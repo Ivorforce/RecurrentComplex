@@ -1,0 +1,20 @@
+=== ThatDutchIdiot ===
+
+- OldWatchtower
+- DesertBeacon
+- ForestBeacon
+- JokerTower
+- MysticalTree
+- MysticalTree1
+- MysticalTree2
+- MeteorSite
+
+=== Dominic ===
+
+- SmallAbandonedMine
+- PeacefulCrypt
+
+=== Linka71 ===
+
+- DesertHut
+- DesertWatchtower

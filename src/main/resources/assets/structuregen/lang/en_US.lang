@@ -1,0 +1,76 @@
+item.blockSelector.name=Block Selector
+item.blockSelectorFloating.name=Floating Block Selector
+item.inventoryGenerationTag.name=Inventory Generation Tag
+item.inventoryGenerationSingleTag.name=Single Item Generation Tag
+
+tile.negativeSpace.name=Negative Space
+tile.negativeSpace.damage.0.name=Space (0~Negative Space)
+tile.negativeSpace.damage.1.name=Space (1~Natural Air)
+tile.naturalFloor.name=Natural Floor
+tile.structureGenerator.name=Structure Generator
+
+itemGroup.structureTools=Structure Tools
+itemGroup.inventoryGenerators=Inventory Generators
+
+commands.structure.notGeneric=Structure '%s' is not generic!
+commands.structure.notRegistered=No structure found by name '%s'!
+
+commands.strucExport.usage=/strucExport [blueprintName]
+commands.strucExport.noPlayer=strucExport must be invoked by player
+commands.strucExport.failure=Failed to export structure to file '%s'
+commands.strucExport.success=Exported structure to file '%s'
+
+commands.strucEdit.usage=/strucEdit <structureName>
+commands.strucEdit.noPlayer=strucEdit must be invoked by player
+
+commands.strucGen.usage=/strucGen <structureName> [x] [z]
+commands.strucGen.noStructure=No structure registered by the name of '%s'
+
+commands.strucImport.usage=/strucImport <structureName> [x] [y] [z]
+commands.strucImport.noStructure=No structure registered by the name of '%s'
+
+commands.strucChest.usage=/strucChest <generatorName> [x] [y] [z]
+commands.strucChest.noGen=No inventory generator registered by the name of '%s'
+
+commands.selectSet.usage=/selectSet <clear|point1|point2> [x] [y] [z]
+commands.selectSet.noPlayer=selectSet must be invoked by player
+
+commands.selectModify.noSelection=Player does not have a complete selection
+commands.selectModify.noPlayer=Command must be invoked by player
+commands.selectModify.invalidBlock=No block registered by name '%s'
+commands.selectModify.invalidMetadata=Metadata must be entered like '0,1,5', but was '%s'
+
+commands.selectFill.usage=/selectFill <block> [metadata1,metadata2,metadata3...]
+
+commands.selectReplace.usage=/selectReplace <source> <dest> [srcmetadata1,metadata2,metadata3...] [destmetadata1,metadata2,metadata3...]
+
+commands.selectFillSphere.usage=/selectFillSphere <block> [metadata1,metadata2,metadata3...]
+
+commands.selectNatural.usage=/selectNatural [naturalFloorExpansion]
+
+commands.reloadStructures.usage=/strucImport <structureName> [x] [y] [z]
+
+
+inventoryGen.vanilla=Vanilla Generator
+inventoryGen.custom=Custom Generator
+inventoryGen.create=Create New Generator
+inventoryGen.mod=Mod Generator
+
+guiGenericInventory.save=Save
+guiGenericInventory.weight=Weight
+guiGenericInventory.minMax=Min: %s, Max: %s
+guiGenericInventory.minMaxItems=Min Items: %s, Max Items: %s
+guiGenericInventory.weightNumber=Weight: %s
+
+structures.gui.true=True
+structures.gui.false=False
+
+structures.category.decoration=Decoration
+structures.category.rare=Rare
+structures.category.adventure=Adventure
+
+structures.genY.bedrock=Bedrock
+structures.genY.surface=Surface
+structures.genY.sealevel=Sealevel
+structures.genY.underwater=Ocean Floor
+structures.genY.top=Top (Sky)

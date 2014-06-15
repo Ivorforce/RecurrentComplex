@@ -1,0 +1,8 @@
+/*
+/*/
+!/src/
+!.gitignore
+!gradlew*
+!/gradle/
+!/build.gradle
+!/README.md

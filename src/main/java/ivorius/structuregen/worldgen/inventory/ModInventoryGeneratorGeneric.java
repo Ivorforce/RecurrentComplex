@@ -1,3 +1,8 @@
+/*
+ *  Copyright (c) 2014, Lukas Tenbrink.
+ *  * http://lukas.axxim.net
+ */
+
 package ivorius.structuregen.worldgen.inventory;
 
 import cpw.mods.fml.common.Loader;

@@ -1,3 +1,8 @@
+/*
+ *  Copyright (c) 2014, Lukas Tenbrink.
+ *  * http://lukas.axxim.net
+ */
+
 package ivorius.structuregen.events;
 
 import cpw.mods.fml.common.FMLCommonHandler;

@@ -18,6 +18,11 @@
 
 package ivorius.structuregen.ivtoolkit;
 
+import net.minecraft.block.Block;
+import net.minecraft.world.World;
+import net.minecraftforge.common.util.ForgeDirection;
+import net.minecraftforge.common.util.RotationHelper;
+
 import java.util.Arrays;
 
 /**
@@ -104,5 +109,15 @@ public class AxisAlignedTransform2D
         double[] transformed = new double[]{shifted[0] * matrix[0][0] + shifted[2] * matrix[1][0], shifted[1], shifted[0] * matrix[0][1] + shifted[2] * matrix[1][1]};
 
         return new double[]{transformed[0] + center[0], transformed[1] + center[1], transformed[2] + center[2]};
+    }
+
+    public void rotateBlock(World world, BlockCoord coord, Block block)
+    {
+        int number = matrix[0][0] > 0 ? 0 : (matrix[0][0] < 0 ? 2 : (matrix[0][1] < 0 ? 3 : 1));
+
+        for (int i = 0; i < number; i++)
+        {
+            block.rotateBlock(world, coord.x, coord.y, coord.z, ForgeDirection.UP);
+        }
     }
 }

@@ -18,6 +18,9 @@
 
 package ivorius.structuregen.ivtoolkit;
 
+import net.minecraft.util.AABBPool;
+import net.minecraft.util.AxisAlignedBB;
+
 import java.util.Iterator;
 
 /**
@@ -78,6 +81,14 @@ public class BlockArea implements Iterable<BlockCoord>
         BlockCoord higher = getHigherCorner();
 
         return coord.x >= lower.x && coord.y >= lower.y && coord.z >= lower.z && coord.x <= higher.x && coord.y <= higher.y && coord.z <= higher.z;
+    }
+
+    public AxisAlignedBB asAxisAlignedBB(AABBPool pool)
+    {
+        BlockCoord lower = getLowerCorner();
+        BlockCoord higher = getHigherCorner();
+
+        return pool.getAABB(lower.x, lower.y, lower.z, higher.x, higher.y, higher.z);
     }
 
     @Override

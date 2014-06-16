@@ -7,6 +7,7 @@ package ivorius.structuregen.commands;
 
 import ivorius.structuregen.StructureGen;
 import ivorius.structuregen.entities.StructureEntityInfo;
+import ivorius.structuregen.ivtoolkit.BlockArea;
 import ivorius.structuregen.ivtoolkit.BlockCoord;
 import ivorius.structuregen.ivtoolkit.IvWorldData;
 import ivorius.structuregen.worldgen.StructureHandler;
@@ -98,8 +99,11 @@ public class CommandExportStructure extends CommandBase
             structureName = "NewStructure";
         }
 
-        IvWorldData data = new IvWorldData(player.getEntityWorld(), x, y, z, width, height, length, true);
-        genericStructureInfo.worldDataCompound = data.createTagCompound(x, y, z);
+        BlockCoord lowerCoord = new BlockCoord(x, y, z);
+        BlockCoord higherCoord = new BlockCoord(x + width, y + height, z + length);
+
+        IvWorldData data = new IvWorldData(player.getEntityWorld(), new BlockArea(lowerCoord, higherCoord), true);
+        genericStructureInfo.worldDataCompound = data.createTagCompound(lowerCoord);
         StructureGen.chEditStructure.sendBeginEdit(player, genericStructureInfo, structureName);
     }
 

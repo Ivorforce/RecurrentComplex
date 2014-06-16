@@ -49,36 +49,29 @@ public class IvWorldData
         this.entities = entities;
     }
 
-    public IvWorldData(World world, int x, int y, int z, int width, int height, int length, boolean captureEntities)
+    public IvWorldData(World world, BlockArea blockArea, boolean captureEntities)
     {
-        blockCollection = new IvBlockCollection(width, height, length);
+        int[] size = blockArea.areaSize();
+        blockCollection = new IvBlockCollection(size[0], size[1], size[2]);
 
         tileEntities = new ArrayList<>();
-        for (int xP = 0; xP < width; xP++)
+        for (BlockCoord worldCoord : blockArea)
         {
-            for (int yP = 0; yP < height; yP++)
+            BlockCoord dataCoord = worldCoord.subtract(blockArea.getLowerCorner());
+
+            blockCollection.setBlock(dataCoord, world.getBlock(worldCoord.x, worldCoord.y, worldCoord.z));
+            blockCollection.setMetadata(dataCoord, (byte) world.getBlockMetadata(worldCoord.x, worldCoord.y, worldCoord.z));
+
+            TileEntity tileEntity = world.getTileEntity(worldCoord.x, worldCoord.y, worldCoord.z);
+            if (tileEntity != null)
             {
-                for (int zP = 0; zP < length; zP++)
-                {
-                    int wX = x + xP;
-                    int wY = y + yP;
-                    int wZ = z + zP;
-
-                    blockCollection.setBlock(xP, yP, zP, world.getBlock(wX, wY, wZ));
-                    blockCollection.setMetadata(xP, yP, zP, (byte) world.getBlockMetadata(wX, wY, wZ));
-
-                    TileEntity tileEntity = world.getTileEntity(wX, wY, wZ);
-                    if (tileEntity != null)
-                    {
-                        tileEntities.add(tileEntity);
-                    }
-                }
+                tileEntities.add(tileEntity);
             }
         }
 
         if (captureEntities)
         {
-            entities = world.getEntitiesWithinAABBExcludingEntity(null, AxisAlignedBB.getAABBPool().getAABB(x, y, z, x + width, y + height, z + length));
+            entities = world.getEntitiesWithinAABBExcludingEntity(null, blockArea.asAxisAlignedBB(AxisAlignedBB.getAABBPool()));
             Iterator<Entity> entityIterator = entities.iterator();
             while (entityIterator.hasNext())
             {
@@ -119,7 +112,7 @@ public class IvWorldData
         }
     }
 
-    public NBTTagCompound createTagCompound(int referenceX, int referenceY, int referenceZ)
+    public NBTTagCompound createTagCompound(BlockCoord referenceCoord)
     {
         NBTTagCompound compound = new NBTTagCompound();
 
@@ -129,13 +122,13 @@ public class IvWorldData
         for (TileEntity tileEntity : tileEntities)
         {
             NBTTagCompound teCompound = new NBTTagCompound();
-            tileEntity.xCoord -= referenceX;
-            tileEntity.yCoord -= referenceY;
-            tileEntity.zCoord -= referenceZ;
+            tileEntity.xCoord -= referenceCoord.x;
+            tileEntity.yCoord -= referenceCoord.y;
+            tileEntity.zCoord -= referenceCoord.z;
             tileEntity.writeToNBT(teCompound);
-            tileEntity.xCoord += referenceX;
-            tileEntity.yCoord += referenceY;
-            tileEntity.zCoord += referenceZ;
+            tileEntity.xCoord += referenceCoord.x;
+            tileEntity.yCoord += referenceCoord.y;
+            tileEntity.zCoord += referenceCoord.z;
 
             teList.appendTag(teCompound);
         }
@@ -145,13 +138,13 @@ public class IvWorldData
         for (Entity entity : entities)
         {
             NBTTagCompound teCompound = new NBTTagCompound();
-            entity.posX -= referenceX;
-            entity.posY -= referenceY;
-            entity.posZ -= referenceZ;
+            entity.posX -= referenceCoord.x;
+            entity.posY -= referenceCoord.y;
+            entity.posZ -= referenceCoord.z;
             entity.writeToNBTOptional(teCompound);
-            entity.posX += referenceX;
-            entity.posY += referenceY;
-            entity.posZ += referenceZ;
+            entity.posX += referenceCoord.x;
+            entity.posY += referenceCoord.y;
+            entity.posZ += referenceCoord.z;
 
             entityList.appendTag(teCompound);
         }

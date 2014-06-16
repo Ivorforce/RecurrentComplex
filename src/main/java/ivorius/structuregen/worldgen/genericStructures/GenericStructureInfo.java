@@ -35,10 +35,7 @@ import net.minecraft.world.biome.BiomeGenBase;
 import net.minecraftforge.common.BiomeDictionary;
 
 import java.lang.reflect.Type;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Random;
+import java.util.*;
 
 /**
  * Created by lukas on 24.05.14.
@@ -83,7 +80,7 @@ public class GenericStructureInfo implements StructureInfo, Cloneable
     @Override
     public void generate(World world, Random random, int x, int y, int z, boolean asCenter, int layer)
     {
-        AxisAlignedTransform2D transform2D = rotatable ? AxisAlignedTransform2D.transform(random.nextInt(4), random.nextBoolean()) : AxisAlignedTransform2D.ORIGINAL;
+        AxisAlignedTransform2D transform2D = rotatable ? AxisAlignedTransform2D.transform(random.nextInt(4), false /* Can't mirror with Forge's DirectionHelper */) : AxisAlignedTransform2D.ORIGINAL;
 
         generate(world, random, new BlockCoord(x, y, z), asCenter, layer, transform2D, false);
     }
@@ -100,6 +97,13 @@ public class GenericStructureInfo implements StructureInfo, Cloneable
         IvBlockCollection blockCollection = worldData.blockCollection;
         int[] size = new int[]{blockCollection.width, blockCollection.height, blockCollection.length};
 
+        List<GeneratingTileEntity> generatingTileEntities = new ArrayList<>();
+        Map<BlockCoord, TileEntity> tileEntities = new HashMap<>();
+        for (TileEntity tileEntity : worldData.tileEntities)
+        {
+            tileEntities.put(new BlockCoord(tileEntity), tileEntity);
+        }
+
         if (asCenter)
         {
             origin = origin.add(-size[0] / 2, 0, -size[2] / 2);
@@ -111,12 +115,12 @@ public class GenericStructureInfo implements StructureInfo, Cloneable
             {
                 if (transformer.generatesBefore())
                 {
-                    for (BlockCoord dataCoord : blockCollection)
+                    for (BlockCoord sourceCoord : blockCollection)
                     {
-                        BlockCoord worldCoord = transform.apply(dataCoord, size).add(origin);
+                        BlockCoord worldCoord = transform.apply(sourceCoord, size).add(origin);
 
-                        Block block = blockCollection.getBlock(dataCoord.x, dataCoord.y, dataCoord.z);
-                        int meta = blockCollection.getMetadata(dataCoord.x, dataCoord.y, dataCoord.z);
+                        Block block = blockCollection.getBlock(sourceCoord);
+                        int meta = blockCollection.getMetadata(sourceCoord);
 
                         if (transformer.matches(block, meta))
                         {
@@ -129,50 +133,44 @@ public class GenericStructureInfo implements StructureInfo, Cloneable
 
         for (int pass = 0; pass < 2; pass++)
         {
-            for (int xP = 0; xP < blockCollection.width; xP++)
+            for (BlockCoord sourceCoord : blockCollection)
             {
-                for (int yP = 0; yP < blockCollection.height; yP++)
+                Block block = blockCollection.getBlock(sourceCoord);
+                int meta = blockCollection.getMetadata(sourceCoord);
+
+                BlockCoord worldPos = transform.apply(sourceCoord, size).add(origin);
+
+                if (pass == getPass(block, meta) && (asSource || transformer(block, meta) == null))
                 {
-                    for (int zP = 0; zP < blockCollection.length; zP++)
+                    world.setBlock(worldPos.x, worldPos.y, worldPos.z, block, meta, 2);
+
+                    TileEntity tileEntity = tileEntities.get(sourceCoord);
+                    if (tileEntity != null)
                     {
-                        Block block = blockCollection.getBlock(xP, yP, zP);
-                        int meta = blockCollection.getMetadata(xP, yP, zP);
+                        tileEntity.xCoord = worldPos.x;
+                        tileEntity.yCoord = worldPos.y;
+                        tileEntity.zCoord = worldPos.z;
+                        world.setTileEntity(worldPos.x, worldPos.y, worldPos.z, tileEntity);
+                        tileEntity.updateContainingBlockInfo();
 
-                        BlockCoord worldPos = transform.apply(new BlockCoord(xP, yP, zP), size).add(origin);
-
-                        if (pass == getPass(block, meta) && (asSource || transformer(block, meta) == null))
+                        if (!asSource)
                         {
-                            world.setBlock(worldPos.x, worldPos.y, worldPos.z, block, meta, 3);
+                            if (tileEntity instanceof IInventory)
+                            {
+                                IInventory inventory = (IInventory) tileEntity;
+                                InventoryGenerationHandler.generateAllTags(inventory, random);
+                            }
+
+                            if (tileEntity instanceof GeneratingTileEntity)
+                            {
+                                generatingTileEntities.add((GeneratingTileEntity) tileEntity);
+                            }
                         }
                     }
+
+                    transform.rotateBlock(world, worldPos, block);
                 }
             }
-        }
-
-        List<GeneratingTileEntity> generatingTileEntities = new ArrayList<>();
-        List<TileEntity> tileEntities = worldData.tileEntities;
-        for (TileEntity tileEntity : tileEntities)
-        {
-            BlockCoord teCoord = transform.apply(new BlockCoord(tileEntity), size).add(origin);
-            tileEntity.xCoord = teCoord.x;
-            tileEntity.yCoord = teCoord.y;
-            tileEntity.zCoord = teCoord.z;
-
-            if (!asSource)
-            {
-                if (tileEntity instanceof IInventory)
-                {
-                    IInventory inventory = (IInventory) tileEntity;
-                    InventoryGenerationHandler.generateAllTags(inventory, random);
-                }
-
-                if (tileEntity instanceof GeneratingTileEntity)
-                {
-                    generatingTileEntities.add((GeneratingTileEntity) tileEntity);
-                }
-            }
-
-            world.setTileEntity(tileEntity.xCoord, tileEntity.yCoord, tileEntity.zCoord, tileEntity);
         }
 
         if (!asSource)
@@ -181,12 +179,12 @@ public class GenericStructureInfo implements StructureInfo, Cloneable
             {
                 if (!transformer.generatesBefore())
                 {
-                    for (BlockCoord dataCoord : blockCollection)
+                    for (BlockCoord sourceCoord : blockCollection)
                     {
-                        BlockCoord worldCoord = transform.apply(dataCoord, size).add(origin);
+                        BlockCoord worldCoord = transform.apply(sourceCoord, size).add(origin);
 
-                        Block block = blockCollection.getBlock(dataCoord.x, dataCoord.y, dataCoord.z);
-                        int meta = blockCollection.getMetadata(dataCoord.x, dataCoord.y, dataCoord.z);
+                        Block block = blockCollection.getBlock(sourceCoord);
+                        int meta = blockCollection.getMetadata(sourceCoord);
 
                         if (transformer.matches(block, meta))
                         {

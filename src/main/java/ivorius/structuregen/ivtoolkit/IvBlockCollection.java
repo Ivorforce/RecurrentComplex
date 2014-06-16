@@ -21,6 +21,7 @@ package ivorius.structuregen.ivtoolkit;
 import net.minecraft.block.Block;
 import net.minecraft.init.Blocks;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraftforge.common.util.ForgeDirection;
 
 import java.util.Iterator;
 
@@ -70,74 +71,61 @@ public class IvBlockCollection implements Iterable<BlockCoord>
         }
     }
 
-    public Block getBlock(int x, int y, int z)
+    public Block getBlock(BlockCoord coord)
     {
-        if (x < 0 || x >= width || y < 0 || y >= height || z < 0 || z >= length)
+        if (!hasCoord(coord))
         {
             return Blocks.air;
         }
 
-        return blocks[((z * height) + y) * width + x];
+        return blocks[indexFromCoord(coord)];
     }
 
-    public byte getMetadata(int x, int y, int z)
+    public byte getMetadata(BlockCoord coord)
     {
-        if (x < 0 || x >= width || y < 0 || y >= height || z < 0 || z >= length)
+        if (!hasCoord(coord))
         {
             return 0;
         }
 
-        return metas[((z * height) + y) * width + x];
+        return metas[indexFromCoord(coord)];
     }
 
-    public void setBlock(int x, int y, int z, Block block)
+    public void setBlock(BlockCoord coord, Block block)
     {
-        if (x < 0 || x >= width || y < 0 || y >= height || z < 0 || z >= length)
+        if (!hasCoord(coord))
         {
             return;
         }
 
-        blocks[((z * height) + y) * width + x] = block;
+        blocks[indexFromCoord(coord)] = block;
     }
 
-    public void setMetadata(int x, int y, int z, byte meta)
+    public void setMetadata(BlockCoord coord, byte meta)
     {
-        if (x < 0 || x >= width || y < 0 || y >= height || z < 0 || z >= length)
+        if (!hasCoord(coord))
         {
             return;
         }
 
-        metas[((z * height) + y) * width + x] = meta;
+        metas[indexFromCoord(coord)] = meta;
     }
 
-    public boolean shouldRenderSide(int x, int y, int z, int side)
+    private int indexFromCoord(BlockCoord coord)
     {
-        if (side == 0)
-        {
-            y--;
-        }
-        else if (side == 1)
-        {
-            y++;
-        }
-        else if (side == 2)
-        {
-            z--;
-        }
-        else if (side == 3)
-        {
-            z++;
-        }
-        else if (side == 4)
-        {
-            x--;
-        }
-        else if (side == 5)
-        {
-            x++;
-        }
+        return ((coord.z * height) + coord.y) * width + coord.x;
+    }
 
-        Block block = getBlock(x, y, z);
+    public boolean hasCoord(BlockCoord coord)
+    {
+        return coord.x >= 0 && coord.x < width && coord.y >= 0 && coord.y < height && coord.z >= 0 && coord.z < length;
+    }
+
+    public boolean shouldRenderSide(BlockCoord coord, ForgeDirection side)
+    {
+        BlockCoord sideCoord = coord.add(side.offsetX, side.offsetY, side.offsetZ);
+
+        Block block = getBlock(sideCoord);
         return !block.isOpaqueCube();
     }
 

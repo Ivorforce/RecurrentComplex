@@ -120,6 +120,16 @@ public class BlockCoord
         return new BlockCoord(x + coord.x, y + coord.y, z + coord.z);
     }
 
+    public BlockCoord subtract(int x, int y, int z)
+    {
+        return new BlockCoord(this.x - x, this.y - y, this.z - z);
+    }
+
+    public BlockCoord subtract(BlockCoord coord)
+    {
+        return new BlockCoord(x - coord.x, y - coord.y, z - coord.z);
+    }
+
     public BlockCoord getLowerCorner(BlockCoord coord)
     {
         return new BlockCoord(Math.min(x, coord.x), Math.min(y, coord.y), Math.min(z, coord.z));

@@ -13,18 +13,18 @@ import net.minecraft.command.ICommandSender;
 /**
  * Created by lukas on 25.05.14.
  */
-public class CommandReloadStructures extends CommandBase
+public class CommandStructuresReload extends CommandBase
 {
     @Override
     public String getCommandName()
     {
-        return "reloadStructures";
+        return "strucReload";
     }
 
     @Override
     public String getCommandUsage(ICommandSender var1)
     {
-        return "commands.reloadStructures.usage";
+        return "commands.strucReload.usage";
     }
 
     @Override

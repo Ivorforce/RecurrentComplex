@@ -193,7 +193,7 @@ public class StructureGen
         event.registerServerCommand(new CommandEditStructure());
         event.registerServerCommand(new CommandGenerateStructure());
         event.registerServerCommand(new CommandImportStructure());
-        event.registerServerCommand(new CommandReloadStructures());
+        event.registerServerCommand(new CommandStructuresReload());
         event.registerServerCommand(new CommandSelectPoint());
         event.registerServerCommand(new CommandSelectFill());
         event.registerServerCommand(new CommandSelectReplace());

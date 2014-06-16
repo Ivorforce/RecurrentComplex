@@ -48,7 +48,7 @@ commands.selectFillSphere.usage=/selectFillSphere <block> [metadata1,metadata2,m
 
 commands.selectNatural.usage=/selectNatural [naturalFloorExpansion]
 
-commands.reloadStructures.usage=/strucImport <structureName> [x] [y] [z]
+commands.strucReload.usage=/strucReload <structureName> [x] [y] [z]
 
 
 inventoryGen.vanilla=Vanilla Generator

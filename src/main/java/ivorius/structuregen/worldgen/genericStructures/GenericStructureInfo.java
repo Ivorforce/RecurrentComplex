@@ -147,12 +147,13 @@ public class GenericStructureInfo implements StructureInfo, Cloneable
                     TileEntity tileEntity = tileEntities.get(sourceCoord);
                     if (tileEntity != null)
                     {
+                        world.setBlockMetadataWithNotify(worldPos.x, worldPos.y, worldPos.z, meta, 2); // TODO Figure out why some blocks (chests, furnace) need this
+
                         tileEntity.xCoord = worldPos.x;
                         tileEntity.yCoord = worldPos.y;
                         tileEntity.zCoord = worldPos.z;
                         world.setTileEntity(worldPos.x, worldPos.y, worldPos.z, tileEntity);
                         tileEntity.updateContainingBlockInfo();
-
                         if (!asSource)
                         {
                             if (tileEntity instanceof IInventory)
@@ -167,7 +168,6 @@ public class GenericStructureInfo implements StructureInfo, Cloneable
                             }
                         }
                     }
-
                     transform.rotateBlock(world, worldPos, block);
                 }
             }

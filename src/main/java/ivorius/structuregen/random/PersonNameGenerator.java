@@ -9,7 +9,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
 
-public class RandomNameGenerator
+public class PersonNameGenerator
 {
     public static enum NameType
     {
@@ -22,30 +22,39 @@ public class RandomNameGenerator
     private static List<String> endConsonants = Arrays.asList("b", "d", "f", "g", "h", "k", "l", "m", "n", "p", "r", "s", "t", "v", "w", "z", "ch", "gh", "nn", "st", "sh", "th", "tt", "ss", "pf", "nt");
     private static List<String> chaoticNameBlueprints = Arrays.asList("vdv", "cvdvd", "cvd", "vdvd");
 
-    public static List<String> nordicNamesMale = Arrays.asList("Erik", "Magnus", "John", "William", "Lukas", "Elias", "Malik", "Aron", "Enuk", "Christian", "Peter", "Hans", "Jens", "Niels", "Kristian", "Aage", "Johannes", "Carl", "Svend", "Sven", "Jakup", "Benjamin", "Danjal", "Hanus", "Rei", "Simun", "Bardur", "Johan", "Jonas", "Aleksi", "Ville", "Niko", "Juho", "Teemu", "Joonas", "Jesse", "Joni", "Jere", "Antti", "Ole", "Lars", "Jorgen", "Jakob", "Jon", "Daniel", "Sigurdur", "Arnar", "Kristofer", "Einar", "Gunnar", "Alexander", "Andri", "Viktor", "Olof", "Lennart", "Pall");
-    public static List<String> nordicNamesFemale = Arrays.asList("Emma", "Eva", "Sofia", "Pipaluk", "Emilia", "Alice", "Marie", "Anna", "Margrethe", "Kristine", "Johanne", "Karen", "Elisabeth", "Ellen", "Ingeborg", "Rebekka", "Helena", "Vir", "Ronja", "Katrin", "Liv", "Maria", "Sara", "Jenna", "Laura", "Roosa", "Veera", "Emilia", "Julia", "Sara", "Jenni", "Noora", "Ane", "Johanne", "Dorthe", "Margrethe", "Sofie", "Else", "Amalie", "Gudrun", "Helga", "Birta", "Maria");
+    public static List<String> nordicNamesMale = Arrays.asList("Erik", "Magnus", "John", "William", "Lukas", "Elias",
+            "Malik", "Aron", "Enuk", "Christian", "Peter", "Hans", "Jens", "Niels", "Kristian", "Aage", "Johannes",
+            "Carl", "Svend", "Sven", "Jakup", "Benjamin", "Danjal", "Hanus", "Rei", "Simun", "Bardur", "Johan", "Jonas",
+            "Aleksi", "Ville", "Niko", "Juho", "Teemu", "Joonas", "Jesse", "Joni", "Jere", "Antti", "Ole", "Lars", "Jorgen",
+            "Jakob", "Jon", "Daniel", "Sigurdur", "Arnar", "Kristofer", "Einar", "Gunnar", "Alexander", "Andri", "Viktor",
+            "Olof", "Lennart", "Pall");
+    public static List<String> nordicNamesFemale = Arrays.asList("Emma", "Eva", "Sofia", "Pipaluk", "Emilia", "Alice",
+            "Marie", "Anna", "Margrethe", "Kristine", "Johanne", "Karen", "Elisabeth", "Ellen", "Ingeborg", "Rebekka",
+            "Helena", "Vir", "Ronja", "Katrin", "Liv", "Maria", "Sara", "Jenna", "Laura", "Roosa", "Veera", "Emilia",
+            "Julia", "Sara", "Jenni", "Noora", "Ane", "Johanne", "Dorthe", "Margrethe", "Sofie", "Else", "Amalie", "Gudrun",
+            "Helga", "Birta", "Maria");
 
-    public static String getRandomName(Random random, boolean male, NameType type)
+    public static String humanName(Random random, boolean male)
+    {
+        NameType nameType = random.nextFloat() < 0.95f ? NameType.NORDIC : NameType.CHAOTIC;
+
+        return randomName(random, male, nameType);
+    }
+
+    public static String randomName(Random random, boolean male, NameType type)
     {
         switch (type)
         {
             case CHAOTIC:
-                return getChaoticName(random, male);
+                return chaoticName(random, male);
             case NORDIC:
-                return getNordicName(random, male);
+                return nordicName(random, male);
         }
 
         throw new RuntimeException();
     }
 
-    public static String getHumanName(Random random, boolean male)
-    {
-        NameType nameType = random.nextFloat() < 0.95f ? NameType.NORDIC : NameType.CHAOTIC;
-
-        return getRandomName(random, male, nameType);
-    }
-
-    private static String getNordicName(Random random, boolean male)
+    private static String nordicName(Random random, boolean male)
     {
         StringBuilder name = new StringBuilder();
 
@@ -68,25 +77,25 @@ public class RandomNameGenerator
         return name.toString();
     }
 
-    private static String getChaoticName(Random random, boolean male)
+    private static String chaoticName(Random random, boolean male)
     {
         StringBuilder name = new StringBuilder();
 
-        name.append(firstCharUppercase(getChaoticName(getRandomElementFrom(chaoticNameBlueprints, random), random)));
+        name.append(firstCharUppercase(parseChaoticName(getRandomElementFrom(chaoticNameBlueprints, random), random)));
 
         if (random.nextFloat() < 0.33f)
         {
-            name.append(" ").append(firstCharUppercase(getChaoticName(getRandomElementFrom(chaoticNameBlueprints, random), random)));
+            name.append(" ").append(firstCharUppercase(parseChaoticName(getRandomElementFrom(chaoticNameBlueprints, random), random)));
         }
         else if (random.nextFloat() < 0.5f)
         {
-            name.append("-").append(firstCharUppercase(getChaoticName(getRandomElementFrom(chaoticNameBlueprints, random), random)));
+            name.append("-").append(firstCharUppercase(parseChaoticName(getRandomElementFrom(chaoticNameBlueprints, random), random)));
         }
 
         return name.toString();
     }
 
-    private static String getChaoticName(String blueprint, Random random)
+    private static String parseChaoticName(String blueprint, Random random)
     {
         StringBuilder name = new StringBuilder();
 

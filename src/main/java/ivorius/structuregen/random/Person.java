@@ -9,7 +9,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
 
-public class PersonNameGenerator
+public class Person
 {
     public static enum NameType
     {
@@ -34,60 +34,66 @@ public class PersonNameGenerator
             "Julia", "Sara", "Jenni", "Noora", "Ane", "Johanne", "Dorthe", "Margrethe", "Sofie", "Else", "Amalie", "Gudrun",
             "Helga", "Birta", "Maria");
 
-    public static String humanName(Random random, boolean male)
+    private String firstName;
+    private String middleName;
+    private String lastName;
+
+    public Person(String firstName, String middleName, String lastName)
+    {
+        this.firstName = firstName;
+        this.middleName = middleName;
+        this.lastName = lastName;
+    }
+
+    public static Person randomHuman(Random random, boolean male)
     {
         NameType nameType = random.nextFloat() < 0.95f ? NameType.NORDIC : NameType.CHAOTIC;
 
-        return randomName(random, male, nameType);
+        return randomPerson(random, male, nameType);
     }
 
-    public static String randomName(Random random, boolean male, NameType type)
+    public static Person randomPerson(Random random, boolean male, NameType type)
     {
         switch (type)
         {
             case CHAOTIC:
-                return chaoticName(random, male);
+                return randomChaoticPerson(random, male);
             case NORDIC:
-                return nordicName(random, male);
+                return randomNordicPerson(random, male);
         }
 
         throw new RuntimeException();
     }
 
-    private static String nordicName(Random random, boolean male)
+    private static Person randomChaoticPerson(Random random, boolean male)
     {
-        StringBuilder name = new StringBuilder();
-
-        name.append(male ? getRandomElementFrom(nordicNamesMale, random) : getRandomElementFrom(nordicNamesFemale, random));
-        name.append(' ');
-
-        if (random.nextFloat() < 0.3f) // Middle name
-        {
-            name.append(male ? getRandomElementFrom(nordicNamesMale, random) : getRandomElementFrom(nordicNamesFemale, random));
-            name.append(' ');
-        }
-
-        if (random.nextFloat() < 0.95f) // Unknown parents
-        {
-            boolean maleFather = random.nextFloat() < 0.9f; //People were named after their fathers. It's a fact, not sexist :P
-            name.append(maleFather ? getRandomElementFrom(nordicNamesMale, random) : getRandomElementFrom(nordicNamesFemale, random));
-            name.append(male ? "sson" : "sdottir");
-        }
-
-        return name.toString();
+        return new Person(chaoticName(random, male), random.nextFloat() < 0.15f ? chaoticName(random, male) : null, random.nextFloat() < 0.4f ? chaoticName(random, male) : null);
     }
 
-    private static String chaoticName(Random random, boolean male)
+    private static Person randomNordicPerson(Random random, boolean male)
+    {
+        String middleName = random.nextFloat() < 0.3f ? nordicName(random, male) : null;
+        String lastName = random.nextFloat() < 0.95f ? nordicLastName(random, male, random.nextFloat() < 0.1f) : null; // People were named after their fathers. It's a fact, not sexist :P
+        return new Person(nordicName(random, male), middleName, lastName);
+    }
+
+    public static String nordicName(Random random, boolean male)
+    {
+        return male ? getRandomElementFrom(nordicNamesMale, random) : getRandomElementFrom(nordicNamesFemale, random);
+    }
+
+    public static String nordicLastName(Random random, boolean male, boolean parentMale)
+    {
+        return nordicName(random, parentMale) + (male ? "sson" : "sdottir");
+    }
+
+    public static String chaoticName(Random random, boolean male)
     {
         StringBuilder name = new StringBuilder();
 
         name.append(firstCharUppercase(parseChaoticName(getRandomElementFrom(chaoticNameBlueprints, random), random)));
 
-        if (random.nextFloat() < 0.33f)
-        {
-            name.append(" ").append(firstCharUppercase(parseChaoticName(getRandomElementFrom(chaoticNameBlueprints, random), random)));
-        }
-        else if (random.nextFloat() < 0.5f)
+        if (random.nextFloat() < 0.2f)
         {
             name.append("-").append(firstCharUppercase(parseChaoticName(getRandomElementFrom(chaoticNameBlueprints, random), random)));
         }

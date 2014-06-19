@@ -31,7 +31,8 @@ import ivorius.structuregen.worldgen.StructureSaveHandler;
 import ivorius.structuregen.worldgen.WorldGenStructures;
 import ivorius.structuregen.worldgen.blockTransformers.*;
 import ivorius.structuregen.worldgen.genericStructures.SGStructures;
-import ivorius.structuregen.worldgen.inventory.*;
+import ivorius.structuregen.worldgen.inventory.InventoryGeneratorSaveHandler;
+import ivorius.structuregen.worldgen.inventory.SGInventoryGenerators;
 import net.minecraft.block.material.Material;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.Item;
@@ -150,6 +151,10 @@ public class StructureGen
         SGItems.artifactGenerationTag = new ItemArtifactGenerator().setUnlocalizedName("artifactGenerationTag").setTextureName(textureBase + "artifactGenerationTag");
         SGItems.artifactGenerationTag.setCreativeTab(tabInventoryGenerators);
         GameRegistry.registerItem(SGItems.artifactGenerationTag, "artifactGenerationTag", MODID);
+
+        SGItems.bookGenerationTag = new ItemBookGenerator().setUnlocalizedName("bookGenerationTag").setTextureName(textureBase + "bookGenerationTag");
+        SGItems.bookGenerationTag.setCreativeTab(tabInventoryGenerators);
+        GameRegistry.registerItem(SGItems.bookGenerationTag, "bookGenerationTag", MODID);
 
         SGBlocks.negativeSpace = new BlockNegativeSpace().setBlockName("negativeSpace").setBlockTextureName(textureBase + "negativeSpace");
         SGBlocks.negativeSpace.setCreativeTab(tabStructureTools);

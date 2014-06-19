@@ -355,7 +355,7 @@ public class IvTileEntityMultiBlock extends TileEntity
     public AxisAlignedBB getBoxAroundCenter(double width, double height, double length)
     {
         double[] center = getActiveCenterCoords();
-        return AxisAlignedBB.getAABBPool().getAABB(center[0] - width, center[1] - height, center[2] - length, center[0] + width, center[1] + height, center[2] + length);
+        return AxisAlignedBB.getBoundingBox(center[0] - width, center[1] - height, center[2] - length, center[0] + width, center[1] + height, center[2] + length);
     }
 
     @Override

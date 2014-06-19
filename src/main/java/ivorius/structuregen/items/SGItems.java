@@ -17,4 +17,6 @@ public class SGItems
 
     public static Item inventoryGenerationTag;
     public static Item inventoryGenerationSingleTag;
+
+    public static Item artifactGenerationTag;
 }

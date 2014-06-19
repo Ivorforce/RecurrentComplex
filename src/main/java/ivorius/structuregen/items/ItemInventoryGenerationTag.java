@@ -27,8 +27,7 @@ public abstract class ItemInventoryGenerationTag extends Item implements Generat
     {
     }
 
-    @Override
-    public boolean onItemUse(ItemStack usedItem, EntityPlayer player, World world, int x, int y, int z, int par7, float par8, float par9, float par10)
+    public static boolean applyGeneratorToInventory(World world, int x, int y, int z, GeneratingItem generatingItem, ItemStack stack)
     {
         TileEntity rightClicked = world.getTileEntity(x, y, z);
 
@@ -36,7 +35,7 @@ public abstract class ItemInventoryGenerationTag extends Item implements Generat
         {
             if (!world.isRemote)
             {
-                generateInInventory((IInventory) rightClicked, world.rand, usedItem, world.rand.nextInt(((IInventory) rightClicked).getSizeInventory()));
+                generatingItem.generateInInventory((IInventory) rightClicked, world.rand, stack, world.rand.nextInt(((IInventory) rightClicked).getSizeInventory()));
                 InventoryGenerationHandler.generateAllTags((IInventory) rightClicked, world.rand);
             }
 
@@ -44,6 +43,12 @@ public abstract class ItemInventoryGenerationTag extends Item implements Generat
         }
 
         return false;
+    }
+
+    @Override
+    public boolean onItemUse(ItemStack usedItem, EntityPlayer player, World world, int x, int y, int z, int par7, float par8, float par9, float par10)
+    {
+        return applyGeneratorToInventory(world, x, y, z, this, usedItem);
     }
 
     @Override

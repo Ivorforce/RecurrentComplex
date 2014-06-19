@@ -147,6 +147,10 @@ public class StructureGen
         SGItems.inventoryGenerationSingleTag.setCreativeTab(tabInventoryGenerators);
         GameRegistry.registerItem(SGItems.inventoryGenerationSingleTag, "inventoryGenerationSingleTag", MODID);
 
+        SGItems.artifactGenerationTag = new ItemArtifactGenerator().setUnlocalizedName("artifactGenerationTag").setTextureName(textureBase + "artifactGenerationTag");
+        SGItems.artifactGenerationTag.setCreativeTab(tabInventoryGenerators);
+        GameRegistry.registerItem(SGItems.artifactGenerationTag, "artifactGenerationTag", MODID);
+
         SGBlocks.negativeSpace = new BlockNegativeSpace().setBlockName("negativeSpace").setBlockTextureName(textureBase + "negativeSpace");
         SGBlocks.negativeSpace.setCreativeTab(tabStructureTools);
         GameRegistry.registerBlock(SGBlocks.negativeSpace, ItemBlockNegativeSpace.class, "negativeSpace");

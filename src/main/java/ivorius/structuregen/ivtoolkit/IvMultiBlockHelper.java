@@ -445,7 +445,7 @@ public class IvMultiBlockHelper implements Iterable<int[]>
 
     public static AxisAlignedBB getBBWithLengths(double x, double y, double z, double width, double height, double depth)
     {
-        return AxisAlignedBB.getAABBPool().getAABB(x, y, z, x + width, y + height, z + depth);
+        return AxisAlignedBB.getBoundingBox(x, y, z, x + width, y + height, z + depth);
     }
 
     public static int getRotation(Entity entity)

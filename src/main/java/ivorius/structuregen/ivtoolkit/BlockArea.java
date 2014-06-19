@@ -83,12 +83,12 @@ public class BlockArea implements Iterable<BlockCoord>
         return coord.x >= lower.x && coord.y >= lower.y && coord.z >= lower.z && coord.x <= higher.x && coord.y <= higher.y && coord.z <= higher.z;
     }
 
-    public AxisAlignedBB asAxisAlignedBB(AABBPool pool)
+    public AxisAlignedBB asAxisAlignedBB()
     {
         BlockCoord lower = getLowerCorner();
         BlockCoord higher = getHigherCorner();
 
-        return pool.getAABB(lower.x, lower.y, lower.z, higher.x, higher.y, higher.z);
+        return AxisAlignedBB.getBoundingBox(lower.x, lower.y, lower.z, higher.x, higher.y, higher.z);
     }
 
     @Override

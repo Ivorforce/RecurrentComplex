@@ -2,6 +2,7 @@ item.blockSelector.name=Block Selector
 item.blockSelectorFloating.name=Floating Block Selector
 item.inventoryGenerationTag.name=Inventory Generation Tag
 item.inventoryGenerationSingleTag.name=Single Item Generation Tag
+item.artifactGenerationTag.name=Artifact Generation Tag
 
 tile.negativeSpace.name=Negative Space
 tile.negativeSpace.damage.0.name=Space (0~Negative Space)

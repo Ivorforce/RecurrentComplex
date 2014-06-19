@@ -14,9 +14,9 @@ import java.util.Random;
  */
 public class Artifact
 {
-    private static List<String> objectTypes = Arrays.asList("tool", "eye", "board", "weapon", "toy", "memory", "relic", "orb", "block", "device", "killer", "eraser", "diminisher", "supporter", "spreader", "eater", "devourer", "helper", "teacher", "inventor", "partner", "remedy", "destination", "constructor", "prophet", "stone", "artifact", "scroll");
-    private static List<String> traits = Arrays.asList("ominous", "odd", "uncontrollable", "catastrophical", "silent", "furious", "banned", "secret", "unknown", "popular", "forgotten", "lost", "heroic", "famous", "colossal", "mad", "wise", "uncontrollable", "glorious", "unprecedented", "unbelievable", "incredible", "lesser", "greater", "striking", "Red", "Gold", "Silver", "Blue", "Marine", "Glowing", "Crimson", "Violet", "White", "Black", "Sinister");
-    private static List<String> powers = Arrays.asList("tears", "darkness", "light", "fire", "gold", "luck", "cold", "wealth", "fury", "magic", "nature", "beasts");
+    private static List<String> objectTypes = Arrays.asList("tool", "eye", "board", "weapon", "toy", "memory", "relic", "orb", "block", "killer", "diminisher", "eater", "devourer", "helper", "teacher", "remedy", "prophet", "stone", "artifact", "scroll", "amulet", "ring", "tablet");
+    private static List<String> traits = Arrays.asList("ominous", "odd", "uncontrollable", "catastrophical", "silent", "furious", "banned", "secret", "unknown", "popular", "forgotten", "lost", "heroic", "famous", "colossal", "mad", "wise", "uncontrollable", "glorious", "unprecedented", "unbelievable", "incredible", "lesser", "greater", "striking", "red", "gold", "silver", "blue", "marine", "glowing", "crimson", "violet", "white", "black", "sinister");
+    private static List<String> powers = Arrays.asList("tears", "darkness", "gloom", "twilight", "light", "fire", "gold", "luck", "cold", "wealth", "fury", "magic", "nature", "beasts", "rapture", "salvation", "destruction", "perdition");
 
     private String objectType;
     private String trait;
@@ -31,16 +31,16 @@ public class Artifact
         this.uniqueName = uniqueName;
     }
 
-    private static Artifact randomArtifact(Random random)
+    public static Artifact randomArtifact(Random random)
     {
         return randomArtifact(random, getRandomElementFrom(objectTypes, random));
     }
 
-    private static Artifact randomArtifact(Random random, String objectType)
+    public static Artifact randomArtifact(Random random, String objectType)
     {
         String trait = random.nextFloat() < 0.2f ? getRandomElementFrom(traits, random) : null;
-        String power = random.nextFloat() < 0.8f ? getRandomElementFrom(powers, random) : null;
-        String uniqueName = random.nextFloat() < 0.1f ? Person.chaoticName(random, random.nextBoolean()) : null;
+        String power = random.nextFloat() < 0.1f ? Person.chaoticName(random, random.nextBoolean()) : (random.nextFloat() < 0.8f ? getRandomElementFrom(powers, random) : null);
+        String uniqueName = random.nextFloat() < 0.2f ? Person.chaoticName(random, random.nextBoolean()) : null;
 
         return new Artifact(objectType, trait, power, uniqueName);
     }
@@ -81,11 +81,11 @@ public class Artifact
 
         if (uniqueName != null)
         {
-            builder.append(firstCharUppercase(trait)).append(", the ");
+            builder.append(uniqueName).append(", the ");
         }
         else
         {
-            builder.append("the ");
+            builder.append("The ");
         }
 
         if (trait != null)
@@ -98,11 +98,6 @@ public class Artifact
         if (power != null)
         {
             builder.append(" of ").append(firstCharUppercase(power));
-        }
-
-        if (uniqueName != null)
-        {
-            builder.append(",");
         }
 
         return builder.toString();

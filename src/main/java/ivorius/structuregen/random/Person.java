@@ -137,4 +137,41 @@ public class Person
     {
         return list.get(random.nextInt(list.size()));
     }
+
+    public String getFirstName()
+    {
+        return firstName;
+    }
+
+    public String getMiddleName()
+    {
+        return middleName;
+    }
+
+    public String getLastName()
+    {
+        return lastName;
+    }
+
+    public String getFullName()
+    {
+        StringBuilder builder = new StringBuilder();
+
+        if (firstName != null)
+        {
+            builder.append(firstName);
+        }
+
+        if (middleName != null)
+        {
+            builder.append(middleName);
+        }
+
+        if (lastName != null)
+        {
+            builder.append(lastName);
+        }
+
+        return builder.toString();
+    }
 }

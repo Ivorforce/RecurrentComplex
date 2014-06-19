@@ -71,7 +71,7 @@ public class IvWorldData
 
         if (captureEntities)
         {
-            entities = world.getEntitiesWithinAABBExcludingEntity(null, blockArea.asAxisAlignedBB(AxisAlignedBB.getAABBPool()));
+            entities = world.getEntitiesWithinAABBExcludingEntity(null, blockArea.asAxisAlignedBB());
             Iterator<Entity> entityIterator = entities.iterator();
             while (entityIterator.hasNext())
             {

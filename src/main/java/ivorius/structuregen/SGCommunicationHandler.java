@@ -7,6 +7,8 @@ package ivorius.structuregen;
 
 import cpw.mods.fml.common.event.FMLInterModComms;
 import ivorius.structuregen.ivtoolkit.IvFMLIntercommHandler;
+import ivorius.structuregen.worldgen.StructureHandler;
+import ivorius.structuregen.worldgen.inventory.InventoryGenerationHandler;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.Entity;
 import net.minecraft.item.ItemStack;
@@ -27,9 +29,23 @@ public class SGCommunicationHandler extends IvFMLIntercommHandler
     @Override
     protected boolean handleMessage(FMLInterModComms.IMCMessage message, boolean server, boolean runtime)
     {
-        if (isMessage("addStructure", message, String.class))
+        if (isMessage("registerStructure", message, String.class))
         {
+            StructureHandler.registerStructures(message.getSender(), true, message.getStringValue());
 
+            return true;
+        }
+        else if (isMessage("registerSilentStructure", message, String.class))
+        {
+            StructureHandler.registerStructures(message.getSender(), false, message.getStringValue());
+
+            return true;
+        }
+        else if (isMessage("registerInventoryGenerator", message, String.class))
+        {
+            InventoryGenerationHandler.registerInventoryHandlers(message.getSender(), message.getStringValue());
+
+            return true;
         }
 
         return false;

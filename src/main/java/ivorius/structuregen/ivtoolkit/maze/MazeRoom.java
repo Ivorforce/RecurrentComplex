@@ -18,8 +18,7 @@
 
 package ivorius.structuregen.ivtoolkit.maze;
 
-import com.sun.javafx.beans.annotations.NonNull;
-import ivorius.structuregen.ivtoolkit.IvVecMathHelper;
+import ivorius.structuregen.ivtoolkit.math.IvVecMathHelper;
 import net.minecraft.nbt.NBTTagCompound;
 
 import java.util.Arrays;

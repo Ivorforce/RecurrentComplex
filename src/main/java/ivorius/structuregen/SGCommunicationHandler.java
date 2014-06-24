@@ -6,14 +6,9 @@
 package ivorius.structuregen;
 
 import cpw.mods.fml.common.event.FMLInterModComms;
-import ivorius.structuregen.ivtoolkit.IvFMLIntercommHandler;
+import ivorius.structuregen.ivtoolkit.tools.IvFMLIntercommHandler;
 import ivorius.structuregen.worldgen.StructureHandler;
 import ivorius.structuregen.worldgen.inventory.InventoryGenerationHandler;
-import net.minecraft.client.Minecraft;
-import net.minecraft.entity.Entity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.server.MinecraftServer;
 import org.apache.logging.log4j.Logger;
 
 /**

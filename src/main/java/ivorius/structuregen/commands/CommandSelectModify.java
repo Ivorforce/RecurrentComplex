@@ -6,13 +6,12 @@
 package ivorius.structuregen.commands;
 
 import ivorius.structuregen.entities.StructureEntityInfo;
-import ivorius.structuregen.ivtoolkit.BlockCoord;
+import ivorius.structuregen.ivtoolkit.blocks.BlockCoord;
 import net.minecraft.block.Block;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.command.WrongUsageException;
 import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.util.MathHelper;
 
 /**
  * Created by lukas on 25.05.14.

@@ -6,7 +6,7 @@
 package ivorius.structuregen.worldgen;
 
 import ivorius.structuregen.StructureGen;
-import ivorius.structuregen.ivtoolkit.IvFileHelper;
+import ivorius.structuregen.ivtoolkit.tools.IvFileHelper;
 import ivorius.structuregen.worldgen.genericStructures.GenericStructureInfo;
 import net.minecraft.nbt.CompressedStreamTools;
 import net.minecraft.nbt.NBTTagCompound;

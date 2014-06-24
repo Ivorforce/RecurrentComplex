@@ -7,7 +7,7 @@ package ivorius.structuregen.gui.editstructureblock;
 
 import ivorius.structuregen.blocks.TileEntityStructureGenerator;
 import ivorius.structuregen.gui.table.*;
-import ivorius.structuregen.ivtoolkit.BlockCoord;
+import ivorius.structuregen.ivtoolkit.blocks.BlockCoord;
 import joptsimple.internal.Strings;
 
 import java.util.Arrays;

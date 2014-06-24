@@ -7,8 +7,8 @@ package ivorius.structuregen.worldgen;
 
 import cpw.mods.fml.common.IWorldGenerator;
 import ivorius.structuregen.StructureGen;
-import ivorius.structuregen.ivtoolkit.AxisAlignedTransform2D;
-import ivorius.structuregen.ivtoolkit.BlockCoord;
+import ivorius.structuregen.ivtoolkit.math.AxisAlignedTransform2D;
+import ivorius.structuregen.ivtoolkit.blocks.BlockCoord;
 import net.minecraft.world.World;
 import net.minecraft.world.biome.BiomeGenBase;
 import net.minecraft.world.chunk.IChunkProvider;

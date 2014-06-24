@@ -5,8 +5,6 @@
 
 package ivorius.structuregen.commands;
 
-import ivorius.structuregen.ivtoolkit.AxisAlignedTransform2D;
-import ivorius.structuregen.ivtoolkit.BlockCoord;
 import ivorius.structuregen.worldgen.StructureHandler;
 import ivorius.structuregen.worldgen.StructureInfo;
 import ivorius.structuregen.worldgen.WorldGenStructures;

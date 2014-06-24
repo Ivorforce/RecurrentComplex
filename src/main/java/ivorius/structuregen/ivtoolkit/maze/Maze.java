@@ -18,7 +18,7 @@
 
 package ivorius.structuregen.ivtoolkit.maze;
 
-import ivorius.structuregen.ivtoolkit.IvVecMathHelper;
+import ivorius.structuregen.ivtoolkit.math.IvVecMathHelper;
 import org.apache.logging.log4j.Logger;
 
 import java.util.ArrayList;

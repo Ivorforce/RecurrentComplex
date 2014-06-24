@@ -5,7 +5,7 @@
 
 package ivorius.structuregen.worldgen.blockTransformers;
 
-import ivorius.structuregen.ivtoolkit.IvWorldData;
+import ivorius.structuregen.ivtoolkit.tools.IvWorldData;
 import net.minecraft.block.Block;
 import net.minecraft.world.World;
 

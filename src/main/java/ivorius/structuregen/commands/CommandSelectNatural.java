@@ -7,8 +7,8 @@ package ivorius.structuregen.commands;
 
 import ivorius.structuregen.blocks.SGBlocks;
 import ivorius.structuregen.entities.StructureEntityInfo;
-import ivorius.structuregen.ivtoolkit.BlockArea;
-import ivorius.structuregen.ivtoolkit.BlockCoord;
+import ivorius.structuregen.ivtoolkit.blocks.BlockArea;
+import ivorius.structuregen.ivtoolkit.blocks.BlockCoord;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.command.ICommandSender;

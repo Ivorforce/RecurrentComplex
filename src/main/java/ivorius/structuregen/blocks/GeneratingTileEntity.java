@@ -5,7 +5,7 @@
 
 package ivorius.structuregen.blocks;
 
-import ivorius.structuregen.ivtoolkit.AxisAlignedTransform2D;
+import ivorius.structuregen.ivtoolkit.math.AxisAlignedTransform2D;
 import net.minecraft.world.World;
 
 import java.util.Random;

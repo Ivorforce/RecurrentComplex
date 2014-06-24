@@ -7,7 +7,7 @@ package ivorius.structuregen.gui.editinventorygen;
 
 import io.netty.buffer.ByteBuf;
 import ivorius.structuregen.gui.SlotDynamicIndex;
-import ivorius.structuregen.ivtoolkit.IGuiActionHandler;
+import ivorius.structuregen.ivtoolkit.network.IGuiActionHandler;
 import ivorius.structuregen.worldgen.inventory.GenericInventoryGenerator;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;

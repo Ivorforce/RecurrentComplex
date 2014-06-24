@@ -6,8 +6,10 @@
 package ivorius.structuregen.blocks;
 
 import ivorius.structuregen.StructureGen;
-import ivorius.structuregen.ivtoolkit.*;
+import ivorius.structuregen.ivtoolkit.blocks.BlockCoord;
+import ivorius.structuregen.ivtoolkit.math.AxisAlignedTransform2D;
 import ivorius.structuregen.ivtoolkit.maze.*;
+import ivorius.structuregen.ivtoolkit.tools.IvCollections;
 import ivorius.structuregen.worldgen.StructureHandler;
 import ivorius.structuregen.worldgen.StructureInfo;
 import net.minecraft.nbt.NBTTagCompound;
@@ -15,7 +17,6 @@ import net.minecraft.nbt.NBTTagList;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.Constants;
-import net.minecraftforge.common.util.ForgeDirection;
 
 import java.util.ArrayList;
 import java.util.Collections;

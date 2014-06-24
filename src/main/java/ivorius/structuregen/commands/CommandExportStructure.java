@@ -7,9 +7,9 @@ package ivorius.structuregen.commands;
 
 import ivorius.structuregen.StructureGen;
 import ivorius.structuregen.entities.StructureEntityInfo;
-import ivorius.structuregen.ivtoolkit.BlockArea;
-import ivorius.structuregen.ivtoolkit.BlockCoord;
-import ivorius.structuregen.ivtoolkit.IvWorldData;
+import ivorius.structuregen.ivtoolkit.blocks.BlockArea;
+import ivorius.structuregen.ivtoolkit.blocks.BlockCoord;
+import ivorius.structuregen.ivtoolkit.tools.IvWorldData;
 import ivorius.structuregen.worldgen.StructureHandler;
 import ivorius.structuregen.worldgen.StructureInfo;
 import ivorius.structuregen.worldgen.genericStructures.GenericStructureInfo;

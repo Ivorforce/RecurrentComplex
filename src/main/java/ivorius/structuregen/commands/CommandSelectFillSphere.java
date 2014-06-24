@@ -6,17 +6,15 @@
 package ivorius.structuregen.commands;
 
 import ivorius.structuregen.entities.StructureEntityInfo;
-import ivorius.structuregen.ivtoolkit.BlockArea;
-import ivorius.structuregen.ivtoolkit.BlockCoord;
-import ivorius.structuregen.ivtoolkit.IvMathHelper;
-import ivorius.structuregen.ivtoolkit.IvShapeHelper;
+import ivorius.structuregen.ivtoolkit.blocks.BlockArea;
+import ivorius.structuregen.ivtoolkit.blocks.BlockCoord;
+import ivorius.structuregen.ivtoolkit.math.IvShapeHelper;
 import net.minecraft.block.Block;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.command.WrongUsageException;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.world.World;
 
-import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
 

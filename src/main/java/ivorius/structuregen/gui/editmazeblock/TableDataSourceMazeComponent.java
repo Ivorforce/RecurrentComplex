@@ -7,7 +7,7 @@ package ivorius.structuregen.gui.editmazeblock;
 
 import ivorius.structuregen.gui.GuiValidityStateIndicator;
 import ivorius.structuregen.gui.table.*;
-import ivorius.structuregen.ivtoolkit.IvCollections;
+import ivorius.structuregen.ivtoolkit.tools.IvCollections;
 import ivorius.structuregen.ivtoolkit.maze.MazeComponent;
 import ivorius.structuregen.ivtoolkit.maze.MazePath;
 import ivorius.structuregen.ivtoolkit.maze.MazeRoom;

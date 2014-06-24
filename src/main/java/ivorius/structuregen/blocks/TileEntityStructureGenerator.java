@@ -5,9 +5,9 @@
 
 package ivorius.structuregen.blocks;
 
-import ivorius.structuregen.ivtoolkit.AxisAlignedTransform2D;
-import ivorius.structuregen.ivtoolkit.BlockCoord;
-import ivorius.structuregen.ivtoolkit.IvCollections;
+import ivorius.structuregen.ivtoolkit.math.AxisAlignedTransform2D;
+import ivorius.structuregen.ivtoolkit.blocks.BlockCoord;
+import ivorius.structuregen.ivtoolkit.tools.IvCollections;
 import ivorius.structuregen.worldgen.StructureHandler;
 import ivorius.structuregen.worldgen.StructureInfo;
 import net.minecraft.nbt.NBTTagCompound;

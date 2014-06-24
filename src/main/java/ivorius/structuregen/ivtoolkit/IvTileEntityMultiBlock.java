@@ -170,7 +170,7 @@ public class IvTileEntityMultiBlock extends TileEntity
 
     public float getDistanceToCenter()
     {
-        return (float) IvMathHelper.distance(new double[]{xCoord + 0.5, yCoord + 0.5, zCoord + 0.5}, getActiveCenterCoords());
+        return (float) IvVecMathHelper.distance(new double[]{xCoord + 0.5, yCoord + 0.5, zCoord + 0.5}, getActiveCenterCoords());
     }
 
     @Override

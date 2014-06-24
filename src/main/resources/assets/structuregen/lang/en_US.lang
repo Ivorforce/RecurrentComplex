@@ -10,6 +10,7 @@ tile.negativeSpace.damage.0.name=Space (0~Negative Space)
 tile.negativeSpace.damage.1.name=Space (1~Natural Air)
 tile.naturalFloor.name=Natural Floor
 tile.structureGenerator.name=Structure Generator
+tile.mazeGenerator.name=Maze Generator
 
 itemGroup.structureTools=Structure Tools
 itemGroup.inventoryGenerators=Inventory Generators

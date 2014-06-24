@@ -28,7 +28,8 @@ import org.lwjgl.util.vector.Matrix4f;
 
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
-import java.util.Hashtable;
+import java.util.HashMap;
+import java.util.Map;
 
 public class IvShaderInstance
 {
@@ -39,7 +40,7 @@ public class IvShaderInstance
 
     private boolean shaderActive = false;
 
-    private Hashtable<String, Integer> uniformLocations = new Hashtable<String, Integer>();
+    private Map<String, Integer> uniformLocations = new HashMap<String, Integer>();
 
     public int getShaderID()
     {

@@ -68,10 +68,10 @@ public class IvBezierPath3D
                     double[] bezierFrom = previousPoint.getBezierDirectionPointFrom();
                     double[] bezierTo = bezierPoint.getBezierDirectionPointTo();
 
-                    double[] position = IvMathHelper.cubicMix(previousPoint.position, bezierFrom, bezierTo, bezierPoint.position, (double) i / (double) samples);
-                    double[] position1 = IvMathHelper.cubicMix(previousPoint.position, bezierFrom, bezierTo, bezierPoint.position, (double) (i + 1) / (double) samples);
+                    double[] position = IvVecMathHelper.cubicMix(previousPoint.position, bezierFrom, bezierTo, bezierPoint.position, (double) i / (double) samples);
+                    double[] position1 = IvVecMathHelper.cubicMix(previousPoint.position, bezierFrom, bezierTo, bezierPoint.position, (double) (i + 1) / (double) samples);
 
-                    distance += IvMathHelper.distance(position, position1);
+                    distance += IvVecMathHelper.distance(position, position1);
                 }
 
                 cachedFullDistance += distance;
@@ -146,7 +146,7 @@ public class IvBezierPath3D
 
     public double[] getMotion(IvBezierPoint3DCachedStep cachedStep, IvBezierPoint3DCachedStep cachedStep1)
     {
-        return IvMathHelper.difference(cachedStep1.getPosition(), cachedStep.getPosition());
+        return IvVecMathHelper.sub(cachedStep1.getPosition(), cachedStep.getPosition());
     }
 
     public double[] getPVector(IvBezierPoint3DCachedStep cachedStep, double stepSize)
@@ -159,7 +159,7 @@ public class IvBezierPath3D
 //        double[] motionNext2 = getMotion(nextStep, getCachedStep(nextPositionProgress + stepSize * 0.6));
 //
 //        double[] pVector = IvMathHelper.crossProduct(IvMathHelper.mix(motion1, motionNext1, cachedStep.progress), IvMathHelper.mix(motion2, motionNext2, cachedStep.progress));
-        double[] pVector = IvMathHelper.crossProduct(motion1, motion2);
+        double[] pVector = IvVecMathHelper.crossProduct(motion1, motion2);
 
         return pVector;
     }
@@ -167,7 +167,7 @@ public class IvBezierPath3D
     public double[] getNaturalRotation(IvBezierPoint3DCachedStep cachedStep, double stepSize)
     {
         double[] motion1 = getMotion(cachedStep, getCachedStepAfterStep(cachedStep, stepSize * 0.3));
-        double[] spherical = IvMathHelper.sphericalFromCartesian(motion1);
+        double[] spherical = IvVecMathHelper.sphericalFromCartesian(motion1);
 
         return new double[]{-spherical[0] / Math.PI * 180.0, spherical[1] / Math.PI * 180.0 + 90.0};
     }

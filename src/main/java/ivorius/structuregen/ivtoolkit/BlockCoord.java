@@ -25,7 +25,7 @@ import net.minecraft.tileentity.TileEntity;
 /**
  * Created by lukas on 08.06.14.
  */
-public class BlockCoord
+public class BlockCoord implements Cloneable
 {
     public final int x;
     public final int y;
@@ -201,5 +201,18 @@ public class BlockCoord
         result = 31 * result + y;
         result = 31 * result + z;
         return result;
+    }
+
+    @Override
+    public Object clone()
+    {
+        try
+        {
+            return super.clone();
+        }
+        catch (CloneNotSupportedException e)
+        {
+            throw new InternalError();
+        }
     }
 }

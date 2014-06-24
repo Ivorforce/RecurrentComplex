@@ -24,6 +24,7 @@ import ivorius.structuregen.items.*;
 import ivorius.structuregen.ivtoolkit.ChannelHandlerExtendedEntityPropertiesData;
 import ivorius.structuregen.ivtoolkit.ChannelHandlerGuiAction;
 import ivorius.structuregen.network.ChannelHandlerEditInventoryGenerator;
+import ivorius.structuregen.network.ChannelHandlerEditMazeBlock;
 import ivorius.structuregen.network.ChannelHandlerEditStructure;
 import ivorius.structuregen.network.ChannelHandlerEditStructureBlock;
 import ivorius.structuregen.worldgen.StructureHandler;
@@ -86,6 +87,7 @@ public class StructureGen
     public static ChannelHandlerEditStructure chEditStructure;
     public static ChannelHandlerGuiAction chGuiAction;
     public static ChannelHandlerEditStructureBlock chEditStructureBlock;
+    public static ChannelHandlerEditMazeBlock chEditMazeBlock;
 
     public static SGGuiHandler guiHandler;
 
@@ -128,6 +130,9 @@ public class StructureGen
         chEditStructureBlock = new ChannelHandlerEditStructureBlock("SG|editStrucB");
         NetworkRegistry.INSTANCE.newChannel(chEditStructureBlock.packetChannel, chEditStructureBlock);
 
+        chEditMazeBlock = new ChannelHandlerEditMazeBlock("SG|editMazeB");
+        NetworkRegistry.INSTANCE.newChannel(chEditMazeBlock.packetChannel, chEditMazeBlock);
+
         communicationHandler = new SGCommunicationHandler(logger, MODID, instance);
 
         materialNegativeSpace = new MaterialNegativeSpace();
@@ -168,6 +173,11 @@ public class StructureGen
         SGBlocks.structureGenerator.setCreativeTab(tabStructureTools);
         GameRegistry.registerBlock(SGBlocks.structureGenerator, ItemStructureGenerator.class, "structureGenerator");
         GameRegistry.registerTileEntity(TileEntityStructureGenerator.class, "SGStructureGenerator");
+
+        SGBlocks.mazeGenerator = new BlockMazeGenerator().setBlockName("mazeGenerator").setBlockTextureName(textureBase + "mazeGenerator");
+        SGBlocks.mazeGenerator.setCreativeTab(tabStructureTools);
+        GameRegistry.registerBlock(SGBlocks.mazeGenerator, ItemMazeGenerator.class, "mazeGenerator");
+        GameRegistry.registerTileEntity(TileEntityMazeGenerator.class, "SGMazeGenerator");
     }
 
     @EventHandler

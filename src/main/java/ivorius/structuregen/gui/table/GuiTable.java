@@ -5,6 +5,7 @@
 
 package ivorius.structuregen.gui.table;
 
+import net.minecraft.client.gui.Gui;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiScreen;
 import org.apache.commons.lang3.tuple.ImmutablePair;
@@ -18,7 +19,7 @@ import java.util.Map;
 /**
  * Created by lukas on 30.05.14.
  */
-public class GuiTable
+public class GuiTable extends Gui
 {
     public static final int HEIGHT_PER_SLOT = 25;
     public static final int SCROLL_BAR_HEIGHT = 27;

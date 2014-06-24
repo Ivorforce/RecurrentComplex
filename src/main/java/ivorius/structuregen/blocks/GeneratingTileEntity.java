@@ -5,6 +5,7 @@
 
 package ivorius.structuregen.blocks;
 
+import ivorius.structuregen.ivtoolkit.AxisAlignedTransform2D;
 import net.minecraft.world.World;
 
 import java.util.Random;
@@ -14,5 +15,5 @@ import java.util.Random;
  */
 public interface GeneratingTileEntity
 {
-    void generate(World world, Random random, int layer);
+    void generate(World world, Random random, AxisAlignedTransform2D transform, int layer);
 }

@@ -47,6 +47,11 @@ public class AxisAlignedTransform2D
         return flipX ? ORIGINAL.rotateClockwise(rotationClockwise).flipX() : ORIGINAL.rotateClockwise(rotationClockwise);
     }
 
+    public static AxisAlignedTransform2D transform(AxisAlignedTransform2D original, int rotationClockwise, boolean flipX)
+    {
+        return flipX ? original.rotateClockwise(rotationClockwise).flipX() : original.rotateClockwise(rotationClockwise);
+    }
+
     public int[][] getMatrix()
     {
         return matrix.clone();

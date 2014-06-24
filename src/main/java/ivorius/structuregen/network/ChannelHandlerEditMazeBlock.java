@@ -14,8 +14,8 @@ import io.netty.buffer.Unpooled;
 import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
-import ivorius.structuregen.blocks.TileEntityStructureGenerator;
-import ivorius.structuregen.gui.editstructureblock.GuiEditStructureBlock;
+import ivorius.structuregen.blocks.TileEntityMazeGenerator;
+import ivorius.structuregen.gui.editmazeblock.GuiEditMazeBlock;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.EntityClientPlayerMP;
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -29,40 +29,40 @@ import net.minecraft.world.World;
  * Created by lukas on 13.04.14.
  */
 @ChannelHandler.Sharable
-public class ChannelHandlerEditStructureBlock extends SimpleChannelInboundHandler<FMLProxyPacket>
+public class ChannelHandlerEditMazeBlock extends SimpleChannelInboundHandler<FMLProxyPacket>
 {
     public final String packetChannel;
 
-    public ChannelHandlerEditStructureBlock(String packetChannel)
+    public ChannelHandlerEditMazeBlock(String packetChannel)
     {
         this.packetChannel = packetChannel;
     }
 
-    public void sendBeginEdit(EntityPlayerMP player, TileEntityStructureGenerator structureGenerator)
+    public void sendBeginEdit(EntityPlayerMP player, TileEntityMazeGenerator mazeGenerator)
     {
         ByteBuf buffer = Unpooled.buffer();
         NBTTagCompound compound = new NBTTagCompound();
-        structureGenerator.writeStructureDataToNBT(compound);
+        mazeGenerator.writeMazeDataToNBT(compound);
 
-        buffer.writeInt(structureGenerator.xCoord);
-        buffer.writeInt(structureGenerator.yCoord);
-        buffer.writeInt(structureGenerator.zCoord);
+        buffer.writeInt(mazeGenerator.xCoord);
+        buffer.writeInt(mazeGenerator.yCoord);
+        buffer.writeInt(mazeGenerator.zCoord);
         ByteBufUtils.writeTag(buffer, compound);
 
         FMLProxyPacket packet = new FMLProxyPacket(buffer, packetChannel);
         player.playerNetServerHandler.sendPacket(packet);
     }
 
-    public void sendSaveEdit(EntityClientPlayerMP player, TileEntityStructureGenerator structureGenerator)
+    public void sendSaveEdit(EntityClientPlayerMP player, TileEntityMazeGenerator mazeGenerator)
     {
         ByteBuf buffer = Unpooled.buffer();
         NBTTagCompound compound = new NBTTagCompound();
-        structureGenerator.writeStructureDataToNBT(compound);
+        mazeGenerator.writeMazeDataToNBT(compound);
 
-        buffer.writeInt(structureGenerator.getWorldObj().provider.dimensionId);
-        buffer.writeInt(structureGenerator.xCoord);
-        buffer.writeInt(structureGenerator.yCoord);
-        buffer.writeInt(structureGenerator.zCoord);
+        buffer.writeInt(mazeGenerator.getWorldObj().provider.dimensionId);
+        buffer.writeInt(mazeGenerator.xCoord);
+        buffer.writeInt(mazeGenerator.yCoord);
+        buffer.writeInt(mazeGenerator.zCoord);
         ByteBufUtils.writeTag(buffer, compound);
 
         FMLProxyPacket packet = new FMLProxyPacket(buffer, packetChannel);
@@ -85,12 +85,12 @@ public class ChannelHandlerEditStructureBlock extends SimpleChannelInboundHandle
             NBTTagCompound compound = ByteBufUtils.readTag(buffer);
 
             TileEntity tileEntity = Minecraft.getMinecraft().theWorld.getTileEntity(x, y, z);
-            if (tileEntity instanceof TileEntityStructureGenerator)
+            if (tileEntity instanceof TileEntityMazeGenerator)
             {
-                TileEntityStructureGenerator tileEntityStructureGenerator = ((TileEntityStructureGenerator) tileEntity);
+                TileEntityMazeGenerator tileEntityMazeGenerator = ((TileEntityMazeGenerator) tileEntity);
 
-                tileEntityStructureGenerator.readStructureDataFromNBT(compound);
-                Minecraft.getMinecraft().displayGuiScreen(new GuiEditStructureBlock(tileEntityStructureGenerator));
+                tileEntityMazeGenerator.readMazeDataFromNBT(compound);
+                Minecraft.getMinecraft().displayGuiScreen(new GuiEditMazeBlock(tileEntityMazeGenerator));
             }
         }
         else
@@ -106,9 +106,9 @@ public class ChannelHandlerEditStructureBlock extends SimpleChannelInboundHandle
             {
                 TileEntity tileEntity = world.getTileEntity(x, y, z);
 
-                if (tileEntity instanceof TileEntityStructureGenerator)
+                if (tileEntity instanceof TileEntityMazeGenerator)
                 {
-                    ((TileEntityStructureGenerator) tileEntity).readStructureDataFromNBT(compound);
+                    ((TileEntityMazeGenerator) tileEntity).readMazeDataFromNBT(compound);
                     tileEntity.markDirty();
                     world.markBlockForUpdate(x, y, z);
                 }

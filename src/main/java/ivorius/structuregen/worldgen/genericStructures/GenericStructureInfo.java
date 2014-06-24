@@ -78,20 +78,37 @@ public class GenericStructureInfo implements StructureInfo, Cloneable
     }
 
     @Override
-    public void generate(World world, Random random, int x, int y, int z, boolean asCenter, int layer)
+    public int[] structureBoundingBox()
     {
-        AxisAlignedTransform2D transform2D = rotatable ? AxisAlignedTransform2D.transform(random.nextInt(4), false /* Can't mirror with Forge's DirectionHelper */) : AxisAlignedTransform2D.ORIGINAL;
-
-        generate(world, random, new BlockCoord(x, y, z), asCenter, layer, transform2D, false);
+        IvBlockCollection collection = new IvWorldData(worldDataCompound, null).blockCollection;
+        return new int[]{collection.width, collection.height, collection.length};
     }
 
     @Override
-    public void generateSource(World world, Random random, int x, int y, int z, int layer)
+    public boolean isRotatable()
     {
-        generate(world, random, new BlockCoord(x, y, z), false, layer, AxisAlignedTransform2D.ORIGINAL, true);
+        return rotatable;
     }
 
-    private void generate(World world, Random random, BlockCoord origin, boolean asCenter, int layer, AxisAlignedTransform2D transform, boolean asSource)
+    @Override
+    public boolean isMirrorable()
+    {
+        return false;
+    }
+
+    @Override
+    public void generate(World world, Random random, BlockCoord coord, AxisAlignedTransform2D transform, int layer)
+    {
+        generate(world, random, coord, layer, transform, false);
+    }
+
+    @Override
+    public void generateSource(World world, Random random, BlockCoord coord, int layer)
+    {
+        generate(world, random, coord, layer, AxisAlignedTransform2D.ORIGINAL, true);
+    }
+
+    private void generate(World world, Random random, BlockCoord origin, int layer, AxisAlignedTransform2D transform, boolean asSource)
     {
         IvWorldData worldData = new IvWorldData(worldDataCompound, world);
         IvBlockCollection blockCollection = worldData.blockCollection;
@@ -102,11 +119,6 @@ public class GenericStructureInfo implements StructureInfo, Cloneable
         for (TileEntity tileEntity : worldData.tileEntities)
         {
             tileEntities.put(new BlockCoord(tileEntity), tileEntity);
-        }
-
-        if (asCenter)
-        {
-            origin = origin.add(-size[0] / 2, 0, -size[2] / 2);
         }
 
         if (!asSource)
@@ -211,7 +223,7 @@ public class GenericStructureInfo implements StructureInfo, Cloneable
         {
             for (GeneratingTileEntity generatingTileEntity : generatingTileEntities)
             {
-                generatingTileEntity.generate(world, random, layer + 1);
+                generatingTileEntity.generate(world, random, transform, layer + 1);
             }
         }
         else

@@ -7,6 +7,8 @@ package ivorius.structuregen.worldgen;
 
 import cpw.mods.fml.common.IWorldGenerator;
 import ivorius.structuregen.StructureGen;
+import ivorius.structuregen.ivtoolkit.AxisAlignedTransform2D;
+import ivorius.structuregen.ivtoolkit.BlockCoord;
 import net.minecraft.world.World;
 import net.minecraft.world.biome.BiomeGenBase;
 import net.minecraft.world.chunk.IChunkProvider;
@@ -33,11 +35,25 @@ public class WorldGenStructures implements IWorldGenerator
             {
                 int genX = chunkX * 16 + random.nextInt(16);
                 int genZ = chunkZ * 16 + random.nextInt(16);
-                int genY = info.generationY(world, random, genX, genZ);
-
-                info.generate(world, random, genX, genY, genZ, true, 0);
+                int genY = generateStructureRandomly(world, random, info, genX, genZ);
+                
                 StructureGen.logger.info("Generated " + info + " at " + genX + ", " + genY + ", " + genZ);
             }
         }
+    }
+
+    public static int generateStructureRandomly(World world, Random random, StructureInfo info, int x, int z)
+    {
+        int genY = info.generationY(world, random, x, z);
+
+        AxisAlignedTransform2D transform = AxisAlignedTransform2D.transform(info.isMirrorable() ? world.rand.nextInt(4) : 0, info.isMirrorable() && random.nextBoolean());
+
+        int[] size = info.structureBoundingBox();
+        int genX = x - size[0] / 2;
+        int genZ = z - size[2] / 2;
+
+        info.generate(world, random, new BlockCoord(genX, genY, genZ), transform, 0);
+
+        return genY;
     }
 }

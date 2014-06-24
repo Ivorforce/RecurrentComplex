@@ -5,6 +5,9 @@
 
 package ivorius.structuregen.blocks;
 
+import ivorius.structuregen.ivtoolkit.AxisAlignedTransform2D;
+import ivorius.structuregen.ivtoolkit.BlockCoord;
+import ivorius.structuregen.ivtoolkit.IvCollections;
 import ivorius.structuregen.worldgen.StructureHandler;
 import ivorius.structuregen.worldgen.StructureInfo;
 import net.minecraft.nbt.NBTTagCompound;
@@ -15,6 +18,7 @@ import net.minecraft.world.World;
 import net.minecraftforge.common.util.Constants;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Random;
 
@@ -24,50 +28,26 @@ import java.util.Random;
 public class TileEntityStructureGenerator extends TileEntity implements GeneratingTileEntity
 {
     private List<String> structureNames = new ArrayList<>();
-
-    private int structureShiftX;
-    private int structureShiftY;
-    private int structureShiftZ;
+    private BlockCoord structureShift = new BlockCoord(0, 0, 0);
 
     public List<String> getStructureNames()
     {
-        return structureNames;
+        return Collections.unmodifiableList(structureNames);
     }
 
     public void setStructureNames(List<String> structureNames)
     {
-        this.structureNames.clear();
-        this.structureNames.addAll(structureNames);
+        IvCollections.setContentsOfList(this.structureNames, structureNames);
     }
 
-    public int getStructureShiftX()
+    public BlockCoord getStructureShift()
     {
-        return structureShiftX;
+        return structureShift;
     }
 
-    public void setStructureShiftX(int structureShiftX)
+    public void setStructureShift(BlockCoord structureShift)
     {
-        this.structureShiftX = structureShiftX;
-    }
-
-    public int getStructureShiftY()
-    {
-        return structureShiftY;
-    }
-
-    public void setStructureShiftY(int structureShiftY)
-    {
-        this.structureShiftY = structureShiftY;
-    }
-
-    public int getStructureShiftZ()
-    {
-        return structureShiftZ;
-    }
-
-    public void setStructureShiftZ(int structureShiftZ)
-    {
-        this.structureShiftZ = structureShiftZ;
+        this.structureShift = structureShift;
     }
 
     @Override
@@ -80,12 +60,9 @@ public class TileEntityStructureGenerator extends TileEntity implements Generati
 
     public void readStructureDataFromNBT(NBTTagCompound nbtTagCompound)
     {
-        structureNames.clear();
-        structureNames.addAll(generatorsFromNBT(nbtTagCompound));
+        IvCollections.setContentsOfList(structureNames, generatorsFromNBT(nbtTagCompound));
 
-        structureShiftX = nbtTagCompound.getInteger("structureShiftX");
-        structureShiftY = nbtTagCompound.getInteger("structureShiftY");
-        structureShiftZ = nbtTagCompound.getInteger("structureShiftZ");
+        structureShift = BlockCoord.readCoordFromNBT("structureShift", nbtTagCompound);
     }
 
     @Override
@@ -105,14 +82,14 @@ public class TileEntityStructureGenerator extends TileEntity implements Generati
         }
         nbtTagCompound.setTag("structures", structureNBTList);
 
-        nbtTagCompound.setInteger("structureShiftX", structureShiftX);
-        nbtTagCompound.setInteger("structureShiftY", structureShiftY);
-        nbtTagCompound.setInteger("structureShiftZ", structureShiftZ);
+        BlockCoord.writeCoordToNBT("structureShift", structureShift, nbtTagCompound);
     }
 
     @Override
-    public void generate(World world, Random random, int layer)
+    public void generate(World world, Random random, AxisAlignedTransform2D transform, int layer)
     {
+        world.setBlockToAir(xCoord, yCoord, zCoord);
+
         if (structureNames.size() > 0)
         {
             String structure = structureNames.get(random.nextInt(structureNames.size()));
@@ -120,7 +97,7 @@ public class TileEntityStructureGenerator extends TileEntity implements Generati
 
             if (structureInfo != null)
             {
-                structureInfo.generate(world, random, xCoord + structureShiftX, yCoord + structureShiftY, zCoord + structureShiftZ, false, layer);
+                structureInfo.generate(world, random, new BlockCoord(xCoord + structureShift.x, yCoord + structureShift.y, zCoord + structureShift.z), transform, layer);
             }
         }
     }

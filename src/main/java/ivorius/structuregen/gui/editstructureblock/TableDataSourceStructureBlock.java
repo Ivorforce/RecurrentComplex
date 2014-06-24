@@ -7,6 +7,7 @@ package ivorius.structuregen.gui.editstructureblock;
 
 import ivorius.structuregen.blocks.TileEntityStructureGenerator;
 import ivorius.structuregen.gui.table.*;
+import ivorius.structuregen.ivtoolkit.BlockCoord;
 import joptsimple.internal.Strings;
 
 import java.util.Arrays;
@@ -50,19 +51,19 @@ public class TableDataSourceStructureBlock implements TableDataSource, TableElem
         }
         else if (index == 1)
         {
-            TableElementInteger element = new TableElementInteger("xShift", "Shift: X", structureGenerator.getStructureShiftX(), -50, 50);
+            TableElementInteger element = new TableElementInteger("xShift", "Shift: X", structureGenerator.getStructureShift().x, -50, 50);
             element.addPropertyListener(this);
             return element;
         }
         else if (index == 2)
         {
-            TableElementInteger element = new TableElementInteger("yShift", "Shift: Y", structureGenerator.getStructureShiftY(), -50, 50);
+            TableElementInteger element = new TableElementInteger("yShift", "Shift: Y", structureGenerator.getStructureShift().y, -50, 50);
             element.addPropertyListener(this);
             return element;
         }
         else if (index == 3)
         {
-            TableElementInteger element = new TableElementInteger("zShift", "Shift: Z", structureGenerator.getStructureShiftZ(), -50, 50);
+            TableElementInteger element = new TableElementInteger("zShift", "Shift: Z", structureGenerator.getStructureShift().z, -50, 50);
             element.addPropertyListener(this);
             return element;
         }
@@ -80,15 +81,18 @@ public class TableDataSourceStructureBlock implements TableDataSource, TableElem
         }
         else if ("xShift".equals(element.getID()))
         {
-            structureGenerator.setStructureShiftX(((int) element.getPropertyValue()));
+            BlockCoord shift = structureGenerator.getStructureShift();
+            structureGenerator.setStructureShift(new BlockCoord((int) element.getPropertyValue(), shift.y, shift.z));
         }
         else if ("yShift".equals(element.getID()))
         {
-            structureGenerator.setStructureShiftY(((int) element.getPropertyValue()));
+            BlockCoord shift = structureGenerator.getStructureShift();
+            structureGenerator.setStructureShift(new BlockCoord(shift.x, (int) element.getPropertyValue(), shift.z));
         }
         else if ("zShift".equals(element.getID()))
         {
-            structureGenerator.setStructureShiftZ(((int) element.getPropertyValue()));
+            BlockCoord shift = structureGenerator.getStructureShift();
+            structureGenerator.setStructureShift(new BlockCoord(shift.x, shift.y, (int) element.getPropertyValue()));
         }
     }
 }

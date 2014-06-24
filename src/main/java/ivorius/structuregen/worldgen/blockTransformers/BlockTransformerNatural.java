@@ -5,7 +5,7 @@
 
 package ivorius.structuregen.worldgen.blockTransformers;
 
-import ivorius.structuregen.ivtoolkit.IvMathHelper;
+import ivorius.structuregen.ivtoolkit.IvVecMathHelper;
 import ivorius.structuregen.ivtoolkit.IvWorldData;
 import net.minecraft.block.Block;
 import net.minecraft.init.Blocks;
@@ -75,7 +75,7 @@ public class BlockTransformerNatural implements BlockTransformer
                 if (replaceable || curBlock == topBlock || curBlock == fillerBlock || curBlock == mainBlock)
                 {
                     double yForDistance = y * 0.3 + currentY * 0.7;
-                    double distToOrigSQ = IvMathHelper.distanceSQ(new double[]{x, y, z}, new double[]{currentX, yForDistance, currentZ});
+                    double distToOrigSQ = IvVecMathHelper.distanceSQ(new double[]{x, y, z}, new double[]{currentX, yForDistance, currentZ});
                     double add = (random.nextDouble() - random.nextDouble()) * NATURAL_DISTANCE_RANDOMIZATION;
                     distToOrigSQ += add < 0 ? -(add * add) : (add * add);
 

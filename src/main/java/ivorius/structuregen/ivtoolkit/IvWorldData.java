@@ -102,13 +102,16 @@ public class IvWorldData
             tileEntities.add(tileEntity);
         }
 
-        NBTTagList entityList = compound.getTagList("entities", Constants.NBT.TAG_COMPOUND);
-        entities = new ArrayList<>(entityList.tagCount());
-        for (int i = 0; i < entityList.tagCount(); i++)
+        if (world != null)
         {
-            Entity entity = EntityList.createEntityFromNBT(entityList.getCompoundTagAt(i), world);
+            NBTTagList entityList = compound.getTagList("entities", Constants.NBT.TAG_COMPOUND);
+            entities = new ArrayList<>(entityList.tagCount());
+            for (int i = 0; i < entityList.tagCount(); i++)
+            {
+                Entity entity = EntityList.createEntityFromNBT(entityList.getCompoundTagAt(i), world);
 
-            entities.add(entity);
+                entities.add(entity);
+            }
         }
     }
 

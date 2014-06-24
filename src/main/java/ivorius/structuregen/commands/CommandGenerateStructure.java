@@ -5,8 +5,11 @@
 
 package ivorius.structuregen.commands;
 
+import ivorius.structuregen.ivtoolkit.AxisAlignedTransform2D;
+import ivorius.structuregen.ivtoolkit.BlockCoord;
 import ivorius.structuregen.worldgen.StructureHandler;
 import ivorius.structuregen.worldgen.StructureInfo;
+import ivorius.structuregen.worldgen.WorldGenStructures;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.command.WrongUsageException;
@@ -61,9 +64,7 @@ public class CommandGenerateStructure extends CommandBase
             z = MathHelper.floor_double(func_110666_a(commandSender, (double) z, args[2]));
         }
 
-        y = structureInfo.generationY(world, world.rand, x, z);
-
-        structureInfo.generate(world, world.rand, x, y, z, true, 0);
+        WorldGenStructures.generateStructureRandomly(world, world.rand, structureInfo, x, z);
     }
 
     @Override

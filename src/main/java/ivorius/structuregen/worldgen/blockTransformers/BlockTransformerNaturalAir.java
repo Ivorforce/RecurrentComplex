@@ -5,7 +5,7 @@
 
 package ivorius.structuregen.worldgen.blockTransformers;
 
-import ivorius.structuregen.ivtoolkit.IvMathHelper;
+import ivorius.structuregen.ivtoolkit.IvVecMathHelper;
 import ivorius.structuregen.ivtoolkit.IvWorldData;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
@@ -77,7 +77,7 @@ public class BlockTransformerNaturalAir implements BlockTransformer
 
                 if (replaceable || curBlock.getMaterial() == Material.air)
                 {
-                    double distToOrigSQ = IvMathHelper.distanceSQ(new double[]{x, y, z}, new double[]{currentX, currentY, currentZ});
+                    double distToOrigSQ = IvVecMathHelper.distanceSQ(new double[]{x, y, z}, new double[]{currentX, currentY, currentZ});
                     double add = (random.nextDouble() - random.nextDouble()) * NATURAL_DISTANCE_RANDOMIZATION;
                     distToOrigSQ += add < 0 ? -(add * add) : (add * add);
 

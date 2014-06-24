@@ -100,7 +100,7 @@ public class CommandExportStructure extends CommandBase
         }
 
         BlockCoord lowerCoord = new BlockCoord(x, y, z);
-        BlockCoord higherCoord = new BlockCoord(x + width, y + height, z + length);
+        BlockCoord higherCoord = new BlockCoord(x + width - 1, y + height - 1, z + length - 1);
 
         IvWorldData data = new IvWorldData(player.getEntityWorld(), new BlockArea(lowerCoord, higherCoord), true);
         genericStructureInfo.worldDataCompound = data.createTagCompound(lowerCoord);

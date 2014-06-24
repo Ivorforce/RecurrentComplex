@@ -93,7 +93,7 @@ public class IvBezierPoint3DCachedStep
             double[] bezierFrom = leftPoint.getBezierDirectionPointFrom();
             double[] bezierTo = rightPoint.getBezierDirectionPointTo();
 
-            cachedPosition = IvMathHelper.cubicMix(leftPoint.position, bezierFrom, bezierTo, rightPoint.position, getInnerProgress());
+            cachedPosition = IvVecMathHelper.cubicMix(leftPoint.position, bezierFrom, bezierTo, rightPoint.position, getInnerProgress());
         }
 
         return cachedPosition;

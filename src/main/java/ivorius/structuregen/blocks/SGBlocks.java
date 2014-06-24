@@ -16,4 +16,5 @@ public class SGBlocks
     public static Block naturalFloor;
 
     public static Block structureGenerator;
+    public static Block mazeGenerator;
 }

@@ -6,6 +6,7 @@
 package ivorius.structuregen.items;
 
 import ivorius.structuregen.random.Person;
+import ivorius.structuregen.random.Poem;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Items;
@@ -34,7 +35,12 @@ public class ItemBookGenerator extends Item implements GeneratingItem
     @Override
     public void generateInInventory(IInventory inventory, Random random, ItemStack stack, int fromSlot)
     {
-        inventory.setInventorySlotContents(fromSlot, getRandomLoreBook(random));
+        inventory.setInventorySlotContents(fromSlot, getRandomBook(random));
+    }
+
+    public static ItemStack getRandomBook(Random random)
+    {
+        return random.nextFloat() < 0.5f ? getRandomLoreBook(random) : getRandomPoemBook(random);
     }
 
     public static ItemStack getRandomLoreBook(Random random)
@@ -44,6 +50,22 @@ public class ItemBookGenerator extends Item implements GeneratingItem
         String bookName = Person.chaoticName(random, random.nextFloat() < 0.8f);
 
         stack.setStackDisplayName(bookName);
+
+        return stack;
+    }
+
+    public static ItemStack getRandomPoemBook(Random random)
+    {
+        ItemStack stack = new ItemStack(Items.written_book);
+        Poem poem = Poem.randomPoem(random);
+        Person author = Person.randomHuman(random, random.nextFloat() < 0.9f);
+
+        NBTTagList pages = new NBTTagList();
+        pages.appendTag(new NBTTagString(poem.getText()));
+
+        stack.setTagInfo("pages", pages);
+        stack.setTagInfo("author", new NBTTagString(author.getFullName()));
+        stack.setTagInfo("title", new NBTTagString(poem.getTitle()));
 
         return stack;
     }

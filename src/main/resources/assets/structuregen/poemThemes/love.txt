@@ -1,0 +1,35 @@
+*** Concrete Nouns
+heart
+eye
+
+*** Abstract Nouns
+faith
+love
+
+*** Present Transitive Verbs
+make
+see
+
+*** Past Transitive Verbs
+made
+saw
+
+*** Present Intransitive Verbs
+run
+bleed
+
+*** Adjectives
+giddy
+aching
+
+*** Adverbs
+gently
+barely
+
+*** Prepositions
+on
+in
+
+*** Interjections
+hey
+ha

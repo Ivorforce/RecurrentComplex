@@ -27,6 +27,7 @@ import ivorius.structuregen.network.ChannelHandlerEditInventoryGenerator;
 import ivorius.structuregen.network.ChannelHandlerEditMazeBlock;
 import ivorius.structuregen.network.ChannelHandlerEditStructure;
 import ivorius.structuregen.network.ChannelHandlerEditStructureBlock;
+import ivorius.structuregen.random.Poem;
 import ivorius.structuregen.worldgen.StructureHandler;
 import ivorius.structuregen.worldgen.StructureSaveHandler;
 import ivorius.structuregen.worldgen.WorldGenStructures;
@@ -197,6 +198,8 @@ public class StructureGen
 
         StructureSaveHandler.reloadAllCustomStructures();
         SGStructures.registerModStructures();
+
+        Poem.registerThemes(MODID, "love");
     }
 
     @EventHandler

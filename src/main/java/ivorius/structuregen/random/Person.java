@@ -164,14 +164,14 @@ public class Person
 
         if (middleName != null)
         {
-            builder.append(middleName);
+            builder.append(' ').append(middleName);
         }
 
         if (lastName != null)
         {
-            builder.append(lastName);
+            builder.append(' ').append(lastName);
         }
 
-        return builder.toString();
+        return builder.toString().trim();
     }
 }

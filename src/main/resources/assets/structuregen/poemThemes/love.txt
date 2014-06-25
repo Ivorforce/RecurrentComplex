@@ -67,6 +67,7 @@ color
 beginning
 end
 desire
+lust
 death
 life
 meaning
@@ -177,6 +178,7 @@ cravenly
 needlessly
 devotedly
 wondrously
+mindlessly
 
 *** Prepositions
 on

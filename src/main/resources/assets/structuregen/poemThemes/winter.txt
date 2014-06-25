@@ -8,11 +8,34 @@ flame
 smoke
 grass
 ice
+river
+tea
+fire
+angel
+hay
+bed
+giant
+mountain
+blizzard
+storm
+stew
+soup
+bread
 
 *** Concrete Nouns Plural
 stones
 raindrops
 flames
+rivers
+fires
+angels
+beds
+giants
+mountains
+blizzards
+storms
+stews
+soups
 
 *** Abstract Nouns
 bitterness
@@ -29,6 +52,7 @@ dawn
 dusk
 majesty
 desire
+work
 magnitude
 coldness
 isolation
@@ -38,11 +62,27 @@ stagnation
 see
 feel
 hold
+smell
+envision
+give
+take
+find
+hear
+call
+pick
 
 *** Past Transitive Verbs
 saw
 felt
 held
+smelled
+envisioned
+gave
+took
+found
+heard
+called
+picked
 
 *** Present Intransitive Verbs
 sit
@@ -55,6 +95,8 @@ linger
 remain
 watch
 think
+breathe
+endure
 
 *** Adjectives
 quick
@@ -68,6 +110,7 @@ warm
 cold
 serene
 bitter
+gritty
 
 *** Adverbs
 swiftly
@@ -75,7 +118,9 @@ slowly
 softly
 harshly
 coldly
-
+rarely
+devotedly
+mindlessly
 
 *** Prepositions
 on

@@ -1,13 +1,47 @@
 *** Concrete Nouns
-sword
 blood
+sword
 day
 night
+weapon
+armor
+shield
+horse
+catapult
+bullet
+shack
+field
+corpse
+king
+knight
+captain
+soldier
+arrow
+peasant
+fork
+spear
 
 *** Concrete Nouns Plural
+people
 swords
 days
 nights
+weapons
+shields
+horses
+catapults
+bullets
+shacks
+fields
+corpses
+kings
+knights
+captains
+soldiers
+arrows
+peasants
+forks
+spears
 
 *** Abstract Nouns
 agony
@@ -15,6 +49,7 @@ pain
 death
 terror
 noise
+battle
 desolation
 hunger
 extinction
@@ -49,9 +84,9 @@ fight
 give
 take
 waste
+sneak
 terrify
 hunt
-radiate
 
 *** Past Transitive Verbs
 killed
@@ -99,6 +134,11 @@ painful
 wild
 calm
 clever
+crazy
+demented
+mad
+manic
+violent
 blue
 yellow
 golden
@@ -110,6 +150,7 @@ scaly
 extinct
 pointy
 frightening
+inhuman
 sparkly
 
 *** Adverbs

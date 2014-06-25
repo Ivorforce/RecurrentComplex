@@ -160,7 +160,6 @@ clear
 azure
 magenta
 calloused
-gritty
 sandy
 muddy
 musky

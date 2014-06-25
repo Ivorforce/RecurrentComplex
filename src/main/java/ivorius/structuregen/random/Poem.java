@@ -49,7 +49,7 @@ public class Poem
             "<7>, <10> <5>",
             "Count the <10>, <3> the <2>.",
             "How does the <1> not <5>?",
-            "Though it's now more <6> and less <6>.",
+            "Although it's now more <6> and less <6>.",
             "Yet there's <2> <8> the <2>s and the <10>.",
             "<10> <4> <10> like <6> <10> <5>.",
             "Why did the <1> <3> it, to <3> the <2>?",

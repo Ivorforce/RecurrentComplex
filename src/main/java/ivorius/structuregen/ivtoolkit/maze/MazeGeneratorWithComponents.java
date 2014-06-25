@@ -37,8 +37,6 @@ public class MazeGeneratorWithComponents
 
         Stack<MazeRoom> positionStack = new Stack<>();
 
-        System.out.println("maze.allPaths() = " + maze.allPaths());
-        System.out.println("maze.allPaths().size() = " + maze.allPaths().size());
         // Gather needed start points
         for (MazePath path : maze.allPaths())
         {
@@ -51,8 +49,6 @@ public class MazeGeneratorWithComponents
 
         ArrayList<MazeComponentPosition> validComponents = new ArrayList<>();
 
-        System.out.println("positionStack = " + positionStack);
-        System.out.println("positionStack = " + positionStack.size());
         while (!positionStack.empty())
         {
             maze.logMaze2D(StructureGen.logger, 0, 2, new MazeCoordinateDirect(0, 1, 0));

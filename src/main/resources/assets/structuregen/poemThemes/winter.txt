@@ -9,6 +9,11 @@ smoke
 grass
 ice
 
+*** Concrete Nouns Plural
+stones
+raindrops
+flames
+
 *** Abstract Nouns
 bitterness
 comfort
@@ -33,13 +38,11 @@ stagnation
 see
 feel
 hold
-think about
 
 *** Past Transitive Verbs
 saw
 felt
 held
-thought about
 
 *** Present Intransitive Verbs
 sit
@@ -51,6 +54,7 @@ rest
 linger
 remain
 watch
+think
 
 *** Adjectives
 quick

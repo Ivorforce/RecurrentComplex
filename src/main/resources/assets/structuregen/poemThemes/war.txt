@@ -4,6 +4,11 @@ blood
 day
 night
 
+*** Concrete Nouns Plural
+swords
+days
+nights
+
 *** Abstract Nouns
 agony
 pain
@@ -91,7 +96,6 @@ linger
 *** Adjectives
 quick
 painful
-Jurassic
 wild
 calm
 clever

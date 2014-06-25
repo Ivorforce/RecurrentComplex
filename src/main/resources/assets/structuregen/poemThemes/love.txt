@@ -28,6 +28,33 @@ poem
 text
 lips
 
+*** Concrete Nouns Plural
+hearts
+faces
+eyes
+breezes
+waves
+clouds
+lovers
+roses
+skies
+moons
+rainbows
+days
+gestures
+embraces
+kisses
+locks
+cheeks
+grudges
+smiles
+beds
+hands
+letters
+poems
+texts
+lips
+
 *** Abstract Nouns
 faith
 love
@@ -37,6 +64,8 @@ feeling
 time
 size
 color
+beginning
+end
 desire
 death
 life

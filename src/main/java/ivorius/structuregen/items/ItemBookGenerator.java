@@ -5,21 +5,23 @@
 
 package ivorius.structuregen.items;
 
+import ivorius.structuregen.ivtoolkit.tools.IvStringHelper;
 import ivorius.structuregen.random.Person;
 import ivorius.structuregen.random.Poem;
-import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Items;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagInt;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.nbt.NBTTagString;
 import net.minecraft.world.World;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
+import java.util.Scanner;
+import java.util.regex.Pattern;
 
 /**
  * Created by lukas on 18.06.14.
@@ -65,91 +67,193 @@ public class ItemBookGenerator extends Item implements GeneratingItem
         Poem poem = Poem.randomPoem(random);
         Person author = Person.randomHuman(random, random.nextFloat() < 0.9f);
 
-        NBTTagList pages = new NBTTagList();
-        pages.appendTag(new NBTTagString(poem.getText()));
-
-        stack.setTagInfo("pages", pages);
+        stack.setTagInfo("pages", stringList(bookPages(poem.getText())));
         stack.setTagInfo("author", new NBTTagString(author.getFullName()));
         stack.setTagInfo("title", new NBTTagString(poem.getTitle()));
 
         return stack;
     }
 
-    public static String[] getPages(String content, FontRenderer fontRenderer, int maxStringWidth, int maxCharacters)
+    public static NBTTagList stringList(List<String> strings)
     {
-        ArrayList<String> returnList = new ArrayList<>();
-        int lastCut = 0;
+        NBTTagList list = new NBTTagList();
 
-        for (int i = 0; i < content.length(); )
+        for (String s : strings)
         {
-            int wordEndIndex = !content.substring(i).contains(" ") ? content.length() : i + content.substring(i).indexOf(" ");
-
-            String currentPageString = content.substring(lastCut, wordEndIndex);
-            int realLength = fontRenderer.splitStringWidth(currentPageString, maxStringWidth);
-
-            if (!(realLength <= maxStringWidth && currentPageString.length() < maxCharacters))
-            {
-                returnList.add(content.substring(lastCut, i));
-                lastCut = i;
-            }
-
-            i = wordEndIndex + 1;
-        }
-        if (lastCut < content.length())
-        {
-            returnList.add(content.substring(lastCut, content.length()));
+            list.appendTag(new NBTTagString(s));
         }
 
-        String[] returnArray = new String[returnList.size()];
-
-        for (int i = 0; i < returnList.size(); i++)
-        {
-            returnArray[i] = returnList.get(i);
-        }
-
-        return returnArray;
+        return list;
     }
 
-    public static String[] getLines(String content, FontRenderer fontRenderer, int maxStringWidth, int maxCharacters)
+    public static List<String> bookPages(String text)
     {
-        ArrayList<String> returnList = new ArrayList<>();
-        int lastCut = 0;
+        List<Integer> pageIndices = new ArrayList<>();
 
-        for (int i = 0; i < content.length(); )
+        int allowedLines = 12;
+        int charsPerLine = 15;
+
+        int currentLineChars = 0;
+        int currentLineNumber = 0;
+
+        int hardcodedLineIndex = 0;
+
+        String[] hardcodedLines = text.split("\n");
+        for (String hardcodedLine : hardcodedLines)
         {
-            int wordEndIndex = i + 1;
-            if (content.substring(i).indexOf(" ") == -1)
+            Scanner scanner = new Scanner(hardcodedLine);
+            while (scanner.hasNext())
             {
-                wordEndIndex = content.length();
-            }
-            else
-            {
-                wordEndIndex = i + content.substring(i).indexOf(" ");
+                String word = scanner.next();
+
+                if (word.length() > charsPerLine)
+                {
+                    int lines = word.length() / charsPerLine;
+
+                    if (currentLineNumber + lines > allowedLines)
+                    {
+                        int index = scanner.match().end() + hardcodedLineIndex;
+                        pageIndices.add(index);
+                        currentLineNumber = 0;
+                    }
+
+                    currentLineNumber += lines;
+                    currentLineChars = word.length() - lines * charsPerLine;
+                }
+                else if (word.length() + currentLineChars > charsPerLine)
+                {
+                    if (currentLineNumber >= allowedLines)
+                    {
+                        int index = scanner.match().end() + hardcodedLineIndex;
+                        pageIndices.add(index);
+                        currentLineNumber = 0;
+                    }
+                    else
+                    {
+                        currentLineNumber++;
+                    }
+
+                    currentLineChars = word.length();
+                }
+                else
+                {
+                    currentLineChars += word.length();
+                }
             }
 
-            String currentPageString = content.substring(lastCut, wordEndIndex);
-            int realLength = fontRenderer.getStringWidth(currentPageString);
+            currentLineChars = 0;
+            currentLineNumber ++;
 
-            if (!(realLength <= maxStringWidth && currentPageString.length() < maxCharacters))
+            hardcodedLineIndex += hardcodedLine.length() + 1;
+
+            if (currentLineNumber >= allowedLines)
             {
-                returnList.add(content.substring(lastCut, i));
-                lastCut = i;
+                pageIndices.add(hardcodedLineIndex);
+                currentLineNumber = 0;
             }
-
-            i = wordEndIndex + 1;
         }
-        if (lastCut < content.length())
+
+        List<String> pages = new ArrayList<>();
+        int lastIndex = 0;
+        for (Integer index : pageIndices)
         {
-            returnList.add(content.substring(lastCut, content.length()));
+            String newPage = text.substring(lastIndex, index);
+
+            if (newPage.trim().length() > 0)
+            {
+                pages.add(newPage.trim());
+            }
+
+            lastIndex = index;
         }
-
-        String[] returnArray = new String[returnList.size()];
-
-        for (int i = 0; i < returnList.size(); i++)
+        if (text.length() > lastIndex)
         {
-            returnArray[i] = returnList.get(i);
+            String newPage = text.substring(lastIndex, text.length());
+
+            if (newPage.trim().length() > 0)
+            {
+                pages.add(newPage.trim());
+            }
         }
 
-        return returnArray;
+        return pages;
     }
+
+//    public static String[] getPages(String content, FontRenderer fontRenderer, int maxStringWidth, int maxCharacters)
+//    {
+//        ArrayList<String> returnList = new ArrayList<>();
+//        int lastCut = 0;
+//
+//        for (int i = 0; i < content.length(); )
+//        {
+//            int wordEndIndex = !content.substring(i).contains(" ") ? content.length() : i + content.substring(i).indexOf(" ");
+//
+//            String currentPageString = content.substring(lastCut, wordEndIndex);
+//            int realLength = fontRenderer.splitStringWidth(currentPageString, maxStringWidth);
+//
+//            if (!(realLength <= maxStringWidth && currentPageString.length() < maxCharacters))
+//            {
+//                returnList.add(content.substring(lastCut, i));
+//                lastCut = i;
+//            }
+//
+//            i = wordEndIndex + 1;
+//        }
+//        if (lastCut < content.length())
+//        {
+//            returnList.add(content.substring(lastCut, content.length()));
+//        }
+//
+//        String[] returnArray = new String[returnList.size()];
+//
+//        for (int i = 0; i < returnList.size(); i++)
+//        {
+//            returnArray[i] = returnList.get(i);
+//        }
+//
+//        return returnArray;
+//    }
+//
+//    public static String[] getLines(String content, FontRenderer fontRenderer, int maxStringWidth, int maxCharacters)
+//    {
+//        ArrayList<String> returnList = new ArrayList<>();
+//        int lastCut = 0;
+//
+//        for (int i = 0; i < content.length(); )
+//        {
+//            int wordEndIndex = i + 1;
+//            if (content.substring(i).indexOf(" ") == -1)
+//            {
+//                wordEndIndex = content.length();
+//            }
+//            else
+//            {
+//                wordEndIndex = i + content.substring(i).indexOf(" ");
+//            }
+//
+//            String currentPageString = content.substring(lastCut, wordEndIndex);
+//            int realLength = fontRenderer.getStringWidth(currentPageString);
+//
+//            if (!(realLength <= maxStringWidth && currentPageString.length() < maxCharacters))
+//            {
+//                returnList.add(content.substring(lastCut, i));
+//                lastCut = i;
+//            }
+//
+//            i = wordEndIndex + 1;
+//        }
+//        if (lastCut < content.length())
+//        {
+//            returnList.add(content.substring(lastCut, content.length()));
+//        }
+//
+//        String[] returnArray = new String[returnList.size()];
+//
+//        for (int i = 0; i < returnList.size(); i++)
+//        {
+//            returnArray[i] = returnList.get(i);
+//        }
+//
+//        return returnArray;
+//    }
 }

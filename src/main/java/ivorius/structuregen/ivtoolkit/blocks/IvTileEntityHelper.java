@@ -72,10 +72,10 @@ public class IvTileEntityHelper
     {
         if (world.isRemote || !(world instanceof WorldServer))
         {
-            return new ArrayList<EntityPlayerMP>(0);
+            return new ArrayList<>(0);
         }
 
-        ArrayList<EntityPlayerMP> playersWatching = new ArrayList<EntityPlayerMP>();
+        ArrayList<EntityPlayerMP> playersWatching = new ArrayList<>();
 
         WorldServer server = (WorldServer) world;
         PlayerManager playerManager = server.getPlayerManager();

@@ -37,7 +37,7 @@ public class CommandGenerateStructure extends CommandBase
     @Override
     public void processCommand(ICommandSender commandSender, String[] args)
     {
-        int x, y, z;
+        int x, z;
 
         if (args.length <= 0)
         {

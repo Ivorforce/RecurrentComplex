@@ -53,7 +53,7 @@ public class IvPacketPipeline extends MessageToMessageCodec<FMLProxyPacket, IvPa
 {
 
     private EnumMap<Side, FMLEmbeddedChannel> channels;
-    private LinkedList<Class<? extends IvPacket>> packets = new LinkedList<Class<? extends IvPacket>>();
+    private LinkedList<Class<? extends IvPacket>> packets = new LinkedList<>();
     private boolean isPostInitialised = false;
 
     /**

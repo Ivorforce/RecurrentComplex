@@ -124,7 +124,7 @@ public class IvBezierPath3DRendererText
         OpenGlHelper.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA, GL11.GL_ONE, GL11.GL_ZERO);
 
         String plainText = "";
-        ArrayList<String> modifiers = new ArrayList<String>();
+        ArrayList<String> modifiers = new ArrayList<>();
         modifiers.add("");
 
         for (int i = 0; i < text.length(); i++)

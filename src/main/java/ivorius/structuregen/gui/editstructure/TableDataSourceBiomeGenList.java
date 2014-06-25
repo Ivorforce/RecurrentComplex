@@ -117,19 +117,19 @@ public class TableDataSourceBiomeGenList implements TableDataSource, TableElemen
     {
         if (tableElementButton.getID().equals("biomePreset"))
         {
-            if (actionID.equals("default"))
+            switch (actionID)
             {
-                biomeGenerationInfoList.clear();
-                biomeGenerationInfoList.addAll(BiomeGenerationInfo.defaultBiomeGenerationList());
-            }
-            else if (actionID.equals("ocean"))
-            {
-                biomeGenerationInfoList.clear();
-                biomeGenerationInfoList.addAll(BiomeGenerationInfo.oceanBiomeGenerationList());
-            }
-            else if (actionID.equals("clear"))
-            {
-                biomeGenerationInfoList.clear();
+                case "default":
+                    biomeGenerationInfoList.clear();
+                    biomeGenerationInfoList.addAll(BiomeGenerationInfo.defaultBiomeGenerationList());
+                    break;
+                case "ocean":
+                    biomeGenerationInfoList.clear();
+                    biomeGenerationInfoList.addAll(BiomeGenerationInfo.oceanBiomeGenerationList());
+                    break;
+                case "clear":
+                    biomeGenerationInfoList.clear();
+                    break;
             }
 
             tableDelegate.reloadData();

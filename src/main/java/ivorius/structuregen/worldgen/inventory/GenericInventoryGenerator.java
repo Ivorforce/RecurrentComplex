@@ -140,7 +140,7 @@ public class GenericInventoryGenerator implements InventoryGenerator, Cloneable
             int minItems = JsonUtils.getJsonObjectIntegerFieldValue(jsonobject, "minItems");
             int maxItems = JsonUtils.getJsonObjectIntegerFieldValue(jsonobject, "maxItems");
             JsonArray chestContentsJSON = JsonUtils.getJsonObjectJsonArrayField(jsonobject, "contents");
-            List<WeightedRandomChestContent> chestContents = new ArrayList<WeightedRandomChestContent>();
+            List<WeightedRandomChestContent> chestContents = new ArrayList<>();
 
             for (JsonElement element : chestContentsJSON)
             {

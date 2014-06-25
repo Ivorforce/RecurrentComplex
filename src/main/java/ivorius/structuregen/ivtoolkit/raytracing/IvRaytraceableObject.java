@@ -32,7 +32,7 @@ public abstract class IvRaytraceableObject
     {
         this.userInfo = userInfo;
 
-        this.containedObjects = new ArrayList<IvRaytraceableObject>();
+        this.containedObjects = new ArrayList<>();
     }
 
     /**
@@ -52,12 +52,12 @@ public abstract class IvRaytraceableObject
     {
         if (this.isContainer())
         {
-            ArrayList<IvRaytracedIntersection> intersections = new ArrayList<IvRaytracedIntersection>();
+            ArrayList<IvRaytracedIntersection> intersections = new ArrayList<>();
             addRaytracedIntersectionsForLineToList(intersections, x, y, z, xDir, yDir, zDir);
 
             if (intersections.size() > 0)
             {
-                ArrayList<double[]> hitInnerPoints = new ArrayList<double[]>();
+                ArrayList<double[]> hitInnerPoints = new ArrayList<>();
 
                 for (IvRaytraceableObject subObject : this.containedObjects)
                 {
@@ -87,7 +87,7 @@ public abstract class IvRaytraceableObject
 
     public double[][] getRaytracedIntersectionsForLine(double x, double y, double z, double xDir, double yDir, double zDir)
     {
-        ArrayList<IvRaytracedIntersection> intersections = new ArrayList<IvRaytracedIntersection>();
+        ArrayList<IvRaytracedIntersection> intersections = new ArrayList<>();
         addRaytracedIntersectionsForLineToList(intersections, x, y, z, xDir, yDir, zDir);
 
         double[][] intersectionPoints = new double[intersections.size()][];
@@ -101,7 +101,7 @@ public abstract class IvRaytraceableObject
 
     public IvRaytracedIntersection getFirstHitPointForLine(double x, double y, double z, double xDir, double yDir, double zDir)
     {
-        ArrayList<IvRaytracedIntersection> intersections = new ArrayList<IvRaytracedIntersection>();
+        ArrayList<IvRaytracedIntersection> intersections = new ArrayList<>();
         addRaytracedIntersectionsForLineToList(intersections, x, y, z, xDir, yDir, zDir);
 
         return IvRaytracer.findFirstIntersection(intersections, x, y, z, xDir, yDir, zDir);

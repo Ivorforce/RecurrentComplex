@@ -27,7 +27,7 @@ public class IvBezierPath3DCreator
 {
     public static IvBezierPath3D createSpiraledBezierPath(double distCenter, double heightDistInf, double spirals, double maxHeight, double fontSize, double heightFontInf, boolean staged)
     {
-        ArrayList<IvBezierPoint3D> bezierPoints = new ArrayList<IvBezierPoint3D>();
+        ArrayList<IvBezierPoint3D> bezierPoints = new ArrayList<>();
 
         for (double height = 0; height <= maxHeight; height += maxHeight / spirals)
         {
@@ -61,7 +61,7 @@ public class IvBezierPath3DCreator
 
     public static IvBezierPath3D createSpiraledBezierPath(double distCenter, double heightDistInf, double spirals, double[] endPos, double fontSize, double heightFontInf, boolean staged)
     {
-        ArrayList<IvBezierPoint3D> bezierPoints = new ArrayList<IvBezierPoint3D>();
+        ArrayList<IvBezierPoint3D> bezierPoints = new ArrayList<>();
 
         for (double height = 0; height <= endPos[1]; height += endPos[1] / spirals)
         {
@@ -105,7 +105,7 @@ public class IvBezierPath3DCreator
 
     public static IvBezierPath3D createSpiraledSphere(double radius, double spirals, double fontSize)
     {
-        ArrayList<IvBezierPoint3D> bezierPoints = new ArrayList<IvBezierPoint3D>();
+        ArrayList<IvBezierPoint3D> bezierPoints = new ArrayList<>();
 
         double centerYShift = -radius * 0.5;
         for (double height = 0; height <= radius; height += radius / spirals)
@@ -140,7 +140,7 @@ public class IvBezierPath3DCreator
 
     public static IvBezierPath3D createQuickBezierPath(IvBezierPoint3D[] points)
     {
-        ArrayList<IvBezierPoint3D> bezierPoints = new ArrayList<IvBezierPoint3D>();
+        ArrayList<IvBezierPoint3D> bezierPoints = new ArrayList<>();
 
         Collections.addAll(bezierPoints, points);
 

@@ -17,7 +17,7 @@ import java.util.*;
  */
 public class StructureSelector
 {
-    private Map<String, List<WeightedStructureInfo>> weightedStructureInfos = new HashMap<String, List<WeightedStructureInfo>>();
+    private Map<String, List<WeightedStructureInfo>> weightedStructureInfos = new HashMap<>();
 
     public StructureSelector(Collection<StructureInfo> structures, BiomeGenBase biome)
     {
@@ -40,17 +40,14 @@ public class StructureSelector
 
     public static float generationChance(String category)
     {
-        if (category.equals("decoration"))
+        switch (category)
         {
-            return 1.0f / 10.0f;
-        }
-        else if (category.equals("adventure"))
-        {
-            return 1.0f / 100.0f;
-        }
-        else if (category.equals("rare"))
-        {
-            return 1.0f / 1000.0f;
+            case "decoration":
+                return 1.0f / 10.0f;
+            case "adventure":
+                return 1.0f / 100.0f;
+            case "rare":
+                return 1.0f / 1000.0f;
         }
 
         return 0.01f;
@@ -58,7 +55,7 @@ public class StructureSelector
 
     public List<StructureInfo> generatedStructures(Random random, int chunkX, int chunkZ, World world, IChunkProvider chunkGenerator, IChunkProvider chunkProvider)
     {
-        List<StructureInfo> infos = new ArrayList<StructureInfo>();
+        List<StructureInfo> infos = new ArrayList<>();
 
         for (String category : weightedStructureInfos.keySet())
         {

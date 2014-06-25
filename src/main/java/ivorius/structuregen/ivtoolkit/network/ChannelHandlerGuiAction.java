@@ -98,11 +98,7 @@ public class ChannelHandlerGuiAction extends SimpleChannelInboundHandler<FMLProx
         ByteBuf buffer = msg.payload();
         String context = ByteBufUtils.readUTF8String(buffer);
 
-        if (channelSide == Side.CLIENT)
-        {
-
-        }
-        else
+        if (channelSide == Side.SERVER)
         {
             NetHandlerPlayServer netHandler = (NetHandlerPlayServer) ctx.channel().attr(NetworkRegistry.NET_HANDLER).get();
             Container container = netHandler.playerEntity.openContainer;

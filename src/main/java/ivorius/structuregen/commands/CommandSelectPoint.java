@@ -45,38 +45,42 @@ public class CommandSelectPoint extends CommandBase
             {
                 if (args.length >= 1)
                 {
-                    if ("clear".equals(args[0]))
+                    switch (args[0])
                     {
-                        structureEntityInfo.selectedPoint1 = null;
-                        structureEntityInfo.selectedPoint2 = null;
-                        structureEntityInfo.sendSelectionChangesToClients(entityPlayerMP);
-                    }
-                    else if ("point1".equals(args[0]) || "point2".equals(args[0]))
-                    {
-                        if (args.length >= 4)
-                        {
-                            int x = commandSender.getPlayerCoordinates().posX;
-                            int y = commandSender.getPlayerCoordinates().posY;
-                            int z = commandSender.getPlayerCoordinates().posZ;
-                            x = MathHelper.floor_double(func_110666_a(commandSender, (double)x, args[1]));
-                            y = MathHelper.floor_double(func_110666_a(commandSender, (double)y, args[2]));
-                            z = MathHelper.floor_double(func_110666_a(commandSender, (double)z, args[3]));
-
-                            if ("point1".equals(args[0]))
-                                structureEntityInfo.selectedPoint1 = new BlockCoord(x, y, z);
-                            else
-                                structureEntityInfo.selectedPoint2 = new BlockCoord(x, y, z);
-
+                        case "clear":
+                            structureEntityInfo.selectedPoint1 = null;
+                            structureEntityInfo.selectedPoint2 = null;
                             structureEntityInfo.sendSelectionChangesToClients(entityPlayerMP);
-                        }
-                        else
-                        {
+                            break;
+                        case "point1":
+                        case "point2":
+                            if (args.length >= 4)
+                            {
+                                int x = commandSender.getPlayerCoordinates().posX;
+                                int y = commandSender.getPlayerCoordinates().posY;
+                                int z = commandSender.getPlayerCoordinates().posZ;
+                                x = MathHelper.floor_double(func_110666_a(commandSender, (double) x, args[1]));
+                                y = MathHelper.floor_double(func_110666_a(commandSender, (double) y, args[2]));
+                                z = MathHelper.floor_double(func_110666_a(commandSender, (double) z, args[3]));
+
+                                if ("point1".equals(args[0]))
+                                {
+                                    structureEntityInfo.selectedPoint1 = new BlockCoord(x, y, z);
+                                }
+                                else
+                                {
+                                    structureEntityInfo.selectedPoint2 = new BlockCoord(x, y, z);
+                                }
+
+                                structureEntityInfo.sendSelectionChangesToClients(entityPlayerMP);
+                            }
+                            else
+                            {
+                                throw new WrongUsageException("commands.selectSet.usage");
+                            }
+                            break;
+                        default:
                             throw new WrongUsageException("commands.selectSet.usage");
-                        }
-                    }
-                    else
-                    {
-                        throw new WrongUsageException("commands.selectSet.usage");
                     }
                 }
                 else

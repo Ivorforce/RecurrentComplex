@@ -225,8 +225,6 @@ public class IvNBTHelper
 
             for (long l : longs)
             {
-                int lower = (int) l;
-                int upper = (int) (l >>> 32);
                 nbtTagList.appendTag(new NBTTagIntArray(new int[]{(int) l, (int) (l >>> 32)}));
             }
 

@@ -29,7 +29,7 @@ public class IvRaytracer
 {
     public static List<IvRaytracedIntersection> getIntersections(List<IvRaytraceableObject> objects, double x, double y, double z, double xDir, double yDir, double zDir)
     {
-        ArrayList<IvRaytracedIntersection> hitPoints = new ArrayList<IvRaytracedIntersection>();
+        ArrayList<IvRaytracedIntersection> hitPoints = new ArrayList<>();
 
         for (IvRaytraceableObject object : objects)
         {
@@ -60,7 +60,7 @@ public class IvRaytracer
 
     public static IvRaytracedIntersection getFirstIntersection(List<IvRaytraceableObject> objects, double x, double y, double z, double xDir, double yDir, double zDir)
     {
-        ArrayList<IvRaytracedIntersection> intersections = new ArrayList<IvRaytracedIntersection>();
+        ArrayList<IvRaytracedIntersection> intersections = new ArrayList<>();
 
         for (IvRaytraceableObject object : objects)
         {

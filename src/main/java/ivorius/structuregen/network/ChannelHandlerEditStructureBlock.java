@@ -73,7 +73,7 @@ public class ChannelHandlerEditStructureBlock extends SimpleChannelInboundHandle
     protected void channelRead0(ChannelHandlerContext ctx, FMLProxyPacket msg) throws Exception
     {
         Side channelSide = ctx.channel().attr(NetworkRegistry.CHANNEL_SOURCE).get();
-        INetHandler netHandler = ctx.channel().attr(NetworkRegistry.NET_HANDLER).get();
+//        INetHandler netHandler = ctx.channel().attr(NetworkRegistry.NET_HANDLER).get();
 
         ByteBuf buffer = msg.payload();
 

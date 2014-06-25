@@ -148,9 +148,9 @@ public class InventoryGenericInvGen_Single implements IInventory
     @Override
     public void markDirty()
     {
-        for (int i = 0; i < this.watchers.size(); ++i)
+        for (InventoryWatcher watcher : this.watchers)
         {
-            this.watchers.get(i).inventoryChanged(this);
+            watcher.inventoryChanged(this);
         }
     }
 

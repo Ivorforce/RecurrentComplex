@@ -40,7 +40,7 @@ public class IvShaderInstance
 
     private boolean shaderActive = false;
 
-    private Map<String, Integer> uniformLocations = new HashMap<String, Integer>();
+    private Map<String, Integer> uniformLocations = new HashMap<>();
 
     public int getShaderID()
     {
@@ -286,21 +286,17 @@ public class IvShaderInstance
         matrix.store(floatBuffer);
         floatBuffer.position(0);
 
-        if (width == 2)
+        switch (width)
         {
-            ARBShaderObjects.glUniformMatrix2ARB(getUniformLocation(key), false, floatBuffer);
-        }
-        else if (width == 3)
-        {
-            ARBShaderObjects.glUniformMatrix3ARB(getUniformLocation(key), false, floatBuffer);
-        }
-        else if (width == 4)
-        {
-            ARBShaderObjects.glUniformMatrix4ARB(getUniformLocation(key), false, floatBuffer);
-        }
-        else
-        {
-            throw new IllegalArgumentException();
+            case 2:
+                ARBShaderObjects.glUniformMatrix2ARB(getUniformLocation(key), false, floatBuffer);
+                break;
+            case 3:
+                ARBShaderObjects.glUniformMatrix3ARB(getUniformLocation(key), false, floatBuffer);
+                break;
+            default:
+                ARBShaderObjects.glUniformMatrix4ARB(getUniformLocation(key), false, floatBuffer);
+                break;
         }
 
         return true;
@@ -367,7 +363,7 @@ public class IvShaderInstance
         String majorVersion;
         String minorVersion;
 
-        String glslVersion = "";
+        String glslVersion;
 
         try
         {

@@ -75,7 +75,7 @@ public class IvFileHelper
 
     public static byte[] getContentsOfFile(InputStream inputStream)
     {
-        ArrayList<Byte> array = new ArrayList<Byte>();
+        ArrayList<Byte> array = new ArrayList<>();
 
         try
         {
@@ -84,7 +84,7 @@ public class IvFileHelper
                 int i = inputStream.read();
                 if (i >= 0)
                 {
-                    array.add(Byte.valueOf((byte) i));
+                    array.add((byte) i);
                 }
                 else
                 {

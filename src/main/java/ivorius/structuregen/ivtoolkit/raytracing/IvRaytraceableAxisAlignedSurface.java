@@ -175,8 +175,6 @@ public class IvRaytraceableAxisAlignedSurface extends IvRaytraceableObject
                 list.add(new IvRaytracedIntersection(this, hitPoint));
             }
         }
-
-        return;
     }
 
     private boolean withinBounds(double value, double min, double max)

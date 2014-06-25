@@ -35,16 +35,16 @@ public class IvBezierPath3D
 
     public IvBezierPath3D()
     {
-        cachedProgresses = new ArrayList<Double>();
-        cachedDistances = new ArrayList<Double>();
+        cachedProgresses = new ArrayList<>();
+        cachedDistances = new ArrayList<>();
 
         setBezierPoints(new ArrayList<IvBezierPoint3D>());
     }
 
     public IvBezierPath3D(List<IvBezierPoint3D> bezierPoints)
     {
-        cachedProgresses = new ArrayList<Double>();
-        cachedDistances = new ArrayList<Double>();
+        cachedProgresses = new ArrayList<>();
+        cachedDistances = new ArrayList<>();
 
         setBezierPoints(bezierPoints);
     }
@@ -186,7 +186,7 @@ public class IvBezierPath3D
 
     public void setBezierPoints(List<IvBezierPoint3D> points)
     {
-        this.bezierPoints = new ArrayList<IvBezierPoint3D>();
+        this.bezierPoints = new ArrayList<>();
         this.bezierPoints.addAll(points);
 
         markDirty();
@@ -194,7 +194,7 @@ public class IvBezierPath3D
 
     public List<IvBezierPoint3D> getBezierPoints()
     {
-        List<IvBezierPoint3D> l = new ArrayList<IvBezierPoint3D>(bezierPoints.size());
+        List<IvBezierPoint3D> l = new ArrayList<>(bezierPoints.size());
         l.addAll(bezierPoints);
         return l;
     }

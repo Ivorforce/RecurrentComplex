@@ -22,7 +22,7 @@ import java.util.List;
  */
 public class InventoryGeneratorSaveHandler
 {
-    private static List<String> importedCustomGenerators = new ArrayList<String>();
+    private static List<String> importedCustomGenerators = new ArrayList<>();
 
     public static void reloadAllCustomInventoryGenerators()
     {

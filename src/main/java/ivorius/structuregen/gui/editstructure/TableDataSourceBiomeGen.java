@@ -82,15 +82,19 @@ public class TableDataSourceBiomeGen implements TableDataSource, TableElementPro
     private GuiValidityStateIndicator.State currentBiomeIDState()
     {
         if (generationInfo.getBiomeTypes() != null)
+        {
             return GuiValidityStateIndicator.State.VALID;
+        }
 
         String biomeID = generationInfo.getBiomeID();
         BiomeGenBase[] biomes = BiomeGenBase.getBiomeGenArray();
 
-        for (int i = 0; i < biomes.length; i++)
+        for (BiomeGenBase biome : biomes)
         {
-            if (biomes[i] != null && biomes[i].biomeName.equals(biomeID))
+            if (biome != null && biome.biomeName.equals(biomeID))
+            {
                 return GuiValidityStateIndicator.State.VALID;
+            }
         }
 
         return biomeID.trim().length() > 0 ? GuiValidityStateIndicator.State.SEMI_VALID : GuiValidityStateIndicator.State.INVALID;

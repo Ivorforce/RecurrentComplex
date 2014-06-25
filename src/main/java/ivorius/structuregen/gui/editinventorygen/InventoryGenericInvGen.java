@@ -21,9 +21,9 @@ import java.util.List;
 public class InventoryGenericInvGen implements IInventory
 {
     public List<WeightedRandomChestContent> chestContents;
-    private List<ItemStack> cachedItemStacks = new ArrayList<ItemStack>();
+    private List<ItemStack> cachedItemStacks = new ArrayList<>();
 
-    private List<InventoryWatcher> watchers = new ArrayList<InventoryWatcher>();
+    private List<InventoryWatcher> watchers = new ArrayList<>();
 
     public InventoryGenericInvGen(List<WeightedRandomChestContent> chestContents)
     {

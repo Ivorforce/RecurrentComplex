@@ -50,20 +50,12 @@ public class ItemBookGenerator extends Item implements GeneratingItem
 
     public static String[] getPages(String content, FontRenderer fontRenderer, int maxStringWidth, int maxCharacters)
     {
-        ArrayList<String> returnList = new ArrayList<String>();
+        ArrayList<String> returnList = new ArrayList<>();
         int lastCut = 0;
 
         for (int i = 0; i < content.length(); )
         {
-            int wordEndIndex = i + 1;
-            if (content.substring(i).indexOf(" ") == -1)
-            {
-                wordEndIndex = content.length();
-            }
-            else
-            {
-                wordEndIndex = i + content.substring(i).indexOf(" ");
-            }
+            int wordEndIndex = !content.substring(i).contains(" ") ? content.length() : i + content.substring(i).indexOf(" ");
 
             String currentPageString = content.substring(lastCut, wordEndIndex);
             int realLength = fontRenderer.splitStringWidth(currentPageString, maxStringWidth);
@@ -93,7 +85,7 @@ public class ItemBookGenerator extends Item implements GeneratingItem
 
     public static String[] getLines(String content, FontRenderer fontRenderer, int maxStringWidth, int maxCharacters)
     {
-        ArrayList<String> returnList = new ArrayList<String>();
+        ArrayList<String> returnList = new ArrayList<>();
         int lastCut = 0;
 
         for (int i = 0; i < content.length(); )

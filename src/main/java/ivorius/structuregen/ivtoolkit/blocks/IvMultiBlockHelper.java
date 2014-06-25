@@ -251,11 +251,11 @@ public class IvMultiBlockHelper implements Iterable<int[]>
 
         if (!player.canPlayerEdit(x, y, z, blockSide, itemStack))
         {
-            return new ArrayList<List<int[]>>();
+            return new ArrayList<>();
         }
         else if (y == world.getHeight() && block.getMaterial().isSolid())
         {
-            return new ArrayList<List<int[]>>();
+            return new ArrayList<>();
         }
         else
         {
@@ -263,14 +263,14 @@ public class IvMultiBlockHelper implements Iterable<int[]>
             int[] min = getExtremeCoords(positions, true);
 
             // Run from min+length (maximimum) being the placed x, y, z to minimum being the x, y, z
-            ArrayList<List<int[]>> validPlacements = new ArrayList<List<int[]>>();
+            ArrayList<List<int[]>> validPlacements = new ArrayList<>();
             for (int xShift = min[0] - lengths[0]; xShift <= min[0]; xShift++)
             {
                 for (int yShift = min[0] - lengths[1]; yShift <= min[1]; yShift++)
                 {
                     for (int zShift = min[0] - lengths[2]; zShift <= min[2]; zShift++)
                     {
-                        ArrayList<int[]> validPositions = new ArrayList<int[]>();
+                        ArrayList<int[]> validPositions = new ArrayList<>();
 
                         for (int[] position : positions)
                         {
@@ -327,7 +327,7 @@ public class IvMultiBlockHelper implements Iterable<int[]>
 
     public static List<int[]> getRotatedPositions(List<int[]> positions, int rotation)
     {
-        ArrayList<int[]> returnList = new ArrayList<int[]>(positions.size());
+        ArrayList<int[]> returnList = new ArrayList<>(positions.size());
 
         for (int[] position : positions)
         {
@@ -462,7 +462,7 @@ public class IvMultiBlockHelper implements Iterable<int[]>
 
     public static List<int[]> getPositions(int width, int height, int length)
     {
-        ArrayList<int[]> positions = new ArrayList<int[]>();
+        ArrayList<int[]> positions = new ArrayList<>();
 
         for (int x = 0; x < width; x++)
         {

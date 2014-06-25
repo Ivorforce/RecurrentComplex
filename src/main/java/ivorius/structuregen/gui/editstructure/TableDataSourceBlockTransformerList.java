@@ -129,26 +129,25 @@ public class TableDataSourceBlockTransformerList implements TableDataSource, Tab
             BlockTransformer blockTransformer = blockTransformerList.get(index);
             BlockTransformerProvider provider = StructureHandler.blockTransformerProviderForID(StructureHandler.blockTransformerIDForType(blockTransformer.getClass()));
 
-            if (actionID.equals("edit"))
+            switch (actionID)
             {
-                navigator.pushTable(new GuiTable(tableDelegate, provider.tableDataSource(blockTransformer)));
-            }
-            else if (actionID.equals("delete"))
-            {
-                blockTransformerList.remove(blockTransformer);
-                tableDelegate.reloadData();
-            }
-            else if (actionID.equals("earlier"))
-            {
-                blockTransformerList.remove(index);
-                blockTransformerList.add(index - 1, blockTransformer);
-                tableDelegate.reloadData();
-            }
-            else if (actionID.equals("later"))
-            {
-                blockTransformerList.remove(index);
-                blockTransformerList.add(index + 1, blockTransformer);
-                tableDelegate.reloadData();
+                case "edit":
+                    navigator.pushTable(new GuiTable(tableDelegate, provider.tableDataSource(blockTransformer)));
+                    break;
+                case "delete":
+                    blockTransformerList.remove(blockTransformer);
+                    tableDelegate.reloadData();
+                    break;
+                case "earlier":
+                    blockTransformerList.remove(index);
+                    blockTransformerList.add(index - 1, blockTransformer);
+                    tableDelegate.reloadData();
+                    break;
+                case "later":
+                    blockTransformerList.remove(index);
+                    blockTransformerList.add(index + 1, blockTransformer);
+                    tableDelegate.reloadData();
+                    break;
             }
         }
     }

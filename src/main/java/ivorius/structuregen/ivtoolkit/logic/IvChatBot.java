@@ -26,7 +26,7 @@ public abstract class IvChatBot
 {
     public Random random;
 
-    public List<IvChatLine> sendQueue = new ArrayList<IvChatLine>();
+    public List<IvChatLine> sendQueue = new ArrayList<>();
 
     public IvChatBot(Random rand)
     {

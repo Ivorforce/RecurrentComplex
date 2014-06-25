@@ -24,7 +24,7 @@ import java.util.*;
  */
 public class InventoryGenerationHandler
 {
-    private static Map<String, InventoryGenerator> inventoryGeneratorMap = new HashMap<String, InventoryGenerator>();
+    private static Map<String, InventoryGenerator> inventoryGeneratorMap = new HashMap<>();
 
     private static Gson gson = createGson();
 
@@ -95,7 +95,7 @@ public class InventoryGenerationHandler
 
     public static void generateAllTags(IInventory inventory, Random random)
     {
-        List<Pair<ItemStack, Integer>> foundGenerators = new ArrayList<Pair<ItemStack, Integer>>();
+        List<Pair<ItemStack, Integer>> foundGenerators = new ArrayList<>();
         boolean didChange = true;
         int cycles = 0;
 
@@ -109,7 +109,7 @@ public class InventoryGenerationHandler
 
                     if (stack != null && (stack.getItem() instanceof GeneratingItem))
                     {
-                        foundGenerators.add(new ImmutablePair<ItemStack, Integer>(stack, i));
+                        foundGenerators.add(new ImmutablePair<>(stack, i));
                         inventory.setInventorySlotContents(i, null);
                     }
                 }

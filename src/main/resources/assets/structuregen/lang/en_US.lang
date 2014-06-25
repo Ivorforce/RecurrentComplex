@@ -52,7 +52,7 @@ commands.selectFillSphere.usage=/selectFillSphere <block> [metadata1,metadata2,m
 commands.selectNatural.usage=/selectNatural [naturalFloorExpansion]
 
 commands.strucReload.usage=/strucReload <structureName> [x] [y] [z]
-
+commands.strucReload.success=Reloaded all structures and inventory generators
 
 inventoryGen.vanilla=Vanilla Generator
 inventoryGen.custom=Custom Generator
@@ -64,6 +64,8 @@ guiGenericInventory.weight=Weight
 guiGenericInventory.minMax=Min: %s, Max: %s
 guiGenericInventory.minMaxItems=Min Items: %s, Max Items: %s
 guiGenericInventory.weightNumber=Weight: %s
+inventorygen.save.success=Exported inventory generator to '%s'
+inventorygen.save.failure=Failed to export inventory generator to '%s'
 
 structures.gui.true=True
 structures.gui.false=False

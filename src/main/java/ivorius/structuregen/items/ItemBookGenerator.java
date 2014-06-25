@@ -46,6 +46,11 @@ public class ItemBookGenerator extends Item implements GeneratingItem
     public static ItemStack getRandomLoreBook(Random random)
     {
         // TODO Create written book with text
+        return getRandomGenericBook(random);
+    }
+
+    public static ItemStack getRandomGenericBook(Random random)
+    {
         ItemStack stack = new ItemStack(Items.book);
         String bookName = Person.chaoticName(random, random.nextFloat() < 0.8f);
 

@@ -25,6 +25,7 @@ import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.INetHandler;
 import net.minecraft.network.NetHandlerPlayServer;
+import net.minecraft.util.ChatComponentTranslation;
 
 /**
  * Created by lukas on 13.04.14.
@@ -79,14 +80,23 @@ public class ChannelHandlerEditInventoryGenerator extends SimpleChannelInboundHa
         else
         {
             NetHandlerPlayServer playServer = (NetHandlerPlayServer) netHandler;
+            EntityPlayerMP player = playServer.playerEntity;
 
-            InventoryGeneratorSaveHandler.saveInventoryGenerator(generator, key);
-            InventoryGeneratorSaveHandler.reloadAllCustomInventoryGenerators();
-
-            ItemStack heldItem = playServer.playerEntity.getHeldItem();
-            if (heldItem != null && heldItem.getItem() instanceof ItemInventoryGenerationTag)
+            if (InventoryGeneratorSaveHandler.saveInventoryGenerator(generator, key))
             {
-                ItemInventoryGenerationTag.setItemStackGeneratorKey(heldItem, key);
+                player.addChatMessage(new ChatComponentTranslation("inventorygen.save.success", key));
+
+                InventoryGeneratorSaveHandler.reloadAllCustomInventoryGenerators();
+
+                ItemStack heldItem = playServer.playerEntity.getHeldItem();
+                if (heldItem != null && heldItem.getItem() instanceof ItemInventoryGenerationTag)
+                {
+                    ItemInventoryGenerationTag.setItemStackGeneratorKey(heldItem, key);
+                }
+            }
+            else
+            {
+                player.addChatMessage(new ChatComponentTranslation("inventorygen.save.failure", key));
             }
         }
     }

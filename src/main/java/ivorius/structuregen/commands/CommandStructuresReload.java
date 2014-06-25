@@ -9,6 +9,7 @@ import ivorius.structuregen.worldgen.StructureSaveHandler;
 import ivorius.structuregen.worldgen.inventory.InventoryGeneratorSaveHandler;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.ICommandSender;
+import net.minecraft.util.ChatComponentTranslation;
 
 /**
  * Created by lukas on 25.05.14.
@@ -32,5 +33,6 @@ public class CommandStructuresReload extends CommandBase
     {
         StructureSaveHandler.reloadAllCustomStructures();
         InventoryGeneratorSaveHandler.reloadAllCustomInventoryGenerators();
+        commandSender.addChatMessage(new ChatComponentTranslation("commands.strucReload.success"));
     }
 }

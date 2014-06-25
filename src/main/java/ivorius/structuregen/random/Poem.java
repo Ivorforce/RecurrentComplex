@@ -52,7 +52,16 @@ public class Poem
             "They never <3> the <1>s nor the <1>s, with <2>.",
             "Where is the <6> <1>, the <6> <2> now?",
             "Where was the <6> <2> then?",
-            "Ever to <3> a <1>, it <4> a <1>.");
+            "Ever to <3> a <1>, it <4> a <1>.",
+            "<5 r>, <name>! <5 r>!",
+            "<name>",
+            "<name> is <6>",
+            "<name> is <6 r>, oh so <6 r>",
+            "oh so <6>",
+            "<name>!",
+            "<name r>! <name r>! <name r>!",
+            "<name>! It is you!",
+            "<5>, <name>!");
 
     public static final Map<String, Theme> themes = new HashMap<>();
 
@@ -85,7 +94,20 @@ public class Poem
 
     public static Poem randomPoem(Random random, Theme theme)
     {
-        String title = getRandomPhrase(random, theme, sentencePatterns);
+        List<String> names = new ArrayList<>();
+        do
+        {
+            names.add(Person.randomHuman(random, random.nextBoolean()).getFirstName());
+        }
+        while (random.nextFloat() < 0.3f);
+
+        String title = getRandomPhrase(random, theme, sentencePatterns, names).trim();
+        char titleLastChar = title.charAt(title.length() - 1);
+        if (titleLastChar == '.' || titleLastChar == ',' || titleLastChar == ';')
+        {
+            title = title.substring(0, title.length() - 1);
+        }
+
         StringBuilder poem = new StringBuilder();
 
 //        int verses = random.nextInt(5) + 1; // TODO Increase number when custom books are implemented
@@ -93,10 +115,21 @@ public class Poem
         for (int verse = 0; verse < verses; verse++)
         {
 //            int lines = random.nextInt(10) + 1;
-            int lines = random.nextInt(7) + 1;
+            int lines = random.nextInt(5) + 4;
             for (int line = 0; line < lines; line++)
             {
-                poem.append(getRandomPhrase(random, theme, sentencePatterns)).append("\n");
+                String phrase = getRandomPhrase(random, theme, sentencePatterns, names);
+
+                if (line == lines - 1)
+                {
+                    char phraseLastChar = phrase.charAt(phrase.length() - 1);
+                    if (phraseLastChar == ',' || phraseLastChar == ';')
+                    {
+                        phrase = phrase.substring(0, phrase.length() - 1) + ".";
+                    }
+                }
+
+                poem.append(phrase).append("\n");
             }
 
             poem.append("\n");
@@ -105,36 +138,55 @@ public class Poem
         return new Poem(title, poem.toString());
     }
 
-    private static String getRandomPhrase(Random random, Theme theme, List<String> sentencePatterns)
+    private static String getRandomPhrase(Random random, Theme theme, List<String> sentencePatterns, List<String> names)
     {
-        return replaceAllWords(random, getRandomElementFrom(sentencePatterns, random), theme);
+        return firstCharUppercase(replaceAllWords(random, getRandomElementFrom(sentencePatterns, random), theme, names));
     }
 
-    private static String replaceAllWords(Random random, String text, Theme theme)
+    private static String replaceAllWords(Random random, String text, Theme theme, List<String> names)
     {
         StringBuilder builder = new StringBuilder(text);
 
-        replaceAll(random, builder, "<1>", theme.concreteNouns);
-        replaceAll(random, builder, "<2>", theme.abstractNouns);
-        replaceAll(random, builder, "<3>", theme.transitivePresentVerbs);
-        replaceAll(random, builder, "<4>", theme.transitivePastVerbs);
-        replaceAll(random, builder, "<5>", theme.intransitivePresentVerbs);
-        replaceAll(random, builder, "<6>", theme.adjectives);
-        replaceAll(random, builder, "<7>", theme.adverbs);
-        replaceAll(random, builder, "<8>", theme.prepositions);
-        replaceAll(random, builder, "<9>", theme.interjections);
+        replaceAll(random, builder, "1", theme.concreteNouns);
+        replaceAll(random, builder, "2", theme.abstractNouns);
+        replaceAll(random, builder, "3", theme.transitivePresentVerbs);
+        replaceAll(random, builder, "4", theme.transitivePastVerbs);
+        replaceAll(random, builder, "5", theme.intransitivePresentVerbs);
+        replaceAll(random, builder, "6", theme.adjectives);
+        replaceAll(random, builder, "7", theme.adverbs);
+        replaceAll(random, builder, "8", theme.prepositions);
+        replaceAll(random, builder, "9", theme.interjections);
+        replaceAll(random, builder, "name", names);
 
         return builder.toString();
     }
 
     private static void replaceAll(Random random, StringBuilder builder, String tag, List<String> words)
     {
-        int tagLength = tag.length();
+        String repeatWord = null;
         int index;
-        while ((index = builder.indexOf(tag)) >= 0)
+        while ((index = builder.indexOf("<" + tag)) >= 0)
         {
-            builder.replace(index, index + tagLength, getRandomElementFrom(words, random));
+            int endIndex = builder.indexOf(">", index);
+            if (builder.charAt(endIndex - 1) == 'r')
+            {
+                if (repeatWord == null)
+                {
+                    repeatWord = getRandomElementFrom(words, random);
+                }
+
+                builder.replace(index, endIndex + 1, repeatWord);
+            }
+            else
+            {
+                builder.replace(index, endIndex + 1, getRandomElementFrom(words, random));
+            }
         }
+    }
+
+    private static String firstCharUppercase(String name)
+    {
+        return Character.toString(name.charAt(0)).toUpperCase() + name.substring(1);
     }
 
     private static <O> O getRandomElementFrom(List<O> list, Random random)

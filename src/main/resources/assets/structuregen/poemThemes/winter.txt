@@ -1,0 +1,95 @@
+*** Concrete Nouns
+stone
+water
+wind
+rain
+snow
+flame
+smoke
+grass
+ice
+
+*** Abstract Nouns
+bitterness
+comfort
+pain
+death
+desolation
+hunger
+beauty
+fear
+balance
+nature
+dawn
+dusk
+majesty
+desire
+magnitude
+coldness
+isolation
+stagnation
+
+*** Present Transitive Verbs
+see
+feel
+hold
+think about
+
+*** Past Transitive Verbs
+saw
+felt
+held
+thought about
+
+*** Present Intransitive Verbs
+sit
+hide
+pray
+sit
+wait
+rest
+linger
+remain
+watch
+
+*** Adjectives
+quick
+comfortable
+slow
+pleasant
+relaxed
+snug
+soft
+warm
+cold
+serene
+bitter
+
+*** Adverbs
+swiftly
+slowly
+softly
+harshly
+coldly
+
+
+*** Prepositions
+on
+in
+about
+upon
+within
+between
+under
+above
+after
+before
+
+*** Interjections
+o
+alas
+aha
+ay
+whoa
+hey
+damn

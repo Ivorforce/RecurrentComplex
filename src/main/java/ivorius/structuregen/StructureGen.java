@@ -199,7 +199,7 @@ public class StructureGen
         StructureSaveHandler.reloadAllCustomStructures();
         SGStructures.registerModStructures();
 
-        Poem.registerThemes(MODID, "love");
+        Poem.registerThemes(MODID, "love", "summer", "war", "winter");
     }
 
     @EventHandler

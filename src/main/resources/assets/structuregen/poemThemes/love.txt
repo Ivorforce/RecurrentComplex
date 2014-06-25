@@ -1,35 +1,175 @@
 *** Concrete Nouns
 heart
+face
 eye
+breeze
+wave
+cloud
+lover
+rose
+sky
+moon
+rainbow
+day
+gesture
+embrace
+kiss
+lock
+cheek
+grudge
+skin
+smile
+bed
+home
+hair
+hand
+letter
+poem
+text
+lips
 
 *** Abstract Nouns
 faith
 love
+hate
+fear
+feeling
+time
+size
+color
+desire
+death
+life
+meaning
+need
+rebirth
+transformation
+betrayal
+kindness
+affection
+appreciation
+emotion
+fondness
+passion
+yearning
+horror
+hatred
+hostility
+pain
+grief
 
 *** Present Transitive Verbs
 make
 see
+feel
+hear
+lead
+pull
+love
+fight
+find
+reveal
+give
+drive
+seek
 
 *** Past Transitive Verbs
 made
 saw
+felt
+heard
+lead
+pulled
+loved
+fought
+found
+revealed
+gave
+drove
+sought
 
 *** Present Intransitive Verbs
 run
 bleed
+glow
+live
+wave
+grow
+rise
+breathe
+endure
+die
+stumble
+fall
+err
+triumph
+gaze
+breathe
+wink
+grieve
+love
+like
+hate
 
 *** Adjectives
 giddy
 aching
+tender
+hot
+wild
+dark
+luminous
+stormy
+sunny
+clear
+blue
+red
+rough
+vigorous
+dead
+wild
+gentle
+nurturing
+painful
+pleasant
+pleasurable
+empty
+full
+sweet
 
 *** Adverbs
 gently
 barely
+hardly
+silently
+rapidly
+gamely
+cravenly
+needlessly
+devotedly
+wondrously
 
 *** Prepositions
 on
 in
+about
+upon
+within
+between
+under
+above
+after
+before
 
 *** Interjections
 hey
 ha
+alas
+oh
+lord
+damn
+god
+well
+please
+beware
+behold

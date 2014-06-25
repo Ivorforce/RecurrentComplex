@@ -6,7 +6,6 @@
 package ivorius.structuregen.ivtoolkit.maze;
 
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.nbt.NBTTagIntArray;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.util.WeightedRandom;
 import net.minecraftforge.common.util.Constants;
@@ -84,6 +83,27 @@ public class MazeComponent extends WeightedRandom.Item
     {
         this.exitPaths.clear();
         this.exitPaths.addAll(exitPaths);
+    }
+
+    public int[] getSize()
+    {
+        int[] size = new int[]{1, 1, 1};
+        for (MazeRoom room : rooms)
+        {
+            if (room.coordinates[0] >= size[0])
+            {
+                size[0] = room.coordinates[0] + 1;
+            }
+            else if (room.coordinates[1] >= size[1])
+            {
+                size[1] = room.coordinates[1] + 1;
+            }
+            else if (room.coordinates[2] >= size[2])
+            {
+                size[2] = room.coordinates[2] + 1;
+            }
+        }
+        return size;
     }
 
     public void writeToNBT(NBTTagCompound compound)

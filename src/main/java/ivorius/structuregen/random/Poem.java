@@ -73,7 +73,10 @@ public class Poem
             "<5>, <name>!",
             "<lownum> <10>",
             "<highnum> <10>",
-            "<hugenum> <10>"
+            "<hugenum> <10>",
+            "<lownum> <10> <5> <7>",
+            "<highnum> <10> <5> <7>",
+            "<hugenum> <10> <5> <7>"
     );
 
     public static final Map<String, Theme> themes = new HashMap<>();

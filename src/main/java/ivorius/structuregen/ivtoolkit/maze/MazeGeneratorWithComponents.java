@@ -51,7 +51,6 @@ public class MazeGeneratorWithComponents
 
         while (!positionStack.empty())
         {
-            maze.logMaze2D(StructureGen.logger, 0, 2, new MazeCoordinateDirect(0, 1, 0));
             MazeRoom position = positionStack.pop();
             validComponents.clear();
 

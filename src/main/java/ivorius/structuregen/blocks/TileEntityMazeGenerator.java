@@ -147,6 +147,7 @@ public class TileEntityMazeGenerator extends TileEntity implements GeneratingTil
         for (MazeComponent comp : mazeComponents)
         {
             StructureInfo info = StructureHandler.getStructure(comp.getIdentifier());
+            int[] compSize = comp.getSize();
 
             for (int rotations = 0; rotations < (info.isRotatable() ? 4 : 1); rotations++)
             {
@@ -159,7 +160,7 @@ public class TileEntityMazeGenerator extends TileEntity implements GeneratingTil
                     for (MazeRoom room : comp.getRooms())
                     {
                         int[] roomPosition = room.coordinates;
-                        BlockCoord transformedRoom = componentTransform.apply(new BlockCoord(roomPosition[0], roomPosition[1], roomPosition[2]), new int[3]);
+                        BlockCoord transformedRoom = componentTransform.apply(new BlockCoord(roomPosition[0], roomPosition[1], roomPosition[2]), compSize);
                         transformedRooms.add(new MazeRoom(transformedRoom.x, transformedRoom.y, transformedRoom.z));
                     }
 
@@ -168,8 +169,8 @@ public class TileEntityMazeGenerator extends TileEntity implements GeneratingTil
                     {
                         int[] sourceCoords = exit.getSourceRoom().coordinates;
                         int[] destCoords = exit.getDestinationRoom().coordinates;
-                        BlockCoord transformedSource = componentTransform.apply(new BlockCoord(sourceCoords[0], sourceCoords[1], sourceCoords[2]), new int[3]);
-                        BlockCoord transformedDest = componentTransform.apply(new BlockCoord(destCoords[0], destCoords[1], destCoords[2]), new int[3]);
+                        BlockCoord transformedSource = componentTransform.apply(new BlockCoord(sourceCoords[0], sourceCoords[1], sourceCoords[2]), compSize);
+                        BlockCoord transformedDest = componentTransform.apply(new BlockCoord(destCoords[0], destCoords[1], destCoords[2]), compSize);
 
                         transformedExits.add(MazePath.pathFromSourceAndDest(new MazeRoom(transformedSource.x, transformedSource.y, transformedSource.z), new MazeRoom(transformedDest.x, transformedDest.y, transformedDest.z)));
                     }

@@ -104,7 +104,8 @@ public class BlockTransformerNatural implements BlockTransformer
 
     private boolean hasBlockAbove(World world, int x, int y, int z, Block blockType)
     {
-        for (; y < world.getHeight(); y++)
+        int origY = y;
+        for (; y < world.getHeight() && y < origY + 30; y++)
         {
             if (world.getBlock(x, y, z) == blockType)
                 return true;

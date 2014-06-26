@@ -29,7 +29,7 @@ public class Poem
             "Why do the <10> <3> <2> so <7>?",
             "They <3> to <3>.",
             "Is <2> really <6> like <2>",
-            "Could you <4> it so <7>?",
+            "Could you <3> it so <7>?",
             "The <2> of <lownum> <10>",
             "We <3> to <4>.",
             "When <1> <4>,",

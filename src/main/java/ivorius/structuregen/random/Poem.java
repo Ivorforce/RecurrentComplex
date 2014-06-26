@@ -76,6 +76,9 @@ public class Poem
             "<name r>! Oh, <name r>!",
             "<name>! It is you!",
             "<5>, <name>!",
+            "We <4> the <place> before we <4> <2>.",
+            "<3> the <place> <8> you, <name>!",
+            "<9>, how the <place> <7> <5>s",
             "<lownum> <10>",
             "<highnum> <10>",
             "<hugenum> <10>",
@@ -115,14 +118,17 @@ public class Poem
 
     public static Poem randomPoem(Random random, Theme theme)
     {
-        List<String> names = new ArrayList<>();
-        do
+        PoemContext poemContext = new PoemContext();
+        while (poemContext.add(random, poemContext.names, 0.3f, Person.randomHuman(random, random.nextBoolean()).getFirstName()))
         {
-            names.add(Person.randomHuman(random, random.nextBoolean()).getFirstName());
+            ;
         }
-        while (random.nextFloat() < 0.3f);
+        while (poemContext.add(random, poemContext.places, 0.3f, Place.randomPlace(random).getFullPlaceType()))
+        {
+            ;
+        }
 
-        String title = getRandomPhrase(random, theme, sentencePatterns, names).trim();
+        String title = getRandomPhrase(random, theme, sentencePatterns, poemContext).trim();
         char titleLastChar = title.charAt(title.length() - 1);
         if (titleLastChar == '.' || titleLastChar == ',' || titleLastChar == ';')
         {
@@ -137,7 +143,7 @@ public class Poem
             int lines = random.nextInt(10) + 1;
             for (int line = 0; line < lines; line++)
             {
-                String phrase = getRandomPhrase(random, theme, sentencePatterns, names);
+                String phrase = getRandomPhrase(random, theme, sentencePatterns, poemContext);
 
                 if (line == lines - 1)
                 {
@@ -157,12 +163,12 @@ public class Poem
         return new Poem(title, poem.toString());
     }
 
-    private static String getRandomPhrase(Random random, Theme theme, List<String> sentencePatterns, List<String> names)
+    private static String getRandomPhrase(Random random, Theme theme, List<String> sentencePatterns, PoemContext poemContext)
     {
-        return firstCharUppercase(replaceAllWords(random, getRandomElementFrom(sentencePatterns, random), theme, names));
+        return firstCharUppercase(replaceAllWords(random, getRandomElementFrom(sentencePatterns, random), theme, poemContext));
     }
 
-    private static String replaceAllWords(Random random, String text, Theme theme, List<String> names)
+    private static String replaceAllWords(Random random, String text, Theme theme, PoemContext poemContext)
     {
         StringBuilder builder = new StringBuilder(text);
 
@@ -176,7 +182,8 @@ public class Poem
         replaceAll(random, builder, "7", theme.adverbs);
         replaceAll(random, builder, "8", theme.prepositions);
         replaceAll(random, builder, "9", theme.interjections);
-        replaceAll(random, builder, "name", names);
+        replaceAll(random, builder, "name", poemContext.names);
+        replaceAll(random, builder, "place", poemContext.places);
         replaceAllWithNums(random, builder, "lownum", 2, 20, 1);
         replaceAllWithNums(random, builder, "highnum", 2, 20, 10);
         replaceAllWithNums(random, builder, "hugenum", 2, 1000, 100);
@@ -361,6 +368,19 @@ public class Poem
             {
                 list.add("MISSING");
             }
+        }
+    }
+
+    private static class PoemContext
+    {
+        public List<String> names = new ArrayList<>();
+        public List<String> places = new ArrayList<>();
+
+
+        public boolean add(Random random, List<String> list, float continueChance, String value)
+        {
+            list.add(value);
+            return random.nextFloat() < continueChance;
         }
     }
 }

@@ -80,7 +80,7 @@ public class Place
 
     public String getFullPlaceType()
     {
-        return placeTrait != null ? placeType + " " + placeTrait : placeType;
+        return placeTrait != null ? placeTrait + " " +  placeType: placeType;
     }
 
     public String getFullName()

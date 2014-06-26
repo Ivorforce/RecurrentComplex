@@ -55,7 +55,7 @@ public class GenerationYSelector
         this.maxY = maxY;
     }
 
-    public int generationY(World world, Random random, int x, int z)
+    public int generationY(World world, Random random, int x, int z, int[] structureSize)
     {
         int y = minY + random.nextInt(maxY - minY + 1);
 
@@ -64,49 +64,76 @@ public class GenerationYSelector
             case BEDROCK:
                 return y;
             case SURFACE:
-                int curY = world.getTopSolidOrLiquidBlock(x, z);
+            {
+                int genYC = surfaceHeight(world, x, z);
+                int genYPP = surfaceHeight(world, x + structureSize[0] / 2, z + structureSize[2] / 2);
+                int genYPM = surfaceHeight(world, x + structureSize[0] / 2, z - structureSize[2] / 2);
+                int genYMP = surfaceHeight(world, x - structureSize[0] / 2, z + structureSize[2] / 2);
+                int genYMM = surfaceHeight(world, x - structureSize[0] / 2, z - structureSize[2] / 2);
 
-                while (curY > 0)
-                {
-                    Block block = world.getBlock(x, curY, z);
-                    if (!(block.isFoliage(world, x, curY, z) || block.getMaterial() == Material.leaves || block.getMaterial() == Material.plants || block.getMaterial() == Material.wood))
-                    {
-                        break;
-                    }
-
-                    curY--;
-                }
-                while (curY < world.getHeight())
-                {
-                    if (!(world.getBlock(x, curY, z) instanceof BlockLiquid))
-                    {
-                        break;
-                    }
-
-                    curY++;
-                }
-                return curY + y;
+                return (genYC * 2 + genYPP + genYPM + genYMP + genYMM) / 6 + y;
+            }
             case SEALEVEL:
                 return 63 + y;
             case UNDERWATER:
-                int curYWater = world.getTopSolidOrLiquidBlock(x, z) + y;
+            {
+                int genYC = surfaceHeightUnderwater(world, x, z);
+                int genYPP = surfaceHeightUnderwater(world, x + structureSize[0] / 2, z + structureSize[2] / 2);
+                int genYPM = surfaceHeightUnderwater(world, x + structureSize[0] / 2, z - structureSize[2] / 2);
+                int genYMP = surfaceHeightUnderwater(world, x - structureSize[0] / 2, z + structureSize[2] / 2);
+                int genYMM = surfaceHeightUnderwater(world, x - structureSize[0] / 2, z - structureSize[2] / 2);
 
-                while (curYWater > 0)
-                {
-                    Block block = world.getBlock(x, curYWater, z);
-                    if (!(block instanceof BlockLiquid || block.getMaterial() == Material.ice))
-                    {
-                        curYWater ++;
-                        break;
-                    }
-
-                    curYWater--;
-                }
-                return curYWater + y;
+                return (genYC * 2 + genYPP + genYPM + genYMP + genYMM) / 6 + y;
+            }
             case TOP:
                 return world.getHeight() + y;
         }
 
         throw new RuntimeException("Unrecognized selection mode " + selectionMode);
+    }
+
+    private int surfaceHeightUnderwater(World world, int x, int z)
+    {
+        int curYWater = world.getTopSolidOrLiquidBlock(x, z);
+
+        while (curYWater > 0)
+        {
+            Block block = world.getBlock(x, curYWater, z);
+            if (!(block instanceof BlockLiquid || block.getMaterial() == Material.ice))
+            {
+                curYWater ++;
+                break;
+            }
+
+            curYWater--;
+        }
+        return curYWater;
+    }
+
+    private int surfaceHeight(World world, int x, int z)
+    {
+        int curY = world.getTopSolidOrLiquidBlock(x, z);
+
+        while (curY > 0)
+        {
+            Block block = world.getBlock(x, curY, z);
+            if (!(block.isFoliage(world, x, curY, z) || block.getMaterial() == Material.leaves || block.getMaterial() == Material.plants || block.getMaterial() == Material.wood))
+            {
+                break;
+            }
+
+            curY--;
+        }
+        while (curY < world.getHeight())
+        {
+            if (!(world.getBlock(x, curY, z) instanceof BlockLiquid))
+            {
+                break;
+            }
+
+            curY++;
+        }
+
+        return curY;
     }
 }

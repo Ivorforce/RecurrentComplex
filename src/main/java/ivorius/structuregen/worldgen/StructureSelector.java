@@ -43,9 +43,9 @@ public class StructureSelector
         switch (category)
         {
             case "decoration":
-                return 1.0f / 10.0f;
+                return 1.0f / 20.0f;
             case "adventure":
-                return 1.0f / 100.0f;
+                return 1.0f / 200.0f;
             case "rare":
                 return 1.0f / 1000.0f;
         }

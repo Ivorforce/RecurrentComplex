@@ -52,6 +52,8 @@ public class BlockTransformerNatural implements BlockTransformer
         List<int[]> nextList = new ArrayList<>();
         nextList.add(new int[]{x, z});
 
+        boolean useStoneBlock = hasBlockAbove(world, x, y, z, mainBlock);
+
         while (nextList.size() > 0 && currentY > 1)
         {
             List<int[]> cachedList = currentList;
@@ -68,11 +70,12 @@ public class BlockTransformerNatural implements BlockTransformer
                 boolean replaceable = currentY == y || curBlock.isReplaceable(world, currentX, currentY, currentZ);
                 if (replaceable)
                 {
-                    Block setBlock = hasBlockAbove(world, currentX, currentY, currentZ, mainBlock) ? mainBlock : (isTopBlock(world, currentX, currentY, currentZ) ? topBlock : fillerBlock);
+                    Block setBlock = useStoneBlock ? mainBlock : (isTopBlock(world, currentX, currentY, currentZ) ? topBlock : fillerBlock);
                     world.setBlock(currentX, currentY, currentZ, setBlock);
                 }
 
-                if (replaceable || curBlock == topBlock || curBlock == fillerBlock || curBlock == mainBlock)
+                // Uncommenting makes performance shit
+                if (replaceable/* || curBlock == topBlock || curBlock == fillerBlock || curBlock == mainBlock*/)
                 {
                     double yForDistance = y * 0.3 + currentY * 0.7;
                     double distToOrigSQ = IvVecMathHelper.distanceSQ(new double[]{x, y, z}, new double[]{currentX, yForDistance, currentZ});
@@ -105,7 +108,7 @@ public class BlockTransformerNatural implements BlockTransformer
     private boolean hasBlockAbove(World world, int x, int y, int z, Block blockType)
     {
         int origY = y;
-        for (; y < world.getHeight() && y < origY + 30; y++)
+        for (; y < world.getHeight() && y < origY + 60; y++)
         {
             if (world.getBlock(x, y, z) == blockType)
                 return true;

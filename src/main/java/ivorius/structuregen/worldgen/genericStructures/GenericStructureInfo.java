@@ -74,7 +74,7 @@ public class GenericStructureInfo implements StructureInfo, Cloneable
     @Override
     public int generationY(World world, Random random, int x, int z)
     {
-        return ySelector.generationY(world, random, x, z);
+        return ySelector.generationY(world, random, x, z, structureBoundingBox());
     }
 
     @Override

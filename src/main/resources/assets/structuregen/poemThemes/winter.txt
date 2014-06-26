@@ -9,7 +9,6 @@ smoke
 grass
 ice
 river
-tea
 fire
 angel
 hay
@@ -18,9 +17,6 @@ giant
 mountain
 blizzard
 storm
-stew
-soup
-bread
 
 *** Concrete Nouns Plural
 stones
@@ -34,8 +30,6 @@ giants
 mountains
 blizzards
 storms
-stews
-soups
 
 *** Abstract Nouns
 bitterness

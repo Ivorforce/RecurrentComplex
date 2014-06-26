@@ -62,7 +62,7 @@ public class GenerationYSelector
         switch (selectionMode)
         {
             case BEDROCK:
-                return y;
+                return Math.max(2, y);
             case SURFACE:
             {
                 int genYC = surfaceHeight(world, x, z);
@@ -71,10 +71,10 @@ public class GenerationYSelector
                 int genYMP = surfaceHeight(world, x - structureSize[0] / 2, z + structureSize[2] / 2);
                 int genYMM = surfaceHeight(world, x - structureSize[0] / 2, z - structureSize[2] / 2);
 
-                return (genYC * 2 + genYPP + genYPM + genYMP + genYMM) / 6 + y;
+                return Math.max(2, (genYC * 2 + genYPP + genYPM + genYMP + genYMM) / 6 + y);
             }
             case SEALEVEL:
-                return 63 + y;
+                return Math.max(2, 63 + y);
             case UNDERWATER:
             {
                 int genYC = surfaceHeightUnderwater(world, x, z);
@@ -83,10 +83,10 @@ public class GenerationYSelector
                 int genYMP = surfaceHeightUnderwater(world, x - structureSize[0] / 2, z + structureSize[2] / 2);
                 int genYMM = surfaceHeightUnderwater(world, x - structureSize[0] / 2, z - structureSize[2] / 2);
 
-                return (genYC * 2 + genYPP + genYPM + genYMP + genYMM) / 6 + y;
+                return Math.max(2, (genYC * 2 + genYPP + genYPM + genYMP + genYMM) / 6 + y);
             }
             case TOP:
-                return world.getHeight() + y;
+                return Math.max(2, world.getHeight() + y);
         }
 
         throw new RuntimeException("Unrecognized selection mode " + selectionMode);

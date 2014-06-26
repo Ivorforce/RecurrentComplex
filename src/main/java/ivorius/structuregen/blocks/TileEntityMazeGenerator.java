@@ -153,7 +153,7 @@ public class TileEntityMazeGenerator extends TileEntity implements GeneratingTil
             {
                 for (int mirrorInd = 0; mirrorInd < (info.isMirrorable() ? 2 : 1); mirrorInd++)
                 {
-                    String newID = comp.getIdentifier() + "_" + rotations + "_" + mirrorInd;
+                    String newID = comp.getIdentifier() + "_" + rotations + "_" + (mirrorInd == 1);
                     AxisAlignedTransform2D componentTransform = AxisAlignedTransform2D.transform(rotations, mirrorInd == 1);
 
                     List<MazeRoom> transformedRooms = new ArrayList<>();
@@ -200,7 +200,7 @@ public class TileEntityMazeGenerator extends TileEntity implements GeneratingTil
         {
             String identifier = position.getComponent().getIdentifier();
             int splitIndex0 = identifier.lastIndexOf("_");
-            boolean mirror = Integer.valueOf(identifier.substring(splitIndex0 + 1)) == 1;
+            boolean mirror = Boolean.valueOf(identifier.substring(splitIndex0 + 1));
             int splitIndex1 = identifier.lastIndexOf("_", splitIndex0 - 1);
             String structure = identifier.substring(0, splitIndex1);
             int rotations = Integer.valueOf(identifier.substring(splitIndex1 + 1, splitIndex0));

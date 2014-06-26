@@ -47,7 +47,7 @@ public class WorldGenStructures implements IWorldGenerator
         int[] size = info.structureBoundingBox();
         int genY = info.generationY(world, random, x, z);
 
-        AxisAlignedTransform2D transform = AxisAlignedTransform2D.transform(info.isMirrorable() ? world.rand.nextInt(4) : 0, info.isMirrorable() && random.nextBoolean());
+        AxisAlignedTransform2D transform = AxisAlignedTransform2D.transform(info.isRotatable() ? world.rand.nextInt(4) : 0, info.isMirrorable() && random.nextBoolean());
 
         int genX = x - size[0] / 2;
         int genZ = z - size[2] / 2;

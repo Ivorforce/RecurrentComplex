@@ -28,16 +28,15 @@ import net.minecraftforge.common.util.ForgeDirection;
  */
 public class AxisAlignedTransform2D
 {
-    public static final AxisAlignedTransform2D ORIGINAL = new AxisAlignedTransform2D(new int[][]{{1, 0}, {0, 1}});
+    public static final AxisAlignedTransform2D ORIGINAL = new AxisAlignedTransform2D(0, false);
 
-    /**
-     * [from][to]
-     */
-    private int[][] matrix;
+    private final int rotation;
+    private final boolean mirrorX;
 
-    protected AxisAlignedTransform2D(int[][] matrix)
+    public AxisAlignedTransform2D(int rotation, boolean mirrorX)
     {
-        this.matrix = matrix;
+        this.rotation = ((rotation % 4) + 4) % 4;
+        this.mirrorX = mirrorX;
     }
 
     public static AxisAlignedTransform2D transform(int rotationClockwise, boolean flipX)
@@ -50,75 +49,91 @@ public class AxisAlignedTransform2D
         return flipX ? original.rotateClockwise(rotationClockwise).flipX() : original.rotateClockwise(rotationClockwise);
     }
 
-    public int[][] getMatrix()
-    {
-        return matrix.clone();
-    }
-
     public AxisAlignedTransform2D rotateClockwise(int steps)
     {
-        AxisAlignedTransform2D transform2D = this;
-
-        for (int i = 0; i < steps % 4; i++)
-        {
-            transform2D = transform2D.rotateClockwise();
-        }
-        for (int i = 0; i < -(steps % 4); i++)
-        {
-            transform2D = transform2D.rotateCounterClockwise();
-        }
-
-        return transform2D;
+        return new AxisAlignedTransform2D(rotation + steps, mirrorX);
     }
 
     public AxisAlignedTransform2D rotateClockwise()
     {
-        return new AxisAlignedTransform2D(new int[][]{{this.matrix[0][1], -this.matrix[0][0]}, {this.matrix[1][1], -this.matrix[1][0]}});
+        return new AxisAlignedTransform2D(rotation + 1, mirrorX);
     }
 
     public AxisAlignedTransform2D rotateCounterClockwise(int steps)
     {
-        return rotateClockwise(-steps);
+        return new AxisAlignedTransform2D(rotation - steps, mirrorX);
     }
 
     public AxisAlignedTransform2D rotateCounterClockwise()
     {
-        return new AxisAlignedTransform2D(new int[][]{{-this.matrix[0][1], this.matrix[0][0]}, {-this.matrix[1][1], this.matrix[1][0]}});
+        return new AxisAlignedTransform2D(rotation - 1, mirrorX);
     }
 
     public AxisAlignedTransform2D flipX()
     {
-        return new AxisAlignedTransform2D(new int[][]{{-this.matrix[0][0], this.matrix[0][1]}, {-this.matrix[1][0], this.matrix[1][1]}});
+        return new AxisAlignedTransform2D(rotation, !mirrorX);
     }
 
     public AxisAlignedTransform2D flipZ()
     {
-        return new AxisAlignedTransform2D(new int[][]{{this.matrix[0][0], -this.matrix[0][1]}, {this.matrix[1][0], -this.matrix[1][1]}});
+        return new AxisAlignedTransform2D(rotation + 2, !mirrorX);
     }
 
     public BlockCoord apply(BlockCoord position, int[] size)
     {
-        int[] center = new int[]{size[0] / 2, size[1] / 2, size[2] / 2};
-        int[] shifted = new int[]{position.x - center[0], position.y - center[1], position.z - center[2]};
-        int[] transformed = new int[]{shifted[0] * matrix[0][0] + shifted[2] * matrix[1][0], shifted[1], shifted[0] * matrix[0][1] + shifted[2] * matrix[1][1]};
+        BlockCoord coord;
+        int positionX = mirrorX ? -position.x : position.x;
 
-        return new BlockCoord(transformed[0] + center[0], transformed[1] + center[1], transformed[2] + center[2]);
+        switch (rotation)
+        {
+            case 0:
+                coord = position;
+                break;
+            case 1:
+                coord = new BlockCoord(position.z, position.y, size[0] - 1 - positionX);
+                break;
+            case 2:
+                coord = new BlockCoord(size[0] - 1 - positionX, position.y, size[2] - 1 - position.z);
+                break;
+            case 3:
+                coord = new BlockCoord(size[2] - 1 - position.z, position.y, positionX);
+                break;
+            default:
+                throw new InternalError();
+        }
+
+        return coord;
     }
 
     public double[] apply(double[] position, int[] size)
     {
-        int[] center = new int[]{size[0] / 2, size[1] / 2, size[2] / 2};
-        double[] shifted = new double[]{position[0] - center[0], position[1] - center[1], position[2] - center[2]};
-        double[] transformed = new double[]{shifted[0] * matrix[0][0] + shifted[2] * matrix[1][0], shifted[1], shifted[0] * matrix[0][1] + shifted[2] * matrix[1][1]};
+        double[] coord;
+        double positionX = mirrorX ? -position[0] : position[0];
 
-        return new double[]{transformed[0] + center[0], transformed[1] + center[1], transformed[2] + center[2]};
+        switch (rotation)
+        {
+            case 0:
+                coord = position;
+                break;
+            case 1:
+                coord = new double[]{position[2], position[1], size[0] - 1 - positionX};
+                break;
+            case 2:
+                coord = new double[]{size[0] - 1 - positionX, position[1], size[2] - 1 - position[2]};
+                break;
+            case 3:
+                coord = new double[]{size[2] - 1 - position[2], position[1], positionX};
+                break;
+            default:
+                throw new InternalError();
+        }
+
+        return coord;
     }
 
     public void rotateBlock(World world, BlockCoord coord, Block block)
     {
-        int number = matrix[0][0] > 0 ? 0 : (matrix[0][0] < 0 ? 2 : (matrix[0][1] < 0 ? 3 : 1));
-
-        for (int i = 0; i < number; i++)
+        for (int i = 0; i < rotation; i++)
         {
             block.rotateBlock(world, coord.x, coord.y, coord.z, ForgeDirection.UP);
         }

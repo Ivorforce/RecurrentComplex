@@ -39,6 +39,7 @@ public class BiomeGenerationInfo
                 new BiomeGenerationInfo("Type:DESERT", null),
                 new BiomeGenerationInfo("Type:FROZEN", null),
                 new BiomeGenerationInfo("Type:FOREST,FROZEN", null),
+                new BiomeGenerationInfo("Type:PLAINS,DESERT", null),
                 new BiomeGenerationInfo("Type:JUNGLE", null));
     }
 

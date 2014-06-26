@@ -26,7 +26,7 @@ public class WorldGenStructures implements IWorldGenerator
     {
         if (world.getWorldInfo().isMapFeaturesEnabled())
         {
-            BiomeGenBase biomeGen = world.getBiomeGenForCoords(chunkX * 16 + 16, chunkZ * 16 + 16);
+            BiomeGenBase biomeGen = world.getBiomeGenForCoords(chunkX * 16, chunkZ * 16);
 
             StructureSelector structureSelector = StructureHandler.getStructureSelectorInBiome(biomeGen);
             List<StructureInfo> generated = structureSelector.generatedStructures(random, chunkX, chunkZ, world, chunkGenerator, chunkProvider);

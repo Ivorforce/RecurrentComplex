@@ -148,6 +148,13 @@ public class TileEntityMazeGenerator extends TileEntity implements GeneratingTil
         {
             StructureInfo info = StructureHandler.getStructure(comp.getIdentifier());
             int[] compSize = comp.getSize();
+            int roomVariations = (info.isRotatable() ? 4 : 1) * (info.isMirrorable() ? 2 : 1);
+
+            int splitCompWeight = 0;
+            if (comp.itemWeight > 0)
+            {
+                splitCompWeight = Math.max(1, comp.itemWeight / roomVariations);
+            }
 
             for (int rotations = 0; rotations < (info.isRotatable() ? 4 : 1); rotations++)
             {
@@ -175,7 +182,7 @@ public class TileEntityMazeGenerator extends TileEntity implements GeneratingTil
                         transformedExits.add(MazePath.pathFromSourceAndDest(new MazeRoom(transformedSource.x, transformedSource.y, transformedSource.z), new MazeRoom(transformedDest.x, transformedDest.y, transformedDest.z)));
                     }
 
-                    transformedComponents.add(new MazeComponent(comp.itemWeight, newID, transformedRooms, transformedExits));
+                    transformedComponents.add(new MazeComponent(splitCompWeight, newID, transformedRooms, transformedExits));
                 }
             }
         }

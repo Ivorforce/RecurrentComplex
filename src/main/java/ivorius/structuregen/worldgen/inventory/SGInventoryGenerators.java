@@ -15,8 +15,10 @@ public class SGInventoryGenerators
 {
     public static void registerModInventoryGenerators()
     {
-        InventoryGenerationHandler.registerInventoryHandlers(StructureGen.MODID, "AbandonedChest", "PirateChest", "PeacefulCrypt");
-        InventoryGenerationHandler.registerInventoryHandlers(StructureGen.MODID, "AirShrine", "EarthShrine", "FireShrine", "UnderwaterShrine");
+        InventoryGenerationHandler.registerInventoryHandlers(StructureGen.MODID, "AbandonedChest", "PirateChest", "PeacefulCrypt",
+                "AirShrine", "EarthShrine", "FireShrine", "UnderwaterShrine",
+                "ForestChest"
+        );
     }
 
     public static void registerVanillaInventoryGenerators()

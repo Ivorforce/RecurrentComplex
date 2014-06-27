@@ -15,14 +15,14 @@ import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 import cpw.mods.fml.common.event.FMLServerStartingEvent;
 import cpw.mods.fml.common.network.NetworkRegistry;
 import cpw.mods.fml.common.registry.GameRegistry;
+import ivorius.ivtoolkit.network.ChannelHandlerExtendedEntityPropertiesData;
+import ivorius.ivtoolkit.network.ChannelHandlerGuiAction;
 import ivorius.structuregen.blocks.*;
 import ivorius.structuregen.commands.*;
 import ivorius.structuregen.events.SGFMLEventHandler;
 import ivorius.structuregen.events.SGForgeEventHandler;
 import ivorius.structuregen.gui.SGGuiHandler;
 import ivorius.structuregen.items.*;
-import ivorius.ivtoolkit.network.ChannelHandlerExtendedEntityPropertiesData;
-import ivorius.ivtoolkit.network.ChannelHandlerGuiAction;
 import ivorius.structuregen.network.ChannelHandlerEditInventoryGenerator;
 import ivorius.structuregen.network.ChannelHandlerEditMazeBlock;
 import ivorius.structuregen.network.ChannelHandlerEditStructure;
@@ -39,6 +39,7 @@ import net.minecraft.block.material.Material;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemBlock;
+import net.minecraftforge.common.config.Configuration;
 import org.apache.logging.log4j.Logger;
 
 @Mod(modid = StructureGen.MODID, version = StructureGen.VERSION)
@@ -96,16 +97,18 @@ public class StructureGen
 
     public static Material materialNegativeSpace;
 
+    public static boolean generateDefaultStructures;
+
     @EventHandler
     public void preInit(FMLPreInitializationEvent event)
     {
         logger = event.getModLog();
 
-//        Configuration config = new Configuration(event.getSuggestedConfigurationFile());
-//
-//        config.load();
-//
-//        config.save();
+        Configuration config = new Configuration(event.getSuggestedConfigurationFile());
+
+        config.load();
+        generateDefaultStructures = config.getBoolean("generateDefaultStructures", "General", true, "Generate the default mod set of structures?");
+        config.save();
 
         forgeEventHandler = new SGForgeEventHandler();
         forgeEventHandler.register();
@@ -197,7 +200,8 @@ public class StructureGen
         SGInventoryGenerators.registerModInventoryGenerators();
 
         StructureSaveHandler.reloadAllCustomStructures();
-        SGStructures.registerModStructures();
+
+        SGStructures.generateDefaultStructures(generateDefaultStructures);
 
         Poem.registerThemes(MODID, "love", "summer", "war", "winter");
     }

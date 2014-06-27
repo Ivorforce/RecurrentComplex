@@ -60,6 +60,9 @@ public class Poem
             "Why did the <1> <3> it, to <3> the <2>?",
             "<2>, <2>, and ever <2>.",
             "Where was the <6> <2> then?",
+            "<2> like <highnum> <10>",
+            "Where did our <2> go? When did lose the <2>?",
+            "<10>, <10>, <10> - Those are our true <2>.",
             "<8> or <8>, how <2> <5>s on.",
             "<5> <7> like a <6> <1> <8> <2>.",
             "Where is the <6> <1>, the <6> <2> now?",
@@ -184,9 +187,9 @@ public class Poem
         replaceAll(random, builder, "9", theme.interjections);
         replaceAll(random, builder, "name", poemContext.names);
         replaceAll(random, builder, "place", poemContext.places);
-        replaceAllWithNums(random, builder, "lownum", 2, 20, 1);
-        replaceAllWithNums(random, builder, "highnum", 2, 20, 10);
-        replaceAllWithNums(random, builder, "hugenum", 2, 1000, 100);
+        replaceAllWithNums(random, builder, "lownum", 2, 10, 1);
+        replaceAllWithNums(random, builder, "highnum", 2, 10, 10);
+        replaceAllWithNums(random, builder, "hugenum", 1, 10, 1000);
 
         return builder.toString();
     }

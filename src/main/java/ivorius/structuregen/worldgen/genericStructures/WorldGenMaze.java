@@ -45,7 +45,7 @@ public class WorldGenMaze
             if (compStructureInfo != null)
             {
                 int[] compSize = compStructureInfo.structureBoundingBox();
-                int[] sizeDependentShift = new int[]{(roomSize[0] - compSize[0]) / 2};
+                int[] sizeDependentShift = new int[]{(roomSize[0] - compSize[0]) / 2, (roomSize[1] - compSize[1]) / 2, (roomSize[2] - compSize[2]) / 2};
 
                 BlockCoord compMazeCoordLower = coord.add(scaledCompMazePosition[0] + sizeDependentShift[0], scaledCompMazePosition[1] + sizeDependentShift[1], scaledCompMazePosition[2] +  + sizeDependentShift[2]);
 

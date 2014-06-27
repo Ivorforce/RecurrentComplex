@@ -214,16 +214,19 @@ public class TileEntityMazeGenerator extends TileEntity implements GeneratingTil
 
             MazeRoom mazePosition = position.getPositionInMaze();
 //            int[] size = maze.getRoomSize(mazePosition, pathLengths, roomSize);
-            int[] scaledMazePosition = maze.getRoomPosition(mazePosition, pathLengths, roomSize);
+            int[] scaledCompMazePosition = maze.getRoomPosition(mazePosition, pathLengths, roomSize);
 
             AxisAlignedTransform2D componentTransform = AxisAlignedTransform2D.transform(rotations, mirror);
-            BlockCoord mazeCoordLower = startCoord.add(scaledMazePosition[0], scaledMazePosition[1], scaledMazePosition[2]);
+            StructureInfo compStructureInfo = StructureHandler.getStructure(structure);
 
-            StructureInfo structureInfo = StructureHandler.getStructure(structure);
-
-            if (structureInfo != null)
+            if (compStructureInfo != null)
             {
-                structureInfo.generate(world, random, mazeCoordLower, componentTransform, layer + 1);
+                int[] compSize = compStructureInfo.structureBoundingBox();
+                int[] sizeDependentShift = new int[]{(roomSize[0] - compSize[0]) / 2};
+
+                BlockCoord compMazeCoordLower = startCoord.add(scaledCompMazePosition[0] + sizeDependentShift[0], scaledCompMazePosition[1] + sizeDependentShift[1], scaledCompMazePosition[2] +  + sizeDependentShift[2]);
+
+                compStructureInfo.generate(world, random, compMazeCoordLower, componentTransform, layer + 1);
             }
             else
             {

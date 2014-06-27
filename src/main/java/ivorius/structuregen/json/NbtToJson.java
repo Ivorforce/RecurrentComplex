@@ -6,9 +6,9 @@
 package ivorius.structuregen.json;
 
 import com.google.gson.*;
-import com.sun.org.apache.xerces.internal.impl.dv.util.Base64;
 import net.minecraft.nbt.*;
 
+import javax.xml.bind.DatatypeConverter;
 import java.io.IOException;
 
 /**
@@ -136,7 +136,7 @@ public class NbtToJson
 
     public static NBTTagCompound getNBTFromBase64(String elementString)
     {
-        byte[] nbtBytes = Base64.decode(elementString);
+        byte[] nbtBytes = DatatypeConverter.parseBase64Binary(elementString);
 
         try
         {
@@ -157,7 +157,7 @@ public class NbtToJson
         try
         {
             worldDataByteArray = CompressedStreamTools.compress(compound);
-            return Base64.encode(worldDataByteArray);
+            return DatatypeConverter.printBase64Binary(worldDataByteArray);
         }
         catch (IOException e)
         {

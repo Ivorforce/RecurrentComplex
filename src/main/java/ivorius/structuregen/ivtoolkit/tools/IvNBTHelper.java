@@ -265,4 +265,9 @@ public class IvNBTHelper
         }
     }
 
+    public static int[] readIntArrayFixedSize(String id, int length, NBTTagCompound compound)
+    {
+        int[] array = compound.getIntArray(id);
+        return array.length != length ? new int[length] : array;
+    }
 }

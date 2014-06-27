@@ -10,6 +10,7 @@ import ivorius.structuregen.ivtoolkit.blocks.BlockCoord;
 import ivorius.structuregen.ivtoolkit.math.AxisAlignedTransform2D;
 import ivorius.structuregen.ivtoolkit.maze.*;
 import ivorius.structuregen.ivtoolkit.tools.IvCollections;
+import ivorius.structuregen.ivtoolkit.tools.IvNBTHelper;
 import ivorius.structuregen.worldgen.StructureHandler;
 import ivorius.structuregen.worldgen.StructureInfo;
 import net.minecraft.nbt.NBTTagCompound;
@@ -102,8 +103,8 @@ public class TileEntityMazeGenerator extends TileEntity implements GeneratingTil
 
         structureShift = BlockCoord.readCoordFromNBT("structureShift", nbtTagCompound);
 
-        roomSize = nbtTagCompound.getIntArray("roomSize");
-        roomNumbers = nbtTagCompound.getIntArray("roomNumbers");
+        roomSize = IvNBTHelper.readIntArrayFixedSize("roomSize", 3, nbtTagCompound);
+        roomNumbers = IvNBTHelper.readIntArrayFixedSize("roomNumbers", 3, nbtTagCompound);
     }
 
     @Override

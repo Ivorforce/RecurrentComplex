@@ -251,7 +251,7 @@ public class IvTileEntityMultiBlock extends TileEntity
 
         if (par1nbtTagCompound.hasKey("parentCoords"))
         {
-            this.parentCoords = par1nbtTagCompound.getIntArray("parentCoords");
+            this.parentCoords = IvNBTHelper.readIntArrayFixedSize("parentCoords", 3, par1nbtTagCompound);
         }
         else
         {

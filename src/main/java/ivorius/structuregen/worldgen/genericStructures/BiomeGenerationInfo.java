@@ -6,7 +6,7 @@
 package ivorius.structuregen.worldgen.genericStructures;
 
 import com.google.gson.*;
-import ivorius.structuregen.ivtoolkit.tools.IvGsonHelper;
+import ivorius.ivtoolkit.tools.IvGsonHelper;
 import net.minecraft.util.JsonUtils;
 import net.minecraftforge.common.BiomeDictionary;
 

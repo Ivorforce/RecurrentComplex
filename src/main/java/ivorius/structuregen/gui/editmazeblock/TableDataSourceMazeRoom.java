@@ -6,7 +6,7 @@
 package ivorius.structuregen.gui.editmazeblock;
 
 import ivorius.structuregen.gui.table.*;
-import ivorius.structuregen.ivtoolkit.maze.MazeRoom;
+import ivorius.ivtoolkit.maze.MazeRoom;
 
 /**
  * Created by lukas on 22.06.14.

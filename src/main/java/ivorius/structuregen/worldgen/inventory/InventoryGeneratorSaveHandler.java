@@ -6,7 +6,7 @@
 package ivorius.structuregen.worldgen.inventory;
 
 import ivorius.structuregen.StructureGen;
-import ivorius.structuregen.ivtoolkit.tools.IvFileHelper;
+import ivorius.ivtoolkit.tools.IvFileHelper;
 import net.minecraft.util.ResourceLocation;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;

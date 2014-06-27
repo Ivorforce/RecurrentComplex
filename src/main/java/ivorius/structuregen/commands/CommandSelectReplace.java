@@ -6,8 +6,8 @@
 package ivorius.structuregen.commands;
 
 import ivorius.structuregen.entities.StructureEntityInfo;
-import ivorius.structuregen.ivtoolkit.blocks.BlockArea;
-import ivorius.structuregen.ivtoolkit.blocks.BlockCoord;
+import ivorius.ivtoolkit.blocks.BlockArea;
+import ivorius.ivtoolkit.blocks.BlockCoord;
 import net.minecraft.block.Block;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.command.WrongUsageException;

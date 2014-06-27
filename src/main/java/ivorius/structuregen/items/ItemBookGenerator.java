@@ -5,7 +5,6 @@
 
 package ivorius.structuregen.items;
 
-import ivorius.structuregen.ivtoolkit.tools.IvStringHelper;
 import ivorius.structuregen.random.Person;
 import ivorius.structuregen.random.Poem;
 import net.minecraft.entity.player.EntityPlayer;
@@ -21,7 +20,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 import java.util.Scanner;
-import java.util.regex.Pattern;
 
 /**
  * Created by lukas on 18.06.14.

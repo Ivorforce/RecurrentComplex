@@ -6,9 +6,9 @@
 package ivorius.structuregen.gui.editmazeblock;
 
 import ivorius.structuregen.gui.table.*;
-import ivorius.structuregen.ivtoolkit.maze.MazeComponent;
-import ivorius.structuregen.ivtoolkit.maze.MazePath;
-import ivorius.structuregen.ivtoolkit.maze.MazeRoom;
+import ivorius.ivtoolkit.maze.MazeComponent;
+import ivorius.ivtoolkit.maze.MazePath;
+import ivorius.ivtoolkit.maze.MazeRoom;
 
 import java.util.Arrays;
 import java.util.Collections;

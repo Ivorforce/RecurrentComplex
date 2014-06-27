@@ -7,8 +7,8 @@ package ivorius.structuregen.entities;
 
 import io.netty.buffer.ByteBuf;
 import ivorius.structuregen.StructureGen;
-import ivorius.structuregen.ivtoolkit.blocks.BlockCoord;
-import ivorius.structuregen.ivtoolkit.network.IExtendedEntityPropertiesUpdateData;
+import ivorius.ivtoolkit.blocks.BlockCoord;
+import ivorius.ivtoolkit.network.IExtendedEntityPropertiesUpdateData;
 import net.minecraft.entity.Entity;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.world.World;

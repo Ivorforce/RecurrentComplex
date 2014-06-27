@@ -7,7 +7,7 @@ package ivorius.structuregen.gui.editmazeblock;
 
 import ivorius.structuregen.blocks.TileEntityMazeGenerator;
 import ivorius.structuregen.gui.table.*;
-import ivorius.structuregen.ivtoolkit.blocks.BlockCoord;
+import ivorius.ivtoolkit.blocks.BlockCoord;
 
 /**
  * Created by lukas on 05.06.14.

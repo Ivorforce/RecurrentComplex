@@ -6,7 +6,7 @@
 package ivorius.structuregen.items;
 
 import ivorius.structuregen.entities.StructureEntityInfo;
-import ivorius.structuregen.ivtoolkit.blocks.BlockCoord;
+import ivorius.ivtoolkit.blocks.BlockCoord;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;

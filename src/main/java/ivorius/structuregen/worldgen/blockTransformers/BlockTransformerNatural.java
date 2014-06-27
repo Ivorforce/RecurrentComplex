@@ -5,8 +5,8 @@
 
 package ivorius.structuregen.worldgen.blockTransformers;
 
-import ivorius.structuregen.ivtoolkit.math.IvVecMathHelper;
-import ivorius.structuregen.ivtoolkit.tools.IvWorldData;
+import ivorius.ivtoolkit.math.IvVecMathHelper;
+import ivorius.ivtoolkit.tools.IvWorldData;
 import net.minecraft.block.Block;
 import net.minecraft.init.Blocks;
 import net.minecraft.world.World;

@@ -5,10 +5,8 @@
 
 package ivorius.structuregen.gui.editmazeblock;
 
-import ivorius.structuregen.blocks.TileEntityMazeGenerator;
 import ivorius.structuregen.gui.table.*;
-import ivorius.structuregen.ivtoolkit.maze.MazePath;
-import net.minecraftforge.common.util.ForgeDirection;
+import ivorius.ivtoolkit.maze.MazePath;
 
 import java.util.List;
 

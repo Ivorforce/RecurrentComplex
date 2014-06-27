@@ -5,8 +5,8 @@
 
 package ivorius.structuregen.worldgen;
 
-import ivorius.structuregen.ivtoolkit.math.AxisAlignedTransform2D;
-import ivorius.structuregen.ivtoolkit.blocks.BlockCoord;
+import ivorius.ivtoolkit.math.AxisAlignedTransform2D;
+import ivorius.ivtoolkit.blocks.BlockCoord;
 import ivorius.structuregen.worldgen.genericStructures.GenericStructureInfo;
 import net.minecraft.world.World;
 import net.minecraft.world.biome.BiomeGenBase;

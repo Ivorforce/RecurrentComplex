@@ -6,7 +6,7 @@
 package ivorius.structuregen;
 
 import cpw.mods.fml.common.event.FMLInterModComms;
-import ivorius.structuregen.ivtoolkit.tools.IvFMLIntercommHandler;
+import ivorius.ivtoolkit.tools.IvFMLIntercommHandler;
 import ivorius.structuregen.worldgen.StructureHandler;
 import ivorius.structuregen.worldgen.inventory.InventoryGenerationHandler;
 import org.apache.logging.log4j.Logger;

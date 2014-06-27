@@ -6,7 +6,7 @@
 package ivorius.structuregen.worldgen.genericStructures;
 
 import com.google.gson.annotations.SerializedName;
-import ivorius.structuregen.ivtoolkit.tools.IvGsonHelper;
+import ivorius.ivtoolkit.tools.IvGsonHelper;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockLiquid;
 import net.minecraft.block.material.Material;

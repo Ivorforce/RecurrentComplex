@@ -5,7 +5,7 @@
 
 package ivorius.structuregen.commands;
 
-import ivorius.structuregen.ivtoolkit.blocks.BlockCoord;
+import ivorius.ivtoolkit.blocks.BlockCoord;
 import ivorius.structuregen.worldgen.StructureHandler;
 import ivorius.structuregen.worldgen.StructureInfo;
 import net.minecraft.command.CommandBase;

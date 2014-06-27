@@ -7,7 +7,7 @@ package ivorius.structuregen.random;
 
 import com.google.common.io.LineReader;
 import ivorius.structuregen.StructureGen;
-import ivorius.structuregen.ivtoolkit.tools.IvFileHelper;
+import ivorius.ivtoolkit.tools.IvFileHelper;
 import net.minecraft.util.ResourceLocation;
 import org.apache.commons.io.IOUtils;
 

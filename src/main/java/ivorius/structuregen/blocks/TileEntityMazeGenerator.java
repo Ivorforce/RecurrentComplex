@@ -13,6 +13,7 @@ import ivorius.ivtoolkit.tools.IvCollections;
 import ivorius.ivtoolkit.tools.IvNBTHelper;
 import ivorius.structuregen.worldgen.StructureHandler;
 import ivorius.structuregen.worldgen.StructureInfo;
+import ivorius.structuregen.worldgen.genericStructures.WorldGenMaze;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.tileentity.TileEntity;
@@ -144,54 +145,9 @@ public class TileEntityMazeGenerator extends TileEntity implements GeneratingTil
     {
         world.setBlockToAir(xCoord, yCoord, zCoord);
 
-        List<MazeComponent> transformedComponents = new ArrayList<>();
-        for (MazeComponent comp : mazeComponents)
-        {
-            StructureInfo info = StructureHandler.getStructure(comp.getIdentifier());
-            int[] compSize = comp.getSize();
-            int roomVariations = (info.isRotatable() ? 4 : 1) * (info.isMirrorable() ? 2 : 1);
-
-            int splitCompWeight = 0;
-            if (comp.itemWeight > 0)
-            {
-                splitCompWeight = Math.max(1, comp.itemWeight / roomVariations);
-            }
-
-            for (int rotations = 0; rotations < (info.isRotatable() ? 4 : 1); rotations++)
-            {
-                for (int mirrorInd = 0; mirrorInd < (info.isMirrorable() ? 2 : 1); mirrorInd++)
-                {
-                    String newID = comp.getIdentifier() + "_" + rotations + "_" + (mirrorInd == 1);
-                    AxisAlignedTransform2D componentTransform = AxisAlignedTransform2D.transform(rotations, mirrorInd == 1);
-
-                    List<MazeRoom> transformedRooms = new ArrayList<>();
-                    for (MazeRoom room : comp.getRooms())
-                    {
-                        int[] roomPosition = room.coordinates;
-                        BlockCoord transformedRoom = componentTransform.apply(new BlockCoord(roomPosition[0], roomPosition[1], roomPosition[2]), compSize);
-                        transformedRooms.add(new MazeRoom(transformedRoom.x, transformedRoom.y, transformedRoom.z));
-                    }
-
-                    List<MazePath> transformedExits = new ArrayList<>();
-                    for (MazePath exit : comp.getExitPaths())
-                    {
-                        int[] sourceCoords = exit.getSourceRoom().coordinates;
-                        int[] destCoords = exit.getDestinationRoom().coordinates;
-                        BlockCoord transformedSource = componentTransform.apply(new BlockCoord(sourceCoords[0], sourceCoords[1], sourceCoords[2]), compSize);
-                        BlockCoord transformedDest = componentTransform.apply(new BlockCoord(destCoords[0], destCoords[1], destCoords[2]), compSize);
-
-                        transformedExits.add(MazePath.pathFromSourceAndDest(new MazeRoom(transformedSource.x, transformedSource.y, transformedSource.z), new MazeRoom(transformedDest.x, transformedDest.y, transformedDest.z)));
-                    }
-
-                    transformedComponents.add(new MazeComponent(splitCompWeight, newID, transformedRooms, transformedExits));
-                }
-            }
-        }
-
-        int[] pathLengths = new int[]{0, 0, 0};
+        BlockCoord startCoord = structureShift.add(xCoord, yCoord, zCoord);
 
         Maze maze = new Maze(roomNumbers[0] * 2 + 1, roomNumbers[1] * 2 + 1, roomNumbers[2] * 2 + 1);
-
         MazePath[] mazeExits = new MazePath[1 + this.mazeExits.size()];
         mazeExits[0] = MazeGenerator.randomPathInMaze(random, maze, 1, 1, 1);
         for (int i = 0; i < this.mazeExits.size(); i++)
@@ -199,77 +155,10 @@ public class TileEntityMazeGenerator extends TileEntity implements GeneratingTil
             mazeExits[i + 1] = this.mazeExits.get(i);
         }
 
+        List<MazeComponent> transformedComponents = WorldGenMaze.transformedComponents(mazeComponents);
         MazeGenerator.generateStartPathsForEnclosedMaze(maze, mazeExits);
-
         List<MazeComponentPosition> placedComponents = MazeGeneratorWithComponents.generatePaths(random, maze, transformedComponents);
-        BlockCoord startCoord = structureShift.add(xCoord, yCoord, zCoord);
 
-        for (MazeComponentPosition position : placedComponents)
-        {
-            String identifier = position.getComponent().getIdentifier();
-            int splitIndex0 = identifier.lastIndexOf("_");
-            boolean mirror = Boolean.valueOf(identifier.substring(splitIndex0 + 1));
-            int splitIndex1 = identifier.lastIndexOf("_", splitIndex0 - 1);
-            String structure = identifier.substring(0, splitIndex1);
-            int rotations = Integer.valueOf(identifier.substring(splitIndex1 + 1, splitIndex0));
-
-            MazeRoom mazePosition = position.getPositionInMaze();
-//            int[] size = maze.getRoomSize(mazePosition, pathLengths, roomSize);
-            int[] scaledCompMazePosition = maze.getRoomPosition(mazePosition, pathLengths, roomSize);
-
-            AxisAlignedTransform2D componentTransform = AxisAlignedTransform2D.transform(rotations, mirror);
-            StructureInfo compStructureInfo = StructureHandler.getStructure(structure);
-
-            if (compStructureInfo != null)
-            {
-                int[] compSize = compStructureInfo.structureBoundingBox();
-                int[] sizeDependentShift = new int[]{(roomSize[0] - compSize[0]) / 2};
-
-                BlockCoord compMazeCoordLower = startCoord.add(scaledCompMazePosition[0] + sizeDependentShift[0], scaledCompMazePosition[1] + sizeDependentShift[1], scaledCompMazePosition[2] +  + sizeDependentShift[2]);
-
-                compStructureInfo.generate(world, random, compMazeCoordLower, componentTransform, layer + 1);
-            }
-            else
-            {
-                StructureGen.logger.error("Could not find maze component structure '" + structure + "'");
-            }
-        }
-
-//        for (int i = 0; i < maze.blocks.length; i++)
-//        {
-//            byte blockType = maze.blocks[i];
-//
-//            int[] mazePosition = maze.getCoordPosition(i);
-//
-//            int[] size = maze.getRoomSize(mazePosition, pathLengths, roomSize);
-//
-//            if (size[0] > 0 && size[1] > 0 && size[2] > 0)
-//            {
-//                int[] scaledMazePosition = maze.getRoomPosition(mazePosition, pathLengths, roomSize);
-//
-//                BlockCoord mazeCoordLower = startCoord.add(scaledMazePosition[0], scaledMazePosition[1], scaledMazePosition[2]);
-//                BlockCoord mazeCoordHigher = mazeCoordLower.add(size[0] - 1, size[1] - 1, size[2] - 1);
-//
-//                for (BlockCoord worldCoord : new BlockArea(mazeCoordLower, mazeCoordHigher))
-//                {
-//                    if (blockType == Maze.WALL)
-//                    {
-//                        world.setBlock(worldCoord.x, worldCoord.y, worldCoord.z, Blocks.stone);
-//                    }
-//                    else if (blockType == Maze.ROOM)
-//                    {
-//                        world.setBlockToAir(worldCoord.x, worldCoord.y, worldCoord.z);
-//                    }
-//                    else if (blockType == Maze.NULL)
-//                    {
-//                        world.setBlock(worldCoord.x, worldCoord.y, worldCoord.z, SGBlocks.negativeSpace);
-//                    }
-//                    else if (blockType == Maze.INVALID)
-//                    {
-//                        world.setBlock(worldCoord.x, worldCoord.y, worldCoord.z, Blocks.glass);
-//                    }
-//                }
-//            }
-//        }
+        WorldGenMaze.generateMaze(world, random, startCoord, placedComponents, roomSize, layer);
     }
 }

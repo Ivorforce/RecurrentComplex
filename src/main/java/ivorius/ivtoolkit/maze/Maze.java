@@ -99,10 +99,10 @@ public class Maze
         return returnSize;
     }
 
-    public int[] getRoomPosition(MazeCoordinate coordinate, int[] pathLengths, int[] roomWidths)
+    public static int[] getRoomPosition(MazeCoordinate coordinate, int[] pathLengths, int[] roomWidths)
     {
         int[] mazePosition = coordinate.getMazeCoordinates();
-        int[] returnPos = new int[this.dimensions.length];
+        int[] returnPos = new int[pathLengths.length];
 
         for (int i = 0; i < returnPos.length; i++)
         {

@@ -204,8 +204,6 @@ public class TableDataSourceGenericStructure implements TableDataSource, TableEl
             IntegerRange range = ((IntegerRange) element.getPropertyValue());
             structureInfo.ySelector.minY = range.getMin();
             structureInfo.ySelector.maxY = range.getMax();
-
-            ((TableElementIntegerRange) element).setPropertyValue(new IntegerRange(structureInfo.ySelector.minY, structureInfo.ySelector.maxY));
         }
         else if ("rotatable".equals(element.getID()))
         {

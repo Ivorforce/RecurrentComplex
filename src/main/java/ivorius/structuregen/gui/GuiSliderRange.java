@@ -17,8 +17,10 @@ public class GuiSliderRange extends GuiSliderMultivalue
 
     public void setRange(FloatRange range)
     {
-        setValue(0, range.getMin());
-        setValue(1, range.getMax());
+        boolean firstLower = getValue(0) < getValue(1);
+
+        setValue(firstLower ? 0 : 1, range.getMin());
+        setValue(firstLower ? 1 : 0, range.getMax());
     }
 
     public FloatRange getRange()

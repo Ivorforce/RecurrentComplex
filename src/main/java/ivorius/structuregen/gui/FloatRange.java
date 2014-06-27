@@ -34,4 +34,13 @@ public class FloatRange
     {
         return max;
     }
+
+    @Override
+    public String toString()
+    {
+        return "FloatRange{" +
+                "min=" + min +
+                ", max=" + max +
+                '}';
+    }
 }

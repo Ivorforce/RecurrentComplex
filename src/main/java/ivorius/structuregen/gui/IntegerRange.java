@@ -36,4 +36,13 @@ public class IntegerRange
     {
         return max;
     }
+
+    @Override
+    public String toString()
+    {
+        return "IntegerRange{" +
+                "min=" + min +
+                ", max=" + max +
+                '}';
+    }
 }

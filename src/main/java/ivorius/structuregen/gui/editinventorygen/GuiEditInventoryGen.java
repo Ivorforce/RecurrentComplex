@@ -174,7 +174,7 @@ public class GuiEditInventoryGen extends GuiContainer implements InventoryWatche
 
     private void updateGenAmountSliders()
     {
-        itemNumberRangeSlider.setRange(new FloatRange(inventoryGenerator.maxItems, inventoryGenerator.minItems));
+        itemNumberRangeSlider.setRange(new FloatRange(inventoryGenerator.minItems, inventoryGenerator.maxItems));
         itemNumberRangeSlider.displayString = I18n.format("guiGenericInventory.minMaxItems", inventoryGenerator.minItems, inventoryGenerator.maxItems);
     }
 
@@ -340,8 +340,6 @@ public class GuiEditInventoryGen extends GuiContainer implements InventoryWatche
                 IntegerRange intRange = new IntegerRange(slider.getRange());
                 inventoryGenerator.minItems = intRange.getMin();
                 inventoryGenerator.maxItems = intRange.getMax();
-
-                slider.setRange(new FloatRange(inventoryGenerator.minItems, inventoryGenerator.maxItems));
 
                 updateGenAmountSliders();
             }

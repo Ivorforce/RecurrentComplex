@@ -69,6 +69,7 @@ public class Poem
             "What is <2> after all...",
             "They never <3> the <10> nor the <10>, with <2>.",
             "<5 r>, <name>! <5 r>!",
+            "No <1> is <6>, no <1> is <6>.",
             "Oh so <6>",
             "<name>",
             "<name> is <6>",

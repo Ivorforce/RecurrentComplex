@@ -21,6 +21,7 @@ daisy
 sun beam
 daffodil
 poem
+fortnight
 
 *** Concrete Nouns Plural
 trees
@@ -42,6 +43,7 @@ daisies
 sun beams
 daffodils
 poems
+fortnights
 
 *** Abstract Nouns
 love
@@ -68,6 +70,8 @@ uncertainty
 ice
 water
 expanse
+zephyr
+susurration
 
 *** Present Transitive Verbs
 see
@@ -170,11 +174,21 @@ buttery
 paired
 rejuvenated
 veiled
+peculiar
 obscured
 faded
 single
 unique
 scary
+volatile
+tenebrific
+splendiferous
+mirthful
+overclouded
+laureated
+daedal
+arcadian
+susurrant
 
 *** Adverbs
 swiftly
@@ -196,6 +210,9 @@ voraciously
 temporarily
 transparently
 softly
+ne'er
+never
+otherwhile
 
 *** Prepositions
 on
@@ -208,6 +225,7 @@ under
 above
 after
 before
+twixt
 
 *** Interjections
 hey
@@ -224,3 +242,4 @@ hello
 no
 yes
 maybe
+lo

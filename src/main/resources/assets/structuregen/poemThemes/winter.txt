@@ -17,6 +17,7 @@ giant
 mountain
 blizzard
 storm
+gravel
 
 *** Concrete Nouns Plural
 stones
@@ -42,6 +43,8 @@ beauty
 fear
 balance
 nature
+sagacity
+penumbra
 dawn
 dusk
 majesty
@@ -64,6 +67,8 @@ find
 hear
 call
 pick
+undulate
+hie
 
 *** Past Transitive Verbs
 saw
@@ -77,6 +82,8 @@ found
 heard
 called
 picked
+undulated
+hied
 
 *** Present Intransitive Verbs
 sit
@@ -91,6 +98,7 @@ watch
 think
 breathe
 endure
+purl
 
 *** Adjectives
 quick
@@ -99,12 +107,20 @@ slow
 pleasant
 relaxed
 snug
+halcyon
 soft
 warm
+salubrious
 cold
 serene
 bitter
 gritty
+soporific
+torpid
+brumous
+overclouded
+daeodal
+frory
 
 *** Adverbs
 swiftly
@@ -115,6 +131,8 @@ coldly
 rarely
 devotedly
 mindlessly
+ne'er
+never
 
 *** Prepositions
 on
@@ -127,6 +145,7 @@ under
 above
 after
 before
+twixt
 
 *** Interjections
 o
@@ -136,3 +155,4 @@ ay
 whoa
 hey
 damn
+lo

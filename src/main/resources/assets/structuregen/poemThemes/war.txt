@@ -10,6 +10,8 @@ horse
 catapult
 bullet
 shack
+rapscallion
+vulture
 field
 corpse
 king
@@ -20,6 +22,9 @@ arrow
 peasant
 fork
 spear
+bone
+wound
+swashbuckler
 
 *** Concrete Nouns Plural
 people
@@ -32,6 +37,8 @@ horses
 catapults
 bullets
 shacks
+rapscallions
+vultures
 fields
 corpses
 kings
@@ -42,6 +49,9 @@ arrows
 peasants
 forks
 spears
+bones
+wounds
+swashbucklers
 
 *** Abstract Nouns
 agony
@@ -56,6 +66,7 @@ extinction
 beauty
 fear
 balance
+machination
 nature
 dawn
 dusk
@@ -72,6 +83,9 @@ flesh
 prey
 heat
 rapture
+vertigo
+ribaldry
+psychosis
 
 *** Present Transitive Verbs
 kill
@@ -87,6 +101,12 @@ waste
 sneak
 terrify
 hunt
+usurp
+overtake
+gain
+lose
+capture
+rive
 
 *** Past Transitive Verbs
 killed
@@ -102,6 +122,12 @@ wasted
 terrified
 hunted
 radiated
+usurped
+overtook
+gained
+lost
+captured
+rived
 
 *** Present Intransitive Verbs
 run
@@ -112,6 +138,7 @@ hide
 exist
 wait
 feast
+abscond
 preen
 die
 cower
@@ -119,14 +146,12 @@ live
 fall
 fail
 win
-glow
-shimmer
-radiate
 rise
 fall
 alight
 swoop
 linger
+advesperate
 
 *** Adjectives
 quick
@@ -146,12 +171,17 @@ green
 monstrous
 beautiful
 majestic
-scaly
-extinct
+abominable
+aberrant
 pointy
 frightening
 inhuman
 sparkly
+fell
+acheronian
+sanguine
+madding
+wasteful
 
 *** Adverbs
 swiftly
@@ -166,6 +196,8 @@ heavily
 cunningly
 brightly
 ominously
+dissemblingly
+wailfully
 
 *** Prepositions
 on
@@ -178,6 +210,7 @@ under
 above
 after
 before
+twixt
 
 *** Interjections
 o
@@ -187,3 +220,4 @@ ay
 whoa
 hey
 damn
+lo

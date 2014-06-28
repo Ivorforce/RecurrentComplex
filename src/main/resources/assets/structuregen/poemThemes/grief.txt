@@ -1,99 +1,41 @@
 *** Concrete Nouns
 heart
-face
-eye
-breeze
-wave
-cloud
 lover
-rose
 sky
 moon
-rainbow
-day
-gesture
-embrace
 kiss
 lock
-cheek
-grudge
-skin
-smile
-bed
-home
-hair
-hand
-letter
-poem
-text
 lips
+miasma
 
 *** Concrete Nouns Plural
 hearts
-faces
-eyes
-breezes
-waves
-clouds
 lovers
-roses
 skies
-moons
-rainbows
-days
-gestures
-embraces
 kisses
 locks
-cheeks
-grudges
-smiles
-beds
-hands
-letters
-poems
-texts
 lips
 
 *** Abstract Nouns
-faith
-love
-hate
 fear
-feeling
-time
-size
-color
-beginning
-end
 desire
-euphoria
-lust
 death
 life
-meaning
 need
 rebirth
+essence
+humility
 transformation
 betrayal
 acatalepsy
-affinity
-kindness
-affection
-appreciation
-emotion
-fondness
-passion
 yearning
 horror
 hatred
+enigma
 hostility
 pain
 grief
-tryst
-serendipity
-mirth
-reverie
+taint
 
 *** Present Transitive Verbs
 make
@@ -101,17 +43,14 @@ see
 feel
 hear
 lead
+lacerate
 pull
 love
 fight
 find
-reveal
 give
 drive
 seek
-wed
-hie
-hate
 
 *** Past Transitive Verbs
 made
@@ -119,17 +58,14 @@ saw
 felt
 heard
 lead
+lacerated
 pulled
 loved
 fought
 found
-revealed
 gave
 drove
 sought
-wed
-hied
-hated
 
 *** Present Intransitive Verbs
 run
@@ -153,60 +89,46 @@ grieve
 love
 like
 hate
-suspire
 
 *** Adjectives
-giddy
 aching
-tender
-hot
 wild
 dark
 luminous
 stormy
 sunny
+odious
+otiose
 clear
-lambent
 blue
 red
-euphoric
 abyssopelagic
 rough
 vigorous
+incondite
+treacherous
+insidious
 dead
 wild
-halcyon
-iridescent
-gentle
-nurturing
 painful
-pleasant
-pleasurable
 empty
-full
-sweet
-suave
-sempiternal
-wanton
-perfervid
+disingenuous
+drear
+acheronian
 
 *** Adverbs
-gently
 barely
 hardly
 silently
 rapidly
-gamely
 cravenly
 needlessly
 devotedly
-wondrously
 mindlessly
-always
-forever
 ne'er
 never
-otherwhile
+dissemblingly
+wailfully
 
 *** Prepositions
 on
@@ -231,6 +153,7 @@ damn
 god
 well
 please
+no
 beware
 behold
 lo

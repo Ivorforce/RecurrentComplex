@@ -193,17 +193,17 @@ public class StructureGen
         StructureHandler.registerBlockTransformer("replace", BlockTransformerReplace.class, new BTProviderReplace());
         StructureHandler.registerBlockTransformer("negativeSpace", BlockTransformerNegativeSpace.class, new BTProviderNegativeSpace());
 
+        Poem.registerThemes(MODID, "love", "summer", "war", "winter", "grief");
+
         GameRegistry.registerWorldGenerator(new WorldGenStructures(), 100);
 
         InventoryGeneratorSaveHandler.reloadAllCustomInventoryGenerators();
         SGInventoryGenerators.registerVanillaInventoryGenerators();
         SGInventoryGenerators.registerModInventoryGenerators();
 
-        StructureSaveHandler.reloadAllCustomStructures();
-
         SGStructures.generateDefaultStructures(generateDefaultStructures);
 
-        Poem.registerThemes(MODID, "love", "summer", "war", "winter");
+        StructureSaveHandler.reloadAllCustomStructures();
     }
 
     @EventHandler

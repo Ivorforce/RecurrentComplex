@@ -197,19 +197,17 @@ public class StructureGen
 
         GameRegistry.registerWorldGenerator(new WorldGenStructures(), 100);
 
-        InventoryGeneratorSaveHandler.reloadAllCustomInventoryGenerators();
         SGInventoryGenerators.registerVanillaInventoryGenerators();
         SGInventoryGenerators.registerModInventoryGenerators();
 
         SGStructures.generateDefaultStructures(generateDefaultStructures);
-
-        StructureSaveHandler.reloadAllCustomStructures();
     }
 
     @EventHandler
     public void postInit(FMLPostInitializationEvent event)
     {
-
+        InventoryGeneratorSaveHandler.reloadAllCustomInventoryGenerators();
+        StructureSaveHandler.reloadAllCustomStructures();
     }
 
     @EventHandler

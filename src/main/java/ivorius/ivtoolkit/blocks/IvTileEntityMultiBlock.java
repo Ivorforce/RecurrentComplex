@@ -348,7 +348,7 @@ public class IvTileEntityMultiBlock extends TileEntity
 
     public Vec3 getRotatedVector(Vec3 vec3)
     {
-        return IvMultiBlockHelper.getRotatedVector(vec3, worldObj.getWorldVec3Pool(), getDirection());
+        return IvMultiBlockHelper.getRotatedVector(vec3, getDirection());
     }
 
     public int getDirection()

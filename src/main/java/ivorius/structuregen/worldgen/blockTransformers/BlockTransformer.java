@@ -18,9 +18,11 @@ public interface BlockTransformer
 {
     boolean matches(Block block, int metadata);
 
-    void apply(World world, Random random, int x, int y, int z, Block sourceBlock, int sourceMetadata, IvWorldData worldData);
+    void apply(World world, Random random, boolean beforeGeneration, int x, int y, int z, Block sourceBlock, int sourceMetadata, IvWorldData worldData);
 
     String displayString();
 
     boolean generatesBefore();
+
+    boolean generatesAfter();
 }

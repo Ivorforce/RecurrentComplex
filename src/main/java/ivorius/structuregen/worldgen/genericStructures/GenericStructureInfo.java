@@ -136,7 +136,7 @@ public class GenericStructureInfo implements StructureInfo, Cloneable
 
                         if (transformer.matches(block, meta))
                         {
-                            transformer.apply(world, random, worldCoord.x, worldCoord.y, worldCoord.z, block, meta, worldData);
+                            transformer.apply(world, random, true, worldCoord.x, worldCoord.y, worldCoord.z, block, meta, worldData);
                         }
                     }
                 }
@@ -189,7 +189,7 @@ public class GenericStructureInfo implements StructureInfo, Cloneable
         {
             for (BlockTransformer transformer : blockTransformers)
             {
-                if (!transformer.generatesBefore())
+                if (transformer.generatesAfter())
                 {
                     for (BlockCoord sourceCoord : blockCollection)
                     {
@@ -200,7 +200,7 @@ public class GenericStructureInfo implements StructureInfo, Cloneable
 
                         if (transformer.matches(block, meta))
                         {
-                            transformer.apply(world, random, worldCoord.x, worldCoord.y, worldCoord.z, block, meta, worldData);
+                            transformer.apply(world, random, false, worldCoord.x, worldCoord.y, worldCoord.z, block, meta, worldData);
                         }
                     }
                 }

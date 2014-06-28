@@ -41,7 +41,7 @@ public class BlockTransformerNaturalAir implements BlockTransformer
     }
 
     @Override
-    public void apply(World world, Random random, int x, int y, int z, Block sourceBlock, int sourceMetadata, IvWorldData worldData)
+    public void apply(World world, Random random, boolean beforeGeneration, int x, int y, int z, Block sourceBlock, int sourceMetadata, IvWorldData worldData)
     {
         BiomeGenBase biome = world.getBiomeGenForCoords(x, z);
         Block topBlock = biome.topBlock;
@@ -114,5 +114,11 @@ public class BlockTransformerNaturalAir implements BlockTransformer
     public boolean generatesBefore()
     {
         return true;
+    }
+
+    @Override
+    public boolean generatesAfter()
+    {
+        return false;
     }
 }

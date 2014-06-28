@@ -422,23 +422,23 @@ public class IvMultiBlockHelper implements Iterable<int[]>
         return null;
     }
 
-    public static Vec3 getRotatedVector(Vec3 vec3, Vec3Pool pool, int rotation)
+    public static Vec3 getRotatedVector(Vec3 vec3, int rotation)
     {
         if (rotation == 0)
         {
-            return pool.getVecFromPool(vec3.xCoord, vec3.yCoord, vec3.zCoord);
+            return Vec3.createVectorHelper(vec3.xCoord, vec3.yCoord, vec3.zCoord);
         }
         else if (rotation == 1)
         {
-            return pool.getVecFromPool(-vec3.zCoord, vec3.yCoord, vec3.xCoord);
+            return Vec3.createVectorHelper(-vec3.zCoord, vec3.yCoord, vec3.xCoord);
         }
         else if (rotation == 2)
         {
-            return pool.getVecFromPool(-vec3.xCoord, vec3.yCoord, -vec3.zCoord);
+            return Vec3.createVectorHelper(-vec3.xCoord, vec3.yCoord, -vec3.zCoord);
         }
         else if (rotation == 3)
         {
-            return pool.getVecFromPool(vec3.zCoord, vec3.yCoord, -vec3.xCoord);
+            return Vec3.createVectorHelper(vec3.zCoord, vec3.yCoord, -vec3.xCoord);
         }
 
         return null;

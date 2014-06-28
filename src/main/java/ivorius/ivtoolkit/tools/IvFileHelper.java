@@ -18,7 +18,6 @@
 
 package ivorius.ivtoolkit.tools;
 
-import ivorius.structuregen.StructureGen;
 import net.minecraft.util.ResourceLocation;
 
 import java.io.*;
@@ -154,7 +153,7 @@ public class IvFileHelper
         {
             if (!file.mkdir())
             {
-                StructureGen.logger.warn("Could not create " + file.getName() + " folder");
+                System.out.println("Could not create " + file.getName() + " folder");
             }
         }
 

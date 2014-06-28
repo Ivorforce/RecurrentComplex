@@ -28,7 +28,6 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.MathHelper;
 import net.minecraft.util.Vec3;
-import net.minecraft.util.Vec3Pool;
 import net.minecraft.world.World;
 import org.lwjgl.util.vector.Vector3f;
 

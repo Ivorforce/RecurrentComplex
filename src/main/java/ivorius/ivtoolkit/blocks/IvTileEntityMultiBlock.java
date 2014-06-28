@@ -19,8 +19,8 @@
 package ivorius.ivtoolkit.blocks;
 
 
-import ivorius.ivtoolkit.math.IvVecMathHelper;
 import ivorius.ivtoolkit.math.IvMathHelper;
+import ivorius.ivtoolkit.math.IvVecMathHelper;
 import ivorius.ivtoolkit.raytracing.IvRaytraceableAxisAlignedBox;
 import ivorius.ivtoolkit.tools.IvNBTHelper;
 import net.minecraft.nbt.NBTTagCompound;

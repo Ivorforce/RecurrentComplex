@@ -18,7 +18,6 @@
 
 package ivorius.ivtoolkit.maze;
 
-import ivorius.structuregen.StructureGen;
 import net.minecraft.util.WeightedRandom;
 
 import java.util.ArrayList;
@@ -69,7 +68,7 @@ public class MazeGeneratorWithComponents
 
             if (validComponents.size() == 0)
             {
-                StructureGen.logger.debug("Did not find fitting component for maze!");
+                System.out.println("Did not find fitting component for maze!");
 
                 continue;
             }

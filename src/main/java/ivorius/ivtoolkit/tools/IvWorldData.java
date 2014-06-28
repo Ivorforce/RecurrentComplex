@@ -21,6 +21,7 @@ package ivorius.ivtoolkit.tools;
 import ivorius.ivtoolkit.blocks.BlockArea;
 import ivorius.ivtoolkit.blocks.BlockCoord;
 import ivorius.ivtoolkit.blocks.IvBlockCollection;
+import ivorius.structuregen.StructureGen;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityList;
 import net.minecraft.entity.player.EntityPlayer;
@@ -39,6 +40,8 @@ import java.util.*;
  */
 public class IvWorldData
 {
+    public static final String ID_FIX_TAG_KEY = "SG_ID_FIX_TAG";
+
     public IvBlockCollection blockCollection;
     public List<TileEntity> tileEntities;
     public List<Entity> entities;
@@ -215,26 +218,34 @@ public class IvWorldData
 
         if (list != null)
         {
-            compound.setTag("SG_ID_FIX_TAG", list);
+            compound.setTag(ID_FIX_TAG_KEY, list);
         }
     }
 
     public static void addItemTag(int itemID, NBTTagList tagList, String tagDest)
     {
-        String stringID = Item.itemRegistry.getNameForObject(Item.getItemById(itemID));
+        Item item = Item.getItemById(itemID);
+        if (item != null)
+        {
+            String stringID = Item.itemRegistry.getNameForObject(item);
 
-        NBTTagCompound idCompound = new NBTTagCompound();
-        idCompound.setString("type", "item");
-        idCompound.setString("tagDest", tagDest);
-        idCompound.setString("itemID", stringID);
+            NBTTagCompound idCompound = new NBTTagCompound();
+            idCompound.setString("type", "item");
+            idCompound.setString("tagDest", tagDest);
+            idCompound.setString("itemID", stringID);
 
-        tagList.appendTag(idCompound);
+            tagList.appendTag(idCompound);
+        }
+        else
+        {
+            StructureGen.logger.warn("Failed to apply item tag for structure with ID '" + itemID + "'");
+        }
     }
 
     public static void recursivelyApplyIDFixTags(NBTTagCompound compound)
     {
         applyIDFixTags(compound);
-        compound.removeTag("SG_ID_FIX_TAG");
+        compound.removeTag(ID_FIX_TAG_KEY);
 
         for (Object key : compound.func_150296_c())
         {
@@ -274,9 +285,9 @@ public class IvWorldData
 
     public static void applyIDFixTags(NBTTagCompound compound)
     {
-        if (compound.hasKey("SG_ID_FIX_TAG"))
+        if (compound.hasKey(ID_FIX_TAG_KEY))
         {
-            NBTTagList list = compound.getTagList("SG_ID_FIX_TAG", Constants.NBT.TAG_COMPOUND);
+            NBTTagList list = compound.getTagList(ID_FIX_TAG_KEY, Constants.NBT.TAG_COMPOUND);
             for (int i = 0; i < list.tagCount(); i++)
             {
                 NBTTagCompound fixTag = list.getCompoundTagAt(i);
@@ -286,8 +297,16 @@ public class IvWorldData
                 {
                     String dest = fixTag.getString("tagDest");
                     String stringID = fixTag.getString("itemID");
-                    int itemID = Item.getIdFromItem((Item) Item.itemRegistry.getObject(stringID));
-                    compound.setInteger(dest, itemID);
+                    Item item = (Item) Item.itemRegistry.getObject(stringID);
+                    if (item != null)
+                    {
+                        int itemID = Item.getIdFromItem(item);
+                        compound.setInteger(dest, itemID);
+                    }
+                    else
+                    {
+                        StructureGen.logger.warn("Failed to fix item tag from structure with ID '" + stringID + "'");
+                    }
                 }
             }
         }

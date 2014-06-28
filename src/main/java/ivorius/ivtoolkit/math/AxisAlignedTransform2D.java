@@ -90,13 +90,13 @@ public class AxisAlignedTransform2D
                 coord = position;
                 break;
             case 1:
-                coord = new BlockCoord(position.z, position.y, size[0] - 1 - positionX);
+                coord = new BlockCoord(size[2] - 1 - position.z, position.y, positionX);
                 break;
             case 2:
                 coord = new BlockCoord(size[0] - 1 - positionX, position.y, size[2] - 1 - position.z);
                 break;
             case 3:
-                coord = new BlockCoord(size[2] - 1 - position.z, position.y, positionX);
+                coord = new BlockCoord(position.z, position.y, size[0] - 1 - positionX);
                 break;
             default:
                 throw new InternalError();
@@ -116,13 +116,13 @@ public class AxisAlignedTransform2D
                 coord = position;
                 break;
             case 1:
-                coord = new double[]{position[2], position[1], size[0] - 1 - positionX};
+                coord = new double[]{size[2] - 1 - position[2], position[1], positionX};
                 break;
             case 2:
                 coord = new double[]{size[0] - 1 - positionX, position[1], size[2] - 1 - position[2]};
                 break;
             case 3:
-                coord = new double[]{size[2] - 1 - position[2], position[1], positionX};
+                coord = new double[]{position[2], position[1], size[0] - 1 - positionX};
                 break;
             default:
                 throw new InternalError();

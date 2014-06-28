@@ -54,20 +54,13 @@ public class StructureHandler
     {
         if (info.areDependenciesResolved())
         {
-            if (allStructures.containsKey(name))
-            {
-                StructureGen.logger.warn("Structure '" + name + "' already registered!");
-            }
-            else
-            {
-                allStructures.put(name, info);
-                if (generates)
-                {
-                    generatingStructures.put(name, info);
-                    structureSelectorsInBiomes.clear();
-                }
+            StructureGen.logger.info(allStructures.containsKey(name) ? "Overwrote structure with structureTitle '" + name + "'" : "Registered structure with structureTitle '" + name + "'");
 
-                StructureGen.logger.info("Registered structure with structureTitle '" + name + "'");
+            allStructures.put(name, info);
+            if (generates)
+            {
+                generatingStructures.put(name, info);
+                structureSelectorsInBiomes.clear();
             }
         }
     }

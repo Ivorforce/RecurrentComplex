@@ -25,7 +25,7 @@ import ivorius.structuregen.worldgen.inventory.InventoryGenerationHandler;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityAccessor;
+import net.minecraft.entity.StructureGenEntityAccessor;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
@@ -212,7 +212,7 @@ public class GenericStructureInfo implements StructureInfo, Cloneable
         for (Entity entity : entities)
         {
             entity.resetEntityId();
-            EntityAccessor.resetEntityUUID(entity);
+            StructureGenEntityAccessor.resetEntityUUID(entity);
 
             double[] newEntityPos = transform.apply(new double[]{entity.posX, entity.posY, entity.posZ}, size);
             entity.setPosition(newEntityPos[0] + origin.x, newEntityPos[1] + origin.y, newEntityPos[2] + origin.z);

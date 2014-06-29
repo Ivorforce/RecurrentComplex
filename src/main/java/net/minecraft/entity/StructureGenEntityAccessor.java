@@ -5,7 +5,7 @@ import java.util.UUID;
 /**
  * Created by lukas on 05.06.14.
  */
-public class EntityAccessor
+public class StructureGenEntityAccessor
 {
     public static void resetEntityUUID(Entity entity)
     {

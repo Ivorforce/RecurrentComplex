@@ -1,14 +1,14 @@
 [
 {
-  "modid": "examplemod",
-  "name": "Example Mod",
-  "description": "Example placeholder mod.",
+  "modid": "structuregen",
+  "name": "StructureGen",
+  "description": "Adds structures to worldgen, handles exporting and importing structures, and provides build tools.",
   "version": "${version}",
   "mcversion": "${mcversion}",
   "url": "",
   "updateUrl": "",
-  "authorList": ["ExampleDude"],
-  "credits": "The Forge and FML guys, for making this example",
+  "authorList": ["Ivorius"],
+  "credits": "See structurecredits.txt for full default structure list credits.",
   "logoFile": "",
   "screenshots": [],
   "dependencies": []

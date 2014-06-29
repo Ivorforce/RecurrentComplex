@@ -25,7 +25,8 @@ public class SGStructures
                 "SmallWoodenCottage", "SmallWoodenCottage1", "SmallWoodenCottage2", "DesertHut",
                 "ShrineSmallAir", "ShrineSmallEarth", "ShrineSmallFire", "ShrineSmallWater",
                 "MysticalTree", "MysticalTree1", "MysticalTree2",
-                "StoneMaze", "ForestMaze"
+                "StoneMaze", "ForestMaze",
+                "DinosaurSkeleton"
         );
     }
 }

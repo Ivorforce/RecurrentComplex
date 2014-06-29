@@ -54,6 +54,16 @@ public class AxisAlignedTransform2D
         return new AxisAlignedTransform2D(rotation + steps, mirrorX);
     }
 
+    public int getRotation()
+    {
+        return rotation;
+    }
+
+    public boolean isMirrorX()
+    {
+        return mirrorX;
+    }
+
     public AxisAlignedTransform2D rotateClockwise()
     {
         return new AxisAlignedTransform2D(rotation + 1, mirrorX);
@@ -123,6 +133,32 @@ public class AxisAlignedTransform2D
                 break;
             case 3:
                 coord = new double[]{position[2], position[1], size[0] - 1 - positionX};
+                break;
+            default:
+                throw new InternalError();
+        }
+
+        return coord;
+    }
+
+    public int[] apply(int[] position, int[] size)
+    {
+        int[] coord;
+        int positionX = mirrorX ? -position[0] : position[0];
+
+        switch (rotation)
+        {
+            case 0:
+                coord = position.clone();
+                break;
+            case 1:
+                coord = new int[]{size[2] - 1 - position[2], position[1], positionX};
+                break;
+            case 2:
+                coord = new int[]{size[0] - 1 - positionX, position[1], size[2] - 1 - position[2]};
+                break;
+            case 3:
+                coord = new int[]{position[2], position[1], size[0] - 1 - positionX};
                 break;
             default:
                 throw new InternalError();

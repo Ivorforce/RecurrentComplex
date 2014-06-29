@@ -71,13 +71,13 @@ public class TableDataSourceStructureBlock implements TableDataSource, TableElem
         }
         else if (index == 4)
         {
-            TableElementList element = new TableElementList("rotation", "Rotation", "" + structureGenerator.getStructureRotation(), new Option("0", "0 Clockwise"), new Option("1", "1 Clockwise"), new Option("2", "2 Clockwise"), new Option("3", "3 Clockwise"), new Option("null", "Random"));
+            TableElementList element = new TableElementList("rotation", "Rotation", "" + structureGenerator.getStructureRotation(), new Option("0", "0 Clockwise"), new Option("1", "1 Clockwise"), new Option("2", "2 Clockwise"), new Option("3", "3 Clockwise"), new Option("null", "Random (if rotatable)"));
             element.addPropertyListener(this);
             return element;
         }
         else if (index == 5)
         {
-            TableElementList element = new TableElementList("mirror", "Mirror", "" + structureGenerator.getStructureMirror(), new Option("false", "false"), new Option("true", "true"), new Option("null", "Random"));
+            TableElementList element = new TableElementList("mirror", "Mirror", "" + structureGenerator.getStructureMirror(), new Option("false", "false"), new Option("true", "true"), new Option("null", "Random (if mirrorable)"));
             element.addPropertyListener(this);
             return element;
         }

@@ -27,7 +27,7 @@ public class SGStructures
                 "MysticalTree", "MysticalTree1", "MysticalTree2",
                 "StoneMaze", "ForestMaze",
                 "DinosaurSkeleton",
-                "SmallClockworkSite", "BigClockwordSite"
+                "SmallClockworkSite", "BigClockworkSite"
         );
     }
 }

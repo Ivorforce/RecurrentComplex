@@ -197,7 +197,7 @@ public class StructureGen
 
         Poem.registerThemes(MODID, "love", "summer", "war", "winter", "grief");
 
-        GameRegistry.registerWorldGenerator(new WorldGenStructures(), 100);
+        GameRegistry.registerWorldGenerator(new WorldGenStructures(), 50);
 
         SGInventoryGenerators.registerVanillaInventoryGenerators();
         SGInventoryGenerators.registerModInventoryGenerators();

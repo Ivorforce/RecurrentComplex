@@ -26,7 +26,8 @@ public class SGStructures
                 "ShrineSmallAir", "ShrineSmallEarth", "ShrineSmallFire", "ShrineSmallWater",
                 "MysticalTree", "MysticalTree1", "MysticalTree2",
                 "StoneMaze", "ForestMaze",
-                "DinosaurSkeleton"
+                "DinosaurSkeleton",
+                "SmallClockworkSite", "BigClockwordSite"
         );
     }
 }

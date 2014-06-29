@@ -92,7 +92,7 @@ public class AxisAlignedTransform2D
     public BlockCoord apply(BlockCoord position, int[] size)
     {
         BlockCoord coord;
-        int positionX = mirrorX ? -position.x : position.x;
+        int positionX = mirrorX ? size[0] - 1 - position.x : position.x;
 
         switch (rotation)
         {
@@ -118,7 +118,7 @@ public class AxisAlignedTransform2D
     public double[] apply(double[] position, int[] size)
     {
         double[] coord;
-        double positionX = mirrorX ? -position[0] : position[0];
+        double positionX = mirrorX ? size[0] - 1 - position[0] : position[0];
 
         switch (rotation)
         {
@@ -144,7 +144,7 @@ public class AxisAlignedTransform2D
     public int[] apply(int[] position, int[] size)
     {
         int[] coord;
-        int positionX = mirrorX ? -position[0] : position[0];
+        int positionX = mirrorX ? size[0] - 1 - position[0] : position[0];
 
         switch (rotation)
         {

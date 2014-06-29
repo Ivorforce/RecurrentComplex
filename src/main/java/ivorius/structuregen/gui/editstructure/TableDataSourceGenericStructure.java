@@ -105,7 +105,7 @@ public class TableDataSourceGenericStructure implements TableDataSource, TableEl
     @Override
     public boolean has(GuiTable table, int index)
     {
-        return index >= 0 && index < 8;
+        return index >= 0 && index < 9;
     }
 
     @Override
@@ -145,19 +145,25 @@ public class TableDataSourceGenericStructure implements TableDataSource, TableEl
         }
         else if (index == 5)
         {
+            TableElementBoolean element = new TableElementBoolean("mirrorable", "Mirrorable", structureInfo.mirrorable);
+            element.addPropertyListener(this);
+            return element;
+        }
+        else if (index == 6)
+        {
             TableElementString element = new TableElementString("dependencies", "Dependencies (A,B,...)", Strings.join(structureInfo.dependencies, ","));
             element.setValidityState(currentDependencyState());
             element.setShowsValidityState(true);
             element.addPropertyListener(this);
             return element;
         }
-        else if (index == 6)
+        else if (index == 7)
         {
             TableElementButton elementEditBiomes = new TableElementButton("editBiomes", "Biomes", new TableElementButton.Action("edit", "Edit"));
             elementEditBiomes.addListener(this);
             return elementEditBiomes;
         }
-        else if (index == 7)
+        else if (index == 8)
         {
             TableElementButton elementEditTransformers = new TableElementButton("editTransformers", "Transformers", new TableElementButton.Action("edit", "Edit"));
             elementEditTransformers.addListener(this);
@@ -208,6 +214,10 @@ public class TableDataSourceGenericStructure implements TableDataSource, TableEl
         else if ("rotatable".equals(element.getID()))
         {
             structureInfo.rotatable = (boolean) element.getPropertyValue();
+        }
+        else if ("mirrorable".equals(element.getID()))
+        {
+            structureInfo.mirrorable = (boolean) element.getPropertyValue();
         }
         else if ("dependencies".equals(element.getID()))
         {

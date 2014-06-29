@@ -7,6 +7,7 @@ package ivorius.structuregen.gui.table;
 
 import net.minecraft.client.gui.GuiButton;
 
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -16,12 +17,17 @@ public class TableElementList extends TableElementPropertyDefault<String>
 {
     private GuiButton button;
 
-    private List<Option> optionIDs;
+    private List<Option> options;
 
-    public TableElementList(String id, String title, String value, List<Option> optionIDs)
+    public TableElementList(String id, String title, String value, List<Option> options)
     {
         super(id, title, value);
-        this.optionIDs = optionIDs;
+        this.options = options;
+    }
+
+    public TableElementList(String id, String title, String value, Option... options)
+    {
+        this(id, title, value, Arrays.asList(options));
     }
 
     @Override
@@ -63,9 +69,9 @@ public class TableElementList extends TableElementPropertyDefault<String>
         super.buttonClicked(buttonID);
 
         int prevOptionIndex = currentOptionIndex();
-        int optionIndex = prevOptionIndex < 0 ? 0 : (prevOptionIndex + 1) % optionIDs.size();
+        int optionIndex = prevOptionIndex < 0 ? 0 : (prevOptionIndex + 1) % options.size();
 
-        setPropertyValue(optionIDs.get(optionIndex).id);
+        setPropertyValue(options.get(optionIndex).id);
 
         alertListenersOfChange();
     }
@@ -75,15 +81,15 @@ public class TableElementList extends TableElementPropertyDefault<String>
         if (button != null)
         {
             int index = currentOptionIndex();
-            button.displayString = index >= 0 ? optionIDs.get(index).title : getPropertyValue();
+            button.displayString = index >= 0 ? options.get(index).title : getPropertyValue();
         }
     }
 
     private int currentOptionIndex()
     {
-        for (int i = 0; i < optionIDs.size(); i++)
+        for (int i = 0; i < options.size(); i++)
         {
-            if (optionIDs.get(i).id.equals(getPropertyValue()))
+            if (options.get(i).id.equals(getPropertyValue()))
             {
                 return i;
             }

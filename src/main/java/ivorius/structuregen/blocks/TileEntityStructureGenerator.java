@@ -29,6 +29,8 @@ public class TileEntityStructureGenerator extends TileEntity implements Generati
 {
     private List<String> structureNames = new ArrayList<>();
     private BlockCoord structureShift = new BlockCoord(0, 0, 0);
+    private Integer structureRotation;
+    private Boolean structureMirror;
 
     public List<String> getStructureNames()
     {
@@ -50,6 +52,26 @@ public class TileEntityStructureGenerator extends TileEntity implements Generati
         this.structureShift = structureShift;
     }
 
+    public Integer getStructureRotation()
+    {
+        return structureRotation;
+    }
+
+    public void setStructureRotation(Integer structureRotation)
+    {
+        this.structureRotation = structureRotation;
+    }
+
+    public Boolean getStructureMirror()
+    {
+        return structureMirror;
+    }
+
+    public void setStructureMirror(Boolean structureMirror)
+    {
+        this.structureMirror = structureMirror;
+    }
+
     @Override
     public void readFromNBT(NBTTagCompound nbtTagCompound)
     {
@@ -63,6 +85,9 @@ public class TileEntityStructureGenerator extends TileEntity implements Generati
         IvCollections.setContentsOfList(structureNames, generatorsFromNBT(nbtTagCompound));
 
         structureShift = BlockCoord.readCoordFromNBT("structureShift", nbtTagCompound);
+
+        structureRotation = nbtTagCompound.hasKey("structureRotation") ? nbtTagCompound.getInteger("structureRotation") : null;
+        structureMirror = nbtTagCompound.hasKey("structureMirror") ? nbtTagCompound.getBoolean("structureMirror") : null;
     }
 
     @Override
@@ -83,6 +108,16 @@ public class TileEntityStructureGenerator extends TileEntity implements Generati
         nbtTagCompound.setTag("structures", structureNBTList);
 
         BlockCoord.writeCoordToNBT("structureShift", structureShift, nbtTagCompound);
+
+        if (structureRotation != null)
+        {
+            nbtTagCompound.setInteger("structureRotation", structureRotation);
+        }
+
+        if (structureMirror != null)
+        {
+            nbtTagCompound.setBoolean("structureMirror", structureMirror);
+        }
     }
 
     @Override
@@ -97,7 +132,11 @@ public class TileEntityStructureGenerator extends TileEntity implements Generati
 
             if (structureInfo != null)
             {
-                structureInfo.generate(world, random, new BlockCoord(xCoord + structureShift.x, yCoord + structureShift.y, zCoord + structureShift.z), transform, layer);
+                int strucRotation = structureInfo.isRotatable() ? (structureRotation != null ? transform.getRotation() + structureRotation : random.nextInt(4)) : 0;
+                boolean strucMirror = structureInfo.isMirrorable() && (structureMirror != null ? transform.isMirrorX() != structureMirror : random.nextBoolean());
+                AxisAlignedTransform2D strucTransform = AxisAlignedTransform2D.transform(strucRotation, strucMirror);
+
+                structureInfo.generate(world, random, new BlockCoord(xCoord + structureShift.x, yCoord + structureShift.y, zCoord + structureShift.z), strucTransform, layer);
             }
         }
     }

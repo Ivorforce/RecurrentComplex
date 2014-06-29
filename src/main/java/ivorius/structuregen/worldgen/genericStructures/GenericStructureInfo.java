@@ -51,6 +51,7 @@ public class GenericStructureInfo implements StructureInfo, Cloneable
     public List<BlockTransformer> blockTransformers = new ArrayList<>();
     public GenerationYSelector ySelector;
     public boolean rotatable;
+    public boolean mirrorable;
 
     public String generationCategory;
 
@@ -93,7 +94,7 @@ public class GenericStructureInfo implements StructureInfo, Cloneable
     @Override
     public boolean isMirrorable()
     {
-        return false;
+        return mirrorable;
     }
 
     @Override
@@ -374,6 +375,7 @@ public class GenericStructureInfo implements StructureInfo, Cloneable
             }
 
             structureInfo.rotatable = JsonUtils.getJsonObjectBooleanFieldValueOrDefault(jsonobject, "rotatable", false);
+            structureInfo.mirrorable = JsonUtils.getJsonObjectBooleanFieldValueOrDefault(jsonobject, "mirrorable", false);
 
             structureInfo.generationCategory = JsonUtils.getJsonObjectStringFieldValue(jsonobject, "generationCategory");
 
@@ -427,6 +429,7 @@ public class GenericStructureInfo implements StructureInfo, Cloneable
 
             jsonobject.add("generationY", context.serialize(structureInfo.ySelector, GenerationYSelector.class));
             jsonobject.addProperty("rotatable", structureInfo.rotatable);
+            jsonobject.addProperty("mirrorable", structureInfo.mirrorable);
 
             jsonobject.addProperty("generationCategory", structureInfo.generationCategory);
 

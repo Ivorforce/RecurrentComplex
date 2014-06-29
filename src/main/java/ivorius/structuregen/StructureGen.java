@@ -42,9 +42,10 @@ import net.minecraft.item.ItemBlock;
 import net.minecraftforge.common.config.Configuration;
 import org.apache.logging.log4j.Logger;
 
-@Mod(modid = StructureGen.MODID, version = StructureGen.VERSION)
+@Mod(modid = StructureGen.MODID, version = StructureGen.VERSION, name = StructureGen.NAME, guiFactory = "ivorius.structuregen.gui.SGConfigGuiFactory")
 public class StructureGen
 {
+    public static final String NAME = "StructureGen";
     public static final String MODID = "structuregen";
     public static final String VERSION = "1.0";
 
@@ -62,6 +63,7 @@ public class StructureGen
     public static String textureBase = "structuregen:";
 
     public static Logger logger;
+    public static Configuration config;
 
     public static CreativeTabs tabStructureTools = new CreativeTabs("structureTools")
     {
@@ -104,10 +106,10 @@ public class StructureGen
     {
         logger = event.getModLog();
 
-        Configuration config = new Configuration(event.getSuggestedConfigurationFile());
+        config = new Configuration(event.getSuggestedConfigurationFile());
 
         config.load();
-        generateDefaultStructures = config.getBoolean("generateDefaultStructures", "General", true, "Generate the default mod set of structures?");
+        generateDefaultStructures = config.getBoolean("generateDefaultStructures", Configuration.CATEGORY_GENERAL, true, "Generate the default mod set of structures?");
         config.save();
 
         forgeEventHandler = new SGForgeEventHandler();

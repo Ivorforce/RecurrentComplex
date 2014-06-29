@@ -79,6 +79,7 @@ structures.genY.surface=Surface
 structures.genY.sealevel=Sealevel
 structures.genY.underwater=Ocean Floor
 structures.genY.top=Top (Sky)
+structures.genY.lowestedge=Lowest Edge (Ocean Floor)
 
 structuregen.configgui.title=Structure Gen Config
 structuregen.configgui.ctgy.general.tooltip=General

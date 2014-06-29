@@ -30,7 +30,9 @@ public class GenerationYSelector
         @SerializedName("underwater")
         UNDERWATER,
         @SerializedName("top")
-        TOP;
+        TOP,
+        @SerializedName("lowestedge")
+        LOWEST_EDGE;
 
         public String serializedName()
         {
@@ -87,6 +89,16 @@ public class GenerationYSelector
             }
             case TOP:
                 return Math.max(2, world.getHeight() + y);
+            case LOWEST_EDGE:
+            {
+                int genYC = surfaceHeightUnderwater(world, x, z);
+                int genYPP = surfaceHeightUnderwater(world, x + structureSize[0] / 2, z + structureSize[2] / 2);
+                int genYPM = surfaceHeightUnderwater(world, x + structureSize[0] / 2, z - structureSize[2] / 2);
+                int genYMP = surfaceHeightUnderwater(world, x - structureSize[0] / 2, z + structureSize[2] / 2);
+                int genYMM = surfaceHeightUnderwater(world, x - structureSize[0] / 2, z - structureSize[2] / 2);
+
+                return Math.max(2, min(genYC, genYPP, genYPM, genYMP, genYMM) + y);
+            }
         }
 
         throw new RuntimeException("Unrecognized selection mode " + selectionMode);
@@ -135,5 +147,13 @@ public class GenerationYSelector
         }
 
         return curY;
+    }
+
+    private static int min(int... values)
+    {
+        int min = values[0];
+        for (int val : values)
+            min = Math.min(val, min);
+        return min;
     }
 }

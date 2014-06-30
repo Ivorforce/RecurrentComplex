@@ -88,6 +88,6 @@ structures.genY.underwater=Ocean Floor
 structures.genY.top=Top (Sky)
 structures.genY.lowestedge=Lowest Edge (Ocean Floor)
 
-structuregen.configgui.title=Structure Gen Config
-structuregen.configgui.ctgy.general.tooltip=General
-structuregen.configgui.general=General
+reccomplex.configgui.title=Structure Gen Config
+reccomplex.configgui.ctgy.general.tooltip=General
+reccomplex.configgui.general=General

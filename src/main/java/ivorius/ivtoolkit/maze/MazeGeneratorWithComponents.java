@@ -18,7 +18,6 @@
 
 package ivorius.ivtoolkit.maze;
 
-import ivorius.structuregen.StructureGen;
 import net.minecraft.util.WeightedRandom;
 
 import java.util.ArrayList;

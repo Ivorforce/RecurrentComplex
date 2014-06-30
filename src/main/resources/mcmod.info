@@ -1,7 +1,7 @@
 [
 {
-  "modid": "structuregen",
-  "name": "StructureGen",
+  "modid": "reccomplex",
+  "name": "Recurrent Complex",
   "description": "Adds structures to worldgen, handles exporting and importing structures, and provides build tools.",
   "version": "${version}",
   "mcversion": "${mcversion}",

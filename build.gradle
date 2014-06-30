@@ -18,8 +18,8 @@ buildscript {
 apply plugin: 'forge'
 
 version = "1.0"
-group= "ivorius.structuregen" // http://maven.apache.org/guides/mini/guide-naming-conventions.html
-archivesBaseName = "StructureGen"
+group= "ivorius.reccomplex" // http://maven.apache.org/guides/mini/guide-naming-conventions.html
+archivesBaseName = "RecurrentComplex"
 
 minecraft {
     version = "1.7.2-10.12.2.1147"

@@ -231,17 +231,31 @@ public class GuiEditInventoryGen extends GuiContainer implements InventoryWatche
             super.keyTyped(par1, par2);
         }
 
-        nameTextField.textboxKeyTyped(par1, par2);
-        key = nameTextField.getText();
-
-        dependencyTextField.textboxKeyTyped(par1, par2);
-        inventoryGenerator.dependencies.clear();
-        String[] dependencies = dependencyTextField.getText().split(",");
-        if (dependencies.length != 1 || dependencies[0].trim().length() > 0)
+        if (nameTextField.textboxKeyTyped(par1, par2))
         {
-            Collections.addAll(inventoryGenerator.dependencies, dependencies);
+            key = nameTextField.getText();
         }
-        dependencyStateIndicator.setState(inventoryGenerator.areDependenciesResolved() ? GuiValidityStateIndicator.State.VALID : GuiValidityStateIndicator.State.SEMI_VALID);
+        else if (dependencyTextField.textboxKeyTyped(par1, par2))
+        {
+            inventoryGenerator.dependencies.clear();
+            String[] dependencies = dependencyTextField.getText().split(",");
+            if (dependencies.length != 1 || dependencies[0].trim().length() > 0)
+            {
+                Collections.addAll(inventoryGenerator.dependencies, dependencies);
+            }
+            dependencyStateIndicator.setState(inventoryGenerator.areDependenciesResolved() ? GuiValidityStateIndicator.State.VALID : GuiValidityStateIndicator.State.SEMI_VALID);
+        }
+        else
+        {
+            if (par2 == Keyboard.KEY_LEFT && prevPageBtn.enabled)
+            {
+                actionPerformed(prevPageBtn);
+            }
+            else if (par2 == Keyboard.KEY_RIGHT && nextPageBtn.enabled)
+            {
+                actionPerformed(nextPageBtn);
+            }
+        }
 
         this.saveBtn.enabled = key.trim().length() > 0;
 

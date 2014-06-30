@@ -165,7 +165,7 @@ public class IvNBTHelper
         }
     }
 
-    public static Block[] readNBTBlocks(String id, NBTTagCompound compound)
+    public static Block[] readNBTBlocks(String id, NBTTagCompound compound, MCRegistry registry)
     {
         if (compound.hasKey(id))
         {
@@ -174,7 +174,7 @@ public class IvNBTHelper
 
             for (int i = 0; i < blocks.length; i++)
             {
-                blocks[i] = (Block) Block.blockRegistry.getObject(nbtTagList.getStringTagAt(i));
+                blocks[i] = registry.blockFromID(nbtTagList.getStringTagAt(i));
             }
 
             return blocks;

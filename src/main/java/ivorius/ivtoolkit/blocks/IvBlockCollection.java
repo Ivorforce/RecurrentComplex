@@ -18,6 +18,7 @@
 
 package ivorius.ivtoolkit.blocks;
 
+import ivorius.ivtoolkit.tools.MCRegistry;
 import net.minecraft.block.Block;
 import net.minecraft.init.Blocks;
 import net.minecraft.nbt.NBTTagCompound;
@@ -55,7 +56,7 @@ public class IvBlockCollection implements Iterable<BlockCoord>
         this.length = length;
     }
 
-    public IvBlockCollection(NBTTagCompound compound)
+    public IvBlockCollection(NBTTagCompound compound, MCRegistry registry)
     {
         width = compound.getInteger("width");
         height = compound.getInteger("height");
@@ -63,7 +64,7 @@ public class IvBlockCollection implements Iterable<BlockCoord>
 
         metas = compound.getByteArray("metadata");
 
-        IvBlockMapper mapper = new IvBlockMapper(compound, "mapping");
+        IvBlockMapper mapper = new IvBlockMapper(compound, "mapping", registry);
         blocks = mapper.createBlocksFromNBT(compound.getCompoundTag("blocks"));
         if (blocks.length != width * height * length)
         {

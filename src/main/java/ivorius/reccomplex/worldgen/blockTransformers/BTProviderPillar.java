@@ -6,8 +6,10 @@
 package ivorius.reccomplex.worldgen.blockTransformers;
 
 import com.google.gson.*;
+import ivorius.ivtoolkit.tools.MCRegistry;
 import ivorius.reccomplex.gui.editstructure.TableDataSourceBTPillar;
 import ivorius.reccomplex.gui.table.TableDataSource;
+import ivorius.reccomplex.worldgen.MCRegistrySpecial;
 import net.minecraft.block.Block;
 import net.minecraft.init.Blocks;
 import net.minecraft.util.JsonUtils;
@@ -23,7 +25,7 @@ public class BTProviderPillar implements BlockTransformerProvider<BlockTransform
 
     public BTProviderPillar()
     {
-        serializer = new Serializer();
+        serializer = new Serializer(MCRegistrySpecial.INSTANCE);
     }
 
     @Override
@@ -52,17 +54,24 @@ public class BTProviderPillar implements BlockTransformerProvider<BlockTransform
 
     public static class Serializer implements JsonDeserializer<BlockTransformerPillar>, JsonSerializer<BlockTransformerPillar>
     {
+        private MCRegistry registry;
+
+        public Serializer(MCRegistry registry)
+        {
+            this.registry = registry;
+        }
+
         @Override
         public BlockTransformerPillar deserialize(JsonElement jsonElement, Type par2Type, JsonDeserializationContext context)
         {
             JsonObject jsonobject = JsonUtils.getJsonElementAsJsonObject(jsonElement, "transformerPillar");
 
             String sourceBlock = JsonUtils.getJsonObjectStringFieldValue(jsonobject, "source");
-            Block source = (Block) Block.blockRegistry.getObject(sourceBlock);
+            Block source = registry.blockFromID(sourceBlock);
             int sourceMeta = JsonUtils.getJsonObjectIntegerFieldValueOrDefault(jsonobject, "sourceMetadata", -1);
 
             String destBlock = JsonUtils.getJsonObjectStringFieldValue(jsonobject, "dest");
-            Block dest = (Block) Block.blockRegistry.getObject(destBlock);
+            Block dest = registry.blockFromID(destBlock);
             int destMeta = JsonUtils.getJsonObjectIntegerFieldValue(jsonobject, "destMetadata");
 
             return new BlockTransformerPillar(source, sourceMeta, dest, destMeta);

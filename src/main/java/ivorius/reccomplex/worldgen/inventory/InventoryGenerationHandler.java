@@ -10,6 +10,7 @@ import com.google.gson.GsonBuilder;
 import ivorius.reccomplex.items.GeneratingItem;
 import ivorius.reccomplex.json.ItemStackSerializer;
 import ivorius.reccomplex.json.NbtToJson;
+import ivorius.reccomplex.worldgen.MCRegistrySpecial;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
@@ -34,7 +35,7 @@ public class InventoryGenerationHandler
 
         builder.registerTypeAdapter(GenericInventoryGenerator.class, new GenericInventoryGenerator.Serializer());
         builder.registerTypeAdapter(WeightedRandomChestContent.class, new WeightedRandomChestContentSerializer());
-        builder.registerTypeAdapter(ItemStack.class, new ItemStackSerializer());
+        builder.registerTypeAdapter(ItemStack.class, new ItemStackSerializer(MCRegistrySpecial.INSTANCE));
 
         NbtToJson.registerSafeNBTSerializer(builder);
 

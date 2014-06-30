@@ -6,8 +6,10 @@
 package ivorius.reccomplex.worldgen.blockTransformers;
 
 import com.google.gson.*;
+import ivorius.ivtoolkit.tools.MCRegistry;
 import ivorius.reccomplex.gui.editstructure.TableDataSourceBTNaturalAir;
 import ivorius.reccomplex.gui.table.TableDataSource;
+import ivorius.reccomplex.worldgen.MCRegistrySpecial;
 import net.minecraft.block.Block;
 import net.minecraft.init.Blocks;
 import net.minecraft.util.JsonUtils;
@@ -23,7 +25,7 @@ public class BTProviderNaturalAir implements BlockTransformerProvider<BlockTrans
 
     public BTProviderNaturalAir()
     {
-        serializer = new Serializer();
+        serializer = new Serializer(MCRegistrySpecial.INSTANCE);
     }
 
     @Override
@@ -52,13 +54,20 @@ public class BTProviderNaturalAir implements BlockTransformerProvider<BlockTrans
 
     public static class Serializer implements JsonDeserializer<BlockTransformerNaturalAir>, JsonSerializer<BlockTransformerNaturalAir>
     {
+        private MCRegistry registry;
+
+        public Serializer(MCRegistry registry)
+        {
+            this.registry = registry;
+        }
+
         @Override
         public BlockTransformerNaturalAir deserialize(JsonElement jsonElement, Type par2Type, JsonDeserializationContext context)
         {
             JsonObject jsonobject = JsonUtils.getJsonElementAsJsonObject(jsonElement, "transformerNatural");
 
             String sourceBlock = JsonUtils.getJsonObjectStringFieldValue(jsonobject, "source");
-            Block source = (Block) Block.blockRegistry.getObject(sourceBlock);
+            Block source = registry.blockFromID(sourceBlock);
             int sourceMeta = JsonUtils.getJsonObjectIntegerFieldValueOrDefault(jsonobject, "sourceMetadata", -1);
 
             return new BlockTransformerNaturalAir(source, sourceMeta);

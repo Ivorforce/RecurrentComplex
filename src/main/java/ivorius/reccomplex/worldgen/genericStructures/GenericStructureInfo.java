@@ -15,6 +15,7 @@ import ivorius.ivtoolkit.blocks.BlockCoord;
 import ivorius.ivtoolkit.blocks.IvBlockCollection;
 import ivorius.ivtoolkit.tools.IvWorldData;
 import ivorius.reccomplex.json.NbtToJson;
+import ivorius.reccomplex.worldgen.MCRegistrySpecial;
 import ivorius.reccomplex.worldgen.StructureHandler;
 import ivorius.reccomplex.worldgen.StructureInfo;
 import ivorius.reccomplex.worldgen.blockTransformers.BlockTransformer;
@@ -82,7 +83,7 @@ public class GenericStructureInfo implements StructureInfo, Cloneable
     @Override
     public int[] structureBoundingBox()
     {
-        IvBlockCollection collection = new IvWorldData(worldDataCompound, null).blockCollection;
+        IvBlockCollection collection = new IvWorldData(worldDataCompound, null, MCRegistrySpecial.INSTANCE).blockCollection;
         return new int[]{collection.width, collection.height, collection.length};
     }
 
@@ -112,7 +113,7 @@ public class GenericStructureInfo implements StructureInfo, Cloneable
 
     private void generate(World world, Random random, BlockCoord origin, int layer, AxisAlignedTransform2D transform, boolean asSource)
     {
-        IvWorldData worldData = new IvWorldData(worldDataCompound, world);
+        IvWorldData worldData = new IvWorldData(worldDataCompound, world, MCRegistrySpecial.INSTANCE);
         IvBlockCollection blockCollection = worldData.blockCollection;
         int[] size = new int[]{blockCollection.width, blockCollection.height, blockCollection.length};
 

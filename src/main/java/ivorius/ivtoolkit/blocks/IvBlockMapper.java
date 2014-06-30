@@ -18,6 +18,7 @@
 
 package ivorius.ivtoolkit.blocks;
 
+import ivorius.ivtoolkit.tools.MCRegistry;
 import net.minecraft.block.Block;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
@@ -39,18 +40,18 @@ public class IvBlockMapper
         mapping = new ArrayList<>();
     }
 
-    public IvBlockMapper(NBTTagCompound compound, String key)
+    public IvBlockMapper(NBTTagCompound compound, String key, MCRegistry registry)
     {
-        this(compound.getTagList(key, Constants.NBT.TAG_STRING));
+        this(compound.getTagList(key, Constants.NBT.TAG_STRING), registry);
     }
 
-    public IvBlockMapper(NBTTagList list)
+    public IvBlockMapper(NBTTagList list, MCRegistry registry)
     {
         mapping = new ArrayList<>(list.tagCount());
 
         for (int i = 0; i < list.tagCount(); i++)
         {
-            mapping.add((Block) Block.blockRegistry.getObject(list.getStringTagAt(i)));
+            mapping.add(registry.blockFromID(list.getStringTagAt(i)));
         }
     }
 

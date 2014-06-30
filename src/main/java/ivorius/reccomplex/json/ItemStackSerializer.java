@@ -6,6 +6,7 @@
 package ivorius.reccomplex.json;
 
 import com.google.gson.*;
+import ivorius.ivtoolkit.tools.MCRegistry;
 import ivorius.reccomplex.RecurrentComplex;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -19,6 +20,13 @@ import java.lang.reflect.Type;
  */
 public class ItemStackSerializer implements JsonSerializer<ItemStack>, JsonDeserializer<ItemStack>
 {
+    private MCRegistry registry;
+
+    public ItemStackSerializer(MCRegistry registry)
+    {
+        this.registry = registry;
+    }
+
     @Override
     public JsonElement serialize(ItemStack src, Type typeOfSrc, JsonSerializationContext context)
     {
@@ -49,7 +57,7 @@ public class ItemStackSerializer implements JsonSerializer<ItemStack>, JsonDeser
         JsonObject jsonObject = JsonUtils.getJsonElementAsJsonObject(json, "ItemStack");
 
         String id = JsonUtils.getJsonObjectStringFieldValue(jsonObject, "id");
-        Item item = (Item) Item.itemRegistry.getObject(id);
+        Item item = registry.itemFromID(id);
         int damage = JsonUtils.getJsonObjectIntegerFieldValue(jsonObject, "damage");
         int count = JsonUtils.getJsonObjectIntegerFieldValue(jsonObject, "count");
 

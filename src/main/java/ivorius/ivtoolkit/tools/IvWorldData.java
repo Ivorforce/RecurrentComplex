@@ -92,16 +92,16 @@ public class IvWorldData
         }
     }
 
-    public IvWorldData(NBTTagCompound compound, World world)
+    public IvWorldData(NBTTagCompound compound, World world, MCRegistry registry)
     {
-        blockCollection = new IvBlockCollection(compound.getCompoundTag("blockCollection"));
+        blockCollection = new IvBlockCollection(compound.getCompoundTag("blockCollection"), registry);
 
         NBTTagList teList = compound.getTagList("tileEntities", Constants.NBT.TAG_COMPOUND);
         tileEntities = new ArrayList<>(teList.tagCount());
         for (int i = 0; i < teList.tagCount(); i++)
         {
             NBTTagCompound teCompound = teList.getCompoundTagAt(i);
-            recursivelyApplyIDFixTags(teCompound);
+            recursivelyApplyIDFixTags(teCompound, registry);
             TileEntity tileEntity = TileEntity.createAndLoadEntity(teCompound);
 
             tileEntities.add(tileEntity);
@@ -114,7 +114,7 @@ public class IvWorldData
             for (int i = 0; i < entityList.tagCount(); i++)
             {
                 NBTTagCompound entityCompound = entityList.getCompoundTagAt(i);
-                recursivelyApplyIDFixTags(entityCompound);
+                recursivelyApplyIDFixTags(entityCompound, registry);
                 Entity entity = EntityList.createEntityFromNBT(entityCompound, world);
 
                 entities.add(entity);
@@ -241,9 +241,9 @@ public class IvWorldData
         }
     }
 
-    public static void recursivelyApplyIDFixTags(NBTTagCompound compound)
+    public static void recursivelyApplyIDFixTags(NBTTagCompound compound, MCRegistry registry)
     {
-        applyIDFixTags(compound);
+        applyIDFixTags(compound, registry);
         compound.removeTag(ID_FIX_TAG_KEY);
 
         for (Object key : compound.func_150296_c())
@@ -253,16 +253,16 @@ public class IvWorldData
 
             if (innerCompound instanceof NBTTagCompound)
             {
-                recursivelyApplyIDFixTags((NBTTagCompound) innerCompound);
+                recursivelyApplyIDFixTags((NBTTagCompound) innerCompound, registry);
             }
             else if (innerCompound instanceof NBTTagList)
             {
-                recursivelyApplyIDFixTags((NBTTagList) innerCompound);
+                recursivelyApplyIDFixTags((NBTTagList) innerCompound, registry);
             }
         }
     }
 
-    public static void recursivelyApplyIDFixTags(NBTTagList list)
+    public static void recursivelyApplyIDFixTags(NBTTagList list, MCRegistry registry)
     {
         int tagType = list.func_150303_d();
         switch (tagType)
@@ -270,7 +270,7 @@ public class IvWorldData
             case Constants.NBT.TAG_COMPOUND:
                 for (int i = 0; i < list.tagCount(); i++)
                 {
-                    recursivelyApplyIDFixTags(list.getCompoundTagAt(i));
+                    recursivelyApplyIDFixTags(list.getCompoundTagAt(i), registry);
                 }
                 break;
             case Constants.NBT.TAG_LIST:
@@ -282,7 +282,7 @@ public class IvWorldData
         }
     }
 
-    public static void applyIDFixTags(NBTTagCompound compound)
+    public static void applyIDFixTags(NBTTagCompound compound, MCRegistry registry)
     {
         if (compound.hasKey(ID_FIX_TAG_KEY))
         {
@@ -296,7 +296,7 @@ public class IvWorldData
                 {
                     String dest = fixTag.getString("tagDest");
                     String stringID = fixTag.getString("itemID");
-                    Item item = (Item) Item.itemRegistry.getObject(stringID);
+                    Item item = registry.itemFromID(stringID);
                     if (item != null)
                     {
                         int itemID = Item.getIdFromItem(item);

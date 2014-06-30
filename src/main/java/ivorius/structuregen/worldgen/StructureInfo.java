@@ -20,7 +20,7 @@ public interface StructureInfo
 {
     void generate(World world, Random random, BlockCoord coord, AxisAlignedTransform2D transform, int layer);
 
-    void generateSource(World world, Random random, BlockCoord coord, int layer);
+    void generateSource(World world, Random random, BlockCoord coord, int layer, AxisAlignedTransform2D transform);
 
     int generationY(World world, Random random, int x, int z);
 

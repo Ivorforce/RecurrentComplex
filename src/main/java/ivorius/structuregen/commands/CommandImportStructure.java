@@ -6,6 +6,7 @@
 package ivorius.structuregen.commands;
 
 import ivorius.ivtoolkit.blocks.BlockCoord;
+import ivorius.ivtoolkit.math.AxisAlignedTransform2D;
 import ivorius.structuregen.worldgen.StructureHandler;
 import ivorius.structuregen.worldgen.StructureInfo;
 import net.minecraft.command.CommandBase;
@@ -64,7 +65,7 @@ public class CommandImportStructure extends CommandBase
             z = MathHelper.floor_double(func_110666_a(commandSender, (double) z, args[3]));
         }
 
-        structureInfo.generateSource(world, world.rand, new BlockCoord(x, y, z), 0);
+        structureInfo.generateSource(world, world.rand, new BlockCoord(x, y, z), 0, AxisAlignedTransform2D.ORIGINAL);
     }
 
     @Override

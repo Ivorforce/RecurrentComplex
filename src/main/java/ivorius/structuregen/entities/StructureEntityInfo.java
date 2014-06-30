@@ -6,6 +6,7 @@
 package ivorius.structuregen.entities;
 
 import io.netty.buffer.ByteBuf;
+import ivorius.ivtoolkit.tools.IvWorldData;
 import ivorius.structuregen.StructureGen;
 import ivorius.ivtoolkit.blocks.BlockCoord;
 import ivorius.ivtoolkit.network.IExtendedEntityPropertiesUpdateData;
@@ -25,6 +26,8 @@ public class StructureEntityInfo implements IExtendedEntityProperties, IExtended
     public BlockCoord selectedPoint2;
 
     private NBTTagCompound cachedExportStructureBlockDataNBT;
+
+    private NBTTagCompound worldDataClipboard;
 
     public static StructureEntityInfo getStructureEntityInfo(Entity entity)
     {
@@ -54,6 +57,16 @@ public class StructureEntityInfo implements IExtendedEntityProperties, IExtended
     public void setCachedExportStructureBlockDataNBT(NBTTagCompound cachedExportStructureBlockDataNBT)
     {
         this.cachedExportStructureBlockDataNBT = cachedExportStructureBlockDataNBT;
+    }
+
+    public NBTTagCompound getWorldDataClipboard()
+    {
+        return worldDataClipboard;
+    }
+
+    public void setWorldDataClipboard(NBTTagCompound worldDataClipboard)
+    {
+        this.worldDataClipboard = worldDataClipboard;
     }
 
     @Override

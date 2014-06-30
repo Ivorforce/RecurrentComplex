@@ -64,6 +64,7 @@ public class GenericStructureInfo implements StructureInfo, Cloneable
         genericStructureInfo.generationCategory = "decoration";
         genericStructureInfo.ySelector = new GenerationYSelector(GenerationYSelector.SelectionMode.SURFACE, 0, 0);
         genericStructureInfo.rotatable = false;
+        genericStructureInfo.mirrorable = false;
 
         genericStructureInfo.blockTransformers.add(new BlockTransformerNaturalAir(SGBlocks.negativeSpace, 1));
         genericStructureInfo.blockTransformers.add(new BlockTransformerNegativeSpace(SGBlocks.negativeSpace, 0));
@@ -104,9 +105,9 @@ public class GenericStructureInfo implements StructureInfo, Cloneable
     }
 
     @Override
-    public void generateSource(World world, Random random, BlockCoord coord, int layer)
+    public void generateSource(World world, Random random, BlockCoord coord, int layer, AxisAlignedTransform2D transform)
     {
-        generate(world, random, coord, layer, AxisAlignedTransform2D.ORIGINAL, true);
+        generate(world, random, coord, layer, transform, true);
     }
 
     private void generate(World world, Random random, BlockCoord origin, int layer, AxisAlignedTransform2D transform, boolean asSource)

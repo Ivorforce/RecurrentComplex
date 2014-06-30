@@ -54,6 +54,13 @@ commands.selectNatural.usage=/selectNatural [naturalFloorExpansion]
 commands.strucReload.usage=/strucReload <structureName> [x] [y] [z]
 commands.strucReload.success=Reloaded all structures and inventory generators
 
+commands.selectCopy.usage=/selectCopy
+
+commands.strucPaste.usage=/strucPaste [x] [y] [z]
+commands.strucPaste.noClipboard=You have to copy an area first!
+
+commands.selectMove.usage=/selectMove <x> <y> <z> [clockwise-rotations] [mirror x:true|false]
+
 inventoryGen.vanilla=Vanilla Generator
 inventoryGen.custom=Custom Generator
 inventoryGen.create=Create New Generator

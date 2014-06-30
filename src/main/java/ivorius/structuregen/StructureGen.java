@@ -225,5 +225,8 @@ public class StructureGen
         event.registerServerCommand(new CommandSelectReplace());
         event.registerServerCommand(new CommandSelectFillSphere());
         event.registerServerCommand(new CommandSelectNatural());
+        event.registerServerCommand(new CommandSelectCopy());
+        event.registerServerCommand(new CommandPaste());
+        event.registerServerCommand(new CommandSelectMove());
     }
 }

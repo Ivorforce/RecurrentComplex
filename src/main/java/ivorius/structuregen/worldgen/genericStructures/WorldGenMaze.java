@@ -11,9 +11,11 @@ import ivorius.ivtoolkit.maze.*;
 import ivorius.structuregen.StructureGen;
 import ivorius.structuregen.worldgen.StructureHandler;
 import ivorius.structuregen.worldgen.StructureInfo;
+import ivorius.structuregen.worldgen.WorldGenStructures;
 import net.minecraft.world.World;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
 
@@ -44,8 +46,9 @@ public class WorldGenMaze
 
             if (compStructureInfo != null)
             {
-                int[] compSize = compStructureInfo.structureBoundingBox();
-                int[] sizeDependentShift = new int[]{(roomSize[0] - compSize[0]) / 2, (roomSize[1] - compSize[1]) / 2, (roomSize[2] - compSize[2]) / 2};
+                int[] compStructureSize = WorldGenStructures.structureBoundingBox(compStructureInfo, componentTransform);
+                int[] compRoomSize = Maze.getRoomSize(position.getComponent().getSize(), pathLengths, roomSize);
+                int[] sizeDependentShift = new int[]{(compRoomSize[0] - compStructureSize[0]) / 2, (compRoomSize[1] - compStructureSize[1]) / 2, (compRoomSize[2] - compStructureSize[2]) / 2};
 
                 BlockCoord compMazeCoordLower = coord.add(scaledCompMazePosition[0] + sizeDependentShift[0], scaledCompMazePosition[1] + sizeDependentShift[1], scaledCompMazePosition[2] +  + sizeDependentShift[2]);
 

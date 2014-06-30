@@ -87,29 +87,41 @@ public class Maze
         }
     }
 
-    public static int[] getMazeSize(int size[], int pathLengths[], int roomWidths[])
+    public static int[] getMazeSize(int size[], int pathLengths[], int roomSize[])
     {
         int[] returnSize = new int[size.length];
 
         for (int i = 0; i < returnSize.length; i++)
         {
-            returnSize[i] = (size[i] - pathLengths[i]) / (pathLengths[i] + roomWidths[i]) * 2 + 1;
+            returnSize[i] = (size[i] - pathLengths[i]) / (pathLengths[i] + roomSize[i]) * 2 + 1;
         }
 
         return returnSize;
     }
 
-    public static int[] getRoomPosition(MazeCoordinate coordinate, int[] pathLengths, int[] roomWidths)
+    public static int[] getRoomPosition(MazeCoordinate coordinate, int[] pathLengths, int[] roomSize)
     {
         int[] mazePosition = coordinate.getMazeCoordinates();
         int[] returnPos = new int[pathLengths.length];
 
         for (int i = 0; i < returnPos.length; i++)
         {
-            returnPos[i] = (mazePosition[i] / 2) * roomWidths[i] + ((mazePosition[i] + 1) / 2) * pathLengths[i];
+            returnPos[i] = (mazePosition[i] / 2) * roomSize[i] + ((mazePosition[i] + 1) / 2) * pathLengths[i];
         }
 
         return returnPos;
+    }
+
+    public static int[] getRoomSize(int[] rooms, int[] pathLengths, int[] roomSize)
+    {
+        int[] returnSize = new int[pathLengths.length];
+
+        for (int i = 0; i < returnSize.length; i++)
+        {
+            returnSize[i] = rooms[i] * roomSize[i] + (rooms[i] / 2) * pathLengths[i];
+        }
+
+        return returnSize;
     }
 
     public int[] getCompleteMazeSize(int[] pathLengths, int[] roomWidths)

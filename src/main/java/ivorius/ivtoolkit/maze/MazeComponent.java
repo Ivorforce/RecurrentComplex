@@ -18,6 +18,7 @@
 
 package ivorius.ivtoolkit.maze;
 
+import ivorius.ivtoolkit.math.IvVecMathHelper;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.util.WeightedRandom;
@@ -100,22 +101,29 @@ public class MazeComponent extends WeightedRandom.Item
 
     public int[] getSize()
     {
-        int[] size = new int[]{1, 1, 1};
+        int[] lowest = rooms.get(0).coordinates.clone();
+        int[] highest = rooms.get(0).coordinates.clone();
         for (MazeRoom room : rooms)
         {
-            if (room.coordinates[0] >= size[0])
+            for (int i = 0; i < room.coordinates.length; i++)
             {
-                size[0] = room.coordinates[0] + 1;
-            }
-            else if (room.coordinates[1] >= size[1])
-            {
-                size[1] = room.coordinates[1] + 1;
-            }
-            else if (room.coordinates[2] >= size[2])
-            {
-                size[2] = room.coordinates[2] + 1;
+                if (room.coordinates[i] < lowest[i])
+                {
+                    lowest[i] = room.coordinates[i];
+                }
+                else if (room.coordinates[i] > highest[i])
+                {
+                    highest[i] = room.coordinates[i];
+                }
             }
         }
+
+        int[] size = IvVecMathHelper.sub(highest, lowest);
+        for (int i = 0; i < size.length; i++)
+        {
+            size[i]++;
+        }
+
         return size;
     }
 

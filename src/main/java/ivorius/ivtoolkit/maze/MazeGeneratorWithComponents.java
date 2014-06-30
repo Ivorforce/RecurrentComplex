@@ -18,6 +18,7 @@
 
 package ivorius.ivtoolkit.maze;
 
+import ivorius.structuregen.StructureGen;
 import net.minecraft.util.WeightedRandom;
 
 import java.util.ArrayList;
@@ -51,6 +52,12 @@ public class MazeGeneratorWithComponents
         while (!positionStack.empty())
         {
             MazeRoom position = positionStack.pop();
+
+            if (maze.get(position) != Maze.NULL) // Has been filled while this was queued
+            {
+                continue;
+            }
+
             validComponents.clear();
 
             for (MazeComponent component : mazeComponents)

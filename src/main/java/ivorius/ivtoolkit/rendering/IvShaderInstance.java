@@ -471,33 +471,33 @@ public class IvShaderInstance
             versions += ":lwjgl-Error-3";
         }
 
-        try
-        {
-            if (cap.OpenGL40)
-            {
-                versions += ":40";
-            }
-            if (cap.OpenGL41)
-            {
-                versions += ":41";
-            }
-            if (cap.OpenGL42)
-            {
-                versions += ":42";
-            }
-            if (cap.OpenGL43)
-            {
-                versions += ":43";
-            }
-            if (cap.OpenGL44)
-            {
-                versions += ":44";
-            }
-        }
-        catch (Throwable throwable)
-        {
-            versions += ":lwjgl-Error-4";
-        }
+//        try
+//        {
+//            if (cap.OpenGL40)
+//            {
+//                versions += ":40";
+//            }
+//            if (cap.OpenGL41)
+//            {
+//                versions += ":41";
+//            }
+//            if (cap.OpenGL42)
+//            {
+//                versions += ":42";
+//            }
+//            if (cap.OpenGL43)
+//            {
+//                versions += ":43";
+//            }
+//            if (cap.OpenGL44)
+//            {
+//                versions += ":44";
+//            }
+//        }
+//        catch (Throwable throwable)
+//        {
+//            versions += ":lwjgl-Error-4";
+//        }
 
         if (versions.length() > 0)
         {

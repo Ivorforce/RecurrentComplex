@@ -6,7 +6,7 @@
 package ivorius.reccomplex.gui.editstructure;
 
 import ivorius.reccomplex.gui.GuiValidityStateIndicator;
-import ivorius.reccomplex.gui.IntegerRange;
+import ivorius.ivtoolkit.gui.IntegerRange;
 import ivorius.reccomplex.gui.table.*;
 import ivorius.reccomplex.worldgen.StructureHandler;
 import ivorius.reccomplex.worldgen.genericStructures.GenerationYSelector;

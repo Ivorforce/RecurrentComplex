@@ -3,7 +3,7 @@
  *  * http://lukas.axxim.net
  */
 
-package ivorius.reccomplex.gui;
+package ivorius.ivtoolkit.gui;
 
 /**
  * Created by lukas on 12.06.14.

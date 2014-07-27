@@ -3,7 +3,7 @@
  *  * http://lukas.axxim.net
  */
 
-package ivorius.reccomplex.gui;
+package ivorius.ivtoolkit.gui;
 
 import net.minecraft.client.gui.Gui;
 

@@ -5,7 +5,7 @@
 
 package ivorius.reccomplex.gui.table;
 
-import ivorius.reccomplex.gui.*;
+import ivorius.ivtoolkit.gui.*;
 
 /**
  * Created by lukas on 02.06.14.

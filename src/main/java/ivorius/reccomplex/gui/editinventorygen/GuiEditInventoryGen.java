@@ -5,6 +5,7 @@
 
 package ivorius.reccomplex.gui.editinventorygen;
 
+import ivorius.ivtoolkit.gui.*;
 import ivorius.reccomplex.RecurrentComplex;
 import ivorius.reccomplex.gui.*;
 import ivorius.reccomplex.worldgen.inventory.GenericInventoryGenerator;

@@ -20,4 +20,10 @@ public class ServerProxy implements RCProxy
     {
         return MinecraftServer.getServer().getFile(filename);
     }
+
+    @Override
+    public void loadConfig(String configID)
+    {
+
+    }
 }

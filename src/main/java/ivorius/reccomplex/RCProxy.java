@@ -13,4 +13,6 @@ import java.io.File;
 public interface RCProxy
 {
     File getBaseFolderFile(String filename);
+
+    void loadConfig(String configID);
 }

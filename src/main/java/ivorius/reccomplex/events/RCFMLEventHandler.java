@@ -5,9 +5,11 @@
 
 package ivorius.reccomplex.events;
 
+import cpw.mods.fml.client.event.ConfigChangedEvent;
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.common.gameevent.TickEvent;
+import ivorius.reccomplex.RCConfig;
 import ivorius.reccomplex.RecurrentComplex;
 import ivorius.reccomplex.entities.StructureEntityInfo;
 
@@ -37,6 +39,16 @@ public class RCFMLEventHandler
         if ((event.type == TickEvent.Type.CLIENT || event.type == TickEvent.Type.SERVER) && event.phase == TickEvent.Phase.END)
         {
             RecurrentComplex.communicationHandler.handleMessages(event.type == TickEvent.Type.SERVER, true);
+        }
+    }
+
+    @SubscribeEvent
+    public void onConfigChanged(ConfigChangedEvent event)
+    {
+        if (event instanceof ConfigChangedEvent.OnConfigChangedEvent && event.modID.equals(RecurrentComplex.MODID))
+        {
+            RCConfig.loadConfig(event.configID);
+            RecurrentComplex.config.save();
         }
     }
 }

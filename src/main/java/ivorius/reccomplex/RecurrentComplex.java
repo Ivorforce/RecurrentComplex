@@ -99,17 +99,14 @@ public class RecurrentComplex
 
     public static Material materialNegativeSpace;
 
-    public static boolean generateDefaultStructures;
-
     @EventHandler
     public void preInit(FMLPreInitializationEvent event)
     {
         logger = event.getModLog();
 
         config = new Configuration(event.getSuggestedConfigurationFile());
-
         config.load();
-        generateDefaultStructures = config.getBoolean("generateDefaultStructures", Configuration.CATEGORY_GENERAL, true, "Generate the default mod set of structures?");
+        RCConfig.loadConfig(null);
         config.save();
 
         forgeEventHandler = new RCForgeEventHandler();
@@ -202,7 +199,7 @@ public class RecurrentComplex
         RCInventoryGenerators.registerVanillaInventoryGenerators();
         RCInventoryGenerators.registerModInventoryGenerators();
 
-        RCStructures.generateDefaultStructures(generateDefaultStructures);
+        RCStructures.generateDefaultStructures(RCConfig.generateDefaultStructures);
     }
 
     @EventHandler

@@ -20,4 +20,10 @@ public class ClientProxy implements RCProxy
     {
         return new File(Minecraft.getMinecraft().mcDataDir, filename);
     }
+
+    @Override
+    public void loadConfig(String configID)
+    {
+
+    }
 }

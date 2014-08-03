@@ -35,19 +35,15 @@ public class BiomeGenerationInfo
                 new BiomeGenerationInfo("Type:MOUNTAIN", null),
                 new BiomeGenerationInfo("Type:HILLS", null),
                 new BiomeGenerationInfo("Type:SWAMP", null),
-                new BiomeGenerationInfo("Type:DESERT", null),
-                new BiomeGenerationInfo("Type:FROZEN", null),
-                new BiomeGenerationInfo("Type:FOREST,FROZEN", null),
-                new BiomeGenerationInfo("Type:PLAINS,DESERT", null),
+                new BiomeGenerationInfo("Type:SANDY", null),
+                new BiomeGenerationInfo("Type:WASTELAND", null),
+                new BiomeGenerationInfo("Type:MUSHROOM", null),
                 new BiomeGenerationInfo("Type:JUNGLE", null));
     }
 
     public static List<BiomeGenerationInfo> oceanBiomeGenerationList()
     {
-        return Arrays.asList(new BiomeGenerationInfo("River", 0),
-                new BiomeGenerationInfo("Type:WATER", null),
-                new BiomeGenerationInfo("Type:WATER,FROZEN", null),
-                new BiomeGenerationInfo("Deep Ocean", null));
+        return Arrays.asList(new BiomeGenerationInfo("Type:OCEAN,SNOWY", 0), new BiomeGenerationInfo("Type:OCEAN", null));
     }
 
     public String getBiomeID()

@@ -5,8 +5,8 @@
 
 package ivorius.reccomplex.blocks;
 
-import ivorius.ivtoolkit.math.AxisAlignedTransform2D;
 import ivorius.ivtoolkit.blocks.BlockCoord;
+import ivorius.ivtoolkit.math.AxisAlignedTransform2D;
 import ivorius.ivtoolkit.tools.IvCollections;
 import ivorius.reccomplex.worldgen.StructureHandler;
 import ivorius.reccomplex.worldgen.StructureInfo;

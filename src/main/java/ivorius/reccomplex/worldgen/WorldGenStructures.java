@@ -6,9 +6,9 @@
 package ivorius.reccomplex.worldgen;
 
 import cpw.mods.fml.common.IWorldGenerator;
-import ivorius.reccomplex.RecurrentComplex;
-import ivorius.ivtoolkit.math.AxisAlignedTransform2D;
 import ivorius.ivtoolkit.blocks.BlockCoord;
+import ivorius.ivtoolkit.math.AxisAlignedTransform2D;
+import ivorius.reccomplex.RecurrentComplex;
 import net.minecraft.world.World;
 import net.minecraft.world.biome.BiomeGenBase;
 import net.minecraft.world.chunk.IChunkProvider;
@@ -36,7 +36,7 @@ public class WorldGenStructures implements IWorldGenerator
                 int genX = chunkX * 16 + random.nextInt(16);
                 int genZ = chunkZ * 16 + random.nextInt(16);
                 int genY = generateStructureRandomly(world, random, info, genX, genZ);
-                
+
                 RecurrentComplex.logger.info("Generated " + info + " at " + genX + ", " + genY + ", " + genZ);
             }
         }

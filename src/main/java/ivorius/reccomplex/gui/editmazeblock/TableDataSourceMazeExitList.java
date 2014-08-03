@@ -5,8 +5,8 @@
 
 package ivorius.reccomplex.gui.editmazeblock;
 
-import ivorius.reccomplex.gui.table.*;
 import ivorius.ivtoolkit.maze.MazePath;
+import ivorius.reccomplex.gui.table.*;
 
 import java.util.List;
 

@@ -5,12 +5,12 @@
 
 package ivorius.reccomplex.gui.editmazeblock;
 
-import ivorius.reccomplex.gui.GuiValidityStateIndicator;
-import ivorius.reccomplex.gui.table.*;
-import ivorius.ivtoolkit.tools.IvCollections;
 import ivorius.ivtoolkit.maze.MazeComponent;
 import ivorius.ivtoolkit.maze.MazePath;
 import ivorius.ivtoolkit.maze.MazeRoom;
+import ivorius.ivtoolkit.tools.IvCollections;
+import ivorius.reccomplex.gui.GuiValidityStateIndicator;
+import ivorius.reccomplex.gui.table.*;
 import ivorius.reccomplex.worldgen.StructureHandler;
 
 import java.util.Arrays;

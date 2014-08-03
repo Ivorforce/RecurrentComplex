@@ -6,6 +6,7 @@
 package ivorius.reccomplex.commands;
 
 import ivorius.reccomplex.RecurrentComplex;
+import ivorius.reccomplex.network.PacketEditStructure;
 import ivorius.reccomplex.worldgen.StructureHandler;
 import ivorius.reccomplex.worldgen.genericStructures.GenericStructureInfo;
 import net.minecraft.command.CommandBase;
@@ -43,7 +44,7 @@ public class CommandEditStructure extends CommandBase
             if (args.length >= 1)
             {
                 GenericStructureInfo structureInfo = CommandExportStructure.getGenericStructureInfo(args[0]);
-                RecurrentComplex.chEditStructure.sendBeginEdit(entityPlayerMP, structureInfo, args[0]);
+                RecurrentComplex.network.sendTo(new PacketEditStructure(args[0], structureInfo), entityPlayerMP);
             }
             else
             {

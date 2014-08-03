@@ -23,7 +23,7 @@ import java.util.Random;
  */
 public class WorldGenMaze
 {
-    public static boolean generateMaze(World world, Random random, BlockCoord coord, List<MazeComponentPosition> placedComponents,  int[] roomSize, int layer)
+    public static boolean generateMaze(World world, Random random, BlockCoord coord, List<MazeComponentPosition> placedComponents, int[] roomSize, int layer)
     {
         int[] pathLengths = new int[]{0, 0, 0};
 
@@ -49,7 +49,7 @@ public class WorldGenMaze
                 int[] compRoomSize = Maze.getRoomSize(position.getComponent().getSize(), pathLengths, roomSize);
                 int[] sizeDependentShift = new int[]{(compRoomSize[0] - compStructureSize[0]) / 2, (compRoomSize[1] - compStructureSize[1]) / 2, (compRoomSize[2] - compStructureSize[2]) / 2};
 
-                BlockCoord compMazeCoordLower = coord.add(scaledCompMazePosition[0] + sizeDependentShift[0], scaledCompMazePosition[1] + sizeDependentShift[1], scaledCompMazePosition[2] +  + sizeDependentShift[2]);
+                BlockCoord compMazeCoordLower = coord.add(scaledCompMazePosition[0] + sizeDependentShift[0], scaledCompMazePosition[1] + sizeDependentShift[1], scaledCompMazePosition[2] + +sizeDependentShift[2]);
 
                 compStructureInfo.generate(world, random, compMazeCoordLower, componentTransform, layer + 1);
             }

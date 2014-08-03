@@ -5,9 +5,9 @@
 
 package ivorius.reccomplex.gui.editstructureblock;
 
+import ivorius.ivtoolkit.blocks.BlockCoord;
 import ivorius.reccomplex.blocks.TileEntityStructureGenerator;
 import ivorius.reccomplex.gui.table.*;
-import ivorius.ivtoolkit.blocks.BlockCoord;
 import joptsimple.internal.Strings;
 
 import java.util.Arrays;

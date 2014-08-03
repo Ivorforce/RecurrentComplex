@@ -5,8 +5,8 @@
 
 package ivorius.reccomplex.items;
 
-import ivorius.reccomplex.entities.StructureEntityInfo;
 import ivorius.ivtoolkit.blocks.BlockCoord;
+import ivorius.reccomplex.entities.StructureEntityInfo;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;

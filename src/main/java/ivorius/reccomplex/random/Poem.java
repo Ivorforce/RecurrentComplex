@@ -6,8 +6,8 @@
 package ivorius.reccomplex.random;
 
 import com.google.common.io.LineReader;
-import ivorius.reccomplex.RecurrentComplex;
 import ivorius.ivtoolkit.tools.IvFileHelper;
+import ivorius.reccomplex.RecurrentComplex;
 import net.minecraft.util.ResourceLocation;
 import org.apache.commons.io.IOUtils;
 

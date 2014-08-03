@@ -140,7 +140,7 @@ public class ItemBookGenerator extends Item implements GeneratingItem
             }
 
             currentLineChars = 0;
-            currentLineNumber ++;
+            currentLineNumber++;
 
             hardcodedLineIndex += hardcodedLine.length() + 1;
 

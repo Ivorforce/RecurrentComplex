@@ -8,7 +8,9 @@ package ivorius.reccomplex.gui.editinventorygen;
 import ivorius.ivtoolkit.gui.*;
 import ivorius.ivtoolkit.network.PacketGuiAction;
 import ivorius.reccomplex.RecurrentComplex;
-import ivorius.reccomplex.gui.*;
+import ivorius.reccomplex.gui.GuiValidityStateIndicator;
+import ivorius.reccomplex.gui.InventoryWatcher;
+import ivorius.reccomplex.network.PacketEditInventoryGenerator;
 import ivorius.reccomplex.worldgen.inventory.GenericInventoryGenerator;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.client.gui.GuiButton;
@@ -207,7 +209,7 @@ public class GuiEditInventoryGen extends GuiContainer implements InventoryWatche
             }
             else if (button.id == 0)
             {
-                RecurrentComplex.chEditInventoryGenerator.sendSaveEdit(mc.thePlayer, inventoryGenerator, key);
+                RecurrentComplex.network.sendToServer(new PacketEditInventoryGenerator(key, inventoryGenerator));
 
                 this.mc.thePlayer.closeScreen();
             }

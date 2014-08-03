@@ -9,6 +9,7 @@ import ivorius.reccomplex.RecurrentComplex;
 import ivorius.reccomplex.gui.table.Bounds;
 import ivorius.reccomplex.gui.table.GuiScreenModalTable;
 import ivorius.reccomplex.gui.table.GuiTable;
+import ivorius.reccomplex.network.PacketEditStructure;
 import ivorius.reccomplex.worldgen.genericStructures.GenericStructureInfo;
 import net.minecraft.client.gui.GuiButton;
 import org.lwjgl.input.Keyboard;
@@ -62,7 +63,7 @@ public class GuiEditGenericStructure extends GuiScreenModalTable
 
         if (button.id == 0)
         {
-            RecurrentComplex.chEditStructure.sendSaveEdit(this.mc.thePlayer, structureDataSource.getStructureInfo(), structureDataSource.getStructureKey());
+            RecurrentComplex.network.sendToServer(new PacketEditStructure(structureDataSource.getStructureKey(), structureDataSource.getStructureInfo()));
             this.mc.thePlayer.closeScreen();
         }
         else if (button.id == 1)

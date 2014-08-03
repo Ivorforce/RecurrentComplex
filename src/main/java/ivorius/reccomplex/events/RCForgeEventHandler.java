@@ -6,10 +6,10 @@
 package ivorius.reccomplex.events;
 
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
-import ivorius.reccomplex.entities.StructureEntityInfo;
-import ivorius.reccomplex.items.ItemBlockSelectorFloating;
 import ivorius.ivtoolkit.blocks.BlockCoord;
 import ivorius.ivtoolkit.rendering.IvRenderHelper;
+import ivorius.reccomplex.entities.StructureEntityInfo;
+import ivorius.reccomplex.items.ItemBlockSelectorFloating;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.client.renderer.Tessellator;

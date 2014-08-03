@@ -6,6 +6,7 @@
 package ivorius.reccomplex.blocks;
 
 import ivorius.reccomplex.RecurrentComplex;
+import ivorius.reccomplex.network.PacketEditStructureBlock;
 import net.minecraft.block.BlockContainer;
 import net.minecraft.block.ITileEntityProvider;
 import net.minecraft.block.material.Material;
@@ -36,7 +37,7 @@ public class BlockStructureGenerator extends BlockContainer implements ITileEnti
         {
             TileEntity tileEntity = world.getTileEntity(x, y, z);
 
-            RecurrentComplex.chEditStructureBlock.sendBeginEdit(((EntityPlayerMP) player), ((TileEntityStructureGenerator) tileEntity));
+            RecurrentComplex.network.sendTo(new PacketEditStructureBlock((TileEntityStructureGenerator) tileEntity), (EntityPlayerMP) player);
         }
 
         return true;

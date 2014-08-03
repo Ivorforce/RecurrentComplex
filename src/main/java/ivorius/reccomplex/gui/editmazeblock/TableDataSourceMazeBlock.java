@@ -5,9 +5,9 @@
 
 package ivorius.reccomplex.gui.editmazeblock;
 
+import ivorius.ivtoolkit.blocks.BlockCoord;
 import ivorius.reccomplex.blocks.TileEntityMazeGenerator;
 import ivorius.reccomplex.gui.table.*;
-import ivorius.ivtoolkit.blocks.BlockCoord;
 
 /**
  * Created by lukas on 05.06.14.

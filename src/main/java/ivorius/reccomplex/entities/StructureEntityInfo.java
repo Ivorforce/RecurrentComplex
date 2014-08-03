@@ -6,10 +6,10 @@
 package ivorius.reccomplex.entities;
 
 import io.netty.buffer.ByteBuf;
+import ivorius.ivtoolkit.blocks.BlockCoord;
 import ivorius.ivtoolkit.network.IvNetworkHelperServer;
 import ivorius.ivtoolkit.network.PartialUpdateHandler;
 import ivorius.reccomplex.RecurrentComplex;
-import ivorius.ivtoolkit.blocks.BlockCoord;
 import net.minecraft.entity.Entity;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.world.World;

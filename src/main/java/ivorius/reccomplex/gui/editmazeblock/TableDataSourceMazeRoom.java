@@ -5,8 +5,8 @@
 
 package ivorius.reccomplex.gui.editmazeblock;
 
-import ivorius.reccomplex.gui.table.*;
 import ivorius.ivtoolkit.maze.MazeRoom;
+import ivorius.reccomplex.gui.table.*;
 
 /**
  * Created by lukas on 22.06.14.

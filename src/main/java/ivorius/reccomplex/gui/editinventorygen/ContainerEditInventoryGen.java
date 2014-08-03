@@ -114,7 +114,7 @@ public class ContainerEditInventoryGen extends Container implements PacketGuiAct
     public ItemStack transferStackInSlot(EntityPlayer player, int slotIndex)
     {
         ItemStack itemstack = null;
-        Slot slot = (Slot)this.inventorySlots.get(slotIndex);
+        Slot slot = (Slot) this.inventorySlots.get(slotIndex);
 
         if (slot != null && slot.getHasStack())
         {
@@ -136,7 +136,7 @@ public class ContainerEditInventoryGen extends Container implements PacketGuiAct
 
             if (itemstack1.stackSize == 0)
             {
-                slot.putStack((ItemStack)null);
+                slot.putStack((ItemStack) null);
             }
             else
             {

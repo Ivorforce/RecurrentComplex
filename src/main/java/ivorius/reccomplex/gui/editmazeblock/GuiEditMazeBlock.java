@@ -10,6 +10,7 @@ import ivorius.reccomplex.blocks.TileEntityMazeGenerator;
 import ivorius.reccomplex.gui.table.Bounds;
 import ivorius.reccomplex.gui.table.GuiScreenModalTable;
 import ivorius.reccomplex.gui.table.GuiTable;
+import ivorius.reccomplex.network.PacketEditMazeBlock;
 import net.minecraft.client.gui.GuiButton;
 import org.lwjgl.input.Keyboard;
 
@@ -51,7 +52,7 @@ public class GuiEditMazeBlock extends GuiScreenModalTable
     {
         if (keyCode == Keyboard.KEY_ESCAPE)
         {
-            RecurrentComplex.chEditMazeBlock.sendSaveEdit(this.mc.thePlayer, structureDataSource.getMazeGenerator());
+            RecurrentComplex.network.sendToServer(new PacketEditMazeBlock(structureDataSource.getMazeGenerator()));
             this.mc.thePlayer.closeScreen();
         }
         else
@@ -67,7 +68,7 @@ public class GuiEditMazeBlock extends GuiScreenModalTable
 
         if (button.id == 0)
         {
-            RecurrentComplex.chEditMazeBlock.sendSaveEdit(this.mc.thePlayer, structureDataSource.getMazeGenerator());
+            RecurrentComplex.network.sendToServer(new PacketEditMazeBlock(structureDataSource.getMazeGenerator()));
             this.mc.thePlayer.closeScreen();
         }
         else if (button.id == 1)

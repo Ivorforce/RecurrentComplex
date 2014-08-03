@@ -7,13 +7,13 @@ package ivorius.reccomplex.worldgen.genericStructures;
 
 import com.google.gson.*;
 import cpw.mods.fml.common.Loader;
+import ivorius.ivtoolkit.blocks.BlockCoord;
+import ivorius.ivtoolkit.blocks.IvBlockCollection;
+import ivorius.ivtoolkit.math.AxisAlignedTransform2D;
+import ivorius.ivtoolkit.tools.IvWorldData;
 import ivorius.reccomplex.RecurrentComplex;
 import ivorius.reccomplex.blocks.GeneratingTileEntity;
 import ivorius.reccomplex.blocks.RCBlocks;
-import ivorius.ivtoolkit.math.AxisAlignedTransform2D;
-import ivorius.ivtoolkit.blocks.BlockCoord;
-import ivorius.ivtoolkit.blocks.IvBlockCollection;
-import ivorius.ivtoolkit.tools.IvWorldData;
 import ivorius.reccomplex.json.NbtToJson;
 import ivorius.reccomplex.worldgen.MCRegistrySpecial;
 import ivorius.reccomplex.worldgen.StructureHandler;

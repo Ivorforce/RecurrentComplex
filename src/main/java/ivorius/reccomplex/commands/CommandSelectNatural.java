@@ -5,10 +5,10 @@
 
 package ivorius.reccomplex.commands;
 
-import ivorius.reccomplex.blocks.RCBlocks;
-import ivorius.reccomplex.entities.StructureEntityInfo;
 import ivorius.ivtoolkit.blocks.BlockArea;
 import ivorius.ivtoolkit.blocks.BlockCoord;
+import ivorius.reccomplex.blocks.RCBlocks;
+import ivorius.reccomplex.entities.StructureEntityInfo;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.command.ICommandSender;

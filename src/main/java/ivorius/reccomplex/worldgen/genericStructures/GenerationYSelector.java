@@ -113,7 +113,7 @@ public class GenerationYSelector
             Block block = world.getBlock(x, curYWater, z);
             if (!(block instanceof BlockLiquid || block.getMaterial() == Material.ice))
             {
-                curYWater ++;
+                curYWater++;
                 break;
             }
 

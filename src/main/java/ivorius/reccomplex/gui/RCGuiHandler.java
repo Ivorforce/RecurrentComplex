@@ -42,7 +42,7 @@ public class RCGuiHandler implements IGuiHandler
                 else
                 {
                     InventoryGenerator generator = InventoryGenerationHandler.generator(key);
-                    GenericInventoryGenerator genericInventoryGenerator  = generator.copyAsGenericInventoryGenerator();
+                    GenericInventoryGenerator genericInventoryGenerator = generator.copyAsGenericInventoryGenerator();
 
                     if (genericInventoryGenerator == null)
                     {
@@ -76,7 +76,7 @@ public class RCGuiHandler implements IGuiHandler
                 else
                 {
                     InventoryGenerator generator = InventoryGenerationHandler.generator(key);
-                    GenericInventoryGenerator genericInventoryGenerator  = generator.copyAsGenericInventoryGenerator();
+                    GenericInventoryGenerator genericInventoryGenerator = generator.copyAsGenericInventoryGenerator();
 
                     if (genericInventoryGenerator == null)
                     {

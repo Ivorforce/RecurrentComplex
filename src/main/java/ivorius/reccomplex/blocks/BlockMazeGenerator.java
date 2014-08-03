@@ -6,6 +6,7 @@
 package ivorius.reccomplex.blocks;
 
 import ivorius.reccomplex.RecurrentComplex;
+import ivorius.reccomplex.network.PacketEditMazeBlock;
 import net.minecraft.block.BlockContainer;
 import net.minecraft.block.ITileEntityProvider;
 import net.minecraft.block.material.Material;
@@ -36,7 +37,7 @@ public class BlockMazeGenerator extends BlockContainer implements ITileEntityPro
         {
             TileEntity tileEntity = world.getTileEntity(x, y, z);
 
-            RecurrentComplex.chEditMazeBlock.sendBeginEdit(((EntityPlayerMP) player), ((TileEntityMazeGenerator) tileEntity));
+            RecurrentComplex.network.sendTo(new PacketEditMazeBlock((TileEntityMazeGenerator) tileEntity), (EntityPlayerMP) player);
         }
 
         return true;

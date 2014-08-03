@@ -5,8 +5,8 @@
 
 package ivorius.reccomplex.gui.editmazeblock;
 
-import ivorius.reccomplex.gui.table.*;
 import ivorius.ivtoolkit.maze.MazePath;
+import ivorius.reccomplex.gui.table.*;
 import net.minecraftforge.common.util.ForgeDirection;
 
 import java.util.ArrayList;

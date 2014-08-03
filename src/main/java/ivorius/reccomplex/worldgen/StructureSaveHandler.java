@@ -5,8 +5,8 @@
 
 package ivorius.reccomplex.worldgen;
 
-import ivorius.reccomplex.RecurrentComplex;
 import ivorius.ivtoolkit.tools.IvFileHelper;
+import ivorius.reccomplex.RecurrentComplex;
 import ivorius.reccomplex.worldgen.genericStructures.GenericStructureInfo;
 import net.minecraft.nbt.CompressedStreamTools;
 import net.minecraft.nbt.NBTSizeTracker;

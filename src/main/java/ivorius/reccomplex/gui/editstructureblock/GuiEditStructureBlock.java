@@ -10,6 +10,7 @@ import ivorius.reccomplex.blocks.TileEntityStructureGenerator;
 import ivorius.reccomplex.gui.table.Bounds;
 import ivorius.reccomplex.gui.table.GuiScreenModalTable;
 import ivorius.reccomplex.gui.table.GuiTable;
+import ivorius.reccomplex.network.PacketEditStructureBlock;
 import net.minecraft.client.gui.GuiButton;
 import org.lwjgl.input.Keyboard;
 
@@ -51,7 +52,7 @@ public class GuiEditStructureBlock extends GuiScreenModalTable
     {
         if (keyCode == Keyboard.KEY_ESCAPE)
         {
-            RecurrentComplex.chEditStructureBlock.sendSaveEdit(this.mc.thePlayer, structureDataSource.getStructureGenerator());
+            RecurrentComplex.network.sendToServer(new PacketEditStructureBlock(structureDataSource.getStructureGenerator()));
             this.mc.thePlayer.closeScreen();
         }
         else
@@ -67,7 +68,7 @@ public class GuiEditStructureBlock extends GuiScreenModalTable
 
         if (button.id == 0)
         {
-            RecurrentComplex.chEditStructureBlock.sendSaveEdit(this.mc.thePlayer, structureDataSource.getStructureGenerator());
+            RecurrentComplex.network.sendToServer(new PacketEditStructureBlock(structureDataSource.getStructureGenerator()));
             this.mc.thePlayer.closeScreen();
         }
         else if (button.id == 1)

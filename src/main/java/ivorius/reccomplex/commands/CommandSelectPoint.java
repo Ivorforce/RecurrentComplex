@@ -5,8 +5,8 @@
 
 package ivorius.reccomplex.commands;
 
-import ivorius.reccomplex.entities.StructureEntityInfo;
 import ivorius.ivtoolkit.blocks.BlockCoord;
+import ivorius.reccomplex.entities.StructureEntityInfo;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.command.WrongUsageException;

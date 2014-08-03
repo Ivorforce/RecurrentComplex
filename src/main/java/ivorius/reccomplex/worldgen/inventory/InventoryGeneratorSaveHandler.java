@@ -5,8 +5,8 @@
 
 package ivorius.reccomplex.worldgen.inventory;
 
-import ivorius.reccomplex.RecurrentComplex;
 import ivorius.ivtoolkit.tools.IvFileHelper;
+import ivorius.reccomplex.RecurrentComplex;
 import net.minecraft.util.ResourceLocation;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;

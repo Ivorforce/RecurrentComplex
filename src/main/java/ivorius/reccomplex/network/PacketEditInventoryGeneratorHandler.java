@@ -9,6 +9,7 @@ import cpw.mods.fml.common.network.simpleimpl.IMessage;
 import cpw.mods.fml.common.network.simpleimpl.IMessageHandler;
 import cpw.mods.fml.common.network.simpleimpl.MessageContext;
 import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import ivorius.reccomplex.gui.editinventorygen.GuiEditInventoryGen;
 import ivorius.reccomplex.items.ItemInventoryGenerationTag;
 import ivorius.reccomplex.worldgen.inventory.InventoryGeneratorSaveHandler;
@@ -28,7 +29,7 @@ public class PacketEditInventoryGeneratorHandler implements IMessageHandler<Pack
     {
         if (ctx.side == Side.CLIENT)
         {
-            Minecraft.getMinecraft().displayGuiScreen(new GuiEditInventoryGen(Minecraft.getMinecraft().thePlayer, message.getInventoryGenerator(), message.getKey()));
+            onMessageClient(message, ctx);
         }
         else
         {
@@ -54,5 +55,11 @@ public class PacketEditInventoryGeneratorHandler implements IMessageHandler<Pack
         }
 
         return null;
+    }
+
+    @SideOnly(Side.CLIENT)
+    private void onMessageClient(PacketEditInventoryGenerator message, MessageContext ctx)
+    {
+        Minecraft.getMinecraft().displayGuiScreen(new GuiEditInventoryGen(Minecraft.getMinecraft().thePlayer, message.getInventoryGenerator(), message.getKey()));
     }
 }

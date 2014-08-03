@@ -9,6 +9,7 @@ import cpw.mods.fml.common.network.simpleimpl.IMessage;
 import cpw.mods.fml.common.network.simpleimpl.IMessageHandler;
 import cpw.mods.fml.common.network.simpleimpl.MessageContext;
 import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import ivorius.ivtoolkit.tools.IvSideClient;
 import ivorius.reccomplex.blocks.TileEntityMazeGenerator;
 import ivorius.reccomplex.gui.editmazeblock.GuiEditMazeBlock;
@@ -27,14 +28,7 @@ public class PacketEditMazeBlockHandler implements IMessageHandler<PacketEditMaz
     {
         if (ctx.side == Side.CLIENT)
         {
-            TileEntity tileEntity = IvSideClient.getClientWorld().getTileEntity(message.getX(), message.getY(), message.getZ());
-            if (tileEntity instanceof TileEntityMazeGenerator)
-            {
-                TileEntityMazeGenerator tileEntityMazeGenerator = ((TileEntityMazeGenerator) tileEntity);
-
-                tileEntityMazeGenerator.readMazeDataFromNBT(message.getData());
-                Minecraft.getMinecraft().displayGuiScreen(new GuiEditMazeBlock(tileEntityMazeGenerator));
-            }
+            onMessageClient(message, ctx);
         }
         else
         {
@@ -52,5 +46,18 @@ public class PacketEditMazeBlockHandler implements IMessageHandler<PacketEditMaz
         }
 
         return null;
+    }
+
+    @SideOnly(Side.CLIENT)
+    private void onMessageClient(PacketEditMazeBlock message, MessageContext ctx)
+    {
+        TileEntity tileEntity = IvSideClient.getClientWorld().getTileEntity(message.getX(), message.getY(), message.getZ());
+        if (tileEntity instanceof TileEntityMazeGenerator)
+        {
+            TileEntityMazeGenerator tileEntityMazeGenerator = ((TileEntityMazeGenerator) tileEntity);
+
+            tileEntityMazeGenerator.readMazeDataFromNBT(message.getData());
+            Minecraft.getMinecraft().displayGuiScreen(new GuiEditMazeBlock(tileEntityMazeGenerator));
+        }
     }
 }

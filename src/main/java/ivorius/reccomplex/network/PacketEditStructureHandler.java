@@ -9,6 +9,7 @@ import cpw.mods.fml.common.network.simpleimpl.IMessage;
 import cpw.mods.fml.common.network.simpleimpl.IMessageHandler;
 import cpw.mods.fml.common.network.simpleimpl.MessageContext;
 import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import ivorius.reccomplex.entities.StructureEntityInfo;
 import ivorius.reccomplex.gui.editstructure.GuiEditGenericStructure;
 import ivorius.reccomplex.worldgen.StructureSaveHandler;
@@ -28,7 +29,7 @@ public class PacketEditStructureHandler implements IMessageHandler<PacketEditStr
     {
         if (ctx.side == Side.CLIENT)
         {
-            Minecraft.getMinecraft().displayGuiScreen(new GuiEditGenericStructure(message.getKey(), message.getStructureInfo()));
+            onMessageClient(message, ctx);
         }
         else
         {
@@ -55,5 +56,11 @@ public class PacketEditStructureHandler implements IMessageHandler<PacketEditStr
         }
 
         return null;
+    }
+
+    @SideOnly(Side.CLIENT)
+    private void onMessageClient(PacketEditStructure message, MessageContext ctx)
+    {
+        Minecraft.getMinecraft().displayGuiScreen(new GuiEditGenericStructure(message.getKey(), message.getStructureInfo()));
     }
 }

@@ -9,6 +9,7 @@ import cpw.mods.fml.common.network.simpleimpl.IMessage;
 import cpw.mods.fml.common.network.simpleimpl.IMessageHandler;
 import cpw.mods.fml.common.network.simpleimpl.MessageContext;
 import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import ivorius.ivtoolkit.tools.IvSideClient;
 import ivorius.reccomplex.blocks.TileEntityStructureGenerator;
 import ivorius.reccomplex.gui.editstructureblock.GuiEditStructureBlock;
@@ -27,14 +28,7 @@ public class PacketEditStructureBlockHandler implements IMessageHandler<PacketEd
     {
         if (ctx.side == Side.CLIENT)
         {
-            TileEntity tileEntity = IvSideClient.getClientWorld().getTileEntity(message.getX(), message.getY(), message.getZ());
-            if (tileEntity instanceof TileEntityStructureGenerator)
-            {
-                TileEntityStructureGenerator tileEntityStructureGenerator = ((TileEntityStructureGenerator) tileEntity);
-
-                tileEntityStructureGenerator.readStructureDataFromNBT(message.getData());
-                Minecraft.getMinecraft().displayGuiScreen(new GuiEditStructureBlock(tileEntityStructureGenerator));
-            }
+            onMessageClient(message, ctx);
         }
         else
         {
@@ -52,5 +46,18 @@ public class PacketEditStructureBlockHandler implements IMessageHandler<PacketEd
         }
 
         return null;
+    }
+
+    @SideOnly(Side.CLIENT)
+    private void onMessageClient(PacketEditStructureBlock message, MessageContext ctx)
+    {
+        TileEntity tileEntity = IvSideClient.getClientWorld().getTileEntity(message.getX(), message.getY(), message.getZ());
+        if (tileEntity instanceof TileEntityStructureGenerator)
+        {
+            TileEntityStructureGenerator tileEntityStructureGenerator = ((TileEntityStructureGenerator) tileEntity);
+
+            tileEntityStructureGenerator.readStructureDataFromNBT(message.getData());
+            Minecraft.getMinecraft().displayGuiScreen(new GuiEditStructureBlock(tileEntityStructureGenerator));
+        }
     }
 }

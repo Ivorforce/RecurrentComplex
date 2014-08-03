@@ -30,7 +30,9 @@ public class BiomeGenerationInfo
 
     public static List<BiomeGenerationInfo> defaultBiomeGenerationList()
     {
-        return Arrays.asList(new BiomeGenerationInfo("Type:PLAINS", null),
+        return Arrays.asList(new BiomeGenerationInfo("Type:NETHER", 0),
+                new BiomeGenerationInfo("Type:END", 0),
+                new BiomeGenerationInfo("Type:PLAINS", null),
                 new BiomeGenerationInfo("Type:FOREST", null),
                 new BiomeGenerationInfo("Type:MOUNTAIN", null),
                 new BiomeGenerationInfo("Type:HILLS", null),
@@ -43,7 +45,10 @@ public class BiomeGenerationInfo
 
     public static List<BiomeGenerationInfo> oceanBiomeGenerationList()
     {
-        return Arrays.asList(new BiomeGenerationInfo("Type:OCEAN,SNOWY", 0), new BiomeGenerationInfo("Type:OCEAN", null));
+        return Arrays.asList(new BiomeGenerationInfo("Type:NETHER", 0),
+                new BiomeGenerationInfo("Type:END", 0),
+                new BiomeGenerationInfo("Type:OCEAN,SNOWY", 0),
+                new BiomeGenerationInfo("Type:OCEAN", null));
     }
 
     public String getBiomeID()

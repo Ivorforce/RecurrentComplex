@@ -256,21 +256,15 @@ public class GenericStructureInfo implements StructureInfo, Cloneable
     @Override
     public int generationWeightInBiome(BiomeGenBase biome)
     {
-        // Do specific biomes first
         for (BiomeGenerationInfo generationInfo : generationWeights)
         {
-            String generationBiomeID = generationInfo.getBiomeID();
             int genWeight = generationInfo.getActiveGenerationWeight();
 
+            String generationBiomeID = generationInfo.getBiomeID();
             if (generationBiomeID.equals(biome.biomeName))
             {
                 return genWeight;
             }
-        }
-
-        for (BiomeGenerationInfo generationInfo : generationWeights)
-        {
-            int genWeight = generationInfo.getActiveGenerationWeight();
 
             List<BiomeDictionary.Type> types = generationInfo.getBiomeTypes();
             if (types != null && isBiomeAllTypes(biome, types))

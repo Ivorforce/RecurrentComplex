@@ -81,7 +81,8 @@ public class TableDataSourceBiomeGenList implements TableDataSource, TableElemen
         }
 
         int biomeGenIndex = index - 1;
-        TableElementButton button = new TableElementButton("biomeGen" + biomeGenIndex, biomeGenerationInfoList.get(biomeGenIndex).getBiomeID(), new TableElementButton.Action("edit", "Edit"), new TableElementButton.Action("delete", "Delete"));
+        TableElementButton.Action[] actions = {new TableElementButton.Action("earlier", "Earlier", biomeGenIndex > 0), new TableElementButton.Action("later", "Later", biomeGenIndex < biomeGenerationInfoList.size() - 1), new TableElementButton.Action("edit", "Edit"), new TableElementButton.Action("delete", "Delete")};
+        TableElementButton button = new TableElementButton("biomeGen" + biomeGenIndex, biomeGenerationInfoList.get(biomeGenIndex).getBiomeID(), actions);
         button.addListener(this);
         return button;
     }
@@ -100,14 +101,25 @@ public class TableDataSourceBiomeGenList implements TableDataSource, TableElemen
             int index = Integer.valueOf(tableElementButton.getID().substring(8));
             BiomeGenerationInfo generationInfo = biomeGenerationInfoList.get(index);
 
-            if (actionID.equals("edit"))
+            switch (actionID)
             {
-                navigator.pushTable(new GuiTable(tableDelegate, new TableDataSourceBiomeGen(generationInfo, tableDelegate)));
-            }
-            else if (actionID.equals("delete"))
-            {
-                biomeGenerationInfoList.remove(generationInfo);
-                tableDelegate.reloadData();
+                case "edit":
+                    navigator.pushTable(new GuiTable(tableDelegate, new TableDataSourceBiomeGen(generationInfo, tableDelegate)));
+                    break;
+                case "delete":
+                    biomeGenerationInfoList.remove(generationInfo);
+                    tableDelegate.reloadData();
+                    break;
+                case "earlier":
+                    biomeGenerationInfoList.remove(index);
+                    biomeGenerationInfoList.add(index - 1, generationInfo);
+                    tableDelegate.reloadData();
+                    break;
+                case "later":
+                    biomeGenerationInfoList.remove(index);
+                    biomeGenerationInfoList.add(index + 1, generationInfo);
+                    tableDelegate.reloadData();
+                    break;
             }
         }
     }

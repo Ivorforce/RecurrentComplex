@@ -273,18 +273,24 @@ public class GenericStructureInfo implements StructureInfo, Cloneable
             int genWeight = generationInfo.getActiveGenerationWeight();
 
             List<BiomeDictionary.Type> types = generationInfo.getBiomeTypes();
-            if (types != null)
+            if (types != null && isBiomeAllTypes(biome, types))
             {
-                BiomeDictionary.Type[] biomeTypes = BiomeDictionary.getTypesForBiome(biome);
-
-                if (types.containsAll(Arrays.asList(biomeTypes)))
-                {
-                    return genWeight;
-                }
+                return genWeight;
             }
         }
 
         return 0;
+    }
+
+    private static boolean isBiomeAllTypes(BiomeGenBase biomeGenBase, List<BiomeDictionary.Type> types)
+    {
+        for (BiomeDictionary.Type type : types)
+        {
+            if (!BiomeDictionary.isBiomeOfType(biomeGenBase, type))
+                return false;
+        }
+
+        return true;
     }
 
     @Override

@@ -14,9 +14,10 @@ import cpw.mods.fml.common.event.FMLPostInitializationEvent;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 import cpw.mods.fml.common.event.FMLServerStartingEvent;
 import cpw.mods.fml.common.network.NetworkRegistry;
+import cpw.mods.fml.common.network.simpleimpl.SimpleNetworkWrapper;
 import cpw.mods.fml.common.registry.GameRegistry;
-import ivorius.ivtoolkit.network.ChannelHandlerExtendedEntityPropertiesData;
-import ivorius.ivtoolkit.network.ChannelHandlerGuiAction;
+import cpw.mods.fml.relauncher.Side;
+import ivorius.ivtoolkit.network.*;
 import ivorius.reccomplex.blocks.*;
 import ivorius.reccomplex.commands.*;
 import ivorius.reccomplex.events.RCFMLEventHandler;
@@ -86,10 +87,9 @@ public class RecurrentComplex
     public static RCForgeEventHandler forgeEventHandler;
     public static RCFMLEventHandler fmlEventHandler;
 
-    public static ChannelHandlerExtendedEntityPropertiesData chExtendedEntityPropertiesData;
+    public static SimpleNetworkWrapper network;
     public static ChannelHandlerEditInventoryGenerator chEditInventoryGenerator;
     public static ChannelHandlerEditStructure chEditStructure;
-    public static ChannelHandlerGuiAction chGuiAction;
     public static ChannelHandlerEditStructureBlock chEditStructureBlock;
     public static ChannelHandlerEditMazeBlock chEditMazeBlock;
 
@@ -118,17 +118,11 @@ public class RecurrentComplex
         guiHandler = new RCGuiHandler();
         NetworkRegistry.INSTANCE.registerGuiHandler(this, guiHandler);
 
-        chExtendedEntityPropertiesData = new ChannelHandlerExtendedEntityPropertiesData("RC|eepData");
-        NetworkRegistry.INSTANCE.newChannel(chExtendedEntityPropertiesData.packetChannel, chExtendedEntityPropertiesData);
-
         chEditInventoryGenerator = new ChannelHandlerEditInventoryGenerator("RC|editIG");
         NetworkRegistry.INSTANCE.newChannel(chEditInventoryGenerator.packetChannel, chEditInventoryGenerator);
 
         chEditStructure = new ChannelHandlerEditStructure("RC|editStruc");
         NetworkRegistry.INSTANCE.newChannel(chEditStructure.packetChannel, chEditStructure);
-
-        chGuiAction = new ChannelHandlerGuiAction("RC|guiAct");
-        NetworkRegistry.INSTANCE.newChannel(chGuiAction.packetChannel, chGuiAction);
 
         chEditStructureBlock = new ChannelHandlerEditStructureBlock("RC|editStrucB");
         NetworkRegistry.INSTANCE.newChannel(chEditStructureBlock.packetChannel, chEditStructureBlock);
@@ -186,6 +180,10 @@ public class RecurrentComplex
     @EventHandler
     public void load(FMLInitializationEvent event)
     {
+        network = NetworkRegistry.INSTANCE.newSimpleChannel(MODID);
+        network.registerMessage(PacketExtendedEntityPropertiesDataHandler.class, PacketExtendedEntityPropertiesData.class, 0, Side.CLIENT);
+        network.registerMessage(PacketGuiActionHandler.class, PacketGuiAction.class, 1, Side.SERVER);
+
         StructureHandler.registerBlockTransformer("natural", BlockTransformerNatural.class, new BTProviderNatural());
         StructureHandler.registerBlockTransformer("naturalAir", BlockTransformerNaturalAir.class, new BTProviderNaturalAir());
         StructureHandler.registerBlockTransformer("pillar", BlockTransformerPillar.class, new BTProviderPillar());

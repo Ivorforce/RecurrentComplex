@@ -6,9 +6,10 @@
 package ivorius.reccomplex.entities;
 
 import io.netty.buffer.ByteBuf;
+import ivorius.ivtoolkit.network.IvNetworkHelperServer;
+import ivorius.ivtoolkit.network.PartialUpdateHandler;
 import ivorius.reccomplex.RecurrentComplex;
 import ivorius.ivtoolkit.blocks.BlockCoord;
-import ivorius.ivtoolkit.network.IExtendedEntityPropertiesUpdateData;
 import net.minecraft.entity.Entity;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.world.World;
@@ -17,7 +18,7 @@ import net.minecraftforge.common.IExtendedEntityProperties;
 /**
  * Created by lukas on 24.05.14.
  */
-public class StructureEntityInfo implements IExtendedEntityProperties, IExtendedEntityPropertiesUpdateData
+public class StructureEntityInfo implements IExtendedEntityProperties, PartialUpdateHandler
 {
     private boolean hasChanges;
 
@@ -45,7 +46,7 @@ public class StructureEntityInfo implements IExtendedEntityProperties, IExtended
 
     public void sendSelectionChangesToClients(Entity entity)
     {
-        RecurrentComplex.chExtendedEntityPropertiesData.sendUpdatePacketSafe(entity, "structureEntityInfo", "selection");
+        IvNetworkHelperServer.sendEEPUpdatePacket(entity, "structureEntityInfo", "selection", RecurrentComplex.network);
     }
 
     public NBTTagCompound getCachedExportStructureBlockDataNBT()

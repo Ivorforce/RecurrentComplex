@@ -9,6 +9,7 @@ import ivorius.reccomplex.RecurrentComplex;
 import ivorius.ivtoolkit.tools.IvFileHelper;
 import ivorius.reccomplex.worldgen.genericStructures.GenericStructureInfo;
 import net.minecraft.nbt.CompressedStreamTools;
+import net.minecraft.nbt.NBTSizeTracker;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ResourceLocation;
 import org.apache.commons.io.FileUtils;
@@ -205,7 +206,7 @@ public class StructureSaveHandler
                     }
                     else if ("worldData.nbt".equals(zipEntry.getName()))
                     {
-                        worldData = CompressedStreamTools.decompress(bytes);
+                        worldData = CompressedStreamTools.func_152457_a(bytes, NBTSizeTracker.field_152451_a);
                     }
                 }
 

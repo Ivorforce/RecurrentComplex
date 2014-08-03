@@ -22,7 +22,7 @@ group= "ivorius.reccomplex" // http://maven.apache.org/guides/mini/guide-naming-
 archivesBaseName = "RecurrentComplex"
 
 minecraft {
-    version = "1.7.2-10.12.2.1147"
+    version = "1.7.10-10.13.0.1194"
     assetDir = "eclipse/assets"
 }
 

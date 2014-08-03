@@ -63,6 +63,11 @@ public class IvMultiBlockHelper implements Iterable<int[]>
             return false;
         }
 
+        return beginPlacing(validLocations, world, block, metadata, direction);
+    }
+
+    public boolean beginPlacing(List<int[]> validLocations, World world, Block block, int metadata, int direction)
+    {
         this.world = world;
         this.block = block;
         this.metadata = metadata;
@@ -265,9 +270,9 @@ public class IvMultiBlockHelper implements Iterable<int[]>
             ArrayList<List<int[]>> validPlacements = new ArrayList<>();
             for (int xShift = min[0] - lengths[0]; xShift <= min[0]; xShift++)
             {
-                for (int yShift = min[0] - lengths[1]; yShift <= min[1]; yShift++)
+                for (int yShift = min[1] - lengths[1]; yShift <= min[1]; yShift++)
                 {
-                    for (int zShift = min[0] - lengths[2]; zShift <= min[2]; zShift++)
+                    for (int zShift = min[2] - lengths[2]; zShift <= min[2]; zShift++)
                     {
                         ArrayList<int[]> validPositions = new ArrayList<>();
 

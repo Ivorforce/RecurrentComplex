@@ -18,27 +18,28 @@
 
 package ivorius.ivtoolkit.network;
 
-import io.netty.buffer.ByteBuf;
+import cpw.mods.fml.common.network.simpleimpl.IMessage;
+import cpw.mods.fml.common.network.simpleimpl.IMessageHandler;
+import cpw.mods.fml.common.network.simpleimpl.MessageContext;
+import ivorius.ivtoolkit.tools.IvSideClient;
+import net.minecraft.server.MinecraftServer;
+import net.minecraft.tileentity.TileEntity;
+import net.minecraft.world.World;
 
 /**
- * A interface for TileEntities that need extra information to be communicated
- * between the server and client when their values are updated.
+ * Created by lukas on 02.07.14.
  */
-public interface ITileEntityUpdateData
+public class PacketTileEntityClientEventHandler implements IMessageHandler<PacketTileEntityClientEvent, IMessage>
 {
-    /**
-     * Called by the server when constructing the update packet.
-     * Data should be added to the provided stream.
-     *
-     * @param buffer The packet data stream
-     */
-    public void writeUpdateData(ByteBuf buffer, String context);
+    @Override
+    public IMessage onMessage(PacketTileEntityClientEvent message, MessageContext ctx)
+    {
+        World world = MinecraftServer.getServer().worldServerForDimension(message.getDimension());
+        TileEntity entity = world.getTileEntity(message.getX(), message.getY(), message.getZ());
 
-    /**
-     * Called by the client when it receives a Entity update packet.
-     * Data should be read out of the stream in the same way as it was written.
-     *
-     * @param buffer The packet data stream
-     */
-    public void readUpdateData(ByteBuf buffer, String context);
+        if (entity != null)
+            ((PartialUpdateHandler) entity).readUpdateData(message.getPayload(), message.getContext());
+
+        return null;
+    }
 }

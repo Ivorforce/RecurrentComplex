@@ -6,8 +6,8 @@
 package ivorius.reccomplex.gui.editinventorygen;
 
 import io.netty.buffer.ByteBuf;
+import ivorius.ivtoolkit.network.PacketGuiAction;
 import ivorius.reccomplex.gui.SlotDynamicIndex;
-import ivorius.ivtoolkit.network.IGuiActionHandler;
 import ivorius.reccomplex.worldgen.inventory.GenericInventoryGenerator;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
@@ -21,7 +21,7 @@ import java.util.List;
 /**
  * Created by lukas on 26.05.14.
  */
-public class ContainerEditInventoryGen extends Container implements IGuiActionHandler
+public class ContainerEditInventoryGen extends Container implements PacketGuiAction.ActionHandler
 {
     public static final int ITEM_ROWS = 4;
     public static final int ITEM_COLUMNS = 1;

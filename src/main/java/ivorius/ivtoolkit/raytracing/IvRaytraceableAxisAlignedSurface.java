@@ -27,17 +27,18 @@ public class IvRaytraceableAxisAlignedSurface extends IvRaytraceableObject
     private double x, y, z;
     private double width, height, depth;
 
-    public IvRaytraceableAxisAlignedSurface(Object userInfo, double x, double y, double z, double width, double height, double depth)
+    private Object hitInfo;
+
+    public IvRaytraceableAxisAlignedSurface(Object userInfo, Object hitInfo, double y, double z, double width, double height, double depth, double x)
     {
         super(userInfo);
-
         this.x = x;
         this.y = y;
         this.z = z;
-
         this.width = width;
         this.height = height;
         this.depth = depth;
+        this.hitInfo = hitInfo;
     }
 
     public double getX()
@@ -98,6 +99,16 @@ public class IvRaytraceableAxisAlignedSurface extends IvRaytraceableObject
     public void setDepth(double depth)
     {
         this.depth = depth;
+    }
+
+    public Object getHitInfo()
+    {
+        return hitInfo;
+    }
+
+    public void setHitInfo(Object hitInfo)
+    {
+        this.hitInfo = hitInfo;
     }
 
     @Override
@@ -172,14 +183,14 @@ public class IvRaytraceableAxisAlignedSurface extends IvRaytraceableObject
 
             if (withinBounds(hitPoint[0], this.x, this.x + this.width) && withinBounds(hitPoint[1], this.y, this.y + this.height) && withinBounds(hitPoint[2], this.z, this.z + this.depth))
             {
-                list.add(new IvRaytracedIntersection(this, hitPoint));
+                list.add(new IvRaytracedIntersection(this, hitInfo, hitPoint));
             }
         }
     }
 
     private boolean withinBounds(double value, double min, double max)
     {
-        return value >= min && value <= max;
+        return value >= (min - 0.0001f) && value <= (max + 0.0001f);
     }
 
     private void checkValid()

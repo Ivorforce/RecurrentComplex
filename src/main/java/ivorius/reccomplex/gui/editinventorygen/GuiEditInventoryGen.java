@@ -6,6 +6,7 @@
 package ivorius.reccomplex.gui.editinventorygen;
 
 import ivorius.ivtoolkit.gui.*;
+import ivorius.ivtoolkit.network.PacketGuiAction;
 import ivorius.reccomplex.RecurrentComplex;
 import ivorius.reccomplex.gui.*;
 import ivorius.reccomplex.worldgen.inventory.GenericInventoryGenerator;
@@ -213,12 +214,12 @@ public class GuiEditInventoryGen extends GuiContainer implements InventoryWatche
             else if (button.id == 2)
             {
                 scrollTo(currentColShift + 1);
-                RecurrentComplex.chGuiAction.sendActionToServer("igSelectCol", currentColShift);
+                RecurrentComplex.network.sendToServer(PacketGuiAction.packetGuiAction("igSelectCol", currentColShift));
             }
             else if (button.id == 3)
             {
                 scrollTo(currentColShift - 1);
-                RecurrentComplex.chGuiAction.sendActionToServer("igSelectCol", currentColShift);
+                RecurrentComplex.network.sendToServer(PacketGuiAction.packetGuiAction("igSelectCol", currentColShift));
             }
         }
     }

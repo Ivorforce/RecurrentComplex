@@ -16,29 +16,15 @@
  * No additional restrictions — You may not apply legal terms or technological measures that legally restrict others from doing anything the license permits.
  */
 
-package ivorius.ivtoolkit.network;
-
-import io.netty.buffer.ByteBuf;
+package ivorius.ivtoolkit.logic;
 
 /**
- * A interface for Entities that need extra information to be communicated
- * between the server and client when their values are updated.
+ * Created by lukas on 02.08.14.
  */
-public interface IEntityUpdateData
+public class IvObjects
 {
-    /**
-     * Called by the server when constructing the update packet.
-     * Data should be added to the provided stream.
-     *
-     * @param buffer The packet data stream
-     */
-    public void writeUpdateData(ByteBuf buffer, String context);
-
-    /**
-     * Called by the client when it receives a Entity update packet.
-     * Data should be read out of the stream in the same way as it was written.
-     *
-     * @param buffer The packet data stream
-     */
-    public void readUpdateData(ByteBuf buffer, String context);
+    public static boolean equals(Object a, Object b)
+    {
+        return a == b || (a == null ? b.equals(a) : a.equals(b));
+    }
 }

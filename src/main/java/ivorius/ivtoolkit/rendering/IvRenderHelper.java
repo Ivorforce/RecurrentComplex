@@ -47,7 +47,7 @@ public class IvRenderHelper
         tessellator.draw();
     }
 
-    public static void renderCubeInvBlock(RenderBlocks rb, Block block)
+    public static void renderCubeInvBlock(RenderBlocks rb, Block block, int metadata)
     {
         block.setBlockBoundsForItemRender();
         Tessellator tessellator = Tessellator.instance;
@@ -60,27 +60,27 @@ public class IvRenderHelper
         GL11.glTranslatef(-0.5F, -0.5F, -0.5F);
         tessellator.startDrawingQuads();
         tessellator.setNormal(0.0F, -1.0F, 0.0F);
-        rb.renderFaceYNeg(block, x, y, z, rb.getBlockIconFromSide(block, 0));
+        rb.renderFaceYNeg(block, x, y, z, rb.getBlockIconFromSideAndMetadata(block, 0, metadata));
         tessellator.draw();
         tessellator.startDrawingQuads();
         tessellator.setNormal(0.0F, 1.0F, 0.0F);
-        rb.renderFaceYPos(block, x, y, z, rb.getBlockIconFromSide(block, 1));
+        rb.renderFaceYPos(block, x, y, z, rb.getBlockIconFromSideAndMetadata(block, 1, metadata));
         tessellator.draw();
         tessellator.startDrawingQuads();
         tessellator.setNormal(0.0F, 0.0F, -1.0F);
-        rb.renderFaceZNeg(block, x, y, z, rb.getBlockIconFromSide(block, 2));
+        rb.renderFaceZNeg(block, x, y, z, rb.getBlockIconFromSideAndMetadata(block, 2, metadata));
         tessellator.draw();
         tessellator.startDrawingQuads();
         tessellator.setNormal(0.0F, 0.0F, 1.0F);
-        rb.renderFaceZPos(block, x, y, z, rb.getBlockIconFromSide(block, 3));
+        rb.renderFaceZPos(block, x, y, z, rb.getBlockIconFromSideAndMetadata(block, 3, metadata));
         tessellator.draw();
         tessellator.startDrawingQuads();
         tessellator.setNormal(-1.0F, 0.0F, 0.0F);
-        rb.renderFaceXNeg(block, x, y, z, rb.getBlockIconFromSide(block, 4));
+        rb.renderFaceXNeg(block, x, y, z, rb.getBlockIconFromSideAndMetadata(block, 4, metadata));
         tessellator.draw();
         tessellator.startDrawingQuads();
         tessellator.setNormal(1.0F, 0.0F, 0.0F);
-        rb.renderFaceXPos(block, x, y, z, rb.getBlockIconFromSide(block, 5));
+        rb.renderFaceXPos(block, x, y, z, rb.getBlockIconFromSideAndMetadata(block, 5, metadata));
         tessellator.draw();
         GL11.glTranslatef(0.5F, 0.5F, 0.5F);
     }

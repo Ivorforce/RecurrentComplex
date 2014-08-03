@@ -36,6 +36,14 @@ public class BlockArea implements Iterable<BlockCoord>
         this.point2 = point2;
     }
 
+    public static BlockArea areaFromSize(BlockCoord coord, int[] size)
+    {
+        if (size[0] <= 0 || size[1] <= 0 || size[2] <= 0)
+            throw new IllegalArgumentException();
+
+        return new BlockArea(coord, new BlockCoord(coord.x + size[0] - 1, coord.y + size[1] - 1, coord.z + size[2] - 1));
+    }
+
     public BlockCoord getPoint1()
     {
         return point1;

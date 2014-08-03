@@ -18,27 +18,27 @@
 
 package ivorius.ivtoolkit.network;
 
-import io.netty.buffer.ByteBuf;
+import cpw.mods.fml.common.network.simpleimpl.IMessage;
+import cpw.mods.fml.common.network.simpleimpl.IMessageHandler;
+import cpw.mods.fml.common.network.simpleimpl.MessageContext;
+import ivorius.ivtoolkit.tools.IvSideClient;
+import net.minecraft.entity.Entity;
+import net.minecraft.world.World;
 
 /**
- * A interface for ExtendedEntityProperties that need extra information to be communicated
- * between the server and client when their values are updated.
+ * Created by lukas on 02.07.14.
  */
-public interface IExtendedEntityPropertiesUpdateData
+public class PacketEntityDataHandler implements IMessageHandler<PacketEntityData, IMessage>
 {
-    /**
-     * Called by the server when constructing the update packet.
-     * Data should be added to the provided stream.
-     *
-     * @param buffer The packet data stream
-     */
-    public void writeUpdateData(ByteBuf buffer, String context);
+    @Override
+    public IMessage onMessage(PacketEntityData message, MessageContext ctx)
+    {
+        World world = IvSideClient.getClientWorld();
+        Entity entity = world.getEntityByID(message.getEntityID());
 
-    /**
-     * Called by the client when it receives an EEP update packet.
-     * Data should be read out of the stream in the same way as it was written.
-     *
-     * @param buffer The packet data stream
-     */
-    public void readUpdateData(ByteBuf buffer, String context);
+        if (entity != null)
+            ((PartialUpdateHandler) entity).readUpdateData(message.getPayload(), message.getContext());
+
+        return null;
+    }
 }

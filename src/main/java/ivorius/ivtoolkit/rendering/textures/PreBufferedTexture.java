@@ -16,57 +16,35 @@
  * No additional restrictions — You may not apply legal terms or technological measures that legally restrict others from doing anything the license permits.
  */
 
-package ivorius.ivtoolkit.network;
+package ivorius.ivtoolkit.rendering.textures;
 
-import io.netty.buffer.ByteBuf;
-import io.netty.buffer.ByteBufInputStream;
-import io.netty.buffer.ByteBufOutputStream;
-import io.netty.channel.ChannelHandlerContext;
-import net.minecraft.nbt.CompressedStreamTools;
-import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.client.renderer.texture.AbstractTexture;
+import net.minecraft.client.renderer.texture.TextureUtil;
+import net.minecraft.client.resources.IResourceManager;
 
+import java.awt.image.BufferedImage;
 import java.io.IOException;
 
 /**
- * Created by lukas on 24.02.14.
+ * Created by lukas on 27.07.14.
  */
-public abstract class IvNBTPacket extends IvPacket
+public class PreBufferedTexture extends AbstractTexture
 {
-    public NBTTagCompound compound;
+    private BufferedImage bufferedImage;
 
-    public IvNBTPacket()
+    public PreBufferedTexture(BufferedImage bufferedImage)
     {
-
+        this.bufferedImage = bufferedImage;
     }
 
-    public IvNBTPacket(NBTTagCompound compound)
+    public BufferedImage getBufferedImage()
     {
-        this.compound = compound;
-    }
-
-    @Override
-    public void encodeInto(ChannelHandlerContext ctx, ByteBuf buffer)
-    {
-        try
-        {
-            CompressedStreamTools.write(compound, new ByteBufOutputStream(buffer));
-        }
-        catch (IOException e)
-        {
-            e.printStackTrace();
-        }
+        return bufferedImage;
     }
 
     @Override
-    public void decodeInto(ChannelHandlerContext ctx, ByteBuf buffer)
+    public void loadTexture(IResourceManager var1) throws IOException
     {
-        try
-        {
-            compound = CompressedStreamTools.read(new ByteBufInputStream(buffer));
-        }
-        catch (IOException e)
-        {
-            e.printStackTrace();
-        }
+        TextureUtil.uploadTextureImageAllocate(this.getGlTextureId(), bufferedImage, false, false);
     }
 }

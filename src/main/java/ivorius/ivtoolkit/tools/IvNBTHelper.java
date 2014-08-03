@@ -18,11 +18,14 @@
 
 package ivorius.ivtoolkit.tools;
 
+import ivorius.ivtoolkit.math.IvBytePacker;
 import net.minecraft.block.Block;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.*;
 import net.minecraft.potion.PotionEffect;
 import net.minecraftforge.common.util.Constants;
+
+import java.util.Arrays;
 
 /**
  * Created by lukas on 23.04.14.
@@ -269,5 +272,22 @@ public class IvNBTHelper
     {
         int[] array = compound.getIntArray(id);
         return array.length != length ? new int[length] : array;
+    }
+
+    public static void writeCompressed(String idBase, int[] intArray, int maxValueInArray, NBTTagCompound compound)
+    {
+        byte bitLength = IvBytePacker.getRequiredBitLength(maxValueInArray);
+        byte[] bytes = IvBytePacker.packValues(intArray, bitLength);
+        compound.setByteArray(idBase + "_bytes", bytes);
+        compound.setByte(idBase + "_bitLength", bitLength);
+        compound.setInteger(idBase + "_length", intArray.length);
+    }
+
+    public static int[] readCompressed(String idBase, NBTTagCompound compound)
+    {
+        byte[] bytes = compound.getByteArray(idBase + "_bytes");
+        byte bitLength = compound.getByte(idBase + "_bitLength");
+        int intArrayLength = compound.getInteger(idBase + "_length");
+        return IvBytePacker.unpackValues(bytes, bitLength, intArrayLength);
     }
 }

@@ -18,17 +18,16 @@
 
 package ivorius.ivtoolkit.blocks;
 
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.network.Packet;
-import net.minecraft.network.play.server.S35PacketUpdateTileEntity;
-import net.minecraft.tileentity.TileEntity;
+import org.lwjgl.opengl.GL11;
 
-public class IvTileEntityHelper
+/**
+ * Created by lukas on 26.07.14.
+ */
+public class IvRotatableBlockRenderHelper
 {
-    public static Packet getStandardDescriptionPacket(TileEntity tileEntity)
+    public static void transformFor(IvTileEntityRotatable tileEntity, double renderX, double renderY, double renderZ)
     {
-        NBTTagCompound var1 = new NBTTagCompound();
-        tileEntity.writeToNBT(var1);
-        return new S35PacketUpdateTileEntity(tileEntity.xCoord, tileEntity.yCoord, tileEntity.zCoord, 1, var1);
+        GL11.glTranslated(renderX + 0.5, renderY + 0.5, renderZ + 0.5);
+        GL11.glRotatef(-90.0f * tileEntity.direction + 180.0f, 0.0f, 1.0f, 0.0f);
     }
 }

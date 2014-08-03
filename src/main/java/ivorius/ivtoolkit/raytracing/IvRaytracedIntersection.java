@@ -20,18 +20,30 @@ package ivorius.ivtoolkit.raytracing;
 
 public class IvRaytracedIntersection
 {
-    public IvRaytraceableObject info;
-    public double[] point;
+    private IvRaytraceableObject hitObject;
+    private Object hitInfo;
+    private double[] point;
 
-    public IvRaytracedIntersection(IvRaytraceableObject info, double[] point)
+    public IvRaytracedIntersection(IvRaytraceableObject hitObject, Object hitInfo, double[] point)
     {
-        this.info = info;
+        this.hitObject = hitObject;
+        this.hitInfo = hitInfo;
         this.point = point;
     }
 
     public Object getUserInfo()
     {
-        return this.info.userInfo;
+        return this.hitObject.userInfo;
+    }
+
+    public IvRaytraceableObject getHitObject()
+    {
+        return hitObject;
+    }
+
+    public Object getHitInfo()
+    {
+        return hitInfo;
     }
 
     public double getX()
@@ -49,9 +61,14 @@ public class IvRaytracedIntersection
         return point[2];
     }
 
+    public double[] getPoint()
+    {
+        return point.clone();
+    }
+
     @Override
     public String toString()
     {
-        return String.format("%s: [%.3f, %.3f, %.3f]", this.getUserInfo().toString(), this.getX(), this.getY(), this.getZ());
+        return String.format("%s: [%.3f, %.3f, %.3f]", String.valueOf(this.getUserInfo()), this.getX(), this.getY(), this.getZ());
     }
 }

@@ -16,19 +16,30 @@
  * No additional restrictions — You may not apply legal terms or technological measures that legally restrict others from doing anything the license permits.
  */
 
-package ivorius.ivtoolkit.blocks;
+package ivorius.ivtoolkit.network;
 
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.network.Packet;
-import net.minecraft.network.play.server.S35PacketUpdateTileEntity;
-import net.minecraft.tileentity.TileEntity;
+import cpw.mods.fml.common.network.simpleimpl.IMessage;
+import cpw.mods.fml.common.network.simpleimpl.IMessageHandler;
+import cpw.mods.fml.common.network.simpleimpl.MessageContext;
+import net.minecraft.inventory.Container;
+import net.minecraft.network.NetHandlerPlayServer;
 
-public class IvTileEntityHelper
+/**
+* Created by lukas on 02.07.14.
+*/
+public class PacketGuiActionHandler implements IMessageHandler<PacketGuiAction, IMessage>
 {
-    public static Packet getStandardDescriptionPacket(TileEntity tileEntity)
+    @Override
+    public IMessage onMessage(PacketGuiAction message, MessageContext ctx)
     {
-        NBTTagCompound var1 = new NBTTagCompound();
-        tileEntity.writeToNBT(var1);
-        return new S35PacketUpdateTileEntity(tileEntity.xCoord, tileEntity.yCoord, tileEntity.zCoord, 1, var1);
+        NetHandlerPlayServer netHandler = ctx.getServerHandler();
+
+        Container container = netHandler.playerEntity.openContainer;
+        if (container instanceof PacketGuiAction.ActionHandler)
+        {
+            ((PacketGuiAction.ActionHandler) container).handleAction(message.getContext(), message.getPayload());
+        }
+
+        return null;
     }
 }

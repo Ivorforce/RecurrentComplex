@@ -18,6 +18,8 @@
 
 package ivorius.ivtoolkit.raytracing;
 
+import net.minecraftforge.common.util.ForgeDirection;
+
 import java.util.List;
 
 public class IvRaytraceableAxisAlignedBox extends IvRaytraceableObject
@@ -40,12 +42,12 @@ public class IvRaytraceableAxisAlignedBox extends IvRaytraceableObject
         this.depth = depth;
 
         this.surfaces = new IvRaytraceableAxisAlignedSurface[6];
-        this.surfaces[0] = new IvRaytraceableAxisAlignedSurface(userInfo, x, y, z, 0, height, depth);
-        this.surfaces[1] = new IvRaytraceableAxisAlignedSurface(userInfo, x + width, y, z, 0, height, depth);
-        this.surfaces[2] = new IvRaytraceableAxisAlignedSurface(userInfo, x, y, z, width, 0, depth);
-        this.surfaces[3] = new IvRaytraceableAxisAlignedSurface(userInfo, x, y + height, z, width, 0, depth);
-        this.surfaces[4] = new IvRaytraceableAxisAlignedSurface(userInfo, x, y, z, width, height, 0);
-        this.surfaces[5] = new IvRaytraceableAxisAlignedSurface(userInfo, x, y, z + depth, width, height, 0);
+        this.surfaces[0] = new IvRaytraceableAxisAlignedSurface(userInfo, ForgeDirection.WEST, y, z, 0, height, depth, x);
+        this.surfaces[1] = new IvRaytraceableAxisAlignedSurface(userInfo, ForgeDirection.EAST, y, z, 0, height, depth, x + width);
+        this.surfaces[2] = new IvRaytraceableAxisAlignedSurface(userInfo, ForgeDirection.DOWN, y, z, width, 0, depth, x);
+        this.surfaces[3] = new IvRaytraceableAxisAlignedSurface(userInfo, ForgeDirection.UP, y + height, z, width, 0, depth, x);
+        this.surfaces[4] = new IvRaytraceableAxisAlignedSurface(userInfo, ForgeDirection.NORTH, y, z, width, height, 0, x);
+        this.surfaces[5] = new IvRaytraceableAxisAlignedSurface(userInfo, ForgeDirection.SOUTH, y, z + depth, width, height, 0, x);
     }
 
     public double getX()
@@ -96,5 +98,11 @@ public class IvRaytraceableAxisAlignedBox extends IvRaytraceableObject
         {
             object.drawOutlines();
         }
+    }
+
+    @Override
+    public String toString()
+    {
+        return "IvRaytraceableAxisAlignedBox{ " + x + ", " + y + ", " + z + " -> " + width + " x " + height + " x " + depth + "}";
     }
 }

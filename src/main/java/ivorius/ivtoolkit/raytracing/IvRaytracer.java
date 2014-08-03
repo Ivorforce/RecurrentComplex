@@ -47,8 +47,9 @@ public class IvRaytracer
         for (IvRaytracedIntersection point : intersections)
         {
             double pointDistSQ = (x - point.getX()) * (x - point.getX()) + (y - point.getY()) * (y - point.getY()) + (z - point.getZ()) * (z - point.getZ());
+            boolean forwards = (point.getX() - x > 0) == (xDir > 0) && (point.getY() - y > 0) == (yDir > 0) && (point.getZ() - z > 0) == (zDir > 0);
 
-            if (firstDistanceSQ < 0 || pointDistSQ < firstDistanceSQ)
+            if (forwards && (firstDistanceSQ < 0 || pointDistSQ < firstDistanceSQ))
             {
                 firstPoint = point;
                 firstDistanceSQ = pointDistSQ;

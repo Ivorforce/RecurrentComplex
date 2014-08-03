@@ -19,6 +19,7 @@
 package ivorius.ivtoolkit.tools;
 
 import net.minecraft.entity.player.InventoryPlayer;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 
 public class IvInventoryHelper
@@ -47,6 +48,19 @@ public class IvInventoryHelper
         for (int var2 = 0; var2 < inventory.mainInventory.length; ++var2)
         {
             if (inventory.mainInventory[var2] != null && inventory.mainInventory[var2].isItemEqual(itemStack))
+            {
+                return var2;
+            }
+        }
+
+        return -1;
+    }
+
+    public static int getInventorySlotContainItem(InventoryPlayer inventory, Item item)
+    {
+        for (int var2 = 0; var2 < inventory.mainInventory.length; ++var2)
+        {
+            if (inventory.mainInventory[var2] != null && inventory.mainInventory[var2].getItem() == item)
             {
                 return var2;
             }

@@ -19,8 +19,10 @@
 package ivorius.ivtoolkit.blocks;
 
 import io.netty.buffer.ByteBuf;
+import net.minecraft.block.Block;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.world.World;
 
 /**
  * Created by lukas on 08.06.14.
@@ -214,5 +216,20 @@ public class BlockCoord implements Cloneable
         {
             throw new InternalError();
         }
+    }
+
+    public Block getBlock(World world)
+    {
+        return world.getBlock(x, y, z);
+    }
+
+    public int getMetadata(World world)
+    {
+        return world.getBlockMetadata(x, y, z);
+    }
+
+    public TileEntity getTileEntity(World world)
+    {
+        return world.getTileEntity(x, y, z);
     }
 }

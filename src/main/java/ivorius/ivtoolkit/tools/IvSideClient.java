@@ -16,19 +16,28 @@
  * No additional restrictions — You may not apply legal terms or technological measures that legally restrict others from doing anything the license permits.
  */
 
-package ivorius.ivtoolkit.blocks;
+package ivorius.ivtoolkit.tools;
 
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.network.Packet;
-import net.minecraft.network.play.server.S35PacketUpdateTileEntity;
-import net.minecraft.tileentity.TileEntity;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
+import net.minecraft.client.Minecraft;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.world.World;
 
-public class IvTileEntityHelper
+/**
+ * Created by lukas on 03.07.14.
+ */
+public class IvSideClient
 {
-    public static Packet getStandardDescriptionPacket(TileEntity tileEntity)
+    @SideOnly(Side.CLIENT)
+    public static EntityPlayer getClientPlayer()
     {
-        NBTTagCompound var1 = new NBTTagCompound();
-        tileEntity.writeToNBT(var1);
-        return new S35PacketUpdateTileEntity(tileEntity.xCoord, tileEntity.yCoord, tileEntity.zCoord, 1, var1);
+        return Minecraft.getMinecraft().thePlayer;
+    }
+
+    @SideOnly(Side.CLIENT)
+    public static World getClientWorld()
+    {
+        return Minecraft.getMinecraft().theWorld;
     }
 }

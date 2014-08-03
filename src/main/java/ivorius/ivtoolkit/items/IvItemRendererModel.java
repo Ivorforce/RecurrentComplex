@@ -31,17 +31,19 @@ import org.lwjgl.opengl.GL11;
  */
 public class IvItemRendererModel implements IItemRenderer
 {
-    public ModelBase model;
+    public ItemModelRenderer model;
     public ResourceLocation texture;
-    public Entity fakeEntity;
-    public float[] modelSize;
+    public float modelSize;
+    public float[] translation;
+    public float[] rotation;
 
-    public IvItemRendererModel(ModelBase model, ResourceLocation texture, Entity fakeEntity, float[] modelSize)
+    public IvItemRendererModel(ItemModelRenderer model, ResourceLocation texture, float modelSize, float[] translation, float[] rotation)
     {
         this.model = model;
         this.texture = texture;
-        this.fakeEntity = fakeEntity;
         this.modelSize = modelSize;
+        this.translation = translation;
+        this.rotation = rotation;
     }
 
     @Override
@@ -74,17 +76,27 @@ public class IvItemRendererModel implements IItemRenderer
             GL11.glTranslated(0.5, 1.0, 0.5);
         }
 
+        GL11.glTranslatef(translation[0], translation[1] + 1.0f, translation[2]);
+
         if (type != ItemRenderType.ENTITY)
         {
-            GL11.glScalef(1.0f / modelSize[0], 1.0f / modelSize[1], 1.0f / modelSize[2]);
+            float modelScale = 1.0f / modelSize;
+            GL11.glScalef(modelScale, modelScale, modelScale);
         }
 
         GL11.glRotatef(180.0f, 0.0f, 0.0f, 1.0f);
-        GL11.glTranslated(0.0, -1.0, 0.0);
+        GL11.glRotatef(rotation[0], 1.0f, 0.0f, 0.0f);
+        GL11.glRotatef(rotation[1], 0.0f, 1.0f, 0.0f);
+        GL11.glRotatef(rotation[2], 0.0f, 0.0f, 1.0f);
 
         Minecraft.getMinecraft().getTextureManager().bindTexture(texture);
-        model.render(fakeEntity, 0.0F, 0.0F, -0.1F, 0.0F, 0.0F, 0.0625F);
+        model.render(item);
 
         GL11.glPopMatrix();
+    }
+
+    public static interface ItemModelRenderer
+    {
+        void render(ItemStack stack);
     }
 }

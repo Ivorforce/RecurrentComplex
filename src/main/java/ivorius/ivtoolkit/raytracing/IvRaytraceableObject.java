@@ -93,7 +93,7 @@ public abstract class IvRaytraceableObject
         double[][] intersectionPoints = new double[intersections.size()][];
         for (int i = 0; i < intersections.size(); i++)
         {
-            intersectionPoints[i] = intersections.get(i).point;
+            intersectionPoints[i] = intersections.get(i).getPoint();
         }
 
         return intersectionPoints;

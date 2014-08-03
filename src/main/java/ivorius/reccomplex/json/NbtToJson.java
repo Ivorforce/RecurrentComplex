@@ -140,7 +140,7 @@ public class NbtToJson
 
         try
         {
-            return CompressedStreamTools.decompress(nbtBytes);
+            return CompressedStreamTools.func_152457_a(nbtBytes, NBTSizeTracker.field_152451_a);
         }
         catch (IOException e)
         {

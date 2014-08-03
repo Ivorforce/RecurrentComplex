@@ -8,12 +8,11 @@ package ivorius.reccomplex.worldgen.genericStructures;
 import com.google.gson.*;
 import ivorius.ivtoolkit.tools.IvGsonHelper;
 import net.minecraft.util.JsonUtils;
+import net.minecraft.world.biome.BiomeGenBase;
 import net.minecraftforge.common.BiomeDictionary;
 
 import java.lang.reflect.Type;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 
 /**
  * Created by lukas on 24.05.14.
@@ -91,7 +90,7 @@ public class BiomeGenerationInfo
 
             for (String typeID : typeIDs)
             {
-                BiomeDictionary.Type type = IvGsonHelper.enumForName(typeID, BiomeDictionary.Type.values());
+                BiomeDictionary.Type type = IvGsonHelper.enumForNameIgnoreCase(typeID, BiomeDictionary.Type.values());
 
                 if (type == null)
                     return null;
@@ -103,6 +102,22 @@ public class BiomeGenerationInfo
         }
 
         return null;
+    }
+
+    public static Set<BiomeGenBase> gatherAllBiomes()
+    {
+        Set<BiomeGenBase> set = new HashSet<>();
+
+        for (BiomeGenBase biomeGenBase : BiomeGenBase.getBiomeGenArray())
+        {
+            if (biomeGenBase != null)
+                set.add(biomeGenBase);
+        }
+
+        for (BiomeDictionary.Type type : BiomeDictionary.Type.values())
+            Collections.addAll(set, BiomeDictionary.getBiomesForType(type));
+
+        return set;
     }
 
     public static class Serializer implements JsonDeserializer<BiomeGenerationInfo>, JsonSerializer<BiomeGenerationInfo>

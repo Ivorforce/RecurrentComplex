@@ -61,6 +61,12 @@ commands.strucPaste.noClipboard=You have to copy an area first!
 
 commands.selectMove.usage=/selectMove <x> <y> <z> [clockwise-rotations] [mirror x:true|false]
 
+commands.biomedict.usage=/biomedict <get|list> id (get: Biome ID, list: Biome Type ID)
+commands.biomedict.get=Biome Types for %s: %s
+commands.biomedict.list=Biomes of Type %s: %s
+commands.biomedict.nobiome=No Biome with the ID '%s'
+commands.biomedict.notype=No Biome Type with the ID '%s'
+
 inventoryGen.vanilla=Vanilla Generator
 inventoryGen.custom=Custom Generator
 inventoryGen.create=Create New Generator

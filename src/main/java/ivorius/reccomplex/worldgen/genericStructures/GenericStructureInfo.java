@@ -277,7 +277,7 @@ public class GenericStructureInfo implements StructureInfo, Cloneable
             {
                 BiomeDictionary.Type[] biomeTypes = BiomeDictionary.getTypesForBiome(biome);
 
-                if (types.containsAll(Arrays.asList(biomeTypes)) && types.size() == biomeTypes.length)
+                if (types.containsAll(Arrays.asList(biomeTypes)))
                 {
                     return genWeight;
                 }

@@ -39,6 +39,7 @@ public class BiomeGenerationInfo
                 new BiomeGenerationInfo("Type:HILLS", null),
                 new BiomeGenerationInfo("Type:SWAMP", null),
                 new BiomeGenerationInfo("Type:SANDY", null),
+                new BiomeGenerationInfo("Type:MESA", null),
                 new BiomeGenerationInfo("Type:WASTELAND", null),
                 new BiomeGenerationInfo("Type:MUSHROOM", null),
                 new BiomeGenerationInfo("Type:JUNGLE", null));
@@ -54,6 +55,7 @@ public class BiomeGenerationInfo
                 new BiomeGenerationInfo("Type:HILLS", null),
                 new BiomeGenerationInfo("Type:SWAMP", null),
                 new BiomeGenerationInfo("Type:SANDY", null),
+                new BiomeGenerationInfo("Type:MESA", null),
                 new BiomeGenerationInfo("Type:RIVER", null),
                 new BiomeGenerationInfo("Type:OCEAN", null),
                 new BiomeGenerationInfo("Type:WASTELAND", null),

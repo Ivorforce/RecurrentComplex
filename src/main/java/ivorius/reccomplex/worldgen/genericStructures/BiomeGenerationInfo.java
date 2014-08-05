@@ -28,7 +28,23 @@ public class BiomeGenerationInfo
         this.generationWeight = generationWeight;
     }
 
-    public static List<BiomeGenerationInfo> defaultBiomeGenerationList()
+    public static List<BiomeGenerationInfo> overworldBiomeGenerationList()
+    {
+        return Arrays.asList(new BiomeGenerationInfo("Type:NETHER", 0),
+                new BiomeGenerationInfo("Type:END", 0),
+                new BiomeGenerationInfo("Type:WATER", 0),
+                new BiomeGenerationInfo("Type:PLAINS", null),
+                new BiomeGenerationInfo("Type:FOREST", null),
+                new BiomeGenerationInfo("Type:MOUNTAIN", null),
+                new BiomeGenerationInfo("Type:HILLS", null),
+                new BiomeGenerationInfo("Type:SWAMP", null),
+                new BiomeGenerationInfo("Type:SANDY", null),
+                new BiomeGenerationInfo("Type:WASTELAND", null),
+                new BiomeGenerationInfo("Type:MUSHROOM", null),
+                new BiomeGenerationInfo("Type:JUNGLE", null));
+    }
+
+    public static List<BiomeGenerationInfo> undergroundBiomeGenerationList()
     {
         return Arrays.asList(new BiomeGenerationInfo("Type:NETHER", 0),
                 new BiomeGenerationInfo("Type:END", 0),
@@ -39,6 +55,7 @@ public class BiomeGenerationInfo
                 new BiomeGenerationInfo("Type:SWAMP", null),
                 new BiomeGenerationInfo("Type:SANDY", null),
                 new BiomeGenerationInfo("Type:RIVER", null),
+                new BiomeGenerationInfo("Type:OCEAN", null),
                 new BiomeGenerationInfo("Type:WASTELAND", null),
                 new BiomeGenerationInfo("Type:MUSHROOM", null),
                 new BiomeGenerationInfo("Type:JUNGLE", null));

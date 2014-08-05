@@ -61,7 +61,7 @@ public class GenericStructureInfo implements StructureInfo, Cloneable
     public static GenericStructureInfo createDefaultStructure()
     {
         GenericStructureInfo genericStructureInfo = new GenericStructureInfo();
-        genericStructureInfo.generationWeights.addAll(BiomeGenerationInfo.defaultBiomeGenerationList());
+        genericStructureInfo.generationWeights.addAll(BiomeGenerationInfo.overworldBiomeGenerationList());
         genericStructureInfo.generationCategory = "decoration";
         genericStructureInfo.ySelector = new GenerationYSelector(GenerationYSelector.SelectionMode.SURFACE, 0, 0);
         genericStructureInfo.rotatable = false;

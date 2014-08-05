@@ -11,6 +11,7 @@ import ivorius.ivtoolkit.tools.IvWorldData;
 import ivorius.reccomplex.RecurrentComplex;
 import ivorius.reccomplex.entities.StructureEntityInfo;
 import ivorius.reccomplex.network.PacketEditStructure;
+import ivorius.reccomplex.network.PacketEditStructureHandler;
 import ivorius.reccomplex.worldgen.StructureHandler;
 import ivorius.reccomplex.worldgen.StructureInfo;
 import ivorius.reccomplex.worldgen.genericStructures.GenericStructureInfo;
@@ -105,7 +106,7 @@ public class CommandExportStructure extends CommandBase
 
         IvWorldData data = new IvWorldData(player.getEntityWorld(), new BlockArea(lowerCoord, higherCoord), true);
         genericStructureInfo.worldDataCompound = data.createTagCompound(lowerCoord);
-        RecurrentComplex.network.sendTo(new PacketEditStructure(structureName, genericStructureInfo), player);
+        PacketEditStructureHandler.sendEditStructure(genericStructureInfo, structureName, player);
     }
 
     @Override

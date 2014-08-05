@@ -69,7 +69,7 @@ public class TableDataSourceBiomeGenList implements TableDataSource, TableElemen
     {
         if (index == 0)
         {
-            TableElementPresetAction elementPresetAction = new TableElementPresetAction("biomePreset", "Presets", "Apply", new TableElementButton.Action("default", "Default"), new TableElementButton.Action("ocean", "Ocean"), new TableElementButton.Action("clear", "Clear"));
+            TableElementPresetAction elementPresetAction = new TableElementPresetAction("biomePreset", "Presets", "Apply", new TableElementButton.Action("overworld", "Overworld"), new TableElementButton.Action("underground", "Underground"), new TableElementButton.Action("ocean", "Ocean"), new TableElementButton.Action("clear", "Clear"));
             elementPresetAction.addListener(this);
             return elementPresetAction;
         }
@@ -132,9 +132,13 @@ public class TableDataSourceBiomeGenList implements TableDataSource, TableElemen
         {
             switch (actionID)
             {
-                case "default":
+                case "overworld":
                     biomeGenerationInfoList.clear();
-                    biomeGenerationInfoList.addAll(BiomeGenerationInfo.defaultBiomeGenerationList());
+                    biomeGenerationInfoList.addAll(BiomeGenerationInfo.overworldBiomeGenerationList());
+                    break;
+                case "underground":
+                    biomeGenerationInfoList.clear();
+                    biomeGenerationInfoList.addAll(BiomeGenerationInfo.undergroundBiomeGenerationList());
                     break;
                 case "ocean":
                     biomeGenerationInfoList.clear();

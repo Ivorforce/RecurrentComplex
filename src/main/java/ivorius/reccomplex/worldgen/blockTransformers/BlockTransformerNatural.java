@@ -47,53 +47,62 @@ public class BlockTransformerNatural implements BlockTransformer
         Block fillerBlock = biome.fillerBlock;
         Block mainBlock = world.provider.dimensionId == -1 ? Blocks.netherrack : (world.provider.dimensionId == 1 ? Blocks.end_stone : Blocks.stone);
 
-        int currentY = y;
-        List<int[]> currentList = new ArrayList<>();
-        List<int[]> nextList = new ArrayList<>();
-        nextList.add(new int[]{x, z});
-
         boolean useStoneBlock = hasBlockAbove(world, x, y, z, mainBlock);
 
-        while (nextList.size() > 0 && currentY > 1)
+        if (beforeGeneration)
         {
-            List<int[]> cachedList = currentList;
-            currentList = nextList;
-            nextList = cachedList;
+            int currentY = y;
+            List<int[]> currentList = new ArrayList<>();
+            List<int[]> nextList = new ArrayList<>();
+            nextList.add(new int[]{x, z});
 
-            while (currentList.size() > 0)
+            while (nextList.size() > 0 && currentY > 1)
             {
-                int[] currentPos = currentList.remove(0);
-                int currentX = currentPos[0];
-                int currentZ = currentPos[1];
-                Block curBlock = world.getBlock(currentX, currentY, currentZ);
+                List<int[]> cachedList = currentList;
+                currentList = nextList;
+                nextList = cachedList;
 
-                boolean replaceable = currentY == y || curBlock.isReplaceable(world, currentX, currentY, currentZ);
-                if (replaceable)
+                while (currentList.size() > 0)
                 {
-                    Block setBlock = useStoneBlock ? mainBlock : (isTopBlock(world, currentX, currentY, currentZ) ? topBlock : fillerBlock);
-                    world.setBlock(currentX, currentY, currentZ, setBlock);
-                }
+                    int[] currentPos = currentList.remove(0);
+                    int currentX = currentPos[0];
+                    int currentZ = currentPos[1];
+                    Block curBlock = world.getBlock(currentX, currentY, currentZ);
 
-                // Uncommenting makes performance shit
-                if (replaceable/* || curBlock == topBlock || curBlock == fillerBlock || curBlock == mainBlock*/)
-                {
-                    double yForDistance = y * 0.3 + currentY * 0.7;
-                    double distToOrigSQ = IvVecMathHelper.distanceSQ(new double[]{x, y, z}, new double[]{currentX, yForDistance, currentZ});
-                    double add = (random.nextDouble() - random.nextDouble()) * NATURAL_DISTANCE_RANDOMIZATION;
-                    distToOrigSQ += add < 0 ? -(add * add) : (add * add);
-
-                    if (distToOrigSQ < NATURAL_EXPANSION_DISTANCE * NATURAL_EXPANSION_DISTANCE)
+                    boolean replaceable = currentY == y || curBlock.isReplaceable(world, currentX, currentY, currentZ);
+                    if (replaceable)
                     {
-                        addIfNew(nextList, currentX, currentZ);
-                        addIfNew(nextList, currentX - 1, currentZ);
-                        addIfNew(nextList, currentX + 1, currentZ);
-                        addIfNew(nextList, currentX, currentZ - 1);
-                        addIfNew(nextList, currentX, currentZ + 1);
+                        Block setBlock = useStoneBlock ? mainBlock : (isTopBlock(world, currentX, currentY, currentZ) ? topBlock : fillerBlock);
+                        world.setBlock(currentX, currentY, currentZ, setBlock);
+                    }
+
+                    // Uncommenting makes performance shit
+                    if (replaceable/* || curBlock == topBlock || curBlock == fillerBlock || curBlock == mainBlock*/)
+                    {
+                        double yForDistance = y * 0.3 + currentY * 0.7;
+                        double distToOrigSQ = IvVecMathHelper.distanceSQ(new double[]{x, y, z}, new double[]{currentX, yForDistance, currentZ});
+                        double add = (random.nextDouble() - random.nextDouble()) * NATURAL_DISTANCE_RANDOMIZATION;
+                        distToOrigSQ += add < 0 ? -(add * add) : (add * add);
+
+                        if (distToOrigSQ < NATURAL_EXPANSION_DISTANCE * NATURAL_EXPANSION_DISTANCE)
+                        {
+                            addIfNew(nextList, currentX, currentZ);
+                            addIfNew(nextList, currentX - 1, currentZ);
+                            addIfNew(nextList, currentX + 1, currentZ);
+                            addIfNew(nextList, currentX, currentZ - 1);
+                            addIfNew(nextList, currentX, currentZ + 1);
+                        }
                     }
                 }
-            }
 
-            currentY--;
+                currentY--;
+            }
+        }
+        else
+        {
+            // Get the top blocks right (grass rather than dirt)
+            Block setBlock = useStoneBlock ? mainBlock : (isTopBlock(world, x, y, z) ? topBlock : fillerBlock);
+            world.setBlock(x, y, z, setBlock);
         }
     }
 
@@ -137,6 +146,6 @@ public class BlockTransformerNatural implements BlockTransformer
     @Override
     public boolean generatesAfter()
     {
-        return false;
+        return true;
     }
 }

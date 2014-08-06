@@ -18,3 +18,9 @@
 
 - DesertHut
 - DesertWatchtower
+
+=== TripleHeadedSheep ===
+
+- VeldtBath
+- DesertFort
+- HillAltarHouse

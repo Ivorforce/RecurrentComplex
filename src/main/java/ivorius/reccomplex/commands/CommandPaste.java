@@ -14,6 +14,7 @@ import net.minecraft.command.ICommandSender;
 import net.minecraft.command.WrongUsageException;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.ChatComponentTranslation;
 import net.minecraft.util.MathHelper;
 import net.minecraft.world.World;
 
@@ -70,6 +71,9 @@ public class CommandPaste extends CommandBase
                     structureInfo.worldDataCompound = worldData;
 
                     structureInfo.generateSource(world, world.rand, new BlockCoord(x, y, z), 0, AxisAlignedTransform2D.ORIGINAL);
+
+                    int[] size = structureInfo.structureBoundingBox();
+                    commandSender.addChatMessage(new ChatComponentTranslation("commands.strucPaste.success", String.valueOf(x), String.valueOf(y), String.valueOf(z), String.valueOf(x + size[0] - 1), String.valueOf(y + size[1] - 1), String.valueOf(z + size[2] - 1)));
                 }
                 else
                 {

@@ -55,9 +55,11 @@ commands.strucReload.usage=/strucReload <structureName> [x] [y] [z]
 commands.strucReload.success=Reloaded all structures and inventory generators
 
 commands.selectCopy.usage=/selectCopy
+commands.selectCopy.success=Copied %s, %s, %s to %s, %s, %s to clipboard
 
 commands.strucPaste.usage=/strucPaste [x] [y] [z]
 commands.strucPaste.noClipboard=You have to copy an area first!
+commands.strucPaste.success=Pasted clipboard at %s, %s, %s to %s, %s, %s
 
 commands.selectMove.usage=/selectMove <x> <y> <z> [clockwise-rotations] [mirror x:true|false]
 

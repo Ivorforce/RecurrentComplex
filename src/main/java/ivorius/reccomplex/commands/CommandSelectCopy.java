@@ -11,6 +11,7 @@ import ivorius.ivtoolkit.tools.IvWorldData;
 import ivorius.reccomplex.entities.StructureEntityInfo;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.util.ChatComponentTranslation;
 
 /**
  * Created by lukas on 09.06.14.
@@ -34,6 +35,11 @@ public class CommandSelectCopy extends CommandSelectModify
     {
         BlockArea area = new BlockArea(point1, point2);
         IvWorldData worldData = new IvWorldData(player.worldObj, area, true);
-        structureEntityInfo.setWorldDataClipboard(worldData.createTagCompound(area.getLowerCorner()));
+
+        BlockCoord lowerCorner = area.getLowerCorner();
+        BlockCoord higherCorner = area.getHigherCorner();
+
+        structureEntityInfo.setWorldDataClipboard(worldData.createTagCompound(lowerCorner));
+        player.addChatMessage(new ChatComponentTranslation("commands.selectCopy.success", String.valueOf(lowerCorner.x), String.valueOf(lowerCorner.y), String.valueOf(lowerCorner.z), String.valueOf(higherCorner.x), String.valueOf(higherCorner.y), String.valueOf(higherCorner.z)));
     }
 }

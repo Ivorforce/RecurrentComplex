@@ -47,22 +47,19 @@ public class CommandSelectMove extends CommandSelectModify
         boolean mirrorX = args.length >= 5 && parseBoolean(player, args[4]);
 
         BlockArea area = new BlockArea(point1, point2);
+        BlockCoord lowerCorner = area.getLowerCorner();
+
+        int x = MathHelper.floor_double(func_110666_a(player, (double) lowerCorner.x, args[0]));
+        int y = MathHelper.floor_double(func_110666_a(player, (double) lowerCorner.y, args[1]));
+        int z = MathHelper.floor_double(func_110666_a(player, (double) lowerCorner.z, args[2]));
+
         IvWorldData worldData = new IvWorldData(player.worldObj, area, true);
         NBTTagCompound worldDataCompound = worldData.createTagCompound(area.getLowerCorner());
 
         World world = player.worldObj;
 
         for (BlockCoord coord : area)
-        {
             world.setBlockToAir(coord.x, coord.y, coord.z);
-        }
-
-        int x, y, z;
-
-        BlockCoord lowerCorner = area.getLowerCorner();
-        x = MathHelper.floor_double(func_110666_a(player, (double) lowerCorner.x, args[0]));
-        y = MathHelper.floor_double(func_110666_a(player, (double) lowerCorner.y, args[1]));
-        z = MathHelper.floor_double(func_110666_a(player, (double) lowerCorner.z, args[2]));
 
         GenericStructureInfo structureInfo = GenericStructureInfo.createDefaultStructure();
         structureInfo.worldDataCompound = worldDataCompound;

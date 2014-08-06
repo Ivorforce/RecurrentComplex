@@ -62,6 +62,7 @@ public class RCConfigGuiFactory implements IModGuiFactory
         {
             List<IConfigElement> list = new ArrayList<>();
             list.add(new DummyCategoryElement("reccomplex.configgui.general", "reccomplex.configgui.ctgy.general", GeneralEntry.class).setRequiresMcRestart(true));
+            list.add(new DummyCategoryElement("reccomplex.configgui.visual", "reccomplex.configgui.ctgy.visual", VisualEntry.class));
             return list;
         }
 
@@ -78,6 +79,24 @@ public class RCConfigGuiFactory implements IModGuiFactory
                 return new GuiConfig(this.owningScreen,
                         (new ConfigElement(RecurrentComplex.config.getCategory(Configuration.CATEGORY_GENERAL))).getChildElements(),
                         this.owningScreen.modID, Configuration.CATEGORY_GENERAL, this.configElement.requiresWorldRestart() || this.owningScreen.allRequireWorldRestart,
+                        this.configElement.requiresMcRestart() || this.owningScreen.allRequireMcRestart,
+                        GuiConfig.getAbridgedConfigPath(RecurrentComplex.config.toString()));
+            }
+        }
+
+        public static class VisualEntry extends GuiConfigEntries.CategoryEntry
+        {
+            public VisualEntry(GuiConfig owningScreen, GuiConfigEntries owningEntryList, IConfigElement prop)
+            {
+                super(owningScreen, owningEntryList, prop);
+            }
+
+            @Override
+            protected GuiScreen buildChildScreen()
+            {
+                return new GuiConfig(this.owningScreen,
+                        (new ConfigElement(RecurrentComplex.config.getCategory("visual"))).getChildElements(),
+                        this.owningScreen.modID, "visual", this.configElement.requiresWorldRestart() || this.owningScreen.allRequireWorldRestart,
                         this.configElement.requiresMcRestart() || this.owningScreen.allRequireMcRestart,
                         GuiConfig.getAbridgedConfigPath(RecurrentComplex.config.toString()));
             }

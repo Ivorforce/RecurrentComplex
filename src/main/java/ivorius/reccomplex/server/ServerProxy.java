@@ -26,4 +26,10 @@ public class ServerProxy implements RCProxy
     {
 
     }
+
+    @Override
+    public void registerRenderers()
+    {
+
+    }
 }

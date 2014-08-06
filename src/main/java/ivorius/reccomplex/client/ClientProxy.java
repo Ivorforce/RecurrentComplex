@@ -5,8 +5,13 @@
 
 package ivorius.reccomplex.client;
 
+import cpw.mods.fml.client.registry.RenderingRegistry;
+import ivorius.reccomplex.RCConfig;
 import ivorius.reccomplex.RCProxy;
+import ivorius.reccomplex.RecurrentComplex;
+import ivorius.reccomplex.client.rendering.RenderNegativeSpace;
 import net.minecraft.client.Minecraft;
+import net.minecraftforge.common.config.Configuration;
 
 import java.io.File;
 
@@ -24,6 +29,15 @@ public class ClientProxy implements RCProxy
     @Override
     public void loadConfig(String configID)
     {
+        if (configID == null || configID.equals("visual"))
+        {
+            RCConfig.hideRedundantNegativeSpace = RecurrentComplex.config.getBoolean("hideRedundantNegativeSpace", "visual", true, "Only show the edges of negative space blocks? (Improves performance in big builds)");
+        }
+    }
 
+    @Override
+    public void registerRenderers()
+    {
+        RenderingRegistry.registerBlockHandler(RecurrentComplex.negativeSpaceRenderID, new RenderNegativeSpace());
     }
 }

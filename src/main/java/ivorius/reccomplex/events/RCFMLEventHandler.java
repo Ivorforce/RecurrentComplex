@@ -48,7 +48,9 @@ public class RCFMLEventHandler
         if (event instanceof ConfigChangedEvent.OnConfigChangedEvent && event.modID.equals(RecurrentComplex.MODID))
         {
             RCConfig.loadConfig(event.configID);
-            RecurrentComplex.config.save();
+
+            if (RecurrentComplex.config.hasChanged())
+                RecurrentComplex.config.save();
         }
     }
 }

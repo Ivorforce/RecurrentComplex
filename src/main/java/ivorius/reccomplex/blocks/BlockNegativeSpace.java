@@ -76,6 +76,12 @@ public class BlockNegativeSpace extends Block
     }
 
     @Override
+    public int getRenderType()
+    {
+        return RecurrentComplex.negativeSpaceRenderID;
+    }
+
+    @Override
     public IIcon getIcon(int side, int meta)
     {
         return meta < icons.length ? icons[meta] : icons[0];

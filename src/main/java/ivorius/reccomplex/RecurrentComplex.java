@@ -5,6 +5,7 @@
 
 package ivorius.reccomplex;
 
+import cpw.mods.fml.client.registry.RenderingRegistry;
 import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.Mod.EventHandler;
 import cpw.mods.fml.common.Mod.Instance;
@@ -94,6 +95,8 @@ public class RecurrentComplex
     public static RCCommunicationHandler communicationHandler;
 
     public static Material materialNegativeSpace;
+
+    public static int negativeSpaceRenderID;
 
     @EventHandler
     public void preInit(FMLPreInitializationEvent event)
@@ -190,6 +193,9 @@ public class RecurrentComplex
         RCInventoryGenerators.registerModInventoryGenerators();
 
         RCStructures.generateDefaultStructures(RCConfig.generateDefaultStructures);
+
+        negativeSpaceRenderID = RenderingRegistry.getNextAvailableRenderId();
+        proxy.registerRenderers();
     }
 
     @EventHandler

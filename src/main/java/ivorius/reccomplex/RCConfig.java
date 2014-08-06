@@ -14,6 +14,8 @@ public class RCConfig
 {
     public static boolean generateDefaultStructures;
 
+    public static boolean hideRedundantNegativeSpace;
+
     public static void loadConfig(String configID)
     {
         if (configID == null || configID.equals(Configuration.CATEGORY_GENERAL))

@@ -95,5 +95,7 @@ structures.genY.top=Top (Sky)
 structures.genY.lowestedge=Lowest Edge (Ocean Floor)
 
 reccomplex.configgui.title=Structure Gen Config
-reccomplex.configgui.ctgy.general.tooltip=General
-reccomplex.configgui.general=General
+reccomplex.configgui.ctgy.general=General
+reccomplex.configgui.ctgy.general.tooltip=General Settings
+reccomplex.configgui.ctgy.visual=Visual
+reccomplex.configgui.ctgy.visual.tooltip=Visual Settings

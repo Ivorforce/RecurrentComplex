@@ -10,6 +10,7 @@ import ivorius.ivtoolkit.blocks.BlockCoord;
 import ivorius.ivtoolkit.rendering.IvRenderHelper;
 import ivorius.reccomplex.entities.StructureEntityInfo;
 import ivorius.reccomplex.items.ItemBlockSelectorFloating;
+import ivorius.reccomplex.worldgen.WorldGenStructures;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.client.renderer.Tessellator;
@@ -19,6 +20,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraftforge.client.event.RenderWorldLastEvent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.entity.EntityEvent;
+import net.minecraftforge.event.terraingen.PopulateChunkEvent;
 import org.lwjgl.opengl.GL11;
 
 /**
@@ -26,9 +28,22 @@ import org.lwjgl.opengl.GL11;
  */
 public class RCForgeEventHandler
 {
+    private WorldGenStructures worldGenStructures;
+
+    public RCForgeEventHandler()
+    {
+        this.worldGenStructures = new WorldGenStructures();
+    }
+
     public void register()
     {
         MinecraftForge.EVENT_BUS.register(this);
+    }
+
+    @SubscribeEvent
+    public void onPreChunkDecoration(PopulateChunkEvent.Pre event)
+    {
+        worldGenStructures.generate(event.rand, event.chunkX, event.chunkZ, event.world, event.chunkProvider, event.chunkProvider);
     }
 
     @SubscribeEvent

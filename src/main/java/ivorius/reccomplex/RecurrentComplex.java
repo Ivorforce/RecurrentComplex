@@ -187,8 +187,7 @@ public class RecurrentComplex
 
         Poem.registerThemes(MODID, "love", "summer", "war", "winter", "grief");
 
-        GameRegistry.registerWorldGenerator(new WorldGenStructures(), 50);
-
+//        GameRegistry.registerWorldGenerator(new WorldGenStructures(), 50);
         RCInventoryGenerators.registerVanillaInventoryGenerators();
         RCInventoryGenerators.registerModInventoryGenerators();
 

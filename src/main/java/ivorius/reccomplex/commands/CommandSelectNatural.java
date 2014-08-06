@@ -177,7 +177,7 @@ public class CommandSelectNatural extends CommandSelectModify
 
                     if ((block.getMaterial() != Material.air && block != spaceBlock) || sidesClosed(world, new BlockCoord(x, y, z), area) >= 3)
                     {
-                        safePoint = y + 3;
+                        safePoint = y + (block == RCBlocks.naturalFloor ? 1 : 3);
                         break;
                     }
                 }

@@ -21,7 +21,7 @@ public class RCStructures
         );
         StructureHandler.registerStructures(RecurrentComplex.MODID, generateDefaultStructures,
                 "MeteorSite",
-                "DesertFort", "VeldtBath",
+                "DesertFort", "VeldtBath", "HillAltarHouse",
                 "PirateChest", "OldWatchtower", "JokerTower", "DesertBeacon", "ForestBeacon", "DesertWatchtower", "PeacefulCrypt", "SmallAbandonedMine",
                 "SmallWoodenCottage", "SmallWoodenCottage1", "SmallWoodenCottage2", "DesertHut",
                 "ShrineSmallAir", "ShrineSmallEarth", "ShrineSmallFire", "ShrineSmallWater",

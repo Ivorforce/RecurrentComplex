@@ -18,11 +18,15 @@ public interface BlockTransformer
 {
     boolean matches(Block block, int metadata);
 
-    void apply(World world, Random random, boolean beforeGeneration, int x, int y, int z, Block sourceBlock, int sourceMetadata, IvWorldData worldData);
+    void apply(World world, Random random, Phase phase, int x, int y, int z, Block sourceBlock, int sourceMetadata, IvWorldData worldData);
 
     String displayString();
 
-    boolean generatesBefore();
+    boolean generatesInPhase(Phase phase);
 
-    boolean generatesAfter();
+    public static enum Phase
+    {
+        BEFORE,
+        AFTER
+    }
 }

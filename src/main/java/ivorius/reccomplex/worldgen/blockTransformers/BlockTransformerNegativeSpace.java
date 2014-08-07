@@ -32,7 +32,7 @@ public class BlockTransformerNegativeSpace implements BlockTransformer
     }
 
     @Override
-    public void apply(World world, Random random, boolean beforeGeneration, int x, int y, int z, Block sourceBlock, int sourceMetadata, IvWorldData worldData)
+    public void apply(World world, Random random, Phase phase, int x, int y, int z, Block sourceBlock, int sourceMetadata, IvWorldData worldData)
     {
 
     }
@@ -44,13 +44,7 @@ public class BlockTransformerNegativeSpace implements BlockTransformer
     }
 
     @Override
-    public boolean generatesBefore()
-    {
-        return false;
-    }
-
-    @Override
-    public boolean generatesAfter()
+    public boolean generatesInPhase(Phase phase)
     {
         return false;
     }

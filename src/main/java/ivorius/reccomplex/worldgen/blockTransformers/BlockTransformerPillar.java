@@ -38,7 +38,7 @@ public class BlockTransformerPillar implements BlockTransformer
     }
 
     @Override
-    public void apply(World world, Random random, boolean beforeGeneration, int x, int y, int z, Block sourceBlock, int sourceMetadata, IvWorldData worldData)
+    public void apply(World world, Random random, Phase phase, int x, int y, int z, Block sourceBlock, int sourceMetadata, IvWorldData worldData)
     {
         world.setBlock(x, y, z, destBlock, destMetadata, 3);
         y--;
@@ -64,14 +64,8 @@ public class BlockTransformerPillar implements BlockTransformer
     }
 
     @Override
-    public boolean generatesBefore()
+    public boolean generatesInPhase(Phase phase)
     {
-        return true;
-    }
-
-    @Override
-    public boolean generatesAfter()
-    {
-        return false;
+        return phase == Phase.BEFORE;
     }
 }

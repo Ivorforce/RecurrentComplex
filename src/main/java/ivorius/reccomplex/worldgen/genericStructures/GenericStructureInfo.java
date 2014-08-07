@@ -139,7 +139,7 @@ public class GenericStructureInfo implements StructureInfo, Cloneable
 
                         if (transformer.matches(block, meta))
                         {
-                            transformer.apply(world, random, BlockTransformer.Phase.BEFORE, worldCoord.x, worldCoord.y, worldCoord.z, block, meta, worldData);
+                            transformer.apply(world, random, BlockTransformer.Phase.BEFORE, worldCoord, block, meta, worldData);
                         }
                     }
                 }
@@ -203,7 +203,7 @@ public class GenericStructureInfo implements StructureInfo, Cloneable
 
                         if (transformer.matches(block, meta))
                         {
-                            transformer.apply(world, random, BlockTransformer.Phase.AFTER, worldCoord.x, worldCoord.y, worldCoord.z, block, meta, worldData);
+                            transformer.apply(world, random, BlockTransformer.Phase.AFTER, worldCoord, block, meta, worldData);
                         }
                     }
                 }

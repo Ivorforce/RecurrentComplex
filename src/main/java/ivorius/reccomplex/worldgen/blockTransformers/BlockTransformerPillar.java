@@ -5,6 +5,7 @@
 
 package ivorius.reccomplex.worldgen.blockTransformers;
 
+import ivorius.ivtoolkit.blocks.BlockCoord;
 import ivorius.ivtoolkit.tools.IvWorldData;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
@@ -38,21 +39,22 @@ public class BlockTransformerPillar implements BlockTransformer
     }
 
     @Override
-    public void apply(World world, Random random, Phase phase, int x, int y, int z, Block sourceBlock, int sourceMetadata, IvWorldData worldData)
+    public void apply(World world, Random random, Phase phase, BlockCoord coord, Block sourceBlock, int sourceMetadata, IvWorldData worldData)
     {
-        world.setBlock(x, y, z, destBlock, destMetadata, 3);
+        world.setBlock(coord.x, coord.y, coord.z, destBlock, destMetadata, 3);
+        int y = coord.y;
         y--;
 
         while (y > 0)
         {
-            Block block = world.getBlock(x, y, z);
+            Block block = world.getBlock(coord.x, y, coord.z);
 
-            if (!(block.isReplaceable(world, x, y, z) || block.getMaterial() == Material.leaves || block.isFoliage(world, x, y, z)))
+            if (!(block.isReplaceable(world, coord.x, y, coord.z) || block.getMaterial() == Material.leaves || block.isFoliage(world, coord.x, y, coord.z)))
             {
                 return;
             }
 
-            world.setBlock(x, y, z, destBlock, destMetadata, 3);
+            world.setBlock(coord.x, y, coord.z, destBlock, destMetadata, 3);
             y--;
         }
     }

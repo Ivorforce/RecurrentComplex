@@ -5,6 +5,7 @@
 
 package ivorius.reccomplex.worldgen.blockTransformers;
 
+import ivorius.ivtoolkit.blocks.BlockCoord;
 import ivorius.ivtoolkit.tools.IvWorldData;
 import net.minecraft.block.Block;
 import net.minecraft.world.World;
@@ -18,7 +19,7 @@ public interface BlockTransformer
 {
     boolean matches(Block block, int metadata);
 
-    void apply(World world, Random random, Phase phase, int x, int y, int z, Block sourceBlock, int sourceMetadata, IvWorldData worldData);
+    void apply(World world, Random random, Phase phase, BlockCoord coord, Block sourceBlock, int sourceMetadata, IvWorldData worldData);
 
     String displayString();
 

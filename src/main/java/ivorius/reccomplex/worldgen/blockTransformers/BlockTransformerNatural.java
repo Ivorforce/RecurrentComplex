@@ -5,6 +5,7 @@
 
 package ivorius.reccomplex.worldgen.blockTransformers;
 
+import ivorius.ivtoolkit.blocks.BlockCoord;
 import ivorius.ivtoolkit.math.IvVecMathHelper;
 import ivorius.ivtoolkit.tools.IvWorldData;
 import net.minecraft.block.Block;
@@ -40,21 +41,21 @@ public class BlockTransformerNatural implements BlockTransformer
     }
 
     @Override
-    public void apply(World world, Random random, Phase phase, int x, int y, int z, Block sourceBlock, int sourceMetadata, IvWorldData worldData)
+    public void apply(World world, Random random, Phase phase, BlockCoord coord, Block sourceBlock, int sourceMetadata, IvWorldData worldData)
     {
-        BiomeGenBase biome = world.getBiomeGenForCoords(x, z);
+        BiomeGenBase biome = world.getBiomeGenForCoords(coord.x, coord.z);
         Block topBlock = biome.topBlock;
         Block fillerBlock = biome.fillerBlock;
         Block mainBlock = world.provider.dimensionId == -1 ? Blocks.netherrack : (world.provider.dimensionId == 1 ? Blocks.end_stone : Blocks.stone);
 
-        boolean useStoneBlock = hasBlockAbove(world, x, y, z, mainBlock);
+        boolean useStoneBlock = hasBlockAbove(world, coord.x, coord.y, coord.z, mainBlock);
 
         if (phase == Phase.BEFORE)
         {
-            int currentY = y;
+            int currentY = coord.y;
             List<int[]> currentList = new ArrayList<>();
             List<int[]> nextList = new ArrayList<>();
-            nextList.add(new int[]{x, z});
+            nextList.add(new int[]{coord.x, coord.z});
 
             while (nextList.size() > 0 && currentY > 1)
             {
@@ -69,7 +70,7 @@ public class BlockTransformerNatural implements BlockTransformer
                     int currentZ = currentPos[1];
                     Block curBlock = world.getBlock(currentX, currentY, currentZ);
 
-                    boolean replaceable = currentY == y || curBlock.isReplaceable(world, currentX, currentY, currentZ);
+                    boolean replaceable = currentY == coord.y || curBlock.isReplaceable(world, currentX, currentY, currentZ);
                     if (replaceable)
                     {
                         Block setBlock = useStoneBlock ? mainBlock : (isTopBlock(world, currentX, currentY, currentZ) ? topBlock : fillerBlock);
@@ -79,8 +80,8 @@ public class BlockTransformerNatural implements BlockTransformer
                     // Uncommenting makes performance shit
                     if (replaceable/* || curBlock == topBlock || curBlock == fillerBlock || curBlock == mainBlock*/)
                     {
-                        double yForDistance = y * 0.3 + currentY * 0.7;
-                        double distToOrigSQ = IvVecMathHelper.distanceSQ(new double[]{x, y, z}, new double[]{currentX, yForDistance, currentZ});
+                        double yForDistance = coord.y * 0.3 + currentY * 0.7;
+                        double distToOrigSQ = IvVecMathHelper.distanceSQ(new double[]{coord.x, coord.y, coord.z}, new double[]{currentX, yForDistance, currentZ});
                         double add = (random.nextDouble() - random.nextDouble()) * NATURAL_DISTANCE_RANDOMIZATION;
                         distToOrigSQ += add < 0 ? -(add * add) : (add * add);
 
@@ -101,8 +102,8 @@ public class BlockTransformerNatural implements BlockTransformer
         else
         {
             // Get the top blocks right (grass rather than dirt)
-            Block setBlock = useStoneBlock ? mainBlock : (isTopBlock(world, x, y, z) ? topBlock : fillerBlock);
-            world.setBlock(x, y, z, setBlock);
+            Block setBlock = useStoneBlock ? mainBlock : (isTopBlock(world, coord.x, coord.y, coord.z) ? topBlock : fillerBlock);
+            world.setBlock(coord.x, coord.y, coord.z, setBlock);
         }
     }
 

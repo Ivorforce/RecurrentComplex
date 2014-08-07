@@ -5,6 +5,7 @@
 
 package ivorius.reccomplex.worldgen.blockTransformers;
 
+import ivorius.ivtoolkit.blocks.BlockCoord;
 import ivorius.ivtoolkit.math.IvVecMathHelper;
 import ivorius.ivtoolkit.tools.IvWorldData;
 import net.minecraft.block.Block;
@@ -41,16 +42,16 @@ public class BlockTransformerNaturalAir implements BlockTransformer
     }
 
     @Override
-    public void apply(World world, Random random, Phase phase, int x, int y, int z, Block sourceBlock, int sourceMetadata, IvWorldData worldData)
+    public void apply(World world, Random random, Phase phase, BlockCoord coord, Block sourceBlock, int sourceMetadata, IvWorldData worldData)
     {
-        BiomeGenBase biome = world.getBiomeGenForCoords(x, z);
+        BiomeGenBase biome = world.getBiomeGenForCoords(coord.x, coord.z);
         Block topBlock = biome.topBlock;
         Block fillerBlock = biome.fillerBlock;
 
-        int currentY = y;
+        int currentY = coord.y;
         List<int[]> currentList = new ArrayList<>();
         List<int[]> nextList = new ArrayList<>();
-        nextList.add(new int[]{x, z});
+        nextList.add(new int[]{coord.x, coord.z});
 
         int worldHeight = world.getHeight();
         while (nextList.size() > 0 && currentY < worldHeight)
@@ -68,7 +69,7 @@ public class BlockTransformerNaturalAir implements BlockTransformer
 
                 boolean isFoliage = curBlock.isFoliage(world, currentX, currentY, currentZ) || curBlock.getMaterial() == Material.leaves || curBlock.getMaterial() == Material.plants || curBlock.getMaterial() == Material.wood;
                 boolean isCommon = curBlock == Blocks.stone || curBlock == Blocks.dirt || curBlock == Blocks.sand || curBlock == Blocks.stained_hardened_clay || curBlock == Blocks.gravel;
-                boolean replaceable = currentY == y || curBlock == topBlock || curBlock == fillerBlock || curBlock.isReplaceable(world, currentX, currentY, currentZ)
+                boolean replaceable = currentY == coord.y || curBlock == topBlock || curBlock == fillerBlock || curBlock.isReplaceable(world, currentX, currentY, currentZ)
                         || isCommon || isFoliage;
                 if (replaceable)
                 {
@@ -77,7 +78,7 @@ public class BlockTransformerNaturalAir implements BlockTransformer
 
                 if (replaceable || curBlock.getMaterial() == Material.air)
                 {
-                    double distToOrigSQ = IvVecMathHelper.distanceSQ(new double[]{x, y, z}, new double[]{currentX, currentY, currentZ});
+                    double distToOrigSQ = IvVecMathHelper.distanceSQ(new double[]{coord.x, coord.y, coord.z}, new double[]{currentX, currentY, currentZ});
                     double add = (random.nextDouble() - random.nextDouble()) * NATURAL_DISTANCE_RANDOMIZATION;
                     distToOrigSQ += add < 0 ? -(add * add) : (add * add);
 

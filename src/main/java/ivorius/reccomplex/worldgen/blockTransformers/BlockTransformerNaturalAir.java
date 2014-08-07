@@ -24,7 +24,7 @@ import java.util.Random;
 public class BlockTransformerNaturalAir implements BlockTransformer
 {
     public static final double NATURAL_EXPANSION_DISTANCE = 4.0;
-    public static final double NATURAL_DISTANCE_RANDOMIZATION = 6.0;
+    public static final double NATURAL_DISTANCE_RANDOMIZATION = 10.0;
 
     public Block sourceBlock;
     public int sourceMetadata;
@@ -47,6 +47,8 @@ public class BlockTransformerNaturalAir implements BlockTransformer
         BiomeGenBase biome = world.getBiomeGenForCoords(coord.x, coord.z);
         Block topBlock = biome.topBlock;
         Block fillerBlock = biome.fillerBlock;
+
+        coord = coord.subtract(0, 4, 0);
 
         int currentY = coord.y;
         List<int[]> currentList = new ArrayList<>();

@@ -44,7 +44,7 @@ public class WorldGenStructures implements IWorldGenerator
 
     public static int generateStructureRandomly(World world, Random random, StructureInfo info, int x, int z)
     {
-        AxisAlignedTransform2D transform = AxisAlignedTransform2D.transform(info.isRotatable() ? world.rand.nextInt(4) : 0, info.isMirrorable() && random.nextBoolean());
+        AxisAlignedTransform2D transform = AxisAlignedTransform2D.transform(info.isRotatable() ? random.nextInt(4) : 0, info.isMirrorable() && random.nextBoolean());
 
         int[] size = structureBoundingBox(info, transform);
 

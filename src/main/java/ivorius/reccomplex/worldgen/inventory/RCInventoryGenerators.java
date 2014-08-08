@@ -17,7 +17,7 @@ public class RCInventoryGenerators
     {
         InventoryGenerationHandler.registerInventoryHandlers(RecurrentComplex.MODID, "AbandonedChest", "PirateChest", "PeacefulCrypt",
                 "AirShrine", "EarthShrine", "FireShrine", "UnderwaterShrine",
-                "ForestChest"
+                "ForestChest", "TribalChest"
         );
     }
 

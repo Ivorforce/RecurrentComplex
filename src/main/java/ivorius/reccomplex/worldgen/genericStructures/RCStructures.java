@@ -26,6 +26,7 @@ public class RCStructures
                 "SmallWoodenCottage", "SmallWoodenCottage1", "SmallWoodenCottage2", "DesertHut",
                 "ShrineSmallAir", "ShrineSmallEarth", "ShrineSmallFire", "ShrineSmallWater",
                 "MysticalTree", "MysticalTree1", "MysticalTree2",
+                "TribalJungleHead",
                 "StoneMaze", "ForestMaze",
                 "DinosaurSkeleton",
                 "SmallClockworkSite", "BigClockworkSite"

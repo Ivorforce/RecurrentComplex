@@ -220,6 +220,7 @@ public class RecurrentComplex
         event.registerServerCommand(new CommandSelectCopy());
         event.registerServerCommand(new CommandPaste());
         event.registerServerCommand(new CommandSelectMove());
+        event.registerServerCommand(new CommandSelectDuplicate());
         event.registerServerCommand(new CommandBiomeDict());
     }
 }

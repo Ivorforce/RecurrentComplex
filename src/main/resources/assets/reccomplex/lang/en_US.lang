@@ -63,6 +63,8 @@ commands.strucPaste.success=Pasted clipboard at %s, %s, %s to %s, %s, %s
 
 commands.selectMove.usage=/selectMove <x> <y> <z> [clockwise-rotations] [mirror x:true|false]
 
+commands.selectDuplicate.usage=/selectDuplicate <x> <y> <z> [clockwise-rotations] [mirror x:true|false]
+
 commands.biomedict.usage=/biomedict <get|list> id (get: Biome ID, list: Biome Type ID)
 commands.biomedict.get=Biome Types for %s: %s
 commands.biomedict.list=Biomes of Type %s: %s

@@ -12,7 +12,8 @@ import ivorius.reccomplex.gui.RCGuiHandler;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.JsonUtils;
+import ivorius.reccomplex.json.JsonUtils;
+
 import net.minecraft.util.StatCollector;
 import net.minecraft.util.WeightedRandom;
 import net.minecraft.util.WeightedRandomChestContent;

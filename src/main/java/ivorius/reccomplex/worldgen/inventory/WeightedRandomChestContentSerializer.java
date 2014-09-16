@@ -7,7 +7,8 @@ package ivorius.reccomplex.worldgen.inventory;
 
 import com.google.gson.*;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.JsonUtils;
+import ivorius.reccomplex.json.JsonUtils;
+
 import net.minecraft.util.WeightedRandomChestContent;
 
 import java.lang.reflect.Type;

@@ -7,7 +7,8 @@ package ivorius.reccomplex.worldgen.genericStructures;
 
 import com.google.gson.*;
 import ivorius.ivtoolkit.tools.IvGsonHelper;
-import net.minecraft.util.JsonUtils;
+import ivorius.reccomplex.json.JsonUtils;
+
 import net.minecraft.world.biome.BiomeGenBase;
 import net.minecraftforge.common.BiomeDictionary;
 

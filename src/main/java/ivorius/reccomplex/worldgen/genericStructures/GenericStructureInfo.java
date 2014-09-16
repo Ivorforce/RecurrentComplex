@@ -30,7 +30,8 @@ import net.minecraft.entity.RecurrentComplexEntityAccessor;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.JsonUtils;
+import ivorius.reccomplex.json.JsonUtils;
+
 import net.minecraft.world.World;
 import net.minecraft.world.biome.BiomeGenBase;
 import net.minecraftforge.common.BiomeDictionary;

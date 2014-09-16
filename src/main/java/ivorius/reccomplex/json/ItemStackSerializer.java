@@ -11,7 +11,7 @@ import ivorius.reccomplex.RecurrentComplex;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.JsonUtils;
+import ivorius.reccomplex.json.JsonUtils;
 
 import java.lang.reflect.Type;
 

@@ -6,6 +6,8 @@
 package ivorius.reccomplex.events;
 
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import ivorius.ivtoolkit.blocks.BlockCoord;
 import ivorius.ivtoolkit.rendering.IvRenderHelper;
 import ivorius.reccomplex.entities.StructureEntityInfo;
@@ -55,6 +57,7 @@ public class RCForgeEventHandler
         }
     }
 
+    @SideOnly(Side.CLIENT)
     @SubscribeEvent
     public void onDrawWorld(RenderWorldLastEvent event)
     {
@@ -132,6 +135,7 @@ public class RCForgeEventHandler
         }
     }
 
+    @SideOnly(Side.CLIENT)
     private static void drawCuboid(BlockCoord min, BlockCoord max, boolean lined)
     {
         float width2 = ((float) max.x - (float) min.x) * 0.5f;

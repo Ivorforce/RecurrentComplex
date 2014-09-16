@@ -12,7 +12,8 @@ import ivorius.reccomplex.gui.editstructure.TableDataSourceBTNegativeSpace;
 import ivorius.reccomplex.gui.table.TableDataSource;
 import ivorius.reccomplex.worldgen.MCRegistrySpecial;
 import net.minecraft.block.Block;
-import net.minecraft.util.JsonUtils;
+import ivorius.reccomplex.json.JsonUtils;
+
 
 import java.lang.reflect.Type;
 

@@ -5,11 +5,8 @@
 
 package ivorius.reccomplex.worldgen.blockTransformers;
 
-import ivorius.ivtoolkit.blocks.BlockArea;
 import ivorius.ivtoolkit.blocks.BlockCoord;
-import ivorius.ivtoolkit.math.AxisAlignedTransform2D;
 import ivorius.ivtoolkit.math.IvVecMathHelper;
-import ivorius.ivtoolkit.tools.IvWorldData;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.init.Blocks;
@@ -23,7 +20,7 @@ import java.util.Random;
 /**
  * Created by lukas on 25.05.14.
  */
-public class BlockTransformerNaturalAir implements BlockTransformer
+public class BlockTransformerNaturalAir extends BlockTransformerSingle
 {
     public static final double NATURAL_EXPANSION_DISTANCE = 4.0;
     public static final double NATURAL_DISTANCE_RANDOMIZATION = 10.0;
@@ -44,7 +41,7 @@ public class BlockTransformerNaturalAir implements BlockTransformer
     }
 
     @Override
-    public void apply(World world, Random random, Phase phase, BlockCoord coord, Block sourceBlock, int sourceMetadata, IvWorldData worldData)
+    public void transformBlock(World world, Random random, Phase phase, BlockCoord coord, Block sourceBlock, int sourceMetadata)
     {
         BiomeGenBase biome = world.getBiomeGenForCoords(coord.x, coord.z);
         Block topBlock = biome.topBlock;
@@ -101,12 +98,6 @@ public class BlockTransformerNaturalAir implements BlockTransformer
         }
     }
 
-    @Override
-    public void applyArea(World world, Random random, Phase phase, BlockArea area, AxisAlignedTransform2D transform2D, IvWorldData worldData)
-    {
-
-    }
-
     private void addIfNew(List<int[]> list, int... object)
     {
         if (!list.contains(object))
@@ -125,11 +116,5 @@ public class BlockTransformerNaturalAir implements BlockTransformer
     public boolean generatesInPhase(Phase phase)
     {
         return phase == Phase.BEFORE;
-    }
-
-    @Override
-    public boolean generatesAreaInPhase(Phase phase)
-    {
-        return false;
     }
 }

@@ -7,7 +7,6 @@ package ivorius.reccomplex.worldgen.genericStructures;
 
 import com.google.gson.*;
 import cpw.mods.fml.common.Loader;
-import ivorius.ivtoolkit.blocks.BlockArea;
 import ivorius.ivtoolkit.blocks.BlockCoord;
 import ivorius.ivtoolkit.blocks.IvBlockCollection;
 import ivorius.ivtoolkit.math.AxisAlignedTransform2D;
@@ -128,32 +127,12 @@ public class GenericStructureInfo implements StructureInfo, Cloneable
             tileEntities.put(new BlockCoord(tileEntity), tileEntity);
         }
 
-        BlockArea genArea = new BlockArea(origin.add(transform.apply(new BlockCoord(0, 0, 0), size)), origin.add(transform.apply(new BlockCoord(size[0], size[1], size[2]), size)));
-
         if (!asSource)
         {
             for (BlockTransformer transformer : blockTransformers)
             {
                 if (transformer.generatesInPhase(BlockTransformer.Phase.BEFORE))
-                {
-                    for (BlockCoord sourceCoord : blockCollection)
-                    {
-                        BlockCoord worldCoord = transform.apply(sourceCoord, size).add(origin);
-
-                        Block block = blockCollection.getBlock(sourceCoord);
-                        int meta = blockCollection.getMetadata(sourceCoord);
-
-                        if (transformer.matches(block, meta))
-                        {
-                            transformer.apply(world, random, BlockTransformer.Phase.BEFORE, worldCoord, block, meta, worldData);
-                        }
-                    }
-                }
-
-                if (transformer.generatesAreaInPhase(BlockTransformer.Phase.BEFORE))
-                {
-                    transformer.applyArea(world, random, BlockTransformer.Phase.BEFORE, genArea, transform, worldData);
-                }
+                    transformer.transform(world, random, BlockTransformer.Phase.BEFORE, origin, size, transform, worldData);
             }
         }
 
@@ -204,25 +183,7 @@ public class GenericStructureInfo implements StructureInfo, Cloneable
             for (BlockTransformer transformer : blockTransformers)
             {
                 if (transformer.generatesInPhase(BlockTransformer.Phase.AFTER))
-                {
-                    for (BlockCoord sourceCoord : blockCollection)
-                    {
-                        BlockCoord worldCoord = transform.apply(sourceCoord, size).add(origin);
-
-                        Block block = blockCollection.getBlock(sourceCoord);
-                        int meta = blockCollection.getMetadata(sourceCoord);
-
-                        if (transformer.matches(block, meta))
-                        {
-                            transformer.apply(world, random, BlockTransformer.Phase.AFTER, worldCoord, block, meta, worldData);
-                        }
-                    }
-                }
-
-                if (transformer.generatesAreaInPhase(BlockTransformer.Phase.BEFORE))
-                {
-                    transformer.applyArea(world, random, BlockTransformer.Phase.BEFORE, genArea, transform, worldData);
-                }
+                    transformer.transform(world, random, BlockTransformer.Phase.AFTER, origin, size, transform, worldData);
             }
         }
 
@@ -260,7 +221,7 @@ public class GenericStructureInfo implements StructureInfo, Cloneable
     {
         for (BlockTransformer transformer : blockTransformers)
         {
-            if (transformer.matches(block, metadata))
+            if (transformer.skipGeneration(block, metadata))
             {
                 return transformer;
             }

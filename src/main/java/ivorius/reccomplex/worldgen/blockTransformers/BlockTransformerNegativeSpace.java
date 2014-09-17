@@ -5,7 +5,6 @@
 
 package ivorius.reccomplex.worldgen.blockTransformers;
 
-import ivorius.ivtoolkit.blocks.BlockArea;
 import ivorius.ivtoolkit.blocks.BlockCoord;
 import ivorius.ivtoolkit.math.AxisAlignedTransform2D;
 import ivorius.ivtoolkit.tools.IvWorldData;
@@ -29,19 +28,13 @@ public class BlockTransformerNegativeSpace implements BlockTransformer
     }
 
     @Override
-    public boolean matches(Block block, int metadata)
+    public boolean skipGeneration(Block block, int metadata)
     {
         return block == sourceBlock && (metadata < 0 || metadata == sourceMetadata);
     }
 
     @Override
-    public void apply(World world, Random random, Phase phase, BlockCoord coord, Block sourceBlock, int sourceMetadata, IvWorldData worldData)
-    {
-
-    }
-
-    @Override
-    public void applyArea(World world, Random random, Phase phase, BlockArea area, AxisAlignedTransform2D transform2D, IvWorldData worldData)
+    public void transform(World world, Random random, Phase phase, BlockCoord origin, int[] size, AxisAlignedTransform2D transform, IvWorldData worldData)
     {
 
     }
@@ -54,12 +47,6 @@ public class BlockTransformerNegativeSpace implements BlockTransformer
 
     @Override
     public boolean generatesInPhase(Phase phase)
-    {
-        return false;
-    }
-
-    @Override
-    public boolean generatesAreaInPhase(Phase phase)
     {
         return false;
     }

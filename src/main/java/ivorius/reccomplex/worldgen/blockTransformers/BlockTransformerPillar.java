@@ -5,10 +5,7 @@
 
 package ivorius.reccomplex.worldgen.blockTransformers;
 
-import ivorius.ivtoolkit.blocks.BlockArea;
 import ivorius.ivtoolkit.blocks.BlockCoord;
-import ivorius.ivtoolkit.math.AxisAlignedTransform2D;
-import ivorius.ivtoolkit.tools.IvWorldData;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.world.World;
@@ -18,7 +15,7 @@ import java.util.Random;
 /**
  * Created by lukas on 25.05.14.
  */
-public class BlockTransformerPillar implements BlockTransformer
+public class BlockTransformerPillar extends BlockTransformerSingle
 {
     public Block sourceBlock;
     public int sourceMetadata;
@@ -41,7 +38,7 @@ public class BlockTransformerPillar implements BlockTransformer
     }
 
     @Override
-    public void apply(World world, Random random, Phase phase, BlockCoord coord, Block sourceBlock, int sourceMetadata, IvWorldData worldData)
+    public void transformBlock(World world, Random random, Phase phase, BlockCoord coord, Block sourceBlock, int sourceMetadata)
     {
         world.setBlock(coord.x, coord.y, coord.z, destBlock, destMetadata, 3);
         int y = coord.y;
@@ -62,12 +59,6 @@ public class BlockTransformerPillar implements BlockTransformer
     }
 
     @Override
-    public void applyArea(World world, Random random, Phase phase, BlockArea area, AxisAlignedTransform2D transform2D, IvWorldData worldData)
-    {
-
-    }
-
-    @Override
     public String displayString()
     {
         return "Pillar: " + sourceBlock.getLocalizedName() + "->" + destBlock.getLocalizedName();
@@ -77,11 +68,5 @@ public class BlockTransformerPillar implements BlockTransformer
     public boolean generatesInPhase(Phase phase)
     {
         return phase == Phase.BEFORE;
-    }
-
-    @Override
-    public boolean generatesAreaInPhase(Phase phase)
-    {
-        return false;
     }
 }

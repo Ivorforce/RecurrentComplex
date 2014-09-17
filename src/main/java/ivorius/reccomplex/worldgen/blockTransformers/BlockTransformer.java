@@ -19,17 +19,13 @@ import java.util.Random;
  */
 public interface BlockTransformer
 {
-    boolean matches(Block block, int metadata);
+    boolean skipGeneration(Block block, int metadata);
 
-    void apply(World world, Random random, Phase phase, BlockCoord coord, Block sourceBlock, int sourceMetadata, IvWorldData worldData);
-
-    void applyArea(World world, Random random, Phase phase, BlockArea area, AxisAlignedTransform2D transform2D, IvWorldData worldData);
+    void transform(World world, Random random, Phase phase, BlockCoord origin, int[] size, AxisAlignedTransform2D transform, IvWorldData worldData);
 
     String displayString();
 
     boolean generatesInPhase(Phase phase);
-
-    boolean generatesAreaInPhase(Phase phase);
 
     public static enum Phase
     {

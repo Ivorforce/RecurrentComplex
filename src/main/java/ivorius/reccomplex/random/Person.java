@@ -6,8 +6,11 @@
 package ivorius.reccomplex.random;
 
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Random;
+
+import static ivorius.reccomplex.random.LayeredStringGenerator.*;
 
 public class Person
 {
@@ -17,10 +20,23 @@ public class Person
         CHAOTIC
     }
 
-    private static List<String> vowels = Arrays.asList("a", "e", "i", "o", "u", "ei", "ai", "ou", "j", "ji", "y", "oi", "au", "oo");
-    private static List<String> startConsonants = Arrays.asList("b", "c", "d", "f", "g", "h", "k", "l", "m", "n", "p", "q", "r", "s", "t", "v", "w", "x", "z", "ch", "bl", "br", "fl", "gl", "gr", "kl", "pr", "st", "sh", "th");
-    private static List<String> endConsonants = Arrays.asList("b", "d", "f", "g", "h", "k", "l", "m", "n", "p", "r", "s", "t", "v", "w", "z", "ch", "gh", "nn", "st", "sh", "th", "tt", "ss", "pf", "nt");
-    private static List<String> chaoticNameBlueprints = Arrays.asList("vdv", "cvdvd", "cvd", "vdvd");
+    private static final LayeredStringGenerator chaoticNameGen;
+
+    static
+    {
+        LayerStatic vowels = new LayerStatic("a", "e", "i", "o", "u", "ei", "ai", "ou", "j", "ji", "y", "oi", "au", "oo");
+        LayerStatic startConsonants = new LayerStatic("b", "c", "d", "f", "g", "h", "k", "l", "m", "n", "p", "q", "r", "s", "t", "v", "w", "x", "z", "ch", "bl", "br", "fl", "gl", "gr", "kl", "pr", "st", "sh", "th");
+        LayerStatic endConsonants = new LayerStatic("b", "d", "f", "g", "h", "k", "l", "m", "n", "p", "r", "s", "t", "v", "w", "z", "ch", "gh", "nn", "st", "sh", "th", "tt", "ss", "pf", "nt");
+
+        LayerSimple chaoticWord = new LayerSimple('c', startConsonants, 'v', vowels, 'd', endConsonants);
+        chaoticWord.addStrings(1, "vdv", "cvdvd", "cvd", "vdvd");
+
+        LayerSimple baseChaoticName = new LayerSimple('n', new LayerUppercase(chaoticWord));
+        baseChaoticName.addStrings(4, "n");
+        baseChaoticName.addStrings(1, "n-n");
+        
+        chaoticNameGen = new LayeredStringGenerator(baseChaoticName);
+    }
 
     public static List<String> nordicNamesMale = Arrays.asList("Erik", "Magnus", "John", "William", "Lukas", "Elias",
             "Malik", "Aron", "Enuk", "Christian", "Peter", "Hans", "Jens", "Niels", "Kristian", "Aage", "Johannes",
@@ -89,48 +105,7 @@ public class Person
 
     public static String chaoticName(Random random, boolean male)
     {
-        StringBuilder name = new StringBuilder();
-
-        name.append(firstCharUppercase(parseChaoticName(getRandomElementFrom(chaoticNameBlueprints, random), random)));
-
-        if (random.nextFloat() < 0.2f)
-        {
-            name.append("-").append(firstCharUppercase(parseChaoticName(getRandomElementFrom(chaoticNameBlueprints, random), random)));
-        }
-
-        return name.toString();
-    }
-
-    private static String parseChaoticName(String blueprint, Random random)
-    {
-        StringBuilder name = new StringBuilder();
-
-        for (int i = 0; i < blueprint.length(); i++)
-        {
-            char ch = blueprint.charAt(i);
-
-            switch (ch)
-            {
-                case 'v':
-                    name.append(getRandomElementFrom(vowels, random));
-                    break;
-
-                case 'c':
-                    name.append(getRandomElementFrom(startConsonants, random));
-                    break;
-
-                case 'd':
-                    name.append(getRandomElementFrom(endConsonants, random));
-                    break;
-            }
-        }
-
-        return name.toString();
-    }
-
-    private static String firstCharUppercase(String name)
-    {
-        return Character.toString(name.charAt(0)).toUpperCase() + name.substring(1);
+        return chaoticNameGen.randomString(random);
     }
 
     private static <O> O getRandomElementFrom(List<O> list, Random random)

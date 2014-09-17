@@ -184,6 +184,7 @@ public class RecurrentComplex
         StructureHandler.registerBlockTransformer("pillar", BlockTransformerPillar.class, new BTProviderPillar());
         StructureHandler.registerBlockTransformer("replaceAll", BlockTransformerReplaceAll.class, new BTProviderReplaceAll());
         StructureHandler.registerBlockTransformer("replace", BlockTransformerReplace.class, new BTProviderReplace());
+        StructureHandler.registerBlockTransformer("ruins", BlockTransformerRuins.class, new BTProviderRuins());
         StructureHandler.registerBlockTransformer("negativeSpace", BlockTransformerNegativeSpace.class, new BTProviderNegativeSpace());
 
         Poem.registerThemes(MODID, "love", "summer", "war", "winter", "grief");

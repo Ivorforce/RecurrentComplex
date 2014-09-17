@@ -12,6 +12,7 @@ import ivorius.ivtoolkit.tools.IvWorldData;
 import net.minecraft.block.Block;
 import net.minecraft.world.World;
 
+import java.util.List;
 import java.util.Random;
 
 /**
@@ -40,7 +41,7 @@ public class BlockTransformerReplaceAll implements BlockTransformer
     }
 
     @Override
-    public void transform(World world, Random random, Phase phase, BlockCoord origin, int[] size, AxisAlignedTransform2D transform, IvWorldData worldData)
+    public void transform(World world, Random random, Phase phase, BlockCoord origin, int[] size, AxisAlignedTransform2D transform, IvWorldData worldData, List<BlockTransformer> transformerList)
     {
         IvBlockCollection blockCollection = worldData.blockCollection;
 

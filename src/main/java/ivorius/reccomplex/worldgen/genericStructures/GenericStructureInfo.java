@@ -59,6 +59,8 @@ public class GenericStructureInfo implements StructureInfo, Cloneable
 
     public List<String> dependencies = new ArrayList<>();
 
+    public JsonObject customData;
+
     public static GenericStructureInfo createDefaultStructure()
     {
         GenericStructureInfo genericStructureInfo = new GenericStructureInfo();
@@ -404,6 +406,8 @@ public class GenericStructureInfo implements StructureInfo, Cloneable
                 // And else it is taken out for packet size
             }
 
+            structureInfo.customData = JsonUtils.getJsonObjectFieldOrDefault(jsonobject, "customData", new JsonObject());
+
             return structureInfo;
         }
 
@@ -457,6 +461,8 @@ public class GenericStructureInfo implements StructureInfo, Cloneable
                     jsonobject.addProperty("worldDataBase64", NbtToJson.getBase64FromNBT(structureInfo.worldDataCompound));
                 }
             }
+
+            jsonobject.add("customData", structureInfo.customData);
 
             return jsonobject;
         }

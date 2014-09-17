@@ -5,7 +5,9 @@
 
 package ivorius.reccomplex.worldgen.blockTransformers;
 
+import ivorius.ivtoolkit.blocks.BlockArea;
 import ivorius.ivtoolkit.blocks.BlockCoord;
+import ivorius.ivtoolkit.math.AxisAlignedTransform2D;
 import ivorius.ivtoolkit.tools.IvWorldData;
 import net.minecraft.block.Block;
 import net.minecraft.world.World;
@@ -39,6 +41,12 @@ public class BlockTransformerNegativeSpace implements BlockTransformer
     }
 
     @Override
+    public void applyArea(World world, Random random, Phase phase, BlockArea area, AxisAlignedTransform2D transform2D, IvWorldData worldData)
+    {
+
+    }
+
+    @Override
     public String displayString()
     {
         return "Space: " + sourceBlock.getLocalizedName();
@@ -46,6 +54,12 @@ public class BlockTransformerNegativeSpace implements BlockTransformer
 
     @Override
     public boolean generatesInPhase(Phase phase)
+    {
+        return false;
+    }
+
+    @Override
+    public boolean generatesAreaInPhase(Phase phase)
     {
         return false;
     }

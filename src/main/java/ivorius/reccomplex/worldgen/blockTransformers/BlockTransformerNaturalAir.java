@@ -5,7 +5,9 @@
 
 package ivorius.reccomplex.worldgen.blockTransformers;
 
+import ivorius.ivtoolkit.blocks.BlockArea;
 import ivorius.ivtoolkit.blocks.BlockCoord;
+import ivorius.ivtoolkit.math.AxisAlignedTransform2D;
 import ivorius.ivtoolkit.math.IvVecMathHelper;
 import ivorius.ivtoolkit.tools.IvWorldData;
 import net.minecraft.block.Block;
@@ -99,6 +101,12 @@ public class BlockTransformerNaturalAir implements BlockTransformer
         }
     }
 
+    @Override
+    public void applyArea(World world, Random random, Phase phase, BlockArea area, AxisAlignedTransform2D transform2D, IvWorldData worldData)
+    {
+
+    }
+
     private void addIfNew(List<int[]> list, int... object)
     {
         if (!list.contains(object))
@@ -117,5 +125,11 @@ public class BlockTransformerNaturalAir implements BlockTransformer
     public boolean generatesInPhase(Phase phase)
     {
         return phase == Phase.BEFORE;
+    }
+
+    @Override
+    public boolean generatesAreaInPhase(Phase phase)
+    {
+        return false;
     }
 }

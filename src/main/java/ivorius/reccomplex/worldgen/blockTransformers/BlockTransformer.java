@@ -5,7 +5,9 @@
 
 package ivorius.reccomplex.worldgen.blockTransformers;
 
+import ivorius.ivtoolkit.blocks.BlockArea;
 import ivorius.ivtoolkit.blocks.BlockCoord;
+import ivorius.ivtoolkit.math.AxisAlignedTransform2D;
 import ivorius.ivtoolkit.tools.IvWorldData;
 import net.minecraft.block.Block;
 import net.minecraft.world.World;
@@ -21,9 +23,13 @@ public interface BlockTransformer
 
     void apply(World world, Random random, Phase phase, BlockCoord coord, Block sourceBlock, int sourceMetadata, IvWorldData worldData);
 
+    void applyArea(World world, Random random, Phase phase, BlockArea area, AxisAlignedTransform2D transform2D, IvWorldData worldData);
+
     String displayString();
 
     boolean generatesInPhase(Phase phase);
+
+    boolean generatesAreaInPhase(Phase phase);
 
     public static enum Phase
     {

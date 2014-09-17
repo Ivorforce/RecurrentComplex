@@ -5,6 +5,7 @@
 
 package ivorius.reccomplex.worldgen;
 
+import ivorius.reccomplex.RCConfig;
 import net.minecraft.util.WeightedRandom;
 import net.minecraft.world.World;
 import net.minecraft.world.biome.BiomeGenBase;
@@ -43,11 +44,11 @@ public class StructureSelector
         switch (category)
         {
             case "decoration":
-                return 1.0f / 20.0f;
+                return 1.0f / 20.0f * RCConfig.structureSpawnChanceModifier;
             case "adventure":
-                return 1.0f / 200.0f;
+                return 1.0f / 200.0f * RCConfig.structureSpawnChanceModifier;
             case "rare":
-                return 1.0f / 1000.0f;
+                return 1.0f / 1000.0f * RCConfig.structureSpawnChanceModifier;
         }
 
         return 0.01f;

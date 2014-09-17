@@ -182,6 +182,7 @@ public class RecurrentComplex
         StructureHandler.registerBlockTransformer("natural", BlockTransformerNatural.class, new BTProviderNatural());
         StructureHandler.registerBlockTransformer("naturalAir", BlockTransformerNaturalAir.class, new BTProviderNaturalAir());
         StructureHandler.registerBlockTransformer("pillar", BlockTransformerPillar.class, new BTProviderPillar());
+        StructureHandler.registerBlockTransformer("replaceAll", BlockTransformerReplaceAll.class, new BTProviderReplaceAll());
         StructureHandler.registerBlockTransformer("replace", BlockTransformerReplace.class, new BTProviderReplace());
         StructureHandler.registerBlockTransformer("negativeSpace", BlockTransformerNegativeSpace.class, new BTProviderNegativeSpace());
 

@@ -101,6 +101,6 @@ public class TableElementFloatRange extends TableElementPropertyDefault<FloatRan
 
     private static String getNumberString(float number, int precision)
     {
-        return String.format("%." + number + "f", number);
+        return String.format("%." + precision + "f", number);
     }
 }

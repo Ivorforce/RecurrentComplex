@@ -75,37 +75,27 @@ public class LayeredStringGenerator
 
             return stringBuilder.toString();
         }
-
-        private static class WeightedString extends WeightedRandom.Item
-        {
-            public String string;
-
-            private WeightedString(int weight, String string)
-            {
-                super(weight);
-                this.string = string;
-            }
-        }
     }
 
     public static class LayerStatic implements Layer
     {
-        public List<String> baseStrings;
-
-        public LayerStatic(List<String> baseStrings)
-        {
-            this.baseStrings = baseStrings;
-        }
+        private List<WeightedString> baseStrings = new ArrayList<>();
 
         public LayerStatic(String... baseStrings)
         {
-            this.baseStrings = Arrays.asList(baseStrings);
+            addStrings(1, baseStrings);
+        }
+
+        public void addStrings(int weight, String... strings)
+        {
+            for (String s : strings)
+                baseStrings.add(new WeightedString(weight, s));
         }
 
         @Override
         public String randomString(Random random)
         {
-            return getRandomElementFrom(baseStrings, random);
+            return ((WeightedString) WeightedRandom.getRandomItem(random, baseStrings)).string;
         }
     }
 
@@ -133,5 +123,16 @@ public class LayeredStringGenerator
     private static <O> O getRandomElementFrom(List<O> list, Random random)
     {
         return list.get(random.nextInt(list.size()));
+    }
+
+    private static class WeightedString extends WeightedRandom.Item
+    {
+        public String string;
+
+        private WeightedString(int weight, String string)
+        {
+            super(weight);
+            this.string = string;
+        }
     }
 }

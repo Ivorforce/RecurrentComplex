@@ -21,6 +21,7 @@ package ivorius.ivtoolkit.tools;
 import ivorius.ivtoolkit.blocks.BlockArea;
 import ivorius.ivtoolkit.blocks.BlockCoord;
 import ivorius.ivtoolkit.blocks.IvBlockCollection;
+import net.minecraft.command.IEntitySelector;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityList;
 import net.minecraft.entity.player.EntityPlayer;
@@ -74,17 +75,7 @@ public class IvWorldData
 
         if (captureEntities)
         {
-            entities = world.getEntitiesWithinAABBExcludingEntity(null, blockArea.asAxisAlignedBB());
-            Iterator<Entity> entityIterator = entities.iterator();
-            while (entityIterator.hasNext())
-            {
-                Entity entity = entityIterator.next();
-
-                if (entity instanceof EntityPlayer)
-                {
-                    entityIterator.remove();
-                }
-            }
+            entities = world.getEntitiesWithinAABBExcludingEntity(null, blockArea.asAxisAlignedBB(), new EntitySelectorSaveable());
         }
         else
         {
@@ -308,6 +299,15 @@ public class IvWorldData
                     }
                 }
             }
+        }
+    }
+
+    public static class EntitySelectorSaveable implements IEntitySelector
+    {
+        @Override
+        public boolean isEntityApplicable(Entity entity)
+        {
+            return !(entity instanceof EntityPlayer);
         }
     }
 }

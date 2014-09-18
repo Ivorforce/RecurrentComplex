@@ -6,12 +6,16 @@
 package ivorius.reccomplex.worldgen;
 
 import cpw.mods.fml.common.IWorldGenerator;
+import ivorius.ivtoolkit.blocks.BlockArea;
 import ivorius.ivtoolkit.blocks.BlockCoord;
 import ivorius.ivtoolkit.math.AxisAlignedTransform2D;
-import ivorius.reccomplex.RecurrentComplex;
+import ivorius.reccomplex.events.RCEventBus;
+import ivorius.reccomplex.events.StructureGenerationEvent;
+import ivorius.reccomplex.events.StructureGenerationEventLite;
 import net.minecraft.world.World;
 import net.minecraft.world.biome.BiomeGenBase;
 import net.minecraft.world.chunk.IChunkProvider;
+import net.minecraftforge.common.MinecraftForge;
 
 import java.util.List;
 import java.util.Random;
@@ -51,10 +55,26 @@ public class WorldGenStructures implements IWorldGenerator
         int genX = x - size[0] / 2;
         int genZ = z - size[2] / 2;
         int genY = info.generationY(world, random, x, z);
+        BlockCoord coord = new BlockCoord(genX, genY, genZ);
 
-        info.generate(world, random, new BlockCoord(genX, genY, genZ), transform, 0);
+        generateStructureWithNotifications(info, world, random, coord, transform, 0);
 
         return genY;
+    }
+
+    public static void generateStructureWithNotifications(StructureInfo structureInfo, World world, Random random, BlockCoord coord, AxisAlignedTransform2D strucTransform, int layer)
+    {
+        int[] size = structureBoundingBox(structureInfo, strucTransform);
+        BlockArea genArea = new BlockArea(coord, coord.add(size[0] - 1, size[1] - 1, size[2] - 1));
+        int[] coordInts = new int[]{coord.x, coord.y, coord.z};
+
+        RCEventBus.INSTANCE.post(new StructureGenerationEvent.Pre(structureInfo, strucTransform, genArea, layer));
+        MinecraftForge.EVENT_BUS.post(new StructureGenerationEventLite.Pre(StructureHandler.getName(structureInfo), coordInts, size, layer));
+
+        structureInfo.generate(world, random, coord, strucTransform, layer);
+
+        RCEventBus.INSTANCE.post(new StructureGenerationEvent.Post(structureInfo, strucTransform, genArea, layer));
+        MinecraftForge.EVENT_BUS.post(new StructureGenerationEventLite.Post(StructureHandler.getName(structureInfo), coordInts, size, layer));
     }
 
     public static int[] structureBoundingBox(StructureInfo info, AxisAlignedTransform2D transform)

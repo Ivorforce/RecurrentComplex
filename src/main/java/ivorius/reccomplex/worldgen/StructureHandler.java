@@ -5,6 +5,8 @@
 
 package ivorius.reccomplex.worldgen;
 
+import com.google.common.collect.BiMap;
+import com.google.common.collect.HashBiMap;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import ivorius.reccomplex.RecurrentComplex;
@@ -27,7 +29,7 @@ import java.util.Set;
  */
 public class StructureHandler
 {
-    private static Map<String, StructureInfo> allStructures = new HashMap<>();
+    private static BiMap<String, StructureInfo> allStructures = HashBiMap.create();
     private static Map<String, StructureInfo> generatingStructures = new HashMap<>();
     private static Map<String, StructureSelector> structureSelectorsInBiomes = new HashMap<>();
 
@@ -88,6 +90,11 @@ public class StructureHandler
     public static StructureInfo getStructure(String name)
     {
         return allStructures.get(name);
+    }
+
+    public static String getName(StructureInfo structureInfo)
+    {
+        return allStructures.inverse().get(structureInfo);
     }
 
     public static void removeStructure(String name)

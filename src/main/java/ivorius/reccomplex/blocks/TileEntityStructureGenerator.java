@@ -10,6 +10,7 @@ import ivorius.ivtoolkit.math.AxisAlignedTransform2D;
 import ivorius.ivtoolkit.tools.IvCollections;
 import ivorius.reccomplex.worldgen.StructureHandler;
 import ivorius.reccomplex.worldgen.StructureInfo;
+import ivorius.reccomplex.worldgen.WorldGenStructures;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.nbt.NBTTagString;
@@ -136,7 +137,9 @@ public class TileEntityStructureGenerator extends TileEntity implements Generati
                 boolean strucMirror = structureInfo.isMirrorable() && (structureMirror != null ? transform.isMirrorX() != structureMirror : random.nextBoolean());
                 AxisAlignedTransform2D strucTransform = AxisAlignedTransform2D.transform(strucRotation, strucMirror);
 
-                structureInfo.generate(world, random, new BlockCoord(xCoord + structureShift.x, yCoord + structureShift.y, zCoord + structureShift.z), strucTransform, layer);
+                BlockCoord coord = new BlockCoord(xCoord + structureShift.x, yCoord + structureShift.y, zCoord + structureShift.z);
+
+                WorldGenStructures.generateStructureWithNotifications(structureInfo, world, random, coord, strucTransform, layer);
             }
         }
     }

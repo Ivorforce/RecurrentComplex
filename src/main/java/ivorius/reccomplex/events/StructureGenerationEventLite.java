@@ -6,9 +6,6 @@
 package ivorius.reccomplex.events;
 
 import cpw.mods.fml.common.eventhandler.Event;
-import ivorius.ivtoolkit.blocks.BlockArea;
-import ivorius.ivtoolkit.math.AxisAlignedTransform2D;
-import ivorius.reccomplex.worldgen.StructureInfo;
 
 /**
  * Created by lukas on 18.09.14.

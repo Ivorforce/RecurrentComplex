@@ -218,6 +218,11 @@ public class BlockCoord implements Cloneable
         }
     }
 
+    public BlockCoord invert()
+    {
+        return new BlockCoord(-x, -y, -z);
+    }
+
     public Block getBlock(World world)
     {
         return world.getBlock(x, y, z);

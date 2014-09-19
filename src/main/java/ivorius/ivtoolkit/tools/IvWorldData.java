@@ -21,6 +21,7 @@ package ivorius.ivtoolkit.tools;
 import ivorius.ivtoolkit.blocks.BlockArea;
 import ivorius.ivtoolkit.blocks.BlockCoord;
 import ivorius.ivtoolkit.blocks.IvBlockCollection;
+import ivorius.ivtoolkit.math.AxisAlignedTransform2D;
 import net.minecraft.command.IEntitySelector;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityList;
@@ -33,7 +34,9 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.Constants;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 /**
  * Created by lukas on 24.05.14.
@@ -124,9 +127,9 @@ public class IvWorldData
         {
             NBTTagCompound teCompound = new NBTTagCompound();
 
-            changeTileEntityPos(tileEntity, -referenceCoord.x, -referenceCoord.y, -referenceCoord.z);
+            moveTileEntityForGeneration(tileEntity, referenceCoord.invert());
             tileEntity.writeToNBT(teCompound);
-            changeTileEntityPos(tileEntity, referenceCoord.x, referenceCoord.y, referenceCoord.z);
+            moveTileEntityForGeneration(tileEntity, referenceCoord);
 
             recursivelyInjectIDFixTags(teCompound);
             teList.appendTag(teCompound);
@@ -138,9 +141,9 @@ public class IvWorldData
         {
             NBTTagCompound entityCompound = new NBTTagCompound();
 
-            changeEntityPos(entity, -referenceCoord.x, -referenceCoord.y, -referenceCoord.z);
+            moveEntityForGeneration(entity, referenceCoord.invert());
             entity.writeToNBTOptional(entityCompound);
-            changeEntityPos(entity, referenceCoord.x, referenceCoord.y, referenceCoord.z);
+            moveEntityForGeneration(entity, referenceCoord);
 
             recursivelyInjectIDFixTags(entityCompound);
             entityList.appendTag(entityCompound);
@@ -150,18 +153,31 @@ public class IvWorldData
         return compound;
     }
 
-    private static void changeTileEntityPos(TileEntity tileEntity, int x, int y, int z)
+    public static void moveTileEntityForGeneration(TileEntity tileEntity, BlockCoord coord)
     {
-        tileEntity.xCoord += x;
-        tileEntity.yCoord += y;
-        tileEntity.zCoord += z;
+        tileEntity.xCoord += coord.x;
+        tileEntity.yCoord += coord.y;
+        tileEntity.zCoord += coord.z;
     }
 
-    private static void changeEntityPos(Entity entity, int x, int y, int z)
+    public static void setTileEntityPosForGeneration(TileEntity tileEntity, BlockCoord coord)
     {
-        entity.posX += x;
-        entity.posY += y;
-        entity.posZ += z;
+        moveTileEntityForGeneration(tileEntity, coord.subtract(new BlockCoord(tileEntity)));
+    }
+
+    public static void moveEntityForGeneration(Entity entity, BlockCoord coord)
+    {
+        entity.posX += coord.x;
+        entity.posY += coord.y;
+        entity.posZ += coord.z;
+    }
+
+    public static void transformEntityPosForGeneration(Entity entity, AxisAlignedTransform2D transform, int[] size)
+    {
+        double[] newEntityPos = transform.apply(new double[]{entity.posX, entity.posY, entity.posZ}, size);
+        entity.posX = newEntityPos[0];
+        entity.posY = newEntityPos[1];
+        entity.posZ = newEntityPos[2];
     }
 
     public static void recursivelyInjectIDFixTags(NBTTagCompound compound)

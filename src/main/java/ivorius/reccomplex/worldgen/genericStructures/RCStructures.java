@@ -13,7 +13,7 @@ import ivorius.reccomplex.worldgen.StructureHandler;
  */
 public class RCStructures
 {
-    public static void generateDefaultStructures(boolean generateDefaultStructures)
+    public static void registerDefaultStructures(boolean generateDefaultStructures)
     {
         StructureHandler.registerStructures(RecurrentComplex.MODID, false,
                 "StoneMaze3Way", "StoneMazeCorridor", "StoneMazeCrossing", "StoneMazeEnd", "StoneMazeEndChest", "StoneMazeLitRoom", "StoneMazeSpiderRoom", "StoneMazeTurn",

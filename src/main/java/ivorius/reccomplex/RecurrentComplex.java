@@ -33,7 +33,6 @@ import ivorius.reccomplex.random.Poem;
 import ivorius.reccomplex.worldgen.StructureHandler;
 import ivorius.reccomplex.worldgen.StructureSaveHandler;
 import ivorius.reccomplex.worldgen.StructureSelector;
-import ivorius.reccomplex.worldgen.WorldGenStructures;
 import ivorius.reccomplex.worldgen.blockTransformers.*;
 import ivorius.reccomplex.worldgen.genericStructures.RCStructures;
 import ivorius.reccomplex.worldgen.inventory.InventoryGeneratorSaveHandler;
@@ -44,7 +43,6 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemBlock;
 import net.minecraftforge.common.config.Configuration;
 import org.apache.logging.log4j.Logger;
-import scala.collection.immutable.List;
 
 import java.util.Collections;
 
@@ -201,7 +199,7 @@ public class RecurrentComplex
         RCInventoryGenerators.registerVanillaInventoryGenerators();
         RCInventoryGenerators.registerModInventoryGenerators();
 
-        RCStructures.generateDefaultStructures(RCConfig.generateDefaultStructures);
+        RCStructures.registerDefaultStructures(RCConfig.generateDefaultStructures);
 
         negativeSpaceRenderID = RenderingRegistry.getNextAvailableRenderId();
         proxy.registerRenderers();

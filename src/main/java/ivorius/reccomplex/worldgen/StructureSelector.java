@@ -19,9 +19,26 @@ import java.util.*;
  */
 public class StructureSelector
 {
+    public static final int STRUCTURE_MIN_CAP_DEFAULT = 10;
+
     private static Map<String, Category> categories = new HashMap<>();
 
     private Map<String, List<WeightedStructureInfo>> weightedStructureInfos = new HashMap<>();
+
+    public static void registerCategory(String id, Category category)
+    {
+        categories.put(id, category);
+    }
+
+    public static Category categoryForID(String id)
+    {
+        return categories.get(id);
+    }
+
+    public static Set<String> allCategoryIDs()
+    {
+        return categories.keySet();
+    }
 
     public StructureSelector(Collection<StructureInfo> structures, BiomeGenBase biome)
     {
@@ -42,27 +59,12 @@ public class StructureSelector
         }
     }
 
-    public static void registerCategory(String id, Category category)
-    {
-        categories.put(id, category);
-    }
-
-    public static Category categoryForID(String id)
-    {
-        return categories.get(id);
-    }
-
-    public static Set<String> allCategoryIDs()
-    {
-        return categories.keySet();
-    }
-
-    public static float generationChance(String category, BiomeGenBase biome)
+    public float generationChance(String category, BiomeGenBase biome)
     {
         Category categoryObj = categoryForID(category);
 
         if (categoryObj != null)
-            return categoryObj.structureSpawnChance(biome) * RCConfig.structureSpawnChanceModifier;
+            return categoryObj.structureSpawnChance(biome, weightedStructureInfos.get(category).size()) * RCConfig.structureSpawnChanceModifier;
 
         return 0.01f * RCConfig.structureSpawnChanceModifier;
     }
@@ -88,7 +90,7 @@ public class StructureSelector
 
     public static interface Category
     {
-        float structureSpawnChance(BiomeGenBase biome);
+        float structureSpawnChance(BiomeGenBase biome, int registeredStructures);
 
         boolean selectableInGUI();
     }
@@ -98,24 +100,33 @@ public class StructureSelector
         public float defaultSpawnChance;
         public List<GenerationInfo> generationInfos;
         public boolean selectableInGUI;
+        public int structureMinCap;
 
-        public SimpleCategory(float defaultSpawnChance, List<GenerationInfo> generationInfos, boolean selectableInGUI)
+        public SimpleCategory(float defaultSpawnChance, List<GenerationInfo> generationInfos, boolean selectableInGUI, int structureMinCap)
         {
             this.defaultSpawnChance = defaultSpawnChance;
             this.generationInfos = generationInfos;
             this.selectableInGUI = selectableInGUI;
+            this.structureMinCap = structureMinCap;
+        }
+
+        public SimpleCategory(float defaultSpawnChance, List<GenerationInfo> generationInfos, boolean selectableInGUI)
+        {
+            this(defaultSpawnChance, generationInfos, selectableInGUI, STRUCTURE_MIN_CAP_DEFAULT);
         }
 
         @Override
-        public float structureSpawnChance(BiomeGenBase biome)
+        public float structureSpawnChance(BiomeGenBase biome, int registeredStructures)
         {
+            float amountMultiplier = Math.min((float) registeredStructures / (float) structureMinCap, 1.0f);
+
             for (GenerationInfo info : generationInfos)
             {
                 if (info.selector.matches(biome))
-                    return info.spawnChance;
+                    return info.spawnChance * amountMultiplier;
             }
 
-            return defaultSpawnChance;
+            return defaultSpawnChance * amountMultiplier;
         }
 
         @Override

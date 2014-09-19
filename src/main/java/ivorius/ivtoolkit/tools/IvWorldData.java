@@ -123,13 +123,10 @@ public class IvWorldData
         for (TileEntity tileEntity : tileEntities)
         {
             NBTTagCompound teCompound = new NBTTagCompound();
-            tileEntity.xCoord -= referenceCoord.x;
-            tileEntity.yCoord -= referenceCoord.y;
-            tileEntity.zCoord -= referenceCoord.z;
+
+            changeTileEntityPos(tileEntity, -referenceCoord.x, -referenceCoord.y, -referenceCoord.z);
             tileEntity.writeToNBT(teCompound);
-            tileEntity.xCoord += referenceCoord.x;
-            tileEntity.yCoord += referenceCoord.y;
-            tileEntity.zCoord += referenceCoord.z;
+            changeTileEntityPos(tileEntity, referenceCoord.x, referenceCoord.y, referenceCoord.z);
 
             recursivelyInjectIDFixTags(teCompound);
             teList.appendTag(teCompound);
@@ -140,13 +137,10 @@ public class IvWorldData
         for (Entity entity : entities)
         {
             NBTTagCompound entityCompound = new NBTTagCompound();
-            entity.posX -= referenceCoord.x;
-            entity.posY -= referenceCoord.y;
-            entity.posZ -= referenceCoord.z;
+
+            changeEntityPos(entity, -referenceCoord.x, -referenceCoord.y, -referenceCoord.z);
             entity.writeToNBTOptional(entityCompound);
-            entity.posX += referenceCoord.x;
-            entity.posY += referenceCoord.y;
-            entity.posZ += referenceCoord.z;
+            changeEntityPos(entity, referenceCoord.x, referenceCoord.y, referenceCoord.z);
 
             recursivelyInjectIDFixTags(entityCompound);
             entityList.appendTag(entityCompound);
@@ -154,6 +148,20 @@ public class IvWorldData
         compound.setTag("entities", entityList);
 
         return compound;
+    }
+
+    private static void changeTileEntityPos(TileEntity tileEntity, int x, int y, int z)
+    {
+        tileEntity.xCoord += x;
+        tileEntity.yCoord += y;
+        tileEntity.zCoord += z;
+    }
+
+    private static void changeEntityPos(Entity entity, int x, int y, int z)
+    {
+        entity.posX += x;
+        entity.posY += y;
+        entity.posZ += z;
     }
 
     public static void recursivelyInjectIDFixTags(NBTTagCompound compound)

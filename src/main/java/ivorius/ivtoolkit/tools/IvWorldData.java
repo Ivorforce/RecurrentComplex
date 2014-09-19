@@ -24,6 +24,7 @@ import ivorius.ivtoolkit.blocks.IvBlockCollection;
 import ivorius.ivtoolkit.math.AxisAlignedTransform2D;
 import net.minecraft.command.IEntitySelector;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityHanging;
 import net.minecraft.entity.EntityList;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
@@ -170,6 +171,14 @@ public class IvWorldData
         entity.posX += coord.x;
         entity.posY += coord.y;
         entity.posZ += coord.z;
+
+        if (entity instanceof EntityHanging)
+        {
+            EntityHanging entityHanging = (EntityHanging) entity;
+            entityHanging.field_146063_b += coord.x;
+            entityHanging.field_146064_c += coord.y;
+            entityHanging.field_146062_d += coord.z;
+        }
     }
 
     public static void transformEntityPosForGeneration(Entity entity, AxisAlignedTransform2D transform, int[] size)
@@ -178,6 +187,16 @@ public class IvWorldData
         entity.posX = newEntityPos[0];
         entity.posY = newEntityPos[1];
         entity.posZ = newEntityPos[2];
+
+        if (entity instanceof EntityHanging)
+        {
+            EntityHanging entityHanging = (EntityHanging) entity;
+            BlockCoord hangingCoord = new BlockCoord(entityHanging.field_146063_b, entityHanging.field_146064_c, entityHanging.field_146062_d);
+            BlockCoord newHangingCoord = transform.apply(hangingCoord, size);
+            entityHanging.field_146063_b = newHangingCoord.x;
+            entityHanging.field_146064_c = newHangingCoord.y;
+            entityHanging.field_146062_d = newHangingCoord.z;
+        }
     }
 
     public static void recursivelyInjectIDFixTags(NBTTagCompound compound)

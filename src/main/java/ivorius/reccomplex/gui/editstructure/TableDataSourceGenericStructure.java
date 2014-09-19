@@ -58,7 +58,10 @@ public class TableDataSourceGenericStructure implements TableDataSource, TableEl
 
         for (String category : categories)
         {
-            generationBases.add(new TableElementList.Option(category, I18n.format("structures.category." + category)));
+            StructureSelector.Category categoryObj = StructureSelector.categoryForID(category);
+
+            if (categoryObj.selectableInGUI())
+                generationBases.add(new TableElementList.Option(category, I18n.format("structures.category." + category)));
         }
 
         return generationBases;

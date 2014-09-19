@@ -81,7 +81,7 @@ public class TableDataSourceBiomeGen implements TableDataSource, TableElementPro
 
     private GuiValidityStateIndicator.State currentBiomeIDState()
     {
-        if (generationInfo.getBiomeTypes() != null)
+        if (generationInfo.isTypeList())
         {
             return GuiValidityStateIndicator.State.VALID;
         }

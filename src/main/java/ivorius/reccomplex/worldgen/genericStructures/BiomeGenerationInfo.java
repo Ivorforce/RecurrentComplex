@@ -20,12 +20,12 @@ import java.util.*;
  */
 public class BiomeGenerationInfo
 {
-    private String biomeID;
+    private BiomeSelector biomeSelector;
     private Integer generationWeight;
 
     public BiomeGenerationInfo(String biomeID, Integer generationWeight)
     {
-        this.biomeID = biomeID;
+        this.biomeSelector = new BiomeSelector(biomeID);
         this.generationWeight = generationWeight;
     }
 
@@ -76,12 +76,12 @@ public class BiomeGenerationInfo
 
     public String getBiomeID()
     {
-        return biomeID;
+        return biomeSelector.getBiomeID();
     }
 
     public void setBiomeID(String biomeID)
     {
-        this.biomeID = biomeID;
+        biomeSelector.setBiomeID(biomeID);
     }
 
     public Integer getGenerationWeight()
@@ -104,44 +104,14 @@ public class BiomeGenerationInfo
         return generationWeight == null;
     }
 
-    public List<BiomeDictionary.Type> getBiomeTypes()
+    public boolean matches(BiomeGenBase biome)
     {
-        if (biomeID.startsWith("Type:"))
-        {
-            String[] typeIDs = biomeID.substring(5).split(",");
-
-            List<BiomeDictionary.Type> types = new ArrayList<>(typeIDs.length);
-
-            for (String typeID : typeIDs)
-            {
-                BiomeDictionary.Type type = IvGsonHelper.enumForNameIgnoreCase(typeID, BiomeDictionary.Type.values());
-
-                if (type == null)
-                    return null;
-
-                types.add(type);
-            }
-
-            return types;
-        }
-
-        return null;
+        return biomeSelector.matches(biome);
     }
 
-    public static Set<BiomeGenBase> gatherAllBiomes()
+    public boolean isTypeList()
     {
-        Set<BiomeGenBase> set = new HashSet<>();
-
-        for (BiomeGenBase biomeGenBase : BiomeGenBase.getBiomeGenArray())
-        {
-            if (biomeGenBase != null)
-                set.add(biomeGenBase);
-        }
-
-        for (BiomeDictionary.Type type : BiomeDictionary.Type.values())
-            Collections.addAll(set, BiomeDictionary.getBiomesForType(type));
-
-        return set;
+        return biomeSelector.isTypeList();
     }
 
     public static class Serializer implements JsonDeserializer<BiomeGenerationInfo>, JsonSerializer<BiomeGenerationInfo>

@@ -9,6 +9,7 @@ import ivorius.ivtoolkit.gui.IntegerRange;
 import ivorius.reccomplex.gui.GuiValidityStateIndicator;
 import ivorius.reccomplex.gui.table.*;
 import ivorius.reccomplex.worldgen.StructureHandler;
+import ivorius.reccomplex.worldgen.StructureSelector;
 import ivorius.reccomplex.worldgen.genericStructures.GenerationYSelector;
 import ivorius.reccomplex.worldgen.genericStructures.GenericStructureInfo;
 import joptsimple.internal.Strings;
@@ -17,6 +18,7 @@ import net.minecraft.client.resources.I18n;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Set;
 
 /**
  * Created by lukas on 05.06.14.
@@ -51,7 +53,7 @@ public class TableDataSourceGenericStructure implements TableDataSource, TableEl
 
     private static List<TableElementList.Option> allGenerationCategories()
     {
-        String[] categories = {"decoration", "adventure", "rare"};
+        Set<String> categories = StructureSelector.allCategoryIDs();
         List<TableElementList.Option> generationBases = new ArrayList<>();
 
         for (String category : categories)

@@ -32,6 +32,7 @@ import ivorius.reccomplex.network.*;
 import ivorius.reccomplex.random.Poem;
 import ivorius.reccomplex.worldgen.StructureHandler;
 import ivorius.reccomplex.worldgen.StructureSaveHandler;
+import ivorius.reccomplex.worldgen.StructureSelector;
 import ivorius.reccomplex.worldgen.WorldGenStructures;
 import ivorius.reccomplex.worldgen.blockTransformers.*;
 import ivorius.reccomplex.worldgen.genericStructures.RCStructures;
@@ -43,6 +44,9 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemBlock;
 import net.minecraftforge.common.config.Configuration;
 import org.apache.logging.log4j.Logger;
+import scala.collection.immutable.List;
+
+import java.util.Collections;
 
 @Mod(modid = RecurrentComplex.MODID, version = RecurrentComplex.VERSION, name = RecurrentComplex.NAME, guiFactory = "ivorius.reccomplex.gui.RCConfigGuiFactory")
 public class RecurrentComplex
@@ -186,6 +190,10 @@ public class RecurrentComplex
         StructureHandler.registerBlockTransformer("replace", BlockTransformerReplace.class, new BTProviderReplace());
         StructureHandler.registerBlockTransformer("ruins", BlockTransformerRuins.class, new BTProviderRuins());
         StructureHandler.registerBlockTransformer("negativeSpace", BlockTransformerNegativeSpace.class, new BTProviderNegativeSpace());
+
+        StructureSelector.registerCategory("decoration", new StructureSelector.SimpleCategory(1.0f / 20.0f, Collections.<StructureSelector.GenerationInfo>emptyList(), true));
+        StructureSelector.registerCategory("adventure", new StructureSelector.SimpleCategory(1.0f / 200.0f, Collections.<StructureSelector.GenerationInfo>emptyList(), true));
+        StructureSelector.registerCategory("rare", new StructureSelector.SimpleCategory(1.0f / 1000.0f, Collections.<StructureSelector.GenerationInfo>emptyList(), true));
 
         Poem.registerThemes(MODID, "love", "summer", "war", "winter", "grief");
 

@@ -6,6 +6,7 @@
 package ivorius.reccomplex.worldgen;
 
 import ivorius.reccomplex.RCConfig;
+import ivorius.reccomplex.worldgen.genericStructures.BiomeSelector;
 import net.minecraft.util.WeightedRandom;
 import net.minecraft.world.World;
 import net.minecraft.world.biome.BiomeGenBase;
@@ -18,6 +19,8 @@ import java.util.*;
  */
 public class StructureSelector
 {
+    private static Map<String, Category> categories = new HashMap<>();
+
     private Map<String, List<WeightedStructureInfo>> weightedStructureInfos = new HashMap<>();
 
     public StructureSelector(Collection<StructureInfo> structures, BiomeGenBase biome)
@@ -39,28 +42,39 @@ public class StructureSelector
         }
     }
 
-    public static float generationChance(String category)
+    public static void registerCategory(String id, Category category)
     {
-        switch (category)
-        {
-            case "decoration":
-                return 1.0f / 20.0f * RCConfig.structureSpawnChanceModifier;
-            case "adventure":
-                return 1.0f / 200.0f * RCConfig.structureSpawnChanceModifier;
-            case "rare":
-                return 1.0f / 1000.0f * RCConfig.structureSpawnChanceModifier;
-        }
+        categories.put(id, category);
+    }
 
-        return 0.01f;
+    public static Category categoryForID(String id)
+    {
+        return categories.get(id);
+    }
+
+    public static Set<String> allCategoryIDs()
+    {
+        return categories.keySet();
+    }
+
+    public static float generationChance(String category, BiomeGenBase biome)
+    {
+        Category categoryObj = categoryForID(category);
+
+        if (categoryObj != null)
+            return categoryObj.structureSpawnChance(biome) * RCConfig.structureSpawnChanceModifier;
+
+        return 0.01f * RCConfig.structureSpawnChanceModifier;
     }
 
     public List<StructureInfo> generatedStructures(Random random, int chunkX, int chunkZ, World world, IChunkProvider chunkGenerator, IChunkProvider chunkProvider)
     {
         List<StructureInfo> infos = new ArrayList<>();
+        BiomeGenBase biome = world.getBiomeGenForCoords(chunkX * 16, chunkZ * 16);
 
         for (String category : weightedStructureInfos.keySet())
         {
-            if (random.nextFloat() < generationChance(category))
+            if (random.nextFloat() < generationChance(category, biome))
             {
                 List<WeightedStructureInfo> structureInfos = weightedStructureInfos.get(category);
 
@@ -70,5 +84,56 @@ public class StructureSelector
         }
 
         return infos;
+    }
+
+    public static interface Category
+    {
+        float structureSpawnChance(BiomeGenBase biome);
+
+        boolean selectableInGUI();
+    }
+
+    public static class SimpleCategory implements Category
+    {
+        public float defaultSpawnChance;
+        public List<GenerationInfo> generationInfos;
+        public boolean selectableInGUI;
+
+        public SimpleCategory(float defaultSpawnChance, List<GenerationInfo> generationInfos, boolean selectableInGUI)
+        {
+            this.defaultSpawnChance = defaultSpawnChance;
+            this.generationInfos = generationInfos;
+            this.selectableInGUI = selectableInGUI;
+        }
+
+        @Override
+        public float structureSpawnChance(BiomeGenBase biome)
+        {
+            for (GenerationInfo info : generationInfos)
+            {
+                if (info.selector.matches(biome))
+                    return info.spawnChance;
+            }
+
+            return defaultSpawnChance;
+        }
+
+        @Override
+        public boolean selectableInGUI()
+        {
+            return selectableInGUI;
+        }
+    }
+
+    public static class GenerationInfo
+    {
+        public float spawnChance;
+        public BiomeSelector selector;
+
+        public GenerationInfo(float spawnChance, BiomeSelector selector)
+        {
+            this.spawnChance = spawnChance;
+            this.selector = selector;
+        }
     }
 }

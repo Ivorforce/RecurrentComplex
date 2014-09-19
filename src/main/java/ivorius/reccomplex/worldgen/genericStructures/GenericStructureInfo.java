@@ -188,7 +188,6 @@ public class GenericStructureInfo implements StructureInfo, Cloneable
         List<Entity> entities = worldData.entities;
         for (Entity entity : entities)
         {
-            entity.resetEntityId();
             entity.entityUniqueID = UUID.randomUUID();
 
             IvWorldData.transformEntityPosForGeneration(entity, transform, size);

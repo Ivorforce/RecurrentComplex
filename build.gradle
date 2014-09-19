@@ -26,6 +26,12 @@ minecraft {
     assetDir = "eclipse/assets"
 }
 
+jar {
+    manifest {
+        attributes 'FMLAT': 'recurrentcomplex_at.cfg'
+    }
+}
+
 dependencies {
     // you may put jars on which you depend on in ./libs
     // or you may define them like so..

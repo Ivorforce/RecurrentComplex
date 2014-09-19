@@ -26,7 +26,6 @@ import ivorius.reccomplex.worldgen.inventory.InventoryGenerationHandler;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.RecurrentComplexEntityAccessor;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
@@ -191,7 +190,7 @@ public class GenericStructureInfo implements StructureInfo, Cloneable
         for (Entity entity : entities)
         {
             entity.resetEntityId();
-            RecurrentComplexEntityAccessor.resetEntityUUID(entity);
+            entity.entityUniqueID = UUID.randomUUID();
 
             double[] newEntityPos = transform.apply(new double[]{entity.posX, entity.posY, entity.posZ}, size);
             entity.setPosition(newEntityPos[0] + origin.x, newEntityPos[1] + origin.y, newEntityPos[2] + origin.z);

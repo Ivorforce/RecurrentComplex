@@ -168,9 +168,7 @@ public class IvWorldData
 
     public static void moveEntityForGeneration(Entity entity, BlockCoord coord)
     {
-        entity.posX += coord.x;
-        entity.posY += coord.y;
-        entity.posZ += coord.z;
+        entity.setPosition(entity.posX + coord.x, entity.posY + coord.y, entity.posZ + coord.z);
 
         if (entity instanceof EntityHanging)
         {
@@ -178,15 +176,14 @@ public class IvWorldData
             entityHanging.field_146063_b += coord.x;
             entityHanging.field_146064_c += coord.y;
             entityHanging.field_146062_d += coord.z;
+            entityHanging.setDirection(entityHanging.hangingDirection);
         }
     }
 
     public static void transformEntityPosForGeneration(Entity entity, AxisAlignedTransform2D transform, int[] size)
     {
         double[] newEntityPos = transform.apply(new double[]{entity.posX, entity.posY, entity.posZ}, size);
-        entity.posX = newEntityPos[0];
-        entity.posY = newEntityPos[1];
-        entity.posZ = newEntityPos[2];
+        entity.setPosition(newEntityPos[0], newEntityPos[1], newEntityPos[2]);
 
         if (entity instanceof EntityHanging)
         {
@@ -196,6 +193,7 @@ public class IvWorldData
             entityHanging.field_146063_b = newHangingCoord.x;
             entityHanging.field_146064_c = newHangingCoord.y;
             entityHanging.field_146062_d = newHangingCoord.z;
+            entityHanging.setDirection(entityHanging.hangingDirection);
         }
     }
 

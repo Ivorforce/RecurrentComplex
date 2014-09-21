@@ -5,16 +5,16 @@
 
 package ivorius.reccomplex.events;
 
-import cpw.mods.fml.common.eventhandler.Event;
 import ivorius.ivtoolkit.blocks.BlockArea;
-import ivorius.ivtoolkit.blocks.BlockCoord;
 import ivorius.ivtoolkit.math.AxisAlignedTransform2D;
 import ivorius.reccomplex.worldgen.StructureInfo;
+import net.minecraft.world.World;
+import net.minecraftforge.event.world.WorldEvent;
 
 /**
  * Created by lukas on 18.09.14.
  */
-public class StructureGenerationEvent extends Event
+public class StructureGenerationEvent extends WorldEvent
 {
     /**
      * The structure info to be spawned.
@@ -36,8 +36,9 @@ public class StructureGenerationEvent extends Event
      */
     public final int generationLayer;
 
-    public StructureGenerationEvent(StructureInfo structureInfo, AxisAlignedTransform2D transform, BlockArea area, int generationLayer)
+    public StructureGenerationEvent(World world, StructureInfo structureInfo, AxisAlignedTransform2D transform, BlockArea area, int generationLayer)
     {
+        super(world);
         this.structureInfo = structureInfo;
         this.transform = transform;
         this.area = area;
@@ -46,17 +47,17 @@ public class StructureGenerationEvent extends Event
 
     public static class Pre extends StructureGenerationEvent
     {
-        public Pre(StructureInfo structureInfo, AxisAlignedTransform2D transform, BlockArea area, int generationLayer)
+        public Pre(World world, StructureInfo structureInfo, AxisAlignedTransform2D transform, BlockArea area, int generationLayer)
         {
-            super(structureInfo, transform, area, generationLayer);
+            super(world, structureInfo, transform, area, generationLayer);
         }
     }
 
     public static class Post extends StructureGenerationEvent
     {
-        public Post(StructureInfo structureInfo, AxisAlignedTransform2D transform, BlockArea area, int generationLayer)
+        public Post(World world, StructureInfo structureInfo, AxisAlignedTransform2D transform, BlockArea area, int generationLayer)
         {
-            super(structureInfo, transform, area, generationLayer);
+            super(world, structureInfo, transform, area, generationLayer);
         }
     }
 }

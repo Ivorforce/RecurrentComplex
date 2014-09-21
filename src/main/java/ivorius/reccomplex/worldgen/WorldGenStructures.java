@@ -68,13 +68,13 @@ public class WorldGenStructures implements IWorldGenerator
         BlockArea genArea = new BlockArea(coord, coord.add(size[0] - 1, size[1] - 1, size[2] - 1));
         int[] coordInts = new int[]{coord.x, coord.y, coord.z};
 
-        RCEventBus.INSTANCE.post(new StructureGenerationEvent.Pre(structureInfo, strucTransform, genArea, layer));
-        MinecraftForge.EVENT_BUS.post(new StructureGenerationEventLite.Pre(StructureHandler.getName(structureInfo), coordInts, size, layer));
+        RCEventBus.INSTANCE.post(new StructureGenerationEvent.Pre(world, structureInfo, strucTransform, genArea, layer));
+        MinecraftForge.EVENT_BUS.post(new StructureGenerationEventLite.Pre(world, StructureHandler.getName(structureInfo), coordInts, size, layer));
 
         structureInfo.generate(world, random, coord, strucTransform, layer);
 
-        RCEventBus.INSTANCE.post(new StructureGenerationEvent.Post(structureInfo, strucTransform, genArea, layer));
-        MinecraftForge.EVENT_BUS.post(new StructureGenerationEventLite.Post(StructureHandler.getName(structureInfo), coordInts, size, layer));
+        RCEventBus.INSTANCE.post(new StructureGenerationEvent.Post(world, structureInfo, strucTransform, genArea, layer));
+        MinecraftForge.EVENT_BUS.post(new StructureGenerationEventLite.Post(world, StructureHandler.getName(structureInfo), coordInts, size, layer));
     }
 
     public static int[] structureBoundingBox(StructureInfo info, AxisAlignedTransform2D transform)

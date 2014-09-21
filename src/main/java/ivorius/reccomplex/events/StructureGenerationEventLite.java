@@ -5,12 +5,13 @@
 
 package ivorius.reccomplex.events;
 
-import cpw.mods.fml.common.eventhandler.Event;
+import net.minecraft.world.World;
+import net.minecraftforge.event.world.WorldEvent;
 
 /**
  * Created by lukas on 18.09.14.
  */
-public class StructureGenerationEventLite extends Event
+public class StructureGenerationEventLite extends WorldEvent
 {
     /**
      * The name of the structure info to be spawned.
@@ -32,8 +33,9 @@ public class StructureGenerationEventLite extends Event
      */
     public final int generationLayer;
 
-    public StructureGenerationEventLite(String structureName, int[] coordinates, int[] size, int generationLayer)
+    public StructureGenerationEventLite(World world, String structureName, int[] coordinates, int[] size, int generationLayer)
     {
+        super(world);
         this.structureName = structureName;
         this.coordinates = coordinates;
         this.size = size;
@@ -42,17 +44,17 @@ public class StructureGenerationEventLite extends Event
 
     public static class Pre extends StructureGenerationEventLite
     {
-        public Pre(String structureName, int[] coordinates, int[] size, int generationLayer)
+        public Pre(World world, String structureName, int[] coordinates, int[] size, int generationLayer)
         {
-            super(structureName, coordinates, size, generationLayer);
+            super(world, structureName, coordinates, size, generationLayer);
         }
     }
 
     public static class Post extends StructureGenerationEventLite
     {
-        public Post(String structureName, int[] coordinates, int[] size, int generationLayer)
+        public Post(World world, String structureName, int[] coordinates, int[] size, int generationLayer)
         {
-            super(structureName, coordinates, size, generationLayer);
+            super(world, structureName, coordinates, size, generationLayer);
         }
     }
 }

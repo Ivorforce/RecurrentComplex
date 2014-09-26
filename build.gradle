@@ -70,3 +70,49 @@ processResources
 
 sourceCompatibility = 1.7
 targetCompatibility = 1.7
+
+uploadArchives {
+    if (System.getenv("mavenUrl") != null) {
+        repositories {
+            logger.info('Publishing to files server')
+
+            mavenDeployer {
+
+                repository(url: System.getenv("mavenUrl")) {
+                    authentication(userName: System.getenv("mavenUser"), password: System.getenv("mavenPassword"))
+                }
+
+                pom {
+                    groupId = project.group
+                    version = project.version
+                    artifactId = project.archivesBaseName
+                    project {
+                        name project.archivesBaseName
+                        packaging 'jar'
+                        description 'Shared functionality for Ivorius\' mods'
+                        url 'https://github.com/Ivorforce/RecurrentComplex'
+
+                        scm {
+                            url 'scm:git:git@github.com:Ivorforce/RecurrentComplex.git'
+                            connection 'scm:git:git@github.com:Ivorforce/RecurrentComplex.git'
+                            developerConnection 'scm:git:git@github.com:Ivorforce/RecurrentComplex.git'
+                        }
+
+                        issueManagement {
+                            system 'github'
+                            url 'https://github.com/Ivorforce/RecurrentComplex/issues'
+                        }
+
+                        developers {
+                            developer {
+                                id 'Ivorius'
+                                name 'Ivorius'
+                                roles { role 'developer' }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}

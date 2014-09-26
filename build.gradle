@@ -89,7 +89,7 @@ uploadArchives {
                     project {
                         name project.archivesBaseName
                         packaging 'jar'
-                        description 'Shared functionality for Ivorius\' mods'
+                        description 'Handles structures for Minecraft'
                         url 'https://github.com/Ivorforce/RecurrentComplex'
 
                         scm {

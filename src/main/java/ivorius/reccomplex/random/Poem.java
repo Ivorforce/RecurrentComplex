@@ -281,7 +281,7 @@ public class Poem
             {
                 return themeFromFile(IOUtils.toString(RCFileHelper.inputStreamFromResourceLocation(Poem.class, resourceLocation), "UTF-8"));
             }
-            catch (IOException e)
+            catch (Exception e)
             {
                 RecurrentComplex.logger.error(e);
             }

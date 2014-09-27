@@ -6,6 +6,7 @@
 package ivorius.reccomplex.worldgen;
 
 import ivorius.ivtoolkit.tools.IvFileHelper;
+import ivorius.reccomplex.RCFileHelper;
 import ivorius.reccomplex.RecurrentComplex;
 import ivorius.reccomplex.worldgen.genericStructures.GenericStructureInfo;
 import net.minecraft.nbt.CompressedStreamTools;
@@ -175,7 +176,7 @@ public class StructureSaveHandler
     {
         try
         {
-            return structureInfoFromZip(new ZipInputStream(IvFileHelper.inputStreamFromResourceLocation(resourceLocation)), resourceLocation.toString());
+            return structureInfoFromZip(new ZipInputStream(RCFileHelper.inputStreamFromResourceLocation(StructureSaveHandler.class, resourceLocation)), resourceLocation.toString());
         }
         catch (Exception ex)
         {

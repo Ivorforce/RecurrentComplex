@@ -110,7 +110,7 @@ uploadArchives() {
                     project {
                         name project.archivesBaseName
                         packaging 'jar'
-                        description 'Handles structures for Minecraft'
+                        description 'Handles structures for the game Minecraft'
                         url 'https://github.com/Ivorforce/RecurrentComplex'
 
                         scm {

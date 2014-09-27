@@ -79,8 +79,7 @@ task sourceJar(type: Jar) {
 
 task deobfJar(type: Jar) {
     from sourceSets.main.output
-    //Since this is now the main version, maven standards
-    classifier = ''
+    classifier = 'dev'
 
     manifest {
     }
@@ -89,10 +88,6 @@ task deobfJar(type: Jar) {
 artifacts {
     archives sourceJar
     archives deobfJar
-}
-
-jar {
-    classifier = 'universal'
 }
 
 uploadArchives() {
@@ -109,7 +104,7 @@ uploadArchives() {
                 }
 
                 addFilter('deobf') {artifact, file ->
-                    artifact.attributes['classifier'] == null
+                    artifact.attributes['classifier'] == 'dev'
                 }
                 pom('deobf').version = project.version
                 addFilter('sources') {artifact, file ->
@@ -117,7 +112,7 @@ uploadArchives() {
                 }
                 pom('sources').version = project.version
                 addFilter('universal') {artifact, file ->
-                    artifact.attributes['classifier'] == 'universal'
+                    artifact.attributes['classifier'] == null
                 }
                 pom('universal').version = project.version
 

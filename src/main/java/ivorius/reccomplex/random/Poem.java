@@ -7,7 +7,6 @@ package ivorius.reccomplex.random;
 
 import com.google.common.io.LineReader;
 import ivorius.ivtoolkit.tools.IvFileHelper;
-import ivorius.reccomplex.RCFileHelper;
 import ivorius.reccomplex.RecurrentComplex;
 import net.minecraft.util.ResourceLocation;
 import org.apache.commons.io.IOUtils;
@@ -279,7 +278,7 @@ public class Poem
         {
             try
             {
-                return themeFromFile(IOUtils.toString(RCFileHelper.inputStreamFromResourceLocation(Poem.class, resourceLocation), "UTF-8"));
+                return themeFromFile(IOUtils.toString(IvFileHelper.inputStreamFromResourceLocation(resourceLocation), "UTF-8"));
             }
             catch (Exception e)
             {

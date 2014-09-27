@@ -6,7 +6,6 @@
 package ivorius.reccomplex.worldgen.inventory;
 
 import ivorius.ivtoolkit.tools.IvFileHelper;
-import ivorius.reccomplex.RCFileHelper;
 import ivorius.reccomplex.RecurrentComplex;
 import net.minecraft.util.ResourceLocation;
 import org.apache.commons.io.FileUtils;
@@ -90,7 +89,7 @@ public class InventoryGeneratorSaveHandler
     {
         try
         {
-            String json = IOUtils.toString(RCFileHelper.inputStreamFromResourceLocation(InventoryGeneratorSaveHandler.class, resourceLocation), "UTF-8");
+            String json = IOUtils.toString(IvFileHelper.inputStreamFromResourceLocation(resourceLocation), "UTF-8");
             return InventoryGenerationHandler.createInventoryGeneratorFromJSON(json);
         }
         catch (Exception ex)

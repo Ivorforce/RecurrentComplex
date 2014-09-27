@@ -10,6 +10,7 @@ import ivorius.ivtoolkit.blocks.BlockCoord;
 import ivorius.ivtoolkit.network.IvNetworkHelperServer;
 import ivorius.ivtoolkit.network.PartialUpdateHandler;
 import ivorius.reccomplex.RecurrentComplex;
+import ivorius.reccomplex.network.RCNetworkHelperServer;
 import net.minecraft.entity.Entity;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.world.World;
@@ -46,7 +47,7 @@ public class StructureEntityInfo implements IExtendedEntityProperties, PartialUp
 
     public void sendSelectionChangesToClients(Entity entity)
     {
-        IvNetworkHelperServer.sendEEPUpdatePacket(entity, "structureEntityInfo", "selection", RecurrentComplex.network);
+        RCNetworkHelperServer.sendEEPUpdatePacket(entity, "structureEntityInfo", "selection", RecurrentComplex.network);
     }
 
     public NBTTagCompound getCachedExportStructureBlockDataNBT()
@@ -100,7 +101,7 @@ public class StructureEntityInfo implements IExtendedEntityProperties, PartialUp
     }
 
     @Override
-    public void writeUpdateData(ByteBuf buffer, String context)
+    public void writeUpdateData(ByteBuf buffer, String context, Object... params)
     {
         if ("selection".equals(context))
         {

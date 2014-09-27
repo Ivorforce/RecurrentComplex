@@ -6,6 +6,7 @@
 package ivorius.reccomplex.commands;
 
 import ivorius.ivtoolkit.tools.IvGsonHelper;
+import ivorius.reccomplex.json.RCGsonHelper;
 import ivorius.reccomplex.worldgen.genericStructures.BiomeGenerationInfo;
 import ivorius.reccomplex.worldgen.genericStructures.BiomeSelector;
 import joptsimple.internal.Strings;
@@ -75,7 +76,7 @@ public class CommandBiomeDict extends CommandBase
         }
         else if (args[0].equals("list"))
         {
-            BiomeDictionary.Type type = IvGsonHelper.enumForNameIgnoreCase(args[1], BiomeDictionary.Type.values());
+            BiomeDictionary.Type type = RCGsonHelper.enumForNameIgnoreCase(args[1], BiomeDictionary.Type.values());
 
             if (type != null)
             {

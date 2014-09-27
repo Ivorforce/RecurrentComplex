@@ -8,6 +8,7 @@ package ivorius.reccomplex.worldgen.genericStructures;
 import com.google.gson.*;
 import ivorius.ivtoolkit.tools.IvGsonHelper;
 import ivorius.reccomplex.json.JsonUtils;
+import ivorius.reccomplex.json.RCGsonHelper;
 import net.minecraft.world.biome.BiomeGenBase;
 import net.minecraftforge.common.BiomeDictionary;
 
@@ -46,7 +47,7 @@ public class BiomeSelector
 
             for (String typeID : typeIDs)
             {
-                BiomeDictionary.Type type = IvGsonHelper.enumForNameIgnoreCase(typeID, BiomeDictionary.Type.values());
+                BiomeDictionary.Type type = RCGsonHelper.enumForNameIgnoreCase(typeID, BiomeDictionary.Type.values());
 
                 if (type == null)
                     return null;

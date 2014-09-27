@@ -33,6 +33,7 @@ jar {
 }
 
 dependencies {
+    compile 'ivorius:ivtoolkit:1.0'
     // you may put jars on which you depend on in ./libs
     // or you may define them like so..
     //compile "some.group:artifact:version:classifier"
@@ -71,16 +72,54 @@ processResources
 sourceCompatibility = 1.7
 targetCompatibility = 1.7
 
-uploadArchives {
-    if (System.getenv("mavenUrl") != null) {
+task sourceJar(type: Jar) {
+    from sourceSets.main.allSource
+    classifier = 'sources'
+}
+
+task deobfJar(type: Jar) {
+    from sourceSets.main.output
+    //Since this is now the main version, maven standards
+    classifier = ''
+
+    manifest {
+    }
+}
+
+artifacts {
+    archives sourceJar
+    archives deobfJar
+}
+
+jar {
+    classifier = 'universal'
+}
+
+uploadArchives() {
+    dependsOn reobf
+
+    if (project.mavenUrl != null) {
         repositories {
             logger.info('Publishing to files server')
 
             mavenDeployer {
 
-                repository(url: System.getenv("mavenUrl")) {
-                    authentication(userName: System.getenv("mavenUser"), password: System.getenv("mavenPassword"))
+                repository(url: project.mavenUrl) {
+                    authentication(userName: project.mavenUser, password: project.mavenPassword)
                 }
+
+                addFilter('deobf') {artifact, file ->
+                    artifact.attributes['classifier'] == null
+                }
+                pom('deobf').version = project.version
+                addFilter('sources') {artifact, file ->
+                    artifact.attributes['classifier'] == 'sources'
+                }
+                pom('sources').version = project.version
+                addFilter('universal') {artifact, file ->
+                    artifact.attributes['classifier'] == 'universal'
+                }
+                pom('universal').version = project.version
 
                 pom {
                     groupId = project.group
@@ -114,5 +153,8 @@ uploadArchives {
                 }
             }
         }
+    }
+    else {
+        logger.log(LogLevel.ERROR, 'No upload url (project.mavenUrl) defined!');
     }
 }

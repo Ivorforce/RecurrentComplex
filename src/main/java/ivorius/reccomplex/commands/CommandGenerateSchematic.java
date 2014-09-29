@@ -84,7 +84,7 @@ public class CommandGenerateSchematic extends CommandBase
     {
         if (args.length == 1)
         {
-            return getListOfStringsMatchingLastWord(args, SchematicLoader.currentSchematicFiles());
+            return getListOfStringsMatchingLastWord(args, SchematicLoader.currentSchematicFileNames());
         }
         else if (args.length == 2 || args.length == 3 || args.length == 4)
         {

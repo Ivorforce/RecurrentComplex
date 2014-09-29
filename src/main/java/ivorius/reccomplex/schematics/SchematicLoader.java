@@ -17,6 +17,8 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.Collection;
+import java.util.Collections;
 
 /**
  * Created by lukas on 29.09.14.
@@ -33,21 +35,10 @@ public class SchematicLoader
         if (FilenameUtils.getExtension(name).length() == 0)
             name = name + ".schematic";
 
-        File schematicsFile = getValidatedSchematicsFile();
-        return schematicsFile != null ? loadSchematicByNameInDirectory(schematicsFile, name) : null;
-    }
-
-    public static SchematicFile loadSchematicByNameInDirectory(File directory, String name) throws SchematicFile.UnsupportedSchematicFormatException
-    {
-        File[] files = directory.listFiles();
-
-        if (files != null)
+        for (File file : currentSchematicFiles())
         {
-            for (File file : files)
-            {
-                if (file.getName().equals(name))
-                    return loadSchematicFromFile(file);
-            }
+            if (file.getPath().endsWith(name) && name.endsWith(file.getName()))
+                return loadSchematicFromFile(file);
         }
 
         return null;
@@ -72,10 +63,20 @@ public class SchematicLoader
         return null;
     }
 
-    public static String[] currentSchematicFiles()
+    public static String[] currentSchematicFileNames()
+    {
+        Collection<File> files = currentSchematicFiles();
+        String[] filenames = new String[files.size()];
+        int i = 0;
+        for (File file : files)
+            filenames[i++] = file.getName();
+        return filenames;
+    }
+
+    public static Collection<File> currentSchematicFiles()
     {
         File schematicsFile = getValidatedSchematicsFile();
-        return schematicsFile != null ? schematicsFile.list(new PatternFilenameFilter(".*\\.schematic")) : new String[0];
+        return schematicsFile != null ? FileUtils.listFiles(schematicsFile, new String[]{"schematic"}, true) : Collections.<File>emptyList();
     }
 
     public static String getLookupFolderName()

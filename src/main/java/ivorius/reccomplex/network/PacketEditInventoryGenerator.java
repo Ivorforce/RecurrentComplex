@@ -10,6 +10,7 @@ import cpw.mods.fml.common.network.simpleimpl.IMessage;
 import io.netty.buffer.ByteBuf;
 import ivorius.reccomplex.worldgen.inventory.GenericInventoryGenerator;
 import ivorius.reccomplex.worldgen.inventory.InventoryGenerationHandler;
+import ivorius.reccomplex.worldgen.inventory.InventoryLoadException;
 
 /**
  * Created by lukas on 03.08.14.
@@ -54,7 +55,15 @@ public class PacketEditInventoryGenerator implements IMessage
     {
         key = ByteBufUtils.readUTF8String(buf);
         String json = ByteBufUtils.readUTF8String(buf);
-        inventoryGenerator = InventoryGenerationHandler.createInventoryGeneratorFromJSON(json);
+
+        try
+        {
+            inventoryGenerator = InventoryGenerationHandler.createInventoryGeneratorFromJSON(json);
+        }
+        catch (InventoryLoadException e)
+        {
+            e.printStackTrace();
+        }
     }
 
     @Override

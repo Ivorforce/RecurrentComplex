@@ -37,7 +37,7 @@ public class ModInventoryGeneratorGeneric extends ModInventoryGenerator
     @Override
     public GenericInventoryGenerator copyAsGenericInventoryGenerator()
     {
-        return (GenericInventoryGenerator) genericInventoryGenerator.clone();
+        return genericInventoryGenerator.copy();
     }
 
     @Override

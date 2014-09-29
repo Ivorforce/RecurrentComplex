@@ -98,7 +98,7 @@ public class GenericInventoryGenerator implements InventoryGenerator, Cloneable
     @Override
     public GenericInventoryGenerator copyAsGenericInventoryGenerator()
     {
-        return (GenericInventoryGenerator) clone();
+        return copy();
     }
 
     @Override
@@ -115,10 +115,18 @@ public class GenericInventoryGenerator implements InventoryGenerator, Cloneable
         return true;
     }
 
-    @Override
-    public Object clone()
+    public GenericInventoryGenerator copy()
     {
-        return InventoryGenerationHandler.createInventoryGeneratorFromJSON(InventoryGenerationHandler.createJSONFromInventoryGenerator(this));
+        try
+        {
+            return InventoryGenerationHandler.createInventoryGeneratorFromJSON(InventoryGenerationHandler.createJSONFromInventoryGenerator(this));
+        }
+        catch (InventoryLoadException e)
+        {
+            e.printStackTrace();
+        }
+
+        return null;
     }
 
     public static class Serializer implements JsonDeserializer<GenericInventoryGenerator>, JsonSerializer<GenericInventoryGenerator>

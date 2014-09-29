@@ -5,6 +5,7 @@
 
 package ivorius.reccomplex.worldgen.inventory;
 
+import com.google.gson.JsonSyntaxException;
 import ivorius.ivtoolkit.tools.IvFileHelper;
 import ivorius.reccomplex.RecurrentComplex;
 import net.minecraft.util.ResourceLocation;
@@ -15,6 +16,7 @@ import org.apache.commons.io.IOUtils;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 /**
@@ -37,23 +39,28 @@ public class InventoryGeneratorSaveHandler
         {
             File inventoryGeneratorsFile = IvFileHelper.getValidatedFolder(structuresFile, "inventoryGenerators");
             if (inventoryGeneratorsFile != null)
+                loadAllInventoryGeneratorsInDirectory(inventoryGeneratorsFile);
+        }
+    }
+
+    public static void loadAllInventoryGeneratorsInDirectory(File directory)
+    {
+        Collection<File> files = FileUtils.listFiles(directory, new String[]{"json"}, true);
+
+        for (File file : files)
+        {
+            GenericInventoryGenerator genericStructureInfo = null;
+            try
             {
-                File[] inventoryGenFiles = inventoryGeneratorsFile.listFiles();
+                genericStructureInfo = readInventoryGenerator(file);
 
-                if (inventoryGenFiles != null)
-                {
-                    for (File inventoryGenFile : inventoryGenFiles)
-                    {
-                        String name = FilenameUtils.getBaseName(inventoryGenFile.getName());
-                        GenericInventoryGenerator genericStructureInfo = readInventoryGenerator(inventoryGenFile);
-
-                        if (genericStructureInfo != null)
-                        {
-                            InventoryGenerationHandler.registerInventoryGenerator(genericStructureInfo, name);
-                            importedCustomGenerators.add(name);
-                        }
-                    }
-                }
+                String name = FilenameUtils.getBaseName(file.getName());
+                InventoryGenerationHandler.registerInventoryGenerator(genericStructureInfo, name);
+                importedCustomGenerators.add(name);
+            }
+            catch (IOException | JsonSyntaxException e)
+            {
+                e.printStackTrace();
             }
         }
     }
@@ -100,29 +107,8 @@ public class InventoryGeneratorSaveHandler
         return null;
     }
 
-    public static GenericInventoryGenerator readInventoryGenerator(File file)
+    public static GenericInventoryGenerator readInventoryGenerator(File file) throws IOException, JsonSyntaxException
     {
-        String fullFileName = file.getName();
-
-        String ext = FilenameUtils.getExtension(fullFileName);
-        if (file.isFile() && "json".equals(ext))
-        {
-            String fileContents = null;
-            try
-            {
-                fileContents = FileUtils.readFileToString(file);
-            }
-            catch (IOException e)
-            {
-                e.printStackTrace();
-            }
-
-            if (fileContents != null)
-            {
-                return InventoryGenerationHandler.createInventoryGeneratorFromJSON(fileContents);
-            }
-        }
-
-        return null;
+        return InventoryGenerationHandler.createInventoryGeneratorFromJSON(FileUtils.readFileToString(file));
     }
 }

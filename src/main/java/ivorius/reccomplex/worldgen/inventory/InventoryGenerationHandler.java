@@ -7,6 +7,7 @@ package ivorius.reccomplex.worldgen.inventory;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.google.gson.JsonSyntaxException;
 import ivorius.reccomplex.items.GeneratingItem;
 import ivorius.reccomplex.json.ItemStackSerializer;
 import ivorius.reccomplex.json.NbtToJson;
@@ -89,7 +90,7 @@ public class InventoryGenerationHandler
         return gson.toJson(inventoryGenerator, GenericInventoryGenerator.class);
     }
 
-    public static GenericInventoryGenerator createInventoryGeneratorFromJSON(String json)
+    public static GenericInventoryGenerator createInventoryGeneratorFromJSON(String json) throws JsonSyntaxException
     {
         return gson.fromJson(json, GenericInventoryGenerator.class);
     }

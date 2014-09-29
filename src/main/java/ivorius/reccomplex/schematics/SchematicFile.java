@@ -44,11 +44,22 @@ public class SchematicFile
         weOriginZ = tagCompound.getShort("WEOriginZ");
 
         metadatas = tagCompound.getByteArray("Data");
-        byte[] blocks = tagCompound.getByteArray("Blocks");
+        byte[] blockIDs = tagCompound.getByteArray("Blocks");
+        byte[] addBlocks = tagCompound.getByteArray("AddBlocks");
 
-        this.blocks = new Block[blocks.length];
-        for (int i = 0; i < blocks.length; i++)
-            this.blocks[i] = Block.getBlockById(blocks[i]);
+        this.blocks = new Block[blockIDs.length];
+        for (int i = 0; i < blockIDs.length; i++)
+        {
+            int blockID = blockIDs[i] & 0xff;
+
+            if (addBlocks.length == blockIDs.length / 2)
+            {
+                boolean lowerNybble = (i & 1) == 0;
+                blockID |= lowerNybble ? ((addBlocks[i >> 1] & 0x0F) << 8) : ((addBlocks[i >> 1] & 0xF0) << 4);
+            }
+
+            this.blocks[i] = Block.getBlockById(blockID);
+        }
 
         NBTTagList entities = tagCompound.getTagList("Entities", Constants.NBT.TAG_COMPOUND);
         for (int i = 0; i < entities.tagCount(); i++)

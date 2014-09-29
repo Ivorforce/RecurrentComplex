@@ -66,7 +66,7 @@ public class StructureSelector
         if (categoryObj != null)
             return categoryObj.structureSpawnChance(biome, weightedStructureInfos.get(category).size()) * RCConfig.structureSpawnChanceModifier;
 
-        return 0.01f * RCConfig.structureSpawnChanceModifier;
+        return 0.0f;
     }
 
     public List<StructureInfo> generatedStructures(Random random, int chunkX, int chunkZ, World world, IChunkProvider chunkGenerator, IChunkProvider chunkProvider)

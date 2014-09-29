@@ -9,6 +9,7 @@ import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.google.gson.JsonSyntaxException;
 import ivorius.reccomplex.RecurrentComplex;
 import ivorius.reccomplex.json.NbtToJson;
 import ivorius.reccomplex.json.StringTypeAdapterFactory;
@@ -104,7 +105,7 @@ public class StructureHandler
         structureSelectorsInBiomes.clear();
     }
 
-    public static GenericStructureInfo createStructureFromJSON(String jsonData)
+    public static GenericStructureInfo createStructureFromJSON(String jsonData) throws JsonSyntaxException
     {
         return gson.fromJson(jsonData, GenericStructureInfo.class);
     }

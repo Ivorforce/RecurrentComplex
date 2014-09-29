@@ -5,6 +5,7 @@
 
 package ivorius.reccomplex.worldgen;
 
+import com.google.gson.JsonSyntaxException;
 import ivorius.ivtoolkit.tools.IvFileHelper;
 import ivorius.reccomplex.RecurrentComplex;
 import ivorius.reccomplex.schematics.SchematicLoader;
@@ -18,6 +19,7 @@ import org.apache.commons.io.FilenameUtils;
 
 import java.io.*;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
@@ -42,36 +44,33 @@ public class StructureSaveHandler
         {
             File genericStructuresFile = IvFileHelper.getValidatedFolder(structuresFile, "genericStructures");
             if (genericStructuresFile != null)
-            {
-                addAllStructuresInFolder(genericStructuresFile, true);
-            }
+                addAllStructuresInDirectory(genericStructuresFile, true);
 
             File silentStructuresFile = IvFileHelper.getValidatedFolder(structuresFile, "silentStructures");
             if (silentStructuresFile != null)
-            {
-                addAllStructuresInFolder(silentStructuresFile, false);
-            }
+                addAllStructuresInDirectory(silentStructuresFile, false);
         }
 
         SchematicLoader.initializeFolder();
     }
 
-    public static void addAllStructuresInFolder(File folder, boolean generating)
+    public static void addAllStructuresInDirectory(File directory, boolean generating)
     {
-        File[] strucFiles = folder.listFiles();
+        Collection<File> files = FileUtils.listFiles(directory, new String[]{RecurrentComplex.USE_ZIP_FOR_STRUCTURE_FILES ? "zip" : "json"}, true);
 
-        if (strucFiles != null)
+        for (File file : files)
         {
-            for (File strucFile : strucFiles)
+            try
             {
-                String[] structureNamePointer = new String[1];
-                GenericStructureInfo genericStructureInfo = StructureSaveHandler.readGenericStructure(strucFile, structureNamePointer);
+                GenericStructureInfo genericStructureInfo = StructureSaveHandler.readGenericStructure(file);
 
-                if (genericStructureInfo != null)
-                {
-                    StructureHandler.registerStructure(genericStructureInfo, structureNamePointer[0], generating);
-                    importedGenerators.add(structureNamePointer[0]);
-                }
+                String structureID = FilenameUtils.getBaseName(file.getName());
+                StructureHandler.registerStructure(genericStructureInfo, structureID, generating);
+                importedGenerators.add(structureID);
+            }
+            catch (IOException | StructureInvalidZipException | JsonSyntaxException e)
+            {
+                e.printStackTrace();
             }
         }
     }
@@ -139,46 +138,19 @@ public class StructureSaveHandler
         return false;
     }
 
-    public static GenericStructureInfo readGenericStructure(File file, String[] structureNamePointer)
+    public static GenericStructureInfo readGenericStructure(File file) throws IOException, StructureInvalidZipException, JsonSyntaxException
     {
-        String fullFileName = file.getName();
-
-        if (structureNamePointer != null)
+        try (ZipInputStream zip = new ZipInputStream(FileUtils.openInputStream(file)))
         {
-            structureNamePointer[0] = FilenameUtils.getBaseName(fullFileName);
+            return structureInfoFromZip(zip);
         }
-
-        String ext = FilenameUtils.getExtension(fullFileName);
-        if (file.isFile())
-        {
-            if ("zip".equals(ext))
-            {
-                ZipInputStream zipInputStream = null;
-
-                try
-                {
-                    zipInputStream = new ZipInputStream(new FileInputStream(file));
-                }
-                catch (FileNotFoundException e)
-                {
-                    e.printStackTrace();
-                }
-
-                if (zipInputStream != null)
-                {
-                    return structureInfoFromZip(zipInputStream, fullFileName);
-                }
-            }
-        }
-
-        return null;
     }
 
     public static GenericStructureInfo structureInfoFromResource(ResourceLocation resourceLocation)
     {
         try
         {
-            return structureInfoFromZip(new ZipInputStream(IvFileHelper.inputStreamFromResourceLocation(resourceLocation)), resourceLocation.toString());
+            return structureInfoFromZip(new ZipInputStream(IvFileHelper.inputStreamFromResourceLocation(resourceLocation)));
         }
         catch (Exception ex)
         {
@@ -188,64 +160,36 @@ public class StructureSaveHandler
         return null;
     }
 
-    public static GenericStructureInfo structureInfoFromZip(ZipInputStream zipInputStream, String fullFileName)
+    public static GenericStructureInfo structureInfoFromZip(ZipInputStream zipInputStream) throws IOException, StructureInvalidZipException, JsonSyntaxException
     {
         String json = null;
         NBTTagCompound worldData = null;
 
-        try
+        ZipEntry zipEntry;
+
+        while ((zipEntry = zipInputStream.getNextEntry()) != null)
         {
-            ZipEntry zipEntry;
+            byte[] bytes = completeByteArray(zipInputStream);
 
-            while ((zipEntry = zipInputStream.getNextEntry()) != null)
+            if (bytes != null)
             {
-                byte[] bytes = completeByteArray(zipInputStream);
-
-                if (bytes != null)
-                {
-                    if ("structure.json".equals(zipEntry.getName()))
-                    {
-                        json = new String(bytes);
-                    }
-                    else if ("worldData.nbt".equals(zipEntry.getName()))
-                    {
-                        worldData = CompressedStreamTools.func_152457_a(bytes, NBTSizeTracker.field_152451_a);
-                    }
-                }
-
-                zipInputStream.closeEntry();
+                if ("structure.json".equals(zipEntry.getName()))
+                    json = new String(bytes);
+                else if ("worldData.nbt".equals(zipEntry.getName()))
+                    worldData = CompressedStreamTools.func_152457_a(bytes, NBTSizeTracker.field_152451_a);
             }
-            zipInputStream.close();
 
-            if (json != null)
-            {
-                GenericStructureInfo genericStructureInfo = StructureHandler.createStructureFromJSON(json);
-
-                if (worldData != null)
-                {
-                    genericStructureInfo.worldDataCompound = worldData;
-                }
-
-                if (genericStructureInfo.worldDataCompound == null)
-                {
-                    RecurrentComplex.logger.error("Structure file '" + fullFileName + "' does not contain worldData.nbt");
-                }
-                else
-                {
-                    return genericStructureInfo;
-                }
-            }
-            else
-            {
-                RecurrentComplex.logger.error("Structure file '" + fullFileName + "' does not contain structure.json");
-            }
+            zipInputStream.closeEntry();
         }
-        catch (Exception ex)
-        {
-            RecurrentComplex.logger.error("Could not read structure from zip file", ex);
-        }
+        zipInputStream.close();
 
-        return null;
+        if (json == null || worldData == null)
+            throw new StructureInvalidZipException(json != null, worldData != null);
+
+        GenericStructureInfo genericStructureInfo = StructureHandler.createStructureFromJSON(json);
+        genericStructureInfo.worldDataCompound = worldData;
+
+        return genericStructureInfo;
     }
 
     public static byte[] completeByteArray(InputStream inputStream)
@@ -266,5 +210,18 @@ public class StructureSaveHandler
         }
 
         return byteArrayOutputStream.toByteArray();
+    }
+
+    public static class StructureInvalidZipException extends RuntimeException
+    {
+        public boolean jsonExists;
+        public boolean worldDataExists;
+
+        public StructureInvalidZipException(boolean jsonExists, boolean worldDataExists)
+        {
+            super("Cannot load structure! Found Json: " + jsonExists + ", World Data: " + worldDataExists);
+            this.jsonExists = jsonExists;
+            this.worldDataExists = worldDataExists;
+        }
     }
 }

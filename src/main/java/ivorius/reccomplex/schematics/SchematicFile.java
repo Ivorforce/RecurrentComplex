@@ -7,6 +7,7 @@ package ivorius.reccomplex.schematics;
 
 import ivorius.reccomplex.RecurrentComplex;
 import net.minecraft.block.Block;
+import net.minecraft.block.material.Material;
 import net.minecraft.init.Blocks;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
@@ -60,15 +61,25 @@ public class SchematicFile
 
     public void generate(World world, int x, int y, int z)
     {
-        for (int xP = 0; xP < width; xP++)
-            for (int yP = 0; yP < height; yP++)
-                for (int zP = 0; zP < length; zP++)
-                {
-                    int index = xP + (yP * length + zP) * width;
+        for (int pass = 0; pass < 2; pass++)
+        {
+            for (int xP = 0; xP < width; xP++)
+                for (int yP = 0; yP < height; yP++)
+                    for (int zP = 0; zP < length; zP++)
+                    {
+                        int index = xP + (yP * length + zP) * width;
+                        Block block = blocks[index];
+                        byte meta = metadatas[index];
 
-                    if (blocks[index] != null)
-                        world.setBlock(x + xP, y + yP, z + zP, blocks[index], metadatas[index], 3);
-                }
+                        if (block != null && getPass(block, meta) == pass)
+                            world.setBlock(x + xP, y + yP, z + zP, block, meta, 3);
+                    }
+        }
+    }
+
+    private int getPass(Block block, int metadata)
+    {
+        return (block.isNormalCube() || block.getMaterial() == Material.air) ? 0 : 1;
     }
 
     public static class UnsupportedSchematicFormatException extends Exception

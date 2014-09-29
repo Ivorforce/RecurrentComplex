@@ -58,7 +58,7 @@ public class InventoryGeneratorSaveHandler
                 InventoryGenerationHandler.registerInventoryGenerator(genericStructureInfo, name);
                 importedCustomGenerators.add(name);
             }
-            catch (IOException | JsonSyntaxException e)
+            catch (IOException | InventoryLoadException e)
             {
                 e.printStackTrace();
             }
@@ -107,7 +107,7 @@ public class InventoryGeneratorSaveHandler
         return null;
     }
 
-    public static GenericInventoryGenerator readInventoryGenerator(File file) throws IOException, JsonSyntaxException
+    public static GenericInventoryGenerator readInventoryGenerator(File file) throws IOException, InventoryLoadException
     {
         return InventoryGenerationHandler.createInventoryGeneratorFromJSON(FileUtils.readFileToString(file));
     }

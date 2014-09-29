@@ -90,9 +90,16 @@ public class InventoryGenerationHandler
         return gson.toJson(inventoryGenerator, GenericInventoryGenerator.class);
     }
 
-    public static GenericInventoryGenerator createInventoryGeneratorFromJSON(String json) throws JsonSyntaxException
+    public static GenericInventoryGenerator createInventoryGeneratorFromJSON(String json) throws InventoryLoadException
     {
-        return gson.fromJson(json, GenericInventoryGenerator.class);
+        try
+        {
+            return gson.fromJson(json, GenericInventoryGenerator.class);
+        }
+        catch (JsonSyntaxException e)
+        {
+            throw new InventoryLoadException(e);
+        }
     }
 
     public static void generateAllTags(IInventory inventory, Random random)

@@ -5,11 +5,12 @@
 
 package ivorius.reccomplex.worldgen;
 
-import com.google.gson.JsonSyntaxException;
 import ivorius.ivtoolkit.tools.IvFileHelper;
 import ivorius.reccomplex.RecurrentComplex;
 import ivorius.reccomplex.schematics.SchematicLoader;
 import ivorius.reccomplex.worldgen.genericStructures.GenericStructureInfo;
+import ivorius.reccomplex.worldgen.genericStructures.StructureInvalidZipException;
+import ivorius.reccomplex.worldgen.genericStructures.StructureLoadException;
 import net.minecraft.nbt.CompressedStreamTools;
 import net.minecraft.nbt.NBTSizeTracker;
 import net.minecraft.nbt.NBTTagCompound;
@@ -68,7 +69,7 @@ public class StructureSaveHandler
                 StructureHandler.registerStructure(genericStructureInfo, structureID, generating);
                 importedGenerators.add(structureID);
             }
-            catch (IOException | StructureInvalidZipException | JsonSyntaxException e)
+            catch (IOException | StructureLoadException e)
             {
                 e.printStackTrace();
             }
@@ -138,7 +139,7 @@ public class StructureSaveHandler
         return false;
     }
 
-    public static GenericStructureInfo readGenericStructure(File file) throws IOException, StructureInvalidZipException, JsonSyntaxException
+    public static GenericStructureInfo readGenericStructure(File file) throws StructureLoadException, IOException
     {
         try (ZipInputStream zip = new ZipInputStream(FileUtils.openInputStream(file)))
         {
@@ -160,36 +161,43 @@ public class StructureSaveHandler
         return null;
     }
 
-    public static GenericStructureInfo structureInfoFromZip(ZipInputStream zipInputStream) throws IOException, StructureInvalidZipException, JsonSyntaxException
+    public static GenericStructureInfo structureInfoFromZip(ZipInputStream zipInputStream) throws StructureLoadException
     {
-        String json = null;
-        NBTTagCompound worldData = null;
-
-        ZipEntry zipEntry;
-
-        while ((zipEntry = zipInputStream.getNextEntry()) != null)
+        try
         {
-            byte[] bytes = completeByteArray(zipInputStream);
+            String json = null;
+            NBTTagCompound worldData = null;
 
-            if (bytes != null)
+            ZipEntry zipEntry;
+
+            while ((zipEntry = zipInputStream.getNextEntry()) != null)
             {
-                if ("structure.json".equals(zipEntry.getName()))
-                    json = new String(bytes);
-                else if ("worldData.nbt".equals(zipEntry.getName()))
-                    worldData = CompressedStreamTools.func_152457_a(bytes, NBTSizeTracker.field_152451_a);
+                byte[] bytes = completeByteArray(zipInputStream);
+
+                if (bytes != null)
+                {
+                    if ("structure.json".equals(zipEntry.getName()))
+                        json = new String(bytes);
+                    else if ("worldData.nbt".equals(zipEntry.getName()))
+                        worldData = CompressedStreamTools.func_152457_a(bytes, NBTSizeTracker.field_152451_a);
+                }
+
+                zipInputStream.closeEntry();
             }
+            zipInputStream.close();
 
-            zipInputStream.closeEntry();
+            if (json == null || worldData == null)
+                throw new StructureInvalidZipException(json != null, worldData != null);
+
+            GenericStructureInfo genericStructureInfo = StructureHandler.createStructureFromJSON(json);
+            genericStructureInfo.worldDataCompound = worldData;
+
+            return genericStructureInfo;
         }
-        zipInputStream.close();
-
-        if (json == null || worldData == null)
-            throw new StructureInvalidZipException(json != null, worldData != null);
-
-        GenericStructureInfo genericStructureInfo = StructureHandler.createStructureFromJSON(json);
-        genericStructureInfo.worldDataCompound = worldData;
-
-        return genericStructureInfo;
+        catch (IOException e)
+        {
+            throw new StructureLoadException(e);
+        }
     }
 
     public static byte[] completeByteArray(InputStream inputStream)
@@ -210,18 +218,5 @@ public class StructureSaveHandler
         }
 
         return byteArrayOutputStream.toByteArray();
-    }
-
-    public static class StructureInvalidZipException extends RuntimeException
-    {
-        public boolean jsonExists;
-        public boolean worldDataExists;
-
-        public StructureInvalidZipException(boolean jsonExists, boolean worldDataExists)
-        {
-            super("Cannot load structure! Found Json: " + jsonExists + ", World Data: " + worldDataExists);
-            this.jsonExists = jsonExists;
-            this.worldDataExists = worldDataExists;
-        }
     }
 }

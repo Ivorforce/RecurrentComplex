@@ -5,6 +5,7 @@
 
 package ivorius.reccomplex.schematics;
 
+import com.google.common.io.PatternFilenameFilter;
 import ivorius.ivtoolkit.tools.IvFileHelper;
 import ivorius.reccomplex.RecurrentComplex;
 import net.minecraft.nbt.CompressedStreamTools;
@@ -74,7 +75,7 @@ public class SchematicLoader
     public static String[] currentSchematicFiles()
     {
         File schematicsFile = getValidatedSchematicsFile();
-        return schematicsFile != null ? schematicsFile.list() : new String[0];
+        return schematicsFile != null ? schematicsFile.list(new PatternFilenameFilter(".*\\.schematic")) : new String[0];
     }
 
     public static String getLookupFolderName()

@@ -7,6 +7,7 @@ package ivorius.reccomplex.worldgen;
 
 import ivorius.ivtoolkit.tools.IvFileHelper;
 import ivorius.reccomplex.RecurrentComplex;
+import ivorius.reccomplex.schematics.SchematicLoader;
 import ivorius.reccomplex.worldgen.genericStructures.GenericStructureInfo;
 import net.minecraft.nbt.CompressedStreamTools;
 import net.minecraft.nbt.NBTSizeTracker;
@@ -51,6 +52,8 @@ public class StructureSaveHandler
                 addAllStructuresInFolder(silentStructuresFile, false);
             }
         }
+
+        SchematicLoader.initializeFolder();
     }
 
     public static void addAllStructuresInFolder(File folder, boolean generating)

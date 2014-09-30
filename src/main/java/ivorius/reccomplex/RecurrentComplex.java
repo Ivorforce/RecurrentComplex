@@ -46,7 +46,8 @@ import org.apache.logging.log4j.Logger;
 
 import java.util.Collections;
 
-@Mod(modid = RecurrentComplex.MODID, version = RecurrentComplex.VERSION, name = RecurrentComplex.NAME, guiFactory = "ivorius.reccomplex.gui.RCConfigGuiFactory")
+@Mod(modid = RecurrentComplex.MODID, version = RecurrentComplex.VERSION, name = RecurrentComplex.NAME, guiFactory = "ivorius.reccomplex.gui.RCConfigGuiFactory",
+        dependencies = "required-after:ivtoolkit")
 public class RecurrentComplex
 {
     public static final String NAME = "Recurrent Complex";

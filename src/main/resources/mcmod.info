@@ -11,6 +11,6 @@
   "credits": "See structurecredits.txt for full default structure list credits.",
   "logoFile": "",
   "screenshots": [],
-  "dependencies": ["ivtoolkit"]
+  "dependencies": []
 }
 ]

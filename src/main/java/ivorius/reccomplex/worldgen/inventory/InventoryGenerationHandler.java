@@ -8,6 +8,7 @@ package ivorius.reccomplex.worldgen.inventory;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonSyntaxException;
+import ivorius.reccomplex.RecurrentComplex;
 import ivorius.reccomplex.items.GeneratingItem;
 import ivorius.reccomplex.json.ItemStackSerializer;
 import ivorius.reccomplex.json.NbtToJson;
@@ -47,6 +48,8 @@ public class InventoryGenerationHandler
     {
         if (inventoryGenerator.areDependenciesResolved())
         {
+            RecurrentComplex.logger.info(inventoryGeneratorMap.containsKey(key) ? "Overwrote inventory generator with id '" + key + "'" : "Registered inventory generator with id '" + key + "'");
+
             inventoryGeneratorMap.put(key, inventoryGenerator);
         }
     }

@@ -53,28 +53,28 @@ public class StructureHandler
         return builder.create();
     }
 
-    public static void registerStructure(StructureInfo info, String name, boolean generates)
+    public static void registerStructure(StructureInfo info, String key, boolean generates)
     {
         if (info.areDependenciesResolved())
         {
-            RecurrentComplex.logger.info(allStructures.containsKey(name) ? "Overwrote structure with structureTitle '" + name + "'" : "Registered structure with structureTitle '" + name + "'");
+            RecurrentComplex.logger.info(allStructures.containsKey(key) ? "Overwrote structure with id '" + key + "'" : "Registered structure with id '" + key + "'");
 
-            allStructures.put(name, info);
+            allStructures.put(key, info);
             if (generates)
             {
-                generatingStructures.put(name, info);
+                generatingStructures.put(key, info);
                 structureSelectorsInBiomes.clear();
             }
         }
     }
 
-    public static void registerStructure(ResourceLocation resourceLocation, String name, boolean generates)
+    public static void registerStructure(ResourceLocation resourceLocation, String key, boolean generates)
     {
         GenericStructureInfo structureInfo = StructureSaveHandler.structureInfoFromResource(resourceLocation);
 
         if (structureInfo != null)
         {
-            registerStructure(structureInfo, name, generates);
+            registerStructure(structureInfo, key, generates);
         }
     }
 
@@ -88,9 +88,9 @@ public class StructureHandler
         }
     }
 
-    public static StructureInfo getStructure(String name)
+    public static StructureInfo getStructure(String key)
     {
-        return allStructures.get(name);
+        return allStructures.get(key);
     }
 
     public static String getName(StructureInfo structureInfo)
@@ -98,10 +98,10 @@ public class StructureHandler
         return allStructures.inverse().get(structureInfo);
     }
 
-    public static void removeStructure(String name)
+    public static void removeStructure(String key)
     {
-        allStructures.remove(name);
-        generatingStructures.remove(name);
+        allStructures.remove(key);
+        generatingStructures.remove(key);
         structureSelectorsInBiomes.clear();
     }
 

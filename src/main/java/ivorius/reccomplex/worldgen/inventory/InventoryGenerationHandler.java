@@ -65,14 +65,6 @@ public class InventoryGenerationHandler
         }
     }
 
-    public static void registerInventoryHandlers(String modID, String... names)
-    {
-        for (String name : names)
-        {
-            registerInventoryGenerator(new ResourceLocation(modID, "structures/inventoryGenerators/" + name + ".json"), name, modID);
-        }
-    }
-
     public static InventoryGenerator generator(String key)
     {
         return inventoryGeneratorMap.get(key);

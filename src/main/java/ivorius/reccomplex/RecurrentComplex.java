@@ -6,6 +6,7 @@
 package ivorius.reccomplex;
 
 import cpw.mods.fml.client.registry.RenderingRegistry;
+import cpw.mods.fml.common.Loader;
 import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.Mod.EventHandler;
 import cpw.mods.fml.common.Mod.Instance;
@@ -34,7 +35,6 @@ import ivorius.reccomplex.worldgen.StructureHandler;
 import ivorius.reccomplex.worldgen.StructureSaveHandler;
 import ivorius.reccomplex.worldgen.StructureSelector;
 import ivorius.reccomplex.worldgen.blockTransformers.*;
-import ivorius.reccomplex.worldgen.genericStructures.RCStructures;
 import ivorius.reccomplex.worldgen.inventory.InventoryGeneratorSaveHandler;
 import ivorius.reccomplex.worldgen.inventory.RCInventoryGenerators;
 import net.minecraft.block.material.Material;
@@ -198,9 +198,6 @@ public class RecurrentComplex
 
 //        GameRegistry.registerWorldGenerator(new WorldGenStructures(), 50);
         RCInventoryGenerators.registerVanillaInventoryGenerators();
-        RCInventoryGenerators.registerModInventoryGenerators();
-
-        RCStructures.registerDefaultStructures(RCConfig.generateDefaultStructures);
 
         negativeSpaceRenderID = RenderingRegistry.getNextAvailableRenderId();
         proxy.registerRenderers();
@@ -209,6 +206,8 @@ public class RecurrentComplex
     @EventHandler
     public void postInit(FMLPostInitializationEvent event)
     {
+        loadAllModData();
+
         InventoryGeneratorSaveHandler.reloadAllCustomInventoryGenerators();
         StructureSaveHandler.reloadAllCustomStructures();
     }
@@ -232,5 +231,14 @@ public class RecurrentComplex
         event.registerServerCommand(new CommandSelectDuplicate());
         event.registerServerCommand(new CommandBiomeDict());
         event.registerServerCommand(new CommandGenerateSchematic());
+    }
+
+    public static void loadAllModData()
+    {
+        for (String modid : Loader.instance().getIndexedModList().keySet())
+        {
+            StructureSaveHandler.loadStructuresFromMod(modid);
+            InventoryGeneratorSaveHandler.loadInventoryGeneratorsFromMod(modid);
+        }
     }
 }

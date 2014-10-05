@@ -78,16 +78,6 @@ public class StructureHandler
         }
     }
 
-    public static void registerStructures(String modID, boolean generating, String... names)
-    {
-        String path = generating ? "structures/genericStructures/" : "structures/silentStructures/";
-
-        for (String name : names)
-        {
-            registerStructure(new ResourceLocation(modID, path + name + ".zip"), name, generating);
-        }
-    }
-
     public static StructureInfo getStructure(String key)
     {
         return allStructures.get(key);

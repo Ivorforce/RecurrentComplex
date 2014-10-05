@@ -5,6 +5,7 @@
 
 package ivorius.reccomplex.worldgen;
 
+import cpw.mods.fml.common.Loader;
 import ivorius.ivtoolkit.tools.IvFileHelper;
 import ivorius.reccomplex.files.FileSuffixFilter;
 import ivorius.reccomplex.files.RCFileHelper;
@@ -21,6 +22,7 @@ import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
 
 import java.io.*;
+import java.net.URISyntaxException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
@@ -72,6 +74,35 @@ public class StructureSaveHandler
         }
 
         SchematicLoader.initializeFolder();
+    }
+
+    public static void loadStructuresFromMod(String modid)
+    {
+        modid = modid.toLowerCase();
+
+        try
+        {
+            Path path = RCFileHelper.pathFromResourceLocation(new ResourceLocation(modid, "structures/genericStructures"));
+            if (path != null)
+                addAllStructuresInDirectory(path, true);
+        }
+        catch (URISyntaxException | IOException e)
+        {
+            System.out.println("Could not read generic structures from mod '" + modid + "'");
+            e.printStackTrace();
+        }
+
+        try
+        {
+            Path path = RCFileHelper.pathFromResourceLocation(new ResourceLocation(modid, "structures/silentStructures"));
+            if (path != null)
+                addAllStructuresInDirectory(path, false);
+        }
+        catch (URISyntaxException | IOException e)
+        {
+            System.out.println("Could not read silent structures from mod '" + modid + "'");
+            e.printStackTrace();
+        }
     }
 
     public static void addAllStructuresInDirectory(Path directory, boolean generating) throws IOException

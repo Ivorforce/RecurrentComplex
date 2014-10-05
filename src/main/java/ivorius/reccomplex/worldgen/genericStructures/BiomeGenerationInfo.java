@@ -9,6 +9,7 @@ import com.google.gson.*;
 import ivorius.ivtoolkit.tools.IvGsonHelper;
 import ivorius.reccomplex.json.JsonUtils;
 
+import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.world.biome.BiomeGenBase;
 import net.minecraftforge.common.BiomeDictionary;
 
@@ -112,6 +113,15 @@ public class BiomeGenerationInfo
     public boolean isTypeList()
     {
         return biomeSelector.isTypeList();
+    }
+
+    public String getDisplayString()
+    {
+        String biomeID = biomeSelector.getBiomeID();
+        if (biomeSelector.isTypeList())
+            return EnumChatFormatting.AQUA + biomeID.substring(5) + EnumChatFormatting.RESET;
+        else
+            return biomeID;
     }
 
     public static class Serializer implements JsonDeserializer<BiomeGenerationInfo>, JsonSerializer<BiomeGenerationInfo>

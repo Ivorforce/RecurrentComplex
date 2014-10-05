@@ -83,7 +83,7 @@ public class TableDataSourceBiomeGenList implements TableDataSource, TableElemen
         int biomeGenIndex = index - 1;
         TableElementButton.Action[] actions = {new TableElementButton.Action("earlier", "Earlier", biomeGenIndex > 0), new TableElementButton.Action("later", "Later", biomeGenIndex < biomeGenerationInfoList.size() - 1), new TableElementButton.Action("edit", "Edit"), new TableElementButton.Action("delete", "Delete")};
         BiomeGenerationInfo biomeGenerationInfo = biomeGenerationInfoList.get(biomeGenIndex);
-        TableElementButton button = new TableElementButton("biomeGen" + biomeGenIndex, biomeGenerationInfo.getBiomeID() + " (" + biomeGenerationInfo.getActiveGenerationWeight() + ")", actions);
+        TableElementButton button = new TableElementButton("biomeGen" + biomeGenIndex, biomeGenerationInfo.getDisplayString() + " (" + biomeGenerationInfo.getActiveGenerationWeight() + ")", actions);
         button.addListener(this);
         return button;
     }

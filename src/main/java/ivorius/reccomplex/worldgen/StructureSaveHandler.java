@@ -6,6 +6,8 @@
 package ivorius.reccomplex.worldgen;
 
 import ivorius.ivtoolkit.tools.IvFileHelper;
+import ivorius.reccomplex.files.FileSuffixFilter;
+import ivorius.reccomplex.files.RCFileHelper;
 import ivorius.reccomplex.RecurrentComplex;
 import ivorius.reccomplex.schematics.SchematicLoader;
 import ivorius.reccomplex.worldgen.genericStructures.GenericStructureInfo;
@@ -19,8 +21,9 @@ import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
 
 import java.io.*;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
@@ -43,29 +46,45 @@ public class StructureSaveHandler
         File structuresFile = IvFileHelper.getValidatedFolder(RecurrentComplex.proxy.getBaseFolderFile("structures"));
         if (structuresFile != null)
         {
-            File genericStructuresFile = IvFileHelper.getValidatedFolder(structuresFile, "genericStructures");
-            if (genericStructuresFile != null)
-                addAllStructuresInDirectory(genericStructuresFile, true);
+            try
+            {
+                File genericStructuresFile = IvFileHelper.getValidatedFolder(structuresFile, "genericStructures");
+                if (genericStructuresFile != null)
+                    addAllStructuresInDirectory(genericStructuresFile.toPath(), true);
+            }
+            catch (IOException e)
+            {
+                System.out.println("Could not read from generic structures directory");
+                e.printStackTrace();
+            }
 
-            File silentStructuresFile = IvFileHelper.getValidatedFolder(structuresFile, "silentStructures");
-            if (silentStructuresFile != null)
-                addAllStructuresInDirectory(silentStructuresFile, false);
+            try
+            {
+                File silentStructuresFile = IvFileHelper.getValidatedFolder(structuresFile, "silentStructures");
+                if (silentStructuresFile != null)
+                    addAllStructuresInDirectory(silentStructuresFile.toPath(), false);
+            }
+            catch (IOException e)
+            {
+                System.out.println("Could not read from silent structures directory");
+                e.printStackTrace();
+            }
         }
 
         SchematicLoader.initializeFolder();
     }
 
-    public static void addAllStructuresInDirectory(File directory, boolean generating)
+    public static void addAllStructuresInDirectory(Path directory, boolean generating) throws IOException
     {
-        Collection<File> files = FileUtils.listFiles(directory, new String[]{RecurrentComplex.USE_ZIP_FOR_STRUCTURE_FILES ? "zip" : "json"}, true);
+        List<Path> paths = RCFileHelper.listFilesRecursively(directory, new FileSuffixFilter(RecurrentComplex.USE_ZIP_FOR_STRUCTURE_FILES ? "zip" : "json"), true);
 
-        for (File file : files)
+        for (Path file : paths)
         {
             try
             {
                 GenericStructureInfo genericStructureInfo = StructureSaveHandler.readGenericStructure(file);
 
-                String structureID = FilenameUtils.getBaseName(file.getName());
+                String structureID = FilenameUtils.getBaseName(file.getFileName().toString());
                 StructureHandler.registerStructure(genericStructureInfo, structureID, generating);
                 importedGenerators.add(structureID);
             }
@@ -139,9 +158,9 @@ public class StructureSaveHandler
         return false;
     }
 
-    public static GenericStructureInfo readGenericStructure(File file) throws StructureLoadException, IOException
+    public static GenericStructureInfo readGenericStructure(Path file) throws StructureLoadException, IOException
     {
-        try (ZipInputStream zip = new ZipInputStream(FileUtils.openInputStream(file)))
+        try (ZipInputStream zip = new ZipInputStream(Files.newInputStream(file)))
         {
             return structureInfoFromZip(zip);
         }

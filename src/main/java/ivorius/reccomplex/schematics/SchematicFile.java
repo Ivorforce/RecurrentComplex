@@ -7,12 +7,15 @@ package ivorius.reccomplex.schematics;
 
 import ivorius.ivtoolkit.blocks.BlockArea;
 import ivorius.ivtoolkit.blocks.BlockCoord;
+import ivorius.ivtoolkit.math.AxisAlignedTransform2D;
 import ivorius.ivtoolkit.tools.IvWorldData;
 import ivorius.reccomplex.RecurrentComplex;
 import ivorius.reccomplex.blocks.GeneratingTileEntity;
 import ivorius.reccomplex.worldgen.inventory.InventoryGenerationHandler;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityList;
 import net.minecraft.init.Blocks;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.nbt.NBTTagCompound;
@@ -21,10 +24,7 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.Constants;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Created by lukas on 29.09.14.
@@ -113,6 +113,16 @@ public class SchematicFile
                     }
                 }
             }
+        }
+
+        for (NBTTagCompound entityCompound : entityCompounds)
+        {
+            Entity entity = EntityList.createEntityFromNBT(entityCompound, world);
+            entity.entityUniqueID = UUID.randomUUID();
+
+            IvWorldData.moveEntityForGeneration(entity, new BlockCoord(x, y, z));
+
+            world.spawnEntityInWorld(entity);
         }
     }
 

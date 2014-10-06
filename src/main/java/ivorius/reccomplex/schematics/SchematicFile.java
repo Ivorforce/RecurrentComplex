@@ -5,17 +5,26 @@
 
 package ivorius.reccomplex.schematics;
 
+import ivorius.ivtoolkit.blocks.BlockArea;
+import ivorius.ivtoolkit.blocks.BlockCoord;
+import ivorius.ivtoolkit.tools.IvWorldData;
 import ivorius.reccomplex.RecurrentComplex;
+import ivorius.reccomplex.blocks.GeneratingTileEntity;
+import ivorius.reccomplex.worldgen.inventory.InventoryGenerationHandler;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.init.Blocks;
+import net.minecraft.inventory.IInventory;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.Constants;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by lukas on 29.09.14.
@@ -72,19 +81,38 @@ public class SchematicFile
 
     public void generate(World world, int x, int y, int z)
     {
+        Map<BlockCoord, TileEntity> tileEntities = new HashMap<>();
+        for (NBTTagCompound tileTagCompound : tileEntityCompounds)
+        {
+            TileEntity tileEntity = TileEntity.createAndLoadEntity(tileTagCompound);
+            tileEntities.put(new BlockCoord(tileEntity), tileEntity);
+        }
+
+        BlockArea blockArea = BlockArea.areaFromSize(new BlockCoord(0, 0, 0), new int[]{width, height, length});
         for (int pass = 0; pass < 2; pass++)
         {
-            for (int xP = 0; xP < width; xP++)
-                for (int yP = 0; yP < height; yP++)
-                    for (int zP = 0; zP < length; zP++)
-                    {
-                        int index = xP + (yP * length + zP) * width;
-                        Block block = blocks[index];
-                        byte meta = metadatas[index];
+            for (BlockCoord srcCoord : blockArea)
+            {
+                int index = srcCoord.x + (srcCoord.y * length + srcCoord.z) * width;
+                Block block = blocks[index];
+                byte meta = metadatas[index];
 
-                        if (block != null && getPass(block, meta) == pass)
-                            world.setBlock(x + xP, y + yP, z + zP, block, meta, 3);
+                if (block != null && getPass(block, meta) == pass)
+                {
+                    BlockCoord worldPos = new BlockCoord(x + srcCoord.x, y + srcCoord.y, z + srcCoord.z);
+                    world.setBlock(worldPos.x, worldPos.y, worldPos.z, block, meta, 3);
+
+                    TileEntity tileEntity = tileEntities.get(srcCoord);
+                    if (tileEntity != null)
+                    {
+                        world.setBlockMetadataWithNotify(worldPos.x, worldPos.y, worldPos.z, meta, 2); // TODO Figure out why some blocks (chests, furnace) need this
+
+                        IvWorldData.setTileEntityPosForGeneration(tileEntity, worldPos);
+                        world.setTileEntity(worldPos.x, worldPos.y, worldPos.z, tileEntity);
+                        tileEntity.updateContainingBlockInfo();
                     }
+                }
+            }
         }
     }
 

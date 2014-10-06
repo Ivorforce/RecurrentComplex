@@ -73,7 +73,7 @@ public class GenerationYSelector
                 int genYMP = surfaceHeight(world, x - structureSize[0] / 2, z + structureSize[2] / 2);
                 int genYMM = surfaceHeight(world, x - structureSize[0] / 2, z - structureSize[2] / 2);
 
-                return Math.max(2, (genYC * 2 + genYPP + genYPM + genYMP + genYMM) / 6 + y);
+                return Math.max(2, averageIgnoringErrors(genYC, genYPP, genYPM, genYMP, genYMM) + y);
             }
             case SEALEVEL:
                 return Math.max(2, 63 + y);
@@ -85,7 +85,7 @@ public class GenerationYSelector
                 int genYMP = surfaceHeightUnderwater(world, x - structureSize[0] / 2, z + structureSize[2] / 2);
                 int genYMM = surfaceHeightUnderwater(world, x - structureSize[0] / 2, z - structureSize[2] / 2);
 
-                return Math.max(2, (genYC * 2 + genYPP + genYPM + genYMP + genYMM) / 6 + y);
+                return Math.max(2, averageIgnoringErrors(genYC, genYPP, genYPM, genYMP, genYMM) + y);
             }
             case TOP:
                 return Math.max(2, world.getHeight() + y);
@@ -155,5 +155,36 @@ public class GenerationYSelector
         for (int val : values)
             min = Math.min(val, min);
         return min;
+    }
+
+
+    private int averageIgnoringErrors(int... values)
+    {
+        int average = 0;
+        for (int val : values)
+            average += val;
+        average /= values.length;
+
+        int averageDist = 0;
+        for (int val : values)
+            averageDist += dist(val, average);
+        averageDist /= values.length;
+
+        int newAverage = 0;
+        int ignored = 0;
+        for (int val : values)
+        {
+            if (dist(val, average) <= averageDist * 2)
+                newAverage += val;
+            else
+                ignored++;
+        }
+
+        return newAverage / (values.length - ignored);
+    }
+
+    private int dist(int val1, int val2)
+    {
+        return (val1 > val2) ? val1 - val2 : val2 - val1;
     }
 }

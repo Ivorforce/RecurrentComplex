@@ -10,6 +10,7 @@ import com.google.common.collect.HashBiMap;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonSyntaxException;
+import ivorius.reccomplex.RCConfig;
 import ivorius.reccomplex.RecurrentComplex;
 import ivorius.reccomplex.json.NbtToJson;
 import ivorius.reccomplex.json.StringTypeAdapterFactory;
@@ -57,6 +58,8 @@ public class StructureHandler
     {
         if (info.areDependenciesResolved())
         {
+            generates = generates && !RCConfig.disabledStructures.contains(key);
+
             String baseString = allStructures.containsKey(key) ? "Overwrote structure '%s'%s" : "Registered structure '%s'%s";
             String genPart = generates ? " (Generating)" : "";
             RecurrentComplex.logger.info(String.format(baseString, key, genPart));

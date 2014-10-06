@@ -86,8 +86,7 @@ public class StructureSaveHandler
                 GenericStructureInfo genericStructureInfo = StructureSaveHandler.readGenericStructure(file);
 
                 String structureID = FilenameUtils.getBaseName(file.getFileName().toString());
-                boolean shouldGenerate = generating && !RCConfig.disabledStructures.contains(structureID);
-                StructureHandler.registerStructure(genericStructureInfo, structureID, shouldGenerate);
+                StructureHandler.registerStructure(genericStructureInfo, structureID, generating);
 
                 if (imported)
                     importedGenerators.add(structureID);

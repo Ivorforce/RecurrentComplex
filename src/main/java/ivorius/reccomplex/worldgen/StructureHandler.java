@@ -57,14 +57,17 @@ public class StructureHandler
     {
         if (info.areDependenciesResolved())
         {
-            RecurrentComplex.logger.info(allStructures.containsKey(key) ? "Overwrote structure with id '" + key + "'" : "Registered structure with id '" + key + "'");
+            String baseString = allStructures.containsKey(key) ? "Overwrote structure '%s'%s" : "Registered structure '%s'%s";
+            String genPart = generates ? " (Generating)" : "";
+            RecurrentComplex.logger.info(String.format(baseString, key, genPart));
 
             allStructures.put(key, info);
             if (generates)
-            {
                 generatingStructures.put(key, info);
-                structureSelectorsInBiomes.clear();
-            }
+            else
+                generatingStructures.remove(key); // Make sure to honour the new 'generates' boolean
+
+            structureSelectorsInBiomes.clear();
         }
     }
 

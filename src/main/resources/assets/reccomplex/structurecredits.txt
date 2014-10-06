@@ -37,3 +37,7 @@
 - StoneMound1 (http://minecraftbuildinginc.com/savanna-tree-pack/)
 - StoneMound2 (http://minecraftbuildinginc.com/savanna-tree-pack/)
 - StoneMound3 (http://minecraftbuildinginc.com/savanna-tree-pack/)
+
+== Gazamo ==
+
+- WoodenClockTower (http://minecraftbuildinginc.com/steampunk-style-map/ - style replaced with wood)

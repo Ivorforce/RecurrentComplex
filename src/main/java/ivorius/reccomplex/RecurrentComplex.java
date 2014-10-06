@@ -190,9 +190,9 @@ public class RecurrentComplex
         StructureHandler.registerBlockTransformer("ruins", BlockTransformerRuins.class, new BTProviderRuins());
         StructureHandler.registerBlockTransformer("negativeSpace", BlockTransformerNegativeSpace.class, new BTProviderNegativeSpace());
 
-        StructureSelector.registerCategory("decoration", new StructureSelector.SimpleCategory(1.0f / 20.0f, Collections.<StructureSelector.GenerationInfo>emptyList(), true));
-        StructureSelector.registerCategory("adventure", new StructureSelector.SimpleCategory(1.0f / 200.0f, Collections.<StructureSelector.GenerationInfo>emptyList(), true));
-        StructureSelector.registerCategory("rare", new StructureSelector.SimpleCategory(1.0f / 1000.0f, Collections.<StructureSelector.GenerationInfo>emptyList(), true));
+        StructureSelector.registerCategory("decoration", new StructureSelector.SimpleCategory(1.0f / 25.0f, Collections.<StructureSelector.GenerationInfo>emptyList(), true));
+        StructureSelector.registerCategory("adventure", new StructureSelector.SimpleCategory(1.0f / 250.0f, Collections.<StructureSelector.GenerationInfo>emptyList(), true));
+        StructureSelector.registerCategory("rare", new StructureSelector.SimpleCategory(1.0f / 1250.0f, Collections.<StructureSelector.GenerationInfo>emptyList(), true));
 
         Poem.registerThemes(MODID, "love", "summer", "war", "winter", "grief");
 

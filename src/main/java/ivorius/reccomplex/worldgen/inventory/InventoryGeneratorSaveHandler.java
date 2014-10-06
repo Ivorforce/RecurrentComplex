@@ -46,7 +46,7 @@ public class InventoryGeneratorSaveHandler
             {
                 File inventoryGeneratorsFile = IvFileHelper.getValidatedFolder(structuresFile, "inventoryGenerators");
                 if (inventoryGeneratorsFile != null)
-                    loadAllInventoryGeneratorsInDirectory(inventoryGeneratorsFile.toPath());
+                    loadAllInventoryGeneratorsInDirectory(inventoryGeneratorsFile.toPath(), true);
             }
             catch (IOException e)
             {
@@ -76,20 +76,21 @@ public class InventoryGeneratorSaveHandler
         }
     }
 
-    public static void loadAllInventoryGeneratorsInDirectory(Path directory) throws IOException
+    public static void loadAllInventoryGeneratorsInDirectory(Path directory, boolean imported) throws IOException
     {
         List<Path> paths = RCFileHelper.listFilesRecursively(directory, new FileSuffixFilter("json"), true);
 
         for (Path file : paths)
         {
-            GenericInventoryGenerator genericStructureInfo = null;
             try
             {
-                genericStructureInfo = readInventoryGenerator(file);
+                GenericInventoryGenerator genericStructureInfo = readInventoryGenerator(file);
 
                 String name = FilenameUtils.getBaseName(file.getFileName().toString());
                 InventoryGenerationHandler.registerInventoryGenerator(genericStructureInfo, name);
-                importedCustomGenerators.add(name);
+
+                if (imported)
+                    importedCustomGenerators.add(name);
             }
             catch (IOException | InventoryLoadException e)
             {

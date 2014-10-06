@@ -52,7 +52,7 @@ public class StructureSaveHandler
             {
                 File genericStructuresFile = IvFileHelper.getValidatedFolder(structuresFile, "genericStructures");
                 if (genericStructuresFile != null)
-                    addAllStructuresInDirectory(genericStructuresFile.toPath(), true);
+                    addAllStructuresInDirectory(genericStructuresFile.toPath(), true, true);
             }
             catch (IOException e)
             {
@@ -64,7 +64,7 @@ public class StructureSaveHandler
             {
                 File silentStructuresFile = IvFileHelper.getValidatedFolder(structuresFile, "silentStructures");
                 if (silentStructuresFile != null)
-                    addAllStructuresInDirectory(silentStructuresFile.toPath(), false);
+                    addAllStructuresInDirectory(silentStructuresFile.toPath(), false, true);
             }
             catch (IOException e)
             {
@@ -111,7 +111,7 @@ public class StructureSaveHandler
         }
     }
 
-    public static void addAllStructuresInDirectory(Path directory, boolean generating) throws IOException
+    public static void addAllStructuresInDirectory(Path directory, boolean generating, boolean imported) throws IOException
     {
         List<Path> paths = RCFileHelper.listFilesRecursively(directory, new FileSuffixFilter(RecurrentComplex.USE_ZIP_FOR_STRUCTURE_FILES ? "zip" : "json"), true);
 
@@ -123,7 +123,9 @@ public class StructureSaveHandler
 
                 String structureID = FilenameUtils.getBaseName(file.getFileName().toString());
                 StructureHandler.registerStructure(genericStructureInfo, structureID, generating);
-                importedGenerators.add(structureID);
+
+                if (imported)
+                    importedGenerators.add(structureID);
             }
             catch (IOException | StructureLoadException e)
             {

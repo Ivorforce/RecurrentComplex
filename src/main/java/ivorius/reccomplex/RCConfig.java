@@ -7,8 +7,7 @@ package ivorius.reccomplex;
 
 import net.minecraftforge.common.config.Configuration;
 
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 
 /**
  * Created by lukas on 31.07.14.
@@ -20,7 +19,9 @@ public class RCConfig
     public static boolean hideRedundantNegativeSpace;
 
     public static float structureSpawnChanceModifier = 1.0f;
-    public static List<String> disabledStructures;
+    private static Set<String> disabledStructures = new HashSet<>();
+    private static Set<String> persistentDisabledStructures = new HashSet<>();
+    private static Set<String> forceEnabledStructures = new HashSet<>();
 
     public static void loadConfig(String configID)
     {
@@ -28,9 +29,25 @@ public class RCConfig
         {
             generateDefaultStructures = RecurrentComplex.config.getBoolean("generateDefaultStructures", Configuration.CATEGORY_GENERAL, true, "Generate the default mod set of structures?");
             structureSpawnChanceModifier = RecurrentComplex.config.getFloat("structureSpawnChance", Configuration.CATEGORY_GENERAL, 1.0f, 0.0f, 10.0f, "How often do structures spawn?");
-            disabledStructures = Arrays.asList(RecurrentComplex.config.getStringList("disabledStructures", Configuration.CATEGORY_GENERAL, new String[0], "Structures that will be hindered from generating"));
+
+            disabledStructures.clear();
+            disabledStructures.addAll(Arrays.asList(RecurrentComplex.config.getStringList("disabledStructures", Configuration.CATEGORY_GENERAL, new String[0], "Structures that will be hindered from generating")));
+            forceEnabledStructures.clear();
+            forceEnabledStructures.addAll(Arrays.asList(RecurrentComplex.config.getStringList("forceEnabledStructures", Configuration.CATEGORY_GENERAL, new String[0], "Structures that be set to generate (if in the right directory), no matter what")));
         }
 
         RecurrentComplex.proxy.loadConfig(configID);
+    }
+
+    public static void setStructurePersistentlyDisabled(String id, boolean disabled)
+    {
+        if (disabled)
+            persistentDisabledStructures.add(id);
+    }
+
+    public static boolean isStructureDisabled(String id)
+    {
+        return !forceEnabledStructures.contains(id)
+                && (persistentDisabledStructures.contains(id) || disabledStructures.contains(id));
     }
 }

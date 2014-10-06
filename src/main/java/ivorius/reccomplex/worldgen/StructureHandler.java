@@ -58,7 +58,7 @@ public class StructureHandler
     {
         if (info.areDependenciesResolved())
         {
-            generates = generates && !RCConfig.disabledStructures.contains(key);
+            generates = generates && !RCConfig.isStructureDisabled(key);
 
             String baseString = allStructures.containsKey(key) ? "Overwrote structure '%s'%s" : "Registered structure '%s'%s";
             String genPart = generates ? " (Generating)" : "";

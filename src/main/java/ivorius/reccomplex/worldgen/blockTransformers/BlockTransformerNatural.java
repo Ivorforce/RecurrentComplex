@@ -140,6 +140,6 @@ public class BlockTransformerNatural extends BlockTransformerSingle
     @Override
     public boolean generatesInPhase(Phase phase)
     {
-        return phase == Phase.AFTER || phase == Phase.BEFORE;
+        return phase == Phase.BEFORE;
     }
 }

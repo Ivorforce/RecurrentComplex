@@ -43,8 +43,8 @@ public class BlockTransformerNatural extends BlockTransformerSingle
     public void transformBlock(World world, Random random, Phase phase, BlockCoord coord, Block sourceBlock, int sourceMetadata)
     {
         BiomeGenBase biome = world.getBiomeGenForCoords(coord.x, coord.z);
-        Block topBlock = biome.topBlock;
-        Block fillerBlock = biome.fillerBlock;
+        Block topBlock = biome.topBlock != null ? biome.topBlock : Blocks.air;
+        Block fillerBlock = biome.fillerBlock != null ? biome.fillerBlock : Blocks.air;
         Block mainBlock = world.provider.dimensionId == -1 ? Blocks.netherrack : (world.provider.dimensionId == 1 ? Blocks.end_stone : Blocks.stone);
 
         boolean useStoneBlock = hasBlockAbove(world, coord.x, coord.y, coord.z, mainBlock);

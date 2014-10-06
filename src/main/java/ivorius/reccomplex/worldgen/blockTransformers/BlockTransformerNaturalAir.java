@@ -44,8 +44,8 @@ public class BlockTransformerNaturalAir extends BlockTransformerSingle
     public void transformBlock(World world, Random random, Phase phase, BlockCoord coord, Block sourceBlock, int sourceMetadata)
     {
         BiomeGenBase biome = world.getBiomeGenForCoords(coord.x, coord.z);
-        Block topBlock = biome.topBlock;
-        Block fillerBlock = biome.fillerBlock;
+        Block topBlock = biome.topBlock != null ? biome.topBlock : Blocks.air;
+        Block fillerBlock = biome.fillerBlock != null ? biome.fillerBlock : Blocks.air;
 
         coord = coord.subtract(0, 4, 0);
 

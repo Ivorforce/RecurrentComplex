@@ -84,7 +84,10 @@ public class StructureSaveHandler
         {
             Path path = RCFileHelper.pathFromResourceLocation(new ResourceLocation(modid, "structures/genericStructures"));
             if (path != null)
+            {
                 addAllStructuresInDirectory(path, true);
+                path.getFileSystem().close();
+            }
         }
         catch (URISyntaxException | IOException e)
         {
@@ -96,7 +99,10 @@ public class StructureSaveHandler
         {
             Path path = RCFileHelper.pathFromResourceLocation(new ResourceLocation(modid, "structures/silentStructures"));
             if (path != null)
+            {
                 addAllStructuresInDirectory(path, false);
+                path.getFileSystem().close();
+            }
         }
         catch (URISyntaxException | IOException e)
         {

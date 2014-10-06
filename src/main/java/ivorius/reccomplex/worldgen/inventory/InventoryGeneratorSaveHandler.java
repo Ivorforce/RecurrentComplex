@@ -64,7 +64,10 @@ public class InventoryGeneratorSaveHandler
         {
             Path path = RCFileHelper.pathFromResourceLocation(new ResourceLocation(modid, "structures/inventoryGenerators"));
             if (path != null)
+            {
                 loadAllInventoryGeneratorsInDirectory(path);
+                path.getFileSystem().close();
+            }
         }
         catch (URISyntaxException | IOException e)
         {

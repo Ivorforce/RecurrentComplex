@@ -237,8 +237,8 @@ public class RecurrentComplex
     {
         for (String modid : Loader.instance().getIndexedModList().keySet())
         {
-            StructureSaveHandler.loadStructuresFromMod(modid);
             InventoryGeneratorSaveHandler.loadInventoryGeneratorsFromMod(modid);
+            StructureSaveHandler.loadStructuresFromMod(modid);
         }
     }
 }

@@ -69,7 +69,7 @@ public class SchematicLoader
         String[] filenames = new String[files.size()];
         int i = 0;
         for (File file : files)
-            filenames[i++] = file.getName();
+            filenames[i++] = FilenameUtils.getBaseName(file.getName());
         return filenames;
     }
 

@@ -6,6 +6,7 @@
 package ivorius.reccomplex.worldgen;
 
 import ivorius.ivtoolkit.tools.IvFileHelper;
+import ivorius.reccomplex.RCConfig;
 import ivorius.reccomplex.files.FileSuffixFilter;
 import ivorius.reccomplex.files.RCFileHelper;
 import ivorius.reccomplex.RecurrentComplex;
@@ -85,7 +86,8 @@ public class StructureSaveHandler
                 GenericStructureInfo genericStructureInfo = StructureSaveHandler.readGenericStructure(file);
 
                 String structureID = FilenameUtils.getBaseName(file.getFileName().toString());
-                StructureHandler.registerStructure(genericStructureInfo, structureID, generating);
+                boolean shouldGenerate = generating && !RCConfig.disabledStructures.contains(structureID);
+                StructureHandler.registerStructure(genericStructureInfo, structureID, shouldGenerate);
 
                 if (imported)
                     importedGenerators.add(structureID);

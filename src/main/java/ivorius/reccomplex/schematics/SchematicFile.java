@@ -85,7 +85,8 @@ public class SchematicFile
         for (NBTTagCompound tileTagCompound : tileEntityCompounds)
         {
             TileEntity tileEntity = TileEntity.createAndLoadEntity(tileTagCompound);
-            tileEntities.put(new BlockCoord(tileEntity), tileEntity);
+            if (tileEntity != null)
+                tileEntities.put(new BlockCoord(tileEntity), tileEntity);
         }
 
         BlockArea blockArea = BlockArea.areaFromSize(new BlockCoord(0, 0, 0), new int[]{width, height, length});
@@ -118,11 +119,14 @@ public class SchematicFile
         for (NBTTagCompound entityCompound : entityCompounds)
         {
             Entity entity = EntityList.createEntityFromNBT(entityCompound, world);
-            entity.entityUniqueID = UUID.randomUUID();
+            if (entity != null)
+            {
+                entity.entityUniqueID = UUID.randomUUID();
 
-            IvWorldData.moveEntityForGeneration(entity, new BlockCoord(x, y, z));
+                IvWorldData.moveEntityForGeneration(entity, new BlockCoord(x, y, z));
 
-            world.spawnEntityInWorld(entity);
+                world.spawnEntityInWorld(entity);
+            }
         }
     }
 

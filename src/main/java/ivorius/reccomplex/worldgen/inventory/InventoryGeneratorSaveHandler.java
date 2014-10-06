@@ -17,6 +17,7 @@ import org.apache.commons.io.IOUtils;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.URISyntaxException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
@@ -52,6 +53,26 @@ public class InventoryGeneratorSaveHandler
                 System.out.println("Could not read from inventory generators directory");
                 e.printStackTrace();
             }
+        }
+    }
+
+    public static void loadInventoryGeneratorsFromMod(String modid)
+    {
+        modid = modid.toLowerCase();
+
+        try
+        {
+            Path path = RCFileHelper.pathFromResourceLocation(new ResourceLocation(modid, "structures/inventoryGenerators"));
+            if (path != null)
+            {
+                loadAllInventoryGeneratorsInDirectory(path, false);
+                path.getFileSystem().close();
+            }
+        }
+        catch (URISyntaxException | IOException e)
+        {
+            System.out.println("Could not read inventory generators from mod '" + modid + "'");
+            e.printStackTrace();
         }
     }
 

@@ -47,7 +47,8 @@ public class RCFileHelper
 
     public static Path pathFromResourceLocation(ResourceLocation resourceLocation) throws URISyntaxException, IOException
     {
-        return Paths.get(RCFileHelper.class.getResource("/assets/" + resourceLocation.getResourceDomain() + "/" + resourceLocation.getResourcePath()).toURI());
+        URL resource = RCFileHelper.class.getResource("/assets/" + resourceLocation.getResourceDomain() + "/" + resourceLocation.getResourcePath());
+        return resource != null ? resourceToPath(resource.toURI().toURL()) : null;
     }
 
     public static List<Path> listFilesRecursively(Path dir, final DirectoryStream.Filter<Path> filter, final boolean recursive) throws IOException
@@ -61,7 +62,7 @@ public class RCFileHelper
                 if (filter.accept(file))
                     files.add(file);
 
-                return recursive ?  FileVisitResult.CONTINUE : FileVisitResult.SKIP_SUBTREE;
+                return recursive ? FileVisitResult.CONTINUE : FileVisitResult.SKIP_SUBTREE;
             }
         });
         return files;

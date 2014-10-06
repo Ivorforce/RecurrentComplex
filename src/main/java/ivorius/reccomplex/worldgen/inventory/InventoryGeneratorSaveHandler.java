@@ -66,7 +66,6 @@ public class InventoryGeneratorSaveHandler
             if (path != null)
             {
                 loadAllInventoryGeneratorsInDirectory(path, false);
-                path.getFileSystem().close();
             }
         }
         catch (URISyntaxException | IOException e)

@@ -13,7 +13,10 @@ import java.net.URISyntaxException;
 import java.net.URL;
 import java.nio.file.*;
 import java.nio.file.attribute.BasicFileAttributes;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Objects;
 
 /**
  * Created by lukas on 05.10.14.
@@ -40,6 +43,14 @@ public class RCFileHelper
         int separator = s.indexOf("!/");
         String entryName = s.substring(separator + 2);
         URI fileURI = URI.create(s.substring(0, separator));
+
+        try
+        {
+            FileSystem fs = FileSystems.getFileSystem(fileURI);
+            if (fs.isOpen())
+                return fs.getPath(entryName);
+        }
+        catch (FileSystemNotFoundException ignored) {}
 
         FileSystem fs = FileSystems.newFileSystem(fileURI, Collections.<String, Object>emptyMap());
         return fs.getPath(entryName);

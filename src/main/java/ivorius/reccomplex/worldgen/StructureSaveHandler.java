@@ -87,7 +87,6 @@ public class StructureSaveHandler
             if (path != null)
             {
                 addAllStructuresInDirectory(path, true, false);
-                path.getFileSystem().close();
             }
         }
         catch (URISyntaxException | IOException e)
@@ -102,7 +101,6 @@ public class StructureSaveHandler
             if (path != null)
             {
                 addAllStructuresInDirectory(path, false, false);
-                path.getFileSystem().close();
             }
         }
         catch (URISyntaxException | IOException e)

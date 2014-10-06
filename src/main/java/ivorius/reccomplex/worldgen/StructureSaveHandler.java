@@ -85,7 +85,7 @@ public class StructureSaveHandler
             Path path = RCFileHelper.pathFromResourceLocation(new ResourceLocation(modid, "structures/genericStructures"));
             if (path != null)
             {
-                addAllStructuresInDirectory(path, true);
+                addAllStructuresInDirectory(path, true, false);
                 path.getFileSystem().close();
             }
         }
@@ -100,7 +100,7 @@ public class StructureSaveHandler
             Path path = RCFileHelper.pathFromResourceLocation(new ResourceLocation(modid, "structures/silentStructures"));
             if (path != null)
             {
-                addAllStructuresInDirectory(path, false);
+                addAllStructuresInDirectory(path, false, false);
                 path.getFileSystem().close();
             }
         }

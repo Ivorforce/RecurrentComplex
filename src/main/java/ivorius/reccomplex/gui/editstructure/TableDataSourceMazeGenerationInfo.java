@@ -149,10 +149,9 @@ public class TableDataSourceMazeGenerationInfo extends TableDataSourceSegmented 
             else
             {
                 MazeComponent mazeComponent = new MazeComponent(100);
-                MazeRoom defaultRoom = new MazeRoom(0, 0, 0);
-                mazeComponent.setRooms(Arrays.asList(defaultRoom));
-                mazeComponent.setExitPaths(Arrays.asList(new MazePath(defaultRoom, 0, true), new MazePath(defaultRoom, 0, false),
-                        new MazePath(defaultRoom, 2, true), new MazePath(defaultRoom, 2, false)));
+                mazeComponent.setRooms(Arrays.asList(new MazeRoom(0, 0, 0)));
+                mazeComponent.setExitPaths(Arrays.asList(new MazePath(new MazeRoom(0, 0, 0), 0, true), new MazePath(new MazeRoom(0, 0, 0), 0, false),
+                        new MazePath(new MazeRoom(0, 0, 0), 2, true), new MazePath(new MazeRoom(0, 0, 0), 2, false)));
                 structureInfo.mazeGenerationInfo = new MazeGenerationInfo("", mazeComponent);
             }
 

@@ -22,6 +22,7 @@ import ivorius.reccomplex.worldgen.blockTransformers.BlockTransformer;
 import ivorius.reccomplex.worldgen.blockTransformers.BlockTransformerNatural;
 import ivorius.reccomplex.worldgen.blockTransformers.BlockTransformerNaturalAir;
 import ivorius.reccomplex.worldgen.blockTransformers.BlockTransformerNegativeSpace;
+import ivorius.reccomplex.worldgen.genericStructures.gentypes.NaturalGenerationInfo;
 import ivorius.reccomplex.worldgen.inventory.InventoryGenerationHandler;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
@@ -43,18 +44,17 @@ import java.util.*;
  */
 public class GenericStructureInfo implements StructureInfo, Cloneable
 {
-    public static final int LATEST_VERSION = 1;
+    public static final int LATEST_VERSION = 2;
     public static final int MAX_GENERATING_LAYERS = 30;
 
     public NBTTagCompound worldDataCompound;
 
-    public List<BiomeGenerationInfo> generationWeights = new ArrayList<>();
-    public List<BlockTransformer> blockTransformers = new ArrayList<>();
-    public GenerationYSelector ySelector;
     public boolean rotatable;
     public boolean mirrorable;
 
-    public String generationCategory;
+    public NaturalGenerationInfo naturalGenerationInfo;
+
+    public List<BlockTransformer> blockTransformers = new ArrayList<>();
 
     public List<String> dependencies = new ArrayList<>();
 
@@ -63,9 +63,6 @@ public class GenericStructureInfo implements StructureInfo, Cloneable
     public static GenericStructureInfo createDefaultStructure()
     {
         GenericStructureInfo genericStructureInfo = new GenericStructureInfo();
-        genericStructureInfo.generationWeights.addAll(BiomeGenerationInfo.overworldBiomeGenerationList());
-        genericStructureInfo.generationCategory = "decoration";
-        genericStructureInfo.ySelector = new GenerationYSelector(GenerationYSelector.SelectionMode.SURFACE, 0, 0);
         genericStructureInfo.rotatable = false;
         genericStructureInfo.mirrorable = false;
 
@@ -73,13 +70,16 @@ public class GenericStructureInfo implements StructureInfo, Cloneable
         genericStructureInfo.blockTransformers.add(new BlockTransformerNegativeSpace(RCBlocks.negativeSpace, 0));
         genericStructureInfo.blockTransformers.add(new BlockTransformerNatural(RCBlocks.naturalFloor, 0));
 
+        genericStructureInfo.naturalGenerationInfo = new NaturalGenerationInfo("decoration", new GenerationYSelector(GenerationYSelector.SelectionMode.SURFACE, 0, 0));
+        genericStructureInfo.naturalGenerationInfo.generationWeights.addAll(BiomeGenerationInfo.overworldBiomeGenerationList());
+
         return genericStructureInfo;
     }
 
     @Override
     public int generationY(World world, Random random, int x, int z)
     {
-        return ySelector.generationY(world, random, x, z, structureBoundingBox());
+        return naturalGenerationInfo != null ? naturalGenerationInfo.ySelector.generationY(world, random, x, z, structureBoundingBox()) : world.getHeightValue(x, z);
     }
 
     @Override
@@ -230,10 +230,13 @@ public class GenericStructureInfo implements StructureInfo, Cloneable
     @Override
     public int generationWeightInBiome(BiomeGenBase biome)
     {
-        for (BiomeGenerationInfo generationInfo : generationWeights)
+        if (naturalGenerationInfo != null)
         {
-            if (generationInfo.matches(biome))
-                return generationInfo.getActiveGenerationWeight();
+            for (BiomeGenerationInfo generationInfo : naturalGenerationInfo.generationWeights)
+            {
+                if (generationInfo.matches(biome))
+                    return generationInfo.getActiveGenerationWeight();
+            }
         }
 
         return 0;
@@ -253,7 +256,7 @@ public class GenericStructureInfo implements StructureInfo, Cloneable
     @Override
     public String generationCategory()
     {
-        return generationCategory;
+        return naturalGenerationInfo != null ? naturalGenerationInfo.generationCategory : null;
     }
 
     @Override
@@ -303,21 +306,6 @@ public class GenericStructureInfo implements StructureInfo, Cloneable
                 RecurrentComplex.logger.warn("Structure JSON missing 'version', using latest (" + getClass() + ")");
             }
 
-            if (jsonobject.has("generationBiomes"))
-            {
-                JsonArray generationBiomes = JsonUtils.getJsonObjectJsonArrayField(jsonobject, "generationBiomes");
-
-                for (JsonElement generationElement : generationBiomes)
-                {
-                    BiomeGenerationInfo genInfo = context.deserialize(generationElement, BiomeGenerationInfo.class);
-                    structureInfo.generationWeights.add(genInfo);
-                }
-            }
-            else
-            {
-                RecurrentComplex.logger.warn("Structure JSON missing 'generationBiomes'!");
-            }
-
             if (jsonobject.has("blockTransformers"))
             {
                 JsonArray blockTransformers = JsonUtils.getJsonObjectJsonArrayField(jsonobject, "blockTransformers");
@@ -329,20 +317,16 @@ public class GenericStructureInfo implements StructureInfo, Cloneable
                 }
             }
 
-            if (jsonobject.has("generationY"))
-            {
-                structureInfo.ySelector = context.deserialize(jsonobject.get("generationY"), GenerationYSelector.class);
-            }
+            if (version == 1)
+                structureInfo.naturalGenerationInfo = NaturalGenerationInfo.deserializeFromVersion1(jsonobject, context);
             else
             {
-                RecurrentComplex.logger.warn("Structure JSON missing 'generationY'! Using 'surface'!");
-                structureInfo.ySelector = new GenerationYSelector(GenerationYSelector.SelectionMode.SURFACE, 0, 0);
+                if (jsonobject.has("naturalGenerationInfo"))
+                    structureInfo.naturalGenerationInfo = context.deserialize(jsonobject.get("naturalGenerationInfo"), NaturalGenerationInfo.class);
             }
 
             structureInfo.rotatable = JsonUtils.getJsonObjectBooleanFieldValueOrDefault(jsonobject, "rotatable", false);
             structureInfo.mirrorable = JsonUtils.getJsonObjectBooleanFieldValueOrDefault(jsonobject, "mirrorable", false);
-
-            structureInfo.generationCategory = JsonUtils.getJsonObjectStringFieldValue(jsonobject, "generationCategory");
 
             if (jsonobject.has("dependencies"))
             {
@@ -377,13 +361,6 @@ public class GenericStructureInfo implements StructureInfo, Cloneable
 
             jsonobject.addProperty("version", LATEST_VERSION);
 
-            JsonArray generationBiomes = new JsonArray();
-            for (BiomeGenerationInfo info : structureInfo.generationWeights)
-            {
-                generationBiomes.add(context.serialize(info));
-            }
-            jsonobject.add("generationBiomes", generationBiomes);
-
             if (structureInfo.blockTransformers.size() > 0)
             {
                 JsonArray blockTransformers = new JsonArray();
@@ -394,11 +371,11 @@ public class GenericStructureInfo implements StructureInfo, Cloneable
                 jsonobject.add("blockTransformers", blockTransformers);
             }
 
-            jsonobject.add("generationY", context.serialize(structureInfo.ySelector, GenerationYSelector.class));
             jsonobject.addProperty("rotatable", structureInfo.rotatable);
             jsonobject.addProperty("mirrorable", structureInfo.mirrorable);
 
-            jsonobject.addProperty("generationCategory", structureInfo.generationCategory);
+            if (structureInfo.naturalGenerationInfo != null)
+                jsonobject.add("naturalGenerationInfo", context.serialize(structureInfo.naturalGenerationInfo));
 
             if (structureInfo.dependencies.size() > 0)
             {

@@ -39,34 +39,6 @@ public class TableDataSourceGenericStructure implements TableDataSource, TableEl
         this.navigator = navigator;
     }
 
-    private static List<TableElementList.Option> allGenerationOptions()
-    {
-        List<TableElementList.Option> generationBases = new ArrayList<>();
-
-        for (GenerationYSelector.SelectionMode selectionMode : GenerationYSelector.SelectionMode.values())
-        {
-            generationBases.add(new TableElementList.Option(selectionMode.serializedName(), I18n.format("structures.genY." + selectionMode.serializedName())));
-        }
-
-        return generationBases;
-    }
-
-    private static List<TableElementList.Option> allGenerationCategories()
-    {
-        Set<String> categories = StructureSelector.allCategoryIDs();
-        List<TableElementList.Option> generationBases = new ArrayList<>();
-
-        for (String category : categories)
-        {
-            StructureSelector.Category categoryObj = StructureSelector.categoryForID(category);
-
-            if (categoryObj.selectableInGUI())
-                generationBases.add(new TableElementList.Option(category, I18n.format("structures.category." + category)));
-        }
-
-        return generationBases;
-    }
-
     public GenericStructureInfo getStructureInfo()
     {
         return structureInfo;
@@ -110,7 +82,7 @@ public class TableDataSourceGenericStructure implements TableDataSource, TableEl
     @Override
     public boolean has(GuiTable table, int index)
     {
-        return index >= 0 && index < 9;
+        return index >= 0 && index < 6;
     }
 
     @Override
@@ -126,35 +98,17 @@ public class TableDataSourceGenericStructure implements TableDataSource, TableEl
         }
         else if (index == 1)
         {
-            TableElementList element = new TableElementList("category", "Category", structureInfo.generationCategory(), allGenerationCategories());
+            TableElementBoolean element = new TableElementBoolean("rotatable", "Rotatable", structureInfo.rotatable);
             element.addPropertyListener(this);
             return element;
         }
         else if (index == 2)
         {
-            TableElementList element = new TableElementList("ySelType", "Generation Base", structureInfo.ySelector.selectionMode.serializedName(), allGenerationOptions());
-            element.addPropertyListener(this);
-            return element;
-        }
-        else if (index == 3)
-        {
-            TableElementIntegerRange element = new TableElementIntegerRange("ySelShift", "Y Shift", new IntegerRange(structureInfo.ySelector.minY, structureInfo.ySelector.maxY), -100, 100);
-            element.addPropertyListener(this);
-            return element;
-        }
-        else if (index == 4)
-        {
-            TableElementBoolean element = new TableElementBoolean("rotatable", "Rotatable", structureInfo.rotatable);
-            element.addPropertyListener(this);
-            return element;
-        }
-        else if (index == 5)
-        {
             TableElementBoolean element = new TableElementBoolean("mirrorable", "Mirrorable", structureInfo.mirrorable);
             element.addPropertyListener(this);
             return element;
         }
-        else if (index == 6)
+        else if (index == 3)
         {
             TableElementString element = new TableElementString("dependencies", "Dependencies (A,B,...)", Strings.join(structureInfo.dependencies, ","));
             element.setValidityState(currentDependencyState());
@@ -162,15 +116,15 @@ public class TableDataSourceGenericStructure implements TableDataSource, TableEl
             element.addPropertyListener(this);
             return element;
         }
-        else if (index == 7)
-        {
-            TableElementButton elementEditBiomes = new TableElementButton("editBiomes", "Biomes", new TableElementButton.Action("edit", "Edit"));
-            elementEditBiomes.addListener(this);
-            return elementEditBiomes;
-        }
-        else if (index == 8)
+        else if (index == 4)
         {
             TableElementButton elementEditTransformers = new TableElementButton("editTransformers", "Transformers", new TableElementButton.Action("edit", "Edit"));
+            elementEditTransformers.addListener(this);
+            return elementEditTransformers;
+        }
+        else if (index == 5)
+        {
+            TableElementButton elementEditTransformers = new TableElementButton("editNaturalGeneration", "Natural Generation", new TableElementButton.Action("edit", "Edit"));
             elementEditTransformers.addListener(this);
             return elementEditTransformers;
         }
@@ -181,14 +135,14 @@ public class TableDataSourceGenericStructure implements TableDataSource, TableEl
     @Override
     public void actionPerformed(TableElementButton tableElementButton, String actionID)
     {
-        if ("editBiomes".equals(tableElementButton.getID()) && "edit".equals(actionID))
-        {
-            GuiTable editBiomesProperties = new GuiTable(tableDelegate, new TableDataSourceBiomeGenList(structureInfo.generationWeights, tableDelegate, navigator));
-            navigator.pushTable(editBiomesProperties);
-        }
-        else if ("editTransformers".equals(tableElementButton.getID()) && "edit".equals(actionID))
+        if ("editTransformers".equals(tableElementButton.getID()) && "edit".equals(actionID))
         {
             GuiTable editTransformersProperties = new GuiTable(tableDelegate, new TableDataSourceBlockTransformerList(structureInfo.blockTransformers, tableDelegate, navigator));
+            navigator.pushTable(editTransformersProperties);
+        }
+        else if ("editNaturalGeneration".equals(tableElementButton.getID()) && "edit".equals(actionID))
+        {
+            GuiTable editTransformersProperties = new GuiTable(tableDelegate, new TableDataSourceNaturalGenerationInfo(navigator, tableDelegate, structureInfo));
             navigator.pushTable(editTransformersProperties);
         }
     }
@@ -200,21 +154,6 @@ public class TableDataSourceGenericStructure implements TableDataSource, TableEl
         {
             structureKey = (String) element.getPropertyValue();
             ((TableElementString) element).setValidityState(currentNameState());
-        }
-        else if ("category".equals(element.getID()))
-        {
-            structureInfo.generationCategory = (String) element.getPropertyValue();
-        }
-        else if ("ySelType".equals(element.getID()))
-        {
-            GenerationYSelector.SelectionMode selectionMode = GenerationYSelector.SelectionMode.selectionMode((String) element.getPropertyValue());
-            structureInfo.ySelector.selectionMode = selectionMode != null ? selectionMode : GenerationYSelector.SelectionMode.SURFACE;
-        }
-        else if ("ySelShift".equals(element.getID()))
-        {
-            IntegerRange range = ((IntegerRange) element.getPropertyValue());
-            structureInfo.ySelector.minY = range.getMin();
-            structureInfo.ySelector.maxY = range.getMax();
         }
         else if ("rotatable".equals(element.getID()))
         {

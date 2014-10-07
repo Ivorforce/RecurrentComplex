@@ -18,6 +18,7 @@ import ivorius.reccomplex.worldgen.blockTransformers.BlockTransformer;
 import ivorius.reccomplex.worldgen.blockTransformers.BlockTransformerProvider;
 import ivorius.reccomplex.worldgen.genericStructures.BiomeGenerationInfo;
 import ivorius.reccomplex.worldgen.genericStructures.GenericStructureInfo;
+import ivorius.reccomplex.worldgen.genericStructures.gentypes.NaturalGenerationInfo;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.biome.BiomeGenBase;
 
@@ -46,6 +47,7 @@ public class StructureHandler
 
         builder.registerTypeAdapter(GenericStructureInfo.class, new GenericStructureInfo.Serializer());
         builder.registerTypeAdapter(BiomeGenerationInfo.class, new BiomeGenerationInfo.Serializer());
+        builder.registerTypeAdapter(NaturalGenerationInfo.class, new NaturalGenerationInfo.Serializer());
         blockTransformerAdapterFactory = new StringTypeAdapterFactory<>("transformer", "type");
         builder.registerTypeHierarchyAdapter(BlockTransformer.class, blockTransformerAdapterFactory);
 

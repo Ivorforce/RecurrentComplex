@@ -14,6 +14,7 @@ import ivorius.ivtoolkit.tools.IvWorldData;
 import ivorius.reccomplex.RecurrentComplex;
 import ivorius.reccomplex.blocks.GeneratingTileEntity;
 import ivorius.reccomplex.blocks.RCBlocks;
+import ivorius.reccomplex.json.JsonUtils;
 import ivorius.reccomplex.json.NbtToJson;
 import ivorius.reccomplex.worldgen.MCRegistrySpecial;
 import ivorius.reccomplex.worldgen.StructureHandler;
@@ -22,6 +23,7 @@ import ivorius.reccomplex.worldgen.blockTransformers.BlockTransformer;
 import ivorius.reccomplex.worldgen.blockTransformers.BlockTransformerNatural;
 import ivorius.reccomplex.worldgen.blockTransformers.BlockTransformerNaturalAir;
 import ivorius.reccomplex.worldgen.blockTransformers.BlockTransformerNegativeSpace;
+import ivorius.reccomplex.worldgen.genericStructures.gentypes.MazeGenerationInfo;
 import ivorius.reccomplex.worldgen.genericStructures.gentypes.NaturalGenerationInfo;
 import ivorius.reccomplex.worldgen.inventory.InventoryGenerationHandler;
 import net.minecraft.block.Block;
@@ -30,8 +32,6 @@ import net.minecraft.entity.Entity;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
-import ivorius.reccomplex.json.JsonUtils;
-
 import net.minecraft.world.World;
 import net.minecraft.world.biome.BiomeGenBase;
 import net.minecraftforge.common.BiomeDictionary;
@@ -53,6 +53,7 @@ public class GenericStructureInfo implements StructureInfo, Cloneable
     public boolean mirrorable;
 
     public NaturalGenerationInfo naturalGenerationInfo;
+    public MazeGenerationInfo mazeGenerationInfo;
 
     public List<BlockTransformer> blockTransformers = new ArrayList<>();
 
@@ -74,6 +75,17 @@ public class GenericStructureInfo implements StructureInfo, Cloneable
         genericStructureInfo.naturalGenerationInfo.generationWeights.addAll(BiomeGenerationInfo.overworldBiomeGenerationList());
 
         return genericStructureInfo;
+    }
+
+    private static boolean isBiomeAllTypes(BiomeGenBase biomeGenBase, List<BiomeDictionary.Type> types)
+    {
+        for (BiomeDictionary.Type type : types)
+        {
+            if (!BiomeDictionary.isBiomeOfType(biomeGenBase, type))
+                return false;
+        }
+
+        return true;
     }
 
     @Override
@@ -242,17 +254,6 @@ public class GenericStructureInfo implements StructureInfo, Cloneable
         return 0;
     }
 
-    private static boolean isBiomeAllTypes(BiomeGenBase biomeGenBase, List<BiomeDictionary.Type> types)
-    {
-        for (BiomeDictionary.Type type : types)
-        {
-            if (!BiomeDictionary.isBiomeOfType(biomeGenBase, type))
-                return false;
-        }
-
-        return true;
-    }
-
     @Override
     public String generationCategory()
     {
@@ -277,6 +278,18 @@ public class GenericStructureInfo implements StructureInfo, Cloneable
         }
 
         return true;
+    }
+
+    @Override
+    public String mazeID()
+    {
+        return mazeGenerationInfo != null ? mazeGenerationInfo.mazeID : null;
+    }
+
+    @Override
+    public MazeComponent mazeComponent()
+    {
+        return mazeGenerationInfo != null ? mazeGenerationInfo.mazeComponent : null;
     }
 
     @Override
@@ -324,6 +337,9 @@ public class GenericStructureInfo implements StructureInfo, Cloneable
                 if (jsonobject.has("naturalGenerationInfo"))
                     structureInfo.naturalGenerationInfo = context.deserialize(jsonobject.get("naturalGenerationInfo"), NaturalGenerationInfo.class);
             }
+
+            if (jsonobject.has("mazeGenerationInfo"))
+                structureInfo.mazeGenerationInfo = context.deserialize(jsonobject.get("mazeGenerationInfo"), MazeGenerationInfo.class);
 
             structureInfo.rotatable = JsonUtils.getJsonObjectBooleanFieldValueOrDefault(jsonobject, "rotatable", false);
             structureInfo.mirrorable = JsonUtils.getJsonObjectBooleanFieldValueOrDefault(jsonobject, "mirrorable", false);
@@ -376,6 +392,8 @@ public class GenericStructureInfo implements StructureInfo, Cloneable
 
             if (structureInfo.naturalGenerationInfo != null)
                 jsonobject.add("naturalGenerationInfo", context.serialize(structureInfo.naturalGenerationInfo));
+            if (structureInfo.mazeGenerationInfo != null)
+                jsonobject.add("mazeGenerationInfo", context.serialize(structureInfo.mazeGenerationInfo));
 
             if (structureInfo.dependencies.size() > 0)
             {

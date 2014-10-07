@@ -10,6 +10,8 @@ import com.google.common.collect.HashBiMap;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonSyntaxException;
+import ivorius.ivtoolkit.maze.MazePath;
+import ivorius.ivtoolkit.maze.MazeRoom;
 import ivorius.reccomplex.RCConfig;
 import ivorius.reccomplex.RecurrentComplex;
 import ivorius.reccomplex.json.NbtToJson;
@@ -18,14 +20,13 @@ import ivorius.reccomplex.worldgen.blockTransformers.BlockTransformer;
 import ivorius.reccomplex.worldgen.blockTransformers.BlockTransformerProvider;
 import ivorius.reccomplex.worldgen.genericStructures.BiomeGenerationInfo;
 import ivorius.reccomplex.worldgen.genericStructures.GenericStructureInfo;
+import ivorius.reccomplex.worldgen.genericStructures.MazeComponent;
+import ivorius.reccomplex.worldgen.genericStructures.gentypes.MazeGenerationInfo;
 import ivorius.reccomplex.worldgen.genericStructures.gentypes.NaturalGenerationInfo;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.biome.BiomeGenBase;
 
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 /**
  * Created by lukas on 24.05.14.
@@ -34,7 +35,9 @@ public class StructureHandler
 {
     private static BiMap<String, StructureInfo> allStructures = HashBiMap.create();
     private static Map<String, StructureInfo> generatingStructures = new HashMap<>();
+
     private static Map<String, StructureSelector> structureSelectorsInBiomes = new HashMap<>();
+    private static Map<String, List<StructureInfo>> structuresInMazes = new HashMap<>();
 
     private static StringTypeAdapterFactory<BlockTransformer> blockTransformerAdapterFactory;
     private static Map<String, BlockTransformerProvider> blockTransformerProviders = new HashMap<>();
@@ -48,6 +51,10 @@ public class StructureHandler
         builder.registerTypeAdapter(GenericStructureInfo.class, new GenericStructureInfo.Serializer());
         builder.registerTypeAdapter(BiomeGenerationInfo.class, new BiomeGenerationInfo.Serializer());
         builder.registerTypeAdapter(NaturalGenerationInfo.class, new NaturalGenerationInfo.Serializer());
+        builder.registerTypeAdapter(MazeGenerationInfo.class, new MazeGenerationInfo.Serializer());
+        builder.registerTypeAdapter(MazeComponent.class, new MazeComponent.Serializer());
+        builder.registerTypeAdapter(MazeRoom.class, new MazeComponent.RoomSerializer());
+        builder.registerTypeAdapter(MazePath.class, new MazeComponent.PathSerializer());
         blockTransformerAdapterFactory = new StringTypeAdapterFactory<>("transformer", "type");
         builder.registerTypeHierarchyAdapter(BlockTransformer.class, blockTransformerAdapterFactory);
 
@@ -72,7 +79,7 @@ public class StructureHandler
             else
                 generatingStructures.remove(key); // Make sure to honour the new 'generates' boolean
 
-            structureSelectorsInBiomes.clear();
+            clearCaches();
         }
     }
 
@@ -100,7 +107,7 @@ public class StructureHandler
     {
         allStructures.remove(key);
         generatingStructures.remove(key);
-        structureSelectorsInBiomes.clear();
+        clearCaches();
     }
 
     public static GenericStructureInfo createStructureFromJSON(String jsonData) throws JsonSyntaxException
@@ -131,11 +138,25 @@ public class StructureHandler
     public static StructureSelector getStructureSelectorInBiome(BiomeGenBase biome)
     {
         if (!structureSelectorsInBiomes.containsKey(biome.biomeName))
-        {
             structureSelectorsInBiomes.put(biome.biomeName, new StructureSelector(getAllGeneratingStructures(), biome));
-        }
 
         return structureSelectorsInBiomes.get(biome.biomeName);
+    }
+
+    public static List<StructureInfo> getStructuresInMaze(String mazeID)
+    {
+        if (!structuresInMazes.containsKey(mazeID))
+        {
+            List<StructureInfo> structureInfos = new ArrayList<>();
+            for (StructureInfo info : getAllGeneratingStructures())
+            {
+                if (mazeID.equals(info.mazeID()))
+                    structureInfos.add(info);
+            }
+            structuresInMazes.put(mazeID, structureInfos);
+        }
+
+        return structuresInMazes.get(mazeID);
     }
 
     public static StringTypeAdapterFactory<BlockTransformer> blockTransformerAdapterFactory()
@@ -167,5 +188,11 @@ public class StructureHandler
     public static BlockTransformerProvider blockTransformerProviderForID(String id)
     {
         return blockTransformerProviders.get(id);
+    }
+
+    private static void clearCaches()
+    {
+        structureSelectorsInBiomes.clear();
+        structuresInMazes.clear();
     }
 }

@@ -65,12 +65,7 @@ public class TableDataSourceMazeBlock extends TableDataSourceSegmented implement
     @Override
     public int sizeOfSegment(int segment)
     {
-        if (segment == 0 || segment == 1)
-        {
-            return 1;
-        }
-
-        return 3;
+        return segment == 0 || segment == 1 ? 1 : 3;
     }
 
     @Override
@@ -78,8 +73,8 @@ public class TableDataSourceMazeBlock extends TableDataSourceSegmented implement
     {
         if (segment == 0)
         {
-            TableElementButton element = new TableElementButton("components", "Components", new TableElementButton.Action("edit", "Edit"));
-            element.addListener(this);
+            TableElementString element = new TableElementString("mazeID", "Maze ID", mazeGenerator.getMazeID());
+            element.addPropertyListener(this);
             return element;
         }
         else if (segment == 1)
@@ -158,7 +153,11 @@ public class TableDataSourceMazeBlock extends TableDataSourceSegmented implement
     @Override
     public void valueChanged(TableElementPropertyDefault element)
     {
-        if ("xShift".equals(element.getID()))
+        if ("mazeID".equals(element.getID()))
+        {
+            mazeGenerator.setMazeID((String) element.getPropertyValue());
+        }
+        else if ("xShift".equals(element.getID()))
         {
             BlockCoord shift = mazeGenerator.getStructureShift();
             mazeGenerator.setStructureShift(new BlockCoord((int) element.getPropertyValue(), shift.y, shift.z));
@@ -214,11 +213,7 @@ public class TableDataSourceMazeBlock extends TableDataSourceSegmented implement
     @Override
     public void actionPerformed(TableElementButton tableElementButton, String actionID)
     {
-        if ("components".equals(tableElementButton.getID()))
-        {
-            tableNavigator.pushTable(new GuiTable(tableDelegate, new TableDataSourceMazeComponentList(mazeGenerator.mazeComponents, tableDelegate, tableNavigator)));
-        }
-        else if ("exits".equals(tableElementButton.getID()))
+        if ("exits".equals(tableElementButton.getID()))
         {
             tableNavigator.pushTable(new GuiTable(tableDelegate, new TableDataSourceMazeExitList(mazeGenerator.mazeExits, tableDelegate, tableNavigator)));
         }

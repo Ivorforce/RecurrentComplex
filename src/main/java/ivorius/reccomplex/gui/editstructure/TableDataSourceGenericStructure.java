@@ -82,7 +82,7 @@ public class TableDataSourceGenericStructure implements TableDataSource, TableEl
     @Override
     public boolean has(GuiTable table, int index)
     {
-        return index >= 0 && index < 6;
+        return index >= 0 && index < 7;
     }
 
     @Override
@@ -128,6 +128,12 @@ public class TableDataSourceGenericStructure implements TableDataSource, TableEl
             elementEditTransformers.addListener(this);
             return elementEditTransformers;
         }
+        else if (index == 6)
+        {
+            TableElementButton elementEditTransformers = new TableElementButton("editMazeGeneration", "Maze Generation", new TableElementButton.Action("edit", "Edit"));
+            elementEditTransformers.addListener(this);
+            return elementEditTransformers;
+        }
 
         return null;
     }
@@ -142,8 +148,13 @@ public class TableDataSourceGenericStructure implements TableDataSource, TableEl
         }
         else if ("editNaturalGeneration".equals(tableElementButton.getID()) && "edit".equals(actionID))
         {
-            GuiTable editTransformersProperties = new GuiTable(tableDelegate, new TableDataSourceNaturalGenerationInfo(navigator, tableDelegate, structureInfo));
-            navigator.pushTable(editTransformersProperties);
+            GuiTable editNaturalGeneration = new GuiTable(tableDelegate, new TableDataSourceNaturalGenerationInfo(navigator, tableDelegate, structureInfo));
+            navigator.pushTable(editNaturalGeneration);
+        }
+        else if ("editMazeGeneration".equals(tableElementButton.getID()) && "edit".equals(actionID))
+        {
+            GuiTable editMazeGeneration = new GuiTable(tableDelegate, new TableDataSourceMazeGenerationInfo(navigator, tableDelegate, structureInfo));
+            navigator.pushTable(editMazeGeneration);
         }
     }
 

@@ -8,6 +8,7 @@ package ivorius.reccomplex.gui.editmazeblock;
 import ivorius.ivtoolkit.maze.MazePath;
 import ivorius.reccomplex.gui.table.*;
 
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -73,7 +74,8 @@ public class TableDataSourceMazeExitList implements TableDataSource, TableElemen
             return addButton;
         }
 
-        TableElementButton button = new TableElementButton("mazeExit" + index, "Exit", new TableElementButton.Action("edit", "Edit"), new TableElementButton.Action("delete", "Delete"));
+        String title = "Exit " + Arrays.toString(mazeExitList.get(index).getDestinationRoom().coordinates);
+        TableElementButton button = new TableElementButton("mazeExit" + index, title, new TableElementButton.Action("edit", "Edit"), new TableElementButton.Action("delete", "Delete"));
         button.addListener(this);
         return button;
     }

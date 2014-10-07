@@ -13,6 +13,7 @@ import ivorius.reccomplex.worldgen.StructureHandler;
 import ivorius.reccomplex.worldgen.StructureInfo;
 import ivorius.reccomplex.worldgen.WorldGenStructures;
 import net.minecraft.world.World;
+import net.minecraft.world.gen.structure.StructureComponent;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -99,12 +100,14 @@ public class WorldGenMaze
         return true;
     }
 
-    public static List<MazeComponent> transformedComponents(List<MazeComponent> rawComponents)
+    public static List<ivorius.ivtoolkit.maze.MazeComponent> transformedComponents(List<StructureInfo> componentStructures)
     {
-        List<MazeComponent> transformedComponents = new ArrayList<>();
-        for (MazeComponent comp : rawComponents)
+        List<ivorius.ivtoolkit.maze.MazeComponent> transformedComponents = new ArrayList<>();
+        for (StructureInfo info : componentStructures)
         {
-            StructureInfo info = StructureHandler.getStructure(comp.getIdentifier());
+            MazeComponent comp = info.mazeComponent();
+            String id = StructureHandler.getName(info);
+
             int[] compSize = comp.getSize();
             int roomVariations = (info.isRotatable() ? 4 : 1) * (info.isMirrorable() ? 2 : 1);
 
@@ -118,7 +121,7 @@ public class WorldGenMaze
             {
                 for (int mirrorInd = 0; mirrorInd < (info.isMirrorable() ? 2 : 1); mirrorInd++)
                 {
-                    String newID = comp.getIdentifier() + "_" + rotations + "_" + (mirrorInd == 1);
+                    String newID = id + "_" + rotations + "_" + (mirrorInd == 1);
                     AxisAlignedTransform2D componentTransform = AxisAlignedTransform2D.transform(rotations, mirrorInd == 1);
 
                     List<MazeRoom> transformedRooms = new ArrayList<>();
@@ -140,7 +143,7 @@ public class WorldGenMaze
                         transformedExits.add(MazePath.pathFromSourceAndDest(new MazeRoom(transformedSource.x, transformedSource.y, transformedSource.z), new MazeRoom(transformedDest.x, transformedDest.y, transformedDest.z)));
                     }
 
-                    transformedComponents.add(new MazeComponent(splitCompWeight, newID, transformedRooms, transformedExits));
+                    transformedComponents.add(new ivorius.ivtoolkit.maze.MazeComponent(splitCompWeight, newID, transformedRooms, transformedExits));
                 }
             }
         }

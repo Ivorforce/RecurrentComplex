@@ -37,7 +37,7 @@ public class TableDataSourceMazeGenerationInfo extends TableDataSourceSegmented 
     @Override
     public int numberOfSegments()
     {
-        return structureInfo.mazeGenerationInfo != null ? 9 : 1;
+        return 7;
     }
 
     @Override
@@ -46,22 +46,18 @@ public class TableDataSourceMazeGenerationInfo extends TableDataSourceSegmented 
         switch (segment)
         {
             case 0:
-                return 1;
+                return 2;
             case 1:
                 return 1;
             case 2:
-                return 2;
+                return mazeComponent().getRooms().size();
             case 3:
                 return 1;
             case 4:
-                return mazeComponent().getRooms().size();
+                return 1;
             case 5:
-                return 1;
-            case 6:
-                return 1;
-            case 7:
                 return mazeComponent().getExitPaths().size();
-            case 8:
+            case 6:
                 return 1;
         }
 
@@ -72,16 +68,6 @@ public class TableDataSourceMazeGenerationInfo extends TableDataSourceSegmented 
     public TableElement elementForIndexInSegment(GuiTable table, int index, int segment)
     {
         if (segment == 0)
-        {
-            TableElementButton element = new TableElementButton("enableGen", "Maze Generation", new TableElementButton.Action("toggle", structureInfo.mazeGenerationInfo != null ? "Delete" : "Enable"));
-            element.addListener(this);
-            return element;
-        }
-        else if (segment == 1)
-        {
-            return new TableElementTitle("infoTitle", "", "Information");
-        }
-        else if (segment == 2)
         {
             if (index == 0)
             {
@@ -96,11 +82,11 @@ public class TableDataSourceMazeGenerationInfo extends TableDataSourceSegmented 
                 return element;
             }
         }
-        else if (segment == 3)
+        else if (segment == 1)
         {
             return new TableElementTitle("roomsTitle", "", "Rooms");
         }
-        else if (segment == 4)
+        else if (segment == 2)
         {
             MazeRoom room = mazeComponent().getRooms().get(index);
             boolean canEdit = index > 0 || room.coordinates[0] != 0 || room.coordinates[1] != 0 || room.coordinates[2] != 0;
@@ -110,17 +96,17 @@ public class TableDataSourceMazeGenerationInfo extends TableDataSourceSegmented 
             element.addListener(this);
             return element;
         }
-        else if (segment == 5)
+        else if (segment == 3)
         {
             TableElementButton element = new TableElementButton("addRoom", "Add Room", new TableElementButton.Action("add", "Add"));
             element.addListener(this);
             return element;
         }
-        else if (segment == 6)
+        else if (segment == 4)
         {
             return new TableElementTitle("exitsTitle", "", "Exits");
         }
-        else if (segment == 7)
+        else if (segment == 5)
         {
             MazePath exit = mazeComponent().getExitPaths().get(index);
             String title = "Exit " + Arrays.toString(exit.getDestinationRoom().coordinates);
@@ -129,7 +115,7 @@ public class TableDataSourceMazeGenerationInfo extends TableDataSourceSegmented 
             element.addListener(this);
             return element;
         }
-        else if (segment == 8)
+        else if (segment == 6)
         {
             TableElementButton element = new TableElementButton("addExit", "Add Exit", new TableElementButton.Action("add", "Add"));
             element.addListener(this);
@@ -142,22 +128,7 @@ public class TableDataSourceMazeGenerationInfo extends TableDataSourceSegmented 
     @Override
     public void actionPerformed(TableElementButton tableElementButton, String actionID)
     {
-        if ("enableGen".equals(tableElementButton.getID()) && "toggle".equals(actionID))
-        {
-            if (structureInfo.mazeGenerationInfo != null)
-                structureInfo.mazeGenerationInfo = null;
-            else
-            {
-                MazeComponent mazeComponent = new MazeComponent(100);
-                mazeComponent.setRooms(Arrays.asList(new MazeRoom(0, 0, 0)));
-                mazeComponent.setExitPaths(Arrays.asList(new MazePath(new MazeRoom(0, 0, 0), 0, true), new MazePath(new MazeRoom(0, 0, 0), 0, false),
-                        new MazePath(new MazeRoom(0, 0, 0), 2, true), new MazePath(new MazeRoom(0, 0, 0), 2, false)));
-                structureInfo.mazeGenerationInfo = new MazeGenerationInfo("", mazeComponent);
-            }
-
-            tableDelegate.reloadData();
-        }
-        else if ("addRoom".equals(tableElementButton.getID()))
+        if ("addRoom".equals(tableElementButton.getID()))
         {
             MazeRoom newRoom = new MazeRoom(0, 0, 0);
             mazeComponent().setRooms(IvCollections.modifiableCopyWith(mazeComponent().getRooms(), newRoom));

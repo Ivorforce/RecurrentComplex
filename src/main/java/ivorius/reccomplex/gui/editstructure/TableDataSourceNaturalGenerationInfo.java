@@ -64,28 +64,9 @@ public class TableDataSourceNaturalGenerationInfo implements TableDataSource, Ta
     }
 
     @Override
-    public void actionPerformed(TableElementButton tableElementButton, String actionID)
-    {
-        if ("enableGen".equals(tableElementButton.getID()) && "toggle".equals(actionID))
-        {
-            if (structureInfo.naturalGenerationInfo != null)
-                structureInfo.naturalGenerationInfo = null;
-            else
-                structureInfo.naturalGenerationInfo = new NaturalGenerationInfo("decoration", new GenerationYSelector(GenerationYSelector.SelectionMode.SURFACE, 0, 0));
-
-            tableDelegate.reloadData();
-        }
-        else if ("editBiomes".equals(tableElementButton.getID()) && "edit".equals(actionID))
-        {
-            GuiTable editBiomesProperties = new GuiTable(tableDelegate, new TableDataSourceBiomeGenList(structureInfo.naturalGenerationInfo.generationWeights, tableDelegate, navigator));
-            navigator.pushTable(editBiomesProperties);
-        }
-    }
-
-    @Override
     public boolean has(GuiTable table, int index)
     {
-        return index >= 0 && index < (structureInfo.naturalGenerationInfo != null ? 5 : 1);
+        return index >= 0 && index < 4;
     }
 
     @Override
@@ -93,29 +74,23 @@ public class TableDataSourceNaturalGenerationInfo implements TableDataSource, Ta
     {
         if (index == 0)
         {
-            TableElementButton element = new TableElementButton("enableGen", "Natural Generation", new TableElementButton.Action("toggle", structureInfo.naturalGenerationInfo != null ? "Delete" : "Enable"));
-            element.addListener(this);
-            return element;
-        }
-        else if (index == 1)
-        {
             TableElementList element = new TableElementList("category", "Category", structureInfo.naturalGenerationInfo.generationCategory, allGenerationCategories());
             element.addPropertyListener(this);
             return element;
         }
-        else if (index == 2)
+        else if (index == 1)
         {
             TableElementList element = new TableElementList("ySelType", "Generation Base", structureInfo.naturalGenerationInfo.ySelector.selectionMode.serializedName(), allGenerationOptions());
             element.addPropertyListener(this);
             return element;
         }
-        else if (index == 3)
+        else if (index == 2)
         {
             TableElementIntegerRange element = new TableElementIntegerRange("ySelShift", "Y Shift", new IntegerRange(structureInfo.naturalGenerationInfo.ySelector.minY, structureInfo.naturalGenerationInfo.ySelector.maxY), -100, 100);
             element.addPropertyListener(this);
             return element;
         }
-        else if (index == 4)
+        else if (index == 3)
         {
             TableElementButton elementEditBiomes = new TableElementButton("editBiomes", "Biomes", new TableElementButton.Action("edit", "Edit"));
             elementEditBiomes.addListener(this);
@@ -123,6 +98,16 @@ public class TableDataSourceNaturalGenerationInfo implements TableDataSource, Ta
         }
 
         return null;
+    }
+
+    @Override
+    public void actionPerformed(TableElementButton tableElementButton, String actionID)
+    {
+        if ("editBiomes".equals(tableElementButton.getID()) && "edit".equals(actionID))
+        {
+            GuiTable editBiomesProperties = new GuiTable(tableDelegate, new TableDataSourceBiomeGenList(structureInfo.naturalGenerationInfo.generationWeights, tableDelegate, navigator));
+            navigator.pushTable(editBiomesProperties);
+        }
     }
 
     @Override

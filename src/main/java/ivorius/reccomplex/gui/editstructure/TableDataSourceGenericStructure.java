@@ -6,19 +6,21 @@
 package ivorius.reccomplex.gui.editstructure;
 
 import ivorius.ivtoolkit.gui.IntegerRange;
+import ivorius.ivtoolkit.maze.MazePath;
+import ivorius.ivtoolkit.maze.MazeRoom;
 import ivorius.reccomplex.gui.GuiValidityStateIndicator;
 import ivorius.reccomplex.gui.table.*;
 import ivorius.reccomplex.worldgen.StructureHandler;
 import ivorius.reccomplex.worldgen.StructureSelector;
 import ivorius.reccomplex.worldgen.genericStructures.GenerationYSelector;
 import ivorius.reccomplex.worldgen.genericStructures.GenericStructureInfo;
+import ivorius.reccomplex.worldgen.genericStructures.MazeComponent;
+import ivorius.reccomplex.worldgen.genericStructures.gentypes.MazeGenerationInfo;
+import ivorius.reccomplex.worldgen.genericStructures.gentypes.NaturalGenerationInfo;
 import joptsimple.internal.Strings;
 import net.minecraft.client.resources.I18n;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 /**
  * Created by lukas on 05.06.14.
@@ -124,13 +126,17 @@ public class TableDataSourceGenericStructure implements TableDataSource, TableEl
         }
         else if (index == 5)
         {
-            TableElementButton elementEditTransformers = new TableElementButton("editNaturalGeneration", "Natural Generation", new TableElementButton.Action("edit", "Edit"));
+            TableElementButton.Action toggle = structureInfo.naturalGenerationInfo != null ? new TableElementButton.Action("delete", "Delete") : new TableElementButton.Action("enable", "Enable");
+            TableElementButton elementEditTransformers = new TableElementButton("editNaturalGeneration", "Natural Generation",
+                    new TableElementButton.Action("edit", "Edit", structureInfo.naturalGenerationInfo != null), toggle);
             elementEditTransformers.addListener(this);
             return elementEditTransformers;
         }
         else if (index == 6)
         {
-            TableElementButton elementEditTransformers = new TableElementButton("editMazeGeneration", "Maze Generation", new TableElementButton.Action("edit", "Edit"));
+            TableElementButton.Action toggle = structureInfo.mazeGenerationInfo != null ? new TableElementButton.Action("delete", "Delete") : new TableElementButton.Action("enable", "Enable");
+            TableElementButton elementEditTransformers = new TableElementButton("editMazeGeneration", "Maze Generation",
+                    new TableElementButton.Action("edit", "Edit", structureInfo.mazeGenerationInfo != null), toggle);
             elementEditTransformers.addListener(this);
             return elementEditTransformers;
         }
@@ -146,15 +152,45 @@ public class TableDataSourceGenericStructure implements TableDataSource, TableEl
             GuiTable editTransformersProperties = new GuiTable(tableDelegate, new TableDataSourceBlockTransformerList(structureInfo.blockTransformers, tableDelegate, navigator));
             navigator.pushTable(editTransformersProperties);
         }
-        else if ("editNaturalGeneration".equals(tableElementButton.getID()) && "edit".equals(actionID))
+        else if ("editNaturalGeneration".equals(tableElementButton.getID()))
         {
-            GuiTable editNaturalGeneration = new GuiTable(tableDelegate, new TableDataSourceNaturalGenerationInfo(navigator, tableDelegate, structureInfo));
-            navigator.pushTable(editNaturalGeneration);
+            switch (actionID)
+            {
+                case "edit":
+                    GuiTable editNaturalGeneration = new GuiTable(tableDelegate, new TableDataSourceNaturalGenerationInfo(navigator, tableDelegate, structureInfo));
+                    navigator.pushTable(editNaturalGeneration);
+                    break;
+                case "delete":
+                    structureInfo.naturalGenerationInfo = null;
+                    tableDelegate.reloadData();
+                    break;
+                case "enable":
+                    structureInfo.naturalGenerationInfo = new NaturalGenerationInfo("decoration", new GenerationYSelector(GenerationYSelector.SelectionMode.SURFACE, 0, 0));
+                    tableDelegate.reloadData();
+                    break;
+            }
         }
-        else if ("editMazeGeneration".equals(tableElementButton.getID()) && "edit".equals(actionID))
+        else if ("editMazeGeneration".equals(tableElementButton.getID()))
         {
-            GuiTable editMazeGeneration = new GuiTable(tableDelegate, new TableDataSourceMazeGenerationInfo(navigator, tableDelegate, structureInfo));
-            navigator.pushTable(editMazeGeneration);
+            switch (actionID)
+            {
+                case "edit":
+                    GuiTable editMazeGeneration = new GuiTable(tableDelegate, new TableDataSourceMazeGenerationInfo(navigator, tableDelegate, structureInfo));
+                    navigator.pushTable(editMazeGeneration);
+                    break;
+                case "delete":
+                    structureInfo.mazeGenerationInfo = null;
+                    tableDelegate.reloadData();
+                    break;
+                case "enable":
+                    MazeComponent mazeComponent = new MazeComponent(100);
+                    mazeComponent.setRooms(Arrays.asList(new MazeRoom(0, 0, 0)));
+                    mazeComponent.setExitPaths(Arrays.asList(new MazePath(new MazeRoom(0, 0, 0), 0, true), new MazePath(new MazeRoom(0, 0, 0), 0, false),
+                            new MazePath(new MazeRoom(0, 0, 0), 2, true), new MazePath(new MazeRoom(0, 0, 0), 2, false)));
+                    structureInfo.mazeGenerationInfo = new MazeGenerationInfo("", mazeComponent);
+                    tableDelegate.reloadData();
+                    break;
+            }
         }
     }
 

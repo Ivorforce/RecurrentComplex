@@ -85,7 +85,7 @@ public class NaturalGenerationInfo
             jsonObject.add("generationY", context.serialize(src.ySelector));
             jsonObject.add("generationBiomes", context.serialize(src.generationWeights));
 
-            return null;
+            return jsonObject;
         }
     }
 }

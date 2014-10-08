@@ -75,7 +75,7 @@ public class TableElementInteger extends TableElementPropertyDefault<Integer> im
     @Override
     public void valueChanged(GuiSlider gui)
     {
-        property = MathHelper.floor_float(gui.getValue());
+        property = MathHelper.floor_float(gui.getValue() + 0.5f);
 
         gui.setValue(property);
         gui.displayString = String.valueOf(property);

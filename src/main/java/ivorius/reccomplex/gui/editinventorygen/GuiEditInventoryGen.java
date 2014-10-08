@@ -11,6 +11,7 @@ import ivorius.reccomplex.RecurrentComplex;
 import ivorius.reccomplex.gui.GuiValidityStateIndicator;
 import ivorius.reccomplex.gui.InventoryWatcher;
 import ivorius.reccomplex.network.PacketEditInventoryGenerator;
+import ivorius.reccomplex.utils.RangeHelper;
 import ivorius.reccomplex.worldgen.inventory.GenericInventoryGenerator;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.client.gui.GuiButton;
@@ -354,7 +355,7 @@ public class GuiEditInventoryGen extends GuiContainer implements InventoryWatche
 
             if (slider.id == 4)
             {
-                IntegerRange intRange = new IntegerRange(slider.getRange());
+                IntegerRange intRange = RangeHelper.roundedIntRange(slider.getRange());
                 inventoryGenerator.minItems = intRange.getMin();
                 inventoryGenerator.maxItems = intRange.getMax();
 
@@ -367,7 +368,7 @@ public class GuiEditInventoryGen extends GuiContainer implements InventoryWatche
                 if (stackIndex < chestContents.size())
                 {
                     WeightedRandomChestContent chestContent = chestContents.get(stackIndex);
-                    IntegerRange intRange = new IntegerRange(slider.getRange());
+                    IntegerRange intRange = RangeHelper.roundedIntRange(slider.getRange());
                     chestContent.theMinimumChanceToGenerateItem = intRange.getMin();
                     chestContent.theMaximumChanceToGenerateItem = intRange.getMax();
 

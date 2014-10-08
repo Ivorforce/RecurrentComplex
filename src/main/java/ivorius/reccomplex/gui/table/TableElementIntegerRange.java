@@ -6,6 +6,7 @@
 package ivorius.reccomplex.gui.table;
 
 import ivorius.ivtoolkit.gui.*;
+import ivorius.reccomplex.utils.RangeHelper;
 
 /**
  * Created by lukas on 02.06.14.
@@ -73,7 +74,7 @@ public class TableElementIntegerRange extends TableElementPropertyDefault<Intege
     @Override
     public void valueChanged(GuiSliderMultivalue gui)
     {
-        property = new IntegerRange(slider.getRange());
+        property = RangeHelper.roundedIntRange(slider.getRange());
 
         slider.setRange(new FloatRange(property));
         slider.displayString = property.getMin() + " - " + property.getMax();

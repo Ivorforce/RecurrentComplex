@@ -159,10 +159,11 @@ public class TileEntityMazeGenerator extends TileEntity implements GeneratingTil
         {
             MazePath randPath = RCMazeGenerator.randomEmptyPathInMaze(random, maze);
             if (randPath != null)
-                maze.set(Maze.WALL, randPath);
+                maze.set(Maze.ROOM, randPath);
             else
                 break;
         }
+
         List<MazeComponentPosition> placedComponents = MazeGeneratorWithComponents.generatePaths(random, maze, transformedComponents);
 
         WorldGenMaze.generateMaze(world, random, startCoord, placedComponents, roomSize, layer);

@@ -84,7 +84,7 @@ public class TableDataSourceMazePath extends TableDataSourceSegmented implements
         }
     }
 
-    private static ForgeDirection directionFromPath(MazePath path)
+    public static ForgeDirection directionFromPath(MazePath path)
     {
         switch (path.pathDimension)
         {
@@ -99,7 +99,7 @@ public class TableDataSourceMazePath extends TableDataSourceSegmented implements
         return null;
     }
 
-    private static MazePath pathFromDirection(ForgeDirection side, int[] room)
+    public static MazePath pathFromDirection(ForgeDirection side, int[] room)
     {
         int pathDim = side.offsetX != 0 ? 0 : side.offsetY != 0 ? 1 : side.offsetZ != 0 ? 2 : -1;
         int offset = side.offsetX + side.offsetY + side.offsetZ;

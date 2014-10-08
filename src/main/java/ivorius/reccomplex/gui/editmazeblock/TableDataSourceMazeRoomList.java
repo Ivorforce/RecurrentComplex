@@ -6,6 +6,7 @@
 package ivorius.reccomplex.gui.editmazeblock;
 
 import ivorius.ivtoolkit.maze.MazePath;
+import ivorius.ivtoolkit.maze.MazeRoom;
 import ivorius.reccomplex.gui.table.*;
 
 import java.util.Arrays;
@@ -14,30 +15,30 @@ import java.util.List;
 /**
  * Created by lukas on 04.06.14.
  */
-public class TableDataSourceMazeExitList implements TableDataSource, TableElementButton.Listener
+public class TableDataSourceMazeRoomList implements TableDataSource, TableElementButton.Listener
 {
-    private List<MazePath> mazeExitList;
+    private List<MazeRoom> mazeRoomList;
     private int[] dimensions;
 
     private TableDelegate tableDelegate;
     private TableNavigator navigator;
 
-    public TableDataSourceMazeExitList(List<MazePath> mazeExitList, int[] dimensions, TableDelegate tableDelegate, TableNavigator navigator)
+    public TableDataSourceMazeRoomList(List<MazeRoom> mazeRoomList, int[] dimensions, TableDelegate tableDelegate, TableNavigator navigator)
     {
-        this.mazeExitList = mazeExitList;
+        this.mazeRoomList = mazeRoomList;
         this.dimensions = dimensions;
         this.tableDelegate = tableDelegate;
         this.navigator = navigator;
     }
 
-    public List<MazePath> getMazeExitList()
+    public List<MazeRoom> getMazeRoomList()
     {
-        return mazeExitList;
+        return mazeRoomList;
     }
 
-    public void setMazeExitList(List<MazePath> mazeExitList)
+    public void setMazeRoomList(List<MazeRoom> mazeRoomList)
     {
-        this.mazeExitList = mazeExitList;
+        this.mazeRoomList = mazeRoomList;
     }
 
     public TableDelegate getTableDelegate()
@@ -63,21 +64,21 @@ public class TableDataSourceMazeExitList implements TableDataSource, TableElemen
     @Override
     public boolean has(GuiTable table, int index)
     {
-        return index >= 0 && index < mazeExitList.size() + 1;
+        return index >= 0 && index < mazeRoomList.size() + 1;
     }
 
     @Override
     public TableElement elementForIndex(GuiTable table, int index)
     {
-        if (index == mazeExitList.size())
+        if (index == mazeRoomList.size())
         {
-            TableElementButton addButton = new TableElementButton("addExit", "Add", new TableElementButton.Action("addExit", "Add Exit"));
+            TableElementButton addButton = new TableElementButton("addRoom", "Add", new TableElementButton.Action("addRoom", "Add Room"));
             addButton.addListener(this);
             return addButton;
         }
 
-        String title = "Exit " + Arrays.toString(mazeExitList.get(index).getDestinationRoom().coordinates);
-        TableElementButton button = new TableElementButton("mazeExit" + index, title, new TableElementButton.Action("edit", "Edit"), new TableElementButton.Action("delete", "Delete"));
+        String title = "Room " + Arrays.toString(mazeRoomList.get(index).coordinates);
+        TableElementButton button = new TableElementButton("mazeRoom" + index, title, new TableElementButton.Action("edit", "Edit"), new TableElementButton.Action("delete", "Delete"));
         button.addListener(this);
         return button;
     }
@@ -85,25 +86,25 @@ public class TableDataSourceMazeExitList implements TableDataSource, TableElemen
     @Override
     public void actionPerformed(TableElementButton tableElementButton, String actionID)
     {
-        if (actionID.equals("addExit"))
+        if (actionID.equals("addRoom"))
         {
-            MazePath exit = new MazePath(2, false, 0, 0, 0);
-            mazeExitList.add(exit);
+            MazeRoom room = new MazeRoom(new int[dimensions.length]);
+            mazeRoomList.add(room);
 
-            navigator.pushTable(new GuiTable(tableDelegate, new TableDataSourceMazePath(exit, dimensions)));
+            navigator.pushTable(new GuiTable(tableDelegate, new TableDataSourceMazeRoom(room, dimensions)));
         }
-        else if (tableElementButton.getID().startsWith("mazeExit"))
+        else if (tableElementButton.getID().startsWith("mazeRoom"))
         {
             int index = Integer.valueOf(tableElementButton.getID().substring(8));
-            MazePath exit = mazeExitList.get(index);
+            MazeRoom room = mazeRoomList.get(index);
 
             if (actionID.equals("edit"))
             {
-                navigator.pushTable(new GuiTable(tableDelegate, new TableDataSourceMazePath(exit, dimensions)));
+                navigator.pushTable(new GuiTable(tableDelegate, new TableDataSourceMazeRoom(room, dimensions)));
             }
             else if (actionID.equals("delete"))
             {
-                mazeExitList.remove(exit);
+                mazeRoomList.remove(room);
                 tableDelegate.reloadData();
             }
         }

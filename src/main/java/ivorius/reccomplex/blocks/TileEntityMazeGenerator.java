@@ -10,6 +10,7 @@ import ivorius.ivtoolkit.math.AxisAlignedTransform2D;
 import ivorius.ivtoolkit.maze.*;
 import ivorius.ivtoolkit.maze.MazeComponent;
 import ivorius.ivtoolkit.tools.IvNBTHelper;
+import ivorius.reccomplex.utils.RCMazeGenerator;
 import ivorius.reccomplex.worldgen.StructureHandler;
 import ivorius.reccomplex.worldgen.genericStructures.*;
 import net.minecraft.nbt.NBTTagCompound;
@@ -30,6 +31,7 @@ public class TileEntityMazeGenerator extends TileEntity implements GeneratingTil
 {
     public String mazeID = "";
     public List<MazePath> mazeExits = new ArrayList<>();
+    public List<MazeRoom> blockedRooms = new ArrayList<>();
 
     public BlockCoord structureShift = new BlockCoord(0, 0, 0);
 
@@ -95,6 +97,13 @@ public class TileEntityMazeGenerator extends TileEntity implements GeneratingTil
             mazeExits.add(new MazePath(exitsList.getCompoundTagAt(i)));
         }
 
+        blockedRooms.clear();
+        NBTTagList blockedRoomsList = nbtTagCompound.getTagList("blockedRooms", Constants.NBT.TAG_COMPOUND);
+        for (int i = 0; i < blockedRoomsList.tagCount(); i++)
+        {
+            blockedRooms.add(new MazeRoom(blockedRoomsList.getCompoundTagAt(i)));
+        }
+
         structureShift = BlockCoord.readCoordFromNBT("structureShift", nbtTagCompound);
 
         roomSize = IvNBTHelper.readIntArrayFixedSize("roomSize", 3, nbtTagCompound);
@@ -120,6 +129,13 @@ public class TileEntityMazeGenerator extends TileEntity implements GeneratingTil
         }
         nbtTagCompound.setTag("mazeExits", exitsList);
 
+        NBTTagList blockedRoomsList = new NBTTagList();
+        for (MazeRoom room : blockedRooms)
+        {
+            blockedRoomsList.appendTag(room.writeToNBT());
+        }
+        nbtTagCompound.setTag("blockedRooms", blockedRoomsList);
+
         BlockCoord.writeCoordToNBT("structureShift", structureShift, nbtTagCompound);
 
         nbtTagCompound.setIntArray("roomSize", roomSize);
@@ -134,15 +150,18 @@ public class TileEntityMazeGenerator extends TileEntity implements GeneratingTil
         BlockCoord startCoord = structureShift.add(xCoord, yCoord, zCoord);
 
         Maze maze = new Maze(roomNumbers[0] * 2 + 1, roomNumbers[1] * 2 + 1, roomNumbers[2] * 2 + 1);
-        MazePath[] mazeExits = new MazePath[1 + this.mazeExits.size()];
-        mazeExits[0] = MazeGenerator.randomPathInMaze(random, maze, 1, 1, 1);
-        for (int i = 0; i < this.mazeExits.size(); i++)
-        {
-            mazeExits[i + 1] = this.mazeExits.get(i);
-        }
 
         List<MazeComponent> transformedComponents = WorldGenMaze.transformedComponents(StructureHandler.getStructuresInMaze(mazeID));
-        MazeGenerator.generateStartPathsForEnclosedMaze(maze, mazeExits);
+
+        RCMazeGenerator.generateStartPathsForEnclosedMaze(maze, mazeExits, blockedRooms);
+        for (int i = 0; i < roomNumbers[0] * roomNumbers[1] * roomNumbers[2] / (5 * 5 * 5) + 1; i++)
+        {
+            MazePath randPath = RCMazeGenerator.randomEmptyPathInMaze(random, maze);
+            if (randPath != null)
+                maze.set(Maze.WALL, randPath);
+            else
+                break;
+        }
         List<MazeComponentPosition> placedComponents = MazeGeneratorWithComponents.generatePaths(random, maze, transformedComponents);
 
         WorldGenMaze.generateMaze(world, random, startCoord, placedComponents, roomSize, layer);

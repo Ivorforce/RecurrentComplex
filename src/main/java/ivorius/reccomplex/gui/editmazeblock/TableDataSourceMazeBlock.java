@@ -65,7 +65,7 @@ public class TableDataSourceMazeBlock extends TableDataSourceSegmented implement
     @Override
     public int sizeOfSegment(int segment)
     {
-        return segment == 0 || segment == 1 ? 1 : 3;
+        return segment == 0 ? 1 : segment == 1 ? 2 : 3;
     }
 
     @Override
@@ -79,9 +79,18 @@ public class TableDataSourceMazeBlock extends TableDataSourceSegmented implement
         }
         else if (segment == 1)
         {
-            TableElementButton element = new TableElementButton("exits", "Exits", new TableElementButton.Action("edit", "Edit"));
-            element.addListener(this);
-            return element;
+            if (index == 0)
+            {
+                TableElementButton element = new TableElementButton("exits", "Exits", new TableElementButton.Action("edit", "Edit"));
+                element.addListener(this);
+                return element;
+            }
+            else if (index == 1)
+            {
+                TableElementButton element = new TableElementButton("blockedRooms", "Blocked Rooms", new TableElementButton.Action("edit", "Edit"));
+                element.addListener(this);
+                return element;
+            }
         }
         else if (segment == 2)
         {
@@ -215,7 +224,11 @@ public class TableDataSourceMazeBlock extends TableDataSourceSegmented implement
     {
         if ("exits".equals(tableElementButton.getID()))
         {
-            tableNavigator.pushTable(new GuiTable(tableDelegate, new TableDataSourceMazeExitList(mazeGenerator.mazeExits, mazeGenerator.roomNumbers, tableDelegate, tableNavigator)));
+            tableNavigator.pushTable(new GuiTable(tableDelegate, new TableDataSourceMazePathList(mazeGenerator.mazeExits, mazeGenerator.roomNumbers, tableDelegate, tableNavigator)));
+        }
+        else if ("blockedRooms".equals(tableElementButton.getID()))
+        {
+            tableNavigator.pushTable(new GuiTable(tableDelegate, new TableDataSourceMazeRoomList(mazeGenerator.blockedRooms, mazeGenerator.roomNumbers, tableDelegate, tableNavigator)));
         }
     }
 }

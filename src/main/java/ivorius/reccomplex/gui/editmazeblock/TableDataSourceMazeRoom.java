@@ -14,24 +14,26 @@ import ivorius.reccomplex.gui.table.*;
 public class TableDataSourceMazeRoom implements TableDataSource, TableElementPropertyListener
 {
     private MazeRoom room;
+    private int[] dimensions;
 
-    public TableDataSourceMazeRoom(MazeRoom room)
+    public TableDataSourceMazeRoom(MazeRoom room, int[] dimensions)
     {
         this.room = room;
+        this.dimensions = dimensions;
     }
 
     @Override
     public boolean has(GuiTable table, int index)
     {
-        return index >= 0 && index <= 2;
+        return index >= 0 && index < dimensions.length;
     }
 
     @Override
     public TableElement elementForIndex(GuiTable table, int index)
     {
         String id = "pos" + index;
-        String title = index == 0 ? "Position: X" : index == 1 ? "Position: Y" : "Position: Z";
-        TableElementInteger element = new TableElementInteger(id, title, room.coordinates[index], 0, 20);
+        String title = String.format("Position: %s", index == 0 ? "X" : index == 1 ? "Y" : index == 2 ? "Z" : "" + index);
+        TableElementInteger element = new TableElementInteger(id, title, room.coordinates[index], 0, dimensions[index] - 1);
         element.addPropertyListener(this);
 
         return element;

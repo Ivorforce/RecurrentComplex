@@ -17,13 +17,15 @@ import java.util.List;
 public class TableDataSourceMazeExitList implements TableDataSource, TableElementButton.Listener
 {
     private List<MazePath> mazeExitList;
+    private int[] dimensions;
 
     private TableDelegate tableDelegate;
     private TableNavigator navigator;
 
-    public TableDataSourceMazeExitList(List<MazePath> mazeExitList, TableDelegate tableDelegate, TableNavigator navigator)
+    public TableDataSourceMazeExitList(List<MazePath> mazeExitList, int[] dimensions, TableDelegate tableDelegate, TableNavigator navigator)
     {
         this.mazeExitList = mazeExitList;
+        this.dimensions = dimensions;
         this.tableDelegate = tableDelegate;
         this.navigator = navigator;
     }
@@ -88,7 +90,7 @@ public class TableDataSourceMazeExitList implements TableDataSource, TableElemen
             MazePath exit = new MazePath(2, false, 0, 0, 0);
             mazeExitList.add(exit);
 
-            navigator.pushTable(new GuiTable(tableDelegate, new TableDataSourceMazePath(exit)));
+            navigator.pushTable(new GuiTable(tableDelegate, new TableDataSourceMazePath(exit, dimensions)));
         }
         else if (tableElementButton.getID().startsWith("mazeExit"))
         {
@@ -97,7 +99,7 @@ public class TableDataSourceMazeExitList implements TableDataSource, TableElemen
 
             if (actionID.equals("edit"))
             {
-                navigator.pushTable(new GuiTable(tableDelegate, new TableDataSourceMazePath(exit)));
+                navigator.pushTable(new GuiTable(tableDelegate, new TableDataSourceMazePath(exit, dimensions)));
             }
             else if (actionID.equals("delete"))
             {

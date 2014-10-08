@@ -15,41 +15,49 @@ import java.util.List;
 /**
  * Created by lukas on 22.06.14.
  */
-public class TableDataSourceMazePath implements TableDataSource, TableElementPropertyListener
+public class TableDataSourceMazePath extends TableDataSourceSegmented implements TableElementPropertyListener
 {
     private MazePath mazePath;
+    private int[] dimensions;
 
-    public TableDataSourceMazePath(MazePath mazePath)
+    public TableDataSourceMazePath(MazePath mazePath, int[] dimensions)
     {
         this.mazePath = mazePath;
+        this.dimensions = dimensions;
     }
 
     @Override
-    public boolean has(GuiTable table, int index)
+    public int numberOfSegments()
     {
-        return index >= 0 && index <= 3;
+        return 2;
     }
 
     @Override
-    public TableElement elementForIndex(GuiTable table, int index)
+    public int sizeOfSegment(int segment)
     {
-        if (index >= 0 && index < 3)
+        return segment == 0 ? dimensions.length : 1;
+    }
+
+    @Override
+    public TableElement elementForIndexInSegment(GuiTable table, int index, int segment)
+    {
+        if (segment == 0)
         {
             String id = "pos" + index;
-            String title = index == 0 ? "Position: X" : index == 1 ? "Position: Y" : "Position: Z";
-            TableElementInteger element = new TableElementInteger(id, title, mazePath.sourceRoom.coordinates[index], 0, 20);
+            String title = String.format("Position: %s", index == 0 ? "X" : index == 1 ? "Y" : index == 2 ? "Z" : "" + index);
+            TableElementInteger element = new TableElementInteger(id, title, mazePath.sourceRoom.coordinates[index], 0, dimensions[index] - 1);
             element.addPropertyListener(this);
             return element;
         }
-        else if (index == 3)
+        else if (segment == 1)
         {
             List<TableElementList.Option> optionList = new ArrayList<>();
-            optionList.add(new TableElementList.Option("" + 0, "Down (-Y)"));
-            optionList.add(new TableElementList.Option("" + 1, "Up (+Y)"));
-            optionList.add(new TableElementList.Option("" + 2, "North (-Z)"));
-            optionList.add(new TableElementList.Option("" + 3, "South (+Z)"));
-            optionList.add(new TableElementList.Option("" + 4, "West (-X)"));
-            optionList.add(new TableElementList.Option("" + 5, "East (+X)"));
+            optionList.add(new TableElementList.Option("" + ForgeDirection.DOWN.ordinal(), "Down (-Y)"));
+            optionList.add(new TableElementList.Option("" + ForgeDirection.UP.ordinal(), "Up (+Y)"));
+            optionList.add(new TableElementList.Option("" + ForgeDirection.NORTH.ordinal(), "North (-Z)"));
+            optionList.add(new TableElementList.Option("" + ForgeDirection.SOUTH.ordinal(), "South (+Z)"));
+            optionList.add(new TableElementList.Option("" + ForgeDirection.WEST.ordinal(), "West (-X)"));
+            optionList.add(new TableElementList.Option("" + ForgeDirection.EAST.ordinal(), "East (+X)"));
 
             TableElementList element = new TableElementList("side", "Side", directionFromPath(mazePath).ordinal() + "", optionList);
             element.addPropertyListener(this);
@@ -65,7 +73,7 @@ public class TableDataSourceMazePath implements TableDataSource, TableElementPro
         if ("side".equals(element.getID()))
         {
             int side = Integer.valueOf(((String) element.getPropertyValue()));
-            MazePath path = pathFromDirection(ForgeDirection.values()[side], mazePath.sourceRoom.coordinates);
+            MazePath path = pathFromDirection(ForgeDirection.getOrientation(side), mazePath.sourceRoom.coordinates);
             mazePath.pathDimension = path.pathDimension;
             mazePath.pathGoesUp = path.pathGoesUp;
         }

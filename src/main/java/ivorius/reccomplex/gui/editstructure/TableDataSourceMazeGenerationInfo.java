@@ -22,6 +22,8 @@ import java.util.Arrays;
  */
 public class TableDataSourceMazeGenerationInfo extends TableDataSourceSegmented implements TableElementButton.Listener, TableElementPropertyListener
 {
+    public static final int[] DEFAULT_MAX_COMPONENT_SIZE = {30, 30, 30};
+
     private TableNavigator navigator;
     private TableDelegate tableDelegate;
 
@@ -134,7 +136,7 @@ public class TableDataSourceMazeGenerationInfo extends TableDataSourceSegmented 
             mazeComponent().setRooms(IvCollections.modifiableCopyWith(mazeComponent().getRooms(), newRoom));
             tableDelegate.reloadData();
 
-            navigator.pushTable(new GuiTable(tableDelegate, new TableDataSourceMazeRoom(newRoom)));
+            navigator.pushTable(new GuiTable(tableDelegate, new TableDataSourceMazeRoom(newRoom, DEFAULT_MAX_COMPONENT_SIZE)));
         }
         else if ("addExit".equals(tableElementButton.getID()))
         {
@@ -142,7 +144,7 @@ public class TableDataSourceMazeGenerationInfo extends TableDataSourceSegmented 
             mazeComponent().setExitPaths(IvCollections.modifiableCopyWith(mazeComponent().getExitPaths(), newExit));
             tableDelegate.reloadData();
 
-            navigator.pushTable(new GuiTable(tableDelegate, new TableDataSourceMazePath(newExit)));
+            navigator.pushTable(new GuiTable(tableDelegate, new TableDataSourceMazePath(newExit, mazeComponent().getSize())));
         }
         else if (tableElementButton.getID().startsWith("room"))
         {
@@ -150,7 +152,7 @@ public class TableDataSourceMazeGenerationInfo extends TableDataSourceSegmented 
 
             if (actionID.equals("edit"))
             {
-                navigator.pushTable(new GuiTable(tableDelegate, new TableDataSourceMazeRoom(mazeComponent().getRooms().get(index))));
+                navigator.pushTable(new GuiTable(tableDelegate, new TableDataSourceMazeRoom(mazeComponent().getRooms().get(index), DEFAULT_MAX_COMPONENT_SIZE)));
             }
             else if (actionID.equals("delete"))
             {
@@ -164,7 +166,7 @@ public class TableDataSourceMazeGenerationInfo extends TableDataSourceSegmented 
 
             if (actionID.equals("edit"))
             {
-                navigator.pushTable(new GuiTable(tableDelegate, new TableDataSourceMazePath(mazeComponent().getExitPaths().get(index))));
+                navigator.pushTable(new GuiTable(tableDelegate, new TableDataSourceMazePath(mazeComponent().getExitPaths().get(index), mazeComponent().getSize())));
             }
             else if (actionID.equals("delete"))
             {

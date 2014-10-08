@@ -111,7 +111,7 @@ public class TableDataSourceMazeGenerationInfo extends TableDataSourceSegmented 
         else if (segment == 5)
         {
             MazePath exit = mazeComponent().getExitPaths().get(index);
-            String title = "Exit " + Arrays.toString(exit.getDestinationRoom().coordinates);
+            String title = String.format("%s (%s)", Arrays.toString(exit.getSourceRoom().coordinates), TableDataSourceMazePath.directionFromPath(exit).toString());
 
             TableElementButton element = new TableElementButton("exit" + index, title, new TableElementButton.Action("edit", "Edit"), new TableElementButton.Action("delete", "Delete"));
             element.addListener(this);

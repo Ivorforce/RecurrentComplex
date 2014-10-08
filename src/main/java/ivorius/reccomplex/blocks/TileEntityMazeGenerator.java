@@ -19,10 +19,7 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.Constants;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Random;
+import java.util.*;
 
 /**
  * Created by lukas on 06.06.14.
@@ -31,7 +28,7 @@ public class TileEntityMazeGenerator extends TileEntity implements GeneratingTil
 {
     public String mazeID = "";
     public List<MazePath> mazeExits = new ArrayList<>();
-    public List<MazeRoom> blockedRooms = new ArrayList<>();
+    public List<MazeRoomArea> blockedRoomAreas = new ArrayList<>();
 
     public BlockCoord structureShift = new BlockCoord(0, 0, 0);
 
@@ -97,11 +94,11 @@ public class TileEntityMazeGenerator extends TileEntity implements GeneratingTil
             mazeExits.add(new MazePath(exitsList.getCompoundTagAt(i)));
         }
 
-        blockedRooms.clear();
-        NBTTagList blockedRoomsList = nbtTagCompound.getTagList("blockedRooms", Constants.NBT.TAG_COMPOUND);
+        blockedRoomAreas.clear();
+        NBTTagList blockedRoomsList = nbtTagCompound.getTagList("blockedRoomAreas", Constants.NBT.TAG_COMPOUND);
         for (int i = 0; i < blockedRoomsList.tagCount(); i++)
         {
-            blockedRooms.add(new MazeRoom(blockedRoomsList.getCompoundTagAt(i)));
+            blockedRoomAreas.add(new MazeRoomArea(blockedRoomsList.getCompoundTagAt(i)));
         }
 
         structureShift = BlockCoord.readCoordFromNBT("structureShift", nbtTagCompound);
@@ -130,11 +127,11 @@ public class TileEntityMazeGenerator extends TileEntity implements GeneratingTil
         nbtTagCompound.setTag("mazeExits", exitsList);
 
         NBTTagList blockedRoomsList = new NBTTagList();
-        for (MazeRoom room : blockedRooms)
+        for (MazeRoomArea area : blockedRoomAreas)
         {
-            blockedRoomsList.appendTag(room.writeToNBT());
+            blockedRoomsList.appendTag(area.writeToNBT());
         }
-        nbtTagCompound.setTag("blockedRooms", blockedRoomsList);
+        nbtTagCompound.setTag("blockedRoomAreas", blockedRoomsList);
 
         BlockCoord.writeCoordToNBT("structureShift", structureShift, nbtTagCompound);
 
@@ -152,6 +149,10 @@ public class TileEntityMazeGenerator extends TileEntity implements GeneratingTil
         Maze maze = new Maze(roomNumbers[0] * 2 + 1, roomNumbers[1] * 2 + 1, roomNumbers[2] * 2 + 1);
 
         List<MazeComponent> transformedComponents = WorldGenMaze.transformedComponents(StructureHandler.getStructuresInMaze(mazeID));
+
+        Set<MazeRoom> blockedRooms = new HashSet<>();
+        for (MazeRoomArea area : blockedRoomAreas)
+            blockedRooms.addAll(area.mazeRooms());
 
         RCMazeGenerator.generateStartPathsForEnclosedMaze(maze, mazeExits, blockedRooms);
         for (int i = 0; i < roomNumbers[0] * roomNumbers[1] * roomNumbers[2] / (5 * 5 * 5) + 1; i++)

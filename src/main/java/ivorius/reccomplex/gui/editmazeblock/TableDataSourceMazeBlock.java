@@ -228,7 +228,7 @@ public class TableDataSourceMazeBlock extends TableDataSourceSegmented implement
         }
         else if ("blockedRooms".equals(tableElementButton.getID()))
         {
-            tableNavigator.pushTable(new GuiTable(tableDelegate, new TableDataSourceMazeRoomList(mazeGenerator.blockedRooms, mazeGenerator.roomNumbers, tableDelegate, tableNavigator)));
+            tableNavigator.pushTable(new GuiTable(tableDelegate, new TableDataSourceMazeAreaList(mazeGenerator.blockedRoomAreas, mazeGenerator.roomNumbers, tableDelegate, tableNavigator)));
         }
     }
 }

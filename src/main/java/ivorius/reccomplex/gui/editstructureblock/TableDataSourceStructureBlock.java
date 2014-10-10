@@ -7,7 +7,9 @@ package ivorius.reccomplex.gui.editstructureblock;
 
 import ivorius.ivtoolkit.blocks.BlockCoord;
 import ivorius.reccomplex.blocks.TileEntityStructureGenerator;
+import ivorius.reccomplex.gui.GuiValidityStateIndicator;
 import ivorius.reccomplex.gui.table.*;
+import ivorius.reccomplex.worldgen.StructureHandler;
 import joptsimple.internal.Strings;
 
 import java.util.Arrays;
@@ -48,6 +50,8 @@ public class TableDataSourceStructureBlock implements TableDataSource, TableElem
         if (index == 0)
         {
             TableElementString element = new TableElementString("generators", "Generators (A,B,...)", Strings.join(structureGenerator.getStructureNames(), ","));
+            element.setShowsValidityState(true);
+            element.setValidityState(doAllStructuresExist(structureGenerator.getStructureNames()) ? GuiValidityStateIndicator.State.VALID : GuiValidityStateIndicator.State.SEMI_VALID);
             element.addPropertyListener(this);
             return element;
         }
@@ -92,6 +96,7 @@ public class TableDataSourceStructureBlock implements TableDataSource, TableElem
         {
             String value = ((String) element.getPropertyValue());
             structureGenerator.setStructureNames(Arrays.asList(value.split(",")));
+            ((TableElementString) element).setValidityState(doAllStructuresExist(structureGenerator.getStructureNames()) ? GuiValidityStateIndicator.State.VALID : GuiValidityStateIndicator.State.SEMI_VALID);
         }
         else if ("xShift".equals(element.getID()))
         {
@@ -120,5 +125,16 @@ public class TableDataSourceStructureBlock implements TableDataSource, TableElem
             Boolean mirror = propertyID.equals("null") ? null : Boolean.valueOf(propertyID);
             structureGenerator.setStructureMirror(mirror);
         }
+    }
+
+    private static boolean doAllStructuresExist(Iterable<String> structures)
+    {
+        for (String s : structures)
+        {
+            if (s.length() != 0 && StructureHandler.getStructure(s) == null)
+                return false; // s==0 = "No structure"
+        }
+
+        return true;
     }
 }

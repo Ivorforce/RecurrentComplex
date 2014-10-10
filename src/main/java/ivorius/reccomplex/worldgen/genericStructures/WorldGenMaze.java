@@ -126,22 +126,11 @@ public class WorldGenMaze
 
                     List<MazeRoom> transformedRooms = new ArrayList<>();
                     for (MazeRoom room : comp.getRooms())
-                    {
-                        int[] roomPosition = room.coordinates;
-                        BlockCoord transformedRoom = componentTransform.apply(new BlockCoord(roomPosition[0], roomPosition[1], roomPosition[2]), compSize);
-                        transformedRooms.add(new MazeRoom(transformedRoom.x, transformedRoom.y, transformedRoom.z));
-                    }
+                        transformedRooms.add(rotatedRoom(room, componentTransform, compSize));
 
                     List<MazePath> transformedExits = new ArrayList<>();
                     for (MazePath exit : comp.getExitPaths())
-                    {
-                        int[] sourceCoords = exit.getSourceRoom().coordinates;
-                        int[] destCoords = exit.getDestinationRoom().coordinates;
-                        BlockCoord transformedSource = componentTransform.apply(new BlockCoord(sourceCoords[0], sourceCoords[1], sourceCoords[2]), compSize);
-                        BlockCoord transformedDest = componentTransform.apply(new BlockCoord(destCoords[0], destCoords[1], destCoords[2]), compSize);
-
-                        transformedExits.add(MazePath.pathFromSourceAndDest(new MazeRoom(transformedSource.x, transformedSource.y, transformedSource.z), new MazeRoom(transformedDest.x, transformedDest.y, transformedDest.z)));
-                    }
+                        transformedExits.add(rotatedPath(exit, componentTransform, compSize));
 
                     transformedComponents.add(new ivorius.ivtoolkit.maze.MazeComponent(splitCompWeight, newID, transformedRooms, transformedExits));
                 }
@@ -149,5 +138,22 @@ public class WorldGenMaze
         }
 
         return transformedComponents;
+    }
+
+    public static MazeRoom rotatedRoom(MazeRoom room, AxisAlignedTransform2D transform, int[] size)
+    {
+        int[] roomPosition = room.coordinates;
+        BlockCoord transformedRoom = transform.apply(new BlockCoord(roomPosition[0], roomPosition[1], roomPosition[2]), size);
+        return new MazeRoom(transformedRoom.x, transformedRoom.y, transformedRoom.z);
+    }
+
+    public static MazePath rotatedPath(MazePath path, AxisAlignedTransform2D transform, int[] size)
+    {
+        int[] sourceCoords = path.getSourceRoom().coordinates;
+        int[] destCoords = path.getDestinationRoom().coordinates;
+        BlockCoord transformedSource = transform.apply(new BlockCoord(sourceCoords[0], sourceCoords[1], sourceCoords[2]), size);
+        BlockCoord transformedDest = transform.apply(new BlockCoord(destCoords[0], destCoords[1], destCoords[2]), size);
+
+        return MazePath.pathFromSourceAndDest(new MazeRoom(transformedSource.x, transformedSource.y, transformedSource.z), new MazeRoom(transformedDest.x, transformedDest.y, transformedDest.z));
     }
 }

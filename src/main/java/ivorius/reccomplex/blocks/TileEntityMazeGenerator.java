@@ -144,7 +144,8 @@ public class TileEntityMazeGenerator extends TileEntity implements GeneratingTil
     {
         world.setBlockToAir(xCoord, yCoord, zCoord);
 
-        BlockCoord startCoord = structureShift.add(xCoord, yCoord, zCoord);
+        int[] mazeSize = new int[]{roomSize[0] * roomNumbers[0], roomSize[1] * roomNumbers[1], roomSize[2] * roomNumbers[2]};
+        BlockCoord startCoord = transform.apply(structureShift, new int[]{1, 1, 1}).add(xCoord, yCoord, zCoord).subtract(transform.apply(new BlockCoord(0, 0, 0), mazeSize));
 
         Maze maze = new Maze(roomNumbers[0] * 2 + 1, roomNumbers[1] * 2 + 1, roomNumbers[2] * 2 + 1);
 
@@ -154,7 +155,7 @@ public class TileEntityMazeGenerator extends TileEntity implements GeneratingTil
         for (MazeRoomArea area : blockedRoomAreas)
             blockedRooms.addAll(area.mazeRooms());
 
-        RCMazeGenerator.generateStartPathsForEnclosedMaze(maze, mazeExits, blockedRooms);
+        RCMazeGenerator.generateStartPathsForEnclosedMaze(maze, mazeExits, blockedRooms, transform);
         for (int i = 0; i < roomNumbers[0] * roomNumbers[1] * roomNumbers[2] / (5 * 5 * 5) + 1; i++)
         {
             MazePath randPath = RCMazeGenerator.randomEmptyPathInMaze(random, maze);

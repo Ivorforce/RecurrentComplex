@@ -150,6 +150,12 @@ public class TileEntityMazeGenerator extends TileEntity implements GeneratingTil
         Maze maze = new Maze(roomNumbers[0] * 2 + 1, roomNumbers[1] * 2 + 1, roomNumbers[2] * 2 + 1);
 
         List<MazeComponent> transformedComponents = WorldGenMaze.transformedComponents(StructureHandler.getStructuresInMaze(mazeID));
+        Set<Integer> pathDims = new HashSet<>();
+        for (MazeComponent mazeComponent : transformedComponents)
+        {
+            for (MazePath path : mazeComponent.getExitPaths())
+                pathDims.add(path.pathDimension);
+        }
 
         Set<MazeRoom> blockedRooms = new HashSet<>();
         for (MazeRoomArea area : blockedRoomAreas)
@@ -158,7 +164,7 @@ public class TileEntityMazeGenerator extends TileEntity implements GeneratingTil
         RCMazeGenerator.generateStartPathsForEnclosedMaze(maze, mazeExits, blockedRooms, transform);
         for (int i = 0; i < roomNumbers[0] * roomNumbers[1] * roomNumbers[2] / (5 * 5 * 5) + 1; i++)
         {
-            MazePath randPath = RCMazeGenerator.randomEmptyPathInMaze(random, maze);
+            MazePath randPath = RCMazeGenerator.randomEmptyPathInMaze(random, maze, pathDims);
             if (randPath != null)
                 maze.set(Maze.ROOM, randPath);
             else

@@ -11,10 +11,7 @@ import ivorius.ivtoolkit.maze.MazePath;
 import ivorius.ivtoolkit.maze.MazeRoom;
 import ivorius.reccomplex.worldgen.genericStructures.WorldGenMaze;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Random;
+import java.util.*;
 
 /**
  * Created by lukas on 08.10.14.
@@ -49,12 +46,13 @@ public class RCMazeGenerator
             maze.set(Maze.ROOM, WorldGenMaze.rotatedPath(startPoint, transform, mazeSizeInRooms));
     }
 
-    public static MazePath randomEmptyPathInMaze(Random rand, Maze maze)
+    public static MazePath randomEmptyPathInMaze(Random rand, Maze maze, Collection<Integer> applicableDimensions)
     {
         List<MazePath> paths = new ArrayList<>(maze.allPaths());
         for (Iterator<MazePath> iterator = paths.iterator(); iterator.hasNext(); )
         {
-            if (maze.get(iterator.next()) != Maze.NULL)
+            MazePath path = iterator.next();
+            if (maze.get(path) != Maze.NULL || !applicableDimensions.contains(path.pathDimension))
                 iterator.remove();
         }
 

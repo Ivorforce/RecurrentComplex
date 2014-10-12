@@ -50,3 +50,9 @@
 
 - SmallFortRuins (http://www.planetminecraft.com/project/medievalfantasy-building-bundle/)
 - WoodWallRemains (http://www.planetminecraft.com/project/medievalfantasy-building-bundle/)
+
+
+== lentebriesje ==
+
+- WhiteWillowLarge (http://www.planetminecraft.com/project/native-trees-of-europe-template-repository-1779952/)
+- GiganticTree1 (http://www.planetminecraft.com/project/fantasy-tree-repository/)

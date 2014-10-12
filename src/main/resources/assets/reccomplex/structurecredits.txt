@@ -43,3 +43,5 @@
 - WoodenClockTower (http://minecraftbuildinginc.com/steampunk-style-map/ - style replaced with wood)
 
 - PirateHideout (http://www.planetminecraft.com/project/shippack-download/)
+
+- ElvenPond (http://minecraftbuildinginc.com/elven-map-pack/)

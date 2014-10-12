@@ -24,6 +24,9 @@ public class RCConfig
     private static Set<String> persistentDisabledStructures = new HashSet<>();
     private static Set<String> forceEnabledStructures = new HashSet<>();
 
+    public static String spawnStructure;
+    public static int spawnStructureShiftX, spawnStructureShiftZ;
+
     public static void loadConfig(String configID)
     {
         if (configID == null || configID.equals(Configuration.CATEGORY_GENERAL))
@@ -36,6 +39,10 @@ public class RCConfig
             disabledStructures.addAll(Arrays.asList(RecurrentComplex.config.getStringList("disabledStructures", Configuration.CATEGORY_GENERAL, new String[0], "Structures that will be hindered from generating")));
             forceEnabledStructures.clear();
             forceEnabledStructures.addAll(Arrays.asList(RecurrentComplex.config.getStringList("forceEnabledStructures", Configuration.CATEGORY_GENERAL, new String[0], "Structures that be set to generate (if in the right directory), no matter what")));
+
+            spawnStructure = RecurrentComplex.config.getString("spawnStructure", Configuration.CATEGORY_GENERAL, "", "The structure that will generate around the spawn point. Keep in mind the structure will generate towards +x and +z, and may thus need a negative shift.");
+            spawnStructureShiftX = RecurrentComplex.config.getInt("spawnStructureShiftX", Configuration.CATEGORY_GENERAL, 0, -100, 100, "The amount of blocks the spawn structure will be moved along the x axis on generation.");
+            spawnStructureShiftZ = RecurrentComplex.config.getInt("spawnStructureShiftZ", Configuration.CATEGORY_GENERAL, 0, -100, 100, "The amount of blocks the spawn structure will be moved along the z axis on generation.");
         }
 
         RecurrentComplex.proxy.loadConfig(configID);

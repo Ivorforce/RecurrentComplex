@@ -11,6 +11,7 @@ import ivorius.ivtoolkit.blocks.BlockCoord;
 import ivorius.ivtoolkit.math.AxisAlignedTransform2D;
 import ivorius.ivtoolkit.math.IvVecMathHelper;
 import ivorius.reccomplex.RCConfig;
+import ivorius.reccomplex.RecurrentComplex;
 import ivorius.reccomplex.events.RCEventBus;
 import ivorius.reccomplex.events.StructureGenerationEvent;
 import ivorius.reccomplex.events.StructureGenerationEventLite;
@@ -35,6 +36,9 @@ public class WorldGenStructures implements IWorldGenerator
         if (world.provider.dimensionId == 0)
         {
             ChunkCoordinates spawnPos = world.getSpawnPoint();
+
+            if (chunkContains(chunkX, chunkZ, spawnPos))
+                generateSpawnStructure(random, spawnPos, world, chunkGenerator, chunkProvider);
 
             double distToSpawn = IvVecMathHelper.distanceSQ(new double[]{chunkX * 16 + 8, chunkZ * 16 + 8}, new double[]{spawnPos.posX, spawnPos.posZ});
             mayGenerate &= distToSpawn >= RCConfig.minDistToSpawnForGeneration * RCConfig.minDistToSpawnForGeneration;
@@ -89,6 +93,29 @@ public class WorldGenStructures implements IWorldGenerator
         MinecraftForge.EVENT_BUS.post(new StructureGenerationEventLite.Post(world, StructureHandler.getName(structureInfo), coordInts, size, layer));
     }
 
+    public static void generateSpawnStructure(Random random, ChunkCoordinates spawn, World world, IChunkProvider chunkGenerator, IChunkProvider chunkProvider)
+    {
+        if (RCConfig.spawnStructure != null && RCConfig.spawnStructure.trim().length() > 0)
+        {
+            StructureInfo structureInfo = StructureHandler.getStructure(RCConfig.spawnStructure);
+            if (structureInfo != null)
+            {
+                AxisAlignedTransform2D transform = AxisAlignedTransform2D.transform(structureInfo.isRotatable() ? random.nextInt(4) : 0, structureInfo.isMirrorable() && random.nextBoolean());
+                int[] strucBB = structureBoundingBox(structureInfo, transform);
+
+                int strucX = spawn.posX + RCConfig.spawnStructureShiftX;
+                int strucZ = spawn.posZ + RCConfig.spawnStructureShiftZ;
+                int strucY = structureInfo.generationY(world, random, strucX + strucBB[0] / 2, strucZ + strucBB[2] / 2);
+
+                BlockCoord genCoord = new BlockCoord(strucX, strucY, strucZ);
+
+                generateStructureWithNotifications(structureInfo, world, random, genCoord, transform, 0);
+            }
+            else
+                RecurrentComplex.logger.warn("Could not find spawn structure '" + RCConfig.spawnStructure + "'");
+        }
+    }
+
     public static int[] structureBoundingBox(StructureInfo info, AxisAlignedTransform2D transform)
     {
         int[] size = info.structureBoundingBox();
@@ -99,5 +126,10 @@ public class WorldGenStructures implements IWorldGenerator
             size[2] = cache;
         }
         return size;
+    }
+
+    public static boolean chunkContains(int chunkX, int chunkZ, ChunkCoordinates coords)
+    {
+        return (coords.posX >> 4) == chunkX && (coords.posZ >> 4) == chunkZ;
     }
 }

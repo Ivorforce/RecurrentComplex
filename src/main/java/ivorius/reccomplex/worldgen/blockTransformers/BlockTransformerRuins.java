@@ -10,6 +10,7 @@ import ivorius.ivtoolkit.blocks.BlockCoord;
 import ivorius.ivtoolkit.blocks.IvBlockCollection;
 import ivorius.ivtoolkit.math.AxisAlignedTransform2D;
 import ivorius.ivtoolkit.tools.IvWorldData;
+import ivorius.reccomplex.random.BlurredValueField;
 import net.minecraft.block.Block;
 import net.minecraft.util.MathHelper;
 import net.minecraft.world.World;
@@ -48,15 +49,19 @@ public class BlockTransformerRuins implements BlockTransformer
         if (this.maxDecay - this.minDecay > decayChaos)
             decayChaos = this.maxDecay - this.minDecay;
 
-        float center = random.nextFloat() * (this.maxDecay - this.minDecay - decayChaos) + this.minDecay + decayChaos * 0.5f;
+        float center = random.nextFloat() * (this.maxDecay - this.minDecay) + this.minDecay;
+
+        BlurredValueField field = new BlurredValueField(size[0], size[2]);
+        for (int i = 0; i < size[0] * size[2] / 25; i++)
+            field.addValue(center + (random.nextFloat() - random.nextFloat()) * decayChaos * 2.0f, random);
 
         BlockArea topArea = new BlockArea(new BlockCoord(0, blockCollection.height, 0), new BlockCoord(blockCollection.width, blockCollection.height, blockCollection.length));
         for (BlockCoord surfaceSourceCoord : topArea)
         {
-            float decay = center + (random.nextFloat() - random.nextFloat()) * decayChaos * 0.5f;
+            float decay = field.getValue(surfaceSourceCoord.x, surfaceSourceCoord.z);
             int removedBlocks = MathHelper.floor_float(decay * blockCollection.height + 0.5f);
 
-            for (int ySource = 0; ySource < removedBlocks; ySource++)
+            for (int ySource = 0; ySource < removedBlocks && ySource < size[1]; ySource++)
             {
                 BlockCoord sourceCoord = new BlockCoord(surfaceSourceCoord.x, blockCollection.height - 1 - ySource, surfaceSourceCoord.z);
 

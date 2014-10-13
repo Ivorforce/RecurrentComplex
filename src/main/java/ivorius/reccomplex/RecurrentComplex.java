@@ -52,7 +52,7 @@ public class RecurrentComplex
 {
     public static final String NAME = "Recurrent Complex";
     public static final String MODID = "reccomplex";
-    public static final String VERSION = "0.9.2.1";
+    public static final String VERSION = "0.9.3";
 
     public static final boolean USE_JSON_FOR_NBT = true;
     public static final boolean USE_ZIP_FOR_STRUCTURE_FILES = true;

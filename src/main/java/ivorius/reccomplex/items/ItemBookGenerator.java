@@ -5,6 +5,7 @@
 
 package ivorius.reccomplex.items;
 
+import ivorius.reccomplex.events.ItemGenerationEvent;
 import ivorius.reccomplex.random.Person;
 import ivorius.reccomplex.random.Poem;
 import net.minecraft.entity.player.EntityPlayer;
@@ -15,6 +16,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.nbt.NBTTagString;
 import net.minecraft.world.World;
+import net.minecraftforge.common.MinecraftForge;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -35,7 +37,8 @@ public class ItemBookGenerator extends Item implements GeneratingItem
     @Override
     public void generateInInventory(IInventory inventory, Random random, ItemStack stack, int fromSlot)
     {
-        inventory.setInventorySlotContents(fromSlot, getRandomBook(random));
+        if (!MinecraftForge.EVENT_BUS.post(new ItemGenerationEvent.Book(inventory, random, stack, fromSlot)))
+            inventory.setInventorySlotContents(fromSlot, getRandomBook(random));
     }
 
     public static ItemStack getRandomBook(Random random)

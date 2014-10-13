@@ -5,6 +5,7 @@
 
 package ivorius.reccomplex.items;
 
+import ivorius.reccomplex.events.ItemGenerationEvent;
 import ivorius.reccomplex.random.Artifact;
 import net.minecraft.enchantment.EnchantmentData;
 import net.minecraft.enchantment.EnchantmentHelper;
@@ -14,6 +15,7 @@ import net.minecraft.inventory.IInventory;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
+import net.minecraftforge.common.MinecraftForge;
 
 import java.util.*;
 
@@ -70,34 +72,37 @@ public class ItemArtifactGenerator extends Item implements GeneratingItem
     @Override
     public void generateInInventory(IInventory inventory, Random random, ItemStack stack, int fromSlot)
     {
-        Set<ItemStack> stacks = getArtifacts().keySet();
-        ItemStack[] stackArray = stacks.toArray(new ItemStack[stacks.size()]);
-        ItemStack origStack = stackArray[random.nextInt(stackArray.length)];
-        ItemStack artifactStack = origStack.copy();
-
-        int enchantLevel = random.nextInt(20);
-
-        List enchantments = EnchantmentHelper.buildEnchantmentList(random, artifactStack, enchantLevel);
-
-        if (enchantments == null)
+        if (!MinecraftForge.EVENT_BUS.post(new ItemGenerationEvent.Artifact(inventory, random, stack, fromSlot)))
         {
-            enchantments = EnchantmentHelper.buildEnchantmentList(random, new ItemStack(Items.iron_axe), enchantLevel);
-        }
+            Set<ItemStack> stacks = getArtifacts().keySet();
+            ItemStack[] stackArray = stacks.toArray(new ItemStack[stacks.size()]);
+            ItemStack origStack = stackArray[random.nextInt(stackArray.length)];
+            ItemStack artifactStack = origStack.copy();
 
-        if (enchantments != null)
-        {
-            for (Object enchantment : enchantments)
+            int enchantLevel = random.nextInt(20);
+
+            List enchantments = EnchantmentHelper.buildEnchantmentList(random, artifactStack, enchantLevel);
+
+            if (enchantments == null)
             {
-                EnchantmentData enchantmentdata = (EnchantmentData) enchantment;
-                artifactStack.addEnchantment(enchantmentdata.enchantmentobj, enchantmentdata.enchantmentLevel);
+                enchantments = EnchantmentHelper.buildEnchantmentList(random, new ItemStack(Items.iron_axe), enchantLevel);
             }
+
+            if (enchantments != null)
+            {
+                for (Object enchantment : enchantments)
+                {
+                    EnchantmentData enchantmentdata = (EnchantmentData) enchantment;
+                    artifactStack.addEnchantment(enchantmentdata.enchantmentobj, enchantmentdata.enchantmentLevel);
+                }
+            }
+
+            List<String> possibleNames = getArtifacts().get(origStack);
+
+            Artifact artifact = Artifact.randomArtifact(random, possibleNames.get(random.nextInt(possibleNames.size())));
+            artifactStack.setStackDisplayName(artifact.getFullName());
+
+            inventory.setInventorySlotContents(fromSlot, artifactStack);
         }
-
-        List<String> possibleNames = getArtifacts().get(origStack);
-
-        Artifact artifact = Artifact.randomArtifact(random, possibleNames.get(random.nextInt(possibleNames.size())));
-        artifactStack.setStackDisplayName(artifact.getFullName());
-
-        inventory.setInventorySlotContents(fromSlot, artifactStack);
     }
 }

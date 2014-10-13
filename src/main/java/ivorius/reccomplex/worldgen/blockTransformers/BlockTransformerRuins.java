@@ -12,6 +12,9 @@ import ivorius.ivtoolkit.math.AxisAlignedTransform2D;
 import ivorius.ivtoolkit.tools.IvWorldData;
 import ivorius.reccomplex.random.BlurredValueField;
 import net.minecraft.block.Block;
+import net.minecraft.block.material.Material;
+import net.minecraft.inventory.IInventory;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.MathHelper;
 import net.minecraft.world.World;
 
@@ -56,35 +59,57 @@ public class BlockTransformerRuins implements BlockTransformer
             field.addValue(center + (random.nextFloat() - random.nextFloat()) * decayChaos * 2.0f, random);
 
         BlockArea topArea = new BlockArea(new BlockCoord(0, blockCollection.height, 0), new BlockCoord(blockCollection.width, blockCollection.height, blockCollection.length));
-        for (BlockCoord surfaceSourceCoord : topArea)
+
+        for (int pass = 1; pass >= 0; pass--)
         {
-            float decay = field.getValue(surfaceSourceCoord.x, surfaceSourceCoord.z);
-            int removedBlocks = MathHelper.floor_float(decay * blockCollection.height + 0.5f);
-
-            for (int ySource = 0; ySource < removedBlocks && ySource < size[1]; ySource++)
+            for (BlockCoord surfaceSourceCoord : topArea)
             {
-                BlockCoord sourceCoord = new BlockCoord(surfaceSourceCoord.x, blockCollection.height - 1 - ySource, surfaceSourceCoord.z);
+                float decay = field.getValue(surfaceSourceCoord.x, surfaceSourceCoord.z);
+                int removedBlocks = MathHelper.floor_float(decay * blockCollection.height + 0.5f);
 
-                Block block = blockCollection.getBlock(sourceCoord);
-                int meta = blockCollection.getMetadata(sourceCoord);
-
-                boolean skip = false;
-                for (BlockTransformer transformer : transformerList)
+                for (int ySource = 0; ySource < removedBlocks && ySource < size[1]; ySource++)
                 {
-                    if (transformer.skipGeneration(block, meta))
+                    BlockCoord sourceCoord = new BlockCoord(surfaceSourceCoord.x, blockCollection.height - 1 - ySource, surfaceSourceCoord.z);
+
+                    Block block = blockCollection.getBlock(sourceCoord);
+                    int meta = blockCollection.getMetadata(sourceCoord);
+
+                    if (getPass(block, meta) == pass)
                     {
-                        skip = true;
-                        break;
-                    }
-                }
+                        boolean skip = false;
+                        for (BlockTransformer transformer : transformerList)
+                        {
+                            if (transformer.skipGeneration(block, meta))
+                            {
+                                skip = true;
+                                break;
+                            }
+                        }
 
-                if (!skip)
-                {
-                    BlockCoord worldCoord = transform.apply(sourceCoord, size).add(origin);
-                    world.setBlockToAir(worldCoord.x, worldCoord.y, worldCoord.z);
+                        if (!skip)
+                            setBlockToAirClean(world, transform.apply(sourceCoord, size).add(origin));
+                    }
                 }
             }
         }
+    }
+
+    private static int getPass(Block block, int metadata)
+    {
+        return (block.isNormalCube() || block.getMaterial() == Material.air) ? 0 : 1;
+    }
+
+    public static void setBlockToAirClean(World world, BlockCoord blockCoord)
+    {
+        TileEntity tileEntity = world.getTileEntity(blockCoord.x, blockCoord.y, blockCoord.z);
+        if (tileEntity instanceof IInventory)
+        {
+            IInventory inventory = (IInventory) tileEntity;
+            for (int i = 0; i < inventory.getSizeInventory(); i++)
+                inventory.setInventorySlotContents(i, null);
+        }
+
+        world.setBlockToAir(blockCoord.x, blockCoord.y, blockCoord.z);
     }
 
     @Override

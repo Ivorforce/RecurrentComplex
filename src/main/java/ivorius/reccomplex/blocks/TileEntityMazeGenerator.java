@@ -10,7 +10,6 @@ import ivorius.ivtoolkit.math.AxisAlignedTransform2D;
 import ivorius.ivtoolkit.maze.*;
 import ivorius.ivtoolkit.maze.MazeComponent;
 import ivorius.ivtoolkit.tools.IvNBTHelper;
-import ivorius.reccomplex.utils.RCMazeGenerator;
 import ivorius.reccomplex.worldgen.StructureHandler;
 import ivorius.reccomplex.worldgen.genericStructures.*;
 import net.minecraft.nbt.NBTTagCompound;
@@ -161,10 +160,10 @@ public class TileEntityMazeGenerator extends TileEntity implements GeneratingTil
         for (MazeRoomArea area : blockedRoomAreas)
             blockedRooms.addAll(area.mazeRooms());
 
-        RCMazeGenerator.generateStartPathsForEnclosedMaze(maze, mazeExits, blockedRooms, transform);
+        MazeGenerator.generateStartPathsForEnclosedMaze(maze, mazeExits, blockedRooms, transform);
         for (int i = 0; i < roomNumbers[0] * roomNumbers[1] * roomNumbers[2] / (5 * 5 * 5) + 1; i++)
         {
-            MazePath randPath = RCMazeGenerator.randomEmptyPathInMaze(random, maze, pathDims);
+            MazePath randPath = MazeGenerator.randomEmptyPathInMaze(random, maze, pathDims);
             if (randPath != null)
                 maze.set(Maze.ROOM, randPath);
             else

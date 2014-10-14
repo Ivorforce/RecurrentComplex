@@ -5,21 +5,16 @@
 
 package ivorius.reccomplex.random;
 
+import ivorius.ivtoolkit.strings.LayeredStringGenerator;
+
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Random;
 
-import static ivorius.reccomplex.random.LayeredStringGenerator.*;
+import static ivorius.ivtoolkit.strings.LayeredStringGenerator.*;
 
 public class Person
 {
-    public static enum NameType
-    {
-        NORDIC,
-        CHAOTIC
-    }
-
     private static final LayeredStringGenerator chaoticNameGen;
 
     static
@@ -34,7 +29,7 @@ public class Person
         LayerSimple baseChaoticName = new LayerSimple('n', new LayerUppercase(chaoticWord));
         baseChaoticName.addStrings(4, "n");
         baseChaoticName.addStrings(1, "n-n");
-        
+
         chaoticNameGen = new LayeredStringGenerator(baseChaoticName);
     }
 
@@ -49,7 +44,6 @@ public class Person
             "Helena", "Vir", "Ronja", "Katrin", "Liv", "Maria", "Sara", "Jenna", "Laura", "Roosa", "Veera", "Emilia",
             "Julia", "Sara", "Jenni", "Noora", "Ane", "Johanne", "Dorthe", "Margrethe", "Sofie", "Else", "Amalie", "Gudrun",
             "Helga", "Birta", "Maria");
-
     private String firstName;
     private String middleName;
     private String lastName;
@@ -148,5 +142,11 @@ public class Person
         }
 
         return builder.toString().trim();
+    }
+
+    public static enum NameType
+    {
+        NORDIC,
+        CHAOTIC
     }
 }

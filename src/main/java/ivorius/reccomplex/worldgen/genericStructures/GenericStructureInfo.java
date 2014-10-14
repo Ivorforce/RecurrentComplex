@@ -287,7 +287,7 @@ public class GenericStructureInfo implements StructureInfo, Cloneable
     }
 
     @Override
-    public MazeComponent mazeComponent()
+    public SavedMazeComponent mazeComponent()
     {
         return mazeGenerationInfo != null ? mazeGenerationInfo.mazeComponent : null;
     }

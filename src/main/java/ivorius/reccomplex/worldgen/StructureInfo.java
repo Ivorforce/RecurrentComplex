@@ -8,7 +8,7 @@ package ivorius.reccomplex.worldgen;
 import ivorius.ivtoolkit.blocks.BlockCoord;
 import ivorius.ivtoolkit.math.AxisAlignedTransform2D;
 import ivorius.reccomplex.worldgen.genericStructures.GenericStructureInfo;
-import ivorius.reccomplex.worldgen.genericStructures.MazeComponent;
+import ivorius.reccomplex.worldgen.genericStructures.SavedMazeComponent;
 import net.minecraft.world.World;
 import net.minecraft.world.biome.BiomeGenBase;
 
@@ -41,5 +41,5 @@ public interface StructureInfo
 
     String mazeID();
 
-    MazeComponent mazeComponent();
+    SavedMazeComponent mazeComponent();
 }

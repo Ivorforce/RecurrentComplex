@@ -7,7 +7,7 @@ package ivorius.reccomplex.worldgen.genericStructures.gentypes;
 
 import com.google.gson.*;
 import ivorius.reccomplex.json.JsonUtils;
-import ivorius.reccomplex.worldgen.genericStructures.MazeComponent;
+import ivorius.reccomplex.worldgen.genericStructures.SavedMazeComponent;
 
 import java.lang.reflect.Type;
 
@@ -17,9 +17,9 @@ import java.lang.reflect.Type;
 public class MazeGenerationInfo
 {
     public String mazeID;
-    public MazeComponent mazeComponent;
+    public SavedMazeComponent mazeComponent;
 
-    public MazeGenerationInfo(String mazeID, MazeComponent mazeComponent)
+    public MazeGenerationInfo(String mazeID, SavedMazeComponent mazeComponent)
     {
         this.mazeID = mazeID;
         this.mazeComponent = mazeComponent;
@@ -33,7 +33,7 @@ public class MazeGenerationInfo
             JsonObject jsonObject = JsonUtils.getJsonElementAsJsonObject(json, "MazeGenerationInfo");
 
             String mazeID = JsonUtils.getJsonObjectStringFieldValue(jsonObject, "mazeID");
-            MazeComponent mazeComponent = context.deserialize(jsonObject.get("component"), MazeComponent.class);
+            SavedMazeComponent mazeComponent = context.deserialize(jsonObject.get("component"), SavedMazeComponent.class);
 
             return new MazeGenerationInfo(mazeID, mazeComponent);
         }

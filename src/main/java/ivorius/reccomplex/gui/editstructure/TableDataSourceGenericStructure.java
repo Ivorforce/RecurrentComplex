@@ -5,20 +5,17 @@
 
 package ivorius.reccomplex.gui.editstructure;
 
-import ivorius.ivtoolkit.gui.IntegerRange;
 import ivorius.ivtoolkit.maze.MazePath;
 import ivorius.ivtoolkit.maze.MazeRoom;
 import ivorius.reccomplex.gui.GuiValidityStateIndicator;
 import ivorius.reccomplex.gui.table.*;
 import ivorius.reccomplex.worldgen.StructureHandler;
-import ivorius.reccomplex.worldgen.StructureSelector;
 import ivorius.reccomplex.worldgen.genericStructures.GenerationYSelector;
 import ivorius.reccomplex.worldgen.genericStructures.GenericStructureInfo;
-import ivorius.reccomplex.worldgen.genericStructures.MazeComponent;
+import ivorius.reccomplex.worldgen.genericStructures.SavedMazeComponent;
 import ivorius.reccomplex.worldgen.genericStructures.gentypes.MazeGenerationInfo;
 import ivorius.reccomplex.worldgen.genericStructures.gentypes.NaturalGenerationInfo;
 import joptsimple.internal.Strings;
-import net.minecraft.client.resources.I18n;
 
 import java.util.*;
 
@@ -183,7 +180,7 @@ public class TableDataSourceGenericStructure implements TableDataSource, TableEl
                     tableDelegate.reloadData();
                     break;
                 case "enable":
-                    MazeComponent mazeComponent = new MazeComponent(100);
+                    SavedMazeComponent mazeComponent = new SavedMazeComponent(100);
                     mazeComponent.setRooms(Arrays.asList(new MazeRoom(0, 0, 0)));
                     mazeComponent.setExitPaths(Arrays.asList(new MazePath(new MazeRoom(0, 0, 0), 0, true), new MazePath(new MazeRoom(0, 0, 0), 0, false),
                             new MazePath(new MazeRoom(0, 0, 0), 2, true), new MazePath(new MazeRoom(0, 0, 0), 2, false)));

@@ -8,12 +8,9 @@ package ivorius.reccomplex.worldgen.genericStructures;
 import ivorius.ivtoolkit.blocks.BlockCoord;
 import ivorius.ivtoolkit.math.AxisAlignedTransform2D;
 import ivorius.ivtoolkit.maze.*;
-import ivorius.reccomplex.RecurrentComplex;
-import ivorius.reccomplex.worldgen.StructureHandler;
 import ivorius.reccomplex.worldgen.StructureInfo;
 import ivorius.reccomplex.worldgen.WorldGenStructures;
 import net.minecraft.world.World;
-import net.minecraft.world.gen.structure.StructureComponent;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -30,34 +27,22 @@ public class WorldGenMaze
 
         for (MazeComponentPosition position : placedComponents)
         {
-            String identifier = position.getComponent().getIdentifier();
-            int splitIndex0 = identifier.lastIndexOf("_");
-            boolean mirror = Boolean.valueOf(identifier.substring(splitIndex0 + 1));
-            int splitIndex1 = identifier.lastIndexOf("_", splitIndex0 - 1);
-            String structure = identifier.substring(0, splitIndex1);
-            int rotations = Integer.valueOf(identifier.substring(splitIndex1 + 1, splitIndex0));
+            MazeComponentInfo info = (MazeComponentInfo) position.getComponent().getIdentifier();
 
             MazeRoom mazePosition = position.getPositionInMaze();
 //            int[] size = maze.getRoomSize(mazePosition, pathLengths, roomSize);
             int[] scaledCompMazePosition = Maze.getRoomPosition(mazePosition, pathLengths, roomSize);
 
-            AxisAlignedTransform2D componentTransform = AxisAlignedTransform2D.transform(rotations, mirror);
-            StructureInfo compStructureInfo = StructureHandler.getStructure(structure);
+            AxisAlignedTransform2D componentTransform = info.transform;
+            StructureInfo compStructureInfo = info.structureInfo;
 
-            if (compStructureInfo != null)
-            {
-                int[] compStructureSize = WorldGenStructures.structureBoundingBox(compStructureInfo, componentTransform);
-                int[] compRoomSize = Maze.getRoomSize(position.getComponent().getSize(), pathLengths, roomSize);
-                int[] sizeDependentShift = new int[]{(compRoomSize[0] - compStructureSize[0]) / 2, (compRoomSize[1] - compStructureSize[1]) / 2, (compRoomSize[2] - compStructureSize[2]) / 2};
+            int[] compStructureSize = WorldGenStructures.structureBoundingBox(compStructureInfo, componentTransform);
+            int[] compRoomSize = Maze.getRoomSize(position.getComponent().getSize(), pathLengths, roomSize);
+            int[] sizeDependentShift = new int[]{(compRoomSize[0] - compStructureSize[0]) / 2, (compRoomSize[1] - compStructureSize[1]) / 2, (compRoomSize[2] - compStructureSize[2]) / 2};
 
-                BlockCoord compMazeCoordLower = coord.add(scaledCompMazePosition[0] + sizeDependentShift[0], scaledCompMazePosition[1] + sizeDependentShift[1], scaledCompMazePosition[2] + +sizeDependentShift[2]);
+            BlockCoord compMazeCoordLower = coord.add(scaledCompMazePosition[0] + sizeDependentShift[0], scaledCompMazePosition[1] + sizeDependentShift[1], scaledCompMazePosition[2] + +sizeDependentShift[2]);
 
-                WorldGenStructures.generateStructureWithNotifications(compStructureInfo, world, random, compMazeCoordLower, componentTransform, layer + 1);
-            }
-            else
-            {
-                RecurrentComplex.logger.error("Could not find maze component structure '" + structure + "'");
-            }
+            WorldGenStructures.generateStructureWithNotifications(compStructureInfo, world, random, compMazeCoordLower, componentTransform, layer + 1);
         }
 
 //        for (int i = 0; i < maze.blocks.length; i++)
@@ -100,13 +85,12 @@ public class WorldGenMaze
         return true;
     }
 
-    public static List<ivorius.ivtoolkit.maze.MazeComponent> transformedComponents(List<StructureInfo> componentStructures)
+    public static List<MazeComponent> transformedComponents(List<StructureInfo> componentStructures)
     {
-        List<ivorius.ivtoolkit.maze.MazeComponent> transformedComponents = new ArrayList<>();
+        List<MazeComponent> transformedComponents = new ArrayList<>();
         for (StructureInfo info : componentStructures)
         {
-            MazeComponent comp = info.mazeComponent();
-            String id = StructureHandler.getName(info);
+            SavedMazeComponent comp = info.mazeComponent();
 
             int[] compSize = comp.getSize();
             int roomVariations = (info.isRotatable() ? 4 : 1) * (info.isMirrorable() ? 2 : 1);
@@ -121,18 +105,18 @@ public class WorldGenMaze
             {
                 for (int mirrorInd = 0; mirrorInd < (info.isMirrorable() ? 2 : 1); mirrorInd++)
                 {
-                    String newID = id + "_" + rotations + "_" + (mirrorInd == 1);
                     AxisAlignedTransform2D componentTransform = AxisAlignedTransform2D.transform(rotations, mirrorInd == 1);
 
                     List<MazeRoom> transformedRooms = new ArrayList<>();
                     for (MazeRoom room : comp.getRooms())
-                        transformedRooms.add(rotatedRoom(room, componentTransform, compSize));
+                        transformedRooms.add(MazeGenerator.rotatedRoom(room, componentTransform, compSize));
 
                     List<MazePath> transformedExits = new ArrayList<>();
                     for (MazePath exit : comp.getExitPaths())
-                        transformedExits.add(rotatedPath(exit, componentTransform, compSize));
+                        transformedExits.add(MazeGenerator.rotatedPath(exit, componentTransform, compSize));
 
-                    transformedComponents.add(new ivorius.ivtoolkit.maze.MazeComponent(splitCompWeight, newID, transformedRooms, transformedExits));
+                    MazeComponentInfo compInfo = new MazeComponentInfo(info, componentTransform);
+                    transformedComponents.add(new MazeComponent(splitCompWeight, compInfo, transformedRooms, transformedExits));
                 }
             }
         }
@@ -140,20 +124,15 @@ public class WorldGenMaze
         return transformedComponents;
     }
 
-    public static MazeRoom rotatedRoom(MazeRoom room, AxisAlignedTransform2D transform, int[] size)
+    public static class MazeComponentInfo
     {
-        int[] roomPosition = room.coordinates;
-        BlockCoord transformedRoom = transform.apply(new BlockCoord(roomPosition[0], roomPosition[1], roomPosition[2]), size);
-        return new MazeRoom(transformedRoom.x, transformedRoom.y, transformedRoom.z);
-    }
+        public StructureInfo structureInfo;
+        public AxisAlignedTransform2D transform;
 
-    public static MazePath rotatedPath(MazePath path, AxisAlignedTransform2D transform, int[] size)
-    {
-        int[] sourceCoords = path.getSourceRoom().coordinates;
-        int[] destCoords = path.getDestinationRoom().coordinates;
-        BlockCoord transformedSource = transform.apply(new BlockCoord(sourceCoords[0], sourceCoords[1], sourceCoords[2]), size);
-        BlockCoord transformedDest = transform.apply(new BlockCoord(destCoords[0], destCoords[1], destCoords[2]), size);
-
-        return MazePath.pathFromSourceAndDest(new MazeRoom(transformedSource.x, transformedSource.y, transformedSource.z), new MazeRoom(transformedDest.x, transformedDest.y, transformedDest.z));
+        public MazeComponentInfo(StructureInfo structureInfo, AxisAlignedTransform2D transform)
+        {
+            this.structureInfo = structureInfo;
+            this.transform = transform;
+        }
     }
 }

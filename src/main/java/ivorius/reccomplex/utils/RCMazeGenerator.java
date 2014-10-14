@@ -7,6 +7,7 @@ package ivorius.reccomplex.utils;
 
 import ivorius.ivtoolkit.math.AxisAlignedTransform2D;
 import ivorius.ivtoolkit.maze.Maze;
+import ivorius.ivtoolkit.maze.MazeGenerator;
 import ivorius.ivtoolkit.maze.MazePath;
 import ivorius.ivtoolkit.maze.MazeRoom;
 import ivorius.reccomplex.worldgen.genericStructures.WorldGenMaze;
@@ -32,7 +33,7 @@ public class RCMazeGenerator
 
         for (MazeRoom blockedRoom : blockedRooms)
         {
-            blockedRoom = WorldGenMaze.rotatedRoom(blockedRoom, transform, mazeSizeInRooms);
+            blockedRoom = MazeGenerator.rotatedRoom(blockedRoom, transform, mazeSizeInRooms);
 
             maze.set(Maze.WALL, blockedRoom);
             for (int dim = 0; dim < maze.dimensions.length; dim++)
@@ -43,7 +44,7 @@ public class RCMazeGenerator
         }
 
         for (MazePath startPoint : startPoints)
-            maze.set(Maze.ROOM, WorldGenMaze.rotatedPath(startPoint, transform, mazeSizeInRooms));
+            maze.set(Maze.ROOM, MazeGenerator.rotatedPath(startPoint, transform, mazeSizeInRooms));
     }
 
     public static MazePath randomEmptyPathInMaze(Random rand, Maze maze, Collection<Integer> applicableDimensions)

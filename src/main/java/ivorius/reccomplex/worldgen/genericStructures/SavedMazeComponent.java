@@ -24,17 +24,17 @@ import java.util.List;
 /**
  * Created by lukas on 07.10.14.
  */
-public class MazeComponent extends WeightedRandom.Item
+public class SavedMazeComponent extends WeightedRandom.Item
 {
     private final List<MazeRoom> rooms = new ArrayList<>();
     private final List<MazePath> exitPaths = new ArrayList<>();
 
-    public MazeComponent(int weight)
+    public SavedMazeComponent(int weight)
     {
         super(weight);
     }
 
-    public MazeComponent(NBTTagCompound compound)
+    public SavedMazeComponent(NBTTagCompound compound)
     {
         super(compound.getInteger("weight"));
 
@@ -114,14 +114,14 @@ public class MazeComponent extends WeightedRandom.Item
         compound.setTag("exits", exitsList);
     }
 
-    public static class Serializer implements JsonSerializer<MazeComponent>, JsonDeserializer<MazeComponent>
+    public static class Serializer implements JsonSerializer<SavedMazeComponent>, JsonDeserializer<SavedMazeComponent>
     {
         @Override
-        public MazeComponent deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException
+        public SavedMazeComponent deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException
         {
             JsonObject jsonObject = JsonUtils.getJsonElementAsJsonObject(json, "MazeComponent");
 
-            MazeComponent mazeComponent = new MazeComponent(JsonUtils.getJsonObjectIntegerFieldValue(jsonObject, "weight"));
+            SavedMazeComponent mazeComponent = new SavedMazeComponent(JsonUtils.getJsonObjectIntegerFieldValue(jsonObject, "weight"));
 
             MazeRoom[] rooms = context.deserialize(jsonObject.get("rooms"), MazeRoom[].class);
             mazeComponent.setRooms(Arrays.asList(rooms));
@@ -133,7 +133,7 @@ public class MazeComponent extends WeightedRandom.Item
         }
 
         @Override
-        public JsonElement serialize(MazeComponent src, Type typeOfSrc, JsonSerializationContext context)
+        public JsonElement serialize(SavedMazeComponent src, Type typeOfSrc, JsonSerializationContext context)
         {
             JsonObject jsonObject = new JsonObject();
 

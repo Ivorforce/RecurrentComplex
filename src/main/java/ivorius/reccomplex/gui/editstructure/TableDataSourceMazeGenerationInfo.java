@@ -12,8 +12,7 @@ import ivorius.reccomplex.gui.editmazeblock.TableDataSourceMazePath;
 import ivorius.reccomplex.gui.editmazeblock.TableDataSourceMazeRoom;
 import ivorius.reccomplex.gui.table.*;
 import ivorius.reccomplex.worldgen.genericStructures.GenericStructureInfo;
-import ivorius.reccomplex.worldgen.genericStructures.MazeComponent;
-import ivorius.reccomplex.worldgen.genericStructures.gentypes.MazeGenerationInfo;
+import ivorius.reccomplex.worldgen.genericStructures.SavedMazeComponent;
 
 import java.util.Arrays;
 
@@ -189,7 +188,7 @@ public class TableDataSourceMazeGenerationInfo extends TableDataSourceSegmented 
         }
     }
 
-    private MazeComponent mazeComponent()
+    private SavedMazeComponent mazeComponent()
     {
         return structureInfo.mazeGenerationInfo.mazeComponent;
     }

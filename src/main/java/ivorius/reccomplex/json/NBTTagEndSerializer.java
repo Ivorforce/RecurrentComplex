@@ -8,6 +8,8 @@ package ivorius.reccomplex.json;
 import com.google.gson.*;
 import net.minecraft.nbt.NBTTagEnd;
 
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Type;
 
 /**
@@ -15,6 +17,26 @@ import java.lang.reflect.Type;
  */
 public class NBTTagEndSerializer implements JsonSerializer<NBTTagEnd>, JsonDeserializer<NBTTagEnd>
 {
+    private static Constructor<NBTTagEnd> nbtTagEndConstructor;
+
+    public static Constructor<NBTTagEnd> getNbtTagEndConstructor()
+    {
+        if (nbtTagEndConstructor == null)
+        {
+            try
+            {
+                nbtTagEndConstructor = NBTTagEnd.class.getDeclaredConstructor();
+            }
+            catch (NoSuchMethodException e)
+            {
+                e.printStackTrace();
+            }
+
+            nbtTagEndConstructor.setAccessible(true);
+        }
+        return nbtTagEndConstructor;
+    }
+
     @Override
     public JsonElement serialize(NBTTagEnd src, Type typeOfSrc, JsonSerializationContext context)
     {
@@ -24,6 +46,13 @@ public class NBTTagEndSerializer implements JsonSerializer<NBTTagEnd>, JsonDeser
     @Override
     public NBTTagEnd deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException
     {
-        return new NBTTagEnd();
+        try
+        {
+            return getNbtTagEndConstructor().newInstance();
+        }
+        catch (InstantiationException | IllegalAccessException | InvocationTargetException e)
+        {
+            throw new RuntimeException(e);
+        }
     }
 }

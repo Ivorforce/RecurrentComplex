@@ -1,7 +1,9 @@
 StructureGen
 ============
 
-Structure mod for Minecraft
+[![Build Status](https://drone.io/github.com/Ivorforce/RecurrentComplex/status.png)](https://drone.io/github.com/Ivorforce/RecurrentComplex/latest)
+
+Structure mod for Minecraft.
 
 Visit the [Wiki](https://github.com/Ivorforce/RecurrentComplex/wiki) for information about the mod.
 

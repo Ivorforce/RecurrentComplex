@@ -18,6 +18,11 @@ buildscript {
 apply plugin: 'forge'
 
 version = "0.9.3"
+def ENV = System.getenv()
+if (ENV.DRONE_BUILD_NUMBER) {
+    version += ".n" + ENV.DRONE_BUILD_NUMBER
+}
+
 group= "ivorius.reccomplex" // http://maven.apache.org/guides/mini/guide-naming-conventions.html
 archivesBaseName = "RecurrentComplex"
 
@@ -120,14 +125,14 @@ artifacts {
 uploadArchives() {
     dependsOn reobf
 
-    if (project.mavenUrl != null) {
+    if (project.hasProperty("mavenUrl") && project.hasProperty("mavenUser") && project.hasProperty("mavenPassword")) {
         repositories {
             logger.info('Publishing to files server')
 
             mavenDeployer {
 
-                repository(url: project.mavenUrl) {
-                    authentication(userName: project.mavenUser, password: project.mavenPassword)
+                repository(url: project."mavenUrl") {
+                    authentication(userName: project."mavenUser", password: project."mavenPassword")
                 }
 
                 addFilter('deobf') {artifact, file ->
@@ -177,6 +182,6 @@ uploadArchives() {
         }
     }
     else {
-        logger.log(LogLevel.ERROR, 'No upload url (project.mavenUrl) defined!');
+        logger.log(LogLevel.ERROR, 'No upload variables defined!');
     }
 }

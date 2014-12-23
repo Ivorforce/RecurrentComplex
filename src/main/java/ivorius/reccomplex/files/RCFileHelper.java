@@ -5,12 +5,15 @@
 
 package ivorius.reccomplex.files;
 
+import ivorius.reccomplex.RecurrentComplex;
 import net.minecraft.util.ResourceLocation;
 
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.net.URLEncoder;
 import java.nio.file.*;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.util.ArrayList;
@@ -23,6 +26,20 @@ import java.util.Objects;
  */
 public class RCFileHelper
 {
+    public static String encodePath(String path)
+    {
+        try
+        {
+            return URLEncoder.encode(path, "UTF-8");
+        }
+        catch (UnsupportedEncodingException e)
+        {
+            RecurrentComplex.logger.warn("Could not encode path", e);
+        }
+
+        return path;
+    }
+
     static Path resourceToPath(URL resource) throws IOException, URISyntaxException
     {
         Objects.requireNonNull(resource, "Resource URL cannot be null");
@@ -39,7 +56,7 @@ public class RCFileHelper
             throw new IllegalArgumentException("Cannot convert to Path: " + uri);
         }
 
-        String s = uri.toString();
+        String s = encodePath(uri.toString());
         int separator = s.indexOf("!/");
         String entryName = s.substring(separator + 2);
         URI fileURI = URI.create(s.substring(0, separator));
@@ -58,7 +75,7 @@ public class RCFileHelper
 
     public static Path pathFromResourceLocation(ResourceLocation resourceLocation) throws URISyntaxException, IOException
     {
-        URL resource = RCFileHelper.class.getResource("/assets/" + resourceLocation.getResourceDomain() + "/" + resourceLocation.getResourcePath());
+        URL resource = RCFileHelper.class.getResource(String.format("/assets/%s/%s", resourceLocation.getResourceDomain(), resourceLocation.getResourcePath()));
         return resource != null ? resourceToPath(resource.toURI().toURL()) : null;
     }
 

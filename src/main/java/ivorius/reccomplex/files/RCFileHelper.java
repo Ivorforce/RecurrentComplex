@@ -28,16 +28,17 @@ public class RCFileHelper
 {
     public static String encodePath(String path)
     {
-        try
-        {
-            return URLEncoder.encode(path, "UTF-8");
-        }
-        catch (UnsupportedEncodingException e)
-        {
-            RecurrentComplex.logger.warn("Could not encode path", e);
-        }
-
-        return path;
+        return path.replaceAll(" ", "%20");
+//        try
+//        {
+//            return URLEncoder.encode(path, "UTF-8");
+//        }
+//        catch (UnsupportedEncodingException e)
+//        {
+//            RecurrentComplex.logger.warn("Could not encode path", e);
+//        }
+//
+//        return path;
     }
 
     static Path resourceToPath(URL resource) throws IOException, URISyntaxException

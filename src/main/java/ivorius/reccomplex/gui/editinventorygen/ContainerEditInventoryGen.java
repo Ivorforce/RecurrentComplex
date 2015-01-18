@@ -8,7 +8,8 @@ package ivorius.reccomplex.gui.editinventorygen;
 import io.netty.buffer.ByteBuf;
 import ivorius.ivtoolkit.network.PacketGuiAction;
 import ivorius.reccomplex.gui.SlotDynamicIndex;
-import ivorius.reccomplex.worldgen.inventory.GenericInventoryGenerator;
+import ivorius.reccomplex.worldgen.inventory.GenericItemCollection;
+import ivorius.reccomplex.worldgen.inventory.GenericItemCollection.Component;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.Container;
@@ -28,13 +29,13 @@ public class ContainerEditInventoryGen extends Container implements PacketGuiAct
     public static final int SEGMENT_WIDTH = 288;
 
     public InventoryGenericInvGen_Single inventory;
-    private GenericInventoryGenerator inventoryGenerator;
+    private Component inventoryGenerator;
 
     private List<SlotDynamicIndex> scrollableSlots = new ArrayList<>();
 
-    public ContainerEditInventoryGen(EntityPlayer player, GenericInventoryGenerator inventoryGenerator)
+    public ContainerEditInventoryGen(EntityPlayer player, Component inventoryGenerator)
     {
-        inventory = new InventoryGenericInvGen_Single(inventoryGenerator.weightedRandomChestContents);
+        inventory = new InventoryGenericInvGen_Single(inventoryGenerator.items);
 
         this.inventoryGenerator = inventoryGenerator;
 

@@ -35,7 +35,7 @@ import ivorius.reccomplex.worldgen.StructureHandler;
 import ivorius.reccomplex.worldgen.StructureSaveHandler;
 import ivorius.reccomplex.worldgen.StructureSelector;
 import ivorius.reccomplex.worldgen.blockTransformers.*;
-import ivorius.reccomplex.worldgen.inventory.InventoryGeneratorSaveHandler;
+import ivorius.reccomplex.worldgen.inventory.CustomGenericItemCollectionHandler;
 import ivorius.reccomplex.worldgen.inventory.RCInventoryGenerators;
 import net.minecraft.block.material.Material;
 import net.minecraft.creativetab.CreativeTabs;
@@ -132,13 +132,17 @@ public class RecurrentComplex
         RCItems.blockSelectorFloating.setCreativeTab(tabStructureTools);
         GameRegistry.registerItem(RCItems.blockSelectorFloating, "blockSelectorFloating", MODID);
 
-        RCItems.inventoryGenerationTag = new ItemInventoryGenerationMultiTag().setUnlocalizedName("inventoryGenerationTag").setTextureName(textureBase + "inventoryGenerationTag");
+        RCItems.inventoryGenerationTag = (ItemInventoryGenMultiTag) new ItemInventoryGenMultiTag().setUnlocalizedName("inventoryGenerationTag").setTextureName(textureBase + "inventoryGenerationTag");
         RCItems.inventoryGenerationTag.setCreativeTab(tabInventoryGenerators);
         GameRegistry.registerItem(RCItems.inventoryGenerationTag, "inventoryGenerationTag", MODID);
 
-        RCItems.inventoryGenerationSingleTag = new ItemInventoryGenerationSingleTag().setUnlocalizedName("inventoryGenerationSingleTag").setTextureName(textureBase + "inventoryGenerationSingleTag");
+        RCItems.inventoryGenerationSingleTag = (ItemInventoryGenSingleTag) new ItemInventoryGenSingleTag().setUnlocalizedName("inventoryGenerationSingleTag").setTextureName(textureBase + "inventoryGenerationSingleTag");
         RCItems.inventoryGenerationSingleTag.setCreativeTab(tabInventoryGenerators);
         GameRegistry.registerItem(RCItems.inventoryGenerationSingleTag, "inventoryGenerationSingleTag", MODID);
+
+        RCItems.inventoryGenerationComponentTag = (ItemInventoryGenComponentTag) new ItemInventoryGenComponentTag().setUnlocalizedName("inventoryGenerationComponentTag").setTextureName(textureBase + "inventoryGenerationComponentTag");
+        RCItems.inventoryGenerationComponentTag.setCreativeTab(tabInventoryGenerators);
+        GameRegistry.registerItem(RCItems.inventoryGenerationComponentTag, "inventory_generation_component_tag", MODID);
 
         RCItems.artifactGenerationTag = new ItemArtifactGenerator().setUnlocalizedName("artifactGenerationTag").setTextureName(textureBase + "artifactGenerationTag");
         RCItems.artifactGenerationTag.setCreativeTab(tabInventoryGenerators);
@@ -181,6 +185,7 @@ public class RecurrentComplex
         network.registerMessage(PacketEditStructureHandler.class, PacketEditStructure.class, 7, Side.SERVER);
         network.registerMessage(PacketEditStructureBlockHandler.class, PacketEditStructureBlock.class, 8, Side.CLIENT);
         network.registerMessage(PacketEditStructureBlockHandler.class, PacketEditStructureBlock.class, 9, Side.SERVER);
+        network.registerMessage(PacketEditInvGenMultiTagHandler.class, PacketEditInvGenMultiTag.class, 9, Side.SERVER);
 
         StructureHandler.registerBlockTransformer("natural", BlockTransformerNatural.class, new BTProviderNatural());
         StructureHandler.registerBlockTransformer("naturalAir", BlockTransformerNaturalAir.class, new BTProviderNaturalAir());
@@ -208,7 +213,7 @@ public class RecurrentComplex
     {
         loadAllModData();
 
-        InventoryGeneratorSaveHandler.reloadAllCustomInventoryGenerators();
+        CustomGenericItemCollectionHandler.reloadAllCustomInventoryGenerators();
         StructureSaveHandler.reloadAllCustomStructures();
     }
 
@@ -238,7 +243,7 @@ public class RecurrentComplex
     {
         for (String modid : Loader.instance().getIndexedModList().keySet())
         {
-            InventoryGeneratorSaveHandler.loadInventoryGeneratorsFromMod(modid);
+            CustomGenericItemCollectionHandler.loadInventoryGeneratorsFromMod(modid);
             StructureSaveHandler.loadStructuresFromMod(modid);
         }
     }

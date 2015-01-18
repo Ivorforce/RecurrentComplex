@@ -6,7 +6,7 @@
 package ivorius.reccomplex.commands;
 
 import ivorius.reccomplex.worldgen.StructureSaveHandler;
-import ivorius.reccomplex.worldgen.inventory.InventoryGeneratorSaveHandler;
+import ivorius.reccomplex.worldgen.inventory.CustomGenericItemCollectionHandler;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.util.ChatComponentTranslation;
@@ -32,7 +32,7 @@ public class CommandStructuresReload extends CommandBase
     public void processCommand(ICommandSender commandSender, String[] args)
     {
         StructureSaveHandler.reloadAllCustomStructures();
-        InventoryGeneratorSaveHandler.reloadAllCustomInventoryGenerators();
+        CustomGenericItemCollectionHandler.reloadAllCustomInventoryGenerators();
         commandSender.addChatMessage(new ChatComponentTranslation("commands.strucReload.success"));
     }
 }

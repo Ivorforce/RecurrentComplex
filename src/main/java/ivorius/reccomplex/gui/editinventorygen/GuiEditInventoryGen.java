@@ -12,7 +12,7 @@ import ivorius.reccomplex.gui.GuiValidityStateIndicator;
 import ivorius.reccomplex.gui.InventoryWatcher;
 import ivorius.reccomplex.network.PacketEditInventoryGenerator;
 import ivorius.reccomplex.utils.RangeHelper;
-import ivorius.reccomplex.worldgen.inventory.GenericInventoryGenerator;
+import ivorius.reccomplex.worldgen.inventory.GenericItemCollection.Component;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiTextField;
@@ -39,16 +39,16 @@ public class GuiEditInventoryGen extends GuiContainer implements InventoryWatche
     public static ResourceLocation textureBackground = new ResourceLocation(RecurrentComplex.MODID, RecurrentComplex.filePathTextures + "guiEditInventoryGen.png");
 
     public String key;
-    private GenericInventoryGenerator inventoryGenerator;
+    private Component inventoryGenerator;
 
     private GuiTextField nameTextField;
+    private GuiTextField inventoryGenIDTextField;
     private GuiButton saveBtn;
     private GuiButton cancelBtn;
 
     private GuiButton nextPageBtn;
     private GuiButton prevPageBtn;
 
-    private GuiSliderRange itemNumberRangeSlider;
     private GuiTextField dependencyTextField;
     private GuiValidityStateIndicator dependencyStateIndicator;
 
@@ -57,7 +57,7 @@ public class GuiEditInventoryGen extends GuiContainer implements InventoryWatche
 
     private int currentColShift;
 
-    public GuiEditInventoryGen(EntityPlayer player, GenericInventoryGenerator generator, String key)
+    public GuiEditInventoryGen(EntityPlayer player, Component generator, String key)
     {
         super(new ContainerEditInventoryGen(player, generator));
 
@@ -83,22 +83,21 @@ public class GuiEditInventoryGen extends GuiContainer implements InventoryWatche
         int shiftRightPage = shiftRight + ContainerEditInventoryGen.ITEM_COLUMNS * ContainerEditInventoryGen.SEGMENT_WIDTH;
 
         this.nameTextField = new GuiTextField(this.fontRendererObj, this.width / 2 - 150, this.height / 2 - 110, 142, 20);
+        this.nameTextField.setMaxStringLength(32767);
+        this.nameTextField.setFocused(true);
+        this.nameTextField.setText(key);
         this.buttonList.add(this.saveBtn = new GuiButton(0, this.width / 2, this.height / 2 - 110, 70, 20, I18n.format("guiGenericInventory.save")));
         this.buttonList.add(this.cancelBtn = new GuiButton(1, this.width / 2 + 75, this.height / 2 - 110, 70, 20, I18n.format("gui.cancel")));
 
-        this.buttonList.add(this.itemNumberRangeSlider = new GuiSliderRange(4, this.width / 2 - 150, this.height / 2 - 85, 142, 20, ""));
-        this.itemNumberRangeSlider.setMinValue(0);
-        this.itemNumberRangeSlider.setMaxValue(60);
-        this.itemNumberRangeSlider.addListener(this);
+        inventoryGenIDTextField = new GuiTextField(this.fontRendererObj, this.width / 2 - 150, this.height / 2 - 85, 142, 20);
+        inventoryGenIDTextField.setMaxStringLength(32767);
+        inventoryGenIDTextField.setText(inventoryGenerator.inventoryGeneratorID);
 
         dependencyTextField = new GuiTextField(fontRendererObj, this.width / 2, this.height / 2 - 85, 130, 20);
         dependencyStateIndicator = new GuiValidityStateIndicator(this.width / 2 + 135, this.height / 2 - 80, inventoryGenerator.areDependenciesResolved() ? GuiValidityStateIndicator.State.VALID : GuiValidityStateIndicator.State.SEMI_VALID);
 
         this.buttonList.add(this.nextPageBtn = new GuiButton(2, shiftRightPage, this.height / 2 - 50, 20, 20, ">"));
         this.buttonList.add(this.prevPageBtn = new GuiButton(3, shiftRightPage, this.height / 2 - 20, 20, 20, "<"));
-        this.nameTextField.setMaxStringLength(32767);
-        this.nameTextField.setFocused(true);
-        this.nameTextField.setText(key);
 
         for (int col = 0; col < ContainerEditInventoryGen.ITEM_COLUMNS; ++col)
         {
@@ -123,10 +122,9 @@ public class GuiEditInventoryGen extends GuiContainer implements InventoryWatche
             }
         }
 
-        this.saveBtn.enabled = this.nameTextField.getText().trim().length() > 0;
+        updateSaveButtonEnabled();
 
         this.scrollTo(currentColShift);
-        updateGenAmountSliders();
     }
 
     public void scrollTo(int colShift)
@@ -140,7 +138,7 @@ public class GuiEditInventoryGen extends GuiContainer implements InventoryWatche
 
     private void updateAllItemSliders()
     {
-        List<WeightedRandomChestContent> chestContents = inventoryGenerator.weightedRandomChestContents;
+        List<WeightedRandomChestContent> chestContents = inventoryGenerator.items;
 
         for (int i = 0; i < weightSliders.size(); i++)
         {
@@ -176,15 +174,9 @@ public class GuiEditInventoryGen extends GuiContainer implements InventoryWatche
         }
     }
 
-    private void updateGenAmountSliders()
-    {
-        itemNumberRangeSlider.setRange(new FloatRange(inventoryGenerator.minItems, inventoryGenerator.maxItems));
-        itemNumberRangeSlider.displayString = I18n.format("guiGenericInventory.minMaxItems", inventoryGenerator.minItems, inventoryGenerator.maxItems);
-    }
-
     private void updatePageButtons()
     {
-        List<WeightedRandomChestContent> chestContents = inventoryGenerator.weightedRandomChestContents;
+        List<WeightedRandomChestContent> chestContents = inventoryGenerator.items;
         int neededCols = chestContents.size() / ContainerEditInventoryGen.ITEM_ROWS + 1;
         nextPageBtn.enabled = (currentColShift + ContainerEditInventoryGen.ITEM_COLUMNS) < neededCols;
         prevPageBtn.enabled = currentColShift > 0;
@@ -196,6 +188,7 @@ public class GuiEditInventoryGen extends GuiContainer implements InventoryWatche
         super.updateScreen();
 
         nameTextField.updateCursorCounter();
+        inventoryGenIDTextField.updateCursorCounter();
         dependencyTextField.updateCursorCounter();
     }
 
@@ -239,6 +232,10 @@ public class GuiEditInventoryGen extends GuiContainer implements InventoryWatche
         {
             key = nameTextField.getText();
         }
+        else if (inventoryGenIDTextField.textboxKeyTyped(par1, par2))
+        {
+            inventoryGenerator.inventoryGeneratorID = inventoryGenIDTextField.getText();
+        }
         else if (dependencyTextField.textboxKeyTyped(par1, par2))
         {
             inventoryGenerator.dependencies.clear();
@@ -261,7 +258,7 @@ public class GuiEditInventoryGen extends GuiContainer implements InventoryWatche
             }
         }
 
-        this.saveBtn.enabled = key.trim().length() > 0;
+        updateSaveButtonEnabled();
 
 //        if (par2 != 28 && par2 != 156)
 //        {
@@ -282,6 +279,7 @@ public class GuiEditInventoryGen extends GuiContainer implements InventoryWatche
         super.mouseClicked(par1, par2, par3);
 
         this.nameTextField.mouseClicked(par1, par2, par3);
+        this.inventoryGenIDTextField.mouseClicked(par1, par2, par3);
         dependencyTextField.mouseClicked(par1, par2, par3);
     }
 
@@ -296,12 +294,14 @@ public class GuiEditInventoryGen extends GuiContainer implements InventoryWatche
     @Override
     protected void drawGuiContainerBackgroundLayer(float var1, int var2, int var3)
     {
-        this.nameTextField.drawTextBox();
+        nameTextField.drawTextBox();
+        drawPlaceholderString(nameTextField, "Component ID");
+
+        inventoryGenIDTextField.drawTextBox();
+        drawPlaceholderString(inventoryGenIDTextField, "Group ID");
+
         dependencyTextField.drawTextBox();
-        if (StringUtils.isNullOrEmpty(dependencyTextField.getText()))
-        {
-            drawString(fontRendererObj, "Dependencies (A,B,C...)", this.width / 2 + 5, this.height / 2 - 85 + 7, 0xff888888);
-        }
+        drawPlaceholderString(dependencyTextField, "Dependencies (A,B,C...)");
         dependencyStateIndicator.draw();
 
         mc.getTextureManager().bindTexture(textureBackground);
@@ -321,6 +321,12 @@ public class GuiEditInventoryGen extends GuiContainer implements InventoryWatche
 //        }
     }
 
+    private void drawPlaceholderString(GuiTextField textField, String string)
+    {
+        if (StringUtils.isNullOrEmpty(textField.getText()))
+            drawString(fontRendererObj, string, textField.xPosition + 5, textField.yPosition + 7, 0xff888888);
+    }
+
     @Override
     public void inventoryChanged(IInventory inventory)
     {
@@ -331,7 +337,7 @@ public class GuiEditInventoryGen extends GuiContainer implements InventoryWatche
     @Override
     public void valueChanged(Gui gui)
     {
-        List<WeightedRandomChestContent> chestContents = inventoryGenerator.weightedRandomChestContents;
+        List<WeightedRandomChestContent> chestContents = inventoryGenerator.items;
 
         if (gui instanceof GuiSlider)
         {
@@ -353,15 +359,7 @@ public class GuiEditInventoryGen extends GuiContainer implements InventoryWatche
         {
             GuiSliderRange slider = (GuiSliderRange) gui;
 
-            if (slider.id == 4)
-            {
-                IntegerRange intRange = RangeHelper.roundedIntRange(slider.getRange());
-                inventoryGenerator.minItems = intRange.getMin();
-                inventoryGenerator.maxItems = intRange.getMax();
-
-                updateGenAmountSliders();
-            }
-            else if (slider.id < 300)
+            if (slider.id < 300)
             {
                 int stackIndex = slider.id - 200;
 
@@ -393,5 +391,10 @@ public class GuiEditInventoryGen extends GuiContainer implements InventoryWatche
                 button.mouseReleased(p_146286_1_, p_146286_2_);
             }
         }
+    }
+
+    public void updateSaveButtonEnabled()
+    {
+        saveBtn.enabled = key.trim().length() > 0 && inventoryGenerator.inventoryGeneratorID.trim().length() > 0;
     }
 }

@@ -2,6 +2,7 @@ item.blockSelector.name=Block Selector
 item.blockSelectorFloating.name=Floating Block Selector
 item.inventoryGenerationTag.name=Inventory Generation Tag
 item.inventoryGenerationSingleTag.name=Single Item Generation Tag
+item.inventoryGenerationComponentTag.name=Item Generation Component Tag
 item.artifactGenerationTag.name=Artifact Generation Tag
 item.bookGenerationTag.name=Book Generation Tag
 
@@ -81,6 +82,7 @@ commands.biomedict.notype=No Biome Type with the ID '%s'
 inventoryGen.vanilla=Vanilla Generator
 inventoryGen.custom=Custom Generator
 inventoryGen.create=Create New Generator
+inventoryGen.none=No Generator
 inventoryGen.mod=Mod Generator
 
 guiGenericInventory.save=Save

@@ -11,8 +11,9 @@ import cpw.mods.fml.common.network.simpleimpl.MessageContext;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import ivorius.reccomplex.gui.editinventorygen.GuiEditInventoryGen;
+import ivorius.reccomplex.items.ItemInventoryGenComponentTag;
 import ivorius.reccomplex.items.ItemInventoryGenerationTag;
-import ivorius.reccomplex.worldgen.inventory.InventoryGeneratorSaveHandler;
+import ivorius.reccomplex.worldgen.inventory.CustomGenericItemCollectionHandler;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemStack;
@@ -36,17 +37,16 @@ public class PacketEditInventoryGeneratorHandler implements IMessageHandler<Pack
             NetHandlerPlayServer playServer = ctx.getServerHandler();
             EntityPlayerMP player = playServer.playerEntity;
 
-            if (InventoryGeneratorSaveHandler.saveInventoryGenerator(message.getInventoryGenerator(), message.getKey()))
+            if (CustomGenericItemCollectionHandler.saveInventoryGenerator(message.getInventoryGenerator(), message.getKey()))
             {
                 player.addChatMessage(new ChatComponentTranslation("inventorygen.save.success", message.getKey()));
 
-                InventoryGeneratorSaveHandler.reloadAllCustomInventoryGenerators();
+                CustomGenericItemCollectionHandler.reloadAllCustomInventoryGenerators();
 
                 ItemStack heldItem = playServer.playerEntity.getHeldItem();
-                if (heldItem != null && heldItem.getItem() instanceof ItemInventoryGenerationTag)
-                {
-                    ItemInventoryGenerationTag.setItemStackGeneratorKey(heldItem, message.getKey());
-                }
+                if (heldItem != null && heldItem.getItem() instanceof ItemInventoryGenComponentTag)
+                    ItemInventoryGenComponentTag.setComponentKey(heldItem, message.getKey());
+                player.openContainer.detectAndSendChanges();
             }
             else
             {

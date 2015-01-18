@@ -8,8 +8,8 @@ package ivorius.reccomplex.network;
 import cpw.mods.fml.common.network.ByteBufUtils;
 import cpw.mods.fml.common.network.simpleimpl.IMessage;
 import io.netty.buffer.ByteBuf;
-import ivorius.reccomplex.worldgen.inventory.GenericInventoryGenerator;
-import ivorius.reccomplex.worldgen.inventory.InventoryGenerationHandler;
+import ivorius.reccomplex.worldgen.inventory.GenericItemCollection.Component;
+import ivorius.reccomplex.worldgen.inventory.GenericItemCollectionRegistry;
 import ivorius.reccomplex.worldgen.inventory.InventoryLoadException;
 
 /**
@@ -18,13 +18,13 @@ import ivorius.reccomplex.worldgen.inventory.InventoryLoadException;
 public class PacketEditInventoryGenerator implements IMessage
 {
     private String key;
-    private GenericInventoryGenerator inventoryGenerator;
+    private Component inventoryGenerator;
 
     public PacketEditInventoryGenerator()
     {
     }
 
-    public PacketEditInventoryGenerator(String key, GenericInventoryGenerator inventoryGenerator)
+    public PacketEditInventoryGenerator(String key, Component inventoryGenerator)
     {
         this.key = key;
         this.inventoryGenerator = inventoryGenerator;
@@ -40,12 +40,12 @@ public class PacketEditInventoryGenerator implements IMessage
         this.key = key;
     }
 
-    public GenericInventoryGenerator getInventoryGenerator()
+    public Component getInventoryGenerator()
     {
         return inventoryGenerator;
     }
 
-    public void setInventoryGenerator(GenericInventoryGenerator inventoryGenerator)
+    public void setInventoryGenerator(Component inventoryGenerator)
     {
         this.inventoryGenerator = inventoryGenerator;
     }
@@ -58,7 +58,7 @@ public class PacketEditInventoryGenerator implements IMessage
 
         try
         {
-            inventoryGenerator = InventoryGenerationHandler.createInventoryGeneratorFromJSON(json);
+            inventoryGenerator = GenericItemCollectionRegistry.createComponentFromJSON(json);
         }
         catch (InventoryLoadException e)
         {
@@ -70,7 +70,7 @@ public class PacketEditInventoryGenerator implements IMessage
     public void toBytes(ByteBuf buf)
     {
         ByteBufUtils.writeUTF8String(buf, key);
-        String json = InventoryGenerationHandler.createJSONFromInventoryGenerator(inventoryGenerator);
+        String json = GenericItemCollectionRegistry.createJSONFromComponent(inventoryGenerator);
         ByteBufUtils.writeUTF8String(buf, json);
     }
 }

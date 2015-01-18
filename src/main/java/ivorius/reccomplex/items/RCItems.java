@@ -15,8 +15,9 @@ public class RCItems
     public static Item blockSelector;
     public static Item blockSelectorFloating;
 
-    public static Item inventoryGenerationTag;
-    public static Item inventoryGenerationSingleTag;
+    public static ItemInventoryGenMultiTag inventoryGenerationTag;
+    public static ItemInventoryGenSingleTag inventoryGenerationSingleTag;
+    public static ItemInventoryGenComponentTag inventoryGenerationComponentTag;
 
     public static Item artifactGenerationTag;
     public static Item bookGenerationTag;

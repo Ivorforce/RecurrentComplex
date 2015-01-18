@@ -7,8 +7,6 @@ package ivorius.reccomplex;
 
 import cpw.mods.fml.common.event.FMLInterModComms;
 import ivorius.ivtoolkit.tools.IvFMLIntercommHandler;
-import ivorius.reccomplex.worldgen.StructureHandler;
-import ivorius.reccomplex.worldgen.inventory.InventoryGenerationHandler;
 import org.apache.logging.log4j.Logger;
 
 /**

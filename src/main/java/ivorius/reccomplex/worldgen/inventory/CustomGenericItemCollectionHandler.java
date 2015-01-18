@@ -5,11 +5,11 @@
 
 package ivorius.reccomplex.worldgen.inventory;
 
-import com.google.gson.JsonSyntaxException;
 import ivorius.ivtoolkit.tools.IvFileHelper;
 import ivorius.reccomplex.RecurrentComplex;
 import ivorius.reccomplex.files.FileSuffixFilter;
 import ivorius.reccomplex.files.RCFileHelper;
+import ivorius.reccomplex.worldgen.inventory.GenericItemCollection.Component;
 import net.minecraft.util.ResourceLocation;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
@@ -21,13 +21,12 @@ import java.net.URISyntaxException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 
 /**
  * Created by lukas on 25.05.14.
  */
-public class InventoryGeneratorSaveHandler
+public class CustomGenericItemCollectionHandler
 {
     private static List<String> importedCustomGenerators = new ArrayList<>();
 
@@ -35,7 +34,7 @@ public class InventoryGeneratorSaveHandler
     {
         while (!importedCustomGenerators.isEmpty())
         {
-            InventoryGenerationHandler.removeGenerator(importedCustomGenerators.remove(0));
+            InventoryGeneratorRegistry.removeGenerator(importedCustomGenerators.remove(0));
         }
         importedCustomGenerators.clear();
 
@@ -83,10 +82,14 @@ public class InventoryGeneratorSaveHandler
         {
             try
             {
-                GenericInventoryGenerator genericStructureInfo = readInventoryGenerator(file);
+                Component component = readInventoryGenerator(file);
 
                 String name = FilenameUtils.getBaseName(file.getFileName().toString());
-                InventoryGenerationHandler.registerInventoryGenerator(genericStructureInfo, name);
+
+                if (component.inventoryGeneratorID == null || component.inventoryGeneratorID.length() == 0) // Legacy support
+                    component.inventoryGeneratorID = name;
+
+                GenericItemCollectionRegistry.register(component, name);
 
                 if (imported)
                     importedCustomGenerators.add(name);
@@ -98,7 +101,7 @@ public class InventoryGeneratorSaveHandler
         }
     }
 
-    public static boolean saveInventoryGenerator(GenericInventoryGenerator info, String name)
+    public static boolean saveInventoryGenerator(Component info, String name)
     {
         File structuresFile = IvFileHelper.getValidatedFolder(RecurrentComplex.proxy.getBaseFolderFile("structures"));
         if (structuresFile != null)
@@ -107,7 +110,7 @@ public class InventoryGeneratorSaveHandler
             if (inventoryGeneratorsFile != null)
             {
                 File newFile = new File(inventoryGeneratorsFile, name + ".json");
-                String json = InventoryGenerationHandler.createJSONFromInventoryGenerator(info);
+                String json = GenericItemCollectionRegistry.createJSONFromComponent(info);
 
                 try
                 {
@@ -125,12 +128,12 @@ public class InventoryGeneratorSaveHandler
         return false;
     }
 
-    public static GenericInventoryGenerator readInventoryGenerator(ResourceLocation resourceLocation)
+    public static Component readInventoryGenerator(ResourceLocation resourceLocation)
     {
         try
         {
             String json = IOUtils.toString(IvFileHelper.inputStreamFromResourceLocation(resourceLocation), "UTF-8");
-            return InventoryGenerationHandler.createInventoryGeneratorFromJSON(json);
+            return GenericItemCollectionRegistry.createComponentFromJSON(json);
         }
         catch (Exception ex)
         {
@@ -140,8 +143,8 @@ public class InventoryGeneratorSaveHandler
         return null;
     }
 
-    public static GenericInventoryGenerator readInventoryGenerator(Path file) throws IOException, InventoryLoadException
+    public static Component readInventoryGenerator(Path file) throws IOException, InventoryLoadException
     {
-        return InventoryGenerationHandler.createInventoryGeneratorFromJSON(new String(Files.readAllBytes(file)));
+        return GenericItemCollectionRegistry.createComponentFromJSON(new String(Files.readAllBytes(file)));
     }
 }

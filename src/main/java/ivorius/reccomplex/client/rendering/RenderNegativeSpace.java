@@ -8,7 +8,6 @@ package ivorius.reccomplex.client.rendering;
 import cpw.mods.fml.client.registry.ISimpleBlockRenderingHandler;
 import ivorius.ivtoolkit.rendering.IvRenderHelper;
 import ivorius.reccomplex.RCConfig;
-import ivorius.reccomplex.RecurrentComplex;
 import net.minecraft.block.Block;
 import net.minecraft.client.renderer.RenderBlocks;
 import net.minecraft.world.IBlockAccess;
@@ -52,6 +51,6 @@ public class RenderNegativeSpace implements ISimpleBlockRenderingHandler
     @Override
     public int getRenderId()
     {
-        return RecurrentComplex.negativeSpaceRenderID;
+        return RCBlockRendering.negativeSpaceRenderID;
     }
 }

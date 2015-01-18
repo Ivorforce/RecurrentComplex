@@ -5,7 +5,8 @@
 
 package ivorius.reccomplex.blocks;
 
-import ivorius.reccomplex.RecurrentComplex;
+import ivorius.reccomplex.client.rendering.RCBlockRendering;
+import ivorius.reccomplex.materials.RCMaterials;
 import net.minecraft.block.Block;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.creativetab.CreativeTabs;
@@ -26,7 +27,7 @@ public class BlockNegativeSpace extends Block
 
     public BlockNegativeSpace()
     {
-        super(RecurrentComplex.materialNegativeSpace);
+        super(RCMaterials.materialNegativeSpace);
 
         float lowB = 1.0f / 16.0f * 5.5f;
         float highB = 1.0f / 16.0f * 9.5f;
@@ -78,7 +79,7 @@ public class BlockNegativeSpace extends Block
     @Override
     public int getRenderType()
     {
-        return RecurrentComplex.negativeSpaceRenderID;
+        return RCBlockRendering.negativeSpaceRenderID;
     }
 
     @Override

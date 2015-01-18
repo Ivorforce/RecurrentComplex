@@ -9,9 +9,9 @@ import cpw.mods.fml.client.registry.RenderingRegistry;
 import ivorius.reccomplex.RCConfig;
 import ivorius.reccomplex.RCProxy;
 import ivorius.reccomplex.RecurrentComplex;
+import ivorius.reccomplex.client.rendering.RCBlockRendering;
 import ivorius.reccomplex.client.rendering.RenderNegativeSpace;
 import net.minecraft.client.Minecraft;
-import net.minecraftforge.common.config.Configuration;
 
 import java.io.File;
 
@@ -38,6 +38,6 @@ public class ClientProxy implements RCProxy
     @Override
     public void registerRenderers()
     {
-        RenderingRegistry.registerBlockHandler(RecurrentComplex.negativeSpaceRenderID, new RenderNegativeSpace());
+        RenderingRegistry.registerBlockHandler(RCBlockRendering.negativeSpaceRenderID, new RenderNegativeSpace());
     }
 }

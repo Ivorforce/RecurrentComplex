@@ -17,13 +17,12 @@ import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 import cpw.mods.fml.common.event.FMLServerStartingEvent;
 import cpw.mods.fml.common.network.NetworkRegistry;
 import cpw.mods.fml.common.network.simpleimpl.SimpleNetworkWrapper;
-import cpw.mods.fml.common.registry.GameRegistry;
 import cpw.mods.fml.relauncher.Side;
 import ivorius.ivtoolkit.network.PacketExtendedEntityPropertiesData;
 import ivorius.ivtoolkit.network.PacketExtendedEntityPropertiesDataHandler;
 import ivorius.ivtoolkit.network.PacketGuiAction;
 import ivorius.ivtoolkit.network.PacketGuiActionHandler;
-import ivorius.reccomplex.blocks.*;
+import ivorius.reccomplex.client.rendering.RCBlockRendering;
 import ivorius.reccomplex.commands.*;
 import ivorius.reccomplex.events.RCFMLEventHandler;
 import ivorius.reccomplex.events.RCForgeEventHandler;
@@ -37,10 +36,8 @@ import ivorius.reccomplex.worldgen.StructureSelector;
 import ivorius.reccomplex.worldgen.blockTransformers.*;
 import ivorius.reccomplex.worldgen.inventory.CustomGenericItemCollectionHandler;
 import ivorius.reccomplex.worldgen.inventory.RCInventoryGenerators;
-import net.minecraft.block.material.Material;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.Item;
-import net.minecraft.item.ItemBlock;
 import net.minecraftforge.common.config.Configuration;
 import org.apache.logging.log4j.Logger;
 
@@ -70,24 +67,6 @@ public class RecurrentComplex
     public static Logger logger;
     public static Configuration config;
 
-    public static CreativeTabs tabStructureTools = new CreativeTabs("structureTools")
-    {
-        @Override
-        public Item getTabIconItem()
-        {
-            return RCItems.blockSelector;
-        }
-    };
-
-    public static CreativeTabs tabInventoryGenerators = new CreativeTabs("inventoryGenerators")
-    {
-        @Override
-        public Item getTabIconItem()
-        {
-            return RCItems.inventoryGenerationTag;
-        }
-    };
-
     public static RCForgeEventHandler forgeEventHandler;
     public static RCFMLEventHandler fmlEventHandler;
 
@@ -96,10 +75,6 @@ public class RecurrentComplex
     public static RCGuiHandler guiHandler;
 
     public static RCCommunicationHandler communicationHandler;
-
-    public static Material materialNegativeSpace;
-
-    public static int negativeSpaceRenderID;
 
     @EventHandler
     public void preInit(FMLPreInitializationEvent event)
@@ -122,53 +97,7 @@ public class RecurrentComplex
 
         communicationHandler = new RCCommunicationHandler(logger, MODID, instance);
 
-        materialNegativeSpace = new MaterialNegativeSpace();
-
-        RCItems.blockSelector = new ItemBlockSelector().setUnlocalizedName("blockSelector").setTextureName(textureBase + "blockSelector");
-        RCItems.blockSelector.setCreativeTab(tabStructureTools);
-        GameRegistry.registerItem(RCItems.blockSelector, "blockSelector", MODID);
-
-        RCItems.blockSelectorFloating = new ItemBlockSelectorFloating(2.0f).setUnlocalizedName("blockSelectorFloating").setTextureName(textureBase + "blockSelectorFloating");
-        RCItems.blockSelectorFloating.setCreativeTab(tabStructureTools);
-        GameRegistry.registerItem(RCItems.blockSelectorFloating, "blockSelectorFloating", MODID);
-
-        RCItems.inventoryGenerationTag = (ItemInventoryGenMultiTag) new ItemInventoryGenMultiTag().setUnlocalizedName("inventoryGenerationTag").setTextureName(textureBase + "inventoryGenerationTag");
-        RCItems.inventoryGenerationTag.setCreativeTab(tabInventoryGenerators);
-        GameRegistry.registerItem(RCItems.inventoryGenerationTag, "inventoryGenerationTag", MODID);
-
-        RCItems.inventoryGenerationSingleTag = (ItemInventoryGenSingleTag) new ItemInventoryGenSingleTag().setUnlocalizedName("inventoryGenerationSingleTag").setTextureName(textureBase + "inventoryGenerationSingleTag");
-        RCItems.inventoryGenerationSingleTag.setCreativeTab(tabInventoryGenerators);
-        GameRegistry.registerItem(RCItems.inventoryGenerationSingleTag, "inventoryGenerationSingleTag", MODID);
-
-        RCItems.inventoryGenerationComponentTag = (ItemInventoryGenComponentTag) new ItemInventoryGenComponentTag().setUnlocalizedName("inventoryGenerationComponentTag").setTextureName(textureBase + "inventoryGenerationComponentTag");
-        RCItems.inventoryGenerationComponentTag.setCreativeTab(tabInventoryGenerators);
-        GameRegistry.registerItem(RCItems.inventoryGenerationComponentTag, "inventory_generation_component_tag", MODID);
-
-        RCItems.artifactGenerationTag = new ItemArtifactGenerator().setUnlocalizedName("artifactGenerationTag").setTextureName(textureBase + "artifactGenerationTag");
-        RCItems.artifactGenerationTag.setCreativeTab(tabInventoryGenerators);
-        GameRegistry.registerItem(RCItems.artifactGenerationTag, "artifactGenerationTag", MODID);
-
-        RCItems.bookGenerationTag = new ItemBookGenerator().setUnlocalizedName("bookGenerationTag").setTextureName(textureBase + "bookGenerationTag");
-        RCItems.bookGenerationTag.setCreativeTab(tabInventoryGenerators);
-        GameRegistry.registerItem(RCItems.bookGenerationTag, "bookGenerationTag", MODID);
-
-        RCBlocks.negativeSpace = new BlockNegativeSpace().setBlockName("negativeSpace").setBlockTextureName(textureBase + "negativeSpace");
-        RCBlocks.negativeSpace.setCreativeTab(tabStructureTools);
-        GameRegistry.registerBlock(RCBlocks.negativeSpace, ItemBlockNegativeSpace.class, "negativeSpace");
-
-        RCBlocks.naturalFloor = new BlockNaturalFloor().setBlockName("naturalFloor").setBlockTextureName(textureBase + "naturalFloor");
-        RCBlocks.naturalFloor.setCreativeTab(tabStructureTools);
-        GameRegistry.registerBlock(RCBlocks.naturalFloor, ItemBlock.class, "naturalFloor");
-
-        RCBlocks.structureGenerator = new BlockStructureGenerator().setBlockName("structureGenerator").setBlockTextureName(textureBase + "structureGenerator");
-        RCBlocks.structureGenerator.setCreativeTab(tabStructureTools);
-        GameRegistry.registerBlock(RCBlocks.structureGenerator, ItemStructureGenerator.class, "structureGenerator");
-        GameRegistry.registerTileEntityWithAlternatives(TileEntityStructureGenerator.class, "RCStructureGenerator", "SGStructureGenerator");
-
-        RCBlocks.mazeGenerator = new BlockMazeGenerator().setBlockName("mazeGenerator").setBlockTextureName(textureBase + "mazeGenerator");
-        RCBlocks.mazeGenerator.setCreativeTab(tabStructureTools);
-        GameRegistry.registerBlock(RCBlocks.mazeGenerator, ItemMazeGenerator.class, "mazeGenerator");
-        GameRegistry.registerTileEntityWithAlternatives(TileEntityMazeGenerator.class, "RCMazeGenerator", "SGMazeGenerator");
+        RCRegistryHandler.preInit(event, this);
     }
 
     @EventHandler
@@ -187,24 +116,7 @@ public class RecurrentComplex
         network.registerMessage(PacketEditStructureBlockHandler.class, PacketEditStructureBlock.class, 9, Side.SERVER);
         network.registerMessage(PacketEditInvGenMultiTagHandler.class, PacketEditInvGenMultiTag.class, 9, Side.SERVER);
 
-        StructureHandler.registerBlockTransformer("natural", BlockTransformerNatural.class, new BTProviderNatural());
-        StructureHandler.registerBlockTransformer("naturalAir", BlockTransformerNaturalAir.class, new BTProviderNaturalAir());
-        StructureHandler.registerBlockTransformer("pillar", BlockTransformerPillar.class, new BTProviderPillar());
-        StructureHandler.registerBlockTransformer("replaceAll", BlockTransformerReplaceAll.class, new BTProviderReplaceAll());
-        StructureHandler.registerBlockTransformer("replace", BlockTransformerReplace.class, new BTProviderReplace());
-        StructureHandler.registerBlockTransformer("ruins", BlockTransformerRuins.class, new BTProviderRuins());
-        StructureHandler.registerBlockTransformer("negativeSpace", BlockTransformerNegativeSpace.class, new BTProviderNegativeSpace());
-
-        StructureSelector.registerCategory("decoration", new StructureSelector.SimpleCategory(1.0f / 25.0f, Collections.<StructureSelector.GenerationInfo>emptyList(), true));
-        StructureSelector.registerCategory("adventure", new StructureSelector.SimpleCategory(1.0f / 250.0f, Collections.<StructureSelector.GenerationInfo>emptyList(), true));
-        StructureSelector.registerCategory("rare", new StructureSelector.SimpleCategory(1.0f / 1250.0f, Collections.<StructureSelector.GenerationInfo>emptyList(), true));
-
-        Poem.registerThemes(MODID, "love", "summer", "war", "winter", "grief");
-
-//        GameRegistry.registerWorldGenerator(new WorldGenStructures(), 50);
-        RCInventoryGenerators.registerVanillaInventoryGenerators();
-
-        negativeSpaceRenderID = RenderingRegistry.getNextAvailableRenderId();
+        RCRegistryHandler.load(event, this);
         proxy.registerRenderers();
     }
 
@@ -220,23 +132,7 @@ public class RecurrentComplex
     @EventHandler
     public void onServerStart(FMLServerStartingEvent event)
     {
-        event.registerServerCommand(new CommandExportStructure());
-        event.registerServerCommand(new CommandEditStructure());
-        event.registerServerCommand(new CommandGenerateStructure());
-        event.registerServerCommand(new CommandImportStructure());
-        event.registerServerCommand(new CommandStructuresReload());
-        event.registerServerCommand(new CommandSelectPoint());
-        event.registerServerCommand(new CommandSelectFill());
-        event.registerServerCommand(new CommandSelectReplace());
-        event.registerServerCommand(new CommandSelectFillSphere());
-        event.registerServerCommand(new CommandSelectNatural());
-        event.registerServerCommand(new CommandSelectCopy());
-        event.registerServerCommand(new CommandPaste());
-        event.registerServerCommand(new CommandSelectMove());
-        event.registerServerCommand(new CommandSelectDuplicate());
-        event.registerServerCommand(new CommandBiomeDict());
-        event.registerServerCommand(new CommandGenerateSchematic());
-        event.registerServerCommand(new CommandExportSchematic());
+        RCCommands.onServerStart(event);
     }
 
     public static void loadAllModData()

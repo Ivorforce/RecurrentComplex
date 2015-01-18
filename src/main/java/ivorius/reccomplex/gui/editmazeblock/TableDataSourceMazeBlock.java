@@ -117,19 +117,19 @@ public class TableDataSourceMazeBlock extends TableDataSourceSegmented implement
         {
             if (index == 0)
             {
-                TableElementInteger element = new TableElementInteger("roomSizeX", "Room Size: X", mazeGenerator.getRoomSize()[0], 1, 20);
+                TableElementInteger element = new TableElementInteger("roomSizeX", "Room Size: X", mazeGenerator.getRoomSize()[0], 1, 64);
                 element.addPropertyListener(this);
                 return element;
             }
             else if (index == 1)
             {
-                TableElementInteger element = new TableElementInteger("roomSizeY", "Room Size: Y", mazeGenerator.getRoomSize()[1], 1, 20);
+                TableElementInteger element = new TableElementInteger("roomSizeY", "Room Size: Y", mazeGenerator.getRoomSize()[1], 1, 64);
                 element.addPropertyListener(this);
                 return element;
             }
             else if (index == 2)
             {
-                TableElementInteger element = new TableElementInteger("roomSizeZ", "Room Size: Z", mazeGenerator.getRoomSize()[2], 1, 20);
+                TableElementInteger element = new TableElementInteger("roomSizeZ", "Room Size: Z", mazeGenerator.getRoomSize()[2], 1, 64);
                 element.addPropertyListener(this);
                 return element;
             }
@@ -138,19 +138,19 @@ public class TableDataSourceMazeBlock extends TableDataSourceSegmented implement
         {
             if (index == 0)
             {
-                TableElementInteger element = new TableElementInteger("roomsX", "Rooms: X", mazeGenerator.getRoomNumbers()[0], 1, 20);
+                TableElementInteger element = new TableElementInteger("roomsX", "Rooms: X", mazeGenerator.getRoomNumbers()[0], 1, 64);
                 element.addPropertyListener(this);
                 return element;
             }
             else if (index == 1)
             {
-                TableElementInteger element = new TableElementInteger("roomsY", "Rooms: Y", mazeGenerator.getRoomNumbers()[1], 1, 20);
+                TableElementInteger element = new TableElementInteger("roomsY", "Rooms: Y", mazeGenerator.getRoomNumbers()[1], 1, 64);
                 element.addPropertyListener(this);
                 return element;
             }
             else if (index == 2)
             {
-                TableElementInteger element = new TableElementInteger("roomsZ", "Rooms: Z", mazeGenerator.getRoomNumbers()[2], 1, 20);
+                TableElementInteger element = new TableElementInteger("roomsZ", "Rooms: Z", mazeGenerator.getRoomNumbers()[2], 1, 64);
                 element.addPropertyListener(this);
                 return element;
             }

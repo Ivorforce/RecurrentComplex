@@ -5,9 +5,9 @@
 
 package ivorius.reccomplex.schematics;
 
-import com.google.common.io.PatternFilenameFilter;
 import ivorius.ivtoolkit.tools.IvFileHelper;
 import ivorius.reccomplex.RecurrentComplex;
+import ivorius.reccomplex.utils.RCAccessHelperNBT;
 import net.minecraft.nbt.CompressedStreamTools;
 import net.minecraft.nbt.NBTTagCompound;
 import org.apache.commons.io.FileUtils;
@@ -16,6 +16,7 @@ import org.apache.commons.io.FilenameUtils;
 import java.io.*;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.zip.GZIPOutputStream;
 
 /**
  * Created by lukas on 29.09.14.
@@ -70,9 +71,9 @@ public class SchematicLoader
         NBTTagCompound compound = new NBTTagCompound();
         schematic.writeToNBT(compound);
 
-        try (FileOutputStream fileOutputStream = new FileOutputStream(file))
+        try (DataOutputStream dataOutputStream = new DataOutputStream(new GZIPOutputStream(new FileOutputStream(file))))
         {
-            CompressedStreamTools.writeCompressed(compound, fileOutputStream);
+            RCAccessHelperNBT.writeEntry("Schematic", compound, dataOutputStream);
         }
         catch (IOException e)
         {

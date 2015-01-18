@@ -98,8 +98,8 @@ public class GenericStructureInfo implements StructureInfo, Cloneable
     @Override
     public int[] structureBoundingBox()
     {
-        IvBlockCollection collection = new IvWorldData(worldDataCompound, null, MCRegistrySpecial.INSTANCE).blockCollection;
-        return new int[]{collection.width, collection.height, collection.length};
+        NBTTagCompound compound = worldDataCompound.getCompoundTag("blockCollection");
+        return new int[]{compound.getInteger("width"), compound.getInteger("height"), compound.getInteger("length")};
     }
 
     @Override

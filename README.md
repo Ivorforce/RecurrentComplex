@@ -1,4 +1,4 @@
-StructureGen
+Recurrent Complex
 ============
 
 [![Build Status](https://drone.io/github.com/Ivorforce/RecurrentComplex/status.png)](https://drone.io/github.com/Ivorforce/RecurrentComplex/latest)

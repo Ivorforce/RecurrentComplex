@@ -13,10 +13,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileReader;
-import java.io.IOException;
+import java.io.*;
 import java.util.Collection;
 import java.util.Collections;
 
@@ -61,6 +58,26 @@ public class SchematicLoader
             return new SchematicFile(compound);
 
         return null;
+    }
+
+    public static void writeSchematicByName(SchematicFile schematic, String name)
+    {
+        writeSchematicToFile(schematic, new File(getValidatedSchematicsFile(), name + ".schematic"));
+    }
+
+    public static void writeSchematicToFile(SchematicFile schematic, File file)
+    {
+        NBTTagCompound compound = new NBTTagCompound();
+        schematic.writeToNBT(compound);
+
+        try (FileOutputStream fileOutputStream = new FileOutputStream(file))
+        {
+            CompressedStreamTools.writeCompressed(compound, fileOutputStream);
+        }
+        catch (IOException e)
+        {
+            e.printStackTrace();
+        }
     }
 
     public static String[] currentSchematicFileNames()

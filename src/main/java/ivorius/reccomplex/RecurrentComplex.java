@@ -231,6 +231,7 @@ public class RecurrentComplex
         event.registerServerCommand(new CommandSelectDuplicate());
         event.registerServerCommand(new CommandBiomeDict());
         event.registerServerCommand(new CommandGenerateSchematic());
+        event.registerServerCommand(new CommandExportSchematic());
     }
 
     public static void loadAllModData()

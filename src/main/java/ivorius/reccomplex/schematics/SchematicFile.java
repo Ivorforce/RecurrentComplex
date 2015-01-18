@@ -7,17 +7,11 @@ package ivorius.reccomplex.schematics;
 
 import ivorius.ivtoolkit.blocks.BlockArea;
 import ivorius.ivtoolkit.blocks.BlockCoord;
-import ivorius.ivtoolkit.math.AxisAlignedTransform2D;
 import ivorius.ivtoolkit.tools.IvWorldData;
-import ivorius.reccomplex.RecurrentComplex;
-import ivorius.reccomplex.blocks.GeneratingTileEntity;
-import ivorius.reccomplex.worldgen.inventory.InventoryGenerationHandler;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityList;
-import net.minecraft.init.Blocks;
-import net.minecraft.inventory.IInventory;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.tileentity.TileEntity;
@@ -31,12 +25,25 @@ import java.util.*;
  */
 public class SchematicFile
 {
+    public final List<NBTTagCompound> entityCompounds = new ArrayList<>();
+    public final List<NBTTagCompound> tileEntityCompounds = new ArrayList<>();
     public short width, height, length;
-    public short weOriginX, weOriginY, weOriginZ;
+    public Short weOriginX, weOriginY, weOriginZ;
     public Block[] blocks;
     public byte[] metadatas;
-    public List<NBTTagCompound> entityCompounds = new ArrayList<>();
-    public List<NBTTagCompound> tileEntityCompounds = new ArrayList<>();
+
+    public SchematicFile()
+    {
+    }
+
+    public SchematicFile(short width, short height, short length)
+    {
+        this.width = width;
+        this.height = height;
+        this.length = length;
+        this.blocks = new Block[width * height * length];
+        this.metadatas = new byte[width * height * length];
+    }
 
     public SchematicFile(NBTTagCompound tagCompound) throws UnsupportedSchematicFormatException
     {
@@ -48,9 +55,12 @@ public class SchematicFile
         height = tagCompound.getShort("Height");
         length = tagCompound.getShort("Length");
 
-        weOriginX = tagCompound.getShort("WEOriginX");
-        weOriginY = tagCompound.getShort("WEOriginY");
-        weOriginZ = tagCompound.getShort("WEOriginZ");
+        if (tagCompound.hasKey("WEOriginX", Constants.NBT.TAG_SHORT))
+            weOriginX = tagCompound.getShort("WEOriginX");
+        if (tagCompound.hasKey("WEOriginY", Constants.NBT.TAG_SHORT))
+            weOriginY = tagCompound.getShort("WEOriginY");
+        if (tagCompound.hasKey("WEOriginZ", Constants.NBT.TAG_SHORT))
+            weOriginZ = tagCompound.getShort("WEOriginZ");
 
         metadatas = tagCompound.getByteArray("Data");
         byte[] blockIDs = tagCompound.getByteArray("Blocks");
@@ -61,7 +71,7 @@ public class SchematicFile
         {
             int blockID = blockIDs[i] & 0xff;
 
-            if (addBlocks.length == blockIDs.length / 2)
+            if (addBlocks.length >= (blockIDs.length + 1) / 2)
             {
                 boolean lowerNybble = (i & 1) == 0;
                 blockID |= lowerNybble ? ((addBlocks[i >> 1] & 0x0F) << 8) : ((addBlocks[i >> 1] & 0xF0) << 4);
@@ -79,6 +89,11 @@ public class SchematicFile
             tileEntityCompounds.add(tileEntities.getCompoundTagAt(i));
     }
 
+    public int getBlockIndex(int x, int y, int z)
+    {
+        return x + (y * length + z) * width;
+    }
+
     public void generate(World world, int x, int y, int z)
     {
         Map<BlockCoord, TileEntity> tileEntities = new HashMap<>();
@@ -94,7 +109,7 @@ public class SchematicFile
         {
             for (BlockCoord srcCoord : blockArea)
             {
-                int index = srcCoord.x + (srcCoord.y * length + srcCoord.z) * width;
+                int index = getBlockIndex(srcCoord.x, srcCoord.y, srcCoord.z);
                 Block block = blocks[index];
                 byte meta = metadatas[index];
 
@@ -133,6 +148,52 @@ public class SchematicFile
     private int getPass(Block block, int metadata)
     {
         return (block.isNormalCube() || block.getMaterial() == Material.air) ? 0 : 1;
+    }
+
+    public void writeToNBT(NBTTagCompound tagCompound)
+    {
+        tagCompound.setString("Materials", "Alpha");
+
+        tagCompound.setShort("Width", width);
+        tagCompound.setShort("Height", height);
+        tagCompound.setShort("Length", length);
+
+        if (weOriginX != null)
+            tagCompound.setShort("WEOriginX", weOriginX);
+        if (weOriginY != null)
+            tagCompound.setShort("WEOriginY", weOriginY);
+        if (weOriginZ != null)
+            tagCompound.setShort("WEOriginZ", weOriginZ);
+
+        tagCompound.setByteArray("Data", metadatas);
+
+        byte[] blockIDs = new byte[blocks.length];
+        byte[] addBlocks = new byte[(blocks.length + 1) / 2];
+        for (int i = 0; i < blocks.length; i++)
+        {
+            int blockID = getBlockID(blocks[i]);
+
+            blockIDs[i] = (byte) (blockID & 0xff);
+            boolean lowerNybble = (i & 1) == 0;
+            addBlocks[i >> 1] |= lowerNybble ? (byte) ((blockID >> 8) & 0x0F) : (byte) ((blockID >> 4) & 0xF0);
+        }
+        tagCompound.setByteArray("Blocks", blockIDs);
+        tagCompound.setByteArray("AddBlocks", addBlocks);
+
+        NBTTagList entities = new NBTTagList();
+        for (NBTTagCompound entityCompound : entityCompounds)
+            entities.appendTag(entityCompound);
+        tagCompound.setTag("Entities", entities);
+
+        NBTTagList tileEntitites = new NBTTagList();
+        for (NBTTagCompound tileEntityCompound : tileEntityCompounds)
+            entities.appendTag(tileEntityCompound);
+        tagCompound.setTag("TileEntities", tileEntitites);
+    }
+
+    private int getBlockID(Block block)
+    {
+        return Block.blockRegistry.getIDForObject(block);
     }
 
     public static class UnsupportedSchematicFormatException extends Exception

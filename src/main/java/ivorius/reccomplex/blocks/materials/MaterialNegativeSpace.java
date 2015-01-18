@@ -3,7 +3,7 @@
  *  * http://lukas.axxim.net
  */
 
-package ivorius.reccomplex.blocks;
+package ivorius.reccomplex.blocks.materials;
 
 import net.minecraft.block.material.MapColor;
 import net.minecraft.block.material.Material;

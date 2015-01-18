@@ -11,14 +11,16 @@ import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 import cpw.mods.fml.common.registry.GameRegistry;
 import ivorius.reccomplex.blocks.*;
 import ivorius.reccomplex.client.rendering.RCBlockRendering;
-import ivorius.reccomplex.gui.RCCreativeTabs;
 import ivorius.reccomplex.items.*;
-import ivorius.reccomplex.materials.RCMaterials;
+import ivorius.reccomplex.blocks.materials.MaterialNegativeSpace;
+import ivorius.reccomplex.blocks.materials.RCMaterials;
 import ivorius.reccomplex.random.Poem;
 import ivorius.reccomplex.worldgen.StructureHandler;
 import ivorius.reccomplex.worldgen.StructureSelector;
 import ivorius.reccomplex.worldgen.blockTransformers.*;
 import ivorius.reccomplex.worldgen.inventory.RCInventoryGenerators;
+import net.minecraft.block.material.MapColor;
+import net.minecraft.block.material.Material;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemBlock;
@@ -55,6 +57,7 @@ public class RCRegistryHandler
         };
 
         RCMaterials.materialNegativeSpace = new MaterialNegativeSpace();
+        RCMaterials.materialGenericSolid = (new Material(MapColor.stoneColor));
 
         blockSelector = new ItemBlockSelector().setUnlocalizedName("blockSelector").setTextureName(textureBase + "blockSelector");
         blockSelector.setCreativeTab(tabStructureTools);
@@ -90,7 +93,7 @@ public class RCRegistryHandler
 
         naturalFloor = new BlockNaturalFloor().setBlockName("naturalFloor").setBlockTextureName(textureBase + "naturalFloor");
         naturalFloor.setCreativeTab(tabStructureTools);
-        GameRegistry.registerBlock(naturalFloor, ItemBlock.class, "naturalFloor");
+        GameRegistry.registerBlock(naturalFloor, ItemBlockGenericSolid.class, "naturalFloor");
 
         structureGenerator = new BlockStructureGenerator().setBlockName("structureGenerator").setBlockTextureName(textureBase + "structureGenerator");
         structureGenerator.setCreativeTab(tabStructureTools);

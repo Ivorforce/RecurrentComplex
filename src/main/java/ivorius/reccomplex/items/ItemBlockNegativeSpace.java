@@ -98,6 +98,6 @@ public class ItemBlockNegativeSpace extends ItemBlockWithMetadata
     @Override
     public String getUnlocalizedName(ItemStack par1ItemStack)
     {
-        return super.getUnlocalizedName(par1ItemStack) + ".damage." + par1ItemStack.getItemDamage();
+        return super.getUnlocalizedName(par1ItemStack) + ".meta." + par1ItemStack.getItemDamage();
     }
 }

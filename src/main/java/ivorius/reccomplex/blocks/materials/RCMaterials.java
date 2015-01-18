@@ -3,7 +3,7 @@
  *  * http://lukas.axxim.net
  */
 
-package ivorius.reccomplex.materials;
+package ivorius.reccomplex.blocks.materials;
 
 import net.minecraft.block.material.Material;
 
@@ -13,4 +13,5 @@ import net.minecraft.block.material.Material;
 public class RCMaterials
 {
     public static Material materialNegativeSpace;
+    public static Material materialGenericSolid;
 }

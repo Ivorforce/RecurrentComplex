@@ -6,7 +6,7 @@
 package ivorius.reccomplex.blocks;
 
 import ivorius.reccomplex.client.rendering.RCBlockRendering;
-import ivorius.reccomplex.materials.RCMaterials;
+import ivorius.reccomplex.blocks.materials.RCMaterials;
 import net.minecraft.block.Block;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.creativetab.CreativeTabs;
@@ -23,7 +23,7 @@ import java.util.List;
  */
 public class BlockNegativeSpace extends Block
 {
-    private IIcon[] icons = new IIcon[2];
+    private IIcon[] icons = new IIcon[16];
 
     public BlockNegativeSpace()
     {
@@ -61,30 +61,26 @@ public class BlockNegativeSpace extends Block
     @Override
     public void getSubBlocks(Item item, CreativeTabs tab, List list)
     {
-        for (int i = 0; i < 2; i++)
-        {
+        for (int i = 0; i < 16; i++)
             list.add(new ItemStack(item, 1, i));
-        }
     }
 
     @Override
     public void registerBlockIcons(IIconRegister iconRegister)
     {
-        for (int i = 0; i < 2; i++)
-        {
+        for (int i = 0; i < icons.length; i++)
             icons[i] = iconRegister.registerIcon(getTextureName() + "." + i);
-        }
-    }
-
-    @Override
-    public int getRenderType()
-    {
-        return RCBlockRendering.negativeSpaceRenderID;
     }
 
     @Override
     public IIcon getIcon(int side, int meta)
     {
         return meta < icons.length ? icons[meta] : icons[0];
+    }
+
+    @Override
+    public int getRenderType()
+    {
+        return RCBlockRendering.negativeSpaceRenderID;
     }
 }

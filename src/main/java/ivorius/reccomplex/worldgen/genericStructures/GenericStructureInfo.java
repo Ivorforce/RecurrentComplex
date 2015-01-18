@@ -70,6 +70,7 @@ public class GenericStructureInfo implements StructureInfo, Cloneable
         genericStructureInfo.blockTransformers.add(new BlockTransformerNaturalAir(RCBlocks.negativeSpace, 1));
         genericStructureInfo.blockTransformers.add(new BlockTransformerNegativeSpace(RCBlocks.negativeSpace, 0));
         genericStructureInfo.blockTransformers.add(new BlockTransformerNatural(RCBlocks.naturalFloor, 0));
+        genericStructureInfo.blockTransformers.add(new BlockTransformerNegativeSpace(RCBlocks.naturalFloor, 1));
 
         genericStructureInfo.naturalGenerationInfo = new NaturalGenerationInfo("decoration", new GenerationYSelector(GenerationYSelector.SelectionMode.SURFACE, 0, 0));
         genericStructureInfo.naturalGenerationInfo.generationWeights.addAll(BiomeGenerationInfo.overworldBiomeGenerationList());

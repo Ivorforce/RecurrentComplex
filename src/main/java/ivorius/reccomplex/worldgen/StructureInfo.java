@@ -5,10 +5,9 @@
 
 package ivorius.reccomplex.worldgen;
 
-import ivorius.ivtoolkit.blocks.BlockCoord;
-import ivorius.ivtoolkit.math.AxisAlignedTransform2D;
 import ivorius.reccomplex.worldgen.genericStructures.GenericStructureInfo;
 import ivorius.reccomplex.worldgen.genericStructures.SavedMazeComponent;
+import ivorius.reccomplex.worldgen.genericStructures.gentypes.VanillaStructureSpawnInfo;
 import net.minecraft.world.World;
 import net.minecraft.world.biome.BiomeGenBase;
 
@@ -19,9 +18,7 @@ import java.util.Random;
  */
 public interface StructureInfo
 {
-    void generate(World world, Random random, BlockCoord coord, AxisAlignedTransform2D transform, int layer);
-
-    void generateSource(World world, Random random, BlockCoord coord, int layer, AxisAlignedTransform2D transform);
+    void generate(StructureSpawnContext context);
 
     int generationY(World world, Random random, int x, int z);
 
@@ -42,4 +39,6 @@ public interface StructureInfo
     String mazeID();
 
     SavedMazeComponent mazeComponent();
+
+    VanillaStructureSpawnInfo vanillaStructureSpawnInfo();
 }

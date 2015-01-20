@@ -15,6 +15,7 @@ import ivorius.reccomplex.worldgen.genericStructures.GenericStructureInfo;
 import ivorius.reccomplex.worldgen.genericStructures.SavedMazeComponent;
 import ivorius.reccomplex.worldgen.genericStructures.gentypes.MazeGenerationInfo;
 import ivorius.reccomplex.worldgen.genericStructures.gentypes.NaturalGenerationInfo;
+import ivorius.reccomplex.worldgen.genericStructures.gentypes.VanillaStructureSpawnInfo;
 import joptsimple.internal.Strings;
 
 import java.util.*;
@@ -137,6 +138,14 @@ public class TableDataSourceGenericStructure implements TableDataSource, TableEl
             elementEditTransformers.addListener(this);
             return elementEditTransformers;
         }
+//        else if (index == 7)
+//        {
+//            TableElementButton.Action toggle = structureInfo.vanillaStructureSpawnInfo != null ? new TableElementButton.Action("delete", "Delete") : new TableElementButton.Action("enable", "Enable");
+//            TableElementButton elementEditTransformers = new TableElementButton("editVanillaStructureGeneration", "Vanilla Structure",
+//                    new TableElementButton.Action("edit", "Edit", structureInfo.vanillaStructureSpawnInfo != null), toggle);
+//            elementEditTransformers.addListener(this);
+//            return elementEditTransformers;
+//        }
 
         return null;
     }
@@ -185,6 +194,24 @@ public class TableDataSourceGenericStructure implements TableDataSource, TableEl
                     mazeComponent.setExitPaths(Arrays.asList(new MazePath(new MazeRoom(0, 0, 0), 0, true), new MazePath(new MazeRoom(0, 0, 0), 0, false),
                             new MazePath(new MazeRoom(0, 0, 0), 2, true), new MazePath(new MazeRoom(0, 0, 0), 2, false)));
                     structureInfo.mazeGenerationInfo = new MazeGenerationInfo("", mazeComponent);
+                    tableDelegate.reloadData();
+                    break;
+            }
+        }
+        else if ("editVanillaStructureGeneration".equals(tableElementButton.getID()))
+        {
+            switch (actionID)
+            {
+                case "edit":
+                    GuiTable editMazeGeneration = new GuiTable(tableDelegate, new TableDataSourceVanillaStructureGenerationInfo(navigator, tableDelegate, structureInfo));
+                    navigator.pushTable(editMazeGeneration);
+                    break;
+                case "delete":
+                    structureInfo.vanillaStructureSpawnInfo = null;
+                    tableDelegate.reloadData();
+                    break;
+                case "enable":
+                    structureInfo.vanillaStructureSpawnInfo = VanillaStructureSpawnInfo.defaultStructureSpawnInfo();
                     tableDelegate.reloadData();
                     break;
             }

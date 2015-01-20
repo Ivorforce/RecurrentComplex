@@ -9,6 +9,7 @@ import cpw.mods.fml.client.registry.RenderingRegistry;
 import cpw.mods.fml.common.event.FMLInitializationEvent;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 import cpw.mods.fml.common.registry.GameRegistry;
+import cpw.mods.fml.common.registry.VillagerRegistry;
 import ivorius.reccomplex.blocks.*;
 import ivorius.reccomplex.client.rendering.RCBlockRendering;
 import ivorius.reccomplex.items.*;
@@ -19,11 +20,14 @@ import ivorius.reccomplex.worldgen.StructureHandler;
 import ivorius.reccomplex.worldgen.StructureSelector;
 import ivorius.reccomplex.worldgen.blockTransformers.*;
 import ivorius.reccomplex.worldgen.inventory.RCInventoryGenerators;
+import ivorius.reccomplex.worldgen.villages.GenericVillageCreationHandler;
+import ivorius.reccomplex.worldgen.villages.GenericVillagePiece;
 import net.minecraft.block.material.MapColor;
 import net.minecraft.block.material.Material;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemBlock;
+import net.minecraft.world.gen.structure.MapGenStructureIO;
 
 import java.util.Collections;
 
@@ -124,6 +128,8 @@ public class RCRegistryHandler
 
 //        GameRegistry.registerWorldGenerator(new WorldGenStructures(), 50);
         RCInventoryGenerators.registerVanillaInventoryGenerators();
+//        MapGenStructureIO.func_143031_a(GenericVillagePiece.class, "RcGSP");
+//        VillagerRegistry.instance().registerVillageCreationHandler(new GenericVillageCreationHandler("DesertHut"));
 
         RCBlockRendering.negativeSpaceRenderID = RenderingRegistry.getNextAvailableRenderId();
     }

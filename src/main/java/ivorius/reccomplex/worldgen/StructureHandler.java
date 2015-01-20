@@ -23,6 +23,7 @@ import ivorius.reccomplex.worldgen.genericStructures.GenericStructureInfo;
 import ivorius.reccomplex.worldgen.genericStructures.SavedMazeComponent;
 import ivorius.reccomplex.worldgen.genericStructures.gentypes.MazeGenerationInfo;
 import ivorius.reccomplex.worldgen.genericStructures.gentypes.NaturalGenerationInfo;
+import ivorius.reccomplex.worldgen.genericStructures.gentypes.VanillaStructureSpawnInfo;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.biome.BiomeGenBase;
 
@@ -52,6 +53,7 @@ public class StructureHandler
         builder.registerTypeAdapter(BiomeGenerationInfo.class, new BiomeGenerationInfo.Serializer());
         builder.registerTypeAdapter(NaturalGenerationInfo.class, new NaturalGenerationInfo.Serializer());
         builder.registerTypeAdapter(MazeGenerationInfo.class, new MazeGenerationInfo.Serializer());
+        builder.registerTypeAdapter(VanillaStructureSpawnInfo.class, new VanillaStructureSpawnInfo.Serializer());
         builder.registerTypeAdapter(SavedMazeComponent.class, new SavedMazeComponent.Serializer());
         builder.registerTypeAdapter(MazeRoom.class, new SavedMazeComponent.RoomSerializer());
         builder.registerTypeAdapter(MazePath.class, new SavedMazeComponent.PathSerializer());

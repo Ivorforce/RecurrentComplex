@@ -10,6 +10,7 @@ import ivorius.ivtoolkit.blocks.BlockCoord;
 import ivorius.ivtoolkit.math.AxisAlignedTransform2D;
 import ivorius.ivtoolkit.tools.IvWorldData;
 import ivorius.reccomplex.entities.StructureEntityInfo;
+import ivorius.reccomplex.worldgen.StructureSpawnContext;
 import ivorius.reccomplex.worldgen.genericStructures.GenericStructureInfo;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.command.WrongUsageException;
@@ -64,7 +65,7 @@ public class CommandSelectMove extends CommandSelectModify
         GenericStructureInfo structureInfo = GenericStructureInfo.createDefaultStructure();
         structureInfo.worldDataCompound = worldDataCompound;
 
-        structureInfo.generateSource(world, world.rand, new BlockCoord(x, y, z), 0, AxisAlignedTransform2D.transform(rotations, mirrorX));
+        structureInfo.generate(new StructureSpawnContext(world, world.rand, new BlockCoord(x, y, z), AxisAlignedTransform2D.transform(rotations, mirrorX), 0, true, structureInfo));
 
         structureEntityInfo.selectedPoint1 = point1.subtract(lowerCorner).add(x, y, z);
         structureEntityInfo.selectedPoint2 = point2.subtract(lowerCorner).add(x, y, z);

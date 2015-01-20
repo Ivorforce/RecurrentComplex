@@ -19,12 +19,14 @@ import ivorius.reccomplex.json.NbtToJson;
 import ivorius.reccomplex.worldgen.MCRegistrySpecial;
 import ivorius.reccomplex.worldgen.StructureHandler;
 import ivorius.reccomplex.worldgen.StructureInfo;
+import ivorius.reccomplex.worldgen.StructureSpawnContext;
 import ivorius.reccomplex.worldgen.blockTransformers.BlockTransformer;
 import ivorius.reccomplex.worldgen.blockTransformers.BlockTransformerNatural;
 import ivorius.reccomplex.worldgen.blockTransformers.BlockTransformerNaturalAir;
 import ivorius.reccomplex.worldgen.blockTransformers.BlockTransformerNegativeSpace;
 import ivorius.reccomplex.worldgen.genericStructures.gentypes.MazeGenerationInfo;
 import ivorius.reccomplex.worldgen.genericStructures.gentypes.NaturalGenerationInfo;
+import ivorius.reccomplex.worldgen.genericStructures.gentypes.VanillaStructureSpawnInfo;
 import ivorius.reccomplex.worldgen.inventory.InventoryGenerationHandler;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
@@ -32,8 +34,10 @@ import net.minecraft.entity.Entity;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.MathHelper;
 import net.minecraft.world.World;
 import net.minecraft.world.biome.BiomeGenBase;
+import net.minecraft.world.gen.structure.StructureBoundingBox;
 import net.minecraftforge.common.BiomeDictionary;
 
 import java.lang.reflect.Type;
@@ -54,6 +58,7 @@ public class GenericStructureInfo implements StructureInfo, Cloneable
 
     public NaturalGenerationInfo naturalGenerationInfo;
     public MazeGenerationInfo mazeGenerationInfo;
+    public VanillaStructureSpawnInfo vanillaStructureSpawnInfo;
 
     public List<BlockTransformer> blockTransformers = new ArrayList<>();
 
@@ -114,23 +119,18 @@ public class GenericStructureInfo implements StructureInfo, Cloneable
         return mirrorable;
     }
 
-    @Override
-    public void generate(World world, Random random, BlockCoord coord, AxisAlignedTransform2D transform, int layer)
-    {
-        generate(world, random, coord, layer, transform, false);
-    }
 
     @Override
-    public void generateSource(World world, Random random, BlockCoord coord, int layer, AxisAlignedTransform2D transform)
+    public void generate(StructureSpawnContext context)
     {
-        generate(world, random, coord, layer, transform, true);
-    }
+        World world = context.world;
+        Random random = context.random;
 
-    private void generate(World world, Random random, BlockCoord origin, int layer, AxisAlignedTransform2D transform, boolean asSource)
-    {
         IvWorldData worldData = new IvWorldData(worldDataCompound, world, MCRegistrySpecial.INSTANCE);
+
         IvBlockCollection blockCollection = worldData.blockCollection;
-        int[] size = new int[]{blockCollection.width, blockCollection.height, blockCollection.length};
+        int[] areaSize = new int[]{blockCollection.width, blockCollection.height, blockCollection.length};
+        BlockCoord origin = context.lowerCoord();
 
         List<GeneratingTileEntity> generatingTileEntities = new ArrayList<>();
         Map<BlockCoord, TileEntity> tileEntities = new HashMap<>();
@@ -139,12 +139,12 @@ public class GenericStructureInfo implements StructureInfo, Cloneable
             tileEntities.put(new BlockCoord(tileEntity), tileEntity);
         }
 
-        if (!asSource)
+        if (!context.generateAsSource)
         {
             for (BlockTransformer transformer : blockTransformers)
             {
                 if (transformer.generatesInPhase(BlockTransformer.Phase.BEFORE))
-                    transformer.transform(world, random, BlockTransformer.Phase.BEFORE, origin, size, transform, worldData, blockTransformers);
+                    transformer.transform(world, random, BlockTransformer.Phase.BEFORE, origin, areaSize, context.transform, worldData, blockTransformers);
             }
         }
 
@@ -155,46 +155,47 @@ public class GenericStructureInfo implements StructureInfo, Cloneable
                 Block block = blockCollection.getBlock(sourceCoord);
                 int meta = blockCollection.getMetadata(sourceCoord);
 
-                BlockCoord worldPos = transform.apply(sourceCoord, size).add(origin);
+                BlockCoord worldPos = context.transform.apply(sourceCoord, areaSize).add(origin);
 
-                if (pass == getPass(block, meta) && (asSource || transformer(block, meta) == null))
+                if (pass == getPass(block, meta) && (context.generateAsSource || transformer(block, meta) == null))
                 {
-                    world.setBlock(worldPos.x, worldPos.y, worldPos.z, block, meta, 2);
-
-                    TileEntity tileEntity = tileEntities.get(sourceCoord);
-                    if (tileEntity != null)
+                    if (context.setBlock(worldPos, block, meta))
                     {
-                        world.setBlockMetadataWithNotify(worldPos.x, worldPos.y, worldPos.z, meta, 2); // TODO Figure out why some blocks (chests, furnace) need this
-
-                        IvWorldData.setTileEntityPosForGeneration(tileEntity, worldPos);
-                        world.setTileEntity(worldPos.x, worldPos.y, worldPos.z, tileEntity);
-                        tileEntity.updateContainingBlockInfo();
-
-                        if (!asSource)
+                        TileEntity tileEntity = tileEntities.get(sourceCoord);
+                        if (tileEntity != null)
                         {
-                            if (tileEntity instanceof IInventory)
-                            {
-                                IInventory inventory = (IInventory) tileEntity;
-                                InventoryGenerationHandler.generateAllTags(inventory, random);
-                            }
+                            world.setBlockMetadataWithNotify(worldPos.x, worldPos.y, worldPos.z, meta, 2); // TODO Figure out why some blocks (chests, furnace) need this
 
-                            if (tileEntity instanceof GeneratingTileEntity)
+                            IvWorldData.setTileEntityPosForGeneration(tileEntity, worldPos);
+                            world.setTileEntity(worldPos.x, worldPos.y, worldPos.z, tileEntity);
+                            tileEntity.updateContainingBlockInfo();
+
+                            if (!context.generateAsSource)
                             {
-                                generatingTileEntities.add((GeneratingTileEntity) tileEntity);
+                                if (tileEntity instanceof IInventory)
+                                {
+                                    IInventory inventory = (IInventory) tileEntity;
+                                    InventoryGenerationHandler.generateAllTags(inventory, random);
+                                }
+
+                                if (tileEntity instanceof GeneratingTileEntity)
+                                {
+                                    generatingTileEntities.add((GeneratingTileEntity) tileEntity);
+                                }
                             }
                         }
+                        context.transform.rotateBlock(world, worldPos, block);
                     }
-                    transform.rotateBlock(world, worldPos, block);
                 }
             }
         }
 
-        if (!asSource)
+        if (!context.generateAsSource)
         {
             for (BlockTransformer transformer : blockTransformers)
             {
                 if (transformer.generatesInPhase(BlockTransformer.Phase.AFTER))
-                    transformer.transform(world, random, BlockTransformer.Phase.AFTER, origin, size, transform, worldData, blockTransformers);
+                    transformer.transform(world, random, BlockTransformer.Phase.AFTER, origin, areaSize, context.transform, worldData, blockTransformers);
             }
         }
 
@@ -203,17 +204,18 @@ public class GenericStructureInfo implements StructureInfo, Cloneable
         {
             entity.entityUniqueID = UUID.randomUUID();
 
-            IvWorldData.transformEntityPosForGeneration(entity, transform, size);
+            IvWorldData.transformEntityPosForGeneration(entity, context.transform, areaSize);
             IvWorldData.moveEntityForGeneration(entity, origin);
 
-            world.spawnEntityInWorld(entity);
+            if (context.boundingBox.isVecInside(MathHelper.floor_double(entity.posX), MathHelper.floor_double(entity.posY), MathHelper.floor_double(entity.posZ)))
+                world.spawnEntityInWorld(entity);
         }
 
-        if (layer < MAX_GENERATING_LAYERS)
+        if (context.generationLayer < MAX_GENERATING_LAYERS)
         {
             for (GeneratingTileEntity generatingTileEntity : generatingTileEntities)
             {
-                generatingTileEntity.generate(world, random, transform, layer + 1);
+                generatingTileEntity.generate(world, random, context.transform, context.generationLayer + 1);
             }
         }
         else
@@ -294,6 +296,12 @@ public class GenericStructureInfo implements StructureInfo, Cloneable
     }
 
     @Override
+    public VanillaStructureSpawnInfo vanillaStructureSpawnInfo()
+    {
+        return vanillaStructureSpawnInfo;
+    }
+
+    @Override
     public Object clone()
     {
         GenericStructureInfo genericStructureInfo = StructureHandler.createStructureFromJSON(StructureHandler.createJSONFromStructure(this));
@@ -341,6 +349,9 @@ public class GenericStructureInfo implements StructureInfo, Cloneable
 
             if (jsonobject.has("mazeGenerationInfo"))
                 structureInfo.mazeGenerationInfo = context.deserialize(jsonobject.get("mazeGenerationInfo"), MazeGenerationInfo.class);
+
+            if (jsonobject.has("vanillaStructureGenerationInfo"))
+                structureInfo.vanillaStructureSpawnInfo = context.deserialize(jsonobject.get("vanillaStructureGenerationInfo"), VanillaStructureSpawnInfo.class);
 
             structureInfo.rotatable = JsonUtils.getJsonObjectBooleanFieldValueOrDefault(jsonobject, "rotatable", false);
             structureInfo.mirrorable = JsonUtils.getJsonObjectBooleanFieldValueOrDefault(jsonobject, "mirrorable", false);
@@ -395,6 +406,8 @@ public class GenericStructureInfo implements StructureInfo, Cloneable
                 jsonobject.add("naturalGenerationInfo", context.serialize(structureInfo.naturalGenerationInfo));
             if (structureInfo.mazeGenerationInfo != null)
                 jsonobject.add("mazeGenerationInfo", context.serialize(structureInfo.mazeGenerationInfo));
+            if (structureInfo.vanillaStructureSpawnInfo != null)
+                jsonobject.add("vanillaStructureGenerationInfo", context.serialize(structureInfo.vanillaStructureSpawnInfo));
 
             if (structureInfo.dependencies.size() > 0)
             {

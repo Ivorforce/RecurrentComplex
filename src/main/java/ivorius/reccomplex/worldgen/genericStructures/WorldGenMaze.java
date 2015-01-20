@@ -36,7 +36,7 @@ public class WorldGenMaze
             AxisAlignedTransform2D componentTransform = info.transform;
             StructureInfo compStructureInfo = info.structureInfo;
 
-            int[] compStructureSize = WorldGenStructures.structureBoundingBox(compStructureInfo, componentTransform);
+            int[] compStructureSize = WorldGenStructures.structureSize(compStructureInfo, componentTransform);
             int[] compRoomSize = Maze.getRoomSize(position.getComponent().getSize(), pathLengths, roomSize);
             int[] sizeDependentShift = new int[]{(compRoomSize[0] - compStructureSize[0]) / 2, (compRoomSize[1] - compStructureSize[1]) / 2, (compRoomSize[2] - compStructureSize[2]) / 2};
 

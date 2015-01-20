@@ -5,9 +5,8 @@
 
 package ivorius.reccomplex.events;
 
-import ivorius.ivtoolkit.blocks.BlockArea;
-import ivorius.ivtoolkit.math.AxisAlignedTransform2D;
 import ivorius.reccomplex.worldgen.StructureInfo;
+import ivorius.reccomplex.worldgen.StructureSpawnContext;
 import net.minecraft.world.World;
 import net.minecraftforge.event.world.WorldEvent;
 
@@ -22,42 +21,30 @@ public class StructureGenerationEvent extends WorldEvent
     public final StructureInfo structureInfo;
 
     /**
-     * The transform that affects the structure generation.
+     * The context in which the structure will spawn.
      */
-    public final AxisAlignedTransform2D transform;
+    public StructureSpawnContext spawnContext;
 
-    /**
-     * The (expected) generated area.
-     */
-    public final BlockArea area;
-
-    /**
-     * The depth at which the structure spawns. Example: 0 = spawned as such, 1 = spawned within another structure, etc.
-     */
-    public final int generationLayer;
-
-    public StructureGenerationEvent(World world, StructureInfo structureInfo, AxisAlignedTransform2D transform, BlockArea area, int generationLayer)
+    public StructureGenerationEvent(StructureInfo structureInfo, StructureSpawnContext spawnContext)
     {
-        super(world);
+        super(spawnContext.world);
         this.structureInfo = structureInfo;
-        this.transform = transform;
-        this.area = area;
-        this.generationLayer = generationLayer;
+        this.spawnContext = spawnContext;
     }
 
     public static class Pre extends StructureGenerationEvent
     {
-        public Pre(World world, StructureInfo structureInfo, AxisAlignedTransform2D transform, BlockArea area, int generationLayer)
+        public Pre(StructureInfo structureInfo, StructureSpawnContext spawnContext)
         {
-            super(world, structureInfo, transform, area, generationLayer);
+            super(structureInfo, spawnContext);
         }
     }
 
     public static class Post extends StructureGenerationEvent
     {
-        public Post(World world, StructureInfo structureInfo, AxisAlignedTransform2D transform, BlockArea area, int generationLayer)
+        public Post(StructureInfo structureInfo, StructureSpawnContext spawnContext)
         {
-            super(world, structureInfo, transform, area, generationLayer);
+            super(structureInfo, spawnContext);
         }
     }
 }

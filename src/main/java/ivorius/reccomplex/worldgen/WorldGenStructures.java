@@ -19,6 +19,7 @@ import net.minecraft.util.ChunkCoordinates;
 import net.minecraft.world.World;
 import net.minecraft.world.biome.BiomeGenBase;
 import net.minecraft.world.chunk.IChunkProvider;
+import net.minecraft.world.gen.structure.StructureBoundingBox;
 import net.minecraftforge.common.MinecraftForge;
 
 import java.util.List;
@@ -66,7 +67,7 @@ public class WorldGenStructures implements IWorldGenerator
     {
         AxisAlignedTransform2D transform = AxisAlignedTransform2D.transform(info.isRotatable() ? random.nextInt(4) : 0, info.isMirrorable() && random.nextBoolean());
 
-        int[] size = structureBoundingBox(info, transform);
+        int[] size = structureSize(info, transform);
 
         int genX = x - size[0] / 2;
         int genZ = z - size[2] / 2;
@@ -80,16 +81,17 @@ public class WorldGenStructures implements IWorldGenerator
 
     public static void generateStructureWithNotifications(StructureInfo structureInfo, World world, Random random, BlockCoord coord, AxisAlignedTransform2D strucTransform, int layer)
     {
-        int[] size = structureBoundingBox(structureInfo, strucTransform);
-        BlockArea genArea = new BlockArea(coord, coord.add(size[0] - 1, size[1] - 1, size[2] - 1));
+        int[] size = structureSize(structureInfo, strucTransform);
         int[] coordInts = new int[]{coord.x, coord.y, coord.z};
 
-        RCEventBus.INSTANCE.post(new StructureGenerationEvent.Pre(world, structureInfo, strucTransform, genArea, layer));
+        StructureSpawnContext structureSpawnContext = new StructureSpawnContext(world, random, structureBoundingBox(coord, size), layer, false, strucTransform);
+
+        RCEventBus.INSTANCE.post(new StructureGenerationEvent.Pre(structureInfo, structureSpawnContext));
         MinecraftForge.EVENT_BUS.post(new StructureGenerationEventLite.Pre(world, StructureHandler.getName(structureInfo), coordInts, size, layer));
 
-        structureInfo.generate(world, random, coord, strucTransform, layer);
+        structureInfo.generate(structureSpawnContext);
 
-        RCEventBus.INSTANCE.post(new StructureGenerationEvent.Post(world, structureInfo, strucTransform, genArea, layer));
+        RCEventBus.INSTANCE.post(new StructureGenerationEvent.Post(structureInfo, structureSpawnContext));
         MinecraftForge.EVENT_BUS.post(new StructureGenerationEventLite.Post(world, StructureHandler.getName(structureInfo), coordInts, size, layer));
     }
 
@@ -101,7 +103,7 @@ public class WorldGenStructures implements IWorldGenerator
             if (structureInfo != null)
             {
                 AxisAlignedTransform2D transform = AxisAlignedTransform2D.transform(structureInfo.isRotatable() ? random.nextInt(4) : 0, structureInfo.isMirrorable() && random.nextBoolean());
-                int[] strucBB = structureBoundingBox(structureInfo, transform);
+                int[] strucBB = structureSize(structureInfo, transform);
 
                 int strucX = spawn.posX + RCConfig.spawnStructureShiftX;
                 int strucZ = spawn.posZ + RCConfig.spawnStructureShiftZ;
@@ -116,7 +118,7 @@ public class WorldGenStructures implements IWorldGenerator
         }
     }
 
-    public static int[] structureBoundingBox(StructureInfo info, AxisAlignedTransform2D transform)
+    public static int[] structureSize(StructureInfo info, AxisAlignedTransform2D transform)
     {
         int[] size = info.structureBoundingBox();
         if (transform.getRotation() % 2 == 1)
@@ -126,6 +128,11 @@ public class WorldGenStructures implements IWorldGenerator
             size[2] = cache;
         }
         return size;
+    }
+
+    public static StructureBoundingBox structureBoundingBox(BlockCoord coord, int[] size)
+    {
+        return new StructureBoundingBox(coord.x, coord.y, coord.z, coord.x + size[0], coord.y + size[1], coord.z + size[2]);
     }
 
     public static boolean chunkContains(int chunkX, int chunkZ, ChunkCoordinates coords)

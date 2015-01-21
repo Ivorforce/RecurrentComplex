@@ -55,7 +55,7 @@ public class WorldGenStructures implements IWorldGenerator
 
         if (!suggest
                 || !RCEventBus.INSTANCE.post(new StructureGenerationEvent.Suggest(structureInfo, structureSpawnContext))
-                || !RCEventBus.INSTANCE.post(new StructureGenerationEventLite.Suggest(world, structureName, coordInts, size, layer)))
+                || !MinecraftForge.EVENT_BUS.post(new StructureGenerationEventLite.Suggest(world, structureName, coordInts, size, layer)))
         {
             RCEventBus.INSTANCE.post(new StructureGenerationEvent.Pre(structureInfo, structureSpawnContext));
             MinecraftForge.EVENT_BUS.post(new StructureGenerationEventLite.Pre(world, structureName, coordInts, size, layer));

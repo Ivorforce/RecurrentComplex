@@ -5,15 +5,12 @@
 
 package ivorius.reccomplex.gui.editstructure;
 
-import com.google.common.primitives.Ints;
 import gnu.trove.list.TIntList;
 import gnu.trove.list.array.TIntArrayList;
 import ivorius.reccomplex.dimensions.DimensionDictionary;
 import ivorius.reccomplex.gui.GuiValidityStateIndicator;
 import ivorius.reccomplex.gui.table.*;
-import ivorius.reccomplex.worldgen.genericStructures.BiomeGenerationInfo;
 import ivorius.reccomplex.worldgen.genericStructures.DimensionGenerationInfo;
-import net.minecraft.world.biome.BiomeGenBase;
 import net.minecraftforge.common.DimensionManager;
 
 /**
@@ -44,7 +41,7 @@ public class TableDataSourceDimensionGen implements TableDataSource, TableElemen
         {
             TableElementString element = new TableElementString("dimID", "Dimension ID", generationInfo.getDimensionID());
             element.setShowsValidityState(true);
-            element.setValidityState(currentBiomeIDState());
+            element.setValidityState(currentDimensionIDState());
             element.addPropertyListener(this);
             return element;
         }
@@ -71,7 +68,7 @@ public class TableDataSourceDimensionGen implements TableDataSource, TableElemen
         if ("dimID".equals(element.getID()))
         {
             generationInfo.setDimensionID((String) element.getPropertyValue());
-            ((TableElementString) element).setValidityState(currentBiomeIDState());
+            ((TableElementString) element).setValidityState(currentDimensionIDState());
         }
         else if ("defaultWeight".equals(element.getID()))
         {
@@ -85,7 +82,7 @@ public class TableDataSourceDimensionGen implements TableDataSource, TableElemen
         }
     }
 
-    private GuiValidityStateIndicator.State currentBiomeIDState()
+    private GuiValidityStateIndicator.State currentDimensionIDState()
     {
         if (generationInfo.isTypeList())
         {

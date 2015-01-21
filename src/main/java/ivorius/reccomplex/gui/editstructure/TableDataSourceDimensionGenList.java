@@ -91,16 +91,16 @@ public class TableDataSourceDimensionGenList extends TableDataSourceSegmented im
         }
         else if (segment == 1)
         {
-            int biomeGenIndex = index;
-            TableElementButton.Action[] actions = {new TableElementButton.Action("earlier", "Earlier", biomeGenIndex > 0), new TableElementButton.Action("later", "Later", biomeGenIndex < dimensionGenerationInfos.size() - 1), new TableElementButton.Action("edit", "Edit"), new TableElementButton.Action("delete", "Delete")};
-            DimensionGenerationInfo generationInfo = dimensionGenerationInfos.get(biomeGenIndex);
-            TableElementButton button = new TableElementButton("dimensionGen" + biomeGenIndex, generationInfo.getDisplayString() + " (" + generationInfo.getActiveGenerationWeight() + ")", actions);
+            int dimGenIndex = index;
+            TableElementButton.Action[] actions = {new TableElementButton.Action("earlier", "Earlier", dimGenIndex > 0), new TableElementButton.Action("later", "Later", dimGenIndex < dimensionGenerationInfos.size() - 1), new TableElementButton.Action("edit", "Edit"), new TableElementButton.Action("delete", "Delete")};
+            DimensionGenerationInfo generationInfo = dimensionGenerationInfos.get(dimGenIndex);
+            TableElementButton button = new TableElementButton("dimensionGen" + dimGenIndex, generationInfo.getDisplayString() + " (" + generationInfo.getActiveGenerationWeight() + ")", actions);
             button.addListener(this);
             return button;
         }
         else if (segment == 2)
         {
-            TableElementButton addButton = new TableElementButton("addGen", "Add", new TableElementButton.Action("addGen", "Add Biome"));
+            TableElementButton addButton = new TableElementButton("addGen", "Add", new TableElementButton.Action("addGen", "Add Dimension"));
             addButton.addListener(this);
             return addButton;
         }

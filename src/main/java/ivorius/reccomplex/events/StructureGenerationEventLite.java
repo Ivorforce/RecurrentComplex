@@ -5,6 +5,7 @@
 
 package ivorius.reccomplex.events;
 
+import cpw.mods.fml.common.eventhandler.Cancelable;
 import net.minecraft.world.World;
 import net.minecraftforge.event.world.WorldEvent;
 
@@ -40,6 +41,15 @@ public class StructureGenerationEventLite extends WorldEvent
         this.coordinates = coordinates;
         this.size = size;
         this.generationLayer = generationLayer;
+    }
+
+    @Cancelable
+    public static class Suggest extends StructureGenerationEventLite
+    {
+        public Suggest(World world, String structureName, int[] coordinates, int[] size, int generationLayer)
+        {
+            super(world, structureName, coordinates, size, generationLayer);
+        }
     }
 
     public static class Pre extends StructureGenerationEventLite

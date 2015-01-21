@@ -29,40 +29,7 @@ import java.util.Random;
  */
 public class WorldGenStructures implements IWorldGenerator
 {
-    @Override
-    public void generate(Random random, int chunkX, int chunkZ, World world, IChunkProvider chunkGenerator, IChunkProvider chunkProvider)
-    {
-        boolean mayGenerate = world.getWorldInfo().isMapFeaturesEnabled();
-        if (world.provider.dimensionId == 0)
-        {
-            ChunkCoordinates spawnPos = world.getSpawnPoint();
-
-            if (chunkContains(chunkX, chunkZ, spawnPos))
-                generateSpawnStructure(random, spawnPos, world, chunkGenerator, chunkProvider);
-
-            double distToSpawn = IvVecMathHelper.distanceSQ(new double[]{chunkX * 16 + 8, chunkZ * 16 + 8}, new double[]{spawnPos.posX, spawnPos.posZ});
-            mayGenerate &= distToSpawn >= RCConfig.minDistToSpawnForGeneration * RCConfig.minDistToSpawnForGeneration;
-        }
-
-        if (mayGenerate)
-        {
-            BiomeGenBase biomeGen = world.getBiomeGenForCoords(chunkX * 16, chunkZ * 16);
-
-            StructureSelector structureSelector = StructureRegistry.getStructureSelector(biomeGen, world.provider.dimensionId);
-            List<StructureInfo> generated = structureSelector.generatedStructures(random, chunkX, chunkZ, world, chunkGenerator, chunkProvider);
-
-            for (StructureInfo info : generated)
-            {
-                int genX = chunkX * 16 + random.nextInt(16);
-                int genZ = chunkZ * 16 + random.nextInt(16);
-                int genY = generateStructureRandomly(world, random, info, genX, genZ);
-
-//                RecurrentComplex.logger.info("Generated " + info + " at " + genX + ", " + genY + ", " + genZ);
-            }
-        }
-    }
-
-    public static int generateStructureRandomly(World world, Random random, StructureInfo info, int x, int z)
+    public static int generateStructureRandomly(World world, Random random, StructureInfo info, int x, int z, boolean suggest)
     {
         AxisAlignedTransform2D transform = AxisAlignedTransform2D.transform(info.isRotatable() ? random.nextInt(4) : 0, info.isMirrorable() && random.nextBoolean());
 
@@ -73,25 +40,31 @@ public class WorldGenStructures implements IWorldGenerator
         int genY = info.generationY(world, random, x, z);
         BlockCoord coord = new BlockCoord(genX, genY, genZ);
 
-        generateStructureWithNotifications(info, world, random, coord, transform, 0);
+        generateStructureWithNotifications(info, world, random, coord, transform, 0, suggest);
 
         return genY;
     }
 
-    public static void generateStructureWithNotifications(StructureInfo structureInfo, World world, Random random, BlockCoord coord, AxisAlignedTransform2D strucTransform, int layer)
+    public static void generateStructureWithNotifications(StructureInfo structureInfo, World world, Random random, BlockCoord coord, AxisAlignedTransform2D strucTransform, int layer, boolean suggest)
     {
         int[] size = structureSize(structureInfo, strucTransform);
         int[] coordInts = new int[]{coord.x, coord.y, coord.z};
 
         StructureSpawnContext structureSpawnContext = new StructureSpawnContext(world, random, structureBoundingBox(coord, size), layer, false, strucTransform);
+        String structureName = StructureRegistry.getName(structureInfo);
 
-        RCEventBus.INSTANCE.post(new StructureGenerationEvent.Pre(structureInfo, structureSpawnContext));
-        MinecraftForge.EVENT_BUS.post(new StructureGenerationEventLite.Pre(world, StructureRegistry.getName(structureInfo), coordInts, size, layer));
+        if (!suggest
+                || !RCEventBus.INSTANCE.post(new StructureGenerationEvent.Suggest(structureInfo, structureSpawnContext))
+                || !RCEventBus.INSTANCE.post(new StructureGenerationEventLite.Suggest(world, structureName, coordInts, size, layer)))
+        {
+            RCEventBus.INSTANCE.post(new StructureGenerationEvent.Pre(structureInfo, structureSpawnContext));
+            MinecraftForge.EVENT_BUS.post(new StructureGenerationEventLite.Pre(world, structureName, coordInts, size, layer));
 
-        structureInfo.generate(structureSpawnContext);
+            structureInfo.generate(structureSpawnContext);
 
-        RCEventBus.INSTANCE.post(new StructureGenerationEvent.Post(structureInfo, structureSpawnContext));
-        MinecraftForge.EVENT_BUS.post(new StructureGenerationEventLite.Post(world, StructureRegistry.getName(structureInfo), coordInts, size, layer));
+            RCEventBus.INSTANCE.post(new StructureGenerationEvent.Post(structureInfo, structureSpawnContext));
+            MinecraftForge.EVENT_BUS.post(new StructureGenerationEventLite.Post(world, structureName, coordInts, size, layer));
+        }
     }
 
     public static void generateSpawnStructure(Random random, ChunkCoordinates spawn, World world, IChunkProvider chunkGenerator, IChunkProvider chunkProvider)
@@ -110,7 +83,7 @@ public class WorldGenStructures implements IWorldGenerator
 
                 BlockCoord genCoord = new BlockCoord(strucX, strucY, strucZ);
 
-                generateStructureWithNotifications(structureInfo, world, random, genCoord, transform, 0);
+                generateStructureWithNotifications(structureInfo, world, random, genCoord, transform, 0, false);
             }
             else
                 RecurrentComplex.logger.warn("Could not find spawn structure '" + RCConfig.spawnStructure + "'");
@@ -137,5 +110,38 @@ public class WorldGenStructures implements IWorldGenerator
     public static boolean chunkContains(int chunkX, int chunkZ, ChunkCoordinates coords)
     {
         return (coords.posX >> 4) == chunkX && (coords.posZ >> 4) == chunkZ;
+    }
+
+    @Override
+    public void generate(Random random, int chunkX, int chunkZ, World world, IChunkProvider chunkGenerator, IChunkProvider chunkProvider)
+    {
+        boolean mayGenerate = world.getWorldInfo().isMapFeaturesEnabled();
+        if (world.provider.dimensionId == 0)
+        {
+            ChunkCoordinates spawnPos = world.getSpawnPoint();
+
+            if (chunkContains(chunkX, chunkZ, spawnPos))
+                generateSpawnStructure(random, spawnPos, world, chunkGenerator, chunkProvider);
+
+            double distToSpawn = IvVecMathHelper.distanceSQ(new double[]{chunkX * 16 + 8, chunkZ * 16 + 8}, new double[]{spawnPos.posX, spawnPos.posZ});
+            mayGenerate &= distToSpawn >= RCConfig.minDistToSpawnForGeneration * RCConfig.minDistToSpawnForGeneration;
+        }
+
+        if (mayGenerate)
+        {
+            BiomeGenBase biomeGen = world.getBiomeGenForCoords(chunkX * 16, chunkZ * 16);
+
+            StructureSelector structureSelector = StructureRegistry.getStructureSelector(biomeGen, world.provider.dimensionId);
+            List<StructureInfo> generated = structureSelector.generatedStructures(random, chunkX, chunkZ, world, chunkGenerator, chunkProvider);
+
+            for (StructureInfo info : generated)
+            {
+                int genX = chunkX * 16 + random.nextInt(16);
+                int genZ = chunkZ * 16 + random.nextInt(16);
+                generateStructureRandomly(world, random, info, genX, genZ, true);
+
+//                RecurrentComplex.logger.info("Generated " + info + " at " + genX + ", " + genY + ", " + genZ);
+            }
+        }
     }
 }

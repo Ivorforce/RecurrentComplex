@@ -42,7 +42,7 @@ public class WorldGenMaze
 
             BlockCoord compMazeCoordLower = coord.add(scaledCompMazePosition[0] + sizeDependentShift[0], scaledCompMazePosition[1] + sizeDependentShift[1], scaledCompMazePosition[2] + +sizeDependentShift[2]);
 
-            WorldGenStructures.generateStructureWithNotifications(compStructureInfo, world, random, compMazeCoordLower, componentTransform, layer + 1);
+            WorldGenStructures.generateStructureWithNotifications(compStructureInfo, world, random, compMazeCoordLower, componentTransform, layer + 1, false);
         }
 
 //        for (int i = 0; i < maze.blocks.length; i++)

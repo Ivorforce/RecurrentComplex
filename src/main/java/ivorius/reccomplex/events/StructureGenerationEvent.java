@@ -5,9 +5,9 @@
 
 package ivorius.reccomplex.events;
 
+import cpw.mods.fml.common.eventhandler.Cancelable;
 import ivorius.reccomplex.worldgen.StructureInfo;
 import ivorius.reccomplex.worldgen.StructureSpawnContext;
-import net.minecraft.world.World;
 import net.minecraftforge.event.world.WorldEvent;
 
 /**
@@ -30,6 +30,15 @@ public class StructureGenerationEvent extends WorldEvent
         super(spawnContext.world);
         this.structureInfo = structureInfo;
         this.spawnContext = spawnContext;
+    }
+
+    @Cancelable
+    public static class Suggest extends StructureGenerationEvent
+    {
+        public Suggest(StructureInfo structureInfo, StructureSpawnContext spawnContext)
+        {
+            super(structureInfo, spawnContext);
+        }
     }
 
     public static class Pre extends StructureGenerationEvent

@@ -140,7 +140,7 @@ public class TileEntityStructureGenerator extends TileEntity implements Generati
                 int[] strucSize = structureInfo.structureBoundingBox();
                 BlockCoord coord = transform.apply(structureShift, new int[]{1, 1, 1}).add(xCoord, yCoord, zCoord).subtract(transform.apply(new BlockCoord(0, 0, 0), strucSize));
 
-                WorldGenStructures.generateStructureWithNotifications(structureInfo, world, random, coord, strucTransform, layer);
+                WorldGenStructures.generateStructureWithNotifications(structureInfo, world, random, coord, strucTransform, layer, false);
             }
         }
     }

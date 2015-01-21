@@ -62,7 +62,7 @@ public class CommandGenerateStructure extends CommandBase
             z = MathHelper.floor_double(func_110666_a(commandSender, (double) z, args[2]));
         }
 
-        WorldGenStructures.generateStructureRandomly(world, world.rand, structureInfo, x, z);
+        WorldGenStructures.generateStructureRandomly(world, world.rand, structureInfo, x, z, false);
     }
 
     @Override

@@ -9,7 +9,6 @@ import com.google.gson.*;
 import cpw.mods.fml.common.Loader;
 import ivorius.ivtoolkit.blocks.BlockCoord;
 import ivorius.ivtoolkit.blocks.IvBlockCollection;
-import ivorius.ivtoolkit.math.AxisAlignedTransform2D;
 import ivorius.ivtoolkit.tools.IvWorldData;
 import ivorius.reccomplex.RecurrentComplex;
 import ivorius.reccomplex.blocks.GeneratingTileEntity;
@@ -37,7 +36,6 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.MathHelper;
 import net.minecraft.world.World;
 import net.minecraft.world.biome.BiomeGenBase;
-import net.minecraft.world.gen.structure.StructureBoundingBox;
 import net.minecraftforge.common.BiomeDictionary;
 
 import java.lang.reflect.Type;
@@ -78,7 +76,7 @@ public class GenericStructureInfo implements StructureInfo, Cloneable
         genericStructureInfo.blockTransformers.add(new BlockTransformerNegativeSpace(RCBlocks.naturalFloor, 1));
 
         genericStructureInfo.naturalGenerationInfo = new NaturalGenerationInfo("decoration", new GenerationYSelector(GenerationYSelector.SelectionMode.SURFACE, 0, 0));
-        genericStructureInfo.naturalGenerationInfo.generationWeights.addAll(BiomeGenerationInfo.overworldBiomeGenerationList());
+        genericStructureInfo.naturalGenerationInfo.biomeWeights.addAll(BiomeGenerationInfo.overworldBiomeGenerationList());
 
         return genericStructureInfo;
     }
@@ -243,11 +241,30 @@ public class GenericStructureInfo implements StructureInfo, Cloneable
     }
 
     @Override
-    public int generationWeightInBiome(BiomeGenBase biome)
+    public int generationWeight(BiomeGenBase biome, int dimensionID)
+    {
+        return generationWeightInBiome(biome) * generationWeightInDimension(dimensionID);
+    }
+
+    protected int generationWeightInDimension(int dimensionID)
     {
         if (naturalGenerationInfo != null)
         {
-            for (BiomeGenerationInfo generationInfo : naturalGenerationInfo.generationWeights)
+            for (DimensionGenerationInfo generationInfo : naturalGenerationInfo.dimensionWeights)
+            {
+                if (generationInfo.matches(dimensionID))
+                    return generationInfo.getActiveGenerationWeight();
+            }
+        }
+
+        return 0;
+    }
+
+    protected int generationWeightInBiome(BiomeGenBase biome)
+    {
+        if (naturalGenerationInfo != null)
+        {
+            for (BiomeGenerationInfo generationInfo : naturalGenerationInfo.biomeWeights)
             {
                 if (generationInfo.matches(biome))
                     return generationInfo.getActiveGenerationWeight();

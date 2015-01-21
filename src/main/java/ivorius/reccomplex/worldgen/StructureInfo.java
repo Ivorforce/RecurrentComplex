@@ -28,7 +28,7 @@ public interface StructureInfo
 
     boolean isMirrorable();
 
-    int generationWeightInBiome(BiomeGenBase biome);
+    int generationWeight(BiomeGenBase biome, int dimensionID);
 
     String generationCategory();
 

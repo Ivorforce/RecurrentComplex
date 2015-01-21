@@ -5,14 +5,10 @@
 
 package ivorius.reccomplex.worldgen.genericStructures;
 
-import com.google.gson.*;
-import ivorius.ivtoolkit.tools.IvGsonHelper;
-import ivorius.reccomplex.json.JsonUtils;
 import ivorius.reccomplex.json.RCGsonHelper;
 import net.minecraft.world.biome.BiomeGenBase;
 import net.minecraftforge.common.BiomeDictionary;
 
-import java.lang.reflect.Type;
 import java.util.*;
 
 /**
@@ -25,6 +21,33 @@ public class BiomeSelector
     public BiomeSelector(String biomeID)
     {
         this.biomeID = biomeID;
+    }
+
+    public static Set<BiomeGenBase> gatherAllBiomes()
+    {
+        Set<BiomeGenBase> set = new HashSet<>();
+
+        for (BiomeGenBase biomeGenBase : BiomeGenBase.getBiomeGenArray())
+        {
+            if (biomeGenBase != null)
+                set.add(biomeGenBase);
+        }
+
+        for (BiomeDictionary.Type type : BiomeDictionary.Type.values())
+            Collections.addAll(set, BiomeDictionary.getBiomesForType(type));
+
+        return set;
+    }
+
+    public static boolean isBiomeAllTypes(BiomeGenBase biomeGenBase, List<BiomeDictionary.Type> types)
+    {
+        for (BiomeDictionary.Type type : types)
+        {
+            if (!BiomeDictionary.isBiomeOfType(biomeGenBase, type))
+                return false;
+        }
+
+        return true;
     }
 
     public String getBiomeID()
@@ -61,22 +84,6 @@ public class BiomeSelector
         return null;
     }
 
-    public static Set<BiomeGenBase> gatherAllBiomes()
-    {
-        Set<BiomeGenBase> set = new HashSet<>();
-
-        for (BiomeGenBase biomeGenBase : BiomeGenBase.getBiomeGenArray())
-        {
-            if (biomeGenBase != null)
-                set.add(biomeGenBase);
-        }
-
-        for (BiomeDictionary.Type type : BiomeDictionary.Type.values())
-            Collections.addAll(set, BiomeDictionary.getBiomesForType(type));
-
-        return set;
-    }
-
     public boolean matches(BiomeGenBase biome)
     {
         String generationBiomeID = getBiomeID();
@@ -85,17 +92,6 @@ public class BiomeSelector
 
         List<BiomeDictionary.Type> types = getBiomeTypes();
         return types != null && isBiomeAllTypes(biome, types);
-    }
-
-    public static boolean isBiomeAllTypes(BiomeGenBase biomeGenBase, List<BiomeDictionary.Type> types)
-    {
-        for (BiomeDictionary.Type type : types)
-        {
-            if (!BiomeDictionary.isBiomeOfType(biomeGenBase, type))
-                return false;
-        }
-
-        return true;
     }
 
     public boolean isTypeList()

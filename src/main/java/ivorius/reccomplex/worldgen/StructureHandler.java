@@ -19,6 +19,7 @@ import ivorius.reccomplex.json.StringTypeAdapterFactory;
 import ivorius.reccomplex.worldgen.blockTransformers.BlockTransformer;
 import ivorius.reccomplex.worldgen.blockTransformers.BlockTransformerProvider;
 import ivorius.reccomplex.worldgen.genericStructures.BiomeGenerationInfo;
+import ivorius.reccomplex.worldgen.genericStructures.DimensionGenerationInfo;
 import ivorius.reccomplex.worldgen.genericStructures.GenericStructureInfo;
 import ivorius.reccomplex.worldgen.genericStructures.SavedMazeComponent;
 import ivorius.reccomplex.worldgen.genericStructures.gentypes.MazeGenerationInfo;
@@ -26,6 +27,8 @@ import ivorius.reccomplex.worldgen.genericStructures.gentypes.NaturalGenerationI
 import ivorius.reccomplex.worldgen.genericStructures.gentypes.VanillaStructureSpawnInfo;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.biome.BiomeGenBase;
+import org.apache.commons.lang3.tuple.ImmutablePair;
+import org.apache.commons.lang3.tuple.Pair;
 
 import java.util.*;
 
@@ -37,7 +40,7 @@ public class StructureHandler
     private static BiMap<String, StructureInfo> allStructures = HashBiMap.create();
     private static Map<String, StructureInfo> generatingStructures = new HashMap<>();
 
-    private static Map<String, StructureSelector> structureSelectorsInBiomes = new HashMap<>();
+    private static Map<Pair<Integer, String>, StructureSelector> structureSelectors = new HashMap<>();
     private static Map<String, List<StructureInfo>> structuresInMazes = new HashMap<>();
 
     private static StringTypeAdapterFactory<BlockTransformer> blockTransformerAdapterFactory;
@@ -51,6 +54,7 @@ public class StructureHandler
 
         builder.registerTypeAdapter(GenericStructureInfo.class, new GenericStructureInfo.Serializer());
         builder.registerTypeAdapter(BiomeGenerationInfo.class, new BiomeGenerationInfo.Serializer());
+        builder.registerTypeAdapter(DimensionGenerationInfo.class, new DimensionGenerationInfo.Serializer());
         builder.registerTypeAdapter(NaturalGenerationInfo.class, new NaturalGenerationInfo.Serializer());
         builder.registerTypeAdapter(MazeGenerationInfo.class, new MazeGenerationInfo.Serializer());
         builder.registerTypeAdapter(VanillaStructureSpawnInfo.class, new VanillaStructureSpawnInfo.Serializer());
@@ -137,12 +141,13 @@ public class StructureHandler
         return allStructures.keySet();
     }
 
-    public static StructureSelector getStructureSelectorInBiome(BiomeGenBase biome)
+    public static StructureSelector getStructureSelector(BiomeGenBase biome, int dimensionID)
     {
-        if (!structureSelectorsInBiomes.containsKey(biome.biomeName))
-            structureSelectorsInBiomes.put(biome.biomeName, new StructureSelector(getAllGeneratingStructures(), biome));
+        Pair<Integer, String> pair = new ImmutablePair<>(dimensionID, biome.biomeName);
+        if (!structureSelectors.containsKey(pair))
+            structureSelectors.put(pair, new StructureSelector(getAllGeneratingStructures(), biome, dimensionID));
 
-        return structureSelectorsInBiomes.get(biome.biomeName);
+        return structureSelectors.get(pair);
     }
 
     public static List<StructureInfo> getStructuresInMaze(String mazeID)
@@ -194,7 +199,7 @@ public class StructureHandler
 
     private static void clearCaches()
     {
-        structureSelectorsInBiomes.clear();
+        structureSelectors.clear();
         structuresInMazes.clear();
     }
 }

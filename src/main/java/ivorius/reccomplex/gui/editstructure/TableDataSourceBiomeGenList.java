@@ -14,7 +14,7 @@ import java.util.List;
 /**
  * Created by lukas on 04.06.14.
  */
-public class TableDataSourceBiomeGenList implements TableDataSource, TableElementButton.Listener, TableElementPresetAction.Listener
+public class TableDataSourceBiomeGenList extends TableDataSourceSegmented implements TableElementButton.Listener, TableElementPresetAction.Listener
 {
     private List<BiomeGenerationInfo> biomeGenerationInfoList;
 
@@ -59,33 +59,53 @@ public class TableDataSourceBiomeGenList implements TableDataSource, TableElemen
     }
 
     @Override
-    public boolean has(GuiTable table, int index)
+    public int numberOfSegments()
     {
-        return index >= 0 && index < biomeGenerationInfoList.size() + 2;
+        return 3;
     }
 
     @Override
-    public TableElement elementForIndex(GuiTable table, int index)
+    public int sizeOfSegment(int segment)
     {
-        if (index == 0)
+        switch (segment)
+        {
+            case 0:
+                return 1;
+            case 1:
+                return biomeGenerationInfoList.size();
+            case 2:
+                return 1;
+        }
+
+        return 0;
+    }
+
+    @Override
+    public TableElement elementForIndexInSegment(GuiTable table, int index, int segment)
+    {
+        if (segment == 0)
         {
             TableElementPresetAction elementPresetAction = new TableElementPresetAction("biomePreset", "Presets", "Apply", new TableElementButton.Action("overworld", "Overworld"), new TableElementButton.Action("underground", "Underground"), new TableElementButton.Action("ocean", "Ocean"), new TableElementButton.Action("clear", "Clear"));
             elementPresetAction.addListener(this);
             return elementPresetAction;
         }
-        else if (index == biomeGenerationInfoList.size() + 1)
+        else if (segment == 1)
+        {
+            int biomeGenIndex = index;
+            TableElementButton.Action[] actions = {new TableElementButton.Action("earlier", "Earlier", biomeGenIndex > 0), new TableElementButton.Action("later", "Later", biomeGenIndex < biomeGenerationInfoList.size() - 1), new TableElementButton.Action("edit", "Edit"), new TableElementButton.Action("delete", "Delete")};
+            BiomeGenerationInfo biomeGenerationInfo = biomeGenerationInfoList.get(biomeGenIndex);
+            TableElementButton button = new TableElementButton("biomeGen" + biomeGenIndex, biomeGenerationInfo.getDisplayString() + " (" + biomeGenerationInfo.getActiveGenerationWeight() + ")", actions);
+            button.addListener(this);
+            return button;
+        }
+        else if (segment == 2)
         {
             TableElementButton addButton = new TableElementButton("addGen", "Add", new TableElementButton.Action("addGen", "Add Biome"));
             addButton.addListener(this);
             return addButton;
         }
 
-        int biomeGenIndex = index - 1;
-        TableElementButton.Action[] actions = {new TableElementButton.Action("earlier", "Earlier", biomeGenIndex > 0), new TableElementButton.Action("later", "Later", biomeGenIndex < biomeGenerationInfoList.size() - 1), new TableElementButton.Action("edit", "Edit"), new TableElementButton.Action("delete", "Delete")};
-        BiomeGenerationInfo biomeGenerationInfo = biomeGenerationInfoList.get(biomeGenIndex);
-        TableElementButton button = new TableElementButton("biomeGen" + biomeGenIndex, biomeGenerationInfo.getDisplayString() + " (" + biomeGenerationInfo.getActiveGenerationWeight() + ")", actions);
-        button.addListener(this);
-        return button;
+        return null;
     }
 
     @Override

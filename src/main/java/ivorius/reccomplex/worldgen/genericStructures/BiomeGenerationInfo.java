@@ -6,15 +6,13 @@
 package ivorius.reccomplex.worldgen.genericStructures;
 
 import com.google.gson.*;
-import ivorius.ivtoolkit.tools.IvGsonHelper;
 import ivorius.reccomplex.json.JsonUtils;
-
 import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.world.biome.BiomeGenBase;
-import net.minecraftforge.common.BiomeDictionary;
 
 import java.lang.reflect.Type;
-import java.util.*;
+import java.util.Arrays;
+import java.util.List;
 
 /**
  * Created by lukas on 24.05.14.
@@ -32,9 +30,7 @@ public class BiomeGenerationInfo
 
     public static List<BiomeGenerationInfo> overworldBiomeGenerationList()
     {
-        return Arrays.asList(new BiomeGenerationInfo("Type:NETHER", 0),
-                new BiomeGenerationInfo("Type:END", 0),
-                new BiomeGenerationInfo("Type:WATER", 0),
+        return Arrays.asList(new BiomeGenerationInfo("Type:WATER", 0),
                 new BiomeGenerationInfo("Type:PLAINS", null),
                 new BiomeGenerationInfo("Type:FOREST", null),
                 new BiomeGenerationInfo("Type:MOUNTAIN", null),
@@ -50,9 +46,7 @@ public class BiomeGenerationInfo
 
     public static List<BiomeGenerationInfo> undergroundBiomeGenerationList()
     {
-        return Arrays.asList(new BiomeGenerationInfo("Type:NETHER", 0),
-                new BiomeGenerationInfo("Type:END", 0),
-                new BiomeGenerationInfo("Type:PLAINS", null),
+        return Arrays.asList(new BiomeGenerationInfo("Type:PLAINS", null),
                 new BiomeGenerationInfo("Type:FOREST", null),
                 new BiomeGenerationInfo("Type:MOUNTAIN", null),
                 new BiomeGenerationInfo("Type:HILLS", null),
@@ -69,9 +63,7 @@ public class BiomeGenerationInfo
 
     public static List<BiomeGenerationInfo> oceanBiomeGenerationList()
     {
-        return Arrays.asList(new BiomeGenerationInfo("Type:NETHER", 0),
-                new BiomeGenerationInfo("Type:END", 0),
-                new BiomeGenerationInfo("Type:OCEAN,SNOWY", 0),
+        return Arrays.asList(new BiomeGenerationInfo("Type:OCEAN,SNOWY", 0),
                 new BiomeGenerationInfo("Type:OCEAN", null));
     }
 

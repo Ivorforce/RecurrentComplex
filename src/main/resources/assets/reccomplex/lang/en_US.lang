@@ -109,6 +109,10 @@ commands.biomedict.list=Biomes of Type %s: %s
 commands.biomedict.nobiome=No Biome with the ID '%s'
 commands.biomedict.notype=No Biome Type with the ID '%s'
 
+commands.dimensiondict.usage=/dimensiondict <get|list> id (get: Dimension ID, list: Dimension Type ID)
+commands.dimensiondict.get=Dimension Types for %d: %s
+commands.dimensiondict.list=Dimensions of Type %s: %s
+
 inventoryGen.vanilla=Vanilla Generator
 inventoryGen.custom=Custom Generator
 inventoryGen.create=Create New Generator

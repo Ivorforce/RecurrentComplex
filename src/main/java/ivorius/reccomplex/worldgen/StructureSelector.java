@@ -40,11 +40,11 @@ public class StructureSelector
         return categories.keySet();
     }
 
-    public StructureSelector(Collection<StructureInfo> structures, BiomeGenBase biome)
+    public StructureSelector(Collection<StructureInfo> structures, BiomeGenBase biome, int dimensionID)
     {
         for (StructureInfo structureInfo : structures)
         {
-            int generationWeight = structureInfo.generationWeightInBiome(biome);
+            int generationWeight = structureInfo.generationWeight(biome, dimensionID);
 
             if (generationWeight > 0)
             {

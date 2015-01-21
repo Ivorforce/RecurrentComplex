@@ -29,6 +29,7 @@ public class RCCommands
         event.registerServerCommand(new CommandSelectMove());
         event.registerServerCommand(new CommandSelectDuplicate());
         event.registerServerCommand(new CommandBiomeDict());
+        event.registerServerCommand(new CommandDimensionDict());
         event.registerServerCommand(new CommandGenerateSchematic());
         event.registerServerCommand(new CommandExportSchematic());
     }

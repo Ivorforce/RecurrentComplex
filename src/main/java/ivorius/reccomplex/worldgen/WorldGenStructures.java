@@ -6,7 +6,6 @@
 package ivorius.reccomplex.worldgen;
 
 import cpw.mods.fml.common.IWorldGenerator;
-import ivorius.ivtoolkit.blocks.BlockArea;
 import ivorius.ivtoolkit.blocks.BlockCoord;
 import ivorius.ivtoolkit.math.AxisAlignedTransform2D;
 import ivorius.ivtoolkit.math.IvVecMathHelper;
@@ -49,7 +48,7 @@ public class WorldGenStructures implements IWorldGenerator
         {
             BiomeGenBase biomeGen = world.getBiomeGenForCoords(chunkX * 16, chunkZ * 16);
 
-            StructureSelector structureSelector = StructureHandler.getStructureSelectorInBiome(biomeGen);
+            StructureSelector structureSelector = StructureHandler.getStructureSelector(biomeGen, world.provider.dimensionId);
             List<StructureInfo> generated = structureSelector.generatedStructures(random, chunkX, chunkZ, world, chunkGenerator, chunkProvider);
 
             for (StructureInfo info : generated)

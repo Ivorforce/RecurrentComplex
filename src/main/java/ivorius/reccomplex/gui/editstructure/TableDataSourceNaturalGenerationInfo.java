@@ -7,11 +7,9 @@ package ivorius.reccomplex.gui.editstructure;
 
 import ivorius.ivtoolkit.gui.IntegerRange;
 import ivorius.reccomplex.gui.table.*;
-import ivorius.reccomplex.worldgen.StructureInfo;
 import ivorius.reccomplex.worldgen.StructureSelector;
 import ivorius.reccomplex.worldgen.genericStructures.GenerationYSelector;
 import ivorius.reccomplex.worldgen.genericStructures.GenericStructureInfo;
-import ivorius.reccomplex.worldgen.genericStructures.gentypes.NaturalGenerationInfo;
 import net.minecraft.client.resources.I18n;
 
 import java.util.ArrayList;
@@ -66,7 +64,7 @@ public class TableDataSourceNaturalGenerationInfo implements TableDataSource, Ta
     @Override
     public boolean has(GuiTable table, int index)
     {
-        return index >= 0 && index < 4;
+        return index >= 0 && index < 5;
     }
 
     @Override
@@ -96,6 +94,12 @@ public class TableDataSourceNaturalGenerationInfo implements TableDataSource, Ta
             elementEditBiomes.addListener(this);
             return elementEditBiomes;
         }
+        else if (index == 4)
+        {
+            TableElementButton elementEditBiomes = new TableElementButton("editDimensions", "Dimensions", new TableElementButton.Action("edit", "Edit"));
+            elementEditBiomes.addListener(this);
+            return elementEditBiomes;
+        }
 
         return null;
     }
@@ -105,7 +109,12 @@ public class TableDataSourceNaturalGenerationInfo implements TableDataSource, Ta
     {
         if ("editBiomes".equals(tableElementButton.getID()) && "edit".equals(actionID))
         {
-            GuiTable editBiomesProperties = new GuiTable(tableDelegate, new TableDataSourceBiomeGenList(structureInfo.naturalGenerationInfo.generationWeights, tableDelegate, navigator));
+            GuiTable editBiomesProperties = new GuiTable(tableDelegate, new TableDataSourceBiomeGenList(structureInfo.naturalGenerationInfo.biomeWeights, tableDelegate, navigator));
+            navigator.pushTable(editBiomesProperties);
+        }
+        else if ("editDimensions".equals(tableElementButton.getID()) && "edit".equals(actionID))
+        {
+            GuiTable editBiomesProperties = new GuiTable(tableDelegate, new TableDataSourceDimensionGenList(structureInfo.naturalGenerationInfo.dimensionWeights, tableDelegate, navigator));
             navigator.pushTable(editBiomesProperties);
         }
     }

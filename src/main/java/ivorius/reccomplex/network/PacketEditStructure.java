@@ -8,7 +8,7 @@ package ivorius.reccomplex.network;
 import cpw.mods.fml.common.network.ByteBufUtils;
 import cpw.mods.fml.common.network.simpleimpl.IMessage;
 import io.netty.buffer.ByteBuf;
-import ivorius.reccomplex.worldgen.StructureHandler;
+import ivorius.reccomplex.worldgen.StructureRegistry;
 import ivorius.reccomplex.worldgen.genericStructures.GenericStructureInfo;
 
 /**
@@ -54,13 +54,13 @@ public class PacketEditStructure implements IMessage
     {
         key = ByteBufUtils.readUTF8String(buf);
         String json = ByteBufUtils.readUTF8String(buf);
-        structureInfo = StructureHandler.createStructureFromJSON(json);
+        structureInfo = StructureRegistry.createStructureFromJSON(json);
     }
 
     @Override
     public void toBytes(ByteBuf buf)
     {
         ByteBufUtils.writeUTF8String(buf, key);
-        ByteBufUtils.writeUTF8String(buf, StructureHandler.createJSONFromStructure(structureInfo));
+        ByteBufUtils.writeUTF8String(buf, StructureRegistry.createJSONFromStructure(structureInfo));
     }
 }

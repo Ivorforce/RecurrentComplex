@@ -9,7 +9,7 @@ import ivorius.ivtoolkit.maze.MazePath;
 import ivorius.ivtoolkit.maze.MazeRoom;
 import ivorius.reccomplex.gui.GuiValidityStateIndicator;
 import ivorius.reccomplex.gui.table.*;
-import ivorius.reccomplex.worldgen.StructureHandler;
+import ivorius.reccomplex.worldgen.StructureRegistry;
 import ivorius.reccomplex.worldgen.genericStructures.GenerationYSelector;
 import ivorius.reccomplex.worldgen.genericStructures.GenericStructureInfo;
 import ivorius.reccomplex.worldgen.genericStructures.SavedMazeComponent;
@@ -249,7 +249,7 @@ public class TableDataSourceGenericStructure implements TableDataSource, TableEl
 
     private GuiValidityStateIndicator.State currentNameState()
     {
-        if (StructureHandler.getAllStructureNames().contains(structureKey))
+        if (StructureRegistry.getAllStructureNames().contains(structureKey))
         {
             return GuiValidityStateIndicator.State.SEMI_VALID;
         }

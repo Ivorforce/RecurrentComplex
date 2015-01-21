@@ -8,7 +8,7 @@ package ivorius.reccomplex.blocks;
 import ivorius.ivtoolkit.blocks.BlockCoord;
 import ivorius.ivtoolkit.math.AxisAlignedTransform2D;
 import ivorius.ivtoolkit.tools.IvCollections;
-import ivorius.reccomplex.worldgen.StructureHandler;
+import ivorius.reccomplex.worldgen.StructureRegistry;
 import ivorius.reccomplex.worldgen.StructureInfo;
 import ivorius.reccomplex.worldgen.WorldGenStructures;
 import net.minecraft.nbt.NBTTagCompound;
@@ -129,7 +129,7 @@ public class TileEntityStructureGenerator extends TileEntity implements Generati
         if (structureNames.size() > 0)
         {
             String structure = structureNames.get(random.nextInt(structureNames.size()));
-            StructureInfo structureInfo = StructureHandler.getStructure(structure);
+            StructureInfo structureInfo = StructureRegistry.getStructure(structure);
 
             if (structureInfo != null)
             {

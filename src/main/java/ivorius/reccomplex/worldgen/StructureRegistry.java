@@ -10,10 +10,13 @@ import com.google.common.collect.HashBiMap;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonSyntaxException;
+import cpw.mods.fml.common.eventhandler.Event;
 import ivorius.ivtoolkit.maze.MazePath;
 import ivorius.ivtoolkit.maze.MazeRoom;
 import ivorius.reccomplex.RCConfig;
 import ivorius.reccomplex.RecurrentComplex;
+import ivorius.reccomplex.events.RCEventBus;
+import ivorius.reccomplex.events.StructureRegistrationEvent;
 import ivorius.reccomplex.json.NbtToJson;
 import ivorius.reccomplex.json.StringTypeAdapterFactory;
 import ivorius.reccomplex.worldgen.blockTransformers.BlockTransformer;
@@ -35,7 +38,7 @@ import java.util.*;
 /**
  * Created by lukas on 24.05.14.
  */
-public class StructureHandler
+public class StructureRegistry
 {
     private static BiMap<String, StructureInfo> allStructures = HashBiMap.create();
     private static Map<String, StructureInfo> generatingStructures = new HashMap<>();
@@ -73,19 +76,27 @@ public class StructureHandler
     {
         if (info.areDependenciesResolved())
         {
-            generates = generates && !RCConfig.isStructureDisabled(key);
+            StructureRegistrationEvent.Pre event = new StructureRegistrationEvent.Pre(key, info, generates);
+            RCEventBus.INSTANCE.post(event);
 
-            String baseString = allStructures.containsKey(key) ? "Overwrote structure '%s'%s" : "Registered structure '%s'%s";
-            String genPart = generates ? " (Generating)" : "";
-            RecurrentComplex.logger.info(String.format(baseString, key, genPart));
+            if (event.getResult() != Event.Result.DENY)
+            {
+                generates = event.shouldGenerate && !RCConfig.isStructureDisabled(key);
 
-            allStructures.put(key, info);
-            if (generates)
-                generatingStructures.put(key, info);
-            else
-                generatingStructures.remove(key); // Make sure to honour the new 'generates' boolean
+                String baseString = allStructures.containsKey(key) ? "Overwrote structure '%s'%s" : "Registered structure '%s'%s";
+                String genPart = generates ? " (Generating)" : "";
+                RecurrentComplex.logger.info(String.format(baseString, key, genPart));
 
-            clearCaches();
+                allStructures.put(key, info);
+                if (generates)
+                    generatingStructures.put(key, info);
+                else
+                    generatingStructures.remove(key); // Make sure to honour the new 'generates' boolean
+
+                clearCaches();
+
+                RCEventBus.INSTANCE.post(new StructureRegistrationEvent.Post(key, info, generates));
+            }
         }
     }
 
@@ -94,9 +105,7 @@ public class StructureHandler
         GenericStructureInfo structureInfo = StructureSaveHandler.structureInfoFromResource(resourceLocation);
 
         if (structureInfo != null)
-        {
             registerStructure(structureInfo, key, generates);
-        }
     }
 
     public static StructureInfo getStructure(String key)

@@ -5,10 +5,8 @@
 
 package ivorius.reccomplex.commands;
 
-import ivorius.reccomplex.RecurrentComplex;
-import ivorius.reccomplex.network.PacketEditStructure;
 import ivorius.reccomplex.network.PacketEditStructureHandler;
-import ivorius.reccomplex.worldgen.StructureHandler;
+import ivorius.reccomplex.worldgen.StructureRegistry;
 import ivorius.reccomplex.worldgen.genericStructures.GenericStructureInfo;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.ICommandSender;
@@ -63,7 +61,7 @@ public class CommandEditStructure extends CommandBase
     {
         if (args.length == 1)
         {
-            Set<String> allStructureNames = StructureHandler.getAllStructureNames();
+            Set<String> allStructureNames = StructureRegistry.getAllStructureNames();
 
             return getListOfStringsMatchingLastWord(args, allStructureNames.toArray(new String[allStructureNames.size()]));
         }

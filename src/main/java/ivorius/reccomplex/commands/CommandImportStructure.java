@@ -7,7 +7,7 @@ package ivorius.reccomplex.commands;
 
 import ivorius.ivtoolkit.blocks.BlockCoord;
 import ivorius.ivtoolkit.math.AxisAlignedTransform2D;
-import ivorius.reccomplex.worldgen.StructureHandler;
+import ivorius.reccomplex.worldgen.StructureRegistry;
 import ivorius.reccomplex.worldgen.StructureInfo;
 import ivorius.reccomplex.worldgen.StructureSpawnContext;
 import net.minecraft.command.CommandBase;
@@ -47,7 +47,7 @@ public class CommandImportStructure extends CommandBase
         }
 
         String structureName = args[0];
-        StructureInfo structureInfo = StructureHandler.getStructure(structureName);
+        StructureInfo structureInfo = StructureRegistry.getStructure(structureName);
         World world = commandSender.getEntityWorld();
 
         if (structureInfo == null)
@@ -75,7 +75,7 @@ public class CommandImportStructure extends CommandBase
     {
         if (args.length == 1)
         {
-            Set<String> allStructureNames = StructureHandler.getAllStructureNames();
+            Set<String> allStructureNames = StructureRegistry.getAllStructureNames();
 
             return getListOfStringsMatchingLastWord(args, allStructureNames.toArray(new String[allStructureNames.size()]));
         }

@@ -9,25 +9,20 @@ import cpw.mods.fml.client.registry.RenderingRegistry;
 import cpw.mods.fml.common.event.FMLInitializationEvent;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 import cpw.mods.fml.common.registry.GameRegistry;
-import cpw.mods.fml.common.registry.VillagerRegistry;
 import ivorius.reccomplex.blocks.*;
 import ivorius.reccomplex.client.rendering.RCBlockRendering;
 import ivorius.reccomplex.items.*;
 import ivorius.reccomplex.blocks.materials.MaterialNegativeSpace;
 import ivorius.reccomplex.blocks.materials.RCMaterials;
 import ivorius.reccomplex.random.Poem;
-import ivorius.reccomplex.worldgen.StructureHandler;
+import ivorius.reccomplex.worldgen.StructureRegistry;
 import ivorius.reccomplex.worldgen.StructureSelector;
 import ivorius.reccomplex.worldgen.blockTransformers.*;
 import ivorius.reccomplex.worldgen.inventory.RCInventoryGenerators;
-import ivorius.reccomplex.worldgen.villages.GenericVillageCreationHandler;
-import ivorius.reccomplex.worldgen.villages.GenericVillagePiece;
 import net.minecraft.block.material.MapColor;
 import net.minecraft.block.material.Material;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.Item;
-import net.minecraft.item.ItemBlock;
-import net.minecraft.world.gen.structure.MapGenStructureIO;
 
 import java.util.Collections;
 
@@ -112,13 +107,13 @@ public class RCRegistryHandler
 
     public static void load(FMLInitializationEvent event, RecurrentComplex mod)
     {
-        StructureHandler.registerBlockTransformer("natural", BlockTransformerNatural.class, new BTProviderNatural());
-        StructureHandler.registerBlockTransformer("naturalAir", BlockTransformerNaturalAir.class, new BTProviderNaturalAir());
-        StructureHandler.registerBlockTransformer("pillar", BlockTransformerPillar.class, new BTProviderPillar());
-        StructureHandler.registerBlockTransformer("replaceAll", BlockTransformerReplaceAll.class, new BTProviderReplaceAll());
-        StructureHandler.registerBlockTransformer("replace", BlockTransformerReplace.class, new BTProviderReplace());
-        StructureHandler.registerBlockTransformer("ruins", BlockTransformerRuins.class, new BTProviderRuins());
-        StructureHandler.registerBlockTransformer("negativeSpace", BlockTransformerNegativeSpace.class, new BTProviderNegativeSpace());
+        StructureRegistry.registerBlockTransformer("natural", BlockTransformerNatural.class, new BTProviderNatural());
+        StructureRegistry.registerBlockTransformer("naturalAir", BlockTransformerNaturalAir.class, new BTProviderNaturalAir());
+        StructureRegistry.registerBlockTransformer("pillar", BlockTransformerPillar.class, new BTProviderPillar());
+        StructureRegistry.registerBlockTransformer("replaceAll", BlockTransformerReplaceAll.class, new BTProviderReplaceAll());
+        StructureRegistry.registerBlockTransformer("replace", BlockTransformerReplace.class, new BTProviderReplace());
+        StructureRegistry.registerBlockTransformer("ruins", BlockTransformerRuins.class, new BTProviderRuins());
+        StructureRegistry.registerBlockTransformer("negativeSpace", BlockTransformerNegativeSpace.class, new BTProviderNegativeSpace());
 
         StructureSelector.registerCategory("decoration", new StructureSelector.SimpleCategory(1.0f / 25.0f, Collections.<StructureSelector.GenerationInfo>emptyList(), true));
         StructureSelector.registerCategory("adventure", new StructureSelector.SimpleCategory(1.0f / 250.0f, Collections.<StructureSelector.GenerationInfo>emptyList(), true));

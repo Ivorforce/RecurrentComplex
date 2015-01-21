@@ -5,7 +5,7 @@
 
 package ivorius.reccomplex.commands;
 
-import ivorius.reccomplex.worldgen.StructureHandler;
+import ivorius.reccomplex.worldgen.StructureRegistry;
 import ivorius.reccomplex.worldgen.StructureInfo;
 import ivorius.reccomplex.worldgen.WorldGenStructures;
 import net.minecraft.command.CommandBase;
@@ -45,7 +45,7 @@ public class CommandGenerateStructure extends CommandBase
         }
 
         String structureName = args[0];
-        StructureInfo structureInfo = StructureHandler.getStructure(structureName);
+        StructureInfo structureInfo = StructureRegistry.getStructure(structureName);
         World world = commandSender.getEntityWorld();
 
         if (structureInfo == null)
@@ -70,7 +70,7 @@ public class CommandGenerateStructure extends CommandBase
     {
         if (args.length == 1)
         {
-            Set<String> allStructureNames = StructureHandler.getAllStructureNames();
+            Set<String> allStructureNames = StructureRegistry.getAllStructureNames();
 
             return getListOfStringsMatchingLastWord(args, allStructureNames.toArray(new String[allStructureNames.size()]));
         }

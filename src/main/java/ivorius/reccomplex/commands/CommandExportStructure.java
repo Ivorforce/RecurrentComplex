@@ -8,11 +8,9 @@ package ivorius.reccomplex.commands;
 import ivorius.ivtoolkit.blocks.BlockArea;
 import ivorius.ivtoolkit.blocks.BlockCoord;
 import ivorius.ivtoolkit.tools.IvWorldData;
-import ivorius.reccomplex.RecurrentComplex;
 import ivorius.reccomplex.entities.StructureEntityInfo;
-import ivorius.reccomplex.network.PacketEditStructure;
 import ivorius.reccomplex.network.PacketEditStructureHandler;
-import ivorius.reccomplex.worldgen.StructureHandler;
+import ivorius.reccomplex.worldgen.StructureRegistry;
 import ivorius.reccomplex.worldgen.StructureInfo;
 import ivorius.reccomplex.worldgen.genericStructures.GenericStructureInfo;
 import net.minecraft.command.CommandBase;
@@ -114,7 +112,7 @@ public class CommandExportStructure extends CommandBase
     {
         if (args.length == 1)
         {
-            Set<String> allStructureNames = StructureHandler.getAllStructureNames();
+            Set<String> allStructureNames = StructureRegistry.getAllStructureNames();
 
             return getListOfStringsMatchingLastWord(args, allStructureNames.toArray(new String[allStructureNames.size()]));
         }
@@ -124,7 +122,7 @@ public class CommandExportStructure extends CommandBase
 
     public static GenericStructureInfo getGenericStructureInfo(String name)
     {
-        StructureInfo structureInfo = StructureHandler.getStructure(name);
+        StructureInfo structureInfo = StructureRegistry.getStructure(name);
 
         if (structureInfo == null)
         {

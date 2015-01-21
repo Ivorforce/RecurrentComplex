@@ -7,7 +7,7 @@ package ivorius.reccomplex.worldgen.villages;
 
 import ivorius.ivtoolkit.blocks.BlockCoord;
 import ivorius.ivtoolkit.math.AxisAlignedTransform2D;
-import ivorius.reccomplex.worldgen.StructureHandler;
+import ivorius.reccomplex.worldgen.StructureRegistry;
 import ivorius.reccomplex.worldgen.StructureInfo;
 import ivorius.reccomplex.worldgen.StructureSpawnContext;
 import ivorius.reccomplex.worldgen.genericStructures.gentypes.VanillaStructureSpawnInfo;
@@ -45,7 +45,7 @@ public class GenericVillagePiece extends StructureVillagePieces.Village
     @Override
     public boolean addComponentParts(World world, Random random, StructureBoundingBox boundingBox)
     {
-        StructureInfo structureInfo = StructureHandler.getStructure(structureID);
+        StructureInfo structureInfo = StructureRegistry.getStructure(structureID);
         VanillaStructureSpawnInfo spawnInfo = structureInfo.vanillaStructureSpawnInfo();
 
         BlockCoord structureShift = spawnInfo.spawnShift;

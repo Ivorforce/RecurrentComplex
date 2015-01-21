@@ -6,16 +6,6 @@
 package ivorius.reccomplex.worldgen.villages;
 
 import cpw.mods.fml.common.registry.VillagerRegistry;
-import ivorius.ivtoolkit.blocks.BlockCoord;
-import ivorius.ivtoolkit.math.AxisAlignedTransform2D;
-import ivorius.reccomplex.utils.WeightedObject;
-import ivorius.reccomplex.worldgen.StructureHandler;
-import ivorius.reccomplex.worldgen.StructureInfo;
-import ivorius.reccomplex.worldgen.WorldGenStructures;
-import ivorius.reccomplex.worldgen.genericStructures.gentypes.VanillaStructureSpawnInfo;
-import net.minecraft.util.MathHelper;
-import net.minecraft.world.gen.structure.StructureBoundingBox;
-import net.minecraft.world.gen.structure.StructureComponent;
 import net.minecraft.world.gen.structure.StructureVillagePieces;
 
 import java.util.List;

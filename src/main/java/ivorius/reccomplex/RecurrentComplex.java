@@ -5,7 +5,6 @@
 
 package ivorius.reccomplex;
 
-import cpw.mods.fml.client.registry.RenderingRegistry;
 import cpw.mods.fml.common.Loader;
 import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.Mod.EventHandler;
@@ -22,26 +21,15 @@ import ivorius.ivtoolkit.network.PacketExtendedEntityPropertiesData;
 import ivorius.ivtoolkit.network.PacketExtendedEntityPropertiesDataHandler;
 import ivorius.ivtoolkit.network.PacketGuiAction;
 import ivorius.ivtoolkit.network.PacketGuiActionHandler;
-import ivorius.reccomplex.client.rendering.RCBlockRendering;
 import ivorius.reccomplex.commands.*;
 import ivorius.reccomplex.events.RCFMLEventHandler;
 import ivorius.reccomplex.events.RCForgeEventHandler;
 import ivorius.reccomplex.gui.RCGuiHandler;
-import ivorius.reccomplex.items.*;
 import ivorius.reccomplex.network.*;
-import ivorius.reccomplex.random.Poem;
-import ivorius.reccomplex.worldgen.StructureHandler;
 import ivorius.reccomplex.worldgen.StructureSaveHandler;
-import ivorius.reccomplex.worldgen.StructureSelector;
-import ivorius.reccomplex.worldgen.blockTransformers.*;
 import ivorius.reccomplex.worldgen.inventory.CustomGenericItemCollectionHandler;
-import ivorius.reccomplex.worldgen.inventory.RCInventoryGenerators;
-import net.minecraft.creativetab.CreativeTabs;
-import net.minecraft.item.Item;
 import net.minecraftforge.common.config.Configuration;
 import org.apache.logging.log4j.Logger;
-
-import java.util.Collections;
 
 @Mod(modid = RecurrentComplex.MODID, version = RecurrentComplex.VERSION, name = RecurrentComplex.NAME, guiFactory = "ivorius.reccomplex.gui.RCConfigGuiFactory",
         dependencies = "required-after:ivtoolkit@[1.0.1,)")

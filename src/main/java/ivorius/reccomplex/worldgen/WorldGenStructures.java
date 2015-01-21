@@ -48,7 +48,7 @@ public class WorldGenStructures implements IWorldGenerator
         {
             BiomeGenBase biomeGen = world.getBiomeGenForCoords(chunkX * 16, chunkZ * 16);
 
-            StructureSelector structureSelector = StructureHandler.getStructureSelector(biomeGen, world.provider.dimensionId);
+            StructureSelector structureSelector = StructureRegistry.getStructureSelector(biomeGen, world.provider.dimensionId);
             List<StructureInfo> generated = structureSelector.generatedStructures(random, chunkX, chunkZ, world, chunkGenerator, chunkProvider);
 
             for (StructureInfo info : generated)
@@ -86,19 +86,19 @@ public class WorldGenStructures implements IWorldGenerator
         StructureSpawnContext structureSpawnContext = new StructureSpawnContext(world, random, structureBoundingBox(coord, size), layer, false, strucTransform);
 
         RCEventBus.INSTANCE.post(new StructureGenerationEvent.Pre(structureInfo, structureSpawnContext));
-        MinecraftForge.EVENT_BUS.post(new StructureGenerationEventLite.Pre(world, StructureHandler.getName(structureInfo), coordInts, size, layer));
+        MinecraftForge.EVENT_BUS.post(new StructureGenerationEventLite.Pre(world, StructureRegistry.getName(structureInfo), coordInts, size, layer));
 
         structureInfo.generate(structureSpawnContext);
 
         RCEventBus.INSTANCE.post(new StructureGenerationEvent.Post(structureInfo, structureSpawnContext));
-        MinecraftForge.EVENT_BUS.post(new StructureGenerationEventLite.Post(world, StructureHandler.getName(structureInfo), coordInts, size, layer));
+        MinecraftForge.EVENT_BUS.post(new StructureGenerationEventLite.Post(world, StructureRegistry.getName(structureInfo), coordInts, size, layer));
     }
 
     public static void generateSpawnStructure(Random random, ChunkCoordinates spawn, World world, IChunkProvider chunkGenerator, IChunkProvider chunkProvider)
     {
         if (RCConfig.spawnStructure != null && RCConfig.spawnStructure.trim().length() > 0)
         {
-            StructureInfo structureInfo = StructureHandler.getStructure(RCConfig.spawnStructure);
+            StructureInfo structureInfo = StructureRegistry.getStructure(RCConfig.spawnStructure);
             if (structureInfo != null)
             {
                 AxisAlignedTransform2D transform = AxisAlignedTransform2D.transform(structureInfo.isRotatable() ? random.nextInt(4) : 0, structureInfo.isMirrorable() && random.nextBoolean());

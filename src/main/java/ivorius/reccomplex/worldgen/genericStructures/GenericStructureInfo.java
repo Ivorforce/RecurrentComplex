@@ -16,7 +16,7 @@ import ivorius.reccomplex.blocks.RCBlocks;
 import ivorius.reccomplex.json.JsonUtils;
 import ivorius.reccomplex.json.NbtToJson;
 import ivorius.reccomplex.worldgen.MCRegistrySpecial;
-import ivorius.reccomplex.worldgen.StructureHandler;
+import ivorius.reccomplex.worldgen.StructureRegistry;
 import ivorius.reccomplex.worldgen.StructureInfo;
 import ivorius.reccomplex.worldgen.StructureSpawnContext;
 import ivorius.reccomplex.worldgen.blockTransformers.BlockTransformer;
@@ -321,7 +321,7 @@ public class GenericStructureInfo implements StructureInfo, Cloneable
     @Override
     public Object clone()
     {
-        GenericStructureInfo genericStructureInfo = StructureHandler.createStructureFromJSON(StructureHandler.createJSONFromStructure(this));
+        GenericStructureInfo genericStructureInfo = StructureRegistry.createStructureFromJSON(StructureRegistry.createJSONFromStructure(this));
         genericStructureInfo.worldDataCompound = (NBTTagCompound) worldDataCompound.copy();
 
         return genericStructureInfo;

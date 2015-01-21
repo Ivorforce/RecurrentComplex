@@ -6,7 +6,7 @@
 package ivorius.reccomplex.gui.editstructure;
 
 import ivorius.reccomplex.gui.table.*;
-import ivorius.reccomplex.worldgen.StructureHandler;
+import ivorius.reccomplex.worldgen.StructureRegistry;
 import ivorius.reccomplex.worldgen.blockTransformers.BlockTransformer;
 import ivorius.reccomplex.worldgen.blockTransformers.BlockTransformerProvider;
 
@@ -66,7 +66,7 @@ public class TableDataSourceBlockTransformerList implements TableDataSource, Tab
 
     private static String nextTransformerID(String transformerID)
     {
-        Collection<String> allTypes = StructureHandler.allBlockTransformerIDs();
+        Collection<String> allTypes = StructureRegistry.allBlockTransformerIDs();
         String[] allTypesArray = allTypes.toArray(new String[allTypes.size()]);
 
         for (int i = 0; i < allTypesArray.length; i++)
@@ -110,7 +110,7 @@ public class TableDataSourceBlockTransformerList implements TableDataSource, Tab
         if (actionID.equals("add"))
         {
             int index = Integer.valueOf(tableElementButton.getID().substring(3));
-            BlockTransformerProvider provider = StructureHandler.blockTransformerProviderForID(currentTransformerType);
+            BlockTransformerProvider provider = StructureRegistry.blockTransformerProviderForID(currentTransformerType);
 
             BlockTransformer blockTransformer = provider.defaultTransformer();
             TableDataSource tableDataSource = provider.tableDataSource(blockTransformer);
@@ -127,7 +127,7 @@ public class TableDataSourceBlockTransformerList implements TableDataSource, Tab
         {
             int index = Integer.valueOf(tableElementButton.getID().substring(11));
             BlockTransformer blockTransformer = blockTransformerList.get(index);
-            BlockTransformerProvider provider = StructureHandler.blockTransformerProviderForID(StructureHandler.blockTransformerIDForType(blockTransformer.getClass()));
+            BlockTransformerProvider provider = StructureRegistry.blockTransformerProviderForID(StructureRegistry.blockTransformerIDForType(blockTransformer.getClass()));
 
             switch (actionID)
             {

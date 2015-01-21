@@ -7,9 +7,6 @@ package ivorius.reccomplex.commands;
 
 import ivorius.reccomplex.schematics.SchematicFile;
 import ivorius.reccomplex.schematics.SchematicLoader;
-import ivorius.reccomplex.worldgen.StructureHandler;
-import ivorius.reccomplex.worldgen.StructureInfo;
-import ivorius.reccomplex.worldgen.WorldGenStructures;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
@@ -18,7 +15,6 @@ import net.minecraft.util.MathHelper;
 import net.minecraft.world.World;
 
 import java.util.List;
-import java.util.Set;
 
 /**
  * Created by lukas on 25.05.14.

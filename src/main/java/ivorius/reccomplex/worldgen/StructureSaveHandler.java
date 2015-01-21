@@ -5,9 +5,7 @@
 
 package ivorius.reccomplex.worldgen;
 
-import cpw.mods.fml.common.Loader;
 import ivorius.ivtoolkit.tools.IvFileHelper;
-import ivorius.reccomplex.RCConfig;
 import ivorius.reccomplex.files.FileSuffixFilter;
 import ivorius.reccomplex.files.RCFileHelper;
 import ivorius.reccomplex.RecurrentComplex;
@@ -43,7 +41,7 @@ public class StructureSaveHandler
     {
         while (!importedGenerators.isEmpty())
         {
-            StructureHandler.removeStructure(importedGenerators.remove(0));
+            StructureRegistry.removeStructure(importedGenerators.remove(0));
         }
 
         File structuresFile = IvFileHelper.getValidatedFolder(RecurrentComplex.proxy.getBaseFolderFile("structures"));
@@ -121,7 +119,7 @@ public class StructureSaveHandler
                 GenericStructureInfo genericStructureInfo = StructureSaveHandler.readGenericStructure(file);
 
                 String structureID = FilenameUtils.getBaseName(file.getFileName().toString());
-                StructureHandler.registerStructure(genericStructureInfo, structureID, generating);
+                StructureRegistry.registerStructure(genericStructureInfo, structureID, generating);
 
                 if (imported)
                     importedGenerators.add(structureID);
@@ -139,7 +137,7 @@ public class StructureSaveHandler
         File parent = IvFileHelper.getValidatedFolder(structuresFolder, "silentStructures");
         if (parent != null)
         {
-            String json = StructureHandler.createJSONFromStructure(info);
+            String json = StructureRegistry.createJSONFromStructure(info);
 
             if (RecurrentComplex.USE_ZIP_FOR_STRUCTURE_FILES)
             {
@@ -246,7 +244,7 @@ public class StructureSaveHandler
             if (json == null || worldData == null)
                 throw new StructureInvalidZipException(json != null, worldData != null);
 
-            GenericStructureInfo genericStructureInfo = StructureHandler.createStructureFromJSON(json);
+            GenericStructureInfo genericStructureInfo = StructureRegistry.createStructureFromJSON(json);
             genericStructureInfo.worldDataCompound = worldData;
 
             return genericStructureInfo;

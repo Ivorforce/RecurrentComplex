@@ -9,7 +9,7 @@ import ivorius.ivtoolkit.blocks.BlockCoord;
 import ivorius.reccomplex.blocks.TileEntityStructureGenerator;
 import ivorius.reccomplex.gui.GuiValidityStateIndicator;
 import ivorius.reccomplex.gui.table.*;
-import ivorius.reccomplex.worldgen.StructureHandler;
+import ivorius.reccomplex.worldgen.StructureRegistry;
 import joptsimple.internal.Strings;
 
 import java.util.Arrays;
@@ -131,7 +131,7 @@ public class TableDataSourceStructureBlock implements TableDataSource, TableElem
     {
         for (String s : structures)
         {
-            if (s.length() != 0 && StructureHandler.getStructure(s) == null)
+            if (s.length() != 0 && StructureRegistry.getStructure(s) == null)
                 return false; // s==0 = "No structure"
         }
 

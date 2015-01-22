@@ -33,7 +33,7 @@ public class RCCommunicationHandler extends IvFMLIntercommHandler
         if (isMessage("loadStructure", message, NBTTagCompound.class))
         {
             // Note that this is not required for default loading, using the correct directories.
-            // Only use this if you want to load a structure conditionally.
+            // Only use this if you want to load it conditionally.
 
             NBTTagCompound cmp = message.getNBTValue();
             String structurePath = cmp.getString("structurePath");
@@ -48,7 +48,7 @@ public class RCCommunicationHandler extends IvFMLIntercommHandler
         else if (isMessage("loadInventoryGenerator", message, NBTTagCompound.class))
         {
             // Note that this is not required for default loading, using the correct directories.
-            // Only use this if you want to load a structure conditionally.
+            // Only use this if you want to load it conditionally.
 
             NBTTagCompound cmp = message.getNBTValue();
             String genPath = cmp.getString("genPath");
@@ -56,6 +56,8 @@ public class RCCommunicationHandler extends IvFMLIntercommHandler
 
             if (!GenericItemCollectionRegistry.register(new ResourceLocation(genPath), genID))
                 getLogger().warn(String.format("Could not find inventory generator with path '%s and id '%s'", genPath, genID));
+
+            return true;
         }
         else if (isMessage("registerDimension", message, NBTTagCompound.class))
         {

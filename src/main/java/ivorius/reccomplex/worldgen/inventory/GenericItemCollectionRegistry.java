@@ -50,12 +50,12 @@ public class GenericItemCollectionRegistry
             RecurrentComplex.logger.info(componentMap.containsKey(key) ? "Overwrote inventory generator with id '" + key + "'" : "Registered inventory generator with id '" + key + "'");
             componentMap.put(key, component);
 
-            WeightedItemCollection collection = InventoryGeneratorRegistry.generator(component.inventoryGeneratorID);
+            WeightedItemCollection collection = WeightedItemCollectionRegistry.itemCollection(component.inventoryGeneratorID);
             if (collection == null)
             {
                 GenericItemCollection itemCollection = new GenericItemCollection();
                 itemCollection.components.add(component);
-                InventoryGeneratorRegistry.registerInventoryGenerator(itemCollection, component.inventoryGeneratorID);
+                WeightedItemCollectionRegistry.registerInventoryGenerator(itemCollection, component.inventoryGeneratorID);
             }
             else if (collection instanceof GenericItemCollection)
                 ((GenericItemCollection) collection).components.add(component);
@@ -80,19 +80,24 @@ public class GenericItemCollectionRegistry
 
         if (component != null)
         {
-            WeightedItemCollection collection = InventoryGeneratorRegistry.generator(component.inventoryGeneratorID);
+            WeightedItemCollection collection = WeightedItemCollectionRegistry.itemCollection(component.inventoryGeneratorID);
 
             if (collection instanceof GenericItemCollection)
                 ((GenericItemCollection) collection).components.remove(component);
         }
     }
 
-    public static void registerFromResourceLocation(ResourceLocation resourceLocation, String key, String modName)
+    public static boolean register(ResourceLocation resourceLocation, String key)
     {
         Component component = CustomGenericItemCollectionHandler.readInventoryGenerator(resourceLocation);
 
         if (component != null)
+        {
             register(component, key);
+            return true;
+        }
+        else
+            return false;
     }
 
     public static String createJSONFromComponent(Component inventoryGenerator)

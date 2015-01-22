@@ -9,7 +9,10 @@ import cpw.mods.fml.common.event.FMLInterModComms;
 import ivorius.ivtoolkit.tools.IvFMLIntercommHandler;
 import ivorius.ivtoolkit.tools.IvNBTHelper;
 import ivorius.reccomplex.dimensions.DimensionDictionary;
+import ivorius.reccomplex.worldgen.StructureRegistry;
+import ivorius.reccomplex.worldgen.inventory.GenericItemCollectionRegistry;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.ResourceLocation;
 import org.apache.logging.log4j.Logger;
 
 import java.util.Arrays;
@@ -27,7 +30,34 @@ public class RCCommunicationHandler extends IvFMLIntercommHandler
     @Override
     protected boolean handleMessage(FMLInterModComms.IMCMessage message, boolean server, boolean runtime)
     {
-        if (isMessage("registerDimension", message, NBTTagCompound.class))
+        if (isMessage("loadStructure", message, NBTTagCompound.class))
+        {
+            // Note that this is not required for default loading, using the correct directories.
+            // Only use this if you want to load a structure conditionally.
+
+            NBTTagCompound cmp = message.getNBTValue();
+            String structurePath = cmp.getString("structurePath");
+            String structureID = cmp.getString("structureID");
+            boolean generates = cmp.getBoolean("generates");
+
+            if (!StructureRegistry.registerStructure(new ResourceLocation(structurePath), structureID, generates))
+                getLogger().warn(String.format("Could not find structure with path '%s and id '%s'", structurePath, structureID));
+
+            return true;
+        }
+        else if (isMessage("loadInventoryGenerator", message, NBTTagCompound.class))
+        {
+            // Note that this is not required for default loading, using the correct directories.
+            // Only use this if you want to load a structure conditionally.
+
+            NBTTagCompound cmp = message.getNBTValue();
+            String genPath = cmp.getString("genPath");
+            String genID = cmp.getString("genID");
+
+            if (!GenericItemCollectionRegistry.register(new ResourceLocation(genPath), genID))
+                getLogger().warn(String.format("Could not find inventory generator with path '%s and id '%s'", genPath, genID));
+        }
+        else if (isMessage("registerDimension", message, NBTTagCompound.class))
         {
             NBTTagCompound cmp = message.getNBTValue();
             int dimensionID = cmp.getInteger("dimensionID");

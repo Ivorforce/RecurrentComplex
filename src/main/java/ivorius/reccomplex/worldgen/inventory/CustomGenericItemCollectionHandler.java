@@ -34,7 +34,7 @@ public class CustomGenericItemCollectionHandler
     {
         while (!importedCustomGenerators.isEmpty())
         {
-            InventoryGeneratorRegistry.removeGenerator(importedCustomGenerators.remove(0));
+            WeightedItemCollectionRegistry.removeItemCollection(importedCustomGenerators.remove(0));
         }
         importedCustomGenerators.clear();
 

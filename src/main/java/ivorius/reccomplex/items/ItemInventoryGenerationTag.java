@@ -6,7 +6,7 @@
 package ivorius.reccomplex.items;
 
 import ivorius.reccomplex.worldgen.inventory.InventoryGenerationHandler;
-import ivorius.reccomplex.worldgen.inventory.InventoryGeneratorRegistry;
+import ivorius.reccomplex.worldgen.inventory.WeightedItemCollectionRegistry;
 import ivorius.reccomplex.worldgen.inventory.WeightedItemCollection;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.player.EntityPlayer;
@@ -61,13 +61,13 @@ public abstract class ItemInventoryGenerationTag extends Item implements Generat
 
     public static WeightedItemCollection inventoryGenerator(ItemStack stack)
     {
-        return InventoryGeneratorRegistry.generator(inventoryGeneratorKey(stack));
+        return WeightedItemCollectionRegistry.itemCollection(inventoryGeneratorKey(stack));
     }
 
     @Override
     public void getSubItems(Item item, CreativeTabs creativeTabs, List list)
     {
-        for (String key : InventoryGeneratorRegistry.allInventoryGeneratorKeys())
+        for (String key : WeightedItemCollectionRegistry.allItemCollectionKeys())
         {
             ItemStack stack = new ItemStack(item);
             setItemStackGeneratorKey(stack, key);

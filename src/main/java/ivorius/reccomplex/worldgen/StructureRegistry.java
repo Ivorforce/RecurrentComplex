@@ -100,12 +100,17 @@ public class StructureRegistry
         }
     }
 
-    public static void registerStructure(ResourceLocation resourceLocation, String key, boolean generates)
+    public static boolean registerStructure(ResourceLocation resourceLocation, String key, boolean generates)
     {
         GenericStructureInfo structureInfo = StructureSaveHandler.structureInfoFromResource(resourceLocation);
 
         if (structureInfo != null)
+        {
             registerStructure(structureInfo, key, generates);
+            return true;
+        }
+        else
+            return false;
     }
 
     public static StructureInfo getStructure(String key)

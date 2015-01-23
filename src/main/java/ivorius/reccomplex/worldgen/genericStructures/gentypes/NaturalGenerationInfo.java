@@ -42,7 +42,7 @@ public class NaturalGenerationInfo
         BiomeGenerationInfo[] infos = context.deserialize(jsonObject.get("generationBiomes"), BiomeGenerationInfo[].class);
         Collections.addAll(naturalGenerationInfo.biomeWeights, infos);
 
-        naturalGenerationInfo.dimensionWeights.add(new DimensionGenerationInfo("Type:OVERWORLD", 100));
+        naturalGenerationInfo.dimensionWeights.addAll(DimensionGenerationInfo.overworldGenerationList());
 
         return naturalGenerationInfo;
     }
@@ -85,7 +85,7 @@ public class NaturalGenerationInfo
             else
             {
                 // Legacy
-                naturalGenerationInfo.dimensionWeights.add(new DimensionGenerationInfo("Type:OVERWORLD", null));
+                naturalGenerationInfo.dimensionWeights.addAll(DimensionGenerationInfo.overworldGenerationList());
             }
 
             return naturalGenerationInfo;

@@ -31,7 +31,8 @@ public class DimensionGenerationInfo
 
     public static List<DimensionGenerationInfo> overworldGenerationList()
     {
-        return Arrays.asList(new DimensionGenerationInfo("Type:" + DimensionDictionary.OVERWORLD, null));
+        return Arrays.asList(new DimensionGenerationInfo("Type:" + DimensionDictionary.UNCATEGORIZED, null),
+                new DimensionGenerationInfo("Type:" + DimensionDictionary.OVERWORLD, null));
     }
 
     public static List<DimensionGenerationInfo> netherGenerationList()

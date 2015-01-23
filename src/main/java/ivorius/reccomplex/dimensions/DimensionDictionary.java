@@ -19,6 +19,12 @@ import java.util.*;
 public class DimensionDictionary
 {
     public static final String MC_DEFAULT = "MC_DEFAULT";
+
+    /**
+     * Dimensions that are not registered in the dictionary default to this category.
+     * Assigning this to your dimension manually is discouraged.
+     */
+    public static final String UNCATEGORIZED = "UNCATEGORIZED";
     /**
      * Dimensions that are deemed to be situated in physical reality.
      */
@@ -75,8 +81,12 @@ public class DimensionDictionary
     private static final TIntObjectMap<Set<String>> dimensionTypes = new TIntObjectHashMap<>();
     private static final Map<String, Type> types = new HashMap<>();
 
+    private static final Set<String> SET_UNCATEGORIZED = Collections.singleton(UNCATEGORIZED);
+
     static
     {
+        registerType(UNCATEGORIZED);
+
         registerSubtypes(UNREAL, Arrays.asList(IMAGINARY, SIMULATED, ABSTRACT));
 
         registerSubtypes(OVERWORLD, Arrays.asList(EARTH));
@@ -191,7 +201,7 @@ public class DimensionDictionary
     public static Set<String> getDimensionTypes(int dimensionID)
     {
         Set<String> types = dimensionTypes.get(dimensionID);
-        return types != null ? Collections.unmodifiableSet(types) : Collections.<String>emptySet();
+        return types != null ? SET_UNCATEGORIZED : Collections.<String>emptySet();
     }
 
     /**

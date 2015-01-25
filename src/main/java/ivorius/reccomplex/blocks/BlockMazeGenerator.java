@@ -7,8 +7,7 @@ package ivorius.reccomplex.blocks;
 
 import ivorius.reccomplex.RecurrentComplex;
 import ivorius.reccomplex.network.PacketEditMazeBlock;
-import net.minecraft.block.BlockContainer;
-import net.minecraft.block.ITileEntityProvider;
+import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
@@ -23,7 +22,7 @@ import net.minecraft.world.World;
 /**
  * Created by lukas on 06.06.14.
  */
-public class BlockMazeGenerator extends BlockContainer implements ITileEntityProvider
+public class BlockMazeGenerator extends Block
 {
     public BlockMazeGenerator()
     {
@@ -68,7 +67,13 @@ public class BlockMazeGenerator extends BlockContainer implements ITileEntityPro
     }
 
     @Override
-    public TileEntity createNewTileEntity(World var1, int var2)
+    public boolean hasTileEntity(int metadata)
+    {
+        return true;
+    }
+
+    @Override
+    public TileEntity createTileEntity(World var1, int var2)
     {
         return new TileEntityMazeGenerator();
     }

@@ -342,7 +342,7 @@ public class GenericStructureInfo implements StructureInfo, Cloneable
             else
             {
                 version = LATEST_VERSION;
-                RecurrentComplex.logger.warn("Structure JSON missing 'version', using latest (" + getClass() + ")");
+                RecurrentComplex.logger.warn("Structure JSON missing 'version', using latest (" + LATEST_VERSION + ")");
             }
 
             if (jsonobject.has("blockTransformers"))

@@ -102,7 +102,7 @@ public class RecurrentComplex
         network.registerMessage(PacketEditStructureHandler.class, PacketEditStructure.class, 7, Side.SERVER);
         network.registerMessage(PacketEditStructureBlockHandler.class, PacketEditStructureBlock.class, 8, Side.CLIENT);
         network.registerMessage(PacketEditStructureBlockHandler.class, PacketEditStructureBlock.class, 9, Side.SERVER);
-        network.registerMessage(PacketEditInvGenMultiTagHandler.class, PacketEditInvGenMultiTag.class, 9, Side.SERVER);
+        network.registerMessage(PacketEditInvGenMultiTagHandler.class, PacketEditInvGenMultiTag.class, 10, Side.SERVER);
 
         RCRegistryHandler.load(event, this);
         proxy.registerRenderers();

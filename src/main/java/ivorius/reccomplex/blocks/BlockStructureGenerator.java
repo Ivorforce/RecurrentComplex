@@ -7,8 +7,7 @@ package ivorius.reccomplex.blocks;
 
 import ivorius.reccomplex.RecurrentComplex;
 import ivorius.reccomplex.network.PacketEditStructureBlock;
-import net.minecraft.block.BlockContainer;
-import net.minecraft.block.ITileEntityProvider;
+import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
@@ -23,7 +22,7 @@ import net.minecraft.world.World;
 /**
  * Created by lukas on 06.06.14.
  */
-public class BlockStructureGenerator extends BlockContainer implements ITileEntityProvider
+public class BlockStructureGenerator extends Block
 {
     public BlockStructureGenerator()
     {
@@ -68,7 +67,13 @@ public class BlockStructureGenerator extends BlockContainer implements ITileEnti
     }
 
     @Override
-    public TileEntity createNewTileEntity(World var1, int var2)
+    public boolean hasTileEntity(int metadata)
+    {
+        return true;
+    }
+
+    @Override
+    public TileEntity createTileEntity(World var1, int var2)
     {
         return new TileEntityStructureGenerator();
     }

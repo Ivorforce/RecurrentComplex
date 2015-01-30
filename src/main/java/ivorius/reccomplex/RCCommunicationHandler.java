@@ -131,10 +131,10 @@ public class RCCommunicationHandler extends IvFMLIntercommHandler
             // If less structures than this cap are registered, the overall spawn chance will decrease so not to spam the same structures over and over.
             int structureMinCap = cmp.getInteger("structureMinCap");
 
-            // {chance}:{ID}. These selectors work the same as structure biome selectors.
+            // List of {chance}:{ID}. These selectors work the same as structure biome selectors.
             // e.g. 0.232:Type:PLAINS,COLD
             // e.g. 1:Ocean
-            String[] biomeTypes = IvNBTHelper.readNBTStrings("supertypes", cmp); // NBTTagList of NBTTagString
+            String[] biomeTypes = IvNBTHelper.readNBTStrings("biomeTypes", cmp); // NBTTagList of NBTTagString
 
             if (!Strings.isEmpty(id))
             {

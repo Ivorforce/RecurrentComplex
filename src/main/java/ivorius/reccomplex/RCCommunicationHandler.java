@@ -10,10 +10,13 @@ import ivorius.ivtoolkit.tools.IvFMLIntercommHandler;
 import ivorius.ivtoolkit.tools.IvNBTHelper;
 import ivorius.reccomplex.dimensions.DimensionDictionary;
 import ivorius.reccomplex.worldgen.StructureRegistry;
+import ivorius.reccomplex.worldgen.StructureSelector;
+import ivorius.reccomplex.worldgen.genericStructures.BiomeSelector;
 import ivorius.reccomplex.worldgen.inventory.GenericItemCollectionRegistry;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ResourceLocation;
 import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.core.helpers.Strings;
 
 import java.util.Arrays;
 
@@ -96,7 +99,7 @@ public class RCCommunicationHandler extends IvFMLIntercommHandler
             String type = cmp.getString("type");
             String[] subtypes = IvNBTHelper.readNBTStrings("subtypes", cmp); // NBTTagList of NBTTagString
 
-            if (type != null)
+            if (!Strings.isEmpty(type))
                 DimensionDictionary.registerSubtypes(type, Arrays.asList(subtypes));
             else
                 getLogger().warn("Could not handle message with key '" + message.key + "' - missing 'subtypes' key!");
@@ -109,10 +112,44 @@ public class RCCommunicationHandler extends IvFMLIntercommHandler
             String type = cmp.getString("type");
             String[] subtypes = IvNBTHelper.readNBTStrings("supertypes", cmp); // NBTTagList of NBTTagString
 
-            if (type != null)
+            if (!Strings.isEmpty(type))
                 DimensionDictionary.registerSupertypes(type, Arrays.asList(subtypes));
             else
                 getLogger().warn("Could not handle message with key '" + message.key + "' - missing 'supertypes' key!");
+
+            return true;
+        }
+        else if (isMessage("registerSimpleSpawnCategory", message, String.class))
+        {
+            NBTTagCompound cmp = message.getNBTValue();
+            String id = cmp.getString("id");
+
+            // If no biome selector matches, this value will be returned.
+            float defaultSpawnChance = cmp.getFloat("defaultSpawnChance");
+            boolean selectableInGui = cmp.getBoolean("selectableInGui");
+
+            // If less structures than this cap are registered, the overall spawn chance will decrease so not to spam the same structures over and over.
+            int structureMinCap = cmp.getInteger("structureMinCap");
+
+            // {chance}:{ID}. These selectors work the same as structure biome selectors.
+            // e.g. 0.232:Type:PLAINS,COLD
+            // e.g. 1:Ocean
+            String[] biomeTypes = IvNBTHelper.readNBTStrings("supertypes", cmp); // NBTTagList of NBTTagString
+
+            if (!Strings.isEmpty(id))
+            {
+                StructureSelector.GenerationInfo[] biomeInfos = new StructureSelector.GenerationInfo[biomeTypes.length];
+                for (int i = 0; i < biomeTypes.length; i++)
+                {
+                    String[] parts = biomeTypes[i].split(":", 2);
+                    biomeInfos[i] = new StructureSelector.GenerationInfo(Float.valueOf(parts[0]), new BiomeSelector(parts[1]));
+                }
+
+                StructureSelector.registerCategory(id, new StructureSelector.SimpleCategory(defaultSpawnChance,
+                        Arrays.asList(biomeInfos), selectableInGui, structureMinCap));
+            }
+            else
+                getLogger().warn("Could not handle message with key '" + message.key + "' - missing 'id' key!");
 
             return true;
         }

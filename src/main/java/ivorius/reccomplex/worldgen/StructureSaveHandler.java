@@ -75,7 +75,7 @@ public class StructureSaveHandler
         SchematicLoader.initializeFolder();
     }
 
-    public static void loadStructuresFromMod(String modid)
+    public static void loadStructuresFromMod(String modid, boolean disableGeneration)
     {
         modid = modid.toLowerCase();
 
@@ -84,7 +84,7 @@ public class StructureSaveHandler
             Path path = RCFileHelper.pathFromResourceLocation(new ResourceLocation(modid, "structures/genericStructures"));
             if (path != null)
             {
-                addAllStructuresInDirectory(path, true, false);
+                addAllStructuresInDirectory(path, !disableGeneration, false);
             }
         }
         catch (URISyntaxException | IOException e)

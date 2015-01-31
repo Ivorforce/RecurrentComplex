@@ -127,8 +127,9 @@ public class RecurrentComplex
     {
         for (String modid : Loader.instance().getIndexedModList().keySet())
         {
-            CustomGenericItemCollectionHandler.loadInventoryGeneratorsFromMod(modid);
-            StructureSaveHandler.loadStructuresFromMod(modid);
+            boolean modGenerationDisabled = RCConfig.isModGenerationDisabled(modid);
+            CustomGenericItemCollectionHandler.loadInventoryGeneratorsFromMod(modid, modGenerationDisabled);
+            StructureSaveHandler.loadStructuresFromMod(modid, modGenerationDisabled);
         }
     }
 }

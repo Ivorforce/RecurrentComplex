@@ -55,7 +55,7 @@ public class CustomGenericItemCollectionHandler
         }
     }
 
-    public static void loadInventoryGeneratorsFromMod(String modid)
+    public static void loadInventoryGeneratorsFromMod(String modid, boolean disableGeneration)
     {
         modid = modid.toLowerCase();
 

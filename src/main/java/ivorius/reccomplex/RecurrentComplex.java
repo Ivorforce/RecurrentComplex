@@ -32,7 +32,7 @@ import net.minecraftforge.common.config.Configuration;
 import org.apache.logging.log4j.Logger;
 
 @Mod(modid = RecurrentComplex.MODID, version = RecurrentComplex.VERSION, name = RecurrentComplex.NAME, guiFactory = "ivorius.reccomplex.gui.RCConfigGuiFactory",
-        dependencies = "required-after:ivtoolkit@[1.0.1,)")
+        dependencies = "required-after:ivtoolkit")
 public class RecurrentComplex
 {
     public static final String NAME = "Recurrent Complex";

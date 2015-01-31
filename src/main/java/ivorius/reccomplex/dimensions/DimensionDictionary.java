@@ -1,8 +1,3 @@
-/*
- *  Copyright (c) 2014, Lukas Tenbrink.
- *  * http://lukas.axxim.net
- */
-
 package ivorius.reccomplex.dimensions;
 
 import gnu.trove.map.TIntObjectMap;
@@ -18,13 +13,17 @@ import java.util.*;
  */
 public class DimensionDictionary
 {
-    public static final String MC_DEFAULT = "MC_DEFAULT";
-
     /**
      * Dimensions that are not registered in the dictionary default to this category.
      * Assigning this to your dimension manually is discouraged.
      */
     public static final String UNCATEGORIZED = "UNCATEGORIZED";
+
+    /**
+     * Dimensions that exist in the base game of Minecraft.
+     */
+    public static final String MC_DEFAULT = "MC_DEFAULT";
+
     /**
      * Dimensions that are deemed to be situated in physical reality.
      */
@@ -45,41 +44,57 @@ public class DimensionDictionary
      * Dimensions that are abstract and don't really exist at all.
      */
     public static final String ABSTRACT = "ABSTRACT";
+
     /**
-     * Dimensions that are on the surface on a planet.
+     * Dimensions with a bottom, but no top limitation, e.g. the surface of a planet.
      */
-    public static final String OVERWORLD = "OVERWORLD";
+    public static final String SURFACE = "SURFACE";
     /**
-     * Dimensions that are above the surface of a planet.
+     * Dimensions with a bottom and top limitation, e.g. an underground caves system (nether).
      */
-    public static final String SKY = "SKY";
+    public static final String CAVE_WORLD = "CAVE_WORLD";
     /**
-     * Dimensions that are below the surface of a planet.
+     * Dimensions with neither bottom nor top limitations, e.g. floating islands or space.
      */
-    public static final String UNDERGROUND = "UNDERGROUND";
+    public static final String FLOATING = "FLOATING";
     /**
-     * Dimensions that are in free space.
+     * Dimensions with no bottom, but a top limitation, e.g. an inverted surface world.
      */
-    public static final String SPACE = "SPACE";
+    public static final String SURFACE_INVERTED = "SURFACE_INVERTED";
+
     /**
-     * Dimensions that are deemed to be on the surface of our earth (like the default dimension).
+     * Dimensions that are only defined in a limited space, e.g. dungeon instances or boss arenas.
+     */
+    public static final String FINITE = "FINITE";
+    /**
+     * Dimensions that are not limited in space, e.g. any dynamically generated world.
+     */
+    public static final String INFINITE = "INFINITE";
+
+    /**
+     * Dimensions that are deemed to be on the surface of a planet.
+     */
+    public static final String PLANET_SURFACE = "PLANET_SURFACE";
+
+    /**
+     * Dimensions that are 'earth' themed, e.g. the overworld.
      */
     public static final String EARTH = "EARTH";
     /**
-     * Dimensions that are 'hell' based - e.g. netherrack, lava, fire.
+     * Dimensions that are 'hell' themed - e.g. netherrack, lava, fire.
      */
     public static final String HELL = "HELL";
     /**
-     * Dimensions that are 'Ender' based - e.g. Endstone, Endermen
+     * Dimensions that are 'ender' themed - e.g. Endstone, Endermen
      */
     public static final String ENDER = "ENDER";
     /**
-     * Dimensions that are made up of underground caves (like the overworld's underground area).
+     * Dimensions intended for a particular boss fight, e.g. the end.
      */
-    public static final String CAVES = "CAVES";
+    public static final String BOSS_ARENA = "BOSS_ARENA";
 
-    private static final TIntObjectMap<Set<String>> dimensionTypes = new TIntObjectHashMap<>();
-    private static final Map<String, Type> types = new HashMap<>();
+    private static final TIntObjectMap<Set<String>> dimensionTypes = new TIntObjectHashMap<Set<String>>();
+    private static final Map<String, Type> types = new HashMap<String, Type>();
 
     private static final Set<String> SET_UNCATEGORIZED = Collections.singleton(UNCATEGORIZED);
 
@@ -88,16 +103,14 @@ public class DimensionDictionary
         registerType(UNCATEGORIZED);
 
         registerSubtypes(UNREAL, Arrays.asList(IMAGINARY, SIMULATED, ABSTRACT));
+        registerSubtypes(FINITE, Arrays.asList(BOSS_ARENA));
+        registerSubtypes(SURFACE, Arrays.asList(PLANET_SURFACE));
 
-        registerSubtypes(OVERWORLD, Arrays.asList(EARTH));
-        registerSubtypes(SKY, Arrays.asList(ENDER));
-        registerSubtypes(UNDERGROUND, Arrays.asList(HELL, CAVES));
+        registerTypes(Arrays.asList(SURFACE_INVERTED));
 
-        registerType(SPACE);
-
-        registerDimensionTypes(0, Arrays.asList(EARTH, REAL, MC_DEFAULT));
-        registerDimensionTypes(-1, Arrays.asList(HELL, REAL, MC_DEFAULT));
-        registerDimensionTypes(1, Arrays.asList(ENDER, REAL, MC_DEFAULT));
+        registerDimensionTypes(0, Arrays.asList(MC_DEFAULT, REAL, INFINITE, PLANET_SURFACE, EARTH));
+        registerDimensionTypes(-1, Arrays.asList(MC_DEFAULT, REAL, INFINITE, CAVE_WORLD, HELL));
+        registerDimensionTypes(1, Arrays.asList(MC_DEFAULT, REAL, BOSS_ARENA, FLOATING, ENDER));
     }
 
     /**
@@ -112,7 +125,7 @@ public class DimensionDictionary
         Set<String> dTypes = dimensionTypes.get(dimensionID);
         if (dTypes == null)
         {
-            dTypes = new HashSet<>();
+            dTypes = new HashSet<String>();
             dimensionTypes.put(dimensionID, dTypes);
         }
         dTypes.addAll(types);
@@ -167,29 +180,29 @@ public class DimensionDictionary
      * This will also register any used types, if they weren't already.
      *
      * @param type     The type.
-     * @param subTypes The subtypes.
+     * @param subtypes The subtypes.
      */
-    public static void registerSubtypes(String type, Collection<String> subTypes)
+    public static void registerSubtypes(String type, Collection<String> subtypes)
     {
-        registerGetType(type).subtypes.addAll(subTypes);
+        registerGetType(type).subtypes.addAll(subtypes);
 
-        for (String sub : subTypes)
+        for (String sub : subtypes)
             registerGetType(sub).supertypes.add(type);
     }
 
     /**
-     * Adds the specified type as a subtype to each of the collection's type.
+     * Adds supertypes to a specific type.
      * This will also register any used types, if they weren't already.
      *
      * @param type     The type.
-     * @param subTypes The supertypes.
+     * @param supertypes The supertypes.
      */
-    public static void registerSupertypes(String type, Collection<String> subTypes)
+    public static void registerSupertypes(String type, Collection<String> supertypes)
     {
-        registerGetType(type).supertypes.addAll(subTypes);
+        registerGetType(type).supertypes.addAll(supertypes);
 
-        for (String sub : subTypes)
-            registerGetType(sub).subtypes.add(type);
+        for (String supertype : supertypes)
+            registerGetType(supertype).subtypes.add(type);
     }
 
     /**
@@ -236,7 +249,7 @@ public class DimensionDictionary
         if (dimTypes == null)
             return false;
 
-        Queue<String> curTypes = new ArrayDeque<>();
+        Queue<String> curTypes = new ArrayDeque<String>();
         curTypes.add(type);
 
         String curType;
@@ -286,7 +299,7 @@ public class DimensionDictionary
 
     private static class Type
     {
-        public final Set<String> supertypes = new HashSet<>();
-        public final Set<String> subtypes = new HashSet<>();
+        public final Set<String> supertypes = new HashSet<String>();
+        public final Set<String> subtypes = new HashSet<String>();
     }
 }

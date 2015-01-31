@@ -32,17 +32,17 @@ public class DimensionGenerationInfo
     public static List<DimensionGenerationInfo> overworldGenerationList()
     {
         return Arrays.asList(new DimensionGenerationInfo("Type:" + DimensionDictionary.UNCATEGORIZED, null),
-                new DimensionGenerationInfo("Type:" + DimensionDictionary.OVERWORLD, null));
+                new DimensionGenerationInfo(String.format("Type:%s,%s", DimensionDictionary.SURFACE, DimensionDictionary.INFINITE), null));
     }
 
     public static List<DimensionGenerationInfo> netherGenerationList()
     {
-        return Arrays.asList(new DimensionGenerationInfo("Type:" + DimensionDictionary.HELL, null));
+        return Arrays.asList(new DimensionGenerationInfo(String.format("Type:%s,%s", DimensionDictionary.HELL, DimensionDictionary.INFINITE), null));
     }
 
     public static List<DimensionGenerationInfo> endGenerationList()
     {
-        return Arrays.asList(new DimensionGenerationInfo("Type:" + DimensionDictionary.ENDER, null));
+        return Arrays.asList(new DimensionGenerationInfo(String.format("Type:%s,%s", DimensionDictionary.ENDER, DimensionDictionary.INFINITE), null));
     }
 
     public String getDimensionID()

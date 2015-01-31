@@ -31,12 +31,6 @@ minecraft {
     runDir = "eclipse"
 }
 
-jar {
-    manifest {
-        attributes 'FMLAT': 'recurrentcomplex_at.cfg'
-    }
-}
-
 // Provided - Start
 // FML doesnt laod coremods and ATs from the classpath
 
@@ -105,19 +99,11 @@ targetCompatibility = 1.7
 task sourceJar(type: Jar) {
     from sourceSets.main.allSource
     classifier = 'sources'
-
-    manifest {
-        attributes 'FMLAT': 'recurrentcomplex_at.cfg'
-    }
 }
 
 task deobfJar(type: Jar) {
     from sourceSets.main.output
     classifier = 'dev'
-
-    manifest {
-        attributes 'FMLAT': 'recurrentcomplex_at.cfg'
-    }
 }
 
 artifacts {

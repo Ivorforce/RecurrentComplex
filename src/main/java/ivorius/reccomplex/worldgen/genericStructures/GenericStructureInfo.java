@@ -15,6 +15,7 @@ import ivorius.reccomplex.blocks.GeneratingTileEntity;
 import ivorius.reccomplex.blocks.RCBlocks;
 import ivorius.reccomplex.json.JsonUtils;
 import ivorius.reccomplex.json.NbtToJson;
+import ivorius.reccomplex.utils.RCAccessHelperEntity;
 import ivorius.reccomplex.worldgen.MCRegistrySpecial;
 import ivorius.reccomplex.worldgen.StructureRegistry;
 import ivorius.reccomplex.worldgen.StructureInfo;
@@ -200,7 +201,7 @@ public class GenericStructureInfo implements StructureInfo, Cloneable
         List<Entity> entities = worldData.entities;
         for (Entity entity : entities)
         {
-            entity.entityUniqueID = UUID.randomUUID();
+            RCAccessHelperEntity.setEntityUniqueID(entity, UUID.randomUUID());
 
             IvWorldData.transformEntityPosForGeneration(entity, context.transform, areaSize);
             IvWorldData.moveEntityForGeneration(entity, origin);

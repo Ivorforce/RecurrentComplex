@@ -20,10 +20,7 @@ import ivorius.reccomplex.worldgen.MCRegistrySpecial;
 import ivorius.reccomplex.worldgen.StructureRegistry;
 import ivorius.reccomplex.worldgen.StructureInfo;
 import ivorius.reccomplex.worldgen.StructureSpawnContext;
-import ivorius.reccomplex.worldgen.blockTransformers.BlockTransformer;
-import ivorius.reccomplex.worldgen.blockTransformers.BlockTransformerNatural;
-import ivorius.reccomplex.worldgen.blockTransformers.BlockTransformerNaturalAir;
-import ivorius.reccomplex.worldgen.blockTransformers.BlockTransformerNegativeSpace;
+import ivorius.reccomplex.worldgen.blockTransformers.*;
 import ivorius.reccomplex.worldgen.genericStructures.gentypes.MazeGenerationInfo;
 import ivorius.reccomplex.worldgen.genericStructures.gentypes.NaturalGenerationInfo;
 import ivorius.reccomplex.worldgen.genericStructures.gentypes.VanillaStructureSpawnInfo;
@@ -31,6 +28,7 @@ import ivorius.reccomplex.worldgen.inventory.InventoryGenerationHandler;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.entity.Entity;
+import net.minecraft.init.Blocks;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
@@ -74,7 +72,7 @@ public class GenericStructureInfo implements StructureInfo, Cloneable
         genericStructureInfo.blockTransformers.add(new BlockTransformerNaturalAir(RCBlocks.negativeSpace, 1));
         genericStructureInfo.blockTransformers.add(new BlockTransformerNegativeSpace(RCBlocks.negativeSpace, 0));
         genericStructureInfo.blockTransformers.add(new BlockTransformerNatural(RCBlocks.naturalFloor, 0));
-        genericStructureInfo.blockTransformers.add(new BlockTransformerNegativeSpace(RCBlocks.naturalFloor, 1));
+        genericStructureInfo.blockTransformers.add(new BlockTransformerReplace(RCBlocks.naturalFloor, 1, Blocks.air, new byte[]{0}));
 
         genericStructureInfo.naturalGenerationInfo = new NaturalGenerationInfo("decoration", new GenerationYSelector(GenerationYSelector.SelectionMode.SURFACE, 0, 0));
         genericStructureInfo.naturalGenerationInfo.biomeWeights.addAll(BiomeGenerationInfo.overworldBiomeGenerationList());

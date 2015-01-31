@@ -37,12 +37,12 @@ public class DimensionGenerationInfo
 
     public static List<DimensionGenerationInfo> netherGenerationList()
     {
-        return Arrays.asList(new DimensionGenerationInfo(String.format("Type:%s,%s", DimensionDictionary.HELL, DimensionDictionary.INFINITE), null));
+        return Arrays.asList(new DimensionGenerationInfo(String.format("Type:%s,%s", DimensionDictionary.HELL, DimensionDictionary.CAVE_WORLD), null));
     }
 
     public static List<DimensionGenerationInfo> endGenerationList()
     {
-        return Arrays.asList(new DimensionGenerationInfo(String.format("Type:%s,%s", DimensionDictionary.ENDER, DimensionDictionary.INFINITE), null));
+        return Arrays.asList(new DimensionGenerationInfo(String.format("Type:%s%s", DimensionDictionary.ENDER, DimensionDictionary.FLOATING), null));
     }
 
     public String getDimensionID()

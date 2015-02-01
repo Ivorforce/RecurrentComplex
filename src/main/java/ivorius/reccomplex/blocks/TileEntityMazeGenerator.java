@@ -143,7 +143,7 @@ public class TileEntityMazeGenerator extends TileEntity implements GeneratingTil
     {
         world.setBlockToAir(xCoord, yCoord, zCoord);
 
-        int[] roomNumbers = mazeRooms.boundsHigher();
+        int[] roomNumbers = IvVecMathHelper.add(mazeRooms.boundsHigher(), new int[]{1, 1, 1});
 
         int[] mazeSize = new int[]{roomSize[0] * roomNumbers[0], roomSize[1] * roomNumbers[1], roomSize[2] * roomNumbers[2]};
         BlockCoord startCoord = transform.apply(structureShift, new int[]{1, 1, 1}).add(xCoord, yCoord, zCoord).subtract(transform.apply(new BlockCoord(0, 0, 0), mazeSize));

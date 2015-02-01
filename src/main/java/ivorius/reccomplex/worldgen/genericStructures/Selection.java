@@ -43,21 +43,25 @@ public class Selection extends ArrayList<Selection.Area>
 
     public Collection<MazeRoom> mazeRooms(boolean additive)
     {
-        Set<MazeRoom> mazeRooms = new HashSet<>();
-        for (Area area : this)
-            mergeRooms(area.additive, 0, area.minCoord, area.maxCoord, area.minCoord.clone(), mazeRooms);
-
-        if (!additive)
+        if (additive)
+        {
+            Set<MazeRoom> rooms = new HashSet<>();
+            for (Area area : this)
+                mergeRooms(area.additive, 0, area.minCoord, area.maxCoord, area.minCoord.clone(), rooms);
+            return rooms;
+        }
+        else
         {
             Set<MazeRoom> spaces = new HashSet<>();
             int[] min = boundsLower();
             int[] max = boundsHigher();
             mergeRooms(true, 0, min, max, min.clone(), spaces);
-            spaces.removeAll(mazeRooms);
+
+            for (Area area : this)
+                mergeRooms(!area.additive, 0, area.minCoord, area.maxCoord, area.minCoord.clone(), spaces);
+
             return spaces;
         }
-
-        return mazeRooms;
     }
 
     public void readFromNBT(NBTTagCompound compound, int dimensions)

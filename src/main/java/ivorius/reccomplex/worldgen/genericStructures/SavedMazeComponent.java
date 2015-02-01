@@ -16,18 +16,15 @@ import net.minecraft.util.WeightedRandom;
 import net.minecraftforge.common.util.Constants;
 
 import java.lang.reflect.Type;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 
 /**
  * Created by lukas on 07.10.14.
  */
 public class SavedMazeComponent extends WeightedRandom.Item
 {
-    private final List<MazeRoom> rooms = new ArrayList<>();
-    private final List<MazePath> exitPaths = new ArrayList<>();
+    public final Selection rooms = new Selection();
+    public final List<MazePath> exitPaths = new ArrayList<>();
 
     public SavedMazeComponent(int weight)
     {
@@ -38,10 +35,21 @@ public class SavedMazeComponent extends WeightedRandom.Item
     {
         super(compound.getInteger("weight"));
 
-        NBTTagList roomsList = compound.getTagList("rooms", Constants.NBT.TAG_COMPOUND);
-        rooms.clear();
-        for (int i = 0; i < roomsList.tagCount(); i++)
-            rooms.add(new MazeRoom(roomsList.getCompoundTagAt(i)));
+        if (compound.hasKey("roomArea", Constants.NBT.TAG_COMPOUND))
+        {
+            rooms.readFromNBT(compound.getCompoundTag("roomArea"), 3);
+        }
+        else if (compound.hasKey("rooms", Constants.NBT.TAG_LIST))
+        {
+            // Legacy
+            NBTTagList roomsList = compound.getTagList("rooms", Constants.NBT.TAG_COMPOUND);
+            rooms.clear();
+            for (int i = 0; i < roomsList.tagCount(); i++)
+            {
+                MazeRoom room = new MazeRoom(roomsList.getCompoundTagAt(i));
+                rooms.add(new Selection.Area(true, room.coordinates, room.coordinates.clone()));
+            }
+        }
 
         NBTTagList exitsList = compound.getTagList("exits", Constants.NBT.TAG_COMPOUND);
         exitPaths.clear();
@@ -49,15 +57,9 @@ public class SavedMazeComponent extends WeightedRandom.Item
             exitPaths.add(new MazePath(exitsList.getCompoundTagAt(i)));
     }
 
-    public List<MazeRoom> getRooms()
+    public Collection<MazeRoom> getRooms()
     {
-        return Collections.unmodifiableList(rooms);
-    }
-
-    public void setRooms(List<MazeRoom> rooms)
-    {
-        this.rooms.clear();
-        this.rooms.addAll(rooms);
+        return rooms.mazeRooms(true);
     }
 
     public List<MazePath> getExitPaths()
@@ -73,28 +75,22 @@ public class SavedMazeComponent extends WeightedRandom.Item
 
     public int[] getSize()
     {
-        int[] lowest = rooms.get(0).coordinates.clone();
-        int[] highest = rooms.get(0).coordinates.clone();
-        for (MazeRoom room : rooms)
+        int[] lowest = rooms.get(0).getMinCoord();
+        int[] highest = rooms.get(0).getMaxCoord();
+        for (MazeRoom room : getRooms())
         {
             for (int i = 0; i < room.coordinates.length; i++)
             {
                 if (room.coordinates[i] < lowest[i])
-                {
                     lowest[i] = room.coordinates[i];
-                }
                 else if (room.coordinates[i] > highest[i])
-                {
                     highest[i] = room.coordinates[i];
-                }
             }
         }
 
         int[] size = IvVecMathHelper.sub(highest, lowest);
         for (int i = 0; i < size.length; i++)
-        {
             size[i]++;
-        }
 
         return size;
     }
@@ -103,10 +99,9 @@ public class SavedMazeComponent extends WeightedRandom.Item
     {
         compound.setInteger("weight", itemWeight);
 
-        NBTTagList roomsList = new NBTTagList();
-        for (MazeRoom room : rooms)
-            roomsList.appendTag(room.writeToNBT());
-        compound.setTag("rooms", roomsList);
+        NBTTagCompound roomsCompound = new NBTTagCompound();
+        rooms.writeToNBT(roomsCompound);
+        compound.setTag("rooms", roomsCompound);
 
         NBTTagList exitsList = new NBTTagList();
         for (MazePath exit : exitPaths)
@@ -123,11 +118,20 @@ public class SavedMazeComponent extends WeightedRandom.Item
 
             SavedMazeComponent mazeComponent = new SavedMazeComponent(JsonUtils.getJsonObjectIntegerFieldValue(jsonObject, "weight"));
 
-            MazeRoom[] rooms = context.deserialize(jsonObject.get("rooms"), MazeRoom[].class);
-            mazeComponent.setRooms(Arrays.asList(rooms));
+            if (jsonObject.has("roomArea"))
+            {
+                mazeComponent.rooms.addAll((Selection) context.deserialize(jsonObject.get("roomArea"), Selection.class));
+            }
+            if (jsonObject.has("rooms"))
+            {
+                // Legacy
+                MazeRoom[] rooms = context.deserialize(jsonObject.get("rooms"), MazeRoom[].class);
+                for (MazeRoom room : rooms)
+                    mazeComponent.rooms.add(new Selection.Area(true, room.coordinates, room.coordinates.clone()));
 
-            MazePath[] exits = context.deserialize(jsonObject.get("exits"), MazePath[].class);
-            mazeComponent.setExitPaths(Arrays.asList(exits));
+                MazePath[] exits = context.deserialize(jsonObject.get("exits"), MazePath[].class);
+                mazeComponent.setExitPaths(Arrays.asList(exits));
+            }
 
             return mazeComponent;
         }
@@ -138,7 +142,7 @@ public class SavedMazeComponent extends WeightedRandom.Item
             JsonObject jsonObject = new JsonObject();
 
             jsonObject.addProperty("weight", src.itemWeight);
-            jsonObject.add("rooms", context.serialize(src.rooms));
+            jsonObject.add("roomArea", context.serialize(src.rooms));
             jsonObject.add("exits", context.serialize(src.exitPaths));
 
             return jsonObject;

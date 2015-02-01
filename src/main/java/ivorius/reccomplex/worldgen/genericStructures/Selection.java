@@ -5,7 +5,7 @@
 
 package ivorius.reccomplex.worldgen.genericStructures;
 
-import ivorius.ivtoolkit.blocks.BlockArea;
+import com.google.gson.annotations.SerializedName;
 import ivorius.ivtoolkit.gui.IntegerRange;
 import ivorius.ivtoolkit.maze.MazeRoom;
 import ivorius.ivtoolkit.tools.IvNBTHelper;
@@ -13,19 +13,49 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraftforge.common.util.Constants;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * Created by lukas on 01.02.15.
  */
 public class Selection extends ArrayList<Selection.Area>
 {
+    private static void mergeRooms(boolean additive, int dimIndex, int[] min, int[] max, int[] position, Set<MazeRoom> rooms)
+    {
+        for (int i = min[dimIndex]; i <= max[dimIndex]; i++)
+        {
+            position[dimIndex] = i;
+
+            if (dimIndex == position.length - 1)
+            {
+                if (additive)
+                    rooms.add(new MazeRoom(position.clone()));
+                else
+                    rooms.remove(new MazeRoom(position));
+            }
+            else
+                mergeRooms(additive, dimIndex + 1, min, max, position, rooms);
+        }
+    }
+
     public Collection<MazeRoom> mazeRooms(boolean additive)
     {
         Set<MazeRoom> mazeRooms = new HashSet<>();
-
         for (Area area : this)
-            mergeRooms(additive == area.additive, 0, area.minCoord, area.maxCoord, area.minCoord.clone(), mazeRooms);
+            mergeRooms(area.additive, 0, area.minCoord, area.maxCoord, area.minCoord.clone(), mazeRooms);
+
+        if (!additive)
+        {
+            Set<MazeRoom> spaces = new HashSet<>();
+            int[] min = boundsLower();
+            int[] max = boundsHigher();
+            mergeRooms(true, 0, min, max, min.clone(), spaces);
+            spaces.removeAll(mazeRooms);
+            return spaces;
+        }
 
         return mazeRooms;
     }
@@ -82,28 +112,13 @@ public class Selection extends ArrayList<Selection.Area>
         return max;
     }
 
-    private static void mergeRooms(boolean additive, int dimIndex, int[] min, int[] max, int[] position, Set<MazeRoom> rooms)
-    {
-        for (int i = min[dimIndex]; i <= max[dimIndex]; i++)
-        {
-            position[dimIndex] = i;
-
-            if (dimIndex == position.length - 1)
-            {
-                if (additive)
-                    rooms.add(new MazeRoom(position.clone()));
-                else
-                    rooms.remove(new MazeRoom(position));
-            }
-            else
-                mergeRooms(additive, dimIndex + 1, min, max, position, rooms);
-        }
-    }
-
     public static class Area
     {
+        @SerializedName("additive")
         private boolean additive;
+        @SerializedName("minCoord")
         private int[] minCoord;
+        @SerializedName("maxCoord")
         private int[] maxCoord;
 
         public Area(boolean additive, IntegerRange... ranges)

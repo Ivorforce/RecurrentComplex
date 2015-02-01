@@ -13,6 +13,7 @@ import ivorius.reccomplex.worldgen.StructureRegistry;
 import ivorius.reccomplex.worldgen.genericStructures.GenerationYSelector;
 import ivorius.reccomplex.worldgen.genericStructures.GenericStructureInfo;
 import ivorius.reccomplex.worldgen.genericStructures.SavedMazeComponent;
+import ivorius.reccomplex.worldgen.genericStructures.Selection;
 import ivorius.reccomplex.worldgen.genericStructures.gentypes.MazeGenerationInfo;
 import ivorius.reccomplex.worldgen.genericStructures.gentypes.NaturalGenerationInfo;
 import ivorius.reccomplex.worldgen.genericStructures.gentypes.VanillaStructureSpawnInfo;
@@ -190,7 +191,7 @@ public class TableDataSourceGenericStructure implements TableDataSource, TableEl
                     break;
                 case "enable":
                     SavedMazeComponent mazeComponent = new SavedMazeComponent(100);
-                    mazeComponent.setRooms(Arrays.asList(new MazeRoom(0, 0, 0)));
+                    mazeComponent.rooms.add(new Selection.Area(true, new int[3], new int[3]));
                     mazeComponent.setExitPaths(Arrays.asList(new MazePath(new MazeRoom(0, 0, 0), 0, true), new MazePath(new MazeRoom(0, 0, 0), 0, false),
                             new MazePath(new MazeRoom(0, 0, 0), 2, true), new MazePath(new MazeRoom(0, 0, 0), 2, false)));
                     structureInfo.mazeGenerationInfo = new MazeGenerationInfo("", mazeComponent);

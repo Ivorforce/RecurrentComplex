@@ -14,6 +14,7 @@ import ivorius.reccomplex.gui.table.*;
  */
 public class TableDataSourceMazeBlock extends TableDataSourceSegmented implements TableElementPropertyListener, TableElementButton.Listener
 {
+    public static final int[] DIMENSIONS = new int[]{100, 100, 100};
     private TileEntityMazeGenerator mazeGenerator;
 
     private TableDelegate tableDelegate;
@@ -59,7 +60,7 @@ public class TableDataSourceMazeBlock extends TableDataSourceSegmented implement
     @Override
     public int numberOfSegments()
     {
-        return 5;
+        return 4;
     }
 
     @Override
@@ -87,7 +88,7 @@ public class TableDataSourceMazeBlock extends TableDataSourceSegmented implement
             }
             else if (index == 1)
             {
-                TableElementButton element = new TableElementButton("blockedRooms", "Blocked Rooms", new TableElementButton.Action("edit", "Edit"));
+                TableElementButton element = new TableElementButton("rooms", "Rooms", new TableElementButton.Action("edit", "Edit"));
                 element.addListener(this);
                 return element;
             }
@@ -130,27 +131,6 @@ public class TableDataSourceMazeBlock extends TableDataSourceSegmented implement
             else if (index == 2)
             {
                 TableElementInteger element = new TableElementInteger("roomSizeZ", "Room Size: Z", mazeGenerator.getRoomSize()[2], 1, 64);
-                element.addPropertyListener(this);
-                return element;
-            }
-        }
-        else if (segment == 4)
-        {
-            if (index == 0)
-            {
-                TableElementInteger element = new TableElementInteger("roomsX", "Rooms: X", mazeGenerator.getRoomNumbers()[0], 1, 64);
-                element.addPropertyListener(this);
-                return element;
-            }
-            else if (index == 1)
-            {
-                TableElementInteger element = new TableElementInteger("roomsY", "Rooms: Y", mazeGenerator.getRoomNumbers()[1], 1, 64);
-                element.addPropertyListener(this);
-                return element;
-            }
-            else if (index == 2)
-            {
-                TableElementInteger element = new TableElementInteger("roomsZ", "Rooms: Z", mazeGenerator.getRoomNumbers()[2], 1, 64);
                 element.addPropertyListener(this);
                 return element;
             }
@@ -199,24 +179,6 @@ public class TableDataSourceMazeBlock extends TableDataSourceSegmented implement
             size[2] = (int) element.getPropertyValue();
             mazeGenerator.setRoomSize(size);
         }
-        else if ("roomsX".equals(element.getID()))
-        {
-            int[] size = mazeGenerator.getRoomNumbers();
-            size[0] = (int) element.getPropertyValue();
-            mazeGenerator.setRoomNumbers(size);
-        }
-        else if ("roomsY".equals(element.getID()))
-        {
-            int[] size = mazeGenerator.getRoomNumbers();
-            size[1] = (int) element.getPropertyValue();
-            mazeGenerator.setRoomNumbers(size);
-        }
-        else if ("roomsZ".equals(element.getID()))
-        {
-            int[] size = mazeGenerator.getRoomNumbers();
-            size[2] = (int) element.getPropertyValue();
-            mazeGenerator.setRoomNumbers(size);
-        }
     }
 
     @Override
@@ -224,11 +186,11 @@ public class TableDataSourceMazeBlock extends TableDataSourceSegmented implement
     {
         if ("exits".equals(tableElementButton.getID()))
         {
-            tableNavigator.pushTable(new GuiTable(tableDelegate, new TableDataSourceMazePathList(mazeGenerator.mazeExits, mazeGenerator.roomNumbers, tableDelegate, tableNavigator)));
+            tableNavigator.pushTable(new GuiTable(tableDelegate, new TableDataSourceMazePathList(mazeGenerator.mazeExits, mazeGenerator.mazeRooms.boundsHigher(), tableDelegate, tableNavigator)));
         }
-        else if ("blockedRooms".equals(tableElementButton.getID()))
+        else if ("rooms".equals(tableElementButton.getID()))
         {
-            tableNavigator.pushTable(new GuiTable(tableDelegate, new TableDataSourceMazeAreaList(mazeGenerator.blockedRoomAreas, mazeGenerator.roomNumbers, tableDelegate, tableNavigator)));
+            tableNavigator.pushTable(new GuiTable(tableDelegate, new TableDataSourceSelection(mazeGenerator.mazeRooms, DIMENSIONS, tableDelegate, tableNavigator)));
         }
     }
 }

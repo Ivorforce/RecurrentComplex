@@ -41,6 +41,13 @@ public class Selection extends ArrayList<Selection.Area>
         }
     }
 
+    public static Selection zeroSelection(int dimensions)
+    {
+        Selection selection = new Selection();
+        selection.add(new Area(true, new int[dimensions], new int[dimensions]));
+        return selection;
+    }
+
     public Collection<MazeRoom> mazeRooms(boolean additive)
     {
         if (additive)

@@ -97,9 +97,7 @@ public class WorldGenMaze
 
             int splitCompWeight = 0;
             if (comp.itemWeight > 0)
-            {
                 splitCompWeight = Math.max(1, comp.itemWeight / roomVariations);
-            }
 
             for (int rotations = 0; rotations < (info.isRotatable() ? 4 : 1); rotations++)
             {

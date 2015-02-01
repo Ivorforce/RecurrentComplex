@@ -23,7 +23,7 @@ import java.util.*;
  */
 public class SavedMazeComponent extends WeightedRandom.Item
 {
-    public final Selection rooms = new Selection();
+    public final Selection rooms = Selection.zeroSelection(3);
     public final List<MazePath> exitPaths = new ArrayList<>();
 
     public SavedMazeComponent(int weight)
@@ -55,6 +55,11 @@ public class SavedMazeComponent extends WeightedRandom.Item
         exitPaths.clear();
         for (int i = 0; i < exitsList.tagCount(); i++)
             exitPaths.add(new MazePath(exitsList.getCompoundTagAt(i)));
+    }
+
+    public boolean isValid()
+    {
+        return !rooms.isEmpty();
     }
 
     public Collection<MazeRoom> getRooms()

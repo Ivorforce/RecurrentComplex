@@ -168,7 +168,7 @@ public class StructureRegistry
             List<StructureInfo> structureInfos = new ArrayList<>();
             for (StructureInfo info : getAllGeneratingStructures())
             {
-                if (mazeID.equals(info.mazeID()))
+                if (info.mazeComponent().isValid() && mazeID.equals(info.mazeID()))
                     structureInfos.add(info);
             }
             structuresInMazes.put(mazeID, structureInfos);

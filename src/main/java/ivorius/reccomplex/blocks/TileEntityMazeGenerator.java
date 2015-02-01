@@ -28,7 +28,7 @@ public class TileEntityMazeGenerator extends TileEntity implements GeneratingTil
 {
     public String mazeID = "";
     public List<MazePath> mazeExits = new ArrayList<>();
-    public Selection mazeRooms = new Selection();
+    public Selection mazeRooms = Selection.zeroSelection(3);
 
     public BlockCoord structureShift = new BlockCoord(0, 0, 0);
 
@@ -142,6 +142,9 @@ public class TileEntityMazeGenerator extends TileEntity implements GeneratingTil
     public void generate(World world, Random random, AxisAlignedTransform2D transform, int layer)
     {
         world.setBlockToAir(xCoord, yCoord, zCoord);
+
+        if (mazeRooms.isEmpty())
+            return ;
 
         int[] roomNumbers = IvVecMathHelper.add(mazeRooms.boundsHigher(), new int[]{1, 1, 1});
 

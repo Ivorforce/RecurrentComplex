@@ -61,6 +61,7 @@ public class WorldGenStructures implements IWorldGenerator
             MinecraftForge.EVENT_BUS.post(new StructureGenerationEventLite.Pre(world, structureName, coordInts, size, layer));
 
             structureInfo.generate(structureSpawnContext);
+            RecurrentComplex.logger.trace("Generated structure '" + StructureRegistry.getName(structureInfo) + "' in " + structureSpawnContext.boundingBox);
 
             RCEventBus.INSTANCE.post(new StructureGenerationEvent.Post(structureInfo, structureSpawnContext));
             MinecraftForge.EVENT_BUS.post(new StructureGenerationEventLite.Post(world, structureName, coordInts, size, layer));
@@ -71,6 +72,8 @@ public class WorldGenStructures implements IWorldGenerator
     {
         if (RCConfig.spawnStructure != null && RCConfig.spawnStructure.trim().length() > 0)
         {
+            RecurrentComplex.logger.trace(String.format("Attempting to generate spawn structure"));
+
             StructureInfo structureInfo = StructureRegistry.getStructure(RCConfig.spawnStructure);
             if (structureInfo != null)
             {
@@ -121,7 +124,10 @@ public class WorldGenStructures implements IWorldGenerator
             ChunkCoordinates spawnPos = world.getSpawnPoint();
 
             if (chunkContains(chunkX, chunkZ, spawnPos))
+            {
+                RecurrentComplex.logger.trace(String.format("Found spawn chunk at x = %d, z = %d", chunkX << 4, chunkZ << 4));
                 generateSpawnStructure(random, spawnPos, world, chunkGenerator, chunkProvider);
+            }
 
             double distToSpawn = IvVecMathHelper.distanceSQ(new double[]{chunkX * 16 + 8, chunkZ * 16 + 8}, new double[]{spawnPos.posX, spawnPos.posZ});
             mayGenerate &= distToSpawn >= RCConfig.minDistToSpawnForGeneration * RCConfig.minDistToSpawnForGeneration;

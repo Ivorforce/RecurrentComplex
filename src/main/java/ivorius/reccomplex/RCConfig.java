@@ -40,7 +40,7 @@ public class RCConfig
             forceEnabledStructures.clear();
             forceEnabledStructures.addAll(Arrays.asList(RecurrentComplex.config.getStringList("forceEnabledStructures", Configuration.CATEGORY_GENERAL, new String[0], "Structures that be set to generate (if in the right directory), no matter what")));
 
-            spawnStructure = RecurrentComplex.config.getString("spawnStructure", Configuration.CATEGORY_GENERAL, "", "The structure that will generate around the spawn point. Keep in mind the structure will generate towards +x and +z, and may thus need a negative shift.");
+            spawnStructure = RecurrentComplex.config.getString("spawnStructure", Configuration.CATEGORY_GENERAL, "", "The structure that will generate around the spawn point. It will start off in the center of the spawn area, and may need to be moved using the spawn shift.");
             spawnStructureShiftX = RecurrentComplex.config.getInt("spawnStructureShiftX", Configuration.CATEGORY_GENERAL, 0, -100, 100, "The amount of blocks the spawn structure will be moved along the x axis on generation.");
             spawnStructureShiftZ = RecurrentComplex.config.getInt("spawnStructureShiftZ", Configuration.CATEGORY_GENERAL, 0, -100, 100, "The amount of blocks the spawn structure will be moved along the z axis on generation.");
         }

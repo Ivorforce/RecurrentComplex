@@ -19,6 +19,9 @@ import java.util.Random;
  */
 public class GenerationYSelector
 {
+    public static final int DONT_GENERATE = -1;
+    public static final int MIN_DIST_TO_VOID = 3;
+
     public static enum SelectionMode
     {
         @SerializedName("bedrock")
@@ -73,10 +76,11 @@ public class GenerationYSelector
                 int genYMP = surfaceHeight(world, x - structureSize[0] / 2, z + structureSize[2] / 2);
                 int genYMM = surfaceHeight(world, x - structureSize[0] / 2, z - structureSize[2] / 2);
 
-                return Math.max(2, averageIgnoringErrors(genYC, genYPP, genYPM, genYMP, genYMM) + y);
+                int avg = averageIgnoringErrors(genYC, genYPP, genYPM, genYMP, genYMM);
+                return avg > MIN_DIST_TO_VOID ? avg + y : DONT_GENERATE;
             }
             case SEALEVEL:
-                return Math.max(2, 63 + y);
+                return 63 + y;
             case UNDERWATER:
             {
                 int genYC = surfaceHeightUnderwater(world, x, z);
@@ -85,10 +89,11 @@ public class GenerationYSelector
                 int genYMP = surfaceHeightUnderwater(world, x - structureSize[0] / 2, z + structureSize[2] / 2);
                 int genYMM = surfaceHeightUnderwater(world, x - structureSize[0] / 2, z - structureSize[2] / 2);
 
-                return Math.max(2, averageIgnoringErrors(genYC, genYPP, genYPM, genYMP, genYMM) + y);
+                int avg = averageIgnoringErrors(genYC, genYPP, genYPM, genYMP, genYMM);
+                return avg > MIN_DIST_TO_VOID ? avg + y : DONT_GENERATE;
             }
             case TOP:
-                return Math.max(2, world.getHeight() + y);
+                return world.getHeight() + y;
             case LOWEST_EDGE:
             {
                 int genYC = surfaceHeightUnderwater(world, x, z);
@@ -97,7 +102,8 @@ public class GenerationYSelector
                 int genYMP = surfaceHeightUnderwater(world, x - structureSize[0] / 2, z + structureSize[2] / 2);
                 int genYMM = surfaceHeightUnderwater(world, x - structureSize[0] / 2, z - structureSize[2] / 2);
 
-                return Math.max(2, min(genYC, genYPP, genYPM, genYMP, genYMM) + y);
+                int min = min(genYC, genYPP, genYPM, genYMP, genYMM);
+                return min > MIN_DIST_TO_VOID ? min + y : DONT_GENERATE;
             }
         }
 

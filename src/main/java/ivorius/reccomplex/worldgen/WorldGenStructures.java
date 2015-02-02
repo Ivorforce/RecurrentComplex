@@ -29,6 +29,9 @@ import java.util.Random;
  */
 public class WorldGenStructures implements IWorldGenerator
 {
+
+    public static final int MIN_DIST_TO_LIMIT = 3;
+
     public static int generateStructureRandomly(World world, Random random, StructureInfo info, int x, int z, boolean suggest)
     {
         AxisAlignedTransform2D transform = AxisAlignedTransform2D.transform(info.isRotatable() ? random.nextInt(4) : 0, info.isMirrorable() && random.nextBoolean());
@@ -53,9 +56,11 @@ public class WorldGenStructures implements IWorldGenerator
         StructureSpawnContext structureSpawnContext = new StructureSpawnContext(world, random, structureBoundingBox(coord, size), layer, false, strucTransform);
         String structureName = StructureRegistry.getName(structureInfo);
 
-        if (!suggest
-                || !RCEventBus.INSTANCE.post(new StructureGenerationEvent.Suggest(structureInfo, structureSpawnContext))
-                || !MinecraftForge.EVENT_BUS.post(new StructureGenerationEventLite.Suggest(world, structureName, coordInts, size, layer)))
+        if (!suggest || (
+                coord.y > MIN_DIST_TO_LIMIT && coord.y + size[1] < world.getHeight() - MIN_DIST_TO_LIMIT
+                && !RCEventBus.INSTANCE.post(new StructureGenerationEvent.Suggest(structureInfo, structureSpawnContext))
+                && !MinecraftForge.EVENT_BUS.post(new StructureGenerationEventLite.Suggest(world, structureName, coordInts, size, layer))
+                ))
         {
             RCEventBus.INSTANCE.post(new StructureGenerationEvent.Pre(structureInfo, structureSpawnContext));
             MinecraftForge.EVENT_BUS.post(new StructureGenerationEventLite.Pre(world, structureName, coordInts, size, layer));
@@ -66,6 +71,8 @@ public class WorldGenStructures implements IWorldGenerator
             RCEventBus.INSTANCE.post(new StructureGenerationEvent.Post(structureInfo, structureSpawnContext));
             MinecraftForge.EVENT_BUS.post(new StructureGenerationEventLite.Post(world, structureName, coordInts, size, layer));
         }
+        else
+            RecurrentComplex.logger.trace("Canceled structure '" + StructureRegistry.getName(structureInfo) + "' generation in " + structureSpawnContext.boundingBox);
     }
 
     public static void generateSpawnStructure(Random random, ChunkCoordinates spawn, World world, IChunkProvider chunkGenerator, IChunkProvider chunkProvider)

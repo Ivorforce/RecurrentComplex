@@ -77,6 +77,7 @@ public class GenericStructureInfo implements StructureInfo, Cloneable
 
         genericStructureInfo.naturalGenerationInfo = new NaturalGenerationInfo("decoration", new GenerationYSelector(GenerationYSelector.SelectionMode.SURFACE, 0, 0));
         genericStructureInfo.naturalGenerationInfo.biomeWeights.addAll(BiomeGenerationInfo.overworldBiomeGenerationList());
+        genericStructureInfo.naturalGenerationInfo.dimensionWeights.addAll(DimensionGenerationInfo.overworldGenerationList());
 
         return genericStructureInfo;
     }

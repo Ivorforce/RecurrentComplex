@@ -82,9 +82,9 @@ public class WorldGenStructures implements IWorldGenerator
 
                 int strucX = spawn.posX + RCConfig.spawnStructureShiftX;
                 int strucZ = spawn.posZ + RCConfig.spawnStructureShiftZ;
-                int strucY = structureInfo.generationY(world, random, strucX + strucBB[0] / 2, strucZ + strucBB[2] / 2);
+                int strucY = structureInfo.generationY(world, random, strucX, strucZ);
 
-                BlockCoord genCoord = new BlockCoord(strucX, strucY, strucZ);
+                BlockCoord genCoord = new BlockCoord(strucX - strucBB[0] / 2, strucY, strucZ - strucBB[2] / 2);
 
                 generateStructureWithNotifications(structureInfo, world, random, genCoord, transform, 0, false);
             }

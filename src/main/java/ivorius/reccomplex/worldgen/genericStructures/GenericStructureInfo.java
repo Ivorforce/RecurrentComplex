@@ -34,6 +34,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.MathHelper;
 import net.minecraft.world.World;
+import net.minecraft.world.WorldProvider;
 import net.minecraft.world.biome.BiomeGenBase;
 import net.minecraftforge.common.BiomeDictionary;
 
@@ -240,18 +241,18 @@ public class GenericStructureInfo implements StructureInfo, Cloneable
     }
 
     @Override
-    public int generationWeight(BiomeGenBase biome, int dimensionID)
+    public int generationWeight(BiomeGenBase biome, WorldProvider provider)
     {
-        return generationWeightInBiome(biome) * generationWeightInDimension(dimensionID);
+        return generationWeightInBiome(biome) * generationWeightInDimension(provider);
     }
 
-    protected int generationWeightInDimension(int dimensionID)
+    protected int generationWeightInDimension(WorldProvider provider)
     {
         if (naturalGenerationInfo != null)
         {
             for (DimensionGenerationInfo generationInfo : naturalGenerationInfo.dimensionWeights)
             {
-                if (generationInfo.matches(dimensionID))
+                if (generationInfo.matches(provider))
                     return generationInfo.getActiveGenerationWeight();
             }
         }

@@ -46,26 +46,31 @@ public class CommandDimensionDict extends CommandBase
         if (args.length < 2)
             throw new WrongUsageException("commands.dimensiondict.usage");
 
-        if (args[0].equals("get"))
+        switch (args[0])
         {
-            int dimensionID = parseInt(commandSender, args[1]);
+            case "get":
+            {
+                int dimensionID = parseInt(commandSender, args[1]);
 
-            Set<String> types = DimensionDictionary.getDimensionTypes(dimensionID);
-            List<String> typeList = new ArrayList<>();
-            typeList.addAll(types);
-            commandSender.addChatMessage(new ChatComponentTranslation("commands.dimensiondict.get", dimensionID, Strings.join(typeList, ", ")));
-        }
-        else if (args[0].equals("list"))
-        {
-            TIntList typeDimensions = allDimensionsOfType(args[1]);
-            String[] types = new String[typeDimensions.size()];
-            for (int i = 0; i < typeDimensions.size(); i++)
-                types[i] = String.valueOf(typeDimensions.get(i));
+                Set<String> types = DimensionDictionary.getDimensionTypes(DimensionManager.getProvider(dimensionID));
+                List<String> typeList = new ArrayList<>();
+                typeList.addAll(types);
+                commandSender.addChatMessage(new ChatComponentTranslation("commands.dimensiondict.get", dimensionID, Strings.join(typeList, ", ")));
+                break;
+            }
+            case "list":
+            {
+                TIntList typeDimensions = allDimensionsOfType(args[1]);
+                String[] types = new String[typeDimensions.size()];
+                for (int i = 0; i < typeDimensions.size(); i++)
+                    types[i] = String.valueOf(typeDimensions.get(i));
 
-            commandSender.addChatMessage(new ChatComponentTranslation("commands.dimensiondict.list", args[1], Strings.join(types, ", ")));
+                commandSender.addChatMessage(new ChatComponentTranslation("commands.dimensiondict.list", args[1], Strings.join(types, ", ")));
+                break;
+            }
+            default:
+                throw new WrongUsageException("commands.dimensiondict.usage");
         }
-        else
-            throw new WrongUsageException("commands.dimensiondict.usage");
     }
 
     private TIntList allDimensionsOfType(String type)
@@ -73,7 +78,7 @@ public class CommandDimensionDict extends CommandBase
         TIntList intList = new TIntArrayList();
         for (int d : DimensionManager.getIDs())
         {
-            if (DimensionDictionary.dimensionMatchesType(d, type))
+            if (DimensionDictionary.dimensionMatchesType(DimensionManager.getProvider(d), type))
                 intList.add(d);
         }
         return intList;
@@ -87,25 +92,16 @@ public class CommandDimensionDict extends CommandBase
 
         if (args[0].equals("get"))
         {
-            Set<BiomeGenBase> biomes = BiomeSelector.gatherAllBiomes();
-            String[] biomeNames = new String[biomes.size()];
+            Integer[] dimensions = DimensionManager.getIDs();
+            String[] dimensionStrings = new String[dimensions.length];
 
-            int index = 0;
-            for (BiomeGenBase biome : biomes)
-                biomeNames[index ++] = biome.biomeName;
+            for (int i = 0; i < dimensions.length; i++)
+                dimensionStrings[i] = String.valueOf(dimensions[i]);
 
-            return getListOfStringsMatchingLastWord(args, biomeNames);
+            return getListOfStringsMatchingLastWord(args, dimensionStrings);
         }
         else if (args[0].equals("list"))
-        {
-            BiomeDictionary.Type[] types = BiomeDictionary.Type.values();
-            String[] typeNames = new String[types.length];
-
-            for (int i = 0; i < types.length; i++)
-                typeNames[i] = IvGsonHelper.serializedName(types[i]);
-
-            return getListOfStringsMatchingLastWord(args, typeNames);
-        }
+            return getListOfStringsFromIterableMatchingLastWord(args, DimensionDictionary.allRegisteredTypes());
 
         return null;
     }

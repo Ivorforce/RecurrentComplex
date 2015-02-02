@@ -6,9 +6,11 @@
 package ivorius.reccomplex.worldgen;
 
 import ivorius.reccomplex.RCConfig;
+import ivorius.reccomplex.dimensions.DimensionDictionary;
 import ivorius.reccomplex.worldgen.genericStructures.BiomeSelector;
 import net.minecraft.util.WeightedRandom;
 import net.minecraft.world.World;
+import net.minecraft.world.WorldProvider;
 import net.minecraft.world.biome.BiomeGenBase;
 import net.minecraft.world.chunk.IChunkProvider;
 
@@ -25,6 +27,30 @@ public class StructureSelector
 
     private Map<String, List<WeightedStructureInfo>> weightedStructureInfos = new HashMap<>();
 
+    private Set<String> cachedDimensionTypes;
+
+    public StructureSelector(Collection<StructureInfo> structures, BiomeGenBase biome, WorldProvider provider)
+    {
+        cachedDimensionTypes = new HashSet<>();
+        cachedDimensionTypes.addAll(DimensionDictionary.getDimensionTypes(provider));
+
+        for (StructureInfo structureInfo : structures)
+        {
+            int generationWeight = structureInfo.generationWeight(biome, provider);
+
+            if (generationWeight > 0)
+            {
+                String category = structureInfo.generationCategory();
+                if (!weightedStructureInfos.containsKey(category))
+                {
+                    weightedStructureInfos.put(category, new ArrayList<WeightedStructureInfo>());
+                }
+
+                weightedStructureInfos.get(category).add(new WeightedStructureInfo(generationWeight, structureInfo));
+            }
+        }
+    }
+
     public static void registerCategory(String id, Category category)
     {
         categories.put(id, category);
@@ -40,23 +66,9 @@ public class StructureSelector
         return categories.keySet();
     }
 
-    public StructureSelector(Collection<StructureInfo> structures, BiomeGenBase biome, int dimensionID)
+    public boolean isValid(BiomeGenBase biome, WorldProvider provider)
     {
-        for (StructureInfo structureInfo : structures)
-        {
-            int generationWeight = structureInfo.generationWeight(biome, dimensionID);
-
-            if (generationWeight > 0)
-            {
-                String category = structureInfo.generationCategory();
-                if (!weightedStructureInfos.containsKey(category))
-                {
-                    weightedStructureInfos.put(category, new ArrayList<WeightedStructureInfo>());
-                }
-
-                weightedStructureInfos.get(category).add(new WeightedStructureInfo(generationWeight, structureInfo));
-            }
-        }
+        return DimensionDictionary.getDimensionTypes(provider).equals(cachedDimensionTypes);
     }
 
     public float generationChance(String category, BiomeGenBase biome)

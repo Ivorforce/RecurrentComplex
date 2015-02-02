@@ -9,6 +9,7 @@ import com.google.gson.*;
 import ivorius.reccomplex.dimensions.DimensionDictionary;
 import ivorius.reccomplex.json.JsonUtils;
 import net.minecraft.util.EnumChatFormatting;
+import net.minecraft.world.WorldProvider;
 
 import java.lang.reflect.Type;
 import java.util.Arrays;
@@ -32,17 +33,17 @@ public class DimensionGenerationInfo
     public static List<DimensionGenerationInfo> overworldGenerationList()
     {
         return Arrays.asList(new DimensionGenerationInfo("Type:" + DimensionDictionary.UNCATEGORIZED, null),
-                new DimensionGenerationInfo(String.format("Type:%s,%s", DimensionDictionary.SURFACE, DimensionDictionary.INFINITE), null));
+                new DimensionGenerationInfo(String.format("Type:%s,%s,%s", DimensionDictionary.NO_TOP_LIMIT, DimensionDictionary.BOTTOM_LIMIT, DimensionDictionary.INFINITE), null));
     }
 
     public static List<DimensionGenerationInfo> netherGenerationList()
     {
-        return Arrays.asList(new DimensionGenerationInfo(String.format("Type:%s,%s", DimensionDictionary.HELL, DimensionDictionary.CAVE_WORLD), null));
+        return Arrays.asList(new DimensionGenerationInfo(String.format("Type:%s,%s,%s", DimensionDictionary.HELL, DimensionDictionary.TOP_LIMIT, DimensionDictionary.BOTTOM_LIMIT), null));
     }
 
     public static List<DimensionGenerationInfo> endGenerationList()
     {
-        return Arrays.asList(new DimensionGenerationInfo(String.format("Type:%s%s", DimensionDictionary.ENDER, DimensionDictionary.FLOATING), null));
+        return Arrays.asList(new DimensionGenerationInfo(String.format("Type:%s,%s,%s", DimensionDictionary.ENDER, DimensionDictionary.NO_TOP_LIMIT, DimensionDictionary.NO_BOTTOM_LIMIT), null));
     }
 
     public String getDimensionID()
@@ -75,9 +76,9 @@ public class DimensionGenerationInfo
         return generationWeight == null;
     }
 
-    public boolean matches(int dimensionID)
+    public boolean matches(WorldProvider provider)
     {
-        return dimensionSelector.matches(dimensionID);
+        return dimensionSelector.matches(provider);
     }
 
     public boolean isTypeList()

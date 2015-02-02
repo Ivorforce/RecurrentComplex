@@ -6,6 +6,7 @@
 package ivorius.reccomplex.worldgen.genericStructures;
 
 import ivorius.reccomplex.dimensions.DimensionDictionary;
+import net.minecraft.world.WorldProvider;
 
 import java.util.Arrays;
 import java.util.List;
@@ -40,12 +41,12 @@ public class DimensionSelector
         return null;
     }
 
-    public boolean matches(int dimensionID)
+    public boolean matches(WorldProvider provider)
     {
         try
         {
             Integer dimensionIDInt = Integer.valueOf(this.dimensionID);
-            return dimensionIDInt == dimensionID;
+            return dimensionIDInt == provider.dimensionId;
         }
         catch (NumberFormatException ignored)
         {
@@ -53,7 +54,7 @@ public class DimensionSelector
         }
 
         List<String> types = getDimensionTypes();
-        return types != null && DimensionDictionary.dimensionMatchesAllTypes(dimensionID, types);
+        return types != null && DimensionDictionary.dimensionMatchesAllTypes(provider, types);
     }
 
     public boolean isTypeList()

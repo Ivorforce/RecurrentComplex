@@ -144,7 +144,7 @@ public class WorldGenStructures implements IWorldGenerator
         {
             BiomeGenBase biomeGen = world.getBiomeGenForCoords(chunkX * 16, chunkZ * 16);
 
-            StructureSelector structureSelector = StructureRegistry.getStructureSelector(biomeGen, world.provider.dimensionId);
+            StructureSelector structureSelector = StructureRegistry.getStructureSelector(biomeGen, world.provider);
             List<StructureInfo> generated = structureSelector.generatedStructures(random, chunkX, chunkZ, world, chunkGenerator, chunkProvider);
 
             for (StructureInfo info : generated)

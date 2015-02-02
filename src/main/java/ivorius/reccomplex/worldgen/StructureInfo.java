@@ -9,6 +9,7 @@ import ivorius.reccomplex.worldgen.genericStructures.GenericStructureInfo;
 import ivorius.reccomplex.worldgen.genericStructures.SavedMazeComponent;
 import ivorius.reccomplex.worldgen.genericStructures.gentypes.VanillaStructureSpawnInfo;
 import net.minecraft.world.World;
+import net.minecraft.world.WorldProvider;
 import net.minecraft.world.biome.BiomeGenBase;
 
 import java.util.Random;
@@ -28,7 +29,7 @@ public interface StructureInfo
 
     boolean isMirrorable();
 
-    int generationWeight(BiomeGenBase biome, int dimensionID);
+    int generationWeight(BiomeGenBase biome, WorldProvider provider);
 
     String generationCategory();
 

@@ -26,6 +26,7 @@ import ivorius.reccomplex.worldgen.genericStructures.gentypes.MazeGenerationInfo
 import ivorius.reccomplex.worldgen.genericStructures.gentypes.NaturalGenerationInfo;
 import ivorius.reccomplex.worldgen.genericStructures.gentypes.VanillaStructureSpawnInfo;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.world.WorldProvider;
 import net.minecraft.world.biome.BiomeGenBase;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
@@ -152,13 +153,18 @@ public class StructureRegistry
         return allStructures.keySet();
     }
 
-    public static StructureSelector getStructureSelector(BiomeGenBase biome, int dimensionID)
+    public static StructureSelector getStructureSelector(BiomeGenBase biome, WorldProvider provider)
     {
-        Pair<Integer, String> pair = new ImmutablePair<>(dimensionID, biome.biomeName);
-        if (!structureSelectors.containsKey(pair))
-            structureSelectors.put(pair, new StructureSelector(getAllGeneratingStructures(), biome, dimensionID));
+        Pair<Integer, String> pair = new ImmutablePair<>(provider.dimensionId, biome.biomeName);
+        StructureSelector structureSelector = structureSelectors.get(pair);
 
-        return structureSelectors.get(pair);
+        if (structureSelector == null || !structureSelector.isValid(biome, provider))
+        {
+            structureSelector = new StructureSelector(getAllGeneratingStructures(), biome, provider);
+            structureSelectors.put(pair, structureSelector);
+        }
+
+        return structureSelector;
     }
 
     public static List<StructureInfo> getStructuresInMaze(String mazeID)

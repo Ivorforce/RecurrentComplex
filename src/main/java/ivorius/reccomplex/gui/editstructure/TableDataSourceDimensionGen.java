@@ -101,9 +101,9 @@ public class TableDataSourceDimensionGen implements TableDataSource, TableElemen
 
             for (int eID : DimensionManager.getIDs())
                 if (dimID == eID)
-                    return GuiValidityStateIndicator.State.SEMI_VALID;
+                    return GuiValidityStateIndicator.State.VALID;
 
-            return GuiValidityStateIndicator.State.VALID;
+            return GuiValidityStateIndicator.State.SEMI_VALID;
         }
         catch (NumberFormatException ignored)
         {
@@ -119,7 +119,7 @@ public class TableDataSourceDimensionGen implements TableDataSource, TableElemen
         TIntList intList = new TIntArrayList();
         for (int d : DimensionManager.getIDs())
         {
-            if (DimensionDictionary.dimensionMatchesType(d, type))
+            if (DimensionDictionary.dimensionMatchesType(DimensionManager.getProvider(d), type))
                 intList.add(d);
         }
         return intList;

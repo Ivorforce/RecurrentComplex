@@ -5,6 +5,8 @@ import gnu.trove.map.hash.TIntObjectHashMap;
 
 import java.util.*;
 
+import net.minecraft.world.WorldProvider;
+
 /**
  * Handles tags for dimensions, in a way similar to {@link net.minecraftforge.common.BiomeDictionary}.
  * <p/>
@@ -46,21 +48,21 @@ public class DimensionDictionary
     public static final String ABSTRACT = "ABSTRACT";
 
     /**
-     * Dimensions with a bottom, but no top limitation, e.g. the surface of a planet.
+     * Dimensions with a top limitation (e.g. bedrock), conveying that there is terrain beyond.
      */
-    public static final String SURFACE = "SURFACE";
+    public static final String TOP_LIMIT = "TOP_LIMIT";
     /**
-     * Dimensions with a bottom and top limitation, e.g. an underground caves system (nether).
+     * Dimensions without a top limitation (e.g. bedrock), conveying that there is no terrain (void) beyond.
      */
-    public static final String CAVE_WORLD = "CAVE_WORLD";
+    public static final String NO_TOP_LIMIT = "NO_TOP_LIMIT";
     /**
-     * Dimensions with neither bottom nor top limitations, e.g. floating islands or space.
+     * Dimensions with a bottom limitation (e.g. bedrock), conveying that there is terrain beyond.
      */
-    public static final String FLOATING = "FLOATING";
+    public static final String BOTTOM_LIMIT = "BOTTOM_LIMIT";
     /**
-     * Dimensions with no bottom, but a top limitation, e.g. an inverted surface world.
+     * Dimensions without a bottom limitation (e.g. bedrock), conveying that there is no terrain (void) beyond.
      */
-    public static final String SURFACE_INVERTED = "SURFACE_INVERTED";
+    public static final String NO_BOTTOM_LIMIT = "NO_BOTTOM_LIMIT";
 
     /**
      * Dimensions that are only defined in a limited space, e.g. dungeon instances or boss arenas.
@@ -103,14 +105,10 @@ public class DimensionDictionary
         registerType(UNCATEGORIZED);
 
         registerSubtypes(UNREAL, Arrays.asList(IMAGINARY, SIMULATED, ABSTRACT));
-        registerSubtypes(FINITE, Arrays.asList(BOSS_ARENA));
-        registerSubtypes(SURFACE, Arrays.asList(PLANET_SURFACE));
 
-        registerTypes(Arrays.asList(SURFACE_INVERTED));
-
-        registerDimensionTypes(0, Arrays.asList(MC_DEFAULT, REAL, INFINITE, PLANET_SURFACE, EARTH));
-        registerDimensionTypes(-1, Arrays.asList(MC_DEFAULT, REAL, INFINITE, CAVE_WORLD, HELL));
-        registerDimensionTypes(1, Arrays.asList(MC_DEFAULT, REAL, BOSS_ARENA, FLOATING, ENDER));
+        registerDimensionTypes(0, Arrays.asList(MC_DEFAULT, REAL, INFINITE, NO_TOP_LIMIT, BOTTOM_LIMIT, PLANET_SURFACE, EARTH));
+        registerDimensionTypes(-1, Arrays.asList(MC_DEFAULT, REAL, INFINITE, TOP_LIMIT, BOTTOM_LIMIT, HELL));
+        registerDimensionTypes(1, Arrays.asList(MC_DEFAULT, REAL, FINITE, NO_TOP_LIMIT, NO_BOTTOM_LIMIT, BOSS_ARENA, ENDER));
     }
 
     /**
@@ -208,27 +206,30 @@ public class DimensionDictionary
     /**
      * Returns a set of types a specific dimension was registered for.
      *
-     * @param dimensionID The dimension's ID.
+     * @param provider The dimension's provider.
      * @return The dimension's types.
      */
-    public static Set<String> getDimensionTypes(int dimensionID)
+    public static Set<String> getDimensionTypes(WorldProvider provider)
     {
-        Set<String> types = dimensionTypes.get(dimensionID);
-        return types != null ? SET_UNCATEGORIZED : Collections.<String>emptySet();
+        if (provider instanceof Handler)
+            return ((Handler) provider).getDimensionTypes();
+
+        Set<String> types = dimensionTypes.get(provider.dimensionId);
+        return types != null ? types : SET_UNCATEGORIZED;
     }
 
     /**
      * Determines if a dimension matches all types from a collection of types.
      *
-     * @param dimensionID The dimension's ID.
+     * @param provider The dimension's provider.
      * @param types       The types.
      * @return True if all types were matched, otherwise false.
      */
-    public static boolean dimensionMatchesAllTypes(int dimensionID, Collection<String> types)
+    public static boolean dimensionMatchesAllTypes(WorldProvider provider, Collection<String> types)
     {
         for (String type : types)
         {
-            if (!dimensionMatchesType(dimensionID, type))
+            if (!dimensionMatchesType(provider, type))
                 return false;
         }
 
@@ -239,30 +240,26 @@ public class DimensionDictionary
      * Determines if a dimension matches a specific type.
      * This is the case exactly when the dimension is associated with either the type or any of its subtypes.
      *
-     * @param dimensionID The dimension's ID.
+     * @param provider The dimension's provider.
      * @param type        The type.
      * @return True if the dimension matches the type, otherwise false.
      */
-    public static boolean dimensionMatchesType(int dimensionID, String type)
+    public static boolean dimensionMatchesType(WorldProvider provider, String type)
     {
-        Set<String> dimTypes = dimensionTypes.get(dimensionID);
-        if (dimTypes == null)
-            return false;
+        Set<String> dimTypes = getDimensionTypes(provider);
 
         Queue<String> curTypes = new ArrayDeque<String>();
-        curTypes.add(type);
 
-        String curType;
-
-        while ((curType = curTypes.poll()) != null)
+        do
         {
-            if (dimTypes.contains(curType))
+            if (dimTypes.contains(type))
                 return true;
 
-            Type curT = types.get(curType);
+            Type curT = types.get(type);
             if (curT != null)
                 curTypes.addAll(curT.subtypes);
         }
+        while ((type = curTypes.poll()) != null);
 
         return false;
     }
@@ -291,10 +288,28 @@ public class DimensionDictionary
         return t == null ? Collections.<String>emptySet() : Collections.unmodifiableSet(t.subtypes);
     }
 
+    /**
+     * Returns a set of all registered types.
+     * @return A set of all registered types.
+     */
+    public static Set<String> allRegisteredTypes()
+    {
+        return types.keySet();
+    }
+
     private static Type registerGetType(String type)
     {
         registerType(type);
         return types.get(type);
+    }
+
+    public static interface Handler
+    {
+        /**
+         * Note: Do not invoke this directly. Use {@link DimensionDictionary}'s methods instead.
+         * @return The dimension types.
+         */
+        Set<String> getDimensionTypes();
     }
 
     private static class Type

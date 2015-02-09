@@ -255,11 +255,15 @@ public class TableDataSourceGenericStructure implements TableDataSource, TableEl
             return GuiValidityStateIndicator.State.SEMI_VALID;
         }
 
-        return structureKey.trim().length() > 0 ? GuiValidityStateIndicator.State.VALID : GuiValidityStateIndicator.State.INVALID;
+        return structureKey.trim().length() > 0 && !structureKey.contains(" ")
+                ? GuiValidityStateIndicator.State.VALID
+                : GuiValidityStateIndicator.State.INVALID;
     }
 
     private GuiValidityStateIndicator.State currentDependencyState()
     {
-        return structureInfo.areDependenciesResolved() ? GuiValidityStateIndicator.State.VALID : GuiValidityStateIndicator.State.SEMI_VALID;
+        return structureInfo.areDependenciesResolved()
+                ? GuiValidityStateIndicator.State.VALID
+                : GuiValidityStateIndicator.State.SEMI_VALID;
     }
 }

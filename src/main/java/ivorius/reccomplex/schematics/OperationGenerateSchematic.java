@@ -73,25 +73,6 @@ public class OperationGenerateSchematic implements Operation
     public void renderPreview(int previewType, World world, int ticks, float partialTicks)
     {
         if (previewType == PREVIEW_TYPE_BOUNDING_BOX)
-        {
-            BlockCoord higherCoord = lowerCoord.add(file.width - 1, file.height - 1, file.length - 1);
-
-            GL11.glLineWidth(3.0f);
-            GL11.glColor3f(0.8f, 0.8f, 1.0f);
-            AreaRenderer.renderArea(new BlockArea(lowerCoord, higherCoord), true, 0.0232f);
-
-            GL11.glEnable(GL11.GL_BLEND);
-            OpenGlHelper.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA, GL11.GL_ONE, GL11.GL_ZERO);
-            GL11.glAlphaFunc(GL11.GL_GREATER, 0.0001f);
-
-            ResourceLocation curTex = SelectionRenderer.textureSelection[MathHelper.floor_float((ticks + partialTicks) * 0.75f) % SelectionRenderer.textureSelection.length];
-            Minecraft.getMinecraft().renderEngine.bindTexture(curTex);
-
-            GL11.glColor4f(0.8f, 0.8f, 1.0f, 0.5f);
-            AreaRenderer.renderArea(new BlockArea(lowerCoord, higherCoord), false, 0.0132f);
-
-            GL11.glAlphaFunc(GL11.GL_GREATER, 0.002f);
-            GL11.glDisable(GL11.GL_BLEND);
-        }
+            OperationGenerateStructure.maybeRenderBoundingBox(lowerCoord, new int[]{file.width, file.length, file.height}, ticks, partialTicks);
     }
 }

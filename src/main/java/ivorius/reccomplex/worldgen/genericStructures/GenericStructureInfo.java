@@ -102,6 +102,9 @@ public class GenericStructureInfo implements StructureInfo, Cloneable
     @Override
     public int[] structureBoundingBox()
     {
+        if (worldDataCompound == null)
+            return new int[]{0, 0, 0};
+
         NBTTagCompound compound = worldDataCompound.getCompoundTag("blockCollection");
         return new int[]{compound.getInteger("width"), compound.getInteger("height"), compound.getInteger("length")};
     }

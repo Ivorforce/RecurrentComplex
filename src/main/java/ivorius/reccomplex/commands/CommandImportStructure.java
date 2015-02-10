@@ -8,9 +8,12 @@ package ivorius.reccomplex.commands;
 import ivorius.ivtoolkit.blocks.BlockCoord;
 import ivorius.ivtoolkit.math.AxisAlignedTransform2D;
 import ivorius.reccomplex.RCConfig;
+import ivorius.reccomplex.operation.OperationRegistry;
+import ivorius.reccomplex.schematics.OperationGenerateStructure;
 import ivorius.reccomplex.worldgen.StructureRegistry;
 import ivorius.reccomplex.worldgen.StructureInfo;
 import ivorius.reccomplex.worldgen.StructureSpawnContext;
+import ivorius.reccomplex.worldgen.genericStructures.GenericStructureInfo;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
@@ -68,8 +71,17 @@ public class CommandImportStructure extends CommandBase
             z = MathHelper.floor_double(func_110666_a(commandSender, (double) z, args[3]));
         }
 
+        AxisAlignedTransform2D transform = AxisAlignedTransform2D.ORIGINAL;
         BlockCoord coord = new BlockCoord(x, y, z);
-        structureInfo.generate(new StructureSpawnContext(world, world.rand, coord, AxisAlignedTransform2D.ORIGINAL, 0, true, structureInfo));
+
+        if (structureInfo instanceof GenericStructureInfo)
+        {
+            OperationRegistry.queueOperation(new OperationGenerateStructure((GenericStructureInfo) structureInfo, transform, coord, true), commandSender);
+        }
+        else
+        {
+            structureInfo.generate(new StructureSpawnContext(world, world.rand, coord, transform, 0, true, structureInfo));
+        }
     }
 
     @Override

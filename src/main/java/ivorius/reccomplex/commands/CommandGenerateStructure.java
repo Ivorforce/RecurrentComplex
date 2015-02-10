@@ -5,10 +5,15 @@
 
 package ivorius.reccomplex.commands;
 
+import ivorius.ivtoolkit.blocks.BlockCoord;
+import ivorius.ivtoolkit.math.AxisAlignedTransform2D;
 import ivorius.reccomplex.RCConfig;
+import ivorius.reccomplex.operation.OperationRegistry;
+import ivorius.reccomplex.schematics.OperationGenerateStructure;
 import ivorius.reccomplex.worldgen.StructureRegistry;
 import ivorius.reccomplex.worldgen.StructureInfo;
 import ivorius.reccomplex.worldgen.WorldGenStructures;
+import ivorius.reccomplex.worldgen.genericStructures.GenericStructureInfo;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
@@ -17,6 +22,7 @@ import net.minecraft.util.MathHelper;
 import net.minecraft.world.World;
 
 import java.util.List;
+import java.util.Random;
 import java.util.Set;
 
 /**
@@ -62,7 +68,23 @@ public class CommandGenerateStructure extends CommandBase
             z = MathHelper.floor_double(func_110666_a(commandSender, (double) z, args[2]));
         }
 
-        WorldGenStructures.generateStructureRandomly(world, world.rand, structureInfo, x, z, false);
+        if (structureInfo instanceof GenericStructureInfo)
+        {
+            Random random = world.rand;
+
+            AxisAlignedTransform2D transform = AxisAlignedTransform2D.transform(structureInfo.isRotatable() ? random.nextInt(4) : 0, structureInfo.isMirrorable() && random.nextBoolean());
+
+            int[] size = WorldGenStructures.structureSize(structureInfo, transform);
+
+            int genX = x - size[0] / 2;
+            int genZ = z - size[2] / 2;
+            int genY = structureInfo.generationY(world, random, x, z);
+            BlockCoord coord = new BlockCoord(genX, genY, genZ);
+
+            OperationRegistry.queueOperation(new OperationGenerateStructure((GenericStructureInfo) structureInfo, transform, coord, false), commandSender);
+        }
+        else
+            WorldGenStructures.generateStructureRandomly(world, world.rand, structureInfo, x, z, false);
     }
 
     @Override

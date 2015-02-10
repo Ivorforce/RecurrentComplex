@@ -13,6 +13,7 @@ import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.command.WrongUsageException;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.util.ChatComponentTranslation;
 
 import java.util.List;
 
@@ -44,6 +45,8 @@ public class CommandPreview extends CommandBase
 
         structureEntityInfo.previewType = getPreviewTypeFromCommand(args[0]);
         structureEntityInfo.sendPreviewTypeToClients(player);
+
+        commandSender.addChatMessage(new ChatComponentTranslation("commands.rcpreview.success", args[0]));
     }
 
     public int getPreviewTypeFromCommand(String type)

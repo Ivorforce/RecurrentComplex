@@ -51,12 +51,12 @@ public class SelectionRenderer
 
         if (selPoint1 != null)
         {
-            GL11.glColor3f(1.0f, 0.6f, 0.6f);
+            GL11.glColor3f(0.6f, 0.8f, 0.95f);
             AreaRenderer.renderArea(new BlockArea(selPoint1, selPoint1), true, 0.03f);
         }
         if (selPoint2 != null)
         {
-            GL11.glColor3f(0.6f, 1.0f, 0.6f);
+            GL11.glColor3f(0.2f, 0.45f, 0.65f);
             AreaRenderer.renderArea(new BlockArea(selPoint2, selPoint2), true, 0.04f);
         }
 
@@ -69,7 +69,7 @@ public class SelectionRenderer
 
         if (selPoint1 != null && selPoint2 != null)
         {
-            GL11.glColor3f(0.6f, 0.6f, 0.6f);
+            GL11.glColor3f(0.4f, 0.65f, 0.8f);
             AreaRenderer.renderArea(new BlockArea(selPoint1, selPoint2), true, 0.02f);
 
             GL11.glEnable(GL11.GL_BLEND);

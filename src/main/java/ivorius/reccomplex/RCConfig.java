@@ -28,6 +28,8 @@ public class RCConfig
 
     public static String commandPrefix;
 
+    public static boolean savePlayerCache;
+
     public static void loadConfig(String configID)
     {
         if (configID == null || configID.equals(Configuration.CATEGORY_GENERAL))
@@ -47,6 +49,8 @@ public class RCConfig
             spawnStructureShiftZ = RecurrentComplex.config.getInt("spawnStructureShiftZ", Configuration.CATEGORY_GENERAL, 0, -100, 100, "The amount of blocks the spawn structure will be moved along the z axis on generation.");
 
             commandPrefix = RecurrentComplex.config.getString("commandPrefix", Configuration.CATEGORY_GENERAL, "#", "The String that will be prefixed to every command, e.g. '#' -> '/#gen', '#paste' etc.");
+
+            savePlayerCache = RecurrentComplex.config.getBoolean("savePlayerCache", Configuration.CATEGORY_GENERAL, true, "Whether player caches like the clipboard and previewed operations will be saved and loaded.");
         }
 
         RecurrentComplex.proxy.loadConfig(configID);

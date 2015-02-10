@@ -10,6 +10,7 @@ import io.netty.buffer.ByteBuf;
 import ivorius.ivtoolkit.blocks.BlockCoord;
 import ivorius.ivtoolkit.network.IvNetworkHelperServer;
 import ivorius.ivtoolkit.network.PartialUpdateHandler;
+import ivorius.reccomplex.RCConfig;
 import ivorius.reccomplex.RecurrentComplex;
 import ivorius.reccomplex.operation.Operation;
 import ivorius.reccomplex.operation.OperationRegistry;
@@ -129,8 +130,14 @@ public class StructureEntityInfo implements IExtendedEntityProperties, PartialUp
         BlockCoord.writeCoordToNBT("selectedPoint2", selectedPoint2, compound);
 
         compound.setInteger("previewType", previewType);
-        if (danglingOperation != null)
-            compound.setTag("danglingOperation", OperationRegistry.writeOperation(danglingOperation));
+
+        if (RCConfig.savePlayerCache)
+        {
+            if (danglingOperation != null)
+                compound.setTag("danglingOperation", OperationRegistry.writeOperation(danglingOperation));
+            if (worldDataClipboard != null)
+                compound.setTag("worldDataClipboard", worldDataClipboard);
+        }
     }
 
     @Override
@@ -140,8 +147,14 @@ public class StructureEntityInfo implements IExtendedEntityProperties, PartialUp
         selectedPoint2 = BlockCoord.readCoordFromNBT("selectedPoint2", compound);
 
         previewType = compound.getInteger("previewType");
-        if (compound.hasKey("danglingOperation", Constants.NBT.TAG_COMPOUND))
-            danglingOperation = OperationRegistry.readOperation(compound.getCompoundTag("danglingOperation"));
+
+        if (RCConfig.savePlayerCache)
+        {
+            if (compound.hasKey("danglingOperation", Constants.NBT.TAG_COMPOUND))
+                danglingOperation = OperationRegistry.readOperation(compound.getCompoundTag("danglingOperation"));
+            if (compound.hasKey("worldDataClipboard", Constants.NBT.TAG_COMPOUND))
+                worldDataClipboard = compound.getCompoundTag("worldDataClipboard");
+        }
 
         hasChanges = true;
     }

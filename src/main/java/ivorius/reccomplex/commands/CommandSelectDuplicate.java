@@ -11,6 +11,8 @@ import ivorius.ivtoolkit.math.AxisAlignedTransform2D;
 import ivorius.ivtoolkit.tools.IvWorldData;
 import ivorius.reccomplex.RCConfig;
 import ivorius.reccomplex.entities.StructureEntityInfo;
+import ivorius.reccomplex.operation.OperationRegistry;
+import ivorius.reccomplex.schematics.OperationGenerateStructure;
 import ivorius.reccomplex.worldgen.StructureSpawnContext;
 import ivorius.reccomplex.worldgen.genericStructures.GenericStructureInfo;
 import net.minecraft.command.ICommandSender;
@@ -58,15 +60,12 @@ public class CommandSelectDuplicate extends CommandSelectModify
         IvWorldData worldData = new IvWorldData(player.worldObj, area, true);
         NBTTagCompound worldDataCompound = worldData.createTagCompound(area.getLowerCorner());
 
-        World world = player.worldObj;
-
         GenericStructureInfo structureInfo = GenericStructureInfo.createDefaultStructure();
         structureInfo.worldDataCompound = worldDataCompound;
 
-        structureInfo.generate(new StructureSpawnContext(world, world.rand, new BlockCoord(x, y, z), AxisAlignedTransform2D.transform(rotations, mirrorX), 0, true, structureInfo));
+        BlockCoord coord = new BlockCoord(x, y, z);
+        AxisAlignedTransform2D transform = AxisAlignedTransform2D.transform(rotations, mirrorX);
 
-        structureEntityInfo.selectedPoint1 = point1.subtract(lowerCorner).add(x, y, z);
-        structureEntityInfo.selectedPoint2 = point2.subtract(lowerCorner).add(x, y, z);
-        structureEntityInfo.sendSelectionToClients(player);
+        OperationRegistry.queueOperation(new OperationGenerateStructure(structureInfo, transform, coord, true), player);
     }
 }

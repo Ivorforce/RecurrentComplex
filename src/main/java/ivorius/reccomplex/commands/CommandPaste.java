@@ -9,6 +9,8 @@ import ivorius.ivtoolkit.blocks.BlockCoord;
 import ivorius.ivtoolkit.math.AxisAlignedTransform2D;
 import ivorius.reccomplex.RCConfig;
 import ivorius.reccomplex.entities.StructureEntityInfo;
+import ivorius.reccomplex.operation.OperationRegistry;
+import ivorius.reccomplex.schematics.OperationGenerateStructure;
 import ivorius.reccomplex.worldgen.StructureSpawnContext;
 import ivorius.reccomplex.worldgen.genericStructures.GenericStructureInfo;
 import net.minecraft.command.CommandBase;
@@ -69,10 +71,9 @@ public class CommandPaste extends CommandBase
             structureInfo.worldDataCompound = worldData;
 
             BlockCoord coord = new BlockCoord(x, y, z);
-            structureInfo.generate(new StructureSpawnContext(world, world.rand, coord, AxisAlignedTransform2D.ORIGINAL, 0, true, structureInfo));
+            AxisAlignedTransform2D transform = AxisAlignedTransform2D.ORIGINAL;
 
-            int[] size = structureInfo.structureBoundingBox();
-            commandSender.addChatMessage(new ChatComponentTranslation("commands.strucPaste.success", String.valueOf(x), String.valueOf(y), String.valueOf(z), String.valueOf(x + size[0] - 1), String.valueOf(y + size[1] - 1), String.valueOf(z + size[2] - 1)));
+            OperationRegistry.queueOperation(new OperationGenerateStructure(structureInfo, transform, coord, true), commandSender);
         }
         else
         {

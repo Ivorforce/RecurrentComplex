@@ -38,6 +38,7 @@ public class RCCommands
 
         event.registerServerCommand(new CommandSelectCopy());
         event.registerServerCommand(new CommandPaste());
+        event.registerServerCommand(new CommandPasteGen());
 
         event.registerServerCommand(new CommandSelectMove());
         event.registerServerCommand(new CommandSelectDuplicate());

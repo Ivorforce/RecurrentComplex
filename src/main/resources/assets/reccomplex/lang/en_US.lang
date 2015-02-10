@@ -84,6 +84,7 @@ commands.selectCopy.success=Copied %s, %s, %s to %s, %s, %s to clipboard
 
 commands.strucPaste.usage=/#paste [x] [y] [z]
 commands.strucPaste.noClipboard=You have to copy an area first!
+commands.strucPasteGen.usage=/#pastegen [x] [y] [z]
 
 commands.selectMove.usage=/#move <x> <y> <z> [clockwise-rotations] [mirror x:true|false]
 

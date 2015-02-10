@@ -11,15 +11,12 @@ import ivorius.reccomplex.RCConfig;
 import ivorius.reccomplex.entities.StructureEntityInfo;
 import ivorius.reccomplex.operation.OperationRegistry;
 import ivorius.reccomplex.schematics.OperationGenerateStructure;
-import ivorius.reccomplex.worldgen.StructureSpawnContext;
 import ivorius.reccomplex.worldgen.genericStructures.GenericStructureInfo;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
-import net.minecraft.command.WrongUsageException;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.ChatComponentTranslation;
 import net.minecraft.util.MathHelper;
 import net.minecraft.world.World;
 
@@ -28,18 +25,18 @@ import java.util.List;
 /**
  * Created by lukas on 25.05.14.
  */
-public class CommandPaste extends CommandBase
+public class CommandPasteGen extends CommandBase
 {
     @Override
     public String getCommandName()
     {
-        return RCConfig.commandPrefix + "paste";
+        return RCConfig.commandPrefix + "pastegen";
     }
 
     @Override
     public String getCommandUsage(ICommandSender var1)
     {
-        return "commands.strucPaste.usage";
+        return "commands.strucPasteGen.usage";
     }
 
     @Override
@@ -73,7 +70,7 @@ public class CommandPaste extends CommandBase
             BlockCoord coord = new BlockCoord(x, y, z);
             AxisAlignedTransform2D transform = AxisAlignedTransform2D.ORIGINAL;
 
-            OperationRegistry.queueOperation(new OperationGenerateStructure(structureInfo, transform, coord, true), commandSender);
+            OperationRegistry.queueOperation(new OperationGenerateStructure(structureInfo, transform, coord, false), commandSender);
         }
         else
         {

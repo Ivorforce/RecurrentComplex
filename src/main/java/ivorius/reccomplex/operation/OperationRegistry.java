@@ -7,7 +7,6 @@ package ivorius.reccomplex.operation;
 
 import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
-import com.sun.javafx.beans.annotations.NonNull;
 import ivorius.reccomplex.RecurrentComplex;
 import ivorius.reccomplex.entities.StructureEntityInfo;
 import net.minecraft.command.CommandBase;
@@ -16,6 +15,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ChatComponentTranslation;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 /**
@@ -31,7 +31,7 @@ public class OperationRegistry
     }
 
     @Nullable
-    public static Operation readOperation(@NonNull NBTTagCompound compound)
+    public static Operation readOperation(@Nonnull NBTTagCompound compound)
     {
         String opID = compound.getString("opID");
         Class<? extends Operation> clazz = operations.get(opID);
@@ -56,11 +56,8 @@ public class OperationRegistry
         return null;
     }
 
-    public static NBTTagCompound writeOperation(@NonNull Operation operation)
+    public static NBTTagCompound writeOperation(@Nonnull Operation operation)
     {
-        if (operation == null)
-            return null;
-
         NBTTagCompound compound = new NBTTagCompound();
         operation.writeToNBT(compound);
         compound.setString("opID", operations.inverse().get(operation.getClass()));

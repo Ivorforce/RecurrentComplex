@@ -8,12 +8,14 @@ package ivorius.reccomplex.commands;
 import ivorius.ivtoolkit.blocks.BlockArea;
 import ivorius.ivtoolkit.blocks.BlockCoord;
 import ivorius.ivtoolkit.tools.IvWorldData;
+import ivorius.reccomplex.RCConfig;
 import ivorius.reccomplex.entities.StructureEntityInfo;
 import ivorius.reccomplex.network.PacketEditStructureHandler;
 import ivorius.reccomplex.worldgen.StructureRegistry;
 import ivorius.reccomplex.worldgen.StructureInfo;
 import ivorius.reccomplex.worldgen.genericStructures.GenericStructureInfo;
 import net.minecraft.command.CommandBase;
+import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.command.WrongUsageException;
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -29,7 +31,7 @@ public class CommandExportStructure extends CommandBase
     @Override
     public String getCommandName()
     {
-        return "strucExport";
+        return RCConfig.commandPrefix + "export";
     }
 
     @Override
@@ -42,11 +44,6 @@ public class CommandExportStructure extends CommandBase
     public void processCommand(ICommandSender commandSender, String[] args)
     {
         EntityPlayerMP player = getCommandSenderAsPlayer(commandSender);
-
-        if (player == null)
-        {
-            throw new WrongUsageException("commands.strucExport.noPlayer");
-        }
 
         int x, y, z;
         int width, height, length;
@@ -125,16 +122,12 @@ public class CommandExportStructure extends CommandBase
         StructureInfo structureInfo = StructureRegistry.getStructure(name);
 
         if (structureInfo == null)
-        {
-            throw new WrongUsageException("commands.structure.notRegistered", name);
-        }
+            throw new CommandException("commands.structure.notRegistered", name);
 
         GenericStructureInfo genericStructureInfo = structureInfo.copyAsGenericStructureInfo();
 
         if (genericStructureInfo == null)
-        {
-            throw new WrongUsageException("commands.structure.notGeneric", name);
-        }
+            throw new CommandException("commands.structure.notGeneric", name);
 
         return genericStructureInfo;
     }

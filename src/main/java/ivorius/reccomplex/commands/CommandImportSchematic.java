@@ -5,6 +5,7 @@
 
 package ivorius.reccomplex.commands;
 
+import ivorius.reccomplex.RCConfig;
 import ivorius.reccomplex.schematics.SchematicFile;
 import ivorius.reccomplex.schematics.SchematicLoader;
 import net.minecraft.command.CommandBase;
@@ -19,12 +20,12 @@ import java.util.List;
 /**
  * Created by lukas on 25.05.14.
  */
-public class CommandGenerateSchematic extends CommandBase
+public class CommandImportSchematic extends CommandBase
 {
     @Override
     public String getCommandName()
     {
-        return "strucImportSchematic";
+        return RCConfig.commandPrefix + "importschematic";
     }
 
     @Override

@@ -5,6 +5,7 @@
 
 package ivorius.reccomplex.commands;
 
+import ivorius.reccomplex.RCConfig;
 import ivorius.reccomplex.worldgen.StructureSaveHandler;
 import ivorius.reccomplex.worldgen.inventory.CustomGenericItemCollectionHandler;
 import net.minecraft.command.CommandBase;
@@ -19,7 +20,7 @@ public class CommandStructuresReload extends CommandBase
     @Override
     public String getCommandName()
     {
-        return "strucReload";
+        return RCConfig.commandPrefix + "reload";
     }
 
     @Override

@@ -7,6 +7,7 @@ package ivorius.reccomplex.commands;
 
 import ivorius.ivtoolkit.blocks.BlockArea;
 import ivorius.ivtoolkit.blocks.BlockCoord;
+import ivorius.reccomplex.RCConfig;
 import ivorius.reccomplex.blocks.RCBlocks;
 import ivorius.reccomplex.entities.StructureEntityInfo;
 import net.minecraft.block.Block;
@@ -26,7 +27,7 @@ public class CommandSelectNatural extends CommandSelectModify
     @Override
     public String getCommandName()
     {
-        return "selectNatural";
+        return RCConfig.commandPrefix + "natural";
     }
 
     @Override

@@ -49,67 +49,59 @@ itemGroup.inventoryGenerators=Geradores de Inventário
 commands.structure.notGeneric=A estrutura '%s' não é genérica! 
 commands.structure.notRegistered=Nenhuma estrutura encontrada com o nome '%s'! 
 
-commands.strucExport.usage=/strucExport [blueprintName] 
-commands.strucExport.noPlayer=strucExport deve ser executado pelo jogador
-commands.strucExport.failure=Falha ao exportar a estrutura para o arquivo '%s' 
+commands.strucExport.usage=/#export [blueprintName]
+commands.strucExport.failure=Falha ao exportar a estrutura para o arquivo '%s'
 commands.strucExport.success=Estrutura exportada para o arquivo '%s' 
 
-commands.strucEdit.usage=/strucEdit <structureName> 
-commands.strucEdit.noPlayer=strucEdit deve ser executado pelo jogador
+commands.strucEdit.usage=/#edit <structureName>
 
-commands.strucGen.usage=/strucGen <structureName> [x] [z] 
+commands.strucGen.usage=/#gen <structureName> [x] [z]
 commands.strucGen.noStructure=Nenhuma estrutura registrada com o nome de '%s' 
 
-commands.strucImport.usage=/strucImport <structureName> [x] [y] [z] 
+commands.strucImport.usage=/#import <structureName> [x] [y] [z]
 commands.strucImport.noStructure=Nenhuma estrutura registrada com o nome de '%s' 
 
-commands.strucChest.usage=/strucChest <generatorName> [x] [y] [z] 
-commands.strucChest.noGen=Nenhum gerador de inventário registrado com o nome de '%s' 
-
-commands.selectSet.usage=/selectSet <clear|point1|point2> [x] [y] [z] 
-commands.selectSet.noPlayer=selectSet deve ser executado pelo jogador
+commands.selectSet.usage=/#select <clear|point1|point2> [x] [y] [z]
 
 commands.selectModify.noSelection=O jogador não possui uma seleção completa 
-commands.selectModify.noPlayer=O comando deve ser executado pelo jogador
-commands.selectModify.invalidBlock=Nenhum bloco registrado com o nome de '%s' 
-commands.selectModify.invalidMetadata=Metadados devem ser inseridos como '0,1,5', mas foi '%s' 
+commands.selectModify.invalidMetadata=Metadados devem ser inseridos como '0,1,5', mas foi '%s'
 
-commands.selectFill.usage=/selectFill <block> [metadata1,metadata2,metadata3...] 
+commands.selectFill.usage=/#fill <block> [metadata1,metadata2,metadata3...]
 
-commands.selectReplace.usage=/selectReplace <source> <dest> [srcmetadata1,metadata2,metadata3...] [destmetadata1,metadata2,metadata3...] 
+commands.selectReplace.usage=/#replace <source> <dest> [srcmetadata1,metadata2,metadata3...] [destmetadata1,metadata2,metadata3...]
 
-commands.selectFillSphere.usage=/selectFillSphere <block> [metadata1,metadata2,metadata3...] 
+commands.selectFillSphere.usage=/#sphere <block> [metadata1,metadata2,metadata3...]
 
-commands.selectNatural.usage=/selectNatural [naturalFloorExpansion] 
+commands.selectNatural.usage=/#natural [naturalFloorExpansion]
 
-commands.strucReload.usage=/strucReload <structureName> [x] [y] [z] 
+commands.strucReload.usage=/#reload <structureName> [x] [y] [z]
 commands.strucReload.success=Recarregada todas as estruturas e geradores de inventário 
 
-commands.selectCopy.usage=/selectCopy 
+commands.selectCopy.usage=/#copy
 commands.selectCopy.success=Copiado %s, %s, %s para %s, %s, %s para área de transferência 
 
-commands.strucPaste.usage=/strucPaste [x] [y] [z] 
+commands.strucPaste.usage=/#paste [x] [y] [z]
 commands.strucPaste.noClipboard=Você tem que copiar uma área primeiro! 
 commands.strucPaste.success=Área de transferência colada em %s, %s, %s para %s, %s, %s 
 
-commands.selectMove.usage=/selectMove <x> <y> <z> [clockwise-rotations] [mirror x:true|false] 
+commands.selectMove.usage=/#move <x> <y> <z> [clockwise-rotations] [mirror x:true|false]
 
-commands.selectDuplicate.usage=/selectDuplicate <x> <y> <z> [clockwise-rotations] [mirror x:true|false] 
+commands.selectDuplicate.usage=/#duplicate <x> <y> <z> [clockwise-rotations] [mirror x:true|false]
 
-commands.strucImportSchematic.usage=/strucImportSchematic <schematic name> 
+commands.strucImportSchematic.usage=/#importschematic <schematic name>
 commands.strucImportSchematic.noStructure=O arquivo '%s' não foi encontrado em %s 
 commands.strucImportSchematic.format=O arquivo '%s' tem um formato não suportado (%s) 
 
-commands.strucExportSchematic.usage=/strucExportSchematic <schematic name> 
+commands.strucExportSchematic.usage=/#exportschematic <schematic name>
 commands.strucExportSchematic.success=Esquema exportado para '%s' 
 
-commands.biomedict.usage=/biomedict <get|list> id (get: Biome ID, list: Biome Type ID) 
+commands.biomedict.usage=/#biomedict <get|list> id (get: Biome ID, list: Biome Type ID)
 commands.biomedict.get=Tipos de Bioma para %s: %s 
 commands.biomedict.list=Biomas do Tipo %s: %s 
 commands.biomedict.nobiome=Nenhum Bioma com o ID '%s' 
 commands.biomedict.notype=Nenhum Tipo de Bioma com o ID '%s' 
 
-commands.dimensiondict.usage=/dimensiondict <get|list> id (get: ID da Dimensão, list: ID do Tipo da Dimensão)
+commands.dimensiondict.usage=/#dimensiondict <get|list> id (get: ID da Dimensão, list: ID do Tipo da Dimensão)
 commands.dimensiondict.get=Tipo de Dimensões para %d: %s
 commands.dimensiondict.list=Dimensões do Tipo %s: %s
 

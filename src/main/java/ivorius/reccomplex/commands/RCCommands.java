@@ -30,7 +30,7 @@ public class RCCommands
         event.registerServerCommand(new CommandSelectDuplicate());
         event.registerServerCommand(new CommandBiomeDict());
         event.registerServerCommand(new CommandDimensionDict());
-        event.registerServerCommand(new CommandGenerateSchematic());
+        event.registerServerCommand(new CommandImportSchematic());
         event.registerServerCommand(new CommandExportSchematic());
     }
 }

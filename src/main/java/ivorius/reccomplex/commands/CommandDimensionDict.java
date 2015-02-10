@@ -8,6 +8,7 @@ package ivorius.reccomplex.commands;
 import gnu.trove.list.TIntList;
 import gnu.trove.list.array.TIntArrayList;
 import ivorius.ivtoolkit.tools.IvGsonHelper;
+import ivorius.reccomplex.RCConfig;
 import ivorius.reccomplex.dimensions.DimensionDictionary;
 import ivorius.reccomplex.worldgen.genericStructures.BiomeSelector;
 import joptsimple.internal.Strings;
@@ -31,7 +32,7 @@ public class CommandDimensionDict extends CommandBase
     @Override
     public String getCommandName()
     {
-        return "dimensiondict";
+        return RCConfig.commandPrefix + "dimensiondict";
     }
 
     @Override

@@ -9,6 +9,7 @@ import ivorius.ivtoolkit.blocks.BlockCoord;
 import ivorius.reccomplex.entities.StructureEntityInfo;
 import net.minecraft.block.Block;
 import net.minecraft.command.CommandBase;
+import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.command.WrongUsageException;
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -23,36 +24,19 @@ public abstract class CommandSelectModify extends CommandBase
     {
         EntityPlayerMP entityPlayerMP = getCommandSenderAsPlayer(commandSender);
 
-        if (entityPlayerMP != null)
-        {
-            StructureEntityInfo structureEntityInfo = StructureEntityInfo.getStructureEntityInfo(entityPlayerMP);
+        StructureEntityInfo structureEntityInfo = StructureEntityInfo.getStructureEntityInfo(entityPlayerMP);
 
-            if (structureEntityInfo != null)
+        if (structureEntityInfo != null)
+        {
+            if (structureEntityInfo.hasValidSelection())
             {
-                if (structureEntityInfo.hasValidSelection())
-                {
-                    processCommandSelection(entityPlayerMP, structureEntityInfo, structureEntityInfo.selectedPoint1, structureEntityInfo.selectedPoint2, args);
-                }
-                else
-                {
-                    throw new WrongUsageException("commands.selectModify.noSelection");
-                }
+                processCommandSelection(entityPlayerMP, structureEntityInfo, structureEntityInfo.selectedPoint1, structureEntityInfo.selectedPoint2, args);
+            }
+            else
+            {
+                throw new CommandException("commands.selectModify.noSelection");
             }
         }
-        else
-        {
-            throw new WrongUsageException("commands.selectModify.noPlayer");
-        }
-    }
-
-    public static Block getBlock(String blockID)
-    {
-        Block block = Block.getBlockFromName(blockID);
-
-        if (block == null)
-            throw new WrongUsageException("commands.selectModify.invalidBlock", blockID);
-
-        return block;
     }
 
     public static int[] getMetadatas(String arg)

@@ -6,6 +6,7 @@
 package ivorius.reccomplex.commands;
 
 import ivorius.ivtoolkit.tools.IvGsonHelper;
+import ivorius.reccomplex.RCConfig;
 import ivorius.reccomplex.json.RCGsonHelper;
 import ivorius.reccomplex.worldgen.genericStructures.BiomeGenerationInfo;
 import ivorius.reccomplex.worldgen.genericStructures.BiomeSelector;
@@ -29,7 +30,7 @@ public class CommandBiomeDict extends CommandBase
     @Override
     public String getCommandName()
     {
-        return "biomedict";
+        return RCConfig.commandPrefix + "biomedict";
     }
 
     @Override

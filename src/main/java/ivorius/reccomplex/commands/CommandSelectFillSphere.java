@@ -8,6 +8,7 @@ package ivorius.reccomplex.commands;
 import ivorius.ivtoolkit.blocks.BlockArea;
 import ivorius.ivtoolkit.blocks.BlockCoord;
 import ivorius.ivtoolkit.math.IvShapeHelper;
+import ivorius.reccomplex.RCConfig;
 import ivorius.reccomplex.entities.StructureEntityInfo;
 import net.minecraft.block.Block;
 import net.minecraft.command.ICommandSender;
@@ -26,7 +27,7 @@ public class CommandSelectFillSphere extends CommandSelectModify
     @Override
     public String getCommandName()
     {
-        return "selectFillSphere";
+        return RCConfig.commandPrefix + "sphere";
     }
 
     @Override
@@ -42,7 +43,7 @@ public class CommandSelectFillSphere extends CommandSelectModify
         {
             World world = player.getEntityWorld();
 
-            Block dst = getBlock(args[0]);
+            Block dst = getBlockByText(player, args[0]);
             int[] dstMeta = args.length >= 2 ? getMetadatas(args[1]) : new int[]{0};
 
             BlockArea area = new BlockArea(point1, point2);

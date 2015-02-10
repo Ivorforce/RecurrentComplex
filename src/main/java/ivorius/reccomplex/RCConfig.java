@@ -26,6 +26,8 @@ public class RCConfig
     public static String spawnStructure;
     public static int spawnStructureShiftX, spawnStructureShiftZ;
 
+    public static String commandPrefix;
+
     public static void loadConfig(String configID)
     {
         if (configID == null || configID.equals(Configuration.CATEGORY_GENERAL))
@@ -43,6 +45,8 @@ public class RCConfig
             spawnStructure = RecurrentComplex.config.getString("spawnStructure", Configuration.CATEGORY_GENERAL, "", "The structure that will generate around the spawn point. It will start off in the center of the spawn area, and may need to be moved using the spawn shift.");
             spawnStructureShiftX = RecurrentComplex.config.getInt("spawnStructureShiftX", Configuration.CATEGORY_GENERAL, 0, -100, 100, "The amount of blocks the spawn structure will be moved along the x axis on generation.");
             spawnStructureShiftZ = RecurrentComplex.config.getInt("spawnStructureShiftZ", Configuration.CATEGORY_GENERAL, 0, -100, 100, "The amount of blocks the spawn structure will be moved along the z axis on generation.");
+
+            commandPrefix = RecurrentComplex.config.getString("commandPrefix", Configuration.CATEGORY_GENERAL, "#", "The String that will be prefixed to every command, e.g. '#' -> '/#gen', '#paste' etc.");
         }
 
         RecurrentComplex.proxy.loadConfig(configID);

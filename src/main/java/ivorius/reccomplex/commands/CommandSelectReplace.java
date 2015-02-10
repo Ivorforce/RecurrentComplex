@@ -7,6 +7,7 @@ package ivorius.reccomplex.commands;
 
 import ivorius.ivtoolkit.blocks.BlockArea;
 import ivorius.ivtoolkit.blocks.BlockCoord;
+import ivorius.reccomplex.RCConfig;
 import ivorius.reccomplex.entities.StructureEntityInfo;
 import net.minecraft.block.Block;
 import net.minecraft.command.ICommandSender;
@@ -25,7 +26,7 @@ public class CommandSelectReplace extends CommandSelectModify
     @Override
     public String getCommandName()
     {
-        return "selectReplace";
+        return RCConfig.commandPrefix + "replace";
     }
 
     @Override
@@ -41,8 +42,8 @@ public class CommandSelectReplace extends CommandSelectModify
         {
             World world = player.getEntityWorld();
 
-            Block src = getBlock(args[0]);
-            Block dst = getBlock(args[1]);
+            Block src = getBlockByText(player, args[0]);
+            Block dst = getBlockByText(player, args[1]);
             int[] srcMeta = args.length >= 3 ? getMetadatas(args[2]) : new int[]{0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15};
             int[] dstMeta = args.length >= 4 ? getMetadatas(args[3]) : new int[]{0};
 

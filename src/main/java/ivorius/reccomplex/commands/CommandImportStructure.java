@@ -7,10 +7,12 @@ package ivorius.reccomplex.commands;
 
 import ivorius.ivtoolkit.blocks.BlockCoord;
 import ivorius.ivtoolkit.math.AxisAlignedTransform2D;
+import ivorius.reccomplex.RCConfig;
 import ivorius.reccomplex.worldgen.StructureRegistry;
 import ivorius.reccomplex.worldgen.StructureInfo;
 import ivorius.reccomplex.worldgen.StructureSpawnContext;
 import net.minecraft.command.CommandBase;
+import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.command.WrongUsageException;
 import net.minecraft.util.MathHelper;
@@ -27,7 +29,7 @@ public class CommandImportStructure extends CommandBase
     @Override
     public String getCommandName()
     {
-        return "strucImport";
+        return RCConfig.commandPrefix + "import";
     }
 
     @Override
@@ -52,7 +54,7 @@ public class CommandImportStructure extends CommandBase
 
         if (structureInfo == null)
         {
-            throw new WrongUsageException("commands.strucImport.noStructure", structureName);
+            throw new CommandException("commands.strucImport.noStructure", structureName);
         }
 
         x = commandSender.getPlayerCoordinates().posX;

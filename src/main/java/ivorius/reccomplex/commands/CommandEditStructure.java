@@ -5,10 +5,12 @@
 
 package ivorius.reccomplex.commands;
 
+import ivorius.reccomplex.RCConfig;
 import ivorius.reccomplex.network.PacketEditStructureHandler;
 import ivorius.reccomplex.worldgen.StructureRegistry;
 import ivorius.reccomplex.worldgen.genericStructures.GenericStructureInfo;
 import net.minecraft.command.CommandBase;
+import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.command.WrongUsageException;
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -24,7 +26,7 @@ public class CommandEditStructure extends CommandBase
     @Override
     public String getCommandName()
     {
-        return "strucEdit";
+        return RCConfig.commandPrefix + "editstructure";
     }
 
     @Override
@@ -38,21 +40,14 @@ public class CommandEditStructure extends CommandBase
     {
         EntityPlayerMP entityPlayerMP = getCommandSenderAsPlayer(commandSender);
 
-        if (entityPlayerMP != null)
+        if (args.length >= 1)
         {
-            if (args.length >= 1)
-            {
-                GenericStructureInfo structureInfo = CommandExportStructure.getGenericStructureInfo(args[0]);
-                PacketEditStructureHandler.sendEditStructure(structureInfo, args[0], entityPlayerMP);
-            }
-            else
-            {
-                throw new WrongUsageException("commands.strucEdit.usage");
-            }
+            GenericStructureInfo structureInfo = CommandExportStructure.getGenericStructureInfo(args[0]);
+            PacketEditStructureHandler.sendEditStructure(structureInfo, args[0], entityPlayerMP);
         }
         else
         {
-            throw new WrongUsageException("commands.strucEdit.noPlayer");
+            throw new CommandException("commands.strucEdit.usage");
         }
     }
 

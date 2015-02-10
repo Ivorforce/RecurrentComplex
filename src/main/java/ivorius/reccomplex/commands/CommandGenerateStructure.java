@@ -5,10 +5,12 @@
 
 package ivorius.reccomplex.commands;
 
+import ivorius.reccomplex.RCConfig;
 import ivorius.reccomplex.worldgen.StructureRegistry;
 import ivorius.reccomplex.worldgen.StructureInfo;
 import ivorius.reccomplex.worldgen.WorldGenStructures;
 import net.minecraft.command.CommandBase;
+import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.command.WrongUsageException;
 import net.minecraft.util.MathHelper;
@@ -25,7 +27,7 @@ public class CommandGenerateStructure extends CommandBase
     @Override
     public String getCommandName()
     {
-        return "strucGen";
+        return RCConfig.commandPrefix + "gen";
     }
 
     @Override
@@ -40,9 +42,7 @@ public class CommandGenerateStructure extends CommandBase
         int x, z;
 
         if (args.length <= 0)
-        {
             throw new WrongUsageException("commands.strucGen.usage");
-        }
 
         String structureName = args[0];
         StructureInfo structureInfo = StructureRegistry.getStructure(structureName);
@@ -50,7 +50,7 @@ public class CommandGenerateStructure extends CommandBase
 
         if (structureInfo == null)
         {
-            throw new WrongUsageException("commands.strucGen.noStructure", structureName);
+            throw new CommandException("commands.strucGen.noStructure", structureName);
         }
 
         x = commandSender.getPlayerCoordinates().posX;

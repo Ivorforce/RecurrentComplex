@@ -8,6 +8,7 @@ package ivorius.reccomplex.commands;
 import ivorius.ivtoolkit.blocks.BlockArea;
 import ivorius.ivtoolkit.blocks.BlockCoord;
 import ivorius.ivtoolkit.tools.IvWorldData;
+import ivorius.reccomplex.RCConfig;
 import ivorius.reccomplex.entities.StructureEntityInfo;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -21,7 +22,7 @@ public class CommandSelectCopy extends CommandSelectModify
     @Override
     public String getCommandName()
     {
-        return "selectCopy";
+        return RCConfig.commandPrefix + "copy";
     }
 
     @Override

@@ -9,6 +9,7 @@ import ivorius.ivtoolkit.blocks.BlockArea;
 import ivorius.ivtoolkit.blocks.BlockCoord;
 import ivorius.ivtoolkit.math.AxisAlignedTransform2D;
 import ivorius.ivtoolkit.tools.IvWorldData;
+import ivorius.reccomplex.RCConfig;
 import ivorius.reccomplex.entities.StructureEntityInfo;
 import ivorius.reccomplex.worldgen.StructureSpawnContext;
 import ivorius.reccomplex.worldgen.genericStructures.GenericStructureInfo;
@@ -27,7 +28,7 @@ public class CommandSelectMove extends CommandSelectModify
     @Override
     public String getCommandName()
     {
-        return "selectMove";
+        return RCConfig.commandPrefix + "move";
     }
 
     @Override

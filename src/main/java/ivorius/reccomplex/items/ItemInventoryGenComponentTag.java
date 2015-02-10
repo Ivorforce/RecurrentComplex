@@ -14,8 +14,11 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.NBTTagString;
 import net.minecraft.util.StatCollector;
 import net.minecraft.world.World;
+import net.minecraftforge.common.util.Constants;
 
 import java.util.List;
 import java.util.Random;
@@ -27,15 +30,22 @@ public class ItemInventoryGenComponentTag extends Item implements GeneratingItem
 {
     public static String componentKey(ItemStack stack)
     {
-        if (stack.hasDisplayName())
-            return stack.getDisplayName();
+        if (stack.hasTagCompound() && stack.getTagCompound().hasKey("itemCollectionKey", Constants.NBT.TAG_STRING))
+            return stack.getTagCompound().getString("itemCollectionKey");
+        if (stack.stackTagCompound != null && stack.stackTagCompound.hasKey("display", Constants.NBT.TAG_COMPOUND)) // Legacy - Display Name
+        {
+            NBTTagCompound nbttagcompound = stack.stackTagCompound.getCompoundTag("display");
+            if (nbttagcompound.hasKey("Name", Constants.NBT.TAG_STRING))
+                return nbttagcompound.getString("Name");
+        }
+
 
         return null;
     }
 
     public static void setComponentKey(ItemStack stack, String generatorKey)
     {
-        stack.setStackDisplayName(generatorKey);
+        stack.setTagInfo("itemCollectionKey", new NBTTagString(generatorKey));
     }
 
     public static Component component(ItemStack stack)
@@ -62,6 +72,14 @@ public class ItemInventoryGenComponentTag extends Item implements GeneratingItem
 
         if (component != null)
             inventory.setInventorySlotContents(fromSlot, component.getRandomItemStack(random));
+    }
+
+    @Override
+    public String getItemStackDisplayName(ItemStack stack)
+    {
+        String key = componentKey(stack);
+
+        return key != null ? key : super.getItemStackDisplayName(stack);
     }
 
     @Override

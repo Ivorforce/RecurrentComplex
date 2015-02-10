@@ -6,16 +6,19 @@
 package ivorius.reccomplex.items;
 
 import ivorius.reccomplex.worldgen.inventory.InventoryGenerationHandler;
-import ivorius.reccomplex.worldgen.inventory.WeightedItemCollectionRegistry;
 import ivorius.reccomplex.worldgen.inventory.WeightedItemCollection;
+import ivorius.reccomplex.worldgen.inventory.WeightedItemCollectionRegistry;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.NBTTagString;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.StatCollector;
 import net.minecraft.world.World;
+import net.minecraftforge.common.util.Constants;
 
 import java.util.List;
 
@@ -43,17 +46,15 @@ public abstract class ItemInventoryGenerationTag extends Item implements Generat
         return false;
     }
 
-    @Override
-    public boolean onItemUse(ItemStack usedItem, EntityPlayer player, World world, int x, int y, int z, int par7, float par8, float par9, float par10)
-    {
-        return applyGeneratorToInventory(world, x, y, z, this, usedItem);
-    }
-
     public static String inventoryGeneratorKey(ItemStack stack)
     {
-        if (stack.hasDisplayName())
+        if (stack.hasTagCompound() && stack.getTagCompound().hasKey("itemCollectionKey", Constants.NBT.TAG_STRING))
+            return stack.getTagCompound().getString("itemCollectionKey");
+        if (stack.stackTagCompound != null && stack.stackTagCompound.hasKey("display", Constants.NBT.TAG_COMPOUND)) // Legacy - Display Name
         {
-            return stack.getDisplayName();
+            NBTTagCompound nbttagcompound = stack.stackTagCompound.getCompoundTag("display");
+            if (nbttagcompound.hasKey("Name", Constants.NBT.TAG_STRING))
+                return nbttagcompound.getString("Name");
         }
 
         return null;
@@ -62,6 +63,17 @@ public abstract class ItemInventoryGenerationTag extends Item implements Generat
     public static WeightedItemCollection inventoryGenerator(ItemStack stack)
     {
         return WeightedItemCollectionRegistry.itemCollection(inventoryGeneratorKey(stack));
+    }
+
+    public static void setItemStackGeneratorKey(ItemStack stack, String generatorKey)
+    {
+        stack.setTagInfo("itemCollectionKey", new NBTTagString(generatorKey));
+    }
+
+    @Override
+    public boolean onItemUse(ItemStack usedItem, EntityPlayer player, World world, int x, int y, int z, int par7, float par8, float par9, float par10)
+    {
+        return applyGeneratorToInventory(world, x, y, z, this, usedItem);
     }
 
     @Override
@@ -75,9 +87,12 @@ public abstract class ItemInventoryGenerationTag extends Item implements Generat
         }
     }
 
-    public static void setItemStackGeneratorKey(ItemStack stack, String generatorKey)
+    @Override
+    public String getItemStackDisplayName(ItemStack stack)
     {
-        stack.setStackDisplayName(generatorKey);
+        String key = inventoryGeneratorKey(stack);
+
+        return key != null ? key : super.getItemStackDisplayName(stack);
     }
 
     @Override

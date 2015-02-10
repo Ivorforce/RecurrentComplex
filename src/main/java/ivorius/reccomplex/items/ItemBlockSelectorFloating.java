@@ -47,7 +47,7 @@ public class ItemBlockSelectorFloating extends Item
                     structureEntityInfo.selectedPoint2 = position;
                 }
 
-                structureEntityInfo.sendSelectionChangesToClients(player);
+                structureEntityInfo.sendSelectionToClients(player);
 
                 player.addChatMessage(new ChatComponentText((second ? "Second" : "First") + " position set at: " + position.x + ", " + position.y + ", " + position.z));
             }

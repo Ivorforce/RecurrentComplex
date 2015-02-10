@@ -14,7 +14,9 @@ import ivorius.reccomplex.client.rendering.RCBlockRendering;
 import ivorius.reccomplex.items.*;
 import ivorius.reccomplex.blocks.materials.MaterialNegativeSpace;
 import ivorius.reccomplex.blocks.materials.RCMaterials;
+import ivorius.reccomplex.operation.OperationRegistry;
 import ivorius.reccomplex.random.Poem;
+import ivorius.reccomplex.schematics.OperationGenerateSchematic;
 import ivorius.reccomplex.worldgen.StructureRegistry;
 import ivorius.reccomplex.worldgen.StructureSelector;
 import ivorius.reccomplex.worldgen.blockTransformers.*;
@@ -118,6 +120,8 @@ public class RCRegistryHandler
         StructureSelector.registerCategory("decoration", new StructureSelector.SimpleCategory(1.0f / 25.0f, Collections.<StructureSelector.GenerationInfo>emptyList(), true));
         StructureSelector.registerCategory("adventure", new StructureSelector.SimpleCategory(1.0f / 250.0f, Collections.<StructureSelector.GenerationInfo>emptyList(), true));
         StructureSelector.registerCategory("rare", new StructureSelector.SimpleCategory(1.0f / 1250.0f, Collections.<StructureSelector.GenerationInfo>emptyList(), true));
+
+        OperationRegistry.register("schemImport", OperationGenerateSchematic.class);
 
         Poem.registerThemes(MODID, "love", "summer", "war", "winter", "grief");
 

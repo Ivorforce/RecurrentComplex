@@ -46,41 +46,37 @@ public class CommandPaste extends CommandBase
         int x, y, z;
 
         EntityPlayerMP entityPlayerMP = getCommandSenderAsPlayer(commandSender);
+        StructureEntityInfo structureEntityInfo = RCCommands.getStructureEntityInfo(entityPlayerMP);
 
-        StructureEntityInfo structureEntityInfo = StructureEntityInfo.getStructureEntityInfo(entityPlayerMP);
+        NBTTagCompound worldData = structureEntityInfo.getWorldDataClipboard();
 
-        if (structureEntityInfo != null)
+        if (worldData != null)
         {
-            NBTTagCompound worldData = structureEntityInfo.getWorldDataClipboard();
+            World world = commandSender.getEntityWorld();
 
-            if (worldData != null)
+            x = commandSender.getPlayerCoordinates().posX;
+            y = commandSender.getPlayerCoordinates().posY;
+            z = commandSender.getPlayerCoordinates().posZ;
+
+            if (args.length >= 3)
             {
-                World world = commandSender.getEntityWorld();
-
-                x = commandSender.getPlayerCoordinates().posX;
-                y = commandSender.getPlayerCoordinates().posY;
-                z = commandSender.getPlayerCoordinates().posZ;
-
-                if (args.length >= 3)
-                {
-                    x = MathHelper.floor_double(func_110666_a(commandSender, (double) x, args[0]));
-                    y = MathHelper.floor_double(func_110666_a(commandSender, (double) x, args[1]));
-                    z = MathHelper.floor_double(func_110666_a(commandSender, (double) z, args[2]));
-                }
-
-                GenericStructureInfo structureInfo = GenericStructureInfo.createDefaultStructure();
-                structureInfo.worldDataCompound = worldData;
-
-                BlockCoord coord = new BlockCoord(x, y, z);
-                structureInfo.generate(new StructureSpawnContext(world, world.rand, coord, AxisAlignedTransform2D.ORIGINAL, 0, true, structureInfo));
-
-                int[] size = structureInfo.structureBoundingBox();
-                commandSender.addChatMessage(new ChatComponentTranslation("commands.strucPaste.success", String.valueOf(x), String.valueOf(y), String.valueOf(z), String.valueOf(x + size[0] - 1), String.valueOf(y + size[1] - 1), String.valueOf(z + size[2] - 1)));
+                x = MathHelper.floor_double(func_110666_a(commandSender, (double) x, args[0]));
+                y = MathHelper.floor_double(func_110666_a(commandSender, (double) x, args[1]));
+                z = MathHelper.floor_double(func_110666_a(commandSender, (double) z, args[2]));
             }
-            else
-            {
-                throw new CommandException("commands.strucPaste.noClipboard");
-            }
+
+            GenericStructureInfo structureInfo = GenericStructureInfo.createDefaultStructure();
+            structureInfo.worldDataCompound = worldData;
+
+            BlockCoord coord = new BlockCoord(x, y, z);
+            structureInfo.generate(new StructureSpawnContext(world, world.rand, coord, AxisAlignedTransform2D.ORIGINAL, 0, true, structureInfo));
+
+            int[] size = structureInfo.structureBoundingBox();
+            commandSender.addChatMessage(new ChatComponentTranslation("commands.strucPaste.success", String.valueOf(x), String.valueOf(y), String.valueOf(z), String.valueOf(x + size[0] - 1), String.valueOf(y + size[1] - 1), String.valueOf(z + size[2] - 1)));
+        }
+        else
+        {
+            throw new CommandException("commands.strucPaste.noClipboard");
         }
     }
 

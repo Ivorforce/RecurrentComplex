@@ -5,13 +5,17 @@
 
 package ivorius.reccomplex.commands;
 
+import ivorius.ivtoolkit.blocks.BlockCoord;
 import ivorius.reccomplex.RCConfig;
+import ivorius.reccomplex.operation.OperationRegistry;
+import ivorius.reccomplex.schematics.OperationGenerateSchematic;
 import ivorius.reccomplex.schematics.SchematicFile;
 import ivorius.reccomplex.schematics.SchematicLoader;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.command.WrongUsageException;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.MathHelper;
 import net.minecraft.world.World;
 
@@ -73,7 +77,7 @@ public class CommandImportSchematic extends CommandBase
             z = MathHelper.floor_double(func_110666_a(commandSender, (double) z, args[3]));
         }
 
-        schematicFile.generate(world, x, y, z);
+        OperationRegistry.queueOperation(new OperationGenerateSchematic(schematicFile, new BlockCoord(x, y, z)), commandSender);
     }
 
     @Override

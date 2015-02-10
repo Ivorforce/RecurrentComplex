@@ -70,6 +70,6 @@ public class CommandSelectMove extends CommandSelectModify
 
         structureEntityInfo.selectedPoint1 = point1.subtract(lowerCorner).add(x, y, z);
         structureEntityInfo.selectedPoint2 = point2.subtract(lowerCorner).add(x, y, z);
-        structureEntityInfo.sendSelectionChangesToClients(player);
+        structureEntityInfo.sendSelectionToClients(player);
     }
 }

@@ -46,6 +46,8 @@ tile.mazeGenerator.name=Maze Generator
 itemGroup.structureTools=Structure Tools
 itemGroup.inventoryGenerators=Inventory Generators
 
+commands.rc.noEntityInfo=The entity does not contain structure info! This is a bug!
+
 commands.structure.notGeneric=Structure '%s' is not generic!
 commands.structure.notRegistered=No structure found by name '%s'!
 
@@ -87,6 +89,14 @@ commands.strucPaste.success=Pasted clipboard at %s, %s, %s to %s, %s, %s
 commands.selectMove.usage=/#move <x> <y> <z> [clockwise-rotations] [mirror x:true|false]
 
 commands.selectDuplicate.usage=/#duplicate <x> <y> <z> [clockwise-rotations] [mirror x:true|false]
+
+commands.rcpreview.usage=/#preview <none|bounds>
+commands.rcpreview.invalid=Invalid preview type
+
+commands.rc.noOperation=No currently queued operation
+commands.rc.queuedOp=The operation is now being previewed. Type /#confirm or /#cancel.
+commands.rcconfirm.usage=/#confirm
+commands.rccancel.usage=/#cancel
 
 commands.strucImportSchematic.usage=/#importschematic <schematic name>
 commands.strucImportSchematic.noStructure=The file '%s' was not found in %s

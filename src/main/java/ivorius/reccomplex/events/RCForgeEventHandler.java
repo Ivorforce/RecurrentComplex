@@ -8,20 +8,12 @@ package ivorius.reccomplex.events;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
-import ivorius.ivtoolkit.blocks.BlockArea;
-import ivorius.ivtoolkit.blocks.BlockCoord;
-import ivorius.ivtoolkit.rendering.IvRenderHelper;
-import ivorius.reccomplex.client.rendering.AreaRenderer;
 import ivorius.reccomplex.client.rendering.SelectionRenderer;
 import ivorius.reccomplex.entities.StructureEntityInfo;
-import ivorius.reccomplex.items.ItemBlockSelectorFloating;
 import ivorius.reccomplex.worldgen.WorldGenStructures;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.OpenGlHelper;
-import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.item.ItemStack;
 import net.minecraftforge.client.event.RenderWorldLastEvent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.entity.EntityEvent;
@@ -65,6 +57,22 @@ public class RCForgeEventHandler
     public void onDrawWorld(RenderWorldLastEvent event)
     {
         Minecraft mc = Minecraft.getMinecraft();
-        SelectionRenderer.renderSelection(mc.thePlayer, mc.thePlayer.ticksExisted, event.partialTicks);
+        int ticks = mc.thePlayer.ticksExisted;
+
+        EntityLivingBase renderEntity = mc.renderViewEntity;
+        double entityX = renderEntity.lastTickPosX + (renderEntity.posX - renderEntity.lastTickPosX) * (double) event.partialTicks;
+        double entityY = renderEntity.lastTickPosY + (renderEntity.posY - renderEntity.lastTickPosY) * (double) event.partialTicks;
+        double entityZ = renderEntity.lastTickPosZ + (renderEntity.posZ - renderEntity.lastTickPosZ) * (double) event.partialTicks;
+
+        GL11.glPushMatrix();
+        GL11.glTranslated(-entityX, -entityY, -entityZ);
+
+        SelectionRenderer.renderSelection(mc.thePlayer, ticks, event.partialTicks);
+
+        StructureEntityInfo info = StructureEntityInfo.getStructureEntityInfo(mc.thePlayer);
+        if (info != null && info.danglingOperation != null)
+            info.danglingOperation.renderPreview(info.previewType, mc.theWorld, ticks, event.partialTicks);
+
+        GL11.glPopMatrix();
     }
 }

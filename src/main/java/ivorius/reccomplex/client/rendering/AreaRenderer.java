@@ -42,7 +42,11 @@ public class AreaRenderer
         GL11.glPushMatrix();
         GL11.glTranslated(centerX, centerY, centerZ);
         if (lined)
+        {
+            GL11.glDisable(GL11.GL_TEXTURE_2D);
             drawLineCuboid(Tessellator.instance, width2 + sizeP, height2 + sizeP, length2 + sizeP, 1);
+            GL11.glEnable(GL11.GL_TEXTURE_2D);
+        }
         else
             drawCuboid(Tessellator.instance, width2 + sizeP, height2 + sizeP, length2 + sizeP, 1);
         GL11.glPopMatrix();

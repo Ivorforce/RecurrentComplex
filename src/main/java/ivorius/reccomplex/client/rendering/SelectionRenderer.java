@@ -35,11 +35,10 @@ public class SelectionRenderer
     public static void renderSelection(EntityLivingBase entity, int ticks, float partialTicks)
     {
         Minecraft mc = Minecraft.getMinecraft();
-        EntityLivingBase renderEntity = mc.renderViewEntity;
-        StructureEntityInfo structureEntityInfo = StructureEntityInfo.getStructureEntityInfo(entity);
         BlockCoord selPoint1 = null;
         BlockCoord selPoint2 = null;
 
+        StructureEntityInfo structureEntityInfo = StructureEntityInfo.getStructureEntityInfo(entity);
         if (structureEntityInfo != null)
         {
             selPoint1 = structureEntityInfo.selectedPoint1;
@@ -47,15 +46,6 @@ public class SelectionRenderer
         }
 
         ItemStack heldItem = entity.getHeldItem();
-
-        double entityX = renderEntity.lastTickPosX + (renderEntity.posX - renderEntity.lastTickPosX) * (double) partialTicks;
-        double entityY = renderEntity.lastTickPosY + (renderEntity.posY - renderEntity.lastTickPosY) * (double) partialTicks;
-        double entityZ = renderEntity.lastTickPosZ + (renderEntity.posZ - renderEntity.lastTickPosZ) * (double) partialTicks;
-
-        GL11.glPushMatrix();
-        GL11.glTranslated(-entityX, -entityY, -entityZ);
-
-        GL11.glDisable(GL11.GL_TEXTURE_2D);
 
         GL11.glLineWidth(3.0f);
 
@@ -72,7 +62,7 @@ public class SelectionRenderer
 
         if (heldItem != null && heldItem.getItem() instanceof ItemBlockSelectorFloating)
         {
-            BlockCoord hoverPoint = ItemBlockSelectorFloating.getHoveredBlock(renderEntity, ((ItemBlockSelectorFloating) heldItem.getItem()).selectionRange);
+            BlockCoord hoverPoint = ItemBlockSelectorFloating.getHoveredBlock(entity, ((ItemBlockSelectorFloating) heldItem.getItem()).selectionRange);
             GL11.glColor3f(0.6f, 0.6f, 1.0f);
             AreaRenderer.renderArea(new BlockArea(hoverPoint, hoverPoint), true, 0.05f);
         }
@@ -86,7 +76,6 @@ public class SelectionRenderer
             OpenGlHelper.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA, GL11.GL_ONE, GL11.GL_ZERO);
             GL11.glAlphaFunc(GL11.GL_GREATER, 0.0001f);
 
-            GL11.glEnable(GL11.GL_TEXTURE_2D);
             ResourceLocation curTex = textureSelection[MathHelper.floor_float((ticks + partialTicks) * 0.75f) % textureSelection.length];
             mc.renderEngine.bindTexture(curTex);
 
@@ -96,10 +85,5 @@ public class SelectionRenderer
             GL11.glAlphaFunc(GL11.GL_GREATER, 0.002f);
             GL11.glDisable(GL11.GL_BLEND);
         }
-        else
-            GL11.glEnable(GL11.GL_TEXTURE_2D);
-
-
-        GL11.glPopMatrix();
     }
 }

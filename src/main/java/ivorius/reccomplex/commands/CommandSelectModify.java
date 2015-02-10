@@ -23,8 +23,7 @@ public abstract class CommandSelectModify extends CommandBase
     public void processCommand(ICommandSender commandSender, String[] args)
     {
         EntityPlayerMP entityPlayerMP = getCommandSenderAsPlayer(commandSender);
-
-        StructureEntityInfo structureEntityInfo = StructureEntityInfo.getStructureEntityInfo(entityPlayerMP);
+        StructureEntityInfo structureEntityInfo = RCCommands.getStructureEntityInfo(entityPlayerMP);
 
         if (structureEntityInfo != null)
         {

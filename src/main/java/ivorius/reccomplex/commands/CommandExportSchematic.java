@@ -68,7 +68,7 @@ public class CommandExportSchematic extends CommandBase
 //        }
 //        else
         {
-            StructureEntityInfo structureEntityInfo = StructureEntityInfo.getStructureEntityInfo(player);
+            StructureEntityInfo structureEntityInfo = RCCommands.getStructureEntityInfo(player);
 
             if (structureEntityInfo.hasValidSelection())
             {

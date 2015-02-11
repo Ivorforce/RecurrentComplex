@@ -21,7 +21,6 @@ import ivorius.reccomplex.structures.MCRegistrySpecial;
 import ivorius.reccomplex.structures.StructureRegistry;
 import ivorius.reccomplex.structures.StructureInfo;
 import ivorius.reccomplex.structures.StructureSpawnContext;
-import ivorius.reccomplex.worldgen.blockTransformers.*;
 import ivorius.reccomplex.structures.generic.gentypes.MazeGenerationInfo;
 import ivorius.reccomplex.structures.generic.gentypes.NaturalGenerationInfo;
 import ivorius.reccomplex.structures.generic.gentypes.VanillaStructureSpawnInfo;

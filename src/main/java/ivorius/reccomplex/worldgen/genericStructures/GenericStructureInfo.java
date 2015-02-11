@@ -146,7 +146,7 @@ public class GenericStructureInfo implements StructureInfo, Cloneable
             for (BlockTransformer transformer : blockTransformers)
             {
                 if (transformer.generatesInPhase(BlockTransformer.Phase.BEFORE))
-                    transformer.transform(world, random, BlockTransformer.Phase.BEFORE, origin, areaSize, context.transform, worldData, blockTransformers);
+                    transformer.transform(BlockTransformer.Phase.BEFORE, context, worldData, blockTransformers);
             }
         }
 
@@ -197,7 +197,7 @@ public class GenericStructureInfo implements StructureInfo, Cloneable
             for (BlockTransformer transformer : blockTransformers)
             {
                 if (transformer.generatesInPhase(BlockTransformer.Phase.AFTER))
-                    transformer.transform(world, random, BlockTransformer.Phase.AFTER, origin, areaSize, context.transform, worldData, blockTransformers);
+                    transformer.transform(BlockTransformer.Phase.AFTER, context, worldData, blockTransformers);
             }
         }
 

@@ -7,8 +7,8 @@ package ivorius.reccomplex.worldgen.blockTransformers;
 
 import ivorius.ivtoolkit.blocks.BlockCoord;
 import ivorius.ivtoolkit.blocks.IvBlockCollection;
-import ivorius.ivtoolkit.math.AxisAlignedTransform2D;
 import ivorius.ivtoolkit.tools.IvWorldData;
+import ivorius.reccomplex.worldgen.StructureSpawnContext;
 import net.minecraft.block.Block;
 import net.minecraft.world.World;
 
@@ -27,20 +27,20 @@ public abstract class BlockTransformerSingle implements BlockTransformer
     }
 
     @Override
-    public void transform(World world, Random random, Phase phase, BlockCoord origin, int[] size, AxisAlignedTransform2D transform, IvWorldData worldData, List<BlockTransformer> transformerList)
+    public void transform(Phase phase, StructureSpawnContext context, IvWorldData worldData, List<BlockTransformer> transformerList)
     {
         IvBlockCollection blockCollection = worldData.blockCollection;
 
         for (BlockCoord sourceCoord : blockCollection)
         {
-            BlockCoord worldCoord = transform.apply(sourceCoord, size).add(origin);
+            BlockCoord worldCoord = context.transform.apply(sourceCoord, context.boundingBoxSize()).add(context.lowerCoord());
 
             Block block = blockCollection.getBlock(sourceCoord);
             int meta = blockCollection.getMetadata(sourceCoord);
 
             if (matches(block, meta))
             {
-                transformBlock(world, random, BlockTransformer.Phase.BEFORE, worldCoord, block, meta);
+                transformBlock(context.world, context.random, BlockTransformer.Phase.BEFORE, worldCoord, block, meta);
             }
         }
     }

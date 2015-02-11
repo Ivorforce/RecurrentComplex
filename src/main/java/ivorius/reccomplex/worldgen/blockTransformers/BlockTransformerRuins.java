@@ -8,9 +8,9 @@ package ivorius.reccomplex.worldgen.blockTransformers;
 import ivorius.ivtoolkit.blocks.BlockArea;
 import ivorius.ivtoolkit.blocks.BlockCoord;
 import ivorius.ivtoolkit.blocks.IvBlockCollection;
-import ivorius.ivtoolkit.math.AxisAlignedTransform2D;
 import ivorius.ivtoolkit.tools.IvWorldData;
 import ivorius.reccomplex.random.BlurredValueField;
+import ivorius.reccomplex.worldgen.StructureSpawnContext;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.inventory.IInventory;
@@ -19,7 +19,6 @@ import net.minecraft.util.MathHelper;
 import net.minecraft.world.World;
 
 import java.util.List;
-import java.util.Random;
 
 /**
  * Created by lukas on 25.05.14.
@@ -44,19 +43,20 @@ public class BlockTransformerRuins implements BlockTransformer
     }
 
     @Override
-    public void transform(World world, Random random, Phase phase, BlockCoord origin, int[] size, AxisAlignedTransform2D transform, IvWorldData worldData, List<BlockTransformer> transformerList)
+    public void transform(Phase phase, StructureSpawnContext context, IvWorldData worldData, List<BlockTransformer> transformerList)
     {
         IvBlockCollection blockCollection = worldData.blockCollection;
 
-        float decayChaos = random.nextFloat() * this.decayChaos;
+        float decayChaos = context.random.nextFloat() * this.decayChaos;
         if (this.maxDecay - this.minDecay > decayChaos)
             decayChaos = this.maxDecay - this.minDecay;
 
-        float center = random.nextFloat() * (this.maxDecay - this.minDecay) + this.minDecay;
+        float center = context.random.nextFloat() * (this.maxDecay - this.minDecay) + this.minDecay;
+        int[] size = context.boundingBoxSize();
 
         BlurredValueField field = new BlurredValueField(size[0], size[2]);
         for (int i = 0; i < size[0] * size[2] / 25; i++)
-            field.addValue(center + (random.nextFloat() - random.nextFloat()) * decayChaos * 2.0f, random);
+            field.addValue(center + (context.random.nextFloat() - context.random.nextFloat()) * decayChaos * 2.0f, context.random);
 
         BlockArea topArea = new BlockArea(new BlockCoord(0, blockCollection.height, 0), new BlockCoord(blockCollection.width, blockCollection.height, blockCollection.length));
 
@@ -87,7 +87,7 @@ public class BlockTransformerRuins implements BlockTransformer
                         }
 
                         if (!skip)
-                            setBlockToAirClean(world, transform.apply(sourceCoord, size).add(origin));
+                            setBlockToAirClean(context.world, context.transform.apply(sourceCoord, size).add(context.lowerCoord()));
                     }
                 }
             }

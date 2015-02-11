@@ -3,7 +3,7 @@
  *  * http://lukas.axxim.net
  */
 
-package ivorius.reccomplex.worldgen;
+package ivorius.reccomplex.structures;
 
 import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
@@ -19,12 +19,17 @@ import ivorius.reccomplex.events.RCEventBus;
 import ivorius.reccomplex.events.StructureRegistrationEvent;
 import ivorius.reccomplex.json.NbtToJson;
 import ivorius.reccomplex.json.StringTypeAdapterFactory;
-import ivorius.reccomplex.worldgen.blockTransformers.BlockTransformer;
-import ivorius.reccomplex.worldgen.blockTransformers.BlockTransformerProvider;
-import ivorius.reccomplex.worldgen.genericStructures.*;
-import ivorius.reccomplex.worldgen.genericStructures.gentypes.MazeGenerationInfo;
-import ivorius.reccomplex.worldgen.genericStructures.gentypes.NaturalGenerationInfo;
-import ivorius.reccomplex.worldgen.genericStructures.gentypes.VanillaStructureSpawnInfo;
+import ivorius.reccomplex.structures.generic.BiomeGenerationInfo;
+import ivorius.reccomplex.structures.generic.DimensionGenerationInfo;
+import ivorius.reccomplex.structures.generic.GenericStructureInfo;
+import ivorius.reccomplex.structures.generic.SavedMazeComponent;
+import ivorius.reccomplex.structures.generic.blocktransformers.BlockTransformer;
+import ivorius.reccomplex.structures.generic.blocktransformers.BlockTransformerProvider;
+import ivorius.reccomplex.structures.generic.gentypes.MazeGenerationInfo;
+import ivorius.reccomplex.structures.generic.gentypes.NaturalGenerationInfo;
+import ivorius.reccomplex.structures.generic.gentypes.VanillaStructureSpawnInfo;
+import ivorius.reccomplex.structures.generic.StructureSaveHandler;
+import ivorius.reccomplex.worldgen.StructureSelector;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.WorldProvider;
 import net.minecraft.world.biome.BiomeGenBase;

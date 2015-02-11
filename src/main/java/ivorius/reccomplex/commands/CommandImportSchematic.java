@@ -8,14 +8,13 @@ package ivorius.reccomplex.commands;
 import ivorius.ivtoolkit.blocks.BlockCoord;
 import ivorius.reccomplex.RCConfig;
 import ivorius.reccomplex.operation.OperationRegistry;
-import ivorius.reccomplex.schematics.OperationGenerateSchematic;
-import ivorius.reccomplex.schematics.SchematicFile;
-import ivorius.reccomplex.schematics.SchematicLoader;
+import ivorius.reccomplex.structures.schematics.OperationGenerateSchematic;
+import ivorius.reccomplex.structures.schematics.SchematicFile;
+import ivorius.reccomplex.structures.schematics.SchematicLoader;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.command.WrongUsageException;
-import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.MathHelper;
 import net.minecraft.world.World;
 

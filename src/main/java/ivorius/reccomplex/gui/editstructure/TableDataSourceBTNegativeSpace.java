@@ -6,7 +6,7 @@
 package ivorius.reccomplex.gui.editstructure;
 
 import ivorius.reccomplex.gui.table.*;
-import ivorius.reccomplex.worldgen.blockTransformers.BlockTransformerNegativeSpace;
+import ivorius.reccomplex.structures.generic.blocktransformers.BlockTransformerNegativeSpace;
 import net.minecraft.block.Block;
 
 /**

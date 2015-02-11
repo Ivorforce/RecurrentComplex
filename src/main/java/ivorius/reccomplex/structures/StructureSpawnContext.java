@@ -3,10 +3,11 @@
  *  * http://lukas.axxim.net
  */
 
-package ivorius.reccomplex.worldgen;
+package ivorius.reccomplex.structures;
 
 import ivorius.ivtoolkit.blocks.BlockCoord;
 import ivorius.ivtoolkit.math.AxisAlignedTransform2D;
+import ivorius.reccomplex.worldgen.WorldGenStructures;
 import net.minecraft.block.Block;
 import net.minecraft.world.World;
 import net.minecraft.world.gen.structure.StructureBoundingBox;

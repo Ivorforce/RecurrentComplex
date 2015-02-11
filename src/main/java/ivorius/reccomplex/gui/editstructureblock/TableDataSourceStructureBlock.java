@@ -9,7 +9,7 @@ import ivorius.ivtoolkit.blocks.BlockCoord;
 import ivorius.reccomplex.blocks.TileEntityStructureGenerator;
 import ivorius.reccomplex.gui.GuiValidityStateIndicator;
 import ivorius.reccomplex.gui.table.*;
-import ivorius.reccomplex.worldgen.StructureRegistry;
+import ivorius.reccomplex.structures.StructureRegistry;
 import joptsimple.internal.Strings;
 
 import java.util.Arrays;

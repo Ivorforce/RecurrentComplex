@@ -5,6 +5,7 @@
 
 package ivorius.reccomplex.worldgen;
 
+import ivorius.reccomplex.structures.StructureInfo;
 import net.minecraft.util.WeightedRandom;
 
 /**

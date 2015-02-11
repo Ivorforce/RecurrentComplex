@@ -10,7 +10,7 @@ import ivorius.reccomplex.gui.table.Bounds;
 import ivorius.reccomplex.gui.table.GuiScreenModalTable;
 import ivorius.reccomplex.gui.table.GuiTable;
 import ivorius.reccomplex.network.PacketEditStructure;
-import ivorius.reccomplex.worldgen.genericStructures.GenericStructureInfo;
+import ivorius.reccomplex.structures.generic.GenericStructureInfo;
 import net.minecraft.client.gui.GuiButton;
 import org.lwjgl.input.Keyboard;
 

@@ -3,7 +3,7 @@
  *  * http://lukas.axxim.net
  */
 
-package ivorius.reccomplex.worldgen;
+package ivorius.reccomplex.structures;
 
 import ivorius.ivtoolkit.tools.MCRegistry;
 import net.minecraft.block.Block;

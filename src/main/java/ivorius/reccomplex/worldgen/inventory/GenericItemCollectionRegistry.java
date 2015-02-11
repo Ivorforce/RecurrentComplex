@@ -11,7 +11,7 @@ import com.google.gson.JsonSyntaxException;
 import ivorius.reccomplex.RecurrentComplex;
 import ivorius.reccomplex.json.ItemStackSerializer;
 import ivorius.reccomplex.json.NbtToJson;
-import ivorius.reccomplex.worldgen.MCRegistrySpecial;
+import ivorius.reccomplex.structures.MCRegistrySpecial;
 import ivorius.reccomplex.worldgen.inventory.GenericItemCollection.Component;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;

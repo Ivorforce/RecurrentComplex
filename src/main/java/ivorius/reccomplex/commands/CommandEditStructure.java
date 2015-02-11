@@ -7,12 +7,11 @@ package ivorius.reccomplex.commands;
 
 import ivorius.reccomplex.RCConfig;
 import ivorius.reccomplex.network.PacketEditStructureHandler;
-import ivorius.reccomplex.worldgen.StructureRegistry;
-import ivorius.reccomplex.worldgen.genericStructures.GenericStructureInfo;
+import ivorius.reccomplex.structures.StructureRegistry;
+import ivorius.reccomplex.structures.generic.GenericStructureInfo;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
-import net.minecraft.command.WrongUsageException;
 import net.minecraft.entity.player.EntityPlayerMP;
 
 import java.util.List;

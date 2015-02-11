@@ -7,9 +7,7 @@ package ivorius.reccomplex.gui.editstructure;
 
 import ivorius.ivtoolkit.gui.FloatRange;
 import ivorius.reccomplex.gui.table.*;
-import ivorius.reccomplex.worldgen.blockTransformers.BlockTransformerNaturalAir;
-import ivorius.reccomplex.worldgen.blockTransformers.BlockTransformerRuins;
-import net.minecraft.block.Block;
+import ivorius.reccomplex.structures.generic.blocktransformers.BlockTransformerRuins;
 
 /**
  * Created by lukas on 05.06.14.

@@ -3,20 +3,13 @@
  *  * http://lukas.axxim.net
  */
 
-package ivorius.reccomplex.schematics;
+package ivorius.reccomplex.structures.schematics;
 
-import ivorius.ivtoolkit.blocks.BlockArea;
 import ivorius.ivtoolkit.blocks.BlockCoord;
-import ivorius.reccomplex.client.rendering.AreaRenderer;
-import ivorius.reccomplex.client.rendering.SelectionRenderer;
 import ivorius.reccomplex.operation.Operation;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.OpenGlHelper;
+import ivorius.reccomplex.structures.OperationGenerateStructure;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.MathHelper;
-import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
-import org.lwjgl.opengl.GL11;
 
 /**
  * Created by lukas on 10.02.15.

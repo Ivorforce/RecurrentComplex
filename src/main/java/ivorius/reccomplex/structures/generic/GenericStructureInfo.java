@@ -3,7 +3,7 @@
  *  * http://lukas.axxim.net
  */
 
-package ivorius.reccomplex.worldgen.genericStructures;
+package ivorius.reccomplex.structures.generic;
 
 import com.google.gson.*;
 import cpw.mods.fml.common.Loader;
@@ -15,15 +15,16 @@ import ivorius.reccomplex.blocks.GeneratingTileEntity;
 import ivorius.reccomplex.blocks.RCBlocks;
 import ivorius.reccomplex.json.JsonUtils;
 import ivorius.reccomplex.json.NbtToJson;
+import ivorius.reccomplex.structures.generic.blocktransformers.*;
 import ivorius.reccomplex.utils.RCAccessHelperEntity;
-import ivorius.reccomplex.worldgen.MCRegistrySpecial;
-import ivorius.reccomplex.worldgen.StructureRegistry;
-import ivorius.reccomplex.worldgen.StructureInfo;
-import ivorius.reccomplex.worldgen.StructureSpawnContext;
+import ivorius.reccomplex.structures.MCRegistrySpecial;
+import ivorius.reccomplex.structures.StructureRegistry;
+import ivorius.reccomplex.structures.StructureInfo;
+import ivorius.reccomplex.structures.StructureSpawnContext;
 import ivorius.reccomplex.worldgen.blockTransformers.*;
-import ivorius.reccomplex.worldgen.genericStructures.gentypes.MazeGenerationInfo;
-import ivorius.reccomplex.worldgen.genericStructures.gentypes.NaturalGenerationInfo;
-import ivorius.reccomplex.worldgen.genericStructures.gentypes.VanillaStructureSpawnInfo;
+import ivorius.reccomplex.structures.generic.gentypes.MazeGenerationInfo;
+import ivorius.reccomplex.structures.generic.gentypes.NaturalGenerationInfo;
+import ivorius.reccomplex.structures.generic.gentypes.VanillaStructureSpawnInfo;
 import ivorius.reccomplex.worldgen.inventory.InventoryGenerationHandler;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;

@@ -6,8 +6,7 @@
 package ivorius.reccomplex.gui.editstructure;
 
 import ivorius.reccomplex.gui.table.*;
-import ivorius.reccomplex.worldgen.blockTransformers.BlockTransformerReplace;
-import ivorius.reccomplex.worldgen.blockTransformers.BlockTransformerReplaceAll;
+import ivorius.reccomplex.structures.generic.blocktransformers.BlockTransformerReplaceAll;
 import net.minecraft.block.Block;
 
 import java.util.ArrayList;

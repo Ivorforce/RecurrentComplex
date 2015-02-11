@@ -11,15 +11,14 @@ import ivorius.ivtoolkit.blocks.BlockCoord;
 import ivorius.ivtoolkit.math.AxisAlignedTransform2D;
 import ivorius.ivtoolkit.tools.IvCollections;
 import ivorius.reccomplex.gui.editstructureblock.GuiEditStructureBlock;
-import ivorius.reccomplex.worldgen.StructureRegistry;
-import ivorius.reccomplex.worldgen.StructureInfo;
+import ivorius.reccomplex.structures.StructureRegistry;
+import ivorius.reccomplex.structures.StructureInfo;
 import ivorius.reccomplex.worldgen.WorldGenStructures;
 import net.minecraft.client.Minecraft;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.nbt.NBTTagString;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.ChunkCoordinates;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.Constants;
 

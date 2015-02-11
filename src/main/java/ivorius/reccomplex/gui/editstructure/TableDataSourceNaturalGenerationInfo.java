@@ -8,8 +8,8 @@ package ivorius.reccomplex.gui.editstructure;
 import ivorius.ivtoolkit.gui.IntegerRange;
 import ivorius.reccomplex.gui.table.*;
 import ivorius.reccomplex.worldgen.StructureSelector;
-import ivorius.reccomplex.worldgen.genericStructures.GenerationYSelector;
-import ivorius.reccomplex.worldgen.genericStructures.GenericStructureInfo;
+import ivorius.reccomplex.structures.generic.GenerationYSelector;
+import ivorius.reccomplex.structures.generic.GenericStructureInfo;
 import net.minecraft.client.resources.I18n;
 
 import java.util.ArrayList;

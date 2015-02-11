@@ -7,7 +7,7 @@ package ivorius.reccomplex.gui.editstructure;
 
 import ivorius.reccomplex.gui.GuiValidityStateIndicator;
 import ivorius.reccomplex.gui.table.*;
-import ivorius.reccomplex.worldgen.genericStructures.BiomeGenerationInfo;
+import ivorius.reccomplex.structures.generic.BiomeGenerationInfo;
 import net.minecraft.world.biome.BiomeGenBase;
 
 /**

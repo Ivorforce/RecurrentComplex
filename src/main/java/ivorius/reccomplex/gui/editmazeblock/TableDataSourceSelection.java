@@ -5,9 +5,8 @@
 
 package ivorius.reccomplex.gui.editmazeblock;
 
-import ivorius.reccomplex.gui.editstructure.TableDataSourceBiomeGen;
 import ivorius.reccomplex.gui.table.*;
-import ivorius.reccomplex.worldgen.genericStructures.Selection;
+import ivorius.reccomplex.structures.generic.Selection;
 import net.minecraft.util.EnumChatFormatting;
 
 import java.util.Arrays;

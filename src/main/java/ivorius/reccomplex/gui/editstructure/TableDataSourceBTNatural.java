@@ -7,7 +7,7 @@ package ivorius.reccomplex.gui.editstructure;
 
 import ivorius.reccomplex.gui.GuiValidityStateIndicator;
 import ivorius.reccomplex.gui.table.*;
-import ivorius.reccomplex.worldgen.blockTransformers.BlockTransformerNatural;
+import ivorius.reccomplex.structures.generic.blocktransformers.BlockTransformerNatural;
 import net.minecraft.block.Block;
 
 /**

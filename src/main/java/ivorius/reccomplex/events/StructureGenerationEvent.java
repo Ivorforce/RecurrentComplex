@@ -6,8 +6,8 @@
 package ivorius.reccomplex.events;
 
 import cpw.mods.fml.common.eventhandler.Cancelable;
-import ivorius.reccomplex.worldgen.StructureInfo;
-import ivorius.reccomplex.worldgen.StructureSpawnContext;
+import ivorius.reccomplex.structures.StructureInfo;
+import ivorius.reccomplex.structures.StructureSpawnContext;
 import net.minecraftforge.event.world.WorldEvent;
 
 /**

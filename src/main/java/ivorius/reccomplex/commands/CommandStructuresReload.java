@@ -6,7 +6,7 @@
 package ivorius.reccomplex.commands;
 
 import ivorius.reccomplex.RCConfig;
-import ivorius.reccomplex.worldgen.StructureSaveHandler;
+import ivorius.reccomplex.structures.generic.StructureSaveHandler;
 import ivorius.reccomplex.worldgen.inventory.CustomGenericItemCollectionHandler;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.ICommandSender;

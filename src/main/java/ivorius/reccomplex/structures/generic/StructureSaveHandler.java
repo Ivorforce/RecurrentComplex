@@ -3,16 +3,14 @@
  *  * http://lukas.axxim.net
  */
 
-package ivorius.reccomplex.worldgen;
+package ivorius.reccomplex.structures.generic;
 
 import ivorius.ivtoolkit.tools.IvFileHelper;
 import ivorius.reccomplex.files.FileSuffixFilter;
 import ivorius.reccomplex.files.RCFileHelper;
 import ivorius.reccomplex.RecurrentComplex;
-import ivorius.reccomplex.schematics.SchematicLoader;
-import ivorius.reccomplex.worldgen.genericStructures.GenericStructureInfo;
-import ivorius.reccomplex.worldgen.genericStructures.StructureInvalidZipException;
-import ivorius.reccomplex.worldgen.genericStructures.StructureLoadException;
+import ivorius.reccomplex.structures.StructureRegistry;
+import ivorius.reccomplex.structures.schematics.SchematicLoader;
 import net.minecraft.nbt.CompressedStreamTools;
 import net.minecraft.nbt.NBTSizeTracker;
 import net.minecraft.nbt.NBTTagCompound;

@@ -3,12 +3,12 @@
  *  * http://lukas.axxim.net
  */
 
-package ivorius.reccomplex.worldgen.genericStructures;
+package ivorius.reccomplex.structures.generic;
 
 import ivorius.ivtoolkit.blocks.BlockCoord;
 import ivorius.ivtoolkit.math.AxisAlignedTransform2D;
 import ivorius.ivtoolkit.maze.*;
-import ivorius.reccomplex.worldgen.StructureInfo;
+import ivorius.reccomplex.structures.StructureInfo;
 import ivorius.reccomplex.worldgen.WorldGenStructures;
 import net.minecraft.world.World;
 

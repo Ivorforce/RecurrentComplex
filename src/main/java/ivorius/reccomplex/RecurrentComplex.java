@@ -26,7 +26,7 @@ import ivorius.reccomplex.events.RCFMLEventHandler;
 import ivorius.reccomplex.events.RCForgeEventHandler;
 import ivorius.reccomplex.gui.RCGuiHandler;
 import ivorius.reccomplex.network.*;
-import ivorius.reccomplex.worldgen.StructureSaveHandler;
+import ivorius.reccomplex.structures.generic.StructureSaveHandler;
 import ivorius.reccomplex.worldgen.inventory.CustomGenericItemCollectionHandler;
 import net.minecraftforge.common.config.Configuration;
 import org.apache.logging.log4j.Logger;

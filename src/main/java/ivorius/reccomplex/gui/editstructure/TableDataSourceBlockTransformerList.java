@@ -6,9 +6,9 @@
 package ivorius.reccomplex.gui.editstructure;
 
 import ivorius.reccomplex.gui.table.*;
-import ivorius.reccomplex.worldgen.StructureRegistry;
-import ivorius.reccomplex.worldgen.blockTransformers.BlockTransformer;
-import ivorius.reccomplex.worldgen.blockTransformers.BlockTransformerProvider;
+import ivorius.reccomplex.structures.StructureRegistry;
+import ivorius.reccomplex.structures.generic.blocktransformers.BlockTransformer;
+import ivorius.reccomplex.structures.generic.blocktransformers.BlockTransformerProvider;
 
 import java.util.Collection;
 import java.util.Collections;

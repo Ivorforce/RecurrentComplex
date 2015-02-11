@@ -3,7 +3,7 @@
  *  * http://lukas.axxim.net
  */
 
-package ivorius.reccomplex.worldgen.genericStructures;
+package ivorius.reccomplex.structures.generic;
 
 import ivorius.reccomplex.dimensions.DimensionDictionary;
 import net.minecraft.world.WorldProvider;

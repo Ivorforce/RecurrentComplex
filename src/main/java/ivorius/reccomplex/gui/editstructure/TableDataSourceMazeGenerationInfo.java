@@ -5,19 +5,11 @@
 
 package ivorius.reccomplex.gui.editstructure;
 
-import ivorius.ivtoolkit.maze.MazePath;
-import ivorius.ivtoolkit.maze.MazeRoom;
-import ivorius.ivtoolkit.tools.IvCollections;
-import ivorius.reccomplex.gui.editmazeblock.TableDataSourceMazePath;
 import ivorius.reccomplex.gui.editmazeblock.TableDataSourceMazePathList;
-import ivorius.reccomplex.gui.editmazeblock.TableDataSourceMazeRoom;
 import ivorius.reccomplex.gui.editmazeblock.TableDataSourceSelection;
 import ivorius.reccomplex.gui.table.*;
-import ivorius.reccomplex.worldgen.genericStructures.GenericStructureInfo;
-import ivorius.reccomplex.worldgen.genericStructures.SavedMazeComponent;
-import ivorius.reccomplex.worldgen.genericStructures.Selection;
-
-import java.util.Arrays;
+import ivorius.reccomplex.structures.generic.GenericStructureInfo;
+import ivorius.reccomplex.structures.generic.SavedMazeComponent;
 
 /**
  * Created by lukas on 07.10.14.

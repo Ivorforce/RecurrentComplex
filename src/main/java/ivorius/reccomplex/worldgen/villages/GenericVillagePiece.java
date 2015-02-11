@@ -7,10 +7,10 @@ package ivorius.reccomplex.worldgen.villages;
 
 import ivorius.ivtoolkit.blocks.BlockCoord;
 import ivorius.ivtoolkit.math.AxisAlignedTransform2D;
-import ivorius.reccomplex.worldgen.StructureRegistry;
-import ivorius.reccomplex.worldgen.StructureInfo;
-import ivorius.reccomplex.worldgen.StructureSpawnContext;
-import ivorius.reccomplex.worldgen.genericStructures.gentypes.VanillaStructureSpawnInfo;
+import ivorius.reccomplex.structures.StructureRegistry;
+import ivorius.reccomplex.structures.StructureInfo;
+import ivorius.reccomplex.structures.StructureSpawnContext;
+import ivorius.reccomplex.structures.generic.gentypes.VanillaStructureSpawnInfo;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.world.World;
 import net.minecraft.world.gen.structure.StructureBoundingBox;

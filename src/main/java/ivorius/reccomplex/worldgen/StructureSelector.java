@@ -7,7 +7,8 @@ package ivorius.reccomplex.worldgen;
 
 import ivorius.reccomplex.RCConfig;
 import ivorius.reccomplex.dimensions.DimensionDictionary;
-import ivorius.reccomplex.worldgen.genericStructures.BiomeSelector;
+import ivorius.reccomplex.structures.StructureInfo;
+import ivorius.reccomplex.structures.generic.BiomeSelector;
 import net.minecraft.util.WeightedRandom;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldProvider;

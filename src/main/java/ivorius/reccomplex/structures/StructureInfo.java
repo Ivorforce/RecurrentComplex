@@ -3,11 +3,11 @@
  *  * http://lukas.axxim.net
  */
 
-package ivorius.reccomplex.worldgen;
+package ivorius.reccomplex.structures;
 
-import ivorius.reccomplex.worldgen.genericStructures.GenericStructureInfo;
-import ivorius.reccomplex.worldgen.genericStructures.SavedMazeComponent;
-import ivorius.reccomplex.worldgen.genericStructures.gentypes.VanillaStructureSpawnInfo;
+import ivorius.reccomplex.structures.generic.GenericStructureInfo;
+import ivorius.reccomplex.structures.generic.SavedMazeComponent;
+import ivorius.reccomplex.structures.generic.gentypes.VanillaStructureSpawnInfo;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldProvider;
 import net.minecraft.world.biome.BiomeGenBase;

@@ -14,13 +14,13 @@ import ivorius.ivtoolkit.maze.*;
 import ivorius.ivtoolkit.maze.MazeComponent;
 import ivorius.ivtoolkit.tools.IvNBTHelper;
 import ivorius.reccomplex.gui.editmazeblock.GuiEditMazeBlock;
-import ivorius.reccomplex.worldgen.StructureRegistry;
-import ivorius.reccomplex.worldgen.genericStructures.*;
+import ivorius.reccomplex.structures.generic.Selection;
+import ivorius.reccomplex.structures.generic.WorldGenMaze;
+import ivorius.reccomplex.structures.StructureRegistry;
 import net.minecraft.client.Minecraft;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.ChunkCoordinates;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.Constants;
 

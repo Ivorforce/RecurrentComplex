@@ -7,7 +7,7 @@ package ivorius.reccomplex.gui.editmazeblock;
 
 import ivorius.ivtoolkit.gui.IntegerRange;
 import ivorius.reccomplex.gui.table.*;
-import ivorius.reccomplex.worldgen.genericStructures.Selection;
+import ivorius.reccomplex.structures.generic.Selection;
 
 /**
 * Created by lukas on 08.10.14.

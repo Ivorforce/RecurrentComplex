@@ -6,7 +6,7 @@
 package ivorius.reccomplex.gui.editstructure;
 
 import ivorius.reccomplex.gui.table.*;
-import ivorius.reccomplex.worldgen.genericStructures.BiomeGenerationInfo;
+import ivorius.reccomplex.structures.generic.BiomeGenerationInfo;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.Collections;

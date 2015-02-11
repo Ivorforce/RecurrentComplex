@@ -6,16 +6,8 @@
 package ivorius.reccomplex.gui.editstructure;
 
 import ivorius.ivtoolkit.blocks.BlockCoord;
-import ivorius.ivtoolkit.gui.IntegerRange;
 import ivorius.reccomplex.gui.table.*;
-import ivorius.reccomplex.worldgen.StructureSelector;
-import ivorius.reccomplex.worldgen.genericStructures.GenerationYSelector;
-import ivorius.reccomplex.worldgen.genericStructures.GenericStructureInfo;
-import net.minecraft.client.resources.I18n;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Set;
+import ivorius.reccomplex.structures.generic.GenericStructureInfo;
 
 /**
  * Created by lukas on 07.10.14.

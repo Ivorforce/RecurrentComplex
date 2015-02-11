@@ -8,8 +8,8 @@ package ivorius.reccomplex.network;
 import cpw.mods.fml.common.network.ByteBufUtils;
 import cpw.mods.fml.common.network.simpleimpl.IMessage;
 import io.netty.buffer.ByteBuf;
-import ivorius.reccomplex.worldgen.StructureRegistry;
-import ivorius.reccomplex.worldgen.genericStructures.GenericStructureInfo;
+import ivorius.reccomplex.structures.StructureRegistry;
+import ivorius.reccomplex.structures.generic.GenericStructureInfo;
 
 /**
  * Created by lukas on 03.08.14.

@@ -6,7 +6,7 @@
 package ivorius.reccomplex.events;
 
 import cpw.mods.fml.common.eventhandler.Event;
-import ivorius.reccomplex.worldgen.StructureInfo;
+import ivorius.reccomplex.structures.StructureInfo;
 
 /**
  * Created by lukas on 21.01.15.

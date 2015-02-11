@@ -3,7 +3,7 @@
  *  * http://lukas.axxim.net
  */
 
-package ivorius.reccomplex.worldgen.genericStructures;
+package ivorius.reccomplex.structures.generic;
 
 import com.google.gson.*;
 import ivorius.ivtoolkit.math.IvVecMathHelper;

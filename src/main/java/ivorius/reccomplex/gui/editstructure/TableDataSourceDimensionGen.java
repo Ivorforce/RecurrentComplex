@@ -10,7 +10,7 @@ import gnu.trove.list.array.TIntArrayList;
 import ivorius.reccomplex.dimensions.DimensionDictionary;
 import ivorius.reccomplex.gui.GuiValidityStateIndicator;
 import ivorius.reccomplex.gui.table.*;
-import ivorius.reccomplex.worldgen.genericStructures.DimensionGenerationInfo;
+import ivorius.reccomplex.structures.generic.DimensionGenerationInfo;
 import net.minecraftforge.common.DimensionManager;
 
 /**

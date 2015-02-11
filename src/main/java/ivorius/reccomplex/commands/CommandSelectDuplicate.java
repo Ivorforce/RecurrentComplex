@@ -12,15 +12,13 @@ import ivorius.ivtoolkit.tools.IvWorldData;
 import ivorius.reccomplex.RCConfig;
 import ivorius.reccomplex.entities.StructureEntityInfo;
 import ivorius.reccomplex.operation.OperationRegistry;
-import ivorius.reccomplex.schematics.OperationGenerateStructure;
-import ivorius.reccomplex.worldgen.StructureSpawnContext;
-import ivorius.reccomplex.worldgen.genericStructures.GenericStructureInfo;
+import ivorius.reccomplex.structures.OperationGenerateStructure;
+import ivorius.reccomplex.structures.generic.GenericStructureInfo;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.command.WrongUsageException;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.MathHelper;
-import net.minecraft.world.World;
 
 /**
  * Created by lukas on 09.06.14.

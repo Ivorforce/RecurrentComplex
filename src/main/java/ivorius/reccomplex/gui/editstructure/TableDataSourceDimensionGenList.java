@@ -6,7 +6,7 @@
 package ivorius.reccomplex.gui.editstructure;
 
 import ivorius.reccomplex.gui.table.*;
-import ivorius.reccomplex.worldgen.genericStructures.DimensionGenerationInfo;
+import ivorius.reccomplex.structures.generic.DimensionGenerationInfo;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.Collections;

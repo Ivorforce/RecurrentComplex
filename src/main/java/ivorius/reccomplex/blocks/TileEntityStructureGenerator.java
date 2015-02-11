@@ -5,16 +5,21 @@
 
 package ivorius.reccomplex.blocks;
 
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import ivorius.ivtoolkit.blocks.BlockCoord;
 import ivorius.ivtoolkit.math.AxisAlignedTransform2D;
 import ivorius.ivtoolkit.tools.IvCollections;
+import ivorius.reccomplex.gui.editstructureblock.GuiEditStructureBlock;
 import ivorius.reccomplex.worldgen.StructureRegistry;
 import ivorius.reccomplex.worldgen.StructureInfo;
 import ivorius.reccomplex.worldgen.WorldGenStructures;
+import net.minecraft.client.Minecraft;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.nbt.NBTTagString;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.ChunkCoordinates;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.Constants;
 
@@ -26,7 +31,7 @@ import java.util.Random;
 /**
  * Created by lukas on 06.06.14.
  */
-public class TileEntityStructureGenerator extends TileEntity implements GeneratingTileEntity
+public class TileEntityStructureGenerator extends TileEntity implements GeneratingTileEntity, TileEntityWithGUI
 {
     private List<String> structureNames = new ArrayList<>();
     private BlockCoord structureShift = new BlockCoord(0, 0, 0);
@@ -78,17 +83,7 @@ public class TileEntityStructureGenerator extends TileEntity implements Generati
     {
         super.readFromNBT(nbtTagCompound);
 
-        readStructureDataFromNBT(nbtTagCompound);
-    }
-
-    public void readStructureDataFromNBT(NBTTagCompound nbtTagCompound)
-    {
-        IvCollections.setContentsOfList(structureNames, generatorsFromNBT(nbtTagCompound));
-
-        structureShift = BlockCoord.readCoordFromNBT("structureShift", nbtTagCompound);
-
-        structureRotation = nbtTagCompound.hasKey("structureRotation") ? nbtTagCompound.getInteger("structureRotation") : null;
-        structureMirror = nbtTagCompound.hasKey("structureMirror") ? nbtTagCompound.getBoolean("structureMirror") : null;
+        readSyncedNBT(nbtTagCompound);
     }
 
     @Override
@@ -96,29 +91,7 @@ public class TileEntityStructureGenerator extends TileEntity implements Generati
     {
         super.writeToNBT(nbtTagCompound);
 
-        writeStructureDataToNBT(nbtTagCompound);
-    }
-
-    public void writeStructureDataToNBT(NBTTagCompound nbtTagCompound)
-    {
-        NBTTagList structureNBTList = new NBTTagList();
-        for (String struc : structureNames)
-        {
-            structureNBTList.appendTag(new NBTTagString(struc));
-        }
-        nbtTagCompound.setTag("structures", structureNBTList);
-
-        BlockCoord.writeCoordToNBT("structureShift", structureShift, nbtTagCompound);
-
-        if (structureRotation != null)
-        {
-            nbtTagCompound.setInteger("structureRotation", structureRotation);
-        }
-
-        if (structureMirror != null)
-        {
-            nbtTagCompound.setBoolean("structureMirror", structureMirror);
-        }
+        writeSyncedNBT(nbtTagCompound);
     }
 
     @Override
@@ -156,6 +129,47 @@ public class TileEntityStructureGenerator extends TileEntity implements Generati
         }
 
         return list;
+    }
+
+    @Override
+    public void writeSyncedNBT(NBTTagCompound compound)
+    {
+        NBTTagList structureNBTList = new NBTTagList();
+        for (String struc : structureNames)
+        {
+            structureNBTList.appendTag(new NBTTagString(struc));
+        }
+        compound.setTag("structures", structureNBTList);
+
+        BlockCoord.writeCoordToNBT("structureShift", structureShift, compound);
+
+        if (structureRotation != null)
+        {
+            compound.setInteger("structureRotation", structureRotation);
+        }
+
+        if (structureMirror != null)
+        {
+            compound.setBoolean("structureMirror", structureMirror);
+        }
+    }
+
+    @Override
+    public void readSyncedNBT(NBTTagCompound compound)
+    {
+        IvCollections.setContentsOfList(structureNames, generatorsFromNBT(compound));
+
+        structureShift = BlockCoord.readCoordFromNBT("structureShift", compound);
+
+        structureRotation = compound.hasKey("structureRotation") ? compound.getInteger("structureRotation") : null;
+        structureMirror = compound.hasKey("structureMirror") ? compound.getBoolean("structureMirror") : null;
+    }
+
+    @SideOnly(Side.CLIENT)
+    @Override
+    public void openEditGUI()
+    {
+        Minecraft.getMinecraft().displayGuiScreen(new GuiEditStructureBlock(this));
     }
 
 //

@@ -96,13 +96,12 @@ public class RecurrentComplex
         network.registerMessage(PacketGuiActionHandler.class, PacketGuiAction.class, 1, Side.SERVER);
         network.registerMessage(PacketEditInventoryGeneratorHandler.class, PacketEditInventoryGenerator.class, 2, Side.CLIENT);
         network.registerMessage(PacketEditInventoryGeneratorHandler.class, PacketEditInventoryGenerator.class, 3, Side.SERVER);
-        network.registerMessage(PacketEditMazeBlockHandler.class, PacketEditMazeBlock.class, 4, Side.CLIENT);
-        network.registerMessage(PacketEditMazeBlockHandler.class, PacketEditMazeBlock.class, 5, Side.SERVER);
+        network.registerMessage(PacketEditTileEntityHandler.class, PacketEditTileEntity.class, 4, Side.CLIENT);
+        network.registerMessage(PacketEditTileEntityHandler.class, PacketEditTileEntity.class, 5, Side.SERVER);
         network.registerMessage(PacketEditStructureHandler.class, PacketEditStructure.class, 6, Side.CLIENT);
         network.registerMessage(PacketEditStructureHandler.class, PacketEditStructure.class, 7, Side.SERVER);
-        network.registerMessage(PacketEditStructureBlockHandler.class, PacketEditStructureBlock.class, 8, Side.CLIENT);
-        network.registerMessage(PacketEditStructureBlockHandler.class, PacketEditStructureBlock.class, 9, Side.SERVER);
-        network.registerMessage(PacketEditInvGenMultiTagHandler.class, PacketEditInvGenMultiTag.class, 10, Side.SERVER);
+        network.registerMessage(PacketSyncItemHandler.class, PacketSyncItem.class, 8, Side.CLIENT);
+        network.registerMessage(PacketSyncItemHandler.class, PacketSyncItem.class, 9, Side.SERVER);
 
         RCRegistryHandler.load(event, this);
         proxy.registerRenderers();

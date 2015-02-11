@@ -3,10 +3,10 @@
  *  * http://lukas.axxim.net
  */
 
-package ivorius.reccomplex.gui.editmazeblock;
+package ivorius.reccomplex.gui.editspawncommandblock;
 
 import ivorius.reccomplex.RecurrentComplex;
-import ivorius.reccomplex.blocks.TileEntityMazeGenerator;
+import ivorius.reccomplex.blocks.TileEntitySpawnCommand;
 import ivorius.reccomplex.gui.table.Bounds;
 import ivorius.reccomplex.gui.table.GuiScreenModalTable;
 import ivorius.reccomplex.gui.table.GuiTable;
@@ -17,13 +17,13 @@ import org.lwjgl.input.Keyboard;
 /**
  * Created by lukas on 26.05.14.
  */
-public class GuiEditMazeBlock extends GuiScreenModalTable
+public class GuiEditSpawnCommandBlock extends GuiScreenModalTable
 {
-    TableDataSourceMazeBlock structureDataSource;
+    TableDataSourceSpawnCommandBlock structureDataSource;
 
-    public GuiEditMazeBlock(TileEntityMazeGenerator structureGenerator)
+    public GuiEditSpawnCommandBlock(TileEntitySpawnCommand tileEntity)
     {
-        GuiTable structureGenProperties = new GuiTable(this, structureDataSource = new TableDataSourceMazeBlock(structureGenerator, this, this));
+        GuiTable structureGenProperties = new GuiTable(this, structureDataSource = new TableDataSourceSpawnCommandBlock(tileEntity, this, this));
         structureGenProperties.setHideScrollbarIfUnnecessary(true);
         setTable(structureGenProperties);
     }
@@ -52,7 +52,7 @@ public class GuiEditMazeBlock extends GuiScreenModalTable
     {
         if (keyCode == Keyboard.KEY_ESCAPE)
         {
-            RecurrentComplex.network.sendToServer(new PacketEditTileEntity(structureDataSource.getMazeGenerator()));
+            RecurrentComplex.network.sendToServer(new PacketEditTileEntity(structureDataSource.getTileEntity()));
             this.mc.thePlayer.closeScreen();
         }
         else
@@ -68,7 +68,7 @@ public class GuiEditMazeBlock extends GuiScreenModalTable
 
         if (button.id == 0)
         {
-            RecurrentComplex.network.sendToServer(new PacketEditTileEntity(structureDataSource.getMazeGenerator()));
+            RecurrentComplex.network.sendToServer(new PacketEditTileEntity(structureDataSource.getTileEntity()));
             this.mc.thePlayer.closeScreen();
         }
         else if (button.id == 1)

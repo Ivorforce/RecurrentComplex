@@ -17,13 +17,14 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagInt;
 import net.minecraft.world.World;
 
 import java.util.List;
 import java.util.Random;
 
-public class ItemInventoryGenMultiTag extends ItemInventoryGenerationTag
+public class ItemInventoryGenMultiTag extends ItemInventoryGenerationTag implements ItemSyncable
 {
     public static TIntList emptySlots(IInventory inv)
     {
@@ -93,5 +94,19 @@ public class ItemInventoryGenMultiTag extends ItemInventoryGenerationTag
     {
         stack.setTagInfo("itemCountMin", new NBTTagInt(range.getMin()));
         stack.setTagInfo("itemCountMax", new NBTTagInt(range.getMax()));
+    }
+
+    @Override
+    public void writeSyncedNBT(NBTTagCompound compound, ItemStack stack)
+    {
+        IntegerRange range = getGenerationCount(stack);
+        compound.setInteger("itemCountMin", range.getMin());
+        compound.setInteger("itemCountMax", range.getMax());
+    }
+
+    @Override
+    public void readSyncedNBT(NBTTagCompound compound, ItemStack stack)
+    {
+        setGenerationCount(stack, new IntegerRange(compound.getInteger("itemCountMin"), compound.getInteger("itemCountMax")));
     }
 }

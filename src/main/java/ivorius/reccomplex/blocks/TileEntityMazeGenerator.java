@@ -5,17 +5,22 @@
 
 package ivorius.reccomplex.blocks;
 
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import ivorius.ivtoolkit.blocks.BlockCoord;
 import ivorius.ivtoolkit.math.AxisAlignedTransform2D;
 import ivorius.ivtoolkit.math.IvVecMathHelper;
 import ivorius.ivtoolkit.maze.*;
 import ivorius.ivtoolkit.maze.MazeComponent;
 import ivorius.ivtoolkit.tools.IvNBTHelper;
+import ivorius.reccomplex.gui.editmazeblock.GuiEditMazeBlock;
 import ivorius.reccomplex.worldgen.StructureRegistry;
 import ivorius.reccomplex.worldgen.genericStructures.*;
+import net.minecraft.client.Minecraft;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.ChunkCoordinates;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.Constants;
 
@@ -24,7 +29,7 @@ import java.util.*;
 /**
  * Created by lukas on 06.06.14.
  */
-public class TileEntityMazeGenerator extends TileEntity implements GeneratingTileEntity
+public class TileEntityMazeGenerator extends TileEntity implements GeneratingTileEntity, TileEntityWithGUI
 {
     public String mazeID = "";
     public List<MazePath> mazeExits = new ArrayList<>();
@@ -79,37 +84,7 @@ public class TileEntityMazeGenerator extends TileEntity implements GeneratingTil
     {
         super.readFromNBT(nbtTagCompound);
 
-        readMazeDataFromNBT(nbtTagCompound);
-    }
-
-    public void readMazeDataFromNBT(NBTTagCompound nbtTagCompound)
-    {
-        mazeID = nbtTagCompound.getString("mazeID");
-
-        NBTTagCompound rooms = nbtTagCompound.getCompoundTag("rooms");
-        mazeRooms.readFromNBT(rooms, 3);
-
-        // Legacy
-        if (nbtTagCompound.hasKey("roomNumbers", Constants.NBT.TAG_INT_ARRAY))
-            mazeRooms.add(new Selection.Area(true, new int[]{0, 0, 0}, IvVecMathHelper.sub(IvNBTHelper.readIntArrayFixedSize("roomNumbers", 3, nbtTagCompound), new int[]{1, 1, 1})));
-        if (nbtTagCompound.hasKey("blockedRoomAreas", Constants.NBT.TAG_LIST))
-        {
-            NBTTagList blockedRoomsList = nbtTagCompound.getTagList("blockedRoomAreas", Constants.NBT.TAG_COMPOUND);
-            for (int i = 0; i < blockedRoomsList.tagCount(); i++)
-            {
-                NBTTagCompound blockedRoomTag = blockedRoomsList.getCompoundTagAt(i);
-                mazeRooms.add(new Selection.Area(false, IvNBTHelper.readIntArrayFixedSize("min", 3, blockedRoomTag), IvNBTHelper.readIntArrayFixedSize("max", 3, blockedRoomTag)));
-            }
-        }
-
-        mazeExits.clear();
-        NBTTagList exitsList = nbtTagCompound.getTagList("mazeExits", Constants.NBT.TAG_COMPOUND);
-        for (int i = 0; i < exitsList.tagCount(); i++)
-            mazeExits.add(new MazePath(exitsList.getCompoundTagAt(i)));
-
-        structureShift = BlockCoord.readCoordFromNBT("structureShift", nbtTagCompound);
-
-        roomSize = IvNBTHelper.readIntArrayFixedSize("roomSize", 3, nbtTagCompound);
+        readSyncedNBT(nbtTagCompound);
     }
 
     @Override
@@ -117,25 +92,7 @@ public class TileEntityMazeGenerator extends TileEntity implements GeneratingTil
     {
         super.writeToNBT(nbtTagCompound);
 
-        writeMazeDataToNBT(nbtTagCompound);
-    }
-
-    public void writeMazeDataToNBT(NBTTagCompound nbtTagCompound)
-    {
-        nbtTagCompound.setString("mazeID", mazeID);
-
-        NBTTagCompound rooms = new NBTTagCompound();
-        mazeRooms.writeToNBT(rooms);
-        nbtTagCompound.setTag("rooms", rooms);
-
-        NBTTagList exitsList = new NBTTagList();
-        for (MazePath exit : mazeExits)
-            exitsList.appendTag(exit.writeToNBT());
-        nbtTagCompound.setTag("mazeExits", exitsList);
-
-        BlockCoord.writeCoordToNBT("structureShift", structureShift, nbtTagCompound);
-
-        nbtTagCompound.setIntArray("roomSize", roomSize);
+        writeSyncedNBT(nbtTagCompound);
     }
 
     @Override
@@ -176,5 +133,62 @@ public class TileEntityMazeGenerator extends TileEntity implements GeneratingTil
         List<MazeComponentPosition> placedComponents = MazeGeneratorWithComponents.generatePaths(random, maze, transformedComponents);
 
         WorldGenMaze.generateMaze(world, random, startCoord, placedComponents, roomSize, layer);
+    }
+
+    @Override
+    public void writeSyncedNBT(NBTTagCompound compound)
+    {
+        compound.setString("mazeID", mazeID);
+
+        NBTTagCompound rooms = new NBTTagCompound();
+        mazeRooms.writeToNBT(rooms);
+        compound.setTag("rooms", rooms);
+
+        NBTTagList exitsList = new NBTTagList();
+        for (MazePath exit : mazeExits)
+            exitsList.appendTag(exit.writeToNBT());
+        compound.setTag("mazeExits", exitsList);
+
+        BlockCoord.writeCoordToNBT("structureShift", structureShift, compound);
+
+        compound.setIntArray("roomSize", roomSize);
+    }
+
+    @Override
+    public void readSyncedNBT(NBTTagCompound compound)
+    {
+        mazeID = compound.getString("mazeID");
+
+        NBTTagCompound rooms = compound.getCompoundTag("rooms");
+        mazeRooms.readFromNBT(rooms, 3);
+
+        // Legacy
+        if (compound.hasKey("roomNumbers", Constants.NBT.TAG_INT_ARRAY))
+            mazeRooms.add(new Selection.Area(true, new int[]{0, 0, 0}, IvVecMathHelper.sub(IvNBTHelper.readIntArrayFixedSize("roomNumbers", 3, compound), new int[]{1, 1, 1})));
+        if (compound.hasKey("blockedRoomAreas", Constants.NBT.TAG_LIST))
+        {
+            NBTTagList blockedRoomsList = compound.getTagList("blockedRoomAreas", Constants.NBT.TAG_COMPOUND);
+            for (int i = 0; i < blockedRoomsList.tagCount(); i++)
+            {
+                NBTTagCompound blockedRoomTag = blockedRoomsList.getCompoundTagAt(i);
+                mazeRooms.add(new Selection.Area(false, IvNBTHelper.readIntArrayFixedSize("min", 3, blockedRoomTag), IvNBTHelper.readIntArrayFixedSize("max", 3, blockedRoomTag)));
+            }
+        }
+
+        mazeExits.clear();
+        NBTTagList exitsList = compound.getTagList("mazeExits", Constants.NBT.TAG_COMPOUND);
+        for (int i = 0; i < exitsList.tagCount(); i++)
+            mazeExits.add(new MazePath(exitsList.getCompoundTagAt(i)));
+
+        structureShift = BlockCoord.readCoordFromNBT("structureShift", compound);
+
+        roomSize = IvNBTHelper.readIntArrayFixedSize("roomSize", 3, compound);
+    }
+
+    @SideOnly(Side.CLIENT)
+    @Override
+    public void openEditGUI()
+    {
+        Minecraft.getMinecraft().displayGuiScreen(new GuiEditMazeBlock(this));
     }
 }

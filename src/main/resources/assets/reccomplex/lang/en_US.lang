@@ -42,6 +42,7 @@ tile.naturalFloor.meta.14.name=Solid (14)
 tile.naturalFloor.meta.15.name=Solid (15)
 tile.structureGenerator.name=Structure Generator
 tile.mazeGenerator.name=Maze Generator
+tile.spawnCommand.name=Spawn Command Block
 
 itemGroup.structureTools=Structure Tools
 itemGroup.inventoryGenerators=Inventory Generators

@@ -106,6 +106,11 @@ public class RCRegistryHandler
         mazeGenerator.setCreativeTab(tabStructureTools);
         GameRegistry.registerBlock(mazeGenerator, ItemMazeGenerator.class, "mazeGenerator");
         GameRegistry.registerTileEntityWithAlternatives(TileEntityMazeGenerator.class, "RCMazeGenerator", "SGMazeGenerator");
+
+        spawnCommands = new BlockSpawnCommand().setBlockName("spawnCommand").setBlockTextureName(textureBase + "spawnCommand");
+        spawnCommands.setCreativeTab(tabStructureTools);
+        GameRegistry.registerBlock(spawnCommands, ItemMazeGenerator.class, "weighted_command_block");
+        GameRegistry.registerTileEntityWithAlternatives(TileEntitySpawnCommand.class, "RCSpawnCommand");
     }
 
     public static void load(FMLInitializationEvent event, RecurrentComplex mod)

@@ -6,7 +6,7 @@
 package ivorius.reccomplex.blocks;
 
 import ivorius.reccomplex.RecurrentComplex;
-import ivorius.reccomplex.network.PacketEditStructureBlock;
+import ivorius.reccomplex.network.PacketEditTileEntity;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.entity.EntityLivingBase;
@@ -18,6 +18,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.world.World;
+import net.minecraftforge.common.util.Constants;
 
 /**
  * Created by lukas on 06.06.14.
@@ -36,7 +37,7 @@ public class BlockStructureGenerator extends Block
         {
             TileEntity tileEntity = world.getTileEntity(x, y, z);
 
-            RecurrentComplex.network.sendTo(new PacketEditStructureBlock((TileEntityStructureGenerator) tileEntity), (EntityPlayerMP) player);
+            RecurrentComplex.network.sendTo(new PacketEditTileEntity((TileEntityStructureGenerator) tileEntity), (EntityPlayerMP) player);
         }
 
         return true;
@@ -47,7 +48,7 @@ public class BlockStructureGenerator extends Block
     {
         TileEntity tileEntity = world.getTileEntity(x, y, z);
         NBTTagCompound compound = new NBTTagCompound();
-        ((TileEntityStructureGenerator) tileEntity).writeStructureDataToNBT(compound);
+        ((TileEntityStructureGenerator) tileEntity).writeSyncedNBT(compound);
 
         ItemStack returnStack = new ItemStack(Item.getItemFromBlock(this));
         returnStack.setTagInfo("structureGeneratorInfo", compound);
@@ -58,11 +59,11 @@ public class BlockStructureGenerator extends Block
     @Override
     public void onBlockPlacedBy(World world, int x, int y, int z, EntityLivingBase entityLivingBase, ItemStack itemStack)
     {
-        if (itemStack.hasTagCompound() && itemStack.getTagCompound().hasKey("structureGeneratorInfo"))
+        if (itemStack.hasTagCompound() && itemStack.getTagCompound().hasKey("structureGeneratorInfo", Constants.NBT.TAG_COMPOUND))
         {
             NBTTagCompound compound = itemStack.getTagCompound().getCompoundTag("structureGeneratorInfo");
             TileEntity tileEntity = world.getTileEntity(x, y, z);
-            ((TileEntityStructureGenerator) tileEntity).readStructureDataFromNBT(compound);
+            ((TileEntityStructureGenerator) tileEntity).readSyncedNBT(compound);
         }
     }
 

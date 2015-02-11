@@ -23,9 +23,9 @@ import net.minecraftforge.common.util.Constants;
 /**
  * Created by lukas on 06.06.14.
  */
-public class BlockMazeGenerator extends Block
+public class BlockSpawnCommand extends Block
 {
-    public BlockMazeGenerator()
+    public BlockSpawnCommand()
     {
         super(Material.iron);
     }
@@ -37,7 +37,7 @@ public class BlockMazeGenerator extends Block
         {
             TileEntity tileEntity = world.getTileEntity(x, y, z);
 
-            RecurrentComplex.network.sendTo(new PacketEditTileEntity((TileEntityMazeGenerator) tileEntity), (EntityPlayerMP) player);
+            RecurrentComplex.network.sendTo(new PacketEditTileEntity((TileEntitySpawnCommand) tileEntity), (EntityPlayerMP) player);
         }
 
         return true;
@@ -48,10 +48,10 @@ public class BlockMazeGenerator extends Block
     {
         TileEntity tileEntity = world.getTileEntity(x, y, z);
         NBTTagCompound compound = new NBTTagCompound();
-        ((TileEntityMazeGenerator) tileEntity).writeSyncedNBT(compound);
+        ((TileEntitySpawnCommand) tileEntity).writeSyncedNBT(compound);
 
         ItemStack returnStack = new ItemStack(Item.getItemFromBlock(this));
-        returnStack.setTagInfo("mazeGeneratorInfo", compound);
+        returnStack.setTagInfo("spawnCommandInfo", compound);
 
         return returnStack;
     }
@@ -59,11 +59,11 @@ public class BlockMazeGenerator extends Block
     @Override
     public void onBlockPlacedBy(World world, int x, int y, int z, EntityLivingBase entityLivingBase, ItemStack itemStack)
     {
-        if (itemStack.hasTagCompound() && itemStack.getTagCompound().hasKey("mazeGeneratorInfo", Constants.NBT.TAG_COMPOUND))
+        if (itemStack.hasTagCompound() && itemStack.getTagCompound().hasKey("spawnCommandInfo", Constants.NBT.TAG_COMPOUND))
         {
-            NBTTagCompound compound = itemStack.getTagCompound().getCompoundTag("mazeGeneratorInfo");
+            NBTTagCompound compound = itemStack.getTagCompound().getCompoundTag("spawnCommandInfo");
             TileEntity tileEntity = world.getTileEntity(x, y, z);
-            ((TileEntityMazeGenerator) tileEntity).readSyncedNBT(compound);
+            ((TileEntitySpawnCommand) tileEntity).readSyncedNBT(compound);
         }
     }
 
@@ -76,6 +76,6 @@ public class BlockMazeGenerator extends Block
     @Override
     public TileEntity createTileEntity(World var1, int var2)
     {
-        return new TileEntityMazeGenerator();
+        return new TileEntitySpawnCommand();
     }
 }

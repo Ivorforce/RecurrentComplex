@@ -8,7 +8,7 @@ package ivorius.reccomplex.gui.inventorygen;
 import ivorius.reccomplex.RecurrentComplex;
 import ivorius.reccomplex.gui.table.*;
 import ivorius.reccomplex.items.RCItems;
-import ivorius.reccomplex.network.PacketEditInvGenMultiTag;
+import ivorius.reccomplex.network.PacketSyncItem;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
@@ -91,6 +91,6 @@ public class GuiEditInvGenMultiTag extends GuiScreenModalTable
         ItemStack stack = player.inventory.getStackInSlot(playerSlot);
         RCItems.inventoryGenerationTag.setGenerationCount(stack, tableDataSource.itemCount);
 
-        RecurrentComplex.network.sendToServer(new PacketEditInvGenMultiTag(playerSlot, tableDataSource.itemCount));
+        RecurrentComplex.network.sendToServer(new PacketSyncItem(playerSlot, stack));
     }
 }

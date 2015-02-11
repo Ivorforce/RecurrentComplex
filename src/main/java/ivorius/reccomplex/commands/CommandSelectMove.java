@@ -11,14 +11,14 @@ import ivorius.ivtoolkit.math.AxisAlignedTransform2D;
 import ivorius.ivtoolkit.tools.IvWorldData;
 import ivorius.reccomplex.RCConfig;
 import ivorius.reccomplex.entities.StructureEntityInfo;
-import ivorius.reccomplex.structures.StructureSpawnContext;
+import ivorius.reccomplex.operation.OperationRegistry;
+import ivorius.reccomplex.structures.OperationMoveStructure;
 import ivorius.reccomplex.structures.generic.GenericStructureInfo;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.command.WrongUsageException;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.MathHelper;
-import net.minecraft.world.World;
 
 /**
  * Created by lukas on 09.06.14.
@@ -58,18 +58,12 @@ public class CommandSelectMove extends CommandSelectModify
         IvWorldData worldData = new IvWorldData(player.worldObj, area, true);
         NBTTagCompound worldDataCompound = worldData.createTagCompound(area.getLowerCorner());
 
-        World world = player.worldObj;
-
-        for (BlockCoord coord : area)
-            world.setBlockToAir(coord.x, coord.y, coord.z);
-
         GenericStructureInfo structureInfo = GenericStructureInfo.createDefaultStructure();
         structureInfo.worldDataCompound = worldDataCompound;
 
-        structureInfo.generate(new StructureSpawnContext(world, world.rand, new BlockCoord(x, y, z), AxisAlignedTransform2D.transform(rotations, mirrorX), 0, true, structureInfo));
+        BlockCoord coord = new BlockCoord(x, y, z);
+        AxisAlignedTransform2D transform = AxisAlignedTransform2D.transform(rotations, mirrorX);
 
-        structureEntityInfo.selectedPoint1 = point1.subtract(lowerCorner).add(x, y, z);
-        structureEntityInfo.selectedPoint2 = point2.subtract(lowerCorner).add(x, y, z);
-        structureEntityInfo.sendSelectionToClients(player);
+        OperationRegistry.queueOperation(new OperationMoveStructure(structureInfo, transform, coord, true, area), player);
     }
 }

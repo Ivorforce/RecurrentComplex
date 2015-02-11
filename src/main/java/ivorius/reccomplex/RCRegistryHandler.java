@@ -16,6 +16,7 @@ import ivorius.reccomplex.blocks.materials.MaterialNegativeSpace;
 import ivorius.reccomplex.blocks.materials.RCMaterials;
 import ivorius.reccomplex.operation.OperationRegistry;
 import ivorius.reccomplex.random.Poem;
+import ivorius.reccomplex.structures.OperationMoveStructure;
 import ivorius.reccomplex.structures.generic.blocktransformers.*;
 import ivorius.reccomplex.structures.schematics.OperationGenerateSchematic;
 import ivorius.reccomplex.structures.OperationGenerateStructure;
@@ -129,6 +130,7 @@ public class RCRegistryHandler
 
         OperationRegistry.register("strucGen", OperationGenerateStructure.class);
         OperationRegistry.register("schemGen", OperationGenerateSchematic.class);
+        OperationRegistry.register("strucMove", OperationMoveStructure.class);
 
         Poem.registerThemes(MODID, "love", "summer", "war", "winter", "grief");
 

@@ -9,6 +9,7 @@ import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import ivorius.ivtoolkit.math.AxisAlignedTransform2D;
 import ivorius.ivtoolkit.tools.IvCollections;
+import ivorius.reccomplex.RecurrentComplex;
 import ivorius.reccomplex.gui.editspawncommandblock.GuiEditSpawnCommandBlock;
 import net.minecraft.client.Minecraft;
 import net.minecraft.nbt.NBTTagCompound;
@@ -93,7 +94,16 @@ public class TileEntitySpawnCommand extends TileEntity implements GeneratingTile
         {
             Entry entry = (Entry) WeightedRandom.getRandomItem(random, entries);
             SpawnCommandLogic logic = new SpawnCommandLogic(this, entry.command);
-            logic.executeCommand(world);
+
+            try
+            {
+                logic.executeCommand(world);
+            }
+            catch (Throwable t)
+            {
+                RecurrentComplex.logger.error("Error executing command '%s'", entry.command);
+                RecurrentComplex.logger.error("Command execution failed", t);
+            }
         }
     }
 

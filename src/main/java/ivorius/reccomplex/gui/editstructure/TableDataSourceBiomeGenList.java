@@ -7,6 +7,7 @@ package ivorius.reccomplex.gui.editstructure;
 
 import ivorius.reccomplex.gui.table.*;
 import ivorius.reccomplex.worldgen.genericStructures.BiomeGenerationInfo;
+import org.apache.commons.lang3.StringUtils;
 
 import java.util.Collections;
 import java.util.List;
@@ -94,7 +95,9 @@ public class TableDataSourceBiomeGenList extends TableDataSourceSegmented implem
             int biomeGenIndex = index;
             TableElementButton.Action[] actions = {new TableElementButton.Action("earlier", "Earlier", biomeGenIndex > 0), new TableElementButton.Action("later", "Later", biomeGenIndex < biomeGenerationInfoList.size() - 1), new TableElementButton.Action("edit", "Edit"), new TableElementButton.Action("delete", "Delete")};
             BiomeGenerationInfo biomeGenerationInfo = biomeGenerationInfoList.get(biomeGenIndex);
-            TableElementButton button = new TableElementButton("biomeGen" + biomeGenIndex, biomeGenerationInfo.getDisplayString() + " (" + biomeGenerationInfo.getActiveGenerationWeight() + ")", actions);
+
+            String title = StringUtils.abbreviate(biomeGenerationInfo.getDisplayString(), 16) + " (" + biomeGenerationInfo.getActiveGenerationWeight() + ")";
+            TableElementButton button = new TableElementButton("biomeGen" + biomeGenIndex, title, actions);
             button.addListener(this);
             return button;
         }

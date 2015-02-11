@@ -7,6 +7,7 @@ package ivorius.reccomplex.gui.editstructure;
 
 import ivorius.reccomplex.gui.table.*;
 import ivorius.reccomplex.worldgen.genericStructures.DimensionGenerationInfo;
+import org.apache.commons.lang3.StringUtils;
 
 import java.util.Collections;
 import java.util.List;
@@ -94,7 +95,9 @@ public class TableDataSourceDimensionGenList extends TableDataSourceSegmented im
             int dimGenIndex = index;
             TableElementButton.Action[] actions = {new TableElementButton.Action("earlier", "Earlier", dimGenIndex > 0), new TableElementButton.Action("later", "Later", dimGenIndex < dimensionGenerationInfos.size() - 1), new TableElementButton.Action("edit", "Edit"), new TableElementButton.Action("delete", "Delete")};
             DimensionGenerationInfo generationInfo = dimensionGenerationInfos.get(dimGenIndex);
-            TableElementButton button = new TableElementButton("dimensionGen" + dimGenIndex, generationInfo.getDisplayString() + " (" + generationInfo.getActiveGenerationWeight() + ")", actions);
+
+            String title = StringUtils.abbreviate(generationInfo.getDisplayString(), 16) + " (" + generationInfo.getActiveGenerationWeight() + ")";
+            TableElementButton button = new TableElementButton("dimensionGen" + dimGenIndex, title, actions);
             button.addListener(this);
             return button;
         }

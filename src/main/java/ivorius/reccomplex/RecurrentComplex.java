@@ -102,6 +102,8 @@ public class RecurrentComplex
         network.registerMessage(PacketEditStructureHandler.class, PacketEditStructure.class, 7, Side.SERVER);
         network.registerMessage(PacketSyncItemHandler.class, PacketSyncItem.class, 8, Side.CLIENT);
         network.registerMessage(PacketSyncItemHandler.class, PacketSyncItem.class, 9, Side.SERVER);
+        network.registerMessage(PacketItemEventHandler.class, PacketItemEvent.class, 10, Side.CLIENT);
+        network.registerMessage(PacketItemEventHandler.class, PacketItemEvent.class, 11, Side.SERVER);
 
         RCRegistryHandler.load(event, this);
         proxy.registerRenderers();

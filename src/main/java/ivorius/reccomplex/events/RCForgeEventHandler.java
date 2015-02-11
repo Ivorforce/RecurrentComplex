@@ -10,10 +10,13 @@ import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import ivorius.reccomplex.client.rendering.SelectionRenderer;
 import ivorius.reccomplex.entities.StructureEntityInfo;
+import ivorius.reccomplex.items.ItemInputHandler;
 import ivorius.reccomplex.worldgen.WorldGenStructures;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.ItemStack;
+import net.minecraftforge.client.event.MouseEvent;
 import net.minecraftforge.client.event.RenderWorldLastEvent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.entity.EntityEvent;
@@ -74,5 +77,18 @@ public class RCForgeEventHandler
             info.danglingOperation.renderPreview(info.previewType, mc.theWorld, ticks, event.partialTicks);
 
         GL11.glPopMatrix();
+    }
+
+    @SideOnly(Side.CLIENT)
+    @SubscribeEvent
+    public void onMouseInput(MouseEvent event)
+    {
+        EntityPlayer player = Minecraft.getMinecraft().thePlayer;
+        ItemStack heldItem = player.getHeldItem();
+        if (heldItem != null && heldItem.getItem() instanceof ItemInputHandler)
+        {
+            if (((ItemInputHandler) heldItem.getItem()).onMouseInput(player, heldItem, event.button, event.buttonstate, event.dwheel))
+                event.setCanceled(true);
+        }
     }
 }

@@ -62,11 +62,11 @@ public class RCRegistryHandler
         RCMaterials.materialNegativeSpace = new MaterialNegativeSpace();
         RCMaterials.materialGenericSolid = (new Material(MapColor.stoneColor));
 
-        blockSelector = new ItemBlockSelector().setUnlocalizedName("blockSelector").setTextureName(textureBase + "blockSelector");
+        blockSelector = new ItemBlockSelectorBlock().setUnlocalizedName("blockSelector").setTextureName(textureBase + "blockSelector");
         blockSelector.setCreativeTab(tabStructureTools);
         GameRegistry.registerItem(blockSelector, "blockSelector", MODID);
 
-        blockSelectorFloating = new ItemBlockSelectorFloating(2.0f).setUnlocalizedName("blockSelectorFloating").setTextureName(textureBase + "blockSelectorFloating");
+        blockSelectorFloating = new ItemBlockSelectorFloating().setUnlocalizedName("blockSelectorFloating").setTextureName(textureBase + "blockSelectorFloating");
         blockSelectorFloating.setCreativeTab(tabStructureTools);
         GameRegistry.registerItem(blockSelectorFloating, "blockSelectorFloating", MODID);
 

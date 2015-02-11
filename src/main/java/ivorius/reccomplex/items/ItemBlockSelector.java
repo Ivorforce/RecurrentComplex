@@ -5,48 +5,52 @@
 
 package ivorius.reccomplex.items;
 
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
 import ivorius.ivtoolkit.blocks.BlockCoord;
+import ivorius.reccomplex.RecurrentComplex;
 import ivorius.reccomplex.entities.StructureEntityInfo;
+import ivorius.reccomplex.network.PacketItemEvent;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.ChatComponentText;
 import net.minecraft.world.World;
+import org.lwjgl.input.Keyboard;
 
-public class ItemBlockSelector extends Item
+/**
+ * Created by lukas on 11.02.15.
+ */
+public class ItemBlockSelector extends Item implements ItemEventHandler
 {
-    public ItemBlockSelector()
+    @SideOnly(Side.CLIENT)
+    public void sendClickToServer(ItemStack usedItem, World world, EntityPlayer player, BlockCoord position)
     {
+        ByteBuf buf = Unpooled.buffer();
+        BlockCoord.writeCoordToBuffer(position, buf);
+        buf.writeBoolean(Keyboard.isKeyDown(Keyboard.KEY_LCONTROL) || Keyboard.isKeyDown(Keyboard.KEY_RCONTROL));
+        RecurrentComplex.network.sendToServer(new PacketItemEvent(player.inventory.currentItem, buf, "select"));
     }
 
     @Override
-    public boolean onItemUse(ItemStack usedItem, EntityPlayer player, World world, int x, int y, int z, int par7, float par8, float par9, float par10)
+    public void onClientEvent(String context, ByteBuf payload, EntityPlayer sender, ItemStack stack, int itemSlot)
     {
-        if (!world.isRemote)
+        if ("select".equals(context))
         {
-            StructureEntityInfo structureEntityInfo = StructureEntityInfo.getStructureEntityInfo(player);
+            BlockCoord coord = BlockCoord.readCoordFromBuffer(payload);
+            boolean secondary = payload.readBoolean();
 
+            StructureEntityInfo structureEntityInfo = StructureEntityInfo.getStructureEntityInfo(sender);
             if (structureEntityInfo != null)
             {
-                BlockCoord position = new BlockCoord(x, y, z);
-
-                boolean second = player.isSneaking();
-
-                if (!second)
-                {
-                    structureEntityInfo.selectedPoint1 = position;
-                }
+                if (secondary)
+                    structureEntityInfo.selectedPoint2 = coord;
                 else
-                {
-                    structureEntityInfo.selectedPoint2 = position;
-                }
+                    structureEntityInfo.selectedPoint1 = coord;
 
-                structureEntityInfo.sendSelectionToClients(player);
-
-                player.addChatMessage(new ChatComponentText((second ? "Second" : "First") + " position set at: " + position.x + ", " + position.y + ", " + position.z));
+                structureEntityInfo.sendSelectionToClients(sender);
             }
         }
-
-        return true;
     }
 }

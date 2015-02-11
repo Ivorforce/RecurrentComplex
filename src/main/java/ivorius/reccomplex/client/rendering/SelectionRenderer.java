@@ -62,7 +62,8 @@ public class SelectionRenderer
 
         if (heldItem != null && heldItem.getItem() instanceof ItemBlockSelectorFloating)
         {
-            BlockCoord hoverPoint = ItemBlockSelectorFloating.getHoveredBlock(entity, ((ItemBlockSelectorFloating) heldItem.getItem()).selectionRange);
+            float selectionRange = ((ItemBlockSelectorFloating) heldItem.getItem()).getSelectionRange(heldItem);
+            BlockCoord hoverPoint = ItemBlockSelectorFloating.getHoveredBlock(entity, selectionRange);
             GL11.glColor3f(0.6f, 0.6f, 1.0f);
             AreaRenderer.renderAreaLined(new BlockArea(hoverPoint, hoverPoint), 0.05f);
         }

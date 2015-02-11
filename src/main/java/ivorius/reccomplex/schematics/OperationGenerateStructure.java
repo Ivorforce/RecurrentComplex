@@ -57,7 +57,7 @@ public class OperationGenerateStructure implements Operation
     {
         GL11.glLineWidth(3.0f);
         GL11.glColor3f(0.8f, 0.8f, 1.0f);
-        AreaRenderer.renderArea(area, true, 0.0232f);
+        AreaRenderer.renderAreaLined(area, 0.0232f);
 
         GL11.glEnable(GL11.GL_BLEND);
         OpenGlHelper.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA, GL11.GL_ONE, GL11.GL_ZERO);
@@ -66,8 +66,11 @@ public class OperationGenerateStructure implements Operation
         ResourceLocation curTex = SelectionRenderer.textureSelection[MathHelper.floor_float((ticks + partialTicks) * 0.75f) % SelectionRenderer.textureSelection.length];
         Minecraft.getMinecraft().renderEngine.bindTexture(curTex);
 
+        GL11.glColor4f(0.6f, 0.6f, 0.8f, 0.3f);
+        AreaRenderer.renderArea(area, false, true, 0.0132f);
+
         GL11.glColor4f(0.8f, 0.8f, 1.0f, 0.5f);
-        AreaRenderer.renderArea(area, false, 0.0132f);
+        AreaRenderer.renderArea(area, false, false, 0.0132f);
 
         GL11.glAlphaFunc(GL11.GL_GREATER, 0.002f);
         GL11.glDisable(GL11.GL_BLEND);

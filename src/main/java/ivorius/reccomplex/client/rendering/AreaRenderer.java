@@ -18,18 +18,23 @@ import org.lwjgl.opengl.GL11;
 @SideOnly(Side.CLIENT)
 public class AreaRenderer
 {
-    public static void renderArea(BlockArea area, boolean lined, float sizeP)
+    public static void renderAreaLined(BlockArea area, float sizeP)
+    {
+        renderArea(area, true, false, sizeP);
+    }
+
+    public static void renderArea(BlockArea area, boolean lined, boolean insides, float sizeP)
     {
         BlockCoord lower = area.getLowerCorner();
         BlockCoord higher = area.getHigherCorner();
 
         BlockCoord biggerMax = higher.add(1, 1, 1);
 
-        drawCuboid(lower, biggerMax, lined, sizeP);
+        drawCuboid(lower, biggerMax, lined, insides, sizeP);
     }
 
     @SideOnly(Side.CLIENT)
-    private static void drawCuboid(BlockCoord min, BlockCoord max, boolean lined, float sizeP)
+    private static void drawCuboid(BlockCoord min, BlockCoord max, boolean lined, boolean insides, float sizeP)
     {
         float width2 = ((float) max.x - (float) min.x) * 0.5f;
         float height2 = ((float) max.y - (float) min.y) * 0.5f;
@@ -38,6 +43,8 @@ public class AreaRenderer
         double centerX = min.x + width2;
         double centerY = min.y + height2;
         double centerZ = min.z + length2;
+
+        int sizeCE = insides ? -1 : 1;
 
         GL11.glPushMatrix();
         GL11.glTranslated(centerX, centerY, centerZ);
@@ -48,7 +55,7 @@ public class AreaRenderer
             GL11.glEnable(GL11.GL_TEXTURE_2D);
         }
         else
-            drawCuboid(Tessellator.instance, width2 + sizeP, height2 + sizeP, length2 + sizeP, 1);
+            drawCuboid(Tessellator.instance, width2 * sizeCE + sizeP, height2 * sizeCE + sizeP, length2 * sizeCE + sizeP, 1);
         GL11.glPopMatrix();
     }
 

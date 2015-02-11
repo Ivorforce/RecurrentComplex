@@ -52,25 +52,27 @@ public class SelectionRenderer
         if (selPoint1 != null)
         {
             GL11.glColor3f(0.6f, 0.8f, 0.95f);
-            AreaRenderer.renderArea(new BlockArea(selPoint1, selPoint1), true, 0.03f);
+            AreaRenderer.renderAreaLined(new BlockArea(selPoint1, selPoint1), 0.03f);
         }
         if (selPoint2 != null)
         {
             GL11.glColor3f(0.2f, 0.45f, 0.65f);
-            AreaRenderer.renderArea(new BlockArea(selPoint2, selPoint2), true, 0.04f);
+            AreaRenderer.renderAreaLined(new BlockArea(selPoint2, selPoint2), 0.04f);
         }
 
         if (heldItem != null && heldItem.getItem() instanceof ItemBlockSelectorFloating)
         {
             BlockCoord hoverPoint = ItemBlockSelectorFloating.getHoveredBlock(entity, ((ItemBlockSelectorFloating) heldItem.getItem()).selectionRange);
             GL11.glColor3f(0.6f, 0.6f, 1.0f);
-            AreaRenderer.renderArea(new BlockArea(hoverPoint, hoverPoint), true, 0.05f);
+            AreaRenderer.renderAreaLined(new BlockArea(hoverPoint, hoverPoint), 0.05f);
         }
 
         if (selPoint1 != null && selPoint2 != null)
         {
+            BlockArea selArea = new BlockArea(selPoint1, selPoint2);
+
             GL11.glColor3f(0.4f, 0.65f, 0.8f);
-            AreaRenderer.renderArea(new BlockArea(selPoint1, selPoint2), true, 0.02f);
+            AreaRenderer.renderAreaLined(selArea, 0.02f);
 
             GL11.glEnable(GL11.GL_BLEND);
             OpenGlHelper.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA, GL11.GL_ONE, GL11.GL_ZERO);
@@ -79,8 +81,11 @@ public class SelectionRenderer
             ResourceLocation curTex = textureSelection[MathHelper.floor_float((ticks + partialTicks) * 0.75f) % textureSelection.length];
             mc.renderEngine.bindTexture(curTex);
 
+            GL11.glColor4f(0.2f, 0.5f, 0.6f, 0.5f);
+            AreaRenderer.renderArea(selArea, false, true, 0.01f);
+
             GL11.glColor4f(0.4f, 0.65f, 0.8f, 0.75f);
-            AreaRenderer.renderArea(new BlockArea(selPoint1, selPoint2), false, 0.01f);
+            AreaRenderer.renderArea(selArea, false, false, 0.01f);
 
             GL11.glAlphaFunc(GL11.GL_GREATER, 0.002f);
             GL11.glDisable(GL11.GL_BLEND);

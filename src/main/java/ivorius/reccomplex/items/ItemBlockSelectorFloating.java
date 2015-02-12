@@ -25,7 +25,7 @@ import java.util.List;
 
 public class ItemBlockSelectorFloating extends ItemBlockSelector implements ItemSyncable, ItemInputHandler
 {
-    public static final float SCROLL_DISTANCE_SPEED = 0.002f;
+    public static final float SCROLL_DISTANCE_SPEED = 0.004f;
 
     public ItemBlockSelectorFloating()
     {
@@ -73,7 +73,7 @@ public class ItemBlockSelectorFloating extends ItemBlockSelector implements Item
 
         list.add(String.format("Range: %.02f", getSelectionRange(stack)));
         list.add("(Hold ctrl and scroll to modify range)");
-        list.add("(Hold ctrl and right-click for secondary selection)");
+        list.add("(Hold ctrl for secondary selection)");
     }
 
     @Override

@@ -42,6 +42,6 @@ public class ItemBlockSelectorBlock extends ItemBlockSelector
     {
         super.addInformation(stack, player, list, advanced);
 
-        list.add("(Hold ctrl and right-click for secondary selection)");
+        list.add("(Hold ctrl for secondary selection)");
     }
 }

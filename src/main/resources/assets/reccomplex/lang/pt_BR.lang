@@ -61,7 +61,7 @@ commands.strucGen.noStructure=Nenhuma estrutura registrada com o nome de '%s'
 commands.strucImport.usage=/#import <structureName> [x] [y] [z]
 commands.strucImport.noStructure=Nenhuma estrutura registrada com o nome de '%s' 
 
-commands.selectSet.usage=/#select <clear|point1|point2> [x] [y] [z]
+commands.selectSet.usage=/#select <both|clear|point1|point2> [x] [y] [z]
 
 commands.selectModify.noSelection=O jogador não possui uma seleção completa 
 commands.selectModify.invalidMetadata=Metadados devem ser inseridos como '0,1,5', mas foi '%s'

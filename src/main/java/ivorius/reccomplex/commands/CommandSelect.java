@@ -19,7 +19,7 @@ import java.util.List;
 /**
  * Created by lukas on 25.05.14.
  */
-public class CommandSelectPoint extends CommandBase
+public class CommandSelect extends CommandBase
 {
     @Override
     public String getCommandName()
@@ -48,24 +48,26 @@ public class CommandSelectPoint extends CommandBase
                     structureEntityInfo.selectedPoint2 = null;
                     structureEntityInfo.sendSelectionToClients(entityPlayerMP);
                     break;
+                case "both":
                 case "point1":
                 case "point2":
                     if (args.length >= 4)
                     {
-                        int x = commandSender.getPlayerCoordinates().posX;
-                        int y = commandSender.getPlayerCoordinates().posY;
-                        int z = commandSender.getPlayerCoordinates().posZ;
-                        x = MathHelper.floor_double(func_110666_a(commandSender, (double) x, args[1]));
-                        y = MathHelper.floor_double(func_110666_a(commandSender, (double) y, args[2]));
-                        z = MathHelper.floor_double(func_110666_a(commandSender, (double) z, args[3]));
-
-                        if ("point1".equals(args[0]))
+                        if (!args[0].equals("point2"))
                         {
-                            structureEntityInfo.selectedPoint1 = new BlockCoord(x, y, z);
+                            structureEntityInfo.selectedPoint1 = new BlockCoord(
+                                    MathHelper.floor_double(func_110666_a(commandSender, structureEntityInfo.selectedPoint1.x, args[1])),
+                                    MathHelper.floor_double(func_110666_a(commandSender, structureEntityInfo.selectedPoint1.y, args[2])),
+                                    MathHelper.floor_double(func_110666_a(commandSender, structureEntityInfo.selectedPoint1.z, args[3]))
+                            );
                         }
-                        else
+                        if (!args[0].equals("point1"))
                         {
-                            structureEntityInfo.selectedPoint2 = new BlockCoord(x, y, z);
+                            structureEntityInfo.selectedPoint2 = new BlockCoord(
+                                    MathHelper.floor_double(func_110666_a(commandSender, structureEntityInfo.selectedPoint2.x, args[1])),
+                                    MathHelper.floor_double(func_110666_a(commandSender, structureEntityInfo.selectedPoint2.y, args[2])),
+                                    MathHelper.floor_double(func_110666_a(commandSender, structureEntityInfo.selectedPoint2.z, args[3]))
+                            );
                         }
 
                         structureEntityInfo.sendSelectionToClients(entityPlayerMP);
@@ -90,7 +92,7 @@ public class CommandSelectPoint extends CommandBase
     {
         if (args.length == 1)
         {
-            return getListOfStringsMatchingLastWord(args, "clear", "point1", "point2");
+            return getListOfStringsMatchingLastWord(args, "both", "clear", "point1", "point2");
         }
         else if (args.length == 2 || args.length == 3 || args.length == 4)
         {

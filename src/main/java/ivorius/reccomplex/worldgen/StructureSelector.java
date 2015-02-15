@@ -22,7 +22,7 @@ import java.util.*;
  */
 public class StructureSelector
 {
-    public static final int STRUCTURE_MIN_CAP_DEFAULT = 10;
+    public static final int STRUCTURE_MIN_CAP_DEFAULT = 20;
 
     private static Map<String, Category> categories = new HashMap<>();
 

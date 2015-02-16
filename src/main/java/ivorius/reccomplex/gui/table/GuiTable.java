@@ -5,16 +5,19 @@
 
 package ivorius.reccomplex.gui.table;
 
+import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiScreen;
+import net.minecraft.client.renderer.RenderHelper;
+import net.minecraft.item.ItemStack;
+import net.minecraft.util.EnumChatFormatting;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
+import org.lwjgl.opengl.GL11;
+import org.lwjgl.opengl.GL12;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Created by lukas on 30.05.14.
@@ -125,14 +128,18 @@ public class GuiTable extends Gui
         {
             if (!element.isHidden())
             {
-                element.draw(this, mouseX, mouseY, partialTicks);
-
                 String title = element.getTitle();
                 Bounds bounds = element.bounds();
 
                 int stringWidth = screen.mc.fontRenderer.getStringWidth(title);
                 screen.drawString(screen.mc.fontRenderer, title, bounds.getMinX() - stringWidth - 10, bounds.getCenterY() - 4, 0xffffffff);
             }
+        }
+
+        for (TableElement element : currentElements)
+        {
+            if (!element.isHidden())
+                element.draw(this, mouseX, mouseY, partialTicks);
         }
     }
 
@@ -243,6 +250,83 @@ public class GuiTable extends Gui
         {
             currentScrollIndex++;
             delegate.reloadData();
+        }
+    }
+
+    // Accessors
+
+    public void drawTooltipRect(List<String> lines, Bounds bounds, int mouseX, int mouseY, FontRenderer font)
+    {
+        if (bounds.contains(mouseX, mouseY))
+            drawTooltip(lines, mouseX, mouseY, font);
+    }
+
+    public void drawTooltip(List<String> lines, int x, int y, FontRenderer font)
+    {
+        if (!lines.isEmpty())
+        {
+            GL11.glDisable(GL11.GL_DEPTH_TEST);
+            int k = 0;
+            Iterator iterator = lines.iterator();
+
+            while (iterator.hasNext())
+            {
+                String s = (String)iterator.next();
+                int l = font.getStringWidth(s);
+
+                if (l > k)
+                {
+                    k = l;
+                }
+            }
+
+            int j2 = x + 12;
+            int k2 = y - 12;
+            int i1 = 8;
+
+            if (lines.size() > 1)
+            {
+                i1 += 2 + (lines.size() - 1) * 10;
+            }
+
+            if (j2 + k > this.propertiesBounds.getWidth())
+            {
+                j2 -= 28 + k;
+            }
+
+            if (k2 + i1 + 6 > this.propertiesBounds.getHeight())
+            {
+                k2 = this.propertiesBounds.getHeight() - i1 - 6;
+            }
+
+            this.zLevel = 300.0F;
+            int j1 = -267386864;
+            this.drawGradientRect(j2 - 3, k2 - 4, j2 + k + 3, k2 - 3, j1, j1);
+            this.drawGradientRect(j2 - 3, k2 + i1 + 3, j2 + k + 3, k2 + i1 + 4, j1, j1);
+            this.drawGradientRect(j2 - 3, k2 - 3, j2 + k + 3, k2 + i1 + 3, j1, j1);
+            this.drawGradientRect(j2 - 4, k2 - 3, j2 - 3, k2 + i1 + 3, j1, j1);
+            this.drawGradientRect(j2 + k + 3, k2 - 3, j2 + k + 4, k2 + i1 + 3, j1, j1);
+            int k1 = 1347420415;
+            int l1 = (k1 & 16711422) >> 1 | k1 & -16777216;
+            this.drawGradientRect(j2 - 3, k2 - 3 + 1, j2 - 3 + 1, k2 + i1 + 3 - 1, k1, l1);
+            this.drawGradientRect(j2 + k + 2, k2 - 3 + 1, j2 + k + 3, k2 + i1 + 3 - 1, k1, l1);
+            this.drawGradientRect(j2 - 3, k2 - 3, j2 + k + 3, k2 - 3 + 1, k1, k1);
+            this.drawGradientRect(j2 - 3, k2 + i1 + 2, j2 + k + 3, k2 + i1 + 3, l1, l1);
+
+            for (int i2 = 0; i2 < lines.size(); ++i2)
+            {
+                String s1 = (String)lines.get(i2);
+                font.drawStringWithShadow(s1, j2, k2, -1);
+
+                if (i2 == 0)
+                {
+                    k2 += 2;
+                }
+
+                k2 += 10;
+            }
+
+            this.zLevel = 0.0F;
         }
     }
 }

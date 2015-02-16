@@ -65,4 +65,9 @@ public class Bounds
     {
         return (minY + maxY) / 2;
     }
+
+    public boolean contains(int x, int y)
+    {
+        return x >= minX && x <= maxX && y >= minY && y <= maxY;
+    }
 }

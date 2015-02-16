@@ -135,17 +135,33 @@ structures.gui.true=True
 structures.gui.false=False
 
 structures.category.frequent=Frequent
+structures.category.frequent.tooltip.1=Small structures or scenery
+structures.category.frequent.tooltip.2=Random structure each 10 chunks
 structures.category.decoration=Common
+structures.category.decoration.tooltip.1=Common structures
+structures.category.decoration.tooltip.2=Random structure each 30 chunks
 structures.category.rare=Rare
+structures.category.rare.tooltip.1=Special sights to behold
+structures.category.rare.tooltip.2=Random structure each 1250 chunks
 structures.category.ultrarare=Ultra Rare
+structures.category.ultrarare.tooltip.1=Once-In-A-Lifetime sights
+structures.category.ultrarare.tooltip.2=Random structure each 5000 chunks
 structures.category.adventure=Adventure
+structures.category.adventure.tooltip.1=Structures focusing around combat and loot
+structures.category.adventure.tooltip.2=Random structure each 250 chunks
 
 structures.genY.bedrock=Bedrock
+structures.genY.bedrock.tooltip=Bottom of the world: y=0
 structures.genY.surface=Surface
+structures.genY.surface.tooltip=The topmost solid or liquid block
 structures.genY.sealevel=Sealevel
+structures.genY.sealevel.tooltip=The ocean height: y=63
 structures.genY.underwater=Ocean Floor
+structures.genY.underwater.tooltip=The topmost solid block
 structures.genY.top=Top (Sky)
+structures.genY.top.tooltip=Top of the world: y=127
 structures.genY.lowestedge=Lowest Edge (Ocean Floor)
+structures.genY.lowestedge.tooltip=Like ocean floor, but buried as much as needed
 
 reccomplex.configgui.title=Structure Gen Config
 reccomplex.configgui.ctgy.general=General

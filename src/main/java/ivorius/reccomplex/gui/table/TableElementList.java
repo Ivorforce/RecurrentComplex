@@ -5,6 +5,7 @@
 
 package ivorius.reccomplex.gui.table;
 
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiButton;
 
 import java.util.Arrays;
@@ -50,9 +51,7 @@ public class TableElementList extends TableElementPropertyDefault<String>
         super.setHidden(hidden);
 
         if (button != null)
-        {
             button.visible = !hidden;
-        }
     }
 
     @Override
@@ -76,6 +75,16 @@ public class TableElementList extends TableElementPropertyDefault<String>
         alertListenersOfChange();
     }
 
+    @Override
+    public void draw(GuiTable screen, int mouseX, int mouseY, float partialTicks)
+    {
+        super.draw(screen, mouseX, mouseY, partialTicks);
+
+        Option option = currentOption();
+        if (option != null && option.tooltip != null)
+            screen.drawTooltipRect(option.tooltip, bounds(), mouseX, mouseY, Minecraft.getMinecraft().fontRenderer);
+    }
+
     private void updateButtonTitle()
     {
         if (button != null)
@@ -83,6 +92,12 @@ public class TableElementList extends TableElementPropertyDefault<String>
             int index = currentOptionIndex();
             button.displayString = index >= 0 ? options.get(index).title : getPropertyValue();
         }
+    }
+
+    private Option currentOption()
+    {
+        int index = currentOptionIndex();
+        return index >= 0 ? options.get(index) : null;
     }
 
     private int currentOptionIndex()
@@ -102,11 +117,19 @@ public class TableElementList extends TableElementPropertyDefault<String>
     {
         public String id;
         public String title;
+        public List<String> tooltip;
 
         public Option(String id, String title)
         {
             this.id = id;
             this.title = title;
+        }
+
+        public Option(String id, String title, List<String> tooltip)
+        {
+            this.id = id;
+            this.title = title;
+            this.tooltip = tooltip;
         }
     }
 }

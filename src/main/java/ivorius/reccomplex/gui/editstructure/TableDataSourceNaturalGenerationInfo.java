@@ -11,8 +11,10 @@ import ivorius.reccomplex.structures.generic.GenerationYSelector;
 import ivorius.reccomplex.structures.generic.GenericStructureInfo;
 import ivorius.reccomplex.worldgen.StructureSelector;
 import net.minecraft.client.resources.I18n;
+import net.minecraft.util.EnumChatFormatting;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
 
@@ -38,7 +40,9 @@ public class TableDataSourceNaturalGenerationInfo extends TableDataSourceSegment
 
         for (GenerationYSelector.SelectionMode selectionMode : GenerationYSelector.SelectionMode.values())
         {
-            generationBases.add(new TableElementList.Option(selectionMode.serializedName(), I18n.format("structures.genY." + selectionMode.serializedName())));
+            String transKeyBase = "structures.genY." + selectionMode.serializedName();
+            generationBases.add(new TableElementList.Option(selectionMode.serializedName(),
+                    I18n.format(transKeyBase), Arrays.asList(I18n.format(transKeyBase + ".tooltip"))));
         }
 
         return generationBases;
@@ -54,7 +58,14 @@ public class TableDataSourceNaturalGenerationInfo extends TableDataSourceSegment
             StructureSelector.Category categoryObj = StructureSelector.categoryForID(category);
 
             if (categoryObj.selectableInGUI())
-                generationBases.add(new TableElementList.Option(category, I18n.format("structures.category." + category)));
+            {
+                String transKeyBase = "structures.category." + category;
+
+                generationBases.add(new TableElementList.Option(category,
+                        I18n.format(transKeyBase),
+                        Arrays.asList(I18n.format(transKeyBase + ".tooltip.1"),
+                                I18n.format(transKeyBase + ".tooltip.2"))));
+            }
         }
 
         return generationBases;

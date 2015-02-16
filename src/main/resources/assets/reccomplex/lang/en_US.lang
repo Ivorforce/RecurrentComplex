@@ -134,8 +134,10 @@ inventorygen.save.failure=Failed to export inventory generator to '%s'
 structures.gui.true=True
 structures.gui.false=False
 
-structures.category.decoration=Decoration
+structures.category.frequent=Frequent
+structures.category.decoration=Common
 structures.category.rare=Rare
+structures.category.ultrarare=Ultra Rare
 structures.category.adventure=Adventure
 
 structures.genY.bedrock=Bedrock

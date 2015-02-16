@@ -22,9 +22,9 @@ import java.util.List;
 public class DimensionGenerationInfo
 {
     private DimensionSelector dimensionSelector;
-    private Integer generationWeight;
+    private Double generationWeight;
 
-    public DimensionGenerationInfo(String dimensionID, Integer generationWeight)
+    public DimensionGenerationInfo(String dimensionID, Double generationWeight)
     {
         this.dimensionSelector = new DimensionSelector(dimensionID);
         this.generationWeight = generationWeight;
@@ -56,19 +56,19 @@ public class DimensionGenerationInfo
         dimensionSelector.setDimensionID(dimensionID);
     }
 
-    public Integer getGenerationWeight()
+    public Double getGenerationWeight()
     {
         return generationWeight;
     }
 
-    public void setGenerationWeight(Integer generationWeight)
+    public void setGenerationWeight(Double generationWeight)
     {
         this.generationWeight = generationWeight;
     }
 
-    public int getActiveGenerationWeight()
+    public double getActiveGenerationWeight()
     {
-        return generationWeight != null ? generationWeight : 100;
+        return generationWeight != null ? generationWeight : 1.0;
     }
 
     public boolean hasDefaultWeight()
@@ -108,7 +108,7 @@ public class DimensionGenerationInfo
             JsonObject jsonobject = JsonUtils.getJsonElementAsJsonObject(jsonElement, "generationInfo");
 
             String dimensionID = JsonUtils.getJsonObjectStringFieldValue(jsonobject, "dimensionID");
-            Integer weight = jsonobject.has("weight") ? JsonUtils.getJsonObjectIntegerFieldValue(jsonobject, "weight") : null;
+            Double weight = jsonobject.has("weight") ? JsonUtils.getJsonObjectDoubleFieldValue(jsonobject, "weight") : null;
 
             return new DimensionGenerationInfo(dimensionID, weight);
         }
@@ -119,11 +119,8 @@ public class DimensionGenerationInfo
             JsonObject jsonobject = new JsonObject();
 
             jsonobject.addProperty("dimensionID", generationInfo.getDimensionID());
-            Integer weight = generationInfo.getGenerationWeight();
-            if (weight != null)
-            {
-                jsonobject.addProperty("weight", weight);
-            }
+            if (generationInfo.generationWeight != null)
+                jsonobject.addProperty("weight", generationInfo.generationWeight);
 
             return jsonobject;
         }

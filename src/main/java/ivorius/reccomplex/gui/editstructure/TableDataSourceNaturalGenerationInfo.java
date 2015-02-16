@@ -7,9 +7,9 @@ package ivorius.reccomplex.gui.editstructure;
 
 import ivorius.ivtoolkit.gui.IntegerRange;
 import ivorius.reccomplex.gui.table.*;
-import ivorius.reccomplex.worldgen.StructureSelector;
 import ivorius.reccomplex.structures.generic.GenerationYSelector;
 import ivorius.reccomplex.structures.generic.GenericStructureInfo;
+import ivorius.reccomplex.worldgen.StructureSelector;
 import net.minecraft.client.resources.I18n;
 
 import java.util.ArrayList;
@@ -19,8 +19,19 @@ import java.util.Set;
 /**
  * Created by lukas on 07.10.14.
  */
-public class TableDataSourceNaturalGenerationInfo implements TableDataSource, TableElementButton.Listener, TableElementPropertyListener
+public class TableDataSourceNaturalGenerationInfo extends TableDataSourceSegmented implements TableElementButton.Listener, TableElementPropertyListener
 {
+    private TableNavigator navigator;
+    private TableDelegate tableDelegate;
+    private GenericStructureInfo structureInfo;
+
+    public TableDataSourceNaturalGenerationInfo(TableNavigator navigator, TableDelegate tableDelegate, GenericStructureInfo structureInfo)
+    {
+        this.navigator = navigator;
+        this.tableDelegate = tableDelegate;
+        this.structureInfo = structureInfo;
+    }
+
     private static List<TableElementList.Option> allGenerationOptions()
     {
         List<TableElementList.Option> generationBases = new ArrayList<>();
@@ -49,56 +60,82 @@ public class TableDataSourceNaturalGenerationInfo implements TableDataSource, Ta
         return generationBases;
     }
 
-    private TableNavigator navigator;
-    private TableDelegate tableDelegate;
-
-    private GenericStructureInfo structureInfo;
-
-    public TableDataSourceNaturalGenerationInfo(TableNavigator navigator, TableDelegate tableDelegate, GenericStructureInfo structureInfo)
+    @Override
+    public int numberOfSegments()
     {
-        this.navigator = navigator;
-        this.tableDelegate = tableDelegate;
-        this.structureInfo = structureInfo;
+        return 3;
     }
 
     @Override
-    public boolean has(GuiTable table, int index)
+    public int sizeOfSegment(int segment)
     {
-        return index >= 0 && index < 5;
+        switch (segment)
+        {
+            case 0:
+                return 1;
+            case 1:
+                return 2;
+            case 2:
+                return 4;
+        }
+
+        return 0;
     }
 
     @Override
-    public TableElement elementForIndex(GuiTable table, int index)
+    public TableElement elementForIndexInSegment(GuiTable table, int index, int segment)
     {
-        if (index == 0)
+        if (segment == 0)
         {
-            TableElementList element = new TableElementList("category", "Category", structureInfo.naturalGenerationInfo.generationCategory, allGenerationCategories());
-            element.addPropertyListener(this);
-            return element;
+            if (index == 0)
+            {
+                TableElementList element = new TableElementList("category", "Category", structureInfo.naturalGenerationInfo.generationCategory, allGenerationCategories());
+                element.addPropertyListener(this);
+                return element;
+            }
         }
-        else if (index == 1)
+        else if (segment == 1)
         {
-            TableElementList element = new TableElementList("ySelType", "Generation Base", structureInfo.naturalGenerationInfo.ySelector.selectionMode.serializedName(), allGenerationOptions());
-            element.addPropertyListener(this);
-            return element;
+            if (index == 0)
+            {
+                TableElementList element = new TableElementList("ySelType", "Generation Base", structureInfo.naturalGenerationInfo.ySelector.selectionMode.serializedName(), allGenerationOptions());
+                element.addPropertyListener(this);
+                return element;
+            }
+            else if (index == 1)
+            {
+                TableElementIntegerRange element = new TableElementIntegerRange("ySelShift", "Y Shift", new IntegerRange(structureInfo.naturalGenerationInfo.ySelector.minY, structureInfo.naturalGenerationInfo.ySelector.maxY), -100, 100);
+                element.addPropertyListener(this);
+                return element;
+            }
         }
-        else if (index == 2)
+        else if (segment == 2)
         {
-            TableElementIntegerRange element = new TableElementIntegerRange("ySelShift", "Y Shift", new IntegerRange(structureInfo.naturalGenerationInfo.ySelector.minY, structureInfo.naturalGenerationInfo.ySelector.maxY), -100, 100);
-            element.addPropertyListener(this);
-            return element;
-        }
-        else if (index == 3)
-        {
-            TableElementButton elementEditBiomes = new TableElementButton("editBiomes", "Biomes", new TableElementButton.Action("edit", "Edit"));
-            elementEditBiomes.addListener(this);
-            return elementEditBiomes;
-        }
-        else if (index == 4)
-        {
-            TableElementButton elementEditBiomes = new TableElementButton("editDimensions", "Dimensions", new TableElementButton.Action("edit", "Edit"));
-            elementEditBiomes.addListener(this);
-            return elementEditBiomes;
+            if (index == 0)
+            {
+                TableElementBoolean element = new TableElementBoolean("defaultWeight", "Use Default Weight", structureInfo.naturalGenerationInfo.hasDefaultWeight());
+                element.addPropertyListener(this);
+                return element;
+            }
+            else if (index == 1)
+            {
+                TableElementFloat element = new TableElementFloat("weight", "Weight", (float) structureInfo.naturalGenerationInfo.getActiveSpawnWeight(), 0, 10);
+                element.setEnabled(!structureInfo.naturalGenerationInfo.hasDefaultWeight());
+                element.addPropertyListener(this);
+                return element;
+            }
+            else if (index == 2)
+            {
+                TableElementButton elementEditBiomes = new TableElementButton("editBiomes", "Biomes", new TableElementButton.Action("edit", "Edit"));
+                elementEditBiomes.addListener(this);
+                return elementEditBiomes;
+            }
+            else if (index == 3)
+            {
+                TableElementButton elementEditBiomes = new TableElementButton("editDimensions", "Dimensions", new TableElementButton.Action("edit", "Edit"));
+                elementEditBiomes.addListener(this);
+                return elementEditBiomes;
+            }
         }
 
         return null;
@@ -125,6 +162,16 @@ public class TableDataSourceNaturalGenerationInfo implements TableDataSource, Ta
         if ("category".equals(element.getID()))
         {
             structureInfo.naturalGenerationInfo.generationCategory = (String) element.getPropertyValue();
+        }
+        else if ("weight".equals(element.getID()))
+        {
+            structureInfo.naturalGenerationInfo.setGenerationWeight((double) (Float) element.getPropertyValue());
+        }
+        else if ("defaultWeight".equals(element.getID()))
+        {
+            boolean useDefault = (boolean) element.getPropertyValue();
+            structureInfo.naturalGenerationInfo.setGenerationWeight(useDefault ? null : structureInfo.naturalGenerationInfo.getActiveSpawnWeight());
+            tableDelegate.reloadData();
         }
         else if ("ySelType".equals(element.getID()))
         {

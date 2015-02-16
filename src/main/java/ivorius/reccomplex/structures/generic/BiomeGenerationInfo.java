@@ -20,9 +20,9 @@ import java.util.List;
 public class BiomeGenerationInfo
 {
     private BiomeSelector biomeSelector;
-    private Integer generationWeight;
+    private Double generationWeight;
 
-    public BiomeGenerationInfo(String biomeID, Integer generationWeight)
+    public BiomeGenerationInfo(String biomeID, Double generationWeight)
     {
         this.biomeSelector = new BiomeSelector(biomeID);
         this.generationWeight = generationWeight;
@@ -30,7 +30,7 @@ public class BiomeGenerationInfo
 
     public static List<BiomeGenerationInfo> overworldBiomeGenerationList()
     {
-        return Arrays.asList(new BiomeGenerationInfo("Type:WATER", 0),
+        return Arrays.asList(new BiomeGenerationInfo("Type:WATER", 0.0),
                 new BiomeGenerationInfo("Type:PLAINS", null),
                 new BiomeGenerationInfo("Type:FOREST", null),
                 new BiomeGenerationInfo("Type:MOUNTAIN", null),
@@ -63,7 +63,7 @@ public class BiomeGenerationInfo
 
     public static List<BiomeGenerationInfo> oceanBiomeGenerationList()
     {
-        return Arrays.asList(new BiomeGenerationInfo("Type:OCEAN,SNOWY", 0),
+        return Arrays.asList(new BiomeGenerationInfo("Type:OCEAN,SNOWY", 0.0),
                 new BiomeGenerationInfo("Type:OCEAN", null));
     }
 
@@ -77,19 +77,19 @@ public class BiomeGenerationInfo
         biomeSelector.setBiomeID(biomeID);
     }
 
-    public Integer getGenerationWeight()
+    public Double getGenerationWeight()
     {
         return generationWeight;
     }
 
-    public void setGenerationWeight(Integer generationWeight)
+    public void setGenerationWeight(Double generationWeight)
     {
         this.generationWeight = generationWeight;
     }
 
-    public int getActiveGenerationWeight()
+    public double getActiveGenerationWeight()
     {
-        return generationWeight != null ? generationWeight : 100;
+        return generationWeight != null ? generationWeight : 1.0;
     }
 
     public boolean hasDefaultWeight()
@@ -124,7 +124,7 @@ public class BiomeGenerationInfo
             JsonObject jsonobject = JsonUtils.getJsonElementAsJsonObject(jsonElement, "generationInfo");
 
             String biomeID = JsonUtils.getJsonObjectStringFieldValue(jsonobject, "biome");
-            Integer weight = jsonobject.has("weight") ? JsonUtils.getJsonObjectIntegerFieldValue(jsonobject, "weight") : null;
+            Double weight = jsonobject.has("weight") ? JsonUtils.getJsonObjectDoubleFieldValue(jsonobject, "weight") : null;
 
             return new BiomeGenerationInfo(biomeID, weight);
         }
@@ -135,11 +135,8 @@ public class BiomeGenerationInfo
             JsonObject jsonobject = new JsonObject();
 
             jsonobject.addProperty("biome", generationInfo.getBiomeID());
-            Integer weight = generationInfo.getGenerationWeight();
-            if (weight != null)
-            {
-                jsonobject.addProperty("weight", weight);
-            }
+            if (generationInfo.generationWeight != null)
+                jsonobject.addProperty("weight", generationInfo.generationWeight);
 
             return jsonobject;
         }

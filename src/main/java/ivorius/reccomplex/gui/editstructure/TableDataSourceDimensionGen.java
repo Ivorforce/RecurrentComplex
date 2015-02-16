@@ -53,7 +53,7 @@ public class TableDataSourceDimensionGen implements TableDataSource, TableElemen
         }
         else if (index == 2)
         {
-            TableElementInteger element = new TableElementInteger("weight", "Weight", generationInfo.getActiveGenerationWeight(), 0, 500);
+            TableElementFloat element = new TableElementFloat("weight", "Weight", (float) generationInfo.getActiveGenerationWeight(), 0, 10);
             element.setEnabled(!generationInfo.hasDefaultWeight());
             element.addPropertyListener(this);
             return element;
@@ -78,7 +78,7 @@ public class TableDataSourceDimensionGen implements TableDataSource, TableElemen
         }
         else if ("weight".equals(element.getID()))
         {
-            generationInfo.setGenerationWeight((Integer) element.getPropertyValue());
+            generationInfo.setGenerationWeight((double)(Float) element.getPropertyValue());
         }
     }
 

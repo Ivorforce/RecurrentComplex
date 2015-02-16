@@ -9,6 +9,7 @@ import ivorius.reccomplex.RCConfig;
 import ivorius.reccomplex.dimensions.DimensionDictionary;
 import ivorius.reccomplex.structures.StructureInfo;
 import ivorius.reccomplex.structures.generic.BiomeSelector;
+import ivorius.reccomplex.utils.WeightedSelector;
 import net.minecraft.util.WeightedRandom;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldProvider;
@@ -26,7 +27,7 @@ public class StructureSelector
 
     private static Map<String, Category> categories = new HashMap<>();
 
-    private Map<String, List<WeightedStructureInfo>> weightedStructureInfos = new HashMap<>();
+    private Map<String, List<WeightedSelector.Item<StructureInfo>>> weightedStructureInfos = new HashMap<>();
 
     private Set<String> cachedDimensionTypes;
 
@@ -37,17 +38,15 @@ public class StructureSelector
 
         for (StructureInfo structureInfo : structures)
         {
-            int generationWeight = structureInfo.generationWeight(biome, provider);
+            double generationWeight = structureInfo.generationWeight(biome, provider);
 
             if (generationWeight > 0)
             {
                 String category = structureInfo.generationCategory();
                 if (!weightedStructureInfos.containsKey(category))
-                {
-                    weightedStructureInfos.put(category, new ArrayList<WeightedStructureInfo>());
-                }
+                    weightedStructureInfos.put(category, new ArrayList<WeightedSelector.Item<StructureInfo>>());
 
-                weightedStructureInfos.get(category).add(new WeightedStructureInfo(generationWeight, structureInfo));
+                weightedStructureInfos.get(category).add(new WeightedSelector.Item<>(generationWeight, structureInfo));
             }
         }
     }
@@ -90,12 +89,7 @@ public class StructureSelector
         for (String category : weightedStructureInfos.keySet())
         {
             if (random.nextFloat() < generationChance(category, biome))
-            {
-                List<WeightedStructureInfo> structureInfos = weightedStructureInfos.get(category);
-
-                WeightedStructureInfo structureInfo = (WeightedStructureInfo) WeightedRandom.getRandomItem(random, structureInfos);
-                infos.add(structureInfo.structureInfo);
-            }
+                infos.add(WeightedSelector.select(random, weightedStructureInfos.get(category)));
         }
 
         return infos;

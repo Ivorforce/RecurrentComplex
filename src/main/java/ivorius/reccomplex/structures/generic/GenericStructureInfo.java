@@ -245,37 +245,9 @@ public class GenericStructureInfo implements StructureInfo, Cloneable
     }
 
     @Override
-    public int generationWeight(BiomeGenBase biome, WorldProvider provider)
+    public double generationWeight(BiomeGenBase biome, WorldProvider provider)
     {
-        return generationWeightInBiome(biome) * generationWeightInDimension(provider);
-    }
-
-    protected int generationWeightInDimension(WorldProvider provider)
-    {
-        if (naturalGenerationInfo != null)
-        {
-            for (DimensionGenerationInfo generationInfo : naturalGenerationInfo.dimensionWeights)
-            {
-                if (generationInfo.matches(provider))
-                    return generationInfo.getActiveGenerationWeight();
-            }
-        }
-
-        return 0;
-    }
-
-    protected int generationWeightInBiome(BiomeGenBase biome)
-    {
-        if (naturalGenerationInfo != null)
-        {
-            for (BiomeGenerationInfo generationInfo : naturalGenerationInfo.biomeWeights)
-            {
-                if (generationInfo.matches(biome))
-                    return generationInfo.getActiveGenerationWeight();
-            }
-        }
-
-        return 0;
+        return naturalGenerationInfo != null ? naturalGenerationInfo.getGenerationWeight(biome, provider) : 0;
     }
 
     @Override

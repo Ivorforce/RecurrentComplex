@@ -11,6 +11,8 @@ import ivorius.reccomplex.json.JsonUtils;
 import ivorius.reccomplex.structures.generic.BiomeGenerationInfo;
 import ivorius.reccomplex.structures.generic.DimensionGenerationInfo;
 import ivorius.reccomplex.structures.generic.GenerationYSelector;
+import net.minecraft.world.WorldProvider;
+import net.minecraft.world.biome.BiomeGenBase;
 
 import java.lang.reflect.Type;
 import java.util.ArrayList;
@@ -24,6 +26,8 @@ public class NaturalGenerationInfo
 {
     public String generationCategory;
     public GenerationYSelector ySelector;
+
+    private Double generationWeight;
     public final List<BiomeGenerationInfo> biomeWeights = new ArrayList<>();
     public final List<DimensionGenerationInfo> dimensionWeights = new ArrayList<>();
 
@@ -47,6 +51,55 @@ public class NaturalGenerationInfo
         return naturalGenerationInfo;
     }
 
+    public Double getGenerationWeight()
+    {
+        return generationWeight;
+    }
+
+    public void setGenerationWeight(Double generationWeight)
+    {
+        this.generationWeight = generationWeight;
+    }
+
+    public double getGenerationWeight(BiomeGenBase biome, WorldProvider provider)
+    {
+        return getActiveSpawnWeight()
+                * generationWeightInBiome(biome)
+                * generationWeightInDimension(provider);
+    }
+
+    public double generationWeightInDimension(WorldProvider provider)
+    {
+        for (DimensionGenerationInfo generationInfo : dimensionWeights)
+        {
+            if (generationInfo.matches(provider))
+                return generationInfo.getActiveGenerationWeight();
+        }
+
+        return 0;
+    }
+
+    public double generationWeightInBiome(BiomeGenBase biome)
+    {
+        for (BiomeGenerationInfo generationInfo : biomeWeights)
+        {
+            if (generationInfo.matches(biome))
+                return generationInfo.getActiveGenerationWeight();
+        }
+
+        return 0;
+    }
+
+    public double getActiveSpawnWeight()
+    {
+        return generationWeight != null ? generationWeight : 1.0;
+    }
+
+    public boolean hasDefaultWeight()
+    {
+        return generationWeight == null;
+    }
+
     public static class Serializer implements JsonSerializer<NaturalGenerationInfo>, JsonDeserializer<NaturalGenerationInfo>
     {
         @Override
@@ -66,6 +119,9 @@ public class NaturalGenerationInfo
             }
 
             NaturalGenerationInfo naturalGenerationInfo = new NaturalGenerationInfo(generationCategory, ySelector);
+
+            if (jsonObject.has("generationWeight"))
+                naturalGenerationInfo.generationWeight = JsonUtils.getJsonObjectDoubleFieldValue(jsonObject, "generationWeight");
 
             if (jsonObject.has("generationBiomes"))
             {
@@ -97,6 +153,8 @@ public class NaturalGenerationInfo
             JsonObject jsonObject = new JsonObject();
 
             jsonObject.addProperty("generationCategory", src.generationCategory);
+            if (src.generationWeight != null)
+                jsonObject.addProperty("generationWeight", src.generationWeight);
             jsonObject.add("generationY", context.serialize(src.ySelector));
             jsonObject.add("generationBiomes", context.serialize(src.biomeWeights));
             jsonObject.add("generationDimensions", context.serialize(src.dimensionWeights));

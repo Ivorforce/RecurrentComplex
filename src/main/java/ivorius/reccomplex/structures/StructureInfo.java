@@ -29,7 +29,7 @@ public interface StructureInfo
 
     boolean isMirrorable();
 
-    int generationWeight(BiomeGenBase biome, WorldProvider provider);
+    double generationWeight(BiomeGenBase biome, WorldProvider provider);
 
     String generationCategory();
 

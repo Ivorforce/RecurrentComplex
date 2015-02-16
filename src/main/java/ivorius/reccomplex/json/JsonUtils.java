@@ -12,6 +12,54 @@ import com.google.gson.*;
  */
 public class JsonUtils
 {
+    /**
+     * Gets the float value of the given JsonElement.  Expects the second parameter to be the name of the element's
+     * field if an error message needs to be thrown.
+     */
+
+    public static double getJsonElementDoubleValue(JsonElement p_151220_0_, String p_151220_1_)
+    {
+        if (p_151220_0_.isJsonPrimitive() && p_151220_0_.getAsJsonPrimitive().isNumber())
+        {
+            return p_151220_0_.getAsDouble();
+        }
+        else
+        {
+            throw new JsonSyntaxException("Expected " + p_151220_1_ + " to be a Double, was " + getJsonElementTypeDescription(p_151220_0_));
+        }
+    }
+
+    /**
+     * Gets the float value of the field on the JsonObject with the given name.
+     */
+
+    public static double getJsonObjectDoubleFieldValue(JsonObject p_151217_0_, String p_151217_1_)
+    {
+        if (p_151217_0_.has(p_151217_1_))
+        {
+            /**
+             * Gets the float value of the given JsonElement.  Expects the second parameter to be the name of the
+             * element's field if an error message needs to be thrown.
+             */
+            return getJsonElementDoubleValue(p_151217_0_.get(p_151217_1_), p_151217_1_);
+        }
+        else
+        {
+            throw new JsonSyntaxException("Missing " + p_151217_1_ + ", expected to find a Double");
+        }
+    }
+
+    /**
+     * Gets the float value of the field on the JsonObject with the given name, or the given default value if the field
+     * is missing.
+     */
+
+    public static double getJsonObjectDoubleFieldValueOrDefault(JsonObject p_151221_0_, String p_151221_1_, double p_151221_2_)
+    {
+        return p_151221_0_.has(p_151221_1_) ? getJsonElementDoubleValue(p_151221_0_.get(p_151221_1_), p_151221_1_) : p_151221_2_;
+    }
+
+    // ------------------------------------------------------------------
     // Copied from Mojang, but removed @SideOnly
 
     /**

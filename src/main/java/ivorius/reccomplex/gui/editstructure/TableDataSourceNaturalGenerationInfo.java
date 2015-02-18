@@ -9,9 +9,9 @@ import ivorius.ivtoolkit.gui.IntegerRange;
 import ivorius.reccomplex.gui.table.*;
 import ivorius.reccomplex.structures.generic.GenerationYSelector;
 import ivorius.reccomplex.structures.generic.GenericStructureInfo;
+import ivorius.reccomplex.utils.IvTranslations;
 import ivorius.reccomplex.worldgen.StructureSelector;
 import net.minecraft.client.resources.I18n;
-import net.minecraft.util.EnumChatFormatting;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -42,7 +42,7 @@ public class TableDataSourceNaturalGenerationInfo extends TableDataSourceSegment
         {
             String transKeyBase = "structures.genY." + selectionMode.serializedName();
             generationBases.add(new TableElementList.Option(selectionMode.serializedName(),
-                    I18n.format(transKeyBase), Arrays.asList(I18n.format(transKeyBase + ".tooltip"))));
+                    I18n.format(transKeyBase), IvTranslations.formatLines(transKeyBase + ".tooltip")));
         }
 
         return generationBases;
@@ -62,9 +62,7 @@ public class TableDataSourceNaturalGenerationInfo extends TableDataSourceSegment
                 String transKeyBase = "structures.category." + category;
 
                 generationBases.add(new TableElementList.Option(category,
-                        I18n.format(transKeyBase),
-                        Arrays.asList(I18n.format(transKeyBase + ".tooltip.1"),
-                                I18n.format(transKeyBase + ".tooltip.2"))));
+                        I18n.format(transKeyBase), IvTranslations.formatLines(transKeyBase + ".tooltip")));
             }
         }
 

@@ -9,7 +9,7 @@
   "updateUrl": "",
   "authorList": ["Ivorius"],
   "credits": "See structurecredits.txt for full default structure list credits.",
-  "logoFile": "",
+  "logoFile": "gfx/reccomplex/logo.png",
   "screenshots": [],
   "dependencies": []
 }

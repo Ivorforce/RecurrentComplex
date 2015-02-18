@@ -30,6 +30,8 @@ public class RCConfig
 
     public static boolean savePlayerCache;
 
+    public static boolean notifyAdminOnBlockCommands;
+
     public static void loadConfig(String configID)
     {
         if (configID == null || configID.equals(Configuration.CATEGORY_GENERAL))
@@ -51,6 +53,8 @@ public class RCConfig
             commandPrefix = RecurrentComplex.config.getString("commandPrefix", Configuration.CATEGORY_GENERAL, "#", "The String that will be prefixed to every command, e.g. '#' -> '/#gen', '#paste' etc.");
 
             savePlayerCache = RecurrentComplex.config.getBoolean("savePlayerCache", Configuration.CATEGORY_GENERAL, true, "Whether player caches like the clipboard and previewed operations will be saved and loaded.");
+
+            notifyAdminOnBlockCommands = RecurrentComplex.config.getBoolean("notifyAdminOnBlockCommands", Configuration.CATEGORY_GENERAL, false, "Disabling this will prevent spawn command blocks from notifying the server admins, as normal commands would.");
         }
 
         RecurrentComplex.proxy.loadConfig(configID);

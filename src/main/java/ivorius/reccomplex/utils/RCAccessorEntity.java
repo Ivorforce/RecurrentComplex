@@ -14,7 +14,7 @@ import java.util.UUID;
 /**
  * Created by lukas on 31.01.15.
  */
-public class RCAccessHelperEntity
+public class RCAccessorEntity
 {
     private static Field uniqueID;
 

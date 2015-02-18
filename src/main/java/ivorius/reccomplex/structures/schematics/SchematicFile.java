@@ -8,7 +8,7 @@ package ivorius.reccomplex.structures.schematics;
 import ivorius.ivtoolkit.blocks.BlockArea;
 import ivorius.ivtoolkit.blocks.BlockCoord;
 import ivorius.ivtoolkit.tools.IvWorldData;
-import ivorius.reccomplex.utils.RCAccessHelperEntity;
+import ivorius.reccomplex.utils.RCAccessorEntity;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.entity.Entity;
@@ -137,7 +137,7 @@ public class SchematicFile
             Entity entity = EntityList.createEntityFromNBT(entityCompound, world);
             if (entity != null)
             {
-                RCAccessHelperEntity.setEntityUniqueID(entity, UUID.randomUUID());
+                RCAccessorEntity.setEntityUniqueID(entity, UUID.randomUUID());
 
                 IvWorldData.moveEntityForGeneration(entity, new BlockCoord(x, y, z));
 

@@ -5,6 +5,10 @@
 
 package ivorius.reccomplex.blocks;
 
+import ivorius.reccomplex.RCConfig;
+import ivorius.reccomplex.utils.RCAccessorCommandBase;
+import net.minecraft.command.CommandBase;
+import net.minecraft.command.IAdminCommand;
 import net.minecraft.command.ICommandManager;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.server.MinecraftServer;
@@ -61,8 +65,18 @@ public class SpawnCommandLogic implements ICommandSender
 
         if (minecraftserver != null)
         {
+            IAdminCommand cachedAdmin = null;
+            if (!RCConfig.notifyAdminOnBlockCommands)
+            {
+                cachedAdmin = RCAccessorCommandBase.getCommandAdmin();
+                CommandBase.setAdminCommander(null);
+            }
+
             ICommandManager icommandmanager = minecraftserver.getCommandManager();
             icommandmanager.executeCommand(this, command);
+
+            if (!RCConfig.notifyAdminOnBlockCommands)
+                CommandBase.setAdminCommander(cachedAdmin);
         }
     }
 
@@ -79,7 +93,7 @@ public class SpawnCommandLogic implements ICommandSender
     }
 
     @Override
-    public void addChatMessage(IChatComponent p_145747_1_)
+    public void addChatMessage(IChatComponent message)
     {
 
     }

@@ -18,7 +18,7 @@ import java.lang.reflect.Method;
 /**
  * Created by lukas on 18.01.15.
  */
-public class RCAccessHelperNBT
+public class RCAccessorNBT
 {
     private static Method methodSetNBTTagName;
 

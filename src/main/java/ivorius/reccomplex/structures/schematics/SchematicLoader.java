@@ -7,7 +7,7 @@ package ivorius.reccomplex.structures.schematics;
 
 import ivorius.ivtoolkit.tools.IvFileHelper;
 import ivorius.reccomplex.RecurrentComplex;
-import ivorius.reccomplex.utils.RCAccessHelperNBT;
+import ivorius.reccomplex.utils.RCAccessorNBT;
 import net.minecraft.nbt.CompressedStreamTools;
 import net.minecraft.nbt.NBTTagCompound;
 import org.apache.commons.io.FileUtils;
@@ -73,7 +73,7 @@ public class SchematicLoader
 
         try (DataOutputStream dataOutputStream = new DataOutputStream(new GZIPOutputStream(new FileOutputStream(file))))
         {
-            RCAccessHelperNBT.writeEntry("Schematic", compound, dataOutputStream);
+            RCAccessorNBT.writeEntry("Schematic", compound, dataOutputStream);
         }
         catch (IOException e)
         {

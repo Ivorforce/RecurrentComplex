@@ -9,6 +9,7 @@ import cpw.mods.fml.client.IModGuiFactory;
 import cpw.mods.fml.client.config.GuiConfig;
 import cpw.mods.fml.client.config.GuiConfigEntries;
 import cpw.mods.fml.client.config.IConfigElement;
+import ivorius.reccomplex.RCConfig;
 import ivorius.reccomplex.RecurrentComplex;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiScreen;
@@ -62,6 +63,7 @@ public class RCConfigGuiFactory implements IModGuiFactory
         {
             List<IConfigElement> list = new ArrayList<>();
             list.add(new DummyCategoryElement("reccomplex.configgui.general", "reccomplex.configgui.ctgy.general", GeneralEntry.class).setRequiresMcRestart(true));
+            list.add(new DummyCategoryElement("reccomplex.configgui.balancing", "reccomplex.configgui.ctgy.balancing", BalancingEntry.class));
             list.add(new DummyCategoryElement("reccomplex.configgui.visual", "reccomplex.configgui.ctgy.visual", VisualEntry.class));
             return list;
         }
@@ -84,6 +86,24 @@ public class RCConfigGuiFactory implements IModGuiFactory
             }
         }
 
+        public static class BalancingEntry extends GuiConfigEntries.CategoryEntry
+        {
+            public BalancingEntry(GuiConfig owningScreen, GuiConfigEntries owningEntryList, IConfigElement prop)
+            {
+                super(owningScreen, owningEntryList, prop);
+            }
+
+            @Override
+            protected GuiScreen buildChildScreen()
+            {
+                return new GuiConfig(this.owningScreen,
+                        (new ConfigElement(RecurrentComplex.config.getCategory(RCConfig.CATEGORY_BALANCING))).getChildElements(),
+                        this.owningScreen.modID, RCConfig.CATEGORY_BALANCING, this.configElement.requiresWorldRestart() || this.owningScreen.allRequireWorldRestart,
+                        this.configElement.requiresMcRestart() || this.owningScreen.allRequireMcRestart,
+                        GuiConfig.getAbridgedConfigPath(RecurrentComplex.config.toString()));
+            }
+        }
+
         public static class VisualEntry extends GuiConfigEntries.CategoryEntry
         {
             public VisualEntry(GuiConfig owningScreen, GuiConfigEntries owningEntryList, IConfigElement prop)
@@ -95,8 +115,8 @@ public class RCConfigGuiFactory implements IModGuiFactory
             protected GuiScreen buildChildScreen()
             {
                 return new GuiConfig(this.owningScreen,
-                        (new ConfigElement(RecurrentComplex.config.getCategory("visual"))).getChildElements(),
-                        this.owningScreen.modID, "visual", this.configElement.requiresWorldRestart() || this.owningScreen.allRequireWorldRestart,
+                        (new ConfigElement(RecurrentComplex.config.getCategory(RCConfig.CATEGORY_VISUAL))).getChildElements(),
+                        this.owningScreen.modID, RCConfig.CATEGORY_VISUAL, this.configElement.requiresWorldRestart() || this.owningScreen.allRequireWorldRestart,
                         this.configElement.requiresMcRestart() || this.owningScreen.allRequireMcRestart,
                         GuiConfig.getAbridgedConfigPath(RecurrentComplex.config.toString()));
             }

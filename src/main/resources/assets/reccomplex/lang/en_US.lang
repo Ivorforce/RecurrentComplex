@@ -163,3 +163,5 @@ reccomplex.configgui.ctgy.general=General
 reccomplex.configgui.ctgy.general.tooltip=General Settings
 reccomplex.configgui.ctgy.visual=Visual
 reccomplex.configgui.ctgy.visual.tooltip=Visual Settings
+reccomplex.configgui.ctgy.balancing=Balancing
+reccomplex.configgui.ctgy.balancing.tooltip=Settings affecting the mod's balancing

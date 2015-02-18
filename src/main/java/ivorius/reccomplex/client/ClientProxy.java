@@ -29,9 +29,9 @@ public class ClientProxy implements RCProxy
     @Override
     public void loadConfig(String configID)
     {
-        if (configID == null || configID.equals("visual"))
+        if (configID == null || configID.equals(RCConfig.CATEGORY_VISUAL))
         {
-            RCConfig.hideRedundantNegativeSpace = RecurrentComplex.config.getBoolean("hideRedundantNegativeSpace", "visual", true, "Only show the edges of negative space blocks? (Improves performance in big builds)");
+            RCConfig.hideRedundantNegativeSpace = RecurrentComplex.config.getBoolean("hideRedundantNegativeSpace", RCConfig.CATEGORY_VISUAL, true, "Only show the edges of negative space blocks? (Improves performance in big builds)");
         }
     }
 

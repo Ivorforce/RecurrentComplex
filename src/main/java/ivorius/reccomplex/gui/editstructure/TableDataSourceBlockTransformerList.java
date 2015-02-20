@@ -5,11 +5,13 @@
 
 package ivorius.reccomplex.gui.editstructure;
 
+import ivorius.reccomplex.RecurrentComplex;
 import ivorius.reccomplex.gui.table.*;
 import ivorius.reccomplex.structures.StructureRegistry;
 import ivorius.reccomplex.structures.generic.blocktransformers.BlockTransformer;
-import ivorius.reccomplex.structures.generic.blocktransformers.BlockTransformerProvider;
+import net.minecraft.util.StatCollector;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
@@ -17,21 +19,18 @@ import java.util.List;
 /**
  * Created by lukas on 04.06.14.
  */
-public class TableDataSourceBlockTransformerList implements TableDataSource, TableElementButton.Listener
+public class TableDataSourceBlockTransformerList extends TableDataSourceSegmented implements TableElementButton.Listener, TableElementPresetAction.Listener
 {
     private List<BlockTransformer> blockTransformerList;
 
     private TableDelegate tableDelegate;
     private TableNavigator navigator;
 
-    private String currentTransformerType;
-
     public TableDataSourceBlockTransformerList(List<BlockTransformer> blockTransformerList, TableDelegate tableDelegate, TableNavigator navigator)
     {
         this.blockTransformerList = blockTransformerList;
         this.tableDelegate = tableDelegate;
         this.navigator = navigator;
-        currentTransformerType = nextTransformerID(null);
     }
 
     public List<BlockTransformer> getBlockTransformerList()
@@ -64,75 +63,56 @@ public class TableDataSourceBlockTransformerList implements TableDataSource, Tab
         this.navigator = navigator;
     }
 
-    private static String nextTransformerID(String transformerID)
+    @Override
+    public int numberOfSegments()
     {
-        Collection<String> allTypes = StructureRegistry.allBlockTransformerIDs();
-        String[] allTypesArray = allTypes.toArray(new String[allTypes.size()]);
-
-        for (int i = 0; i < allTypesArray.length; i++)
-        {
-            if (allTypesArray[i].equals(transformerID))
-            {
-                return allTypesArray[(i + 1) % allTypesArray.length];
-            }
-        }
-
-        return allTypesArray[0];
+        return 3;
     }
 
     @Override
-    public boolean has(GuiTable table, int index)
+    public int sizeOfSegment(int segment)
     {
-        return index >= 0 && index < blockTransformerList.size() + 2;
+        return segment == 0 || segment == 2 ? 1 : blockTransformerList.size();
     }
 
     @Override
-    public TableElement elementForIndex(GuiTable table, int index)
+    public TableElement elementForIndexInSegment(GuiTable table, int index, int segment)
     {
-        if (index == 0 || index == blockTransformerList.size() + 1)
+        if (segment == 0 || segment == 2)
         {
-            int realIndex = index == 0 ? index : index - 1;
-            TableElementButton addButton = new TableElementButton("add" + realIndex, "Type", new TableElementButton.Action("changeType", currentTransformerType), new TableElementButton.Action("add", "Add"));
+            Collection<String> allTypes = StructureRegistry.getBlockTransformerRegistry().allIDs();
+            List<TableElementButton.Action> actions = new ArrayList<>(allTypes.size());
+            for (String type : allTypes)
+                actions.add(new TableElementButton.Action(type, StatCollector.translateToLocal("reccomplex.blockTransformer." + type)));
+
+            int addIndex = segment == 0 ? 0 : blockTransformerList.size();
+            TableElementPresetAction addButton = new TableElementPresetAction("add" + addIndex, "Type", "Add", actions.toArray(new TableElementButton.Action[actions.size()]));
             addButton.addListener(this);
             return addButton;
         }
+        else if (segment == 1)
+        {
+            TableElementButton.Action[] actions = {new TableElementButton.Action("earlier", "Earlier", index > 0), new TableElementButton.Action("later", "Later", index < blockTransformerList.size() - 1), new TableElementButton.Action("edit", "Edit"), new TableElementButton.Action("delete", "Delete")};
+            TableElementButton button = new TableElementButton("transformer" + index, blockTransformerList.get(index).displayString(), actions);
+            button.addListener(this);
+            return button;
+        }
 
-        int transformerIndex = index - 1;
-        TableElementButton.Action[] actions = {new TableElementButton.Action("earlier", "Earlier", transformerIndex > 0), new TableElementButton.Action("later", "Later", transformerIndex < blockTransformerList.size() - 1), new TableElementButton.Action("edit", "Edit"), new TableElementButton.Action("delete", "Delete")};
-        TableElementButton button = new TableElementButton("transformer" + transformerIndex, blockTransformerList.get(transformerIndex).displayString(), actions);
-        button.addListener(this);
-        return button;
+        return null;
     }
 
     @Override
     public void actionPerformed(TableElementButton tableElementButton, String actionID)
     {
-        if (actionID.equals("add"))
-        {
-            int index = Integer.valueOf(tableElementButton.getID().substring(3));
-            BlockTransformerProvider provider = StructureRegistry.blockTransformerProviderForID(currentTransformerType);
-
-            BlockTransformer blockTransformer = provider.defaultTransformer();
-            TableDataSource tableDataSource = provider.tableDataSource(blockTransformer);
-
-            blockTransformerList.add(index, blockTransformer);
-            navigator.pushTable(new GuiTable(tableDelegate, tableDataSource));
-        }
-        else if (actionID.equals("changeType"))
-        {
-            currentTransformerType = nextTransformerID(currentTransformerType);
-            tableDelegate.reloadData();
-        }
-        else if (tableElementButton.getID().startsWith("transformer"))
+        if (tableElementButton.getID().startsWith("transformer"))
         {
             int index = Integer.valueOf(tableElementButton.getID().substring(11));
             BlockTransformer blockTransformer = blockTransformerList.get(index);
-            BlockTransformerProvider provider = StructureRegistry.blockTransformerProviderForID(StructureRegistry.blockTransformerIDForType(blockTransformer.getClass()));
 
             switch (actionID)
             {
                 case "edit":
-                    navigator.pushTable(new GuiTable(tableDelegate, provider.tableDataSource(blockTransformer)));
+                    navigator.pushTable(new GuiTable(tableDelegate, blockTransformer.tableDataSource(navigator, tableDelegate)));
                     break;
                 case "delete":
                     blockTransformerList.remove(blockTransformer);
@@ -150,5 +130,40 @@ public class TableDataSourceBlockTransformerList implements TableDataSource, Tab
                     break;
             }
         }
+    }
+
+    @Override
+    public void actionPerformed(TableElementPresetAction tableElementButton, String actionID)
+    {
+        if (tableElementButton.getID().startsWith("add"))
+        {
+            int index = Integer.valueOf(tableElementButton.getID().substring(3));
+            Class<? extends BlockTransformer> clazz = StructureRegistry.getBlockTransformerRegistry().typeForID(actionID);
+
+            BlockTransformer blockTransformer = instantiateBlockTransformer(clazz);
+            if (blockTransformer != null)
+            {
+                TableDataSource tableDataSource = blockTransformer.tableDataSource(navigator, tableDelegate);
+
+                blockTransformerList.add(index, blockTransformer);
+                navigator.pushTable(new GuiTable(tableDelegate, tableDataSource));
+            }
+        }
+    }
+
+    public BlockTransformer instantiateBlockTransformer(Class<? extends BlockTransformer> clazz)
+    {
+        BlockTransformer blockTransformer = null;
+
+        try
+        {
+            blockTransformer = clazz.newInstance();
+        }
+        catch (InstantiationException | IllegalAccessException e)
+        {
+            RecurrentComplex.logger.error(e);
+        }
+
+        return blockTransformer;
     }
 }

@@ -5,10 +5,17 @@
 
 package ivorius.reccomplex.structures.generic.blocktransformers;
 
+import com.google.gson.*;
 import ivorius.ivtoolkit.blocks.BlockArea;
 import ivorius.ivtoolkit.blocks.BlockCoord;
 import ivorius.ivtoolkit.blocks.IvBlockCollection;
 import ivorius.ivtoolkit.tools.IvWorldData;
+import ivorius.ivtoolkit.tools.MCRegistry;
+import ivorius.reccomplex.gui.editstructure.TableDataSourceBTRuins;
+import ivorius.reccomplex.gui.table.TableDataSource;
+import ivorius.reccomplex.gui.table.TableDelegate;
+import ivorius.reccomplex.gui.table.TableNavigator;
+import ivorius.reccomplex.json.JsonUtils;
 import ivorius.reccomplex.random.BlurredValueField;
 import ivorius.reccomplex.structures.StructureSpawnContext;
 import net.minecraft.block.Block;
@@ -16,8 +23,10 @@ import net.minecraft.block.material.Material;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.MathHelper;
+import net.minecraft.util.StatCollector;
 import net.minecraft.world.World;
 
+import java.lang.reflect.Type;
 import java.util.List;
 
 /**
@@ -28,6 +37,11 @@ public class BlockTransformerRuins implements BlockTransformer
     public float minDecay;
     public float maxDecay;
     public float decayChaos;
+
+    public BlockTransformerRuins()
+    {
+        this(0.0f, 0.9f, 0.3f);
+    }
 
     public BlockTransformerRuins(float minDecay, float maxDecay, float decayChaos)
     {
@@ -115,12 +129,52 @@ public class BlockTransformerRuins implements BlockTransformer
     @Override
     public String displayString()
     {
-        return "Ruins";
+        return StatCollector.translateToLocal("reccomplex.blockTransformer.ruins");
+    }
+
+    @Override
+    public TableDataSource tableDataSource(TableNavigator navigator, TableDelegate delegate)
+    {
+        return new TableDataSourceBTRuins(this);
     }
 
     @Override
     public boolean generatesInPhase(Phase phase)
     {
         return phase == Phase.AFTER;
+    }
+
+    public static class Serializer implements JsonDeserializer<BlockTransformerRuins>, JsonSerializer<BlockTransformerRuins>
+    {
+        private MCRegistry registry;
+
+        public Serializer(MCRegistry registry)
+        {
+            this.registry = registry;
+        }
+
+        @Override
+        public BlockTransformerRuins deserialize(JsonElement jsonElement, Type par2Type, JsonDeserializationContext context)
+        {
+            JsonObject jsonobject = JsonUtils.getJsonElementAsJsonObject(jsonElement, "transformerRuins");
+
+            float minDecay = JsonUtils.getJsonObjectFloatFieldValueOrDefault(jsonobject, "minDecay", 0.0f);
+            float maxDecay = JsonUtils.getJsonObjectFloatFieldValueOrDefault(jsonobject, "maxDecay", 0.9f);
+            float decayChaos = JsonUtils.getJsonObjectFloatFieldValueOrDefault(jsonobject, "decayChaos", 0.3f);
+
+            return new BlockTransformerRuins(minDecay, maxDecay, decayChaos);
+        }
+
+        @Override
+        public JsonElement serialize(BlockTransformerRuins transformer, Type par2Type, JsonSerializationContext context)
+        {
+            JsonObject jsonobject = new JsonObject();
+
+            jsonobject.addProperty("minDecay", transformer.minDecay);
+            jsonobject.addProperty("maxDecay", transformer.maxDecay);
+            jsonobject.addProperty("decayChaos", transformer.decayChaos);
+
+            return jsonobject;
+        }
     }
 }

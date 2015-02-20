@@ -9,8 +9,10 @@ import ivorius.ivtoolkit.blocks.BlockCoord;
 import ivorius.ivtoolkit.math.AxisAlignedTransform2D;
 import ivorius.ivtoolkit.maze.*;
 import ivorius.reccomplex.structures.StructureInfo;
+import ivorius.reccomplex.structures.generic.gentypes.MazeGenerationInfo;
 import ivorius.reccomplex.worldgen.WorldGenStructures;
 import net.minecraft.world.World;
+import org.apache.commons.lang3.tuple.Pair;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -85,12 +87,13 @@ public class WorldGenMaze
         return true;
     }
 
-    public static List<MazeComponent> transformedComponents(List<StructureInfo> componentStructures)
+    public static List<MazeComponent> transformedComponents(List<Pair<StructureInfo, MazeGenerationInfo>> componentStructures)
     {
         List<MazeComponent> transformedComponents = new ArrayList<>();
-        for (StructureInfo info : componentStructures)
+        for (Pair<StructureInfo, MazeGenerationInfo> pair : componentStructures)
         {
-            SavedMazeComponent comp = info.mazeComponent();
+            StructureInfo info = pair.getLeft();
+            SavedMazeComponent comp = pair.getRight().mazeComponent;
 
             int[] compSize = comp.getSize();
             int roomVariations = (info.isRotatable() ? 4 : 1) * (info.isMirrorable() ? 2 : 1);

@@ -10,6 +10,7 @@ import ivorius.reccomplex.gui.editmazeblock.TableDataSourceSelection;
 import ivorius.reccomplex.gui.table.*;
 import ivorius.reccomplex.structures.generic.GenericStructureInfo;
 import ivorius.reccomplex.structures.generic.SavedMazeComponent;
+import ivorius.reccomplex.structures.generic.gentypes.MazeGenerationInfo;
 
 /**
  * Created by lukas on 07.10.14.
@@ -21,13 +22,13 @@ public class TableDataSourceMazeGenerationInfo extends TableDataSourceSegmented 
     private TableNavigator navigator;
     private TableDelegate tableDelegate;
 
-    private GenericStructureInfo structureInfo;
+    private MazeGenerationInfo mazeGenerationInfo;
 
-    public TableDataSourceMazeGenerationInfo(TableNavigator navigator, TableDelegate tableDelegate, GenericStructureInfo structureInfo)
+    public TableDataSourceMazeGenerationInfo(TableNavigator navigator, TableDelegate tableDelegate, MazeGenerationInfo mazeGenerationInfo)
     {
         this.navigator = navigator;
         this.tableDelegate = tableDelegate;
-        this.structureInfo = structureInfo;
+        this.mazeGenerationInfo = mazeGenerationInfo;
     }
 
     @Override
@@ -59,7 +60,7 @@ public class TableDataSourceMazeGenerationInfo extends TableDataSourceSegmented 
         {
             if (index == 0)
             {
-                TableElementString element = new TableElementString("mazeID", "Maze ID", structureInfo.mazeGenerationInfo.mazeID);
+                TableElementString element = new TableElementString("mazeID", "Maze ID", mazeGenerationInfo.mazeID);
                 element.addPropertyListener(this);
                 return element;
             }
@@ -104,7 +105,7 @@ public class TableDataSourceMazeGenerationInfo extends TableDataSourceSegmented 
     {
         if ("mazeID".equals(element.getID()))
         {
-            structureInfo.mazeGenerationInfo.mazeID = (String) element.getPropertyValue();
+            mazeGenerationInfo.mazeID = (String) element.getPropertyValue();
         }
         else if ("weight".equals(element.getID()))
         {
@@ -114,6 +115,6 @@ public class TableDataSourceMazeGenerationInfo extends TableDataSourceSegmented 
 
     private SavedMazeComponent mazeComponent()
     {
-        return structureInfo.mazeGenerationInfo.mazeComponent;
+        return mazeGenerationInfo.mazeComponent;
     }
 }

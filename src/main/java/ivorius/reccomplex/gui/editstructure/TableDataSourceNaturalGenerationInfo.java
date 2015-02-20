@@ -8,13 +8,12 @@ package ivorius.reccomplex.gui.editstructure;
 import ivorius.ivtoolkit.gui.IntegerRange;
 import ivorius.reccomplex.gui.table.*;
 import ivorius.reccomplex.structures.generic.GenerationYSelector;
-import ivorius.reccomplex.structures.generic.GenericStructureInfo;
+import ivorius.reccomplex.structures.generic.gentypes.NaturalGenerationInfo;
 import ivorius.reccomplex.utils.IvTranslations;
 import ivorius.reccomplex.worldgen.StructureSelector;
 import net.minecraft.client.resources.I18n;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
 
@@ -25,13 +24,13 @@ public class TableDataSourceNaturalGenerationInfo extends TableDataSourceSegment
 {
     private TableNavigator navigator;
     private TableDelegate tableDelegate;
-    private GenericStructureInfo structureInfo;
+    private NaturalGenerationInfo naturelGenerationInfo;
 
-    public TableDataSourceNaturalGenerationInfo(TableNavigator navigator, TableDelegate tableDelegate, GenericStructureInfo structureInfo)
+    public TableDataSourceNaturalGenerationInfo(TableNavigator navigator, TableDelegate tableDelegate, NaturalGenerationInfo naturelGenerationInfo)
     {
         this.navigator = navigator;
         this.tableDelegate = tableDelegate;
-        this.structureInfo = structureInfo;
+        this.naturelGenerationInfo = naturelGenerationInfo;
     }
 
     private static List<TableElementList.Option> allGenerationOptions()
@@ -98,7 +97,7 @@ public class TableDataSourceNaturalGenerationInfo extends TableDataSourceSegment
         {
             if (index == 0)
             {
-                TableElementList element = new TableElementList("category", "Category", structureInfo.naturalGenerationInfo.generationCategory, allGenerationCategories());
+                TableElementList element = new TableElementList("category", "Category", naturelGenerationInfo.generationCategory, allGenerationCategories());
                 element.addPropertyListener(this);
                 return element;
             }
@@ -107,13 +106,13 @@ public class TableDataSourceNaturalGenerationInfo extends TableDataSourceSegment
         {
             if (index == 0)
             {
-                TableElementList element = new TableElementList("ySelType", "Generation Base", structureInfo.naturalGenerationInfo.ySelector.selectionMode.serializedName(), allGenerationOptions());
+                TableElementList element = new TableElementList("ySelType", "Generation Base", naturelGenerationInfo.ySelector.selectionMode.serializedName(), allGenerationOptions());
                 element.addPropertyListener(this);
                 return element;
             }
             else if (index == 1)
             {
-                TableElementIntegerRange element = new TableElementIntegerRange("ySelShift", "Y Shift", new IntegerRange(structureInfo.naturalGenerationInfo.ySelector.minY, structureInfo.naturalGenerationInfo.ySelector.maxY), -100, 100);
+                TableElementIntegerRange element = new TableElementIntegerRange("ySelShift", "Y Shift", new IntegerRange(naturelGenerationInfo.ySelector.minY, naturelGenerationInfo.ySelector.maxY), -100, 100);
                 element.addPropertyListener(this);
                 return element;
             }
@@ -122,14 +121,14 @@ public class TableDataSourceNaturalGenerationInfo extends TableDataSourceSegment
         {
             if (index == 0)
             {
-                TableElementBoolean element = new TableElementBoolean("defaultWeight", "Use Default Weight", structureInfo.naturalGenerationInfo.hasDefaultWeight());
+                TableElementBoolean element = new TableElementBoolean("defaultWeight", "Use Default Weight", naturelGenerationInfo.hasDefaultWeight());
                 element.addPropertyListener(this);
                 return element;
             }
             else if (index == 1)
             {
-                TableElementFloat element = new TableElementFloat("weight", "Weight", (float) structureInfo.naturalGenerationInfo.getActiveSpawnWeight(), 0, 10);
-                element.setEnabled(!structureInfo.naturalGenerationInfo.hasDefaultWeight());
+                TableElementFloat element = new TableElementFloat("weight", "Weight", (float) naturelGenerationInfo.getActiveSpawnWeight(), 0, 10);
+                element.setEnabled(!naturelGenerationInfo.hasDefaultWeight());
                 element.addPropertyListener(this);
                 return element;
             }
@@ -155,12 +154,12 @@ public class TableDataSourceNaturalGenerationInfo extends TableDataSourceSegment
     {
         if ("editBiomes".equals(tableElementButton.getID()) && "edit".equals(actionID))
         {
-            GuiTable editBiomesProperties = new GuiTable(tableDelegate, new TableDataSourceBiomeGenList(structureInfo.naturalGenerationInfo.biomeWeights, tableDelegate, navigator));
+            GuiTable editBiomesProperties = new GuiTable(tableDelegate, new TableDataSourceBiomeGenList(naturelGenerationInfo.biomeWeights, tableDelegate, navigator));
             navigator.pushTable(editBiomesProperties);
         }
         else if ("editDimensions".equals(tableElementButton.getID()) && "edit".equals(actionID))
         {
-            GuiTable editBiomesProperties = new GuiTable(tableDelegate, new TableDataSourceDimensionGenList(structureInfo.naturalGenerationInfo.dimensionWeights, tableDelegate, navigator));
+            GuiTable editBiomesProperties = new GuiTable(tableDelegate, new TableDataSourceDimensionGenList(naturelGenerationInfo.dimensionWeights, tableDelegate, navigator));
             navigator.pushTable(editBiomesProperties);
         }
     }
@@ -170,28 +169,28 @@ public class TableDataSourceNaturalGenerationInfo extends TableDataSourceSegment
     {
         if ("category".equals(element.getID()))
         {
-            structureInfo.naturalGenerationInfo.generationCategory = (String) element.getPropertyValue();
+            naturelGenerationInfo.generationCategory = (String) element.getPropertyValue();
         }
         else if ("weight".equals(element.getID()))
         {
-            structureInfo.naturalGenerationInfo.setGenerationWeight((double) (Float) element.getPropertyValue());
+            naturelGenerationInfo.setGenerationWeight((double) (Float) element.getPropertyValue());
         }
         else if ("defaultWeight".equals(element.getID()))
         {
             boolean useDefault = (boolean) element.getPropertyValue();
-            structureInfo.naturalGenerationInfo.setGenerationWeight(useDefault ? null : structureInfo.naturalGenerationInfo.getActiveSpawnWeight());
+            naturelGenerationInfo.setGenerationWeight(useDefault ? null : naturelGenerationInfo.getActiveSpawnWeight());
             tableDelegate.reloadData();
         }
         else if ("ySelType".equals(element.getID()))
         {
             GenerationYSelector.SelectionMode selectionMode = GenerationYSelector.SelectionMode.selectionMode((String) element.getPropertyValue());
-            structureInfo.naturalGenerationInfo.ySelector.selectionMode = selectionMode != null ? selectionMode : GenerationYSelector.SelectionMode.SURFACE;
+            naturelGenerationInfo.ySelector.selectionMode = selectionMode != null ? selectionMode : GenerationYSelector.SelectionMode.SURFACE;
         }
         else if ("ySelShift".equals(element.getID()))
         {
             IntegerRange range = ((IntegerRange) element.getPropertyValue());
-            structureInfo.naturalGenerationInfo.ySelector.minY = range.getMin();
-            structureInfo.naturalGenerationInfo.ySelector.maxY = range.getMax();
+            naturelGenerationInfo.ySelector.minY = range.getMin();
+            naturelGenerationInfo.ySelector.maxY = range.getMax();
         }
     }
 }

@@ -5,18 +5,10 @@
 
 package ivorius.reccomplex.gui.editstructure;
 
-import ivorius.ivtoolkit.maze.MazePath;
-import ivorius.ivtoolkit.maze.MazeRoom;
 import ivorius.reccomplex.gui.GuiValidityStateIndicator;
 import ivorius.reccomplex.gui.table.*;
 import ivorius.reccomplex.structures.StructureRegistry;
-import ivorius.reccomplex.structures.generic.GenerationYSelector;
 import ivorius.reccomplex.structures.generic.GenericStructureInfo;
-import ivorius.reccomplex.structures.generic.SavedMazeComponent;
-import ivorius.reccomplex.structures.generic.Selection;
-import ivorius.reccomplex.structures.generic.gentypes.MazeGenerationInfo;
-import ivorius.reccomplex.structures.generic.gentypes.NaturalGenerationInfo;
-import ivorius.reccomplex.structures.generic.gentypes.VanillaStructureSpawnInfo;
 import joptsimple.internal.Strings;
 
 import java.util.*;
@@ -24,7 +16,7 @@ import java.util.*;
 /**
  * Created by lukas on 05.06.14.
  */
-public class TableDataSourceGenericStructure implements TableDataSource, TableElementButton.Listener, TableElementPropertyListener
+public class TableDataSourceGenericStructure extends TableDataSourceSegmented implements TableElementButton.Listener, TableElementPropertyListener
 {
     private GenericStructureInfo structureInfo;
     private String structureKey;
@@ -81,15 +73,34 @@ public class TableDataSourceGenericStructure implements TableDataSource, TableEl
     }
 
     @Override
-    public boolean has(GuiTable table, int index)
+    public int numberOfSegments()
     {
-        return index >= 0 && index < 7;
+        return 5;
     }
 
     @Override
-    public TableElement elementForIndex(GuiTable table, int index)
+    public int sizeOfSegment(int segment)
     {
-        if (index == 0)
+        switch (segment)
+        {
+            case 0:
+            case 2:
+                return 1;
+            case 1:
+                return 2;
+            case 3:
+                return structureInfo.generationInfos.size() > 0 ? 1 : 0;
+            case 4:
+                return structureInfo.blockTransformers.size() > 0 ? 1 : 0;
+        }
+
+        return 0;
+    }
+
+    @Override
+    public TableElement elementForIndexInSegment(GuiTable table, int index, int segment)
+    {
+        if (segment == 0)
         {
             TableElementString element = new TableElementString("name", "Name", structureKey);
             element.addPropertyListener(this);
@@ -97,19 +108,22 @@ public class TableDataSourceGenericStructure implements TableDataSource, TableEl
             element.setValidityState(currentNameState());
             return element;
         }
-        else if (index == 1)
+        else if (segment == 1)
         {
-            TableElementBoolean element = new TableElementBoolean("rotatable", "Rotatable", structureInfo.rotatable);
-            element.addPropertyListener(this);
-            return element;
+            if (index == 0)
+            {
+                TableElementBoolean element = new TableElementBoolean("rotatable", "Rotatable", structureInfo.rotatable);
+                element.addPropertyListener(this);
+                return element;
+            }
+            else if (index == 1)
+            {
+                TableElementBoolean element = new TableElementBoolean("mirrorable", "Mirrorable", structureInfo.mirrorable);
+                element.addPropertyListener(this);
+                return element;
+            }
         }
-        else if (index == 2)
-        {
-            TableElementBoolean element = new TableElementBoolean("mirrorable", "Mirrorable", structureInfo.mirrorable);
-            element.addPropertyListener(this);
-            return element;
-        }
-        else if (index == 3)
+        else if (segment == 2)
         {
             TableElementString element = new TableElementString("dependencies", "Dependencies (A,B,...)", Strings.join(structureInfo.dependencies, ","));
             element.setValidityState(currentDependencyState());
@@ -117,36 +131,18 @@ public class TableDataSourceGenericStructure implements TableDataSource, TableEl
             element.addPropertyListener(this);
             return element;
         }
-        else if (index == 4)
+        else if (segment == 3)
+        {
+            TableElementButton elementEditTransformers = new TableElementButton("editGenerationInfos", "Generation", new TableElementButton.Action("edit", "Edit"));
+            elementEditTransformers.addListener(this);
+            return elementEditTransformers;
+        }
+        else if (segment == 4)
         {
             TableElementButton elementEditTransformers = new TableElementButton("editTransformers", "Transformers", new TableElementButton.Action("edit", "Edit"));
             elementEditTransformers.addListener(this);
             return elementEditTransformers;
         }
-        else if (index == 5)
-        {
-            TableElementButton.Action toggle = structureInfo.naturalGenerationInfo != null ? new TableElementButton.Action("delete", "Delete") : new TableElementButton.Action("enable", "Enable");
-            TableElementButton elementEditTransformers = new TableElementButton("editNaturalGeneration", "Natural Generation",
-                    new TableElementButton.Action("edit", "Edit", structureInfo.naturalGenerationInfo != null), toggle);
-            elementEditTransformers.addListener(this);
-            return elementEditTransformers;
-        }
-        else if (index == 6)
-        {
-            TableElementButton.Action toggle = structureInfo.mazeGenerationInfo != null ? new TableElementButton.Action("delete", "Delete") : new TableElementButton.Action("enable", "Enable");
-            TableElementButton elementEditTransformers = new TableElementButton("editMazeGeneration", "Maze Generation",
-                    new TableElementButton.Action("edit", "Edit", structureInfo.mazeGenerationInfo != null), toggle);
-            elementEditTransformers.addListener(this);
-            return elementEditTransformers;
-        }
-//        else if (index == 7)
-//        {
-//            TableElementButton.Action toggle = structureInfo.vanillaStructureSpawnInfo != null ? new TableElementButton.Action("delete", "Delete") : new TableElementButton.Action("enable", "Enable");
-//            TableElementButton elementEditTransformers = new TableElementButton("editVanillaStructureGeneration", "Vanilla Structure",
-//                    new TableElementButton.Action("edit", "Edit", structureInfo.vanillaStructureSpawnInfo != null), toggle);
-//            elementEditTransformers.addListener(this);
-//            return elementEditTransformers;
-//        }
 
         return null;
     }
@@ -159,63 +155,10 @@ public class TableDataSourceGenericStructure implements TableDataSource, TableEl
             GuiTable editTransformersProperties = new GuiTable(tableDelegate, new TableDataSourceBlockTransformerList(structureInfo.blockTransformers, tableDelegate, navigator));
             navigator.pushTable(editTransformersProperties);
         }
-        else if ("editNaturalGeneration".equals(tableElementButton.getID()))
+        else if ("editGenerationInfos".equals(tableElementButton.getID()) && "edit".equals(actionID))
         {
-            switch (actionID)
-            {
-                case "edit":
-                    GuiTable editNaturalGeneration = new GuiTable(tableDelegate, new TableDataSourceNaturalGenerationInfo(navigator, tableDelegate, structureInfo));
-                    navigator.pushTable(editNaturalGeneration);
-                    break;
-                case "delete":
-                    structureInfo.naturalGenerationInfo = null;
-                    tableDelegate.reloadData();
-                    break;
-                case "enable":
-                    structureInfo.naturalGenerationInfo = new NaturalGenerationInfo("decoration", new GenerationYSelector(GenerationYSelector.SelectionMode.SURFACE, 0, 0));
-                    tableDelegate.reloadData();
-                    break;
-            }
-        }
-        else if ("editMazeGeneration".equals(tableElementButton.getID()))
-        {
-            switch (actionID)
-            {
-                case "edit":
-                    GuiTable editMazeGeneration = new GuiTable(tableDelegate, new TableDataSourceMazeGenerationInfo(navigator, tableDelegate, structureInfo));
-                    navigator.pushTable(editMazeGeneration);
-                    break;
-                case "delete":
-                    structureInfo.mazeGenerationInfo = null;
-                    tableDelegate.reloadData();
-                    break;
-                case "enable":
-                    SavedMazeComponent mazeComponent = new SavedMazeComponent(100);
-                    mazeComponent.rooms.add(new Selection.Area(true, new int[3], new int[3]));
-                    mazeComponent.setExitPaths(Arrays.asList(new MazePath(new MazeRoom(0, 0, 0), 0, true), new MazePath(new MazeRoom(0, 0, 0), 0, false),
-                            new MazePath(new MazeRoom(0, 0, 0), 2, true), new MazePath(new MazeRoom(0, 0, 0), 2, false)));
-                    structureInfo.mazeGenerationInfo = new MazeGenerationInfo("", mazeComponent);
-                    tableDelegate.reloadData();
-                    break;
-            }
-        }
-        else if ("editVanillaStructureGeneration".equals(tableElementButton.getID()))
-        {
-            switch (actionID)
-            {
-                case "edit":
-                    GuiTable editMazeGeneration = new GuiTable(tableDelegate, new TableDataSourceVanillaStructureGenerationInfo(navigator, tableDelegate, structureInfo));
-                    navigator.pushTable(editMazeGeneration);
-                    break;
-                case "delete":
-                    structureInfo.vanillaStructureSpawnInfo = null;
-                    tableDelegate.reloadData();
-                    break;
-                case "enable":
-                    structureInfo.vanillaStructureSpawnInfo = VanillaStructureSpawnInfo.defaultStructureSpawnInfo();
-                    tableDelegate.reloadData();
-                    break;
-            }
+            GuiTable editGenerationProperties = new GuiTable(tableDelegate, new TableDataSourceStructureGenerationInfoList(structureInfo.generationInfos, tableDelegate, navigator));
+            navigator.pushTable(editGenerationProperties);
         }
     }
 

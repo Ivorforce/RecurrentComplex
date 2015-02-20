@@ -23,7 +23,7 @@ import java.util.*;
  */
 public class SavedMazeComponent extends WeightedRandom.Item
 {
-    public final Selection rooms = Selection.zeroSelection(3);
+    public final Selection rooms = new Selection();
     public final List<MazePath> exitPaths = new ArrayList<>();
 
     public SavedMazeComponent(int weight)
@@ -125,7 +125,7 @@ public class SavedMazeComponent extends WeightedRandom.Item
 
             if (jsonObject.has("roomArea"))
             {
-                mazeComponent.rooms.addAll((Selection) context.deserialize(jsonObject.get("roomArea"), Selection.class));
+                mazeComponent.rooms.addAll(context.<Selection>deserialize(jsonObject.get("roomArea"), Selection.class));
             }
             if (jsonObject.has("rooms"))
             {
@@ -133,10 +133,10 @@ public class SavedMazeComponent extends WeightedRandom.Item
                 MazeRoom[] rooms = context.deserialize(jsonObject.get("rooms"), MazeRoom[].class);
                 for (MazeRoom room : rooms)
                     mazeComponent.rooms.add(new Selection.Area(true, room.coordinates, room.coordinates.clone()));
-
-                MazePath[] exits = context.deserialize(jsonObject.get("exits"), MazePath[].class);
-                mazeComponent.setExitPaths(Arrays.asList(exits));
             }
+
+            MazePath[] exits = context.deserialize(jsonObject.get("exits"), MazePath[].class);
+            mazeComponent.setExitPaths(Arrays.asList(exits));
 
             return mazeComponent;
         }

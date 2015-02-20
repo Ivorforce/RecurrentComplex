@@ -46,22 +46,23 @@ public class GenericVillagePiece extends StructureVillagePieces.Village
     public boolean addComponentParts(World world, Random random, StructureBoundingBox boundingBox)
     {
         StructureInfo structureInfo = StructureRegistry.getStructure(structureID);
-        VanillaStructureSpawnInfo spawnInfo = structureInfo.vanillaStructureSpawnInfo();
-
-        BlockCoord structureShift = spawnInfo.spawnShift;
-        AxisAlignedTransform2D transform = AxisAlignedTransform2D.transform(coordBaseMode, false);
-
-        if (this.field_143015_k < 0)
+        for (VanillaStructureSpawnInfo spawnInfo : structureInfo.generationInfos(VanillaStructureSpawnInfo.class))
         {
-            this.field_143015_k = this.getAverageGroundLevel(world, boundingBox);
+            BlockCoord structureShift = spawnInfo.spawnShift;
+            AxisAlignedTransform2D transform = AxisAlignedTransform2D.transform(coordBaseMode, false);
 
             if (this.field_143015_k < 0)
-                return true;
+            {
+                this.field_143015_k = this.getAverageGroundLevel(world, boundingBox);
 
-            this.boundingBox.offset(0, this.field_143015_k - this.boundingBox.minY + structureShift.y, 0);
+                if (this.field_143015_k < 0)
+                    return true;
+
+                this.boundingBox.offset(0, this.field_143015_k - this.boundingBox.minY + structureShift.y, 0);
+            }
+
+            structureInfo.generate(new StructureSpawnContext(world, random, boundingBox, 0, false, transform));
         }
-
-        structureInfo.generate(new StructureSpawnContext(world, random, boundingBox, 0, false, transform));
 
         return true;
     }

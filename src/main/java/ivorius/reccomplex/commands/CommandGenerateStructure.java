@@ -12,6 +12,7 @@ import ivorius.reccomplex.operation.OperationRegistry;
 import ivorius.reccomplex.structures.OperationGenerateStructure;
 import ivorius.reccomplex.structures.StructureRegistry;
 import ivorius.reccomplex.structures.StructureInfo;
+import ivorius.reccomplex.structures.generic.gentypes.NaturalGenerationInfo;
 import ivorius.reccomplex.worldgen.WorldGenStructures;
 import ivorius.reccomplex.structures.generic.GenericStructureInfo;
 import net.minecraft.command.CommandBase;
@@ -78,13 +79,19 @@ public class CommandGenerateStructure extends CommandBase
 
             int genX = x - size[0] / 2;
             int genZ = z - size[2] / 2;
-            int genY = structureInfo.generationY(world, random, x, z);
+            int genY;
+            List<NaturalGenerationInfo> naturalGenerationInfos = structureInfo.generationInfos(NaturalGenerationInfo.class);
+            if (naturalGenerationInfos.size() > 0)
+                genY = naturalGenerationInfos.get(0).ySelector.generationY(world, random, genX, genZ, size);
+            else
+                genY = world.getHeightValue(genX, genZ);
+
             BlockCoord coord = new BlockCoord(genX, genY, genZ);
 
             OperationRegistry.queueOperation(new OperationGenerateStructure((GenericStructureInfo) structureInfo, transform, coord, false), commandSender);
         }
         else
-            WorldGenStructures.generateStructureRandomly(world, world.rand, structureInfo, x, z, false);
+            WorldGenStructures.generateStructureRandomly(world, world.rand, structureInfo, null, x, z, false);
     }
 
     @Override

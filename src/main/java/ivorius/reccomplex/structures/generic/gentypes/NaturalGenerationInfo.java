@@ -7,10 +7,15 @@ package ivorius.reccomplex.structures.generic.gentypes;
 
 import com.google.gson.*;
 import ivorius.reccomplex.RecurrentComplex;
+import ivorius.reccomplex.gui.editstructure.TableDataSourceNaturalGenerationInfo;
+import ivorius.reccomplex.gui.table.TableDataSource;
+import ivorius.reccomplex.gui.table.TableDelegate;
+import ivorius.reccomplex.gui.table.TableNavigator;
 import ivorius.reccomplex.json.JsonUtils;
 import ivorius.reccomplex.structures.generic.BiomeGenerationInfo;
 import ivorius.reccomplex.structures.generic.DimensionGenerationInfo;
 import ivorius.reccomplex.structures.generic.GenerationYSelector;
+import net.minecraft.util.StatCollector;
 import net.minecraft.world.WorldProvider;
 import net.minecraft.world.biome.BiomeGenBase;
 
@@ -22,14 +27,23 @@ import java.util.List;
 /**
  * Created by lukas on 07.10.14.
  */
-public class NaturalGenerationInfo
+public class NaturalGenerationInfo extends StructureGenerationInfo
 {
-    public String generationCategory;
-    public GenerationYSelector ySelector;
+    private static Gson gson = createGson();
 
-    private Double generationWeight;
     public final List<BiomeGenerationInfo> biomeWeights = new ArrayList<>();
     public final List<DimensionGenerationInfo> dimensionWeights = new ArrayList<>();
+
+    public String generationCategory;
+    public GenerationYSelector ySelector;
+    private Double generationWeight;
+
+    public NaturalGenerationInfo()
+    {
+        this("decoration", new GenerationYSelector(GenerationYSelector.SelectionMode.SURFACE, 0, 0));
+        biomeWeights.addAll(BiomeGenerationInfo.overworldBiomeGenerationList());
+        dimensionWeights.addAll(DimensionGenerationInfo.overworldGenerationList());
+    }
 
     public NaturalGenerationInfo(String generationCategory, GenerationYSelector ySelector)
     {
@@ -37,13 +51,29 @@ public class NaturalGenerationInfo
         this.ySelector = ySelector;
     }
 
+    public static Gson createGson()
+    {
+        GsonBuilder builder = new GsonBuilder();
+
+        builder.registerTypeAdapter(NaturalGenerationInfo.class, new NaturalGenerationInfo.Serializer());
+        builder.registerTypeAdapter(BiomeGenerationInfo.class, new BiomeGenerationInfo.Serializer());
+        builder.registerTypeAdapter(DimensionGenerationInfo.class, new DimensionGenerationInfo.Serializer());
+
+        return builder.create();
+    }
+
+    public static Gson getGson()
+    {
+        return gson;
+    }
+
     public static NaturalGenerationInfo deserializeFromVersion1(JsonObject jsonObject, JsonDeserializationContext context)
     {
         String generationCategory = JsonUtils.getJsonObjectStringFieldValue(jsonObject, "generationCategory");
-        GenerationYSelector ySelector = context.deserialize(jsonObject.get("generationY"), GenerationYSelector.class);
+        GenerationYSelector ySelector = gson.fromJson(jsonObject.get("generationY"), GenerationYSelector.class);
 
         NaturalGenerationInfo naturalGenerationInfo = new NaturalGenerationInfo(generationCategory, ySelector);
-        BiomeGenerationInfo[] infos = context.deserialize(jsonObject.get("generationBiomes"), BiomeGenerationInfo[].class);
+        BiomeGenerationInfo[] infos = gson.fromJson(jsonObject.get("generationBiomes"), BiomeGenerationInfo[].class);
         Collections.addAll(naturalGenerationInfo.biomeWeights, infos);
 
         naturalGenerationInfo.dimensionWeights.addAll(DimensionGenerationInfo.overworldGenerationList());
@@ -100,6 +130,18 @@ public class NaturalGenerationInfo
         return generationWeight == null;
     }
 
+    @Override
+    public String displayString()
+    {
+        return StatCollector.translateToLocal("reccomplex.generationInfo.natural");
+    }
+
+    @Override
+    public TableDataSource tableDataSource(TableNavigator navigator, TableDelegate delegate)
+    {
+        return new TableDataSourceNaturalGenerationInfo(navigator, delegate, this);
+    }
+
     public static class Serializer implements JsonSerializer<NaturalGenerationInfo>, JsonDeserializer<NaturalGenerationInfo>
     {
         @Override
@@ -111,7 +153,7 @@ public class NaturalGenerationInfo
             GenerationYSelector ySelector;
 
             if (jsonObject.has("generationY"))
-                ySelector = context.deserialize(jsonObject.get("generationY"), GenerationYSelector.class);
+                ySelector = gson.fromJson(jsonObject.get("generationY"), GenerationYSelector.class);
             else
             {
                 RecurrentComplex.logger.warn("Structure JSON missing 'generationY'! Using 'surface'!");
@@ -124,25 +166,12 @@ public class NaturalGenerationInfo
                 naturalGenerationInfo.generationWeight = JsonUtils.getJsonObjectDoubleFieldValue(jsonObject, "generationWeight");
 
             if (jsonObject.has("generationBiomes"))
-            {
-                BiomeGenerationInfo[] infos = context.deserialize(jsonObject.get("generationBiomes"), BiomeGenerationInfo[].class);
-                Collections.addAll(naturalGenerationInfo.biomeWeights, infos);
-            }
-            else
-            {
-                RecurrentComplex.logger.warn("Structure JSON missing 'generationBiomes'!");
-            }
+                Collections.addAll(naturalGenerationInfo.biomeWeights, gson.fromJson(jsonObject.get("generationBiomes"), BiomeGenerationInfo[].class));
 
             if (jsonObject.has("generationDimensions"))
-            {
-                DimensionGenerationInfo[] infos = context.deserialize(jsonObject.get("generationDimensions"), DimensionGenerationInfo[].class);
-                Collections.addAll(naturalGenerationInfo.dimensionWeights, infos);
-            }
+                Collections.addAll(naturalGenerationInfo.dimensionWeights, gson.fromJson(jsonObject.get("generationDimensions"), DimensionGenerationInfo[].class));
             else
-            {
-                // Legacy
-                naturalGenerationInfo.dimensionWeights.addAll(DimensionGenerationInfo.overworldGenerationList());
-            }
+                naturalGenerationInfo.dimensionWeights.addAll(DimensionGenerationInfo.overworldGenerationList()); // Legacy
 
             return naturalGenerationInfo;
         }
@@ -155,9 +184,14 @@ public class NaturalGenerationInfo
             jsonObject.addProperty("generationCategory", src.generationCategory);
             if (src.generationWeight != null)
                 jsonObject.addProperty("generationWeight", src.generationWeight);
-            jsonObject.add("generationY", context.serialize(src.ySelector));
-            jsonObject.add("generationBiomes", context.serialize(src.biomeWeights));
-            jsonObject.add("generationDimensions", context.serialize(src.dimensionWeights));
+
+            jsonObject.add("generationY", gson.toJsonTree(src.ySelector));
+
+            if (src.biomeWeights.size() > 0)
+                jsonObject.add("generationBiomes", gson.toJsonTree(src.biomeWeights));
+
+            // Always add to prevent legacy problems
+            jsonObject.add("generationDimensions", gson.toJsonTree(src.dimensionWeights));
 
             return jsonObject;
         }

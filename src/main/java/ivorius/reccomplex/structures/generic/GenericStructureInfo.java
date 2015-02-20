@@ -16,6 +16,7 @@ import ivorius.reccomplex.blocks.RCBlocks;
 import ivorius.reccomplex.json.JsonUtils;
 import ivorius.reccomplex.json.NbtToJson;
 import ivorius.reccomplex.structures.generic.blocktransformers.*;
+import ivorius.reccomplex.structures.generic.gentypes.StructureGenerationInfo;
 import ivorius.reccomplex.utils.RCAccessorEntity;
 import ivorius.reccomplex.structures.MCRegistrySpecial;
 import ivorius.reccomplex.structures.StructureRegistry;
@@ -46,7 +47,7 @@ import java.util.*;
  */
 public class GenericStructureInfo implements StructureInfo, Cloneable
 {
-    public static final int LATEST_VERSION = 2;
+    public static final int LATEST_VERSION = 3;
     public static final int MAX_GENERATING_LAYERS = 30;
 
     public NBTTagCompound worldDataCompound;
@@ -54,13 +55,11 @@ public class GenericStructureInfo implements StructureInfo, Cloneable
     public boolean rotatable;
     public boolean mirrorable;
 
-    public NaturalGenerationInfo naturalGenerationInfo;
-    public MazeGenerationInfo mazeGenerationInfo;
-    public VanillaStructureSpawnInfo vanillaStructureSpawnInfo;
+    public final List<StructureGenerationInfo> generationInfos = new ArrayList<>();
 
-    public List<BlockTransformer> blockTransformers = new ArrayList<>();
+    public final List<BlockTransformer> blockTransformers = new ArrayList<>();
 
-    public List<String> dependencies = new ArrayList<>();
+    public final List<String> dependencies = new ArrayList<>();
 
     public JsonObject customData;
 
@@ -75,9 +74,7 @@ public class GenericStructureInfo implements StructureInfo, Cloneable
         genericStructureInfo.blockTransformers.add(new BlockTransformerNatural(RCBlocks.naturalFloor, 0));
         genericStructureInfo.blockTransformers.add(new BlockTransformerReplace(RCBlocks.naturalFloor, 1, Blocks.air, new byte[]{0}));
 
-        genericStructureInfo.naturalGenerationInfo = new NaturalGenerationInfo("decoration", new GenerationYSelector(GenerationYSelector.SelectionMode.SURFACE, 0, 0));
-        genericStructureInfo.naturalGenerationInfo.biomeWeights.addAll(BiomeGenerationInfo.overworldBiomeGenerationList());
-        genericStructureInfo.naturalGenerationInfo.dimensionWeights.addAll(DimensionGenerationInfo.overworldGenerationList());
+        genericStructureInfo.generationInfos.add(new NaturalGenerationInfo());
 
         return genericStructureInfo;
     }
@@ -91,12 +88,6 @@ public class GenericStructureInfo implements StructureInfo, Cloneable
         }
 
         return true;
-    }
-
-    @Override
-    public int generationY(World world, Random random, int x, int z)
-    {
-        return naturalGenerationInfo != null ? naturalGenerationInfo.ySelector.generationY(world, random, x, z, structureBoundingBox()) : world.getHeightValue(x, z);
     }
 
     @Override
@@ -226,6 +217,19 @@ public class GenericStructureInfo implements StructureInfo, Cloneable
         }
     }
 
+    @Override
+    public <I> List<I> generationInfos(Class<I> clazz)
+    {
+        List<I> list = new ArrayList<>();
+        for (StructureGenerationInfo info : generationInfos)
+        {
+            if (clazz.isAssignableFrom(info.getClass()))
+                list.add((I) info);
+        }
+
+        return list;
+    }
+
     private int getPass(Block block, int metadata)
     {
         return (block.isNormalCube() || block.getMaterial() == Material.air) ? 0 : 1;
@@ -242,18 +246,6 @@ public class GenericStructureInfo implements StructureInfo, Cloneable
         }
 
         return null;
-    }
-
-    @Override
-    public double generationWeight(BiomeGenBase biome, WorldProvider provider)
-    {
-        return naturalGenerationInfo != null ? naturalGenerationInfo.getGenerationWeight(biome, provider) : 0;
-    }
-
-    @Override
-    public String generationCategory()
-    {
-        return naturalGenerationInfo != null ? naturalGenerationInfo.generationCategory : null;
     }
 
     @Override
@@ -274,24 +266,6 @@ public class GenericStructureInfo implements StructureInfo, Cloneable
         }
 
         return true;
-    }
-
-    @Override
-    public String mazeID()
-    {
-        return mazeGenerationInfo != null ? mazeGenerationInfo.mazeID : null;
-    }
-
-    @Override
-    public SavedMazeComponent mazeComponent()
-    {
-        return mazeGenerationInfo != null ? mazeGenerationInfo.mazeComponent : null;
-    }
-
-    @Override
-    public VanillaStructureSpawnInfo vanillaStructureSpawnInfo()
-    {
-        return vanillaStructureSpawnInfo;
     }
 
     @Override
@@ -321,42 +295,29 @@ public class GenericStructureInfo implements StructureInfo, Cloneable
                 RecurrentComplex.logger.warn("Structure JSON missing 'version', using latest (" + LATEST_VERSION + ")");
             }
 
-            if (jsonobject.has("blockTransformers"))
-            {
-                JsonArray blockTransformers = JsonUtils.getJsonObjectJsonArrayField(jsonobject, "blockTransformers");
-
-                for (JsonElement transformerElement : blockTransformers)
-                {
-                    BlockTransformer transformer = context.deserialize(transformerElement, BlockTransformer.class);
-                    structureInfo.blockTransformers.add(transformer);
-                }
-            }
+            if (jsonobject.has("generationInfos"))
+                Collections.addAll(structureInfo.generationInfos, context.<StructureGenerationInfo[]>deserialize(jsonobject.get("generationInfos"), StructureGenerationInfo[].class));
 
             if (version == 1)
-                structureInfo.naturalGenerationInfo = NaturalGenerationInfo.deserializeFromVersion1(jsonobject, context);
-            else
+                structureInfo.generationInfos.add(NaturalGenerationInfo.deserializeFromVersion1(jsonobject, context));
+
             {
+                // Legacy version 2
                 if (jsonobject.has("naturalGenerationInfo"))
-                    structureInfo.naturalGenerationInfo = context.deserialize(jsonobject.get("naturalGenerationInfo"), NaturalGenerationInfo.class);
+                    structureInfo.generationInfos.add(NaturalGenerationInfo.getGson().fromJson(jsonobject.get("naturalGenerationInfo"), NaturalGenerationInfo.class));
+
+                if (jsonobject.has("mazeGenerationInfo"))
+                    structureInfo.generationInfos.add(MazeGenerationInfo.getGson().fromJson(jsonobject.get("mazeGenerationInfo"), MazeGenerationInfo.class));
             }
 
-            if (jsonobject.has("mazeGenerationInfo"))
-                structureInfo.mazeGenerationInfo = context.deserialize(jsonobject.get("mazeGenerationInfo"), MazeGenerationInfo.class);
-
-            if (jsonobject.has("vanillaStructureGenerationInfo"))
-                structureInfo.vanillaStructureSpawnInfo = context.deserialize(jsonobject.get("vanillaStructureGenerationInfo"), VanillaStructureSpawnInfo.class);
+            if (jsonobject.has("blockTransformers"))
+                Collections.addAll(structureInfo.blockTransformers, context.<BlockTransformer[]>deserialize(jsonobject.get("blockTransformers"), BlockTransformer[].class));
 
             structureInfo.rotatable = JsonUtils.getJsonObjectBooleanFieldValueOrDefault(jsonobject, "rotatable", false);
             structureInfo.mirrorable = JsonUtils.getJsonObjectBooleanFieldValueOrDefault(jsonobject, "mirrorable", false);
 
             if (jsonobject.has("dependencies"))
-            {
-                JsonArray dependencyArray = JsonUtils.getJsonObjectJsonArrayField(jsonobject, "dependencies");
-                for (JsonElement element : dependencyArray)
-                {
-                    structureInfo.dependencies.add(JsonUtils.getJsonElementStringValue(element, "dependency"));
-                }
-            }
+                Collections.addAll(structureInfo.dependencies, context.<String[]>deserialize(jsonobject.get("dependencies"), String[].class));
 
             if (jsonobject.has("worldData"))
             {
@@ -382,35 +343,17 @@ public class GenericStructureInfo implements StructureInfo, Cloneable
 
             jsonobject.addProperty("version", LATEST_VERSION);
 
+            if (structureInfo.generationInfos.size() > 0)
+                jsonobject.add("generationInfos", context.serialize(structureInfo.generationInfos));
+
             if (structureInfo.blockTransformers.size() > 0)
-            {
-                JsonArray blockTransformers = new JsonArray();
-                for (BlockTransformer transformer : structureInfo.blockTransformers)
-                {
-                    blockTransformers.add(context.serialize(transformer, BlockTransformer.class));
-                }
-                jsonobject.add("blockTransformers", blockTransformers);
-            }
+                jsonobject.add("blockTransformers", context.serialize(structureInfo.blockTransformers));
 
             jsonobject.addProperty("rotatable", structureInfo.rotatable);
             jsonobject.addProperty("mirrorable", structureInfo.mirrorable);
 
-            if (structureInfo.naturalGenerationInfo != null)
-                jsonobject.add("naturalGenerationInfo", context.serialize(structureInfo.naturalGenerationInfo));
-            if (structureInfo.mazeGenerationInfo != null)
-                jsonobject.add("mazeGenerationInfo", context.serialize(structureInfo.mazeGenerationInfo));
-            if (structureInfo.vanillaStructureSpawnInfo != null)
-                jsonobject.add("vanillaStructureGenerationInfo", context.serialize(structureInfo.vanillaStructureSpawnInfo));
-
             if (structureInfo.dependencies.size() > 0)
-            {
-                JsonArray dependencyArray = new JsonArray();
-                for (String s : structureInfo.dependencies)
-                {
-                    dependencyArray.add(context.serialize(s));
-                }
-                jsonobject.add("dependencies", dependencyArray);
-            }
+                jsonobject.add("dependencies", context.serialize(structureInfo.dependencies));
 
             if (!RecurrentComplex.USE_ZIP_FOR_STRUCTURE_FILES && structureInfo.worldDataCompound != null)
             {

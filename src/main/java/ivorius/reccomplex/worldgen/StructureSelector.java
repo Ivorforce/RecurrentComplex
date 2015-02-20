@@ -9,12 +9,14 @@ import ivorius.reccomplex.RCConfig;
 import ivorius.reccomplex.dimensions.DimensionDictionary;
 import ivorius.reccomplex.structures.StructureInfo;
 import ivorius.reccomplex.structures.generic.BiomeSelector;
+import ivorius.reccomplex.structures.generic.gentypes.NaturalGenerationInfo;
 import ivorius.reccomplex.utils.WeightedSelector;
 import net.minecraft.util.WeightedRandom;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldProvider;
 import net.minecraft.world.biome.BiomeGenBase;
 import net.minecraft.world.chunk.IChunkProvider;
+import org.apache.commons.lang3.tuple.Pair;
 
 import java.util.*;
 
@@ -27,7 +29,7 @@ public class StructureSelector
 
     private static Map<String, Category> categories = new HashMap<>();
 
-    private Map<String, List<WeightedSelector.Item<StructureInfo>>> weightedStructureInfos = new HashMap<>();
+    private Map<String, List<WeightedSelector.Item<Pair<StructureInfo, NaturalGenerationInfo>>>> weightedStructureInfos = new HashMap<>();
 
     private Set<String> cachedDimensionTypes;
 
@@ -38,15 +40,18 @@ public class StructureSelector
 
         for (StructureInfo structureInfo : structures)
         {
-            double generationWeight = structureInfo.generationWeight(biome, provider);
-
-            if (generationWeight > 0)
+            for (NaturalGenerationInfo naturalGenerationInfo : structureInfo.generationInfos(NaturalGenerationInfo.class))
             {
-                String category = structureInfo.generationCategory();
-                if (!weightedStructureInfos.containsKey(category))
-                    weightedStructureInfos.put(category, new ArrayList<WeightedSelector.Item<StructureInfo>>());
+                double generationWeight = naturalGenerationInfo.getGenerationWeight(biome, provider);
 
-                weightedStructureInfos.get(category).add(new WeightedSelector.Item<>(generationWeight, structureInfo));
+                if (generationWeight > 0)
+                {
+                    String category = naturalGenerationInfo.generationCategory;
+                    if (!weightedStructureInfos.containsKey(category))
+                        weightedStructureInfos.put(category, new ArrayList<WeightedSelector.Item<Pair<StructureInfo, NaturalGenerationInfo>>>());
+
+                    weightedStructureInfos.get(category).add(new WeightedSelector.Item<>(generationWeight, Pair.of(structureInfo, naturalGenerationInfo)));
+                }
             }
         }
     }
@@ -81,9 +86,9 @@ public class StructureSelector
         return 0.0f;
     }
 
-    public List<StructureInfo> generatedStructures(Random random, int chunkX, int chunkZ, World world, IChunkProvider chunkGenerator, IChunkProvider chunkProvider)
+    public List<Pair<StructureInfo, NaturalGenerationInfo>> generatedStructures(Random random, int chunkX, int chunkZ, World world, IChunkProvider chunkGenerator, IChunkProvider chunkProvider)
     {
-        List<StructureInfo> infos = new ArrayList<>();
+        List<Pair<StructureInfo, NaturalGenerationInfo>> infos = new ArrayList<>();
         BiomeGenBase biome = world.getBiomeGenForCoords(chunkX * 16, chunkZ * 16);
 
         for (String category : weightedStructureInfos.keySet())

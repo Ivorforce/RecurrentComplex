@@ -14,10 +14,16 @@ import ivorius.reccomplex.client.rendering.RCBlockRendering;
 import ivorius.reccomplex.items.*;
 import ivorius.reccomplex.blocks.materials.MaterialNegativeSpace;
 import ivorius.reccomplex.blocks.materials.RCMaterials;
+import ivorius.reccomplex.json.SerializableStringTypeRegistry;
 import ivorius.reccomplex.operation.OperationRegistry;
 import ivorius.reccomplex.random.Poem;
+import ivorius.reccomplex.structures.MCRegistrySpecial;
 import ivorius.reccomplex.structures.OperationMoveStructure;
 import ivorius.reccomplex.structures.generic.blocktransformers.*;
+import ivorius.reccomplex.structures.generic.gentypes.MazeGenerationInfo;
+import ivorius.reccomplex.structures.generic.gentypes.NaturalGenerationInfo;
+import ivorius.reccomplex.structures.generic.gentypes.StructureGenerationInfo;
+import ivorius.reccomplex.structures.generic.gentypes.VanillaStructureSpawnInfo;
 import ivorius.reccomplex.structures.schematics.OperationGenerateSchematic;
 import ivorius.reccomplex.structures.OperationGenerateStructure;
 import ivorius.reccomplex.structures.StructureRegistry;
@@ -116,13 +122,21 @@ public class RCRegistryHandler
 
     public static void load(FMLInitializationEvent event, RecurrentComplex mod)
     {
-        StructureRegistry.registerBlockTransformer("natural", BlockTransformerNatural.class, new BTProviderNatural());
-        StructureRegistry.registerBlockTransformer("naturalAir", BlockTransformerNaturalAir.class, new BTProviderNaturalAir());
-        StructureRegistry.registerBlockTransformer("pillar", BlockTransformerPillar.class, new BTProviderPillar());
-        StructureRegistry.registerBlockTransformer("replaceAll", BlockTransformerReplaceAll.class, new BTProviderReplaceAll());
-        StructureRegistry.registerBlockTransformer("replace", BlockTransformerReplace.class, new BTProviderReplace());
-        StructureRegistry.registerBlockTransformer("ruins", BlockTransformerRuins.class, new BTProviderRuins());
-        StructureRegistry.registerBlockTransformer("negativeSpace", BlockTransformerNegativeSpace.class, new BTProviderNegativeSpace());
+        MCRegistrySpecial mcRegistry = MCRegistrySpecial.INSTANCE;
+
+        SerializableStringTypeRegistry<BlockTransformer> transformerRegistry = StructureRegistry.getBlockTransformerRegistry();
+        transformerRegistry.registerType("natural", BlockTransformerNatural.class, new BlockTransformerNatural.Serializer(mcRegistry));
+        transformerRegistry.registerType("naturalAir", BlockTransformerNaturalAir.class, new BlockTransformerNaturalAir.Serializer(mcRegistry));
+        transformerRegistry.registerType("pillar", BlockTransformerPillar.class, new BlockTransformerPillar.Serializer(mcRegistry));
+        transformerRegistry.registerType("replaceAll", BlockTransformerReplaceAll.class, new BlockTransformerReplaceAll.Serializer(mcRegistry));
+        transformerRegistry.registerType("replace", BlockTransformerReplace.class, new BlockTransformerReplace.Serializer(mcRegistry));
+        transformerRegistry.registerType("ruins", BlockTransformerRuins.class, new BlockTransformerRuins.Serializer(mcRegistry));
+        transformerRegistry.registerType("negativeSpace", BlockTransformerNegativeSpace.class, new BlockTransformerNegativeSpace.Serializer(mcRegistry));
+
+        SerializableStringTypeRegistry<StructureGenerationInfo> genInfoRegistry = StructureRegistry.getStructureGenerationInfoRegistry();
+        genInfoRegistry.registerType("natural", NaturalGenerationInfo.class, new NaturalGenerationInfo.Serializer());
+        genInfoRegistry.registerType("mazeComponent", MazeGenerationInfo.class, new MazeGenerationInfo.Serializer());
+//        genInfoRegistry.registerType("vanilla", VanillaStructureSpawnInfo.class, new VanillaStructureSpawnInfo.Serializer());
 
         StructureSelector.registerCategory("frequent", new StructureSelector.SimpleCategory(1.0f / 10.0f, Collections.<StructureSelector.GenerationInfo>emptyList(), true));
         StructureSelector.registerCategory("decoration", new StructureSelector.SimpleCategory(1.0f / 30.0f, Collections.<StructureSelector.GenerationInfo>emptyList(), true));

@@ -18,17 +18,13 @@ import ivorius.reccomplex.RecurrentComplex;
 import ivorius.reccomplex.events.RCEventBus;
 import ivorius.reccomplex.events.StructureRegistrationEvent;
 import ivorius.reccomplex.json.NbtToJson;
-import ivorius.reccomplex.json.StringTypeAdapterFactory;
-import ivorius.reccomplex.structures.generic.BiomeGenerationInfo;
-import ivorius.reccomplex.structures.generic.DimensionGenerationInfo;
-import ivorius.reccomplex.structures.generic.GenericStructureInfo;
-import ivorius.reccomplex.structures.generic.SavedMazeComponent;
+import ivorius.reccomplex.json.SerializableStringTypeRegistry;
+import ivorius.reccomplex.structures.generic.*;
 import ivorius.reccomplex.structures.generic.blocktransformers.BlockTransformer;
-import ivorius.reccomplex.structures.generic.blocktransformers.BlockTransformerProvider;
 import ivorius.reccomplex.structures.generic.gentypes.MazeGenerationInfo;
 import ivorius.reccomplex.structures.generic.gentypes.NaturalGenerationInfo;
+import ivorius.reccomplex.structures.generic.gentypes.StructureGenerationInfo;
 import ivorius.reccomplex.structures.generic.gentypes.VanillaStructureSpawnInfo;
-import ivorius.reccomplex.structures.generic.StructureSaveHandler;
 import ivorius.reccomplex.worldgen.StructureSelector;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.WorldProvider;
@@ -47,10 +43,10 @@ public class StructureRegistry
     private static Map<String, StructureInfo> generatingStructures = new HashMap<>();
 
     private static Map<Pair<Integer, String>, StructureSelector> structureSelectors = new HashMap<>();
-    private static Map<String, List<StructureInfo>> structuresInMazes = new HashMap<>();
+    private static Map<String, List<Pair<StructureInfo, MazeGenerationInfo>>> structuresInMazes = new HashMap<>();
 
-    private static StringTypeAdapterFactory<BlockTransformer> blockTransformerAdapterFactory;
-    private static Map<String, BlockTransformerProvider> blockTransformerProviders = new HashMap<>();
+    private static SerializableStringTypeRegistry<BlockTransformer> blockTransformerRegistry = new SerializableStringTypeRegistry<>("transformer", "type", BlockTransformer.class);
+    private static SerializableStringTypeRegistry<StructureGenerationInfo> structureGenerationInfoRegistry = new SerializableStringTypeRegistry<>("generationInfo", "type", StructureGenerationInfo.class);
 
     private static Gson gson = createGson();
 
@@ -59,16 +55,8 @@ public class StructureRegistry
         GsonBuilder builder = new GsonBuilder();
 
         builder.registerTypeAdapter(GenericStructureInfo.class, new GenericStructureInfo.Serializer());
-        builder.registerTypeAdapter(BiomeGenerationInfo.class, new BiomeGenerationInfo.Serializer());
-        builder.registerTypeAdapter(DimensionGenerationInfo.class, new DimensionGenerationInfo.Serializer());
-        builder.registerTypeAdapter(NaturalGenerationInfo.class, new NaturalGenerationInfo.Serializer());
-        builder.registerTypeAdapter(MazeGenerationInfo.class, new MazeGenerationInfo.Serializer());
-        builder.registerTypeAdapter(VanillaStructureSpawnInfo.class, new VanillaStructureSpawnInfo.Serializer());
-        builder.registerTypeAdapter(SavedMazeComponent.class, new SavedMazeComponent.Serializer());
-        builder.registerTypeAdapter(MazeRoom.class, new SavedMazeComponent.RoomSerializer());
-        builder.registerTypeAdapter(MazePath.class, new SavedMazeComponent.PathSerializer());
-        blockTransformerAdapterFactory = new StringTypeAdapterFactory<>("transformer", "type");
-        builder.registerTypeHierarchyAdapter(BlockTransformer.class, blockTransformerAdapterFactory);
+        blockTransformerRegistry.constructGson(builder);
+        structureGenerationInfoRegistry.constructGson(builder);
 
         NbtToJson.registerSafeNBTSerializer(builder);
 
@@ -172,15 +160,18 @@ public class StructureRegistry
         return structureSelector;
     }
 
-    public static List<StructureInfo> getStructuresInMaze(String mazeID)
+    public static List<Pair<StructureInfo, MazeGenerationInfo>> getStructuresInMaze(String mazeID)
     {
         if (!structuresInMazes.containsKey(mazeID))
         {
-            List<StructureInfo> structureInfos = new ArrayList<>();
+            List<Pair<StructureInfo, MazeGenerationInfo>> structureInfos = new ArrayList<>();
             for (StructureInfo info : getAllGeneratingStructures())
             {
-                if (mazeID.equals(info.mazeID()) && info.mazeComponent().isValid())
-                    structureInfos.add(info);
+                for (MazeGenerationInfo mazeGenerationInfo : info.generationInfos(MazeGenerationInfo.class))
+                {
+                    if (mazeID.equals(mazeGenerationInfo.mazeID) && mazeGenerationInfo.mazeComponent.isValid())
+                        structureInfos.add(Pair.of(info, mazeGenerationInfo));
+                }
             }
             structuresInMazes.put(mazeID, structureInfos);
         }
@@ -188,35 +179,14 @@ public class StructureRegistry
         return structuresInMazes.get(mazeID);
     }
 
-    public static StringTypeAdapterFactory<BlockTransformer> blockTransformerAdapterFactory()
+    public static SerializableStringTypeRegistry<BlockTransformer> getBlockTransformerRegistry()
     {
-        return blockTransformerAdapterFactory;
+        return blockTransformerRegistry;
     }
 
-    public static <T extends BlockTransformer> void registerBlockTransformer(String id, Class<T> clazz, BlockTransformerProvider<T> provider)
+    public static SerializableStringTypeRegistry<StructureGenerationInfo> getStructureGenerationInfoRegistry()
     {
-        blockTransformerAdapterFactory.register(id, clazz, provider.serializer(), provider.deserializer());
-        blockTransformerProviders.put(id, provider);
-    }
-
-    public static Class<? extends BlockTransformer> blockTransformerTypeForID(String id)
-    {
-        return blockTransformerAdapterFactory.objectClass(id);
-    }
-
-    public static String blockTransformerIDForType(Class<? extends BlockTransformer> type)
-    {
-        return blockTransformerAdapterFactory.type(type);
-    }
-
-    public static Collection<String> allBlockTransformerIDs()
-    {
-        return blockTransformerAdapterFactory.allIDs();
-    }
-
-    public static BlockTransformerProvider blockTransformerProviderForID(String id)
-    {
-        return blockTransformerProviders.get(id);
+        return structureGenerationInfoRegistry;
     }
 
     private static void clearCaches()

@@ -165,3 +165,16 @@ reccomplex.configgui.ctgy.visual=Visual
 reccomplex.configgui.ctgy.visual.tooltip=Visual Settings
 reccomplex.configgui.ctgy.balancing=Balancing
 reccomplex.configgui.ctgy.balancing.tooltip=Settings affecting the mod's balancing
+
+reccomplex.generationInfo.natural=Natural
+reccomplex.generationInfo.mazeComponent=Maze Component
+reccomplex.generationInfo.mazeComponent.title=In Maze: %s
+reccomplex.generationInfo.vanillaStructure=Structure Part
+
+reccomplex.blockTransformer.natural=Natural Floor
+reccomplex.blockTransformer.naturalAir=Natural Air
+reccomplex.blockTransformer.pillar=Pillar
+reccomplex.blockTransformer.replaceAll=Replace All
+reccomplex.blockTransformer.replace=Replace
+reccomplex.blockTransformer.ruins=Ruins
+reccomplex.blockTransformer.negativeSpace=Negative Space

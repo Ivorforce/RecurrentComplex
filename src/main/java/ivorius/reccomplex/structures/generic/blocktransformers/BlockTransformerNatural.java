@@ -5,13 +5,21 @@
 
 package ivorius.reccomplex.structures.generic.blocktransformers;
 
+import com.google.gson.*;
 import ivorius.ivtoolkit.blocks.BlockCoord;
 import ivorius.ivtoolkit.math.IvVecMathHelper;
+import ivorius.ivtoolkit.tools.MCRegistry;
+import ivorius.reccomplex.gui.editstructure.TableDataSourceBTNatural;
+import ivorius.reccomplex.gui.table.TableDataSource;
+import ivorius.reccomplex.gui.table.TableDelegate;
+import ivorius.reccomplex.gui.table.TableNavigator;
+import ivorius.reccomplex.json.JsonUtils;
 import net.minecraft.block.Block;
 import net.minecraft.init.Blocks;
 import net.minecraft.world.World;
 import net.minecraft.world.biome.BiomeGenBase;
 
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -26,6 +34,11 @@ public class BlockTransformerNatural extends BlockTransformerSingle
 
     public Block sourceBlock;
     public int sourceMetadata;
+
+    public BlockTransformerNatural()
+    {
+        this(Blocks.grass, 0);
+    }
 
     public BlockTransformerNatural(Block sourceBlock, int sourceMetadata)
     {
@@ -132,14 +145,56 @@ public class BlockTransformerNatural extends BlockTransformerSingle
     }
 
     @Override
+    public boolean generatesInPhase(Phase phase)
+    {
+        return phase == Phase.BEFORE;
+    }
+
+    @Override
     public String displayString()
     {
         return "Natural: " + sourceBlock.getLocalizedName();
     }
 
     @Override
-    public boolean generatesInPhase(Phase phase)
+    public TableDataSource tableDataSource(TableNavigator navigator, TableDelegate delegate)
     {
-        return phase == Phase.BEFORE;
+        return new TableDataSourceBTNatural(this);
+    }
+
+    public static class Serializer implements JsonDeserializer<BlockTransformerNatural>, JsonSerializer<BlockTransformerNatural>
+    {
+        private MCRegistry registry;
+
+        public Serializer(MCRegistry registry)
+        {
+            this.registry = registry;
+        }
+
+        @Override
+        public BlockTransformerNatural deserialize(JsonElement jsonElement, Type par2Type, JsonDeserializationContext context)
+        {
+            JsonObject jsonobject = JsonUtils.getJsonElementAsJsonObject(jsonElement, "transformerNatural");
+
+            String sourceBlock = JsonUtils.getJsonObjectStringFieldValue(jsonobject, "source");
+            Block source = registry.blockFromID(sourceBlock);
+            int sourceMeta = JsonUtils.getJsonObjectIntegerFieldValueOrDefault(jsonobject, "sourceMetadata", -1);
+
+            return new BlockTransformerNatural(source, sourceMeta);
+        }
+
+        @Override
+        public JsonElement serialize(BlockTransformerNatural transformerPillar, Type par2Type, JsonSerializationContext context)
+        {
+            JsonObject jsonobject = new JsonObject();
+
+            jsonobject.addProperty("source", Block.blockRegistry.getNameForObject(transformerPillar.sourceBlock));
+            if (transformerPillar.sourceMetadata >= 0)
+            {
+                jsonobject.addProperty("sourceMetadata", transformerPillar.sourceMetadata);
+            }
+
+            return jsonobject;
+        }
     }
 }

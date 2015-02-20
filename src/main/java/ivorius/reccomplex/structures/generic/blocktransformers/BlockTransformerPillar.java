@@ -5,11 +5,20 @@
 
 package ivorius.reccomplex.structures.generic.blocktransformers;
 
+import com.google.gson.*;
 import ivorius.ivtoolkit.blocks.BlockCoord;
+import ivorius.ivtoolkit.tools.MCRegistry;
+import ivorius.reccomplex.gui.editstructure.TableDataSourceBTPillar;
+import ivorius.reccomplex.gui.table.TableDataSource;
+import ivorius.reccomplex.gui.table.TableDelegate;
+import ivorius.reccomplex.gui.table.TableNavigator;
+import ivorius.reccomplex.json.JsonUtils;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
+import net.minecraft.init.Blocks;
 import net.minecraft.world.World;
 
+import java.lang.reflect.Type;
 import java.util.Random;
 
 /**
@@ -22,6 +31,11 @@ public class BlockTransformerPillar extends BlockTransformerSingle
 
     public Block destBlock;
     public int destMetadata;
+
+    public BlockTransformerPillar()
+    {
+        this(Blocks.stone, 0, Blocks.stone, 0);
+    }
 
     public BlockTransformerPillar(Block sourceBlock, int sourceMetadata, Block destBlock, int destMetadata)
     {
@@ -65,8 +79,57 @@ public class BlockTransformerPillar extends BlockTransformerSingle
     }
 
     @Override
+    public TableDataSource tableDataSource(TableNavigator navigator, TableDelegate delegate)
+    {
+        return new TableDataSourceBTPillar(this);
+    }
+
+    @Override
     public boolean generatesInPhase(Phase phase)
     {
         return phase == Phase.BEFORE;
+    }
+
+    public static class Serializer implements JsonDeserializer<BlockTransformerPillar>, JsonSerializer<BlockTransformerPillar>
+    {
+        private MCRegistry registry;
+
+        public Serializer(MCRegistry registry)
+        {
+            this.registry = registry;
+        }
+
+        @Override
+        public BlockTransformerPillar deserialize(JsonElement jsonElement, Type par2Type, JsonDeserializationContext context)
+        {
+            JsonObject jsonobject = JsonUtils.getJsonElementAsJsonObject(jsonElement, "transformerPillar");
+
+            String sourceBlock = JsonUtils.getJsonObjectStringFieldValue(jsonobject, "source");
+            Block source = registry.blockFromID(sourceBlock);
+            int sourceMeta = JsonUtils.getJsonObjectIntegerFieldValueOrDefault(jsonobject, "sourceMetadata", -1);
+
+            String destBlock = JsonUtils.getJsonObjectStringFieldValue(jsonobject, "dest");
+            Block dest = registry.blockFromID(destBlock);
+            int destMeta = JsonUtils.getJsonObjectIntegerFieldValue(jsonobject, "destMetadata");
+
+            return new BlockTransformerPillar(source, sourceMeta, dest, destMeta);
+        }
+
+        @Override
+        public JsonElement serialize(BlockTransformerPillar transformerPillar, Type par2Type, JsonSerializationContext context)
+        {
+            JsonObject jsonobject = new JsonObject();
+
+            jsonobject.addProperty("source", Block.blockRegistry.getNameForObject(transformerPillar.sourceBlock));
+            if (transformerPillar.sourceMetadata >= 0)
+            {
+                jsonobject.addProperty("sourceMetadata", transformerPillar.sourceMetadata);
+            }
+
+            jsonobject.addProperty("dest", Block.blockRegistry.getNameForObject(transformerPillar.destBlock));
+            jsonobject.addProperty("destMetadata", transformerPillar.destMetadata);
+
+            return jsonobject;
+        }
     }
 }

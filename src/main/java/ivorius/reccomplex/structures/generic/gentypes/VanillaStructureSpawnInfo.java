@@ -7,14 +7,19 @@ package ivorius.reccomplex.structures.generic.gentypes;
 
 import com.google.gson.*;
 import ivorius.ivtoolkit.blocks.BlockCoord;
+import ivorius.reccomplex.gui.editstructure.TableDataSourceVanillaStructureGenerationInfo;
+import ivorius.reccomplex.gui.table.TableDataSource;
+import ivorius.reccomplex.gui.table.TableDelegate;
+import ivorius.reccomplex.gui.table.TableNavigator;
 import ivorius.reccomplex.json.JsonUtils;
+import net.minecraft.util.StatCollector;
 
 import java.lang.reflect.Type;
 
 /**
  * Created by lukas on 19.01.15.
  */
-public class VanillaStructureSpawnInfo
+public class VanillaStructureSpawnInfo extends StructureGenerationInfo
 {
     public int spawnWeight;
     public int minBaseLimit;
@@ -37,6 +42,18 @@ public class VanillaStructureSpawnInfo
     public static VanillaStructureSpawnInfo defaultStructureSpawnInfo()
     {
         return new VanillaStructureSpawnInfo(20, 2, 5, 3, 3, new BlockCoord(0, 0, 0));
+    }
+
+    @Override
+    public String displayString()
+    {
+        return StatCollector.translateToLocal("reccomplex.generationInfo.vanillaStructure");
+    }
+
+    @Override
+    public TableDataSource tableDataSource(TableNavigator navigator, TableDelegate delegate)
+    {
+        return new TableDataSourceVanillaStructureGenerationInfo(navigator, delegate, this);
     }
 
     public static class Serializer implements JsonSerializer<VanillaStructureSpawnInfo>, JsonDeserializer<VanillaStructureSpawnInfo>

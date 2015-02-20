@@ -17,13 +17,16 @@ import ivorius.reccomplex.events.StructureGenerationEventLite;
 import ivorius.reccomplex.structures.StructureInfo;
 import ivorius.reccomplex.structures.StructureRegistry;
 import ivorius.reccomplex.structures.StructureSpawnContext;
+import ivorius.reccomplex.structures.generic.gentypes.NaturalGenerationInfo;
 import net.minecraft.util.ChunkCoordinates;
 import net.minecraft.world.World;
 import net.minecraft.world.biome.BiomeGenBase;
 import net.minecraft.world.chunk.IChunkProvider;
 import net.minecraft.world.gen.structure.StructureBoundingBox;
 import net.minecraftforge.common.MinecraftForge;
+import org.apache.commons.lang3.tuple.Pair;
 
+import javax.annotation.Nullable;
 import java.util.List;
 import java.util.Random;
 
@@ -35,7 +38,7 @@ public class WorldGenStructures implements IWorldGenerator
 
     public static final int MIN_DIST_TO_LIMIT = 3;
 
-    public static int generateStructureRandomly(World world, Random random, StructureInfo info, int x, int z, boolean suggest)
+    public static int generateStructureRandomly(World world, Random random, StructureInfo info, @Nullable NaturalGenerationInfo naturalGenerationInfo, int x, int z, boolean suggest)
     {
         AxisAlignedTransform2D transform = AxisAlignedTransform2D.transform(info.isRotatable() ? random.nextInt(4) : 0, info.isMirrorable() && random.nextBoolean());
 
@@ -43,7 +46,7 @@ public class WorldGenStructures implements IWorldGenerator
 
         int genX = x - size[0] / 2;
         int genZ = z - size[2] / 2;
-        int genY = info.generationY(world, random, x, z);
+        int genY = naturalGenerationInfo != null ? naturalGenerationInfo.ySelector.generationY(world, random, x, z, size) : world.getHeightValue(x, z);
         BlockCoord coord = new BlockCoord(genX, genY, genZ);
 
         generateStructureWithNotifications(info, world, random, coord, transform, 0, suggest);
@@ -87,12 +90,19 @@ public class WorldGenStructures implements IWorldGenerator
             StructureInfo structureInfo = StructureRegistry.getStructure(RCConfig.spawnStructure);
             if (structureInfo != null)
             {
+
                 AxisAlignedTransform2D transform = AxisAlignedTransform2D.transform(structureInfo.isRotatable() ? random.nextInt(4) : 0, structureInfo.isMirrorable() && random.nextBoolean());
                 int[] strucBB = structureSize(structureInfo, transform);
 
                 int strucX = spawn.posX + RCConfig.spawnStructureShiftX;
                 int strucZ = spawn.posZ + RCConfig.spawnStructureShiftZ;
-                int strucY = structureInfo.generationY(world, random, strucX, strucZ);
+
+                int strucY;
+                List<NaturalGenerationInfo> naturalGenerationInfos = structureInfo.generationInfos(NaturalGenerationInfo.class);
+                if (naturalGenerationInfos.size() > 0)
+                    strucY = naturalGenerationInfos.get(0).ySelector.generationY(world, random, strucX, strucZ, strucBB);
+                else
+                    strucY = world.getHeightValue(strucX, strucZ);
 
                 BlockCoord genCoord = new BlockCoord(strucX - strucBB[0] / 2, strucY, strucZ - strucBB[2] / 2);
 
@@ -148,13 +158,13 @@ public class WorldGenStructures implements IWorldGenerator
             BiomeGenBase biomeGen = world.getBiomeGenForCoords(chunkX * 16, chunkZ * 16);
 
             StructureSelector structureSelector = StructureRegistry.getStructureSelector(biomeGen, world.provider);
-            List<StructureInfo> generated = structureSelector.generatedStructures(random, chunkX, chunkZ, world, chunkGenerator, chunkProvider);
+            List<Pair<StructureInfo, NaturalGenerationInfo>> generated = structureSelector.generatedStructures(random, chunkX, chunkZ, world, chunkGenerator, chunkProvider);
 
-            for (StructureInfo info : generated)
+            for (Pair<StructureInfo, NaturalGenerationInfo> pair : generated)
             {
                 int genX = chunkX * 16 + random.nextInt(16);
                 int genZ = chunkZ * 16 + random.nextInt(16);
-                generateStructureRandomly(world, random, info, genX, genZ, true);
+                generateStructureRandomly(world, random, pair.getLeft(), pair.getRight(), genX, genZ, true);
 
 //                RecurrentComplex.logger.info("Generated " + info + " at " + genX + ", " + genY + ", " + genZ);
             }

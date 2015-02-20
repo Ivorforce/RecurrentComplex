@@ -9,76 +9,45 @@ import ivorius.reccomplex.gui.table.*;
 import ivorius.reccomplex.structures.generic.BiomeGenerationInfo;
 import org.apache.commons.lang3.StringUtils;
 
-import java.util.Collections;
 import java.util.List;
 
 /**
  * Created by lukas on 04.06.14.
  */
-public class TableDataSourceBiomeGenList extends TableDataSourceSegmented implements TableElementButton.Listener, TableElementPresetAction.Listener
+public class TableDataSourceBiomeGenList extends TableDataSourceList<BiomeGenerationInfo, List<BiomeGenerationInfo>> implements TableElementButton.Listener, TableElementPresetAction.Listener
 {
-    private List<BiomeGenerationInfo> biomeGenerationInfoList;
-
-    private TableDelegate tableDelegate;
-    private TableNavigator navigator;
-
-    public TableDataSourceBiomeGenList(List<BiomeGenerationInfo> biomeGenerationInfoList, TableDelegate tableDelegate, TableNavigator navigator)
+    public TableDataSourceBiomeGenList(List<BiomeGenerationInfo> list, TableDelegate tableDelegate, TableNavigator navigator)
     {
-        this.biomeGenerationInfoList = biomeGenerationInfoList;
-        this.tableDelegate = tableDelegate;
-        this.navigator = navigator;
-    }
-
-    public List<BiomeGenerationInfo> getBiomeGenerationInfoList()
-    {
-        return Collections.unmodifiableList(biomeGenerationInfoList);
-    }
-
-    public void setBiomeGenerationInfoList(List<BiomeGenerationInfo> biomeGenerationInfoList)
-    {
-        this.biomeGenerationInfoList = biomeGenerationInfoList;
-    }
-
-    public TableDelegate getTableDelegate()
-    {
-        return tableDelegate;
-    }
-
-    public void setTableDelegate(TableDelegate tableDelegate)
-    {
-        this.tableDelegate = tableDelegate;
-    }
-
-    public TableNavigator getNavigator()
-    {
-        return navigator;
-    }
-
-    public void setNavigator(TableNavigator navigator)
-    {
-        this.navigator = navigator;
+        super(list, tableDelegate, navigator);
+        setAddTitle("Add Biome");
     }
 
     @Override
     public int numberOfSegments()
     {
-        return 3;
+        return super.numberOfSegments() + 1;
     }
 
     @Override
     public int sizeOfSegment(int segment)
     {
-        switch (segment)
-        {
-            case 0:
-                return 1;
-            case 1:
-                return biomeGenerationInfoList.size();
-            case 2:
-                return 1;
-        }
+        return segment == 0 ? 1 : super.sizeOfSegment(segment);
+    }
 
-        return 0;
+    @Override
+    public boolean isListSegment(int segment)
+    {
+        return segment == 2;
+    }
+
+    @Override
+    public int getAddIndex(int segment)
+    {
+        return segment == 1
+                ? 0
+                : segment == 3
+                ? (list.size() > 0 ? list.size() : -1)
+                : -1;
     }
 
     @Override
@@ -90,62 +59,26 @@ public class TableDataSourceBiomeGenList extends TableDataSourceSegmented implem
             elementPresetAction.addListener(this);
             return elementPresetAction;
         }
-        else if (segment == 1)
-        {
-            int biomeGenIndex = index;
-            TableElementButton.Action[] actions = {new TableElementButton.Action("earlier", "Earlier", biomeGenIndex > 0), new TableElementButton.Action("later", "Later", biomeGenIndex < biomeGenerationInfoList.size() - 1), new TableElementButton.Action("edit", "Edit"), new TableElementButton.Action("delete", "Delete")};
-            BiomeGenerationInfo biomeGenerationInfo = biomeGenerationInfoList.get(biomeGenIndex);
 
-            String title = StringUtils.abbreviate(biomeGenerationInfo.getDisplayString(), 16) + " (" + biomeGenerationInfo.getActiveGenerationWeight() + ")";
-            TableElementButton button = new TableElementButton("biomeGen" + biomeGenIndex, title, actions);
-            button.addListener(this);
-            return button;
-        }
-        else if (segment == 2)
-        {
-            TableElementButton addButton = new TableElementButton("addGen", "Add", new TableElementButton.Action("addGen", "Add Biome"));
-            addButton.addListener(this);
-            return addButton;
-        }
-
-        return null;
+        return super.elementForIndexInSegment(table, index, segment);
     }
 
     @Override
-    public void actionPerformed(TableElementButton tableElementButton, String actionID)
+    public String getDisplayString(BiomeGenerationInfo biomeGenerationInfo)
     {
-        if (actionID.equals("addGen"))
-        {
-            BiomeGenerationInfo generationInfo = new BiomeGenerationInfo("", null);
-            biomeGenerationInfoList.add(generationInfo);
-            navigator.pushTable(new GuiTable(tableDelegate, new TableDataSourceBiomeGen(generationInfo, tableDelegate)));
-        }
-        else if (tableElementButton.getID().startsWith("biomeGen"))
-        {
-            int index = Integer.valueOf(tableElementButton.getID().substring(8));
-            BiomeGenerationInfo generationInfo = biomeGenerationInfoList.get(index);
+        return StringUtils.abbreviate(biomeGenerationInfo.getDisplayString(), 16) + " (" + biomeGenerationInfo.getActiveGenerationWeight() + ")";
+    }
 
-            switch (actionID)
-            {
-                case "edit":
-                    navigator.pushTable(new GuiTable(tableDelegate, new TableDataSourceBiomeGen(generationInfo, tableDelegate)));
-                    break;
-                case "delete":
-                    biomeGenerationInfoList.remove(generationInfo);
-                    tableDelegate.reloadData();
-                    break;
-                case "earlier":
-                    biomeGenerationInfoList.remove(index);
-                    biomeGenerationInfoList.add(index - 1, generationInfo);
-                    tableDelegate.reloadData();
-                    break;
-                case "later":
-                    biomeGenerationInfoList.remove(index);
-                    biomeGenerationInfoList.add(index + 1, generationInfo);
-                    tableDelegate.reloadData();
-                    break;
-            }
-        }
+    @Override
+    public BiomeGenerationInfo newEntry(String actionID)
+    {
+        return new BiomeGenerationInfo("", null);
+    }
+
+    @Override
+    public TableDataSource editEntryDataSource(BiomeGenerationInfo entry)
+    {
+        return new TableDataSourceBiomeGen(entry, tableDelegate);
     }
 
     @Override
@@ -156,23 +89,25 @@ public class TableDataSourceBiomeGenList extends TableDataSourceSegmented implem
             switch (actionID)
             {
                 case "overworld":
-                    biomeGenerationInfoList.clear();
-                    biomeGenerationInfoList.addAll(BiomeGenerationInfo.overworldBiomeGenerationList());
+                    list.clear();
+                    list.addAll(BiomeGenerationInfo.overworldBiomeGenerationList());
                     break;
                 case "underground":
-                    biomeGenerationInfoList.clear();
-                    biomeGenerationInfoList.addAll(BiomeGenerationInfo.undergroundBiomeGenerationList());
+                    list.clear();
+                    list.addAll(BiomeGenerationInfo.undergroundBiomeGenerationList());
                     break;
                 case "ocean":
-                    biomeGenerationInfoList.clear();
-                    biomeGenerationInfoList.addAll(BiomeGenerationInfo.oceanBiomeGenerationList());
+                    list.clear();
+                    list.addAll(BiomeGenerationInfo.oceanBiomeGenerationList());
                     break;
                 case "clear":
-                    biomeGenerationInfoList.clear();
+                    list.clear();
                     break;
             }
 
             tableDelegate.reloadData();
         }
+
+        super.actionPerformed(tableElementButton, actionID);
     }
 }

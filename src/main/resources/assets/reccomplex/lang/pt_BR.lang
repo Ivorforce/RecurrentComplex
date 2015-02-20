@@ -1,4 +1,4 @@
-item.blockSelector.name=Seletor de Bloco 
+item.blockSelector.name=Seletor de Bloco
 item.blockSelectorFloating.name=Seletor de Bloco Flutuante
 item.inventoryGenerationTag.name=Gerador de Etiqueta de Inventário
 item.inventoryGenerationSingleTag.name=Gerador de Etiqueta de Item Único
@@ -6,7 +6,7 @@ item.inventoryGenerationComponentTag.name=Gerador de Etiqueta de Item Componente
 item.artifactGenerationTag.name=Gerador de Etiqueta de Artefato
 item.bookGenerationTag.name=Gerador de Etiqueta de Livro
 
-tile.negativeSpace.name=Espaço Genérico 
+tile.negativeSpace.name=Espaço Genérico
 tile.negativeSpace.meta.0.name=Espaço (0 ~ Espaço Negativo)
 tile.negativeSpace.meta.1.name=Espaço (1 ~ Ar Natural)
 tile.negativeSpace.meta.2.name=Espaço (2)
@@ -23,7 +23,7 @@ tile.negativeSpace.meta.12.name=Espaço (12)
 tile.negativeSpace.meta.13.name=Espaço (13)
 tile.negativeSpace.meta.14.name=Espaço (14)
 tile.negativeSpace.meta.15.name=Espaço (15)
-tile.naturalFloor.name=Sólido Genérico 
+tile.naturalFloor.name=Sólido Genérico
 tile.naturalFloor.meta.0.name=Sólido (0 ~ Piso Natural)
 tile.naturalFloor.meta.1.name=Sólido (1 ~ Barreira)
 tile.naturalFloor.meta.2.name=Sólido (2)
@@ -42,28 +42,31 @@ tile.naturalFloor.meta.14.name=Sólido (14)
 tile.naturalFloor.meta.15.name=Sólido (15)
 tile.structureGenerator.name=Gerador de Estrutura
 tile.mazeGenerator.name=Gerador de Labirinto
+tile.spawnCommand.name=Invocar Bloco de Comando
 
 itemGroup.structureTools=Ferramentas de Estrutura
 itemGroup.inventoryGenerators=Geradores de Inventário
 
-commands.structure.notGeneric=A estrutura '%s' não é genérica! 
-commands.structure.notRegistered=Nenhuma estrutura encontrada com o nome '%s'! 
+commands.rc.noEntityInfo=A entidade não contém estrutura de informação! Isto é um erro!
+
+commands.structure.notGeneric=A estrutura '%s' não é genérica!
+commands.structure.notRegistered=Nenhuma estrutura encontrada com o nome '%s'!
 
 commands.strucExport.usage=/#export [blueprintName]
 commands.strucExport.failure=Falha ao exportar a estrutura para o arquivo '%s'
-commands.strucExport.success=Estrutura exportada para o arquivo '%s' 
+commands.strucExport.success=Estrutura exportada para o arquivo '%s'
 
-commands.strucEdit.usage=/#edit <structureName>
+commands.strucEdit.usage=/#editstructure <structureName>
 
 commands.strucGen.usage=/#gen <structureName> [x] [z]
-commands.strucGen.noStructure=Nenhuma estrutura registrada com o nome de '%s' 
+commands.strucGen.noStructure=Nenhuma estrutura registrada com o nome de '%s'
 
 commands.strucImport.usage=/#import <structureName> [x] [y] [z]
-commands.strucImport.noStructure=Nenhuma estrutura registrada com o nome de '%s' 
+commands.strucImport.noStructure=Nenhuma estrutura registrada com o nome de '%s'
 
 commands.selectSet.usage=/#select <both|clear|point1|point2> [x] [y] [z]
 
-commands.selectModify.noSelection=O jogador não possui uma seleção completa 
+commands.selectModify.noSelection=O jogador não possui uma seleção completa
 commands.selectModify.invalidMetadata=Metadados devem ser inseridos como '0,1,5', mas foi '%s'
 
 commands.selectFill.usage=/#fill <block> [metadata1,metadata2,metadata3...]
@@ -75,65 +78,92 @@ commands.selectFillSphere.usage=/#sphere <block> [metadata1,metadata2,metadata3.
 commands.selectNatural.usage=/#natural [naturalFloorExpansion]
 
 commands.strucReload.usage=/#reload <structureName> [x] [y] [z]
-commands.strucReload.success=Recarregada todas as estruturas e geradores de inventário 
+commands.strucReload.success=Recarregada todas as estruturas e geradores de inventário
 
 commands.selectCopy.usage=/#copy
-commands.selectCopy.success=Copiado %s, %s, %s para %s, %s, %s para área de transferência 
+commands.selectCopy.success=Copiado %s, %s, %s para %s, %s, %s para área de transferência
 
 commands.strucPaste.usage=/#paste [x] [y] [z]
-commands.strucPaste.noClipboard=Você tem que copiar uma área primeiro! 
+commands.strucPaste.noClipboard=Você tem que copiar uma área primeiro!
+commands.strucPasteGen.usage=/#pastegen [x] [y] [z]
 
 commands.selectMove.usage=/#move <x> <y> <z> [clockwise-rotations] [mirror x:true|false]
 
 commands.selectDuplicate.usage=/#duplicate <x> <y> <z> [clockwise-rotations] [mirror x:true|false]
 
+commands.rcpreview.usage=/#preview <none|bounds>
+commands.rcpreview.invalid=Tipo de visualização inválido
+commands.rcpreview.success=Tipo de visualização definido para '%s'
+
+commands.rc.noOperation=Nenhuma operação atualmente na fila
+commands.rc.queuedOp=A operação agora está sendo visualizada. Digite /#confirm ou /#cancel.
+commands.rcconfirm.usage=/#confirm
+commands.rccancel.usage=/#cancel
+
 commands.strucImportSchematic.usage=/#importschematic <schematic name>
-commands.strucImportSchematic.noStructure=O arquivo '%s' não foi encontrado em %s 
-commands.strucImportSchematic.format=O arquivo '%s' tem um formato não suportado (%s) 
+commands.strucImportSchematic.noStructure=O arquivo '%s' não foi encontrado em %s
+commands.strucImportSchematic.format=O arquivo '%s' tem um formato não suportado (%s)
 
 commands.strucExportSchematic.usage=/#exportschematic <schematic name>
-commands.strucExportSchematic.success=Esquema exportado para '%s' 
+commands.strucExportSchematic.success=Esquema exportado para '%s'
 
 commands.biomedict.usage=/#biomedict <get|list> id (get: Biome ID, list: Biome Type ID)
-commands.biomedict.get=Tipos de Bioma para %s: %s 
-commands.biomedict.list=Biomas do Tipo %s: %s 
-commands.biomedict.nobiome=Nenhum Bioma com o ID '%s' 
-commands.biomedict.notype=Nenhum Tipo de Bioma com o ID '%s' 
+commands.biomedict.get=Tipos de Bioma para %s: %s
+commands.biomedict.list=Biomas do Tipo %s: %s
+commands.biomedict.nobiome=Nenhum Bioma com o ID '%s'
+commands.biomedict.notype=Nenhum Tipo de Bioma com o ID '%s'
 
-commands.dimensiondict.usage=/#dimensiondict <get|list> id (get: ID da Dimensão, list: ID do Tipo da Dimensão)
+commands.dimensiondict.usage=/#dimensiondict <get|list> id (get: Dimension ID, list: Dimension Type ID)
 commands.dimensiondict.get=Tipo de Dimensões para %d: %s
 commands.dimensiondict.list=Dimensões do Tipo %s: %s
 
 inventoryGen.vanilla=Gerador Vanila
 inventoryGen.custom=Gerador Personalizado
-inventoryGen.create=Criar Novo Gerador 
-inventoryGen.none=Sem Gerador 
+inventoryGen.create=Criar Novo Gerador
+inventoryGen.none=Sem Gerador
 inventoryGen.mod=Gerador Mod
 
-guiGenericInventory.save=Salvar 
-guiGenericInventory.weight=Peso 
-guiGenericInventory.minMax=Min.: %s, Máx.: %s 
-guiGenericInventory.minMaxItems=Itens Min.: %s, Itens Máx.: %s 
-guiGenericInventory.weightNumber=Peso: %s 
-inventorygen.save.success=Gerador de Inventário exportado para '%s' 
-inventorygen.save.failure=Falha ao exportar Gerador de Inventário para '%s' 
+guiGenericInventory.save=Salvar
+guiGenericInventory.weight=Peso
+guiGenericInventory.minMax=Min.: %s, Máx.: %s
+guiGenericInventory.minMaxItems=Itens Min.: %s, Itens Máx.: %s
+guiGenericInventory.weightNumber=Peso: %s
+inventorygen.save.success=Gerador de Inventário exportado para '%s'
+inventorygen.save.failure=Falha ao exportar gerador de inventário para '%s'
 
-structures.gui.true=Verdadeiro 
-structures.gui.false=Falso 
+structures.gui.true=Verdadeiro
+structures.gui.false=Falso
 
-structures.category.decoration=Decoração 
-structures.category.rare=Raro 
-structures.category.adventure=Aventura 
+structures.category.frequent=Frequente
+structures.category.frequent.tooltip=Pequenas estruturas ou cenário <br>Estruturas aleatórias a cada 10 ´chunks´
+structures.category.decoration=Comum
+structures.category.decoration.tooltip=Estruturas comuns <br>Estruturas aleatórias cada 30 ´chunks´
+structures.category.rare=Raro
+structures.category.rare.tooltip=Atrações especiais para contemplar<br>Estruturas aleatórias a cada 1250 ´chunks´
+structures.category.ultrarare=Ultra Rara
+structures.category.ultrarare.tooltip=Vista uma vez na vida<br>Estrutura aleatória a cada 5000 ´chunks´
+structures.category.adventure=Aventura
+structures.category.adventure.tooltip=Estruturas centrando-se em combate e despojos<br>Estrutura aleatória a cada 250 ´chunks´
 
-structures.genY.bedrock=Rocha Matriz 
-structures.genY.surface=Superfície 
-structures.genY.sealevel=Nível do Mar 
-structures.genY.underwater=Oceano 
-structures.genY.top=Topo (Céu) 
-structures.genY.lowestedge=Borda Mais Baixa (Fundo do Oceano) 
+structures.genY.bedrock=Rocha Matriz
+structures.genY.bedrock.tooltip=Fundo do mundo: y0
+structures.genY.surface=Superfície
+structures.genY.surface.tooltip=O mais alto bloco sólido ou líquido
+structures.genY.sealevel=Nível do Mar
+structures.genY.sealevel.tooltip=A altura do oceano: y63
+structures.genY.underwater=Oceano Oceano
+structures.genY.underwater.tooltip=O mais alto bloco sólido
+structures.genY.top=Topo (Céu)
+structures.genY.top.tooltip=Topo do mundo: y127
+structures.genY.lowestedge=Borda mais baixa (Fundo do Oceano)
+structures.genY.lowestedge.tooltip=Como o oceano, mas enterrado tanto quanto necessário
 
-reccomplex.configgui.title=Config. Gerador de Esturura 
-reccomplex.configgui.ctgy.general=Geral 
-reccomplex.configgui.ctgy.general.tooltip=Configurações Gerais 
-reccomplex.configgui.ctgy.visual=Visual 
-reccomplex.configgui.ctgy.visual.tooltip=Configurações do Visual 
+reccomplex.configgui.title=Config. Gerador de Esturura
+reccomplex.configgui.ctgy.general=Geral
+reccomplex.configgui.ctgy.general.tooltip=Configurações Gerais
+reccomplex.configgui.ctgy.visual=Visual
+reccomplex.configgui.ctgy.visual.tooltip=Configurações do Visual
+reccomplex.configgui.ctgy.balancing=Balanceamento
+reccomplex.configgui.ctgy.balancing.tooltip=As configurações que afetam o equilíbrio do mod
+
+# Localization File: Português Brasileiro (pt_BR) – por: Al-Myr/Last Update: 19/2/2015 – por: Al-Myr

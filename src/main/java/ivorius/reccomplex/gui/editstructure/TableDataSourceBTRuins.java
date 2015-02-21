@@ -34,23 +34,38 @@ public class TableDataSourceBTRuins implements TableDataSource, TableElementProp
     @Override
     public boolean has(GuiTable table, int index)
     {
-        return index >= 0 && index < 2;
+        return index >= 0 && index < 4;
     }
 
     @Override
     public TableElement elementForIndex(GuiTable table, int index)
     {
-        if (index == 0)
+        switch (index)
         {
-            TableElementFloatRange element = new TableElementFloatRange("decay", "Decay", new FloatRange(blockTransformer.minDecay, blockTransformer.maxDecay), 0.0f, 1.0f, 2);
-            element.addPropertyListener(this);
-            return element;
-        }
-        else if (index == 1)
-        {
-            TableElementFloat element = new TableElementFloat("decayChaos", "Chaos", blockTransformer.decayChaos, 0.0f, 1.0f);
-            element.addPropertyListener(this);
-            return element;
+            case 0:
+            {
+                TableElementFloatRange element = new TableElementFloatRange("decay", "Decay", new FloatRange(blockTransformer.minDecay, blockTransformer.maxDecay), 0.0f, 1.0f, 2);
+                element.addPropertyListener(this);
+                return element;
+            }
+            case 1:
+            {
+                TableElementFloat element = new TableElementFloat("decayChaos", "Chaos", blockTransformer.decayChaos, 0.0f, 1.0f);
+                element.addPropertyListener(this);
+                return element;
+            }
+            case 2:
+            {
+                TableElementFloat element = new TableElementFloat("erosion", "Erosion", blockTransformer.blockErosion, 0.0f, 1.0f);
+                element.addPropertyListener(this);
+                return element;
+            }
+            case 3:
+            {
+                TableElementFloat element = new TableElementFloat("vines", "Vine Growth", blockTransformer.vineGrowth, 0.0f, 1.0f);
+                element.addPropertyListener(this);
+                return element;
+            }
         }
 
         return null;
@@ -59,15 +74,22 @@ public class TableDataSourceBTRuins implements TableDataSource, TableElementProp
     @Override
     public void valueChanged(TableElementPropertyDefault element)
     {
-        if ("decay".equals(element.getID()))
+        switch (element.getID())
         {
-            FloatRange range = (FloatRange) element.getPropertyValue();
-            blockTransformer.minDecay = range.getMin();
-            blockTransformer.maxDecay = range.getMax();
-        }
-        else if ("decayChaos".equals(element.getID()))
-        {
-            blockTransformer.decayChaos = (float) element.getPropertyValue();
+            case "decay":
+                FloatRange range = (FloatRange) element.getPropertyValue();
+                blockTransformer.minDecay = range.getMin();
+                blockTransformer.maxDecay = range.getMax();
+                break;
+            case "decayChaos":
+                blockTransformer.decayChaos = (float) element.getPropertyValue();
+                break;
+            case "erosion":
+                blockTransformer.blockErosion = (float) element.getPropertyValue();
+                break;
+            case "vines":
+                blockTransformer.vineGrowth = (float) element.getPropertyValue();
+                break;
         }
     }
 }

@@ -41,6 +41,8 @@ public class StructureEntityInfo implements IExtendedEntityProperties, PartialUp
     public int previewType = Operation.PREVIEW_TYPE_BOUNDING_BOX;
     public Operation danglingOperation;
 
+    public boolean showGrid = false;
+
     @Nullable
     public static StructureEntityInfo getStructureEntityInfo(Entity entity)
     {
@@ -70,6 +72,11 @@ public class StructureEntityInfo implements IExtendedEntityProperties, PartialUp
     public void sendOperationToClients(Entity entity)
     {
         IvNetworkHelperServer.sendEEPUpdatePacket(entity, EEP_KEY, "operation", RecurrentComplex.network);
+    }
+
+    public void sendOptionsToClients(Entity entity)
+    {
+        IvNetworkHelperServer.sendEEPUpdatePacket(entity, EEP_KEY, "options", RecurrentComplex.network);
     }
 
     public NBTTagCompound getCachedExportStructureBlockDataNBT()
@@ -138,6 +145,8 @@ public class StructureEntityInfo implements IExtendedEntityProperties, PartialUp
             if (worldDataClipboard != null)
                 compound.setTag("worldDataClipboard", worldDataClipboard);
         }
+
+        compound.setBoolean("showGrid", showGrid);
     }
 
     @Override
@@ -156,6 +165,8 @@ public class StructureEntityInfo implements IExtendedEntityProperties, PartialUp
                 worldDataClipboard = compound.getCompoundTag("worldDataClipboard");
         }
 
+        showGrid = compound.getBoolean("showGrid");
+
         hasChanges = true;
     }
 
@@ -173,6 +184,7 @@ public class StructureEntityInfo implements IExtendedEntityProperties, PartialUp
             sendSelectionToClients(entity);
             sendPreviewTypeToClients(entity);
             sendOperationToClients(entity);
+            sendOptionsToClients(entity);
         }
     }
 
@@ -192,6 +204,10 @@ public class StructureEntityInfo implements IExtendedEntityProperties, PartialUp
         {
             ByteBufUtils.writeTag(buffer, danglingOperation != null ? OperationRegistry.writeOperation(danglingOperation) : null);
         }
+        else if ("options".equals(context))
+        {
+            buffer.writeBoolean(showGrid);
+        }
     }
 
     @Override
@@ -210,6 +226,10 @@ public class StructureEntityInfo implements IExtendedEntityProperties, PartialUp
         {
             NBTTagCompound tag = ByteBufUtils.readTag(buffer);
             danglingOperation = tag != null ? OperationRegistry.readOperation(tag) : null;
+        }
+        else if ("options".equals(context))
+        {
+            showGrid = buffer.readBoolean();
         }
     }
 }

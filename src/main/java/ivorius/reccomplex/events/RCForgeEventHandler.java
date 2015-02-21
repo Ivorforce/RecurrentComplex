@@ -8,6 +8,7 @@ package ivorius.reccomplex.events;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
+import ivorius.reccomplex.client.rendering.GridRenderer;
 import ivorius.reccomplex.client.rendering.SelectionRenderer;
 import ivorius.reccomplex.entities.StructureEntityInfo;
 import ivorius.reccomplex.items.ItemInputHandler;
@@ -16,6 +17,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.MathHelper;
 import net.minecraftforge.client.event.MouseEvent;
 import net.minecraftforge.client.event.RenderWorldLastEvent;
 import net.minecraftforge.common.MinecraftForge;
@@ -63,6 +65,7 @@ public class RCForgeEventHandler
         int ticks = mc.thePlayer.ticksExisted;
 
         EntityLivingBase renderEntity = mc.renderViewEntity;
+        StructureEntityInfo info = StructureEntityInfo.getStructureEntityInfo(mc.thePlayer);
         double entityX = renderEntity.lastTickPosX + (renderEntity.posX - renderEntity.lastTickPosX) * (double) event.partialTicks;
         double entityY = renderEntity.lastTickPosY + (renderEntity.posY - renderEntity.lastTickPosY) * (double) event.partialTicks;
         double entityZ = renderEntity.lastTickPosZ + (renderEntity.posZ - renderEntity.lastTickPosZ) * (double) event.partialTicks;
@@ -70,9 +73,20 @@ public class RCForgeEventHandler
         GL11.glPushMatrix();
         GL11.glTranslated(-entityX, -entityY, -entityZ);
 
+        if (info != null && info.showGrid)
+        {
+            int spacing = 10;
+            GL11.glDisable(GL11.GL_TEXTURE_2D);
+            GL11.glColor3f(0.5f, 0.5f, 0.5f);
+            GL11.glPushMatrix();
+            GL11.glTranslatef(MathHelper.floor_double(entityX / spacing) * spacing, MathHelper.floor_double(entityY / spacing) * spacing, MathHelper.floor_double(entityZ / spacing) * spacing);
+            GridRenderer.renderGrid(8, spacing, 100, 0.05f);
+            GL11.glPopMatrix();
+            GL11.glEnable(GL11.GL_TEXTURE_2D);
+        }
+
         SelectionRenderer.renderSelection(mc.thePlayer, ticks, event.partialTicks);
 
-        StructureEntityInfo info = StructureEntityInfo.getStructureEntityInfo(mc.thePlayer);
         if (info != null && info.danglingOperation != null)
             info.danglingOperation.renderPreview(info.previewType, mc.theWorld, ticks, event.partialTicks);
 

@@ -31,6 +31,8 @@ public class RCCommands
         event.registerServerCommand(new CommandConfirm());
         event.registerServerCommand(new CommandCancel());
 
+        event.registerServerCommand(new CommandVisual());
+
         event.registerServerCommand(new CommandSelectFill());
         event.registerServerCommand(new CommandSelectReplace());
         event.registerServerCommand(new CommandSelectFillSphere());

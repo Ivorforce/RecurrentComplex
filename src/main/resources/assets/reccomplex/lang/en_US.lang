@@ -117,6 +117,10 @@ commands.dimensiondict.usage=/#dimensiondict <get|list> id (get: Dimension ID, l
 commands.dimensiondict.get=Dimension Types for %d: %s
 commands.dimensiondict.list=Dimensions of Type %s: %s
 
+commands.rcvisual.usage=/#visual rulers <true|false>
+commands.rcvisual.enabled='%s' successfully enabled
+commands.rcvisual.disabled='%s' successfully disabled
+
 inventoryGen.vanilla=Vanilla Generator
 inventoryGen.custom=Custom Generator
 inventoryGen.create=Create New Generator

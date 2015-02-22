@@ -14,7 +14,7 @@ import java.util.Arrays;
 /**
  * Created by lukas on 04.06.14.
  */
-public class TableDataSourceSelection extends TableDataSourceList<Selection.Area, Selection> implements TableElementButton.Listener
+public class TableDataSourceSelection extends TableDataSourceList<Selection.Area, Selection>
 {
     private int[] dimensions;
 

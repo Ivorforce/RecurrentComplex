@@ -12,7 +12,7 @@ import ivorius.reccomplex.gui.table.*;
 /**
  * Created by lukas on 05.06.14.
  */
-public class TableDataSourceMazeBlock extends TableDataSourceSegmented implements TableElementPropertyListener, TableElementButton.Listener
+public class TableDataSourceMazeBlock extends TableDataSourceSegmented implements TableElementPropertyListener, TableElementActionListener
 {
     public static final int[] DIMENSIONS = new int[]{100, 100, 100};
     private TileEntityMazeGenerator mazeGenerator;
@@ -182,13 +182,13 @@ public class TableDataSourceMazeBlock extends TableDataSourceSegmented implement
     }
 
     @Override
-    public void actionPerformed(TableElementButton tableElementButton, String actionID)
+    public void actionPerformed(TableElement element, String actionID)
     {
-        if ("exits".equals(tableElementButton.getID()))
+        if ("exits".equals(element.getID()))
         {
             tableNavigator.pushTable(new GuiTable(tableDelegate, new TableDataSourceMazePathList(mazeGenerator.mazeExits, mazeGenerator.mazeRooms.boundsHigher(), tableDelegate, tableNavigator)));
         }
-        else if ("rooms".equals(tableElementButton.getID()))
+        else if ("rooms".equals(element.getID()))
         {
             tableNavigator.pushTable(new GuiTable(tableDelegate, new TableDataSourceSelection(mazeGenerator.mazeRooms, DIMENSIONS, tableDelegate, tableNavigator)));
         }

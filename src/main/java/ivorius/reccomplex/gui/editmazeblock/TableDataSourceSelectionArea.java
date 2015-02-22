@@ -12,7 +12,7 @@ import ivorius.reccomplex.structures.generic.Selection;
 /**
 * Created by lukas on 08.10.14.
 */
-public class TableDataSourceSelectionArea extends TableDataSourceSegmented implements TableElementButton.Listener, TableElementPropertyListener
+public class TableDataSourceSelectionArea extends TableDataSourceSegmented implements TableElementPropertyListener
 {
     private Selection.Area area;
 
@@ -55,12 +55,6 @@ public class TableDataSourceSelectionArea extends TableDataSourceSegmented imple
         }
 
         return null;
-    }
-
-    @Override
-    public void actionPerformed(TableElementButton tableElementButton, String actionID)
-    {
-
     }
 
     @Override

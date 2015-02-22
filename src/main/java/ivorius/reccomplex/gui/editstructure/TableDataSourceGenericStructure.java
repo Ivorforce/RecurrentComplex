@@ -16,7 +16,7 @@ import java.util.*;
 /**
  * Created by lukas on 05.06.14.
  */
-public class TableDataSourceGenericStructure extends TableDataSourceSegmented implements TableElementButton.Listener, TableElementPropertyListener
+public class TableDataSourceGenericStructure extends TableDataSourceSegmented implements TableElementActionListener, TableElementPropertyListener
 {
     private GenericStructureInfo structureInfo;
     private String structureKey;
@@ -148,14 +148,14 @@ public class TableDataSourceGenericStructure extends TableDataSourceSegmented im
     }
 
     @Override
-    public void actionPerformed(TableElementButton tableElementButton, String actionID)
+    public void actionPerformed(TableElement element, String actionID)
     {
-        if ("editTransformers".equals(tableElementButton.getID()) && "edit".equals(actionID))
+        if ("editTransformers".equals(element.getID()) && "edit".equals(actionID))
         {
             GuiTable editTransformersProperties = new GuiTable(tableDelegate, new TableDataSourceBlockTransformerList(structureInfo.blockTransformers, tableDelegate, navigator));
             navigator.pushTable(editTransformersProperties);
         }
-        else if ("editGenerationInfos".equals(tableElementButton.getID()) && "edit".equals(actionID))
+        else if ("editGenerationInfos".equals(element.getID()) && "edit".equals(actionID))
         {
             GuiTable editGenerationProperties = new GuiTable(tableDelegate, new TableDataSourceStructureGenerationInfoList(structureInfo.generationInfos, tableDelegate, navigator));
             navigator.pushTable(editGenerationProperties);

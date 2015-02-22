@@ -22,7 +22,7 @@ import java.util.Set;
 /**
  * Created by lukas on 07.10.14.
  */
-public class TableDataSourceNaturalGenerationInfo extends TableDataSourceSegmented implements TableElementButton.Listener, TableElementPropertyListener
+public class TableDataSourceNaturalGenerationInfo extends TableDataSourceSegmented implements TableElementActionListener, TableElementPropertyListener
 {
     private TableNavigator navigator;
     private TableDelegate tableDelegate;
@@ -152,14 +152,14 @@ public class TableDataSourceNaturalGenerationInfo extends TableDataSourceSegment
     }
 
     @Override
-    public void actionPerformed(TableElementButton tableElementButton, String actionID)
+    public void actionPerformed(TableElement element, String actionID)
     {
-        if ("editBiomes".equals(tableElementButton.getID()) && "edit".equals(actionID))
+        if ("editBiomes".equals(element.getID()) && "edit".equals(actionID))
         {
             GuiTable editBiomesProperties = new GuiTable(tableDelegate, new TableDataSourceBiomeGenList(naturelGenerationInfo.biomeWeights, tableDelegate, navigator));
             navigator.pushTable(editBiomesProperties);
         }
-        else if ("editDimensions".equals(tableElementButton.getID()) && "edit".equals(actionID))
+        else if ("editDimensions".equals(element.getID()) && "edit".equals(actionID))
         {
             GuiTable editBiomesProperties = new GuiTable(tableDelegate, new TableDataSourceDimensionGenList(naturelGenerationInfo.dimensionWeights, tableDelegate, navigator));
             navigator.pushTable(editBiomesProperties);

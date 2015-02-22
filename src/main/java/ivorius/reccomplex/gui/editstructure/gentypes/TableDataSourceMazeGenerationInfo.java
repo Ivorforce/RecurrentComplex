@@ -15,7 +15,7 @@ import ivorius.reccomplex.structures.generic.gentypes.MazeGenerationInfo;
 /**
  * Created by lukas on 07.10.14.
  */
-public class TableDataSourceMazeGenerationInfo extends TableDataSourceSegmented implements TableElementButton.Listener, TableElementPropertyListener
+public class TableDataSourceMazeGenerationInfo extends TableDataSourceSegmented implements TableElementActionListener, TableElementPropertyListener
 {
     public static final int[] DEFAULT_MAX_COMPONENT_SIZE = {100, 100, 100};
 
@@ -95,13 +95,13 @@ public class TableDataSourceMazeGenerationInfo extends TableDataSourceSegmented 
     }
 
     @Override
-    public void actionPerformed(TableElementButton tableElementButton, String actionID)
+    public void actionPerformed(TableElement element, String actionID)
     {
-        if ("rooms".equals(tableElementButton.getID()))
+        if ("rooms".equals(element.getID()))
         {
             navigator.pushTable(new GuiTable(tableDelegate, new TableDataSourceSelection(mazeComponent().rooms, DEFAULT_MAX_COMPONENT_SIZE, tableDelegate, navigator)));
         }
-        else if ("exits".equals(tableElementButton.getID()))
+        else if ("exits".equals(element.getID()))
         {
             navigator.pushTable(new GuiTable(tableDelegate, new TableDataSourceMazePathList(mazeComponent().exitPaths, mazeComponent().rooms.boundsHigher(), tableDelegate, navigator)));
         }

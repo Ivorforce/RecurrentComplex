@@ -14,7 +14,7 @@ import java.util.List;
 /**
  * Created by lukas on 04.06.14.
  */
-public class TableDataSourceMazePathList extends TableDataSourceList<MazePath, List<MazePath>> implements TableElementButton.Listener
+public class TableDataSourceMazePathList extends TableDataSourceList<MazePath, List<MazePath>>
 {
     private int[] dimensions;
 

@@ -19,7 +19,7 @@ public class TableElementButton extends TableElementDefault
     private GuiButton[] buttons = new GuiButton[0];
     private Action[] actions;
 
-    private List<Listener> listeners = new ArrayList<>();
+    private List<TableElementActionListener> listeners = new ArrayList<>();
 
     public TableElementButton(String id, String title, Action... actions)
     {
@@ -27,17 +27,17 @@ public class TableElementButton extends TableElementDefault
         this.actions = actions;
     }
 
-    public void addListener(Listener listener)
+    public void addListener(TableElementActionListener listener)
     {
         listeners.add(listener);
     }
 
-    public void removeListener(Listener listener)
+    public void removeListener(TableElementActionListener listener)
     {
         listeners.remove(listener);
     }
 
-    public List<Listener> listeners()
+    public List<TableElementActionListener> listeners()
     {
         return Collections.unmodifiableList(listeners);
     }
@@ -83,15 +83,8 @@ public class TableElementButton extends TableElementDefault
     {
         super.buttonClicked(buttonID);
 
-        for (Listener listener : listeners)
-        {
+        for (TableElementActionListener listener : listeners)
             listener.actionPerformed(this, actions[buttonID].id);
-        }
-    }
-
-    public static interface Listener
-    {
-        void actionPerformed(TableElementButton tableElementButton, String actionID);
     }
 
     public static class Action

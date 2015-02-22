@@ -24,7 +24,7 @@ public class TableElementPresetAction extends TableElementDefault
     private String actionTitle;
     private TableElementButton.Action[] actions;
 
-    private List<Listener> listeners = new ArrayList<>();
+    private List<TableElementActionListener> listeners = new ArrayList<>();
 
     public TableElementPresetAction(String id, String title, String actionTitle, TableElementButton.Action... actions)
     {
@@ -34,17 +34,17 @@ public class TableElementPresetAction extends TableElementDefault
         currentActionID = actions[0].id;
     }
 
-    public void addListener(Listener listener)
+    public void addListener(TableElementActionListener listener)
     {
         listeners.add(listener);
     }
 
-    public void removeListener(Listener listener)
+    public void removeListener(TableElementActionListener listener)
     {
         listeners.remove(listener);
     }
 
-    public List<Listener> listeners()
+    public List<TableElementActionListener> listeners()
     {
         return Collections.unmodifiableList(listeners);
     }
@@ -80,13 +80,9 @@ public class TableElementPresetAction extends TableElementDefault
         super.setHidden(hidden);
 
         if (changePresetButton != null)
-        {
             changePresetButton.visible = !hidden;
-        }
         if (runActionButton != null)
-        {
             runActionButton.visible = !hidden;
-        }
     }
 
     @Override
@@ -104,10 +100,8 @@ public class TableElementPresetAction extends TableElementDefault
         }
         else if (buttonID == 1)
         {
-            for (Listener listener : listeners)
-            {
+            for (TableElementActionListener listener : listeners)
                 listener.actionPerformed(this, currentActionID);
-            }
         }
     }
 
@@ -120,9 +114,7 @@ public class TableElementPresetAction extends TableElementDefault
             TableElementButton.Action action = actions[i];
 
             if (action.id.equals(currentActionID))
-            {
                 currentIndex = i;
-            }
         }
 
         return currentIndex;
@@ -135,10 +127,5 @@ public class TableElementPresetAction extends TableElementDefault
             int currentActionIndex = currentActionIndex();
             runActionButton.enabled = currentActionIndex >= 0 && actions[currentActionIndex].enabled;
         }
-    }
-
-    public static interface Listener
-    {
-        void actionPerformed(TableElementPresetAction tableElementButton, String actionID);
     }
 }

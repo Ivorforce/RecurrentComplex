@@ -32,9 +32,7 @@ public class GuiScreenModalTable extends GuiScreen implements TableDelegate, Tab
         buttonList.clear();
 
         if (tableStack.size() > 0)
-        {
             tableStack.peek().initGui();
-        }
     }
 
     @Override
@@ -195,8 +193,17 @@ public class GuiScreenModalTable extends GuiScreen implements TableDelegate, Tab
     }
 
     @Override
-    public void reloadData()
+    public void redrawTable()
     {
         initGui();
+    }
+
+    @Override
+    public void reloadData()
+    {
+        if (tableStack.size() > 0)
+            tableStack.peek().clearElementCache();
+
+        redrawTable();
     }
 }

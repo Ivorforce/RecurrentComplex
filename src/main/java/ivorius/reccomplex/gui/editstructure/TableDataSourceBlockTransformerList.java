@@ -18,7 +18,7 @@ import java.util.List;
 /**
  * Created by lukas on 04.06.14.
  */
-public class TableDataSourceBlockTransformerList extends TableDataSourceList<BlockTransformer, List<BlockTransformer>> implements TableElementButton.Listener, TableElementPresetAction.Listener
+public class TableDataSourceBlockTransformerList extends TableDataSourceList<BlockTransformer, List<BlockTransformer>>
 {
     public TableDataSourceBlockTransformerList(List<BlockTransformer> list, TableDelegate tableDelegate, TableNavigator navigator)
     {

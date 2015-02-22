@@ -14,5 +14,7 @@ public interface TableDelegate
 {
     void addButton(GuiButton button);
 
+    void redrawTable();
+
     void reloadData();
 }

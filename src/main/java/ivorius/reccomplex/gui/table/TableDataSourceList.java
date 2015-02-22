@@ -10,7 +10,7 @@ import java.util.List;
 /**
  * Created by lukas on 20.02.15.
  */
-public abstract class TableDataSourceList<T, L extends List<T>> extends TableDataSourceSegmented implements TableElementButton.Listener, TableElementPresetAction.Listener
+public abstract class TableDataSourceList<T, L extends List<T>> extends TableDataSourceSegmented implements TableElementActionListener
 {
     protected L list;
 
@@ -203,22 +203,22 @@ public abstract class TableDataSourceList<T, L extends List<T>> extends TableDat
     }
 
     @Override
-    public void actionPerformed(TableElementButton tableElementButton, String actionID)
+    public void actionPerformed(TableElement element, String actionID)
     {
-        if (tableElementButton.getID().startsWith("add"))
+        if (element.getID().startsWith("add"))
         {
             T entry = newEntry(actionID);
             if (entry != null)
             {
-                int addIndex = Integer.valueOf(tableElementButton.getID().substring("add".length()));
+                int addIndex = Integer.valueOf(element.getID().substring("add".length()));
                 list.add(addIndex, entry);
 
                 navigator.pushTable(new GuiTable(tableDelegate, editEntryDataSource(entry)));
             }
         }
-        else if (tableElementButton.getID().startsWith("entry"))
+        else if (element.getID().startsWith("entry"))
         {
-            int index = Integer.valueOf(tableElementButton.getID().substring("entry".length()));
+            int index = Integer.valueOf(element.getID().substring("entry".length()));
             T entry = list.get(index);
 
             performEntryAction(actionID, index, entry);
@@ -246,22 +246,6 @@ public abstract class TableDataSourceList<T, L extends List<T>> extends TableDat
                 list.add(index + 1, t);
                 tableDelegate.reloadData();
                 break;
-        }
-    }
-
-    @Override
-    public void actionPerformed(TableElementPresetAction tableElementButton, String actionID)
-    {
-        if (tableElementButton.getID().startsWith("add"))
-        {
-            T entry = newEntry(actionID);
-            if (entry != null)
-            {
-                int addIndex = Integer.valueOf(tableElementButton.getID().substring(3));
-                list.add(addIndex, entry);
-
-                navigator.pushTable(new GuiTable(tableDelegate, editEntryDataSource(entry)));
-            }
         }
     }
 

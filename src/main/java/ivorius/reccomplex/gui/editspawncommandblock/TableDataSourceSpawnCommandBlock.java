@@ -14,7 +14,7 @@ import java.util.List;
 /**
  * Created by lukas on 05.06.14.
  */
-public class TableDataSourceSpawnCommandBlock extends TableDataSourceList<TileEntitySpawnCommand.Entry, List<TileEntitySpawnCommand.Entry>> implements TableElementButton.Listener
+public class TableDataSourceSpawnCommandBlock extends TableDataSourceList<TileEntitySpawnCommand.Entry, List<TileEntitySpawnCommand.Entry>>
 {
     private TileEntitySpawnCommand tileEntity;
 

@@ -21,7 +21,7 @@ import java.util.List;
 /**
  * Created by lukas on 04.06.14.
  */
-public class TableDataSourceStructureGenerationInfoList extends TableDataSourceList<StructureGenerationInfo, List<StructureGenerationInfo>> implements TableElementButton.Listener, TableElementPresetAction.Listener
+public class TableDataSourceStructureGenerationInfoList extends TableDataSourceList<StructureGenerationInfo, List<StructureGenerationInfo>>
 {
     public TableDataSourceStructureGenerationInfoList(List<StructureGenerationInfo> list, TableDelegate tableDelegate, TableNavigator navigator)
     {

@@ -5,6 +5,7 @@
 
 package ivorius.reccomplex.gui.table;
 
+import gnu.trove.map.hash.TIntObjectHashMap;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.client.gui.GuiButton;
@@ -36,6 +37,7 @@ public class GuiTable extends Gui
 
     private boolean hideScrollbarIfUnnecessary;
 
+    private TIntObjectHashMap<TableElement> cachedElements = new TIntObjectHashMap<>();
     private List<TableElement> currentElements = new ArrayList<>();
 
     private Map<GuiButton, Pair<TableElement, Integer>> buttonMap = new HashMap<>();
@@ -84,9 +86,7 @@ public class GuiTable extends Gui
         buttonMap.clear();
 
         for (TableElement element : currentElements)
-        {
             element.setHidden(true);
-        }
         currentElements.clear();
 
         ////////
@@ -111,12 +111,20 @@ public class GuiTable extends Gui
         int baseY = propertiesBounds.getMinY() + SCROLL_BAR_HEIGHT;
         for (int index = 0; index < supportedSlotNumber && dataSource.has(this, currentScrollIndex + index); index++)
         {
+            TableElement element = cachedElements.get(currentScrollIndex + index);
+            boolean initElement = element == null;
+
+            if (initElement)
+                element = dataSource.elementForIndex(this, currentScrollIndex + index);
+
             int elementY = index * HEIGHT_PER_SLOT;
 
-            TableElement element = dataSource.elementForIndex(this, currentScrollIndex + index);
             element.setBounds(Bounds.boundsWithSize(propertiesBounds.getMinX() + 100, propertiesBounds.getWidth() - 100, baseY + elementY, 20));
             element.setHidden(false);
             element.initGui(this);
+
+            if (initElement)
+                cachedElements.put(currentScrollIndex + index, element);
 
             currentElements.add(element);
         }
@@ -240,7 +248,7 @@ public class GuiTable extends Gui
         if (dataSource.has(this, currentScrollIndex - 1))
         {
             currentScrollIndex--;
-            delegate.reloadData();
+            delegate.redrawTable();
         }
     }
 
@@ -249,8 +257,13 @@ public class GuiTable extends Gui
         if (dataSource.has(this, cachedMaxIndex + 1))
         {
             currentScrollIndex++;
-            delegate.reloadData();
+            delegate.redrawTable();
         }
+    }
+
+    public void clearElementCache()
+    {
+        cachedElements.clear();
     }
 
     // Accessors

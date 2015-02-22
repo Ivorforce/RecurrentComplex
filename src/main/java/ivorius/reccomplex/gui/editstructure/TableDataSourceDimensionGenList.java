@@ -15,7 +15,7 @@ import java.util.List;
 /**
  * Created by lukas on 04.06.14.
  */
-public class TableDataSourceDimensionGenList extends TableDataSourceList<DimensionGenerationInfo, List<DimensionGenerationInfo>> implements TableElementButton.Listener, TableElementPresetAction.Listener
+public class TableDataSourceDimensionGenList extends TableDataSourceList<DimensionGenerationInfo, List<DimensionGenerationInfo>> implements TableElementActionListener
 {
     public TableDataSourceDimensionGenList(List<DimensionGenerationInfo> list, TableDelegate tableDelegate, TableNavigator navigator)
     {
@@ -83,9 +83,9 @@ public class TableDataSourceDimensionGenList extends TableDataSourceList<Dimensi
     }
 
     @Override
-    public void actionPerformed(TableElementPresetAction tableElementButton, String actionID)
+    public void actionPerformed(TableElement element, String actionID)
     {
-        if (tableElementButton.getID().equals("dimensionPreset"))
+        if (element.getID().equals("dimensionPreset"))
         {
             switch (actionID)
             {
@@ -109,6 +109,6 @@ public class TableDataSourceDimensionGenList extends TableDataSourceList<Dimensi
             tableDelegate.reloadData();
         }
 
-        super.actionPerformed(tableElementButton, actionID);
+        super.actionPerformed(element, actionID);
     }
 }

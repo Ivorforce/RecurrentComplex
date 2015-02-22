@@ -14,7 +14,7 @@ import java.util.List;
 /**
  * Created by lukas on 04.06.14.
  */
-public class TableDataSourceBiomeGenList extends TableDataSourceList<BiomeGenerationInfo, List<BiomeGenerationInfo>> implements TableElementButton.Listener, TableElementPresetAction.Listener
+public class TableDataSourceBiomeGenList extends TableDataSourceList<BiomeGenerationInfo, List<BiomeGenerationInfo>>
 {
     public TableDataSourceBiomeGenList(List<BiomeGenerationInfo> list, TableDelegate tableDelegate, TableNavigator navigator)
     {
@@ -82,9 +82,9 @@ public class TableDataSourceBiomeGenList extends TableDataSourceList<BiomeGenera
     }
 
     @Override
-    public void actionPerformed(TableElementPresetAction tableElementButton, String actionID)
+    public void actionPerformed(TableElement element, String actionID)
     {
-        if (tableElementButton.getID().equals("biomePreset"))
+        if (element.getID().equals("biomePreset"))
         {
             switch (actionID)
             {
@@ -108,6 +108,6 @@ public class TableDataSourceBiomeGenList extends TableDataSourceList<BiomeGenera
             tableDelegate.reloadData();
         }
 
-        super.actionPerformed(tableElementButton, actionID);
+        super.actionPerformed(element, actionID);
     }
 }

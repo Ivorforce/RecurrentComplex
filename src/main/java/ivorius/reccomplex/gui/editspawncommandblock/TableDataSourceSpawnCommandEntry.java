@@ -11,7 +11,7 @@ import ivorius.reccomplex.gui.table.*;
 /**
  * Created by lukas on 05.06.14.
  */
-public class TableDataSourceSpawnCommandEntry implements TableDataSource, TableElementPropertyListener, TableElementPresetAction.Listener
+public class TableDataSourceSpawnCommandEntry implements TableDataSource, TableElementPropertyListener, TableElementActionListener
 {
     private TileEntitySpawnCommand.Entry entry;
 
@@ -68,9 +68,9 @@ public class TableDataSourceSpawnCommandEntry implements TableDataSource, TableE
     }
 
     @Override
-    public void actionPerformed(TableElementPresetAction tableElementButton, String actionID)
+    public void actionPerformed(TableElement element, String actionID)
     {
-        if ("default".equals(tableElementButton.getID()))
+        if ("default".equals(element.getID()))
         {
             if ("spawner".equals(actionID))
                 entry.command = "/setblock ~ ~ ~ mob_spawner 0 replace {EntityId:Zombie}";

@@ -28,20 +28,14 @@ import javax.annotation.Nullable;
 public class StructureEntityInfo implements IExtendedEntityProperties, PartialUpdateHandler
 {
     public static final String EEP_KEY = "structureEntityInfo";
-
-    private boolean hasChanges;
-
     public BlockCoord selectedPoint1;
     public BlockCoord selectedPoint2;
-
-    private NBTTagCompound cachedExportStructureBlockDataNBT;
-
-    private NBTTagCompound worldDataClipboard;
-
     public int previewType = Operation.PREVIEW_TYPE_BOUNDING_BOX;
     public Operation danglingOperation;
-
     public boolean showGrid = false;
+    private boolean hasChanges;
+    private NBTTagCompound cachedExportStructureBlockDataNBT;
+    private NBTTagCompound worldDataClipboard;
 
     @Nullable
     public static StructureEntityInfo getStructureEntityInfo(Entity entity)
@@ -61,22 +55,26 @@ public class StructureEntityInfo implements IExtendedEntityProperties, PartialUp
 
     public void sendSelectionToClients(Entity entity)
     {
-        IvNetworkHelperServer.sendEEPUpdatePacket(entity, EEP_KEY, "selection", RecurrentComplex.network);
+        if (!entity.worldObj.isRemote)
+            IvNetworkHelperServer.sendEEPUpdatePacket(entity, EEP_KEY, "selection", RecurrentComplex.network);
     }
 
     public void sendPreviewTypeToClients(Entity entity)
     {
-        IvNetworkHelperServer.sendEEPUpdatePacket(entity, EEP_KEY, "previewType", RecurrentComplex.network);
+        if (!entity.worldObj.isRemote)
+            IvNetworkHelperServer.sendEEPUpdatePacket(entity, EEP_KEY, "previewType", RecurrentComplex.network);
     }
 
     public void sendOperationToClients(Entity entity)
     {
-        IvNetworkHelperServer.sendEEPUpdatePacket(entity, EEP_KEY, "operation", RecurrentComplex.network);
+        if (!entity.worldObj.isRemote)
+            IvNetworkHelperServer.sendEEPUpdatePacket(entity, EEP_KEY, "operation", RecurrentComplex.network);
     }
 
     public void sendOptionsToClients(Entity entity)
     {
-        IvNetworkHelperServer.sendEEPUpdatePacket(entity, EEP_KEY, "options", RecurrentComplex.network);
+        if (!entity.worldObj.isRemote)
+            IvNetworkHelperServer.sendEEPUpdatePacket(entity, EEP_KEY, "options", RecurrentComplex.network);
     }
 
     public NBTTagCompound getCachedExportStructureBlockDataNBT()

@@ -7,6 +7,7 @@ package ivorius.reccomplex.gui.editmazeblock;
 
 import ivorius.ivtoolkit.maze.MazePath;
 import ivorius.reccomplex.gui.table.*;
+import net.minecraft.util.EnumChatFormatting;
 
 import java.util.Arrays;
 import java.util.List;
@@ -16,12 +17,14 @@ import java.util.List;
  */
 public class TableDataSourceMazePathList extends TableDataSourceList<MazePath, List<MazePath>>
 {
-    private int[] dimensions;
+    private int[] boundsLower;
+    private int[] boundsHigher;
 
-    public TableDataSourceMazePathList(List<MazePath> list, int[] dimensions, TableDelegate tableDelegate, TableNavigator navigator)
+    public TableDataSourceMazePathList(List<MazePath> list, TableDelegate tableDelegate, TableNavigator navigator, int[] boundsLower, int[] boundsHigher)
     {
         super(list, tableDelegate, navigator);
-        this.dimensions = dimensions;
+        this.boundsLower = boundsLower;
+        this.boundsHigher = boundsHigher;
         setEarlierTitle("Up");
         setLaterTitle("Down");
     }
@@ -29,18 +32,18 @@ public class TableDataSourceMazePathList extends TableDataSourceList<MazePath, L
     @Override
     public String getDisplayString(MazePath mazePath)
     {
-        return String.format("%s (%s)", Arrays.toString(mazePath.getSourceRoom().coordinates), TableDataSourceMazePath.directionFromPath(mazePath).toString());
+        return String.format("%s %s%s", Arrays.toString(mazePath.getSourceRoom().coordinates), EnumChatFormatting.BLUE, TableDataSourceMazePath.directionFromPath(mazePath).toString());
     }
 
     @Override
     public MazePath newEntry(String actionID)
     {
-        return new MazePath(2, false, new int[dimensions.length]);
+        return new MazePath(2, false, new int[boundsLower.length]);
     }
 
     @Override
     public TableDataSource editEntryDataSource(MazePath entry)
     {
-        return new TableDataSourceMazePath(entry, dimensions);
+        return new TableDataSourceMazePath(entry, boundsLower, boundsHigher);
     }
 }

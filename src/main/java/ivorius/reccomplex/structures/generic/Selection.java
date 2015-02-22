@@ -7,16 +7,14 @@ package ivorius.reccomplex.structures.generic;
 
 import com.google.gson.annotations.SerializedName;
 import ivorius.ivtoolkit.gui.IntegerRange;
+import ivorius.ivtoolkit.math.IvVecMathHelper;
 import ivorius.ivtoolkit.maze.MazeRoom;
 import ivorius.ivtoolkit.tools.IvNBTHelper;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraftforge.common.util.Constants;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 
 /**
  * Created by lukas on 01.02.15.
@@ -121,6 +119,15 @@ public class Selection extends ArrayList<Selection.Area>
         }
 
         return max;
+    }
+
+    public int[] boundsSize()
+    {
+        int[] min = boundsLower();
+        int[] max = boundsHigher();
+        int[] minusOne = new int[min.length];
+        Arrays.fill(minusOne, -1);
+        return IvVecMathHelper.sub(max, min, minusOne);
     }
 
     public static class Area

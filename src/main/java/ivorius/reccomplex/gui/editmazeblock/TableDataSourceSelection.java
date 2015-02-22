@@ -28,7 +28,7 @@ public class TableDataSourceSelection extends TableDataSourceList<Selection.Area
     public String getDisplayString(Selection.Area area)
     {
         EnumChatFormatting color = area.isAdditive() ? EnumChatFormatting.GREEN : EnumChatFormatting.RED;
-        return String.format(color + "%s - %s", Arrays.toString(area.getMinCoord()), Arrays.toString(area.getMaxCoord()));
+        return String.format("%s%s%s - %s%s", color, Arrays.toString(area.getMinCoord()), EnumChatFormatting.RESET, color, Arrays.toString(area.getMaxCoord()));
     }
 
     @Override

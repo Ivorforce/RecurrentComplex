@@ -103,7 +103,7 @@ public class TableDataSourceMazeGenerationInfo extends TableDataSourceSegmented 
         }
         else if ("exits".equals(element.getID()))
         {
-            navigator.pushTable(new GuiTable(tableDelegate, new TableDataSourceMazePathList(mazeComponent().exitPaths, mazeComponent().rooms.boundsHigher(), tableDelegate, navigator)));
+            navigator.pushTable(new GuiTable(tableDelegate, new TableDataSourceMazePathList(mazeComponent().exitPaths, tableDelegate, navigator, mazeComponent().rooms.boundsLower(), mazeComponent().rooms.boundsHigher())));
         }
     }
 

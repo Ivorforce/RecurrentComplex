@@ -182,13 +182,13 @@ public class TableDataSourceMazeBlock extends TableDataSourceSegmented implement
     }
 
     @Override
-    public void actionPerformed(TableElement element, String actionID)
+    public void actionPerformed(TableElement tableElementButton, String actionID)
     {
-        if ("exits".equals(element.getID()))
+        if ("exits".equals(tableElementButton.getID()))
         {
-            tableNavigator.pushTable(new GuiTable(tableDelegate, new TableDataSourceMazePathList(mazeGenerator.mazeExits, mazeGenerator.mazeRooms.boundsHigher(), tableDelegate, tableNavigator)));
+            tableNavigator.pushTable(new GuiTable(tableDelegate, new TableDataSourceMazePathList(mazeGenerator.mazeExits, tableDelegate, tableNavigator, mazeGenerator.mazeRooms.boundsLower(), mazeGenerator.mazeRooms.boundsHigher())));
         }
-        else if ("rooms".equals(element.getID()))
+        else if ("rooms".equals(tableElementButton.getID()))
         {
             tableNavigator.pushTable(new GuiTable(tableDelegate, new TableDataSourceSelection(mazeGenerator.mazeRooms, DIMENSIONS, tableDelegate, tableNavigator)));
         }

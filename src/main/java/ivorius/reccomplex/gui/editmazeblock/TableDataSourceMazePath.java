@@ -18,12 +18,14 @@ import java.util.List;
 public class TableDataSourceMazePath extends TableDataSourceSegmented implements TableElementPropertyListener
 {
     private MazePath mazePath;
-    private int[] dimensions;
+    private int[] boundsLower;
+    private int[] boundsHigher;
 
-    public TableDataSourceMazePath(MazePath mazePath, int[] dimensions)
+    public TableDataSourceMazePath(MazePath mazePath, int[] boundsLower, int[] boundsHigher)
     {
         this.mazePath = mazePath;
-        this.dimensions = dimensions;
+        this.boundsLower = boundsLower;
+        this.boundsHigher = boundsHigher;
     }
 
     @Override
@@ -35,7 +37,7 @@ public class TableDataSourceMazePath extends TableDataSourceSegmented implements
     @Override
     public int sizeOfSegment(int segment)
     {
-        return segment == 0 ? dimensions.length : 1;
+        return segment == 0 ? boundsLower.length : 1;
     }
 
     @Override
@@ -45,7 +47,7 @@ public class TableDataSourceMazePath extends TableDataSourceSegmented implements
         {
             String id = "pos" + index;
             String title = String.format("Position: %s", index == 0 ? "X" : index == 1 ? "Y" : index == 2 ? "Z" : "" + index);
-            TableElementInteger element = new TableElementInteger(id, title, mazePath.sourceRoom.coordinates[index], 0, dimensions[index] - 1);
+            TableElementInteger element = new TableElementInteger(id, title, mazePath.sourceRoom.coordinates[index], boundsLower[index], boundsHigher[index]);
             element.addPropertyListener(this);
             return element;
         }

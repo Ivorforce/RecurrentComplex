@@ -5,33 +5,36 @@
 
 package ivorius.reccomplex.structures;
 
+import com.google.common.base.Predicate;
 import com.google.common.collect.BiMap;
+import com.google.common.collect.Collections2;
 import com.google.common.collect.HashBiMap;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonSyntaxException;
 import cpw.mods.fml.common.eventhandler.Event;
-import ivorius.ivtoolkit.maze.MazePath;
-import ivorius.ivtoolkit.maze.MazeRoom;
 import ivorius.reccomplex.RCConfig;
 import ivorius.reccomplex.RecurrentComplex;
 import ivorius.reccomplex.events.RCEventBus;
 import ivorius.reccomplex.events.StructureRegistrationEvent;
 import ivorius.reccomplex.json.NbtToJson;
 import ivorius.reccomplex.json.SerializableStringTypeRegistry;
-import ivorius.reccomplex.structures.generic.*;
+import ivorius.reccomplex.structures.generic.GenericStructureInfo;
+import ivorius.reccomplex.structures.generic.StructureSaveHandler;
 import ivorius.reccomplex.structures.generic.blocktransformers.BlockTransformer;
 import ivorius.reccomplex.structures.generic.gentypes.MazeGenerationInfo;
-import ivorius.reccomplex.structures.generic.gentypes.NaturalGenerationInfo;
+import ivorius.reccomplex.structures.generic.gentypes.StaticGenerationInfo;
 import ivorius.reccomplex.structures.generic.gentypes.StructureGenerationInfo;
-import ivorius.reccomplex.structures.generic.gentypes.VanillaStructureSpawnInfo;
 import ivorius.reccomplex.worldgen.StructureSelector;
+import net.minecraft.util.ChunkCoordinates;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.world.World;
 import net.minecraft.world.WorldProvider;
 import net.minecraft.world.biome.BiomeGenBase;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
 
+import javax.annotation.Nullable;
 import java.util.*;
 
 /**
@@ -42,8 +45,9 @@ public class StructureRegistry
     private static BiMap<String, StructureInfo> allStructures = HashBiMap.create();
     private static Map<String, StructureInfo> generatingStructures = new HashMap<>();
 
+    private static Map<Class<StructureGenerationInfo>, List<Pair<StructureInfo, StructureGenerationInfo>>> cachedGeneration = new HashMap<>();
+
     private static Map<Pair<Integer, String>, StructureSelector> structureSelectors = new HashMap<>();
-    private static Map<String, List<Pair<StructureInfo, MazeGenerationInfo>>> structuresInMazes = new HashMap<>();
 
     private static SerializableStringTypeRegistry<BlockTransformer> blockTransformerRegistry = new SerializableStringTypeRegistry<>("transformer", "type", BlockTransformer.class);
     private static SerializableStringTypeRegistry<StructureGenerationInfo> structureGenerationInfoRegistry = new SerializableStringTypeRegistry<>("generationInfo", "type", StructureGenerationInfo.class);
@@ -146,6 +150,38 @@ public class StructureRegistry
         return allStructures.keySet();
     }
 
+    public static <T extends StructureGenerationInfo> Collection<Pair<StructureInfo, T>> getStructureGenerations(Class<T> clazz)
+    {
+        Map cachedGeneration = StructureRegistry.cachedGeneration;
+
+        List<Pair<StructureInfo, T>> pairs = (List<Pair<StructureInfo, T>>) cachedGeneration.get(clazz);
+        if (pairs != null)
+            return pairs;
+
+        ArrayList<Pair<StructureInfo, T>> pairsArrayList = new ArrayList<>();
+        for (StructureInfo info : getAllGeneratingStructures())
+        {
+            for (T t : info.generationInfos(clazz))
+                pairsArrayList.add(Pair.of(info, t));
+        }
+        pairsArrayList.trimToSize();
+        cachedGeneration.put(clazz, pairsArrayList);
+
+        return pairsArrayList;
+    }
+
+    public static <T extends StructureGenerationInfo> Collection<Pair<StructureInfo, T>> getStructureGenerations(Class<T> clazz, final Predicate<T> predicate)
+    {
+        return Collections2.filter(getStructureGenerations(clazz), new Predicate<Pair<StructureInfo, T>>()
+        {
+            @Override
+            public boolean apply(Pair<StructureInfo, T> input)
+            {
+                return predicate.apply(input.getRight());
+            }
+        });
+    }
+
     public static StructureSelector getStructureSelector(BiomeGenBase biome, WorldProvider provider)
     {
         Pair<Integer, String> pair = new ImmutablePair<>(provider.dimensionId, biome.biomeName);
@@ -160,23 +196,35 @@ public class StructureRegistry
         return structureSelector;
     }
 
-    public static List<Pair<StructureInfo, MazeGenerationInfo>> getStructuresInMaze(String mazeID)
+    public static Collection<Pair<StructureInfo, MazeGenerationInfo>> getStructuresInMaze(final String mazeID)
     {
-        if (!structuresInMazes.containsKey(mazeID))
+        return getStructureGenerations(MazeGenerationInfo.class, new Predicate<MazeGenerationInfo>()
         {
-            List<Pair<StructureInfo, MazeGenerationInfo>> structureInfos = new ArrayList<>();
-            for (StructureInfo info : getAllGeneratingStructures())
+            @Override
+            public boolean apply(MazeGenerationInfo input)
             {
-                for (MazeGenerationInfo mazeGenerationInfo : info.generationInfos(MazeGenerationInfo.class))
-                {
-                    if (mazeID.equals(mazeGenerationInfo.mazeID) && mazeGenerationInfo.mazeComponent.isValid())
-                        structureInfos.add(Pair.of(info, mazeGenerationInfo));
-                }
+                return mazeID.equals(input.mazeID) && input.mazeComponent.isValid();
             }
-            structuresInMazes.put(mazeID, structureInfos);
-        }
+        });
+    }
 
-        return structuresInMazes.get(mazeID);
+    private static boolean chunkContains(int chunkX, int chunkZ, int x, int z)
+    {
+        return (x >> 4) == chunkX && (z >> 4) == chunkZ;
+    }
+
+    public static Collection<Pair<StructureInfo, StaticGenerationInfo>> getStaticStructuresAt(final int chunkX, final int chunkZ, final World world, final ChunkCoordinates spawnPos)
+    {
+        return getStructureGenerations(StaticGenerationInfo.class, new Predicate<StaticGenerationInfo>()
+        {
+            @Override
+            public boolean apply(@Nullable StaticGenerationInfo input)
+            {
+                return input != null && input.dimensionSelector.matches(world.provider)
+                        && chunkContains(chunkX, chunkZ, input.getPositionX(spawnPos), input.getPositionZ(spawnPos)
+                );
+            }
+        });
     }
 
     public static SerializableStringTypeRegistry<BlockTransformer> getBlockTransformerRegistry()
@@ -192,6 +240,6 @@ public class StructureRegistry
     private static void clearCaches()
     {
         structureSelectors.clear();
-        structuresInMazes.clear();
+        cachedGeneration.clear();
     }
 }

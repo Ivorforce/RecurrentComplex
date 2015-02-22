@@ -15,14 +15,15 @@ import ivorius.reccomplex.events.RCEventBus;
 import ivorius.reccomplex.events.StructureGenerationEvent;
 import ivorius.reccomplex.events.StructureGenerationEventLite;
 import ivorius.reccomplex.structures.StructureInfo;
+import ivorius.reccomplex.structures.StructureInfos;
 import ivorius.reccomplex.structures.StructureRegistry;
 import ivorius.reccomplex.structures.StructureSpawnContext;
 import ivorius.reccomplex.structures.generic.gentypes.NaturalGenerationInfo;
+import ivorius.reccomplex.structures.generic.gentypes.StaticGenerationInfo;
 import net.minecraft.util.ChunkCoordinates;
 import net.minecraft.world.World;
 import net.minecraft.world.biome.BiomeGenBase;
 import net.minecraft.world.chunk.IChunkProvider;
-import net.minecraft.world.gen.structure.StructureBoundingBox;
 import net.minecraftforge.common.MinecraftForge;
 import org.apache.commons.lang3.tuple.Pair;
 
@@ -35,14 +36,13 @@ import java.util.Random;
  */
 public class WorldGenStructures implements IWorldGenerator
 {
-
     public static final int MIN_DIST_TO_LIMIT = 3;
 
     public static int generateStructureRandomly(World world, Random random, StructureInfo info, @Nullable NaturalGenerationInfo naturalGenerationInfo, int x, int z, boolean suggest)
     {
         AxisAlignedTransform2D transform = AxisAlignedTransform2D.transform(info.isRotatable() ? random.nextInt(4) : 0, info.isMirrorable() && random.nextBoolean());
 
-        int[] size = structureSize(info, transform);
+        int[] size = StructureInfos.structureSize(info, transform);
 
         int genX = x - size[0] / 2;
         int genZ = z - size[2] / 2;
@@ -56,17 +56,17 @@ public class WorldGenStructures implements IWorldGenerator
 
     public static void generateStructureWithNotifications(StructureInfo structureInfo, World world, Random random, BlockCoord coord, AxisAlignedTransform2D strucTransform, int layer, boolean suggest)
     {
-        int[] size = structureSize(structureInfo, strucTransform);
+        int[] size = StructureInfos.structureSize(structureInfo, strucTransform);
         int[] coordInts = new int[]{coord.x, coord.y, coord.z};
 
-        StructureSpawnContext structureSpawnContext = new StructureSpawnContext(world, random, structureBoundingBox(coord, size), layer, false, strucTransform);
+        StructureSpawnContext structureSpawnContext = new StructureSpawnContext(world, random, StructureInfos.structureBoundingBox(coord, size), layer, false, strucTransform);
         String structureName = StructureRegistry.getName(structureInfo);
 
         if (!suggest || (
                 coord.y > MIN_DIST_TO_LIMIT && coord.y + size[1] < world.getHeight() - MIN_DIST_TO_LIMIT
-                && !RCEventBus.INSTANCE.post(new StructureGenerationEvent.Suggest(structureInfo, structureSpawnContext))
-                && !MinecraftForge.EVENT_BUS.post(new StructureGenerationEventLite.Suggest(world, structureName, coordInts, size, layer))
-                ))
+                        && !RCEventBus.INSTANCE.post(new StructureGenerationEvent.Suggest(structureInfo, structureSpawnContext))
+                        && !MinecraftForge.EVENT_BUS.post(new StructureGenerationEventLite.Suggest(world, structureName, coordInts, size, layer))
+        ))
         {
             RCEventBus.INSTANCE.post(new StructureGenerationEvent.Pre(structureInfo, structureSpawnContext));
             MinecraftForge.EVENT_BUS.post(new StructureGenerationEventLite.Pre(world, structureName, coordInts, size, layer));
@@ -81,74 +81,36 @@ public class WorldGenStructures implements IWorldGenerator
             RecurrentComplex.logger.trace("Canceled structure '" + StructureRegistry.getName(structureInfo) + "' generation in " + structureSpawnContext.boundingBox);
     }
 
-    public static void generateSpawnStructure(Random random, ChunkCoordinates spawn, World world, IChunkProvider chunkGenerator, IChunkProvider chunkProvider)
+    public static void generateStructureRandomly(World world, Random random, StructureInfo structureInfo, StaticGenerationInfo staticGenerationInfo, boolean suggest)
     {
-        if (RCConfig.spawnStructure != null && RCConfig.spawnStructure.trim().length() > 0)
-        {
-            RecurrentComplex.logger.trace(String.format("Attempting to generate spawn structure"));
+        AxisAlignedTransform2D transform = AxisAlignedTransform2D.transform(structureInfo.isRotatable() ? random.nextInt(4) : 0, structureInfo.isMirrorable() && random.nextBoolean());
+        int[] strucBB = StructureInfos.structureSize(structureInfo, transform);
 
-            StructureInfo structureInfo = StructureRegistry.getStructure(RCConfig.spawnStructure);
-            if (structureInfo != null)
-            {
+        final ChunkCoordinates spawnPos = world.getSpawnPoint();
+        int strucX = staticGenerationInfo.getPositionX(spawnPos);
+        int strucZ = staticGenerationInfo.getPositionZ(spawnPos);
+        int strucY = staticGenerationInfo.ySelector.generationY(world, random, strucX, strucZ, strucBB);
 
-                AxisAlignedTransform2D transform = AxisAlignedTransform2D.transform(structureInfo.isRotatable() ? random.nextInt(4) : 0, structureInfo.isMirrorable() && random.nextBoolean());
-                int[] strucBB = structureSize(structureInfo, transform);
+        BlockCoord genCoord = new BlockCoord(strucX - strucBB[0] / 2, strucY, strucZ - strucBB[2] / 2);
 
-                int strucX = spawn.posX + RCConfig.spawnStructureShiftX;
-                int strucZ = spawn.posZ + RCConfig.spawnStructureShiftZ;
-
-                int strucY;
-                List<NaturalGenerationInfo> naturalGenerationInfos = structureInfo.generationInfos(NaturalGenerationInfo.class);
-                if (naturalGenerationInfos.size() > 0)
-                    strucY = naturalGenerationInfos.get(0).ySelector.generationY(world, random, strucX, strucZ, strucBB);
-                else
-                    strucY = world.getHeightValue(strucX, strucZ);
-
-                BlockCoord genCoord = new BlockCoord(strucX - strucBB[0] / 2, strucY, strucZ - strucBB[2] / 2);
-
-                generateStructureWithNotifications(structureInfo, world, random, genCoord, transform, 0, false);
-            }
-            else
-                RecurrentComplex.logger.warn("Could not find spawn structure '" + RCConfig.spawnStructure + "'");
-        }
-    }
-
-    public static int[] structureSize(StructureInfo info, AxisAlignedTransform2D transform)
-    {
-        int[] size = info.structureBoundingBox();
-        if (transform.getRotation() % 2 == 1)
-        {
-            int cache = size[0];
-            size[0] = size[2];
-            size[2] = cache;
-        }
-        return size;
-    }
-
-    public static StructureBoundingBox structureBoundingBox(BlockCoord coord, int[] size)
-    {
-        return new StructureBoundingBox(coord.x, coord.y, coord.z, coord.x + size[0], coord.y + size[1], coord.z + size[2]);
-    }
-
-    public static boolean chunkContains(int chunkX, int chunkZ, ChunkCoordinates coords)
-    {
-        return (coords.posX >> 4) == chunkX && (coords.posZ >> 4) == chunkZ;
+        generateStructureWithNotifications(structureInfo, world, random, genCoord, transform, 0, suggest);
     }
 
     @Override
-    public void generate(Random random, int chunkX, int chunkZ, World world, IChunkProvider chunkGenerator, IChunkProvider chunkProvider)
+    public void generate(Random random, final int chunkX, final int chunkZ, final World world, IChunkProvider chunkGenerator, IChunkProvider chunkProvider)
     {
         boolean mayGenerate = world.getWorldInfo().isMapFeaturesEnabled();
+
+        final ChunkCoordinates spawnPos = world.getSpawnPoint();
+
+        for (Pair<StructureInfo, StaticGenerationInfo> pair : StructureRegistry.getStaticStructuresAt(chunkX, chunkZ, world, spawnPos))
+        {
+            RecurrentComplex.logger.trace(String.format("Spawning static structure at x = %d, z = %d", chunkX << 4, chunkZ << 4));
+            generateStructureRandomly(world, random, pair.getLeft(), pair.getRight(), false);
+        }
+
         if (world.provider.dimensionId == 0)
         {
-            ChunkCoordinates spawnPos = world.getSpawnPoint();
-
-            if (chunkContains(chunkX, chunkZ, spawnPos))
-            {
-                RecurrentComplex.logger.trace(String.format("Found spawn chunk at x = %d, z = %d", chunkX << 4, chunkZ << 4));
-                generateSpawnStructure(random, spawnPos, world, chunkGenerator, chunkProvider);
-            }
-
             double distToSpawn = IvVecMathHelper.distanceSQ(new double[]{chunkX * 16 + 8, chunkZ * 16 + 8}, new double[]{spawnPos.posX, spawnPos.posZ});
             mayGenerate &= distToSpawn >= RCConfig.minDistToSpawnForGeneration * RCConfig.minDistToSpawnForGeneration;
         }

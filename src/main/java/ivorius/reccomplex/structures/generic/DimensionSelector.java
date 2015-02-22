@@ -5,6 +5,7 @@
 
 package ivorius.reccomplex.structures.generic;
 
+import com.google.common.primitives.Ints;
 import ivorius.reccomplex.dimensions.DimensionDictionary;
 import net.minecraft.world.WorldProvider;
 
@@ -43,15 +44,9 @@ public class DimensionSelector
 
     public boolean matches(WorldProvider provider)
     {
-        try
-        {
-            Integer dimensionIDInt = Integer.valueOf(this.dimensionID);
+        Integer dimensionIDInt = Ints.tryParse(this.dimensionID);
+        if (dimensionIDInt != null)
             return dimensionIDInt == provider.dimensionId;
-        }
-        catch (NumberFormatException ignored)
-        {
-
-        }
 
         List<String> types = getDimensionTypes();
         return types != null && DimensionDictionary.dimensionMatchesAllTypes(provider, types);

@@ -8,7 +8,7 @@ package ivorius.reccomplex.structures.generic.gentypes;
 import com.google.gson.*;
 import ivorius.ivtoolkit.maze.MazePath;
 import ivorius.ivtoolkit.maze.MazeRoom;
-import ivorius.reccomplex.gui.editstructure.TableDataSourceMazeGenerationInfo;
+import ivorius.reccomplex.gui.editstructure.gentypes.TableDataSourceMazeGenerationInfo;
 import ivorius.reccomplex.gui.table.TableDataSource;
 import ivorius.reccomplex.gui.table.TableDelegate;
 import ivorius.reccomplex.gui.table.TableNavigator;

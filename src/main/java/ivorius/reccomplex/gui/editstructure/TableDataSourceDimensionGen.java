@@ -11,6 +11,7 @@ import ivorius.reccomplex.dimensions.DimensionDictionary;
 import ivorius.reccomplex.gui.GuiValidityStateIndicator;
 import ivorius.reccomplex.gui.table.*;
 import ivorius.reccomplex.structures.generic.DimensionGenerationInfo;
+import ivorius.reccomplex.structures.generic.DimensionSelector;
 import net.minecraftforge.common.DimensionManager;
 
 /**
@@ -28,6 +29,49 @@ public class TableDataSourceDimensionGen implements TableDataSource, TableElemen
         this.tableDelegate = tableDelegate;
     }
 
+    public static GuiValidityStateIndicator.State dimensionSelectorState(DimensionSelector selector)
+    {
+        if (selector.isTypeList())
+        {
+            for (String s : selector.getDimensionTypes())
+                if (allDimensionsOfType(s).size() == 0)
+                    return GuiValidityStateIndicator.State.SEMI_VALID;
+
+            return GuiValidityStateIndicator.State.VALID;
+        }
+
+        String dimIDString = selector.getDimensionID();
+
+        try
+        {
+            int dimID = Integer.valueOf(dimIDString);
+
+            for (int eID : DimensionManager.getIDs())
+                if (dimID == eID)
+                    return GuiValidityStateIndicator.State.VALID;
+
+            return GuiValidityStateIndicator.State.SEMI_VALID;
+        }
+        catch (NumberFormatException ignored)
+        {
+
+        }
+
+
+        return GuiValidityStateIndicator.State.INVALID;
+    }
+
+    public static TIntList allDimensionsOfType(String type)
+    {
+        TIntList intList = new TIntArrayList();
+        for (int d : DimensionManager.getIDs())
+        {
+            if (DimensionDictionary.dimensionMatchesType(DimensionManager.getProvider(d), type))
+                intList.add(d);
+        }
+        return intList;
+    }
+
     @Override
     public boolean has(GuiTable table, int index)
     {
@@ -41,7 +85,7 @@ public class TableDataSourceDimensionGen implements TableDataSource, TableElemen
         {
             TableElementString element = new TableElementString("dimID", "Dimension ID", generationInfo.getDimensionID());
             element.setShowsValidityState(true);
-            element.setValidityState(currentDimensionIDState());
+            element.setValidityState(dimensionSelectorState(generationInfo.getDimensionSelector()));
             element.addPropertyListener(this);
             return element;
         }
@@ -68,7 +112,7 @@ public class TableDataSourceDimensionGen implements TableDataSource, TableElemen
         if ("dimID".equals(element.getID()))
         {
             generationInfo.setDimensionID((String) element.getPropertyValue());
-            ((TableElementString) element).setValidityState(currentDimensionIDState());
+            ((TableElementString) element).setValidityState(dimensionSelectorState(generationInfo.getDimensionSelector()));
         }
         else if ("defaultWeight".equals(element.getID()))
         {
@@ -78,50 +122,7 @@ public class TableDataSourceDimensionGen implements TableDataSource, TableElemen
         }
         else if ("weight".equals(element.getID()))
         {
-            generationInfo.setGenerationWeight((double)(Float) element.getPropertyValue());
+            generationInfo.setGenerationWeight((double) (Float) element.getPropertyValue());
         }
-    }
-
-    private GuiValidityStateIndicator.State currentDimensionIDState()
-    {
-        if (generationInfo.isTypeList())
-        {
-            for (String s : generationInfo.allTypes())
-                if (allDimensionsOfType(s).size() == 0)
-                    return GuiValidityStateIndicator.State.SEMI_VALID;
-
-            return GuiValidityStateIndicator.State.VALID;
-        }
-
-        String dimIDString = generationInfo.getDimensionID();
-
-        try
-        {
-            int dimID = Integer.valueOf(dimIDString);
-
-            for (int eID : DimensionManager.getIDs())
-                if (dimID == eID)
-                    return GuiValidityStateIndicator.State.VALID;
-
-            return GuiValidityStateIndicator.State.SEMI_VALID;
-        }
-        catch (NumberFormatException ignored)
-        {
-
-        }
-
-
-        return GuiValidityStateIndicator.State.INVALID;
-    }
-
-    private TIntList allDimensionsOfType(String type)
-    {
-        TIntList intList = new TIntArrayList();
-        for (int d : DimensionManager.getIDs())
-        {
-            if (DimensionDictionary.dimensionMatchesType(DimensionManager.getProvider(d), type))
-                intList.add(d);
-        }
-        return intList;
     }
 }

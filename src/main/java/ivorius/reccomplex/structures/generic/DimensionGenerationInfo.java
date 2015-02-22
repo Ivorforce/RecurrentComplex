@@ -13,7 +13,6 @@ import net.minecraft.world.WorldProvider;
 
 import java.lang.reflect.Type;
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.List;
 
 /**
@@ -81,14 +80,9 @@ public class DimensionGenerationInfo
         return dimensionSelector.matches(provider);
     }
 
-    public boolean isTypeList()
+    public DimensionSelector getDimensionSelector()
     {
-        return dimensionSelector.isTypeList();
-    }
-
-    public Collection<String> allTypes()
-    {
-        return dimensionSelector.getDimensionTypes();
+        return dimensionSelector;
     }
 
     public String getDisplayString()

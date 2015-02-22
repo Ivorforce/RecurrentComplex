@@ -7,7 +7,6 @@ package ivorius.reccomplex.structures;
 
 import ivorius.ivtoolkit.blocks.BlockCoord;
 import ivorius.ivtoolkit.math.AxisAlignedTransform2D;
-import ivorius.reccomplex.worldgen.WorldGenStructures;
 import net.minecraft.block.Block;
 import net.minecraft.world.World;
 import net.minecraft.world.gen.structure.StructureBoundingBox;
@@ -43,7 +42,7 @@ public class StructureSpawnContext
     {
         this.world = world;
         this.random = random;
-        boundingBox = WorldGenStructures.structureBoundingBox(coord, WorldGenStructures.structureSize(structureInfo, transform));
+        boundingBox = StructureInfos.structureBoundingBox(coord, StructureInfos.structureSize(structureInfo, transform));
         this.transform = transform;
         this.generationLayer = generationLayer;
         this.generateAsSource = generateAsSource;

@@ -10,6 +10,7 @@ import ivorius.ivtoolkit.math.AxisAlignedTransform2D;
 import ivorius.reccomplex.RCConfig;
 import ivorius.reccomplex.operation.OperationRegistry;
 import ivorius.reccomplex.structures.OperationGenerateStructure;
+import ivorius.reccomplex.structures.StructureInfos;
 import ivorius.reccomplex.structures.StructureRegistry;
 import ivorius.reccomplex.structures.StructureInfo;
 import ivorius.reccomplex.structures.generic.gentypes.NaturalGenerationInfo;
@@ -75,7 +76,7 @@ public class CommandGenerateStructure extends CommandBase
 
             AxisAlignedTransform2D transform = AxisAlignedTransform2D.transform(structureInfo.isRotatable() ? random.nextInt(4) : 0, structureInfo.isMirrorable() && random.nextBoolean());
 
-            int[] size = WorldGenStructures.structureSize(structureInfo, transform);
+            int[] size = StructureInfos.structureSize(structureInfo, transform);
 
             int genX = x - size[0] / 2;
             int genZ = z - size[2] / 2;

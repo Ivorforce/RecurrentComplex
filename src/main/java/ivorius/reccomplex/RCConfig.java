@@ -28,9 +28,6 @@ public class RCConfig
     private static Set<String> persistentDisabledStructures = new HashSet<>();
     private static Set<String> forceEnabledStructures = new HashSet<>();
 
-    public static String spawnStructure;
-    public static int spawnStructureShiftX, spawnStructureShiftZ;
-
     public static String commandPrefix;
 
     public static boolean savePlayerCache;
@@ -59,10 +56,6 @@ public class RCConfig
             disabledModGeneration.addAll(Arrays.asList(RecurrentComplex.config.getStringList("disabledModGeneration", CATEGORY_BALANCING, new String[0], "Structures from mods in this list will automatically be set not to generate.")));
             forceEnabledStructures.clear();
             forceEnabledStructures.addAll(Arrays.asList(RecurrentComplex.config.getStringList("forceEnabledStructures", CATEGORY_BALANCING, new String[0], "Structures that be set to generate (if in the right directory), no matter what")));
-
-            spawnStructure = RecurrentComplex.config.getString("spawnStructure", CATEGORY_BALANCING, "", "The structure that will generate around the spawn point. It will start off in the center of the spawn area, and may need to be moved using the spawn shift.");
-            spawnStructureShiftX = RecurrentComplex.config.getInt("spawnStructureShiftX", CATEGORY_BALANCING, 0, -100, 100, "The amount of blocks the spawn structure will be moved along the x axis on generation.");
-            spawnStructureShiftZ = RecurrentComplex.config.getInt("spawnStructureShiftZ", CATEGORY_BALANCING, 0, -100, 100, "The amount of blocks the spawn structure will be moved along the z axis on generation.");
         }
 
         RecurrentComplex.proxy.loadConfig(configID);

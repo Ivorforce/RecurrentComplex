@@ -3,7 +3,7 @@
  *  * http://lukas.axxim.net
  */
 
-package ivorius.reccomplex.gui.editstructure;
+package ivorius.reccomplex.gui.editstructure.gentypes;
 
 import ivorius.reccomplex.gui.editmazeblock.TableDataSourceMazePathList;
 import ivorius.reccomplex.gui.editmazeblock.TableDataSourceSelection;

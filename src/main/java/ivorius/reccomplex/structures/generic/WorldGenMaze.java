@@ -9,12 +9,14 @@ import ivorius.ivtoolkit.blocks.BlockCoord;
 import ivorius.ivtoolkit.math.AxisAlignedTransform2D;
 import ivorius.ivtoolkit.maze.*;
 import ivorius.reccomplex.structures.StructureInfo;
+import ivorius.reccomplex.structures.StructureInfos;
 import ivorius.reccomplex.structures.generic.gentypes.MazeGenerationInfo;
 import ivorius.reccomplex.worldgen.WorldGenStructures;
 import net.minecraft.world.World;
 import org.apache.commons.lang3.tuple.Pair;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Random;
 
@@ -38,7 +40,7 @@ public class WorldGenMaze
             AxisAlignedTransform2D componentTransform = info.transform;
             StructureInfo compStructureInfo = info.structureInfo;
 
-            int[] compStructureSize = WorldGenStructures.structureSize(compStructureInfo, componentTransform);
+            int[] compStructureSize = StructureInfos.structureSize(compStructureInfo, componentTransform);
             int[] compRoomSize = Maze.getRoomSize(position.getComponent().getSize(), pathLengths, roomSize);
             int[] sizeDependentShift = new int[]{(compRoomSize[0] - compStructureSize[0]) / 2, (compRoomSize[1] - compStructureSize[1]) / 2, (compRoomSize[2] - compStructureSize[2]) / 2};
 
@@ -87,7 +89,7 @@ public class WorldGenMaze
         return true;
     }
 
-    public static List<MazeComponent> transformedComponents(List<Pair<StructureInfo, MazeGenerationInfo>> componentStructures)
+    public static List<MazeComponent> transformedComponents(Collection<Pair<StructureInfo, MazeGenerationInfo>> componentStructures)
     {
         List<MazeComponent> transformedComponents = new ArrayList<>();
         for (Pair<StructureInfo, MazeGenerationInfo> pair : componentStructures)

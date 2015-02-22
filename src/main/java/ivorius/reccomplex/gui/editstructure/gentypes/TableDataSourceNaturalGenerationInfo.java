@@ -3,9 +3,11 @@
  *  * http://lukas.axxim.net
  */
 
-package ivorius.reccomplex.gui.editstructure;
+package ivorius.reccomplex.gui.editstructure.gentypes;
 
 import ivorius.ivtoolkit.gui.IntegerRange;
+import ivorius.reccomplex.gui.editstructure.TableDataSourceBiomeGenList;
+import ivorius.reccomplex.gui.editstructure.TableDataSourceDimensionGenList;
 import ivorius.reccomplex.gui.table.*;
 import ivorius.reccomplex.structures.generic.GenerationYSelector;
 import ivorius.reccomplex.structures.generic.gentypes.NaturalGenerationInfo;
@@ -33,7 +35,7 @@ public class TableDataSourceNaturalGenerationInfo extends TableDataSourceSegment
         this.naturelGenerationInfo = naturelGenerationInfo;
     }
 
-    private static List<TableElementList.Option> allGenerationOptions()
+    public static List<TableElementList.Option> allGenerationOptions()
     {
         List<TableElementList.Option> generationBases = new ArrayList<>();
 
@@ -47,7 +49,7 @@ public class TableDataSourceNaturalGenerationInfo extends TableDataSourceSegment
         return generationBases;
     }
 
-    private static List<TableElementList.Option> allGenerationCategories()
+    public static List<TableElementList.Option> allGenerationCategories()
     {
         Set<String> categories = StructureSelector.allCategoryIDs();
         List<TableElementList.Option> generationBases = new ArrayList<>();

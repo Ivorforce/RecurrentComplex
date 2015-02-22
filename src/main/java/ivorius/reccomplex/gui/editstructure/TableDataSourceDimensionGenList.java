@@ -20,7 +20,6 @@ public class TableDataSourceDimensionGenList extends TableDataSourceList<Dimensi
     public TableDataSourceDimensionGenList(List<DimensionGenerationInfo> list, TableDelegate tableDelegate, TableNavigator navigator)
     {
         super(list, tableDelegate, navigator);
-        setAddTitle("Add Dimension");
     }
 
     @Override

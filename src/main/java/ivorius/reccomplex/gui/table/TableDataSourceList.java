@@ -5,6 +5,8 @@
 
 package ivorius.reccomplex.gui.table;
 
+import net.minecraft.util.EnumChatFormatting;
+
 import java.util.List;
 
 /**
@@ -20,8 +22,8 @@ public abstract class TableDataSourceList<T, L extends List<T>> extends TableDat
     protected String earlierTitle = "Earlier";
     protected String laterTitle = "Later";
     protected String editTitle = "Edit";
-    protected String deleteTitle = "Delete";
-    protected String addTitle = "Add";
+    protected String deleteTitle = EnumChatFormatting.RED + "-";
+    protected String addTitle = EnumChatFormatting.GREEN + "+";
 
     protected boolean usesPresetActionForAdding;
 
@@ -159,6 +161,7 @@ public abstract class TableDataSourceList<T, L extends List<T>> extends TableDat
             if (isUsesPresetActionForAdding())
             {
                 TableElementPresetAction addButton = new TableElementPresetAction("add" + addIndex, "", getAddTitle(), getAddActions());
+                addButton.setActionButtonWidth(0.2f);
                 addButton.addListener(this);
                 return addButton;
             }

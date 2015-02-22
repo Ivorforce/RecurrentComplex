@@ -22,7 +22,6 @@ public class TableDataSourceSpawnCommandBlock extends TableDataSourceList<TileEn
     {
         super(tileEntity.entries, tableDelegate, navigator);
         this.tileEntity = tileEntity;
-        setAddTitle("Add Command");
         setEarlierTitle("Up");
         setLaterTitle("Down");
     }

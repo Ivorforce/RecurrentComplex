@@ -22,7 +22,6 @@ public class TableDataSourceMazePathList extends TableDataSourceList<MazePath, L
     {
         super(list, tableDelegate, navigator);
         this.dimensions = dimensions;
-        setAddTitle("Add Path");
         setEarlierTitle("Up");
         setLaterTitle("Down");
     }

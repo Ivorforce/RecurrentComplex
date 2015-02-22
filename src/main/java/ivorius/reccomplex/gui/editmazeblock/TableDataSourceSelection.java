@@ -22,7 +22,6 @@ public class TableDataSourceSelection extends TableDataSourceList<Selection.Area
     {
         super(list, tableDelegate, navigator);
         this.dimensions = dimensions;
-        setAddTitle("Add Area");
     }
 
     @Override

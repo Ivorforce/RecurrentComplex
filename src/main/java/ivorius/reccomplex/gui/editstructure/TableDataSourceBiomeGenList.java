@@ -19,7 +19,6 @@ public class TableDataSourceBiomeGenList extends TableDataSourceList<BiomeGenera
     public TableDataSourceBiomeGenList(List<BiomeGenerationInfo> list, TableDelegate tableDelegate, TableNavigator navigator)
     {
         super(list, tableDelegate, navigator);
-        setAddTitle("Add Biome");
     }
 
     @Override

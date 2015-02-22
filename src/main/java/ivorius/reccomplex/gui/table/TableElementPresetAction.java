@@ -6,6 +6,7 @@
 package ivorius.reccomplex.gui.table;
 
 import net.minecraft.client.gui.GuiButton;
+import net.minecraft.util.MathHelper;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -16,15 +17,17 @@ import java.util.List;
  */
 public class TableElementPresetAction extends TableElementDefault
 {
-    private GuiButton changePresetButton;
-    private GuiButton runActionButton;
+    protected GuiButton changePresetButton;
+    protected GuiButton runActionButton;
 
-    private String currentActionID;
+    protected String currentActionID;
 
-    private String actionTitle;
-    private TableElementButton.Action[] actions;
+    protected String actionTitle;
+    protected TableElementButton.Action[] actions;
 
-    private List<TableElementActionListener> listeners = new ArrayList<>();
+    protected List<TableElementActionListener> listeners = new ArrayList<>();
+
+    protected float actionButtonWidth = 0.4f;
 
     public TableElementPresetAction(String id, String title, String actionTitle, TableElementButton.Action... actions)
     {
@@ -54,6 +57,16 @@ public class TableElementPresetAction extends TableElementDefault
         return actions;
     }
 
+    public float getActionButtonWidth()
+    {
+        return actionButtonWidth;
+    }
+
+    public void setActionButtonWidth(float actionButtonWidth)
+    {
+        this.actionButtonWidth = actionButtonWidth;
+    }
+
     @Override
     public void initGui(GuiTable screen)
     {
@@ -63,11 +76,13 @@ public class TableElementPresetAction extends TableElementDefault
 
         int curIndex = currentActionIndex();
         String title = curIndex >= 0 ? actions[curIndex].title : currentActionID;
-        changePresetButton = new GuiButton(-1, bounds.getMinX(), bounds.getMinY() + (bounds.getHeight() - 20) / 2, bounds.getWidth() / 2 - 2, 20, title);
+
+        int presetButtonWidth = MathHelper.floor_float(bounds.getWidth() * (1f - actionButtonWidth)) - 1;
+        changePresetButton = new GuiButton(-1, bounds.getMinX(), bounds.getMinY() + (bounds.getHeight() - 20) / 2, presetButtonWidth, 20, title);
         changePresetButton.visible = !isHidden();
         screen.addButton(this, 0, changePresetButton);
 
-        runActionButton = new GuiButton(-1, bounds.getCenterX(), bounds.getMinY() + (bounds.getHeight() - 20) / 2, bounds.getWidth() / 2, 20, actionTitle);
+        runActionButton = new GuiButton(-1, bounds.getMinX() + presetButtonWidth + 2, bounds.getMinY() + (bounds.getHeight() - 20) / 2, MathHelper.floor_float(bounds.getWidth() * actionButtonWidth) - 1, 20, actionTitle);
         runActionButton.visible = !isHidden();
         screen.addButton(this, 1, runActionButton);
 

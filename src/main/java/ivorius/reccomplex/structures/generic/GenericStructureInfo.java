@@ -61,6 +61,7 @@ public class GenericStructureInfo implements StructureInfo, Cloneable
 
     public final List<String> dependencies = new ArrayList<>();
 
+    public Metadata metadata = new Metadata();
     public JsonObject customData;
 
     public static GenericStructureInfo createDefaultStructure()
@@ -332,6 +333,9 @@ public class GenericStructureInfo implements StructureInfo, Cloneable
                 // And else it is taken out for packet size
             }
 
+            if (jsonobject.has("metadata")) // Else, use default
+                structureInfo.metadata = context.deserialize(jsonobject.get("metadata"), Metadata.class);
+
             structureInfo.customData = JsonUtils.getJsonObjectFieldOrDefault(jsonobject, "customData", new JsonObject());
 
             return structureInfo;
@@ -367,6 +371,7 @@ public class GenericStructureInfo implements StructureInfo, Cloneable
                 }
             }
 
+            jsonobject.add("metadata", context.serialize(structureInfo.metadata));
             jsonobject.add("customData", structureInfo.customData);
 
             return jsonobject;

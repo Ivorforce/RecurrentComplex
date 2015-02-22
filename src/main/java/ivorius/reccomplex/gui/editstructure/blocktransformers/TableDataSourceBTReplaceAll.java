@@ -3,7 +3,7 @@
  *  * http://lukas.axxim.net
  */
 
-package ivorius.reccomplex.gui.editstructure;
+package ivorius.reccomplex.gui.editstructure.blocktransformers;
 
 import ivorius.reccomplex.gui.table.*;
 import ivorius.reccomplex.structures.generic.blocktransformers.BlockTransformerReplaceAll;

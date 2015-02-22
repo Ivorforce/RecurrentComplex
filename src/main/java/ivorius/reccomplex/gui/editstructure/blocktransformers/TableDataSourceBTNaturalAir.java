@@ -3,30 +3,30 @@
  *  * http://lukas.axxim.net
  */
 
-package ivorius.reccomplex.gui.editstructure;
+package ivorius.reccomplex.gui.editstructure.blocktransformers;
 
 import ivorius.reccomplex.gui.table.*;
-import ivorius.reccomplex.structures.generic.blocktransformers.BlockTransformerNegativeSpace;
+import ivorius.reccomplex.structures.generic.blocktransformers.BlockTransformerNaturalAir;
 import net.minecraft.block.Block;
 
 /**
  * Created by lukas on 05.06.14.
  */
-public class TableDataSourceBTNegativeSpace implements TableDataSource, TableElementPropertyListener
+public class TableDataSourceBTNaturalAir implements TableDataSource, TableElementPropertyListener
 {
-    private BlockTransformerNegativeSpace blockTransformer;
+    private BlockTransformerNaturalAir blockTransformer;
 
-    public TableDataSourceBTNegativeSpace(BlockTransformerNegativeSpace blockTransformer)
+    public TableDataSourceBTNaturalAir(BlockTransformerNaturalAir blockTransformer)
     {
         this.blockTransformer = blockTransformer;
     }
 
-    public BlockTransformerNegativeSpace getBlockTransformer()
+    public BlockTransformerNaturalAir getBlockTransformer()
     {
         return blockTransformer;
     }
 
-    public void setBlockTransformer(BlockTransformerNegativeSpace blockTransformer)
+    public void setBlockTransformer(BlockTransformerNaturalAir blockTransformer)
     {
         this.blockTransformer = blockTransformer;
     }

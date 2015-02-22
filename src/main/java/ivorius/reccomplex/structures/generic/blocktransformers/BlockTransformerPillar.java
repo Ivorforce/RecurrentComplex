@@ -8,7 +8,7 @@ package ivorius.reccomplex.structures.generic.blocktransformers;
 import com.google.gson.*;
 import ivorius.ivtoolkit.blocks.BlockCoord;
 import ivorius.ivtoolkit.tools.MCRegistry;
-import ivorius.reccomplex.gui.editstructure.TableDataSourceBTPillar;
+import ivorius.reccomplex.gui.editstructure.blocktransformers.TableDataSourceBTPillar;
 import ivorius.reccomplex.gui.table.TableDataSource;
 import ivorius.reccomplex.gui.table.TableDelegate;
 import ivorius.reccomplex.gui.table.TableNavigator;

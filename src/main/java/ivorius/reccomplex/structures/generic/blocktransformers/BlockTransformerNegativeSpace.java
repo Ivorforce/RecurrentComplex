@@ -9,7 +9,7 @@ import com.google.gson.*;
 import ivorius.ivtoolkit.tools.IvWorldData;
 import ivorius.ivtoolkit.tools.MCRegistry;
 import ivorius.reccomplex.blocks.RCBlocks;
-import ivorius.reccomplex.gui.editstructure.TableDataSourceBTNegativeSpace;
+import ivorius.reccomplex.gui.editstructure.blocktransformers.TableDataSourceBTNegativeSpace;
 import ivorius.reccomplex.gui.table.TableDataSource;
 import ivorius.reccomplex.gui.table.TableDelegate;
 import ivorius.reccomplex.gui.table.TableNavigator;

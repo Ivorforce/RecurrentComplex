@@ -84,6 +84,7 @@ public class TableDataSourceGenericStructure extends TableDataSourceSegmented im
         switch (segment)
         {
             case 0:
+                return 2;
             case 2:
                 return 1;
             case 1:
@@ -100,48 +101,58 @@ public class TableDataSourceGenericStructure extends TableDataSourceSegmented im
     @Override
     public TableElement elementForIndexInSegment(GuiTable table, int index, int segment)
     {
-        if (segment == 0)
+        switch (segment)
         {
-            TableElementString element = new TableElementString("name", "Name", structureKey);
-            element.addPropertyListener(this);
-            element.setShowsValidityState(true);
-            element.setValidityState(currentNameState());
-            return element;
-        }
-        else if (segment == 1)
-        {
-            if (index == 0)
+            case 0:
+                if (index == 0)
+                {
+                    TableElementString element = new TableElementString("name", "Name", structureKey);
+                    element.addPropertyListener(this);
+                    element.setShowsValidityState(true);
+                    element.setValidityState(currentNameState());
+                    return element;
+                }
+                else if (index == 1)
+                {
+                    TableElementButton element = new TableElementButton("metadata", "", new TableElementButton.Action("metadata", "Metadata"));
+                    element.addListener(this);
+                    return element;
+                }
+                break;
+            case 1:
+                if (index == 0)
+                {
+                    TableElementBoolean element = new TableElementBoolean("rotatable", "Rotatable", structureInfo.rotatable);
+                    element.addPropertyListener(this);
+                    return element;
+                }
+                else if (index == 1)
+                {
+                    TableElementBoolean element = new TableElementBoolean("mirrorable", "Mirrorable", structureInfo.mirrorable);
+                    element.addPropertyListener(this);
+                    return element;
+                }
+                break;
+            case 2:
             {
-                TableElementBoolean element = new TableElementBoolean("rotatable", "Rotatable", structureInfo.rotatable);
+                TableElementString element = new TableElementString("dependencies", "Dependencies (A,B,...)", Strings.join(structureInfo.dependencies, ","));
+                element.setValidityState(currentDependencyState());
+                element.setShowsValidityState(true);
                 element.addPropertyListener(this);
                 return element;
             }
-            else if (index == 1)
+            case 3:
             {
-                TableElementBoolean element = new TableElementBoolean("mirrorable", "Mirrorable", structureInfo.mirrorable);
-                element.addPropertyListener(this);
+                TableElementButton element = new TableElementButton("editGenerationInfos", "Generation", new TableElementButton.Action("edit", "Edit"));
+                element.addListener(this);
                 return element;
             }
-        }
-        else if (segment == 2)
-        {
-            TableElementString element = new TableElementString("dependencies", "Dependencies (A,B,...)", Strings.join(structureInfo.dependencies, ","));
-            element.setValidityState(currentDependencyState());
-            element.setShowsValidityState(true);
-            element.addPropertyListener(this);
-            return element;
-        }
-        else if (segment == 3)
-        {
-            TableElementButton elementEditTransformers = new TableElementButton("editGenerationInfos", "Generation", new TableElementButton.Action("edit", "Edit"));
-            elementEditTransformers.addListener(this);
-            return elementEditTransformers;
-        }
-        else if (segment == 4)
-        {
-            TableElementButton elementEditTransformers = new TableElementButton("editTransformers", "Transformers", new TableElementButton.Action("edit", "Edit"));
-            elementEditTransformers.addListener(this);
-            return elementEditTransformers;
+            case 4:
+            {
+                TableElementButton element = new TableElementButton("editTransformers", "Transformers", new TableElementButton.Action("edit", "Edit"));
+                element.addListener(this);
+                return element;
+            }
         }
 
         return null;
@@ -150,7 +161,12 @@ public class TableDataSourceGenericStructure extends TableDataSourceSegmented im
     @Override
     public void actionPerformed(TableElement element, String actionID)
     {
-        if ("editTransformers".equals(element.getID()) && "edit".equals(actionID))
+        if ("metadata".equals(actionID))
+        {
+            GuiTable table = new GuiTable(tableDelegate, new TableDataSourceMetadata(structureInfo.metadata));
+            navigator.pushTable(table);
+        }
+        else if ("editTransformers".equals(element.getID()) && "edit".equals(actionID))
         {
             GuiTable editTransformersProperties = new GuiTable(tableDelegate, new TableDataSourceBlockTransformerList(structureInfo.blockTransformers, tableDelegate, navigator));
             navigator.pushTable(editTransformersProperties);

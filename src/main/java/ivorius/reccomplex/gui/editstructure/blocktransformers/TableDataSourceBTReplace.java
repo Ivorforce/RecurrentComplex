@@ -3,30 +3,33 @@
  *  * http://lukas.axxim.net
  */
 
-package ivorius.reccomplex.gui.editstructure;
+package ivorius.reccomplex.gui.editstructure.blocktransformers;
 
 import ivorius.reccomplex.gui.table.*;
-import ivorius.reccomplex.structures.generic.blocktransformers.BlockTransformerPillar;
+import ivorius.reccomplex.structures.generic.blocktransformers.BlockTransformerReplace;
 import net.minecraft.block.Block;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by lukas on 05.06.14.
  */
-public class TableDataSourceBTPillar implements TableDataSource, TableElementPropertyListener
+public class TableDataSourceBTReplace implements TableDataSource, TableElementPropertyListener
 {
-    private BlockTransformerPillar blockTransformer;
+    private BlockTransformerReplace blockTransformer;
 
-    public TableDataSourceBTPillar(BlockTransformerPillar blockTransformer)
+    public TableDataSourceBTReplace(BlockTransformerReplace blockTransformer)
     {
         this.blockTransformer = blockTransformer;
     }
 
-    public BlockTransformerPillar getBlockTransformer()
+    public BlockTransformerReplace getBlockTransformer()
     {
         return blockTransformer;
     }
 
-    public void setBlockTransformer(BlockTransformerPillar blockTransformer)
+    public void setBlockTransformer(BlockTransformerReplace blockTransformer)
     {
         this.blockTransformer = blockTransformer;
     }
@@ -64,12 +67,48 @@ public class TableDataSourceBTPillar implements TableDataSource, TableElementPro
         }
         else if (index == 3)
         {
-            TableElementInteger element = new TableElementInteger("destMeta", "Dest Metadata", blockTransformer.destMetadata, 0, 16);
+            TableElementString element = new TableElementString("destMeta", "Dest Metadatas (Hex)", byteArrayToHexString(blockTransformer.destMetadata));
             element.addPropertyListener(this);
             return element;
         }
 
         return null;
+    }
+
+    public static String byteArrayToHexString(byte[] bytes)
+    {
+        StringBuilder builder = new StringBuilder();
+
+        for (byte aByte : bytes)
+        {
+            builder.append(String.format("%01X", aByte));
+        }
+
+        return builder.toString();
+    }
+
+    public static byte[] hexStringToByteArray(String string)
+    {
+        List<Byte> bytes = new ArrayList<>();
+
+        for (int i = 0; i < string.length(); i++)
+        {
+            char aChar = string.charAt(i);
+            byte aByte = (byte) Character.digit(aChar, 16);
+
+            if (aByte >= 0)
+            {
+                bytes.add(aByte);
+            }
+        }
+
+        byte[] byteArray = new byte[bytes.size()];
+        for (int i = 0; i < bytes.size(); i++)
+        {
+            byteArray[i] = bytes.get(i);
+        }
+
+        return byteArray;
     }
 
     @Override
@@ -91,7 +130,14 @@ public class TableDataSourceBTPillar implements TableDataSource, TableElementPro
         }
         else if ("destMeta".equals(element.getID()))
         {
-            blockTransformer.destMetadata = (int) element.getPropertyValue();
+            String propValue = ((String) element.getPropertyValue());
+            blockTransformer.destMetadata = hexStringToByteArray(propValue);
+            String newString = byteArrayToHexString(blockTransformer.destMetadata);
+
+            if (!propValue.equalsIgnoreCase(newString))
+            {
+                element.setPropertyValue(newString);
+            }
         }
     }
 }

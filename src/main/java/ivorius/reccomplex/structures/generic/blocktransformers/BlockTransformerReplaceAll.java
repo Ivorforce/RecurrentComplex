@@ -10,7 +10,7 @@ import ivorius.ivtoolkit.blocks.BlockCoord;
 import ivorius.ivtoolkit.blocks.IvBlockCollection;
 import ivorius.ivtoolkit.tools.IvWorldData;
 import ivorius.ivtoolkit.tools.MCRegistry;
-import ivorius.reccomplex.gui.editstructure.TableDataSourceBTReplaceAll;
+import ivorius.reccomplex.gui.editstructure.blocktransformers.TableDataSourceBTReplaceAll;
 import ivorius.reccomplex.gui.table.TableDataSource;
 import ivorius.reccomplex.gui.table.TableDelegate;
 import ivorius.reccomplex.gui.table.TableNavigator;

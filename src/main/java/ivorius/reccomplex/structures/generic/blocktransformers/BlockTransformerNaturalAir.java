@@ -9,7 +9,7 @@ import com.google.gson.*;
 import ivorius.ivtoolkit.blocks.BlockCoord;
 import ivorius.ivtoolkit.math.IvVecMathHelper;
 import ivorius.ivtoolkit.tools.MCRegistry;
-import ivorius.reccomplex.gui.editstructure.TableDataSourceBTNaturalAir;
+import ivorius.reccomplex.gui.editstructure.blocktransformers.TableDataSourceBTNaturalAir;
 import ivorius.reccomplex.gui.table.TableDataSource;
 import ivorius.reccomplex.gui.table.TableDelegate;
 import ivorius.reccomplex.gui.table.TableNavigator;

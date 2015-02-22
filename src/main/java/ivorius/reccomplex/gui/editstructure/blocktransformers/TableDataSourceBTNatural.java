@@ -3,30 +3,31 @@
  *  * http://lukas.axxim.net
  */
 
-package ivorius.reccomplex.gui.editstructure;
+package ivorius.reccomplex.gui.editstructure.blocktransformers;
 
+import ivorius.reccomplex.gui.GuiValidityStateIndicator;
 import ivorius.reccomplex.gui.table.*;
-import ivorius.reccomplex.structures.generic.blocktransformers.BlockTransformerNaturalAir;
+import ivorius.reccomplex.structures.generic.blocktransformers.BlockTransformerNatural;
 import net.minecraft.block.Block;
 
 /**
  * Created by lukas on 05.06.14.
  */
-public class TableDataSourceBTNaturalAir implements TableDataSource, TableElementPropertyListener
+public class TableDataSourceBTNatural implements TableDataSource, TableElementPropertyListener
 {
-    private BlockTransformerNaturalAir blockTransformer;
+    private BlockTransformerNatural blockTransformer;
 
-    public TableDataSourceBTNaturalAir(BlockTransformerNaturalAir blockTransformer)
+    public TableDataSourceBTNatural(BlockTransformerNatural blockTransformer)
     {
         this.blockTransformer = blockTransformer;
     }
 
-    public BlockTransformerNaturalAir getBlockTransformer()
+    public BlockTransformerNatural getBlockTransformer()
     {
         return blockTransformer;
     }
 
-    public void setBlockTransformer(BlockTransformerNaturalAir blockTransformer)
+    public void setBlockTransformer(BlockTransformerNatural blockTransformer)
     {
         this.blockTransformer = blockTransformer;
     }
@@ -44,7 +45,7 @@ public class TableDataSourceBTNaturalAir implements TableDataSource, TableElemen
         {
             TableElementString element = new TableElementString("sourceID", "Block", Block.blockRegistry.getNameForObject(blockTransformer.sourceBlock));
             element.setShowsValidityState(true);
-            TableDataSourceBTNatural.setStateForBlockTextfield(element);
+            setStateForBlockTextfield(element);
             element.addPropertyListener(this);
             return element;
         }
@@ -64,11 +65,21 @@ public class TableDataSourceBTNaturalAir implements TableDataSource, TableElemen
         if ("sourceID".equals(element.getID()))
         {
             blockTransformer.sourceBlock = (Block) Block.blockRegistry.getObject(element.getPropertyValue());
-            TableDataSourceBTNatural.setStateForBlockTextfield(((TableElementString) element));
+            setStateForBlockTextfield(((TableElementString) element));
         }
         else if ("sourceMeta".equals(element.getID()))
         {
             blockTransformer.sourceMetadata = (int) element.getPropertyValue();
         }
+    }
+
+    public static void setStateForBlockTextfield(TableElementString elementString)
+    {
+        elementString.setValidityState(stateForBlock(elementString.getPropertyValue()));
+    }
+
+    public static GuiValidityStateIndicator.State stateForBlock(String blockID)
+    {
+        return Block.blockRegistry.containsKey(blockID) ? GuiValidityStateIndicator.State.VALID : GuiValidityStateIndicator.State.INVALID;
     }
 }

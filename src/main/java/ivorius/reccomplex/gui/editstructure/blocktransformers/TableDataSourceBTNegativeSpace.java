@@ -3,31 +3,30 @@
  *  * http://lukas.axxim.net
  */
 
-package ivorius.reccomplex.gui.editstructure;
+package ivorius.reccomplex.gui.editstructure.blocktransformers;
 
-import ivorius.reccomplex.gui.GuiValidityStateIndicator;
 import ivorius.reccomplex.gui.table.*;
-import ivorius.reccomplex.structures.generic.blocktransformers.BlockTransformerNatural;
+import ivorius.reccomplex.structures.generic.blocktransformers.BlockTransformerNegativeSpace;
 import net.minecraft.block.Block;
 
 /**
  * Created by lukas on 05.06.14.
  */
-public class TableDataSourceBTNatural implements TableDataSource, TableElementPropertyListener
+public class TableDataSourceBTNegativeSpace implements TableDataSource, TableElementPropertyListener
 {
-    private BlockTransformerNatural blockTransformer;
+    private BlockTransformerNegativeSpace blockTransformer;
 
-    public TableDataSourceBTNatural(BlockTransformerNatural blockTransformer)
+    public TableDataSourceBTNegativeSpace(BlockTransformerNegativeSpace blockTransformer)
     {
         this.blockTransformer = blockTransformer;
     }
 
-    public BlockTransformerNatural getBlockTransformer()
+    public BlockTransformerNegativeSpace getBlockTransformer()
     {
         return blockTransformer;
     }
 
-    public void setBlockTransformer(BlockTransformerNatural blockTransformer)
+    public void setBlockTransformer(BlockTransformerNegativeSpace blockTransformer)
     {
         this.blockTransformer = blockTransformer;
     }
@@ -45,7 +44,7 @@ public class TableDataSourceBTNatural implements TableDataSource, TableElementPr
         {
             TableElementString element = new TableElementString("sourceID", "Block", Block.blockRegistry.getNameForObject(blockTransformer.sourceBlock));
             element.setShowsValidityState(true);
-            setStateForBlockTextfield(element);
+            TableDataSourceBTNatural.setStateForBlockTextfield(element);
             element.addPropertyListener(this);
             return element;
         }
@@ -65,21 +64,11 @@ public class TableDataSourceBTNatural implements TableDataSource, TableElementPr
         if ("sourceID".equals(element.getID()))
         {
             blockTransformer.sourceBlock = (Block) Block.blockRegistry.getObject(element.getPropertyValue());
-            setStateForBlockTextfield(((TableElementString) element));
+            TableDataSourceBTNatural.setStateForBlockTextfield(((TableElementString) element));
         }
         else if ("sourceMeta".equals(element.getID()))
         {
             blockTransformer.sourceMetadata = (int) element.getPropertyValue();
         }
-    }
-
-    public static void setStateForBlockTextfield(TableElementString elementString)
-    {
-        elementString.setValidityState(stateForBlock(elementString.getPropertyValue()));
-    }
-
-    public static GuiValidityStateIndicator.State stateForBlock(String blockID)
-    {
-        return Block.blockRegistry.containsKey(blockID) ? GuiValidityStateIndicator.State.VALID : GuiValidityStateIndicator.State.INVALID;
     }
 }

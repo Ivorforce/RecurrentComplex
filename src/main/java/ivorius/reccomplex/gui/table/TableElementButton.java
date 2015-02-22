@@ -5,6 +5,7 @@
 
 package ivorius.reccomplex.gui.table;
 
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiButton;
 
 import java.util.ArrayList;
@@ -87,22 +88,48 @@ public class TableElementButton extends TableElementDefault
             listener.actionPerformed(this, actions[buttonID].id);
     }
 
+    @Override
+    public void draw(GuiTable screen, int mouseX, int mouseY, float partialTicks)
+    {
+        super.draw(screen, mouseX, mouseY, partialTicks);
+
+        for (int i = 0; i < actions.length; i++)
+        {
+            Action action = actions[i];
+            GuiButton button = buttons[i];
+            if (action.tooltip != null)
+                screen.drawTooltipRect(action.tooltip, TableElementPresetAction.getBounds(button), mouseX, mouseY, Minecraft.getMinecraft().fontRenderer);
+        }
+    }
+
     public static class Action
     {
         public String id;
         public String title;
+        public List<String> tooltip;
         public boolean enabled;
 
-        public Action(String id, String title, boolean enabled)
+        public Action(String id, String title, List<String> tooltip, boolean enabled)
         {
             this.id = id;
             this.title = title;
+            this.tooltip = tooltip;
             this.enabled = enabled;
+        }
+
+        public Action(String id, String title, boolean enabled)
+        {
+            this(id, title, null, enabled);
+        }
+
+        public Action(String id, String title, List<String> tooltip)
+        {
+            this(id, title, tooltip, true);
         }
 
         public Action(String id, String title)
         {
-            this(id, title, true);
+            this(id, title, null, true);
         }
     }
 }

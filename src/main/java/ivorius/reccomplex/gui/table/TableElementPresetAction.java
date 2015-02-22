@@ -5,6 +5,7 @@
 
 package ivorius.reccomplex.gui.table;
 
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.util.MathHelper;
 
@@ -35,6 +36,11 @@ public class TableElementPresetAction extends TableElementDefault
         this.actionTitle = actionTitle;
         this.actions = actions;
         currentActionID = actions[0].id;
+    }
+
+    public static Bounds getBounds(GuiButton button)
+    {
+        return Bounds.boundsWithSize(button.xPosition, button.width, button.yPosition, button.height);
     }
 
     public void addListener(TableElementActionListener listener)
@@ -118,6 +124,22 @@ public class TableElementPresetAction extends TableElementDefault
             for (TableElementActionListener listener : listeners)
                 listener.actionPerformed(this, currentActionID);
         }
+    }
+
+    @Override
+    public void draw(GuiTable screen, int mouseX, int mouseY, float partialTicks)
+    {
+        super.draw(screen, mouseX, mouseY, partialTicks);
+
+        TableElementButton.Action action = currentAction();
+        if (action != null && action.tooltip != null)
+            screen.drawTooltipRect(action.tooltip, getBounds(changePresetButton), mouseX, mouseY, Minecraft.getMinecraft().fontRenderer);
+    }
+
+    private TableElementButton.Action currentAction()
+    {
+        int index = currentActionIndex();
+        return index >= 0 ? actions[index] : null;
     }
 
     private int currentActionIndex()

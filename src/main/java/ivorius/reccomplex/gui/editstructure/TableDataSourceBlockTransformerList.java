@@ -9,6 +9,7 @@ import ivorius.reccomplex.RecurrentComplex;
 import ivorius.reccomplex.gui.table.*;
 import ivorius.reccomplex.structures.StructureRegistry;
 import ivorius.reccomplex.structures.generic.blocktransformers.BlockTransformer;
+import ivorius.reccomplex.utils.IvTranslations;
 import net.minecraft.util.StatCollector;
 
 import java.util.ArrayList;
@@ -52,7 +53,13 @@ public class TableDataSourceBlockTransformerList extends TableDataSourceList<Blo
         Collection<String> allTypes = StructureRegistry.getBlockTransformerRegistry().allIDs();
         List<TableElementButton.Action> actions = new ArrayList<>(allTypes.size());
         for (String type : allTypes)
-            actions.add(new TableElementButton.Action(type, StatCollector.translateToLocal("reccomplex.blockTransformer." + type)));
+        {
+            String baseKey = "reccomplex.blockTransformer." + type;
+            actions.add(new TableElementButton.Action(type,
+                    StatCollector.translateToLocal(baseKey),
+                    IvTranslations.formatLines(baseKey + ".tooltip")
+            ));
+        }
         return actions.toArray(new TableElementButton.Action[actions.size()]);
     }
 

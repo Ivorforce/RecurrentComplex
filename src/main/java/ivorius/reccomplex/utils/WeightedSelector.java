@@ -8,7 +8,7 @@ package ivorius.reccomplex.utils;
 import java.util.List;
 import java.util.Random;
 
-public class WeightedSelector<T>
+public class WeightedSelector
 {
     public static <T extends Item> T selectItem(Random rand, List<T> items)
     {

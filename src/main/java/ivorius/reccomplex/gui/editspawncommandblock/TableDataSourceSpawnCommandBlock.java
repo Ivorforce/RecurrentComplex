@@ -39,13 +39,13 @@ public class TableDataSourceSpawnCommandBlock extends TableDataSourceList<TileEn
     @Override
     public String getDisplayString(TileEntitySpawnCommand.Entry entry)
     {
-        return StringUtils.abbreviate(entry.command, 16) + " (" + entry.itemWeight + ")";
+        return StringUtils.abbreviate(entry.command, 20);
     }
 
     @Override
     public TileEntitySpawnCommand.Entry newEntry(String actionID)
     {
-        return new TileEntitySpawnCommand.Entry(100, "");
+        return new TileEntitySpawnCommand.Entry(1.0, "");
     }
 
     @Override

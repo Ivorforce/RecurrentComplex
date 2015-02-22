@@ -11,6 +11,7 @@ import ivorius.ivtoolkit.math.AxisAlignedTransform2D;
 import ivorius.ivtoolkit.tools.IvCollections;
 import ivorius.reccomplex.RecurrentComplex;
 import ivorius.reccomplex.gui.editspawncommandblock.GuiEditSpawnCommandBlock;
+import ivorius.reccomplex.utils.WeightedSelector;
 import net.minecraft.client.Minecraft;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
@@ -92,7 +93,7 @@ public class TileEntitySpawnCommand extends TileEntity implements GeneratingTile
 
         if (entries.size() > 0)
         {
-            Entry entry = (Entry) WeightedRandom.getRandomItem(random, entries);
+            Entry entry = WeightedSelector.selectItem(random, entries);
             SpawnCommandLogic logic = new SpawnCommandLogic(this, entry.command);
 
             try
@@ -121,27 +122,46 @@ public class TileEntitySpawnCommand extends TileEntity implements GeneratingTile
         return new S35PacketUpdateTileEntity(this.xCoord, this.yCoord, this.zCoord, 0, nbttagcompound);
     }
 
-    public static class Entry extends WeightedRandom.Item
+    public static class Entry implements WeightedSelector.Item
     {
         public String command;
+        public Double weight;
 
-        public Entry(int weight, String command)
+        public Entry(Double weight, String command)
         {
-            super(weight);
             this.command = command;
+            this.weight = weight;
         }
 
         public Entry(NBTTagCompound compound)
         {
-            this(compound.getInteger("weight"), compound.getString("command"));
+            command = compound.getString("command");
+
+            if (compound.hasKey("weight", Constants.NBT.TAG_DOUBLE))
+                weight =  compound.getDouble("weight");
+            else if (compound.hasKey("weight", Constants.NBT.TAG_INT)) // Legacy
+                weight = compound.getInteger("weight") * 0.01;
+            else
+                weight = null;
         }
 
         public NBTTagCompound writeToNBT()
         {
             NBTTagCompound compound = new NBTTagCompound();
             compound.setString("command", command);
-            compound.setInteger("weight", itemWeight);
+            compound.setDouble("weight", weight);
             return compound;
+        }
+
+        @Override
+        public double getWeight()
+        {
+            return weight != null ? weight : 1.0;
+        }
+
+        public boolean hasDefaultWeight()
+        {
+            return weight == null;
         }
     }
 }

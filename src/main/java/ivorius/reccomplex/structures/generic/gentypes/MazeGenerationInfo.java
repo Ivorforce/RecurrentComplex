@@ -31,7 +31,7 @@ public class MazeGenerationInfo extends StructureGenerationInfo
 
     public MazeGenerationInfo()
     {
-        this("", new SavedMazeComponent(100));
+        this("", new SavedMazeComponent((Double) null));
         mazeComponent.rooms.addAll(Selection.zeroSelection(3));
     }
 

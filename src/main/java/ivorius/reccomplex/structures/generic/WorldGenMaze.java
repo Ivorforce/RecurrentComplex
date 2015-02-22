@@ -12,6 +12,7 @@ import ivorius.reccomplex.structures.StructureInfo;
 import ivorius.reccomplex.structures.StructureInfos;
 import ivorius.reccomplex.structures.generic.gentypes.MazeGenerationInfo;
 import ivorius.reccomplex.worldgen.WorldGenStructures;
+import net.minecraft.util.MathHelper;
 import net.minecraft.world.World;
 import org.apache.commons.lang3.tuple.Pair;
 
@@ -100,9 +101,9 @@ public class WorldGenMaze
             int[] compSize = comp.getSize();
             int roomVariations = (info.isRotatable() ? 4 : 1) * (info.isMirrorable() ? 2 : 1);
 
-            int splitCompWeight = 0;
-            if (comp.itemWeight > 0)
-                splitCompWeight = Math.max(1, comp.itemWeight / roomVariations);
+            double splitCompWeight = 0;
+            if (comp.getWeight() > 0)
+                splitCompWeight = comp.getWeight() / roomVariations;
 
             for (int rotations = 0; rotations < (info.isRotatable() ? 4 : 1); rotations++)
             {
@@ -119,7 +120,7 @@ public class WorldGenMaze
                         transformedExits.add(MazeGenerator.rotatedPath(exit, componentTransform, compSize));
 
                     MazeComponentInfo compInfo = new MazeComponentInfo(info, componentTransform);
-                    transformedComponents.add(new MazeComponent(splitCompWeight, compInfo, transformedRooms, transformedExits));
+                    transformedComponents.add(new MazeComponent(MathHelper.floor_double(splitCompWeight * 1000.0), compInfo, transformedRooms, transformedExits));
                 }
             }
         }

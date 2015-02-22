@@ -10,9 +10,9 @@ import ivorius.ivtoolkit.math.IvVecMathHelper;
 import ivorius.ivtoolkit.maze.MazePath;
 import ivorius.ivtoolkit.maze.MazeRoom;
 import ivorius.reccomplex.json.JsonUtils;
+import ivorius.reccomplex.utils.WeightedSelector;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
-import net.minecraft.util.WeightedRandom;
 import net.minecraftforge.common.util.Constants;
 
 import java.lang.reflect.Type;
@@ -21,19 +21,20 @@ import java.util.*;
 /**
  * Created by lukas on 07.10.14.
  */
-public class SavedMazeComponent extends WeightedRandom.Item
+public class SavedMazeComponent implements WeightedSelector.Item
 {
+    public Double weight;
     public final Selection rooms = new Selection();
     public final List<MazePath> exitPaths = new ArrayList<>();
 
-    public SavedMazeComponent(int weight)
+    public SavedMazeComponent(Double weight)
     {
-        super(weight);
+        this.weight = weight;
     }
 
     public SavedMazeComponent(NBTTagCompound compound)
     {
-        super(compound.getInteger("weight"));
+        this(compound.hasKey("weight", Constants.NBT.TAG_DOUBLE) ? compound.getDouble("weight") : null);
 
         if (compound.hasKey("roomArea", Constants.NBT.TAG_COMPOUND))
         {
@@ -102,7 +103,8 @@ public class SavedMazeComponent extends WeightedRandom.Item
 
     public void writeToNBT(NBTTagCompound compound)
     {
-        compound.setInteger("weight", itemWeight);
+        if (weight != null)
+            compound.setDouble("weight", weight);
 
         NBTTagCompound roomsCompound = new NBTTagCompound();
         rooms.writeToNBT(roomsCompound);
@@ -114,6 +116,17 @@ public class SavedMazeComponent extends WeightedRandom.Item
         compound.setTag("exits", exitsList);
     }
 
+    @Override
+    public double getWeight()
+    {
+        return weight != null ? weight : 1.0;
+    }
+
+    public boolean hasDefaultWeight()
+    {
+        return weight == null;
+    }
+
     public static class Serializer implements JsonSerializer<SavedMazeComponent>, JsonDeserializer<SavedMazeComponent>
     {
         @Override
@@ -121,7 +134,11 @@ public class SavedMazeComponent extends WeightedRandom.Item
         {
             JsonObject jsonObject = JsonUtils.getJsonElementAsJsonObject(json, "MazeComponent");
 
-            SavedMazeComponent mazeComponent = new SavedMazeComponent(JsonUtils.getJsonObjectIntegerFieldValue(jsonObject, "weight"));
+            Double weight = jsonObject.has("weightD") ? JsonUtils.getJsonObjectDoubleFieldValue(jsonObject, "weightD") : null;
+            if (weight == null && jsonObject.has("weight")) // legacy
+                weight = JsonUtils.getJsonObjectIntegerFieldValue(jsonObject, "weight") * 0.01; // 100 was default
+
+            SavedMazeComponent mazeComponent = new SavedMazeComponent(weight);
 
             if (jsonObject.has("roomArea"))
             {
@@ -146,7 +163,9 @@ public class SavedMazeComponent extends WeightedRandom.Item
         {
             JsonObject jsonObject = new JsonObject();
 
-            jsonObject.addProperty("weight", src.itemWeight);
+            if (src.weight != null)
+                jsonObject.addProperty("weightD", src.weight);
+
             jsonObject.add("roomArea", context.serialize(src.rooms));
             jsonObject.add("exits", context.serialize(src.exitPaths));
 

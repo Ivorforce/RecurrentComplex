@@ -11,7 +11,6 @@ import ivorius.reccomplex.structures.StructureInfo;
 import ivorius.reccomplex.structures.generic.BiomeSelector;
 import ivorius.reccomplex.structures.generic.gentypes.NaturalGenerationInfo;
 import ivorius.reccomplex.utils.WeightedSelector;
-import net.minecraft.util.WeightedRandom;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldProvider;
 import net.minecraft.world.biome.BiomeGenBase;
@@ -29,7 +28,7 @@ public class StructureSelector
 
     private static Map<String, Category> categories = new HashMap<>();
 
-    private Map<String, List<WeightedSelector.Item<Pair<StructureInfo, NaturalGenerationInfo>>>> weightedStructureInfos = new HashMap<>();
+    private Map<String, List<WeightedSelector.SimpleItem<Pair<StructureInfo, NaturalGenerationInfo>>>> weightedStructureInfos = new HashMap<>();
 
     private Set<String> cachedDimensionTypes;
 
@@ -48,9 +47,9 @@ public class StructureSelector
                 {
                     String category = naturalGenerationInfo.generationCategory;
                     if (!weightedStructureInfos.containsKey(category))
-                        weightedStructureInfos.put(category, new ArrayList<WeightedSelector.Item<Pair<StructureInfo, NaturalGenerationInfo>>>());
+                        weightedStructureInfos.put(category, new ArrayList<WeightedSelector.SimpleItem<Pair<StructureInfo, NaturalGenerationInfo>>>());
 
-                    weightedStructureInfos.get(category).add(new WeightedSelector.Item<>(generationWeight, Pair.of(structureInfo, naturalGenerationInfo)));
+                    weightedStructureInfos.get(category).add(new WeightedSelector.SimpleItem<>(generationWeight, Pair.of(structureInfo, naturalGenerationInfo)));
                 }
             }
         }

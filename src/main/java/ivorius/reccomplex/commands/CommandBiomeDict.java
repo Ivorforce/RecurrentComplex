@@ -8,7 +8,7 @@ package ivorius.reccomplex.commands;
 import ivorius.ivtoolkit.tools.IvGsonHelper;
 import ivorius.reccomplex.RCConfig;
 import ivorius.reccomplex.json.RCGsonHelper;
-import ivorius.reccomplex.structures.generic.BiomeSelector;
+import ivorius.reccomplex.structures.generic.BiomeMatcher;
 import joptsimple.internal.Strings;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.ICommandSender;
@@ -45,7 +45,7 @@ public class CommandBiomeDict extends CommandBase
 
         if (args[0].equals("get"))
         {
-            Set<BiomeGenBase> biomes = BiomeSelector.gatherAllBiomes();
+            Set<BiomeGenBase> biomes = BiomeMatcher.gatherAllBiomes();
 
             boolean didFindBiome = false;
 
@@ -102,7 +102,7 @@ public class CommandBiomeDict extends CommandBase
 
         if (args[0].equals("get"))
         {
-            Set<BiomeGenBase> biomes = BiomeSelector.gatherAllBiomes();
+            Set<BiomeGenBase> biomes = BiomeMatcher.gatherAllBiomes();
             String[] biomeNames = new String[biomes.size()];
 
             int index = 0;

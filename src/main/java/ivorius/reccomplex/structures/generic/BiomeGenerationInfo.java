@@ -7,74 +7,65 @@ package ivorius.reccomplex.structures.generic;
 
 import com.google.gson.*;
 import ivorius.reccomplex.json.JsonUtils;
-import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.world.biome.BiomeGenBase;
+import org.apache.commons.lang3.StringUtils;
 
 import java.lang.reflect.Type;
 import java.util.Arrays;
 import java.util.List;
+import java.util.regex.Matcher;
 
 /**
  * Created by lukas on 24.05.14.
  */
 public class BiomeGenerationInfo
 {
-    private BiomeSelector biomeSelector;
+    private BiomeMatcher biomeMatcher;
     private Double generationWeight;
 
-    public BiomeGenerationInfo(String biomeID, Double generationWeight)
+    public BiomeGenerationInfo(String expression, Double generationWeight)
     {
-        this.biomeSelector = new BiomeSelector(biomeID);
+        this.biomeMatcher = new BiomeMatcher(expression);
         this.generationWeight = generationWeight;
     }
 
     public static List<BiomeGenerationInfo> overworldBiomeGenerationList()
     {
-        return Arrays.asList(new BiomeGenerationInfo("Type:WATER", 0.0),
-                new BiomeGenerationInfo("Type:PLAINS", null),
-                new BiomeGenerationInfo("Type:FOREST", null),
-                new BiomeGenerationInfo("Type:MOUNTAIN", null),
-                new BiomeGenerationInfo("Type:HILLS", null),
-                new BiomeGenerationInfo("Type:SWAMP", null),
-                new BiomeGenerationInfo("Type:SANDY", null),
-                new BiomeGenerationInfo("Type:MESA", null),
-                new BiomeGenerationInfo("Type:SAVANNA", null),
-                new BiomeGenerationInfo("Type:WASTELAND", null),
-                new BiomeGenerationInfo("Type:MUSHROOM", null),
-                new BiomeGenerationInfo("Type:JUNGLE", null));
+        return Arrays.asList(new BiomeGenerationInfo("$WATER", 0.0),
+                new BiomeGenerationInfo("$PLAINS", null),
+                new BiomeGenerationInfo("$FOREST", null),
+                new BiomeGenerationInfo("$MOUNTAIN", null),
+                new BiomeGenerationInfo("$HILLS", null),
+                new BiomeGenerationInfo("$SWAMP", null),
+                new BiomeGenerationInfo("$SANDY", null),
+                new BiomeGenerationInfo("$MESA", null),
+                new BiomeGenerationInfo("$SAVANNA", null),
+                new BiomeGenerationInfo("$WASTELAND", null),
+                new BiomeGenerationInfo("$MUSHROOM", null),
+                new BiomeGenerationInfo("$JUNGLE", null));
     }
 
     public static List<BiomeGenerationInfo> undergroundBiomeGenerationList()
     {
-        return Arrays.asList(new BiomeGenerationInfo("Type:PLAINS", null),
-                new BiomeGenerationInfo("Type:FOREST", null),
-                new BiomeGenerationInfo("Type:MOUNTAIN", null),
-                new BiomeGenerationInfo("Type:HILLS", null),
-                new BiomeGenerationInfo("Type:SWAMP", null),
-                new BiomeGenerationInfo("Type:SANDY", null),
-                new BiomeGenerationInfo("Type:MESA", null),
-                new BiomeGenerationInfo("Type:SAVANNA", null),
-                new BiomeGenerationInfo("Type:RIVER", null),
-                new BiomeGenerationInfo("Type:OCEAN", null),
-                new BiomeGenerationInfo("Type:WASTELAND", null),
-                new BiomeGenerationInfo("Type:MUSHROOM", null),
-                new BiomeGenerationInfo("Type:JUNGLE", null));
+        return Arrays.asList(new BiomeGenerationInfo("$PLAINS", null),
+                new BiomeGenerationInfo("$FOREST", null),
+                new BiomeGenerationInfo("$MOUNTAIN", null),
+                new BiomeGenerationInfo("$HILLS", null),
+                new BiomeGenerationInfo("$SWAMP", null),
+                new BiomeGenerationInfo("$SANDY", null),
+                new BiomeGenerationInfo("$MESA", null),
+                new BiomeGenerationInfo("$SAVANNA", null),
+                new BiomeGenerationInfo("$RIVER", null),
+                new BiomeGenerationInfo("$OCEAN", null),
+                new BiomeGenerationInfo("$WASTELAND", null),
+                new BiomeGenerationInfo("$MUSHROOM", null),
+                new BiomeGenerationInfo("$JUNGLE", null));
     }
 
     public static List<BiomeGenerationInfo> oceanBiomeGenerationList()
     {
-        return Arrays.asList(new BiomeGenerationInfo("Type:OCEAN,SNOWY", 0.0),
-                new BiomeGenerationInfo("Type:OCEAN", null));
-    }
-
-    public String getBiomeID()
-    {
-        return biomeSelector.getBiomeID();
-    }
-
-    public void setBiomeID(String biomeID)
-    {
-        biomeSelector.setBiomeID(biomeID);
+        return Arrays.asList(new BiomeGenerationInfo("$OCEAN,SNOWY", 0.0),
+                new BiomeGenerationInfo("$OCEAN", null));
     }
 
     public Double getGenerationWeight()
@@ -99,21 +90,17 @@ public class BiomeGenerationInfo
 
     public boolean matches(BiomeGenBase biome)
     {
-        return biomeSelector.matches(biome);
+        return biomeMatcher.apply(biome);
     }
 
-    public boolean isTypeList()
+    public BiomeMatcher getBiomeMatcher()
     {
-        return biomeSelector.isTypeList();
+        return biomeMatcher;
     }
 
     public String getDisplayString()
     {
-        String biomeID = biomeSelector.getBiomeID();
-        if (biomeSelector.isTypeList())
-            return EnumChatFormatting.AQUA + biomeID.substring(5) + EnumChatFormatting.RESET;
-        else
-            return biomeID;
+        return biomeMatcher.getDisplayString();
     }
 
     public static class Serializer implements JsonDeserializer<BiomeGenerationInfo>, JsonSerializer<BiomeGenerationInfo>
@@ -123,10 +110,20 @@ public class BiomeGenerationInfo
         {
             JsonObject jsonobject = JsonUtils.getJsonElementAsJsonObject(jsonElement, "generationInfo");
 
-            String biomeID = JsonUtils.getJsonObjectStringFieldValue(jsonobject, "biome");
+            String expression;
+            if (jsonobject.has("biome"))
+            {
+                // Legacy
+                expression = JsonUtils.getJsonObjectStringFieldValue(jsonobject, "biome");
+                if (expression.startsWith("Type:"))
+                    expression = "$" + expression.substring(5).replaceAll(",", Matcher.quoteReplacement(" & $"));
+            }
+            else
+                expression = JsonUtils.getJsonObjectStringFieldValue(jsonobject, "biomes");
+
             Double weight = jsonobject.has("weight") ? JsonUtils.getJsonObjectDoubleFieldValue(jsonobject, "weight") : null;
 
-            return new BiomeGenerationInfo(biomeID, weight);
+            return new BiomeGenerationInfo(expression, weight);
         }
 
         @Override
@@ -134,7 +131,7 @@ public class BiomeGenerationInfo
         {
             JsonObject jsonobject = new JsonObject();
 
-            jsonobject.addProperty("biome", generationInfo.getBiomeID());
+            jsonobject.addProperty("biomes", generationInfo.getBiomeMatcher().getExpression());
             if (generationInfo.generationWeight != null)
                 jsonobject.addProperty("weight", generationInfo.generationWeight);
 

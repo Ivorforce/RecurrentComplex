@@ -5,19 +5,19 @@
 
 package ivorius.reccomplex.gui.editstructure;
 
-import ivorius.reccomplex.gui.GuiValidityStateIndicator;
 import ivorius.reccomplex.gui.table.*;
 import ivorius.reccomplex.structures.generic.BiomeGenerationInfo;
-import net.minecraft.world.biome.BiomeGenBase;
+import org.apache.commons.lang3.StringUtils;
 
 /**
  * Created by lukas on 05.06.14.
  */
-public class TableDataSourceBiomeGen implements TableDataSource, TableElementPropertyListener
+public class TableDataSourceBiomeGen extends TableDataSourceSegmented implements TableElementPropertyListener
 {
     private BiomeGenerationInfo generationInfo;
 
     private TableDelegate tableDelegate;
+    private TableElementTitle parsed;
 
     public TableDataSourceBiomeGen(BiomeGenerationInfo generationInfo, TableDelegate tableDelegate)
     {
@@ -26,34 +26,46 @@ public class TableDataSourceBiomeGen implements TableDataSource, TableElementPro
     }
 
     @Override
-    public boolean has(GuiTable table, int index)
+    public int numberOfSegments()
     {
-        return index >= 0 && index < 3;
+        return 2;
     }
 
     @Override
-    public TableElement elementForIndex(GuiTable table, int index)
+    public int sizeOfSegment(int segment)
     {
-        if (index == 0)
+        return 2;
+    }
+
+    @Override
+    public TableElement elementForIndexInSegment(GuiTable table, int index, int segment)
+    {
+        if (segment == 0)
         {
-            TableElementString element = new TableElementString("biomeID", "Biome ID", generationInfo.getBiomeID());
-            element.setShowsValidityState(true);
-            element.setValidityState(currentBiomeIDState());
-            element.addPropertyListener(this);
-            return element;
+            if (index == 0)
+            {
+                TableElementString element = new TableElementString("biomeID", "Biome ID", generationInfo.getBiomeMatcher().getExpression());
+                element.addPropertyListener(this);
+                return element;
+            }
+            else if (index == 1)
+                return parsed = new TableElementTitle("parsed", "", StringUtils.abbreviate(generationInfo.getBiomeMatcher().getDisplayString(), 60));
         }
-        else if (index == 1)
+        else if (segment == 1)
         {
-            TableElementBoolean element = new TableElementBoolean("defaultWeight", "Use Default Weight", generationInfo.hasDefaultWeight());
-            element.addPropertyListener(this);
-            return element;
-        }
-        else if (index == 2)
-        {
-            TableElementFloat element = new TableElementFloat("weight", "Weight", (float) generationInfo.getActiveGenerationWeight(), 0, 10);
-            element.setEnabled(!generationInfo.hasDefaultWeight());
-            element.addPropertyListener(this);
-            return element;
+            if (index == 0)
+            {
+                TableElementBoolean element = new TableElementBoolean("defaultWeight", "Use Default Weight", generationInfo.hasDefaultWeight());
+                element.addPropertyListener(this);
+                return element;
+            }
+            else if (index == 1)
+            {
+                TableElementFloat element = new TableElementFloat("weight", "Weight", (float) generationInfo.getActiveGenerationWeight(), 0, 10);
+                element.setEnabled(!generationInfo.hasDefaultWeight());
+                element.addPropertyListener(this);
+                return element;
+            }
         }
 
         return null;
@@ -64,8 +76,9 @@ public class TableDataSourceBiomeGen implements TableDataSource, TableElementPro
     {
         if ("biomeID".equals(element.getID()))
         {
-            generationInfo.setBiomeID((String) element.getPropertyValue());
-            ((TableElementString) element).setValidityState(currentBiomeIDState());
+            generationInfo.getBiomeMatcher().setExpression((String) element.getPropertyValue());
+            if (parsed != null)
+                parsed.setDisplayString(generationInfo.getBiomeMatcher().getDisplayString());
         }
         else if ("defaultWeight".equals(element.getID()))
         {
@@ -75,28 +88,7 @@ public class TableDataSourceBiomeGen implements TableDataSource, TableElementPro
         }
         else if ("weight".equals(element.getID()))
         {
-            generationInfo.setGenerationWeight((double)(Float) element.getPropertyValue());
+            generationInfo.setGenerationWeight((double) (Float) element.getPropertyValue());
         }
-    }
-
-    private GuiValidityStateIndicator.State currentBiomeIDState()
-    {
-        if (generationInfo.isTypeList())
-        {
-            return GuiValidityStateIndicator.State.VALID;
-        }
-
-        String biomeID = generationInfo.getBiomeID();
-        BiomeGenBase[] biomes = BiomeGenBase.getBiomeGenArray();
-
-        for (BiomeGenBase biome : biomes)
-        {
-            if (biome != null && biome.biomeName.equals(biomeID))
-            {
-                return GuiValidityStateIndicator.State.VALID;
-            }
-        }
-
-        return biomeID.trim().length() > 0 ? GuiValidityStateIndicator.State.SEMI_VALID : GuiValidityStateIndicator.State.INVALID;
     }
 }

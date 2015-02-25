@@ -220,7 +220,7 @@ public class StructureRegistry
             @Override
             public boolean apply(@Nullable StaticGenerationInfo input)
             {
-                return input != null && input.dimensionSelector.matches(world.provider)
+                return input != null && input.dimensionMatcher.apply(world.provider)
                         && chunkContains(chunkX, chunkZ, input.getPositionX(spawnPos), input.getPositionZ(spawnPos)
                 );
             }

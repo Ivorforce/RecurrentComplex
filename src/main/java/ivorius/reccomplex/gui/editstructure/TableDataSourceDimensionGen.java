@@ -11,17 +11,19 @@ import ivorius.reccomplex.dimensions.DimensionDictionary;
 import ivorius.reccomplex.gui.GuiValidityStateIndicator;
 import ivorius.reccomplex.gui.table.*;
 import ivorius.reccomplex.structures.generic.DimensionGenerationInfo;
-import ivorius.reccomplex.structures.generic.DimensionSelector;
+import ivorius.reccomplex.structures.generic.DimensionMatcher;
 import net.minecraftforge.common.DimensionManager;
+import org.apache.commons.lang3.StringUtils;
 
 /**
  * Created by lukas on 05.06.14.
  */
-public class TableDataSourceDimensionGen implements TableDataSource, TableElementPropertyListener
+public class TableDataSourceDimensionGen extends TableDataSourceSegmented implements TableElementPropertyListener
 {
     private DimensionGenerationInfo generationInfo;
 
     private TableDelegate tableDelegate;
+    private TableElementTitle parsed;
 
     public TableDataSourceDimensionGen(DimensionGenerationInfo generationInfo, TableDelegate tableDelegate)
     {
@@ -29,78 +31,47 @@ public class TableDataSourceDimensionGen implements TableDataSource, TableElemen
         this.tableDelegate = tableDelegate;
     }
 
-    public static GuiValidityStateIndicator.State dimensionSelectorState(DimensionSelector selector)
+    @Override
+    public int numberOfSegments()
     {
-        if (selector.isTypeList())
-        {
-            for (String s : selector.getDimensionTypes())
-                if (allDimensionsOfType(s).size() == 0)
-                    return GuiValidityStateIndicator.State.SEMI_VALID;
-
-            return GuiValidityStateIndicator.State.VALID;
-        }
-
-        String dimIDString = selector.getDimensionID();
-
-        try
-        {
-            int dimID = Integer.valueOf(dimIDString);
-
-            for (int eID : DimensionManager.getIDs())
-                if (dimID == eID)
-                    return GuiValidityStateIndicator.State.VALID;
-
-            return GuiValidityStateIndicator.State.SEMI_VALID;
-        }
-        catch (NumberFormatException ignored)
-        {
-
-        }
-
-
-        return GuiValidityStateIndicator.State.INVALID;
-    }
-
-    public static TIntList allDimensionsOfType(String type)
-    {
-        TIntList intList = new TIntArrayList();
-        for (int d : DimensionManager.getIDs())
-        {
-            if (DimensionDictionary.dimensionMatchesType(DimensionManager.getProvider(d), type))
-                intList.add(d);
-        }
-        return intList;
+        return 2;
     }
 
     @Override
-    public boolean has(GuiTable table, int index)
+    public int sizeOfSegment(int segment)
     {
-        return index >= 0 && index < 3;
+        return 2;
     }
 
     @Override
-    public TableElement elementForIndex(GuiTable table, int index)
+    public TableElement elementForIndexInSegment(GuiTable table, int index, int segment)
     {
-        if (index == 0)
+        if (segment == 0)
         {
-            TableElementString element = new TableElementString("dimID", "Dimension ID", generationInfo.getDimensionID());
-            element.setShowsValidityState(true);
-            element.setValidityState(dimensionSelectorState(generationInfo.getDimensionSelector()));
-            element.addPropertyListener(this);
-            return element;
+            if (index == 0)
+            {
+                TableElementString element = new TableElementString("dimID", "Dimension ID", generationInfo.getDimensionMatcher().getExpression());
+                element.addPropertyListener(this);
+                return element;
+            }
+            else if (index == 1)
+                return parsed = new TableElementTitle("parsed", "", StringUtils.abbreviate(generationInfo.getDimensionMatcher().getDisplayString(), 60));
         }
-        else if (index == 1)
+        else if (segment == 1)
         {
-            TableElementBoolean element = new TableElementBoolean("defaultWeight", "Use Default Weight", generationInfo.hasDefaultWeight());
-            element.addPropertyListener(this);
-            return element;
-        }
-        else if (index == 2)
-        {
-            TableElementFloat element = new TableElementFloat("weight", "Weight", (float) generationInfo.getActiveGenerationWeight(), 0, 10);
-            element.setEnabled(!generationInfo.hasDefaultWeight());
-            element.addPropertyListener(this);
-            return element;
+            if (index == 0)
+            {
+                TableElementBoolean element = new TableElementBoolean("defaultWeight", "Use Default Weight", generationInfo.hasDefaultWeight());
+                element.addPropertyListener(this);
+                return element;
+            }
+            else if (index == 1)
+            {
+                TableElementFloat element = new TableElementFloat("weight", "Weight", (float) generationInfo.getActiveGenerationWeight(), 0, 10);
+                element.setEnabled(!generationInfo.hasDefaultWeight());
+                element.addPropertyListener(this);
+                return element;
+            }
         }
 
         return null;
@@ -111,8 +82,9 @@ public class TableDataSourceDimensionGen implements TableDataSource, TableElemen
     {
         if ("dimID".equals(element.getID()))
         {
-            generationInfo.setDimensionID((String) element.getPropertyValue());
-            ((TableElementString) element).setValidityState(dimensionSelectorState(generationInfo.getDimensionSelector()));
+            generationInfo.getDimensionMatcher().setExpression((String) element.getPropertyValue());
+            if (parsed != null)
+                parsed.setDisplayString(generationInfo.getDimensionMatcher().getDisplayString());
         }
         else if ("defaultWeight".equals(element.getID()))
         {

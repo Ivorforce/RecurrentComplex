@@ -11,7 +11,7 @@ import ivorius.ivtoolkit.tools.IvNBTHelper;
 import ivorius.reccomplex.dimensions.DimensionDictionary;
 import ivorius.reccomplex.structures.StructureRegistry;
 import ivorius.reccomplex.worldgen.StructureSelector;
-import ivorius.reccomplex.structures.generic.BiomeSelector;
+import ivorius.reccomplex.structures.generic.BiomeMatcher;
 import ivorius.reccomplex.worldgen.inventory.GenericItemCollectionRegistry;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ResourceLocation;
@@ -142,7 +142,7 @@ public class RCCommunicationHandler extends IvFMLIntercommHandler
                 for (int i = 0; i < biomeTypes.length; i++)
                 {
                     String[] parts = biomeTypes[i].split(":", 2);
-                    biomeInfos[i] = new StructureSelector.GenerationInfo(Float.valueOf(parts[0]), new BiomeSelector(parts[1]));
+                    biomeInfos[i] = new StructureSelector.GenerationInfo(Float.valueOf(parts[0]), new BiomeMatcher(parts[1]));
                 }
 
                 StructureSelector.registerCategory(id, new StructureSelector.SimpleCategory(defaultSpawnChance,

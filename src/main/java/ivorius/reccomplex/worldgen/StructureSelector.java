@@ -8,7 +8,7 @@ package ivorius.reccomplex.worldgen;
 import ivorius.reccomplex.RCConfig;
 import ivorius.reccomplex.dimensions.DimensionDictionary;
 import ivorius.reccomplex.structures.StructureInfo;
-import ivorius.reccomplex.structures.generic.BiomeSelector;
+import ivorius.reccomplex.structures.generic.BiomeMatcher;
 import ivorius.reccomplex.structures.generic.gentypes.NaturalGenerationInfo;
 import ivorius.reccomplex.utils.WeightedSelector;
 import net.minecraft.world.World;
@@ -133,7 +133,7 @@ public class StructureSelector
 
             for (GenerationInfo info : generationInfos)
             {
-                if (info.selector.matches(biome))
+                if (info.selector.apply(biome))
                     return info.spawnChance * amountMultiplier;
             }
 
@@ -150,9 +150,9 @@ public class StructureSelector
     public static class GenerationInfo
     {
         public float spawnChance;
-        public BiomeSelector selector;
+        public BiomeMatcher selector;
 
-        public GenerationInfo(float spawnChance, BiomeSelector selector)
+        public GenerationInfo(float spawnChance, BiomeMatcher selector)
         {
             this.spawnChance = spawnChance;
             this.selector = selector;

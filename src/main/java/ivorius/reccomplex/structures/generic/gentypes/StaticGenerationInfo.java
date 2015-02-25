@@ -11,9 +11,7 @@ import ivorius.reccomplex.gui.table.TableDataSource;
 import ivorius.reccomplex.gui.table.TableDelegate;
 import ivorius.reccomplex.gui.table.TableNavigator;
 import ivorius.reccomplex.json.JsonUtils;
-import ivorius.reccomplex.structures.generic.BiomeGenerationInfo;
-import ivorius.reccomplex.structures.generic.DimensionGenerationInfo;
-import ivorius.reccomplex.structures.generic.DimensionSelector;
+import ivorius.reccomplex.structures.generic.DimensionMatcher;
 import ivorius.reccomplex.structures.generic.GenerationYSelector;
 import net.minecraft.util.ChunkCoordinates;
 import net.minecraft.util.StatCollector;
@@ -26,7 +24,7 @@ import java.lang.reflect.Type;
 public class StaticGenerationInfo extends StructureGenerationInfo
 {
     public GenerationYSelector ySelector;
-    public DimensionSelector dimensionSelector;
+    public DimensionMatcher dimensionMatcher;
 
     public boolean relativeToSpawn;
     public int positionX;
@@ -34,13 +32,13 @@ public class StaticGenerationInfo extends StructureGenerationInfo
 
     public StaticGenerationInfo()
     {
-        this(new GenerationYSelector(GenerationYSelector.SelectionMode.SURFACE, 0, 0), new DimensionSelector("0"), true, 0, 0);
+        this(new GenerationYSelector(GenerationYSelector.SelectionMode.SURFACE, 0, 0), new DimensionMatcher("0"), true, 0, 0);
     }
 
-    public StaticGenerationInfo(GenerationYSelector ySelector, DimensionSelector dimensionSelector, boolean relativeToSpawn, int positionX, int positionZ)
+    public StaticGenerationInfo(GenerationYSelector ySelector, DimensionMatcher dimensionMatcher, boolean relativeToSpawn, int positionX, int positionZ)
     {
         this.ySelector = ySelector;
-        this.dimensionSelector = dimensionSelector;
+        this.dimensionMatcher = dimensionMatcher;
         this.relativeToSpawn = relativeToSpawn;
         this.positionX = positionX;
         this.positionZ = positionZ;
@@ -79,13 +77,13 @@ public class StaticGenerationInfo extends StructureGenerationInfo
             JsonObject jsonObject = JsonUtils.getJsonElementAsJsonObject(json, "vanillaStructureSpawnInfo");
 
             GenerationYSelector ySelector = context.deserialize(jsonObject.get("generationY"), GenerationYSelector.class);
-            String dimension = JsonUtils.getJsonObjectStringFieldValueOrDefault(jsonObject, "dimension", "");
+            String dimension = JsonUtils.getJsonObjectStringFieldValueOrDefault(jsonObject, "dimensions", "");
 
             boolean relativeToSpawn = JsonUtils.getJsonObjectBooleanFieldValueOrDefault(jsonObject, "relativeToSpawn", false);
             int positionX = JsonUtils.getJsonObjectIntegerFieldValueOrDefault(jsonObject, "positionX", 0);
             int positionZ = JsonUtils.getJsonObjectIntegerFieldValueOrDefault(jsonObject, "positionZ", 0);
 
-            return new StaticGenerationInfo(ySelector, new DimensionSelector(dimension), relativeToSpawn, positionX, positionZ);
+            return new StaticGenerationInfo(ySelector, new DimensionMatcher(dimension), relativeToSpawn, positionX, positionZ);
         }
 
         @Override
@@ -94,7 +92,7 @@ public class StaticGenerationInfo extends StructureGenerationInfo
             JsonObject jsonObject = new JsonObject();
 
             jsonObject.add("generationY", context.serialize(src.ySelector));
-            jsonObject.addProperty("dimension", src.dimensionSelector.getDimensionID());
+            jsonObject.addProperty("dimensions", src.dimensionMatcher.getExpression());
 
             jsonObject.addProperty("relativeToSpawn", src.relativeToSpawn);
             jsonObject.addProperty("positionX", src.positionX);

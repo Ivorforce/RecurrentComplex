@@ -14,45 +14,36 @@ import net.minecraft.world.WorldProvider;
 import java.lang.reflect.Type;
 import java.util.Arrays;
 import java.util.List;
+import java.util.regex.Matcher;
 
 /**
  * Created by lukas on 24.05.14.
  */
 public class DimensionGenerationInfo
 {
-    private DimensionSelector dimensionSelector;
+    private DimensionMatcher dimensionMatcher;
     private Double generationWeight;
 
-    public DimensionGenerationInfo(String dimensionID, Double generationWeight)
+    public DimensionGenerationInfo(String expression, Double generationWeight)
     {
-        this.dimensionSelector = new DimensionSelector(dimensionID);
+        this.dimensionMatcher = new DimensionMatcher(expression);
         this.generationWeight = generationWeight;
     }
 
     public static List<DimensionGenerationInfo> overworldGenerationList()
     {
-        return Arrays.asList(new DimensionGenerationInfo("Type:" + DimensionDictionary.UNCATEGORIZED, null),
-                new DimensionGenerationInfo(String.format("Type:%s,%s,%s", DimensionDictionary.NO_TOP_LIMIT, DimensionDictionary.BOTTOM_LIMIT, DimensionDictionary.INFINITE), null));
+        return Arrays.asList(new DimensionGenerationInfo("$" + DimensionDictionary.UNCATEGORIZED, null),
+                new DimensionGenerationInfo(String.format("$%s & $%s & $%s", DimensionDictionary.NO_TOP_LIMIT, DimensionDictionary.BOTTOM_LIMIT, DimensionDictionary.INFINITE), null));
     }
 
     public static List<DimensionGenerationInfo> netherGenerationList()
     {
-        return Arrays.asList(new DimensionGenerationInfo(String.format("Type:%s,%s,%s", DimensionDictionary.HELL, DimensionDictionary.TOP_LIMIT, DimensionDictionary.BOTTOM_LIMIT), null));
+        return Arrays.asList(new DimensionGenerationInfo(String.format("$%s & $%s & $%s", DimensionDictionary.HELL, DimensionDictionary.TOP_LIMIT, DimensionDictionary.BOTTOM_LIMIT), null));
     }
 
     public static List<DimensionGenerationInfo> endGenerationList()
     {
-        return Arrays.asList(new DimensionGenerationInfo(String.format("Type:%s,%s,%s", DimensionDictionary.ENDER, DimensionDictionary.NO_TOP_LIMIT, DimensionDictionary.NO_BOTTOM_LIMIT), null));
-    }
-
-    public String getDimensionID()
-    {
-        return dimensionSelector.getDimensionID();
-    }
-
-    public void setDimensionID(String dimensionID)
-    {
-        dimensionSelector.setDimensionID(dimensionID);
+        return Arrays.asList(new DimensionGenerationInfo(String.format("$%s & $%s & $%s", DimensionDictionary.ENDER, DimensionDictionary.NO_TOP_LIMIT, DimensionDictionary.NO_BOTTOM_LIMIT), null));
     }
 
     public Double getGenerationWeight()
@@ -77,21 +68,17 @@ public class DimensionGenerationInfo
 
     public boolean matches(WorldProvider provider)
     {
-        return dimensionSelector.matches(provider);
+        return dimensionMatcher.apply(provider);
     }
 
-    public DimensionSelector getDimensionSelector()
+    public DimensionMatcher getDimensionMatcher()
     {
-        return dimensionSelector;
+        return dimensionMatcher;
     }
 
     public String getDisplayString()
     {
-        String dimensionID = dimensionSelector.getDimensionID();
-        if (dimensionSelector.isTypeList())
-            return EnumChatFormatting.AQUA + dimensionID.substring(5) + EnumChatFormatting.RESET;
-        else
-            return dimensionID;
+        return dimensionMatcher.getDisplayString();
     }
 
     public static class Serializer implements JsonDeserializer<DimensionGenerationInfo>, JsonSerializer<DimensionGenerationInfo>
@@ -101,10 +88,20 @@ public class DimensionGenerationInfo
         {
             JsonObject jsonobject = JsonUtils.getJsonElementAsJsonObject(jsonElement, "generationInfo");
 
-            String dimensionID = JsonUtils.getJsonObjectStringFieldValue(jsonobject, "dimensionID");
+            String expression;
+            if (jsonobject.has("dimensionID"))
+            {
+                // Legacy
+                expression = JsonUtils.getJsonObjectStringFieldValue(jsonobject, "dimensionID");
+                if (expression.startsWith("Type:"))
+                    expression = "$" + expression.substring(5).replaceAll(",", Matcher.quoteReplacement(" & $"));
+            }
+            else
+                expression = JsonUtils.getJsonObjectStringFieldValue(jsonobject, "dimensions");
+
             Double weight = jsonobject.has("weight") ? JsonUtils.getJsonObjectDoubleFieldValue(jsonobject, "weight") : null;
 
-            return new DimensionGenerationInfo(dimensionID, weight);
+            return new DimensionGenerationInfo(expression, weight);
         }
 
         @Override
@@ -112,7 +109,7 @@ public class DimensionGenerationInfo
         {
             JsonObject jsonobject = new JsonObject();
 
-            jsonobject.addProperty("dimensionID", generationInfo.getDimensionID());
+            jsonobject.addProperty("dimensions", generationInfo.getDimensionMatcher().getExpression());
             if (generationInfo.generationWeight != null)
                 jsonobject.addProperty("weight", generationInfo.generationWeight);
 

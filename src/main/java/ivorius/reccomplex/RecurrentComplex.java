@@ -21,7 +21,7 @@ import ivorius.ivtoolkit.network.PacketExtendedEntityPropertiesData;
 import ivorius.ivtoolkit.network.PacketExtendedEntityPropertiesDataHandler;
 import ivorius.ivtoolkit.network.PacketGuiAction;
 import ivorius.ivtoolkit.network.PacketGuiActionHandler;
-import ivorius.reccomplex.commands.*;
+import ivorius.reccomplex.commands.RCCommands;
 import ivorius.reccomplex.events.RCFMLEventHandler;
 import ivorius.reccomplex.events.RCForgeEventHandler;
 import ivorius.reccomplex.gui.RCGuiHandler;
@@ -124,7 +124,7 @@ public class RecurrentComplex
         RCCommands.onServerStart(event);
     }
 
-    public static void loadAllModData()
+    public void loadAllModData()
     {
         for (String modid : Loader.instance().getIndexedModList().keySet())
         {

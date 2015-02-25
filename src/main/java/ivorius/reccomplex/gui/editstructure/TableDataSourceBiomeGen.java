@@ -49,7 +49,7 @@ public class TableDataSourceBiomeGen extends TableDataSourceSegmented implements
                 return element;
             }
             else if (index == 1)
-                return parsed = new TableElementTitle("parsed", "", StringUtils.abbreviate(generationInfo.getBiomeMatcher().getDisplayString(), 60));
+                return parsed = new TableElementTitle("parsed", "", StringUtils.abbreviate(TableDataSourceDimensionGen.parsedString(generationInfo.getBiomeMatcher()), 60));
         }
         else if (segment == 1)
         {
@@ -78,7 +78,7 @@ public class TableDataSourceBiomeGen extends TableDataSourceSegmented implements
         {
             generationInfo.getBiomeMatcher().setExpression((String) element.getPropertyValue());
             if (parsed != null)
-                parsed.setDisplayString(generationInfo.getBiomeMatcher().getDisplayString());
+                parsed.setDisplayString(StringUtils.abbreviate(TableDataSourceDimensionGen.parsedString(generationInfo.getBiomeMatcher()), 60));
         }
         else if ("defaultWeight".equals(element.getID()))
         {

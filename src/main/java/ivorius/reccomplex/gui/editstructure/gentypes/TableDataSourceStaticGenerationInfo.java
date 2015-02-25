@@ -115,7 +115,7 @@ public class TableDataSourceStaticGenerationInfo extends TableDataSourceSegmente
                     return element;
                 }
                 else if (index == 1)
-                    return parsed = new TableElementTitle("parsed", "", StringUtils.abbreviate(generationInfo.dimensionMatcher.getDisplayString(), 60));
+                    return parsed = new TableElementTitle("parsed", "", StringUtils.abbreviate(TableDataSourceDimensionGen.parsedString(generationInfo.dimensionMatcher), 70));
             }
         }
 
@@ -158,7 +158,7 @@ public class TableDataSourceStaticGenerationInfo extends TableDataSourceSegmente
             case "dimID":
                 generationInfo.dimensionMatcher.setExpression((String) element.getPropertyValue());
                 if (parsed != null)
-                    parsed.setDisplayString(generationInfo.dimensionMatcher.getDisplayString());
+                    parsed.setDisplayString(StringUtils.abbreviate(TableDataSourceDimensionGen.parsedString(generationInfo.dimensionMatcher), 70));
                 break;
         }
     }

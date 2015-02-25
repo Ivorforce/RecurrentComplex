@@ -9,15 +9,13 @@ import com.google.common.base.Function;
 import com.google.common.base.Predicate;
 import com.google.common.collect.Iterables;
 import ivorius.reccomplex.json.RCGsonHelper;
-import ivorius.reccomplex.utils.Algebra;
-import ivorius.reccomplex.utils.BoolAlgebra;
+import ivorius.reccomplex.utils.ExpressionCache;
 import ivorius.reccomplex.utils.Visitor;
 import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.world.biome.BiomeGenBase;
 import net.minecraftforge.common.BiomeDictionary;
 
 import javax.annotation.Nullable;
-import java.text.ParseException;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
@@ -25,16 +23,13 @@ import java.util.Set;
 /**
  * Created by lukas on 19.09.14.
  */
-public class BiomeMatcher implements Predicate<BiomeGenBase>
+public class BiomeMatcher extends ExpressionCache implements Predicate<BiomeGenBase>
 {
     public static final String BIOME_TYPE_PREFIX = "$";
 
-    protected String expression;
-    protected Algebra.Expression<Boolean> parsedExpression;
-
     public BiomeMatcher(String expression)
     {
-        setExpression(expression);
+        super(expression);
     }
 
     public static Set<BiomeGenBase> gatherAllBiomes()
@@ -65,39 +60,6 @@ public class BiomeMatcher implements Predicate<BiomeGenBase>
                 return input.biomeName.equals(var);
             }
         });
-    }
-
-    protected void parseExpression()
-    {
-        try
-        {
-            parsedExpression = BoolAlgebra.algebra().parse(expression);
-        }
-        catch (ParseException ignored)
-        {
-            parsedExpression = null;
-        }
-    }
-
-    public String getExpression()
-    {
-        return expression;
-    }
-
-    public void setExpression(String expression)
-    {
-        this.expression = expression;
-        parseExpression();
-    }
-
-    public Algebra.Expression<Boolean> getParsedExpression()
-    {
-        return parsedExpression;
-    }
-
-    public boolean isExpressionValid()
-    {
-        return parsedExpression != null;
     }
 
     public boolean containsUnknownVariables()
@@ -137,11 +99,12 @@ public class BiomeMatcher implements Predicate<BiomeGenBase>
         });
     }
 
+    @Override
     public String getDisplayString()
     {
         final Set<BiomeGenBase> biomes = gatherAllBiomes();
 
-        return isExpressionValid() ? parsedExpression.toString(new Function<String, String>()
+        return parsedExpression != null ? parsedExpression.toString(new Function<String, String>()
         {
             @Nullable
             @Override

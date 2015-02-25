@@ -5,15 +5,14 @@
 
 package ivorius.reccomplex.gui.editstructure;
 
-import gnu.trove.list.TIntList;
-import gnu.trove.list.array.TIntArrayList;
-import ivorius.reccomplex.dimensions.DimensionDictionary;
-import ivorius.reccomplex.gui.GuiValidityStateIndicator;
 import ivorius.reccomplex.gui.table.*;
 import ivorius.reccomplex.structures.generic.DimensionGenerationInfo;
 import ivorius.reccomplex.structures.generic.DimensionMatcher;
-import net.minecraftforge.common.DimensionManager;
+import ivorius.reccomplex.utils.ExpressionCache;
+import net.minecraft.util.EnumChatFormatting;
 import org.apache.commons.lang3.StringUtils;
+
+import java.text.ParseException;
 
 /**
  * Created by lukas on 05.06.14.
@@ -29,6 +28,18 @@ public class TableDataSourceDimensionGen extends TableDataSourceSegmented implem
     {
         this.generationInfo = generationInfo;
         this.tableDelegate = tableDelegate;
+    }
+
+    public static String parsedString(ExpressionCache expressionCache)
+    {
+        if (expressionCache.isExpressionValid())
+            return expressionCache.getDisplayString();
+        else
+        {
+            ParseException parseException = expressionCache.getParseException();
+            return String.format("%s%s%s: at %d", EnumChatFormatting.RED, parseException.getMessage(), EnumChatFormatting.RESET,
+                    parseException.getErrorOffset());
+        }
     }
 
     @Override
@@ -55,7 +66,7 @@ public class TableDataSourceDimensionGen extends TableDataSourceSegmented implem
                 return element;
             }
             else if (index == 1)
-                return parsed = new TableElementTitle("parsed", "", StringUtils.abbreviate(generationInfo.getDimensionMatcher().getDisplayString(), 60));
+                return parsed = new TableElementTitle("parsed", "", StringUtils.abbreviate(parsedString(generationInfo.getDimensionMatcher()), 70));
         }
         else if (segment == 1)
         {
@@ -84,7 +95,7 @@ public class TableDataSourceDimensionGen extends TableDataSourceSegmented implem
         {
             generationInfo.getDimensionMatcher().setExpression((String) element.getPropertyValue());
             if (parsed != null)
-                parsed.setDisplayString(generationInfo.getDimensionMatcher().getDisplayString());
+                parsed.setDisplayString(StringUtils.abbreviate(parsedString(generationInfo.getDimensionMatcher()), 70));
         }
         else if ("defaultWeight".equals(element.getID()))
         {

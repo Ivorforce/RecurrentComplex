@@ -11,6 +11,7 @@ import com.google.common.primitives.Ints;
 import ivorius.reccomplex.dimensions.DimensionDictionary;
 import ivorius.reccomplex.utils.Algebra;
 import ivorius.reccomplex.utils.BoolAlgebra;
+import ivorius.reccomplex.utils.ExpressionCache;
 import ivorius.reccomplex.utils.Visitor;
 import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.world.WorldProvider;
@@ -24,16 +25,13 @@ import java.util.Collection;
 /**
  * Created by lukas on 19.09.14.
  */
-public class DimensionMatcher implements Predicate<WorldProvider>
+public class DimensionMatcher extends ExpressionCache implements Predicate<WorldProvider>
 {
     public static final String DIMENSION_TYPE_PREFIX = "$";
 
-    protected String expression;
-    protected Algebra.Expression<Boolean> parsedExpression;
-
     public DimensionMatcher(String expression)
     {
-        setExpression(expression);
+        super(expression);
     }
 
     public static boolean isKnownVariable(final String var, final Collection<Integer> dimensions)
@@ -45,39 +43,6 @@ public class DimensionMatcher implements Predicate<WorldProvider>
             return dimensions.contains(dimID);
         else
             return false;
-    }
-
-    protected void parseExpression()
-    {
-        try
-        {
-            parsedExpression = BoolAlgebra.algebra().parse(expression);
-        }
-        catch (ParseException ignored)
-        {
-            parsedExpression = null;
-        }
-    }
-
-    public String getExpression()
-    {
-        return expression;
-    }
-
-    public void setExpression(String expression)
-    {
-        this.expression = expression;
-        parseExpression();
-    }
-
-    public Algebra.Expression<Boolean> getParsedExpression()
-    {
-        return parsedExpression;
-    }
-
-    public boolean isExpressionValid()
-    {
-        return parsedExpression != null;
     }
 
     public boolean containsUnknownVariables()
@@ -117,11 +82,12 @@ public class DimensionMatcher implements Predicate<WorldProvider>
         });
     }
 
+    @Override
     public String getDisplayString()
     {
         final Collection<Integer> dimensions = Arrays.asList(DimensionManager.getIDs());
 
-        return isExpressionValid() ? parsedExpression.toString(new Function<String, String>()
+        return parsedExpression != null ? parsedExpression.toString(new Function<String, String>()
         {
             @Nullable
             @Override

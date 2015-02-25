@@ -56,7 +56,7 @@ commands.strucExport.usage=/#export [blueprintName]
 commands.strucExport.failure=Failed to export structure to file '%s'
 commands.strucExport.success=Exported structure to file '%s'
 
-commands.strucEdit.usage=/#editstructure <structureName>
+commands.strucEdit.usage=/#edit <structureName>
 
 commands.strucGen.usage=/#gen <structureName> [x] [z]
 commands.strucGen.noStructure=No structure registered by the name of '%s'

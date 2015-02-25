@@ -25,7 +25,7 @@ public class CommandEditStructure extends CommandBase
     @Override
     public String getCommandName()
     {
-        return RCConfig.commandPrefix + "editstructure";
+        return RCConfig.commandPrefix + "edit";
     }
 
     @Override

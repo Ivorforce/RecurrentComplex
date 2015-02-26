@@ -30,22 +30,6 @@ public class DimensionGenerationInfo
         this.generationWeight = generationWeight;
     }
 
-    public static List<DimensionGenerationInfo> overworldGenerationList()
-    {
-        return Arrays.asList(new DimensionGenerationInfo("$" + DimensionDictionary.UNCATEGORIZED, null),
-                new DimensionGenerationInfo(String.format("$%s & $%s & $%s", DimensionDictionary.NO_TOP_LIMIT, DimensionDictionary.BOTTOM_LIMIT, DimensionDictionary.INFINITE), null));
-    }
-
-    public static List<DimensionGenerationInfo> netherGenerationList()
-    {
-        return Arrays.asList(new DimensionGenerationInfo(String.format("$%s & $%s & $%s", DimensionDictionary.HELL, DimensionDictionary.TOP_LIMIT, DimensionDictionary.BOTTOM_LIMIT), null));
-    }
-
-    public static List<DimensionGenerationInfo> endGenerationList()
-    {
-        return Arrays.asList(new DimensionGenerationInfo(String.format("$%s & $%s & $%s", DimensionDictionary.ENDER, DimensionDictionary.NO_TOP_LIMIT, DimensionDictionary.NO_BOTTOM_LIMIT), null));
-    }
-
     public Double getGenerationWeight()
     {
         return generationWeight;

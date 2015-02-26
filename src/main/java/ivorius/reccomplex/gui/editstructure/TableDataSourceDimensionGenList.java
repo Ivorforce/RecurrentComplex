@@ -7,9 +7,13 @@ package ivorius.reccomplex.gui.editstructure;
 
 import ivorius.reccomplex.gui.table.*;
 import ivorius.reccomplex.structures.generic.DimensionGenerationInfo;
+import ivorius.reccomplex.structures.generic.gentypes.DimensionMatcherPresets;
+import ivorius.reccomplex.utils.IvTranslations;
+import net.minecraft.util.StatCollector;
 import org.apache.commons.lang3.StringUtils;
 
-import java.util.Collections;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 /**
@@ -50,12 +54,27 @@ public class TableDataSourceDimensionGenList extends TableDataSourceList<Dimensi
                 : -1;
     }
 
+    public TableElementButton.Action[] getPresetActions()
+    {
+        Collection<String> allTypes = DimensionMatcherPresets.instance().allTypes();
+        List<TableElementButton.Action> actions = new ArrayList<>(allTypes.size());
+        for (String type : allTypes)
+        {
+            String baseKey = "reccomplex.dimensionPreset." + type;
+            actions.add(new TableElementButton.Action(type,
+                    StatCollector.translateToLocal(baseKey),
+                    IvTranslations.formatLines(baseKey + ".tooltip")
+            ));
+        }
+        return actions.toArray(new TableElementButton.Action[actions.size()]);
+    }
+
     @Override
     public TableElement elementForIndexInSegment(GuiTable table, int index, int segment)
     {
         if (segment == 0)
         {
-            TableElementPresetAction elementPresetAction = new TableElementPresetAction("dimensionPreset", "Presets", "Apply", new TableElementButton.Action("overworld", "Overworld"), new TableElementButton.Action("nether", "Nether"), new TableElementButton.Action("end", "End"), new TableElementButton.Action("clear", "Clear"));
+            TableElementPresetAction elementPresetAction = new TableElementPresetAction("dimensionPreset", "Presets", "Apply", getPresetActions());
             elementPresetAction.addListener(this);
             return elementPresetAction;
         }
@@ -86,26 +105,14 @@ public class TableDataSourceDimensionGenList extends TableDataSourceList<Dimensi
     {
         if (element.getID().equals("dimensionPreset"))
         {
-            switch (actionID)
-            {
-                case "overworld":
-                    list.clear();
-                    list.addAll(DimensionGenerationInfo.overworldGenerationList());
-                    break;
-                case "nether":
-                    list.clear();
-                    list.addAll(DimensionGenerationInfo.netherGenerationList());
-                    break;
-                case "end":
-                    list.clear();
-                    list.addAll(DimensionGenerationInfo.endGenerationList());
-                    break;
-                case "clear":
-                    list.clear();
-                    break;
-            }
+            list.clear();
+            List<DimensionGenerationInfo> preset = DimensionMatcherPresets.instance().preset(actionID);
 
-            tableDelegate.reloadData();
+            if (preset != null)
+            {
+                list.addAll(preset);
+                tableDelegate.reloadData();
+            }
         }
 
         super.actionPerformed(element, actionID);

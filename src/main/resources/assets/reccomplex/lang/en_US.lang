@@ -196,3 +196,21 @@ reccomplex.blockTransformer.ruins=Ruins
 reccomplex.blockTransformer.ruins.tooltip=Deconstructs and decays the structure
 reccomplex.blockTransformer.negativeSpace=Negative Space
 reccomplex.blockTransformer.negativeSpace.tooltip=Makes the generation ignore blocks
+
+reccomplex.biomePreset.clear=Clear
+reccomplex.biomePreset.clear.tooltip=No Biomes
+reccomplex.biomePreset.overworld=Overworld
+reccomplex.biomePreset.overworld.tooltip=Biomes decent surface to spawn on
+reccomplex.biomePreset.underground=Underground
+reccomplex.biomePreset.underground.tooltip=Biomes with underground area
+reccomplex.biomePreset.ocean=Ocean
+reccomplex.biomePreset.ocean.tooltip=Biomes with lots of water
+
+reccomplex.dimensionPreset.clear=Clear
+reccomplex.dimensionPreset.clear.tooltip=No Dimensions
+reccomplex.dimensionPreset.overworld=Overworld
+reccomplex.dimensionPreset.overworld.tooltip=Dimensions resembling the real world surface
+reccomplex.dimensionPreset.nether=Nether
+reccomplex.dimensionPreset.nether.tooltip=Dimensions resembling the Nether
+reccomplex.dimensionPreset.end=End
+reccomplex.dimensionPreset.end.tooltip=Dimensions resembling the End

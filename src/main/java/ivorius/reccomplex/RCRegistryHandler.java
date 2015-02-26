@@ -11,6 +11,7 @@ import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 import cpw.mods.fml.common.registry.GameRegistry;
 import ivorius.reccomplex.blocks.*;
 import ivorius.reccomplex.client.rendering.RCBlockRendering;
+import ivorius.reccomplex.dimensions.DimensionDictionary;
 import ivorius.reccomplex.items.*;
 import ivorius.reccomplex.blocks.materials.MaterialNegativeSpace;
 import ivorius.reccomplex.blocks.materials.RCMaterials;
@@ -19,6 +20,9 @@ import ivorius.reccomplex.operation.OperationRegistry;
 import ivorius.reccomplex.random.Poem;
 import ivorius.reccomplex.structures.MCRegistrySpecial;
 import ivorius.reccomplex.structures.OperationMoveStructure;
+import ivorius.reccomplex.structures.generic.BiomeGenerationInfo;
+import ivorius.reccomplex.structures.generic.DimensionGenerationInfo;
+import ivorius.reccomplex.structures.generic.DimensionMatcher;
 import ivorius.reccomplex.structures.generic.blocktransformers.*;
 import ivorius.reccomplex.structures.generic.gentypes.*;
 import ivorius.reccomplex.structures.schematics.OperationGenerateSchematic;
@@ -115,6 +119,10 @@ public class RCRegistryHandler
         spawnCommands.setCreativeTab(tabStructureTools);
         GameRegistry.registerBlock(spawnCommands, ItemMazeGenerator.class, "weighted_command_block");
         GameRegistry.registerTileEntityWithAlternatives(TileEntitySpawnCommand.class, "RCSpawnCommand");
+
+        // Register early to allow proper loading
+        registerDimensionPresets();
+        registerBiomePresets();
     }
 
     public static void load(FMLInitializationEvent event, RecurrentComplex mod)
@@ -154,5 +162,61 @@ public class RCRegistryHandler
 //        VillagerRegistry.instance().registerVillageCreationHandler(new GenericVillageCreationHandler("DesertHut"));
 
         RCBlockRendering.negativeSpaceRenderID = RenderingRegistry.getNextAvailableRenderId();
+    }
+
+    protected static void registerDimensionPresets()
+    {
+        DimensionMatcherPresets.instance().register("clear");
+
+        DimensionMatcherPresets.instance().register("overworld",
+                new DimensionGenerationInfo("$" + DimensionDictionary.UNCATEGORIZED, null),
+                new DimensionGenerationInfo(String.format("$%s & $%s & $%s", DimensionDictionary.NO_TOP_LIMIT, DimensionDictionary.BOTTOM_LIMIT, DimensionDictionary.INFINITE), null));
+        DimensionMatcherPresets.instance().setDefault("overworld");
+
+        DimensionMatcherPresets.instance().register("nether",
+                new DimensionGenerationInfo(String.format("$%s & $%s & $%s",
+                        DimensionDictionary.HELL, DimensionDictionary.TOP_LIMIT, DimensionDictionary.BOTTOM_LIMIT), null));
+
+        DimensionMatcherPresets.instance().register("end",
+                new DimensionGenerationInfo(String.format("$%s & $%s & $%s", DimensionDictionary.ENDER, DimensionDictionary.NO_TOP_LIMIT, DimensionDictionary.NO_BOTTOM_LIMIT), null));
+    }
+
+    protected static void registerBiomePresets()
+    {
+        BiomeMatcherPresets.instance().register("clear");
+
+        BiomeMatcherPresets.instance().register("overworld",
+                new BiomeGenerationInfo("$WATER", 0.0),
+                new BiomeGenerationInfo("$PLAINS", null),
+                new BiomeGenerationInfo("$FOREST", null),
+                new BiomeGenerationInfo("$MOUNTAIN", null),
+                new BiomeGenerationInfo("$HILLS", null),
+                new BiomeGenerationInfo("$SWAMP", null),
+                new BiomeGenerationInfo("$SANDY", null),
+                new BiomeGenerationInfo("$MESA", null),
+                new BiomeGenerationInfo("$SAVANNA", null),
+                new BiomeGenerationInfo("$WASTELAND", null),
+                new BiomeGenerationInfo("$MUSHROOM", null),
+                new BiomeGenerationInfo("$JUNGLE", null));
+        BiomeMatcherPresets.instance().setDefault("overworld");
+
+        BiomeMatcherPresets.instance().register("underground",
+                new BiomeGenerationInfo("$PLAINS", null),
+                new BiomeGenerationInfo("$FOREST", null),
+                new BiomeGenerationInfo("$MOUNTAIN", null),
+                new BiomeGenerationInfo("$HILLS", null),
+                new BiomeGenerationInfo("$SWAMP", null),
+                new BiomeGenerationInfo("$SANDY", null),
+                new BiomeGenerationInfo("$MESA", null),
+                new BiomeGenerationInfo("$SAVANNA", null),
+                new BiomeGenerationInfo("$RIVER", null),
+                new BiomeGenerationInfo("$OCEAN", null),
+                new BiomeGenerationInfo("$WASTELAND", null),
+                new BiomeGenerationInfo("$MUSHROOM", null),
+                new BiomeGenerationInfo("$JUNGLE", null));
+
+        BiomeMatcherPresets.instance().register("ocean",
+                new BiomeGenerationInfo("$OCEAN & $SNOWY", 0.0),
+                new BiomeGenerationInfo("$OCEAN", null));
     }
 }

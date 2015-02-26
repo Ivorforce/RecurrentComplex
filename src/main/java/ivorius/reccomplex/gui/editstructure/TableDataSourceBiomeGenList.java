@@ -6,9 +6,15 @@
 package ivorius.reccomplex.gui.editstructure;
 
 import ivorius.reccomplex.gui.table.*;
+import ivorius.reccomplex.structures.StructureRegistry;
 import ivorius.reccomplex.structures.generic.BiomeGenerationInfo;
+import ivorius.reccomplex.structures.generic.gentypes.BiomeMatcherPresets;
+import ivorius.reccomplex.utils.IvTranslations;
+import net.minecraft.util.StatCollector;
 import org.apache.commons.lang3.StringUtils;
 
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 /**
@@ -49,12 +55,27 @@ public class TableDataSourceBiomeGenList extends TableDataSourceList<BiomeGenera
                 : -1;
     }
 
+    public TableElementButton.Action[] getPresetActions()
+    {
+        Collection<String> allTypes = BiomeMatcherPresets.instance().allTypes();
+        List<TableElementButton.Action> actions = new ArrayList<>(allTypes.size());
+        for (String type : allTypes)
+        {
+            String baseKey = "reccomplex.biomePreset." + type;
+            actions.add(new TableElementButton.Action(type,
+                    StatCollector.translateToLocal(baseKey),
+                    IvTranslations.formatLines(baseKey + ".tooltip")
+            ));
+        }
+        return actions.toArray(new TableElementButton.Action[actions.size()]);
+    }
+
     @Override
     public TableElement elementForIndexInSegment(GuiTable table, int index, int segment)
     {
         if (segment == 0)
         {
-            TableElementPresetAction elementPresetAction = new TableElementPresetAction("biomePreset", "Presets", "Apply", new TableElementButton.Action("overworld", "Overworld"), new TableElementButton.Action("underground", "Underground"), new TableElementButton.Action("ocean", "Ocean"), new TableElementButton.Action("clear", "Clear"));
+            TableElementPresetAction elementPresetAction = new TableElementPresetAction("biomePreset", "Presets", "Apply", getPresetActions());
             elementPresetAction.addListener(this);
             return elementPresetAction;
         }
@@ -85,26 +106,14 @@ public class TableDataSourceBiomeGenList extends TableDataSourceList<BiomeGenera
     {
         if (element.getID().equals("biomePreset"))
         {
-            switch (actionID)
-            {
-                case "overworld":
-                    list.clear();
-                    list.addAll(BiomeGenerationInfo.overworldBiomeGenerationList());
-                    break;
-                case "underground":
-                    list.clear();
-                    list.addAll(BiomeGenerationInfo.undergroundBiomeGenerationList());
-                    break;
-                case "ocean":
-                    list.clear();
-                    list.addAll(BiomeGenerationInfo.oceanBiomeGenerationList());
-                    break;
-                case "clear":
-                    list.clear();
-                    break;
-            }
+            list.clear();
+            List<BiomeGenerationInfo> preset = BiomeMatcherPresets.instance().preset(actionID);
 
-            tableDelegate.reloadData();
+            if (preset != null)
+            {
+                list.addAll(preset);
+                tableDelegate.reloadData();
+            }
         }
 
         super.actionPerformed(element, actionID);

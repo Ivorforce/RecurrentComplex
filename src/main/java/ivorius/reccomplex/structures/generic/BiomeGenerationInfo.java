@@ -29,45 +29,6 @@ public class BiomeGenerationInfo
         this.generationWeight = generationWeight;
     }
 
-    public static List<BiomeGenerationInfo> overworldBiomeGenerationList()
-    {
-        return Arrays.asList(new BiomeGenerationInfo("$WATER", 0.0),
-                new BiomeGenerationInfo("$PLAINS", null),
-                new BiomeGenerationInfo("$FOREST", null),
-                new BiomeGenerationInfo("$MOUNTAIN", null),
-                new BiomeGenerationInfo("$HILLS", null),
-                new BiomeGenerationInfo("$SWAMP", null),
-                new BiomeGenerationInfo("$SANDY", null),
-                new BiomeGenerationInfo("$MESA", null),
-                new BiomeGenerationInfo("$SAVANNA", null),
-                new BiomeGenerationInfo("$WASTELAND", null),
-                new BiomeGenerationInfo("$MUSHROOM", null),
-                new BiomeGenerationInfo("$JUNGLE", null));
-    }
-
-    public static List<BiomeGenerationInfo> undergroundBiomeGenerationList()
-    {
-        return Arrays.asList(new BiomeGenerationInfo("$PLAINS", null),
-                new BiomeGenerationInfo("$FOREST", null),
-                new BiomeGenerationInfo("$MOUNTAIN", null),
-                new BiomeGenerationInfo("$HILLS", null),
-                new BiomeGenerationInfo("$SWAMP", null),
-                new BiomeGenerationInfo("$SANDY", null),
-                new BiomeGenerationInfo("$MESA", null),
-                new BiomeGenerationInfo("$SAVANNA", null),
-                new BiomeGenerationInfo("$RIVER", null),
-                new BiomeGenerationInfo("$OCEAN", null),
-                new BiomeGenerationInfo("$WASTELAND", null),
-                new BiomeGenerationInfo("$MUSHROOM", null),
-                new BiomeGenerationInfo("$JUNGLE", null));
-    }
-
-    public static List<BiomeGenerationInfo> oceanBiomeGenerationList()
-    {
-        return Arrays.asList(new BiomeGenerationInfo("$OCEAN,SNOWY", 0.0),
-                new BiomeGenerationInfo("$OCEAN", null));
-    }
-
     public Double getGenerationWeight()
     {
         return generationWeight;

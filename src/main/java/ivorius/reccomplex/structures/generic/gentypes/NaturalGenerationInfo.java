@@ -41,8 +41,8 @@ public class NaturalGenerationInfo extends StructureGenerationInfo
     public NaturalGenerationInfo()
     {
         this("decoration", new GenerationYSelector(GenerationYSelector.SelectionMode.SURFACE, 0, 0));
-        biomeWeights.addAll(BiomeGenerationInfo.overworldBiomeGenerationList());
-        dimensionWeights.addAll(DimensionGenerationInfo.overworldGenerationList());
+        biomeWeights.addAll(BiomeMatcherPresets.instance().defaultPreset());
+        dimensionWeights.addAll(DimensionMatcherPresets.instance().defaultPreset());
     }
 
     public NaturalGenerationInfo(String generationCategory, GenerationYSelector ySelector)
@@ -76,7 +76,7 @@ public class NaturalGenerationInfo extends StructureGenerationInfo
         BiomeGenerationInfo[] infos = gson.fromJson(jsonObject.get("generationBiomes"), BiomeGenerationInfo[].class);
         Collections.addAll(naturalGenerationInfo.biomeWeights, infos);
 
-        naturalGenerationInfo.dimensionWeights.addAll(DimensionGenerationInfo.overworldGenerationList());
+        naturalGenerationInfo.dimensionWeights.addAll(DimensionMatcherPresets.instance().defaultPreset());
 
         return naturalGenerationInfo;
     }
@@ -171,7 +171,7 @@ public class NaturalGenerationInfo extends StructureGenerationInfo
             if (jsonObject.has("generationDimensions"))
                 Collections.addAll(naturalGenerationInfo.dimensionWeights, gson.fromJson(jsonObject.get("generationDimensions"), DimensionGenerationInfo[].class));
             else
-                naturalGenerationInfo.dimensionWeights.addAll(DimensionGenerationInfo.overworldGenerationList()); // Legacy
+                naturalGenerationInfo.dimensionWeights.addAll(DimensionMatcherPresets.instance().defaultPreset()); // Legacy
 
             return naturalGenerationInfo;
         }

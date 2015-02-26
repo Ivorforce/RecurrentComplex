@@ -12,17 +12,21 @@ import java.text.ParseException;
 /**
  * Created by lukas on 25.02.15.
  */
-public class ExpressionCache
+public class ExpressionCache<T>
 {
+    @Nonnull
+    protected Algebra<T> algebra;
+
     @Nonnull
     protected String expression;
     @Nullable
-    protected Algebra.Expression<Boolean> parsedExpression;
+    protected Algebra.Expression<T> parsedExpression;
     @Nullable
     protected ParseException parseException;
 
-    public ExpressionCache(String expression)
+    public ExpressionCache(Algebra<T> algebra, String expression)
     {
+        this.algebra = algebra;
         setExpression(expression);
     }
 
@@ -30,7 +34,7 @@ public class ExpressionCache
     {
         try
         {
-            parsedExpression = BoolAlgebra.algebra().parse(expression);
+            parsedExpression = algebra.parse(expression);
             parseException = null;
         }
         catch (ParseException e)
@@ -53,13 +57,24 @@ public class ExpressionCache
     }
 
     @Nonnull
+    public Algebra<T> getAlgebra()
+    {
+        return algebra;
+    }
+
+    public void setAlgebra(@Nonnull Algebra<T> algebra)
+    {
+        this.algebra = algebra;
+    }
+
+    @Nonnull
     public String getDisplayString()
     {
         return getExpression();
     }
 
     @Nullable
-    public Algebra.Expression<Boolean> getParsedExpression()
+    public Algebra.Expression<T> getParsedExpression()
     {
         return parsedExpression;
     }

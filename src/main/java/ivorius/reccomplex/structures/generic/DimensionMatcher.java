@@ -9,7 +9,6 @@ import com.google.common.base.Function;
 import com.google.common.base.Predicate;
 import com.google.common.primitives.Ints;
 import ivorius.reccomplex.dimensions.DimensionDictionary;
-import ivorius.reccomplex.utils.Algebra;
 import ivorius.reccomplex.utils.BoolAlgebra;
 import ivorius.reccomplex.utils.ExpressionCache;
 import ivorius.reccomplex.utils.Visitor;
@@ -18,20 +17,19 @@ import net.minecraft.world.WorldProvider;
 import net.minecraftforge.common.DimensionManager;
 
 import javax.annotation.Nullable;
-import java.text.ParseException;
 import java.util.Arrays;
 import java.util.Collection;
 
 /**
  * Created by lukas on 19.09.14.
  */
-public class DimensionMatcher extends ExpressionCache implements Predicate<WorldProvider>
+public class DimensionMatcher extends ExpressionCache<Boolean> implements Predicate<WorldProvider>
 {
     public static final String DIMENSION_TYPE_PREFIX = "$";
 
     public DimensionMatcher(String expression)
     {
-        super(expression);
+        super(BoolAlgebra.algebra(), expression);
     }
 
     public static boolean isKnownVariable(final String var, final Collection<Integer> dimensions)
@@ -93,7 +91,11 @@ public class DimensionMatcher extends ExpressionCache implements Predicate<World
             @Override
             public String apply(String input)
             {
-                return (isKnownVariable(input, dimensions) ? EnumChatFormatting.GREEN : EnumChatFormatting.YELLOW) + input + EnumChatFormatting.RESET;
+                EnumChatFormatting variableColor = isKnownVariable(input, dimensions) ? EnumChatFormatting.GREEN : EnumChatFormatting.YELLOW;
+
+                if (input.startsWith(DIMENSION_TYPE_PREFIX))
+                    return EnumChatFormatting.BLUE + DIMENSION_TYPE_PREFIX + variableColor + input.substring(DIMENSION_TYPE_PREFIX.length()) + EnumChatFormatting.RESET;
+                return variableColor + input + EnumChatFormatting.RESET;
             }
         }) : EnumChatFormatting.RED + expression;
     }

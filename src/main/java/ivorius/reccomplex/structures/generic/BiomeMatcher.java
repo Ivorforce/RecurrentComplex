@@ -9,6 +9,7 @@ import com.google.common.base.Function;
 import com.google.common.base.Predicate;
 import com.google.common.collect.Iterables;
 import ivorius.reccomplex.json.RCGsonHelper;
+import ivorius.reccomplex.utils.BoolAlgebra;
 import ivorius.reccomplex.utils.ExpressionCache;
 import ivorius.reccomplex.utils.Visitor;
 import net.minecraft.util.EnumChatFormatting;
@@ -23,13 +24,13 @@ import java.util.Set;
 /**
  * Created by lukas on 19.09.14.
  */
-public class BiomeMatcher extends ExpressionCache implements Predicate<BiomeGenBase>
+public class BiomeMatcher extends ExpressionCache<Boolean> implements Predicate<BiomeGenBase>
 {
     public static final String BIOME_TYPE_PREFIX = "$";
 
     public BiomeMatcher(String expression)
     {
-        super(expression);
+        super(BoolAlgebra.algebra(), expression);
     }
 
     public static Set<BiomeGenBase> gatherAllBiomes()
@@ -110,7 +111,11 @@ public class BiomeMatcher extends ExpressionCache implements Predicate<BiomeGenB
             @Override
             public String apply(String input)
             {
-                return (isKnownVariable(input, biomes) ? EnumChatFormatting.GREEN : EnumChatFormatting.YELLOW) + input + EnumChatFormatting.RESET;
+                EnumChatFormatting variableColor = isKnownVariable(input, biomes) ? EnumChatFormatting.GREEN : EnumChatFormatting.YELLOW;
+
+                if (input.startsWith(BIOME_TYPE_PREFIX))
+                    return EnumChatFormatting.BLUE + BIOME_TYPE_PREFIX + variableColor + input.substring(BIOME_TYPE_PREFIX.length()) + EnumChatFormatting.RESET;
+                return variableColor + input + EnumChatFormatting.RESET;
             }
         }) : EnumChatFormatting.RED + expression;
     }

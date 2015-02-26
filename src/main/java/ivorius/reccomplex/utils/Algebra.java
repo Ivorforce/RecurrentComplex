@@ -6,7 +6,7 @@
 package ivorius.reccomplex.utils;
 
 import com.google.common.base.Function;
-import org.apache.commons.lang3.tuple.MutableTriple;
+import org.apache.logging.log4j.Logger;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -17,11 +17,15 @@ import java.util.List;
 import java.util.Stack;
 
 /**
- * Created by lukas on 23.02.15.
+ * A list of operators that is able to parse strings to an expression.
+ *
+ * @param <T> The Algebra's data type.
  */
 public class Algebra<T>
 {
     protected final List<Operator<T>> operators = new ArrayList<>();
+
+    protected Logger logger;
 
     @SafeVarargs
     public Algebra(Operator<T>... operators)
@@ -32,6 +36,16 @@ public class Algebra<T>
     private static boolean hasAt(String string, String symbol, int index)
     {
         return string.regionMatches(index, symbol, 0, symbol.length());
+    }
+
+    public Logger getLogger()
+    {
+        return logger;
+    }
+
+    public void setLogger(Logger logger)
+    {
+        this.logger = logger;
     }
 
     @Nullable
@@ -63,7 +77,10 @@ public class Algebra<T>
         }
         catch (Exception e)
         {
-            throw new ParseException(String.format("Failed Parsing (%s)", e.toString()), 0);
+            if (logger != null)
+                logger.error("Internal error when parsing", e);
+
+            throw new ParseException(String.format("%s", e.toString()), 0);
         }
     }
 
@@ -107,8 +124,9 @@ public class Algebra<T>
                         throw new ParseException("Internal Error (Operator Sorting)", operatorIndex);
                     else if (operatorToken.operatorIndex == operatorIndex)
                     {
-                        if (expressionStack.peek().currentSymbolIndex == lastSymbolIndex && operator.hasRightArgument())
+                        if (expressionStack.peek().currentSymbolIndex == lastSymbolIndex && operator.hasRightArgument() && operator.hasLeftArgument())
                         {
+                            // Evaluate from left to right, so short-circuit asap
                             Integer lastTokenIndex = expressionStack.peek().currentTokenIndex;
                             implode(tokens, minOperatorIndex + 1, lastTokenIndex, t);
 
@@ -168,7 +186,7 @@ public class Algebra<T>
                 }
             }
 
-            if (expressionStack.peek().currentSymbolIndex == lastSymbolIndex && operator.hasRightArgument())
+            while (expressionStack.peek().currentSymbolIndex == lastSymbolIndex && operator.hasRightArgument())
             {
                 Integer lastTokenIndex = expressionStack.peek().currentTokenIndex;
                 implode(tokens, minOperatorIndex + 1, lastTokenIndex, end);
@@ -183,8 +201,8 @@ public class Algebra<T>
 
             if (expressionStack.size() > 1)
             {
-                String expectedSymbol = symbols[expressionStack.peek().currentTokenIndex + 1];
-                String previousSymbol = symbols[expressionStack.peek().currentTokenIndex];
+                String expectedSymbol = symbols[expressionStack.peek().currentSymbolIndex + 1];
+                String previousSymbol = symbols[expressionStack.peek().currentSymbolIndex];
 
                 throw new ParseException(String.format("Expected Token '%s'", expectedSymbol), expressionStack.peek().currentStringIndex + previousSymbol.length());
             }
@@ -421,17 +439,27 @@ public class Algebra<T>
             StringBuilder builder = new StringBuilder();
 
             int idx = 0;
-            if (operator.hasLeftArgument())
-                builder.append(expressions[idx++].toString(stringMapper)).append(' ');
-
             String[] symbols = operator.getSymbols();
-            for (int i = 0; i < symbols.length - 1; i++)
-                builder.append(symbols[i]).append(' ').append(expressions[idx++].toString(stringMapper)).append(' ');
 
-            builder.append(symbols[symbols.length - 1]);
+            boolean hasSpaceRightOfFirst = operator.hasLeftArgument();
+            boolean hasSpaceLeftOfLast = operator.hasRightArgument();
 
-            if (operator.hasRightArgument())
-                builder.append(' ').append(expressions[idx].toString(stringMapper));
+            if (operator.hasLeftArgument())
+                builder.append(expressions[idx++].toString(stringMapper));
+
+            for (int i = 0; i < symbols.length; i++)
+            {
+                if ((i > 0 || operator.hasLeftArgument()) && (i != symbols.length - 1 || hasSpaceLeftOfLast))
+                    builder.append(' ');
+
+                builder.append(symbols[i]);
+
+                if ((i < symbols.length - 1 || operator.hasRightArgument()) && (i != 0 || hasSpaceRightOfFirst))
+                    builder.append(' ');
+
+                if (i < symbols.length - 1 || operator.hasRightArgument())
+                    builder.append(expressions[idx++].toString(stringMapper));
+            }
 
             return builder.toString();
         }

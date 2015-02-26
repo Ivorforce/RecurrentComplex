@@ -61,7 +61,7 @@ public class TableDataSourceDimensionGen extends TableDataSourceSegmented implem
         {
             if (index == 0)
             {
-                TableElementString element = new TableElementString("dimID", "Dimension ID", generationInfo.getDimensionMatcher().getExpression());
+                TableElementString element = new TableElementString("dimID", "Dimensions", generationInfo.getDimensionMatcher().getExpression());
                 element.addPropertyListener(this);
                 return element;
             }

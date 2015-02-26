@@ -110,7 +110,7 @@ public class TableDataSourceStaticGenerationInfo extends TableDataSourceSegmente
             {
                 if (index == 0)
                 {
-                    TableElementString element = new TableElementString("dimID", "Dimension ID", generationInfo.dimensionMatcher.getExpression());
+                    TableElementString element = new TableElementString("dimID", "Dimensions", generationInfo.dimensionMatcher.getExpression());
                     element.addPropertyListener(this);
                     return element;
                 }

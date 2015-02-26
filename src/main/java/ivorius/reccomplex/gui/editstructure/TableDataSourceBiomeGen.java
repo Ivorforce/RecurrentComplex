@@ -44,7 +44,7 @@ public class TableDataSourceBiomeGen extends TableDataSourceSegmented implements
         {
             if (index == 0)
             {
-                TableElementString element = new TableElementString("biomeID", "Biome ID", generationInfo.getBiomeMatcher().getExpression());
+                TableElementString element = new TableElementString("biomeID", "Biomes", generationInfo.getBiomeMatcher().getExpression());
                 element.addPropertyListener(this);
                 return element;
             }

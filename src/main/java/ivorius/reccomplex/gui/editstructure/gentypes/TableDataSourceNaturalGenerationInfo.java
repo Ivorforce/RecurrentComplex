@@ -26,13 +26,13 @@ public class TableDataSourceNaturalGenerationInfo extends TableDataSourceSegment
 {
     private TableNavigator navigator;
     private TableDelegate tableDelegate;
-    private NaturalGenerationInfo naturelGenerationInfo;
+    private NaturalGenerationInfo generationInfo;
 
-    public TableDataSourceNaturalGenerationInfo(TableNavigator navigator, TableDelegate tableDelegate, NaturalGenerationInfo naturelGenerationInfo)
+    public TableDataSourceNaturalGenerationInfo(TableNavigator navigator, TableDelegate tableDelegate, NaturalGenerationInfo generationInfo)
     {
         this.navigator = navigator;
         this.tableDelegate = tableDelegate;
-        this.naturelGenerationInfo = naturelGenerationInfo;
+        this.generationInfo = generationInfo;
     }
 
     public static List<TableElementList.Option> allGenerationOptions()
@@ -86,7 +86,7 @@ public class TableDataSourceNaturalGenerationInfo extends TableDataSourceSegment
             case 1:
                 return 2;
             case 2:
-                return 4;
+                return 3;
         }
 
         return 0;
@@ -99,7 +99,7 @@ public class TableDataSourceNaturalGenerationInfo extends TableDataSourceSegment
         {
             if (index == 0)
             {
-                TableElementList element = new TableElementList("category", "Category", naturelGenerationInfo.generationCategory, allGenerationCategories());
+                TableElementList element = new TableElementList("category", "Category", generationInfo.generationCategory, allGenerationCategories());
                 element.addPropertyListener(this);
                 return element;
             }
@@ -108,13 +108,13 @@ public class TableDataSourceNaturalGenerationInfo extends TableDataSourceSegment
         {
             if (index == 0)
             {
-                TableElementList element = new TableElementList("ySelType", "Generation Base", naturelGenerationInfo.ySelector.selectionMode.serializedName(), allGenerationOptions());
+                TableElementList element = new TableElementList("ySelType", "Generation Base", generationInfo.ySelector.selectionMode.serializedName(), allGenerationOptions());
                 element.addPropertyListener(this);
                 return element;
             }
             else if (index == 1)
             {
-                TableElementIntegerRange element = new TableElementIntegerRange("ySelShift", "Y Shift", new IntegerRange(naturelGenerationInfo.ySelector.minY, naturelGenerationInfo.ySelector.maxY), -100, 100);
+                TableElementIntegerRange element = new TableElementIntegerRange("ySelShift", "Y Shift", new IntegerRange(generationInfo.ySelector.minY, generationInfo.ySelector.maxY), -100, 100);
                 element.addPropertyListener(this);
                 return element;
             }
@@ -123,24 +123,17 @@ public class TableDataSourceNaturalGenerationInfo extends TableDataSourceSegment
         {
             if (index == 0)
             {
-                TableElementBoolean element = new TableElementBoolean("defaultWeight", "Use Default Weight", naturelGenerationInfo.hasDefaultWeight());
+                TableElementFloatNullable element = new TableElementFloatNullable("weight", "Weight", (float) generationInfo.getActiveSpawnWeight(), 1.0f, 0, 10, "D", "C");
                 element.addPropertyListener(this);
                 return element;
             }
             else if (index == 1)
             {
-                TableElementFloat element = new TableElementFloat("weight", "Weight", (float) naturelGenerationInfo.getActiveSpawnWeight(), 0, 10);
-                element.setEnabled(!naturelGenerationInfo.hasDefaultWeight());
-                element.addPropertyListener(this);
-                return element;
-            }
-            else if (index == 2)
-            {
                 TableElementButton elementEditBiomes = new TableElementButton("editBiomes", "Biomes", new TableElementButton.Action("edit", "Edit"));
                 elementEditBiomes.addListener(this);
                 return elementEditBiomes;
             }
-            else if (index == 3)
+            else if (index == 2)
             {
                 TableElementButton elementEditBiomes = new TableElementButton("editDimensions", "Dimensions", new TableElementButton.Action("edit", "Edit"));
                 elementEditBiomes.addListener(this);
@@ -156,12 +149,12 @@ public class TableDataSourceNaturalGenerationInfo extends TableDataSourceSegment
     {
         if ("editBiomes".equals(element.getID()) && "edit".equals(actionID))
         {
-            GuiTable editBiomesProperties = new GuiTable(tableDelegate, new TableDataSourceBiomeGenList(naturelGenerationInfo.biomeWeights, tableDelegate, navigator));
+            GuiTable editBiomesProperties = new GuiTable(tableDelegate, new TableDataSourceBiomeGenList(generationInfo.biomeWeights, tableDelegate, navigator));
             navigator.pushTable(editBiomesProperties);
         }
         else if ("editDimensions".equals(element.getID()) && "edit".equals(actionID))
         {
-            GuiTable editBiomesProperties = new GuiTable(tableDelegate, new TableDataSourceDimensionGenList(naturelGenerationInfo.dimensionWeights, tableDelegate, navigator));
+            GuiTable editBiomesProperties = new GuiTable(tableDelegate, new TableDataSourceDimensionGenList(generationInfo.dimensionWeights, tableDelegate, navigator));
             navigator.pushTable(editBiomesProperties);
         }
     }
@@ -171,28 +164,23 @@ public class TableDataSourceNaturalGenerationInfo extends TableDataSourceSegment
     {
         if ("category".equals(element.getID()))
         {
-            naturelGenerationInfo.generationCategory = (String) element.getPropertyValue();
+            generationInfo.generationCategory = (String) element.getPropertyValue();
         }
         else if ("weight".equals(element.getID()))
         {
-            naturelGenerationInfo.setGenerationWeight((double) (Float) element.getPropertyValue());
-        }
-        else if ("defaultWeight".equals(element.getID()))
-        {
-            boolean useDefault = (boolean) element.getPropertyValue();
-            naturelGenerationInfo.setGenerationWeight(useDefault ? null : naturelGenerationInfo.getActiveSpawnWeight());
-            tableDelegate.reloadData();
+            Float propertyValue = (Float) element.getPropertyValue();
+            generationInfo.setGenerationWeight(propertyValue != null ? (double) propertyValue : null);
         }
         else if ("ySelType".equals(element.getID()))
         {
             GenerationYSelector.SelectionMode selectionMode = GenerationYSelector.SelectionMode.selectionMode((String) element.getPropertyValue());
-            naturelGenerationInfo.ySelector.selectionMode = selectionMode != null ? selectionMode : GenerationYSelector.SelectionMode.SURFACE;
+            generationInfo.ySelector.selectionMode = selectionMode != null ? selectionMode : GenerationYSelector.SelectionMode.SURFACE;
         }
         else if ("ySelShift".equals(element.getID()))
         {
             IntegerRange range = ((IntegerRange) element.getPropertyValue());
-            naturelGenerationInfo.ySelector.minY = range.getMin();
-            naturelGenerationInfo.ySelector.maxY = range.getMax();
+            generationInfo.ySelector.minY = range.getMin();
+            generationInfo.ySelector.maxY = range.getMax();
         }
     }
 }

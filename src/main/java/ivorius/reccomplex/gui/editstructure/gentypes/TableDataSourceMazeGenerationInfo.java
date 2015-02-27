@@ -43,7 +43,7 @@ public class TableDataSourceMazeGenerationInfo extends TableDataSourceSegmented 
         switch (segment)
         {
             case 0:
-                return 3;
+                return 2;
             case 1:
                 return 1;
             case 2:
@@ -66,14 +66,7 @@ public class TableDataSourceMazeGenerationInfo extends TableDataSourceSegmented 
             }
             else if (index == 1)
             {
-                TableElementBoolean element = new TableElementBoolean("defaultWeight", "Use Default Weight", mazeGenerationInfo.mazeComponent.hasDefaultWeight());
-                element.addPropertyListener(this);
-                return element;
-            }
-            else if (index == 2)
-            {
-                TableElementFloat element = new TableElementFloat("weight", "Weight", (float) mazeGenerationInfo.mazeComponent.getWeight(), 0, 10);
-                element.setEnabled(!mazeGenerationInfo.mazeComponent.hasDefaultWeight());
+                TableElementFloatNullable element = new TableElementFloatNullable("weight", "Weight", (float) mazeGenerationInfo.mazeComponent.getWeight(), 1.0f, 0, 10, "D", "C");
                 element.addPropertyListener(this);
                 return element;
             }
@@ -116,13 +109,8 @@ public class TableDataSourceMazeGenerationInfo extends TableDataSourceSegmented 
         }
         else if ("weight".equals(element.getID()))
         {
-            mazeGenerationInfo.mazeComponent.weight = (double) (Float) element.getPropertyValue();
-        }
-        else if ("defaultWeight".equals(element.getID()))
-        {
-            boolean useDefault = (boolean) element.getPropertyValue();
-            mazeGenerationInfo.mazeComponent.weight = useDefault ? null : mazeGenerationInfo.mazeComponent.getWeight();
-            tableDelegate.reloadData();
+            Float propertyValue = (Float) element.getPropertyValue();
+            mazeGenerationInfo.mazeComponent.weight = propertyValue != null ? (double) propertyValue : null;
         }
     }
 

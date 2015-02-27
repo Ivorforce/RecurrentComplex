@@ -26,7 +26,7 @@ public class TableDataSourceSpawnCommandEntry implements TableDataSource, TableE
     @Override
     public boolean has(GuiTable table, int index)
     {
-        return index >= 0 && index < 4;
+        return index >= 0 && index < 3;
     }
 
     @Override
@@ -46,14 +46,7 @@ public class TableDataSourceSpawnCommandEntry implements TableDataSource, TableE
         }
         else if (index == 2)
         {
-            TableElementBoolean element = new TableElementBoolean("defaultWeight", "Use Default Weight", entry.hasDefaultWeight());
-            element.addPropertyListener(this);
-            return element;
-        }
-        else if (index == 3)
-        {
-            TableElementFloat element = new TableElementFloat("weight", "Weight", (float) entry.getWeight(), 0, 10);
-            element.setEnabled(!entry.hasDefaultWeight());
+            TableElementFloatNullable element = new TableElementFloatNullable("weight", "Weight", (float) entry.getWeight(), 1.0f, 0, 10, "D", "C");
             element.addPropertyListener(this);
             return element;
         }
@@ -70,13 +63,8 @@ public class TableDataSourceSpawnCommandEntry implements TableDataSource, TableE
         }
         else if ("weight".equals(element.getID()))
         {
-            entry.weight = (double) (Float) element.getPropertyValue();
-        }
-        else if ("defaultWeight".equals(element.getID()))
-        {
-            boolean useDefault = (boolean) element.getPropertyValue();
-            entry.weight = useDefault ? null : entry.getWeight();
-            tableDelegate.reloadData();
+            Float propertyValue = (Float) element.getPropertyValue();
+            entry.weight = propertyValue != null ? (double) propertyValue : null;
         }
     }
 

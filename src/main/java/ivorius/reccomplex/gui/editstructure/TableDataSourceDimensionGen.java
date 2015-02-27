@@ -51,7 +51,7 @@ public class TableDataSourceDimensionGen extends TableDataSourceSegmented implem
     @Override
     public int sizeOfSegment(int segment)
     {
-        return 2;
+        return segment == 0 ? 2 : 1;
     }
 
     @Override
@@ -70,19 +70,9 @@ public class TableDataSourceDimensionGen extends TableDataSourceSegmented implem
         }
         else if (segment == 1)
         {
-            if (index == 0)
-            {
-                TableElementBoolean element = new TableElementBoolean("defaultWeight", "Use Default Weight", generationInfo.hasDefaultWeight());
-                element.addPropertyListener(this);
-                return element;
-            }
-            else if (index == 1)
-            {
-                TableElementFloat element = new TableElementFloat("weight", "Weight", (float) generationInfo.getActiveGenerationWeight(), 0, 10);
-                element.setEnabled(!generationInfo.hasDefaultWeight());
-                element.addPropertyListener(this);
-                return element;
-            }
+            TableElementFloatNullable element = new TableElementFloatNullable("weight", "Weight", (float) generationInfo.getActiveGenerationWeight(), 1.0f, 0, 10, "D", "C");
+            element.addPropertyListener(this);
+            return element;
         }
 
         return null;
@@ -97,15 +87,10 @@ public class TableDataSourceDimensionGen extends TableDataSourceSegmented implem
             if (parsed != null)
                 parsed.setDisplayString(StringUtils.abbreviate(parsedString(generationInfo.getDimensionMatcher()), 70));
         }
-        else if ("defaultWeight".equals(element.getID()))
-        {
-            boolean useDefault = (boolean) element.getPropertyValue();
-            generationInfo.setGenerationWeight(useDefault ? null : generationInfo.getActiveGenerationWeight());
-            tableDelegate.reloadData();
-        }
         else if ("weight".equals(element.getID()))
         {
-            generationInfo.setGenerationWeight((double) (Float) element.getPropertyValue());
+            Float propertyValue = (Float) element.getPropertyValue();
+            generationInfo.setGenerationWeight(propertyValue != null ? (double) propertyValue : null);
         }
     }
 }

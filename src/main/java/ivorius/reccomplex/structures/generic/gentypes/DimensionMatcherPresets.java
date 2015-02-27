@@ -12,7 +12,7 @@ import ivorius.reccomplex.structures.generic.DimensionGenerationInfo;
 /**
  * Created by lukas on 26.02.15.
  */
-public class DimensionMatcherPresets extends MatcherPresets<DimensionGenerationInfo>
+public class DimensionMatcherPresets extends ListPresets<DimensionGenerationInfo>
 {
     private static DimensionMatcherPresets instance;
 

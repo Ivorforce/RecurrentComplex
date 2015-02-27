@@ -12,7 +12,7 @@ import ivorius.reccomplex.structures.generic.BiomeGenerationInfo;
 /**
  * Created by lukas on 26.02.15.
  */
-public class BiomeMatcherPresets extends MatcherPresets<BiomeGenerationInfo>
+public class BiomeMatcherPresets extends ListPresets<BiomeGenerationInfo>
 {
     private static BiomeMatcherPresets instance;
 

@@ -192,17 +192,24 @@ public abstract class TableDataSourceList<T, L extends List<T>> extends TableDat
 
     public TableElementButton.Action[] getAddActions()
     {
-        return new TableElementButton.Action[]{new TableElementButton.Action("add", getAddTitle())};
+        boolean enabled = canEditList();
+        return new TableElementButton.Action[]{new TableElementButton.Action("add", getAddTitle(), enabled)};
     }
 
     public TableElementButton.Action[] getEntryActions(int index)
     {
+        boolean enabled = canEditList();
         return new TableElementButton.Action[]{
-                new TableElementButton.Action("earlier", getEarlierTitle(), index > 0),
-                new TableElementButton.Action("later", getLaterTitle(), index < list.size() - 1),
-                new TableElementButton.Action("edit", getEditTitle()),
-                new TableElementButton.Action("delete", getDeleteTitle())
+                new TableElementButton.Action("earlier", getEarlierTitle(), index > 0 && enabled),
+                new TableElementButton.Action("later", getLaterTitle(), index < list.size() - 1 && enabled),
+                new TableElementButton.Action("edit", getEditTitle(), enabled),
+                new TableElementButton.Action("delete", getDeleteTitle(), enabled)
         };
+    }
+
+    public boolean canEditList()
+    {
+        return true;
     }
 
     @Override

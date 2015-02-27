@@ -15,11 +15,13 @@ import java.util.*;
 /**
  * Created by lukas on 26.02.15.
  */
-public abstract class MatcherPresets<T>
+public abstract class ListPresets<T>
 {
     protected Gson gson = createGson();
 
     protected final Map<String, List<T>> presets = new HashMap<>();
+
+    @Nullable
     protected String defaultType;
 
     public void register(@Nonnull String type, @Nonnull List<T> values)
@@ -38,11 +40,10 @@ public abstract class MatcherPresets<T>
         defaultType = type;
     }
 
-    @Nonnull
-    public List<T> defaultPreset()
+    @Nullable
+    public String defaultType()
     {
-        List<T> preset = preset(defaultType);
-        return preset != null ? preset : Collections.<T>emptyList();
+        return defaultType;
     }
 
     @Nullable
@@ -57,6 +58,11 @@ public abstract class MatcherPresets<T>
     public Collection<String> allTypes()
     {
         return presets.keySet();
+    }
+
+    public boolean has(String type)
+    {
+        return presets.containsKey(type);
     }
 
     protected abstract Gson createGson();

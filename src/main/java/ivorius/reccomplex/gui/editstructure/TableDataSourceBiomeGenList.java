@@ -37,7 +37,7 @@ public class TableDataSourceBiomeGenList extends TableDataSourcePresettedList<Bi
     @Override
     public String getDisplayString(BiomeGenerationInfo biomeGenerationInfo)
     {
-        return StringUtils.abbreviate(biomeGenerationInfo.getDisplayString(), 16) + " (" + biomeGenerationInfo.getActiveGenerationWeight() + ")";
+        return String.format("%s (%.2f)", StringUtils.abbreviate(biomeGenerationInfo.getDisplayString(), 16), biomeGenerationInfo.getActiveGenerationWeight());
     }
 
     @Override

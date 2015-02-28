@@ -36,7 +36,7 @@ public class TableDataSourceDimensionGenList extends TableDataSourcePresettedLis
     @Override
     public String getDisplayString(DimensionGenerationInfo generationInfo)
     {
-        return StringUtils.abbreviate(generationInfo.getDisplayString(), 16) + " (" + generationInfo.getActiveGenerationWeight() + ")";
+        return String.format("%s (%.2f)", StringUtils.abbreviate(generationInfo.getDisplayString(), 16), generationInfo.getActiveGenerationWeight());
     }
 
     @Override

@@ -13,11 +13,13 @@ import ivorius.ivtoolkit.gui.GuiSlider;
  */
 public class TableElementFloat extends TableElementPropertyDefault<Float> implements GuiControlListener<GuiSlider>
 {
-    private GuiSlider slider;
+    protected GuiSlider slider;
 
-    private boolean enabled = true;
-    private float min;
-    private float max;
+    protected boolean enabled = true;
+    protected float min;
+    protected float max;
+
+    protected String titleFormat = "%.4f";
 
     public TableElementFloat(String id, String title, float value, float min, float max)
     {
@@ -25,6 +27,36 @@ public class TableElementFloat extends TableElementPropertyDefault<Float> implem
 
         this.min = min;
         this.max = max;
+    }
+
+    public float getMin()
+    {
+        return min;
+    }
+
+    public void setMin(float min)
+    {
+        this.min = min;
+    }
+
+    public float getMax()
+    {
+        return max;
+    }
+
+    public void setMax(float max)
+    {
+        this.max = max;
+    }
+
+    public String getTitleFormat()
+    {
+        return titleFormat;
+    }
+
+    public void setTitleFormat(String titleFormat)
+    {
+        this.titleFormat = titleFormat;
     }
 
     public boolean isEnabled()
@@ -37,9 +69,7 @@ public class TableElementFloat extends TableElementPropertyDefault<Float> implem
         this.enabled = enabled;
 
         if (slider != null)
-        {
             slider.enabled = enabled;
-        }
     }
 
     @Override
@@ -48,7 +78,7 @@ public class TableElementFloat extends TableElementPropertyDefault<Float> implem
         super.initGui(screen);
 
         Bounds bounds = bounds();
-        slider = new GuiSlider(-1, bounds.getMinX(), bounds.getMinY() + (bounds.getHeight() - 20) / 2, bounds.getWidth(), 20, String.valueOf(property));
+        slider = new GuiSlider(-1, bounds.getMinX(), bounds.getMinY() + (bounds.getHeight() - 20) / 2, bounds.getWidth(), 20, String.format(titleFormat, property));
         slider.setMinValue(min);
         slider.setMaxValue(max);
         slider.enabled = enabled;
@@ -75,7 +105,7 @@ public class TableElementFloat extends TableElementPropertyDefault<Float> implem
     public void valueChanged(GuiSlider gui)
     {
         property = gui.getValue();
-        gui.displayString = String.valueOf(property);
+        gui.displayString = String.format(titleFormat, property);
 
         alertListenersOfChange();
     }
@@ -88,7 +118,7 @@ public class TableElementFloat extends TableElementPropertyDefault<Float> implem
         if (slider != null)
         {
             slider.setValue(value);
-            slider.displayString = String.valueOf(property);
+            slider.displayString = String.format(titleFormat, property);
         }
     }
 }

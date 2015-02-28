@@ -23,6 +23,8 @@ public class TableElementFloatNullable extends TableElementPropertyDefault<Float
     protected float min;
     protected float max;
 
+    protected String titleFormat = "%.4f";
+
     protected String buttonTitleNull;
     protected String buttonTitleCustom;
     protected float nullButtonWidth = 0.08f;
@@ -38,6 +40,36 @@ public class TableElementFloatNullable extends TableElementPropertyDefault<Float
         this.buttonTitleCustom = buttonTitleCustom;
     }
 
+    public float getMin()
+    {
+        return min;
+    }
+
+    public void setMin(float min)
+    {
+        this.min = min;
+    }
+
+    public float getMax()
+    {
+        return max;
+    }
+
+    public void setMax(float max)
+    {
+        this.max = max;
+    }
+
+    public String getTitleFormat()
+    {
+        return titleFormat;
+    }
+
+    public void setTitleFormat(String titleFormat)
+    {
+        this.titleFormat = titleFormat;
+    }
+
     public boolean isEnabled()
     {
         return enabled;
@@ -48,9 +80,7 @@ public class TableElementFloatNullable extends TableElementPropertyDefault<Float
         this.enabled = enabled;
 
         if (slider != null)
-        {
             slider.enabled = enabled;
-        }
     }
 
     public float getNullButtonWidth()
@@ -93,7 +123,7 @@ public class TableElementFloatNullable extends TableElementPropertyDefault<Float
     {
         slider.enabled = enabled && property != null;
         slider.setValue(getActiveValue());
-        slider.displayString = String.valueOf(getActiveValue());
+        slider.displayString = String.format(titleFormat, getActiveValue());
     }
 
     protected float getActiveValue()
@@ -129,7 +159,7 @@ public class TableElementFloatNullable extends TableElementPropertyDefault<Float
     public void valueChanged(GuiSlider gui)
     {
         property = gui.getValue();
-        gui.displayString = String.valueOf(getActiveValue());
+        gui.displayString = String.format(titleFormat, getActiveValue());
 
         alertListenersOfChange();
     }

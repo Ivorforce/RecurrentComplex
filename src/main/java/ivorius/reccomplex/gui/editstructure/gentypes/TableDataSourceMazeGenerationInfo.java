@@ -8,7 +8,6 @@ package ivorius.reccomplex.gui.editstructure.gentypes;
 import ivorius.reccomplex.gui.editmazeblock.TableDataSourceMazePathList;
 import ivorius.reccomplex.gui.editmazeblock.TableDataSourceSelection;
 import ivorius.reccomplex.gui.table.*;
-import ivorius.reccomplex.structures.generic.GenericStructureInfo;
 import ivorius.reccomplex.structures.generic.SavedMazeComponent;
 import ivorius.reccomplex.structures.generic.gentypes.MazeGenerationInfo;
 
@@ -66,7 +65,7 @@ public class TableDataSourceMazeGenerationInfo extends TableDataSourceSegmented 
             }
             else if (index == 1)
             {
-                TableElementFloatNullable element = new TableElementFloatNullable("weight", "Weight", (float) mazeGenerationInfo.mazeComponent.getWeight(), 1.0f, 0, 10, "D", "C");
+                TableElementFloatNullable element = new TableElementFloatNullable("weight", "Weight", TableElements.toFloat(mazeGenerationInfo.mazeComponent.weight), 1.0f, 0, 10, "D", "C");
                 element.addPropertyListener(this);
                 return element;
             }
@@ -109,8 +108,7 @@ public class TableDataSourceMazeGenerationInfo extends TableDataSourceSegmented 
         }
         else if ("weight".equals(element.getID()))
         {
-            Float propertyValue = (Float) element.getPropertyValue();
-            mazeGenerationInfo.mazeComponent.weight = propertyValue != null ? (double) propertyValue : null;
+            mazeGenerationInfo.mazeComponent.weight = TableElements.toDouble((Float) element.getPropertyValue());
         }
     }
 

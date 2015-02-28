@@ -29,7 +29,7 @@ public class TableElementFloatNullable extends TableElementPropertyDefault<Float
     protected String buttonTitleCustom;
     protected float nullButtonWidth = 0.08f;
 
-    public TableElementFloatNullable(String id, String title, float value, float defaultValue, float min, float max, String buttonTitleNull, String buttonTitleCustom)
+    public TableElementFloatNullable(String id, String title, Float value, float defaultValue, float min, float max, String buttonTitleNull, String buttonTitleCustom)
     {
         super(id, title, value);
 

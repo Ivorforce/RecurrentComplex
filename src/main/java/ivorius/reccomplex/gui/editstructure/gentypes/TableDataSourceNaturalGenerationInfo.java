@@ -123,7 +123,7 @@ public class TableDataSourceNaturalGenerationInfo extends TableDataSourceSegment
         {
             if (index == 0)
             {
-                TableElementFloatNullable element = new TableElementFloatNullable("weight", "Weight", (float) generationInfo.getActiveSpawnWeight(), 1.0f, 0, 10, "D", "C");
+                TableElementFloatNullable element = new TableElementFloatNullable("weight", "Weight", TableElements.toFloat(generationInfo.getGenerationWeight()), 1.0f, 0, 10, "D", "C");
                 element.addPropertyListener(this);
                 return element;
             }
@@ -168,8 +168,7 @@ public class TableDataSourceNaturalGenerationInfo extends TableDataSourceSegment
         }
         else if ("weight".equals(element.getID()))
         {
-            Float propertyValue = (Float) element.getPropertyValue();
-            generationInfo.setGenerationWeight(propertyValue != null ? (double) propertyValue : null);
+            generationInfo.setGenerationWeight(TableElements.toDouble((Float) element.getPropertyValue()));
         }
         else if ("ySelType".equals(element.getID()))
         {

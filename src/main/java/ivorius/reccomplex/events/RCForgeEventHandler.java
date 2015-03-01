@@ -12,6 +12,7 @@ import ivorius.reccomplex.client.rendering.GridRenderer;
 import ivorius.reccomplex.client.rendering.SelectionRenderer;
 import ivorius.reccomplex.entities.StructureEntityInfo;
 import ivorius.reccomplex.items.ItemInputHandler;
+import ivorius.reccomplex.worldgen.StructureGenerator;
 import ivorius.reccomplex.worldgen.WorldGenStructures;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.EntityLivingBase;

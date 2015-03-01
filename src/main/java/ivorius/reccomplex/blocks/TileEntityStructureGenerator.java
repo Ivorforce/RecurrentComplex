@@ -13,7 +13,7 @@ import ivorius.ivtoolkit.tools.IvCollections;
 import ivorius.reccomplex.gui.editstructureblock.GuiEditStructureBlock;
 import ivorius.reccomplex.structures.StructureRegistry;
 import ivorius.reccomplex.structures.StructureInfo;
-import ivorius.reccomplex.worldgen.WorldGenStructures;
+import ivorius.reccomplex.worldgen.StructureGenerator;
 import net.minecraft.client.Minecraft;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
@@ -112,7 +112,7 @@ public class TileEntityStructureGenerator extends TileEntity implements Generati
                 int[] strucSize = structureInfo.structureBoundingBox();
                 BlockCoord coord = transform.apply(structureShift, new int[]{1, 1, 1}).add(xCoord, yCoord, zCoord).subtract(transform.apply(new BlockCoord(0, 0, 0), strucSize));
 
-                WorldGenStructures.generateStructureWithNotifications(structureInfo, world, random, coord, strucTransform, layer, false);
+                StructureGenerator.generateStructureWithNotifications(structureInfo, world, random, coord, strucTransform, layer, false);
             }
         }
     }

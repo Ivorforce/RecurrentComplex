@@ -11,7 +11,7 @@ import ivorius.ivtoolkit.math.AxisAlignedTransform2D;
 import ivorius.reccomplex.client.rendering.AreaRenderer;
 import ivorius.reccomplex.client.rendering.SelectionRenderer;
 import ivorius.reccomplex.operation.Operation;
-import ivorius.reccomplex.worldgen.WorldGenStructures;
+import ivorius.reccomplex.worldgen.StructureGenerator;
 import ivorius.reccomplex.structures.generic.GenericStructureInfo;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.OpenGlHelper;
@@ -80,7 +80,7 @@ public class OperationGenerateStructure implements Operation
         if (generateAsSource)
             structure.generate(new StructureSpawnContext(world, world.rand, lowerCoord, transform, 0, true, structure));
         else
-            WorldGenStructures.generateStructureWithNotifications(structure, world, world.rand, lowerCoord, transform, 0, false);
+            StructureGenerator.generateStructureWithNotifications(structure, world, world.rand, lowerCoord, transform, 0, false);
     }
 
     @Override

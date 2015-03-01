@@ -14,7 +14,7 @@ import ivorius.reccomplex.structures.StructureInfos;
 import ivorius.reccomplex.structures.StructureRegistry;
 import ivorius.reccomplex.structures.StructureInfo;
 import ivorius.reccomplex.structures.generic.gentypes.NaturalGenerationInfo;
-import ivorius.reccomplex.worldgen.WorldGenStructures;
+import ivorius.reccomplex.worldgen.StructureGenerator;
 import ivorius.reccomplex.structures.generic.GenericStructureInfo;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.CommandException;
@@ -92,7 +92,7 @@ public class CommandGenerateStructure extends CommandBase
             OperationRegistry.queueOperation(new OperationGenerateStructure((GenericStructureInfo) structureInfo, transform, coord, false), commandSender);
         }
         else
-            WorldGenStructures.generateStructureRandomly(world, world.rand, structureInfo, null, x, z, false);
+            StructureGenerator.generateStructureRandomly(world, world.rand, structureInfo, null, x, z, false);
     }
 
     @Override

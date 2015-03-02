@@ -85,7 +85,7 @@ public class OperationMoveStructure extends OperationGenerateStructure
     {
         if (previewType == PREVIEW_TYPE_BOUNDING_BOX)
         {
-            maybeRenderBoundingBox(lowerCoord, structure.structureBoundingBox(), ticks, partialTicks);
+            maybeRenderBoundingBox(lowerCoord, StructureInfos.structureSize(structure, transform), ticks, partialTicks);
 
             GL11.glLineWidth(3.0f);
             GL11.glColor3f(0.5f, 0.5f, 1.0f);

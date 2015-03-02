@@ -47,7 +47,7 @@ public class StructureGenerator
 
         int genX = x - size[0] / 2;
         int genZ = z - size[2] / 2;
-        int genY = ySelector != null ? ySelector.generationY(world, random, x, z, size) : world.getHeightValue(x, z);
+        int genY = ySelector != null ? ySelector.generationY(world, random, StructureInfos.structureBoundingBox(new BlockCoord(genX, 0, genZ), size)) : world.getHeightValue(x, z);
         BlockCoord coord = new BlockCoord(genX, genY, genZ);
 
         generateStructureWithNotifications(info, world, random, coord, transform, 0, suggest);
@@ -55,12 +55,12 @@ public class StructureGenerator
         return genY;
     }
 
-    public static void generateStructureWithNotifications(StructureInfo structureInfo, World world, Random random, BlockCoord coord, AxisAlignedTransform2D strucTransform, int layer, boolean suggest)
+    public static void generateStructureWithNotifications(StructureInfo structureInfo, World world, Random random, BlockCoord coord, AxisAlignedTransform2D transform, int layer, boolean suggest)
     {
-        int[] size = StructureInfos.structureSize(structureInfo, strucTransform);
+        int[] size = StructureInfos.structureSize(structureInfo, transform);
         int[] coordInts = new int[]{coord.x, coord.y, coord.z};
 
-        StructureSpawnContext structureSpawnContext = new StructureSpawnContext(world, random, StructureInfos.structureBoundingBox(coord, size), layer, false, strucTransform);
+        StructureSpawnContext structureSpawnContext = new StructureSpawnContext(world, random, StructureInfos.structureBoundingBox(coord, size), layer, false, transform);
         String structureName = StructureRegistry.getName(structureInfo);
 
         if (!suggest || (

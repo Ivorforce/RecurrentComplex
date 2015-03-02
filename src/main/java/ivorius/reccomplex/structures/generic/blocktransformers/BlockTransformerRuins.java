@@ -163,11 +163,12 @@ public class BlockTransformerRuins implements BlockTransformer
             }
         }
 
+        int[] areaSize = new int[]{blockCollection.width, blockCollection.height, blockCollection.length};
         if (blockErosion > 0.0f || vineGrowth > 0.0f)
         {
             for (BlockCoord sourceCoord : blockCollection)
             {
-                BlockCoord worldCoord = context.transform.apply(sourceCoord, size).add(context.lowerCoord());
+                BlockCoord worldCoord = context.transform.apply(sourceCoord, areaSize).add(context.lowerCoord());
                 Block block = worldCoord.getBlock(context.world);
                 int meta = worldCoord.getMetadata(context.world);
 

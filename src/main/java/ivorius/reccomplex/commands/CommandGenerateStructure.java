@@ -83,9 +83,9 @@ public class CommandGenerateStructure extends CommandBase
             int genY;
             List<NaturalGenerationInfo> naturalGenerationInfos = structureInfo.generationInfos(NaturalGenerationInfo.class);
             if (naturalGenerationInfos.size() > 0)
-                genY = naturalGenerationInfos.get(0).ySelector.generationY(world, random, genX, genZ, size);
+                genY = naturalGenerationInfos.get(0).ySelector.generationY(world, random, StructureInfos.structureBoundingBox(new BlockCoord(genX, 0, genZ), size));
             else
-                genY = world.getHeightValue(genX, genZ);
+                genY = world.getHeightValue(x, z);
 
             BlockCoord coord = new BlockCoord(genX, genY, genZ);
 

@@ -11,6 +11,7 @@ import net.minecraft.block.Block;
 import net.minecraft.block.BlockLiquid;
 import net.minecraft.block.material.Material;
 import net.minecraft.world.World;
+import net.minecraft.world.gen.structure.StructureBoundingBox;
 
 import java.util.Random;
 
@@ -60,7 +61,7 @@ public class GenerationYSelector
         this.maxY = maxY;
     }
 
-    public int generationY(World world, Random random, int x, int z, int[] structureSize)
+    public int generationY(World world, Random random, StructureBoundingBox boundingBox)
     {
         int y = minY + random.nextInt(maxY - minY + 1);
 
@@ -70,11 +71,11 @@ public class GenerationYSelector
                 return Math.max(2, y);
             case SURFACE:
             {
-                int genYC = surfaceHeight(world, x, z);
-                int genYPP = surfaceHeight(world, x + structureSize[0] / 2, z + structureSize[2] / 2);
-                int genYPM = surfaceHeight(world, x + structureSize[0] / 2, z - structureSize[2] / 2);
-                int genYMP = surfaceHeight(world, x - structureSize[0] / 2, z + structureSize[2] / 2);
-                int genYMM = surfaceHeight(world, x - structureSize[0] / 2, z - structureSize[2] / 2);
+                int genYC = surfaceHeight(world, boundingBox.getCenterX(), boundingBox.getCenterZ());
+                int genYPP = surfaceHeight(world, boundingBox.maxX, boundingBox.maxZ);
+                int genYPM = surfaceHeight(world, boundingBox.maxX, boundingBox.minZ);
+                int genYMP = surfaceHeight(world, boundingBox.minX, boundingBox.maxZ);
+                int genYMM = surfaceHeight(world, boundingBox.minX, boundingBox.minZ);
 
                 int avg = averageIgnoringErrors(genYC, genYPP, genYPM, genYMP, genYMM);
                 return avg > MIN_DIST_TO_VOID ? avg + y : DONT_GENERATE;
@@ -83,11 +84,11 @@ public class GenerationYSelector
                 return 63 + y;
             case UNDERWATER:
             {
-                int genYC = surfaceHeightUnderwater(world, x, z);
-                int genYPP = surfaceHeightUnderwater(world, x + structureSize[0] / 2, z + structureSize[2] / 2);
-                int genYPM = surfaceHeightUnderwater(world, x + structureSize[0] / 2, z - structureSize[2] / 2);
-                int genYMP = surfaceHeightUnderwater(world, x - structureSize[0] / 2, z + structureSize[2] / 2);
-                int genYMM = surfaceHeightUnderwater(world, x - structureSize[0] / 2, z - structureSize[2] / 2);
+                int genYC = surfaceHeightUnderwater(world, boundingBox.getCenterX(), boundingBox.getCenterZ());
+                int genYPP = surfaceHeightUnderwater(world, boundingBox.maxX, boundingBox.maxZ);
+                int genYPM = surfaceHeightUnderwater(world, boundingBox.maxX, boundingBox.minZ);
+                int genYMP = surfaceHeightUnderwater(world, boundingBox.minX, boundingBox.maxZ);
+                int genYMM = surfaceHeightUnderwater(world, boundingBox.minX, boundingBox.minZ);
 
                 int avg = averageIgnoringErrors(genYC, genYPP, genYPM, genYMP, genYMM);
                 return avg > MIN_DIST_TO_VOID ? avg + y : DONT_GENERATE;
@@ -96,11 +97,11 @@ public class GenerationYSelector
                 return world.getHeight() + y;
             case LOWEST_EDGE:
             {
-                int genYC = surfaceHeightUnderwater(world, x, z);
-                int genYPP = surfaceHeightUnderwater(world, x + structureSize[0] / 2, z + structureSize[2] / 2);
-                int genYPM = surfaceHeightUnderwater(world, x + structureSize[0] / 2, z - structureSize[2] / 2);
-                int genYMP = surfaceHeightUnderwater(world, x - structureSize[0] / 2, z + structureSize[2] / 2);
-                int genYMM = surfaceHeightUnderwater(world, x - structureSize[0] / 2, z - structureSize[2] / 2);
+                int genYC = surfaceHeightUnderwater(world, boundingBox.getCenterX(), boundingBox.getCenterZ());
+                int genYPP = surfaceHeightUnderwater(world, boundingBox.maxX, boundingBox.maxZ);
+                int genYPM = surfaceHeightUnderwater(world, boundingBox.maxX, boundingBox.minZ);
+                int genYMP = surfaceHeightUnderwater(world, boundingBox.minX, boundingBox.maxZ);
+                int genYMM = surfaceHeightUnderwater(world, boundingBox.minX, boundingBox.minZ);
 
                 int min = min(genYC, genYPP, genYPM, genYMP, genYMM);
                 return min > MIN_DIST_TO_VOID ? min + y : DONT_GENERATE;

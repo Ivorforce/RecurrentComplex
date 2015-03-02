@@ -30,18 +30,18 @@ public abstract class BlockTransformerSingle implements BlockTransformer
     public void transform(Phase phase, StructureSpawnContext context, IvWorldData worldData, List<BlockTransformer> transformerList)
     {
         IvBlockCollection blockCollection = worldData.blockCollection;
+        int[] areaSize = new int[]{blockCollection.width, blockCollection.height, blockCollection.length};
+        BlockCoord lowerCoord = context.lowerCoord();
 
         for (BlockCoord sourceCoord : blockCollection)
         {
-            BlockCoord worldCoord = context.transform.apply(sourceCoord, context.boundingBoxSize()).add(context.lowerCoord());
+            BlockCoord worldCoord = context.transform.apply(sourceCoord, areaSize).add(lowerCoord);
 
             Block block = blockCollection.getBlock(sourceCoord);
             int meta = blockCollection.getMetadata(sourceCoord);
 
             if (matches(block, meta))
-            {
-                transformBlock(context.world, context.random, BlockTransformer.Phase.BEFORE, worldCoord, block, meta);
-            }
+                transformBlock(context.world, context.random, Phase.BEFORE, worldCoord, block, meta);
         }
     }
 

@@ -114,6 +114,6 @@ public class OperationGenerateStructure implements Operation
     public void renderPreview(int previewType, World world, int ticks, float partialTicks)
     {
         if (previewType == PREVIEW_TYPE_BOUNDING_BOX)
-            maybeRenderBoundingBox(lowerCoord, structure.structureBoundingBox(), ticks, partialTicks);
+            maybeRenderBoundingBox(lowerCoord, StructureInfos.structureSize(structure, transform), ticks, partialTicks);
     }
 }

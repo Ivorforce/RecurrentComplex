@@ -58,18 +58,18 @@ public class BlockTransformerReplaceAll implements BlockTransformer
         IvBlockCollection blockCollection = worldData.blockCollection;
 
         byte destMeta = destMetadata[context.random.nextInt(destMetadata.length)];
+        int[] areaSize = new int[]{blockCollection.width, blockCollection.height, blockCollection.length};
+        BlockCoord lowerCoord = context.lowerCoord();
 
         for (BlockCoord sourceCoord : blockCollection)
         {
-            BlockCoord worldCoord = context.transform.apply(sourceCoord, context.boundingBoxSize()).add(context.lowerCoord());
+            BlockCoord worldCoord = context.transform.apply(sourceCoord, areaSize).add(lowerCoord);
 
             Block block = blockCollection.getBlock(sourceCoord);
             int meta = blockCollection.getMetadata(sourceCoord);
 
             if (skipGeneration(block, meta))
-            {
                 context.world.setBlock(worldCoord.x, worldCoord.y, worldCoord.z, destBlock, destMeta, 3);
-            }
         }
     }
 

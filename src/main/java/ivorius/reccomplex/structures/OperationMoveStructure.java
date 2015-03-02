@@ -15,7 +15,9 @@ import ivorius.reccomplex.client.rendering.SelectionRenderer;
 import ivorius.reccomplex.structures.generic.GenericStructureInfo;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.OpenGlHelper;
+import net.minecraft.inventory.IInventory;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.MathHelper;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
@@ -59,9 +61,22 @@ public class OperationMoveStructure extends OperationGenerateStructure
     public void perform(World world)
     {
         for (BlockCoord coord : sourceArea)
-            world.setBlockToAir(coord.x, coord.y, coord.z);
+            setBlockToAirClean(world, coord);
 
         super.perform(world);
+    }
+
+    public static void setBlockToAirClean(World world, BlockCoord blockCoord)
+    {
+        TileEntity tileEntity = world.getTileEntity(blockCoord.x, blockCoord.y, blockCoord.z);
+        if (tileEntity instanceof IInventory)
+        {
+            IInventory inventory = (IInventory) tileEntity;
+            for (int i = 0; i < inventory.getSizeInventory(); i++)
+                inventory.setInventorySlotContents(i, null);
+        }
+
+        world.setBlockToAir(blockCoord.x, blockCoord.y, blockCoord.z);
     }
 
     @SideOnly(Side.CLIENT)

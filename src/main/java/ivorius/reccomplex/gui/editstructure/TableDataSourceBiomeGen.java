@@ -7,6 +7,7 @@ package ivorius.reccomplex.gui.editstructure;
 
 import ivorius.reccomplex.gui.table.*;
 import ivorius.reccomplex.structures.generic.BiomeGenerationInfo;
+import ivorius.reccomplex.utils.IvTranslations;
 import org.apache.commons.lang3.StringUtils;
 
 /**
@@ -45,6 +46,7 @@ public class TableDataSourceBiomeGen extends TableDataSourceSegmented implements
             if (index == 0)
             {
                 TableElementString element = new TableElementString("biomeID", "Biomes", generationInfo.getBiomeMatcher().getExpression());
+                element.setTooltip(IvTranslations.formatLines("reccomplex.expression.biome.tooltip"));
                 element.addPropertyListener(this);
                 return element;
             }

@@ -12,6 +12,7 @@ import ivorius.reccomplex.gui.editstructure.TableDataSourceDimensionGen;
 import ivorius.reccomplex.gui.table.*;
 import ivorius.reccomplex.structures.generic.GenerationYSelector;
 import ivorius.reccomplex.structures.generic.gentypes.StaticGenerationInfo;
+import ivorius.reccomplex.utils.IvTranslations;
 import org.apache.commons.lang3.StringUtils;
 
 /**
@@ -111,6 +112,7 @@ public class TableDataSourceStaticGenerationInfo extends TableDataSourceSegmente
                 if (index == 0)
                 {
                     TableElementString element = new TableElementString("dimID", "Dimensions", generationInfo.dimensionMatcher.getExpression());
+                    element.setTooltip(IvTranslations.formatLines("reccomplex.expression.dimension.tooltip"));
                     element.addPropertyListener(this);
                     return element;
                 }

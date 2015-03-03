@@ -221,3 +221,7 @@ reccomplex.weightedBlockStatePreset.clear=Clear
 reccomplex.weightedBlockStatePreset.clear.tooltip=No Blocks
 reccomplex.weightedBlockStatePreset.allWool=Wool
 reccomplex.weightedBlockStatePreset.allWool.tooltip=All 16 wool blocks
+
+reccomplex.expression.biome.tooltip=This is a §obiome expression§r.<br>Visit the wiki for syntax information.
+reccomplex.expression.dimension.tooltip=This is a §odimension expression§r.<br>Visit the wiki for syntax information.
+reccomplex.expression.block.tooltip=This is a §oblock expression§r.<br>Visit the wiki for syntax information.

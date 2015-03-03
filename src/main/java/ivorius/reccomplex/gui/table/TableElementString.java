@@ -6,23 +6,38 @@
 package ivorius.reccomplex.gui.table;
 
 import ivorius.reccomplex.gui.GuiValidityStateIndicator;
+import ivorius.reccomplex.utils.IvTranslations;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiTextField;
+
+import java.util.List;
 
 /**
  * Created by lukas on 02.06.14.
  */
 public class TableElementString extends TableElementPropertyDefault<String>
 {
-    private GuiTextField textField;
-    private GuiValidityStateIndicator stateIndicator;
+    protected GuiTextField textField;
+    protected GuiValidityStateIndicator stateIndicator;
 
-    private boolean showsValidityState;
-    private GuiValidityStateIndicator.State validityState;
+    protected boolean showsValidityState;
+    protected GuiValidityStateIndicator.State validityState;
+
+    protected List<String> tooltip;
 
     public TableElementString(String id, String title, String value)
     {
         super(id, title, value);
+    }
+
+    public List<String> getTooltip()
+    {
+        return tooltip;
+    }
+
+    public void setTooltip(List<String> tooltip)
+    {
+        this.tooltip = tooltip;
     }
 
     @Override
@@ -56,9 +71,10 @@ public class TableElementString extends TableElementPropertyDefault<String>
         textField.drawTextBox();
 
         if (stateIndicator != null)
-        {
             stateIndicator.draw();
-        }
+
+        if (tooltip != null)
+            screen.drawTooltipRect(tooltip, bounds(), mouseX, mouseY, Minecraft.getMinecraft().fontRenderer);
     }
 
     @Override
@@ -79,9 +95,7 @@ public class TableElementString extends TableElementPropertyDefault<String>
         property = textField.getText();
 
         if (!text.equals(property))
-        {
             alertListenersOfChange();
-        }
 
         return used;
     }
@@ -100,14 +114,10 @@ public class TableElementString extends TableElementPropertyDefault<String>
         super.setHidden(hidden);
 
         if (textField != null)
-        {
             textField.setVisible(!hidden);
-        }
 
         if (stateIndicator != null)
-        {
             stateIndicator.setVisible(!hidden);
-        }
     }
 
     @Override
@@ -116,9 +126,7 @@ public class TableElementString extends TableElementPropertyDefault<String>
         super.setPropertyValue(value);
 
         if (textField != null)
-        {
             textField.setText(value);
-        }
     }
 
     public GuiValidityStateIndicator.State getValidityState()
@@ -131,9 +139,7 @@ public class TableElementString extends TableElementPropertyDefault<String>
         this.validityState = validityState;
 
         if (stateIndicator != null)
-        {
             stateIndicator.setState(validityState);
-        }
     }
 
     public boolean showsValidityState()

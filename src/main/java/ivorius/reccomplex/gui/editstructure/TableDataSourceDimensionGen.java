@@ -8,6 +8,7 @@ package ivorius.reccomplex.gui.editstructure;
 import ivorius.reccomplex.gui.table.*;
 import ivorius.reccomplex.structures.generic.DimensionGenerationInfo;
 import ivorius.reccomplex.utils.ExpressionCache;
+import ivorius.reccomplex.utils.IvTranslations;
 import net.minecraft.util.EnumChatFormatting;
 import org.apache.commons.lang3.StringUtils;
 
@@ -61,6 +62,7 @@ public class TableDataSourceDimensionGen extends TableDataSourceSegmented implem
             if (index == 0)
             {
                 TableElementString element = new TableElementString("dimID", "Dimensions", generationInfo.getDimensionMatcher().getExpression());
+                element.setTooltip(IvTranslations.formatLines("reccomplex.expression.dimension.tooltip"));
                 element.addPropertyListener(this);
                 return element;
             }

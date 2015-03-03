@@ -9,6 +9,7 @@ import ivorius.reccomplex.gui.GuiValidityStateIndicator;
 import ivorius.reccomplex.gui.editstructure.TableDataSourceDimensionGen;
 import ivorius.reccomplex.gui.table.*;
 import ivorius.reccomplex.structures.generic.blocktransformers.BlockTransformerNatural;
+import ivorius.reccomplex.utils.IvTranslations;
 import net.minecraft.block.Block;
 import org.apache.commons.lang3.StringUtils;
 
@@ -56,6 +57,7 @@ public class TableDataSourceBTNatural extends TableDataSourceSegmented implement
             if (index == 0)
             {
                 TableElementString element = new TableElementString("source", "Sources", blockTransformer.sourceMatcher.getExpression());
+                element.setTooltip(IvTranslations.formatLines("reccomplex.expression.block.tooltip"));
                 element.addPropertyListener(this);
                 return element;
             }

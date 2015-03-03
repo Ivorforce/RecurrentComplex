@@ -7,12 +7,10 @@ package ivorius.reccomplex.structures.generic;
 
 import com.google.gson.*;
 import ivorius.reccomplex.json.JsonUtils;
+import ivorius.reccomplex.structures.generic.matchers.BiomeMatcher;
 import net.minecraft.world.biome.BiomeGenBase;
-import org.apache.commons.lang3.StringUtils;
 
 import java.lang.reflect.Type;
-import java.util.Arrays;
-import java.util.List;
 import java.util.regex.Matcher;
 
 /**

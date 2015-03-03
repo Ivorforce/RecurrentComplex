@@ -6,14 +6,11 @@
 package ivorius.reccomplex.structures.generic;
 
 import com.google.gson.*;
-import ivorius.reccomplex.dimensions.DimensionDictionary;
 import ivorius.reccomplex.json.JsonUtils;
-import net.minecraft.util.EnumChatFormatting;
+import ivorius.reccomplex.structures.generic.matchers.DimensionMatcher;
 import net.minecraft.world.WorldProvider;
 
 import java.lang.reflect.Type;
-import java.util.Arrays;
-import java.util.List;
 import java.util.regex.Matcher;
 
 /**

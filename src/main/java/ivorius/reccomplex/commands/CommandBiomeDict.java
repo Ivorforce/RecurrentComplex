@@ -8,7 +8,7 @@ package ivorius.reccomplex.commands;
 import ivorius.ivtoolkit.tools.IvGsonHelper;
 import ivorius.reccomplex.RCConfig;
 import ivorius.reccomplex.json.RCGsonHelper;
-import ivorius.reccomplex.structures.generic.BiomeMatcher;
+import ivorius.reccomplex.structures.generic.matchers.BiomeMatcher;
 import joptsimple.internal.Strings;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.ICommandSender;

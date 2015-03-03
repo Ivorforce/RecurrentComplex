@@ -3,7 +3,7 @@
  *  * http://lukas.axxim.net
  */
 
-package ivorius.reccomplex.structures.generic;
+package ivorius.reccomplex.structures.generic.matchers;
 
 import com.google.common.base.Function;
 import com.google.common.base.Predicate;

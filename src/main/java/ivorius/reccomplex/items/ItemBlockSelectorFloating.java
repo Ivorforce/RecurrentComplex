@@ -92,8 +92,7 @@ public class ItemBlockSelectorFloating extends ItemBlockSelector implements Item
     @Override
     public boolean onMouseInput(EntityPlayer player, ItemStack stack, int button, boolean buttonState, int dWheel)
     {
-        boolean ctrlDown = Keyboard.isKeyDown(Keyboard.KEY_LCONTROL) || Keyboard.isKeyDown(Keyboard.KEY_RCONTROL);
-        if (ctrlDown && dWheel != 0)
+        if (modifierKeyDown() && dWheel != 0)
         {
             setSelectionRange(stack, MathHelper.clamp_float(getSelectionRange(stack) + dWheel * SCROLL_DISTANCE_SPEED, 0, 40));
             RecurrentComplex.network.sendToServer(new PacketSyncItem(player.inventory.currentItem, stack));

@@ -169,6 +169,8 @@ reccomplex.configgui.ctgy.visual=Visual
 reccomplex.configgui.ctgy.visual.tooltip=Visual Settings
 reccomplex.configgui.ctgy.balancing=Balancing
 reccomplex.configgui.ctgy.balancing.tooltip=Settings affecting the mod's balancing
+reccomplex.configgui.ctgy.controls=Controls
+reccomplex.configgui.ctgy.controls.tooltip=Settings affecting the controls
 
 reccomplex.generationInfo.natural=Natural
 reccomplex.generationInfo.natural.tooltip=Randomized generation in any biome

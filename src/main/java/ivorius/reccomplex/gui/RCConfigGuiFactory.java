@@ -65,6 +65,7 @@ public class RCConfigGuiFactory implements IModGuiFactory
             list.add(new DummyCategoryElement("reccomplex.configgui.general", "reccomplex.configgui.ctgy.general", GeneralEntry.class).setRequiresMcRestart(true));
             list.add(new DummyCategoryElement("reccomplex.configgui.balancing", "reccomplex.configgui.ctgy.balancing", BalancingEntry.class));
             list.add(new DummyCategoryElement("reccomplex.configgui.visual", "reccomplex.configgui.ctgy.visual", VisualEntry.class));
+            list.add(new DummyCategoryElement("reccomplex.configgui.controls", "reccomplex.configgui.ctgy.controls", ControlsEntry.class));
             return list;
         }
 
@@ -117,6 +118,24 @@ public class RCConfigGuiFactory implements IModGuiFactory
                 return new GuiConfig(this.owningScreen,
                         (new ConfigElement(RecurrentComplex.config.getCategory(RCConfig.CATEGORY_VISUAL))).getChildElements(),
                         this.owningScreen.modID, RCConfig.CATEGORY_VISUAL, this.configElement.requiresWorldRestart() || this.owningScreen.allRequireWorldRestart,
+                        this.configElement.requiresMcRestart() || this.owningScreen.allRequireMcRestart,
+                        GuiConfig.getAbridgedConfigPath(RecurrentComplex.config.toString()));
+            }
+        }
+
+        public static class ControlsEntry extends GuiConfigEntries.CategoryEntry
+        {
+            public ControlsEntry(GuiConfig owningScreen, GuiConfigEntries owningEntryList, IConfigElement prop)
+            {
+                super(owningScreen, owningEntryList, prop);
+            }
+
+            @Override
+            protected GuiScreen buildChildScreen()
+            {
+                return new GuiConfig(this.owningScreen,
+                        (new ConfigElement(RecurrentComplex.config.getCategory(RCConfig.CATEGORY_CONTROLS))).getChildElements(),
+                        this.owningScreen.modID, RCConfig.CATEGORY_CONTROLS, this.configElement.requiresWorldRestart() || this.owningScreen.allRequireWorldRestart,
                         this.configElement.requiresMcRestart() || this.owningScreen.allRequireMcRestart,
                         GuiConfig.getAbridgedConfigPath(RecurrentComplex.config.toString()));
             }

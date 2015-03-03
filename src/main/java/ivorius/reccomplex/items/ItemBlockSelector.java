@@ -5,11 +5,13 @@
 
 package ivorius.reccomplex.items;
 
+import com.google.common.collect.Iterables;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 import ivorius.ivtoolkit.blocks.BlockCoord;
+import ivorius.reccomplex.RCConfig;
 import ivorius.reccomplex.RecurrentComplex;
 import ivorius.reccomplex.entities.StructureEntityInfo;
 import ivorius.reccomplex.network.PacketItemEvent;
@@ -18,6 +20,8 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
 import org.lwjgl.input.Keyboard;
+
+import java.util.Arrays;
 
 /**
  * Created by lukas on 11.02.15.
@@ -28,9 +32,18 @@ public class ItemBlockSelector extends Item implements ItemEventHandler
     public void sendClickToServer(ItemStack usedItem, World world, EntityPlayer player, BlockCoord position)
     {
         ByteBuf buf = Unpooled.buffer();
-        BlockCoord.writeCoordToBuffer(position, buf);
-        buf.writeBoolean(Keyboard.isKeyDown(Keyboard.KEY_LCONTROL) || Keyboard.isKeyDown(Keyboard.KEY_RCONTROL));
+
+        buf.writeBoolean(modifierKeyDown());
         RecurrentComplex.network.sendToServer(new PacketItemEvent(player.inventory.currentItem, buf, "select"));
+    }
+
+    @SideOnly(Side.CLIENT)
+    public boolean modifierKeyDown()
+    {
+        boolean modifier = false;
+        for (int k : RCConfig.blockSelectorModifierKeys)
+            modifier |= Keyboard.isKeyDown(k);
+        return modifier;
     }
 
     @Override

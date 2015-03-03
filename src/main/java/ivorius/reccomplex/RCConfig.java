@@ -18,6 +18,7 @@ public class RCConfig
 {
     public static final String CATEGORY_VISUAL = "visual";
     public static final String CATEGORY_BALANCING = "balancing";
+    public static final String CATEGORY_CONTROLS = "controls";
 
     public static boolean hideRedundantNegativeSpace;
 
@@ -33,6 +34,8 @@ public class RCConfig
     public static boolean savePlayerCache;
 
     public static boolean notifyAdminOnBlockCommands;
+
+    public static int blockSelectorModifierKeys[];
 
     public static void loadConfig(String configID)
     {

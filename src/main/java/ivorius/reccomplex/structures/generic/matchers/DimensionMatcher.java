@@ -12,10 +12,12 @@ import ivorius.reccomplex.dimensions.DimensionDictionary;
 import ivorius.reccomplex.utils.BoolAlgebra;
 import ivorius.reccomplex.utils.ExpressionCache;
 import ivorius.reccomplex.utils.Visitor;
+import joptsimple.internal.Strings;
 import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.world.WorldProvider;
 import net.minecraftforge.common.DimensionManager;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.Arrays;
 import java.util.Collection;
@@ -30,6 +32,11 @@ public class DimensionMatcher extends ExpressionCache<Boolean> implements Predic
     public DimensionMatcher(String expression)
     {
         super(BoolAlgebra.algebra(), expression);
+    }
+
+    public static String ofTypes(String... dimensionTypes)
+    {
+        return DIMENSION_TYPE_PREFIX + Strings.join(dimensionTypes, " & " + DIMENSION_TYPE_PREFIX);
     }
 
     public static boolean isKnownVariable(final String var, final Collection<Integer> dimensions)
@@ -80,6 +87,7 @@ public class DimensionMatcher extends ExpressionCache<Boolean> implements Predic
         });
     }
 
+    @Nonnull
     @Override
     public String getDisplayString()
     {

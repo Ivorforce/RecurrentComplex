@@ -17,6 +17,7 @@ import ivorius.reccomplex.json.JsonUtils;
 import ivorius.reccomplex.json.NbtToJson;
 import ivorius.reccomplex.structures.generic.blocktransformers.*;
 import ivorius.reccomplex.structures.generic.gentypes.StructureGenerationInfo;
+import ivorius.reccomplex.structures.generic.matchers.BlockMatcher;
 import ivorius.reccomplex.utils.RCAccessorEntity;
 import ivorius.reccomplex.structures.MCRegistrySpecial;
 import ivorius.reccomplex.structures.StructureRegistry;
@@ -70,10 +71,10 @@ public class GenericStructureInfo implements StructureInfo, Cloneable
         genericStructureInfo.rotatable = false;
         genericStructureInfo.mirrorable = false;
 
-        genericStructureInfo.blockTransformers.add(new BlockTransformerNaturalAir(RCBlocks.negativeSpace, 1));
-        genericStructureInfo.blockTransformers.add(new BlockTransformerNegativeSpace(RCBlocks.negativeSpace, 0));
-        genericStructureInfo.blockTransformers.add(new BlockTransformerNatural(RCBlocks.naturalFloor, 0));
-        genericStructureInfo.blockTransformers.add(new BlockTransformerReplace(RCBlocks.naturalFloor, 1, Blocks.air, new byte[]{0}));
+        genericStructureInfo.blockTransformers.add(new BlockTransformerNaturalAir(BlockMatcher.of(RCBlocks.negativeSpace, 1)));
+        genericStructureInfo.blockTransformers.add(new BlockTransformerNegativeSpace(BlockMatcher.of(RCBlocks.negativeSpace, 0)));
+        genericStructureInfo.blockTransformers.add(new BlockTransformerNatural(BlockMatcher.of(RCBlocks.naturalFloor, 0)));
+        genericStructureInfo.blockTransformers.add(new BlockTransformerReplace(BlockMatcher.of(RCBlocks.naturalFloor, 1), Blocks.air, new byte[]{0}));
 
         genericStructureInfo.generationInfos.add(new NaturalGenerationInfo());
 

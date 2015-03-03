@@ -15,6 +15,7 @@ import ivorius.reccomplex.gui.table.TableDelegate;
 import ivorius.reccomplex.gui.table.TableNavigator;
 import ivorius.reccomplex.json.JsonUtils;
 import ivorius.reccomplex.structures.StructureSpawnContext;
+import ivorius.reccomplex.structures.generic.matchers.BlockMatcher;
 import net.minecraft.block.Block;
 
 import java.lang.reflect.Type;
@@ -25,24 +26,22 @@ import java.util.List;
  */
 public class BlockTransformerNegativeSpace implements BlockTransformer
 {
-    public Block sourceBlock;
-    public int sourceMetadata;
+    public BlockMatcher sourceMatcher;
 
     public BlockTransformerNegativeSpace()
     {
-        this(RCBlocks.negativeSpace, 0);
+        this(BlockMatcher.of(RCBlocks.negativeSpace, 0));
     }
 
-    public BlockTransformerNegativeSpace(Block sourceBlock, int sourceMetadata)
+    public BlockTransformerNegativeSpace(String sourceExpression)
     {
-        this.sourceBlock = sourceBlock;
-        this.sourceMetadata = sourceMetadata;
+        this.sourceMatcher = new BlockMatcher(sourceExpression);
     }
 
     @Override
     public boolean skipGeneration(Block block, int metadata)
     {
-        return block == sourceBlock && (metadata < 0 || metadata == sourceMetadata);
+        return sourceMatcher.apply(new BlockMatcher.BlockFragment(block, metadata));
     }
 
     @Override
@@ -52,9 +51,9 @@ public class BlockTransformerNegativeSpace implements BlockTransformer
     }
 
     @Override
-    public String displayString()
+    public String getDisplayString()
     {
-        return "Space: " + sourceBlock.getLocalizedName();
+        return "Space: " + sourceMatcher.getDisplayString();
     }
 
     @Override
@@ -81,27 +80,23 @@ public class BlockTransformerNegativeSpace implements BlockTransformer
         @Override
         public BlockTransformerNegativeSpace deserialize(JsonElement jsonElement, Type par2Type, JsonDeserializationContext context)
         {
-            JsonObject jsonobject = JsonUtils.getJsonElementAsJsonObject(jsonElement, "transformerNegativeSpace");
+            JsonObject jsonObject = JsonUtils.getJsonElementAsJsonObject(jsonElement, "transformerNegativeSpace");
 
-            String sourceBlock = JsonUtils.getJsonObjectStringFieldValue(jsonobject, "source");
-            Block source = registry.blockFromID(sourceBlock);
-            int sourceMeta = JsonUtils.getJsonObjectIntegerFieldValueOrDefault(jsonobject, "sourceMetadata", -1);
+            String expression = BlockTransformerReplace.Serializer.readLegacyMatcher(jsonObject, "source", "sourceMetadata"); // Legacy
+            if (expression == null)
+                expression = JsonUtils.getJsonObjectStringFieldValueOrDefault(jsonObject, "sourceExpression", "");
 
-            return new BlockTransformerNegativeSpace(source, sourceMeta);
+            return new BlockTransformerNegativeSpace(expression);
         }
 
         @Override
-        public JsonElement serialize(BlockTransformerNegativeSpace transformerPillar, Type par2Type, JsonSerializationContext context)
+        public JsonElement serialize(BlockTransformerNegativeSpace transformer, Type par2Type, JsonSerializationContext context)
         {
-            JsonObject jsonobject = new JsonObject();
+            JsonObject jsonObject = new JsonObject();
 
-            jsonobject.addProperty("source", Block.blockRegistry.getNameForObject(transformerPillar.sourceBlock));
-            if (transformerPillar.sourceMetadata >= 0)
-            {
-                jsonobject.addProperty("sourceMetadata", transformerPillar.sourceMetadata);
-            }
+            jsonObject.addProperty("sourceExpression", transformer.sourceMatcher.getExpression());
 
-            return jsonobject;
+            return jsonObject;
         }
     }
 }

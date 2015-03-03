@@ -230,7 +230,7 @@ public class BlockTransformerRuins implements BlockTransformer
     }
 
     @Override
-    public String displayString()
+    public String getDisplayString()
     {
         return StatCollector.translateToLocal("reccomplex.blockTransformer.ruins");
     }

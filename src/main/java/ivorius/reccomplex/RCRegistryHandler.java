@@ -24,6 +24,8 @@ import ivorius.reccomplex.structures.generic.BiomeGenerationInfo;
 import ivorius.reccomplex.structures.generic.DimensionGenerationInfo;
 import ivorius.reccomplex.structures.generic.blocktransformers.*;
 import ivorius.reccomplex.structures.generic.gentypes.*;
+import ivorius.reccomplex.structures.generic.matchers.BiomeMatcher;
+import ivorius.reccomplex.structures.generic.matchers.DimensionMatcher;
 import ivorius.reccomplex.structures.schematics.OperationGenerateSchematic;
 import ivorius.reccomplex.structures.OperationGenerateStructure;
 import ivorius.reccomplex.structures.StructureRegistry;
@@ -33,6 +35,7 @@ import net.minecraft.block.material.MapColor;
 import net.minecraft.block.material.Material;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.Item;
+import net.minecraftforge.common.BiomeDictionary;
 
 import java.util.Collections;
 
@@ -168,16 +171,18 @@ public class RCRegistryHandler
         DimensionMatcherPresets.instance().register("clear");
 
         DimensionMatcherPresets.instance().register("overworld",
-                new DimensionGenerationInfo("$" + DimensionDictionary.UNCATEGORIZED, null),
-                new DimensionGenerationInfo(String.format("$%s & $%s & $%s", DimensionDictionary.NO_TOP_LIMIT, DimensionDictionary.BOTTOM_LIMIT, DimensionDictionary.INFINITE), null));
+                new DimensionGenerationInfo(DimensionMatcher.ofTypes(DimensionDictionary.UNCATEGORIZED), null),
+                new DimensionGenerationInfo(DimensionMatcher.ofTypes(DimensionDictionary.NO_TOP_LIMIT, DimensionDictionary.BOTTOM_LIMIT, DimensionDictionary.INFINITE), null)
+        );
         DimensionMatcherPresets.instance().setDefault("overworld");
 
         DimensionMatcherPresets.instance().register("nether",
-                new DimensionGenerationInfo(String.format("$%s & $%s & $%s",
-                        DimensionDictionary.HELL, DimensionDictionary.TOP_LIMIT, DimensionDictionary.BOTTOM_LIMIT), null));
+                new DimensionGenerationInfo(DimensionMatcher.ofTypes(DimensionDictionary.HELL, DimensionDictionary.TOP_LIMIT, DimensionDictionary.BOTTOM_LIMIT), null)
+        );
 
         DimensionMatcherPresets.instance().register("end",
-                new DimensionGenerationInfo(String.format("$%s & $%s & $%s", DimensionDictionary.ENDER, DimensionDictionary.NO_TOP_LIMIT, DimensionDictionary.NO_BOTTOM_LIMIT), null));
+                new DimensionGenerationInfo(DimensionMatcher.ofTypes(DimensionDictionary.ENDER, DimensionDictionary.NO_TOP_LIMIT, DimensionDictionary.NO_BOTTOM_LIMIT), null)
+        );
     }
 
     protected static void registerBiomePresets()
@@ -185,37 +190,37 @@ public class RCRegistryHandler
         BiomeMatcherPresets.instance().register("clear");
 
         BiomeMatcherPresets.instance().register("overworld",
-                new BiomeGenerationInfo("$WATER", 0.0),
-                new BiomeGenerationInfo("$PLAINS", null),
-                new BiomeGenerationInfo("$FOREST", null),
-                new BiomeGenerationInfo("$MOUNTAIN", null),
-                new BiomeGenerationInfo("$HILLS", null),
-                new BiomeGenerationInfo("$SWAMP", null),
-                new BiomeGenerationInfo("$SANDY", null),
-                new BiomeGenerationInfo("$MESA", null),
-                new BiomeGenerationInfo("$SAVANNA", null),
-                new BiomeGenerationInfo("$WASTELAND", null),
-                new BiomeGenerationInfo("$MUSHROOM", null),
-                new BiomeGenerationInfo("$JUNGLE", null));
+                new BiomeGenerationInfo(BiomeMatcher.ofTypes(BiomeDictionary.Type.WATER), 0.0),
+                new BiomeGenerationInfo(BiomeMatcher.ofTypes(BiomeDictionary.Type.PLAINS), null),
+                new BiomeGenerationInfo(BiomeMatcher.ofTypes(BiomeDictionary.Type.FOREST), null),
+                new BiomeGenerationInfo(BiomeMatcher.ofTypes(BiomeDictionary.Type.MOUNTAIN), null),
+                new BiomeGenerationInfo(BiomeMatcher.ofTypes(BiomeDictionary.Type.HILLS), null),
+                new BiomeGenerationInfo(BiomeMatcher.ofTypes(BiomeDictionary.Type.SWAMP), null),
+                new BiomeGenerationInfo(BiomeMatcher.ofTypes(BiomeDictionary.Type.SANDY), null),
+                new BiomeGenerationInfo(BiomeMatcher.ofTypes(BiomeDictionary.Type.MESA), null),
+                new BiomeGenerationInfo(BiomeMatcher.ofTypes(BiomeDictionary.Type.SAVANNA), null),
+                new BiomeGenerationInfo(BiomeMatcher.ofTypes(BiomeDictionary.Type.WASTELAND), null),
+                new BiomeGenerationInfo(BiomeMatcher.ofTypes(BiomeDictionary.Type.MUSHROOM), null),
+                new BiomeGenerationInfo(BiomeMatcher.ofTypes(BiomeDictionary.Type.JUNGLE), null));
         BiomeMatcherPresets.instance().setDefault("overworld");
 
         BiomeMatcherPresets.instance().register("underground",
-                new BiomeGenerationInfo("$PLAINS", null),
-                new BiomeGenerationInfo("$FOREST", null),
-                new BiomeGenerationInfo("$MOUNTAIN", null),
-                new BiomeGenerationInfo("$HILLS", null),
-                new BiomeGenerationInfo("$SWAMP", null),
-                new BiomeGenerationInfo("$SANDY", null),
-                new BiomeGenerationInfo("$MESA", null),
-                new BiomeGenerationInfo("$SAVANNA", null),
-                new BiomeGenerationInfo("$RIVER", null),
-                new BiomeGenerationInfo("$OCEAN", null),
-                new BiomeGenerationInfo("$WASTELAND", null),
-                new BiomeGenerationInfo("$MUSHROOM", null),
-                new BiomeGenerationInfo("$JUNGLE", null));
+                new BiomeGenerationInfo(BiomeMatcher.ofTypes(BiomeDictionary.Type.PLAINS), null),
+                new BiomeGenerationInfo(BiomeMatcher.ofTypes(BiomeDictionary.Type.FOREST), null),
+                new BiomeGenerationInfo(BiomeMatcher.ofTypes(BiomeDictionary.Type.MOUNTAIN), null),
+                new BiomeGenerationInfo(BiomeMatcher.ofTypes(BiomeDictionary.Type.HILLS), null),
+                new BiomeGenerationInfo(BiomeMatcher.ofTypes(BiomeDictionary.Type.SWAMP), null),
+                new BiomeGenerationInfo(BiomeMatcher.ofTypes(BiomeDictionary.Type.SANDY), null),
+                new BiomeGenerationInfo(BiomeMatcher.ofTypes(BiomeDictionary.Type.MESA), null),
+                new BiomeGenerationInfo(BiomeMatcher.ofTypes(BiomeDictionary.Type.SAVANNA), null),
+                new BiomeGenerationInfo(BiomeMatcher.ofTypes(BiomeDictionary.Type.RIVER), null),
+                new BiomeGenerationInfo(BiomeMatcher.ofTypes(BiomeDictionary.Type.OCEAN), null),
+                new BiomeGenerationInfo(BiomeMatcher.ofTypes(BiomeDictionary.Type.WASTELAND), null),
+                new BiomeGenerationInfo(BiomeMatcher.ofTypes(BiomeDictionary.Type.MUSHROOM), null),
+                new BiomeGenerationInfo(BiomeMatcher.ofTypes(BiomeDictionary.Type.JUNGLE), null));
 
         BiomeMatcherPresets.instance().register("ocean",
-                new BiomeGenerationInfo("$OCEAN & $SNOWY", 0.0),
-                new BiomeGenerationInfo("$OCEAN", null));
+                new BiomeGenerationInfo(BiomeMatcher.ofTypes(BiomeDictionary.Type.OCEAN, BiomeDictionary.Type.SNOWY), 0.0),
+                new BiomeGenerationInfo(BiomeMatcher.ofTypes(BiomeDictionary.Type.OCEAN), null));
     }
 }

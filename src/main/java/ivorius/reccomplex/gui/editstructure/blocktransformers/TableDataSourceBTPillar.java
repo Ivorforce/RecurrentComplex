@@ -5,16 +5,20 @@
 
 package ivorius.reccomplex.gui.editstructure.blocktransformers;
 
+import ivorius.reccomplex.gui.editstructure.TableDataSourceDimensionGen;
 import ivorius.reccomplex.gui.table.*;
 import ivorius.reccomplex.structures.generic.blocktransformers.BlockTransformerPillar;
 import net.minecraft.block.Block;
+import org.apache.commons.lang3.StringUtils;
 
 /**
  * Created by lukas on 05.06.14.
  */
-public class TableDataSourceBTPillar implements TableDataSource, TableElementPropertyListener
+public class TableDataSourceBTPillar extends TableDataSourceSegmented implements TableElementPropertyListener
 {
     private BlockTransformerPillar blockTransformer;
+
+    private TableElementTitle parsed;
 
     public TableDataSourceBTPillar(BlockTransformerPillar blockTransformer)
     {
@@ -32,41 +36,47 @@ public class TableDataSourceBTPillar implements TableDataSource, TableElementPro
     }
 
     @Override
-    public boolean has(GuiTable table, int index)
+    public int numberOfSegments()
     {
-        return index >= 0 && index < 4;
+        return 2;
     }
 
     @Override
-    public TableElement elementForIndex(GuiTable table, int index)
+    public int sizeOfSegment(int segment)
     {
-        if (index == 0)
+        return 2;
+    }
+
+    @Override
+    public TableElement elementForIndexInSegment(GuiTable table, int index, int segment)
+    {
+        if (segment == 0)
         {
-            TableElementString element = new TableElementString("sourceID", "Source Block", Block.blockRegistry.getNameForObject(blockTransformer.sourceBlock));
-            element.setShowsValidityState(true);
-            TableDataSourceBTNatural.setStateForBlockTextfield(element);
-            element.addPropertyListener(this);
-            return element;
+            if (index == 0)
+            {
+                TableElementString element = new TableElementString("source", "Sources", blockTransformer.sourceMatcher.getExpression());
+                element.addPropertyListener(this);
+                return element;
+            }
+            else if (index == 1)
+                return parsed = new TableElementTitle("parsed", "", StringUtils.abbreviate(TableDataSourceDimensionGen.parsedString(blockTransformer.sourceMatcher), 60));
         }
-        else if (index == 1)
+        else if (segment == 1)
         {
-            TableElementInteger element = new TableElementInteger("sourceMeta", "Source Metadata", blockTransformer.sourceMetadata, 0, 16);
-            element.addPropertyListener(this);
-            return element;
-        }
-        else if (index == 2)
-        {
-            TableElementString element = new TableElementString("destID", "Dest Block", Block.blockRegistry.getNameForObject(blockTransformer.destBlock));
-            element.setShowsValidityState(true);
-            TableDataSourceBTNatural.setStateForBlockTextfield(element);
-            element.addPropertyListener(this);
-            return element;
-        }
-        else if (index == 3)
-        {
-            TableElementInteger element = new TableElementInteger("destMeta", "Dest Metadata", blockTransformer.destMetadata, 0, 16);
-            element.addPropertyListener(this);
-            return element;
+            if (index == 0)
+            {
+                TableElementString element = new TableElementString("destID", "Dest Block", Block.blockRegistry.getNameForObject(blockTransformer.destBlock));
+                element.setShowsValidityState(true);
+                TableDataSourceBTNatural.setStateForBlockTextfield(element);
+                element.addPropertyListener(this);
+                return element;
+            }
+            else if (index == 1)
+            {
+                TableElementInteger element = new TableElementInteger("destMeta", "Dest Metadata", blockTransformer.destMetadata, 0, 16);
+                element.addPropertyListener(this);
+                return element;
+            }
         }
 
         return null;
@@ -75,14 +85,11 @@ public class TableDataSourceBTPillar implements TableDataSource, TableElementPro
     @Override
     public void valueChanged(TableElementPropertyDefault element)
     {
-        if ("sourceID".equals(element.getID()))
+        if ("source".equals(element.getID()))
         {
-            blockTransformer.sourceBlock = (Block) Block.blockRegistry.getObject(element.getPropertyValue());
-            TableDataSourceBTNatural.setStateForBlockTextfield(((TableElementString) element));
-        }
-        else if ("sourceMeta".equals(element.getID()))
-        {
-            blockTransformer.sourceMetadata = (int) element.getPropertyValue();
+            blockTransformer.sourceMatcher.setExpression((String) element.getPropertyValue());
+            if (parsed != null)
+                parsed.setDisplayString(StringUtils.abbreviate(TableDataSourceDimensionGen.parsedString(blockTransformer.sourceMatcher), 60));
         }
         else if ("destID".equals(element.getID()))
         {

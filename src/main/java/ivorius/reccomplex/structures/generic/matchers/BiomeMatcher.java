@@ -7,16 +7,22 @@ package ivorius.reccomplex.structures.generic.matchers;
 
 import com.google.common.base.Function;
 import com.google.common.base.Predicate;
+import com.google.common.collect.Collections2;
 import com.google.common.collect.Iterables;
+import com.google.common.collect.Lists;
+import ivorius.ivtoolkit.tools.IvGsonHelper;
 import ivorius.reccomplex.json.RCGsonHelper;
 import ivorius.reccomplex.utils.BoolAlgebra;
 import ivorius.reccomplex.utils.ExpressionCache;
 import ivorius.reccomplex.utils.Visitor;
+import joptsimple.internal.Strings;
 import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.world.biome.BiomeGenBase;
 import net.minecraftforge.common.BiomeDictionary;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
@@ -31,6 +37,19 @@ public class BiomeMatcher extends ExpressionCache<Boolean> implements Predicate<
     public BiomeMatcher(String expression)
     {
         super(BoolAlgebra.algebra(), expression);
+    }
+
+    public static String ofTypes(BiomeDictionary.Type... biomeTypes)
+    {
+        return BIOME_TYPE_PREFIX + Strings.join(Lists.transform(Arrays.asList(biomeTypes), new Function<BiomeDictionary.Type, String>()
+        {
+            @Nullable
+            @Override
+            public String apply(@Nullable BiomeDictionary.Type input)
+            {
+                return input != null ? IvGsonHelper.serializedName(input) : null;
+            }
+        }), " & " + BIOME_TYPE_PREFIX);
     }
 
     public static Set<BiomeGenBase> gatherAllBiomes()
@@ -51,7 +70,7 @@ public class BiomeMatcher extends ExpressionCache<Boolean> implements Predicate<
 
     public static boolean isKnownVariable(final String var, Set<BiomeGenBase> biomes)
     {
-        return var.startsWith(BiomeMatcher.BIOME_TYPE_PREFIX)
+        return var.startsWith(BIOME_TYPE_PREFIX)
                 ? RCGsonHelper.enumForNameIgnoreCase(var.substring(BIOME_TYPE_PREFIX.length()), BiomeDictionary.Type.values()) != null
                 : Iterables.any(biomes, new Predicate<BiomeGenBase>()
         {
@@ -100,6 +119,7 @@ public class BiomeMatcher extends ExpressionCache<Boolean> implements Predicate<
         });
     }
 
+    @Nonnull
     @Override
     public String getDisplayString()
     {

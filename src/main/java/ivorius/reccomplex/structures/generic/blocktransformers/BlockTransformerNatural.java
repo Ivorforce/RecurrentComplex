@@ -9,11 +9,13 @@ import com.google.gson.*;
 import ivorius.ivtoolkit.blocks.BlockCoord;
 import ivorius.ivtoolkit.math.IvVecMathHelper;
 import ivorius.ivtoolkit.tools.MCRegistry;
+import ivorius.reccomplex.blocks.RCBlocks;
 import ivorius.reccomplex.gui.editstructure.blocktransformers.TableDataSourceBTNatural;
 import ivorius.reccomplex.gui.table.TableDataSource;
 import ivorius.reccomplex.gui.table.TableDelegate;
 import ivorius.reccomplex.gui.table.TableNavigator;
 import ivorius.reccomplex.json.JsonUtils;
+import ivorius.reccomplex.structures.generic.matchers.BlockMatcher;
 import net.minecraft.block.Block;
 import net.minecraft.init.Blocks;
 import net.minecraft.world.World;
@@ -32,24 +34,22 @@ public class BlockTransformerNatural extends BlockTransformerSingle
     public static final double NATURAL_EXPANSION_DISTANCE = 4.0;
     public static final double NATURAL_DISTANCE_RANDOMIZATION = 6.0;
 
-    public Block sourceBlock;
-    public int sourceMetadata;
+    public BlockMatcher sourceMatcher;
 
     public BlockTransformerNatural()
     {
-        this(Blocks.grass, 0);
+        this(BlockMatcher.of(RCBlocks.naturalFloor, 0));
     }
 
-    public BlockTransformerNatural(Block sourceBlock, int sourceMetadata)
+    public BlockTransformerNatural(String sourceMatcherExpression)
     {
-        this.sourceBlock = sourceBlock;
-        this.sourceMetadata = sourceMetadata;
+        this.sourceMatcher = new BlockMatcher(sourceMatcherExpression);
     }
 
     @Override
     public boolean matches(Block block, int metadata)
     {
-        return block == sourceBlock && (metadata < 0 || metadata == sourceMetadata);
+        return sourceMatcher.apply(new BlockMatcher.BlockFragment(block, metadata));
     }
 
     @Override
@@ -151,9 +151,9 @@ public class BlockTransformerNatural extends BlockTransformerSingle
     }
 
     @Override
-    public String displayString()
+    public String getDisplayString()
     {
-        return "Natural: " + sourceBlock.getLocalizedName();
+        return "Natural: " + sourceMatcher.getDisplayString();
     }
 
     @Override
@@ -174,27 +174,23 @@ public class BlockTransformerNatural extends BlockTransformerSingle
         @Override
         public BlockTransformerNatural deserialize(JsonElement jsonElement, Type par2Type, JsonDeserializationContext context)
         {
-            JsonObject jsonobject = JsonUtils.getJsonElementAsJsonObject(jsonElement, "transformerNatural");
+            JsonObject jsonObject = JsonUtils.getJsonElementAsJsonObject(jsonElement, "transformerNatural");
 
-            String sourceBlock = JsonUtils.getJsonObjectStringFieldValue(jsonobject, "source");
-            Block source = registry.blockFromID(sourceBlock);
-            int sourceMeta = JsonUtils.getJsonObjectIntegerFieldValueOrDefault(jsonobject, "sourceMetadata", -1);
+            String expression = BlockTransformerReplace.Serializer.readLegacyMatcher(jsonObject, "source", "sourceMetadata"); // Legacy
+            if (expression == null)
+                expression = JsonUtils.getJsonObjectStringFieldValueOrDefault(jsonObject, "sourceExpression", "");
 
-            return new BlockTransformerNatural(source, sourceMeta);
+            return new BlockTransformerNatural(expression);
         }
 
         @Override
-        public JsonElement serialize(BlockTransformerNatural transformerPillar, Type par2Type, JsonSerializationContext context)
+        public JsonElement serialize(BlockTransformerNatural transformer, Type par2Type, JsonSerializationContext context)
         {
-            JsonObject jsonobject = new JsonObject();
+            JsonObject jsonObject = new JsonObject();
 
-            jsonobject.addProperty("source", Block.blockRegistry.getNameForObject(transformerPillar.sourceBlock));
-            if (transformerPillar.sourceMetadata >= 0)
-            {
-                jsonobject.addProperty("sourceMetadata", transformerPillar.sourceMetadata);
-            }
+            jsonObject.addProperty("sourceExpression", transformer.sourceMatcher.getExpression());
 
-            return jsonobject;
+            return jsonObject;
         }
     }
 }

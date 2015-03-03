@@ -25,7 +25,7 @@ public interface BlockTransformer
 
     boolean generatesInPhase(Phase phase);
 
-    String displayString();
+    String getDisplayString();
 
     public TableDataSource tableDataSource(TableNavigator navigator, TableDelegate delegate);
 

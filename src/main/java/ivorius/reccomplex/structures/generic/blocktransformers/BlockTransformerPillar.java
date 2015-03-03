@@ -13,6 +13,7 @@ import ivorius.reccomplex.gui.table.TableDataSource;
 import ivorius.reccomplex.gui.table.TableDelegate;
 import ivorius.reccomplex.gui.table.TableNavigator;
 import ivorius.reccomplex.json.JsonUtils;
+import ivorius.reccomplex.structures.generic.matchers.BlockMatcher;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.init.Blocks;
@@ -26,21 +27,19 @@ import java.util.Random;
  */
 public class BlockTransformerPillar extends BlockTransformerSingle
 {
-    public Block sourceBlock;
-    public int sourceMetadata;
+    public BlockMatcher sourceMatcher;
 
     public Block destBlock;
     public int destMetadata;
 
     public BlockTransformerPillar()
     {
-        this(Blocks.stone, 0, Blocks.stone, 0);
+        this(BlockMatcher.of(Blocks.stone, 0), Blocks.stone, 0);
     }
 
-    public BlockTransformerPillar(Block sourceBlock, int sourceMetadata, Block destBlock, int destMetadata)
+    public BlockTransformerPillar(String sourceExpression, Block destBlock, int destMetadata)
     {
-        this.sourceBlock = sourceBlock;
-        this.sourceMetadata = sourceMetadata;
+        this.sourceMatcher = new BlockMatcher(sourceExpression);
         this.destBlock = destBlock;
         this.destMetadata = destMetadata;
     }
@@ -48,7 +47,7 @@ public class BlockTransformerPillar extends BlockTransformerSingle
     @Override
     public boolean matches(Block block, int metadata)
     {
-        return block == sourceBlock && (metadata < 0 || metadata == sourceMetadata);
+        return sourceMatcher.apply(new BlockMatcher.BlockFragment(block, metadata));
     }
 
     @Override
@@ -73,9 +72,9 @@ public class BlockTransformerPillar extends BlockTransformerSingle
     }
 
     @Override
-    public String displayString()
+    public String getDisplayString()
     {
-        return "Pillar: " + sourceBlock.getLocalizedName() + "->" + destBlock.getLocalizedName();
+        return "Pillar: " + sourceMatcher.getDisplayString() + "->" + destBlock.getLocalizedName();
     }
 
     @Override
@@ -102,34 +101,30 @@ public class BlockTransformerPillar extends BlockTransformerSingle
         @Override
         public BlockTransformerPillar deserialize(JsonElement jsonElement, Type par2Type, JsonDeserializationContext context)
         {
-            JsonObject jsonobject = JsonUtils.getJsonElementAsJsonObject(jsonElement, "transformerPillar");
+            JsonObject jsonObject = JsonUtils.getJsonElementAsJsonObject(jsonElement, "transformerPillar");
 
-            String sourceBlock = JsonUtils.getJsonObjectStringFieldValue(jsonobject, "source");
-            Block source = registry.blockFromID(sourceBlock);
-            int sourceMeta = JsonUtils.getJsonObjectIntegerFieldValueOrDefault(jsonobject, "sourceMetadata", -1);
+            String expression = BlockTransformerReplace.Serializer.readLegacyMatcher(jsonObject, "source", "sourceMetadata"); // Legacy
+            if (expression == null)
+                expression = JsonUtils.getJsonObjectStringFieldValueOrDefault(jsonObject, "sourceExpression", "");
 
-            String destBlock = JsonUtils.getJsonObjectStringFieldValue(jsonobject, "dest");
+            String destBlock = JsonUtils.getJsonObjectStringFieldValue(jsonObject, "dest");
             Block dest = registry.blockFromID(destBlock);
-            int destMeta = JsonUtils.getJsonObjectIntegerFieldValue(jsonobject, "destMetadata");
+            int destMeta = JsonUtils.getJsonObjectIntegerFieldValue(jsonObject, "destMetadata");
 
-            return new BlockTransformerPillar(source, sourceMeta, dest, destMeta);
+            return new BlockTransformerPillar(expression, dest, destMeta);
         }
 
         @Override
-        public JsonElement serialize(BlockTransformerPillar transformerPillar, Type par2Type, JsonSerializationContext context)
+        public JsonElement serialize(BlockTransformerPillar transformer, Type par2Type, JsonSerializationContext context)
         {
-            JsonObject jsonobject = new JsonObject();
+            JsonObject jsonObject = new JsonObject();
 
-            jsonobject.addProperty("source", Block.blockRegistry.getNameForObject(transformerPillar.sourceBlock));
-            if (transformerPillar.sourceMetadata >= 0)
-            {
-                jsonobject.addProperty("sourceMetadata", transformerPillar.sourceMetadata);
-            }
+            jsonObject.addProperty("sourceExpression", transformer.sourceMatcher.getExpression());
 
-            jsonobject.addProperty("dest", Block.blockRegistry.getNameForObject(transformerPillar.destBlock));
-            jsonobject.addProperty("destMetadata", transformerPillar.destMetadata);
+            jsonObject.addProperty("dest", Block.blockRegistry.getNameForObject(transformer.destBlock));
+            jsonObject.addProperty("destMetadata", transformer.destMetadata);
 
-            return jsonobject;
+            return jsonObject;
         }
     }
 }

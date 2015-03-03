@@ -11,6 +11,7 @@ import ivorius.reccomplex.structures.StructureRegistry;
 import ivorius.reccomplex.structures.generic.blocktransformers.BlockTransformer;
 import ivorius.reccomplex.utils.IvTranslations;
 import net.minecraft.util.StatCollector;
+import org.apache.commons.lang3.StringUtils;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -30,7 +31,7 @@ public class TableDataSourceBlockTransformerList extends TableDataSourceList<Blo
     @Override
     public String getDisplayString(BlockTransformer blockTransformer)
     {
-        return blockTransformer.displayString();
+        return StringUtils.abbreviate(blockTransformer.getDisplayString(), 24);
     }
 
     @Override

@@ -8,6 +8,7 @@ package ivorius.reccomplex.structures.generic.blocktransformers;
 import com.google.gson.*;
 import ivorius.ivtoolkit.blocks.BlockCoord;
 import ivorius.ivtoolkit.blocks.IvBlockCollection;
+import ivorius.ivtoolkit.gui.IntegerRange;
 import ivorius.ivtoolkit.tools.IvWorldData;
 import ivorius.ivtoolkit.tools.MCRegistry;
 import ivorius.reccomplex.gui.editstructure.blocktransformers.TableDataSourceBTReplaceAll;
@@ -16,6 +17,7 @@ import ivorius.reccomplex.gui.table.TableDelegate;
 import ivorius.reccomplex.gui.table.TableNavigator;
 import ivorius.reccomplex.json.JsonUtils;
 import ivorius.reccomplex.structures.StructureSpawnContext;
+import ivorius.reccomplex.structures.generic.matchers.BlockMatcher;
 import net.minecraft.block.Block;
 import net.minecraft.init.Blocks;
 
@@ -27,21 +29,19 @@ import java.util.List;
  */
 public class BlockTransformerReplaceAll implements BlockTransformer
 {
-    public Block sourceBlock;
-    public int sourceMetadata;
+    public BlockMatcher sourceMatcher;
 
     public Block destBlock;
     public byte[] destMetadata;
 
     public BlockTransformerReplaceAll()
     {
-        this(Blocks.wool, 0, Blocks.wool, new byte[]{0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15});
+        this(BlockMatcher.of(Blocks.wool, new IntegerRange(0, 15)), Blocks.wool, new byte[]{0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15});
     }
 
-    public BlockTransformerReplaceAll(Block sourceBlock, int sourceMetadata, Block destBlock, byte[] destMetadata)
+    public BlockTransformerReplaceAll(String sourceExpression, Block destBlock, byte[] destMetadata)
     {
-        this.sourceBlock = sourceBlock;
-        this.sourceMetadata = sourceMetadata;
+        this.sourceMatcher = new BlockMatcher(sourceExpression);
         this.destBlock = destBlock;
         this.destMetadata = destMetadata;
     }
@@ -49,7 +49,7 @@ public class BlockTransformerReplaceAll implements BlockTransformer
     @Override
     public boolean skipGeneration(Block block, int metadata)
     {
-        return block == sourceBlock && (metadata < 0 || metadata == sourceMetadata);
+        return sourceMatcher.apply(new BlockMatcher.BlockFragment(block, metadata));
     }
 
     @Override
@@ -74,9 +74,9 @@ public class BlockTransformerReplaceAll implements BlockTransformer
     }
 
     @Override
-    public String displayString()
+    public String getDisplayString()
     {
-        return "Replace All: " + sourceBlock.getLocalizedName() + "->" + destBlock.getLocalizedName();
+        return "Replace All: " + sourceMatcher.getDisplayString() + "->" + destBlock.getLocalizedName();
     }
 
     @Override
@@ -103,34 +103,30 @@ public class BlockTransformerReplaceAll implements BlockTransformer
         @Override
         public BlockTransformerReplaceAll deserialize(JsonElement jsonElement, Type par2Type, JsonDeserializationContext context)
         {
-            JsonObject jsonobject = JsonUtils.getJsonElementAsJsonObject(jsonElement, "transformerReplace");
+            JsonObject jsonObject = JsonUtils.getJsonElementAsJsonObject(jsonElement, "transformerReplace");
 
-            String sourceBlock = JsonUtils.getJsonObjectStringFieldValue(jsonobject, "source");
-            Block source = registry.blockFromID(sourceBlock);
-            int sourceMeta = JsonUtils.getJsonObjectIntegerFieldValueOrDefault(jsonobject, "sourceMetadata", -1);
+            String expression = BlockTransformerReplace.Serializer.readLegacyMatcher(jsonObject, "source", "sourceMetadata"); // Legacy
+            if (expression == null)
+                expression = JsonUtils.getJsonObjectStringFieldValueOrDefault(jsonObject, "sourceExpression", "");
 
-            String destBlock = JsonUtils.getJsonObjectStringFieldValue(jsonobject, "dest");
+            String destBlock = JsonUtils.getJsonObjectStringFieldValue(jsonObject, "dest");
             Block dest = registry.blockFromID(destBlock);
-            byte[] destMeta = context.deserialize(jsonobject.get("destMetadata"), byte[].class);
+            byte[] destMeta = context.deserialize(jsonObject.get("destMetadata"), byte[].class);
 
-            return new BlockTransformerReplaceAll(source, sourceMeta, dest, destMeta);
+            return new BlockTransformerReplaceAll(expression, dest, destMeta);
         }
 
         @Override
-        public JsonElement serialize(BlockTransformerReplaceAll transformerPillar, Type par2Type, JsonSerializationContext context)
+        public JsonElement serialize(BlockTransformerReplaceAll transformer, Type par2Type, JsonSerializationContext context)
         {
-            JsonObject jsonobject = new JsonObject();
+            JsonObject jsonObject = new JsonObject();
 
-            jsonobject.addProperty("source", Block.blockRegistry.getNameForObject(transformerPillar.sourceBlock));
-            if (transformerPillar.sourceMetadata >= 0)
-            {
-                jsonobject.addProperty("sourceMetadata", transformerPillar.sourceMetadata);
-            }
+            jsonObject.addProperty("sourceExpression", transformer.sourceMatcher.getExpression());
 
-            jsonobject.addProperty("dest", Block.blockRegistry.getNameForObject(transformerPillar.destBlock));
-            jsonobject.add("destMetadata", context.serialize(transformerPillar.destMetadata, byte[].class));
+            jsonObject.addProperty("dest", Block.blockRegistry.getNameForObject(transformer.destBlock));
+            jsonObject.add("destMetadata", context.serialize(transformer.destMetadata, byte[].class));
 
-            return jsonobject;
+            return jsonObject;
         }
     }
 }

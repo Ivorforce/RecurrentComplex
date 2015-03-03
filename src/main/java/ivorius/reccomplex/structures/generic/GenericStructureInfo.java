@@ -74,7 +74,7 @@ public class GenericStructureInfo implements StructureInfo, Cloneable
         genericStructureInfo.blockTransformers.add(new BlockTransformerNaturalAir(BlockMatcher.of(RCBlocks.negativeSpace, 1)));
         genericStructureInfo.blockTransformers.add(new BlockTransformerNegativeSpace(BlockMatcher.of(RCBlocks.negativeSpace, 0)));
         genericStructureInfo.blockTransformers.add(new BlockTransformerNatural(BlockMatcher.of(RCBlocks.naturalFloor, 0)));
-        genericStructureInfo.blockTransformers.add(new BlockTransformerReplace(BlockMatcher.of(RCBlocks.naturalFloor, 1), Blocks.air, new byte[]{0}));
+        genericStructureInfo.blockTransformers.add(new BlockTransformerReplace(BlockMatcher.of(RCBlocks.naturalFloor, 1)).replaceWith(new WeightedBlockState(null, Blocks.air, 0, "")));
 
         genericStructureInfo.generationInfos.add(new NaturalGenerationInfo());
 

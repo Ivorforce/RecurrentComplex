@@ -25,6 +25,6 @@ public class MCRegistrySpecial implements MCRegistry
     @Override
     public Block blockFromID(String blockID)
     {
-        return (Block) Block.blockRegistry.getObject(blockID);
+        return Block.getBlockFromName(blockID);
     }
 }

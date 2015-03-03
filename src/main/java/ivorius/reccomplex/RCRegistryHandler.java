@@ -22,12 +22,15 @@ import ivorius.reccomplex.structures.MCRegistrySpecial;
 import ivorius.reccomplex.structures.OperationMoveStructure;
 import ivorius.reccomplex.structures.generic.BiomeGenerationInfo;
 import ivorius.reccomplex.structures.generic.DimensionGenerationInfo;
+import ivorius.reccomplex.structures.generic.WeightedBlockState;
 import ivorius.reccomplex.structures.generic.blocktransformers.*;
 import ivorius.reccomplex.structures.generic.gentypes.*;
 import ivorius.reccomplex.structures.generic.matchers.BiomeMatcher;
+import ivorius.reccomplex.structures.generic.matchers.BlockMatcher;
 import ivorius.reccomplex.structures.generic.matchers.DimensionMatcher;
 import ivorius.reccomplex.structures.generic.presets.BiomeMatcherPresets;
 import ivorius.reccomplex.structures.generic.presets.DimensionMatcherPresets;
+import ivorius.reccomplex.structures.generic.presets.WeightedBlockStatePresets;
 import ivorius.reccomplex.structures.schematics.OperationGenerateSchematic;
 import ivorius.reccomplex.structures.OperationGenerateStructure;
 import ivorius.reccomplex.structures.StructureRegistry;
@@ -36,6 +39,7 @@ import ivorius.reccomplex.worldgen.inventory.RCInventoryGenerators;
 import net.minecraft.block.material.MapColor;
 import net.minecraft.block.material.Material;
 import net.minecraft.creativetab.CreativeTabs;
+import net.minecraft.init.Blocks;
 import net.minecraft.item.Item;
 import net.minecraftforge.common.BiomeDictionary;
 
@@ -127,6 +131,7 @@ public class RCRegistryHandler
         // Register early to allow proper loading
         registerDimensionPresets();
         registerBiomePresets();
+        registerBlockStatePresets();
     }
 
     public static void load(FMLInitializationEvent event, RecurrentComplex mod)
@@ -224,5 +229,16 @@ public class RCRegistryHandler
         BiomeMatcherPresets.instance().register("ocean",
                 new BiomeGenerationInfo(BiomeMatcher.ofTypes(BiomeDictionary.Type.OCEAN, BiomeDictionary.Type.SNOWY), 0.0),
                 new BiomeGenerationInfo(BiomeMatcher.ofTypes(BiomeDictionary.Type.OCEAN), null));
+    }
+
+    protected static void registerBlockStatePresets()
+    {
+        WeightedBlockStatePresets.instance().register("clear");
+
+        WeightedBlockState[] wools = new WeightedBlockState[16];
+        for (int i = 0; i < wools.length; i++)
+            wools[i] = new WeightedBlockState(null, Blocks.wool, i, "");
+        WeightedBlockStatePresets.instance().register("allWool", wools);
+        WeightedBlockStatePresets.instance().setDefault("allWool");
     }
 }

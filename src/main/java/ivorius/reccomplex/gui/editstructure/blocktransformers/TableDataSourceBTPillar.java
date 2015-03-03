@@ -65,9 +65,7 @@ public class TableDataSourceBTPillar extends TableDataSourceSegmented implements
         {
             if (index == 0)
             {
-                TableElementString element = new TableElementString("destID", "Dest Block", Block.blockRegistry.getNameForObject(blockTransformer.destBlock));
-                element.setShowsValidityState(true);
-                TableDataSourceBTNatural.setStateForBlockTextfield(element);
+                TableElementString element = TableDataSourceBTNatural.elementForBlock("destID", "Dest Block", blockTransformer.destBlock);
                 element.addPropertyListener(this);
                 return element;
             }

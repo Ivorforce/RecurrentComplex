@@ -214,3 +214,8 @@ reccomplex.dimensionPreset.nether=Nether
 reccomplex.dimensionPreset.nether.tooltip=Dimensions resembling the Nether
 reccomplex.dimensionPreset.end=End
 reccomplex.dimensionPreset.end.tooltip=Dimensions resembling the End
+
+reccomplex.weightedBlockStatePreset.clear=Clear
+reccomplex.weightedBlockStatePreset.clear.tooltip=No Blocks
+reccomplex.weightedBlockStatePreset.allWool=Wool
+reccomplex.weightedBlockStatePreset.allWool.tooltip=All 16 wool blocks

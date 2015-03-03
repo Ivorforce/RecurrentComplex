@@ -17,11 +17,19 @@ import ivorius.reccomplex.gui.table.TableDelegate;
 import ivorius.reccomplex.gui.table.TableNavigator;
 import ivorius.reccomplex.json.JsonUtils;
 import ivorius.reccomplex.structures.StructureSpawnContext;
+import ivorius.reccomplex.structures.generic.WeightedBlockState;
 import ivorius.reccomplex.structures.generic.matchers.BlockMatcher;
+import ivorius.reccomplex.structures.generic.presets.WeightedBlockStatePresets;
+import ivorius.reccomplex.utils.PresettedList;
+import ivorius.reccomplex.utils.WeightedSelector;
 import net.minecraft.block.Block;
 import net.minecraft.init.Blocks;
+import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.tileentity.TileEntity;
 
 import java.lang.reflect.Type;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -31,19 +39,23 @@ public class BlockTransformerReplaceAll implements BlockTransformer
 {
     public BlockMatcher sourceMatcher;
 
-    public Block destBlock;
-    public byte[] destMetadata;
+    public final PresettedList<WeightedBlockState> destination = new PresettedList<>(WeightedBlockStatePresets.instance(), null);
 
     public BlockTransformerReplaceAll()
     {
-        this(BlockMatcher.of(Blocks.wool, new IntegerRange(0, 15)), Blocks.wool, new byte[]{0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15});
+        this(BlockMatcher.of(Blocks.wool, new IntegerRange(0, 15)));
+        destination.setToDefault();
     }
 
-    public BlockTransformerReplaceAll(String sourceExpression, Block destBlock, byte[] destMetadata)
+    public BlockTransformerReplaceAll(String sourceExpression)
     {
         this.sourceMatcher = new BlockMatcher(sourceExpression);
-        this.destBlock = destBlock;
-        this.destMetadata = destMetadata;
+    }
+
+    public BlockTransformerReplaceAll replaceWith(WeightedBlockState... states)
+    {
+        destination.setContents(Arrays.asList(states));
+        return this;
     }
 
     @Override
@@ -57,9 +69,17 @@ public class BlockTransformerReplaceAll implements BlockTransformer
     {
         IvBlockCollection blockCollection = worldData.blockCollection;
 
-        byte destMeta = destMetadata[context.random.nextInt(destMetadata.length)];
+        WeightedBlockState blockState;
+        if (destination.list.size() > 0)
+            blockState = WeightedSelector.selectItem(context.random, destination.list);
+        else
+            blockState = new WeightedBlockState(null, Blocks.air, 0, "");
+
         int[] areaSize = new int[]{blockCollection.width, blockCollection.height, blockCollection.length};
         BlockCoord lowerCoord = context.lowerCoord();
+
+        NBTTagCompound nbtTagCompound = blockState.tileEntityInfo.trim().length() > 0 && blockState.block.hasTileEntity(blockState.metadata)
+        ? BlockTransformerReplace.tryParse(blockState.tileEntityInfo) : null;
 
         for (BlockCoord sourceCoord : blockCollection)
         {
@@ -69,20 +89,29 @@ public class BlockTransformerReplaceAll implements BlockTransformer
             int meta = blockCollection.getMetadata(sourceCoord);
 
             if (skipGeneration(block, meta))
-                context.world.setBlock(worldCoord.x, worldCoord.y, worldCoord.z, destBlock, destMeta, 3);
+            {
+                context.world.setBlock(worldCoord.x, worldCoord.y, worldCoord.z, blockState.block, blockState.metadata, 3);
+
+                if (nbtTagCompound != null)
+                {
+                    TileEntity tileentity = context.world.getTileEntity(worldCoord.x, worldCoord.y, worldCoord.z);
+                    if (tileentity != null)
+                        tileentity.readFromNBT(BlockTransformerReplace.positionedCopy(nbtTagCompound, worldCoord));
+                }
+            }
         }
     }
 
     @Override
     public String getDisplayString()
     {
-        return "Replace All: " + sourceMatcher.getDisplayString() + "->" + destBlock.getLocalizedName();
+        return "Replace All: " + sourceMatcher.getDisplayString();
     }
 
     @Override
     public TableDataSource tableDataSource(TableNavigator navigator, TableDelegate delegate)
     {
-        return new TableDataSourceBTReplaceAll(this);
+        return new TableDataSourceBTReplaceAll(this, navigator, delegate);
     }
 
     @Override
@@ -94,10 +123,12 @@ public class BlockTransformerReplaceAll implements BlockTransformer
     public static class Serializer implements JsonDeserializer<BlockTransformerReplaceAll>, JsonSerializer<BlockTransformerReplaceAll>
     {
         private MCRegistry registry;
+        private Gson gson;
 
         public Serializer(MCRegistry registry)
         {
             this.registry = registry;
+            gson = new GsonBuilder().registerTypeAdapter(WeightedBlockState.class, new WeightedBlockState.Serializer(registry)).create();
         }
 
         @Override
@@ -109,11 +140,27 @@ public class BlockTransformerReplaceAll implements BlockTransformer
             if (expression == null)
                 expression = JsonUtils.getJsonObjectStringFieldValueOrDefault(jsonObject, "sourceExpression", "");
 
-            String destBlock = JsonUtils.getJsonObjectStringFieldValue(jsonObject, "dest");
-            Block dest = registry.blockFromID(destBlock);
-            byte[] destMeta = context.deserialize(jsonObject.get("destMetadata"), byte[].class);
+            BlockTransformerReplaceAll transformer = new BlockTransformerReplaceAll(expression);
 
-            return new BlockTransformerReplaceAll(expression, dest, destMeta);
+            if (!transformer.destination.setPreset(JsonUtils.getJsonObjectStringFieldValueOrDefault(jsonObject, "destinationPreset", null)))
+            {
+                if (jsonObject.has("destination"))
+                    Collections.addAll(transformer.destination.list, gson.fromJson(jsonObject.get("destination"), WeightedBlockState[].class));
+            }
+
+            if (jsonObject.has("dest"))
+            {
+                // Legacy
+                String destBlock = JsonUtils.getJsonObjectStringFieldValue(jsonObject, "dest");
+                Block dest = registry.blockFromID(destBlock);
+                byte[] destMeta = context.deserialize(jsonObject.get("destMetadata"), byte[].class);
+
+                transformer.destination.setToCustom();
+                for (byte b : destMeta)
+                    transformer.destination.list.add(new WeightedBlockState(null, dest, b, ""));
+            }
+
+            return transformer;
         }
 
         @Override
@@ -123,8 +170,9 @@ public class BlockTransformerReplaceAll implements BlockTransformer
 
             jsonObject.addProperty("sourceExpression", transformer.sourceMatcher.getExpression());
 
-            jsonObject.addProperty("dest", Block.blockRegistry.getNameForObject(transformer.destBlock));
-            jsonObject.add("destMetadata", context.serialize(transformer.destMetadata, byte[].class));
+            if (transformer.destination.getPreset() != null)
+                jsonObject.addProperty("destinationPreset", transformer.destination.getPreset());
+            jsonObject.add("destination", gson.toJsonTree(transformer.destination.list));
 
             return jsonObject;
         }

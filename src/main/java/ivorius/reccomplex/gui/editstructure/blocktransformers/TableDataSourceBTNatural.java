@@ -77,6 +77,14 @@ public class TableDataSourceBTNatural extends TableDataSourceSegmented implement
         }
     }
 
+    public static TableElementString elementForBlock(String id, String title, Block block)
+    {
+        TableElementString element = new TableElementString(id, title, Block.blockRegistry.getNameForObject(block));
+        element.setShowsValidityState(true);
+        setStateForBlockTextfield(element);
+        return element;
+    }
+
     public static void setStateForBlockTextfield(TableElementString elementString)
     {
         elementString.setValidityState(stateForBlock(elementString.getPropertyValue()));

@@ -7,19 +7,29 @@ package ivorius.reccomplex.structures.generic.blocktransformers;
 
 import com.google.gson.*;
 import ivorius.ivtoolkit.blocks.BlockCoord;
-import ivorius.ivtoolkit.gui.IntegerRange;
 import ivorius.ivtoolkit.tools.MCRegistry;
 import ivorius.reccomplex.gui.editstructure.blocktransformers.TableDataSourceBTReplace;
 import ivorius.reccomplex.gui.table.TableDataSource;
 import ivorius.reccomplex.gui.table.TableDelegate;
 import ivorius.reccomplex.gui.table.TableNavigator;
 import ivorius.reccomplex.json.JsonUtils;
+import ivorius.reccomplex.structures.generic.WeightedBlockState;
 import ivorius.reccomplex.structures.generic.matchers.BlockMatcher;
+import ivorius.reccomplex.structures.generic.presets.WeightedBlockStatePresets;
+import ivorius.reccomplex.utils.PresettedList;
+import ivorius.reccomplex.utils.WeightedSelector;
 import net.minecraft.block.Block;
 import net.minecraft.init.Blocks;
+import net.minecraft.nbt.JsonToNBT;
+import net.minecraft.nbt.NBTBase;
+import net.minecraft.nbt.NBTException;
+import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 
 import java.lang.reflect.Type;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.Random;
 
 /**
@@ -29,20 +39,53 @@ public class BlockTransformerReplace extends BlockTransformerSingle
 {
     public BlockMatcher sourceMatcher;
 
-    public Block destBlock;
-    public byte[] destMetadata;
+    public final PresettedList<WeightedBlockState> destination = new PresettedList<>(WeightedBlockStatePresets.instance(), null);
 
     public BlockTransformerReplace()
     {
-        this(BlockMatcher.of(Blocks.wool, new IntegerRange(0, 15)),
-                Blocks.wool, new byte[]{0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15});
+        this(BlockMatcher.of(Blocks.wool));
+        destination.setToDefault();
     }
 
-    public BlockTransformerReplace(String sourceMatcherExpression, Block destBlock, byte[] destMetadata)
+    public BlockTransformerReplace(String sourceExpression)
     {
-        this.sourceMatcher = new BlockMatcher(sourceMatcherExpression);
-        this.destBlock = destBlock;
-        this.destMetadata = destMetadata;
+        this.sourceMatcher = new BlockMatcher(sourceExpression);
+    }
+
+    public BlockTransformerReplace replaceWith(WeightedBlockState... states)
+    {
+        destination.setContents(Arrays.asList(states));
+        return this;
+    }
+
+    public static NBTTagCompound tryParse(String json)
+    {
+        NBTBase nbtbase = null;
+
+        try
+        {
+            nbtbase = JsonToNBT.func_150315_a(json);
+        }
+        catch (NBTException ignored)
+        {
+
+        }
+
+        if (nbtbase instanceof NBTTagCompound)
+            return (NBTTagCompound) nbtbase;
+
+        return null;
+    }
+
+    public static NBTTagCompound positionedCopy(NBTTagCompound compound, BlockCoord teCoord)
+    {
+        NBTTagCompound positioned = (NBTTagCompound) compound.copy();
+
+        positioned.setInteger("x", teCoord.x);
+        positioned.setInteger("y", teCoord.y);
+        positioned.setInteger("z", teCoord.z);
+
+        return positioned;
     }
 
     @Override
@@ -54,7 +97,25 @@ public class BlockTransformerReplace extends BlockTransformerSingle
     @Override
     public void transformBlock(World world, Random random, Phase phase, BlockCoord coord, Block sourceBlock, int sourceMetadata)
     {
-        world.setBlock(coord.x, coord.y, coord.z, destBlock, destMetadata[random.nextInt(destMetadata.length)], 3);
+        WeightedBlockState blockState;
+        if (destination.list.size() > 0)
+            blockState = WeightedSelector.selectItem(random, destination.list);
+        else
+            blockState = new WeightedBlockState(null, Blocks.air, 0, "");
+
+        world.setBlock(coord.x, coord.y, coord.z, blockState.block, blockState.metadata, 3);
+
+        // Behavior as in CommandSetBlock
+        if (blockState.tileEntityInfo.trim().length() > 0 && blockState.block.hasTileEntity(blockState.metadata))
+        {
+            NBTTagCompound nbtTagCompound = positionedCopy(tryParse(blockState.tileEntityInfo), coord);
+            if (nbtTagCompound != null)
+            {
+                TileEntity tileentity = world.getTileEntity(coord.x, coord.y, coord.z);
+                if (tileentity != null)
+                    tileentity.readFromNBT(nbtTagCompound);
+            }
+        }
     }
 
     @Override
@@ -66,7 +127,7 @@ public class BlockTransformerReplace extends BlockTransformerSingle
     @Override
     public TableDataSource tableDataSource(TableNavigator navigator, TableDelegate delegate)
     {
-        return new TableDataSourceBTReplace(this);
+        return new TableDataSourceBTReplace(this, navigator, delegate);
     }
 
     @Override
@@ -78,10 +139,12 @@ public class BlockTransformerReplace extends BlockTransformerSingle
     public static class Serializer implements JsonDeserializer<BlockTransformerReplace>, JsonSerializer<BlockTransformerReplace>
     {
         private MCRegistry registry;
+        private Gson gson;
 
         public Serializer(MCRegistry registry)
         {
             this.registry = registry;
+            gson = new GsonBuilder().registerTypeAdapter(WeightedBlockState.class, new WeightedBlockState.Serializer(registry)).create();
         }
 
         public static String readLegacyMatcher(JsonObject jsonObject, String blockKey, String metadataKey)
@@ -105,11 +168,27 @@ public class BlockTransformerReplace extends BlockTransformerSingle
             if (expression == null)
                 expression = JsonUtils.getJsonObjectStringFieldValueOrDefault(jsonObject, "sourceExpression", "");
 
-            String destBlock = JsonUtils.getJsonObjectStringFieldValue(jsonObject, "dest");
-            Block dest = registry.blockFromID(destBlock);
-            byte[] destMeta = context.deserialize(jsonObject.get("destMetadata"), byte[].class);
+            BlockTransformerReplace transformer = new BlockTransformerReplace(expression);
 
-            return new BlockTransformerReplace(expression, dest, destMeta);
+            if (!transformer.destination.setPreset(JsonUtils.getJsonObjectStringFieldValueOrDefault(jsonObject, "destinationPreset", null)))
+            {
+                if (jsonObject.has("destination"))
+                    Collections.addAll(transformer.destination.list, gson.fromJson(jsonObject.get("destination"), WeightedBlockState[].class));
+            }
+
+            if (jsonObject.has("dest"))
+            {
+                // Legacy
+                String destBlock = JsonUtils.getJsonObjectStringFieldValue(jsonObject, "dest");
+                Block dest = registry.blockFromID(destBlock);
+                byte[] destMeta = context.deserialize(jsonObject.get("destMetadata"), byte[].class);
+
+                transformer.destination.setToCustom();
+                for (byte b : destMeta)
+                    transformer.destination.list.add(new WeightedBlockState(null, dest, b, ""));
+            }
+
+            return transformer;
         }
 
         @Override
@@ -119,8 +198,9 @@ public class BlockTransformerReplace extends BlockTransformerSingle
 
             jsonObject.addProperty("sourceExpression", transformer.sourceMatcher.getExpression());
 
-            jsonObject.addProperty("dest", Block.blockRegistry.getNameForObject(transformer.destBlock));
-            jsonObject.add("destMetadata", context.serialize(transformer.destMetadata, byte[].class));
+            if (transformer.destination.getPreset() != null)
+                jsonObject.addProperty("destinationPreset", transformer.destination.getPreset());
+            jsonObject.add("destination", gson.toJsonTree(transformer.destination.list));
 
             return jsonObject;
         }

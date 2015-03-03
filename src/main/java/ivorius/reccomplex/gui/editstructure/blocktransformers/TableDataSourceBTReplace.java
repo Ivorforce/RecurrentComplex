@@ -5,27 +5,30 @@
 
 package ivorius.reccomplex.gui.editstructure.blocktransformers;
 
+import ivorius.reccomplex.gui.editstructure.TableDataSourceBiomeGenList;
 import ivorius.reccomplex.gui.editstructure.TableDataSourceDimensionGen;
+import ivorius.reccomplex.gui.editstructure.TableDataSourceWeightedBlockStateList;
 import ivorius.reccomplex.gui.table.*;
 import ivorius.reccomplex.structures.generic.blocktransformers.BlockTransformerReplace;
-import net.minecraft.block.Block;
 import org.apache.commons.lang3.StringUtils;
-
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Created by lukas on 05.06.14.
  */
-public class TableDataSourceBTReplace extends TableDataSourceSegmented implements TableElementPropertyListener
+public class TableDataSourceBTReplace extends TableDataSourceSegmented implements TableElementPropertyListener, TableElementActionListener
 {
     private BlockTransformerReplace blockTransformer;
 
+    private TableNavigator navigator;
+    private TableDelegate tableDelegate;
+
     private TableElementTitle parsed;
 
-    public TableDataSourceBTReplace(BlockTransformerReplace blockTransformer)
+    public TableDataSourceBTReplace(BlockTransformerReplace blockTransformer, TableNavigator navigator, TableDelegate tableDelegate)
     {
         this.blockTransformer = blockTransformer;
+        this.navigator = navigator;
+        this.tableDelegate = tableDelegate;
     }
 
     public BlockTransformerReplace getBlockTransformer()
@@ -47,7 +50,7 @@ public class TableDataSourceBTReplace extends TableDataSourceSegmented implement
     @Override
     public int sizeOfSegment(int segment)
     {
-        return 2;
+        return segment == 0 ? 2 : 1;
     }
 
     @Override
@@ -66,55 +69,12 @@ public class TableDataSourceBTReplace extends TableDataSourceSegmented implement
         }
         else if (segment == 1)
         {
-            if (index == 0)
-            {
-                TableElementString element = new TableElementString("destID", "Dest Block", Block.blockRegistry.getNameForObject(blockTransformer.destBlock));
-                element.setShowsValidityState(true);
-                TableDataSourceBTNatural.setStateForBlockTextfield(element);
-                element.addPropertyListener(this);
-                return element;
-            }
-            else if (index == 1)
-            {
-                TableElementString element = new TableElementString("destMeta", "Dest Metadatas (Hex)", byteArrayToHexString(blockTransformer.destMetadata));
-                element.addPropertyListener(this);
-                return element;
-            }
+            TableElementButton element = new TableElementButton("dest", "Destinations", new TableElementButton.Action("edit", "Edit"));
+            element.addListener(this);
+            return element;
         }
 
         return null;
-    }
-
-    public static String byteArrayToHexString(byte[] bytes)
-    {
-        StringBuilder builder = new StringBuilder();
-
-        for (byte aByte : bytes)
-        {
-            builder.append(String.format("%01X", aByte));
-        }
-
-        return builder.toString();
-    }
-
-    public static byte[] hexStringToByteArray(String string)
-    {
-        List<Byte> bytes = new ArrayList<>();
-
-        for (int i = 0; i < string.length(); i++)
-        {
-            char aChar = string.charAt(i);
-            byte aByte = (byte) Character.digit(aChar, 16);
-
-            if (aByte >= 0)
-                bytes.add(aByte);
-        }
-
-        byte[] byteArray = new byte[bytes.size()];
-        for (int i = 0; i < bytes.size(); i++)
-            byteArray[i] = bytes.get(i);
-
-        return byteArray;
     }
 
     @Override
@@ -126,19 +86,15 @@ public class TableDataSourceBTReplace extends TableDataSourceSegmented implement
             if (parsed != null)
                 parsed.setDisplayString(StringUtils.abbreviate(TableDataSourceDimensionGen.parsedString(blockTransformer.sourceMatcher), 60));
         }
-        else if ("destID".equals(element.getID()))
-        {
-            blockTransformer.destBlock = (Block) Block.blockRegistry.getObject(element.getPropertyValue());
-            TableDataSourceBTNatural.setStateForBlockTextfield(((TableElementString) element));
-        }
-        else if ("destMeta".equals(element.getID()))
-        {
-            String propValue = ((String) element.getPropertyValue());
-            blockTransformer.destMetadata = hexStringToByteArray(propValue);
-            String newString = byteArrayToHexString(blockTransformer.destMetadata);
+    }
 
-            if (!propValue.equalsIgnoreCase(newString))
-                element.setPropertyValue(newString);
+    @Override
+    public void actionPerformed(TableElement element, String action)
+    {
+        if ("dest".equals(element.getID()))
+        {
+            GuiTable table = new GuiTable(tableDelegate, new TableDataSourceWeightedBlockStateList(blockTransformer.destination, tableDelegate, navigator));
+            navigator.pushTable(table);
         }
     }
 }

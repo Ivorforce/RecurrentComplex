@@ -8,6 +8,7 @@ package ivorius.reccomplex.utils;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -63,6 +64,13 @@ public class PresettedList<T>
     public void setToDefault()
     {
         setPreset(listPresets.defaultType());
+    }
+
+    public void setContents(T... ts)
+    {
+        setToCustom();
+        list.clear();
+        Collections.addAll(list, ts);
     }
 
     public void setContents(List<T> ts)

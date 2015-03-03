@@ -26,6 +26,8 @@ import ivorius.reccomplex.structures.generic.blocktransformers.*;
 import ivorius.reccomplex.structures.generic.gentypes.*;
 import ivorius.reccomplex.structures.generic.matchers.BiomeMatcher;
 import ivorius.reccomplex.structures.generic.matchers.DimensionMatcher;
+import ivorius.reccomplex.structures.generic.presets.BiomeMatcherPresets;
+import ivorius.reccomplex.structures.generic.presets.DimensionMatcherPresets;
 import ivorius.reccomplex.structures.schematics.OperationGenerateSchematic;
 import ivorius.reccomplex.structures.OperationGenerateStructure;
 import ivorius.reccomplex.structures.StructureRegistry;

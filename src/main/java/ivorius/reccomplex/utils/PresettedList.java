@@ -3,7 +3,7 @@
  *  * http://lukas.axxim.net
  */
 
-package ivorius.reccomplex.structures.generic.gentypes;
+package ivorius.reccomplex.utils;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -62,7 +62,7 @@ public class PresettedList<T>
 
     public void setToDefault()
     {
-        setPreset(listPresets.defaultType);
+        setPreset(listPresets.defaultType());
     }
 
     public void setContents(List<T> ts)

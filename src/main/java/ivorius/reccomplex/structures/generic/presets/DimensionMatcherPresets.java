@@ -3,11 +3,12 @@
  *  * http://lukas.axxim.net
  */
 
-package ivorius.reccomplex.structures.generic.gentypes;
+package ivorius.reccomplex.structures.generic.presets;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import ivorius.reccomplex.structures.generic.DimensionGenerationInfo;
+import ivorius.reccomplex.utils.ListPresets;
 
 /**
  * Created by lukas on 26.02.15.

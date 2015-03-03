@@ -3,7 +3,7 @@
  *  * http://lukas.axxim.net
  */
 
-package ivorius.reccomplex.structures.generic.gentypes;
+package ivorius.reccomplex.utils;
 
 import com.google.common.collect.Lists;
 import com.google.gson.Gson;

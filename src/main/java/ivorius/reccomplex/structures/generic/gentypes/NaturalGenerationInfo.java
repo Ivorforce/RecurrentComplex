@@ -15,6 +15,9 @@ import ivorius.reccomplex.json.JsonUtils;
 import ivorius.reccomplex.structures.generic.BiomeGenerationInfo;
 import ivorius.reccomplex.structures.generic.DimensionGenerationInfo;
 import ivorius.reccomplex.structures.generic.GenerationYSelector;
+import ivorius.reccomplex.structures.generic.presets.BiomeMatcherPresets;
+import ivorius.reccomplex.structures.generic.presets.DimensionMatcherPresets;
+import ivorius.reccomplex.utils.PresettedList;
 import net.minecraft.util.StatCollector;
 import net.minecraft.world.WorldProvider;
 import net.minecraft.world.biome.BiomeGenBase;
@@ -22,7 +25,6 @@ import net.minecraft.world.biome.BiomeGenBase;
 import java.lang.reflect.Type;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.List;
 
 /**
  * Created by lukas on 07.10.14.
@@ -192,12 +194,12 @@ public class NaturalGenerationInfo extends StructureGenerationInfo
 
             jsonObject.add("generationY", gson.toJsonTree(src.ySelector));
 
-            if (src.biomeWeights.preset != null)
-                jsonObject.addProperty("biomeWeightsPreset", src.biomeWeights.preset);
+            if (src.biomeWeights.getPreset() != null)
+                jsonObject.addProperty("biomeWeightsPreset", src.biomeWeights.getPreset());
             jsonObject.add("generationBiomes", gson.toJsonTree(src.biomeWeights.list));
 
-            if (src.dimensionWeights.preset != null)
-                jsonObject.addProperty("dimensionWeightsPreset", src.dimensionWeights.preset);
+            if (src.dimensionWeights.getPreset() != null)
+                jsonObject.addProperty("dimensionWeightsPreset", src.dimensionWeights.getPreset());
             jsonObject.add("generationDimensions", gson.toJsonTree(src.dimensionWeights.list));
 
             return jsonObject;

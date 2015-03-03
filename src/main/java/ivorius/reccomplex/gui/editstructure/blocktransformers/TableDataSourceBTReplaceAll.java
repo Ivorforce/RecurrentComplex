@@ -66,7 +66,7 @@ public class TableDataSourceBTReplaceAll extends TableDataSourceSegmented implem
         }
         else if (segment == 1)
         {
-            if (index == 2)
+            if (index == 0)
             {
                 TableElementString element = new TableElementString("destID", "Dest Block", Block.blockRegistry.getNameForObject(blockTransformer.destBlock));
                 element.setShowsValidityState(true);
@@ -74,7 +74,7 @@ public class TableDataSourceBTReplaceAll extends TableDataSourceSegmented implem
                 element.addPropertyListener(this);
                 return element;
             }
-            else if (index == 3)
+            else if (index == 1)
             {
                 TableElementString element = new TableElementString("destMeta", "Dest Metadatas (Hex)", byteArrayToHexString(blockTransformer.destMetadata));
                 element.addPropertyListener(this);

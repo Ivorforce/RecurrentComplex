@@ -152,6 +152,8 @@ public class TableElementFloatNullable extends TableElementPropertyDefault<Float
             property = property != null ? null : defaultValue;
             nullButton.displayString = property != null ? buttonTitleCustom : buttonTitleNull;
             updateSliderValue();
+
+            alertListenersOfChange();
         }
     }
 

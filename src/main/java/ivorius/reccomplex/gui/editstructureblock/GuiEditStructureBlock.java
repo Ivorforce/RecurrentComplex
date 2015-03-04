@@ -23,7 +23,7 @@ public class GuiEditStructureBlock extends GuiScreenModalTable
 
     public GuiEditStructureBlock(TileEntityStructureGenerator structureGenerator)
     {
-        GuiTable structureGenProperties = new GuiTable(this, structureDataSource = new TableDataSourceStructureBlock(structureGenerator));
+        GuiTable structureGenProperties = new GuiTable(this, structureDataSource = new TableDataSourceStructureBlock(structureGenerator, this, this));
         structureGenProperties.setHideScrollbarIfUnnecessary(true);
         setTable(structureGenProperties);
     }

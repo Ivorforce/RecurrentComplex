@@ -183,6 +183,9 @@ reccomplex.generationInfo.static=Static
 reccomplex.generationInfo.static.tooltip=Constant Position in a specific dimension<br>Also useful for spawn structures
 reccomplex.generationInfo.static.spawn=From Spawn %s, %s
 reccomplex.generationInfo.static.nospawn=At %s, %s
+reccomplex.generationInfo.structureList=Structure List
+reccomplex.generationInfo.structureList.tooltip=As part of a structure list<br>(Used in structure blocks)
+reccomplex.generationInfo.structureList.title=In List %s
 
 reccomplex.blockTransformer.natural=Natural Floor
 reccomplex.blockTransformer.natural.tooltip=Spawns biome-native floor blocks below blocks
@@ -225,3 +228,12 @@ reccomplex.weightedBlockStatePreset.allWool.tooltip=All 16 wool blocks
 reccomplex.expression.biome.tooltip=This is a §obiome expression§r.<br>Visit the wiki for syntax information.
 reccomplex.expression.dimension.tooltip=This is a §odimension expression§r.<br>Visit the wiki for syntax information.
 reccomplex.expression.block.tooltip=This is a §oblock expression§r.<br>Visit the wiki for syntax information.
+
+reccomplex.direction.up=Up
+reccomplex.direction.down=Down
+reccomplex.direction.north=North
+reccomplex.direction.south=South
+reccomplex.direction.east=East
+reccomplex.direction.west=West
+reccomplex.direction.none=None
+

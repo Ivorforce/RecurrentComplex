@@ -149,6 +149,7 @@ public class RCRegistryHandler
 
         SerializableStringTypeRegistry<StructureGenerationInfo> genInfoRegistry = StructureRegistry.getStructureGenerationInfoRegistry();
         genInfoRegistry.registerType("natural", NaturalGenerationInfo.class, new NaturalGenerationInfo.Serializer());
+        genInfoRegistry.registerType("structureList", StructureListGenerationInfo.class, new StructureListGenerationInfo.Serializer());
         genInfoRegistry.registerType("mazeComponent", MazeGenerationInfo.class, new MazeGenerationInfo.Serializer());
         genInfoRegistry.registerType("static", StaticGenerationInfo.class, new StaticGenerationInfo.Serializer());
 //        genInfoRegistry.registerType("vanilla", VanillaStructureSpawnInfo.class, new VanillaStructureSpawnInfo.Serializer());

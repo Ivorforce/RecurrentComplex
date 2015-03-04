@@ -25,12 +25,14 @@ import ivorius.reccomplex.structures.generic.blocktransformers.BlockTransformer;
 import ivorius.reccomplex.structures.generic.gentypes.MazeGenerationInfo;
 import ivorius.reccomplex.structures.generic.gentypes.StaticGenerationInfo;
 import ivorius.reccomplex.structures.generic.gentypes.StructureGenerationInfo;
+import ivorius.reccomplex.structures.generic.gentypes.StructureListGenerationInfo;
 import ivorius.reccomplex.worldgen.StructureSelector;
 import net.minecraft.util.ChunkCoordinates;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldProvider;
 import net.minecraft.world.biome.BiomeGenBase;
+import net.minecraftforge.common.util.ForgeDirection;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
 
@@ -40,7 +42,8 @@ import java.util.*;
 /**
  * Created by lukas on 24.05.14.
  */
-public class StructureRegistry
+public class
+        StructureRegistry
 {
     private static BiMap<String, StructureInfo> allStructures = HashBiMap.create();
     private static Map<String, StructureInfo> generatingStructures = new HashMap<>();
@@ -170,16 +173,9 @@ public class StructureRegistry
         return pairsArrayList;
     }
 
-    public static <T extends StructureGenerationInfo> Collection<Pair<StructureInfo, T>> getStructureGenerations(Class<T> clazz, final Predicate<T> predicate)
+    public static <T extends StructureGenerationInfo> Collection<Pair<StructureInfo, T>> getStructureGenerations(Class<T> clazz, final Predicate<Pair<StructureInfo, T>> predicate)
     {
-        return Collections2.filter(getStructureGenerations(clazz), new Predicate<Pair<StructureInfo, T>>()
-        {
-            @Override
-            public boolean apply(Pair<StructureInfo, T> input)
-            {
-                return predicate.apply(input.getRight());
-            }
-        });
+        return Collections2.filter(getStructureGenerations(clazz), predicate);
     }
 
     public static StructureSelector getStructureSelector(BiomeGenBase biome, WorldProvider provider)
@@ -196,14 +192,28 @@ public class StructureRegistry
         return structureSelector;
     }
 
-    public static Collection<Pair<StructureInfo, MazeGenerationInfo>> getStructuresInMaze(final String mazeID)
+    public static Collection<Pair<StructureInfo, StructureListGenerationInfo>> getStructuresInList(final String listID, final ForgeDirection front)
     {
-        return getStructureGenerations(MazeGenerationInfo.class, new Predicate<MazeGenerationInfo>()
+        return getStructureGenerations(StructureListGenerationInfo.class, new Predicate<Pair<StructureInfo, StructureListGenerationInfo>>()
         {
             @Override
-            public boolean apply(MazeGenerationInfo input)
+            public boolean apply(Pair<StructureInfo, StructureListGenerationInfo> input)
             {
-                return mazeID.equals(input.mazeID) && input.mazeComponent.isValid();
+                return listID.equals(input.getRight().listID)
+                        && (front == null || input.getLeft().isRotatable() || input.getRight().front == front);
+            }
+        });
+    }
+
+    public static Collection<Pair<StructureInfo, MazeGenerationInfo>> getStructuresInMaze(final String mazeID)
+    {
+        return getStructureGenerations(MazeGenerationInfo.class, new Predicate<Pair<StructureInfo, MazeGenerationInfo>>()
+        {
+            @Override
+            public boolean apply(Pair<StructureInfo, MazeGenerationInfo> input)
+            {
+                MazeGenerationInfo info = input.getRight();
+                return mazeID.equals(info.mazeID) && info.mazeComponent.isValid();
             }
         });
     }
@@ -215,13 +225,14 @@ public class StructureRegistry
 
     public static Collection<Pair<StructureInfo, StaticGenerationInfo>> getStaticStructuresAt(final int chunkX, final int chunkZ, final World world, final ChunkCoordinates spawnPos)
     {
-        return getStructureGenerations(StaticGenerationInfo.class, new Predicate<StaticGenerationInfo>()
+        return getStructureGenerations(StaticGenerationInfo.class, new Predicate<Pair<StructureInfo, StaticGenerationInfo>>()
         {
             @Override
-            public boolean apply(@Nullable StaticGenerationInfo input)
+            public boolean apply(@Nullable Pair<StructureInfo, StaticGenerationInfo> input)
             {
-                return input != null && input.dimensionMatcher.apply(world.provider)
-                        && chunkContains(chunkX, chunkZ, input.getPositionX(spawnPos), input.getPositionZ(spawnPos)
+                StaticGenerationInfo info = input.getRight();
+                return info.dimensionMatcher.apply(world.provider)
+                        && chunkContains(chunkX, chunkZ, info.getPositionX(spawnPos), info.getPositionZ(spawnPos)
                 );
             }
         });

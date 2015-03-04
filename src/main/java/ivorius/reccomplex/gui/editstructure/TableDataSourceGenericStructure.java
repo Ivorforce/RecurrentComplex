@@ -90,9 +90,9 @@ public class TableDataSourceGenericStructure extends TableDataSourceSegmented im
             case 1:
                 return 2;
             case 3:
-                return structureInfo.generationInfos.size() > 0 ? 1 : 0;
+                return 1;
             case 4:
-                return structureInfo.blockTransformers.size() > 0 ? 1 : 0;
+                return 1;
         }
 
         return 0;

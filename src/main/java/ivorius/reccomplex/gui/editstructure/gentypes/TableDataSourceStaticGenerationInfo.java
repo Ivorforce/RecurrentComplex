@@ -26,17 +26,11 @@ public class TableDataSourceStaticGenerationInfo extends TableDataSourceSegmente
     private StaticGenerationInfo generationInfo;
     private TableElementTitle parsed;
 
-    private String currentPositionValueX;
-    private String currentPositionValueZ;
-
     public TableDataSourceStaticGenerationInfo(TableNavigator navigator, TableDelegate tableDelegate, StaticGenerationInfo generationInfo)
     {
         this.navigator = navigator;
         this.tableDelegate = tableDelegate;
         this.generationInfo = generationInfo;
-
-        currentPositionValueX = String.valueOf(generationInfo.positionX);
-        currentPositionValueZ = String.valueOf(generationInfo.positionZ);
     }
 
     @Override
@@ -75,17 +69,17 @@ public class TableDataSourceStaticGenerationInfo extends TableDataSourceSegmente
                 }
                 else if (index == 1)
                 {
-                    TableElementString element = new TableElementString("positionX", "Position (x)", currentPositionValueX);
+                    TableElementString element = new TableElementString("positionX", "Position (x)", String.valueOf(generationInfo.positionX));
                     element.setShowsValidityState(true);
-                    element.setValidityState(Ints.tryParse(currentPositionValueX) != null ? GuiValidityStateIndicator.State.VALID : GuiValidityStateIndicator.State.INVALID);
+                    element.setValidityState(GuiValidityStateIndicator.State.VALID);
                     element.addPropertyListener(this);
                     return element;
                 }
                 else if (index == 2)
                 {
-                    TableElementString element = new TableElementString("positionZ", "Position (z)", currentPositionValueZ);
+                    TableElementString element = new TableElementString("positionZ", "Position (z)", String.valueOf(generationInfo.positionZ));
                     element.setShowsValidityState(true);
-                    element.setValidityState(Ints.tryParse(currentPositionValueZ) != null ? GuiValidityStateIndicator.State.VALID : GuiValidityStateIndicator.State.INVALID);
+                    element.setValidityState(GuiValidityStateIndicator.State.VALID);
                     element.addPropertyListener(this);
                     return element;
                 }
@@ -131,16 +125,14 @@ public class TableDataSourceStaticGenerationInfo extends TableDataSourceSegmente
         {
             case "positionX":
             {
-                currentPositionValueX = (String) element.getPropertyValue();
-                Integer val = Ints.tryParse(currentPositionValueX);
+                Integer val = Ints.tryParse((String) element.getPropertyValue());
                 generationInfo.positionX = val != null ? val : 0;
                 ((TableElementString) element).setValidityState(val != null ? GuiValidityStateIndicator.State.VALID : GuiValidityStateIndicator.State.INVALID);
                 break;
             }
             case "positionZ":
             {
-                currentPositionValueZ = (String) element.getPropertyValue();
-                Integer val = Ints.tryParse(currentPositionValueZ);
+                Integer val = Ints.tryParse((String) element.getPropertyValue());
                 generationInfo.positionZ = val != null ? val : 0;
                 ((TableElementString) element).setValidityState(val != null ? GuiValidityStateIndicator.State.VALID : GuiValidityStateIndicator.State.INVALID);
                 break;

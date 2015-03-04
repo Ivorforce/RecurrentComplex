@@ -24,26 +24,4 @@ public class ItemStructureGenerator extends ItemBlock
     {
         super(block);
     }
-
-    @Override
-    public void addInformation(ItemStack itemStack, EntityPlayer par2EntityPlayer, List par3List, boolean par4)
-    {
-        super.addInformation(itemStack, par2EntityPlayer, par3List, par4);
-
-        if (itemStack.hasTagCompound() && itemStack.getTagCompound().hasKey("structureGeneratorInfo"))
-        {
-            NBTTagCompound compound = itemStack.getTagCompound().getCompoundTag("structureGeneratorInfo");
-            List<String> structures = TileEntityStructureGenerator.generatorsFromNBT(compound);
-
-            for (int i = 0; i < 3 && i < structures.size(); i++)
-            {
-                par3List.add(structures.get(i));
-            }
-
-            if (structures.size() > 3)
-            {
-                par3List.add(EnumChatFormatting.GRAY + "[...]");
-            }
-        }
-    }
 }

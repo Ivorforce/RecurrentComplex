@@ -55,6 +55,9 @@ public class CommandSelect extends CommandBase
                     {
                         if (!args[0].equals("point2"))
                         {
+                            if (structureEntityInfo.selectedPoint1 == null)
+                                structureEntityInfo.selectedPoint1 = new BlockCoord(MathHelper.floor_double(entityPlayerMP.posX), MathHelper.floor_double(entityPlayerMP.posY), MathHelper.floor_double(entityPlayerMP.posZ));
+
                             structureEntityInfo.selectedPoint1 = new BlockCoord(
                                     MathHelper.floor_double(func_110666_a(commandSender, structureEntityInfo.selectedPoint1.x, args[1])),
                                     MathHelper.floor_double(func_110666_a(commandSender, structureEntityInfo.selectedPoint1.y, args[2])),
@@ -63,6 +66,9 @@ public class CommandSelect extends CommandBase
                         }
                         if (!args[0].equals("point1"))
                         {
+                            if (structureEntityInfo.selectedPoint2 == null)
+                                structureEntityInfo.selectedPoint2 = new BlockCoord(MathHelper.floor_double(entityPlayerMP.posX), MathHelper.floor_double(entityPlayerMP.posY), MathHelper.floor_double(entityPlayerMP.posZ));
+
                             structureEntityInfo.selectedPoint2 = new BlockCoord(
                                     MathHelper.floor_double(func_110666_a(commandSender, structureEntityInfo.selectedPoint2.x, args[1])),
                                     MathHelper.floor_double(func_110666_a(commandSender, structureEntityInfo.selectedPoint2.y, args[2])),

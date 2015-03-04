@@ -33,6 +33,7 @@ public class ItemBlockSelector extends Item implements ItemEventHandler
     {
         ByteBuf buf = Unpooled.buffer();
 
+        BlockCoord.writeCoordToBuffer(position, buf);
         buf.writeBoolean(modifierKeyDown());
         RecurrentComplex.network.sendToServer(new PacketItemEvent(player.inventory.currentItem, buf, "select"));
     }

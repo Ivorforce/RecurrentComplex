@@ -68,6 +68,7 @@ public class WorldGenStructures implements IWorldGenerator
 
                 int genX = chunkX * 16 + random.nextInt(16);
                 int genZ = chunkZ * 16 + random.nextInt(16);
+
                 StructureGenerator.generateStructureRandomly(world, random, structureInfo, pair.getRight().ySelector, genX, genZ, true, structureName);
 
 //                RecurrentComplex.logger.info("Generated " + info + " at " + genX + ", " + genY + ", " + genZ);

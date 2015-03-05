@@ -29,6 +29,8 @@ public class RCConfig
     private static Set<String> persistentDisabledStructures = new HashSet<>();
     private static Set<String> forceEnabledStructures = new HashSet<>();
 
+    public static boolean avoidOverlappingGeneration;
+
     public static String commandPrefix;
 
     public static boolean savePlayerCache;
@@ -50,6 +52,8 @@ public class RCConfig
         
         if (configID == null || configID.equals(CATEGORY_BALANCING))
         {
+            avoidOverlappingGeneration = RecurrentComplex.config.getBoolean("avoidOverlappingGeneration", CATEGORY_BALANCING, true, "Enabling this will cancel any structure generation if another structure is present at the cooridnate already.");
+
             minDistToSpawnForGeneration = RecurrentComplex.config.getFloat("minDistToSpawnForGeneration", CATEGORY_BALANCING, 30.0f, 0.0f, 500.0f, "Within this block radius, default structures won't spawn (in the main dimension).");
             structureSpawnChanceModifier = RecurrentComplex.config.getFloat("structureSpawnChance", CATEGORY_BALANCING, 1.0f, 0.0f, 10.0f, "How often do structures spawn?");
 

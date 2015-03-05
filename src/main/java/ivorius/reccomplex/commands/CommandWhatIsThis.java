@@ -65,7 +65,7 @@ public class CommandWhatIsThis extends CommandBase
             z = MathHelper.floor_double(func_110666_a(commandSender, (double) z, args[2]));
         }
 
-        Collection<StructureGenerationData.Entry> entries = StructureGenerationData.get(world).getEntries(new BlockCoord(x, y, z), false);
+        Collection<StructureGenerationData.Entry> entries = StructureGenerationData.get(world).getEntries(new BlockCoord(x, y, z));
         if (entries.size() > 0)
         {
             List<StructureGenerationData.Entry> ordered = Lists.newArrayList(entries);

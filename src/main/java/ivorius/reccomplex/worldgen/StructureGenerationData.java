@@ -6,10 +6,7 @@
 package ivorius.reccomplex.worldgen;
 
 import com.google.common.base.Predicate;
-import com.google.common.collect.Collections2;
-import com.google.common.collect.HashMultimap;
-import com.google.common.collect.Multimap;
-import com.google.common.collect.Sets;
+import com.google.common.collect.*;
 import ivorius.ivtoolkit.blocks.BlockCoord;
 import ivorius.ivtoolkit.math.AxisAlignedTransform2D;
 import ivorius.reccomplex.RecurrentComplex;
@@ -38,7 +35,7 @@ public class StructureGenerationData extends WorldSavedData
     protected final Set<ChunkCoordIntPair> checkedChunksFinal = new HashSet<>();
 
     protected final Map<UUID, Entry> entryMap = new HashMap<>();
-    protected final Multimap<ChunkCoordIntPair, Entry> chunkMap = HashMultimap.create();
+    protected final SetMultimap<ChunkCoordIntPair, Entry> chunkMap = HashMultimap.create();
 
     public StructureGenerationData(String id)
     {
@@ -61,10 +58,10 @@ public class StructureGenerationData extends WorldSavedData
         return data;
     }
 
-    public Collection<Entry> getEntries(ChunkCoordIntPair coords, boolean forGeneration)
+    public Set<Entry> getEntries(ChunkCoordIntPair coords, boolean onlyPartial)
     {
-        if (forGeneration)
-            return Collections2.filter(chunkMap.get(coords), new Predicate<Entry>()
+        if (onlyPartial)
+            return Sets.filter(chunkMap.get(coords), new Predicate<Entry>()
             {
                 @Override
                 public boolean apply(Entry input)
@@ -75,17 +72,35 @@ public class StructureGenerationData extends WorldSavedData
         return chunkMap.get(coords);
     }
 
-    public Collection<Entry> getEntries(final BlockCoord coords, boolean forGeneration)
+    public Set<Entry> getEntries(final BlockCoord coords)
     {
-        Collection<Entry> entries = getEntries(new ChunkCoordIntPair(coords.x >> 4, coords.z >> 4), forGeneration);
+        Set<Entry> entries = getEntries(new ChunkCoordIntPair(coords.x >> 4, coords.z >> 4), false);
 
-        return Collections2.filter(entries, new Predicate<Entry>()
+        return Sets.filter(entries, new Predicate<Entry>()
         {
             @Override
             public boolean apply(Entry input)
             {
                 StructureBoundingBox bb = input.boundingBox();
                 return bb != null && bb.isVecInside(coords.x, coords.y, coords.z);
+            }
+        });
+    }
+
+    public Set<Entry> getEntries(final StructureBoundingBox boundingBox)
+    {
+        Set<Entry> entries = Collections.emptySet();
+        for (int x = boundingBox.minX >> 4; x <= boundingBox.maxX >> 4; x++)
+            for (int z = boundingBox.minZ >> 4; z <= boundingBox.maxZ >> 4; z++)
+                entries = Sets.union(getEntries(new ChunkCoordIntPair(x, z), false), entries);
+
+        return Sets.filter(entries, new Predicate<Entry>()
+        {
+            @Override
+            public boolean apply(Entry input)
+            {
+                StructureBoundingBox bb = input.boundingBox();
+                return bb != null && bb.intersectsWith(boundingBox);
             }
         });
     }

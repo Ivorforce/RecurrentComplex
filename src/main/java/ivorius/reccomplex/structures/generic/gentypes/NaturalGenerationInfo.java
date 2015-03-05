@@ -76,8 +76,13 @@ public class NaturalGenerationInfo extends StructureGenerationInfo
         GenerationYSelector ySelector = gson.fromJson(jsonObject.get("generationY"), GenerationYSelector.class);
 
         NaturalGenerationInfo naturalGenerationInfo = new NaturalGenerationInfo(generationCategory, ySelector);
-        BiomeGenerationInfo[] infos = gson.fromJson(jsonObject.get("generationBiomes"), BiomeGenerationInfo[].class);
-        naturalGenerationInfo.biomeWeights.setContents(Arrays.asList(infos));
+        if (jsonObject.has("generationBiomes"))
+        {
+            BiomeGenerationInfo[] infos = gson.fromJson(jsonObject.get("generationBiomes"), BiomeGenerationInfo[].class);
+            naturalGenerationInfo.biomeWeights.setContents(Arrays.asList(infos));
+        }
+        else
+            naturalGenerationInfo.biomeWeights.setToDefault();
 
         naturalGenerationInfo.dimensionWeights.setToDefault();
 
@@ -172,12 +177,16 @@ public class NaturalGenerationInfo extends StructureGenerationInfo
             {
                 if (jsonObject.has("generationBiomes"))
                     Collections.addAll(naturalGenerationInfo.biomeWeights.list, gson.fromJson(jsonObject.get("generationBiomes"), BiomeGenerationInfo[].class));
+                else
+                    naturalGenerationInfo.biomeWeights.setToDefault();
             }
 
             if (!naturalGenerationInfo.dimensionWeights.setPreset(JsonUtils.getJsonObjectStringFieldValueOrDefault(jsonObject, "dimensionWeightsPreset", null)))
             {
                 if (jsonObject.has("generationDimensions"))
                     Collections.addAll(naturalGenerationInfo.dimensionWeights.list, gson.fromJson(jsonObject.get("generationDimensions"), DimensionGenerationInfo[].class));
+                else
+                    naturalGenerationInfo.dimensionWeights.setToDefault();
             }
 
             return naturalGenerationInfo;

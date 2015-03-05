@@ -11,6 +11,7 @@ import ivorius.ivtoolkit.math.AxisAlignedTransform2D;
 import ivorius.reccomplex.client.rendering.AreaRenderer;
 import ivorius.reccomplex.client.rendering.SelectionRenderer;
 import ivorius.reccomplex.operation.Operation;
+import ivorius.reccomplex.worldgen.StructureGenerationData;
 import ivorius.reccomplex.worldgen.StructureGenerator;
 import ivorius.reccomplex.structures.generic.GenericStructureInfo;
 import net.minecraft.client.Minecraft;
@@ -19,6 +20,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.MathHelper;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
+import net.minecraftforge.common.util.Constants;
 import org.lwjgl.opengl.GL11;
 
 /**
@@ -33,6 +35,8 @@ public class OperationGenerateStructure implements Operation
 
     public boolean generateAsSource;
 
+    public String structureIDForSaving;
+
     public OperationGenerateStructure()
     {
     }
@@ -43,6 +47,15 @@ public class OperationGenerateStructure implements Operation
         this.transform = transform;
         this.lowerCoord = lowerCoord;
         this.generateAsSource = generateAsSource;
+    }
+
+    public OperationGenerateStructure(GenericStructureInfo structure, AxisAlignedTransform2D transform, BlockCoord lowerCoord, boolean generateAsSource, String structureIDForSaving)
+    {
+        this.structure = structure;
+        this.transform = transform;
+        this.lowerCoord = lowerCoord;
+        this.generateAsSource = generateAsSource;
+        this.structureIDForSaving = structureIDForSaving;
     }
 
     public static void maybeRenderBoundingBox(BlockCoord lowerCoord, int[] size, int ticks, float partialTicks)
@@ -74,13 +87,23 @@ public class OperationGenerateStructure implements Operation
         GL11.glDisable(GL11.GL_BLEND);
     }
 
+    public String getStructureIDForSaving()
+    {
+        return structureIDForSaving;
+    }
+
+    public void setStructureIDForSaving(String structureIDForSaving)
+    {
+        this.structureIDForSaving = structureIDForSaving;
+    }
+
     @Override
     public void perform(World world)
     {
         if (generateAsSource)
             structure.generate(new StructureSpawnContext(world, world.rand, lowerCoord, transform, 0, true, structure));
         else
-            StructureGenerator.generateStructureWithNotifications(structure, world, world.rand, lowerCoord, transform, 0, false);
+            StructureGenerator.generateStructureWithNotifications(structure, world, world.rand, lowerCoord, transform, 0, false, structureIDForSaving);
     }
 
     @Override
@@ -95,6 +118,9 @@ public class OperationGenerateStructure implements Operation
         BlockCoord.writeCoordToNBT("lowerCoord", lowerCoord, compound);
 
         compound.setBoolean("generateAsSource", generateAsSource);
+
+        if (structureIDForSaving != null)
+            compound.setString("structureIDForSaving", structureIDForSaving);
     }
 
     @Override
@@ -108,6 +134,10 @@ public class OperationGenerateStructure implements Operation
         lowerCoord = BlockCoord.readCoordFromNBT("lowerCoord", compound);
 
         generateAsSource = compound.getBoolean("generateAsSource");
+
+        structureIDForSaving = compound.hasKey("structureIDForSaving", Constants.NBT.TAG_STRING)
+                ? compound.getString("structureIDForSaving")
+                : null;
     }
 
     @Override

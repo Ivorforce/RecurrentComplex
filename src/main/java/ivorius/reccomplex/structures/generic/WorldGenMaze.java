@@ -10,6 +10,7 @@ import ivorius.ivtoolkit.math.AxisAlignedTransform2D;
 import ivorius.ivtoolkit.maze.*;
 import ivorius.reccomplex.structures.StructureInfo;
 import ivorius.reccomplex.structures.StructureInfos;
+import ivorius.reccomplex.structures.StructureRegistry;
 import ivorius.reccomplex.structures.generic.gentypes.MazeGenerationInfo;
 import ivorius.reccomplex.worldgen.StructureGenerator;
 import net.minecraft.util.MathHelper;
@@ -40,6 +41,7 @@ public class WorldGenMaze
 
             AxisAlignedTransform2D componentTransform = info.transform;
             StructureInfo compStructureInfo = info.structureInfo;
+            String compStructureName = StructureRegistry.getName(compStructureInfo);
 
             int[] compStructureSize = StructureInfos.structureSize(compStructureInfo, componentTransform);
             int[] compRoomSize = Maze.getRoomSize(position.getComponent().getSize(), pathLengths, roomSize);
@@ -47,7 +49,7 @@ public class WorldGenMaze
 
             BlockCoord compMazeCoordLower = coord.add(scaledCompMazePosition[0] + sizeDependentShift[0], scaledCompMazePosition[1] + sizeDependentShift[1], scaledCompMazePosition[2] + +sizeDependentShift[2]);
 
-            StructureGenerator.generateStructureWithNotifications(compStructureInfo, world, random, compMazeCoordLower, componentTransform, layer + 1, false);
+            StructureGenerator.generateStructureWithNotifications(compStructureInfo, world, random, compMazeCoordLower, componentTransform, layer + 1, false, compStructureName);
         }
 
 //        for (int i = 0; i < maze.blocks.length; i++)

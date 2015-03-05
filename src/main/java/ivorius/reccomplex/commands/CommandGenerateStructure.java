@@ -89,10 +89,10 @@ public class CommandGenerateStructure extends CommandBase
 
             BlockCoord coord = new BlockCoord(genX, genY, genZ);
 
-            OperationRegistry.queueOperation(new OperationGenerateStructure((GenericStructureInfo) structureInfo, transform, coord, false), commandSender);
+            OperationRegistry.queueOperation(new OperationGenerateStructure((GenericStructureInfo) structureInfo, transform, coord, false, structureName), commandSender);
         }
         else
-            StructureGenerator.generateStructureRandomly(world, world.rand, structureInfo, null, x, z, false);
+            StructureGenerator.generateStructureRandomly(world, world.rand, structureInfo, null, x, z, false, structureName);
     }
 
     @Override

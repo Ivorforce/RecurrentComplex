@@ -121,6 +121,11 @@ commands.rcvisual.usage=/#visual rulers <true|false>
 commands.rcvisual.enabled='%s' successfully enabled
 commands.rcvisual.disabled='%s' successfully disabled
 
+commands.whatisthis.usage=/#whatisthis [x] [y] [z]
+commands.whatisthis.none=There is nothing here!
+commands.whatisthis.one=This is: %s
+commands.whatisthis.many=This is any, or all of: %s
+
 inventoryGen.vanilla=Vanilla Generator
 inventoryGen.custom=Custom Generator
 inventoryGen.create=Create New Generator

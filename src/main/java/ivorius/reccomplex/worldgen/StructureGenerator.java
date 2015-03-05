@@ -39,7 +39,7 @@ public class StructureGenerator
 {
     public static final int MIN_DIST_TO_LIMIT = 3;
 
-    public static int generateStructureRandomly(World world, Random random, StructureInfo info, @Nullable GenerationYSelector ySelector, int x, int z, boolean suggest)
+    public static int generateStructureRandomly(World world, Random random, StructureInfo info, @Nullable GenerationYSelector ySelector, int x, int z, boolean suggest, String structureName)
     {
         AxisAlignedTransform2D transform = AxisAlignedTransform2D.transform(info.isRotatable() ? random.nextInt(4) : 0, info.isMirrorable() && random.nextBoolean());
 
@@ -50,18 +50,17 @@ public class StructureGenerator
         int genY = ySelector != null ? ySelector.generationY(world, random, StructureInfos.structureBoundingBox(new BlockCoord(genX, 0, genZ), size)) : world.getHeightValue(x, z);
         BlockCoord coord = new BlockCoord(genX, genY, genZ);
 
-        generateStructureWithNotifications(info, world, random, coord, transform, 0, suggest);
+        generateStructureWithNotifications(info, world, random, coord, transform, 0, suggest, structureName);
 
         return genY;
     }
 
-    public static void generateStructureWithNotifications(StructureInfo structureInfo, World world, Random random, BlockCoord coord, AxisAlignedTransform2D transform, int layer, boolean suggest)
+    public static boolean generateStructureWithNotifications(StructureInfo structureInfo, World world, Random random, BlockCoord coord, AxisAlignedTransform2D transform, int layer, boolean suggest, String structureName)
     {
         int[] size = StructureInfos.structureSize(structureInfo, transform);
         int[] coordInts = new int[]{coord.x, coord.y, coord.z};
 
         StructureSpawnContext structureSpawnContext = new StructureSpawnContext(world, random, StructureInfos.structureBoundingBox(coord, size), layer, false, transform);
-        String structureName = StructureRegistry.getName(structureInfo);
 
         if (!suggest || (
                 coord.y > MIN_DIST_TO_LIMIT && coord.y + size[1] < world.getHeight() - MIN_DIST_TO_LIMIT
@@ -73,12 +72,25 @@ public class StructureGenerator
             MinecraftForge.EVENT_BUS.post(new StructureGenerationEventLite.Pre(world, structureName, coordInts, size, layer));
 
             structureInfo.generate(structureSpawnContext);
-            RecurrentComplex.logger.trace("Generated structure '" + StructureRegistry.getName(structureInfo) + "' in " + structureSpawnContext.boundingBox);
+
+            RecurrentComplex.logger.trace(String.format("Generated structure '%s' in %s", name(structureName), structureSpawnContext.boundingBox));
 
             RCEventBus.INSTANCE.post(new StructureGenerationEvent.Post(structureInfo, structureSpawnContext));
             MinecraftForge.EVENT_BUS.post(new StructureGenerationEventLite.Post(world, structureName, coordInts, size, layer));
+
+            if (structureName != null)
+                StructureGenerationData.get(world).addNewEntry(structureName, coord, transform);
+
+            return true;
         }
         else
-            RecurrentComplex.logger.trace("Canceled structure '" + StructureRegistry.getName(structureInfo) + "' generation in " + structureSpawnContext.boundingBox);
+            RecurrentComplex.logger.trace(String.format("Canceled structure '%s' generation in %s", structureName, structureSpawnContext.boundingBox));
+
+        return false;
+    }
+
+    private static String name(String structureName)
+    {
+        return structureName != null ? structureName : "Unknown";
     }
 }

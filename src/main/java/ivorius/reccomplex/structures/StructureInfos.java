@@ -30,4 +30,28 @@ public class StructureInfos
         }
         return size;
     }
+
+    public static StructureBoundingBox chunkBoundingBox(int chunkX, int chunkZ)
+    {
+        return new StructureBoundingBox(chunkX << 4, chunkZ << 4, chunkX << 4 + 15, chunkZ << 4 + 15);
+    }
+
+    public static StructureBoundingBox intersection(StructureBoundingBox bb1, StructureBoundingBox bb2)
+    {
+        int x1 = Math.max(bb1.minX, bb2.minX);
+        int y1 = Math.max(bb1.minY, bb2.minY);
+        int z1 = Math.max(bb1.minZ, bb2.minZ);
+        int x2 = Math.min(bb1.maxX, bb2.maxX);
+        int y2 = Math.min(bb1.maxY, bb2.maxY);
+        int z2 = Math.min(bb1.maxZ, bb2.maxZ);
+
+        return new StructureBoundingBox(
+                Math.min(x1, x2),
+                Math.min(y1, y2),
+                Math.min(z1, z2),
+                Math.max(x1, x2),
+                Math.max(y1, y2),
+                Math.max(z1, z2)
+        );
+    }
 }

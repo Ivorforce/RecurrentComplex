@@ -39,10 +39,13 @@ public class WorldGenStructures implements IWorldGenerator
             RecurrentComplex.logger.trace(String.format("Spawning static structure at x = %d, z = %d", chunkX << 4, chunkZ << 4));
 
             StaticGenerationInfo staticGenInfo = pair.getRight();
+            StructureInfo structureInfo = pair.getLeft();
+            String structureName = StructureRegistry.getName(structureInfo);
+
             int strucX = staticGenInfo.getPositionX(spawnPos);
             int strucZ = staticGenInfo.getPositionZ(spawnPos);
 
-            StructureGenerator.generateStructureRandomly(world, random, pair.getLeft(), staticGenInfo.ySelector, strucX, strucZ, false);
+            StructureGenerator.generateStructureRandomly(world, random, structureInfo, staticGenInfo.ySelector, strucX, strucZ, false, structureName);
         }
 
         if (world.provider.dimensionId == 0)
@@ -60,9 +63,12 @@ public class WorldGenStructures implements IWorldGenerator
 
             for (Pair<StructureInfo, NaturalGenerationInfo> pair : generated)
             {
+                StructureInfo structureInfo = pair.getLeft();
+                String structureName = StructureRegistry.getName(structureInfo);
+
                 int genX = chunkX * 16 + random.nextInt(16);
                 int genZ = chunkZ * 16 + random.nextInt(16);
-                StructureGenerator.generateStructureRandomly(world, random, pair.getLeft(), pair.getRight().ySelector, genX, genZ, true);
+                StructureGenerator.generateStructureRandomly(world, random, structureInfo, pair.getRight().ySelector, genX, genZ, true, structureName);
 
 //                RecurrentComplex.logger.info("Generated " + info + " at " + genX + ", " + genY + ", " + genZ);
             }

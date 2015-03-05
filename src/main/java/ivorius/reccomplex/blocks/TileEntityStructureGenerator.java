@@ -144,8 +144,8 @@ public class TileEntityStructureGenerator extends TileEntity implements Generati
         {
             if (structureNames.size() > 0)
             {
-                String structure = structureNames.get(random.nextInt(structureNames.size()));
-                StructureInfo structureInfo = StructureRegistry.getStructure(structure);
+                String structureID = structureNames.get(random.nextInt(structureNames.size()));
+                StructureInfo structureInfo = StructureRegistry.getStructure(structureID);
 
                 if (structureInfo != null)
                 {
@@ -156,7 +156,7 @@ public class TileEntityStructureGenerator extends TileEntity implements Generati
                     int[] strucSize = structureInfo.structureBoundingBox();
                     BlockCoord coord = transform.apply(structureShift, new int[]{1, 1, 1}).add(xCoord, yCoord, zCoord).subtract(transform.apply(new BlockCoord(0, 0, 0), strucSize));
 
-                    StructureGenerator.generateStructureWithNotifications(structureInfo, world, random, coord, strucTransform, layer, false);
+                    StructureGenerator.generateStructureWithNotifications(structureInfo, world, random, coord, strucTransform, layer, false, structureID);
                 }
             }
         }
@@ -176,6 +176,7 @@ public class TileEntityStructureGenerator extends TileEntity implements Generati
                     }
                 });
                 StructureInfo structureInfo = pair.getLeft();
+                String structureName = StructureRegistry.getName(structureInfo);
                 StructureListGenerationInfo generationInfo = pair.getRight();
 
                 boolean mirrorX;
@@ -200,7 +201,7 @@ public class TileEntityStructureGenerator extends TileEntity implements Generati
                         .add(xCoord, yCoord, zCoord)
                         .subtract(transform.apply(new BlockCoord(0, 0, 0), strucSize));
 
-                StructureGenerator.generateStructureWithNotifications(structureInfo, world, random, coord, strucTransform, layer, false);
+                StructureGenerator.generateStructureWithNotifications(structureInfo, world, random, coord, strucTransform, layer, false, structureName);
             }
         }
     }

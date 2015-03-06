@@ -191,13 +191,15 @@ public class BlockTransformerRuins implements BlockTransformer
 
         if (random.nextFloat() < vineGrowth)
         {
-            if (newBlock == Blocks.stonebrick && newMeta == 2)
-                newMeta = 3;
+            if (newBlock == Blocks.stonebrick && (newMeta == 2 || newMeta == 0))
+                newMeta = 1;
             else if (newBlock == Blocks.cobblestone)
             {
                 newBlock = Blocks.mossy_cobblestone;
                 newMeta = 0;
             }
+            else if (newBlock == Blocks.cobblestone_wall && newMeta == 0)
+                newMeta = 1;
             else if (newBlock == Blocks.air)
             {
                 ForgeDirection[] directions = HORIZONTAL_DIRECTIONS.clone();

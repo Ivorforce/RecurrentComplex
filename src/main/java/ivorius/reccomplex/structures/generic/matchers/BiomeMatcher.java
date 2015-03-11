@@ -7,13 +7,12 @@ package ivorius.reccomplex.structures.generic.matchers;
 
 import com.google.common.base.Function;
 import com.google.common.base.Predicate;
-import com.google.common.collect.Collections2;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
 import ivorius.ivtoolkit.tools.IvGsonHelper;
 import ivorius.reccomplex.json.RCGsonHelper;
-import ivorius.reccomplex.utils.BoolAlgebra;
 import ivorius.reccomplex.utils.ExpressionCache;
+import ivorius.reccomplex.utils.RCBoolAlgebra;
 import ivorius.reccomplex.utils.Visitor;
 import joptsimple.internal.Strings;
 import net.minecraft.util.EnumChatFormatting;
@@ -36,7 +35,7 @@ public class BiomeMatcher extends ExpressionCache<Boolean> implements Predicate<
 
     public BiomeMatcher(String expression)
     {
-        super(BoolAlgebra.algebra(), expression);
+        super(RCBoolAlgebra.algebra(), expression);
     }
 
     public static String ofTypes(BiomeDictionary.Type... biomeTypes)

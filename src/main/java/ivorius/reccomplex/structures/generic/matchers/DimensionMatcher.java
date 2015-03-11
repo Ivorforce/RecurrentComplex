@@ -9,8 +9,8 @@ import com.google.common.base.Function;
 import com.google.common.base.Predicate;
 import com.google.common.primitives.Ints;
 import ivorius.reccomplex.dimensions.DimensionDictionary;
-import ivorius.reccomplex.utils.BoolAlgebra;
 import ivorius.reccomplex.utils.ExpressionCache;
+import ivorius.reccomplex.utils.RCBoolAlgebra;
 import ivorius.reccomplex.utils.Visitor;
 import joptsimple.internal.Strings;
 import net.minecraft.util.EnumChatFormatting;
@@ -31,7 +31,7 @@ public class DimensionMatcher extends ExpressionCache<Boolean> implements Predic
 
     public DimensionMatcher(String expression)
     {
-        super(BoolAlgebra.algebra(), expression);
+        super(RCBoolAlgebra.algebra(), expression);
     }
 
     public static String ofTypes(String... dimensionTypes)

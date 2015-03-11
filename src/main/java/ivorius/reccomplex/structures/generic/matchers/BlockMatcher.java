@@ -10,8 +10,8 @@ import com.google.common.base.Predicate;
 import com.google.common.base.Splitter;
 import com.google.common.primitives.Ints;
 import ivorius.ivtoolkit.gui.IntegerRange;
-import ivorius.reccomplex.utils.BoolAlgebra;
 import ivorius.reccomplex.utils.ExpressionCache;
+import ivorius.reccomplex.utils.RCBoolAlgebra;
 import ivorius.reccomplex.utils.Visitor;
 import net.minecraft.block.Block;
 import net.minecraft.util.EnumChatFormatting;
@@ -29,7 +29,7 @@ public class BlockMatcher extends ExpressionCache<Boolean> implements Predicate<
 
     public BlockMatcher(String expression)
     {
-        super(BoolAlgebra.algebra(), expression);
+        super(RCBoolAlgebra.algebra(), expression);
     }
 
     public static String of(Block block)

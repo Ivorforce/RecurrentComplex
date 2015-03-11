@@ -7,15 +7,32 @@ package ivorius.reccomplex.utils;
 
 import com.google.common.base.Function;
 
+import javax.annotation.Nullable;
+import java.text.ParseException;
+
 /**
  * Created by lukas on 24.02.15.
  */
 public class Algebras
 {
+    @Nullable
     public static <T> T tryEvaluate(String expression, Algebra<T> algebra, Function<String, T> variableEvaluator)
     {
-        Algebra.Expression<T> parsed = algebra.tryParse(expression);
+        Algebra.Expression<T> parsed = tryParse(expression, algebra);
         return parsed != null ? parsed.evaluate(variableEvaluator) : null;
+    }
+
+    @Nullable
+    public static <T> Algebra.Expression<T> tryParse(String string, Algebra<T> algebra)
+    {
+        try
+        {
+            return algebra.parse(string);
+        }
+        catch (ParseException e)
+        {
+            return null;
+        }
     }
 
     public static class Closure<T> extends Algebra.Operator<T>

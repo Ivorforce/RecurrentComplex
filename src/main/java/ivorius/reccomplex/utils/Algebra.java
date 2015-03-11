@@ -134,35 +134,15 @@ public class Algebra<T>
         };
     }
 
-    @Nullable
-    public Expression<T> tryParse(String string)
-    {
-        try
-        {
-            return parse(string);
-        }
-        catch (ParseException e)
-        {
-            return null;
-        }
-    }
-
     @Nonnull
     public Expression<T> parse(String string) throws ParseException
     {
         try
         {
             List<SymbolTokenizer.Token> tokens = new SymbolTokenizer(rules, getTokenFactory()).tokenize(string);
-
-            implodeExpressions(tokens, new TreeSet<>(PrecedenceSets.group(this.operators)), 0);
-
-            return ((ExpressionToken<T>) tokens.get(0)).expression;
+            return implodeExpressions(tokens, new TreeSet<>(PrecedenceSets.group(this.operators)), 0).expression;
         }
-        catch (ParseException e)
-        {
-            throw e;
-        }
-        catch (Exception e)
+        catch (RuntimeException e)
         {
             if (logger != null)
                 logger.error("Internal error when parsing", e);
@@ -171,7 +151,7 @@ public class Algebra<T>
         }
     }
 
-    protected void implodeExpressions(List<SymbolTokenizer.Token> tokens, NavigableSet<PrecedenceSet<Operator<T>>> operators, int stringIndex) throws ParseException
+    protected ExpressionToken<T> implodeExpressions(List<SymbolTokenizer.Token> tokens, NavigableSet<PrecedenceSet<Operator<T>>> operators, int stringIndex) throws ParseException
     {
         if (tokens.size() == 0)
                 throw new ParseException("Expected Expression", stringIndex);
@@ -180,9 +160,10 @@ public class Algebra<T>
         if (tokens.size() == 1 && (startToken = tokens.get(0)) instanceof ConstantToken)
         {
             tokens.remove(0);
-            tokens.add(0, new ExpressionToken<>(startToken.startIndex, startToken.endIndex,
-                    new Constant<>(((ConstantToken) startToken).identifier)));
-            return;
+            ExpressionToken<T> exp = new ExpressionToken<>(startToken.startIndex, startToken.endIndex,
+                    new Constant<T>(((ConstantToken) startToken).identifier));
+            tokens.add(exp);
+            return exp;
         }
 
         for (PrecedenceSet<Operator<T>> curOperators : operators)
@@ -251,6 +232,8 @@ public class Algebra<T>
 
         if (tokens.size() > 1 || !(tokens.get(0) instanceof ExpressionToken))
             throw new ParseException("Expected Operator", tokens.get(1).startIndex);
+
+        return (ExpressionToken) tokens.get(0);
     }
 
     protected void implodeOperator(final List<SymbolTokenizer.Token> tokens, final int startIndex, int endIndex, Operator<T> operator) throws ParseException
@@ -269,7 +252,7 @@ public class Algebra<T>
         }
         tokens.clear();
 
-        tokens.add(0, new ExpressionToken<>(startIndex, endIndex, new Operation<>(operator, expressions)));
+        tokens.add(new ExpressionToken<>(startIndex, endIndex, new Operation<>(operator, expressions)));
     }
 
     protected int implodeBuildingExpression(BuildingExpression<T> buildingExpression, List<SymbolTokenizer.Token> tokens, NavigableSet<PrecedenceSet<Operator<T>>> followingOperators, int currentTokenIndex) throws ParseException

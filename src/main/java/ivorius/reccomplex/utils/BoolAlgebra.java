@@ -6,11 +6,6 @@
 package ivorius.reccomplex.utils;
 
 import com.google.common.base.Function;
-import com.google.common.base.Predicate;
-
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-import java.text.ParseException;
 
 /**
  * Created by lukas on 23.02.15.
@@ -19,34 +14,39 @@ public abstract class BoolAlgebra
 {
     private static Algebra<Boolean> algebra;
 
-    public static Algebra<Boolean> algebra()
+    public static Algebra<Boolean> newAlgebra()
     {
-        return algebra != null ? algebra : (algebra = new Algebra<>(
+        return new Algebra<>(
                 new Algebras.Closure("(", ")"),
-                new Algebra.Operator<Boolean>(true, true, "|")
+                new Algebras.Infix<Boolean>("|")
                 {
                     @Override
-                    public Boolean evaluate(Function<String, Boolean> variableEvaluator, Algebra.Expression<Boolean>[] expressions)
+                    public Boolean evaluate(Function<String, Boolean> variableEvaluator, Algebra.Expression<Boolean> left, Algebra.Expression<Boolean> right)
                     {
-                        return expressions[0].evaluate(variableEvaluator) || expressions[1].evaluate(variableEvaluator);
+                        return left.evaluate(variableEvaluator) || right.evaluate(variableEvaluator);
                     }
                 },
-                new Algebra.Operator<Boolean>(true, true, "&")
+                new Algebras.Infix<Boolean>("&")
                 {
                     @Override
-                    public Boolean evaluate(Function<String, Boolean> variableEvaluator, Algebra.Expression<Boolean>[] expressions)
+                    public Boolean evaluate(Function<String, Boolean> variableEvaluator, Algebra.Expression<Boolean> left, Algebra.Expression<Boolean> right)
                     {
-                        return expressions[0].evaluate(variableEvaluator) && expressions[1].evaluate(variableEvaluator);
+                        return left.evaluate(variableEvaluator) && right.evaluate(variableEvaluator);
                     }
                 },
-                new Algebra.Operator<Boolean>(false, true, "!")
+                new Algebras.Unary<Boolean>(Algebras.Unary.Notation.PREFIX, "!")
                 {
                     @Override
-                    public Boolean evaluate(Function<String, Boolean> variableEvaluator, Algebra.Expression<Boolean>[] expressions)
+                    public Boolean evaluate(Function<String, Boolean> variableEvaluator, Algebra.Expression<Boolean> expression)
                     {
-                        return !expressions[0].evaluate(variableEvaluator);
+                        return !expression.evaluate(variableEvaluator);
                     }
                 }
-        ));
+        );
+    }
+
+    public static Algebra<Boolean> algebra()
+    {
+        return algebra != null ? algebra : (algebra = newAlgebra());
     }
 }

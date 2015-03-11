@@ -6,6 +6,10 @@
 package ivorius.reccomplex.utils;
 
 import com.google.common.base.Function;
+import gnu.trove.stack.TIntStack;
+import gnu.trove.stack.array.TIntArrayStack;
+import org.apache.commons.lang3.ArrayUtils;
+import org.apache.commons.lang3.tuple.Triple;
 import org.apache.logging.log4j.Logger;
 
 import javax.annotation.Nonnull;
@@ -23,13 +27,24 @@ import java.util.Stack;
  */
 public class Algebra<T>
 {
+    @Nonnull
+    protected Rules rules;
+
     protected final List<Operator<T>> operators = new ArrayList<>();
 
+    @Nullable
     protected Logger logger;
 
     @SafeVarargs
     public Algebra(Operator<T>... operators)
     {
+        this(new SimpleRules(), operators);
+    }
+
+    @SafeVarargs
+    public Algebra(@Nonnull Rules rules, Operator<T>... operators)
+    {
+        this.rules = rules;
         Collections.addAll(this.operators, operators);
     }
 
@@ -38,12 +53,24 @@ public class Algebra<T>
         return string.regionMatches(index, symbol, 0, symbol.length());
     }
 
+    @Nonnull
+    public Rules getRules()
+    {
+        return rules;
+    }
+
+    public void setRules(@Nonnull Rules rules)
+    {
+        this.rules = rules;
+    }
+
+    @Nullable
     public Logger getLogger()
     {
         return logger;
     }
 
-    public void setLogger(Logger logger)
+    public void setLogger(@Nullable Logger logger)
     {
         this.logger = logger;
     }
@@ -231,60 +258,117 @@ public class Algebra<T>
         tokens.add(start, new Token.ExpressionToken(stringIndex, new Operation<>(operator, expressions)));
     }
 
-    protected List<Token> tokenize(String string)
+    protected List<Token> tokenize(String string) throws ParseException
     {
+        Character escapeChar = rules.escapeChar();
+
         int index = 0;
         int variableStart = -1;
+        boolean escape = false;
+        TIntStack escapes = new TIntArrayStack();
         ArrayList<Token> tokens = new ArrayList<>();
 
         while (index < string.length())
         {
-            if (Character.isWhitespace(string.charAt(index)))
+            char character = string.charAt(index);
+
+            if (rules.isIllegal(character))
+                throw new ParseException(String.format("Illegal character '%c'", character), index);
+            else if (!escape && escapeChar != null && escapeChar == character)
+            {
+                escape = true;
+                escapes.push(index);
+            }
+            else if (!escape && rules.isWhitespace(character))
             {
                 if (variableStart >= 0)
-                    tokens.add(new Token.ConstantToken(variableStart, string.substring(variableStart, index)));
+                    tokens.add(buildConstantToken(string, variableStart, index, escapes));
                 variableStart = -1;
             }
             else
             {
-                boolean recognized = false;
+                Token.OperatorToken token;
 
-                atOperators:
-                for (int o = 0; o < operators.size(); o++)
+                if (!escape && (token = operatorTokenAt(string, index)) != null)
                 {
-                    Operator<T> operator = operators.get(o);
-                    String[] symbols = operator.getSymbols();
+                    if (variableStart >= 0)
+                        tokens.add(buildConstantToken(string, variableStart, index, escapes));
+                    variableStart = -1;
 
-                    for (int s = 0; s < symbols.length; s++)
-                    {
-                        String symbol = symbols[s];
-                        if (hasAt(string, symbol, index))
-                        {
-                            if (variableStart >= 0)
-                                tokens.add(new Token.ConstantToken(variableStart, string.substring(variableStart, index)));
-                            variableStart = -1;
-
-                            tokens.add(new Token.OperatorToken(index, o, s));
-                            index += symbol.length() - 1;
-
-                            recognized = true;
-                            break atOperators;
-                        }
-                    }
+                    tokens.add(token);
+                    String symbol = operators.get(token.operatorIndex).getSymbols()[token.symbolIndex];
+                    index += symbol.length() - 1;
                 }
-
-                if (!recognized && variableStart < 0)
+                else if (variableStart < 0)
                     variableStart = index;
+
+                escape = false;
             }
 
             index++;
         }
 
         if (variableStart >= 0)
-            tokens.add(new Token.ConstantToken(variableStart, string.substring(variableStart, index)));
+            tokens.add(buildConstantToken(string, variableStart, index, escapes));
 
         tokens.trimToSize();
         return tokens;
+    }
+
+    protected Token.ConstantToken buildConstantToken(String string, int start, int end, TIntStack escapes)
+    {
+        StringBuilder constant = new StringBuilder(string.substring(start, end));
+
+        while (escapes.size() > 0) // Iterate from the right, so indexes stay the same
+            constant.deleteCharAt(escapes.pop() - start);
+        escapes.clear();
+
+        return new Token.ConstantToken(start, constant.toString());
+    }
+
+    protected Token.OperatorToken operatorTokenAt(String string, int index)
+    {
+        for (int o = 0; o < operators.size(); o++)
+        {
+            Operator<T> operator = operators.get(o);
+            String[] symbols = operator.getSymbols();
+
+            for (int s = 0; s < symbols.length; s++)
+            {
+                String symbol = symbols[s];
+                if (hasAt(string, symbol, index))
+                    return new Token.OperatorToken(index, o, s);
+            }
+        }
+
+        return null;
+    }
+
+    public String escapeWhereNecessary(String string)
+    {
+        Character escapeChar = rules.escapeChar();
+
+        if (escapeChar != null)
+        {
+            TIntStack escapes = new TIntArrayStack();
+            for (int idx = 0; idx < string.length(); idx++)
+            {
+                if (rules.isWhitespace(string.charAt(idx)) || operatorTokenAt(string, idx) != null)
+                    escapes.push(idx);
+            }
+
+            if (escapes.size() > 0)
+            {
+                StringBuilder builder = new StringBuilder(string);
+
+                while (escapes.size() > 0)
+                    builder.insert(escapes.pop(), escapeChar);
+
+                return builder.toString();
+            }
+        }
+
+        return string;
     }
 
     protected static class BuildingExpression
@@ -515,5 +599,84 @@ public class Algebra<T>
         }
 
         public abstract T evaluate(Function<String, T> variableEvaluator, Expression<T>[] expressions);
+    }
+
+    public static interface Rules
+    {
+        Character escapeChar();
+
+        boolean isWhitespace(char character);
+
+        boolean isIllegal(char character);
+    }
+
+    public static class SimpleRules implements Rules
+    {
+        @Nullable
+        private Character escapeChar;
+        @Nullable
+        private char[] whitespace;
+        @Nullable
+        private char[] illegal;
+
+        public SimpleRules()
+        {
+            this('\\', null, null);
+        }
+
+        public SimpleRules(Character escapeChar, char[] whitespace, char[] illegal)
+        {
+            this.escapeChar = escapeChar;
+            this.whitespace = whitespace;
+            this.illegal = illegal;
+        }
+
+        @Nullable
+        public Character getEscapeChar()
+        {
+            return escapeChar;
+        }
+
+        @Nullable
+        public char[] getWhitespace()
+        {
+            return whitespace;
+        }
+
+        public void setWhitespace(@Nullable char[] whitespace)
+        {
+            this.whitespace = whitespace;
+        }
+
+        @Nullable
+        public char[] getIllegal()
+        {
+            return illegal;
+        }
+
+        public void setIllegal(@Nullable char[] illegal)
+        {
+            this.illegal = illegal;
+        }
+
+        @Override
+        public boolean isWhitespace(char character)
+        {
+            return whitespace != null
+                    ? ArrayUtils.contains(whitespace, character)
+                    : Character.isWhitespace(character);
+        }
+
+        @Override
+        public Character escapeChar()
+        {
+            return escapeChar;
+        }
+
+        @Override
+        public boolean isIllegal(char character)
+        {
+            return illegal != null && ArrayUtils.contains(illegal, character);
+        }
     }
 }

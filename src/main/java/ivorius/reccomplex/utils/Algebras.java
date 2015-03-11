@@ -25,4 +25,41 @@ public class Algebras
             return expressions[0].evaluate(variableEvaluator);
         }
     }
+
+    public static abstract class Unary<T> extends Algebra.Operator<T>
+    {
+        public static enum Notation
+        {
+            PREFIX, POSTFIX
+        }
+
+        public Unary(Notation notation, String symbol)
+        {
+            super(notation == Notation.POSTFIX, notation == Notation.PREFIX, symbol);
+        }
+
+        @Override
+        public T evaluate(Function<String, T> variableEvaluator, Algebra.Expression<T>[] expressions)
+        {
+            return evaluate(variableEvaluator, expressions[0]);
+        }
+
+        public abstract T evaluate(Function<String, T> variableEvaluator, Algebra.Expression<T> expression);
+    }
+
+    public static abstract class Infix<T> extends Algebra.Operator<T>
+    {
+        public Infix(String symbol)
+        {
+            super(true, true, symbol);
+        }
+
+        @Override
+        public T evaluate(Function<String, T> variableEvaluator, Algebra.Expression<T>[] expressions)
+        {
+            return evaluate(variableEvaluator, expressions[0], expressions[1]);
+        }
+
+        public abstract T evaluate(Function<String, T> variableEvaluator, Algebra.Expression<T> left, Algebra.Expression<T> right);
+    }
 }

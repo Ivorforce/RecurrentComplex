@@ -9,16 +9,12 @@ import com.google.common.base.Function;
 import gnu.trove.stack.TIntStack;
 import gnu.trove.stack.array.TIntArrayStack;
 import org.apache.commons.lang3.ArrayUtils;
-import org.apache.commons.lang3.tuple.Triple;
 import org.apache.logging.log4j.Logger;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.text.ParseException;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Stack;
+import java.util.*;
 
 /**
  * A list of operators that is able to parse strings to an expression.
@@ -30,7 +26,7 @@ public class Algebra<T>
     @Nonnull
     protected Rules rules;
 
-    protected final List<Operator<T>> operators = new ArrayList<>();
+    protected final Set<Operator<T>> operators = new HashSet<>();
 
     @Nullable
     protected Logger logger;
@@ -48,9 +44,19 @@ public class Algebra<T>
         Collections.addAll(this.operators, operators);
     }
 
-    private static boolean hasAt(String string, String symbol, int index)
+    public boolean addOperator(Operator<T> operator)
     {
-        return string.regionMatches(index, symbol, 0, symbol.length());
+        return operators.add(operator);
+    }
+
+    public boolean removeOperator(Operator<T> operator)
+    {
+        return operators.remove(operator);
+    }
+
+    public Set<Operator<T>> operators()
+    {
+        return Collections.unmodifiableSet(operators);
     }
 
     @Nonnull
@@ -94,7 +100,8 @@ public class Algebra<T>
         try
         {
             List<Token> tokens = tokenize(string);
-            implode(tokens, 0, 0, tokens.size());
+
+            implode(tokens, new TreeSet<>(PrecedenceSets.group(this.operators)), 0, tokens.size());
 
             return ((Token.ExpressionToken<T>) tokens.get(0)).expression;
         }
@@ -111,7 +118,7 @@ public class Algebra<T>
         }
     }
 
-    protected void implode(List<Token> tokens, int minOperatorIndex, int start, int end) throws ParseException
+    protected void implode(List<Token> tokens, NavigableSet<PrecedenceSet<Operator<T>>> operators, int start, int end) throws ParseException
     {
         if (end - start < 1)
         {
@@ -131,107 +138,110 @@ public class Algebra<T>
             return;
         }
 
-        for (int operatorIndex = minOperatorIndex; operatorIndex < operators.size(); operatorIndex++)
+        for (PrecedenceSet<Operator<T>> curOperators : operators)
         {
-            Operator<T> operator = operators.get(operatorIndex);
-            String[] symbols = operator.getSymbols();
-            int lastSymbolIndex = symbols.length - 1;
-            int numberOfArguments = operator.getNumberOfArguments();
-
-            Stack<BuildingExpression> expressionStack = new Stack<>();
-            expressionStack.push(new BuildingExpression(tokens.get(start).stringIndex, start, -1));
+            Stack<BuildingExpression<T>> expressionStack = new Stack<>();
+            expressionStack.push(new BuildingExpression<T>(null, tokens.get(start).stringIndex, start, -1));
 
             for (int t = start; t < end; t++)
             {
                 Token token = tokens.get(t);
                 if (token instanceof Token.OperatorToken)
                 {
-                    Token.OperatorToken operatorToken = (Token.OperatorToken) token;
-                    if (operatorToken.operatorIndex < operatorIndex)
-                        throw new ParseException("Internal Error (Operator Sorting)", operatorIndex);
-                    else if (operatorToken.operatorIndex == operatorIndex)
+                    Token.OperatorToken<T> operatorToken = (Token.OperatorToken<T>) token;
+                    Operator<T> operator = operatorToken.operator;
+
+                    if (operator.precedence < curOperators.precedence)
+                        throw new ParseException("Internal Error (Operator Sorting)", operatorToken.stringIndex);
+                    else if (curOperators.contains(operator))
                     {
-                        if (expressionStack.peek().currentSymbolIndex == lastSymbolIndex && operator.hasRightArgument() && operator.hasLeftArgument())
+                        if (expressionStack.peek().isAtLastSymbol() && expressionStack.peek().operator.hasRightArgument() && operator.hasLeftArgument())
                         {
+                            BuildingExpression<T> curExp = expressionStack.pop();
+                            Operator<T> endedOperator = curExp.operator;
+                            int numberOfArguments = endedOperator.getNumberOfArguments();
+
                             // Evaluate from left to right, so short-circuit asap
-                            Integer lastTokenIndex = expressionStack.peek().currentTokenIndex;
-                            implode(tokens, minOperatorIndex + 1, lastTokenIndex, t);
+                            Integer lastTokenIndex = curExp.currentTokenIndex;
+                            implode(tokens, operators.tailSet(curOperators, false), lastTokenIndex, t);
 
                             int difference = (t - lastTokenIndex) - 1;
                             end -= difference; // Account for imploded tokens
                             t -= difference; // Account for imploded tokens
 
-                            finishImploding(tokens, expressionStack.peek().startStringIndex, t - numberOfArguments, t, operator);
+                            finishImploding(tokens, curExp.getStartStringIndex(), t - numberOfArguments, t, endedOperator);
                             t -= numberOfArguments - 1; // Account for imploded tokens
                             end -= numberOfArguments - 1; // Account for imploded tokens
-                            expressionStack.pop();
+                        }
 
-                            t--; // Do the same symbol again
+                        if (operatorToken.symbolIndex == 0 || expressionStack.peek().isNext(operatorToken.symbolIndex))
+                        {
+                            if (operatorToken.symbolIndex > 0 || operator.hasLeftArgument())
+                            {
+                                Integer lastTokenIndex = expressionStack.peek().currentTokenIndex;
+                                implode(tokens, operators.tailSet(curOperators, false), lastTokenIndex, t);
+
+                                int difference = (t - lastTokenIndex) - 1;
+                                end -= difference; // Account for imploded tokens
+                                t -= difference; // Account for imploded tokens
+                            }
+
+                            if (operatorToken.symbolIndex == 0)
+                                expressionStack.push(new BuildingExpression<>(operator, operatorToken.stringIndex, t));
+                            else
+                            {
+                                BuildingExpression curExp = expressionStack.peek();
+                                curExp.setCurrentStringIndex(operatorToken.stringIndex);
+                                curExp.setCurrentTokenIndex(t);
+                                curExp.setCurrentSymbolIndex(operatorToken.symbolIndex);
+                            }
+
+                            if (expressionStack.peek().isAtLastSymbol() && !operator.hasRightArgument())
+                            {
+                                BuildingExpression<T> curExp = expressionStack.pop();
+                                int numberOfArguments = operator.getNumberOfArguments();
+
+                                finishImploding(tokens, curExp.getStartStringIndex(), t - numberOfArguments, t, operator);
+
+                                int difference = numberOfArguments - 1;
+                                t -= difference; // Account for imploded tokens
+                                end -= difference; // Account for imploded tokens
+                            }
+
+                            tokens.remove(t--); // Remove symbol
+                            end--; // Account for removed symbol
                         }
                         else
-                        {
-                            if (operatorToken.symbolIndex == 0 || operatorToken.symbolIndex == expressionStack.peek().currentSymbolIndex + 1)
-                            {
-                                if (operatorToken.symbolIndex > 0 || operator.hasLeftArgument())
-                                {
-                                    Integer lastTokenIndex = expressionStack.peek().currentTokenIndex;
-                                    implode(tokens, minOperatorIndex + 1, lastTokenIndex, t);
-
-                                    int difference = (t - lastTokenIndex) - 1;
-                                    end -= difference; // Account for imploded tokens
-                                    t -= difference; // Account for imploded tokens
-                                }
-
-                                if (operatorToken.symbolIndex == 0)
-                                    expressionStack.push(new BuildingExpression(operatorToken.stringIndex, t));
-                                else
-                                {
-                                    BuildingExpression currentExpression = expressionStack.peek();
-                                    currentExpression.currentStringIndex = operatorToken.stringIndex;
-                                    currentExpression.currentTokenIndex = t;
-                                    currentExpression.currentSymbolIndex = operatorToken.symbolIndex;
-                                }
-
-                                if (expressionStack.peek().currentSymbolIndex == lastSymbolIndex && !operator.hasRightArgument())
-                                {
-                                    finishImploding(tokens, expressionStack.peek().startStringIndex, t - numberOfArguments, t, operator);
-
-                                    int difference = numberOfArguments - 1;
-                                    t -= difference; // Account for imploded tokens
-                                    end -= difference; // Account for imploded tokens
-
-                                    expressionStack.pop();
-                                }
-
-                                tokens.remove(t--); // Remove symbol
-                                end--; // Account for removed symbol
-                            }
-                            else
-                                throw new ParseException(String.format("Unexpected Token '%s'", symbols[operatorToken.symbolIndex]), operatorToken.stringIndex);
-                        }
+                            throw new ParseException(String.format("Unexpected Token '%s'", operator.getSymbols()[operatorToken.symbolIndex]), operatorToken.stringIndex);
                     }
                 }
             }
 
-            while (expressionStack.peek().currentSymbolIndex == lastSymbolIndex && operator.hasRightArgument())
+            while (expressionStack.peek().isAtLastSymbol() && expressionStack.peek().operator.hasRightArgument())
             {
-                Integer lastTokenIndex = expressionStack.peek().currentTokenIndex;
-                implode(tokens, minOperatorIndex + 1, lastTokenIndex, end);
+                BuildingExpression<T> curExp = expressionStack.pop();
+                Operator<T> operator = curExp.operator;
+                int numberOfArguments = operator.getNumberOfArguments();
+
+                Integer lastTokenIndex = curExp.currentTokenIndex;
+                implode(tokens, operators.tailSet(curOperators, false), lastTokenIndex, end);
 
                 int difference = (end - lastTokenIndex) - 1;
                 end -= difference; // Account for imploded tokens
 
-                finishImploding(tokens, expressionStack.peek().startStringIndex, end - numberOfArguments, end, operator);
+                finishImploding(tokens, curExp.getStartStringIndex(), end - numberOfArguments, end, operator);
                 end -= numberOfArguments - 1;
-                expressionStack.pop();
             }
 
             if (expressionStack.size() > 1)
             {
-                String expectedSymbol = symbols[expressionStack.peek().currentSymbolIndex + 1];
-                String previousSymbol = symbols[expressionStack.peek().currentSymbolIndex];
+                BuildingExpression<T> curExp = expressionStack.peek();
 
-                throw new ParseException(String.format("Expected Token '%s'", expectedSymbol), expressionStack.peek().currentStringIndex + previousSymbol.length());
+                String[] symbols = curExp.operator.getSymbols();
+                String expectedSymbol = symbols[curExp.expectedSymbolIndex()];
+                String previousSymbol = symbols[curExp.getCurrentStringIndex()];
+
+                throw new ParseException(String.format("Expected Token '%s'", expectedSymbol), curExp.currentStringIndex + previousSymbol.length());
             }
         }
 
@@ -296,7 +306,7 @@ public class Algebra<T>
                     variableStart = -1;
 
                     tokens.add(token);
-                    String symbol = operators.get(token.operatorIndex).getSymbols()[token.symbolIndex];
+                    String symbol = token.operator.getSymbols()[token.symbolIndex];
                     index += symbol.length() - 1;
                 }
                 else if (variableStart < 0)
@@ -326,18 +336,22 @@ public class Algebra<T>
         return new Token.ConstantToken(start, constant.toString());
     }
 
-    protected Token.OperatorToken operatorTokenAt(String string, int index)
+    protected boolean hasAt(String string, String symbol, int index)
     {
-        for (int o = 0; o < operators.size(); o++)
+        return string.regionMatches(index, symbol, 0, symbol.length());
+    }
+
+    protected Token.OperatorToken<T> operatorTokenAt(String string, int index)
+    {
+        for (Operator<T> operator : operators)
         {
-            Operator<T> operator = operators.get(o);
             String[] symbols = operator.getSymbols();
 
             for (int s = 0; s < symbols.length; s++)
             {
                 String symbol = symbols[s];
                 if (hasAt(string, symbol, index))
-                    return new Token.OperatorToken(index, o, s);
+                    return new Token.OperatorToken<>(index, operator, s);
             }
         }
 
@@ -371,26 +385,96 @@ public class Algebra<T>
         return string;
     }
 
-    protected static class BuildingExpression
+    protected static class BuildingExpression<T>
     {
         public int startStringIndex;
         public int currentStringIndex;
         public int currentTokenIndex;
+
+        public Operator<T> operator;
         public int currentSymbolIndex;
 
-        public BuildingExpression(int startStringIndex, int currentTokenIndex)
+        public BuildingExpression(Operator<T> operator, int startStringIndex, int currentTokenIndex)
         {
+            this.operator = operator;
             this.startStringIndex = startStringIndex;
             this.currentStringIndex = startStringIndex;
             this.currentTokenIndex = currentTokenIndex;
             this.currentSymbolIndex = 0;
         }
-        public BuildingExpression(int startStringIndex, int currentTokenIndex, int currentSymbolIndex)
+
+        public BuildingExpression(Operator<T> operator, int startStringIndex, int currentTokenIndex, int currentSymbolIndex)
         {
+            this.operator = operator;
             this.startStringIndex = startStringIndex;
             this.currentStringIndex = startStringIndex;
             this.currentTokenIndex = currentTokenIndex;
             this.currentSymbolIndex = currentSymbolIndex;
+        }
+
+        public int getStartStringIndex()
+        {
+            return startStringIndex;
+        }
+
+        public void setStartStringIndex(int startStringIndex)
+        {
+            this.startStringIndex = startStringIndex;
+        }
+
+        public int getCurrentStringIndex()
+        {
+            return currentStringIndex;
+        }
+
+        public void setCurrentStringIndex(int currentStringIndex)
+        {
+            this.currentStringIndex = currentStringIndex;
+        }
+
+        public int getCurrentTokenIndex()
+        {
+            return currentTokenIndex;
+        }
+
+        public void setCurrentTokenIndex(int currentTokenIndex)
+        {
+            this.currentTokenIndex = currentTokenIndex;
+        }
+
+        public Operator<T> getOperator()
+        {
+            return operator;
+        }
+
+        public void setOperator(Operator<T> operator)
+        {
+            this.operator = operator;
+        }
+
+        public int getCurrentSymbolIndex()
+        {
+            return currentSymbolIndex;
+        }
+
+        public void setCurrentSymbolIndex(int currentSymbolIndex)
+        {
+            this.currentSymbolIndex = currentSymbolIndex;
+        }
+
+        public int expectedSymbolIndex()
+        {
+            return currentSymbolIndex + 1;
+        }
+
+        public boolean isNext(int symbolIndex)
+        {
+            return currentSymbolIndex + 1 == symbolIndex;
+        }
+
+        public boolean isAtLastSymbol()
+        {
+            return operator != null && operator.getSymbols().length - 1 == currentSymbolIndex;
         }
     }
 
@@ -425,15 +509,15 @@ public class Algebra<T>
             }
         }
 
-        protected static class OperatorToken extends Token
+        protected static class OperatorToken<T> extends Token
         {
-            public int operatorIndex;
+            public Operator<T> operator;
             public int symbolIndex;
 
-            public OperatorToken(int stringIndex, int operatorIndex, int symbolIndex)
+            public OperatorToken(int stringIndex, Operator<T> operator, int symbolIndex)
             {
                 super(stringIndex);
-                this.operatorIndex = operatorIndex;
+                this.operator = operator;
                 this.symbolIndex = symbolIndex;
             }
         }
@@ -549,18 +633,32 @@ public class Algebra<T>
         }
     }
 
-    public abstract static class Operator<T>
+    public abstract static class Operator<T> implements PrecedenceSet.NativeEntry
     {
+        protected float precedence;
+
         protected boolean hasLeftArgument;
         protected boolean hasRightArgument;
 
         protected String[] symbols;
 
-        public Operator(boolean hasLeftArgument, boolean hasRightArgument, String... symbols)
+        public Operator(float precedence, boolean hasLeftArgument, boolean hasRightArgument, String... symbols)
         {
+            this.precedence = precedence;
             this.hasLeftArgument = hasLeftArgument;
             this.hasRightArgument = hasRightArgument;
             this.symbols = symbols;
+        }
+
+        @Override
+        public float getPrecedence()
+        {
+            return precedence;
+        }
+
+        public void setPrecedence(float precedence)
+        {
+            this.precedence = precedence;
         }
 
         public boolean hasLeftArgument()

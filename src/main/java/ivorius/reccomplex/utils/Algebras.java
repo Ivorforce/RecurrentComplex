@@ -12,11 +12,17 @@ import com.google.common.base.Function;
  */
 public class Algebras
 {
+    public static <T> T tryEvaluate(String expression, Algebra<T> algebra, Function<String, T> variableEvaluator)
+    {
+        Algebra.Expression<T> parsed = algebra.tryParse(expression);
+        return parsed != null ? parsed.evaluate(variableEvaluator) : null;
+    }
+
     public static class Closure<T> extends Algebra.Operator<T>
     {
-        public Closure(String open, String close)
+        public Closure(float precedence, String open, String close)
         {
-            super(false, false, open, close);
+            super(precedence, false, false, open, close);
         }
 
         @Override
@@ -33,9 +39,9 @@ public class Algebras
             PREFIX, POSTFIX
         }
 
-        public Unary(Notation notation, String symbol)
+        public Unary(float precedence, Notation notation, String symbol)
         {
-            super(notation == Notation.POSTFIX, notation == Notation.PREFIX, symbol);
+            super(precedence, notation == Notation.POSTFIX, notation == Notation.PREFIX, symbol);
         }
 
         @Override
@@ -49,9 +55,9 @@ public class Algebras
 
     public static abstract class Infix<T> extends Algebra.Operator<T>
     {
-        public Infix(String symbol)
+        public Infix(float precedence, String symbol)
         {
-            super(true, true, symbol);
+            super(precedence, true, true, symbol);
         }
 
         @Override

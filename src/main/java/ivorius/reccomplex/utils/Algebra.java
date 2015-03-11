@@ -7,7 +7,6 @@ package ivorius.reccomplex.utils;
 
 import com.google.common.base.Function;
 import com.google.common.collect.Lists;
-import org.apache.logging.log4j.Logger;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -23,18 +22,16 @@ public class Algebra<T>
 {
     protected final Set<Operator<T>> operators = new HashSet<>();
     @Nonnull
-    protected SymbolTokenizer.CharacterRules rules;
-    @Nullable
-    protected Logger logger;
+    protected SymbolTokenizer.CharacterRules characterRules;
 
     public Algebra()
     {
         this(new SymbolTokenizer.SimpleCharacterRules());
     }
 
-    public Algebra(@Nonnull SymbolTokenizer.CharacterRules rules)
+    public Algebra(@Nonnull SymbolTokenizer.CharacterRules characterRules)
     {
-        this.rules = rules;
+        this.characterRules = characterRules;
     }
 
     @SafeVarargs
@@ -44,117 +41,16 @@ public class Algebra<T>
     }
 
     @SafeVarargs
-    public Algebra(@Nonnull SymbolTokenizer.CharacterRules rules, Operator<T>... operators)
+    public Algebra(@Nonnull SymbolTokenizer.CharacterRules characterRules, Operator<T>... operators)
     {
-        this.rules = rules;
+        this.characterRules = characterRules;
         Collections.addAll(this.operators, operators);
     }
 
-    public boolean addOperators(Collection<Operator<T>> operators)
-    {
-        return this.operators.addAll(operators);
-    }
-
-    public boolean addOperator(Operator<T> operator)
-    {
-        return operators.add(operator);
-    }
-
-    public boolean removeOperators(Collection<Operator<T>> operators)
-    {
-        return this.operators.removeAll(operators);
-    }
-
-    public boolean removeOperator(Operator<T> operator)
-    {
-        return operators.remove(operator);
-    }
-
-    public Set<Operator<T>> operators()
-    {
-        return Collections.unmodifiableSet(operators);
-    }
-
-    @Nonnull
-    public SymbolTokenizer.CharacterRules getRules()
-    {
-        return rules;
-    }
-
-    public void setRules(@Nonnull SymbolTokenizer.CharacterRules rules)
-    {
-        this.rules = rules;
-    }
-
-    @Nullable
-    public Logger getLogger()
-    {
-        return logger;
-    }
-
-    public void setLogger(@Nullable Logger logger)
-    {
-        this.logger = logger;
-    }
-
-    public SymbolTokenizer.TokenFactory getTokenFactory()
-    {
-        return new SymbolTokenizer.TokenFactory()
-        {
-            protected boolean hasAt(String string, String symbol, int index)
-            {
-                return string.regionMatches(index, symbol, 0, symbol.length());
-            }
-
-            @Nullable
-            @Override
-            public SymbolTokenizer.Token tryConstructSymbolTokenAt(int index, @Nonnull String string)
-            {
-                for (Operator<T> operator : operators)
-                {
-                    String[] symbols = operator.getSymbols();
-
-                    for (int s = 0; s < symbols.length; s++)
-                    {
-                        String symbol = symbols[s];
-                        if (hasAt(string, symbol, index))
-                            return new OperatorToken<>(index, index + symbol.length(), operator, s);
-                    }
-                }
-
-                return null;
-            }
-
-            @Nonnull
-            @Override
-            public SymbolTokenizer.Token constructStringToken(int index, @Nonnull String string)
-            {
-                return new ConstantToken(index, index + string.length(), string);
-            }
-        };
-    }
-
-    @Nonnull
-    public Expression<T> parse(String string) throws ParseException
-    {
-        try
-        {
-            List<SymbolTokenizer.Token> tokens = new SymbolTokenizer(rules, getTokenFactory()).tokenize(string);
-            return implodeExpressions(tokens, new TreeSet<>(PrecedenceSets.group(this.operators)), 0).expression;
-        }
-        catch (RuntimeException e)
-        {
-            if (logger != null)
-                logger.error("Internal error when parsing", e);
-
-            throw new ParseException(String.format("%s", e.toString()), 0);
-        }
-    }
-
-    protected ExpressionToken<T> implodeExpressions(List<SymbolTokenizer.Token> tokens, NavigableSet<PrecedenceSet<Operator<T>>> operators, int stringIndex) throws ParseException
+    protected static <T> ExpressionToken<T> implodeExpressions(List<SymbolTokenizer.Token> tokens, NavigableSet<PrecedenceSet<Operator<T>>> operators, int stringIndex) throws ParseException
     {
         if (tokens.size() == 0)
-                throw new ParseException("Expected Expression", stringIndex);
+            throw new ParseException("Expected Expression", stringIndex);
 
         SymbolTokenizer.Token startToken;
         if (tokens.size() == 1 && (startToken = tokens.get(0)) instanceof ConstantToken)
@@ -236,7 +132,7 @@ public class Algebra<T>
         return (ExpressionToken) tokens.get(0);
     }
 
-    protected void implodeOperator(final List<SymbolTokenizer.Token> tokens, final int startIndex, int endIndex, Operator<T> operator) throws ParseException
+    protected static <T> void implodeOperator(final List<SymbolTokenizer.Token> tokens, final int startIndex, int endIndex, Operator<T> operator) throws ParseException
     {
         if (tokens.size() < 1)
             throw new ParseException("Internal Error (Missing Arguments)", startIndex);
@@ -255,7 +151,7 @@ public class Algebra<T>
         tokens.add(new ExpressionToken<>(startIndex, endIndex, new Operation<>(operator, expressions)));
     }
 
-    protected int implodeBuildingExpression(BuildingExpression<T> buildingExpression, List<SymbolTokenizer.Token> tokens, NavigableSet<PrecedenceSet<Operator<T>>> followingOperators, int currentTokenIndex) throws ParseException
+    protected static <T> int implodeBuildingExpression(BuildingExpression<T> buildingExpression, List<SymbolTokenizer.Token> tokens, NavigableSet<PrecedenceSet<Operator<T>>> followingOperators, int currentTokenIndex) throws ParseException
     {
         Operator<T> endedOperator = buildingExpression.operator;
         int numberOfArguments = endedOperator.getNumberOfArguments();
@@ -269,6 +165,90 @@ public class Algebra<T>
 
         implodeOperator(tokens.subList(currentTokenIndex - numberOfArguments, currentTokenIndex), buildingExpression.startStringIndex, buildingExpression.endStringIndex, endedOperator);
         return difference + numberOfArguments - 1; // Count imploded tokens
+    }
+
+    public boolean addOperators(Collection<Operator<T>> operators)
+    {
+        return this.operators.addAll(operators);
+    }
+
+    public boolean addOperator(Operator<T> operator)
+    {
+        return operators.add(operator);
+    }
+
+    public boolean removeOperators(Collection<Operator<T>> operators)
+    {
+        return this.operators.removeAll(operators);
+    }
+
+    public boolean removeOperator(Operator<T> operator)
+    {
+        return operators.remove(operator);
+    }
+
+    public Set<Operator<T>> operators()
+    {
+        return Collections.unmodifiableSet(operators);
+    }
+
+    @Nonnull
+    public SymbolTokenizer.CharacterRules getCharacterRules()
+    {
+        return characterRules;
+    }
+
+    public void setCharacterRules(@Nonnull SymbolTokenizer.CharacterRules characterRules)
+    {
+        this.characterRules = characterRules;
+    }
+
+    public SymbolTokenizer.TokenFactory getTokenFactory()
+    {
+        return new SymbolTokenizer.TokenFactory()
+        {
+            protected boolean hasAt(String string, String symbol, int index)
+            {
+                return string.regionMatches(index, symbol, 0, symbol.length());
+            }
+
+            @Nullable
+            @Override
+            public SymbolTokenizer.Token tryConstructSymbolTokenAt(int index, @Nonnull String string)
+            {
+                for (Operator<T> operator : operators)
+                {
+                    String[] symbols = operator.getSymbols();
+
+                    for (int s = 0; s < symbols.length; s++)
+                    {
+                        String symbol = symbols[s];
+                        if (hasAt(string, symbol, index))
+                            return new OperatorToken<>(index, index + symbol.length(), operator, s);
+                    }
+                }
+
+                return null;
+            }
+
+            @Nonnull
+            @Override
+            public SymbolTokenizer.Token constructStringToken(int index, @Nonnull String string)
+            {
+                return new ConstantToken(index, index + string.length(), string);
+            }
+        };
+    }
+
+    @Nonnull
+    public Expression<T> parse(String string) throws ParseException
+    {
+        return constructExpression(new SymbolTokenizer(characterRules, getTokenFactory()).tokenize(string));
+    }
+
+    public Expression<T> constructExpression(List<SymbolTokenizer.Token> tokens) throws ParseException
+    {
+        return implodeExpressions(Lists.newArrayList(tokens), new TreeSet<>(PrecedenceSets.group(this.operators)), 0).expression;
     }
 
     protected static class BuildingExpression<T>

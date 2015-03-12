@@ -35,9 +35,9 @@ public class Algebras
         }
     }
 
-    public static class Closure<T> extends Algebra.Operator<T>
+    public static class Parentheses<T> extends Algebra.Operator<T>
     {
-        public Closure(float precedence, String open, String close)
+        public Parentheses(float precedence, String open, String close)
         {
             super(precedence, false, false, open, close);
         }

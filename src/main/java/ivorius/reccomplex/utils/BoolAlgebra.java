@@ -60,8 +60,8 @@ public abstract class BoolAlgebra
         };
     }
 
-    public static Algebras.Closure closure()
+    public static Algebras.Parentheses parentheses()
     {
-        return new Algebras.Closure(1f, "(", ")");
+        return new Algebras.Parentheses(1f, "(", ")");
     }
 }

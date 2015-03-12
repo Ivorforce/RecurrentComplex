@@ -50,7 +50,7 @@ public class Algebra<T>
         Collections.addAll(this.operators, operators);
     }
 
-    protected static <T> ExpressionToken<T> implodeExpressions(List<SymbolTokenizer.Token> tokens, NavigableSet<PrecedenceSet<Operator<T>>> operators, int stringIndex) throws ParseException
+    protected static <T> ExpressionToken<T> reduceExpressions(List<SymbolTokenizer.Token> tokens, NavigableSet<PrecedenceSet<Operator<T>>> operators, int stringIndex) throws ParseException
     {
         if (tokens.size() == 0)
             throw new ParseException("Expected Expression", stringIndex);
@@ -83,15 +83,15 @@ public class Algebra<T>
                     else if (curOperators.contains(operator))
                     {
                         if (expressionStack.peek().isAtLastSymbol() && expressionStack.peek().operator.hasRightArgument() && operator.hasLeftArgument())
-                            t -= implodeBuildingExpression(expressionStack.pop(), tokens, operators.tailSet(curOperators, false), t); // Account for imploded tokens
+                            t -= reduceBuildingExpression(expressionStack.pop(), tokens, operators.tailSet(curOperators, false), t); // Account for reduced tokens
 
                         if (operatorToken.symbolIndex == 0 || expressionStack.peek().isNext(operatorToken.symbolIndex))
                         {
                             if (operatorToken.symbolIndex > 0 || operator.hasLeftArgument())
                             {
                                 Integer lastTokenIndex = expressionStack.peek().currentTokenIndex;
-                                implodeExpressions(tokens.subList(lastTokenIndex, t), operators.tailSet(curOperators, false), operatorToken.startIndex);
-                                t -= (t - lastTokenIndex) - 1; // Account for imploded tokens
+                                reduceExpressions(tokens.subList(lastTokenIndex, t), operators.tailSet(curOperators, false), operatorToken.startIndex);
+                                t -= (t - lastTokenIndex) - 1; // Account for reduced tokens
                             }
 
                             if (operatorToken.symbolIndex == 0)
@@ -104,8 +104,8 @@ public class Algebra<T>
                                 BuildingExpression<T> curExp = expressionStack.pop();
                                 int numberOfArguments = operator.getNumberOfArguments();
 
-                                implodeOperator(tokens.subList(t - numberOfArguments, t), curExp.startStringIndex, curExp.endStringIndex, operator);
-                                t -= numberOfArguments - 1; // Account for imploded tokens
+                                reduceOperator(tokens.subList(t - numberOfArguments, t), curExp.startStringIndex, curExp.endStringIndex, operator);
+                                t -= numberOfArguments - 1; // Account for reduced tokens
                             }
 
                             tokens.remove(t--); // Remove symbol
@@ -117,7 +117,7 @@ public class Algebra<T>
             }
 
             while (expressionStack.peek().isAtLastSymbol() && expressionStack.peek().operator.hasRightArgument())
-                implodeBuildingExpression(expressionStack.pop(), tokens, operators.tailSet(curOperators, false), tokens.size());
+                reduceBuildingExpression(expressionStack.pop(), tokens, operators.tailSet(curOperators, false), tokens.size());
 
             if (expressionStack.size() > 1)
             {
@@ -135,7 +135,7 @@ public class Algebra<T>
         return (ExpressionToken) tokens.get(0);
     }
 
-    protected static <T> void implodeOperator(final List<SymbolTokenizer.Token> tokens, final int startIndex, int endIndex, Operator<T> operator) throws ParseException
+    protected static <T> void reduceOperator(final List<SymbolTokenizer.Token> tokens, final int startIndex, int endIndex, Operator<T> operator) throws ParseException
     {
         if (tokens.size() < 1)
             throw new ParseException("Internal Error (Missing Arguments)", startIndex);
@@ -154,20 +154,20 @@ public class Algebra<T>
         tokens.add(new ExpressionToken<>(startIndex, endIndex, new Operation<>(operator, expressions)));
     }
 
-    protected static <T> int implodeBuildingExpression(BuildingExpression<T> buildingExpression, List<SymbolTokenizer.Token> tokens, NavigableSet<PrecedenceSet<Operator<T>>> followingOperators, int currentTokenIndex) throws ParseException
+    protected static <T> int reduceBuildingExpression(BuildingExpression<T> buildingExpression, List<SymbolTokenizer.Token> tokens, NavigableSet<PrecedenceSet<Operator<T>>> followingOperators, int currentTokenIndex) throws ParseException
     {
         Operator<T> endedOperator = buildingExpression.operator;
         int numberOfArguments = endedOperator.getNumberOfArguments();
 
         // Evaluate from left to right, so short-circuit asap
         Integer lastTokenIndex = buildingExpression.currentTokenIndex;
-        implodeExpressions(tokens.subList(lastTokenIndex, currentTokenIndex), followingOperators, buildingExpression.endStringIndex);
+        reduceExpressions(tokens.subList(lastTokenIndex, currentTokenIndex), followingOperators, buildingExpression.endStringIndex);
 
         int difference = (currentTokenIndex - lastTokenIndex) - 1;
-        currentTokenIndex -= difference; // Account for imploded tokens
+        currentTokenIndex -= difference; // Account for reduced tokens
 
-        implodeOperator(tokens.subList(currentTokenIndex - numberOfArguments, currentTokenIndex), buildingExpression.startStringIndex, buildingExpression.endStringIndex, endedOperator);
-        return difference + numberOfArguments - 1; // Count imploded tokens
+        reduceOperator(tokens.subList(currentTokenIndex - numberOfArguments, currentTokenIndex), buildingExpression.startStringIndex, buildingExpression.endStringIndex, endedOperator);
+        return difference + numberOfArguments - 1; // Count reduced tokens
     }
 
     public boolean addOperators(Collection<Operator<T>> operators)
@@ -233,7 +233,7 @@ public class Algebra<T>
                     @Override
                     public Iterable<Pair<Operator<T>, Integer>> apply(@Nullable Operator<T> operator)
                     {
-                        return Pairs.pairLeft(operator, Ints.asList(Ranges.to(operator.symbols.length)));
+                        return Pairs.pairLeft(operator, Ranges.toIterable(operator.symbols.length));
                     }
                 }))));
 
@@ -264,7 +264,7 @@ public class Algebra<T>
 
     public Expression<T> constructExpression(List<SymbolTokenizer.Token> tokens) throws ParseException
     {
-        return implodeExpressions(Lists.newArrayList(tokens), new TreeSet<>(PrecedenceSets.group(this.operators)), 0).expression;
+        return reduceExpressions(Lists.newArrayList(tokens), new TreeSet<>(PrecedenceSets.group(this.operators)), 0).expression;
     }
 
     protected static class BuildingExpression<T>

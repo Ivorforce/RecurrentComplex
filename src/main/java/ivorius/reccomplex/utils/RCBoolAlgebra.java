@@ -15,9 +15,9 @@ public class RCBoolAlgebra
     public static Algebra<Boolean> algebra()
     {
         return algebra != null ? algebra : (algebra = new Algebra<>(
-                BoolAlgebra.parentheses(),
-                BoolAlgebra.or(), BoolAlgebra.and(),
-                BoolAlgebra.not()
+                BoolAlgebra.parentheses("(", ")"),
+                BoolAlgebra.or("|"), BoolAlgebra.and("&"),
+                BoolAlgebra.not("!")
         ));
     }
 }

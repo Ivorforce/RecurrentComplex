@@ -6,7 +6,10 @@
 package ivorius.reccomplex.utils;
 
 import com.google.common.base.Function;
+import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
+import com.google.common.primitives.Ints;
+import org.apache.commons.lang3.tuple.Pair;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -207,7 +210,7 @@ public class Algebra<T>
     {
         return new SymbolTokenizer.TokenFactory()
         {
-            protected boolean hasAt(String string, String symbol, int index)
+            protected boolean hasAt(String string, int index, String symbol)
             {
                 return string.regionMatches(index, symbol, 0, symbol.length());
             }
@@ -216,16 +219,29 @@ public class Algebra<T>
             @Override
             public SymbolTokenizer.Token tryConstructSymbolTokenAt(int index, @Nonnull String string)
             {
-                for (Operator<T> operator : operators)
-                {
-                    String[] symbols = operator.getSymbols();
+                SortedSet<Pair<Operator<T>, Integer>> sortedSymbols = new TreeSet<>(new Comparator<Pair<Operator<T>, Integer>>(){
 
-                    for (int s = 0; s < symbols.length; s++)
+                    @Override
+                    public int compare(Pair<Operator<T>, Integer> o1, Pair<Operator<T>, Integer> o2)
                     {
-                        String symbol = symbols[s];
-                        if (hasAt(string, symbol, index))
-                            return new OperatorToken<>(index, index + symbol.length(), operator, s);
+                        return o2.getLeft().getSymbols()[o2.getRight()].compareTo(o1.getLeft().getSymbols()[o1.getRight()]);
                     }
+                });
+                sortedSymbols.addAll(Lists.newArrayList(Iterables.concat(Iterables.transform(operators, new Function<Operator<T>, Iterable<Pair<Operator<T>, Integer>>>()
+                {
+                    @Nullable
+                    @Override
+                    public Iterable<Pair<Operator<T>, Integer>> apply(@Nullable Operator<T> operator)
+                    {
+                        return Pairs.pairLeft(operator, Ints.asList(Ranges.to(operator.symbols.length)));
+                    }
+                }))));
+
+                for (Pair<Operator<T>, Integer> symbolPair : sortedSymbols)
+                {
+                    String symbol = symbolPair.getLeft().getSymbols()[symbolPair.getRight()];
+                    if (hasAt(string, index, symbol))
+                        return new OperatorToken<>(index, index + symbol.length(), symbolPair.getLeft(), symbolPair.getRight());
                 }
 
                 return null;

@@ -3,7 +3,7 @@
  *  * http://lukas.axxim.net
  */
 
-package ivorius.reccomplex.structures.generic.blocktransformers;
+package ivorius.reccomplex.structures.generic.transformers;
 
 import ivorius.ivtoolkit.tools.IvWorldData;
 import ivorius.reccomplex.gui.table.TableDataSource;
@@ -17,11 +17,11 @@ import java.util.List;
 /**
  * Created by lukas on 25.05.14.
  */
-public interface BlockTransformer
+public interface Transformer
 {
     boolean skipGeneration(Block block, int metadata);
 
-    void transform(Phase phase, StructureSpawnContext context, IvWorldData worldData, List<BlockTransformer> transformerList);
+    void transform(Phase phase, StructureSpawnContext context, IvWorldData worldData, List<Transformer> transformerList);
 
     boolean generatesInPhase(Phase phase);
 

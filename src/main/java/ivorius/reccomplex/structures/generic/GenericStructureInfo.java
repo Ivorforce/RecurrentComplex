@@ -15,7 +15,7 @@ import ivorius.reccomplex.blocks.GeneratingTileEntity;
 import ivorius.reccomplex.blocks.RCBlocks;
 import ivorius.reccomplex.json.JsonUtils;
 import ivorius.reccomplex.json.NbtToJson;
-import ivorius.reccomplex.structures.generic.blocktransformers.*;
+import ivorius.reccomplex.structures.generic.transformers.*;
 import ivorius.reccomplex.structures.generic.gentypes.StructureGenerationInfo;
 import ivorius.reccomplex.structures.generic.matchers.BlockMatcher;
 import ivorius.reccomplex.utils.RCAccessorEntity;
@@ -25,7 +25,6 @@ import ivorius.reccomplex.structures.StructureInfo;
 import ivorius.reccomplex.structures.StructureSpawnContext;
 import ivorius.reccomplex.structures.generic.gentypes.MazeGenerationInfo;
 import ivorius.reccomplex.structures.generic.gentypes.NaturalGenerationInfo;
-import ivorius.reccomplex.structures.generic.gentypes.VanillaStructureSpawnInfo;
 import ivorius.reccomplex.worldgen.inventory.InventoryGenerationHandler;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
@@ -36,7 +35,6 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.MathHelper;
 import net.minecraft.world.World;
-import net.minecraft.world.WorldProvider;
 import net.minecraft.world.biome.BiomeGenBase;
 import net.minecraftforge.common.BiomeDictionary;
 
@@ -58,7 +56,7 @@ public class GenericStructureInfo implements StructureInfo, Cloneable
 
     public final List<StructureGenerationInfo> generationInfos = new ArrayList<>();
 
-    public final List<BlockTransformer> blockTransformers = new ArrayList<>();
+    public final List<Transformer> transformers = new ArrayList<>();
 
     public final List<String> dependencies = new ArrayList<>();
 
@@ -71,10 +69,10 @@ public class GenericStructureInfo implements StructureInfo, Cloneable
         genericStructureInfo.rotatable = false;
         genericStructureInfo.mirrorable = false;
 
-        genericStructureInfo.blockTransformers.add(new BlockTransformerNaturalAir(BlockMatcher.of(RCBlocks.negativeSpace, 1)));
-        genericStructureInfo.blockTransformers.add(new BlockTransformerNegativeSpace(BlockMatcher.of(RCBlocks.negativeSpace, 0)));
-        genericStructureInfo.blockTransformers.add(new BlockTransformerNatural(BlockMatcher.of(RCBlocks.naturalFloor, 0)));
-        genericStructureInfo.blockTransformers.add(new BlockTransformerReplace(BlockMatcher.of(RCBlocks.naturalFloor, 1)).replaceWith(new WeightedBlockState(null, Blocks.air, 0, "")));
+        genericStructureInfo.transformers.add(new TransformerNaturalAir(BlockMatcher.of(RCBlocks.negativeSpace, 1)));
+        genericStructureInfo.transformers.add(new TransformerNegativeSpace(BlockMatcher.of(RCBlocks.negativeSpace, 0)));
+        genericStructureInfo.transformers.add(new TransformerNatural(BlockMatcher.of(RCBlocks.naturalFloor, 0)));
+        genericStructureInfo.transformers.add(new TransformerReplace(BlockMatcher.of(RCBlocks.naturalFloor, 1)).replaceWith(new WeightedBlockState(null, Blocks.air, 0, "")));
 
         genericStructureInfo.generationInfos.add(new NaturalGenerationInfo());
 
@@ -136,10 +134,10 @@ public class GenericStructureInfo implements StructureInfo, Cloneable
 
         if (!context.generateAsSource)
         {
-            for (BlockTransformer transformer : blockTransformers)
+            for (Transformer transformer : transformers)
             {
-                if (transformer.generatesInPhase(BlockTransformer.Phase.BEFORE))
-                    transformer.transform(BlockTransformer.Phase.BEFORE, context, worldData, blockTransformers);
+                if (transformer.generatesInPhase(Transformer.Phase.BEFORE))
+                    transformer.transform(Transformer.Phase.BEFORE, context, worldData, transformers);
             }
         }
 
@@ -187,10 +185,10 @@ public class GenericStructureInfo implements StructureInfo, Cloneable
 
         if (!context.generateAsSource)
         {
-            for (BlockTransformer transformer : blockTransformers)
+            for (Transformer transformer : transformers)
             {
-                if (transformer.generatesInPhase(BlockTransformer.Phase.AFTER))
-                    transformer.transform(BlockTransformer.Phase.AFTER, context, worldData, blockTransformers);
+                if (transformer.generatesInPhase(Transformer.Phase.AFTER))
+                    transformer.transform(Transformer.Phase.AFTER, context, worldData, transformers);
             }
         }
 
@@ -237,9 +235,9 @@ public class GenericStructureInfo implements StructureInfo, Cloneable
         return (block.isNormalCube() || block.getMaterial() == Material.air) ? 0 : 1;
     }
 
-    private BlockTransformer transformer(Block block, int metadata)
+    private Transformer transformer(Block block, int metadata)
     {
-        for (BlockTransformer transformer : blockTransformers)
+        for (Transformer transformer : transformers)
         {
             if (transformer.skipGeneration(block, metadata))
             {
@@ -312,8 +310,10 @@ public class GenericStructureInfo implements StructureInfo, Cloneable
                     structureInfo.generationInfos.add(MazeGenerationInfo.getGson().fromJson(jsonobject.get("mazeGenerationInfo"), MazeGenerationInfo.class));
             }
 
-            if (jsonobject.has("blockTransformers"))
-                Collections.addAll(structureInfo.blockTransformers, context.<BlockTransformer[]>deserialize(jsonobject.get("blockTransformers"), BlockTransformer[].class));
+            if (jsonobject.has("transformers"))
+                Collections.addAll(structureInfo.transformers, context.<Transformer[]>deserialize(jsonobject.get("transformers"), Transformer[].class));
+            if (jsonobject.has("blockTransformers")) // Legacy
+                Collections.addAll(structureInfo.transformers, context.<Transformer[]>deserialize(jsonobject.get("blockTransformers"), Transformer[].class));
 
             structureInfo.rotatable = JsonUtils.getJsonObjectBooleanFieldValueOrDefault(jsonobject, "rotatable", false);
             structureInfo.mirrorable = JsonUtils.getJsonObjectBooleanFieldValueOrDefault(jsonobject, "mirrorable", false);
@@ -322,17 +322,10 @@ public class GenericStructureInfo implements StructureInfo, Cloneable
                 Collections.addAll(structureInfo.dependencies, context.<String[]>deserialize(jsonobject.get("dependencies"), String[].class));
 
             if (jsonobject.has("worldData"))
-            {
                 structureInfo.worldDataCompound = context.deserialize(jsonobject.get("worldData"), NBTTagCompound.class);
-            }
             else if (jsonobject.has("worldDataBase64"))
-            {
                 structureInfo.worldDataCompound = NbtToJson.getNBTFromBase64(JsonUtils.getJsonObjectStringFieldValue(jsonobject, "worldDataBase64"));
-            }
-            else
-            {
-                // And else it is taken out for packet size
-            }
+            // And else it is taken out for packet size, or stored in the zip
 
             if (jsonobject.has("metadata")) // Else, use default
                 structureInfo.metadata = context.deserialize(jsonobject.get("metadata"), Metadata.class);
@@ -348,28 +341,20 @@ public class GenericStructureInfo implements StructureInfo, Cloneable
 
             jsonobject.addProperty("version", LATEST_VERSION);
 
-            if (structureInfo.generationInfos.size() > 0)
-                jsonobject.add("generationInfos", context.serialize(structureInfo.generationInfos));
-
-            if (structureInfo.blockTransformers.size() > 0)
-                jsonobject.add("blockTransformers", context.serialize(structureInfo.blockTransformers));
+            jsonobject.add("generationInfos", context.serialize(structureInfo.generationInfos));
+            jsonobject.add("transformers", context.serialize(structureInfo.transformers));
 
             jsonobject.addProperty("rotatable", structureInfo.rotatable);
             jsonobject.addProperty("mirrorable", structureInfo.mirrorable);
 
-            if (structureInfo.dependencies.size() > 0)
-                jsonobject.add("dependencies", context.serialize(structureInfo.dependencies));
+            jsonobject.add("dependencies", context.serialize(structureInfo.dependencies));
 
             if (!RecurrentComplex.USE_ZIP_FOR_STRUCTURE_FILES && structureInfo.worldDataCompound != null)
             {
                 if (RecurrentComplex.USE_JSON_FOR_NBT)
-                {
                     jsonobject.add("worldData", context.serialize(structureInfo.worldDataCompound));
-                }
                 else
-                {
                     jsonobject.addProperty("worldDataBase64", NbtToJson.getBase64FromNBT(structureInfo.worldDataCompound));
-                }
             }
 
             jsonobject.add("metadata", context.serialize(structureInfo.metadata));

@@ -3,7 +3,7 @@
  *  * http://lukas.axxim.net
  */
 
-package ivorius.reccomplex.structures.generic.blocktransformers;
+package ivorius.reccomplex.structures.generic.transformers;
 
 import com.google.gson.*;
 import ivorius.ivtoolkit.blocks.BlockCoord;
@@ -11,7 +11,7 @@ import ivorius.ivtoolkit.blocks.IvBlockCollection;
 import ivorius.ivtoolkit.gui.IntegerRange;
 import ivorius.ivtoolkit.tools.IvWorldData;
 import ivorius.ivtoolkit.tools.MCRegistry;
-import ivorius.reccomplex.gui.editstructure.blocktransformers.TableDataSourceBTReplaceAll;
+import ivorius.reccomplex.gui.editstructure.transformers.TableDataSourceBTReplaceAll;
 import ivorius.reccomplex.gui.table.TableDataSource;
 import ivorius.reccomplex.gui.table.TableDelegate;
 import ivorius.reccomplex.gui.table.TableNavigator;
@@ -35,24 +35,24 @@ import java.util.List;
 /**
  * Created by lukas on 25.05.14.
  */
-public class BlockTransformerReplaceAll implements BlockTransformer
+public class TransformerReplaceAll implements Transformer
 {
     public BlockMatcher sourceMatcher;
 
     public final PresettedList<WeightedBlockState> destination = new PresettedList<>(WeightedBlockStatePresets.instance(), null);
 
-    public BlockTransformerReplaceAll()
+    public TransformerReplaceAll()
     {
         this(BlockMatcher.of(Blocks.wool, new IntegerRange(0, 15)));
         destination.setToDefault();
     }
 
-    public BlockTransformerReplaceAll(String sourceExpression)
+    public TransformerReplaceAll(String sourceExpression)
     {
         this.sourceMatcher = new BlockMatcher(sourceExpression);
     }
 
-    public BlockTransformerReplaceAll replaceWith(WeightedBlockState... states)
+    public TransformerReplaceAll replaceWith(WeightedBlockState... states)
     {
         destination.setContents(Arrays.asList(states));
         return this;
@@ -65,7 +65,7 @@ public class BlockTransformerReplaceAll implements BlockTransformer
     }
 
     @Override
-    public void transform(Phase phase, StructureSpawnContext context, IvWorldData worldData, List<BlockTransformer> transformerList)
+    public void transform(Phase phase, StructureSpawnContext context, IvWorldData worldData, List<Transformer> transformerList)
     {
         IvBlockCollection blockCollection = worldData.blockCollection;
 
@@ -79,7 +79,7 @@ public class BlockTransformerReplaceAll implements BlockTransformer
         BlockCoord lowerCoord = context.lowerCoord();
 
         NBTTagCompound nbtTagCompound = blockState.tileEntityInfo.trim().length() > 0 && blockState.block.hasTileEntity(blockState.metadata)
-        ? BlockTransformerReplace.tryParse(blockState.tileEntityInfo) : null;
+        ? TransformerReplace.tryParse(blockState.tileEntityInfo) : null;
 
         for (BlockCoord sourceCoord : blockCollection)
         {
@@ -96,7 +96,7 @@ public class BlockTransformerReplaceAll implements BlockTransformer
                 {
                     TileEntity tileentity = context.world.getTileEntity(worldCoord.x, worldCoord.y, worldCoord.z);
                     if (tileentity != null)
-                        tileentity.readFromNBT(BlockTransformerReplace.positionedCopy(nbtTagCompound, worldCoord));
+                        tileentity.readFromNBT(TransformerReplace.positionedCopy(nbtTagCompound, worldCoord));
                 }
             }
         }
@@ -120,7 +120,7 @@ public class BlockTransformerReplaceAll implements BlockTransformer
         return phase == Phase.BEFORE;
     }
 
-    public static class Serializer implements JsonDeserializer<BlockTransformerReplaceAll>, JsonSerializer<BlockTransformerReplaceAll>
+    public static class Serializer implements JsonDeserializer<TransformerReplaceAll>, JsonSerializer<TransformerReplaceAll>
     {
         private MCRegistry registry;
         private Gson gson;
@@ -132,15 +132,15 @@ public class BlockTransformerReplaceAll implements BlockTransformer
         }
 
         @Override
-        public BlockTransformerReplaceAll deserialize(JsonElement jsonElement, Type par2Type, JsonDeserializationContext context)
+        public TransformerReplaceAll deserialize(JsonElement jsonElement, Type par2Type, JsonDeserializationContext context)
         {
             JsonObject jsonObject = JsonUtils.getJsonElementAsJsonObject(jsonElement, "transformerReplace");
 
-            String expression = BlockTransformerReplace.Serializer.readLegacyMatcher(jsonObject, "source", "sourceMetadata"); // Legacy
+            String expression = TransformerReplace.Serializer.readLegacyMatcher(jsonObject, "source", "sourceMetadata"); // Legacy
             if (expression == null)
                 expression = JsonUtils.getJsonObjectStringFieldValueOrDefault(jsonObject, "sourceExpression", "");
 
-            BlockTransformerReplaceAll transformer = new BlockTransformerReplaceAll(expression);
+            TransformerReplaceAll transformer = new TransformerReplaceAll(expression);
 
             if (!transformer.destination.setPreset(JsonUtils.getJsonObjectStringFieldValueOrDefault(jsonObject, "destinationPreset", null)))
             {
@@ -164,7 +164,7 @@ public class BlockTransformerReplaceAll implements BlockTransformer
         }
 
         @Override
-        public JsonElement serialize(BlockTransformerReplaceAll transformer, Type par2Type, JsonSerializationContext context)
+        public JsonElement serialize(TransformerReplaceAll transformer, Type par2Type, JsonSerializationContext context)
         {
             JsonObject jsonObject = new JsonObject();
 

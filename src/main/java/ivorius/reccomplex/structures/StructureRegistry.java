@@ -21,7 +21,7 @@ import ivorius.reccomplex.json.NbtToJson;
 import ivorius.reccomplex.json.SerializableStringTypeRegistry;
 import ivorius.reccomplex.structures.generic.GenericStructureInfo;
 import ivorius.reccomplex.structures.generic.StructureSaveHandler;
-import ivorius.reccomplex.structures.generic.blocktransformers.BlockTransformer;
+import ivorius.reccomplex.structures.generic.transformers.Transformer;
 import ivorius.reccomplex.structures.generic.gentypes.MazeGenerationInfo;
 import ivorius.reccomplex.structures.generic.gentypes.StaticGenerationInfo;
 import ivorius.reccomplex.structures.generic.gentypes.StructureGenerationInfo;
@@ -52,7 +52,7 @@ public class
 
     private static Map<Pair<Integer, String>, StructureSelector> structureSelectors = new HashMap<>();
 
-    private static SerializableStringTypeRegistry<BlockTransformer> blockTransformerRegistry = new SerializableStringTypeRegistry<>("transformer", "type", BlockTransformer.class);
+    private static SerializableStringTypeRegistry<Transformer> transformerRegistry = new SerializableStringTypeRegistry<>("transformer", "type", Transformer.class);
     private static SerializableStringTypeRegistry<StructureGenerationInfo> structureGenerationInfoRegistry = new SerializableStringTypeRegistry<>("generationInfo", "type", StructureGenerationInfo.class);
 
     private static Gson gson = createGson();
@@ -62,7 +62,7 @@ public class
         GsonBuilder builder = new GsonBuilder();
 
         builder.registerTypeAdapter(GenericStructureInfo.class, new GenericStructureInfo.Serializer());
-        blockTransformerRegistry.constructGson(builder);
+        transformerRegistry.constructGson(builder);
         structureGenerationInfoRegistry.constructGson(builder);
 
         NbtToJson.registerSafeNBTSerializer(builder);
@@ -238,9 +238,9 @@ public class
         });
     }
 
-    public static SerializableStringTypeRegistry<BlockTransformer> getBlockTransformerRegistry()
+    public static SerializableStringTypeRegistry<Transformer> getTransformerRegistry()
     {
-        return blockTransformerRegistry;
+        return transformerRegistry;
     }
 
     public static SerializableStringTypeRegistry<StructureGenerationInfo> getStructureGenerationInfoRegistry()

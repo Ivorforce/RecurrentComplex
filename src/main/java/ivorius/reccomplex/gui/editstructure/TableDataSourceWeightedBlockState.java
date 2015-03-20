@@ -6,7 +6,7 @@
 package ivorius.reccomplex.gui.editstructure;
 
 import ivorius.reccomplex.gui.GuiValidityStateIndicator;
-import ivorius.reccomplex.gui.editstructure.blocktransformers.TableDataSourceBTNatural;
+import ivorius.reccomplex.gui.editstructure.transformers.TableDataSourceBTNatural;
 import ivorius.reccomplex.gui.table.*;
 import ivorius.reccomplex.structures.generic.WeightedBlockState;
 import net.minecraft.block.Block;
@@ -14,7 +14,6 @@ import net.minecraft.nbt.JsonToNBT;
 import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTException;
 import net.minecraft.nbt.NBTTagCompound;
-import org.apache.commons.lang3.StringUtils;
 
 /**
  * Created by lukas on 05.06.14.

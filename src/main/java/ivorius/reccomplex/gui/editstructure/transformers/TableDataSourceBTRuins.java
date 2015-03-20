@@ -3,32 +3,32 @@
  *  * http://lukas.axxim.net
  */
 
-package ivorius.reccomplex.gui.editstructure.blocktransformers;
+package ivorius.reccomplex.gui.editstructure.transformers;
 
 import ivorius.ivtoolkit.gui.FloatRange;
 import ivorius.reccomplex.gui.table.*;
-import ivorius.reccomplex.structures.generic.blocktransformers.BlockTransformerRuins;
+import ivorius.reccomplex.structures.generic.transformers.TransformerRuins;
 
 /**
  * Created by lukas on 05.06.14.
  */
 public class TableDataSourceBTRuins implements TableDataSource, TableElementPropertyListener
 {
-    private BlockTransformerRuins blockTransformer;
+    private TransformerRuins transformer;
 
-    public TableDataSourceBTRuins(BlockTransformerRuins blockTransformer)
+    public TableDataSourceBTRuins(TransformerRuins transformer)
     {
-        this.blockTransformer = blockTransformer;
+        this.transformer = transformer;
     }
 
-    public BlockTransformerRuins getBlockTransformer()
+    public TransformerRuins getTransformer()
     {
-        return blockTransformer;
+        return transformer;
     }
 
-    public void setBlockTransformer(BlockTransformerRuins blockTransformer)
+    public void setTransformer(TransformerRuins transformer)
     {
-        this.blockTransformer = blockTransformer;
+        this.transformer = transformer;
     }
 
     @Override
@@ -44,25 +44,25 @@ public class TableDataSourceBTRuins implements TableDataSource, TableElementProp
         {
             case 0:
             {
-                TableElementFloatRange element = new TableElementFloatRange("decay", "Decay", new FloatRange(blockTransformer.minDecay, blockTransformer.maxDecay), 0.0f, 1.0f, 2);
+                TableElementFloatRange element = new TableElementFloatRange("decay", "Decay", new FloatRange(transformer.minDecay, transformer.maxDecay), 0.0f, 1.0f, 2);
                 element.addPropertyListener(this);
                 return element;
             }
             case 1:
             {
-                TableElementFloat element = new TableElementFloat("decayChaos", "Chaos", blockTransformer.decayChaos, 0.0f, 1.0f);
+                TableElementFloat element = new TableElementFloat("decayChaos", "Chaos", transformer.decayChaos, 0.0f, 1.0f);
                 element.addPropertyListener(this);
                 return element;
             }
             case 2:
             {
-                TableElementFloat element = new TableElementFloat("erosion", "Erosion", blockTransformer.blockErosion, 0.0f, 1.0f);
+                TableElementFloat element = new TableElementFloat("erosion", "Erosion", transformer.blockErosion, 0.0f, 1.0f);
                 element.addPropertyListener(this);
                 return element;
             }
             case 3:
             {
-                TableElementFloat element = new TableElementFloat("vines", "Vine Growth", blockTransformer.vineGrowth, 0.0f, 1.0f);
+                TableElementFloat element = new TableElementFloat("vines", "Vine Growth", transformer.vineGrowth, 0.0f, 1.0f);
                 element.addPropertyListener(this);
                 return element;
             }
@@ -78,17 +78,17 @@ public class TableDataSourceBTRuins implements TableDataSource, TableElementProp
         {
             case "decay":
                 FloatRange range = (FloatRange) element.getPropertyValue();
-                blockTransformer.minDecay = range.getMin();
-                blockTransformer.maxDecay = range.getMax();
+                transformer.minDecay = range.getMin();
+                transformer.maxDecay = range.getMax();
                 break;
             case "decayChaos":
-                blockTransformer.decayChaos = (float) element.getPropertyValue();
+                transformer.decayChaos = (float) element.getPropertyValue();
                 break;
             case "erosion":
-                blockTransformer.blockErosion = (float) element.getPropertyValue();
+                transformer.blockErosion = (float) element.getPropertyValue();
                 break;
             case "vines":
-                blockTransformer.vineGrowth = (float) element.getPropertyValue();
+                transformer.vineGrowth = (float) element.getPropertyValue();
                 break;
         }
     }

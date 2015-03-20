@@ -168,7 +168,7 @@ public class TableDataSourceGenericStructure extends TableDataSourceSegmented im
         }
         else if ("editTransformers".equals(element.getID()) && "edit".equals(actionID))
         {
-            GuiTable editTransformersProperties = new GuiTable(tableDelegate, new TableDataSourceBlockTransformerList(structureInfo.blockTransformers, tableDelegate, navigator));
+            GuiTable editTransformersProperties = new GuiTable(tableDelegate, new TableDataSourceTransformerList(structureInfo.transformers, tableDelegate, navigator));
             navigator.pushTable(editTransformersProperties);
         }
         else if ("editGenerationInfos".equals(element.getID()) && "edit".equals(actionID))

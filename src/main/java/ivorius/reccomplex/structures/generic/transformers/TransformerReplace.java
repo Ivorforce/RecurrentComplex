@@ -3,12 +3,12 @@
  *  * http://lukas.axxim.net
  */
 
-package ivorius.reccomplex.structures.generic.blocktransformers;
+package ivorius.reccomplex.structures.generic.transformers;
 
 import com.google.gson.*;
 import ivorius.ivtoolkit.blocks.BlockCoord;
 import ivorius.ivtoolkit.tools.MCRegistry;
-import ivorius.reccomplex.gui.editstructure.blocktransformers.TableDataSourceBTReplace;
+import ivorius.reccomplex.gui.editstructure.transformers.TableDataSourceBTReplace;
 import ivorius.reccomplex.gui.table.TableDataSource;
 import ivorius.reccomplex.gui.table.TableDelegate;
 import ivorius.reccomplex.gui.table.TableNavigator;
@@ -35,24 +35,24 @@ import java.util.Random;
 /**
  * Created by lukas on 25.05.14.
  */
-public class BlockTransformerReplace extends BlockTransformerSingle
+public class TransformerReplace extends TransformerSingleBlock
 {
     public BlockMatcher sourceMatcher;
 
     public final PresettedList<WeightedBlockState> destination = new PresettedList<>(WeightedBlockStatePresets.instance(), null);
 
-    public BlockTransformerReplace()
+    public TransformerReplace()
     {
         this(BlockMatcher.of(Blocks.wool));
         destination.setToDefault();
     }
 
-    public BlockTransformerReplace(String sourceExpression)
+    public TransformerReplace(String sourceExpression)
     {
         this.sourceMatcher = new BlockMatcher(sourceExpression);
     }
 
-    public BlockTransformerReplace replaceWith(WeightedBlockState... states)
+    public TransformerReplace replaceWith(WeightedBlockState... states)
     {
         destination.setContents(Arrays.asList(states));
         return this;
@@ -136,7 +136,7 @@ public class BlockTransformerReplace extends BlockTransformerSingle
         return phase == Phase.BEFORE;
     }
 
-    public static class Serializer implements JsonDeserializer<BlockTransformerReplace>, JsonSerializer<BlockTransformerReplace>
+    public static class Serializer implements JsonDeserializer<TransformerReplace>, JsonSerializer<TransformerReplace>
     {
         private MCRegistry registry;
         private Gson gson;
@@ -160,7 +160,7 @@ public class BlockTransformerReplace extends BlockTransformerSingle
         }
 
         @Override
-        public BlockTransformerReplace deserialize(JsonElement jsonElement, Type par2Type, JsonDeserializationContext context)
+        public TransformerReplace deserialize(JsonElement jsonElement, Type par2Type, JsonDeserializationContext context)
         {
             JsonObject jsonObject = JsonUtils.getJsonElementAsJsonObject(jsonElement, "transformerReplace");
 
@@ -168,7 +168,7 @@ public class BlockTransformerReplace extends BlockTransformerSingle
             if (expression == null)
                 expression = JsonUtils.getJsonObjectStringFieldValueOrDefault(jsonObject, "sourceExpression", "");
 
-            BlockTransformerReplace transformer = new BlockTransformerReplace(expression);
+            TransformerReplace transformer = new TransformerReplace(expression);
 
             if (!transformer.destination.setPreset(JsonUtils.getJsonObjectStringFieldValueOrDefault(jsonObject, "destinationPreset", null)))
             {
@@ -192,7 +192,7 @@ public class BlockTransformerReplace extends BlockTransformerSingle
         }
 
         @Override
-        public JsonElement serialize(BlockTransformerReplace transformer, Type par2Type, JsonSerializationContext context)
+        public JsonElement serialize(TransformerReplace transformer, Type par2Type, JsonSerializationContext context)
         {
             JsonObject jsonObject = new JsonObject();
 

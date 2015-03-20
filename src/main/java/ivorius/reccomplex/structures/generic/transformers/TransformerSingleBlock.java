@@ -3,7 +3,7 @@
  *  * http://lukas.axxim.net
  */
 
-package ivorius.reccomplex.structures.generic.blocktransformers;
+package ivorius.reccomplex.structures.generic.transformers;
 
 import ivorius.ivtoolkit.blocks.BlockCoord;
 import ivorius.ivtoolkit.blocks.IvBlockCollection;
@@ -18,7 +18,7 @@ import java.util.Random;
 /**
  * Created by lukas on 17.09.14.
  */
-public abstract class BlockTransformerSingle implements BlockTransformer
+public abstract class TransformerSingleBlock implements Transformer
 {
     @Override
     public boolean skipGeneration(Block block, int metadata)
@@ -27,7 +27,7 @@ public abstract class BlockTransformerSingle implements BlockTransformer
     }
 
     @Override
-    public void transform(Phase phase, StructureSpawnContext context, IvWorldData worldData, List<BlockTransformer> transformerList)
+    public void transform(Phase phase, StructureSpawnContext context, IvWorldData worldData, List<Transformer> transformerList)
     {
         IvBlockCollection blockCollection = worldData.blockCollection;
         int[] areaSize = new int[]{blockCollection.width, blockCollection.height, blockCollection.length};

@@ -3,13 +3,12 @@
  *  * http://lukas.axxim.net
  */
 
-package ivorius.reccomplex.gui.editstructure.blocktransformers;
+package ivorius.reccomplex.gui.editstructure.transformers;
 
-import ivorius.reccomplex.gui.editstructure.TableDataSourceBiomeGenList;
 import ivorius.reccomplex.gui.editstructure.TableDataSourceDimensionGen;
 import ivorius.reccomplex.gui.editstructure.TableDataSourceWeightedBlockStateList;
 import ivorius.reccomplex.gui.table.*;
-import ivorius.reccomplex.structures.generic.blocktransformers.BlockTransformerReplace;
+import ivorius.reccomplex.structures.generic.transformers.TransformerReplace;
 import ivorius.reccomplex.utils.IvTranslations;
 import org.apache.commons.lang3.StringUtils;
 
@@ -18,28 +17,28 @@ import org.apache.commons.lang3.StringUtils;
  */
 public class TableDataSourceBTReplace extends TableDataSourceSegmented implements TableElementPropertyListener, TableElementActionListener
 {
-    private BlockTransformerReplace blockTransformer;
+    private TransformerReplace transformer;
 
     private TableNavigator navigator;
     private TableDelegate tableDelegate;
 
     private TableElementTitle parsed;
 
-    public TableDataSourceBTReplace(BlockTransformerReplace blockTransformer, TableNavigator navigator, TableDelegate tableDelegate)
+    public TableDataSourceBTReplace(TransformerReplace transformer, TableNavigator navigator, TableDelegate tableDelegate)
     {
-        this.blockTransformer = blockTransformer;
+        this.transformer = transformer;
         this.navigator = navigator;
         this.tableDelegate = tableDelegate;
     }
 
-    public BlockTransformerReplace getBlockTransformer()
+    public TransformerReplace getTransformer()
     {
-        return blockTransformer;
+        return transformer;
     }
 
-    public void setBlockTransformer(BlockTransformerReplace blockTransformer)
+    public void setTransformer(TransformerReplace transformer)
     {
-        this.blockTransformer = blockTransformer;
+        this.transformer = transformer;
     }
 
     @Override
@@ -61,13 +60,13 @@ public class TableDataSourceBTReplace extends TableDataSourceSegmented implement
         {
             if (index == 0)
             {
-                TableElementString element = new TableElementString("source", "Sources", blockTransformer.sourceMatcher.getExpression());
+                TableElementString element = new TableElementString("source", "Sources", transformer.sourceMatcher.getExpression());
                 element.setTooltip(IvTranslations.formatLines("reccomplex.expression.block.tooltip"));
                 element.addPropertyListener(this);
                 return element;
             }
             else if (index == 1)
-                return parsed = new TableElementTitle("parsed", "", StringUtils.abbreviate(TableDataSourceDimensionGen.parsedString(blockTransformer.sourceMatcher), 60));
+                return parsed = new TableElementTitle("parsed", "", StringUtils.abbreviate(TableDataSourceDimensionGen.parsedString(transformer.sourceMatcher), 60));
         }
         else if (segment == 1)
         {
@@ -84,9 +83,9 @@ public class TableDataSourceBTReplace extends TableDataSourceSegmented implement
     {
         if ("source".equals(element.getID()))
         {
-            blockTransformer.sourceMatcher.setExpression((String) element.getPropertyValue());
+            transformer.sourceMatcher.setExpression((String) element.getPropertyValue());
             if (parsed != null)
-                parsed.setDisplayString(StringUtils.abbreviate(TableDataSourceDimensionGen.parsedString(blockTransformer.sourceMatcher), 60));
+                parsed.setDisplayString(StringUtils.abbreviate(TableDataSourceDimensionGen.parsedString(transformer.sourceMatcher), 60));
         }
     }
 
@@ -95,7 +94,7 @@ public class TableDataSourceBTReplace extends TableDataSourceSegmented implement
     {
         if ("dest".equals(element.getID()))
         {
-            GuiTable table = new GuiTable(tableDelegate, new TableDataSourceWeightedBlockStateList(blockTransformer.destination, tableDelegate, navigator));
+            GuiTable table = new GuiTable(tableDelegate, new TableDataSourceWeightedBlockStateList(transformer.destination, tableDelegate, navigator));
             navigator.pushTable(table);
         }
     }

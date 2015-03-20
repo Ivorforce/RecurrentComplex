@@ -3,14 +3,14 @@
  *  * http://lukas.axxim.net
  */
 
-package ivorius.reccomplex.structures.generic.blocktransformers;
+package ivorius.reccomplex.structures.generic.transformers;
 
 import com.google.gson.*;
 import ivorius.ivtoolkit.blocks.BlockCoord;
 import ivorius.ivtoolkit.math.IvVecMathHelper;
 import ivorius.ivtoolkit.tools.MCRegistry;
 import ivorius.reccomplex.blocks.RCBlocks;
-import ivorius.reccomplex.gui.editstructure.blocktransformers.TableDataSourceBTNaturalAir;
+import ivorius.reccomplex.gui.editstructure.transformers.TableDataSourceBTNaturalAir;
 import ivorius.reccomplex.gui.table.TableDataSource;
 import ivorius.reccomplex.gui.table.TableDelegate;
 import ivorius.reccomplex.gui.table.TableNavigator;
@@ -30,19 +30,19 @@ import java.util.Random;
 /**
  * Created by lukas on 25.05.14.
  */
-public class BlockTransformerNaturalAir extends BlockTransformerSingle
+public class TransformerNaturalAir extends TransformerSingleBlock
 {
     public static final double NATURAL_EXPANSION_DISTANCE = 4.0;
     public static final double NATURAL_DISTANCE_RANDOMIZATION = 10.0;
 
     public BlockMatcher sourceMatcher;
 
-    public BlockTransformerNaturalAir()
+    public TransformerNaturalAir()
     {
         this(BlockMatcher.of(RCBlocks.negativeSpace, 1));
     }
 
-    public BlockTransformerNaturalAir(String sourceExpression)
+    public TransformerNaturalAir(String sourceExpression)
     {
         this.sourceMatcher = new BlockMatcher(sourceExpression);
     }
@@ -137,7 +137,7 @@ public class BlockTransformerNaturalAir extends BlockTransformerSingle
         return phase == Phase.BEFORE;
     }
 
-    public static class Serializer implements JsonDeserializer<BlockTransformerNaturalAir>, JsonSerializer<BlockTransformerNaturalAir>
+    public static class Serializer implements JsonDeserializer<TransformerNaturalAir>, JsonSerializer<TransformerNaturalAir>
     {
         private MCRegistry registry;
 
@@ -147,19 +147,19 @@ public class BlockTransformerNaturalAir extends BlockTransformerSingle
         }
 
         @Override
-        public BlockTransformerNaturalAir deserialize(JsonElement jsonElement, Type par2Type, JsonDeserializationContext context)
+        public TransformerNaturalAir deserialize(JsonElement jsonElement, Type par2Type, JsonDeserializationContext context)
         {
             JsonObject jsonObject = JsonUtils.getJsonElementAsJsonObject(jsonElement, "transformerNatural");
 
-            String expression = BlockTransformerReplace.Serializer.readLegacyMatcher(jsonObject, "source", "sourceMetadata"); // Legacy
+            String expression = TransformerReplace.Serializer.readLegacyMatcher(jsonObject, "source", "sourceMetadata"); // Legacy
             if (expression == null)
                 expression = JsonUtils.getJsonObjectStringFieldValueOrDefault(jsonObject, "sourceExpression", "");
 
-            return new BlockTransformerNaturalAir(expression);
+            return new TransformerNaturalAir(expression);
         }
 
         @Override
-        public JsonElement serialize(BlockTransformerNaturalAir transformer, Type par2Type, JsonSerializationContext context)
+        public JsonElement serialize(TransformerNaturalAir transformer, Type par2Type, JsonSerializationContext context)
         {
             JsonObject jsonObject = new JsonObject();
 

@@ -7,16 +7,13 @@ package ivorius.reccomplex.gui.editstructure;
 
 import ivorius.reccomplex.RecurrentComplex;
 import ivorius.reccomplex.gui.table.*;
-import ivorius.reccomplex.json.SerializableStringTypeRegistry;
 import ivorius.reccomplex.structures.StructureRegistry;
-import ivorius.reccomplex.structures.generic.blocktransformers.BlockTransformer;
 import ivorius.reccomplex.structures.generic.gentypes.StructureGenerationInfo;
 import ivorius.reccomplex.utils.IvTranslations;
 import net.minecraft.util.StatCollector;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
 
 /**

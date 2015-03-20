@@ -8,7 +8,7 @@ package ivorius.reccomplex.gui.editstructure;
 import ivorius.reccomplex.RecurrentComplex;
 import ivorius.reccomplex.gui.table.*;
 import ivorius.reccomplex.structures.StructureRegistry;
-import ivorius.reccomplex.structures.generic.blocktransformers.BlockTransformer;
+import ivorius.reccomplex.structures.generic.transformers.Transformer;
 import ivorius.reccomplex.utils.IvTranslations;
 import net.minecraft.util.StatCollector;
 import org.apache.commons.lang3.StringUtils;
@@ -20,30 +20,30 @@ import java.util.List;
 /**
  * Created by lukas on 04.06.14.
  */
-public class TableDataSourceBlockTransformerList extends TableDataSourceList<BlockTransformer, List<BlockTransformer>>
+public class TableDataSourceTransformerList extends TableDataSourceList<Transformer, List<Transformer>>
 {
-    public TableDataSourceBlockTransformerList(List<BlockTransformer> list, TableDelegate tableDelegate, TableNavigator navigator)
+    public TableDataSourceTransformerList(List<Transformer> list, TableDelegate tableDelegate, TableNavigator navigator)
     {
         super(list, tableDelegate, navigator);
         setUsesPresetActionForAdding(true);
     }
 
     @Override
-    public String getDisplayString(BlockTransformer blockTransformer)
+    public String getDisplayString(Transformer transformer)
     {
-        return StringUtils.abbreviate(blockTransformer.getDisplayString(), 24);
+        return StringUtils.abbreviate(transformer.getDisplayString(), 24);
     }
 
     @Override
-    public BlockTransformer newEntry(String actionID)
+    public Transformer newEntry(String actionID)
     {
-        Class<? extends BlockTransformer> clazz = StructureRegistry.getBlockTransformerRegistry().typeForID(actionID);
+        Class<? extends Transformer> clazz = StructureRegistry.getTransformerRegistry().typeForID(actionID);
 
-        return instantiateBlockTransformer(clazz);
+        return instantiateTransformer(clazz);
     }
 
     @Override
-    public TableDataSource editEntryDataSource(BlockTransformer entry)
+    public TableDataSource editEntryDataSource(Transformer entry)
     {
         return entry.tableDataSource(navigator, tableDelegate);
     }
@@ -51,11 +51,11 @@ public class TableDataSourceBlockTransformerList extends TableDataSourceList<Blo
     @Override
     public TableElementButton.Action[] getAddActions()
     {
-        Collection<String> allTypes = StructureRegistry.getBlockTransformerRegistry().allIDs();
+        Collection<String> allTypes = StructureRegistry.getTransformerRegistry().allIDs();
         List<TableElementButton.Action> actions = new ArrayList<>(allTypes.size());
         for (String type : allTypes)
         {
-            String baseKey = "reccomplex.blockTransformer." + type;
+            String baseKey = "reccomplex.transformer." + type;
             actions.add(new TableElementButton.Action(type,
                     StatCollector.translateToLocal(baseKey),
                     IvTranslations.formatLines(baseKey + ".tooltip")
@@ -64,19 +64,19 @@ public class TableDataSourceBlockTransformerList extends TableDataSourceList<Blo
         return actions.toArray(new TableElementButton.Action[actions.size()]);
     }
 
-    public BlockTransformer instantiateBlockTransformer(Class<? extends BlockTransformer> clazz)
+    public Transformer instantiateTransformer(Class<? extends Transformer> clazz)
     {
-        BlockTransformer blockTransformer = null;
+        Transformer transformer = null;
 
         try
         {
-            blockTransformer = clazz.newInstance();
+            transformer = clazz.newInstance();
         }
         catch (InstantiationException | IllegalAccessException e)
         {
             RecurrentComplex.logger.error(e);
         }
 
-        return blockTransformer;
+        return transformer;
     }
 }

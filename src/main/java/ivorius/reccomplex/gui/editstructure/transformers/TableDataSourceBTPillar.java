@@ -3,11 +3,11 @@
  *  * http://lukas.axxim.net
  */
 
-package ivorius.reccomplex.gui.editstructure.blocktransformers;
+package ivorius.reccomplex.gui.editstructure.transformers;
 
 import ivorius.reccomplex.gui.editstructure.TableDataSourceDimensionGen;
 import ivorius.reccomplex.gui.table.*;
-import ivorius.reccomplex.structures.generic.blocktransformers.BlockTransformerPillar;
+import ivorius.reccomplex.structures.generic.transformers.TransformerPillar;
 import ivorius.reccomplex.utils.IvTranslations;
 import net.minecraft.block.Block;
 import org.apache.commons.lang3.StringUtils;
@@ -17,23 +17,23 @@ import org.apache.commons.lang3.StringUtils;
  */
 public class TableDataSourceBTPillar extends TableDataSourceSegmented implements TableElementPropertyListener
 {
-    private BlockTransformerPillar blockTransformer;
+    private TransformerPillar transformer;
 
     private TableElementTitle parsed;
 
-    public TableDataSourceBTPillar(BlockTransformerPillar blockTransformer)
+    public TableDataSourceBTPillar(TransformerPillar transformer)
     {
-        this.blockTransformer = blockTransformer;
+        this.transformer = transformer;
     }
 
-    public BlockTransformerPillar getBlockTransformer()
+    public TransformerPillar getTransformer()
     {
-        return blockTransformer;
+        return transformer;
     }
 
-    public void setBlockTransformer(BlockTransformerPillar blockTransformer)
+    public void setTransformer(TransformerPillar transformer)
     {
-        this.blockTransformer = blockTransformer;
+        this.transformer = transformer;
     }
 
     @Override
@@ -55,25 +55,25 @@ public class TableDataSourceBTPillar extends TableDataSourceSegmented implements
         {
             if (index == 0)
             {
-                TableElementString element = new TableElementString("source", "Sources", blockTransformer.sourceMatcher.getExpression());
+                TableElementString element = new TableElementString("source", "Sources", transformer.sourceMatcher.getExpression());
                 element.setTooltip(IvTranslations.formatLines("reccomplex.expression.block.tooltip"));
                 element.addPropertyListener(this);
                 return element;
             }
             else if (index == 1)
-                return parsed = new TableElementTitle("parsed", "", StringUtils.abbreviate(TableDataSourceDimensionGen.parsedString(blockTransformer.sourceMatcher), 60));
+                return parsed = new TableElementTitle("parsed", "", StringUtils.abbreviate(TableDataSourceDimensionGen.parsedString(transformer.sourceMatcher), 60));
         }
         else if (segment == 1)
         {
             if (index == 0)
             {
-                TableElementString element = TableDataSourceBTNatural.elementForBlock("destID", "Dest Block", blockTransformer.destBlock);
+                TableElementString element = TableDataSourceBTNatural.elementForBlock("destID", "Dest Block", transformer.destBlock);
                 element.addPropertyListener(this);
                 return element;
             }
             else if (index == 1)
             {
-                TableElementInteger element = new TableElementInteger("destMeta", "Dest Metadata", blockTransformer.destMetadata, 0, 16);
+                TableElementInteger element = new TableElementInteger("destMeta", "Dest Metadata", transformer.destMetadata, 0, 16);
                 element.addPropertyListener(this);
                 return element;
             }
@@ -87,18 +87,18 @@ public class TableDataSourceBTPillar extends TableDataSourceSegmented implements
     {
         if ("source".equals(element.getID()))
         {
-            blockTransformer.sourceMatcher.setExpression((String) element.getPropertyValue());
+            transformer.sourceMatcher.setExpression((String) element.getPropertyValue());
             if (parsed != null)
-                parsed.setDisplayString(StringUtils.abbreviate(TableDataSourceDimensionGen.parsedString(blockTransformer.sourceMatcher), 60));
+                parsed.setDisplayString(StringUtils.abbreviate(TableDataSourceDimensionGen.parsedString(transformer.sourceMatcher), 60));
         }
         else if ("destID".equals(element.getID()))
         {
-            blockTransformer.destBlock = (Block) Block.blockRegistry.getObject(element.getPropertyValue());
+            transformer.destBlock = (Block) Block.blockRegistry.getObject(element.getPropertyValue());
             TableDataSourceBTNatural.setStateForBlockTextfield(((TableElementString) element));
         }
         else if ("destMeta".equals(element.getID()))
         {
-            blockTransformer.destMetadata = (int) element.getPropertyValue();
+            transformer.destMetadata = (int) element.getPropertyValue();
         }
     }
 }

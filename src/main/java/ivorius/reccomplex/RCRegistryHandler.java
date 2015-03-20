@@ -23,10 +23,9 @@ import ivorius.reccomplex.structures.OperationMoveStructure;
 import ivorius.reccomplex.structures.generic.BiomeGenerationInfo;
 import ivorius.reccomplex.structures.generic.DimensionGenerationInfo;
 import ivorius.reccomplex.structures.generic.WeightedBlockState;
-import ivorius.reccomplex.structures.generic.blocktransformers.*;
+import ivorius.reccomplex.structures.generic.transformers.*;
 import ivorius.reccomplex.structures.generic.gentypes.*;
 import ivorius.reccomplex.structures.generic.matchers.BiomeMatcher;
-import ivorius.reccomplex.structures.generic.matchers.BlockMatcher;
 import ivorius.reccomplex.structures.generic.matchers.DimensionMatcher;
 import ivorius.reccomplex.structures.generic.presets.BiomeMatcherPresets;
 import ivorius.reccomplex.structures.generic.presets.DimensionMatcherPresets;
@@ -138,14 +137,14 @@ public class RCRegistryHandler
     {
         MCRegistrySpecial mcRegistry = MCRegistrySpecial.INSTANCE;
 
-        SerializableStringTypeRegistry<BlockTransformer> transformerRegistry = StructureRegistry.getBlockTransformerRegistry();
-        transformerRegistry.registerType("natural", BlockTransformerNatural.class, new BlockTransformerNatural.Serializer(mcRegistry));
-        transformerRegistry.registerType("naturalAir", BlockTransformerNaturalAir.class, new BlockTransformerNaturalAir.Serializer(mcRegistry));
-        transformerRegistry.registerType("pillar", BlockTransformerPillar.class, new BlockTransformerPillar.Serializer(mcRegistry));
-        transformerRegistry.registerType("replaceAll", BlockTransformerReplaceAll.class, new BlockTransformerReplaceAll.Serializer(mcRegistry));
-        transformerRegistry.registerType("replace", BlockTransformerReplace.class, new BlockTransformerReplace.Serializer(mcRegistry));
-        transformerRegistry.registerType("ruins", BlockTransformerRuins.class, new BlockTransformerRuins.Serializer(mcRegistry));
-        transformerRegistry.registerType("negativeSpace", BlockTransformerNegativeSpace.class, new BlockTransformerNegativeSpace.Serializer(mcRegistry));
+        SerializableStringTypeRegistry<Transformer> transformerRegistry = StructureRegistry.getTransformerRegistry();
+        transformerRegistry.registerType("natural", TransformerNatural.class, new TransformerNatural.Serializer(mcRegistry));
+        transformerRegistry.registerType("naturalAir", TransformerNaturalAir.class, new TransformerNaturalAir.Serializer(mcRegistry));
+        transformerRegistry.registerType("pillar", TransformerPillar.class, new TransformerPillar.Serializer(mcRegistry));
+        transformerRegistry.registerType("replaceAll", TransformerReplaceAll.class, new TransformerReplaceAll.Serializer(mcRegistry));
+        transformerRegistry.registerType("replace", TransformerReplace.class, new TransformerReplace.Serializer(mcRegistry));
+        transformerRegistry.registerType("ruins", TransformerRuins.class, new TransformerRuins.Serializer(mcRegistry));
+        transformerRegistry.registerType("negativeSpace", TransformerNegativeSpace.class, new TransformerNegativeSpace.Serializer(mcRegistry));
 
         SerializableStringTypeRegistry<StructureGenerationInfo> genInfoRegistry = StructureRegistry.getStructureGenerationInfoRegistry();
         genInfoRegistry.registerType("natural", NaturalGenerationInfo.class, new NaturalGenerationInfo.Serializer());

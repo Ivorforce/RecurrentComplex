@@ -3,7 +3,7 @@
  *  * http://lukas.axxim.net
  */
 
-package ivorius.reccomplex.structures.generic.blocktransformers;
+package ivorius.reccomplex.structures.generic.transformers;
 
 import com.google.gson.*;
 import ivorius.ivtoolkit.blocks.BlockArea;
@@ -11,7 +11,7 @@ import ivorius.ivtoolkit.blocks.BlockCoord;
 import ivorius.ivtoolkit.blocks.IvBlockCollection;
 import ivorius.ivtoolkit.tools.IvWorldData;
 import ivorius.ivtoolkit.tools.MCRegistry;
-import ivorius.reccomplex.gui.editstructure.blocktransformers.TableDataSourceBTRuins;
+import ivorius.reccomplex.gui.editstructure.transformers.TableDataSourceBTRuins;
 import ivorius.reccomplex.gui.table.TableDataSource;
 import ivorius.reccomplex.gui.table.TableDelegate;
 import ivorius.reccomplex.gui.table.TableNavigator;
@@ -36,7 +36,7 @@ import java.util.Random;
 /**
  * Created by lukas on 25.05.14.
  */
-public class BlockTransformerRuins implements BlockTransformer
+public class TransformerRuins implements Transformer
 {
     public static final ForgeDirection[] HORIZONTAL_DIRECTIONS = new ForgeDirection[]{ForgeDirection.NORTH, ForgeDirection.EAST, ForgeDirection.SOUTH, ForgeDirection.WEST};
 
@@ -47,12 +47,12 @@ public class BlockTransformerRuins implements BlockTransformer
     public float blockErosion;
     public float vineGrowth;
 
-    public BlockTransformerRuins()
+    public TransformerRuins()
     {
         this(0.0f, 0.9f, 0.3f, 0.3f, 0.1f);
     }
 
-    public BlockTransformerRuins(float minDecay, float maxDecay, float decayChaos, float blockErosion, float vineGrowth)
+    public TransformerRuins(float minDecay, float maxDecay, float decayChaos, float blockErosion, float vineGrowth)
     {
         this.minDecay = minDecay;
         this.maxDecay = maxDecay;
@@ -61,9 +61,9 @@ public class BlockTransformerRuins implements BlockTransformer
         this.vineGrowth = vineGrowth;
     }
 
-    private static boolean skipBlock(Collection<BlockTransformer> transformers, Block block, int meta)
+    private static boolean skipBlock(Collection<Transformer> transformers, Block block, int meta)
     {
-        for (BlockTransformer transformer : transformers)
+        for (Transformer transformer : transformers)
             if (transformer.skipGeneration(block, meta))
                 return true;
         return false;
@@ -123,7 +123,7 @@ public class BlockTransformerRuins implements BlockTransformer
     }
 
     @Override
-    public void transform(Phase phase, StructureSpawnContext context, IvWorldData worldData, List<BlockTransformer> transformerList)
+    public void transform(Phase phase, StructureSpawnContext context, IvWorldData worldData, List<Transformer> transformerList)
     {
         IvBlockCollection blockCollection = worldData.blockCollection;
 
@@ -234,7 +234,7 @@ public class BlockTransformerRuins implements BlockTransformer
     @Override
     public String getDisplayString()
     {
-        return StatCollector.translateToLocal("reccomplex.blockTransformer.ruins");
+        return StatCollector.translateToLocal("reccomplex.transformer.ruins");
     }
 
     @Override
@@ -249,7 +249,7 @@ public class BlockTransformerRuins implements BlockTransformer
         return phase == Phase.AFTER;
     }
 
-    public static class Serializer implements JsonDeserializer<BlockTransformerRuins>, JsonSerializer<BlockTransformerRuins>
+    public static class Serializer implements JsonDeserializer<TransformerRuins>, JsonSerializer<TransformerRuins>
     {
         private MCRegistry registry;
 
@@ -259,7 +259,7 @@ public class BlockTransformerRuins implements BlockTransformer
         }
 
         @Override
-        public BlockTransformerRuins deserialize(JsonElement jsonElement, Type par2Type, JsonDeserializationContext context)
+        public TransformerRuins deserialize(JsonElement jsonElement, Type par2Type, JsonDeserializationContext context)
         {
             JsonObject jsonobject = JsonUtils.getJsonElementAsJsonObject(jsonElement, "transformerRuins");
 
@@ -270,11 +270,11 @@ public class BlockTransformerRuins implements BlockTransformer
             float vineGrowth = JsonUtils.getJsonObjectFloatFieldValueOrDefault(jsonobject, "vineGrowth", 0.0f);
             float gravity = JsonUtils.getJsonObjectFloatFieldValueOrDefault(jsonobject, "gravity", 0.0f);
 
-            return new BlockTransformerRuins(minDecay, maxDecay, decayChaos, blockErosion, vineGrowth);
+            return new TransformerRuins(minDecay, maxDecay, decayChaos, blockErosion, vineGrowth);
         }
 
         @Override
-        public JsonElement serialize(BlockTransformerRuins transformer, Type par2Type, JsonSerializationContext context)
+        public JsonElement serialize(TransformerRuins transformer, Type par2Type, JsonSerializationContext context)
         {
             JsonObject jsonobject = new JsonObject();
 

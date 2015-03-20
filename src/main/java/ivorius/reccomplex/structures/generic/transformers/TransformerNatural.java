@@ -3,14 +3,14 @@
  *  * http://lukas.axxim.net
  */
 
-package ivorius.reccomplex.structures.generic.blocktransformers;
+package ivorius.reccomplex.structures.generic.transformers;
 
 import com.google.gson.*;
 import ivorius.ivtoolkit.blocks.BlockCoord;
 import ivorius.ivtoolkit.math.IvVecMathHelper;
 import ivorius.ivtoolkit.tools.MCRegistry;
 import ivorius.reccomplex.blocks.RCBlocks;
-import ivorius.reccomplex.gui.editstructure.blocktransformers.TableDataSourceBTNatural;
+import ivorius.reccomplex.gui.editstructure.transformers.TableDataSourceBTNatural;
 import ivorius.reccomplex.gui.table.TableDataSource;
 import ivorius.reccomplex.gui.table.TableDelegate;
 import ivorius.reccomplex.gui.table.TableNavigator;
@@ -29,19 +29,19 @@ import java.util.Random;
 /**
  * Created by lukas on 25.05.14.
  */
-public class BlockTransformerNatural extends BlockTransformerSingle
+public class TransformerNatural extends TransformerSingleBlock
 {
     public static final double NATURAL_EXPANSION_DISTANCE = 4.0;
     public static final double NATURAL_DISTANCE_RANDOMIZATION = 6.0;
 
     public BlockMatcher sourceMatcher;
 
-    public BlockTransformerNatural()
+    public TransformerNatural()
     {
         this(BlockMatcher.of(RCBlocks.naturalFloor, 0));
     }
 
-    public BlockTransformerNatural(String sourceMatcherExpression)
+    public TransformerNatural(String sourceMatcherExpression)
     {
         this.sourceMatcher = new BlockMatcher(sourceMatcherExpression);
     }
@@ -162,7 +162,7 @@ public class BlockTransformerNatural extends BlockTransformerSingle
         return new TableDataSourceBTNatural(this);
     }
 
-    public static class Serializer implements JsonDeserializer<BlockTransformerNatural>, JsonSerializer<BlockTransformerNatural>
+    public static class Serializer implements JsonDeserializer<TransformerNatural>, JsonSerializer<TransformerNatural>
     {
         private MCRegistry registry;
 
@@ -172,19 +172,19 @@ public class BlockTransformerNatural extends BlockTransformerSingle
         }
 
         @Override
-        public BlockTransformerNatural deserialize(JsonElement jsonElement, Type par2Type, JsonDeserializationContext context)
+        public TransformerNatural deserialize(JsonElement jsonElement, Type par2Type, JsonDeserializationContext context)
         {
             JsonObject jsonObject = JsonUtils.getJsonElementAsJsonObject(jsonElement, "transformerNatural");
 
-            String expression = BlockTransformerReplace.Serializer.readLegacyMatcher(jsonObject, "source", "sourceMetadata"); // Legacy
+            String expression = TransformerReplace.Serializer.readLegacyMatcher(jsonObject, "source", "sourceMetadata"); // Legacy
             if (expression == null)
                 expression = JsonUtils.getJsonObjectStringFieldValueOrDefault(jsonObject, "sourceExpression", "");
 
-            return new BlockTransformerNatural(expression);
+            return new TransformerNatural(expression);
         }
 
         @Override
-        public JsonElement serialize(BlockTransformerNatural transformer, Type par2Type, JsonSerializationContext context)
+        public JsonElement serialize(TransformerNatural transformer, Type par2Type, JsonSerializationContext context)
         {
             JsonObject jsonObject = new JsonObject();
 

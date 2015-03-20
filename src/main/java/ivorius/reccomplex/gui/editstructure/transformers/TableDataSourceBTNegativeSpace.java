@@ -3,13 +3,12 @@
  *  * http://lukas.axxim.net
  */
 
-package ivorius.reccomplex.gui.editstructure.blocktransformers;
+package ivorius.reccomplex.gui.editstructure.transformers;
 
 import ivorius.reccomplex.gui.editstructure.TableDataSourceDimensionGen;
 import ivorius.reccomplex.gui.table.*;
-import ivorius.reccomplex.structures.generic.blocktransformers.BlockTransformerNegativeSpace;
+import ivorius.reccomplex.structures.generic.transformers.TransformerNegativeSpace;
 import ivorius.reccomplex.utils.IvTranslations;
-import net.minecraft.block.Block;
 import org.apache.commons.lang3.StringUtils;
 
 /**
@@ -17,23 +16,23 @@ import org.apache.commons.lang3.StringUtils;
  */
 public class TableDataSourceBTNegativeSpace extends TableDataSourceSegmented implements TableElementPropertyListener
 {
-    private BlockTransformerNegativeSpace blockTransformer;
+    private TransformerNegativeSpace transformer;
 
     private TableElementTitle parsed;
 
-    public TableDataSourceBTNegativeSpace(BlockTransformerNegativeSpace blockTransformer)
+    public TableDataSourceBTNegativeSpace(TransformerNegativeSpace transformer)
     {
-        this.blockTransformer = blockTransformer;
+        this.transformer = transformer;
     }
 
-    public BlockTransformerNegativeSpace getBlockTransformer()
+    public TransformerNegativeSpace getTransformer()
     {
-        return blockTransformer;
+        return transformer;
     }
 
-    public void setBlockTransformer(BlockTransformerNegativeSpace blockTransformer)
+    public void setTransformer(TransformerNegativeSpace transformer)
     {
-        this.blockTransformer = blockTransformer;
+        this.transformer = transformer;
     }
 
     @Override
@@ -55,13 +54,13 @@ public class TableDataSourceBTNegativeSpace extends TableDataSourceSegmented imp
         {
             if (index == 0)
             {
-                TableElementString element = new TableElementString("source", "Sources", blockTransformer.sourceMatcher.getExpression());
+                TableElementString element = new TableElementString("source", "Sources", transformer.sourceMatcher.getExpression());
                 element.setTooltip(IvTranslations.formatLines("reccomplex.expression.block.tooltip"));
                 element.addPropertyListener(this);
                 return element;
             }
             else if (index == 1)
-                return parsed = new TableElementTitle("parsed", "", StringUtils.abbreviate(TableDataSourceDimensionGen.parsedString(blockTransformer.sourceMatcher), 60));
+                return parsed = new TableElementTitle("parsed", "", StringUtils.abbreviate(TableDataSourceDimensionGen.parsedString(transformer.sourceMatcher), 60));
         }
 
         return null;
@@ -72,9 +71,9 @@ public class TableDataSourceBTNegativeSpace extends TableDataSourceSegmented imp
     {
         if ("source".equals(element.getID()))
         {
-            blockTransformer.sourceMatcher.setExpression((String) element.getPropertyValue());
+            transformer.sourceMatcher.setExpression((String) element.getPropertyValue());
             if (parsed != null)
-                parsed.setDisplayString(StringUtils.abbreviate(TableDataSourceDimensionGen.parsedString(blockTransformer.sourceMatcher), 60));
+                parsed.setDisplayString(StringUtils.abbreviate(TableDataSourceDimensionGen.parsedString(transformer.sourceMatcher), 60));
         }
     }
 }

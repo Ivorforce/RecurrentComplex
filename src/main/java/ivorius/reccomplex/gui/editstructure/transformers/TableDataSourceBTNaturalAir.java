@@ -3,13 +3,12 @@
  *  * http://lukas.axxim.net
  */
 
-package ivorius.reccomplex.gui.editstructure.blocktransformers;
+package ivorius.reccomplex.gui.editstructure.transformers;
 
 import ivorius.reccomplex.gui.editstructure.TableDataSourceDimensionGen;
 import ivorius.reccomplex.gui.table.*;
-import ivorius.reccomplex.structures.generic.blocktransformers.BlockTransformerNaturalAir;
+import ivorius.reccomplex.structures.generic.transformers.TransformerNaturalAir;
 import ivorius.reccomplex.utils.IvTranslations;
-import net.minecraft.block.Block;
 import org.apache.commons.lang3.StringUtils;
 
 /**
@@ -17,23 +16,23 @@ import org.apache.commons.lang3.StringUtils;
  */
 public class TableDataSourceBTNaturalAir extends TableDataSourceSegmented implements TableElementPropertyListener
 {
-    private BlockTransformerNaturalAir blockTransformer;
+    private TransformerNaturalAir transformer;
 
     private TableElementTitle parsed;
 
-    public TableDataSourceBTNaturalAir(BlockTransformerNaturalAir blockTransformer)
+    public TableDataSourceBTNaturalAir(TransformerNaturalAir transformer)
     {
-        this.blockTransformer = blockTransformer;
+        this.transformer = transformer;
     }
 
-    public BlockTransformerNaturalAir getBlockTransformer()
+    public TransformerNaturalAir getTransformer()
     {
-        return blockTransformer;
+        return transformer;
     }
 
-    public void setBlockTransformer(BlockTransformerNaturalAir blockTransformer)
+    public void setTransformer(TransformerNaturalAir transformer)
     {
-        this.blockTransformer = blockTransformer;
+        this.transformer = transformer;
     }
 
     @Override
@@ -55,13 +54,13 @@ public class TableDataSourceBTNaturalAir extends TableDataSourceSegmented implem
         {
             if (index == 0)
             {
-                TableElementString element = new TableElementString("source", "Sources", blockTransformer.sourceMatcher.getExpression());
+                TableElementString element = new TableElementString("source", "Sources", transformer.sourceMatcher.getExpression());
                 element.setTooltip(IvTranslations.formatLines("reccomplex.expression.block.tooltip"));
                 element.addPropertyListener(this);
                 return element;
             }
             else if (index == 1)
-                return parsed = new TableElementTitle("parsed", "", StringUtils.abbreviate(TableDataSourceDimensionGen.parsedString(blockTransformer.sourceMatcher), 60));
+                return parsed = new TableElementTitle("parsed", "", StringUtils.abbreviate(TableDataSourceDimensionGen.parsedString(transformer.sourceMatcher), 60));
         }
 
         return null;
@@ -72,9 +71,9 @@ public class TableDataSourceBTNaturalAir extends TableDataSourceSegmented implem
     {
         if ("source".equals(element.getID()))
         {
-            blockTransformer.sourceMatcher.setExpression((String) element.getPropertyValue());
+            transformer.sourceMatcher.setExpression((String) element.getPropertyValue());
             if (parsed != null)
-                parsed.setDisplayString(StringUtils.abbreviate(TableDataSourceDimensionGen.parsedString(blockTransformer.sourceMatcher), 60));
+                parsed.setDisplayString(StringUtils.abbreviate(TableDataSourceDimensionGen.parsedString(transformer.sourceMatcher), 60));
         }
     }
 }

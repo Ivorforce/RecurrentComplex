@@ -3,13 +3,13 @@
  *  * http://lukas.axxim.net
  */
 
-package ivorius.reccomplex.structures.generic.blocktransformers;
+package ivorius.reccomplex.structures.generic.transformers;
 
 import com.google.gson.*;
 import ivorius.ivtoolkit.tools.IvWorldData;
 import ivorius.ivtoolkit.tools.MCRegistry;
 import ivorius.reccomplex.blocks.RCBlocks;
-import ivorius.reccomplex.gui.editstructure.blocktransformers.TableDataSourceBTNegativeSpace;
+import ivorius.reccomplex.gui.editstructure.transformers.TableDataSourceBTNegativeSpace;
 import ivorius.reccomplex.gui.table.TableDataSource;
 import ivorius.reccomplex.gui.table.TableDelegate;
 import ivorius.reccomplex.gui.table.TableNavigator;
@@ -24,16 +24,16 @@ import java.util.List;
 /**
  * Created by lukas on 25.05.14.
  */
-public class BlockTransformerNegativeSpace implements BlockTransformer
+public class TransformerNegativeSpace implements Transformer
 {
     public BlockMatcher sourceMatcher;
 
-    public BlockTransformerNegativeSpace()
+    public TransformerNegativeSpace()
     {
         this(BlockMatcher.of(RCBlocks.negativeSpace, 0));
     }
 
-    public BlockTransformerNegativeSpace(String sourceExpression)
+    public TransformerNegativeSpace(String sourceExpression)
     {
         this.sourceMatcher = new BlockMatcher(sourceExpression);
     }
@@ -45,7 +45,7 @@ public class BlockTransformerNegativeSpace implements BlockTransformer
     }
 
     @Override
-    public void transform(Phase phase, StructureSpawnContext context, IvWorldData worldData, List<BlockTransformer> transformerList)
+    public void transform(Phase phase, StructureSpawnContext context, IvWorldData worldData, List<Transformer> transformerList)
     {
 
     }
@@ -68,7 +68,7 @@ public class BlockTransformerNegativeSpace implements BlockTransformer
         return false;
     }
 
-    public static class Serializer implements JsonDeserializer<BlockTransformerNegativeSpace>, JsonSerializer<BlockTransformerNegativeSpace>
+    public static class Serializer implements JsonDeserializer<TransformerNegativeSpace>, JsonSerializer<TransformerNegativeSpace>
     {
         private MCRegistry registry;
 
@@ -78,19 +78,19 @@ public class BlockTransformerNegativeSpace implements BlockTransformer
         }
 
         @Override
-        public BlockTransformerNegativeSpace deserialize(JsonElement jsonElement, Type par2Type, JsonDeserializationContext context)
+        public TransformerNegativeSpace deserialize(JsonElement jsonElement, Type par2Type, JsonDeserializationContext context)
         {
             JsonObject jsonObject = JsonUtils.getJsonElementAsJsonObject(jsonElement, "transformerNegativeSpace");
 
-            String expression = BlockTransformerReplace.Serializer.readLegacyMatcher(jsonObject, "source", "sourceMetadata"); // Legacy
+            String expression = TransformerReplace.Serializer.readLegacyMatcher(jsonObject, "source", "sourceMetadata"); // Legacy
             if (expression == null)
                 expression = JsonUtils.getJsonObjectStringFieldValueOrDefault(jsonObject, "sourceExpression", "");
 
-            return new BlockTransformerNegativeSpace(expression);
+            return new TransformerNegativeSpace(expression);
         }
 
         @Override
-        public JsonElement serialize(BlockTransformerNegativeSpace transformer, Type par2Type, JsonSerializationContext context)
+        public JsonElement serialize(TransformerNegativeSpace transformer, Type par2Type, JsonSerializationContext context)
         {
             JsonObject jsonObject = new JsonObject();
 

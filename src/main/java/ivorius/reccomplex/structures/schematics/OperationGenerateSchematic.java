@@ -68,6 +68,11 @@ public class OperationGenerateSchematic implements Operation
         lowerCoord = BlockCoord.readCoordFromNBT("lowerCoord", compound);
     }
 
+    public void invalidateCache()
+    {
+        cachedShapeGrid = null;
+    }
+
     @Override
     public void renderPreview(PreviewType previewType, World world, int ticks, float partialTicks)
     {

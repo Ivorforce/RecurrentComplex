@@ -69,6 +69,10 @@ public class SchematicFile
         byte[] blockIDs = tagCompound.getByteArray("Blocks");
         byte[] addBlocks = tagCompound.getByteArray("AddBlocks");
 
+        SchematicaMapping schematicaMapping = tagCompound.hasKey(SchematicaMapping.COMPOUND_KEY, Constants.NBT.TAG_COMPOUND)
+                ? new SchematicaMapping(tagCompound.getCompoundTag(SchematicaMapping.COMPOUND_KEY))
+                : null;
+
         this.blocks = new Block[blockIDs.length];
         for (int i = 0; i < blockIDs.length; i++)
         {
@@ -80,7 +84,9 @@ public class SchematicFile
                 blockID |= lowerNybble ? ((addBlocks[i >> 1] & 0x0F) << 8) : ((addBlocks[i >> 1] & 0xF0) << 4);
             }
 
-            this.blocks[i] = Block.getBlockById(blockID);
+            this.blocks[i] = schematicaMapping != null
+                    ? schematicaMapping.blockFromID(blockID)
+                    : Block.getBlockById(blockID);
         }
 
         NBTTagList entities = tagCompound.getTagList("Entities", Constants.NBT.TAG_COMPOUND);
@@ -196,9 +202,11 @@ public class SchematicFile
 
         byte[] blockIDs = new byte[blocks.length];
         byte[] addBlocks = new byte[(blocks.length + 1) / 2];
+        SchematicaMapping schematicaMapping = new SchematicaMapping();
         for (int i = 0; i < blocks.length; i++)
         {
             int blockID = getBlockID(blocks[i]);
+            schematicaMapping.putBlock(blockID, blocks[i]);
 
             blockIDs[i] = (byte) (blockID & 0xff);
             boolean lowerNybble = (i & 1) == 0;
@@ -206,6 +214,7 @@ public class SchematicFile
         }
         tagCompound.setByteArray("Blocks", blockIDs);
         tagCompound.setByteArray("AddBlocks", addBlocks);
+        tagCompound.setTag(SchematicaMapping.COMPOUND_KEY, schematicaMapping.writeToNBT());
 
         NBTTagList entities = new NBTTagList();
         for (NBTTagCompound entityCompound : entityCompounds)

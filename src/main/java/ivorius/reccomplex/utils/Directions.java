@@ -33,6 +33,9 @@ public class Directions
     @Nullable
     public static Integer getHorizontalClockwiseRotations(ForgeDirection source, ForgeDirection dest, boolean mirrorX)
     {
+        if (source == dest)
+            return mirrorX && ArrayUtils.contains(Directions.X_AXIS, dest) ? 2 : 0;
+
         int arrayIndexSrc = ArrayUtils.indexOf(HORIZONTAL, source);
         int arrayIndexDst = ArrayUtils.indexOf(HORIZONTAL, dest);
 
@@ -47,6 +50,9 @@ public class Directions
 
     public static ForgeDirection rotate(ForgeDirection direction, AxisAlignedTransform2D transform)
     {
+        if (direction == UP || direction == DOWN)
+            return direction;
+
         int rotations = transform.getRotation();
         if (transform.isMirrorX() && ArrayUtils.contains(X_AXIS, direction))
             rotations += 2;

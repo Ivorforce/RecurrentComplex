@@ -43,30 +43,21 @@ public class CommandPreview extends CommandBase
         EntityPlayer player = getCommandSenderAsPlayer(commandSender);
         StructureEntityInfo structureEntityInfo = RCCommands.getStructureEntityInfo(player);
 
-        structureEntityInfo.previewType = getPreviewTypeFromCommand(args[0]);
+        Operation.PreviewType previewType = Operation.PreviewType.find(args[0]);
+        if (previewType == null)
+            throw new CommandException("commands.rcpreview.invalid");
+
+        structureEntityInfo.previewType = previewType;
         structureEntityInfo.sendPreviewTypeToClients(player);
 
         commandSender.addChatMessage(new ChatComponentTranslation("commands.rcpreview.success", args[0]));
-    }
-
-    public int getPreviewTypeFromCommand(String type)
-    {
-        switch (type)
-        {
-            case "none":
-                return Operation.PREVIEW_TYPE_NONE;
-            case "bounds":
-                return Operation.PREVIEW_TYPE_BOUNDING_BOX;
-            default:
-                throw new CommandException("commands.rcpreview.invalid");
-        }
     }
 
     @Override
     public List addTabCompletionOptions(ICommandSender commandSender, String[] args)
     {
         if (args.length == 1)
-            return getListOfStringsMatchingLastWord(args, "none", "bounds");
+            return getListOfStringsMatchingLastWord(args, Operation.PreviewType.keys());
 
         return null;
     }

@@ -25,12 +25,7 @@ public class AreaRenderer
 
     public static void renderArea(BlockArea area, boolean lined, boolean insides, float sizeP)
     {
-        BlockCoord lower = area.getLowerCorner();
-        BlockCoord higher = area.getHigherCorner();
-
-        BlockCoord biggerMax = higher.add(1, 1, 1);
-
-        drawCuboid(lower, biggerMax, lined, insides, sizeP);
+        drawCuboid(area.getLowerCorner(), area.getHigherCorner().add(1, 1, 1), lined, insides, sizeP);
     }
 
     @SideOnly(Side.CLIENT)

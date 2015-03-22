@@ -13,11 +13,13 @@ import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityList;
+import net.minecraft.init.Blocks;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.Constants;
+import net.minecraftforge.common.util.ForgeDirection;
 
 import java.util.*;
 
@@ -95,6 +97,30 @@ public class SchematicFile
         return x + (y * length + z) * width;
     }
 
+    public Block getBlock(BlockCoord coord)
+    {
+        if (coord.x < 0 || coord.y < 0 || coord.z < 0 || coord.x >= width || coord.y >= height || coord.z >= length)
+            return Blocks.air;
+
+        return blocks[getBlockIndex(coord.x, coord.y, coord.z)];
+    }
+
+    public int getMetadata(BlockCoord coord)
+    {
+        if (coord.x < 0 || coord.y < 0 || coord.z < 0 || coord.x >= width || coord.y >= height || coord.z >= length)
+            return 0;
+
+        return metadatas[getBlockIndex(coord.x, coord.y, coord.z)];
+    }
+
+    public boolean shouldRenderSide(BlockCoord coord, ForgeDirection side)
+    {
+        BlockCoord sideCoord = coord.add(side.offsetX, side.offsetY, side.offsetZ);
+
+        Block block = getBlock(sideCoord);
+        return !block.isOpaqueCube();
+    }
+
     public void generate(World world, int x, int y, int z)
     {
         Map<BlockCoord, TileEntity> tileEntities = new HashMap<>();
@@ -116,7 +142,7 @@ public class SchematicFile
 
                 if (block != null && getPass(block, meta) == pass)
                 {
-                    BlockCoord worldPos = new BlockCoord(x + srcCoord.x, y + srcCoord.y, z + srcCoord.z);
+                    BlockCoord worldPos = srcCoord.add(x, y, z);
                     world.setBlock(worldPos.x, worldPos.y, worldPos.z, block, meta, 3);
 
                     TileEntity tileEntity = tileEntities.get(srcCoord);

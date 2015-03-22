@@ -11,6 +11,8 @@ import ivorius.ivtoolkit.blocks.BlockArea;
 import ivorius.ivtoolkit.blocks.BlockCoord;
 import ivorius.ivtoolkit.math.AxisAlignedTransform2D;
 import ivorius.reccomplex.client.rendering.AreaRenderer;
+import ivorius.reccomplex.client.rendering.BlockQuadCache;
+import ivorius.reccomplex.client.rendering.OperationRenderer;
 import ivorius.reccomplex.client.rendering.SelectionRenderer;
 import ivorius.reccomplex.structures.generic.GenericStructureInfo;
 import net.minecraft.client.Minecraft;
@@ -81,11 +83,20 @@ public class OperationMoveStructure extends OperationGenerateStructure
 
     @SideOnly(Side.CLIENT)
     @Override
-    public void renderPreview(int previewType, World world, int ticks, float partialTicks)
+    public void renderPreview(PreviewType previewType, World world, int ticks, float partialTicks)
     {
-        if (previewType == PREVIEW_TYPE_BOUNDING_BOX)
+        int[] size = structure.structureBoundingBox();
+        if (previewType == PreviewType.SHAPE)
         {
-            maybeRenderBoundingBox(lowerCoord, StructureInfos.structureSize(structure, transform), ticks, partialTicks);
+            GL11.glColor3f(0.8f, 0.75f, 1.0f);
+            OperationRenderer.renderGridQuadCache(
+                    cachedShapeGrid != null ? cachedShapeGrid : (cachedShapeGrid = BlockQuadCache.createQuadCache(structure.constructWorldData(world).blockCollection, transform, new float[]{1, 1, 1})),
+                    lowerCoord, ticks, partialTicks);
+        }
+
+        if (previewType == PreviewType.BOUNDING_BOX || previewType == PreviewType.SHAPE)
+        {
+            OperationRenderer.maybeRenderBoundingBox(lowerCoord, StructureInfos.structureSize(size, transform), ticks, partialTicks);
 
             GL11.glLineWidth(3.0f);
             GL11.glColor3f(0.5f, 0.5f, 1.0f);

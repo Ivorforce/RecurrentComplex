@@ -21,7 +21,11 @@ public class StructureInfos
 
     public static int[] structureSize(StructureInfo info, AxisAlignedTransform2D transform)
     {
-        int[] size = info.structureBoundingBox();
+        return structureSize(info.structureBoundingBox(), transform);
+    }
+
+    public static int[] structureSize(int[] size, AxisAlignedTransform2D transform)
+    {
         if (transform.getRotation() % 2 == 1)
         {
             int cache = size[0];

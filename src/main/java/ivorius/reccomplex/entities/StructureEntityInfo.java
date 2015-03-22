@@ -30,7 +30,7 @@ public class StructureEntityInfo implements IExtendedEntityProperties, PartialUp
     public static final String EEP_KEY = "structureEntityInfo";
     public BlockCoord selectedPoint1;
     public BlockCoord selectedPoint2;
-    public int previewType = Operation.PREVIEW_TYPE_BOUNDING_BOX;
+    public Operation.PreviewType previewType = Operation.PreviewType.SHAPE;
     public Operation danglingOperation;
     public boolean showGrid = false;
     private boolean hasChanges;
@@ -134,7 +134,7 @@ public class StructureEntityInfo implements IExtendedEntityProperties, PartialUp
         BlockCoord.writeCoordToNBT("selectedPoint1", selectedPoint1, compound);
         BlockCoord.writeCoordToNBT("selectedPoint2", selectedPoint2, compound);
 
-        compound.setInteger("previewType", previewType);
+        compound.setString("previewType", previewType.key);
 
         if (RCConfig.savePlayerCache)
         {
@@ -153,7 +153,7 @@ public class StructureEntityInfo implements IExtendedEntityProperties, PartialUp
         selectedPoint1 = BlockCoord.readCoordFromNBT("selectedPoint1", compound);
         selectedPoint2 = BlockCoord.readCoordFromNBT("selectedPoint2", compound);
 
-        previewType = compound.getInteger("previewType");
+        previewType = Operation.PreviewType.findOrDefault(compound.getString("previewType"), Operation.PreviewType.SHAPE);
 
         if (RCConfig.savePlayerCache)
         {
@@ -196,7 +196,7 @@ public class StructureEntityInfo implements IExtendedEntityProperties, PartialUp
         }
         else if ("previewType".equals(context))
         {
-            buffer.writeInt(previewType);
+            ByteBufUtils.writeUTF8String(buffer, previewType.key);
         }
         else if ("operation".equals(context))
         {
@@ -218,7 +218,7 @@ public class StructureEntityInfo implements IExtendedEntityProperties, PartialUp
         }
         else if ("previewType".equals(context))
         {
-            previewType = buffer.readInt();
+            previewType = Operation.PreviewType.findOrDefault(ByteBufUtils.readUTF8String(buffer), Operation.PreviewType.SHAPE);
         }
         else if ("operation".equals(context))
         {

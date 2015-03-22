@@ -15,16 +15,16 @@ import ivorius.reccomplex.blocks.GeneratingTileEntity;
 import ivorius.reccomplex.blocks.RCBlocks;
 import ivorius.reccomplex.json.JsonUtils;
 import ivorius.reccomplex.json.NbtToJson;
-import ivorius.reccomplex.structures.generic.transformers.*;
-import ivorius.reccomplex.structures.generic.gentypes.StructureGenerationInfo;
-import ivorius.reccomplex.structures.generic.matchers.BlockMatcher;
-import ivorius.reccomplex.utils.RCAccessorEntity;
 import ivorius.reccomplex.structures.MCRegistrySpecial;
-import ivorius.reccomplex.structures.StructureRegistry;
 import ivorius.reccomplex.structures.StructureInfo;
+import ivorius.reccomplex.structures.StructureRegistry;
 import ivorius.reccomplex.structures.StructureSpawnContext;
 import ivorius.reccomplex.structures.generic.gentypes.MazeGenerationInfo;
 import ivorius.reccomplex.structures.generic.gentypes.NaturalGenerationInfo;
+import ivorius.reccomplex.structures.generic.gentypes.StructureGenerationInfo;
+import ivorius.reccomplex.structures.generic.matchers.BlockMatcher;
+import ivorius.reccomplex.structures.generic.transformers.*;
+import ivorius.reccomplex.utils.RCAccessorEntity;
 import ivorius.reccomplex.worldgen.inventory.InventoryGenerationHandler;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
@@ -48,18 +48,12 @@ public class GenericStructureInfo implements StructureInfo, Cloneable
 {
     public static final int LATEST_VERSION = 3;
     public static final int MAX_GENERATING_LAYERS = 30;
-
+    public final List<StructureGenerationInfo> generationInfos = new ArrayList<>();
+    public final List<Transformer> transformers = new ArrayList<>();
+    public final List<String> dependencies = new ArrayList<>();
     public NBTTagCompound worldDataCompound;
-
     public boolean rotatable;
     public boolean mirrorable;
-
-    public final List<StructureGenerationInfo> generationInfos = new ArrayList<>();
-
-    public final List<Transformer> transformers = new ArrayList<>();
-
-    public final List<String> dependencies = new ArrayList<>();
-
     public Metadata metadata = new Metadata();
     public JsonObject customData;
 
@@ -112,14 +106,13 @@ public class GenericStructureInfo implements StructureInfo, Cloneable
         return mirrorable;
     }
 
-
     @Override
     public void generate(StructureSpawnContext context)
     {
         World world = context.world;
         Random random = context.random;
 
-        IvWorldData worldData = new IvWorldData(worldDataCompound, world, MCRegistrySpecial.INSTANCE);
+        IvWorldData worldData = constructWorldData(world);
 
         IvBlockCollection blockCollection = worldData.blockCollection;
         int[] areaSize = new int[]{blockCollection.width, blockCollection.height, blockCollection.length};
@@ -215,6 +208,11 @@ public class GenericStructureInfo implements StructureInfo, Cloneable
         {
             RecurrentComplex.logger.warn("Structure generated with over " + MAX_GENERATING_LAYERS + " layers; most likely infinite loop!");
         }
+    }
+
+    public IvWorldData constructWorldData(World world)
+    {
+        return new IvWorldData(worldDataCompound, world, MCRegistrySpecial.INSTANCE);
     }
 
     @Override

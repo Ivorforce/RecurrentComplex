@@ -6,10 +6,14 @@
 package ivorius.reccomplex.structures.schematics;
 
 import ivorius.ivtoolkit.blocks.BlockCoord;
+import ivorius.ivtoolkit.math.AxisAlignedTransform2D;
+import ivorius.reccomplex.client.rendering.GridQuadCache;
+import ivorius.reccomplex.client.rendering.OperationRenderer;
+import ivorius.reccomplex.client.rendering.SchematicQuadCache;
 import ivorius.reccomplex.operation.Operation;
-import ivorius.reccomplex.structures.OperationGenerateStructure;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.world.World;
+import org.lwjgl.opengl.GL11;
 
 /**
  * Created by lukas on 10.02.15.
@@ -19,6 +23,8 @@ public class OperationGenerateSchematic implements Operation
     public SchematicFile file;
 
     public BlockCoord lowerCoord;
+
+    protected GridQuadCache cachedShapeGrid;
 
     public OperationGenerateSchematic()
     {
@@ -63,9 +69,18 @@ public class OperationGenerateSchematic implements Operation
     }
 
     @Override
-    public void renderPreview(int previewType, World world, int ticks, float partialTicks)
+    public void renderPreview(PreviewType previewType, World world, int ticks, float partialTicks)
     {
-        if (previewType == PREVIEW_TYPE_BOUNDING_BOX)
-            OperationGenerateStructure.maybeRenderBoundingBox(lowerCoord, new int[]{file.width, file.length, file.height}, ticks, partialTicks);
+        int[] size = {file.width, file.height, file.length};
+        if (previewType == PreviewType.SHAPE)
+        {
+            GL11.glColor3f(0.8f, 0.75f, 1.0f);
+            OperationRenderer.renderGridQuadCache(
+                    cachedShapeGrid != null ? cachedShapeGrid : (cachedShapeGrid = SchematicQuadCache.createQuadCache(file, new float[]{1, 1, 1})),
+                    lowerCoord, ticks, partialTicks);
+        }
+
+        if (previewType == PreviewType.BOUNDING_BOX || previewType == PreviewType.SHAPE)
+            OperationRenderer.maybeRenderBoundingBox(lowerCoord, size, ticks, partialTicks);
     }
 }

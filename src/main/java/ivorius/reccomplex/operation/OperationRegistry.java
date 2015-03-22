@@ -74,7 +74,7 @@ public class OperationRegistry
             StructureEntityInfo info = StructureEntityInfo.getStructureEntityInfo(player);
             if (info != null)
             {
-                if (info.previewType != Operation.PREVIEW_TYPE_NONE)
+                if (info.previewType != Operation.PreviewType.NONE)
                 {
                     info.queueOperation(operation, player);
                     instant = false;

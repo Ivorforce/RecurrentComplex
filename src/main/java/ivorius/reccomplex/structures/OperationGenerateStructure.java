@@ -5,20 +5,13 @@
 
 package ivorius.reccomplex.structures;
 
-import ivorius.ivtoolkit.blocks.BlockArea;
 import ivorius.ivtoolkit.blocks.BlockCoord;
 import ivorius.ivtoolkit.math.AxisAlignedTransform2D;
-import ivorius.reccomplex.client.rendering.AreaRenderer;
-import ivorius.reccomplex.client.rendering.SelectionRenderer;
+import ivorius.reccomplex.client.rendering.*;
 import ivorius.reccomplex.operation.Operation;
-import ivorius.reccomplex.worldgen.StructureGenerationData;
 import ivorius.reccomplex.worldgen.StructureGenerator;
 import ivorius.reccomplex.structures.generic.GenericStructureInfo;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.MathHelper;
-import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.Constants;
 import org.lwjgl.opengl.GL11;
@@ -36,6 +29,8 @@ public class OperationGenerateStructure implements Operation
     public boolean generateAsSource;
 
     public String structureIDForSaving;
+
+    protected GridQuadCache cachedShapeGrid;
 
     public OperationGenerateStructure()
     {
@@ -56,35 +51,6 @@ public class OperationGenerateStructure implements Operation
         this.lowerCoord = lowerCoord;
         this.generateAsSource = generateAsSource;
         this.structureIDForSaving = structureIDForSaving;
-    }
-
-    public static void maybeRenderBoundingBox(BlockCoord lowerCoord, int[] size, int ticks, float partialTicks)
-    {
-        if (size[0] > 0 && size[1] > 0 && size[2] > 0)
-            renderBoundingBox(BlockArea.areaFromSize(lowerCoord, size), ticks, partialTicks);
-    }
-
-    public static void renderBoundingBox(BlockArea area, int ticks, float partialTicks)
-    {
-        GL11.glLineWidth(3.0f);
-        GL11.glColor3f(0.8f, 0.8f, 1.0f);
-        AreaRenderer.renderAreaLined(area, 0.0232f);
-
-        GL11.glEnable(GL11.GL_BLEND);
-        OpenGlHelper.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA, GL11.GL_ONE, GL11.GL_ZERO);
-        GL11.glAlphaFunc(GL11.GL_GREATER, 0.0001f);
-
-        ResourceLocation curTex = SelectionRenderer.textureSelection[MathHelper.floor_float((ticks + partialTicks) * 0.75f) % SelectionRenderer.textureSelection.length];
-        Minecraft.getMinecraft().renderEngine.bindTexture(curTex);
-
-        GL11.glColor4f(0.6f, 0.6f, 0.8f, 0.3f);
-        AreaRenderer.renderArea(area, false, true, 0.0132f);
-
-        GL11.glColor4f(0.8f, 0.8f, 1.0f, 0.5f);
-        AreaRenderer.renderArea(area, false, false, 0.0132f);
-
-        GL11.glAlphaFunc(GL11.GL_GREATER, 0.002f);
-        GL11.glDisable(GL11.GL_BLEND);
     }
 
     public String getStructureIDForSaving()
@@ -140,10 +106,24 @@ public class OperationGenerateStructure implements Operation
                 : null;
     }
 
-    @Override
-    public void renderPreview(int previewType, World world, int ticks, float partialTicks)
+    public void invalidateCache()
     {
-        if (previewType == PREVIEW_TYPE_BOUNDING_BOX)
-            maybeRenderBoundingBox(lowerCoord, StructureInfos.structureSize(structure, transform), ticks, partialTicks);
+        cachedShapeGrid = null;
+    }
+
+    @Override
+    public void renderPreview(PreviewType previewType, World world, int ticks, float partialTicks)
+    {
+        int[] size = structure.structureBoundingBox();
+        if (previewType == PreviewType.SHAPE)
+        {
+            GL11.glColor3f(0.8f, 0.75f, 1.0f);
+            OperationRenderer.renderGridQuadCache(
+                    cachedShapeGrid != null ? cachedShapeGrid : (cachedShapeGrid = BlockQuadCache.createQuadCache(structure.constructWorldData(world).blockCollection, transform, new float[]{1, 1, 1})),
+                    lowerCoord, ticks, partialTicks);
+        }
+
+        if (previewType == PreviewType.BOUNDING_BOX || previewType == PreviewType.SHAPE)
+            OperationRenderer.maybeRenderBoundingBox(lowerCoord, StructureInfos.structureSize(size, transform), ticks, partialTicks);
     }
 }

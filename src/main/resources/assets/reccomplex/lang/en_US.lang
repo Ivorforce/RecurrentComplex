@@ -91,7 +91,7 @@ commands.selectMove.usage=/#move <x> <y> <z> [clockwise-rotations] [mirror x:tru
 
 commands.selectDuplicate.usage=/#duplicate <x> <y> <z> [clockwise-rotations] [mirror x:true|false]
 
-commands.rcpreview.usage=/#preview <none|bounds>
+commands.rcpreview.usage=/#preview <none|bounds|shape>
 commands.rcpreview.invalid=Invalid preview type
 commands.rcpreview.success=Preview type set to '%s'
 

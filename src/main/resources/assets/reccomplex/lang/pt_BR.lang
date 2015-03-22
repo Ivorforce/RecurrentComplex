@@ -100,8 +100,8 @@ commands.rc.queuedOp=A operação agora está sendo visualizada. Digite /#confir
 commands.rcconfirm.usage=/#confirm
 commands.rccancel.usage=/#cancel
 
-commands.strucImportSchematic.usage=/#importschematic <schematic name>
-commands.strucImportSchematic.noStructure=O arquivo '%s' não foi encontrado em %s
+commands.strucImportSchematic.usage=/#importschematic <x> <y> <z> <schematic name>
+commands.strucImportSchematic.missing=O arquivo '%s' não foi encontrado em %s
 commands.strucImportSchematic.format=O arquivo '%s' tem um formato não suportado (%s)
 
 commands.strucExportSchematic.usage=/#exportschematic <schematic name>

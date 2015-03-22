@@ -100,8 +100,8 @@ commands.rc.queuedOp=The operation is now being previewed. Type /#confirm or /#c
 commands.rcconfirm.usage=/#confirm
 commands.rccancel.usage=/#cancel
 
-commands.strucImportSchematic.usage=/#importschematic <schematic name>
-commands.strucImportSchematic.noStructure=The file '%s' was not found in %s
+commands.strucImportSchematic.usage=/#importschematic <x> <y> <z> <schematic name>
+commands.strucImportSchematic.missing=The file '%s' was not found in %s
 commands.strucImportSchematic.format=The file '%s' has an unsupported format (%s)
 
 commands.strucExportSchematic.usage=/#exportschematic <schematic name>

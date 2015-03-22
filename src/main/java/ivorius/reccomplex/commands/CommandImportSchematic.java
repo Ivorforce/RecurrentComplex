@@ -40,16 +40,17 @@ public class CommandImportSchematic extends CommandBase
     @Override
     public void processCommand(ICommandSender commandSender, String[] args)
     {
-        int x, y, z;
-
-        if (args.length <= 0)
+        if (args.length < 4)
         {
             throw new WrongUsageException("commands.strucImportSchematic.usage");
         }
 
-        String schematicName = args[0];
-        World world = commandSender.getEntityWorld();
-        SchematicFile schematicFile = null;
+        int x = MathHelper.floor_double(func_110666_a(commandSender, commandSender.getPlayerCoordinates().posX, args[0]));
+        int y = MathHelper.floor_double(func_110666_a(commandSender, commandSender.getPlayerCoordinates().posY, args[1]));
+        int z = MathHelper.floor_double(func_110666_a(commandSender, commandSender.getPlayerCoordinates().posZ, args[2]));
+
+        String schematicName = func_147178_a(commandSender, args, 3).getUnformattedText();;
+        SchematicFile schematicFile;
 
         try
         {
@@ -61,20 +62,7 @@ public class CommandImportSchematic extends CommandBase
         }
 
         if (schematicFile == null)
-        {
-            throw new CommandException("commands.strucImportSchematic.noStructure", schematicName, SchematicLoader.getLookupFolderName());
-        }
-
-        x = commandSender.getPlayerCoordinates().posX;
-        y = commandSender.getPlayerCoordinates().posY;
-        z = commandSender.getPlayerCoordinates().posZ;
-
-        if (args.length >= 4)
-        {
-            x = MathHelper.floor_double(func_110666_a(commandSender, (double) x, args[1]));
-            y = MathHelper.floor_double(func_110666_a(commandSender, (double) y, args[2]));
-            z = MathHelper.floor_double(func_110666_a(commandSender, (double) z, args[3]));
-        }
+            throw new CommandException("commands.strucImportSchematic.missing", schematicName, SchematicLoader.getLookupFolderName());
 
         OperationRegistry.queueOperation(new OperationGenerateSchematic(schematicFile, new BlockCoord(x, y, z)), commandSender);
     }
@@ -82,11 +70,11 @@ public class CommandImportSchematic extends CommandBase
     @Override
     public List addTabCompletionOptions(ICommandSender commandSender, String[] args)
     {
-        if (args.length == 1)
+        if (args.length == 4)
         {
             return getListOfStringsMatchingLastWord(args, SchematicLoader.currentSchematicFileNames());
         }
-        else if (args.length == 2 || args.length == 3 || args.length == 4)
+        else if (args.length == 1 || args.length == 2 || args.length == 3)
         {
             return getListOfStringsMatchingLastWord(args, "~");
         }

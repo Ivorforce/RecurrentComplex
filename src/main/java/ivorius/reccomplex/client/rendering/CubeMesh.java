@@ -16,62 +16,6 @@ import java.util.Collection;
  */
 public class CubeMesh
 {
-    public static final IIcon WHOLE_TEXTURE = new IIcon()
-    {
-        @Override
-        public int getIconWidth()
-        {
-            return 0;
-        }
-
-        @Override
-        public int getIconHeight()
-        {
-            return 0;
-        }
-
-        @Override
-        public float getMinU()
-        {
-            return 0;
-        }
-
-        @Override
-        public float getMaxU()
-        {
-            return 1;
-        }
-
-        @Override
-        public float getInterpolatedU(double lerp)
-        {
-            return (float) lerp;
-        }
-
-        @Override
-        public float getMinV()
-        {
-            return 0;
-        }
-
-        @Override
-        public float getMaxV()
-        {
-            return 1;
-        }
-
-        @Override
-        public float getInterpolatedV(double lerp)
-        {
-            return (float) lerp;
-        }
-
-        @Override
-        public String getIconName()
-        {
-            return null;
-        }
-    };
 
     public static void renderSides(Collection<ForgeDirection> sides, double x1, double y1, double z1, double x2, double y2, double z2, IIcon icon)
     {
@@ -110,9 +54,9 @@ public class CubeMesh
     {
         Tessellator tessellator = Tessellator.instance;
         tessellator.addVertexWithUV(x1, y1, z, icon.getMinU(), icon.getMinV());
-        tessellator.addVertexWithUV(x1, y2, z, icon.getMinU(), icon.getMaxV());
+        tessellator.addVertexWithUV(x1, y2, z, icon.getMaxU(), icon.getMinV());
         tessellator.addVertexWithUV(x2, y2, z, icon.getMaxU(), icon.getMaxV());
-        tessellator.addVertexWithUV(x2, y1, z, icon.getMaxU(), icon.getMinV());
+        tessellator.addVertexWithUV(x2, y1, z, icon.getMinU(), icon.getMaxV());
     }
 
     public static void renderEast(double z1, double y1, double z2, double y2, double x, IIcon icon)
@@ -128,9 +72,9 @@ public class CubeMesh
     {
         Tessellator tessellator = Tessellator.instance;
         tessellator.addVertexWithUV(x1, y1, z, icon.getMinU(), icon.getMinV());
-        tessellator.addVertexWithUV(x2, y1, z, icon.getMaxU(), icon.getMinV());
+        tessellator.addVertexWithUV(x2, y1, z, icon.getMinU(), icon.getMaxV());
         tessellator.addVertexWithUV(x2, y2, z, icon.getMaxU(), icon.getMaxV());
-        tessellator.addVertexWithUV(x1, y2, z, icon.getMinU(), icon.getMaxV());
+        tessellator.addVertexWithUV(x1, y2, z, icon.getMaxU(), icon.getMinV());
     }
 
     public static void renderWest(double z1, double y1, double z2, double y2, double x, IIcon icon)

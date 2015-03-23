@@ -106,7 +106,7 @@ public class OperationMoveStructure extends OperationGenerateStructure
             OpenGlHelper.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA, GL11.GL_ONE, GL11.GL_ZERO);
             GL11.glAlphaFunc(GL11.GL_GREATER, 0.0001f);
 
-            ResourceLocation curTex = SelectionRenderer.textureSelection[MathHelper.floor_float((ticks + partialTicks) * 0.75f) % SelectionRenderer.textureSelection.length];
+            ResourceLocation curTex = SelectionRenderer.TEXTURE[MathHelper.floor_float((ticks + partialTicks) * 0.75f) % SelectionRenderer.TEXTURE.length];
             Minecraft.getMinecraft().renderEngine.bindTexture(curTex);
 
             GL11.glColor4f(0.3f, 0.3f, 0.4f, 0.2f);

@@ -7,11 +7,10 @@ package ivorius.reccomplex.client.rendering;
 
 import ivorius.ivtoolkit.blocks.BlockArea;
 import ivorius.ivtoolkit.blocks.BlockCoord;
-import ivorius.ivtoolkit.math.AxisAlignedTransform2D;
+import ivorius.reccomplex.utils.Icons;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.client.renderer.Tessellator;
-import net.minecraft.util.MathHelper;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.util.ForgeDirection;
 import org.lwjgl.opengl.GL11;
@@ -30,7 +29,7 @@ public class OperationRenderer
         GL11.glAlphaFunc(GL11.GL_GREATER, 0.0001f);
         GL11.glDisable(GL11.GL_CULL_FACE);
 
-        ResourceLocation curTex = getSelectionTexture((ticks + partialTicks) * 0.75f);
+        ResourceLocation curTex = Icons.frame(SelectionRenderer.LATTICE_TEXTURE, (ticks + partialTicks) * 0.75f);
         Minecraft.getMinecraft().renderEngine.bindTexture(curTex);
 
         GL11.glPushMatrix();
@@ -52,7 +51,8 @@ public class OperationRenderer
                 float[] minAxes = GridQuadCache.getNormalAxes(direction, zLevel, minX, minY);
                 float[] maxAxes = GridQuadCache.getNormalAxes(direction, zLevel, maxX, maxY);
 
-                CubeMesh.renderSide(direction, minAxes[0], minAxes[1], minAxes[2], maxAxes[0], maxAxes[1], maxAxes[2], CubeMesh.WHOLE_TEXTURE);
+                CubeMesh.renderSide(direction, minAxes[0], minAxes[1], minAxes[2], maxAxes[0], maxAxes[1], maxAxes[2],
+                        Icons.from(minX, minY, maxX, maxY));
             }
             quads.position(0);
         }
@@ -80,7 +80,7 @@ public class OperationRenderer
         OpenGlHelper.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA, GL11.GL_ONE, GL11.GL_ZERO);
         GL11.glAlphaFunc(GL11.GL_GREATER, 0.0001f);
 
-        ResourceLocation curTex = getSelectionTexture((ticks + partialTicks) * 0.75f);
+        ResourceLocation curTex = Icons.frame(SelectionRenderer.TEXTURE, (ticks + partialTicks) * 0.75f);
         Minecraft.getMinecraft().renderEngine.bindTexture(curTex);
 
         GL11.glColor4f(0.6f, 0.6f, 0.8f, 0.3f);
@@ -91,10 +91,5 @@ public class OperationRenderer
 
         GL11.glAlphaFunc(GL11.GL_GREATER, 0.002f);
         GL11.glDisable(GL11.GL_BLEND);
-    }
-
-    protected static ResourceLocation getSelectionTexture(float ticks)
-    {
-        return SelectionRenderer.textureSelection[MathHelper.floor_float(ticks) % SelectionRenderer.textureSelection.length];
     }
 }

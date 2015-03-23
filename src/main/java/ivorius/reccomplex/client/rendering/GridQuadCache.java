@@ -23,7 +23,9 @@ import static net.minecraftforge.common.util.ForgeDirection.*;
  */
 public class GridQuadCache<T> implements Iterable<GridQuadCache.CachedQuadLevel<T>>
 {
-    private final List<CachedQuadLevel<T>> cachedQuadLevels = new ArrayList<>();
+    protected final List<CachedQuadLevel<T>> cachedQuadLevels = new ArrayList<>();
+
+    protected float[] size;
 
     public static int[] getCacheAxes(ForgeDirection direction, int... axes)
     {
@@ -95,6 +97,9 @@ public class GridQuadCache<T> implements Iterable<GridQuadCache.CachedQuadLevel<
 
         Set<Map.Entry<QuadContext<T>, CoordGrid>> quads = partialCache.entrySet();
         GridQuadCache<T> cache = new GridQuadCache<>();
+        cache.size = new float[3];
+        for (int i = 0; i < 3; i++)
+            cache.size[i] = size[i] * scale[i];
 
         for (Map.Entry<QuadContext<T>, CoordGrid> entry : quads)
         {
@@ -144,6 +149,11 @@ public class GridQuadCache<T> implements Iterable<GridQuadCache.CachedQuadLevel<
         if (quad == null)
             cache.put(context, quad = new CoordGrid());
         quad.addCoord(x, y);
+    }
+
+    public float[] getSize()
+    {
+        return size.clone();
     }
 
     @Override

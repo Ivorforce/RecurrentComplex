@@ -23,13 +23,18 @@ import org.lwjgl.opengl.GL11;
  */
 public class SelectionRenderer
 {
-    public static ResourceLocation[] textureSelection;
+    public static ResourceLocation[] TEXTURE;
+    public static ResourceLocation[] LATTICE_TEXTURE;
 
     static
     {
-        textureSelection = new ResourceLocation[100];
-        for (int i = 0; i < textureSelection.length; i++)
-            textureSelection[i] = new ResourceLocation(RecurrentComplex.MODID, String.format("%sselection/selection_%05d.png", RecurrentComplex.filePathTextures, i));
+        TEXTURE = new ResourceLocation[100];
+        for (int i = 0; i < TEXTURE.length; i++)
+            TEXTURE[i] = new ResourceLocation(RecurrentComplex.MODID, String.format("%sselection/selection_%05d.png", RecurrentComplex.filePathTextures, i));
+
+        LATTICE_TEXTURE = new ResourceLocation[100];
+        for (int i = 0; i < LATTICE_TEXTURE.length; i++)
+            LATTICE_TEXTURE[i] = new ResourceLocation(RecurrentComplex.MODID, String.format("%sselection-lattice/lattice_%05d.png", RecurrentComplex.filePathTextures, i));
     }
 
     public static void renderSelection(EntityLivingBase entity, int ticks, float partialTicks)
@@ -79,7 +84,7 @@ public class SelectionRenderer
             OpenGlHelper.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA, GL11.GL_ONE, GL11.GL_ZERO);
             GL11.glAlphaFunc(GL11.GL_GREATER, 0.0001f);
 
-            ResourceLocation curTex = textureSelection[MathHelper.floor_float((ticks + partialTicks) * 0.75f) % textureSelection.length];
+            ResourceLocation curTex = TEXTURE[MathHelper.floor_float((ticks + partialTicks) * 0.75f) % TEXTURE.length];
             mc.renderEngine.bindTexture(curTex);
 
             GL11.glColor4f(0.2f, 0.5f, 0.6f, 0.5f);

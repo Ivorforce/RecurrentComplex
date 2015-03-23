@@ -361,6 +361,36 @@ public class Algebra<T>
         }
     }
 
+    public static class Value<T> extends Expression<T>
+    {
+        public T value;
+        public String representation;
+
+        public Value(T value, String representation)
+        {
+            this.value = value;
+            this.representation = representation;
+        }
+
+        @Override
+        public T evaluate(@Nullable Function<String, T> input)
+        {
+            return value;
+        }
+
+        @Override
+        public boolean walkVariables(Visitor<String> visitor)
+        {
+            return visitor.visit(representation);
+        }
+
+        @Override
+        public String toString(Function<String, String> stringMapper)
+        {
+            return representation;
+        }
+    }
+
     public static class Operation<T> extends Expression<T>
     {
         protected Operator<T> operator;

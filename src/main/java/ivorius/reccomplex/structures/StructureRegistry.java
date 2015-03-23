@@ -111,6 +111,11 @@ public class
             return false;
     }
 
+    public static boolean hasStructure(String key)
+    {
+        return allStructures.containsKey(key);
+    }
+
     public static StructureInfo getStructure(String key)
     {
         return allStructures.get(key);

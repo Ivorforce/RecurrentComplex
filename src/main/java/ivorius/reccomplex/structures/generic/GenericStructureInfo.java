@@ -23,6 +23,7 @@ import ivorius.reccomplex.structures.generic.gentypes.MazeGenerationInfo;
 import ivorius.reccomplex.structures.generic.gentypes.NaturalGenerationInfo;
 import ivorius.reccomplex.structures.generic.gentypes.StructureGenerationInfo;
 import ivorius.reccomplex.structures.generic.matchers.BlockMatcher;
+import ivorius.reccomplex.structures.generic.matchers.DependencyMatcher;
 import ivorius.reccomplex.structures.generic.transformers.*;
 import ivorius.reccomplex.utils.RCAccessorEntity;
 import ivorius.reccomplex.worldgen.inventory.InventoryGenerationHandler;
@@ -50,7 +51,7 @@ public class GenericStructureInfo implements StructureInfo, Cloneable
     public static final int MAX_GENERATING_LAYERS = 30;
     public final List<StructureGenerationInfo> generationInfos = new ArrayList<>();
     public final List<Transformer> transformers = new ArrayList<>();
-    public final List<String> dependencies = new ArrayList<>();
+    public final DependencyMatcher dependencies = new DependencyMatcher("");
     public NBTTagCompound worldDataCompound;
     public boolean rotatable;
     public boolean mirrorable;
@@ -255,15 +256,7 @@ public class GenericStructureInfo implements StructureInfo, Cloneable
     @Override
     public boolean areDependenciesResolved()
     {
-        for (String mod : dependencies)
-        {
-            if (!Loader.isModLoaded(mod))
-            {
-                return false;
-            }
-        }
-
-        return true;
+        return dependencies.apply();
     }
 
     @Override
@@ -316,8 +309,10 @@ public class GenericStructureInfo implements StructureInfo, Cloneable
             structureInfo.rotatable = JsonUtils.getJsonObjectBooleanFieldValueOrDefault(jsonobject, "rotatable", false);
             structureInfo.mirrorable = JsonUtils.getJsonObjectBooleanFieldValueOrDefault(jsonobject, "mirrorable", false);
 
-            if (jsonobject.has("dependencies"))
-                Collections.addAll(structureInfo.dependencies, context.<String[]>deserialize(jsonobject.get("dependencies"), String[].class));
+            if (jsonobject.has("dependencyExpression"))
+                structureInfo.dependencies.setExpression(JsonUtils.getJsonObjectStringFieldValue(jsonobject, "dependencyExpression"));
+            else if (jsonobject.has("dependencies")) // Legacy
+                structureInfo.dependencies.setExpression(DependencyMatcher.ofMods(context.<String[]>deserialize(jsonobject.get("dependencies"), String[].class)));
 
             if (jsonobject.has("worldData"))
                 structureInfo.worldDataCompound = context.deserialize(jsonobject.get("worldData"), NBTTagCompound.class);
@@ -345,7 +340,7 @@ public class GenericStructureInfo implements StructureInfo, Cloneable
             jsonobject.addProperty("rotatable", structureInfo.rotatable);
             jsonobject.addProperty("mirrorable", structureInfo.mirrorable);
 
-            jsonobject.add("dependencies", context.serialize(structureInfo.dependencies));
+            jsonobject.add("dependencyExpression", context.serialize(structureInfo.dependencies.getExpression()));
 
             if (!RecurrentComplex.USE_ZIP_FOR_STRUCTURE_FILES && structureInfo.worldDataCompound != null)
             {

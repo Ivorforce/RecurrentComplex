@@ -9,7 +9,9 @@ import ivorius.reccomplex.gui.GuiValidityStateIndicator;
 import ivorius.reccomplex.gui.table.*;
 import ivorius.reccomplex.structures.StructureRegistry;
 import ivorius.reccomplex.structures.generic.GenericStructureInfo;
+import ivorius.reccomplex.utils.IvTranslations;
 import joptsimple.internal.Strings;
+import org.apache.commons.lang3.StringUtils;
 
 import java.util.*;
 
@@ -23,6 +25,8 @@ public class TableDataSourceGenericStructure extends TableDataSourceSegmented im
 
     private TableDelegate tableDelegate;
     private TableNavigator navigator;
+
+    private TableElementTitle parsed;
 
     public TableDataSourceGenericStructure(GenericStructureInfo structureInfo, String structureKey, TableDelegate tableDelegate, TableNavigator navigator)
     {
@@ -85,9 +89,9 @@ public class TableDataSourceGenericStructure extends TableDataSourceSegmented im
         {
             case 0:
                 return 2;
-            case 2:
-                return 1;
             case 1:
+                return 2;
+            case 2:
                 return 2;
             case 3:
                 return 1;
@@ -135,11 +139,15 @@ public class TableDataSourceGenericStructure extends TableDataSourceSegmented im
                 break;
             case 2:
             {
-                TableElementString element = new TableElementString("dependencies", "Dependencies (A,B,...)", Strings.join(structureInfo.dependencies, ","));
-                element.setValidityState(currentDependencyState());
-                element.setShowsValidityState(true);
-                element.addPropertyListener(this);
-                return element;
+                if (index == 0)
+                {
+                    TableElementString element = new TableElementString("dependencies", "Dependencies", structureInfo.dependencies.getExpression());
+                    element.setTooltip(IvTranslations.formatLines("reccomplex.expression.dependency.tooltip"));
+                    element.addPropertyListener(this);
+                    return element;
+                }
+                else if (index == 1)
+                    return parsed = new TableElementTitle("parsed", "", StringUtils.abbreviate(TableDataSourceDimensionGen.parsedString(structureInfo.dependencies), 60));
             }
             case 3:
             {
@@ -196,14 +204,9 @@ public class TableDataSourceGenericStructure extends TableDataSourceSegmented im
         }
         else if ("dependencies".equals(element.getID()))
         {
-            structureInfo.dependencies.clear();
-            String[] dependencies = ((String) element.getPropertyValue()).split(",");
-            if (dependencies.length != 1 || dependencies[0].trim().length() > 0)
-            {
-                Collections.addAll(structureInfo.dependencies, dependencies);
-            }
-
-            ((TableElementString) element).setValidityState(currentDependencyState());
+            structureInfo.dependencies.setExpression((String) element.getPropertyValue());
+            if (parsed != null)
+                parsed.setDisplayString(StringUtils.abbreviate(TableDataSourceDimensionGen.parsedString(structureInfo.dependencies), 60));
         }
     }
 
@@ -217,12 +220,5 @@ public class TableDataSourceGenericStructure extends TableDataSourceSegmented im
         return structureKey.trim().length() > 0 && !structureKey.contains(" ")
                 ? GuiValidityStateIndicator.State.VALID
                 : GuiValidityStateIndicator.State.INVALID;
-    }
-
-    private GuiValidityStateIndicator.State currentDependencyState()
-    {
-        return structureInfo.areDependenciesResolved()
-                ? GuiValidityStateIndicator.State.VALID
-                : GuiValidityStateIndicator.State.SEMI_VALID;
     }
 }

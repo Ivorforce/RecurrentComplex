@@ -63,30 +63,25 @@ public class PrefixedTypeExpressionCache<T> extends ExpressionCache<T>
     protected boolean isKnownVariable(String var, Object... args)
     {
         VariableType<T> type = type(var);
-        return type != null && type.isKnown(var, args);
+        return type != null && type.isKnown(var.substring(type.prefix.length()), args);
     }
 
     protected T evaluateVariable(String var, Object... args)
     {
         VariableType<T> type = type(var);
-        return type != null ? type.evaluate(var, args) : null;
+        return type != null ? type.evaluate(var.substring(type.prefix.length()), args) : null;
     }
 
     protected boolean containsUnknownVariables(final Object... args)
     {
-        if (parsedExpression != null)
+        return parsedExpression != null && !parsedExpression.walkVariables(new Visitor<String>()
         {
-            return !parsedExpression.walkVariables(new Visitor<String>()
+            @Override
+            public boolean visit(final String s)
             {
-                @Override
-                public boolean visit(final String s)
-                {
-                    return isKnownVariable(s, args);
-                }
-            });
-        }
-
-        return true;
+                return isKnownVariable(s, args);
+            }
+        });
     }
 
     protected T evaluate(final Object... args)

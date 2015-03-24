@@ -16,7 +16,7 @@ public class ExpressionCache<T>
 {
     @Nonnull
     protected Algebra<T> algebra;
-    protected T emptyResult;
+    protected T emptyExpressionResult;
     protected String emptyResultRepresentation;
 
     @Nonnull
@@ -26,25 +26,25 @@ public class ExpressionCache<T>
     @Nullable
     protected ParseException parseException;
 
-    public ExpressionCache(Algebra<T> algebra, String expression)
+    public ExpressionCache(@Nonnull Algebra<T> algebra, String expression)
     {
         this.algebra = algebra;
         setExpression(expression);
     }
 
-    public ExpressionCache(Algebra<T> algebra, T emptyResult, String emptyResultRepresentation, String expression)
+    public ExpressionCache(@Nonnull Algebra<T> algebra, T emptyExpressionResult, String emptyResultRepresentation, String expression)
     {
         this.algebra = algebra;
-        this.emptyResult = emptyResult;
+        this.emptyExpressionResult = emptyExpressionResult;
         this.emptyResultRepresentation = emptyResultRepresentation;
         setExpression(expression);
     }
 
     protected void parseExpression()
     {
-        if (expression.trim().isEmpty() && emptyResultRepresentation != null)
+        if (expressionIsEmpty() && acceptsEmptyExpression())
         {
-            parsedExpression = new Algebra.Value<>(emptyResult, emptyResultRepresentation);
+            parsedExpression = new Algebra.Value<>(emptyExpressionResult, emptyResultRepresentation);
             parseException = null;
         }
         else
@@ -85,28 +85,38 @@ public class ExpressionCache<T>
         this.algebra = algebra;
     }
 
-    public T getEmptyResult()
+    public T getEmptyExpressionResult()
     {
-        return emptyResult;
+        return emptyExpressionResult;
     }
 
-    public String getEmptyResultRepresentation()
+    public String getEmptyExpressionResultRepresentation()
     {
         return emptyResultRepresentation;
     }
 
-    public void setNoEmptyResult()
+    public void setNoEmptyExpressionResult()
     {
-        this.emptyResult = null;
+        this.emptyExpressionResult = null;
         this.emptyResultRepresentation = null;
         parseExpression();
     }
-    
-    public void setEmptyResult(T emptyResult, String representation)
+
+    public void setEmptyExpressionResult(T emptyResult, String representation)
     {
-        this.emptyResult = emptyResult;
+        this.emptyExpressionResult = emptyResult;
         this.emptyResultRepresentation = representation;
         parseExpression();
+    }
+
+    public boolean acceptsEmptyExpression()
+    {
+        return emptyResultRepresentation != null;
+    }
+
+    public boolean expressionIsEmpty()
+    {
+        return expression.trim().isEmpty();
     }
 
     @Nonnull

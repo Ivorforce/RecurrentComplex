@@ -26,7 +26,7 @@ public class OperationRenderer
     {
         GL11.glEnable(GL11.GL_BLEND);
         OpenGlHelper.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA, GL11.GL_ONE, GL11.GL_ZERO);
-        GL11.glAlphaFunc(GL11.GL_GREATER, 0.0001f);
+        GL11.glAlphaFunc(GL11.GL_GREATER, 0.5f);
         GL11.glDisable(GL11.GL_CULL_FACE);
 
         ResourceLocation curTex = Icons.frame(SelectionRenderer.LATTICE_TEXTURE, (ticks + partialTicks) * 0.75f);

@@ -125,8 +125,8 @@ public class BiomeMatcher extends PrefixedTypeExpressionCache<Boolean> implement
         @Override
         public Boolean evaluate(String var, Object... args)
         {
-            return BiomeDictionary.isBiomeOfType((BiomeGenBase) args[0],
-                    RCGsonHelper.enumForNameIgnoreCase(var, BiomeDictionary.Type.values()));
+            BiomeDictionary.Type type = RCGsonHelper.enumForNameIgnoreCase(var, BiomeDictionary.Type.values());
+            return type != null && BiomeDictionary.isBiomeOfType((BiomeGenBase) args[0], type);
         }
 
         @Override

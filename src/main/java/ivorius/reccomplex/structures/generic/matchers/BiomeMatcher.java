@@ -35,7 +35,7 @@ public class BiomeMatcher extends PrefixedTypeExpressionCache<Boolean> implement
 
     public BiomeMatcher(String expression)
     {
-        super(RCBoolAlgebra.algebra(), expression);
+        super(RCBoolAlgebra.algebra(), false, EnumChatFormatting.RED + "No Biomes", expression);
 
         addType(new BiomeVariableType(""));
         addType(new BiomeDictVariableType(BIOME_TYPE_PREFIX));

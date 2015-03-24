@@ -42,7 +42,7 @@ public class ExpressionCache<T>
 
     protected void parseExpression()
     {
-        if (expression.trim().isEmpty())
+        if (expression.trim().isEmpty() && emptyResultRepresentation != null)
         {
             parsedExpression = new Algebra.Value<>(emptyResult, emptyResultRepresentation);
             parseException = null;
@@ -95,6 +95,13 @@ public class ExpressionCache<T>
         return emptyResultRepresentation;
     }
 
+    public void setNoEmptyResult()
+    {
+        this.emptyResult = null;
+        this.emptyResultRepresentation = null;
+        parseExpression();
+    }
+    
     public void setEmptyResult(T emptyResult, String representation)
     {
         this.emptyResult = emptyResult;

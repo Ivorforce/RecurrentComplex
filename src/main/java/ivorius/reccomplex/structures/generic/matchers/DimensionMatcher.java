@@ -34,7 +34,7 @@ public class DimensionMatcher extends PrefixedTypeExpressionCache<Boolean> imple
 
     public DimensionMatcher(String expression)
     {
-        super(RCBoolAlgebra.algebra(), expression);
+        super(RCBoolAlgebra.algebra(), false, EnumChatFormatting.RED + "No Dimensions", expression);
         addType(new DimensionVariableType(""));
         addType(new DimensionDictVariableType(DIMENSION_TYPE_PREFIX));
     }

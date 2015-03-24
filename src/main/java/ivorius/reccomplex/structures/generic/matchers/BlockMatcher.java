@@ -26,7 +26,7 @@ public class BlockMatcher extends PrefixedTypeExpressionCache<Boolean> implement
 
     public BlockMatcher(String expression)
     {
-        super(RCBoolAlgebra.algebra(), expression);
+        super(RCBoolAlgebra.algebra(), false, EnumChatFormatting.RED + "No Blocks", expression);
 
         addType(new BlockVariableType(""));
         addType(new MetadataVariableType(METADATA_PREFIX));

@@ -49,9 +49,7 @@ public class CommandBiomeDict extends CommandBase
 
             boolean didFindBiome = false;
 
-            String[] biomeNameArgs = new String[args.length - 1];
-            System.arraycopy(args, 1, biomeNameArgs, 0, biomeNameArgs.length);
-            String biomeName = Strings.join(biomeNameArgs, " ");
+            String biomeName = func_147178_a(commandSender, args, 1).getUnformattedText();
 
             for (BiomeGenBase biomeGenBase : biomes)
             {

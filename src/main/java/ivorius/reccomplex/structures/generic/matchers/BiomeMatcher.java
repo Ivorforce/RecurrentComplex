@@ -11,9 +11,9 @@ import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
 import ivorius.ivtoolkit.tools.IvGsonHelper;
 import ivorius.reccomplex.json.RCGsonHelper;
-import ivorius.reccomplex.utils.ExpressionCache;
+import ivorius.reccomplex.utils.ExpressionCaches;
+import ivorius.reccomplex.utils.PrefixedTypeExpressionCache;
 import ivorius.reccomplex.utils.RCBoolAlgebra;
-import ivorius.reccomplex.utils.Visitor;
 import joptsimple.internal.Strings;
 import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.world.biome.BiomeGenBase;
@@ -29,13 +29,16 @@ import java.util.Set;
 /**
  * Created by lukas on 19.09.14.
  */
-public class BiomeMatcher extends ExpressionCache<Boolean> implements Predicate<BiomeGenBase>
+public class BiomeMatcher extends PrefixedTypeExpressionCache<Boolean> implements Predicate<BiomeGenBase>
 {
     public static final String BIOME_TYPE_PREFIX = "$";
 
     public BiomeMatcher(String expression)
     {
         super(RCBoolAlgebra.algebra(), expression);
+
+        addType(new BiomeVariableType(""));
+        addType(new BiomeDictVariableType(BIOME_TYPE_PREFIX));
     }
 
     public static String ofTypes(BiomeDictionary.Type... biomeTypes)
@@ -67,75 +70,76 @@ public class BiomeMatcher extends ExpressionCache<Boolean> implements Predicate<
         return set;
     }
 
-    public static boolean isKnownVariable(final String var, Set<BiomeGenBase> biomes)
-    {
-        return var.startsWith(BIOME_TYPE_PREFIX)
-                ? RCGsonHelper.enumForNameIgnoreCase(var.substring(BIOME_TYPE_PREFIX.length()), BiomeDictionary.Type.values()) != null
-                : Iterables.any(biomes, new Predicate<BiomeGenBase>()
-        {
-            @Override
-            public boolean apply(BiomeGenBase input)
-            {
-                return input.biomeName.equals(var);
-            }
-        });
-    }
-
     public boolean containsUnknownVariables()
     {
-        if (parsedExpression != null)
-        {
-            final Set<BiomeGenBase> biomes = gatherAllBiomes();
-
-            return !parsedExpression.walkVariables(new Visitor<String>()
-            {
-                @Override
-                public boolean visit(final String s)
-                {
-                    return isKnownVariable(s, biomes);
-                }
-            });
-        }
-
-        return true;
-    }
-
-    @Override
-    public boolean apply(final BiomeGenBase input)
-    {
-        return parsedExpression != null && parsedExpression.evaluate(new Function<String, Boolean>()
-        {
-            @Override
-            public Boolean apply(String var)
-            {
-                if (var.startsWith(BIOME_TYPE_PREFIX))
-                    return BiomeDictionary.isBiomeOfType(input,
-                            RCGsonHelper.enumForNameIgnoreCase(var.substring(BIOME_TYPE_PREFIX.length()),
-                                    BiomeDictionary.Type.values()));
-
-                return input.biomeName.equals(var);
-            }
-        });
+        return super.containsUnknownVariables(gatherAllBiomes());
     }
 
     @Nonnull
     @Override
     public String getDisplayString()
     {
-        final Set<BiomeGenBase> biomes = gatherAllBiomes();
+        return super.getDisplayString(gatherAllBiomes());
+    }
 
-        return parsedExpression != null ? parsedExpression.toString(new Function<String, String>()
+    @Override
+    public boolean apply(final BiomeGenBase input)
+    {
+        return evaluate(input);
+    }
+
+    protected static class BiomeVariableType extends VariableType<Boolean>
+    {
+        public BiomeVariableType(String prefix)
         {
-            @Nullable
-            @Override
-            public String apply(String input)
-            {
-                EnumChatFormatting variableColor = isKnownVariable(input, biomes) ? EnumChatFormatting.GREEN : EnumChatFormatting.YELLOW;
+            super(prefix);
+        }
 
-                if (input.startsWith(BIOME_TYPE_PREFIX))
-                    return EnumChatFormatting.BLUE + BIOME_TYPE_PREFIX + variableColor + input.substring(BIOME_TYPE_PREFIX.length()) + EnumChatFormatting.RESET;
-                return variableColor + input + EnumChatFormatting.RESET;
-            }
-        }) : EnumChatFormatting.RED + expression;
+        @Override
+        public Boolean evaluate(String var, Object... args)
+        {
+            return ((BiomeGenBase) args[0]).biomeName.equals(var);
+        }
+
+        @Override
+        public boolean isKnown(final String var, final Object... args)
+        {
+            return Iterables.any((Iterable<BiomeGenBase>) args[0], new Predicate<BiomeGenBase>()
+            {
+                @Override
+                public boolean apply(BiomeGenBase input)
+                {
+                    return input.biomeName.equals(var);
+                }
+            });
+        }
+
+        @Override
+        public String getRepresentation(String var, Object... args)
+        {
+            EnumChatFormatting variableColor = isKnown(var, args) ? EnumChatFormatting.GREEN : EnumChatFormatting.YELLOW;
+            return EnumChatFormatting.BLUE + prefix + variableColor + var + EnumChatFormatting.RESET;
+        }
+    }
+
+    protected static class BiomeDictVariableType extends ExpressionCaches.SimpleVariableType<Boolean>
+    {
+        public BiomeDictVariableType(String prefix)
+        {
+            super(prefix);
+        }
+
+        @Override
+        public Boolean evaluate(String var, Object... args)
+        {
+            return BiomeDictionary.isBiomeOfType((BiomeGenBase) args[0],
+                    RCGsonHelper.enumForNameIgnoreCase(var, BiomeDictionary.Type.values()));
+        }
+
+        @Override
+        public boolean isKnown(String var, Object... args)
+        {
+            return RCGsonHelper.enumForNameIgnoreCase(var, BiomeDictionary.Type.values()) != null;
+        }
     }
 }

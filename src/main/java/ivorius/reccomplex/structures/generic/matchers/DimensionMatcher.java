@@ -7,15 +7,18 @@ package ivorius.reccomplex.structures.generic.matchers;
 
 import com.google.common.base.Function;
 import com.google.common.base.Predicate;
+import com.google.common.collect.Iterables;
 import com.google.common.primitives.Ints;
 import ivorius.reccomplex.dimensions.DimensionDictionary;
-import ivorius.reccomplex.utils.ExpressionCache;
-import ivorius.reccomplex.utils.RCBoolAlgebra;
-import ivorius.reccomplex.utils.Visitor;
+import ivorius.reccomplex.json.RCGsonHelper;
+import ivorius.reccomplex.utils.*;
 import joptsimple.internal.Strings;
 import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.world.WorldProvider;
+import net.minecraft.world.biome.BiomeGenBase;
+import net.minecraftforge.common.BiomeDictionary;
 import net.minecraftforge.common.DimensionManager;
+import org.apache.commons.lang3.ArrayUtils;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -25,13 +28,15 @@ import java.util.Collection;
 /**
  * Created by lukas on 19.09.14.
  */
-public class DimensionMatcher extends ExpressionCache<Boolean> implements Predicate<WorldProvider>
+public class DimensionMatcher extends PrefixedTypeExpressionCache<Boolean> implements Predicate<WorldProvider>
 {
     public static final String DIMENSION_TYPE_PREFIX = "$";
 
     public DimensionMatcher(String expression)
     {
         super(RCBoolAlgebra.algebra(), expression);
+        addType(new DimensionVariableType(""));
+        addType(new DimensionDictVariableType(DIMENSION_TYPE_PREFIX));
     }
 
     public static String ofTypes(String... dimensionTypes)
@@ -39,72 +44,58 @@ public class DimensionMatcher extends ExpressionCache<Boolean> implements Predic
         return DIMENSION_TYPE_PREFIX + Strings.join(dimensionTypes, " & " + DIMENSION_TYPE_PREFIX);
     }
 
-    public static boolean isKnownVariable(final String var, final Collection<Integer> dimensions)
-    {
-        Integer dimID;
-        if (var.startsWith(DIMENSION_TYPE_PREFIX))
-                return DimensionDictionary.allRegisteredTypes().contains(var.substring(DIMENSION_TYPE_PREFIX.length()));
-        else if ((dimID = Ints.tryParse(var)) != null)
-            return dimensions.contains(dimID);
-        else
-            return false;
-    }
-
-    public boolean containsUnknownVariables()
-    {
-        if (parsedExpression != null)
-        {
-            final Collection<Integer> dimensions = Arrays.asList(DimensionManager.getIDs());
-
-            return !parsedExpression.walkVariables(new Visitor<String>()
-            {
-                @Override
-                public boolean visit(final String s)
-                {
-                    return isKnownVariable(s, dimensions);
-                }
-            });
-        }
-
-        return true;
-    }
-
     @Override
     public boolean apply(final WorldProvider input)
     {
-        return parsedExpression != null && parsedExpression.evaluate(new Function<String, Boolean>()
-        {
-            @Override
-            public Boolean apply(String var)
-            {
-                if (var.startsWith(DIMENSION_TYPE_PREFIX))
-                    return DimensionDictionary.dimensionMatchesType(input,
-                            var.substring(DIMENSION_TYPE_PREFIX.length()));
-
-                Integer dimID = Ints.tryParse(var);
-                return dimID != null && input.dimensionId == dimID;
-            }
-        });
+        return evaluate(input);
     }
 
-    @Nonnull
-    @Override
-    public String getDisplayString()
+    protected static class DimensionVariableType extends VariableType<Boolean>
     {
-        final Collection<Integer> dimensions = Arrays.asList(DimensionManager.getIDs());
-
-        return parsedExpression != null ? parsedExpression.toString(new Function<String, String>()
+        public DimensionVariableType(String prefix)
         {
-            @Nullable
-            @Override
-            public String apply(String input)
-            {
-                EnumChatFormatting variableColor = isKnownVariable(input, dimensions) ? EnumChatFormatting.GREEN : EnumChatFormatting.YELLOW;
+            super(prefix);
+        }
 
-                if (input.startsWith(DIMENSION_TYPE_PREFIX))
-                    return EnumChatFormatting.BLUE + DIMENSION_TYPE_PREFIX + variableColor + input.substring(DIMENSION_TYPE_PREFIX.length()) + EnumChatFormatting.RESET;
-                return variableColor + input + EnumChatFormatting.RESET;
-            }
-        }) : EnumChatFormatting.RED + expression;
+        @Override
+        public Boolean evaluate(String var, Object... args)
+        {
+            Integer dimID = Ints.tryParse(var);
+            return dimID != null && ((WorldProvider) args[0]).dimensionId == dimID;
+        }
+
+        @Override
+        public boolean isKnown(final String var, final Object... args)
+        {
+            Integer dimID = Ints.tryParse(var);
+            return dimID != null && ArrayUtils.contains(DimensionManager.getIDs(), dimID);
+        }
+
+        @Override
+        public String getRepresentation(String var, Object... args)
+        {
+            EnumChatFormatting variableColor = isKnown(var, args) ? EnumChatFormatting.GREEN : EnumChatFormatting.YELLOW;
+            return EnumChatFormatting.BLUE + prefix + variableColor + var + EnumChatFormatting.RESET;
+        }
+    }
+
+    protected static class DimensionDictVariableType extends ExpressionCaches.SimpleVariableType<Boolean>
+    {
+        public DimensionDictVariableType(String prefix)
+        {
+            super(prefix);
+        }
+
+        @Override
+        public Boolean evaluate(String var, Object... args)
+        {
+            return DimensionDictionary.dimensionMatchesType((WorldProvider) args[0], var);
+        }
+
+        @Override
+        public boolean isKnown(String var, Object... args)
+        {
+            return DimensionDictionary.allRegisteredTypes().contains(var);
+        }
     }
 }

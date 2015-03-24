@@ -62,7 +62,11 @@ public class TableDataSourceBTNatural extends TableDataSourceSegmented implement
                 return element;
             }
             else if (index == 1)
-                return parsed = new TableElementTitle("parsed", "", StringUtils.abbreviate(TableDataSourceDimensionGen.parsedString(transformer.sourceMatcher), 60));
+            {
+                parsed = new TableElementTitle("parsed", "", StringUtils.abbreviate(TableDataSourceDimensionGen.parsedString(transformer.sourceMatcher), 60));
+                parsed.setPositioning(TableElementTitle.Positioning.TOP);
+                return parsed;
+            }
         }
 
         return null;

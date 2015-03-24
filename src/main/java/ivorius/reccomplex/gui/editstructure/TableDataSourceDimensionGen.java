@@ -67,7 +67,11 @@ public class TableDataSourceDimensionGen extends TableDataSourceSegmented implem
                 return element;
             }
             else if (index == 1)
-                return parsed = new TableElementTitle("parsed", "", StringUtils.abbreviate(parsedString(generationInfo.getDimensionMatcher()), 70));
+            {
+                parsed = new TableElementTitle("parsed", "", StringUtils.abbreviate(parsedString(generationInfo.getDimensionMatcher()), 70));
+                parsed.setPositioning(TableElementTitle.Positioning.TOP);
+                return parsed;
+            }
         }
         else if (segment == 1)
         {

@@ -111,7 +111,11 @@ public class TableDataSourceStaticGenerationInfo extends TableDataSourceSegmente
                     return element;
                 }
                 else if (index == 1)
-                    return parsed = new TableElementTitle("parsed", "", StringUtils.abbreviate(TableDataSourceDimensionGen.parsedString(generationInfo.dimensionMatcher), 70));
+                {
+                    parsed = new TableElementTitle("parsed", "", StringUtils.abbreviate(TableDataSourceDimensionGen.parsedString(generationInfo.dimensionMatcher), 70));
+                    parsed.setPositioning(TableElementTitle.Positioning.TOP);
+                    return parsed;
+                }
             }
         }
 

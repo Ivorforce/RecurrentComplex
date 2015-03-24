@@ -50,7 +50,7 @@ public class DimensionMatcher extends PrefixedTypeExpressionCache<Boolean> imple
         return evaluate(input);
     }
 
-    protected static class DimensionVariableType extends VariableType<Boolean>
+    protected static class DimensionVariableType extends ExpressionCaches.SimpleVariableType<Boolean>
     {
         public DimensionVariableType(String prefix)
         {
@@ -69,13 +69,6 @@ public class DimensionMatcher extends PrefixedTypeExpressionCache<Boolean> imple
         {
             Integer dimID = Ints.tryParse(var);
             return dimID != null && ArrayUtils.contains(DimensionManager.getIDs(), dimID);
-        }
-
-        @Override
-        public String getRepresentation(String var, Object... args)
-        {
-            EnumChatFormatting variableColor = isKnown(var, args) ? EnumChatFormatting.GREEN : EnumChatFormatting.YELLOW;
-            return EnumChatFormatting.BLUE + prefix + variableColor + var + EnumChatFormatting.RESET;
         }
     }
 

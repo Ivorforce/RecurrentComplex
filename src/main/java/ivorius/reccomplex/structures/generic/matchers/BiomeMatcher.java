@@ -88,7 +88,7 @@ public class BiomeMatcher extends PrefixedTypeExpressionCache<Boolean> implement
         return evaluate(input);
     }
 
-    protected static class BiomeVariableType extends VariableType<Boolean>
+    protected static class BiomeVariableType extends ExpressionCaches.SimpleVariableType<Boolean>
     {
         public BiomeVariableType(String prefix)
         {
@@ -112,13 +112,6 @@ public class BiomeMatcher extends PrefixedTypeExpressionCache<Boolean> implement
                     return input.biomeName.equals(var);
                 }
             });
-        }
-
-        @Override
-        public String getRepresentation(String var, Object... args)
-        {
-            EnumChatFormatting variableColor = isKnown(var, args) ? EnumChatFormatting.GREEN : EnumChatFormatting.YELLOW;
-            return EnumChatFormatting.BLUE + prefix + variableColor + var + EnumChatFormatting.RESET;
         }
     }
 

@@ -26,6 +26,7 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.MathHelper;
 import net.minecraft.util.StatCollector;
 import net.minecraft.world.World;
+import net.minecraft.world.biome.BiomeGenBase;
 import net.minecraftforge.common.util.ForgeDirection;
 
 import java.lang.reflect.Type;
@@ -149,15 +150,24 @@ public class TransformerRuins implements Transformer
                     float decay = field.getValue(surfaceSourceCoord.x, surfaceSourceCoord.z);
                     int removedBlocks = MathHelper.floor_float(decay * blockCollection.height + 0.5f);
 
+                    BiomeGenBase biome = context.world.getBiomeGenForCoords(surfaceSourceCoord.x, surfaceSourceCoord.z);
+                    Block topBlock = biome.topBlock != null ? biome.topBlock : Blocks.air;
+                    Block fillerBlock = biome.fillerBlock != null ? biome.fillerBlock : Blocks.air;
+                    Block mainBlock = context.world.provider.dimensionId == -1 ? Blocks.netherrack : (context.world.provider.dimensionId == 1 ? Blocks.end_stone : Blocks.stone);
+
                     for (int ySource = 0; ySource < removedBlocks && ySource < size[1]; ySource++)
                     {
                         BlockCoord sourceCoord = new BlockCoord(surfaceSourceCoord.x, blockCollection.height - 1 - ySource, surfaceSourceCoord.z);
 
                         Block block = blockCollection.getBlock(sourceCoord);
-                        int meta = blockCollection.getMetadata(sourceCoord);
 
-                        if (getPass(block, meta) == pass && !skipBlock(transformerList, block, meta))
-                            setBlockToAirClean(context.world, context.transform.apply(sourceCoord, size).add(context.lowerCoord()));
+                        if (block != topBlock && block != fillerBlock && block != mainBlock)
+                        {
+                            int meta = blockCollection.getMetadata(sourceCoord);
+
+                            if (getPass(block, meta) == pass && !skipBlock(transformerList, block, meta))
+                                setBlockToAirClean(context.world, context.transform.apply(sourceCoord, size).add(context.lowerCoord()));
+                        }
                     }
                 }
             }

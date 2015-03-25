@@ -75,11 +75,7 @@ public class CommandSelectReplace extends CommandSelectModify
     public List addTabCompletionOptions(ICommandSender commandSender, String[] args)
     {
         if (args.length == 1 || args.length == 2)
-        {
-            Set<String> allStructureNames = Block.blockRegistry.getKeys();
-
-            return getListOfStringsMatchingLastWord(args, allStructureNames.toArray(new String[allStructureNames.size()]));
-        }
+            return getListOfStringsFromIterableMatchingLastWord(args, Block.blockRegistry.getKeys());
         else if (args.length == 3 || args.length == 4)
         {
             return getListOfStringsMatchingLastWord(args, "0");

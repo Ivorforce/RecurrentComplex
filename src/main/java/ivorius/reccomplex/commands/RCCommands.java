@@ -52,6 +52,7 @@ public class RCCommands
         event.registerServerCommand(new CommandExportSchematic());
 
         event.registerServerCommand(new CommandWhatIsThis());
+        event.registerServerCommand(new CommandLookupStructure());
     }
 
     @Nonnull

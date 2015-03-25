@@ -71,11 +71,7 @@ public class CommandSelectFillSphere extends CommandSelectModify
     public List addTabCompletionOptions(ICommandSender commandSender, String[] args)
     {
         if (args.length == 1)
-        {
-            Set<String> allStructureNames = Block.blockRegistry.getKeys();
-
-            return getListOfStringsMatchingLastWord(args, allStructureNames.toArray(new String[allStructureNames.size()]));
-        }
+            return getListOfStringsFromIterableMatchingLastWord(args, Block.blockRegistry.getKeys());
         else if (args.length == 2)
         {
             return getListOfStringsMatchingLastWord(args, "0");

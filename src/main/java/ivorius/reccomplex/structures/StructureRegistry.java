@@ -9,6 +9,7 @@ import com.google.common.base.Predicate;
 import com.google.common.collect.BiMap;
 import com.google.common.collect.Collections2;
 import com.google.common.collect.HashBiMap;
+import com.google.common.collect.Maps;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonSyntaxException;
@@ -42,11 +43,13 @@ import java.util.*;
 /**
  * Created by lukas on 24.05.14.
  */
-public class
-        StructureRegistry
+public class StructureRegistry
 {
     private static BiMap<String, StructureInfo> allStructures = HashBiMap.create();
-    private static Map<String, StructureInfo> generatingStructures = new HashMap<>();
+
+    private static boolean needsGenerationCacheUpdate = true;
+    private static Set<String> persistentlyDisabledStructures = new HashSet<>();
+    private static Set<String> generatingStructures = new HashSet<>();
 
     private static Map<Class<StructureGenerationInfo>, List<Pair<StructureInfo, StructureGenerationInfo>>> cachedGeneration = new HashMap<>();
 
@@ -72,29 +75,24 @@ public class
 
     public static void registerStructure(StructureInfo info, String key, boolean generates)
     {
-        if (info.areDependenciesResolved())
+        StructureRegistrationEvent.Pre event = new StructureRegistrationEvent.Pre(key, info, generates);
+        RCEventBus.INSTANCE.post(event);
+
+        if (event.getResult() != Event.Result.DENY)
         {
-            StructureRegistrationEvent.Pre event = new StructureRegistrationEvent.Pre(key, info, generates);
-            RCEventBus.INSTANCE.post(event);
+            if (!event.shouldGenerate)
+                persistentlyDisabledStructures.add(key);
+            else
+                persistentlyDisabledStructures.remove(key);
 
-            if (event.getResult() != Event.Result.DENY)
-            {
-                generates = event.shouldGenerate && !RCConfig.isStructureDisabled(key);
+            String baseString = allStructures.containsKey(key) ? "Replaced structure '%s'" : "Registered structure '%s'";
+            RecurrentComplex.logger.info(String.format(baseString, key));
 
-                String baseString = allStructures.containsKey(key) ? "Overwrote structure '%s'%s" : "Registered structure '%s'%s";
-                String genPart = generates ? " (Generating)" : "";
-                RecurrentComplex.logger.info(String.format(baseString, key, genPart));
+            allStructures.put(key, info);
 
-                allStructures.put(key, info);
-                if (generates)
-                    generatingStructures.put(key, info);
-                else
-                    generatingStructures.remove(key); // Make sure to honour the new 'generates' boolean
+            clearCaches();
 
-                clearCaches();
-
-                RCEventBus.INSTANCE.post(new StructureRegistrationEvent.Post(key, info, generates));
-            }
+            RCEventBus.INSTANCE.post(new StructureRegistrationEvent.Post(key, info, generates));
         }
     }
 
@@ -128,8 +126,12 @@ public class
 
     public static void removeStructure(String key)
     {
-        allStructures.remove(key);
-        generatingStructures.remove(key);
+        StructureInfo info = allStructures.remove(key);
+
+        persistentlyDisabledStructures.remove(key); // Clean up space
+        if (info != null)
+            generatingStructures.remove(info);
+
         clearCaches();
     }
 
@@ -143,19 +145,58 @@ public class
         return gson.toJson(structureInfo, GenericStructureInfo.class);
     }
 
-    public static Collection<StructureInfo> getAllStructures()
+    public static Set<StructureInfo> getAllStructures()
     {
-        return allStructures.values();
+        return Collections.unmodifiableSet(allStructures.values());
     }
 
-    public static Collection<StructureInfo> getAllGeneratingStructures()
+    private static void ensureGenerationCache()
     {
-        return generatingStructures.values();
+        if (needsGenerationCacheUpdate)
+        {
+            needsGenerationCacheUpdate = false;
+            generatingStructures.clear();
+
+            for (Map.Entry<String, StructureInfo> entry : allStructures.entrySet())
+            {
+                StructureInfo info = entry.getValue();
+                String key = entry.getKey();
+
+                if (!persistentlyDisabledStructures.contains(key)
+                        && !RCConfig.isStructureDisabled(key)
+                        && info.areDependenciesResolved())
+                    generatingStructures.add(key);
+            }
+        }
+    }
+
+    public static Set<StructureInfo> getAllGeneratingStructures()
+    {
+        ensureGenerationCache();
+        return Collections.unmodifiableSet(Maps.filterKeys(allStructures, new Predicate<String>()
+        {
+            @Override
+            public boolean apply(@Nullable String input)
+            {
+                return generatingStructures.contains(input);
+            }
+        }).values());
+    }
+
+    public static Set<String> getAllGeneratingStructureKeys()
+    {
+        return Collections.unmodifiableSet(generatingStructures);
+    }
+
+    public static boolean isStructureGenerating(String key)
+    {
+        ensureGenerationCache();
+        return generatingStructures.contains(key);
     }
 
     public static Set<String> getAllStructureNames()
     {
-        return allStructures.keySet();
+        return Collections.unmodifiableSet(allStructures.keySet());
     }
 
     public static <T extends StructureGenerationInfo> Collection<Pair<StructureInfo, T>> getStructureGenerations(Class<T> clazz)
@@ -257,5 +298,6 @@ public class
     {
         structureSelectors.clear();
         cachedGeneration.clear();
+        needsGenerationCacheUpdate = true;
     }
 }

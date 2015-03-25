@@ -54,11 +54,7 @@ public class CommandEditStructure extends CommandBase
     public List addTabCompletionOptions(ICommandSender commandSender, String[] args)
     {
         if (args.length == 1)
-        {
-            Set<String> allStructureNames = StructureRegistry.getAllStructureNames();
-
-            return getListOfStringsMatchingLastWord(args, allStructureNames.toArray(new String[allStructureNames.size()]));
-        }
+            return getListOfStringsFromIterableMatchingLastWord(args, StructureRegistry.getAllStructureNames());
 
         return null;
     }

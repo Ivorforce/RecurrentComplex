@@ -69,8 +69,8 @@ public class SchematicFile
         byte[] blockIDs = tagCompound.getByteArray("Blocks");
         byte[] addBlocks = tagCompound.getByteArray("AddBlocks");
 
-        SchematicaMapping schematicaMapping = tagCompound.hasKey(SchematicaMapping.COMPOUND_KEY, Constants.NBT.TAG_COMPOUND)
-                ? new SchematicaMapping(tagCompound.getCompoundTag(SchematicaMapping.COMPOUND_KEY))
+        SchematicMapping schematicMapping = tagCompound.hasKey(SchematicMapping.COMPOUND_KEY, Constants.NBT.TAG_COMPOUND)
+                ? new SchematicMapping(tagCompound.getCompoundTag(SchematicMapping.COMPOUND_KEY))
                 : null;
 
         this.blocks = new Block[blockIDs.length];
@@ -84,8 +84,8 @@ public class SchematicFile
                 blockID |= lowerNybble ? ((addBlocks[i >> 1] & 0x0F) << 8) : ((addBlocks[i >> 1] & 0xF0) << 4);
             }
 
-            this.blocks[i] = schematicaMapping != null
-                    ? schematicaMapping.blockFromID(blockID)
+            this.blocks[i] = schematicMapping != null
+                    ? schematicMapping.blockFromID(blockID)
                     : Block.getBlockById(blockID);
         }
 
@@ -202,11 +202,11 @@ public class SchematicFile
 
         byte[] blockIDs = new byte[blocks.length];
         byte[] addBlocks = new byte[(blocks.length + 1) / 2];
-        SchematicaMapping schematicaMapping = new SchematicaMapping();
+        SchematicMapping schematicMapping = new SchematicMapping();
         for (int i = 0; i < blocks.length; i++)
         {
             int blockID = getBlockID(blocks[i]);
-            schematicaMapping.putBlock(blockID, blocks[i]);
+            schematicMapping.putBlock(blockID, blocks[i]);
 
             blockIDs[i] = (byte) (blockID & 0xff);
             boolean lowerNybble = (i & 1) == 0;
@@ -214,7 +214,7 @@ public class SchematicFile
         }
         tagCompound.setByteArray("Blocks", blockIDs);
         tagCompound.setByteArray("AddBlocks", addBlocks);
-        tagCompound.setTag(SchematicaMapping.COMPOUND_KEY, schematicaMapping.writeToNBT());
+        tagCompound.setTag(SchematicMapping.COMPOUND_KEY, schematicMapping.writeToNBT());
 
         NBTTagList entities = new NBTTagList();
         for (NBTTagCompound entityCompound : entityCompounds)

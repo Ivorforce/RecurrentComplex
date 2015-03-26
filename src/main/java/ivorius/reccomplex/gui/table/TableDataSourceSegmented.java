@@ -5,25 +5,43 @@
 
 package ivorius.reccomplex.gui.table;
 
+import com.google.common.primitives.Ints;
+import gnu.trove.map.TIntObjectMap;
+import gnu.trove.map.hash.TIntObjectHashMap;
+import gnu.trove.set.TIntSet;
+
 /**
  * Created by lukas on 22.06.14.
  */
 public abstract class TableDataSourceSegmented implements TableDataSource
 {
-    @Override
-    public boolean has(GuiTable table, int index)
+    protected final TIntObjectMap<TableDataSource> managedSections = new TIntObjectHashMap<>();
+
+    public void addManagedSection(int section, TableDataSource source)
     {
-        if (index < 0)
-        {
-            return false;
-        }
+        managedSections.put(section, source);
+    }
 
-        for (int seg = 0; seg < numberOfSegments(); seg++)
-        {
-            index -= sizeOfSegment(seg);
-        }
+    public void removeManagedSection(int section)
+    {
+        managedSections.remove(section);
+    }
 
-        return index < 0;
+    public TIntSet managedSections()
+    {
+        return managedSections.keySet();
+    }
+
+    @Override
+    public int numberOfElements()
+    {
+        int elements = 0;
+
+        int segments = numberOfSegments();
+        for (int i = 0; i < segments; i++)
+            elements += sizeOfSegment(i);
+
+        return elements;
     }
 
     @Override
@@ -32,9 +50,7 @@ public abstract class TableDataSourceSegmented implements TableDataSource
         for (int seg = 0; seg < numberOfSegments(); seg++)
         {
             if (index - sizeOfSegment(seg) < 0)
-            {
                 return elementForIndexInSegment(table, index, seg);
-            }
 
             index -= sizeOfSegment(seg);
         }
@@ -42,9 +58,20 @@ public abstract class TableDataSourceSegmented implements TableDataSource
         return null;
     }
 
-    public abstract int numberOfSegments();
+    public int numberOfSegments()
+    {
+        return managedSections.isEmpty() ? 0 : Ints.max(managedSections.keys());
+    }
 
-    public abstract int sizeOfSegment(int segment);
+    public int sizeOfSegment(int segment)
+    {
+        TableDataSource managed = managedSections.get(segment);
+        return managed != null ? managed.numberOfElements() : 0;
+    }
 
-    public abstract TableElement elementForIndexInSegment(GuiTable table, int index, int segment);
+    public TableElement elementForIndexInSegment(GuiTable table, int index, int segment)
+    {
+        TableDataSource managed = managedSections.get(segment);
+        return managed != null ? managed.elementForIndex(table, index) : null;
+    }
 }

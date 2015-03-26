@@ -30,9 +30,9 @@ public class TableDataSourcePreloaded implements TableDataSource
     }
 
     @Override
-    public boolean has(GuiTable table, int index)
+    public int numberOfElements()
     {
-        return index >= 0 && index < elements.size();
+        return elements.size();
     }
 
     @Override

@@ -7,7 +7,10 @@ package ivorius.reccomplex.structures;
 
 import ivorius.ivtoolkit.blocks.BlockCoord;
 import ivorius.ivtoolkit.math.AxisAlignedTransform2D;
+import ivorius.reccomplex.gui.GuiValidityStateIndicator;
+import ivorius.reccomplex.structures.generic.gentypes.StructureGenerationInfo;
 import net.minecraft.world.gen.structure.StructureBoundingBox;
+import org.apache.commons.lang3.StringUtils;
 
 /**
  * Created by lukas on 22.02.15.
@@ -57,5 +60,13 @@ public class StructureInfos
                 Math.max(y1, y2),
                 Math.max(z1, z2)
         );
+    }
+
+    public static GuiValidityStateIndicator.State defaultIDValidityState(StructureGenerationInfo genInfo)
+    {
+        String id = genInfo.id();
+        return id.trim().isEmpty() || !StringUtils.isAlphanumeric(id)
+                ? GuiValidityStateIndicator.State.INVALID
+                : GuiValidityStateIndicator.State.VALID;
     }
 }

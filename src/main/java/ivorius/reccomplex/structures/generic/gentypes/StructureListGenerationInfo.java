@@ -20,6 +20,7 @@ import net.minecraft.util.ChunkCoordinates;
 import net.minecraft.util.StatCollector;
 import net.minecraftforge.common.util.ForgeDirection;
 
+import javax.annotation.Nonnull;
 import java.lang.reflect.Type;
 import java.util.Arrays;
 
@@ -28,6 +29,8 @@ import java.util.Arrays;
  */
 public class StructureListGenerationInfo extends StructureGenerationInfo implements WeightedSelector.Item
 {
+    public String id = "";
+
     public String listID;
 
     public Double weight;
@@ -40,16 +43,31 @@ public class StructureListGenerationInfo extends StructureGenerationInfo impleme
 
     public StructureListGenerationInfo()
     {
-        this("", 0, 0, 0, ForgeDirection.NORTH);
+        this("StructureListGen1", "", null, 0, 0, 0, ForgeDirection.NORTH);
     }
 
-    public StructureListGenerationInfo(String listID, int shiftX, int shiftY, int shiftZ, ForgeDirection front)
+    public StructureListGenerationInfo(String id, String listID, Double weight, int shiftX, int shiftY, int shiftZ, ForgeDirection front)
     {
+        this.id = id;
         this.listID = listID;
+        this.weight = weight;
         this.shiftX = shiftX;
         this.shiftY = shiftY;
         this.shiftZ = shiftZ;
         this.front = front;
+    }
+
+    @Nonnull
+    @Override
+    public String id()
+    {
+        return id;
+    }
+
+    @Override
+    public void setID(@Nonnull String id)
+    {
+        this.id = id;
     }
 
     @Override
@@ -77,6 +95,8 @@ public class StructureListGenerationInfo extends StructureGenerationInfo impleme
         {
             JsonObject jsonObject = JsonUtils.getJsonElementAsJsonObject(json, "vanillaStructureSpawnInfo");
 
+            String id = JsonUtils.getJsonObjectStringFieldValueOrDefault(jsonObject, "id", "");
+
             String listID = JsonUtils.getJsonObjectStringFieldValueOrDefault(jsonObject, "listID", "");
 
             Double weight = jsonObject.has("weight") ? JsonUtils.getJsonObjectDoubleFieldValue(jsonObject, "weight") : null;
@@ -87,13 +107,15 @@ public class StructureListGenerationInfo extends StructureGenerationInfo impleme
 
             ForgeDirection front = Directions.deserialize(JsonUtils.getJsonObjectStringFieldValueOrDefault(jsonObject, "front", "NORTH"));
 
-            return new StructureListGenerationInfo(listID, positionX, positionY, positionZ, front);
+            return new StructureListGenerationInfo(id, listID, weight, positionX, positionY, positionZ, front);
         }
 
         @Override
         public JsonElement serialize(StructureListGenerationInfo src, Type typeOfSrc, JsonSerializationContext context)
         {
             JsonObject jsonObject = new JsonObject();
+
+            jsonObject.addProperty("id", src.id);
 
             jsonObject.addProperty("listID", src.listID);
 

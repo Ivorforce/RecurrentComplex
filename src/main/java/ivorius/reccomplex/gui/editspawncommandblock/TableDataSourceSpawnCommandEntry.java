@@ -11,7 +11,7 @@ import ivorius.reccomplex.gui.table.*;
 /**
  * Created by lukas on 05.06.14.
  */
-public class TableDataSourceSpawnCommandEntry implements TableDataSource, TableElementPropertyListener, TableElementActionListener
+public class TableDataSourceSpawnCommandEntry extends TableDataSourceSegmented implements TableElementPropertyListener, TableElementActionListener
 {
     private TileEntitySpawnCommand.Entry entry;
 
@@ -24,13 +24,19 @@ public class TableDataSourceSpawnCommandEntry implements TableDataSource, TableE
     }
 
     @Override
-    public boolean has(GuiTable table, int index)
+    public int numberOfSegments()
     {
-        return index >= 0 && index < 3;
+        return 1;
     }
 
     @Override
-    public TableElement elementForIndex(GuiTable table, int index)
+    public int sizeOfSegment(int segment)
+    {
+        return 3;
+    }
+
+    @Override
+    public TableElement elementForIndexInSegment(GuiTable table, int index, int segment)
     {
         if (index == 0)
         {

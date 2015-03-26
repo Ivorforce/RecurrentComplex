@@ -11,7 +11,7 @@ import ivorius.reccomplex.gui.table.*;
 /**
  * Created by lukas on 22.06.14.
  */
-public class TableDataSourceMazeRoom implements TableDataSource, TableElementPropertyListener
+public class TableDataSourceMazeRoom extends TableDataSourceSegmented implements TableElementPropertyListener
 {
     private MazeRoom room;
     private int[] dimensions;
@@ -23,13 +23,19 @@ public class TableDataSourceMazeRoom implements TableDataSource, TableElementPro
     }
 
     @Override
-    public boolean has(GuiTable table, int index)
+    public int numberOfSegments()
     {
-        return index >= 0 && index < dimensions.length;
+        return 1;
     }
 
     @Override
-    public TableElement elementForIndex(GuiTable table, int index)
+    public int sizeOfSegment(int segment)
+    {
+        return dimensions.length;
+    }
+
+    @Override
+    public TableElement elementForIndexInSegment(GuiTable table, int index, int segment)
     {
         String id = "pos" + index;
         String title = String.format("Position: %s", index == 0 ? "X" : index == 1 ? "Y" : index == 2 ? "Z" : "" + index);

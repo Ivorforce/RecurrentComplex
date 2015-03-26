@@ -10,7 +10,7 @@ package ivorius.reccomplex.gui.table;
  */
 public interface TableDataSource
 {
-    boolean has(GuiTable table, int index);
+    int numberOfElements();
 
     TableElement elementForIndex(GuiTable table, int index);
 }

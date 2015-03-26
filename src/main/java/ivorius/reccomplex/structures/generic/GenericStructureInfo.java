@@ -26,6 +26,7 @@ import ivorius.reccomplex.structures.generic.matchers.BlockMatcher;
 import ivorius.reccomplex.structures.generic.matchers.DependencyMatcher;
 import ivorius.reccomplex.structures.generic.transformers.*;
 import ivorius.reccomplex.utils.RCAccessorEntity;
+import ivorius.reccomplex.worldgen.StructureSelector;
 import ivorius.reccomplex.worldgen.inventory.InventoryGenerationHandler;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
@@ -217,7 +218,7 @@ public class GenericStructureInfo implements StructureInfo, Cloneable
     }
 
     @Override
-    public <I> List<I> generationInfos(Class<I> clazz)
+    public <I extends StructureGenerationInfo> List<I> generationInfos(Class<I> clazz)
     {
         List<I> list = new ArrayList<>();
         for (StructureGenerationInfo info : generationInfos)
@@ -227,6 +228,18 @@ public class GenericStructureInfo implements StructureInfo, Cloneable
         }
 
         return list;
+    }
+
+    @Override
+    public StructureGenerationInfo generationInfo(String id)
+    {
+        for (StructureGenerationInfo info : generationInfos)
+        {
+            if (Objects.equals(info.id(), id))
+                return info;
+        }
+
+        return null;
     }
 
     private int getPass(Block block, int metadata)

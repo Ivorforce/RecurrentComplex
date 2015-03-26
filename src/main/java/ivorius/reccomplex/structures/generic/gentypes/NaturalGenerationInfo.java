@@ -22,6 +22,7 @@ import net.minecraft.util.StatCollector;
 import net.minecraft.world.WorldProvider;
 import net.minecraft.world.biome.BiomeGenBase;
 
+import javax.annotation.Nonnull;
 import java.lang.reflect.Type;
 import java.util.Arrays;
 import java.util.Collections;
@@ -33,6 +34,8 @@ public class NaturalGenerationInfo extends StructureGenerationInfo
 {
     private static Gson gson = createGson();
 
+    public String id = "";
+
     public final PresettedList<BiomeGenerationInfo> biomeWeights = new PresettedList<>(BiomeMatcherPresets.instance(), null);
     public final PresettedList<DimensionGenerationInfo> dimensionWeights = new PresettedList<>(DimensionMatcherPresets.instance(), null);
 
@@ -42,14 +45,15 @@ public class NaturalGenerationInfo extends StructureGenerationInfo
 
     public NaturalGenerationInfo()
     {
-        this("decoration", new GenerationYSelector(GenerationYSelector.SelectionMode.SURFACE, 0, 0));
+        this("NaturalGen1", "decoration", new GenerationYSelector(GenerationYSelector.SelectionMode.SURFACE, 0, 0));
 
         biomeWeights.setToDefault();
         dimensionWeights.setToDefault();
     }
 
-    public NaturalGenerationInfo(String generationCategory, GenerationYSelector ySelector)
+    public NaturalGenerationInfo(String id, String generationCategory, GenerationYSelector ySelector)
     {
+        this.id = id;
         this.generationCategory = generationCategory;
         this.ySelector = ySelector;
     }
@@ -75,7 +79,7 @@ public class NaturalGenerationInfo extends StructureGenerationInfo
         String generationCategory = JsonUtils.getJsonObjectStringFieldValue(jsonObject, "generationCategory");
         GenerationYSelector ySelector = gson.fromJson(jsonObject.get("generationY"), GenerationYSelector.class);
 
-        NaturalGenerationInfo naturalGenerationInfo = new NaturalGenerationInfo(generationCategory, ySelector);
+        NaturalGenerationInfo naturalGenerationInfo = new NaturalGenerationInfo("", generationCategory, ySelector);
         if (jsonObject.has("generationBiomes"))
         {
             BiomeGenerationInfo[] infos = gson.fromJson(jsonObject.get("generationBiomes"), BiomeGenerationInfo[].class);
@@ -138,6 +142,19 @@ public class NaturalGenerationInfo extends StructureGenerationInfo
         return generationWeight == null;
     }
 
+    @Nonnull
+    @Override
+    public String id()
+    {
+        return id;
+    }
+
+    @Override
+    public void setID(@Nonnull String id)
+    {
+        this.id = id;
+    }
+
     @Override
     public String displayString()
     {
@@ -157,6 +174,8 @@ public class NaturalGenerationInfo extends StructureGenerationInfo
         {
             JsonObject jsonObject = JsonUtils.getJsonElementAsJsonObject(json, "naturalGenerationInfo");
 
+            String id = JsonUtils.getJsonObjectStringFieldValueOrDefault(jsonObject, "id", "");
+
             String generationCategory = JsonUtils.getJsonObjectStringFieldValue(jsonObject, "generationCategory");
             GenerationYSelector ySelector;
 
@@ -168,7 +187,7 @@ public class NaturalGenerationInfo extends StructureGenerationInfo
                 ySelector = new GenerationYSelector(GenerationYSelector.SelectionMode.SURFACE, 0, 0);
             }
 
-            NaturalGenerationInfo naturalGenerationInfo = new NaturalGenerationInfo(generationCategory, ySelector);
+            NaturalGenerationInfo naturalGenerationInfo = new NaturalGenerationInfo(id, generationCategory, ySelector);
 
             if (jsonObject.has("generationWeight"))
                 naturalGenerationInfo.generationWeight = JsonUtils.getJsonObjectDoubleFieldValue(jsonObject, "generationWeight");
@@ -196,6 +215,8 @@ public class NaturalGenerationInfo extends StructureGenerationInfo
         public JsonElement serialize(NaturalGenerationInfo src, Type typeOfSrc, JsonSerializationContext context)
         {
             JsonObject jsonObject = new JsonObject();
+
+            jsonObject.addProperty("id", src.id);
 
             jsonObject.addProperty("generationCategory", src.generationCategory);
             if (src.generationWeight != null)

@@ -16,6 +16,7 @@ import ivorius.reccomplex.structures.generic.GenerationYSelector;
 import net.minecraft.util.ChunkCoordinates;
 import net.minecraft.util.StatCollector;
 
+import javax.annotation.Nonnull;
 import java.lang.reflect.Type;
 
 /**
@@ -23,6 +24,8 @@ import java.lang.reflect.Type;
  */
 public class StaticGenerationInfo extends StructureGenerationInfo
 {
+    public String id = "";
+
     public GenerationYSelector ySelector;
     public DimensionMatcher dimensionMatcher;
 
@@ -32,16 +35,30 @@ public class StaticGenerationInfo extends StructureGenerationInfo
 
     public StaticGenerationInfo()
     {
-        this(new GenerationYSelector(GenerationYSelector.SelectionMode.SURFACE, 0, 0), new DimensionMatcher("0"), true, 0, 0);
+        this("StaticGen1", new GenerationYSelector(GenerationYSelector.SelectionMode.SURFACE, 0, 0), new DimensionMatcher("0"), true, 0, 0);
     }
 
-    public StaticGenerationInfo(GenerationYSelector ySelector, DimensionMatcher dimensionMatcher, boolean relativeToSpawn, int positionX, int positionZ)
+    public StaticGenerationInfo(String id, GenerationYSelector ySelector, DimensionMatcher dimensionMatcher, boolean relativeToSpawn, int positionX, int positionZ)
     {
+        this.id = id;
         this.ySelector = ySelector;
         this.dimensionMatcher = dimensionMatcher;
         this.relativeToSpawn = relativeToSpawn;
         this.positionX = positionX;
         this.positionZ = positionZ;
+    }
+
+    @Nonnull
+    @Override
+    public String id()
+    {
+        return id;
+    }
+
+    @Override
+    public void setID(@Nonnull String id)
+    {
+        this.id = id;
     }
 
     @Override
@@ -76,6 +93,8 @@ public class StaticGenerationInfo extends StructureGenerationInfo
         {
             JsonObject jsonObject = JsonUtils.getJsonElementAsJsonObject(json, "vanillaStructureSpawnInfo");
 
+            String id = JsonUtils.getJsonObjectStringFieldValueOrDefault(jsonObject, "id", "");
+
             GenerationYSelector ySelector = context.deserialize(jsonObject.get("generationY"), GenerationYSelector.class);
             String dimension = JsonUtils.getJsonObjectStringFieldValueOrDefault(jsonObject, "dimensions", "");
 
@@ -83,13 +102,15 @@ public class StaticGenerationInfo extends StructureGenerationInfo
             int positionX = JsonUtils.getJsonObjectIntegerFieldValueOrDefault(jsonObject, "positionX", 0);
             int positionZ = JsonUtils.getJsonObjectIntegerFieldValueOrDefault(jsonObject, "positionZ", 0);
 
-            return new StaticGenerationInfo(ySelector, new DimensionMatcher(dimension), relativeToSpawn, positionX, positionZ);
+            return new StaticGenerationInfo(id, ySelector, new DimensionMatcher(dimension), relativeToSpawn, positionX, positionZ);
         }
 
         @Override
         public JsonElement serialize(StaticGenerationInfo src, Type typeOfSrc, JsonSerializationContext context)
         {
             JsonObject jsonObject = new JsonObject();
+
+            jsonObject.addProperty("id", src.id);
 
             jsonObject.add("generationY", context.serialize(src.ySelector));
             jsonObject.addProperty("dimensions", src.dimensionMatcher.getExpression());

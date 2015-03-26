@@ -34,12 +34,14 @@ public class TableDataSourceStructureListGenerationInfo extends TableDataSourceS
         this.navigator = navigator;
         this.tableDelegate = tableDelegate;
         this.generationInfo = generationInfo;
+
+        addManagedSection(0, new TableDataSourceGenerationInfo(generationInfo));
     }
 
     @Override
     public int numberOfSegments()
     {
-        return 4;
+        return 5;
     }
 
     @Override
@@ -47,16 +49,16 @@ public class TableDataSourceStructureListGenerationInfo extends TableDataSourceS
     {
         switch (segment)
         {
-            case 0:
-                return 1;
             case 1:
                 return 1;
             case 2:
-                return 3;
+                return 1;
             case 3:
+                return 3;
+            case 4:
                 return 1;
         }
-        return 0;
+        return super.sizeOfSegment(segment);
     }
 
     @Override
@@ -64,19 +66,19 @@ public class TableDataSourceStructureListGenerationInfo extends TableDataSourceS
     {
         switch (segment)
         {
-            case 0:
+            case 1:
             {
                 TableElementString element = new TableElementString("listID", "List ID", generationInfo.listID);
                 element.addPropertyListener(this);
                 return element;
             }
-            case 1:
+            case 2:
             {
                 TableElementFloatNullable element = new TableElementFloatNullable("weight", "Weight", TableElements.toFloat(generationInfo.weight), 1, 0, 10, "D", "C");
                 element.addPropertyListener(this);
                 return element;
             }
-            case 2:
+            case 3:
             {
                 if (index == 0)
                 {
@@ -103,7 +105,7 @@ public class TableDataSourceStructureListGenerationInfo extends TableDataSourceS
                     return element;
                 }
             }
-            case 3:
+            case 4:
             {
                 TableElementList.Option[] options = new TableElementList.Option[Directions.HORIZONTAL.length];
                 for (int i = 0; i < options.length; i++)
@@ -115,7 +117,7 @@ public class TableDataSourceStructureListGenerationInfo extends TableDataSourceS
             }
         }
 
-        return null;
+        return super.elementForIndexInSegment(table, index, segment);
     }
 
     @Override

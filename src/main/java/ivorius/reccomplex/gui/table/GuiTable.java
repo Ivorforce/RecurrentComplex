@@ -10,13 +10,9 @@ import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiScreen;
-import net.minecraft.client.renderer.RenderHelper;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.EnumChatFormatting;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
 import org.lwjgl.opengl.GL11;
-import org.lwjgl.opengl.GL12;
 
 import java.util.*;
 
@@ -97,10 +93,11 @@ public class GuiTable extends Gui
         delegate.addButton(scrollDownButton);
 
         int supportedSlotNumber = (propertiesBounds.getHeight() - SCROLL_BAR_HEIGHT) / HEIGHT_PER_SLOT;
+        int numberOfElements = dataSource.numberOfElements();
         cachedMaxIndex = currentScrollIndex + supportedSlotNumber - 1;
 
-        boolean needsUpScroll = dataSource.has(this, currentScrollIndex - 1);
-        boolean needsDownScroll = dataSource.has(this, cachedMaxIndex + 1);
+        boolean needsUpScroll = canScrollUp();
+        boolean needsDownScroll = canScrollDown(numberOfElements);
         boolean needsScroll = needsUpScroll || needsDownScroll;
 
         scrollUpButton.enabled = needsUpScroll;
@@ -109,13 +106,16 @@ public class GuiTable extends Gui
         scrollDownButton.visible = needsScroll || !hideScrollbarIfUnnecessary;
 
         int baseY = propertiesBounds.getMinY() + SCROLL_BAR_HEIGHT;
-        for (int index = 0; index < supportedSlotNumber && dataSource.has(this, currentScrollIndex + index); index++)
+        for (int index = 0; index < supportedSlotNumber && index < numberOfElements; index++)
         {
             TableElement element = cachedElements.get(currentScrollIndex + index);
             boolean initElement = element == null;
 
             if (initElement)
                 element = dataSource.elementForIndex(this, currentScrollIndex + index);
+
+            if (element == null)
+                throw new NullPointerException("Element not initialized: at " + index);
 
             int elementY = index * HEIGHT_PER_SLOT;
 
@@ -245,7 +245,7 @@ public class GuiTable extends Gui
 
     public void scrollUpIfPossible()
     {
-        if (dataSource.has(this, currentScrollIndex - 1))
+        if (canScrollUp())
         {
             currentScrollIndex--;
             delegate.redrawTable();
@@ -254,11 +254,26 @@ public class GuiTable extends Gui
 
     public void scrollDownIfPossible()
     {
-        if (dataSource.has(this, cachedMaxIndex + 1))
+        if (canScrollDown())
         {
             currentScrollIndex++;
             delegate.redrawTable();
         }
+    }
+
+    public boolean canScrollUp()
+    {
+        return currentScrollIndex > 0;
+    }
+
+    public boolean canScrollDown()
+    {
+        return canScrollDown(dataSource.numberOfElements());
+    }
+
+    protected boolean canScrollDown(int numberOfElements)
+    {
+        return cachedMaxIndex < numberOfElements - 1;
     }
 
     public void clearElementCache()

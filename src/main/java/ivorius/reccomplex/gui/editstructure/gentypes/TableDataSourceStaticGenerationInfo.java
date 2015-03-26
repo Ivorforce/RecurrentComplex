@@ -31,12 +31,14 @@ public class TableDataSourceStaticGenerationInfo extends TableDataSourceSegmente
         this.navigator = navigator;
         this.tableDelegate = tableDelegate;
         this.generationInfo = generationInfo;
+
+        addManagedSection(0, new TableDataSourceGenerationInfo(generationInfo));
     }
 
     @Override
     public int numberOfSegments()
     {
-        return 3;
+        return 4;
     }
 
     @Override
@@ -44,14 +46,14 @@ public class TableDataSourceStaticGenerationInfo extends TableDataSourceSegmente
     {
         switch (segment)
         {
-            case 0:
-                return 3;
             case 1:
-                return 2;
+                return 3;
             case 2:
                 return 2;
+            case 3:
+                return 2;
         }
-        return 0;
+        return super.sizeOfSegment(segment);
     }
 
     @Override
@@ -59,7 +61,7 @@ public class TableDataSourceStaticGenerationInfo extends TableDataSourceSegmente
     {
         switch (segment)
         {
-            case 0:
+            case 1:
             {
                 if (index == 0)
                 {
@@ -84,7 +86,7 @@ public class TableDataSourceStaticGenerationInfo extends TableDataSourceSegmente
                     return element;
                 }
             }
-            case 1:
+            case 2:
             {
                 if (index == 0)
                 {
@@ -101,7 +103,7 @@ public class TableDataSourceStaticGenerationInfo extends TableDataSourceSegmente
 
                 break;
             }
-            case 2:
+            case 3:
             {
                 if (index == 0)
                 {
@@ -119,7 +121,7 @@ public class TableDataSourceStaticGenerationInfo extends TableDataSourceSegmente
             }
         }
 
-        return null;
+        return super.elementForIndexInSegment(table, index, segment);
     }
 
     @Override

@@ -12,7 +12,7 @@ import ivorius.reccomplex.structures.generic.transformers.TransformerRuins;
 /**
  * Created by lukas on 05.06.14.
  */
-public class TableDataSourceBTRuins implements TableDataSource, TableElementPropertyListener
+public class TableDataSourceBTRuins extends TableDataSourceSegmented implements TableElementPropertyListener
 {
     private TransformerRuins transformer;
 
@@ -32,13 +32,19 @@ public class TableDataSourceBTRuins implements TableDataSource, TableElementProp
     }
 
     @Override
-    public boolean has(GuiTable table, int index)
+    public int numberOfSegments()
     {
-        return index >= 0 && index < 4;
+        return 1;
     }
 
     @Override
-    public TableElement elementForIndex(GuiTable table, int index)
+    public int sizeOfSegment(int segment)
+    {
+        return 4;
+    }
+
+    @Override
+    public TableElement elementForIndexInSegment(GuiTable table, int index, int segment)
     {
         switch (index)
         {

@@ -17,6 +17,7 @@ import ivorius.reccomplex.structures.generic.SavedMazeComponent;
 import ivorius.reccomplex.structures.generic.Selection;
 import net.minecraft.util.StatCollector;
 
+import javax.annotation.Nonnull;
 import java.lang.reflect.Type;
 
 /**
@@ -26,17 +27,20 @@ public class MazeGenerationInfo extends StructureGenerationInfo
 {
     private static Gson gson = createGson();
 
+    public String id = "";
+
     public String mazeID;
     public SavedMazeComponent mazeComponent;
 
     public MazeGenerationInfo()
     {
-        this("", new SavedMazeComponent((Double) null));
+        this("MazeGen1", "", new SavedMazeComponent((Double) null));
         mazeComponent.rooms.addAll(Selection.zeroSelection(3));
     }
 
-    public MazeGenerationInfo(String mazeID, SavedMazeComponent mazeComponent)
+    public MazeGenerationInfo(String id, String mazeID, SavedMazeComponent mazeComponent)
     {
+        this.id = id;
         this.mazeID = mazeID;
         this.mazeComponent = mazeComponent;
     }
@@ -58,6 +62,19 @@ public class MazeGenerationInfo extends StructureGenerationInfo
         return gson;
     }
 
+    @Nonnull
+    @Override
+    public String id()
+    {
+        return id;
+    }
+
+    @Override
+    public void setID(@Nonnull String id)
+    {
+        this.id = id;
+    }
+
     @Override
     public String displayString()
     {
@@ -77,16 +94,20 @@ public class MazeGenerationInfo extends StructureGenerationInfo
         {
             JsonObject jsonObject = JsonUtils.getJsonElementAsJsonObject(json, "MazeGenerationInfo");
 
+            String id = JsonUtils.getJsonObjectStringFieldValueOrDefault(jsonObject, "id", "");
+
             String mazeID = JsonUtils.getJsonObjectStringFieldValue(jsonObject, "mazeID");
             SavedMazeComponent mazeComponent = gson.fromJson(jsonObject.get("component"), SavedMazeComponent.class);
 
-            return new MazeGenerationInfo(mazeID, mazeComponent);
+            return new MazeGenerationInfo(id, mazeID, mazeComponent);
         }
 
         @Override
         public JsonElement serialize(MazeGenerationInfo src, Type typeOfSrc, JsonSerializationContext context)
         {
             JsonObject jsonObject = new JsonObject();
+
+            jsonObject.addProperty("id", src.id);
 
             jsonObject.addProperty("mazeID", src.mazeID);
             jsonObject.add("component", gson.toJsonTree(src.mazeComponent));

@@ -14,6 +14,7 @@ import ivorius.reccomplex.gui.table.TableNavigator;
 import ivorius.reccomplex.json.JsonUtils;
 import net.minecraft.util.StatCollector;
 
+import javax.annotation.Nonnull;
 import java.lang.reflect.Type;
 
 /**
@@ -21,6 +22,8 @@ import java.lang.reflect.Type;
  */
 public class VanillaStructureSpawnInfo extends StructureGenerationInfo
 {
+    public String id = "";
+
     public int spawnWeight;
     public int minBaseLimit;
     public int maxBaseLimit;
@@ -29,8 +32,14 @@ public class VanillaStructureSpawnInfo extends StructureGenerationInfo
 
     public BlockCoord spawnShift;
 
-    public VanillaStructureSpawnInfo(int spawnWeight, int minBaseLimit, int maxBaseLimit, int minScaledLimit, int maxScaledLimit, BlockCoord spawnShift)
+    public VanillaStructureSpawnInfo()
     {
+        this("VanillaGen1", 20, 2, 5, 3, 3, new BlockCoord(0, 0, 0));
+    }
+
+    public VanillaStructureSpawnInfo(String id, int spawnWeight, int minBaseLimit, int maxBaseLimit, int minScaledLimit, int maxScaledLimit, BlockCoord spawnShift)
+    {
+        this.id = id;
         this.spawnWeight = spawnWeight;
         this.minBaseLimit = minBaseLimit;
         this.maxBaseLimit = maxBaseLimit;
@@ -39,9 +48,17 @@ public class VanillaStructureSpawnInfo extends StructureGenerationInfo
         this.spawnShift = spawnShift;
     }
 
-    public static VanillaStructureSpawnInfo defaultStructureSpawnInfo()
+    @Nonnull
+    @Override
+    public String id()
     {
-        return new VanillaStructureSpawnInfo(20, 2, 5, 3, 3, new BlockCoord(0, 0, 0));
+        return id;
+    }
+
+    @Override
+    public void setID(@Nonnull String id)
+    {
+        this.id = id;
     }
 
     @Override
@@ -63,6 +80,8 @@ public class VanillaStructureSpawnInfo extends StructureGenerationInfo
         {
             JsonObject jsonObject = JsonUtils.getJsonElementAsJsonObject(json, "vanillaStructureSpawnInfo");
 
+            String id = JsonUtils.getJsonObjectStringFieldValueOrDefault(jsonObject, "id", "");
+
             int spawnWeight = JsonUtils.getJsonObjectIntegerFieldValueOrDefault(jsonObject, "spawnWeight", 0);
 
             int minBaseLimit = JsonUtils.getJsonObjectIntegerFieldValueOrDefault(jsonObject, "minBaseLimit", 0);
@@ -74,13 +93,15 @@ public class VanillaStructureSpawnInfo extends StructureGenerationInfo
             int spawnY = JsonUtils.getJsonObjectIntegerFieldValueOrDefault(jsonObject, "spawnShiftY", 0);
             int spawnZ = JsonUtils.getJsonObjectIntegerFieldValueOrDefault(jsonObject, "spawnShiftZ", 0);
 
-            return new VanillaStructureSpawnInfo(spawnWeight, minBaseLimit, maxBaseLimit, minScaledLimit, maxScaledLimit, new BlockCoord(spawnX, spawnY, spawnZ));
+            return new VanillaStructureSpawnInfo(id, spawnWeight, minBaseLimit, maxBaseLimit, minScaledLimit, maxScaledLimit, new BlockCoord(spawnX, spawnY, spawnZ));
         }
 
         @Override
         public JsonElement serialize(VanillaStructureSpawnInfo src, Type typeOfSrc, JsonSerializationContext context)
         {
             JsonObject jsonObject = new JsonObject();
+
+            jsonObject.addProperty("id", src.id);
 
             jsonObject.addProperty("spawnWeight", src.spawnWeight);
 

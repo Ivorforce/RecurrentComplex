@@ -21,19 +21,21 @@ public class TableDataSourceMazeGenerationInfo extends TableDataSourceSegmented 
     private TableNavigator navigator;
     private TableDelegate tableDelegate;
 
-    private MazeGenerationInfo mazeGenerationInfo;
+    private MazeGenerationInfo generationInfo;
 
-    public TableDataSourceMazeGenerationInfo(TableNavigator navigator, TableDelegate tableDelegate, MazeGenerationInfo mazeGenerationInfo)
+    public TableDataSourceMazeGenerationInfo(TableNavigator navigator, TableDelegate tableDelegate, MazeGenerationInfo generationInfo)
     {
         this.navigator = navigator;
         this.tableDelegate = tableDelegate;
-        this.mazeGenerationInfo = mazeGenerationInfo;
+        this.generationInfo = generationInfo;
+
+        addManagedSection(0, new TableDataSourceGenerationInfo(generationInfo));
     }
 
     @Override
     public int numberOfSegments()
     {
-        return 3;
+        return 4;
     }
 
     @Override
@@ -41,49 +43,51 @@ public class TableDataSourceMazeGenerationInfo extends TableDataSourceSegmented 
     {
         switch (segment)
         {
-            case 0:
-                return 2;
             case 1:
-                return 1;
+                return 2;
             case 2:
+                return 1;
+            case 3:
                 return 1;
         }
 
-        return 0;
+        return super.sizeOfSegment(segment);
     }
 
     @Override
     public TableElement elementForIndexInSegment(GuiTable table, int index, int segment)
     {
-        if (segment == 0)
+        switch (segment)
         {
-            if (index == 0)
+            case 1:
+                if (index == 0)
+                {
+                    TableElementString element = new TableElementString("mazeID", "Maze ID", generationInfo.mazeID);
+                    element.addPropertyListener(this);
+                    return element;
+                }
+                else if (index == 1)
+                {
+                    TableElementFloatNullable element = new TableElementFloatNullable("weight", "Weight", TableElements.toFloat(generationInfo.mazeComponent.weight), 1.0f, 0, 10, "D", "C");
+                    element.addPropertyListener(this);
+                    return element;
+                }
+                break;
+            case 2:
             {
-                TableElementString element = new TableElementString("mazeID", "Maze ID", mazeGenerationInfo.mazeID);
-                element.addPropertyListener(this);
+                TableElementButton element = new TableElementButton("rooms", "Rooms", new TableElementButton.Action("edit", "Edit"));
+                element.addListener(this);
                 return element;
             }
-            else if (index == 1)
+            case 3:
             {
-                TableElementFloatNullable element = new TableElementFloatNullable("weight", "Weight", TableElements.toFloat(mazeGenerationInfo.mazeComponent.weight), 1.0f, 0, 10, "D", "C");
-                element.addPropertyListener(this);
+                TableElementButton element = new TableElementButton("exits", "Exits", new TableElementButton.Action("edit", "Edit"));
+                element.addListener(this);
                 return element;
             }
-        }
-        else if (segment == 1)
-        {
-            TableElementButton element = new TableElementButton("rooms", "Rooms", new TableElementButton.Action("edit", "Edit"));
-            element.addListener(this);
-            return element;
-        }
-        else if (segment == 2)
-        {
-            TableElementButton element = new TableElementButton("exits", "Exits", new TableElementButton.Action("edit", "Edit"));
-            element.addListener(this);
-            return element;
         }
 
-        return null;
+        return super.elementForIndexInSegment(table, index, segment);
     }
 
     @Override
@@ -104,16 +108,16 @@ public class TableDataSourceMazeGenerationInfo extends TableDataSourceSegmented 
     {
         if ("mazeID".equals(element.getID()))
         {
-            mazeGenerationInfo.mazeID = (String) element.getPropertyValue();
+            generationInfo.mazeID = (String) element.getPropertyValue();
         }
         else if ("weight".equals(element.getID()))
         {
-            mazeGenerationInfo.mazeComponent.weight = TableElements.toDouble((Float) element.getPropertyValue());
+            generationInfo.mazeComponent.weight = TableElements.toDouble((Float) element.getPropertyValue());
         }
     }
 
     private SavedMazeComponent mazeComponent()
     {
-        return mazeGenerationInfo.mazeComponent;
+        return generationInfo.mazeComponent;
     }
 }

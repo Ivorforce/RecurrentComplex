@@ -60,7 +60,7 @@ public abstract class TableDataSourceSegmented implements TableDataSource
 
     public int numberOfSegments()
     {
-        return managedSections.isEmpty() ? 0 : Ints.max(managedSections.keys());
+        return managedSections.isEmpty() ? 0 : Ints.max(managedSections.keys()) + 1;
     }
 
     public int sizeOfSegment(int segment)

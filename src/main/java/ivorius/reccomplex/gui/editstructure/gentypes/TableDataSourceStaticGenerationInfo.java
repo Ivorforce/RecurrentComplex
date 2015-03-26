@@ -8,7 +8,7 @@ package ivorius.reccomplex.gui.editstructure.gentypes;
 import com.google.common.primitives.Ints;
 import ivorius.ivtoolkit.gui.IntegerRange;
 import ivorius.reccomplex.gui.GuiValidityStateIndicator;
-import ivorius.reccomplex.gui.editstructure.TableDataSourceDimensionGen;
+import ivorius.reccomplex.gui.TableDataSourceExpression;
 import ivorius.reccomplex.gui.table.*;
 import ivorius.reccomplex.structures.generic.GenerationYSelector;
 import ivorius.reccomplex.structures.generic.gentypes.StaticGenerationInfo;
@@ -24,7 +24,6 @@ public class TableDataSourceStaticGenerationInfo extends TableDataSourceSegmente
     private TableDelegate tableDelegate;
 
     private StaticGenerationInfo generationInfo;
-    private TableElementTitle parsed;
 
     public TableDataSourceStaticGenerationInfo(TableNavigator navigator, TableDelegate tableDelegate, StaticGenerationInfo generationInfo)
     {
@@ -33,6 +32,7 @@ public class TableDataSourceStaticGenerationInfo extends TableDataSourceSegmente
         this.generationInfo = generationInfo;
 
         addManagedSection(0, new TableDataSourceGenerationInfo(generationInfo));
+        addManagedSection(3, new TableDataSourceExpression<>("Dimensions", "reccomplex.expression.dimension.tooltip", generationInfo.dimensionMatcher));
     }
 
     @Override
@@ -49,8 +49,6 @@ public class TableDataSourceStaticGenerationInfo extends TableDataSourceSegmente
             case 1:
                 return 3;
             case 2:
-                return 2;
-            case 3:
                 return 2;
         }
         return super.sizeOfSegment(segment);
@@ -103,22 +101,6 @@ public class TableDataSourceStaticGenerationInfo extends TableDataSourceSegmente
 
                 break;
             }
-            case 3:
-            {
-                if (index == 0)
-                {
-                    TableElementString element = new TableElementString("dimID", "Dimensions", generationInfo.dimensionMatcher.getExpression());
-                    element.setTooltip(IvTranslations.formatLines("reccomplex.expression.dimension.tooltip"));
-                    element.addPropertyListener(this);
-                    return element;
-                }
-                else if (index == 1)
-                {
-                    parsed = new TableElementTitle("parsed", "", StringUtils.abbreviate(TableDataSourceDimensionGen.parsedString(generationInfo.dimensionMatcher), 70));
-                    parsed.setPositioning(TableElementTitle.Positioning.TOP);
-                    return parsed;
-                }
-            }
         }
 
         return super.elementForIndexInSegment(table, index, segment);
@@ -154,11 +136,6 @@ public class TableDataSourceStaticGenerationInfo extends TableDataSourceSegmente
                 IntegerRange range = ((IntegerRange) element.getPropertyValue());
                 generationInfo.ySelector.minY = range.getMin();
                 generationInfo.ySelector.maxY = range.getMax();
-                break;
-            case "dimID":
-                generationInfo.dimensionMatcher.setExpression((String) element.getPropertyValue());
-                if (parsed != null)
-                    parsed.setDisplayString(StringUtils.abbreviate(TableDataSourceDimensionGen.parsedString(generationInfo.dimensionMatcher), 70));
                 break;
         }
     }

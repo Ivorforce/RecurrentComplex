@@ -72,6 +72,12 @@ public class PrefixedTypeExpressionCache<T> extends ExpressionCache<T>
         return type != null ? type.evaluate(var.substring(type.prefix.length()), args) : null;
     }
 
+    @Override
+    public boolean containsUnknownVariables()
+    {
+        return containsUnknownVariables(new Object[0]);
+    }
+
     protected boolean containsUnknownVariables(final Object... args)
     {
         return parsedExpression != null && !parsedExpression.walkVariables(new Visitor<String>()

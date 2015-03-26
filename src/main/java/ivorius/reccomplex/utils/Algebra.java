@@ -381,7 +381,7 @@ public class Algebra<T>
         @Override
         public boolean walkVariables(Visitor<String> visitor)
         {
-            return visitor.visit(representation);
+            return true;
         }
 
         @Override

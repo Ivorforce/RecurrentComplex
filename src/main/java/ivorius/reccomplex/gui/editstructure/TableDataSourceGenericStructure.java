@@ -6,14 +6,12 @@
 package ivorius.reccomplex.gui.editstructure;
 
 import ivorius.reccomplex.gui.GuiValidityStateIndicator;
+import ivorius.reccomplex.gui.TableDataSourceExpression;
 import ivorius.reccomplex.gui.table.*;
 import ivorius.reccomplex.structures.StructureRegistry;
 import ivorius.reccomplex.structures.generic.GenericStructureInfo;
 import ivorius.reccomplex.utils.IvTranslations;
-import joptsimple.internal.Strings;
 import org.apache.commons.lang3.StringUtils;
-
-import java.util.*;
 
 /**
  * Created by lukas on 05.06.14.
@@ -26,14 +24,14 @@ public class TableDataSourceGenericStructure extends TableDataSourceSegmented im
     private TableDelegate tableDelegate;
     private TableNavigator navigator;
 
-    private TableElementTitle parsed;
-
     public TableDataSourceGenericStructure(GenericStructureInfo structureInfo, String structureKey, TableDelegate tableDelegate, TableNavigator navigator)
     {
         this.structureInfo = structureInfo;
         this.structureKey = structureKey;
         this.tableDelegate = tableDelegate;
         this.navigator = navigator;
+
+        addManagedSection(2, new TableDataSourceExpression<>("Dependencies", "reccomplex.expression.dependency.tooltip", structureInfo.dependencies));
     }
 
     public GenericStructureInfo getStructureInfo()
@@ -91,15 +89,13 @@ public class TableDataSourceGenericStructure extends TableDataSourceSegmented im
                 return 2;
             case 1:
                 return 2;
-            case 2:
-                return 2;
             case 3:
                 return 1;
             case 4:
                 return 1;
         }
 
-        return 0;
+        return super.sizeOfSegment(segment);
     }
 
     @Override
@@ -137,22 +133,6 @@ public class TableDataSourceGenericStructure extends TableDataSourceSegmented im
                     return element;
                 }
                 break;
-            case 2:
-            {
-                if (index == 0)
-                {
-                    TableElementString element = new TableElementString("dependencies", "Dependencies", structureInfo.dependencies.getExpression());
-                    element.setTooltip(IvTranslations.formatLines("reccomplex.expression.dependency.tooltip"));
-                    element.addPropertyListener(this);
-                    return element;
-                }
-                else if (index == 1)
-                {
-                    parsed = new TableElementTitle("parsed", "", StringUtils.abbreviate(TableDataSourceDimensionGen.parsedString(structureInfo.dependencies), 60));
-                    parsed.setPositioning(TableElementTitle.Positioning.TOP);
-                    return parsed;
-                }
-            }
             case 3:
             {
                 TableElementButton element = new TableElementButton("editGenerationInfos", "Generation", new TableElementButton.Action("edit", "Edit"));
@@ -167,7 +147,7 @@ public class TableDataSourceGenericStructure extends TableDataSourceSegmented im
             }
         }
 
-        return null;
+        return super.elementForIndexInSegment(table, index, segment);
     }
 
     @Override
@@ -205,12 +185,6 @@ public class TableDataSourceGenericStructure extends TableDataSourceSegmented im
         else if ("mirrorable".equals(element.getID()))
         {
             structureInfo.mirrorable = (boolean) element.getPropertyValue();
-        }
-        else if ("dependencies".equals(element.getID()))
-        {
-            structureInfo.dependencies.setExpression((String) element.getPropertyValue());
-            if (parsed != null)
-                parsed.setDisplayString(StringUtils.abbreviate(TableDataSourceDimensionGen.parsedString(structureInfo.dependencies), 60));
         }
     }
 

@@ -5,7 +5,7 @@
 
 package ivorius.reccomplex.gui.editstructure.transformers;
 
-import ivorius.reccomplex.gui.editstructure.TableDataSourceDimensionGen;
+import ivorius.reccomplex.gui.TableDataSourceExpression;
 import ivorius.reccomplex.gui.table.*;
 import ivorius.reccomplex.structures.generic.transformers.TransformerPillar;
 import ivorius.reccomplex.utils.IvTranslations;
@@ -19,11 +19,11 @@ public class TableDataSourceBTPillar extends TableDataSourceSegmented implements
 {
     private TransformerPillar transformer;
 
-    private TableElementTitle parsed;
-
     public TableDataSourceBTPillar(TransformerPillar transformer)
     {
         this.transformer = transformer;
+
+        addManagedSection(0, new TableDataSourceExpression<>("Sources", "reccomplex.expression.block.tooltip", transformer.sourceMatcher));
     }
 
     public TransformerPillar getTransformer()
@@ -45,29 +45,13 @@ public class TableDataSourceBTPillar extends TableDataSourceSegmented implements
     @Override
     public int sizeOfSegment(int segment)
     {
-        return 2;
+        return segment == 1 ? 2 : super.sizeOfSegment(segment);
     }
 
     @Override
     public TableElement elementForIndexInSegment(GuiTable table, int index, int segment)
     {
-        if (segment == 0)
-        {
-            if (index == 0)
-            {
-                TableElementString element = new TableElementString("source", "Sources", transformer.sourceMatcher.getExpression());
-                element.setTooltip(IvTranslations.formatLines("reccomplex.expression.block.tooltip"));
-                element.addPropertyListener(this);
-                return element;
-            }
-            else if (index == 1)
-            {
-                parsed = new TableElementTitle("parsed", "", StringUtils.abbreviate(TableDataSourceDimensionGen.parsedString(transformer.sourceMatcher), 60));
-                parsed.setPositioning(TableElementTitle.Positioning.TOP);
-                return parsed;
-            }
-        }
-        else if (segment == 1)
+        if (segment == 1)
         {
             if (index == 0)
             {
@@ -83,19 +67,13 @@ public class TableDataSourceBTPillar extends TableDataSourceSegmented implements
             }
         }
 
-        return null;
+        return super.elementForIndexInSegment(table, index, segment);
     }
 
     @Override
     public void valueChanged(TableElementPropertyDefault element)
     {
-        if ("source".equals(element.getID()))
-        {
-            transformer.sourceMatcher.setExpression((String) element.getPropertyValue());
-            if (parsed != null)
-                parsed.setDisplayString(StringUtils.abbreviate(TableDataSourceDimensionGen.parsedString(transformer.sourceMatcher), 60));
-        }
-        else if ("destID".equals(element.getID()))
+        if ("destID".equals(element.getID()))
         {
             transformer.destBlock = (Block) Block.blockRegistry.getObject(element.getPropertyValue());
             TableDataSourceBTNatural.setStateForBlockTextfield(((TableElementString) element));

@@ -141,4 +141,9 @@ public class ExpressionCache<T>
     {
         return parsedExpression != null && parseException == null;
     }
+
+    public boolean containsUnknownVariables()
+    {
+        return false;
+    }
 }

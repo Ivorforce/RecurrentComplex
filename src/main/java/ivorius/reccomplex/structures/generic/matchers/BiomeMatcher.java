@@ -70,6 +70,7 @@ public class BiomeMatcher extends PrefixedTypeExpressionCache<Boolean> implement
         return set;
     }
 
+    @Override
     public boolean containsUnknownVariables()
     {
         return super.containsUnknownVariables(gatherAllBiomes());

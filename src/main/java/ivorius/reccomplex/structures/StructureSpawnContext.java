@@ -101,7 +101,7 @@ public class StructureSpawnContext
 
     public boolean setBlock(BlockCoord coord, Block block, int meta)
     {
-        if (boundingBox.isVecInside(coord.x, coord.y, coord.z))
+        if (includes(coord.x, coord.y, coord.z))
         {
             world.setBlock(coord.x, coord.y, coord.z, block, meta, 2);
             return true;
@@ -112,7 +112,7 @@ public class StructureSpawnContext
 
     public boolean setBlock(int x, int y, int z, Block block, int meta)
     {
-        if (boundingBox.isVecInside(x, y, z))
+        if (includes(x, y, z))
         {
             world.setBlock(x, y, z, block, meta, 2);
             return true;

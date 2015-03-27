@@ -58,6 +58,7 @@ public class TemporaryVillagerRegistry
         Map<Class<?>, VillagerRegistry.IVillageCreationHandler> map = getMap();
         if (map != null)
             map.remove(handler.getComponentClass());
+        registeredHandlers.remove(handler);
     }
 
     public void setHandlers(Set<VillagerRegistry.IVillageCreationHandler> handlers)

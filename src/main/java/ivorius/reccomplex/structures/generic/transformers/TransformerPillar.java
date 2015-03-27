@@ -13,6 +13,7 @@ import ivorius.reccomplex.gui.table.TableDataSource;
 import ivorius.reccomplex.gui.table.TableDelegate;
 import ivorius.reccomplex.gui.table.TableNavigator;
 import ivorius.reccomplex.json.JsonUtils;
+import ivorius.reccomplex.structures.StructureSpawnContext;
 import ivorius.reccomplex.structures.generic.matchers.BlockMatcher;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
@@ -51,9 +52,11 @@ public class TransformerPillar extends TransformerSingleBlock
     }
 
     @Override
-    public void transformBlock(World world, Random random, Phase phase, BlockCoord coord, Block sourceBlock, int sourceMetadata)
+    public void transformBlock(StructureSpawnContext context, Phase phase, BlockCoord coord, Block sourceBlock, int sourceMetadata)
     {
-        world.setBlock(coord.x, coord.y, coord.z, destBlock, destMetadata, 3);
+        World world = context.world;
+
+        context.setBlock(coord.x, coord.y, coord.z, destBlock, destMetadata);
         int y = coord.y;
         y--;
 
@@ -66,7 +69,7 @@ public class TransformerPillar extends TransformerSingleBlock
                 return;
             }
 
-            world.setBlock(coord.x, y, coord.z, destBlock, destMetadata, 3);
+            context.setBlock(coord.x, y, coord.z, destBlock, destMetadata);
             y--;
         }
     }

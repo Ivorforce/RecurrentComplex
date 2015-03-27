@@ -13,6 +13,7 @@ import ivorius.reccomplex.gui.table.TableDataSource;
 import ivorius.reccomplex.gui.table.TableDelegate;
 import ivorius.reccomplex.gui.table.TableNavigator;
 import ivorius.reccomplex.json.JsonUtils;
+import ivorius.reccomplex.structures.StructureSpawnContext;
 import ivorius.reccomplex.structures.generic.WeightedBlockState;
 import ivorius.reccomplex.structures.generic.matchers.BlockMatcher;
 import ivorius.reccomplex.structures.generic.presets.WeightedBlockStatePresets;
@@ -95,15 +96,18 @@ public class TransformerReplace extends TransformerSingleBlock
     }
 
     @Override
-    public void transformBlock(World world, Random random, Phase phase, BlockCoord coord, Block sourceBlock, int sourceMetadata)
+    public void transformBlock(StructureSpawnContext context, Phase phase, BlockCoord coord, Block sourceBlock, int sourceMetadata)
     {
+        World world = context.world;
+        Random random = context.random;
+
         WeightedBlockState blockState;
         if (destination.list.size() > 0)
             blockState = WeightedSelector.selectItem(random, destination.list);
         else
             blockState = new WeightedBlockState(null, Blocks.air, 0, "");
 
-        world.setBlock(coord.x, coord.y, coord.z, blockState.block, blockState.metadata, 3);
+        context.setBlock(coord.x, coord.y, coord.z, blockState.block, blockState.metadata);
 
         // Behavior as in CommandSetBlock
         if (blockState.tileEntityInfo.trim().length() > 0 && blockState.block.hasTileEntity(blockState.metadata))

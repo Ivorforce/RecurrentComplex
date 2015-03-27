@@ -15,6 +15,7 @@ import ivorius.reccomplex.gui.table.TableDataSource;
 import ivorius.reccomplex.gui.table.TableDelegate;
 import ivorius.reccomplex.gui.table.TableNavigator;
 import ivorius.reccomplex.json.JsonUtils;
+import ivorius.reccomplex.structures.StructureSpawnContext;
 import ivorius.reccomplex.structures.generic.matchers.BlockMatcher;
 import net.minecraft.block.Block;
 import net.minecraft.init.Blocks;
@@ -53,9 +54,12 @@ public class TransformerNatural extends TransformerSingleBlock
     }
 
     @Override
-    public void transformBlock(World world, Random random, Phase phase, BlockCoord coord, Block sourceBlock, int sourceMetadata)
+    public void transformBlock(StructureSpawnContext context, Phase phase, BlockCoord coord, Block sourceBlock, int sourceMetadata)
     {
-        // TODO Make partial
+        // TODO Fix for partial generation
+        World world = context.world;
+        Random random = context.random;
+
         BiomeGenBase biome = world.getBiomeGenForCoords(coord.x, coord.z);
         Block topBlock = biome.topBlock != null ? biome.topBlock : Blocks.air;
         Block fillerBlock = biome.fillerBlock != null ? biome.fillerBlock : Blocks.air;
@@ -87,7 +91,7 @@ public class TransformerNatural extends TransformerSingleBlock
                     if (replaceable)
                     {
                         Block setBlock = useStoneBlock ? mainBlock : (isTopBlock(world, currentX, currentY, currentZ) ? topBlock : fillerBlock);
-                        world.setBlock(currentX, currentY, currentZ, setBlock);
+                        context.setBlock(currentX, currentY, currentZ, setBlock, 0);
                     }
 
                     // Uncommenting makes performance shit
@@ -116,7 +120,7 @@ public class TransformerNatural extends TransformerSingleBlock
         {
             // Get the top blocks right (grass rather than dirt)
             Block setBlock = useStoneBlock ? mainBlock : (isTopBlock(world, coord.x, coord.y, coord.z) ? topBlock : fillerBlock);
-            world.setBlock(coord.x, coord.y, coord.z, setBlock);
+            context.setBlock(coord.x, coord.y, coord.z, setBlock, 0);
         }
     }
 

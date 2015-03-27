@@ -108,6 +108,8 @@ public class GenericVillageCreationHandler implements VillagerRegistry.IVillageC
                             // Do this after the test because this is raw structure movement
                             strucBB.offset(structureShift.x, structureShift.y, structureShift.z);
 
+                            System.out.println("strucBB = " + strucBB);
+
                             genericVillagePiece.setIds(structureID, generationID);
                             genericVillagePiece.setOrientation(front, mirrorX, strucBB);
                             return genericVillagePiece;

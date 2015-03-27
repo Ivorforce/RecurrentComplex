@@ -15,6 +15,7 @@ import ivorius.reccomplex.gui.table.TableDataSource;
 import ivorius.reccomplex.gui.table.TableDelegate;
 import ivorius.reccomplex.gui.table.TableNavigator;
 import ivorius.reccomplex.json.JsonUtils;
+import ivorius.reccomplex.structures.StructureSpawnContext;
 import ivorius.reccomplex.structures.generic.matchers.BlockMatcher;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
@@ -54,8 +55,12 @@ public class TransformerNaturalAir extends TransformerSingleBlock
     }
 
     @Override
-    public void transformBlock(World world, Random random, Phase phase, BlockCoord coord, Block sourceBlock, int sourceMetadata)
+    public void transformBlock(StructureSpawnContext context, Phase phase, BlockCoord coord, Block sourceBlock, int sourceMetadata)
     {
+        // TODO Fix for partial generation
+        World world = context.world;
+        Random random = context.random;
+
         BiomeGenBase biome = world.getBiomeGenForCoords(coord.x, coord.z);
         Block topBlock = biome.topBlock != null ? biome.topBlock : Blocks.air;
         Block fillerBlock = biome.fillerBlock != null ? biome.fillerBlock : Blocks.air;
@@ -87,7 +92,7 @@ public class TransformerNaturalAir extends TransformerSingleBlock
                         || isCommon || isFoliage;
                 if (replaceable)
                 {
-                    world.setBlockToAir(currentX, currentY, currentZ);
+                    context.setBlock(currentX, currentY, currentZ, Blocks.air, 0);
                 }
 
                 if (replaceable || curBlock.getMaterial() == Material.air)

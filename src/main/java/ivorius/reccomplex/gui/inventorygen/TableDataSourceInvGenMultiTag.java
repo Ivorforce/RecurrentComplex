@@ -41,7 +41,7 @@ public class TableDataSourceInvGenMultiTag extends TableDataSourceSegmented impl
         {
             if (index == 0)
             {
-                TableElementIntegerRange element = new TableElementIntegerRange("itemCount", "Item Count", itemCount, 1, 64);
+                TableElementIntegerRange element = new TableElementIntegerRange("itemCount", "Item Count", itemCount, 0, 64);
                 element.addPropertyListener(this);
                 return element;
             }

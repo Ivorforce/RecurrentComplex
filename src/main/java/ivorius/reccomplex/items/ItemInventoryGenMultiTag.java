@@ -62,7 +62,7 @@ public class ItemInventoryGenMultiTag extends ItemInventoryGenerationTag impleme
         if (weightedItemCollection != null)
         {
             IntegerRange range = getGenerationCount(stack);
-            int amount = range.getMin() < range.getMax() ? random.nextInt(range.getMax() - range.getMin() + 1) + range.getMin() : 1;
+            int amount = range.getMin() < range.getMax() ? random.nextInt(range.getMax() - range.getMin() + 1) + range.getMin() : 0;
 
             TIntList emptySlots = emptySlots(inventory);
 

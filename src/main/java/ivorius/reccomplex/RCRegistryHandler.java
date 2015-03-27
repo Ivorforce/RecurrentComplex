@@ -151,7 +151,7 @@ public class RCRegistryHandler
         genInfoRegistry.registerType("structureList", StructureListGenerationInfo.class, new StructureListGenerationInfo.Serializer());
         genInfoRegistry.registerType("mazeComponent", MazeGenerationInfo.class, new MazeGenerationInfo.Serializer());
         genInfoRegistry.registerType("static", StaticGenerationInfo.class, new StaticGenerationInfo.Serializer());
-//        genInfoRegistry.registerType("vanilla", VanillaStructureSpawnInfo.class, new VanillaStructureSpawnInfo.Serializer());
+        genInfoRegistry.registerType("vanilla", VanillaStructureGenerationInfo.class, new VanillaStructureGenerationInfo.Serializer());
 
         StructureSelector.registerCategory("frequent", new StructureSelector.SimpleCategory(1.0f / 10.0f, Collections.<StructureSelector.GenerationInfo>emptyList(), true));
         StructureSelector.registerCategory("decoration", new StructureSelector.SimpleCategory(1.0f / 30.0f, Collections.<StructureSelector.GenerationInfo>emptyList(), true));

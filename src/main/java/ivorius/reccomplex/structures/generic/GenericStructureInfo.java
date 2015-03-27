@@ -6,7 +6,6 @@
 package ivorius.reccomplex.structures.generic;
 
 import com.google.gson.*;
-import cpw.mods.fml.common.Loader;
 import ivorius.ivtoolkit.blocks.BlockCoord;
 import ivorius.ivtoolkit.blocks.IvBlockCollection;
 import ivorius.ivtoolkit.tools.IvWorldData;
@@ -26,7 +25,6 @@ import ivorius.reccomplex.structures.generic.matchers.BlockMatcher;
 import ivorius.reccomplex.structures.generic.matchers.DependencyMatcher;
 import ivorius.reccomplex.structures.generic.transformers.*;
 import ivorius.reccomplex.utils.RCAccessorEntity;
-import ivorius.reccomplex.worldgen.StructureSelector;
 import ivorius.reccomplex.worldgen.inventory.InventoryGenerationHandler;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
@@ -144,35 +142,37 @@ public class GenericStructureInfo implements StructureInfo, Cloneable
                 int meta = blockCollection.getMetadata(sourceCoord);
 
                 BlockCoord worldPos = context.transform.apply(sourceCoord, areaSize).add(origin);
-
-                if (pass == getPass(block, meta) && (context.generateAsSource || transformer(block, meta) == null))
+                if (context.includes(worldPos))
                 {
-                    if (context.setBlock(worldPos, block, meta))
+                    if (pass == getPass(block, meta) && (context.generateAsSource || transformer(block, meta) == null))
                     {
-                        TileEntity tileEntity = tileEntities.get(sourceCoord);
-                        if (tileEntity != null)
+                        if (context.setBlock(worldPos, block, meta))
                         {
-                            world.setBlockMetadataWithNotify(worldPos.x, worldPos.y, worldPos.z, meta, 2); // TODO Figure out why some blocks (chests, furnace) need this
-
-                            IvWorldData.setTileEntityPosForGeneration(tileEntity, worldPos);
-                            world.setTileEntity(worldPos.x, worldPos.y, worldPos.z, tileEntity);
-                            tileEntity.updateContainingBlockInfo();
-
-                            if (!context.generateAsSource)
+                            TileEntity tileEntity = tileEntities.get(sourceCoord);
+                            if (tileEntity != null)
                             {
-                                if (tileEntity instanceof IInventory)
-                                {
-                                    IInventory inventory = (IInventory) tileEntity;
-                                    InventoryGenerationHandler.generateAllTags(inventory, random);
-                                }
+                                world.setBlockMetadataWithNotify(worldPos.x, worldPos.y, worldPos.z, meta, 2); // TODO Figure out why some blocks (chests, furnace) need this
 
-                                if (tileEntity instanceof GeneratingTileEntity)
+                                IvWorldData.setTileEntityPosForGeneration(tileEntity, worldPos);
+                                world.setTileEntity(worldPos.x, worldPos.y, worldPos.z, tileEntity);
+                                tileEntity.updateContainingBlockInfo();
+
+                                if (!context.generateAsSource)
                                 {
-                                    generatingTileEntities.add((GeneratingTileEntity) tileEntity);
+                                    if (tileEntity instanceof IInventory)
+                                    {
+                                        IInventory inventory = (IInventory) tileEntity;
+                                        InventoryGenerationHandler.generateAllTags(inventory, random);
+                                    }
+
+                                    if (tileEntity instanceof GeneratingTileEntity)
+                                    {
+                                        generatingTileEntities.add((GeneratingTileEntity) tileEntity);
+                                    }
                                 }
                             }
+                            context.transform.rotateBlock(world, worldPos, block);
                         }
-                        context.transform.rotateBlock(world, worldPos, block);
                     }
                 }
             }
@@ -190,21 +190,22 @@ public class GenericStructureInfo implements StructureInfo, Cloneable
         List<Entity> entities = worldData.entities;
         for (Entity entity : entities)
         {
-            RCAccessorEntity.setEntityUniqueID(entity, UUID.randomUUID());
+            if (context.includes(entity.posX, entity.posY, entity.posZ))
+            {
+                RCAccessorEntity.setEntityUniqueID(entity, UUID.randomUUID());
 
-            IvWorldData.transformEntityPosForGeneration(entity, context.transform, areaSize);
-            IvWorldData.moveEntityForGeneration(entity, origin);
+                IvWorldData.transformEntityPosForGeneration(entity, context.transform, areaSize);
+                IvWorldData.moveEntityForGeneration(entity, origin);
 
-            if (context.boundingBox.isVecInside(MathHelper.floor_double(entity.posX), MathHelper.floor_double(entity.posY), MathHelper.floor_double(entity.posZ)))
-                world.spawnEntityInWorld(entity);
+                if (context.boundingBox.isVecInside(MathHelper.floor_double(entity.posX), MathHelper.floor_double(entity.posY), MathHelper.floor_double(entity.posZ)))
+                    world.spawnEntityInWorld(entity);
+            }
         }
 
         if (context.generationLayer < MAX_GENERATING_LAYERS)
         {
             for (GeneratingTileEntity generatingTileEntity : generatingTileEntities)
-            {
-                generatingTileEntity.generate(world, random, context.transform, context.generationLayer + 1);
-            }
+                generatingTileEntity.generate(context);
         }
         else
         {

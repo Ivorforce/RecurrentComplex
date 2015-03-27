@@ -7,7 +7,8 @@ package ivorius.reccomplex.gui.editstructure.gentypes;
 
 import ivorius.ivtoolkit.blocks.BlockCoord;
 import ivorius.reccomplex.gui.table.*;
-import ivorius.reccomplex.structures.generic.gentypes.VanillaStructureSpawnInfo;
+import ivorius.reccomplex.structures.generic.gentypes.VanillaStructureGenerationInfo;
+import ivorius.reccomplex.utils.Directions;
 
 /**
  * Created by lukas on 07.10.14.
@@ -17,9 +18,9 @@ public class TableDataSourceVanillaStructureGenerationInfo extends TableDataSour
     private TableNavigator navigator;
     private TableDelegate tableDelegate;
 
-    private VanillaStructureSpawnInfo generationInfo;
+    private VanillaStructureGenerationInfo generationInfo;
 
-    public TableDataSourceVanillaStructureGenerationInfo(TableNavigator navigator, TableDelegate tableDelegate, VanillaStructureSpawnInfo generationInfo)
+    public TableDataSourceVanillaStructureGenerationInfo(TableNavigator navigator, TableDelegate tableDelegate, VanillaStructureGenerationInfo generationInfo)
     {
         this.navigator = navigator;
         this.tableDelegate = tableDelegate;
@@ -42,7 +43,7 @@ public class TableDataSourceVanillaStructureGenerationInfo extends TableDataSour
             case 1:
                 return 1;
             case 2:
-                return 1;
+                return 2;
             case 3:
                 return 4;
             case 4:
@@ -64,9 +65,21 @@ public class TableDataSourceVanillaStructureGenerationInfo extends TableDataSour
             }
             case 2:
             {
-                TableElementInteger element = new TableElementInteger("spawnWeight", "Spawn Weight", generationInfo.spawnWeight, 1, 200);
-                element.addPropertyListener(this);
-                return element;
+                switch (index)
+                {
+                    case 0:
+                    {
+                        TableElementFloatNullable element = new TableElementFloatNullable("weight", "Weight", TableElements.toFloat(generationInfo.spawnWeight), 1.0f, 0, 10, "D", "C");
+                        element.addPropertyListener(this);
+                        return element;
+                    }
+                    case 1:
+                    {
+                        TableElementList element = new TableElementList("front", "Front", Directions.serialize(generationInfo.front), TableDataSourceStructureListGenerationInfo.getDirectionOptions(Directions.HORIZONTAL));
+                        element.addPropertyListener(this);
+                        return element;
+                    }
+                }
             }
             case 3:
                 switch (index)
@@ -128,40 +141,44 @@ public class TableDataSourceVanillaStructureGenerationInfo extends TableDataSour
     @Override
     public void valueChanged(TableElementPropertyDefault element)
     {
-        if ("spawnWeight".equals(element.getID()))
+        switch (element.getID())
         {
-            generationInfo.spawnWeight = (int) element.getPropertyValue();
-        }
-        else if ("minBaseLimit".equals(element.getID()))
-        {
-            generationInfo.minBaseLimit = (int) element.getPropertyValue();
-        }
-        else if ("maxBaseLimit".equals(element.getID()))
-        {
-            generationInfo.maxBaseLimit = (int) element.getPropertyValue();
-        }
-        else if ("minScaledLimit".equals(element.getID()))
-        {
-            generationInfo.minScaledLimit = (int) element.getPropertyValue();
-        }
-        else if ("maxScaledLimit".equals(element.getID()))
-        {
-            generationInfo.maxScaledLimit = (int) element.getPropertyValue();
-        }
-        else if ("spawnX".equals(element.getID()))
-        {
-            BlockCoord coord = generationInfo.spawnShift;
-            generationInfo.spawnShift = new BlockCoord((int) element.getPropertyValue(), coord.y, coord.z);
-        }
-        else if ("spawnY".equals(element.getID()))
-        {
-            BlockCoord coord = generationInfo.spawnShift;
-            generationInfo.spawnShift = new BlockCoord(coord.x, (int) element.getPropertyValue(), coord.z);
-        }
-        else if ("spawnZ".equals(element.getID()))
-        {
-            BlockCoord coord = generationInfo.spawnShift;
-            generationInfo.spawnShift = new BlockCoord(coord.x, coord.y, (int) element.getPropertyValue());
+            case "weight":
+                generationInfo.spawnWeight = TableElements.toDouble((Float) element.getPropertyValue());
+                break;
+            case "minBaseLimit":
+                generationInfo.minBaseLimit = (int) element.getPropertyValue();
+                break;
+            case "maxBaseLimit":
+                generationInfo.maxBaseLimit = (int) element.getPropertyValue();
+                break;
+            case "minScaledLimit":
+                generationInfo.minScaledLimit = (int) element.getPropertyValue();
+                break;
+            case "maxScaledLimit":
+                generationInfo.maxScaledLimit = (int) element.getPropertyValue();
+                break;
+            case "spawnX":
+            {
+                BlockCoord coord = generationInfo.spawnShift;
+                generationInfo.spawnShift = new BlockCoord((int) element.getPropertyValue(), coord.y, coord.z);
+                break;
+            }
+            case "spawnY":
+            {
+                BlockCoord coord = generationInfo.spawnShift;
+                generationInfo.spawnShift = new BlockCoord(coord.x, (int) element.getPropertyValue(), coord.z);
+                break;
+            }
+            case "spawnZ":
+            {
+                BlockCoord coord = generationInfo.spawnShift;
+                generationInfo.spawnShift = new BlockCoord(coord.x, coord.y, (int) element.getPropertyValue());
+                break;
+            }
+            case "front":
+                generationInfo.front = Directions.deserializeHorizontal((String) element.getPropertyValue());
+                break;
         }
     }
 }

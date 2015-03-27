@@ -13,7 +13,9 @@ import ivorius.ivtoolkit.math.AxisAlignedTransform2D;
 import ivorius.ivtoolkit.tools.IvCollections;
 import ivorius.reccomplex.gui.editstructureblock.GuiEditStructureBlock;
 import ivorius.reccomplex.structures.StructureInfo;
+import ivorius.reccomplex.structures.StructureInfos;
 import ivorius.reccomplex.structures.StructureRegistry;
+import ivorius.reccomplex.structures.StructureSpawnContext;
 import ivorius.reccomplex.structures.generic.gentypes.StructureListGenerationInfo;
 import ivorius.reccomplex.utils.Directions;
 import ivorius.reccomplex.utils.WeightedSelector;
@@ -24,6 +26,7 @@ import net.minecraft.nbt.NBTTagList;
 import net.minecraft.nbt.NBTTagString;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
+import net.minecraft.world.gen.structure.StructureBoundingBox;
 import net.minecraftforge.common.util.Constants;
 import net.minecraftforge.common.util.ForgeDirection;
 import org.apache.commons.lang3.tuple.Pair;
@@ -136,8 +139,13 @@ public class TileEntityStructureGenerator extends TileEntity implements Generati
     }
 
     @Override
-    public void generate(World world, Random random, AxisAlignedTransform2D transform, int layer)
+    public void generate(StructureSpawnContext context)
     {
+        World world = context.world;
+        Random random = context.random;
+        AxisAlignedTransform2D transform = context.transform;
+        int layer = context.generationLayer;
+
         world.setBlockToAir(xCoord, yCoord, zCoord);
 
         if (simpleMode)
@@ -156,7 +164,7 @@ public class TileEntityStructureGenerator extends TileEntity implements Generati
                     int[] strucSize = structureInfo.structureBoundingBox();
                     BlockCoord coord = transform.apply(structureShift, new int[]{1, 1, 1}).add(xCoord, yCoord, zCoord).subtract(transform.apply(new BlockCoord(0, 0, 0), strucSize));
 
-                    StructureGenerator.generateStructureWithNotifications(structureInfo, world, random, coord, strucTransform, layer, false, structureID);
+                    StructureGenerator.generatePartialStructure(structureInfo, world, random, coord, strucTransform, context.generationBB, layer, structureID, context.isFirstTime);
                 }
             }
         }
@@ -201,7 +209,7 @@ public class TileEntityStructureGenerator extends TileEntity implements Generati
                         .add(xCoord, yCoord, zCoord)
                         .subtract(transform.apply(new BlockCoord(0, 0, 0), strucSize));
 
-                StructureGenerator.generateStructureWithNotifications(structureInfo, world, random, coord, strucTransform, layer, false, structureName);
+                StructureGenerator.generatePartialStructure(structureInfo, world, random, coord, strucTransform, context.generationBB, layer, structureName, context.isFirstTime);
             }
         }
     }

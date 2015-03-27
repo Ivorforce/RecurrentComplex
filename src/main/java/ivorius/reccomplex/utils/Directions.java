@@ -75,4 +75,20 @@ public class Directions
     {
         return IvGsonHelper.serializedName(direction);
     }
+
+    public static ForgeDirection getDirectionFromVRotation(int front)
+    {
+        switch (front)
+        {
+            default:
+            case 0:
+                return NORTH;
+            case 1:
+                return EAST;
+            case 2:
+                return SOUTH;
+            case 3:
+                return WEST;
+        }
+    }
 }

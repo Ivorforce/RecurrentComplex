@@ -25,6 +25,7 @@ import net.minecraft.util.ChunkCoordinates;
 import net.minecraft.world.World;
 import net.minecraft.world.biome.BiomeGenBase;
 import net.minecraft.world.chunk.IChunkProvider;
+import net.minecraft.world.gen.structure.StructureBoundingBox;
 import net.minecraftforge.common.MinecraftForge;
 import org.apache.commons.lang3.tuple.Pair;
 
@@ -37,7 +38,7 @@ import java.util.Random;
  */
 public class StructureGenerator
 {
-    public static final int MIN_DIST_TO_LIMIT = 3;
+    public static final int MIN_DIST_TO_LIMIT = 1;
 
     public static int generateStructureRandomly(World world, Random random, StructureInfo info, @Nullable GenerationYSelector ySelector, int x, int z, boolean suggest, String structureName)
     {
@@ -55,6 +56,21 @@ public class StructureGenerator
         return genY;
     }
 
+    public static boolean generatePartialStructure(StructureInfo structureInfo, World world, Random random, BlockCoord coord, AxisAlignedTransform2D transform, @Nullable StructureBoundingBox boundingBox, int layer, String structureName, boolean firstTime)
+    {
+        StructureBoundingBox structureBoundingBox = StructureInfos.structureBoundingBox(coord, StructureInfos.structureSize(structureInfo, transform));
+        StructureSpawnContext structureSpawnContext = new StructureSpawnContext(world, random, structureBoundingBox, boundingBox, layer, false, transform, firstTime);
+        structureInfo.generate(structureSpawnContext);
+
+        if (firstTime)
+            RecurrentComplex.logger.trace(String.format("Generated structure '%s' in %s", name(structureName), structureSpawnContext.boundingBox));
+
+        if (structureName != null && firstTime)
+            StructureGenerationData.get(world).addNewEntry(structureName, coord, transform);
+
+        return true;
+    }
+
     public static boolean generateStructureWithNotifications(StructureInfo structureInfo, World world, Random random, BlockCoord coord, AxisAlignedTransform2D transform, int layer, boolean suggest, String structureName)
     {
         int[] size = StructureInfos.structureSize(structureInfo, transform);
@@ -63,7 +79,7 @@ public class StructureGenerator
         StructureSpawnContext structureSpawnContext = new StructureSpawnContext(world, random, StructureInfos.structureBoundingBox(coord, size), layer, false, transform);
 
         if (!suggest || (
-                coord.y > MIN_DIST_TO_LIMIT && coord.y + size[1] < world.getHeight() - MIN_DIST_TO_LIMIT
+                coord.y >= MIN_DIST_TO_LIMIT && coord.y + size[1] <= world.getHeight() - 1 - MIN_DIST_TO_LIMIT
                         && (!RCConfig.avoidOverlappingGeneration || StructureGenerationData.get(world).getEntries(structureSpawnContext.boundingBox).size() == 0)
                         && !RCEventBus.INSTANCE.post(new StructureGenerationEvent.Suggest(structureInfo, structureSpawnContext))
                         && !MinecraftForge.EVENT_BUS.post(new StructureGenerationEventLite.Suggest(world, structureName, coordInts, size, layer))

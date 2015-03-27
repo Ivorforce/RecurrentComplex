@@ -6,18 +6,11 @@
 package ivorius.reccomplex.gui.editstructure.gentypes;
 
 import com.google.common.primitives.Ints;
-import ivorius.ivtoolkit.gui.IntegerRange;
-import ivorius.ivtoolkit.tools.IvGsonHelper;
 import ivorius.reccomplex.gui.GuiValidityStateIndicator;
-import ivorius.reccomplex.gui.editstructure.TableDataSourceDimensionGen;
 import ivorius.reccomplex.gui.table.*;
-import ivorius.reccomplex.structures.generic.GenerationYSelector;
-import ivorius.reccomplex.structures.generic.gentypes.StaticGenerationInfo;
 import ivorius.reccomplex.structures.generic.gentypes.StructureListGenerationInfo;
 import ivorius.reccomplex.utils.Directions;
-import ivorius.reccomplex.utils.IvTranslations;
-import net.minecraft.client.resources.I18n;
-import org.apache.commons.lang3.StringUtils;
+import net.minecraftforge.common.util.ForgeDirection;
 
 /**
  * Created by lukas on 07.10.14.
@@ -36,6 +29,14 @@ public class TableDataSourceStructureListGenerationInfo extends TableDataSourceS
         this.generationInfo = generationInfo;
 
         addManagedSection(0, new TableDataSourceGenerationInfo(generationInfo));
+    }
+
+    public static TableElementList.Option[] getDirectionOptions(ForgeDirection[] directions)
+    {
+        TableElementList.Option[] options = new TableElementList.Option[directions.length];
+        for (int i = 0; i < options.length; i++)
+            options[i] = new TableElementList.Option(Directions.serialize(directions[i]), Directions.displayName(directions[i]));
+        return options;
     }
 
     @Override
@@ -107,11 +108,7 @@ public class TableDataSourceStructureListGenerationInfo extends TableDataSourceS
             }
             case 4:
             {
-                TableElementList.Option[] options = new TableElementList.Option[Directions.HORIZONTAL.length];
-                for (int i = 0; i < options.length; i++)
-                    options[i] = new TableElementList.Option(Directions.serialize(Directions.HORIZONTAL[i]), Directions.displayName(Directions.HORIZONTAL[i]));
-
-                TableElementList element = new TableElementList("front", "Front", Directions.serialize(generationInfo.front), options);
+                TableElementList element = new TableElementList("front", "Front", Directions.serialize(generationInfo.front), getDirectionOptions(Directions.HORIZONTAL));
                 element.addPropertyListener(this);
                 return element;
             }

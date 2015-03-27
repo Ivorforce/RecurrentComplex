@@ -37,11 +37,14 @@ public abstract class TransformerSingleBlock implements Transformer
         {
             BlockCoord worldCoord = context.transform.apply(sourceCoord, areaSize).add(lowerCoord);
 
-            Block block = blockCollection.getBlock(sourceCoord);
-            int meta = blockCollection.getMetadata(sourceCoord);
+            if (context.includes(worldCoord))
+            {
+                Block block = blockCollection.getBlock(sourceCoord);
+                int meta = blockCollection.getMetadata(sourceCoord);
 
-            if (matches(block, meta))
-                transformBlock(context.world, context.random, Phase.BEFORE, worldCoord, block, meta);
+                if (matches(block, meta))
+                    transformBlock(context.world, context.random, Phase.BEFORE, worldCoord, block, meta);
+            }
         }
     }
 

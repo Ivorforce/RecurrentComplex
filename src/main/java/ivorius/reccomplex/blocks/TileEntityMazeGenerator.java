@@ -14,6 +14,7 @@ import ivorius.ivtoolkit.maze.*;
 import ivorius.ivtoolkit.maze.MazeComponent;
 import ivorius.ivtoolkit.tools.IvNBTHelper;
 import ivorius.reccomplex.gui.editmazeblock.GuiEditMazeBlock;
+import ivorius.reccomplex.structures.StructureSpawnContext;
 import ivorius.reccomplex.structures.generic.Selection;
 import ivorius.reccomplex.structures.generic.WorldGenMaze;
 import ivorius.reccomplex.structures.StructureRegistry;
@@ -96,17 +97,34 @@ public class TileEntityMazeGenerator extends TileEntity implements GeneratingTil
     }
 
     @Override
-    public void generate(World world, Random random, AxisAlignedTransform2D transform, int layer)
+    public void generate(StructureSpawnContext context)
     {
-        world.setBlockToAir(xCoord, yCoord, zCoord);
+        World world = context.world;
+        Random random = context.random;
+        AxisAlignedTransform2D transform = context.transform;
+        int layer = context.generationLayer;
 
-        if (mazeRooms.isEmpty())
-            return ;
+        if (context.includes(xCoord, yCoord, zCoord))
+            world.setBlockToAir(xCoord, yCoord, zCoord);
+
+        List<MazeComponentPosition> placedComponents = getPlacedRooms(random, transform);
+        if (placedComponents == null)
+            return;
 
         int[] roomNumbers = IvVecMathHelper.add(mazeRooms.boundsHigher(), new int[]{1, 1, 1});
 
         int[] mazeSize = new int[]{roomSize[0] * roomNumbers[0], roomSize[1] * roomNumbers[1], roomSize[2] * roomNumbers[2]};
         BlockCoord startCoord = transform.apply(structureShift, new int[]{1, 1, 1}).add(xCoord, yCoord, zCoord).subtract(transform.apply(new BlockCoord(0, 0, 0), mazeSize));
+
+        WorldGenMaze.generateMaze(world, random, startCoord, placedComponents, roomSize, layer, context.generationBB, context.isFirstTime);
+    }
+
+    public List<MazeComponentPosition> getPlacedRooms(Random random, AxisAlignedTransform2D transform)
+    {
+        if (mazeRooms.isEmpty())
+            return null;
+
+        int[] roomNumbers = IvVecMathHelper.add(mazeRooms.boundsHigher(), new int[]{1, 1, 1});
 
         Maze maze = new Maze(roomNumbers[0] * 2 + 1, roomNumbers[1] * 2 + 1, roomNumbers[2] * 2 + 1);
 
@@ -130,9 +148,7 @@ public class TileEntityMazeGenerator extends TileEntity implements GeneratingTil
                 break;
         }
 
-        List<MazeComponentPosition> placedComponents = MazeGeneratorWithComponents.generatePaths(random, maze, transformedComponents);
-
-        WorldGenMaze.generateMaze(world, random, startCoord, placedComponents, roomSize, layer);
+        return MazeGeneratorWithComponents.generatePaths(random, maze, transformedComponents);
     }
 
     @Override

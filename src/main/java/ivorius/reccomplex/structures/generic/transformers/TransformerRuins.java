@@ -126,6 +126,7 @@ public class TransformerRuins implements Transformer
     @Override
     public void transform(Phase phase, StructureSpawnContext context, IvWorldData worldData, List<Transformer> transformerList)
     {
+        // TODO Make partial
         IvBlockCollection blockCollection = worldData.blockCollection;
 
         BlockArea topdownArea = new BlockArea(new BlockCoord(0, blockCollection.height, 0), new BlockCoord(blockCollection.width, blockCollection.height, blockCollection.length));
@@ -158,15 +159,18 @@ public class TransformerRuins implements Transformer
                     for (int ySource = 0; ySource < removedBlocks && ySource < size[1]; ySource++)
                     {
                         BlockCoord sourceCoord = new BlockCoord(surfaceSourceCoord.x, blockCollection.height - 1 - ySource, surfaceSourceCoord.z);
-
-                        Block block = blockCollection.getBlock(sourceCoord);
-
-                        if (block != topBlock && block != fillerBlock && block != mainBlock)
+                        BlockCoord worldCoord = context.transform.apply(sourceCoord, size).add(context.lowerCoord());
+                        if (context.includes(worldCoord))
                         {
-                            int meta = blockCollection.getMetadata(sourceCoord);
+                            Block block = blockCollection.getBlock(sourceCoord);
 
-                            if (getPass(block, meta) == pass && !skipBlock(transformerList, block, meta))
-                                setBlockToAirClean(context.world, context.transform.apply(sourceCoord, size).add(context.lowerCoord()));
+                            if (block != topBlock && block != fillerBlock && block != mainBlock)
+                            {
+                                int meta = blockCollection.getMetadata(sourceCoord);
+
+                                if (getPass(block, meta) == pass && !skipBlock(transformerList, block, meta))
+                                    setBlockToAirClean(context.world, worldCoord);
+                            }
                         }
                     }
                 }
@@ -179,11 +183,15 @@ public class TransformerRuins implements Transformer
             for (BlockCoord sourceCoord : blockCollection)
             {
                 BlockCoord worldCoord = context.transform.apply(sourceCoord, areaSize).add(context.lowerCoord());
-                Block block = worldCoord.getBlock(context.world);
-                int meta = worldCoord.getMetadata(context.world);
 
-                if (!skipBlock(transformerList, block, meta))
-                    decayBlock(context.world, context.random, block, meta, worldCoord);
+                if (context.includes(worldCoord))
+                {
+                    Block block = worldCoord.getBlock(context.world);
+                    int meta = worldCoord.getMetadata(context.world);
+
+                    if (!skipBlock(transformerList, block, meta))
+                        decayBlock(context.world, context.random, block, meta, worldCoord);
+                }
             }
         }
     }

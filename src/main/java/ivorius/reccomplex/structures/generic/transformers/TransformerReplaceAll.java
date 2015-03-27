@@ -67,6 +67,7 @@ public class TransformerReplaceAll implements Transformer
     @Override
     public void transform(Phase phase, StructureSpawnContext context, IvWorldData worldData, List<Transformer> transformerList)
     {
+        // TODO Fix for partial structures
         IvBlockCollection blockCollection = worldData.blockCollection;
 
         WeightedBlockState blockState;
@@ -84,19 +85,21 @@ public class TransformerReplaceAll implements Transformer
         for (BlockCoord sourceCoord : blockCollection)
         {
             BlockCoord worldCoord = context.transform.apply(sourceCoord, areaSize).add(lowerCoord);
-
-            Block block = blockCollection.getBlock(sourceCoord);
-            int meta = blockCollection.getMetadata(sourceCoord);
-
-            if (skipGeneration(block, meta))
+            if (context.includes(worldCoord))
             {
-                context.world.setBlock(worldCoord.x, worldCoord.y, worldCoord.z, blockState.block, blockState.metadata, 3);
+                Block block = blockCollection.getBlock(sourceCoord);
+                int meta = blockCollection.getMetadata(sourceCoord);
 
-                if (nbtTagCompound != null)
+                if (skipGeneration(block, meta))
                 {
-                    TileEntity tileentity = context.world.getTileEntity(worldCoord.x, worldCoord.y, worldCoord.z);
-                    if (tileentity != null)
-                        tileentity.readFromNBT(TransformerReplace.positionedCopy(nbtTagCompound, worldCoord));
+                    context.world.setBlock(worldCoord.x, worldCoord.y, worldCoord.z, blockState.block, blockState.metadata, 3);
+
+                    if (nbtTagCompound != null)
+                    {
+                        TileEntity tileentity = context.world.getTileEntity(worldCoord.x, worldCoord.y, worldCoord.z);
+                        if (tileentity != null)
+                            tileentity.readFromNBT(TransformerReplace.positionedCopy(nbtTagCompound, worldCoord));
+                    }
                 }
             }
         }

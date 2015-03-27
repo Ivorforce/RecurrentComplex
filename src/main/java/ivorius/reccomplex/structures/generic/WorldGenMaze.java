@@ -15,6 +15,7 @@ import ivorius.reccomplex.structures.generic.gentypes.MazeGenerationInfo;
 import ivorius.reccomplex.worldgen.StructureGenerator;
 import net.minecraft.util.MathHelper;
 import net.minecraft.world.World;
+import net.minecraft.world.gen.structure.StructureBoundingBox;
 import org.apache.commons.lang3.tuple.Pair;
 
 import java.util.ArrayList;
@@ -28,6 +29,11 @@ import java.util.Random;
 public class WorldGenMaze
 {
     public static boolean generateMaze(World world, Random random, BlockCoord coord, List<MazeComponentPosition> placedComponents, int[] roomSize, int layer)
+    {
+        return generateMaze(world, random, coord, placedComponents, roomSize, layer, null, false);
+    }
+
+    public static boolean generateMaze(World world, Random random, BlockCoord coord, List<MazeComponentPosition> placedComponents, int[] roomSize, int layer, StructureBoundingBox boundingBox, boolean firstTime)
     {
         int[] pathLengths = new int[]{0, 0, 0};
 
@@ -49,7 +55,10 @@ public class WorldGenMaze
 
             BlockCoord compMazeCoordLower = coord.add(scaledCompMazePosition[0] + sizeDependentShift[0], scaledCompMazePosition[1] + sizeDependentShift[1], scaledCompMazePosition[2] + +sizeDependentShift[2]);
 
-            StructureGenerator.generateStructureWithNotifications(compStructureInfo, world, random, compMazeCoordLower, componentTransform, layer + 1, false, compStructureName);
+            if (boundingBox != null)
+                StructureGenerator.generateStructureWithNotifications(compStructureInfo, world, random, compMazeCoordLower, componentTransform, layer + 1, false, compStructureName);
+            else
+                StructureGenerator.generatePartialStructure(compStructureInfo, world, random, compMazeCoordLower, componentTransform, boundingBox, layer + 1, compStructureName, firstTime);
         }
 
 //        for (int i = 0; i < maze.blocks.length; i++)

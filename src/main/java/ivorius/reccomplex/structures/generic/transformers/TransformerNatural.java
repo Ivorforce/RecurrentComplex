@@ -55,6 +55,7 @@ public class TransformerNatural extends TransformerSingleBlock
     @Override
     public void transformBlock(World world, Random random, Phase phase, BlockCoord coord, Block sourceBlock, int sourceMetadata)
     {
+        // TODO Make partial
         BiomeGenBase biome = world.getBiomeGenForCoords(coord.x, coord.z);
         Block topBlock = biome.topBlock != null ? biome.topBlock : Blocks.air;
         Block fillerBlock = biome.fillerBlock != null ? biome.fillerBlock : Blocks.air;

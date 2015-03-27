@@ -5,15 +5,15 @@
 
 package ivorius.reccomplex.structures;
 
+import com.google.common.base.Function;
 import com.google.common.base.Predicate;
-import com.google.common.collect.BiMap;
-import com.google.common.collect.Collections2;
-import com.google.common.collect.HashBiMap;
-import com.google.common.collect.Maps;
+import com.google.common.base.Predicates;
+import com.google.common.collect.*;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonSyntaxException;
 import cpw.mods.fml.common.eventhandler.Event;
+import cpw.mods.fml.common.registry.VillagerRegistry;
 import ivorius.reccomplex.RCConfig;
 import ivorius.reccomplex.RecurrentComplex;
 import ivorius.reccomplex.events.RCEventBus;
@@ -22,17 +22,17 @@ import ivorius.reccomplex.json.NbtToJson;
 import ivorius.reccomplex.json.SerializableStringTypeRegistry;
 import ivorius.reccomplex.structures.generic.GenericStructureInfo;
 import ivorius.reccomplex.structures.generic.StructureSaveHandler;
+import ivorius.reccomplex.structures.generic.gentypes.*;
 import ivorius.reccomplex.structures.generic.transformers.Transformer;
-import ivorius.reccomplex.structures.generic.gentypes.MazeGenerationInfo;
-import ivorius.reccomplex.structures.generic.gentypes.StaticGenerationInfo;
-import ivorius.reccomplex.structures.generic.gentypes.StructureGenerationInfo;
-import ivorius.reccomplex.structures.generic.gentypes.StructureListGenerationInfo;
 import ivorius.reccomplex.worldgen.StructureSelector;
+import ivorius.reccomplex.worldgen.villages.GenericVillageCreationHandler;
+import ivorius.reccomplex.worldgen.villages.TemporaryVillagerRegistry;
 import net.minecraft.util.ChunkCoordinates;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldProvider;
 import net.minecraft.world.biome.BiomeGenBase;
+import net.minecraft.world.gen.structure.MapGenStructureIO;
 import net.minecraftforge.common.util.ForgeDirection;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
@@ -299,5 +299,31 @@ public class StructureRegistry
         structureSelectors.clear();
         cachedGeneration.clear();
         needsGenerationCacheUpdate = true;
+
+        updateVanillaGenerations();
+        for (Pair<StructureInfo, VanillaStructureGenerationInfo> pair : getStructureGenerations(VanillaStructureGenerationInfo.class))
+        {
+            String structureID = getName(pair.getLeft());
+            String generationID = pair.getRight().id();
+            Class clazz = GenericVillageCreationHandler.getPieceClass(structureID, generationID);
+            if (clazz != null)
+                MapGenStructureIO.func_143031_a(clazz, "Rc:" + structureID + "_" + generationID);
+        }
+    }
+
+    private static void updateVanillaGenerations()
+    {
+        TemporaryVillagerRegistry.instance().setHandlers(
+                Sets.newHashSet(Iterables.filter(Collections2.transform(getStructureGenerations(VanillaStructureGenerationInfo.class),
+                        new Function<Pair<StructureInfo, VanillaStructureGenerationInfo>, VillagerRegistry.IVillageCreationHandler>()
+                        {
+                            @Nullable
+                            @Override
+                            public VillagerRegistry.IVillageCreationHandler apply(@Nullable Pair<StructureInfo, VanillaStructureGenerationInfo> input)
+                            {
+                                return GenericVillageCreationHandler.forGeneration(getName(input.getLeft()), input.getRight().id());
+                            }
+                        }), Predicates.notNull()))
+        );
     }
 }

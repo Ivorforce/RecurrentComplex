@@ -6,6 +6,7 @@
 package ivorius.reccomplex.blocks;
 
 import ivorius.ivtoolkit.math.AxisAlignedTransform2D;
+import ivorius.reccomplex.structures.StructureSpawnContext;
 import net.minecraft.world.World;
 
 import java.util.Random;
@@ -15,5 +16,5 @@ import java.util.Random;
  */
 public interface GeneratingTileEntity
 {
-    void generate(World world, Random random, AxisAlignedTransform2D transform, int layer);
+    void generate(StructureSpawnContext context);
 }

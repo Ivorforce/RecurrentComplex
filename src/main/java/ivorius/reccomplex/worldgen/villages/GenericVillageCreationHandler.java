@@ -92,7 +92,7 @@ public class GenericVillageCreationHandler implements VillagerRegistry.IVillageC
                 if (structureInfo.isRotatable() || transform.getRotation() == 0)
                 {
                     int[] structureSize = StructureInfos.structureSize(structureInfo, transform);
-                    BlockCoord structureShift = transform.apply(vanillaGenInfo.spawnShift, new int[]{1, 1, 1});
+                    BlockCoord structureShift = new BlockCoord(0, 0, 0); // Reserved for future shifts where allowed
 
                     StructureBoundingBox strucBB = StructureInfos.structureBoundingBox(structureShift, structureSize);
                     int derotatedX = front % 2 == 0 ? strucBB.getXSize() : strucBB.getZSize();
@@ -105,7 +105,9 @@ public class GenericVillageCreationHandler implements VillagerRegistry.IVillageC
 
                         if (genericVillagePiece != null)
                         {
-                            System.out.println("GENERATING at " + strucBB);
+                            // Do this after the test because this is raw structure movement
+                            strucBB.offset(structureShift.x, structureShift.y, structureShift.z);
+
                             genericVillagePiece.setIds(structureID, generationID);
                             genericVillagePiece.setOrientation(front, mirrorX, strucBB);
                             return genericVillagePiece;

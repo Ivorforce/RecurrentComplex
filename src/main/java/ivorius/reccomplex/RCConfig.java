@@ -92,6 +92,6 @@ public class RCConfig
 
     public static boolean isGenerationEnabled(String biomeID)
     {
-        return disabledBiomes.contains(biomeID);
+        return !disabledBiomes.contains(biomeID);
     }
 }

@@ -30,7 +30,8 @@ public class WorldGenStructures implements IWorldGenerator
     @Override
     public void generate(Random random, final int chunkX, final int chunkZ, final World world, IChunkProvider chunkGenerator, IChunkProvider chunkProvider)
     {
-        boolean mayGenerate = world.getWorldInfo().isMapFeaturesEnabled();
+        BiomeGenBase biomeGen = world.getBiomeGenForCoords(chunkX * 16, chunkZ * 16);
+        boolean mayGenerate = world.getWorldInfo().isMapFeaturesEnabled() && RCConfig.isGenerationEnabled(biomeGen.biomeName);
 
         final ChunkCoordinates spawnPos = world.getSpawnPoint();
 
@@ -56,8 +57,6 @@ public class WorldGenStructures implements IWorldGenerator
 
         if (mayGenerate)
         {
-            BiomeGenBase biomeGen = world.getBiomeGenForCoords(chunkX * 16, chunkZ * 16);
-
             StructureSelector structureSelector = StructureRegistry.getStructureSelector(biomeGen, world.provider);
             List<Pair<StructureInfo, NaturalGenerationInfo>> generated = structureSelector.generatedStructures(random, chunkX, chunkZ, world, chunkGenerator, chunkProvider);
 

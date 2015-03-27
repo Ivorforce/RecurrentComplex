@@ -29,6 +29,8 @@ public class RCConfig
     private static Set<String> persistentDisabledStructures = new HashSet<>();
     private static Set<String> forceEnabledStructures = new HashSet<>();
 
+    private static Set<String> disabledBiomes = new HashSet<>();
+
     public static boolean avoidOverlappingGeneration;
 
     public static String commandPrefix;
@@ -63,6 +65,9 @@ public class RCConfig
             disabledModGeneration.addAll(Arrays.asList(RecurrentComplex.config.getStringList("disabledModGeneration", CATEGORY_BALANCING, new String[0], "Structures from mods in this list will automatically be set not to generate.")));
             forceEnabledStructures.clear();
             forceEnabledStructures.addAll(Arrays.asList(RecurrentComplex.config.getStringList("forceEnabledStructures", CATEGORY_BALANCING, new String[0], "Structures that be set to generate (if in the right directory), no matter what")));
+
+            disabledBiomes.clear();
+            disabledBiomes.addAll(Arrays.asList(RecurrentComplex.config.getStringList("disabledBiomes", CATEGORY_BALANCING, new String[0], "Biomes in which no biomes will spawn at all. This is for biomes that generally don't work well with structures.")));
         }
 
         RecurrentComplex.proxy.loadConfig(configID);
@@ -83,5 +88,10 @@ public class RCConfig
     public static boolean isModGenerationDisabled(String modID)
     {
         return disabledModGeneration.contains(modID);
+    }
+
+    public static boolean isGenerationEnabled(String biomeID)
+    {
+        return disabledBiomes.contains(biomeID);
     }
 }

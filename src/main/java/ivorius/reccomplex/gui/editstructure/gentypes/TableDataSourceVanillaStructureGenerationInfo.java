@@ -6,6 +6,7 @@
 package ivorius.reccomplex.gui.editstructure.gentypes;
 
 import ivorius.ivtoolkit.blocks.BlockCoord;
+import ivorius.ivtoolkit.gui.IntegerRange;
 import ivorius.reccomplex.gui.table.*;
 import ivorius.reccomplex.structures.generic.gentypes.VanillaStructureGenerationInfo;
 import ivorius.reccomplex.utils.Directions;
@@ -45,7 +46,7 @@ public class TableDataSourceVanillaStructureGenerationInfo extends TableDataSour
             case 2:
                 return 2;
             case 3:
-                return 4;
+                return 2;
             case 4:
                 return 3;
         }
@@ -86,25 +87,13 @@ public class TableDataSourceVanillaStructureGenerationInfo extends TableDataSour
                 {
                     case 0:
                     {
-                        TableElementInteger element = new TableElementInteger("minBaseLimit", "Min. Base Limit", generationInfo.minBaseLimit, 0, 100);
+                        TableElementIntegerRange element = new TableElementIntegerRange("baseLimit", "Amount (p. V.)", new IntegerRange(generationInfo.minBaseLimit, generationInfo.maxBaseLimit), 0, 100);
                         element.addPropertyListener(this);
                         return element;
                     }
                     case 1:
                     {
-                        TableElementInteger element = new TableElementInteger("maxBaseLimit", "Max. Base Limit", generationInfo.maxBaseLimit, 0, 100);
-                        element.addPropertyListener(this);
-                        return element;
-                    }
-                    case 2:
-                    {
-                        TableElementInteger element = new TableElementInteger("minScaleLimit", "Min. Scaled Limit", generationInfo.minScaledLimit, 0, 100);
-                        element.addPropertyListener(this);
-                        return element;
-                    }
-                    case 3:
-                    {
-                        TableElementInteger element = new TableElementInteger("maxScaleLimit", "Max. Scaled Limit", generationInfo.maxScaledLimit, 0, 100);
+                        TableElementIntegerRange element = new TableElementIntegerRange("scaledLimit", "Amount (scaled)", new IntegerRange(generationInfo.minScaledLimit, generationInfo.maxScaledLimit), 0, 100);
                         element.addPropertyListener(this);
                         return element;
                     }
@@ -146,18 +135,20 @@ public class TableDataSourceVanillaStructureGenerationInfo extends TableDataSour
             case "weight":
                 generationInfo.spawnWeight = TableElements.toDouble((Float) element.getPropertyValue());
                 break;
-            case "minBaseLimit":
-                generationInfo.minBaseLimit = (int) element.getPropertyValue();
+            case "baseLimit":
+            {
+                IntegerRange baseLimit = (IntegerRange) element.getPropertyValue();
+                generationInfo.minBaseLimit = baseLimit.getMin();
+                generationInfo.maxBaseLimit = baseLimit.getMax();
                 break;
-            case "maxBaseLimit":
-                generationInfo.maxBaseLimit = (int) element.getPropertyValue();
+            }
+            case "scaledLimit":
+            {
+                IntegerRange baseLimit = (IntegerRange) element.getPropertyValue();
+                generationInfo.minScaledLimit = baseLimit.getMin();
+                generationInfo.maxScaledLimit = baseLimit.getMax();
                 break;
-            case "minScaledLimit":
-                generationInfo.minScaledLimit = (int) element.getPropertyValue();
-                break;
-            case "maxScaledLimit":
-                generationInfo.maxScaledLimit = (int) element.getPropertyValue();
-                break;
+            }
             case "spawnX":
             {
                 BlockCoord coord = generationInfo.spawnShift;

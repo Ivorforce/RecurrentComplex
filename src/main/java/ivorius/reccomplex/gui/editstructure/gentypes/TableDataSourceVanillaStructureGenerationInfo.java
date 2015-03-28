@@ -6,6 +6,7 @@
 package ivorius.reccomplex.gui.editstructure.gentypes;
 
 import ivorius.ivtoolkit.blocks.BlockCoord;
+import ivorius.ivtoolkit.gui.FloatRange;
 import ivorius.ivtoolkit.gui.IntegerRange;
 import ivorius.reccomplex.gui.table.*;
 import ivorius.reccomplex.structures.generic.gentypes.VanillaStructureGenerationInfo;
@@ -70,7 +71,7 @@ public class TableDataSourceVanillaStructureGenerationInfo extends TableDataSour
                 {
                     case 0:
                     {
-                        TableElementFloatNullable element = new TableElementFloatNullable("weight", "Weight", TableElements.toFloat(generationInfo.spawnWeight), 1.0f, 0, 10, "D", "C");
+                        TableElementFloatNullable element = new TableElementFloatNullable("weight", "Weight", TableElements.toFloat(generationInfo.generationWeight), 1.0f, 0, 10, "D", "C");
                         element.addPropertyListener(this);
                         return element;
                     }
@@ -87,13 +88,13 @@ public class TableDataSourceVanillaStructureGenerationInfo extends TableDataSour
                 {
                     case 0:
                     {
-                        TableElementIntegerRange element = new TableElementIntegerRange("baseLimit", "Amount (p. V.)", new IntegerRange(generationInfo.minBaseLimit, generationInfo.maxBaseLimit), 0, 100);
+                        TableElementFloatRange element = new TableElementFloatRange("baseLimit", "Amount (p. V.)", new FloatRange((float) generationInfo.minBaseLimit, (float) generationInfo.maxBaseLimit), 0, 10, 2);
                         element.addPropertyListener(this);
                         return element;
                     }
                     case 1:
                     {
-                        TableElementIntegerRange element = new TableElementIntegerRange("scaledLimit", "Amount (scaled)", new IntegerRange(generationInfo.minScaledLimit, generationInfo.maxScaledLimit), 0, 100);
+                        TableElementFloatRange element = new TableElementFloatRange("scaledLimit", "Amount (scaled)", new FloatRange((float) generationInfo.minScaledLimit, (float) generationInfo.maxScaledLimit), 0, 10, 2);
                         element.addPropertyListener(this);
                         return element;
                     }
@@ -133,18 +134,18 @@ public class TableDataSourceVanillaStructureGenerationInfo extends TableDataSour
         switch (element.getID())
         {
             case "weight":
-                generationInfo.spawnWeight = TableElements.toDouble((Float) element.getPropertyValue());
+                generationInfo.generationWeight = TableElements.toDouble((Float) element.getPropertyValue());
                 break;
             case "baseLimit":
             {
-                IntegerRange baseLimit = (IntegerRange) element.getPropertyValue();
+                FloatRange baseLimit = (FloatRange) element.getPropertyValue();
                 generationInfo.minBaseLimit = baseLimit.getMin();
                 generationInfo.maxBaseLimit = baseLimit.getMax();
                 break;
             }
             case "scaledLimit":
             {
-                IntegerRange baseLimit = (IntegerRange) element.getPropertyValue();
+                FloatRange baseLimit = (FloatRange) element.getPropertyValue();
                 generationInfo.minScaledLimit = baseLimit.getMin();
                 generationInfo.maxScaledLimit = baseLimit.getMax();
                 break;

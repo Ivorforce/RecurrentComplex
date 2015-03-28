@@ -27,11 +27,11 @@ public class VanillaStructureGenerationInfo extends StructureGenerationInfo
 {
     public String id = "";
 
-    public Double spawnWeight;
-    public int minBaseLimit;
-    public int maxBaseLimit;
-    public int minScaledLimit;
-    public int maxScaledLimit;
+    public Double generationWeight;
+    public double minBaseLimit;
+    public double maxBaseLimit;
+    public double minScaledLimit;
+    public double maxScaledLimit;
 
     public ForgeDirection front;
 
@@ -42,10 +42,10 @@ public class VanillaStructureGenerationInfo extends StructureGenerationInfo
         this("VanillaGen1", null, 2, 5, 3, 3, ForgeDirection.NORTH, new BlockCoord(0, 0, 0));
     }
 
-    public VanillaStructureGenerationInfo(String id, Double spawnWeight, int minBaseLimit, int maxBaseLimit, int minScaledLimit, int maxScaledLimit, ForgeDirection front, BlockCoord spawnShift)
+    public VanillaStructureGenerationInfo(String id, Double generationWeight, double minBaseLimit, double maxBaseLimit, double minScaledLimit, double maxScaledLimit, ForgeDirection front, BlockCoord spawnShift)
     {
         this.id = id;
-        this.spawnWeight = spawnWeight;
+        this.generationWeight = generationWeight;
         this.minBaseLimit = minBaseLimit;
         this.maxBaseLimit = maxBaseLimit;
         this.minScaledLimit = minScaledLimit;
@@ -79,9 +79,14 @@ public class VanillaStructureGenerationInfo extends StructureGenerationInfo
         return new TableDataSourceVanillaStructureGenerationInfo(navigator, delegate, this);
     }
 
+    public double getActiveWeight()
+    {
+        return generationWeight != null ? generationWeight : 1.0;
+    }
+
     public int getVanillaWeight()
     {
-        return MathHelper.floor_double((spawnWeight != null ? spawnWeight : 1.0) * 10 + 0.5);
+        return MathHelper.floor_double(getActiveWeight() * 10 + 0.5);
     }
 
     public static class Serializer implements JsonSerializer<VanillaStructureGenerationInfo>, JsonDeserializer<VanillaStructureGenerationInfo>
@@ -93,12 +98,12 @@ public class VanillaStructureGenerationInfo extends StructureGenerationInfo
 
             String id = JsonUtils.getJsonObjectStringFieldValueOrDefault(jsonObject, "id", "");
 
-            Double spawnWeight = jsonObject.has("spawnWeight") ? JsonUtils.getJsonObjectDoubleFieldValue(jsonObject, "spawnWeight") : null;
+            Double spawnWeight = jsonObject.has("generationWeight") ? JsonUtils.getJsonObjectDoubleFieldValue(jsonObject, "generationWeight") : null;
 
-            int minBaseLimit = JsonUtils.getJsonObjectIntegerFieldValueOrDefault(jsonObject, "minBaseLimit", 0);
-            int maxBaseLimit = JsonUtils.getJsonObjectIntegerFieldValueOrDefault(jsonObject, "maxBaseLimit", 0);
-            int minScaledLimit = JsonUtils.getJsonObjectIntegerFieldValueOrDefault(jsonObject, "minScaledLimit", 0);
-            int maxScaledLimit = JsonUtils.getJsonObjectIntegerFieldValueOrDefault(jsonObject, "maxScaledLimit", 0);
+            double minBaseLimit = JsonUtils.getJsonObjectDoubleFieldValueOrDefault(jsonObject, "minBaseLimit", 0);
+            double maxBaseLimit = JsonUtils.getJsonObjectDoubleFieldValueOrDefault(jsonObject, "maxBaseLimit", 0);
+            double minScaledLimit = JsonUtils.getJsonObjectDoubleFieldValueOrDefault(jsonObject, "minScaledLimit", 0);
+            double maxScaledLimit = JsonUtils.getJsonObjectDoubleFieldValueOrDefault(jsonObject, "maxScaledLimit", 0);
 
             int spawnX = JsonUtils.getJsonObjectIntegerFieldValueOrDefault(jsonObject, "spawnShiftX", 0);
             int spawnY = JsonUtils.getJsonObjectIntegerFieldValueOrDefault(jsonObject, "spawnShiftY", 0);
@@ -116,8 +121,8 @@ public class VanillaStructureGenerationInfo extends StructureGenerationInfo
 
             jsonObject.addProperty("id", src.id);
 
-            if (src.spawnWeight != null)
-                jsonObject.addProperty("spawnWeight", src.spawnWeight);
+            if (src.generationWeight != null)
+                jsonObject.addProperty("generationWeight", src.generationWeight);
 
             jsonObject.addProperty("minBaseLimit", src.minBaseLimit);
             jsonObject.addProperty("maxBaseLimit", src.maxBaseLimit);

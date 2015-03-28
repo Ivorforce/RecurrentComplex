@@ -58,9 +58,9 @@ public class GenericVillageCreationHandler implements VillagerRegistry.IVillageC
             {
                 VanillaStructureGenerationInfo vanillaGenInfo = (VanillaStructureGenerationInfo) generationInfo;
 
-                int spawnLimit = MathHelper.getRandomIntegerInRange(random,
+                int spawnLimit = MathHelper.floor_double(MathHelper.getRandomDoubleInRange(random,
                         vanillaGenInfo.minBaseLimit + villageSize * vanillaGenInfo.minScaledLimit,
-                        vanillaGenInfo.maxBaseLimit + villageSize * vanillaGenInfo.maxScaledLimit);
+                        vanillaGenInfo.maxBaseLimit + villageSize * vanillaGenInfo.maxScaledLimit) + 0.5);
                 return new StructureVillagePieces.PieceWeight(getComponentClass(), vanillaGenInfo.getVanillaWeight(), spawnLimit);
             }
         }

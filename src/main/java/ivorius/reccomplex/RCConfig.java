@@ -32,6 +32,7 @@ public class RCConfig
     private static Set<String> disabledBiomes = new HashSet<>();
 
     public static boolean avoidOverlappingGeneration;
+    public static int baseVillageSpawnWeight;
 
     public static String commandPrefix;
 
@@ -39,7 +40,7 @@ public class RCConfig
 
     public static boolean notifyAdminOnBlockCommands;
 
-    public static int blockSelectorModifierKeys[];
+    public static int[] blockSelectorModifierKeys;
 
     public static void loadConfig(String configID)
     {
@@ -55,6 +56,7 @@ public class RCConfig
         if (configID == null || configID.equals(CATEGORY_BALANCING))
         {
             avoidOverlappingGeneration = RecurrentComplex.config.getBoolean("avoidOverlappingGeneration", CATEGORY_BALANCING, true, "Enabling this will cancel any structure generation if another structure is present at the cooridnate already.");
+            baseVillageSpawnWeight = RecurrentComplex.config.getInt("baseVillageSpawnWeight", CATEGORY_BALANCING, 10, 0, 100000, "The base weight of RC village generation types. Vanilla average is about 10 - if you want to fully replace vanilla structures in villages, crank this up to something big.");
 
             minDistToSpawnForGeneration = RecurrentComplex.config.getFloat("minDistToSpawnForGeneration", CATEGORY_BALANCING, 30.0f, 0.0f, 500.0f, "Within this block radius, default structures won't spawn (in the main dimension).");
             structureSpawnChanceModifier = RecurrentComplex.config.getFloat("structureSpawnChance", CATEGORY_BALANCING, 1.0f, 0.0f, 10.0f, "How often do structures spawn?");

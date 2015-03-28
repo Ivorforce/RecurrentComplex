@@ -7,6 +7,7 @@ package ivorius.reccomplex.structures.generic.gentypes;
 
 import com.google.gson.*;
 import ivorius.ivtoolkit.blocks.BlockCoord;
+import ivorius.reccomplex.RCConfig;
 import ivorius.reccomplex.gui.editstructure.gentypes.TableDataSourceVanillaStructureGenerationInfo;
 import ivorius.reccomplex.gui.table.TableDataSource;
 import ivorius.reccomplex.gui.table.TableDelegate;
@@ -86,7 +87,7 @@ public class VanillaStructureGenerationInfo extends StructureGenerationInfo
 
     public int getVanillaWeight()
     {
-        return MathHelper.floor_double(getActiveWeight() * 10 + 0.5);
+        return MathHelper.floor_double(getActiveWeight() * RCConfig.baseVillageSpawnWeight + 0.5);
     }
 
     public static class Serializer implements JsonSerializer<VanillaStructureGenerationInfo>, JsonDeserializer<VanillaStructureGenerationInfo>

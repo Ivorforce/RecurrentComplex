@@ -30,10 +30,10 @@ public class OperationRenderer
         else
             GL11.glTranslatef(size[0] * 0.5f, 0f, size[2] * 0.5f);
 
+        GL11.glRotatef(-90.0f * transform2D.getRotation(), 0, 1, 0);
+
         if (transform2D.isMirrorX())
             GL11.glScalef(-1, 1, 1);
-
-        GL11.glRotatef(90.0f * transform2D.getRotation(), 0, 1, 0);
 
         GL11.glTranslatef(-size[0] * 0.5f, 0f, -size[2] * 0.5f);
     }

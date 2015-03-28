@@ -38,8 +38,8 @@ public class GenericVillageCreationHandler implements VillagerRegistry.IVillageC
     public static GenericVillageCreationHandler forGeneration(String structureID, String generationID)
     {
         return getPieceClass(structureID, generationID) != null
-            ? new GenericVillageCreationHandler(structureID, generationID)
-            : null;
+                ? new GenericVillageCreationHandler(structureID, generationID)
+                : null;
     }
 
     public static Class<? extends GenericVillagePiece> getPieceClass(String structureID, String generationID)
@@ -89,7 +89,7 @@ public class GenericVillageCreationHandler implements VillagerRegistry.IVillageC
                 boolean mirrorX = structureInfo.isMirrorable() && random.nextBoolean();
                 AxisAlignedTransform2D transform = GenericVillagePiece.getTransform(vanillaGenInfo, front, mirrorX);
 
-                if (structureInfo.isRotatable() || transform.getRotation() == 0)
+                if (vanillaGenInfo.generatesIn(start.biome) && structureInfo.isRotatable() || transform.getRotation() == 0)
                 {
                     int[] structureSize = StructureInfos.structureSize(structureInfo, transform);
                     BlockCoord structureShift = new BlockCoord(0, 0, 0); // Reserved for future shifts where allowed

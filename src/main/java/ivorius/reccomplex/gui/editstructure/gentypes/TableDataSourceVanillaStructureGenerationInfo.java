@@ -8,6 +8,7 @@ package ivorius.reccomplex.gui.editstructure.gentypes;
 import ivorius.ivtoolkit.blocks.BlockCoord;
 import ivorius.ivtoolkit.gui.FloatRange;
 import ivorius.ivtoolkit.gui.IntegerRange;
+import ivorius.reccomplex.gui.TableDataSourceExpression;
 import ivorius.reccomplex.gui.table.*;
 import ivorius.reccomplex.structures.generic.gentypes.VanillaStructureGenerationInfo;
 import ivorius.reccomplex.utils.Directions;
@@ -29,12 +30,13 @@ public class TableDataSourceVanillaStructureGenerationInfo extends TableDataSour
         this.generationInfo = generationInfo;
 
         addManagedSection(0, new TableDataSourceGenerationInfo(generationInfo));
+        addManagedSection(4, new TableDataSourceExpression<>("Biomes", "reccomplex.expression.biome.tooltip", generationInfo.biomeMatcher));
     }
 
     @Override
     public int numberOfSegments()
     {
-        return 5;
+        return 6;
     }
 
     @Override
@@ -48,7 +50,7 @@ public class TableDataSourceVanillaStructureGenerationInfo extends TableDataSour
                 return 2;
             case 3:
                 return 2;
-            case 4:
+            case 5:
                 return 3;
         }
         return super.sizeOfSegment(segment);
@@ -100,7 +102,7 @@ public class TableDataSourceVanillaStructureGenerationInfo extends TableDataSour
                     }
                 }
                 break;
-            case 4:
+            case 5:
                 switch (index)
                 {
                     case 0:

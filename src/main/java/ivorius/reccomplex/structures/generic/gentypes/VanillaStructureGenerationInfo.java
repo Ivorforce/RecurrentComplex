@@ -13,9 +13,11 @@ import ivorius.reccomplex.gui.table.TableDataSource;
 import ivorius.reccomplex.gui.table.TableDelegate;
 import ivorius.reccomplex.gui.table.TableNavigator;
 import ivorius.reccomplex.json.JsonUtils;
+import ivorius.reccomplex.structures.generic.matchers.BiomeMatcher;
 import ivorius.reccomplex.utils.Directions;
 import net.minecraft.util.MathHelper;
 import net.minecraft.util.StatCollector;
+import net.minecraft.world.biome.BiomeGenBase;
 import net.minecraftforge.common.util.ForgeDirection;
 
 import javax.annotation.Nonnull;
@@ -38,12 +40,14 @@ public class VanillaStructureGenerationInfo extends StructureGenerationInfo
 
     public BlockCoord spawnShift;
 
+    public BiomeMatcher biomeMatcher;
+
     public VanillaStructureGenerationInfo()
     {
-        this("VanillaGen1", null, 2, 5, 3, 3, ForgeDirection.NORTH, new BlockCoord(0, 0, 0));
+        this("VanillaGen1", null, 2, 5, 3, 3, ForgeDirection.NORTH, new BlockCoord(0, 0, 0), "");
     }
 
-    public VanillaStructureGenerationInfo(String id, Double generationWeight, double minBaseLimit, double maxBaseLimit, double minScaledLimit, double maxScaledLimit, ForgeDirection front, BlockCoord spawnShift)
+    public VanillaStructureGenerationInfo(String id, Double generationWeight, double minBaseLimit, double maxBaseLimit, double minScaledLimit, double maxScaledLimit, ForgeDirection front, BlockCoord spawnShift, String biomeExpression)
     {
         this.id = id;
         this.generationWeight = generationWeight;
@@ -53,6 +57,7 @@ public class VanillaStructureGenerationInfo extends StructureGenerationInfo
         this.maxScaledLimit = maxScaledLimit;
         this.front = front;
         this.spawnShift = spawnShift;
+        biomeMatcher = new BiomeMatcher(biomeExpression);
     }
 
     @Nonnull
@@ -78,6 +83,11 @@ public class VanillaStructureGenerationInfo extends StructureGenerationInfo
     public TableDataSource tableDataSource(TableNavigator navigator, TableDelegate delegate)
     {
         return new TableDataSourceVanillaStructureGenerationInfo(navigator, delegate, this);
+    }
+
+    public boolean generatesIn(BiomeGenBase biome)
+    {
+        return biomeMatcher.apply(biome);
     }
 
     public double getActiveWeight()
@@ -112,7 +122,9 @@ public class VanillaStructureGenerationInfo extends StructureGenerationInfo
 
             ForgeDirection front = Directions.deserialize(JsonUtils.getJsonObjectStringFieldValueOrDefault(jsonObject, "front", "NORTH"));
 
-            return new VanillaStructureGenerationInfo(id, spawnWeight, minBaseLimit, maxBaseLimit, minScaledLimit, maxScaledLimit, front, new BlockCoord(spawnX, spawnY, spawnZ));
+            String biomeExpression = JsonUtils.getJsonObjectStringFieldValueOrDefault(jsonObject, "biomeExpression", "");
+
+            return new VanillaStructureGenerationInfo(id, spawnWeight, minBaseLimit, maxBaseLimit, minScaledLimit, maxScaledLimit, front, new BlockCoord(spawnX, spawnY, spawnZ), biomeExpression);
         }
 
         @Override
@@ -135,6 +147,8 @@ public class VanillaStructureGenerationInfo extends StructureGenerationInfo
             jsonObject.addProperty("spawnShiftZ", src.spawnShift.z);
 
             jsonObject.addProperty("front", Directions.serialize(src.front));
+
+            jsonObject.addProperty("biomeExpression", src.biomeMatcher.getExpression());
 
             return jsonObject;
         }

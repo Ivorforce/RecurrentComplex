@@ -9,13 +9,9 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonSyntaxException;
 import ivorius.reccomplex.RecurrentComplex;
-import ivorius.reccomplex.json.ItemStackSerializer;
 import ivorius.reccomplex.json.NbtToJson;
-import ivorius.reccomplex.structures.MCRegistrySpecial;
 import ivorius.reccomplex.worldgen.inventory.GenericItemCollection.Component;
-import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.WeightedRandomChestContent;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -35,9 +31,6 @@ public class GenericItemCollectionRegistry
         GsonBuilder builder = new GsonBuilder();
 
         builder.registerTypeAdapter(Component.class, new Component.Serializer());
-        builder.registerTypeAdapter(WeightedRandomChestContent.class, new WeightedRandomChestContentSerializer());
-        builder.registerTypeAdapter(ItemStack.class, new ItemStackSerializer(MCRegistrySpecial.INSTANCE));
-
         NbtToJson.registerSafeNBTSerializer(builder);
 
         return builder.create();

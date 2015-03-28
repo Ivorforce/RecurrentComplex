@@ -6,10 +6,10 @@
 package ivorius.reccomplex.gui.editinventorygen;
 
 import ivorius.reccomplex.gui.InventoryWatcher;
+import ivorius.reccomplex.worldgen.inventory.GenericItemCollection;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.WeightedRandomChestContent;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -20,11 +20,11 @@ import java.util.List;
  */
 public class InventoryGenericInvGen_Single implements IInventory
 {
-    public List<WeightedRandomChestContent> weightedRandomChestContents;
+    public List<GenericItemCollection.RandomizedItemStack> weightedRandomChestContents;
 
     private List<InventoryWatcher> watchers = new ArrayList<>();
 
-    public InventoryGenericInvGen_Single(List<WeightedRandomChestContent> weightedRandomChestContents)
+    public InventoryGenericInvGen_Single(List<GenericItemCollection.RandomizedItemStack> weightedRandomChestContents)
     {
         this.weightedRandomChestContents = weightedRandomChestContents;
     }
@@ -53,7 +53,7 @@ public class InventoryGenericInvGen_Single implements IInventory
     @Override
     public ItemStack getStackInSlot(int var1)
     {
-        return var1 < weightedRandomChestContents.size() ? weightedRandomChestContents.get(var1).theItemId : null;
+        return var1 < weightedRandomChestContents.size() ? weightedRandomChestContents.get(var1).itemStack : null;
     }
 
     @Override
@@ -61,7 +61,7 @@ public class InventoryGenericInvGen_Single implements IInventory
     {
         if (slot < weightedRandomChestContents.size())
         {
-            ItemStack stack = weightedRandomChestContents.get(slot).theItemId;
+            ItemStack stack = weightedRandomChestContents.get(slot).itemStack;
             if (stack != null)
             {
                 ItemStack itemstack;
@@ -103,20 +103,14 @@ public class InventoryGenericInvGen_Single implements IInventory
         if (slot < weightedRandomChestContents.size())
         {
             if (stack != null)
-            {
-                weightedRandomChestContents.get(slot).theItemId = stack;
-            }
+                weightedRandomChestContents.get(slot).itemStack = stack;
             else
-            {
                 weightedRandomChestContents.remove(slot);
-            }
         }
         else
         {
             if (stack != null)
-            {
-                weightedRandomChestContents.add(new WeightedRandomChestContent(stack, 1, stack.getMaxStackSize(), 100));
-            }
+                weightedRandomChestContents.add(new GenericItemCollection.RandomizedItemStack(stack, 1, stack.getMaxStackSize(), 1.0));
         }
 
         if (stack != null && stack.stackSize > this.getInventoryStackLimit())
@@ -149,9 +143,7 @@ public class InventoryGenericInvGen_Single implements IInventory
     public void markDirty()
     {
         for (InventoryWatcher watcher : this.watchers)
-        {
             watcher.inventoryChanged(this);
-        }
     }
 
     @Override

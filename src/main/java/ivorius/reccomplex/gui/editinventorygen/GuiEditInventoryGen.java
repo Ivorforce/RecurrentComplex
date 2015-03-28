@@ -10,8 +10,11 @@ import ivorius.ivtoolkit.network.PacketGuiAction;
 import ivorius.reccomplex.RecurrentComplex;
 import ivorius.reccomplex.gui.GuiValidityStateIndicator;
 import ivorius.reccomplex.gui.InventoryWatcher;
+import ivorius.reccomplex.gui.TableDataSourceExpression;
+import ivorius.reccomplex.gui.table.TableDataSource;
 import ivorius.reccomplex.network.PacketEditInventoryGenerator;
 import ivorius.reccomplex.utils.RangeHelper;
+import ivorius.reccomplex.worldgen.inventory.GenericItemCollection;
 import ivorius.reccomplex.worldgen.inventory.GenericItemCollection.Component;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.client.gui.GuiButton;
@@ -23,7 +26,6 @@ import net.minecraft.inventory.IInventory;
 import net.minecraft.util.MathHelper;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.StringUtils;
-import net.minecraft.util.WeightedRandomChestContent;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.opengl.GL11;
 
@@ -94,7 +96,8 @@ public class GuiEditInventoryGen extends GuiContainer implements InventoryWatche
         inventoryGenIDTextField.setText(inventoryGenerator.inventoryGeneratorID);
 
         dependencyTextField = new GuiTextField(fontRendererObj, this.width / 2, this.height / 2 - 85, 130, 20);
-        dependencyStateIndicator = new GuiValidityStateIndicator(this.width / 2 + 135, this.height / 2 - 80, inventoryGenerator.areDependenciesResolved() ? GuiValidityStateIndicator.State.VALID : GuiValidityStateIndicator.State.SEMI_VALID);
+        dependencyTextField.setText(inventoryGenerator.dependencies.getExpression());
+        dependencyStateIndicator = new GuiValidityStateIndicator(this.width / 2 + 135, this.height / 2 - 80, TableDataSourceExpression.getValidityState(inventoryGenerator.dependencies));
 
         this.buttonList.add(this.nextPageBtn = new GuiButton(2, shiftRightPage, this.height / 2 - 50, 20, 20, ">"));
         this.buttonList.add(this.prevPageBtn = new GuiButton(3, shiftRightPage, this.height / 2 - 20, 20, 20, "<"));
@@ -115,8 +118,8 @@ public class GuiEditInventoryGen extends GuiContainer implements InventoryWatche
 
                 GuiSlider weightSlider = new GuiSlider(200, baseX + onePart * 2, shiftTop + 48 + row * 18, onePart * 3, 18, I18n.format("guiGenericInventory.weight"));
                 weightSlider.addListener(this);
-                weightSlider.setMinValue(1);
-                weightSlider.setMaxValue(500);
+                weightSlider.setMinValue(0);
+                weightSlider.setMaxValue(10);
                 this.buttonList.add(weightSlider);
                 weightSliders.add(weightSlider);
             }
@@ -138,7 +141,7 @@ public class GuiEditInventoryGen extends GuiContainer implements InventoryWatche
 
     private void updateAllItemSliders()
     {
-        List<WeightedRandomChestContent> chestContents = inventoryGenerator.items;
+        List<GenericItemCollection.RandomizedItemStack> chestContents = inventoryGenerator.items;
 
         for (int i = 0; i < weightSliders.size(); i++)
         {
@@ -150,15 +153,15 @@ public class GuiEditInventoryGen extends GuiContainer implements InventoryWatche
             minMaxSlider.id = index + 200;
             if (index < chestContents.size())
             {
-                WeightedRandomChestContent chestContent = chestContents.get(index);
-                minMaxSlider.setRange(new FloatRange(chestContent.theMinimumChanceToGenerateItem, chestContent.theMaximumChanceToGenerateItem));
-                minMaxSlider.setMaxValue(chestContent.theItemId.getMaxStackSize());
+                GenericItemCollection.RandomizedItemStack chestContent = chestContents.get(index);
+                minMaxSlider.setRange(new FloatRange(chestContent.min, chestContent.max));
+                minMaxSlider.setMaxValue(chestContent.itemStack.getMaxStackSize());
                 minMaxSlider.enabled = true;
-                minMaxSlider.displayString = I18n.format("guiGenericInventory.minMax", chestContent.theMinimumChanceToGenerateItem, chestContent.theMaximumChanceToGenerateItem);
+                minMaxSlider.displayString = I18n.format("guiGenericInventory.minMax", chestContent.min, chestContent.max);
 
-                weightSlider.setValue(chestContent.itemWeight);
+                weightSlider.setValue((float) chestContent.weight);
                 weightSlider.enabled = true;
-                weightSlider.displayString = I18n.format("guiGenericInventory.weightNumber", "" + MathHelper.floor_float(weightSlider.getValue()));
+                weightSlider.displayString = I18n.format("guiGenericInventory.weightNumber", String.format("%.2f", weightSlider.getValue()));
             }
             else
             {
@@ -176,7 +179,7 @@ public class GuiEditInventoryGen extends GuiContainer implements InventoryWatche
 
     private void updatePageButtons()
     {
-        List<WeightedRandomChestContent> chestContents = inventoryGenerator.items;
+        List<GenericItemCollection.RandomizedItemStack> chestContents = inventoryGenerator.items;
         int neededCols = chestContents.size() / ContainerEditInventoryGen.ITEM_ROWS + 1;
         nextPageBtn.enabled = (currentColShift + ContainerEditInventoryGen.ITEM_COLUMNS) < neededCols;
         prevPageBtn.enabled = currentColShift > 0;
@@ -238,13 +241,8 @@ public class GuiEditInventoryGen extends GuiContainer implements InventoryWatche
         }
         else if (dependencyTextField.textboxKeyTyped(par1, par2))
         {
-            inventoryGenerator.dependencies.clear();
-            String[] dependencies = dependencyTextField.getText().split(",");
-            if (dependencies.length != 1 || dependencies[0].trim().length() > 0)
-            {
-                Collections.addAll(inventoryGenerator.dependencies, dependencies);
-            }
-            dependencyStateIndicator.setState(inventoryGenerator.areDependenciesResolved() ? GuiValidityStateIndicator.State.VALID : GuiValidityStateIndicator.State.SEMI_VALID);
+            inventoryGenerator.dependencies.setExpression(dependencyTextField.getText());
+            dependencyStateIndicator.setState(TableDataSourceExpression.getValidityState(inventoryGenerator.dependencies));
         }
         else
         {
@@ -301,7 +299,7 @@ public class GuiEditInventoryGen extends GuiContainer implements InventoryWatche
         drawPlaceholderString(inventoryGenIDTextField, "Group ID");
 
         dependencyTextField.drawTextBox();
-        drawPlaceholderString(dependencyTextField, "Dependencies (A,B,C...)");
+        drawPlaceholderString(dependencyTextField, "Dependency Expression");
         dependencyStateIndicator.draw();
 
         mc.getTextureManager().bindTexture(textureBackground);
@@ -337,20 +335,18 @@ public class GuiEditInventoryGen extends GuiContainer implements InventoryWatche
     @Override
     public void valueChanged(Gui gui)
     {
-        List<WeightedRandomChestContent> chestContents = inventoryGenerator.items;
+        List<GenericItemCollection.RandomizedItemStack> chestContents = inventoryGenerator.items;
 
         if (gui instanceof GuiSlider)
         {
             GuiSlider slider = (GuiSlider) gui;
-            int value = MathHelper.floor_float(slider.getValue());
-            slider.setValue(value);
 
             if (slider.id < 200 && slider.id >= 100)
             {
                 int stackIndex = slider.id - 100;
                 if (stackIndex < chestContents.size())
                 {
-                    chestContents.get(stackIndex).itemWeight = value;
+                    chestContents.get(stackIndex).weight = slider.getValue();
                     updateAllItemSliders();
                 }
             }
@@ -365,12 +361,12 @@ public class GuiEditInventoryGen extends GuiContainer implements InventoryWatche
 
                 if (stackIndex < chestContents.size())
                 {
-                    WeightedRandomChestContent chestContent = chestContents.get(stackIndex);
+                    GenericItemCollection.RandomizedItemStack chestContent = chestContents.get(stackIndex);
                     IntegerRange intRange = RangeHelper.roundedIntRange(slider.getRange());
-                    chestContent.theMinimumChanceToGenerateItem = intRange.getMin();
-                    chestContent.theMaximumChanceToGenerateItem = intRange.getMax();
+                    chestContent.min = intRange.getMin();
+                    chestContent.max = intRange.getMax();
 
-                    slider.setRange(new FloatRange(chestContent.theMinimumChanceToGenerateItem, chestContent.theMaximumChanceToGenerateItem));
+                    slider.setRange(new FloatRange(chestContent.min, chestContent.max));
 
                     updateAllItemSliders();
                 }

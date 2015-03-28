@@ -82,7 +82,7 @@ public class OperationGenerateSchematic implements Operation
             GL11.glColor3f(0.8f, 0.75f, 1.0f);
             OperationRenderer.renderGridQuadCache(
                     cachedShapeGrid != null ? cachedShapeGrid : (cachedShapeGrid = SchematicQuadCache.createQuadCache(file, new float[]{1, 1, 1})),
-                    lowerCoord, ticks, partialTicks);
+                    AxisAlignedTransform2D.ORIGINAL, lowerCoord, ticks, partialTicks);
         }
 
         if (previewType == PreviewType.BOUNDING_BOX || previewType == PreviewType.SHAPE)

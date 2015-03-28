@@ -24,11 +24,11 @@ import javax.annotation.Nullable;
  */
 public class BlockQuadCache
 {
-    public static GridQuadCache<?> createQuadCache(final IvBlockCollection blockCollection, final AxisAlignedTransform2D transform, float[] scale)
+    public static GridQuadCache<?> createQuadCache(final IvBlockCollection blockCollection, float[] scale)
     {
         final Object handle = new Object();
-        int[] size = {blockCollection.width, blockCollection.height, blockCollection.length};
-        final int[] tSize = StructureInfos.structureSize(size, transform);
+
+        final int[] size = {blockCollection.width, blockCollection.height, blockCollection.length};
 
         return GridQuadCache.createQuadCache(size, scale, new Function<Pair<BlockCoord, ForgeDirection>, Object>()
         {
@@ -36,11 +36,8 @@ public class BlockQuadCache
             @Override
             public Object apply(Pair<BlockCoord, ForgeDirection> input)
             {
-                BlockCoord coord = transform.apply(input.getLeft(), tSize);
-                ForgeDirection direction = Directions.rotate(input.getRight(), transform);
-
-                Block block = blockCollection.getBlock(coord);
-                return block.isOpaqueCube() && blockCollection.shouldRenderSide(coord, direction)
+                Block block = blockCollection.getBlock(input.getLeft());
+                return block.isOpaqueCube() && blockCollection.shouldRenderSide(input.getLeft(), input.getRight())
                         ? handle
                         : null;
             }

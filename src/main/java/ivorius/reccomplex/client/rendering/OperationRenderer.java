@@ -7,6 +7,7 @@ package ivorius.reccomplex.client.rendering;
 
 import ivorius.ivtoolkit.blocks.BlockArea;
 import ivorius.ivtoolkit.blocks.BlockCoord;
+import ivorius.ivtoolkit.math.AxisAlignedTransform2D;
 import ivorius.reccomplex.utils.Icons;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.OpenGlHelper;
@@ -22,7 +23,22 @@ import java.nio.FloatBuffer;
  */
 public class OperationRenderer
 {
-    public static void renderGridQuadCache(GridQuadCache<?> cached, BlockCoord lowerCoord, int ticks, float partialTicks)
+    public static void applyTransformVisual(AxisAlignedTransform2D transform2D, float[] size)
+    {
+        if (transform2D.getRotation() % 2 == 1)
+            GL11.glTranslatef(size[2] * 0.5f, 0f, size[0] * 0.5f);
+        else
+            GL11.glTranslatef(size[0] * 0.5f, 0f, size[2] * 0.5f);
+
+        if (transform2D.isMirrorX())
+            GL11.glScalef(-1, 1, 1);
+
+        GL11.glRotatef(90.0f * transform2D.getRotation(), 0, 1, 0);
+
+        GL11.glTranslatef(-size[0] * 0.5f, 0f, -size[2] * 0.5f);
+    }
+
+    public static void renderGridQuadCache(GridQuadCache<?> cached, AxisAlignedTransform2D transform, BlockCoord lowerCoord, int ticks, float partialTicks)
     {
         GL11.glEnable(GL11.GL_BLEND);
         OpenGlHelper.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA, GL11.GL_ONE, GL11.GL_ZERO);
@@ -34,6 +50,8 @@ public class OperationRenderer
 
         GL11.glPushMatrix();
         GL11.glTranslated(lowerCoord.x, lowerCoord.y, lowerCoord.z);
+        applyTransformVisual(transform, cached.size);
+
         Tessellator tessellator = Tessellator.instance;
         tessellator.startDrawingQuads();
         for (GridQuadCache.CachedQuadLevel<?> cachedQuadLevel : cached)

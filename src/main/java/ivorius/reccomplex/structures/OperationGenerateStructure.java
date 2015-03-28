@@ -119,8 +119,8 @@ public class OperationGenerateStructure implements Operation
         {
             GL11.glColor3f(0.8f, 0.75f, 1.0f);
             OperationRenderer.renderGridQuadCache(
-                    cachedShapeGrid != null ? cachedShapeGrid : (cachedShapeGrid = BlockQuadCache.createQuadCache(structure.constructWorldData(world).blockCollection, transform, new float[]{1, 1, 1})),
-                    lowerCoord, ticks, partialTicks);
+                    cachedShapeGrid != null ? cachedShapeGrid : (cachedShapeGrid = BlockQuadCache.createQuadCache(structure.constructWorldData(world).blockCollection, new float[]{1, 1, 1})),
+                    transform, lowerCoord, ticks, partialTicks);
         }
 
         if (previewType == PreviewType.BOUNDING_BOX || previewType == PreviewType.SHAPE)

@@ -100,7 +100,7 @@ commands.rcpreview.invalid=Invalid preview type
 commands.rcpreview.success=Preview type set to '%s'
 
 commands.rc.noOperation=No currently queued operation
-commands.rc.queuedOp=The operation is now being previewed. Type /#confirm or /#cancel.
+commands.rc.queuedOp=Operation in preview - §a/#confirm§r or §c/#cancel§r.
 commands.rcconfirm.usage=/#confirm
 commands.rccancel.usage=/#cancel
 

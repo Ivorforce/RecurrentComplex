@@ -83,7 +83,7 @@ public class CommandSelectNatural extends CommandSelectModify
 
                     if ((block.getMaterial() != Material.air && block != airBlock1))
                     {
-                        if (block.isNormalCube(world, surfaceCoord.x, y, surfaceCoord.z) && y > lowerPoint.y)
+                        if (block.isNormalCube(world, surfaceCoord.x, y, surfaceCoord.z) && block != floorBlock && y > lowerPoint.y)
                         {
                             setBlockIfAirInArea(world, new BlockCoord(surfaceCoord.x, y - 1, surfaceCoord.z), floorBlock, area);
 

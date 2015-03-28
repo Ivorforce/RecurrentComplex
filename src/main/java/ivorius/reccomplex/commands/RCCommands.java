@@ -28,6 +28,8 @@ public class RCCommands
 
         event.registerServerCommand(new CommandSelect());
         event.registerServerCommand(new CommandSelectCrop());
+        event.registerServerCommand(new CommandSelectShrink());
+        event.registerServerCommand(new CommandSelectExpand());
 
         event.registerServerCommand(new CommandPreview());
         event.registerServerCommand(new CommandConfirm());

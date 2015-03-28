@@ -7,8 +7,10 @@ package ivorius.reccomplex.utils;
 
 import ivorius.ivtoolkit.blocks.BlockArea;
 import ivorius.ivtoolkit.blocks.BlockCoord;
+import ivorius.ivtoolkit.gui.IntegerRange;
 import net.minecraftforge.common.util.ForgeDirection;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 /**
@@ -67,10 +69,42 @@ public class BlockAreas
     @Nullable
     public static BlockArea shrink(BlockArea area, BlockCoord lower, BlockCoord higher)
     {
-        BlockCoord lowerCorner = area.getLowerCorner().add(lower);
-        BlockCoord higherCorner = area.getHigherCorner().subtract(higher);
-        return lowerCorner.x <= higherCorner.x && lowerCorner.y <= higherCorner.y && lowerCorner.z <= higherCorner.z
-                ? new BlockArea(lowerCorner, higherCorner)
+        BlockCoord p1 = area.getPoint1();
+        BlockCoord p2 = area.getPoint2();
+        IntegerRange x = shrink(p1.x, p2.x, lower.x, higher.x);
+        IntegerRange y = shrink(p1.y, p2.y, lower.y, higher.y);
+        IntegerRange z = shrink(p1.z, p2.z, lower.z, higher.z);
+
+        return x != null && y != null && z != null
+                ? new BlockArea(new BlockCoord(x.min, y.min, z.min), new BlockCoord(x.max, y.max, z.max))
                 : null;
+    }
+
+    @Nullable
+    private static IntegerRange shrink(int l, int r, int shrMin, int shrMax)
+    {
+        boolean c = l < r;
+        return Math.abs(l - r) >= shrMin + shrMax
+                ? new IntegerRange(c ? l + shrMin : l - shrMax, c ? r - shrMax : r + shrMin)
+                : null;
+    }
+
+    @Nonnull
+    public static BlockArea expand(BlockArea area, BlockCoord lower, BlockCoord higher)
+    {
+        BlockCoord p1 = area.getPoint1();
+        BlockCoord p2 = area.getPoint2();
+        IntegerRange x = expand(p1.x, p2.x, lower.x, higher.x);
+        IntegerRange y = expand(p1.y, p2.y, lower.y, higher.y);
+        IntegerRange z = expand(p1.z, p2.z, lower.z, higher.z);
+
+        return new BlockArea(new BlockCoord(x.min, y.min, z.min), new BlockCoord(x.max, y.max, z.max));
+    }
+
+    @Nonnull
+    private static IntegerRange expand(int l, int r, int expMin, int expMax)
+    {
+        boolean c = l < r;
+        return new IntegerRange(c ? l - expMin : l + expMax, c ? r + expMax : r - expMin);
     }
 }

@@ -12,7 +12,6 @@ import ivorius.ivtoolkit.blocks.BlockCoord;
 import ivorius.reccomplex.RCConfig;
 import ivorius.reccomplex.entities.StructureEntityInfo;
 import ivorius.reccomplex.utils.BlockAreas;
-import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.command.WrongUsageException;
@@ -20,48 +19,34 @@ import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
 
-import java.util.List;
-
 /**
  * Created by lukas on 09.06.14.
  */
-public class CommandSelectCrop extends CommandSelectModify
+public class CommandSelectShrink extends CommandSelectModify
 {
     @Override
     public String getCommandName()
     {
-        return RCConfig.commandPrefix + "crop";
+        return RCConfig.commandPrefix + "shrink";
     }
 
     @Override
     public String getCommandUsage(ICommandSender var1)
     {
-        return "commands.selectCrop.usage";
+        return "commands.selectShrink.usage";
     }
 
     @Override
     public void processCommandSelection(EntityPlayerMP player, StructureEntityInfo structureEntityInfo, BlockCoord point1, BlockCoord point2, String[] args)
     {
-        World world = player.getEntityWorld();
-        BlockArea area = new BlockArea(point1, point2);
+        if (args.length < 3)
+            throw new WrongUsageException("commands.selectShrink.usage");
 
-        for (ForgeDirection direction : ForgeDirection.VALID_DIRECTIONS)
-            while (area != null && isSideEmpty(world, area, direction))
-                area = BlockAreas.shrink(area, direction, 1);
+        int x = parseInt(player, args[0]), y = parseInt(player, args[1]), z = parseInt(player, args[2]);
+
+        BlockArea area = BlockAreas.shrink(new BlockArea(point1, point2), new BlockCoord(x, y, z), new BlockCoord(x, y, z));
 
         structureEntityInfo.setSelection(area);
         structureEntityInfo.sendSelectionToClients(player);
-    }
-
-    public static boolean isSideEmpty(final World world, BlockArea area, ForgeDirection direction)
-    {
-        return Iterables.all(BlockAreas.side(area, direction), new Predicate<BlockCoord>()
-        {
-            @Override
-            public boolean apply(BlockCoord coord)
-            {
-                return coord.getBlock(world).getMaterial() == Material.air;
-            }
-        });
     }
 }

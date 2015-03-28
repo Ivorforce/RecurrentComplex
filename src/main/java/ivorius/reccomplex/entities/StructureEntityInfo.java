@@ -7,6 +7,7 @@ package ivorius.reccomplex.entities;
 
 import cpw.mods.fml.common.network.ByteBufUtils;
 import io.netty.buffer.ByteBuf;
+import ivorius.ivtoolkit.blocks.BlockArea;
 import ivorius.ivtoolkit.blocks.BlockCoord;
 import ivorius.ivtoolkit.network.IvNetworkHelperServer;
 import ivorius.ivtoolkit.network.PartialUpdateHandler;
@@ -51,6 +52,20 @@ public class StructureEntityInfo implements IExtendedEntityProperties, PartialUp
     public boolean hasValidSelection()
     {
         return selectedPoint1 != null && selectedPoint2 != null;
+    }
+
+    public void setSelection(BlockArea area)
+    {
+        if (area != null)
+        {
+            selectedPoint1 = area.getPoint1();
+            selectedPoint2 = area.getPoint2();
+        }
+        else
+        {
+            selectedPoint1 = null;
+            selectedPoint2 = null;
+        }
     }
 
     public void sendSelectionToClients(Entity entity)

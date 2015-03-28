@@ -10,7 +10,6 @@ import cpw.mods.fml.common.registry.VillagerRegistry;
 import cpw.mods.fml.relauncher.ReflectionHelper;
 
 import java.lang.reflect.Field;
-import java.util.Collection;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
@@ -49,24 +48,37 @@ public class TemporaryVillagerRegistry
 
     public void register(VillagerRegistry.IVillageCreationHandler handler)
     {
-        VillagerRegistry.instance().registerVillageCreationHandler(handler);
+        addToRegistry(handler);
         registeredHandlers.add(handler);
+    }
+
+    private void addToRegistry(VillagerRegistry.IVillageCreationHandler handler)
+    {
+        VillagerRegistry.instance().registerVillageCreationHandler(handler);
     }
 
     public void unregister(VillagerRegistry.IVillageCreationHandler handler)
     {
+        removeFromRegistry(handler);
+        registeredHandlers.remove(handler);
+    }
+
+    private void removeFromRegistry(VillagerRegistry.IVillageCreationHandler handler)
+    {
         Map<Class<?>, VillagerRegistry.IVillageCreationHandler> map = getMap();
         if (map != null)
             map.remove(handler.getComponentClass());
-        registeredHandlers.remove(handler);
     }
 
     public void setHandlers(Set<VillagerRegistry.IVillageCreationHandler> handlers)
     {
         for (VillagerRegistry.IVillageCreationHandler handler : Sets.difference(registeredHandlers, handlers))
-            unregister(handler);
+            removeFromRegistry(handler);
 
         for (VillagerRegistry.IVillageCreationHandler handler : Sets.difference(handlers, registeredHandlers))
-            register(handler);
+            addToRegistry(handler);
+
+        registeredHandlers.clear();
+        registeredHandlers.addAll(handlers);
     }
 }

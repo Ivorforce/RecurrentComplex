@@ -66,6 +66,8 @@ commands.strucImport.noStructure=No structure registered by the name of '%s'
 
 commands.selectSet.usage=/#select <both|clear|point1|point2> [x] [y] [z]
 
+commands.selectCrop.usage=/#crop
+
 commands.selectModify.noSelection=Player does not have a complete selection
 commands.selectModify.invalidMetadata=Metadata must be entered like '0,1,5', but was '%s'
 

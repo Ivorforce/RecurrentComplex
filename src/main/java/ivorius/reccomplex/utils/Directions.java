@@ -82,11 +82,11 @@ public class Directions
         {
             default:
             case 0:
-                return NORTH;
+                return SOUTH;
             case 1:
                 return EAST;
             case 2:
-                return SOUTH;
+                return NORTH;
             case 3:
                 return WEST;
         }

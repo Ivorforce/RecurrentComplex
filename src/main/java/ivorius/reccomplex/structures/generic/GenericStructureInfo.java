@@ -25,6 +25,7 @@ import ivorius.reccomplex.structures.generic.matchers.BlockMatcher;
 import ivorius.reccomplex.structures.generic.matchers.DependencyMatcher;
 import ivorius.reccomplex.structures.generic.transformers.*;
 import ivorius.reccomplex.utils.RCAccessorEntity;
+import ivorius.reccomplex.utils.RCAccessorWorldServer;
 import ivorius.reccomplex.worldgen.inventory.InventoryGenerationHandler;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
@@ -35,6 +36,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.MathHelper;
 import net.minecraft.world.World;
+import net.minecraft.world.WorldServer;
 import net.minecraft.world.biome.BiomeGenBase;
 import net.minecraftforge.common.BiomeDictionary;
 
@@ -111,6 +113,11 @@ public class GenericStructureInfo implements StructureInfo, Cloneable
     {
         World world = context.world;
         Random random = context.random;
+
+        // The world initializes the block event array after it generates the world - in the constructor
+        // This hackily sets the field to a temporary value. Yay.
+        if (world instanceof WorldServer)
+            RCAccessorWorldServer.ensureBlockEventArray((WorldServer) world); // Hax
 
         IvWorldData worldData = constructWorldData(world);
 

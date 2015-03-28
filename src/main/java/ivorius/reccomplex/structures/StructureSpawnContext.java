@@ -56,7 +56,7 @@ public class StructureSpawnContext
         this.random = random;
         this.transform = transform;
         this.boundingBox = boundingBox;
-        this.generationBB = null;
+        this.generationBB = generationBB;
         this.generationLayer = generationLayer;
         this.generateAsSource = generateAsSource;
         this.isFirstTime = isFirstTime;

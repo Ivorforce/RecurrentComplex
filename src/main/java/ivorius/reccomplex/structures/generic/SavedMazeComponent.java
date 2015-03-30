@@ -5,16 +5,21 @@
 
 package ivorius.reccomplex.structures.generic;
 
+import com.google.common.base.Function;
+import com.google.common.collect.Lists;
 import com.google.gson.*;
 import ivorius.ivtoolkit.math.IvVecMathHelper;
 import ivorius.ivtoolkit.maze.MazePath;
 import ivorius.ivtoolkit.maze.MazeRoom;
+import ivorius.ivtoolkit.tools.NBTTagCompounds;
+import ivorius.ivtoolkit.tools.NBTTagLists;
 import ivorius.reccomplex.json.JsonUtils;
 import ivorius.reccomplex.utils.WeightedSelector;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraftforge.common.util.Constants;
 
+import javax.annotation.Nullable;
 import java.lang.reflect.Type;
 import java.util.*;
 
@@ -43,19 +48,21 @@ public class SavedMazeComponent implements WeightedSelector.Item
         else if (compound.hasKey("rooms", Constants.NBT.TAG_LIST))
         {
             // Legacy
-            NBTTagList roomsList = compound.getTagList("rooms", Constants.NBT.TAG_COMPOUND);
             rooms.clear();
-            for (int i = 0; i < roomsList.tagCount(); i++)
+            rooms.addAll(Lists.transform(NBTTagLists.compounds(compound, "rooms"), new Function<NBTTagCompound, Selection.Area>()
             {
-                MazeRoom room = new MazeRoom(roomsList.getCompoundTagAt(i));
-                rooms.add(new Selection.Area(true, room.coordinates, room.coordinates.clone()));
-            }
+                @Nullable
+                @Override
+                public Selection.Area apply(NBTTagCompound input)
+                {
+                    MazeRoom room = new MazeRoom(input);
+                    return new Selection.Area(true, room.coordinates, room.coordinates.clone());
+                }
+            }));
         }
 
-        NBTTagList exitsList = compound.getTagList("exits", Constants.NBT.TAG_COMPOUND);
         exitPaths.clear();
-        for (int i = 0; i < exitsList.tagCount(); i++)
-            exitPaths.add(new MazePath(exitsList.getCompoundTagAt(i)));
+        exitPaths.addAll(NBTTagCompounds.readFrom(compound, "exits", MazePath.class));
     }
 
     public boolean isValid()
@@ -110,10 +117,7 @@ public class SavedMazeComponent implements WeightedSelector.Item
         rooms.writeToNBT(roomsCompound);
         compound.setTag("rooms", roomsCompound);
 
-        NBTTagList exitsList = new NBTTagList();
-        for (MazePath exit : exitPaths)
-            exitsList.appendTag(exit.writeToNBT());
-        compound.setTag("exits", exitsList);
+        compound.setTag("exits", NBTTagCompounds.write(exitPaths));
     }
 
     @Override

@@ -5,29 +5,38 @@
 
 package ivorius.reccomplex.structures.generic.transformers;
 
+import com.google.common.base.Predicate;
+import com.google.common.collect.Iterables;
 import com.google.gson.*;
 import ivorius.ivtoolkit.blocks.BlockArea;
 import ivorius.ivtoolkit.blocks.BlockCoord;
 import ivorius.ivtoolkit.blocks.IvBlockCollection;
 import ivorius.ivtoolkit.tools.IvWorldData;
 import ivorius.ivtoolkit.tools.MCRegistry;
+import ivorius.ivtoolkit.tools.NBTTagCompounds;
 import ivorius.reccomplex.gui.editstructure.transformers.TableDataSourceBTRuins;
 import ivorius.reccomplex.gui.table.TableDataSource;
 import ivorius.reccomplex.gui.table.TableDelegate;
 import ivorius.reccomplex.gui.table.TableNavigator;
 import ivorius.reccomplex.json.JsonUtils;
 import ivorius.reccomplex.random.BlurredValueField;
+import ivorius.reccomplex.structures.StructureLoadContext;
+import ivorius.reccomplex.structures.StructurePrepareContext;
 import ivorius.reccomplex.structures.StructureSpawnContext;
+import ivorius.reccomplex.utils.NBTStorable;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.init.Blocks;
 import net.minecraft.inventory.IInventory;
+import net.minecraft.nbt.NBTBase;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.MathHelper;
 import net.minecraft.util.StatCollector;
 import net.minecraft.world.World;
 import net.minecraft.world.biome.BiomeGenBase;
 import net.minecraftforge.common.util.ForgeDirection;
+import org.apache.commons.lang3.tuple.Pair;
 
 import java.lang.reflect.Type;
 import java.util.Collection;
@@ -37,7 +46,7 @@ import java.util.Random;
 /**
  * Created by lukas on 25.05.14.
  */
-public class TransformerRuins implements Transformer
+public class TransformerRuins implements Transformer<TransformerRuins.InstanceData>
 {
     public static final ForgeDirection[] HORIZONTAL_DIRECTIONS = new ForgeDirection[]{ForgeDirection.NORTH, ForgeDirection.EAST, ForgeDirection.SOUTH, ForgeDirection.WEST};
 
@@ -62,12 +71,16 @@ public class TransformerRuins implements Transformer
         this.vineGrowth = vineGrowth;
     }
 
-    private static boolean skipBlock(Collection<Transformer> transformers, Block block, int meta)
+    private static boolean skipBlock(Collection<Pair<Transformer, NBTStorable>> transformers, final Block block, final int meta)
     {
-        for (Transformer transformer : transformers)
-            if (transformer.skipGeneration(block, meta))
-                return true;
-        return false;
+        return Iterables.any(transformers, new Predicate<Pair<Transformer, NBTStorable>>()
+        {
+            @Override
+            public boolean apply(Pair<Transformer, NBTStorable> input)
+            {
+                return input.getLeft().skipGeneration(input.getRight(), block, meta);
+            }
+        });
     }
 
     private static int getPass(Block block, int metadata)
@@ -118,32 +131,22 @@ public class TransformerRuins implements Transformer
     }
 
     @Override
-    public boolean skipGeneration(Block block, int metadata)
+    public boolean skipGeneration(InstanceData instanceData, Block block, int metadata)
     {
         return false;
     }
 
     @Override
-    public void transform(Phase phase, StructureSpawnContext context, IvWorldData worldData, List<Transformer> transformerList)
+    public void transform(InstanceData instanceData, Phase phase, StructureSpawnContext context, IvWorldData worldData, List<Pair<Transformer, NBTStorable>> transformers)
     {
-        // TODO Make partial
         IvBlockCollection blockCollection = worldData.blockCollection;
 
         BlockArea topdownArea = new BlockArea(new BlockCoord(0, blockCollection.height, 0), new BlockCoord(blockCollection.width, blockCollection.height, blockCollection.length));
         int[] size = context.boundingBoxSize();
 
-        if (minDecay > 0.0f || maxDecay > 0.0f)
+        BlurredValueField field = instanceData.blurredValueField;
+        if (field != null)
         {
-            float decayChaos = context.random.nextFloat() * this.decayChaos;
-            if (this.maxDecay - this.minDecay > decayChaos)
-                decayChaos = this.maxDecay - this.minDecay;
-
-            float center = context.random.nextFloat() * (this.maxDecay - this.minDecay) + this.minDecay;
-
-            BlurredValueField field = new BlurredValueField(size[0], size[2]);
-            for (int i = 0; i < size[0] * size[2] / 25; i++)
-                field.addValue(center + (context.random.nextFloat() - context.random.nextFloat()) * decayChaos * 2.0f, context.random);
-
             for (int pass = 1; pass >= 0; pass--)
             {
                 for (BlockCoord surfaceSourceCoord : topdownArea)
@@ -160,6 +163,7 @@ public class TransformerRuins implements Transformer
                     {
                         BlockCoord sourceCoord = new BlockCoord(surfaceSourceCoord.x, blockCollection.height - 1 - ySource, surfaceSourceCoord.z);
                         BlockCoord worldCoord = context.transform.apply(sourceCoord, size).add(context.lowerCoord());
+
                         if (context.includes(worldCoord))
                         {
                             Block block = blockCollection.getBlock(sourceCoord);
@@ -168,7 +172,7 @@ public class TransformerRuins implements Transformer
                             {
                                 int meta = blockCollection.getMetadata(sourceCoord);
 
-                                if (getPass(block, meta) == pass && !skipBlock(transformerList, block, meta))
+                                if (getPass(block, meta) == pass && !skipBlock(transformers, block, meta))
                                     setBlockToAirClean(context.world, worldCoord);
                             }
                         }
@@ -189,7 +193,7 @@ public class TransformerRuins implements Transformer
                     Block block = worldCoord.getBlock(context.world);
                     int meta = worldCoord.getMetadata(context.world);
 
-                    if (!skipBlock(transformerList, block, meta))
+                    if (!skipBlock(transformers, block, meta))
                         decayBlock(context.world, context.random, block, meta, worldCoord);
                 }
             }
@@ -262,9 +266,60 @@ public class TransformerRuins implements Transformer
     }
 
     @Override
-    public boolean generatesInPhase(Phase phase)
+    public InstanceData prepareInstanceData(StructurePrepareContext context)
+    {
+        InstanceData instanceData = new InstanceData();
+
+        if (minDecay > 0.0f || maxDecay > 0.0f)
+        {
+            int[] size = context.boundingBoxSize();
+
+            float decayChaos = context.random.nextFloat() * this.decayChaos;
+            if (this.maxDecay - this.minDecay > decayChaos)
+                decayChaos = this.maxDecay - this.minDecay;
+
+            float center = context.random.nextFloat() * (this.maxDecay - this.minDecay) + this.minDecay;
+
+            instanceData.blurredValueField = new BlurredValueField(size[0], size[2]);
+            for (int i = 0; i < size[0] * size[2] / 25; i++)
+                instanceData.blurredValueField.addValue(center + (context.random.nextFloat() - context.random.nextFloat()) * decayChaos * 2.0f, context.random);
+        }
+
+        return instanceData;
+    }
+
+    @Override
+    public InstanceData loadInstanceData(StructureLoadContext context, NBTBase nbt)
+    {
+        return new InstanceData(nbt instanceof NBTTagCompound ? (NBTTagCompound) nbt : new NBTTagCompound());
+    }
+
+    @Override
+    public boolean generatesInPhase(InstanceData instanceData, Phase phase)
     {
         return phase == Phase.AFTER;
+    }
+
+    public static class InstanceData implements NBTStorable
+    {
+        public BlurredValueField blurredValueField;
+
+        public InstanceData()
+        {
+        }
+
+        public InstanceData(NBTTagCompound compound)
+        {
+            blurredValueField = NBTTagCompounds.read(compound.getCompoundTag("field"), BlurredValueField.class);
+        }
+
+        @Override
+        public NBTBase writeToNBT()
+        {
+            NBTTagCompound compound = new NBTTagCompound();
+            compound.setTag("field", NBTTagCompounds.write(blurredValueField));
+            return compound;
+        }
     }
 
     public static class Serializer implements JsonDeserializer<TransformerRuins>, JsonSerializer<TransformerRuins>

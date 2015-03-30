@@ -24,11 +24,11 @@ public class Person
         LayerStatic endConsonants = new LayerStatic("b", "d", "f", "g", "h", "k", "l", "m", "n", "p", "r", "s", "t", "v", "w", "z", "ch", "gh", "nn", "st", "sh", "th", "tt", "ss", "pf", "nt");
 
         LayerSimple chaoticWord = new LayerSimple('c', startConsonants, 'v', vowels, 'd', endConsonants);
-        chaoticWord.addStrings(1, "vdv", "cvdvd", "cvd", "vdvd");
+        chaoticWord.addStrings(1.0, "vdv", "cvdvd", "cvd", "vdvd");
 
         LayerSimple baseChaoticName = new LayerSimple('n', new LayerUppercase(chaoticWord));
-        baseChaoticName.addStrings(4, "n");
-        baseChaoticName.addStrings(1, "n-n");
+        baseChaoticName.addStrings(4.0, "n");
+        baseChaoticName.addStrings(1.0, "n-n");
 
         chaoticNameGen = new LayeredStringGenerator(baseChaoticName);
     }

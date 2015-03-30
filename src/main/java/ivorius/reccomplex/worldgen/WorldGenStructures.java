@@ -46,7 +46,7 @@ public class WorldGenStructures implements IWorldGenerator
             int strucX = staticGenInfo.getPositionX(spawnPos);
             int strucZ = staticGenInfo.getPositionZ(spawnPos);
 
-            StructureGenerator.generateStructureRandomly(world, random, structureInfo, staticGenInfo.ySelector, strucX, strucZ, false, structureName);
+            StructureGenerator.randomInstantly(world, random, structureInfo, staticGenInfo.ySelector, strucX, strucZ, false, structureName);
         }
 
         if (world.provider.dimensionId == 0)
@@ -68,7 +68,7 @@ public class WorldGenStructures implements IWorldGenerator
                 int genX = chunkX * 16 + random.nextInt(16);
                 int genZ = chunkZ * 16 + random.nextInt(16);
 
-                StructureGenerator.generateStructureRandomly(world, random, structureInfo, pair.getRight().ySelector, genX, genZ, true, structureName);
+                StructureGenerator.randomInstantly(world, random, structureInfo, pair.getRight().ySelector, genX, genZ, true, structureName);
 
 //                RecurrentComplex.logger.info("Generated " + info + " at " + genX + ", " + genY + ", " + genZ);
             }

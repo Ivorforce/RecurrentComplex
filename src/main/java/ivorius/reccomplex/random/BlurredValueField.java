@@ -6,6 +6,9 @@
 package ivorius.reccomplex.random;
 
 import ivorius.ivtoolkit.math.IvVecMathHelper;
+import ivorius.ivtoolkit.tools.NBTCompoundObject;
+import ivorius.ivtoolkit.tools.NBTTagCompounds;
+import net.minecraft.nbt.NBTTagCompound;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -14,7 +17,7 @@ import java.util.Random;
 /**
  * Created by lukas on 12.10.14.
  */
-public class BlurredValueField
+public class BlurredValueField implements NBTCompoundObject
 {
     private final List<Value> values = new ArrayList<>();
 
@@ -74,7 +77,21 @@ public class BlurredValueField
         return retVal;
     }
 
-    public static class Value
+    @Override
+    public void readFromNBT(NBTTagCompound compound)
+    {
+        size = compound.getIntArray("size");
+        values.addAll(NBTTagCompounds.readFrom(compound, "values", Value.class));
+    }
+
+    @Override
+    public void writeToNBT(NBTTagCompound compound)
+    {
+        compound.setIntArray("size", size);
+        compound.setTag("values", NBTTagCompounds.write(values));
+    }
+
+    public static class Value implements NBTCompoundObject
     {
         private float value;
         private int[] pos;
@@ -83,6 +100,20 @@ public class BlurredValueField
         {
             this.value = value;
             this.pos = pos;
+        }
+
+        @Override
+        public void readFromNBT(NBTTagCompound compound)
+        {
+            value = compound.getFloat("value");
+            pos = compound.getIntArray("pos");
+        }
+
+        @Override
+        public void writeToNBT(NBTTagCompound compound)
+        {
+            compound.setFloat("value", value);
+            compound.setIntArray("pos", pos);
         }
     }
 }

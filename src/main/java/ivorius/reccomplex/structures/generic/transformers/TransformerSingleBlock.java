@@ -9,26 +9,26 @@ import ivorius.ivtoolkit.blocks.BlockCoord;
 import ivorius.ivtoolkit.blocks.IvBlockCollection;
 import ivorius.ivtoolkit.tools.IvWorldData;
 import ivorius.reccomplex.structures.StructureSpawnContext;
+import ivorius.reccomplex.utils.NBTStorable;
 import net.minecraft.block.Block;
+import org.apache.commons.lang3.tuple.Pair;
 
 import java.util.List;
 
 /**
  * Created by lukas on 17.09.14.
  */
-public abstract class TransformerSingleBlock implements Transformer
+public abstract class TransformerSingleBlock<S extends NBTStorable> implements Transformer<S>
 {
     @Override
-    public boolean skipGeneration(Block block, int metadata)
+    public boolean skipGeneration(S instanceData, Block block, int metadata)
     {
         return matches(block, metadata);
     }
 
     @Override
-    public void transform(Phase phase, StructureSpawnContext context, IvWorldData worldData, List<Transformer> transformerList)
+    public void transform(S instanceData, Phase phase, StructureSpawnContext context, IvWorldData worldData, List<Pair<Transformer, NBTStorable>> transformers)
     {
-        // TODO Fix for partial generation
-
         IvBlockCollection blockCollection = worldData.blockCollection;
         int[] areaSize = new int[]{blockCollection.width, blockCollection.height, blockCollection.length};
         BlockCoord lowerCoord = context.lowerCoord();

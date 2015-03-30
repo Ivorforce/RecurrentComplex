@@ -8,12 +8,14 @@ package ivorius.reccomplex.structures.generic;
 import ivorius.ivtoolkit.blocks.BlockCoord;
 import ivorius.ivtoolkit.math.AxisAlignedTransform2D;
 import ivorius.ivtoolkit.maze.*;
-import ivorius.reccomplex.structures.StructureInfo;
-import ivorius.reccomplex.structures.StructureInfos;
-import ivorius.reccomplex.structures.StructureRegistry;
+import ivorius.ivtoolkit.tools.NBTCompoundObject;
+import ivorius.reccomplex.RecurrentComplex;
+import ivorius.reccomplex.structures.*;
 import ivorius.reccomplex.structures.generic.gentypes.MazeGenerationInfo;
+import ivorius.reccomplex.utils.NBTStorable;
 import ivorius.reccomplex.worldgen.StructureGenerator;
-import net.minecraft.util.MathHelper;
+import net.minecraft.nbt.NBTBase;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.world.World;
 import net.minecraft.world.gen.structure.StructureBoundingBox;
 import org.apache.commons.lang3.tuple.Pair;
@@ -28,7 +30,7 @@ import java.util.Random;
  */
 public class WorldGenMaze
 {
-    public static boolean generateMaze(World world, Random random, BlockCoord coord, List<MazeComponentPosition> placedComponents, int[] roomSize, int layer)
+    public static boolean generateMazeInstantly(World world, Random random, BlockCoord coord, List<MazeComponentPosition> placedComponents, int[] roomSize, int layer)
     {
         return generateMaze(world, random, coord, placedComponents, roomSize, layer, null, false);
     }
@@ -41,67 +43,42 @@ public class WorldGenMaze
         {
             MazeComponentInfo info = (MazeComponentInfo) position.getComponent().getIdentifier();
 
-            MazeRoom mazePosition = position.getPositionInMaze();
-//            int[] size = maze.getRoomSize(mazePosition, pathLengths, roomSize);
-            int[] scaledCompMazePosition = Maze.getRoomPosition(mazePosition, pathLengths, roomSize);
+            StructureInfo compStructureInfo = StructureRegistry.getStructure(info.structureID);
+            if (compStructureInfo != null)
+            {
+                MazeRoom mazePosition = position.getPositionInMaze();
+//                int[] size = maze.getRoomSize(mazePosition, pathLengths, roomSize);
+                int[] scaledCompMazePosition = Maze.getRoomPosition(mazePosition, pathLengths, roomSize);
 
-            AxisAlignedTransform2D componentTransform = info.transform;
-            StructureInfo compStructureInfo = info.structureInfo;
-            String compStructureName = StructureRegistry.getName(compStructureInfo);
+                AxisAlignedTransform2D componentTransform = info.transform;
 
-            int[] compStructureSize = StructureInfos.structureSize(compStructureInfo, componentTransform);
-            int[] compRoomSize = Maze.getRoomSize(position.getComponent().getSize(), pathLengths, roomSize);
-            int[] sizeDependentShift = new int[]{(compRoomSize[0] - compStructureSize[0]) / 2, (compRoomSize[1] - compStructureSize[1]) / 2, (compRoomSize[2] - compStructureSize[2]) / 2};
+                String compStructureName = StructureRegistry.getName(compStructureInfo);
 
-            BlockCoord compMazeCoordLower = coord.add(scaledCompMazePosition[0] + sizeDependentShift[0], scaledCompMazePosition[1] + sizeDependentShift[1], scaledCompMazePosition[2] + +sizeDependentShift[2]);
+                int[] compStructureSize = StructureInfos.structureSize(compStructureInfo, componentTransform);
+                int[] compRoomSize = Maze.getRoomSize(position.getComponent().getSize(), pathLengths, roomSize);
+                int[] sizeDependentShift = new int[]{(compRoomSize[0] - compStructureSize[0]) / 2, (compRoomSize[1] - compStructureSize[1]) / 2, (compRoomSize[2] - compStructureSize[2]) / 2};
 
-            if (boundingBox != null)
-                StructureGenerator.generateStructureWithNotifications(compStructureInfo, world, random, compMazeCoordLower, componentTransform, layer + 1, false, compStructureName);
+                BlockCoord compMazeCoordLower = coord.add(scaledCompMazePosition[0] + sizeDependentShift[0], scaledCompMazePosition[1] + sizeDependentShift[1], scaledCompMazePosition[2] + +sizeDependentShift[2]);
+
+                if (boundingBox != null)
+                    StructureGenerator.instantly(compStructureInfo, world, random, compMazeCoordLower, componentTransform, layer + 1, false, compStructureName);
+                else
+                {
+                    StructureBoundingBox compBoundingBox = StructureInfos.structureBoundingBox(compMazeCoordLower, compStructureSize);
+                    NBTStorable instanceData = compStructureInfo.loadInstanceData(new StructureLoadContext(componentTransform, compBoundingBox, false), info.instanceData);
+                    StructureGenerator.partially(compStructureInfo, world, random, compMazeCoordLower, componentTransform, compBoundingBox, layer + 1, compStructureName, instanceData, firstTime);
+                }
+            }
             else
-                StructureGenerator.generatePartialStructure(compStructureInfo, world, random, compMazeCoordLower, componentTransform, boundingBox, layer + 1, compStructureName, firstTime);
+            {
+                RecurrentComplex.logger.error(String.format("Could not find structure '%s' for maze", info.structureID));
+            }
         }
-
-//        for (int i = 0; i < maze.blocks.length; i++)
-//        {
-//            byte blockType = maze.blocks[i];
-//
-//            int[] mazePosition = maze.getCoordPosition(i);
-//
-//            int[] size = maze.getRoomSize(mazePosition, pathLengths, roomSize);
-//
-//            if (size[0] > 0 && size[1] > 0 && size[2] > 0)
-//            {
-//                int[] scaledMazePosition = maze.getRoomPosition(mazePosition, pathLengths, roomSize);
-//
-//                BlockCoord mazeCoordLower = startCoord.add(scaledMazePosition[0], scaledMazePosition[1], scaledMazePosition[2]);
-//                BlockCoord mazeCoordHigher = mazeCoordLower.add(size[0] - 1, size[1] - 1, size[2] - 1);
-//
-//                for (BlockCoord worldCoord : new BlockArea(mazeCoordLower, mazeCoordHigher))
-//                {
-//                    if (blockType == Maze.WALL)
-//                    {
-//                        world.setBlock(worldCoord.x, worldCoord.y, worldCoord.z, Blocks.stone);
-//                    }
-//                    else if (blockType == Maze.ROOM)
-//                    {
-//                        world.setBlockToAir(worldCoord.x, worldCoord.y, worldCoord.z);
-//                    }
-//                    else if (blockType == Maze.NULL)
-//                    {
-//                        world.setBlock(worldCoord.x, worldCoord.y, worldCoord.z, SGBlocks.negativeSpace);
-//                    }
-//                    else if (blockType == Maze.INVALID)
-//                    {
-//                        world.setBlock(worldCoord.x, worldCoord.y, worldCoord.z, Blocks.glass);
-//                    }
-//                }
-//            }
-//        }
 
         return true;
     }
 
-    public static List<MazeComponent> transformedComponents(Collection<Pair<StructureInfo, MazeGenerationInfo>> componentStructures)
+    public static List<MazeComponent> transformedComponents(Collection<Pair<StructureInfo, MazeGenerationInfo>> componentStructures, StructurePrepareContext context)
     {
         List<MazeComponent> transformedComponents = new ArrayList<>();
         for (Pair<StructureInfo, MazeGenerationInfo> pair : componentStructures)
@@ -130,8 +107,8 @@ public class WorldGenMaze
                     for (MazePath exit : comp.getExitPaths())
                         transformedExits.add(MazeGenerator.rotatedPath(exit, componentTransform, compSize));
 
-                    MazeComponentInfo compInfo = new MazeComponentInfo(info, componentTransform);
-                    transformedComponents.add(new MazeComponent(MathHelper.floor_double(splitCompWeight * 1000.0), compInfo, transformedRooms, transformedExits));
+                    MazeComponentInfo compInfo = new MazeComponentInfo(StructureRegistry.getName(info), componentTransform, info.prepareInstanceData(context).writeToNBT());
+                    transformedComponents.add(new MazeComponent(splitCompWeight, compInfo, transformedRooms, transformedExits));
                 }
             }
         }
@@ -139,15 +116,34 @@ public class WorldGenMaze
         return transformedComponents;
     }
 
-    public static class MazeComponentInfo
+    public static class MazeComponentInfo implements NBTCompoundObject
     {
-        public StructureInfo structureInfo;
+        public String structureID;
         public AxisAlignedTransform2D transform;
+        public NBTBase instanceData;
 
-        public MazeComponentInfo(StructureInfo structureInfo, AxisAlignedTransform2D transform)
+        public MazeComponentInfo(String structureID, AxisAlignedTransform2D transform, NBTBase instanceData)
         {
-            this.structureInfo = structureInfo;
+            this.structureID = structureID;
             this.transform = transform;
+            this.instanceData = instanceData;
+        }
+
+        @Override
+        public void readFromNBT(NBTTagCompound compound)
+        {
+            structureID = compound.getString("structureID");
+            transform = new AxisAlignedTransform2D(compound.getInteger("rotation"), compound.getBoolean("mirrorX"));
+            instanceData = compound.getTag("instanceData");
+        }
+
+        @Override
+        public void writeToNBT(NBTTagCompound compound)
+        {
+            compound.setString("structureID", structureID);
+            compound.setInteger("rotation", transform.getRotation());
+            compound.setBoolean("mirrorX", transform.isMirrorX());
+            compound.setTag("instanceData", instanceData);
         }
     }
 }

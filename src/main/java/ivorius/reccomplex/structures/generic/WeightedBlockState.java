@@ -13,6 +13,7 @@ import ivorius.reccomplex.json.JsonUtils;
 import ivorius.reccomplex.structures.MCRegistrySpecial;
 import ivorius.reccomplex.utils.WeightedSelector;
 import net.minecraft.block.Block;
+import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTTagCompound;
 
 import java.lang.reflect.Type;
@@ -40,6 +41,14 @@ public class WeightedBlockState implements WeightedSelector.Item
         this.tileEntityInfo = tileEntityInfo;
     }
 
+    public WeightedBlockState(NBTTagCompound compound)
+    {
+        weight = compound.hasKey("weight") ? compound.getDouble("weight") : null;
+        block = compound.hasKey("block") ? Block.getBlockFromName(compound.getString("block")) : null;
+        metadata = compound.getInteger("meta");
+        tileEntityInfo = compound.getString("tileEntityInfo");
+    }
+
     public static Gson createGson()
     {
         GsonBuilder builder = new GsonBuilder();
@@ -58,6 +67,18 @@ public class WeightedBlockState implements WeightedSelector.Item
     public double getWeight()
     {
         return weight != null ? weight : 1.0;
+    }
+
+    public NBTTagCompound writeToNBT()
+    {
+        NBTTagCompound compound = new NBTTagCompound();
+
+        if (weight != null) compound.setDouble("weight", weight);
+        if (block != null) compound.setString("block", Block.blockRegistry.getNameForObject(block));
+        compound.setInteger("meta", metadata);
+        compound.setString("tileEntityInfo", tileEntityInfo);
+
+        return compound;
     }
 
     public static class Serializer implements JsonDeserializer<WeightedBlockState>, JsonSerializer<WeightedBlockState>

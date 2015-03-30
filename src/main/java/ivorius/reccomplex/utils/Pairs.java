@@ -10,6 +10,9 @@ import com.google.common.collect.Iterables;
 import org.apache.commons.lang3.tuple.Pair;
 
 import javax.annotation.Nullable;
+import java.util.AbstractList;
+import java.util.Iterator;
+import java.util.List;
 
 /**
  * Created by lukas on 12.03.15.
@@ -40,5 +43,34 @@ public class Pairs
                 return Pair.of(input, right);
             }
         });
+    }
+
+    public static <L, R> List<Pair<L, R>> of(List<L> left, List<R> right)
+    {
+        return new PairList<>(left, right);
+    }
+
+    protected static class PairList<L, R> extends AbstractList<Pair<L, R>>
+    {
+        protected List<L> left;
+        protected List<R> right;
+
+        public PairList(List<L> left, List<R> right)
+        {
+            this.left = left;
+            this.right = right;
+        }
+
+        @Override
+        public Pair<L, R> get(int index)
+        {
+            return Pair.of(left.get(index), right.get(index));
+        }
+
+        @Override
+        public int size()
+        {
+            return Math.min(left.size(), right.size());
+        }
     }
 }

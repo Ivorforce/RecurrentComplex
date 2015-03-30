@@ -13,10 +13,13 @@ import ivorius.reccomplex.gui.table.TableDataSource;
 import ivorius.reccomplex.gui.table.TableDelegate;
 import ivorius.reccomplex.gui.table.TableNavigator;
 import ivorius.reccomplex.json.JsonUtils;
+import ivorius.reccomplex.structures.StructureLoadContext;
+import ivorius.reccomplex.structures.StructurePrepareContext;
 import ivorius.reccomplex.structures.StructureSpawnContext;
 import ivorius.reccomplex.structures.generic.WeightedBlockState;
 import ivorius.reccomplex.structures.generic.matchers.BlockMatcher;
 import ivorius.reccomplex.structures.generic.presets.WeightedBlockStatePresets;
+import ivorius.reccomplex.utils.NBTNone;
 import ivorius.reccomplex.utils.PresettedList;
 import ivorius.reccomplex.utils.WeightedSelector;
 import net.minecraft.block.Block;
@@ -36,7 +39,7 @@ import java.util.Random;
 /**
  * Created by lukas on 25.05.14.
  */
-public class TransformerReplace extends TransformerSingleBlock
+public class TransformerReplace extends TransformerSingleBlock<NBTNone>
 {
     public BlockMatcher sourceMatcher;
 
@@ -123,6 +126,18 @@ public class TransformerReplace extends TransformerSingleBlock
     }
 
     @Override
+    public NBTNone prepareInstanceData(StructurePrepareContext context)
+    {
+        return new NBTNone();
+    }
+
+    @Override
+    public NBTNone loadInstanceData(StructureLoadContext context, NBTBase nbt)
+    {
+        return new NBTNone();
+    }
+
+    @Override
     public String getDisplayString()
     {
         return "Replace: " + sourceMatcher.getDisplayString();
@@ -135,7 +150,7 @@ public class TransformerReplace extends TransformerSingleBlock
     }
 
     @Override
-    public boolean generatesInPhase(Phase phase)
+    public boolean generatesInPhase(NBTNone instanceData, Phase phase)
     {
         return phase == Phase.BEFORE;
     }

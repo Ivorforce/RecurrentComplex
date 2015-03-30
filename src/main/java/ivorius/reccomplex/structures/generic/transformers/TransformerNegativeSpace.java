@@ -14,9 +14,15 @@ import ivorius.reccomplex.gui.table.TableDataSource;
 import ivorius.reccomplex.gui.table.TableDelegate;
 import ivorius.reccomplex.gui.table.TableNavigator;
 import ivorius.reccomplex.json.JsonUtils;
+import ivorius.reccomplex.structures.StructureLoadContext;
+import ivorius.reccomplex.structures.StructurePrepareContext;
 import ivorius.reccomplex.structures.StructureSpawnContext;
 import ivorius.reccomplex.structures.generic.matchers.BlockMatcher;
+import ivorius.reccomplex.utils.NBTNone;
+import ivorius.reccomplex.utils.NBTStorable;
 import net.minecraft.block.Block;
+import net.minecraft.nbt.NBTBase;
+import org.apache.commons.lang3.tuple.Pair;
 
 import java.lang.reflect.Type;
 import java.util.List;
@@ -24,7 +30,7 @@ import java.util.List;
 /**
  * Created by lukas on 25.05.14.
  */
-public class TransformerNegativeSpace implements Transformer
+public class TransformerNegativeSpace implements Transformer<NBTNone>
 {
     public BlockMatcher sourceMatcher;
 
@@ -39,13 +45,13 @@ public class TransformerNegativeSpace implements Transformer
     }
 
     @Override
-    public boolean skipGeneration(Block block, int metadata)
+    public boolean skipGeneration(NBTNone instanceData, Block block, int metadata)
     {
         return sourceMatcher.apply(new BlockMatcher.BlockFragment(block, metadata));
     }
 
     @Override
-    public void transform(Phase phase, StructureSpawnContext context, IvWorldData worldData, List<Transformer> transformerList)
+    public void transform(NBTNone instanceData, Phase phase, StructureSpawnContext context, IvWorldData worldData, List<Pair<Transformer, NBTStorable>> transformers)
     {
 
     }
@@ -63,7 +69,19 @@ public class TransformerNegativeSpace implements Transformer
     }
 
     @Override
-    public boolean generatesInPhase(Phase phase)
+    public NBTNone prepareInstanceData(StructurePrepareContext context)
+    {
+        return new NBTNone();
+    }
+
+    @Override
+    public NBTNone loadInstanceData(StructureLoadContext context, NBTBase nbt)
+    {
+        return new NBTNone();
+    }
+
+    @Override
+    public boolean generatesInPhase(NBTNone instanceData, Phase phase)
     {
         return false;
     }

@@ -210,7 +210,8 @@ public class StructureRegistry
         ArrayList<Pair<StructureInfo, T>> pairsArrayList = new ArrayList<>();
         for (StructureInfo info : getAllGeneratingStructures())
         {
-            for (T t : info.generationInfos(clazz))
+            List<T> generationInfos = info.generationInfos(clazz);
+            for (T t : generationInfos)
                 pairsArrayList.add(Pair.of(info, t));
         }
         pairsArrayList.trimToSize();

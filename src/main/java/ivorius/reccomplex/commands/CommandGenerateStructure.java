@@ -25,7 +25,6 @@ import net.minecraft.world.World;
 
 import java.util.List;
 import java.util.Random;
-import java.util.Set;
 
 /**
  * Created by lukas on 25.05.14.
@@ -92,7 +91,7 @@ public class CommandGenerateStructure extends CommandBase
             OperationRegistry.queueOperation(new OperationGenerateStructure((GenericStructureInfo) structureInfo, transform, coord, false, structureName), commandSender);
         }
         else
-            StructureGenerator.generateStructureRandomly(world, world.rand, structureInfo, null, x, z, false, structureName);
+            StructureGenerator.randomInstantly(world, world.rand, structureInfo, null, x, z, false, structureName);
     }
 
     @Override

@@ -39,7 +39,8 @@ public class StructureSelector
 
         for (StructureInfo structureInfo : structures)
         {
-            for (NaturalGenerationInfo naturalGenerationInfo : structureInfo.generationInfos(NaturalGenerationInfo.class))
+            List<NaturalGenerationInfo> generationInfos = structureInfo.generationInfos(NaturalGenerationInfo.class);
+            for (NaturalGenerationInfo naturalGenerationInfo : generationInfos)
             {
                 double generationWeight = naturalGenerationInfo.getGenerationWeight(biome, provider);
 

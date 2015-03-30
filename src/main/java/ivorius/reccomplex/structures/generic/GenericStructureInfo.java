@@ -5,6 +5,8 @@
 
 package ivorius.reccomplex.structures.generic;
 
+import com.google.common.base.Predicate;
+import com.google.common.collect.Iterables;
 import com.google.gson.*;
 import ivorius.ivtoolkit.blocks.BlockCoord;
 import ivorius.ivtoolkit.blocks.IvBlockCollection;
@@ -14,16 +16,15 @@ import ivorius.reccomplex.blocks.GeneratingTileEntity;
 import ivorius.reccomplex.blocks.RCBlocks;
 import ivorius.reccomplex.json.JsonUtils;
 import ivorius.reccomplex.json.NbtToJson;
-import ivorius.reccomplex.structures.MCRegistrySpecial;
-import ivorius.reccomplex.structures.StructureInfo;
-import ivorius.reccomplex.structures.StructureRegistry;
-import ivorius.reccomplex.structures.StructureSpawnContext;
+import ivorius.reccomplex.structures.*;
 import ivorius.reccomplex.structures.generic.gentypes.MazeGenerationInfo;
 import ivorius.reccomplex.structures.generic.gentypes.NaturalGenerationInfo;
 import ivorius.reccomplex.structures.generic.gentypes.StructureGenerationInfo;
 import ivorius.reccomplex.structures.generic.matchers.BlockMatcher;
 import ivorius.reccomplex.structures.generic.matchers.DependencyMatcher;
 import ivorius.reccomplex.structures.generic.transformers.*;
+import ivorius.reccomplex.utils.NBTStorable;
+import ivorius.reccomplex.utils.Pairs;
 import ivorius.reccomplex.utils.RCAccessorEntity;
 import ivorius.reccomplex.utils.RCAccessorWorldServer;
 import ivorius.reccomplex.worldgen.inventory.InventoryGenerationHandler;
@@ -32,21 +33,26 @@ import net.minecraft.block.material.Material;
 import net.minecraft.entity.Entity;
 import net.minecraft.init.Blocks;
 import net.minecraft.inventory.IInventory;
+import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.NBTTagList;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.MathHelper;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldServer;
 import net.minecraft.world.biome.BiomeGenBase;
 import net.minecraftforge.common.BiomeDictionary;
+import net.minecraftforge.common.util.Constants;
+import org.apache.commons.lang3.tuple.Pair;
 
+import javax.annotation.Nullable;
 import java.lang.reflect.Type;
 import java.util.*;
 
 /**
  * Created by lukas on 24.05.14.
  */
-public class GenericStructureInfo implements StructureInfo, Cloneable
+public class GenericStructureInfo implements StructureInfo<GenericStructureInfo.InstanceData>, Cloneable
 {
     public static final int LATEST_VERSION = 3;
     public static final int MAX_GENERATING_LAYERS = 30;
@@ -109,35 +115,35 @@ public class GenericStructureInfo implements StructureInfo, Cloneable
     }
 
     @Override
-    public void generate(StructureSpawnContext context)
+    public void generate(final StructureSpawnContext context, InstanceData instanceData)
     {
         World world = context.world;
         Random random = context.random;
+        IvWorldData worldData = constructWorldData(world);
 
         // The world initializes the block event array after it generates the world - in the constructor
         // This hackily sets the field to a temporary value. Yay.
         if (world instanceof WorldServer)
             RCAccessorWorldServer.ensureBlockEventArray((WorldServer) world); // Hax
 
-        IvWorldData worldData = constructWorldData(world);
-
         IvBlockCollection blockCollection = worldData.blockCollection;
         int[] areaSize = new int[]{blockCollection.width, blockCollection.height, blockCollection.length};
         BlockCoord origin = context.lowerCoord();
 
-        List<GeneratingTileEntity> generatingTileEntities = new ArrayList<>();
         Map<BlockCoord, TileEntity> tileEntities = new HashMap<>();
         for (TileEntity tileEntity : worldData.tileEntities)
-        {
             tileEntities.put(new BlockCoord(tileEntity), tileEntity);
-        }
+
+        List<Pair<Transformer, NBTStorable>> transformers = Pairs.of(this.transformers, instanceData.transformers);
 
         if (!context.generateAsSource)
         {
-            for (Transformer transformer : transformers)
+            for (Pair<Transformer, NBTStorable> pair : transformers)
             {
-                if (transformer.generatesInPhase(Transformer.Phase.BEFORE))
-                    transformer.transform(Transformer.Phase.BEFORE, context, worldData, transformers);
+                Transformer transformer = pair.getLeft();
+                NBTStorable transformerData = pair.getRight();
+                if (transformer.generatesInPhase(transformerData, Transformer.Phase.BEFORE))
+                    transformer.transform(transformerData, Transformer.Phase.BEFORE, context, worldData, transformers);
             }
         }
 
@@ -151,7 +157,7 @@ public class GenericStructureInfo implements StructureInfo, Cloneable
                 BlockCoord worldPos = context.transform.apply(sourceCoord, areaSize).add(origin);
                 if (context.includes(worldPos))
                 {
-                    if (pass == getPass(block, meta) && (context.generateAsSource || transformer(block, meta) == null))
+                    if (pass == getPass(block, meta) && (context.generateAsSource || !skips(transformers, block, meta)))
                     {
                         if (context.setBlock(worldPos, block, meta))
                         {
@@ -171,11 +177,6 @@ public class GenericStructureInfo implements StructureInfo, Cloneable
                                         IInventory inventory = (IInventory) tileEntity;
                                         InventoryGenerationHandler.generateAllTags(inventory, random);
                                     }
-
-                                    if (tileEntity instanceof GeneratingTileEntity)
-                                    {
-                                        generatingTileEntities.add((GeneratingTileEntity) tileEntity);
-                                    }
                                 }
                             }
                             context.transform.rotateBlock(world, worldPos, block);
@@ -187,10 +188,12 @@ public class GenericStructureInfo implements StructureInfo, Cloneable
 
         if (!context.generateAsSource)
         {
-            for (Transformer transformer : transformers)
+            for (Pair<Transformer, NBTStorable> pair : transformers)
             {
-                if (transformer.generatesInPhase(Transformer.Phase.AFTER))
-                    transformer.transform(Transformer.Phase.AFTER, context, worldData, transformers);
+                Transformer transformer = pair.getLeft();
+                NBTStorable transformerData = pair.getRight();
+                if (transformer.generatesInPhase(transformerData, Transformer.Phase.AFTER))
+                    transformer.transform(transformerData, Transformer.Phase.AFTER, context, worldData, transformers);
             }
         }
 
@@ -211,13 +214,51 @@ public class GenericStructureInfo implements StructureInfo, Cloneable
 
         if (context.generationLayer < MAX_GENERATING_LAYERS)
         {
-            for (GeneratingTileEntity generatingTileEntity : generatingTileEntities)
-                generatingTileEntity.generate(context);
+            for (Map.Entry<BlockCoord, TileEntity> entry : tileEntities.entrySet())
+                if (entry.getValue() instanceof GeneratingTileEntity)
+                    ((GeneratingTileEntity) entry.getValue()).generate(context, instanceData.tileEntities.get(entry.getKey()));
         }
         else
         {
             RecurrentComplex.logger.warn("Structure generated with over " + MAX_GENERATING_LAYERS + " layers; most likely infinite loop!");
         }
+    }
+
+    @Override
+    public InstanceData prepareInstanceData(StructurePrepareContext context)
+    {
+        InstanceData instanceData = new InstanceData();
+
+        for (Transformer transformer : transformers)
+            instanceData.transformers.add(transformer.prepareInstanceData(context));
+
+        IvWorldData worldData = constructWorldData(null);
+
+        for (TileEntity tileEntity : worldData.tileEntities)
+            if (tileEntity instanceof GeneratingTileEntity)
+                instanceData.tileEntities.put(new BlockCoord(tileEntity), (NBTStorable) ((GeneratingTileEntity) tileEntity).prepareInstanceData(context));
+
+        return instanceData;
+    }
+
+    @Override
+    public InstanceData loadInstanceData(StructureLoadContext context, final NBTBase nbt)
+    {
+        InstanceData instanceData = new InstanceData();
+        instanceData.readFromNBT(context, nbt, transformers, constructWorldData(null));
+        return instanceData;
+    }
+
+    private boolean skips(List<Pair<Transformer, NBTStorable>> transformers, final Block block, final int metadata)
+    {
+        return Iterables.any(transformers, new Predicate<Pair<Transformer, NBTStorable>>()
+        {
+            @Override
+            public boolean apply(@Nullable Pair<Transformer, NBTStorable> input)
+            {
+                return input.getLeft().skipGeneration(input.getRight(), block, metadata);
+            }
+        });
     }
 
     public IvWorldData constructWorldData(World world)
@@ -253,19 +294,6 @@ public class GenericStructureInfo implements StructureInfo, Cloneable
     private int getPass(Block block, int metadata)
     {
         return (block.isNormalCube() || block.getMaterial() == Material.air) ? 0 : 1;
-    }
-
-    private Transformer transformer(Block block, int metadata)
-    {
-        for (Transformer transformer : transformers)
-        {
-            if (transformer.skipGeneration(block, metadata))
-            {
-                return transformer;
-            }
-        }
-
-        return null;
     }
 
     @Override
@@ -375,6 +403,67 @@ public class GenericStructureInfo implements StructureInfo, Cloneable
             jsonobject.add("customData", structureInfo.customData);
 
             return jsonobject;
+        }
+    }
+
+    public static class InstanceData implements NBTStorable
+    {
+        public static final String KEY_TRANSFORMERS = "transformers";
+        public static final String KEY_TILE_ENTITIES = "tileEntities";
+
+        public final List<NBTStorable> transformers = new ArrayList<>();
+        public final Map<BlockCoord, NBTStorable> tileEntities = new HashMap<>();
+
+        protected static NBTBase getTileEntityTag(NBTTagCompound tileEntityCompound, TileEntity tileEntity)
+        {
+            return tileEntityCompound.getTag(getTileEntityKey(new BlockCoord(tileEntity)));
+        }
+
+        private static String getTileEntityKey(BlockCoord coord)
+        {
+            return String.format("%d,%d,%d", coord.x, coord.y, coord.z);
+        }
+
+        public void readFromNBT(StructureLoadContext context, NBTBase nbt, List<Transformer> transformers, IvWorldData worldData)
+        {
+            NBTTagCompound compound = nbt instanceof NBTTagCompound ? (NBTTagCompound) nbt : new NBTTagCompound();
+
+            NBTTagList transformerDatas = compound.getTagList(InstanceData.KEY_TRANSFORMERS, Constants.NBT.TAG_LIST);
+            for (int i = 0; i < transformers.size(); i++)
+            {
+                NBTTagCompound transformerCompound = transformerDatas.getCompoundTagAt(i);
+                this.transformers.add(transformers.get(i).loadInstanceData(context, transformerCompound.getTag("data")));
+            }
+
+            NBTTagCompound tileEntityCompound = compound.getCompoundTag(InstanceData.KEY_TILE_ENTITIES);
+            for (TileEntity tileEntity : worldData.tileEntities)
+            {
+                if (tileEntity instanceof GeneratingTileEntity)
+                    tileEntities.put(new BlockCoord(tileEntity),
+                            (NBTStorable) ((GeneratingTileEntity) tileEntity).loadInstanceData(context, getTileEntityTag(tileEntityCompound, tileEntity)));
+            }
+        }
+
+        @Override
+        public NBTBase writeToNBT()
+        {
+            NBTTagCompound compound = new NBTTagCompound();
+
+            NBTTagList transformerDatas = new NBTTagList();
+            for (NBTStorable transformerData : this.transformers)
+            {
+                NBTTagCompound transformerCompound = new NBTTagCompound();
+                transformerCompound.setTag("data", transformerData.writeToNBT());
+                transformerDatas.appendTag(transformerCompound);
+            }
+            compound.setTag(KEY_TRANSFORMERS, transformerDatas);
+
+            NBTTagCompound tileEntityCompound = new NBTTagCompound();
+            for (Map.Entry<BlockCoord, NBTStorable> entry : tileEntities.entrySet())
+                tileEntityCompound.setTag(getTileEntityKey(entry.getKey()), entry.getValue().writeToNBT());
+            compound.setTag(KEY_TILE_ENTITIES, tileEntityCompound);
+
+            return compound;
         }
     }
 }

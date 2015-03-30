@@ -14,6 +14,7 @@ import ivorius.reccomplex.structures.StructureRegistry;
 import ivorius.reccomplex.structures.StructureInfo;
 import ivorius.reccomplex.structures.StructureSpawnContext;
 import ivorius.reccomplex.structures.generic.GenericStructureInfo;
+import ivorius.reccomplex.worldgen.StructureGenerator;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
@@ -22,7 +23,6 @@ import net.minecraft.util.MathHelper;
 import net.minecraft.world.World;
 
 import java.util.List;
-import java.util.Set;
 
 /**
  * Created by lukas on 25.05.14.
@@ -80,7 +80,7 @@ public class CommandImportStructure extends CommandBase
         }
         else
         {
-            structureInfo.generate(new StructureSpawnContext(world, world.rand, coord, transform, 0, true, structureInfo));
+            StructureGenerator.directly(structureInfo, new StructureSpawnContext(world, world.rand, coord, transform, 0, true, structureInfo));
         }
     }
 

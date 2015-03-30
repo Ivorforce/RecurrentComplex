@@ -12,21 +12,19 @@ import ivorius.ivtoolkit.blocks.BlockCoord;
 import ivorius.ivtoolkit.math.AxisAlignedTransform2D;
 import ivorius.ivtoolkit.tools.IvCollections;
 import ivorius.reccomplex.gui.editstructureblock.GuiEditStructureBlock;
-import ivorius.reccomplex.structures.StructureInfo;
-import ivorius.reccomplex.structures.StructureInfos;
-import ivorius.reccomplex.structures.StructureRegistry;
-import ivorius.reccomplex.structures.StructureSpawnContext;
+import ivorius.reccomplex.structures.*;
 import ivorius.reccomplex.structures.generic.gentypes.StructureListGenerationInfo;
 import ivorius.reccomplex.utils.Directions;
+import ivorius.reccomplex.utils.NBTStorable;
 import ivorius.reccomplex.utils.WeightedSelector;
 import ivorius.reccomplex.worldgen.StructureGenerator;
 import net.minecraft.client.Minecraft;
+import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.nbt.NBTTagString;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
-import net.minecraft.world.gen.structure.StructureBoundingBox;
 import net.minecraftforge.common.util.Constants;
 import net.minecraftforge.common.util.ForgeDirection;
 import org.apache.commons.lang3.tuple.Pair;
@@ -37,7 +35,7 @@ import java.util.*;
 /**
  * Created by lukas on 06.06.14.
  */
-public class TileEntityStructureGenerator extends TileEntity implements GeneratingTileEntity, TileEntityWithGUI
+public class TileEntityStructureGenerator extends TileEntity implements GeneratingTileEntity<TileEntityStructureGenerator.InstanceData>, TileEntityWithGUI
 {
     protected boolean simpleMode;
 
@@ -139,14 +137,11 @@ public class TileEntityStructureGenerator extends TileEntity implements Generati
     }
 
     @Override
-    public void generate(StructureSpawnContext context)
+    public InstanceData prepareInstanceData(StructurePrepareContext context)
     {
-        World world = context.world;
+        InstanceData instanceData = null;
         Random random = context.random;
         AxisAlignedTransform2D transform = context.transform;
-        int layer = context.generationLayer;
-
-        world.setBlockToAir(xCoord, yCoord, zCoord);
 
         if (simpleMode)
         {
@@ -164,7 +159,7 @@ public class TileEntityStructureGenerator extends TileEntity implements Generati
                     int[] strucSize = structureInfo.structureBoundingBox();
                     BlockCoord coord = transform.apply(structureShift, new int[]{1, 1, 1}).add(xCoord, yCoord, zCoord).subtract(transform.apply(new BlockCoord(0, 0, 0), strucSize));
 
-                    StructureGenerator.generatePartialStructure(structureInfo, world, random, coord, strucTransform, context.generationBB, layer, structureID, context.isFirstTime);
+                    instanceData = new InstanceData(structureID, coord, strucTransform, structureInfo.prepareInstanceData(context).writeToNBT());
                 }
             }
         }
@@ -184,7 +179,7 @@ public class TileEntityStructureGenerator extends TileEntity implements Generati
                     }
                 });
                 StructureInfo structureInfo = pair.getLeft();
-                String structureName = StructureRegistry.getName(structureInfo);
+                String structureID = StructureRegistry.getName(structureInfo);
                 StructureListGenerationInfo generationInfo = pair.getRight();
 
                 boolean mirrorX;
@@ -209,8 +204,34 @@ public class TileEntityStructureGenerator extends TileEntity implements Generati
                         .add(xCoord, yCoord, zCoord)
                         .subtract(transform.apply(new BlockCoord(0, 0, 0), strucSize));
 
-                StructureGenerator.generatePartialStructure(structureInfo, world, random, coord, strucTransform, context.generationBB, layer, structureName, context.isFirstTime);
+                instanceData = new InstanceData(structureID, coord, strucTransform, structureInfo.prepareInstanceData(context).writeToNBT());
             }
+        }
+
+        return instanceData != null ? instanceData : new InstanceData();
+    }
+
+    @Override
+    public InstanceData loadInstanceData(StructureLoadContext context, NBTBase nbt)
+    {
+        return new InstanceData(nbt instanceof NBTTagCompound ? (NBTTagCompound) nbt : new NBTTagCompound());
+    }
+
+    @Override
+    public void generate(StructureSpawnContext context, InstanceData instanceData)
+    {
+        World world = context.world;
+        Random random = context.random;
+        int layer = context.generationLayer;
+
+        if (context.includes(xCoord, yCoord, zCoord))
+            world.setBlockToAir(xCoord, yCoord, zCoord);
+
+        StructureInfo structureInfo = StructureRegistry.getStructure(instanceData.structureID);
+        if (structureInfo != null)
+        {
+            NBTStorable structureData = instanceData.loadInstanceData(structureInfo);
+            StructureGenerator.partially(structureInfo, world, random, instanceData.lowerCoord, instanceData.structureTransform, context.generationBB, layer, instanceData.structureID, structureData, context.isFirstTime);
         }
     }
 
@@ -265,18 +286,52 @@ public class TileEntityStructureGenerator extends TileEntity implements Generati
         Minecraft.getMinecraft().displayGuiScreen(new GuiEditStructureBlock(this));
     }
 
-//
-//    @Override
-//    public void onDataPacket(NetworkManager net, S35PacketUpdateTileEntity pkt)
-//    {
-//        readStructureDataFromNBT(pkt.func_148857_g());
-//    }
-//
-//    @Override
-//    public Packet getDescriptionPacket()
-//    {
-//        NBTTagCompound nbttagcompound = new NBTTagCompound();
-//        this.writeStructureDataToNBT(nbttagcompound);
-//        return new S35PacketUpdateTileEntity(this.xCoord, this.yCoord, this.zCoord, 0, nbttagcompound);
-//    }
+    public static class InstanceData implements NBTStorable
+    {
+        public String structureID;
+        public BlockCoord lowerCoord;
+        public AxisAlignedTransform2D structureTransform;
+
+        public NBTBase structureData;
+
+        public InstanceData()
+        {
+            structureID = "";
+        }
+
+        public InstanceData(String structureID, BlockCoord lowerCoord, AxisAlignedTransform2D structureTransform, NBTBase structureData)
+        {
+            this.structureID = structureID;
+            this.lowerCoord = lowerCoord;
+            this.structureTransform = structureTransform;
+            this.structureData = structureData;
+        }
+
+        public InstanceData(NBTTagCompound compound)
+        {
+            structureID = compound.getString("structureID");
+            lowerCoord = BlockCoord.readCoordFromNBT("lowerCoord", compound);
+            structureTransform = new AxisAlignedTransform2D(compound.getInteger("rotation"), compound.getBoolean("mirrorX"));
+            structureData = compound.getTag("structureData");
+        }
+
+        public NBTStorable loadInstanceData(StructureInfo structureInfo)
+        {
+            return structureInfo.loadInstanceData(new StructureLoadContext(structureTransform, StructureInfos.structureBoundingBox(lowerCoord, StructureInfos.structureSize(structureInfo, structureTransform)), false), structureData);
+        }
+
+        @Override
+        public NBTBase writeToNBT()
+        {
+            NBTTagCompound compound = new NBTTagCompound();
+
+            compound.setString("structureID", structureID);
+            BlockCoord.writeCoordToNBT("lowerCoord", lowerCoord, compound);
+            compound.setInteger("rotation", structureTransform.getRotation());
+            compound.setBoolean("mirrorX", structureTransform.isMirrorX());
+            compound.setTag("structureData", structureData);
+
+            return compound;
+        }
+    }
 }

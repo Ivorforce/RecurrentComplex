@@ -16,16 +16,21 @@ import ivorius.reccomplex.gui.table.TableDataSource;
 import ivorius.reccomplex.gui.table.TableDelegate;
 import ivorius.reccomplex.gui.table.TableNavigator;
 import ivorius.reccomplex.json.JsonUtils;
+import ivorius.reccomplex.structures.StructureLoadContext;
+import ivorius.reccomplex.structures.StructurePrepareContext;
 import ivorius.reccomplex.structures.StructureSpawnContext;
 import ivorius.reccomplex.structures.generic.WeightedBlockState;
 import ivorius.reccomplex.structures.generic.matchers.BlockMatcher;
 import ivorius.reccomplex.structures.generic.presets.WeightedBlockStatePresets;
+import ivorius.reccomplex.utils.NBTStorable;
 import ivorius.reccomplex.utils.PresettedList;
 import ivorius.reccomplex.utils.WeightedSelector;
 import net.minecraft.block.Block;
 import net.minecraft.init.Blocks;
+import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
+import org.apache.commons.lang3.tuple.Pair;
 
 import java.lang.reflect.Type;
 import java.util.Arrays;
@@ -35,7 +40,7 @@ import java.util.List;
 /**
  * Created by lukas on 25.05.14.
  */
-public class TransformerReplaceAll implements Transformer
+public class TransformerReplaceAll implements Transformer<TransformerReplaceAll.InstanceData>
 {
     public BlockMatcher sourceMatcher;
 
@@ -59,46 +64,48 @@ public class TransformerReplaceAll implements Transformer
     }
 
     @Override
-    public boolean skipGeneration(Block block, int metadata)
+    public boolean skipGeneration(InstanceData instanceData, Block block, int metadata)
+    {
+        return matches(instanceData, block, metadata);
+    }
+
+    public boolean matches(NBTStorable instanceData, Block block, int metadata)
     {
         return sourceMatcher.apply(new BlockMatcher.BlockFragment(block, metadata));
     }
 
     @Override
-    public void transform(Phase phase, StructureSpawnContext context, IvWorldData worldData, List<Transformer> transformerList)
+    public void transform(InstanceData instanceData, Phase phase, StructureSpawnContext context, IvWorldData worldData, List<Pair<Transformer, NBTStorable>> transformers)
     {
-        // TODO Fix for partial structures
-        IvBlockCollection blockCollection = worldData.blockCollection;
-
-        WeightedBlockState blockState;
-        if (destination.list.size() > 0)
-            blockState = WeightedSelector.selectItem(context.random, destination.list);
-        else
-            blockState = new WeightedBlockState(null, Blocks.air, 0, "");
-
-        int[] areaSize = new int[]{blockCollection.width, blockCollection.height, blockCollection.length};
-        BlockCoord lowerCoord = context.lowerCoord();
-
-        NBTTagCompound nbtTagCompound = blockState.tileEntityInfo.trim().length() > 0 && blockState.block.hasTileEntity(blockState.metadata)
-        ? TransformerReplace.tryParse(blockState.tileEntityInfo) : null;
-
-        for (BlockCoord sourceCoord : blockCollection)
+        WeightedBlockState blockState = instanceData.blockState;
+        if (blockState.block != null)
         {
-            BlockCoord worldCoord = context.transform.apply(sourceCoord, areaSize).add(lowerCoord);
-            if (context.includes(worldCoord))
+            IvBlockCollection blockCollection = worldData.blockCollection;
+
+            int[] areaSize = new int[]{blockCollection.width, blockCollection.height, blockCollection.length};
+            BlockCoord lowerCoord = context.lowerCoord();
+
+            NBTTagCompound nbtTagCompound = blockState.tileEntityInfo.trim().length() > 0 && blockState.block.hasTileEntity(blockState.metadata)
+                    ? TransformerReplace.tryParse(blockState.tileEntityInfo) : null;
+
+            for (BlockCoord sourceCoord : blockCollection)
             {
-                Block block = blockCollection.getBlock(sourceCoord);
-                int meta = blockCollection.getMetadata(sourceCoord);
-
-                if (skipGeneration(block, meta))
+                BlockCoord worldCoord = context.transform.apply(sourceCoord, areaSize).add(lowerCoord);
+                if (context.includes(worldCoord))
                 {
-                    context.world.setBlock(worldCoord.x, worldCoord.y, worldCoord.z, blockState.block, blockState.metadata, 3);
+                    Block block = blockCollection.getBlock(sourceCoord);
+                    int meta = blockCollection.getMetadata(sourceCoord);
 
-                    if (nbtTagCompound != null)
+                    if (matches(instanceData, block, meta))
                     {
-                        TileEntity tileentity = context.world.getTileEntity(worldCoord.x, worldCoord.y, worldCoord.z);
-                        if (tileentity != null)
-                            tileentity.readFromNBT(TransformerReplace.positionedCopy(nbtTagCompound, worldCoord));
+                        context.world.setBlock(worldCoord.x, worldCoord.y, worldCoord.z, blockState.block, blockState.metadata, 3);
+
+                        if (nbtTagCompound != null)
+                        {
+                            TileEntity tileentity = context.world.getTileEntity(worldCoord.x, worldCoord.y, worldCoord.z);
+                            if (tileentity != null)
+                                tileentity.readFromNBT(TransformerReplace.positionedCopy(nbtTagCompound, worldCoord));
+                        }
                     }
                 }
             }
@@ -118,9 +125,52 @@ public class TransformerReplaceAll implements Transformer
     }
 
     @Override
-    public boolean generatesInPhase(Phase phase)
+    public InstanceData prepareInstanceData(StructurePrepareContext context)
+    {
+        WeightedBlockState blockState;
+        if (destination.list.size() > 0)
+            blockState = WeightedSelector.selectItem(context.random, destination.list);
+        else
+            blockState = new WeightedBlockState(null, Blocks.air, 0, "");
+
+        return new InstanceData(blockState);
+    }
+
+    @Override
+    public InstanceData loadInstanceData(StructureLoadContext context, NBTBase nbt)
+    {
+        return new InstanceData(nbt instanceof NBTTagCompound ? (NBTTagCompound) nbt : new NBTTagCompound());
+    }
+
+    @Override
+    public boolean generatesInPhase(InstanceData instanceData, Phase phase)
     {
         return phase == Phase.BEFORE;
+    }
+
+    public static class InstanceData implements NBTStorable
+    {
+        public WeightedBlockState blockState;
+
+        public InstanceData(WeightedBlockState blockState)
+        {
+            this.blockState = blockState;
+        }
+
+        public InstanceData(NBTTagCompound compound)
+        {
+            this.blockState = new WeightedBlockState(compound.getCompoundTag("blockState"));
+        }
+
+        @Override
+        public NBTBase writeToNBT()
+        {
+            NBTTagCompound compound = new NBTTagCompound();
+
+            compound.setTag("blockState", blockState.writeToNBT());
+
+            return compound;
+        }
     }
 
     public static class Serializer implements JsonDeserializer<TransformerReplaceAll>, JsonSerializer<TransformerReplaceAll>

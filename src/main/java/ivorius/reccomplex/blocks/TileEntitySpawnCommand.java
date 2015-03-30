@@ -10,9 +10,13 @@ import cpw.mods.fml.relauncher.SideOnly;
 import ivorius.ivtoolkit.tools.IvCollections;
 import ivorius.reccomplex.RecurrentComplex;
 import ivorius.reccomplex.gui.editspawncommandblock.GuiEditSpawnCommandBlock;
+import ivorius.reccomplex.structures.StructureLoadContext;
+import ivorius.reccomplex.structures.StructurePrepareContext;
 import ivorius.reccomplex.structures.StructureSpawnContext;
+import ivorius.reccomplex.utils.NBTNone;
 import ivorius.reccomplex.utils.WeightedSelector;
 import net.minecraft.client.Minecraft;
+import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.network.NetworkManager;
@@ -28,7 +32,7 @@ import java.util.List;
 /**
  * Created by lukas on 06.06.14.
  */
-public class TileEntitySpawnCommand extends TileEntity implements GeneratingTileEntity, TileEntityWithGUI
+public class TileEntitySpawnCommand extends TileEntity implements GeneratingTileEntity<NBTNone>, TileEntityWithGUI
 {
     public List<Entry> entries = new ArrayList<>();
 
@@ -84,8 +88,9 @@ public class TileEntitySpawnCommand extends TileEntity implements GeneratingTile
     }
 
     @Override
-    public void generate(StructureSpawnContext context)
+    public void generate(StructureSpawnContext context, NBTNone instanceData)
     {
+        // TODO Fix for partial generation (if areas are affected?)
         if (context.includes(xCoord, yCoord, zCoord))
         {
             context.world.setBlockToAir(xCoord, yCoord, zCoord);
@@ -106,6 +111,18 @@ public class TileEntitySpawnCommand extends TileEntity implements GeneratingTile
                 }
             }
         }
+    }
+
+    @Override
+    public NBTNone prepareInstanceData(StructurePrepareContext context)
+    {
+        return new NBTNone();
+    }
+
+    @Override
+    public NBTNone loadInstanceData(StructureLoadContext context, NBTBase nbt)
+    {
+        return new NBTNone();
     }
 
     @Override

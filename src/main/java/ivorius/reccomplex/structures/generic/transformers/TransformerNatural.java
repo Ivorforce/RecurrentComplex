@@ -15,10 +15,14 @@ import ivorius.reccomplex.gui.table.TableDataSource;
 import ivorius.reccomplex.gui.table.TableDelegate;
 import ivorius.reccomplex.gui.table.TableNavigator;
 import ivorius.reccomplex.json.JsonUtils;
+import ivorius.reccomplex.structures.StructureLoadContext;
+import ivorius.reccomplex.structures.StructurePrepareContext;
 import ivorius.reccomplex.structures.StructureSpawnContext;
 import ivorius.reccomplex.structures.generic.matchers.BlockMatcher;
+import ivorius.reccomplex.utils.NBTNone;
 import net.minecraft.block.Block;
 import net.minecraft.init.Blocks;
+import net.minecraft.nbt.NBTBase;
 import net.minecraft.world.World;
 import net.minecraft.world.biome.BiomeGenBase;
 
@@ -30,7 +34,7 @@ import java.util.Random;
 /**
  * Created by lukas on 25.05.14.
  */
-public class TransformerNatural extends TransformerSingleBlock
+public class TransformerNatural extends TransformerSingleBlock<NBTNone>
 {
     public static final double NATURAL_EXPANSION_DISTANCE = 4.0;
     public static final double NATURAL_DISTANCE_RANDOMIZATION = 6.0;
@@ -150,9 +154,21 @@ public class TransformerNatural extends TransformerSingleBlock
     }
 
     @Override
-    public boolean generatesInPhase(Phase phase)
+    public boolean generatesInPhase(NBTNone instanceData, Phase phase)
     {
         return phase == Phase.BEFORE;
+    }
+
+    @Override
+    public NBTNone prepareInstanceData(StructurePrepareContext context)
+    {
+        return new NBTNone();
+    }
+
+    @Override
+    public NBTNone loadInstanceData(StructureLoadContext context, NBTBase nbt)
+    {
+        return new NBTNone();
     }
 
     @Override

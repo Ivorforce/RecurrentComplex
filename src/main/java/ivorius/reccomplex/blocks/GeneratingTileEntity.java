@@ -5,16 +5,20 @@
 
 package ivorius.reccomplex.blocks;
 
-import ivorius.ivtoolkit.math.AxisAlignedTransform2D;
+import ivorius.reccomplex.structures.StructureLoadContext;
+import ivorius.reccomplex.structures.StructurePrepareContext;
 import ivorius.reccomplex.structures.StructureSpawnContext;
-import net.minecraft.world.World;
-
-import java.util.Random;
+import ivorius.reccomplex.utils.NBTStorable;
+import net.minecraft.nbt.NBTBase;
 
 /**
  * Created by lukas on 06.06.14.
  */
-public interface GeneratingTileEntity
+public interface GeneratingTileEntity<S>
 {
-    void generate(StructureSpawnContext context);
+    S prepareInstanceData(StructurePrepareContext context);
+
+    S loadInstanceData(StructureLoadContext context, NBTBase nbt);
+
+    void generate(StructureSpawnContext context, S instanceData);
 }

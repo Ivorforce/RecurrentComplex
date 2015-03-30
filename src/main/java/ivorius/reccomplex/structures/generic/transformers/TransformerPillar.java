@@ -13,20 +13,23 @@ import ivorius.reccomplex.gui.table.TableDataSource;
 import ivorius.reccomplex.gui.table.TableDelegate;
 import ivorius.reccomplex.gui.table.TableNavigator;
 import ivorius.reccomplex.json.JsonUtils;
+import ivorius.reccomplex.structures.StructureLoadContext;
+import ivorius.reccomplex.structures.StructurePrepareContext;
 import ivorius.reccomplex.structures.StructureSpawnContext;
 import ivorius.reccomplex.structures.generic.matchers.BlockMatcher;
+import ivorius.reccomplex.utils.NBTNone;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.init.Blocks;
+import net.minecraft.nbt.NBTBase;
 import net.minecraft.world.World;
 
 import java.lang.reflect.Type;
-import java.util.Random;
 
 /**
  * Created by lukas on 25.05.14.
  */
-public class TransformerPillar extends TransformerSingleBlock
+public class TransformerPillar extends TransformerSingleBlock<NBTNone>
 {
     public BlockMatcher sourceMatcher;
 
@@ -54,6 +57,7 @@ public class TransformerPillar extends TransformerSingleBlock
     @Override
     public void transformBlock(StructureSpawnContext context, Phase phase, BlockCoord coord, Block sourceBlock, int sourceMetadata)
     {
+        // TODO Fix for partial generation
         World world = context.world;
 
         context.setBlock(coord.x, coord.y, coord.z, destBlock, destMetadata);
@@ -75,6 +79,18 @@ public class TransformerPillar extends TransformerSingleBlock
     }
 
     @Override
+    public NBTNone prepareInstanceData(StructurePrepareContext context)
+    {
+        return new NBTNone();
+    }
+
+    @Override
+    public NBTNone loadInstanceData(StructureLoadContext context, NBTBase nbt)
+    {
+        return new NBTNone();
+    }
+
+    @Override
     public String getDisplayString()
     {
         return "Pillar: " + sourceMatcher.getDisplayString() + "->" + destBlock.getLocalizedName();
@@ -87,7 +103,7 @@ public class TransformerPillar extends TransformerSingleBlock
     }
 
     @Override
-    public boolean generatesInPhase(Phase phase)
+    public boolean generatesInPhase(NBTNone instanceData, Phase phase)
     {
         return phase == Phase.BEFORE;
     }

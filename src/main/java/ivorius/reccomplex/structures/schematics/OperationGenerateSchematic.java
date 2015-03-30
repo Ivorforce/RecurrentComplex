@@ -7,7 +7,7 @@ package ivorius.reccomplex.structures.schematics;
 
 import ivorius.ivtoolkit.blocks.BlockCoord;
 import ivorius.ivtoolkit.math.AxisAlignedTransform2D;
-import ivorius.reccomplex.client.rendering.GridQuadCache;
+import ivorius.ivtoolkit.rendering.grid.GridQuadCache;
 import ivorius.reccomplex.client.rendering.OperationRenderer;
 import ivorius.reccomplex.client.rendering.SchematicQuadCache;
 import ivorius.reccomplex.operation.Operation;

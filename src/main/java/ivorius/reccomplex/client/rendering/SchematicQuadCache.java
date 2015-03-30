@@ -7,6 +7,7 @@ package ivorius.reccomplex.client.rendering;
 
 import com.google.common.base.Function;
 import ivorius.ivtoolkit.blocks.BlockCoord;
+import ivorius.ivtoolkit.rendering.grid.GridQuadCache;
 import ivorius.reccomplex.structures.schematics.SchematicFile;
 import net.minecraft.block.Block;
 import net.minecraftforge.common.util.ForgeDirection;

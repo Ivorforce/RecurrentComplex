@@ -10,7 +10,8 @@ import ivorius.reccomplex.blocks.TileEntityStructureGenerator;
 import ivorius.reccomplex.gui.GuiValidityStateIndicator;
 import ivorius.reccomplex.gui.table.*;
 import ivorius.reccomplex.structures.StructureRegistry;
-import ivorius.reccomplex.utils.Directions;
+import ivorius.ivtoolkit.blocks.Directions;
+import ivorius.reccomplex.utils.DirectionNames;
 import joptsimple.internal.Strings;
 
 import java.util.Arrays;
@@ -146,8 +147,8 @@ public class TableDataSourceStructureBlock extends TableDataSourceSegmented impl
             {
                 TableElementList.Option[] options = new TableElementList.Option[Directions.HORIZONTAL.length + 1];
                 for (int i = 0; i < Directions.HORIZONTAL.length; i++)
-                    options[i] = new TableElementList.Option(Directions.serialize(Directions.HORIZONTAL[i]), Directions.displayName(Directions.HORIZONTAL[i]));
-                options[Directions.HORIZONTAL.length] = new TableElementList.Option("none", Directions.displayName(null));
+                    options[i] = new TableElementList.Option(Directions.serialize(Directions.HORIZONTAL[i]), DirectionNames.of(Directions.HORIZONTAL[i]));
+                options[Directions.HORIZONTAL.length] = new TableElementList.Option("none", DirectionNames.of(null));
 
                 TableElementList element = new TableElementList("front", "Front",
                         structureGenerator.getFront() != null ? Directions.serialize(structureGenerator.getFront()) : "none", options);

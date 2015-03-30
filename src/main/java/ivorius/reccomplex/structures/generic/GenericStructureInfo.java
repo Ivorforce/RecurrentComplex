@@ -24,7 +24,7 @@ import ivorius.reccomplex.structures.generic.matchers.BlockMatcher;
 import ivorius.reccomplex.structures.generic.matchers.DependencyMatcher;
 import ivorius.reccomplex.structures.generic.transformers.*;
 import ivorius.reccomplex.utils.NBTStorable;
-import ivorius.reccomplex.utils.Pairs;
+import ivorius.ivtoolkit.tools.Pairs;
 import ivorius.reccomplex.utils.RCAccessorEntity;
 import ivorius.reccomplex.utils.RCAccessorWorldServer;
 import ivorius.reccomplex.worldgen.inventory.InventoryGenerationHandler;

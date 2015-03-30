@@ -8,6 +8,9 @@ package ivorius.reccomplex.client.rendering;
 import ivorius.ivtoolkit.blocks.BlockArea;
 import ivorius.ivtoolkit.blocks.BlockCoord;
 import ivorius.ivtoolkit.math.AxisAlignedTransform2D;
+import ivorius.ivtoolkit.rendering.grid.AreaRenderer;
+import ivorius.ivtoolkit.rendering.grid.CubeMesh;
+import ivorius.ivtoolkit.rendering.grid.GridQuadCache;
 import ivorius.reccomplex.utils.Icons;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.OpenGlHelper;
@@ -50,7 +53,7 @@ public class OperationRenderer
 
         GL11.glPushMatrix();
         GL11.glTranslated(lowerCoord.x, lowerCoord.y, lowerCoord.z);
-        applyTransformVisual(transform, cached.size);
+        applyTransformVisual(transform, cached.getSize());
 
         Tessellator tessellator = Tessellator.instance;
         tessellator.startDrawingQuads();

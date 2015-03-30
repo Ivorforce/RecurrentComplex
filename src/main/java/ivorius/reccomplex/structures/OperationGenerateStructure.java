@@ -7,6 +7,8 @@ package ivorius.reccomplex.structures;
 
 import ivorius.ivtoolkit.blocks.BlockCoord;
 import ivorius.ivtoolkit.math.AxisAlignedTransform2D;
+import ivorius.ivtoolkit.rendering.grid.BlockQuadCache;
+import ivorius.ivtoolkit.rendering.grid.GridQuadCache;
 import ivorius.reccomplex.client.rendering.*;
 import ivorius.reccomplex.operation.Operation;
 import ivorius.reccomplex.worldgen.StructureGenerator;

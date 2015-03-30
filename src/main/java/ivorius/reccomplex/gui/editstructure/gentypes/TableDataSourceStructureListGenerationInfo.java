@@ -9,7 +9,8 @@ import com.google.common.primitives.Ints;
 import ivorius.reccomplex.gui.GuiValidityStateIndicator;
 import ivorius.reccomplex.gui.table.*;
 import ivorius.reccomplex.structures.generic.gentypes.StructureListGenerationInfo;
-import ivorius.reccomplex.utils.Directions;
+import ivorius.ivtoolkit.blocks.Directions;
+import ivorius.reccomplex.utils.DirectionNames;
 import net.minecraftforge.common.util.ForgeDirection;
 
 /**
@@ -35,7 +36,7 @@ public class TableDataSourceStructureListGenerationInfo extends TableDataSourceS
     {
         TableElementList.Option[] options = new TableElementList.Option[directions.length];
         for (int i = 0; i < options.length; i++)
-            options[i] = new TableElementList.Option(Directions.serialize(directions[i]), Directions.displayName(directions[i]));
+            options[i] = new TableElementList.Option(Directions.serialize(directions[i]), DirectionNames.of(directions[i]));
         return options;
     }
 

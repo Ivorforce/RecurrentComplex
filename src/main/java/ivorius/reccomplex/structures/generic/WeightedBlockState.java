@@ -6,18 +6,14 @@
 package ivorius.reccomplex.structures.generic;
 
 import com.google.gson.*;
-import ivorius.ivtoolkit.maze.MazePath;
-import ivorius.ivtoolkit.maze.MazeRoom;
 import ivorius.ivtoolkit.tools.MCRegistry;
 import ivorius.reccomplex.json.JsonUtils;
 import ivorius.reccomplex.structures.MCRegistrySpecial;
-import ivorius.reccomplex.utils.WeightedSelector;
+import ivorius.ivtoolkit.random.WeightedSelector;
 import net.minecraft.block.Block;
-import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTTagCompound;
 
 import java.lang.reflect.Type;
-import java.util.regex.Matcher;
 
 /**
  * Created by lukas on 03.03.15.

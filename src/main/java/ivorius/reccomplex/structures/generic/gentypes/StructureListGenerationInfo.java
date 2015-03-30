@@ -6,23 +6,18 @@
 package ivorius.reccomplex.structures.generic.gentypes;
 
 import com.google.gson.*;
-import ivorius.reccomplex.gui.editstructure.gentypes.TableDataSourceStaticGenerationInfo;
 import ivorius.reccomplex.gui.editstructure.gentypes.TableDataSourceStructureListGenerationInfo;
 import ivorius.reccomplex.gui.table.TableDataSource;
 import ivorius.reccomplex.gui.table.TableDelegate;
 import ivorius.reccomplex.gui.table.TableNavigator;
 import ivorius.reccomplex.json.JsonUtils;
-import ivorius.reccomplex.structures.generic.GenerationYSelector;
-import ivorius.reccomplex.structures.generic.matchers.DimensionMatcher;
-import ivorius.reccomplex.utils.Directions;
-import ivorius.reccomplex.utils.WeightedSelector;
-import net.minecraft.util.ChunkCoordinates;
+import ivorius.ivtoolkit.blocks.Directions;
+import ivorius.ivtoolkit.random.WeightedSelector;
 import net.minecraft.util.StatCollector;
 import net.minecraftforge.common.util.ForgeDirection;
 
 import javax.annotation.Nonnull;
 import java.lang.reflect.Type;
-import java.util.Arrays;
 
 /**
  * Created by lukas on 21.02.15.

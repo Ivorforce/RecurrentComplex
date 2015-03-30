@@ -8,7 +8,9 @@ package ivorius.reccomplex.utils;
 import com.google.common.base.Function;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
-import com.google.common.primitives.Ints;
+import ivorius.ivtoolkit.tools.Pairs;
+import ivorius.ivtoolkit.tools.Ranges;
+import ivorius.ivtoolkit.tools.Visitor;
 import org.apache.commons.lang3.tuple.Pair;
 
 import javax.annotation.Nonnull;

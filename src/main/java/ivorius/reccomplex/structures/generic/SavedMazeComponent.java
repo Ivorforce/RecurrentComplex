@@ -14,9 +14,8 @@ import ivorius.ivtoolkit.maze.MazeRoom;
 import ivorius.ivtoolkit.tools.NBTTagCompounds;
 import ivorius.ivtoolkit.tools.NBTTagLists;
 import ivorius.reccomplex.json.JsonUtils;
-import ivorius.reccomplex.utils.WeightedSelector;
+import ivorius.ivtoolkit.random.WeightedSelector;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.nbt.NBTTagList;
 import net.minecraftforge.common.util.Constants;
 
 import javax.annotation.Nullable;

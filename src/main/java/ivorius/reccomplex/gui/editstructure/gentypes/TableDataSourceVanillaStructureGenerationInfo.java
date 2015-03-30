@@ -7,11 +7,10 @@ package ivorius.reccomplex.gui.editstructure.gentypes;
 
 import ivorius.ivtoolkit.blocks.BlockCoord;
 import ivorius.ivtoolkit.gui.FloatRange;
-import ivorius.ivtoolkit.gui.IntegerRange;
 import ivorius.reccomplex.gui.TableDataSourceExpression;
 import ivorius.reccomplex.gui.table.*;
 import ivorius.reccomplex.structures.generic.gentypes.VanillaStructureGenerationInfo;
-import ivorius.reccomplex.utils.Directions;
+import ivorius.ivtoolkit.blocks.Directions;
 
 /**
  * Created by lukas on 07.10.14.

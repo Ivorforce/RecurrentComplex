@@ -14,6 +14,7 @@ import ivorius.ivtoolkit.blocks.IvBlockCollection;
 import ivorius.ivtoolkit.tools.IvWorldData;
 import ivorius.ivtoolkit.tools.MCRegistry;
 import ivorius.ivtoolkit.tools.NBTTagCompounds;
+import ivorius.reccomplex.RecurrentComplex;
 import ivorius.reccomplex.gui.editstructure.transformers.TableDataSourceBTRuins;
 import ivorius.reccomplex.gui.table.TableDataSource;
 import ivorius.reccomplex.gui.table.TableDelegate;
@@ -35,6 +36,7 @@ import net.minecraft.util.MathHelper;
 import net.minecraft.util.StatCollector;
 import net.minecraft.world.World;
 import net.minecraft.world.biome.BiomeGenBase;
+import net.minecraft.world.gen.structure.StructureBoundingBox;
 import net.minecraftforge.common.util.ForgeDirection;
 import org.apache.commons.lang3.tuple.Pair;
 
@@ -144,6 +146,9 @@ public class TransformerRuins implements Transformer<TransformerRuins.InstanceDa
         BlockArea topdownArea = new BlockArea(new BlockCoord(0, blockCollection.height, 0), new BlockCoord(blockCollection.width, blockCollection.height, blockCollection.length));
         int[] size = context.boundingBoxSize();
 
+        StructureBoundingBox dropAreaBB = context.boundingBox;
+        RecurrentComplex.forgeEventHandler.disabledTileDropAreas.add(dropAreaBB);
+
         BlurredValueField field = instanceData.blurredValueField;
         if (field != null)
         {
@@ -198,6 +203,8 @@ public class TransformerRuins implements Transformer<TransformerRuins.InstanceDa
                 }
             }
         }
+
+        RecurrentComplex.forgeEventHandler.disabledTileDropAreas.remove(dropAreaBB);
     }
 
     public void decayBlock(World world, Random random, Block block, int meta, BlockCoord coord)

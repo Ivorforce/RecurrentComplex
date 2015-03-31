@@ -5,6 +5,8 @@
 
 package ivorius.reccomplex.events;
 
+import com.google.common.base.Predicate;
+import com.google.common.collect.Iterables;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -14,16 +16,24 @@ import ivorius.reccomplex.entities.StructureEntityInfo;
 import ivorius.reccomplex.items.ItemInputHandler;
 import ivorius.reccomplex.worldgen.WorldGenStructures;
 import net.minecraft.client.Minecraft;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.MathHelper;
+import net.minecraft.world.gen.structure.StructureBoundingBox;
 import net.minecraftforge.client.event.MouseEvent;
 import net.minecraftforge.client.event.RenderWorldLastEvent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.entity.EntityEvent;
+import net.minecraftforge.event.entity.EntityJoinWorldEvent;
 import net.minecraftforge.event.terraingen.PopulateChunkEvent;
 import org.lwjgl.opengl.GL11;
+
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 /**
  * Created by lukas on 24.05.14.
@@ -31,6 +41,8 @@ import org.lwjgl.opengl.GL11;
 public class RCForgeEventHandler
 {
     private WorldGenStructures worldGenStructures;
+
+    public final Set<StructureBoundingBox> disabledTileDropAreas = new HashSet<>();
 
     public RCForgeEventHandler()
     {
@@ -54,6 +66,27 @@ public class RCForgeEventHandler
         if (event.entity instanceof EntityPlayer)
         {
             StructureEntityInfo.initInEntity(event.entity);
+        }
+    }
+
+    @SubscribeEvent
+    public void onEntityDrop(EntityJoinWorldEvent event)
+    {
+        if (event.entity instanceof EntityItem)
+        {
+            final int entityX = MathHelper.floor_double(event.entity.posX);
+            final int entityY = MathHelper.floor_double(event.entity.posY);
+            final int entityZ = MathHelper.floor_double(event.entity.posZ);
+
+            if (Iterables.any(disabledTileDropAreas, new Predicate<StructureBoundingBox>()
+            {
+                @Override
+                public boolean apply(StructureBoundingBox input)
+                {
+                    return input.isVecInside(entityX, entityY, entityZ);
+                }
+            }))
+                event.setCanceled(true);
         }
     }
 

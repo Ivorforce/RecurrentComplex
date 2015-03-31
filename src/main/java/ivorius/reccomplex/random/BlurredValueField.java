@@ -23,6 +23,10 @@ public class BlurredValueField implements NBTCompoundObject
 
     private int[] size;
 
+    public BlurredValueField()
+    {
+    }
+
     public BlurredValueField(int... size)
     {
         this.size = size;
@@ -95,6 +99,10 @@ public class BlurredValueField implements NBTCompoundObject
     {
         private float value;
         private int[] pos;
+
+        public Value()
+        {
+        }
 
         public Value(float value, int[] pos)
         {

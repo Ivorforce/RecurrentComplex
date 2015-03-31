@@ -122,6 +122,10 @@ public class WorldGenMaze
         public AxisAlignedTransform2D transform;
         public NBTBase instanceData;
 
+        public MazeComponentInfo()
+        {
+        }
+
         public MazeComponentInfo(String structureID, AxisAlignedTransform2D transform, NBTBase instanceData)
         {
             this.structureID = structureID;

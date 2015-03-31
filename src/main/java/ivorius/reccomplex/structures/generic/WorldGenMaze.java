@@ -60,14 +60,9 @@ public class WorldGenMaze
 
                 BlockCoord compMazeCoordLower = coord.add(scaledCompMazePosition[0] + sizeDependentShift[0], scaledCompMazePosition[1] + sizeDependentShift[1], scaledCompMazePosition[2] + +sizeDependentShift[2]);
 
-                if (boundingBox != null)
-                    StructureGenerator.instantly(compStructureInfo, world, random, compMazeCoordLower, componentTransform, layer + 1, false, compStructureName);
-                else
-                {
-                    StructureBoundingBox compBoundingBox = StructureInfos.structureBoundingBox(compMazeCoordLower, compStructureSize);
-                    NBTStorable instanceData = compStructureInfo.loadInstanceData(new StructureLoadContext(componentTransform, compBoundingBox, false), info.instanceData);
-                    StructureGenerator.partially(compStructureInfo, world, random, compMazeCoordLower, componentTransform, compBoundingBox, layer + 1, compStructureName, instanceData, firstTime);
-                }
+                StructureBoundingBox compBoundingBox = StructureInfos.structureBoundingBox(compMazeCoordLower, compStructureSize);
+                NBTStorable instanceData = compStructureInfo.loadInstanceData(new StructureLoadContext(componentTransform, compBoundingBox, false), info.instanceData);
+                StructureGenerator.partially(compStructureInfo, world, random, compMazeCoordLower, componentTransform, boundingBox, layer + 1, compStructureName, instanceData, firstTime);
             }
             else
             {

@@ -104,7 +104,7 @@ public class TileEntityMazeGenerator extends TileEntity implements GeneratingTil
     public InstanceData prepareInstanceData(StructurePrepareContext context)
     {
         InstanceData instanceData = new InstanceData();
-        instanceData.placedComponents = getPlacedRooms(context.random, context.transform, context);
+        instanceData.placedComponents = getPlacedRooms(context);
         return instanceData;
     }
 
@@ -136,7 +136,7 @@ public class TileEntityMazeGenerator extends TileEntity implements GeneratingTil
         WorldGenMaze.generateMaze(world, context.random, startCoord, placedComponents, roomSize, layer, context.generationBB, context.isFirstTime);
     }
 
-    public List<MazeComponentPosition> getPlacedRooms(Random random, AxisAlignedTransform2D transform, StructurePrepareContext context)
+    public List<MazeComponentPosition> getPlacedRooms(StructurePrepareContext context)
     {
         if (mazeRooms.isEmpty())
             return null;
@@ -155,17 +155,17 @@ public class TileEntityMazeGenerator extends TileEntity implements GeneratingTil
 
         Collection<MazeRoom> blockedRooms = mazeRooms.mazeRooms(false);
 
-        MazeGenerator.generateStartPathsForEnclosedMaze(maze, mazeExits, blockedRooms, transform);
+        MazeGenerator.generateStartPathsForEnclosedMaze(maze, mazeExits, blockedRooms, context.transform);
         for (int i = 0; i < roomNumbers[0] * roomNumbers[1] * roomNumbers[2] / (5 * 5 * 5) + 1; i++)
         {
-            MazePath randPath = MazeGenerator.randomEmptyPathInMaze(random, maze, pathDims);
+            MazePath randPath = MazeGenerator.randomEmptyPathInMaze(context.random, maze, pathDims);
             if (randPath != null)
                 maze.set(Maze.ROOM, randPath);
             else
                 break;
         }
 
-        return MazeGeneratorWithComponents.generatePaths(random, maze, transformedComponents);
+        return MazeGeneratorWithComponents.generatePaths(context.random, maze, transformedComponents);
     }
 
     @Override

@@ -132,7 +132,11 @@ public class GenericStructureInfo implements StructureInfo<GenericStructureInfo.
 
         Map<BlockCoord, TileEntity> tileEntities = new HashMap<>();
         for (TileEntity tileEntity : worldData.tileEntities)
-            tileEntities.put(new BlockCoord(tileEntity), tileEntity);
+        {
+            BlockCoord key = new BlockCoord(tileEntity);
+            tileEntities.put(key, tileEntity);
+            IvWorldData.setTileEntityPosForGeneration(tileEntity, context.transform.apply(key, areaSize).add(origin));
+        }
 
         List<Pair<Transformer, NBTStorable>> transformers = Pairs.of(this.transformers, instanceData.transformers);
 
@@ -166,7 +170,6 @@ public class GenericStructureInfo implements StructureInfo<GenericStructureInfo.
                             {
                                 world.setBlockMetadataWithNotify(worldPos.x, worldPos.y, worldPos.z, meta, 2); // TODO Figure out why some blocks (chests, furnace) need this
 
-                                IvWorldData.setTileEntityPosForGeneration(tileEntity, worldPos);
                                 world.setTileEntity(worldPos.x, worldPos.y, worldPos.z, tileEntity);
                                 tileEntity.updateContainingBlockInfo();
 
@@ -233,10 +236,16 @@ public class GenericStructureInfo implements StructureInfo<GenericStructureInfo.
             instanceData.transformers.add(transformer.prepareInstanceData(context));
 
         IvWorldData worldData = constructWorldData(null);
+        int[] areaSize = context.boundingBoxSize();
+        BlockCoord origin = context.lowerCoord();
 
         for (TileEntity tileEntity : worldData.tileEntities)
             if (tileEntity instanceof GeneratingTileEntity)
-                instanceData.tileEntities.put(new BlockCoord(tileEntity), (NBTStorable) ((GeneratingTileEntity) tileEntity).prepareInstanceData(context));
+            {
+                BlockCoord key = new BlockCoord(tileEntity);
+                IvWorldData.setTileEntityPosForGeneration(tileEntity, context.transform.apply(key, areaSize).add(origin));
+                instanceData.tileEntities.put(key, (NBTStorable) ((GeneratingTileEntity) tileEntity).prepareInstanceData(context));
+            }
 
         return instanceData;
     }
@@ -414,9 +423,9 @@ public class GenericStructureInfo implements StructureInfo<GenericStructureInfo.
         public final List<NBTStorable> transformers = new ArrayList<>();
         public final Map<BlockCoord, NBTStorable> tileEntities = new HashMap<>();
 
-        protected static NBTBase getTileEntityTag(NBTTagCompound tileEntityCompound, TileEntity tileEntity)
+        protected static NBTBase getTileEntityTag(NBTTagCompound tileEntityCompound, BlockCoord coord)
         {
-            return tileEntityCompound.getTag(getTileEntityKey(new BlockCoord(tileEntity)));
+            return tileEntityCompound.getTag(getTileEntityKey(coord));
         }
 
         private static String getTileEntityKey(BlockCoord coord)
@@ -435,12 +444,18 @@ public class GenericStructureInfo implements StructureInfo<GenericStructureInfo.
                 this.transformers.add(transformers.get(i).loadInstanceData(context, transformerCompound.getTag("data")));
             }
 
+            int[] areaSize = context.boundingBoxSize();
+            BlockCoord origin = context.lowerCoord();
+
             NBTTagCompound tileEntityCompound = compound.getCompoundTag(InstanceData.KEY_TILE_ENTITIES);
             for (TileEntity tileEntity : worldData.tileEntities)
             {
                 if (tileEntity instanceof GeneratingTileEntity)
-                    tileEntities.put(new BlockCoord(tileEntity),
-                            (NBTStorable) ((GeneratingTileEntity) tileEntity).loadInstanceData(context, getTileEntityTag(tileEntityCompound, tileEntity)));
+                {
+                    BlockCoord key = new BlockCoord(tileEntity);
+                    IvWorldData.setTileEntityPosForGeneration(tileEntity, context.transform.apply(key, areaSize).add(origin));
+                    tileEntities.put(key, (NBTStorable) ((GeneratingTileEntity) tileEntity).loadInstanceData(context, getTileEntityTag(tileEntityCompound, key)));
+                }
             }
         }
 

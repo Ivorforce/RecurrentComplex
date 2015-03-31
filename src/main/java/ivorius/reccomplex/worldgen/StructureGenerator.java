@@ -30,11 +30,11 @@ public class StructureGenerator
 {
     public static final int MIN_DIST_TO_LIMIT = 1;
 
-    public static void partially(StructureInfo structureInfo, World world, Random random, BlockCoord coord, AxisAlignedTransform2D transform, @Nullable StructureBoundingBox boundingBox, int layer, String structureName, NBTStorable instanceData, boolean firstTime)
+    public static void partially(StructureInfo structureInfo, World world, Random random, BlockCoord coord, AxisAlignedTransform2D transform, @Nullable StructureBoundingBox generationBB, int layer, String structureName, NBTStorable instanceData, boolean firstTime)
     {
         StructureBoundingBox structureBoundingBox = StructureInfos.structureBoundingBox(coord, StructureInfos.structureSize(structureInfo, transform));
 
-        StructureSpawnContext structureSpawnContext = new StructureSpawnContext(world, random, structureBoundingBox, boundingBox, layer, false, transform, firstTime);
+        StructureSpawnContext structureSpawnContext = new StructureSpawnContext(world, random, structureBoundingBox, generationBB, layer, false, transform, firstTime);
         structureInfo.generate(structureSpawnContext, instanceData);
 
         if (firstTime)
@@ -65,7 +65,7 @@ public class StructureGenerator
         return genY;
     }
 
-    public static boolean instantly(StructureInfo structureInfo, World world, Random random, BlockCoord coord, AxisAlignedTransform2D transform, int layer, boolean suggest, String structureName)
+    public static boolean instantly(StructureInfo structureInfo, World world, Random random, BlockCoord coord, AxisAlignedTransform2D transform, int layer, boolean suggest, String structureID)
     {
         int[] size = StructureInfos.structureSize(structureInfo, transform);
         int[] coordInts = new int[]{coord.x, coord.y, coord.z};
@@ -76,26 +76,26 @@ public class StructureGenerator
                 coord.y >= MIN_DIST_TO_LIMIT && coord.y + size[1] <= world.getHeight() - 1 - MIN_DIST_TO_LIMIT
                         && (!RCConfig.avoidOverlappingGeneration || StructureGenerationData.get(world).getEntries(structureSpawnContext.boundingBox).size() == 0)
                         && !RCEventBus.INSTANCE.post(new StructureGenerationEvent.Suggest(structureInfo, structureSpawnContext))
-                        && !MinecraftForge.EVENT_BUS.post(new StructureGenerationEventLite.Suggest(world, structureName, coordInts, size, layer))
+                        && !MinecraftForge.EVENT_BUS.post(new StructureGenerationEventLite.Suggest(world, structureID, coordInts, size, layer))
         ))
         {
             RCEventBus.INSTANCE.post(new StructureGenerationEvent.Pre(structureInfo, structureSpawnContext));
-            MinecraftForge.EVENT_BUS.post(new StructureGenerationEventLite.Pre(world, structureName, coordInts, size, layer));
+            MinecraftForge.EVENT_BUS.post(new StructureGenerationEventLite.Pre(world, structureID, coordInts, size, layer));
 
             structureInfo.generate(structureSpawnContext, structureInfo.prepareInstanceData(new StructurePrepareContext(random, transform, structureSpawnContext.boundingBox, structureSpawnContext.generateAsSource)));
 
-            RecurrentComplex.logger.trace(String.format("Generated structure '%s' in %s", name(structureName), structureSpawnContext.boundingBox));
+            RecurrentComplex.logger.trace(String.format("Generated structure '%s' in %s", name(structureID), structureSpawnContext.boundingBox));
 
             RCEventBus.INSTANCE.post(new StructureGenerationEvent.Post(structureInfo, structureSpawnContext));
-            MinecraftForge.EVENT_BUS.post(new StructureGenerationEventLite.Post(world, structureName, coordInts, size, layer));
+            MinecraftForge.EVENT_BUS.post(new StructureGenerationEventLite.Post(world, structureID, coordInts, size, layer));
 
-            if (structureName != null)
-                StructureGenerationData.get(world).addNewEntry(structureName, coord, transform);
+            if (structureID != null)
+                StructureGenerationData.get(world).addNewEntry(structureID, coord, transform);
 
             return true;
         }
         else
-            RecurrentComplex.logger.trace(String.format("Canceled structure '%s' generation in %s", structureName, structureSpawnContext.boundingBox));
+            RecurrentComplex.logger.trace(String.format("Canceled structure '%s' generation in %s", structureID, structureSpawnContext.boundingBox));
 
         return false;
     }

@@ -157,9 +157,10 @@ public class TileEntityStructureGenerator extends TileEntity implements Generati
                     AxisAlignedTransform2D strucTransform = AxisAlignedTransform2D.transform(rotations, mirrorX);
 
                     int[] strucSize = structureInfo.structureBoundingBox();
-                    BlockCoord coord = transform.apply(structureShift, new int[]{1, 1, 1}).add(xCoord, yCoord, zCoord).subtract(transform.apply(new BlockCoord(0, 0, 0), strucSize));
+                    BlockCoord coord = transform.apply(structureShift, new int[]{1, 1, 1})
+                            .subtract(transform.apply(new BlockCoord(0, 0, 0), strucSize));
 
-                    instanceData = new InstanceData(structureID, coord, strucTransform, structureInfo.prepareInstanceData(context).writeToNBT());
+                    instanceData = new InstanceData(structureID, coord, strucTransform, structureInfo.prepareInstanceData(context));
                 }
             }
         }
@@ -201,10 +202,9 @@ public class TileEntityStructureGenerator extends TileEntity implements Generati
 
                 int[] strucSize = structureInfo.structureBoundingBox();
                 BlockCoord coord = transform.apply(structureShift.add(generationInfo.shiftX, generationInfo.shiftY, generationInfo.shiftZ), new int[]{1, 1, 1})
-                        .add(xCoord, yCoord, zCoord)
                         .subtract(transform.apply(new BlockCoord(0, 0, 0), strucSize));
 
-                instanceData = new InstanceData(structureID, coord, strucTransform, structureInfo.prepareInstanceData(context).writeToNBT());
+                instanceData = new InstanceData(structureID, coord, strucTransform, structureInfo.prepareInstanceData(context));
             }
         }
 
@@ -228,11 +228,8 @@ public class TileEntityStructureGenerator extends TileEntity implements Generati
             world.setBlockToAir(xCoord, yCoord, zCoord);
 
         StructureInfo structureInfo = StructureRegistry.getStructure(instanceData.structureID);
-        if (structureInfo != null)
-        {
-            NBTStorable structureData = instanceData.loadInstanceData(structureInfo);
-            StructureGenerator.partially(structureInfo, world, random, instanceData.lowerCoord, instanceData.structureTransform, context.generationBB, layer, instanceData.structureID, structureData, context.isFirstTime);
-        }
+        if (structureInfo != null && instanceData.structureData != null)
+            StructureGenerator.partially(structureInfo, world, random, instanceData.lowerCoord.add(xCoord, yCoord, zCoord), instanceData.structureTransform, context.generationBB, layer + 1, instanceData.structureID, instanceData.structureData, context.isFirstTime);
     }
 
     @Override
@@ -292,14 +289,14 @@ public class TileEntityStructureGenerator extends TileEntity implements Generati
         public BlockCoord lowerCoord;
         public AxisAlignedTransform2D structureTransform;
 
-        public NBTBase structureData;
+        public NBTStorable structureData;
 
         public InstanceData()
         {
             structureID = "";
         }
 
-        public InstanceData(String structureID, BlockCoord lowerCoord, AxisAlignedTransform2D structureTransform, NBTBase structureData)
+        public InstanceData(String structureID, BlockCoord lowerCoord, AxisAlignedTransform2D structureTransform, NBTStorable structureData)
         {
             this.structureID = structureID;
             this.lowerCoord = lowerCoord;
@@ -312,12 +309,10 @@ public class TileEntityStructureGenerator extends TileEntity implements Generati
             structureID = compound.getString("structureID");
             lowerCoord = BlockCoord.readCoordFromNBT("lowerCoord", compound);
             structureTransform = new AxisAlignedTransform2D(compound.getInteger("rotation"), compound.getBoolean("mirrorX"));
-            structureData = compound.getTag("structureData");
-        }
 
-        public NBTStorable loadInstanceData(StructureInfo structureInfo)
-        {
-            return structureInfo.loadInstanceData(new StructureLoadContext(structureTransform, StructureInfos.structureBoundingBox(lowerCoord, StructureInfos.structureSize(structureInfo, structureTransform)), false), structureData);
+            StructureInfo structureInfo = StructureRegistry.getStructure(structureID);
+            if (structureInfo != null)
+                structureData = structureInfo.loadInstanceData(new StructureLoadContext(structureTransform, StructureInfos.structureBoundingBox(lowerCoord, StructureInfos.structureSize(structureInfo, structureTransform)), false), compound.getTag("structureData"));
         }
 
         @Override
@@ -329,7 +324,7 @@ public class TileEntityStructureGenerator extends TileEntity implements Generati
             BlockCoord.writeCoordToNBT("lowerCoord", lowerCoord, compound);
             compound.setInteger("rotation", structureTransform.getRotation());
             compound.setBoolean("mirrorX", structureTransform.isMirrorX());
-            compound.setTag("structureData", structureData);
+            compound.setTag("structureData", structureData.writeToNBT());
 
             return compound;
         }

@@ -12,6 +12,8 @@ import net.minecraft.world.WorldProvider;
  * <p/>
  * A type can have subtypes and supertypes.
  * A dimension matches a type when it is associated with either the type or any of its sub-types.
+ *
+ * If you want to handle the types yourself, implement {@link ivorius.reccomplex.dimensions.DimensionDictionary.Handler} in your WorldProvider.
  */
 public class DimensionDictionary
 {
@@ -215,7 +217,7 @@ public class DimensionDictionary
             return ((Handler) provider).getDimensionTypes();
 
         Set<String> types = dimensionTypes.get(provider.dimensionId);
-        return types != null ? types : SET_UNCATEGORIZED;
+        return types != null ? Collections.unmodifiableSet(types) : SET_UNCATEGORIZED;
     }
 
     /**
@@ -294,7 +296,7 @@ public class DimensionDictionary
      */
     public static Set<String> allRegisteredTypes()
     {
-        return types.keySet();
+        return Collections.unmodifiableSet(types.keySet());
     }
 
     private static Type registerGetType(String type)
@@ -303,7 +305,11 @@ public class DimensionDictionary
         return types.get(type);
     }
 
-    public static interface Handler
+    /**
+     * Intended for WorldProviders to implement.
+     * Implementing this will override all normal register functionality, and instead let the provider handle it itself.
+     */
+    public interface Handler
     {
         /**
          * Note: Do not invoke this directly. Use {@link DimensionDictionary}'s methods instead.

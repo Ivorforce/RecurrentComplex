@@ -23,7 +23,6 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ChatComponentTranslation;
 
 import java.util.List;
-import java.util.Set;
 
 /**
  * Created by lukas on 25.05.14.
@@ -141,7 +140,7 @@ public class CommandExportSchematic extends CommandBase
     public List addTabCompletionOptions(ICommandSender commandSender, String[] args)
     {
         if (args.length == 1)
-            return getListOfStringsFromIterableMatchingLastWord(args, StructureRegistry.getAllStructureNames());
+            return getListOfStringsFromIterableMatchingLastWord(args, StructureRegistry.allStructureIDs());
 
         return null;
     }

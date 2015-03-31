@@ -5,6 +5,11 @@
 
 package ivorius.reccomplex.gui.table;
 
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.FontRenderer;
+
+import java.util.List;
+
 /**
  * Created by lukas on 02.06.14.
  */
@@ -16,6 +21,8 @@ public abstract class TableElementDefault implements TableElement
     private boolean hidden = false;
 
     private Bounds bounds = new Bounds(0, 0, 0, 0);
+
+    protected List<String> tooltip;
 
     public TableElementDefault(String id, String title)
     {
@@ -33,6 +40,16 @@ public abstract class TableElementDefault implements TableElement
     public String getTitle()
     {
         return title;
+    }
+
+    public List<String> getTooltip()
+    {
+        return tooltip;
+    }
+
+    public void setTooltip(List<String> tooltip)
+    {
+        this.tooltip = tooltip;
     }
 
     @Override
@@ -65,10 +82,22 @@ public abstract class TableElementDefault implements TableElement
         return hidden;
     }
 
+    public FontRenderer getFontRenderer()
+    {
+        return Minecraft.getMinecraft().fontRenderer;
+    }
+
     @Override
     public void draw(GuiTable screen, int mouseX, int mouseY, float partialTicks)
     {
+    }
 
+    @Override
+    public void drawFloating(GuiTable screen, int mouseX, int mouseY, float partialTicks)
+    {
+        List<String> tooltip = getTooltip();
+        if (tooltip != null)
+            screen.drawTooltipRect(tooltip, bounds(), mouseX, mouseY, getFontRenderer());
     }
 
     @Override

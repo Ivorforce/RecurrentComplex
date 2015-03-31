@@ -117,6 +117,7 @@ public class TableDataSourceNaturalGenerationInfo extends TableDataSourceSegment
                 else if (index == 1)
                 {
                     TableElementIntegerRange element = new TableElementIntegerRange("ySelShift", "Y Shift", new IntegerRange(generationInfo.ySelector.minY, generationInfo.ySelector.maxY), -100, 100);
+                    element.setTooltip(IvTranslations.formatLines("reccomplex.structure.randomrange"));
                     element.addPropertyListener(this);
                     return element;
                 }

@@ -53,7 +53,7 @@ public class TableElementTitle extends TableElementDefault
         super.draw(screen, mouseX, mouseY, partialTicks);
 
         Bounds bounds = bounds();
-        FontRenderer fontRenderer = Minecraft.getMinecraft().fontRenderer;
+        FontRenderer fontRenderer = getFontRenderer();
         screen.drawCenteredString(fontRenderer, displayString, bounds.getCenterX(), positioning.getY(fontRenderer, bounds.getMinY(), bounds.getMaxY()), 0xffffffff);
     }
 

@@ -52,7 +52,7 @@ public class WorldGenMaze
 
                 AxisAlignedTransform2D componentTransform = info.transform;
 
-                String compStructureName = StructureRegistry.getName(compStructureInfo);
+                String compStructureName = StructureRegistry.structureID(compStructureInfo);
 
                 int[] compStructureSize = StructureInfos.structureSize(compStructureInfo, componentTransform);
                 int[] compRoomSize = Maze.getRoomSize(position.getComponent().getSize(), pathLengths, roomSize);
@@ -107,7 +107,7 @@ public class WorldGenMaze
                     for (MazePath exit : comp.getExitPaths())
                         transformedExits.add(MazeGenerator.rotatedPath(exit, componentTransform, compSize));
 
-                    MazeComponentInfo compInfo = new MazeComponentInfo(StructureRegistry.getName(info), componentTransform, info.prepareInstanceData(context).writeToNBT());
+                    MazeComponentInfo compInfo = new MazeComponentInfo(StructureRegistry.structureID(info), componentTransform, info.prepareInstanceData(context).writeToNBT());
                     transformedComponents.add(new MazeComponent(splitCompWeight, compInfo, transformedRooms, transformedExits));
                 }
             }

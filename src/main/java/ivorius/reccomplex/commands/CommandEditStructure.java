@@ -15,7 +15,6 @@ import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayerMP;
 
 import java.util.List;
-import java.util.Set;
 
 /**
  * Created by lukas on 25.05.14.
@@ -54,7 +53,7 @@ public class CommandEditStructure extends CommandBase
     public List addTabCompletionOptions(ICommandSender commandSender, String[] args)
     {
         if (args.length == 1)
-            return getListOfStringsFromIterableMatchingLastWord(args, StructureRegistry.getAllStructureNames());
+            return getListOfStringsFromIterableMatchingLastWord(args, StructureRegistry.allStructureIDs());
 
         return null;
     }

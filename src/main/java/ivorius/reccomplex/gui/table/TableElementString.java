@@ -23,21 +23,9 @@ public class TableElementString extends TableElementPropertyDefault<String>
     protected boolean showsValidityState;
     protected GuiValidityStateIndicator.State validityState;
 
-    protected List<String> tooltip;
-
     public TableElementString(String id, String title, String value)
     {
         super(id, title, value);
-    }
-
-    public List<String> getTooltip()
-    {
-        return tooltip;
-    }
-
-    public void setTooltip(List<String> tooltip)
-    {
-        this.tooltip = tooltip;
     }
 
     @Override
@@ -46,7 +34,7 @@ public class TableElementString extends TableElementPropertyDefault<String>
         super.initGui(screen);
 
         Bounds bounds = bounds();
-        textField = new GuiTextField(Minecraft.getMinecraft().fontRenderer, bounds.getMinX(), bounds.getMinY() + (bounds.getHeight() - 20) / 2, bounds.getWidth() - (showsValidityState ? 15 : 0), 20);
+        textField = new GuiTextField(getFontRenderer(), bounds.getMinX(), bounds.getMinY() + (bounds.getHeight() - 20) / 2, bounds.getWidth() - (showsValidityState ? 15 : 0), 20);
         textField.setMaxStringLength(300);
 
         textField.setText(getPropertyValue());
@@ -72,9 +60,6 @@ public class TableElementString extends TableElementPropertyDefault<String>
 
         if (stateIndicator != null)
             stateIndicator.draw();
-
-        if (tooltip != null)
-            screen.drawTooltipRect(tooltip, bounds(), mouseX, mouseY, Minecraft.getMinecraft().fontRenderer);
     }
 
     @Override

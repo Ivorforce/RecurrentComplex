@@ -149,6 +149,12 @@ public class GuiTable extends Gui
             if (!element.isHidden())
                 element.draw(this, mouseX, mouseY, partialTicks);
         }
+
+        for (TableElement element : currentElements)
+        {
+            if (!element.isHidden())
+                element.drawFloating(this, mouseX, mouseY, partialTicks);
+        }
     }
 
     public void updateScreen()

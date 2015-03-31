@@ -76,13 +76,13 @@ public class TableElementList extends TableElementPropertyDefault<String>
     }
 
     @Override
-    public void draw(GuiTable screen, int mouseX, int mouseY, float partialTicks)
+    public void drawFloating(GuiTable screen, int mouseX, int mouseY, float partialTicks)
     {
-        super.draw(screen, mouseX, mouseY, partialTicks);
+        super.drawFloating(screen, mouseX, mouseY, partialTicks);
 
         Option option = currentOption();
         if (option != null && option.tooltip != null)
-            screen.drawTooltipRect(option.tooltip, bounds(), mouseX, mouseY, Minecraft.getMinecraft().fontRenderer);
+            screen.drawTooltipRect(option.tooltip, bounds(), mouseX, mouseY, getFontRenderer());
     }
 
     private void updateButtonTitle()

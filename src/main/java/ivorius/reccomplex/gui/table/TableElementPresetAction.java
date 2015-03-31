@@ -127,13 +127,13 @@ public class TableElementPresetAction extends TableElementDefault
     }
 
     @Override
-    public void draw(GuiTable screen, int mouseX, int mouseY, float partialTicks)
+    public void drawFloating(GuiTable screen, int mouseX, int mouseY, float partialTicks)
     {
-        super.draw(screen, mouseX, mouseY, partialTicks);
+        super.drawFloating(screen, mouseX, mouseY, partialTicks);
 
         TableElementButton.Action action = currentAction();
         if (action != null && action.tooltip != null)
-            screen.drawTooltipRect(action.tooltip, getBounds(changePresetButton), mouseX, mouseY, Minecraft.getMinecraft().fontRenderer);
+            screen.drawTooltipRect(action.tooltip, getBounds(changePresetButton), mouseX, mouseY, getFontRenderer());
     }
 
     private TableElementButton.Action currentAction()

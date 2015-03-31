@@ -179,7 +179,7 @@ public class TileEntityStructureGenerator extends TileEntity implements Generati
                     }
                 });
                 StructureInfo structureInfo = pair.getLeft();
-                String structureID = StructureRegistry.getName(structureInfo);
+                String structureID = StructureRegistry.structureID(structureInfo);
                 StructureListGenerationInfo generationInfo = pair.getRight();
 
                 boolean mirrorX;

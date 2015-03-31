@@ -26,6 +26,8 @@ public interface TableElement
 
     void draw(GuiTable screen, int mouseX, int mouseY, float partialTicks);
 
+    void drawFloating(GuiTable screen, int mouseX, int mouseY, float partialTicks);
+
     void update(GuiTable screen);
 
     boolean keyTyped(char keyChar, int keyCode);

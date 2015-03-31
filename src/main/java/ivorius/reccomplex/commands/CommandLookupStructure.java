@@ -6,14 +6,12 @@
 package ivorius.reccomplex.commands;
 
 import ivorius.reccomplex.RCConfig;
-import ivorius.reccomplex.network.PacketEditStructureHandler;
 import ivorius.reccomplex.structures.StructureRegistry;
 import ivorius.reccomplex.structures.generic.GenericStructureInfo;
 import ivorius.reccomplex.structures.generic.Metadata;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
-import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.util.ChatComponentTranslation;
 
 import java.util.List;
@@ -66,7 +64,7 @@ public class CommandLookupStructure extends CommandBase
     {
         if (args.length == 1)
         {
-            Set<String> allStructureNames = StructureRegistry.getAllStructureNames();
+            Set<String> allStructureNames = StructureRegistry.allStructureIDs();
 
             return getListOfStringsFromIterableMatchingLastWord(args, allStructureNames);
         }

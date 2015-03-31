@@ -98,7 +98,7 @@ public class TableElementButton extends TableElementDefault
             Action action = actions[i];
             GuiButton button = buttons[i];
             if (action.tooltip != null)
-                screen.drawTooltipRect(action.tooltip, TableElementPresetAction.getBounds(button), mouseX, mouseY, Minecraft.getMinecraft().fontRenderer);
+                screen.drawTooltipRect(action.tooltip, TableElementPresetAction.getBounds(button), mouseX, mouseY, getFontRenderer());
         }
     }
 

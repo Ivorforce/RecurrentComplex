@@ -41,7 +41,7 @@ public class WorldGenStructures implements IWorldGenerator
 
             StaticGenerationInfo staticGenInfo = pair.getRight();
             StructureInfo structureInfo = pair.getLeft();
-            String structureName = StructureRegistry.getName(structureInfo);
+            String structureName = StructureRegistry.structureID(structureInfo);
 
             int strucX = staticGenInfo.getPositionX(spawnPos);
             int strucZ = staticGenInfo.getPositionZ(spawnPos);
@@ -63,7 +63,7 @@ public class WorldGenStructures implements IWorldGenerator
             for (Pair<StructureInfo, NaturalGenerationInfo> pair : generated)
             {
                 StructureInfo structureInfo = pair.getLeft();
-                String structureName = StructureRegistry.getName(structureInfo);
+                String structureName = StructureRegistry.structureID(structureInfo);
 
                 int genX = chunkX * 16 + random.nextInt(16);
                 int genZ = chunkZ * 16 + random.nextInt(16);

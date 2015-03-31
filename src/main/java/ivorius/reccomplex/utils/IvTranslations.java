@@ -15,6 +15,21 @@ import java.util.List;
  */
 public class IvTranslations
 {
+    public static boolean has(String key)
+    {
+        return StatCollector.canTranslate(key);
+    }
+
+    public static String get(String key)
+    {
+        return StatCollector.translateToLocal(key);
+    }
+
+    public static String format(String key, Object... args)
+    {
+        return StatCollector.translateToLocalFormatted(key, args);
+    }
+
     public static List<String> formatLines(String key, Object... args)
     {
         String translation = StatCollector.translateToLocalFormatted(key, args);

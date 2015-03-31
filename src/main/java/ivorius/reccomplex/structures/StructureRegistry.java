@@ -119,7 +119,13 @@ public class StructureRegistry
         return allStructures.get(key);
     }
 
+    @Deprecated
     public static String getName(StructureInfo structureInfo)
+    {
+        return structureID(structureInfo);
+    }
+
+    public static String structureID(StructureInfo structureInfo)
     {
         return allStructures.inverse().get(structureInfo);
     }
@@ -194,7 +200,18 @@ public class StructureRegistry
         return generatingStructures.contains(key);
     }
 
+    public static Map<String, StructureInfo> structureMap()
+    {
+        return Collections.unmodifiableMap(allStructures);
+    }
+
+    @Deprecated
     public static Set<String> getAllStructureNames()
+    {
+        return allStructureIDs();
+    }
+
+    public static Set<String> allStructureIDs()
     {
         return Collections.unmodifiableSet(allStructures.keySet());
     }
@@ -304,7 +321,7 @@ public class StructureRegistry
         updateVanillaGenerations();
         for (Pair<StructureInfo, VanillaStructureGenerationInfo> pair : getStructureGenerations(VanillaStructureGenerationInfo.class))
         {
-            String structureID = getName(pair.getLeft());
+            String structureID = structureID(pair.getLeft());
             String generationID = pair.getRight().id();
             Class clazz = GenericVillageCreationHandler.getPieceClass(structureID, generationID);
             if (clazz != null)
@@ -322,7 +339,7 @@ public class StructureRegistry
                             @Override
                             public VillagerRegistry.IVillageCreationHandler apply(@Nullable Pair<StructureInfo, VanillaStructureGenerationInfo> input)
                             {
-                                return GenericVillageCreationHandler.forGeneration(getName(input.getLeft()), input.getRight().id());
+                                return GenericVillageCreationHandler.forGeneration(structureID(input.getLeft()), input.getRight().id());
                             }
                         }), Predicates.notNull()))
         );

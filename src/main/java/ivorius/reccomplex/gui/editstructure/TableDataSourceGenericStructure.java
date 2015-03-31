@@ -11,7 +11,6 @@ import ivorius.reccomplex.gui.table.*;
 import ivorius.reccomplex.structures.StructureRegistry;
 import ivorius.reccomplex.structures.generic.GenericStructureInfo;
 import ivorius.reccomplex.utils.IvTranslations;
-import org.apache.commons.lang3.StringUtils;
 
 /**
  * Created by lukas on 05.06.14.
@@ -106,7 +105,7 @@ public class TableDataSourceGenericStructure extends TableDataSourceSegmented im
             case 0:
                 if (index == 0)
                 {
-                    TableElementString element = new TableElementString("name", "Name", structureKey);
+                    TableElementString element = new TableElementString("name", "Structure ID", structureKey);
                     element.addPropertyListener(this);
                     element.setShowsValidityState(true);
                     element.setValidityState(currentNameState());
@@ -122,13 +121,15 @@ public class TableDataSourceGenericStructure extends TableDataSourceSegmented im
             case 1:
                 if (index == 0)
                 {
-                    TableElementBoolean element = new TableElementBoolean("rotatable", "Rotatable", structureInfo.rotatable);
+                    TableElementBoolean element = new TableElementBoolean("rotatable", IvTranslations.format("reccomplex.structure.rotatable"), structureInfo.rotatable);
+                    element.setTooltip(IvTranslations.formatLines("reccomplex.structure.rotatable.tooltip"));
                     element.addPropertyListener(this);
                     return element;
                 }
                 else if (index == 1)
                 {
-                    TableElementBoolean element = new TableElementBoolean("mirrorable", "Mirrorable", structureInfo.mirrorable);
+                    TableElementBoolean element = new TableElementBoolean("mirrorable", IvTranslations.format("reccomplex.structure.mirrorable"), structureInfo.mirrorable);
+                    element.setTooltip(IvTranslations.formatLines("reccomplex.structure.mirrorable.tooltip"));
                     element.addPropertyListener(this);
                     return element;
                 }
@@ -190,7 +191,7 @@ public class TableDataSourceGenericStructure extends TableDataSourceSegmented im
 
     private GuiValidityStateIndicator.State currentNameState()
     {
-        if (StructureRegistry.getAllStructureNames().contains(structureKey))
+        if (StructureRegistry.allStructureIDs().contains(structureKey))
         {
             return GuiValidityStateIndicator.State.SEMI_VALID;
         }

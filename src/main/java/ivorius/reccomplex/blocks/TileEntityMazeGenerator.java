@@ -121,9 +121,6 @@ public class TileEntityMazeGenerator extends TileEntity implements GeneratingTil
         AxisAlignedTransform2D transform = context.transform;
         int layer = context.generationLayer;
 
-        if (context.includes(xCoord, yCoord, zCoord))
-            world.setBlockToAir(xCoord, yCoord, zCoord);
-
         List<MazeComponentPosition> placedComponents = instanceData.placedComponents;
         if (placedComponents == null)
             return;
@@ -134,6 +131,12 @@ public class TileEntityMazeGenerator extends TileEntity implements GeneratingTil
         BlockCoord startCoord = transform.apply(structureShift, new int[]{1, 1, 1}).add(xCoord, yCoord, zCoord).subtract(transform.apply(new BlockCoord(0, 0, 0), mazeSize));
 
         WorldGenMaze.generateMaze(world, context.random, startCoord, placedComponents, roomSize, layer, context.generationBB, context.isFirstTime);
+    }
+
+    @Override
+    public boolean shouldPlaceInWorld(StructureSpawnContext context, InstanceData instanceData)
+    {
+        return false;
     }
 
     public List<MazeComponentPosition> getPlacedRooms(StructurePrepareContext context)

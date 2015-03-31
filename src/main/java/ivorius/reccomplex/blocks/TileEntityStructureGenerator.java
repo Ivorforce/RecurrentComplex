@@ -224,12 +224,15 @@ public class TileEntityStructureGenerator extends TileEntity implements Generati
         Random random = context.random;
         int layer = context.generationLayer;
 
-        if (context.includes(xCoord, yCoord, zCoord))
-            world.setBlockToAir(xCoord, yCoord, zCoord);
-
         StructureInfo structureInfo = StructureRegistry.getStructure(instanceData.structureID);
         if (structureInfo != null && instanceData.structureData != null)
             StructureGenerator.partially(structureInfo, world, random, instanceData.lowerCoord.add(xCoord, yCoord, zCoord), instanceData.structureTransform, context.generationBB, layer + 1, instanceData.structureID, instanceData.structureData, context.isFirstTime);
+    }
+
+    @Override
+    public boolean shouldPlaceInWorld(StructureSpawnContext context, InstanceData instanceData)
+    {
+        return false;
     }
 
     @Override

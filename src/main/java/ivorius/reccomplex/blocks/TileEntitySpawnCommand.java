@@ -93,8 +93,6 @@ public class TileEntitySpawnCommand extends TileEntity implements GeneratingTile
         // TODO Fix for partial generation (if areas are affected?)
         if (context.includes(xCoord, yCoord, zCoord))
         {
-            context.world.setBlockToAir(xCoord, yCoord, zCoord);
-
             if (entries.size() > 0)
             {
                 Entry entry = WeightedSelector.selectItem(context.random, entries);
@@ -111,6 +109,12 @@ public class TileEntitySpawnCommand extends TileEntity implements GeneratingTile
                 }
             }
         }
+    }
+
+    @Override
+    public boolean shouldPlaceInWorld(StructureSpawnContext context, NBTNone instanceData)
+    {
+        return false;
     }
 
     @Override

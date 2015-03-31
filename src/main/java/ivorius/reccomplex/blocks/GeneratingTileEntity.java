@@ -21,4 +21,6 @@ public interface GeneratingTileEntity<S>
     S loadInstanceData(StructureLoadContext context, NBTBase nbt);
 
     void generate(StructureSpawnContext context, S instanceData);
+
+    boolean shouldPlaceInWorld(StructureSpawnContext context, S instanceData);
 }

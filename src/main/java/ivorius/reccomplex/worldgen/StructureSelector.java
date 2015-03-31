@@ -5,6 +5,9 @@
 
 package ivorius.reccomplex.worldgen;
 
+import com.google.common.collect.ArrayListMultimap;
+import com.google.common.collect.HashMultimap;
+import com.google.common.collect.Multimap;
 import ivorius.reccomplex.RCConfig;
 import ivorius.reccomplex.dimensions.DimensionDictionary;
 import ivorius.reccomplex.structures.StructureInfo;
@@ -28,13 +31,12 @@ public class StructureSelector
 
     private static Map<String, Category> categories = new HashMap<>();
 
-    private Map<String, List<WeightedSelector.SimpleItem<Pair<StructureInfo, NaturalGenerationInfo>>>> weightedStructureInfos = new HashMap<>();
+    private Multimap<String, WeightedSelector.SimpleItem<Pair<StructureInfo, NaturalGenerationInfo>>> weightedStructureInfos = ArrayListMultimap.create();
 
-    private Set<String> cachedDimensionTypes;
+    private final Set<String> cachedDimensionTypes = new HashSet<>();
 
     public StructureSelector(Collection<StructureInfo> structures, BiomeGenBase biome, WorldProvider provider)
     {
-        cachedDimensionTypes = new HashSet<>();
         cachedDimensionTypes.addAll(DimensionDictionary.getDimensionTypes(provider));
 
         for (StructureInfo structureInfo : structures)
@@ -45,13 +47,7 @@ public class StructureSelector
                 double generationWeight = naturalGenerationInfo.getGenerationWeight(biome, provider);
 
                 if (generationWeight > 0)
-                {
-                    String category = naturalGenerationInfo.generationCategory;
-                    if (!weightedStructureInfos.containsKey(category))
-                        weightedStructureInfos.put(category, new ArrayList<WeightedSelector.SimpleItem<Pair<StructureInfo, NaturalGenerationInfo>>>());
-
-                    weightedStructureInfos.get(category).add(new WeightedSelector.SimpleItem<>(generationWeight, Pair.of(structureInfo, naturalGenerationInfo)));
-                }
+                    weightedStructureInfos.put(naturalGenerationInfo.generationCategory, new WeightedSelector.SimpleItem<>(generationWeight, Pair.of(structureInfo, naturalGenerationInfo)));
             }
         }
     }

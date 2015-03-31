@@ -64,6 +64,11 @@ public class RecurrentComplex
 
     public static RCCommunicationHandler communicationHandler;
 
+    public static boolean isLite()
+    {
+        return RCConfig.isLightweightMode();
+    }
+
     @EventHandler
     public void preInit(FMLPreInitializationEvent event)
     {

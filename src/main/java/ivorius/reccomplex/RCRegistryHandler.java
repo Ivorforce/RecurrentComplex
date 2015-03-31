@@ -5,6 +5,7 @@
 
 package ivorius.reccomplex;
 
+import com.google.common.collect.ObjectArrays;
 import cpw.mods.fml.client.registry.RenderingRegistry;
 import cpw.mods.fml.common.event.FMLInitializationEvent;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
@@ -35,13 +36,18 @@ import ivorius.reccomplex.structures.OperationGenerateStructure;
 import ivorius.reccomplex.structures.StructureRegistry;
 import ivorius.reccomplex.worldgen.StructureSelector;
 import ivorius.reccomplex.worldgen.inventory.RCInventoryGenerators;
+import net.minecraft.block.Block;
 import net.minecraft.block.material.MapColor;
 import net.minecraft.block.material.Material;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.Item;
+import net.minecraft.item.ItemBlock;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.BiomeDictionary;
 
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
 import java.util.Collections;
 
 import static ivorius.reccomplex.RecurrentComplex.*;
@@ -56,81 +62,147 @@ public class RCRegistryHandler
 {
     public static void preInit(FMLPreInitializationEvent event, RecurrentComplex mod)
     {
-        tabStructureTools = new CreativeTabs("structureTools")
+        if (!RecurrentComplex.isLite())
         {
-            @Override
-            public Item getTabIconItem()
+            tabStructureTools = new CreativeTabs("structureTools")
             {
-                return RCItems.blockSelector;
-            }
-        };
-        tabInventoryGenerators = new CreativeTabs("inventoryGenerators")
-        {
-            @Override
-            public Item getTabIconItem()
+                @Override
+                public Item getTabIconItem()
+                {
+                    return RCItems.blockSelector;
+                }
+            };
+            tabInventoryGenerators = new CreativeTabs("inventoryGenerators")
             {
-                return RCItems.inventoryGenerationTag;
-            }
-        };
+                @Override
+                public Item getTabIconItem()
+                {
+                    return RCItems.inventoryGenerationTag;
+                }
+            };
+        }
 
         RCMaterials.materialNegativeSpace = new MaterialNegativeSpace();
         RCMaterials.materialGenericSolid = (new Material(MapColor.stoneColor));
 
         blockSelector = new ItemBlockSelectorBlock().setUnlocalizedName("blockSelector").setTextureName(textureBase + "blockSelector");
         blockSelector.setCreativeTab(tabStructureTools);
-        GameRegistry.registerItem(blockSelector, "blockSelector", MODID);
+        register(blockSelector, "blockSelector");
 
         blockSelectorFloating = new ItemBlockSelectorFloating().setUnlocalizedName("blockSelectorFloating").setTextureName(textureBase + "blockSelectorFloating");
         blockSelectorFloating.setCreativeTab(tabStructureTools);
-        GameRegistry.registerItem(blockSelectorFloating, "blockSelectorFloating", MODID);
+        register(blockSelectorFloating, "blockSelectorFloating");
 
         inventoryGenerationTag = (ItemInventoryGenMultiTag) new ItemInventoryGenMultiTag().setUnlocalizedName("inventoryGenerationTag").setTextureName(textureBase + "inventoryGenerationTag");
         inventoryGenerationTag.setCreativeTab(tabInventoryGenerators);
-        GameRegistry.registerItem(inventoryGenerationTag, "inventoryGenerationTag", MODID);
+        register(inventoryGenerationTag, "inventoryGenerationTag");
 
         inventoryGenerationSingleTag = (ItemInventoryGenSingleTag) new ItemInventoryGenSingleTag().setUnlocalizedName("inventoryGenerationSingleTag").setTextureName(textureBase + "inventoryGenerationSingleTag");
         inventoryGenerationSingleTag.setCreativeTab(tabInventoryGenerators);
-        GameRegistry.registerItem(inventoryGenerationSingleTag, "inventoryGenerationSingleTag", MODID);
+        register(inventoryGenerationSingleTag, "inventoryGenerationSingleTag");
 
         inventoryGenerationComponentTag = (ItemInventoryGenComponentTag) new ItemInventoryGenComponentTag().setUnlocalizedName("inventoryGenerationComponentTag").setTextureName(textureBase + "inventoryGenerationComponentTag");
         inventoryGenerationComponentTag.setCreativeTab(tabInventoryGenerators);
-        GameRegistry.registerItem(inventoryGenerationComponentTag, "inventory_generation_component_tag", MODID);
+        register(inventoryGenerationComponentTag, "inventory_generation_component_tag");
 
         artifactGenerationTag = new ItemArtifactGenerator().setUnlocalizedName("artifactGenerationTag").setTextureName(textureBase + "artifactGenerationTag");
         artifactGenerationTag.setCreativeTab(tabInventoryGenerators);
-        GameRegistry.registerItem(artifactGenerationTag, "artifactGenerationTag", MODID);
+        register(artifactGenerationTag, "artifactGenerationTag");
 
         bookGenerationTag = new ItemBookGenerator().setUnlocalizedName("bookGenerationTag").setTextureName(textureBase + "bookGenerationTag");
         bookGenerationTag.setCreativeTab(tabInventoryGenerators);
-        GameRegistry.registerItem(bookGenerationTag, "bookGenerationTag", MODID);
+        register(bookGenerationTag, "bookGenerationTag");
 
         negativeSpace = new BlockNegativeSpace().setBlockName("negativeSpace").setBlockTextureName(textureBase + "negativeSpace");
         negativeSpace.setCreativeTab(tabStructureTools);
-        GameRegistry.registerBlock(negativeSpace, ItemBlockNegativeSpace.class, "negativeSpace");
+        register(negativeSpace, ItemBlockNegativeSpace.class, "negativeSpace");
 
         naturalFloor = new BlockNaturalFloor().setBlockName("naturalFloor").setBlockTextureName(textureBase + "naturalFloor");
         naturalFloor.setCreativeTab(tabStructureTools);
-        GameRegistry.registerBlock(naturalFloor, ItemBlockGenericSolid.class, "naturalFloor");
+        register(naturalFloor, ItemBlockGenericSolid.class, "naturalFloor");
 
         structureGenerator = new BlockStructureGenerator().setBlockName("structureGenerator").setBlockTextureName(textureBase + "structureGenerator");
         structureGenerator.setCreativeTab(tabStructureTools);
-        GameRegistry.registerBlock(structureGenerator, ItemStructureGenerator.class, "structureGenerator");
-        GameRegistry.registerTileEntityWithAlternatives(TileEntityStructureGenerator.class, "RCStructureGenerator", "SGStructureGenerator");
+        register(structureGenerator, ItemStructureGenerator.class, "structureGenerator");
+        register(TileEntityStructureGenerator.class, "RCStructureGenerator", "SGStructureGenerator");
 
         mazeGenerator = new BlockMazeGenerator().setBlockName("mazeGenerator").setBlockTextureName(textureBase + "mazeGenerator");
         mazeGenerator.setCreativeTab(tabStructureTools);
-        GameRegistry.registerBlock(mazeGenerator, ItemMazeGenerator.class, "mazeGenerator");
-        GameRegistry.registerTileEntityWithAlternatives(TileEntityMazeGenerator.class, "RCMazeGenerator", "SGMazeGenerator");
+        register(mazeGenerator, ItemMazeGenerator.class, "mazeGenerator");
+        register(TileEntityMazeGenerator.class, "RCMazeGenerator", "SGMazeGenerator");
 
         spawnCommands = new BlockSpawnCommand().setBlockName("spawnCommand").setBlockTextureName(textureBase + "spawnCommand");
         spawnCommands.setCreativeTab(tabStructureTools);
-        GameRegistry.registerBlock(spawnCommands, ItemMazeGenerator.class, "weighted_command_block");
-        GameRegistry.registerTileEntityWithAlternatives(TileEntitySpawnCommand.class, "RCSpawnCommand");
+        register(spawnCommands, ItemMazeGenerator.class, "weighted_command_block");
+        register(TileEntitySpawnCommand.class, "RCSpawnCommand");
 
         // Register early to allow proper loading
         registerDimensionPresets();
         registerBiomePresets();
         registerBlockStatePresets();
+    }
+
+    public static void register(Item item, String id)
+    {
+        if (!RecurrentComplex.isLite())
+            GameRegistry.registerItem(item, id);
+        else
+            MCRegistrySpecial.INSTANCE.register(id, item);
+    }
+
+    public static void register(Block block, String id)
+    {
+        if (!RecurrentComplex.isLite())
+            GameRegistry.registerBlock(block, id);
+        else
+        {
+            MCRegistrySpecial.INSTANCE.register(id, block);
+            MCRegistrySpecial.INSTANCE.register(id, new ItemBlock(block));
+        }
+    }
+
+    public static void register(Block block, Class<? extends ItemBlock> itemClass, String id, Object... itemArgs)
+    {
+        if (!RecurrentComplex.isLite())
+            GameRegistry.registerBlock(block, itemClass, id, itemArgs);
+        else
+        {
+            MCRegistrySpecial.INSTANCE.register(id, block);
+            Item item = constructItem(block, itemClass, itemArgs);
+            if (item != null) MCRegistrySpecial.INSTANCE.register(id, item);
+        }
+    }
+
+    protected static ItemBlock constructItem(Block block, Class<? extends ItemBlock> itemClass, Object... itemArgs)
+    {
+        // From FML
+        try
+        {
+            Class<?>[] ctorArgClasses = new Class<?>[itemArgs.length + 1];
+            ctorArgClasses[0] = Block.class;
+            for (int idx = 1; idx < ctorArgClasses.length; idx++)
+                ctorArgClasses[idx] = itemArgs[idx - 1].getClass();
+            Constructor<? extends ItemBlock> itemCtor = itemClass.getConstructor(ctorArgClasses);
+
+            return itemCtor.newInstance(ObjectArrays.concat(block, itemArgs));
+        }
+        catch (Throwable e)
+        {
+            RecurrentComplex.logger.warn("Error constructing secret item", e);
+        }
+
+        return null;
+    }
+
+    public static void register(Class<? extends TileEntity> tileEntity, String id, String...alternatives)
+    {
+        if (!RecurrentComplex.isLite())
+            GameRegistry.registerTileEntityWithAlternatives(tileEntity, id, alternatives);
+        else
+        {
+            MCRegistrySpecial.INSTANCE.register(id, tileEntity);
+            for (String aid : alternatives) MCRegistrySpecial.INSTANCE.register(aid, tileEntity);
+        }
     }
 
     public static void load(FMLInitializationEvent event, RecurrentComplex mod)

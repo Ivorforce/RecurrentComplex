@@ -8,6 +8,7 @@ package ivorius.reccomplex.structures;
 import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
 import cpw.mods.fml.common.FMLLog;
+import cpw.mods.fml.relauncher.ReflectionHelper;
 import ivorius.ivtoolkit.tools.MCRegistry;
 import ivorius.reccomplex.RecurrentComplex;
 import net.minecraft.block.Block;
@@ -15,6 +16,9 @@ import net.minecraft.item.Item;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import org.apache.logging.log4j.Level;
+
+import java.lang.reflect.Field;
+import java.util.Map;
 
 /**
  * Created by lukas on 30.06.14.
@@ -56,6 +60,11 @@ public class MCRegistrySpecial implements MCRegistry
         return id != null ? id : Item.itemRegistry.getNameForObject(item);
     }
 
+    public boolean isSafe(Item item)
+    {
+        return itemMap.isEmpty() || !itemMap.containsValue(item);
+    }
+
     @Override
     public Block blockFromID(String blockID)
     {
@@ -68,6 +77,11 @@ public class MCRegistrySpecial implements MCRegistry
     {
         String id = blockMap.inverse().get(block);
         return id != null ? id : Block.blockRegistry.getNameForObject(block);
+    }
+
+    public boolean isSafe(Block block)
+    {
+        return blockMap.isEmpty() || !blockMap.containsValue(block);
     }
 
     @Override
@@ -91,5 +105,10 @@ public class MCRegistrySpecial implements MCRegistry
         }
 
         return TileEntity.createAndLoadEntity(compound);
+    }
+
+    public boolean isSafe(TileEntity tileEntity)
+    {
+        return tileEntityMap.isEmpty() || !tileEntityMap.containsValue(tileEntity.getClass());
     }
 }

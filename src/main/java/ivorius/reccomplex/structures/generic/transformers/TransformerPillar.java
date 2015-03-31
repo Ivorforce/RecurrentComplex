@@ -13,6 +13,7 @@ import ivorius.reccomplex.gui.table.TableDataSource;
 import ivorius.reccomplex.gui.table.TableDelegate;
 import ivorius.reccomplex.gui.table.TableNavigator;
 import ivorius.reccomplex.json.JsonUtils;
+import ivorius.reccomplex.structures.MCRegistrySpecial;
 import ivorius.reccomplex.structures.StructureLoadContext;
 import ivorius.reccomplex.structures.StructurePrepareContext;
 import ivorius.reccomplex.structures.StructureSpawnContext;
@@ -57,24 +58,22 @@ public class TransformerPillar extends TransformerSingleBlock<NBTNone>
     @Override
     public void transformBlock(StructureSpawnContext context, Phase phase, BlockCoord coord, Block sourceBlock, int sourceMetadata)
     {
-        // TODO Fix for partial generation
-        World world = context.world;
-
-        context.setBlock(coord.x, coord.y, coord.z, destBlock, destMetadata);
-        int y = coord.y;
-        y--;
-
-        while (y > 0)
+        if (MCRegistrySpecial.INSTANCE.isSafe(destBlock))
         {
-            Block block = world.getBlock(coord.x, y, coord.z);
+            // TODO Fix for partial generation
+            World world = context.world;
 
-            if (!(block.isReplaceable(world, coord.x, y, coord.z) || block.getMaterial() == Material.leaves || block.isFoliage(world, coord.x, y, coord.z)))
+            int y = coord.y;
+
+            do
             {
-                return;
-            }
+                context.setBlock(coord.x, y--, coord.z, destBlock, destMetadata);
 
-            context.setBlock(coord.x, y, coord.z, destBlock, destMetadata);
-            y--;
+                Block block = world.getBlock(coord.x, y, coord.z);
+                if (!(block.isReplaceable(world, coord.x, y, coord.z) || block.getMaterial() == Material.leaves || block.isFoliage(world, coord.x, y, coord.z)))
+                    break;
+            }
+            while (y > 0);
         }
     }
 

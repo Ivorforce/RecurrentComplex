@@ -13,6 +13,7 @@ import ivorius.reccomplex.gui.table.TableDataSource;
 import ivorius.reccomplex.gui.table.TableDelegate;
 import ivorius.reccomplex.gui.table.TableNavigator;
 import ivorius.reccomplex.json.JsonUtils;
+import ivorius.reccomplex.structures.MCRegistrySpecial;
 import ivorius.reccomplex.structures.StructureLoadContext;
 import ivorius.reccomplex.structures.StructurePrepareContext;
 import ivorius.reccomplex.structures.StructureSpawnContext;
@@ -108,19 +109,22 @@ public class TransformerReplace extends TransformerSingleBlock<NBTNone>
         if (destination.list.size() > 0)
             blockState = WeightedSelector.selectItem(random, destination.list);
         else
-            blockState = new WeightedBlockState(null, Blocks.air, 0, "");
+            blockState = new WeightedBlockState(null, null, 0, "");
 
-        context.setBlock(coord.x, coord.y, coord.z, blockState.block, blockState.metadata);
-
-        // Behavior as in CommandSetBlock
-        if (blockState.tileEntityInfo.trim().length() > 0 && blockState.block.hasTileEntity(blockState.metadata))
+        if (blockState.block != null && MCRegistrySpecial.INSTANCE.isSafe(blockState.block))
         {
-            NBTTagCompound nbtTagCompound = positionedCopy(tryParse(blockState.tileEntityInfo), coord);
-            if (nbtTagCompound != null)
+            context.setBlock(coord.x, coord.y, coord.z, blockState.block, blockState.metadata);
+
+            // Behavior as in CommandSetBlock
+            if (blockState.tileEntityInfo.trim().length() > 0 && blockState.block.hasTileEntity(blockState.metadata))
             {
-                TileEntity tileentity = world.getTileEntity(coord.x, coord.y, coord.z);
-                if (tileentity != null)
-                    tileentity.readFromNBT(nbtTagCompound);
+                NBTTagCompound nbtTagCompound = positionedCopy(tryParse(blockState.tileEntityInfo), coord);
+                if (nbtTagCompound != null)
+                {
+                    TileEntity tileentity = world.getTileEntity(coord.x, coord.y, coord.z);
+                    if (tileentity != null)
+                        tileentity.readFromNBT(nbtTagCompound);
+                }
             }
         }
     }

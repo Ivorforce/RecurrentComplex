@@ -159,7 +159,7 @@ public class GenericStructureInfo implements StructureInfo<GenericStructureInfo.
                 int meta = blockCollection.getMetadata(sourceCoord);
 
                 BlockCoord worldPos = context.transform.apply(sourceCoord, areaSize).add(origin);
-                if (context.includes(worldPos))
+                if (context.includes(worldPos) && MCRegistrySpecial.INSTANCE.isSafe(block))
                 {
                     TileEntity tileEntity = tileEntities.get(sourceCoord);
 
@@ -168,7 +168,7 @@ public class GenericStructureInfo implements StructureInfo<GenericStructureInfo.
                     {
                         if (context.setBlock(worldPos, block, meta))
                         {
-                            if (tileEntity != null)
+                            if (tileEntity != null && MCRegistrySpecial.INSTANCE.isSafe(tileEntity))
                             {
                                 world.setBlockMetadataWithNotify(worldPos.x, worldPos.y, worldPos.z, meta, 2); // TODO Figure out why some blocks (chests, furnace) need this
 

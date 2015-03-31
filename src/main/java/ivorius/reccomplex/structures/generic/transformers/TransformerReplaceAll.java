@@ -16,6 +16,7 @@ import ivorius.reccomplex.gui.table.TableDataSource;
 import ivorius.reccomplex.gui.table.TableDelegate;
 import ivorius.reccomplex.gui.table.TableNavigator;
 import ivorius.reccomplex.json.JsonUtils;
+import ivorius.reccomplex.structures.MCRegistrySpecial;
 import ivorius.reccomplex.structures.StructureLoadContext;
 import ivorius.reccomplex.structures.StructurePrepareContext;
 import ivorius.reccomplex.structures.StructureSpawnContext;
@@ -78,7 +79,7 @@ public class TransformerReplaceAll implements Transformer<TransformerReplaceAll.
     public void transform(InstanceData instanceData, Phase phase, StructureSpawnContext context, IvWorldData worldData, List<Pair<Transformer, NBTStorable>> transformers)
     {
         WeightedBlockState blockState = instanceData.blockState;
-        if (blockState.block != null)
+        if (blockState.block != null && MCRegistrySpecial.INSTANCE.isSafe(blockState.block))
         {
             IvBlockCollection blockCollection = worldData.blockCollection;
 

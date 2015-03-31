@@ -194,6 +194,11 @@ reccomplex.structure.mirrorable=Mirrorable
 reccomplex.structure.mirrorable.tooltip=Whether the structure can be mirrored.<br>This may need to be set to false<br>for some TileEntities or Entities.
 reccomplex.structure.randomrange=Randomized between the two values.
 
+reccomplex.structure.id=Structure ID
+reccomplex.structure.id.tooltip=Unique Identifier for the structure
+reccomplex.structure.generation.id=Generation ID
+reccomplex.structure.generation.id.tooltip=Identifier for the generation type.<br>Unique within the structure file.
+
 reccomplex.generationInfo.natural=Natural
 reccomplex.generationInfo.natural.tooltip=Randomized generation in any biome
 reccomplex.generationInfo.mazeComponent=Maze Component

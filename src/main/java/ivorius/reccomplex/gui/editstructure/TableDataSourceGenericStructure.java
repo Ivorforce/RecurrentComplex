@@ -105,7 +105,8 @@ public class TableDataSourceGenericStructure extends TableDataSourceSegmented im
             case 0:
                 if (index == 0)
                 {
-                    TableElementString element = new TableElementString("name", "Structure ID", structureKey);
+                    TableElementString element = new TableElementString("name", IvTranslations.get("reccomplex.structure.id"), structureKey);
+                    element.setTooltip(IvTranslations.formatLines("reccomplex.structure.id.tooltip"));
                     element.addPropertyListener(this);
                     element.setShowsValidityState(true);
                     element.setValidityState(currentNameState());
@@ -121,7 +122,7 @@ public class TableDataSourceGenericStructure extends TableDataSourceSegmented im
             case 1:
                 if (index == 0)
                 {
-                    TableElementBoolean element = new TableElementBoolean("rotatable", IvTranslations.format("reccomplex.structure.rotatable"), structureInfo.rotatable);
+                    TableElementBoolean element = new TableElementBoolean("rotatable", IvTranslations.get("reccomplex.structure.rotatable"), structureInfo.rotatable);
                     element.setTooltip(IvTranslations.formatLines("reccomplex.structure.rotatable.tooltip"));
                     element.addPropertyListener(this);
                     return element;

@@ -131,7 +131,7 @@ commands.whatisthis.one=This is: %s
 commands.whatisthis.many=This is any, or all of: %s
 
 commands.rclookup.usage=/#lookup <structure>
-commands.rclookup.reply.silent=%s: §bSilent§r, By: '%s', %s
+commands.rclookup.reply.silent=%s: §bInactive§r, By: '%s', %s
 commands.rclookup.reply.generates=%s: §bGenerates§r, By: '%s', %s
 commands.rclookup.reply.noauthor=§oUnknown§r
 commands.rclookup.reply.nolink=§oNo link provided§r

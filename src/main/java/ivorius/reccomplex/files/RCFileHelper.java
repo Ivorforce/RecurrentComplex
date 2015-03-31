@@ -8,6 +8,7 @@ package ivorius.reccomplex.files;
 import ivorius.reccomplex.RecurrentComplex;
 import net.minecraft.util.ResourceLocation;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URI;
@@ -97,4 +98,19 @@ public class RCFileHelper
         return files;
     }
 
+    public static File getValidatedFolder(File file, boolean create)
+    {
+        if (create && !file.exists())
+        {
+            if (!file.mkdir())
+                System.out.println("Could not create " + file.getName() + " folder");
+        }
+
+        return file.exists() ? file : null;
+    }
+
+    public static File getValidatedFolder(File parent, String child, boolean create)
+    {
+        return getValidatedFolder(new File(parent, child), create);
+    }
 }

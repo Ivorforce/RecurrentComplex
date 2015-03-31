@@ -45,29 +45,12 @@ public class StructureSaveHandler
         File structuresFile = IvFileHelper.getValidatedFolder(RecurrentComplex.proxy.getBaseFolderFile("structures"));
         if (structuresFile != null)
         {
-            try
-            {
-                File genericStructuresFile = IvFileHelper.getValidatedFolder(structuresFile, "genericStructures");
-                if (genericStructuresFile != null)
-                    addAllStructuresInDirectory(genericStructuresFile.toPath(), true, true);
-            }
-            catch (IOException e)
-            {
-                System.out.println("Could not read from generic structures directory");
-                e.printStackTrace();
-            }
+            tryAddAllStructuresInDirectory(RCFileHelper.getValidatedFolder(structuresFile, "active", true), true, true);
+            tryAddAllStructuresInDirectory(RCFileHelper.getValidatedFolder(structuresFile, "inactive", true), false, true);
 
-            try
-            {
-                File silentStructuresFile = IvFileHelper.getValidatedFolder(structuresFile, "silentStructures");
-                if (silentStructuresFile != null)
-                    addAllStructuresInDirectory(silentStructuresFile.toPath(), false, true);
-            }
-            catch (IOException e)
-            {
-                System.out.println("Could not read from silent structures directory");
-                e.printStackTrace();
-            }
+            // Legacy
+            tryAddAllStructuresInDirectory(RCFileHelper.getValidatedFolder(structuresFile, "genericStructures", false), true, true);
+            tryAddAllStructuresInDirectory(RCFileHelper.getValidatedFolder(structuresFile, "silentStructures", false), false, true);
         }
 
         SchematicLoader.initializeFolder();
@@ -77,32 +60,40 @@ public class StructureSaveHandler
     {
         modid = modid.toLowerCase();
 
-        try
-        {
-            Path path = RCFileHelper.pathFromResourceLocation(new ResourceLocation(modid, "structures/genericStructures"));
-            if (path != null)
-            {
-                addAllStructuresInDirectory(path, !disableGeneration, false);
-            }
-        }
-        catch (URISyntaxException | IOException e)
-        {
-            System.out.println("Could not read generic structures from mod '" + modid + "'");
-            e.printStackTrace();
-        }
+        tryAddAllStructuresInResourceLocation(new ResourceLocation(modid, "structures/active"), !disableGeneration, false);
+        tryAddAllStructuresInResourceLocation(new ResourceLocation(modid, "structures/inactive"), false, false);
 
+        // Legacy
+        tryAddAllStructuresInResourceLocation(new ResourceLocation(modid, "structures/genericStructures"), !disableGeneration, false);
+        tryAddAllStructuresInResourceLocation(new ResourceLocation(modid, "structures/silentStructures"), false, false);
+    }
+
+    public static void tryAddAllStructuresInResourceLocation(ResourceLocation resourceLocation, boolean generating, boolean imported)
+    {
         try
         {
-            Path path = RCFileHelper.pathFromResourceLocation(new ResourceLocation(modid, "structures/silentStructures"));
+            Path path = RCFileHelper.pathFromResourceLocation(resourceLocation);
             if (path != null)
-            {
-                addAllStructuresInDirectory(path, false, false);
-            }
+                addAllStructuresInDirectory(path, generating, imported);
         }
-        catch (URISyntaxException | IOException e)
+        catch (Throwable e)
         {
-            System.out.println("Could not read silent structures from mod '" + modid + "'");
-            e.printStackTrace();
+            RecurrentComplex.logger.error("Error reading from resource location '" + resourceLocation + "'", e);
+        }
+    }
+
+    public static void tryAddAllStructuresInDirectory(File file, boolean generating, boolean imported)
+    {
+        if (file != null)
+        {
+            try
+            {
+                addAllStructuresInDirectory(file.toPath(), generating, imported);
+            }
+            catch (Throwable e)
+            {
+                RecurrentComplex.logger.error("Error reading from directory '" + file + "'", e);
+            }
         }
     }
 
@@ -132,7 +123,7 @@ public class StructureSaveHandler
     public static boolean saveGenericStructure(GenericStructureInfo info, String structureName)
     {
         File structuresFolder = RecurrentComplex.proxy.getBaseFolderFile("structures");
-        File parent = IvFileHelper.getValidatedFolder(structuresFolder, "silentStructures");
+        File parent = RCFileHelper.getValidatedFolder(structuresFolder, "inactive", true);
         if (parent != null)
         {
             String json = StructureRegistry.createJSONFromStructure(info);

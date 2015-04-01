@@ -19,7 +19,7 @@ import java.util.Set;
  */
 public class SchematicMapping
 {
-    public static final String COMPOUND_KEY = "Mapping";
+    public static final String COMPOUND_KEY = "SchematicaMapping";
     private TShortObjectMap<Block> blockMapping = new TShortObjectHashMap<>();
 
     public SchematicMapping()

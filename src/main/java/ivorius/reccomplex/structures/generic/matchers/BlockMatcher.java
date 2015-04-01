@@ -9,6 +9,7 @@ import com.google.common.base.Predicate;
 import com.google.common.base.Splitter;
 import com.google.common.primitives.Ints;
 import ivorius.ivtoolkit.gui.IntegerRange;
+import ivorius.ivtoolkit.tools.MCRegistry;
 import ivorius.reccomplex.utils.ExpressionCaches;
 import ivorius.reccomplex.utils.PrefixedTypeExpressionCache;
 import ivorius.reccomplex.utils.RCBoolAlgebra;
@@ -24,27 +25,27 @@ public class BlockMatcher extends PrefixedTypeExpressionCache<Boolean> implement
 {
     public static final String METADATA_PREFIX = "#";
 
-    public BlockMatcher(String expression)
+    public BlockMatcher(MCRegistry registry, String expression)
     {
         super(RCBoolAlgebra.algebra(), true, EnumChatFormatting.GREEN + "Any Block", expression);
 
-        addType(new BlockVariableType(""));
+        addType(new BlockVariableType("", registry));
         addType(new MetadataVariableType(METADATA_PREFIX));
     }
 
-    public static String of(Block block)
+    public static String of(MCRegistry registry, Block block)
     {
-        return Block.blockRegistry.getNameForObject(block);
+        return registry.idFromBlock(block);
     }
 
-    public static String of(Block block, Integer metadata)
+    public static String of(MCRegistry registry, Block block, Integer metadata)
     {
-        return String.format("%s & %s%d", Block.blockRegistry.getNameForObject(block), METADATA_PREFIX, metadata);
+        return String.format("%s & %s%d", registry.idFromBlock(block), METADATA_PREFIX, metadata);
     }
 
-    public static String of(Block block, IntegerRange range)
+    public static String of(MCRegistry registry, Block block, IntegerRange range)
     {
-        return String.format("%s & %s%d-%d", Block.blockRegistry.getNameForObject(block), METADATA_PREFIX, range.min, range.max);
+        return String.format("%s & %s%d-%d", registry.idFromBlock(block), METADATA_PREFIX, range.min, range.max);
     }
 
     @Override
@@ -67,21 +68,24 @@ public class BlockMatcher extends PrefixedTypeExpressionCache<Boolean> implement
 
     public static class BlockVariableType extends ExpressionCaches.SimpleVariableType<Boolean>
     {
-        public BlockVariableType(String prefix)
+        public MCRegistry registry;
+
+        public BlockVariableType(String prefix, MCRegistry registry)
         {
             super(prefix);
+            this.registry = registry;
         }
 
         @Override
         public Boolean evaluate(String var, Object... args)
         {
-            return ((BlockFragment) args[0]).block == Block.getBlockFromName(var);
+            return ((BlockFragment) args[0]).block == registry.blockFromID(var);
         }
 
         @Override
         public boolean isKnown(String var, Object... args)
         {
-            return Block.getBlockFromName(var) != null;
+            return registry.blockFromID(var) != null;
         }
     }
 

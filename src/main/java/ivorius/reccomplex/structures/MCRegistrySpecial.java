@@ -19,6 +19,8 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.util.Constants;
 
 import javax.annotation.Nullable;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Created by lukas on 30.06.14.
@@ -31,7 +33,7 @@ public class MCRegistrySpecial implements MCRegistry
 
     private final BiMap<String, Item> itemMap = HashBiMap.create();
     private final BiMap<String, Block> blockMap = HashBiMap.create();
-    private final BiMap<String, Class<? extends TileEntity>> tileEntityMap = HashBiMap.create();
+    private final Map<String, Class<? extends TileEntity>> tileEntityMap = new HashMap<>();
 
     private ItemHidingRegistry itemHidingRegistry = new ItemHidingRegistry(this);
 

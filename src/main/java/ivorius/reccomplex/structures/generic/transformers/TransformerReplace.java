@@ -48,13 +48,13 @@ public class TransformerReplace extends TransformerSingleBlock<NBTNone>
 
     public TransformerReplace()
     {
-        this(BlockMatcher.of(Blocks.wool));
+        this(BlockMatcher.of(MCRegistrySpecial.INSTANCE, Blocks.wool));
         destination.setToDefault();
     }
 
     public TransformerReplace(String sourceExpression)
     {
-        this.sourceMatcher = new BlockMatcher(sourceExpression);
+        this.sourceMatcher = new BlockMatcher(MCRegistrySpecial.INSTANCE, sourceExpression);
     }
 
     public TransformerReplace replaceWith(WeightedBlockState... states)

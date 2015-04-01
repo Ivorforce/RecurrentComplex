@@ -14,6 +14,7 @@ import ivorius.reccomplex.gui.table.TableDataSource;
 import ivorius.reccomplex.gui.table.TableDelegate;
 import ivorius.reccomplex.gui.table.TableNavigator;
 import ivorius.reccomplex.json.JsonUtils;
+import ivorius.reccomplex.structures.MCRegistrySpecial;
 import ivorius.reccomplex.structures.StructureLoadContext;
 import ivorius.reccomplex.structures.StructurePrepareContext;
 import ivorius.reccomplex.structures.StructureSpawnContext;
@@ -36,12 +37,12 @@ public class TransformerNegativeSpace implements Transformer<NBTNone>
 
     public TransformerNegativeSpace()
     {
-        this(BlockMatcher.of(RCBlocks.negativeSpace, 0));
+        this(BlockMatcher.of(MCRegistrySpecial.INSTANCE, RCBlocks.negativeSpace, 0));
     }
 
     public TransformerNegativeSpace(String sourceExpression)
     {
-        this.sourceMatcher = new BlockMatcher(sourceExpression);
+        this.sourceMatcher = new BlockMatcher(MCRegistrySpecial.INSTANCE, sourceExpression);
     }
 
     @Override

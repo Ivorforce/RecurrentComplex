@@ -37,10 +37,10 @@ public class WeightedBlockState implements WeightedSelector.Item
         this.tileEntityInfo = tileEntityInfo;
     }
 
-    public WeightedBlockState(NBTTagCompound compound)
+    public WeightedBlockState(MCRegistry registry, NBTTagCompound compound)
     {
         weight = compound.hasKey("weight") ? compound.getDouble("weight") : null;
-        block = compound.hasKey("block") ? Block.getBlockFromName(compound.getString("block")) : null;
+        block = compound.hasKey("block") ? registry.blockFromID(compound.getString("block")) : null;
         metadata = compound.getInteger("meta");
         tileEntityInfo = compound.getString("tileEntityInfo");
     }
@@ -65,12 +65,12 @@ public class WeightedBlockState implements WeightedSelector.Item
         return weight != null ? weight : 1.0;
     }
 
-    public NBTTagCompound writeToNBT()
+    public NBTTagCompound writeToNBT(MCRegistry registry)
     {
         NBTTagCompound compound = new NBTTagCompound();
 
         if (weight != null) compound.setDouble("weight", weight);
-        if (block != null) compound.setString("block", Block.blockRegistry.getNameForObject(block));
+        if (block != null) compound.setString("block", registry.idFromBlock(block));
         compound.setInteger("meta", metadata);
         compound.setString("tileEntityInfo", tileEntityInfo);
 
@@ -109,7 +109,7 @@ public class WeightedBlockState implements WeightedSelector.Item
             if (generationInfo.weight != null)
                 jsonObject.addProperty("weight", generationInfo.weight);
 
-            jsonObject.addProperty("block", Block.blockRegistry.getNameForObject(generationInfo.block));
+            jsonObject.addProperty("block", registry.idFromBlock(generationInfo.block));
             jsonObject.addProperty("metadata", generationInfo.metadata);
 
             jsonObject.addProperty("tileEntityInfo", generationInfo.tileEntityInfo);

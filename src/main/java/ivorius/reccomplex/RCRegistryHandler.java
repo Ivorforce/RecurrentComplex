@@ -5,7 +5,6 @@
 
 package ivorius.reccomplex;
 
-import com.google.common.collect.ObjectArrays;
 import cpw.mods.fml.client.registry.RenderingRegistry;
 import cpw.mods.fml.common.event.FMLInitializationEvent;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
@@ -34,6 +33,7 @@ import ivorius.reccomplex.structures.generic.presets.WeightedBlockStatePresets;
 import ivorius.reccomplex.structures.schematics.OperationGenerateSchematic;
 import ivorius.reccomplex.structures.OperationGenerateStructure;
 import ivorius.reccomplex.structures.StructureRegistry;
+import ivorius.reccomplex.utils.FMLUtils;
 import ivorius.reccomplex.worldgen.StructureSelector;
 import ivorius.reccomplex.worldgen.inventory.RCInventoryGenerators;
 import net.minecraft.block.Block;
@@ -46,8 +46,6 @@ import net.minecraft.item.ItemBlock;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.BiomeDictionary;
 
-import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
 import java.util.Collections;
 
 import static ivorius.reccomplex.RecurrentComplex.*;
@@ -147,7 +145,7 @@ public class RCRegistryHandler
         if (!RecurrentComplex.isLite())
             GameRegistry.registerItem(item, id);
         else
-            MCRegistrySpecial.INSTANCE.register(id, item);
+            MCRegistrySpecial.INSTANCE.register(FMLUtils.addPrefix(id), item);
     }
 
     public static void register(Block block, String id)
@@ -156,8 +154,8 @@ public class RCRegistryHandler
             GameRegistry.registerBlock(block, id);
         else
         {
-            MCRegistrySpecial.INSTANCE.register(id, block);
-            MCRegistrySpecial.INSTANCE.register(id, new ItemBlock(block));
+            MCRegistrySpecial.INSTANCE.register(FMLUtils.addPrefix(id), block);
+            MCRegistrySpecial.INSTANCE.register(FMLUtils.addPrefix(id), new ItemBlock(block));
         }
     }
 
@@ -167,31 +165,10 @@ public class RCRegistryHandler
             GameRegistry.registerBlock(block, itemClass, id, itemArgs);
         else
         {
-            MCRegistrySpecial.INSTANCE.register(id, block);
-            Item item = constructItem(block, itemClass, itemArgs);
-            if (item != null) MCRegistrySpecial.INSTANCE.register(id, item);
+            MCRegistrySpecial.INSTANCE.register(FMLUtils.addPrefix(id), block);
+            Item item = FMLUtils.constructItem(block, itemClass, itemArgs);
+            if (item != null) MCRegistrySpecial.INSTANCE.register(FMLUtils.addPrefix(id), item);
         }
-    }
-
-    protected static ItemBlock constructItem(Block block, Class<? extends ItemBlock> itemClass, Object... itemArgs)
-    {
-        // From FML
-        try
-        {
-            Class<?>[] ctorArgClasses = new Class<?>[itemArgs.length + 1];
-            ctorArgClasses[0] = Block.class;
-            for (int idx = 1; idx < ctorArgClasses.length; idx++)
-                ctorArgClasses[idx] = itemArgs[idx - 1].getClass();
-            Constructor<? extends ItemBlock> itemCtor = itemClass.getConstructor(ctorArgClasses);
-
-            return itemCtor.newInstance(ObjectArrays.concat(block, itemArgs));
-        }
-        catch (Throwable e)
-        {
-            RecurrentComplex.logger.warn("Error constructing secret item", e);
-        }
-
-        return null;
     }
 
     public static void register(Class<? extends TileEntity> tileEntity, String id, String...alternatives)

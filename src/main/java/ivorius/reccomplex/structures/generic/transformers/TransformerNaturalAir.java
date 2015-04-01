@@ -15,6 +15,7 @@ import ivorius.reccomplex.gui.table.TableDataSource;
 import ivorius.reccomplex.gui.table.TableDelegate;
 import ivorius.reccomplex.gui.table.TableNavigator;
 import ivorius.reccomplex.json.JsonUtils;
+import ivorius.reccomplex.structures.MCRegistrySpecial;
 import ivorius.reccomplex.structures.StructureLoadContext;
 import ivorius.reccomplex.structures.StructurePrepareContext;
 import ivorius.reccomplex.structures.StructureSpawnContext;
@@ -44,12 +45,12 @@ public class TransformerNaturalAir extends TransformerSingleBlock<NBTNone>
 
     public TransformerNaturalAir()
     {
-        this(BlockMatcher.of(RCBlocks.negativeSpace, 1));
+        this(BlockMatcher.of(MCRegistrySpecial.INSTANCE, RCBlocks.negativeSpace, 1));
     }
 
     public TransformerNaturalAir(String sourceExpression)
     {
-        this.sourceMatcher = new BlockMatcher(sourceExpression);
+        this.sourceMatcher = new BlockMatcher(MCRegistrySpecial.INSTANCE, sourceExpression);
     }
 
     @Override

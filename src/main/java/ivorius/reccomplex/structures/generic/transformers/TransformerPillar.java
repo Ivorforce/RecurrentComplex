@@ -39,12 +39,12 @@ public class TransformerPillar extends TransformerSingleBlock<NBTNone>
 
     public TransformerPillar()
     {
-        this(BlockMatcher.of(Blocks.stone, 0), Blocks.stone, 0);
+        this(BlockMatcher.of(MCRegistrySpecial.INSTANCE, Blocks.stone, 0), Blocks.stone, 0);
     }
 
     public TransformerPillar(String sourceExpression, Block destBlock, int destMetadata)
     {
-        this.sourceMatcher = new BlockMatcher(sourceExpression);
+        this.sourceMatcher = new BlockMatcher(MCRegistrySpecial.INSTANCE, sourceExpression);
         this.destBlock = destBlock;
         this.destMetadata = destMetadata;
     }
@@ -139,7 +139,7 @@ public class TransformerPillar extends TransformerSingleBlock<NBTNone>
 
             jsonObject.addProperty("sourceExpression", transformer.sourceMatcher.getExpression());
 
-            jsonObject.addProperty("dest", Block.blockRegistry.getNameForObject(transformer.destBlock));
+            jsonObject.addProperty("dest", registry.idFromBlock(transformer.destBlock));
             jsonObject.addProperty("destMetadata", transformer.destMetadata);
 
             return jsonObject;

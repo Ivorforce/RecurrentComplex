@@ -49,13 +49,13 @@ public class TransformerReplaceAll implements Transformer<TransformerReplaceAll.
 
     public TransformerReplaceAll()
     {
-        this(BlockMatcher.of(Blocks.wool, new IntegerRange(0, 15)));
+        this(BlockMatcher.of(MCRegistrySpecial.INSTANCE, Blocks.wool, new IntegerRange(0, 15)));
         destination.setToDefault();
     }
 
     public TransformerReplaceAll(String sourceExpression)
     {
-        this.sourceMatcher = new BlockMatcher(sourceExpression);
+        this.sourceMatcher = new BlockMatcher(MCRegistrySpecial.INSTANCE, sourceExpression);
     }
 
     public TransformerReplaceAll replaceWith(WeightedBlockState... states)
@@ -160,7 +160,7 @@ public class TransformerReplaceAll implements Transformer<TransformerReplaceAll.
 
         public InstanceData(NBTTagCompound compound)
         {
-            this.blockState = new WeightedBlockState(compound.getCompoundTag("blockState"));
+            this.blockState = new WeightedBlockState(MCRegistrySpecial.INSTANCE, compound.getCompoundTag("blockState"));
         }
 
         @Override
@@ -168,7 +168,7 @@ public class TransformerReplaceAll implements Transformer<TransformerReplaceAll.
         {
             NBTTagCompound compound = new NBTTagCompound();
 
-            compound.setTag("blockState", blockState.writeToNBT());
+            compound.setTag("blockState", blockState.writeToNBT(MCRegistrySpecial.INSTANCE));
 
             return compound;
         }

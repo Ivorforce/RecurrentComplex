@@ -31,7 +31,7 @@ public class StructureEntityInfo implements IExtendedEntityProperties, PartialUp
     public static final String EEP_KEY = "structureEntityInfo";
     public BlockCoord selectedPoint1;
     public BlockCoord selectedPoint2;
-    public Operation.PreviewType previewType = Operation.PreviewType.SHAPE;
+    private Operation.PreviewType previewType = Operation.PreviewType.SHAPE;
     public Operation danglingOperation;
     public boolean showGrid = false;
     private boolean hasChanges;
@@ -68,27 +68,37 @@ public class StructureEntityInfo implements IExtendedEntityProperties, PartialUp
         }
     }
 
+    public Operation.PreviewType getPreviewType()
+    {
+        return RecurrentComplex.isLite() ? Operation.PreviewType.NONE : previewType;
+    }
+
+    public void setPreviewType(Operation.PreviewType previewType)
+    {
+        this.previewType = previewType;
+    }
+
     public void sendSelectionToClients(Entity entity)
     {
-        if (!entity.worldObj.isRemote)
+        if (!entity.worldObj.isRemote && !RecurrentComplex.isLite())
             IvNetworkHelperServer.sendEEPUpdatePacket(entity, EEP_KEY, "selection", RecurrentComplex.network);
     }
 
     public void sendPreviewTypeToClients(Entity entity)
     {
-        if (!entity.worldObj.isRemote)
+        if (!entity.worldObj.isRemote && !RecurrentComplex.isLite())
             IvNetworkHelperServer.sendEEPUpdatePacket(entity, EEP_KEY, "previewType", RecurrentComplex.network);
     }
 
     public void sendOperationToClients(Entity entity)
     {
-        if (!entity.worldObj.isRemote)
+        if (!entity.worldObj.isRemote && !RecurrentComplex.isLite())
             IvNetworkHelperServer.sendEEPUpdatePacket(entity, EEP_KEY, "operation", RecurrentComplex.network);
     }
 
     public void sendOptionsToClients(Entity entity)
     {
-        if (!entity.worldObj.isRemote)
+        if (!entity.worldObj.isRemote && !RecurrentComplex.isLite())
             IvNetworkHelperServer.sendEEPUpdatePacket(entity, EEP_KEY, "options", RecurrentComplex.network);
     }
 

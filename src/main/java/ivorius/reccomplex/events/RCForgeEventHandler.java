@@ -121,7 +121,7 @@ public class RCForgeEventHandler
         SelectionRenderer.renderSelection(mc.thePlayer, ticks, event.partialTicks);
 
         if (info != null && info.danglingOperation != null)
-            info.danglingOperation.renderPreview(info.previewType, mc.theWorld, ticks, event.partialTicks);
+            info.danglingOperation.renderPreview(info.getPreviewType(), mc.theWorld, ticks, event.partialTicks);
 
         GL11.glPopMatrix();
     }

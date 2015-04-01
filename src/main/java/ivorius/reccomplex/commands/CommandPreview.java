@@ -47,7 +47,7 @@ public class CommandPreview extends CommandBase
         if (previewType == null)
             throw new CommandException("commands.rcpreview.invalid");
 
-        structureEntityInfo.previewType = previewType;
+        structureEntityInfo.setPreviewType(previewType);
         structureEntityInfo.sendPreviewTypeToClients(player);
 
         commandSender.addChatMessage(new ChatComponentTranslation("commands.rcpreview.success", args[0]));

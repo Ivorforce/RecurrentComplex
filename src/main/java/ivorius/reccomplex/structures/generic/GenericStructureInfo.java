@@ -180,7 +180,7 @@ public class GenericStructureInfo implements StructureInfo<GenericStructureInfo.
                                     if (tileEntity instanceof IInventory)
                                     {
                                         IInventory inventory = (IInventory) tileEntity;
-                                        InventoryGenerationHandler.generateAllTags(inventory, random);
+                                        InventoryGenerationHandler.generateAllTags(inventory, MCRegistrySpecial.INSTANCE.itemHidingMode(), random);
                                     }
                                 }
                             }
@@ -274,7 +274,7 @@ public class GenericStructureInfo implements StructureInfo<GenericStructureInfo.
 
     public IvWorldData constructWorldData(World world)
     {
-        return new IvWorldData(worldDataCompound, world, MCRegistrySpecial.INSTANCE);
+        return new IvWorldData(worldDataCompound, world, MCRegistrySpecial.INSTANCE.itemHidingMode());
     }
 
     @Override

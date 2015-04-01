@@ -6,12 +6,10 @@
 package ivorius.reccomplex.json;
 
 import com.google.gson.*;
-import ivorius.ivtoolkit.tools.MCRegistry;
 import ivorius.reccomplex.RecurrentComplex;
-import net.minecraft.item.Item;
+import ivorius.reccomplex.structures.MCRegistrySpecial;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import ivorius.reccomplex.json.JsonUtils;
 
 import java.lang.reflect.Type;
 
@@ -20,9 +18,9 @@ import java.lang.reflect.Type;
  */
 public class ItemStackSerializer implements JsonSerializer<ItemStack>, JsonDeserializer<ItemStack>
 {
-    private MCRegistry registry;
+    private MCRegistrySpecial registry;
 
-    public ItemStackSerializer(MCRegistry registry)
+    public ItemStackSerializer(MCRegistrySpecial registry)
     {
         this.registry = registry;
     }
@@ -32,20 +30,16 @@ public class ItemStackSerializer implements JsonSerializer<ItemStack>, JsonDeser
     {
         JsonObject jsonObject = new JsonObject();
 
-        jsonObject.addProperty("id", Item.itemRegistry.getNameForObject(src.getItem()));
+        jsonObject.addProperty("id", registry.itemHidingMode().containedItemID(src));
         jsonObject.addProperty("damage", src.getItemDamage());
         jsonObject.addProperty("count", src.stackSize);
 
         if (src.hasTagCompound())
         {
             if (RecurrentComplex.USE_JSON_FOR_NBT)
-            {
                 jsonObject.add("tag", context.serialize(src.getTagCompound()));
-            }
             else
-            {
                 jsonObject.addProperty("tagBase64", NbtToJson.getBase64FromNBT(src.getTagCompound()));
-            }
         }
 
         return jsonObject;
@@ -57,11 +51,10 @@ public class ItemStackSerializer implements JsonSerializer<ItemStack>, JsonDeser
         JsonObject jsonObject = JsonUtils.getJsonElementAsJsonObject(json, "ItemStack");
 
         String id = JsonUtils.getJsonObjectStringFieldValue(jsonObject, "id");
-        Item item = registry.itemFromID(id);
         int damage = JsonUtils.getJsonObjectIntegerFieldValue(jsonObject, "damage");
         int count = JsonUtils.getJsonObjectIntegerFieldValue(jsonObject, "count");
 
-        ItemStack stack = new ItemStack(item, count, damage);
+        ItemStack stack = registry.itemHidingMode().constructItemStack(id, count, damage);
 
         if (jsonObject.has("tag"))
         {

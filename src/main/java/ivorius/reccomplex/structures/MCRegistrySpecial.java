@@ -7,29 +7,33 @@ package ivorius.reccomplex.structures;
 
 import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
-import cpw.mods.fml.common.FMLLog;
-import cpw.mods.fml.relauncher.ReflectionHelper;
 import ivorius.ivtoolkit.tools.MCRegistry;
 import ivorius.reccomplex.RecurrentComplex;
 import net.minecraft.block.Block;
+import net.minecraft.init.Items;
 import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.NBTTagString;
 import net.minecraft.tileentity.TileEntity;
-import org.apache.logging.log4j.Level;
+import net.minecraftforge.common.util.Constants;
 
-import java.lang.reflect.Field;
-import java.util.Map;
+import javax.annotation.Nullable;
 
 /**
  * Created by lukas on 30.06.14.
  */
 public class MCRegistrySpecial implements MCRegistry
 {
+    public static final String HIDDEN_ITEM_TAG = "RC_HIDDEN_ITEM";
+
     public static final MCRegistrySpecial INSTANCE = new MCRegistrySpecial();
 
     private final BiMap<String, Item> itemMap = HashBiMap.create();
     private final BiMap<String, Block> blockMap = HashBiMap.create();
     private final BiMap<String, Class<? extends TileEntity>> tileEntityMap = HashBiMap.create();
+
+    private ItemHidingRegistry itemHidingRegistry = new ItemHidingRegistry(this);
 
     public void register(String id, Item item)
     {
@@ -46,6 +50,11 @@ public class MCRegistrySpecial implements MCRegistry
         tileEntityMap.put(id, tileEntity);
     }
 
+    public ItemHidingRegistry itemHidingMode()
+    {
+        return itemHidingRegistry;
+    }
+
     @Override
     public Item itemFromID(String itemID)
     {
@@ -58,6 +67,12 @@ public class MCRegistrySpecial implements MCRegistry
     {
         String id = itemMap.inverse().get(item);
         return id != null ? id : Item.itemRegistry.getNameForObject(item);
+    }
+
+    @Override
+    public void modifyItemStackCompound(NBTTagCompound compound, String itemID)
+    {
+
     }
 
     public boolean isSafe(Item item)
@@ -110,5 +125,99 @@ public class MCRegistrySpecial implements MCRegistry
     public boolean isSafe(TileEntity tileEntity)
     {
         return tileEntityMap.isEmpty() || !tileEntityMap.containsValue(tileEntity.getClass());
+    }
+
+    public static class ItemHidingRegistry implements MCRegistry
+    {
+        protected MCRegistrySpecial parent;
+
+        public ItemHidingRegistry(MCRegistrySpecial parent)
+        {
+            this.parent = parent;
+        }
+
+        @Override
+        public Item itemFromID(String itemID)
+        {
+            Item item = parent.itemMap.get(itemID);
+            return item != null ? Items.coal : (Item) Item.itemRegistry.getObject(itemID);
+        }
+
+        @Override
+        public String idFromItem(Item item)
+        {
+            return parent.idFromItem(item);
+        }
+
+        public String containedItemID(ItemStack stack)
+        {
+            return parent.idFromItem(containedItem(stack));
+        }
+
+        public Item containedItem(ItemStack stack)
+        {
+            Item hidden = hiddenItem(stack);
+            return hidden != null ? hidden : stack.getItem();
+        }
+
+        @Nullable
+        public Item hiddenItem(ItemStack stack)
+        {
+            return stack.hasTagCompound() && stack.getTagCompound().hasKey(HIDDEN_ITEM_TAG, Constants.NBT.TAG_STRING)
+                    ? parent.itemFromID(stack.getTagCompound().getString(HIDDEN_ITEM_TAG))
+                    : null;
+        }
+
+        public ItemStack constructItemStack(String itemID, int stackSize, int metadata)
+        {
+            return constructItemStack(parent.itemFromID(itemID), stackSize, metadata);
+        }
+
+        public ItemStack constructItemStack(Item item, int stackSize, int metadata)
+        {
+            String hiddenID = parent.itemMap.inverse().get(item);
+            if (hiddenID != null)
+            {
+                ItemStack stack = new ItemStack(Items.coal, stackSize, metadata);
+                stack.setTagInfo(HIDDEN_ITEM_TAG, new NBTTagString(hiddenID));
+                return stack;
+            }
+            else
+                return new ItemStack(item, stackSize, metadata);
+        }
+
+        @Override
+        public void modifyItemStackCompound(NBTTagCompound compound, String itemID)
+        {
+            Item item = parent.itemMap.get(itemID);
+            if (item != null)
+            {
+                NBTTagCompound stackNBT;
+                if (compound.hasKey("tag", Constants.NBT.TAG_COMPOUND))
+                    stackNBT = compound.getCompoundTag("tag");
+                else
+                    compound.setTag("tag", stackNBT = new NBTTagCompound());
+
+                stackNBT.setString(HIDDEN_ITEM_TAG, itemID);
+            }
+        }
+
+        @Override
+        public Block blockFromID(String blockID)
+        {
+            return parent.blockFromID(blockID);
+        }
+
+        @Override
+        public String idFromBlock(Block block)
+        {
+            return parent.idFromBlock(block);
+        }
+
+        @Override
+        public TileEntity loadTileEntity(NBTTagCompound compound)
+        {
+            return parent.loadTileEntity(compound);
+        }
     }
 }

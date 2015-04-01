@@ -6,10 +6,11 @@
 package ivorius.reccomplex.worldgen.inventory;
 
 import ivorius.reccomplex.items.GeneratingItem;
+import ivorius.reccomplex.structures.MCRegistrySpecial;
 import net.minecraft.inventory.IInventory;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import org.apache.commons.lang3.tuple.ImmutablePair;
-import org.apache.commons.lang3.tuple.Pair;
+import org.apache.commons.lang3.tuple.Triple;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -20,9 +21,9 @@ import java.util.Random;
  */
 public class InventoryGenerationHandler
 {
-    public static void generateAllTags(IInventory inventory, Random random)
+    public static void generateAllTags(IInventory inventory, MCRegistrySpecial.ItemHidingRegistry registry, Random random)
     {
-        List<Pair<ItemStack, Integer>> foundGenerators = new ArrayList<>();
+        List<Triple<ItemStack, GeneratingItem, Integer>> foundGenerators = new ArrayList<>();
         boolean didChange = true;
         int cycles = 0;
 
@@ -34,10 +35,14 @@ public class InventoryGenerationHandler
                 {
                     ItemStack stack = inventory.getStackInSlot(i);
 
-                    if (stack != null && (stack.getItem() instanceof GeneratingItem))
+                    if (stack != null)
                     {
-                        foundGenerators.add(new ImmutablePair<>(stack, i));
-                        inventory.setInventorySlotContents(i, null);
+                        Item item = registry.containedItem(stack);
+                        if (item instanceof GeneratingItem)
+                        {
+                            foundGenerators.add(Triple.of(stack, (GeneratingItem) item, i));
+                            inventory.setInventorySlotContents(i, null);
+                        }
                     }
                 }
 
@@ -46,9 +51,8 @@ public class InventoryGenerationHandler
 
             if (foundGenerators.size() > 0)
             {
-                Pair<ItemStack, Integer> pair = foundGenerators.get(0);
-                ItemStack stack = pair.getLeft();
-                ((GeneratingItem) stack.getItem()).generateInInventory(inventory, random, stack, pair.getRight());
+                Triple<ItemStack, GeneratingItem, Integer> pair = foundGenerators.get(0);
+                pair.getMiddle().generateInInventory(inventory, random, pair.getLeft(), pair.getRight());
 
                 foundGenerators.remove(0);
                 didChange = true;

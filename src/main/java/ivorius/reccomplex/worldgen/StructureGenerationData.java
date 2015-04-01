@@ -13,6 +13,7 @@ import ivorius.reccomplex.RecurrentComplex;
 import ivorius.reccomplex.structures.StructureInfo;
 import ivorius.reccomplex.structures.StructureInfos;
 import ivorius.reccomplex.structures.StructureRegistry;
+import ivorius.reccomplex.utils.StructureBoundingBoxes;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.world.ChunkCoordIntPair;
@@ -89,20 +90,18 @@ public class StructureGenerationData extends WorldSavedData
 
     public Set<Entry> getEntries(final StructureBoundingBox boundingBox)
     {
-        Set<Entry> entries = Collections.emptySet();
-        for (int x = boundingBox.minX >> 4; x <= boundingBox.maxX >> 4; x++)
-            for (int z = boundingBox.minZ >> 4; z <= boundingBox.maxZ >> 4; z++)
-                entries = Sets.union(getEntries(new ChunkCoordIntPair(x, z), false), entries);
-
-        return Sets.filter(entries, new Predicate<Entry>()
-        {
-            @Override
-            public boolean apply(Entry input)
-            {
-                StructureBoundingBox bb = input.boundingBox();
-                return bb != null && bb.intersectsWith(boundingBox);
-            }
-        });
+        ImmutableSet.Builder<Entry> entries = ImmutableSet.builder();
+        for (ChunkCoordIntPair chunkCoords : StructureBoundingBoxes.rasterize(boundingBox))
+                entries.addAll(Sets.filter(getEntries(chunkCoords, false), new Predicate<Entry>()
+                {
+                    @Override
+                    public boolean apply(Entry input)
+                    {
+                        StructureBoundingBox bb = input.boundingBox();
+                        return bb != null && bb.intersectsWith(boundingBox);
+                    }
+                }));
+        return entries.build();
     }
 
     public Set<ChunkCoordIntPair> addNewEntry(String structureID, BlockCoord lowerCoord, AxisAlignedTransform2D transform)
@@ -117,6 +116,7 @@ public class StructureGenerationData extends WorldSavedData
         Set<ChunkCoordIntPair> rasterized = entry.rasterize();
         for (ChunkCoordIntPair coords : rasterized)
             chunkMap.put(coords, entry);
+
         markDirty();
 
         return Sets.intersection(checkedChunksFinal, rasterized);
@@ -259,25 +259,7 @@ public class StructureGenerationData extends WorldSavedData
 
         public Set<ChunkCoordIntPair> rasterize()
         {
-            StructureBoundingBox boundingBox = boundingBox();
-
-            if (boundingBox != null)
-            {
-                int minX = boundingBox.minX >> 4;
-                int maxX = boundingBox.maxX >> 4;
-
-                int minZ = boundingBox.minZ >> 4;
-                int maxZ = boundingBox.maxZ >> 4;
-
-                Set<ChunkCoordIntPair> pairs = new HashSet<>((maxX - minX + 1) * (maxZ - minZ + 1));
-                for (int x = minX; x <= maxX; x++)
-                    for (int z = minZ; z <= maxZ; z++)
-                        pairs.add(new ChunkCoordIntPair(x, z));
-
-                return pairs;
-            }
-
-            return Collections.emptySet();
+            return StructureBoundingBoxes.rasterize(boundingBox());
         }
 
         public StructureBoundingBox boundingBox()

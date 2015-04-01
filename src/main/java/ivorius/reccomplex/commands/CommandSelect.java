@@ -12,6 +12,7 @@ import net.minecraft.command.CommandBase;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.command.WrongUsageException;
 import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.util.ChatComponentTranslation;
 import net.minecraft.util.MathHelper;
 
 import java.util.List;
@@ -47,6 +48,9 @@ public class CommandSelect extends CommandBase
                     structureEntityInfo.selectedPoint1 = null;
                     structureEntityInfo.selectedPoint2 = null;
                     structureEntityInfo.sendSelectionToClients(entityPlayerMP);
+                    break;
+                case "get":
+                    commandSender.addChatMessage(new ChatComponentTranslation("commands.selectSet.get", translatePoint(structureEntityInfo.selectedPoint1), translatePoint(structureEntityInfo.selectedPoint2)));
                     break;
                 case "both":
                 case "point1":
@@ -93,12 +97,19 @@ public class CommandSelect extends CommandBase
         }
     }
 
+    protected Object translatePoint(BlockCoord coord)
+    {
+        return coord != null
+                ? String.format("[%d,%d,%d]", coord.x, coord.y, coord.z)
+                : new ChatComponentTranslation("commands.selectSet.point.none");
+    }
+
     @Override
     public List addTabCompletionOptions(ICommandSender commandSender, String[] args)
     {
         if (args.length == 1)
         {
-            return getListOfStringsMatchingLastWord(args, "both", "clear", "point1", "point2");
+            return getListOfStringsMatchingLastWord(args, "both", "clear", "point1", "point2", "get");
         }
         else if (args.length == 2 || args.length == 3 || args.length == 4)
         {

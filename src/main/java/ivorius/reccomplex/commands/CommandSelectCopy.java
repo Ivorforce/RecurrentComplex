@@ -10,6 +10,7 @@ import ivorius.ivtoolkit.blocks.BlockCoord;
 import ivorius.ivtoolkit.tools.IvWorldData;
 import ivorius.reccomplex.RCConfig;
 import ivorius.reccomplex.entities.StructureEntityInfo;
+import ivorius.reccomplex.utils.ServerTranslations;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.util.ChatComponentTranslation;
@@ -28,7 +29,7 @@ public class CommandSelectCopy extends CommandSelectModify
     @Override
     public String getCommandUsage(ICommandSender var1)
     {
-        return "commands.selectCopy.usage";
+        return ServerTranslations.usage("commands.selectCopy.usage");
     }
 
     @Override
@@ -41,6 +42,6 @@ public class CommandSelectCopy extends CommandSelectModify
         BlockCoord higherCorner = area.getHigherCorner();
 
         structureEntityInfo.setWorldDataClipboard(worldData.createTagCompound(lowerCorner));
-        player.addChatMessage(new ChatComponentTranslation("commands.selectCopy.success", String.valueOf(lowerCorner.x), String.valueOf(lowerCorner.y), String.valueOf(lowerCorner.z), String.valueOf(higherCorner.x), String.valueOf(higherCorner.y), String.valueOf(higherCorner.z)));
+        player.addChatMessage(ServerTranslations.format("commands.selectCopy.success", String.valueOf(lowerCorner.x), String.valueOf(lowerCorner.y), String.valueOf(lowerCorner.z), String.valueOf(higherCorner.x), String.valueOf(higherCorner.y), String.valueOf(higherCorner.z)));
     }
 }

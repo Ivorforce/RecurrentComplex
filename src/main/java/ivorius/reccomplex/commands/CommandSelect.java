@@ -8,6 +8,7 @@ package ivorius.reccomplex.commands;
 import ivorius.ivtoolkit.blocks.BlockCoord;
 import ivorius.reccomplex.RCConfig;
 import ivorius.reccomplex.entities.StructureEntityInfo;
+import ivorius.reccomplex.utils.ServerTranslations;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.command.WrongUsageException;
@@ -31,7 +32,7 @@ public class CommandSelect extends CommandBase
     @Override
     public String getCommandUsage(ICommandSender var1)
     {
-        return "commands.selectSet.usage";
+        return ServerTranslations.usage("commands.selectSet.usage");
     }
 
     @Override
@@ -50,7 +51,7 @@ public class CommandSelect extends CommandBase
                     structureEntityInfo.sendSelectionToClients(entityPlayerMP);
                     break;
                 case "get":
-                    commandSender.addChatMessage(new ChatComponentTranslation("commands.selectSet.get", translatePoint(structureEntityInfo.selectedPoint1), translatePoint(structureEntityInfo.selectedPoint2)));
+                    commandSender.addChatMessage(ServerTranslations.format("commands.selectSet.get", translatePoint(structureEntityInfo.selectedPoint1), translatePoint(structureEntityInfo.selectedPoint2)));
                     break;
                 case "both":
                 case "point1":
@@ -84,16 +85,16 @@ public class CommandSelect extends CommandBase
                     }
                     else
                     {
-                        throw new WrongUsageException("commands.selectSet.usage");
+                        throw ServerTranslations.wrongUsageException("commands.selectSet.usage");
                     }
                     break;
                 default:
-                    throw new WrongUsageException("commands.selectSet.usage");
+                    throw ServerTranslations.wrongUsageException("commands.selectSet.usage");
             }
         }
         else
         {
-            throw new WrongUsageException("commands.selectSet.usage");
+            throw ServerTranslations.wrongUsageException("commands.selectSet.usage");
         }
     }
 
@@ -101,7 +102,7 @@ public class CommandSelect extends CommandBase
     {
         return coord != null
                 ? String.format("[%d,%d,%d]", coord.x, coord.y, coord.z)
-                : new ChatComponentTranslation("commands.selectSet.point.none");
+                : ServerTranslations.format("commands.selectSet.point.none");
     }
 
     @Override

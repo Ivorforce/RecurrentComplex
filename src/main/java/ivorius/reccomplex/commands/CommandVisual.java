@@ -8,6 +8,7 @@ package ivorius.reccomplex.commands;
 import ivorius.reccomplex.RCConfig;
 import ivorius.reccomplex.entities.StructureEntityInfo;
 import ivorius.reccomplex.operation.Operation;
+import ivorius.reccomplex.utils.ServerTranslations;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
@@ -31,14 +32,14 @@ public class CommandVisual extends CommandBase
     @Override
     public String getCommandUsage(ICommandSender commandSender)
     {
-        return "commands.rcvisual.usage";
+        return ServerTranslations.usage("commands.rcvisual.usage");
     }
 
     @Override
     public void processCommand(ICommandSender commandSender, String[] args)
     {
         if (args.length < 2)
-            throw new WrongUsageException("commands.rcvisual.usage");
+            throw ServerTranslations.wrongUsageException("commands.rcvisual.usage");
 
         boolean enabled = parseBoolean(commandSender, args[1]);
 
@@ -52,13 +53,13 @@ public class CommandVisual extends CommandBase
                 structureEntityInfo.sendOptionsToClients(player);
                 break;
             default:
-                throw new WrongUsageException("commands.rcvisual.usage");
+                throw ServerTranslations.wrongUsageException("commands.rcvisual.usage");
         }
 
         if (enabled)
-            commandSender.addChatMessage(new ChatComponentTranslation("commands.rcvisual.enabled", args[0]));
+            commandSender.addChatMessage(ServerTranslations.format("commands.rcvisual.enabled", args[0]));
         else
-            commandSender.addChatMessage(new ChatComponentTranslation("commands.rcvisual.disabled", args[0]));
+            commandSender.addChatMessage(ServerTranslations.format("commands.rcvisual.disabled", args[0]));
     }
 
     @Override

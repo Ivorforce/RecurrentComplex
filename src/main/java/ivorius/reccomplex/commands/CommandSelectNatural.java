@@ -11,6 +11,7 @@ import ivorius.reccomplex.RCConfig;
 import ivorius.reccomplex.blocks.RCBlocks;
 import ivorius.reccomplex.entities.StructureEntityInfo;
 import ivorius.ivtoolkit.blocks.BlockAreas;
+import ivorius.reccomplex.utils.ServerTranslations;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.command.ICommandSender;
@@ -37,7 +38,7 @@ public class CommandSelectNatural extends CommandSelectModify
     @Override
     public String getCommandUsage(ICommandSender var1)
     {
-        return "commands.selectNatural.usage";
+        return ServerTranslations.usage("commands.selectNatural.usage");
     }
 
     @Override

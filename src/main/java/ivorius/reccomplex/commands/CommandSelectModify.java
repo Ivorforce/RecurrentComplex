@@ -7,6 +7,7 @@ package ivorius.reccomplex.commands;
 
 import ivorius.ivtoolkit.blocks.BlockCoord;
 import ivorius.reccomplex.entities.StructureEntityInfo;
+import ivorius.reccomplex.utils.ServerTranslations;
 import net.minecraft.block.Block;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.CommandException;
@@ -33,7 +34,7 @@ public abstract class CommandSelectModify extends CommandBase
             }
             else
             {
-                throw new CommandException("commands.selectModify.noSelection");
+                throw ServerTranslations.commandException("commands.selectModify.noSelection");
             }
         }
     }
@@ -54,7 +55,7 @@ public abstract class CommandSelectModify extends CommandBase
         }
         catch (Exception ex)
         {
-            throw new WrongUsageException("commands.selectModify.invalidMetadata", arg);
+            throw ServerTranslations.wrongUsageException("commands.selectModify.invalidMetadata", arg);
         }
     }
 

@@ -9,6 +9,7 @@ import ivorius.reccomplex.RCConfig;
 import ivorius.reccomplex.network.PacketEditStructureHandler;
 import ivorius.reccomplex.structures.StructureRegistry;
 import ivorius.reccomplex.structures.generic.GenericStructureInfo;
+import ivorius.reccomplex.utils.ServerTranslations;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
@@ -30,7 +31,7 @@ public class CommandEditStructure extends CommandBase
     @Override
     public String getCommandUsage(ICommandSender var1)
     {
-        return "commands.strucEdit.usage";
+        return ServerTranslations.usage("commands.strucEdit.usage");
     }
 
     @Override
@@ -45,7 +46,7 @@ public class CommandEditStructure extends CommandBase
         }
         else
         {
-            throw new CommandException("commands.strucEdit.usage");
+            throw ServerTranslations.commandException("commands.strucEdit.usage");
         }
     }
 

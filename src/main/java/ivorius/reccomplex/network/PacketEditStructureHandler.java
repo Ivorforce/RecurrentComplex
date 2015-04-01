@@ -15,6 +15,7 @@ import ivorius.reccomplex.entities.StructureEntityInfo;
 import ivorius.reccomplex.gui.editstructure.GuiEditGenericStructure;
 import ivorius.reccomplex.structures.generic.StructureSaveHandler;
 import ivorius.reccomplex.structures.generic.GenericStructureInfo;
+import ivorius.reccomplex.utils.ServerTranslations;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.network.NetHandlerPlayServer;
@@ -55,11 +56,11 @@ public class PacketEditStructureHandler implements IMessageHandler<PacketEditStr
 
             if (!StructureSaveHandler.saveGenericStructure(genericStructureInfo, message.getKey()))
             {
-                player.addChatMessage(new ChatComponentTranslation("commands.strucExport.failure", message.getKey()));
+                player.addChatMessage(ServerTranslations.format("commands.strucExport.failure", message.getKey()));
             }
             else
             {
-                player.addChatMessage(new ChatComponentTranslation("commands.strucExport.success", message.getKey()));
+                player.addChatMessage(ServerTranslations.format("commands.strucExport.success", message.getKey()));
                 StructureSaveHandler.reloadAllCustomStructures();
             }
         }

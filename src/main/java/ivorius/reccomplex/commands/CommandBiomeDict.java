@@ -9,6 +9,7 @@ import ivorius.ivtoolkit.tools.IvGsonHelper;
 import ivorius.reccomplex.RCConfig;
 import ivorius.reccomplex.json.RCGsonHelper;
 import ivorius.reccomplex.structures.generic.matchers.BiomeMatcher;
+import ivorius.reccomplex.utils.ServerTranslations;
 import joptsimple.internal.Strings;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.ICommandSender;
@@ -34,14 +35,14 @@ public class CommandBiomeDict extends CommandBase
     @Override
     public String getCommandUsage(ICommandSender commandSender)
     {
-        return "commands.biomedict.usage";
+        return ServerTranslations.usage("commands.biomedict.usage");
     }
 
     @Override
     public void processCommand(ICommandSender commandSender, String[] args)
     {
         if (args.length < 2)
-            throw new WrongUsageException("commands.biomedict.usage");
+            throw ServerTranslations.wrongUsageException("commands.biomedict.usage");
 
         if (args[0].equals("get"))
         {
@@ -61,7 +62,7 @@ public class CommandBiomeDict extends CommandBase
                     for (int i = 0; i < types.length; i++)
                         typeNames[i] = IvGsonHelper.serializedName(types[i]);
 
-                    commandSender.addChatMessage(new ChatComponentTranslation("commands.biomedict.get", biomeName, Strings.join(typeNames, ", ")));
+                    commandSender.addChatMessage(ServerTranslations.format("commands.biomedict.get", biomeName, Strings.join(typeNames, ", ")));
 
                     didFindBiome = true;
                     break;
@@ -69,7 +70,7 @@ public class CommandBiomeDict extends CommandBase
             }
 
             if (!didFindBiome)
-                commandSender.addChatMessage(new ChatComponentTranslation("commands.biomedict.nobiome", biomeName));
+                commandSender.addChatMessage(ServerTranslations.format("commands.biomedict.nobiome", biomeName));
         }
         else if (args[0].equals("list"))
         {
@@ -83,13 +84,13 @@ public class CommandBiomeDict extends CommandBase
                 for (int i = 0; i < biomes.length; i++)
                     biomeNames[i] = biomes[i].biomeName;
 
-                commandSender.addChatMessage(new ChatComponentTranslation("commands.biomedict.list", args[1], Strings.join(biomeNames, ", ")));
+                commandSender.addChatMessage(ServerTranslations.format("commands.biomedict.list", args[1], Strings.join(biomeNames, ", ")));
             }
             else
-                commandSender.addChatMessage(new ChatComponentTranslation("commands.biomedict.notype", args[1]));
+                commandSender.addChatMessage(ServerTranslations.format("commands.biomedict.notype", args[1]));
         }
         else
-            throw new WrongUsageException("commands.biomedict.usage");
+            throw ServerTranslations.wrongUsageException("commands.biomedict.usage");
     }
 
     @Override

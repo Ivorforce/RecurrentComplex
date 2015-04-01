@@ -13,6 +13,7 @@ import cpw.mods.fml.relauncher.SideOnly;
 import ivorius.reccomplex.gui.editinventorygen.GuiEditInventoryGen;
 import ivorius.reccomplex.items.ItemInventoryGenComponentTag;
 import ivorius.reccomplex.items.ItemInventoryGenerationTag;
+import ivorius.reccomplex.utils.ServerTranslations;
 import ivorius.reccomplex.worldgen.inventory.CustomGenericItemCollectionHandler;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -39,7 +40,7 @@ public class PacketEditInventoryGeneratorHandler implements IMessageHandler<Pack
 
             if (CustomGenericItemCollectionHandler.saveInventoryGenerator(message.getInventoryGenerator(), message.getKey()))
             {
-                player.addChatMessage(new ChatComponentTranslation("inventorygen.save.success", message.getKey()));
+                player.addChatMessage(ServerTranslations.format("inventorygen.save.success", message.getKey()));
 
                 CustomGenericItemCollectionHandler.reloadAllCustomInventoryGenerators();
 
@@ -50,7 +51,7 @@ public class PacketEditInventoryGeneratorHandler implements IMessageHandler<Pack
             }
             else
             {
-                player.addChatMessage(new ChatComponentTranslation("inventorygen.save.failure", message.getKey()));
+                player.addChatMessage(ServerTranslations.format("inventorygen.save.failure", message.getKey()));
             }
         }
 

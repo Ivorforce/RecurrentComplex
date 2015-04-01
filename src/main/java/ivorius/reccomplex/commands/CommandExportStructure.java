@@ -14,6 +14,7 @@ import ivorius.reccomplex.network.PacketEditStructureHandler;
 import ivorius.reccomplex.structures.StructureRegistry;
 import ivorius.reccomplex.structures.StructureInfo;
 import ivorius.reccomplex.structures.generic.GenericStructureInfo;
+import ivorius.reccomplex.utils.ServerTranslations;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
@@ -36,7 +37,7 @@ public class CommandExportStructure extends CommandBase
     @Override
     public String getCommandUsage(ICommandSender var1)
     {
-        return "commands.strucExport.usage";
+        return ServerTranslations.usage("commands.strucExport.usage");
     }
 
     @Override
@@ -77,7 +78,7 @@ public class CommandExportStructure extends CommandBase
             }
             else
             {
-                throw new WrongUsageException("commands.selectModify.noSelection");
+                throw ServerTranslations.wrongUsageException("commands.selectModify.noSelection");
             }
         }
 
@@ -117,12 +118,12 @@ public class CommandExportStructure extends CommandBase
         StructureInfo structureInfo = StructureRegistry.getStructure(name);
 
         if (structureInfo == null)
-            throw new CommandException("commands.structure.notRegistered", name);
+            throw ServerTranslations.commandException("commands.structure.notRegistered", name);
 
         GenericStructureInfo genericStructureInfo = structureInfo.copyAsGenericStructureInfo();
 
         if (genericStructureInfo == null)
-            throw new CommandException("commands.structure.notGeneric", name);
+            throw ServerTranslations.commandException("commands.structure.notGeneric", name);
 
         return genericStructureInfo;
     }

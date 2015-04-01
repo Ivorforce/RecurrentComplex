@@ -14,6 +14,7 @@ import ivorius.reccomplex.entities.StructureEntityInfo;
 import ivorius.reccomplex.operation.OperationRegistry;
 import ivorius.reccomplex.structures.OperationGenerateStructure;
 import ivorius.reccomplex.structures.generic.GenericStructureInfo;
+import ivorius.reccomplex.utils.ServerTranslations;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.command.WrongUsageException;
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -34,7 +35,7 @@ public class CommandSelectDuplicate extends CommandSelectModify
     @Override
     public String getCommandUsage(ICommandSender var1)
     {
-        return "commands.selectDuplicate.usage";
+        return ServerTranslations.usage("commands.selectDuplicate.usage");
     }
 
     @Override
@@ -42,7 +43,7 @@ public class CommandSelectDuplicate extends CommandSelectModify
     {
         if (args.length < 3)
         {
-            throw new WrongUsageException("commands.selectDuplicate.usage");
+            throw ServerTranslations.wrongUsageException("commands.selectDuplicate.usage");
         }
 
         int rotations = args.length >= 4 ? parseInt(player, args[3]) : 0;

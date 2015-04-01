@@ -12,6 +12,7 @@ import ivorius.ivtoolkit.blocks.BlockCoord;
 import ivorius.reccomplex.RCConfig;
 import ivorius.reccomplex.entities.StructureEntityInfo;
 import ivorius.ivtoolkit.blocks.BlockAreas;
+import ivorius.reccomplex.utils.ServerTranslations;
 import net.minecraft.block.material.Material;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -32,7 +33,7 @@ public class CommandSelectCrop extends CommandSelectModify
     @Override
     public String getCommandUsage(ICommandSender var1)
     {
-        return "commands.selectCrop.usage";
+        return ServerTranslations.usage("commands.selectCrop.usage");
     }
 
     @Override

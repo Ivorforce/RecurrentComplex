@@ -14,6 +14,7 @@ import ivorius.reccomplex.structures.StructureRegistry;
 import ivorius.reccomplex.structures.StructureInfo;
 import ivorius.reccomplex.structures.StructureSpawnContext;
 import ivorius.reccomplex.structures.generic.GenericStructureInfo;
+import ivorius.reccomplex.utils.ServerTranslations;
 import ivorius.reccomplex.worldgen.StructureGenerator;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.CommandException;
@@ -38,7 +39,7 @@ public class CommandImportStructure extends CommandBase
     @Override
     public String getCommandUsage(ICommandSender var1)
     {
-        return "commands.strucImport.usage";
+        return ServerTranslations.usage("commands.strucImport.usage");
     }
 
     @Override
@@ -48,7 +49,7 @@ public class CommandImportStructure extends CommandBase
 
         if (args.length <= 0)
         {
-            throw new WrongUsageException("commands.strucImport.usage");
+            throw ServerTranslations.wrongUsageException("commands.strucImport.usage");
         }
 
         String structureName = args[0];
@@ -57,7 +58,7 @@ public class CommandImportStructure extends CommandBase
 
         if (structureInfo == null)
         {
-            throw new CommandException("commands.strucImport.noStructure", structureName);
+            throw ServerTranslations.commandException("commands.strucImport.noStructure", structureName);
         }
 
         x = commandSender.getPlayerCoordinates().posX;

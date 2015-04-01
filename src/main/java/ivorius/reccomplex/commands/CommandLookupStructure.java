@@ -9,6 +9,7 @@ import ivorius.reccomplex.RCConfig;
 import ivorius.reccomplex.structures.StructureRegistry;
 import ivorius.reccomplex.structures.generic.GenericStructureInfo;
 import ivorius.reccomplex.structures.generic.Metadata;
+import ivorius.reccomplex.utils.ServerTranslations;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
@@ -31,7 +32,7 @@ public class CommandLookupStructure extends CommandBase
     @Override
     public String getCommandUsage(ICommandSender var1)
     {
-        return "commands.rclookup.usage";
+        return ServerTranslations.usage("commands.rclookup.usage");
     }
 
     @Override
@@ -43,19 +44,19 @@ public class CommandLookupStructure extends CommandBase
             GenericStructureInfo structureInfo = CommandExportStructure.getGenericStructureInfo(strucKey);
             Metadata metadata = structureInfo.metadata;
 
-            commandSender.addChatMessage(new ChatComponentTranslation(
+            commandSender.addChatMessage(ServerTranslations.format(
                     StructureRegistry.isStructureGenerating(strucKey) ? "commands.rclookup.reply.generates" : "commands.rclookup.reply.silent",
                     strucKey,
-                    metadata.authors.trim().isEmpty() ? new ChatComponentTranslation("commands.rclookup.reply.noauthor") : metadata.authors,
-                    metadata.weblink.trim().isEmpty() ? new ChatComponentTranslation("commands.rclookup.reply.nolink") : metadata.weblink
+                    metadata.authors.trim().isEmpty() ? ServerTranslations.format("commands.rclookup.reply.noauthor") : metadata.authors,
+                    metadata.weblink.trim().isEmpty() ? ServerTranslations.format("commands.rclookup.reply.nolink") : metadata.weblink
             ));
 
             if (!metadata.comment.trim().isEmpty())
-                commandSender.addChatMessage(new ChatComponentTranslation("commands.rclookup.reply.comment", metadata.comment));
+                commandSender.addChatMessage(ServerTranslations.format("commands.rclookup.reply.comment", metadata.comment));
         }
         else
         {
-            throw new CommandException("commands.rclookup.usage");
+            throw ServerTranslations.commandException("commands.rclookup.usage");
         }
     }
 

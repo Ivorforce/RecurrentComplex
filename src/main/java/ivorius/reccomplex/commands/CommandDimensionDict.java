@@ -9,6 +9,7 @@ import gnu.trove.list.TIntList;
 import gnu.trove.list.array.TIntArrayList;
 import ivorius.reccomplex.RCConfig;
 import ivorius.reccomplex.dimensions.DimensionDictionary;
+import ivorius.reccomplex.utils.ServerTranslations;
 import joptsimple.internal.Strings;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.ICommandSender;
@@ -34,14 +35,14 @@ public class CommandDimensionDict extends CommandBase
     @Override
     public String getCommandUsage(ICommandSender commandSender)
     {
-        return "commands.dimensiondict.usage";
+        return ServerTranslations.usage("commands.dimensiondict.usage");
     }
 
     @Override
     public void processCommand(ICommandSender commandSender, String[] args)
     {
         if (args.length < 2)
-            throw new WrongUsageException("commands.dimensiondict.usage");
+            throw ServerTranslations.wrongUsageException("commands.dimensiondict.usage");
 
         switch (args[0])
         {
@@ -52,7 +53,7 @@ public class CommandDimensionDict extends CommandBase
                 Set<String> types = DimensionDictionary.getDimensionTypes(DimensionManager.getProvider(dimensionID));
                 List<String> typeList = new ArrayList<>();
                 typeList.addAll(types);
-                commandSender.addChatMessage(new ChatComponentTranslation("commands.dimensiondict.get", dimensionID, Strings.join(typeList, ", ")));
+                commandSender.addChatMessage(ServerTranslations.format("commands.dimensiondict.get", dimensionID, Strings.join(typeList, ", ")));
                 break;
             }
             case "list":
@@ -62,11 +63,11 @@ public class CommandDimensionDict extends CommandBase
                 for (int i = 0; i < typeDimensions.size(); i++)
                     types[i] = String.valueOf(typeDimensions.get(i));
 
-                commandSender.addChatMessage(new ChatComponentTranslation("commands.dimensiondict.list", args[1], Strings.join(types, ", ")));
+                commandSender.addChatMessage(ServerTranslations.format("commands.dimensiondict.list", args[1], Strings.join(types, ", ")));
                 break;
             }
             default:
-                throw new WrongUsageException("commands.dimensiondict.usage");
+                throw ServerTranslations.wrongUsageException("commands.dimensiondict.usage");
         }
     }
 

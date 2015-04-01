@@ -8,6 +8,7 @@ package ivorius.reccomplex.commands;
 import ivorius.reccomplex.RCConfig;
 import ivorius.reccomplex.entities.StructureEntityInfo;
 import ivorius.reccomplex.operation.Operation;
+import ivorius.reccomplex.utils.ServerTranslations;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
@@ -31,26 +32,26 @@ public class CommandPreview extends CommandBase
     @Override
     public String getCommandUsage(ICommandSender commandSender)
     {
-        return "commands.rcpreview.usage";
+        return ServerTranslations.usage("commands.rcpreview.usage");
     }
 
     @Override
     public void processCommand(ICommandSender commandSender, String[] args)
     {
         if (args.length < 1)
-            throw new WrongUsageException("commands.rcpreview.usage");
+            throw ServerTranslations.wrongUsageException("commands.rcpreview.usage");
 
         EntityPlayer player = getCommandSenderAsPlayer(commandSender);
         StructureEntityInfo structureEntityInfo = RCCommands.getStructureEntityInfo(player);
 
         Operation.PreviewType previewType = Operation.PreviewType.find(args[0]);
         if (previewType == null)
-            throw new CommandException("commands.rcpreview.invalid");
+            throw ServerTranslations.commandException("commands.rcpreview.invalid");
 
         structureEntityInfo.setPreviewType(previewType);
         structureEntityInfo.sendPreviewTypeToClients(player);
 
-        commandSender.addChatMessage(new ChatComponentTranslation("commands.rcpreview.success", args[0]));
+        commandSender.addChatMessage(ServerTranslations.format("commands.rcpreview.success", args[0]));
     }
 
     @Override

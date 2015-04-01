@@ -8,6 +8,7 @@ package ivorius.reccomplex.commands;
 import cpw.mods.fml.common.event.FMLServerStartingEvent;
 import ivorius.reccomplex.RecurrentComplex;
 import ivorius.reccomplex.entities.StructureEntityInfo;
+import ivorius.reccomplex.utils.ServerTranslations;
 import net.minecraft.command.CommandException;
 import net.minecraft.entity.Entity;
 
@@ -48,7 +49,8 @@ public class RCCommands
         event.registerServerCommand(new CommandSelectFill());
         event.registerServerCommand(new CommandSelectReplace());
         event.registerServerCommand(new CommandSelectFillSphere());
-        event.registerServerCommand(new CommandSelectNatural());
+        if (!RecurrentComplex.isLite())
+            event.registerServerCommand(new CommandSelectNatural());
 
         event.registerServerCommand(new CommandSelectCopy());
         event.registerServerCommand(new CommandPaste());
@@ -73,7 +75,7 @@ public class RCCommands
         StructureEntityInfo info = StructureEntityInfo.getStructureEntityInfo(entity);
 
         if (info == null)
-            throw new CommandException("commands.rc.noEntityInfo");
+            throw ServerTranslations.commandException("commands.rc.noEntityInfo");
 
         return info;
     }

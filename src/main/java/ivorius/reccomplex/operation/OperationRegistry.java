@@ -9,6 +9,7 @@ import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
 import ivorius.reccomplex.RecurrentComplex;
 import ivorius.reccomplex.entities.StructureEntityInfo;
+import ivorius.reccomplex.utils.ServerTranslations;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
@@ -78,7 +79,7 @@ public class OperationRegistry
                 {
                     info.queueOperation(operation, player);
                     instant = false;
-                    commandSender.addChatMessage(new ChatComponentTranslation("commands.rc.queuedOp"));
+                    commandSender.addChatMessage(ServerTranslations.format("commands.rc.queuedOp"));
                 }
             }
         }

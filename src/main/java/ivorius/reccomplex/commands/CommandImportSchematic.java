@@ -11,6 +11,7 @@ import ivorius.reccomplex.operation.OperationRegistry;
 import ivorius.reccomplex.structures.schematics.OperationGenerateSchematic;
 import ivorius.reccomplex.structures.schematics.SchematicFile;
 import ivorius.reccomplex.structures.schematics.SchematicLoader;
+import ivorius.reccomplex.utils.ServerTranslations;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
@@ -34,7 +35,7 @@ public class CommandImportSchematic extends CommandBase
     @Override
     public String getCommandUsage(ICommandSender var1)
     {
-        return "commands.strucImportSchematic.usage";
+        return ServerTranslations.usage("commands.strucImportSchematic.usage");
     }
 
     @Override
@@ -42,7 +43,7 @@ public class CommandImportSchematic extends CommandBase
     {
         if (args.length < 4)
         {
-            throw new WrongUsageException("commands.strucImportSchematic.usage");
+            throw ServerTranslations.wrongUsageException("commands.strucImportSchematic.usage");
         }
 
         int x = MathHelper.floor_double(func_110666_a(commandSender, commandSender.getPlayerCoordinates().posX, args[0]));
@@ -58,11 +59,11 @@ public class CommandImportSchematic extends CommandBase
         }
         catch (SchematicFile.UnsupportedSchematicFormatException e)
         {
-            throw new CommandException("commands.strucImportSchematic.format", schematicName, e.format);
+            throw ServerTranslations.commandException("commands.strucImportSchematic.format", schematicName, e.format);
         }
 
         if (schematicFile == null)
-            throw new CommandException("commands.strucImportSchematic.missing", schematicName, SchematicLoader.getLookupFolderName());
+            throw ServerTranslations.commandException("commands.strucImportSchematic.missing", schematicName, SchematicLoader.getLookupFolderName());
 
         OperationRegistry.queueOperation(new OperationGenerateSchematic(schematicFile, new BlockCoord(x, y, z)), commandSender);
     }

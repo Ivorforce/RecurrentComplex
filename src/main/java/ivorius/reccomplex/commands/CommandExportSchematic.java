@@ -13,6 +13,7 @@ import ivorius.reccomplex.entities.StructureEntityInfo;
 import ivorius.reccomplex.structures.schematics.SchematicFile;
 import ivorius.reccomplex.structures.schematics.SchematicLoader;
 import ivorius.reccomplex.structures.StructureRegistry;
+import ivorius.reccomplex.utils.ServerTranslations;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
@@ -38,7 +39,7 @@ public class CommandExportSchematic extends CommandBase
     @Override
     public String getCommandUsage(ICommandSender var1)
     {
-        return "commands.strucExportSchematic.usage";
+        return ServerTranslations.usage("commands.strucExportSchematic.usage");
     }
 
     @Override
@@ -79,7 +80,7 @@ public class CommandExportSchematic extends CommandBase
             }
             else
             {
-                throw new CommandException("commands.selectModify.noSelection");
+                throw ServerTranslations.commandException("commands.selectModify.noSelection");
             }
         }
 
@@ -97,7 +98,7 @@ public class CommandExportSchematic extends CommandBase
         SchematicFile schematicFile = convert(data, lowerCoord);
         SchematicLoader.writeSchematicByName(schematicFile, structureName);
 
-        commandSender.addChatMessage(new ChatComponentTranslation("commands.strucExportSchematic.success", structureName));
+        commandSender.addChatMessage(ServerTranslations.format("commands.strucExportSchematic.success", structureName));
     }
 
     public static SchematicFile convert(IvWorldData worldData, BlockCoord referenceCoord)

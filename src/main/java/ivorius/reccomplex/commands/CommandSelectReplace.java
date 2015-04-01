@@ -9,6 +9,7 @@ import ivorius.ivtoolkit.blocks.BlockArea;
 import ivorius.ivtoolkit.blocks.BlockCoord;
 import ivorius.reccomplex.RCConfig;
 import ivorius.reccomplex.entities.StructureEntityInfo;
+import ivorius.reccomplex.utils.ServerTranslations;
 import net.minecraft.block.Block;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.command.WrongUsageException;
@@ -32,7 +33,7 @@ public class CommandSelectReplace extends CommandSelectModify
     @Override
     public String getCommandUsage(ICommandSender var1)
     {
-        return "commands.selectReplace.usage";
+        return ServerTranslations.usage("commands.selectReplace.usage");
     }
 
     @Override
@@ -67,7 +68,7 @@ public class CommandSelectReplace extends CommandSelectModify
         }
         else
         {
-            throw new WrongUsageException("commands.selectReplace.usage");
+            throw ServerTranslations.wrongUsageException("commands.selectReplace.usage");
         }
     }
 

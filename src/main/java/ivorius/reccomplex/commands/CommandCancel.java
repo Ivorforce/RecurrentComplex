@@ -7,6 +7,7 @@ package ivorius.reccomplex.commands;
 
 import ivorius.reccomplex.RCConfig;
 import ivorius.reccomplex.entities.StructureEntityInfo;
+import ivorius.reccomplex.utils.ServerTranslations;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
@@ -26,7 +27,7 @@ public class CommandCancel extends CommandBase
     @Override
     public String getCommandUsage(ICommandSender commandSender)
     {
-        return "commands.rccancel.usage";
+        return ServerTranslations.usage("commands.rccancel.usage");
     }
 
     @Override
@@ -36,6 +37,6 @@ public class CommandCancel extends CommandBase
         StructureEntityInfo structureEntityInfo = RCCommands.getStructureEntityInfo(player);
 
         if (!structureEntityInfo.cancelOperation(commandSender.getEntityWorld(), player))
-            throw new CommandException("commands.rc.noOperation");
+            throw ServerTranslations.commandException("commands.rc.noOperation");
     }
 }

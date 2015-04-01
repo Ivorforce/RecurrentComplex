@@ -10,6 +10,7 @@ import ivorius.ivtoolkit.blocks.BlockCoord;
 import ivorius.reccomplex.RCConfig;
 import ivorius.reccomplex.entities.StructureEntityInfo;
 import ivorius.ivtoolkit.blocks.BlockAreas;
+import ivorius.reccomplex.utils.ServerTranslations;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.command.WrongUsageException;
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -28,14 +29,14 @@ public class CommandSelectShrink extends CommandSelectModify
     @Override
     public String getCommandUsage(ICommandSender var1)
     {
-        return "commands.selectShrink.usage";
+        return ServerTranslations.usage("commands.selectShrink.usage");
     }
 
     @Override
     public void processCommandSelection(EntityPlayerMP player, StructureEntityInfo structureEntityInfo, BlockCoord point1, BlockCoord point2, String[] args)
     {
         if (args.length < 3)
-            throw new WrongUsageException("commands.selectShrink.usage");
+            throw ServerTranslations.wrongUsageException("commands.selectShrink.usage");
 
         int x = parseInt(player, args[0]), y = parseInt(player, args[1]), z = parseInt(player, args[2]);
 

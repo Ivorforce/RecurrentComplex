@@ -15,6 +15,7 @@ import ivorius.reccomplex.operation.OperationRegistry;
 import ivorius.reccomplex.structures.OperationGenerateStructure;
 import ivorius.reccomplex.structures.StructureInfo;
 import ivorius.reccomplex.structures.generic.GenericStructureInfo;
+import ivorius.reccomplex.utils.ServerTranslations;
 import ivorius.reccomplex.worldgen.StructureGenerationData;
 import joptsimple.internal.Strings;
 import net.minecraft.command.CommandBase;
@@ -44,7 +45,7 @@ public class CommandWhatIsThis extends CommandBase
     @Override
     public String getCommandUsage(ICommandSender var1)
     {
-        return "commands.whatisthis.usage";
+        return ServerTranslations.usage("commands.whatisthis.usage");
     }
 
     @Override
@@ -70,7 +71,7 @@ public class CommandWhatIsThis extends CommandBase
         {
             List<StructureGenerationData.Entry> ordered = Lists.newArrayList(entries);
             if (ordered.size() > 1)
-                commandSender.addChatMessage(new ChatComponentTranslation("commands.whatisthis.many", Strings.join(Lists.transform(ordered, new Function<StructureGenerationData.Entry, String>()
+                commandSender.addChatMessage(ServerTranslations.format("commands.whatisthis.many", Strings.join(Lists.transform(ordered, new Function<StructureGenerationData.Entry, String>()
                 {
                     @Nullable
                     @Override
@@ -80,10 +81,10 @@ public class CommandWhatIsThis extends CommandBase
                     }
                 }), ", ")));
             else
-                commandSender.addChatMessage(new ChatComponentTranslation("commands.whatisthis.one", ordered.get(0).getStructureID()));
+                commandSender.addChatMessage(ServerTranslations.format("commands.whatisthis.one", ordered.get(0).getStructureID()));
         }
         else
-            commandSender.addChatMessage(new ChatComponentTranslation("commands.whatisthis.none"));
+            commandSender.addChatMessage(ServerTranslations.format("commands.whatisthis.none"));
     }
 
     @Override

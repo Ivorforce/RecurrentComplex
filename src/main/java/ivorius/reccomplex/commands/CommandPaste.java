@@ -12,6 +12,7 @@ import ivorius.reccomplex.entities.StructureEntityInfo;
 import ivorius.reccomplex.operation.OperationRegistry;
 import ivorius.reccomplex.structures.OperationGenerateStructure;
 import ivorius.reccomplex.structures.generic.GenericStructureInfo;
+import ivorius.reccomplex.utils.ServerTranslations;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
@@ -36,7 +37,7 @@ public class CommandPaste extends CommandBase
     @Override
     public String getCommandUsage(ICommandSender var1)
     {
-        return "commands.strucPaste.usage";
+        return ServerTranslations.usage("commands.strucPaste.usage");
     }
 
     @Override
@@ -74,7 +75,7 @@ public class CommandPaste extends CommandBase
         }
         else
         {
-            throw new CommandException("commands.strucPaste.noClipboard");
+            throw ServerTranslations.commandException("commands.strucPaste.noClipboard");
         }
     }
 

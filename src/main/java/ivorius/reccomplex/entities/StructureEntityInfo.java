@@ -29,6 +29,8 @@ import javax.annotation.Nullable;
 public class StructureEntityInfo implements IExtendedEntityProperties, PartialUpdateHandler
 {
     public static final String EEP_KEY = "structureEntityInfo";
+    public static final String EEP_CMP_KEY = "rc-structureEntityInfo";
+
     public BlockCoord selectedPoint1;
     public BlockCoord selectedPoint2;
     private Operation.PreviewType previewType = Operation.PreviewType.SHAPE;
@@ -154,8 +156,10 @@ public class StructureEntityInfo implements IExtendedEntityProperties, PartialUp
     }
 
     @Override
-    public void saveNBTData(NBTTagCompound compound)
+    public void saveNBTData(NBTTagCompound parent)
     {
+        NBTTagCompound compound = new NBTTagCompound();
+
         BlockCoord.writeCoordToNBT("selectedPoint1", selectedPoint1, compound);
         BlockCoord.writeCoordToNBT("selectedPoint2", selectedPoint2, compound);
 
@@ -170,11 +174,17 @@ public class StructureEntityInfo implements IExtendedEntityProperties, PartialUp
         }
 
         compound.setBoolean("showGrid", showGrid);
+
+        parent.setTag(EEP_CMP_KEY, compound);
     }
 
     @Override
-    public void loadNBTData(NBTTagCompound compound)
+    public void loadNBTData(NBTTagCompound parent)
     {
+        NBTTagCompound compound = parent.hasKey(EEP_CMP_KEY)
+                ? parent.getCompoundTag(EEP_CMP_KEY)
+                : parent; // Legacy
+
         selectedPoint1 = BlockCoord.readCoordFromNBT("selectedPoint1", compound);
         selectedPoint2 = BlockCoord.readCoordFromNBT("selectedPoint2", compound);
 

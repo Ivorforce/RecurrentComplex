@@ -14,6 +14,7 @@ import cpw.mods.fml.common.event.FMLInitializationEvent;
 import cpw.mods.fml.common.event.FMLPostInitializationEvent;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 import cpw.mods.fml.common.event.FMLServerStartingEvent;
+import cpw.mods.fml.common.network.NetworkCheckHandler;
 import cpw.mods.fml.common.network.NetworkRegistry;
 import cpw.mods.fml.common.network.simpleimpl.SimpleNetworkWrapper;
 import cpw.mods.fml.relauncher.Side;
@@ -30,6 +31,8 @@ import ivorius.reccomplex.structures.generic.StructureSaveHandler;
 import ivorius.reccomplex.worldgen.inventory.CustomGenericItemCollectionHandler;
 import net.minecraftforge.common.config.Configuration;
 import org.apache.logging.log4j.Logger;
+
+import java.util.Map;
 
 @Mod(modid = RecurrentComplex.MODID, version = RecurrentComplex.VERSION, name = RecurrentComplex.NAME, guiFactory = "ivorius.reccomplex.gui.RCConfigGuiFactory",
         dependencies = "required-after:ivtoolkit")
@@ -67,6 +70,12 @@ public class RecurrentComplex
     public static boolean isLite()
     {
         return RCConfig.isLightweightMode();
+    }
+
+    @NetworkCheckHandler
+    public boolean checkNetwork(Map<String, String> mods, Side side)
+    {
+        return isLite() || mods.containsKey(MODID); // If Lite, it's considered server-side only
     }
 
     @EventHandler

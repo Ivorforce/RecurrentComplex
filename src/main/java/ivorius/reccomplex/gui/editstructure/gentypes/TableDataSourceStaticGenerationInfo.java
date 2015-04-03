@@ -6,14 +6,11 @@
 package ivorius.reccomplex.gui.editstructure.gentypes;
 
 import com.google.common.primitives.Ints;
-import ivorius.ivtoolkit.gui.IntegerRange;
 import ivorius.reccomplex.gui.GuiValidityStateIndicator;
 import ivorius.reccomplex.gui.TableDataSourceExpression;
+import ivorius.reccomplex.gui.editstructure.TableDataSourceYSelector;
 import ivorius.reccomplex.gui.table.*;
-import ivorius.reccomplex.structures.generic.GenerationYSelector;
 import ivorius.reccomplex.structures.generic.gentypes.StaticGenerationInfo;
-import ivorius.reccomplex.utils.IvTranslations;
-import org.apache.commons.lang3.StringUtils;
 
 /**
  * Created by lukas on 07.10.14.
@@ -32,6 +29,7 @@ public class TableDataSourceStaticGenerationInfo extends TableDataSourceSegmente
         this.generationInfo = generationInfo;
 
         addManagedSection(0, new TableDataSourceGenerationInfo(generationInfo));
+        addManagedSection(2, new TableDataSourceYSelector(generationInfo.ySelector));
         addManagedSection(3, new TableDataSourceExpression<>("Dimensions", "reccomplex.expression.dimension.tooltip", generationInfo.dimensionMatcher));
     }
 
@@ -48,8 +46,6 @@ public class TableDataSourceStaticGenerationInfo extends TableDataSourceSegmente
         {
             case 1:
                 return 3;
-            case 2:
-                return 2;
         }
         return super.sizeOfSegment(segment);
     }
@@ -84,24 +80,6 @@ public class TableDataSourceStaticGenerationInfo extends TableDataSourceSegmente
                     return element;
                 }
             }
-            case 2:
-            {
-                if (index == 0)
-                {
-                    TableElementList element = new TableElementList("ySelType", "Generation Base", generationInfo.ySelector.selectionMode.serializedName(), TableDataSourceNaturalGenerationInfo.allGenerationOptions());
-                    element.addPropertyListener(this);
-                    return element;
-                }
-                else if (index == 1)
-                {
-                    TableElementIntegerRange element = new TableElementIntegerRange("ySelShift", "Y Shift", new IntegerRange(generationInfo.ySelector.minY, generationInfo.ySelector.maxY), -100, 100);
-                    element.setTooltip(IvTranslations.formatLines("reccomplex.structure.randomrange"));
-                    element.addPropertyListener(this);
-                    return element;
-                }
-
-                break;
-            }
         }
 
         return super.elementForIndexInSegment(table, index, segment);
@@ -128,15 +106,6 @@ public class TableDataSourceStaticGenerationInfo extends TableDataSourceSegmente
             }
             case "relativeToSpawn":
                 generationInfo.relativeToSpawn = (boolean) element.getPropertyValue();
-                break;
-            case "ySelType":
-                GenerationYSelector.SelectionMode selectionMode = GenerationYSelector.SelectionMode.selectionMode((String) element.getPropertyValue());
-                generationInfo.ySelector.selectionMode = selectionMode != null ? selectionMode : GenerationYSelector.SelectionMode.SURFACE;
-                break;
-            case "ySelShift":
-                IntegerRange range = ((IntegerRange) element.getPropertyValue());
-                generationInfo.ySelector.minY = range.getMin();
-                generationInfo.ySelector.maxY = range.getMax();
                 break;
         }
     }

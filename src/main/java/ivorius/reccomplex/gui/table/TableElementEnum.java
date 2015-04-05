@@ -5,28 +5,30 @@
 
 package ivorius.reccomplex.gui.table;
 
-import net.minecraft.client.Minecraft;
+import com.google.common.collect.Lists;
 import net.minecraft.client.gui.GuiButton;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * Created by lukas on 02.06.14.
  */
-public class TableElementList extends TableElementPropertyDefault<String>
+public class TableElementEnum<T> extends TableElementPropertyDefault<T>
 {
     private GuiButton button;
 
-    private List<Option> options;
+    private List<Option<T>> options;
 
-    public TableElementList(String id, String title, String value, List<Option> options)
+    public TableElementEnum(String id, String title, T value, List<Option<T>> options)
     {
         super(id, title, value);
-        this.options = options;
+        this.options = Lists.newArrayList(options);
     }
 
-    public TableElementList(String id, String title, String value, Option... options)
+    @SafeVarargs
+    public TableElementEnum(String id, String title, T value, Option<T>... options)
     {
         this(id, title, value, Arrays.asList(options));
     }
@@ -55,7 +57,7 @@ public class TableElementList extends TableElementPropertyDefault<String>
     }
 
     @Override
-    public void setPropertyValue(String value)
+    public void setPropertyValue(T value)
     {
         super.setPropertyValue(value);
 
@@ -70,7 +72,7 @@ public class TableElementList extends TableElementPropertyDefault<String>
         int prevOptionIndex = currentOptionIndex();
         int optionIndex = prevOptionIndex < 0 ? 0 : (prevOptionIndex + 1) % options.size();
 
-        setPropertyValue(options.get(optionIndex).id);
+        setPropertyValue(options.get(optionIndex).value);
 
         alertListenersOfChange();
     }
@@ -80,7 +82,7 @@ public class TableElementList extends TableElementPropertyDefault<String>
     {
         super.drawFloating(screen, mouseX, mouseY, partialTicks);
 
-        Option option = currentOption();
+        Option<T> option = currentOption();
         if (option != null && option.tooltip != null)
             screen.drawTooltipRect(option.tooltip, bounds(), mouseX, mouseY, getFontRenderer());
     }
@@ -90,11 +92,14 @@ public class TableElementList extends TableElementPropertyDefault<String>
         if (button != null)
         {
             int index = currentOptionIndex();
-            button.displayString = index >= 0 ? options.get(index).title : getPropertyValue();
+            button.displayString = index >= 0 ? options.get(index).title
+                    : getPropertyValue() != null
+                    ? getPropertyValue().toString()
+                    : "null";
         }
     }
 
-    private Option currentOption()
+    private Option<T> currentOption()
     {
         int index = currentOptionIndex();
         return index >= 0 ? options.get(index) : null;
@@ -104,30 +109,28 @@ public class TableElementList extends TableElementPropertyDefault<String>
     {
         for (int i = 0; i < options.size(); i++)
         {
-            if (options.get(i).id.equals(getPropertyValue()))
-            {
+            if (Objects.equals(options.get(i).value, getPropertyValue()))
                 return i;
-            }
         }
 
         return -1;
     }
 
-    public static class Option
+    public static class Option<T>
     {
-        public String id;
+        public T value;
         public String title;
         public List<String> tooltip;
 
-        public Option(String id, String title)
+        public Option(T value, String title)
         {
-            this.id = id;
+            this.value = value;
             this.title = title;
         }
 
-        public Option(String id, String title, List<String> tooltip)
+        public Option(T value, String title, List<String> tooltip)
         {
-            this.id = id;
+            this.value = value;
             this.title = title;
             this.tooltip = tooltip;
         }

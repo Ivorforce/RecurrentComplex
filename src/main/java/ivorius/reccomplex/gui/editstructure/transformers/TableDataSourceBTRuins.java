@@ -6,8 +6,10 @@
 package ivorius.reccomplex.gui.editstructure.transformers;
 
 import ivorius.ivtoolkit.gui.FloatRange;
+import ivorius.reccomplex.gui.TableDirections;
 import ivorius.reccomplex.gui.table.*;
 import ivorius.reccomplex.structures.generic.transformers.TransformerRuins;
+import net.minecraftforge.common.util.ForgeDirection;
 
 /**
  * Created by lukas on 05.06.14.
@@ -40,7 +42,7 @@ public class TableDataSourceBTRuins extends TableDataSourceSegmented implements 
     @Override
     public int sizeOfSegment(int segment)
     {
-        return 4;
+        return 5;
     }
 
     @Override
@@ -62,11 +64,17 @@ public class TableDataSourceBTRuins extends TableDataSourceSegmented implements 
             }
             case 2:
             {
-                TableElementFloat element = new TableElementFloat("erosion", "Erosion", transformer.blockErosion, 0.0f, 1.0f);
+                TableElementEnum element = new TableElementEnum<>("decaySide", "Direction", transformer.decayDirection, TableDirections.getDirectionOptions(ForgeDirection.VALID_DIRECTIONS));
                 element.addPropertyListener(this);
                 return element;
             }
             case 3:
+            {
+                TableElementFloat element = new TableElementFloat("erosion", "Erosion", transformer.blockErosion, 0.0f, 1.0f);
+                element.addPropertyListener(this);
+                return element;
+            }
+            case 4:
             {
                 TableElementFloat element = new TableElementFloat("vines", "Vine Growth", transformer.vineGrowth, 0.0f, 1.0f);
                 element.addPropertyListener(this);
@@ -82,6 +90,9 @@ public class TableDataSourceBTRuins extends TableDataSourceSegmented implements 
     {
         switch (element.getID())
         {
+            case "decaySide":
+                transformer.decayDirection = (ForgeDirection) element.getPropertyValue();
+                break;
             case "decay":
                 FloatRange range = (FloatRange) element.getPropertyValue();
                 transformer.minDecay = range.getMin();

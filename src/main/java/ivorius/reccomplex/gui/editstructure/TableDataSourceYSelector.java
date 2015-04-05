@@ -26,14 +26,14 @@ public class TableDataSourceYSelector implements TableDataSource, TableElementPr
         this.ySelector = ySelector;
     }
 
-    public static List<TableElementList.Option> allGenerationOptions()
+    public static List<TableElementEnum.Option<GenerationYSelector.SelectionMode>> allGenerationOptions()
     {
-        List<TableElementList.Option> generationBases = new ArrayList<>();
+        List<TableElementEnum.Option<GenerationYSelector.SelectionMode>> generationBases = new ArrayList<>();
 
         for (GenerationYSelector.SelectionMode selectionMode : GenerationYSelector.SelectionMode.values())
         {
             String transKeyBase = "structures.genY." + selectionMode.serializedName();
-            generationBases.add(new TableElementList.Option(selectionMode.serializedName(),
+            generationBases.add(new TableElementEnum.Option<>(selectionMode,
                     I18n.format(transKeyBase), IvTranslations.formatLines(transKeyBase + ".tooltip")));
         }
 
@@ -51,7 +51,7 @@ public class TableDataSourceYSelector implements TableDataSource, TableElementPr
     {
         if (index == 0)
         {
-            TableElementList element = new TableElementList("ySelType", "Generation Base", ySelector.selectionMode.serializedName(), allGenerationOptions());
+            TableElementEnum element = new TableElementEnum<>("ySelType", "Generation Base", ySelector.selectionMode, allGenerationOptions());
             element.addPropertyListener(this);
             return element;
         }
@@ -72,8 +72,7 @@ public class TableDataSourceYSelector implements TableDataSource, TableElementPr
         switch (element.getID())
         {
             case "ySelType":
-                GenerationYSelector.SelectionMode selectionMode = GenerationYSelector.SelectionMode.selectionMode((String) element.getPropertyValue());
-                ySelector.selectionMode = selectionMode != null ? selectionMode : GenerationYSelector.SelectionMode.SURFACE;
+                ySelector.selectionMode = (GenerationYSelector.SelectionMode) element.getPropertyValue();
                 break;
             case "ySelShift":
                 IntegerRange range = ((IntegerRange) element.getPropertyValue());

@@ -260,11 +260,12 @@ reccomplex.expression.dimension.tooltip=This is a §odimension expression§r.<br
 reccomplex.expression.block.tooltip=This is a §oblock expression§r.<br>Visit the wiki for syntax information.
 reccomplex.expression.dependency.tooltip=This is a §odependency expression§r.<br>Visit the wiki for syntax information.
 
-reccomplex.direction.up=Up
-reccomplex.direction.down=Down
-reccomplex.direction.north=North
-reccomplex.direction.south=South
-reccomplex.direction.east=East
-reccomplex.direction.west=West
+reccomplex.direction.up=Up (+Y)
+reccomplex.direction.down=Down (-Y)
+reccomplex.direction.north=North (-Z)
+reccomplex.direction.south=South (+Z)
+reccomplex.direction.east=East (+X)
+reccomplex.direction.west=West (-X)
 reccomplex.direction.none=None
+reccomplex.direction.random=Random
 

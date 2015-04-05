@@ -8,15 +8,18 @@ package ivorius.reccomplex.gui.editstructureblock;
 import ivorius.ivtoolkit.blocks.BlockCoord;
 import ivorius.reccomplex.blocks.TileEntityStructureGenerator;
 import ivorius.reccomplex.gui.GuiValidityStateIndicator;
+import ivorius.reccomplex.gui.TableDirections;
 import ivorius.reccomplex.gui.table.*;
 import ivorius.reccomplex.structures.StructureRegistry;
 import ivorius.ivtoolkit.blocks.Directions;
 import ivorius.reccomplex.utils.DirectionNames;
 import joptsimple.internal.Strings;
+import net.minecraftforge.common.util.ForgeDirection;
+import org.apache.commons.lang3.ArrayUtils;
 
 import java.util.Arrays;
 
-import static ivorius.reccomplex.gui.table.TableElementList.Option;
+import static ivorius.reccomplex.gui.table.TableElementEnum.Option;
 
 /**
  * Created by lukas on 05.06.14.
@@ -130,28 +133,22 @@ public class TableDataSourceStructureBlock extends TableDataSourceSegmented impl
             {
                 if (index == 0)
                 {
-                    TableElementList element = new TableElementList("rotation", "Rotation", "" + structureGenerator.getStructureRotation(),
-                            new Option("0", "0 Clockwise"), new Option("1", "1 Clockwise"), new Option("2", "2 Clockwise"), new Option("3", "3 Clockwise"), new Option("null", "Random (if rotatable)"));
+                    TableElementEnum element = new TableElementEnum<>("rotation", "Rotation", structureGenerator.getStructureRotation(),
+                            new Option<>(0, "0 Clockwise"), new Option<>(1, "1 Clockwise"), new Option<>(2, "2 Clockwise"), new Option<>(3, "3 Clockwise"), new Option<Integer>(null, "Random (if rotatable)"));
                     element.addPropertyListener(this);
                     return element;
                 }
                 else if (index == 1)
                 {
-                    TableElementList element = new TableElementList("mirror", "Mirror", "" + structureGenerator.getStructureMirror(),
-                            new Option("false", "false"), new Option("true", "true"), new Option("null", "Random (if mirrorable)"));
+                    TableElementEnum element = new TableElementEnum<>("mirror", "Mirror", structureGenerator.getStructureMirror(),
+                            new Option<>(false, "false"), new Option<>(true, "true"), new Option<Boolean>(null, "Random (if mirrorable)"));
                     element.addPropertyListener(this);
                     return element;
                 }
             }
             else
             {
-                TableElementList.Option[] options = new TableElementList.Option[Directions.HORIZONTAL.length + 1];
-                for (int i = 0; i < Directions.HORIZONTAL.length; i++)
-                    options[i] = new TableElementList.Option(Directions.serialize(Directions.HORIZONTAL[i]), DirectionNames.of(Directions.HORIZONTAL[i]));
-                options[Directions.HORIZONTAL.length] = new TableElementList.Option("none", DirectionNames.of(null));
-
-                TableElementList element = new TableElementList("front", "Front",
-                        structureGenerator.getFront() != null ? Directions.serialize(structureGenerator.getFront()) : "none", options);
+                TableElementEnum element = new TableElementEnum<>("front", "Front", structureGenerator.getFront(), TableDirections.getDirectionOptions(ArrayUtils.add(Directions.HORIZONTAL, null), "random"));
                 element.addPropertyListener(this);
                 return element;
             }
@@ -201,22 +198,17 @@ public class TableDataSourceStructureBlock extends TableDataSourceSegmented impl
             }
             case "rotation":
             {
-                String propertyID = (String) element.getPropertyValue();
-                Integer rotation = propertyID.equals("null") ? null : Integer.valueOf(propertyID);
-                structureGenerator.setStructureRotation(rotation);
+                structureGenerator.setStructureRotation((Integer) element.getPropertyValue());
                 break;
             }
             case "mirror":
             {
-                String propertyID = (String) element.getPropertyValue();
-                Boolean mirror = propertyID.equals("null") ? null : Boolean.valueOf(propertyID);
-                structureGenerator.setStructureMirror(mirror);
+                structureGenerator.setStructureMirror((Boolean) element.getPropertyValue());
                 break;
             }
             case "front":
             {
-                String val = (String) element.getPropertyValue();
-                structureGenerator.setFront("none".equals(val) ? null : Directions.deserializeHorizontal(val));
+                structureGenerator.setFront((ForgeDirection) element.getPropertyValue());
                 break;
             }
         }

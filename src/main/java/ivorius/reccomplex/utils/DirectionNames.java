@@ -16,6 +16,11 @@ public class DirectionNames
 {
     public static String of(ForgeDirection direction)
     {
-        return StatCollector.translateToLocal("reccomplex.direction." + (direction == null ? "none" : Directions.serialize(direction).toLowerCase()));
+        return of(direction, "none");
+    }
+
+    public static String of(ForgeDirection direction, String nullTitle)
+    {
+        return StatCollector.translateToLocal("reccomplex.direction." + (direction == null ? nullTitle : Directions.serialize(direction).toLowerCase()));
     }
 }

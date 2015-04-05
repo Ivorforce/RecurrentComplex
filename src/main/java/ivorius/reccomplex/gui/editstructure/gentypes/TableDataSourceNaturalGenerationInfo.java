@@ -9,7 +9,6 @@ import ivorius.reccomplex.gui.editstructure.TableDataSourceBiomeGenList;
 import ivorius.reccomplex.gui.editstructure.TableDataSourceDimensionGenList;
 import ivorius.reccomplex.gui.editstructure.TableDataSourceYSelector;
 import ivorius.reccomplex.gui.table.*;
-import ivorius.reccomplex.structures.generic.GenerationYSelector;
 import ivorius.reccomplex.structures.generic.gentypes.NaturalGenerationInfo;
 import ivorius.reccomplex.utils.IvTranslations;
 import ivorius.reccomplex.worldgen.StructureSelector;
@@ -38,10 +37,10 @@ public class TableDataSourceNaturalGenerationInfo extends TableDataSourceSegment
         addManagedSection(2, new TableDataSourceYSelector(generationInfo.ySelector));
     }
 
-    public static List<TableElementList.Option> allGenerationCategories()
+    public static List<TableElementEnum.Option<String>> allGenerationCategories()
     {
         Set<String> categories = StructureSelector.allCategoryIDs();
-        List<TableElementList.Option> generationBases = new ArrayList<>();
+        List<TableElementEnum.Option<String>> generationCategories = new ArrayList<>();
 
         for (String category : categories)
         {
@@ -51,12 +50,12 @@ public class TableDataSourceNaturalGenerationInfo extends TableDataSourceSegment
             {
                 String transKeyBase = "structures.category." + category;
 
-                generationBases.add(new TableElementList.Option(category,
+                generationCategories.add(new TableElementEnum.Option<>(category,
                         I18n.format(transKeyBase), IvTranslations.formatLines(transKeyBase + ".tooltip")));
             }
         }
 
-        return generationBases;
+        return generationCategories;
     }
 
     @Override
@@ -87,7 +86,7 @@ public class TableDataSourceNaturalGenerationInfo extends TableDataSourceSegment
             case 1:
                 if (index == 0)
                 {
-                    TableElementList element = new TableElementList("category", "Category", generationInfo.generationCategory, allGenerationCategories());
+                    TableElementEnum element = new TableElementEnum<>("category", "Category", generationInfo.generationCategory, allGenerationCategories());
                     element.addPropertyListener(this);
                     return element;
                 }

@@ -8,9 +8,7 @@ package ivorius.reccomplex.structures.generic.transformers;
 import com.google.common.base.Predicate;
 import com.google.common.collect.Iterables;
 import com.google.gson.*;
-import ivorius.ivtoolkit.blocks.BlockArea;
-import ivorius.ivtoolkit.blocks.BlockCoord;
-import ivorius.ivtoolkit.blocks.IvBlockCollection;
+import ivorius.ivtoolkit.blocks.*;
 import ivorius.ivtoolkit.tools.IvWorldData;
 import ivorius.ivtoolkit.tools.MCRegistry;
 import ivorius.ivtoolkit.tools.NBTTagCompounds;
@@ -24,6 +22,7 @@ import ivorius.reccomplex.random.BlurredValueField;
 import ivorius.reccomplex.structures.StructureLoadContext;
 import ivorius.reccomplex.structures.StructurePrepareContext;
 import ivorius.reccomplex.structures.StructureSpawnContext;
+import ivorius.reccomplex.utils.BlockAreas2;
 import ivorius.reccomplex.utils.NBTStorable;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
@@ -50,8 +49,7 @@ import java.util.Random;
  */
 public class TransformerRuins implements Transformer<TransformerRuins.InstanceData>
 {
-    public static final ForgeDirection[] HORIZONTAL_DIRECTIONS = new ForgeDirection[]{ForgeDirection.NORTH, ForgeDirection.EAST, ForgeDirection.SOUTH, ForgeDirection.WEST};
-
+    public ForgeDirection decayDirection;
     public float minDecay;
     public float maxDecay;
     public float decayChaos;
@@ -61,11 +59,12 @@ public class TransformerRuins implements Transformer<TransformerRuins.InstanceDa
 
     public TransformerRuins()
     {
-        this(0.0f, 0.9f, 0.3f, 0.3f, 0.1f);
+        this(ForgeDirection.DOWN, 0.0f, 0.9f, 0.3f, 0.3f, 0.1f);
     }
 
-    public TransformerRuins(float minDecay, float maxDecay, float decayChaos, float blockErosion, float vineGrowth)
+    public TransformerRuins(ForgeDirection decayDirection, float minDecay, float maxDecay, float decayChaos, float blockErosion, float vineGrowth)
     {
+        this.decayDirection = decayDirection;
         this.minDecay = minDecay;
         this.maxDecay = maxDecay;
         this.decayChaos = decayChaos;
@@ -143,7 +142,10 @@ public class TransformerRuins implements Transformer<TransformerRuins.InstanceDa
     {
         IvBlockCollection blockCollection = worldData.blockCollection;
 
-        BlockArea topdownArea = new BlockArea(new BlockCoord(0, blockCollection.height, 0), new BlockCoord(blockCollection.width, blockCollection.height, blockCollection.length));
+        BlockArea sourceArea = new BlockArea(new BlockCoord(0, 0, 0), new BlockCoord(blockCollection.width, blockCollection.height, blockCollection.length));
+        BlockArea decaySideAray = BlockAreas.side(sourceArea, decayDirection.getOpposite());
+        int decaySideLength = BlockAreas2.sideLength(sourceArea, decayDirection.getOpposite());
+
         int[] size = context.boundingBoxSize();
 
         StructureBoundingBox dropAreaBB = context.boundingBox;
@@ -152,21 +154,23 @@ public class TransformerRuins implements Transformer<TransformerRuins.InstanceDa
         BlurredValueField field = instanceData.blurredValueField;
         if (field != null)
         {
+            ForgeDirection decayDirection = Directions.rotate(this.decayDirection, context.transform);
+
             for (int pass = 1; pass >= 0; pass--)
             {
-                for (BlockCoord surfaceSourceCoord : topdownArea)
+                for (BlockCoord surfaceSourceCoord : decaySideAray)
                 {
                     float decay = field.getValue(surfaceSourceCoord.x, surfaceSourceCoord.z);
-                    int removedBlocks = MathHelper.floor_float(decay * blockCollection.height + 0.5f);
+                    int removedBlocks = MathHelper.floor_float(decay * decaySideLength + 0.5f);
 
                     BiomeGenBase biome = context.world.getBiomeGenForCoords(surfaceSourceCoord.x, surfaceSourceCoord.z);
                     Block topBlock = biome.topBlock != null ? biome.topBlock : Blocks.air;
                     Block fillerBlock = biome.fillerBlock != null ? biome.fillerBlock : Blocks.air;
                     Block mainBlock = context.world.provider.dimensionId == -1 ? Blocks.netherrack : (context.world.provider.dimensionId == 1 ? Blocks.end_stone : Blocks.stone);
 
-                    for (int ySource = 0; ySource < removedBlocks && ySource < size[1]; ySource++)
+                    for (int decayPos = 0; decayPos < removedBlocks && decayPos < decaySideLength; decayPos++)
                     {
-                        BlockCoord sourceCoord = new BlockCoord(surfaceSourceCoord.x, blockCollection.height - 1 - ySource, surfaceSourceCoord.z);
+                        BlockCoord sourceCoord = surfaceSourceCoord.add(decayDirection.offsetX * decayPos, decayDirection.offsetY * decayPos, decayDirection.offsetZ * decayPos);
                         BlockCoord worldCoord = context.transform.apply(sourceCoord, size).add(context.lowerCoord());
 
                         if (context.includes(worldCoord))
@@ -231,7 +235,7 @@ public class TransformerRuins implements Transformer<TransformerRuins.InstanceDa
                 newMeta = 1;
             else if (newBlock == Blocks.air)
             {
-                ForgeDirection[] directions = HORIZONTAL_DIRECTIONS.clone();
+                ForgeDirection[] directions = Directions.HORIZONTAL.clone();
                 shuffleArray(directions, random);
 
                 for (ForgeDirection direction : directions)
@@ -341,16 +345,17 @@ public class TransformerRuins implements Transformer<TransformerRuins.InstanceDa
         @Override
         public TransformerRuins deserialize(JsonElement jsonElement, Type par2Type, JsonDeserializationContext context)
         {
-            JsonObject jsonobject = JsonUtils.getJsonElementAsJsonObject(jsonElement, "transformerRuins");
+            JsonObject jsonObject = JsonUtils.getJsonElementAsJsonObject(jsonElement, "transformerRuins");
 
-            float minDecay = JsonUtils.getJsonObjectFloatFieldValueOrDefault(jsonobject, "minDecay", 0.0f);
-            float maxDecay = JsonUtils.getJsonObjectFloatFieldValueOrDefault(jsonobject, "maxDecay", 0.9f);
-            float decayChaos = JsonUtils.getJsonObjectFloatFieldValueOrDefault(jsonobject, "decayChaos", 0.3f);
-            float blockErosion = JsonUtils.getJsonObjectFloatFieldValueOrDefault(jsonobject, "blockErosion", 0.0f);
-            float vineGrowth = JsonUtils.getJsonObjectFloatFieldValueOrDefault(jsonobject, "vineGrowth", 0.0f);
-            float gravity = JsonUtils.getJsonObjectFloatFieldValueOrDefault(jsonobject, "gravity", 0.0f);
+            ForgeDirection decayDirection = Directions.deserialize(JsonUtils.getJsonObjectStringFieldValueOrDefault(jsonObject, "decayDirection", "DOWN"));
+            float minDecay = JsonUtils.getJsonObjectFloatFieldValueOrDefault(jsonObject, "minDecay", 0.0f);
+            float maxDecay = JsonUtils.getJsonObjectFloatFieldValueOrDefault(jsonObject, "maxDecay", 0.9f);
+            float decayChaos = JsonUtils.getJsonObjectFloatFieldValueOrDefault(jsonObject, "decayChaos", 0.3f);
+            float blockErosion = JsonUtils.getJsonObjectFloatFieldValueOrDefault(jsonObject, "blockErosion", 0.0f);
+            float vineGrowth = JsonUtils.getJsonObjectFloatFieldValueOrDefault(jsonObject, "vineGrowth", 0.0f);
+            float gravity = JsonUtils.getJsonObjectFloatFieldValueOrDefault(jsonObject, "gravity", 0.0f);
 
-            return new TransformerRuins(minDecay, maxDecay, decayChaos, blockErosion, vineGrowth);
+            return new TransformerRuins(decayDirection, minDecay, maxDecay, decayChaos, blockErosion, vineGrowth);
         }
 
         @Override
@@ -358,6 +363,7 @@ public class TransformerRuins implements Transformer<TransformerRuins.InstanceDa
         {
             JsonObject jsonobject = new JsonObject();
 
+            jsonobject.addProperty("decayDirection", Directions.serialize(transformer.decayDirection));
             jsonobject.addProperty("minDecay", transformer.minDecay);
             jsonobject.addProperty("maxDecay", transformer.maxDecay);
             jsonobject.addProperty("decayChaos", transformer.decayChaos);

@@ -7,10 +7,10 @@ package ivorius.reccomplex.gui.editstructure.gentypes;
 
 import com.google.common.primitives.Ints;
 import ivorius.reccomplex.gui.GuiValidityStateIndicator;
+import ivorius.reccomplex.gui.TableDirections;
 import ivorius.reccomplex.gui.table.*;
 import ivorius.reccomplex.structures.generic.gentypes.StructureListGenerationInfo;
 import ivorius.ivtoolkit.blocks.Directions;
-import ivorius.reccomplex.utils.DirectionNames;
 import net.minecraftforge.common.util.ForgeDirection;
 
 /**
@@ -30,14 +30,6 @@ public class TableDataSourceStructureListGenerationInfo extends TableDataSourceS
         this.generationInfo = generationInfo;
 
         addManagedSection(0, new TableDataSourceGenerationInfo(generationInfo));
-    }
-
-    public static TableElementList.Option[] getDirectionOptions(ForgeDirection[] directions)
-    {
-        TableElementList.Option[] options = new TableElementList.Option[directions.length];
-        for (int i = 0; i < options.length; i++)
-            options[i] = new TableElementList.Option(Directions.serialize(directions[i]), DirectionNames.of(directions[i]));
-        return options;
     }
 
     @Override
@@ -109,7 +101,7 @@ public class TableDataSourceStructureListGenerationInfo extends TableDataSourceS
             }
             case 4:
             {
-                TableElementList element = new TableElementList("front", "Front", Directions.serialize(generationInfo.front), getDirectionOptions(Directions.HORIZONTAL));
+                TableElementEnum element = new TableElementEnum<>("front", "Front", generationInfo.front, TableDirections.getDirectionOptions(Directions.HORIZONTAL));
                 element.addPropertyListener(this);
                 return element;
             }
@@ -156,7 +148,7 @@ public class TableDataSourceStructureListGenerationInfo extends TableDataSourceS
             }
             case "front":
             {
-                generationInfo.front = Directions.deserializeHorizontal((String) element.getPropertyValue());
+                generationInfo.front = (ForgeDirection) element.getPropertyValue();
                 break;
             }
         }

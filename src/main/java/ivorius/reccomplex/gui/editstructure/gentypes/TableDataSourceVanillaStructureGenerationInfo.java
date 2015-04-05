@@ -8,9 +8,11 @@ package ivorius.reccomplex.gui.editstructure.gentypes;
 import ivorius.ivtoolkit.blocks.BlockCoord;
 import ivorius.ivtoolkit.gui.FloatRange;
 import ivorius.reccomplex.gui.TableDataSourceExpression;
+import ivorius.reccomplex.gui.TableDirections;
 import ivorius.reccomplex.gui.table.*;
 import ivorius.reccomplex.structures.generic.gentypes.VanillaStructureGenerationInfo;
 import ivorius.ivtoolkit.blocks.Directions;
+import net.minecraftforge.common.util.ForgeDirection;
 
 /**
  * Created by lukas on 07.10.14.
@@ -62,7 +64,7 @@ public class TableDataSourceVanillaStructureGenerationInfo extends TableDataSour
         {
             case 1:
             {
-                TableElementList element = new TableElementList("type", "Type", "village", new TableElementList.Option("village", "Village"));
+                TableElementEnum element = new TableElementEnum<>("type", "Type", "village", new TableElementEnum.Option<>("village", "Village"));
                 element.addPropertyListener(this);
                 return element;
             }
@@ -78,7 +80,7 @@ public class TableDataSourceVanillaStructureGenerationInfo extends TableDataSour
                     }
                     case 1:
                     {
-                        TableElementList element = new TableElementList("front", "Front", Directions.serialize(generationInfo.front), TableDataSourceStructureListGenerationInfo.getDirectionOptions(Directions.HORIZONTAL));
+                        TableElementEnum element = new TableElementEnum<>("front", "Front", generationInfo.front, TableDirections.getDirectionOptions(Directions.HORIZONTAL));
                         element.addPropertyListener(this);
                         return element;
                     }
@@ -170,7 +172,7 @@ public class TableDataSourceVanillaStructureGenerationInfo extends TableDataSour
                 break;
             }
             case "front":
-                generationInfo.front = Directions.deserializeHorizontal((String) element.getPropertyValue());
+                generationInfo.front = (ForgeDirection) element.getPropertyValue();
                 break;
         }
     }

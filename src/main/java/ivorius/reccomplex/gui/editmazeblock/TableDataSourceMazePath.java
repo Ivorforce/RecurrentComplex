@@ -6,11 +6,9 @@
 package ivorius.reccomplex.gui.editmazeblock;
 
 import ivorius.ivtoolkit.maze.MazePath;
+import ivorius.reccomplex.gui.TableDirections;
 import ivorius.reccomplex.gui.table.*;
 import net.minecraftforge.common.util.ForgeDirection;
-
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Created by lukas on 22.06.14.
@@ -53,15 +51,9 @@ public class TableDataSourceMazePath extends TableDataSourceSegmented implements
         }
         else if (segment == 1)
         {
-            List<TableElementList.Option> optionList = new ArrayList<>();
-            optionList.add(new TableElementList.Option("" + ForgeDirection.DOWN.ordinal(), "Down (-Y)"));
-            optionList.add(new TableElementList.Option("" + ForgeDirection.UP.ordinal(), "Up (+Y)"));
-            optionList.add(new TableElementList.Option("" + ForgeDirection.NORTH.ordinal(), "North (-Z)"));
-            optionList.add(new TableElementList.Option("" + ForgeDirection.SOUTH.ordinal(), "South (+Z)"));
-            optionList.add(new TableElementList.Option("" + ForgeDirection.WEST.ordinal(), "West (-X)"));
-            optionList.add(new TableElementList.Option("" + ForgeDirection.EAST.ordinal(), "East (+X)"));
+            TableElementEnum.Option<ForgeDirection>[] optionList = TableDirections.getDirectionOptions(ForgeDirection.VALID_DIRECTIONS);
 
-            TableElementList element = new TableElementList("side", "Side", directionFromPath(mazePath).ordinal() + "", optionList);
+            TableElementEnum element = new TableElementEnum<>("side", "Side", directionFromPath(mazePath), optionList);
             element.addPropertyListener(this);
             return element;
         }
@@ -74,8 +66,7 @@ public class TableDataSourceMazePath extends TableDataSourceSegmented implements
     {
         if ("side".equals(element.getID()))
         {
-            int side = Integer.valueOf(((String) element.getPropertyValue()));
-            MazePath path = pathFromDirection(ForgeDirection.getOrientation(side), mazePath.sourceRoom.coordinates);
+            MazePath path = pathFromDirection((ForgeDirection) element.getPropertyValue(), mazePath.sourceRoom.coordinates);
             mazePath.pathDimension = path.pathDimension;
             mazePath.pathGoesUp = path.pathGoesUp;
         }

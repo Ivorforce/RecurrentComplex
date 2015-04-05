@@ -32,6 +32,11 @@ public class BlurredValueField implements NBTCompoundObject
         this.size = size;
     }
 
+    public int[] getSize()
+    {
+        return size.clone();
+    }
+
     public void addValue(Value value)
     {
         values.add(value);

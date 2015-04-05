@@ -227,8 +227,24 @@ reccomplex.transformer.replaceAll=Replace All
 reccomplex.transformer.replaceAll.tooltip=Replaces blocks uniformly
 reccomplex.transformer.replace=Replace
 reccomplex.transformer.replace.tooltip=Replaces blocks individually
+
 reccomplex.transformer.ruins=Ruins
 reccomplex.transformer.ruins.tooltip=Deconstructs and decays the structure
+reccomplex.transformer.ruins.decay.title=Decay
+reccomplex.transformer.ruins.decay.base=Base Decay
+reccomplex.transformer.ruins.decay.base.tooltip=The amount of blocks that will<br>be deleted when the structure generates.
+reccomplex.transformer.ruins.decay.chaos=Chaos
+reccomplex.transformer.ruins.decay.chaos.tooltip=The level at which the structure's<br>decay may differ within the<br>same structure.
+reccomplex.transformer.ruins.decay.density=Density
+reccomplex.transformer.ruins.decay.density.tooltip=The density of different decay progressions.<br>In short, set this low for big holes<br>and high for small holes.
+reccomplex.transformer.ruins.decay.direction=Direction
+reccomplex.transformer.ruins.decay.direction.tooltip=The direction the decay happens towards.
+reccomplex.transformer.ruins.other.title=Other
+reccomplex.transformer.ruins.erosion=Erosion
+reccomplex.transformer.ruins.erosion.tooltip=The chance for each block<br>to be replaced by a<br>'broken' version of it.
+reccomplex.transformer.ruins.vines=Vine Growth
+reccomplex.transformer.ruins.vines.tooltip=The chance for vines and moss<br>to spawn on each block.
+
 reccomplex.transformer.negativeSpace=Negative Space
 reccomplex.transformer.negativeSpace.tooltip=Makes the generation ignore blocks
 

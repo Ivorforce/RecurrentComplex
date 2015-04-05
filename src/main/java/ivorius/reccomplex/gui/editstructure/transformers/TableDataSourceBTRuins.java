@@ -9,6 +9,7 @@ import ivorius.ivtoolkit.gui.FloatRange;
 import ivorius.reccomplex.gui.TableDirections;
 import ivorius.reccomplex.gui.table.*;
 import ivorius.reccomplex.structures.generic.transformers.TransformerRuins;
+import ivorius.reccomplex.utils.IvTranslations;
 import net.minecraftforge.common.util.ForgeDirection;
 
 /**
@@ -36,50 +37,76 @@ public class TableDataSourceBTRuins extends TableDataSourceSegmented implements 
     @Override
     public int numberOfSegments()
     {
-        return 1;
+        return 2;
     }
 
     @Override
     public int sizeOfSegment(int segment)
     {
-        return 5;
+        return segment == 0 ? 5 : 3;
     }
 
     @Override
     public TableElement elementForIndexInSegment(GuiTable table, int index, int segment)
     {
-        switch (index)
+        switch (segment)
         {
             case 0:
-            {
-                TableElementFloatRange element = new TableElementFloatRange("decay", "Decay", new FloatRange(transformer.minDecay, transformer.maxDecay), 0.0f, 1.0f, 2);
-                element.addPropertyListener(this);
-                return element;
-            }
+                switch (index)
+                {
+                    case 0:
+                        return new TableElementTitle("decayTitle", "", IvTranslations.get("reccomplex.transformer.ruins.decay.title"));
+                    case 1:
+                    {
+                        TableElementFloatRange element = new TableElementFloatRange("decay", IvTranslations.get("reccomplex.transformer.ruins.decay.base"), new FloatRange(transformer.minDecay, transformer.maxDecay), 0.0f, 1.0f, 2);
+                        element.setTooltip(IvTranslations.formatLines("reccomplex.transformer.ruins.decay.base.tooltip"));
+                        element.addPropertyListener(this);
+                        return element;
+                    }
+                    case 2:
+                    {
+                        TableElementFloat element = new TableElementFloat("decayChaos", IvTranslations.get("reccomplex.transformer.ruins.decay.chaos"), transformer.decayChaos, 0.0f, 1.0f);
+                        element.setTooltip(IvTranslations.formatLines("reccomplex.transformer.ruins.decay.chaos.tooltip"));
+                        element.addPropertyListener(this);
+                        return element;
+                    }
+                    case 3:
+                    {
+                        TableElementFloat element = new TableElementFloat("decayValueDensity", IvTranslations.get("reccomplex.transformer.ruins.decay.density"), transformer.decayValueDensity, 0.0f, 1.0f);
+                        element.setTooltip(IvTranslations.formatLines("reccomplex.transformer.ruins.decay.density.tooltip"));
+                        element.addPropertyListener(this);
+                        return element;
+                    }
+                    case 4:
+                    {
+                        TableElementEnum element = new TableElementEnum<>("decaySide", IvTranslations.get("reccomplex.transformer.ruins.decay.direction"), transformer.decayDirection, TableDirections.getDirectionOptions(ForgeDirection.VALID_DIRECTIONS));
+                        element.setTooltip(IvTranslations.formatLines("reccomplex.transformer.ruins.decay.direction.tooltip"));
+                        element.addPropertyListener(this);
+                        return element;
+                    }
+                }
+                break;
             case 1:
-            {
-                TableElementFloat element = new TableElementFloat("decayChaos", "Chaos", transformer.decayChaos, 0.0f, 1.0f);
-                element.addPropertyListener(this);
-                return element;
-            }
-            case 2:
-            {
-                TableElementEnum element = new TableElementEnum<>("decaySide", "Direction", transformer.decayDirection, TableDirections.getDirectionOptions(ForgeDirection.VALID_DIRECTIONS));
-                element.addPropertyListener(this);
-                return element;
-            }
-            case 3:
-            {
-                TableElementFloat element = new TableElementFloat("erosion", "Erosion", transformer.blockErosion, 0.0f, 1.0f);
-                element.addPropertyListener(this);
-                return element;
-            }
-            case 4:
-            {
-                TableElementFloat element = new TableElementFloat("vines", "Vine Growth", transformer.vineGrowth, 0.0f, 1.0f);
-                element.addPropertyListener(this);
-                return element;
-            }
+                switch (index)
+                {
+                    case 0:
+                        return new TableElementTitle("otherTitle", "", IvTranslations.get("reccomplex.transformer.ruins.other.title"));
+                    case 1:
+                    {
+                        TableElementFloat element = new TableElementFloat("erosion", IvTranslations.get("reccomplex.transformer.ruins.erosion"), transformer.blockErosion, 0.0f, 1.0f);
+                        element.setTooltip(IvTranslations.formatLines("reccomplex.transformer.ruins.erosion.tooltip"));
+                        element.addPropertyListener(this);
+                        return element;
+                    }
+                    case 2:
+                    {
+                        TableElementFloat element = new TableElementFloat("vines", IvTranslations.get("reccomplex.transformer.ruins.vines"), transformer.vineGrowth, 0.0f, 1.0f);
+                        element.setTooltip(IvTranslations.formatLines("reccomplex.transformer.ruins.vines.tooltip"));
+                        element.addPropertyListener(this);
+                        return element;
+                    }
+                }
+                break;
         }
 
         return null;
@@ -100,6 +127,9 @@ public class TableDataSourceBTRuins extends TableDataSourceSegmented implements 
                 break;
             case "decayChaos":
                 transformer.decayChaos = (float) element.getPropertyValue();
+                break;
+            case "decayValueDensity":
+                transformer.decayValueDensity = (float) element.getPropertyValue();
                 break;
             case "erosion":
                 transformer.blockErosion = (float) element.getPropertyValue();

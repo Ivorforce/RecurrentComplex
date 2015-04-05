@@ -53,21 +53,23 @@ public class TransformerRuins implements Transformer<TransformerRuins.InstanceDa
     public float minDecay;
     public float maxDecay;
     public float decayChaos;
+    public float decayValueDensity;
 
     public float blockErosion;
     public float vineGrowth;
 
     public TransformerRuins()
     {
-        this(ForgeDirection.DOWN, 0.0f, 0.9f, 0.3f, 0.3f, 0.1f);
+        this(ForgeDirection.DOWN, 0.0f, 0.9f, 0.3f, 1f / 25.0f, 0.3f, 0.1f);
     }
 
-    public TransformerRuins(ForgeDirection decayDirection, float minDecay, float maxDecay, float decayChaos, float blockErosion, float vineGrowth)
+    public TransformerRuins(ForgeDirection decayDirection, float minDecay, float maxDecay, float decayChaos, float decayValueDensity, float blockErosion, float vineGrowth)
     {
         this.decayDirection = decayDirection;
         this.minDecay = minDecay;
         this.maxDecay = maxDecay;
         this.decayChaos = decayChaos;
+        this.decayValueDensity = decayValueDensity;
         this.blockErosion = blockErosion;
         this.vineGrowth = vineGrowth;
     }
@@ -295,7 +297,7 @@ public class TransformerRuins implements Transformer<TransformerRuins.InstanceDa
 
             int gridCoords = 1;
             for (int d : blurredFieldSize) gridCoords *= d;
-            int values = gridCoords / 25;
+            int values = MathHelper.floor_float(gridCoords * decayValueDensity + 0.5f);
 
             for (int i = 0; i < values; i++)
                 instanceData.blurredValueField.addValue(decayCenter + (context.random.nextFloat() - context.random.nextFloat()) * decayChaos * 2.0f, context.random);
@@ -356,10 +358,12 @@ public class TransformerRuins implements Transformer<TransformerRuins.InstanceDa
             float minDecay = JsonUtils.getJsonObjectFloatFieldValueOrDefault(jsonObject, "minDecay", 0.0f);
             float maxDecay = JsonUtils.getJsonObjectFloatFieldValueOrDefault(jsonObject, "maxDecay", 0.9f);
             float decayChaos = JsonUtils.getJsonObjectFloatFieldValueOrDefault(jsonObject, "decayChaos", 0.3f);
+            float decayValueDensity = JsonUtils.getJsonObjectFloatFieldValueOrDefault(jsonObject, "decayValueDensity", 1.0f / 25.0f);
+
             float blockErosion = JsonUtils.getJsonObjectFloatFieldValueOrDefault(jsonObject, "blockErosion", 0.0f);
             float vineGrowth = JsonUtils.getJsonObjectFloatFieldValueOrDefault(jsonObject, "vineGrowth", 0.0f);
 
-            return new TransformerRuins(decayDirection, minDecay, maxDecay, decayChaos, blockErosion, vineGrowth);
+            return new TransformerRuins(decayDirection, minDecay, maxDecay, decayChaos, decayValueDensity, blockErosion, vineGrowth);
         }
 
         @Override
@@ -371,6 +375,8 @@ public class TransformerRuins implements Transformer<TransformerRuins.InstanceDa
             jsonobject.addProperty("minDecay", transformer.minDecay);
             jsonobject.addProperty("maxDecay", transformer.maxDecay);
             jsonobject.addProperty("decayChaos", transformer.decayChaos);
+            jsonobject.addProperty("decayValueDensity", transformer.decayValueDensity);
+
             jsonobject.addProperty("blockErosion", transformer.blockErosion);
             jsonobject.addProperty("vineGrowth", transformer.vineGrowth);
 

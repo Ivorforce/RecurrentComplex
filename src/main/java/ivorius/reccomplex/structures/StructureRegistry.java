@@ -51,7 +51,7 @@ public class StructureRegistry
     private static Set<String> persistentlyDisabledStructures = new HashSet<>();
     private static Set<String> generatingStructures = new HashSet<>();
 
-    private static Map<Class<StructureGenerationInfo>, List<Pair<StructureInfo, StructureGenerationInfo>>> cachedGeneration = new HashMap<>();
+    private static Map<Class<? extends StructureGenerationInfo>, Collection<Pair<StructureInfo, ? extends StructureGenerationInfo>>> cachedGeneration = new HashMap<>();
 
     private static Map<Pair<Integer, String>, StructureSelector> structureSelectors = new HashMap<>();
 
@@ -216,25 +216,29 @@ public class StructureRegistry
         return Collections.unmodifiableSet(allStructures.keySet());
     }
 
+    protected static <T extends StructureGenerationInfo> Collection<Pair<StructureInfo, T>> getCachedGeneration(Class<T> clazz)
+    {
+        return (Collection<Pair<StructureInfo, T>>) ((Map) cachedGeneration).get(clazz);
+    }
+
     public static <T extends StructureGenerationInfo> Collection<Pair<StructureInfo, T>> getStructureGenerations(Class<T> clazz)
     {
-        Map cachedGeneration = StructureRegistry.cachedGeneration;
-
-        List<Pair<StructureInfo, T>> pairs = (List<Pair<StructureInfo, T>>) cachedGeneration.get(clazz);
+        Collection<Pair<StructureInfo, T>> pairs = getCachedGeneration(clazz);
         if (pairs != null)
             return pairs;
 
-        ArrayList<Pair<StructureInfo, T>> pairsArrayList = new ArrayList<>();
+        pairs = new ArrayList<>();
         for (StructureInfo info : getAllGeneratingStructures())
         {
             List<T> generationInfos = info.generationInfos(clazz);
             for (T t : generationInfos)
-                pairsArrayList.add(Pair.of(info, t));
+                pairs.add(Pair.of(info, t));
         }
-        pairsArrayList.trimToSize();
-        cachedGeneration.put(clazz, pairsArrayList);
 
-        return pairsArrayList;
+        ((ArrayList) pairs).trimToSize();
+        cachedGeneration.put(clazz, (Collection) pairs);
+
+        return pairs;
     }
 
     public static <T extends StructureGenerationInfo> Collection<Pair<StructureInfo, T>> getStructureGenerations(Class<T> clazz, final Predicate<Pair<StructureInfo, T>> predicate)

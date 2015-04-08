@@ -50,7 +50,7 @@ public class CommandImportSchematic extends CommandBase
         int y = MathHelper.floor_double(func_110666_a(commandSender, commandSender.getPlayerCoordinates().posY, args[1]));
         int z = MathHelper.floor_double(func_110666_a(commandSender, commandSender.getPlayerCoordinates().posZ, args[2]));
 
-        String schematicName = func_147178_a(commandSender, args, 3).getUnformattedText();;
+        String schematicName = func_147178_a(commandSender, args, 3).getUnformattedText();
         SchematicFile schematicFile;
 
         try

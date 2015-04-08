@@ -20,7 +20,10 @@ public class NBTBaseSerializerSmart implements JsonSerializer<NBTBase>, JsonDese
     {
         Class<? extends NBTBase> aClass = NbtToJson.getNBTTypeSmart(json);
 
-        return ((JsonDeserializer<? extends NBTBase>) NbtToJson.nbtJson.getAdapter(aClass)).deserialize(json, aClass, context);
+        if (aClass != null)
+            return NbtToJson.nbtJson.fromJson(json, aClass);
+        else
+            throw new JsonParseException("Unknown NBT type");
     }
 
     @Override

@@ -31,9 +31,7 @@ public class StringTypeAdapterFactory<B> implements JsonSerializer<B>, JsonDeser
     public StringTypeAdapterFactory(String objectKey, String typeKey)
     {
         if (objectKey.equals(typeKey))
-        {
             throw new IllegalArgumentException("Type key must be different from object key");
-        }
 
         this.objectKey = objectKey;
         this.typeKey = typeKey;
@@ -44,7 +42,7 @@ public class StringTypeAdapterFactory<B> implements JsonSerializer<B>, JsonDeser
         this("object", "type");
     }
 
-    public void register(String id, Class<? extends B> clazz, JsonSerializer<? extends B> serializer, JsonDeserializer<? extends B> deserializer)
+    public <T extends B> void register(String id, Class<? extends T> clazz, JsonSerializer<T> serializer, JsonDeserializer<T> deserializer)
     {
         deserializerMap.put(id, deserializer);
         serializerMap.put(clazz, serializer);
@@ -61,9 +59,9 @@ public class StringTypeAdapterFactory<B> implements JsonSerializer<B>, JsonDeser
         return deserializerMap.get(key);
     }
 
-    public JsonSerializer<? extends B> serializer(Class<? extends B> aClass)
+    public <T extends B> JsonSerializer<T> serializer(Class<? extends T> aClass)
     {
-        return serializerMap.get(aClass);
+        return (JsonSerializer<T>) serializerMap.get(aClass);
     }
 
     public String type(Class<? extends B> aClass)
@@ -93,13 +91,9 @@ public class StringTypeAdapterFactory<B> implements JsonSerializer<B>, JsonDeser
                 JsonDeserializer<? extends B> deserializer = deserializer(type);
 
                 if (deserializer != null)
-                {
                     return deserializer.deserialize(jsonObject.get(objectKey), typeOfT, context);
-                }
                 else
-                {
                     throw new JsonParseException("Unknown type: " + type);
-                }
             }
         }
 
@@ -109,7 +103,7 @@ public class StringTypeAdapterFactory<B> implements JsonSerializer<B>, JsonDeser
     @Override
     public JsonElement serialize(B src, Type typeOfSrc, JsonSerializationContext context)
     {
-        Class objectClass = src.getClass();
+        Class<? extends B> objectClass = (Class<? extends B>) src.getClass();
 
         String id = type(objectClass);
         JsonSerializer serializer = serializer(objectClass);

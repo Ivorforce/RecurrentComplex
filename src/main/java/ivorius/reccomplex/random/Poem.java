@@ -123,21 +123,13 @@ public class Poem
     public static Poem randomPoem(Random random, Theme theme)
     {
         PoemContext poemContext = new PoemContext();
-        while (poemContext.add(random, poemContext.names, 0.3f, Person.randomHuman(random, random.nextBoolean()).getFirstName()))
-        {
-            ;
-        }
-        while (poemContext.add(random, poemContext.places, 0.3f, Place.randomPlace(random).getFullPlaceType()))
-        {
-            ;
-        }
+        while (poemContext.add(random, poemContext.names, 0.3f, Person.randomHuman(random, random.nextBoolean()).getFirstName()));
+        while (poemContext.add(random, poemContext.places, 0.3f, Place.randomPlace(random).getFullPlaceType()));
 
         String title = getRandomPhrase(random, theme, sentencePatterns, poemContext).trim();
         char titleLastChar = title.charAt(title.length() - 1);
         if (titleLastChar == '.' || titleLastChar == ',' || titleLastChar == ';')
-        {
             title = title.substring(0, title.length() - 1);
-        }
 
         StringBuilder poem = new StringBuilder();
 
@@ -153,9 +145,7 @@ public class Poem
                 {
                     char phraseLastChar = phrase.charAt(phrase.length() - 1);
                     if (phraseLastChar == ',' || phraseLastChar == ';')
-                    {
                         phrase = phrase.substring(0, phrase.length() - 1) + ".";
-                    }
                 }
 
                 poem.append(phrase).append("\n");

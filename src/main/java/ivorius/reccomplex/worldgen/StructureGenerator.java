@@ -15,7 +15,6 @@ import ivorius.reccomplex.events.StructureGenerationEventLite;
 import ivorius.reccomplex.structures.*;
 import ivorius.reccomplex.structures.generic.GenerationYSelector;
 import ivorius.reccomplex.utils.NBTStorable;
-import net.minecraft.nbt.NBTBase;
 import net.minecraft.world.World;
 import net.minecraft.world.gen.structure.StructureBoundingBox;
 import net.minecraftforge.common.MinecraftForge;
@@ -30,7 +29,7 @@ public class StructureGenerator
 {
     public static final int MIN_DIST_TO_LIMIT = 1;
 
-    public static void partially(StructureInfo structureInfo, World world, Random random, BlockCoord coord, AxisAlignedTransform2D transform, @Nullable StructureBoundingBox generationBB, int layer, String structureName, NBTStorable instanceData, boolean firstTime)
+    public static <I extends NBTStorable> void partially(StructureInfo<I> structureInfo, World world, Random random, BlockCoord coord, AxisAlignedTransform2D transform, @Nullable StructureBoundingBox generationBB, int layer, String structureName, I instanceData, boolean firstTime)
     {
         StructureBoundingBox structureBoundingBox = StructureInfos.structureBoundingBox(coord, StructureInfos.structureSize(structureInfo, transform));
 
@@ -44,7 +43,7 @@ public class StructureGenerator
             StructureGenerationData.get(world).addNewEntry(structureName, coord, transform);
     }
 
-    public static void directly(StructureInfo structureInfo, StructureSpawnContext context)
+    public static <I extends NBTStorable> void directly(StructureInfo<I> structureInfo, StructureSpawnContext context)
     {
         structureInfo.generate(context, structureInfo.prepareInstanceData(new StructurePrepareContext(context.random, context.transform, context.boundingBox, context.generateAsSource)));
     }
@@ -65,7 +64,7 @@ public class StructureGenerator
         return genY;
     }
 
-    public static boolean instantly(StructureInfo structureInfo, World world, Random random, BlockCoord coord, AxisAlignedTransform2D transform, int layer, boolean suggest, String structureID)
+    public static <I extends NBTStorable> boolean instantly(StructureInfo<I> structureInfo, World world, Random random, BlockCoord coord, AxisAlignedTransform2D transform, int layer, boolean suggest, String structureID)
     {
         int[] size = StructureInfos.structureSize(structureInfo, transform);
         int[] coordInts = new int[]{coord.x, coord.y, coord.z};

@@ -7,7 +7,7 @@ package ivorius.reccomplex.gui.editstructure;
 
 import ivorius.ivtoolkit.gui.IntegerRange;
 import ivorius.reccomplex.gui.table.*;
-import ivorius.reccomplex.structures.generic.GenerationYSelector;
+import ivorius.reccomplex.structures.generic.GenericYSelector;
 import ivorius.reccomplex.utils.IvTranslations;
 import net.minecraft.client.resources.I18n;
 
@@ -19,18 +19,18 @@ import java.util.List;
  */
 public class TableDataSourceYSelector implements TableDataSource, TableElementPropertyListener
 {
-    public GenerationYSelector ySelector;
+    public GenericYSelector ySelector;
 
-    public TableDataSourceYSelector(GenerationYSelector ySelector)
+    public TableDataSourceYSelector(GenericYSelector ySelector)
     {
         this.ySelector = ySelector;
     }
 
-    public static List<TableElementEnum.Option<GenerationYSelector.SelectionMode>> allGenerationOptions()
+    public static List<TableElementEnum.Option<GenericYSelector.SelectionMode>> allGenerationOptions()
     {
-        List<TableElementEnum.Option<GenerationYSelector.SelectionMode>> generationBases = new ArrayList<>();
+        List<TableElementEnum.Option<GenericYSelector.SelectionMode>> generationBases = new ArrayList<>();
 
-        for (GenerationYSelector.SelectionMode selectionMode : GenerationYSelector.SelectionMode.values())
+        for (GenericYSelector.SelectionMode selectionMode : GenericYSelector.SelectionMode.values())
         {
             String transKeyBase = "structures.genY." + selectionMode.serializedName();
             generationBases.add(new TableElementEnum.Option<>(selectionMode,
@@ -72,7 +72,7 @@ public class TableDataSourceYSelector implements TableDataSource, TableElementPr
         switch (element.getID())
         {
             case "ySelType":
-                ySelector.selectionMode = (GenerationYSelector.SelectionMode) element.getPropertyValue();
+                ySelector.selectionMode = (GenericYSelector.SelectionMode) element.getPropertyValue();
                 break;
             case "ySelShift":
                 IntegerRange range = ((IntegerRange) element.getPropertyValue());

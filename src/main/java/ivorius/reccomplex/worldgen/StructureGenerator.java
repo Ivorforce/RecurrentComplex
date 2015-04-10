@@ -13,7 +13,6 @@ import ivorius.reccomplex.events.RCEventBus;
 import ivorius.reccomplex.events.StructureGenerationEvent;
 import ivorius.reccomplex.events.StructureGenerationEventLite;
 import ivorius.reccomplex.structures.*;
-import ivorius.reccomplex.structures.generic.GenerationYSelector;
 import ivorius.reccomplex.utils.NBTStorable;
 import net.minecraft.world.World;
 import net.minecraft.world.gen.structure.StructureBoundingBox;
@@ -48,7 +47,7 @@ public class StructureGenerator
         structureInfo.generate(context, structureInfo.prepareInstanceData(new StructurePrepareContext(context.random, context.transform, context.boundingBox, context.generateAsSource)));
     }
 
-    public static int randomInstantly(World world, Random random, StructureInfo info, @Nullable GenerationYSelector ySelector, int x, int z, boolean suggest, String structureName)
+    public static int randomInstantly(World world, Random random, StructureInfo info, @Nullable YSelector ySelector, int x, int z, boolean suggest, String structureName)
     {
         AxisAlignedTransform2D transform = AxisAlignedTransform2D.transform(info.isRotatable() ? random.nextInt(4) : 0, info.isMirrorable() && random.nextBoolean());
 

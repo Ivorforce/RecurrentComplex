@@ -9,6 +9,7 @@ import com.google.gson.annotations.SerializedName;
 import gnu.trove.list.TIntList;
 import gnu.trove.list.array.TIntArrayList;
 import ivorius.ivtoolkit.tools.IvGsonHelper;
+import ivorius.reccomplex.structures.YSelector;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockLiquid;
 import net.minecraft.block.material.Material;
@@ -21,12 +22,11 @@ import java.util.Random;
 /**
  * Created by lukas on 25.05.14.
  */
-public class GenerationYSelector
+public class GenericYSelector implements YSelector
 {
-    public static final int DONT_GENERATE = -1;
     public static final int MIN_DIST_TO_VOID = 3;
 
-    public static enum SelectionMode
+    public enum SelectionMode
     {
         @SerializedName("bedrock")
         BEDROCK,
@@ -57,13 +57,14 @@ public class GenerationYSelector
     public int minY;
     public int maxY;
 
-    public GenerationYSelector(SelectionMode selectionMode, int minY, int maxY)
+    public GenericYSelector(SelectionMode selectionMode, int minY, int maxY)
     {
         this.selectionMode = selectionMode;
         this.minY = minY;
         this.maxY = maxY;
     }
 
+    @Override
     public int generationY(final World world, Random random, StructureBoundingBox boundingBox)
     {
         final int y = minY + random.nextInt(maxY - minY + 1);

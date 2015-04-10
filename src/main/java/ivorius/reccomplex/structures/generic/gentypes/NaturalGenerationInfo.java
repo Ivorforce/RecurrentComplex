@@ -14,7 +14,7 @@ import ivorius.reccomplex.gui.table.TableNavigator;
 import ivorius.reccomplex.json.JsonUtils;
 import ivorius.reccomplex.structures.generic.BiomeGenerationInfo;
 import ivorius.reccomplex.structures.generic.DimensionGenerationInfo;
-import ivorius.reccomplex.structures.generic.GenerationYSelector;
+import ivorius.reccomplex.structures.generic.GenericYSelector;
 import ivorius.reccomplex.structures.generic.presets.BiomeMatcherPresets;
 import ivorius.reccomplex.structures.generic.presets.DimensionMatcherPresets;
 import ivorius.reccomplex.utils.PresettedList;
@@ -40,18 +40,18 @@ public class NaturalGenerationInfo extends StructureGenerationInfo
     public final PresettedList<DimensionGenerationInfo> dimensionWeights = new PresettedList<>(DimensionMatcherPresets.instance(), null);
 
     public String generationCategory;
-    public GenerationYSelector ySelector;
+    public GenericYSelector ySelector;
     private Double generationWeight;
 
     public NaturalGenerationInfo()
     {
-        this("NaturalGen1", "decoration", new GenerationYSelector(GenerationYSelector.SelectionMode.SURFACE, 0, 0));
+        this("NaturalGen1", "decoration", new GenericYSelector(GenericYSelector.SelectionMode.SURFACE, 0, 0));
 
         biomeWeights.setToDefault();
         dimensionWeights.setToDefault();
     }
 
-    public NaturalGenerationInfo(String id, String generationCategory, GenerationYSelector ySelector)
+    public NaturalGenerationInfo(String id, String generationCategory, GenericYSelector ySelector)
     {
         this.id = id;
         this.generationCategory = generationCategory;
@@ -77,7 +77,7 @@ public class NaturalGenerationInfo extends StructureGenerationInfo
     public static NaturalGenerationInfo deserializeFromVersion1(JsonObject jsonObject, JsonDeserializationContext context)
     {
         String generationCategory = JsonUtils.getJsonObjectStringFieldValue(jsonObject, "generationCategory");
-        GenerationYSelector ySelector = gson.fromJson(jsonObject.get("generationY"), GenerationYSelector.class);
+        GenericYSelector ySelector = gson.fromJson(jsonObject.get("generationY"), GenericYSelector.class);
 
         NaturalGenerationInfo naturalGenerationInfo = new NaturalGenerationInfo("", generationCategory, ySelector);
         if (jsonObject.has("generationBiomes"))
@@ -177,14 +177,14 @@ public class NaturalGenerationInfo extends StructureGenerationInfo
             String id = JsonUtils.getJsonObjectStringFieldValueOrDefault(jsonObject, "id", "");
 
             String generationCategory = JsonUtils.getJsonObjectStringFieldValue(jsonObject, "generationCategory");
-            GenerationYSelector ySelector;
+            GenericYSelector ySelector;
 
             if (jsonObject.has("generationY"))
-                ySelector = gson.fromJson(jsonObject.get("generationY"), GenerationYSelector.class);
+                ySelector = gson.fromJson(jsonObject.get("generationY"), GenericYSelector.class);
             else
             {
                 RecurrentComplex.logger.warn("Structure JSON missing 'generationY'! Using 'surface'!");
-                ySelector = new GenerationYSelector(GenerationYSelector.SelectionMode.SURFACE, 0, 0);
+                ySelector = new GenericYSelector(GenericYSelector.SelectionMode.SURFACE, 0, 0);
             }
 
             NaturalGenerationInfo naturalGenerationInfo = new NaturalGenerationInfo(id, generationCategory, ySelector);

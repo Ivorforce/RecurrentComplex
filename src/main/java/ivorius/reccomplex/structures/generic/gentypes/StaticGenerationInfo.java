@@ -12,7 +12,7 @@ import ivorius.reccomplex.gui.table.TableDelegate;
 import ivorius.reccomplex.gui.table.TableNavigator;
 import ivorius.reccomplex.json.JsonUtils;
 import ivorius.reccomplex.structures.generic.matchers.DimensionMatcher;
-import ivorius.reccomplex.structures.generic.GenerationYSelector;
+import ivorius.reccomplex.structures.generic.GenericYSelector;
 import net.minecraft.util.ChunkCoordinates;
 import net.minecraft.util.StatCollector;
 
@@ -26,7 +26,7 @@ public class StaticGenerationInfo extends StructureGenerationInfo
 {
     public String id = "";
 
-    public GenerationYSelector ySelector;
+    public GenericYSelector ySelector;
     public DimensionMatcher dimensionMatcher;
 
     public boolean relativeToSpawn;
@@ -35,10 +35,10 @@ public class StaticGenerationInfo extends StructureGenerationInfo
 
     public StaticGenerationInfo()
     {
-        this("StaticGen1", new GenerationYSelector(GenerationYSelector.SelectionMode.SURFACE, 0, 0), new DimensionMatcher("0"), true, 0, 0);
+        this("StaticGen1", new GenericYSelector(GenericYSelector.SelectionMode.SURFACE, 0, 0), new DimensionMatcher("0"), true, 0, 0);
     }
 
-    public StaticGenerationInfo(String id, GenerationYSelector ySelector, DimensionMatcher dimensionMatcher, boolean relativeToSpawn, int positionX, int positionZ)
+    public StaticGenerationInfo(String id, GenericYSelector ySelector, DimensionMatcher dimensionMatcher, boolean relativeToSpawn, int positionX, int positionZ)
     {
         this.id = id;
         this.ySelector = ySelector;
@@ -95,7 +95,7 @@ public class StaticGenerationInfo extends StructureGenerationInfo
 
             String id = JsonUtils.getJsonObjectStringFieldValueOrDefault(jsonObject, "id", "");
 
-            GenerationYSelector ySelector = context.deserialize(jsonObject.get("generationY"), GenerationYSelector.class);
+            GenericYSelector ySelector = context.deserialize(jsonObject.get("generationY"), GenericYSelector.class);
             String dimension = JsonUtils.getJsonObjectStringFieldValueOrDefault(jsonObject, "dimensions", "");
 
             boolean relativeToSpawn = JsonUtils.getJsonObjectBooleanFieldValueOrDefault(jsonObject, "relativeToSpawn", false);

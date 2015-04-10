@@ -16,6 +16,7 @@ import net.minecraft.command.CommandBase;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.event.ClickEvent;
+import net.minecraft.event.HoverEvent;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ChatComponentText;
 import net.minecraft.util.EnumChatFormatting;
@@ -88,10 +89,12 @@ public class OperationRegistry
                     IChatComponent confirmComponent = new ChatComponentText("/" + CommandConfirm.getCommandNameStatic());
                     confirmComponent.getChatStyle().setColor(EnumChatFormatting.GREEN);
                     confirmComponent.getChatStyle().setChatClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/" + CommandConfirm.getCommandNameStatic()));
+                    confirmComponent.getChatStyle().setChatHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, ServerTranslations.get("commands.rcconfirm.run")));
 
                     IChatComponent cancelComponent = new ChatComponentText("/" + CommandCancel.getCommandNameStatic());
                     cancelComponent.getChatStyle().setColor(EnumChatFormatting.RED);
                     cancelComponent.getChatStyle().setChatClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/" + CommandCancel.getCommandNameStatic()));
+                    cancelComponent.getChatStyle().setChatHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, ServerTranslations.get("commands.rccancel.run")));
 
                     IChatComponent component = ServerTranslations.format("commands.rc.queuedOp", confirmComponent, cancelComponent);
                     commandSender.addChatMessage(component);

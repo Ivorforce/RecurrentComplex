@@ -104,7 +104,9 @@ commands.rcpreview.success=Preview type set to '%s'
 commands.rc.noOperation=No currently queued operation
 commands.rc.queuedOp=Operation in preview - %s or %s
 commands.rcconfirm.usage=/#confirm
+commands.rcconfirm.run=Run the operation
 commands.rccancel.usage=/#cancel
+commands.rccancel.run=Cancel the operation
 
 commands.strucImportSchematic.usage=/#importschematic <x> <y> <z> <schematic name>
 commands.strucImportSchematic.missing=The file '%s' was not found in %s

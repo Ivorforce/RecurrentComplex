@@ -11,8 +11,8 @@ import ivorius.reccomplex.gui.table.TableDataSource;
 import ivorius.reccomplex.gui.table.TableDelegate;
 import ivorius.reccomplex.gui.table.TableNavigator;
 import ivorius.reccomplex.json.JsonUtils;
-import ivorius.reccomplex.structures.generic.matchers.DimensionMatcher;
 import ivorius.reccomplex.structures.generic.GenericYSelector;
+import ivorius.reccomplex.structures.generic.matchers.DimensionMatcher;
 import net.minecraft.util.ChunkCoordinates;
 import net.minecraft.util.StatCollector;
 
@@ -24,6 +24,8 @@ import java.lang.reflect.Type;
  */
 public class StaticGenerationInfo extends StructureGenerationInfo
 {
+    private static Gson gson = createGson();
+
     public String id = "";
 
     public GenericYSelector ySelector;
@@ -46,6 +48,21 @@ public class StaticGenerationInfo extends StructureGenerationInfo
         this.relativeToSpawn = relativeToSpawn;
         this.positionX = positionX;
         this.positionZ = positionZ;
+    }
+
+    public static Gson createGson()
+    {
+        GsonBuilder builder = new GsonBuilder();
+
+        builder.registerTypeAdapter(StaticGenerationInfo.class, new StaticGenerationInfo.Serializer());
+        builder.registerTypeAdapter(GenericYSelector.class, new GenericYSelector.Serializer());
+
+        return builder.create();
+    }
+
+    public static Gson getGson()
+    {
+        return gson;
     }
 
     @Nonnull
@@ -112,7 +129,7 @@ public class StaticGenerationInfo extends StructureGenerationInfo
 
             jsonObject.addProperty("id", src.id);
 
-            jsonObject.add("generationY", context.serialize(src.ySelector));
+            jsonObject.add("generationY", gson.toJsonTree(src.ySelector));
             jsonObject.addProperty("dimensions", src.dimensionMatcher.getExpression());
 
             jsonObject.addProperty("relativeToSpawn", src.relativeToSpawn);

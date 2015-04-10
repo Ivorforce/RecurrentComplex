@@ -18,9 +18,7 @@ import ivorius.reccomplex.utils.ServerTranslations;
 import ivorius.reccomplex.worldgen.StructureGenerator;
 import ivorius.reccomplex.structures.generic.GenericStructureInfo;
 import net.minecraft.command.CommandBase;
-import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
-import net.minecraft.command.WrongUsageException;
 import net.minecraft.util.MathHelper;
 import net.minecraft.world.World;
 
@@ -83,7 +81,7 @@ public class CommandGenerateStructure extends CommandBase
             int genY;
             List<NaturalGenerationInfo> naturalGenerationInfos = structureInfo.generationInfos(NaturalGenerationInfo.class);
             if (naturalGenerationInfos.size() > 0)
-                genY = naturalGenerationInfos.get(0).ySelector.generationY(world, random, StructureInfos.structureBoundingBox(new BlockCoord(genX, 0, genZ), size));
+                genY = naturalGenerationInfos.get(0).ySelector.selectY(world, random, StructureInfos.structureBoundingBox(new BlockCoord(genX, 0, genZ), size));
             else
                 genY = world.getHeightValue(x, z);
 

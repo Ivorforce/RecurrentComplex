@@ -17,5 +17,5 @@ public interface YSelector
 {
     int DONT_GENERATE = -1;
 
-    int generationY(World world, Random random, StructureBoundingBox boundingBox);
+    int selectY(World world, Random random, StructureBoundingBox boundingBox);
 }

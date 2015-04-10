@@ -55,7 +55,7 @@ public class StructureGenerator
 
         int genX = x - size[0] / 2;
         int genZ = z - size[2] / 2;
-        int genY = ySelector != null ? ySelector.generationY(world, random, StructureInfos.structureBoundingBox(new BlockCoord(genX, 0, genZ), size)) : world.getHeightValue(x, z);
+        int genY = ySelector != null ? ySelector.selectY(world, random, StructureInfos.structureBoundingBox(new BlockCoord(genX, 0, genZ), size)) : world.getHeightValue(x, z);
         BlockCoord coord = new BlockCoord(genX, genY, genZ);
 
         instantly(info, world, random, coord, transform, 0, suggest, structureName);

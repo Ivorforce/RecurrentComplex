@@ -57,7 +57,7 @@ public class TableDataSourceYSelector implements TableDataSource, TableElementPr
         }
         else if (index == 1)
         {
-            TableElementIntegerRange element = new TableElementIntegerRange("ySelShift", "Y Shift", new IntegerRange(ySelector.minY, ySelector.maxY), -100, 100);
+            TableElementIntegerRange element = new TableElementIntegerRange("ySelShift", "Y Shift", new IntegerRange(ySelector.minYShift, ySelector.maxYShift), -100, 100);
             element.setTooltip(IvTranslations.formatLines("reccomplex.structure.randomrange"));
             element.addPropertyListener(this);
             return element;
@@ -76,8 +76,8 @@ public class TableDataSourceYSelector implements TableDataSource, TableElementPr
                 break;
             case "ySelShift":
                 IntegerRange range = ((IntegerRange) element.getPropertyValue());
-                ySelector.minY = range.getMin();
-                ySelector.maxY = range.getMax();
+                ySelector.minYShift = range.getMin();
+                ySelector.maxYShift = range.getMax();
                 break;
         }
     }

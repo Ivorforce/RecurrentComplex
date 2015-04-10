@@ -65,6 +65,7 @@ public class NaturalGenerationInfo extends StructureGenerationInfo
         builder.registerTypeAdapter(NaturalGenerationInfo.class, new NaturalGenerationInfo.Serializer());
         builder.registerTypeAdapter(BiomeGenerationInfo.class, new BiomeGenerationInfo.Serializer());
         builder.registerTypeAdapter(DimensionGenerationInfo.class, new DimensionGenerationInfo.Serializer());
+        builder.registerTypeAdapter(GenericYSelector.class, new GenericYSelector.Serializer());
 
         return builder.create();
     }

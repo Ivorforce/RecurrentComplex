@@ -5,10 +5,12 @@
 
 package ivorius.reccomplex.structures.generic;
 
+import com.google.gson.*;
 import com.google.gson.annotations.SerializedName;
 import gnu.trove.list.TIntList;
 import gnu.trove.list.array.TIntArrayList;
 import ivorius.ivtoolkit.tools.IvGsonHelper;
+import ivorius.reccomplex.json.JsonUtils;
 import ivorius.reccomplex.structures.YSelector;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockLiquid;
@@ -17,6 +19,7 @@ import net.minecraft.util.MathHelper;
 import net.minecraft.world.World;
 import net.minecraft.world.gen.structure.StructureBoundingBox;
 
+import java.lang.reflect.Type;
 import java.util.Random;
 
 /**
@@ -54,35 +57,35 @@ public class GenericYSelector implements YSelector
 
     public SelectionMode selectionMode;
 
-    public int minY;
-    public int maxY;
+    public int minYShift;
+    public int maxYShift;
 
-    public GenericYSelector(SelectionMode selectionMode, int minY, int maxY)
+    public GenericYSelector(SelectionMode selectionMode, int minYShift, int maxYShift)
     {
         this.selectionMode = selectionMode;
-        this.minY = minY;
-        this.maxY = maxY;
+        this.minYShift = minYShift;
+        this.maxYShift = maxYShift;
     }
 
     @Override
-    public int generationY(final World world, Random random, StructureBoundingBox boundingBox)
+    public int selectY(final World world, Random random, StructureBoundingBox boundingBox)
     {
-        final int y = minY + random.nextInt(maxY - minY + 1);
+        final int yShift = minYShift + random.nextInt(maxYShift - minYShift + 1);
 
         switch (selectionMode)
         {
             case BEDROCK:
-                return selectByConstant(world, y);
+                return selectByConstant(world, yShift);
             case TOP:
-                return selectByConstant(world, world.getHeight() + y);
+                return selectByConstant(world, world.getHeight() + yShift);
             case SEALEVEL:
-                return selectByConstant(world, 63 + y);
+                return selectByConstant(world, 63 + yShift);
             case SURFACE:
-                return selectByFunction(world, boundingBox, surfaceSelector(world), averageReducer(y));
+                return selectByFunction(world, boundingBox, surfaceSelector(world), averageReducer(yShift));
             case UNDERWATER:
-                return selectByFunction(world, boundingBox, surfaceUnderwaterSelector(world), averageReducer(y));
+                return selectByFunction(world, boundingBox, surfaceUnderwaterSelector(world), averageReducer(yShift));
             case LOWEST_EDGE:
-                return selectByFunction(world, boundingBox, surfaceUnderwaterSelector(world), minReducer(y));
+                return selectByFunction(world, boundingBox, surfaceUnderwaterSelector(world), minReducer(yShift));
         }
 
         throw new RuntimeException("Unrecognized selection mode " + selectionMode);
@@ -248,5 +251,36 @@ public class GenericYSelector implements YSelector
     protected interface SingleYSelector
     {
         int select(int x, int z);
+    }
+
+    public static class Serializer implements JsonSerializer<GenericYSelector>, JsonDeserializer<GenericYSelector>
+    {
+        @Override
+        public GenericYSelector deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException
+        {
+            JsonObject jsonObject = JsonUtils.getJsonElementAsJsonObject(json, "ySelector");
+
+            SelectionMode selectionMode = jsonObject.has("selectionMode")
+                    ? (SelectionMode) context.deserialize(jsonObject.get("selectionMode"), SelectionMode.class)
+                    : SelectionMode.SURFACE;
+
+            int minYShift = JsonUtils.getJsonObjectIntegerFieldValueOrDefault(jsonObject, "minY", 0);
+            int maxYShift = JsonUtils.getJsonObjectIntegerFieldValueOrDefault(jsonObject, "maxY", 0);
+
+            return new GenericYSelector(selectionMode, minYShift, maxYShift);
+        }
+
+        @Override
+        public JsonElement serialize(GenericYSelector src, Type typeOfSrc, JsonSerializationContext context)
+        {
+            JsonObject jsonObject = new JsonObject();
+
+            jsonObject.add("selectionMode", context.serialize(src.selectionMode));
+
+            jsonObject.addProperty("minY", src.minYShift);
+            jsonObject.addProperty("maxY", src.maxYShift);
+
+            return jsonObject;
+        }
     }
 }

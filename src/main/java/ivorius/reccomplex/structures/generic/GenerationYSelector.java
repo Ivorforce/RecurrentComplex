@@ -6,10 +6,13 @@
 package ivorius.reccomplex.structures.generic;
 
 import com.google.gson.annotations.SerializedName;
+import gnu.trove.list.TIntList;
+import gnu.trove.list.array.TIntArrayList;
 import ivorius.ivtoolkit.tools.IvGsonHelper;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockLiquid;
 import net.minecraft.block.material.Material;
+import net.minecraft.util.MathHelper;
 import net.minecraft.world.World;
 import net.minecraft.world.gen.structure.StructureBoundingBox;
 
@@ -61,57 +64,80 @@ public class GenerationYSelector
         this.maxY = maxY;
     }
 
-    public int generationY(World world, Random random, StructureBoundingBox boundingBox)
+    public int generationY(final World world, Random random, StructureBoundingBox boundingBox)
     {
-        int y = minY + random.nextInt(maxY - minY + 1);
+        final int y = minY + random.nextInt(maxY - minY + 1);
 
         switch (selectionMode)
         {
             case BEDROCK:
-                return Math.max(2, y);
-            case SURFACE:
-            {
-                int genYC = surfaceHeight(world, boundingBox.getCenterX(), boundingBox.getCenterZ());
-                int genYPP = surfaceHeight(world, boundingBox.maxX, boundingBox.maxZ);
-                int genYPM = surfaceHeight(world, boundingBox.maxX, boundingBox.minZ);
-                int genYMP = surfaceHeight(world, boundingBox.minX, boundingBox.maxZ);
-                int genYMM = surfaceHeight(world, boundingBox.minX, boundingBox.minZ);
-
-                int avg = averageIgnoringErrors(genYC, genYPP, genYPM, genYMP, genYMM);
-                return avg > MIN_DIST_TO_VOID ? avg + y : DONT_GENERATE;
-            }
-            case SEALEVEL:
-                return 63 + y;
-            case UNDERWATER:
-            {
-                int genYC = surfaceHeightUnderwater(world, boundingBox.getCenterX(), boundingBox.getCenterZ());
-                int genYPP = surfaceHeightUnderwater(world, boundingBox.maxX, boundingBox.maxZ);
-                int genYPM = surfaceHeightUnderwater(world, boundingBox.maxX, boundingBox.minZ);
-                int genYMP = surfaceHeightUnderwater(world, boundingBox.minX, boundingBox.maxZ);
-                int genYMM = surfaceHeightUnderwater(world, boundingBox.minX, boundingBox.minZ);
-
-                int avg = averageIgnoringErrors(genYC, genYPP, genYPM, genYMP, genYMM);
-                return avg > MIN_DIST_TO_VOID ? avg + y : DONT_GENERATE;
-            }
+                return selectByConstant(world, y);
             case TOP:
-                return world.getHeight() + y;
+                return selectByConstant(world, world.getHeight() + y);
+            case SEALEVEL:
+                return selectByConstant(world, 63 + y);
+            case SURFACE:
+                return selectByFunction(world, boundingBox, surfaceSelector(world), averageReducer(y));
+            case UNDERWATER:
+                return selectByFunction(world, boundingBox, surfaceUnderwaterSelector(world), averageReducer(y));
             case LOWEST_EDGE:
-            {
-                int genYC = surfaceHeightUnderwater(world, boundingBox.getCenterX(), boundingBox.getCenterZ());
-                int genYPP = surfaceHeightUnderwater(world, boundingBox.maxX, boundingBox.maxZ);
-                int genYPM = surfaceHeightUnderwater(world, boundingBox.maxX, boundingBox.minZ);
-                int genYMP = surfaceHeightUnderwater(world, boundingBox.minX, boundingBox.maxZ);
-                int genYMM = surfaceHeightUnderwater(world, boundingBox.minX, boundingBox.minZ);
-
-                int min = min(genYC, genYPP, genYPM, genYMP, genYMM);
-                return min > MIN_DIST_TO_VOID ? min + y : DONT_GENERATE;
-            }
+                return selectByFunction(world, boundingBox, surfaceUnderwaterSelector(world), minReducer(y));
         }
 
         throw new RuntimeException("Unrecognized selection mode " + selectionMode);
     }
 
-    private int surfaceHeightUnderwater(World world, int x, int z)
+    protected static SingleYSelector surfaceSelector(final World world)
+    {
+        return new SingleYSelector()
+        {
+            @Override
+            public int select(int x, int z)
+            {
+                return surfaceHeight(world, x, z);
+            }
+        };
+    }
+
+    protected static SingleYSelector surfaceUnderwaterSelector(final World world)
+    {
+        return new SingleYSelector()
+        {
+            @Override
+            public int select(int x, int z)
+            {
+                return surfaceHeightUnderwater(world, x, z);
+            }
+        };
+    }
+
+    protected static IntListReducer minReducer(final int y)
+    {
+        return new IntListReducer()
+        {
+            @Override
+            public int reduce(TIntList list)
+            {
+                int average = list.min();
+                return average > MIN_DIST_TO_VOID ? average + y : DONT_GENERATE;
+            }
+        };
+    }
+
+    protected static IntListReducer averageReducer(final int y)
+    {
+        return new IntListReducer()
+        {
+            @Override
+            public int reduce(TIntList list)
+            {
+                int average = averageIgnoringErrors(list.toArray());
+                return average > MIN_DIST_TO_VOID ? average + y : DONT_GENERATE;
+            }
+        };
+    }
+
+    protected static int surfaceHeightUnderwater(World world, int x, int z)
     {
         int curYWater = world.getTopSolidOrLiquidBlock(x, z);
 
@@ -129,7 +155,7 @@ public class GenerationYSelector
         return curYWater;
     }
 
-    private int surfaceHeight(World world, int x, int z)
+    protected static int surfaceHeight(World world, int x, int z)
     {
         int curY = world.getTopSolidOrLiquidBlock(x, z);
 
@@ -156,16 +182,34 @@ public class GenerationYSelector
         return curY;
     }
 
-    private static int min(int... values)
+    protected static int selectByConstant(World world, int y)
     {
-        int min = values[0];
-        for (int val : values)
-            min = Math.min(val, min);
-        return min;
+        return MathHelper.clamp_int(y, MIN_DIST_TO_VOID, world.getHeight() - MIN_DIST_TO_VOID);
     }
 
+    protected static int selectByFunction(World world, StructureBoundingBox boundingBox, SingleYSelector selector, IntListReducer reducer)
+    {
+        TIntList intList = selectAll(world, boundingBox, selector);
 
-    private int averageIgnoringErrors(int... values)
+        if (intList.size() == 0)
+            return DONT_GENERATE;
+
+        return reducer.reduce(intList);
+    }
+
+    protected static TIntList selectAll(World world, StructureBoundingBox boundingBox, SingleYSelector selector)
+    {
+        TIntList list = new TIntArrayList();
+        for (int x = boundingBox.minX; x <= boundingBox.maxX; x++)
+            for (int z = boundingBox.minZ; z <= boundingBox.maxZ; z++)
+            {
+                if (world.blockExists(x, 0, z))
+                    list.add(selector.select(x, z));
+            }
+        return list;
+    }
+
+    protected static int averageIgnoringErrors(int... values)
     {
         int average = 0;
         for (int val : values)
@@ -190,8 +234,18 @@ public class GenerationYSelector
         return newAverage / (values.length - ignored);
     }
 
-    private int dist(int val1, int val2)
+    protected static int dist(int val1, int val2)
     {
         return (val1 > val2) ? val1 - val2 : val2 - val1;
+    }
+
+    protected interface IntListReducer
+    {
+        int reduce(TIntList list);
+    }
+
+    protected interface SingleYSelector
+    {
+        int select(int x, int z);
     }
 }

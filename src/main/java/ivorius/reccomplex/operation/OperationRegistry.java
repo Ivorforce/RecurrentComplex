@@ -10,6 +10,7 @@ import com.google.common.collect.HashBiMap;
 import ivorius.reccomplex.RecurrentComplex;
 import ivorius.reccomplex.commands.CommandCancel;
 import ivorius.reccomplex.commands.CommandConfirm;
+import ivorius.reccomplex.commands.RCCommands;
 import ivorius.reccomplex.entities.StructureEntityInfo;
 import ivorius.reccomplex.utils.ServerTranslations;
 import net.minecraft.command.CommandBase;
@@ -86,14 +87,14 @@ public class OperationRegistry
                     info.queueOperation(operation, player);
                     instant = false;
 
-                    IChatComponent confirmComponent = new ChatComponentText("/" + CommandConfirm.getCommandNameStatic());
+                    IChatComponent confirmComponent = new ChatComponentText("/" + RCCommands.confirm.getCommandName());
                     confirmComponent.getChatStyle().setColor(EnumChatFormatting.GREEN);
-                    confirmComponent.getChatStyle().setChatClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/" + CommandConfirm.getCommandNameStatic()));
+                    confirmComponent.getChatStyle().setChatClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/" + RCCommands.confirm.getCommandName()));
                     confirmComponent.getChatStyle().setChatHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, ServerTranslations.get("commands.rcconfirm.run")));
 
-                    IChatComponent cancelComponent = new ChatComponentText("/" + CommandCancel.getCommandNameStatic());
+                    IChatComponent cancelComponent = new ChatComponentText("/" + RCCommands.cancel.getCommandName());
                     cancelComponent.getChatStyle().setColor(EnumChatFormatting.RED);
-                    cancelComponent.getChatStyle().setChatClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/" + CommandCancel.getCommandNameStatic()));
+                    cancelComponent.getChatStyle().setChatClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/" + RCCommands.cancel.getCommandName()));
                     cancelComponent.getChatStyle().setChatHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, ServerTranslations.get("commands.rccancel.run")));
 
                     IChatComponent component = ServerTranslations.format("commands.rc.queuedOp", confirmComponent, cancelComponent);

@@ -117,13 +117,17 @@ commands.strucExportSchematic.success=Exported schematic to '%s'
 
 commands.biomedict.usage=/#biomedict <get|list> id (get: Biome ID, list: Biome Type ID)
 commands.biomedict.get=Biome Types for %s: %s
+commands.biomedict.get.number=%s biomes
 commands.biomedict.list=Biomes of Type %s: %s
+commands.biomedict.list.number=%s biome types
 commands.biomedict.nobiome=No Biome with the ID '%s'
 commands.biomedict.notype=No Biome Type with the ID '%s'
 
 commands.dimensiondict.usage=/#dimensiondict <get|list> id (get: Dimension ID, list: Dimension Type ID)
 commands.dimensiondict.get=Dimension Types for %d: %s
+commands.dimensiondict.get.number=%s dimensions
 commands.dimensiondict.list=Dimensions of Type %s: %s
+commands.dimensiondict.list.number=%s types
 
 commands.rcvisual.usage=/#visual rulers <true|false>
 commands.rcvisual.enabled='%s' successfully enabled

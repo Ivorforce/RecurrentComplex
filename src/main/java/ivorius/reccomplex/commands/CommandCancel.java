@@ -21,11 +21,6 @@ public class CommandCancel extends CommandBase
     @Override
     public String getCommandName()
     {
-        return getCommandNameStatic();
-    }
-
-    public static String getCommandNameStatic()
-    {
         return RCConfig.commandPrefix + "cancel";
     }
 

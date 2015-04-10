@@ -9,7 +9,9 @@ import cpw.mods.fml.common.event.FMLServerStartingEvent;
 import ivorius.reccomplex.RecurrentComplex;
 import ivorius.reccomplex.entities.StructureEntityInfo;
 import ivorius.reccomplex.utils.ServerTranslations;
+import net.minecraft.command.CommandBase;
 import net.minecraft.command.CommandException;
+import net.minecraft.command.ICommand;
 import net.minecraft.entity.Entity;
 
 import javax.annotation.Nonnull;
@@ -19,6 +21,9 @@ import javax.annotation.Nonnull;
  */
 public class RCCommands
 {
+    public static ICommand confirm;
+    public static ICommand cancel;
+
     public static void onServerStart(FMLServerStartingEvent event)
     {
         if (!RecurrentComplex.isLite())
@@ -39,8 +44,8 @@ public class RCCommands
         if (!RecurrentComplex.isLite())
         {
             event.registerServerCommand(new CommandPreview());
-            event.registerServerCommand(new CommandConfirm());
-            event.registerServerCommand(new CommandCancel());
+            ;event.registerServerCommand(confirm = new CommandConfirm());
+            event.registerServerCommand(cancel = new CommandCancel());
         }
 
         if (!RecurrentComplex.isLite())

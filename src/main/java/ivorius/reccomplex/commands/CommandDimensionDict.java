@@ -5,8 +5,10 @@
 
 package ivorius.reccomplex.commands;
 
+import com.google.common.collect.Lists;
 import gnu.trove.list.TIntList;
 import gnu.trove.list.array.TIntArrayList;
+import ivorius.ivtoolkit.tools.IvGsonHelper;
 import ivorius.reccomplex.RCConfig;
 import ivorius.reccomplex.dimensions.DimensionDictionary;
 import ivorius.reccomplex.utils.ServerTranslations;
@@ -14,8 +16,14 @@ import joptsimple.internal.Strings;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.command.WrongUsageException;
+import net.minecraft.event.ClickEvent;
+import net.minecraft.event.HoverEvent;
+import net.minecraft.util.ChatComponentText;
 import net.minecraft.util.ChatComponentTranslation;
+import net.minecraft.util.IChatComponent;
+import net.minecraftforge.common.BiomeDictionary;
 import net.minecraftforge.common.DimensionManager;
+import org.apache.commons.lang3.StringUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -50,20 +58,42 @@ public class CommandDimensionDict extends CommandBase
             {
                 int dimensionID = parseInt(commandSender, args[1]);
 
-                Set<String> types = DimensionDictionary.getDimensionTypes(DimensionManager.getProvider(dimensionID));
-                List<String> typeList = new ArrayList<>();
-                typeList.addAll(types);
-                commandSender.addChatMessage(ServerTranslations.format("commands.dimensiondict.get", dimensionID, Strings.join(typeList, ", ")));
+                List<String> types = Lists.newArrayList(DimensionDictionary.getDimensionTypes(DimensionManager.getProvider(dimensionID)));
+                IChatComponent[] components = new IChatComponent[types.size()];
+
+                for (int i = 0; i < components.length; i++)
+                {
+                    String type = types.get(i);
+                    components[i] = new ChatComponentText(type);
+                    components[i].getChatStyle().setChatClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND,
+                            String.format("/%s list %s", getCommandName(), type)));
+                    components[i].getChatStyle().setChatHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT,
+                            ServerTranslations.format("commands.dimensiondict.get.number", allDimensionsOfType(type).size())));
+                }
+
+                commandSender.addChatMessage(ServerTranslations.format("commands.dimensiondict.get", dimensionID,
+                        new ChatComponentTranslation(StringUtils.repeat("%s", ", ", components.length), components)));
                 break;
             }
             case "list":
             {
-                TIntList typeDimensions = allDimensionsOfType(args[1]);
-                String[] types = new String[typeDimensions.size()];
-                for (int i = 0; i < typeDimensions.size(); i++)
-                    types[i] = String.valueOf(typeDimensions.get(i));
+                String type = args[1];
 
-                commandSender.addChatMessage(ServerTranslations.format("commands.dimensiondict.list", args[1], Strings.join(types, ", ")));
+                TIntList typeDimensions = allDimensionsOfType(type);
+                IChatComponent[] components = new IChatComponent[typeDimensions.size()];
+
+                for (int i = 0; i < components.length; i++)
+                {
+                    int dimensionID = typeDimensions.get(i);
+                    components[i] = new ChatComponentText(String.valueOf(dimensionID));
+                    components[i].getChatStyle().setChatClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND,
+                            String.format("/%s get %s", getCommandName(), dimensionID)));
+                    components[i].getChatStyle().setChatHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT,
+                            ServerTranslations.format("commands.dimensiondict.list.number", DimensionDictionary.getDimensionTypes(DimensionManager.getProvider(dimensionID)).size())));
+                }
+
+                commandSender.addChatMessage(ServerTranslations.format("commands.dimensiondict.list", type,
+                        new ChatComponentTranslation(StringUtils.repeat("%s", ", ", components.length), components)));
                 break;
             }
             default:

@@ -26,14 +26,14 @@ import net.minecraft.util.ChatComponentTranslation;
  */
 public class PacketEditStructureHandler implements IMessageHandler<PacketEditStructure, IMessage>
 {
-    public static void sendEditStructure(GenericStructureInfo genericStructureInfo, String key, EntityPlayerMP player)
+    public static void sendEditStructure(GenericStructureInfo genericStructureInfo, String key, boolean saveAsActive, EntityPlayerMP player)
     {
         StructureEntityInfo structureEntityInfo = StructureEntityInfo.getStructureEntityInfo(player);
 
         if (structureEntityInfo != null)
             structureEntityInfo.setCachedExportStructureBlockDataNBT(genericStructureInfo.worldDataCompound);
 
-        RecurrentComplex.network.sendTo(new PacketEditStructure(key, genericStructureInfo), player);
+        RecurrentComplex.network.sendTo(new PacketEditStructure(genericStructureInfo, key, saveAsActive), player);
     }
 
     @Override
@@ -54,13 +54,15 @@ public class PacketEditStructureHandler implements IMessageHandler<PacketEditStr
             if (structureEntityInfo != null)
                 genericStructureInfo.worldDataCompound = structureEntityInfo.getCachedExportStructureBlockDataNBT();
 
-            if (!StructureSaveHandler.saveGenericStructure(genericStructureInfo, message.getKey()))
+            String path = (message.isSaveAsActive() ? StructureSaveHandler.ACTIVE_DIR_NAME : StructureSaveHandler.INACTIVE_DIR_NAME) + "/";
+
+            if (!StructureSaveHandler.saveGenericStructure(genericStructureInfo, message.getKey(), message.isSaveAsActive()))
             {
-                player.addChatMessage(ServerTranslations.format("commands.strucExport.failure", message.getKey()));
+                player.addChatMessage(ServerTranslations.format("commands.strucExport.failure", path + message.getKey()));
             }
             else
             {
-                player.addChatMessage(ServerTranslations.format("commands.strucExport.success", message.getKey()));
+                player.addChatMessage(ServerTranslations.format("commands.strucExport.success", path + message.getKey()));
                 StructureSaveHandler.reloadAllCustomStructures();
             }
         }
@@ -71,6 +73,6 @@ public class PacketEditStructureHandler implements IMessageHandler<PacketEditStr
     @SideOnly(Side.CLIENT)
     private void onMessageClient(PacketEditStructure message, MessageContext ctx)
     {
-        Minecraft.getMinecraft().displayGuiScreen(new GuiEditGenericStructure(message.getKey(), message.getStructureInfo()));
+        Minecraft.getMinecraft().displayGuiScreen(new GuiEditGenericStructure(message.getKey(), message.getStructureInfo(), message.isSaveAsActive()));
     }
 }

@@ -21,9 +21,9 @@ public class GuiEditGenericStructure extends GuiScreenModalTable
 {
     TableDataSourceGenericStructure structureDataSource;
 
-    public GuiEditGenericStructure(String key, GenericStructureInfo structureInfo)
+    public GuiEditGenericStructure(String key, GenericStructureInfo structureInfo, boolean saveAsActive)
     {
-        GuiTable structureProperties = new GuiTable(this, structureDataSource = new TableDataSourceGenericStructure(structureInfo, key, this, this));
+        GuiTable structureProperties = new GuiTable(this, structureDataSource = new TableDataSourceGenericStructure(structureInfo, key, saveAsActive, this, this));
         setTable(structureProperties);
     }
 
@@ -63,7 +63,7 @@ public class GuiEditGenericStructure extends GuiScreenModalTable
 
         if (button.id == 0)
         {
-            RecurrentComplex.network.sendToServer(new PacketEditStructure(structureDataSource.getStructureKey(), structureDataSource.getStructureInfo()));
+            RecurrentComplex.network.sendToServer(new PacketEditStructure(structureDataSource.getStructureInfo(), structureDataSource.getStructureKey(), structureDataSource.isSaveAsActive()));
             this.mc.thePlayer.closeScreen();
         }
         else if (button.id == 1)

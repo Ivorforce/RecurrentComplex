@@ -41,8 +41,11 @@ public class CommandEditStructure extends CommandBase
 
         if (args.length >= 1)
         {
-            GenericStructureInfo structureInfo = CommandExportStructure.getGenericStructureInfo(args[0]);
-            PacketEditStructureHandler.sendEditStructure(structureInfo, args[0], entityPlayerMP);
+            String structureID = args[0];
+
+            GenericStructureInfo structureInfo = CommandExportStructure.getGenericStructureInfo(structureID);
+            boolean saveAsActive = StructureRegistry.isStructureGenerating(structureID);
+            PacketEditStructureHandler.sendEditStructure(structureInfo, structureID, saveAsActive, entityPlayerMP);
         }
         else
         {

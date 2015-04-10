@@ -16,17 +16,19 @@ import ivorius.reccomplex.structures.generic.GenericStructureInfo;
  */
 public class PacketEditStructure implements IMessage
 {
-    private String key;
     private GenericStructureInfo structureInfo;
+    private String key;
+    private boolean saveAsActive;
 
     public PacketEditStructure()
     {
     }
 
-    public PacketEditStructure(String key, GenericStructureInfo structureInfo)
+    public PacketEditStructure(GenericStructureInfo structureInfo, String key, boolean saveAsActive)
     {
-        this.key = key;
         this.structureInfo = structureInfo;
+        this.key = key;
+        this.saveAsActive = saveAsActive;
     }
 
     public String getKey()
@@ -37,6 +39,16 @@ public class PacketEditStructure implements IMessage
     public void setKey(String key)
     {
         this.key = key;
+    }
+
+    public boolean isSaveAsActive()
+    {
+        return saveAsActive;
+    }
+
+    public void setSaveAsActive(boolean saveAsActive)
+    {
+        this.saveAsActive = saveAsActive;
     }
 
     public GenericStructureInfo getStructureInfo()
@@ -55,6 +67,7 @@ public class PacketEditStructure implements IMessage
         key = ByteBufUtils.readUTF8String(buf);
         String json = ByteBufUtils.readUTF8String(buf);
         structureInfo = StructureRegistry.createStructureFromJSON(json);
+        saveAsActive = buf.readBoolean();
     }
 
     @Override
@@ -62,5 +75,6 @@ public class PacketEditStructure implements IMessage
     {
         ByteBufUtils.writeUTF8String(buf, key);
         ByteBufUtils.writeUTF8String(buf, StructureRegistry.createJSONFromStructure(structureInfo));
+        buf.writeBoolean(saveAsActive);
     }
 }

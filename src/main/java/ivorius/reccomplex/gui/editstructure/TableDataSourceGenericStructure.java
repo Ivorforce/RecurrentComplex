@@ -19,14 +19,16 @@ public class TableDataSourceGenericStructure extends TableDataSourceSegmented im
 {
     private GenericStructureInfo structureInfo;
     private String structureKey;
+    private boolean saveAsActive;
 
     private TableDelegate tableDelegate;
     private TableNavigator navigator;
 
-    public TableDataSourceGenericStructure(GenericStructureInfo structureInfo, String structureKey, TableDelegate tableDelegate, TableNavigator navigator)
+    public TableDataSourceGenericStructure(GenericStructureInfo structureInfo, String structureKey, boolean saveAsActive, TableDelegate tableDelegate, TableNavigator navigator)
     {
         this.structureInfo = structureInfo;
         this.structureKey = structureKey;
+        this.saveAsActive = saveAsActive;
         this.tableDelegate = tableDelegate;
         this.navigator = navigator;
 
@@ -51,6 +53,16 @@ public class TableDataSourceGenericStructure extends TableDataSourceSegmented im
     public void setStructureKey(String structureKey)
     {
         this.structureKey = structureKey;
+    }
+
+    public boolean isSaveAsActive()
+    {
+        return saveAsActive;
+    }
+
+    public void setSaveAsActive(boolean saveAsActive)
+    {
+        this.saveAsActive = saveAsActive;
     }
 
     public TableDelegate getTableDelegate()
@@ -85,7 +97,7 @@ public class TableDataSourceGenericStructure extends TableDataSourceSegmented im
         switch (segment)
         {
             case 0:
-                return 2;
+                return 3;
             case 1:
                 return 2;
             case 3:
@@ -113,6 +125,12 @@ public class TableDataSourceGenericStructure extends TableDataSourceSegmented im
                     return element;
                 }
                 else if (index == 1)
+                {
+                    TableElementBoolean element = new TableElementBoolean("activeFolder", "", saveAsActive, "Save in '/active'", "Save in '/inactive'");
+                    element.addPropertyListener(this);
+                    return element;
+                }
+                else if (index == 2)
                 {
                     TableElementButton element = new TableElementButton("metadata", "", new TableElementButton.Action("metadata", "Metadata"));
                     element.addListener(this);
@@ -175,27 +193,28 @@ public class TableDataSourceGenericStructure extends TableDataSourceSegmented im
     @Override
     public void valueChanged(TableElementPropertyDefault element)
     {
-        if ("name".equals(element.getID()))
+        switch (element.getID())
         {
-            structureKey = (String) element.getPropertyValue();
-            ((TableElementString) element).setValidityState(currentNameState());
-        }
-        else if ("rotatable".equals(element.getID()))
-        {
-            structureInfo.rotatable = (boolean) element.getPropertyValue();
-        }
-        else if ("mirrorable".equals(element.getID()))
-        {
-            structureInfo.mirrorable = (boolean) element.getPropertyValue();
+            case "name":
+                structureKey = (String) element.getPropertyValue();
+                ((TableElementString) element).setValidityState(currentNameState());
+                break;
+            case "activeFolder":
+                saveAsActive = (boolean) element.getPropertyValue();
+                break;
+            case "rotatable":
+                structureInfo.rotatable = (boolean) element.getPropertyValue();
+                break;
+            case "mirrorable":
+                structureInfo.mirrorable = (boolean) element.getPropertyValue();
+                break;
         }
     }
 
     private GuiValidityStateIndicator.State currentNameState()
     {
         if (StructureRegistry.allStructureIDs().contains(structureKey))
-        {
             return GuiValidityStateIndicator.State.SEMI_VALID;
-        }
 
         return structureKey.trim().length() > 0 && !structureKey.contains(" ")
                 ? GuiValidityStateIndicator.State.VALID

@@ -33,6 +33,8 @@ import java.util.zip.ZipOutputStream;
  */
 public class StructureSaveHandler
 {
+    public static final String ACTIVE_DIR_NAME = "active";
+    public static final String INACTIVE_DIR_NAME = "inactive";
     private static List<String> importedGenerators = new ArrayList<>();
 
     public static void reloadAllCustomStructures()
@@ -45,8 +47,8 @@ public class StructureSaveHandler
         File structuresFile = IvFileHelper.getValidatedFolder(RecurrentComplex.proxy.getBaseFolderFile("structures"));
         if (structuresFile != null)
         {
-            tryAddAllStructuresInDirectory(RCFileHelper.getValidatedFolder(structuresFile, "active", true), true, true);
-            tryAddAllStructuresInDirectory(RCFileHelper.getValidatedFolder(structuresFile, "inactive", true), false, true);
+            tryAddAllStructuresInDirectory(RCFileHelper.getValidatedFolder(structuresFile, ACTIVE_DIR_NAME, true), true, true);
+            tryAddAllStructuresInDirectory(RCFileHelper.getValidatedFolder(structuresFile, INACTIVE_DIR_NAME, true), false, true);
 
             // Legacy
             tryAddAllStructuresInDirectory(RCFileHelper.getValidatedFolder(structuresFile, "genericStructures", false), true, true);
@@ -60,8 +62,8 @@ public class StructureSaveHandler
     {
         modid = modid.toLowerCase();
 
-        tryAddAllStructuresInResourceLocation(new ResourceLocation(modid, "structures/active"), !disableGeneration, false);
-        tryAddAllStructuresInResourceLocation(new ResourceLocation(modid, "structures/inactive"), false, false);
+        tryAddAllStructuresInResourceLocation(new ResourceLocation(modid, "structures/" + ACTIVE_DIR_NAME), !disableGeneration, false);
+        tryAddAllStructuresInResourceLocation(new ResourceLocation(modid, "structures/" + INACTIVE_DIR_NAME), false, false);
 
         // Legacy
         tryAddAllStructuresInResourceLocation(new ResourceLocation(modid, "structures/genericStructures"), !disableGeneration, false);
@@ -120,10 +122,10 @@ public class StructureSaveHandler
         }
     }
 
-    public static boolean saveGenericStructure(GenericStructureInfo info, String structureName)
+    public static boolean saveGenericStructure(GenericStructureInfo info, String structureName, boolean activeFolder)
     {
         File structuresFolder = RecurrentComplex.proxy.getBaseFolderFile("structures");
-        File parent = RCFileHelper.getValidatedFolder(structuresFolder, "inactive", true);
+        File parent = RCFileHelper.getValidatedFolder(structuresFolder, activeFolder ? ACTIVE_DIR_NAME : INACTIVE_DIR_NAME, true);
         if (parent != null)
         {
             String json = StructureRegistry.createJSONFromStructure(info);

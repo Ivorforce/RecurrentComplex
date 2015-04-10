@@ -5,8 +5,8 @@
 
 package ivorius.reccomplex.gui.table;
 
+import ivorius.reccomplex.utils.IvTranslations;
 import net.minecraft.client.gui.GuiButton;
-import net.minecraft.client.resources.I18n;
 
 /**
  * Created by lukas on 02.06.14.
@@ -15,9 +15,39 @@ public class TableElementBoolean extends TableElementPropertyDefault<Boolean>
 {
     private GuiButton button;
 
+    protected String trueTitle;
+    protected String falseTitle;
+
     public TableElementBoolean(String id, String title, boolean value)
     {
+        this(id, title, value, IvTranslations.get("structures.gui.true"), IvTranslations.get("structures.gui.false"));
+    }
+
+    public TableElementBoolean(String id, String title, Boolean value, String trueTitle, String falseTitle)
+    {
         super(id, title, value);
+        this.trueTitle = trueTitle;
+        this.falseTitle = falseTitle;
+    }
+
+    public String getTrueTitle()
+    {
+        return trueTitle;
+    }
+
+    public void setTrueTitle(String trueTitle)
+    {
+        this.trueTitle = trueTitle;
+    }
+
+    public String getFalseTitle()
+    {
+        return falseTitle;
+    }
+
+    public void setFalseTitle(String falseTitle)
+    {
+        this.falseTitle = falseTitle;
     }
 
     @Override
@@ -26,9 +56,8 @@ public class TableElementBoolean extends TableElementPropertyDefault<Boolean>
         super.initGui(screen);
 
         Bounds bounds = bounds();
-        button = new GuiButton(-1, bounds.getMinX(), bounds.getMinY() + (bounds.getHeight() - 20) / 2, bounds.getWidth(), 20, "" + getPropertyValue());
+        button = new GuiButton(-1, bounds.getMinX(), bounds.getMinY() + (bounds.getHeight() - 20) / 2, bounds.getWidth(), 20, getCurrentButtonTitle());
 
-        updateButtonDisplayString();
         button.visible = !isHidden();
 
         screen.addButton(this, 0, button);
@@ -50,7 +79,7 @@ public class TableElementBoolean extends TableElementPropertyDefault<Boolean>
     {
         super.setPropertyValue(value);
 
-        updateButtonDisplayString();
+        if (button != null) button.displayString = getCurrentButtonTitle();
     }
 
     @Override
@@ -59,16 +88,13 @@ public class TableElementBoolean extends TableElementPropertyDefault<Boolean>
         super.buttonClicked(buttonID);
 
         this.property = !property;
-        updateButtonDisplayString();
+        if (button != null) button.displayString = getCurrentButtonTitle();
 
         alertListenersOfChange();
     }
 
-    private void updateButtonDisplayString()
+    public String getCurrentButtonTitle()
     {
-        if (button != null)
-        {
-            button.displayString = I18n.format(property ? "structures.gui.true" : "structures.gui.false");
-        }
+        return property ? trueTitle : falseTitle;
     }
 }

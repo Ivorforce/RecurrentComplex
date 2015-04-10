@@ -11,9 +11,12 @@ import ivorius.reccomplex.structures.generic.GenericStructureInfo;
 import ivorius.reccomplex.structures.generic.Metadata;
 import ivorius.reccomplex.utils.ServerTranslations;
 import net.minecraft.command.CommandBase;
-import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
-import net.minecraft.util.ChatComponentTranslation;
+import net.minecraft.event.ClickEvent;
+import net.minecraft.event.HoverEvent;
+import net.minecraft.util.ChatComponentText;
+import net.minecraft.util.IChatComponent;
+import org.apache.commons.lang3.StringUtils;
 
 import java.util.List;
 import java.util.Set;
@@ -44,12 +47,22 @@ public class CommandLookupStructure extends CommandBase
             GenericStructureInfo structureInfo = CommandExportStructure.getGenericStructureInfo(strucKey);
             Metadata metadata = structureInfo.metadata;
 
+            boolean hasAuthor = !metadata.authors.trim().isEmpty();
+            IChatComponent author = hasAuthor ? new ChatComponentText(StringUtils.abbreviate(metadata.authors, 30)) : ServerTranslations.format("commands.rclookup.reply.noauthor");
+            if (hasAuthor)
+                author.getChatStyle().setChatHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ChatComponentText(metadata.authors)));
+
+            boolean hasWeblink = !metadata.weblink.trim().isEmpty();
+            IChatComponent weblink = hasWeblink ? new ChatComponentText(StringUtils.abbreviate(metadata.weblink, 30)) : ServerTranslations.format("commands.rclookup.reply.nolink");
+            if (hasWeblink)
+            {
+                weblink.getChatStyle().setChatClickEvent(new ClickEvent(ClickEvent.Action.OPEN_URL, metadata.weblink));
+                weblink.getChatStyle().setChatHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ChatComponentText(metadata.weblink)));
+            }
+
             commandSender.addChatMessage(ServerTranslations.format(
                     StructureRegistry.isStructureGenerating(strucKey) ? "commands.rclookup.reply.generates" : "commands.rclookup.reply.silent",
-                    strucKey,
-                    metadata.authors.trim().isEmpty() ? ServerTranslations.format("commands.rclookup.reply.noauthor") : metadata.authors,
-                    metadata.weblink.trim().isEmpty() ? ServerTranslations.format("commands.rclookup.reply.nolink") : metadata.weblink
-            ));
+                    strucKey, author, weblink));
 
             if (!metadata.comment.trim().isEmpty())
                 commandSender.addChatMessage(ServerTranslations.format("commands.rclookup.reply.comment", metadata.comment));

@@ -24,6 +24,11 @@ public class CommandConfirm extends CommandBase
     @Override
     public String getCommandName()
     {
+        return getCommandNameStatic();
+    }
+
+    public static String getCommandNameStatic()
+    {
         return RCConfig.commandPrefix + "confirm";
     }
 

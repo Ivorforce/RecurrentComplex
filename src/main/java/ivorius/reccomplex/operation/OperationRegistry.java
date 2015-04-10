@@ -8,13 +8,18 @@ package ivorius.reccomplex.operation;
 import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
 import ivorius.reccomplex.RecurrentComplex;
+import ivorius.reccomplex.commands.CommandCancel;
+import ivorius.reccomplex.commands.CommandConfirm;
 import ivorius.reccomplex.entities.StructureEntityInfo;
 import ivorius.reccomplex.utils.ServerTranslations;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.event.ClickEvent;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.ChatComponentTranslation;
+import net.minecraft.util.ChatComponentText;
+import net.minecraft.util.EnumChatFormatting;
+import net.minecraft.util.IChatComponent;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -51,7 +56,7 @@ public class OperationRegistry
         }
         catch (InstantiationException | IllegalAccessException e)
         {
-            RecurrentComplex.logger.error(String.format("Could not read Operation with ID '%s'", opID), e );
+            RecurrentComplex.logger.error(String.format("Could not read Operation with ID '%s'", opID), e);
         }
 
         return null;
@@ -79,7 +84,17 @@ public class OperationRegistry
                 {
                     info.queueOperation(operation, player);
                     instant = false;
-                    commandSender.addChatMessage(ServerTranslations.format("commands.rc.queuedOp"));
+
+                    IChatComponent confirmComponent = new ChatComponentText("/" + CommandConfirm.getCommandNameStatic());
+                    confirmComponent.getChatStyle().setColor(EnumChatFormatting.GREEN);
+                    confirmComponent.getChatStyle().setChatClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/" + CommandConfirm.getCommandNameStatic()));
+
+                    IChatComponent cancelComponent = new ChatComponentText("/" + CommandCancel.getCommandNameStatic());
+                    cancelComponent.getChatStyle().setColor(EnumChatFormatting.RED);
+                    cancelComponent.getChatStyle().setChatClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/" + CommandCancel.getCommandNameStatic()));
+
+                    IChatComponent component = ServerTranslations.format("commands.rc.queuedOp", confirmComponent, cancelComponent);
+                    commandSender.addChatMessage(component);
                 }
             }
         }

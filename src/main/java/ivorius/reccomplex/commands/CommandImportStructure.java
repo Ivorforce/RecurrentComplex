@@ -76,13 +76,9 @@ public class CommandImportStructure extends CommandBase
         BlockCoord coord = new BlockCoord(x, y, z);
 
         if (structureInfo instanceof GenericStructureInfo)
-        {
             OperationRegistry.queueOperation(new OperationGenerateStructure((GenericStructureInfo) structureInfo, transform, coord, true), commandSender);
-        }
         else
-        {
             StructureGenerator.directly(structureInfo, new StructureSpawnContext(world, world.rand, coord, transform, 0, true, structureInfo));
-        }
     }
 
     @Override

@@ -69,9 +69,9 @@ public class OperationGenerateStructure implements Operation
     public void perform(World world)
     {
         if (generateAsSource)
-            StructureGenerator.directly(structure, new StructureSpawnContext(world, world.rand, lowerCoord, transform, 0, true, structure));
+            StructureGenerator.directly(structure, new StructureSpawnContext(world, world.rand, lowerCoord, transform, 0, generateAsSource, structure));
         else
-            StructureGenerator.instantly(structure, world, world.rand, lowerCoord, transform, 0, false, structureIDForSaving);
+            StructureGenerator.instantly(structure, world, world.rand, lowerCoord, transform, 0, false, structureIDForSaving, generateAsSource);
     }
 
     @Override

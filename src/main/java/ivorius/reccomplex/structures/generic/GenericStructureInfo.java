@@ -164,7 +164,7 @@ public class GenericStructureInfo implements StructureInfo<GenericStructureInfo.
                     TileEntity tileEntity = tileEntities.get(sourceCoord);
 
                     if (pass == getPass(block, meta) && (context.generateAsSource || !skips(transformers, block, meta))
-                            && !(tileEntity instanceof GeneratingTileEntity && !((GeneratingTileEntity) tileEntity).shouldPlaceInWorld(context, instanceData.tileEntities.get(sourceCoord))))
+                            && !(!context.generateAsSource && tileEntity instanceof GeneratingTileEntity && !((GeneratingTileEntity) tileEntity).shouldPlaceInWorld(context, instanceData.tileEntities.get(sourceCoord))))
                     {
                         if (context.setBlock(worldPos, block, meta))
                         {
@@ -217,7 +217,7 @@ public class GenericStructureInfo implements StructureInfo<GenericStructureInfo.
             }
         }
 
-        if (context.generationLayer < MAX_GENERATING_LAYERS)
+        if (!context.generateAsSource && context.generationLayer < MAX_GENERATING_LAYERS)
         {
             for (Map.Entry<BlockCoord, TileEntity> entry : tileEntities.entrySet())
                 if (entry.getValue() instanceof GeneratingTileEntity)

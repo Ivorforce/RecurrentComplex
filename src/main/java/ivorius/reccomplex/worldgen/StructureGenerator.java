@@ -58,17 +58,17 @@ public class StructureGenerator
         int genY = ySelector != null ? ySelector.selectY(world, random, StructureInfos.structureBoundingBox(new BlockCoord(genX, 0, genZ), size)) : world.getHeightValue(x, z);
         BlockCoord coord = new BlockCoord(genX, genY, genZ);
 
-        instantly(info, world, random, coord, transform, 0, suggest, structureName);
+        instantly(info, world, random, coord, transform, 0, suggest, structureName, false);
 
         return genY;
     }
 
-    public static <I extends NBTStorable> boolean instantly(StructureInfo<I> structureInfo, World world, Random random, BlockCoord coord, AxisAlignedTransform2D transform, int layer, boolean suggest, String structureID)
+    public static <I extends NBTStorable> boolean instantly(StructureInfo<I> structureInfo, World world, Random random, BlockCoord coord, AxisAlignedTransform2D transform, int layer, boolean suggest, String structureID, boolean asSource)
     {
         int[] size = StructureInfos.structureSize(structureInfo, transform);
         int[] coordInts = new int[]{coord.x, coord.y, coord.z};
 
-        StructureSpawnContext structureSpawnContext = new StructureSpawnContext(world, random, StructureInfos.structureBoundingBox(coord, size), layer, false, transform);
+        StructureSpawnContext structureSpawnContext = new StructureSpawnContext(world, random, StructureInfos.structureBoundingBox(coord, size), layer, asSource, transform);
 
         if (!suggest || (
                 coord.y >= MIN_DIST_TO_LIMIT && coord.y + size[1] <= world.getHeight() - 1 - MIN_DIST_TO_LIMIT

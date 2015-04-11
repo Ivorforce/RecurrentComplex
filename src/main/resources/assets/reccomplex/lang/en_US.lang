@@ -66,6 +66,7 @@ commands.selectSet.usage=/#select <both|clear|point1|point2> [x] [y] [z]
 commands.selectSet.get=Selection: %s to %s
 commands.selectSet.point.none=§onowhere§r
 
+commands.selectShift.usage=/#shift <x> <y> <z>
 commands.selectCrop.usage=/#crop
 commands.selectShrink.usage=/#shrink <x> <y> <z>
 commands.selectExpand.usage=/#expand <x> <y> <z>

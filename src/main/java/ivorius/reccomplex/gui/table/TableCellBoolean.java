@@ -18,6 +18,8 @@ public class TableCellBoolean extends TableCellPropertyDefault<Boolean>
     protected String trueTitle;
     protected String falseTitle;
 
+    protected boolean enabled = true;
+
     public TableCellBoolean(String id, boolean value)
     {
         this(id, value, IvTranslations.get("structures.gui.true"), IvTranslations.get("structures.gui.false"));
@@ -50,6 +52,17 @@ public class TableCellBoolean extends TableCellPropertyDefault<Boolean>
         this.falseTitle = falseTitle;
     }
 
+    public boolean isEnabled()
+    {
+        return enabled;
+    }
+
+    public void setEnabled(boolean enabled)
+    {
+        this.enabled = enabled;
+        if (button != null) button.enabled = enabled;
+    }
+
     @Override
     public void initGui(GuiTable screen)
     {
@@ -57,6 +70,7 @@ public class TableCellBoolean extends TableCellPropertyDefault<Boolean>
 
         Bounds bounds = bounds();
         button = new GuiButton(-1, bounds.getMinX(), bounds.getMinY() + (bounds.getHeight() - 20) / 2, bounds.getWidth(), 20, getCurrentButtonTitle());
+        button.enabled = enabled;
 
         button.visible = !isHidden();
 
@@ -68,10 +82,7 @@ public class TableCellBoolean extends TableCellPropertyDefault<Boolean>
     {
         super.setHidden(hidden);
 
-        if (button != null)
-        {
-            button.visible = !hidden;
-        }
+        if (button != null) button.visible = !hidden;
     }
 
     @Override

@@ -137,10 +137,13 @@ public class GuiTable extends Gui
             if (!element.isHidden())
             {
                 String title = element.getTitle();
-                Bounds bounds = element.bounds();
+                if (title != null)
+                {
+                    Bounds bounds = element.bounds();
 
-                int stringWidth = screen.mc.fontRenderer.getStringWidth(title);
-                screen.drawString(screen.mc.fontRenderer, title, bounds.getMinX() - stringWidth - 10, bounds.getCenterY() - 4, 0xffffffff);
+                    int stringWidth = screen.mc.fontRenderer.getStringWidth(title);
+                    screen.drawString(screen.mc.fontRenderer, title, bounds.getMinX() - stringWidth - 10, bounds.getCenterY() - 4, 0xffffffff);
+                }
             }
         }
 

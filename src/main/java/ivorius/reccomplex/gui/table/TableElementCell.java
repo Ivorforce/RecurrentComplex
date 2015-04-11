@@ -21,21 +21,21 @@ public class TableElementCell implements TableElement
     protected String title;
 
     @Nonnull
-    protected TableCellDefault cell;
+    protected TableCell cell;
 
-    public TableElementCell(String id, String title, @Nonnull TableCellDefault cell)
+    public TableElementCell(String id, String title, @Nonnull TableCell cell)
     {
         this.id = id;
         this.title = title;
         this.cell = cell;
     }
 
-    public TableElementCell(String title, @Nonnull TableCellDefault cell)
+    public TableElementCell(String title, @Nonnull TableCell cell)
     {
         this(null, title, cell);
     }
 
-    public TableElementCell(@Nonnull TableCellDefault cell)
+    public TableElementCell(@Nonnull TableCell cell)
     {
         this(null, "", cell);
     }
@@ -64,12 +64,12 @@ public class TableElementCell implements TableElement
     }
 
     @Nonnull
-    public TableCellDefault getCell()
+    public TableCell getCell()
     {
         return cell;
     }
 
-    public void setCell(@Nonnull TableCellDefault cell)
+    public void setCell(@Nonnull TableCell cell)
     {
         this.cell = cell;
     }
@@ -102,11 +102,6 @@ public class TableElementCell implements TableElement
     public boolean isHidden()
     {
         return cell.isHidden();
-    }
-
-    public FontRenderer getFontRenderer()
-    {
-        return cell.getFontRenderer();
     }
 
     @Override

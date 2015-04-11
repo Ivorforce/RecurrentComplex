@@ -135,11 +135,11 @@ public class TableDataSourceGenericStructure extends TableDataSourceSegmented im
         switch (segment)
         {
             case 0:
-                return 2 + ((isSaveAsActive() ? isStructureInInactive() : isStructureInActive()) ? 1 : 0);
+                return 2;
             case 1:
                 return 1;
             case 2:
-                return 2;
+                return 1;
             case 4:
                 return 1;
             case 5:
@@ -166,20 +166,23 @@ public class TableDataSourceGenericStructure extends TableDataSourceSegmented im
                 }
                 else if (index == 1)
                 {
-                    TableCellBoolean cell = new TableCellBoolean("activeFolder", saveAsActive,
+                    TableCellBoolean cellFolder = new TableCellBoolean("activeFolder", saveAsActive,
                             String.format("Save in %s/%s%s", EnumChatFormatting.AQUA, StructureSaveHandler.getStructuresDirectoryName(true), EnumChatFormatting.RESET),
                             String.format("Save in %s/%s%s", EnumChatFormatting.AQUA, StructureSaveHandler.getStructuresDirectoryName(false), EnumChatFormatting.RESET));
-                    cell.addPropertyListener(this);
-                    return new TableElementCell(cell);
-                }
-                else if (index == 2)
-                {
-                    String path = StructureSaveHandler.getStructuresDirectoryName(!saveAsActive);
-                    TableCellBoolean cell = new TableCellBoolean("deleteOther", deleteOther,
-                            String.format("%sDelete%s from %s/%s%s", EnumChatFormatting.RED, EnumChatFormatting.RESET, EnumChatFormatting.AQUA, path, EnumChatFormatting.RESET),
-                            String.format("%sKeep%s inside %s/%s%s", EnumChatFormatting.YELLOW, EnumChatFormatting.RESET, EnumChatFormatting.AQUA, path, EnumChatFormatting.RESET));
-                    cell.addPropertyListener(this);
-                    return new TableElementCell(cell);
+                    cellFolder.addPropertyListener(this);
+
+                    if (saveAsActive ? structureInInactive : structureInActive)
+                    {
+                        String path = StructureSaveHandler.getStructuresDirectoryName(!saveAsActive);
+                        TableCellBoolean cellDelete = new TableCellBoolean("deleteOther", deleteOther,
+                                String.format("%sDelete%s from %s/%s%s", EnumChatFormatting.RED, EnumChatFormatting.RESET, EnumChatFormatting.AQUA, path, EnumChatFormatting.RESET),
+                                String.format("%sKeep%s inside %s/%s%s", EnumChatFormatting.YELLOW, EnumChatFormatting.RESET, EnumChatFormatting.AQUA, path, EnumChatFormatting.RESET));
+                        cellDelete.addPropertyListener(this);
+
+                        return new TableElementCell(new TableCellMulti(cellFolder, cellDelete));
+                    }
+
+                    return new TableElementCell(new TableCellMulti(cellFolder, new TableCellEmpty("")));
                 }
                 break;
             case 1:
@@ -189,21 +192,21 @@ public class TableDataSourceGenericStructure extends TableDataSourceSegmented im
                 return new TableElementCell(cell);
             }
             case 2:
-                if (index == 0)
-                {
-                    TableCellBoolean cell = new TableCellBoolean("rotatable", structureInfo.rotatable);
-                    cell.setTooltip(IvTranslations.formatLines("reccomplex.structure.rotatable.tooltip"));
-                    cell.addPropertyListener(this);
-                    return new TableElementCell(IvTranslations.get("reccomplex.structure.rotatable"), cell);
-                }
-                else if (index == 1)
-                {
-                    TableCellBoolean cell = new TableCellBoolean("mirrorable", structureInfo.mirrorable);
-                    cell.setTooltip(IvTranslations.formatLines("reccomplex.structure.mirrorable.tooltip"));
-                    cell.addPropertyListener(this);
-                    return new TableElementCell(IvTranslations.format("reccomplex.structure.mirrorable"), cell);
-                }
-                break;
+            {
+                TableCellBoolean cellRotatable = new TableCellBoolean("rotatable", structureInfo.rotatable,
+                        IvTranslations.get("reccomplex.structure.rotatable.true"),
+                        IvTranslations.get("reccomplex.structure.rotatable.false"));
+                cellRotatable.setTooltip(IvTranslations.formatLines("reccomplex.structure.rotatable.tooltip"));
+                cellRotatable.addPropertyListener(this);
+
+                TableCellBoolean cellMirrorable = new TableCellBoolean("mirrorable", structureInfo.mirrorable,
+                        IvTranslations.format("reccomplex.structure.mirrorable.true"),
+                        IvTranslations.format("reccomplex.structure.mirrorable.false"));
+                cellMirrorable.setTooltip(IvTranslations.formatLines("reccomplex.structure.mirrorable.tooltip"));
+                cellMirrorable.addPropertyListener(this);
+
+                return new TableElementCell(new TableCellMulti(cellRotatable, cellMirrorable));
+            }
             case 4:
             {
                 TableCellButton cell = new TableCellButton("editGenerationInfos", new TableCellButton.Action("edit", "Edit"));

@@ -8,14 +8,12 @@ package ivorius.reccomplex.gui.editstructure.transformers;
 import ivorius.reccomplex.gui.TableDataSourceExpression;
 import ivorius.reccomplex.gui.table.*;
 import ivorius.reccomplex.structures.generic.transformers.TransformerPillar;
-import ivorius.reccomplex.utils.IvTranslations;
 import net.minecraft.block.Block;
-import org.apache.commons.lang3.StringUtils;
 
 /**
  * Created by lukas on 05.06.14.
  */
-public class TableDataSourceBTPillar extends TableDataSourceSegmented implements TableElementPropertyListener
+public class TableDataSourceBTPillar extends TableDataSourceSegmented implements TableCellPropertyListener
 {
     private TransformerPillar transformer;
 
@@ -55,15 +53,15 @@ public class TableDataSourceBTPillar extends TableDataSourceSegmented implements
         {
             if (index == 0)
             {
-                TableElementString element = TableDataSourceBTNatural.elementForBlock("destID", "Dest Block", transformer.destBlock);
-                element.addPropertyListener(this);
-                return element;
+                TableCellString cell = TableDataSourceBTNatural.elementForBlock("destID", transformer.destBlock);
+                cell.addPropertyListener(this);
+                return new TableElementCell("Dest Block", cell);
             }
             else if (index == 1)
             {
-                TableElementInteger element = new TableElementInteger("destMeta", "Dest Metadata", transformer.destMetadata, 0, 16);
-                element.addPropertyListener(this);
-                return element;
+                TableCellInteger cell = new TableCellInteger("destMeta", transformer.destMetadata, 0, 16);
+                cell.addPropertyListener(this);
+                return new TableElementCell("Dest Metadata", cell);
             }
         }
 
@@ -71,16 +69,16 @@ public class TableDataSourceBTPillar extends TableDataSourceSegmented implements
     }
 
     @Override
-    public void valueChanged(TableElementPropertyDefault element)
+    public void valueChanged(TableCellPropertyDefault cell)
     {
-        if ("destID".equals(element.getID()))
+        if ("destID".equals(cell.getID()))
         {
-            transformer.destBlock = (Block) Block.blockRegistry.getObject(element.getPropertyValue());
-            TableDataSourceBTNatural.setStateForBlockTextfield(((TableElementString) element));
+            transformer.destBlock = (Block) Block.blockRegistry.getObject(cell.getPropertyValue());
+            TableDataSourceBTNatural.setStateForBlockTextfield(((TableCellString) cell));
         }
-        else if ("destMeta".equals(element.getID()))
+        else if ("destMeta".equals(cell.getID()))
         {
-            transformer.destMetadata = (int) element.getPropertyValue();
+            transformer.destMetadata = (int) cell.getPropertyValue();
         }
     }
 }

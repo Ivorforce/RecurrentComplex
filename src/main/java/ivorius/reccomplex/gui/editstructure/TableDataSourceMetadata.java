@@ -11,7 +11,7 @@ import ivorius.reccomplex.structures.generic.Metadata;
 /**
  * Created by lukas on 22.02.15.
  */
-public class TableDataSourceMetadata extends TableDataSourceSegmented implements TableElementPropertyListener
+public class TableDataSourceMetadata extends TableDataSourceSegmented implements TableCellPropertyListener
 {
     protected Metadata metadata;
 
@@ -49,21 +49,21 @@ public class TableDataSourceMetadata extends TableDataSourceSegmented implements
         {
             case 0:
             {
-                TableElementString element = new TableElementString("authors", "Authors", metadata.authors);
-                element.addPropertyListener(this);
-                return element;
+                TableCellString cell = new TableCellString("authors", metadata.authors);
+                cell.addPropertyListener(this);
+                return new TableElementCell("Authors", cell);
             }
             case 1:
             {
-                TableElementString element = new TableElementString("weblink", "Weblink", metadata.weblink);
-                element.addPropertyListener(this);
-                return element;
+                TableCellString cell = new TableCellString("weblink", metadata.weblink);
+                cell.addPropertyListener(this);
+                return new TableElementCell("Weblink", cell);
             }
             case 2:
             {
-                TableElementString element = new TableElementString("comment", "Comment", metadata.comment);
-                element.addPropertyListener(this);
-                return element;
+                TableCellString cell = new TableCellString("comment", metadata.comment);
+                cell.addPropertyListener(this);
+                return new TableElementCell("Comment", cell);
             }
         }
 
@@ -71,19 +71,22 @@ public class TableDataSourceMetadata extends TableDataSourceSegmented implements
     }
 
     @Override
-    public void valueChanged(TableElementPropertyDefault element)
+    public void valueChanged(TableCellPropertyDefault cell)
     {
-        switch (element.getID())
+        if (cell.getID() != null)
         {
-            case "authors":
-                metadata.authors = (String) element.getPropertyValue();
-                break;
-            case "weblink":
-                metadata.weblink = (String) element.getPropertyValue();
-                break;
-            case "comment":
-                metadata.comment = (String) element.getPropertyValue();
-                break;
+            switch (cell.getID())
+            {
+                case "authors":
+                    metadata.authors = (String) cell.getPropertyValue();
+                    break;
+                case "weblink":
+                    metadata.weblink = (String) cell.getPropertyValue();
+                    break;
+                case "comment":
+                    metadata.comment = (String) cell.getPropertyValue();
+                    break;
+            }
         }
     }
 }

@@ -11,21 +11,21 @@ import net.minecraft.client.gui.GuiButton;
 /**
  * Created by lukas on 02.06.14.
  */
-public class TableElementBoolean extends TableElementPropertyDefault<Boolean>
+public class TableCellBoolean extends TableCellPropertyDefault<Boolean>
 {
     private GuiButton button;
 
     protected String trueTitle;
     protected String falseTitle;
 
-    public TableElementBoolean(String id, String title, boolean value)
+    public TableCellBoolean(String id, boolean value)
     {
-        this(id, title, value, IvTranslations.get("structures.gui.true"), IvTranslations.get("structures.gui.false"));
+        this(id, value, IvTranslations.get("structures.gui.true"), IvTranslations.get("structures.gui.false"));
     }
 
-    public TableElementBoolean(String id, String title, Boolean value, String trueTitle, String falseTitle)
+    public TableCellBoolean(String id, Boolean value, String trueTitle, String falseTitle)
     {
-        super(id, title, value);
+        super(id, value);
         this.trueTitle = trueTitle;
         this.falseTitle = falseTitle;
     }

@@ -12,7 +12,7 @@ import ivorius.reccomplex.gui.table.*;
 /**
  * Created by lukas on 05.06.14.
  */
-public class TableDataSourceMazeBlock extends TableDataSourceSegmented implements TableElementPropertyListener, TableElementActionListener
+public class TableDataSourceMazeBlock extends TableDataSourceSegmented implements TableCellPropertyListener, TableCellActionListener
 {
     public static final int[] DIMENSIONS = new int[]{100, 100, 100};
     private TileEntityMazeGenerator mazeGenerator;
@@ -74,65 +74,65 @@ public class TableDataSourceMazeBlock extends TableDataSourceSegmented implement
     {
         if (segment == 0)
         {
-            TableElementString element = new TableElementString("mazeID", "Maze ID", mazeGenerator.getMazeID());
-            element.addPropertyListener(this);
-            return element;
+            TableCellString cell = new TableCellString("mazeID", mazeGenerator.getMazeID());
+            cell.addPropertyListener(this);
+            return new TableElementCell("Maze ID", cell);
         }
         else if (segment == 1)
         {
             if (index == 0)
             {
-                TableElementButton element = new TableElementButton("exits", "Exits", new TableElementButton.Action("edit", "Edit"));
-                element.addListener(this);
-                return element;
+                TableCellButton cell = new TableCellButton("exits", new TableCellButton.Action("edit", "Edit"));
+                cell.addListener(this);
+                return new TableElementCell("Exits", cell);
             }
             else if (index == 1)
             {
-                TableElementButton element = new TableElementButton("rooms", "Rooms", new TableElementButton.Action("edit", "Edit"));
-                element.addListener(this);
-                return element;
+                TableCellButton cell = new TableCellButton("rooms", new TableCellButton.Action("edit", "Edit"));
+                cell.addListener(this);
+                return new TableElementCell("Rooms", cell);
             }
         }
         else if (segment == 2)
         {
             if (index == 0)
             {
-                TableElementInteger element = new TableElementInteger("xShift", "Shift: X", mazeGenerator.getStructureShift().x, -50, 50);
-                element.addPropertyListener(this);
-                return element;
+                TableCellInteger cell = new TableCellInteger("xShift", mazeGenerator.getStructureShift().x, -50, 50);
+                cell.addPropertyListener(this);
+                return new TableElementCell("Shift: X", cell);
             }
             else if (index == 1)
             {
-                TableElementInteger element = new TableElementInteger("yShift", "Shift: Y", mazeGenerator.getStructureShift().y, -50, 50);
-                element.addPropertyListener(this);
-                return element;
+                TableCellInteger cell = new TableCellInteger("yShift", mazeGenerator.getStructureShift().y, -50, 50);
+                cell.addPropertyListener(this);
+                return new TableElementCell("Shift: Y", cell);
             }
             else if (index == 2)
             {
-                TableElementInteger element = new TableElementInteger("zShift", "Shift: Z", mazeGenerator.getStructureShift().z, -50, 50);
-                element.addPropertyListener(this);
-                return element;
+                TableCellInteger cell = new TableCellInteger("zShift", mazeGenerator.getStructureShift().z, -50, 50);
+                cell.addPropertyListener(this);
+                return new TableElementCell("Shift: Z", cell);
             }
         }
         else if (segment == 3)
         {
             if (index == 0)
             {
-                TableElementInteger element = new TableElementInteger("roomSizeX", "Room Size: X", mazeGenerator.getRoomSize()[0], 1, 64);
-                element.addPropertyListener(this);
-                return element;
+                TableCellInteger cell = new TableCellInteger("roomSizeX", mazeGenerator.getRoomSize()[0], 1, 64);
+                cell.addPropertyListener(this);
+                return new TableElementCell("Room Size: X", cell);
             }
             else if (index == 1)
             {
-                TableElementInteger element = new TableElementInteger("roomSizeY", "Room Size: Y", mazeGenerator.getRoomSize()[1], 1, 64);
-                element.addPropertyListener(this);
-                return element;
+                TableCellInteger cell = new TableCellInteger("roomSizeY", mazeGenerator.getRoomSize()[1], 1, 64);
+                cell.addPropertyListener(this);
+                return new TableElementCell("Room Size: Y", cell);
             }
             else if (index == 2)
             {
-                TableElementInteger element = new TableElementInteger("roomSizeZ", "Room Size: Z", mazeGenerator.getRoomSize()[2], 1, 64);
-                element.addPropertyListener(this);
-                return element;
+                TableCellInteger cell = new TableCellInteger("roomSizeZ", mazeGenerator.getRoomSize()[2], 1, 64);
+                cell.addPropertyListener(this);
+                return new TableElementCell("Room Size: Z", cell);
             }
         }
 
@@ -140,49 +140,49 @@ public class TableDataSourceMazeBlock extends TableDataSourceSegmented implement
     }
 
     @Override
-    public void valueChanged(TableElementPropertyDefault element)
+    public void valueChanged(TableCellPropertyDefault cell)
     {
-        if ("mazeID".equals(element.getID()))
+        if ("mazeID".equals(cell.getID()))
         {
-            mazeGenerator.setMazeID((String) element.getPropertyValue());
+            mazeGenerator.setMazeID((String) cell.getPropertyValue());
         }
-        else if ("xShift".equals(element.getID()))
-        {
-            BlockCoord shift = mazeGenerator.getStructureShift();
-            mazeGenerator.setStructureShift(new BlockCoord((int) element.getPropertyValue(), shift.y, shift.z));
-        }
-        else if ("yShift".equals(element.getID()))
+        else if ("xShift".equals(cell.getID()))
         {
             BlockCoord shift = mazeGenerator.getStructureShift();
-            mazeGenerator.setStructureShift(new BlockCoord(shift.x, (int) element.getPropertyValue(), shift.z));
+            mazeGenerator.setStructureShift(new BlockCoord((int) cell.getPropertyValue(), shift.y, shift.z));
         }
-        else if ("zShift".equals(element.getID()))
+        else if ("yShift".equals(cell.getID()))
         {
             BlockCoord shift = mazeGenerator.getStructureShift();
-            mazeGenerator.setStructureShift(new BlockCoord(shift.x, shift.y, (int) element.getPropertyValue()));
+            mazeGenerator.setStructureShift(new BlockCoord(shift.x, (int) cell.getPropertyValue(), shift.z));
         }
-        else if ("roomSizeX".equals(element.getID()))
+        else if ("zShift".equals(cell.getID()))
+        {
+            BlockCoord shift = mazeGenerator.getStructureShift();
+            mazeGenerator.setStructureShift(new BlockCoord(shift.x, shift.y, (int) cell.getPropertyValue()));
+        }
+        else if ("roomSizeX".equals(cell.getID()))
         {
             int[] size = mazeGenerator.getRoomSize();
-            size[0] = (int) element.getPropertyValue();
+            size[0] = (int) cell.getPropertyValue();
             mazeGenerator.setRoomSize(size);
         }
-        else if ("roomSizeY".equals(element.getID()))
+        else if ("roomSizeY".equals(cell.getID()))
         {
             int[] size = mazeGenerator.getRoomSize();
-            size[1] = (int) element.getPropertyValue();
+            size[1] = (int) cell.getPropertyValue();
             mazeGenerator.setRoomSize(size);
         }
-        else if ("roomSizeZ".equals(element.getID()))
+        else if ("roomSizeZ".equals(cell.getID()))
         {
             int[] size = mazeGenerator.getRoomSize();
-            size[2] = (int) element.getPropertyValue();
+            size[2] = (int) cell.getPropertyValue();
             mazeGenerator.setRoomSize(size);
         }
     }
 
     @Override
-    public void actionPerformed(TableElement tableElementButton, String actionID)
+    public void actionPerformed(TableCell tableElementButton, String actionID)
     {
         if ("exits".equals(tableElementButton.getID()))
         {

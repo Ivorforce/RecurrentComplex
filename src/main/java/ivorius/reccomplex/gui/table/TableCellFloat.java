@@ -11,7 +11,7 @@ import ivorius.ivtoolkit.gui.GuiSlider;
 /**
  * Created by lukas on 02.06.14.
  */
-public class TableElementFloat extends TableElementPropertyDefault<Float> implements GuiControlListener<GuiSlider>
+public class TableCellFloat extends TableCellPropertyDefault<Float> implements GuiControlListener<GuiSlider>
 {
     protected GuiSlider slider;
 
@@ -21,9 +21,9 @@ public class TableElementFloat extends TableElementPropertyDefault<Float> implem
 
     protected String titleFormat = "%.4f";
 
-    public TableElementFloat(String id, String title, float value, float min, float max)
+    public TableCellFloat(String id, float value, float min, float max)
     {
-        super(id, title, value);
+        super(id, value);
 
         this.min = min;
         this.max = max;

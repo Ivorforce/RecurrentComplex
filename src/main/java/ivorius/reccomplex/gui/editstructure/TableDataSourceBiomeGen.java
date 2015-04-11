@@ -8,12 +8,11 @@ package ivorius.reccomplex.gui.editstructure;
 import ivorius.reccomplex.gui.TableDataSourceExpression;
 import ivorius.reccomplex.gui.table.*;
 import ivorius.reccomplex.structures.generic.BiomeGenerationInfo;
-import ivorius.reccomplex.utils.IvTranslations;
 
 /**
  * Created by lukas on 05.06.14.
  */
-public class TableDataSourceBiomeGen extends TableDataSourceSegmented implements TableElementPropertyListener
+public class TableDataSourceBiomeGen extends TableDataSourceSegmented implements TableCellPropertyListener
 {
     private BiomeGenerationInfo generationInfo;
 
@@ -44,20 +43,20 @@ public class TableDataSourceBiomeGen extends TableDataSourceSegmented implements
     {
         if (segment == 1)
         {
-            TableElementFloatNullable element = new TableElementFloatNullable("weight", "Weight", TableElements.toFloat(generationInfo.getGenerationWeight()), 1.0f, 0, 10, "D", "C");
+            TableCellFloatNullable element = new TableCellFloatNullable("weight", TableElements.toFloat(generationInfo.getGenerationWeight()), 1.0f, 0, 10, "D", "C");
             element.addPropertyListener(this);
-            return element;
+            return new TableElementCell("Weight", element);
         }
 
         return super.elementForIndexInSegment(table, index, segment);
     }
 
     @Override
-    public void valueChanged(TableElementPropertyDefault element)
+    public void valueChanged(TableCellPropertyDefault cell)
     {
-        if ("weight".equals(element.getID()))
+        if ("weight".equals(cell.getID()))
         {
-            generationInfo.setGenerationWeight(TableElements.toDouble((Float) element.getPropertyValue()));
+            generationInfo.setGenerationWeight(TableElements.toDouble((Float) cell.getPropertyValue()));
         }
     }
 }

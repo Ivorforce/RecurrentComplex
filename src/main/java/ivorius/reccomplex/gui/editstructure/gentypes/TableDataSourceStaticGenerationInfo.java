@@ -11,12 +11,11 @@ import ivorius.reccomplex.gui.TableDataSourceExpression;
 import ivorius.reccomplex.gui.editstructure.TableDataSourceYSelector;
 import ivorius.reccomplex.gui.table.*;
 import ivorius.reccomplex.structures.generic.gentypes.StaticGenerationInfo;
-import ivorius.reccomplex.utils.IvTranslations;
 
 /**
  * Created by lukas on 07.10.14.
  */
-public class TableDataSourceStaticGenerationInfo extends TableDataSourceSegmented implements TableElementPropertyListener
+public class TableDataSourceStaticGenerationInfo extends TableDataSourceSegmented implements TableCellPropertyListener
 {
     private TableNavigator navigator;
     private TableDelegate tableDelegate;
@@ -60,25 +59,25 @@ public class TableDataSourceStaticGenerationInfo extends TableDataSourceSegmente
             {
                 if (index == 0)
                 {
-                    TableElementBoolean element = new TableElementBoolean("relativeToSpawn", "At Spawn", generationInfo.relativeToSpawn);
-                    element.addPropertyListener(this);
-                    return element;
+                    TableCellBoolean cell = new TableCellBoolean("relativeToSpawn", generationInfo.relativeToSpawn);
+                    cell.addPropertyListener(this);
+                    return new TableElementCell("At Spawn", cell);
                 }
                 else if (index == 1)
                 {
-                    TableElementString element = new TableElementString("positionX", "Position (x)", String.valueOf(generationInfo.positionX));
-                    element.setShowsValidityState(true);
-                    element.setValidityState(GuiValidityStateIndicator.State.VALID);
-                    element.addPropertyListener(this);
-                    return element;
+                    TableCellString cell = new TableCellString("positionX", String.valueOf(generationInfo.positionX));
+                    cell.setShowsValidityState(true);
+                    cell.setValidityState(GuiValidityStateIndicator.State.VALID);
+                    cell.addPropertyListener(this);
+                    return new TableElementCell("Position (x)", cell);
                 }
                 else if (index == 2)
                 {
-                    TableElementString element = new TableElementString("positionZ", "Position (z)", String.valueOf(generationInfo.positionZ));
-                    element.setShowsValidityState(true);
-                    element.setValidityState(GuiValidityStateIndicator.State.VALID);
-                    element.addPropertyListener(this);
-                    return element;
+                    TableCellString cell = new TableCellString("positionZ", String.valueOf(generationInfo.positionZ));
+                    cell.setShowsValidityState(true);
+                    cell.setValidityState(GuiValidityStateIndicator.State.VALID);
+                    cell.addPropertyListener(this);
+                    return new TableElementCell("Position (z)", cell);
                 }
             }
         }
@@ -87,27 +86,30 @@ public class TableDataSourceStaticGenerationInfo extends TableDataSourceSegmente
     }
 
     @Override
-    public void valueChanged(TableElementPropertyDefault element)
+    public void valueChanged(TableCellPropertyDefault cell)
     {
-        switch (element.getID())
+        if (cell.getID() != null)
         {
-            case "positionX":
+            switch (cell.getID())
             {
-                Integer val = Ints.tryParse((String) element.getPropertyValue());
-                generationInfo.positionX = val != null ? val : 0;
-                ((TableElementString) element).setValidityState(val != null ? GuiValidityStateIndicator.State.VALID : GuiValidityStateIndicator.State.INVALID);
-                break;
+                case "positionX":
+                {
+                    Integer val = Ints.tryParse((String) cell.getPropertyValue());
+                    generationInfo.positionX = val != null ? val : 0;
+                    ((TableCellString) cell).setValidityState(val != null ? GuiValidityStateIndicator.State.VALID : GuiValidityStateIndicator.State.INVALID);
+                    break;
+                }
+                case "positionZ":
+                {
+                    Integer val = Ints.tryParse((String) cell.getPropertyValue());
+                    generationInfo.positionZ = val != null ? val : 0;
+                    ((TableCellString) cell).setValidityState(val != null ? GuiValidityStateIndicator.State.VALID : GuiValidityStateIndicator.State.INVALID);
+                    break;
+                }
+                case "relativeToSpawn":
+                    generationInfo.relativeToSpawn = (boolean) cell.getPropertyValue();
+                    break;
             }
-            case "positionZ":
-            {
-                Integer val = Ints.tryParse((String) element.getPropertyValue());
-                generationInfo.positionZ = val != null ? val : 0;
-                ((TableElementString) element).setValidityState(val != null ? GuiValidityStateIndicator.State.VALID : GuiValidityStateIndicator.State.INVALID);
-                break;
-            }
-            case "relativeToSpawn":
-                generationInfo.relativeToSpawn = (boolean) element.getPropertyValue();
-                break;
         }
     }
 }

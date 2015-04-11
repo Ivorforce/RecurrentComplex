@@ -12,36 +12,36 @@ import java.util.List;
 /**
  * Created by lukas on 02.06.14.
  */
-public abstract class TableElementPropertyDefault<P> extends TableElementDefault implements TableElementProperty<P>
+public abstract class TableCellPropertyDefault<P> extends TableCellDefault implements TableCellProperty<P>
 {
     protected P property;
 
-    private List<TableElementPropertyListener> listeners = new ArrayList<>();
+    private List<TableCellPropertyListener> listeners = new ArrayList<>();
 
-    public TableElementPropertyDefault(String id, String title, P value)
+    public TableCellPropertyDefault(String id, P value)
     {
-        super(id, title);
+        super(id);
         setPropertyValue(value);
     }
 
-    public void addPropertyListener(TableElementPropertyListener listener)
+    public void addPropertyListener(TableCellPropertyListener listener)
     {
         listeners.add(listener);
     }
 
-    public void removePropertyListener(TableElementPropertyListener listener)
+    public void removePropertyListener(TableCellPropertyListener listener)
     {
         listeners.remove(listener);
     }
 
-    public List<TableElementPropertyListener> getListeners()
+    public List<TableCellPropertyListener> getListeners()
     {
         return Collections.unmodifiableList(listeners);
     }
 
     protected void alertListenersOfChange()
     {
-        for (TableElementPropertyListener listener : listeners)
+        for (TableCellPropertyListener listener : listeners)
         {
             listener.valueChanged(this);
         }

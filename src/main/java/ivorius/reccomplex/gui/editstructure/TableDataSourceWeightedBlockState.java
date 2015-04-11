@@ -18,12 +18,12 @@ import net.minecraft.nbt.NBTTagCompound;
 /**
  * Created by lukas on 05.06.14.
  */
-public class TableDataSourceWeightedBlockState extends TableDataSourceSegmented implements TableElementPropertyListener
+public class TableDataSourceWeightedBlockState extends TableDataSourceSegmented implements TableCellPropertyListener
 {
     private WeightedBlockState weightedBlockState;
 
     private TableDelegate tableDelegate;
-    private TableElementTitle parsed;
+    private TableCellTitle parsed;
 
     public TableDataSourceWeightedBlockState(WeightedBlockState weightedBlockState, TableDelegate tableDelegate)
     {
@@ -69,57 +69,57 @@ public class TableDataSourceWeightedBlockState extends TableDataSourceSegmented 
     {
         if (segment == 0)
         {
-            TableElementFloatNullable element = new TableElementFloatNullable("weight", "Weight", TableElements.toFloat(weightedBlockState.weight), 1.0f, 0, 10, "D", "C");
-            element.addPropertyListener(this);
-            return element;
+            TableCellFloatNullable cell = new TableCellFloatNullable("weight", TableElements.toFloat(weightedBlockState.weight), 1.0f, 0, 10, "D", "C");
+            cell.addPropertyListener(this);
+            return new TableElementCell("Weight", cell);
         }
         else if (segment == 1)
         {
             if (index == 0)
             {
-                TableElementString element = TableDataSourceBTNatural.elementForBlock("block", "Block", weightedBlockState.block);
-                element.addPropertyListener(this);
-                return element;
+                TableCellString cell = TableDataSourceBTNatural.elementForBlock("block", weightedBlockState.block);
+                cell.addPropertyListener(this);
+                return new TableElementCell("Block", cell);
             }
             else if (index == 1)
             {
-                TableElementInteger element = new TableElementInteger("metadata", "Metadata", weightedBlockState.metadata, 0, 15);
-                element.addPropertyListener(this);
-                return element;
+                TableCellInteger cell = new TableCellInteger("metadata", weightedBlockState.metadata, 0, 15);
+                cell.addPropertyListener(this);
+                return new TableElementCell("Metadata", cell);
             }
         }
         else if (segment == 2)
         {
-            TableElementString element = new TableElementString("tileEntityInfo", "Tile Entity NBT", weightedBlockState.tileEntityInfo);
-            element.addPropertyListener(this);
-            element.setShowsValidityState(true);
-            element.setValidityState(stateForNBTCompoundJson(weightedBlockState.tileEntityInfo));
-            return element;
+            TableCellString cell = new TableCellString("tileEntityInfo", weightedBlockState.tileEntityInfo);
+            cell.addPropertyListener(this);
+            cell.setShowsValidityState(true);
+            cell.setValidityState(stateForNBTCompoundJson(weightedBlockState.tileEntityInfo));
+            return new TableElementCell("Tile Entity NBT", cell);
         }
 
         return null;
     }
 
     @Override
-    public void valueChanged(TableElementPropertyDefault element)
+    public void valueChanged(TableCellPropertyDefault cell)
     {
-        if ("weight".equals(element.getID()))
+        if ("weight".equals(cell.getID()))
         {
-            weightedBlockState.weight = TableElements.toDouble((Float) element.getPropertyValue());
+            weightedBlockState.weight = TableElements.toDouble((Float) cell.getPropertyValue());
         }
-        else if ("block".equals(element.getID()))
+        else if ("block".equals(cell.getID()))
         {
-            weightedBlockState.block = (Block) Block.blockRegistry.getObject(element.getPropertyValue());
-            TableDataSourceBTNatural.setStateForBlockTextfield(((TableElementString) element));
+            weightedBlockState.block = (Block) Block.blockRegistry.getObject(cell.getPropertyValue());
+            TableDataSourceBTNatural.setStateForBlockTextfield(((TableCellString) cell));
         }
-        else if ("metadata".equals(element.getID()))
+        else if ("metadata".equals(cell.getID()))
         {
-            weightedBlockState.metadata = (int) element.getPropertyValue();
+            weightedBlockState.metadata = (int) cell.getPropertyValue();
         }
-        else if ("tileEntityInfo".equals(element.getID()))
+        else if ("tileEntityInfo".equals(cell.getID()))
         {
-            weightedBlockState.tileEntityInfo = (String) element.getPropertyValue();
-            ((TableElementString) element).setValidityState(stateForNBTCompoundJson(weightedBlockState.tileEntityInfo));
+            weightedBlockState.tileEntityInfo = (String) cell.getPropertyValue();
+            ((TableCellString) cell).setValidityState(stateForNBTCompoundJson(weightedBlockState.tileEntityInfo));
         }
     }
 }

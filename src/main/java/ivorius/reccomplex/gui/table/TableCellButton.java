@@ -5,7 +5,6 @@
 
 package ivorius.reccomplex.gui.table;
 
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiButton;
 
 import java.util.ArrayList;
@@ -15,30 +14,30 @@ import java.util.List;
 /**
  * Created by lukas on 02.06.14.
  */
-public class TableElementButton extends TableElementDefault
+public class TableCellButton extends TableCellDefault
 {
     private GuiButton[] buttons = new GuiButton[0];
     private Action[] actions;
 
-    private List<TableElementActionListener> listeners = new ArrayList<>();
+    private List<TableCellActionListener> listeners = new ArrayList<>();
 
-    public TableElementButton(String id, String title, Action... actions)
+    public TableCellButton(String id, Action... actions)
     {
-        super(id, title);
+        super(id);
         this.actions = actions;
     }
 
-    public void addListener(TableElementActionListener listener)
+    public void addListener(TableCellActionListener listener)
     {
         listeners.add(listener);
     }
 
-    public void removeListener(TableElementActionListener listener)
+    public void removeListener(TableCellActionListener listener)
     {
         listeners.remove(listener);
     }
 
-    public List<TableElementActionListener> listeners()
+    public List<TableCellActionListener> listeners()
     {
         return Collections.unmodifiableList(listeners);
     }
@@ -84,7 +83,7 @@ public class TableElementButton extends TableElementDefault
     {
         super.buttonClicked(buttonID);
 
-        for (TableElementActionListener listener : listeners)
+        for (TableCellActionListener listener : listeners)
             listener.actionPerformed(this, actions[buttonID].id);
     }
 
@@ -98,7 +97,7 @@ public class TableElementButton extends TableElementDefault
             Action action = actions[i];
             GuiButton button = buttons[i];
             if (action.tooltip != null)
-                screen.drawTooltipRect(action.tooltip, TableElementPresetAction.getBounds(button), mouseX, mouseY, getFontRenderer());
+                screen.drawTooltipRect(action.tooltip, TableCellPresetAction.getBounds(button), mouseX, mouseY, getFontRenderer());
         }
     }
 

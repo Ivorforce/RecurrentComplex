@@ -13,7 +13,7 @@ import ivorius.reccomplex.utils.IvTranslations;
 /**
  * Created by lukas on 26.03.15.
  */
-public class TableDataSourceGenerationInfo implements TableDataSource, TableElementPropertyListener
+public class TableDataSourceGenerationInfo implements TableDataSource, TableCellPropertyListener
 {
     public StructureGenerationInfo genInfo;
 
@@ -31,21 +31,21 @@ public class TableDataSourceGenerationInfo implements TableDataSource, TableElem
     @Override
     public TableElement elementForIndex(GuiTable table, int index)
     {
-        TableElementString element = new TableElementString("genInfoID", IvTranslations.get("reccomplex.structure.generation.id"), genInfo.id());
-        element.setTooltip(IvTranslations.formatLines("reccomplex.structure.generation.id.tooltip"));
-        element.setShowsValidityState(true);
-        element.setValidityState(StructureInfos.defaultIDValidityState(genInfo));
-        element.addPropertyListener(this);
-        return element;
+        TableCellString cell = new TableCellString("genInfoID", genInfo.id());
+        cell.setTooltip(IvTranslations.formatLines("reccomplex.structure.generation.id.tooltip"));
+        cell.setShowsValidityState(true);
+        cell.setValidityState(StructureInfos.defaultIDValidityState(genInfo));
+        cell.addPropertyListener(this);
+        return new TableElementCell(IvTranslations.get("reccomplex.structure.generation.id"), cell);
     }
 
     @Override
-    public void valueChanged(TableElementPropertyDefault element)
+    public void valueChanged(TableCellPropertyDefault cell)
     {
-        if ("genInfoID".equals(element.getID()))
+        if ("genInfoID".equals(cell.getID()))
         {
-            genInfo.setID((String) element.getPropertyValue());
-            ((TableElementString) element).setValidityState(StructureInfos.defaultIDValidityState(genInfo));
+            genInfo.setID((String) cell.getPropertyValue());
+            ((TableCellString) cell).setValidityState(StructureInfos.defaultIDValidityState(genInfo));
         }
     }
 }

@@ -8,7 +8,7 @@ package ivorius.reccomplex.gui.table;
 /**
  * Created by lukas on 03.06.14.
  */
-public interface TableElementProperty<P> extends TableElement
+public interface TableCellProperty<P> extends TableCell
 {
     P getPropertyValue();
 

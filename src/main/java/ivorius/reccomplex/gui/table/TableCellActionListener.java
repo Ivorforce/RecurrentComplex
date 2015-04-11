@@ -8,7 +8,7 @@ package ivorius.reccomplex.gui.table;
 /**
  * Created by lukas on 05.06.14.
  */
-public interface TableElementPropertyListener
+public interface TableCellActionListener
 {
-    void valueChanged(TableElementPropertyDefault element);
+    void actionPerformed(TableCell cell, String action);
 }

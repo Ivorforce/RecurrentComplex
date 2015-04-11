@@ -5,7 +5,6 @@
 
 package ivorius.reccomplex.gui.table;
 
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 
 import javax.annotation.Nonnull;
@@ -13,16 +12,16 @@ import javax.annotation.Nonnull;
 /**
  * Created by lukas on 02.06.14.
  */
-public class TableElementTitle extends TableElementDefault
+public class TableCellTitle extends TableCellDefault
 {
     protected String displayString;
 
     @Nonnull
     protected Positioning positioning = Positioning.CENTER;
 
-    public TableElementTitle(String id, String title, String displayString)
+    public TableCellTitle(String id, String displayString)
     {
-        super(id, title);
+        super(id);
         this.displayString = displayString;
     }
 

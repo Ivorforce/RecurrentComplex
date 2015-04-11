@@ -17,7 +17,7 @@ import net.minecraft.util.EnumChatFormatting;
 /**
  * Created by lukas on 05.06.14.
  */
-public class TableDataSourceGenericStructure extends TableDataSourceSegmented implements TableElementActionListener, TableElementPropertyListener
+public class TableDataSourceGenericStructure extends TableDataSourceSegmented implements TableCellActionListener, TableCellPropertyListener
 {
     private GenericStructureInfo structureInfo;
     private String structureKey;
@@ -157,64 +157,64 @@ public class TableDataSourceGenericStructure extends TableDataSourceSegmented im
             case 0:
                 if (index == 0)
                 {
-                    TableElementString element = new TableElementString("name", IvTranslations.get("reccomplex.structure.id"), structureKey);
-                    element.setTooltip(IvTranslations.formatLines("reccomplex.structure.id.tooltip"));
-                    element.addPropertyListener(this);
-                    element.setShowsValidityState(true);
-                    element.setValidityState(currentNameState());
-                    return element;
+                    TableCellString cell = new TableCellString("name", structureKey);
+                    cell.setTooltip(IvTranslations.formatLines("reccomplex.structure.id.tooltip"));
+                    cell.addPropertyListener(this);
+                    cell.setShowsValidityState(true);
+                    cell.setValidityState(currentNameState());
+                    return new TableElementCell(IvTranslations.get("reccomplex.structure.id"), cell);
                 }
                 else if (index == 1)
                 {
-                    TableElementBoolean element = new TableElementBoolean("activeFolder", "", saveAsActive,
+                    TableCellBoolean cell = new TableCellBoolean("activeFolder", saveAsActive,
                             String.format("Save in %s/%s%s", EnumChatFormatting.AQUA, StructureSaveHandler.getStructuresDirectoryName(true), EnumChatFormatting.RESET),
                             String.format("Save in %s/%s%s", EnumChatFormatting.AQUA, StructureSaveHandler.getStructuresDirectoryName(false), EnumChatFormatting.RESET));
-                    element.addPropertyListener(this);
-                    return element;
+                    cell.addPropertyListener(this);
+                    return new TableElementCell(cell);
                 }
                 else if (index == 2)
                 {
                     String path = StructureSaveHandler.getStructuresDirectoryName(!saveAsActive);
-                    TableElementBoolean element = new TableElementBoolean("deleteOther", "", deleteOther,
+                    TableCellBoolean cell = new TableCellBoolean("deleteOther", deleteOther,
                             String.format("%sDelete%s from %s/%s%s", EnumChatFormatting.RED, EnumChatFormatting.RESET, EnumChatFormatting.AQUA, path, EnumChatFormatting.RESET),
                             String.format("%sKeep%s inside %s/%s%s", EnumChatFormatting.YELLOW, EnumChatFormatting.RESET, EnumChatFormatting.AQUA, path, EnumChatFormatting.RESET));
-                    element.addPropertyListener(this);
-                    return element;
+                    cell.addPropertyListener(this);
+                    return new TableElementCell(cell);
                 }
                 break;
             case 1:
             {
-                TableElementButton element = new TableElementButton("metadata", "", new TableElementButton.Action("metadata", "Metadata"));
-                element.addListener(this);
-                return element;
+                TableCellButton cell = new TableCellButton("metadata", new TableCellButton.Action("metadata", "Metadata"));
+                cell.addListener(this);
+                return new TableElementCell(cell);
             }
             case 2:
                 if (index == 0)
                 {
-                    TableElementBoolean element = new TableElementBoolean("rotatable", IvTranslations.get("reccomplex.structure.rotatable"), structureInfo.rotatable);
-                    element.setTooltip(IvTranslations.formatLines("reccomplex.structure.rotatable.tooltip"));
-                    element.addPropertyListener(this);
-                    return element;
+                    TableCellBoolean cell = new TableCellBoolean("rotatable", structureInfo.rotatable);
+                    cell.setTooltip(IvTranslations.formatLines("reccomplex.structure.rotatable.tooltip"));
+                    cell.addPropertyListener(this);
+                    return new TableElementCell(IvTranslations.get("reccomplex.structure.rotatable"), cell);
                 }
                 else if (index == 1)
                 {
-                    TableElementBoolean element = new TableElementBoolean("mirrorable", IvTranslations.format("reccomplex.structure.mirrorable"), structureInfo.mirrorable);
-                    element.setTooltip(IvTranslations.formatLines("reccomplex.structure.mirrorable.tooltip"));
-                    element.addPropertyListener(this);
-                    return element;
+                    TableCellBoolean cell = new TableCellBoolean("mirrorable", structureInfo.mirrorable);
+                    cell.setTooltip(IvTranslations.formatLines("reccomplex.structure.mirrorable.tooltip"));
+                    cell.addPropertyListener(this);
+                    return new TableElementCell(IvTranslations.format("reccomplex.structure.mirrorable"), cell);
                 }
                 break;
             case 4:
             {
-                TableElementButton element = new TableElementButton("editGenerationInfos", "Generation", new TableElementButton.Action("edit", "Edit"));
-                element.addListener(this);
-                return element;
+                TableCellButton cell = new TableCellButton("editGenerationInfos", new TableCellButton.Action("edit", "Edit"));
+                cell.addListener(this);
+                return new TableElementCell("Generation", cell);
             }
             case 5:
             {
-                TableElementButton element = new TableElementButton("editTransformers", "Transformers", new TableElementButton.Action("edit", "Edit"));
-                element.addListener(this);
-                return element;
+                TableCellButton cell = new TableCellButton("editTransformers", new TableCellButton.Action("edit", "Edit"));
+                cell.addListener(this);
+                return new TableElementCell("Transformers", cell);
             }
         }
 
@@ -222,19 +222,19 @@ public class TableDataSourceGenericStructure extends TableDataSourceSegmented im
     }
 
     @Override
-    public void actionPerformed(TableElement element, String actionID)
+    public void actionPerformed(TableCell cell, String actionID)
     {
         if ("metadata".equals(actionID))
         {
             GuiTable table = new GuiTable(tableDelegate, new TableDataSourceMetadata(structureInfo.metadata));
             navigator.pushTable(table);
         }
-        else if ("editTransformers".equals(element.getID()) && "edit".equals(actionID))
+        else if ("editTransformers".equals(cell.getID()) && "edit".equals(actionID))
         {
             GuiTable editTransformersProperties = new GuiTable(tableDelegate, new TableDataSourceTransformerList(structureInfo.transformers, tableDelegate, navigator));
             navigator.pushTable(editTransformersProperties);
         }
-        else if ("editGenerationInfos".equals(element.getID()) && "edit".equals(actionID))
+        else if ("editGenerationInfos".equals(cell.getID()) && "edit".equals(actionID))
         {
             GuiTable editGenerationProperties = new GuiTable(tableDelegate, new TableDataSourceStructureGenerationInfoList(structureInfo.generationInfos, tableDelegate, navigator));
             navigator.pushTable(editGenerationProperties);
@@ -242,27 +242,30 @@ public class TableDataSourceGenericStructure extends TableDataSourceSegmented im
     }
 
     @Override
-    public void valueChanged(TableElementPropertyDefault element)
+    public void valueChanged(TableCellPropertyDefault cell)
     {
-        switch (element.getID())
+        if (cell.getID() != null)
         {
-            case "name":
-                structureKey = (String) element.getPropertyValue();
-                ((TableElementString) element).setValidityState(currentNameState());
-                break;
-            case "activeFolder":
-                saveAsActive = (boolean) element.getPropertyValue();
-                tableDelegate.reloadData(); // Delete other cell might get added
-                break;
-            case "deleteOther":
-                deleteOther = (boolean) element.getPropertyValue();
-                break;
-            case "rotatable":
-                structureInfo.rotatable = (boolean) element.getPropertyValue();
-                break;
-            case "mirrorable":
-                structureInfo.mirrorable = (boolean) element.getPropertyValue();
-                break;
+            switch (cell.getID())
+            {
+                case "name":
+                    structureKey = (String) cell.getPropertyValue();
+                    ((TableCellString) cell).setValidityState(currentNameState());
+                    break;
+                case "activeFolder":
+                    saveAsActive = (boolean) cell.getPropertyValue();
+                    tableDelegate.reloadData(); // Delete other cell might get added
+                    break;
+                case "deleteOther":
+                    deleteOther = (boolean) cell.getPropertyValue();
+                    break;
+                case "rotatable":
+                    structureInfo.rotatable = (boolean) cell.getPropertyValue();
+                    break;
+                case "mirrorable":
+                    structureInfo.mirrorable = (boolean) cell.getPropertyValue();
+                    break;
+            }
         }
     }
 

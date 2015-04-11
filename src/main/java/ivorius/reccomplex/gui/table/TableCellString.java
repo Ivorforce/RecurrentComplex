@@ -6,16 +6,12 @@
 package ivorius.reccomplex.gui.table;
 
 import ivorius.reccomplex.gui.GuiValidityStateIndicator;
-import ivorius.reccomplex.utils.IvTranslations;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiTextField;
-
-import java.util.List;
 
 /**
  * Created by lukas on 02.06.14.
  */
-public class TableElementString extends TableElementPropertyDefault<String>
+public class TableCellString extends TableCellPropertyDefault<String>
 {
     protected GuiTextField textField;
     protected GuiValidityStateIndicator stateIndicator;
@@ -23,9 +19,9 @@ public class TableElementString extends TableElementPropertyDefault<String>
     protected boolean showsValidityState;
     protected GuiValidityStateIndicator.State validityState;
 
-    public TableElementString(String id, String title, String value)
+    public TableCellString(String id, String value)
     {
-        super(id, title, value);
+        super(id, value);
     }
 
     @Override

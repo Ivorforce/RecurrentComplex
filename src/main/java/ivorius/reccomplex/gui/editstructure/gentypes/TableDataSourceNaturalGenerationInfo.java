@@ -21,7 +21,7 @@ import java.util.Set;
 /**
  * Created by lukas on 07.10.14.
  */
-public class TableDataSourceNaturalGenerationInfo extends TableDataSourceSegmented implements TableElementActionListener, TableElementPropertyListener
+public class TableDataSourceNaturalGenerationInfo extends TableDataSourceSegmented implements TableCellActionListener, TableCellPropertyListener
 {
     private TableNavigator navigator;
     private TableDelegate tableDelegate;
@@ -37,10 +37,10 @@ public class TableDataSourceNaturalGenerationInfo extends TableDataSourceSegment
         addManagedSection(2, new TableDataSourceYSelector(generationInfo.ySelector));
     }
 
-    public static List<TableElementEnum.Option<String>> allGenerationCategories()
+    public static List<TableCellEnum.Option<String>> allGenerationCategories()
     {
         Set<String> categories = StructureSelector.allCategoryIDs();
-        List<TableElementEnum.Option<String>> generationCategories = new ArrayList<>();
+        List<TableCellEnum.Option<String>> generationCategories = new ArrayList<>();
 
         for (String category : categories)
         {
@@ -50,7 +50,7 @@ public class TableDataSourceNaturalGenerationInfo extends TableDataSourceSegment
             {
                 String transKeyBase = "structures.category." + category;
 
-                generationCategories.add(new TableElementEnum.Option<>(category,
+                generationCategories.add(new TableCellEnum.Option<>(category,
                         I18n.format(transKeyBase), IvTranslations.formatLines(transKeyBase + ".tooltip")));
             }
         }
@@ -86,29 +86,29 @@ public class TableDataSourceNaturalGenerationInfo extends TableDataSourceSegment
             case 1:
                 if (index == 0)
                 {
-                    TableElementEnum element = new TableElementEnum<>("category", "Category", generationInfo.generationCategory, allGenerationCategories());
-                    element.addPropertyListener(this);
-                    return element;
+                    TableCellEnum cell = new TableCellEnum<>("category", generationInfo.generationCategory, allGenerationCategories());
+                    cell.addPropertyListener(this);
+                    return new TableElementCell("Category", cell);
                 }
                 break;
             case 3:
                 if (index == 0)
                 {
-                    TableElementFloatNullable element = new TableElementFloatNullable("weight", "Weight", TableElements.toFloat(generationInfo.getGenerationWeight()), 1.0f, 0, 10, "D", "C");
-                    element.addPropertyListener(this);
-                    return element;
+                    TableCellFloatNullable cell = new TableCellFloatNullable("weight", TableElements.toFloat(generationInfo.getGenerationWeight()), 1.0f, 0, 10, "D", "C");
+                    cell.addPropertyListener(this);
+                    return new TableElementCell("Weight", cell);
                 }
                 else if (index == 1)
                 {
-                    TableElementButton elementEditBiomes = new TableElementButton("editBiomes", "Biomes", new TableElementButton.Action("edit", "Edit"));
-                    elementEditBiomes.addListener(this);
-                    return elementEditBiomes;
+                    TableCellButton cell = new TableCellButton("editBiomes", new TableCellButton.Action("edit", "Edit"));
+                    cell.addListener(this);
+                    return new TableElementCell("Biomes", cell);
                 }
                 else if (index == 2)
                 {
-                    TableElementButton elementEditBiomes = new TableElementButton("editDimensions", "Dimensions", new TableElementButton.Action("edit", "Edit"));
-                    elementEditBiomes.addListener(this);
-                    return elementEditBiomes;
+                    TableCellButton cell = new TableCellButton("editDimensions", new TableCellButton.Action("edit", "Edit"));
+                    cell.addListener(this);
+                    return new TableElementCell("Dimensions", cell);
                 }
                 break;
         }
@@ -117,14 +117,14 @@ public class TableDataSourceNaturalGenerationInfo extends TableDataSourceSegment
     }
 
     @Override
-    public void actionPerformed(TableElement element, String actionID)
+    public void actionPerformed(TableCell cell, String actionID)
     {
-        if ("editBiomes".equals(element.getID()) && "edit".equals(actionID))
+        if ("editBiomes".equals(cell.getID()) && "edit".equals(actionID))
         {
             GuiTable editBiomesProperties = new GuiTable(tableDelegate, new TableDataSourceBiomeGenList(generationInfo.biomeWeights, tableDelegate, navigator));
             navigator.pushTable(editBiomesProperties);
         }
-        else if ("editDimensions".equals(element.getID()) && "edit".equals(actionID))
+        else if ("editDimensions".equals(cell.getID()) && "edit".equals(actionID))
         {
             GuiTable editBiomesProperties = new GuiTable(tableDelegate, new TableDataSourceDimensionGenList(generationInfo.dimensionWeights, tableDelegate, navigator));
             navigator.pushTable(editBiomesProperties);
@@ -132,16 +132,19 @@ public class TableDataSourceNaturalGenerationInfo extends TableDataSourceSegment
     }
 
     @Override
-    public void valueChanged(TableElementPropertyDefault element)
+    public void valueChanged(TableCellPropertyDefault cell)
     {
-        switch (element.getID())
+        if (cell.getID() != null)
         {
-            case "category":
-                generationInfo.generationCategory = (String) element.getPropertyValue();
-                break;
-            case "weight":
-                generationInfo.setGenerationWeight(TableElements.toDouble((Float) element.getPropertyValue()));
-                break;
+            switch (cell.getID())
+            {
+                case "category":
+                    generationInfo.generationCategory = (String) cell.getPropertyValue();
+                    break;
+                case "weight":
+                    generationInfo.setGenerationWeight(TableElements.toDouble((Float) cell.getPropertyValue()));
+                    break;
+            }
         }
     }
 }

@@ -16,7 +16,7 @@ import net.minecraftforge.common.util.ForgeDirection;
 /**
  * Created by lukas on 07.10.14.
  */
-public class TableDataSourceStructureListGenerationInfo extends TableDataSourceSegmented implements TableElementPropertyListener
+public class TableDataSourceStructureListGenerationInfo extends TableDataSourceSegmented implements TableCellPropertyListener
 {
     private TableNavigator navigator;
     private TableDelegate tableDelegate;
@@ -62,48 +62,48 @@ public class TableDataSourceStructureListGenerationInfo extends TableDataSourceS
         {
             case 1:
             {
-                TableElementString element = new TableElementString("listID", "List ID", generationInfo.listID);
-                element.addPropertyListener(this);
-                return element;
+                TableCellString cell = new TableCellString("listID", generationInfo.listID);
+                cell.addPropertyListener(this);
+                return new TableElementCell("List ID", cell);
             }
             case 2:
             {
-                TableElementFloatNullable element = new TableElementFloatNullable("weight", "Weight", TableElements.toFloat(generationInfo.weight), 1, 0, 10, "D", "C");
-                element.addPropertyListener(this);
-                return element;
+                TableCellFloatNullable cell = new TableCellFloatNullable("weight", TableElements.toFloat(generationInfo.weight), 1, 0, 10, "D", "C");
+                cell.addPropertyListener(this);
+                return new TableElementCell("Weight", cell);
             }
             case 3:
             {
                 if (index == 0)
                 {
-                    TableElementString element = new TableElementString("positionX", "Shift (x)", String.valueOf(generationInfo.shiftX));
-                    element.setShowsValidityState(true);
-                    element.setValidityState(GuiValidityStateIndicator.State.VALID);
-                    element.addPropertyListener(this);
-                    return element;
+                    TableCellString cell = new TableCellString("positionX", String.valueOf(generationInfo.shiftX));
+                    cell.setShowsValidityState(true);
+                    cell.setValidityState(GuiValidityStateIndicator.State.VALID);
+                    cell.addPropertyListener(this);
+                    return new TableElementCell("Shift (x)", cell);
                 }
                 else if (index == 1)
                 {
-                    TableElementString element = new TableElementString("positionY", "Shift (y)", String.valueOf(generationInfo.shiftY));
-                    element.setShowsValidityState(true);
-                    element.setValidityState(GuiValidityStateIndicator.State.VALID);
-                    element.addPropertyListener(this);
-                    return element;
+                    TableCellString cell = new TableCellString("positionY", String.valueOf(generationInfo.shiftY));
+                    cell.setShowsValidityState(true);
+                    cell.setValidityState(GuiValidityStateIndicator.State.VALID);
+                    cell.addPropertyListener(this);
+                    return new TableElementCell("Shift (y)", cell);
                 }
                 else if (index == 2)
                 {
-                    TableElementString element = new TableElementString("positionZ", "Shift (z)", String.valueOf(generationInfo.shiftZ));
-                    element.setShowsValidityState(true);
-                    element.setValidityState(GuiValidityStateIndicator.State.VALID);
-                    element.addPropertyListener(this);
-                    return element;
+                    TableCellString cell = new TableCellString("positionZ", String.valueOf(generationInfo.shiftZ));
+                    cell.setShowsValidityState(true);
+                    cell.setValidityState(GuiValidityStateIndicator.State.VALID);
+                    cell.addPropertyListener(this);
+                    return new TableElementCell("Shift (z)", cell);
                 }
             }
             case 4:
             {
-                TableElementEnum element = new TableElementEnum<>("front", "Front", generationInfo.front, TableDirections.getDirectionOptions(Directions.HORIZONTAL));
-                element.addPropertyListener(this);
-                return element;
+                TableCellEnum cell = new TableCellEnum<>("front", generationInfo.front, TableDirections.getDirectionOptions(Directions.HORIZONTAL));
+                cell.addPropertyListener(this);
+                return new TableElementCell("Front", cell);
             }
         }
 
@@ -111,45 +111,48 @@ public class TableDataSourceStructureListGenerationInfo extends TableDataSourceS
     }
 
     @Override
-    public void valueChanged(TableElementPropertyDefault element)
+    public void valueChanged(TableCellPropertyDefault cell)
     {
-        switch (element.getID())
+        if (cell.getID() != null)
         {
-            case "listID":
+            switch (cell.getID())
             {
-                generationInfo.listID = (String) element.getPropertyValue();
-                break;
-            }
-            case "weight":
-            {
-                generationInfo.weight = TableElements.toDouble((Float) element.getPropertyValue());
-                break;
-            }
-            case "positionX":
-            {
-                Integer val = Ints.tryParse((String) element.getPropertyValue());
-                generationInfo.shiftX = val != null ? val : 0;
-                ((TableElementString) element).setValidityState(val != null ? GuiValidityStateIndicator.State.VALID : GuiValidityStateIndicator.State.INVALID);
-                break;
-            }
-            case "positionY":
-            {
-                Integer val = Ints.tryParse((String) element.getPropertyValue());
-                generationInfo.shiftY = val != null ? val : 0;
-                ((TableElementString) element).setValidityState(val != null ? GuiValidityStateIndicator.State.VALID : GuiValidityStateIndicator.State.INVALID);
-                break;
-            }
-            case "positionZ":
-            {
-                Integer val = Ints.tryParse((String) element.getPropertyValue());
-                generationInfo.shiftZ = val != null ? val : 0;
-                ((TableElementString) element).setValidityState(val != null ? GuiValidityStateIndicator.State.VALID : GuiValidityStateIndicator.State.INVALID);
-                break;
-            }
-            case "front":
-            {
-                generationInfo.front = (ForgeDirection) element.getPropertyValue();
-                break;
+                case "listID":
+                {
+                    generationInfo.listID = (String) cell.getPropertyValue();
+                    break;
+                }
+                case "weight":
+                {
+                    generationInfo.weight = TableElements.toDouble((Float) cell.getPropertyValue());
+                    break;
+                }
+                case "positionX":
+                {
+                    Integer val = Ints.tryParse((String) cell.getPropertyValue());
+                    generationInfo.shiftX = val != null ? val : 0;
+                    ((TableCellString) cell).setValidityState(val != null ? GuiValidityStateIndicator.State.VALID : GuiValidityStateIndicator.State.INVALID);
+                    break;
+                }
+                case "positionY":
+                {
+                    Integer val = Ints.tryParse((String) cell.getPropertyValue());
+                    generationInfo.shiftY = val != null ? val : 0;
+                    ((TableCellString) cell).setValidityState(val != null ? GuiValidityStateIndicator.State.VALID : GuiValidityStateIndicator.State.INVALID);
+                    break;
+                }
+                case "positionZ":
+                {
+                    Integer val = Ints.tryParse((String) cell.getPropertyValue());
+                    generationInfo.shiftZ = val != null ? val : 0;
+                    ((TableCellString) cell).setValidityState(val != null ? GuiValidityStateIndicator.State.VALID : GuiValidityStateIndicator.State.INVALID);
+                    break;
+                }
+                case "front":
+                {
+                    generationInfo.front = (ForgeDirection) cell.getPropertyValue();
+                    break;
+                }
             }
         }
     }

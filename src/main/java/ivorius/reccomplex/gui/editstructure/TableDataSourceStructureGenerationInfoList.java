@@ -30,19 +30,19 @@ public class TableDataSourceStructureGenerationInfoList extends TableDataSourceL
     }
 
     @Override
-    public TableElementButton.Action[] getAddActions()
+    public TableCellButton.Action[] getAddActions()
     {
         Collection<String> allTypes = StructureRegistry.getStructureGenerationInfoRegistry().allIDs();
-        List<TableElementButton.Action> actions = new ArrayList<>(allTypes.size());
+        List<TableCellButton.Action> actions = new ArrayList<>(allTypes.size());
         for (String type : allTypes)
         {
             String baseKey = "reccomplex.generationInfo." + type;
-            actions.add(new TableElementButton.Action(type,
+            actions.add(new TableCellButton.Action(type,
                     StatCollector.translateToLocal(baseKey),
                     IvTranslations.formatLines(baseKey + ".tooltip")
             ));
         }
-        return actions.toArray(new TableElementButton.Action[actions.size()]);
+        return actions.toArray(new TableCellButton.Action[actions.size()]);
     }
 
     @Override

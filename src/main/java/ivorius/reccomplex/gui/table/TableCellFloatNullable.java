@@ -13,7 +13,7 @@ import net.minecraft.util.MathHelper;
 /**
  * Created by lukas on 02.06.14.
  */
-public class TableElementFloatNullable extends TableElementPropertyDefault<Float> implements GuiControlListener<GuiSlider>
+public class TableCellFloatNullable extends TableCellPropertyDefault<Float> implements GuiControlListener<GuiSlider>
 {
     protected GuiSlider slider;
     protected GuiButton nullButton;
@@ -29,9 +29,9 @@ public class TableElementFloatNullable extends TableElementPropertyDefault<Float
     protected String buttonTitleCustom;
     protected float nullButtonWidth = 0.08f;
 
-    public TableElementFloatNullable(String id, String title, Float value, float defaultValue, float min, float max, String buttonTitleNull, String buttonTitleCustom)
+    public TableCellFloatNullable(String id, Float value, float defaultValue, float min, float max, String buttonTitleNull, String buttonTitleCustom)
     {
-        super(id, title, value);
+        super(id, value);
 
         this.defaultValue = defaultValue;
         this.min = min;

@@ -17,7 +17,7 @@ import java.util.List;
 /**
  * Created by lukas on 04.06.14.
  */
-public abstract class TableDataSourcePresettedList<T> extends TableDataSourceList<T, List<T>> implements TableElementActionListener
+public abstract class TableDataSourcePresettedList<T> extends TableDataSourceList<T, List<T>> implements TableCellActionListener
 {
     public PresettedList<T> presettedList;
 
@@ -61,20 +61,20 @@ public abstract class TableDataSourcePresettedList<T> extends TableDataSourceLis
                 : -1;
     }
 
-    public TableElementButton.Action[] getPresetActions()
+    public TableCellButton.Action[] getPresetActions()
     {
         Collection<String> allTypes = presettedList.getListPresets().allTypes();
-        List<TableElementButton.Action> actions = new ArrayList<>(allTypes.size());
+        List<TableCellButton.Action> actions = new ArrayList<>(allTypes.size());
 
         String baseKey = getBasePresetKey();
         for (String type : allTypes)
         {
-            actions.add(new TableElementButton.Action(type,
+            actions.add(new TableCellButton.Action(type,
                     StatCollector.translateToLocal(baseKey + type),
                     IvTranslations.formatLines(baseKey + type + ".tooltip")
             ));
         }
-        return actions.toArray(new TableElementButton.Action[actions.size()]);
+        return actions.toArray(new TableCellButton.Action[actions.size()]);
     }
 
     protected abstract String getBasePresetKey();
@@ -86,16 +86,16 @@ public abstract class TableDataSourcePresettedList<T> extends TableDataSourceLis
         {
             if (index == 0)
             {
-                TableElementPresetAction element = new TableElementPresetAction("preset", "Presets", "Apply", getPresetActions());
-                element.addListener(this);
-                return element;
+                TableCellPresetAction cell = new TableCellPresetAction("preset", "Apply", getPresetActions());
+                cell.addListener(this);
+                return new TableElementCell("Presets", cell);
             }
             else if (index == 1)
             {
                 String title = !presettedList.isCustom() ? StatCollector.translateToLocal(getBasePresetKey() + presettedList.getPreset()) : "Custom";
-                TableElementButton element = new TableElementButton("customize", title, new TableElementButton.Action("customize", "Customize", !presettedList.isCustom()));
-                element.addListener(this);
-                return element;
+                TableCellButton cell = new TableCellButton("customize", new TableCellButton.Action("customize", "Customize", !presettedList.isCustom()));
+                cell.addListener(this);
+                return new TableElementCell(title, cell);
             }
         }
 
@@ -103,9 +103,9 @@ public abstract class TableDataSourcePresettedList<T> extends TableDataSourceLis
     }
 
     @Override
-    public void actionPerformed(TableElement element, String actionID)
+    public void actionPerformed(TableCell cell, String actionID)
     {
-        if (element.getID().equals("preset"))
+        if ("preset".equals(cell.getID()))
         {
             presettedList.setPreset(actionID);
             tableDelegate.reloadData();
@@ -116,6 +116,6 @@ public abstract class TableDataSourcePresettedList<T> extends TableDataSourceLis
             tableDelegate.reloadData();
         }
 
-        super.actionPerformed(element, actionID);
+        super.actionPerformed(cell, actionID);
     }
 }

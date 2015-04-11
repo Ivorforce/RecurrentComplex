@@ -12,13 +12,12 @@ import ivorius.reccomplex.gui.TableDirections;
 import ivorius.reccomplex.gui.table.*;
 import ivorius.reccomplex.structures.generic.gentypes.VanillaStructureGenerationInfo;
 import ivorius.ivtoolkit.blocks.Directions;
-import ivorius.reccomplex.utils.IvTranslations;
 import net.minecraftforge.common.util.ForgeDirection;
 
 /**
  * Created by lukas on 07.10.14.
  */
-public class TableDataSourceVanillaStructureGenerationInfo extends TableDataSourceSegmented implements TableElementPropertyListener
+public class TableDataSourceVanillaStructureGenerationInfo extends TableDataSourceSegmented implements TableCellPropertyListener
 {
     private TableNavigator navigator;
     private TableDelegate tableDelegate;
@@ -65,9 +64,9 @@ public class TableDataSourceVanillaStructureGenerationInfo extends TableDataSour
         {
             case 1:
             {
-                TableElementEnum element = new TableElementEnum<>("type", "Type", "village", new TableElementEnum.Option<>("village", "Village"));
-                element.addPropertyListener(this);
-                return element;
+                TableCellEnum cell = new TableCellEnum<>("type", "village", new TableCellEnum.Option<>("village", "Village"));
+                cell.addPropertyListener(this);
+                return new TableElementCell("Type", cell);
             }
             case 2:
             {
@@ -75,15 +74,15 @@ public class TableDataSourceVanillaStructureGenerationInfo extends TableDataSour
                 {
                     case 0:
                     {
-                        TableElementFloatNullable element = new TableElementFloatNullable("weight", "Weight", TableElements.toFloat(generationInfo.generationWeight), 1.0f, 0, 10, "D", "C");
-                        element.addPropertyListener(this);
-                        return element;
+                        TableCellFloatNullable cell = new TableCellFloatNullable("weight", TableElements.toFloat(generationInfo.generationWeight), 1.0f, 0, 10, "D", "C");
+                        cell.addPropertyListener(this);
+                        return new TableElementCell("Weight", cell);
                     }
                     case 1:
                     {
-                        TableElementEnum element = new TableElementEnum<>("front", "Front", generationInfo.front, TableDirections.getDirectionOptions(Directions.HORIZONTAL));
-                        element.addPropertyListener(this);
-                        return element;
+                        TableCellEnum cell = new TableCellEnum<>("front", generationInfo.front, TableDirections.getDirectionOptions(Directions.HORIZONTAL));
+                        cell.addPropertyListener(this);
+                        return new TableElementCell("Front", cell);
                     }
                 }
             }
@@ -92,15 +91,15 @@ public class TableDataSourceVanillaStructureGenerationInfo extends TableDataSour
                 {
                     case 0:
                     {
-                        TableElementFloatRange element = new TableElementFloatRange("baseLimit", "Amount (p. V.)", new FloatRange((float) generationInfo.minBaseLimit, (float) generationInfo.maxBaseLimit), 0, 10, 2);
-                        element.addPropertyListener(this);
-                        return element;
+                        TableCellFloatRange cell = new TableCellFloatRange("baseLimit", new FloatRange((float) generationInfo.minBaseLimit, (float) generationInfo.maxBaseLimit), 0, 10, 2);
+                        cell.addPropertyListener(this);
+                        return new TableElementCell("Amount (p. V.)", cell);
                     }
                     case 1:
                     {
-                        TableElementFloatRange element = new TableElementFloatRange("scaledLimit", "Amount (scaled)", new FloatRange((float) generationInfo.minScaledLimit, (float) generationInfo.maxScaledLimit), 0, 10, 2);
-                        element.addPropertyListener(this);
-                        return element;
+                        TableCellFloatRange cell = new TableCellFloatRange("scaledLimit", new FloatRange((float) generationInfo.minScaledLimit, (float) generationInfo.maxScaledLimit), 0, 10, 2);
+                        cell.addPropertyListener(this);
+                        return new TableElementCell("Amount (scaled)", cell);
                     }
                 }
                 break;
@@ -109,21 +108,21 @@ public class TableDataSourceVanillaStructureGenerationInfo extends TableDataSour
                 {
                     case 0:
                     {
-                        TableElementInteger element = new TableElementInteger("spawnX", "Spawn Shift X", generationInfo.spawnShift.x, -50, 50);
-                        element.addPropertyListener(this);
-                        return element;
+                        TableCellInteger cell = new TableCellInteger("spawnX", generationInfo.spawnShift.x, -50, 50);
+                        cell.addPropertyListener(this);
+                        return new TableElementCell("Spawn Shift X", cell);
                     }
                     case 1:
                     {
-                        TableElementInteger element = new TableElementInteger("spawnY", "Spawn Shift Y", generationInfo.spawnShift.y, -50, 50);
-                        element.addPropertyListener(this);
-                        return element;
+                        TableCellInteger cell = new TableCellInteger("spawnY", generationInfo.spawnShift.y, -50, 50);
+                        cell.addPropertyListener(this);
+                        return new TableElementCell("Spawn Shift Y", cell);
                     }
                     case 2:
                     {
-                        TableElementInteger element = new TableElementInteger("spawnZ", "Spawn Shift Z", generationInfo.spawnShift.z, -50, 50);
-                        element.addPropertyListener(this);
-                        return element;
+                        TableCellInteger cell = new TableCellInteger("spawnZ", generationInfo.spawnShift.z, -50, 50);
+                        cell.addPropertyListener(this);
+                        return new TableElementCell("Spawn Shift Z", cell);
                     }
                 }
                 break;
@@ -133,48 +132,51 @@ public class TableDataSourceVanillaStructureGenerationInfo extends TableDataSour
     }
 
     @Override
-    public void valueChanged(TableElementPropertyDefault element)
+    public void valueChanged(TableCellPropertyDefault cell)
     {
-        switch (element.getID())
+        if (cell.getID() != null)
         {
-            case "weight":
-                generationInfo.generationWeight = TableElements.toDouble((Float) element.getPropertyValue());
-                break;
-            case "baseLimit":
+            switch (cell.getID())
             {
-                FloatRange baseLimit = (FloatRange) element.getPropertyValue();
-                generationInfo.minBaseLimit = baseLimit.getMin();
-                generationInfo.maxBaseLimit = baseLimit.getMax();
-                break;
+                case "weight":
+                    generationInfo.generationWeight = TableElements.toDouble((Float) cell.getPropertyValue());
+                    break;
+                case "baseLimit":
+                {
+                    FloatRange baseLimit = (FloatRange) cell.getPropertyValue();
+                    generationInfo.minBaseLimit = baseLimit.getMin();
+                    generationInfo.maxBaseLimit = baseLimit.getMax();
+                    break;
+                }
+                case "scaledLimit":
+                {
+                    FloatRange baseLimit = (FloatRange) cell.getPropertyValue();
+                    generationInfo.minScaledLimit = baseLimit.getMin();
+                    generationInfo.maxScaledLimit = baseLimit.getMax();
+                    break;
+                }
+                case "spawnX":
+                {
+                    BlockCoord coord = generationInfo.spawnShift;
+                    generationInfo.spawnShift = new BlockCoord((int) cell.getPropertyValue(), coord.y, coord.z);
+                    break;
+                }
+                case "spawnY":
+                {
+                    BlockCoord coord = generationInfo.spawnShift;
+                    generationInfo.spawnShift = new BlockCoord(coord.x, (int) cell.getPropertyValue(), coord.z);
+                    break;
+                }
+                case "spawnZ":
+                {
+                    BlockCoord coord = generationInfo.spawnShift;
+                    generationInfo.spawnShift = new BlockCoord(coord.x, coord.y, (int) cell.getPropertyValue());
+                    break;
+                }
+                case "front":
+                    generationInfo.front = (ForgeDirection) cell.getPropertyValue();
+                    break;
             }
-            case "scaledLimit":
-            {
-                FloatRange baseLimit = (FloatRange) element.getPropertyValue();
-                generationInfo.minScaledLimit = baseLimit.getMin();
-                generationInfo.maxScaledLimit = baseLimit.getMax();
-                break;
-            }
-            case "spawnX":
-            {
-                BlockCoord coord = generationInfo.spawnShift;
-                generationInfo.spawnShift = new BlockCoord((int) element.getPropertyValue(), coord.y, coord.z);
-                break;
-            }
-            case "spawnY":
-            {
-                BlockCoord coord = generationInfo.spawnShift;
-                generationInfo.spawnShift = new BlockCoord(coord.x, (int) element.getPropertyValue(), coord.z);
-                break;
-            }
-            case "spawnZ":
-            {
-                BlockCoord coord = generationInfo.spawnShift;
-                generationInfo.spawnShift = new BlockCoord(coord.x, coord.y, (int) element.getPropertyValue());
-                break;
-            }
-            case "front":
-                generationInfo.front = (ForgeDirection) element.getPropertyValue();
-                break;
         }
     }
 }

@@ -9,16 +9,11 @@ import ivorius.reccomplex.gui.TableDataSourceExpression;
 import ivorius.reccomplex.gui.editstructure.TableDataSourceWeightedBlockStateList;
 import ivorius.reccomplex.gui.table.*;
 import ivorius.reccomplex.structures.generic.transformers.TransformerReplaceAll;
-import ivorius.reccomplex.utils.IvTranslations;
-import org.apache.commons.lang3.StringUtils;
-
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Created by lukas on 05.06.14.
  */
-public class TableDataSourceBTReplaceAll extends TableDataSourceSegmented implements TableElementActionListener
+public class TableDataSourceBTReplaceAll extends TableDataSourceSegmented implements TableCellActionListener
 {
     private TransformerReplaceAll transformer;
 
@@ -61,18 +56,18 @@ public class TableDataSourceBTReplaceAll extends TableDataSourceSegmented implem
     {
         if (segment == 1)
         {
-            TableElementButton element = new TableElementButton("dest", "Destinations", new TableElementButton.Action("edit", "Edit"));
-            element.addListener(this);
-            return element;
+            TableCellButton cell = new TableCellButton("dest", new TableCellButton.Action("edit", "Edit"));
+            cell.addListener(this);
+            return new TableElementCell("Destinations", cell);
         }
 
         return super.elementForIndexInSegment(table, index, segment);
     }
 
     @Override
-    public void actionPerformed(TableElement element, String action)
+    public void actionPerformed(TableCell cell, String action)
     {
-        if ("dest".equals(element.getID()))
+        if ("dest".equals(cell.getID()))
         {
             GuiTable table = new GuiTable(tableDelegate, new TableDataSourceWeightedBlockStateList(transformer.destination, tableDelegate, navigator));
             navigator.pushTable(table);

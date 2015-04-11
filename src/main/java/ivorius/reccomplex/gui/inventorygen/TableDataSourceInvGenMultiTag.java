@@ -13,7 +13,7 @@ import java.util.Objects;
 /**
  * Created by lukas on 17.01.15.
  */
-public class TableDataSourceInvGenMultiTag extends TableDataSourceSegmented implements TableElementPropertyListener
+public class TableDataSourceInvGenMultiTag extends TableDataSourceSegmented implements TableCellPropertyListener
 {
     public IntegerRange itemCount;
 
@@ -41,9 +41,9 @@ public class TableDataSourceInvGenMultiTag extends TableDataSourceSegmented impl
         {
             if (index == 0)
             {
-                TableElementIntegerRange element = new TableElementIntegerRange("itemCount", "Item Count", itemCount, 0, 64);
-                element.addPropertyListener(this);
-                return element;
+                TableCellIntegerRange cell = new TableCellIntegerRange("itemCount", itemCount, 0, 64);
+                cell.addPropertyListener(this);
+                return new TableElementCell("Item Count", cell);
             }
         }
 
@@ -51,9 +51,9 @@ public class TableDataSourceInvGenMultiTag extends TableDataSourceSegmented impl
     }
 
     @Override
-    public void valueChanged(TableElementPropertyDefault element)
+    public void valueChanged(TableCellPropertyDefault cell)
     {
-        if (Objects.equals(element.getID(), "itemCount"))
-            itemCount = (IntegerRange) element.getPropertyValue();
+        if ("itemCount".equals(cell.getID()))
+            itemCount = (IntegerRange) cell.getPropertyValue();
     }
 }

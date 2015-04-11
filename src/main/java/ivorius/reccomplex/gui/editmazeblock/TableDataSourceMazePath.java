@@ -13,7 +13,7 @@ import net.minecraftforge.common.util.ForgeDirection;
 /**
  * Created by lukas on 22.06.14.
  */
-public class TableDataSourceMazePath extends TableDataSourceSegmented implements TableElementPropertyListener
+public class TableDataSourceMazePath extends TableDataSourceSegmented implements TableCellPropertyListener
 {
     private MazePath mazePath;
     private int[] boundsLower;
@@ -45,35 +45,35 @@ public class TableDataSourceMazePath extends TableDataSourceSegmented implements
         {
             String id = "pos" + index;
             String title = String.format("Position: %s", index == 0 ? "X" : index == 1 ? "Y" : index == 2 ? "Z" : "" + index);
-            TableElementInteger element = new TableElementInteger(id, title, mazePath.sourceRoom.coordinates[index], boundsLower[index], boundsHigher[index]);
-            element.addPropertyListener(this);
-            return element;
+            TableCellInteger cell = new TableCellInteger(id, mazePath.sourceRoom.coordinates[index], boundsLower[index], boundsHigher[index]);
+            cell.addPropertyListener(this);
+            return new TableElementCell(title, cell);
         }
         else if (segment == 1)
         {
-            TableElementEnum.Option<ForgeDirection>[] optionList = TableDirections.getDirectionOptions(ForgeDirection.VALID_DIRECTIONS);
+            TableCellEnum.Option<ForgeDirection>[] optionList = TableDirections.getDirectionOptions(ForgeDirection.VALID_DIRECTIONS);
 
-            TableElementEnum element = new TableElementEnum<>("side", "Side", directionFromPath(mazePath), optionList);
-            element.addPropertyListener(this);
-            return element;
+            TableCellEnum cell = new TableCellEnum<>("side", directionFromPath(mazePath), optionList);
+            cell.addPropertyListener(this);
+            return new TableElementCell("Side", cell);
         }
 
         return null;
     }
 
     @Override
-    public void valueChanged(TableElementPropertyDefault element)
+    public void valueChanged(TableCellPropertyDefault cell)
     {
-        if ("side".equals(element.getID()))
+        if ("side".equals(cell.getID()))
         {
-            MazePath path = pathFromDirection((ForgeDirection) element.getPropertyValue(), mazePath.sourceRoom.coordinates);
+            MazePath path = pathFromDirection((ForgeDirection) cell.getPropertyValue(), mazePath.sourceRoom.coordinates);
             mazePath.pathDimension = path.pathDimension;
             mazePath.pathGoesUp = path.pathGoesUp;
         }
-        else
+        else if (cell.getID() != null)
         {
-            int index = Integer.valueOf(element.getID().substring(3));
-            mazePath.sourceRoom.coordinates[index] = (int) element.getPropertyValue();
+            int index = Integer.valueOf(cell.getID().substring(3));
+            mazePath.sourceRoom.coordinates[index] = (int) cell.getPropertyValue();
         }
     }
 

@@ -15,22 +15,22 @@ import java.util.Objects;
 /**
  * Created by lukas on 02.06.14.
  */
-public class TableElementEnum<T> extends TableElementPropertyDefault<T>
+public class TableCellEnum<T> extends TableCellPropertyDefault<T>
 {
     private GuiButton button;
 
     private List<Option<T>> options;
 
-    public TableElementEnum(String id, String title, T value, List<Option<T>> options)
+    public TableCellEnum(String id, T value, List<Option<T>> options)
     {
-        super(id, title, value);
+        super(id, value);
         this.options = Lists.newArrayList(options);
     }
 
     @SafeVarargs
-    public TableElementEnum(String id, String title, T value, Option<T>... options)
+    public TableCellEnum(String id, T value, Option<T>... options)
     {
-        this(id, title, value, Arrays.asList(options));
+        this(id, value, Arrays.asList(options));
     }
 
     @Override

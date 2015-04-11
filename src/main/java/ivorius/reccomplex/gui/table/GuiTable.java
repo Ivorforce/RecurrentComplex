@@ -36,7 +36,7 @@ public class GuiTable extends Gui
     private TIntObjectHashMap<TableElement> cachedElements = new TIntObjectHashMap<>();
     private List<TableElement> currentElements = new ArrayList<>();
 
-    private Map<GuiButton, Pair<TableElement, Integer>> buttonMap = new HashMap<>();
+    private Map<GuiButton, Pair<TableCell, Integer>> buttonMap = new HashMap<>();
 
     private GuiButton scrollUpButton;
     private GuiButton scrollDownButton;
@@ -177,11 +177,9 @@ public class GuiTable extends Gui
         }
         else
         {
-            Pair<TableElement, Integer> propertyPair = buttonMap.get(button);
+            Pair<TableCell, Integer> propertyPair = buttonMap.get(button);
             if (propertyPair != null)
-            {
                 propertyPair.getLeft().buttonClicked(propertyPair.getRight());
-            }
         }
     }
 
@@ -206,33 +204,7 @@ public class GuiTable extends Gui
         }
     }
 
-    public void setValueForProperty(String id, Object value)
-    {
-        for (TableElement element : currentElements)
-        {
-            if (element instanceof TableElementProperty && element.getID().equals(id))
-            {
-                ((TableElementProperty) element).setPropertyValue(value);
-            }
-        }
-
-        throw new IllegalArgumentException("Unknown id: " + id);
-    }
-
-    public <V> V valueForProperty(String id)
-    {
-        for (TableElement element : currentElements)
-        {
-            if (element instanceof TableElementProperty && element.getID().equals(id))
-            {
-                return (V) ((TableElementProperty) element).getPropertyValue();
-            }
-        }
-
-        throw new IllegalArgumentException("Unknown id: " + id);
-    }
-
-    public void addButton(TableElement property, int id, GuiButton button)
+    public void addButton(TableCell property, int id, GuiButton button)
     {
         delegate.addButton(button);
 

@@ -14,7 +14,7 @@ import ivorius.reccomplex.structures.generic.gentypes.MazeGenerationInfo;
 /**
  * Created by lukas on 07.10.14.
  */
-public class TableDataSourceMazeGenerationInfo extends TableDataSourceSegmented implements TableElementActionListener, TableElementPropertyListener
+public class TableDataSourceMazeGenerationInfo extends TableDataSourceSegmented implements TableCellActionListener, TableCellPropertyListener
 {
     public static final int[] DEFAULT_MAX_COMPONENT_SIZE = {100, 100, 100};
 
@@ -62,28 +62,28 @@ public class TableDataSourceMazeGenerationInfo extends TableDataSourceSegmented 
             case 1:
                 if (index == 0)
                 {
-                    TableElementString element = new TableElementString("mazeID", "Maze ID", generationInfo.mazeID);
-                    element.addPropertyListener(this);
-                    return element;
+                    TableCellString cell = new TableCellString("mazeID", generationInfo.mazeID);
+                    cell.addPropertyListener(this);
+                    return new TableElementCell("Maze ID", cell);
                 }
                 else if (index == 1)
                 {
-                    TableElementFloatNullable element = new TableElementFloatNullable("weight", "Weight", TableElements.toFloat(generationInfo.mazeComponent.weight), 1.0f, 0, 10, "D", "C");
-                    element.addPropertyListener(this);
-                    return element;
+                    TableCellFloatNullable cell = new TableCellFloatNullable("weight", TableElements.toFloat(generationInfo.mazeComponent.weight), 1.0f, 0, 10, "D", "C");
+                    cell.addPropertyListener(this);
+                    return new TableElementCell("Weight", cell);
                 }
                 break;
             case 2:
             {
-                TableElementButton element = new TableElementButton("rooms", "Rooms", new TableElementButton.Action("edit", "Edit"));
-                element.addListener(this);
-                return element;
+                TableCellButton cell = new TableCellButton("rooms", new TableCellButton.Action("edit", "Edit"));
+                cell.addListener(this);
+                return new TableElementCell("Rooms", cell);
             }
             case 3:
             {
-                TableElementButton element = new TableElementButton("exits", "Exits", new TableElementButton.Action("edit", "Edit"));
-                element.addListener(this);
-                return element;
+                TableCellButton cell = new TableCellButton("exits", new TableCellButton.Action("edit", "Edit"));
+                cell.addListener(this);
+                return new TableElementCell("Exits", cell);
             }
         }
 
@@ -91,28 +91,28 @@ public class TableDataSourceMazeGenerationInfo extends TableDataSourceSegmented 
     }
 
     @Override
-    public void actionPerformed(TableElement element, String actionID)
+    public void actionPerformed(TableCell cell, String actionID)
     {
-        if ("rooms".equals(element.getID()))
+        if ("rooms".equals(cell.getID()))
         {
             navigator.pushTable(new GuiTable(tableDelegate, new TableDataSourceSelection(mazeComponent().rooms, DEFAULT_MAX_COMPONENT_SIZE, tableDelegate, navigator)));
         }
-        else if ("exits".equals(element.getID()))
+        else if ("exits".equals(cell.getID()))
         {
             navigator.pushTable(new GuiTable(tableDelegate, new TableDataSourceMazePathList(mazeComponent().exitPaths, tableDelegate, navigator, mazeComponent().rooms.boundsLower(), mazeComponent().rooms.boundsHigher())));
         }
     }
 
     @Override
-    public void valueChanged(TableElementPropertyDefault element)
+    public void valueChanged(TableCellPropertyDefault cell)
     {
-        if ("mazeID".equals(element.getID()))
+        if ("mazeID".equals(cell.getID()))
         {
-            generationInfo.mazeID = (String) element.getPropertyValue();
+            generationInfo.mazeID = (String) cell.getPropertyValue();
         }
-        else if ("weight".equals(element.getID()))
+        else if ("weight".equals(cell.getID()))
         {
-            generationInfo.mazeComponent.weight = TableElements.toDouble((Float) element.getPropertyValue());
+            generationInfo.mazeComponent.weight = TableElements.toDouble((Float) cell.getPropertyValue());
         }
     }
 

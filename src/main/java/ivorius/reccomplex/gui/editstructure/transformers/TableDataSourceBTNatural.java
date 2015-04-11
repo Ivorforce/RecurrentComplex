@@ -9,9 +9,7 @@ import ivorius.reccomplex.gui.GuiValidityStateIndicator;
 import ivorius.reccomplex.gui.TableDataSourceExpression;
 import ivorius.reccomplex.gui.table.*;
 import ivorius.reccomplex.structures.generic.transformers.TransformerNatural;
-import ivorius.reccomplex.utils.IvTranslations;
 import net.minecraft.block.Block;
-import org.apache.commons.lang3.StringUtils;
 
 /**
  * Created by lukas on 05.06.14.
@@ -37,15 +35,15 @@ public class TableDataSourceBTNatural extends TableDataSourceSegmented
         this.transformer = transformer;
     }
 
-    public static TableElementString elementForBlock(String id, String title, Block block)
+    public static TableCellString elementForBlock(String id, Block block)
     {
-        TableElementString element = new TableElementString(id, title, Block.blockRegistry.getNameForObject(block));
+        TableCellString element = new TableCellString(id, Block.blockRegistry.getNameForObject(block));
         element.setShowsValidityState(true);
         setStateForBlockTextfield(element);
         return element;
     }
 
-    public static void setStateForBlockTextfield(TableElementString elementString)
+    public static void setStateForBlockTextfield(TableCellString elementString)
     {
         elementString.setValidityState(stateForBlock(elementString.getPropertyValue()));
     }

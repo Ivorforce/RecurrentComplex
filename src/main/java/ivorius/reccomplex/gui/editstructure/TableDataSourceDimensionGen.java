@@ -8,13 +8,11 @@ package ivorius.reccomplex.gui.editstructure;
 import ivorius.reccomplex.gui.TableDataSourceExpression;
 import ivorius.reccomplex.gui.table.*;
 import ivorius.reccomplex.structures.generic.DimensionGenerationInfo;
-import ivorius.reccomplex.utils.IvTranslations;
-import org.apache.commons.lang3.StringUtils;
 
 /**
  * Created by lukas on 05.06.14.
  */
-public class TableDataSourceDimensionGen extends TableDataSourceSegmented implements TableElementPropertyListener
+public class TableDataSourceDimensionGen extends TableDataSourceSegmented implements TableCellPropertyListener
 {
     private DimensionGenerationInfo generationInfo;
 
@@ -45,20 +43,20 @@ public class TableDataSourceDimensionGen extends TableDataSourceSegmented implem
     {
         if (segment == 1)
         {
-            TableElementFloatNullable element = new TableElementFloatNullable("weight", "Weight", TableElements.toFloat(generationInfo.getGenerationWeight()), 1.0f, 0, 10, "D", "C");
-            element.addPropertyListener(this);
-            return element;
+            TableCellFloatNullable cell = new TableCellFloatNullable("weight", TableElements.toFloat(generationInfo.getGenerationWeight()), 1.0f, 0, 10, "D", "C");
+            cell.addPropertyListener(this);
+            return new TableElementCell("Weight", cell);
         }
 
         return super.elementForIndexInSegment(table, index, segment);
     }
 
     @Override
-    public void valueChanged(TableElementPropertyDefault element)
+    public void valueChanged(TableCellPropertyDefault cell)
     {
-        if ("weight".equals(element.getID()))
+        if ("weight".equals(cell.getID()))
         {
-            generationInfo.setGenerationWeight(TableElements.toDouble((Float) element.getPropertyValue()));
+            generationInfo.setGenerationWeight(TableElements.toDouble((Float) cell.getPropertyValue()));
         }
     }
 }

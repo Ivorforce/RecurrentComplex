@@ -5,7 +5,6 @@
 
 package ivorius.reccomplex.gui.table;
 
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.util.MathHelper;
 
@@ -16,7 +15,7 @@ import java.util.List;
 /**
  * Created by lukas on 02.06.14.
  */
-public class TableElementPresetAction extends TableElementDefault
+public class TableCellPresetAction extends TableCellDefault
 {
     protected GuiButton changePresetButton;
     protected GuiButton runActionButton;
@@ -24,15 +23,15 @@ public class TableElementPresetAction extends TableElementDefault
     protected String currentActionID;
 
     protected String actionTitle;
-    protected TableElementButton.Action[] actions;
+    protected TableCellButton.Action[] actions;
 
-    protected List<TableElementActionListener> listeners = new ArrayList<>();
+    protected List<TableCellActionListener> listeners = new ArrayList<>();
 
     protected float actionButtonWidth = 0.4f;
 
-    public TableElementPresetAction(String id, String title, String actionTitle, TableElementButton.Action... actions)
+    public TableCellPresetAction(String id, String actionTitle, TableCellButton.Action... actions)
     {
-        super(id, title);
+        super(id);
         this.actionTitle = actionTitle;
         this.actions = actions;
         currentActionID = actions[0].id;
@@ -43,22 +42,22 @@ public class TableElementPresetAction extends TableElementDefault
         return Bounds.boundsWithSize(button.xPosition, button.width, button.yPosition, button.height);
     }
 
-    public void addListener(TableElementActionListener listener)
+    public void addListener(TableCellActionListener listener)
     {
         listeners.add(listener);
     }
 
-    public void removeListener(TableElementActionListener listener)
+    public void removeListener(TableCellActionListener listener)
     {
         listeners.remove(listener);
     }
 
-    public List<TableElementActionListener> listeners()
+    public List<TableCellActionListener> listeners()
     {
         return Collections.unmodifiableList(listeners);
     }
 
-    public TableElementButton.Action[] getActions()
+    public TableCellButton.Action[] getActions()
     {
         return actions;
     }
@@ -113,7 +112,7 @@ public class TableElementPresetAction extends TableElementDefault
 
         if (buttonID == 0)
         {
-            TableElementButton.Action newAction = actions[(currentActionIndex() + 1) % actions.length];
+            TableCellButton.Action newAction = actions[(currentActionIndex() + 1) % actions.length];
             currentActionID = newAction.id;
             changePresetButton.displayString = newAction.title;
 
@@ -121,7 +120,7 @@ public class TableElementPresetAction extends TableElementDefault
         }
         else if (buttonID == 1)
         {
-            for (TableElementActionListener listener : listeners)
+            for (TableCellActionListener listener : listeners)
                 listener.actionPerformed(this, currentActionID);
         }
     }
@@ -131,12 +130,12 @@ public class TableElementPresetAction extends TableElementDefault
     {
         super.drawFloating(screen, mouseX, mouseY, partialTicks);
 
-        TableElementButton.Action action = currentAction();
+        TableCellButton.Action action = currentAction();
         if (action != null && action.tooltip != null)
             screen.drawTooltipRect(action.tooltip, getBounds(changePresetButton), mouseX, mouseY, getFontRenderer());
     }
 
-    private TableElementButton.Action currentAction()
+    private TableCellButton.Action currentAction()
     {
         int index = currentActionIndex();
         return index >= 0 ? actions[index] : null;
@@ -148,7 +147,7 @@ public class TableElementPresetAction extends TableElementDefault
 
         for (int i = 0; i < actions.length; i++)
         {
-            TableElementButton.Action action = actions[i];
+            TableCellButton.Action action = actions[i];
 
             if (action.id.equals(currentActionID))
                 currentIndex = i;

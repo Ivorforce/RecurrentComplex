@@ -15,7 +15,7 @@ import net.minecraftforge.common.util.ForgeDirection;
 /**
  * Created by lukas on 05.06.14.
  */
-public class TableDataSourceBTRuins extends TableDataSourceSegmented implements TableElementPropertyListener
+public class TableDataSourceBTRuins extends TableDataSourceSegmented implements TableCellPropertyListener
 {
     private TransformerRuins transformer;
 
@@ -55,34 +55,34 @@ public class TableDataSourceBTRuins extends TableDataSourceSegmented implements 
                 switch (index)
                 {
                     case 0:
-                        return new TableElementTitle("decayTitle", "", IvTranslations.get("reccomplex.transformer.ruins.decay.title"));
+                        return new TableElementCell(new TableCellTitle("decayTitle", IvTranslations.get("reccomplex.transformer.ruins.decay.title")));
                     case 1:
                     {
-                        TableElementFloatRange element = new TableElementFloatRange("decay", IvTranslations.get("reccomplex.transformer.ruins.decay.base"), new FloatRange(transformer.minDecay, transformer.maxDecay), 0.0f, 1.0f, 2);
-                        element.setTooltip(IvTranslations.formatLines("reccomplex.transformer.ruins.decay.base.tooltip"));
-                        element.addPropertyListener(this);
-                        return element;
+                        TableCellFloatRange cell = new TableCellFloatRange("decay", new FloatRange(transformer.minDecay, transformer.maxDecay), 0.0f, 1.0f, 2);
+                        cell.setTooltip(IvTranslations.formatLines("reccomplex.transformer.ruins.decay.base.tooltip"));
+                        cell.addPropertyListener(this);
+                        return new TableElementCell(IvTranslations.get("reccomplex.transformer.ruins.decay.base"), cell);
                     }
                     case 2:
                     {
-                        TableElementFloat element = new TableElementFloat("decayChaos", IvTranslations.get("reccomplex.transformer.ruins.decay.chaos"), transformer.decayChaos, 0.0f, 1.0f);
-                        element.setTooltip(IvTranslations.formatLines("reccomplex.transformer.ruins.decay.chaos.tooltip"));
-                        element.addPropertyListener(this);
-                        return element;
+                        TableCellFloat cell = new TableCellFloat("decayChaos", transformer.decayChaos, 0.0f, 1.0f);
+                        cell.setTooltip(IvTranslations.formatLines("reccomplex.transformer.ruins.decay.chaos.tooltip"));
+                        cell.addPropertyListener(this);
+                        return new TableElementCell(IvTranslations.get("reccomplex.transformer.ruins.decay.chaos"), cell);
                     }
                     case 3:
                     {
-                        TableElementFloat element = new TableElementFloat("decayValueDensity", IvTranslations.get("reccomplex.transformer.ruins.decay.density"), transformer.decayValueDensity, 0.0f, 1.0f);
-                        element.setTooltip(IvTranslations.formatLines("reccomplex.transformer.ruins.decay.density.tooltip"));
-                        element.addPropertyListener(this);
-                        return element;
+                        TableCellFloat cell = new TableCellFloat("decayValueDensity", transformer.decayValueDensity, 0.0f, 1.0f);
+                        cell.setTooltip(IvTranslations.formatLines("reccomplex.transformer.ruins.decay.density.tooltip"));
+                        cell.addPropertyListener(this);
+                        return new TableElementCell(IvTranslations.get("reccomplex.transformer.ruins.decay.density"), cell);
                     }
                     case 4:
                     {
-                        TableElementEnum element = new TableElementEnum<>("decaySide", IvTranslations.get("reccomplex.transformer.ruins.decay.direction"), transformer.decayDirection, TableDirections.getDirectionOptions(ForgeDirection.VALID_DIRECTIONS));
-                        element.setTooltip(IvTranslations.formatLines("reccomplex.transformer.ruins.decay.direction.tooltip"));
-                        element.addPropertyListener(this);
-                        return element;
+                        TableCellEnum cell = new TableCellEnum<>("decaySide", transformer.decayDirection, TableDirections.getDirectionOptions(ForgeDirection.VALID_DIRECTIONS));
+                        cell.setTooltip(IvTranslations.formatLines("reccomplex.transformer.ruins.decay.direction.tooltip"));
+                        cell.addPropertyListener(this);
+                        return new TableElementCell(IvTranslations.get("reccomplex.transformer.ruins.decay.direction"), cell);
                     }
                 }
                 break;
@@ -90,20 +90,20 @@ public class TableDataSourceBTRuins extends TableDataSourceSegmented implements 
                 switch (index)
                 {
                     case 0:
-                        return new TableElementTitle("otherTitle", "", IvTranslations.get("reccomplex.transformer.ruins.other.title"));
+                        return new TableElementCell(new TableCellTitle("otherTitle", IvTranslations.get("reccomplex.transformer.ruins.other.title")));
                     case 1:
                     {
-                        TableElementFloat element = new TableElementFloat("erosion", IvTranslations.get("reccomplex.transformer.ruins.erosion"), transformer.blockErosion, 0.0f, 1.0f);
+                        TableCellFloat element = new TableCellFloat("erosion", transformer.blockErosion, 0.0f, 1.0f);
                         element.setTooltip(IvTranslations.formatLines("reccomplex.transformer.ruins.erosion.tooltip"));
                         element.addPropertyListener(this);
-                        return element;
+                        return new TableElementCell(IvTranslations.get("reccomplex.transformer.ruins.erosion"), element);
                     }
                     case 2:
                     {
-                        TableElementFloat element = new TableElementFloat("vines", IvTranslations.get("reccomplex.transformer.ruins.vines"), transformer.vineGrowth, 0.0f, 1.0f);
+                        TableCellFloat element = new TableCellFloat("vines", transformer.vineGrowth, 0.0f, 1.0f);
                         element.setTooltip(IvTranslations.formatLines("reccomplex.transformer.ruins.vines.tooltip"));
                         element.addPropertyListener(this);
-                        return element;
+                        return new TableElementCell(IvTranslations.get("reccomplex.transformer.ruins.vines"), element);
                     }
                 }
                 break;
@@ -113,30 +113,33 @@ public class TableDataSourceBTRuins extends TableDataSourceSegmented implements 
     }
 
     @Override
-    public void valueChanged(TableElementPropertyDefault element)
+    public void valueChanged(TableCellPropertyDefault cell)
     {
-        switch (element.getID())
+        if (cell.getID() != null)
         {
-            case "decaySide":
-                transformer.decayDirection = (ForgeDirection) element.getPropertyValue();
-                break;
-            case "decay":
-                FloatRange range = (FloatRange) element.getPropertyValue();
-                transformer.minDecay = range.getMin();
-                transformer.maxDecay = range.getMax();
-                break;
-            case "decayChaos":
-                transformer.decayChaos = (float) element.getPropertyValue();
-                break;
-            case "decayValueDensity":
-                transformer.decayValueDensity = (float) element.getPropertyValue();
-                break;
-            case "erosion":
-                transformer.blockErosion = (float) element.getPropertyValue();
-                break;
-            case "vines":
-                transformer.vineGrowth = (float) element.getPropertyValue();
-                break;
+            switch (cell.getID())
+            {
+                case "decaySide":
+                    transformer.decayDirection = (ForgeDirection) cell.getPropertyValue();
+                    break;
+                case "decay":
+                    FloatRange range = (FloatRange) cell.getPropertyValue();
+                    transformer.minDecay = range.getMin();
+                    transformer.maxDecay = range.getMax();
+                    break;
+                case "decayChaos":
+                    transformer.decayChaos = (float) cell.getPropertyValue();
+                    break;
+                case "decayValueDensity":
+                    transformer.decayValueDensity = (float) cell.getPropertyValue();
+                    break;
+                case "erosion":
+                    transformer.blockErosion = (float) cell.getPropertyValue();
+                    break;
+                case "vines":
+                    transformer.vineGrowth = (float) cell.getPropertyValue();
+                    break;
+            }
         }
     }
 }

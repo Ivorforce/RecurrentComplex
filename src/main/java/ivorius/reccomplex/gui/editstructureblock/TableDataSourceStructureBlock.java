@@ -12,19 +12,18 @@ import ivorius.reccomplex.gui.TableDirections;
 import ivorius.reccomplex.gui.table.*;
 import ivorius.reccomplex.structures.StructureRegistry;
 import ivorius.ivtoolkit.blocks.Directions;
-import ivorius.reccomplex.utils.DirectionNames;
 import joptsimple.internal.Strings;
 import net.minecraftforge.common.util.ForgeDirection;
 import org.apache.commons.lang3.ArrayUtils;
 
 import java.util.Arrays;
 
-import static ivorius.reccomplex.gui.table.TableElementEnum.Option;
+import static ivorius.reccomplex.gui.table.TableCellEnum.Option;
 
 /**
  * Created by lukas on 05.06.14.
  */
-public class TableDataSourceStructureBlock extends TableDataSourceSegmented implements TableElementPropertyListener
+public class TableDataSourceStructureBlock extends TableDataSourceSegmented implements TableCellPropertyListener
 {
     protected TileEntityStructureGenerator structureGenerator;
 
@@ -85,46 +84,46 @@ public class TableDataSourceStructureBlock extends TableDataSourceSegmented impl
     {
         if (segment == 0)
         {
-            TableElementBoolean element = new TableElementBoolean("simpleMode", "Simple Mode", structureGenerator.isSimpleMode());
-            element.addPropertyListener(this);
-            return element;
+            TableCellBoolean cell = new TableCellBoolean("simpleMode", structureGenerator.isSimpleMode());
+            cell.addPropertyListener(this);
+            return new TableElementCell("Simple Mode", cell);
         }
         else if (segment == 1)
         {
             if (structureGenerator.isSimpleMode())
             {
-                TableElementString element = new TableElementString("generators", "Generators (A,B,...)", Strings.join(structureGenerator.getStructureNames(), ","));
-                element.setShowsValidityState(true);
-                element.setValidityState(doAllStructuresExist(structureGenerator.getStructureNames()) ? GuiValidityStateIndicator.State.VALID : GuiValidityStateIndicator.State.SEMI_VALID);
-                element.addPropertyListener(this);
-                return element;
+                TableCellString cell = new TableCellString("generators", Strings.join(structureGenerator.getStructureNames(), ","));
+                cell.setShowsValidityState(true);
+                cell.setValidityState(doAllStructuresExist(structureGenerator.getStructureNames()) ? GuiValidityStateIndicator.State.VALID : GuiValidityStateIndicator.State.SEMI_VALID);
+                cell.addPropertyListener(this);
+                return new TableElementCell("Generators (A,B,...)", cell);
             }
             else
             {
-                TableElementString element = new TableElementString("listID", "List ID", structureGenerator.getStructureListID());
-                element.addPropertyListener(this);
-                return element;
+                TableCellString cell = new TableCellString("listID", structureGenerator.getStructureListID());
+                cell.addPropertyListener(this);
+                return new TableElementCell("List ID", cell);
             }
         }
         else if (segment == 2)
         {
             if (index == 0)
             {
-                TableElementInteger element = new TableElementInteger("xShift", "Shift: X", structureGenerator.getStructureShift().x, -50, 50);
-                element.addPropertyListener(this);
-                return element;
+                TableCellInteger cell = new TableCellInteger("xShift", structureGenerator.getStructureShift().x, -50, 50);
+                cell.addPropertyListener(this);
+                return new TableElementCell("Shift: X", cell);
             }
             else if (index == 1)
             {
-                TableElementInteger element = new TableElementInteger("yShift", "Shift: Y", structureGenerator.getStructureShift().y, -50, 50);
-                element.addPropertyListener(this);
-                return element;
+                TableCellInteger cell = new TableCellInteger("yShift", structureGenerator.getStructureShift().y, -50, 50);
+                cell.addPropertyListener(this);
+                return new TableElementCell("Shift: Y", cell);
             }
             else if (index == 2)
             {
-                TableElementInteger element = new TableElementInteger("zShift", "Shift: Z", structureGenerator.getStructureShift().z, -50, 50);
-                element.addPropertyListener(this);
-                return element;
+                TableCellInteger cell = new TableCellInteger("zShift", structureGenerator.getStructureShift().z, -50, 50);
+                cell.addPropertyListener(this);
+                return new TableElementCell("Shift: Z", cell);
             }
         }
         else if (segment == 3)
@@ -133,24 +132,24 @@ public class TableDataSourceStructureBlock extends TableDataSourceSegmented impl
             {
                 if (index == 0)
                 {
-                    TableElementEnum element = new TableElementEnum<>("rotation", "Rotation", structureGenerator.getStructureRotation(),
+                    TableCellEnum cell = new TableCellEnum<>("rotation", structureGenerator.getStructureRotation(),
                             new Option<>(0, "0 Clockwise"), new Option<>(1, "1 Clockwise"), new Option<>(2, "2 Clockwise"), new Option<>(3, "3 Clockwise"), new Option<Integer>(null, "Random (if rotatable)"));
-                    element.addPropertyListener(this);
-                    return element;
+                    cell.addPropertyListener(this);
+                    return new TableElementCell("Rotation", cell);
                 }
                 else if (index == 1)
                 {
-                    TableElementEnum element = new TableElementEnum<>("mirror", "Mirror", structureGenerator.getStructureMirror(),
+                    TableCellEnum cell = new TableCellEnum<>("mirror", structureGenerator.getStructureMirror(),
                             new Option<>(false, "false"), new Option<>(true, "true"), new Option<Boolean>(null, "Random (if mirrorable)"));
-                    element.addPropertyListener(this);
-                    return element;
+                    cell.addPropertyListener(this);
+                    return new TableElementCell("Mirror", cell);
                 }
             }
             else
             {
-                TableElementEnum element = new TableElementEnum<>("front", "Front", structureGenerator.getFront(), TableDirections.getDirectionOptions(ArrayUtils.add(Directions.HORIZONTAL, null), "random"));
-                element.addPropertyListener(this);
-                return element;
+                TableCellEnum cell = new TableCellEnum<>("front", structureGenerator.getFront(), TableDirections.getDirectionOptions(ArrayUtils.add(Directions.HORIZONTAL, null), "random"));
+                cell.addPropertyListener(this);
+                return new TableElementCell("Front", cell);
             }
         }
 
@@ -158,58 +157,61 @@ public class TableDataSourceStructureBlock extends TableDataSourceSegmented impl
     }
 
     @Override
-    public void valueChanged(TableElementPropertyDefault element)
+    public void valueChanged(TableCellPropertyDefault cell)
     {
-        switch (element.getID())
+        if (cell.getID() != null)
         {
-            case "simpleMode":
-                structureGenerator.setSimpleMode((Boolean) element.getPropertyValue());
-                tableDelegate.reloadData();
-                break;
-            case "generators":
+            switch (cell.getID())
             {
-                String value = ((String) element.getPropertyValue());
-                structureGenerator.setStructureNames(Arrays.asList(value.split(",")));
-                ((TableElementString) element).setValidityState(doAllStructuresExist(structureGenerator.getStructureNames()) ? GuiValidityStateIndicator.State.VALID : GuiValidityStateIndicator.State.SEMI_VALID);
-                break;
-            }
-            case "listID":
-            {
-                structureGenerator.setStructureListID((String) element.getPropertyValue());
-                break;
-            }
-            case "xShift":
-            {
-                BlockCoord shift = structureGenerator.getStructureShift();
-                structureGenerator.setStructureShift(new BlockCoord((int) element.getPropertyValue(), shift.y, shift.z));
-                break;
-            }
-            case "yShift":
-            {
-                BlockCoord shift = structureGenerator.getStructureShift();
-                structureGenerator.setStructureShift(new BlockCoord(shift.x, (int) element.getPropertyValue(), shift.z));
-                break;
-            }
-            case "zShift":
-            {
-                BlockCoord shift = structureGenerator.getStructureShift();
-                structureGenerator.setStructureShift(new BlockCoord(shift.x, shift.y, (int) element.getPropertyValue()));
-                break;
-            }
-            case "rotation":
-            {
-                structureGenerator.setStructureRotation((Integer) element.getPropertyValue());
-                break;
-            }
-            case "mirror":
-            {
-                structureGenerator.setStructureMirror((Boolean) element.getPropertyValue());
-                break;
-            }
-            case "front":
-            {
-                structureGenerator.setFront((ForgeDirection) element.getPropertyValue());
-                break;
+                case "simpleMode":
+                    structureGenerator.setSimpleMode((Boolean) cell.getPropertyValue());
+                    tableDelegate.reloadData();
+                    break;
+                case "generators":
+                {
+                    String value = ((String) cell.getPropertyValue());
+                    structureGenerator.setStructureNames(Arrays.asList(value.split(",")));
+                    ((TableCellString) cell).setValidityState(doAllStructuresExist(structureGenerator.getStructureNames()) ? GuiValidityStateIndicator.State.VALID : GuiValidityStateIndicator.State.SEMI_VALID);
+                    break;
+                }
+                case "listID":
+                {
+                    structureGenerator.setStructureListID((String) cell.getPropertyValue());
+                    break;
+                }
+                case "xShift":
+                {
+                    BlockCoord shift = structureGenerator.getStructureShift();
+                    structureGenerator.setStructureShift(new BlockCoord((int) cell.getPropertyValue(), shift.y, shift.z));
+                    break;
+                }
+                case "yShift":
+                {
+                    BlockCoord shift = structureGenerator.getStructureShift();
+                    structureGenerator.setStructureShift(new BlockCoord(shift.x, (int) cell.getPropertyValue(), shift.z));
+                    break;
+                }
+                case "zShift":
+                {
+                    BlockCoord shift = structureGenerator.getStructureShift();
+                    structureGenerator.setStructureShift(new BlockCoord(shift.x, shift.y, (int) cell.getPropertyValue()));
+                    break;
+                }
+                case "rotation":
+                {
+                    structureGenerator.setStructureRotation((Integer) cell.getPropertyValue());
+                    break;
+                }
+                case "mirror":
+                {
+                    structureGenerator.setStructureMirror((Boolean) cell.getPropertyValue());
+                    break;
+                }
+                case "front":
+                {
+                    structureGenerator.setFront((ForgeDirection) cell.getPropertyValue());
+                    break;
+                }
             }
         }
     }

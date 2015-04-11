@@ -11,7 +11,7 @@ import ivorius.reccomplex.gui.table.*;
 /**
  * Created by lukas on 05.06.14.
  */
-public class TableDataSourceSpawnCommandEntry extends TableDataSourceSegmented implements TableElementPropertyListener, TableElementActionListener
+public class TableDataSourceSpawnCommandEntry extends TableDataSourceSegmented implements TableCellPropertyListener, TableCellActionListener
 {
     private TileEntitySpawnCommand.Entry entry;
 
@@ -40,43 +40,43 @@ public class TableDataSourceSpawnCommandEntry extends TableDataSourceSegmented i
     {
         if (index == 0)
         {
-            TableElementPresetAction element = new TableElementPresetAction("default", "Preset", "Apply", new TableElementButton.Action("spawner", "Mob Spawner"), new TableElementButton.Action("entity", "Spawn Entity"));
-            element.addListener(this);
-            return element;
+            TableCellPresetAction cell = new TableCellPresetAction("default", "Apply", new TableCellButton.Action("spawner", "Mob Spawner"), new TableCellButton.Action("entity", "Spawn Entity"));
+            cell.addListener(this);
+            return new TableElementCell("Preset", cell);
         }
         else if (index == 1)
         {
-            TableElementString element = new TableElementString("command", "Command", entry.command);
-            element.addPropertyListener(this);
-            return element;
+            TableCellString cell = new TableCellString("command", entry.command);
+            cell.addPropertyListener(this);
+            return new TableElementCell("Command", cell);
         }
         else if (index == 2)
         {
-            TableElementFloatNullable element = new TableElementFloatNullable("weight", "Weight", TableElements.toFloat(entry.weight), 1.0f, 0, 10, "D", "C");
-            element.addPropertyListener(this);
-            return element;
+            TableCellFloatNullable cell = new TableCellFloatNullable("weight", TableElements.toFloat(entry.weight), 1.0f, 0, 10, "D", "C");
+            cell.addPropertyListener(this);
+            return new TableElementCell("Weight", cell);
         }
 
         return null;
     }
 
     @Override
-    public void valueChanged(TableElementPropertyDefault element)
+    public void valueChanged(TableCellPropertyDefault cell)
     {
-        if ("command".equals(element.getID()))
+        if ("command".equals(cell.getID()))
         {
-            entry.command = (String) element.getPropertyValue();
+            entry.command = (String) cell.getPropertyValue();
         }
-        else if ("weight".equals(element.getID()))
+        else if ("weight".equals(cell.getID()))
         {
-            entry.weight = TableElements.toDouble((Float) element.getPropertyValue());
+            entry.weight = TableElements.toDouble((Float) cell.getPropertyValue());
         }
     }
 
     @Override
-    public void actionPerformed(TableElement element, String actionID)
+    public void actionPerformed(TableCell cell, String actionID)
     {
-        if ("default".equals(element.getID()))
+        if ("default".equals(cell.getID()))
         {
             if ("spawner".equals(actionID))
                 entry.command = "/setblock ~ ~ ~ mob_spawner 0 replace {EntityId:Zombie}";

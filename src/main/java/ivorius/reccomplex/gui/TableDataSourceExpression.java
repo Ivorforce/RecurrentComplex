@@ -21,14 +21,14 @@ import java.util.List;
 /**
  * Created by lukas on 26.03.15.
  */
-public class TableDataSourceExpression<T> implements TableDataSource, TableElementPropertyListener
+public class TableDataSourceExpression<T> implements TableDataSource, TableCellPropertyListener
 {
     public String title;
     private List<String> tooltip;
 
     public ExpressionCache<T> expressionCache;
 
-    protected TableElementTitle parsed;
+    protected TableCellTitle parsed;
 
     public TableDataSourceExpression(String title, List<String> tooltip, ExpressionCache<T> expressionCache)
     {
@@ -83,31 +83,31 @@ public class TableDataSourceExpression<T> implements TableDataSource, TableEleme
     {
         if (index == 0)
         {
-            TableElementString element = new TableElementString("expression", title, expressionCache.getExpression());
+            TableCellString cell = new TableCellString("expression", expressionCache.getExpression());
             if (tooltip != null)
-                element.setTooltip(tooltip);
-            element.setShowsValidityState(true);
-            element.setValidityState(getValidityState(expressionCache));
-            element.addPropertyListener(this);
-            return element;
+                cell.setTooltip(tooltip);
+            cell.setShowsValidityState(true);
+            cell.setValidityState(getValidityState(expressionCache));
+            cell.addPropertyListener(this);
+            return new TableElementCell(title, cell);
         }
         else if (index == 1)
         {
-            parsed = new TableElementTitle("parsedExpression", "", StringUtils.abbreviate(parsedString(expressionCache), 60));
-            parsed.setPositioning(TableElementTitle.Positioning.TOP);
-            return parsed;
+            parsed = new TableCellTitle("parsedExpression", StringUtils.abbreviate(parsedString(expressionCache), 60));
+            parsed.setPositioning(TableCellTitle.Positioning.TOP);
+            return new TableElementCell(parsed);
         }
 
         return null;
     }
 
     @Override
-    public void valueChanged(TableElementPropertyDefault element)
+    public void valueChanged(TableCellPropertyDefault cell)
     {
-        if ("expression".equals(element.getID()))
+        if ("expression".equals(cell.getID()))
         {
-            expressionCache.setExpression((String) element.getPropertyValue());
-            ((TableElementString) element).setValidityState(getValidityState(expressionCache));
+            expressionCache.setExpression((String) cell.getPropertyValue());
+            ((TableCellString) cell).setValidityState(getValidityState(expressionCache));
             if (parsed != null)
                 parsed.setDisplayString(StringUtils.abbreviate(parsedString(expressionCache), 60));
         }

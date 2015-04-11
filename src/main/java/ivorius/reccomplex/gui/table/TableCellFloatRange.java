@@ -10,7 +10,7 @@ import ivorius.ivtoolkit.gui.*;
 /**
  * Created by lukas on 02.06.14.
  */
-public class TableElementFloatRange extends TableElementPropertyDefault<FloatRange> implements GuiControlListener<GuiSliderMultivalue>
+public class TableCellFloatRange extends TableCellPropertyDefault<FloatRange> implements GuiControlListener<GuiSliderMultivalue>
 {
     private GuiSliderRange slider;
 
@@ -20,9 +20,9 @@ public class TableElementFloatRange extends TableElementPropertyDefault<FloatRan
     private float min;
     private float max;
 
-    public TableElementFloatRange(String id, String title, FloatRange value, float min, float max, int floatDisplayPrecision)
+    public TableCellFloatRange(String id, FloatRange value, float min, float max, int floatDisplayPrecision)
     {
-        super(id, title, value);
+        super(id, value);
 
         this.min = min;
         this.max = max;

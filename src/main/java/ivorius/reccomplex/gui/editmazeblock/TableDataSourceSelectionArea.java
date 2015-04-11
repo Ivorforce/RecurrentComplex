@@ -12,7 +12,7 @@ import ivorius.reccomplex.structures.generic.Selection;
 /**
 * Created by lukas on 08.10.14.
 */
-public class TableDataSourceSelectionArea extends TableDataSourceSegmented implements TableElementPropertyListener
+public class TableDataSourceSelectionArea extends TableDataSourceSegmented implements TableCellPropertyListener
 {
     private Selection.Area area;
 
@@ -41,34 +41,37 @@ public class TableDataSourceSelectionArea extends TableDataSourceSegmented imple
     {
         if (segment == 0)
         {
-            TableElementBoolean element = new TableElementBoolean("additive", "Additive", area.isAdditive());
-            element.addPropertyListener(this);
-            return element;
+            TableCellBoolean cell = new TableCellBoolean("additive", area.isAdditive());
+            cell.addPropertyListener(this);
+            return new TableElementCell("Additive", cell);
         }
         else if (segment == 1)
         {
             String title = String.format("Range: %s", index == 0 ? "X" : index == 1 ? "Y" : index == 2 ? "Z" : "" + index);
             IntegerRange intRange = new IntegerRange(area.getMinCoord()[index], area.getMaxCoord()[index]);
-            TableElementIntegerRange element = new TableElementIntegerRange("area" + index, title, intRange, 0, dimensions[index] - 1);
-            element.addPropertyListener(this);
-            return element;
+            TableCellIntegerRange cell = new TableCellIntegerRange("area" + index, intRange, 0, dimensions[index] - 1);
+            cell.addPropertyListener(this);
+            return new TableElementCell(title, cell);
         }
 
         return null;
     }
 
     @Override
-    public void valueChanged(TableElementPropertyDefault element)
+    public void valueChanged(TableCellPropertyDefault cell)
     {
-        if (element.getID().startsWith("area"))
+        if (cell.getID() != null)
         {
-            int dim = Integer.valueOf(element.getID().substring(4));
-            IntegerRange range = (IntegerRange) element.getPropertyValue();
-            area.setCoord(dim, range.getMin(), range.getMax());
-        }
-        else if ("additive".equals(element.getID()))
-        {
-            area.setAdditive((Boolean) element.getPropertyValue());
+            if (cell.getID().startsWith("area"))
+            {
+                int dim = Integer.valueOf(cell.getID().substring(4));
+                IntegerRange range = (IntegerRange) cell.getPropertyValue();
+                area.setCoord(dim, range.getMin(), range.getMax());
+            }
+            else if ("additive".equals(cell.getID()))
+            {
+                area.setAdditive((Boolean) cell.getPropertyValue());
+            }
         }
     }
 }

@@ -12,7 +12,7 @@ import java.util.List;
 /**
  * Created by lukas on 20.02.15.
  */
-public abstract class TableDataSourceList<T, L extends List<T>> extends TableDataSourceSegmented implements TableElementActionListener
+public abstract class TableDataSourceList<T, L extends List<T>> extends TableDataSourceSegmented implements TableCellActionListener
 {
     protected L list;
 
@@ -150,9 +150,9 @@ public abstract class TableDataSourceList<T, L extends List<T>> extends TableDat
         {
             T t = list.get(index);
 
-            TableElementButton button = new TableElementButton("entry" + index, getDisplayString(t), getEntryActions(index));
-            button.addListener(this);
-            return button;
+            TableCellButton cell = new TableCellButton("entry" + index, getEntryActions(index));
+            cell.addListener(this);
+            return new TableElementCell(getDisplayString(t), cell);
         }
 
         int addIndex = getAddIndex(segment);
@@ -160,16 +160,16 @@ public abstract class TableDataSourceList<T, L extends List<T>> extends TableDat
         {
             if (isUsesPresetActionForAdding())
             {
-                TableElementPresetAction addButton = new TableElementPresetAction("add" + addIndex, "", getAddTitle(), getAddActions());
-                addButton.setActionButtonWidth(0.2f);
-                addButton.addListener(this);
-                return addButton;
+                TableCellPresetAction cell = new TableCellPresetAction("add" + addIndex, getAddTitle(), getAddActions());
+                cell.setActionButtonWidth(0.2f);
+                cell.addListener(this);
+                return new TableElementCell(cell);
             }
             else
             {
-                TableElementButton addButton = new TableElementButton("add" + addIndex, "", getAddActions());
-                addButton.addListener(this);
-                return addButton;
+                TableCellButton cell = new TableCellButton("add" + addIndex, getAddActions());
+                cell.addListener(this);
+                return new TableElementCell(cell);
             }
         }
 
@@ -190,20 +190,20 @@ public abstract class TableDataSourceList<T, L extends List<T>> extends TableDat
                 : -1;
     }
 
-    public TableElementButton.Action[] getAddActions()
+    public TableCellButton.Action[] getAddActions()
     {
         boolean enabled = canEditList();
-        return new TableElementButton.Action[]{new TableElementButton.Action("add", getAddTitle(), enabled)};
+        return new TableCellButton.Action[]{new TableCellButton.Action("add", getAddTitle(), enabled)};
     }
 
-    public TableElementButton.Action[] getEntryActions(int index)
+    public TableCellButton.Action[] getEntryActions(int index)
     {
         boolean enabled = canEditList();
-        return new TableElementButton.Action[]{
-                new TableElementButton.Action("earlier", getEarlierTitle(), index > 0 && enabled),
-                new TableElementButton.Action("later", getLaterTitle(), index < list.size() - 1 && enabled),
-                new TableElementButton.Action("edit", getEditTitle(), enabled),
-                new TableElementButton.Action("delete", getDeleteTitle(), enabled)
+        return new TableCellButton.Action[]{
+                new TableCellButton.Action("earlier", getEarlierTitle(), index > 0 && enabled),
+                new TableCellButton.Action("later", getLaterTitle(), index < list.size() - 1 && enabled),
+                new TableCellButton.Action("edit", getEditTitle(), enabled),
+                new TableCellButton.Action("delete", getDeleteTitle(), enabled)
         };
     }
 
@@ -213,25 +213,28 @@ public abstract class TableDataSourceList<T, L extends List<T>> extends TableDat
     }
 
     @Override
-    public void actionPerformed(TableElement element, String actionID)
+    public void actionPerformed(TableCell cell, String actionID)
     {
-        if (element.getID().startsWith("add"))
+        if (cell.getID() != null)
         {
-            T entry = newEntry(actionID);
-            if (entry != null)
+            if (cell.getID().startsWith("add"))
             {
-                int addIndex = Integer.valueOf(element.getID().substring("add".length()));
-                list.add(addIndex, entry);
+                T entry = newEntry(actionID);
+                if (entry != null)
+                {
+                    int addIndex = Integer.valueOf(cell.getID().substring("add".length()));
+                    list.add(addIndex, entry);
 
-                navigator.pushTable(new GuiTable(tableDelegate, editEntryDataSource(entry)));
+                    navigator.pushTable(new GuiTable(tableDelegate, editEntryDataSource(entry)));
+                }
             }
-        }
-        else if (element.getID().startsWith("entry"))
-        {
-            int index = Integer.valueOf(element.getID().substring("entry".length()));
-            T entry = list.get(index);
+            else if (cell.getID().startsWith("entry"))
+            {
+                int index = Integer.valueOf(cell.getID().substring("entry".length()));
+                T entry = list.get(index);
 
-            performEntryAction(actionID, index, entry);
+                performEntryAction(actionID, index, entry);
+            }
         }
     }
 

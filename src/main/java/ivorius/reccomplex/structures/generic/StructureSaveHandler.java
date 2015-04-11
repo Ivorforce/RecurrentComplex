@@ -37,6 +37,17 @@ public class StructureSaveHandler
     public static final String INACTIVE_DIR_NAME = "inactive";
     private static List<String> importedGenerators = new ArrayList<>();
 
+    public static String getStructuresDirectoryName(boolean activeFolder)
+    {
+        return activeFolder ? ACTIVE_DIR_NAME : INACTIVE_DIR_NAME;
+    }
+
+    public static File getStructuresDirectory(boolean activeFolder)
+    {
+        File structuresFolder = RecurrentComplex.proxy.getBaseFolderFile("structures");
+        return RCFileHelper.getValidatedFolder(structuresFolder, getStructuresDirectoryName(activeFolder), true);
+    }
+
     public static void reloadAllCustomStructures()
     {
         while (!importedGenerators.isEmpty())
@@ -124,8 +135,7 @@ public class StructureSaveHandler
 
     public static boolean saveGenericStructure(GenericStructureInfo info, String structureName, boolean activeFolder)
     {
-        File structuresFolder = RecurrentComplex.proxy.getBaseFolderFile("structures");
-        File parent = RCFileHelper.getValidatedFolder(structuresFolder, activeFolder ? ACTIVE_DIR_NAME : INACTIVE_DIR_NAME, true);
+        File parent = getStructuresDirectory(activeFolder);
         if (parent != null)
         {
             String json = StructureRegistry.createJSONFromStructure(info);
@@ -180,6 +190,36 @@ public class StructureSaveHandler
 
                 return !failed && newFile.exists();
             }
+        }
+
+        return false;
+    }
+
+    public static boolean hasGenericStructure(String structureName, boolean activeFolder)
+    {
+        try
+        {
+            File parent = getStructuresDirectory(activeFolder);
+            return parent != null && new File(parent, structureName + ".zip").exists();
+        }
+        catch (Throwable e)
+        {
+            RecurrentComplex.logger.error("Error when looking up structure", e);
+        }
+
+        return false;
+    }
+
+    public static boolean deleteGenericStructure(String structureName, boolean activeFolder)
+    {
+        try
+        {
+            File parent = getStructuresDirectory(activeFolder);
+            return parent != null && new File(parent, structureName + ".zip").delete();
+        }
+        catch (Throwable e)
+        {
+            RecurrentComplex.logger.error("Error when deleting structure", e);
         }
 
         return false;

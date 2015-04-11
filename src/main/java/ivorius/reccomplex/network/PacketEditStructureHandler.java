@@ -19,21 +19,27 @@ import ivorius.reccomplex.utils.ServerTranslations;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.network.NetHandlerPlayServer;
-import net.minecraft.util.ChatComponentTranslation;
 
 /**
  * Created by lukas on 03.08.14.
  */
 public class PacketEditStructureHandler implements IMessageHandler<PacketEditStructure, IMessage>
 {
-    public static void sendEditStructure(GenericStructureInfo genericStructureInfo, String key, boolean saveAsActive, EntityPlayerMP player)
+    public static void openEditStructure(GenericStructureInfo structureInfo, String structureID, boolean saveAsActive, EntityPlayerMP player)
     {
         StructureEntityInfo structureEntityInfo = StructureEntityInfo.getStructureEntityInfo(player);
 
         if (structureEntityInfo != null)
-            structureEntityInfo.setCachedExportStructureBlockDataNBT(genericStructureInfo.worldDataCompound);
+            structureEntityInfo.setCachedExportStructureBlockDataNBT(structureInfo.worldDataCompound);
 
-        RecurrentComplex.network.sendTo(new PacketEditStructure(genericStructureInfo, key, saveAsActive), player);
+        RecurrentComplex.network.sendTo(new PacketEditStructure(structureInfo, structureID, saveAsActive,
+                StructureSaveHandler.hasGenericStructure(structureID, true),
+                StructureSaveHandler.hasGenericStructure(structureID, false)), player);
+    }
+
+    public static void finishEditStructure(GenericStructureInfo structureInfo, String structureID, boolean saveAsActive, boolean deleteOther)
+    {
+        RecurrentComplex.network.sendToServer(new PacketEditStructure(structureInfo, structureID, saveAsActive, deleteOther));
     }
 
     @Override
@@ -54,15 +60,27 @@ public class PacketEditStructureHandler implements IMessageHandler<PacketEditStr
             if (structureEntityInfo != null)
                 genericStructureInfo.worldDataCompound = structureEntityInfo.getCachedExportStructureBlockDataNBT();
 
-            String path = (message.isSaveAsActive() ? StructureSaveHandler.ACTIVE_DIR_NAME : StructureSaveHandler.INACTIVE_DIR_NAME) + "/";
+            String path = StructureSaveHandler.getStructuresDirectoryName(message.isSaveAsActive()) + "/";
+            String structureID = message.getStructureID();
 
-            if (!StructureSaveHandler.saveGenericStructure(genericStructureInfo, message.getKey(), message.isSaveAsActive()))
+            if (!StructureSaveHandler.saveGenericStructure(genericStructureInfo, structureID, message.isSaveAsActive()))
             {
-                player.addChatMessage(ServerTranslations.format("commands.strucExport.failure", path + message.getKey()));
+                player.addChatMessage(ServerTranslations.format("structure.save.failure", path + structureID));
             }
             else
             {
-                player.addChatMessage(ServerTranslations.format("commands.strucExport.success", path + message.getKey()));
+                player.addChatMessage(ServerTranslations.format("structure.save.success", path + structureID));
+
+                if (message.isDeleteOther() && StructureSaveHandler.hasGenericStructure(structureID, !message.isSaveAsActive()))
+                {
+                    String otherPath = StructureSaveHandler.getStructuresDirectoryName(!message.isSaveAsActive()) + "/";
+
+                    if (StructureSaveHandler.deleteGenericStructure(structureID, !message.isSaveAsActive()))
+                        player.addChatMessage(ServerTranslations.format("structure.delete.success", otherPath + structureID));
+                    else
+                        player.addChatMessage(ServerTranslations.format("structure.delete.failure", otherPath + structureID));
+                }
+
                 StructureSaveHandler.reloadAllCustomStructures();
             }
         }
@@ -73,6 +91,6 @@ public class PacketEditStructureHandler implements IMessageHandler<PacketEditStr
     @SideOnly(Side.CLIENT)
     private void onMessageClient(PacketEditStructure message, MessageContext ctx)
     {
-        Minecraft.getMinecraft().displayGuiScreen(new GuiEditGenericStructure(message.getKey(), message.getStructureInfo(), message.isSaveAsActive()));
+        Minecraft.getMinecraft().displayGuiScreen(new GuiEditGenericStructure(message.getStructureID(), message.getStructureInfo(), message.isSaveAsActive(), message.isStructureInActive(), message.isStructureInInactive()));
     }
 }

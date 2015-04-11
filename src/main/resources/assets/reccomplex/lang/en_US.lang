@@ -53,8 +53,6 @@ commands.structure.notGeneric=Structure '%s' is not generic!
 commands.structure.notRegistered=No structure found by name '%s'!
 
 commands.strucExport.usage=/#export [blueprintName]
-commands.strucExport.failure=Failed to export structure to file '%s'
-commands.strucExport.success=Exported structure to file '%s'
 
 commands.strucEdit.usage=/#edit <structureName>
 
@@ -156,8 +154,14 @@ guiGenericInventory.weight=Weight
 guiGenericInventory.minMax=Min: %s, Max: %s
 guiGenericInventory.minMaxItems=Min Items: %s, Max Items: %s
 guiGenericInventory.weightNumber=Weight: %s
+
 inventorygen.save.success=Exported inventory generator to '%s'
 inventorygen.save.failure=Failed to export inventory generator to '%s'
+
+structure.save.failure=Failed to save structure to file '%s'
+structure.save.success=Saved structure to file '%s'
+structure.delete.failure=Failed to delete structure in file '%s'
+structure.delete.success=Deleted structure structure in file '%s'
 
 structures.gui.true=True
 structures.gui.false=False

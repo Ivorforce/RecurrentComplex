@@ -10,7 +10,9 @@ import ivorius.reccomplex.gui.TableDataSourceExpression;
 import ivorius.reccomplex.gui.table.*;
 import ivorius.reccomplex.structures.StructureRegistry;
 import ivorius.reccomplex.structures.generic.GenericStructureInfo;
+import ivorius.reccomplex.structures.generic.StructureSaveHandler;
 import ivorius.reccomplex.utils.IvTranslations;
+import net.minecraft.util.EnumChatFormatting;
 
 /**
  * Created by lukas on 05.06.14.
@@ -19,20 +21,26 @@ public class TableDataSourceGenericStructure extends TableDataSourceSegmented im
 {
     private GenericStructureInfo structureInfo;
     private String structureKey;
+
     private boolean saveAsActive;
+    private boolean deleteOther = true;
+    private boolean structureInActive;
+    private boolean structureInInactive;
 
     private TableDelegate tableDelegate;
     private TableNavigator navigator;
 
-    public TableDataSourceGenericStructure(GenericStructureInfo structureInfo, String structureKey, boolean saveAsActive, TableDelegate tableDelegate, TableNavigator navigator)
+    public TableDataSourceGenericStructure(GenericStructureInfo structureInfo, String structureKey, boolean saveAsActive, boolean structureInActive, boolean structureInInactive, TableDelegate tableDelegate, TableNavigator navigator)
     {
         this.structureInfo = structureInfo;
         this.structureKey = structureKey;
         this.saveAsActive = saveAsActive;
+        this.structureInActive = structureInActive;
+        this.structureInInactive = structureInInactive;
         this.tableDelegate = tableDelegate;
         this.navigator = navigator;
 
-        addManagedSection(2, new TableDataSourceExpression<>("Dependencies", "reccomplex.expression.dependency.tooltip", structureInfo.dependencies));
+        addManagedSection(3, new TableDataSourceExpression<>("Dependencies", "reccomplex.expression.dependency.tooltip", structureInfo.dependencies));
     }
 
     public GenericStructureInfo getStructureInfo()
@@ -65,6 +73,36 @@ public class TableDataSourceGenericStructure extends TableDataSourceSegmented im
         this.saveAsActive = saveAsActive;
     }
 
+    public boolean isDeleteOther()
+    {
+        return deleteOther;
+    }
+
+    public void setDeleteOther(boolean deleteOther)
+    {
+        this.deleteOther = deleteOther;
+    }
+
+    public boolean isStructureInActive()
+    {
+        return structureInActive;
+    }
+
+    public void setStructureInActive(boolean structureInActive)
+    {
+        this.structureInActive = structureInActive;
+    }
+
+    public boolean isStructureInInactive()
+    {
+        return structureInInactive;
+    }
+
+    public void setStructureInInactive(boolean structureInInactive)
+    {
+        this.structureInInactive = structureInInactive;
+    }
+
     public TableDelegate getTableDelegate()
     {
         return tableDelegate;
@@ -88,7 +126,7 @@ public class TableDataSourceGenericStructure extends TableDataSourceSegmented im
     @Override
     public int numberOfSegments()
     {
-        return 5;
+        return 6;
     }
 
     @Override
@@ -97,12 +135,14 @@ public class TableDataSourceGenericStructure extends TableDataSourceSegmented im
         switch (segment)
         {
             case 0:
-                return 3;
+                return 2 + ((isSaveAsActive() ? isStructureInInactive() : isStructureInActive()) ? 1 : 0);
             case 1:
-                return 2;
-            case 3:
                 return 1;
+            case 2:
+                return 2;
             case 4:
+                return 1;
+            case 5:
                 return 1;
         }
 
@@ -126,18 +166,29 @@ public class TableDataSourceGenericStructure extends TableDataSourceSegmented im
                 }
                 else if (index == 1)
                 {
-                    TableElementBoolean element = new TableElementBoolean("activeFolder", "", saveAsActive, "Save in '/active'", "Save in '/inactive'");
+                    TableElementBoolean element = new TableElementBoolean("activeFolder", "", saveAsActive,
+                            String.format("Save in %s/%s%s", EnumChatFormatting.AQUA, StructureSaveHandler.getStructuresDirectoryName(true), EnumChatFormatting.RESET),
+                            String.format("Save in %s/%s%s", EnumChatFormatting.AQUA, StructureSaveHandler.getStructuresDirectoryName(false), EnumChatFormatting.RESET));
                     element.addPropertyListener(this);
                     return element;
                 }
                 else if (index == 2)
                 {
-                    TableElementButton element = new TableElementButton("metadata", "", new TableElementButton.Action("metadata", "Metadata"));
-                    element.addListener(this);
+                    String path = StructureSaveHandler.getStructuresDirectoryName(!saveAsActive);
+                    TableElementBoolean element = new TableElementBoolean("deleteOther", "", deleteOther,
+                            String.format("%sDelete%s from %s/%s%s", EnumChatFormatting.RED, EnumChatFormatting.RESET, EnumChatFormatting.AQUA, path, EnumChatFormatting.RESET),
+                            String.format("%sKeep%s inside %s/%s%s", EnumChatFormatting.YELLOW, EnumChatFormatting.RESET, EnumChatFormatting.AQUA, path, EnumChatFormatting.RESET));
+                    element.addPropertyListener(this);
                     return element;
                 }
                 break;
             case 1:
+            {
+                TableElementButton element = new TableElementButton("metadata", "", new TableElementButton.Action("metadata", "Metadata"));
+                element.addListener(this);
+                return element;
+            }
+            case 2:
                 if (index == 0)
                 {
                     TableElementBoolean element = new TableElementBoolean("rotatable", IvTranslations.get("reccomplex.structure.rotatable"), structureInfo.rotatable);
@@ -153,13 +204,13 @@ public class TableDataSourceGenericStructure extends TableDataSourceSegmented im
                     return element;
                 }
                 break;
-            case 3:
+            case 4:
             {
                 TableElementButton element = new TableElementButton("editGenerationInfos", "Generation", new TableElementButton.Action("edit", "Edit"));
                 element.addListener(this);
                 return element;
             }
-            case 4:
+            case 5:
             {
                 TableElementButton element = new TableElementButton("editTransformers", "Transformers", new TableElementButton.Action("edit", "Edit"));
                 element.addListener(this);
@@ -201,6 +252,10 @@ public class TableDataSourceGenericStructure extends TableDataSourceSegmented im
                 break;
             case "activeFolder":
                 saveAsActive = (boolean) element.getPropertyValue();
+                tableDelegate.reloadData(); // Delete other cell might get added
+                break;
+            case "deleteOther":
+                deleteOther = (boolean) element.getPropertyValue();
                 break;
             case "rotatable":
                 structureInfo.rotatable = (boolean) element.getPropertyValue();

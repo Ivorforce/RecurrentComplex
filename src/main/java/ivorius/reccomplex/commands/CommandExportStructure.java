@@ -16,9 +16,7 @@ import ivorius.reccomplex.structures.StructureInfo;
 import ivorius.reccomplex.structures.generic.GenericStructureInfo;
 import ivorius.reccomplex.utils.ServerTranslations;
 import net.minecraft.command.CommandBase;
-import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
-import net.minecraft.command.WrongUsageException;
 import net.minecraft.entity.player.EntityPlayerMP;
 
 import java.util.List;
@@ -104,7 +102,7 @@ public class CommandExportStructure extends CommandBase
 
         IvWorldData data = new IvWorldData(player.getEntityWorld(), new BlockArea(lowerCoord, higherCoord), true);
         genericStructureInfo.worldDataCompound = data.createTagCompound(lowerCoord);
-        PacketEditStructureHandler.sendEditStructure(genericStructureInfo, structureID, saveAsActive, player);
+        PacketEditStructureHandler.openEditStructure(genericStructureInfo, structureID, saveAsActive, player);
     }
 
     @Override

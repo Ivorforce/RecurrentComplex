@@ -11,7 +11,6 @@ import ivorius.reccomplex.structures.StructureRegistry;
 import ivorius.reccomplex.structures.generic.GenericStructureInfo;
 import ivorius.reccomplex.utils.ServerTranslations;
 import net.minecraft.command.CommandBase;
-import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayerMP;
 
@@ -45,7 +44,7 @@ public class CommandEditStructure extends CommandBase
 
             GenericStructureInfo structureInfo = CommandExportStructure.getGenericStructureInfo(structureID);
             boolean saveAsActive = StructureRegistry.isStructureGenerating(structureID);
-            PacketEditStructureHandler.sendEditStructure(structureInfo, structureID, saveAsActive, entityPlayerMP);
+            PacketEditStructureHandler.openEditStructure(structureInfo, structureID, saveAsActive, entityPlayerMP);
         }
         else
         {

@@ -5,11 +5,10 @@
 
 package ivorius.reccomplex.gui.editstructure;
 
-import ivorius.reccomplex.RecurrentComplex;
 import ivorius.reccomplex.gui.table.Bounds;
 import ivorius.reccomplex.gui.table.GuiScreenModalTable;
 import ivorius.reccomplex.gui.table.GuiTable;
-import ivorius.reccomplex.network.PacketEditStructure;
+import ivorius.reccomplex.network.PacketEditStructureHandler;
 import ivorius.reccomplex.structures.generic.GenericStructureInfo;
 import net.minecraft.client.gui.GuiButton;
 import org.lwjgl.input.Keyboard;
@@ -21,9 +20,9 @@ public class GuiEditGenericStructure extends GuiScreenModalTable
 {
     TableDataSourceGenericStructure structureDataSource;
 
-    public GuiEditGenericStructure(String key, GenericStructureInfo structureInfo, boolean saveAsActive)
+    public GuiEditGenericStructure(String key, GenericStructureInfo structureInfo, boolean saveAsActive, boolean structureInActive, boolean structureInInactive)
     {
-        GuiTable structureProperties = new GuiTable(this, structureDataSource = new TableDataSourceGenericStructure(structureInfo, key, saveAsActive, this, this));
+        GuiTable structureProperties = new GuiTable(this, structureDataSource = new TableDataSourceGenericStructure(structureInfo, key, saveAsActive, structureInActive, structureInInactive, this, this));
         setTable(structureProperties);
     }
 
@@ -63,7 +62,7 @@ public class GuiEditGenericStructure extends GuiScreenModalTable
 
         if (button.id == 0)
         {
-            RecurrentComplex.network.sendToServer(new PacketEditStructure(structureDataSource.getStructureInfo(), structureDataSource.getStructureKey(), structureDataSource.isSaveAsActive()));
+            PacketEditStructureHandler.finishEditStructure(structureDataSource.getStructureInfo(), structureDataSource.getStructureKey(), structureDataSource.isSaveAsActive(), structureDataSource.isDeleteOther());
             this.mc.thePlayer.closeScreen();
         }
         else if (button.id == 1)

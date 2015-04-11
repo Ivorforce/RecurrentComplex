@@ -8,6 +8,7 @@ package ivorius.reccomplex.gui.editstructure;
 import ivorius.reccomplex.gui.TableDataSourceExpression;
 import ivorius.reccomplex.gui.table.*;
 import ivorius.reccomplex.structures.generic.BiomeGenerationInfo;
+import ivorius.reccomplex.utils.IvTranslations;
 
 /**
  * Created by lukas on 05.06.14.
@@ -23,7 +24,7 @@ public class TableDataSourceBiomeGen extends TableDataSourceSegmented implements
         this.generationInfo = generationInfo;
         this.tableDelegate = tableDelegate;
 
-        addManagedSection(0, new TableDataSourceExpression<>("Biomes", "reccomplex.expression.biome.tooltip", generationInfo.getBiomeMatcher()));
+        addManagedSection(0, TableDataSourceExpression.constructDefault("Biomes", generationInfo.getBiomeMatcher()));
     }
 
     @Override

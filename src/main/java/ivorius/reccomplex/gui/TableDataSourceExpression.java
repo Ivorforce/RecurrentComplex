@@ -6,12 +6,17 @@
 package ivorius.reccomplex.gui;
 
 import ivorius.reccomplex.gui.table.*;
+import ivorius.reccomplex.structures.generic.matchers.BiomeMatcher;
+import ivorius.reccomplex.structures.generic.matchers.BlockMatcher;
+import ivorius.reccomplex.structures.generic.matchers.DependencyMatcher;
+import ivorius.reccomplex.structures.generic.matchers.DimensionMatcher;
 import ivorius.reccomplex.utils.ExpressionCache;
 import ivorius.reccomplex.utils.IvTranslations;
 import net.minecraft.util.EnumChatFormatting;
 import org.apache.commons.lang3.StringUtils;
 
 import java.text.ParseException;
+import java.util.List;
 
 /**
  * Created by lukas on 26.03.15.
@@ -19,17 +24,31 @@ import java.text.ParseException;
 public class TableDataSourceExpression<T> implements TableDataSource, TableElementPropertyListener
 {
     public String title;
-    private String tooltip;
+    private List<String> tooltip;
 
     public ExpressionCache<T> expressionCache;
 
     protected TableElementTitle parsed;
 
-    public TableDataSourceExpression(String title, String tooltip, ExpressionCache<T> expressionCache)
+    public TableDataSourceExpression(String title, List<String> tooltip, ExpressionCache<T> expressionCache)
     {
         this.title = title;
         this.tooltip = tooltip;
         this.expressionCache = expressionCache;
+    }
+    
+    public static <T> TableDataSourceExpression<T> constructDefault(String title, ExpressionCache<T> cache)
+    {
+        if (cache instanceof BiomeMatcher)
+            return new TableDataSourceExpression<>(title, IvTranslations.formatLines("reccomplex.expression.biome.tooltip"), cache);
+        else if (cache instanceof BlockMatcher)
+            return new TableDataSourceExpression<>(title, IvTranslations.formatLines("reccomplex.expression.block.tooltip"), cache);
+        else if (cache instanceof DependencyMatcher)
+            return new TableDataSourceExpression<>(title, IvTranslations.formatLines("reccomplex.expression.dependency.tooltip"), cache);
+        else if (cache instanceof DimensionMatcher)
+            return new TableDataSourceExpression<>(title, IvTranslations.formatLines("reccomplex.expression.dimension.tooltip"), cache);
+
+        throw new IllegalArgumentException();
     }
 
     public static String parsedString(ExpressionCache expressionCache)
@@ -66,7 +85,7 @@ public class TableDataSourceExpression<T> implements TableDataSource, TableEleme
         {
             TableElementString element = new TableElementString("expression", title, expressionCache.getExpression());
             if (tooltip != null)
-                element.setTooltip(IvTranslations.formatLines(tooltip));
+                element.setTooltip(tooltip);
             element.setShowsValidityState(true);
             element.setValidityState(getValidityState(expressionCache));
             element.addPropertyListener(this);

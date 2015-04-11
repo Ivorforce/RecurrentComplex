@@ -11,6 +11,7 @@ import ivorius.reccomplex.gui.TableDataSourceExpression;
 import ivorius.reccomplex.gui.editstructure.TableDataSourceYSelector;
 import ivorius.reccomplex.gui.table.*;
 import ivorius.reccomplex.structures.generic.gentypes.StaticGenerationInfo;
+import ivorius.reccomplex.utils.IvTranslations;
 
 /**
  * Created by lukas on 07.10.14.
@@ -30,7 +31,7 @@ public class TableDataSourceStaticGenerationInfo extends TableDataSourceSegmente
 
         addManagedSection(0, new TableDataSourceGenerationInfo(generationInfo));
         addManagedSection(2, new TableDataSourceYSelector(generationInfo.ySelector));
-        addManagedSection(3, new TableDataSourceExpression<>("Dimensions", "reccomplex.expression.dimension.tooltip", generationInfo.dimensionMatcher));
+        addManagedSection(3, TableDataSourceExpression.constructDefault("Dimensions", generationInfo.dimensionMatcher));
     }
 
     @Override

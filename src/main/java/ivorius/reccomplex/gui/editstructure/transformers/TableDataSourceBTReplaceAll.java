@@ -31,7 +31,7 @@ public class TableDataSourceBTReplaceAll extends TableDataSourceSegmented implem
         this.navigator = navigator;
         this.tableDelegate = tableDelegate;
 
-        addManagedSection(0, new TableDataSourceExpression<>("Sources", "reccomplex.expression.block.tooltip", transformer.sourceMatcher));
+        addManagedSection(0, TableDataSourceExpression.constructDefault("Sources", transformer.sourceMatcher));
     }
 
     public TransformerReplaceAll getTransformer()

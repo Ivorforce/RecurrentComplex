@@ -23,7 +23,7 @@ public class TableDataSourceBTPillar extends TableDataSourceSegmented implements
     {
         this.transformer = transformer;
 
-        addManagedSection(0, new TableDataSourceExpression<>("Sources", "reccomplex.expression.block.tooltip", transformer.sourceMatcher));
+        addManagedSection(0, TableDataSourceExpression.constructDefault("Sources", transformer.sourceMatcher));
     }
 
     public TransformerPillar getTransformer()

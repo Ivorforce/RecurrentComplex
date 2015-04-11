@@ -25,7 +25,7 @@ public class TableDataSourceDimensionGen extends TableDataSourceSegmented implem
         this.generationInfo = generationInfo;
         this.tableDelegate = tableDelegate;
         
-        addManagedSection(0, new TableDataSourceExpression<>("Dimensions", "reccomplex.expression.dimension.tooltip", generationInfo.getDimensionMatcher()));
+        addManagedSection(0, TableDataSourceExpression.constructDefault("Dimensions", generationInfo.getDimensionMatcher()));
     }
 
     @Override

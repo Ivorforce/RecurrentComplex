@@ -12,6 +12,7 @@ import ivorius.reccomplex.gui.TableDirections;
 import ivorius.reccomplex.gui.table.*;
 import ivorius.reccomplex.structures.generic.gentypes.VanillaStructureGenerationInfo;
 import ivorius.ivtoolkit.blocks.Directions;
+import ivorius.reccomplex.utils.IvTranslations;
 import net.minecraftforge.common.util.ForgeDirection;
 
 /**
@@ -31,7 +32,7 @@ public class TableDataSourceVanillaStructureGenerationInfo extends TableDataSour
         this.generationInfo = generationInfo;
 
         addManagedSection(0, new TableDataSourceGenerationInfo(generationInfo));
-        addManagedSection(4, new TableDataSourceExpression<>("Biomes", "reccomplex.expression.biome.tooltip", generationInfo.biomeMatcher));
+        addManagedSection(4, TableDataSourceExpression.constructDefault("Biomes", generationInfo.biomeMatcher));
     }
 
     @Override

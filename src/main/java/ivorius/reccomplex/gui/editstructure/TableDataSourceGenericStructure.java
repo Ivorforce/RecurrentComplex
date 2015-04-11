@@ -40,7 +40,7 @@ public class TableDataSourceGenericStructure extends TableDataSourceSegmented im
         this.tableDelegate = tableDelegate;
         this.navigator = navigator;
 
-        addManagedSection(3, new TableDataSourceExpression<>("Dependencies", "reccomplex.expression.dependency.tooltip", structureInfo.dependencies));
+        addManagedSection(3, TableDataSourceExpression.constructDefault("Dependencies", structureInfo.dependencies));
     }
 
     public GenericStructureInfo getStructureInfo()

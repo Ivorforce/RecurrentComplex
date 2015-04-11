@@ -5,6 +5,10 @@
 
 package ivorius.reccomplex.structures.generic;
 
+import com.google.common.base.Function;
+import com.google.common.base.Predicates;
+import com.google.common.collect.Iterables;
+import com.google.common.collect.Lists;
 import ivorius.ivtoolkit.blocks.BlockCoord;
 import ivorius.ivtoolkit.math.AxisAlignedTransform2D;
 import ivorius.ivtoolkit.maze.*;
@@ -16,10 +20,11 @@ import ivorius.reccomplex.utils.NBTStorable;
 import ivorius.reccomplex.worldgen.StructureGenerator;
 import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.world.World;
 import net.minecraft.world.gen.structure.StructureBoundingBox;
+import net.minecraftforge.common.util.Constants;
 import org.apache.commons.lang3.tuple.Pair;
 
+import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -30,50 +35,74 @@ import java.util.Random;
  */
 public class WorldGenMaze
 {
-    public static boolean generateMazeInstantly(World world, Random random, BlockCoord coord, List<MazeComponentPosition> placedComponents, int[] roomSize, int layer)
+    public static boolean generatePlacedStructures(List<PlacedStructure> placedStructures, StructureSpawnContext context)
     {
-        return generateMaze(world, random, coord, placedComponents, roomSize, layer, null, false);
-    }
-
-    public static boolean generateMaze(World world, Random random, BlockCoord coord, List<MazeComponentPosition> placedComponents, int[] roomSize, int layer, StructureBoundingBox boundingBox, boolean firstTime)
-    {
-        int[] pathLengths = new int[]{0, 0, 0};
-
-        for (MazeComponentPosition position : placedComponents)
+        for (PlacedStructure placedComponent : placedStructures)
         {
-            MazeComponentInfo info = (MazeComponentInfo) position.getComponent().getIdentifier();
+            StructureInfo structureInfo = StructureRegistry.getStructure(placedComponent.structureID);
 
-            StructureInfo compStructureInfo = StructureRegistry.getStructure(info.structureID);
-            if (compStructureInfo != null)
+            if (structureInfo != null && placedComponent.instanceData != null)
             {
-                MazeRoom mazePosition = position.getPositionInMaze();
-//                int[] size = maze.getRoomSize(mazePosition, pathLengths, roomSize);
-                int[] scaledCompMazePosition = Maze.getRoomPosition(mazePosition, pathLengths, roomSize);
+                AxisAlignedTransform2D componentTransform = placedComponent.transform;
+                StructureBoundingBox compBoundingBox = StructureInfos.structureBoundingBox(placedComponent.lowerCoord, StructureInfos.structureSize(structureInfo, componentTransform));
 
-                AxisAlignedTransform2D componentTransform = info.transform;
-
-                String compStructureName = StructureRegistry.structureID(compStructureInfo);
-
-                int[] compStructureSize = StructureInfos.structureSize(compStructureInfo, componentTransform);
-                int[] compRoomSize = Maze.getRoomSize(position.getComponent().getSize(), pathLengths, roomSize);
-                int[] sizeDependentShift = new int[]{(compRoomSize[0] - compStructureSize[0]) / 2, (compRoomSize[1] - compStructureSize[1]) / 2, (compRoomSize[2] - compStructureSize[2]) / 2};
-
-                BlockCoord compMazeCoordLower = coord.add(scaledCompMazePosition[0] + sizeDependentShift[0], scaledCompMazePosition[1] + sizeDependentShift[1], scaledCompMazePosition[2] + +sizeDependentShift[2]);
-
-                StructureBoundingBox compBoundingBox = StructureInfos.structureBoundingBox(compMazeCoordLower, compStructureSize);
-                NBTStorable instanceData = compStructureInfo.loadInstanceData(new StructureLoadContext(componentTransform, compBoundingBox, false), info.instanceData);
-                StructureGenerator.partially(compStructureInfo, world, random, compMazeCoordLower, componentTransform, boundingBox, layer + 1, compStructureName, instanceData, firstTime);
+                StructureGenerator.partially(structureInfo, context.world, context.random, new BlockCoord(compBoundingBox.minX, compBoundingBox.minY, compBoundingBox.minZ), componentTransform, context.generationBB, context.generationLayer + 1, placedComponent.structureID, placedComponent.instanceData, context.isFirstTime);
             }
             else
             {
-                RecurrentComplex.logger.error(String.format("Could not find structure '%s' for maze", info.structureID));
+                RecurrentComplex.logger.error(String.format("Could not find structure '%s' for maze", placedComponent.structureID));
             }
         }
 
         return true;
     }
 
-    public static List<MazeComponent> transformedComponents(Collection<Pair<StructureInfo, MazeGenerationInfo>> componentStructures, StructurePrepareContext context)
+    public static List<PlacedStructure> convertToPlacedStructures(final Random random, final BlockCoord coord, List<MazeComponentPosition> placedComponents, final int[] roomSize)
+    {
+        final int[] pathLengths = new int[]{0, 0, 0};
+
+        return Lists.newArrayList(Iterables.filter(Iterables.transform(placedComponents, new Function<MazeComponentPosition, PlacedStructure>()
+        {
+            @Nullable
+            @Override
+            public PlacedStructure apply(MazeComponentPosition placedComponent)
+            {
+                MazeComponentInfo componentInfo = (WorldGenMaze.MazeComponentInfo) placedComponent.getComponent().getIdentifier();
+                StructureInfo structureInfo = StructureRegistry.getStructure(componentInfo.structureID);
+
+                if (structureInfo != null)
+                {
+                    AxisAlignedTransform2D componentTransform = componentInfo.transform;
+                    StructureBoundingBox compBoundingBox = getBoundingBox(coord, roomSize, pathLengths, placedComponent, structureInfo, componentTransform);
+                    NBTStorable instanceData = structureInfo.prepareInstanceData(new StructurePrepareContext(random, componentTransform, compBoundingBox, false));
+
+                    return new PlacedStructure(componentInfo.structureID, componentTransform, new BlockCoord(compBoundingBox.minX, compBoundingBox.minY, compBoundingBox.minZ), instanceData);
+                }
+                else
+                {
+                    RecurrentComplex.logger.error(String.format("Could not find structure '%s' for maze", componentInfo.structureID));
+                }
+
+                return null;
+            }
+        }), Predicates.notNull()));
+    }
+
+    protected static StructureBoundingBox getBoundingBox(BlockCoord coord, int[] roomSize, int[] pathLengths, MazeComponentPosition placedComponent, StructureInfo structureInfo, AxisAlignedTransform2D componentTransform)
+    {
+        MazeRoom mazePosition = placedComponent.getPositionInMaze();
+        int[] scaledCompMazePosition = Maze.getRoomPosition(mazePosition, pathLengths, roomSize);
+
+        int[] compStructureSize = StructureInfos.structureSize(structureInfo, componentTransform);
+        int[] compRoomSize = Maze.getRoomSize(placedComponent.getComponent().getSize(), pathLengths, roomSize);
+        int[] sizeDependentShift = new int[]{(compRoomSize[0] - compStructureSize[0]) / 2, (compRoomSize[1] - compStructureSize[1]) / 2, (compRoomSize[2] - compStructureSize[2]) / 2};
+
+        BlockCoord compMazeCoordLower = coord.add(scaledCompMazePosition[0] + sizeDependentShift[0], scaledCompMazePosition[1] + sizeDependentShift[1], scaledCompMazePosition[2] + +sizeDependentShift[2]);
+
+        return StructureInfos.structureBoundingBox(compMazeCoordLower, compStructureSize);
+    }
+
+    public static List<MazeComponent> transformedComponents(Collection<Pair<StructureInfo, MazeGenerationInfo>> componentStructures)
     {
         List<MazeComponent> transformedComponents = new ArrayList<>();
         for (Pair<StructureInfo, MazeGenerationInfo> pair : componentStructures)
@@ -102,7 +131,7 @@ public class WorldGenMaze
                     for (MazePath exit : comp.getExitPaths())
                         transformedExits.add(MazeGenerator.rotatedPath(exit, componentTransform, compSize));
 
-                    MazeComponentInfo compInfo = new MazeComponentInfo(StructureRegistry.structureID(info), componentTransform, info.prepareInstanceData(context).writeToNBT());
+                    MazeComponentInfo compInfo = new MazeComponentInfo(StructureRegistry.structureID(info), componentTransform, null);
                     transformedComponents.add(new MazeComponent(splitCompWeight, compInfo, transformedRooms, transformedExits));
                 }
             }
@@ -115,7 +144,6 @@ public class WorldGenMaze
     {
         public String structureID;
         public AxisAlignedTransform2D transform;
-        public NBTBase instanceData;
 
         public MazeComponentInfo()
         {
@@ -125,7 +153,6 @@ public class WorldGenMaze
         {
             this.structureID = structureID;
             this.transform = transform;
-            this.instanceData = instanceData;
         }
 
         @Override
@@ -133,7 +160,6 @@ public class WorldGenMaze
         {
             structureID = compound.getString("structureID");
             transform = new AxisAlignedTransform2D(compound.getInteger("rotation"), compound.getBoolean("mirrorX"));
-            instanceData = compound.getTag("instanceData");
         }
 
         @Override
@@ -142,7 +168,48 @@ public class WorldGenMaze
             compound.setString("structureID", structureID);
             compound.setInteger("rotation", transform.getRotation());
             compound.setBoolean("mirrorX", transform.isMirrorX());
-            compound.setTag("instanceData", instanceData);
+        }
+    }
+
+    public static class PlacedStructure implements NBTCompoundObject
+    {
+        public String structureID;
+        public AxisAlignedTransform2D transform;
+        public BlockCoord lowerCoord;
+
+        public NBTStorable instanceData;
+
+        public PlacedStructure(String structureID, AxisAlignedTransform2D transform, BlockCoord lowerCoord, NBTStorable instanceData)
+        {
+            this.structureID = structureID;
+            this.transform = transform;
+            this.lowerCoord = lowerCoord;
+            this.instanceData = instanceData;
+        }
+
+        @Override
+        public void readFromNBT(NBTTagCompound compound)
+        {
+            structureID = compound.getString("structureID");
+            transform = new AxisAlignedTransform2D(compound.getInteger("rotation"), compound.getBoolean("mirrorX"));
+            lowerCoord = BlockCoord.readCoordFromNBT("lowerCoord", compound);
+
+            StructureInfo structureInfo = StructureRegistry.getStructure(structureID);
+
+            instanceData = compound.hasKey("instanceData", Constants.NBT.TAG_COMPOUND) && structureInfo != null
+                    ? structureInfo.loadInstanceData(new StructureLoadContext(transform, StructureInfos.structureBoundingBox(lowerCoord, StructureInfos.structureSize(structureInfo, transform)), false), compound.getTag("instanceData"))
+                    : null;
+        }
+
+        @Override
+        public void writeToNBT(NBTTagCompound compound)
+        {
+            compound.setString("structureID", structureID);
+            compound.setInteger("rotation", transform.getRotation());
+            compound.setBoolean("mirrorX", transform.isMirrorX());
+            BlockCoord.writeCoordToNBT("lowerCoord", lowerCoord, compound);
+            if (instanceData != null)
+                compound.setTag("instanceData", instanceData.writeToNBT());
         }
     }
 }

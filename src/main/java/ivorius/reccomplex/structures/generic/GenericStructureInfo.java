@@ -11,6 +11,7 @@ import com.google.gson.*;
 import ivorius.ivtoolkit.blocks.BlockCoord;
 import ivorius.ivtoolkit.blocks.IvBlockCollection;
 import ivorius.ivtoolkit.tools.IvWorldData;
+import ivorius.ivtoolkit.tools.NBTTagLists;
 import ivorius.reccomplex.RecurrentComplex;
 import ivorius.reccomplex.blocks.GeneratingTileEntity;
 import ivorius.reccomplex.blocks.RCBlocks;
@@ -439,10 +440,10 @@ public class GenericStructureInfo implements StructureInfo<GenericStructureInfo.
         {
             NBTTagCompound compound = nbt instanceof NBTTagCompound ? (NBTTagCompound) nbt : new NBTTagCompound();
 
-            NBTTagList transformerDatas = compound.getTagList(InstanceData.KEY_TRANSFORMERS, Constants.NBT.TAG_LIST);
-            for (int i = 0; i < transformers.size(); i++)
+            List<NBTTagCompound> transformerCompounds = NBTTagLists.compounds(compound, KEY_TRANSFORMERS);
+            for (int i = 0; i < transformerCompounds.size(); i++)
             {
-                NBTTagCompound transformerCompound = transformerDatas.getCompoundTagAt(i);
+                NBTTagCompound transformerCompound = transformerCompounds.get(i);
                 this.transformers.add(transformers.get(i).loadInstanceData(context, transformerCompound.getTag("data")));
             }
 

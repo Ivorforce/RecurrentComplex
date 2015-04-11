@@ -163,11 +163,6 @@ public class TransformerRuins implements Transformer<TransformerRuins.InstanceDa
                     float decay = field.getValue(surfaceSourceCoord.x - decaySideAreaPos.x, surfaceSourceCoord.y - decaySideAreaPos.y, surfaceSourceCoord.z - decaySideAreaPos.z);
                     int removedBlocks = MathHelper.floor_float(decay * decaySideLength + 0.5f);
 
-                    BiomeGenBase biome = context.world.getBiomeGenForCoords(surfaceSourceCoord.x, surfaceSourceCoord.z);
-                    Block topBlock = biome.topBlock != null ? biome.topBlock : Blocks.air;
-                    Block fillerBlock = biome.fillerBlock != null ? biome.fillerBlock : Blocks.air;
-                    Block mainBlock = context.world.provider.dimensionId == -1 ? Blocks.netherrack : (context.world.provider.dimensionId == 1 ? Blocks.end_stone : Blocks.stone);
-
                     for (int decayPos = 0; decayPos < removedBlocks && decayPos < decaySideLength; decayPos++)
                     {
                         BlockCoord sourceCoord = surfaceSourceCoord.add(decayDirection.offsetX * decayPos, decayDirection.offsetY * decayPos, decayDirection.offsetZ * decayPos);
@@ -176,14 +171,10 @@ public class TransformerRuins implements Transformer<TransformerRuins.InstanceDa
                         if (context.includes(worldCoord))
                         {
                             Block block = blockCollection.getBlock(sourceCoord);
+                            int meta = blockCollection.getMetadata(sourceCoord);
 
-                            if (block != topBlock && block != fillerBlock && block != mainBlock)
-                            {
-                                int meta = blockCollection.getMetadata(sourceCoord);
-
-                                if (getPass(block, meta) == pass && !skipBlock(transformers, block, meta))
-                                    setBlockToAirClean(context.world, worldCoord);
-                            }
+                            if (getPass(block, meta) == pass && !skipBlock(transformers, block, meta))
+                                setBlockToAirClean(context.world, worldCoord);
                         }
                     }
                 }

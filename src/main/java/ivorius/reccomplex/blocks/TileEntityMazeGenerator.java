@@ -20,6 +20,7 @@ import ivorius.reccomplex.structures.StructureRegistry;
 import ivorius.reccomplex.structures.StructureSpawnContext;
 import ivorius.reccomplex.structures.generic.Selection;
 import ivorius.reccomplex.structures.generic.WorldGenMaze;
+import ivorius.reccomplex.structures.generic.WorldGenMaze.PlacedStructure;
 import ivorius.reccomplex.utils.NBTStorable;
 import net.minecraft.client.Minecraft;
 import net.minecraft.nbt.NBTBase;
@@ -104,7 +105,7 @@ public class TileEntityMazeGenerator extends TileEntity implements GeneratingTil
     public InstanceData prepareInstanceData(StructurePrepareContext context)
     {
         InstanceData instanceData = new InstanceData();
-        instanceData.placedComponents = getPlacedRooms(context);
+        instanceData.placedStructures = WorldGenMaze.convertToPlacedStructures(context.random, getLowerCoord(context.transform), getPlacedRooms(context), roomSize);
         return instanceData;
     }
 
@@ -117,20 +118,17 @@ public class TileEntityMazeGenerator extends TileEntity implements GeneratingTil
     @Override
     public void generate(StructureSpawnContext context, InstanceData instanceData)
     {
-        World world = context.world;
-        AxisAlignedTransform2D transform = context.transform;
-        int layer = context.generationLayer;
-
-        List<MazeComponentPosition> placedComponents = instanceData.placedComponents;
-        if (placedComponents == null)
+       List<PlacedStructure> placedStructures = instanceData.placedStructures;
+        if (placedStructures == null)
             return;
+        WorldGenMaze.generatePlacedStructures(placedStructures, context);
+    }
 
+    protected BlockCoord getLowerCoord(AxisAlignedTransform2D transform)
+    {
         int[] roomNumbers = IvVecMathHelper.add(mazeRooms.boundsHigher(), new int[]{1, 1, 1});
-
         int[] mazeSize = new int[]{roomSize[0] * roomNumbers[0], roomSize[1] * roomNumbers[1], roomSize[2] * roomNumbers[2]};
-        BlockCoord startCoord = transform.apply(structureShift, new int[]{1, 1, 1}).add(xCoord, yCoord, zCoord).subtract(transform.apply(new BlockCoord(0, 0, 0), mazeSize));
-
-        WorldGenMaze.generateMaze(world, context.random, startCoord, placedComponents, roomSize, layer, context.generationBB, context.isFirstTime);
+        return transform.apply(structureShift, new int[]{1, 1, 1}).add(xCoord, yCoord, zCoord).subtract(transform.apply(new BlockCoord(0, 0, 0), mazeSize));
     }
 
     @Override
@@ -144,11 +142,13 @@ public class TileEntityMazeGenerator extends TileEntity implements GeneratingTil
         if (mazeRooms.isEmpty())
             return null;
 
+        AxisAlignedTransform2D transform = context.transform;
+
         int[] roomNumbers = IvVecMathHelper.add(mazeRooms.boundsHigher(), new int[]{1, 1, 1});
 
         Maze maze = new Maze(roomNumbers[0] * 2 + 1, roomNumbers[1] * 2 + 1, roomNumbers[2] * 2 + 1);
 
-        List<MazeComponent> transformedComponents = WorldGenMaze.transformedComponents(StructureRegistry.getStructuresInMaze(mazeID), context);
+        List<MazeComponent> transformedComponents = WorldGenMaze.transformedComponents(StructureRegistry.getStructuresInMaze(mazeID));
         Set<Integer> pathDims = new HashSet<>();
         for (MazeComponent mazeComponent : transformedComponents)
         {
@@ -225,7 +225,7 @@ public class TileEntityMazeGenerator extends TileEntity implements GeneratingTil
 
     public static class InstanceData implements NBTStorable
     {
-        public List<MazeComponentPosition> placedComponents;
+        public List<PlacedStructure> placedStructures;
 
         public InstanceData()
         {
@@ -234,9 +234,7 @@ public class TileEntityMazeGenerator extends TileEntity implements GeneratingTil
 
         public InstanceData(NBTTagCompound compound)
         {
-            placedComponents = NBTTagCompounds.readFrom(compound, "placedComponents", MazeComponentPosition.class);
-            for (MazeComponentPosition position : placedComponents)
-                position.getComponent().readIdentifier(WorldGenMaze.MazeComponentInfo.class);
+            placedStructures = NBTTagCompounds.readFrom(compound, "placedStructures", PlacedStructure.class);
         }
 
         @Override
@@ -244,7 +242,7 @@ public class TileEntityMazeGenerator extends TileEntity implements GeneratingTil
         {
             NBTTagCompound compound = new NBTTagCompound();
 
-            compound.setTag("placedComponents", NBTTagCompounds.write(placedComponents));
+            compound.setTag("placedStructures", NBTTagCompounds.write(placedStructures));
 
             return compound;
         }

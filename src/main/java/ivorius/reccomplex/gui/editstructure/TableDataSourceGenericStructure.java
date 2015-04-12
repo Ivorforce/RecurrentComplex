@@ -167,17 +167,20 @@ public class TableDataSourceGenericStructure extends TableDataSourceSegmented im
                 else if (index == 1)
                 {
                     TableCellBoolean cellFolder = new TableCellBoolean("activeFolder", saveAsActive,
-                            String.format("Save in %s/%s%s", EnumChatFormatting.AQUA, StructureSaveHandler.getStructuresDirectoryName(true), EnumChatFormatting.RESET),
-                            String.format("Save in %s/%s%s", EnumChatFormatting.AQUA, StructureSaveHandler.getStructuresDirectoryName(false), EnumChatFormatting.RESET));
+                            IvTranslations.format("reccomplex.structure.savePath", String.format("%s/%s%s", EnumChatFormatting.AQUA, StructureSaveHandler.getStructuresDirectoryName(true), EnumChatFormatting.RESET)),
+                            IvTranslations.format("reccomplex.structure.savePath", String.format("%s/%s%s", EnumChatFormatting.AQUA, StructureSaveHandler.getStructuresDirectoryName(false), EnumChatFormatting.RESET)));
                     cellFolder.addPropertyListener(this);
 
                     if (saveAsActive ? structureInInactive : structureInActive)
                     {
                         String path = StructureSaveHandler.getStructuresDirectoryName(!saveAsActive);
                         TableCellBoolean cellDelete = new TableCellBoolean("deleteOther", deleteOther,
-                                String.format("%sDelete%s from %s/%s%s", EnumChatFormatting.RED, EnumChatFormatting.RESET, EnumChatFormatting.AQUA, path, EnumChatFormatting.RESET),
-                                String.format("%sKeep%s inside %s/%s%s", EnumChatFormatting.YELLOW, EnumChatFormatting.RESET, EnumChatFormatting.AQUA, path, EnumChatFormatting.RESET));
+                                IvTranslations.format("reccomplex.structure.deleteOther.true", EnumChatFormatting.RED, EnumChatFormatting.RESET, String.format("%s/%s%s", EnumChatFormatting.AQUA, path, EnumChatFormatting.RESET)),
+                                IvTranslations.format("reccomplex.structure.deleteOther.false", EnumChatFormatting.YELLOW, EnumChatFormatting.RESET, String.format("%s/%s%s", EnumChatFormatting.AQUA, path, EnumChatFormatting.RESET)));
                         cellDelete.addPropertyListener(this);
+                        cellDelete.setTooltip(IvTranslations.formatLines("reccomplex.structure.deleteOther.tooltip",
+                                EnumChatFormatting.AQUA + StructureSaveHandler.getStructuresDirectoryName(false) + EnumChatFormatting.RESET,
+                                EnumChatFormatting.AQUA + StructureSaveHandler.getStructuresDirectoryName(true) + EnumChatFormatting.RESET));
 
                         return new TableElementCell(new TableCellMulti(cellFolder, cellDelete));
                     }

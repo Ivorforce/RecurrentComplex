@@ -211,6 +211,11 @@ reccomplex.structure.randomrange=Randomized between the two values.
 
 reccomplex.structure.id=Structure ID
 reccomplex.structure.id.tooltip=Unique Identifier for the structure
+reccomplex.structure.savePath=Save in %s
+reccomplex.structure.deleteOther.true=%sDelete%s from %s
+reccomplex.structure.deleteOther.false=%sKeep%s inside %s
+reccomplex.structure.deleteOther.tooltip=Note: Structures in the %s<br>folder take loading precedence<br>over those in the %s folder.
+
 reccomplex.structure.generation.id=Generation ID
 reccomplex.structure.generation.id.tooltip=Identifier for the generation type.<br>Unique within the structure file.
 

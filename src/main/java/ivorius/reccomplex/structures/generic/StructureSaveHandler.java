@@ -35,6 +35,7 @@ public class StructureSaveHandler
 {
     public static final String ACTIVE_DIR_NAME = "active";
     public static final String INACTIVE_DIR_NAME = "inactive";
+
     private static List<String> importedGenerators = new ArrayList<>();
 
     public static String getStructuresDirectoryName(boolean activeFolder)
@@ -81,39 +82,44 @@ public class StructureSaveHandler
         tryAddAllStructuresInResourceLocation(new ResourceLocation(modid, "structures/silentStructures"), false, false);
     }
 
-    public static void tryAddAllStructuresInResourceLocation(ResourceLocation resourceLocation, boolean generating, boolean imported)
+    public static int tryAddAllStructuresInResourceLocation(ResourceLocation resourceLocation, boolean generating, boolean imported)
     {
         try
         {
             Path path = RCFileHelper.pathFromResourceLocation(resourceLocation);
             if (path != null)
-                addAllStructuresInDirectory(path, generating, imported);
+                return addAllStructuresInDirectory(path, generating, imported);
         }
         catch (Throwable e)
         {
             RecurrentComplex.logger.error("Error reading from resource location '" + resourceLocation + "'", e);
         }
+
+        return 0;
     }
 
-    public static void tryAddAllStructuresInDirectory(File file, boolean generating, boolean imported)
+    public static int tryAddAllStructuresInDirectory(File file, boolean generating, boolean imported)
     {
         if (file != null)
         {
             try
             {
-                addAllStructuresInDirectory(file.toPath(), generating, imported);
+                return addAllStructuresInDirectory(file.toPath(), generating, imported);
             }
             catch (Throwable e)
             {
                 RecurrentComplex.logger.error("Error reading from directory '" + file + "'", e);
             }
         }
+
+        return 0;
     }
 
-    public static void addAllStructuresInDirectory(Path directory, boolean generating, boolean imported) throws IOException
+    public static int addAllStructuresInDirectory(Path directory, boolean generating, boolean imported) throws IOException
     {
         List<Path> paths = RCFileHelper.listFilesRecursively(directory, new FileSuffixFilter(RecurrentComplex.USE_ZIP_FOR_STRUCTURE_FILES ? "zip" : "json"), true);
 
+        int added = 0;
         for (Path file : paths)
         {
             try
@@ -121,16 +127,21 @@ public class StructureSaveHandler
                 GenericStructureInfo genericStructureInfo = StructureSaveHandler.readGenericStructure(file);
 
                 String structureID = FilenameUtils.getBaseName(file.getFileName().toString());
-                StructureRegistry.registerStructure(genericStructureInfo, structureID, generating);
 
-                if (imported)
-                    importedGenerators.add(structureID);
+                if (StructureRegistry.registerStructure(genericStructureInfo, structureID, generating))
+                {
+                    if (imported)
+                        importedGenerators.add(structureID);
+
+                    added ++;
+                }
             }
             catch (IOException | StructureLoadException e)
             {
                 e.printStackTrace();
             }
         }
+        return added;
     }
 
     public static boolean saveGenericStructure(GenericStructureInfo info, String structureName, boolean activeFolder)

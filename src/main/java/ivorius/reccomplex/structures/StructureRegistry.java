@@ -73,7 +73,7 @@ public class StructureRegistry
         return builder.create();
     }
 
-    public static void registerStructure(StructureInfo info, String key, boolean generates)
+    public static boolean registerStructure(StructureInfo info, String key, boolean generates)
     {
         StructureRegistrationEvent.Pre event = new StructureRegistrationEvent.Pre(key, info, generates);
         RCEventBus.INSTANCE.post(event);
@@ -93,7 +93,11 @@ public class StructureRegistry
             clearCaches();
 
             RCEventBus.INSTANCE.post(new StructureRegistrationEvent.Post(key, info, generates));
+
+            return true;
         }
+
+        return false;
     }
 
     public static boolean registerStructure(ResourceLocation resourceLocation, String key, boolean generates)

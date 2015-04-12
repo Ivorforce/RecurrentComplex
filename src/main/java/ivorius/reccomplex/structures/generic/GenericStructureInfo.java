@@ -164,29 +164,33 @@ public class GenericStructureInfo implements StructureInfo<GenericStructureInfo.
                 {
                     TileEntity tileEntity = tileEntities.get(sourceCoord);
 
-                    if (pass == getPass(block, meta) && (context.generateAsSource || !skips(transformers, block, meta))
-                            && !(!context.generateAsSource && tileEntity instanceof GeneratingTileEntity && !((GeneratingTileEntity) tileEntity).shouldPlaceInWorld(context, instanceData.tileEntities.get(sourceCoord))))
+                    if (pass == getPass(block, meta) && (context.generateAsSource || !skips(transformers, block, meta)))
                     {
-                        if (context.setBlock(worldPos, block, meta))
+                        if (context.generateAsSource || !(tileEntity instanceof GeneratingTileEntity) || ((GeneratingTileEntity) tileEntity).shouldPlaceInWorld(context, instanceData.tileEntities.get(sourceCoord)))
                         {
-                            if (tileEntity != null && MCRegistrySpecial.INSTANCE.isSafe(tileEntity))
+                            if (context.setBlock(worldPos, block, meta))
                             {
-                                world.setBlockMetadataWithNotify(worldPos.x, worldPos.y, worldPos.z, meta, 2); // TODO Figure out why some blocks (chests, furnace) need this
-
-                                world.setTileEntity(worldPos.x, worldPos.y, worldPos.z, tileEntity);
-                                tileEntity.updateContainingBlockInfo();
-
-                                if (!context.generateAsSource)
+                                if (tileEntity != null && MCRegistrySpecial.INSTANCE.isSafe(tileEntity))
                                 {
-                                    if (tileEntity instanceof IInventory)
+                                    world.setBlockMetadataWithNotify(worldPos.x, worldPos.y, worldPos.z, meta, 2); // TODO Figure out why some blocks (chests, furnace) need this
+
+                                    world.setTileEntity(worldPos.x, worldPos.y, worldPos.z, tileEntity);
+                                    tileEntity.updateContainingBlockInfo();
+
+                                    if (!context.generateAsSource)
                                     {
-                                        IInventory inventory = (IInventory) tileEntity;
-                                        InventoryGenerationHandler.generateAllTags(inventory, MCRegistrySpecial.INSTANCE.itemHidingMode(), random);
+                                        if (tileEntity instanceof IInventory)
+                                        {
+                                            IInventory inventory = (IInventory) tileEntity;
+                                            InventoryGenerationHandler.generateAllTags(inventory, MCRegistrySpecial.INSTANCE.itemHidingMode(), random);
+                                        }
                                     }
                                 }
+                                context.transform.rotateBlock(world, worldPos, block);
                             }
-                            context.transform.rotateBlock(world, worldPos, block);
                         }
+                        else
+                            context.setBlock(worldPos, Blocks.air, 0); // Replace with air
                     }
                 }
             }

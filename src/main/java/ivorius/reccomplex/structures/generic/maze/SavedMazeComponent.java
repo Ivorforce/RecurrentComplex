@@ -12,6 +12,7 @@ import ivorius.ivtoolkit.math.IvVecMathHelper;
 import ivorius.ivtoolkit.maze.MazePath;
 import ivorius.ivtoolkit.maze.MazePaths;
 import ivorius.ivtoolkit.maze.MazeRoom;
+import ivorius.ivtoolkit.tools.NBTCompoundObject;
 import ivorius.ivtoolkit.tools.NBTCompoundObjects;
 import ivorius.ivtoolkit.tools.NBTTagCompounds;
 import ivorius.ivtoolkit.tools.NBTTagLists;
@@ -28,44 +29,19 @@ import java.util.*;
 /**
  * Created by lukas on 07.10.14.
  */
-public class SavedMazeComponent implements WeightedSelector.Item
+public class SavedMazeComponent implements NBTCompoundObject, WeightedSelector.Item
 {
     public Double weight;
     public final Selection rooms = new Selection();
     public final List<SavedMazePath> exitPaths = new ArrayList<>();
 
+    public SavedMazeComponent()
+    {
+    }
+
     public SavedMazeComponent(Double weight)
     {
         this.weight = weight;
-    }
-
-    public SavedMazeComponent(NBTTagCompound compound)
-    {
-        this(compound.hasKey("weight", Constants.NBT.TAG_DOUBLE) ? compound.getDouble("weight") : null);
-
-        if (compound.hasKey("roomArea", Constants.NBT.TAG_COMPOUND))
-        {
-            rooms.readFromNBT(compound.getCompoundTag("roomArea"), 3);
-        }
-        else if (compound.hasKey("rooms", Constants.NBT.TAG_LIST))
-        {
-            // Legacy
-            rooms.clear();
-            rooms.addAll(Lists.transform(NBTTagLists.compoundsFrom(compound, "rooms"), new Function<NBTTagCompound, Selection.Area>()
-            {
-                @Nullable
-                @Override
-                public Selection.Area apply(NBTTagCompound input)
-                {
-                    MazeRoom room = new MazeRoom(input);
-                    int[] coordinates = room.getCoordinates();
-                    return new Selection.Area(true, coordinates, coordinates.clone());
-                }
-            }));
-        }
-
-        exitPaths.clear();
-        exitPaths.addAll(NBTCompoundObjects.readListFrom(compound, "exits", SavedMazePath.class));
     }
 
     public boolean isValid()
@@ -112,6 +88,37 @@ public class SavedMazeComponent implements WeightedSelector.Item
         return size;
     }
 
+    @Override
+    public void readFromNBT(NBTTagCompound compound)
+    {
+        weight = compound.hasKey("weight", Constants.NBT.TAG_DOUBLE) ? compound.getDouble("weight") : null;
+
+        if (compound.hasKey("roomArea", Constants.NBT.TAG_COMPOUND))
+        {
+            rooms.readFromNBT(compound.getCompoundTag("roomArea"), 3);
+        }
+        else if (compound.hasKey("rooms", Constants.NBT.TAG_LIST))
+        {
+            // Legacy
+            rooms.clear();
+            rooms.addAll(Lists.transform(NBTTagLists.compoundsFrom(compound, "rooms"), new Function<NBTTagCompound, Selection.Area>()
+            {
+                @Nullable
+                @Override
+                public Selection.Area apply(NBTTagCompound input)
+                {
+                    MazeRoom room = new MazeRoom(input);
+                    int[] coordinates = room.getCoordinates();
+                    return new Selection.Area(true, coordinates, coordinates.clone());
+                }
+            }));
+        }
+
+        exitPaths.clear();
+        exitPaths.addAll(NBTCompoundObjects.readListFrom(compound, "exits", SavedMazePath.class));
+    }
+
+    @Override
     public void writeToNBT(NBTTagCompound compound)
     {
         if (weight != null)

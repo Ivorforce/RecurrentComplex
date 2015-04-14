@@ -53,7 +53,7 @@ public class MazeGenerationInfo extends StructureGenerationInfo
         builder.registerTypeAdapter(MazeGenerationInfo.class, new Serializer());
         builder.registerTypeAdapter(SavedMazeComponent.class, new SavedMazeComponent.Serializer());
         builder.registerTypeAdapter(MazeRoom.class, new SavedMazeComponent.RoomSerializer());
-        builder.registerTypeAdapter(MazePath.class, new SavedMazePath.Serializer());
+        builder.registerTypeAdapter(SavedMazePath.class, new SavedMazePath.Serializer());
 
         return builder.create();
     }

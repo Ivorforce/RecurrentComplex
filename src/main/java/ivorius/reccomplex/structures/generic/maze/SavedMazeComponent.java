@@ -3,18 +3,21 @@
  *  * http://lukas.axxim.net
  */
 
-package ivorius.reccomplex.structures.generic;
+package ivorius.reccomplex.structures.generic.maze;
 
 import com.google.common.base.Function;
 import com.google.common.collect.Lists;
 import com.google.gson.*;
 import ivorius.ivtoolkit.math.IvVecMathHelper;
 import ivorius.ivtoolkit.maze.MazePath;
+import ivorius.ivtoolkit.maze.MazePaths;
 import ivorius.ivtoolkit.maze.MazeRoom;
+import ivorius.ivtoolkit.tools.NBTCompoundObjects;
 import ivorius.ivtoolkit.tools.NBTTagCompounds;
 import ivorius.ivtoolkit.tools.NBTTagLists;
 import ivorius.reccomplex.json.JsonUtils;
 import ivorius.ivtoolkit.random.WeightedSelector;
+import ivorius.reccomplex.structures.generic.Selection;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.common.util.Constants;
 
@@ -29,7 +32,7 @@ public class SavedMazeComponent implements WeightedSelector.Item
 {
     public Double weight;
     public final Selection rooms = new Selection();
-    public final List<MazePath> exitPaths = new ArrayList<>();
+    public final List<SavedMazePath> exitPaths = new ArrayList<>();
 
     public SavedMazeComponent(Double weight)
     {
@@ -48,20 +51,21 @@ public class SavedMazeComponent implements WeightedSelector.Item
         {
             // Legacy
             rooms.clear();
-            rooms.addAll(Lists.transform(NBTTagLists.compounds(compound, "rooms"), new Function<NBTTagCompound, Selection.Area>()
+            rooms.addAll(Lists.transform(NBTTagLists.compoundsFrom(compound, "rooms"), new Function<NBTTagCompound, Selection.Area>()
             {
                 @Nullable
                 @Override
                 public Selection.Area apply(NBTTagCompound input)
                 {
                     MazeRoom room = new MazeRoom(input);
-                    return new Selection.Area(true, room.coordinates, room.coordinates.clone());
+                    int[] coordinates = room.getCoordinates();
+                    return new Selection.Area(true, coordinates, coordinates.clone());
                 }
             }));
         }
 
         exitPaths.clear();
-        exitPaths.addAll(NBTTagCompounds.readFrom(compound, "exits", MazePath.class));
+        exitPaths.addAll(NBTCompoundObjects.readListFrom(compound, "exits", SavedMazePath.class));
     }
 
     public boolean isValid()
@@ -74,12 +78,12 @@ public class SavedMazeComponent implements WeightedSelector.Item
         return rooms.mazeRooms(true);
     }
 
-    public List<MazePath> getExitPaths()
+    public List<SavedMazePath> getExitPaths()
     {
         return Collections.unmodifiableList(exitPaths);
     }
 
-    public void setExitPaths(List<MazePath> exitPaths)
+    public void setExitPaths(List<SavedMazePath> exitPaths)
     {
         this.exitPaths.clear();
         this.exitPaths.addAll(exitPaths);
@@ -91,12 +95,13 @@ public class SavedMazeComponent implements WeightedSelector.Item
         int[] highest = rooms.get(0).getMaxCoord();
         for (MazeRoom room : getRooms())
         {
-            for (int i = 0; i < room.coordinates.length; i++)
+            int[] coordinates = room.getCoordinates();
+            for (int i = 0; i < coordinates.length; i++)
             {
-                if (room.coordinates[i] < lowest[i])
-                    lowest[i] = room.coordinates[i];
-                else if (room.coordinates[i] > highest[i])
-                    highest[i] = room.coordinates[i];
+                if (coordinates[i] < lowest[i])
+                    lowest[i] = coordinates[i];
+                else if (coordinates[i] > highest[i])
+                    highest[i] = coordinates[i];
             }
         }
 
@@ -116,7 +121,7 @@ public class SavedMazeComponent implements WeightedSelector.Item
         rooms.writeToNBT(roomsCompound);
         compound.setTag("rooms", roomsCompound);
 
-        compound.setTag("exits", NBTTagCompounds.write(exitPaths));
+        NBTCompoundObjects.writeListTo(compound, "exits", exitPaths);
     }
 
     @Override
@@ -152,10 +157,10 @@ public class SavedMazeComponent implements WeightedSelector.Item
                 // Legacy
                 MazeRoom[] rooms = context.deserialize(jsonObject.get("rooms"), MazeRoom[].class);
                 for (MazeRoom room : rooms)
-                    mazeComponent.rooms.add(new Selection.Area(true, room.coordinates, room.coordinates.clone()));
+                    mazeComponent.rooms.add(new Selection.Area(true, room.getCoordinates(), room.getCoordinates()));
             }
 
-            MazePath[] exits = context.deserialize(jsonObject.get("exits"), MazePath[].class);
+            SavedMazePath[] exits = context.deserialize(jsonObject.get("exits"), SavedMazePath[].class);
             mazeComponent.setExitPaths(Arrays.asList(exits));
 
             return mazeComponent;
@@ -176,6 +181,7 @@ public class SavedMazeComponent implements WeightedSelector.Item
         }
     }
 
+    // Legacy
     public static class RoomSerializer implements JsonSerializer<MazeRoom>, JsonDeserializer<MazeRoom>
     {
         @Override
@@ -191,34 +197,7 @@ public class SavedMazeComponent implements WeightedSelector.Item
         {
             JsonObject jsonObject = new JsonObject();
 
-            jsonObject.add("coordinates", context.serialize(src.coordinates));
-
-            return jsonObject;
-        }
-    }
-
-    public static class PathSerializer implements JsonSerializer<MazePath>, JsonDeserializer<MazePath>
-    {
-        @Override
-        public MazePath deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException
-        {
-            JsonObject jsonObject = JsonUtils.getJsonElementAsJsonObject(json, "MazeRoom");
-
-            MazeRoom src = context.deserialize(jsonObject.get("source"), MazeRoom.class);
-            int pathDimension = JsonUtils.getJsonObjectIntegerFieldValue(jsonObject, "pathDimension");
-            boolean pathGoesUp = JsonUtils.getJsonObjectBooleanFieldValue(jsonObject, "pathGoesUp");
-
-            return new MazePath(src, pathDimension, pathGoesUp);
-        }
-
-        @Override
-        public JsonElement serialize(MazePath src, Type typeOfSrc, JsonSerializationContext context)
-        {
-            JsonObject jsonObject = new JsonObject();
-
-            jsonObject.add("source", context.serialize(src.sourceRoom));
-            jsonObject.addProperty("pathDimension", src.pathDimension);
-            jsonObject.addProperty("pathGoesUp", src.pathGoesUp);
+            jsonObject.add("coordinates", context.serialize(src.getCoordinates()));
 
             return jsonObject;
         }

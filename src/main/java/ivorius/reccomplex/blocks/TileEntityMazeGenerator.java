@@ -5,6 +5,8 @@
 
 package ivorius.reccomplex.blocks;
 
+import com.google.common.base.Function;
+import com.google.common.collect.Lists;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import ivorius.ivtoolkit.blocks.BlockCoord;
@@ -12,24 +14,28 @@ import ivorius.ivtoolkit.math.AxisAlignedTransform2D;
 import ivorius.ivtoolkit.math.IvVecMathHelper;
 import ivorius.ivtoolkit.maze.*;
 import ivorius.ivtoolkit.tools.IvNBTHelper;
+import ivorius.ivtoolkit.tools.NBTCompoundObjects;
 import ivorius.ivtoolkit.tools.NBTTagCompounds;
+import ivorius.ivtoolkit.tools.NBTTagLists;
 import ivorius.reccomplex.gui.editmazeblock.GuiEditMazeBlock;
 import ivorius.reccomplex.structures.StructureLoadContext;
 import ivorius.reccomplex.structures.StructurePrepareContext;
 import ivorius.reccomplex.structures.StructureRegistry;
 import ivorius.reccomplex.structures.StructureSpawnContext;
 import ivorius.reccomplex.structures.generic.Selection;
-import ivorius.reccomplex.structures.generic.WorldGenMaze;
-import ivorius.reccomplex.structures.generic.WorldGenMaze.PlacedStructure;
+import ivorius.reccomplex.structures.generic.maze.SavedMazePath;
+import ivorius.reccomplex.structures.generic.maze.SavedMazePaths;
+import ivorius.reccomplex.structures.generic.maze.WorldGenMaze;
+import ivorius.reccomplex.structures.generic.maze.WorldGenMaze.PlacedStructure;
 import ivorius.reccomplex.utils.NBTStorable;
 import net.minecraft.client.Minecraft;
 import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.world.World;
 import net.minecraftforge.common.util.Constants;
 
+import javax.annotation.Nullable;
 import java.util.*;
 
 /**
@@ -38,7 +44,7 @@ import java.util.*;
 public class TileEntityMazeGenerator extends TileEntity implements GeneratingTileEntity<TileEntityMazeGenerator.InstanceData>, TileEntityWithGUI
 {
     public String mazeID = "";
-    public List<MazePath> mazeExits = new ArrayList<>();
+    public List<SavedMazePath> mazeExits = new ArrayList<>();
     public Selection mazeRooms = Selection.zeroSelection(3);
 
     public BlockCoord structureShift = new BlockCoord(0, 0, 0);
@@ -153,12 +159,12 @@ public class TileEntityMazeGenerator extends TileEntity implements GeneratingTil
         for (MazeComponent mazeComponent : transformedComponents)
         {
             for (MazePath path : mazeComponent.getExitPaths())
-                pathDims.add(path.pathDimension);
+                pathDims.add(path.getPathDimension());
         }
 
         Collection<MazeRoom> blockedRooms = mazeRooms.mazeRooms(false);
 
-        MazeGenerator.generateStartPathsForEnclosedMaze(maze, mazeExits, blockedRooms, context.transform);
+        MazeGenerator.generateStartPathsForEnclosedMaze(maze, Lists.transform(mazeExits, SavedMazePaths.toPathFunction()), blockedRooms, context.transform);
         for (int i = 0; i < roomNumbers[0] * roomNumbers[1] * roomNumbers[2] / (5 * 5 * 5) + 1; i++)
         {
             MazePath randPath = MazeGenerator.randomEmptyPathInMaze(context.random, maze, pathDims);
@@ -180,7 +186,7 @@ public class TileEntityMazeGenerator extends TileEntity implements GeneratingTil
         mazeRooms.writeToNBT(rooms);
         compound.setTag("rooms", rooms);
 
-        compound.setTag("mazeExits", NBTTagCompounds.write(mazeExits));
+        NBTCompoundObjects.writeListTo(compound, "mazeExits", mazeExits);
 
         BlockCoord.writeCoordToNBT("structureShift", structureShift, compound);
 
@@ -209,7 +215,7 @@ public class TileEntityMazeGenerator extends TileEntity implements GeneratingTil
         }
 
         mazeExits.clear();
-        mazeExits.addAll(NBTTagCompounds.readFrom(compound, "mazeExits", MazePath.class));
+        mazeExits.addAll(NBTCompoundObjects.readListFrom(compound, "mazeExits", SavedMazePath.class));
 
         structureShift = BlockCoord.readCoordFromNBT("structureShift", compound);
 

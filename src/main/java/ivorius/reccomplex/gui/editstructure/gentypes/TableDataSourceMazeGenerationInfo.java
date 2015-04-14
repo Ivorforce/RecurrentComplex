@@ -8,7 +8,7 @@ package ivorius.reccomplex.gui.editstructure.gentypes;
 import ivorius.reccomplex.gui.editmazeblock.TableDataSourceMazePathList;
 import ivorius.reccomplex.gui.editmazeblock.TableDataSourceSelection;
 import ivorius.reccomplex.gui.table.*;
-import ivorius.reccomplex.structures.generic.SavedMazeComponent;
+import ivorius.reccomplex.structures.generic.maze.SavedMazeComponent;
 import ivorius.reccomplex.structures.generic.gentypes.MazeGenerationInfo;
 
 /**

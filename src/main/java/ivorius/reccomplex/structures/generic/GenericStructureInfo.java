@@ -444,7 +444,7 @@ public class GenericStructureInfo implements StructureInfo<GenericStructureInfo.
         {
             NBTTagCompound compound = nbt instanceof NBTTagCompound ? (NBTTagCompound) nbt : new NBTTagCompound();
 
-            List<NBTTagCompound> transformerCompounds = NBTTagLists.compounds(compound, KEY_TRANSFORMERS);
+            List<NBTTagCompound> transformerCompounds = NBTTagLists.compoundsFrom(compound, KEY_TRANSFORMERS);
             for (int i = 0; i < transformerCompounds.size(); i++)
             {
                 NBTTagCompound transformerCompound = transformerCompounds.get(i);

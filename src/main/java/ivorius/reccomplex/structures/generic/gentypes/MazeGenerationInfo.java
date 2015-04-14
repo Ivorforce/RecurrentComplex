@@ -13,8 +13,9 @@ import ivorius.reccomplex.gui.table.TableDataSource;
 import ivorius.reccomplex.gui.table.TableDelegate;
 import ivorius.reccomplex.gui.table.TableNavigator;
 import ivorius.reccomplex.json.JsonUtils;
-import ivorius.reccomplex.structures.generic.SavedMazeComponent;
+import ivorius.reccomplex.structures.generic.maze.SavedMazeComponent;
 import ivorius.reccomplex.structures.generic.Selection;
+import ivorius.reccomplex.structures.generic.maze.SavedMazePath;
 import net.minecraft.util.StatCollector;
 
 import javax.annotation.Nonnull;
@@ -49,10 +50,10 @@ public class MazeGenerationInfo extends StructureGenerationInfo
     {
         GsonBuilder builder = new GsonBuilder();
 
-        builder.registerTypeAdapter(MazeGenerationInfo.class, new MazeGenerationInfo.Serializer());
+        builder.registerTypeAdapter(MazeGenerationInfo.class, new Serializer());
         builder.registerTypeAdapter(SavedMazeComponent.class, new SavedMazeComponent.Serializer());
         builder.registerTypeAdapter(MazeRoom.class, new SavedMazeComponent.RoomSerializer());
-        builder.registerTypeAdapter(MazePath.class, new SavedMazeComponent.PathSerializer());
+        builder.registerTypeAdapter(MazePath.class, new SavedMazePath.Serializer());
 
         return builder.create();
     }

@@ -3,7 +3,7 @@
  *  * http://lukas.axxim.net
  */
 
-package ivorius.reccomplex.structures.generic;
+package ivorius.reccomplex.structures.generic.maze;
 
 import com.google.common.base.Function;
 import com.google.common.base.Predicates;
@@ -125,11 +125,11 @@ public class WorldGenMaze
 
                     List<MazeRoom> transformedRooms = new ArrayList<>();
                     for (MazeRoom room : comp.getRooms())
-                        transformedRooms.add(MazeGenerator.rotatedRoom(room, componentTransform, compSize));
+                        transformedRooms.add(MazeCoordinates.rotatedRoom(room, componentTransform, compSize));
 
                     List<MazePath> transformedExits = new ArrayList<>();
-                    for (MazePath exit : comp.getExitPaths())
-                        transformedExits.add(MazeGenerator.rotatedPath(exit, componentTransform, compSize));
+                    for (MazePath exit : Lists.transform(comp.getExitPaths(), SavedMazePaths.toPathFunction()))
+                        transformedExits.add(MazeCoordinates.rotatedPath(exit, componentTransform, compSize));
 
                     MazeComponentInfo compInfo = new MazeComponentInfo(StructureRegistry.structureID(info), componentTransform, null);
                     transformedComponents.add(new MazeComponent(splitCompWeight, compInfo, transformedRooms, transformedExits));

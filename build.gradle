@@ -57,7 +57,7 @@ idea {
 // Provided - Stop
 
 dependencies {
-    provided 'ivorius.ivtoolkit:IvToolkit:1.1:dev'
+    provided 'ivorius.ivtoolkit:IvToolkit:1.2:dev'
 }
 
 processResources

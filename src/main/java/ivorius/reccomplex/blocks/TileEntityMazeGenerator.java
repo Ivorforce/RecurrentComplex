@@ -15,8 +15,6 @@ import ivorius.ivtoolkit.math.IvVecMathHelper;
 import ivorius.ivtoolkit.maze.*;
 import ivorius.ivtoolkit.tools.IvNBTHelper;
 import ivorius.ivtoolkit.tools.NBTCompoundObjects;
-import ivorius.ivtoolkit.tools.NBTTagCompounds;
-import ivorius.ivtoolkit.tools.NBTTagLists;
 import ivorius.reccomplex.gui.editmazeblock.GuiEditMazeBlock;
 import ivorius.reccomplex.structures.StructureLoadContext;
 import ivorius.reccomplex.structures.StructurePrepareContext;
@@ -111,7 +109,7 @@ public class TileEntityMazeGenerator extends TileEntity implements GeneratingTil
     public InstanceData prepareInstanceData(StructurePrepareContext context)
     {
         InstanceData instanceData = new InstanceData();
-        instanceData.placedStructures = WorldGenMaze.convertToPlacedStructures(context.random, getLowerCoord(context.transform), getPlacedRooms(context), roomSize);
+        instanceData.placedStructures.addAll(WorldGenMaze.convertToPlacedStructures(context.random, getLowerCoord(context.transform), getPlacedRooms(context), roomSize));
         return instanceData;
     }
 
@@ -152,7 +150,7 @@ public class TileEntityMazeGenerator extends TileEntity implements GeneratingTil
 
         int[] roomNumbers = IvVecMathHelper.add(mazeRooms.boundsHigher(), new int[]{1, 1, 1});
 
-        Maze maze = new Maze(roomNumbers[0] * 2 + 1, roomNumbers[1] * 2 + 1, roomNumbers[2] * 2 + 1);
+        Maze<MazeGeneratorWithComponents.Entry> maze = MazeGeneratorWithComponents.initialize(roomNumbers[0] * 2 + 1, roomNumbers[1] * 2 + 1, roomNumbers[2] * 2 + 1);
 
         List<MazeComponent> transformedComponents = WorldGenMaze.transformedComponents(StructureRegistry.getStructuresInMaze(mazeID));
         Set<Integer> pathDims = new HashSet<>();
@@ -164,12 +162,12 @@ public class TileEntityMazeGenerator extends TileEntity implements GeneratingTil
 
         Collection<MazeRoom> blockedRooms = mazeRooms.mazeRooms(false);
 
-        MazeGenerator.generateStartPathsForEnclosedMaze(maze, Lists.transform(mazeExits, SavedMazePaths.toPathFunction()), blockedRooms, context.transform);
+        MazeGeneratorWithComponents.generateStartPathsForEnclosedMaze(maze, Lists.transform(mazeExits, SavedMazePaths.toPathFunction()), blockedRooms, context.transform);
         for (int i = 0; i < roomNumbers[0] * roomNumbers[1] * roomNumbers[2] / (5 * 5 * 5) + 1; i++)
         {
             MazePath randPath = MazeGenerator.randomEmptyPathInMaze(context.random, maze, pathDims);
             if (randPath != null)
-                maze.set(Maze.ROOM, randPath);
+                maze.set(new MazeGeneratorWithComponents.Path(), randPath);
             else
                 break;
         }
@@ -231,7 +229,7 @@ public class TileEntityMazeGenerator extends TileEntity implements GeneratingTil
 
     public static class InstanceData implements NBTStorable
     {
-        public List<PlacedStructure> placedStructures;
+        public final List<PlacedStructure> placedStructures = new ArrayList<>();
 
         public InstanceData()
         {
@@ -240,16 +238,14 @@ public class TileEntityMazeGenerator extends TileEntity implements GeneratingTil
 
         public InstanceData(NBTTagCompound compound)
         {
-            placedStructures = NBTTagCompounds.readFrom(compound, "placedStructures", PlacedStructure.class);
+            placedStructures.addAll(NBTCompoundObjects.readListFrom(compound, "placedStructures", PlacedStructure.class));
         }
 
         @Override
         public NBTBase writeToNBT()
         {
             NBTTagCompound compound = new NBTTagCompound();
-
-            compound.setTag("placedStructures", NBTTagCompounds.write(placedStructures));
-
+            NBTCompoundObjects.writeListTo(compound, "placedStructures", placedStructures);
             return compound;
         }
     }

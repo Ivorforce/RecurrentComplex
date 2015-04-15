@@ -7,7 +7,7 @@ package ivorius.reccomplex.random;
 
 import ivorius.ivtoolkit.math.IvVecMathHelper;
 import ivorius.ivtoolkit.tools.NBTCompoundObject;
-import ivorius.ivtoolkit.tools.NBTTagCompounds;
+import ivorius.ivtoolkit.tools.NBTCompoundObjects;
 import net.minecraft.nbt.NBTTagCompound;
 
 import java.util.ArrayList;
@@ -90,14 +90,14 @@ public class BlurredValueField implements NBTCompoundObject
     public void readFromNBT(NBTTagCompound compound)
     {
         size = compound.getIntArray("size");
-        values.addAll(NBTTagCompounds.readFrom(compound, "values", Value.class));
+        values.addAll(NBTCompoundObjects.readListFrom(compound, "values", Value.class));
     }
 
     @Override
     public void writeToNBT(NBTTagCompound compound)
     {
         compound.setIntArray("size", size);
-        compound.setTag("values", NBTTagCompounds.write(values));
+        NBTCompoundObjects.writeListTo(compound, "values", values);
     }
 
     public static class Value implements NBTCompoundObject

@@ -11,7 +11,7 @@ import com.google.gson.*;
 import ivorius.ivtoolkit.blocks.*;
 import ivorius.ivtoolkit.tools.IvWorldData;
 import ivorius.ivtoolkit.tools.MCRegistry;
-import ivorius.ivtoolkit.tools.NBTTagCompounds;
+import ivorius.ivtoolkit.tools.NBTCompoundObjects;
 import ivorius.reccomplex.RecurrentComplex;
 import ivorius.reccomplex.gui.editstructure.transformers.TableDataSourceBTRuins;
 import ivorius.reccomplex.gui.table.TableDataSource;
@@ -319,14 +319,14 @@ public class TransformerRuins implements Transformer<TransformerRuins.InstanceDa
 
         public InstanceData(NBTTagCompound compound)
         {
-            blurredValueField = NBTTagCompounds.read(compound.getCompoundTag("field"), BlurredValueField.class);
+            blurredValueField = NBTCompoundObjects.read(compound.getCompoundTag("field"), BlurredValueField.class);
         }
 
         @Override
         public NBTBase writeToNBT()
         {
             NBTTagCompound compound = new NBTTagCompound();
-            compound.setTag("field", NBTTagCompounds.write(blurredValueField));
+            compound.setTag("field", NBTCompoundObjects.write(blurredValueField));
             return compound;
         }
     }

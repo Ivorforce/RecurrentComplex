@@ -106,7 +106,7 @@ public class GuiTable extends Gui
         scrollDownButton.visible = needsScroll || !hideScrollbarIfUnnecessary;
 
         int baseY = propertiesBounds.getMinY() + SCROLL_BAR_HEIGHT;
-        for (int index = 0; index < supportedSlotNumber && index < numberOfElements; index++)
+        for (int index = 0; index < supportedSlotNumber && currentScrollIndex + index < numberOfElements; index++)
         {
             TableElement element = cachedElements.get(currentScrollIndex + index);
             boolean initElement = element == null;

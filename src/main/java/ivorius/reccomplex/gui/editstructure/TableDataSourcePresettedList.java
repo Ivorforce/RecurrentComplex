@@ -54,11 +54,7 @@ public abstract class TableDataSourcePresettedList<T> extends TableDataSourceLis
     @Override
     public int getAddIndex(int segment)
     {
-        return segment == 1
-                ? 0
-                : segment == 3
-                ? (list.size() > 0 ? list.size() : -1)
-                : -1;
+        return super.getAddIndex(segment - 1);
     }
 
     public TableCellButton.Action[] getPresetActions()

@@ -246,7 +246,7 @@ public abstract class TableDataSourceList<T, L extends List<T>> extends TableDat
                 navigator.pushTable(new GuiTable(tableDelegate, editEntryDataSource(t)));
                 break;
             case "delete":
-                list.remove(t);
+                list.remove(index);
                 tableDelegate.reloadData();
                 break;
             case "earlier":

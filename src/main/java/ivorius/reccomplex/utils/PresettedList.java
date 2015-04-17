@@ -22,7 +22,7 @@ public class PresettedList<T>
     @Nullable
     protected String preset;
 
-    public PresettedList(ListPresets<T> listPresets, String preset)
+    public PresettedList(@Nonnull ListPresets<T> listPresets, String preset)
     {
         this.listPresets = listPresets;
         setPreset(preset);
@@ -66,7 +66,8 @@ public class PresettedList<T>
         setPreset(listPresets.defaultType());
     }
 
-    public void setContents(T... ts)
+    @SafeVarargs
+    public final void setContents(T... ts)
     {
         setToCustom();
         list.clear();

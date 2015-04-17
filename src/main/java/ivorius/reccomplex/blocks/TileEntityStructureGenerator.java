@@ -170,13 +170,12 @@ public class TileEntityStructureGenerator extends TileEntity implements Generati
 
             if (generationInfos.size() > 0)
             {
-                Pair<StructureInfo, StructureListGenerationInfo> pair = WeightedSelector.select(random, generationInfos, new Function<Pair<StructureInfo, StructureListGenerationInfo>, Double>()
+                Pair<StructureInfo, StructureListGenerationInfo> pair = WeightedSelector.select(random, generationInfos, new WeightedSelector.WeightFunction<Pair<StructureInfo, StructureListGenerationInfo>>()
                 {
-                    @Nullable
                     @Override
-                    public Double apply(Pair<StructureInfo, StructureListGenerationInfo> input)
+                    public double apply(Pair<StructureInfo, StructureListGenerationInfo> item)
                     {
-                        return input.getRight().getWeight();
+                        return item.getRight().getWeight();
                     }
                 });
                 StructureInfo structureInfo = pair.getLeft();

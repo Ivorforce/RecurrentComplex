@@ -5,8 +5,7 @@
 
 package ivorius.reccomplex.gui.editmazeblock;
 
-import ivorius.ivtoolkit.maze.MazePath;
-import ivorius.ivtoolkit.maze.MazeRoom;
+import ivorius.ivtoolkit.maze.components.MazeRoom;
 import ivorius.reccomplex.gui.table.*;
 import ivorius.reccomplex.structures.generic.maze.SavedMazePath;
 import net.minecraft.util.EnumChatFormatting;

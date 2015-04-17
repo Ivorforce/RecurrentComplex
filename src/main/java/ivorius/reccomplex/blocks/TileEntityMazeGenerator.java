@@ -5,35 +5,34 @@
 
 package ivorius.reccomplex.blocks;
 
-import com.google.common.base.Function;
-import com.google.common.collect.Lists;
+import com.google.common.collect.*;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
+import gnu.trove.list.array.TIntArrayList;
 import ivorius.ivtoolkit.blocks.BlockCoord;
 import ivorius.ivtoolkit.math.AxisAlignedTransform2D;
 import ivorius.ivtoolkit.math.IvVecMathHelper;
-import ivorius.ivtoolkit.maze.*;
+import ivorius.ivtoolkit.maze.components.*;
 import ivorius.ivtoolkit.tools.IvNBTHelper;
 import ivorius.ivtoolkit.tools.NBTCompoundObjects;
+import ivorius.ivtoolkit.tools.Visitor;
 import ivorius.reccomplex.gui.editmazeblock.GuiEditMazeBlock;
 import ivorius.reccomplex.structures.StructureLoadContext;
 import ivorius.reccomplex.structures.StructurePrepareContext;
 import ivorius.reccomplex.structures.StructureRegistry;
 import ivorius.reccomplex.structures.StructureSpawnContext;
 import ivorius.reccomplex.structures.generic.Selection;
-import ivorius.reccomplex.structures.generic.maze.SavedMazePath;
-import ivorius.reccomplex.structures.generic.maze.SavedMazePaths;
-import ivorius.reccomplex.structures.generic.maze.WorldGenMaze;
-import ivorius.reccomplex.structures.generic.maze.WorldGenMaze.PlacedStructure;
+import ivorius.reccomplex.structures.generic.maze.*;
+import ivorius.reccomplex.utils.IntAreas;
 import ivorius.reccomplex.utils.NBTStorable;
 import net.minecraft.client.Minecraft;
 import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.MathHelper;
 import net.minecraftforge.common.util.Constants;
 
-import javax.annotation.Nullable;
 import java.util.*;
 
 /**
@@ -122,7 +121,7 @@ public class TileEntityMazeGenerator extends TileEntity implements GeneratingTil
     @Override
     public void generate(StructureSpawnContext context, InstanceData instanceData)
     {
-       List<PlacedStructure> placedStructures = instanceData.placedStructures;
+        List<PlacedStructure> placedStructures = instanceData.placedStructures;
         if (placedStructures == null)
             return;
         WorldGenMaze.generatePlacedStructures(placedStructures, context);
@@ -141,38 +140,94 @@ public class TileEntityMazeGenerator extends TileEntity implements GeneratingTil
         return false;
     }
 
-    public List<MazeComponentPosition> getPlacedRooms(StructurePrepareContext context)
+    public List<ShiftedMazeComponent<MazeComponentStructure<Connector>, Connector>> getPlacedRooms(StructurePrepareContext context)
     {
         if (mazeRooms.isEmpty())
             return null;
 
-        AxisAlignedTransform2D transform = context.transform;
+        Connector roomConnector = new SimpleConnectors.Hermaphrodite("Path");
+        Connector wallConnector = new SimpleConnectors.Hermaphrodite("Wall");
 
-        int[] roomNumbers = IvVecMathHelper.add(mazeRooms.boundsHigher(), new int[]{1, 1, 1});
+        int[] boundsHigher = mazeRooms.boundsHigher();
+        int[] boundsLower = mazeRooms.boundsLower();
 
-        Maze<MazeGeneratorWithComponents.Entry> maze = MazeGeneratorWithComponents.initialize(roomNumbers[0] * 2 + 1, roomNumbers[1] * 2 + 1, roomNumbers[2] * 2 + 1);
+        int[] oneArray = new int[boundsHigher.length];
+        Arrays.fill(oneArray, 1);
 
-        List<MazeComponent> transformedComponents = WorldGenMaze.transformedComponents(StructureRegistry.getStructuresInMaze(mazeID));
-        Set<Integer> pathDims = new HashSet<>();
-        for (MazeComponent mazeComponent : transformedComponents)
+        final int[] roomNumbers = IvVecMathHelper.add(boundsHigher, oneArray);
+
+        List<MazeComponentStructure<Connector>> transformedComponents = WorldGenMaze.transformedComponents(StructureRegistry.getStructuresInMaze(mazeID), roomConnector, wallConnector);
+
+        MorphingMazeComponent<Connector> maze = new SetMazeComponent<>();
+
+        enclose(maze, new MazeRoom(IvVecMathHelper.sub(boundsLower, oneArray)), new MazeRoom(IvVecMathHelper.add(boundsHigher, oneArray)), wallConnector);
+        blockRooms(maze, mazeRooms.mazeRooms(false), wallConnector);
+        addExits(roomConnector, maze, mazeExits);
+        addRandomPaths(context.random, roomNumbers, maze, transformedComponents, roomConnector, roomNumbers[0] * roomNumbers[1] * roomNumbers[2] / (5 * 5 * 5) + 1);
+
+        return MazeComponentConnector.randomlyConnect(maze, transformedComponents, new ConnectorStrategy(), new LimitAABBStrategy<MazeComponentStructure<Connector>, Connector>(roomNumbers), context.random);
+    }
+
+    protected static <C> void addRandomPaths(Random random, int[] size, MorphingMazeComponent<C> maze, List<? extends MazeComponent<C>> components, C roomConnector, int number)
+    {
+        Map<MazeRoomConnection, C> exits = new HashMap<>();
+        for (MazeComponent<C> component : components)
+            for (Map.Entry<MazeRoomConnection, C> entry : component.exits().entrySet())
+                exits.put(entry.getKey(), entry.getValue());
+
+        for (int i = 0; i < number; i++)
         {
-            for (MazePath path : mazeComponent.getExitPaths())
-                pathDims.add(path.getPathDimension());
+            int[] randomCoords = new int[size.length];
+            for (int c = 0; c < randomCoords.length; c++)
+                randomCoords[c] = MathHelper.getRandomIntegerInRange(random, 0, size[c]);
+            MazeRoom randomRoom = new MazeRoom(randomCoords);
+            MazeRoomConnection randomConnection = new MazeRoomConnection(randomRoom, randomRoom.addInDimension(random.nextInt(size.length), random.nextBoolean() ? 1 : -1));
+            if (Objects.equals(exits.get(randomConnection), roomConnector))
+                maze.exits().put(randomConnection, roomConnector);
+        }
+    }
+
+    protected static void addExits(Connector roomConnector, MorphingMazeComponent<Connector> maze, List<SavedMazePath> mazeExits)
+    {
+        Map<MazeRoomConnection, Connector> exitMap = Maps.newHashMap();
+        SavedMazePaths.putAll(exitMap, Iterables.transform(mazeExits, SavedMazePaths.toConnectionFunction(roomConnector)));
+        maze.exits().putAll(exitMap);
+    }
+
+    public static <C> void blockRooms(MorphingMazeComponent<C> component, Set<MazeRoom> rooms, C wallConnector)
+    {
+        component.add(WorldGenMaze.createCompleteComponent(rooms, Collections.<MazeRoomConnection, C>emptyMap(), wallConnector));
+    }
+
+    public static <C> void enclose(MorphingMazeComponent<C> component, MazeRoom lower, MazeRoom higher, C wallConnector)
+    {
+        if (lower.getDimensions() != higher.getDimensions())
+            throw new IllegalArgumentException();
+
+        final Set<MazeRoom> rooms = new HashSet<>();
+        int[] coords = lower.getCoordinates();
+        for (int i = 0; i < coords.length; i++)
+        {
+            final int lowest = lower.getCoordinate(i);
+            final int highest = higher.getCoordinate(i);
+
+            final int finalI = i;
+            IntAreas.visitCoordsExcept(lower.getCoordinates(), higher.getCoordinates(), TIntArrayList.wrap(new int[]{i}), new Visitor<int[]>()
+            {
+                @Override
+                public boolean visit(int[] ints)
+                {
+                    ints[finalI] = lowest;
+                    rooms.add(new MazeRoom(ints));
+                    ints[finalI] = highest;
+                    rooms.add(new MazeRoom(ints));
+
+                    return true;
+                }
+            });
         }
 
-        Collection<MazeRoom> blockedRooms = mazeRooms.mazeRooms(false);
-
-        MazeGeneratorWithComponents.generateStartPathsForEnclosedMaze(maze, Lists.transform(mazeExits, SavedMazePaths.toPathFunction()), blockedRooms, context.transform);
-        for (int i = 0; i < roomNumbers[0] * roomNumbers[1] * roomNumbers[2] / (5 * 5 * 5) + 1; i++)
-        {
-            MazePath randPath = MazeGenerator.randomEmptyPathInMaze(context.random, maze, pathDims);
-            if (randPath != null)
-                maze.set(new MazeGeneratorWithComponents.Path(), randPath);
-            else
-                break;
-        }
-
-        return MazeGeneratorWithComponents.generatePaths(context.random, maze, transformedComponents);
+        blockRooms(component, rooms, wallConnector);
     }
 
     @Override

@@ -8,7 +8,7 @@ package ivorius.reccomplex.structures.generic;
 import com.google.gson.annotations.SerializedName;
 import ivorius.ivtoolkit.gui.IntegerRange;
 import ivorius.ivtoolkit.math.IvVecMathHelper;
-import ivorius.ivtoolkit.maze.MazeRoom;
+import ivorius.ivtoolkit.maze.components.MazeRoom;
 import ivorius.ivtoolkit.tools.IvNBTHelper;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
@@ -46,7 +46,7 @@ public class Selection extends ArrayList<Selection.Area>
         return selection;
     }
 
-    public Collection<MazeRoom> mazeRooms(boolean additive)
+    public Set<MazeRoom> mazeRooms(boolean additive)
     {
         if (additive)
         {

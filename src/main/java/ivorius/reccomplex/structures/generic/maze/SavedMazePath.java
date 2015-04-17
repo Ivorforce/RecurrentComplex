@@ -6,14 +6,15 @@
 package ivorius.reccomplex.structures.generic.maze;
 
 import com.google.gson.*;
-import ivorius.ivtoolkit.maze.MazePath;
-import ivorius.ivtoolkit.maze.MazeRoom;
+import ivorius.ivtoolkit.maze.components.MazeRoom;
+import ivorius.ivtoolkit.maze.components.MazeRoomConnection;
 import ivorius.ivtoolkit.tools.NBTCompoundObject;
 import ivorius.reccomplex.json.JsonUtils;
 import net.minecraft.nbt.NBTTagCompound;
+import org.apache.commons.lang3.tuple.Pair;
 
-import javax.annotation.Nonnull;
 import java.lang.reflect.Type;
+import java.util.Map;
 
 /**
  * Created by lukas on 14.04.15.
@@ -35,14 +36,9 @@ public class SavedMazePath implements NBTCompoundObject
         this.pathGoesUp = pathGoesUp;
     }
 
-    public static SavedMazePath fromPath(MazePath path, boolean pathGoesUp)
+    public Map.Entry<MazeRoomConnection, Connector> toRoomConnection(Connector connector)
     {
-        return new SavedMazePath(path.getPathDimension(), pathGoesUp ? path.getSourceRoom() : path.getDestinationRoom(), pathGoesUp);
-    }
-
-    public MazePath toPath()
-    {
-        return MazePath.fromRoom(pathDimension, sourceRoom, pathGoesUp);
+        return Pair.of(new MazeRoomConnection(sourceRoom, sourceRoom.addInDimension(pathDimension, pathGoesUp ? 1 : -1)), connector);
     }
 
     @Override

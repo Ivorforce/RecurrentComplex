@@ -207,8 +207,7 @@ public class GenericStructureInfo implements StructureInfo<GenericStructureInfo.
             }
         }
 
-        List<Entity> entities = worldData.entities;
-        for (Entity entity : entities)
+        for (Entity entity : worldData.entities)
         {
             if (context.includes(entity.posX, entity.posY, entity.posZ))
             {
@@ -217,8 +216,7 @@ public class GenericStructureInfo implements StructureInfo<GenericStructureInfo.
                 IvWorldData.transformEntityPosForGeneration(entity, context.transform, areaSize);
                 IvWorldData.moveEntityForGeneration(entity, origin);
 
-                if (context.boundingBox.isVecInside(MathHelper.floor_double(entity.posX), MathHelper.floor_double(entity.posY), MathHelper.floor_double(entity.posZ)))
-                    world.spawnEntityInWorld(entity);
+                world.spawnEntityInWorld(entity);
             }
         }
 

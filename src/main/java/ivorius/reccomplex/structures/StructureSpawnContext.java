@@ -67,7 +67,7 @@ public class StructureSpawnContext
         this.world = world;
         this.random = random;
         boundingBox = StructureInfos.structureBoundingBox(coord, StructureInfos.structureSize(structureInfo, transform));
-        generationBB = boundingBox;
+        generationBB = null;
         this.transform = transform;
         this.generationLayer = generationLayer;
         this.generateAsSource = generateAsSource;

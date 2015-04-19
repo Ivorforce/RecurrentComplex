@@ -112,7 +112,7 @@ public class StaticGenerationInfo extends StructureGenerationInfo
 
             String id = JsonUtils.getJsonObjectStringFieldValueOrDefault(jsonObject, "id", "");
 
-            GenericYSelector ySelector = context.deserialize(jsonObject.get("generationY"), GenericYSelector.class);
+            GenericYSelector ySelector = gson.fromJson(jsonObject.get("generationY"), GenericYSelector.class);
             String dimension = JsonUtils.getJsonObjectStringFieldValueOrDefault(jsonObject, "dimensions", "");
 
             boolean relativeToSpawn = JsonUtils.getJsonObjectBooleanFieldValueOrDefault(jsonObject, "relativeToSpawn", false);

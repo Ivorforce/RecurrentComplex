@@ -11,6 +11,7 @@ import ivorius.ivtoolkit.maze.components.MazeRoomConnection;
 import ivorius.ivtoolkit.tools.NBTCompoundObject;
 import ivorius.reccomplex.json.JsonUtils;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraftforge.common.util.Constants;
 import org.apache.commons.lang3.tuple.Pair;
 
 import java.lang.reflect.Type;
@@ -44,7 +45,11 @@ public class SavedMazePath implements NBTCompoundObject
     @Override
     public void readFromNBT(NBTTagCompound compound)
     {
-        sourceRoom = new MazeRoom(compound.getCompoundTag("source"));
+        if (compound.hasKey("source", Constants.NBT.TAG_COMPOUND)) // Legacy
+            sourceRoom = new MazeRoom(compound.getCompoundTag("source").getIntArray("coordinates"));
+        else
+            sourceRoom = new MazeRoom(compound.getIntArray("source"));
+
         pathDimension = compound.getInteger("pathDimension");
         pathGoesUp = compound.getBoolean("pathGoesUp");
     }

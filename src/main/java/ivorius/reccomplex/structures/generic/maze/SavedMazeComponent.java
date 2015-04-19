@@ -104,7 +104,7 @@ public class SavedMazeComponent implements NBTCompoundObject, WeightedSelector.I
                 @Override
                 public Selection.Area apply(NBTTagCompound input)
                 {
-                    MazeRoom room = new MazeRoom(input);
+                    MazeRoom room = new MazeRoom(input.getIntArray("coordinates"));
                     int[] coordinates = room.getCoordinates();
                     return new Selection.Area(true, coordinates, coordinates.clone());
                 }

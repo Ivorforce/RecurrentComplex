@@ -77,7 +77,7 @@ public class GenericYSelector implements YSelector
             case BEDROCK:
                 return selectByConstant(world, yShift);
             case TOP:
-                return selectByConstant(world, world.getHeight() + yShift);
+                return selectByConstant(world, world.getHeight() + yShift - 1);
             case SEALEVEL:
                 return selectByConstant(world, 63 + yShift);
             case SURFACE:

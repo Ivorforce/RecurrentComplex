@@ -187,7 +187,7 @@ structures.genY.sealevel.tooltip=The ocean height: y=63
 structures.genY.underwater=Ocean Floor
 structures.genY.underwater.tooltip=The topmost solid block
 structures.genY.top=Top (Sky)
-structures.genY.top.tooltip=Top of the world: y=127
+structures.genY.top.tooltip=Top of the world: y=255
 structures.genY.lowestedge=Lowest Edge (Ocean Floor)
 structures.genY.lowestedge.tooltip=Like ocean floor, but buried as much as needed
 

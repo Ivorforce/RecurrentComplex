@@ -5,9 +5,16 @@
 
 package ivorius.reccomplex;
 
-import net.minecraftforge.common.config.Configuration;
+import ivorius.reccomplex.structures.generic.matchers.BiomeMatcher;
+import ivorius.reccomplex.structures.generic.matchers.DimensionMatcher;
+import ivorius.reccomplex.utils.ExpressionCache;
+import net.minecraft.world.WorldProvider;
+import net.minecraft.world.biome.BiomeGenBase;
+import org.apache.logging.log4j.Logger;
 
-import java.util.*;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Set;
 
 import static net.minecraftforge.common.config.Configuration.CATEGORY_GENERAL;
 
@@ -20,29 +27,30 @@ public class RCConfig
     public static final String CATEGORY_BALANCING = "balancing";
     public static final String CATEGORY_CONTROLS = "controls";
 
-    private static boolean lightweightMode;
-
     public static boolean hideRedundantNegativeSpace;
 
     public static float minDistToSpawnForGeneration;
     public static float structureSpawnChanceModifier = 1.0f;
-    private static Set<String> disabledStructures = new HashSet<>();
-    private static Set<String> disabledModGeneration = new HashSet<>();
-    private static Set<String> persistentDisabledStructures = new HashSet<>();
-    private static Set<String> forceEnabledStructures = new HashSet<>();
-
-    private static Set<String> disabledBiomes = new HashSet<>();
-
     public static boolean avoidOverlappingGeneration;
+
     public static int baseVillageSpawnWeight;
 
     public static String commandPrefix;
 
     public static boolean savePlayerCache;
-
     public static boolean notifyAdminOnBlockCommands;
 
     public static int[] blockSelectorModifierKeys;
+
+    private static boolean lightweightMode;
+
+    private static Set<String> disabledStructures = new HashSet<>();
+    private static Set<String> disabledModGeneration = new HashSet<>();
+    private static Set<String> persistentDisabledStructures = new HashSet<>();
+    private static Set<String> forceEnabledStructures = new HashSet<>();
+
+    private static BiomeMatcher universalBiomeMatcher = new BiomeMatcher("");
+    private static DimensionMatcher universalDimensionMatcher = new DimensionMatcher("");
 
     public static void loadConfig(String configID)
     {
@@ -54,7 +62,7 @@ public class RCConfig
 
             notifyAdminOnBlockCommands = RecurrentComplex.config.getBoolean("notifyAdminOnBlockCommands", CATEGORY_GENERAL, false, "Disabling this will prevent spawn command blocks from notifying the server admins, as normal commands would.");
         }
-        
+
         if (configID == null || configID.equals(CATEGORY_BALANCING))
         {
             lightweightMode = RecurrentComplex.config.getBoolean("lightweightMode", CATEGORY_BALANCING, false, "Enabling this will make the mod register as little as possible, which enables it to be used server-side only.");
@@ -72,11 +80,20 @@ public class RCConfig
             forceEnabledStructures.clear();
             forceEnabledStructures.addAll(Arrays.asList(RecurrentComplex.config.getStringList("forceEnabledStructures", CATEGORY_BALANCING, new String[0], "Structures that be set to generate (if in the right directory), no matter what")));
 
-            disabledBiomes.clear();
-            disabledBiomes.addAll(Arrays.asList(RecurrentComplex.config.getStringList("disabledBiomes", CATEGORY_BALANCING, new String[0], "Biomes in which no biomes will spawn at all. This is for biomes that generally don't work well with structures.")));
+            universalBiomeMatcher.setExpression(RecurrentComplex.config.getString("universalBiomeMatcher", CATEGORY_BALANCING, "", "Biome Expression that will be checked for every single structure. Use this if you want to blacklist / whitelist specific biomes that shouldn't have structures."));
+            logExpressionException(universalBiomeMatcher, "universalBiomeMatcher", RecurrentComplex.logger);
+
+            universalDimensionMatcher.setExpression(RecurrentComplex.config.getString("universalDimensionMatcher", CATEGORY_BALANCING, "", "Dimension Expression that will be checked for every single structure. Use this if you want to blacklist / whitelist specific dimensions that shouldn't have structures."));
+            logExpressionException(universalDimensionMatcher, "universalDimensionMatcher", RecurrentComplex.logger);
         }
 
         RecurrentComplex.proxy.loadConfig(configID);
+    }
+
+    private static void logExpressionException(ExpressionCache<?> cache, String name, Logger logger)
+    {
+        if (cache.getParseException() != null)
+            logger.error("Error in expression '" + name + "'", cache.getParseException());
     }
 
     public static boolean isLightweightMode()
@@ -101,8 +118,13 @@ public class RCConfig
         return disabledModGeneration.contains(modID);
     }
 
-    public static boolean isGenerationEnabled(String biomeID)
+    public static boolean isGenerationEnabled(BiomeGenBase biome)
     {
-        return !disabledBiomes.contains(biomeID);
+        return universalBiomeMatcher.apply(biome);
+    }
+
+    public static boolean isGenerationEnabled(WorldProvider provider)
+    {
+        return universalDimensionMatcher.apply(provider);
     }
 }

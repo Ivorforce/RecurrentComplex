@@ -51,7 +51,7 @@ public class WorldGenStructures implements IWorldGenerator
                 StructureGenerator.randomInstantly(world, random, structureInfo, staticGenInfo.ySelector, strucX, strucZ, false, structureName);
             }
 
-            boolean mayGenerate = RCConfig.isGenerationEnabled(biomeGen.biomeName);
+            boolean mayGenerate = RCConfig.isGenerationEnabled(biomeGen) && RCConfig.isGenerationEnabled(world.provider);
 
             if (world.provider.dimensionId == 0)
             {

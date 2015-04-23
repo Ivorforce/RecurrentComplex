@@ -120,11 +120,11 @@ public class RCConfig
 
     public static boolean isGenerationEnabled(BiomeGenBase biome)
     {
-        return universalBiomeMatcher.apply(biome);
+        return !universalBiomeMatcher.isExpressionValid() || universalBiomeMatcher.apply(biome);
     }
 
     public static boolean isGenerationEnabled(WorldProvider provider)
     {
-        return universalDimensionMatcher.apply(provider);
+        return !universalDimensionMatcher.isExpressionValid() || universalDimensionMatcher.apply(provider);
     }
 }

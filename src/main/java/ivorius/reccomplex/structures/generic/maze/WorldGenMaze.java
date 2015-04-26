@@ -99,7 +99,7 @@ public class WorldGenMaze
         return StructureInfos.structureBoundingBox(lowerCoord, structureBB);
     }
 
-    public static List<MazeComponentStructure<Connector>> transformedComponents(Collection<Pair<StructureInfo, MazeGenerationInfo>> componentStructures, Connector roomConnector, Connector wallConnector, AxisAlignedTransform2D transform)
+    public static List<MazeComponentStructure<Connector>> transformedComponents(Collection<Pair<StructureInfo, MazeGenerationInfo>> componentStructures, ConnectorFactory factory, AxisAlignedTransform2D transform)
     {
         List<MazeComponentStructure<Connector>> transformedComponents = new ArrayList<>();
         for (Pair<StructureInfo, MazeGenerationInfo> pair : componentStructures)
@@ -118,10 +118,10 @@ public class WorldGenMaze
             {
                 if (info.isRotatable() || (rotations + transform.getRotation()) % 4 == 0)
                 {
-                    transformedComponents.add(transformedComponent(info, comp, AxisAlignedTransform2D.transform(rotations, false), compSize, splitCompWeight, roomConnector, wallConnector));
+                    transformedComponents.add(transformedComponent(info, comp, AxisAlignedTransform2D.transform(rotations, false), compSize, splitCompWeight, factory));
 
                     if (info.isMirrorable())
-                        transformedComponents.add(transformedComponent(info, comp, AxisAlignedTransform2D.transform(rotations, true), compSize, splitCompWeight, roomConnector, wallConnector));
+                        transformedComponents.add(transformedComponent(info, comp, AxisAlignedTransform2D.transform(rotations, true), compSize, splitCompWeight, factory));
                 }
             }
         }
@@ -129,18 +129,18 @@ public class WorldGenMaze
         return transformedComponents;
     }
 
-    public static MazeComponentStructure<Connector> transformedComponent(StructureInfo info, SavedMazeComponent comp, AxisAlignedTransform2D transform, int[] size, double weight, Connector roomConnector, Connector wallConnector)
+    public static MazeComponentStructure<Connector> transformedComponent(StructureInfo info, SavedMazeComponent comp, AxisAlignedTransform2D transform, int[] size, double weight, ConnectorFactory factory)
     {
         Set<MazeRoom> transformedRooms = new HashSet<>();
         for (MazeRoom room : comp.getRooms())
             transformedRooms.add(MazeRooms.rotated(room, transform, size));
 
         Map<MazeRoomConnection, Connector> transformedExits = new HashMap<>();
-        for (Map.Entry<MazeRoomConnection, Connector> exit : Lists.transform(comp.getExitPaths(), SavedMazePaths.toConnectionFunction(roomConnector)))
-            transformedExits.put(MazeRoomConnections.rotated(exit.getKey(), transform, size), roomConnector);
+        for (Map.Entry<MazeRoomConnection, Connector> path : Lists.transform(comp.getExitPaths(), SavedMazePaths.toConnectionFunction(factory)))
+            transformedExits.put(MazeRoomConnections.rotated(path.getKey(), transform, size), path.getValue());
 
         MazeComponentStructure<Connector> component = new MazeComponentStructure<>(weight, StructureRegistry.structureID(info), transform, transformedRooms, transformedExits);
-        addMissingExits(component, wallConnector);
+        addMissingExits(component, comp.defaultConnector.toConnector(factory));
         return component;
     }
 

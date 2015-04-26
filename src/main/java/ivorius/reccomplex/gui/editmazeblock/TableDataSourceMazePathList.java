@@ -7,6 +7,7 @@ package ivorius.reccomplex.gui.editmazeblock;
 
 import ivorius.ivtoolkit.maze.components.MazeRoom;
 import ivorius.reccomplex.gui.table.*;
+import ivorius.reccomplex.structures.generic.maze.ConnectorStrategy;
 import ivorius.reccomplex.structures.generic.maze.SavedMazePath;
 import net.minecraft.util.EnumChatFormatting;
 
@@ -40,7 +41,7 @@ public class TableDataSourceMazePathList extends TableDataSourceList<SavedMazePa
     @Override
     public SavedMazePath newEntry(String actionID)
     {
-        return new SavedMazePath(2, new MazeRoom(new int[boundsLower.length]), false);
+        return new SavedMazePath(2, new MazeRoom(new int[boundsLower.length]), false, ConnectorStrategy.DEFAULT_PATH);
     }
 
     @Override

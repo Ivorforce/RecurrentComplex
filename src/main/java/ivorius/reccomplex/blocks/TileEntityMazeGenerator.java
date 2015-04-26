@@ -143,8 +143,10 @@ public class TileEntityMazeGenerator extends TileEntity implements GeneratingTil
         if (mazeRooms.isEmpty())
             return null;
 
-        Connector roomConnector = new SimpleConnectors.Hermaphrodite("Path");
-        Connector wallConnector = new SimpleConnectors.Hermaphrodite("Wall");
+        ConnectorFactory factory = new ConnectorFactory();
+
+        Connector roomConnector = factory.get("Path");
+        Connector wallConnector = factory.get("Wall");
 
         int[] boundsHigher = mazeRooms.boundsHigher();
         int[] boundsLower = mazeRooms.boundsLower();
@@ -155,13 +157,13 @@ public class TileEntityMazeGenerator extends TileEntity implements GeneratingTil
         final int[] outsideBoundsHigher = IvVecMathHelper.add(boundsHigher, oneArray);
         final int[] outsideBoundsLower = IvVecMathHelper.sub(boundsLower, oneArray);
 
-        List<MazeComponentStructure<Connector>> transformedComponents = WorldGenMaze.transformedComponents(StructureRegistry.getStructuresInMaze(mazeID), roomConnector, wallConnector, transform);
+        List<MazeComponentStructure<Connector>> transformedComponents = WorldGenMaze.transformedComponents(StructureRegistry.getStructuresInMaze(mazeID), factory, transform);
 
         MorphingMazeComponent<Connector> maze = new SetMazeComponent<>();
 
         enclose(maze, new MazeRoom(outsideBoundsLower), new MazeRoom(outsideBoundsHigher), wallConnector);
         blockRooms(maze, mazeRooms.mazeRooms(false), wallConnector);
-        addExits(roomConnector, maze, mazeExits);
+        addExits(factory, maze, mazeExits);
         addRandomPaths(random, outsideBoundsHigher, maze, transformedComponents, roomConnector, outsideBoundsHigher[0] * outsideBoundsHigher[1] * outsideBoundsHigher[2] / (5 * 5 * 5) + 1);
 
         LimitAABBStrategy<MazeComponentStructure<Connector>, Connector> placementStrategy = new LimitAABBStrategy<>(outsideBoundsHigher, Collections.singleton(wallConnector));
@@ -189,10 +191,10 @@ public class TileEntityMazeGenerator extends TileEntity implements GeneratingTil
         }
     }
 
-    protected static void addExits(Connector roomConnector, MorphingMazeComponent<Connector> maze, List<SavedMazePath> mazeExits)
+    protected static void addExits(ConnectorFactory factory, MorphingMazeComponent<Connector> maze, List<SavedMazePath> mazeExits)
     {
         Map<MazeRoomConnection, Connector> exitMap = Maps.newHashMap();
-        SavedMazePaths.putAll(exitMap, Iterables.transform(mazeExits, SavedMazePaths.toConnectionFunction(roomConnector)));
+        SavedMazePaths.putAll(exitMap, Iterables.transform(mazeExits, SavedMazePaths.toConnectionFunction(factory)));
         maze.exits().putAll(exitMap);
     }
 

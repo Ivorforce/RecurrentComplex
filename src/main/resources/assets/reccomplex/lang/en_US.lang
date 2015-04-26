@@ -303,3 +303,7 @@ reccomplex.direction.west=West (-X)
 reccomplex.direction.none=None
 reccomplex.direction.random=Random
 
+reccomplex.maze.connector=Connector
+reccomplex.maze.connector.tooltip=The ID of the connector.<br>These work like electronical connectors.<br><br>§bHermaphrodite§r (default): Connects to itself.<br><br>If the ID starts with...<br>§bMale:§r Connects to female counterpart.<br>§bFemale:§r Connects to male counterpart.
+reccomplex.maze.connector.default=Default Connector
+

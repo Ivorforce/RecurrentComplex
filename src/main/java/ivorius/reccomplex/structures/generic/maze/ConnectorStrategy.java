@@ -15,6 +15,9 @@ import javax.annotation.Nonnull;
  */
 public class ConnectorStrategy implements ConnectionStrategy<Connector>
 {
+    public static final String DEFAULT_WALL = "Wall";
+    public static final String DEFAULT_PATH = "Path";
+
     @Override
     public boolean connect(@Nonnull MazeRoomConnection connection, Connector a, Connector b)
     {

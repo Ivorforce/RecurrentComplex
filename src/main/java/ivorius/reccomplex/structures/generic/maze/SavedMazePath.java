@@ -22,24 +22,28 @@ import java.util.Map;
  */
 public class SavedMazePath implements NBTCompoundObject
 {
-    public MazeRoom sourceRoom;
     public int pathDimension;
+    public MazeRoom sourceRoom;
     public boolean pathGoesUp;
+
+    public final SavedConnector connector = new SavedConnector();
 
     public SavedMazePath()
     {
+        connector.id = ConnectorStrategy.DEFAULT_PATH;
     }
 
-    public SavedMazePath(int pathDimension, MazeRoom sourceRoom, boolean pathGoesUp)
+    public SavedMazePath(int pathDimension, MazeRoom sourceRoom, boolean pathGoesUp, String connector)
     {
-        this.sourceRoom = sourceRoom;
         this.pathDimension = pathDimension;
+        this.sourceRoom = sourceRoom;
         this.pathGoesUp = pathGoesUp;
+        this.connector.id = connector;
     }
 
-    public Map.Entry<MazeRoomConnection, Connector> toRoomConnection(Connector connector)
+    public Map.Entry<MazeRoomConnection, Connector> toRoomConnection(ConnectorFactory factory)
     {
-        return Pair.of(new MazeRoomConnection(sourceRoom, sourceRoom.addInDimension(pathDimension, pathGoesUp ? 1 : -1)), connector);
+        return Pair.of(new MazeRoomConnection(sourceRoom, sourceRoom.addInDimension(pathDimension, pathGoesUp ? 1 : -1)), connector.toConnector(factory));
     }
 
     @Override
@@ -52,6 +56,9 @@ public class SavedMazePath implements NBTCompoundObject
 
         pathDimension = compound.getInteger("pathDimension");
         pathGoesUp = compound.getBoolean("pathGoesUp");
+        connector.id = compound.hasKey("connector", Constants.NBT.TAG_STRING)
+            ? compound.getString("connector")
+            : ConnectorStrategy.DEFAULT_PATH;
     }
 
     @Override
@@ -60,6 +67,7 @@ public class SavedMazePath implements NBTCompoundObject
         compound.setTag("source", sourceRoom.storeInNBT());
         compound.setInteger("pathDimension", pathDimension);
         compound.setBoolean("pathGoesUp", pathGoesUp);
+        compound.setString("connector", connector.id);
     }
 
     public static class Serializer implements JsonSerializer<SavedMazePath>, JsonDeserializer<SavedMazePath>
@@ -72,8 +80,9 @@ public class SavedMazePath implements NBTCompoundObject
             MazeRoom src = context.deserialize(jsonObject.get("source"), MazeRoom.class);
             int pathDimension = JsonUtils.getJsonObjectIntegerFieldValue(jsonObject, "pathDimension");
             boolean pathGoesUp = JsonUtils.getJsonObjectBooleanFieldValue(jsonObject, "pathGoesUp");
+            String connector = JsonUtils.getJsonObjectStringFieldValueOrDefault(jsonObject, "connector", ConnectorStrategy.DEFAULT_PATH);
 
-            return new SavedMazePath(pathDimension, src, pathGoesUp);
+            return new SavedMazePath(pathDimension, src, pathGoesUp, connector);
         }
 
         @Override
@@ -84,6 +93,7 @@ public class SavedMazePath implements NBTCompoundObject
             jsonObject.add("source", context.serialize(src.sourceRoom));
             jsonObject.addProperty("pathDimension", src.pathDimension);
             jsonObject.addProperty("pathGoesUp", src.pathGoesUp);
+            jsonObject.addProperty("connector", src.connector.id);
 
             return jsonObject;
         }

@@ -8,7 +8,9 @@ package ivorius.reccomplex.gui.editmazeblock;
 import ivorius.ivtoolkit.maze.components.MazeRoom;
 import ivorius.reccomplex.gui.TableDirections;
 import ivorius.reccomplex.gui.table.*;
+import ivorius.reccomplex.structures.generic.maze.ConnectorStrategy;
 import ivorius.reccomplex.structures.generic.maze.SavedMazePath;
+import ivorius.reccomplex.utils.IvTranslations;
 import net.minecraftforge.common.util.ForgeDirection;
 
 /**
@@ -25,24 +27,33 @@ public class TableDataSourceMazePath extends TableDataSourceSegmented implements
         this.mazePath = mazePath;
         this.boundsLower = boundsLower;
         this.boundsHigher = boundsHigher;
+        addManagedSection(0, new TableDataSourceConnector(mazePath.connector, IvTranslations.get("reccomplex.maze.connector")));
     }
 
     @Override
     public int numberOfSegments()
     {
-        return 2;
+        return 3;
     }
 
     @Override
     public int sizeOfSegment(int segment)
     {
-        return segment == 0 ? boundsLower.length : 1;
+        switch (segment)
+        {
+            case 1:
+                return boundsLower.length;
+            case 2:
+                return 1;
+            default:
+                return super.sizeOfSegment(segment);
+        }
     }
 
     @Override
     public TableElement elementForIndexInSegment(GuiTable table, int index, int segment)
     {
-        if (segment == 0)
+        if (segment == 1)
         {
             String id = "pos" + index;
             String title = String.format("Position: %s", index == 0 ? "X" : index == 1 ? "Y" : index == 2 ? "Z" : "" + index);
@@ -50,7 +61,7 @@ public class TableDataSourceMazePath extends TableDataSourceSegmented implements
             cell.addPropertyListener(this);
             return new TableElementCell(title, cell);
         }
-        else if (segment == 1)
+        else if (segment == 2)
         {
             TableCellEnum.Option<ForgeDirection>[] optionList = TableDirections.getDirectionOptions(ForgeDirection.VALID_DIRECTIONS);
 
@@ -59,7 +70,7 @@ public class TableDataSourceMazePath extends TableDataSourceSegmented implements
             return new TableElementCell("Side", cell);
         }
 
-        return null;
+        return super.elementForIndexInSegment(table, index, segment);
     }
 
     @Override
@@ -98,6 +109,6 @@ public class TableDataSourceMazePath extends TableDataSourceSegmented implements
         int pathDim = side.offsetX != 0 ? 0 : side.offsetY != 0 ? 1 : side.offsetZ != 0 ? 2 : -1;
         int offset = side.offsetX + side.offsetY + side.offsetZ;
 
-        return new SavedMazePath(pathDim, new MazeRoom(room[0], room[1], room[2]), offset > 0);
+        return new SavedMazePath(pathDim, new MazeRoom(room[0], room[1], room[2]), offset > 0, ConnectorStrategy.DEFAULT_PATH);
     }
 }

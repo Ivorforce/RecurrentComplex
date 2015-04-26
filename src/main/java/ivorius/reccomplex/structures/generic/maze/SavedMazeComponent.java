@@ -31,14 +31,17 @@ public class SavedMazeComponent implements NBTCompoundObject, WeightedSelector.I
     public Double weight;
     public final Selection rooms = new Selection();
     public final List<SavedMazePath> exitPaths = new ArrayList<>();
+    public final SavedConnector defaultConnector = new SavedConnector();
 
     public SavedMazeComponent()
     {
+        defaultConnector.id = ConnectorStrategy.DEFAULT_WALL;
     }
 
-    public SavedMazeComponent(Double weight)
+    public SavedMazeComponent(Double weight, String defaultConnector)
     {
         this.weight = weight;
+        this.defaultConnector.id = defaultConnector;
     }
 
     public boolean isValid()
@@ -113,6 +116,10 @@ public class SavedMazeComponent implements NBTCompoundObject, WeightedSelector.I
 
         exitPaths.clear();
         exitPaths.addAll(NBTCompoundObjects.readListFrom(compound, "exits", SavedMazePath.class));
+
+        defaultConnector.id = compound.hasKey("defaultConnector", Constants.NBT.TAG_STRING)
+                ? compound.getString("defaultConnector")
+                : ConnectorStrategy.DEFAULT_PATH;
     }
 
     @Override
@@ -126,6 +133,8 @@ public class SavedMazeComponent implements NBTCompoundObject, WeightedSelector.I
         compound.setTag("rooms", roomsCompound);
 
         NBTCompoundObjects.writeListTo(compound, "exits", exitPaths);
+
+        compound.setString("defaultConnector", defaultConnector.id);
     }
 
     @Override
@@ -149,8 +158,9 @@ public class SavedMazeComponent implements NBTCompoundObject, WeightedSelector.I
             Double weight = jsonObject.has("weightD") ? JsonUtils.getJsonObjectDoubleFieldValue(jsonObject, "weightD") : null;
             if (weight == null && jsonObject.has("weight")) // legacy
                 weight = JsonUtils.getJsonObjectIntegerFieldValue(jsonObject, "weight") * 0.01; // 100 was default
+            String defaultConnector = JsonUtils.getJsonObjectStringFieldValueOrDefault(jsonObject, "defaultConnector", ConnectorStrategy.DEFAULT_WALL);
 
-            SavedMazeComponent mazeComponent = new SavedMazeComponent(weight);
+            SavedMazeComponent mazeComponent = new SavedMazeComponent(weight, defaultConnector);
 
             if (jsonObject.has("roomArea"))
             {
@@ -180,6 +190,8 @@ public class SavedMazeComponent implements NBTCompoundObject, WeightedSelector.I
 
             jsonObject.add("roomArea", context.serialize(src.rooms));
             jsonObject.add("exits", context.serialize(src.exitPaths));
+
+            jsonObject.addProperty("defaultConnector", src.defaultConnector.id);
 
             return jsonObject;
         }

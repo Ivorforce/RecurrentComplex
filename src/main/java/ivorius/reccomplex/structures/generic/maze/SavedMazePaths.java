@@ -18,7 +18,7 @@ import java.util.Map;
  */
 public class SavedMazePaths
 {
-    public static Function<SavedMazePath, Map.Entry<MazeRoomConnection, Connector>> toConnectionFunction(final Connector connector)
+    public static Function<SavedMazePath, Map.Entry<MazeRoomConnection, Connector>> toConnectionFunction(final ConnectorFactory factory)
     {
         return new Function<SavedMazePath, Map.Entry<MazeRoomConnection, Connector>>()
         {
@@ -26,7 +26,7 @@ public class SavedMazePaths
             @Override
             public Map.Entry<MazeRoomConnection, Connector> apply(@Nullable SavedMazePath input)
             {
-                return input != null ? input.toRoomConnection(connector) : null;
+                return input != null ? input.toRoomConnection(factory) : null;
             }
         };
     }

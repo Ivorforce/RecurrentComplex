@@ -12,6 +12,7 @@ import ivorius.reccomplex.gui.table.TableDataSource;
 import ivorius.reccomplex.gui.table.TableDelegate;
 import ivorius.reccomplex.gui.table.TableNavigator;
 import ivorius.reccomplex.json.JsonUtils;
+import ivorius.reccomplex.structures.generic.maze.ConnectorStrategy;
 import ivorius.reccomplex.structures.generic.maze.SavedMazeComponent;
 import ivorius.reccomplex.structures.generic.Selection;
 import ivorius.reccomplex.structures.generic.maze.SavedMazePath;
@@ -34,7 +35,7 @@ public class MazeGenerationInfo extends StructureGenerationInfo
 
     public MazeGenerationInfo()
     {
-        this("MazeGen1", "", new SavedMazeComponent((Double) null));
+        this("MazeGen1", "", new SavedMazeComponent(null, ConnectorStrategy.DEFAULT_WALL));
         mazeComponent.rooms.addAll(Selection.zeroSelection(3));
     }
 

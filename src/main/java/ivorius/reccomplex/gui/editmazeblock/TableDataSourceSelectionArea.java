@@ -8,6 +8,7 @@ package ivorius.reccomplex.gui.editmazeblock;
 import ivorius.ivtoolkit.gui.IntegerRange;
 import ivorius.reccomplex.gui.table.*;
 import ivorius.reccomplex.structures.generic.Selection;
+import net.minecraft.util.EnumChatFormatting;
 
 /**
 * Created by lukas on 08.10.14.
@@ -41,9 +42,9 @@ public class TableDataSourceSelectionArea extends TableDataSourceSegmented imple
     {
         if (segment == 0)
         {
-            TableCellBoolean cell = new TableCellBoolean("additive", area.isAdditive());
+            TableCellBoolean cell = new TableCellBoolean("additive", area.isAdditive(), EnumChatFormatting.GREEN + "Additive", EnumChatFormatting.GOLD + "Subtractive");
             cell.addPropertyListener(this);
-            return new TableElementCell("Additive", cell);
+            return new TableElementCell(cell);
         }
         else if (segment == 1)
         {

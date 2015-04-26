@@ -43,8 +43,8 @@ public class LimitAABBStrategy<M extends MazeComponent<C>, C> implements MazeCom
     }
 
     @Override
-    public boolean shouldContinue(MazeRoom room)
+    public boolean shouldContinue(MazeRoom dest, MazeRoom source, C c)
     {
-        return isRoomContained(room);
+        return isRoomContained(dest);
     }
 }

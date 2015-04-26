@@ -164,7 +164,10 @@ public class TileEntityMazeGenerator extends TileEntity implements GeneratingTil
         addExits(roomConnector, maze, mazeExits);
         addRandomPaths(random, outsideBoundsHigher, maze, transformedComponents, roomConnector, outsideBoundsHigher[0] * outsideBoundsHigher[1] * outsideBoundsHigher[2] / (5 * 5 * 5) + 1);
 
-        return MazeComponentConnector.randomlyConnect(maze, transformedComponents, new ConnectorStrategy(), new LimitAABBStrategy<MazeComponentStructure<Connector>, Connector>(outsideBoundsHigher), random);
+        LimitAABBStrategy<MazeComponentStructure<Connector>, Connector> placementStrategy = new LimitAABBStrategy<>(outsideBoundsHigher, Collections.singleton(wallConnector));
+        ConnectorStrategy connectionStrategy = new ConnectorStrategy();
+
+        return MazeComponentConnector.randomlyConnect(maze, transformedComponents, connectionStrategy, placementStrategy, random);
     }
 
     protected static <C> void addRandomPaths(Random random, int[] size, MorphingMazeComponent<C> maze, List<? extends MazeComponent<C>> components, C roomConnector, int number)

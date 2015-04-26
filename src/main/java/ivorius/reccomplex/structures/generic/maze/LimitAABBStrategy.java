@@ -9,16 +9,23 @@ import com.google.common.base.Predicate;
 import com.google.common.collect.Iterables;
 import ivorius.ivtoolkit.maze.components.*;
 
+import javax.annotation.Nonnull;
+import java.util.Collection;
+
 /**
  * Created by lukas on 16.04.15.
  */
 public class LimitAABBStrategy<M extends MazeComponent<C>, C> implements MazeComponentPlacementStrategy<M, C>
 {
+    @Nonnull
     private int[] roomNumbers;
+    @Nonnull
+    private Collection<C> ignoredConnections;
 
-    public LimitAABBStrategy(int[] roomNumbers)
+    public LimitAABBStrategy(@Nonnull int[] roomNumbers, @Nonnull Collection<C> ignoredConnections)
     {
         this.roomNumbers = roomNumbers;
+        this.ignoredConnections = ignoredConnections;
     }
 
     public boolean isRoomContained(MazeRoom input)
@@ -45,6 +52,6 @@ public class LimitAABBStrategy<M extends MazeComponent<C>, C> implements MazeCom
     @Override
     public boolean shouldContinue(MazeRoom dest, MazeRoom source, C c)
     {
-        return isRoomContained(dest);
+        return isRoomContained(dest) && !ignoredConnections.contains(c);
     }
 }

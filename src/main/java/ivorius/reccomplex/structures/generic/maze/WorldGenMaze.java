@@ -7,6 +7,8 @@ package ivorius.reccomplex.structures.generic.maze;
 
 import com.google.common.base.Function;
 import com.google.common.base.Predicates;
+import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
 import ivorius.ivtoolkit.blocks.BlockCoord;
@@ -139,23 +141,22 @@ public class WorldGenMaze
         for (Map.Entry<MazeRoomConnection, Connector> path : Lists.transform(comp.getExitPaths(), SavedMazePaths.toConnectionFunction(factory)))
             transformedExits.put(MazeRoomConnections.rotated(path.getKey(), transform, size), path.getValue());
 
-        MazeComponentStructure<Connector> component = new MazeComponentStructure<>(weight, StructureRegistry.structureID(info), transform, transformedRooms, transformedExits);
-        addMissingExits(component, comp.defaultConnector.toConnector(factory));
-        return component;
+        addMissingExits(transformedRooms, transformedExits, comp.defaultConnector.toConnector(factory));
+        return new MazeComponentStructure<>(weight, StructureRegistry.structureID(info), transform, ImmutableSet.copyOf(transformedRooms), ImmutableMap.copyOf(transformedExits));
     }
 
     public static <C> SetMazeComponent<C> createCompleteComponent(Set<MazeRoom> rooms, Map<MazeRoomConnection, C> exits, C wallConnector)
     {
         SetMazeComponent<C> component = new SetMazeComponent<>(rooms, exits);
-        addMissingExits(component, wallConnector);
+        addMissingExits(component.rooms, component.exits, wallConnector);
         return component;
     }
 
-    public static <C> void addMissingExits(MazeComponent<C> component, C wallConnector)
+    public static <C> void addMissingExits(Set<MazeRoom> rooms, Map<MazeRoomConnection, C> exits, C wallConnector)
     {
-        for (MazeRoom room : component.rooms())
+        for (MazeRoom room : rooms)
             for (MazeRoomConnection connection : MazeRooms.neighbors(room))
-                if (!component.exits().containsKey(connection))
-                    component.exits().put(connection, wallConnector);
+                if (!exits.containsKey(connection))
+                    exits.put(connection, wallConnector);
     }
 }

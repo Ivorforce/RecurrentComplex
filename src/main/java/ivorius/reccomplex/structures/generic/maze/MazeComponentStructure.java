@@ -5,7 +5,8 @@
 
 package ivorius.reccomplex.structures.generic.maze;
 
-import com.google.common.collect.Iterables;
+import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.ImmutableSet;
 import ivorius.ivtoolkit.math.AxisAlignedTransform2D;
 import ivorius.ivtoolkit.math.IvVecMathHelper;
 import ivorius.ivtoolkit.maze.components.MazeRoom;
@@ -22,8 +23,8 @@ import java.util.Set;
  */
 public class MazeComponentStructure<C> implements WeightedMazeComponent<C>
 {
-    public final Set<MazeRoom> rooms = new HashSet<>();
-    public final Map<MazeRoomConnection, C> exits = new HashMap<>();
+    public final ImmutableSet<MazeRoom> rooms;
+    public final ImmutableMap<MazeRoomConnection, C> exits;
 
     public double weight;
 
@@ -31,14 +32,14 @@ public class MazeComponentStructure<C> implements WeightedMazeComponent<C>
     public AxisAlignedTransform2D transform;
     private int[] size;
 
-    public MazeComponentStructure(double weight, String structureID, AxisAlignedTransform2D transform, Set<MazeRoom> rooms, Map<MazeRoomConnection, C> exits)
+    public MazeComponentStructure(double weight, String structureID, AxisAlignedTransform2D transform, ImmutableSet<MazeRoom> rooms, ImmutableMap<MazeRoomConnection, C> exits)
     {
         this.weight = weight;
         this.structureID = structureID;
         this.transform = transform;
 
-        this.rooms.addAll(rooms);
-        this.exits.putAll(exits);
+        this.rooms = rooms;
+        this.exits = exits;
     }
 
     @Override

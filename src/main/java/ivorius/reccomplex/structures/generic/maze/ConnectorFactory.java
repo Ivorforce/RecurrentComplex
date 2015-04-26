@@ -30,7 +30,14 @@ public class ConnectorFactory
     {
         Connector gendered = tryCreateGendered(id);
 
-        return gendered != null ? gendered : new SimpleConnectors.Hermaphrodite(id);
+        if (gendered != null)
+            return gendered;
+        else
+        {
+            SimpleConnectors.Hermaphrodite hermaphrodite = new SimpleConnectors.Hermaphrodite(id);
+            connectors.put(id, hermaphrodite);
+            return hermaphrodite;
+        }
     }
 
     public void put(String id, Connector connector)

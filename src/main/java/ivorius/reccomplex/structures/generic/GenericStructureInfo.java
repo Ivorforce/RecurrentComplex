@@ -209,13 +209,12 @@ public class GenericStructureInfo implements StructureInfo<GenericStructureInfo.
 
         for (Entity entity : worldData.entities)
         {
+            IvWorldData.transformEntityPosForGeneration(entity, context.transform, areaSize);
+            IvWorldData.moveEntityForGeneration(entity, origin);
+
             if (context.includes(entity.posX, entity.posY, entity.posZ))
             {
                 RCAccessorEntity.setEntityUniqueID(entity, UUID.randomUUID());
-
-                IvWorldData.transformEntityPosForGeneration(entity, context.transform, areaSize);
-                IvWorldData.moveEntityForGeneration(entity, origin);
-
                 world.spawnEntityInWorld(entity);
             }
         }
@@ -241,7 +240,9 @@ public class GenericStructureInfo implements StructureInfo<GenericStructureInfo.
             instanceData.transformers.add(transformer.prepareInstanceData(context));
 
         IvWorldData worldData = constructWorldData(null);
-        int[] areaSize = context.boundingBoxSize();
+        IvBlockCollection blockCollection = worldData.blockCollection;
+
+        int[] areaSize = new int[]{blockCollection.width, blockCollection.height, blockCollection.length};
         BlockCoord origin = context.lowerCoord();
 
         for (TileEntity tileEntity : worldData.tileEntities)
@@ -440,6 +441,7 @@ public class GenericStructureInfo implements StructureInfo<GenericStructureInfo.
 
         public void readFromNBT(StructureLoadContext context, NBTBase nbt, List<Transformer> transformers, IvWorldData worldData)
         {
+            IvBlockCollection blockCollection = worldData.blockCollection;
             NBTTagCompound compound = nbt instanceof NBTTagCompound ? (NBTTagCompound) nbt : new NBTTagCompound();
 
             List<NBTTagCompound> transformerCompounds = NBTTagLists.compoundsFrom(compound, KEY_TRANSFORMERS);
@@ -449,7 +451,7 @@ public class GenericStructureInfo implements StructureInfo<GenericStructureInfo.
                 this.transformers.add(transformers.get(i).loadInstanceData(context, transformerCompound.getTag("data")));
             }
 
-            int[] areaSize = context.boundingBoxSize();
+            int[] areaSize = new int[]{blockCollection.width, blockCollection.height, blockCollection.length};
             BlockCoord origin = context.lowerCoord();
 
             NBTTagCompound tileEntityCompound = compound.getCompoundTag(InstanceData.KEY_TILE_ENTITIES);

@@ -51,7 +51,7 @@ public class WorldGenMaze
         return true;
     }
 
-    public static List<PlacedStructure> convertToPlacedStructures(final Random random, final BlockCoord coord, List<ShiftedMazeComponent<MazeComponentStructure<Connector>, Connector>> placedComponents, final int[] roomSize)
+    public static List<PlacedStructure> convertToPlacedStructures(final Random random, final BlockCoord coord, final BlockCoord shift, List<ShiftedMazeComponent<MazeComponentStructure<Connector>, Connector>> placedComponents, final int[] roomSize, final AxisAlignedTransform2D mazeTransform)
     {
         return Lists.newArrayList(Iterables.filter(Iterables.transform(placedComponents, new Function<ShiftedMazeComponent<MazeComponentStructure<Connector>, Connector>, PlacedStructure>()
         {
@@ -64,8 +64,8 @@ public class WorldGenMaze
 
                 if (structureInfo != null)
                 {
-                    AxisAlignedTransform2D componentTransform = componentInfo.transform;
-                    StructureBoundingBox compBoundingBox = getBoundingBox(coord, roomSize, placedComponent, structureInfo, componentTransform);
+                    AxisAlignedTransform2D componentTransform = componentInfo.transform.rotateClockwise(mazeTransform.getRotation());
+                    StructureBoundingBox compBoundingBox = getBoundingBox(coord, shift, roomSize, placedComponent, structureInfo, componentTransform, mazeTransform);
                     NBTStorable instanceData = structureInfo.prepareInstanceData(new StructurePrepareContext(random, componentTransform, compBoundingBox, false));
 
                     return new PlacedStructure(componentInfo.structureID, componentTransform, new BlockCoord(compBoundingBox.minX, compBoundingBox.minY, compBoundingBox.minZ), instanceData);
@@ -80,21 +80,26 @@ public class WorldGenMaze
         }), Predicates.notNull()));
     }
 
-    protected static StructureBoundingBox getBoundingBox(BlockCoord coord, int[] roomSize, ShiftedMazeComponent<MazeComponentStructure<Connector>, Connector> placedComponent, StructureInfo structureInfo, AxisAlignedTransform2D componentTransform)
+    protected static StructureBoundingBox getBoundingBox(BlockCoord coord, BlockCoord shift, int[] roomSize, ShiftedMazeComponent<MazeComponentStructure<Connector>, Connector> placedComponent, StructureInfo structureInfo, AxisAlignedTransform2D componentTransform, AxisAlignedTransform2D mazeTransform)
     {
         MazeRoom mazePosition = placedComponent.getShift();
-        int[] scaledCompMazePosition = IvVecMathHelper.mul(mazePosition.getCoordinates(), roomSize);
+        int[] scaledMazePosition = IvVecMathHelper.mul(mazePosition.getCoordinates(), roomSize);
 
-        int[] compStructureSize = StructureInfos.structureSize(structureInfo, componentTransform);
-        int[] compRoomSize = IvVecMathHelper.mul(placedComponent.getComponent().getSize(), roomSize);
-        int[] sizeDependentShift = new int[]{(compRoomSize[0] - compStructureSize[0]) / 2, (compRoomSize[1] - compStructureSize[1]) / 2, (compRoomSize[2] - compStructureSize[2]) / 2};
+        int[] structureBB = StructureInfos.structureSize(structureInfo, componentTransform);
+        int[] compRoomSize = StructureInfos.structureSize(IvVecMathHelper.mul(placedComponent.getComponent().getSize(), roomSize), mazeTransform);
+        int[] sizeDependentShift = new int[compRoomSize.length];
+        for (int i = 0; i < structureBB.length; i++)
+            sizeDependentShift[i] = (compRoomSize[i] - structureBB[i]) / 2;
 
-        BlockCoord compMazeCoordLower = coord.add(scaledCompMazePosition[0] + sizeDependentShift[0], scaledCompMazePosition[1] + sizeDependentShift[1], scaledCompMazePosition[2] + +sizeDependentShift[2]);
+        BlockCoord lowerCoord = StructureInfos.transformedLowerCoord(
+                coord.add(mazeTransform.apply(shift.add(scaledMazePosition[0], scaledMazePosition[1], scaledMazePosition[2]), new int[]{1, 1, 1}))
+                        .add(sizeDependentShift[0], sizeDependentShift[1], sizeDependentShift[2]),
+                structureBB, mazeTransform);
 
-        return StructureInfos.structureBoundingBox(compMazeCoordLower, compStructureSize);
+        return StructureInfos.structureBoundingBox(lowerCoord, structureBB);
     }
 
-    public static List<MazeComponentStructure<Connector>> transformedComponents(Collection<Pair<StructureInfo, MazeGenerationInfo>> componentStructures, Connector roomConnector, Connector wallConnector)
+    public static List<MazeComponentStructure<Connector>> transformedComponents(Collection<Pair<StructureInfo, MazeGenerationInfo>> componentStructures, Connector roomConnector, Connector wallConnector, AxisAlignedTransform2D transform)
     {
         List<MazeComponentStructure<Connector>> transformedComponents = new ArrayList<>();
         for (Pair<StructureInfo, MazeGenerationInfo> pair : componentStructures)
@@ -111,16 +116,20 @@ public class WorldGenMaze
 
             for (int rotations = 0; rotations < (info.isRotatable() ? 4 : 1); rotations++)
             {
-                transformedComponents.add(structureComponent(info, comp, AxisAlignedTransform2D.transform(rotations, false), compSize, splitCompWeight, roomConnector, wallConnector));
-                if( info.isMirrorable())
-                    transformedComponents.add(structureComponent(info, comp, AxisAlignedTransform2D.transform(rotations, true), compSize, splitCompWeight, roomConnector, wallConnector));
+                if (info.isRotatable() || (rotations + transform.getRotation()) % 4 == 0)
+                {
+                    transformedComponents.add(transformedComponent(info, comp, AxisAlignedTransform2D.transform(rotations, false), compSize, splitCompWeight, roomConnector, wallConnector));
+
+                    if (info.isMirrorable())
+                        transformedComponents.add(transformedComponent(info, comp, AxisAlignedTransform2D.transform(rotations, true), compSize, splitCompWeight, roomConnector, wallConnector));
+                }
             }
         }
 
         return transformedComponents;
     }
 
-    public static MazeComponentStructure<Connector> structureComponent(StructureInfo info, SavedMazeComponent comp, AxisAlignedTransform2D transform, int[] size, double weight, Connector roomConnector, Connector wallConnector)
+    public static MazeComponentStructure<Connector> transformedComponent(StructureInfo info, SavedMazeComponent comp, AxisAlignedTransform2D transform, int[] size, double weight, Connector roomConnector, Connector wallConnector)
     {
         Set<MazeRoom> transformedRooms = new HashSet<>();
         for (MazeRoom room : comp.getRooms())

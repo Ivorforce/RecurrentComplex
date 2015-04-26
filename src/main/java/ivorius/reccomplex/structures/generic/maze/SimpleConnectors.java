@@ -7,6 +7,8 @@ package ivorius.reccomplex.structures.generic.maze;
 
 import org.apache.commons.lang3.tuple.Pair;
 
+import javax.annotation.Nonnull;
+
 /**
  * Created by lukas on 16.04.15.
  */
@@ -14,7 +16,7 @@ public class SimpleConnectors
 {
     public static class Leaf extends Connector
     {
-        public Leaf(String id)
+        public Leaf(@Nonnull String id)
         {
             super(id);
         }
@@ -28,7 +30,7 @@ public class SimpleConnectors
 
     public static class Hermaphrodite extends Connector
     {
-        public Hermaphrodite(String id)
+        public Hermaphrodite(@Nonnull String id)
         {
             super(id);
         }
@@ -44,7 +46,7 @@ public class SimpleConnectors
     {
         private Gendered partner;
 
-        private Gendered(String id)
+        private Gendered(@Nonnull String id)
         {
             super(id);
         }

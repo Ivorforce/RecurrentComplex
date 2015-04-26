@@ -5,6 +5,7 @@
 
 package ivorius.reccomplex.structures.generic.maze;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 /**
@@ -12,14 +13,33 @@ import javax.annotation.Nullable;
  */
 public abstract class Connector
 {
+    @Nonnull
     public final String id;
 
-    public Connector(String id)
+    public Connector(@Nonnull String id)
     {
         this.id = id;
     }
 
     public abstract boolean accepts(@Nullable Connector c);
+
+    @Override
+    public boolean equals(Object o)
+    {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Connector connector = (Connector) o;
+
+        return id.equals(connector.id);
+
+    }
+
+    @Override
+    public int hashCode()
+    {
+        return id.hashCode();
+    }
 
     @Override
     public String toString()

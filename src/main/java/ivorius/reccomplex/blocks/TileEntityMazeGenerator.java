@@ -108,7 +108,7 @@ public class TileEntityMazeGenerator extends TileEntity implements GeneratingTil
     public InstanceData prepareInstanceData(StructurePrepareContext context)
     {
         InstanceData instanceData = new InstanceData();
-        instanceData.placedStructures.addAll(WorldGenMaze.convertToPlacedStructures(context.random, getLowerCoord(context.transform), getPlacedRooms(context), roomSize));
+        instanceData.placedStructures.addAll(WorldGenMaze.convertToPlacedStructures(context.random, getCoordinate(), structureShift, getPlacedRooms(context.random, context.transform), roomSize, context.transform));
         return instanceData;
     }
 
@@ -127,11 +127,9 @@ public class TileEntityMazeGenerator extends TileEntity implements GeneratingTil
         WorldGenMaze.generatePlacedStructures(placedStructures, context);
     }
 
-    protected BlockCoord getLowerCoord(AxisAlignedTransform2D transform)
+    protected BlockCoord getCoordinate()
     {
-        int[] roomNumbers = IvVecMathHelper.add(mazeRooms.boundsHigher(), new int[]{1, 1, 1});
-        int[] mazeSize = new int[]{roomSize[0] * roomNumbers[0], roomSize[1] * roomNumbers[1], roomSize[2] * roomNumbers[2]};
-        return transform.apply(structureShift, new int[]{1, 1, 1}).add(xCoord, yCoord, zCoord).subtract(transform.apply(new BlockCoord(0, 0, 0), mazeSize));
+        return new BlockCoord(xCoord, yCoord, zCoord);
     }
 
     @Override
@@ -140,7 +138,7 @@ public class TileEntityMazeGenerator extends TileEntity implements GeneratingTil
         return false;
     }
 
-    public List<ShiftedMazeComponent<MazeComponentStructure<Connector>, Connector>> getPlacedRooms(StructurePrepareContext context)
+    public List<ShiftedMazeComponent<MazeComponentStructure<Connector>, Connector>> getPlacedRooms(Random random, AxisAlignedTransform2D transform)
     {
         if (mazeRooms.isEmpty())
             return null;
@@ -154,18 +152,19 @@ public class TileEntityMazeGenerator extends TileEntity implements GeneratingTil
         int[] oneArray = new int[boundsHigher.length];
         Arrays.fill(oneArray, 1);
 
-        final int[] roomNumbers = IvVecMathHelper.add(boundsHigher, oneArray);
+        final int[] outsideBoundsHigher = IvVecMathHelper.add(boundsHigher, oneArray);
+        final int[] outsideBoundsLower = IvVecMathHelper.sub(boundsLower, oneArray);
 
-        List<MazeComponentStructure<Connector>> transformedComponents = WorldGenMaze.transformedComponents(StructureRegistry.getStructuresInMaze(mazeID), roomConnector, wallConnector);
+        List<MazeComponentStructure<Connector>> transformedComponents = WorldGenMaze.transformedComponents(StructureRegistry.getStructuresInMaze(mazeID), roomConnector, wallConnector, transform);
 
         MorphingMazeComponent<Connector> maze = new SetMazeComponent<>();
 
-        enclose(maze, new MazeRoom(IvVecMathHelper.sub(boundsLower, oneArray)), new MazeRoom(IvVecMathHelper.add(boundsHigher, oneArray)), wallConnector);
+        enclose(maze, new MazeRoom(outsideBoundsLower), new MazeRoom(outsideBoundsHigher), wallConnector);
         blockRooms(maze, mazeRooms.mazeRooms(false), wallConnector);
         addExits(roomConnector, maze, mazeExits);
-        addRandomPaths(context.random, roomNumbers, maze, transformedComponents, roomConnector, roomNumbers[0] * roomNumbers[1] * roomNumbers[2] / (5 * 5 * 5) + 1);
+        addRandomPaths(random, outsideBoundsHigher, maze, transformedComponents, roomConnector, outsideBoundsHigher[0] * outsideBoundsHigher[1] * outsideBoundsHigher[2] / (5 * 5 * 5) + 1);
 
-        return MazeComponentConnector.randomlyConnect(maze, transformedComponents, new ConnectorStrategy(), new LimitAABBStrategy<MazeComponentStructure<Connector>, Connector>(roomNumbers), context.random);
+        return MazeComponentConnector.randomlyConnect(maze, transformedComponents, new ConnectorStrategy(), new LimitAABBStrategy<MazeComponentStructure<Connector>, Connector>(outsideBoundsHigher), random);
     }
 
     protected static <C> void addRandomPaths(Random random, int[] size, MorphingMazeComponent<C> maze, List<? extends MazeComponent<C>> components, C roomConnector, int number)

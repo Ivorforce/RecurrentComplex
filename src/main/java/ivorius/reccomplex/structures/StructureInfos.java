@@ -38,6 +38,16 @@ public class StructureInfos
         return size;
     }
 
+    public static BlockCoord transformedLowerCoord(BlockCoord coord, int[] size, AxisAlignedTransform2D transform)
+    {
+        // TODO Fix for mirror
+        if (transform.getRotation() == 1 || transform.getRotation() == 2)
+            coord = coord.subtract(size[0] - 1, 0, 0);
+        if (transform.getRotation() == 3 || transform.getRotation() == 2)
+            coord = coord.subtract(0, 0, size[2] - 1);
+        return coord;
+    }
+
     public static StructureBoundingBox chunkBoundingBox(int chunkX, int chunkZ)
     {
         return new StructureBoundingBox(chunkX << 4, chunkZ << 4, chunkX << 4 + 15, chunkZ << 4 + 15);

@@ -236,22 +236,25 @@ public class GenericStructureInfo implements StructureInfo<GenericStructureInfo.
     {
         InstanceData instanceData = new InstanceData();
 
-        for (Transformer transformer : transformers)
-            instanceData.transformers.add(transformer.prepareInstanceData(context));
+        if (!context.generateAsSource)
+        {
+            IvWorldData worldData = constructWorldData(null);
+            IvBlockCollection blockCollection = worldData.blockCollection;
 
-        IvWorldData worldData = constructWorldData(null);
-        IvBlockCollection blockCollection = worldData.blockCollection;
+            int[] areaSize = new int[]{blockCollection.width, blockCollection.height, blockCollection.length};
+            BlockCoord origin = context.lowerCoord();
 
-        int[] areaSize = new int[]{blockCollection.width, blockCollection.height, blockCollection.length};
-        BlockCoord origin = context.lowerCoord();
+            for (Transformer transformer : transformers)
+                instanceData.transformers.add(transformer.prepareInstanceData(context));
 
-        for (TileEntity tileEntity : worldData.tileEntities)
-            if (tileEntity instanceof GeneratingTileEntity)
-            {
-                BlockCoord key = new BlockCoord(tileEntity);
-                IvWorldData.setTileEntityPosForGeneration(tileEntity, context.transform.apply(key, areaSize).add(origin));
-                instanceData.tileEntities.put(key, (NBTStorable) ((GeneratingTileEntity) tileEntity).prepareInstanceData(context));
-            }
+            for (TileEntity tileEntity : worldData.tileEntities)
+                if (tileEntity instanceof GeneratingTileEntity)
+                {
+                    BlockCoord key = new BlockCoord(tileEntity);
+                    IvWorldData.setTileEntityPosForGeneration(tileEntity, context.transform.apply(key, areaSize).add(origin));
+                    instanceData.tileEntities.put(key, (NBTStorable) ((GeneratingTileEntity) tileEntity).prepareInstanceData(context));
+                }
+        }
 
         return instanceData;
     }

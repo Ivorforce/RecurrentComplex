@@ -1,0 +1,309 @@
+item.blockSelector.name=Sélecteur de bloc
+item.blockSelectorFloating.name=Sélecteur de bloc flottant
+item.inventoryGenerationTag.name=Étiquette de génération d'inventaire
+item.inventoryGenerationSingleTag.name=Étiquette de génération d'un élément seul
+item.inventoryGenerationComponentTag.name=Étiquette de composant de génération d'élément
+item.artifactGenerationTag.name=Étiquette de génération d'artefact
+item.bookGenerationTag.name=Étiquette de génération de livre
+
+tile.negativeSpace.name=Espace générique
+tile.negativeSpace.meta.0.name=Espace (0 ~ Espace négatif)
+tile.negativeSpace.meta.1.name=Espace (1 ~ Air naturel)
+tile.negativeSpace.meta.2.name=Espace (2)
+tile.negativeSpace.meta.3.name=Espace (3)
+tile.negativeSpace.meta.4.name=Espace (4)
+tile.negativeSpace.meta.5.name=Espace (5)
+tile.negativeSpace.meta.6.name=Espace (6)
+tile.negativeSpace.meta.7.name=Espace (7)
+tile.negativeSpace.meta.8.name=Espace (8)
+tile.negativeSpace.meta.9.name=Espace (9)
+tile.negativeSpace.meta.10.name=Espace (10)
+tile.negativeSpace.meta.11.name=Espace (11)
+tile.negativeSpace.meta.12.name=Espace (12)
+tile.negativeSpace.meta.13.name=Espace (13)
+tile.negativeSpace.meta.14.name=Espace (14)
+tile.negativeSpace.meta.15.name=Espace (15)
+tile.naturalFloor.name=Solide générique
+tile.naturalFloor.meta.0.name=Solide (0 ~ Plancher naturel)
+tile.naturalFloor.meta.1.name=Solide (1 ~ Barrières)
+tile.naturalFloor.meta.2.name=Solide (2)
+tile.naturalFloor.meta.3.name=Solide (3)
+tile.naturalFloor.meta.4.name=Solide (4)
+tile.naturalFloor.meta.5.name=Solide (5)
+tile.naturalFloor.meta.6.name=Solide (6)
+tile.naturalFloor.meta.7.name=Solide (7)
+tile.naturalFloor.meta.8.name=Solide (8)
+tile.naturalFloor.meta.9.name=Solide (9)
+tile.naturalFloor.meta.10.name=Solide (10)
+tile.naturalFloor.meta.11.name=Solide (11)
+tile.naturalFloor.meta.12.name=Solide (12)
+tile.naturalFloor.meta.13.name=Solide (13)
+tile.naturalFloor.meta.14.name=Solide (14)
+tile.naturalFloor.meta.15.name=Solide (15)
+tile.structureGenerator.name=Générateur de structure
+tile.mazeGenerator.name=Générateur de labyrinthe
+tile.spawnCommand.name=Bloc de commande de spawn
+
+itemGroup.structureTools=Outils de structure
+itemGroup.inventoryGenerators=Générateurs d'inventaire
+
+commands.rc.noEntityInfo=L'entité ne contient pas d'infos de structure ! Ceci est une erreur !
+
+commands.structure.notGeneric=La structure '%s' n'est pas générique !
+commands.structure.notRegistered=Aucune structure trouvée au nom de '%s'!
+
+commands.strucExport.usage=/#export [Nom-de-plan]
+
+commands.strucEdit.usage=/#edit <Nom-de-structure>
+
+commands.strucGen.usage=/#gen <Nom-de-structure> [x] [z]
+commands.strucGen.noStructure=Aucune structure enregistrée au nom de '%s'
+
+commands.strucImport.usage=/#import <Nom-de-structure> [x] [y] [z]
+commands.strucImport.noStructure=Aucune structure enregistrée au nom de '%s'
+
+commands.selectSet.usage=/#select <both|clear|point1|point2> [x] [y] [z]
+commands.selectSet.get=Sélection: %s à %s
+commands.selectSet.point.none=§onulpart§r
+
+commands.selectShift.usage=/#shift <x> <y> <z>
+commands.selectCrop.usage=/#crop
+commands.selectShrink.usage=/#shrink <x> <y> <z>
+commands.selectExpand.usage=/#expand <x> <y> <z>
+
+commands.selectModify.noSelection=Le joueur n'a pas de sélection complète
+commands.selectModify.invalidMetadata=les metadata devraient être saisi comme '0,1,5', mais ils sont '%s'
+
+commands.selectFill.usage=/#fill <bloc> [metadata1,metadata2,metadata3...]
+
+commands.selectReplace.usage=/#replace <source> <destination> [srcmetadata1,metadata2,metadata3...] [destmetadata1,metadata2,metadata3...]
+
+commands.selectFillSphere.usage=/#sphere <bloc> [metadata1,metadata2,metadata3...]
+
+commands.selectNatural.usage=/#natural [naturalFloorExpansion]
+
+commands.strucReload.usage=/#reload <Nom-de-structure> [x] [y] [z]
+commands.strucReload.success=Recharge toutes les structures et les générateurs d'inventaire
+
+commands.selectCopy.usage=/#copy
+commands.selectCopy.success=Copie de %s, %s, %s à %s, %s, %s dans le presse-papier
+
+commands.strucPaste.usage=/#paste [x] [y] [z]
+commands.strucPaste.noClipboard=Vous devez d'abord copier une zone!
+commands.strucPasteGen.usage=/#pastegen [x] [y] [z]
+
+commands.selectMove.usage=/#move <x> <y> <z> [clockwise-rotations] [mirror x:true|false]
+
+commands.selectDuplicate.usage=/#duplicate <x> <y> <z> [clockwise-rotations] [mirror x:true|false]
+
+commands.rcpreview.usage=/#preview <none|bounds|shape>
+commands.rcpreview.invalid=Type d'aperçu invalide
+commands.rcpreview.success=Type d'aperçu mis à '%s'
+
+commands.rc.noOperation=Pas d'opération en file d'attente
+commands.rc.queuedOp=Opération en apperçu - %s ou %s
+commands.rcconfirm.usage=/#confirm
+commands.rcconfirm.run=Lance l'opération
+commands.rccancel.usage=/#cancel
+commands.rccancel.run=Annule l'opération
+
+commands.strucImportSchematic.usage=/#importschematic <x> <y> <z> <nom-du-schéma>
+commands.strucImportSchematic.missing=Le fichier '%s' n'a pas été trouvé dans %s
+commands.strucImportSchematic.format=Le fichier '%s' a un format non supporté (%s)
+
+commands.strucExportSchematic.usage=/#exportschematic <schematic name>
+commands.strucExportSchematic.success=Schéma exporté vers '%s'
+
+commands.biomedict.usage=/#biomedict <get|list> id (get: Biome ID, list: Biome Type ID)
+commands.biomedict.get=Types de biome pour %s: %s
+commands.biomedict.get.number=%s biomes
+commands.biomedict.list=Biomes de type %s: %s
+commands.biomedict.list.number=%s types de biome
+commands.biomedict.nobiome=Pas de biome avec l'ID '%s'
+commands.biomedict.notype=Pas de types de biome avec l'ID '%s'
+
+commands.dimensiondict.usage=/#dimensiondict <get|list> id (get: Dimension ID, list: Dimension Type ID)
+commands.dimensiondict.get=Types de dimension pour %d: %s
+commands.dimensiondict.get.number=%s dimensions
+commands.dimensiondict.list=Dimensions de type %s: %s
+commands.dimensiondict.list.number=%s types
+
+commands.rcvisual.usage=/#visual rulers <true|false>
+commands.rcvisual.enabled='%s' activés avec succès
+commands.rcvisual.disabled='%s' désactivés avec succès
+
+commands.whatisthis.usage=/#whatisthis [x] [y] [z]
+commands.whatisthis.none=Il n'y as rien ici !
+commands.whatisthis.one=Ceci est : %s
+commands.whatisthis.many=Ceci est quelque ou tout de : %s
+
+commands.rclookup.usage=/#lookup <structure>
+commands.rclookup.reply.silent=%s: §bInactif§r, Par : '%s', %s
+commands.rclookup.reply.generates=%s: §bGénératé§r, Par: '%s', %s
+commands.rclookup.reply.noauthor=§oInconnu§r
+commands.rclookup.reply.nolink=§oAucun lien n'est fourni§r
+commands.rclookup.reply.comment=Commentaire: %s
+
+inventoryGen.vanilla=Générateur Vanilla
+inventoryGen.custom=Générateur personnalisé
+inventoryGen.create=Créer un nouveau générateur
+inventoryGen.none=Pas de générateur
+inventoryGen.mod=Générateur du Mod
+
+guiGenericInventory.save=Enregistre
+guiGenericInventory.weight=Taille
+guiGenericInventory.minMax=Mini: %s, Maxi: %s
+guiGenericInventory.minMaxItems=Mini d'éléments: %s, Maxi d'éléments: %s
+guiGenericInventory.weightNumber=tailles: %s
+
+inventorygen.save.success=Générateur d'inventaire exporté vers '%s'
+inventorygen.save.failure=Impossible d'exporter le générateur d'inventaire vers '%s'
+
+structure.save.failure=Impossible d'enregistrer la structure dans le fichier '%s'
+structure.save.success=Structure enregistrée dans le fichier '%s'
+structure.delete.failure=Impossible d'effacer la structure du fichier '%s'
+structure.delete.success=Structure effacée du fichier '%s'
+
+structures.gui.true=Vrai
+structures.gui.false=Faux
+
+structures.category.frequent=Fréquente
+structures.category.frequent.tooltip=Petites structures ou scènes<br>structure aléatoire tous les 10 chunks
+structures.category.decoration=Commune
+structures.category.decoration.tooltip=Structures cummunes<br>structure aléatoire tous les 30 chunks
+structures.category.rare=Rare
+structures.category.rare.tooltip=Curiosités spéciales à contempler<br>structure aléatoire tous les 1250 chunks
+structures.category.ultrarare=Ultra Rare
+structures.category.ultrarare.tooltip=Curiosités uniques<br>structure aléatoire tous les 5000 chunks
+structures.category.adventure=Adventure
+structures.category.adventure.tooltip=Structures concentré sur le combat et le pillage<br>structure aléatoire tous les 250 chunks
+
+structures.genY.bedrock=Bedrock
+structures.genY.bedrock.tooltip=Fond du monde: y=0
+structures.genY.surface=Surface
+structures.genY.surface.tooltip=Le plus haut bloc solide ou liquide
+structures.genY.sealevel=Niveau de la mer
+structures.genY.sealevel.tooltip=Niveau des océans: y=63
+structures.genY.underwater=Fond océanique
+structures.genY.underwater.tooltip=Le plus haut bloc solide
+structures.genY.top=Sommet (Ciel)
+structures.genY.top.tooltip=Sommet du monde : y=255
+structures.genY.lowestedge=Le bord le plus bas (Fond océanique)
+structures.genY.lowestedge.tooltip=Comme le fond océanique, mais enterré autant que nécessaire
+
+reccomplex.configgui.title=Structure Gen Config
+reccomplex.configgui.ctgy.general=General
+reccomplex.configgui.ctgy.general.tooltip=General Settings
+reccomplex.configgui.ctgy.visual=Visual
+reccomplex.configgui.ctgy.visual.tooltip=Visual Settings
+reccomplex.configgui.ctgy.balancing=Balancing
+reccomplex.configgui.ctgy.balancing.tooltip=Settings affecting the mod's balancing
+reccomplex.configgui.ctgy.controls=Controls
+reccomplex.configgui.ctgy.controls.tooltip=Settings affecting the controls
+
+reccomplex.structure.rotatable.true=§aRotatable§r
+reccomplex.structure.rotatable.false=§eNot Rotatable§r
+reccomplex.structure.rotatable.tooltip=Whether the structure can rotate.<br>This may need to be set to false<br>for some TileEntities or Entities.
+reccomplex.structure.mirrorable.true=§aMirrorable§r
+reccomplex.structure.mirrorable.false=§eNot Mirrorable§r
+reccomplex.structure.mirrorable.tooltip=Whether the structure can be mirrored.<br>This may need to be set to false<br>for some TileEntities or Entities.
+reccomplex.structure.randomrange=Randomized between the two values.
+
+reccomplex.structure.id=Structure ID
+reccomplex.structure.id.tooltip=Unique Identifier for the structure
+reccomplex.structure.savePath=Save in %s
+reccomplex.structure.deleteOther.true=%sDelete%s from %s
+reccomplex.structure.deleteOther.false=%sKeep%s inside %s
+reccomplex.structure.deleteOther.tooltip=Note: Structures in the %s<br>folder take loading precedence<br>over those in the %s folder.
+
+reccomplex.structure.generation.id=Generation ID
+reccomplex.structure.generation.id.tooltip=Identifier for the generation type.<br>Unique within the structure file.
+
+reccomplex.generationInfo.natural=Natural
+reccomplex.generationInfo.natural.tooltip=Randomized generation in any biome
+reccomplex.generationInfo.mazeComponent=Maze Component
+reccomplex.generationInfo.mazeComponent.tooltip=A room in a maze
+reccomplex.generationInfo.mazeComponent.title=In Maze: %s
+reccomplex.generationInfo.static=Static
+reccomplex.generationInfo.static.tooltip=Constant Position in a specific dimension<br>Also useful for spawn structures
+reccomplex.generationInfo.static.spawn=From Spawn %s, %s
+reccomplex.generationInfo.static.nospawn=At %s, %s
+reccomplex.generationInfo.structureList=Structure List
+reccomplex.generationInfo.structureList.tooltip=As part of a structure list<br>(Used in structure blocks)
+reccomplex.generationInfo.structureList.title=In List %s
+reccomplex.generationInfo.vanilla=Structure
+reccomplex.generationInfo.vanilla.tooltip=As part of a vanilla structure<br>(Like villages)
+reccomplex.generationInfo.vanilla.title=In Complex Structure
+
+reccomplex.transformer.natural=Natural Floor
+reccomplex.transformer.natural.tooltip=Spawns biome-native floor blocks below blocks
+reccomplex.transformer.naturalAir=Natural Air
+reccomplex.transformer.naturalAir.tooltip=Creates air pockets around blocks
+reccomplex.transformer.pillar=Pillar
+reccomplex.transformer.pillar.tooltip=Constructs pillars down to the floor
+reccomplex.transformer.replaceAll=Replace All
+reccomplex.transformer.replaceAll.tooltip=Replaces blocks uniformly
+reccomplex.transformer.replace=Replace
+reccomplex.transformer.replace.tooltip=Replaces blocks individually
+
+reccomplex.transformer.ruins=Ruins
+reccomplex.transformer.ruins.tooltip=Deconstructs and decays the structure
+reccomplex.transformer.ruins.decay.title=Decay
+reccomplex.transformer.ruins.decay.base=Base Decay
+reccomplex.transformer.ruins.decay.base.tooltip=The amount of blocks that will<br>be deleted when the structure generates.
+reccomplex.transformer.ruins.decay.chaos=Chaos
+reccomplex.transformer.ruins.decay.chaos.tooltip=The level at which the structure's<br>decay may differ within the<br>same structure.
+reccomplex.transformer.ruins.decay.density=Density
+reccomplex.transformer.ruins.decay.density.tooltip=The density of different decay progressions.<br>In short, set this low for big holes<br>and high for small holes.
+reccomplex.transformer.ruins.decay.direction=Direction
+reccomplex.transformer.ruins.decay.direction.tooltip=The direction the decay happens towards.
+reccomplex.transformer.ruins.other.title=Other
+reccomplex.transformer.ruins.erosion=Erosion
+reccomplex.transformer.ruins.erosion.tooltip=The chance for each block<br>to be replaced by a<br>'broken' version of it.
+reccomplex.transformer.ruins.vines=Vine Growth
+reccomplex.transformer.ruins.vines.tooltip=The chance for vines and moss<br>to spawn on each block.
+
+reccomplex.transformer.negativeSpace=Negative Space
+reccomplex.transformer.negativeSpace.tooltip=Makes the generation ignore blocks
+
+reccomplex.biomePreset.clear=Clear
+reccomplex.biomePreset.clear.tooltip=No Biomes
+reccomplex.biomePreset.overworld=Overworld
+reccomplex.biomePreset.overworld.tooltip=Biomes decent surface to spawn on
+reccomplex.biomePreset.underground=Underground
+reccomplex.biomePreset.underground.tooltip=Biomes with underground area
+reccomplex.biomePreset.ocean=Ocean
+reccomplex.biomePreset.ocean.tooltip=Biomes with lots of water
+
+reccomplex.dimensionPreset.clear=Clear
+reccomplex.dimensionPreset.clear.tooltip=No Dimensions
+reccomplex.dimensionPreset.overworld=Overworld
+reccomplex.dimensionPreset.overworld.tooltip=Dimensions resembling the real world surface
+reccomplex.dimensionPreset.nether=Nether
+reccomplex.dimensionPreset.nether.tooltip=Dimensions resembling the Nether
+reccomplex.dimensionPreset.end=End
+reccomplex.dimensionPreset.end.tooltip=Dimensions resembling the End
+
+reccomplex.weightedBlockStatePreset.clear=Clear
+reccomplex.weightedBlockStatePreset.clear.tooltip=No Blocks
+reccomplex.weightedBlockStatePreset.allWool=Wool
+reccomplex.weightedBlockStatePreset.allWool.tooltip=All 16 wool blocks
+
+reccomplex.expression.biome.tooltip=This is a §obiome expression§r.<br>Visit the wiki for syntax information.
+reccomplex.expression.dimension.tooltip=This is a §odimension expression§r.<br>Visit the wiki for syntax information.
+reccomplex.expression.block.tooltip=This is a §oblock expression§r.<br>Visit the wiki for syntax information.
+reccomplex.expression.dependency.tooltip=This is a §odependency expression§r.<br>Visit the wiki for syntax information.
+
+reccomplex.direction.up=Haut (+Y)
+reccomplex.direction.down=Bas (-Y)
+reccomplex.direction.north=Nord (-Z)
+reccomplex.direction.south=Sud (+Z)
+reccomplex.direction.east=Est (+X)
+reccomplex.direction.west=Ouest (-X)
+reccomplex.direction.none=Aucune
+reccomplex.direction.random=Aléatoire
+
+reccomplex.maze.connector=Connector
+reccomplex.maze.connector.tooltip=The ID of the connector.<br>These work like electronical connectors.<br><br>§bHermaphrodite§r (default): Connects to itself.<br><br>If the ID starts with...<br>§bMale:§r Connects to female counterpart.<br>§bFemale:§r Connects to male counterpart.
+reccomplex.maze.connector.default=Default Connector
+

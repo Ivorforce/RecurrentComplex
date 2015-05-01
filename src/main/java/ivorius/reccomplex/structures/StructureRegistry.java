@@ -46,6 +46,7 @@ import java.util.*;
 public class StructureRegistry
 {
     private static BiMap<String, StructureInfo> allStructures = HashBiMap.create();
+    private static Map<String, String> structureDomains = Maps.newHashMap();
 
     private static boolean needsGenerationCacheUpdate = true;
     private static Set<String> persistentlyDisabledStructures = new HashSet<>();
@@ -73,12 +74,12 @@ public class StructureRegistry
         return builder.create();
     }
 
-    public static boolean registerStructure(StructureInfo info, String key, boolean generates)
+    public static boolean registerStructure(StructureInfo info, String key, String domain, boolean generates)
     {
         StructureRegistrationEvent.Pre event = new StructureRegistrationEvent.Pre(key, info, generates);
         RCEventBus.INSTANCE.post(event);
 
-        if (event.getResult() != Event.Result.DENY)
+        if (event.getResult() != Event.Result.DENY && RCConfig.shouldStructureLoad(key, domain))
         {
             if (!event.shouldGenerate)
                 persistentlyDisabledStructures.add(key);
@@ -89,6 +90,7 @@ public class StructureRegistry
             RecurrentComplex.logger.info(String.format(baseString, key));
 
             allStructures.put(key, info);
+            structureDomains.put(key, domain);
 
             clearCaches();
 
@@ -106,7 +108,7 @@ public class StructureRegistry
 
         if (structureInfo != null)
         {
-            registerStructure(structureInfo, key, generates);
+            registerStructure(structureInfo, key, resourceLocation.getResourceDomain(), generates);
             return true;
         }
         else
@@ -173,7 +175,7 @@ public class StructureRegistry
                 String key = entry.getKey();
 
                 if (!persistentlyDisabledStructures.contains(key)
-                        && !RCConfig.isStructureDisabled(key)
+                        && RCConfig.shouldStructureGenerate(key, structureDomains.get(key))
                         && info.areDependenciesResolved())
                     generatingStructures.add(key);
             }

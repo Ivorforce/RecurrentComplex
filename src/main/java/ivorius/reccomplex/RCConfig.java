@@ -7,14 +7,11 @@ package ivorius.reccomplex;
 
 import ivorius.reccomplex.structures.generic.matchers.BiomeMatcher;
 import ivorius.reccomplex.structures.generic.matchers.DimensionMatcher;
+import ivorius.reccomplex.structures.generic.matchers.StructureIDMatcher;
 import ivorius.reccomplex.utils.ExpressionCache;
 import net.minecraft.world.WorldProvider;
 import net.minecraft.world.biome.BiomeGenBase;
 import org.apache.logging.log4j.Logger;
-
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.Set;
 
 import static net.minecraftforge.common.config.Configuration.CATEGORY_GENERAL;
 
@@ -44,10 +41,8 @@ public class RCConfig
 
     private static boolean lightweightMode;
 
-    private static Set<String> disabledStructures = new HashSet<>();
-    private static Set<String> disabledModGeneration = new HashSet<>();
-    private static Set<String> persistentDisabledStructures = new HashSet<>();
-    private static Set<String> forceEnabledStructures = new HashSet<>();
+    private static StructureIDMatcher structureLoadMatcher = new StructureIDMatcher("");
+    private static StructureIDMatcher structureGenerationMatcher = new StructureIDMatcher("");
 
     private static BiomeMatcher universalBiomeMatcher = new BiomeMatcher("");
     private static DimensionMatcher universalDimensionMatcher = new DimensionMatcher("");
@@ -73,12 +68,11 @@ public class RCConfig
             minDistToSpawnForGeneration = RecurrentComplex.config.getFloat("minDistToSpawnForGeneration", CATEGORY_BALANCING, 30.0f, 0.0f, 500.0f, "Within this block radius, default structures won't spawn (in the main dimension).");
             structureSpawnChanceModifier = RecurrentComplex.config.getFloat("structureSpawnChance", CATEGORY_BALANCING, 1.0f, 0.0f, 10.0f, "How often do structures spawn?");
 
-            disabledStructures.clear();
-            disabledStructures.addAll(Arrays.asList(RecurrentComplex.config.getStringList("disabledStructures", CATEGORY_BALANCING, new String[0], "Structures that will be hindered from generating.")));
-            disabledModGeneration.clear();
-            disabledModGeneration.addAll(Arrays.asList(RecurrentComplex.config.getStringList("disabledModGeneration", CATEGORY_BALANCING, new String[0], "Structures from mods in this list will automatically be set not to generate.")));
-            forceEnabledStructures.clear();
-            forceEnabledStructures.addAll(Arrays.asList(RecurrentComplex.config.getStringList("forceEnabledStructures", CATEGORY_BALANCING, new String[0], "Structures that be set to generate (if in the right directory), no matter what")));
+            structureLoadMatcher.setExpression(RecurrentComplex.config.getString("structureLoadMatcher", CATEGORY_BALANCING, "", "Structure Expression that will be applied to each loading structure, determining if the structure should be loaded."));
+            logExpressionException(structureLoadMatcher, "structureLoadMatcher", RecurrentComplex.logger);
+
+            structureGenerationMatcher.setExpression(RecurrentComplex.config.getString("structureGenerationMatcher", CATEGORY_BALANCING, "", "Structure Expression that will be applied to each loading structure, determining if the structure should be set to 'active'."));
+            logExpressionException(structureGenerationMatcher, "structureGenerationMatcher", RecurrentComplex.logger);
 
             universalBiomeMatcher.setExpression(RecurrentComplex.config.getString("universalBiomeMatcher", CATEGORY_BALANCING, "", "Biome Expression that will be checked for every single structure. Use this if you want to blacklist / whitelist specific biomes that shouldn't have structures."));
             logExpressionException(universalBiomeMatcher, "universalBiomeMatcher", RecurrentComplex.logger);
@@ -101,21 +95,14 @@ public class RCConfig
         return lightweightMode;
     }
 
-    public static void setStructurePersistentlyDisabled(String id, boolean disabled)
+    public static boolean shouldStructureLoad(String id, String domain)
     {
-        if (disabled)
-            persistentDisabledStructures.add(id);
+        return structureLoadMatcher.apply(id, domain);
     }
 
-    public static boolean isStructureDisabled(String id)
+    public static boolean shouldStructureGenerate(String id, String domain)
     {
-        return !forceEnabledStructures.contains(id)
-                && (persistentDisabledStructures.contains(id) || disabledStructures.contains(id));
-    }
-
-    public static boolean isModGenerationDisabled(String modID)
-    {
-        return disabledModGeneration.contains(modID);
+        return structureGenerationMatcher.apply(id, domain);
     }
 
     public static boolean isGenerationEnabled(BiomeGenBase biome)

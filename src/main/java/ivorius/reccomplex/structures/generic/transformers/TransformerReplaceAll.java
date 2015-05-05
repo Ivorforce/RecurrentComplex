@@ -7,9 +7,8 @@ package ivorius.reccomplex.structures.generic.transformers;
 
 import com.google.gson.*;
 import ivorius.ivtoolkit.blocks.BlockCoord;
-import ivorius.ivtoolkit.blocks.IvBlockCollection;
 import ivorius.ivtoolkit.gui.IntegerRange;
-import ivorius.ivtoolkit.tools.IvWorldData;
+import ivorius.ivtoolkit.random.WeightedSelector;
 import ivorius.ivtoolkit.tools.MCRegistry;
 import ivorius.reccomplex.gui.editstructure.transformers.TableDataSourceBTReplaceAll;
 import ivorius.reccomplex.gui.table.TableDataSource;
@@ -25,27 +24,24 @@ import ivorius.reccomplex.structures.generic.matchers.BlockMatcher;
 import ivorius.reccomplex.structures.generic.presets.WeightedBlockStatePresets;
 import ivorius.reccomplex.utils.NBTStorable;
 import ivorius.reccomplex.utils.PresettedList;
-import ivorius.ivtoolkit.random.WeightedSelector;
 import net.minecraft.block.Block;
 import net.minecraft.init.Blocks;
 import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.tileentity.TileEntity;
-import org.apache.commons.lang3.tuple.Pair;
+import net.minecraftforge.common.util.Constants;
 
 import java.lang.reflect.Type;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.List;
 
 /**
  * Created by lukas on 25.05.14.
  */
-public class TransformerReplaceAll implements Transformer<TransformerReplaceAll.InstanceData>
+public class TransformerReplaceAll extends TransformerSingleBlock<TransformerReplaceAll.InstanceData>
 {
-    public BlockMatcher sourceMatcher;
-
     public final PresettedList<WeightedBlockState> destination = new PresettedList<>(WeightedBlockStatePresets.instance(), null);
+
+    public BlockMatcher sourceMatcher;
 
     public TransformerReplaceAll()
     {
@@ -65,52 +61,15 @@ public class TransformerReplaceAll implements Transformer<TransformerReplaceAll.
     }
 
     @Override
-    public boolean skipGeneration(InstanceData instanceData, Block block, int metadata)
-    {
-        return matches(instanceData, block, metadata);
-    }
-
-    public boolean matches(NBTStorable instanceData, Block block, int metadata)
+    public boolean matches(InstanceData instanceData, Block block, int metadata)
     {
         return sourceMatcher.apply(new BlockMatcher.BlockFragment(block, metadata));
     }
 
     @Override
-    public void transform(InstanceData instanceData, Phase phase, StructureSpawnContext context, IvWorldData worldData, List<Pair<Transformer, NBTStorable>> transformers)
+    public void transformBlock(InstanceData instanceData, Phase phase, StructureSpawnContext context, BlockCoord coord, Block sourceBlock, int sourceMetadata)
     {
-        WeightedBlockState blockState = instanceData.blockState;
-        if (blockState.block != null && MCRegistrySpecial.INSTANCE.isSafe(blockState.block))
-        {
-            IvBlockCollection blockCollection = worldData.blockCollection;
-
-            int[] areaSize = new int[]{blockCollection.width, blockCollection.height, blockCollection.length};
-            BlockCoord lowerCoord = context.lowerCoord();
-
-            NBTTagCompound nbtTagCompound = blockState.tileEntityInfo.trim().length() > 0 && blockState.block.hasTileEntity(blockState.metadata)
-                    ? TransformerReplace.tryParse(blockState.tileEntityInfo) : null;
-
-            for (BlockCoord sourceCoord : blockCollection)
-            {
-                BlockCoord worldCoord = context.transform.apply(sourceCoord, areaSize).add(lowerCoord);
-                if (context.includes(worldCoord))
-                {
-                    Block block = blockCollection.getBlock(sourceCoord);
-                    int meta = blockCollection.getMetadata(sourceCoord);
-
-                    if (matches(instanceData, block, meta))
-                    {
-                        context.world.setBlock(worldCoord.x, worldCoord.y, worldCoord.z, blockState.block, blockState.metadata, 3);
-
-                        if (nbtTagCompound != null)
-                        {
-                            TileEntity tileentity = context.world.getTileEntity(worldCoord.x, worldCoord.y, worldCoord.z);
-                            if (tileentity != null)
-                                tileentity.readFromNBT(TransformerReplace.positionedCopy(nbtTagCompound, worldCoord));
-                        }
-                    }
-                }
-            }
-        }
+        TransformerReplace.setBlockWith(context, coord, context.world, instanceData.blockState, instanceData.tileEntityInfo);
     }
 
     @Override
@@ -129,12 +88,16 @@ public class TransformerReplaceAll implements Transformer<TransformerReplaceAll.
     public InstanceData prepareInstanceData(StructurePrepareContext context)
     {
         WeightedBlockState blockState;
+
         if (destination.list.size() > 0)
             blockState = WeightedSelector.selectItem(context.random, destination.list);
         else
             blockState = new WeightedBlockState(null, Blocks.air, 0, "");
 
-        return new InstanceData(blockState);
+        NBTTagCompound tileEntityInfo = blockState.tileEntityInfo.trim().length() > 0 && blockState.block.hasTileEntity(blockState.metadata)
+                ? TransformerReplace.tryParse(blockState.tileEntityInfo) : null;
+
+        return new InstanceData(blockState, tileEntityInfo);
     }
 
     @Override
@@ -152,15 +115,21 @@ public class TransformerReplaceAll implements Transformer<TransformerReplaceAll.
     public static class InstanceData implements NBTStorable
     {
         public WeightedBlockState blockState;
+        public NBTTagCompound tileEntityInfo;
 
-        public InstanceData(WeightedBlockState blockState)
+        public InstanceData(WeightedBlockState blockState, NBTTagCompound tileEntityInfo)
         {
             this.blockState = blockState;
+            this.tileEntityInfo = tileEntityInfo;
         }
 
         public InstanceData(NBTTagCompound compound)
         {
             this.blockState = new WeightedBlockState(MCRegistrySpecial.INSTANCE, compound.getCompoundTag("blockState"));
+
+            this.tileEntityInfo = compound.hasKey("tileEntityInfo", Constants.NBT.TAG_COMPOUND)
+                    ? (NBTTagCompound) compound.getCompoundTag("tileEntityInfo").copy()
+                    : null;
         }
 
         @Override
@@ -169,6 +138,9 @@ public class TransformerReplaceAll implements Transformer<TransformerReplaceAll.
             NBTTagCompound compound = new NBTTagCompound();
 
             compound.setTag("blockState", blockState.writeToNBT(MCRegistrySpecial.INSTANCE));
+
+            if (tileEntityInfo != null)
+                compound.setTag("tileEntityInfo", tileEntityInfo.copy());
 
             return compound;
         }

@@ -7,6 +7,7 @@ package ivorius.reccomplex.structures.generic.transformers;
 
 import com.google.gson.*;
 import ivorius.ivtoolkit.blocks.BlockCoord;
+import ivorius.ivtoolkit.random.WeightedSelector;
 import ivorius.ivtoolkit.tools.MCRegistry;
 import ivorius.reccomplex.gui.editstructure.transformers.TableDataSourceBTReplace;
 import ivorius.reccomplex.gui.table.TableDataSource;
@@ -22,7 +23,6 @@ import ivorius.reccomplex.structures.generic.matchers.BlockMatcher;
 import ivorius.reccomplex.structures.generic.presets.WeightedBlockStatePresets;
 import ivorius.reccomplex.utils.NBTNone;
 import ivorius.reccomplex.utils.PresettedList;
-import ivorius.ivtoolkit.random.WeightedSelector;
 import net.minecraft.block.Block;
 import net.minecraft.init.Blocks;
 import net.minecraft.nbt.JsonToNBT;
@@ -35,16 +35,14 @@ import net.minecraft.world.World;
 import java.lang.reflect.Type;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.Random;
 
 /**
  * Created by lukas on 25.05.14.
  */
 public class TransformerReplace extends TransformerSingleBlock<NBTNone>
 {
-    public BlockMatcher sourceMatcher;
-
     public final PresettedList<WeightedBlockState> destination = new PresettedList<>(WeightedBlockStatePresets.instance(), null);
+    public BlockMatcher sourceMatcher;
 
     public TransformerReplace()
     {
@@ -55,12 +53,6 @@ public class TransformerReplace extends TransformerSingleBlock<NBTNone>
     public TransformerReplace(String sourceExpression)
     {
         this.sourceMatcher = new BlockMatcher(MCRegistrySpecial.INSTANCE, sourceExpression);
-    }
-
-    public TransformerReplace replaceWith(WeightedBlockState... states)
-    {
-        destination.setContents(Arrays.asList(states));
-        return this;
     }
 
     public static NBTTagCompound tryParse(String json)
@@ -93,6 +85,12 @@ public class TransformerReplace extends TransformerSingleBlock<NBTNone>
         return positioned;
     }
 
+    public TransformerReplace replaceWith(WeightedBlockState... states)
+    {
+        destination.setContents(Arrays.asList(states));
+        return this;
+    }
+
     @Override
     public boolean matches(NBTNone instanceData, Block block, int metadata)
     {
@@ -102,23 +100,29 @@ public class TransformerReplace extends TransformerSingleBlock<NBTNone>
     @Override
     public void transformBlock(NBTNone instanceData, Phase phase, StructureSpawnContext context, BlockCoord coord, Block sourceBlock, int sourceMetadata)
     {
-        World world = context.world;
-        Random random = context.random;
-
         WeightedBlockState blockState;
         if (destination.list.size() > 0)
-            blockState = WeightedSelector.selectItem(random, destination.list);
+            blockState = WeightedSelector.selectItem(context.random, destination.list);
         else
             blockState = new WeightedBlockState(null, null, 0, "");
 
+        NBTTagCompound parsedTileEntityInfo = blockState.tileEntityInfo.trim().length() > 0
+                ? tryParse(blockState.tileEntityInfo)
+                : null;
+
+        setBlockWith(context, coord, context.world, blockState, parsedTileEntityInfo);
+    }
+
+    public static void setBlockWith(StructureSpawnContext context, BlockCoord coord, World world, WeightedBlockState blockState, NBTTagCompound parsedTileEntityInfo)
+    {
         if (blockState.block != null && MCRegistrySpecial.INSTANCE.isSafe(blockState.block))
         {
             context.setBlock(coord.x, coord.y, coord.z, blockState.block, blockState.metadata);
 
             // Behavior as in CommandSetBlock
-            if (blockState.tileEntityInfo.trim().length() > 0 && blockState.block.hasTileEntity(blockState.metadata))
+            if (parsedTileEntityInfo != null && blockState.block.hasTileEntity(blockState.metadata))
             {
-                NBTTagCompound nbtTagCompound = positionedCopy(tryParse(blockState.tileEntityInfo), coord);
+                NBTTagCompound nbtTagCompound = positionedCopy(parsedTileEntityInfo, coord);
                 if (nbtTagCompound != null)
                 {
                     TileEntity tileentity = world.getTileEntity(coord.x, coord.y, coord.z);

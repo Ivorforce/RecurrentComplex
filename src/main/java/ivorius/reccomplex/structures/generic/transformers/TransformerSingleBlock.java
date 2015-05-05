@@ -23,7 +23,7 @@ public abstract class TransformerSingleBlock<S extends NBTStorable> implements T
     @Override
     public boolean skipGeneration(S instanceData, Block block, int metadata)
     {
-        return matches(block, metadata);
+        return matches(instanceData, block, metadata);
     }
 
     @Override
@@ -42,13 +42,13 @@ public abstract class TransformerSingleBlock<S extends NBTStorable> implements T
                 Block block = blockCollection.getBlock(sourceCoord);
                 int meta = blockCollection.getMetadata(sourceCoord);
 
-                if (matches(block, meta))
-                    transformBlock(context, Phase.BEFORE, worldCoord, block, meta);
+                if (matches(instanceData, block, meta))
+                    transformBlock(instanceData, Phase.BEFORE, context, worldCoord, block, meta);
             }
         }
     }
 
-    public abstract boolean matches(Block block, int metadata);
+    public abstract boolean matches(S instanceData, Block block, int metadata);
 
-    public abstract void transformBlock(StructureSpawnContext context, Phase phase, BlockCoord coord, Block sourceBlock, int sourceMetadata);
+    public abstract void transformBlock(S instanceData, Phase phase, StructureSpawnContext context, BlockCoord coord, Block sourceBlock, int sourceMetadata);
 }

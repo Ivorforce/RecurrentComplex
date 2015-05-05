@@ -54,13 +54,13 @@ public class TransformerNaturalAir extends TransformerSingleBlock<NBTNone>
     }
 
     @Override
-    public boolean matches(Block block, int metadata)
+    public boolean matches(NBTNone instanceData, Block block, int metadata)
     {
         return sourceMatcher.apply(new BlockMatcher.BlockFragment(block, metadata));
     }
 
     @Override
-    public void transformBlock(StructureSpawnContext context, Phase phase, BlockCoord coord, Block sourceBlock, int sourceMetadata)
+    public void transformBlock(NBTNone instanceData, Phase phase, StructureSpawnContext context, BlockCoord coord, Block sourceBlock, int sourceMetadata)
     {
         // TODO Fix for partial generation
         World world = context.world;

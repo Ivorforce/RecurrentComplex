@@ -31,6 +31,6 @@ public class RCInventoryGenerators
     private static void registerVanillaInventoryGenerators(String... keys)
     {
         for (String key : keys)
-            WeightedItemCollectionRegistry.registerInventoryGenerator(new VanillaItemCollection(key), key);
+            WeightedItemCollectionRegistry.register(new VanillaItemCollection(key), key);
     }
 }

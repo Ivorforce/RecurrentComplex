@@ -16,9 +16,9 @@ public class WeightedItemCollectionRegistry
 {
     private static Map<String, WeightedItemCollection> weightedItemCollectionMap = new HashMap<>();
 
-    public static void registerInventoryGenerator(WeightedItemCollection weightedItemCollection, String key)
+    public static void register(WeightedItemCollection weightedItemCollection, String key)
     {
-        RecurrentComplex.logger.info(weightedItemCollectionMap.containsKey(key) ? "Overwrote inventory generator with id '" + key + "'" : "Registered inventory generator with id '" + key + "'");
+//        RecurrentComplex.logger.info(weightedItemCollectionMap.containsKey(key) ? "Replaced inventory generator '" + key + "'" : "Registered inventory generator '" + key + "'");
         weightedItemCollectionMap.put(key, weightedItemCollection);
     }
 
@@ -32,7 +32,7 @@ public class WeightedItemCollectionRegistry
         return weightedItemCollectionMap.keySet();
     }
 
-    public static void removeItemCollection(String key)
+    public static void unregister(String key)
     {
         weightedItemCollectionMap.remove(key);
     }

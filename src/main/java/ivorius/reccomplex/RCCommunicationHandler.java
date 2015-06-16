@@ -56,8 +56,9 @@ public class RCCommunicationHandler extends IvFMLIntercommHandler
             NBTTagCompound cmp = message.getNBTValue();
             String genPath = cmp.getString("genPath");
             String genID = cmp.getString("genID");
+            boolean generates = cmp.getBoolean("generates");
 
-            if (!GenericItemCollectionRegistry.register(new ResourceLocation(genPath), genID))
+            if (!GenericItemCollectionRegistry.register(new ResourceLocation(genPath), genID, generates))
                 getLogger().warn(String.format("Could not find inventory generator with path '%s and id '%s'", genPath, genID));
 
             return true;

@@ -105,14 +105,7 @@ public class StructureRegistry
     public static boolean registerStructure(ResourceLocation resourceLocation, String key, boolean generates)
     {
         GenericStructureInfo structureInfo = StructureSaveHandler.structureInfoFromResource(resourceLocation);
-
-        if (structureInfo != null)
-        {
-            registerStructure(structureInfo, key, resourceLocation.getResourceDomain(), generates);
-            return true;
-        }
-        else
-            return false;
+        return structureInfo != null && registerStructure(structureInfo, key, resourceLocation.getResourceDomain(), generates);
     }
 
     public static boolean hasStructure(String key)

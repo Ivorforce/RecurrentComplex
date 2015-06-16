@@ -98,13 +98,13 @@ public class StructureSaveHandler
         return 0;
     }
 
-    public static int tryAddAllStructuresInDirectory(File file, String resourcePack, boolean generating, boolean imported)
+    public static int tryAddAllStructuresInDirectory(File file, String domain, boolean generating, boolean imported)
     {
         if (file != null)
         {
             try
             {
-                return addAllStructuresInDirectory(file.toPath(), resourcePack, generating, imported);
+                return addAllStructuresInDirectory(file.toPath(), domain, generating, imported);
             }
             catch (Throwable e)
             {
@@ -115,7 +115,7 @@ public class StructureSaveHandler
         return 0;
     }
 
-    public static int addAllStructuresInDirectory(Path directory, String resourcePack, boolean generating, boolean imported) throws IOException
+    public static int addAllStructuresInDirectory(Path directory, String domain, boolean generating, boolean imported) throws IOException
     {
         List<Path> paths = RCFileHelper.listFilesRecursively(directory, new FileSuffixFilter(RecurrentComplex.USE_ZIP_FOR_STRUCTURE_FILES ? "zip" : "json"), true);
 
@@ -128,7 +128,7 @@ public class StructureSaveHandler
 
                 String structureID = FilenameUtils.getBaseName(file.getFileName().toString());
 
-                if (StructureRegistry.registerStructure(genericStructureInfo, structureID, resourcePack, generating))
+                if (StructureRegistry.registerStructure(genericStructureInfo, structureID, domain, generating))
                 {
                     if (imported)
                         importedGenerators.add(structureID);

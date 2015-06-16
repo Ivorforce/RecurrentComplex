@@ -32,10 +32,8 @@ public class CustomGenericItemCollectionHandler
 
     public static void reloadAllCustomInventoryGenerators()
     {
-        while (!importedCustomGenerators.isEmpty())
-        {
-            WeightedItemCollectionRegistry.removeItemCollection(importedCustomGenerators.remove(0));
-        }
+        for (String generator : importedCustomGenerators)
+            WeightedItemCollectionRegistry.unregister(generator);
         importedCustomGenerators.clear();
 
         File structuresFile = IvFileHelper.getValidatedFolder(RecurrentComplex.proxy.getBaseFolderFile("structures"));
@@ -45,7 +43,7 @@ public class CustomGenericItemCollectionHandler
             {
                 File inventoryGeneratorsFile = IvFileHelper.getValidatedFolder(structuresFile, "inventoryGenerators");
                 if (inventoryGeneratorsFile != null)
-                    loadAllInventoryGeneratorsInDirectory(inventoryGeneratorsFile.toPath(), true);
+                    loadAllInventoryGeneratorsInDirectory(inventoryGeneratorsFile.toPath(), "", true, true);
             }
             catch (IOException e)
             {
@@ -64,7 +62,7 @@ public class CustomGenericItemCollectionHandler
             Path path = RCFileHelper.pathFromResourceLocation(new ResourceLocation(modid, "structures/inventoryGenerators"));
             if (path != null)
             {
-                loadAllInventoryGeneratorsInDirectory(path, false);
+                loadAllInventoryGeneratorsInDirectory(path, "", true, false);
             }
         }
         catch (URISyntaxException | IOException e)
@@ -74,7 +72,7 @@ public class CustomGenericItemCollectionHandler
         }
     }
 
-    public static void loadAllInventoryGeneratorsInDirectory(Path directory, boolean imported) throws IOException
+    public static void loadAllInventoryGeneratorsInDirectory(Path directory, String domain, boolean generating, boolean imported) throws IOException
     {
         List<Path> paths = RCFileHelper.listFilesRecursively(directory, new FileSuffixFilter("json"), true);
 
@@ -89,7 +87,7 @@ public class CustomGenericItemCollectionHandler
                 if (component.inventoryGeneratorID == null || component.inventoryGeneratorID.length() == 0) // Legacy support
                     component.inventoryGeneratorID = name;
 
-                GenericItemCollectionRegistry.register(component, name);
+                GenericItemCollectionRegistry.register(component, name, domain, generating);
 
                 if (imported)
                     importedCustomGenerators.add(name);

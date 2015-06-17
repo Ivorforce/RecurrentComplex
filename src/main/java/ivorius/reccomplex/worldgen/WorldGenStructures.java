@@ -10,10 +10,14 @@ import ivorius.ivtoolkit.math.IvVecMathHelper;
 import ivorius.reccomplex.RCConfig;
 import ivorius.reccomplex.RecurrentComplex;
 import ivorius.reccomplex.structures.StructureInfo;
+import ivorius.reccomplex.structures.StructureInfos;
+import ivorius.reccomplex.structures.StructureLoadContext;
 import ivorius.reccomplex.structures.StructureRegistry;
 import ivorius.reccomplex.structures.generic.gentypes.NaturalGenerationInfo;
 import ivorius.reccomplex.structures.generic.gentypes.StaticGenerationInfo;
+import ivorius.reccomplex.utils.NBTStorable;
 import net.minecraft.util.ChunkCoordinates;
+import net.minecraft.world.ChunkCoordIntPair;
 import net.minecraft.world.World;
 import net.minecraft.world.biome.BiomeGenBase;
 import net.minecraft.world.chunk.IChunkProvider;
@@ -31,6 +35,9 @@ public class WorldGenStructures implements IWorldGenerator
     public void generate(Random random, final int chunkX, final int chunkZ, final World world, IChunkProvider chunkGenerator, IChunkProvider chunkProvider)
     {
         boolean worldWantsStructures = world.getWorldInfo().isMapFeaturesEnabled();
+        StructureGenerationData data = StructureGenerationData.get(world);
+
+        generatePartialStructuresInChunk(random, chunkX, chunkZ, world, chunkGenerator, chunkProvider);
 
         if (worldWantsStructures)
         {
@@ -51,28 +58,52 @@ public class WorldGenStructures implements IWorldGenerator
                 StructureGenerator.randomInstantly(world, random, structureInfo, staticGenInfo.ySelector, strucX, strucZ, false, structureName);
             }
 
-            boolean mayGenerate = RCConfig.isGenerationEnabled(biomeGen) && RCConfig.isGenerationEnabled(world.provider);
-
-            if (world.provider.dimensionId == 0)
+            if (data.checkChunk(new ChunkCoordIntPair(chunkX, chunkZ)))
             {
-                double distToSpawn = IvVecMathHelper.distanceSQ(new double[]{chunkX * 16 + 8, chunkZ * 16 + 8}, new double[]{spawnPos.posX, spawnPos.posZ});
-                mayGenerate &= distToSpawn >= RCConfig.minDistToSpawnForGeneration * RCConfig.minDistToSpawnForGeneration;
-            }
+                boolean mayGenerate = RCConfig.isGenerationEnabled(biomeGen) && RCConfig.isGenerationEnabled(world.provider);
 
-            if (mayGenerate)
-            {
-                StructureSelector structureSelector = StructureRegistry.getStructureSelector(biomeGen, world.provider);
-                List<Pair<StructureInfo, NaturalGenerationInfo>> generated = structureSelector.generatedStructures(random, chunkX, chunkZ, world, chunkGenerator, chunkProvider);
-
-                for (Pair<StructureInfo, NaturalGenerationInfo> pair : generated)
+                if (world.provider.dimensionId == 0)
                 {
-                    StructureInfo structureInfo = pair.getLeft();
-                    String structureName = StructureRegistry.structureID(structureInfo);
+                    double distToSpawn = IvVecMathHelper.distanceSQ(new double[]{chunkX * 16 + 8, chunkZ * 16 + 8}, new double[]{spawnPos.posX, spawnPos.posZ});
+                    mayGenerate &= distToSpawn >= RCConfig.minDistToSpawnForGeneration * RCConfig.minDistToSpawnForGeneration;
+                }
 
-                    int genX = chunkX * 16 + random.nextInt(16);
-                    int genZ = chunkZ * 16 + random.nextInt(16);
+                if (mayGenerate)
+                {
+                    StructureSelector structureSelector = StructureRegistry.getStructureSelector(biomeGen, world.provider);
+                    List<Pair<StructureInfo, NaturalGenerationInfo>> generated = structureSelector.generatedStructures(random, chunkX, chunkZ, world, chunkGenerator, chunkProvider);
 
-                    StructureGenerator.randomInstantly(world, random, structureInfo, pair.getRight().ySelector, genX, genZ, true, structureName);
+                    for (Pair<StructureInfo, NaturalGenerationInfo> pair : generated)
+                    {
+                        StructureInfo structureInfo = pair.getLeft();
+                        String structureName = StructureRegistry.structureID(structureInfo);
+
+                        int genX = chunkX * 16 + random.nextInt(16);
+                        int genZ = chunkZ * 16 + random.nextInt(16);
+
+                        StructureGenerator.randomInstantly(world, random, structureInfo, pair.getRight().ySelector, genX, genZ, true, structureName);
+                    }
+                }
+            }
+        }
+    }
+
+    public static void generatePartialStructuresInChunk(Random random, final int chunkX, final int chunkZ, final World world, IChunkProvider chunkGenerator, IChunkProvider chunkProvider)
+    {
+        StructureGenerationData data = StructureGenerationData.get(world);
+
+        for (StructureGenerationData.Entry entry : data.getEntries(new ChunkCoordIntPair(chunkX, chunkZ), true))
+        {
+            StructureInfo structureInfo = StructureRegistry.getStructure(entry.getStructureID());
+
+            if (structureInfo != null)
+            {
+                StructureGenerator.partially(structureInfo, world, random, entry.lowerCoord, entry.transform, StructureInfos.chunkBoundingBox(chunkX, chunkZ), 0, entry.getStructureID(), entry.instanceData, entry.firstTime);
+
+                if (entry.firstTime)
+                {
+                    entry.firstTime = false;
+                    data.markDirty();
                 }
             }
         }

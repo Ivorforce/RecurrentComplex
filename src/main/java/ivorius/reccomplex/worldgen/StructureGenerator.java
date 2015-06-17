@@ -14,6 +14,7 @@ import ivorius.reccomplex.events.StructureGenerationEvent;
 import ivorius.reccomplex.events.StructureGenerationEventLite;
 import ivorius.reccomplex.structures.*;
 import ivorius.reccomplex.utils.NBTStorable;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.world.World;
 import net.minecraft.world.gen.structure.StructureBoundingBox;
 import net.minecraftforge.common.MinecraftForge;
@@ -28,6 +29,18 @@ public class StructureGenerator
 {
     public static final int MIN_DIST_TO_LIMIT = 1;
 
+    public static <I extends NBTStorable> void partially(StructureInfo<I> structureInfo, World world, Random random, BlockCoord coord, AxisAlignedTransform2D transform, @Nullable StructureBoundingBox generationBB, int layer, String structureName, NBTTagCompound instanceData, boolean firstTime)
+    {
+        StructureBoundingBox structureBoundingBox = StructureInfos.structureBoundingBox(coord, StructureInfos.structureSize(structureInfo, transform));
+        I loadedInstanceData = structureInfo.loadInstanceData(new StructureLoadContext(transform, structureBoundingBox, false), instanceData);
+
+        StructureSpawnContext structureSpawnContext = new StructureSpawnContext(world, random, structureBoundingBox, generationBB, layer, false, transform, firstTime);
+        structureInfo.generate(structureSpawnContext, loadedInstanceData);
+
+        if (firstTime)
+            RecurrentComplex.logger.trace(String.format("Generated structure '%s' in %s", name(structureName), structureSpawnContext.boundingBox));
+    }
+
     public static <I extends NBTStorable> void partially(StructureInfo<I> structureInfo, World world, Random random, BlockCoord coord, AxisAlignedTransform2D transform, @Nullable StructureBoundingBox generationBB, int layer, String structureName, I instanceData, boolean firstTime)
     {
         StructureBoundingBox structureBoundingBox = StructureInfos.structureBoundingBox(coord, StructureInfos.structureSize(structureInfo, transform));
@@ -37,9 +50,6 @@ public class StructureGenerator
 
         if (firstTime)
             RecurrentComplex.logger.trace(String.format("Generated structure '%s' in %s", name(structureName), structureSpawnContext.boundingBox));
-
-        if (structureName != null && firstTime)
-            StructureGenerationData.get(world).addNewEntry(structureName, coord, transform);
     }
 
     public static <I extends NBTStorable> void directly(StructureInfo<I> structureInfo, StructureSpawnContext context)
@@ -88,7 +98,7 @@ public class StructureGenerator
             MinecraftForge.EVENT_BUS.post(new StructureGenerationEventLite.Post(world, structureID, coordInts, size, layer));
 
             if (structureID != null)
-                StructureGenerationData.get(world).addNewEntry(structureID, coord, transform);
+                StructureGenerationData.get(world).addCompleteEntry(structureID, coord, transform);
 
             return true;
         }

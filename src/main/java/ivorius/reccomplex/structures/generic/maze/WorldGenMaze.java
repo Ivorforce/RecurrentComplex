@@ -19,6 +19,7 @@ import ivorius.reccomplex.RecurrentComplex;
 import ivorius.reccomplex.structures.*;
 import ivorius.reccomplex.structures.generic.gentypes.MazeGenerationInfo;
 import ivorius.reccomplex.utils.NBTStorable;
+import ivorius.reccomplex.worldgen.StructureGenerationData;
 import ivorius.reccomplex.worldgen.StructureGenerator;
 import net.minecraft.world.gen.structure.StructureBoundingBox;
 import org.apache.commons.lang3.tuple.Pair;
@@ -42,7 +43,12 @@ public class WorldGenMaze
                 AxisAlignedTransform2D componentTransform = placedComponent.transform;
                 StructureBoundingBox compBoundingBox = StructureInfos.structureBoundingBox(placedComponent.lowerCoord, StructureInfos.structureSize(structureInfo, componentTransform));
 
-                StructureGenerator.partially(structureInfo, context.world, context.random, new BlockCoord(compBoundingBox.minX, compBoundingBox.minY, compBoundingBox.minZ), componentTransform, context.generationBB, context.generationLayer + 1, placedComponent.structureID, placedComponent.instanceData, context.isFirstTime);
+                BlockCoord coord = new BlockCoord(compBoundingBox.minX, compBoundingBox.minY, compBoundingBox.minZ);
+
+                StructureGenerator.partially(structureInfo, context.world, context.random, coord, componentTransform, context.generationBB, context.generationLayer + 1, placedComponent.structureID, placedComponent.instanceData, context.isFirstTime);
+
+                if (context.isFirstTime)
+                    StructureGenerationData.get(context.world).addCompleteEntry(placedComponent.structureID, coord, componentTransform);
             }
             else
             {

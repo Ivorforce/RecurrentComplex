@@ -104,9 +104,14 @@ public class StructureGenerationData extends WorldSavedData
         return entries.build();
     }
 
-    public Set<ChunkCoordIntPair> addNewEntry(String structureID, BlockCoord lowerCoord, AxisAlignedTransform2D transform)
+    public Set<ChunkCoordIntPair> addCompleteEntry(String structureID, BlockCoord lowerCoord, AxisAlignedTransform2D transform)
     {
         return addEntry(new Entry(UUID.randomUUID(), structureID, lowerCoord, transform, true));
+    }
+
+    public Set<ChunkCoordIntPair> addGeneratingEntry(String structureID, BlockCoord lowerCoord, AxisAlignedTransform2D transform)
+    {
+        return addEntry(new Entry(UUID.randomUUID(), structureID, lowerCoord, transform, false));
     }
 
     public Set<ChunkCoordIntPair> addEntry(Entry entry)
@@ -183,6 +188,9 @@ public class StructureGenerationData extends WorldSavedData
         protected BlockCoord lowerCoord;
         protected AxisAlignedTransform2D transform;
 
+        protected NBTTagCompound instanceData;
+        protected boolean firstTime = true;
+
         protected boolean hasBeenGenerated;
 
         public Entry()
@@ -196,7 +204,7 @@ public class StructureGenerationData extends WorldSavedData
             this.lowerCoord = lowerCoord;
             this.transform = transform;
             this.hasBeenGenerated = hasBeenGenerated;
-        }
+         }
 
         @Nonnull
         public UUID getUuid()
@@ -235,10 +243,13 @@ public class StructureGenerationData extends WorldSavedData
 
             structureID = compound.getString("structureID");
 
-            transform = new AxisAlignedTransform2D(compound.getInteger("rotation"), compound.getBoolean("mirrorX"));
+            transform = AxisAlignedTransform2D.from(compound.getInteger("rotation"), compound.getBoolean("mirrorX"));
 
             lowerCoord = BlockCoord.readCoordFromNBT("lowerCoord", compound);
 
+            if (compound.hasKey("instanceData", Constants.NBT.TAG_COMPOUND))
+                instanceData = compound.getCompoundTag("instanceData");
+            firstTime = compound.getBoolean("firstTime");
             hasBeenGenerated = compound.getBoolean("hasBeenGenerated");
         }
 
@@ -254,6 +265,9 @@ public class StructureGenerationData extends WorldSavedData
 
             BlockCoord.writeCoordToNBT("lowerCoord", lowerCoord, compound);
 
+            if (instanceData != null)
+                compound.setTag("instanceData", instanceData);
+            compound.setBoolean("firstTime", firstTime);
             compound.setBoolean("hasBeenGenerated", hasBeenGenerated);
         }
 

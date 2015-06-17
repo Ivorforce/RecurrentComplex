@@ -12,6 +12,7 @@ import ivorius.reccomplex.structures.generic.gentypes.StructureGenerationInfo;
 import ivorius.reccomplex.structures.generic.gentypes.VanillaStructureGenerationInfo;
 import ivorius.ivtoolkit.blocks.Directions;
 import ivorius.reccomplex.utils.NBTStorable;
+import ivorius.reccomplex.worldgen.StructureGenerationData;
 import ivorius.reccomplex.worldgen.StructureGenerator;
 import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTTagCompound;
@@ -130,6 +131,10 @@ public class GenericVillagePiece extends StructureVillagePieces.Village
                 NBTStorable instanceData = structureInfo.loadInstanceData(new StructureLoadContext(transform, boundingBox, false), this.instanceData);
 
                 StructureGenerator.partially(structureInfo, world, random, lowerCoord, transform, boundingBox, componentType, structureID, instanceData, !startedGeneration);
+
+                if (structureID != null && !startedGeneration)
+                    StructureGenerationData.get(world).addCompleteEntry(structureID, lowerCoord, transform);
+
                 startedGeneration = true;
 
                 return true;

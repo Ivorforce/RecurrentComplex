@@ -12,14 +12,12 @@ import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import ivorius.reccomplex.gui.editinventorygen.GuiEditInventoryGen;
 import ivorius.reccomplex.items.ItemInventoryGenComponentTag;
-import ivorius.reccomplex.items.ItemInventoryGenerationTag;
 import ivorius.reccomplex.utils.ServerTranslations;
-import ivorius.reccomplex.worldgen.inventory.CustomGenericItemCollectionHandler;
+import ivorius.reccomplex.worldgen.inventory.ItemCollectionSaveHandler;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.NetHandlerPlayServer;
-import net.minecraft.util.ChatComponentTranslation;
 
 /**
  * Created by lukas on 03.08.14.
@@ -38,11 +36,11 @@ public class PacketEditInventoryGeneratorHandler implements IMessageHandler<Pack
             NetHandlerPlayServer playServer = ctx.getServerHandler();
             EntityPlayerMP player = playServer.playerEntity;
 
-            if (CustomGenericItemCollectionHandler.saveInventoryGenerator(message.getInventoryGenerator(), message.getKey()))
+            if (ItemCollectionSaveHandler.saveInventoryGenerator(message.getInventoryGenerator(), message.getKey()))
             {
                 player.addChatMessage(ServerTranslations.format("inventorygen.save.success", message.getKey()));
 
-                CustomGenericItemCollectionHandler.reloadAllCustomInventoryGenerators();
+                ItemCollectionSaveHandler.reloadAllCustomInventoryGenerators();
 
                 ItemStack heldItem = playServer.playerEntity.getHeldItem();
                 if (heldItem != null && heldItem.getItem() instanceof ItemInventoryGenComponentTag)

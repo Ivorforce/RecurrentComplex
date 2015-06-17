@@ -28,7 +28,7 @@ import ivorius.reccomplex.events.RCForgeEventHandler;
 import ivorius.reccomplex.gui.RCGuiHandler;
 import ivorius.reccomplex.network.*;
 import ivorius.reccomplex.structures.generic.StructureSaveHandler;
-import ivorius.reccomplex.worldgen.inventory.CustomGenericItemCollectionHandler;
+import ivorius.reccomplex.worldgen.inventory.ItemCollectionSaveHandler;
 import net.minecraftforge.common.config.Configuration;
 import org.apache.logging.log4j.Logger;
 
@@ -128,7 +128,7 @@ public class RecurrentComplex
     {
         loadAllModData();
 
-        CustomGenericItemCollectionHandler.reloadAllCustomInventoryGenerators();
+        ItemCollectionSaveHandler.reloadAllCustomInventoryGenerators();
         StructureSaveHandler.reloadAllCustomStructures();
     }
 
@@ -142,7 +142,7 @@ public class RecurrentComplex
     {
         for (String modid : Loader.instance().getIndexedModList().keySet())
         {
-            CustomGenericItemCollectionHandler.loadInventoryGeneratorsFromMod(modid, false);
+            ItemCollectionSaveHandler.loadInventoryGeneratorsFromMod(modid, false);
             StructureSaveHandler.loadStructuresFromMod(modid, false);
         }
     }

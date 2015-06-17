@@ -17,7 +17,6 @@ import org.apache.commons.io.IOUtils;
 
 import java.io.File;
 import java.io.IOException;
-import java.net.URISyntaxException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
@@ -26,7 +25,7 @@ import java.util.List;
 /**
  * Created by lukas on 25.05.14.
  */
-public class CustomGenericItemCollectionHandler
+public class ItemCollectionSaveHandler
 {
     private static List<String> importedCustomGenerators = new ArrayList<>();
 
@@ -39,17 +38,7 @@ public class CustomGenericItemCollectionHandler
         File structuresFile = IvFileHelper.getValidatedFolder(RecurrentComplex.proxy.getBaseFolderFile("structures"));
         if (structuresFile != null)
         {
-            try
-            {
-                File inventoryGeneratorsFile = IvFileHelper.getValidatedFolder(structuresFile, "inventoryGenerators");
-                if (inventoryGeneratorsFile != null)
-                    loadAllInventoryGeneratorsInDirectory(inventoryGeneratorsFile.toPath(), "", true, true);
-            }
-            catch (IOException e)
-            {
-                System.out.println("Could not read from inventory generators directory");
-                e.printStackTrace();
-            }
+            tryAddAllItemCollectionsInDirectory(IvFileHelper.getValidatedFolder(structuresFile, "inventoryGenerators"), "", true, true);
         }
     }
 
@@ -57,18 +46,35 @@ public class CustomGenericItemCollectionHandler
     {
         modid = modid.toLowerCase();
 
+        tryAddAllItemCollectionsInResourceLocation(new ResourceLocation(modid, "structures/inventoryGenerators"), !disableGeneration, false);
+    }
+
+    protected static void tryAddAllItemCollectionsInResourceLocation(ResourceLocation resourceLocation, boolean generating, boolean imported)
+    {
         try
         {
-            Path path = RCFileHelper.pathFromResourceLocation(new ResourceLocation(modid, "structures/inventoryGenerators"));
+            Path path = RCFileHelper.pathFromResourceLocation(resourceLocation);
             if (path != null)
-            {
-                loadAllInventoryGeneratorsInDirectory(path, "", true, false);
-            }
+                loadAllInventoryGeneratorsInDirectory(path, "", generating, imported);
         }
-        catch (URISyntaxException | IOException e)
+        catch (Throwable e)
         {
-            System.out.println("Could not read inventory generators from mod '" + modid + "'");
-            e.printStackTrace();
+            RecurrentComplex.logger.error("Error reading from resource location '" + resourceLocation + "'", e);
+        }
+    }
+
+    protected static void tryAddAllItemCollectionsInDirectory(File file, String domain, boolean generating, boolean imported)
+    {
+        if (file != null)
+        {
+            try
+            {
+                loadAllInventoryGeneratorsInDirectory(file.toPath(), domain, generating, imported);
+            }
+            catch (Throwable e)
+            {
+                RecurrentComplex.logger.error("Error reading from directory '" + file + "'", e);
+            }
         }
     }
 

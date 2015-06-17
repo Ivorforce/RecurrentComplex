@@ -10,10 +10,8 @@ import com.google.common.collect.Sets;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonSyntaxException;
-import ivorius.reccomplex.RCConfig;
 import ivorius.reccomplex.RecurrentComplex;
 import ivorius.reccomplex.json.NbtToJson;
-import ivorius.reccomplex.structures.StructureInfo;
 import ivorius.reccomplex.worldgen.inventory.GenericItemCollection.Component;
 import net.minecraft.util.ResourceLocation;
 
@@ -83,7 +81,7 @@ public class GenericItemCollectionRegistry
 
     public static boolean register(ResourceLocation resourceLocation, String key, boolean generates)
     {
-        Component component = CustomGenericItemCollectionHandler.readInventoryGenerator(resourceLocation);
+        Component component = ItemCollectionSaveHandler.readInventoryGenerator(resourceLocation);
         return component != null && register(component, key, resourceLocation.getResourceDomain(), generates);
     }
 

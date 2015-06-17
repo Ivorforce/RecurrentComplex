@@ -55,7 +55,7 @@ public class ItemCollectionSaveHandler
         {
             Path path = RCFileHelper.pathFromResourceLocation(resourceLocation);
             if (path != null)
-                loadAllInventoryGeneratorsInDirectory(path, "", generating, imported);
+                loadAllInventoryGeneratorsInDirectory(path, resourceLocation.getResourceDomain(), generating, imported);
         }
         catch (Throwable e)
         {

@@ -6,6 +6,7 @@
 package ivorius.reccomplex.worldgen.inventory;
 
 import com.google.common.collect.Maps;
+import com.google.common.collect.Sets;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonSyntaxException;
@@ -28,8 +29,6 @@ public class GenericItemCollectionRegistry
 
     private static Set<String> persistentlyDisabledComponents = new HashSet<>();
     private static Set<String> generatingComponents = new HashSet<>();
-
-    private static Set<String> registeredGroups = new HashSet<>();
 
     private static Gson gson = createGson();
 
@@ -78,16 +77,7 @@ public class GenericItemCollectionRegistry
 
     public static void removeGenerator(String key)
     {
-        Component component = allComponents.remove(key);
-
-//        if (component != null)
-//        {
-//            WeightedItemCollection collection = WeightedItemCollectionRegistry.itemCollection(component.inventoryGeneratorID);
-//
-//            if (collection instanceof GenericItemCollection)
-//                ((GenericItemCollection) collection).components.remove(component);
-//        }
-
+        allComponents.remove(key);
         clearCaches();
     }
 
@@ -116,7 +106,7 @@ public class GenericItemCollectionRegistry
 
     private static void clearCaches()
     {
-        generatingComponents.clear();
+        Set<String> newGeneratingComponents = new HashSet<>();
 
         for (Map.Entry<String, Component> entry : allComponents.entrySet())
         {
@@ -126,30 +116,44 @@ public class GenericItemCollectionRegistry
             if (!persistentlyDisabledComponents.contains(key)
 //                    && RCConfig.shouldStructureGenerate(key, componentDomains.get(key))
                     && component.areDependenciesResolved())
-                generatingComponents.add(key);
+                newGeneratingComponents.add(key);
         }
 
+        for (String key : Sets.difference(newGeneratingComponents, generatingComponents))
+        {
+            Component component = allComponents.get(key);
 
-        for (String s : registeredGroups)
-            WeightedItemCollectionRegistry.unregister(s);
+            GenericItemCollection collection = registerGetGenericItemCollection(component.inventoryGeneratorID);
+            collection.components.add(component);
+            generatingComponents.add(key);
+        }
 
-        for (String key : generatingComponents)
+        for (String key : Sets.difference(generatingComponents, newGeneratingComponents))
         {
             Component component = allComponents.get(key);
 
             WeightedItemCollection collection = WeightedItemCollectionRegistry.itemCollection(component.inventoryGeneratorID);
-            if (collection == null)
-            {
-                GenericItemCollection itemCollection = new GenericItemCollection();
-                itemCollection.components.add(component);
-                WeightedItemCollectionRegistry.register(itemCollection, component.inventoryGeneratorID);
 
-                registeredGroups.add(component.inventoryGeneratorID);
+            if (collection instanceof GenericItemCollection)
+            {
+                ((GenericItemCollection) collection).components.remove(component);
+
+                if (((GenericItemCollection) collection).components.size() == 0)
+                    WeightedItemCollectionRegistry.unregister(component.inventoryGeneratorID);
             }
-            else if (collection instanceof GenericItemCollection)
-                ((GenericItemCollection) collection).components.add(component);
-            else
-                RecurrentComplex.logger.info("Failed creating inventory generator with ID '" + component.inventoryGeneratorID + "'");
         }
+
+        generatingComponents = newGeneratingComponents;
+    }
+
+    private static GenericItemCollection registerGetGenericItemCollection(String key)
+    {
+        WeightedItemCollection collection = WeightedItemCollectionRegistry.itemCollection(key);
+        if (collection == null || !(collection instanceof GenericItemCollection))
+        {
+            collection = new GenericItemCollection();
+            WeightedItemCollectionRegistry.register(collection, key);
+        }
+        return (GenericItemCollection) collection;
     }
 }

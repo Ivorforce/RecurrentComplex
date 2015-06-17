@@ -18,7 +18,7 @@ public class WeightedItemCollectionRegistry
 
     public static void register(WeightedItemCollection weightedItemCollection, String key)
     {
-//        RecurrentComplex.logger.info(weightedItemCollectionMap.containsKey(key) ? "Replaced inventory generator '" + key + "'" : "Registered inventory generator '" + key + "'");
+        RecurrentComplex.logger.info(weightedItemCollectionMap.containsKey(key) ? "Replaced inventory generator '" + key + "'" : "Registered inventory generator '" + key + "'");
         weightedItemCollectionMap.put(key, weightedItemCollection);
     }
 

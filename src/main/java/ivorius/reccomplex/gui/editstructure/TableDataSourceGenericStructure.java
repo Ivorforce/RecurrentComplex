@@ -185,7 +185,7 @@ public class TableDataSourceGenericStructure extends TableDataSourceSegmented im
                         return new TableElementCell(new TableCellMulti(cellFolder, cellDelete));
                     }
 
-                    return new TableElementCell(new TableCellMulti(cellFolder));
+                    return new TableElementCell(new TableCellMulti(cellFolder, new TableCellButton("", new TableCellButton.Action("", "-", false))));
                 }
                 break;
             case 1:

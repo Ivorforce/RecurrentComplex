@@ -211,9 +211,9 @@ reccomplex.structure.randomrange=Randomized between the two values.
 
 reccomplex.structure.id=Structure ID
 reccomplex.structure.id.tooltip=Unique Identifier for the structure
-reccomplex.structure.savePath=Save in %s
-reccomplex.structure.deleteOther.true=%sDelete%s from %s
-reccomplex.structure.deleteOther.false=%sKeep%s inside %s
+reccomplex.structure.savePath=Saving in %s
+reccomplex.structure.deleteOther.true=%sDel.%s from %s
+reccomplex.structure.deleteOther.false=%sKeeping%s in %s
 reccomplex.structure.deleteOther.tooltip=Note: Structures in the %s<br>folder take loading precedence<br>over those in the %s folder.
 
 reccomplex.structure.generation.id=Generation ID
@@ -245,7 +245,7 @@ reccomplex.transformer.natural.tooltip=Spawns biome-native floor blocks below bl
 reccomplex.transformer.naturalAir=Natural Air
 reccomplex.transformer.naturalAir.tooltip=Creates air pockets around blocks
 reccomplex.transformer.pillar=Pillar
-reccomplex.transformer.pillar.tooltip=Constructs pillars down to the floor
+reccomplex.transformer.pillar.tooltiLp=Constructs pillars down to the floor
 reccomplex.transformer.replaceAll=Replace All
 reccomplex.transformer.replaceAll.tooltip=Replaces blocks uniformly
 reccomplex.transformer.replace=Replace

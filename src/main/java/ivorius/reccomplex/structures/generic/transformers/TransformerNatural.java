@@ -37,19 +37,24 @@ import java.util.Random;
  */
 public class TransformerNatural extends TransformerSingleBlock<NBTNone>
 {
-    public static final double NATURAL_EXPANSION_DISTANCE = 4.0;
-    public static final double NATURAL_DISTANCE_RANDOMIZATION = 6.0;
+    public static final double DEFAULT_NATURAL_EXPANSION_DISTANCE = 4.0;
+    public static final double DEFAULT_NATURAL_EXPANSION_RANDOMIZATION = 6.0;
 
     public BlockMatcher sourceMatcher;
 
+    public double naturalExpansionDistance;
+    public double naturalExpansionRandomization;
+
     public TransformerNatural()
     {
-        this(BlockMatcher.of(MCRegistrySpecial.INSTANCE, RCBlocks.naturalFloor, 0));
+        this(BlockMatcher.of(MCRegistrySpecial.INSTANCE, RCBlocks.naturalFloor, 0), DEFAULT_NATURAL_EXPANSION_DISTANCE, DEFAULT_NATURAL_EXPANSION_RANDOMIZATION);
     }
 
-    public TransformerNatural(String sourceMatcherExpression)
+    public TransformerNatural(String sourceMatcherExpression, double naturalExpansionDistance, double naturalExpansionRandomization)
     {
         this.sourceMatcher = new BlockMatcher(MCRegistrySpecial.INSTANCE, sourceMatcherExpression);
+        this.naturalExpansionDistance = naturalExpansionDistance;
+        this.naturalExpansionRandomization = naturalExpansionRandomization;
     }
 
     @Override
@@ -104,10 +109,10 @@ public class TransformerNatural extends TransformerSingleBlock<NBTNone>
                     {
                         double yForDistance = coord.y * 0.3 + currentY * 0.7;
                         double distToOrigSQ = IvVecMathHelper.distanceSQ(new double[]{coord.x, coord.y, coord.z}, new double[]{currentX, yForDistance, currentZ});
-                        double add = (random.nextDouble() - random.nextDouble()) * NATURAL_DISTANCE_RANDOMIZATION;
+                        double add = (random.nextDouble() - random.nextDouble()) * naturalExpansionRandomization;
                         distToOrigSQ += add < 0 ? -(add * add) : (add * add);
 
-                        if (distToOrigSQ < NATURAL_EXPANSION_DISTANCE * NATURAL_EXPANSION_DISTANCE)
+                        if (distToOrigSQ < naturalExpansionDistance * naturalExpansionDistance)
                         {
                             addIfNew(nextList, currentX, currentZ);
                             addIfNew(nextList, currentX - 1, currentZ);
@@ -202,7 +207,10 @@ public class TransformerNatural extends TransformerSingleBlock<NBTNone>
             if (expression == null)
                 expression = JsonUtils.getJsonObjectStringFieldValueOrDefault(jsonObject, "sourceExpression", "");
 
-            return new TransformerNatural(expression);
+            double naturalExpansionDistance = JsonUtils.getJsonObjectDoubleFieldValueOrDefault(jsonObject, "naturalExpansionDistance", DEFAULT_NATURAL_EXPANSION_DISTANCE);
+            double naturalExpansionRandomization = JsonUtils.getJsonObjectDoubleFieldValueOrDefault(jsonObject, "naturalExpansionRandomization", DEFAULT_NATURAL_EXPANSION_RANDOMIZATION);
+
+            return new TransformerNatural(expression, naturalExpansionDistance, naturalExpansionRandomization);
         }
 
         @Override
@@ -211,6 +219,9 @@ public class TransformerNatural extends TransformerSingleBlock<NBTNone>
             JsonObject jsonObject = new JsonObject();
 
             jsonObject.addProperty("sourceExpression", transformer.sourceMatcher.getExpression());
+
+            jsonObject.addProperty("naturalExpansionDistance", transformer.naturalExpansionDistance);
+            jsonObject.addProperty("naturalExpansionRandomization", transformer.naturalExpansionRandomization);
 
             return jsonObject;
         }

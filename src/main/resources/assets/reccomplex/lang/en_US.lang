@@ -236,6 +236,11 @@ reccomplex.generationInfo.vanilla.tooltip=As part of a vanilla structure<br>(Lik
 reccomplex.generationInfo.vanilla.title=In Complex Structure
 
 reccomplex.transformer.natural=Natural Floor
+reccomplex.transformer.natural.naturalExpansionDistance=Distance
+reccomplex.transformer.natural.naturalExpansionDistance.tooltip=The radius in blocks.
+reccomplex.transformer.natural.naturalExpansionRandomization=Randomization
+reccomplex.transformer.natural.naturalExpansionRandomization.tooltip=The amount of randomization in the distance.
+
 reccomplex.transformer.natural.tooltip=Spawns biome-native floor blocks below blocks
 reccomplex.transformer.naturalAir=Natural Air
 reccomplex.transformer.naturalAir.tooltip=Creates air pockets around blocks

@@ -72,7 +72,7 @@ public class GenericStructureInfo implements StructureInfo<GenericStructureInfo.
         genericStructureInfo.rotatable = false;
         genericStructureInfo.mirrorable = false;
 
-        genericStructureInfo.transformers.add(new TransformerNaturalAir(BlockMatcher.of(MCRegistrySpecial.INSTANCE, RCBlocks.negativeSpace, 1)));
+        genericStructureInfo.transformers.add(new TransformerNaturalAir(BlockMatcher.of(MCRegistrySpecial.INSTANCE, RCBlocks.negativeSpace, 1), TransformerNaturalAir.DEFAULT_NATURAL_EXPANSION_DISTANCE, TransformerNaturalAir.DEFAULT_NATURAL_EXPANSION_RANDOMIZATION));
         genericStructureInfo.transformers.add(new TransformerNegativeSpace(BlockMatcher.of(MCRegistrySpecial.INSTANCE, RCBlocks.negativeSpace, 0)));
         genericStructureInfo.transformers.add(new TransformerNatural(BlockMatcher.of(MCRegistrySpecial.INSTANCE, RCBlocks.naturalFloor, 0), TransformerNatural.DEFAULT_NATURAL_EXPANSION_DISTANCE, TransformerNatural.DEFAULT_NATURAL_EXPANSION_RANDOMIZATION));
         genericStructureInfo.transformers.add(new TransformerReplace(BlockMatcher.of(MCRegistrySpecial.INSTANCE, RCBlocks.naturalFloor, 1)).replaceWith(new WeightedBlockState(null, Blocks.air, 0, "")));

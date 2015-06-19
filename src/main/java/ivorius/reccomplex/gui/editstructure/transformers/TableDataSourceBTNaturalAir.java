@@ -14,7 +14,7 @@ import org.apache.commons.lang3.StringUtils;
 /**
  * Created by lukas on 05.06.14.
  */
-public class TableDataSourceBTNaturalAir extends TableDataSourceSegmented
+public class TableDataSourceBTNaturalAir extends TableDataSourceSegmented implements TableCellPropertyListener
 {
     private TransformerNaturalAir transformer;
 
@@ -33,5 +33,61 @@ public class TableDataSourceBTNaturalAir extends TableDataSourceSegmented
     public void setTransformer(TransformerNaturalAir transformer)
     {
         this.transformer = transformer;
+    }
+
+    @Override
+    public int numberOfSegments()
+    {
+        return 2;
+    }
+
+    @Override
+    public int sizeOfSegment(int segment)
+    {
+        return segment == 1 ? 2 : super.sizeOfSegment(segment);
+    }
+
+    @Override
+    public TableElement elementForIndexInSegment(GuiTable table, int index, int segment)
+    {
+        if (segment == 1)
+        {
+            switch (index)
+            {
+                case 0:
+                {
+                    TableCellFloatNullable element = new TableCellFloatNullable("naturalExpansionDistance", TableElements.toFloat(transformer.naturalExpansionDistance), 1.0f, 0, 20, "D", "C");
+                    element.addPropertyListener(this);
+                    element.setTooltip(IvTranslations.formatLines("reccomplex.transformer.naturalAir.naturalExpansionDistance.tooltip"));
+                    return new TableElementCell(IvTranslations.get("reccomplex.transformer.naturalAir.naturalExpansionDistance"), element);
+                }
+                case 1:
+                {
+                    TableCellFloatNullable element = new TableCellFloatNullable("naturalExpansionRandomization", TableElements.toFloat(transformer.naturalExpansionRandomization), 1.0f, 0, 20, "D", "C");
+                    element.addPropertyListener(this);
+                    element.setTooltip(IvTranslations.formatLines("reccomplex.transformer.naturalAir.naturalExpansionRandomization.tooltip"));
+                    return new TableElementCell(IvTranslations.get("reccomplex.transformer.naturalAir.naturalExpansionRandomization"), element);
+                }
+            }
+        }
+
+        return super.elementForIndexInSegment(table, index, segment);
+    }
+
+    @Override
+    public void valueChanged(TableCellPropertyDefault cell)
+    {
+        if (cell.getID() != null)
+        {
+            switch (cell.getID())
+            {
+                case "naturalExpansionDistance":
+                    transformer.naturalExpansionDistance = TableElements.toDouble((Float) cell.getPropertyValue());
+                    break;
+                case "naturalExpansionRandomization":
+                    transformer.naturalExpansionRandomization = TableElements.toDouble((Float) cell.getPropertyValue());
+                    break;
+            }
+        }
     }
 }

@@ -75,14 +75,14 @@ public class TableDataSourceBTNatural extends TableDataSourceSegmented implement
             {
                 case 0:
                 {
-                    TableCellFloatNullable element = new TableCellFloatNullable("naturalExpansionDistance", TableElements.toFloat(transformer.naturalExpansionDistance), 1.0f, 0, 10, "D", "C");
+                    TableCellFloatNullable element = new TableCellFloatNullable("naturalExpansionDistance", TableElements.toFloat(transformer.naturalExpansionDistance), 1.0f, 0, 20, "D", "C");
                     element.addPropertyListener(this);
                     element.setTooltip(IvTranslations.formatLines("reccomplex.transformer.natural.naturalExpansionDistance.tooltip"));
                     return new TableElementCell(IvTranslations.get("reccomplex.transformer.natural.naturalExpansionDistance"), element);
                 }
                 case 1:
                 {
-                    TableCellFloatNullable element = new TableCellFloatNullable("naturalExpansionRandomization", TableElements.toFloat(transformer.naturalExpansionRandomization), 1.0f, 0, 10, "D", "C");
+                    TableCellFloatNullable element = new TableCellFloatNullable("naturalExpansionRandomization", TableElements.toFloat(transformer.naturalExpansionRandomization), 1.0f, 0, 20, "D", "C");
                     element.addPropertyListener(this);
                     element.setTooltip(IvTranslations.formatLines("reccomplex.transformer.natural.naturalExpansionRandomization.tooltip"));
                     return new TableElementCell(IvTranslations.get("reccomplex.transformer.natural.naturalExpansionRandomization"), element);

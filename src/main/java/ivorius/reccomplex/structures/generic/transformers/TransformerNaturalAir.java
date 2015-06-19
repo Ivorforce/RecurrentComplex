@@ -38,19 +38,24 @@ import java.util.Random;
  */
 public class TransformerNaturalAir extends TransformerSingleBlock<NBTNone>
 {
-    public static final double NATURAL_EXPANSION_DISTANCE = 4.0;
-    public static final double NATURAL_DISTANCE_RANDOMIZATION = 10.0;
+    public static final double DEFAULT_NATURAL_EXPANSION_DISTANCE = 4.0;
+    public static final double DEFAULT_NATURAL_EXPANSION_RANDOMIZATION = 10.0;
 
     public BlockMatcher sourceMatcher;
 
+    public double naturalExpansionDistance;
+    public double naturalExpansionRandomization;
+
     public TransformerNaturalAir()
     {
-        this(BlockMatcher.of(MCRegistrySpecial.INSTANCE, RCBlocks.negativeSpace, 1));
+        this(BlockMatcher.of(MCRegistrySpecial.INSTANCE, RCBlocks.negativeSpace, 1), DEFAULT_NATURAL_EXPANSION_DISTANCE, DEFAULT_NATURAL_EXPANSION_RANDOMIZATION);
     }
 
-    public TransformerNaturalAir(String sourceExpression)
+    public TransformerNaturalAir(String sourceMatcherExpression, double naturalExpansionDistance, double naturalExpansionRandomization)
     {
-        this.sourceMatcher = new BlockMatcher(MCRegistrySpecial.INSTANCE, sourceExpression);
+        this.sourceMatcher = new BlockMatcher(MCRegistrySpecial.INSTANCE, sourceMatcherExpression);
+        this.naturalExpansionDistance = naturalExpansionDistance;
+        this.naturalExpansionRandomization = naturalExpansionRandomization;
     }
 
     @Override
@@ -95,18 +100,17 @@ public class TransformerNaturalAir extends TransformerSingleBlock<NBTNone>
                 boolean isCommon = curBlock == Blocks.stone || curBlock == Blocks.dirt || curBlock == Blocks.sand || curBlock == Blocks.stained_hardened_clay || curBlock == Blocks.gravel;
                 boolean replaceable = currentY == coord.y || curBlock == topBlock || curBlock == fillerBlock || curBlock.isReplaceable(world, currentX, currentY, currentZ)
                         || isCommon || isFoliage;
+
                 if (replaceable)
-                {
                     context.setBlock(currentX, currentY, currentZ, Blocks.air, 0);
-                }
 
                 if (replaceable || curBlock.getMaterial() == Material.air)
                 {
                     double distToOrigSQ = IvVecMathHelper.distanceSQ(new double[]{coord.x, coord.y, coord.z}, new double[]{currentX, currentY, currentZ});
-                    double add = (random.nextDouble() - random.nextDouble()) * NATURAL_DISTANCE_RANDOMIZATION;
+                    double add = (random.nextDouble() - random.nextDouble()) * naturalExpansionRandomization;
                     distToOrigSQ += add < 0 ? -(add * add) : (add * add);
 
-                    if (distToOrigSQ < NATURAL_EXPANSION_DISTANCE * NATURAL_EXPANSION_DISTANCE)
+                    if (distToOrigSQ < naturalExpansionDistance * naturalExpansionDistance)
                     {
                         addIfNew(nextList, currentX, currentZ);
                         addIfNew(nextList, currentX - 1, currentZ);
@@ -177,7 +181,10 @@ public class TransformerNaturalAir extends TransformerSingleBlock<NBTNone>
             if (expression == null)
                 expression = JsonUtils.getJsonObjectStringFieldValueOrDefault(jsonObject, "sourceExpression", "");
 
-            return new TransformerNaturalAir(expression);
+            double naturalExpansionDistance = JsonUtils.getJsonObjectDoubleFieldValueOrDefault(jsonObject, "naturalExpansionDistance", DEFAULT_NATURAL_EXPANSION_DISTANCE);
+            double naturalExpansionRandomization = JsonUtils.getJsonObjectDoubleFieldValueOrDefault(jsonObject, "naturalExpansionRandomization", DEFAULT_NATURAL_EXPANSION_RANDOMIZATION);
+
+            return new TransformerNaturalAir(expression, naturalExpansionDistance, naturalExpansionRandomization);
         }
 
         @Override
@@ -186,6 +193,9 @@ public class TransformerNaturalAir extends TransformerSingleBlock<NBTNone>
             JsonObject jsonObject = new JsonObject();
 
             jsonObject.addProperty("sourceExpression", transformer.sourceMatcher.getExpression());
+
+            jsonObject.addProperty("naturalExpansionDistance", transformer.naturalExpansionDistance);
+            jsonObject.addProperty("naturalExpansionRandomization", transformer.naturalExpansionRandomization);
 
             return jsonObject;
         }

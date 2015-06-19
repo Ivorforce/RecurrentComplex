@@ -75,6 +75,14 @@ public class GuiScreenModalTable extends GuiScreen implements TableDelegate, Tab
     }
 
     @Override
+    public void handleMouseInput()
+    {
+        super.handleMouseInput();
+
+        currentTable().handleMouseInput();
+    }
+
+    @Override
     protected void keyTyped(char keyChar, int keyCode)
     {
         super.keyTyped(keyChar, keyCode);

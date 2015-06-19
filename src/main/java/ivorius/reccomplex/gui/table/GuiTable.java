@@ -6,12 +6,15 @@
 package ivorius.reccomplex.gui.table;
 
 import gnu.trove.map.hash.TIntObjectHashMap;
+import ivorius.ivtoolkit.math.IvMathHelper;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiScreen;
+import net.minecraft.util.MathHelper;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
+import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.GL11;
 
 import java.util.*;
@@ -23,12 +26,13 @@ public class GuiTable extends Gui
 {
     public static final int HEIGHT_PER_SLOT = 25;
     public static final int SCROLL_BAR_HEIGHT = 27;
+    public static final float SCROLL_SPEED = 0.001f;
 
     private TableDelegate delegate;
     private TableDataSource dataSource;
 
     private Bounds propertiesBounds;
-    private int currentScrollIndex;
+    private float currentScroll;
     private int cachedMaxIndex;
 
     private boolean hideScrollbarIfUnnecessary;
@@ -87,6 +91,8 @@ public class GuiTable extends Gui
 
         ////////
 
+        int roundedScrollIndex = MathHelper.floor_float(currentScroll + 0.5f);
+
         scrollUpButton = new GuiButton(-1, propertiesBounds.getMinX(), propertiesBounds.getMinY(), propertiesBounds.getWidth() / 2 - 1, 20, "Up");
         delegate.addButton(scrollUpButton);
         scrollDownButton = new GuiButton(-1, propertiesBounds.getCenterX() + 1, propertiesBounds.getMinY(), propertiesBounds.getWidth() / 2 - 1, 20, "Down");
@@ -94,7 +100,7 @@ public class GuiTable extends Gui
 
         int supportedSlotNumber = (propertiesBounds.getHeight() - SCROLL_BAR_HEIGHT) / HEIGHT_PER_SLOT;
         int numberOfElements = dataSource.numberOfElements();
-        cachedMaxIndex = currentScrollIndex + supportedSlotNumber - 1;
+        cachedMaxIndex = roundedScrollIndex + supportedSlotNumber - 1;
 
         boolean needsUpScroll = canScrollUp();
         boolean needsDownScroll = canScrollDown(numberOfElements);
@@ -106,13 +112,13 @@ public class GuiTable extends Gui
         scrollDownButton.visible = needsScroll || !hideScrollbarIfUnnecessary;
 
         int baseY = propertiesBounds.getMinY() + SCROLL_BAR_HEIGHT;
-        for (int index = 0; index < supportedSlotNumber && currentScrollIndex + index < numberOfElements; index++)
+        for (int index = 0; index < supportedSlotNumber && roundedScrollIndex + index < numberOfElements; index++)
         {
-            TableElement element = cachedElements.get(currentScrollIndex + index);
+            TableElement element = cachedElements.get(roundedScrollIndex + index);
             boolean initElement = element == null;
 
             if (initElement)
-                element = dataSource.elementForIndex(this, currentScrollIndex + index);
+                element = dataSource.elementForIndex(this, roundedScrollIndex + index);
 
             if (element == null)
                 throw new NullPointerException("Element not initialized: at " + index);
@@ -124,7 +130,7 @@ public class GuiTable extends Gui
             element.initGui(this);
 
             if (initElement)
-                cachedElements.put(currentScrollIndex + index, element);
+                cachedElements.put(roundedScrollIndex + index, element);
 
             currentElements.add(element);
         }
@@ -186,6 +192,17 @@ public class GuiTable extends Gui
         }
     }
 
+    public void handleMouseInput()
+    {
+        int i = Mouse.getEventDWheel();
+
+        if (i != 0)
+        {
+            currentScroll = IvMathHelper.clamp(getMinScroll(), currentScroll + -i * SCROLL_SPEED, getMaxScroll());
+            delegate.redrawTable();
+        }
+    }
+
     protected boolean keyTyped(char keyChar, int keyCode)
     {
         for (TableElement element : currentElements)
@@ -228,7 +245,7 @@ public class GuiTable extends Gui
     {
         if (canScrollUp())
         {
-            currentScrollIndex--;
+            currentScroll = Math.max(currentScroll - 1, getMinScroll());
             delegate.redrawTable();
         }
     }
@@ -237,14 +254,29 @@ public class GuiTable extends Gui
     {
         if (canScrollDown())
         {
-            currentScrollIndex++;
+            currentScroll = Math.min(currentScroll + 1, getMaxScroll());
             delegate.redrawTable();
         }
     }
 
+    public float getMinScroll()
+    {
+        return 0;
+    }
+
+    public float getMaxScroll()
+    {
+        return getMaxScroll(dataSource.numberOfElements());
+    }
+
+    protected float getMaxScroll(int numberOfElements)
+    {
+        return numberOfElements - 1 - (cachedMaxIndex - MathHelper.floor_float(currentScroll + 0.5f));
+    }
+
     public boolean canScrollUp()
     {
-        return currentScrollIndex > 0;
+        return currentScroll > getMinScroll();
     }
 
     public boolean canScrollDown()
@@ -254,7 +286,7 @@ public class GuiTable extends Gui
 
     protected boolean canScrollDown(int numberOfElements)
     {
-        return cachedMaxIndex < numberOfElements - 1;
+        return currentScroll < getMaxScroll(numberOfElements);
     }
 
     public void clearElementCache()

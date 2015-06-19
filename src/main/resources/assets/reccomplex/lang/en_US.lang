@@ -88,9 +88,9 @@ commands.strucReload.success=Reloaded all structures and inventory generators
 commands.selectCopy.usage=/#copy
 commands.selectCopy.success=Copied %s, %s, %s to %s, %s, %s to clipboard
 
-commands.strucPaste.usage=/#paste [x] [y] [z]
+commands.strucPaste.usage=/#paste [x] [y] [z] [rotation] [mirror:true|false]
 commands.strucPaste.noClipboard=You have to copy an area first!
-commands.strucPasteGen.usage=/#pastegen [x] [y] [z]
+commands.strucPasteGen.usage=/#pastegen [x] [y] [z] [rotation] [mirror:true|false]
 
 commands.selectMove.usage=/#move <x> <y> <z> [clockwise-rotations] [mirror x:true|false]
 

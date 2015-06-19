@@ -83,9 +83,9 @@ commands.strucReload.success=Recarregada todas as estruturas e geradores de inve
 commands.selectCopy.usage=/#copy
 commands.selectCopy.success=Copiado %s, %s, %s para %s, %s, %s para área de transferência
 
-commands.strucPaste.usage=/#paste [x] [y] [z]
+commands.strucPaste.usage=/#paste [x] [y] [z] [rotation] [mirror:true|false]
 commands.strucPaste.noClipboard=Você tem que copiar uma área primeiro!
-commands.strucPasteGen.usage=/#pastegen [x] [y] [z]
+commands.strucPasteGen.usage=/#pastegen [x] [y] [z] [rotation] [mirror:true|false]
 
 commands.selectMove.usage=/#move <x> <y> <z> [clockwise-rotations] [mirror x:true|false]
 

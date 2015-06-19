@@ -52,8 +52,6 @@ public class CommandPaste extends CommandBase
 
         if (worldData != null)
         {
-            World world = commandSender.getEntityWorld();
-
             x = commandSender.getPlayerCoordinates().posX;
             y = commandSender.getPlayerCoordinates().posY;
             z = commandSender.getPlayerCoordinates().posZ;
@@ -65,11 +63,14 @@ public class CommandPaste extends CommandBase
                 z = MathHelper.floor_double(func_110666_a(commandSender, (double) z, args[2]));
             }
 
+            int rotation = args.length >= 4 ? parseInt(commandSender, args[3]) : 0;
+            boolean mirror = args.length >= 5 && parseBoolean(commandSender, args[4]);
+
             GenericStructureInfo structureInfo = GenericStructureInfo.createDefaultStructure();
             structureInfo.worldDataCompound = worldData;
 
             BlockCoord coord = new BlockCoord(x, y, z);
-            AxisAlignedTransform2D transform = AxisAlignedTransform2D.ORIGINAL;
+            AxisAlignedTransform2D transform = AxisAlignedTransform2D.from(rotation, mirror);
 
             OperationRegistry.queueOperation(new OperationGenerateStructure(structureInfo, transform, coord, true), commandSender);
         }

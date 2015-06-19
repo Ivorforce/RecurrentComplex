@@ -96,7 +96,8 @@ public class TableDataSourceNaturalGenerationInfo extends TableDataSourceSegment
                 {
                     TableCellFloatNullable cell = new TableCellFloatNullable("weight", TableElements.toFloat(generationInfo.getGenerationWeight()), 1.0f, 0, 10, "D", "C");
                     cell.addPropertyListener(this);
-                    return new TableElementCell("Weight", cell);
+                    cell.setTooltip(IvTranslations.formatLines("structures.gui.random.weight.tooltip"));
+                    return new TableElementCell(IvTranslations.get("structures.gui.random.weight"), cell);
                 }
                 else if (index == 1)
                 {

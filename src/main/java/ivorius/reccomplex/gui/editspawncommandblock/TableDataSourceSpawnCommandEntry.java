@@ -7,6 +7,7 @@ package ivorius.reccomplex.gui.editspawncommandblock;
 
 import ivorius.reccomplex.blocks.TileEntitySpawnCommand;
 import ivorius.reccomplex.gui.table.*;
+import ivorius.reccomplex.utils.IvTranslations;
 
 /**
  * Created by lukas on 05.06.14.
@@ -54,7 +55,8 @@ public class TableDataSourceSpawnCommandEntry extends TableDataSourceSegmented i
         {
             TableCellFloatNullable cell = new TableCellFloatNullable("weight", TableElements.toFloat(entry.weight), 1.0f, 0, 10, "D", "C");
             cell.addPropertyListener(this);
-            return new TableElementCell("Weight", cell);
+            cell.setTooltip(IvTranslations.formatLines("structures.gui.random.weight.tooltip"));
+            return new TableElementCell(IvTranslations.get("structures.gui.random.weight"), cell);
         }
 
         return null;

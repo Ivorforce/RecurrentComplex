@@ -151,7 +151,6 @@ inventoryGen.none=No Generator
 inventoryGen.mod=Mod Generator
 
 guiGenericInventory.save=Save
-guiGenericInventory.weight=Weight
 guiGenericInventory.minMax=Min: %s, Max: %s
 guiGenericInventory.minMaxItems=Min Items: %s, Max Items: %s
 guiGenericInventory.weightNumber=Weight: %s
@@ -166,6 +165,9 @@ structure.delete.success=Deleted structure structure in file '%s'
 
 structures.gui.true=True
 structures.gui.false=False
+
+structures.gui.random.weight=Weight
+structures.gui.random.weight.tooltip=Weight of this element for random selection.<br>§achance = weight / sum_of_all_weights§r<br>In other words, twice the weight means<br>twice as likely.
 
 structures.category.frequent=Frequent
 structures.category.frequent.tooltip=Small structures or scenery<br>Random structure each 10 chunks

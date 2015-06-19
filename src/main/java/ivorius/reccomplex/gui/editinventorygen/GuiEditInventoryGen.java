@@ -13,6 +13,7 @@ import ivorius.reccomplex.gui.InventoryWatcher;
 import ivorius.reccomplex.gui.TableDataSourceExpression;
 import ivorius.reccomplex.gui.table.TableDataSource;
 import ivorius.reccomplex.network.PacketEditInventoryGenerator;
+import ivorius.reccomplex.utils.IvTranslations;
 import ivorius.reccomplex.utils.RangeHelper;
 import ivorius.reccomplex.worldgen.inventory.GenericItemCollection;
 import ivorius.reccomplex.worldgen.inventory.GenericItemCollection.Component;
@@ -116,7 +117,7 @@ public class GuiEditInventoryGen extends GuiContainer implements InventoryWatche
                 this.buttonList.add(minMaxSlider);
                 minMaxSliders.add(minMaxSlider);
 
-                GuiSlider weightSlider = new GuiSlider(200, baseX + onePart * 2, shiftTop + 48 + row * 18, onePart * 3, 18, I18n.format("guiGenericInventory.weight"));
+                GuiSlider weightSlider = new GuiSlider(200, baseX + onePart * 2, shiftTop + 48 + row * 18, onePart * 3, 18, IvTranslations.get("structures.gui.random.weight"));
                 weightSlider.addListener(this);
                 weightSlider.setMinValue(0);
                 weightSlider.setMaxValue(10);

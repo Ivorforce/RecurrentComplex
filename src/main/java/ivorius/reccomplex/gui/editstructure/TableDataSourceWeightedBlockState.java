@@ -9,6 +9,7 @@ import ivorius.reccomplex.gui.GuiValidityStateIndicator;
 import ivorius.reccomplex.gui.editstructure.transformers.TableDataSourceBTNatural;
 import ivorius.reccomplex.gui.table.*;
 import ivorius.reccomplex.structures.generic.WeightedBlockState;
+import ivorius.reccomplex.utils.IvTranslations;
 import net.minecraft.block.Block;
 import net.minecraft.nbt.JsonToNBT;
 import net.minecraft.nbt.NBTBase;
@@ -71,7 +72,8 @@ public class TableDataSourceWeightedBlockState extends TableDataSourceSegmented 
         {
             TableCellFloatNullable cell = new TableCellFloatNullable("weight", TableElements.toFloat(weightedBlockState.weight), 1.0f, 0, 10, "D", "C");
             cell.addPropertyListener(this);
-            return new TableElementCell("Weight", cell);
+            cell.setTooltip(IvTranslations.formatLines("structures.gui.random.weight.tooltip"));
+            return new TableElementCell(IvTranslations.get("structures.gui.random.weight"), cell);
         }
         else if (segment == 1)
         {

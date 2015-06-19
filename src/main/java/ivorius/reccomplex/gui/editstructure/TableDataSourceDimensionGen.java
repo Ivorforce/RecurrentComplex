@@ -8,6 +8,7 @@ package ivorius.reccomplex.gui.editstructure;
 import ivorius.reccomplex.gui.TableDataSourceExpression;
 import ivorius.reccomplex.gui.table.*;
 import ivorius.reccomplex.structures.generic.DimensionGenerationInfo;
+import ivorius.reccomplex.utils.IvTranslations;
 
 /**
  * Created by lukas on 05.06.14.
@@ -45,7 +46,8 @@ public class TableDataSourceDimensionGen extends TableDataSourceSegmented implem
         {
             TableCellFloatNullable cell = new TableCellFloatNullable("weight", TableElements.toFloat(generationInfo.getGenerationWeight()), 1.0f, 0, 10, "D", "C");
             cell.addPropertyListener(this);
-            return new TableElementCell("Weight", cell);
+            cell.setTooltip(IvTranslations.formatLines("structures.gui.random.weight.tooltip"));
+            return new TableElementCell(IvTranslations.get("structures.gui.random.weight"), cell);
         }
 
         return super.elementForIndexInSegment(table, index, segment);

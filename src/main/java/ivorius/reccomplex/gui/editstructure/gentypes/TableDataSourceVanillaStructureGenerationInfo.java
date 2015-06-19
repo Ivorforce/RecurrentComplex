@@ -12,6 +12,7 @@ import ivorius.reccomplex.gui.TableDirections;
 import ivorius.reccomplex.gui.table.*;
 import ivorius.reccomplex.structures.generic.gentypes.VanillaStructureGenerationInfo;
 import ivorius.ivtoolkit.blocks.Directions;
+import ivorius.reccomplex.utils.IvTranslations;
 import net.minecraftforge.common.util.ForgeDirection;
 
 /**
@@ -76,7 +77,8 @@ public class TableDataSourceVanillaStructureGenerationInfo extends TableDataSour
                     {
                         TableCellFloatNullable cell = new TableCellFloatNullable("weight", TableElements.toFloat(generationInfo.generationWeight), 1.0f, 0, 10, "D", "C");
                         cell.addPropertyListener(this);
-                        return new TableElementCell("Weight", cell);
+                        cell.setTooltip(IvTranslations.formatLines("structures.gui.random.weight.tooltip"));
+                        return new TableElementCell(IvTranslations.get("structures.gui.random.weight"), cell);
                     }
                     case 1:
                     {

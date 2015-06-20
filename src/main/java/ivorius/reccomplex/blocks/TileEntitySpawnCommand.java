@@ -170,7 +170,8 @@ public class TileEntitySpawnCommand extends TileEntity implements GeneratingTile
         {
             NBTTagCompound compound = new NBTTagCompound();
             compound.setString("command", command);
-            compound.setDouble("weight", weight);
+            if (weight != null)
+                compound.setDouble("weight", weight);
             return compound;
         }
 

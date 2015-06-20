@@ -27,6 +27,8 @@ import java.util.List;
  */
 public class ItemCollectionSaveHandler
 {
+    public static final String FILE_SUFFIX = "rcig";
+
     private static List<String> importedCustomGenerators = new ArrayList<>();
 
     public static void reloadAllCustomInventoryGenerators()
@@ -80,7 +82,7 @@ public class ItemCollectionSaveHandler
 
     public static void loadAllInventoryGeneratorsInDirectory(Path directory, String domain, boolean generating, boolean imported) throws IOException
     {
-        List<Path> paths = RCFileHelper.listFilesRecursively(directory, new FileSuffixFilter("json"), true);
+        List<Path> paths = RCFileHelper.listFilesRecursively(directory, new FileSuffixFilter(FILE_SUFFIX, /* Legacy */ "json"), true);
 
         for (Path file : paths)
         {
@@ -113,7 +115,7 @@ public class ItemCollectionSaveHandler
             File inventoryGeneratorsFile = IvFileHelper.getValidatedFolder(structuresFile, "inventoryGenerators");
             if (inventoryGeneratorsFile != null)
             {
-                File newFile = new File(inventoryGeneratorsFile, name + ".json");
+                File newFile = new File(inventoryGeneratorsFile, String.format("%s.%s", name, FILE_SUFFIX));
                 String json = GenericItemCollectionRegistry.createJSONFromComponent(info);
 
                 try

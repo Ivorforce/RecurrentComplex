@@ -33,6 +33,10 @@ import java.util.zip.ZipOutputStream;
  */
 public class StructureSaveHandler
 {
+    public static final String FILE_SUFFIX = "rcst";
+    public static final String STRUCTURE_INFO_JSON_FILENAME = "structure.json";
+    public static final String WORLD_DATA_NBT_FILENAME = "worldData.nbt";
+
     public static final String ACTIVE_DIR_NAME = "active";
     public static final String INACTIVE_DIR_NAME = "inactive";
 
@@ -117,7 +121,7 @@ public class StructureSaveHandler
 
     public static int addAllStructuresInDirectory(Path directory, String domain, boolean generating, boolean imported) throws IOException
     {
-        List<Path> paths = RCFileHelper.listFilesRecursively(directory, new FileSuffixFilter(RecurrentComplex.USE_ZIP_FOR_STRUCTURE_FILES ? "zip" : "json"), true);
+        List<Path> paths = RCFileHelper.listFilesRecursively(directory, new FileSuffixFilter(FILE_SUFFIX, /* Legacy */ RecurrentComplex.USE_ZIP_FOR_STRUCTURE_FILES ? "zip" : "json"), true);
 
         int added = 0;
         for (Path file : paths)
@@ -153,21 +157,21 @@ public class StructureSaveHandler
 
             if (RecurrentComplex.USE_ZIP_FOR_STRUCTURE_FILES)
             {
-                File newFile = new File(parent, structureName + ".zip");
+                File newFile = new File(parent, structureName + "." + FILE_SUFFIX);
                 boolean failed = false;
 
                 try
                 {
                     ZipOutputStream zipOutputStream = new ZipOutputStream(new FileOutputStream(newFile));
 
-                    ZipEntry jsonEntry = new ZipEntry("structure.json");
+                    ZipEntry jsonEntry = new ZipEntry(STRUCTURE_INFO_JSON_FILENAME);
                     zipOutputStream.putNextEntry(jsonEntry);
                     byte[] jsonBytes = json.getBytes();
                     jsonEntry.setSize(jsonBytes.length);
                     zipOutputStream.write(jsonBytes);
                     zipOutputStream.closeEntry();
 
-                    ZipEntry worldDataEntry = new ZipEntry("worldData.nbt");
+                    ZipEntry worldDataEntry = new ZipEntry(WORLD_DATA_NBT_FILENAME);
                     zipOutputStream.putNextEntry(worldDataEntry);
                     byte[] worldDataBytes = CompressedStreamTools.compress(info.worldDataCompound);
                     worldDataEntry.setSize(worldDataBytes.length);
@@ -211,7 +215,7 @@ public class StructureSaveHandler
         try
         {
             File parent = getStructuresDirectory(activeFolder);
-            return parent != null && new File(parent, structureName + ".zip").exists();
+            return parent != null && (new File(parent, structureName + "." + FILE_SUFFIX).exists() || /* Legacy */ new File(parent, structureName + ".zip").exists());
         }
         catch (Throwable e)
         {
@@ -226,7 +230,7 @@ public class StructureSaveHandler
         try
         {
             File parent = getStructuresDirectory(activeFolder);
-            return parent != null && new File(parent, structureName + ".zip").delete();
+            return parent != null && (new File(parent, structureName + "." + FILE_SUFFIX).delete() || /* Legacy */ new File(parent, structureName + ".zip").delete());
         }
         catch (Throwable e)
         {
@@ -273,9 +277,9 @@ public class StructureSaveHandler
 
                 if (bytes != null)
                 {
-                    if ("structure.json".equals(zipEntry.getName()))
+                    if (STRUCTURE_INFO_JSON_FILENAME.equals(zipEntry.getName()))
                         json = new String(bytes);
-                    else if ("worldData.nbt".equals(zipEntry.getName()))
+                    else if (WORLD_DATA_NBT_FILENAME.equals(zipEntry.getName()))
                         worldData = CompressedStreamTools.func_152457_a(bytes, NBTSizeTracker.field_152451_a);
                 }
 

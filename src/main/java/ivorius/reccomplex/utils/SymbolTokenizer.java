@@ -56,9 +56,11 @@ public class SymbolTokenizer
     public List<Token> tokenize(String string) throws ParseException
     {
         Character escapeChar = characterRules.escapeChar();
+        Character literalChar = characterRules.literalChar();
 
         int index = 0;
         int variableStart = -1;
+        int literalStart = -1;
         boolean escape = false;
         TIntStack escapes = new TIntArrayStack();
         ArrayList<Token> tokens = new ArrayList<>();
@@ -73,11 +75,31 @@ public class SymbolTokenizer
             {
                 escape = true;
                 escapes.push(index);
+
+                if (variableStart < 0 && literalStart < 0)
+                    variableStart = index;
+            }
+            else if (literalStart >= 0)
+            {
+                if (!escape && literalChar != null && literalChar == character)
+                {
+                    tokens.add(constructStringToken(string, literalStart + 1, literalStart, index, escapes));
+                    literalStart = -1;
+                }
+
+                escape = false;
+            }
+            else if (!escape && literalChar != null && literalChar == character)
+            {
+                if (variableStart >= 0)
+                    tokens.add(constructStringToken(string, variableStart, variableStart, index, escapes));
+
+                literalStart = index;
             }
             else if (!escape && characterRules.isWhitespace(character))
             {
                 if (variableStart >= 0)
-                    tokens.add(constructStringToken(string, variableStart, index, escapes));
+                    tokens.add(constructStringToken(string, variableStart, variableStart, index, escapes));
                 variableStart = -1;
             }
             else
@@ -87,7 +109,7 @@ public class SymbolTokenizer
                 if (!escape && (token = tokenFactory.tryConstructSymbolTokenAt(index, string)) != null)
                 {
                     if (variableStart >= 0)
-                        tokens.add(constructStringToken(string, variableStart, index, escapes));
+                        tokens.add(constructStringToken(string, variableStart, variableStart, index, escapes));
                     variableStart = -1;
 
                     tokens.add(token);
@@ -103,8 +125,14 @@ public class SymbolTokenizer
             index++;
         }
 
+        if (literalStart >= 0)
+            throw new ParseException(String.format("Unclosed literal '%c'", literalChar), index);
+
+        if (escape)
+            throw new ParseException(String.format("Unclosed escape '%c'", escapeChar), index);
+
         if (variableStart >= 0)
-            tokens.add(constructStringToken(string, variableStart, index, escapes));
+            tokens.add(constructStringToken(string, variableStart, variableStart, index, escapes));
 
         tokens.trimToSize();
         return tokens;
@@ -137,7 +165,7 @@ public class SymbolTokenizer
         return string;
     }
 
-    protected Token constructStringToken(String string, int start, int end, TIntStack escapes)
+    protected Token constructStringToken(String string, int start, int varStart, int end, TIntStack escapes)
     {
         StringBuilder constant = new StringBuilder(string.substring(start, end));
 
@@ -145,7 +173,7 @@ public class SymbolTokenizer
             constant.deleteCharAt(escapes.pop() - start);
         escapes.clear();
 
-        return tokenFactory.constructStringToken(start, constant.toString());
+        return tokenFactory.constructStringToken(varStart, constant.toString());
     }
 
     protected boolean hasAt(String string, String symbol, int index)
@@ -174,9 +202,11 @@ public class SymbolTokenizer
         Token constructStringToken(int index, @Nonnull String string);
     }
 
-    public static interface CharacterRules
+    public interface CharacterRules
     {
         Character escapeChar();
+
+        Character literalChar();
 
         boolean isWhitespace(char character);
 
@@ -188,18 +218,21 @@ public class SymbolTokenizer
         @Nullable
         private Character escapeChar;
         @Nullable
+        private Character literalChar;
+        @Nullable
         private char[] whitespace;
         @Nullable
         private char[] illegal;
 
         public SimpleCharacterRules()
         {
-            this('\\', null, null);
+            this('\\', '\"', null, null);
         }
 
-        public SimpleCharacterRules(Character escapeChar, char[] whitespace, char[] illegal)
+        public SimpleCharacterRules(Character escapeChar, Character literalChar, char[] whitespace, char[] illegal)
         {
             this.escapeChar = escapeChar;
+            this.literalChar = literalChar;
             this.whitespace = whitespace;
             this.illegal = illegal;
         }
@@ -208,6 +241,22 @@ public class SymbolTokenizer
         public Character getEscapeChar()
         {
             return escapeChar;
+        }
+
+        public void setEscapeChar(@Nullable Character escapeChar)
+        {
+            this.escapeChar = escapeChar;
+        }
+
+        @Nullable
+        public Character getLiteralChar()
+        {
+            return literalChar;
+        }
+
+        public void setLiteralChar(@Nullable Character literalChar)
+        {
+            this.literalChar = literalChar;
         }
 
         @Nullable
@@ -244,6 +293,12 @@ public class SymbolTokenizer
         public Character escapeChar()
         {
             return escapeChar;
+        }
+
+        @Override
+        public Character literalChar()
+        {
+            return literalChar;
         }
 
         @Override

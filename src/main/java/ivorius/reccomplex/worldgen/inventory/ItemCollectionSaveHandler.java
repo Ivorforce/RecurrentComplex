@@ -40,15 +40,23 @@ public class ItemCollectionSaveHandler
         File structuresFile = IvFileHelper.getValidatedFolder(RecurrentComplex.proxy.getBaseFolderFile("structures"));
         if (structuresFile != null)
         {
+            tryAddAllItemCollectionsInDirectory(IvFileHelper.getValidatedFolder(structuresFile, "active"), "", true, true);
+            tryAddAllItemCollectionsInDirectory(IvFileHelper.getValidatedFolder(structuresFile, "inactive"), "", false, true);
+
+            // Legacy
             tryAddAllItemCollectionsInDirectory(IvFileHelper.getValidatedFolder(structuresFile, "inventoryGenerators"), "", true, true);
         }
     }
 
-    public static void loadInventoryGeneratorsFromMod(String modid, boolean disableGeneration)
+    public static void loadInventoryGeneratorsFromMod(String modid)
     {
         modid = modid.toLowerCase();
 
-        tryAddAllItemCollectionsInResourceLocation(new ResourceLocation(modid, "structures/inventoryGenerators"), !disableGeneration, false);
+        tryAddAllItemCollectionsInResourceLocation(new ResourceLocation(modid, "structures/active"), true, false);
+        tryAddAllItemCollectionsInResourceLocation(new ResourceLocation(modid, "structures/inactive"), false, false);
+
+        // Legacy
+        tryAddAllItemCollectionsInResourceLocation(new ResourceLocation(modid, "structures/inventoryGenerators"), true, false);
     }
 
     protected static void tryAddAllItemCollectionsInResourceLocation(ResourceLocation resourceLocation, boolean generating, boolean imported)

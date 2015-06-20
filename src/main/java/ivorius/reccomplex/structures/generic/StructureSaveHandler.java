@@ -74,15 +74,15 @@ public class StructureSaveHandler
         SchematicLoader.initializeFolder();
     }
 
-    public static void loadStructuresFromMod(String modid, boolean disableGeneration)
+    public static void loadStructuresFromMod(String modid)
     {
         modid = modid.toLowerCase();
 
-        tryAddAllStructuresInResourceLocation(new ResourceLocation(modid, "structures/" + ACTIVE_DIR_NAME), !disableGeneration, false);
+        tryAddAllStructuresInResourceLocation(new ResourceLocation(modid, "structures/" + ACTIVE_DIR_NAME), true, false);
         tryAddAllStructuresInResourceLocation(new ResourceLocation(modid, "structures/" + INACTIVE_DIR_NAME), false, false);
 
         // Legacy
-        tryAddAllStructuresInResourceLocation(new ResourceLocation(modid, "structures/genericStructures"), !disableGeneration, false);
+        tryAddAllStructuresInResourceLocation(new ResourceLocation(modid, "structures/genericStructures"), true, false);
         tryAddAllStructuresInResourceLocation(new ResourceLocation(modid, "structures/silentStructures"), false, false);
     }
 

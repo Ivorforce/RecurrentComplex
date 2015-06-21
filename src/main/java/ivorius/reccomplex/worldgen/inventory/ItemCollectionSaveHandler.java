@@ -40,11 +40,11 @@ public class ItemCollectionSaveHandler
         File structuresFile = IvFileHelper.getValidatedFolder(RecurrentComplex.proxy.getBaseFolderFile("structures"));
         if (structuresFile != null)
         {
-            tryAddAllItemCollectionsInDirectory(IvFileHelper.getValidatedFolder(structuresFile, "active"), "", true, true);
-            tryAddAllItemCollectionsInDirectory(IvFileHelper.getValidatedFolder(structuresFile, "inactive"), "", false, true);
+            tryAddAllItemCollectionsInDirectory(RCFileHelper.getValidatedFolder(structuresFile, "active", true), "", true, true);
+            tryAddAllItemCollectionsInDirectory(RCFileHelper.getValidatedFolder(structuresFile, "inactive", true), "", false, true);
 
             // Legacy
-            tryAddAllItemCollectionsInDirectory(IvFileHelper.getValidatedFolder(structuresFile, "inventoryGenerators"), "", true, true);
+            tryAddAllItemCollectionsInDirectory(RCFileHelper.getValidatedFolder(structuresFile, "inventoryGenerators", false), "", true, true);
         }
     }
 
@@ -120,7 +120,7 @@ public class ItemCollectionSaveHandler
         File structuresFile = IvFileHelper.getValidatedFolder(RecurrentComplex.proxy.getBaseFolderFile("structures"));
         if (structuresFile != null)
         {
-            File inventoryGeneratorsFile = IvFileHelper.getValidatedFolder(structuresFile, "inventoryGenerators");
+            File inventoryGeneratorsFile = IvFileHelper.getValidatedFolder(structuresFile, "active");
             if (inventoryGeneratorsFile != null)
             {
                 File newFile = new File(inventoryGeneratorsFile, String.format("%s.%s", name, FILE_SUFFIX));

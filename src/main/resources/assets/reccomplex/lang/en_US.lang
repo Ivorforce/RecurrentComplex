@@ -149,6 +149,8 @@ inventoryGen.custom=Custom Generator
 inventoryGen.create=Create New Generator
 inventoryGen.none=No Generator
 inventoryGen.mod=Mod Generator
+inventoryGen.active=%sActive%s
+inventoryGen.inactive=%sInactive%s
 
 guiGenericInventory.save=Save
 guiGenericInventory.minMax=Min: %s, Max: %s

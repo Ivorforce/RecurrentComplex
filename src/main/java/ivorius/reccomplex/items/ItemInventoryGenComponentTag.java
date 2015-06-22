@@ -7,6 +7,7 @@ package ivorius.reccomplex.items;
 
 import ivorius.reccomplex.RecurrentComplex;
 import ivorius.reccomplex.gui.RCGuiHandler;
+import ivorius.reccomplex.utils.IvTranslations;
 import ivorius.reccomplex.worldgen.inventory.GenericItemCollection.Component;
 import ivorius.reccomplex.worldgen.inventory.GenericItemCollectionRegistry;
 import net.minecraft.creativetab.CreativeTabs;
@@ -16,7 +17,7 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagString;
-import net.minecraft.util.StatCollector;
+import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.Constants;
 
@@ -90,9 +91,14 @@ public class ItemInventoryGenComponentTag extends Item implements GeneratingItem
         Component component = component(stack);
 
         if (component != null)
+        {
             list.add(component.inventoryGeneratorID);
+            list.add(GenericItemCollectionRegistry.isActive(component.inventoryGeneratorID)
+                    ? IvTranslations.format("inventoryGen.active", EnumChatFormatting.GREEN, EnumChatFormatting.RESET)
+                    : IvTranslations.format("inventoryGen.inactive", EnumChatFormatting.RED, EnumChatFormatting.RESET));
+        }
         else
-            list.add(StatCollector.translateToLocal("inventoryGen.create"));
+            list.add(IvTranslations.get("inventoryGen.create"));
     }
 
     @Override

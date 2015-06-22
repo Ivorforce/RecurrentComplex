@@ -14,25 +14,25 @@ import net.minecraft.util.EnumChatFormatting;
 /**
  * Created by lukas on 01.05.15.
  */
-public class StructureIDMatcher extends PrefixedTypeExpressionCache<Boolean>
+public class ResourceMatcher extends PrefixedTypeExpressionCache<Boolean>
 {
     public static final String DOMAIN_PREFIX = "$";
 
-    public StructureIDMatcher(String expression)
+    public ResourceMatcher(String expression)
     {
-        super(RCBoolAlgebra.algebra(), true, EnumChatFormatting.GREEN + "Any Structure", expression);
-        addType(new StructureNameType(""));
+        super(RCBoolAlgebra.algebra(), true, EnumChatFormatting.GREEN + "Any Resource", expression);
+        addType(new ResourceIDType(""));
         addType(new DomainType(DOMAIN_PREFIX));
     }
 
-    public boolean apply(String structureID, String domain)
+    public boolean apply(String resourceID, String domain)
     {
-        return evaluate(structureID, domain);
+        return evaluate(resourceID, domain);
     }
 
-    protected static class StructureNameType extends ExpressionCaches.SimpleVariableType<Boolean>
+    protected static class ResourceIDType extends ExpressionCaches.SimpleVariableType<Boolean>
     {
-        public StructureNameType(String prefix)
+        public ResourceIDType(String prefix)
         {
             super(prefix);
         }

@@ -10,6 +10,7 @@ import com.google.common.collect.Sets;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonSyntaxException;
+import ivorius.reccomplex.RCConfig;
 import ivorius.reccomplex.RecurrentComplex;
 import ivorius.reccomplex.json.NbtToJson;
 import ivorius.reccomplex.worldgen.inventory.GenericItemCollection.Component;
@@ -42,7 +43,7 @@ public class GenericItemCollectionRegistry
 
     public static boolean register(Component component, String key, String domain, boolean generates)
     {
-        if (component.areDependenciesResolved())
+        if (RCConfig.shouldInventoryGeneratorLoad(key, domain))
         {
             if (!generates)
                 persistentlyDisabledComponents.add(key);
@@ -85,6 +86,16 @@ public class GenericItemCollectionRegistry
         return component != null && register(component, key, resourceLocation.getResourceDomain(), generates);
     }
 
+    public static boolean isLoaded(String key)
+    {
+        return allComponents.containsKey(key);
+    }
+
+    public static boolean isActive(String key)
+    {
+        return generatingComponents.contains(key);
+    }
+
     public static String createJSONFromComponent(Component inventoryGenerator)
     {
         return gson.toJson(inventoryGenerator, Component.class);
@@ -112,7 +123,7 @@ public class GenericItemCollectionRegistry
             String key = entry.getKey();
 
             if (!persistentlyDisabledComponents.contains(key)
-//                    && RCConfig.shouldStructureGenerate(key, componentDomains.get(key))
+                    && RCConfig.shouldInventoryGeneratorGenerate(key, componentDomains.get(key))
                     && component.areDependenciesResolved())
                 newGeneratingComponents.add(key);
         }

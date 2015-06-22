@@ -7,7 +7,7 @@ package ivorius.reccomplex;
 
 import ivorius.reccomplex.structures.generic.matchers.BiomeMatcher;
 import ivorius.reccomplex.structures.generic.matchers.DimensionMatcher;
-import ivorius.reccomplex.structures.generic.matchers.StructureIDMatcher;
+import ivorius.reccomplex.structures.generic.matchers.ResourceMatcher;
 import ivorius.reccomplex.utils.ExpressionCache;
 import net.minecraft.world.WorldProvider;
 import net.minecraft.world.biome.BiomeGenBase;
@@ -41,8 +41,11 @@ public class RCConfig
 
     private static boolean lightweightMode;
 
-    private static StructureIDMatcher structureLoadMatcher = new StructureIDMatcher("");
-    private static StructureIDMatcher structureGenerationMatcher = new StructureIDMatcher("");
+    private static ResourceMatcher structureLoadMatcher = new ResourceMatcher("");
+    private static ResourceMatcher structureGenerationMatcher = new ResourceMatcher("");
+
+    private static ResourceMatcher inventoryGeneratorLoadMatcher = new ResourceMatcher("");
+    private static ResourceMatcher inventoryGeneratorGenerationMatcher = new ResourceMatcher("");
 
     private static BiomeMatcher universalBiomeMatcher = new BiomeMatcher("");
     private static DimensionMatcher universalDimensionMatcher = new DimensionMatcher("");
@@ -68,11 +71,15 @@ public class RCConfig
             minDistToSpawnForGeneration = RecurrentComplex.config.getFloat("minDistToSpawnForGeneration", CATEGORY_BALANCING, 30.0f, 0.0f, 500.0f, "Within this block radius, default structures won't spawn (in the main dimension).");
             structureSpawnChanceModifier = RecurrentComplex.config.getFloat("structureSpawnChance", CATEGORY_BALANCING, 1.0f, 0.0f, 10.0f, "How often do structures spawn?");
 
-            structureLoadMatcher.setExpression(RecurrentComplex.config.getString("structureLoadMatcher", CATEGORY_BALANCING, "", "Structure Expression that will be applied to each loading structure, determining if the structure should be loaded."));
+            structureLoadMatcher.setExpression(RecurrentComplex.config.getString("structureLoadMatcher", CATEGORY_BALANCING, "", "Resource Expression that will be applied to each loading structure, determining if it should be loaded."));
             logExpressionException(structureLoadMatcher, "structureLoadMatcher", RecurrentComplex.logger);
-
-            structureGenerationMatcher.setExpression(RecurrentComplex.config.getString("structureGenerationMatcher", CATEGORY_BALANCING, "", "Structure Expression that will be applied to each loading structure, determining if the structure should be set to 'active'."));
+            structureGenerationMatcher.setExpression(RecurrentComplex.config.getString("structureGenerationMatcher", CATEGORY_BALANCING, "", "Resource Expression that will be applied to each loading structure, determining if it should be set to 'active'."));
             logExpressionException(structureGenerationMatcher, "structureGenerationMatcher", RecurrentComplex.logger);
+
+            inventoryGeneratorLoadMatcher.setExpression(RecurrentComplex.config.getString("inventoryGeneratorLoadMatcher", CATEGORY_BALANCING, "", "Resource Expression that will be applied to each loading inventory generator, determining if it should be loaded."));
+            logExpressionException(inventoryGeneratorLoadMatcher, "inventoryGeneratorLoadMatcher", RecurrentComplex.logger);
+            inventoryGeneratorGenerationMatcher.setExpression(RecurrentComplex.config.getString("inventoryGeneratorGenerationMatcher", CATEGORY_BALANCING, "", "Resource Expression that will be applied to each loading inventory generator, determining if it should be set to 'active'."));
+            logExpressionException(inventoryGeneratorGenerationMatcher, "inventoryGeneratorGenerationMatcher", RecurrentComplex.logger);
 
             universalBiomeMatcher.setExpression(RecurrentComplex.config.getString("universalBiomeMatcher", CATEGORY_BALANCING, "", "Biome Expression that will be checked for every single structure. Use this if you want to blacklist / whitelist specific biomes that shouldn't have structures."));
             logExpressionException(universalBiomeMatcher, "universalBiomeMatcher", RecurrentComplex.logger);
@@ -103,6 +110,16 @@ public class RCConfig
     public static boolean shouldStructureGenerate(String id, String domain)
     {
         return structureGenerationMatcher.apply(id, domain);
+    }
+
+    public static boolean shouldInventoryGeneratorLoad(String id, String domain)
+    {
+        return inventoryGeneratorLoadMatcher.apply(id, domain);
+    }
+
+    public static boolean shouldInventoryGeneratorGenerate(String id, String domain)
+    {
+        return inventoryGeneratorGenerationMatcher.apply(id, domain);
     }
 
     public static boolean isGenerationEnabled(BiomeGenBase biome)

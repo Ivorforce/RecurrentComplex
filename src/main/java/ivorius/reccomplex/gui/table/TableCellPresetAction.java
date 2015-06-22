@@ -39,7 +39,7 @@ public class TableCellPresetAction extends TableCellDefault
 
     public static Bounds getBounds(GuiButton button)
     {
-        return Bounds.boundsWithSize(button.xPosition, button.width, button.yPosition, button.height);
+        return Bounds.fromSize(button.xPosition, button.width, button.yPosition, button.height);
     }
 
     public void addListener(TableCellActionListener listener)

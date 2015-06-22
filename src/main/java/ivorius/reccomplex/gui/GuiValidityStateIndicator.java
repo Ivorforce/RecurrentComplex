@@ -45,6 +45,26 @@ public class GuiValidityStateIndicator extends Gui
         this.state = state;
     }
 
+    public int getWidth()
+    {
+        return width;
+    }
+
+    public int getHeight()
+    {
+        return height;
+    }
+
+    public int getxPosition()
+    {
+        return xPosition;
+    }
+
+    public int getyPosition()
+    {
+        return yPosition;
+    }
+
     public void draw()
     {
         if (isVisible)

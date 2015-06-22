@@ -21,7 +21,7 @@ public class Bounds
         this.maxY = maxY;
     }
 
-    public static Bounds boundsWithSize(int x, int width, int y, int height)
+    public static Bounds fromSize(int x, int width, int y, int height)
     {
         return new Bounds(x, x + width, y, y + height);
     }

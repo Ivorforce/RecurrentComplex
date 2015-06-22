@@ -125,7 +125,7 @@ public class GuiTable extends Gui
 
             int elementY = index * HEIGHT_PER_SLOT;
 
-            element.setBounds(Bounds.boundsWithSize(propertiesBounds.getMinX() + 100, propertiesBounds.getWidth() - 100, baseY + elementY, 20));
+            element.setBounds(Bounds.fromSize(propertiesBounds.getMinX() + 100, propertiesBounds.getWidth() - 100, baseY + elementY, 20));
             element.setHidden(false);
             element.initGui(this);
 

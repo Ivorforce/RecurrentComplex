@@ -31,7 +31,7 @@ public class GuiEditGenericStructure extends GuiScreenModalTable
     {
         if (currentTable() != null)
         {
-            currentTable().setPropertiesBounds(Bounds.boundsWithSize(width / 2 - 155, 310, height / 2 - 110, 205));
+            currentTable().setPropertiesBounds(Bounds.fromSize(width / 2 - 155, 310, height / 2 - 110, 205));
         }
         super.initGui();
 

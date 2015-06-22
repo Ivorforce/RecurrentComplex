@@ -72,7 +72,7 @@ public class TableCellMulti implements TableCell
         {
             TableCell cell = cells[i];
             int realWidth = buttonWidth - (i == cells.length - 1 ? 0 : 2);
-            cell.setBounds(Bounds.boundsWithSize(bounds.getMinX() + buttonWidth * i, realWidth, bounds.getMinY(), bounds.getHeight()));
+            cell.setBounds(Bounds.fromSize(bounds.getMinX() + buttonWidth * i, realWidth, bounds.getMinY(), bounds.getHeight()));
         }
     }
 

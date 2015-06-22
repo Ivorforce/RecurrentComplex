@@ -11,6 +11,7 @@ import ivorius.reccomplex.RecurrentComplex;
 import ivorius.reccomplex.gui.GuiValidityStateIndicator;
 import ivorius.reccomplex.gui.InventoryWatcher;
 import ivorius.reccomplex.gui.TableDataSourceExpression;
+import ivorius.reccomplex.gui.table.Bounds;
 import ivorius.reccomplex.gui.table.TableDataSource;
 import ivorius.reccomplex.network.PacketEditInventoryGenerator;
 import ivorius.reccomplex.utils.IvTranslations;
@@ -31,6 +32,7 @@ import org.lwjgl.input.Keyboard;
 import org.lwjgl.opengl.GL11;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
@@ -173,7 +175,7 @@ public class GuiEditInventoryGen extends GuiContainer implements InventoryWatche
 
                 weightSlider.setValue(weightSlider.getMinValue());
                 weightSlider.enabled = false;
-                weightSlider.displayString = I18n.format("guiGenericInventory.weight");
+                weightSlider.displayString = I18n.format("structures.gui.random.weight");
             }
         }
     }
@@ -291,7 +293,7 @@ public class GuiEditInventoryGen extends GuiContainer implements InventoryWatche
     }
 
     @Override
-    protected void drawGuiContainerBackgroundLayer(float var1, int var2, int var3)
+    protected void drawGuiContainerBackgroundLayer(float var1, int mouseX, int mouseY)
     {
         nameTextField.drawTextBox();
         drawPlaceholderString(nameTextField, "Component ID");
@@ -318,6 +320,9 @@ public class GuiEditInventoryGen extends GuiContainer implements InventoryWatche
 //            drawCenteredString(fontRendererObj, I18n.format("guiGenericInventory.max"), baseX + 40, this.height / 2 - 75, 0xffffffff);
 //            drawCenteredString(fontRendererObj, I18n.format("guiGenericInventory.weight"), baseX + 60, this.height / 2 - 75, 0xffffffff);
 //        }
+
+        if (Bounds.fromSize(dependencyStateIndicator.xPosition, dependencyStateIndicator.getWidth(), dependencyStateIndicator.yPosition, dependencyStateIndicator.getHeight()).contains(mouseX, mouseY))
+            drawHoveringText(Collections.singletonList(TableDataSourceExpression.parsedString(inventoryGenerator.dependencies)), mouseX, mouseY, fontRendererObj);
     }
 
     private void drawPlaceholderString(GuiTextField textField, String string)

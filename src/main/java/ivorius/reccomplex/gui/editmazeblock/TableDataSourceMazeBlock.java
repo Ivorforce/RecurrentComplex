@@ -82,15 +82,15 @@ public class TableDataSourceMazeBlock extends TableDataSourceSegmented implement
         {
             if (index == 0)
             {
-                TableCellButton cell = new TableCellButton("exits", new TableCellButton.Action("edit", "Edit"));
-                cell.addListener(this);
-                return new TableElementCell("Exits", cell);
-            }
-            else if (index == 1)
-            {
                 TableCellButton cell = new TableCellButton("rooms", new TableCellButton.Action("edit", "Edit"));
                 cell.addListener(this);
                 return new TableElementCell("Rooms", cell);
+            }
+            else if (index == 1)
+            {
+                TableCellButton cell = new TableCellButton("exits", new TableCellButton.Action("edit", "Edit"));
+                cell.addListener(this);
+                return new TableElementCell("Exits", cell);
             }
         }
         else if (segment == 2)

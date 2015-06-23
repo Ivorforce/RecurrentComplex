@@ -26,7 +26,7 @@ public class GuiTable extends Gui
 {
     public static final int HEIGHT_PER_SLOT = 25;
     public static final int SCROLL_BAR_HEIGHT = 27;
-    public static final float SCROLL_SPEED = 0.001f;
+    public static final float SCROLL_SPEED = 0.005f;
 
     private TableDelegate delegate;
     private TableDataSource dataSource;

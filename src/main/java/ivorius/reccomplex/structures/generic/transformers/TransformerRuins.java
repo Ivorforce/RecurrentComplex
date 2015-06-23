@@ -224,6 +224,8 @@ public class TransformerRuins implements Transformer<TransformerRuins.InstanceDa
             }
             else if (newBlock == Blocks.cobblestone_wall && newMeta == 0)
                 newMeta = 1;
+            else if (newBlock == Blocks.sandstone && (newMeta == 1 || newMeta == 2))
+                newMeta = 0;
             else if (newBlock == Blocks.air)
             {
                 ForgeDirection[] directions = Directions.HORIZONTAL.clone();

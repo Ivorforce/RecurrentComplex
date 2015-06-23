@@ -202,11 +202,11 @@ public class RCRegistryHandler
         genInfoRegistry.registerType("static", StaticGenerationInfo.class, new StaticGenerationInfo.Serializer());
         genInfoRegistry.registerType("vanilla", VanillaStructureGenerationInfo.class, new VanillaStructureGenerationInfo.Serializer());
 
-        StructureSelector.registerCategory("frequent", new StructureSelector.SimpleCategory(1.0f / 10.0f, Collections.<StructureSelector.GenerationInfo>emptyList(), true));
-        StructureSelector.registerCategory("decoration", new StructureSelector.SimpleCategory(1.0f / 30.0f, Collections.<StructureSelector.GenerationInfo>emptyList(), true));
-        StructureSelector.registerCategory("rare", new StructureSelector.SimpleCategory(1.0f / 1250.0f, Collections.<StructureSelector.GenerationInfo>emptyList(), true));
-        StructureSelector.registerCategory("ultrarare", new StructureSelector.SimpleCategory(1.0f / 5000.0f, Collections.<StructureSelector.GenerationInfo>emptyList(), true));
-        StructureSelector.registerCategory("adventure", new StructureSelector.SimpleCategory(1.0f / 250.0f, Collections.<StructureSelector.GenerationInfo>emptyList(), true));
+        StructureSelector.registerCategory("frequent", new StructureSelector.SimpleCategory(1.0f / 15.0f, Collections.<StructureSelector.GenerationInfo>emptyList(), true));
+        StructureSelector.registerCategory("decoration", new StructureSelector.SimpleCategory(1.0f / 80.0f, Collections.<StructureSelector.GenerationInfo>emptyList(), true));
+        StructureSelector.registerCategory("rare", new StructureSelector.SimpleCategory(1.0f / 2500.0f, Collections.<StructureSelector.GenerationInfo>emptyList(), true));
+        StructureSelector.registerCategory("ultrarare", new StructureSelector.SimpleCategory(1.0f / 8000.0f, Collections.<StructureSelector.GenerationInfo>emptyList(), true));
+        StructureSelector.registerCategory("adventure", new StructureSelector.SimpleCategory(1.0f / 500.0f, Collections.<StructureSelector.GenerationInfo>emptyList(), true));
 
         OperationRegistry.register("strucGen", OperationGenerateStructure.class);
         OperationRegistry.register("schemGen", OperationGenerateSchematic.class);

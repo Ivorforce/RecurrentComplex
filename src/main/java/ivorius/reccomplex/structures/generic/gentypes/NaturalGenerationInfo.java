@@ -6,6 +6,7 @@
 package ivorius.reccomplex.structures.generic.gentypes;
 
 import com.google.gson.*;
+import com.google.gson.annotations.SerializedName;
 import ivorius.reccomplex.RecurrentComplex;
 import ivorius.reccomplex.gui.editstructure.gentypes.TableDataSourceNaturalGenerationInfo;
 import ivorius.reccomplex.gui.table.TableDataSource;
@@ -18,7 +19,9 @@ import ivorius.reccomplex.structures.generic.GenericYSelector;
 import ivorius.reccomplex.structures.generic.presets.BiomeMatcherPresets;
 import ivorius.reccomplex.structures.generic.presets.DimensionMatcherPresets;
 import ivorius.reccomplex.utils.PresettedList;
+import ivorius.reccomplex.worldgen.StructureGenerationData;
 import net.minecraft.util.StatCollector;
+import net.minecraft.world.World;
 import net.minecraft.world.WorldProvider;
 import net.minecraft.world.biome.BiomeGenBase;
 
@@ -42,6 +45,8 @@ public class NaturalGenerationInfo extends StructureGenerationInfo
     public String generationCategory;
     public GenericYSelector ySelector;
     private Double generationWeight;
+
+    public SpawnLimitation spawnLimitation;
 
     public NaturalGenerationInfo()
     {
@@ -143,6 +148,16 @@ public class NaturalGenerationInfo extends StructureGenerationInfo
         return generationWeight == null;
     }
 
+    public boolean hasLimitations()
+    {
+        return spawnLimitation != null;
+    }
+
+    public SpawnLimitation getLimitations()
+    {
+        return spawnLimitation;
+    }
+
     @Nonnull
     @Override
     public String id()
@@ -166,6 +181,23 @@ public class NaturalGenerationInfo extends StructureGenerationInfo
     public TableDataSource tableDataSource(TableNavigator navigator, TableDelegate delegate)
     {
         return new TableDataSourceNaturalGenerationInfo(navigator, delegate, this);
+    }
+
+    public static class SpawnLimitation
+    {
+        public int maxCount = 1;
+        public Context context = Context.DIMENSION;
+
+        public boolean areResolved(World world, String structureID)
+        {
+            return StructureGenerationData.get(world).getEntriesByID(structureID).size() < maxCount;
+        }
+
+        public enum Context
+        {
+            @SerializedName("dimension")
+            DIMENSION,
+        }
     }
 
     public static class Serializer implements JsonSerializer<NaturalGenerationInfo>, JsonDeserializer<NaturalGenerationInfo>
@@ -193,21 +225,11 @@ public class NaturalGenerationInfo extends StructureGenerationInfo
             if (jsonObject.has("generationWeight"))
                 naturalGenerationInfo.generationWeight = JsonUtils.getJsonObjectDoubleFieldValue(jsonObject, "generationWeight");
 
-            if (!naturalGenerationInfo.biomeWeights.setPreset(JsonUtils.getJsonObjectStringFieldValueOrDefault(jsonObject, "biomeWeightsPreset", null)))
-            {
-                if (jsonObject.has("generationBiomes"))
-                    Collections.addAll(naturalGenerationInfo.biomeWeights.list, gson.fromJson(jsonObject.get("generationBiomes"), BiomeGenerationInfo[].class));
-                else
-                    naturalGenerationInfo.biomeWeights.setToDefault();
-            }
+            loadPresettedList(jsonObject, naturalGenerationInfo.biomeWeights, "biomeWeightsPreset", "generationBiomes", BiomeGenerationInfo[].class);
+            loadPresettedList(jsonObject, naturalGenerationInfo.dimensionWeights, "dimensionWeightsPreset", "generationDimensions", DimensionGenerationInfo[].class);
 
-            if (!naturalGenerationInfo.dimensionWeights.setPreset(JsonUtils.getJsonObjectStringFieldValueOrDefault(jsonObject, "dimensionWeightsPreset", null)))
-            {
-                if (jsonObject.has("generationDimensions"))
-                    Collections.addAll(naturalGenerationInfo.dimensionWeights.list, gson.fromJson(jsonObject.get("generationDimensions"), DimensionGenerationInfo[].class));
-                else
-                    naturalGenerationInfo.dimensionWeights.setToDefault();
-            }
+            if (jsonObject.has("spawnLimitation"))
+                naturalGenerationInfo.spawnLimitation = context.deserialize(jsonObject.get("spawnLimitation"), SpawnLimitation.class);
 
             return naturalGenerationInfo;
         }
@@ -225,15 +247,31 @@ public class NaturalGenerationInfo extends StructureGenerationInfo
 
             jsonObject.add("generationY", gson.toJsonTree(src.ySelector));
 
-            if (src.biomeWeights.getPreset() != null)
-                jsonObject.addProperty("biomeWeightsPreset", src.biomeWeights.getPreset());
-            jsonObject.add("generationBiomes", gson.toJsonTree(src.biomeWeights.list));
+            writePresettedList(jsonObject, src.biomeWeights, "biomeWeightsPreset", "generationBiomes");
+            writePresettedList(jsonObject, src.dimensionWeights, "dimensionWeightsPreset", "generationDimensions");
 
-            if (src.dimensionWeights.getPreset() != null)
-                jsonObject.addProperty("dimensionWeightsPreset", src.dimensionWeights.getPreset());
-            jsonObject.add("generationDimensions", gson.toJsonTree(src.dimensionWeights.list));
+            if (src.spawnLimitation != null)
+                jsonObject.add("spawnLimitation", context.serialize(src.spawnLimitation));
 
             return jsonObject;
+        }
+
+        protected static <T> void loadPresettedList(JsonObject jsonObject, PresettedList<T> list, String presetKey, String listKey, Class<T[]> clazz)
+        {
+            if (!list.setPreset(JsonUtils.getJsonObjectStringFieldValueOrDefault(jsonObject, presetKey, null)))
+            {
+                if (jsonObject.has(listKey))
+                    Collections.addAll(list.list, gson.fromJson(jsonObject.get(listKey), clazz));
+                else
+                    list.setToDefault();
+            }
+        }
+
+        protected static <T> void writePresettedList(JsonObject jsonObject, PresettedList<T> list, String presetKey, String listKey)
+        {
+            if (list.getPreset() != null)
+                jsonObject.addProperty(presetKey, list.getPreset());
+            jsonObject.add(listKey, gson.toJsonTree(list.list));
         }
     }
 }

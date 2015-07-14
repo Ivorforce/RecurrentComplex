@@ -5,9 +5,13 @@
 
 package ivorius.reccomplex.gui.table;
 
+import com.google.common.base.Function;
 import com.google.common.collect.Lists;
+import ivorius.ivtoolkit.tools.IvGsonHelper;
+import ivorius.reccomplex.utils.IvTranslations;
 import net.minecraft.client.gui.GuiButton;
 
+import javax.annotation.Nullable;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
@@ -31,6 +35,40 @@ public class TableCellEnum<T> extends TableCellPropertyDefault<T>
     public TableCellEnum(String id, T value, Option<T>... options)
     {
         this(id, value, Arrays.asList(options));
+    }
+
+    public static <T extends Enum> List<Option<T>> options(List<T> values, final String baseKey, boolean tooltip)
+    {
+        return options(values, new Function<T, String>()
+        {
+            @Nullable
+            @Override
+            public String apply(@Nullable T input)
+            {
+                return IvTranslations.get(baseKey + IvGsonHelper.serializedName(input));
+            }
+        }, tooltip ? new Function<T, List<String>>()
+        {
+            @Nullable
+            @Override
+            public List<String> apply(@Nullable T input)
+            {
+                return IvTranslations.getLines(baseKey + IvGsonHelper.serializedName(input) + ".tooltip");
+            }
+        } : null);
+    }
+
+    public static <T extends Enum> List<Option<T>> options(List<T> values, final Function<T, String> titleFunc, final Function<T, List<String>> tooltipFunc)
+    {
+        return Lists.transform(values, new Function<T, Option<T>>()
+        {
+            @Nullable
+            @Override
+            public Option<T> apply(T input)
+            {
+                return new Option<>(input, titleFunc != null ? titleFunc.apply(input) : null, tooltipFunc != null ? tooltipFunc.apply(input) : null);
+            }
+        });
     }
 
     @Override

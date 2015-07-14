@@ -30,9 +30,13 @@ public class IvTranslations
         return StatCollector.translateToLocalFormatted(key, args);
     }
 
+    public static List<String> getLines(String key)
+    {
+        return Arrays.asList(StatCollector.translateToLocal(key).split("<br>"));
+    }
+
     public static List<String> formatLines(String key, Object... args)
     {
-        String translation = StatCollector.translateToLocalFormatted(key, args);
-        return Arrays.asList(translation.split("<br>"));
+        return Arrays.asList(StatCollector.translateToLocalFormatted(key, args).split("<br>"));
     }
 }

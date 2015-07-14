@@ -37,6 +37,7 @@ public class StructureGenerationData extends WorldSavedData
 
     protected final Map<UUID, Entry> entryMap = new HashMap<>();
     protected final SetMultimap<ChunkCoordIntPair, Entry> chunkMap = HashMultimap.create();
+    protected final SetMultimap<String, Entry> instanceMap = HashMultimap.create();
 
     public StructureGenerationData(String id)
     {
@@ -59,7 +60,7 @@ public class StructureGenerationData extends WorldSavedData
         return data;
     }
 
-    public Set<Entry> getEntries(ChunkCoordIntPair coords, boolean onlyPartial)
+    public Set<Entry> getEntriesAt(ChunkCoordIntPair coords, boolean onlyPartial)
     {
         if (onlyPartial)
             return Sets.filter(chunkMap.get(coords), new Predicate<Entry>()
@@ -73,9 +74,9 @@ public class StructureGenerationData extends WorldSavedData
         return chunkMap.get(coords);
     }
 
-    public Set<Entry> getEntries(final BlockCoord coords)
+    public Set<Entry> getEntriesAt(final BlockCoord coords)
     {
-        Set<Entry> entries = getEntries(new ChunkCoordIntPair(coords.x >> 4, coords.z >> 4), false);
+        Set<Entry> entries = getEntriesAt(new ChunkCoordIntPair(coords.x >> 4, coords.z >> 4), false);
 
         return Sets.filter(entries, new Predicate<Entry>()
         {
@@ -88,11 +89,11 @@ public class StructureGenerationData extends WorldSavedData
         });
     }
 
-    public Set<Entry> getEntries(final StructureBoundingBox boundingBox)
+    public Set<Entry> getEntriesAt(final StructureBoundingBox boundingBox)
     {
         ImmutableSet.Builder<Entry> entries = ImmutableSet.builder();
         for (ChunkCoordIntPair chunkCoords : StructureBoundingBoxes.rasterize(boundingBox))
-                entries.addAll(Sets.filter(getEntries(chunkCoords, false), new Predicate<Entry>()
+                entries.addAll(Sets.filter(getEntriesAt(chunkCoords, false), new Predicate<Entry>()
                 {
                     @Override
                     public boolean apply(Entry input)
@@ -122,6 +123,8 @@ public class StructureGenerationData extends WorldSavedData
         for (ChunkCoordIntPair coords : rasterized)
             chunkMap.put(coords, entry);
 
+        instanceMap.put(entry.getStructureID(), entry);
+
         markDirty();
 
         return Sets.intersection(checkedChunksFinal, rasterized);
@@ -130,6 +133,11 @@ public class StructureGenerationData extends WorldSavedData
     public Entry getEntry(UUID id)
     {
         return entryMap.get(id);
+    }
+
+    public Set<Entry> getEntriesByID(String id)
+    {
+        return instanceMap.get(id);
     }
 
     public boolean checkChunk(ChunkCoordIntPair coords)

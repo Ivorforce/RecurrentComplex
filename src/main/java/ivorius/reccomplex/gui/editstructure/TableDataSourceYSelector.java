@@ -10,6 +10,7 @@ import ivorius.reccomplex.gui.table.*;
 import ivorius.reccomplex.structures.generic.GenericYSelector;
 import ivorius.reccomplex.utils.IvTranslations;
 import net.minecraft.client.resources.I18n;
+import scala.actors.threadpool.Arrays;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -26,20 +27,6 @@ public class TableDataSourceYSelector implements TableDataSource, TableCellPrope
         this.ySelector = ySelector;
     }
 
-    public static List<TableCellEnum.Option<GenericYSelector.SelectionMode>> allGenerationOptions()
-    {
-        List<TableCellEnum.Option<GenericYSelector.SelectionMode>> generationBases = new ArrayList<>();
-
-        for (GenericYSelector.SelectionMode selectionMode : GenericYSelector.SelectionMode.values())
-        {
-            String transKeyBase = "structures.genY." + selectionMode.serializedName();
-            generationBases.add(new TableCellEnum.Option<>(selectionMode,
-                    I18n.format(transKeyBase), IvTranslations.formatLines(transKeyBase + ".tooltip")));
-        }
-
-        return generationBases;
-    }
-
     @Override
     public int numberOfElements()
     {
@@ -51,7 +38,7 @@ public class TableDataSourceYSelector implements TableDataSource, TableCellPrope
     {
         if (index == 0)
         {
-            TableCellEnum cell = new TableCellEnum<>("ySelType", ySelector.selectionMode, allGenerationOptions());
+            TableCellEnum cell = new TableCellEnum<>("ySelType", ySelector.selectionMode, TableCellEnum.options(Arrays.asList(GenericYSelector.SelectionMode.values()), "structures.genY.", true));
             cell.addPropertyListener(this);
             return new TableElementCell("Generation Base", cell);
         }

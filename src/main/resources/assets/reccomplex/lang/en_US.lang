@@ -225,6 +225,11 @@ reccomplex.structure.generation.id.tooltip=Identifier for the generation type.<b
 
 reccomplex.generationInfo.natural=Natural
 reccomplex.generationInfo.natural.tooltip=Randomized generation in any biome
+reccomplex.generationInfo.natural.limitation.context.world=Per World
+reccomplex.generationInfo.natural.limitation.context.dimension=Per Dimension
+reccomplex.generationInfo.natural.limitation.context.dimension.tooltip=Structure occurs x times at max, <br>per dimension.
+reccomplex.generationInfo.natural.limitation.context.x_chunks=Every X Chunks
+
 reccomplex.generationInfo.mazeComponent=Maze Component
 reccomplex.generationInfo.mazeComponent.tooltip=A room in a maze
 reccomplex.generationInfo.mazeComponent.title=In Maze: %s

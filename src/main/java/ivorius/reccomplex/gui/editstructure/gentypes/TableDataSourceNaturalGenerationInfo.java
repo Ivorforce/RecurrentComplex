@@ -7,6 +7,7 @@ package ivorius.reccomplex.gui.editstructure.gentypes;
 
 import ivorius.reccomplex.gui.editstructure.TableDataSourceBiomeGenList;
 import ivorius.reccomplex.gui.editstructure.TableDataSourceDimensionGenList;
+import ivorius.reccomplex.gui.editstructure.TableDataSourceNaturalGenLimitation;
 import ivorius.reccomplex.gui.editstructure.TableDataSourceYSelector;
 import ivorius.reccomplex.gui.table.*;
 import ivorius.reccomplex.structures.generic.gentypes.NaturalGenerationInfo;
@@ -72,7 +73,7 @@ public class TableDataSourceNaturalGenerationInfo extends TableDataSourceSegment
             case 1:
                 return 1;
             case 3:
-                return 3;
+                return 4;
         }
 
         return super.sizeOfSegment(segment);
@@ -111,6 +112,12 @@ public class TableDataSourceNaturalGenerationInfo extends TableDataSourceSegment
                     cell.addListener(this);
                     return new TableElementCell("Dimensions", cell);
                 }
+                else if (index == 3)
+                {
+                    TableCellButton cell = new TableCellButton("editLimitations", new TableCellButton.Action("edit", "Edit", generationInfo.hasLimitations()), generationInfo.hasLimitations() ? new TableCellButton.Action("remove", "Remove") : new TableCellButton.Action("add", "Add"));
+                    cell.addListener(this);
+                    return new TableElementCell("Limitations", cell);
+                }
                 break;
         }
 
@@ -122,13 +129,31 @@ public class TableDataSourceNaturalGenerationInfo extends TableDataSourceSegment
     {
         if ("editBiomes".equals(cell.getID()) && "edit".equals(actionID))
         {
-            GuiTable editBiomesProperties = new GuiTable(tableDelegate, new TableDataSourceBiomeGenList(generationInfo.biomeWeights, tableDelegate, navigator));
-            navigator.pushTable(editBiomesProperties);
+            GuiTable table = new GuiTable(tableDelegate, new TableDataSourceBiomeGenList(generationInfo.biomeWeights, tableDelegate, navigator));
+            navigator.pushTable(table);
         }
         else if ("editDimensions".equals(cell.getID()) && "edit".equals(actionID))
         {
-            GuiTable editBiomesProperties = new GuiTable(tableDelegate, new TableDataSourceDimensionGenList(generationInfo.dimensionWeights, tableDelegate, navigator));
-            navigator.pushTable(editBiomesProperties);
+            GuiTable table = new GuiTable(tableDelegate, new TableDataSourceDimensionGenList(generationInfo.dimensionWeights, tableDelegate, navigator));
+            navigator.pushTable(table);
+        }
+        else if ("editLimitations".equals(cell.getID()))
+        {
+            switch (actionID)
+            {
+                case "edit":
+                    GuiTable table = new GuiTable(tableDelegate, new TableDataSourceNaturalGenLimitation(generationInfo.spawnLimitation, tableDelegate));
+                    navigator.pushTable(table);
+                    break;
+                case "remove":
+                    generationInfo.spawnLimitation = null;
+                    tableDelegate.reloadData();
+                    break;
+                case "add":
+                    generationInfo.spawnLimitation = new NaturalGenerationInfo.SpawnLimitation();
+                    tableDelegate.reloadData();
+                    break;
+            }
         }
     }
 

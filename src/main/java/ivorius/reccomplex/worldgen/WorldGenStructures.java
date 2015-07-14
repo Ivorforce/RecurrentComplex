@@ -11,11 +11,9 @@ import ivorius.reccomplex.RCConfig;
 import ivorius.reccomplex.RecurrentComplex;
 import ivorius.reccomplex.structures.StructureInfo;
 import ivorius.reccomplex.structures.StructureInfos;
-import ivorius.reccomplex.structures.StructureLoadContext;
 import ivorius.reccomplex.structures.StructureRegistry;
 import ivorius.reccomplex.structures.generic.gentypes.NaturalGenerationInfo;
 import ivorius.reccomplex.structures.generic.gentypes.StaticGenerationInfo;
-import ivorius.reccomplex.utils.NBTStorable;
 import net.minecraft.util.ChunkCoordinates;
 import net.minecraft.world.ChunkCoordIntPair;
 import net.minecraft.world.World;
@@ -76,12 +74,14 @@ public class WorldGenStructures implements IWorldGenerator
                     for (Pair<StructureInfo, NaturalGenerationInfo> pair : generated)
                     {
                         StructureInfo structureInfo = pair.getLeft();
+                        NaturalGenerationInfo naturalGenInfo = pair.getRight();
                         String structureName = StructureRegistry.structureID(structureInfo);
 
                         int genX = chunkX * 16 + random.nextInt(16);
                         int genZ = chunkZ * 16 + random.nextInt(16);
 
-                        StructureGenerator.randomInstantly(world, random, structureInfo, pair.getRight().ySelector, genX, genZ, true, structureName);
+                        if (!naturalGenInfo.hasLimitations() || naturalGenInfo.getLimitations().areResolved(world, structureName))
+                            StructureGenerator.randomInstantly(world, random, structureInfo, naturalGenInfo.ySelector, genX, genZ, true, structureName);
                     }
                 }
             }
@@ -92,7 +92,7 @@ public class WorldGenStructures implements IWorldGenerator
     {
         StructureGenerationData data = StructureGenerationData.get(world);
 
-        for (StructureGenerationData.Entry entry : data.getEntries(new ChunkCoordIntPair(chunkX, chunkZ), true))
+        for (StructureGenerationData.Entry entry : data.getEntriesAt(new ChunkCoordIntPair(chunkX, chunkZ), true))
         {
             StructureInfo structureInfo = StructureRegistry.getStructure(entry.getStructureID());
 

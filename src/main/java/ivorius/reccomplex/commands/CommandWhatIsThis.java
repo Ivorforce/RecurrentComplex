@@ -8,22 +8,12 @@ package ivorius.reccomplex.commands;
 import com.google.common.base.Function;
 import com.google.common.collect.Lists;
 import ivorius.ivtoolkit.blocks.BlockCoord;
-import ivorius.ivtoolkit.math.AxisAlignedTransform2D;
 import ivorius.reccomplex.RCConfig;
-import ivorius.reccomplex.entities.StructureEntityInfo;
-import ivorius.reccomplex.operation.OperationRegistry;
-import ivorius.reccomplex.structures.OperationGenerateStructure;
-import ivorius.reccomplex.structures.StructureInfo;
-import ivorius.reccomplex.structures.generic.GenericStructureInfo;
 import ivorius.reccomplex.utils.ServerTranslations;
 import ivorius.reccomplex.worldgen.StructureGenerationData;
 import joptsimple.internal.Strings;
 import net.minecraft.command.CommandBase;
-import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
-import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.ChatComponentTranslation;
 import net.minecraft.util.MathHelper;
 import net.minecraft.world.World;
 
@@ -66,7 +56,7 @@ public class CommandWhatIsThis extends CommandBase
             z = MathHelper.floor_double(func_110666_a(commandSender, (double) z, args[2]));
         }
 
-        Collection<StructureGenerationData.Entry> entries = StructureGenerationData.get(world).getEntries(new BlockCoord(x, y, z));
+        Collection<StructureGenerationData.Entry> entries = StructureGenerationData.get(world).getEntriesAt(new BlockCoord(x, y, z));
         if (entries.size() > 0)
         {
             List<StructureGenerationData.Entry> ordered = Lists.newArrayList(entries);

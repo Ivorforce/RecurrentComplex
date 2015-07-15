@@ -9,10 +9,9 @@ import ivorius.ivtoolkit.gui.IntegerRange;
 import ivorius.reccomplex.gui.table.*;
 import ivorius.reccomplex.structures.generic.GenericYSelector;
 import ivorius.reccomplex.utils.IvTranslations;
-import net.minecraft.client.resources.I18n;
-import scala.actors.threadpool.Arrays;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 /**

@@ -32,7 +32,7 @@ minecraft {
 }
 
 // Provided - Start
-// FML doesnt laod coremods and ATs from the classpath
+// FML doesnt load coremods and ATs from the classpath
 
 apply plugin: 'idea'
 

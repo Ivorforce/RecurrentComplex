@@ -68,7 +68,7 @@ public class CommandImportStructure extends CommandBase
         if (args.length >= 4)
         {
             x = MathHelper.floor_double(func_110666_a(commandSender, (double) x, args[1]));
-            y = MathHelper.floor_double(func_110666_a(commandSender, (double) x, args[2]));
+            y = MathHelper.floor_double(func_110666_a(commandSender, (double) y, args[2]));
             z = MathHelper.floor_double(func_110666_a(commandSender, (double) z, args[3]));
         }
 

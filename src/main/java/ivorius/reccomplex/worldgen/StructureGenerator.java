@@ -48,6 +48,10 @@ public class StructureGenerator
         StructureSpawnContext structureSpawnContext = new StructureSpawnContext(world, random, structureBoundingBox, generationBB, layer, false, transform, firstTime);
         structureInfo.generate(structureSpawnContext, instanceData);
 
+        int[] size = StructureInfos.structureSize(structureInfo, transform);
+        int[] coordInts = new int[]{coord.x, coord.y, coord.z};
+        MinecraftForge.EVENT_BUS.post(new StructureGenerationEventLite.Post(world, structureName, coordInts, size, layer));
+        
         if (firstTime)
             RecurrentComplex.logger.trace(String.format("Generated structure '%s' in %s", name(structureName), structureSpawnContext.boundingBox));
     }

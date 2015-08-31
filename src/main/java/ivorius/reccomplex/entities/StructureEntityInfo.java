@@ -257,8 +257,15 @@ public class StructureEntityInfo implements IExtendedEntityProperties, PartialUp
         }
         else if ("operation".equals(context))
         {
-            NBTTagCompound tag = ByteBufUtils.readTag(buffer);
-            danglingOperation = tag != null ? OperationRegistry.readOperation(tag) : null;
+            try
+            {
+                NBTTagCompound tag = ByteBufUtils.readTag(buffer);
+                danglingOperation = tag != null ? OperationRegistry.readOperation(tag) : null;
+            }
+            catch (Exception e)
+            {
+                RecurrentComplex.logger.warn("Error reading operation tag", buffer);
+            }
         }
         else if ("options".equals(context))
         {

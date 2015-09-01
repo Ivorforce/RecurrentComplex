@@ -9,6 +9,7 @@ import ivorius.reccomplex.gui.TableDataSourceExpression;
 import ivorius.reccomplex.gui.table.*;
 import ivorius.reccomplex.structures.generic.transformers.TransformerNaturalAir;
 import ivorius.reccomplex.utils.IvTranslations;
+import ivorius.reccomplex.utils.scale.Scales;
 import org.apache.commons.lang3.StringUtils;
 
 /**
@@ -56,17 +57,19 @@ public class TableDataSourceBTNaturalAir extends TableDataSourceSegmented implem
             {
                 case 0:
                 {
-                    TableCellFloatNullable element = new TableCellFloatNullable("naturalExpansionDistance", TableElements.toFloat(transformer.naturalExpansionDistance), 1.0f, 0, 20, "D", "C");
-                    element.addPropertyListener(this);
-                    element.setTooltip(IvTranslations.formatLines("reccomplex.transformer.naturalAir.naturalExpansionDistance.tooltip"));
-                    return new TableElementCell(IvTranslations.get("reccomplex.transformer.naturalAir.naturalExpansionDistance"), element);
+                    TableCellFloatNullable cell = new TableCellFloatNullable("naturalExpansionDistance", TableElements.toFloat(transformer.naturalExpansionDistance), 1.0f, 0, 40, "D", "C");
+                    cell.setScale(Scales.pow(5));
+                    cell.addPropertyListener(this);
+                    cell.setTooltip(IvTranslations.formatLines("reccomplex.transformer.naturalAir.naturalExpansionDistance.tooltip"));
+                    return new TableElementCell(IvTranslations.get("reccomplex.transformer.naturalAir.naturalExpansionDistance"), cell);
                 }
                 case 1:
                 {
-                    TableCellFloatNullable element = new TableCellFloatNullable("naturalExpansionRandomization", TableElements.toFloat(transformer.naturalExpansionRandomization), 1.0f, 0, 20, "D", "C");
-                    element.addPropertyListener(this);
-                    element.setTooltip(IvTranslations.formatLines("reccomplex.transformer.naturalAir.naturalExpansionRandomization.tooltip"));
-                    return new TableElementCell(IvTranslations.get("reccomplex.transformer.naturalAir.naturalExpansionRandomization"), element);
+                    TableCellFloatNullable cell = new TableCellFloatNullable("naturalExpansionRandomization", TableElements.toFloat(transformer.naturalExpansionRandomization), 1.0f, 0, 40, "D", "C");
+                    cell.setScale(Scales.pow(5));
+                    cell.addPropertyListener(this);
+                    cell.setTooltip(IvTranslations.formatLines("reccomplex.transformer.naturalAir.naturalExpansionRandomization.tooltip"));
+                    return new TableElementCell(IvTranslations.get("reccomplex.transformer.naturalAir.naturalExpansionRandomization"), cell);
                 }
             }
         }

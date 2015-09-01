@@ -76,7 +76,8 @@ public class TableDataSourceVanillaStructureGenerationInfo extends TableDataSour
                 {
                     case 0:
                     {
-                        TableCellFloatNullable cell = new TableCellFloatNullable("weight", TableElements.toFloat(generationInfo.generationWeight), 1.0f, 0, 10, "D", "C");
+                        TableCellFloatNullable cell = new TableCellFloatNullable("weight", TableElements.toFloat(generationInfo.generationWeight), 1.0f, 0, 1000, "D", "C");
+                        cell.setScale(Scales.pow(5));
                         cell.addPropertyListener(this);
                         cell.setTooltip(IvTranslations.formatLines("structures.gui.random.weight.tooltip"));
                         return new TableElementCell(IvTranslations.get("structures.gui.random.weight"), cell);
@@ -94,13 +95,15 @@ public class TableDataSourceVanillaStructureGenerationInfo extends TableDataSour
                 {
                     case 0:
                     {
-                        TableCellFloatRange cell = new TableCellFloatRange("baseLimit", new FloatRange((float) generationInfo.minBaseLimit, (float) generationInfo.maxBaseLimit), 0, 10, "%.2f");
+                        TableCellFloatRange cell = new TableCellFloatRange("baseLimit", new FloatRange((float) generationInfo.minBaseLimit, (float) generationInfo.maxBaseLimit), 0, 1000, "%.2f");
+                        cell.setScale(Scales.pow(5));
                         cell.addPropertyListener(this);
                         return new TableElementCell("Amount (p. V.)", cell);
                     }
                     case 1:
                     {
-                        TableCellFloatRange cell = new TableCellFloatRange("scaledLimit", new FloatRange((float) generationInfo.minScaledLimit, (float) generationInfo.maxScaledLimit), 0, 10, "%.2f");
+                        TableCellFloatRange cell = new TableCellFloatRange("scaledLimit", new FloatRange((float) generationInfo.minScaledLimit, (float) generationInfo.maxScaledLimit), 0, 1000, "%.2f");
+                        cell.setScale(Scales.pow(5));
                         cell.addPropertyListener(this);
                         return new TableElementCell("Amount (scaled)", cell);
                     }

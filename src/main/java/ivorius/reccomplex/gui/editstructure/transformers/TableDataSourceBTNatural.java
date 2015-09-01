@@ -10,6 +10,7 @@ import ivorius.reccomplex.gui.TableDataSourceExpression;
 import ivorius.reccomplex.gui.table.*;
 import ivorius.reccomplex.structures.generic.transformers.TransformerNatural;
 import ivorius.reccomplex.utils.IvTranslations;
+import ivorius.reccomplex.utils.scale.Scales;
 import net.minecraft.block.Block;
 
 /**
@@ -75,17 +76,19 @@ public class TableDataSourceBTNatural extends TableDataSourceSegmented implement
             {
                 case 0:
                 {
-                    TableCellFloatNullable element = new TableCellFloatNullable("naturalExpansionDistance", TableElements.toFloat(transformer.naturalExpansionDistance), 1.0f, 0, 20, "D", "C");
-                    element.addPropertyListener(this);
-                    element.setTooltip(IvTranslations.formatLines("reccomplex.transformer.natural.naturalExpansionDistance.tooltip"));
-                    return new TableElementCell(IvTranslations.get("reccomplex.transformer.natural.naturalExpansionDistance"), element);
+                    TableCellFloatNullable cell = new TableCellFloatNullable("naturalExpansionDistance", TableElements.toFloat(transformer.naturalExpansionDistance), 1.0f, 0, 40, "D", "C");
+                    cell.setScale(Scales.pow(5));
+                    cell.addPropertyListener(this);
+                    cell.setTooltip(IvTranslations.formatLines("reccomplex.transformer.natural.naturalExpansionDistance.tooltip"));
+                    return new TableElementCell(IvTranslations.get("reccomplex.transformer.natural.naturalExpansionDistance"), cell);
                 }
                 case 1:
                 {
-                    TableCellFloatNullable element = new TableCellFloatNullable("naturalExpansionRandomization", TableElements.toFloat(transformer.naturalExpansionRandomization), 1.0f, 0, 20, "D", "C");
-                    element.addPropertyListener(this);
-                    element.setTooltip(IvTranslations.formatLines("reccomplex.transformer.natural.naturalExpansionRandomization.tooltip"));
-                    return new TableElementCell(IvTranslations.get("reccomplex.transformer.natural.naturalExpansionRandomization"), element);
+                    TableCellFloatNullable cell = new TableCellFloatNullable("naturalExpansionRandomization", TableElements.toFloat(transformer.naturalExpansionRandomization), 1.0f, 0, 40, "D", "C");
+                    cell.setScale(Scales.pow(5));
+                    cell.addPropertyListener(this);
+                    cell.setTooltip(IvTranslations.formatLines("reccomplex.transformer.natural.naturalExpansionRandomization.tooltip"));
+                    return new TableElementCell(IvTranslations.get("reccomplex.transformer.natural.naturalExpansionRandomization"), cell);
                 }
             }
         }

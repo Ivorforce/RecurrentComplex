@@ -12,6 +12,7 @@ import ivorius.reccomplex.gui.editstructure.TableDataSourceYSelector;
 import ivorius.reccomplex.gui.table.*;
 import ivorius.reccomplex.structures.generic.gentypes.NaturalGenerationInfo;
 import ivorius.reccomplex.utils.IvTranslations;
+import ivorius.reccomplex.utils.scale.Scales;
 import ivorius.reccomplex.worldgen.StructureSelector;
 import net.minecraft.client.resources.I18n;
 
@@ -95,7 +96,8 @@ public class TableDataSourceNaturalGenerationInfo extends TableDataSourceSegment
             case 3:
                 if (index == 0)
                 {
-                    TableCellFloatNullable cell = new TableCellFloatNullable("weight", TableElements.toFloat(generationInfo.getGenerationWeight()), 1.0f, 0, 10, "D", "C");
+                    TableCellFloatNullable cell = new TableCellFloatNullable("weight", TableElements.toFloat(generationInfo.getGenerationWeight()), 1.0f, 0, 1000, "D", "C");
+                    cell.setScale(Scales.pow(5));
                     cell.addPropertyListener(this);
                     cell.setTooltip(IvTranslations.formatLines("structures.gui.random.weight.tooltip"));
                     return new TableElementCell(IvTranslations.get("structures.gui.random.weight"), cell);

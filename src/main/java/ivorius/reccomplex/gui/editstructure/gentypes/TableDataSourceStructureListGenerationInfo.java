@@ -12,6 +12,7 @@ import ivorius.reccomplex.gui.table.*;
 import ivorius.reccomplex.structures.generic.gentypes.StructureListGenerationInfo;
 import ivorius.ivtoolkit.blocks.Directions;
 import ivorius.reccomplex.utils.IvTranslations;
+import ivorius.reccomplex.utils.scale.Scales;
 import net.minecraftforge.common.util.ForgeDirection;
 
 /**
@@ -69,7 +70,8 @@ public class TableDataSourceStructureListGenerationInfo extends TableDataSourceS
             }
             case 2:
             {
-                TableCellFloatNullable cell = new TableCellFloatNullable("weight", TableElements.toFloat(generationInfo.weight), 1, 0, 10, "D", "C");
+                TableCellFloatNullable cell = new TableCellFloatNullable("weight", TableElements.toFloat(generationInfo.weight), 1, 0, 1000, "D", "C");
+                cell.setScale(Scales.pow(5));
                 cell.addPropertyListener(this);
                 cell.setTooltip(IvTranslations.formatLines("structures.gui.random.weight.tooltip"));
                 return new TableElementCell(IvTranslations.get("structures.gui.random.weight"), cell);

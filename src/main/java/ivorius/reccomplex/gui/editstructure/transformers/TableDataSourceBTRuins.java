@@ -10,6 +10,7 @@ import ivorius.reccomplex.gui.TableDirections;
 import ivorius.reccomplex.gui.table.*;
 import ivorius.reccomplex.structures.generic.transformers.TransformerRuins;
 import ivorius.reccomplex.utils.IvTranslations;
+import ivorius.reccomplex.utils.scale.Scales;
 import net.minecraftforge.common.util.ForgeDirection;
 
 /**
@@ -59,6 +60,7 @@ public class TableDataSourceBTRuins extends TableDataSourceSegmented implements 
                     case 1:
                     {
                         TableCellFloatRange cell = new TableCellFloatRange("decay", new FloatRange(transformer.minDecay, transformer.maxDecay), 0.0f, 1.0f, "%.2f");
+                        cell.setScale(Scales.pow(5));
                         cell.setTooltip(IvTranslations.formatLines("reccomplex.transformer.ruins.decay.base.tooltip"));
                         cell.addPropertyListener(this);
                         return new TableElementCell(IvTranslations.get("reccomplex.transformer.ruins.decay.base"), cell);
@@ -66,6 +68,7 @@ public class TableDataSourceBTRuins extends TableDataSourceSegmented implements 
                     case 2:
                     {
                         TableCellFloat cell = new TableCellFloat("decayChaos", transformer.decayChaos, 0.0f, 1.0f);
+                        cell.setScale(Scales.pow(3));
                         cell.setTooltip(IvTranslations.formatLines("reccomplex.transformer.ruins.decay.chaos.tooltip"));
                         cell.addPropertyListener(this);
                         return new TableElementCell(IvTranslations.get("reccomplex.transformer.ruins.decay.chaos"), cell);
@@ -73,6 +76,7 @@ public class TableDataSourceBTRuins extends TableDataSourceSegmented implements 
                     case 3:
                     {
                         TableCellFloat cell = new TableCellFloat("decayValueDensity", transformer.decayValueDensity, 0.0f, 1.0f);
+                        cell.setScale(Scales.pow(3));
                         cell.setTooltip(IvTranslations.formatLines("reccomplex.transformer.ruins.decay.density.tooltip"));
                         cell.addPropertyListener(this);
                         return new TableElementCell(IvTranslations.get("reccomplex.transformer.ruins.decay.density"), cell);
@@ -93,17 +97,19 @@ public class TableDataSourceBTRuins extends TableDataSourceSegmented implements 
                         return new TableElementCell(new TableCellTitle("otherTitle", IvTranslations.get("reccomplex.transformer.ruins.other.title")));
                     case 1:
                     {
-                        TableCellFloat element = new TableCellFloat("erosion", transformer.blockErosion, 0.0f, 1.0f);
-                        element.setTooltip(IvTranslations.formatLines("reccomplex.transformer.ruins.erosion.tooltip"));
-                        element.addPropertyListener(this);
-                        return new TableElementCell(IvTranslations.get("reccomplex.transformer.ruins.erosion"), element);
+                        TableCellFloat cell = new TableCellFloat("erosion", transformer.blockErosion, 0.0f, 1.0f);
+                        cell.setScale(Scales.pow(3));
+                        cell.setTooltip(IvTranslations.formatLines("reccomplex.transformer.ruins.erosion.tooltip"));
+                        cell.addPropertyListener(this);
+                        return new TableElementCell(IvTranslations.get("reccomplex.transformer.ruins.erosion"), cell);
                     }
                     case 2:
                     {
-                        TableCellFloat element = new TableCellFloat("vines", transformer.vineGrowth, 0.0f, 1.0f);
-                        element.setTooltip(IvTranslations.formatLines("reccomplex.transformer.ruins.vines.tooltip"));
-                        element.addPropertyListener(this);
-                        return new TableElementCell(IvTranslations.get("reccomplex.transformer.ruins.vines"), element);
+                        TableCellFloat cell = new TableCellFloat("vines", transformer.vineGrowth, 0.0f, 1.0f);
+                        cell.setScale(Scales.pow(3));
+                        cell.setTooltip(IvTranslations.formatLines("reccomplex.transformer.ruins.vines.tooltip"));
+                        cell.addPropertyListener(this);
+                        return new TableElementCell(IvTranslations.get("reccomplex.transformer.ruins.vines"), cell);
                     }
                 }
                 break;

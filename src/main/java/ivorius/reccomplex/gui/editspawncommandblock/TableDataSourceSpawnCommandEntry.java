@@ -8,6 +8,7 @@ package ivorius.reccomplex.gui.editspawncommandblock;
 import ivorius.reccomplex.blocks.TileEntitySpawnCommand;
 import ivorius.reccomplex.gui.table.*;
 import ivorius.reccomplex.utils.IvTranslations;
+import ivorius.reccomplex.utils.scale.Scales;
 
 /**
  * Created by lukas on 05.06.14.
@@ -53,7 +54,8 @@ public class TableDataSourceSpawnCommandEntry extends TableDataSourceSegmented i
         }
         else if (index == 2)
         {
-            TableCellFloatNullable cell = new TableCellFloatNullable("weight", TableElements.toFloat(entry.weight), 1.0f, 0, 10, "D", "C");
+            TableCellFloatNullable cell = new TableCellFloatNullable("weight", TableElements.toFloat(entry.weight), 1.0f, 0, 1000, "D", "C");
+            cell.setScale(Scales.pow(5));
             cell.addPropertyListener(this);
             cell.setTooltip(IvTranslations.formatLines("structures.gui.random.weight.tooltip"));
             return new TableElementCell(IvTranslations.get("structures.gui.random.weight"), cell);

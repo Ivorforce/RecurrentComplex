@@ -8,6 +8,7 @@ package ivorius.reccomplex.gui.editmazeblock;
 import ivorius.reccomplex.gui.table.*;
 import ivorius.reccomplex.structures.generic.maze.SavedMazeComponent;
 import ivorius.reccomplex.utils.IvTranslations;
+import ivorius.reccomplex.utils.scale.Scales;
 
 /**
  * Created by lukas on 26.04.15.
@@ -56,7 +57,8 @@ public class TableDataSourceMazeComponent extends TableDataSourceSegmented imple
         {
             case 1:
             {
-                TableCellFloatNullable cell = new TableCellFloatNullable("weight", TableElements.toFloat(component.weight), 1.0f, 0, 10, "D", "C");
+                TableCellFloatNullable cell = new TableCellFloatNullable("weight", TableElements.toFloat(component.weight), 1.0f, 0, 1000, "D", "C");
+                cell.setScale(Scales.pow(5));
                 cell.addPropertyListener(this);
                 cell.setTooltip(IvTranslations.formatLines("structures.gui.random.weight.tooltip"));
                 return new TableElementCell(IvTranslations.get("structures.gui.random.weight"), cell);

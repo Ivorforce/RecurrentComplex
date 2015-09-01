@@ -38,19 +38,7 @@ public class StructureSpawnContext
     public final boolean generateAsSource;
     public final boolean isFirstTime;
 
-    public StructureSpawnContext(@Nonnull World world, @Nonnull Random random, @Nonnull StructureBoundingBox boundingBox, int generationLayer, boolean generateAsSource, @Nonnull AxisAlignedTransform2D transform)
-    {
-        this.world = world;
-        this.random = random;
-        this.transform = transform;
-        this.boundingBox = boundingBox;
-        this.generationBB = null;
-        this.generationLayer = generationLayer;
-        this.generateAsSource = generateAsSource;
-        isFirstTime = true;
-    }
-
-    public StructureSpawnContext(@Nonnull World world, @Nonnull Random random, @Nonnull StructureBoundingBox boundingBox, StructureBoundingBox generationBB, int generationLayer, boolean generateAsSource, @Nonnull AxisAlignedTransform2D transform, boolean isFirstTime)
+    public StructureSpawnContext(@Nonnull World world, @Nonnull Random random, @Nonnull AxisAlignedTransform2D transform, @Nonnull StructureBoundingBox boundingBox, @Nullable StructureBoundingBox generationBB, int generationLayer, boolean generateAsSource, boolean isFirstTime)
     {
         this.world = world;
         this.random = random;
@@ -62,16 +50,26 @@ public class StructureSpawnContext
         this.isFirstTime = isFirstTime;
     }
 
-    public StructureSpawnContext(@Nonnull World world, @Nonnull Random random, BlockCoord coord, @Nonnull AxisAlignedTransform2D transform, int generationLayer, boolean generateAsSource, StructureInfo structureInfo)
+    public static StructureSpawnContext complete(@Nonnull World world, @Nonnull Random random, @Nonnull AxisAlignedTransform2D transform, @Nonnull StructureBoundingBox boundingBox, int generationLayer, boolean generateAsSource)
     {
-        this.world = world;
-        this.random = random;
-        boundingBox = StructureInfos.structureBoundingBox(coord, StructureInfos.structureSize(structureInfo, transform));
-        generationBB = null;
-        this.transform = transform;
-        this.generationLayer = generationLayer;
-        this.generateAsSource = generateAsSource;
-        isFirstTime = true;
+        return new StructureSpawnContext(world, random, transform, boundingBox, null, generationLayer, generateAsSource, true);
+    }
+
+    public static StructureSpawnContext complete(@Nonnull World world, @Nonnull Random random, @Nonnull AxisAlignedTransform2D transform, BlockCoord coord, StructureInfo structureInfo, int generationLayer, boolean generateAsSource)
+    {
+        StructureBoundingBox boundingBox = StructureInfos.structureBoundingBox(coord, StructureInfos.structureSize(structureInfo, transform));
+        return new StructureSpawnContext(world, random, transform, boundingBox, null, generationLayer, generateAsSource, true);
+    }
+
+    public static StructureSpawnContext partial(@Nonnull World world, @Nonnull Random random, @Nonnull AxisAlignedTransform2D transform, @Nonnull StructureBoundingBox boundingBox, StructureBoundingBox generationBB, int generationLayer, boolean generateAsSource, boolean isFirstTime)
+    {
+        return new StructureSpawnContext(world, random, transform, boundingBox, generationBB, generationLayer, generateAsSource, isFirstTime);
+    }
+
+    public static StructureSpawnContext partial(@Nonnull World world, @Nonnull Random random, @Nonnull AxisAlignedTransform2D transform, BlockCoord coord, StructureInfo structureInfo, @Nonnull StructureBoundingBox generationBB, int generationLayer, boolean generateAsSource, boolean isFirstTime)
+    {
+        StructureBoundingBox boundingBox = StructureInfos.structureBoundingBox(coord, StructureInfos.structureSize(structureInfo, transform));
+        return new StructureSpawnContext(world, random, transform, boundingBox, generationBB, generationLayer, generateAsSource, isFirstTime);
     }
 
     public boolean includes(BlockCoord coord)

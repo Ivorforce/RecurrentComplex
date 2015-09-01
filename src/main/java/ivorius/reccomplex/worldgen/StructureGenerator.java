@@ -29,27 +29,34 @@ public class StructureGenerator
 {
     public static final int MIN_DIST_TO_LIMIT = 1;
 
-    public static <I extends NBTStorable> void partially(StructureInfo<I> structureInfo, World world, Random random, BlockCoord coord, AxisAlignedTransform2D transform, @Nullable StructureBoundingBox generationBB, int layer, String structureName, NBTTagCompound instanceData, boolean firstTime)
+    public static <I extends NBTStorable> void partially(StructureInfo<I> structureInfo, World world, Random random, BlockCoord coord, AxisAlignedTransform2D transform, @Nullable StructureBoundingBox generationBB, int layer, String structureID, NBTTagCompound instanceData, boolean firstTime)
     {
-        StructureBoundingBox structureBoundingBox = StructureInfos.structureBoundingBox(coord, StructureInfos.structureSize(structureInfo, transform));
-        I loadedInstanceData = structureInfo.loadInstanceData(new StructureLoadContext(transform, structureBoundingBox, false), instanceData);
-
-        StructureSpawnContext structureSpawnContext = new StructureSpawnContext(world, random, structureBoundingBox, generationBB, layer, false, transform, firstTime);
-        structureInfo.generate(structureSpawnContext, loadedInstanceData);
-
-        if (firstTime)
-            RecurrentComplex.logger.trace(String.format("Generated structure '%s' in %s", name(structureName), structureSpawnContext.boundingBox));
+        partially(structureInfo, world, random, coord, transform, generationBB, layer, structureID,
+                structureInfo.loadInstanceData(new StructureLoadContext(transform, StructureInfos.structureBoundingBox(coord, StructureInfos.structureSize(structureInfo, transform)), false), instanceData),
+                firstTime);
     }
 
-    public static <I extends NBTStorable> void partially(StructureInfo<I> structureInfo, World world, Random random, BlockCoord coord, AxisAlignedTransform2D transform, @Nullable StructureBoundingBox generationBB, int layer, String structureName, I instanceData, boolean firstTime)
+    public static <I extends NBTStorable> void partially(StructureInfo<I> structureInfo, World world, Random random, BlockCoord coord, AxisAlignedTransform2D transform, @Nullable StructureBoundingBox generationBB, int layer, String structureID, I instanceData, boolean firstTime)
     {
-        StructureBoundingBox structureBoundingBox = StructureInfos.structureBoundingBox(coord, StructureInfos.structureSize(structureInfo, transform));
+        StructureSpawnContext structureSpawnContext = StructureSpawnContext.partial(world, random, transform, coord, structureInfo, generationBB, layer, false, firstTime);
+        int[] coordInts = coordInts(structureSpawnContext.boundingBox);
+        int[] sizeInts = sizeInts(structureSpawnContext.boundingBox);
 
-        StructureSpawnContext structureSpawnContext = new StructureSpawnContext(world, random, structureBoundingBox, generationBB, layer, false, transform, firstTime);
+        if (firstTime)
+        {
+            RCEventBus.INSTANCE.post(new StructureGenerationEvent.Pre(structureInfo, structureSpawnContext));
+            MinecraftForge.EVENT_BUS.post(new StructureGenerationEventLite.Pre(world, structureID, coordInts, sizeInts, layer));
+        }
+
         structureInfo.generate(structureSpawnContext, instanceData);
 
         if (firstTime)
-            RecurrentComplex.logger.trace(String.format("Generated structure '%s' in %s", name(structureName), structureSpawnContext.boundingBox));
+        {
+            RecurrentComplex.logger.trace(String.format("Generated structure '%s' in %s", name(structureID), structureSpawnContext.boundingBox));
+
+            RCEventBus.INSTANCE.post(new StructureGenerationEvent.Post(structureInfo, structureSpawnContext));
+            MinecraftForge.EVENT_BUS.post(new StructureGenerationEventLite.Post(world, structureID, coordInts, sizeInts, layer));
+        }
     }
 
     public static <I extends NBTStorable> void directly(StructureInfo<I> structureInfo, StructureSpawnContext context)
@@ -75,10 +82,9 @@ public class StructureGenerator
 
     public static <I extends NBTStorable> boolean instantly(StructureInfo<I> structureInfo, World world, Random random, BlockCoord coord, AxisAlignedTransform2D transform, int layer, boolean suggest, String structureID, boolean asSource)
     {
-        int[] size = StructureInfos.structureSize(structureInfo, transform);
-        int[] coordInts = new int[]{coord.x, coord.y, coord.z};
-
-        StructureSpawnContext structureSpawnContext = new StructureSpawnContext(world, random, StructureInfos.structureBoundingBox(coord, size), layer, asSource, transform);
+        StructureSpawnContext structureSpawnContext = StructureSpawnContext.complete(world, random, transform, coord, structureInfo, layer, asSource);
+        int[] size = sizeInts(structureSpawnContext.boundingBox);
+        int[] coordInts = coordInts(structureSpawnContext.boundingBox);
 
         if (!suggest || (
                 coord.y >= MIN_DIST_TO_LIMIT && coord.y + size[1] <= world.getHeight() - 1 - MIN_DIST_TO_LIMIT
@@ -111,5 +117,15 @@ public class StructureGenerator
     private static String name(String structureName)
     {
         return structureName != null ? structureName : "Unknown";
+    }
+
+    private static int[] coordInts(StructureBoundingBox bb)
+    {
+        return new int[]{bb.minX, bb.minY, bb.minZ};
+    }
+
+    private static int[] sizeInts(StructureBoundingBox bb)
+    {
+        return new int[]{bb.getXSize(), bb.getYSize(), bb.getZSize()};
     }
 }

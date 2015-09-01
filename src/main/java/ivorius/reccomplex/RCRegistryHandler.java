@@ -111,11 +111,11 @@ public class RCRegistryHandler
         bookGenerationTag.setCreativeTab(tabInventoryGenerators);
         register(bookGenerationTag, "bookGenerationTag");
 
-        negativeSpace = new BlockNegativeSpace().setBlockName("negativeSpace").setBlockTextureName(textureBase + "negativeSpace");
+        negativeSpace = new BlockGenericSpace().setBlockName("negativeSpace").setBlockTextureName(textureBase + "negativeSpace");
         negativeSpace.setCreativeTab(tabStructureTools);
         register(negativeSpace, ItemBlockNegativeSpace.class, "negativeSpace");
 
-        naturalFloor = new BlockNaturalFloor().setBlockName("naturalFloor").setBlockTextureName(textureBase + "naturalFloor");
+        naturalFloor = new BlockGenericSolid().setBlockName("naturalFloor").setBlockTextureName(textureBase + "naturalFloor");
         naturalFloor.setCreativeTab(tabStructureTools);
         register(naturalFloor, ItemBlockGenericSolid.class, "naturalFloor");
 

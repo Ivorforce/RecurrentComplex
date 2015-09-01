@@ -18,11 +18,11 @@ import java.util.List;
 /**
  * Created by lukas on 06.06.14.
  */
-public class BlockNaturalFloor extends Block
+public class BlockGenericSolid extends Block
 {
     private IIcon[] icons = new IIcon[16];
 
-    public BlockNaturalFloor()
+    public BlockGenericSolid()
     {
         super(RCMaterials.materialGenericSolid);
     }
@@ -45,5 +45,11 @@ public class BlockNaturalFloor extends Block
     public IIcon getIcon(int side, int meta)
     {
         return meta < icons.length ? icons[meta] : icons[0];
+    }
+
+    @Override
+    public int damageDropped(int meta)
+    {
+        return meta;
     }
 }

@@ -21,11 +21,11 @@ import java.util.List;
 /**
  * Created by lukas on 25.05.14.
  */
-public class BlockNegativeSpace extends Block
+public class BlockGenericSpace extends Block
 {
     private IIcon[] icons = new IIcon[16];
 
-    public BlockNegativeSpace()
+    public BlockGenericSpace()
     {
         super(RCMaterials.materialNegativeSpace);
 
@@ -82,5 +82,11 @@ public class BlockNegativeSpace extends Block
     public int getRenderType()
     {
         return RCBlockRendering.negativeSpaceRenderID;
+    }
+
+    @Override
+    public int damageDropped(int meta)
+    {
+        return meta;
     }
 }

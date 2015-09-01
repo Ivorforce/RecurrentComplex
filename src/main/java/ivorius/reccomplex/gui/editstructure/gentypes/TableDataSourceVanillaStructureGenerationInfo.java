@@ -13,6 +13,7 @@ import ivorius.reccomplex.gui.table.*;
 import ivorius.reccomplex.structures.generic.gentypes.VanillaStructureGenerationInfo;
 import ivorius.ivtoolkit.blocks.Directions;
 import ivorius.reccomplex.utils.IvTranslations;
+import ivorius.reccomplex.utils.scale.Scales;
 import net.minecraftforge.common.util.ForgeDirection;
 
 /**
@@ -93,13 +94,13 @@ public class TableDataSourceVanillaStructureGenerationInfo extends TableDataSour
                 {
                     case 0:
                     {
-                        TableCellFloatRange cell = new TableCellFloatRange("baseLimit", new FloatRange((float) generationInfo.minBaseLimit, (float) generationInfo.maxBaseLimit), 0, 10, 2);
+                        TableCellFloatRange cell = new TableCellFloatRange("baseLimit", new FloatRange((float) generationInfo.minBaseLimit, (float) generationInfo.maxBaseLimit), 0, 10, "%.2f");
                         cell.addPropertyListener(this);
                         return new TableElementCell("Amount (p. V.)", cell);
                     }
                     case 1:
                     {
-                        TableCellFloatRange cell = new TableCellFloatRange("scaledLimit", new FloatRange((float) generationInfo.minScaledLimit, (float) generationInfo.maxScaledLimit), 0, 10, 2);
+                        TableCellFloatRange cell = new TableCellFloatRange("scaledLimit", new FloatRange((float) generationInfo.minScaledLimit, (float) generationInfo.maxScaledLimit), 0, 10, "%.2f");
                         cell.addPropertyListener(this);
                         return new TableElementCell("Amount (scaled)", cell);
                     }

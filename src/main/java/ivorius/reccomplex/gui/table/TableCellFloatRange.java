@@ -5,28 +5,34 @@
 
 package ivorius.reccomplex.gui.table;
 
-import ivorius.ivtoolkit.gui.*;
+import ivorius.ivtoolkit.gui.FloatRange;
+import ivorius.ivtoolkit.gui.GuiControlListener;
+import ivorius.ivtoolkit.gui.GuiSliderMultivalue;
+import ivorius.ivtoolkit.gui.GuiSliderRange;
+import ivorius.reccomplex.utils.scale.Scale;
+import ivorius.reccomplex.utils.scale.Scales;
 
 /**
  * Created by lukas on 02.06.14.
  */
 public class TableCellFloatRange extends TableCellPropertyDefault<FloatRange> implements GuiControlListener<GuiSliderMultivalue>
 {
-    private GuiSliderRange slider;
+    protected GuiSliderRange slider;
 
-    private int floatDisplayPrecision;
+    protected boolean enabled = true;
+    protected float min;
+    protected float max;
+    protected Scale scale = Scales.none();
 
-    private boolean enabled = true;
-    private float min;
-    private float max;
+    protected String titleFormat = "%.4f";
 
-    public TableCellFloatRange(String id, FloatRange value, float min, float max, int floatDisplayPrecision)
+    public TableCellFloatRange(String id, FloatRange value, float min, float max, String titleFormat)
     {
         super(id, value);
 
         this.min = min;
         this.max = max;
-        this.floatDisplayPrecision = floatDisplayPrecision;
+        this.titleFormat = titleFormat;
     }
 
     public boolean isEnabled()
@@ -44,6 +50,46 @@ public class TableCellFloatRange extends TableCellPropertyDefault<FloatRange> im
         }
     }
 
+    public float getMin()
+    {
+        return min;
+    }
+
+    public void setMin(float min)
+    {
+        this.min = min;
+    }
+
+    public float getMax()
+    {
+        return max;
+    }
+
+    public void setMax(float max)
+    {
+        this.max = max;
+    }
+
+    public Scale getScale()
+    {
+        return scale;
+    }
+
+    public void setScale(Scale scale)
+    {
+        this.scale = scale;
+    }
+
+    public String getTitleFormat()
+    {
+        return titleFormat;
+    }
+
+    public void setTitleFormat(String titleFormat)
+    {
+        this.titleFormat = titleFormat;
+    }
+
     @Override
     public void initGui(GuiTable screen)
     {
@@ -51,12 +97,12 @@ public class TableCellFloatRange extends TableCellPropertyDefault<FloatRange> im
 
         Bounds bounds = bounds();
         slider = new GuiSliderRange(-1, bounds.getMinX(), bounds.getMinY() + (bounds.getHeight() - 20) / 2, bounds.getWidth(), 20, getRangeString());
-        slider.setMinValue(min);
-        slider.setMaxValue(max);
+        slider.setMinValue(scale.out(min));
+        slider.setMaxValue(scale.out(max));
         slider.enabled = enabled;
         slider.addListener(this);
 
-        slider.setRange(property);
+        slider.setRange(Scales.out(scale, property));
         slider.visible = !isHidden();
 
         screen.addButton(this, 0, slider);
@@ -68,15 +114,13 @@ public class TableCellFloatRange extends TableCellPropertyDefault<FloatRange> im
         super.setHidden(hidden);
 
         if (slider != null)
-        {
             slider.visible = !hidden;
-        }
     }
 
     @Override
     public void valueChanged(GuiSliderMultivalue gui)
     {
-        property = slider.getRange();
+        property = Scales.in(scale, ((GuiSliderRange) gui).getRange());
         slider.displayString = getRangeString();
 
         alertListenersOfChange();
@@ -89,18 +133,13 @@ public class TableCellFloatRange extends TableCellPropertyDefault<FloatRange> im
 
         if (slider != null)
         {
-            slider.setRange(value);
+            slider.setRange(Scales.out(scale, property));
             slider.displayString = getRangeString();
         }
     }
 
     private String getRangeString()
     {
-        return getNumberString(property.getMin(), floatDisplayPrecision) + " - " + getNumberString(property.getMax(), floatDisplayPrecision);
-    }
-
-    private static String getNumberString(float number, int precision)
-    {
-        return String.format("%." + precision + "f", number);
+        return String.format(titleFormat, property.getMin()) + " - " + String.format(titleFormat, property.getMax());
     }
 }

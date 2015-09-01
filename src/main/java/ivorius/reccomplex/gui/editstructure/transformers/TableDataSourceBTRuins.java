@@ -58,7 +58,7 @@ public class TableDataSourceBTRuins extends TableDataSourceSegmented implements 
                         return new TableElementCell(new TableCellTitle("decayTitle", IvTranslations.get("reccomplex.transformer.ruins.decay.title")));
                     case 1:
                     {
-                        TableCellFloatRange cell = new TableCellFloatRange("decay", new FloatRange(transformer.minDecay, transformer.maxDecay), 0.0f, 1.0f, 2);
+                        TableCellFloatRange cell = new TableCellFloatRange("decay", new FloatRange(transformer.minDecay, transformer.maxDecay), 0.0f, 1.0f, "%.2f");
                         cell.setTooltip(IvTranslations.formatLines("reccomplex.transformer.ruins.decay.base.tooltip"));
                         cell.addPropertyListener(this);
                         return new TableElementCell(IvTranslations.get("reccomplex.transformer.ruins.decay.base"), cell);

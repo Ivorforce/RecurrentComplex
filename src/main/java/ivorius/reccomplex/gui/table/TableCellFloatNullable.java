@@ -7,6 +7,8 @@ package ivorius.reccomplex.gui.table;
 
 import ivorius.ivtoolkit.gui.GuiControlListener;
 import ivorius.ivtoolkit.gui.GuiSlider;
+import ivorius.reccomplex.utils.scale.Scale;
+import ivorius.reccomplex.utils.scale.Scales;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.util.MathHelper;
 
@@ -22,6 +24,7 @@ public class TableCellFloatNullable extends TableCellPropertyDefault<Float> impl
     protected float defaultValue;
     protected float min;
     protected float max;
+    protected Scale scale = Scales.none();
 
     protected String titleFormat = "%.4f";
 
@@ -58,6 +61,16 @@ public class TableCellFloatNullable extends TableCellPropertyDefault<Float> impl
     public void setMax(float max)
     {
         this.max = max;
+    }
+
+    public Scale getScale()
+    {
+        return scale;
+    }
+
+    public void setScale(Scale scale)
+    {
+        this.scale = scale;
     }
 
     public String getTitleFormat()
@@ -101,8 +114,8 @@ public class TableCellFloatNullable extends TableCellPropertyDefault<Float> impl
         Bounds bounds = bounds();
         int sliderWidth = MathHelper.floor_float(bounds.getWidth() * (1.0f - nullButtonWidth)) - 2;
         slider = new GuiSlider(-1, bounds.getMinX(), bounds.getMinY() + (bounds.getHeight() - 20) / 2, sliderWidth, 20, "");
-        slider.setMinValue(min);
-        slider.setMaxValue(max);
+        slider.setMinValue(scale.out(min));
+        slider.setMaxValue(scale.out(max));
         slider.addListener(this);
 
         updateSliderValue();
@@ -122,8 +135,9 @@ public class TableCellFloatNullable extends TableCellPropertyDefault<Float> impl
     protected void updateSliderValue()
     {
         slider.enabled = enabled && property != null;
-        slider.setValue(getActiveValue());
-        slider.displayString = String.format(titleFormat, getActiveValue());
+        float activeValue = getActiveValue();
+        slider.setValue(scale.out(activeValue));
+        slider.displayString = String.format(titleFormat, activeValue);
     }
 
     protected float getActiveValue()
@@ -160,7 +174,7 @@ public class TableCellFloatNullable extends TableCellPropertyDefault<Float> impl
     @Override
     public void valueChanged(GuiSlider gui)
     {
-        property = gui.getValue();
+        property = scale.in(gui.getValue());
         gui.displayString = String.format(titleFormat, getActiveValue());
 
         alertListenersOfChange();

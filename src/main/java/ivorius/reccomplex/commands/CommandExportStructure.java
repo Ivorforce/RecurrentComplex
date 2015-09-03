@@ -94,6 +94,7 @@ public class CommandExportStructure extends CommandBase
         {
             genericStructureInfo = GenericStructureInfo.createDefaultStructure();
             structureID = "NewStructure";
+            genericStructureInfo.metadata.authors = commandSender.getCommandSenderName();
             saveAsActive = false;
         }
 

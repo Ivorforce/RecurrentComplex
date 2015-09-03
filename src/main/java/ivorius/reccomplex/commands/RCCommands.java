@@ -24,6 +24,8 @@ public class RCCommands
     public static ICommand confirm;
     public static ICommand cancel;
 
+    public static ICommand lookup;
+
     public static void onServerStart(FMLServerStartingEvent event)
     {
         if (!RecurrentComplex.isLite())
@@ -72,7 +74,8 @@ public class RCCommands
         event.registerServerCommand(new CommandExportSchematic());
 
         event.registerServerCommand(new CommandWhatIsThis());
-        event.registerServerCommand(new CommandLookupStructure());
+        event.registerServerCommand(lookup = new CommandLookupStructure());
+        event.registerServerCommand(new CommandSearchStructure());
     }
 
     @Nonnull

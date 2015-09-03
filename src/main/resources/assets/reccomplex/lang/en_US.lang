@@ -144,6 +144,9 @@ commands.rclookup.reply.noauthor=§oUnknown§r
 commands.rclookup.reply.nolink=§oNo link provided§r
 commands.rclookup.reply.comment=Comment: %s
 
+commands.rcsearch.usage=/#search
+commands.search.lookup=Look Up
+
 inventoryGen.vanilla=Vanilla Generator
 inventoryGen.custom=Custom Generator
 inventoryGen.create=Create New Generator

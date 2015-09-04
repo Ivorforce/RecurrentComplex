@@ -10,10 +10,7 @@ import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.Mod.EventHandler;
 import cpw.mods.fml.common.Mod.Instance;
 import cpw.mods.fml.common.SidedProxy;
-import cpw.mods.fml.common.event.FMLInitializationEvent;
-import cpw.mods.fml.common.event.FMLPostInitializationEvent;
-import cpw.mods.fml.common.event.FMLPreInitializationEvent;
-import cpw.mods.fml.common.event.FMLServerStartingEvent;
+import cpw.mods.fml.common.event.*;
 import cpw.mods.fml.common.network.NetworkCheckHandler;
 import cpw.mods.fml.common.network.NetworkRegistry;
 import cpw.mods.fml.common.network.simpleimpl.SimpleNetworkWrapper;
@@ -28,6 +25,7 @@ import ivorius.reccomplex.events.RCForgeEventHandler;
 import ivorius.reccomplex.gui.RCGuiHandler;
 import ivorius.reccomplex.network.*;
 import ivorius.reccomplex.structures.generic.StructureSaveHandler;
+import ivorius.reccomplex.utils.FMLRemapper;
 import ivorius.reccomplex.worldgen.inventory.ItemCollectionSaveHandler;
 import net.minecraftforge.common.config.Configuration;
 import org.apache.logging.log4j.Logger;
@@ -58,6 +56,8 @@ public class RecurrentComplex
     public static Logger logger;
     public static Configuration config;
 
+    public static FMLRemapper remapper;
+
     public static RCForgeEventHandler forgeEventHandler;
     public static RCFMLEventHandler fmlEventHandler;
 
@@ -87,6 +87,8 @@ public class RecurrentComplex
         config.load();
         RCConfig.loadConfig(null);
         config.save();
+
+        remapper = new FMLRemapper(MODID);
 
         forgeEventHandler = new RCForgeEventHandler();
         forgeEventHandler.register();
@@ -130,6 +132,12 @@ public class RecurrentComplex
 
         ItemCollectionSaveHandler.reloadAllCustomInventoryGenerators();
         StructureSaveHandler.reloadAllCustomStructures();
+    }
+
+    @EventHandler
+    public void onMissingMapping(FMLMissingMappingsEvent event)
+    {
+        remapper.onMissingMapping(event);
     }
 
     @EventHandler

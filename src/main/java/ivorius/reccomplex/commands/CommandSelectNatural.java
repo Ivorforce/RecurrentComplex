@@ -66,8 +66,8 @@ public class CommandSelectNatural extends CommandSelectModify
     {
         lowerExpansion += 0.01; // Rounding and stuff
 
-        Block floorBlock = RCBlocks.naturalFloor;
-        Block airBlock1 = RCBlocks.negativeSpace;
+        Block floorBlock = RCBlocks.genericSolid;
+        Block airBlock1 = RCBlocks.genericSpace;
 
         BlockCoord lowerPoint = area.getLowerCorner();
         BlockCoord higherPoint = area.getHigherCorner();
@@ -115,7 +115,7 @@ public class CommandSelectNatural extends CommandSelectModify
         if (area.contains(coord))
         {
             Block prevBlock = world.getBlock(coord.x, coord.y, coord.z);
-            if (prevBlock.getMaterial() == Material.air || prevBlock == RCBlocks.negativeSpace)
+            if (prevBlock.getMaterial() == Material.air || prevBlock == RCBlocks.genericSpace)
                 world.setBlock(coord.x, coord.y, coord.z, block);
         }
     }
@@ -157,7 +157,7 @@ public class CommandSelectNatural extends CommandSelectModify
 
     public static void placeNaturalAir(World world, BlockArea area)
     {
-        Block spaceBlock = RCBlocks.negativeSpace;
+        Block spaceBlock = RCBlocks.genericSpace;
 
         BlockCoord lowerPoint = area.getLowerCorner();
         BlockCoord higherPoint = area.getHigherCorner();
@@ -172,7 +172,7 @@ public class CommandSelectNatural extends CommandSelectModify
 
                 if ((block.getMaterial() != Material.air && block != spaceBlock) || sidesClosed(world, new BlockCoord(surfaceCoord.x, y, surfaceCoord.z), area) >= 3)
                 {
-                    safePoint = y + (block == RCBlocks.naturalFloor ? 1 : 3);
+                    safePoint = y + (block == RCBlocks.genericSolid ? 1 : 3);
                     break;
                 }
             }

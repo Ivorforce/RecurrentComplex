@@ -48,7 +48,7 @@ public class TransformerNaturalAir extends TransformerSingleBlock<NBTNone>
 
     public TransformerNaturalAir()
     {
-        this(BlockMatcher.of(MCRegistrySpecial.INSTANCE, RCBlocks.negativeSpace, 1), DEFAULT_NATURAL_EXPANSION_DISTANCE, DEFAULT_NATURAL_EXPANSION_RANDOMIZATION);
+        this(BlockMatcher.of(MCRegistrySpecial.INSTANCE, RCBlocks.genericSpace, 1), DEFAULT_NATURAL_EXPANSION_DISTANCE, DEFAULT_NATURAL_EXPANSION_RANDOMIZATION);
     }
 
     public TransformerNaturalAir(String sourceMatcherExpression, double naturalExpansionDistance, double naturalExpansionRandomization)

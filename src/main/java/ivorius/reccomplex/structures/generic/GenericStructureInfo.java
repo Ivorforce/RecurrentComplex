@@ -38,12 +38,10 @@ import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.MathHelper;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldServer;
 import net.minecraft.world.biome.BiomeGenBase;
 import net.minecraftforge.common.BiomeDictionary;
-import net.minecraftforge.common.util.Constants;
 import org.apache.commons.lang3.tuple.Pair;
 
 import javax.annotation.Nullable;
@@ -72,10 +70,10 @@ public class GenericStructureInfo implements StructureInfo<GenericStructureInfo.
         genericStructureInfo.rotatable = false;
         genericStructureInfo.mirrorable = false;
 
-        genericStructureInfo.transformers.add(new TransformerNaturalAir(BlockMatcher.of(MCRegistrySpecial.INSTANCE, RCBlocks.negativeSpace, 1), TransformerNaturalAir.DEFAULT_NATURAL_EXPANSION_DISTANCE, TransformerNaturalAir.DEFAULT_NATURAL_EXPANSION_RANDOMIZATION));
-        genericStructureInfo.transformers.add(new TransformerNegativeSpace(BlockMatcher.of(MCRegistrySpecial.INSTANCE, RCBlocks.negativeSpace, 0)));
-        genericStructureInfo.transformers.add(new TransformerNatural(BlockMatcher.of(MCRegistrySpecial.INSTANCE, RCBlocks.naturalFloor, 0), TransformerNatural.DEFAULT_NATURAL_EXPANSION_DISTANCE, TransformerNatural.DEFAULT_NATURAL_EXPANSION_RANDOMIZATION));
-        genericStructureInfo.transformers.add(new TransformerReplace(BlockMatcher.of(MCRegistrySpecial.INSTANCE, RCBlocks.naturalFloor, 1)).replaceWith(new WeightedBlockState(null, Blocks.air, 0, "")));
+        genericStructureInfo.transformers.add(new TransformerNaturalAir(BlockMatcher.of(MCRegistrySpecial.INSTANCE, RCBlocks.genericSpace, 1), TransformerNaturalAir.DEFAULT_NATURAL_EXPANSION_DISTANCE, TransformerNaturalAir.DEFAULT_NATURAL_EXPANSION_RANDOMIZATION));
+        genericStructureInfo.transformers.add(new TransformerNegativeSpace(BlockMatcher.of(MCRegistrySpecial.INSTANCE, RCBlocks.genericSpace, 0)));
+        genericStructureInfo.transformers.add(new TransformerNatural(BlockMatcher.of(MCRegistrySpecial.INSTANCE, RCBlocks.genericSolid, 0), TransformerNatural.DEFAULT_NATURAL_EXPANSION_DISTANCE, TransformerNatural.DEFAULT_NATURAL_EXPANSION_RANDOMIZATION));
+        genericStructureInfo.transformers.add(new TransformerReplace(BlockMatcher.of(MCRegistrySpecial.INSTANCE, RCBlocks.genericSolid, 1)).replaceWith(new WeightedBlockState(null, Blocks.air, 0, "")));
 
         genericStructureInfo.generationInfos.add(new NaturalGenerationInfo());
 

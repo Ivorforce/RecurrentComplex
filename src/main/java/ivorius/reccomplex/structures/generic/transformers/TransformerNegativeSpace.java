@@ -37,7 +37,7 @@ public class TransformerNegativeSpace implements Transformer<NBTNone>
 
     public TransformerNegativeSpace()
     {
-        this(BlockMatcher.of(MCRegistrySpecial.INSTANCE, RCBlocks.negativeSpace, 0));
+        this(BlockMatcher.of(MCRegistrySpecial.INSTANCE, RCBlocks.genericSpace, 0));
     }
 
     public TransformerNegativeSpace(String sourceExpression)

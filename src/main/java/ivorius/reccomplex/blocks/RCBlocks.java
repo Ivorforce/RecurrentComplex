@@ -12,8 +12,8 @@ import net.minecraft.block.Block;
  */
 public class RCBlocks
 {
-    public static Block negativeSpace;
-    public static Block naturalFloor;
+    public static Block genericSpace;
+    public static Block genericSolid;
 
     public static Block structureGenerator;
     public static Block mazeGenerator;

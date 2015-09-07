@@ -50,7 +50,7 @@ public class CommandSelectNatural extends CommandSelectModify
         double expandFloor = args.length >= 1 ? parseDouble(player, args[0]) : 1;
 
         CommandSelectFloor.placeNaturalFloor(world, area, expandFloor);
-        CommandSelectSpace.placeNaturalAir(world, area);
+        CommandSelectSpace.placeNaturalAir(world, area, 3, 3);
     }
 
     @Override

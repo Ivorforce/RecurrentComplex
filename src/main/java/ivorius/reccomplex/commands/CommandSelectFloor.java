@@ -40,8 +40,9 @@ public class CommandSelectFloor extends CommandSelectModify
         BlockCoord higherPoint = area.getHigherCorner();
 
         Set<BlockCoord> stopped = new HashSet<>();
+        Set<BlockCoord> stopping = new HashSet<>();
 
-        for (int y = lowerPoint.y; y <= higherPoint.y; y++)
+        for (int y = lowerPoint.y + 1; y <= higherPoint.y; y++)
         {
             for (BlockCoord surfaceCoord : BlockAreas.side(area, ForgeDirection.DOWN))
             {
@@ -55,24 +56,29 @@ public class CommandSelectFloor extends CommandSelectModify
                         {
                             setBlockIfAirInArea(world, new BlockCoord(surfaceCoord.x, y - 1, surfaceCoord.z), floorBlock, area);
 
-                            fillSurface(world, area, lowerExpansion, floorBlock, surfaceCoord, y);
+                            fillSurface(world, area, lowerExpansion, floorBlock, surfaceCoord, y, stopping);
                         }
-
-                        stopped.add(surfaceCoord);
                     }
                 }
             }
+
+            stopped.addAll(stopping);
+            stopping.clear();
         }
     }
 
-    private static void fillSurface(World world, BlockArea area, double expansion, Block floorBlock, BlockCoord surfaceCoord, int y)
+    private static void fillSurface(World world, BlockArea area, double expansion, Block floorBlock, BlockCoord surfaceCoord, int y, Set<BlockCoord> coords)
     {
         for (int expX = MathHelper.ceiling_double_int(-expansion); expX <= expansion; expX++)
         {
             for (int expZ = MathHelper.ceiling_double_int(-expansion); expZ <= expansion; expZ++)
             {
                 if (expX * expX + expZ * expZ <= expansion * expansion)
-                    setBlockIfAirInArea(world, new BlockCoord(surfaceCoord.x + expX, y - 1, surfaceCoord.z + expZ), floorBlock, area);
+                {
+                    BlockCoord coord = new BlockCoord(surfaceCoord.x + expX, y - 1, surfaceCoord.z + expZ);
+                    setBlockIfAirInArea(world, coord, floorBlock, area);
+                    coords.add(coord);
+                }
             }
         }
     }

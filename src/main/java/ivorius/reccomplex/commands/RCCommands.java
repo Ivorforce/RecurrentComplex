@@ -58,7 +58,11 @@ public class RCCommands
         event.registerServerCommand(new CommandSelectReplace());
         event.registerServerCommand(new CommandSelectFillSphere());
         if (!RecurrentComplex.isLite())
+        {
+            event.registerServerCommand(new CommandSelectFloor());
+            event.registerServerCommand(new CommandSelectSpace());
             event.registerServerCommand(new CommandSelectNatural());
+        }
 
         event.registerServerCommand(new CommandSelectCopy());
         event.registerServerCommand(new CommandPaste());

@@ -96,7 +96,7 @@ public class CommandSelectFloor extends CommandSelectModify
     @Override
     public String getCommandUsage(ICommandSender var1)
     {
-        return ServerTranslations.usage("commands.selectNatural.usage");
+        return ServerTranslations.usage("commands.selectFloor.usage");
     }
 
     @Override

@@ -61,7 +61,7 @@ public class CommandSelectSpace extends CommandSelectModify
         return false;
     }
 
-    public static void placeNaturalAir(World world, BlockArea area)
+    public static void placeNaturalAir(World world, BlockArea area, int floorDistance, int maxClosedSides)
     {
         Block spaceBlock = RCBlocks.genericSpace;
 
@@ -76,9 +76,9 @@ public class CommandSelectSpace extends CommandSelectModify
             {
                 Block block = world.getBlock(surfaceCoord.x, y, surfaceCoord.z);
 
-                if ((block.getMaterial() != Material.air && block != spaceBlock) || sidesClosed(world, new BlockCoord(surfaceCoord.x, y, surfaceCoord.z), area) >= 3)
+                if ((block.getMaterial() != Material.air && block != spaceBlock) || sidesClosed(world, new BlockCoord(surfaceCoord.x, y, surfaceCoord.z), area) >= maxClosedSides)
                 {
-                    safePoint = y + (block == RCBlocks.genericSolid ? 1 : 3);
+                    safePoint = y + (block == RCBlocks.genericSolid ? 1 : floorDistance);
                     break;
                 }
             }
@@ -92,7 +92,7 @@ public class CommandSelectSpace extends CommandSelectModify
                 {
                     Block block = world.getBlock(surfaceCoord.x, y, surfaceCoord.z);
 
-                    if ((block.getMaterial() != Material.air && block != spaceBlock) || sidesClosed(world, new BlockCoord(surfaceCoord.x, y, surfaceCoord.z), area) >= 3)
+                    if ((block.getMaterial() != Material.air && block != spaceBlock) || sidesClosed(world, new BlockCoord(surfaceCoord.x, y, surfaceCoord.z), area) >= maxClosedSides)
                     {
                         safePoint = y - 1;
                         break;
@@ -123,6 +123,21 @@ public class CommandSelectSpace extends CommandSelectModify
         World world = player.getEntityWorld();
 
         BlockArea area = new BlockArea(point1, point2);
-        placeNaturalAir(world, area);
+
+        int floorDistance = args.length >= 1 ? parseInt(player, args[0]) : 3;
+        int maxClosedSides = args.length >= 2 ? parseInt(player, args[1]) : 3;
+
+        placeNaturalAir(world, area, floorDistance, maxClosedSides);
+    }
+
+    @Override
+    public List addTabCompletionOptions(ICommandSender commandSender, String[] args)
+    {
+        if (args.length == 1)
+            return getListOfStringsMatchingLastWord(args, "3", "2", "1");
+        else if (args.length == 2)
+            return getListOfStringsMatchingLastWord(args, "3", "4", "5");
+
+        return super.addTabCompletionOptions(commandSender, args);
     }
 }

@@ -20,7 +20,8 @@ import java.util.*;
  */
 public class Poem
 {
-    public static final List<String> sentencePatterns = Arrays.asList("As the <10> are, the <10> <4> <7>.",
+    public static final List<String> sentencePatterns = Arrays.asList(
+            "As the <10> are, the <10> <4> <7>.",
             "All the <10> <3> <6>, so <5> the <10>.",
             "<9>! We <4> the <1> and the <2>, why not <5>?",
             "What is the <6> <2> to <7> <3> the <1>?",
@@ -88,7 +89,14 @@ public class Poem
             "<hugenum> <10>",
             "<lownum> <10> <5> <7>",
             "<highnum> <10> <5> <7>",
-            "<hugenum> <10> <5> <7>"
+            "<hugenum> <10> <5> <7>",
+            "These <10> I <3>",
+            "These <10> I once <4>",
+            "I <5> every day",
+            "Now the <2> is <6>",
+            "<8> <10> of <2>",
+            "<8> <10> of <2> and <10> of <2>",
+            "Where <10> <5>"
     );
 
     public static final Map<String, Theme> themes = new HashMap<>();
@@ -123,8 +131,9 @@ public class Poem
     public static Poem randomPoem(Random random, Theme theme)
     {
         PoemContext poemContext = new PoemContext();
-        while (poemContext.add(random, poemContext.names, 0.3f, Person.randomHuman(random, random.nextBoolean()).getFirstName()));
-        while (poemContext.add(random, poemContext.places, 0.3f, Place.randomPlace(random).getFullPlaceType()));
+        while (poemContext.add(random, poemContext.names, 0.3f, Person.randomHuman(random, random.nextBoolean()).getFirstName()))
+            ;
+        while (poemContext.add(random, poemContext.places, 0.3f, Place.randomPlace(random).getFullPlaceType())) ;
 
         String title = getRandomPhrase(random, theme, sentencePatterns, poemContext).trim();
         char titleLastChar = title.charAt(title.length() - 1);

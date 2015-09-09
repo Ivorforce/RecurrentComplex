@@ -93,6 +93,7 @@ tryst
 serendipity
 mirth
 reverie
+dawn
 
 *** Present Transitive Verbs
 make
@@ -111,6 +112,7 @@ seek
 wed
 hie
 hate
+gather
 
 *** Past Transitive Verbs
 made
@@ -129,6 +131,7 @@ sought
 wed
 hied
 hated
+gathered
 
 *** Present Intransitive Verbs
 run
@@ -219,6 +222,7 @@ above
 after
 before
 twixt
+amidst
 
 *** Interjections
 hey

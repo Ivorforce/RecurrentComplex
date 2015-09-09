@@ -86,6 +86,9 @@ rapture
 vertigo
 ribaldry
 psychosis
+challenge
+deceit
+lies
 
 *** Present Transitive Verbs
 kill
@@ -211,6 +214,7 @@ above
 after
 before
 twixt
+amidst
 
 *** Interjections
 o

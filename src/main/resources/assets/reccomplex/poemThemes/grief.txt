@@ -36,6 +36,9 @@ hostility
 pain
 grief
 taint
+dusk
+deceit
+lies
 
 *** Present Transitive Verbs
 make
@@ -89,6 +92,7 @@ grieve
 love
 like
 hate
+whisper
 
 *** Adjectives
 aching
@@ -142,6 +146,7 @@ above
 after
 before
 twixt
+
 
 *** Interjections
 hey

@@ -72,6 +72,8 @@ water
 expanse
 zephyr
 susurration
+shade
+dawn
 
 *** Present Transitive Verbs
 see
@@ -226,6 +228,7 @@ above
 after
 before
 twixt
+amidst
 
 *** Interjections
 hey

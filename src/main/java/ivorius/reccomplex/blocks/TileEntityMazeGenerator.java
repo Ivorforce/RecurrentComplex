@@ -38,7 +38,7 @@ import java.util.*;
 /**
  * Created by lukas on 06.06.14.
  */
-public class TileEntityMazeGenerator extends TileEntity implements GeneratingTileEntity<TileEntityMazeGenerator.InstanceData>, TileEntityWithGUI
+public class TileEntityMazeGenerator extends TileEntity implements WorldScript<TileEntityMazeGenerator.InstanceData>, TileEntityWithGUI
 {
     public String mazeID = "";
     public List<SavedMazePath> mazeExits = new ArrayList<>();

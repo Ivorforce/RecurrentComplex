@@ -26,7 +26,7 @@ import java.util.Scanner;
 /**
  * Created by lukas on 18.06.14.
  */
-public class ItemBookGenerator extends Item implements GeneratingItem
+public class ItemBookGenerator extends Item implements InventoryScript
 {
     @Override
     public boolean onItemUse(ItemStack usedItem, EntityPlayer player, World world, int x, int y, int z, int par7, float par8, float par9, float par10)

@@ -27,7 +27,7 @@ import java.util.Random;
 /**
  * Created by lukas on 05.01.15.
  */
-public class ItemInventoryGenComponentTag extends Item implements GeneratingItem
+public class ItemInventoryGenComponentTag extends Item implements InventoryScript
 {
     public static String componentKey(ItemStack stack)
     {

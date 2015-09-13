@@ -14,7 +14,7 @@ import net.minecraft.nbt.NBTBase;
 /**
  * Created by lukas on 06.06.14.
  */
-public interface GeneratingTileEntity<S>
+public interface WorldScript<S>
 {
     S prepareInstanceData(StructurePrepareContext context);
 

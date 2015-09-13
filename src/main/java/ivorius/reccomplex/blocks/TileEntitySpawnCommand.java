@@ -32,7 +32,7 @@ import java.util.List;
 /**
  * Created by lukas on 06.06.14.
  */
-public class TileEntitySpawnCommand extends TileEntity implements WorldScript<NBTNone>, TileEntityWithGUI
+public class TileEntitySpawnCommand extends TileEntity implements GeneratingTileEntity<NBTNone>, TileEntityWithGUI
 {
     public List<Entry> entries = new ArrayList<>();
 

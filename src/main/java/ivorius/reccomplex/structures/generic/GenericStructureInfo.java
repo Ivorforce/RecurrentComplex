@@ -13,7 +13,7 @@ import ivorius.ivtoolkit.blocks.IvBlockCollection;
 import ivorius.ivtoolkit.tools.IvWorldData;
 import ivorius.ivtoolkit.tools.NBTTagLists;
 import ivorius.reccomplex.RecurrentComplex;
-import ivorius.reccomplex.blocks.WorldScript;
+import ivorius.reccomplex.blocks.GeneratingTileEntity;
 import ivorius.reccomplex.blocks.RCBlocks;
 import ivorius.reccomplex.json.JsonUtils;
 import ivorius.reccomplex.json.NbtToJson;
@@ -164,7 +164,7 @@ public class GenericStructureInfo implements StructureInfo<GenericStructureInfo.
 
                     if (pass == getPass(block, meta) && (context.generateAsSource || !skips(transformers, block, meta)))
                     {
-                        if (context.generateAsSource || !(tileEntity instanceof WorldScript) || ((WorldScript) tileEntity).shouldPlaceInWorld(context, instanceData.tileEntities.get(sourceCoord)))
+                        if (context.generateAsSource || !(tileEntity instanceof GeneratingTileEntity) || ((GeneratingTileEntity) tileEntity).shouldPlaceInWorld(context, instanceData.tileEntities.get(sourceCoord)))
                         {
                             if (context.setBlock(worldPos, block, meta))
                             {
@@ -220,8 +220,8 @@ public class GenericStructureInfo implements StructureInfo<GenericStructureInfo.
         if (!context.generateAsSource && context.generationLayer < MAX_GENERATING_LAYERS)
         {
             for (Map.Entry<BlockCoord, TileEntity> entry : tileEntities.entrySet())
-                if (entry.getValue() instanceof WorldScript)
-                    ((WorldScript) entry.getValue()).generate(context, instanceData.tileEntities.get(entry.getKey()));
+                if (entry.getValue() instanceof GeneratingTileEntity)
+                    ((GeneratingTileEntity) entry.getValue()).generate(context, instanceData.tileEntities.get(entry.getKey()));
         }
         else
         {
@@ -246,11 +246,11 @@ public class GenericStructureInfo implements StructureInfo<GenericStructureInfo.
                 instanceData.transformers.add(transformer.prepareInstanceData(context));
 
             for (TileEntity tileEntity : worldData.tileEntities)
-                if (tileEntity instanceof WorldScript)
+                if (tileEntity instanceof GeneratingTileEntity)
                 {
                     BlockCoord key = new BlockCoord(tileEntity);
                     IvWorldData.setTileEntityPosForGeneration(tileEntity, context.transform.apply(key, areaSize).add(origin));
-                    instanceData.tileEntities.put(key, (NBTStorable) ((WorldScript) tileEntity).prepareInstanceData(context));
+                    instanceData.tileEntities.put(key, (NBTStorable) ((GeneratingTileEntity) tileEntity).prepareInstanceData(context));
                 }
         }
 
@@ -458,11 +458,11 @@ public class GenericStructureInfo implements StructureInfo<GenericStructureInfo.
             NBTTagCompound tileEntityCompound = compound.getCompoundTag(InstanceData.KEY_TILE_ENTITIES);
             for (TileEntity tileEntity : worldData.tileEntities)
             {
-                if (tileEntity instanceof WorldScript)
+                if (tileEntity instanceof GeneratingTileEntity)
                 {
                     BlockCoord key = new BlockCoord(tileEntity);
                     IvWorldData.setTileEntityPosForGeneration(tileEntity, context.transform.apply(key, areaSize).add(origin));
-                    tileEntities.put(key, (NBTStorable) ((WorldScript) tileEntity).loadInstanceData(context, getTileEntityTag(tileEntityCompound, key)));
+                    tileEntities.put(key, (NBTStorable) ((GeneratingTileEntity) tileEntity).loadInstanceData(context, getTileEntityTag(tileEntityCompound, key)));
                 }
             }
         }

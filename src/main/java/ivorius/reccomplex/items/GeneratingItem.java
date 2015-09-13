@@ -13,7 +13,7 @@ import java.util.Random;
 /**
  * Created by lukas on 25.05.14.
  */
-public interface InventoryScript
+public interface GeneratingItem
 {
     void generateInInventory(IInventory inventory, Random random, ItemStack stack, int fromSlot);
 }

@@ -22,7 +22,7 @@ import java.util.*;
 /**
  * Created by lukas on 18.06.14.
  */
-public class ItemArtifactGenerator extends Item implements InventoryScript
+public class ItemArtifactGenerator extends Item implements GeneratingItem
 {
     private Map<ItemStack, List<String>> artifacts;
 

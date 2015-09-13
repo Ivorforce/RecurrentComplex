@@ -23,13 +23,13 @@ import net.minecraftforge.common.util.Constants;
 
 import java.util.List;
 
-public abstract class ItemInventoryGenerationTag extends Item implements InventoryScript
+public abstract class ItemInventoryGenerationTag extends Item implements GeneratingItem
 {
     public ItemInventoryGenerationTag()
     {
     }
 
-    public static boolean applyGeneratorToInventory(World world, int x, int y, int z, InventoryScript inventoryScript, ItemStack stack)
+    public static boolean applyGeneratorToInventory(World world, int x, int y, int z, GeneratingItem generatingItem, ItemStack stack)
     {
         TileEntity rightClicked = world.getTileEntity(x, y, z);
 
@@ -37,7 +37,7 @@ public abstract class ItemInventoryGenerationTag extends Item implements Invento
         {
             if (!world.isRemote)
             {
-                inventoryScript.generateInInventory((IInventory) rightClicked, world.rand, stack, world.rand.nextInt(((IInventory) rightClicked).getSizeInventory()));
+                generatingItem.generateInInventory((IInventory) rightClicked, world.rand, stack, world.rand.nextInt(((IInventory) rightClicked).getSizeInventory()));
                 InventoryGenerationHandler.generateAllTags((IInventory) rightClicked, MCRegistrySpecial.INSTANCE.itemHidingMode(), world.rand);
             }
 

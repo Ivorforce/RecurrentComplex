@@ -5,6 +5,7 @@
 
 package ivorius.reccomplex.blocks;
 
+import com.google.common.base.Function;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import ivorius.ivtoolkit.blocks.BlockCoord;
@@ -28,12 +29,13 @@ import net.minecraftforge.common.util.Constants;
 import net.minecraftforge.common.util.ForgeDirection;
 import org.apache.commons.lang3.tuple.Pair;
 
+import javax.annotation.Nullable;
 import java.util.*;
 
 /**
  * Created by lukas on 06.06.14.
  */
-public class TileEntityStructureGenerator extends TileEntity implements WorldScript<TileEntityStructureGenerator.InstanceData>, TileEntityWithGUI
+public class TileEntityStructureGenerator extends TileEntity implements GeneratingTileEntity<TileEntityStructureGenerator.InstanceData>, TileEntityWithGUI
 {
     protected boolean simpleMode;
 

@@ -5,7 +5,7 @@
 
 package ivorius.reccomplex.worldgen.inventory;
 
-import ivorius.reccomplex.items.InventoryScript;
+import ivorius.reccomplex.items.GeneratingItem;
 import ivorius.reccomplex.structures.MCRegistrySpecial;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.Item;
@@ -23,7 +23,7 @@ public class InventoryGenerationHandler
 {
     public static void generateAllTags(IInventory inventory, MCRegistrySpecial.ItemHidingRegistry registry, Random random)
     {
-        List<Triple<ItemStack, InventoryScript, Integer>> foundGenerators = new ArrayList<>();
+        List<Triple<ItemStack, GeneratingItem, Integer>> foundGenerators = new ArrayList<>();
         boolean didChange = true;
         int cycles = 0;
 
@@ -38,9 +38,9 @@ public class InventoryGenerationHandler
                     if (stack != null)
                     {
                         Item item = registry.containedItem(stack);
-                        if (item instanceof InventoryScript)
+                        if (item instanceof GeneratingItem)
                         {
-                            foundGenerators.add(Triple.of(stack, (InventoryScript) item, i));
+                            foundGenerators.add(Triple.of(stack, (GeneratingItem) item, i));
                             inventory.setInventorySlotContents(i, null);
                         }
                     }
@@ -51,7 +51,7 @@ public class InventoryGenerationHandler
 
             if (foundGenerators.size() > 0)
             {
-                Triple<ItemStack, InventoryScript, Integer> pair = foundGenerators.get(0);
+                Triple<ItemStack, GeneratingItem, Integer> pair = foundGenerators.get(0);
                 pair.getMiddle().generateInInventory(inventory, random, pair.getLeft(), pair.getRight());
 
                 foundGenerators.remove(0);

@@ -3,7 +3,7 @@
  *  * http://lukas.axxim.net
  */
 
-package ivorius.reccomplex.gui.editmazeblock;
+package ivorius.reccomplex.gui.worldscripts.mazegenerator;
 
 import ivorius.ivtoolkit.maze.components.MazeRoom;
 import ivorius.reccomplex.gui.TableDirections;

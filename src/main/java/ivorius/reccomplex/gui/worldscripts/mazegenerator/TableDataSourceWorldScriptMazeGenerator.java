@@ -3,7 +3,7 @@
  *  * http://lukas.axxim.net
  */
 
-package ivorius.reccomplex.gui.editmazeblock;
+package ivorius.reccomplex.gui.worldscripts.mazegenerator;
 
 import ivorius.ivtoolkit.blocks.BlockCoord;
 import ivorius.reccomplex.gui.table.*;
@@ -12,7 +12,7 @@ import ivorius.reccomplex.scripts.world.WorldScriptMazeGenerator;
 /**
  * Created by lukas on 05.06.14.
  */
-public class TableDataSourceMazeBlock extends TableDataSourceSegmented implements TableCellPropertyListener, TableCellActionListener
+public class TableDataSourceWorldScriptMazeGenerator extends TableDataSourceSegmented implements TableCellPropertyListener, TableCellActionListener
 {
     public static final int[] DIMENSIONS = new int[]{100, 100, 100};
     private WorldScriptMazeGenerator script;
@@ -20,7 +20,7 @@ public class TableDataSourceMazeBlock extends TableDataSourceSegmented implement
     private TableDelegate tableDelegate;
     private TableNavigator tableNavigator;
 
-    public TableDataSourceMazeBlock(WorldScriptMazeGenerator script, TableDelegate tableDelegate, TableNavigator tableNavigator)
+    public TableDataSourceWorldScriptMazeGenerator(WorldScriptMazeGenerator script, TableDelegate tableDelegate, TableNavigator tableNavigator)
     {
         this.script = script;
         this.tableDelegate = tableDelegate;

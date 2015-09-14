@@ -8,7 +8,7 @@ package ivorius.reccomplex.blocks;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import ivorius.ivtoolkit.blocks.BlockCoord;
-import ivorius.reccomplex.gui.editspawncommandblock.GuiEditSpawnCommandBlock;
+import ivorius.reccomplex.gui.worldscripts.command.GuiEditSpawnCommandBlock;
 import ivorius.reccomplex.scripts.world.WorldScriptCommand;
 import ivorius.reccomplex.structures.StructureLoadContext;
 import ivorius.reccomplex.structures.StructurePrepareContext;

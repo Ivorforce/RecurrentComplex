@@ -7,6 +7,9 @@ package ivorius.reccomplex.scripts.world;
 
 import ivorius.ivtoolkit.blocks.BlockCoord;
 import ivorius.ivtoolkit.tools.NBTCompoundObject;
+import ivorius.reccomplex.gui.table.TableDataSource;
+import ivorius.reccomplex.gui.table.TableDelegate;
+import ivorius.reccomplex.gui.table.TableNavigator;
 import ivorius.reccomplex.structures.StructureLoadContext;
 import ivorius.reccomplex.structures.StructurePrepareContext;
 import ivorius.reccomplex.structures.StructureSpawnContext;
@@ -24,4 +27,8 @@ public interface WorldScript<S extends NBTStorable> extends NBTCompoundObject
     S loadInstanceData(StructureLoadContext context, NBTBase nbt);
 
     void generate(StructureSpawnContext context, S instanceData, BlockCoord coord);
+
+    String getDisplayString();
+
+    TableDataSource tableDataSource(TableNavigator navigator, TableDelegate tableDelegate);
 }

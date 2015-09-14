@@ -10,8 +10,13 @@ import ivorius.ivtoolkit.blocks.Directions;
 import ivorius.ivtoolkit.math.AxisAlignedTransform2D;
 import ivorius.ivtoolkit.random.WeightedSelector;
 import ivorius.ivtoolkit.tools.IvCollections;
+import ivorius.reccomplex.gui.table.TableDataSource;
+import ivorius.reccomplex.gui.table.TableDelegate;
+import ivorius.reccomplex.gui.table.TableNavigator;
+import ivorius.reccomplex.gui.worldscripts.structuregenerator.TableDataSourceStructureBlock;
 import ivorius.reccomplex.structures.*;
 import ivorius.reccomplex.structures.generic.gentypes.StructureListGenerationInfo;
+import ivorius.reccomplex.utils.IvTranslations;
 import ivorius.reccomplex.utils.NBTStorable;
 import ivorius.reccomplex.worldgen.StructureGenerator;
 import net.minecraft.nbt.NBTBase;
@@ -247,6 +252,18 @@ public class WorldScriptStructureGenerator implements WorldScript<WorldScriptStr
         StructureInfo structureInfo = StructureRegistry.getStructure(instanceData.structureID);
         if (structureInfo != null && instanceData.structureData != null)
             StructureGenerator.partially(structureInfo, world, random, instanceData.lowerCoord.add(coord), instanceData.structureTransform, context.generationBB, layer + 1, instanceData.structureID, instanceData.structureData, context.isFirstTime);
+    }
+
+    @Override
+    public String getDisplayString()
+    {
+        return IvTranslations.get("reccomplex.worldscript.strucGen");
+    }
+
+    @Override
+    public TableDataSource tableDataSource(TableNavigator navigator, TableDelegate tableDelegate)
+    {
+        return new TableDataSourceStructureBlock(this, navigator, tableDelegate);
     }
 
     public static class InstanceData implements NBTStorable

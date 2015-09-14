@@ -8,8 +8,8 @@ package ivorius.reccomplex.blocks;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import ivorius.ivtoolkit.blocks.BlockCoord;
-import ivorius.reccomplex.gui.worldscripts.mazegenerator.GuiEditMazeBlock;
-import ivorius.reccomplex.scripts.world.WorldScriptMazeGenerator;
+import ivorius.reccomplex.gui.worldscripts.multi.GuiEditSpawnScript;
+import ivorius.reccomplex.scripts.world.WorldScriptMulti;
 import ivorius.reccomplex.structures.StructureLoadContext;
 import ivorius.reccomplex.structures.StructurePrepareContext;
 import ivorius.reccomplex.structures.StructureSpawnContext;
@@ -21,9 +21,9 @@ import net.minecraft.tileentity.TileEntity;
 /**
  * Created by lukas on 06.06.14.
  */
-public class TileEntityMazeGenerator extends TileEntity implements GeneratingTileEntity<WorldScriptMazeGenerator.InstanceData>, TileEntityWithGUI
+public class TileEntitySpawnScript extends TileEntity implements GeneratingTileEntity<WorldScriptMulti.InstanceData>, TileEntityWithGUI
 {
-    public WorldScriptMazeGenerator script = new WorldScriptMazeGenerator();
+    public final WorldScriptMulti script = new WorldScriptMulti();
 
     @Override
     public void readFromNBT(NBTTagCompound nbtTagCompound)
@@ -42,25 +42,25 @@ public class TileEntityMazeGenerator extends TileEntity implements GeneratingTil
     }
 
     @Override
-    public WorldScriptMazeGenerator.InstanceData prepareInstanceData(StructurePrepareContext context)
+    public WorldScriptMulti.InstanceData prepareInstanceData(StructurePrepareContext context)
     {
         return script.prepareInstanceData(context, new BlockCoord(this), worldObj);
     }
 
     @Override
-    public WorldScriptMazeGenerator.InstanceData loadInstanceData(StructureLoadContext context, NBTBase nbt)
+    public WorldScriptMulti.InstanceData loadInstanceData(StructureLoadContext context, NBTBase nbt)
     {
         return script.loadInstanceData(context, nbt);
     }
 
     @Override
-    public void generate(StructureSpawnContext context, WorldScriptMazeGenerator.InstanceData instanceData)
+    public void generate(StructureSpawnContext context, WorldScriptMulti.InstanceData instanceData)
     {
         script.generate(context, instanceData, new BlockCoord(this));
     }
 
     @Override
-    public boolean shouldPlaceInWorld(StructureSpawnContext context, WorldScriptMazeGenerator.InstanceData instanceData)
+    public boolean shouldPlaceInWorld(StructureSpawnContext context, WorldScriptMulti.InstanceData instanceData)
     {
         return false;
     }
@@ -78,15 +78,14 @@ public class TileEntityMazeGenerator extends TileEntity implements GeneratingTil
     {
         if (compound.hasKey("script"))
             script.readFromNBT(compound.getCompoundTag("script"));
-        else // Legacy
-            script.readFromNBT(compound);
+        else
+            script.readFromNBT(new NBTTagCompound());
     }
 
     @SideOnly(Side.CLIENT)
     @Override
     public void openEditGUI()
     {
-        Minecraft.getMinecraft().displayGuiScreen(new GuiEditMazeBlock(this));
+        Minecraft.getMinecraft().displayGuiScreen(new GuiEditSpawnScript(this));
     }
-
 }

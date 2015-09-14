@@ -15,6 +15,10 @@ import ivorius.ivtoolkit.maze.components.*;
 import ivorius.ivtoolkit.tools.IvNBTHelper;
 import ivorius.ivtoolkit.tools.NBTCompoundObjects;
 import ivorius.ivtoolkit.tools.Visitor;
+import ivorius.reccomplex.gui.table.TableDataSource;
+import ivorius.reccomplex.gui.table.TableDelegate;
+import ivorius.reccomplex.gui.table.TableNavigator;
+import ivorius.reccomplex.gui.worldscripts.mazegenerator.TableDataSourceWorldScriptMazeGenerator;
 import ivorius.reccomplex.structures.StructureLoadContext;
 import ivorius.reccomplex.structures.StructurePrepareContext;
 import ivorius.reccomplex.structures.StructureRegistry;
@@ -22,6 +26,7 @@ import ivorius.reccomplex.structures.StructureSpawnContext;
 import ivorius.reccomplex.structures.generic.Selection;
 import ivorius.reccomplex.structures.generic.maze.*;
 import ivorius.reccomplex.utils.IntAreas;
+import ivorius.reccomplex.utils.IvTranslations;
 import ivorius.reccomplex.utils.NBTStorable;
 import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTTagCompound;
@@ -112,6 +117,18 @@ public class WorldScriptMazeGenerator implements WorldScript<WorldScriptMazeGene
         if (placedStructures == null)
             return;
         WorldGenMaze.generatePlacedStructures(placedStructures, context);
+    }
+
+    @Override
+    public String getDisplayString()
+    {
+        return IvTranslations.get("reccomplex.worldscript.mazeGen");
+    }
+
+    @Override
+    public TableDataSource tableDataSource(TableNavigator navigator, TableDelegate tableDelegate)
+    {
+        return new TableDataSourceWorldScriptMazeGenerator(this, tableDelegate, navigator);
     }
 
     public String getMazeID()

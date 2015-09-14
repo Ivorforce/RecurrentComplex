@@ -3,7 +3,7 @@
  *  * http://lukas.axxim.net
  */
 
-package ivorius.reccomplex.gui.editstructureblock;
+package ivorius.reccomplex.gui.worldscripts.structuregenerator;
 
 import ivorius.ivtoolkit.blocks.BlockCoord;
 import ivorius.reccomplex.blocks.TileEntityStructureGenerator;
@@ -26,16 +26,14 @@ import static ivorius.reccomplex.gui.table.TableCellEnum.Option;
  */
 public class TableDataSourceStructureBlock extends TableDataSourceSegmented implements TableCellPropertyListener
 {
-    protected TileEntityStructureGenerator tileEntity;
     protected WorldScriptStructureGenerator script;
 
     protected TableNavigator tableNavigator;
     protected TableDelegate tableDelegate;
 
-    public TableDataSourceStructureBlock(TileEntityStructureGenerator tileEntity, TableNavigator tableNavigator, TableDelegate tableDelegate)
+    public TableDataSourceStructureBlock(WorldScriptStructureGenerator script, TableNavigator tableNavigator, TableDelegate tableDelegate)
     {
-        this.tileEntity = tileEntity;
-        this.script = tileEntity.script;
+        this.script = script;
         this.tableNavigator = tableNavigator;
         this.tableDelegate = tableDelegate;
     }
@@ -49,16 +47,6 @@ public class TableDataSourceStructureBlock extends TableDataSourceSegmented impl
         }
 
         return true;
-    }
-
-    public TileEntityStructureGenerator getTileEntity()
-    {
-        return tileEntity;
-    }
-
-    public void setTileEntity(TileEntityStructureGenerator tileEntity)
-    {
-        this.tileEntity = tileEntity;
     }
 
     @Override

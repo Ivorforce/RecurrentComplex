@@ -3,10 +3,10 @@
  *  * http://lukas.axxim.net
  */
 
-package ivorius.reccomplex.gui.editmazeblock;
+package ivorius.reccomplex.gui.worldscripts.command;
 
 import ivorius.reccomplex.RecurrentComplex;
-import ivorius.reccomplex.blocks.TileEntityMazeGenerator;
+import ivorius.reccomplex.blocks.TileEntitySpawnCommand;
 import ivorius.reccomplex.gui.table.Bounds;
 import ivorius.reccomplex.gui.table.GuiScreenModalTable;
 import ivorius.reccomplex.gui.table.GuiTable;
@@ -17,17 +17,17 @@ import org.lwjgl.input.Keyboard;
 /**
  * Created by lukas on 26.05.14.
  */
-public class GuiEditMazeBlock extends GuiScreenModalTable
+public class GuiEditSpawnCommandBlock extends GuiScreenModalTable
 {
-    TableDataSourceMazeBlock structureDataSource;
-    TileEntityMazeGenerator tileEntity;
+    TileEntitySpawnCommand tileEntity;
+    TableDataSourceWorldScriptCommand structureDataSource;
 
-    public GuiEditMazeBlock(TileEntityMazeGenerator structureGenerator)
+    public GuiEditSpawnCommandBlock(TileEntitySpawnCommand tileEntity)
     {
-        GuiTable structureGenProperties = new GuiTable(this, structureDataSource = new TableDataSourceMazeBlock(structureGenerator.script, this, this));
+        GuiTable structureGenProperties = new GuiTable(this, structureDataSource = new TableDataSourceWorldScriptCommand(tileEntity.script, this, this));
         structureGenProperties.setHideScrollbarIfUnnecessary(true);
         setTable(structureGenProperties);
-        tileEntity = structureGenerator;
+        this.tileEntity = tileEntity;
     }
 
     @Override

@@ -3,7 +3,7 @@
  *  * http://lukas.axxim.net
  */
 
-package ivorius.reccomplex.gui.editspawncommandblock;
+package ivorius.reccomplex.gui.worldscripts.command;
 
 import ivorius.reccomplex.gui.table.*;
 import ivorius.reccomplex.scripts.world.WorldScriptCommand;

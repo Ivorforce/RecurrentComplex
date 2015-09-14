@@ -18,4 +18,5 @@ public class RCBlocks
     public static Block structureGenerator;
     public static Block mazeGenerator;
     public static Block spawnCommands;
+    public static Block spawnScript;
 }

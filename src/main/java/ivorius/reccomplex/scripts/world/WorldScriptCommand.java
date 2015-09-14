@@ -10,9 +10,14 @@ import ivorius.ivtoolkit.random.WeightedSelector;
 import ivorius.ivtoolkit.tools.IvCollections;
 import ivorius.reccomplex.RecurrentComplex;
 import ivorius.reccomplex.blocks.SpawnCommandLogic;
+import ivorius.reccomplex.gui.table.TableDataSource;
+import ivorius.reccomplex.gui.table.TableDelegate;
+import ivorius.reccomplex.gui.table.TableNavigator;
+import ivorius.reccomplex.gui.worldscripts.command.TableDataSourceWorldScriptCommand;
 import ivorius.reccomplex.structures.StructureLoadContext;
 import ivorius.reccomplex.structures.StructurePrepareContext;
 import ivorius.reccomplex.structures.StructureSpawnContext;
+import ivorius.reccomplex.utils.IvTranslations;
 import ivorius.reccomplex.utils.NBTNone;
 import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTTagCompound;
@@ -93,6 +98,18 @@ public class WorldScriptCommand implements WorldScript<NBTNone>
                 }
             }
         }
+    }
+
+    @Override
+    public String getDisplayString()
+    {
+        return IvTranslations.get("reccomplex.worldscript.command");
+    }
+
+    @Override
+    public TableDataSource tableDataSource(TableNavigator navigator, TableDelegate tableDelegate)
+    {
+        return new TableDataSourceWorldScriptCommand(this, tableDelegate, navigator);
     }
 
     public static class Entry implements WeightedSelector.Item

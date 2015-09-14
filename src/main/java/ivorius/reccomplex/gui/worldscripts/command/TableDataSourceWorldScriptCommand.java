@@ -3,13 +3,11 @@
  *  * http://lukas.axxim.net
  */
 
-package ivorius.reccomplex.gui.editspawncommandblock;
+package ivorius.reccomplex.gui.worldscripts.command;
 
 import ivorius.reccomplex.blocks.TileEntitySpawnCommand;
-import ivorius.reccomplex.blocks.TileEntityWithGUI;
 import ivorius.reccomplex.gui.table.*;
 import ivorius.reccomplex.scripts.world.WorldScriptCommand;
-import net.minecraft.tileentity.TileEntity;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.List;
@@ -17,26 +15,13 @@ import java.util.List;
 /**
  * Created by lukas on 05.06.14.
  */
-public class TableDataSourceSpawnCommandBlock extends TableDataSourceList<WorldScriptCommand.Entry, List<WorldScriptCommand.Entry>>
+public class TableDataSourceWorldScriptCommand extends TableDataSourceList<WorldScriptCommand.Entry, List<WorldScriptCommand.Entry>>
 {
-    private TileEntitySpawnCommand tileEntity;
-
-    public TableDataSourceSpawnCommandBlock(TileEntitySpawnCommand tileEntity, TableDelegate tableDelegate, TableNavigator navigator)
+    public TableDataSourceWorldScriptCommand(WorldScriptCommand script, TableDelegate tableDelegate, TableNavigator navigator)
     {
-        super(tileEntity.script.entries, tableDelegate, navigator);
-        this.tileEntity = tileEntity;
+        super(script.entries, tableDelegate, navigator);
         setEarlierTitle("Up");
         setLaterTitle("Down");
-    }
-
-    public TileEntitySpawnCommand getTileEntity()
-    {
-        return tileEntity;
-    }
-
-    public void setTileEntity(TileEntitySpawnCommand tileEntity)
-    {
-        this.tileEntity = tileEntity;
     }
 
     @Override

@@ -5,12 +5,9 @@
 
 package ivorius.reccomplex.gui.editstructure.gentypes;
 
-import ivorius.reccomplex.gui.editmazeblock.TableDataSourceMazeComponent;
-import ivorius.reccomplex.gui.editmazeblock.TableDataSourceMazePathList;
-import ivorius.reccomplex.gui.editmazeblock.TableDataSourceSelection;
+import ivorius.reccomplex.gui.worldscripts.mazegenerator.TableDataSourceMazeComponent;
 import ivorius.reccomplex.gui.table.*;
 import ivorius.reccomplex.structures.generic.gentypes.MazeGenerationInfo;
-import ivorius.reccomplex.structures.generic.maze.SavedMazeComponent;
 
 /**
  * Created by lukas on 07.10.14.

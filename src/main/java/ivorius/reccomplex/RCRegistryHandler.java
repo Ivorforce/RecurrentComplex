@@ -18,6 +18,7 @@ import ivorius.reccomplex.blocks.materials.RCMaterials;
 import ivorius.reccomplex.json.SerializableStringTypeRegistry;
 import ivorius.reccomplex.operation.OperationRegistry;
 import ivorius.reccomplex.random.Poem;
+import ivorius.reccomplex.scripts.world.*;
 import ivorius.reccomplex.structures.MCRegistrySpecial;
 import ivorius.reccomplex.structures.OperationMoveStructure;
 import ivorius.reccomplex.structures.generic.BiomeGenerationInfo;
@@ -141,9 +142,14 @@ public class RCRegistryHandler
 
         spawnCommands = new BlockSpawnCommand().setBlockName("spawn_command").setBlockTextureName(textureBase + "spawnCommand");
         spawnCommands.setCreativeTab(tabStructureTools);
-        register(spawnCommands, ItemMazeGenerator.class, "weighted_command_block");
+        register(spawnCommands, "weighted_command_block");
         register(TileEntitySpawnCommand.class, "RCSpawnCommand");
         RecurrentComplex.remapper.registerLegacyID("spawnCommand", spawnCommands, true);
+
+        spawnScript = new BlockSpawnScript().setBlockName("spawn_script").setBlockTextureName(textureBase + "spawnScript");
+        spawnScript.setCreativeTab(tabStructureTools);
+        register(spawnScript, "spawn_script");
+        register(TileEntitySpawnScript.class, "RCSpawnScript");
 
         // Register early to allow proper loading
         registerDimensionPresets();
@@ -196,6 +202,11 @@ public class RCRegistryHandler
     public static void load(FMLInitializationEvent event, RecurrentComplex mod)
     {
         MCRegistrySpecial mcRegistry = MCRegistrySpecial.INSTANCE;
+
+        WorldScriptRegistry.INSTANCE.register("multi", WorldScriptMulti.class);
+        WorldScriptRegistry.INSTANCE.register("strucGen", WorldScriptStructureGenerator.class);
+        WorldScriptRegistry.INSTANCE.register("mazeGen", WorldScriptMazeGenerator.class);
+        WorldScriptRegistry.INSTANCE.register("command", WorldScriptCommand.class);
 
         SerializableStringTypeRegistry<Transformer> transformerRegistry = StructureRegistry.getTransformerRegistry();
         transformerRegistry.registerType("natural", TransformerNatural.class, new TransformerNatural.Serializer(mcRegistry));

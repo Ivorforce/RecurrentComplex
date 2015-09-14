@@ -5,8 +5,8 @@
 
 package ivorius.reccomplex.gui.editspawncommandblock;
 
-import ivorius.reccomplex.blocks.TileEntitySpawnCommand;
 import ivorius.reccomplex.gui.table.*;
+import ivorius.reccomplex.scripts.world.WorldScriptCommand;
 import ivorius.reccomplex.utils.IvTranslations;
 import ivorius.reccomplex.utils.scale.Scales;
 
@@ -15,11 +15,11 @@ import ivorius.reccomplex.utils.scale.Scales;
  */
 public class TableDataSourceSpawnCommandEntry extends TableDataSourceSegmented implements TableCellPropertyListener, TableCellActionListener
 {
-    private TileEntitySpawnCommand.Entry entry;
+    private WorldScriptCommand.Entry entry;
 
     private TableDelegate tableDelegate;
 
-    public TableDataSourceSpawnCommandEntry(TileEntitySpawnCommand.Entry entry, TableDelegate tableDelegate)
+    public TableDataSourceSpawnCommandEntry(WorldScriptCommand.Entry entry, TableDelegate tableDelegate)
     {
         this.entry = entry;
         this.tableDelegate = tableDelegate;

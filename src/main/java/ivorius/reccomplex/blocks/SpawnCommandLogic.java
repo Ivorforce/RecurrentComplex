@@ -5,6 +5,7 @@
 
 package ivorius.reccomplex.blocks;
 
+import ivorius.ivtoolkit.blocks.BlockCoord;
 import ivorius.reccomplex.RCConfig;
 import ivorius.reccomplex.utils.RCAccessorCommandBase;
 import net.minecraft.command.CommandBase;
@@ -22,12 +23,14 @@ import net.minecraft.world.World;
  */
 public class SpawnCommandLogic implements ICommandSender
 {
-    private TileEntitySpawnCommand tileEntity;
+    private World world;
+    BlockCoord coord;
     private String command = "";
 
-    public SpawnCommandLogic(TileEntitySpawnCommand tileEntity, String command)
+    public SpawnCommandLogic(World world, BlockCoord coord, String command)
     {
-        this.tileEntity = tileEntity;
+        this.world = world;
+        this.coord = coord;
         this.command = command;
     }
 
@@ -40,13 +43,14 @@ public class SpawnCommandLogic implements ICommandSender
     @Override
     public ChunkCoordinates getPlayerCoordinates()
     {
-        return new ChunkCoordinates(tileEntity.xCoord, tileEntity.yCoord, tileEntity.zCoord);
+        return new ChunkCoordinates(coord.x, coord.y, coord.z);
     }
 
     @Override
     public World getEntityWorld()
     {
-        return tileEntity.getWorldObj();
+        return world;
+
     }
 
     public void setCommand(String p_145752_1_)

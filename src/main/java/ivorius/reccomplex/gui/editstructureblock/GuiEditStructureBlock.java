@@ -52,7 +52,7 @@ public class GuiEditStructureBlock extends GuiScreenModalTable
     {
         if (keyCode == Keyboard.KEY_ESCAPE)
         {
-            RecurrentComplex.network.sendToServer(new PacketEditTileEntity(structureDataSource.getStructureGenerator()));
+            RecurrentComplex.network.sendToServer(new PacketEditTileEntity(structureDataSource.getTileEntity()));
             this.mc.thePlayer.closeScreen();
         }
         else
@@ -68,7 +68,7 @@ public class GuiEditStructureBlock extends GuiScreenModalTable
 
         if (button.id == 0)
         {
-            RecurrentComplex.network.sendToServer(new PacketEditTileEntity(structureDataSource.getStructureGenerator()));
+            RecurrentComplex.network.sendToServer(new PacketEditTileEntity(structureDataSource.getTileEntity()));
             this.mc.thePlayer.closeScreen();
         }
         else if (button.id == 1)

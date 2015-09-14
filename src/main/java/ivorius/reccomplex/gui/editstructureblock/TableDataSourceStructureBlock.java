@@ -10,6 +10,7 @@ import ivorius.reccomplex.blocks.TileEntityStructureGenerator;
 import ivorius.reccomplex.gui.GuiValidityStateIndicator;
 import ivorius.reccomplex.gui.TableDirections;
 import ivorius.reccomplex.gui.table.*;
+import ivorius.reccomplex.scripts.world.WorldScriptStructureGenerator;
 import ivorius.reccomplex.structures.StructureRegistry;
 import ivorius.ivtoolkit.blocks.Directions;
 import joptsimple.internal.Strings;
@@ -25,14 +26,16 @@ import static ivorius.reccomplex.gui.table.TableCellEnum.Option;
  */
 public class TableDataSourceStructureBlock extends TableDataSourceSegmented implements TableCellPropertyListener
 {
-    protected TileEntityStructureGenerator structureGenerator;
+    protected TileEntityStructureGenerator tileEntity;
+    protected WorldScriptStructureGenerator script;
 
     protected TableNavigator tableNavigator;
     protected TableDelegate tableDelegate;
 
-    public TableDataSourceStructureBlock(TileEntityStructureGenerator structureGenerator, TableNavigator tableNavigator, TableDelegate tableDelegate)
+    public TableDataSourceStructureBlock(TileEntityStructureGenerator tileEntity, TableNavigator tableNavigator, TableDelegate tableDelegate)
     {
-        this.structureGenerator = structureGenerator;
+        this.tileEntity = tileEntity;
+        this.script = tileEntity.script;
         this.tableNavigator = tableNavigator;
         this.tableDelegate = tableDelegate;
     }
@@ -48,20 +51,20 @@ public class TableDataSourceStructureBlock extends TableDataSourceSegmented impl
         return true;
     }
 
-    public TileEntityStructureGenerator getStructureGenerator()
+    public TileEntityStructureGenerator getTileEntity()
     {
-        return structureGenerator;
+        return tileEntity;
     }
 
-    public void setStructureGenerator(TileEntityStructureGenerator structureGenerator)
+    public void setTileEntity(TileEntityStructureGenerator tileEntity)
     {
-        this.structureGenerator = structureGenerator;
+        this.tileEntity = tileEntity;
     }
 
     @Override
     public int numberOfSegments()
     {
-        return structureGenerator.isSimpleMode() ? 4 : 4;
+        return script.isSimpleMode() ? 4 : 4;
     }
 
     @Override
@@ -74,7 +77,7 @@ public class TableDataSourceStructureBlock extends TableDataSourceSegmented impl
         else if (segment == 2)
             return 3;
         else if (segment == 3)
-            return structureGenerator.isSimpleMode() ? 2 : 1;
+            return script.isSimpleMode() ? 2 : 1;
 
         return 0;
     }
@@ -84,23 +87,23 @@ public class TableDataSourceStructureBlock extends TableDataSourceSegmented impl
     {
         if (segment == 0)
         {
-            TableCellBoolean cell = new TableCellBoolean("simpleMode", structureGenerator.isSimpleMode());
+            TableCellBoolean cell = new TableCellBoolean("simpleMode", script.isSimpleMode());
             cell.addPropertyListener(this);
             return new TableElementCell("Simple Mode", cell);
         }
         else if (segment == 1)
         {
-            if (structureGenerator.isSimpleMode())
+            if (script.isSimpleMode())
             {
-                TableCellString cell = new TableCellString("generators", Strings.join(structureGenerator.getStructureNames(), ","));
+                TableCellString cell = new TableCellString("generators", Strings.join(script.getStructureNames(), ","));
                 cell.setShowsValidityState(true);
-                cell.setValidityState(doAllStructuresExist(structureGenerator.getStructureNames()) ? GuiValidityStateIndicator.State.VALID : GuiValidityStateIndicator.State.SEMI_VALID);
+                cell.setValidityState(doAllStructuresExist(script.getStructureNames()) ? GuiValidityStateIndicator.State.VALID : GuiValidityStateIndicator.State.SEMI_VALID);
                 cell.addPropertyListener(this);
                 return new TableElementCell("Generators (A,B,...)", cell);
             }
             else
             {
-                TableCellString cell = new TableCellString("listID", structureGenerator.getStructureListID());
+                TableCellString cell = new TableCellString("listID", script.getStructureListID());
                 cell.addPropertyListener(this);
                 return new TableElementCell("List ID", cell);
             }
@@ -109,37 +112,37 @@ public class TableDataSourceStructureBlock extends TableDataSourceSegmented impl
         {
             if (index == 0)
             {
-                TableCellInteger cell = new TableCellInteger("xShift", structureGenerator.getStructureShift().x, -50, 50);
+                TableCellInteger cell = new TableCellInteger("xShift", script.getStructureShift().x, -50, 50);
                 cell.addPropertyListener(this);
                 return new TableElementCell("Shift: X", cell);
             }
             else if (index == 1)
             {
-                TableCellInteger cell = new TableCellInteger("yShift", structureGenerator.getStructureShift().y, -50, 50);
+                TableCellInteger cell = new TableCellInteger("yShift", script.getStructureShift().y, -50, 50);
                 cell.addPropertyListener(this);
                 return new TableElementCell("Shift: Y", cell);
             }
             else if (index == 2)
             {
-                TableCellInteger cell = new TableCellInteger("zShift", structureGenerator.getStructureShift().z, -50, 50);
+                TableCellInteger cell = new TableCellInteger("zShift", script.getStructureShift().z, -50, 50);
                 cell.addPropertyListener(this);
                 return new TableElementCell("Shift: Z", cell);
             }
         }
         else if (segment == 3)
         {
-            if (structureGenerator.isSimpleMode())
+            if (script.isSimpleMode())
             {
                 if (index == 0)
                 {
-                    TableCellEnum cell = new TableCellEnum<>("rotation", structureGenerator.getStructureRotation(),
+                    TableCellEnum cell = new TableCellEnum<>("rotation", script.getStructureRotation(),
                             new Option<>(0, "0 Clockwise"), new Option<>(1, "1 Clockwise"), new Option<>(2, "2 Clockwise"), new Option<>(3, "3 Clockwise"), new Option<Integer>(null, "Random (if rotatable)"));
                     cell.addPropertyListener(this);
                     return new TableElementCell("Rotation", cell);
                 }
                 else if (index == 1)
                 {
-                    TableCellEnum cell = new TableCellEnum<>("mirror", structureGenerator.getStructureMirror(),
+                    TableCellEnum cell = new TableCellEnum<>("mirror", script.getStructureMirror(),
                             new Option<>(false, "false"), new Option<>(true, "true"), new Option<Boolean>(null, "Random (if mirrorable)"));
                     cell.addPropertyListener(this);
                     return new TableElementCell("Mirror", cell);
@@ -147,7 +150,7 @@ public class TableDataSourceStructureBlock extends TableDataSourceSegmented impl
             }
             else
             {
-                TableCellEnum cell = new TableCellEnum<>("front", structureGenerator.getFront(), TableDirections.getDirectionOptions(ArrayUtils.add(Directions.HORIZONTAL, null), "random"));
+                TableCellEnum cell = new TableCellEnum<>("front", script.getFront(), TableDirections.getDirectionOptions(ArrayUtils.add(Directions.HORIZONTAL, null), "random"));
                 cell.addPropertyListener(this);
                 return new TableElementCell("Front", cell);
             }
@@ -164,52 +167,52 @@ public class TableDataSourceStructureBlock extends TableDataSourceSegmented impl
             switch (cell.getID())
             {
                 case "simpleMode":
-                    structureGenerator.setSimpleMode((Boolean) cell.getPropertyValue());
+                    script.setSimpleMode((Boolean) cell.getPropertyValue());
                     tableDelegate.reloadData();
                     break;
                 case "generators":
                 {
                     String value = ((String) cell.getPropertyValue());
-                    structureGenerator.setStructureNames(Arrays.asList(value.split(",")));
-                    ((TableCellString) cell).setValidityState(doAllStructuresExist(structureGenerator.getStructureNames()) ? GuiValidityStateIndicator.State.VALID : GuiValidityStateIndicator.State.SEMI_VALID);
+                    script.setStructureNames(Arrays.asList(value.split(",")));
+                    ((TableCellString) cell).setValidityState(doAllStructuresExist(script.getStructureNames()) ? GuiValidityStateIndicator.State.VALID : GuiValidityStateIndicator.State.SEMI_VALID);
                     break;
                 }
                 case "listID":
                 {
-                    structureGenerator.setStructureListID((String) cell.getPropertyValue());
+                    script.setStructureListID((String) cell.getPropertyValue());
                     break;
                 }
                 case "xShift":
                 {
-                    BlockCoord shift = structureGenerator.getStructureShift();
-                    structureGenerator.setStructureShift(new BlockCoord((int) cell.getPropertyValue(), shift.y, shift.z));
+                    BlockCoord shift = script.getStructureShift();
+                    script.setStructureShift(new BlockCoord((int) cell.getPropertyValue(), shift.y, shift.z));
                     break;
                 }
                 case "yShift":
                 {
-                    BlockCoord shift = structureGenerator.getStructureShift();
-                    structureGenerator.setStructureShift(new BlockCoord(shift.x, (int) cell.getPropertyValue(), shift.z));
+                    BlockCoord shift = script.getStructureShift();
+                    script.setStructureShift(new BlockCoord(shift.x, (int) cell.getPropertyValue(), shift.z));
                     break;
                 }
                 case "zShift":
                 {
-                    BlockCoord shift = structureGenerator.getStructureShift();
-                    structureGenerator.setStructureShift(new BlockCoord(shift.x, shift.y, (int) cell.getPropertyValue()));
+                    BlockCoord shift = script.getStructureShift();
+                    script.setStructureShift(new BlockCoord(shift.x, shift.y, (int) cell.getPropertyValue()));
                     break;
                 }
                 case "rotation":
                 {
-                    structureGenerator.setStructureRotation((Integer) cell.getPropertyValue());
+                    script.setStructureRotation((Integer) cell.getPropertyValue());
                     break;
                 }
                 case "mirror":
                 {
-                    structureGenerator.setStructureMirror((Boolean) cell.getPropertyValue());
+                    script.setStructureMirror((Boolean) cell.getPropertyValue());
                     break;
                 }
                 case "front":
                 {
-                    structureGenerator.setFront((ForgeDirection) cell.getPropertyValue());
+                    script.setFront((ForgeDirection) cell.getPropertyValue());
                     break;
                 }
             }

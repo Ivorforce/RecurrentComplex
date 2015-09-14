@@ -20,12 +20,14 @@ import org.lwjgl.input.Keyboard;
 public class GuiEditMazeBlock extends GuiScreenModalTable
 {
     TableDataSourceMazeBlock structureDataSource;
+    TileEntityMazeGenerator tileEntity;
 
     public GuiEditMazeBlock(TileEntityMazeGenerator structureGenerator)
     {
-        GuiTable structureGenProperties = new GuiTable(this, structureDataSource = new TableDataSourceMazeBlock(structureGenerator, this, this));
+        GuiTable structureGenProperties = new GuiTable(this, structureDataSource = new TableDataSourceMazeBlock(structureGenerator.script, this, this));
         structureGenProperties.setHideScrollbarIfUnnecessary(true);
         setTable(structureGenProperties);
+        tileEntity = structureGenerator;
     }
 
     @Override
@@ -52,7 +54,7 @@ public class GuiEditMazeBlock extends GuiScreenModalTable
     {
         if (keyCode == Keyboard.KEY_ESCAPE)
         {
-            RecurrentComplex.network.sendToServer(new PacketEditTileEntity(structureDataSource.getMazeGenerator()));
+            RecurrentComplex.network.sendToServer(new PacketEditTileEntity(tileEntity));
             this.mc.thePlayer.closeScreen();
         }
         else
@@ -68,7 +70,7 @@ public class GuiEditMazeBlock extends GuiScreenModalTable
 
         if (button.id == 0)
         {
-            RecurrentComplex.network.sendToServer(new PacketEditTileEntity(structureDataSource.getMazeGenerator()));
+            RecurrentComplex.network.sendToServer(new PacketEditTileEntity(tileEntity));
             this.mc.thePlayer.closeScreen();
         }
         else if (button.id == 1)

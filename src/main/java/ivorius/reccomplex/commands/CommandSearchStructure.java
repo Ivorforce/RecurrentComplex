@@ -92,7 +92,7 @@ public class CommandSearchStructure extends CommandBase
                 }
             }
 
-            commandSender.addChatMessage(new ChatComponentTranslation(StringUtils.repeat("%s", ", ", components.length), components));
+            commandSender.addChatMessage(new ChatComponentTranslation(StringUtils.repeat("%s", ", ", components.length), (Object[]) components));
         }
         else
         {

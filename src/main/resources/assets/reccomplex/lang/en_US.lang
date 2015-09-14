@@ -333,6 +333,10 @@ reccomplex.maze.connector.tooltip=The ID of the connector.<br>These work like el
 reccomplex.maze.connector.default=Default Connector
 
 reccomplex.worldscript.command=Run Command
+reccomplex.worldscript.command.tooltip=Runs a vanilla command
 reccomplex.worldscript.multi=Multiple
+reccomplex.worldscript.multi.tooltip=Runs multiple commands in succession.
 reccomplex.worldscript.mazeGen=Generate Maze
+reccomplex.worldscript.mazeGen.tooltip=Generates a maze from weighted components.
 reccomplex.worldscript.strucGen=Generate Structure
+reccomplex.worldscript.strucGen.tooltip=Generates a structure from weighted options.

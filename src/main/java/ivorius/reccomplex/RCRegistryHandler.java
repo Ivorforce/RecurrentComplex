@@ -129,19 +129,16 @@ public class RCRegistryHandler
         RecurrentComplex.remapper.registerLegacyID("naturalFloor", genericSolid, true);
 
         structureGenerator = new BlockStructureGenerator().setBlockName("structureGenerator").setBlockTextureName(textureBase + "structureGenerator");
-        structureGenerator.setCreativeTab(tabStructureTools);
         register(structureGenerator, ItemStructureGenerator.class, "structure_generator");
         register(TileEntityStructureGenerator.class, "RCStructureGenerator", "SGStructureGenerator");
         RecurrentComplex.remapper.registerLegacyID("structureGenerator", structureGenerator, true);
 
         mazeGenerator = new BlockMazeGenerator().setBlockName("mazeGenerator").setBlockTextureName(textureBase + "mazeGenerator");
-        mazeGenerator.setCreativeTab(tabStructureTools);
         register(mazeGenerator, ItemMazeGenerator.class, "maze_generator");
         register(TileEntityMazeGenerator.class, "RCMazeGenerator", "SGMazeGenerator");
         RecurrentComplex.remapper.registerLegacyID("mazeGenerator", mazeGenerator, true);
 
         spawnCommands = new BlockSpawnCommand().setBlockName("spawn_command").setBlockTextureName(textureBase + "spawnCommand");
-        spawnCommands.setCreativeTab(tabStructureTools);
         register(spawnCommands, "weighted_command_block");
         register(TileEntitySpawnCommand.class, "RCSpawnCommand");
         RecurrentComplex.remapper.registerLegacyID("spawnCommand", spawnCommands, true);

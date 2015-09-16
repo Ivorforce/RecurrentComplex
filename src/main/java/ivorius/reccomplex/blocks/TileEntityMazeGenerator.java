@@ -5,15 +5,11 @@
 
 package ivorius.reccomplex.blocks;
 
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 import ivorius.ivtoolkit.blocks.BlockCoord;
-import ivorius.reccomplex.gui.worldscripts.mazegenerator.GuiEditMazeBlock;
 import ivorius.reccomplex.scripts.world.WorldScriptMazeGenerator;
 import ivorius.reccomplex.structures.StructureLoadContext;
 import ivorius.reccomplex.structures.StructurePrepareContext;
 import ivorius.reccomplex.structures.StructureSpawnContext;
-import net.minecraft.client.Minecraft;
 import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
@@ -21,7 +17,7 @@ import net.minecraft.tileentity.TileEntity;
 /**
  * Created by lukas on 06.06.14.
  */
-public class TileEntityMazeGenerator extends TileEntity implements GeneratingTileEntity<WorldScriptMazeGenerator.InstanceData>, TileEntityWithGUI
+public class TileEntityMazeGenerator extends TileEntity implements GeneratingTileEntity<WorldScriptMazeGenerator.InstanceData>
 {
     public WorldScriptMazeGenerator script = new WorldScriptMazeGenerator();
 
@@ -65,7 +61,6 @@ public class TileEntityMazeGenerator extends TileEntity implements GeneratingTil
         return false;
     }
 
-    @Override
     public void writeSyncedNBT(NBTTagCompound compound)
     {
         NBTTagCompound scriptCompound = new NBTTagCompound();
@@ -73,7 +68,6 @@ public class TileEntityMazeGenerator extends TileEntity implements GeneratingTil
         compound.setTag("script", scriptCompound);
     }
 
-    @Override
     public void readSyncedNBT(final NBTTagCompound compound)
     {
         if (compound.hasKey("script"))
@@ -81,12 +75,4 @@ public class TileEntityMazeGenerator extends TileEntity implements GeneratingTil
         else // Legacy
             script.readFromNBT(compound);
     }
-
-    @SideOnly(Side.CLIENT)
-    @Override
-    public void openEditGUI()
-    {
-        Minecraft.getMinecraft().displayGuiScreen(new GuiEditMazeBlock(this));
-    }
-
 }

@@ -5,8 +5,7 @@
 
 package ivorius.reccomplex.blocks;
 
-import ivorius.reccomplex.RecurrentComplex;
-import ivorius.reccomplex.network.PacketEditTileEntity;
+import ivorius.reccomplex.scripts.world.WorldScript;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.entity.EntityLivingBase;
@@ -37,34 +36,12 @@ public class BlockStructureGenerator extends Block
         {
             TileEntity tileEntity = world.getTileEntity(x, y, z);
 
-            RecurrentComplex.network.sendTo(new PacketEditTileEntity((TileEntityStructureGenerator) tileEntity), (EntityPlayerMP) player);
+            WorldScript script = ((TileEntityStructureGenerator) tileEntity).script;
+            world.setBlock(x, y, z, RCBlocks.spawnScript);
+            ((TileEntitySpawnScript) world.getTileEntity(x, y, z)).script.scripts.add(script);
         }
 
         return true;
-    }
-
-    @Override
-    public ItemStack getPickBlock(MovingObjectPosition target, World world, int x, int y, int z)
-    {
-        TileEntity tileEntity = world.getTileEntity(x, y, z);
-        NBTTagCompound compound = new NBTTagCompound();
-        ((TileEntityStructureGenerator) tileEntity).writeSyncedNBT(compound);
-
-        ItemStack returnStack = new ItemStack(Item.getItemFromBlock(this));
-        returnStack.setTagInfo("structureGeneratorInfo", compound);
-
-        return returnStack;
-    }
-
-    @Override
-    public void onBlockPlacedBy(World world, int x, int y, int z, EntityLivingBase entityLivingBase, ItemStack itemStack)
-    {
-        if (itemStack.hasTagCompound() && itemStack.getTagCompound().hasKey("structureGeneratorInfo", Constants.NBT.TAG_COMPOUND))
-        {
-            NBTTagCompound compound = itemStack.getTagCompound().getCompoundTag("structureGeneratorInfo");
-            TileEntity tileEntity = world.getTileEntity(x, y, z);
-            ((TileEntityStructureGenerator) tileEntity).readSyncedNBT(compound);
-        }
     }
 
     @Override

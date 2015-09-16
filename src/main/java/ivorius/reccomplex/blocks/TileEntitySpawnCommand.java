@@ -5,16 +5,12 @@
 
 package ivorius.reccomplex.blocks;
 
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 import ivorius.ivtoolkit.blocks.BlockCoord;
-import ivorius.reccomplex.gui.worldscripts.command.GuiEditSpawnCommandBlock;
 import ivorius.reccomplex.scripts.world.WorldScriptCommand;
 import ivorius.reccomplex.structures.StructureLoadContext;
 import ivorius.reccomplex.structures.StructurePrepareContext;
 import ivorius.reccomplex.structures.StructureSpawnContext;
 import ivorius.reccomplex.utils.NBTNone;
-import net.minecraft.client.Minecraft;
 import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.NetworkManager;
@@ -25,7 +21,7 @@ import net.minecraft.tileentity.TileEntity;
 /**
  * Created by lukas on 06.06.14.
  */
-public class TileEntitySpawnCommand extends TileEntity implements GeneratingTileEntity<NBTNone>, TileEntityWithGUI
+public class TileEntitySpawnCommand extends TileEntity implements GeneratingTileEntity<NBTNone>
 {
     public WorldScriptCommand script = new WorldScriptCommand();
 
@@ -37,20 +33,12 @@ public class TileEntitySpawnCommand extends TileEntity implements GeneratingTile
         readSyncedNBT(nbtTagCompound);
     }
 
-    @Override
     public void readSyncedNBT(NBTTagCompound compound)
     {
         if (compound.hasKey("script"))
             script.readFromNBT(compound.getCompoundTag("script"));
         else // Legacy
             script.readFromNBT(compound);
-    }
-
-    @SideOnly(Side.CLIENT)
-    @Override
-    public void openEditGUI()
-    {
-        Minecraft.getMinecraft().displayGuiScreen(new GuiEditSpawnCommandBlock(this));
     }
 
     @Override
@@ -61,7 +49,6 @@ public class TileEntitySpawnCommand extends TileEntity implements GeneratingTile
         writeSyncedNBT(nbtTagCompound);
     }
 
-    @Override
     public void writeSyncedNBT(NBTTagCompound compound)
     {
         NBTTagCompound scriptCompound = new NBTTagCompound();

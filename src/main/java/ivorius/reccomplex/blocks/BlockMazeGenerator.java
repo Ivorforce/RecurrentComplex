@@ -5,20 +5,13 @@
 
 package ivorius.reccomplex.blocks;
 
-import ivorius.reccomplex.RecurrentComplex;
-import ivorius.reccomplex.network.PacketEditTileEntity;
+import ivorius.reccomplex.scripts.world.WorldScript;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
-import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.world.World;
-import net.minecraftforge.common.util.Constants;
 
 /**
  * Created by lukas on 06.06.14.
@@ -37,34 +30,13 @@ public class BlockMazeGenerator extends Block
         {
             TileEntity tileEntity = world.getTileEntity(x, y, z);
 
-            RecurrentComplex.network.sendTo(new PacketEditTileEntity((TileEntityMazeGenerator) tileEntity), (EntityPlayerMP) player);
+            WorldScript script = ((TileEntityMazeGenerator) tileEntity).script;
+            world.setBlock(x, y, z, RCBlocks.spawnScript);
+            ((TileEntitySpawnScript) world.getTileEntity(x, y, z)).script.scripts.add(script);
+
         }
 
         return true;
-    }
-
-    @Override
-    public ItemStack getPickBlock(MovingObjectPosition target, World world, int x, int y, int z)
-    {
-        TileEntity tileEntity = world.getTileEntity(x, y, z);
-        NBTTagCompound compound = new NBTTagCompound();
-        ((TileEntityMazeGenerator) tileEntity).writeSyncedNBT(compound);
-
-        ItemStack returnStack = new ItemStack(Item.getItemFromBlock(this));
-        returnStack.setTagInfo("mazeGeneratorInfo", compound);
-
-        return returnStack;
-    }
-
-    @Override
-    public void onBlockPlacedBy(World world, int x, int y, int z, EntityLivingBase entityLivingBase, ItemStack itemStack)
-    {
-        if (itemStack.hasTagCompound() && itemStack.getTagCompound().hasKey("mazeGeneratorInfo", Constants.NBT.TAG_COMPOUND))
-        {
-            NBTTagCompound compound = itemStack.getTagCompound().getCompoundTag("mazeGeneratorInfo");
-            TileEntity tileEntity = world.getTileEntity(x, y, z);
-            ((TileEntityMazeGenerator) tileEntity).readSyncedNBT(compound);
-        }
     }
 
     @Override

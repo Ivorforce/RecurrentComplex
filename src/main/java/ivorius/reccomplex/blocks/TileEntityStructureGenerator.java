@@ -5,15 +5,11 @@
 
 package ivorius.reccomplex.blocks;
 
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 import ivorius.ivtoolkit.blocks.BlockCoord;
-import ivorius.reccomplex.gui.worldscripts.structuregenerator.GuiEditStructureBlock;
 import ivorius.reccomplex.scripts.world.WorldScriptStructureGenerator;
 import ivorius.reccomplex.structures.StructureLoadContext;
 import ivorius.reccomplex.structures.StructurePrepareContext;
 import ivorius.reccomplex.structures.StructureSpawnContext;
-import net.minecraft.client.Minecraft;
 import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
@@ -21,7 +17,7 @@ import net.minecraft.tileentity.TileEntity;
 /**
  * Created by lukas on 06.06.14.
  */
-public class TileEntityStructureGenerator extends TileEntity implements GeneratingTileEntity<WorldScriptStructureGenerator.InstanceData>, TileEntityWithGUI
+public class TileEntityStructureGenerator extends TileEntity implements GeneratingTileEntity<WorldScriptStructureGenerator.InstanceData>
 {
     public WorldScriptStructureGenerator script = new WorldScriptStructureGenerator();
 
@@ -65,7 +61,6 @@ public class TileEntityStructureGenerator extends TileEntity implements Generati
         return false;
     }
 
-    @Override
     public void writeSyncedNBT(NBTTagCompound compound)
     {
         NBTTagCompound scriptCompound = new NBTTagCompound();
@@ -73,7 +68,6 @@ public class TileEntityStructureGenerator extends TileEntity implements Generati
         compound.setTag("script", scriptCompound);
     }
 
-    @Override
     public void readSyncedNBT(NBTTagCompound compound)
     {
         if (compound.hasKey("script"))
@@ -81,12 +75,4 @@ public class TileEntityStructureGenerator extends TileEntity implements Generati
         else // Legacy
             script.readFromNBT(compound);
     }
-
-    @SideOnly(Side.CLIENT)
-    @Override
-    public void openEditGUI()
-    {
-        Minecraft.getMinecraft().displayGuiScreen(new GuiEditStructureBlock(this));
-    }
-
 }

@@ -8,6 +8,7 @@ package ivorius.reccomplex.blocks;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import ivorius.ivtoolkit.blocks.BlockCoord;
+import ivorius.ivtoolkit.tools.NBTCompoundObjects;
 import ivorius.reccomplex.gui.worldscripts.multi.GuiEditSpawnScript;
 import ivorius.reccomplex.scripts.world.WorldScriptMulti;
 import ivorius.reccomplex.structures.StructureLoadContext;
@@ -68,18 +69,13 @@ public class TileEntitySpawnScript extends TileEntity implements GeneratingTileE
     @Override
     public void writeSyncedNBT(NBTTagCompound compound)
     {
-        NBTTagCompound scriptCompound = new NBTTagCompound();
-        script.writeToNBT(scriptCompound);
-        compound.setTag("script", scriptCompound);
+        compound.setTag("script", NBTCompoundObjects.write(script));
     }
 
     @Override
     public void readSyncedNBT(final NBTTagCompound compound)
     {
-        if (compound.hasKey("script"))
-            script.readFromNBT(compound.getCompoundTag("script"));
-        else
-            script.readFromNBT(new NBTTagCompound());
+        script.readFromNBT(compound.getCompoundTag("script"));
     }
 
     @SideOnly(Side.CLIENT)

@@ -327,7 +327,7 @@ public class GenericStructureInfo implements StructureInfo<GenericStructureInfo.
     @Override
     public Object clone()
     {
-        GenericStructureInfo genericStructureInfo = StructureRegistry.createStructureFromJSON(StructureRegistry.createJSONFromStructure(this));
+        GenericStructureInfo genericStructureInfo = StructureRegistry.INSTANCE.createStructureFromJSON(StructureRegistry.INSTANCE.createJSONFromStructure(this));
         genericStructureInfo.worldDataCompound = (NBTTagCompound) worldDataCompound.copy();
 
         return genericStructureInfo;

@@ -42,13 +42,13 @@ public class WorldGenStructures implements IWorldGenerator
             BiomeGenBase biomeGen = world.getBiomeGenForCoords(chunkX * 16, chunkZ * 16);
             ChunkCoordinates spawnPos = world.getSpawnPoint();
 
-            for (Pair<StructureInfo, StaticGenerationInfo> pair : StructureRegistry.getStaticStructuresAt(chunkX, chunkZ, world, spawnPos))
+            for (Pair<StructureInfo, StaticGenerationInfo> pair : StructureRegistry.INSTANCE.getStaticStructuresAt(chunkX, chunkZ, world, spawnPos))
             {
                 RecurrentComplex.logger.trace(String.format("Spawning static structure at x = %d, z = %d", chunkX << 4, chunkZ << 4));
 
                 StaticGenerationInfo staticGenInfo = pair.getRight();
                 StructureInfo structureInfo = pair.getLeft();
-                String structureName = StructureRegistry.structureID(structureInfo);
+                String structureName = StructureRegistry.INSTANCE.structureID(structureInfo);
 
                 int strucX = staticGenInfo.getPositionX(spawnPos);
                 int strucZ = staticGenInfo.getPositionZ(spawnPos);
@@ -68,14 +68,14 @@ public class WorldGenStructures implements IWorldGenerator
 
                 if (mayGenerate)
                 {
-                    StructureSelector structureSelector = StructureRegistry.getStructureSelector(biomeGen, world.provider);
+                    StructureSelector structureSelector = StructureRegistry.INSTANCE.getStructureSelector(biomeGen, world.provider);
                     List<Pair<StructureInfo, NaturalGenerationInfo>> generated = structureSelector.generatedStructures(random, chunkX, chunkZ, world, chunkGenerator, chunkProvider);
 
                     for (Pair<StructureInfo, NaturalGenerationInfo> pair : generated)
                     {
                         StructureInfo structureInfo = pair.getLeft();
                         NaturalGenerationInfo naturalGenInfo = pair.getRight();
-                        String structureName = StructureRegistry.structureID(structureInfo);
+                        String structureName = StructureRegistry.INSTANCE.structureID(structureInfo);
 
                         int genX = chunkX * 16 + random.nextInt(16);
                         int genZ = chunkZ * 16 + random.nextInt(16);
@@ -94,7 +94,7 @@ public class WorldGenStructures implements IWorldGenerator
 
         for (StructureGenerationData.Entry entry : data.getEntriesAt(new ChunkCoordIntPair(chunkX, chunkZ), true))
         {
-            StructureInfo structureInfo = StructureRegistry.getStructure(entry.getStructureID());
+            StructureInfo structureInfo = StructureRegistry.INSTANCE.getStructure(entry.getStructureID());
 
             if (structureInfo != null)
             {

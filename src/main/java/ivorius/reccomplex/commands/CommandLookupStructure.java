@@ -61,7 +61,7 @@ public class CommandLookupStructure extends CommandBase
             }
 
             commandSender.addChatMessage(ServerTranslations.format(
-                    StructureRegistry.isStructureGenerating(strucKey) ? "commands.rclookup.reply.generates" : "commands.rclookup.reply.silent",
+                    StructureRegistry.INSTANCE.isStructureGenerating(strucKey) ? "commands.rclookup.reply.generates" : "commands.rclookup.reply.silent",
                     strucKey, author, weblink));
 
             if (!metadata.comment.trim().isEmpty())
@@ -78,7 +78,7 @@ public class CommandLookupStructure extends CommandBase
     {
         if (args.length == 1)
         {
-            Set<String> allStructureNames = StructureRegistry.allStructureIDs();
+            Set<String> allStructureNames = StructureRegistry.INSTANCE.allStructureIDs();
 
             return getListOfStringsFromIterableMatchingLastWord(args, allStructureNames);
         }

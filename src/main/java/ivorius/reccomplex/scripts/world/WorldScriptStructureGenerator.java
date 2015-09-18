@@ -180,7 +180,7 @@ public class WorldScriptStructureGenerator implements WorldScript<WorldScriptStr
             if (structureNames.size() > 0)
             {
                 String structureID = structureNames.get(random.nextInt(structureNames.size()));
-                StructureInfo structureInfo = StructureRegistry.getStructure(structureID);
+                StructureInfo structureInfo = StructureRegistry.INSTANCE.getStructure(structureID);
 
                 if (structureInfo != null)
                 {
@@ -198,7 +198,7 @@ public class WorldScriptStructureGenerator implements WorldScript<WorldScriptStr
         }
         else
         {
-            Collection<Pair<StructureInfo, StructureListGenerationInfo>> generationInfos = StructureRegistry.getStructuresInList(structureListID, front);
+            Collection<Pair<StructureInfo, StructureListGenerationInfo>> generationInfos = StructureRegistry.INSTANCE.getStructuresInList(structureListID, front);
 
             if (generationInfos.size() > 0)
             {
@@ -211,7 +211,7 @@ public class WorldScriptStructureGenerator implements WorldScript<WorldScriptStr
                     }
                 });
                 StructureInfo structureInfo = pair.getLeft();
-                String structureID = StructureRegistry.structureID(structureInfo);
+                String structureID = StructureRegistry.INSTANCE.structureID(structureInfo);
                 StructureListGenerationInfo generationInfo = pair.getRight();
 
                 boolean mirrorX;
@@ -249,7 +249,7 @@ public class WorldScriptStructureGenerator implements WorldScript<WorldScriptStr
         Random random = context.random;
         int layer = context.generationLayer;
 
-        StructureInfo structureInfo = StructureRegistry.getStructure(instanceData.structureID);
+        StructureInfo structureInfo = StructureRegistry.INSTANCE.getStructure(instanceData.structureID);
         if (structureInfo != null && instanceData.structureData != null)
             StructureGenerator.partially(structureInfo, world, random, instanceData.lowerCoord.add(coord), instanceData.structureTransform, context.generationBB, layer + 1, instanceData.structureID, instanceData.structureData, context.isFirstTime);
     }
@@ -293,7 +293,7 @@ public class WorldScriptStructureGenerator implements WorldScript<WorldScriptStr
             lowerCoord = BlockCoord.readCoordFromNBT("lowerCoord", compound);
             structureTransform = new AxisAlignedTransform2D(compound.getInteger("rotation"), compound.getBoolean("mirrorX"));
 
-            StructureInfo structureInfo = StructureRegistry.getStructure(structureID);
+            StructureInfo structureInfo = StructureRegistry.INSTANCE.getStructure(structureID);
             if (structureInfo != null)
                 structureData = structureInfo.loadInstanceData(new StructureLoadContext(structureTransform, StructureInfos.structureBoundingBox(lowerCoord, StructureInfos.structureSize(structureInfo, structureTransform)), false), compound.getTag("structureData"));
         }

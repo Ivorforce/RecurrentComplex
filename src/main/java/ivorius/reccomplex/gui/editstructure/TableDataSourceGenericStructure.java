@@ -277,7 +277,7 @@ public class TableDataSourceGenericStructure extends TableDataSourceSegmented im
 
     private GuiValidityStateIndicator.State currentNameState()
     {
-        if (StructureRegistry.allStructureIDs().contains(structureKey))
+        if (StructureRegistry.INSTANCE.allStructureIDs().contains(structureKey))
             return GuiValidityStateIndicator.State.SEMI_VALID;
 
         return structureKey.trim().length() > 0 && !structureKey.contains(" ")

@@ -6,16 +6,15 @@
 package ivorius.reccomplex.utils;
 
 import net.minecraft.nbt.NBTBase;
-import net.minecraft.nbt.NBTTagCompound;
 
 /**
  * Created by lukas on 30.03.15.
  */
 public class NBTDirect implements NBTStorable
 {
-    public NBTTagCompound nbt;
+    public NBTBase nbt;
 
-    public NBTDirect(NBTTagCompound nbt)
+    public NBTDirect(NBTBase nbt)
     {
         this.nbt = nbt;
     }

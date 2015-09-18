@@ -286,7 +286,7 @@ public class StructureGenerationData extends WorldSavedData
 
         public StructureBoundingBox boundingBox()
         {
-            StructureInfo structureInfo = StructureRegistry.getStructure(structureID);
+            StructureInfo structureInfo = StructureRegistry.INSTANCE.getStructure(structureID);
 
             return structureInfo != null
                     ? StructureInfos.structureBoundingBox(lowerCoord, StructureInfos.structureSize(structureInfo, transform))

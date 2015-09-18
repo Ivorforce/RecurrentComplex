@@ -103,7 +103,7 @@ public class ItemCollectionSaveHandler
                 if (component.inventoryGeneratorID == null || component.inventoryGeneratorID.length() == 0) // Legacy support
                     component.inventoryGeneratorID = name;
 
-                GenericItemCollectionRegistry.register(component, name, domain, generating);
+                GenericItemCollectionRegistry.INSTANCE.register(component, name, domain, generating);
 
                 if (imported)
                     importedCustomGenerators.add(name);
@@ -124,7 +124,7 @@ public class ItemCollectionSaveHandler
             if (inventoryGeneratorsFile != null)
             {
                 File newFile = new File(inventoryGeneratorsFile, String.format("%s.%s", name, FILE_SUFFIX));
-                String json = GenericItemCollectionRegistry.createJSONFromComponent(info);
+                String json = GenericItemCollectionRegistry.INSTANCE.createJSONFromComponent(info);
 
                 try
                 {
@@ -147,7 +147,7 @@ public class ItemCollectionSaveHandler
         try
         {
             String json = IOUtils.toString(IvFileHelper.inputStreamFromResourceLocation(resourceLocation), "UTF-8");
-            return GenericItemCollectionRegistry.createComponentFromJSON(json);
+            return GenericItemCollectionRegistry.INSTANCE.createComponentFromJSON(json);
         }
         catch (Exception ex)
         {
@@ -159,6 +159,6 @@ public class ItemCollectionSaveHandler
 
     public static Component readInventoryGenerator(Path file) throws IOException, InventoryLoadException
     {
-        return GenericItemCollectionRegistry.createComponentFromJSON(new String(Files.readAllBytes(file)));
+        return GenericItemCollectionRegistry.INSTANCE.createComponentFromJSON(new String(Files.readAllBytes(file)));
     }
 }

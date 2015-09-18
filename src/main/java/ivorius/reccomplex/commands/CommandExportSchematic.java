@@ -141,7 +141,7 @@ public class CommandExportSchematic extends CommandBase
     public List addTabCompletionOptions(ICommandSender commandSender, String[] args)
     {
         if (args.length == 1)
-            return getListOfStringsFromIterableMatchingLastWord(args, StructureRegistry.allStructureIDs());
+            return getListOfStringsFromIterableMatchingLastWord(args, StructureRegistry.INSTANCE.allStructureIDs());
 
         return null;
     }

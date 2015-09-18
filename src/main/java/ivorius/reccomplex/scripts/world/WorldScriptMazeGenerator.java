@@ -249,7 +249,7 @@ public class WorldScriptMazeGenerator implements WorldScript<WorldScriptMazeGene
         final int[] outsideBoundsHigher = IvVecMathHelper.add(boundsHigher, oneArray);
         final int[] outsideBoundsLower = IvVecMathHelper.sub(boundsLower, oneArray);
 
-        List<MazeComponentStructure<Connector>> transformedComponents = WorldGenMaze.transformedComponents(StructureRegistry.getStructuresInMaze(mazeID), factory, transform);
+        List<MazeComponentStructure<Connector>> transformedComponents = WorldGenMaze.transformedComponents(StructureRegistry.INSTANCE.getStructuresInMaze(mazeID), factory, transform);
 
         MorphingMazeComponent<Connector> maze = new SetMazeComponent<>();
 

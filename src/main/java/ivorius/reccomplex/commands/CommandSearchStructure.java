@@ -63,14 +63,14 @@ public class CommandSearchStructure extends CommandBase
                 @Override
                 public int compare(String o1, String o2)
                 {
-                    float r1 = searchRank(query, o1, StructureRegistry.getStructure(o1));
-                    float r2 = searchRank(query, o2, StructureRegistry.getStructure(o2));
+                    float r1 = searchRank(query, o1, StructureRegistry.INSTANCE.getStructure(o1));
+                    float r2 = searchRank(query, o2, StructureRegistry.INSTANCE.getStructure(o2));
                     return Floats.compare(r1, r2);
                 }
             });
-            for (String s : StructureRegistry.allStructureIDs())
+            for (String s : StructureRegistry.INSTANCE.allStructureIDs())
             {
-                if (searchRank(query, s, StructureRegistry.getStructure(s)) > 0)
+                if (searchRank(query, s, StructureRegistry.INSTANCE.getStructure(s)) > 0)
                     strucs.add(s);
             }
 

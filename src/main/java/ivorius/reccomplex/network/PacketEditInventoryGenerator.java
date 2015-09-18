@@ -58,7 +58,7 @@ public class PacketEditInventoryGenerator implements IMessage
 
         try
         {
-            inventoryGenerator = GenericItemCollectionRegistry.createComponentFromJSON(json);
+            inventoryGenerator = GenericItemCollectionRegistry.INSTANCE.createComponentFromJSON(json);
         }
         catch (InventoryLoadException e)
         {
@@ -70,7 +70,7 @@ public class PacketEditInventoryGenerator implements IMessage
     public void toBytes(ByteBuf buf)
     {
         ByteBufUtils.writeUTF8String(buf, key);
-        String json = GenericItemCollectionRegistry.createJSONFromComponent(inventoryGenerator);
+        String json = GenericItemCollectionRegistry.INSTANCE.createJSONFromComponent(inventoryGenerator);
         ByteBufUtils.writeUTF8String(buf, json);
     }
 }

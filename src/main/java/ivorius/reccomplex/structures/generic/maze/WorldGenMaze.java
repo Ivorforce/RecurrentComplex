@@ -36,7 +36,7 @@ public class WorldGenMaze
     {
         for (PlacedStructure placedComponent : placedStructures)
         {
-            StructureInfo structureInfo = StructureRegistry.getStructure(placedComponent.structureID);
+            StructureInfo structureInfo = StructureRegistry.INSTANCE.getStructure(placedComponent.structureID);
 
             if (structureInfo != null && placedComponent.instanceData != null)
             {
@@ -68,7 +68,7 @@ public class WorldGenMaze
             public PlacedStructure apply(ShiftedMazeComponent<MazeComponentStructure<Connector>, Connector> placedComponent)
             {
                 MazeComponentStructure<Connector> componentInfo = placedComponent.getComponent();
-                StructureInfo structureInfo = StructureRegistry.getStructure(componentInfo.structureID);
+                StructureInfo structureInfo = StructureRegistry.INSTANCE.getStructure(componentInfo.structureID);
 
                 if (structureInfo != null)
                 {
@@ -148,7 +148,7 @@ public class WorldGenMaze
             transformedExits.put(MazeRoomConnections.rotated(path.getKey(), transform, size), path.getValue());
 
         addMissingExits(transformedRooms, transformedExits, comp.defaultConnector.toConnector(factory));
-        return new MazeComponentStructure<>(weight, StructureRegistry.structureID(info), transform, ImmutableSet.copyOf(transformedRooms), ImmutableMap.copyOf(transformedExits));
+        return new MazeComponentStructure<>(weight, StructureRegistry.INSTANCE.structureID(info), transform, ImmutableSet.copyOf(transformedRooms), ImmutableMap.copyOf(transformedExits));
     }
 
     public static <C> SetMazeComponent<C> createCompleteComponent(Set<MazeRoom> rooms, Map<MazeRoomConnection, C> exits, C wallConnector)

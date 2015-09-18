@@ -43,7 +43,7 @@ public class RCCommunicationHandler extends IvFMLIntercommHandler
             String structureID = cmp.getString("structureID");
             boolean generates = cmp.getBoolean("generates");
 
-            if (!StructureRegistry.registerStructure(new ResourceLocation(structurePath), structureID, generates))
+            if (!StructureRegistry.INSTANCE.registerStructure(new ResourceLocation(structurePath), structureID, generates))
                 getLogger().warn(String.format("Could not find structure with path '%s and id '%s'", structurePath, structureID));
 
             return true;
@@ -58,7 +58,7 @@ public class RCCommunicationHandler extends IvFMLIntercommHandler
             String genID = cmp.getString("genID");
             boolean generates = cmp.getBoolean("generates");
 
-            if (!GenericItemCollectionRegistry.register(new ResourceLocation(genPath), genID, generates))
+            if (!GenericItemCollectionRegistry.INSTANCE.register(new ResourceLocation(genPath), genID, generates))
                 getLogger().warn(String.format("Could not find inventory generator with path '%s and id '%s'", genPath, genID));
 
             return true;

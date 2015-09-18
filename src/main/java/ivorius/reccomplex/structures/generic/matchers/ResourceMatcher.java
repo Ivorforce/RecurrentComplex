@@ -46,7 +46,7 @@ public class ResourceMatcher extends PrefixedTypeExpressionCache<Boolean>
         @Override
         public boolean isKnown(final String var, final Object... args)
         {
-            return StructureRegistry.hasStructure(var);
+            return StructureRegistry.INSTANCE.hasStructure(var);
         }
     }
 

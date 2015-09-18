@@ -88,7 +88,7 @@ public class CommandExportStructure extends CommandBase
         {
             genericStructureInfo = getGenericStructureInfo(args[0]);
             structureID = args[0];
-            saveAsActive = StructureRegistry.isStructureGenerating(structureID);
+            saveAsActive = StructureRegistry.INSTANCE.isStructureGenerating(structureID);
         }
         else
         {
@@ -110,14 +110,14 @@ public class CommandExportStructure extends CommandBase
     public List addTabCompletionOptions(ICommandSender commandSender, String[] args)
     {
         if (args.length == 1)
-            return getListOfStringsFromIterableMatchingLastWord(args, StructureRegistry.allStructureIDs());
+            return getListOfStringsFromIterableMatchingLastWord(args, StructureRegistry.INSTANCE.allStructureIDs());
 
         return null;
     }
 
     public static GenericStructureInfo getGenericStructureInfo(String name)
     {
-        StructureInfo structureInfo = StructureRegistry.getStructure(name);
+        StructureInfo structureInfo = StructureRegistry.INSTANCE.getStructure(name);
 
         if (structureInfo == null)
             throw ServerTranslations.commandException("commands.structure.notRegistered", name);

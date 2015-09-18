@@ -205,7 +205,7 @@ public class RCRegistryHandler
         WorldScriptRegistry.INSTANCE.register("mazeGen", WorldScriptMazeGenerator.class);
         WorldScriptRegistry.INSTANCE.register("command", WorldScriptCommand.class);
 
-        SerializableStringTypeRegistry<Transformer> transformerRegistry = StructureRegistry.getTransformerRegistry();
+        SerializableStringTypeRegistry<Transformer> transformerRegistry = StructureRegistry.INSTANCE.getTransformerRegistry();
         transformerRegistry.registerType("natural", TransformerNatural.class, new TransformerNatural.Serializer(mcRegistry));
         transformerRegistry.registerType("naturalAir", TransformerNaturalAir.class, new TransformerNaturalAir.Serializer(mcRegistry));
         transformerRegistry.registerType("pillar", TransformerPillar.class, new TransformerPillar.Serializer(mcRegistry));
@@ -214,7 +214,7 @@ public class RCRegistryHandler
         transformerRegistry.registerType("ruins", TransformerRuins.class, new TransformerRuins.Serializer(mcRegistry));
         transformerRegistry.registerType("negativeSpace", TransformerNegativeSpace.class, new TransformerNegativeSpace.Serializer(mcRegistry));
 
-        SerializableStringTypeRegistry<StructureGenerationInfo> genInfoRegistry = StructureRegistry.getStructureGenerationInfoRegistry();
+        SerializableStringTypeRegistry<StructureGenerationInfo> genInfoRegistry = StructureRegistry.INSTANCE.getStructureGenerationInfoRegistry();
         genInfoRegistry.registerType("natural", NaturalGenerationInfo.class, new NaturalGenerationInfo.Serializer());
         genInfoRegistry.registerType("structureList", StructureListGenerationInfo.class, new StructureListGenerationInfo.Serializer());
         genInfoRegistry.registerType("mazeComponent", MazeGenerationInfo.class, new MazeGenerationInfo.Serializer());

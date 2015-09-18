@@ -23,13 +23,15 @@ import java.util.*;
  */
 public class GenericItemCollectionRegistry
 {
-    private static Map<String, Component> allComponents = new HashMap<>();
-    private static Map<String, String> componentDomains = Maps.newHashMap();
+    public static final GenericItemCollectionRegistry INSTANCE = new GenericItemCollectionRegistry();
 
-    private static Set<String> persistentlyDisabledComponents = new HashSet<>();
-    private static Set<String> generatingComponents = new HashSet<>();
+    private Map<String, Component> allComponents = new HashMap<>();
+    private Map<String, String> componentDomains = Maps.newHashMap();
 
-    private static Gson gson = createGson();
+    private Set<String> persistentlyDisabledComponents = new HashSet<>();
+    private Set<String> generatingComponents = new HashSet<>();
+
+    private Gson gson = createGson();
 
     public static Gson createGson()
     {
@@ -41,7 +43,7 @@ public class GenericItemCollectionRegistry
         return builder.create();
     }
 
-    public static boolean register(Component component, String key, String domain, boolean generates)
+    public boolean register(Component component, String key, String domain, boolean generates)
     {
         if (RCConfig.shouldInventoryGeneratorLoad(key, domain))
         {
@@ -64,44 +66,44 @@ public class GenericItemCollectionRegistry
         return false;
     }
 
-    public static Component component(String key)
+    public Component component(String key)
     {
         return allComponents.get(key);
     }
 
-    public static Set<String> allComponentKeys()
+    public Set<String> allComponentKeys()
     {
         return Collections.unmodifiableSet(allComponents.keySet());
     }
 
-    public static void removeGenerator(String key)
+    public void removeGenerator(String key)
     {
         allComponents.remove(key);
         clearCaches();
     }
 
-    public static boolean register(ResourceLocation resourceLocation, String key, boolean generates)
+    public boolean register(ResourceLocation resourceLocation, String key, boolean generates)
     {
         Component component = ItemCollectionSaveHandler.readInventoryGenerator(resourceLocation);
         return component != null && register(component, key, resourceLocation.getResourceDomain(), generates);
     }
 
-    public static boolean isLoaded(String key)
+    public boolean isLoaded(String key)
     {
         return allComponents.containsKey(key);
     }
 
-    public static boolean isActive(String key)
+    public boolean isActive(String key)
     {
         return generatingComponents.contains(key);
     }
 
-    public static String createJSONFromComponent(Component inventoryGenerator)
+    public String createJSONFromComponent(Component inventoryGenerator)
     {
         return gson.toJson(inventoryGenerator, Component.class);
     }
 
-    public static Component createComponentFromJSON(String json) throws InventoryLoadException
+    public Component createComponentFromJSON(String json) throws InventoryLoadException
     {
         try
         {
@@ -113,7 +115,7 @@ public class GenericItemCollectionRegistry
         }
     }
 
-    private static void clearCaches()
+    private void clearCaches()
     {
         Set<String> newGeneratingComponents = new HashSet<>();
 
@@ -155,7 +157,7 @@ public class GenericItemCollectionRegistry
         generatingComponents = newGeneratingComponents;
     }
 
-    private static GenericItemCollection registerGetGenericItemCollection(String key)
+    private GenericItemCollection registerGetGenericItemCollection(String key)
     {
         WeightedItemCollection collection = WeightedItemCollectionRegistry.itemCollection(key);
         if (collection == null || !(collection instanceof GenericItemCollection))

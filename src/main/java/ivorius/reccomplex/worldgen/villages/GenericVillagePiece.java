@@ -59,7 +59,7 @@ public class GenericVillagePiece extends StructureVillagePieces.Village
 
     public void prepare(Random random)
     {
-        StructureInfo structureInfo = StructureRegistry.getStructure(structureID);
+        StructureInfo structureInfo = StructureRegistry.INSTANCE.getStructure(structureID);
         if (structureInfo != null)
         {
             StructureGenerationInfo generationInfo = structureInfo.generationInfo(generationID);
@@ -105,7 +105,7 @@ public class GenericVillagePiece extends StructureVillagePieces.Village
     @Override
     public boolean addComponentParts(World world, Random random, StructureBoundingBox boundingBox)
     {
-        StructureInfo structureInfo = StructureRegistry.getStructure(structureID);
+        StructureInfo structureInfo = StructureRegistry.INSTANCE.getStructure(structureID);
         if (structureInfo != null)
         {
             StructureGenerationInfo generationInfo = structureInfo.generationInfo(generationID);

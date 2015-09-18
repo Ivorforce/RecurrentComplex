@@ -42,7 +42,7 @@ public class TableDataSourceStructureBlock extends TableDataSourceSegmented impl
     {
         for (String s : structures)
         {
-            if (s.length() != 0 && StructureRegistry.getStructure(s) == null)
+            if (s.length() != 0 && StructureRegistry.INSTANCE.getStructure(s) == null)
                 return false; // s==0 = "No structure"
         }
 

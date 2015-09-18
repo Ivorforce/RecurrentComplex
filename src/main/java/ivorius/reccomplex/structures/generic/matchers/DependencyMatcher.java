@@ -84,7 +84,7 @@ public class DependencyMatcher extends PrefixedTypeExpressionCache<Boolean>
         @Override
         public Boolean evaluate(String var, Object... args)
         {
-            return StructureRegistry.hasStructure(var);
+            return StructureRegistry.INSTANCE.hasStructure(var);
         }
 
         @Override

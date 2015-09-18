@@ -36,7 +36,7 @@ public class RCGuiHandler implements IGuiHandler
             }
             else
             {
-                Component generator = GenericItemCollectionRegistry.component(key);
+                Component generator = GenericItemCollectionRegistry.INSTANCE.component(key);
 
                 if (generator != null)
                     return new ContainerEditInventoryGen(player, generator.copy());
@@ -60,7 +60,7 @@ public class RCGuiHandler implements IGuiHandler
             }
             else
             {
-                Component generator = GenericItemCollectionRegistry.component(key);
+                Component generator = GenericItemCollectionRegistry.INSTANCE.component(key);
 
                 if (generator != null)
                     return new GuiEditInventoryGen(player, generator, key);

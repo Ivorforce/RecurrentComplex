@@ -43,7 +43,7 @@ public class CommandEditStructure extends CommandBase
             String structureID = args[0];
 
             GenericStructureInfo structureInfo = CommandExportStructure.getGenericStructureInfo(structureID);
-            boolean saveAsActive = StructureRegistry.isStructureGenerating(structureID);
+            boolean saveAsActive = StructureRegistry.INSTANCE.isStructureGenerating(structureID);
             PacketEditStructureHandler.openEditStructure(structureInfo, structureID, saveAsActive, entityPlayerMP);
         }
         else
@@ -56,7 +56,7 @@ public class CommandEditStructure extends CommandBase
     public List addTabCompletionOptions(ICommandSender commandSender, String[] args)
     {
         if (args.length == 1)
-            return getListOfStringsFromIterableMatchingLastWord(args, StructureRegistry.allStructureIDs());
+            return getListOfStringsFromIterableMatchingLastWord(args, StructureRegistry.INSTANCE.allStructureIDs());
 
         return null;
     }

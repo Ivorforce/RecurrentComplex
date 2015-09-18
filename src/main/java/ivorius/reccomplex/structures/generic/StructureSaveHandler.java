@@ -57,7 +57,7 @@ public class StructureSaveHandler
     {
         while (!importedGenerators.isEmpty())
         {
-            StructureRegistry.removeStructure(importedGenerators.remove(0));
+            StructureRegistry.INSTANCE.removeStructure(importedGenerators.remove(0));
         }
 
         File structuresFile = IvFileHelper.getValidatedFolder(RecurrentComplex.proxy.getBaseFolderFile("structures"));
@@ -132,7 +132,7 @@ public class StructureSaveHandler
 
                 String structureID = FilenameUtils.getBaseName(file.getFileName().toString());
 
-                if (StructureRegistry.registerStructure(genericStructureInfo, structureID, domain, generating))
+                if (StructureRegistry.INSTANCE.registerStructure(genericStructureInfo, structureID, domain, generating))
                 {
                     if (imported)
                         importedGenerators.add(structureID);
@@ -153,7 +153,7 @@ public class StructureSaveHandler
         File parent = getStructuresDirectory(activeFolder);
         if (parent != null)
         {
-            String json = StructureRegistry.createJSONFromStructure(info);
+            String json = StructureRegistry.INSTANCE.createJSONFromStructure(info);
 
             if (RecurrentComplex.USE_ZIP_FOR_STRUCTURE_FILES)
             {
@@ -290,7 +290,7 @@ public class StructureSaveHandler
             if (json == null || worldData == null)
                 throw new StructureInvalidZipException(json != null, worldData != null);
 
-            GenericStructureInfo genericStructureInfo = StructureRegistry.createStructureFromJSON(json);
+            GenericStructureInfo genericStructureInfo = StructureRegistry.INSTANCE.createStructureFromJSON(json);
             genericStructureInfo.worldDataCompound = worldData;
 
             return genericStructureInfo;

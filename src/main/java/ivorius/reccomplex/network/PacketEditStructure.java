@@ -109,7 +109,7 @@ public class PacketEditStructure implements IMessage
     {
         structureID = ByteBufUtils.readUTF8String(buf);
         String json = ByteBufUtils.readUTF8String(buf);
-        structureInfo = StructureRegistry.createStructureFromJSON(json);
+        structureInfo = StructureRegistry.INSTANCE.createStructureFromJSON(json);
         saveAsActive = buf.readBoolean();
         deleteOtherOrStructureInActive = buf.readBoolean();
         structureInInactive = buf.readBoolean();
@@ -119,7 +119,7 @@ public class PacketEditStructure implements IMessage
     public void toBytes(ByteBuf buf)
     {
         ByteBufUtils.writeUTF8String(buf, structureID);
-        ByteBufUtils.writeUTF8String(buf, StructureRegistry.createJSONFromStructure(structureInfo));
+        ByteBufUtils.writeUTF8String(buf, StructureRegistry.INSTANCE.createJSONFromStructure(structureInfo));
         buf.writeBoolean(saveAsActive);
         buf.writeBoolean(deleteOtherOrStructureInActive);
         buf.writeBoolean(structureInInactive);

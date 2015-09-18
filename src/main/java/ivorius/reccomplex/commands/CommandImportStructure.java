@@ -51,7 +51,7 @@ public class CommandImportStructure extends CommandBase
         }
 
         String structureName = args[0];
-        StructureInfo structureInfo = StructureRegistry.getStructure(structureName);
+        StructureInfo structureInfo = StructureRegistry.INSTANCE.getStructure(structureName);
         World world = commandSender.getEntityWorld();
 
         if (structureInfo == null)
@@ -83,7 +83,7 @@ public class CommandImportStructure extends CommandBase
     public List addTabCompletionOptions(ICommandSender commandSender, String[] args)
     {
         if (args.length == 1)
-            return getListOfStringsFromIterableMatchingLastWord(args, StructureRegistry.allStructureIDs());
+            return getListOfStringsFromIterableMatchingLastWord(args, StructureRegistry.INSTANCE.allStructureIDs());
         else if (args.length == 2 || args.length == 3 || args.length == 4)
         {
             return getListOfStringsMatchingLastWord(args, "~");

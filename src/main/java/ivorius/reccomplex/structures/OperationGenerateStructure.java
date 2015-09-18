@@ -77,7 +77,7 @@ public class OperationGenerateStructure implements Operation
     @Override
     public void writeToNBT(NBTTagCompound compound)
     {
-        compound.setString("structureInfo", StructureRegistry.createJSONFromStructure(structure));
+        compound.setString("structureInfo", StructureRegistry.INSTANCE.createJSONFromStructure(structure));
         compound.setTag("structureData", structure.worldDataCompound);
 
         compound.setInteger("rotation", transform.getRotation());
@@ -94,7 +94,7 @@ public class OperationGenerateStructure implements Operation
     @Override
     public void readFromNBT(NBTTagCompound compound)
     {
-        structure = StructureRegistry.createStructureFromJSON(compound.getString("structureInfo"));
+        structure = StructureRegistry.INSTANCE.createStructureFromJSON(compound.getString("structureInfo"));
         structure.worldDataCompound = compound.getCompoundTag("structureData");
 
         transform = new AxisAlignedTransform2D(compound.getInteger("rotation"), compound.getBoolean("mirrorX"));

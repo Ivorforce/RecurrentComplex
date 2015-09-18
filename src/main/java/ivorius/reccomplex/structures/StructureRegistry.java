@@ -45,21 +45,23 @@ import java.util.*;
  */
 public class StructureRegistry
 {
-    private static BiMap<String, StructureInfo> allStructures = HashBiMap.create();
-    private static Map<String, String> structureDomains = Maps.newHashMap();
-
-    private static boolean needsGenerationCacheUpdate = true;
-    private static Set<String> persistentlyDisabledStructures = new HashSet<>();
-    private static Set<String> generatingStructures = new HashSet<>();
-
-    private static Map<Class<? extends StructureGenerationInfo>, Collection<Pair<StructureInfo, ? extends StructureGenerationInfo>>> cachedGeneration = new HashMap<>();
-
-    private static Map<Pair<Integer, String>, StructureSelector> structureSelectors = new HashMap<>();
+    public static final StructureRegistry INSTANCE = new StructureRegistry();
 
     private static SerializableStringTypeRegistry<Transformer> transformerRegistry = new SerializableStringTypeRegistry<>("transformer", "type", Transformer.class);
     private static SerializableStringTypeRegistry<StructureGenerationInfo> structureGenerationInfoRegistry = new SerializableStringTypeRegistry<>("generationInfo", "type", StructureGenerationInfo.class);
 
-    private static Gson gson = createGson();
+    private BiMap<String, StructureInfo> allStructures = HashBiMap.create();
+    private Map<String, String> structureDomains = Maps.newHashMap();
+
+    private boolean needsGenerationCacheUpdate = true;
+    private Set<String> persistentlyDisabledStructures = new HashSet<>();
+    private Set<String> generatingStructures = new HashSet<>();
+
+    private Map<Class<? extends StructureGenerationInfo>, Collection<Pair<StructureInfo, ? extends StructureGenerationInfo>>> cachedGeneration = new HashMap<>();
+
+    private Map<Pair<Integer, String>, StructureSelector> structureSelectors = new HashMap<>();
+
+    private Gson gson = createGson();
 
     public static Gson createGson()
     {
@@ -74,7 +76,7 @@ public class StructureRegistry
         return builder.create();
     }
 
-    public static boolean registerStructure(StructureInfo info, String key, String domain, boolean generates)
+    public boolean registerStructure(StructureInfo info, String key, String domain, boolean generates)
     {
         StructureRegistrationEvent.Pre event = new StructureRegistrationEvent.Pre(key, info, generates);
         RCEventBus.INSTANCE.post(event);
@@ -102,34 +104,34 @@ public class StructureRegistry
         return false;
     }
 
-    public static boolean registerStructure(ResourceLocation resourceLocation, String key, boolean generates)
+    public boolean registerStructure(ResourceLocation resourceLocation, String key, boolean generates)
     {
         GenericStructureInfo structureInfo = StructureSaveHandler.structureInfoFromResource(resourceLocation);
         return structureInfo != null && registerStructure(structureInfo, key, resourceLocation.getResourceDomain(), generates);
     }
 
-    public static boolean hasStructure(String key)
+    public boolean hasStructure(String key)
     {
         return allStructures.containsKey(key);
     }
 
-    public static StructureInfo getStructure(String key)
+    public StructureInfo getStructure(String key)
     {
         return allStructures.get(key);
     }
 
     @Deprecated
-    public static String getName(StructureInfo structureInfo)
+    public String getName(StructureInfo structureInfo)
     {
         return structureID(structureInfo);
     }
 
-    public static String structureID(StructureInfo structureInfo)
+    public String structureID(StructureInfo structureInfo)
     {
         return allStructures.inverse().get(structureInfo);
     }
 
-    public static void removeStructure(String key)
+    public void removeStructure(String key)
     {
         StructureInfo info = allStructures.remove(key);
 
@@ -140,22 +142,22 @@ public class StructureRegistry
         clearCaches();
     }
 
-    public static GenericStructureInfo createStructureFromJSON(String jsonData) throws JsonSyntaxException
+    public GenericStructureInfo createStructureFromJSON(String jsonData) throws JsonSyntaxException
     {
         return gson.fromJson(jsonData, GenericStructureInfo.class);
     }
 
-    public static String createJSONFromStructure(GenericStructureInfo structureInfo)
+    public String createJSONFromStructure(GenericStructureInfo structureInfo)
     {
         return gson.toJson(structureInfo, GenericStructureInfo.class);
     }
 
-    public static Set<StructureInfo> getAllStructures()
+    public Set<StructureInfo> getAllStructures()
     {
         return Collections.unmodifiableSet(allStructures.values());
     }
 
-    private static void ensureGenerationCache()
+    private void ensureGenerationCache()
     {
         if (needsGenerationCacheUpdate)
         {
@@ -175,7 +177,7 @@ public class StructureRegistry
         }
     }
 
-    public static Set<StructureInfo> getAllGeneratingStructures()
+    public Set<StructureInfo> getAllGeneratingStructures()
     {
         ensureGenerationCache();
         return Collections.unmodifiableSet(Maps.filterKeys(allStructures, new Predicate<String>()
@@ -188,39 +190,39 @@ public class StructureRegistry
         }).values());
     }
 
-    public static Set<String> getAllGeneratingStructureKeys()
+    public Set<String> getAllGeneratingStructureKeys()
     {
         return Collections.unmodifiableSet(generatingStructures);
     }
 
-    public static boolean isStructureGenerating(String key)
+    public boolean isStructureGenerating(String key)
     {
         ensureGenerationCache();
         return generatingStructures.contains(key);
     }
 
-    public static Map<String, StructureInfo> structureMap()
+    public Map<String, StructureInfo> structureMap()
     {
         return Collections.unmodifiableMap(allStructures);
     }
 
     @Deprecated
-    public static Set<String> getAllStructureNames()
+    public Set<String> getAllStructureNames()
     {
         return allStructureIDs();
     }
 
-    public static Set<String> allStructureIDs()
+    public Set<String> allStructureIDs()
     {
         return Collections.unmodifiableSet(allStructures.keySet());
     }
 
-    protected static <T extends StructureGenerationInfo> Collection<Pair<StructureInfo, T>> getCachedGeneration(Class<T> clazz)
+    protected <T extends StructureGenerationInfo> Collection<Pair<StructureInfo, T>> getCachedGeneration(Class<T> clazz)
     {
         return (Collection<Pair<StructureInfo, T>>) ((Map) cachedGeneration).get(clazz);
     }
 
-    public static <T extends StructureGenerationInfo> Collection<Pair<StructureInfo, T>> getStructureGenerations(Class<T> clazz)
+    public <T extends StructureGenerationInfo> Collection<Pair<StructureInfo, T>> getStructureGenerations(Class<T> clazz)
     {
         Collection<Pair<StructureInfo, T>> pairs = getCachedGeneration(clazz);
         if (pairs != null)
@@ -240,12 +242,12 @@ public class StructureRegistry
         return pairs;
     }
 
-    public static <T extends StructureGenerationInfo> Collection<Pair<StructureInfo, T>> getStructureGenerations(Class<T> clazz, final Predicate<Pair<StructureInfo, T>> predicate)
+    public <T extends StructureGenerationInfo> Collection<Pair<StructureInfo, T>> getStructureGenerations(Class<T> clazz, final Predicate<Pair<StructureInfo, T>> predicate)
     {
         return Collections2.filter(getStructureGenerations(clazz), predicate);
     }
 
-    public static StructureSelector getStructureSelector(BiomeGenBase biome, WorldProvider provider)
+    public StructureSelector getStructureSelector(BiomeGenBase biome, WorldProvider provider)
     {
         Pair<Integer, String> pair = new ImmutablePair<>(provider.dimensionId, biome.biomeName);
         StructureSelector structureSelector = structureSelectors.get(pair);
@@ -259,7 +261,7 @@ public class StructureRegistry
         return structureSelector;
     }
 
-    public static Collection<Pair<StructureInfo, StructureListGenerationInfo>> getStructuresInList(final String listID, final ForgeDirection front)
+    public Collection<Pair<StructureInfo, StructureListGenerationInfo>> getStructuresInList(final String listID, final ForgeDirection front)
     {
         return getStructureGenerations(StructureListGenerationInfo.class, new Predicate<Pair<StructureInfo, StructureListGenerationInfo>>()
         {
@@ -272,7 +274,7 @@ public class StructureRegistry
         });
     }
 
-    public static Collection<Pair<StructureInfo, MazeGenerationInfo>> getStructuresInMaze(final String mazeID)
+    public Collection<Pair<StructureInfo, MazeGenerationInfo>> getStructuresInMaze(final String mazeID)
     {
         return getStructureGenerations(MazeGenerationInfo.class, new Predicate<Pair<StructureInfo, MazeGenerationInfo>>()
         {
@@ -285,12 +287,12 @@ public class StructureRegistry
         });
     }
 
-    private static boolean chunkContains(int chunkX, int chunkZ, int x, int z)
+    private boolean chunkContains(int chunkX, int chunkZ, int x, int z)
     {
         return (x >> 4) == chunkX && (z >> 4) == chunkZ;
     }
 
-    public static Collection<Pair<StructureInfo, StaticGenerationInfo>> getStaticStructuresAt(final int chunkX, final int chunkZ, final World world, final ChunkCoordinates spawnPos)
+    public Collection<Pair<StructureInfo, StaticGenerationInfo>> getStaticStructuresAt(final int chunkX, final int chunkZ, final World world, final ChunkCoordinates spawnPos)
     {
         return getStructureGenerations(StaticGenerationInfo.class, new Predicate<Pair<StructureInfo, StaticGenerationInfo>>()
         {
@@ -305,17 +307,17 @@ public class StructureRegistry
         });
     }
 
-    public static SerializableStringTypeRegistry<Transformer> getTransformerRegistry()
+    public SerializableStringTypeRegistry<Transformer> getTransformerRegistry()
     {
         return transformerRegistry;
     }
 
-    public static SerializableStringTypeRegistry<StructureGenerationInfo> getStructureGenerationInfoRegistry()
+    public SerializableStringTypeRegistry<StructureGenerationInfo> getStructureGenerationInfoRegistry()
     {
         return structureGenerationInfoRegistry;
     }
 
-    private static void clearCaches()
+    private void clearCaches()
     {
         structureSelectors.clear();
         cachedGeneration.clear();
@@ -332,7 +334,7 @@ public class StructureRegistry
         }
     }
 
-    private static void updateVanillaGenerations()
+    private void updateVanillaGenerations()
     {
         TemporaryVillagerRegistry.instance().setHandlers(
                 Sets.newHashSet(Iterables.filter(Collections2.transform(getStructureGenerations(VanillaStructureGenerationInfo.class),

@@ -10,6 +10,7 @@ import cpw.mods.fml.common.network.simpleimpl.IMessageHandler;
 import cpw.mods.fml.common.network.simpleimpl.MessageContext;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
+import ivorius.reccomplex.RecurrentComplex;
 import ivorius.reccomplex.gui.editinventorygen.GuiEditInventoryGen;
 import ivorius.reccomplex.items.ItemInventoryGenComponentTag;
 import ivorius.reccomplex.utils.ServerTranslations;
@@ -18,6 +19,8 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.NetHandlerPlayServer;
+
+import java.util.Collections;
 
 /**
  * Created by lukas on 03.08.14.
@@ -40,7 +43,7 @@ public class PacketEditInventoryGeneratorHandler implements IMessageHandler<Pack
             {
                 player.addChatMessage(ServerTranslations.format("inventorygen.save.success", message.getKey()));
 
-                ItemCollectionSaveHandler.reloadAllCustomInventoryGenerators();
+                RecurrentComplex.fileTypeRegistry.reloadCustomFiles(Collections.singletonList(ItemCollectionSaveHandler.FILE_SUFFIX));
 
                 ItemStack heldItem = playServer.playerEntity.getHeldItem();
                 if (heldItem != null && heldItem.getItem() instanceof ItemInventoryGenComponentTag)

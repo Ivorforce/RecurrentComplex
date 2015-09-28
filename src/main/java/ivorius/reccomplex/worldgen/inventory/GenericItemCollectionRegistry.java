@@ -82,12 +82,6 @@ public class GenericItemCollectionRegistry
         clearCaches();
     }
 
-    public boolean register(ResourceLocation resourceLocation, String key, boolean generates)
-    {
-        Component component = ItemCollectionSaveHandler.readInventoryGenerator(resourceLocation);
-        return component != null && register(component, key, resourceLocation.getResourceDomain(), generates);
-    }
-
     public boolean isLoaded(String key)
     {
         return allComponents.containsKey(key);

@@ -6,6 +6,7 @@
 package ivorius.reccomplex.commands;
 
 import ivorius.reccomplex.RCConfig;
+import ivorius.reccomplex.RecurrentComplex;
 import ivorius.reccomplex.structures.generic.StructureSaveHandler;
 import ivorius.reccomplex.utils.ServerTranslations;
 import ivorius.reccomplex.worldgen.inventory.ItemCollectionSaveHandler;
@@ -32,8 +33,7 @@ public class CommandStructuresReload extends CommandBase
     @Override
     public void processCommand(ICommandSender commandSender, String[] args)
     {
-        StructureSaveHandler.reloadAllCustomStructures();
-        ItemCollectionSaveHandler.reloadAllCustomInventoryGenerators();
+        RecurrentComplex.fileTypeRegistry.reloadCustomFiles();
         commandSender.addChatMessage(ServerTranslations.format("commands.strucReload.success"));
     }
 }

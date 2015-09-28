@@ -23,6 +23,7 @@ import ivorius.reccomplex.structures.MCRegistrySpecial;
 import ivorius.reccomplex.structures.OperationMoveStructure;
 import ivorius.reccomplex.structures.generic.BiomeGenerationInfo;
 import ivorius.reccomplex.structures.generic.DimensionGenerationInfo;
+import ivorius.reccomplex.structures.generic.StructureSaveHandler;
 import ivorius.reccomplex.structures.generic.WeightedBlockState;
 import ivorius.reccomplex.structures.generic.transformers.*;
 import ivorius.reccomplex.structures.generic.gentypes.*;
@@ -36,6 +37,7 @@ import ivorius.reccomplex.structures.OperationGenerateStructure;
 import ivorius.reccomplex.structures.StructureRegistry;
 import ivorius.reccomplex.utils.FMLUtils;
 import ivorius.reccomplex.worldgen.StructureSelector;
+import ivorius.reccomplex.worldgen.inventory.ItemCollectionSaveHandler;
 import ivorius.reccomplex.worldgen.inventory.RCInventoryGenerators;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.MapColor;
@@ -199,6 +201,9 @@ public class RCRegistryHandler
     public static void load(FMLInitializationEvent event, RecurrentComplex mod)
     {
         MCRegistrySpecial mcRegistry = MCRegistrySpecial.INSTANCE;
+
+        fileTypeRegistry.put(StructureSaveHandler.FILE_SUFFIX, StructureSaveHandler.INSTANCE);
+        fileTypeRegistry.put(ItemCollectionSaveHandler.FILE_SUFFIX, ItemCollectionSaveHandler.INSTANCE);
 
         WorldScriptRegistry.INSTANCE.register("multi", WorldScriptMulti.class);
         WorldScriptRegistry.INSTANCE.register("strucGen", WorldScriptStructureGenerator.class);

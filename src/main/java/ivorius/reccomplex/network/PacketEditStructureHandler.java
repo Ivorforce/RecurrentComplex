@@ -12,13 +12,16 @@ import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import ivorius.reccomplex.RecurrentComplex;
 import ivorius.reccomplex.entities.StructureEntityInfo;
+import ivorius.reccomplex.files.RCFileTypeRegistry;
 import ivorius.reccomplex.gui.editstructure.GuiEditGenericStructure;
-import ivorius.reccomplex.structures.generic.StructureSaveHandler;
 import ivorius.reccomplex.structures.generic.GenericStructureInfo;
+import ivorius.reccomplex.structures.generic.StructureSaveHandler;
 import ivorius.reccomplex.utils.ServerTranslations;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.network.NetHandlerPlayServer;
+
+import java.util.Collections;
 
 /**
  * Created by lukas on 03.08.14.
@@ -33,8 +36,8 @@ public class PacketEditStructureHandler implements IMessageHandler<PacketEditStr
             structureEntityInfo.setCachedExportStructureBlockDataNBT(structureInfo.worldDataCompound);
 
         RecurrentComplex.network.sendTo(new PacketEditStructure(structureInfo, structureID, saveAsActive,
-                StructureSaveHandler.hasGenericStructure(structureID, true),
-                StructureSaveHandler.hasGenericStructure(structureID, false)), player);
+                StructureSaveHandler.INSTANCE.hasGenericStructure(structureID, true),
+                StructureSaveHandler.INSTANCE.hasGenericStructure(structureID, false)), player);
     }
 
     public static void finishEditStructure(GenericStructureInfo structureInfo, String structureID, boolean saveAsActive, boolean deleteOther)
@@ -60,10 +63,10 @@ public class PacketEditStructureHandler implements IMessageHandler<PacketEditStr
             if (structureEntityInfo != null)
                 genericStructureInfo.worldDataCompound = structureEntityInfo.getCachedExportStructureBlockDataNBT();
 
-            String path = StructureSaveHandler.getStructuresDirectoryName(message.isSaveAsActive()) + "/";
+            String path = RCFileTypeRegistry.getStructuresDirectoryName(message.isSaveAsActive()) + "/";
             String structureID = message.getStructureID();
 
-            if (!StructureSaveHandler.saveGenericStructure(genericStructureInfo, structureID, message.isSaveAsActive()))
+            if (!StructureSaveHandler.INSTANCE.saveGenericStructure(genericStructureInfo, structureID, message.isSaveAsActive()))
             {
                 player.addChatMessage(ServerTranslations.format("structure.save.failure", path + structureID));
             }
@@ -71,17 +74,17 @@ public class PacketEditStructureHandler implements IMessageHandler<PacketEditStr
             {
                 player.addChatMessage(ServerTranslations.format("structure.save.success", path + structureID));
 
-                if (message.isDeleteOther() && StructureSaveHandler.hasGenericStructure(structureID, !message.isSaveAsActive()))
+                if (message.isDeleteOther() && StructureSaveHandler.INSTANCE.hasGenericStructure(structureID, !message.isSaveAsActive()))
                 {
-                    String otherPath = StructureSaveHandler.getStructuresDirectoryName(!message.isSaveAsActive()) + "/";
+                    String otherPath = RCFileTypeRegistry.getStructuresDirectoryName(!message.isSaveAsActive()) + "/";
 
-                    if (StructureSaveHandler.deleteGenericStructure(structureID, !message.isSaveAsActive()))
+                    if (StructureSaveHandler.INSTANCE.deleteGenericStructure(structureID, !message.isSaveAsActive()))
                         player.addChatMessage(ServerTranslations.format("structure.delete.success", otherPath + structureID));
                     else
                         player.addChatMessage(ServerTranslations.format("structure.delete.failure", otherPath + structureID));
                 }
 
-                StructureSaveHandler.reloadAllCustomStructures();
+                RecurrentComplex.fileTypeRegistry.reloadCustomFiles(Collections.singletonList(StructureSaveHandler.FILE_SUFFIX));
             }
         }
 

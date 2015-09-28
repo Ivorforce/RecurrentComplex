@@ -6,11 +6,11 @@
 package ivorius.reccomplex.structures.generic;
 
 import ivorius.ivtoolkit.tools.IvFileHelper;
-import ivorius.reccomplex.files.FileSuffixFilter;
-import ivorius.reccomplex.files.RCFileHelper;
 import ivorius.reccomplex.RecurrentComplex;
+import ivorius.reccomplex.files.FileLoadContext;
+import ivorius.reccomplex.files.FileTypeHandler;
+import ivorius.reccomplex.files.RCFileTypeRegistry;
 import ivorius.reccomplex.structures.StructureRegistry;
-import ivorius.reccomplex.structures.schematics.SchematicLoader;
 import net.minecraft.nbt.CompressedStreamTools;
 import net.minecraft.nbt.NBTSizeTracker;
 import net.minecraft.nbt.NBTTagCompound;
@@ -19,7 +19,6 @@ import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
 
 import java.io.*;
-import java.net.URISyntaxException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
@@ -31,129 +30,57 @@ import java.util.zip.ZipOutputStream;
 /**
  * Created by lukas on 25.05.14.
  */
-public class StructureSaveHandler
+public class StructureSaveHandler implements FileTypeHandler
 {
+    public static final StructureSaveHandler INSTANCE = new StructureSaveHandler(StructureRegistry.INSTANCE);
+
     public static final String FILE_SUFFIX = "rcst";
     public static final String STRUCTURE_INFO_JSON_FILENAME = "structure.json";
     public static final String WORLD_DATA_NBT_FILENAME = "worldData.nbt";
 
-    public static final String ACTIVE_DIR_NAME = "active";
-    public static final String INACTIVE_DIR_NAME = "inactive";
+    public StructureRegistry registry;
+    private List<String> importedGenerators = new ArrayList<>();
 
-    private static List<String> importedGenerators = new ArrayList<>();
-
-    public static String getStructuresDirectoryName(boolean activeFolder)
+    public StructureSaveHandler(StructureRegistry registry)
     {
-        return activeFolder ? ACTIVE_DIR_NAME : INACTIVE_DIR_NAME;
+        this.registry = registry;
     }
 
-    public static File getStructuresDirectory(boolean activeFolder)
+    public static byte[] completeByteArray(InputStream inputStream)
     {
-        File structuresFolder = RecurrentComplex.proxy.getBaseFolderFile("structures");
-        return RCFileHelper.getValidatedFolder(structuresFolder, getStructuresDirectoryName(activeFolder), true);
-    }
+        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+        int aByte;
 
-    public static void reloadAllCustomStructures()
-    {
-        while (!importedGenerators.isEmpty())
-        {
-            StructureRegistry.INSTANCE.removeStructure(importedGenerators.remove(0));
-        }
-
-        File structuresFile = IvFileHelper.getValidatedFolder(RecurrentComplex.proxy.getBaseFolderFile("structures"));
-        if (structuresFile != null)
-        {
-            tryAddAllStructuresInDirectory(RCFileHelper.getValidatedFolder(structuresFile, ACTIVE_DIR_NAME, true), "", true, true);
-            tryAddAllStructuresInDirectory(RCFileHelper.getValidatedFolder(structuresFile, INACTIVE_DIR_NAME, true), "", false, true);
-
-            // Legacy
-            tryAddAllStructuresInDirectory(RCFileHelper.getValidatedFolder(structuresFile, "genericStructures", false), "", true, true);
-            tryAddAllStructuresInDirectory(RCFileHelper.getValidatedFolder(structuresFile, "silentStructures", false), "", false, true);
-        }
-
-        SchematicLoader.initializeFolder();
-    }
-
-    public static void loadStructuresFromMod(String modid)
-    {
-        modid = modid.toLowerCase();
-
-        tryAddAllStructuresInResourceLocation(new ResourceLocation(modid, "structures/" + ACTIVE_DIR_NAME), true, false);
-        tryAddAllStructuresInResourceLocation(new ResourceLocation(modid, "structures/" + INACTIVE_DIR_NAME), false, false);
-
-        // Legacy
-        tryAddAllStructuresInResourceLocation(new ResourceLocation(modid, "structures/genericStructures"), true, false);
-        tryAddAllStructuresInResourceLocation(new ResourceLocation(modid, "structures/silentStructures"), false, false);
-    }
-
-    public static int tryAddAllStructuresInResourceLocation(ResourceLocation resourceLocation, boolean generating, boolean imported)
-    {
         try
         {
-            Path path = RCFileHelper.pathFromResourceLocation(resourceLocation);
-            if (path != null)
-                return addAllStructuresInDirectory(path, resourceLocation.getResourceDomain(), generating, imported);
+            while ((aByte = inputStream.read()) >= 0)
+            {
+                byteArrayOutputStream.write(aByte);
+            }
         }
-        catch (Throwable e)
+        catch (Exception ignored)
         {
-            RecurrentComplex.logger.error("Error reading from resource location '" + resourceLocation + "'", e);
+            return null;
         }
 
-        return 0;
+        return byteArrayOutputStream.toByteArray();
     }
 
-    public static int tryAddAllStructuresInDirectory(File file, String domain, boolean generating, boolean imported)
+    protected static void addZipEntry(ZipOutputStream zip, String path, byte[] bytes) throws IOException
     {
-        if (file != null)
-        {
-            try
-            {
-                return addAllStructuresInDirectory(file.toPath(), domain, generating, imported);
-            }
-            catch (Throwable e)
-            {
-                RecurrentComplex.logger.error("Error reading from directory '" + file + "'", e);
-            }
-        }
-
-        return 0;
+        ZipEntry jsonEntry = new ZipEntry(path);
+        zip.putNextEntry(jsonEntry);
+        jsonEntry.setSize(bytes.length);
+        zip.write(bytes);
+        zip.closeEntry();
     }
 
-    public static int addAllStructuresInDirectory(Path directory, String domain, boolean generating, boolean imported) throws IOException
+    public boolean saveGenericStructure(GenericStructureInfo info, String structureName, boolean activeFolder)
     {
-        List<Path> paths = RCFileHelper.listFilesRecursively(directory, new FileSuffixFilter(FILE_SUFFIX, /* Legacy */ RecurrentComplex.USE_ZIP_FOR_STRUCTURE_FILES ? "zip" : "json"), true);
-
-        int added = 0;
-        for (Path file : paths)
-        {
-            try
-            {
-                GenericStructureInfo genericStructureInfo = StructureSaveHandler.readGenericStructure(file);
-
-                String structureID = FilenameUtils.getBaseName(file.getFileName().toString());
-
-                if (StructureRegistry.INSTANCE.registerStructure(genericStructureInfo, structureID, domain, generating))
-                {
-                    if (imported)
-                        importedGenerators.add(structureID);
-
-                    added ++;
-                }
-            }
-            catch (IOException | StructureLoadException e)
-            {
-                e.printStackTrace();
-            }
-        }
-        return added;
-    }
-
-    public static boolean saveGenericStructure(GenericStructureInfo info, String structureName, boolean activeFolder)
-    {
-        File parent = getStructuresDirectory(activeFolder);
+        File parent = RCFileTypeRegistry.getStructuresDirectory(activeFolder);
         if (parent != null)
         {
-            String json = StructureRegistry.INSTANCE.createJSONFromStructure(info);
+            String json = registry.createJSONFromStructure(info);
 
             if (RecurrentComplex.USE_ZIP_FOR_STRUCTURE_FILES)
             {
@@ -164,19 +91,8 @@ public class StructureSaveHandler
                 {
                     ZipOutputStream zipOutputStream = new ZipOutputStream(new FileOutputStream(newFile));
 
-                    ZipEntry jsonEntry = new ZipEntry(STRUCTURE_INFO_JSON_FILENAME);
-                    zipOutputStream.putNextEntry(jsonEntry);
-                    byte[] jsonBytes = json.getBytes();
-                    jsonEntry.setSize(jsonBytes.length);
-                    zipOutputStream.write(jsonBytes);
-                    zipOutputStream.closeEntry();
-
-                    ZipEntry worldDataEntry = new ZipEntry(WORLD_DATA_NBT_FILENAME);
-                    zipOutputStream.putNextEntry(worldDataEntry);
-                    byte[] worldDataBytes = CompressedStreamTools.compress(info.worldDataCompound);
-                    worldDataEntry.setSize(worldDataBytes.length);
-                    zipOutputStream.write(worldDataBytes);
-                    zipOutputStream.closeEntry();
+                    addZipEntry(zipOutputStream, STRUCTURE_INFO_JSON_FILENAME, json.getBytes());
+                    addZipEntry(zipOutputStream, WORLD_DATA_NBT_FILENAME, CompressedStreamTools.compress(info.worldDataCompound));
 
                     zipOutputStream.close();
                 }
@@ -199,7 +115,7 @@ public class StructureSaveHandler
                 }
                 catch (Exception e)
                 {
-                    e.printStackTrace();
+                    RecurrentComplex.logger.error("Could not write structure zip to folder", e);
                     failed = true;
                 }
 
@@ -210,11 +126,11 @@ public class StructureSaveHandler
         return false;
     }
 
-    public static boolean hasGenericStructure(String structureName, boolean activeFolder)
+    public boolean hasGenericStructure(String structureName, boolean activeFolder)
     {
         try
         {
-            File parent = getStructuresDirectory(activeFolder);
+            File parent = RCFileTypeRegistry.getStructuresDirectory(activeFolder);
             return parent != null && (new File(parent, structureName + "." + FILE_SUFFIX).exists() || /* Legacy */ new File(parent, structureName + ".zip").exists());
         }
         catch (Throwable e)
@@ -225,11 +141,11 @@ public class StructureSaveHandler
         return false;
     }
 
-    public static boolean deleteGenericStructure(String structureName, boolean activeFolder)
+    public boolean deleteGenericStructure(String structureName, boolean activeFolder)
     {
         try
         {
-            File parent = getStructuresDirectory(activeFolder);
+            File parent = RCFileTypeRegistry.getStructuresDirectory(activeFolder);
             return parent != null && (new File(parent, structureName + "." + FILE_SUFFIX).delete() || /* Legacy */ new File(parent, structureName + ".zip").delete());
         }
         catch (Throwable e)
@@ -240,7 +156,7 @@ public class StructureSaveHandler
         return false;
     }
 
-    public static GenericStructureInfo readGenericStructure(Path file) throws StructureLoadException, IOException
+    public GenericStructureInfo readGenericStructure(Path file) throws StructureLoadException, IOException
     {
         try (ZipInputStream zip = new ZipInputStream(Files.newInputStream(file)))
         {
@@ -248,7 +164,7 @@ public class StructureSaveHandler
         }
     }
 
-    public static GenericStructureInfo structureInfoFromResource(ResourceLocation resourceLocation)
+    public GenericStructureInfo structureInfoFromResource(ResourceLocation resourceLocation)
     {
         try
         {
@@ -262,7 +178,7 @@ public class StructureSaveHandler
         return null;
     }
 
-    public static GenericStructureInfo structureInfoFromZip(ZipInputStream zipInputStream) throws StructureLoadException
+    public GenericStructureInfo structureInfoFromZip(ZipInputStream zipInputStream) throws StructureLoadException
     {
         try
         {
@@ -290,7 +206,7 @@ public class StructureSaveHandler
             if (json == null || worldData == null)
                 throw new StructureInvalidZipException(json != null, worldData != null);
 
-            GenericStructureInfo genericStructureInfo = StructureRegistry.INSTANCE.createStructureFromJSON(json);
+            GenericStructureInfo genericStructureInfo = registry.createStructureFromJSON(json);
             genericStructureInfo.worldDataCompound = worldData;
 
             return genericStructureInfo;
@@ -301,23 +217,36 @@ public class StructureSaveHandler
         }
     }
 
-    public static byte[] completeByteArray(InputStream inputStream)
+    @Override
+    public boolean loadFile(Path path, FileLoadContext context)
     {
-        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-        int aByte;
-
         try
         {
-            while ((aByte = inputStream.read()) >= 0)
+            GenericStructureInfo genericStructureInfo = readGenericStructure(path);
+
+            String structureID = FilenameUtils.getBaseName(path.getFileName().toString());
+
+            if (registry.registerStructure(genericStructureInfo, structureID, context.domain, context.active))
             {
-                byteArrayOutputStream.write(aByte);
+                if (context.custom)
+                    importedGenerators.add(structureID);
+
+                return true;
             }
         }
-        catch (Exception ignored)
+        catch (IOException | StructureLoadException e)
         {
-            return null;
+            e.printStackTrace();
         }
 
-        return byteArrayOutputStream.toByteArray();
+        return false;
+    }
+
+    @Override
+    public void clearCustomFiles()
+    {
+        while (!importedGenerators.isEmpty())
+            StructureRegistry.INSTANCE.removeStructure(importedGenerators.remove(0));
+        importedGenerators.clear();
     }
 }

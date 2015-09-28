@@ -9,12 +9,14 @@ import cpw.mods.fml.common.event.FMLInterModComms;
 import ivorius.ivtoolkit.tools.IvFMLIntercommHandler;
 import ivorius.ivtoolkit.tools.IvNBTHelper;
 import ivorius.reccomplex.dimensions.DimensionDictionary;
+import ivorius.reccomplex.files.FileLoadContext;
 import ivorius.reccomplex.structures.StructureRegistry;
 import ivorius.reccomplex.worldgen.StructureSelector;
 import ivorius.reccomplex.structures.generic.matchers.BiomeMatcher;
 import ivorius.reccomplex.worldgen.inventory.GenericItemCollectionRegistry;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.common.util.Constants;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.helpers.Strings;
 
@@ -33,7 +35,23 @@ public class RCCommunicationHandler extends IvFMLIntercommHandler
     @Override
     protected boolean handleMessage(FMLInterModComms.IMCMessage message, boolean server, boolean runtime)
     {
-        if (isMessage("loadStructure", message, NBTTagCompound.class))
+        if (isMessage("loadFile", message, NBTTagCompound.class)
+                || isMessage("loadInventoryGenerator", message, NBTTagCompound.class))
+        {
+            // Note that this is not required for default loading, using the correct directories.
+            // Only use this if you want to load it conditionally.
+
+            NBTTagCompound cmp = message.getNBTValue();
+            String genPath = cmp.getString("genPath");
+            String genID = cmp.hasKey("genID", Constants.NBT.TAG_STRING) ? cmp.getString("genID") : null;
+            boolean generates = cmp.getBoolean("generates");
+
+            ResourceLocation resourceLocation = new ResourceLocation(genPath);
+            RecurrentComplex.fileTypeRegistry.tryLoad(resourceLocation, new FileLoadContext(resourceLocation.getResourceDomain(), generates, false, genID));
+
+            return true;
+        }
+        else if (isMessage("loadStructure", message, NBTTagCompound.class))
         {
             // Note that this is not required for default loading, using the correct directories.
             // Only use this if you want to load it conditionally.
@@ -43,23 +61,8 @@ public class RCCommunicationHandler extends IvFMLIntercommHandler
             String structureID = cmp.getString("structureID");
             boolean generates = cmp.getBoolean("generates");
 
-            if (!StructureRegistry.INSTANCE.registerStructure(new ResourceLocation(structurePath), structureID, generates))
-                getLogger().warn(String.format("Could not find structure with path '%s and id '%s'", structurePath, structureID));
-
-            return true;
-        }
-        else if (isMessage("loadInventoryGenerator", message, NBTTagCompound.class))
-        {
-            // Note that this is not required for default loading, using the correct directories.
-            // Only use this if you want to load it conditionally.
-
-            NBTTagCompound cmp = message.getNBTValue();
-            String genPath = cmp.getString("genPath");
-            String genID = cmp.getString("genID");
-            boolean generates = cmp.getBoolean("generates");
-
-            if (!GenericItemCollectionRegistry.INSTANCE.register(new ResourceLocation(genPath), genID, generates))
-                getLogger().warn(String.format("Could not find inventory generator with path '%s and id '%s'", genPath, genID));
+            ResourceLocation resourceLocation = new ResourceLocation(structurePath);
+            RecurrentComplex.fileTypeRegistry.tryLoad(resourceLocation, new FileLoadContext(resourceLocation.getResourceDomain(), generates, false, structureID));
 
             return true;
         }

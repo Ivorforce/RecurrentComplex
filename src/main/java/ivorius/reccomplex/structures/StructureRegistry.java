@@ -45,10 +45,10 @@ import java.util.*;
  */
 public class StructureRegistry
 {
-    public static final StructureRegistry INSTANCE = new StructureRegistry();
-
     private static SerializableStringTypeRegistry<Transformer> transformerRegistry = new SerializableStringTypeRegistry<>("transformer", "type", Transformer.class);
     private static SerializableStringTypeRegistry<StructureGenerationInfo> structureGenerationInfoRegistry = new SerializableStringTypeRegistry<>("generationInfo", "type", StructureGenerationInfo.class);
+
+    public static final StructureRegistry INSTANCE = new StructureRegistry();
 
     private BiMap<String, StructureInfo> allStructures = HashBiMap.create();
     private Map<String, String> structureDomains = Maps.newHashMap();
@@ -102,12 +102,6 @@ public class StructureRegistry
         }
 
         return false;
-    }
-
-    public boolean registerStructure(ResourceLocation resourceLocation, String key, boolean generates)
-    {
-        GenericStructureInfo structureInfo = StructureSaveHandler.structureInfoFromResource(resourceLocation);
-        return structureInfo != null && registerStructure(structureInfo, key, resourceLocation.getResourceDomain(), generates);
     }
 
     public boolean hasStructure(String key)

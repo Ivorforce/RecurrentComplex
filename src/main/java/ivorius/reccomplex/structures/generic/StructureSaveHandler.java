@@ -224,7 +224,7 @@ public class StructureSaveHandler implements FileTypeHandler
         {
             GenericStructureInfo genericStructureInfo = readGenericStructure(path);
 
-            String structureID = FilenameUtils.getBaseName(path.getFileName().toString());
+            String structureID = context.customID != null ? context.customID : FilenameUtils.getBaseName(path.getFileName().toString());
 
             if (registry.registerStructure(genericStructureInfo, structureID, context.domain, context.active))
             {
@@ -236,7 +236,7 @@ public class StructureSaveHandler implements FileTypeHandler
         }
         catch (IOException | StructureLoadException e)
         {
-            e.printStackTrace();
+            RecurrentComplex.logger.warn("Error reading structure", e);
         }
 
         return false;

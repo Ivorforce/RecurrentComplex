@@ -18,6 +18,7 @@ import ivorius.reccomplex.blocks.materials.RCMaterials;
 import ivorius.reccomplex.json.SerializableStringTypeRegistry;
 import ivorius.reccomplex.operation.OperationRegistry;
 import ivorius.reccomplex.random.Poem;
+import ivorius.reccomplex.random.PoemLoader;
 import ivorius.reccomplex.scripts.world.*;
 import ivorius.reccomplex.structures.MCRegistrySpecial;
 import ivorius.reccomplex.structures.OperationMoveStructure;
@@ -204,6 +205,7 @@ public class RCRegistryHandler
 
         fileTypeRegistry.put(StructureSaveHandler.FILE_SUFFIX, StructureSaveHandler.INSTANCE);
         fileTypeRegistry.put(ItemCollectionSaveHandler.FILE_SUFFIX, ItemCollectionSaveHandler.INSTANCE);
+        fileTypeRegistry.put(PoemLoader.FILE_SUFFIX, new PoemLoader());
 
         WorldScriptRegistry.INSTANCE.register("multi", WorldScriptMulti.class);
         WorldScriptRegistry.INSTANCE.register("strucGen", WorldScriptStructureGenerator.class);
@@ -235,8 +237,6 @@ public class RCRegistryHandler
         OperationRegistry.register("strucGen", OperationGenerateStructure.class);
         OperationRegistry.register("schemGen", OperationGenerateSchematic.class);
         OperationRegistry.register("strucMove", OperationMoveStructure.class);
-
-        Poem.registerThemes(MODID, "love", "summer", "war", "winter", "grief");
 
 //        GameRegistry.registerWorldGenerator(new WorldGenStructures(), 50);
         RCInventoryGenerators.registerVanillaInventoryGenerators();

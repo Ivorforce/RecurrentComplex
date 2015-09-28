@@ -6,10 +6,7 @@
 package ivorius.reccomplex.random;
 
 import com.google.common.io.LineReader;
-import ivorius.ivtoolkit.tools.IvFileHelper;
 import ivorius.reccomplex.RecurrentComplex;
-import net.minecraft.util.ResourceLocation;
-import org.apache.commons.io.IOUtils;
 
 import java.io.IOException;
 import java.io.StringReader;
@@ -99,7 +96,7 @@ public class Poem
             "Where <10> <5>"
     );
 
-    public static final Map<String, Theme> themes = new HashMap<>();
+    private static final Map<String, Theme> themes = new HashMap<>();
 
     private String title;
     private String text;
@@ -110,17 +107,17 @@ public class Poem
         this.text = text;
     }
 
-    public static void registerThemes(String modid, String... themeNames)
+    public static void registerTheme(String name, Theme theme)
     {
-        for (String name : themeNames)
-        {
-            Theme theme = Theme.themeFromMod(new ResourceLocation(modid, "poemThemes/" + name + ".txt"));
+        String baseString = themes.containsKey(name) ? "Replaced poem theme '%s'" : "Registered poem theme '%s'";
+        RecurrentComplex.logger.info(String.format(baseString, name));
 
-            if (theme != null)
-            {
-                themes.put(name, theme);
-            }
-        }
+        themes.put(name, theme);
+    }
+
+    public static void unregisterTheme(String name)
+    {
+        themes.remove(name);
     }
 
     public static Poem randomPoem(Random random)
@@ -273,21 +270,7 @@ public class Poem
         public List<String> prepositions = new ArrayList<>();
         public List<String> interjections = new ArrayList<>();
 
-        public static Theme themeFromMod(ResourceLocation resourceLocation)
-        {
-            try
-            {
-                return themeFromFile(IOUtils.toString(IvFileHelper.inputStreamFromResourceLocation(resourceLocation), "UTF-8"));
-            }
-            catch (Exception e)
-            {
-                RecurrentComplex.logger.error(e);
-            }
-
-            return null;
-        }
-
-        public static Theme themeFromFile(String fileContents)
+        public static Theme fromFile(String fileContents)
         {
             Theme theme = new Theme();
             LineReader reader = new LineReader(new StringReader(fileContents));

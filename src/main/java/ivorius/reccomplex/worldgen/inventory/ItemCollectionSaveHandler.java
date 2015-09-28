@@ -43,7 +43,7 @@ public class ItemCollectionSaveHandler implements FileTypeHandler
         {
             Component component = readInventoryGenerator(path);
 
-            String name = FilenameUtils.getBaseName(path.getFileName().toString());
+            String name = context.customID != null ? context.customID : FilenameUtils.getBaseName(path.getFileName().toString());
 
             if (component.inventoryGeneratorID == null || component.inventoryGeneratorID.length() == 0) // Legacy support
                 component.inventoryGeneratorID = name;
@@ -57,7 +57,7 @@ public class ItemCollectionSaveHandler implements FileTypeHandler
         }
         catch (IOException | InventoryLoadException e)
         {
-            e.printStackTrace();
+            RecurrentComplex.logger.warn("Error reading inventory generator", e);
         }
 
         return false;

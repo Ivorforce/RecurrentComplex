@@ -11,6 +11,7 @@ import ivorius.ivtoolkit.tools.IvNBTHelper;
 import ivorius.reccomplex.dimensions.DimensionDictionary;
 import ivorius.reccomplex.files.FileLoadContext;
 import ivorius.reccomplex.structures.StructureRegistry;
+import ivorius.reccomplex.structures.generic.matchers.DimensionMatcher;
 import ivorius.reccomplex.worldgen.StructureSelector;
 import ivorius.reccomplex.structures.generic.matchers.BiomeMatcher;
 import ivorius.reccomplex.worldgen.inventory.GenericItemCollectionRegistry;
@@ -125,6 +126,8 @@ public class RCCommunicationHandler extends IvFMLIntercommHandler
         }
         else if (isMessage("registerSimpleSpawnCategory", message, String.class))
         {
+            // Legacy. Use natural spawn category files (rcnc) instead.
+
             NBTTagCompound cmp = message.getNBTValue();
             String id = cmp.getString("id");
 
@@ -145,8 +148,8 @@ public class RCCommunicationHandler extends IvFMLIntercommHandler
                 StructureSelector.GenerationInfo[] biomeInfos = new StructureSelector.GenerationInfo[biomeTypes.length];
                 for (int i = 0; i < biomeTypes.length; i++)
                 {
-                    String[] parts = biomeTypes[i].split(":", 2);
-                    biomeInfos[i] = new StructureSelector.GenerationInfo(Float.valueOf(parts[0]), new BiomeMatcher(parts[1]));
+                    String[] biomeParts = biomeTypes[i].split(":", 2);
+                    biomeInfos[i] = new StructureSelector.GenerationInfo(Float.valueOf(biomeParts[0]), new BiomeMatcher(biomeParts[1]), new DimensionMatcher(""));
                 }
 
                 StructureSelector.registerCategory(id, new StructureSelector.SimpleCategory(defaultSpawnChance,

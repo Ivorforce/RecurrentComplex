@@ -32,11 +32,17 @@ public class IvTranslations
 
     public static List<String> getLines(String key)
     {
-        return Arrays.asList(StatCollector.translateToLocal(key).split("<br>"));
+        return splitLines(StatCollector.translateToLocal(key));
     }
 
     public static List<String> formatLines(String key, Object... args)
     {
-        return Arrays.asList(StatCollector.translateToLocalFormatted(key, args).split("<br>"));
+        return splitLines(StatCollector.translateToLocalFormatted(key, args));
+    }
+
+
+    public static List<String> splitLines(String text)
+    {
+        return Arrays.asList(text.split("<br>"));
     }
 }

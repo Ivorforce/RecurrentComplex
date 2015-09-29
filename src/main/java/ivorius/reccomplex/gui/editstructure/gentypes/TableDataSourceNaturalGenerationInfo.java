@@ -49,12 +49,7 @@ public class TableDataSourceNaturalGenerationInfo extends TableDataSourceSegment
             StructureSelector.Category categoryObj = StructureSelector.categoryForID(category);
 
             if (categoryObj.selectableInGUI())
-            {
-                String transKeyBase = "structures.category." + category;
-
-                generationCategories.add(new TableCellEnum.Option<>(category,
-                        I18n.format(transKeyBase), IvTranslations.formatLines(transKeyBase + ".tooltip")));
-            }
+                generationCategories.add(new TableCellEnum.Option<>(category, categoryObj.title(), categoryObj.tooltip()));
         }
 
         return generationCategories;

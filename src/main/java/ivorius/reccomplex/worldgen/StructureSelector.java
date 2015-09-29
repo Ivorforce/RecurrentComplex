@@ -6,14 +6,16 @@
 package ivorius.reccomplex.worldgen;
 
 import com.google.common.collect.ArrayListMultimap;
-import com.google.common.collect.HashMultimap;
+import com.google.common.collect.Lists;
 import com.google.common.collect.Multimap;
+import com.google.gson.annotations.SerializedName;
 import ivorius.reccomplex.RCConfig;
 import ivorius.reccomplex.dimensions.DimensionDictionary;
 import ivorius.reccomplex.structures.StructureInfo;
 import ivorius.reccomplex.structures.generic.matchers.BiomeMatcher;
 import ivorius.reccomplex.structures.generic.gentypes.NaturalGenerationInfo;
 import ivorius.ivtoolkit.random.WeightedSelector;
+import ivorius.reccomplex.structures.generic.matchers.DimensionMatcher;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldProvider;
 import net.minecraft.world.biome.BiomeGenBase;
@@ -57,6 +59,11 @@ public class StructureSelector
         categories.put(id, category);
     }
 
+    public static void unregisterCategory(String id)
+    {
+        categories.remove(id);
+    }
+
     public static Category categoryForID(String id)
     {
         return categories.get(id);
@@ -72,12 +79,12 @@ public class StructureSelector
         return DimensionDictionary.getDimensionTypes(provider).equals(cachedDimensionTypes);
     }
 
-    public float generationChance(String category, BiomeGenBase biome)
+    public float generationChance(String category, BiomeGenBase biome, WorldProvider worldProvider)
     {
         Category categoryObj = categoryForID(category);
 
         if (categoryObj != null)
-            return categoryObj.structureSpawnChance(biome, weightedStructureInfos.get(category).size()) * RCConfig.structureSpawnChanceModifier;
+            return categoryObj.structureSpawnChance(biome, worldProvider, weightedStructureInfos.get(category).size()) * RCConfig.structureSpawnChanceModifier;
 
         return 0.0f;
     }
@@ -89,52 +96,74 @@ public class StructureSelector
 
         for (String category : weightedStructureInfos.keySet())
         {
-            if (random.nextFloat() < generationChance(category, biome))
+            if (random.nextFloat() < generationChance(category, biome, world.provider))
                 infos.add(WeightedSelector.select(random, weightedStructureInfos.get(category)));
         }
 
         return infos;
     }
 
-    public static interface Category
+    public interface Category
     {
-        float structureSpawnChance(BiomeGenBase biome, int registeredStructures);
+        float structureSpawnChance(BiomeGenBase biome, WorldProvider worldProvider, int registeredStructures);
 
         boolean selectableInGUI();
+
+        String title();
+
+        List<String> tooltip();
     }
 
     public static class SimpleCategory implements Category
     {
+        @SerializedName("defaultSpawnChance")
         public float defaultSpawnChance;
-        public List<GenerationInfo> generationInfos;
-        public boolean selectableInGUI;
-        public int structureMinCap;
 
-        public SimpleCategory(float defaultSpawnChance, List<GenerationInfo> generationInfos, boolean selectableInGUI, int structureMinCap)
+        @SerializedName("generationInfos")
+        public final List<GenerationInfo> generationInfos = new ArrayList<>();
+
+        @SerializedName("selectableInGUI")
+        public boolean selectableInGUI;
+
+        @SerializedName("structureMinCap")
+        public Integer structureMinCap;
+
+        @SerializedName("title")
+        public String title;
+
+        @SerializedName("tooltip")
+        public final List<String> tooltip = new ArrayList<>();
+
+        public SimpleCategory(float defaultSpawnChance, List<GenerationInfo> generationInfos, boolean selectableInGUI, Integer structureMinCap)
         {
             this.defaultSpawnChance = defaultSpawnChance;
-            this.generationInfos = generationInfos;
+            this.generationInfos.addAll(generationInfos);
             this.selectableInGUI = selectableInGUI;
             this.structureMinCap = structureMinCap;
         }
 
         public SimpleCategory(float defaultSpawnChance, List<GenerationInfo> generationInfos, boolean selectableInGUI)
         {
-            this(defaultSpawnChance, generationInfos, selectableInGUI, STRUCTURE_MIN_CAP_DEFAULT);
+            this(defaultSpawnChance, generationInfos, selectableInGUI, null);
         }
 
         @Override
-        public float structureSpawnChance(BiomeGenBase biome, int registeredStructures)
+        public float structureSpawnChance(BiomeGenBase biome, WorldProvider worldProvider, int registeredStructures)
         {
-            float amountMultiplier = Math.min((float) registeredStructures / (float) structureMinCap, 1.0f);
+            float amountMultiplier = Math.min((float) registeredStructures / (float) getActiveStructureMinCap(), 1.0f);
 
             for (GenerationInfo info : generationInfos)
             {
-                if (info.selector.apply(biome))
+                if (info.biomeMatcher.apply(biome) && info.dimensionMatcher.apply(worldProvider))
                     return info.spawnChance * amountMultiplier;
             }
 
             return defaultSpawnChance * amountMultiplier;
+        }
+
+        public Integer getActiveStructureMinCap()
+        {
+            return structureMinCap != null ? structureMinCap : STRUCTURE_MIN_CAP_DEFAULT;
         }
 
         @Override
@@ -142,17 +171,34 @@ public class StructureSelector
         {
             return selectableInGUI;
         }
+
+        @Override
+        public String title()
+        {
+            return title;
+        }
+
+        @Override
+        public List<String> tooltip()
+        {
+            return tooltip;
+        }
     }
 
     public static class GenerationInfo
     {
+        @SerializedName("spawnChance")
         public float spawnChance;
-        public BiomeMatcher selector;
+        @SerializedName("biomeMatcher")
+        public BiomeMatcher biomeMatcher;
+        @SerializedName("dimensionMatcher")
+        public DimensionMatcher dimensionMatcher;
 
-        public GenerationInfo(float spawnChance, BiomeMatcher selector)
+        public GenerationInfo(float spawnChance, BiomeMatcher biomeMatcher, DimensionMatcher dimensionMatcher)
         {
             this.spawnChance = spawnChance;
-            this.selector = selector;
+            this.biomeMatcher = biomeMatcher;
+            this.dimensionMatcher = dimensionMatcher;
         }
     }
 }

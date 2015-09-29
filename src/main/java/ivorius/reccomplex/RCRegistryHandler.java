@@ -37,6 +37,7 @@ import ivorius.reccomplex.structures.schematics.OperationGenerateSchematic;
 import ivorius.reccomplex.structures.OperationGenerateStructure;
 import ivorius.reccomplex.structures.StructureRegistry;
 import ivorius.reccomplex.utils.FMLUtils;
+import ivorius.reccomplex.worldgen.CategoryLoader;
 import ivorius.reccomplex.worldgen.StructureSelector;
 import ivorius.reccomplex.worldgen.inventory.ItemCollectionSaveHandler;
 import ivorius.reccomplex.worldgen.inventory.RCInventoryGenerators;
@@ -206,6 +207,7 @@ public class RCRegistryHandler
         fileTypeRegistry.put(StructureSaveHandler.FILE_SUFFIX, StructureSaveHandler.INSTANCE);
         fileTypeRegistry.put(ItemCollectionSaveHandler.FILE_SUFFIX, ItemCollectionSaveHandler.INSTANCE);
         fileTypeRegistry.put(PoemLoader.FILE_SUFFIX, new PoemLoader());
+        fileTypeRegistry.put(CategoryLoader.FILE_SUFFIX, new CategoryLoader());
 
         WorldScriptRegistry.INSTANCE.register("multi", WorldScriptMulti.class);
         WorldScriptRegistry.INSTANCE.register("strucGen", WorldScriptStructureGenerator.class);
@@ -227,12 +229,6 @@ public class RCRegistryHandler
         genInfoRegistry.registerType("mazeComponent", MazeGenerationInfo.class, new MazeGenerationInfo.Serializer());
         genInfoRegistry.registerType("static", StaticGenerationInfo.class, new StaticGenerationInfo.Serializer());
         genInfoRegistry.registerType("vanilla", VanillaStructureGenerationInfo.class, new VanillaStructureGenerationInfo.Serializer());
-
-        StructureSelector.registerCategory("frequent", new StructureSelector.SimpleCategory(1.0f / 15.0f, Collections.<StructureSelector.GenerationInfo>emptyList(), true));
-        StructureSelector.registerCategory("decoration", new StructureSelector.SimpleCategory(1.0f / 80.0f, Collections.<StructureSelector.GenerationInfo>emptyList(), true));
-        StructureSelector.registerCategory("rare", new StructureSelector.SimpleCategory(1.0f / 2500.0f, Collections.<StructureSelector.GenerationInfo>emptyList(), true));
-        StructureSelector.registerCategory("ultrarare", new StructureSelector.SimpleCategory(1.0f / 8000.0f, Collections.<StructureSelector.GenerationInfo>emptyList(), true));
-        StructureSelector.registerCategory("adventure", new StructureSelector.SimpleCategory(1.0f / 500.0f, Collections.<StructureSelector.GenerationInfo>emptyList(), true));
 
         OperationRegistry.register("strucGen", OperationGenerateStructure.class);
         OperationRegistry.register("schemGen", OperationGenerateSchematic.class);

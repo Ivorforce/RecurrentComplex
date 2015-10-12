@@ -15,17 +15,14 @@ import java.util.Collection;
 /**
  * Created by lukas on 16.04.15.
  */
-public class LimitAABBStrategy<M extends MazeComponent<C>, C> implements MazeComponentPlacementStrategy<M, C>
+public class LimitAABBStrategy<M extends MazeComponent<C>, C> implements MazePredicate<M, C>
 {
     @Nonnull
     private int[] roomNumbers;
-    @Nonnull
-    private Collection<C> ignoredConnections;
 
-    public LimitAABBStrategy(@Nonnull int[] roomNumbers, @Nonnull Collection<C> ignoredConnections)
+    public LimitAABBStrategy(@Nonnull int[] roomNumbers)
     {
         this.roomNumbers = roomNumbers;
-        this.ignoredConnections = ignoredConnections;
     }
 
     public boolean isRoomContained(MazeRoom input)
@@ -37,7 +34,7 @@ public class LimitAABBStrategy<M extends MazeComponent<C>, C> implements MazeCom
     }
 
     @Override
-    public boolean canPlace(ShiftedMazeComponent<M, C> component)
+    public boolean canPlace(MorphingMazeComponent<C> maze, ShiftedMazeComponent<M, C> component)
     {
         return Iterables.all(component.rooms(), new Predicate<MazeRoom>()
         {
@@ -50,8 +47,14 @@ public class LimitAABBStrategy<M extends MazeComponent<C>, C> implements MazeCom
     }
 
     @Override
-    public boolean shouldContinue(MazeRoom dest, MazeRoom source, C c)
+    public void willPlace(MorphingMazeComponent<C> maze, ShiftedMazeComponent<M, C> component)
     {
-        return isRoomContained(dest) && !ignoredConnections.contains(c);
+
+    }
+
+    @Override
+    public boolean isDirtyConnection(MazeRoom dest, MazeRoom source, C c)
+    {
+        return isRoomContained(dest);
     }
 }

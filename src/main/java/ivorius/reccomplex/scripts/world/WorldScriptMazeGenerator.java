@@ -258,7 +258,11 @@ public class WorldScriptMazeGenerator implements WorldScript<WorldScriptMazeGene
         WorldScriptMazeGenerator.addExits(factory, maze, mazeExits);
         WorldScriptMazeGenerator.addRandomPaths(random, outsideBoundsHigher, maze, transformedComponents, roomConnector, outsideBoundsHigher[0] * outsideBoundsHigher[1] * outsideBoundsHigher[2] / (5 * 5 * 5) + 1);
 
-        LimitAABBStrategy<MazeComponentStructure<Connector>, Connector> placementStrategy = new LimitAABBStrategy<>(outsideBoundsHigher, Collections.singleton(wallConnector));
+        MazePredicate<MazeComponentStructure<Connector>, Connector> placementStrategy = new MazePredicateMany<>(
+                new LimitAABBStrategy<MazeComponentStructure<Connector>, Connector>(outsideBoundsHigher),
+                new BlockedConnectorStrategy<MazeComponentStructure<Connector>, Connector>(Collections.singleton(wallConnector))
+        );
+
         ConnectorStrategy connectionStrategy = new ConnectorStrategy();
 
         return MazeComponentConnector.randomlyConnect(maze, transformedComponents, connectionStrategy, placementStrategy, random);

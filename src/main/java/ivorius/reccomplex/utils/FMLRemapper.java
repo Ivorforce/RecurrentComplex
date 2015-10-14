@@ -28,18 +28,22 @@ public class FMLRemapper
         this.domain = domain;
     }
 
-    public void registerLegacyID(String oldID, Block block, boolean inferItem)
+    public void registerLegacyIDs(Block block, boolean inferItem, String... oldIDs)
     {
-        String fullID = String.format("%s:%s", domain, oldID);
+        for (String oldID : oldIDs)
+        {
+            String fullID = String.format("%s:%s", domain, oldID);
 
-        blockRemaps.put(fullID, block);
-        if (inferItem)
-            itemRemaps.put(fullID, Item.getItemFromBlock(block));
+            blockRemaps.put(fullID, block);
+            if (inferItem)
+                itemRemaps.put(fullID, Item.getItemFromBlock(block));
+        }
     }
 
-    public void registerLegacyID(String oldID, Item item)
+    public void registerLegacyIDs(Item item, String... oldIDs)
     {
-        itemRemaps.put(String.format("%s:%s", domain, oldID), item);
+        for (String oldID : oldIDs)
+            itemRemaps.put(String.format("%s:%s", domain, oldID), item);
     }
 
     public void onMissingMapping(FMLMissingMappingsEvent event)

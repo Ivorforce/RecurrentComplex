@@ -39,7 +39,6 @@ public class StructureSaveHandler implements FileTypeHandler
     public static final String WORLD_DATA_NBT_FILENAME = "worldData.nbt";
 
     public StructureRegistry registry;
-    private List<String> importedGenerators = new ArrayList<>();
 
     public StructureSaveHandler(StructureRegistry registry)
     {
@@ -226,13 +225,8 @@ public class StructureSaveHandler implements FileTypeHandler
 
             String structureID = context.customID != null ? context.customID : FilenameUtils.getBaseName(path.getFileName().toString());
 
-            if (registry.registerStructure(genericStructureInfo, structureID, context.domain, context.active))
-            {
-                if (context.custom)
-                    importedGenerators.add(structureID);
-
+            if (registry.registerStructure(genericStructureInfo, structureID, context.domain, context.active, context.custom))
                 return true;
-            }
         }
         catch (IOException | StructureLoadException e)
         {
@@ -245,8 +239,6 @@ public class StructureSaveHandler implements FileTypeHandler
     @Override
     public void clearCustomFiles()
     {
-        while (!importedGenerators.isEmpty())
-            StructureRegistry.INSTANCE.removeStructure(importedGenerators.remove(0));
-        importedGenerators.clear();
+        StructureRegistry.INSTANCE.clearCustom();
     }
 }

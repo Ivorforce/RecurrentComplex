@@ -24,6 +24,8 @@ import ivorius.reccomplex.structures.generic.GenericStructureInfo;
 import ivorius.reccomplex.structures.generic.StructureSaveHandler;
 import ivorius.reccomplex.structures.generic.gentypes.*;
 import ivorius.reccomplex.structures.generic.transformers.Transformer;
+import ivorius.reccomplex.utils.CustomizableBiMap;
+import ivorius.reccomplex.utils.CustomizableMap;
 import ivorius.reccomplex.worldgen.StructureSelector;
 import ivorius.reccomplex.worldgen.villages.GenericVillageCreationHandler;
 import ivorius.reccomplex.worldgen.villages.TemporaryVillagerRegistry;
@@ -50,7 +52,7 @@ public class StructureRegistry
 
     public static final StructureRegistry INSTANCE = new StructureRegistry();
 
-    private BiMap<String, StructureInfo> allStructures = HashBiMap.create();
+    private CustomizableBiMap<String, StructureInfo> allStructures = new CustomizableBiMap<>();
     private Map<String, String> structureDomains = Maps.newHashMap();
 
     private boolean needsGenerationCacheUpdate = true;
@@ -76,7 +78,7 @@ public class StructureRegistry
         return builder.create();
     }
 
-    public boolean registerStructure(StructureInfo info, String key, String domain, boolean generates)
+    public boolean registerStructure(StructureInfo info, String key, String domain, boolean generates, boolean custom)
     {
         StructureRegistrationEvent.Pre event = new StructureRegistrationEvent.Pre(key, info, generates);
         RCEventBus.INSTANCE.post(event);
@@ -88,10 +90,10 @@ public class StructureRegistry
             else
                 persistentlyDisabledStructures.remove(key);
 
-            String baseString = allStructures.containsKey(key) ? "Replaced structure '%s'" : "Registered structure '%s'";
+            String baseString = allStructures.getMap().containsKey(key) ? "Replaced structure '%s'" : "Registered structure '%s'";
             RecurrentComplex.logger.info(String.format(baseString, key));
 
-            allStructures.put(key, info);
+            allStructures.put(key, info, custom);
             structureDomains.put(key, domain);
 
             clearCaches();
@@ -106,12 +108,12 @@ public class StructureRegistry
 
     public boolean hasStructure(String key)
     {
-        return allStructures.containsKey(key);
+        return allStructures.getMap().containsKey(key);
     }
 
     public StructureInfo getStructure(String key)
     {
-        return allStructures.get(key);
+        return allStructures.getMap().get(key);
     }
 
     @Deprecated
@@ -122,16 +124,21 @@ public class StructureRegistry
 
     public String structureID(StructureInfo structureInfo)
     {
-        return allStructures.inverse().get(structureInfo);
+        return allStructures.getMap().inverse().get(structureInfo);
     }
 
-    public void removeStructure(String key)
+    public void clearCustom()
     {
-        StructureInfo info = allStructures.remove(key);
+        allStructures.clearCustom();
+    }
+
+    public void removeStructure(String key, boolean custom)
+    {
+        StructureInfo info = allStructures.remove(key, custom);
 
         persistentlyDisabledStructures.remove(key); // Clean up space
         if (info != null)
-            generatingStructures.remove(info);
+            generatingStructures.remove(key);
 
         clearCaches();
     }
@@ -148,7 +155,7 @@ public class StructureRegistry
 
     public Set<StructureInfo> getAllStructures()
     {
-        return Collections.unmodifiableSet(allStructures.values());
+        return Collections.unmodifiableSet(allStructures.getMap().values());
     }
 
     private void ensureGenerationCache()
@@ -158,7 +165,7 @@ public class StructureRegistry
             needsGenerationCacheUpdate = false;
             generatingStructures.clear();
 
-            for (Map.Entry<String, StructureInfo> entry : allStructures.entrySet())
+            for (Map.Entry<String, StructureInfo> entry : allStructures.getMap().entrySet())
             {
                 StructureInfo info = entry.getValue();
                 String key = entry.getKey();
@@ -174,7 +181,7 @@ public class StructureRegistry
     public Set<StructureInfo> getAllGeneratingStructures()
     {
         ensureGenerationCache();
-        return Collections.unmodifiableSet(Maps.filterKeys(allStructures, new Predicate<String>()
+        return Collections.unmodifiableSet(Maps.filterKeys(allStructures.getMap(), new Predicate<String>()
         {
             @Override
             public boolean apply(@Nullable String input)
@@ -197,7 +204,7 @@ public class StructureRegistry
 
     public Map<String, StructureInfo> structureMap()
     {
-        return Collections.unmodifiableMap(allStructures);
+        return Collections.unmodifiableMap(allStructures.getMap());
     }
 
     @Deprecated
@@ -208,7 +215,7 @@ public class StructureRegistry
 
     public Set<String> allStructureIDs()
     {
-        return Collections.unmodifiableSet(allStructures.keySet());
+        return Collections.unmodifiableSet(allStructures.getMap().keySet());
     }
 
     protected <T extends StructureGenerationInfo> Collection<Pair<StructureInfo, T>> getCachedGeneration(Class<T> clazz)

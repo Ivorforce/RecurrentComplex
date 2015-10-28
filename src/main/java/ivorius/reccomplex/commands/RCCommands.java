@@ -9,8 +9,6 @@ import cpw.mods.fml.common.event.FMLServerStartingEvent;
 import ivorius.reccomplex.RecurrentComplex;
 import ivorius.reccomplex.entities.StructureEntityInfo;
 import ivorius.reccomplex.utils.ServerTranslations;
-import net.minecraft.command.CommandBase;
-import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommand;
 import net.minecraft.entity.Entity;
 
@@ -80,6 +78,8 @@ public class RCCommands
         event.registerServerCommand(new CommandWhatIsThis());
         event.registerServerCommand(lookup = new CommandLookupStructure());
         event.registerServerCommand(new CommandSearchStructure());
+
+        event.registerServerCommand(new CommandBrowseFiles());
     }
 
     @Nonnull

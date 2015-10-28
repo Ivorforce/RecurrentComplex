@@ -26,10 +26,14 @@ public class RCFileTypeRegistry extends FileTypeRegistry
         return activeFolder ? ACTIVE_DIR_NAME : INACTIVE_DIR_NAME;
     }
 
+    public static File getBaseStructuresDirectory()
+    {
+        return RecurrentComplex.proxy.getBaseFolderFile("structures");
+    }
+
     public static File getStructuresDirectory(boolean activeFolder)
     {
-        File structuresFolder = RecurrentComplex.proxy.getBaseFolderFile("structures");
-        return RCFileHelper.getValidatedFolder(structuresFolder, getStructuresDirectoryName(activeFolder), true);
+        return RCFileHelper.getValidatedFolder(getBaseStructuresDirectory(), getStructuresDirectoryName(activeFolder), true);
     }
 
     public void reloadCustomFiles()
@@ -41,7 +45,7 @@ public class RCFileTypeRegistry extends FileTypeRegistry
     {
         clearCustomFiles(suffices);
 
-        File structuresFile = IvFileHelper.getValidatedFolder(RecurrentComplex.proxy.getBaseFolderFile("structures"));
+        File structuresFile = IvFileHelper.getValidatedFolder(getBaseStructuresDirectory());
         if (structuresFile != null)
         {
             tryLoadAll(suffices, structuresFile, RCFileTypeRegistry.ACTIVE_DIR_NAME, true, "", true, true);

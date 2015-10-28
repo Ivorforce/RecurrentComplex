@@ -150,6 +150,8 @@ commands.rclookup.reply.comment=Comment: %s
 commands.rcsearch.usage=/#search
 commands.search.lookup=Look Up
 
+commands.rcfiles.usage=/#files
+
 inventoryGen.vanilla=Vanilla Generator
 inventoryGen.custom=Custom Generator
 inventoryGen.create=Create New Generator

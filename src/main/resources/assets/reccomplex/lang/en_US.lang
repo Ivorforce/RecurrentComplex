@@ -147,8 +147,12 @@ commands.rclookup.reply.noauthor=§oUnknown§r
 commands.rclookup.reply.nolink=§oNo link provided§r
 commands.rclookup.reply.comment=Comment: %s
 
+commands.rclist.usage=/#list [page]
+commands.rclist.previous=Previous Page
+commands.rclist.next=Next Page
+
 commands.rcsearch.usage=/#search
-commands.search.lookup=Look Up
+commands.rcsearch.lookup=Look Up
 
 commands.rcfiles.usage=/#files
 

@@ -25,11 +25,13 @@ import net.minecraft.util.ChatComponentText;
 import net.minecraft.util.ChatComponentTranslation;
 import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.util.IChatComponent;
-import net.minecraftforge.common.BiomeDictionary;
 import org.apache.commons.lang3.StringUtils;
 
 import javax.annotation.Nullable;
-import java.util.*;
+import java.util.Arrays;
+import java.util.Comparator;
+import java.util.List;
+import java.util.PriorityQueue;
 import java.util.regex.Pattern;
 
 /**
@@ -38,6 +40,40 @@ import java.util.regex.Pattern;
 public class CommandSearchStructure extends CommandBase
 {
     public static final int MAX_RESULTS = 20;
+
+    public static ChatComponentText createStructureChatComponent(String strucID)
+    {
+        ChatComponentText comp = new ChatComponentText(strucID);
+        comp.getChatStyle().setChatClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND,
+                String.format("/%s %s", RCCommands.lookup.getCommandName(), strucID)));
+        comp.getChatStyle().setChatHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT,
+                ServerTranslations.format("commands.rcsearch.lookup")));
+        comp.getChatStyle().setColor(EnumChatFormatting.BLUE);
+        return comp;
+    }
+
+    public static float searchRank(List<String> query, String id, StructureInfo structure)
+    {
+        return structure instanceof GenericStructureInfo ? searchRank(query, id, ((GenericStructureInfo) structure).metadata) : 0;
+    }
+
+    public static float searchRank(List<String> query, String id, Metadata metadata)
+    {
+        List<String> keywords = Lists.newArrayList(id);
+        keywords.add(metadata.authors);
+        keywords.add(metadata.comment);
+        keywords.add(metadata.weblink);
+
+        return Iterables.any(keywords, Predicates.contains(Pattern.compile(Strings.join(Lists.transform(query, new Function<String, String>()
+        {
+            @Nullable
+            @Override
+            public String apply(String s)
+            {
+                return Pattern.quote(s);
+            }
+        }), "|")))) ? 1 : 0;
+    }
 
     @Override
     public String getCommandName()
@@ -81,15 +117,7 @@ public class CommandSearchStructure extends CommandBase
                 if (cut && i == components.length - 1)
                     components[i] = new ChatComponentText("... (" + strucs.size() + ")");
                 else
-                {
-                    String strucID = strucs.remove();
-                    components[i] = new ChatComponentText(strucID);
-                    components[i].getChatStyle().setChatClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND,
-                            String.format("/%s %s", RCCommands.lookup.getCommandName(), strucID)));
-                    components[i].getChatStyle().setChatHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT,
-                            ServerTranslations.format("commands.search.lookup")));
-                    components[i].getChatStyle().setColor(EnumChatFormatting.BLUE);
-                }
+                    components[i] = createStructureChatComponent(strucs.remove());
             }
 
             commandSender.addChatMessage(new ChatComponentTranslation(StringUtils.repeat("%s", ", ", components.length), (Object[]) components));
@@ -98,28 +126,5 @@ public class CommandSearchStructure extends CommandBase
         {
             throw ServerTranslations.commandException("commands.rclookup.usage");
         }
-    }
-
-    public static float searchRank(List<String> query, String id, StructureInfo structure)
-    {
-        return structure instanceof GenericStructureInfo ? searchRank(query, id, ((GenericStructureInfo) structure).metadata) : 0;
-    }
-
-    public static float searchRank(List<String> query, String id, Metadata metadata)
-    {
-        List<String> keywords = Lists.newArrayList(id);
-        keywords.add(metadata.authors);
-        keywords.add(metadata.comment);
-        keywords.add(metadata.weblink);
-
-        return Iterables.any(keywords, Predicates.contains(Pattern.compile(Strings.join(Lists.transform(query, new Function<String, String>()
-        {
-            @Nullable
-            @Override
-            public String apply(String s)
-            {
-                return Pattern.quote(s);
-            }
-        }), "|")))) ? 1 : 0;
     }
 }

@@ -23,6 +23,7 @@ public class RCCommands
     public static ICommand cancel;
 
     public static ICommand lookup;
+    public static ICommand list;
 
     public static void onServerStart(FMLServerStartingEvent event)
     {
@@ -77,6 +78,7 @@ public class RCCommands
 
         event.registerServerCommand(new CommandWhatIsThis());
         event.registerServerCommand(lookup = new CommandLookupStructure());
+        event.registerServerCommand(list = new CommandListStructures());
         event.registerServerCommand(new CommandSearchStructure());
 
         event.registerServerCommand(new CommandBrowseFiles());

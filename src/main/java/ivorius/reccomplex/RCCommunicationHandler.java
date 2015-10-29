@@ -153,7 +153,7 @@ public class RCCommunicationHandler extends IvFMLIntercommHandler
                 }
 
                 StructureSelector.registerCategory(id, new StructureSelector.SimpleCategory(defaultSpawnChance,
-                        Arrays.asList(biomeInfos), selectableInGui, structureMinCap));
+                        Arrays.asList(biomeInfos), selectableInGui, structureMinCap), false);
             }
             else
                 getLogger().warn("Could not handle message with key '" + message.key + "' - missing 'id' key!");

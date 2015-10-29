@@ -23,8 +23,6 @@ public class PoemLoader implements FileTypeHandler
 {
     public static final String FILE_SUFFIX = "rcpt";
 
-    private List<String> importedCustomGenerators = new ArrayList<>();
-
     @Override
     public boolean loadFile(Path path, FileLoadContext context)
     {
@@ -42,10 +40,7 @@ public class PoemLoader implements FileTypeHandler
 
         if (theme != null)
         {
-            Poem.registerTheme(name, theme);
-
-            if (context.custom)
-                importedCustomGenerators.add(name);
+            Poem.registerTheme(name, theme, context.custom);
 
             return true;
         }
@@ -56,8 +51,6 @@ public class PoemLoader implements FileTypeHandler
     @Override
     public void clearCustomFiles()
     {
-        for (String generator : importedCustomGenerators)
-            Poem.unregisterTheme(generator);
-        importedCustomGenerators.clear();
+        Poem.clearCustom();
     }
 }

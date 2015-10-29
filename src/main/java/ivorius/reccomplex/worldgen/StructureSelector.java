@@ -16,6 +16,7 @@ import ivorius.reccomplex.structures.generic.matchers.BiomeMatcher;
 import ivorius.reccomplex.structures.generic.gentypes.NaturalGenerationInfo;
 import ivorius.ivtoolkit.random.WeightedSelector;
 import ivorius.reccomplex.structures.generic.matchers.DimensionMatcher;
+import ivorius.reccomplex.utils.CustomizableMap;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldProvider;
 import net.minecraft.world.biome.BiomeGenBase;
@@ -31,7 +32,7 @@ public class StructureSelector
 {
     public static final int STRUCTURE_MIN_CAP_DEFAULT = 20;
 
-    private static Map<String, Category> categories = new HashMap<>();
+    private static CustomizableMap<String, Category> categories = new CustomizableMap<>();
 
     private Multimap<String, WeightedSelector.SimpleItem<Pair<StructureInfo, NaturalGenerationInfo>>> weightedStructureInfos = ArrayListMultimap.create();
 
@@ -54,24 +55,29 @@ public class StructureSelector
         }
     }
 
-    public static void registerCategory(String id, Category category)
+    public static void registerCategory(String id, Category category, boolean custom)
     {
-        categories.put(id, category);
+        categories.put(id, category, custom);
     }
 
-    public static void unregisterCategory(String id)
+    public static void unregisterCategory(String id, boolean custom)
     {
-        categories.remove(id);
+        categories.remove(id, custom);
+    }
+
+    public static void clearCustom()
+    {
+        categories.clearCustom();
     }
 
     public static Category categoryForID(String id)
     {
-        return categories.get(id);
+        return categories.getMap().get(id);
     }
 
     public static Set<String> allCategoryIDs()
     {
-        return categories.keySet();
+        return categories.getMap().keySet();
     }
 
     public boolean isValid(BiomeGenBase biome, WorldProvider provider)

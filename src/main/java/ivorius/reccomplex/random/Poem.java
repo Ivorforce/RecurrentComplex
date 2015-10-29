@@ -7,6 +7,7 @@ package ivorius.reccomplex.random;
 
 import com.google.common.io.LineReader;
 import ivorius.reccomplex.RecurrentComplex;
+import ivorius.reccomplex.utils.CustomizableMap;
 
 import java.io.IOException;
 import java.io.StringReader;
@@ -96,7 +97,7 @@ public class Poem
             "Where <10> <5>"
     );
 
-    private static final Map<String, Theme> themes = new HashMap<>();
+    private static final CustomizableMap<String, Theme> themes = new CustomizableMap<>();
 
     private String title;
     private String text;
@@ -107,22 +108,25 @@ public class Poem
         this.text = text;
     }
 
-    public static void registerTheme(String name, Theme theme)
+    public static void registerTheme(String name, Theme theme, boolean custom)
     {
-        String baseString = themes.containsKey(name) ? "Replaced poem theme '%s'" : "Registered poem theme '%s'";
+        String baseString = themes.put(name, theme, custom) != null ? "Replaced poem theme '%s'" : "Registered poem theme '%s'";
         RecurrentComplex.logger.info(String.format(baseString, name));
-
-        themes.put(name, theme);
     }
 
-    public static void unregisterTheme(String name)
+    public static void unregisterTheme(String name, boolean custom)
     {
-        themes.remove(name);
+        themes.remove(name, custom);
+    }
+
+    public static void clearCustom()
+    {
+        themes.clearCustom();
     }
 
     public static Poem randomPoem(Random random)
     {
-        return randomPoem(random, getRandomElementFrom(Arrays.asList(themes.values().toArray(new Theme[themes.size()])), random));
+        return randomPoem(random, getRandomElementFrom(Arrays.asList(themes.getMap().values().toArray(new Theme[themes.getMap().size()])), random));
     }
 
     public static Poem randomPoem(Random random, Theme theme)

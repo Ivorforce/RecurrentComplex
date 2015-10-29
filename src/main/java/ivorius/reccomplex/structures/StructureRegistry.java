@@ -90,10 +90,9 @@ public class StructureRegistry
             else
                 persistentlyDisabledStructures.remove(key);
 
-            String baseString = allStructures.getMap().containsKey(key) ? "Replaced structure '%s'" : "Registered structure '%s'";
+            String baseString = allStructures.put(key, info, custom) != null ? "Replaced structure '%s'" : "Registered structure '%s'";
             RecurrentComplex.logger.info(String.format(baseString, key));
 
-            allStructures.put(key, info, custom);
             structureDomains.put(key, domain);
 
             clearCaches();
@@ -132,7 +131,7 @@ public class StructureRegistry
         allStructures.clearCustom();
     }
 
-    public void removeStructure(String key, boolean custom)
+    public void unregisterStructure(String key, boolean custom)
     {
         StructureInfo info = allStructures.remove(key, custom);
 

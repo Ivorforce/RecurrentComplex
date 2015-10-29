@@ -13,6 +13,8 @@ import com.google.gson.JsonSyntaxException;
 import ivorius.reccomplex.RCConfig;
 import ivorius.reccomplex.RecurrentComplex;
 import ivorius.reccomplex.json.NbtToJson;
+import ivorius.reccomplex.utils.CustomizableBiMap;
+import ivorius.reccomplex.utils.CustomizableMap;
 import ivorius.reccomplex.worldgen.inventory.GenericItemCollection.Component;
 import net.minecraft.util.ResourceLocation;
 
@@ -25,7 +27,7 @@ public class GenericItemCollectionRegistry
 {
     public static final GenericItemCollectionRegistry INSTANCE = new GenericItemCollectionRegistry();
 
-    private Map<String, Component> allComponents = new HashMap<>();
+    private CustomizableMap<String, Component> allComponents = new CustomizableMap<>();
     private Map<String, String> componentDomains = Maps.newHashMap();
 
     private Set<String> persistentlyDisabledComponents = new HashSet<>();
@@ -43,7 +45,7 @@ public class GenericItemCollectionRegistry
         return builder.create();
     }
 
-    public boolean register(Component component, String key, String domain, boolean generates)
+    public boolean register(Component component, String key, String domain, boolean generates, boolean custom)
     {
         if (RCConfig.shouldInventoryGeneratorLoad(key, domain))
         {
@@ -52,10 +54,9 @@ public class GenericItemCollectionRegistry
             else
                 persistentlyDisabledComponents.remove(key);
 
-            String baseString = allComponents.containsKey(key) ? "Replaced inventory generation component '%s'" : "Registered generation component '%s'";
+            String baseString = allComponents.put(key, component, custom) != null ? "Replaced inventory generation component '%s'" : "Registered generation component '%s'";
             RecurrentComplex.logger.info(String.format(baseString, key));
 
-            allComponents.put(key, component);
             componentDomains.put(key, domain);
 
             clearCaches();
@@ -68,23 +69,28 @@ public class GenericItemCollectionRegistry
 
     public Component component(String key)
     {
-        return allComponents.get(key);
+        return allComponents.getMap().get(key);
     }
 
     public Set<String> allComponentKeys()
     {
-        return Collections.unmodifiableSet(allComponents.keySet());
+        return Collections.unmodifiableSet(allComponents.getMap().keySet());
     }
 
-    public void removeGenerator(String key)
+    public void unregister(String key, boolean custom)
     {
-        allComponents.remove(key);
+        allComponents.remove(key, custom);
         clearCaches();
+    }
+
+    public void clearCustom()
+    {
+        allComponents.clearCustom();
     }
 
     public boolean isLoaded(String key)
     {
-        return allComponents.containsKey(key);
+        return allComponents.getMap().containsKey(key);
     }
 
     public boolean isActive(String key)
@@ -113,7 +119,7 @@ public class GenericItemCollectionRegistry
     {
         Set<String> newGeneratingComponents = new HashSet<>();
 
-        for (Map.Entry<String, Component> entry : allComponents.entrySet())
+        for (Map.Entry<String, Component> entry : allComponents.getMap().entrySet())
         {
             Component component = entry.getValue();
             String key = entry.getKey();
@@ -126,7 +132,7 @@ public class GenericItemCollectionRegistry
 
         for (String key : Sets.difference(newGeneratingComponents, generatingComponents))
         {
-            Component component = allComponents.get(key);
+            Component component = allComponents.getMap().get(key);
 
             GenericItemCollection collection = registerGetGenericItemCollection(component.inventoryGeneratorID);
             collection.components.add(component);
@@ -135,7 +141,7 @@ public class GenericItemCollectionRegistry
 
         for (String key : Sets.difference(generatingComponents, newGeneratingComponents))
         {
-            Component component = allComponents.get(key);
+            Component component = allComponents.getMap().get(key);
 
             WeightedItemCollection collection = WeightedItemCollectionRegistry.itemCollection(component.inventoryGeneratorID);
 

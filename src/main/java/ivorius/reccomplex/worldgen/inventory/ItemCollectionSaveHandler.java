@@ -29,8 +29,6 @@ public class ItemCollectionSaveHandler implements FileTypeHandler
 
     public static final String FILE_SUFFIX = "rcig";
 
-    private List<String> importedCustomGenerators = new ArrayList<>();
-
     public static Component readInventoryGenerator(Path file) throws IOException, InventoryLoadException
     {
         return GenericItemCollectionRegistry.INSTANCE.createComponentFromJSON(new String(Files.readAllBytes(file)));
@@ -48,10 +46,7 @@ public class ItemCollectionSaveHandler implements FileTypeHandler
             if (component.inventoryGeneratorID == null || component.inventoryGeneratorID.length() == 0) // Legacy support
                 component.inventoryGeneratorID = name;
 
-            GenericItemCollectionRegistry.INSTANCE.register(component, name, context.domain, context.active);
-
-            if (context.custom)
-                importedCustomGenerators.add(name);
+            GenericItemCollectionRegistry.INSTANCE.register(component, name, context.domain, context.active, context.custom);
 
             return true;
         }
@@ -66,9 +61,7 @@ public class ItemCollectionSaveHandler implements FileTypeHandler
     @Override
     public void clearCustomFiles()
     {
-        for (String generator : importedCustomGenerators)
-            WeightedItemCollectionRegistry.unregister(generator);
-        importedCustomGenerators.clear();
+        GenericItemCollectionRegistry.INSTANCE.clearCustom();
     }
 
     public static boolean saveInventoryGenerator(Component info, String name)

@@ -8,74 +8,25 @@ package ivorius.reccomplex.utils;
 import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
 
-import java.util.Objects;
-
 /**
  * Created by lukas on 28.10.15.
  */
-public class CustomizableBiMap<K, V>
+public class CustomizableBiMap<K, V> extends CustomizableMap<K, V>
 {
-    private final BiMap<K, V> map = HashBiMap.create();
-    private final BiMap<K, V> solidMap = HashBiMap.create();
-
-    protected boolean hasCustom(K k)
+    public CustomizableBiMap()
     {
-        V v = map.get(k);
-        return v != null && !v.equals(solidMap.get(k));
+        super(HashBiMap.<K, V>create(), HashBiMap.<K, V>create());
     }
 
-    protected boolean hasSolid(K k)
-    {
-        return solidMap.containsKey(k);
-    }
-
-    public void put(K k, V v, boolean custom)
-    {
-        if (custom)
-        {
-            V old = map.get(k);
-            if (old != null)
-                solidMap.put(k, old);
-
-            map.put(k, v);
-        }
-        else
-        {
-            if (hasCustom(k))
-                map.put(k, v);
-
-            solidMap.put(k, v);
-        }
-    }
-
-    public V remove(K k, boolean custom)
-    {
-        if (custom)
-        {
-            return hasCustom(k) ? map.put(k, solidMap.get(k)) : null;
-        }
-        else
-        {
-            if (!hasCustom(k))
-                map.remove(k);
-
-            return solidMap.remove(k);
-        }
-    }
-
-    public void clearCustom()
-    {
-        map.clear();
-        map.putAll(solidMap);
-    }
-
+    @Override
     public BiMap<K, V> getMap()
     {
-        return map;
+        return (BiMap<K, V>) map;
     }
 
+    @Override
     public BiMap<K, V> getSolidMap()
     {
-        return solidMap;
+        return (BiMap<K, V>) solidMap;
     }
 }

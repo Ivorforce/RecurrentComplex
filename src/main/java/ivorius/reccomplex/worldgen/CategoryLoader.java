@@ -25,8 +25,6 @@ public class CategoryLoader implements FileTypeHandler
 {
     public static final String FILE_SUFFIX = "rcnc";
 
-    private List<String> importedCustomGenerators = new ArrayList<>();
-
     private Gson gson = createGson();
 
     public static Gson createGson()
@@ -51,10 +49,7 @@ public class CategoryLoader implements FileTypeHandler
 
         if (category != null)
         {
-            StructureSelector.registerCategory(name, category);
-
-            if (context.custom)
-                importedCustomGenerators.add(name);
+            StructureSelector.registerCategory(name, category, context.custom);
 
             return true;
         }
@@ -65,9 +60,7 @@ public class CategoryLoader implements FileTypeHandler
     @Override
     public void clearCustomFiles()
     {
-        for (String generator : importedCustomGenerators)
-            StructureSelector.unregisterCategory(generator);
-        importedCustomGenerators.clear();
+        StructureSelector.clearCustom();
     }
 
     public StructureSelector.SimpleCategory read(String file)

@@ -7,31 +7,61 @@ package ivorius.reccomplex.utils;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Objects;
 
 /**
  * Created by lukas on 28.10.15.
  */
 public class CustomizableMap<K, V>
 {
-    private final Map<K, V> map = new HashMap<>();
-    private final Map<K, V> solidMap = new HashMap<>();
+    protected final Map<K, V> map;
+    protected final Map<K, V> solidMap;
 
-    public void putSolid(K k, V v)
+    protected CustomizableMap(Map<K, V> map, Map<K, V> solidMap)
     {
-        if (Objects.equals(map.get(k), solidMap.get(k)))
-            map.put(k, v);
-
-        solidMap.put(k, v);
+        this.map = map;
+        this.solidMap = solidMap;
     }
 
-    public void putCustom(K k, V v)
+    public CustomizableMap()
     {
-        V old = map.get(k);
-        if (old != null)
-            solidMap.put(k, old);
+        this(new HashMap<K, V>(), new HashMap<K, V>());
+    }
 
-        map.put(k, v);
+    protected boolean hasCustom(K k)
+    {
+        V v = map.get(k);
+        return v != null && !v.equals(solidMap.get(k));
+    }
+
+    protected boolean hasSolid(K k)
+    {
+        return solidMap.containsKey(k);
+    }
+
+    public V put(K k, V v, boolean custom)
+    {
+        if (custom)
+            return map.put(k, v);
+        else
+        {
+            if (!hasCustom(k))
+                map.put(k, v);
+
+            return solidMap.put(k, v);
+        }
+    }
+
+    public V remove(K k, boolean custom)
+    {
+        if (custom)
+            return hasCustom(k) ? map.put(k, solidMap.get(k)) : null;
+        else
+        {
+            if (!hasCustom(k))
+                map.remove(k);
+
+            return solidMap.remove(k);
+        }
     }
 
     public void clearCustom()

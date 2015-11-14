@@ -93,7 +93,7 @@ public class ItemInventoryGenComponentTag extends Item implements GeneratingItem
         if (component != null)
         {
             list.add(component.inventoryGeneratorID);
-            list.add(GenericItemCollectionRegistry.INSTANCE.isActive(component.inventoryGeneratorID)
+            list.add(GenericItemCollectionRegistry.INSTANCE.isActive(componentKey(stack))
                     ? IvTranslations.format("inventoryGen.active", EnumChatFormatting.GREEN, EnumChatFormatting.RESET)
                     : IvTranslations.format("inventoryGen.inactive", EnumChatFormatting.RED, EnumChatFormatting.RESET));
         }

@@ -136,7 +136,6 @@ public class GenericItemCollectionRegistry
 
             GenericItemCollection collection = registerGetGenericItemCollection(component.inventoryGeneratorID);
             collection.components.add(component);
-            generatingComponents.add(key);
         }
 
         for (String key : Sets.difference(generatingComponents, newGeneratingComponents))

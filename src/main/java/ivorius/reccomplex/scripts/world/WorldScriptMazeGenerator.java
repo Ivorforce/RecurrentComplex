@@ -265,7 +265,11 @@ public class WorldScriptMazeGenerator implements WorldScript<WorldScriptMazeGene
 
         ConnectorStrategy connectionStrategy = new ConnectorStrategy();
 
-        return MazeComponentConnector.randomlyConnect(maze, transformedComponents, connectionStrategy, placementStrategy, random);
+        int totalRooms = 1;
+        for (int i = 0; i < outsideBoundsLower.length; i++)
+            totalRooms *= outsideBoundsHigher[i] - outsideBoundsLower[i] + 1;
+
+        return MazeComponentConnector.randomlyConnect(maze, transformedComponents, connectionStrategy, placementStrategy, random, totalRooms * 10);
     }
 
     public static class InstanceData implements NBTStorable

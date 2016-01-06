@@ -53,6 +53,12 @@ public class LimitAABBStrategy<M extends MazeComponent<C>, C> implements MazePre
     }
 
     @Override
+    public void didUnplace(MorphingMazeComponent<C> maze, ShiftedMazeComponent<M, C> component)
+    {
+
+    }
+
+    @Override
     public boolean isDirtyConnection(MazeRoom dest, MazeRoom source, C c)
     {
         return isRoomContained(dest);

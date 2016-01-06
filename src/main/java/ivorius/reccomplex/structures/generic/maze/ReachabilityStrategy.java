@@ -118,6 +118,12 @@ public class ReachabilityStrategy<M extends MazeComponent<C>, C> implements Maze
     }
 
     @Override
+    public void didUnplace(MorphingMazeComponent<C> maze, ShiftedMazeComponent<M, C> component)
+    {
+         // TODO
+    }
+
+    @Override
     public boolean isDirtyConnection(MazeRoom dest, MazeRoom source, C c)
     {
         return true;

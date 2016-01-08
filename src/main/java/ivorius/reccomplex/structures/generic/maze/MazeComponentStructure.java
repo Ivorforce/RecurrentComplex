@@ -12,9 +12,8 @@ import ivorius.ivtoolkit.math.IvVecMathHelper;
 import ivorius.ivtoolkit.maze.components.MazeRoom;
 import ivorius.ivtoolkit.maze.components.MazeRoomConnection;
 import ivorius.ivtoolkit.maze.components.WeightedMazeComponent;
+import org.apache.commons.lang3.tuple.Pair;
 
-import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
@@ -25,6 +24,7 @@ public class MazeComponentStructure<C> implements WeightedMazeComponent<C>
 {
     public final ImmutableSet<MazeRoom> rooms;
     public final ImmutableMap<MazeRoomConnection, C> exits;
+    public final ImmutableSet<Pair<MazeRoom, MazeRoom>> reachability;
 
     public double weight;
 
@@ -40,6 +40,13 @@ public class MazeComponentStructure<C> implements WeightedMazeComponent<C>
 
         this.rooms = rooms;
         this.exits = exits;
+
+        // TODO Make modifiable
+        ImmutableSet.Builder<Pair<MazeRoom, MazeRoom>> builder = ImmutableSet.builder();
+        for (MazeRoom left : rooms)
+            for (MazeRoom right : rooms)
+                builder.add(Pair.of(left, right));
+        this.reachability = builder.build();
     }
 
     @Override
@@ -58,6 +65,12 @@ public class MazeComponentStructure<C> implements WeightedMazeComponent<C>
     public Map<MazeRoomConnection, C> exits()
     {
         return exits;
+    }
+
+    @Override
+    public Set<Pair<MazeRoom, MazeRoom>> reachability()
+    {
+        return reachability;
     }
 
     public int[] getSize()

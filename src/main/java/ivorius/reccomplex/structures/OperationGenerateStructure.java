@@ -97,7 +97,7 @@ public class OperationGenerateStructure implements Operation
         structure = StructureRegistry.INSTANCE.createStructureFromJSON(compound.getString("structureInfo"));
         structure.worldDataCompound = compound.getCompoundTag("structureData");
 
-        transform = new AxisAlignedTransform2D(compound.getInteger("rotation"), compound.getBoolean("mirrorX"));
+        transform = AxisAlignedTransform2D.from(compound.getInteger("rotation"), compound.getBoolean("mirrorX"));
 
         lowerCoord = BlockCoord.readCoordFromNBT("lowerCoord", compound);
 

@@ -72,7 +72,7 @@ public class CommandGenerateStructure extends CommandBase
         {
             Random random = world.rand;
 
-            AxisAlignedTransform2D transform = AxisAlignedTransform2D.transform(structureInfo.isRotatable() ? random.nextInt(4) : 0, structureInfo.isMirrorable() && random.nextBoolean());
+            AxisAlignedTransform2D transform = AxisAlignedTransform2D.from(structureInfo.isRotatable() ? random.nextInt(4) : 0, structureInfo.isMirrorable() && random.nextBoolean());
 
             int[] size = StructureInfos.structureSize(structureInfo, transform);
 

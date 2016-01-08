@@ -76,7 +76,7 @@ public class GenericVillagePiece extends StructureVillagePieces.Village
 
     public static AxisAlignedTransform2D getTransform(VanillaStructureGenerationInfo vanillaGenInfo, int front, boolean mirrorX)
     {
-        return new AxisAlignedTransform2D(getRotations(vanillaGenInfo, front, mirrorX), mirrorX);
+        return AxisAlignedTransform2D.from(getRotations(vanillaGenInfo, front, mirrorX), mirrorX);
     }
 
     public static int getRotations(VanillaStructureGenerationInfo vanillaGenInfo, int front, boolean mirrorX)

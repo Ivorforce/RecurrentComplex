@@ -186,7 +186,7 @@ public class WorldScriptStructureGenerator implements WorldScript<WorldScriptStr
                 {
                     int rotations = structureInfo.isRotatable() ? (structureRotation != null ? transform.getRotation() + structureRotation : random.nextInt(4)) : 0;
                     boolean mirrorX = structureInfo.isMirrorable() && (structureMirror != null ? transform.isMirrorX() != structureMirror : random.nextBoolean());
-                    AxisAlignedTransform2D strucTransform = AxisAlignedTransform2D.transform(rotations, mirrorX);
+                    AxisAlignedTransform2D strucTransform = AxisAlignedTransform2D.from(rotations, mirrorX);
 
                     int[] strucSize = structureInfo.structureBoundingBox();
                     BlockCoord strucCoord = transform.apply(structureShift, new int[]{1, 1, 1})
@@ -229,7 +229,7 @@ public class WorldScriptStructureGenerator implements WorldScript<WorldScriptStr
                     rotations = structureInfo.isRotatable() ? random.nextInt(4) : 0;
                 }
 
-                AxisAlignedTransform2D strucTransform = AxisAlignedTransform2D.transform(rotations, mirrorX);
+                AxisAlignedTransform2D strucTransform = AxisAlignedTransform2D.from(rotations, mirrorX);
 
                 int[] strucSize = structureInfo.structureBoundingBox();
                 BlockCoord strucCoord = transform.apply(structureShift.add(generationInfo.shiftX, generationInfo.shiftY, generationInfo.shiftZ), new int[]{1, 1, 1})
@@ -291,7 +291,7 @@ public class WorldScriptStructureGenerator implements WorldScript<WorldScriptStr
         {
             structureID = compound.getString("structureID");
             lowerCoord = BlockCoord.readCoordFromNBT("lowerCoord", compound);
-            structureTransform = new AxisAlignedTransform2D(compound.getInteger("rotation"), compound.getBoolean("mirrorX"));
+            structureTransform = AxisAlignedTransform2D.from(compound.getInteger("rotation"), compound.getBoolean("mirrorX"));
 
             StructureInfo structureInfo = StructureRegistry.INSTANCE.getStructure(structureID);
             if (structureInfo != null)

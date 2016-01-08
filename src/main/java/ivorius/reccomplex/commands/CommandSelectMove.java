@@ -63,7 +63,7 @@ public class CommandSelectMove extends CommandSelectModify
         structureInfo.worldDataCompound = worldDataCompound;
 
         BlockCoord coord = new BlockCoord(x, y, z);
-        AxisAlignedTransform2D transform = AxisAlignedTransform2D.transform(rotations, mirrorX);
+        AxisAlignedTransform2D transform = AxisAlignedTransform2D.from(rotations, mirrorX);
 
         OperationRegistry.queueOperation(new OperationMoveStructure(structureInfo, transform, coord, true, area), player);
     }

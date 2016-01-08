@@ -63,7 +63,7 @@ public class CommandSelectDuplicate extends CommandSelectModify
         structureInfo.worldDataCompound = worldDataCompound;
 
         BlockCoord coord = new BlockCoord(x, y, z);
-        AxisAlignedTransform2D transform = AxisAlignedTransform2D.transform(rotations, mirrorX);
+        AxisAlignedTransform2D transform = AxisAlignedTransform2D.from(rotations, mirrorX);
 
         OperationRegistry.queueOperation(new OperationGenerateStructure(structureInfo, transform, coord, true), player);
     }

@@ -66,7 +66,7 @@ public class StructureGenerator
 
     public static int randomInstantly(World world, Random random, StructureInfo info, @Nullable YSelector ySelector, int x, int z, boolean suggest, String structureName)
     {
-        AxisAlignedTransform2D transform = AxisAlignedTransform2D.transform(info.isRotatable() ? random.nextInt(4) : 0, info.isMirrorable() && random.nextBoolean());
+        AxisAlignedTransform2D transform = AxisAlignedTransform2D.from(info.isRotatable() ? random.nextInt(4) : 0, info.isMirrorable() && random.nextBoolean());
 
         int[] size = StructureInfos.structureSize(info, transform);
 

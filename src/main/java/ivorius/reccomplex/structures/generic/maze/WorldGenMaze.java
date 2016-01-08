@@ -126,10 +126,10 @@ public class WorldGenMaze
             {
                 if (info.isRotatable() || (rotations + transform.getRotation()) % 4 == 0)
                 {
-                    transformedComponents.add(transformedComponent(info, comp, AxisAlignedTransform2D.transform(rotations, false), compSize, splitCompWeight, factory));
+                    transformedComponents.add(transformedComponent(info, comp, AxisAlignedTransform2D.from(rotations, false), compSize, splitCompWeight, factory));
 
                     if (info.isMirrorable())
-                        transformedComponents.add(transformedComponent(info, comp, AxisAlignedTransform2D.transform(rotations, true), compSize, splitCompWeight, factory));
+                        transformedComponents.add(transformedComponent(info, comp, AxisAlignedTransform2D.from(rotations, true), compSize, splitCompWeight, factory));
                 }
             }
         }
@@ -153,7 +153,7 @@ public class WorldGenMaze
 
     public static <C> SetMazeComponent<C> createCompleteComponent(Set<MazeRoom> rooms, Map<MazeRoomConnection, C> exits, C wallConnector)
     {
-        SetMazeComponent<C> component = new SetMazeComponent<>(rooms, exits);
+        SetMazeComponent<C> component = new SetMazeComponent<>(rooms, exits, Collections.<Pair<MazeRoom,MazeRoom>>emptySet());
         addMissingExits(component.rooms, component.exits, wallConnector);
         return component;
     }

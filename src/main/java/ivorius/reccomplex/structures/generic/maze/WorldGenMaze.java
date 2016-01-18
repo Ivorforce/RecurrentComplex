@@ -7,10 +7,7 @@ package ivorius.reccomplex.structures.generic.maze;
 
 import com.google.common.base.Function;
 import com.google.common.base.Predicates;
-import com.google.common.collect.ImmutableMap;
-import com.google.common.collect.ImmutableSet;
-import com.google.common.collect.Iterables;
-import com.google.common.collect.Lists;
+import com.google.common.collect.*;
 import ivorius.ivtoolkit.blocks.BlockCoord;
 import ivorius.ivtoolkit.math.AxisAlignedTransform2D;
 import ivorius.ivtoolkit.math.IvVecMathHelper;
@@ -107,7 +104,7 @@ public class WorldGenMaze
         return StructureInfos.structureBoundingBox(lowerCoord, structureBB);
     }
 
-    public static List<MazeComponentStructure<Connector>> transformedComponents(Collection<Pair<StructureInfo, MazeGenerationInfo>> componentStructures, ConnectorFactory factory, AxisAlignedTransform2D transform)
+    public static List<MazeComponentStructure<Connector>> transformedComponents(Collection<Pair<StructureInfo, MazeGenerationInfo>> componentStructures, ConnectorFactory factory, AxisAlignedTransform2D transform, Collection<Connector> blockedConnections)
     {
         List<MazeComponentStructure<Connector>> transformedComponents = new ArrayList<>();
         for (Pair<StructureInfo, MazeGenerationInfo> pair : componentStructures)
@@ -126,10 +123,10 @@ public class WorldGenMaze
             {
                 if (info.isRotatable() || (rotations + transform.getRotation()) % 4 == 0)
                 {
-                    transformedComponents.add(transformedComponent(info, comp, AxisAlignedTransform2D.from(rotations, false), compSize, splitCompWeight, factory));
+                    transformedComponents.add(transformedComponent(info, comp, AxisAlignedTransform2D.from(rotations, false), compSize, splitCompWeight, factory, blockedConnections));
 
                     if (info.isMirrorable())
-                        transformedComponents.add(transformedComponent(info, comp, AxisAlignedTransform2D.from(rotations, true), compSize, splitCompWeight, factory));
+                        transformedComponents.add(transformedComponent(info, comp, AxisAlignedTransform2D.from(rotations, true), compSize, splitCompWeight, factory, blockedConnections));
                 }
             }
         }
@@ -137,23 +134,51 @@ public class WorldGenMaze
         return transformedComponents;
     }
 
-    public static MazeComponentStructure<Connector> transformedComponent(StructureInfo info, SavedMazeComponent comp, AxisAlignedTransform2D transform, int[] size, double weight, ConnectorFactory factory)
+    public static MazeComponentStructure<Connector> transformedComponent(StructureInfo info, SavedMazeComponent comp, final AxisAlignedTransform2D transform, final int[] size, double weight, ConnectorFactory factory, Collection<Connector> blockedConnections)
     {
-        Set<MazeRoom> transformedRooms = new HashSet<>();
-        for (MazeRoom room : comp.getRooms())
-            transformedRooms.add(MazeRooms.rotated(room, transform, size));
+        Set<MazeRoom> transformedRooms = FluentIterable.from(comp.getRooms()).transform(new Function<MazeRoom, MazeRoom>()
+        {
+            @Nullable
+            @Override
+            public MazeRoom apply(@Nullable MazeRoom input)
+            {
+                return MazeRooms.rotated(input, transform, size);
+            }
+        }).toSet();
 
         Map<MazeRoomConnection, Connector> transformedExits = new HashMap<>();
         for (Map.Entry<MazeRoomConnection, Connector> path : Lists.transform(comp.getExitPaths(), SavedMazePaths.toConnectionFunction(factory)))
             transformedExits.put(MazeRoomConnections.rotated(path.getKey(), transform, size), path.getValue());
-
         addMissingExits(transformedRooms, transformedExits, comp.defaultConnector.toConnector(factory));
-        return new MazeComponentStructure<>(weight, StructureRegistry.INSTANCE.structureID(info), transform, ImmutableSet.copyOf(transformedRooms), ImmutableMap.copyOf(transformedExits));
+
+        // TODO Make Configurable
+        ImmutableSet.Builder<Pair<MazeRoomConnection, MazeRoomConnection>> reachabilityBuilder = ImmutableSet.builder();
+        for (Map.Entry<MazeRoomConnection, Connector> left : transformedExits.entrySet())
+            for (Map.Entry<MazeRoomConnection, Connector> right : transformedExits.entrySet())
+            {
+                if (!blockedConnections.contains(left.getValue()) && !blockedConnections.contains(right.getValue()))
+                {
+                    reachabilityBuilder.add(Pair.of(left.getKey(), right.getKey()));
+                    reachabilityBuilder.add(Pair.of(right.getKey(), left.getKey()));
+                }
+            }
+
+        ImmutableSet<Pair<MazeRoomConnection, MazeRoomConnection>> transformedReachability = FluentIterable.from(reachabilityBuilder.build()).transform(new Function<Pair<MazeRoomConnection, MazeRoomConnection>, Pair<MazeRoomConnection, MazeRoomConnection>>()
+        {
+            @Nullable
+            @Override
+            public Pair<MazeRoomConnection, MazeRoomConnection> apply(@Nullable Pair<MazeRoomConnection, MazeRoomConnection> p)
+            {
+                return Pair.of(MazeRoomConnections.rotated(p.getLeft(), transform, size), MazeRoomConnections.rotated(p.getRight(), transform, size));
+            }
+        }).toSet();
+
+        return new MazeComponentStructure<>(weight, StructureRegistry.INSTANCE.structureID(info), transform, ImmutableSet.copyOf(transformedRooms), ImmutableMap.copyOf(transformedExits), transformedReachability);
     }
 
     public static <C> SetMazeComponent<C> createCompleteComponent(Set<MazeRoom> rooms, Map<MazeRoomConnection, C> exits, C wallConnector)
     {
-        SetMazeComponent<C> component = new SetMazeComponent<>(rooms, exits, Collections.<Pair<MazeRoom,MazeRoom>>emptySet());
+        SetMazeComponent<C> component = new SetMazeComponent<>(rooms, exits, Collections.<Pair<MazeRoomConnection, MazeRoomConnection>>emptySet());
         addMissingExits(component.rooms, component.exits, wallConnector);
         return component;
     }

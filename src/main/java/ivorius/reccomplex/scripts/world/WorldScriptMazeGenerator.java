@@ -239,6 +239,7 @@ public class WorldScriptMazeGenerator implements WorldScript<WorldScriptMazeGene
 
         Connector roomConnector = factory.get("Path");
         Connector wallConnector = factory.get("Wall");
+        Set<Connector> blockedConnections = Collections.singleton(wallConnector); // TODO Make configurable
 
         int[] boundsHigher = mazeRooms.boundsHigher();
         int[] boundsLower = mazeRooms.boundsLower();
@@ -249,7 +250,7 @@ public class WorldScriptMazeGenerator implements WorldScript<WorldScriptMazeGene
         final int[] outsideBoundsHigher = IvVecMathHelper.add(boundsHigher, oneArray);
         final int[] outsideBoundsLower = IvVecMathHelper.sub(boundsLower, oneArray);
 
-        List<MazeComponentStructure<Connector>> transformedComponents = WorldGenMaze.transformedComponents(StructureRegistry.INSTANCE.getStructuresInMaze(mazeID), factory, transform);
+        List<MazeComponentStructure<Connector>> transformedComponents = WorldGenMaze.transformedComponents(StructureRegistry.INSTANCE.getStructuresInMaze(mazeID), factory, transform, blockedConnections);
 
         MorphingMazeComponent<Connector> maze = new SetMazeComponent<>();
 
@@ -260,7 +261,7 @@ public class WorldScriptMazeGenerator implements WorldScript<WorldScriptMazeGene
 
         MazePredicate<MazeComponentStructure<Connector>, Connector> placementStrategy = new MazePredicateMany<>(
                 new LimitAABBStrategy<MazeComponentStructure<Connector>, Connector>(outsideBoundsHigher),
-                new BlockedConnectorStrategy<MazeComponentStructure<Connector>, Connector>(Collections.singleton(wallConnector))
+                new BlockedConnectorStrategy<MazeComponentStructure<Connector>, Connector>(blockedConnections)
         );
 
         ConnectorStrategy connectionStrategy = new ConnectorStrategy();

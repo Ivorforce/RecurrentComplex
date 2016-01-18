@@ -24,7 +24,7 @@ public class MazeComponentStructure<C> implements WeightedMazeComponent<C>
 {
     public final ImmutableSet<MazeRoom> rooms;
     public final ImmutableMap<MazeRoomConnection, C> exits;
-    public final ImmutableSet<Pair<MazeRoom, MazeRoom>> reachability;
+    public final ImmutableSet<Pair<MazeRoomConnection, MazeRoomConnection>> reachability;
 
     public double weight;
 
@@ -32,7 +32,7 @@ public class MazeComponentStructure<C> implements WeightedMazeComponent<C>
     public AxisAlignedTransform2D transform;
     private int[] size;
 
-    public MazeComponentStructure(double weight, String structureID, AxisAlignedTransform2D transform, ImmutableSet<MazeRoom> rooms, ImmutableMap<MazeRoomConnection, C> exits)
+    public MazeComponentStructure(double weight, String structureID, AxisAlignedTransform2D transform, ImmutableSet<MazeRoom> rooms, ImmutableMap<MazeRoomConnection, C> exits, ImmutableSet<Pair<MazeRoomConnection, MazeRoomConnection>> reachability)
     {
         this.weight = weight;
         this.structureID = structureID;
@@ -40,13 +40,7 @@ public class MazeComponentStructure<C> implements WeightedMazeComponent<C>
 
         this.rooms = rooms;
         this.exits = exits;
-
-        // TODO Make modifiable
-        ImmutableSet.Builder<Pair<MazeRoom, MazeRoom>> builder = ImmutableSet.builder();
-        for (MazeRoom left : rooms)
-            for (MazeRoom right : rooms)
-                builder.add(Pair.of(left, right));
-        this.reachability = builder.build();
+        this.reachability = reachability;
     }
 
     @Override
@@ -68,7 +62,7 @@ public class MazeComponentStructure<C> implements WeightedMazeComponent<C>
     }
 
     @Override
-    public Set<Pair<MazeRoom, MazeRoom>> reachability()
+    public Set<Pair<MazeRoomConnection, MazeRoomConnection>> reachability()
     {
         return reachability;
     }

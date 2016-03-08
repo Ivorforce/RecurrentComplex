@@ -10,6 +10,7 @@ import ivorius.reccomplex.gui.TableDirections;
 import ivorius.reccomplex.gui.table.*;
 import ivorius.reccomplex.structures.generic.maze.ConnectorStrategy;
 import ivorius.reccomplex.structures.generic.maze.SavedMazePath;
+import ivorius.reccomplex.structures.generic.maze.SavedMazePathConnection;
 import ivorius.reccomplex.utils.IvTranslations;
 import net.minecraftforge.common.util.ForgeDirection;
 
@@ -27,7 +28,6 @@ public class TableDataSourceMazePath extends TableDataSourceSegmented implements
         this.mazePath = mazePath;
         this.boundsLower = boundsLower;
         this.boundsHigher = boundsHigher;
-        addManagedSection(0, new TableDataSourceConnector(mazePath.connector, IvTranslations.get("reccomplex.maze.connector")));
     }
 
     @Override
@@ -78,9 +78,9 @@ public class TableDataSourceMazePath extends TableDataSourceSegmented implements
     {
         if ("side".equals(cell.getID()))
         {
-            SavedMazePath path = pathFromDirection((ForgeDirection) cell.getPropertyValue(), mazePath.sourceRoom.getCoordinates());
-            mazePath.pathDimension = path.pathDimension;
-            mazePath.pathGoesUp = path.pathGoesUp;
+            SavedMazePathConnection path = pathFromDirection((ForgeDirection) cell.getPropertyValue(), mazePath.sourceRoom.getCoordinates());
+            mazePath.pathDimension = path.path.pathDimension;
+            mazePath.pathGoesUp = path.path.pathGoesUp;
         }
         else if (cell.getID() != null)
         {
@@ -104,11 +104,11 @@ public class TableDataSourceMazePath extends TableDataSourceSegmented implements
         return null;
     }
 
-    public static SavedMazePath pathFromDirection(ForgeDirection side, int[] room)
+    public static SavedMazePathConnection pathFromDirection(ForgeDirection side, int[] room)
     {
         int pathDim = side.offsetX != 0 ? 0 : side.offsetY != 0 ? 1 : side.offsetZ != 0 ? 2 : -1;
         int offset = side.offsetX + side.offsetY + side.offsetZ;
 
-        return new SavedMazePath(pathDim, new MazeRoom(room[0], room[1], room[2]), offset > 0, ConnectorStrategy.DEFAULT_PATH);
+        return new SavedMazePathConnection(pathDim, new MazeRoom(room[0], room[1], room[2]), offset > 0, ConnectorStrategy.DEFAULT_PATH);
     }
 }

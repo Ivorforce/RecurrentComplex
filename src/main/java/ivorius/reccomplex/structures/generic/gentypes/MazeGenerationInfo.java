@@ -12,10 +12,8 @@ import ivorius.reccomplex.gui.table.TableDataSource;
 import ivorius.reccomplex.gui.table.TableDelegate;
 import ivorius.reccomplex.gui.table.TableNavigator;
 import ivorius.reccomplex.json.JsonUtils;
-import ivorius.reccomplex.structures.generic.maze.ConnectorStrategy;
-import ivorius.reccomplex.structures.generic.maze.SavedMazeComponent;
+import ivorius.reccomplex.structures.generic.maze.*;
 import ivorius.reccomplex.structures.generic.Selection;
-import ivorius.reccomplex.structures.generic.maze.SavedMazePath;
 import net.minecraft.util.StatCollector;
 
 import javax.annotation.Nonnull;
@@ -53,7 +51,9 @@ public class MazeGenerationInfo extends StructureGenerationInfo
         builder.registerTypeAdapter(MazeGenerationInfo.class, new Serializer());
         builder.registerTypeAdapter(SavedMazeComponent.class, new SavedMazeComponent.Serializer());
         builder.registerTypeAdapter(MazeRoom.class, new SavedMazeComponent.RoomSerializer());
+        builder.registerTypeAdapter(SavedMazeReachability.class, new SavedMazeReachability.Serializer());
         builder.registerTypeAdapter(SavedMazePath.class, new SavedMazePath.Serializer());
+        builder.registerTypeAdapter(SavedMazePathConnection.class, new SavedMazePathConnection.Serializer());
 
         return builder.create();
     }

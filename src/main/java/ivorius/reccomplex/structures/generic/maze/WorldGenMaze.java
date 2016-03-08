@@ -151,19 +151,7 @@ public class WorldGenMaze
             transformedExits.put(MazeRoomConnections.rotated(path.getKey(), transform, size), path.getValue());
         addMissingExits(transformedRooms, transformedExits, comp.defaultConnector.toConnector(factory));
 
-        // TODO Make Configurable
-        ImmutableSet.Builder<Pair<MazeRoomConnection, MazeRoomConnection>> reachabilityBuilder = ImmutableSet.builder();
-        for (Map.Entry<MazeRoomConnection, Connector> left : transformedExits.entrySet())
-            for (Map.Entry<MazeRoomConnection, Connector> right : transformedExits.entrySet())
-            {
-                if (!blockedConnections.contains(left.getValue()) && !blockedConnections.contains(right.getValue()))
-                {
-                    reachabilityBuilder.add(Pair.of(left.getKey(), right.getKey()));
-                    reachabilityBuilder.add(Pair.of(right.getKey(), left.getKey()));
-                }
-            }
-
-        ImmutableSet<Pair<MazeRoomConnection, MazeRoomConnection>> transformedReachability = FluentIterable.from(reachabilityBuilder.build()).transform(new Function<Pair<MazeRoomConnection, MazeRoomConnection>, Pair<MazeRoomConnection, MazeRoomConnection>>()
+        ImmutableSet<Pair<MazeRoomConnection, MazeRoomConnection>> transformedReachability = FluentIterable.from(comp.reachability.build(transform, size, SavedMazeReachability.notBlocked(blockedConnections, transformedExits), transformedExits.keySet())).transform(new Function<Pair<MazeRoomConnection, MazeRoomConnection>, Pair<MazeRoomConnection, MazeRoomConnection>>()
         {
             @Nullable
             @Override
@@ -183,11 +171,11 @@ public class WorldGenMaze
         return component;
     }
 
-    public static <C> void addMissingExits(Set<MazeRoom> rooms, Map<MazeRoomConnection, C> exits, C wallConnector)
+    public static <C> void addMissingExits(Set<MazeRoom> rooms, Map<MazeRoomConnection, C> exits, C connector)
     {
         for (MazeRoom room : rooms)
             for (MazeRoomConnection connection : MazeRooms.neighbors(room))
                 if (!exits.containsKey(connection))
-                    exits.put(connection, wallConnector);
+                    exits.put(connection, connector);
     }
 }

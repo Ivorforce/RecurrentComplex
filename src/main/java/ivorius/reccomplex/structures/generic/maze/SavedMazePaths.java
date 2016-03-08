@@ -6,11 +6,9 @@
 package ivorius.reccomplex.structures.generic.maze;
 
 import com.google.common.base.Function;
-import com.google.common.collect.Maps;
 import ivorius.ivtoolkit.maze.components.MazeRoomConnection;
 
 import javax.annotation.Nullable;
-import java.util.Collection;
 import java.util.Map;
 
 /**
@@ -18,13 +16,13 @@ import java.util.Map;
  */
 public class SavedMazePaths
 {
-    public static Function<SavedMazePath, Map.Entry<MazeRoomConnection, Connector>> toConnectionFunction(final ConnectorFactory factory)
+    public static Function<SavedMazePathConnection, Map.Entry<MazeRoomConnection, Connector>> toConnectionFunction(final ConnectorFactory factory)
     {
-        return new Function<SavedMazePath, Map.Entry<MazeRoomConnection, Connector>>()
+        return new Function<SavedMazePathConnection, Map.Entry<MazeRoomConnection, Connector>>()
         {
             @Nullable
             @Override
-            public Map.Entry<MazeRoomConnection, Connector> apply(@Nullable SavedMazePath input)
+            public Map.Entry<MazeRoomConnection, Connector> apply(@Nullable SavedMazePathConnection input)
             {
                 return input != null ? input.toRoomConnection(factory) : null;
             }

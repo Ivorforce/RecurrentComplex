@@ -43,7 +43,7 @@ import java.util.*;
 public class WorldScriptMazeGenerator implements WorldScript<WorldScriptMazeGenerator.InstanceData>
 {
     public String mazeID = "";
-    public List<SavedMazePath> mazeExits = new ArrayList<>();
+    public List<SavedMazePathConnection> mazeExits = new ArrayList<>();
     public Selection mazeRooms = Selection.zeroSelection(3);
     public BlockCoord structureShift = new BlockCoord(0, 0, 0);
     public int[] roomSize = new int[]{3, 5, 3};
@@ -67,7 +67,7 @@ public class WorldScriptMazeGenerator implements WorldScript<WorldScriptMazeGene
         }
     }
 
-    public static void addExits(ConnectorFactory factory, MorphingMazeComponent<Connector> maze, List<SavedMazePath> mazeExits)
+    public static void addExits(ConnectorFactory factory, MorphingMazeComponent<Connector> maze, List<SavedMazePathConnection> mazeExits)
     {
         Map<MazeRoomConnection, Connector> exitMap = Maps.newHashMap();
         SavedMazePaths.putAll(exitMap, Iterables.transform(mazeExits, SavedMazePaths.toConnectionFunction(factory)));
@@ -193,7 +193,7 @@ public class WorldScriptMazeGenerator implements WorldScript<WorldScriptMazeGene
         }
 
         mazeExits.clear();
-        mazeExits.addAll(NBTCompoundObjects.readListFrom(nbtTagCompound, "mazeExits", SavedMazePath.class));
+        mazeExits.addAll(NBTCompoundObjects.readListFrom(nbtTagCompound, "mazeExits", SavedMazePathConnection.class));
 
         structureShift = BlockCoord.readCoordFromNBT("structureShift", nbtTagCompound);
 

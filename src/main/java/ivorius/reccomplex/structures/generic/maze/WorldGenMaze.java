@@ -175,7 +175,7 @@ public class WorldGenMaze
     {
         for (MazeRoom room : rooms)
             for (MazeRoomConnection connection : MazeRooms.neighbors(room))
-                if (!exits.containsKey(connection))
+                if (!exits.containsKey(connection) && !(rooms.contains(connection.getLeft()) && rooms.contains(connection.getRight())))
                     exits.put(connection, connector);
     }
 }

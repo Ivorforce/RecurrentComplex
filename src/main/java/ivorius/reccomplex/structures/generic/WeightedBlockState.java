@@ -7,8 +7,8 @@ package ivorius.reccomplex.structures.generic;
 
 import com.google.gson.*;
 import ivorius.ivtoolkit.tools.MCRegistry;
+import ivorius.reccomplex.RecurrentComplex;
 import ivorius.reccomplex.json.JsonUtils;
-import ivorius.reccomplex.structures.registry.MCRegistrySpecial;
 import ivorius.ivtoolkit.random.WeightedSelector;
 import net.minecraft.block.Block;
 import net.minecraft.nbt.NBTTagCompound;
@@ -49,7 +49,7 @@ public class WeightedBlockState implements WeightedSelector.Item
     {
         GsonBuilder builder = new GsonBuilder();
 
-        builder.registerTypeAdapter(WeightedBlockState.class, new WeightedBlockState.Serializer(MCRegistrySpecial.INSTANCE));
+        builder.registerTypeAdapter(WeightedBlockState.class, new WeightedBlockState.Serializer(RecurrentComplex.mcregistry));
 
         return builder.create();
     }

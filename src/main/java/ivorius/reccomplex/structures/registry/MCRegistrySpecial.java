@@ -30,15 +30,18 @@ public class MCRegistrySpecial implements MCRegistry
 {
     public static final String HIDDEN_ITEM_TAG = "RC_HIDDEN_ITEM";
 
-    public static final MCRegistrySpecial INSTANCE = new MCRegistrySpecial();
+    protected MCRegistry parent;
 
-    protected MCRegistry parent = new MCRegistryDefault();
+    protected final BiMap<String, Item> itemMap = HashBiMap.create();
+    protected final BiMap<String, Block> blockMap = HashBiMap.create();
+    protected final Map<String, Class<? extends TileEntity>> tileEntityMap = new HashMap<>();
 
-    private final BiMap<String, Item> itemMap = HashBiMap.create();
-    private final BiMap<String, Block> blockMap = HashBiMap.create();
-    private final Map<String, Class<? extends TileEntity>> tileEntityMap = new HashMap<>();
+    protected ItemHidingRegistry itemHidingRegistry = new ItemHidingRegistry(this);
 
-    private ItemHidingRegistry itemHidingRegistry = new ItemHidingRegistry(this);
+    public MCRegistrySpecial(MCRegistry parent)
+    {
+        this.parent = parent;
+    }
 
     public void register(String id, Item item)
     {

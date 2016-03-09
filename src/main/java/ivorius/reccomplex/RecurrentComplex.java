@@ -19,18 +19,16 @@ import ivorius.ivtoolkit.network.PacketExtendedEntityPropertiesData;
 import ivorius.ivtoolkit.network.PacketExtendedEntityPropertiesDataHandler;
 import ivorius.ivtoolkit.network.PacketGuiAction;
 import ivorius.ivtoolkit.network.PacketGuiActionHandler;
+import ivorius.ivtoolkit.tools.MCRegistryDefault;
 import ivorius.reccomplex.commands.RCCommands;
 import ivorius.reccomplex.events.RCFMLEventHandler;
 import ivorius.reccomplex.events.RCForgeEventHandler;
-import ivorius.reccomplex.files.FileLoadContext;
-import ivorius.reccomplex.files.FileTypeRegistry;
 import ivorius.reccomplex.files.RCFileTypeRegistry;
 import ivorius.reccomplex.gui.RCGuiHandler;
 import ivorius.reccomplex.network.*;
-import ivorius.reccomplex.structures.generic.StructureSaveHandler;
+import ivorius.reccomplex.structures.registry.MCRegistrySpecial;
 import ivorius.reccomplex.structures.schematics.SchematicLoader;
 import ivorius.reccomplex.utils.FMLRemapper;
-import ivorius.reccomplex.worldgen.inventory.ItemCollectionSaveHandler;
 import net.minecraftforge.common.config.Configuration;
 import org.apache.logging.log4j.Logger;
 
@@ -62,6 +60,7 @@ public class RecurrentComplex
 
     public static RCFileTypeRegistry fileTypeRegistry;
     public static FMLRemapper remapper;
+    public static MCRegistrySpecial mcregistry;
 
     public static RCForgeEventHandler forgeEventHandler;
     public static RCFMLEventHandler fmlEventHandler;
@@ -94,7 +93,8 @@ public class RecurrentComplex
         config.save();
 
         fileTypeRegistry = new RCFileTypeRegistry();
-        remapper = new FMLRemapper(MODID);
+        remapper = new FMLRemapper(MODID, new MCRegistryDefault());
+        mcregistry = new MCRegistrySpecial(remapper);
 
         forgeEventHandler = new RCForgeEventHandler();
         forgeEventHandler.register();

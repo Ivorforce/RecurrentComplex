@@ -9,12 +9,12 @@ import com.google.gson.*;
 import ivorius.ivtoolkit.blocks.BlockCoord;
 import ivorius.ivtoolkit.random.WeightedSelector;
 import ivorius.ivtoolkit.tools.MCRegistry;
+import ivorius.reccomplex.RecurrentComplex;
 import ivorius.reccomplex.gui.editstructure.transformers.TableDataSourceBTReplace;
 import ivorius.reccomplex.gui.table.TableDataSource;
 import ivorius.reccomplex.gui.table.TableDelegate;
 import ivorius.reccomplex.gui.table.TableNavigator;
 import ivorius.reccomplex.json.JsonUtils;
-import ivorius.reccomplex.structures.registry.MCRegistrySpecial;
 import ivorius.reccomplex.structures.StructureLoadContext;
 import ivorius.reccomplex.structures.StructurePrepareContext;
 import ivorius.reccomplex.structures.StructureSpawnContext;
@@ -46,13 +46,13 @@ public class TransformerReplace extends TransformerSingleBlock<NBTNone>
 
     public TransformerReplace()
     {
-        this(BlockMatcher.of(MCRegistrySpecial.INSTANCE, Blocks.wool));
+        this(BlockMatcher.of(RecurrentComplex.mcregistry, Blocks.wool));
         destination.setToDefault();
     }
 
     public TransformerReplace(String sourceExpression)
     {
-        this.sourceMatcher = new BlockMatcher(MCRegistrySpecial.INSTANCE, sourceExpression);
+        this.sourceMatcher = new BlockMatcher(RecurrentComplex.mcregistry, sourceExpression);
     }
 
     public static NBTTagCompound tryParse(String json)
@@ -115,7 +115,7 @@ public class TransformerReplace extends TransformerSingleBlock<NBTNone>
 
     public static void setBlockWith(StructureSpawnContext context, BlockCoord coord, World world, WeightedBlockState blockState, NBTTagCompound parsedTileEntityInfo)
     {
-        if (blockState.block != null && MCRegistrySpecial.INSTANCE.isSafe(blockState.block))
+        if (blockState.block != null && RecurrentComplex.mcregistry.isSafe(blockState.block))
         {
             context.setBlock(coord.x, coord.y, coord.z, blockState.block, blockState.metadata);
 

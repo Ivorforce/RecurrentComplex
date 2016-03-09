@@ -5,26 +5,31 @@
 
 package ivorius.reccomplex.utils;
 
+import com.google.common.collect.BiMap;
+import com.google.common.collect.HashBiMap;
 import cpw.mods.fml.common.event.FMLMissingMappingsEvent;
-import cpw.mods.fml.common.eventhandler.SubscribeEvent;
+import ivorius.ivtoolkit.tools.MCRegistry;
+import ivorius.ivtoolkit.tools.MCRegistryDefault;
 import net.minecraft.block.Block;
 import net.minecraft.item.Item;
-
-import java.util.HashMap;
-import java.util.Map;
+import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.tileentity.TileEntity;
 
 /**
  * Created by lukas on 04.09.15.
  */
-public class FMLRemapper
+public class FMLRemapper implements MCRegistry
 {
-    private String domain;
+    protected String domain;
 
-    private Map<String, Block> blockRemaps = new HashMap<>();
-    private Map<String, Item> itemRemaps = new HashMap<>();
+    protected MCRegistry parent = new MCRegistryDefault();
 
-    public FMLRemapper(String domain)
+    protected BiMap<String, Block> blockRemaps = HashBiMap.create();
+    protected BiMap<String, Item> itemRemaps = HashBiMap.create();
+
+    public FMLRemapper(String domain, MCRegistry parent)
     {
+        this.parent = parent;
         this.domain = domain;
     }
 
@@ -62,5 +67,45 @@ public class FMLRemapper
                     break;
             }
         }
+    }
+
+    @Override
+    public Item itemFromID(String itemID)
+    {
+        Item item = itemRemaps.get(itemID);
+        return item != null ? item : parent.itemFromID(itemID);
+    }
+
+    @Override
+    public String idFromItem(Item item)
+    {
+        String id = itemRemaps.inverse().get(item);
+        return id != null ? id : parent.idFromItem(item);
+    }
+
+    @Override
+    public void modifyItemStackCompound(NBTTagCompound compound, String itemID)
+    {
+        parent.modifyItemStackCompound(compound, itemID);
+    }
+
+    @Override
+    public Block blockFromID(String blockID)
+    {
+        Block block = blockRemaps.get(blockID);
+        return block != null ? block : parent.blockFromID(blockID);
+    }
+
+    @Override
+    public String idFromBlock(Block block)
+    {
+        String id = blockRemaps.inverse().get(block);
+        return id != null ? id : parent.idFromBlock(block);
+    }
+
+    @Override
+    public TileEntity loadTileEntity(NBTTagCompound compound)
+    {
+        return parent.loadTileEntity(compound);
     }
 }

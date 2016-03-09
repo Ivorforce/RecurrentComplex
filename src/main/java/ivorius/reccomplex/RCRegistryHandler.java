@@ -159,7 +159,7 @@ public class RCRegistryHandler
         if (!RecurrentComplex.isLite())
             GameRegistry.registerItem(item, id);
         else
-            MCRegistrySpecial.INSTANCE.register(FMLUtils.addPrefix(id), item);
+            mcregistry.register(FMLUtils.addPrefix(id), item);
     }
 
     public static void register(Block block, String id)
@@ -168,8 +168,8 @@ public class RCRegistryHandler
             GameRegistry.registerBlock(block, id);
         else
         {
-            MCRegistrySpecial.INSTANCE.register(FMLUtils.addPrefix(id), block);
-            MCRegistrySpecial.INSTANCE.register(FMLUtils.addPrefix(id), new ItemBlock(block));
+            mcregistry.register(FMLUtils.addPrefix(id), block);
+            mcregistry.register(FMLUtils.addPrefix(id), new ItemBlock(block));
         }
     }
 
@@ -179,9 +179,9 @@ public class RCRegistryHandler
             GameRegistry.registerBlock(block, itemClass, id, itemArgs);
         else
         {
-            MCRegistrySpecial.INSTANCE.register(FMLUtils.addPrefix(id), block);
+            mcregistry.register(FMLUtils.addPrefix(id), block);
             Item item = FMLUtils.constructItem(block, itemClass, itemArgs);
-            if (item != null) MCRegistrySpecial.INSTANCE.register(FMLUtils.addPrefix(id), item);
+            if (item != null) mcregistry.register(FMLUtils.addPrefix(id), item);
         }
     }
 
@@ -191,14 +191,14 @@ public class RCRegistryHandler
             GameRegistry.registerTileEntityWithAlternatives(tileEntity, id, alternatives);
         else
         {
-            MCRegistrySpecial.INSTANCE.register(id, tileEntity);
-            for (String aid : alternatives) MCRegistrySpecial.INSTANCE.register(aid, tileEntity);
+            mcregistry.register(id, tileEntity);
+            for (String aid : alternatives) mcregistry.register(aid, tileEntity);
         }
     }
 
     public static void load(FMLInitializationEvent event, RecurrentComplex mod)
     {
-        MCRegistrySpecial mcRegistry = MCRegistrySpecial.INSTANCE;
+        MCRegistrySpecial mcRegistry = mcregistry;
 
         fileTypeRegistry.put(StructureSaveHandler.FILE_SUFFIX, StructureSaveHandler.INSTANCE);
         fileTypeRegistry.put(ItemCollectionSaveHandler.FILE_SUFFIX, ItemCollectionSaveHandler.INSTANCE);

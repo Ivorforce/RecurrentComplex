@@ -13,7 +13,6 @@ import ivorius.reccomplex.RecurrentComplex;
 import ivorius.reccomplex.json.ItemStackSerializer;
 import ivorius.reccomplex.json.JsonUtils;
 import ivorius.reccomplex.json.NbtToJson;
-import ivorius.reccomplex.structures.registry.MCRegistrySpecial;
 import ivorius.reccomplex.structures.generic.matchers.DependencyMatcher;
 import ivorius.ivtoolkit.random.WeightedSelector;
 import net.minecraft.item.ItemStack;
@@ -45,7 +44,7 @@ public class GenericItemCollection implements WeightedItemCollection
 
         builder.registerTypeAdapter(Component.class, new Component.Serializer());
         builder.registerTypeAdapter(RandomizedItemStack.class, new RandomizedItemStack.Serializer());
-        builder.registerTypeAdapter(ItemStack.class, new ItemStackSerializer(MCRegistrySpecial.INSTANCE));
+        builder.registerTypeAdapter(ItemStack.class, new ItemStackSerializer(RecurrentComplex.mcregistry));
         builder.registerTypeAdapter(WeightedRandomChestContent.class, new WeightedRandomChestContentSerializer());
         NbtToJson.registerSafeNBTSerializer(builder);
 

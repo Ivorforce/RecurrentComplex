@@ -15,6 +15,8 @@ import ivorius.reccomplex.structures.generic.matchers.DimensionMatcher;
 import ivorius.reccomplex.worldgen.StructureSelector;
 import ivorius.reccomplex.structures.generic.matchers.BiomeMatcher;
 import ivorius.reccomplex.worldgen.inventory.GenericItemCollectionRegistry;
+import net.minecraft.block.Block;
+import net.minecraft.item.Item;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.util.Constants;
@@ -98,7 +100,7 @@ public class RCCommunicationHandler extends IvFMLIntercommHandler
             DimensionDictionary.registerType(message.getStringValue());
             return true;
         }
-        else if (isMessage("registerDimensionSubtypes", message, String.class))
+        else if (isMessage("registerDimensionSubtypes", message, NBTTagCompound.class))
         {
             NBTTagCompound cmp = message.getNBTValue();
             String type = cmp.getString("type");
@@ -111,7 +113,7 @@ public class RCCommunicationHandler extends IvFMLIntercommHandler
 
             return true;
         }
-        else if (isMessage("registerDimensionSupertypes", message, String.class))
+        else if (isMessage("registerDimensionSupertypes", message, NBTTagCompound.class))
         {
             NBTTagCompound cmp = message.getNBTValue();
             String type = cmp.getString("type");
@@ -124,7 +126,7 @@ public class RCCommunicationHandler extends IvFMLIntercommHandler
 
             return true;
         }
-        else if (isMessage("registerSimpleSpawnCategory", message, String.class))
+        else if (isMessage("registerSimpleSpawnCategory", message, NBTTagCompound.class))
         {
             // Legacy. Use natural spawn category files (rcnc) instead.
 
@@ -159,6 +161,37 @@ public class RCCommunicationHandler extends IvFMLIntercommHandler
                 getLogger().warn("Could not handle message with key '" + message.key + "' - missing 'id' key!");
 
             return true;
+        }
+        else if (isMessage("registerLegacyBlockIds", message, NBTTagCompound.class))
+        {
+            NBTTagCompound cmp = message.getNBTValue();
+
+            Block block = RecurrentComplex.mcregistry.blockFromID(cmp.getString("block"));
+
+            if (block != null)
+            {
+                boolean inferItem = cmp.getBoolean("inferItem");
+                String[] legacyIDs = IvNBTHelper.readNBTStrings("legacyIDs", cmp); // NBTTagList of NBTTagString
+
+                RecurrentComplex.remapper.registerLegacyIDs(block, inferItem, legacyIDs);
+            }
+            else
+                getLogger().warn("Could not handle message with key '" + message.key + "' - could not find block!");
+        }
+        else if (isMessage("registerLegacyItemIds", message, NBTTagCompound.class))
+        {
+            NBTTagCompound cmp = message.getNBTValue();
+
+            Item item = RecurrentComplex.mcregistry.itemFromID(cmp.getString("item"));
+
+            if (item != null)
+            {
+                String[] legacyIDs = IvNBTHelper.readNBTStrings("legacyIDs", cmp); // NBTTagList of NBTTagString
+
+                RecurrentComplex.remapper.registerLegacyIDs(item, legacyIDs);
+            }
+            else
+                getLogger().warn("Could not handle message with key '" + message.key + "' - could not find item!");
         }
 
         return false;

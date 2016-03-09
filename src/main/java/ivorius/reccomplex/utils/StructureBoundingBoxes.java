@@ -37,4 +37,9 @@ public class StructureBoundingBoxes
 
         return Collections.emptySet();
     }
+
+    public static boolean fitsY(StructureBoundingBox boundingBox, int minY, int maxY)
+    {
+        return boundingBox.minY >= minY && boundingBox.maxY < maxY;
+    }
 }

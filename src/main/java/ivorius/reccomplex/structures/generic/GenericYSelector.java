@@ -75,11 +75,11 @@ public class GenericYSelector implements YSelector
         switch (selectionMode)
         {
             case BEDROCK:
-                return selectByConstant(world, yShift);
+                return selectByConstant(world, boundingBox, yShift);
             case TOP:
-                return selectByConstant(world, world.getHeight() + yShift - 1);
+                return selectByConstant(world, boundingBox, world.getHeight() + yShift - 1);
             case SEALEVEL:
-                return selectByConstant(world, 63 + yShift);
+                return selectByConstant(world, boundingBox, 63 + yShift);
             case SURFACE:
                 return selectByFunction(world, boundingBox, surfaceSelector(world), averageReducer(yShift));
             case UNDERWATER:
@@ -186,9 +186,9 @@ public class GenericYSelector implements YSelector
         return curY;
     }
 
-    protected static int selectByConstant(World world, int y)
+    protected static int selectByConstant(World world, StructureBoundingBox boundingBox, int y)
     {
-        return MathHelper.clamp_int(y, MIN_DIST_TO_VOID, world.getHeight() - MIN_DIST_TO_VOID);
+        return y;
     }
 
     protected static int selectByFunction(World world, StructureBoundingBox boundingBox, SingleYSelector selector, IntListReducer reducer)

@@ -8,7 +8,7 @@ package ivorius.reccomplex.structures.generic;
 import com.google.gson.*;
 import ivorius.ivtoolkit.tools.MCRegistry;
 import ivorius.reccomplex.json.JsonUtils;
-import ivorius.reccomplex.structures.MCRegistrySpecial;
+import ivorius.reccomplex.structures.registry.MCRegistrySpecial;
 import ivorius.ivtoolkit.random.WeightedSelector;
 import net.minecraft.block.Block;
 import net.minecraft.nbt.NBTTagCompound;

@@ -19,7 +19,7 @@ import ivorius.reccomplex.json.SerializableStringTypeRegistry;
 import ivorius.reccomplex.operation.OperationRegistry;
 import ivorius.reccomplex.random.PoemLoader;
 import ivorius.reccomplex.scripts.world.*;
-import ivorius.reccomplex.structures.MCRegistrySpecial;
+import ivorius.reccomplex.structures.registry.MCRegistrySpecial;
 import ivorius.reccomplex.structures.OperationMoveStructure;
 import ivorius.reccomplex.structures.generic.BiomeGenerationInfo;
 import ivorius.reccomplex.structures.generic.DimensionGenerationInfo;

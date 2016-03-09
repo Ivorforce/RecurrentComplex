@@ -3,11 +3,12 @@
  *  * http://lukas.axxim.net
  */
 
-package ivorius.reccomplex.structures;
+package ivorius.reccomplex.structures.registry;
 
 import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
 import ivorius.ivtoolkit.tools.MCRegistry;
+import ivorius.ivtoolkit.tools.MCRegistryDefault;
 import ivorius.reccomplex.RecurrentComplex;
 import net.minecraft.block.Block;
 import net.minecraft.init.Items;
@@ -30,6 +31,8 @@ public class MCRegistrySpecial implements MCRegistry
     public static final String HIDDEN_ITEM_TAG = "RC_HIDDEN_ITEM";
 
     public static final MCRegistrySpecial INSTANCE = new MCRegistrySpecial();
+
+    protected MCRegistry parent = new MCRegistryDefault();
 
     private final BiMap<String, Item> itemMap = HashBiMap.create();
     private final BiMap<String, Block> blockMap = HashBiMap.create();
@@ -61,20 +64,20 @@ public class MCRegistrySpecial implements MCRegistry
     public Item itemFromID(String itemID)
     {
         Item item = itemMap.get(itemID);
-        return item != null ? item : (Item) Item.itemRegistry.getObject(itemID);
+        return item != null ? item : parent.itemFromID(itemID);
     }
 
     @Override
     public String idFromItem(Item item)
     {
         String id = itemMap.inverse().get(item);
-        return id != null ? id : Item.itemRegistry.getNameForObject(item);
+        return id != null ? id : parent.idFromItem(item);
     }
 
     @Override
     public void modifyItemStackCompound(NBTTagCompound compound, String itemID)
     {
-
+        parent.modifyItemStackCompound(compound, itemID);
     }
 
     public boolean isSafe(Item item)
@@ -86,14 +89,14 @@ public class MCRegistrySpecial implements MCRegistry
     public Block blockFromID(String blockID)
     {
         Block block = blockMap.get(blockID);
-        return block != null ? block : Block.getBlockFromName(blockID);
+        return block != null ? block : parent.blockFromID(blockID);
     }
 
     @Override
     public String idFromBlock(Block block)
     {
         String id = blockMap.inverse().get(block);
-        return id != null ? id : Block.blockRegistry.getNameForObject(block);
+        return id != null ? id : parent.idFromBlock(block);
     }
 
     public boolean isSafe(Block block)
@@ -121,7 +124,7 @@ public class MCRegistrySpecial implements MCRegistry
             RecurrentComplex.logger.error("Error loading special TileEntity", e);
         }
 
-        return TileEntity.createAndLoadEntity(compound);
+        return parent.loadTileEntity(compound);
     }
 
     public boolean isSafe(TileEntity tileEntity)
@@ -141,8 +144,8 @@ public class MCRegistrySpecial implements MCRegistry
         @Override
         public Item itemFromID(String itemID)
         {
-            Item item = parent.itemMap.get(itemID);
-            return item != null ? Items.coal : (Item) Item.itemRegistry.getObject(itemID);
+            Item hidden = parent.itemMap.get(itemID);
+            return hidden != null ? Items.coal : parent.parent.itemFromID(itemID);
         }
 
         @Override

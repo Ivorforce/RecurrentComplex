@@ -24,6 +24,7 @@ import ivorius.reccomplex.structures.generic.gentypes.StructureGenerationInfo;
 import ivorius.reccomplex.structures.generic.matchers.BlockMatcher;
 import ivorius.reccomplex.structures.generic.matchers.DependencyMatcher;
 import ivorius.reccomplex.structures.generic.transformers.*;
+import ivorius.reccomplex.structures.registry.MCRegistrySpecial;
 import ivorius.reccomplex.utils.NBTStorable;
 import ivorius.ivtoolkit.tools.Pairs;
 import ivorius.reccomplex.utils.RCAccessorEntity;

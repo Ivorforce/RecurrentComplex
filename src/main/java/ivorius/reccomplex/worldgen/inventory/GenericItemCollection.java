@@ -13,7 +13,7 @@ import ivorius.reccomplex.RecurrentComplex;
 import ivorius.reccomplex.json.ItemStackSerializer;
 import ivorius.reccomplex.json.JsonUtils;
 import ivorius.reccomplex.json.NbtToJson;
-import ivorius.reccomplex.structures.MCRegistrySpecial;
+import ivorius.reccomplex.structures.registry.MCRegistrySpecial;
 import ivorius.reccomplex.structures.generic.matchers.DependencyMatcher;
 import ivorius.ivtoolkit.random.WeightedSelector;
 import net.minecraft.item.ItemStack;

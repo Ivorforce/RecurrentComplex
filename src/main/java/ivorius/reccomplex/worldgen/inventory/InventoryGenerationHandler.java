@@ -6,7 +6,7 @@
 package ivorius.reccomplex.worldgen.inventory;
 
 import ivorius.reccomplex.items.GeneratingItem;
-import ivorius.reccomplex.structures.MCRegistrySpecial;
+import ivorius.reccomplex.structures.registry.MCRegistrySpecial;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;

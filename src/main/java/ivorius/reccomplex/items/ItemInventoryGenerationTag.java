@@ -5,7 +5,7 @@
 
 package ivorius.reccomplex.items;
 
-import ivorius.reccomplex.structures.MCRegistrySpecial;
+import ivorius.reccomplex.structures.registry.MCRegistrySpecial;
 import ivorius.reccomplex.worldgen.inventory.InventoryGenerationHandler;
 import ivorius.reccomplex.worldgen.inventory.WeightedItemCollection;
 import ivorius.reccomplex.worldgen.inventory.WeightedItemCollectionRegistry;

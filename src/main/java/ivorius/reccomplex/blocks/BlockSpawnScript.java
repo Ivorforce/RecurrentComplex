@@ -44,7 +44,7 @@ public class BlockSpawnScript extends Block
     }
 
     @Override
-    public ItemStack getPickBlock(MovingObjectPosition target, World world, int x, int y, int z)
+    public ItemStack getPickBlock(MovingObjectPosition target, World world, int x, int y, int z, EntityPlayer player)
     {
         TileEntity tileEntity = world.getTileEntity(x, y, z);
         NBTTagCompound compound = new NBTTagCompound();

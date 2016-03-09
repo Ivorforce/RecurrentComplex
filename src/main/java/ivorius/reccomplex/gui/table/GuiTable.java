@@ -121,7 +121,7 @@ public class GuiTable extends Gui
                 element = dataSource.elementForIndex(this, roundedScrollIndex + index);
 
             if (element == null)
-                throw new NullPointerException("Element not initialized: at " + index);
+                throw new NullPointerException("Element not initialized: at " + roundedScrollIndex + index);
 
             int elementY = index * HEIGHT_PER_SLOT;
 
@@ -178,11 +178,11 @@ public class GuiTable extends Gui
     {
         if (button == scrollDownButton)
         {
-            scrollDownIfPossible();
+            tryScrollDown();
         }
         else if (button == scrollUpButton)
         {
-            scrollUpIfPossible();
+            tryScrollUp();
         }
         else
         {
@@ -197,10 +197,7 @@ public class GuiTable extends Gui
         int i = Mouse.getEventDWheel();
 
         if (i != 0)
-        {
-            currentScroll = IvMathHelper.clamp(getMinScroll(), currentScroll + -i * SCROLL_SPEED, getMaxScroll());
-            delegate.redrawTable();
-        }
+            tryScrollUp(i * SCROLL_SPEED);
     }
 
     protected boolean keyTyped(char keyChar, int keyCode)
@@ -241,22 +238,14 @@ public class GuiTable extends Gui
         this.propertiesBounds = propertiesBounds;
     }
 
-    public void scrollUpIfPossible()
+    public void tryScrollUp()
     {
-        if (canScrollUp())
-        {
-            currentScroll = Math.max(currentScroll - 1, getMinScroll());
-            delegate.redrawTable();
-        }
+        tryScrollUp(1);
     }
 
-    public void scrollDownIfPossible()
+    public void tryScrollDown()
     {
-        if (canScrollDown())
-        {
-            currentScroll = Math.min(currentScroll + 1, getMaxScroll());
-            delegate.redrawTable();
-        }
+        tryScrollUp(-1);
     }
 
     public float getMinScroll()
@@ -271,7 +260,13 @@ public class GuiTable extends Gui
 
     protected float getMaxScroll(int numberOfElements)
     {
-        return numberOfElements - 1 - (cachedMaxIndex - MathHelper.floor_float(currentScroll + 0.5f));
+        return Math.max(0, numberOfElements - 1 - (cachedMaxIndex - MathHelper.floor_float(currentScroll + 0.5f)));
+    }
+
+    public void tryScrollUp(float dist)
+    {
+        currentScroll = IvMathHelper.clamp(getMinScroll(), currentScroll - dist, getMaxScroll());
+        delegate.redrawTable();
     }
 
     public boolean canScrollUp()

@@ -97,11 +97,11 @@ public class GuiScreenModalTable extends GuiScreen implements TableDelegate, Tab
         {
             if (keyCode == Keyboard.KEY_UP)
             {
-                currentTable().scrollUpIfPossible();
+                currentTable().tryScrollUp();
             }
             else if (keyCode == Keyboard.KEY_DOWN)
             {
-                currentTable().scrollDownIfPossible();
+                currentTable().tryScrollDown();
             }
         }
     }

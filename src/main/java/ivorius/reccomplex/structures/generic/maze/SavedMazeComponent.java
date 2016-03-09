@@ -178,7 +178,8 @@ public class SavedMazeComponent implements NBTCompoundObject, WeightedSelector.I
             SavedMazePathConnection[] exits = context.deserialize(jsonObject.get("exits"), SavedMazePathConnection[].class);
             mazeComponent.setExitPaths(Arrays.asList(exits));
 
-            mazeComponent.reachability.set(context.<SavedMazeReachability>deserialize(jsonObject.get("reachability"), SavedMazeReachability.class));
+            if (jsonObject.has("reachability"))
+                mazeComponent.reachability.set(context.<SavedMazeReachability>deserialize(jsonObject.get("reachability"), SavedMazeReachability.class));
 
             return mazeComponent;
         }

@@ -88,7 +88,15 @@ public class SavedMazeReachability implements NBTCompoundObject
         groups.clear();
 
         for (List<SavedMazePath> group : reachability.groups)
-            groups.add(Lists.newArrayList(group));
+            groups.add(Lists.newArrayList(Lists.transform(group, new Function<SavedMazePath, SavedMazePath>()
+            {
+                @Nullable
+                @Override
+                public SavedMazePath apply(@Nullable SavedMazePath input)
+                {
+                    return input.copy();
+                }
+            })));
 
         crossConnections.clear();
         crossConnections.putAll(reachability.crossConnections);

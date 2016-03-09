@@ -87,54 +87,65 @@ public class RCRegistryHandler
         blockSelector = new ItemBlockSelectorBlock().setUnlocalizedName("blockSelector").setTextureName(textureBase + "blockSelector");
         blockSelector.setCreativeTab(tabStructureTools);
         register(blockSelector, "block_selector");
+        registerFallback(blockSelector, "blockSelector");
         RecurrentComplex.remapper.registerLegacyIDs(blockSelector, "blockSelector");
 
         blockSelectorFloating = new ItemBlockSelectorFloating().setUnlocalizedName("blockSelectorFloating").setTextureName(textureBase + "blockSelectorFloating");
         blockSelectorFloating.setCreativeTab(tabStructureTools);
         register(blockSelectorFloating, "block_selector_floating");
+        registerFallback(blockSelectorFloating, "blockSelectorFloating");
         RecurrentComplex.remapper.registerLegacyIDs(blockSelectorFloating, "blockSelectorFloating");
 
         inventoryGenerationTag = (ItemInventoryGenMultiTag) new ItemInventoryGenMultiTag().setUnlocalizedName("inventoryGenerationTag").setTextureName(textureBase + "inventoryGenerationTag");
         inventoryGenerationTag.setCreativeTab(tabInventoryGenerators);
         register(inventoryGenerationTag, "inventory_generation_tag");
+        registerFallback(inventoryGenerationTag, "inventoryGenerationTag");
         RecurrentComplex.remapper.registerLegacyIDs(inventoryGenerationTag, "inventoryGenerationTag");
 
         inventoryGenerationSingleTag = (ItemInventoryGenSingleTag) new ItemInventoryGenSingleTag().setUnlocalizedName("inventoryGenerationSingleTag").setTextureName(textureBase + "inventoryGenerationSingleTag");
         inventoryGenerationSingleTag.setCreativeTab(tabInventoryGenerators);
         register(inventoryGenerationSingleTag, "inventory_generation_single_tag");
+        registerFallback(inventoryGenerationSingleTag, "inventoryGenerationSingleTag");
         RecurrentComplex.remapper.registerLegacyIDs(inventoryGenerationSingleTag, "inventoryGenerationSingleTag");
 
         inventoryGenerationComponentTag = (ItemInventoryGenComponentTag) new ItemInventoryGenComponentTag().setUnlocalizedName("inventoryGenerationComponentTag").setTextureName(textureBase + "inventoryGenerationComponentTag");
         inventoryGenerationComponentTag.setCreativeTab(tabInventoryGenerators);
         register(inventoryGenerationComponentTag, "inventory_generation_component_tag");
+        registerFallback(inventoryGenerationComponentTag, "inventoryGenerationComponentTag");
 
         artifactGenerationTag = new ItemArtifactGenerator().setUnlocalizedName("artifactGenerationTag").setTextureName(textureBase + "artifactGenerationTag");
         artifactGenerationTag.setCreativeTab(tabInventoryGenerators);
         register(artifactGenerationTag, "artifact_generation_tag");
+        registerFallback(artifactGenerationTag, "artifactGenerationTag");
         RecurrentComplex.remapper.registerLegacyIDs(artifactGenerationTag, "artifactGenerationTag");
 
         bookGenerationTag = new ItemBookGenerator().setUnlocalizedName("bookGenerationTag").setTextureName(textureBase + "bookGenerationTag");
         bookGenerationTag.setCreativeTab(tabInventoryGenerators);
         register(bookGenerationTag, "book_generation_tag");
+        registerFallback(bookGenerationTag, "bookGenerationTag");
         RecurrentComplex.remapper.registerLegacyIDs(bookGenerationTag, "bookGenerationTag");
 
         genericSpace = new BlockGenericSpace().setBlockName("negativeSpace").setBlockTextureName(textureBase + "negativeSpace");
         genericSpace.setCreativeTab(tabStructureTools);
         register(genericSpace, ItemBlockNegativeSpace.class, "generic_space");
+        registerFallback(genericSpace, ItemBlockNegativeSpace.class, "negativeSpace");
         RecurrentComplex.remapper.registerLegacyIDs(genericSpace, true, "negativeSpace");
 
         genericSolid = new BlockGenericSolid().setBlockName("naturalFloor").setBlockTextureName(textureBase + "naturalFloor");
         genericSolid.setCreativeTab(tabStructureTools);
         register(genericSolid, ItemBlockGenericSolid.class, "generic_solid");
+        registerFallback(genericSolid, ItemBlockGenericSolid.class, "naturalFloor");
         RecurrentComplex.remapper.registerLegacyIDs(genericSolid, true, "naturalFloor");
 
         structureGenerator = new BlockStructureGenerator().setBlockName("structureGenerator").setBlockTextureName(textureBase + "structureGenerator");
         register(structureGenerator, "structure_generator");
+        registerFallback(structureGenerator, "structureGenerator");
         register(TileEntityStructureGenerator.class, "RCStructureGenerator", "SGStructureGenerator");
         RecurrentComplex.remapper.registerLegacyIDs(structureGenerator, true, "structureGenerator");
 
         mazeGenerator = new BlockMazeGenerator().setBlockName("mazeGenerator").setBlockTextureName(textureBase + "mazeGenerator");
         register(mazeGenerator, "maze_generator");
+        registerFallback(mazeGenerator, "mazeGenerator");
         register(TileEntityMazeGenerator.class, "RCMazeGenerator", "SGMazeGenerator");
         RecurrentComplex.remapper.registerLegacyIDs(mazeGenerator, true, "mazeGenerator");
 
@@ -152,6 +163,24 @@ public class RCRegistryHandler
         registerDimensionPresets();
         registerBiomePresets();
         registerBlockStatePresets();
+    }
+
+    public static void registerFallback(Item item, String id)
+    {
+        MCRegistrySpecial.INSTANCE.registerFallback(FMLUtils.addPrefix(id), item);
+    }
+
+    public static void registerFallback(Block block, String id)
+    {
+        MCRegistrySpecial.INSTANCE.registerFallback(FMLUtils.addPrefix(id), block);
+        MCRegistrySpecial.INSTANCE.registerFallback(FMLUtils.addPrefix(id), new ItemBlock(block));
+    }
+
+    public static void registerFallback(Block block, Class<? extends ItemBlock> itemClass, String id, Object... itemArgs)
+    {
+        MCRegistrySpecial.INSTANCE.registerFallback(FMLUtils.addPrefix(id), block);
+        Item item = FMLUtils.constructItem(block, itemClass, itemArgs);
+        if (item != null) MCRegistrySpecial.INSTANCE.registerFallback(FMLUtils.addPrefix(id), item);
     }
 
     public static void register(Item item, String id)

@@ -33,6 +33,8 @@ public class MCRegistrySpecial implements MCRegistry
 
     private final BiMap<String, Item> itemMap = HashBiMap.create();
     private final BiMap<String, Block> blockMap = HashBiMap.create();
+    private final BiMap<String, Item> itemMapFallback = HashBiMap.create();
+    private final BiMap<String, Block> blockMapFallback = HashBiMap.create();
     private final Map<String, Class<? extends TileEntity>> tileEntityMap = new HashMap<>();
 
     private ItemHidingRegistry itemHidingRegistry = new ItemHidingRegistry(this);
@@ -45,6 +47,16 @@ public class MCRegistrySpecial implements MCRegistry
     public void register(String id, Block block)
     {
         blockMap.put(id, block);
+    }
+
+    public void registerFallback(String id, Item item)
+    {
+        itemMapFallback.put(id, item);
+    }
+
+    public void registerFallback(String id, Block block)
+    {
+        blockMapFallback.put(id, block);
     }
 
     public void register(String id, Class<? extends TileEntity> tileEntity)
@@ -61,6 +73,7 @@ public class MCRegistrySpecial implements MCRegistry
     public Item itemFromID(String itemID)
     {
         Item item = itemMap.get(itemID);
+        if (item == null) item = itemMapFallback.get(itemID);
         return item != null ? item : (Item) Item.itemRegistry.getObject(itemID);
     }
 
@@ -86,6 +99,7 @@ public class MCRegistrySpecial implements MCRegistry
     public Block blockFromID(String blockID)
     {
         Block block = blockMap.get(blockID);
+        if (block == null) block = blockMapFallback.get(blockID);
         return block != null ? block : Block.getBlockFromName(blockID);
     }
 
@@ -142,6 +156,7 @@ public class MCRegistrySpecial implements MCRegistry
         public Item itemFromID(String itemID)
         {
             Item item = parent.itemMap.get(itemID);
+            if (item == null) item = parent.itemMapFallback.get(itemID);
             return item != null ? Items.coal : (Item) Item.itemRegistry.getObject(itemID);
         }
 
@@ -192,6 +207,13 @@ public class MCRegistrySpecial implements MCRegistry
         public void modifyItemStackCompound(NBTTagCompound compound, String itemID)
         {
             Item item = parent.itemMap.get(itemID);
+            if (item == null) {
+                item = parent.itemMapFallback.get(itemID);
+                if (item != null) {
+                    String _itemID = parent.idFromItem(item);
+                    if (_itemID != null) itemID = _itemID;
+                }
+            }
             if (item != null)
             {
                 NBTTagCompound stackNBT;

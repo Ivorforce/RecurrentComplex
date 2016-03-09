@@ -190,7 +190,12 @@ public class SavedMazeReachability implements NBTCompoundObject
             JsonObject jsonObject = JsonUtils.getJsonElementAsJsonObject(json, "MazeRoom");
 
             List<List<SavedMazePath>> groups = context.deserialize(jsonObject.get("groups"), new TypeToken<List<List<SavedMazePath>>>(){}.getType());
-            Map<SavedMazePath, SavedMazePath> crossConnections = gson.fromJson(jsonObject.get("crossConnections"), new TypeToken<Map<SavedMazePath, SavedMazePath>>(){}.getType());
+            if (groups == null)
+                groups = Collections.emptyList();
+
+            Map<SavedMazePath, SavedMazePath> crossConnections = (Map<SavedMazePath, SavedMazePath>) gson.fromJson(jsonObject.get("crossConnections"), new TypeToken<Map<SavedMazePath, SavedMazePath>>(){}.getType());
+            if (crossConnections == null)
+                crossConnections = Collections.emptyMap();
 
             return new SavedMazeReachability(groups, crossConnections);
         }

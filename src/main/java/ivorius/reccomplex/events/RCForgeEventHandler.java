@@ -11,12 +11,14 @@ import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import ivorius.ivtoolkit.rendering.grid.GridRenderer;
+import ivorius.reccomplex.RCConfig;
 import ivorius.reccomplex.client.rendering.SelectionRenderer;
 import ivorius.reccomplex.entities.StructureEntityInfo;
 import ivorius.reccomplex.items.ItemInputHandler;
 import ivorius.reccomplex.worldgen.WorldGenStructures;
+import ivorius.reccomplex.worldgen.inventory.WeightedItemCollection;
+import ivorius.reccomplex.worldgen.inventory.WeightedItemCollectionRegistry;
 import net.minecraft.client.Minecraft;
-import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
@@ -29,10 +31,10 @@ import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.entity.EntityEvent;
 import net.minecraftforge.event.entity.EntityJoinWorldEvent;
 import net.minecraftforge.event.terraingen.PopulateChunkEvent;
+import org.apache.commons.lang3.tuple.Pair;
 import org.lwjgl.opengl.GL11;
 
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 /**
@@ -40,9 +42,8 @@ import java.util.Set;
  */
 public class RCForgeEventHandler
 {
-    private WorldGenStructures worldGenStructures;
-
     public final Set<StructureBoundingBox> disabledTileDropAreas = new HashSet<>();
+    private WorldGenStructures worldGenStructures;
 
     public RCForgeEventHandler()
     {
@@ -136,6 +137,25 @@ public class RCForgeEventHandler
         {
             if (((ItemInputHandler) heldItem.getItem()).onMouseInput(player, heldItem, event.button, event.buttonstate, event.dwheel))
                 event.setCanceled(true);
+        }
+    }
+
+    @SubscribeEvent
+    public void onItemGeneration(ItemGenerationEvent event)
+    {
+        Pair<String, Float> pair = null;
+        if (event instanceof ItemGenerationEvent.Artifact)
+            pair = RCConfig.customArtifactTag;
+        else if (event instanceof ItemGenerationEvent.Book)
+            pair = RCConfig.customBookTag;
+
+        if (pair != null && pair.getRight() > 0.0f && event.random.nextFloat() < pair.getRight())
+        {
+            WeightedItemCollection weightedItemCollection = WeightedItemCollectionRegistry.itemCollection(pair.getLeft());
+            if (weightedItemCollection != null)
+                event.inventory.setInventorySlotContents(event.fromSlot, weightedItemCollection.getRandomItemStack(event.random));
+
+            event.setCanceled(true);
         }
     }
 }

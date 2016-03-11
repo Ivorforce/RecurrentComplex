@@ -11,6 +11,7 @@ import ivorius.reccomplex.structures.generic.matchers.ResourceMatcher;
 import ivorius.reccomplex.utils.ExpressionCache;
 import net.minecraft.world.WorldProvider;
 import net.minecraft.world.biome.BiomeGenBase;
+import org.apache.commons.lang3.tuple.Pair;
 import org.apache.logging.log4j.Logger;
 
 import static net.minecraftforge.common.config.Configuration.CATEGORY_GENERAL;
@@ -23,6 +24,9 @@ public class RCConfig
     public static final String CATEGORY_VISUAL = "visual";
     public static final String CATEGORY_BALANCING = "balancing";
     public static final String CATEGORY_CONTROLS = "controls";
+
+    public static Pair<String, Float> customArtifactTag = Pair.of("", 0.0f);
+    public static Pair<String, Float> customBookTag = Pair.of("", 0.0f);
 
     public static boolean hideRedundantNegativeSpace;
 
@@ -86,6 +90,15 @@ public class RCConfig
 
             universalDimensionMatcher.setExpression(RecurrentComplex.config.getString("universalDimensionMatcher", CATEGORY_BALANCING, "", "Dimension Expression that will be checked for every single structure. Use this if you want to blacklist / whitelist specific dimensions that shouldn't have structures."));
             logExpressionException(universalDimensionMatcher, "universalDimensionMatcher", RecurrentComplex.logger);
+
+            customArtifactTag = Pair.of(
+                    RecurrentComplex.config.getString("customArtifactTag", CATEGORY_BALANCING, "", "Custom Inventory Generator to override when an artifact generation tag fires."),
+                    RecurrentComplex.config.getFloat("customArtifactChance", CATEGORY_BALANCING, 0.0f, 0, 1, "Chance to use the customArtifactTag when an artifact generation tag fires.")
+            );
+            customBookTag = Pair.of(
+                    RecurrentComplex.config.getString("customBookTag", CATEGORY_BALANCING, "", "Custom Inventory Generator to override when a book generation tag fires."),
+                    RecurrentComplex.config.getFloat("customBookChance", CATEGORY_BALANCING, 0.0f, 0, 1, "Chance to use the customArtifactTag when a book generation tag fires.")
+            );
         }
 
         RecurrentComplex.proxy.loadConfig(configID);

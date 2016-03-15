@@ -27,13 +27,13 @@ public class CustomizableMap<K, V>
         this(new HashMap<K, V>(), new HashMap<K, V>());
     }
 
-    protected boolean hasCustom(K k)
+    public boolean hasCustom(K k)
     {
         V v = map.get(k);
         return v != null && !v.equals(solidMap.get(k));
     }
 
-    protected boolean hasSolid(K k)
+    public boolean hasSolid(K k)
     {
         return solidMap.containsKey(k);
     }

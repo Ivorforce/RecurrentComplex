@@ -21,16 +21,14 @@ import ivorius.reccomplex.events.StructureRegistrationEvent;
 import ivorius.reccomplex.json.NbtToJson;
 import ivorius.reccomplex.json.SerializableStringTypeRegistry;
 import ivorius.reccomplex.structures.generic.GenericStructureInfo;
-import ivorius.reccomplex.structures.generic.StructureSaveHandler;
 import ivorius.reccomplex.structures.generic.gentypes.*;
 import ivorius.reccomplex.structures.generic.transformers.Transformer;
 import ivorius.reccomplex.utils.CustomizableBiMap;
-import ivorius.reccomplex.utils.CustomizableMap;
+import ivorius.reccomplex.utils.CustomizableSet;
 import ivorius.reccomplex.worldgen.StructureSelector;
 import ivorius.reccomplex.worldgen.villages.GenericVillageCreationHandler;
 import ivorius.reccomplex.worldgen.villages.TemporaryVillagerRegistry;
 import net.minecraft.util.ChunkCoordinates;
-import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldProvider;
 import net.minecraft.world.biome.BiomeGenBase;
@@ -56,7 +54,7 @@ public class StructureRegistry
     private Map<String, String> structureDomains = Maps.newHashMap();
 
     private boolean needsGenerationCacheUpdate = true;
-    private Set<String> persistentlyDisabledStructures = new HashSet<>();
+    private CustomizableSet<String> persistentlyDisabledStructures = new CustomizableSet<>();
     private Set<String> generatingStructures = new HashSet<>();
 
     private Map<Class<? extends StructureGenerationInfo>, Collection<Pair<StructureInfo, ? extends StructureGenerationInfo>>> cachedGeneration = new HashMap<>();
@@ -85,10 +83,7 @@ public class StructureRegistry
 
         if (event.getResult() != Event.Result.DENY && RCConfig.shouldStructureLoad(key, domain))
         {
-            if (!event.shouldGenerate)
-                persistentlyDisabledStructures.add(key);
-            else
-                persistentlyDisabledStructures.remove(key);
+            persistentlyDisabledStructures.setContains(!event.shouldGenerate, custom, key);
 
             String baseString = allStructures.put(key, info, custom) != null ? "Replaced structure '%s'" : "Registered structure '%s'";
             RecurrentComplex.logger.info(String.format(baseString, key));
@@ -128,6 +123,7 @@ public class StructureRegistry
 
     public void clearCustom()
     {
+        persistentlyDisabledStructures.custom.clear();
         allStructures.clearCustom();
     }
 
@@ -135,7 +131,7 @@ public class StructureRegistry
     {
         StructureInfo info = allStructures.remove(key, custom);
 
-        persistentlyDisabledStructures.remove(key); // Clean up space
+        persistentlyDisabledStructures.get(custom).remove(key); // Clean up space
         if (info != null)
             generatingStructures.remove(key);
 
@@ -169,7 +165,7 @@ public class StructureRegistry
                 StructureInfo info = entry.getValue();
                 String key = entry.getKey();
 
-                if (!persistentlyDisabledStructures.contains(key)
+                if (!persistentlyDisabledStructures.get(allStructures.hasCustom(key)).contains(key)
                         && RCConfig.shouldStructureGenerate(key, structureDomains.get(key))
                         && info.areDependenciesResolved())
                     generatingStructures.add(key);

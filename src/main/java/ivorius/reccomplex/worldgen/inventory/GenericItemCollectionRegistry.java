@@ -15,6 +15,7 @@ import ivorius.reccomplex.RecurrentComplex;
 import ivorius.reccomplex.json.NbtToJson;
 import ivorius.reccomplex.utils.CustomizableBiMap;
 import ivorius.reccomplex.utils.CustomizableMap;
+import ivorius.reccomplex.utils.CustomizableSet;
 import ivorius.reccomplex.worldgen.inventory.GenericItemCollection.Component;
 import net.minecraft.util.ResourceLocation;
 
@@ -30,7 +31,7 @@ public class GenericItemCollectionRegistry
     private CustomizableMap<String, Component> allComponents = new CustomizableMap<>();
     private Map<String, String> componentDomains = Maps.newHashMap();
 
-    private Set<String> persistentlyDisabledComponents = new HashSet<>();
+    private CustomizableSet<String> persistentlyDisabledComponents = new CustomizableSet<>();
     private Set<String> generatingComponents = new HashSet<>();
 
     private Gson gson = createGson();
@@ -49,10 +50,7 @@ public class GenericItemCollectionRegistry
     {
         if (RCConfig.shouldInventoryGeneratorLoad(key, domain))
         {
-            if (!generates)
-                persistentlyDisabledComponents.add(key);
-            else
-                persistentlyDisabledComponents.remove(key);
+            persistentlyDisabledComponents.setContains(!generates, custom, key);
 
             String baseString = allComponents.put(key, component, custom) != null ? "Replaced inventory generation component '%s'" : "Registered generation component '%s'";
             RecurrentComplex.logger.info(String.format(baseString, key));
@@ -79,12 +77,14 @@ public class GenericItemCollectionRegistry
 
     public void unregister(String key, boolean custom)
     {
+        persistentlyDisabledComponents.get(custom).remove(key);  // Clean up space
         allComponents.remove(key, custom);
         clearCaches();
     }
 
     public void clearCustom()
     {
+        persistentlyDisabledComponents.custom.clear();
         allComponents.clearCustom();
     }
 
@@ -124,7 +124,7 @@ public class GenericItemCollectionRegistry
             Component component = entry.getValue();
             String key = entry.getKey();
 
-            if (!persistentlyDisabledComponents.contains(key)
+            if (!persistentlyDisabledComponents.get(allComponents.hasCustom(key)).contains(key)
                     && RCConfig.shouldInventoryGeneratorGenerate(key, componentDomains.get(key))
                     && component.areDependenciesResolved())
                 newGeneratingComponents.add(key);

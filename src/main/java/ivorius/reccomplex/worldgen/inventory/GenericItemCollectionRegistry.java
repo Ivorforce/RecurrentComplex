@@ -5,7 +5,6 @@
 
 package ivorius.reccomplex.worldgen.inventory;
 
-import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -13,13 +12,13 @@ import com.google.gson.JsonSyntaxException;
 import ivorius.reccomplex.RCConfig;
 import ivorius.reccomplex.RecurrentComplex;
 import ivorius.reccomplex.json.NbtToJson;
-import ivorius.reccomplex.utils.CustomizableBiMap;
 import ivorius.reccomplex.utils.CustomizableMap;
-import ivorius.reccomplex.utils.CustomizableSet;
 import ivorius.reccomplex.worldgen.inventory.GenericItemCollection.Component;
-import net.minecraft.util.ResourceLocation;
 
-import java.util.*;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * Created by lukas on 05.01.15.
@@ -29,9 +28,8 @@ public class GenericItemCollectionRegistry
     public static final GenericItemCollectionRegistry INSTANCE = new GenericItemCollectionRegistry();
 
     private CustomizableMap<String, Component> allComponents = new CustomizableMap<>();
-    private Map<String, String> componentDomains = Maps.newHashMap();
+    private CustomizableMap<String, ComponentData> componentData = new CustomizableMap<>();
 
-    private CustomizableSet<String> persistentlyDisabledComponents = new CustomizableSet<>();
     private Set<String> generatingComponents = new HashSet<>();
 
     private Gson gson = createGson();
@@ -50,12 +48,10 @@ public class GenericItemCollectionRegistry
     {
         if (RCConfig.shouldInventoryGeneratorLoad(key, domain))
         {
-            persistentlyDisabledComponents.setContains(!generates, custom, key);
-
             String baseString = allComponents.put(key, component, custom) != null ? "Replaced inventory generation component '%s'" : "Registered generation component '%s'";
             RecurrentComplex.logger.info(String.format(baseString, key));
 
-            componentDomains.put(key, domain);
+            componentData.put(key, new ComponentData(!generates, domain), custom);
 
             clearCaches();
 
@@ -77,14 +73,14 @@ public class GenericItemCollectionRegistry
 
     public void unregister(String key, boolean custom)
     {
-        persistentlyDisabledComponents.get(custom).remove(key);  // Clean up space
+        componentData.remove(key, custom);
         allComponents.remove(key, custom);
         clearCaches();
     }
 
     public void clearCustom()
     {
-        persistentlyDisabledComponents.custom.clear();
+        componentData.clearCustom();
         allComponents.clearCustom();
     }
 
@@ -123,9 +119,10 @@ public class GenericItemCollectionRegistry
         {
             Component component = entry.getValue();
             String key = entry.getKey();
+            ComponentData structureData = this.componentData.getMap().get(key);
 
-            if (!persistentlyDisabledComponents.get(allComponents.hasCustom(key)).contains(key)
-                    && RCConfig.shouldInventoryGeneratorGenerate(key, componentDomains.get(key))
+            if (!structureData.disabled
+                    && RCConfig.shouldInventoryGeneratorGenerate(key, structureData.domain)
                     && component.areDependenciesResolved())
                 newGeneratingComponents.add(key);
         }
@@ -165,5 +162,17 @@ public class GenericItemCollectionRegistry
             WeightedItemCollectionRegistry.register(collection, key);
         }
         return (GenericItemCollection) collection;
+    }
+
+    private static class ComponentData
+    {
+        public boolean disabled;
+        public String domain;
+
+        public ComponentData(boolean disabled, String domain)
+        {
+            this.disabled = disabled;
+            this.domain = domain;
+        }
     }
 }

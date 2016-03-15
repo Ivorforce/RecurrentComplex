@@ -24,7 +24,7 @@ import ivorius.reccomplex.structures.generic.GenericStructureInfo;
 import ivorius.reccomplex.structures.generic.gentypes.*;
 import ivorius.reccomplex.structures.generic.transformers.Transformer;
 import ivorius.reccomplex.utils.CustomizableBiMap;
-import ivorius.reccomplex.utils.CustomizableSet;
+import ivorius.reccomplex.utils.CustomizableMap;
 import ivorius.reccomplex.worldgen.StructureSelector;
 import ivorius.reccomplex.worldgen.villages.GenericVillageCreationHandler;
 import ivorius.reccomplex.worldgen.villages.TemporaryVillagerRegistry;
@@ -51,10 +51,9 @@ public class StructureRegistry
     public static final StructureRegistry INSTANCE = new StructureRegistry();
 
     private CustomizableBiMap<String, StructureInfo> allStructures = new CustomizableBiMap<>();
-    private Map<String, String> structureDomains = Maps.newHashMap();
+    private CustomizableMap<String, StructureData> structureData = new CustomizableMap<>();
 
     private boolean needsGenerationCacheUpdate = true;
-    private CustomizableSet<String> persistentlyDisabledStructures = new CustomizableSet<>();
     private Set<String> generatingStructures = new HashSet<>();
 
     private Map<Class<? extends StructureGenerationInfo>, Collection<Pair<StructureInfo, ? extends StructureGenerationInfo>>> cachedGeneration = new HashMap<>();
@@ -83,12 +82,10 @@ public class StructureRegistry
 
         if (event.getResult() != Event.Result.DENY && RCConfig.shouldStructureLoad(key, domain))
         {
-            persistentlyDisabledStructures.setContains(!event.shouldGenerate, custom, key);
-
             String baseString = allStructures.put(key, info, custom) != null ? "Replaced structure '%s'" : "Registered structure '%s'";
             RecurrentComplex.logger.info(String.format(baseString, key));
 
-            structureDomains.put(key, domain);
+            structureData.put(key, new StructureData(!event.shouldGenerate, domain), custom);
 
             clearCaches();
 
@@ -123,15 +120,15 @@ public class StructureRegistry
 
     public void clearCustom()
     {
-        persistentlyDisabledStructures.custom.clear();
+        structureData.clearCustom();
         allStructures.clearCustom();
     }
 
     public void unregisterStructure(String key, boolean custom)
     {
         StructureInfo info = allStructures.remove(key, custom);
+        structureData.remove(key, custom);
 
-        persistentlyDisabledStructures.get(custom).remove(key); // Clean up space
         if (info != null)
             generatingStructures.remove(key);
 
@@ -164,9 +161,10 @@ public class StructureRegistry
             {
                 StructureInfo info = entry.getValue();
                 String key = entry.getKey();
+                StructureData structureData = this.structureData.getMap().get(key);
 
-                if (!persistentlyDisabledStructures.get(allStructures.hasCustom(key)).contains(key)
-                        && RCConfig.shouldStructureGenerate(key, structureDomains.get(key))
+                if (!structureData.disabled
+                        && RCConfig.shouldStructureGenerate(key, structureData.domain)
                         && info.areDependenciesResolved())
                     generatingStructures.add(key);
             }
@@ -344,5 +342,17 @@ public class StructureRegistry
                             }
                         }), Predicates.notNull()))
         );
+    }
+
+    private static class StructureData
+    {
+        public boolean disabled;
+        public String domain;
+
+        public StructureData(boolean disabled, String domain)
+        {
+            this.disabled = disabled;
+            this.domain = domain;
+        }
     }
 }

@@ -37,7 +37,7 @@ public class NBTCompoundObjects2
         return map.build();
     }
 
-    protected static <K extends NBTCompoundObject> K readFrom(NBTTagCompound compound, String key, Class<? extends K> keyClass)
+    public static <K extends NBTCompoundObject> K readFrom(NBTTagCompound compound, String key, Class<? extends K> keyClass)
     {
         return NBTCompoundObjects.read(compound.getCompoundTag(key), keyClass);
     }
@@ -60,7 +60,7 @@ public class NBTCompoundObjects2
         return nbt;
     }
 
-    protected static void writeTo(NBTTagCompound compound, String key, NBTCompoundObject compoundObject)
+    public static void writeTo(NBTTagCompound compound, String key, NBTCompoundObject compoundObject)
     {
         compound.setTag(key, NBTCompoundObjects.write(compoundObject));
     }

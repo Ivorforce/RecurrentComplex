@@ -6,10 +6,17 @@
 package ivorius.reccomplex.structures.generic.maze;
 
 import com.google.common.base.Function;
+import com.google.common.collect.ImmutableSet;
+import gnu.trove.procedure.TIntProcedure;
+import gnu.trove.set.TIntSet;
+import gnu.trove.set.hash.TIntHashSet;
+import ivorius.ivtoolkit.maze.components.MazeRoom;
 import ivorius.ivtoolkit.maze.components.MazeRoomConnection;
+import ivorius.ivtoolkit.tools.Ranges;
 
 import javax.annotation.Nullable;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * Created by lukas on 14.04.15.
@@ -38,6 +45,33 @@ public class SavedMazePaths
     {
         for (Map.Entry<K, V> entry : entries)
             map.put(entry.getKey(), entry.getValue());
+    }
+
+    /**
+     * Analogous to MazeRooms.neighbors
+     * @param room
+     * @param dimensions
+     * @return
+     */
+    public static Set<SavedMazePath> neighbors(final MazeRoom room, TIntSet dimensions)
+    {
+        final ImmutableSet.Builder<SavedMazePath> set = ImmutableSet.builder();
+        dimensions.forEach(new TIntProcedure()
+        {
+            @Override
+            public boolean execute(int value)
+            {
+                set.add(new SavedMazePath(value, room, true));
+                set.add(new SavedMazePath(value, room, false));
+                return true;
+            }
+        });
+        return set.build();
+    }
+
+    public static Set<SavedMazePath> neighbors(MazeRoom room)
+    {
+        return neighbors(room, new TIntHashSet(Ranges.to(room.getDimensions())));
     }
 }
 

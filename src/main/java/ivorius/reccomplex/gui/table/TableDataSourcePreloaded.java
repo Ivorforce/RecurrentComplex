@@ -5,6 +5,8 @@
 
 package ivorius.reccomplex.gui.table;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -12,11 +14,16 @@ import java.util.List;
  */
 public class TableDataSourcePreloaded implements TableDataSource
 {
-    private List<TableElement> elements;
+    public final List<TableElement> elements = new ArrayList<>();
+
+    public TableDataSourcePreloaded(TableElement... elements)
+    {
+        Collections.addAll(this.elements, elements);
+    }
 
     public TableDataSourcePreloaded(List<TableElement> elements)
     {
-        this.elements = elements;
+        this.elements.addAll(elements);
     }
 
     public List<TableElement> getElements()
@@ -26,7 +33,8 @@ public class TableDataSourcePreloaded implements TableDataSource
 
     public void setElements(List<TableElement> elements)
     {
-        this.elements = elements;
+        this.elements.clear();
+        this.elements.addAll(elements);
     }
 
     @Override

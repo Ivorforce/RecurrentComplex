@@ -23,16 +23,15 @@ import java.util.Map;
 public class SavedMazePathConnection implements NBTCompoundObject
 {
     public final SavedMazePath path = new SavedMazePath();
-    public final SavedConnector connector = new SavedConnector();
+    public final SavedConnector connector = new SavedConnector(ConnectorStrategy.DEFAULT_PATH);
 
     public SavedMazePathConnection()
     {
-        connector.id = ConnectorStrategy.DEFAULT_PATH;
     }
 
-    public SavedMazePathConnection(SavedMazePath path, String connector)
+    public SavedMazePathConnection(SavedMazePath path, SavedConnector connector)
     {
-        this(path.pathDimension, path.sourceRoom, path.pathGoesUp, connector);
+        this(path.pathDimension, path.sourceRoom, path.pathGoesUp, connector.id);
     }
 
     public SavedMazePathConnection(int pathDimension, MazeRoom sourceRoom, boolean pathGoesUp, String connector)
@@ -64,6 +63,27 @@ public class SavedMazePathConnection implements NBTCompoundObject
         compound.setString("connector", connector.id);
     }
 
+    @Override
+    public boolean equals(Object o)
+    {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        SavedMazePathConnection that = (SavedMazePathConnection) o;
+
+        if (path != null ? !path.equals(that.path) : that.path != null) return false;
+        return connector != null ? connector.equals(that.connector) : that.connector == null;
+
+    }
+
+    @Override
+    public int hashCode()
+    {
+        int result = path != null ? path.hashCode() : 0;
+        result = 31 * result + (connector != null ? connector.hashCode() : 0);
+        return result;
+    }
+
     public static class Serializer implements JsonSerializer<SavedMazePathConnection>, JsonDeserializer<SavedMazePathConnection>
     {
         @Override
@@ -74,7 +94,7 @@ public class SavedMazePathConnection implements NBTCompoundObject
             SavedMazePath path = context.deserialize(json, SavedMazePath.class); // Don't do this, kids.
             String connector = JsonUtils.getJsonObjectStringFieldValueOrDefault(jsonObject, "connector", ConnectorStrategy.DEFAULT_PATH);
 
-            return new SavedMazePathConnection(path, connector);
+            return new SavedMazePathConnection(path, new SavedConnector(connector));
         }
 
         @Override

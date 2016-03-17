@@ -8,22 +8,23 @@ package ivorius.reccomplex.structures.generic.maze;
 import com.google.common.base.Function;
 import com.google.common.base.Predicate;
 import com.google.common.base.Predicates;
-import com.google.common.collect.FluentIterable;
-import com.google.common.collect.ImmutableSet;
-import com.google.common.collect.Lists;
-import com.google.common.collect.Sets;
+import com.google.common.collect.*;
 import com.google.gson.*;
 import com.google.gson.reflect.TypeToken;
 import ivorius.ivtoolkit.math.AxisAlignedTransform2D;
+import ivorius.ivtoolkit.maze.components.MazeRoom;
 import ivorius.ivtoolkit.maze.components.MazeRoomConnection;
 import ivorius.ivtoolkit.maze.components.MazeRoomConnections;
 import ivorius.ivtoolkit.tools.NBTCompoundObject;
 import ivorius.ivtoolkit.tools.NBTCompoundObjects;
+import ivorius.ivtoolkit.tools.NBTTagLists;
 import ivorius.reccomplex.json.JsonUtils;
+import ivorius.reccomplex.structures.generic.Selection;
 import ivorius.reccomplex.utils.NBTCompoundObjects2;
 import ivorius.reccomplex.utils.NBTTagLists2;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
+import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
 
 import javax.annotation.Nullable;
@@ -37,33 +38,12 @@ public class SavedMazeReachability implements NBTCompoundObject
 {
     private static final Gson gson = new GsonBuilder().enableComplexMapKeySerialization().create();
 
-    // TODO Make GUI
-    public final List<List<SavedMazePath>> groups = new ArrayList<>();
-    public final Map<SavedMazePath, SavedMazePath> crossConnections = new HashMap<>();
+    public final List<Set<SavedMazePath>> groups = new ArrayList<>();
+    public final List<ImmutablePair<SavedMazePath, SavedMazePath>> crossConnections = new ArrayList<>();
 
-    public SavedMazeReachability(List<List<SavedMazePath>> groups, Map<SavedMazePath, SavedMazePath> crossConnections)
+    public <T extends Map.Entry<SavedMazePath, SavedMazePath>> SavedMazeReachability(List<Set<SavedMazePath>> groups, List<T> crossConnections)
     {
-        this.groups.addAll(Lists.transform(groups, new Function<List<SavedMazePath>, List<SavedMazePath>>()
-        {
-            @Nullable
-            @Override
-            public List<SavedMazePath> apply(@Nullable List<SavedMazePath> input)
-            {
-                return Lists.newArrayList(Lists.transform(input, new Function<SavedMazePath, SavedMazePath>()
-                {
-                    @Nullable
-                    @Override
-                    public SavedMazePath apply(@Nullable SavedMazePath input)
-                    {
-                        return input.copy();
-                    }
-                }));
-            }
-        }));
-        for (Map.Entry<SavedMazePath, SavedMazePath> entry : crossConnections.entrySet())
-        {
-            this.crossConnections.put(entry.getKey().copy(), entry.getValue().copy());
-        }
+        set(groups, crossConnections);
     }
 
     public SavedMazeReachability()
@@ -83,12 +63,44 @@ public class SavedMazeReachability implements NBTCompoundObject
         };
     }
 
+    public static Set<SavedMazePath> buildExpected(SavedMazeComponent savedMazeComponent)
+    {
+        Set<SavedMazePath> complete = Sets.newHashSet(Iterables.transform(savedMazeComponent.exitPaths, new Function<SavedMazePathConnection, SavedMazePath>()
+        {
+            @Nullable
+            @Override
+            public SavedMazePath apply(@Nullable SavedMazePathConnection input)
+            {
+                return input.path;
+            }
+        }));
+        completeExitPaths(complete, savedMazeComponent.rooms);
+        return complete;
+    }
+
+    /**
+     * Analogous to WorldGenMaze.completeExitPaths
+     * @param exits
+     * @param rooms
+     */
+    public static void completeExitPaths(Set<SavedMazePath> exits, Selection rooms)
+    {
+        for (MazeRoom room : rooms.mazeRooms(true))
+            for (SavedMazePath connection : SavedMazePaths.neighbors(room))
+                if (!exits.contains(connection) && !(rooms.contains(connection.getSourceRoom()) && rooms.contains(connection.getDestRoom())))
+                    exits.add(connection);
+    }
+
     public void set(SavedMazeReachability reachability)
     {
-        groups.clear();
+        set(reachability.groups, reachability.crossConnections);
+    }
 
-        for (List<SavedMazePath> group : reachability.groups)
-            groups.add(Lists.newArrayList(Lists.transform(group, new Function<SavedMazePath, SavedMazePath>()
+    public <T extends Map.Entry<SavedMazePath, SavedMazePath>> void set(List<Set<SavedMazePath>> groups, List<T> crossConnections)
+    {
+        groups.clear();
+        for (Set<SavedMazePath> group : groups)
+            groups.add(Sets.newHashSet(Iterables.transform(group, new Function<SavedMazePath, SavedMazePath>()
             {
                 @Nullable
                 @Override
@@ -99,7 +111,10 @@ public class SavedMazeReachability implements NBTCompoundObject
             })));
 
         crossConnections.clear();
-        crossConnections.putAll(reachability.crossConnections);
+        for (Map.Entry<SavedMazePath, SavedMazePath> entry : crossConnections)
+        {
+            this.crossConnections.add(ImmutablePair.of(entry.getKey().copy(), entry.getValue().copy()));
+        }
     }
 
     public ImmutableSet<Pair<MazeRoomConnection, MazeRoomConnection>> build(final AxisAlignedTransform2D transform, final int[] size, Predicate<MazeRoomConnection> filter, Set<MazeRoomConnection> connections)
@@ -109,7 +124,7 @@ public class SavedMazeReachability implements NBTCompoundObject
         ImmutableSet.Builder<Pair<MazeRoomConnection, MazeRoomConnection>> builder = ImmutableSet.builder();
         Set<MazeRoomConnection> defaultGroup = Sets.newHashSet(connections);
 
-        for (List<SavedMazePath> group : groups)
+        for (Set<SavedMazePath> group : groups)
         {
             FluentIterable<MazeRoomConnection> existing = FluentIterable.from(group).transform(new Function<SavedMazePath, MazeRoomConnection>()
             {
@@ -129,7 +144,7 @@ public class SavedMazeReachability implements NBTCompoundObject
 
         addInterconnections(builder, defaultGroup);
 
-        for (Map.Entry<SavedMazePath, SavedMazePath> entry : crossConnections.entrySet())
+        for (Map.Entry<SavedMazePath, SavedMazePath> entry : crossConnections)
         {
             MazeRoomConnection key = MazeRoomConnections.rotated(entry.getKey().toRoomConnection(), transform, size);
             MazeRoomConnection val = MazeRoomConnections.rotated(entry.getValue().toRoomConnection(), transform, size);
@@ -152,34 +167,53 @@ public class SavedMazeReachability implements NBTCompoundObject
     public void readFromNBT(NBTTagCompound compound)
     {
         groups.clear();
-        groups.addAll(Lists.transform(NBTTagLists2.listsFrom(compound, "groups"), new Function<NBTTagList, List<SavedMazePath>>()
+        groups.addAll(Lists.transform(NBTTagLists2.listsFrom(compound, "groups"), new Function<NBTTagList, Set<SavedMazePath>>()
         {
             @Nullable
             @Override
-            public List<SavedMazePath> apply(@Nullable NBTTagList input)
+            public Set<SavedMazePath> apply(@Nullable NBTTagList input)
             {
-                return NBTCompoundObjects.readList(input, SavedMazePath.class);
+                return Sets.newHashSet(NBTCompoundObjects.readList(input, SavedMazePath.class));
             }
         }));
 
         crossConnections.clear();
-        crossConnections.putAll(NBTCompoundObjects2.readMapFrom(compound, "crossConnections", SavedMazePath.class, SavedMazePath.class));
+        crossConnections.addAll(Lists.transform(NBTTagLists.compoundsFrom(compound, "crossConnections"), new Function<NBTTagCompound, ImmutablePair<SavedMazePath, SavedMazePath>>()
+        {
+            @Nullable
+            @Override
+            public ImmutablePair<SavedMazePath, SavedMazePath> apply(@Nullable NBTTagCompound input)
+            {
+                return ImmutablePair.of(NBTCompoundObjects2.readFrom(input, "key", SavedMazePath.class), NBTCompoundObjects2.readFrom(input, "val", SavedMazePath.class));
+            }
+        }));
     }
 
     @Override
     public void writeToNBT(NBTTagCompound compound)
     {
-        NBTTagLists2.writeNbt(compound, "groups", Lists.transform(groups, new Function<List<SavedMazePath>, NBTTagList>()
+        NBTTagLists2.writeNbt(compound, "groups", Lists.transform(groups, new Function<Set<SavedMazePath>, NBTTagList>()
         {
             @Nullable
             @Override
-            public NBTTagList apply(@Nullable List<SavedMazePath> input)
+            public NBTTagList apply(@Nullable Set<SavedMazePath> input)
             {
                 return NBTCompoundObjects.writeList(input);
             }
         }));
 
-        NBTCompoundObjects2.writeMapTo(compound, "crossConnections", crossConnections);
+        NBTTagLists.writeCompoundsTo(compound, "crossConnections", Lists.transform(crossConnections, new Function<ImmutablePair<SavedMazePath, SavedMazePath>, NBTTagCompound>()
+        {
+            @Nullable
+            @Override
+            public NBTTagCompound apply(@Nullable ImmutablePair<SavedMazePath, SavedMazePath> input)
+            {
+                NBTTagCompound compound = new NBTTagCompound();
+                NBTCompoundObjects2.writeTo(compound, "key", input.getKey());
+                NBTCompoundObjects2.writeTo(compound, "val", input.getValue());
+                return compound;
+            }
+        }));
     }
 
     public static class Serializer implements JsonSerializer<SavedMazeReachability>, JsonDeserializer<SavedMazeReachability>
@@ -189,13 +223,13 @@ public class SavedMazeReachability implements NBTCompoundObject
         {
             JsonObject jsonObject = JsonUtils.getJsonElementAsJsonObject(json, "MazeRoom");
 
-            List<List<SavedMazePath>> groups = context.deserialize(jsonObject.get("groups"), new TypeToken<List<List<SavedMazePath>>>(){}.getType());
+            List<Set<SavedMazePath>> groups = context.deserialize(jsonObject.get("groups"), new TypeToken<List<Set<SavedMazePath>>>(){}.getType());
             if (groups == null)
                 groups = Collections.emptyList();
 
-            Map<SavedMazePath, SavedMazePath> crossConnections = (Map<SavedMazePath, SavedMazePath>) gson.fromJson(jsonObject.get("crossConnections"), new TypeToken<Map<SavedMazePath, SavedMazePath>>(){}.getType());
+            List<ImmutablePair<SavedMazePath, SavedMazePath>> crossConnections = gson.fromJson(jsonObject.get("crossConnections"), new TypeToken<List<ImmutablePair<SavedMazePath, SavedMazePath>>>(){}.getType());
             if (crossConnections == null)
-                crossConnections = Collections.emptyMap();
+                crossConnections = Collections.emptyList();
 
             return new SavedMazeReachability(groups, crossConnections);
         }

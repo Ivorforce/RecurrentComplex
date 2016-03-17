@@ -69,9 +69,7 @@ public class WorldScriptMazeGenerator implements WorldScript<WorldScriptMazeGene
 
     public static void addExits(ConnectorFactory factory, MorphingMazeComponent<Connector> maze, List<SavedMazePathConnection> mazeExits)
     {
-        Map<MazeRoomConnection, Connector> exitMap = Maps.newHashMap();
-        SavedMazePaths.putAll(exitMap, Iterables.transform(mazeExits, SavedMazePaths.toConnectionFunction(factory)));
-        maze.exits().putAll(exitMap);
+        SavedMazePaths.putAll(maze.exits(), Iterables.transform(mazeExits, SavedMazePaths.toConnectionFunction(factory)));
     }
 
     public static <C> void blockRooms(MorphingMazeComponent<C> component, Set<MazeRoom> rooms, C wallConnector)

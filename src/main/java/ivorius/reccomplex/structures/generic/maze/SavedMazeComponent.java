@@ -31,12 +31,11 @@ public class SavedMazeComponent implements NBTCompoundObject, WeightedSelector.I
     public Double weight;
     public final Selection rooms = new Selection();
     public final List<SavedMazePathConnection> exitPaths = new ArrayList<>();
-    public final SavedConnector defaultConnector = new SavedConnector();
+    public final SavedConnector defaultConnector = new SavedConnector(ConnectorStrategy.DEFAULT_WALL);
     public final SavedMazeReachability reachability = new SavedMazeReachability();
 
     public SavedMazeComponent()
     {
-        defaultConnector.id = ConnectorStrategy.DEFAULT_WALL;
     }
 
     public SavedMazeComponent(Double weight, String defaultConnector)

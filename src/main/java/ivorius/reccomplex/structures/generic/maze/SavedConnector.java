@@ -12,6 +12,11 @@ public class SavedConnector
 {
     public String id;
 
+    public SavedConnector(String id)
+    {
+        this.id = id;
+    }
+
     public Connector toConnector(ConnectorFactory factory)
     {
         return factory.get(id);
@@ -27,6 +32,11 @@ public class SavedConnector
 
         return !(id != null ? !id.equals(that.id) : that.id != null);
 
+    }
+
+    public SavedConnector copy()
+    {
+        return new SavedConnector(id);
     }
 
     @Override

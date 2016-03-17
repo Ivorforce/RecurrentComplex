@@ -329,6 +329,10 @@ reccomplex.maze.connector=Connector
 reccomplex.maze.connector.tooltip=The ID of the connector.<br>These work like electronical connectors.<br><br>§bHermaphrodite§r (default): Connects to itself.<br><br>If the ID starts with...<br>§bMale:§r Connects to female counterpart.<br>§bFemale:§r Connects to male counterpart.
 reccomplex.maze.connector.default=Default Connector
 
+reccomplex.reachability.tooltip=Describes reachability between<br>the exits of this maze component.
+reccomplex.reachability.groups.tooltip=All paths in one group<br>are reachable between<br>each other.
+reccomplex.reachability.crossconnections.tooltip=One-Way connections between<br>paths from different<br>groups.
+
 reccomplex.worldscript.command=Run Command
 reccomplex.worldscript.command.tooltip=Runs a vanilla command
 reccomplex.worldscript.multi=Multiple

@@ -5,112 +5,75 @@
 
 package ivorius.reccomplex.structures.generic.maze;
 
-import com.google.common.collect.Multimap;
-import ivorius.ivtoolkit.maze.classic.MazeCoordinate;
+import com.google.common.base.Predicate;
+import com.google.common.collect.Lists;
+import com.google.common.collect.Sets;
+import gnu.trove.list.TIntList;
+import gnu.trove.list.array.TIntArrayList;
+import gnu.trove.set.hash.TLinkedHashSet;
 import ivorius.ivtoolkit.maze.components.*;
+import ivorius.ivtoolkit.tools.Visitor;
+import org.apache.commons.lang3.tuple.Pair;
 
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
-import java.util.Stack;
+import javax.annotation.Nullable;
+import java.util.*;
 
 /**
  * Created by lukas on 05.10.15.
  */
 public class ReachabilityStrategy<M extends MazeComponent<C>, C> implements MazePredicate<M, C>
 {
-    private final Set<C> blockingConnections = new HashSet<>();
+    private final List<Set<MazeRoomConnection>> left = new ArrayList<>();
+    private final LinkedHashSet<MazeRoomConnection> leftTraversed = new LinkedHashSet<>();
+    private final TIntList leftTraversedSteps = new TIntArrayList();
 
-    private MorphingMazeComponent<C> maze;
-    private MazeCoordinate start;
-    private MazeCoordinate end;
+    private final List<Set<MazeRoomConnection>> right = new ArrayList<>();
+    private final LinkedHashSet<MazeRoomConnection> rightTraversed = new LinkedHashSet<>();
+    private final TIntList rightTraversedSteps = new TIntArrayList();
 
-    private boolean connected;
-    private Multimap<MazeRoom, MazeRoomConnection> connections;
+    private final Predicate<C> traverser;
 
-    public ReachabilityStrategy(MorphingMazeComponent<C> maze, MazeCoordinate start, MazeCoordinate end, Set<C> blockingConnections)
+    private int stepsGoalReached = -1;
+
+    public ReachabilityStrategy(Set<MazeRoomConnection> start, Set<MazeRoomConnection> end, Predicate<C> traverser)
     {
-        this.maze = maze;
-        this.start = start;
-        this.end = end;
-        this.blockingConnections.addAll(blockingConnections);
+        left.add(Sets.newHashSet(start));
+        leftTraversed.addAll(start);
+        right.add(Sets.newHashSet(end));
+        rightTraversed.addAll(end);
+        this.traverser = traverser;
+    }
 
-        // Add all dirty exits
-        for (Map.Entry<MazeRoomConnection, C> entry : maze.exits().entrySet())
+    public static <C> Predicate<C> connectorTraverser(final Set<C> blockingConnections)
+    {
+        return new Predicate<C>()
         {
-            if (!blocksReachability(entry.getValue()))
+            @Override
+            public boolean apply(@Nullable C input)
             {
-                MazeRoomConnection connection = entry.getKey();
-                connections.put(connection.getLeft(), connection);
-                connections.put(connection.getRight(), connection);
+                return !blockingConnections.contains(input);
             }
-        }
+        };
     }
 
-    private boolean blocksReachability(C c)
+    protected static <C> void traverse(List<MazeComponent<C>> mazes, Collection<MazeRoomConnection> traversed, Set<MazeRoomConnection> connections, Predicate<C> traverser, Visitor<MazeRoomConnection> visitor)
     {
-        return blockingConnections.contains(c);
-    }
+        List<MazeRoomConnection> dirty = Lists.newArrayList(connections);
+        connections.clear();
 
-    @Override
-    public boolean canPlace(MorphingMazeComponent<C> maze, ShiftedMazeComponent<M, C> component)
-    {
-        if (connected)
-            return true;
-
-        // Find all dirty exits
-
-        Set<MazeRoom> dirtyExits = new HashSet<>();
-
-        // Check if any dirty exit can connect to the destination
-
-        Set<MazeRoom> checked = dirtyExits;
-        Stack<MazeRoom> toCheck = new Stack<>();
-        toCheck.addAll(dirtyExits);
-
-        while (!toCheck.isEmpty())
+        while (!dirty.isEmpty())
         {
-            MazeRoom room = toCheck.pop();
+            MazeRoomConnection traversing = dirty.remove(0);
 
-            // Run through connections
-            for (MazeRoomConnection connection : connections.get(room))
+            for (MazeComponent<C> maze : mazes)
             {
-                MazeRoom other = connection.getLeft().equals(room) ? connection.getRight() : connection.getLeft();
-                if (!checked.contains(other))
+                for (Pair<MazeRoomConnection, MazeRoomConnection> pair : maze.reachability())
                 {
-                    toCheck.add(other);
-                    checked.add(other);
-                }
-            }
-
-            // Check free neighbors
-        }
-
-        return false;
-    }
-
-    @Override
-    public void willPlace(MorphingMazeComponent<C> maze, ShiftedMazeComponent<M, C> component)
-    {
-        for (Map.Entry<MazeRoomConnection, C> entry : component.exits().entrySet())
-        {
-            if (!blocksReachability(entry.getValue()))
-            {
-                MazeRoomConnection connection = entry.getKey();
-
-                // Add all exits
-                connections.put(connection.getLeft(), connection);
-                connections.put(connection.getRight(), connection);
-
-                // Add all room interconnections
-                for (MazeRoomConnection connection2 : component.exits().keySet())
-                {
-                    // It doesn't matter which two rooms are connected because the generic exit also exists
-                    if (!connection2.equals(connection))
+                    if (pair.getLeft().equals(traversing) && !traversed.contains(pair.getRight()) && visitor.visit(pair.getRight())
+                            && traverser.apply(maze.exits().get(traversing)) && traverser.apply(maze.exits().get(pair.getRight())))
                     {
-                        MazeRoomConnection interconnect = new MazeRoomConnection(connection.getLeft(), connection2.getLeft());
-                        connections.put(connection.getLeft(), interconnect);
-                        connections.put(connection.getRight(), interconnect);
+                        traversed.add(pair.getRight());
+                        dirty.add(pair.getRight());
                     }
                 }
             }
@@ -118,9 +81,79 @@ public class ReachabilityStrategy<M extends MazeComponent<C>, C> implements Maze
     }
 
     @Override
+    public boolean canPlace(MorphingMazeComponent<C> maze, ShiftedMazeComponent<M, C> component)
+    {
+        if (stepsGoalReached >= 0)
+            return true;
+
+        willPlace(maze, component); // Simulate
+        boolean canContinue = left.get(left.size() - 1).size() > 0 && right.get(right.size() - 1).size() > 0;
+        didUnplace(maze, component);
+
+        return canContinue;
+    }
+
+    @Override
+    public void willPlace(MorphingMazeComponent<C> maze, ShiftedMazeComponent<M, C> component)
+    {
+        if (stepsGoalReached < 0)
+            left.add(traverse(maze, component, left.get(left.size() - 1), leftTraversed, leftTraversedSteps, right.get(right.size() - 1)));
+        if (stepsGoalReached < 0)
+            right.add(traverse(maze, component, right.get(right.size() - 1), rightTraversed, rightTraversedSteps, left.get(left.size() - 1)));
+    }
+
+    protected Set<MazeRoomConnection> traverse(MazeComponent<C> maze, MazeComponent<C> component, Collection<MazeRoomConnection> left, LinkedHashSet<MazeRoomConnection> leftTraversed, TIntList leftTraversedSteps, final Collection<MazeRoomConnection> right)
+    {
+        Set<MazeRoomConnection> dirty = Sets.newHashSet(left);
+        int before = leftTraversed.size();
+        traverse(Arrays.asList(maze, component), leftTraversed, dirty, traverser, new Visitor<MazeRoomConnection>()
+        {
+            @Override
+            public boolean visit(MazeRoomConnection connection)
+            {
+                if (right.contains(connection))
+                {
+                    stepsGoalReached = 0;
+                    return false;
+                }
+
+                return true;
+            }
+        });
+        leftTraversedSteps.add(leftTraversed.size() - before);
+        return dirty;
+    }
+
+    @Override
     public void didUnplace(MorphingMazeComponent<C> maze, ShiftedMazeComponent<M, C> component)
     {
-         // TODO
+        if (stepsGoalReached >= 0)
+            stepsGoalReached--;
+
+        if (stepsGoalReached < 0)
+        {
+            left.remove(left.size() - 1);
+            removeLast(leftTraversed, leftTraversedSteps.removeAt(leftTraversedSteps.size() - 1));
+
+            while (right.size() > left.size())
+            {
+                right.remove(right.size() - 1);
+                removeLast(rightTraversed, rightTraversedSteps.removeAt(rightTraversedSteps.size() - 1));
+            }
+        }
+    }
+
+    // Don't look
+    // TODO Better approach
+    private void removeLast(Collection<?> collection, int objects)
+    {
+        int i = collection.size() - objects;
+        for (Iterator<?> iterator = collection.iterator(); iterator.hasNext(); )
+        {
+            iterator.next();
+            if (--i < 0)
+                iterator.remove();
+        }
     }
 
     @Override

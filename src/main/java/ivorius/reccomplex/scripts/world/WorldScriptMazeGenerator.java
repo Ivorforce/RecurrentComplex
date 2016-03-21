@@ -7,6 +7,7 @@ package ivorius.reccomplex.scripts.world;
 
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Maps;
+import com.google.common.collect.Sets;
 import gnu.trove.list.array.TIntArrayList;
 import ivorius.ivtoolkit.blocks.BlockCoord;
 import ivorius.ivtoolkit.math.AxisAlignedTransform2D;
@@ -257,8 +258,10 @@ public class WorldScriptMazeGenerator implements WorldScript<WorldScriptMazeGene
         WorldScriptMazeGenerator.addExits(factory, maze, mazeExits);
         WorldScriptMazeGenerator.addRandomPaths(random, outsideBoundsHigher, maze, transformedComponents, roomConnector, outsideBoundsHigher[0] * outsideBoundsHigher[1] * outsideBoundsHigher[2] / (5 * 5 * 5) + 1);
 
+        LimitAABBStrategy<MazeComponentStructure<Connector>, Connector> limitStrategy = new LimitAABBStrategy<>(outsideBoundsHigher);
         MazePredicate<MazeComponentStructure<Connector>, Connector> placementStrategy = new MazePredicateMany<>(
-                new LimitAABBStrategy<MazeComponentStructure<Connector>, Connector>(outsideBoundsHigher),
+                limitStrategy,
+//                new ReachabilityStrategy<MazeComponentStructure<Connector>, Connector>(Sets.newHashSet(new MazeRoomConnection(new MazeRoom(4, 0, 0), new MazeRoom(4, 0, -1))), Sets.newHashSet(new MazeRoomConnection(new MazeRoom(3, 0, 7), new MazeRoom(3, 0, 8))), ReachabilityStrategy.connectorTraverser(blockedConnections), limitStrategy),
                 new BlockedConnectorStrategy<MazeComponentStructure<Connector>, Connector>(blockedConnections)
         );
 

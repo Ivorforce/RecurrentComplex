@@ -10,12 +10,13 @@ import com.google.common.collect.Iterables;
 import ivorius.ivtoolkit.maze.components.*;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.util.Collection;
 
 /**
  * Created by lukas on 16.04.15.
  */
-public class LimitAABBStrategy<M extends MazeComponent<C>, C> implements MazePredicate<M, C>
+public class LimitAABBStrategy<M extends MazeComponent<C>, C> implements MazePredicate<M, C>, Predicate<MazeRoom>
 {
     @Nonnull
     private int[] roomNumbers;
@@ -25,25 +26,10 @@ public class LimitAABBStrategy<M extends MazeComponent<C>, C> implements MazePre
         this.roomNumbers = roomNumbers;
     }
 
-    public boolean isRoomContained(MazeRoom input)
-    {
-        for (int i = 0; i < input.getDimensions(); i++)
-            if (input.getCoordinate(i) < 0 || input.getCoordinate(i) >= roomNumbers[i])
-                return false;
-        return true;
-    }
-
     @Override
     public boolean canPlace(MorphingMazeComponent<C> maze, ShiftedMazeComponent<M, C> component)
     {
-        return Iterables.all(component.rooms(), new Predicate<MazeRoom>()
-        {
-            @Override
-            public boolean apply(MazeRoom input)
-            {
-                return isRoomContained(input);
-            }
-        });
+        return Iterables.all(component.rooms(), this);
     }
 
     @Override
@@ -61,6 +47,15 @@ public class LimitAABBStrategy<M extends MazeComponent<C>, C> implements MazePre
     @Override
     public boolean isDirtyConnection(MazeRoom dest, MazeRoom source, C c)
     {
-        return isRoomContained(dest);
+        return apply(dest);
+    }
+
+    @Override
+    public boolean apply(@Nullable MazeRoom input)
+    {
+        for (int i = 0; i < input.getDimensions(); i++)
+            if (input.getCoordinate(i) < 0 || input.getCoordinate(i) >= roomNumbers[i])
+                return false;
+        return true;
     }
 }

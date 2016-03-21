@@ -50,9 +50,10 @@ public class MazeRuleConnectAll extends MazeRule
     @Override
     public MazePredicateMany<MazeComponentStructure<Connector>, Connector> build(WorldScriptMazeGenerator script, Set<Connector> blockedConnections, ConnectorFactory connectorFactory)
     {
-        if (exits.size() > 1)
+        List<SavedMazePath> paths = additive ? exits : script.mazeExits.stream().filter(e -> !blockedConnections.contains(e.connector.toConnector(connectorFactory))).map(e -> e.path).filter(e -> !exits.contains(e)).collect(Collectors.toList());
+
+        if (paths.size() > 1)
         {
-            List<SavedMazePath> paths = additive ? exits : script.mazeExits.stream().filter(e -> !blockedConnections.contains(e.connector.toConnector(connectorFactory))).map(e -> e.path).filter(e -> !exits.contains(e)).collect(Collectors.toList());
             MazePredicateMany<MazeComponentStructure<Connector>, Connector> predicate = new MazePredicateMany<>();
 
             for (int i = 1; i < paths.size(); i++)

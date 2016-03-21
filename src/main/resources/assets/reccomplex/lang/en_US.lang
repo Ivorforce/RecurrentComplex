@@ -333,6 +333,12 @@ reccomplex.reachability.tooltip=Describes reachability between<br>the exits of t
 reccomplex.reachability.groups.tooltip=All paths in one group<br>are reachable between<br>each other.
 reccomplex.reachability.crossconnections.tooltip=One-Way connections between<br>paths from different<br>groups.
 
+reccomplex.mazerule.connect=Connect
+reccomplex.mazerule.connect.tooltip=Ensure a path between two exits.
+
+reccomplex.mazerule.connect.start.tooltip=Connect any of these to<br>any of the end paths.
+reccomplex.mazerule.connect.end.tooltip=Connect any of these to<br>any of the start paths.
+
 reccomplex.worldscript.command=Run Command
 reccomplex.worldscript.command.tooltip=Runs a vanilla command
 reccomplex.worldscript.multi=Multiple

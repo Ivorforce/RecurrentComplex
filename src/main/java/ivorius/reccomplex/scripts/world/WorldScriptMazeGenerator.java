@@ -12,6 +12,7 @@ import ivorius.ivtoolkit.math.IvVecMathHelper;
 import ivorius.ivtoolkit.maze.components.*;
 import ivorius.ivtoolkit.tools.IvNBTHelper;
 import ivorius.ivtoolkit.tools.NBTCompoundObjects;
+import ivorius.ivtoolkit.tools.NBTTagLists;
 import ivorius.reccomplex.gui.table.TableDataSource;
 import ivorius.reccomplex.gui.table.TableDelegate;
 import ivorius.reccomplex.gui.table.TableNavigator;
@@ -24,6 +25,8 @@ import ivorius.reccomplex.structures.generic.Selection;
 import ivorius.reccomplex.structures.generic.maze.*;
 import ivorius.reccomplex.structures.generic.maze.rules.BlockedConnectorStrategy;
 import ivorius.reccomplex.structures.generic.maze.rules.LimitAABBStrategy;
+import ivorius.reccomplex.structures.generic.maze.rules.MazeRule;
+import ivorius.reccomplex.structures.generic.maze.rules.MazeRuleRegistry;
 import ivorius.reccomplex.utils.IntAreas;
 import ivorius.reccomplex.utils.IvTranslations;
 import ivorius.reccomplex.utils.NBTStorable;
@@ -47,6 +50,7 @@ public class WorldScriptMazeGenerator implements WorldScript<WorldScriptMazeGene
     public Selection mazeRooms = Selection.zeroSelection(3);
     public BlockCoord structureShift = new BlockCoord(0, 0, 0);
     public int[] roomSize = new int[]{3, 5, 3};
+    public final List<MazeRule<?>> rules = new ArrayList<>();
 
     public static <C> void addRandomPaths(Random random, int[] size, MorphingMazeComponent<C> maze, List<? extends MazeComponent<C>> components, C roomConnector, int number)
     {
@@ -165,19 +169,19 @@ public class WorldScriptMazeGenerator implements WorldScript<WorldScriptMazeGene
     }
 
     @Override
-    public void readFromNBT(NBTTagCompound nbtTagCompound)
+    public void readFromNBT(NBTTagCompound compound)
     {
-        mazeID = nbtTagCompound.getString("mazeID");
+        mazeID = compound.getString("mazeID");
 
-        NBTTagCompound rooms = nbtTagCompound.getCompoundTag("rooms");
+        NBTTagCompound rooms = compound.getCompoundTag("rooms");
         mazeRooms.readFromNBT(rooms, 3);
 
         // Legacy
-        if (nbtTagCompound.hasKey("roomNumbers", Constants.NBT.TAG_INT_ARRAY))
-            mazeRooms.add(new Selection.Area(true, new int[]{0, 0, 0}, IvVecMathHelper.sub(IvNBTHelper.readIntArrayFixedSize("roomNumbers", 3, nbtTagCompound), new int[]{1, 1, 1})));
-        if (nbtTagCompound.hasKey("blockedRoomAreas", Constants.NBT.TAG_LIST))
+        if (compound.hasKey("roomNumbers", Constants.NBT.TAG_INT_ARRAY))
+            mazeRooms.add(new Selection.Area(true, new int[]{0, 0, 0}, IvVecMathHelper.sub(IvNBTHelper.readIntArrayFixedSize("roomNumbers", 3, compound), new int[]{1, 1, 1})));
+        if (compound.hasKey("blockedRoomAreas", Constants.NBT.TAG_LIST))
         {
-            NBTTagList blockedRoomsList = nbtTagCompound.getTagList("blockedRoomAreas", Constants.NBT.TAG_COMPOUND);
+            NBTTagList blockedRoomsList = compound.getTagList("blockedRoomAreas", Constants.NBT.TAG_COMPOUND);
             for (int i = 0; i < blockedRoomsList.tagCount(); i++)
             {
                 NBTTagCompound blockedRoomTag = blockedRoomsList.getCompoundTagAt(i);
@@ -186,27 +190,32 @@ public class WorldScriptMazeGenerator implements WorldScript<WorldScriptMazeGene
         }
 
         mazeExits.clear();
-        mazeExits.addAll(NBTCompoundObjects.readListFrom(nbtTagCompound, "mazeExits", SavedMazePathConnection.class));
+        mazeExits.addAll(NBTCompoundObjects.readListFrom(compound, "mazeExits", SavedMazePathConnection.class));
 
-        structureShift = BlockCoord.readCoordFromNBT("structureShift", nbtTagCompound);
+        structureShift = BlockCoord.readCoordFromNBT("structureShift", compound);
 
-        roomSize = IvNBTHelper.readIntArrayFixedSize("roomSize", 3, nbtTagCompound);
+        roomSize = IvNBTHelper.readIntArrayFixedSize("roomSize", 3, compound);
+
+        rules.clear();
+        rules.addAll(NBTTagLists.compoundsFrom(compound, "rules").stream().map(MazeRuleRegistry.INSTANCE::read).collect(Collectors.toList()));
     }
 
     @Override
-    public void writeToNBT(NBTTagCompound nbtTagCompound)
+    public void writeToNBT(NBTTagCompound compound)
     {
-        nbtTagCompound.setString("mazeID", mazeID);
+        compound.setString("mazeID", mazeID);
 
         NBTTagCompound rooms = new NBTTagCompound();
         mazeRooms.writeToNBT(rooms);
-        nbtTagCompound.setTag("rooms", rooms);
+        compound.setTag("rooms", rooms);
 
-        NBTCompoundObjects.writeListTo(nbtTagCompound, "mazeExits", mazeExits);
+        NBTCompoundObjects.writeListTo(compound, "mazeExits", mazeExits);
 
-        BlockCoord.writeCoordToNBT("structureShift", structureShift, nbtTagCompound);
+        BlockCoord.writeCoordToNBT("structureShift", structureShift, compound);
 
-        nbtTagCompound.setIntArray("roomSize", roomSize);
+        compound.setIntArray("roomSize", roomSize);
+
+        NBTTagLists.writeCompoundsTo(compound, "rules", rules.stream().map(MazeRuleRegistry.INSTANCE::write).collect(Collectors.toList()));
     }
 
     @Override
@@ -252,12 +261,9 @@ public class WorldScriptMazeGenerator implements WorldScript<WorldScriptMazeGene
         WorldScriptMazeGenerator.addExits(factory, maze, mazeExits);
         WorldScriptMazeGenerator.addRandomPaths(random, outsideBoundsHigher, maze, transformedComponents, roomConnector, outsideBoundsHigher[0] * outsideBoundsHigher[1] * outsideBoundsHigher[2] / (5 * 5 * 5) + 1);
 
-        LimitAABBStrategy<MazeComponentStructure<Connector>, Connector> limitStrategy = new LimitAABBStrategy<>(outsideBoundsHigher);
-        MazePredicate<MazeComponentStructure<Connector>, Connector> placementStrategy = new MazePredicateMany<>(
-                limitStrategy,
-//                new ReachabilityStrategy<MazeComponentStructure<Connector>, Connector>(Sets.newHashSet(new MazeRoomConnection(new MazeRoom(4, 0, 0), new MazeRoom(4, 0, -1))), Sets.newHashSet(new MazeRoomConnection(new MazeRoom(3, 0, 7), new MazeRoom(3, 0, 8))), ReachabilityStrategy.connectorTraverser(blockedConnections), limitStrategy),
-                new BlockedConnectorStrategy<MazeComponentStructure<Connector>, Connector>(blockedConnections)
-        );
+        List<MazePredicate<MazeComponentStructure<Connector>, Connector>> predicates = rules.stream().map(r -> r.build(this, blockedConnections)).filter(Objects::nonNull).collect(Collectors.toCollection(ArrayList::new));
+        predicates.add(new LimitAABBStrategy<>(outsideBoundsHigher));
+        predicates.add(new BlockedConnectorStrategy<>(blockedConnections));
 
         ConnectorStrategy connectionStrategy = new ConnectorStrategy();
 
@@ -265,7 +271,7 @@ public class WorldScriptMazeGenerator implements WorldScript<WorldScriptMazeGene
         for (int i = 0; i < outsideBoundsLower.length; i++)
             totalRooms *= outsideBoundsHigher[i] - outsideBoundsLower[i] + 1;
 
-        return MazeComponentConnector.randomlyConnect(maze, transformedComponents, connectionStrategy, placementStrategy, random, totalRooms * 10);
+        return MazeComponentConnector.randomlyConnect(maze, transformedComponents, connectionStrategy, new MazePredicateMany<>(predicates), random, totalRooms * 10);
     }
 
     public static class InstanceData implements NBTStorable

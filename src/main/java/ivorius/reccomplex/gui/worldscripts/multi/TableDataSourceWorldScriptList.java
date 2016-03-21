@@ -5,10 +5,10 @@
 
 package ivorius.reccomplex.gui.worldscripts.multi;
 
-import ivorius.reccomplex.RecurrentComplex;
 import ivorius.reccomplex.gui.table.*;
 import ivorius.reccomplex.scripts.world.WorldScript;
 import ivorius.reccomplex.scripts.world.WorldScriptRegistry;
+import ivorius.reccomplex.utils.IvClasses;
 import ivorius.reccomplex.utils.IvTranslations;
 import net.minecraft.util.StatCollector;
 import org.apache.commons.lang3.StringUtils;
@@ -37,9 +37,7 @@ public class TableDataSourceWorldScriptList extends TableDataSourceList<WorldScr
     @Override
     public WorldScript newEntry(String actionID)
     {
-        Class<? extends WorldScript> clazz = WorldScriptRegistry.INSTANCE.objectClass(actionID);
-
-        return instantiateScript(clazz);
+        return IvClasses.instantiate(WorldScriptRegistry.INSTANCE.objectClass(actionID));
     }
 
     @Override
@@ -64,19 +62,4 @@ public class TableDataSourceWorldScriptList extends TableDataSourceList<WorldScr
         return actions.toArray(new TableCellButton.Action[actions.size()]);
     }
 
-    public WorldScript instantiateScript(Class<? extends WorldScript> clazz)
-    {
-        WorldScript script = null;
-
-        try
-        {
-            script = clazz.newInstance();
-        }
-        catch (InstantiationException | IllegalAccessException e)
-        {
-            RecurrentComplex.logger.error(e);
-        }
-
-        return script;
-    }
 }

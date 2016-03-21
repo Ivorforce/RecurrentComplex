@@ -99,7 +99,7 @@ public class TableDataSourceMazeComponent extends TableDataSourceSegmented imple
         }
         else if ("exits".equals(cell.getID()))
         {
-            navigator.pushTable(new GuiTable(tableDelegate, new TableDataSourceMazePathList(component.exitPaths, tableDelegate, navigator, component.rooms.boundsLower(), component.rooms.boundsHigher())));
+            navigator.pushTable(new GuiTable(tableDelegate, new TableDataSourceMazePathConnectionList(component.exitPaths, tableDelegate, navigator, component.rooms.boundsLower(), component.rooms.boundsHigher())));
         }
         else if ("reachability".equals(cell.getID()))
         {

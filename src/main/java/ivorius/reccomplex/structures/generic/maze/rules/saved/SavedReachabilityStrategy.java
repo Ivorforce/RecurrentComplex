@@ -10,6 +10,8 @@ import ivorius.ivtoolkit.tools.NBTCompoundObjects;
 import ivorius.reccomplex.gui.table.TableDataSource;
 import ivorius.reccomplex.gui.table.TableDelegate;
 import ivorius.reccomplex.gui.table.TableNavigator;
+import ivorius.reccomplex.gui.worldscripts.mazegenerator.rules.TableDataSourceReachabilityStrategy;
+import ivorius.reccomplex.scripts.world.WorldScriptMazeGenerator;
 import ivorius.reccomplex.structures.generic.maze.Connector;
 import ivorius.reccomplex.structures.generic.maze.MazeComponentStructure;
 import ivorius.reccomplex.structures.generic.maze.SavedMazeComponent;
@@ -49,15 +51,18 @@ public class SavedReachabilityStrategy extends MazeRule<ReachabilityStrategy<Maz
     }
 
     @Override
-    public TableDataSource tableDataSource(TableNavigator navigator, TableDelegate delegate)
+    public TableDataSource tableDataSource(TableNavigator navigator, TableDelegate delegate, int[] boundsLower, int[] boundsHigher)
     {
-        return null;
+        return new TableDataSourceReachabilityStrategy(this, delegate, navigator, boundsLower, boundsHigher);
     }
 
     @Override
-    public ReachabilityStrategy<MazeComponentStructure<Connector>, Connector> build(SavedMazeComponent component, Set<Connector> blockedConnections)
+    public ReachabilityStrategy<MazeComponentStructure<Connector>, Connector> build(WorldScriptMazeGenerator script, Set<Connector> blockedConnections)
     {
-        return new ReachabilityStrategy<>(buildPaths(start), buildPaths(end), ReachabilityStrategy.connectorTraverser(blockedConnections), new LimitAABBStrategy<>(component.getSize()));
+        if (start.size() > 0 && end.size() > 0)
+            return new ReachabilityStrategy<>(buildPaths(start), buildPaths(end), ReachabilityStrategy.connectorTraverser(blockedConnections), new LimitAABBStrategy<>(script.mazeRooms.boundsSize()));
+        else
+            return null;
     }
 
     @Override
@@ -70,7 +75,10 @@ public class SavedReachabilityStrategy extends MazeRule<ReachabilityStrategy<Maz
     @Override
     public void writeToNBT(NBTTagCompound compound)
     {
+        start.clear();
         start.addAll(NBTCompoundObjects.readListFrom(compound, "start", SavedMazePath.class));
+
+        end.clear();
         end.addAll(NBTCompoundObjects.readListFrom(compound, "end", SavedMazePath.class));
     }
 }

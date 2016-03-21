@@ -6,8 +6,12 @@
 package ivorius.reccomplex.gui.worldscripts.mazegenerator;
 
 import ivorius.ivtoolkit.maze.components.MazeRoom;
-import ivorius.reccomplex.gui.table.*;
+import ivorius.reccomplex.gui.table.TableDataSource;
+import ivorius.reccomplex.gui.table.TableDataSourceList;
+import ivorius.reccomplex.gui.table.TableDelegate;
+import ivorius.reccomplex.gui.table.TableNavigator;
 import ivorius.reccomplex.structures.generic.maze.ConnectorStrategy;
+import ivorius.reccomplex.structures.generic.maze.SavedMazePath;
 import ivorius.reccomplex.structures.generic.maze.SavedMazePathConnection;
 import net.minecraft.util.EnumChatFormatting;
 
@@ -17,12 +21,12 @@ import java.util.List;
 /**
  * Created by lukas on 04.06.14.
  */
-public class TableDataSourceMazePathList extends TableDataSourceList<SavedMazePathConnection, List<SavedMazePathConnection>>
+public class TableDataSourceMazePathList extends TableDataSourceList<SavedMazePath, List<SavedMazePath>>
 {
     private int[] boundsLower;
     private int[] boundsHigher;
 
-    public TableDataSourceMazePathList(List<SavedMazePathConnection> list, TableDelegate tableDelegate, TableNavigator navigator, int[] boundsLower, int[] boundsHigher)
+    public TableDataSourceMazePathList(List<SavedMazePath> list, TableDelegate tableDelegate, TableNavigator navigator, int[] boundsLower, int[] boundsHigher)
     {
         super(list, tableDelegate, navigator);
         this.boundsLower = boundsLower;
@@ -32,21 +36,21 @@ public class TableDataSourceMazePathList extends TableDataSourceList<SavedMazePa
     }
 
     @Override
-    public String getDisplayString(SavedMazePathConnection mazePath)
+    public String getDisplayString(SavedMazePath mazePath)
     {
-        return String.format("%s %s%s%s", Arrays.toString(mazePath.path.sourceRoom.getCoordinates()),
-                EnumChatFormatting.BLUE, TableDataSourceMazePath.directionFromPath(mazePath.path).toString(), EnumChatFormatting.RESET);
+        return String.format("%s %s%s%s", Arrays.toString(mazePath.sourceRoom.getCoordinates()),
+                EnumChatFormatting.BLUE, TableDataSourceMazePath.directionFromPath(mazePath).toString(), EnumChatFormatting.RESET);
     }
 
     @Override
-    public SavedMazePathConnection newEntry(String actionID)
+    public SavedMazePath newEntry(String actionID)
     {
-        return new SavedMazePathConnection(2, new MazeRoom(new int[boundsLower.length]), false, ConnectorStrategy.DEFAULT_PATH);
+        return new SavedMazePath(2, new MazeRoom(new int[boundsLower.length]), false);
     }
 
     @Override
-    public TableDataSource editEntryDataSource(SavedMazePathConnection entry)
+    public TableDataSource editEntryDataSource(SavedMazePath entry)
     {
-        return new TableDataSourceMazePathConnection(entry, boundsLower, boundsHigher);
+        return new TableDataSourceMazePath(entry, boundsLower, boundsHigher);
     }
 }

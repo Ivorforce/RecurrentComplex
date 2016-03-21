@@ -138,40 +138,25 @@ public class GuiTable extends Gui
 
     public void drawScreen(GuiScreen screen, int mouseX, int mouseY, float partialTicks)
     {
-        for (TableElement element : currentElements)
-        {
-            if (!element.isHidden())
+        currentElements.stream().filter(element -> !element.isHidden()).forEach(element -> {
+            String title = element.getTitle();
+            if (title != null)
             {
-                String title = element.getTitle();
-                if (title != null)
-                {
-                    Bounds bounds = element.bounds();
+                Bounds bounds = element.bounds();
 
-                    int stringWidth = screen.mc.fontRenderer.getStringWidth(title);
-                    screen.drawString(screen.mc.fontRenderer, title, bounds.getMinX() - stringWidth - 10, bounds.getCenterY() - 4, 0xffffffff);
-                }
+                int stringWidth = screen.mc.fontRenderer.getStringWidth(title);
+                screen.drawString(screen.mc.fontRenderer, title, bounds.getMinX() - stringWidth - 10, bounds.getCenterY() - 4, 0xffffffff);
             }
-        }
+        });
 
-        for (TableElement element : currentElements)
-        {
-            if (!element.isHidden())
-                element.draw(this, mouseX, mouseY, partialTicks);
-        }
+        currentElements.stream().filter(element -> !element.isHidden()).forEach(element -> element.draw(this, mouseX, mouseY, partialTicks));
 
-        for (TableElement element : currentElements)
-        {
-            if (!element.isHidden())
-                element.drawFloating(this, mouseX, mouseY, partialTicks);
-        }
+        currentElements.stream().filter(element -> !element.isHidden()).forEach(element -> element.drawFloating(this, mouseX, mouseY, partialTicks));
     }
 
     public void updateScreen()
     {
-        for (TableElement element : currentElements)
-        {
-            element.update(this);
-        }
+        currentElements.stream().forEach(tableElement -> tableElement.update(this));
     }
 
     protected void actionPerformed(GuiButton button)
@@ -303,11 +288,9 @@ public class GuiTable extends Gui
         {
             GL11.glDisable(GL11.GL_DEPTH_TEST);
             int k = 0;
-            Iterator iterator = lines.iterator();
 
-            while (iterator.hasNext())
+            for (String s : lines)
             {
-                String s = (String)iterator.next();
                 int l = font.getStringWidth(s);
 
                 if (l > k)

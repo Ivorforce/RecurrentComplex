@@ -5,23 +5,21 @@
 
 package ivorius.reccomplex.worldgen.inventory;
 
-import com.google.common.base.Function;
 import com.google.common.collect.Collections2;
 import com.google.common.collect.Lists;
 import com.google.gson.*;
+import ivorius.ivtoolkit.random.WeightedSelector;
 import ivorius.reccomplex.RecurrentComplex;
 import ivorius.reccomplex.json.ItemStackSerializer;
 import ivorius.reccomplex.json.JsonUtils;
 import ivorius.reccomplex.json.NbtToJson;
 import ivorius.reccomplex.structures.generic.matchers.DependencyMatcher;
-import ivorius.ivtoolkit.random.WeightedSelector;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.StatCollector;
 import net.minecraft.util.WeightedRandom;
 import net.minecraft.util.WeightedRandomChestContent;
 import net.minecraftforge.common.ChestGenHooks;
 
-import javax.annotation.Nullable;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
@@ -161,15 +159,7 @@ public class GenericItemCollection implements WeightedItemCollection
                 if (version == 1 && jsonObject.has("contents")) // Legacy
                 {
                     List<WeightedRandomChestContent> chestContents = Lists.newArrayList(gson.<WeightedRandomChestContent[]>fromJson(jsonObject.get("contents"), WeightedRandomChestContent[].class));
-                    stacks.addAll(Collections2.transform(chestContents, new Function<WeightedRandomChestContent, RandomizedItemStack>()
-                    {
-                        @Nullable
-                        @Override
-                        public RandomizedItemStack apply(WeightedRandomChestContent input)
-                        {
-                            return RandomizedItemStack.from(input, 100);
-                        }
-                    }));
+                    stacks.addAll(Collections2.transform(chestContents, input -> RandomizedItemStack.from(input, 100)));
                 }
 
                 String dependencyExpression = JsonUtils.getJsonObjectStringFieldValueOrDefault(jsonObject, "dependencyExpression", "");

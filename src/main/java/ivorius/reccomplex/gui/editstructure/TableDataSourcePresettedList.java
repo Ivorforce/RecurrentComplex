@@ -13,6 +13,7 @@ import net.minecraft.util.StatCollector;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * Created by lukas on 04.06.14.
@@ -63,13 +64,10 @@ public abstract class TableDataSourcePresettedList<T> extends TableDataSourceLis
         List<TableCellButton.Action> actions = new ArrayList<>(allTypes.size());
 
         String baseKey = getBasePresetKey();
-        for (String type : allTypes)
-        {
-            actions.add(new TableCellButton.Action(type,
-                    StatCollector.translateToLocal(baseKey + type),
-                    IvTranslations.formatLines(baseKey + type + ".tooltip")
-            ));
-        }
+        actions.addAll(allTypes.stream().map(type -> new TableCellButton.Action(type,
+                StatCollector.translateToLocal(baseKey + type),
+                IvTranslations.formatLines(baseKey + type + ".tooltip")
+        )).collect(Collectors.toList()));
         return actions.toArray(new TableCellButton.Action[actions.size()]);
     }
 

@@ -76,14 +76,7 @@ public class TransformerRuins implements Transformer<TransformerRuins.InstanceDa
 
     private static boolean skipBlock(Collection<Pair<Transformer, NBTStorable>> transformers, final Block block, final int meta)
     {
-        return Iterables.any(transformers, new Predicate<Pair<Transformer, NBTStorable>>()
-        {
-            @Override
-            public boolean apply(Pair<Transformer, NBTStorable> input)
-            {
-                return input.getLeft().skipGeneration(input.getRight(), block, meta);
-            }
-        });
+        return transformers.stream().anyMatch(input -> input.getLeft().skipGeneration(input.getRight(), block, meta));
     }
 
     private static int getPass(Block block, int metadata)

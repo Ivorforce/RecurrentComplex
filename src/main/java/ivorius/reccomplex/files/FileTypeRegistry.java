@@ -39,17 +39,12 @@ public class FileTypeRegistry
 
     public void clearCustomFiles()
     {
-        for (FileTypeHandler handler : handlers.values())
-            handler.clearCustomFiles();
+        handlers.values().forEach(FileTypeHandler::clearCustomFiles);
     }
 
     public void clearCustomFiles(Collection<String> suffices)
     {
-        for (Map.Entry<String, FileTypeHandler> entry : handlers.entrySet())
-        {
-            if (suffices.contains(entry.getKey()))
-                entry.getValue().clearCustomFiles();
-        }
+        handlers.entrySet().stream().filter(entry -> suffices.contains(entry.getKey())).forEach(entry -> entry.getValue().clearCustomFiles());
     }
 
     public int tryLoadAll(ResourceLocation resourceLocation, FileLoadContext context)

@@ -72,11 +72,9 @@ public class TemporaryVillagerRegistry
 
     public void setHandlers(Set<VillagerRegistry.IVillageCreationHandler> handlers)
     {
-        for (VillagerRegistry.IVillageCreationHandler handler : Sets.difference(registeredHandlers, handlers))
-            removeFromRegistry(handler);
+        Sets.difference(registeredHandlers, handlers).forEach(this::removeFromRegistry);
 
-        for (VillagerRegistry.IVillageCreationHandler handler : Sets.difference(handlers, registeredHandlers))
-            addToRegistry(handler);
+        Sets.difference(handlers, registeredHandlers).forEach(this::addToRegistry);
 
         registeredHandlers.clear();
         registeredHandlers.addAll(handlers);

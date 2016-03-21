@@ -25,15 +25,7 @@ public class SavedMazePaths
 {
     public static Function<SavedMazePathConnection, Map.Entry<MazeRoomConnection, Connector>> toConnectionFunction(final ConnectorFactory factory)
     {
-        return new Function<SavedMazePathConnection, Map.Entry<MazeRoomConnection, Connector>>()
-        {
-            @Nullable
-            @Override
-            public Map.Entry<MazeRoomConnection, Connector> apply(@Nullable SavedMazePathConnection input)
-            {
-                return input != null ? input.toRoomConnection(factory) : null;
-            }
-        };
+        return input -> input != null ? input.toRoomConnection(factory) : null;
     }
 
     public static <K, V> void put(Map<K, V> map, Map.Entry<K, V> entry)
@@ -56,15 +48,10 @@ public class SavedMazePaths
     public static Set<SavedMazePath> neighbors(final MazeRoom room, TIntSet dimensions)
     {
         final ImmutableSet.Builder<SavedMazePath> set = ImmutableSet.builder();
-        dimensions.forEach(new TIntProcedure()
-        {
-            @Override
-            public boolean execute(int value)
-            {
-                set.add(new SavedMazePath(value, room, true));
-                set.add(new SavedMazePath(value, room, false));
-                return true;
-            }
+        dimensions.forEach(value -> {
+            set.add(new SavedMazePath(value, room, true));
+            set.add(new SavedMazePath(value, room, false));
+            return true;
         });
         return set.build();
     }

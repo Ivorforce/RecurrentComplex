@@ -51,14 +51,7 @@ public class PrefixedTypeExpressionCache<T> extends ExpressionCache<T>
 
     protected VariableType<T> type(final String var)
     {
-        return Iterables.find(types, new Predicate<VariableType<T>>()
-        {
-            @Override
-            public boolean apply(@Nullable VariableType input)
-            {
-                return var.startsWith(input.prefix);
-            }
-        }, null);
+        return types.stream().filter(input -> var.startsWith(input.prefix)).findFirst().orElseGet(() -> null);
     }
 
     protected boolean isKnownVariable(String var, Object... args)
@@ -81,26 +74,12 @@ public class PrefixedTypeExpressionCache<T> extends ExpressionCache<T>
 
     protected boolean containsUnknownVariables(final Object... args)
     {
-        return parsedExpression != null && !parsedExpression.walkVariables(new Visitor<String>()
-        {
-            @Override
-            public boolean visit(final String s)
-            {
-                return isKnownVariable(s, args);
-            }
-        });
+        return parsedExpression != null && !parsedExpression.walkVariables(s -> isKnownVariable(s, args));
     }
 
     protected T evaluate(final Object... args)
     {
-        return parsedExpression != null ? parsedExpression.evaluate(new Function<String, T>()
-        {
-            @Override
-            public T apply(String var)
-            {
-                return evaluateVariable(var, args);
-            }
-        }) : null;
+        return parsedExpression != null ? parsedExpression.evaluate(var -> evaluateVariable(var, args)) : null;
     }
 
     @Nonnull
@@ -113,17 +92,11 @@ public class PrefixedTypeExpressionCache<T> extends ExpressionCache<T>
     @Nonnull
     public String getDisplayString(final Object... args)
     {
-        return parsedExpression != null ? parsedExpression.toString(new Function<String, String>()
-        {
-            @Nullable
-            @Override
-            public String apply(String input)
-            {
-                VariableType<T> type = type(input);
-                return type != null
-                        ? type.getRepresentation(input.substring(type.prefix.length()), args)
-                        : EnumChatFormatting.RED + input;
-            }
+        return parsedExpression != null ? parsedExpression.toString(input -> {
+            VariableType<T> type = type(input);
+            return type != null
+                    ? type.getRepresentation(input.substring(type.prefix.length()), args)
+                    : EnumChatFormatting.RED + input;
         }) : EnumChatFormatting.RED + expression;
     }
 

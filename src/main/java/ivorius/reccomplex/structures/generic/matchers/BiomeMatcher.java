@@ -25,6 +25,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.stream.StreamSupport;
 
 /**
  * Created by lukas on 19.09.14.
@@ -43,15 +44,7 @@ public class BiomeMatcher extends PrefixedTypeExpressionCache<Boolean> implement
 
     public static String ofTypes(BiomeDictionary.Type... biomeTypes)
     {
-        return BIOME_TYPE_PREFIX + Strings.join(Lists.transform(Arrays.asList(biomeTypes), new Function<BiomeDictionary.Type, String>()
-        {
-            @Nullable
-            @Override
-            public String apply(@Nullable BiomeDictionary.Type input)
-            {
-                return input != null ? IvGsonHelper.serializedName(input) : null;
-            }
-        }), " & " + BIOME_TYPE_PREFIX);
+        return BIOME_TYPE_PREFIX + Strings.join(Lists.transform(Arrays.asList(biomeTypes), input -> input != null ? IvGsonHelper.serializedName(input) : null), " & " + BIOME_TYPE_PREFIX);
     }
 
     public static Set<BiomeGenBase> gatherAllBiomes()
@@ -105,14 +98,7 @@ public class BiomeMatcher extends PrefixedTypeExpressionCache<Boolean> implement
         @Override
         public boolean isKnown(final String var, final Object... args)
         {
-            return Iterables.any((Iterable<BiomeGenBase>) args[0], new Predicate<BiomeGenBase>()
-            {
-                @Override
-                public boolean apply(BiomeGenBase input)
-                {
-                    return input.biomeName.equals(var);
-                }
-            });
+            return StreamSupport.stream(((Iterable<BiomeGenBase>) args[0]).spliterator(), false).anyMatch(input -> input.biomeName.equals(var));
         }
     }
 

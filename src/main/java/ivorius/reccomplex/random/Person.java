@@ -144,7 +144,7 @@ public class Person
         return builder.toString().trim();
     }
 
-    public static enum NameType
+    public enum NameType
     {
         NORDIC,
         CHAOTIC

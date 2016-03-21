@@ -37,6 +37,7 @@ import net.minecraft.world.World;
 import net.minecraftforge.common.util.Constants;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * Created by lukas on 13.09.15.
@@ -70,7 +71,7 @@ public class WorldScriptMazeGenerator implements WorldScript<WorldScriptMazeGene
 
     public static void addExits(ConnectorFactory factory, MorphingMazeComponent<Connector> maze, List<SavedMazePathConnection> mazeExits)
     {
-        SavedMazePaths.putAll(maze.exits(), Iterables.transform(mazeExits, SavedMazePaths.toConnectionFunction(factory)));
+        SavedMazePaths.putAll(maze.exits(), mazeExits.stream().map(SavedMazePaths.toConnectionFunction(factory)::apply).collect(Collectors.toList()));
     }
 
     public static <C> void blockRooms(MorphingMazeComponent<C> component, Set<MazeRoom> rooms, C wallConnector)
@@ -91,18 +92,13 @@ public class WorldScriptMazeGenerator implements WorldScript<WorldScriptMazeGene
             final int highest = higher.getCoordinate(i);
 
             final int finalI = i;
-            IntAreas.visitCoordsExcept(lower.getCoordinates(), higher.getCoordinates(), TIntArrayList.wrap(new int[]{i}), new Visitor<int[]>()
-            {
-                @Override
-                public boolean visit(int[] ints)
-                {
-                    ints[finalI] = lowest;
-                    rooms.add(new MazeRoom(ints));
-                    ints[finalI] = highest;
-                    rooms.add(new MazeRoom(ints));
+            IntAreas.visitCoordsExcept(lower.getCoordinates(), higher.getCoordinates(), TIntArrayList.wrap(new int[]{i}), ints -> {
+                ints[finalI] = lowest;
+                rooms.add(new MazeRoom(ints));
+                ints[finalI] = highest;
+                rooms.add(new MazeRoom(ints));
 
-                    return true;
-                }
+                return true;
             });
         }
 

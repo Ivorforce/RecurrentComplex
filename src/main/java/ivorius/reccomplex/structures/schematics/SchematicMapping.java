@@ -55,14 +55,9 @@ public class SchematicMapping
     public NBTTagCompound writeToNBT()
     {
         final NBTTagCompound compound = new NBTTagCompound();
-        blockMapping.forEachEntry(new TShortObjectProcedure<Block>()
-        {
-            @Override
-            public boolean execute(short a, Block b)
-            {
-                compound.setShort(Block.blockRegistry.getNameForObject(b), a);
-                return true;
-            }
+        blockMapping.forEachEntry((a, b) -> {
+            compound.setShort(Block.blockRegistry.getNameForObject(b), a);
+            return true;
         });
         return compound;
     }

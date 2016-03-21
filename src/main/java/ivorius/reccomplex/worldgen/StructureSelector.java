@@ -100,11 +100,7 @@ public class StructureSelector
         List<Pair<StructureInfo, NaturalGenerationInfo>> infos = new ArrayList<>();
         BiomeGenBase biome = world.getBiomeGenForCoords(chunkX * 16, chunkZ * 16);
 
-        for (String category : weightedStructureInfos.keySet())
-        {
-            if (random.nextFloat() < generationChance(category, biome, world.provider))
-                infos.add(WeightedSelector.select(random, weightedStructureInfos.get(category)));
-        }
+        weightedStructureInfos.keySet().stream().filter(category -> random.nextFloat() < generationChance(category, biome, world.provider)).forEach(category -> infos.add(WeightedSelector.select(random, weightedStructureInfos.get(category))));
 
         return infos;
     }

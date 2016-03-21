@@ -47,6 +47,7 @@ import org.apache.commons.lang3.tuple.Pair;
 import javax.annotation.Nullable;
 import java.lang.reflect.Type;
 import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * Created by lukas on 24.05.14.
@@ -219,9 +220,7 @@ public class GenericStructureInfo implements StructureInfo<GenericStructureInfo.
 
         if (!context.generateAsSource && context.generationLayer < MAX_GENERATING_LAYERS)
         {
-            for (Map.Entry<BlockCoord, TileEntity> entry : tileEntities.entrySet())
-                if (entry.getValue() instanceof GeneratingTileEntity)
-                    ((GeneratingTileEntity) entry.getValue()).generate(context, instanceData.tileEntities.get(entry.getKey()));
+            tileEntities.entrySet().stream().filter(entry -> entry.getValue() instanceof GeneratingTileEntity).forEach(entry -> ((GeneratingTileEntity) entry.getValue()).generate(context, instanceData.tileEntities.get(entry.getKey())));
         }
         else
         {
@@ -242,16 +241,13 @@ public class GenericStructureInfo implements StructureInfo<GenericStructureInfo.
             int[] areaSize = new int[]{blockCollection.width, blockCollection.height, blockCollection.length};
             BlockCoord origin = context.lowerCoord();
 
-            for (Transformer transformer : transformers)
-                instanceData.transformers.add(transformer.prepareInstanceData(context));
+            instanceData.transformers.addAll(transformers.stream().map(transformer -> transformer.prepareInstanceData(context)).collect(Collectors.toList()));
 
-            for (TileEntity tileEntity : worldData.tileEntities)
-                if (tileEntity instanceof GeneratingTileEntity)
-                {
-                    BlockCoord key = new BlockCoord(tileEntity);
-                    IvWorldData.setTileEntityPosForGeneration(tileEntity, context.transform.apply(key, areaSize).add(origin));
-                    instanceData.tileEntities.put(key, (NBTStorable) ((GeneratingTileEntity) tileEntity).prepareInstanceData(context));
-                }
+            worldData.tileEntities.stream().filter(tileEntity -> tileEntity instanceof GeneratingTileEntity).forEach(tileEntity -> {
+                BlockCoord key = new BlockCoord(tileEntity);
+                IvWorldData.setTileEntityPosForGeneration(tileEntity, context.transform.apply(key, areaSize).add(origin));
+                instanceData.tileEntities.put(key, (NBTStorable) ((GeneratingTileEntity) tileEntity).prepareInstanceData(context));
+            });
         }
 
         return instanceData;
@@ -267,14 +263,7 @@ public class GenericStructureInfo implements StructureInfo<GenericStructureInfo.
 
     private boolean skips(List<Pair<Transformer, NBTStorable>> transformers, final Block block, final int metadata)
     {
-        return Iterables.any(transformers, new Predicate<Pair<Transformer, NBTStorable>>()
-        {
-            @Override
-            public boolean apply(@Nullable Pair<Transformer, NBTStorable> input)
-            {
-                return input.getLeft().skipGeneration(input.getRight(), block, metadata);
-            }
-        });
+        return transformers.stream().anyMatch(input -> input.getLeft().skipGeneration(input.getRight(), block, metadata));
     }
 
     public IvWorldData constructWorldData(World world)
@@ -285,12 +274,7 @@ public class GenericStructureInfo implements StructureInfo<GenericStructureInfo.
     @Override
     public <I extends StructureGenerationInfo> List<I> generationInfos(Class<I> clazz)
     {
-        List<I> list = new ArrayList<>();
-        for (StructureGenerationInfo info : generationInfos)
-        {
-            if (clazz.isAssignableFrom(info.getClass()))
-                list.add((I) info);
-        }
+        List<I> list = generationInfos.stream().filter(info -> clazz.isAssignableFrom(info.getClass())).map(info -> (I) info).collect(Collectors.toList());
 
         return list;
     }
@@ -456,15 +440,11 @@ public class GenericStructureInfo implements StructureInfo<GenericStructureInfo.
             BlockCoord origin = context.lowerCoord();
 
             NBTTagCompound tileEntityCompound = compound.getCompoundTag(InstanceData.KEY_TILE_ENTITIES);
-            for (TileEntity tileEntity : worldData.tileEntities)
-            {
-                if (tileEntity instanceof GeneratingTileEntity)
-                {
-                    BlockCoord key = new BlockCoord(tileEntity);
-                    IvWorldData.setTileEntityPosForGeneration(tileEntity, context.transform.apply(key, areaSize).add(origin));
-                    tileEntities.put(key, (NBTStorable) ((GeneratingTileEntity) tileEntity).loadInstanceData(context, getTileEntityTag(tileEntityCompound, key)));
-                }
-            }
+            worldData.tileEntities.stream().filter(tileEntity -> tileEntity instanceof GeneratingTileEntity).forEach(tileEntity -> {
+                BlockCoord key = new BlockCoord(tileEntity);
+                IvWorldData.setTileEntityPosForGeneration(tileEntity, context.transform.apply(key, areaSize).add(origin));
+                tileEntities.put(key, (NBTStorable) ((GeneratingTileEntity) tileEntity).loadInstanceData(context, getTileEntityTag(tileEntityCompound, key)));
+            });
         }
 
         @Override

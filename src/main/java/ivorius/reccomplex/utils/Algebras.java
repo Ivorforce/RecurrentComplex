@@ -51,7 +51,7 @@ public class Algebras
 
     public static abstract class Unary<T> extends Algebra.Operator<T>
     {
-        public static enum Notation
+        public enum Notation
         {
             PREFIX, POSTFIX
         }

@@ -217,13 +217,11 @@ public class SchematicFile
         tagCompound.setTag(SchematicMapping.COMPOUND_KEY, schematicMapping.writeToNBT());
 
         NBTTagList entities = new NBTTagList();
-        for (NBTTagCompound entityCompound : entityCompounds)
-            entities.appendTag(entityCompound);
+        entityCompounds.forEach(entities::appendTag);
         tagCompound.setTag("Entities", entities);
 
         NBTTagList tileEntitites = new NBTTagList();
-        for (NBTTagCompound tileEntityCompound : tileEntityCompounds)
-            entities.appendTag(tileEntityCompound);
+        tileEntityCompounds.forEach(entities::appendTag);
         tagCompound.setTag("TileEntities", tileEntitites);
     }
 

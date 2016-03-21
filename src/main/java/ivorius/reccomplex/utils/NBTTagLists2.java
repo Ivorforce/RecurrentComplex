@@ -58,8 +58,7 @@ public class NBTTagLists2
     public static NBTTagList nbt(List<NBTTagList> lists)
     {
         NBTTagList list = new NBTTagList();
-        for (NBTTagList nbt : lists)
-            list.appendTag(nbt);
+        lists.forEach(list::appendTag);
         return list;
     }
 }

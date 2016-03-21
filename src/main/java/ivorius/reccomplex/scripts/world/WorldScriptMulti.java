@@ -5,7 +5,6 @@
 
 package ivorius.reccomplex.scripts.world;
 
-import com.google.common.base.Function;
 import com.google.common.collect.Lists;
 import ivorius.ivtoolkit.blocks.BlockCoord;
 import ivorius.ivtoolkit.tools.NBTCompoundObjects;
@@ -104,17 +103,11 @@ public class WorldScriptMulti implements WorldScript<WorldScriptMulti.InstanceDa
     @Override
     public void writeToNBT(NBTTagCompound compound)
     {
-        NBTTagLists.writeCompoundsTo(compound, "scripts", Lists.transform(scripts, new Function<WorldScript, NBTTagCompound>()
-        {
-            @Nullable
-            @Override
-            public NBTTagCompound apply(WorldScript script)
-            {
-                NBTTagCompound scriptCompound = new NBTTagCompound();
-                scriptCompound.setString("id", WorldScriptRegistry.INSTANCE.getID(script.getClass()));
-                scriptCompound.setTag("script", NBTCompoundObjects.write(script));
-                return scriptCompound;
-            }
+        NBTTagLists.writeCompoundsTo(compound, "scripts", Lists.transform(scripts, script -> {
+            NBTTagCompound scriptCompound = new NBTTagCompound();
+            scriptCompound.setString("id", WorldScriptRegistry.INSTANCE.getID(script.getClass()));
+            scriptCompound.setTag("script", NBTCompoundObjects.write(script));
+            return scriptCompound;
         }));
     }
 

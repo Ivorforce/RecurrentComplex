@@ -79,14 +79,7 @@ public class RCForgeEventHandler
             final int entityY = MathHelper.floor_double(event.entity.posY);
             final int entityZ = MathHelper.floor_double(event.entity.posZ);
 
-            if (Iterables.any(disabledTileDropAreas, new Predicate<StructureBoundingBox>()
-            {
-                @Override
-                public boolean apply(StructureBoundingBox input)
-                {
-                    return input.isVecInside(entityX, entityY, entityZ);
-                }
-            }))
+            if (disabledTileDropAreas.stream().anyMatch(input -> input.isVecInside(entityX, entityY, entityZ)))
                 event.setCanceled(true);
         }
     }

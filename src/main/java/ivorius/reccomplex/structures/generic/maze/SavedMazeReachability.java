@@ -30,6 +30,7 @@ import org.apache.commons.lang3.tuple.Pair;
 import javax.annotation.Nullable;
 import java.lang.reflect.Type;
 import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * Created by lukas on 18.01.16.
@@ -53,27 +54,12 @@ public class SavedMazeReachability implements NBTCompoundObject
 
     public static Predicate<MazeRoomConnection> notBlocked(final Collection<Connector> blockedConnections, final Map<MazeRoomConnection, Connector> connections)
     {
-        return new Predicate<MazeRoomConnection>()
-        {
-            @Override
-            public boolean apply(@Nullable MazeRoomConnection input)
-            {
-                return !blockedConnections.contains(connections.get(input));
-            }
-        };
+        return input -> !blockedConnections.contains(connections.get(input));
     }
 
     public static Set<SavedMazePath> buildExpected(SavedMazeComponent savedMazeComponent)
     {
-        Set<SavedMazePath> complete = Sets.newHashSet(Iterables.transform(savedMazeComponent.exitPaths, new Function<SavedMazePathConnection, SavedMazePath>()
-        {
-            @Nullable
-            @Override
-            public SavedMazePath apply(@Nullable SavedMazePathConnection input)
-            {
-                return input.path;
-            }
-        }));
+        Set<SavedMazePath> complete = Sets.newHashSet(savedMazeComponent.exitPaths.stream().map(input -> input.path).collect(Collectors.toList()));
         completeExitPaths(complete, savedMazeComponent.rooms);
         return complete;
     }
@@ -86,9 +72,7 @@ public class SavedMazeReachability implements NBTCompoundObject
     public static void completeExitPaths(Set<SavedMazePath> exits, Selection rooms)
     {
         for (MazeRoom room : rooms.mazeRooms(true))
-            for (SavedMazePath connection : SavedMazePaths.neighbors(room))
-                if (!exits.contains(connection) && !(rooms.contains(connection.getSourceRoom()) && rooms.contains(connection.getDestRoom())))
-                    exits.add(connection);
+            SavedMazePaths.neighbors(room).stream().filter(connection -> !exits.contains(connection) && !(rooms.contains(connection.getSourceRoom()) && rooms.contains(connection.getDestRoom()))).forEach(exits::add);
     }
 
     public void set(SavedMazeReachability reachability)
@@ -100,15 +84,7 @@ public class SavedMazeReachability implements NBTCompoundObject
     {
         groups.clear();
         for (Set<SavedMazePath> group : groups)
-            groups.add(Sets.newHashSet(Iterables.transform(group, new Function<SavedMazePath, SavedMazePath>()
-            {
-                @Nullable
-                @Override
-                public SavedMazePath apply(@Nullable SavedMazePath input)
-                {
-                    return input.copy();
-                }
-            })));
+            groups.add(Sets.newHashSet(group.stream().map(SavedMazePath::copy).collect(Collectors.toList())));
 
         crossConnections.clear();
         for (Map.Entry<SavedMazePath, SavedMazePath> entry : crossConnections)
@@ -126,15 +102,7 @@ public class SavedMazeReachability implements NBTCompoundObject
 
         for (Set<SavedMazePath> group : groups)
         {
-            FluentIterable<MazeRoomConnection> existing = FluentIterable.from(group).transform(new Function<SavedMazePath, MazeRoomConnection>()
-            {
-                @Nullable
-                @Override
-                public MazeRoomConnection apply(@Nullable SavedMazePath savedMazePath)
-                {
-                    return MazeRoomConnections.rotated(savedMazePath.toRoomConnection(), transform, size);
-                }
-            }).filter(filter);
+            FluentIterable<MazeRoomConnection> existing = FluentIterable.from(group).transform(savedMazePath -> MazeRoomConnections.rotated(savedMazePath.toRoomConnection(), transform, size)).filter(filter);
 
             for (MazeRoomConnection left : existing)
                 defaultGroup.remove(left);
@@ -167,52 +135,22 @@ public class SavedMazeReachability implements NBTCompoundObject
     public void readFromNBT(NBTTagCompound compound)
     {
         groups.clear();
-        groups.addAll(Lists.transform(NBTTagLists2.listsFrom(compound, "groups"), new Function<NBTTagList, Set<SavedMazePath>>()
-        {
-            @Nullable
-            @Override
-            public Set<SavedMazePath> apply(@Nullable NBTTagList input)
-            {
-                return Sets.newHashSet(NBTCompoundObjects.readList(input, SavedMazePath.class));
-            }
-        }));
+        groups.addAll(Lists.transform(NBTTagLists2.listsFrom(compound, "groups"), input -> Sets.newHashSet(NBTCompoundObjects.readList(input, SavedMazePath.class))));
 
         crossConnections.clear();
-        crossConnections.addAll(Lists.transform(NBTTagLists.compoundsFrom(compound, "crossConnections"), new Function<NBTTagCompound, ImmutablePair<SavedMazePath, SavedMazePath>>()
-        {
-            @Nullable
-            @Override
-            public ImmutablePair<SavedMazePath, SavedMazePath> apply(@Nullable NBTTagCompound input)
-            {
-                return ImmutablePair.of(NBTCompoundObjects2.readFrom(input, "key", SavedMazePath.class), NBTCompoundObjects2.readFrom(input, "val", SavedMazePath.class));
-            }
-        }));
+        crossConnections.addAll(Lists.transform(NBTTagLists.compoundsFrom(compound, "crossConnections"), input -> ImmutablePair.of(NBTCompoundObjects2.readFrom(input, "key", SavedMazePath.class), NBTCompoundObjects2.readFrom(input, "val", SavedMazePath.class))));
     }
 
     @Override
     public void writeToNBT(NBTTagCompound compound)
     {
-        NBTTagLists2.writeNbt(compound, "groups", Lists.transform(groups, new Function<Set<SavedMazePath>, NBTTagList>()
-        {
-            @Nullable
-            @Override
-            public NBTTagList apply(@Nullable Set<SavedMazePath> input)
-            {
-                return NBTCompoundObjects.writeList(input);
-            }
-        }));
+        NBTTagLists2.writeNbt(compound, "groups", Lists.transform(groups, NBTCompoundObjects::writeList));
 
-        NBTTagLists.writeCompoundsTo(compound, "crossConnections", Lists.transform(crossConnections, new Function<ImmutablePair<SavedMazePath, SavedMazePath>, NBTTagCompound>()
-        {
-            @Nullable
-            @Override
-            public NBTTagCompound apply(@Nullable ImmutablePair<SavedMazePath, SavedMazePath> input)
-            {
-                NBTTagCompound compound = new NBTTagCompound();
-                NBTCompoundObjects2.writeTo(compound, "key", input.getKey());
-                NBTCompoundObjects2.writeTo(compound, "val", input.getValue());
-                return compound;
-            }
+        NBTTagLists.writeCompoundsTo(compound, "crossConnections", Lists.transform(crossConnections, input -> {
+            NBTTagCompound compound1 = new NBTTagCompound();
+            NBTCompoundObjects2.writeTo(compound1, "key", input.getKey());
+            NBTCompoundObjects2.writeTo(compound1, "val", input.getValue());
+            return compound1;
         }));
     }
 

@@ -213,10 +213,7 @@ public class InventoryGenericInvGen implements IInventory
             }
         }
 
-        for (WeightedRandomChestContent chestContent : chestContents)
-        {
-            validateMinMax(chestContent);
-        }
+        chestContents.forEach(InventoryGenericInvGen::validateMinMax);
     }
 
     private void buildCachedStacks()

@@ -45,14 +45,7 @@ public class ReachabilityStrategy<M extends MazeComponent<C>, C> implements Maze
 
     public static <C> Predicate<C> connectorTraverser(final Set<C> blockingConnections)
     {
-        return new Predicate<C>()
-        {
-            @Override
-            public boolean apply(@Nullable C input)
-            {
-                return !blockingConnections.contains(input);
-            }
-        };
+        return input -> !blockingConnections.contains(input);
     }
 
     // TODO Better success prediction
@@ -66,20 +59,16 @@ public class ReachabilityStrategy<M extends MazeComponent<C>, C> implements Maze
 
             for (MazeComponent<C> maze : mazes)
             {
-                for (Pair<MazeRoomConnection, MazeRoomConnection> pair : maze.reachability())
-                {
-                    if (pair.getLeft().equals(traversing))
-                    {
-                        MazeRoomConnection dest = pair.getRight();
+                maze.reachability().stream().filter(pair -> pair.getLeft().equals(traversing)).forEach(pair -> {
+                    MazeRoomConnection dest = pair.getRight();
 
-                        if (!traversed.contains(dest) && visitor.visit(dest)
-                                && traverser.apply(maze.exits().get(traversing)) && traverser.apply(maze.exits().get(dest)))
-                        {
-                            traversed.add(dest);
-                            dirty.add(dest);
-                        }
+                    if (!traversed.contains(dest) && visitor.visit(dest)
+                            && traverser.apply(maze.exits().get(traversing)) && traverser.apply(maze.exits().get(dest)))
+                    {
+                        traversed.add(dest);
+                        dirty.add(dest);
                     }
-                }
+                });
             }
         }
     }
@@ -91,17 +80,10 @@ public class ReachabilityStrategy<M extends MazeComponent<C>, C> implements Maze
             return true;
 
         final Set<MazeRoom> roomsFromBoth = Sets.union(maze.rooms(), component.rooms());
-        Predicate<MazeRoomConnection> isExit = new Predicate<MazeRoomConnection>()
-        {
-            @Override
-            public boolean apply(@Nullable MazeRoomConnection input)
-            {
-                return (confiner.apply(input.getLeft()) && !roomsFromBoth.contains(input.getLeft())) || (confiner.apply(input.getRight()) && !roomsFromBoth.contains(input.getRight()));
-            }
-        };
+        Predicate<MazeRoomConnection> isExit = input -> (confiner.apply(input.getLeft()) && !roomsFromBoth.contains(input.getLeft())) || (confiner.apply(input.getRight()) && !roomsFromBoth.contains(input.getRight()));
 
         willPlace(maze, component); // Simulate
-        boolean canPlace = Iterables.any(leftTraversed, isExit) && Iterables.any(rightTraversed, isExit);
+        boolean canPlace = leftTraversed.stream().anyMatch(isExit::apply) && rightTraversed.stream().anyMatch(isExit::apply);
         didUnplace(maze, component);
 
         return canPlace;
@@ -122,19 +104,14 @@ public class ReachabilityStrategy<M extends MazeComponent<C>, C> implements Maze
     protected void traverse(MazeComponent<C> maze, MazeComponent<C> component, LinkedHashSet<MazeRoomConnection> leftTraversed, TIntList leftTraversedSteps, final Collection<MazeRoomConnection> right)
     {
         int before = leftTraversed.size();
-        traverse(Arrays.asList(maze, component), leftTraversed, Sets.intersection(component.exits().keySet(), leftTraversed), traverser, new Visitor<MazeRoomConnection>()
-        {
-            @Override
-            public boolean visit(MazeRoomConnection connection)
+        traverse(Arrays.asList(maze, component), leftTraversed, Sets.intersection(component.exits().keySet(), leftTraversed), traverser, connection -> {
+            if (right.contains(connection))
             {
-                if (right.contains(connection))
-                {
-                    stepsGoalReached = 0;
-                    return false;
-                }
-
-                return true;
+                stepsGoalReached = 0;
+                return false;
             }
+
+            return true;
         });
         leftTraversedSteps.add(leftTraversed.size() - before);
     }

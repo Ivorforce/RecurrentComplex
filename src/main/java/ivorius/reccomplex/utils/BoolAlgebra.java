@@ -14,15 +14,7 @@ import javax.annotation.Nullable;
  */
 public abstract class BoolAlgebra
 {
-    public static final Function<String, Boolean> CONSTANT_EVALUATOR = new Function<String, Boolean>()
-    {
-        @Nullable
-        @Override
-        public Boolean apply(String input)
-        {
-            return Boolean.valueOf(input);
-        }
-    };
+    public static final Function<String, Boolean> CONSTANT_EVALUATOR = Boolean::valueOf;
 
     public static Algebras.Unary<Boolean> not(String symbol)
     {

@@ -23,20 +23,14 @@ public class SchematicQuadCache
     public static GridQuadCache<?> createQuadCache(final SchematicFile schematic, float[] scale)
     {
         final Object handle = new Object();
-        return GridQuadCache.createQuadCache(new int[]{schematic.width, schematic.height, schematic.length}, scale, new Function<Pair<BlockCoord, ForgeDirection>, Object>()
-        {
-            @Nullable
-            @Override
-            public Object apply(Pair<BlockCoord, ForgeDirection> input)
-            {
-                BlockCoord coord = input.getLeft();
-                ForgeDirection direction = input.getRight();
+        return GridQuadCache.createQuadCache(new int[]{schematic.width, schematic.height, schematic.length}, scale, input -> {
+            BlockCoord coord = input.getLeft();
+            ForgeDirection direction = input.getRight();
 
-                Block block = schematic.getBlock(coord);
-                return block.isOpaqueCube() && schematic.shouldRenderSide(coord, direction)
-                        ? handle
-                        : null;
-            }
+            Block block = schematic.getBlock(coord);
+            return block.isOpaqueCube() && schematic.shouldRenderSide(coord, direction)
+                    ? handle
+                    : null;
         });
     }
 }

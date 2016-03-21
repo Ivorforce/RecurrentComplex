@@ -21,7 +21,7 @@ public interface Operation
 
     void renderPreview(PreviewType previewType, World world, int ticks, float partialTicks);
 
-    public static enum PreviewType
+    enum PreviewType
     {
         NONE(0, "none"),
         BOUNDING_BOX(1, "bounds"),

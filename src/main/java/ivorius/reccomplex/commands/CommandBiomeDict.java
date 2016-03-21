@@ -49,69 +49,74 @@ public class CommandBiomeDict extends CommandBase
         if (args.length < 2)
             throw ServerTranslations.wrongUsageException("commands.biomedict.usage");
 
-        if (args[0].equals("get"))
+        switch (args[0])
         {
-            Set<BiomeGenBase> biomes = BiomeMatcher.gatherAllBiomes();
-
-            boolean didFindBiome = false;
-
-            String biomeName = func_147178_a(commandSender, args, 1).getUnformattedText();
-
-            for (BiomeGenBase biomeGenBase : biomes)
+            case "get":
             {
-                if (biomeGenBase.biomeName.equals(biomeName))
-                {
-                    BiomeDictionary.Type[] types = BiomeDictionary.getTypesForBiome(biomeGenBase);
-                    IChatComponent[] components = new IChatComponent[types.length];
+                Set<BiomeGenBase> biomes = BiomeMatcher.gatherAllBiomes();
 
-                    for (int i = 0; i < types.length; i++)
+                boolean didFindBiome = false;
+
+                String biomeName = func_147178_a(commandSender, args, 1).getUnformattedText();
+
+                for (BiomeGenBase biomeGenBase : biomes)
+                {
+                    if (biomeGenBase.biomeName.equals(biomeName))
                     {
-                        BiomeDictionary.Type type = types[i];
-                        components[i] = new ChatComponentText(IvGsonHelper.serializedName(type));
+                        BiomeDictionary.Type[] types = BiomeDictionary.getTypesForBiome(biomeGenBase);
+                        IChatComponent[] components = new IChatComponent[types.length];
+
+                        for (int i = 0; i < types.length; i++)
+                        {
+                            BiomeDictionary.Type type = types[i];
+                            components[i] = new ChatComponentText(IvGsonHelper.serializedName(type));
+                            components[i].getChatStyle().setChatClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND,
+                                    String.format("/%s list %s", getCommandName(), type)));
+                            components[i].getChatStyle().setChatHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT,
+                                    ServerTranslations.format("commands.biomedict.get.number", BiomeDictionary.getBiomesForType(type).length)));
+                        }
+
+                        commandSender.addChatMessage(ServerTranslations.format("commands.biomedict.get", biomeName,
+                                new ChatComponentTranslation(StringUtils.repeat("%s", ", ", components.length), components)));
+
+                        didFindBiome = true;
+                        break;
+                    }
+                }
+
+                if (!didFindBiome)
+                    commandSender.addChatMessage(ServerTranslations.format("commands.biomedict.nobiome", biomeName));
+                break;
+            }
+            case "list":
+            {
+                BiomeDictionary.Type type = RCGsonHelper.enumForNameIgnoreCase(args[1], BiomeDictionary.Type.values());
+
+                if (type != null)
+                {
+                    BiomeGenBase[] biomes = BiomeDictionary.getBiomesForType(type);
+                    IChatComponent[] components = new IChatComponent[biomes.length];
+
+                    for (int i = 0; i < biomes.length; i++)
+                    {
+                        BiomeGenBase biome = biomes[i];
+                        components[i] = new ChatComponentText(biome.biomeName);
                         components[i].getChatStyle().setChatClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND,
-                                String.format("/%s list %s", getCommandName(), type)));
+                                String.format("/%s get %s", getCommandName(), biome.biomeName)));
                         components[i].getChatStyle().setChatHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT,
-                                ServerTranslations.format("commands.biomedict.get.number", BiomeDictionary.getBiomesForType(type).length)));
+                                ServerTranslations.format("commands.biomedict.list.number", BiomeDictionary.getTypesForBiome(biome).length)));
                     }
 
-                    commandSender.addChatMessage(ServerTranslations.format("commands.biomedict.get", biomeName,
+                    commandSender.addChatMessage(ServerTranslations.format("commands.biomedict.list", args[1],
                             new ChatComponentTranslation(StringUtils.repeat("%s", ", ", components.length), components)));
-
-                    didFindBiome = true;
-                    break;
                 }
+                else
+                    commandSender.addChatMessage(ServerTranslations.format("commands.biomedict.notype", args[1]));
+                break;
             }
-
-            if (!didFindBiome)
-                commandSender.addChatMessage(ServerTranslations.format("commands.biomedict.nobiome", biomeName));
+            default:
+                throw ServerTranslations.wrongUsageException("commands.biomedict.usage");
         }
-        else if (args[0].equals("list"))
-        {
-            BiomeDictionary.Type type = RCGsonHelper.enumForNameIgnoreCase(args[1], BiomeDictionary.Type.values());
-
-            if (type != null)
-            {
-                BiomeGenBase[] biomes = BiomeDictionary.getBiomesForType(type);
-                IChatComponent[] components = new IChatComponent[biomes.length];
-
-                for (int i = 0; i < biomes.length; i++)
-                {
-                    BiomeGenBase biome = biomes[i];
-                    components[i] = new ChatComponentText(biome.biomeName);
-                    components[i].getChatStyle().setChatClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND,
-                            String.format("/%s get %s", getCommandName(), biome.biomeName)));
-                    components[i].getChatStyle().setChatHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT,
-                            ServerTranslations.format("commands.biomedict.list.number", BiomeDictionary.getTypesForBiome(biome).length)));
-                }
-
-                commandSender.addChatMessage(ServerTranslations.format("commands.biomedict.list", args[1],
-                        new ChatComponentTranslation(StringUtils.repeat("%s", ", ", components.length), components)));
-            }
-            else
-                commandSender.addChatMessage(ServerTranslations.format("commands.biomedict.notype", args[1]));
-        }
-        else
-            throw ServerTranslations.wrongUsageException("commands.biomedict.usage");
     }
 
     @Override

@@ -39,6 +39,7 @@ import org.apache.commons.lang3.tuple.Pair;
 
 import javax.annotation.Nullable;
 import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * Created by lukas on 24.05.14.
@@ -174,14 +175,7 @@ public class StructureRegistry
     public Set<StructureInfo> getAllGeneratingStructures()
     {
         ensureGenerationCache();
-        return Collections.unmodifiableSet(Maps.filterKeys(allStructures.getMap(), new Predicate<String>()
-        {
-            @Override
-            public boolean apply(@Nullable String input)
-            {
-                return generatingStructures.contains(input);
-            }
-        }).values());
+        return Collections.unmodifiableSet(Maps.filterKeys(allStructures.getMap(), input -> generatingStructures.contains(input)).values());
     }
 
     public Set<String> getAllGeneratingStructureKeys()
@@ -257,27 +251,15 @@ public class StructureRegistry
 
     public Collection<Pair<StructureInfo, StructureListGenerationInfo>> getStructuresInList(final String listID, final ForgeDirection front)
     {
-        return getStructureGenerations(StructureListGenerationInfo.class, new Predicate<Pair<StructureInfo, StructureListGenerationInfo>>()
-        {
-            @Override
-            public boolean apply(Pair<StructureInfo, StructureListGenerationInfo> input)
-            {
-                return listID.equals(input.getRight().listID)
-                        && (front == null || input.getLeft().isRotatable() || input.getRight().front == front);
-            }
-        });
+        return getStructureGenerations(StructureListGenerationInfo.class, input -> listID.equals(input.getRight().listID)
+                && (front == null || input.getLeft().isRotatable() || input.getRight().front == front));
     }
 
     public Collection<Pair<StructureInfo, MazeGenerationInfo>> getStructuresInMaze(final String mazeID)
     {
-        return getStructureGenerations(MazeGenerationInfo.class, new Predicate<Pair<StructureInfo, MazeGenerationInfo>>()
-        {
-            @Override
-            public boolean apply(Pair<StructureInfo, MazeGenerationInfo> input)
-            {
-                MazeGenerationInfo info = input.getRight();
-                return mazeID.equals(info.mazeID) && info.mazeComponent.isValid();
-            }
+        return getStructureGenerations(MazeGenerationInfo.class, input -> {
+            MazeGenerationInfo info = input.getRight();
+            return mazeID.equals(info.mazeID) && info.mazeComponent.isValid();
         });
     }
 
@@ -288,16 +270,11 @@ public class StructureRegistry
 
     public Collection<Pair<StructureInfo, StaticGenerationInfo>> getStaticStructuresAt(final int chunkX, final int chunkZ, final World world, final ChunkCoordinates spawnPos)
     {
-        return getStructureGenerations(StaticGenerationInfo.class, new Predicate<Pair<StructureInfo, StaticGenerationInfo>>()
-        {
-            @Override
-            public boolean apply(@Nullable Pair<StructureInfo, StaticGenerationInfo> input)
-            {
-                StaticGenerationInfo info = input.getRight();
-                return info.dimensionMatcher.apply(world.provider)
-                        && chunkContains(chunkX, chunkZ, info.getPositionX(spawnPos), info.getPositionZ(spawnPos)
-                );
-            }
+        return getStructureGenerations(StaticGenerationInfo.class, input -> {
+            StaticGenerationInfo info = input.getRight();
+            return info.dimensionMatcher.apply(world.provider)
+                    && chunkContains(chunkX, chunkZ, info.getPositionX(spawnPos), info.getPositionZ(spawnPos)
+            );
         });
     }
 
@@ -331,16 +308,8 @@ public class StructureRegistry
     private void updateVanillaGenerations()
     {
         TemporaryVillagerRegistry.instance().setHandlers(
-                Sets.newHashSet(Iterables.filter(Collections2.transform(getStructureGenerations(VanillaStructureGenerationInfo.class),
-                        new Function<Pair<StructureInfo, VanillaStructureGenerationInfo>, VillagerRegistry.IVillageCreationHandler>()
-                        {
-                            @Nullable
-                            @Override
-                            public VillagerRegistry.IVillageCreationHandler apply(@Nullable Pair<StructureInfo, VanillaStructureGenerationInfo> input)
-                            {
-                                return GenericVillageCreationHandler.forGeneration(structureID(input.getLeft()), input.getRight().id());
-                            }
-                        }), Predicates.notNull()))
+                Sets.newHashSet(Collections2.transform(getStructureGenerations(VanillaStructureGenerationInfo.class),
+                        input -> GenericVillageCreationHandler.forGeneration(structureID(input.getLeft()), input.getRight().id())).stream().filter(Objects::nonNull).collect(Collectors.toList()))
         );
     }
 

@@ -130,8 +130,7 @@ public class DimensionDictionary
         }
         dTypes.addAll(types);
 
-        for (String type : types)
-            registerType(type);
+        types.forEach(DimensionDictionary::registerType);
     }
 
     /**
@@ -171,8 +170,7 @@ public class DimensionDictionary
      */
     public static void registerTypes(Collection<String> types)
     {
-        for (String type : types)
-            registerType(type);
+        types.forEach(DimensionDictionary::registerType);
     }
 
     /**

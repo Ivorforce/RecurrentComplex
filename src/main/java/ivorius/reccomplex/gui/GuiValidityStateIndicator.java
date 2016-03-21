@@ -95,7 +95,7 @@ public class GuiValidityStateIndicator extends Gui
         this.isVisible = isVisible;
     }
 
-    public static enum State
+    public enum State
     {
         VALID(0, 0),
         SEMI_VALID(10, 0),

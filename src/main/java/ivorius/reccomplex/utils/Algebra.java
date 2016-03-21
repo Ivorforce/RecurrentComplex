@@ -17,6 +17,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.text.ParseException;
 import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * A list of operators that is able to parse strings to an expression.
@@ -221,23 +222,10 @@ public class Algebra<T>
             @Override
             public SymbolTokenizer.Token tryConstructSymbolTokenAt(int index, @Nonnull String string)
             {
-                SortedSet<Pair<Operator<T>, Integer>> sortedSymbols = new TreeSet<>(new Comparator<Pair<Operator<T>, Integer>>(){
-
-                    @Override
-                    public int compare(Pair<Operator<T>, Integer> o1, Pair<Operator<T>, Integer> o2)
-                    {
-                        return o2.getLeft().getSymbols()[o2.getRight()].compareTo(o1.getLeft().getSymbols()[o1.getRight()]);
-                    }
+                SortedSet<Pair<Operator<T>, Integer>> sortedSymbols = new TreeSet<>((Comparator<Pair<Operator<T>, Integer>>) (o1, o2) -> {
+                    return o2.getLeft().getSymbols()[o2.getRight()].compareTo(o1.getLeft().getSymbols()[o1.getRight()]);
                 });
-                sortedSymbols.addAll(Lists.newArrayList(Iterables.concat(Iterables.transform(operators, new Function<Operator<T>, Iterable<Pair<Operator<T>, Integer>>>()
-                {
-                    @Nullable
-                    @Override
-                    public Iterable<Pair<Operator<T>, Integer>> apply(@Nullable Operator<T> operator)
-                    {
-                        return Pairs.pairLeft(operator, Ranges.toIterable(operator.symbols.length));
-                    }
-                }))));
+                sortedSymbols.addAll(Lists.newArrayList(Iterables.concat(operators.stream().map(operator -> Pairs.pairLeft(operator, Ranges.toIterable(operator.symbols.length))).collect(Collectors.toList()))));
 
                 for (Pair<Operator<T>, Integer> symbolPair : sortedSymbols)
                 {

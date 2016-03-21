@@ -39,36 +39,14 @@ public class TableCellEnum<T> extends TableCellPropertyDefault<T>
 
     public static <T extends Enum> List<Option<T>> options(List<T> values, final String baseKey, boolean tooltip)
     {
-        return options(values, new Function<T, String>()
-        {
-            @Nullable
-            @Override
-            public String apply(@Nullable T input)
-            {
-                return IvTranslations.get(baseKey + IvGsonHelper.serializedName(input));
-            }
-        }, tooltip ? new Function<T, List<String>>()
-        {
-            @Nullable
-            @Override
-            public List<String> apply(@Nullable T input)
-            {
-                return IvTranslations.getLines(baseKey + IvGsonHelper.serializedName(input) + ".tooltip");
-            }
-        } : null);
+        return options(values, input -> {
+            return IvTranslations.get(baseKey + IvGsonHelper.serializedName(input));
+        }, tooltip ? (Function<T, List<String>>) input -> IvTranslations.getLines(baseKey + IvGsonHelper.serializedName(input) + ".tooltip") : null);
     }
 
     public static <T extends Enum> List<Option<T>> options(List<T> values, final Function<T, String> titleFunc, final Function<T, List<String>> tooltipFunc)
     {
-        return Lists.transform(values, new Function<T, Option<T>>()
-        {
-            @Nullable
-            @Override
-            public Option<T> apply(T input)
-            {
-                return new Option<>(input, titleFunc != null ? titleFunc.apply(input) : null, tooltipFunc != null ? tooltipFunc.apply(input) : null);
-            }
-        });
+        return Lists.transform(values, input -> new Option<>(input, titleFunc != null ? titleFunc.apply(input) : null, tooltipFunc != null ? tooltipFunc.apply(input) : null));
     }
 
     @Override

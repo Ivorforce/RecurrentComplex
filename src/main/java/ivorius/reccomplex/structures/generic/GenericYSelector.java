@@ -93,51 +93,27 @@ public class GenericYSelector implements YSelector
 
     protected static SingleYSelector surfaceSelector(final World world)
     {
-        return new SingleYSelector()
-        {
-            @Override
-            public int select(int x, int z)
-            {
-                return surfaceHeight(world, x, z);
-            }
-        };
+        return (x, z) -> surfaceHeight(world, x, z);
     }
 
     protected static SingleYSelector surfaceUnderwaterSelector(final World world)
     {
-        return new SingleYSelector()
-        {
-            @Override
-            public int select(int x, int z)
-            {
-                return surfaceHeightUnderwater(world, x, z);
-            }
-        };
+        return (x, z) -> surfaceHeightUnderwater(world, x, z);
     }
 
     protected static IntListReducer minReducer(final int y)
     {
-        return new IntListReducer()
-        {
-            @Override
-            public int reduce(TIntList list)
-            {
-                int average = list.min();
-                return average > MIN_DIST_TO_VOID ? average + y : DONT_GENERATE;
-            }
+        return list -> {
+            int average = list.min();
+            return average > MIN_DIST_TO_VOID ? average + y : DONT_GENERATE;
         };
     }
 
     protected static IntListReducer averageReducer(final int y)
     {
-        return new IntListReducer()
-        {
-            @Override
-            public int reduce(TIntList list)
-            {
-                int average = averageIgnoringErrors(list.toArray());
-                return average > MIN_DIST_TO_VOID ? average + y : DONT_GENERATE;
-            }
+        return list -> {
+            int average = averageIgnoringErrors(list.toArray());
+            return average > MIN_DIST_TO_VOID ? average + y : DONT_GENERATE;
         };
     }
 

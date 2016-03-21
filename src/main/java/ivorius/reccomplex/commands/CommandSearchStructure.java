@@ -33,6 +33,7 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.PriorityQueue;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 /**
  * Created by lukas on 25.05.14.
@@ -64,15 +65,7 @@ public class CommandSearchStructure extends CommandBase
         keywords.add(metadata.comment);
         keywords.add(metadata.weblink);
 
-        return Iterables.any(keywords, Predicates.contains(Pattern.compile(Strings.join(Lists.transform(query, new Function<String, String>()
-        {
-            @Nullable
-            @Override
-            public String apply(String s)
-            {
-                return Pattern.quote(s);
-            }
-        }), "|")))) ? 1 : 0;
+        return keywords.stream().anyMatch(Predicates.contains(Pattern.compile(Strings.join(Lists.transform(query, Pattern::quote), "|")))::apply) ? 1 : 0;
     }
 
     @Override
@@ -94,21 +87,12 @@ public class CommandSearchStructure extends CommandBase
         {
             final List<String> query = Arrays.asList(args);
 
-            PriorityQueue<String> strucs = new PriorityQueue<>(10, new Comparator<String>()
-            {
-                @Override
-                public int compare(String o1, String o2)
-                {
-                    float r1 = searchRank(query, o1, StructureRegistry.INSTANCE.getStructure(o1));
-                    float r2 = searchRank(query, o2, StructureRegistry.INSTANCE.getStructure(o2));
-                    return Floats.compare(r1, r2);
-                }
+            PriorityQueue<String> strucs = new PriorityQueue<>(10, (Comparator<String>) (o1, o2) -> {
+                float r1 = searchRank(query, o1, StructureRegistry.INSTANCE.getStructure(o1));
+                float r2 = searchRank(query, o2, StructureRegistry.INSTANCE.getStructure(o2));
+                return Floats.compare(r1, r2);
             });
-            for (String s : StructureRegistry.INSTANCE.allStructureIDs())
-            {
-                if (searchRank(query, s, StructureRegistry.INSTANCE.getStructure(s)) > 0)
-                    strucs.add(s);
-            }
+            strucs.addAll(StructureRegistry.INSTANCE.allStructureIDs().stream().filter(s -> searchRank(query, s, StructureRegistry.INSTANCE.getStructure(s)) > 0).collect(Collectors.toList()));
 
             boolean cut = strucs.size() > MAX_RESULTS;
             ChatComponentText[] components = new ChatComponentText[cut ? MAX_RESULTS : strucs.size()];

@@ -63,14 +63,7 @@ public class StructureGenerationData extends WorldSavedData
     public Set<Entry> getEntriesAt(ChunkCoordIntPair coords, boolean onlyPartial)
     {
         if (onlyPartial)
-            return Sets.filter(chunkMap.get(coords), new Predicate<Entry>()
-            {
-                @Override
-                public boolean apply(Entry input)
-                {
-                    return !input.hasBeenGenerated;
-                }
-            });
+            return Sets.filter(chunkMap.get(coords), input -> !input.hasBeenGenerated);
         return chunkMap.get(coords);
     }
 
@@ -78,14 +71,9 @@ public class StructureGenerationData extends WorldSavedData
     {
         Set<Entry> entries = getEntriesAt(new ChunkCoordIntPair(coords.x >> 4, coords.z >> 4), false);
 
-        return Sets.filter(entries, new Predicate<Entry>()
-        {
-            @Override
-            public boolean apply(Entry input)
-            {
-                StructureBoundingBox bb = input.boundingBox();
-                return bb != null && bb.isVecInside(coords.x, coords.y, coords.z);
-            }
+        return Sets.filter(entries, input -> {
+            StructureBoundingBox bb = input.boundingBox();
+            return bb != null && bb.isVecInside(coords.x, coords.y, coords.z);
         });
     }
 
@@ -93,14 +81,9 @@ public class StructureGenerationData extends WorldSavedData
     {
         ImmutableSet.Builder<Entry> entries = ImmutableSet.builder();
         for (ChunkCoordIntPair chunkCoords : StructureBoundingBoxes.rasterize(boundingBox))
-                entries.addAll(Sets.filter(getEntriesAt(chunkCoords, false), new Predicate<Entry>()
-                {
-                    @Override
-                    public boolean apply(Entry input)
-                    {
-                        StructureBoundingBox bb = input.boundingBox();
-                        return bb != null && bb.intersectsWith(boundingBox);
-                    }
+                entries.addAll(Sets.filter(getEntriesAt(chunkCoords, false), input -> {
+                    StructureBoundingBox bb = input.boundingBox();
+                    return bb != null && bb.intersectsWith(boundingBox);
                 }));
         return entries.build();
     }

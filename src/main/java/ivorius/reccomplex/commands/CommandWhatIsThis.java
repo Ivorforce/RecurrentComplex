@@ -61,15 +61,7 @@ public class CommandWhatIsThis extends CommandBase
         {
             List<StructureGenerationData.Entry> ordered = Lists.newArrayList(entries);
             if (ordered.size() > 1)
-                commandSender.addChatMessage(ServerTranslations.format("commands.whatisthis.many", Strings.join(Lists.transform(ordered, new Function<StructureGenerationData.Entry, String>()
-                {
-                    @Nullable
-                    @Override
-                    public String apply(StructureGenerationData.Entry input)
-                    {
-                        return input.getStructureID();
-                    }
-                }), ", ")));
+                commandSender.addChatMessage(ServerTranslations.format("commands.whatisthis.many", Strings.join(Lists.transform(ordered, StructureGenerationData.Entry::getStructureID), ", ")));
             else
                 commandSender.addChatMessage(ServerTranslations.format("commands.whatisthis.one", ordered.get(0).getStructureID()));
         }

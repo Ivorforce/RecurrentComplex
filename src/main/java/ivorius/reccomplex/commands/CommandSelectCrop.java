@@ -19,6 +19,8 @@ import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
 
+import java.util.stream.StreamSupport;
+
 /**
  * Created by lukas on 09.06.14.
  */
@@ -52,13 +54,6 @@ public class CommandSelectCrop extends CommandSelectModify
 
     public static boolean isSideEmpty(final World world, BlockArea area, ForgeDirection direction)
     {
-        return Iterables.all(BlockAreas.side(area, direction), new Predicate<BlockCoord>()
-        {
-            @Override
-            public boolean apply(BlockCoord coord)
-            {
-                return coord.getBlock(world).getMaterial() == Material.air;
-            }
-        });
+        return StreamSupport.stream(BlockAreas.side(area, direction).spliterator(), false).allMatch(coord -> coord.getBlock(world).getMaterial() == Material.air);
     }
 }

@@ -5,9 +5,6 @@
 
 package ivorius.reccomplex.scripts.world;
 
-import com.google.common.collect.Iterables;
-import com.google.common.collect.Maps;
-import com.google.common.collect.Sets;
 import gnu.trove.list.array.TIntArrayList;
 import ivorius.ivtoolkit.blocks.BlockCoord;
 import ivorius.ivtoolkit.math.AxisAlignedTransform2D;
@@ -15,7 +12,6 @@ import ivorius.ivtoolkit.math.IvVecMathHelper;
 import ivorius.ivtoolkit.maze.components.*;
 import ivorius.ivtoolkit.tools.IvNBTHelper;
 import ivorius.ivtoolkit.tools.NBTCompoundObjects;
-import ivorius.ivtoolkit.tools.Visitor;
 import ivorius.reccomplex.gui.table.TableDataSource;
 import ivorius.reccomplex.gui.table.TableDelegate;
 import ivorius.reccomplex.gui.table.TableNavigator;
@@ -26,6 +22,8 @@ import ivorius.reccomplex.structures.StructureRegistry;
 import ivorius.reccomplex.structures.StructureSpawnContext;
 import ivorius.reccomplex.structures.generic.Selection;
 import ivorius.reccomplex.structures.generic.maze.*;
+import ivorius.reccomplex.structures.generic.maze.rules.BlockedConnectorStrategy;
+import ivorius.reccomplex.structures.generic.maze.rules.LimitAABBStrategy;
 import ivorius.reccomplex.utils.IntAreas;
 import ivorius.reccomplex.utils.IvTranslations;
 import ivorius.reccomplex.utils.NBTStorable;
@@ -44,8 +42,8 @@ import java.util.stream.Collectors;
  */
 public class WorldScriptMazeGenerator implements WorldScript<WorldScriptMazeGenerator.InstanceData>
 {
+    public final List<SavedMazePathConnection> mazeExits = new ArrayList<>();
     public String mazeID = "";
-    public List<SavedMazePathConnection> mazeExits = new ArrayList<>();
     public Selection mazeRooms = Selection.zeroSelection(3);
     public BlockCoord structureShift = new BlockCoord(0, 0, 0);
     public int[] roomSize = new int[]{3, 5, 3};

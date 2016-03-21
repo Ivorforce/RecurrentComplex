@@ -42,6 +42,16 @@ public class StringTypeAdapterFactory<B> implements JsonSerializer<B>, JsonDeser
         this("object", "type");
     }
 
+    public String getTypeKey()
+    {
+        return typeKey;
+    }
+
+    public String getObjectKey()
+    {
+        return objectKey;
+    }
+
     public <T extends B> void register(String id, Class<? extends T> clazz, JsonSerializer<T> serializer, JsonDeserializer<T> deserializer)
     {
         deserializerMap.put(id, deserializer);

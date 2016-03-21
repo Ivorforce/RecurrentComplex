@@ -37,7 +37,7 @@ public class TableDataSourceWorldScriptList extends TableDataSourceList<WorldScr
     @Override
     public WorldScript newEntry(String actionID)
     {
-        Class<? extends WorldScript> clazz = WorldScriptRegistry.INSTANCE.getScript(actionID);
+        Class<? extends WorldScript> clazz = WorldScriptRegistry.INSTANCE.objectClass(actionID);
 
         return instantiateScript(clazz);
     }
@@ -51,7 +51,7 @@ public class TableDataSourceWorldScriptList extends TableDataSourceList<WorldScr
     @Override
     public TableCellButton.Action[] getAddActions()
     {
-        Collection<String> allTypes = WorldScriptRegistry.INSTANCE.keySet();
+        Collection<String> allTypes = WorldScriptRegistry.INSTANCE.allIDs();
         List<TableCellButton.Action> actions = new ArrayList<>(allTypes.size());
         for (String type : allTypes)
         {

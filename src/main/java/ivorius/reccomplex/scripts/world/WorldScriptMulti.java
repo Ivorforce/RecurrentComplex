@@ -27,6 +27,7 @@ import net.minecraft.world.World;
 import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * Created by lukas on 14.09.15.
@@ -41,7 +42,7 @@ public class WorldScriptMulti implements WorldScript<WorldScriptMulti.InstanceDa
         InstanceData instanceData = new InstanceData();
 
         for (WorldScript script : scripts)
-            instanceData.addInstanceData(script.prepareInstanceData(context, coord, world), WorldScriptRegistry.INSTANCE.getID(script.getClass()));
+            instanceData.addInstanceData(script.prepareInstanceData(context, coord, world), WorldScriptRegistry.INSTANCE.type(script.getClass()));
 
         return instanceData;
     }
@@ -79,36 +80,13 @@ public class WorldScriptMulti implements WorldScript<WorldScriptMulti.InstanceDa
     public void readFromNBT(NBTTagCompound compound)
     {
         scripts.clear();
-        for (NBTTagCompound scriptCompound : NBTTagLists.compoundsFrom(compound, "scripts"))
-        {
-            String id = scriptCompound.getString("id");
-            Class<? extends WorldScript> clazz = WorldScriptRegistry.INSTANCE.getScript(id);
-
-            if (clazz != null)
-            {
-                try
-                {
-                    WorldScript script = clazz.newInstance();
-                    script.readFromNBT(scriptCompound.getCompoundTag("script"));
-                    scripts.add(script);
-                }
-                catch (InstantiationException | IllegalAccessException e)
-                {
-                    RecurrentComplex.logger.error("Error reading script", e);
-                }
-            }
-        }
+        scripts.addAll(NBTTagLists.compoundsFrom(compound, "scripts").stream().map(WorldScriptRegistry.INSTANCE::read).collect(Collectors.toList()));
     }
 
     @Override
     public void writeToNBT(NBTTagCompound compound)
     {
-        NBTTagLists.writeCompoundsTo(compound, "scripts", Lists.transform(scripts, script -> {
-            NBTTagCompound scriptCompound = new NBTTagCompound();
-            scriptCompound.setString("id", WorldScriptRegistry.INSTANCE.getID(script.getClass()));
-            scriptCompound.setTag("script", NBTCompoundObjects.write(script));
-            return scriptCompound;
-        }));
+        NBTTagLists.writeCompoundsTo(compound, "scripts", scripts.stream().map(WorldScriptRegistry.INSTANCE::write).collect(Collectors.toList()));
     }
 
     public static class InstanceData implements NBTStorable
@@ -128,7 +106,7 @@ public class WorldScriptMulti implements WorldScript<WorldScriptMulti.InstanceDa
                 NBTTagCompound scriptTag = compoundsFrom.get(i);
 
                 WorldScript script = expectedScripts.get(i);
-                if (WorldScriptRegistry.INSTANCE.getID(script.getClass()).equals(scriptTag.getString("id")))
+                if (WorldScriptRegistry.INSTANCE.type(script.getClass()).equals(scriptTag.getString("id")))
                     instanceDates.add(script.loadInstanceData(context, compound.getTag("data")));
                 else
                     instanceDates.add(null);

@@ -3,7 +3,7 @@
  *  * http://lukas.axxim.net
  */
 
-package ivorius.reccomplex.structures.generic.maze;
+package ivorius.reccomplex.structures.generic.maze.rules;
 
 import com.google.common.base.Predicate;
 import com.google.common.collect.Iterables;

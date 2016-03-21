@@ -45,6 +45,16 @@ public class SerializableStringTypeRegistry<T>
         registerType(id, clazz, serializer, serializer);
     }
 
+    public String typeKey()
+    {
+        return adapterFactory.getTypeKey();
+    }
+
+    public String objectKey()
+    {
+        return adapterFactory.getObjectKey();
+    }
+
     public Class<? extends T> typeForID(String id)
     {
         return adapterFactory.objectClass(id);

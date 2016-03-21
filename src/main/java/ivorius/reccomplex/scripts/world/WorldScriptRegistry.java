@@ -7,35 +7,23 @@ package ivorius.reccomplex.scripts.world;
 
 import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
+import ivorius.reccomplex.utils.NBTStringTypeRegistry;
 
 import java.util.Set;
 
 /**
  * Created by lukas on 14.09.15.
  */
-public class WorldScriptRegistry
+public class WorldScriptRegistry extends NBTStringTypeRegistry<WorldScript>
 {
-    public static final WorldScriptRegistry INSTANCE = new WorldScriptRegistry();
+    public static final WorldScriptRegistry INSTANCE = new WorldScriptRegistry("id", "script");
 
-    private BiMap<String, Class<? extends WorldScript>> scripts = HashBiMap.create();
-
-    public Class<? extends WorldScript> register(String key, Class<? extends WorldScript> value)
+    public WorldScriptRegistry(String objectKey, String typeKey)
     {
-        return scripts.put(key, value);
+        super(objectKey, typeKey);
     }
 
-    public Class<? extends WorldScript> getScript(String key)
+    public WorldScriptRegistry()
     {
-        return scripts.get(key);
-    }
-
-    public String getID(Class<? extends WorldScript> script)
-    {
-        return scripts.inverse().get(script);
-    }
-
-    public Set<String> keySet()
-    {
-        return scripts.keySet();
     }
 }

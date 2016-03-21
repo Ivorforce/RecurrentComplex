@@ -3,7 +3,7 @@
  *  * http://lukas.axxim.net
  */
 
-package ivorius.reccomplex.structures.generic.maze;
+package ivorius.reccomplex.structures.generic.maze.rules;
 
 import ivorius.ivtoolkit.maze.components.*;
 

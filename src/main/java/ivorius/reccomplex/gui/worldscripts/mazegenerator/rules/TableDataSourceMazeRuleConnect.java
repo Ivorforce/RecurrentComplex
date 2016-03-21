@@ -7,15 +7,15 @@ package ivorius.reccomplex.gui.worldscripts.mazegenerator.rules;
 
 import ivorius.reccomplex.gui.table.*;
 import ivorius.reccomplex.gui.worldscripts.mazegenerator.TableDataSourceMazePathList;
-import ivorius.reccomplex.structures.generic.maze.rules.saved.SavedReachabilityStrategy;
+import ivorius.reccomplex.structures.generic.maze.rules.saved.MazeRuleConnect;
 import ivorius.reccomplex.utils.IvTranslations;
 
 /**
  * Created by lukas on 21.03.16.
  */
-public class TableDataSourceReachabilityStrategy extends TableDataSourceSegmented
+public class TableDataSourceMazeRuleConnect extends TableDataSourceSegmented
 {
-    public TableDataSourceReachabilityStrategy(SavedReachabilityStrategy strategy, TableDelegate tableDelegate, TableNavigator navigator, int[] boundsLower, int[] boundsHigher)
+    public TableDataSourceMazeRuleConnect(MazeRuleConnect strategy, TableDelegate tableDelegate, TableNavigator navigator, int[] boundsLower, int[] boundsHigher)
     {
         TableCellTitle startTitle = new TableCellTitle("", "Start");
         startTitle.setTooltip(IvTranslations.formatLines("reccomplex.mazerule.connect.start.tooltip"));

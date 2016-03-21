@@ -20,7 +20,8 @@ import ivorius.reccomplex.operation.OperationRegistry;
 import ivorius.reccomplex.random.PoemLoader;
 import ivorius.reccomplex.scripts.world.*;
 import ivorius.reccomplex.structures.generic.maze.rules.MazeRuleRegistry;
-import ivorius.reccomplex.structures.generic.maze.rules.saved.SavedReachabilityStrategy;
+import ivorius.reccomplex.structures.generic.maze.rules.saved.MazeRuleConnect;
+import ivorius.reccomplex.structures.generic.maze.rules.saved.MazeRuleConnectAll;
 import ivorius.reccomplex.structures.registry.MCRegistrySpecial;
 import ivorius.reccomplex.structures.OperationMoveStructure;
 import ivorius.reccomplex.structures.generic.BiomeGenerationInfo;
@@ -228,7 +229,8 @@ public class RCRegistryHandler
         genInfoRegistry.registerType("static", StaticGenerationInfo.class, new StaticGenerationInfo.Serializer());
         genInfoRegistry.registerType("vanilla", VanillaStructureGenerationInfo.class, new VanillaStructureGenerationInfo.Serializer());
 
-        MazeRuleRegistry.INSTANCE.register("connect", SavedReachabilityStrategy.class);
+        MazeRuleRegistry.INSTANCE.register("connect", MazeRuleConnect.class);
+        MazeRuleRegistry.INSTANCE.register("connectall", MazeRuleConnectAll.class);
 
         OperationRegistry.register("strucGen", OperationGenerateStructure.class);
         OperationRegistry.register("schemGen", OperationGenerateSchematic.class);

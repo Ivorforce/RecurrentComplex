@@ -335,6 +335,8 @@ reccomplex.reachability.crossconnections.tooltip=One-Way connections between<br>
 
 reccomplex.mazerule.connect=Connect
 reccomplex.mazerule.connect.tooltip=Ensure a path between two exits.
+reccomplex.mazerule.connectall=Connect All
+reccomplex.mazerule.connectall.tooltip=Ensure a path between all exits.
 
 reccomplex.mazerule.connect.start.tooltip=Connect any of these to<br>any of the end paths.
 reccomplex.mazerule.connect.end.tooltip=Connect any of these to<br>any of the start paths.

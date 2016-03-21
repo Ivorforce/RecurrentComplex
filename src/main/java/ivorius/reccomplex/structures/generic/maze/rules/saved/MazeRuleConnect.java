@@ -10,11 +10,11 @@ import ivorius.ivtoolkit.tools.NBTCompoundObjects;
 import ivorius.reccomplex.gui.table.TableDataSource;
 import ivorius.reccomplex.gui.table.TableDelegate;
 import ivorius.reccomplex.gui.table.TableNavigator;
-import ivorius.reccomplex.gui.worldscripts.mazegenerator.rules.TableDataSourceReachabilityStrategy;
+import ivorius.reccomplex.gui.worldscripts.mazegenerator.rules.TableDataSourceMazeRuleConnect;
 import ivorius.reccomplex.scripts.world.WorldScriptMazeGenerator;
 import ivorius.reccomplex.structures.generic.maze.Connector;
+import ivorius.reccomplex.structures.generic.maze.ConnectorFactory;
 import ivorius.reccomplex.structures.generic.maze.MazeComponentStructure;
-import ivorius.reccomplex.structures.generic.maze.SavedMazeComponent;
 import ivorius.reccomplex.structures.generic.maze.SavedMazePath;
 import ivorius.reccomplex.structures.generic.maze.rules.LimitAABBStrategy;
 import ivorius.reccomplex.structures.generic.maze.rules.MazeRule;
@@ -29,7 +29,7 @@ import java.util.stream.Collectors;
 /**
  * Created by lukas on 21.03.16.
  */
-public class SavedReachabilityStrategy extends MazeRule<ReachabilityStrategy<MazeComponentStructure<Connector>, Connector>>
+public class MazeRuleConnect extends MazeRule
 {
     public final List<SavedMazePath> start = new ArrayList<>();
     public final List<SavedMazePath> end = new ArrayList<>();
@@ -53,11 +53,11 @@ public class SavedReachabilityStrategy extends MazeRule<ReachabilityStrategy<Maz
     @Override
     public TableDataSource tableDataSource(TableNavigator navigator, TableDelegate delegate, int[] boundsLower, int[] boundsHigher)
     {
-        return new TableDataSourceReachabilityStrategy(this, delegate, navigator, boundsLower, boundsHigher);
+        return new TableDataSourceMazeRuleConnect(this, delegate, navigator, boundsLower, boundsHigher);
     }
 
     @Override
-    public ReachabilityStrategy<MazeComponentStructure<Connector>, Connector> build(WorldScriptMazeGenerator script, Set<Connector> blockedConnections)
+    public ReachabilityStrategy<MazeComponentStructure<Connector>, Connector> build(WorldScriptMazeGenerator script, Set<Connector> blockedConnections, ConnectorFactory connectorFactory)
     {
         if (start.size() > 0 && end.size() > 0)
             return new ReachabilityStrategy<>(buildPaths(start), buildPaths(end), ReachabilityStrategy.connectorTraverser(blockedConnections), new LimitAABBStrategy<>(script.mazeRooms.boundsSize()));
@@ -68,17 +68,17 @@ public class SavedReachabilityStrategy extends MazeRule<ReachabilityStrategy<Maz
     @Override
     public void readFromNBT(NBTTagCompound compound)
     {
-        NBTCompoundObjects.writeListTo(compound, "start", start);
-        NBTCompoundObjects.writeListTo(compound, "end", end);
-    }
-
-    @Override
-    public void writeToNBT(NBTTagCompound compound)
-    {
         start.clear();
         start.addAll(NBTCompoundObjects.readListFrom(compound, "start", SavedMazePath.class));
 
         end.clear();
         end.addAll(NBTCompoundObjects.readListFrom(compound, "end", SavedMazePath.class));
+    }
+
+    @Override
+    public void writeToNBT(NBTTagCompound compound)
+    {
+        NBTCompoundObjects.writeListTo(compound, "start", start);
+        NBTCompoundObjects.writeListTo(compound, "end", end);
     }
 }

@@ -20,12 +20,12 @@ import java.util.List;
 /**
  * Created by lukas on 21.03.16.
  */
-public class TableDataSourceMazeRuleList extends TableDataSourceList<MazeRule<?>, List<MazeRule<?>>>
+public class TableDataSourceMazeRuleList extends TableDataSourceList<MazeRule, List<MazeRule>>
 {
     private int[] boundsLower;
     private int[] boundsHigher;
 
-    public TableDataSourceMazeRuleList(List<MazeRule<?>> list, TableDelegate tableDelegate, TableNavigator navigator, int[] boundsLower, int[] boundsHigher)
+    public TableDataSourceMazeRuleList(List<MazeRule> list, TableDelegate tableDelegate, TableNavigator navigator, int[] boundsLower, int[] boundsHigher)
     {
         super(list, tableDelegate, navigator);
         this.boundsLower = boundsLower;
@@ -46,7 +46,7 @@ public class TableDataSourceMazeRuleList extends TableDataSourceList<MazeRule<?>
     }
 
     @Override
-    public TableDataSource editEntryDataSource(MazeRule<?> mazeRule)
+    public TableDataSource editEntryDataSource(MazeRule mazeRule)
     {
         return  mazeRule.tableDataSource(navigator, tableDelegate, boundsLower, boundsHigher);
     }

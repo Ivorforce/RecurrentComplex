@@ -50,7 +50,7 @@ public class WorldScriptMazeGenerator implements WorldScript<WorldScriptMazeGene
     public Selection mazeRooms = Selection.zeroSelection(3);
     public BlockCoord structureShift = new BlockCoord(0, 0, 0);
     public int[] roomSize = new int[]{3, 5, 3};
-    public final List<MazeRule<?>> rules = new ArrayList<>();
+    public final List<MazeRule> rules = new ArrayList<>();
 
     public static <C> void addRandomPaths(Random random, int[] size, MorphingMazeComponent<C> maze, List<? extends MazeComponent<C>> components, C roomConnector, int number)
     {
@@ -261,7 +261,7 @@ public class WorldScriptMazeGenerator implements WorldScript<WorldScriptMazeGene
         WorldScriptMazeGenerator.addExits(factory, maze, mazeExits);
         WorldScriptMazeGenerator.addRandomPaths(random, outsideBoundsHigher, maze, transformedComponents, roomConnector, outsideBoundsHigher[0] * outsideBoundsHigher[1] * outsideBoundsHigher[2] / (5 * 5 * 5) + 1);
 
-        List<MazePredicate<MazeComponentStructure<Connector>, Connector>> predicates = rules.stream().map(r -> r.build(this, blockedConnections)).filter(Objects::nonNull).collect(Collectors.toCollection(ArrayList::new));
+        List<MazePredicate<MazeComponentStructure<Connector>, Connector>> predicates = rules.stream().map(r -> r.build(this, blockedConnections, factory)).filter(Objects::nonNull).collect(Collectors.toCollection(ArrayList::new));
         predicates.add(new LimitAABBStrategy<>(outsideBoundsHigher));
         predicates.add(new BlockedConnectorStrategy<>(blockedConnections));
 

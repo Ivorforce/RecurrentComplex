@@ -10,7 +10,7 @@ import ivorius.reccomplex.utils.NBTStringTypeRegistry;
 /**
  * Created by lukas on 21.03.16.
  */
-public class MazeRuleRegistry extends NBTStringTypeRegistry<MazeRule<?>>
+public class MazeRuleRegistry extends NBTStringTypeRegistry<MazeRule>
 {
     public static final MazeRuleRegistry INSTANCE = new MazeRuleRegistry("rule", "type");
 

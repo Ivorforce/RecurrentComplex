@@ -16,7 +16,7 @@ import java.util.Set;
  */
 public class WorldScriptRegistry extends NBTStringTypeRegistry<WorldScript>
 {
-    public static final WorldScriptRegistry INSTANCE = new WorldScriptRegistry("id", "script");
+    public static final WorldScriptRegistry INSTANCE = new WorldScriptRegistry("script", "id");
 
     public WorldScriptRegistry(String objectKey, String typeKey)
     {

@@ -79,9 +79,9 @@ public class ReachabilityStrategy<M extends MazeComponent<C>, C> implements Maze
         final Set<MazeRoom> roomsFromBoth = Sets.union(maze.rooms(), component.rooms());
         Predicate<MazeRoomConnection> isDirty = input -> (confiner.test(input.getLeft()) && !roomsFromBoth.contains(input.getLeft())) || (confiner.test(input.getRight()) && !roomsFromBoth.contains(input.getRight()));
 
-        willPlace(maze, component, true);
+        place(maze, component, true);
         boolean canPlace = stepsGoalReached >= 0 || (leftTraversed.stream().anyMatch(isDirty) && rightTraversed.stream().anyMatch(isDirty));
-        didUnplace(maze, component, true);
+        unplace(maze, component, true);
 
         return canPlace;
     }
@@ -89,13 +89,12 @@ public class ReachabilityStrategy<M extends MazeComponent<C>, C> implements Maze
     @Override
     public void willPlace(MorphingMazeComponent<C> maze, ShiftedMazeComponent<M, C> component)
     {
-        willPlace(maze, component, false);
+        place(maze, component, false);
     }
 
     @Override
     public void didPlace(MorphingMazeComponent<C> maze, ShiftedMazeComponent<M, C> component)
     {
-
     }
 
     @Override
@@ -104,7 +103,7 @@ public class ReachabilityStrategy<M extends MazeComponent<C>, C> implements Maze
 
     }
 
-    protected void willPlace(MorphingMazeComponent<C> maze, ShiftedMazeComponent<M, C> component, boolean simulate)
+    protected void place(MorphingMazeComponent<C> maze, ShiftedMazeComponent<M, C> component, boolean simulate)
     {
         if (stepsGoalReached >= 0)
             stepsGoalReached++;
@@ -115,8 +114,6 @@ public class ReachabilityStrategy<M extends MazeComponent<C>, C> implements Maze
             if (stepsGoalReached < 0)
                 rightNew.add(traverse(maze, component, rightTraversed, leftTraversed));
         }
-
-        Predicate<MazeRoomConnection> isDirty = input -> (confiner.test(input.getLeft()) && !maze.rooms().contains(input.getLeft())) || (confiner.test(input.getRight()) && !maze.rooms().contains(input.getRight()));
     }
 
     protected Set<MazeRoomConnection> traverse(MazeComponent<C> maze, MazeComponent<C> component, Set<MazeRoomConnection> traversed, final Collection<MazeRoomConnection> goal)
@@ -135,10 +132,10 @@ public class ReachabilityStrategy<M extends MazeComponent<C>, C> implements Maze
     @Override
     public void didUnplace(MorphingMazeComponent<C> maze, ShiftedMazeComponent<M, C> component)
     {
-        didUnplace(maze, component, false);
+        unplace(maze, component, false);
     }
 
-    protected void didUnplace(MorphingMazeComponent<C> maze, ShiftedMazeComponent<M, C> component, boolean simulate)
+    protected void unplace(MorphingMazeComponent<C> maze, ShiftedMazeComponent<M, C> component, boolean simulate)
     {
         if (stepsGoalReached >= 0)
             stepsGoalReached--;
@@ -150,7 +147,6 @@ public class ReachabilityStrategy<M extends MazeComponent<C>, C> implements Maze
             if (rightNew.size() > leftNew.size())
                 rightTraversed.removeAll(rightNew.remove(rightNew.size() - 1));
         }
-        Predicate<MazeRoomConnection> isDirty = input -> (confiner.test(input.getLeft()) && !maze.rooms().contains(input.getLeft())) || (confiner.test(input.getRight()) && !maze.rooms().contains(input.getRight()));
     }
 
     @Override

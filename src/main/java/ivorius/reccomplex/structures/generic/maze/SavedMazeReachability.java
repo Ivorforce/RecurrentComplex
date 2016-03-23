@@ -5,7 +5,6 @@
 
 package ivorius.reccomplex.structures.generic.maze;
 
-import com.google.common.base.Function;
 import com.google.common.base.Predicate;
 import com.google.common.base.Predicates;
 import com.google.common.collect.*;
@@ -19,15 +18,14 @@ import ivorius.ivtoolkit.tools.NBTCompoundObject;
 import ivorius.ivtoolkit.tools.NBTCompoundObjects;
 import ivorius.ivtoolkit.tools.NBTTagLists;
 import ivorius.reccomplex.json.JsonUtils;
+import ivorius.reccomplex.scripts.world.WorldScriptMazeGenerator;
 import ivorius.reccomplex.structures.generic.Selection;
 import ivorius.reccomplex.utils.NBTCompoundObjects2;
 import ivorius.reccomplex.utils.NBTTagLists2;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.nbt.NBTTagList;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
 
-import javax.annotation.Nullable;
 import java.lang.reflect.Type;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -55,6 +53,13 @@ public class SavedMazeReachability implements NBTCompoundObject
     public static Predicate<MazeRoomConnection> notBlocked(final Collection<Connector> blockedConnections, final Map<MazeRoomConnection, Connector> connections)
     {
         return input -> !blockedConnections.contains(connections.get(input));
+    }
+
+    public static Set<SavedMazePath> buildExpected(WorldScriptMazeGenerator script)
+    {
+        Set<SavedMazePath> complete = Sets.newHashSet(script.exitPaths.stream().map(input -> input.path).collect(Collectors.toList()));
+        completeExitPaths(complete, script.rooms);
+        return complete;
     }
 
     public static Set<SavedMazePath> buildExpected(SavedMazeComponent savedMazeComponent)

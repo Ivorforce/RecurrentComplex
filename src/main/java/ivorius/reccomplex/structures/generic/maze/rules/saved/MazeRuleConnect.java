@@ -51,7 +51,7 @@ public class MazeRuleConnect extends MazeRule
     }
 
     @Override
-    public TableDataSource tableDataSource(TableNavigator navigator, TableDelegate delegate, int[] boundsLower, int[] boundsHigher)
+    public TableDataSource tableDataSource(TableNavigator navigator, TableDelegate delegate, Set<SavedMazePath> expected, int[] boundsLower, int[] boundsHigher)
     {
         return new TableDataSourceMazeRuleConnect(this, delegate, navigator, boundsLower, boundsHigher);
     }
@@ -60,7 +60,7 @@ public class MazeRuleConnect extends MazeRule
     public ReachabilityStrategy<MazeComponentStructure<Connector>, Connector> build(WorldScriptMazeGenerator script, Set<Connector> blockedConnections, ConnectorFactory connectorFactory)
     {
         if (start.size() > 0 && end.size() > 0)
-            return new ReachabilityStrategy<>(buildPaths(start), buildPaths(end), ReachabilityStrategy.connectorTraverser(blockedConnections), new LimitAABBStrategy<>(script.mazeRooms.boundsSize()));
+            return new ReachabilityStrategy<>(buildPaths(start), buildPaths(end), ReachabilityStrategy.connectorTraverser(blockedConnections), new LimitAABBStrategy<>(script.rooms.boundsSize()));
         else
             return null;
     }

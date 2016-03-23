@@ -12,10 +12,7 @@ import ivorius.reccomplex.gui.table.TableDelegate;
 import ivorius.reccomplex.gui.table.TableNavigator;
 import ivorius.reccomplex.gui.worldscripts.mazegenerator.rules.TableDataSourceMazeRuleConnectAll;
 import ivorius.reccomplex.scripts.world.WorldScriptMazeGenerator;
-import ivorius.reccomplex.structures.generic.maze.Connector;
-import ivorius.reccomplex.structures.generic.maze.ConnectorFactory;
-import ivorius.reccomplex.structures.generic.maze.MazeComponentStructure;
-import ivorius.reccomplex.structures.generic.maze.SavedMazePath;
+import ivorius.reccomplex.structures.generic.maze.*;
 import ivorius.reccomplex.structures.generic.maze.rules.LimitAABBStrategy;
 import ivorius.reccomplex.structures.generic.maze.rules.MazeRule;
 import ivorius.reccomplex.structures.generic.maze.rules.ReachabilityStrategy;
@@ -32,8 +29,13 @@ import java.util.stream.Collectors;
  */
 public class MazeRuleConnectAll extends MazeRule
 {
-    public boolean additive = false;
     public final List<SavedMazePath> exits = new ArrayList<>();
+    public boolean additive = false;
+
+    public static List<SavedMazePath> getPaths(List<SavedMazePath> paths, List<SavedMazePathConnection> omega, Set<Connector> blockedConnections, ConnectorFactory connectorFactory)
+    {
+        return omega.stream().filter(e -> !blockedConnections.contains(e.connector.toConnector(connectorFactory))).map(e -> e.path).filter(e -> !paths.contains(e)).collect(Collectors.toList());
+    }
 
     @Override
     public String displayString()
@@ -42,22 +44,22 @@ public class MazeRuleConnectAll extends MazeRule
     }
 
     @Override
-    public TableDataSource tableDataSource(TableNavigator navigator, TableDelegate delegate, int[] boundsLower, int[] boundsHigher)
+    public TableDataSource tableDataSource(TableNavigator navigator, TableDelegate delegate, Set<SavedMazePath> expected, int[] boundsLower, int[] boundsHigher)
     {
-        return new TableDataSourceMazeRuleConnectAll(this, delegate, navigator, boundsLower, boundsHigher);
+        return new TableDataSourceMazeRuleConnectAll(this, delegate, navigator, expected, boundsLower, boundsHigher);
     }
 
     @Override
     public MazePredicateMany<MazeComponentStructure<Connector>, Connector> build(WorldScriptMazeGenerator script, Set<Connector> blockedConnections, ConnectorFactory connectorFactory)
     {
-        List<SavedMazePath> paths = additive ? exits : script.mazeExits.stream().filter(e -> !blockedConnections.contains(e.connector.toConnector(connectorFactory))).map(e -> e.path).filter(e -> !exits.contains(e)).collect(Collectors.toList());
+        List<SavedMazePath> paths = additive ? exits : getPaths(exits, script.exitPaths, blockedConnections, connectorFactory);
 
         if (paths.size() > 1)
         {
             MazePredicateMany<MazeComponentStructure<Connector>, Connector> predicate = new MazePredicateMany<>();
 
             for (int i = 1; i < paths.size(); i++)
-                predicate.predicates.add(new ReachabilityStrategy<>(Collections.singleton(paths.get(i - 1).toRoomConnection()), Collections.singleton(paths.get(i).toRoomConnection()), ReachabilityStrategy.connectorTraverser(blockedConnections), new LimitAABBStrategy<>(script.mazeRooms.boundsSize())));
+                predicate.predicates.add(new ReachabilityStrategy<>(Collections.singleton(paths.get(i - 1).toRoomConnection()), Collections.singleton(paths.get(i).toRoomConnection()), ReachabilityStrategy.connectorTraverser(blockedConnections), new LimitAABBStrategy<>(script.rooms.boundsSize())));
 
             return predicate;
         }

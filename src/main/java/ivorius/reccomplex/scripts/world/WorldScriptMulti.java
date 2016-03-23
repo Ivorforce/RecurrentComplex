@@ -27,6 +27,7 @@ import net.minecraft.world.World;
 import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 /**
@@ -80,7 +81,7 @@ public class WorldScriptMulti implements WorldScript<WorldScriptMulti.InstanceDa
     public void readFromNBT(NBTTagCompound compound)
     {
         scripts.clear();
-        scripts.addAll(NBTTagLists.compoundsFrom(compound, "scripts").stream().map(WorldScriptRegistry.INSTANCE::read).collect(Collectors.toList()));
+        scripts.addAll(NBTTagLists.compoundsFrom(compound, "scripts").stream().map(WorldScriptRegistry.INSTANCE::read).filter(Objects::nonNull).collect(Collectors.toList()));
     }
 
     @Override

@@ -12,10 +12,7 @@ import ivorius.reccomplex.gui.table.TableDelegate;
 import ivorius.reccomplex.gui.table.TableNavigator;
 import ivorius.reccomplex.gui.worldscripts.mazegenerator.rules.TableDataSourceMazeRuleConnect;
 import ivorius.reccomplex.scripts.world.WorldScriptMazeGenerator;
-import ivorius.reccomplex.structures.generic.maze.Connector;
-import ivorius.reccomplex.structures.generic.maze.ConnectorFactory;
-import ivorius.reccomplex.structures.generic.maze.MazeComponentStructure;
-import ivorius.reccomplex.structures.generic.maze.SavedMazePath;
+import ivorius.reccomplex.structures.generic.maze.*;
 import ivorius.reccomplex.structures.generic.maze.rules.LimitAABBStrategy;
 import ivorius.reccomplex.structures.generic.maze.rules.MazeRule;
 import ivorius.reccomplex.structures.generic.maze.rules.ReachabilityStrategy;
@@ -51,7 +48,7 @@ public class MazeRuleConnect extends MazeRule
     }
 
     @Override
-    public TableDataSource tableDataSource(TableNavigator navigator, TableDelegate delegate, Set<SavedMazePath> expected, int[] boundsLower, int[] boundsHigher)
+    public TableDataSource tableDataSource(TableNavigator navigator, TableDelegate delegate, List<SavedMazePathConnection> expected, int[] boundsLower, int[] boundsHigher)
     {
         return new TableDataSourceMazeRuleConnect(this, delegate, navigator, boundsLower, boundsHigher);
     }

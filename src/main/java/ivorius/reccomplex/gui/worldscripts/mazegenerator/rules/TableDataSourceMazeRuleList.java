@@ -7,6 +7,7 @@ package ivorius.reccomplex.gui.worldscripts.mazegenerator.rules;
 
 import ivorius.reccomplex.gui.table.*;
 import ivorius.reccomplex.structures.generic.maze.SavedMazePath;
+import ivorius.reccomplex.structures.generic.maze.SavedMazePathConnection;
 import ivorius.reccomplex.structures.generic.maze.rules.MazeRule;
 import ivorius.reccomplex.structures.generic.maze.rules.MazeRuleRegistry;
 import ivorius.reccomplex.utils.IvClasses;
@@ -24,11 +25,11 @@ import java.util.Set;
  */
 public class TableDataSourceMazeRuleList extends TableDataSourceList<MazeRule, List<MazeRule>>
 {
-    private Set<SavedMazePath> expected;
+    private List<SavedMazePathConnection> expected;
     private int[] boundsLower;
     private int[] boundsHigher;
 
-    public TableDataSourceMazeRuleList(List<MazeRule> list, TableDelegate tableDelegate, TableNavigator navigator, Set<SavedMazePath> expected, int[] boundsLower, int[] boundsHigher)
+    public TableDataSourceMazeRuleList(List<MazeRule> list, TableDelegate tableDelegate, TableNavigator navigator, List<SavedMazePathConnection> expected, int[] boundsLower, int[] boundsHigher)
     {
         super(list, tableDelegate, navigator);
         this.expected = expected;

@@ -13,6 +13,7 @@ import ivorius.reccomplex.gui.table.TableNavigator;
 import ivorius.reccomplex.scripts.world.WorldScriptMazeGenerator;
 import ivorius.reccomplex.structures.generic.maze.*;
 
+import java.util.List;
 import java.util.Set;
 
 /**
@@ -22,7 +23,7 @@ public abstract class MazeRule implements NBTCompoundObject
 {
     public abstract String displayString();
 
-    public abstract TableDataSource tableDataSource(TableNavigator navigator, TableDelegate delegate, Set<SavedMazePath> expected, int[] boundsLower, int[] boundsHigher);
+    public abstract TableDataSource tableDataSource(TableNavigator navigator, TableDelegate delegate, List<SavedMazePathConnection> expected, int[] boundsLower, int[] boundsHigher);
 
     public abstract MazePredicate<MazeComponentStructure<Connector>, Connector> build(WorldScriptMazeGenerator script, Set<Connector> blockedConnections, ConnectorFactory connectorFactory);
 }

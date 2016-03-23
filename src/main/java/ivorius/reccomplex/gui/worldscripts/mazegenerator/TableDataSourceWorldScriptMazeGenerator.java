@@ -9,7 +9,12 @@ import ivorius.ivtoolkit.blocks.BlockCoord;
 import ivorius.reccomplex.gui.table.*;
 import ivorius.reccomplex.gui.worldscripts.mazegenerator.rules.TableDataSourceMazeRuleList;
 import ivorius.reccomplex.scripts.world.WorldScriptMazeGenerator;
-import ivorius.reccomplex.structures.generic.maze.SavedMazeReachability;
+import ivorius.reccomplex.structures.generic.maze.*;
+import ivorius.reccomplex.structures.generic.maze.rules.saved.MazeRuleConnectAll;
+
+import java.util.Collections;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 /**
  * Created by lukas on 05.06.14.
@@ -202,7 +207,7 @@ public class TableDataSourceWorldScriptMazeGenerator extends TableDataSourceSegm
         }
         else if ("rules".equals(tableElementButton.getID()))
         {
-            tableNavigator.pushTable(new GuiTable(tableDelegate, new TableDataSourceMazeRuleList(script.rules, tableDelegate, tableNavigator, SavedMazeReachability.buildExpected(script), script.rooms.boundsLower(), script.rooms.boundsHigher())));
+            tableNavigator.pushTable(new GuiTable(tableDelegate, new TableDataSourceMazeRuleList(script.rules, tableDelegate, tableNavigator, script.exitPaths, script.rooms.boundsLower(), script.rooms.boundsHigher())));
         }
     }
 }

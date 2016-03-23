@@ -42,6 +42,16 @@ public class SavedMazePathConnection implements NBTCompoundObject
         this.connector.id = connector;
     }
 
+    public SavedMazePath getPath()
+    {
+        return path;
+    }
+
+    public SavedConnector getConnector()
+    {
+        return connector;
+    }
+
     public Map.Entry<MazeRoomConnection, Connector> toRoomConnection(ConnectorFactory factory)
     {
         return Pair.of(path.toRoomConnection(), connector.toConnector(factory));

@@ -5,13 +5,13 @@
 
 package ivorius.reccomplex.structures.generic.maze.rules;
 
-import com.google.common.base.Predicate;
 import com.google.common.collect.Iterables;
 import ivorius.ivtoolkit.maze.components.*;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.Collection;
+import java.util.function.Predicate;
 
 /**
  * Created by lukas on 16.04.15.
@@ -29,11 +29,23 @@ public class LimitAABBStrategy<M extends MazeComponent<C>, C> implements MazePre
     @Override
     public boolean canPlace(MorphingMazeComponent<C> maze, ShiftedMazeComponent<M, C> component)
     {
-        return Iterables.all(component.rooms(), this);
+        return component.rooms().stream().allMatch(this);
     }
 
     @Override
     public void willPlace(MorphingMazeComponent<C> maze, ShiftedMazeComponent<M, C> component)
+    {
+
+    }
+
+    @Override
+    public void didPlace(MorphingMazeComponent<C> maze, ShiftedMazeComponent<M, C> component)
+    {
+
+    }
+
+    @Override
+    public void willUnplace(MorphingMazeComponent<C> maze, ShiftedMazeComponent<M, C> component)
     {
 
     }
@@ -47,11 +59,11 @@ public class LimitAABBStrategy<M extends MazeComponent<C>, C> implements MazePre
     @Override
     public boolean isDirtyConnection(MazeRoom dest, MazeRoom source, C c)
     {
-        return apply(dest);
+        return test(dest);
     }
 
     @Override
-    public boolean apply(@Nullable MazeRoom input)
+    public boolean test(@Nullable MazeRoom input)
     {
         for (int i = 0; i < input.getDimensions(); i++)
             if (input.getCoordinate(i) < 0 || input.getCoordinate(i) >= roomNumbers[i])

@@ -36,6 +36,18 @@ public class BlockedConnectorStrategy<M extends MazeComponent<C>, C> implements 
     }
 
     @Override
+    public void didPlace(MorphingMazeComponent<C> maze, ShiftedMazeComponent<M, C> component)
+    {
+
+    }
+
+    @Override
+    public void willUnplace(MorphingMazeComponent<C> maze, ShiftedMazeComponent<M, C> component)
+    {
+
+    }
+
+    @Override
     public void didUnplace(MorphingMazeComponent<C> maze, ShiftedMazeComponent<M, C> component)
     {
 

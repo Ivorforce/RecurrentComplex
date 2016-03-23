@@ -126,9 +126,17 @@ public class SavedMazeReachability implements NBTCompoundObject
 
     protected void addInterconnections(ImmutableSet.Builder<Pair<MazeRoomConnection, MazeRoomConnection>> builder, Iterable<MazeRoomConnection> existing)
     {
-        for (MazeRoomConnection left : existing)
-            for (MazeRoomConnection right : existing)
-                builder.add(Pair.of(left, right));
+        MazeRoomConnection last = null;
+        for (MazeRoomConnection current : existing)
+        {
+            if (last != null) // It's enough to make a transitive connection in both directions
+            {
+                builder.add(Pair.of(last, current));
+                builder.add(Pair.of(current, last));
+            }
+
+            last = current;
+        }
     }
 
     @Override

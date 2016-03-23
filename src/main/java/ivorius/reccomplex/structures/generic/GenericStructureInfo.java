@@ -309,6 +309,13 @@ public class GenericStructureInfo implements StructureInfo<GenericStructureInfo.
     }
 
     @Override
+    public String toString()
+    {
+        String s = StructureRegistry.INSTANCE.structureID(this);
+        return s != null ? s : "Generic Structure";
+    }
+
+    @Override
     public Object clone()
     {
         GenericStructureInfo genericStructureInfo = StructureRegistry.INSTANCE.createStructureFromJSON(StructureRegistry.INSTANCE.createJSONFromStructure(this));

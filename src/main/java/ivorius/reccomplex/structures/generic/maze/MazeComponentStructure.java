@@ -14,6 +14,7 @@ import ivorius.ivtoolkit.maze.components.MazeRoomConnection;
 import ivorius.ivtoolkit.maze.components.WeightedMazeComponent;
 import org.apache.commons.lang3.tuple.Pair;
 
+import java.util.Arrays;
 import java.util.Map;
 import java.util.Set;
 
@@ -30,7 +31,6 @@ public class MazeComponentStructure<C> implements WeightedMazeComponent<C>
 
     public String structureID;
     public AxisAlignedTransform2D transform;
-    private int[] size;
 
     public MazeComponentStructure(double weight, String structureID, AxisAlignedTransform2D transform, ImmutableSet<MazeRoom> rooms, ImmutableMap<MazeRoomConnection, C> exits, ImmutableSet<Pair<MazeRoomConnection, MazeRoomConnection>> reachability)
     {
@@ -99,5 +99,14 @@ public class MazeComponentStructure<C> implements WeightedMazeComponent<C>
             size[i]++;
 
         return size;
+    }
+
+    @Override
+    public String toString()
+    {
+        return "MazeComponentStructure{" +
+                "structureID='" + structureID + '\'' +
+                ", transform=" + transform +
+                '}';
     }
 }

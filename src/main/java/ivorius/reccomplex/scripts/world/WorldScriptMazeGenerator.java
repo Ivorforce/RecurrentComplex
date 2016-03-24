@@ -268,9 +268,7 @@ public class WorldScriptMazeGenerator implements WorldScript<WorldScriptMazeGene
 
         ConnectorStrategy connectionStrategy = new ConnectorStrategy();
 
-        int totalRooms = 1;
-        for (int i = 0; i < outsideBoundsLower.length; i++)
-            totalRooms *= outsideBoundsHigher[i] - outsideBoundsLower[i] + 1;
+        int totalRooms = rooms.mazeRooms(true).size();
 
         return MazeComponentConnector.randomlyConnect(maze, transformedComponents, connectionStrategy, new MazePredicateMany<>(predicates), random, totalRooms * 10);
     }

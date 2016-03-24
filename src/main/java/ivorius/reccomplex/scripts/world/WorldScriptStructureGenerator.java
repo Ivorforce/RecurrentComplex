@@ -203,9 +203,7 @@ public class WorldScriptStructureGenerator implements WorldScript<WorldScriptStr
 
             if (generationInfos.size() > 0)
             {
-                Pair<StructureInfo, StructureListGenerationInfo> pair = WeightedSelector.select(random, generationInfos, item -> {
-                    return item.getRight().getWeight();
-                });
+                Pair<StructureInfo, StructureListGenerationInfo> pair = WeightedSelector.select(random, generationInfos, item -> item.getRight().getWeight());
                 StructureInfo structureInfo = pair.getLeft();
                 String structureID = StructureRegistry.INSTANCE.structureID(structureInfo);
                 StructureListGenerationInfo generationInfo = pair.getRight();

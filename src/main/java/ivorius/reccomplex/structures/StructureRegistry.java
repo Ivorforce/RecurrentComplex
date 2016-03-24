@@ -5,15 +5,13 @@
 
 package ivorius.reccomplex.structures;
 
-import com.google.common.base.Function;
-import com.google.common.base.Predicate;
-import com.google.common.base.Predicates;
-import com.google.common.collect.*;
+import com.google.common.collect.Collections2;
+import com.google.common.collect.Maps;
+import com.google.common.collect.Sets;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonSyntaxException;
 import cpw.mods.fml.common.eventhandler.Event;
-import cpw.mods.fml.common.registry.VillagerRegistry;
 import ivorius.reccomplex.RCConfig;
 import ivorius.reccomplex.RecurrentComplex;
 import ivorius.reccomplex.events.RCEventBus;
@@ -37,8 +35,8 @@ import net.minecraftforge.common.util.ForgeDirection;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
 
-import javax.annotation.Nullable;
 import java.util.*;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 /**
@@ -232,7 +230,7 @@ public class StructureRegistry
 
     public <T extends StructureGenerationInfo> Collection<Pair<StructureInfo, T>> getStructureGenerations(Class<T> clazz, final Predicate<Pair<StructureInfo, T>> predicate)
     {
-        return Collections2.filter(getStructureGenerations(clazz), predicate);
+        return Collections2.filter(getStructureGenerations(clazz), predicate::test);
     }
 
     public StructureSelector getStructureSelector(BiomeGenBase biome, WorldProvider provider)

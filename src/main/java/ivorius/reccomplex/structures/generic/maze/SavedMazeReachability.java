@@ -5,9 +5,11 @@
 
 package ivorius.reccomplex.structures.generic.maze;
 
-import com.google.common.base.Predicate;
 import com.google.common.base.Predicates;
-import com.google.common.collect.*;
+import com.google.common.collect.ImmutableMultimap;
+import com.google.common.collect.ImmutableSetMultimap;
+import com.google.common.collect.Lists;
+import com.google.common.collect.Sets;
 import com.google.gson.*;
 import com.google.gson.reflect.TypeToken;
 import ivorius.ivtoolkit.math.AxisAlignedTransform2D;
@@ -24,11 +26,12 @@ import ivorius.reccomplex.utils.NBTCompoundObjects2;
 import ivorius.reccomplex.utils.NBTTagLists2;
 import net.minecraft.nbt.NBTTagCompound;
 import org.apache.commons.lang3.tuple.ImmutablePair;
-import org.apache.commons.lang3.tuple.Pair;
 
 import java.lang.reflect.Type;
 import java.util.*;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * Created by lukas on 18.01.16.
@@ -98,50 +101,47 @@ public class SavedMazeReachability implements NBTCompoundObject
         }
     }
 
-    public ImmutableSet<Pair<MazeRoomConnection, MazeRoomConnection>> build(final AxisAlignedTransform2D transform, final int[] size, Predicate<MazeRoomConnection> filter, Set<MazeRoomConnection> connections)
+    public ImmutableMultimap<MazeRoomConnection, MazeRoomConnection> build(final AxisAlignedTransform2D transform, final int[] size, Predicate<MazeRoomConnection> filter, Set<MazeRoomConnection> connections)
     {
-        filter = Predicates.and(Predicates.in(connections), filter);
+        filter = ((Predicate<MazeRoomConnection>) Predicates.in(connections)::apply).and(filter);
 
-        ImmutableSet.Builder<Pair<MazeRoomConnection, MazeRoomConnection>> builder = ImmutableSet.builder();
+        ImmutableMultimap.Builder<MazeRoomConnection, MazeRoomConnection> builder = ImmutableSetMultimap.builder();
         Set<MazeRoomConnection> defaultGroup = Sets.newHashSet(connections);
 
         for (Set<SavedMazePath> group : groups)
         {
-            FluentIterable<MazeRoomConnection> existing = FluentIterable.from(group).transform(savedMazePath -> MazeRoomConnections.rotated(savedMazePath.toRoomConnection(), transform, size)).filter(filter);
+            Stream<MazeRoomConnection> existing = group.stream().map(savedMazePath -> MazeRoomConnections.rotated(savedMazePath.toRoomConnection(), transform, size)).filter(filter);
 
-            for (MazeRoomConnection left : existing)
-                defaultGroup.remove(left);
+            existing.forEach(defaultGroup::remove);
 
             addInterconnections(builder, existing);
         }
 
-        addInterconnections(builder, defaultGroup);
+        addInterconnections(builder, defaultGroup.stream());
 
         for (Map.Entry<SavedMazePath, SavedMazePath> entry : crossConnections)
         {
             MazeRoomConnection key = MazeRoomConnections.rotated(entry.getKey().toRoomConnection(), transform, size);
             MazeRoomConnection val = MazeRoomConnections.rotated(entry.getValue().toRoomConnection(), transform, size);
 
-            if (filter.apply(key) && filter.apply(val))
-                builder.add(Pair.of(key, val));
+            if (filter.test(key) && filter.test(val))
+                builder.put(key, val);
         }
 
         return builder.build();
     }
 
-    protected void addInterconnections(ImmutableSet.Builder<Pair<MazeRoomConnection, MazeRoomConnection>> builder, Iterable<MazeRoomConnection> existing)
+    protected void addInterconnections(ImmutableMultimap.Builder<MazeRoomConnection, MazeRoomConnection> builder, Stream<MazeRoomConnection> existing)
     {
-        MazeRoomConnection last = null;
-        for (MazeRoomConnection current : existing)
-        {
+        existing.reduce((last, current) -> {
             if (last != null) // It's enough to make a transitive connection in both directions
             {
-                builder.add(Pair.of(last, current));
-                builder.add(Pair.of(current, last));
+                builder.put(last, current);
+                builder.put(current, last);
             }
 
-            last = current;
-        }
+            return current;
+        });
     }
 
     @Override

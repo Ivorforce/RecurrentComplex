@@ -53,9 +53,7 @@ public class ReachabilityStrategy<M extends MazeComponent<C>, C> implements Maze
 
             for (MazeComponent<C> maze : mazes)
             {
-                maze.reachability().stream().filter(pair -> pair.getLeft().equals(traversing)).forEach(pair -> {
-                    MazeRoomConnection dest = pair.getRight();
-
+                maze.reachability().get(traversing).forEach(dest -> {
                     if (!traversed.contains(dest) && visitor.visit(dest)
                             && traverser.test(maze.exits().get(dest)))
                     {
@@ -90,6 +88,7 @@ public class ReachabilityStrategy<M extends MazeComponent<C>, C> implements Maze
     public void willPlace(MorphingMazeComponent<C> maze, ShiftedMazeComponent<M, C> component)
     {
         place(maze, component, false);
+        Predicate<MazeRoomConnection> isDirty = input -> (confiner.test(input.getLeft()) && !maze.rooms().contains(input.getLeft())) || (confiner.test(input.getRight()) && !maze.rooms().contains(input.getRight()));
     }
 
     @Override
@@ -133,6 +132,7 @@ public class ReachabilityStrategy<M extends MazeComponent<C>, C> implements Maze
     public void didUnplace(MorphingMazeComponent<C> maze, ShiftedMazeComponent<M, C> component)
     {
         unplace(maze, component, false);
+        Predicate<MazeRoomConnection> isDirty = input -> (confiner.test(input.getLeft()) && !maze.rooms().contains(input.getLeft())) || (confiner.test(input.getRight()) && !maze.rooms().contains(input.getRight()));
     }
 
     protected void unplace(MorphingMazeComponent<C> maze, ShiftedMazeComponent<M, C> component, boolean simulate)

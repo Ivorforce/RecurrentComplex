@@ -24,6 +24,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.nbt.NBTTagString;
 import net.minecraft.world.World;
+import net.minecraft.world.gen.structure.StructureBoundingBox;
 import net.minecraftforge.common.util.Constants;
 import net.minecraftforge.common.util.ForgeDirection;
 import org.apache.commons.lang3.tuple.Pair;
@@ -190,9 +191,9 @@ public class WorldScriptStructureGenerator implements WorldScript<WorldScriptStr
 
                     int[] strucSize = structureInfo.structureBoundingBox();
                     BlockCoord strucCoord = transform.apply(structureShift, new int[]{1, 1, 1})
-                            .subtract(transform.apply(new BlockCoord(0, 0, 0), strucSize));
+                            .subtract(transform.apply(new BlockCoord(0, 0, 0), strucSize)).add(coord);
 
-                    instanceData = new WorldScriptStructureGenerator.InstanceData(structureID, strucCoord, strucTransform, structureInfo.prepareInstanceData(context));
+                    instanceData = new WorldScriptStructureGenerator.InstanceData(structureID, strucCoord, strucTransform, structureInfo.prepareInstanceData(new StructurePrepareContext(random, strucTransform, StructureInfos.structureBoundingBox(strucCoord, strucSize), context.generateAsSource)));
                 }
             }
         }
@@ -228,9 +229,9 @@ public class WorldScriptStructureGenerator implements WorldScript<WorldScriptStr
 
                 int[] strucSize = structureInfo.structureBoundingBox();
                 BlockCoord strucCoord = transform.apply(structureShift.add(generationInfo.shiftX, generationInfo.shiftY, generationInfo.shiftZ), new int[]{1, 1, 1})
-                        .subtract(transform.apply(new BlockCoord(0, 0, 0), strucSize));
+                        .subtract(transform.apply(new BlockCoord(0, 0, 0), strucSize)).add(coord);
 
-                instanceData = new WorldScriptStructureGenerator.InstanceData(structureID, strucCoord, strucTransform, structureInfo.prepareInstanceData(context));
+                instanceData = new WorldScriptStructureGenerator.InstanceData(structureID, strucCoord, strucTransform, structureInfo.prepareInstanceData(new StructurePrepareContext(random, strucTransform, StructureInfos.structureBoundingBox(strucCoord, strucSize), context.generateAsSource)));
             }
         }
 
@@ -246,7 +247,7 @@ public class WorldScriptStructureGenerator implements WorldScript<WorldScriptStr
 
         StructureInfo structureInfo = StructureRegistry.INSTANCE.getStructure(instanceData.structureID);
         if (structureInfo != null && instanceData.structureData != null)
-            StructureGenerator.partially(structureInfo, world, random, instanceData.lowerCoord.add(coord), instanceData.structureTransform, context.generationBB, layer + 1, instanceData.structureID, instanceData.structureData, context.isFirstTime);
+            StructureGenerator.partially(structureInfo, world, random, instanceData.lowerCoord, instanceData.structureTransform, context.generationBB, layer + 1, instanceData.structureID, instanceData.structureData, context.isFirstTime);
     }
 
     @Override

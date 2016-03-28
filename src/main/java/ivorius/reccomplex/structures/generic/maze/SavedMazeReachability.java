@@ -13,9 +13,7 @@ import com.google.common.collect.Sets;
 import com.google.gson.*;
 import com.google.gson.reflect.TypeToken;
 import ivorius.ivtoolkit.math.AxisAlignedTransform2D;
-import ivorius.ivtoolkit.maze.components.MazeRoom;
-import ivorius.ivtoolkit.maze.components.MazeRoomConnection;
-import ivorius.ivtoolkit.maze.components.MazeRoomConnections;
+import ivorius.ivtoolkit.maze.components.*;
 import ivorius.ivtoolkit.tools.NBTCompoundObject;
 import ivorius.ivtoolkit.tools.NBTCompoundObjects;
 import ivorius.ivtoolkit.tools.NBTTagLists;
@@ -53,7 +51,7 @@ public class SavedMazeReachability implements NBTCompoundObject
     }
 
 
-    public static Predicate<MazeRoomConnection> notBlocked(final Collection<Connector> blockedConnections, final Map<MazeRoomConnection, Connector> connections)
+    public static Predicate<MazePassage> notBlocked(final Collection<Connector> blockedConnections, final Map<MazePassage, Connector> connections)
     {
         return input -> !blockedConnections.contains(connections.get(input));
     }
@@ -101,16 +99,16 @@ public class SavedMazeReachability implements NBTCompoundObject
         }
     }
 
-    public ImmutableMultimap<MazeRoomConnection, MazeRoomConnection> build(final AxisAlignedTransform2D transform, final int[] size, Predicate<MazeRoomConnection> filter, Set<MazeRoomConnection> connections)
+    public ImmutableMultimap<MazePassage, MazePassage> build(final AxisAlignedTransform2D transform, final int[] size, Predicate<MazePassage> filter, Set<MazePassage> connections)
     {
-        filter = ((Predicate<MazeRoomConnection>) Predicates.in(connections)::apply).and(filter);
+        filter = ((Predicate<MazePassage>) Predicates.in(connections)::apply).and(filter);
 
-        ImmutableMultimap.Builder<MazeRoomConnection, MazeRoomConnection> builder = ImmutableSetMultimap.builder();
-        Set<MazeRoomConnection> defaultGroup = Sets.newHashSet(connections);
+        ImmutableMultimap.Builder<MazePassage, MazePassage> builder = ImmutableSetMultimap.builder();
+        Set<MazePassage> defaultGroup = Sets.newHashSet(connections);
 
         for (Set<SavedMazePath> group : groups)
         {
-            Stream<MazeRoomConnection> existing = group.stream().map(savedMazePath -> MazeRoomConnections.rotated(savedMazePath.toRoomConnection(), transform, size)).filter(filter);
+            Stream<MazePassage> existing = group.stream().map(savedMazePath -> MazePassages.rotated(savedMazePath.build(), transform, size)).filter(filter);
 
             existing.forEach(defaultGroup::remove);
 
@@ -121,8 +119,8 @@ public class SavedMazeReachability implements NBTCompoundObject
 
         for (Map.Entry<SavedMazePath, SavedMazePath> entry : crossConnections)
         {
-            MazeRoomConnection key = MazeRoomConnections.rotated(entry.getKey().toRoomConnection(), transform, size);
-            MazeRoomConnection val = MazeRoomConnections.rotated(entry.getValue().toRoomConnection(), transform, size);
+            MazePassage key = MazePassages.rotated(entry.getKey().build(), transform, size);
+            MazePassage val = MazePassages.rotated(entry.getValue().build(), transform, size);
 
             if (filter.test(key) && filter.test(val))
                 builder.put(key, val);
@@ -131,7 +129,7 @@ public class SavedMazeReachability implements NBTCompoundObject
         return builder.build();
     }
 
-    protected void addInterconnections(ImmutableMultimap.Builder<MazeRoomConnection, MazeRoomConnection> builder, Stream<MazeRoomConnection> existing)
+    protected void addInterconnections(ImmutableMultimap.Builder<MazePassage, MazePassage> builder, Stream<MazePassage> existing)
     {
         existing.reduce((last, current) -> {
             if (last != null) // It's enough to make a transitive connection in both directions

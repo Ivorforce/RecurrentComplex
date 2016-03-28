@@ -36,6 +36,7 @@ import net.minecraft.nbt.NBTTagList;
 import net.minecraft.util.MathHelper;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.Constants;
+import org.apache.commons.lang3.tuple.Pair;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -55,9 +56,9 @@ public class WorldScriptMazeGenerator implements WorldScript<WorldScriptMazeGene
 
     public static <C> void addRandomPaths(Random random, int[] size, MorphingMazeComponent<C> maze, List<? extends MazeComponent<C>> components, C roomConnector, int number)
     {
-        Map<MazeRoomConnection, C> exits = new HashMap<>();
+        Map<MazePassage, C> exits = new HashMap<>();
         for (MazeComponent<C> component : components)
-            for (Map.Entry<MazeRoomConnection, C> entry : component.exits().entrySet())
+            for (Map.Entry<MazePassage, C> entry : component.exits().entrySet())
                 exits.put(entry.getKey(), entry.getValue());
 
         for (int i = 0; i < number; i++)
@@ -66,7 +67,7 @@ public class WorldScriptMazeGenerator implements WorldScript<WorldScriptMazeGene
             for (int c = 0; c < randomCoords.length; c++)
                 randomCoords[c] = MathHelper.getRandomIntegerInRange(random, 0, size[c]);
             MazeRoom randomRoom = new MazeRoom(randomCoords);
-            MazeRoomConnection randomConnection = new MazeRoomConnection(randomRoom, randomRoom.addInDimension(random.nextInt(size.length), random.nextBoolean() ? 1 : -1));
+            MazePassage randomConnection = new MazePassage(randomRoom, randomRoom.addInDimension(random.nextInt(size.length), random.nextBoolean() ? 1 : -1));
             if (Objects.equals(exits.get(randomConnection), roomConnector))
                 maze.exits().put(randomConnection, roomConnector);
         }
@@ -74,12 +75,12 @@ public class WorldScriptMazeGenerator implements WorldScript<WorldScriptMazeGene
 
     public static void addExits(ConnectorFactory factory, MorphingMazeComponent<Connector> maze, List<SavedMazePathConnection> mazeExits)
     {
-        SavedMazePaths.putAll(maze.exits(), mazeExits.stream().map(SavedMazePaths.toConnectionFunction(factory)::apply).collect(Collectors.toList()));
+        SavedMazePaths.putAll(maze.exits(), mazeExits.stream().map(SavedMazePaths.buildFunction(factory)).map(e -> Pair.of(e.getKey().inverse(), e.getValue())).collect(Collectors.toList()));
     }
 
     public static <C> void blockRooms(MorphingMazeComponent<C> component, Set<MazeRoom> rooms, C wallConnector)
     {
-        component.add(WorldGenMaze.createCompleteComponent(rooms, Collections.<MazeRoomConnection, C>emptyMap(), wallConnector));
+        component.add(WorldGenMaze.createCompleteComponent(rooms, Collections.<MazePassage, C>emptyMap(), wallConnector));
     }
 
     public static <C> void enclose(MorphingMazeComponent<C> component, MazeRoom lower, MazeRoom higher, C wallConnector)
@@ -220,17 +221,17 @@ public class WorldScriptMazeGenerator implements WorldScript<WorldScriptMazeGene
     }
 
     @Override
-    public WorldScriptMazeGenerator.InstanceData prepareInstanceData(StructurePrepareContext context, BlockCoord coord, World world)
+    public InstanceData prepareInstanceData(StructurePrepareContext context, BlockCoord coord, World world)
     {
-        WorldScriptMazeGenerator.InstanceData instanceData = new WorldScriptMazeGenerator.InstanceData();
+        InstanceData instanceData = new InstanceData();
         instanceData.placedStructures.addAll(WorldGenMaze.convertToPlacedStructures(context.random, coord, structureShift, getPlacedRooms(context.random, context.transform), roomSize, context.transform));
         return instanceData;
     }
 
     @Override
-    public WorldScriptMazeGenerator.InstanceData loadInstanceData(StructureLoadContext context, NBTBase nbt)
+    public InstanceData loadInstanceData(StructureLoadContext context, NBTBase nbt)
     {
-        return new WorldScriptMazeGenerator.InstanceData(nbt instanceof NBTTagCompound ? (NBTTagCompound) nbt : new NBTTagCompound());
+        return new InstanceData(nbt instanceof NBTTagCompound ? (NBTTagCompound) nbt : new NBTTagCompound());
     }
 
     public List<ShiftedMazeComponent<MazeComponentStructure<Connector>, Connector>> getPlacedRooms(Random random, AxisAlignedTransform2D transform)

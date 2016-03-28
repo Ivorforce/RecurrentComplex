@@ -60,7 +60,7 @@ public class MazeRuleConnectAll extends MazeRule
             MazePredicateMany<MazeComponentStructure<Connector>, Connector> predicate = new MazePredicateMany<>();
 
             for (int i = 1; i < paths.size(); i++)
-                predicate.predicates.add(new ReachabilityStrategy<>(Collections.singleton(paths.get(i - 1).toRoomConnection()), Collections.singleton(paths.get(i).toRoomConnection()), ReachabilityStrategy.connectorTraverser(blockedConnections), new LimitAABBStrategy<>(script.rooms.boundsSize())));
+                predicate.predicates.add(new ReachabilityStrategy<>(Collections.singleton(paths.get(i - 1).build()), Collections.singleton(paths.get(i).build()), ReachabilityStrategy.connectorTraverser(blockedConnections), new LimitAABBStrategy<>(script.rooms.boundsSize())));
 
             return predicate;
         }

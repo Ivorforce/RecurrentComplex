@@ -6,8 +6,8 @@
 package ivorius.reccomplex.structures.generic.maze;
 
 import com.google.gson.*;
+import ivorius.ivtoolkit.maze.components.MazePassage;
 import ivorius.ivtoolkit.maze.components.MazeRoom;
-import ivorius.ivtoolkit.maze.components.MazeRoomConnection;
 import ivorius.ivtoolkit.tools.NBTCompoundObject;
 import ivorius.reccomplex.json.JsonUtils;
 import net.minecraft.nbt.NBTTagCompound;
@@ -52,9 +52,9 @@ public class SavedMazePathConnection implements NBTCompoundObject
         return connector;
     }
 
-    public Map.Entry<MazeRoomConnection, Connector> toRoomConnection(ConnectorFactory factory)
+    public Map.Entry<MazePassage, Connector> build(ConnectorFactory factory)
     {
-        return Pair.of(path.toRoomConnection(), connector.toConnector(factory));
+        return Pair.of(path.build(), connector.toConnector(factory));
     }
 
     @Override

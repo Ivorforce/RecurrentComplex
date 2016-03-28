@@ -23,7 +23,6 @@ import org.apache.commons.lang3.tuple.Pair;
 import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
-import java.util.stream.StreamSupport;
 
 /**
  * Created by lukas on 27.06.14.
@@ -133,25 +132,24 @@ public class WorldGenMaze
     {
         Set<MazeRoom> transformedRooms = comp.getRooms().stream().map(input -> MazeRooms.rotated(input, transform, size)).collect(Collectors.toSet());
 
-        Map<MazeRoomConnection, Connector> transformedExits = new HashMap<>();
-        for (Map.Entry<MazeRoomConnection, Connector> path :  Lists.transform(comp.getExitPaths(), SavedMazePaths.toConnectionFunction(factory)))
-            transformedExits.put(MazeRoomConnections.rotated(path.getKey(), transform, size), path.getValue());
+        Map<MazePassage, Connector> transformedExits = new HashMap<>();
+        comp.getExitPaths().stream().map(SavedMazePaths.buildFunction(factory)).forEach(path -> transformedExits.put(MazePassages.rotated(path.getKey(), transform, size), path.getValue()));
         addMissingExits(transformedRooms, transformedExits, comp.defaultConnector.toConnector(factory));
 
-        ImmutableMultimap<MazeRoomConnection, MazeRoomConnection> reachability = comp.reachability.build(transform, size, SavedMazeReachability.notBlocked(blockedConnections, transformedExits), transformedExits.keySet());
-        ImmutableMultimap<MazeRoomConnection, MazeRoomConnection> transformedReachability = reachability.keySet().stream().collect(GuavaCollectors.toMultimap((Function<MazeRoomConnection, MazeRoomConnection>) l -> MazeRoomConnections.rotated(l, transform, size), (Function<MazeRoomConnection, Iterable<? extends MazeRoomConnection>>) c -> reachability.get(c).stream().map(r -> MazeRoomConnections.rotated(r, transform, size))::iterator));
+        ImmutableMultimap<MazePassage, MazePassage> reachability = comp.reachability.build(transform, size, SavedMazeReachability.notBlocked(blockedConnections, transformedExits), transformedExits.keySet());
+        ImmutableMultimap<MazePassage, MazePassage> transformedReachability = reachability.keySet().stream().collect(GuavaCollectors.toMultimap((Function<MazePassage, MazePassage>) l -> MazePassages.rotated(l, transform, size), (Function<MazePassage, Iterable<? extends MazePassage>>) c -> reachability.get(c).stream().map(r -> MazePassages.rotated(r, transform, size))::iterator));
 
         return new MazeComponentStructure<>(weight, StructureRegistry.INSTANCE.structureID(info), transform, ImmutableSet.copyOf(transformedRooms), ImmutableMap.copyOf(transformedExits), transformedReachability);
     }
 
-    public static <C> SetMazeComponent<C> createCompleteComponent(Set<MazeRoom> rooms, Map<MazeRoomConnection, C> exits, C wallConnector)
+    public static <C> SetMazeComponent<C> createCompleteComponent(Set<MazeRoom> rooms, Map<MazePassage, C> exits, C wallConnector)
     {
         SetMazeComponent<C> component = new SetMazeComponent<>(rooms, exits, HashMultimap.create());
         addMissingExits(component.rooms, component.exits, wallConnector);
         return component;
     }
 
-    public static <C> void addMissingExits(Set<MazeRoom> rooms, Map<MazeRoomConnection, C> exits, C connector)
+    public static <C> void addMissingExits(Set<MazeRoom> rooms, Map<MazePassage, C> exits, C connector)
     {
         for (MazeRoom room : rooms)
             MazeRooms.neighbors(room).stream().filter(connection -> !exits.containsKey(connection) && !(rooms.contains(connection.getLeft()) && rooms.contains(connection.getRight()))).forEach(connection -> exits.put(connection, connector));

@@ -6,6 +6,7 @@
 package ivorius.reccomplex.structures.generic.maze;
 
 import com.google.gson.*;
+import ivorius.ivtoolkit.maze.components.MazePassage;
 import ivorius.ivtoolkit.maze.components.MazeRoom;
 import ivorius.ivtoolkit.maze.components.MazeRoomConnection;
 import ivorius.ivtoolkit.tools.NBTCompoundObject;
@@ -36,9 +37,9 @@ public class SavedMazePath implements NBTCompoundObject, Comparable<SavedMazePat
         this.pathGoesUp = pathGoesUp;
     }
 
-    public MazeRoomConnection toRoomConnection()
+    public MazePassage build()
     {
-        return new MazeRoomConnection(getSourceRoom(), getDestRoom());
+        return new MazePassage(getSourceRoom(), getDestRoom());
     }
 
     public MazeRoom getSourceRoom()

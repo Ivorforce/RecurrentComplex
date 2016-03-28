@@ -11,6 +11,7 @@ import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Multimap;
 import ivorius.ivtoolkit.math.AxisAlignedTransform2D;
 import ivorius.ivtoolkit.math.IvVecMathHelper;
+import ivorius.ivtoolkit.maze.components.MazePassage;
 import ivorius.ivtoolkit.maze.components.MazeRoom;
 import ivorius.ivtoolkit.maze.components.MazeRoomConnection;
 import ivorius.ivtoolkit.maze.components.WeightedMazeComponent;
@@ -26,15 +27,15 @@ import java.util.Set;
 public class MazeComponentStructure<C> implements WeightedMazeComponent<C>
 {
     public final ImmutableSet<MazeRoom> rooms;
-    public final ImmutableMap<MazeRoomConnection, C> exits;
-    public final ImmutableMultimap<MazeRoomConnection, MazeRoomConnection> reachability;
+    public final ImmutableMap<MazePassage, C> exits;
+    public final ImmutableMultimap<MazePassage, MazePassage> reachability;
 
     public double weight;
 
     public String structureID;
     public AxisAlignedTransform2D transform;
 
-    public MazeComponentStructure(double weight, String structureID, AxisAlignedTransform2D transform, ImmutableSet<MazeRoom> rooms, ImmutableMap<MazeRoomConnection, C> exits, ImmutableMultimap<MazeRoomConnection, MazeRoomConnection> reachability)
+    public MazeComponentStructure(double weight, String structureID, AxisAlignedTransform2D transform, ImmutableSet<MazeRoom> rooms, ImmutableMap<MazePassage, C> exits, ImmutableMultimap<MazePassage, MazePassage> reachability)
     {
         this.weight = weight;
         this.structureID = structureID;
@@ -58,13 +59,13 @@ public class MazeComponentStructure<C> implements WeightedMazeComponent<C>
     }
 
     @Override
-    public Map<MazeRoomConnection, C> exits()
+    public Map<MazePassage, C> exits()
     {
         return exits;
     }
 
     @Override
-    public Multimap<MazeRoomConnection, MazeRoomConnection> reachability()
+    public Multimap<MazePassage, MazePassage> reachability()
     {
         return reachability;
     }

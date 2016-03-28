@@ -5,27 +5,25 @@
 
 package ivorius.reccomplex.structures.generic.maze;
 
-import com.google.common.base.Function;
 import com.google.common.collect.ImmutableSet;
-import gnu.trove.procedure.TIntProcedure;
 import gnu.trove.set.TIntSet;
 import gnu.trove.set.hash.TIntHashSet;
+import ivorius.ivtoolkit.maze.components.MazePassage;
 import ivorius.ivtoolkit.maze.components.MazeRoom;
-import ivorius.ivtoolkit.maze.components.MazeRoomConnection;
 import ivorius.ivtoolkit.tools.Ranges;
 
-import javax.annotation.Nullable;
 import java.util.Map;
 import java.util.Set;
+import java.util.function.Function;
 
 /**
  * Created by lukas on 14.04.15.
  */
 public class SavedMazePaths
 {
-    public static Function<SavedMazePathConnection, Map.Entry<MazeRoomConnection, Connector>> toConnectionFunction(final ConnectorFactory factory)
+    public static Function<SavedMazePathConnection, Map.Entry<MazePassage, Connector>> buildFunction(final ConnectorFactory factory)
     {
-        return input -> input != null ? input.toRoomConnection(factory) : null;
+        return input -> input != null ? input.build(factory) : null;
     }
 
     public static <K, V> void put(Map<K, V> map, Map.Entry<K, V> entry)

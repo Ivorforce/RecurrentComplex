@@ -5,6 +5,7 @@
 
 package ivorius.reccomplex.structures.generic.maze.rules.saved;
 
+import ivorius.ivtoolkit.maze.components.MazePassage;
 import ivorius.ivtoolkit.maze.components.MazeRoomConnection;
 import ivorius.ivtoolkit.tools.NBTCompoundObjects;
 import ivorius.reccomplex.gui.table.TableDataSource;
@@ -31,9 +32,9 @@ public class MazeRuleConnect extends MazeRule
     public final List<SavedMazePath> start = new ArrayList<>();
     public final List<SavedMazePath> end = new ArrayList<>();
 
-    protected static Set<MazeRoomConnection> buildPaths(List<SavedMazePath> start)
+    protected static Set<MazePassage> buildPaths(List<SavedMazePath> start)
     {
-        return start.stream().map(SavedMazePath::toRoomConnection).collect(Collectors.toSet());
+        return start.stream().map(SavedMazePath::build).collect(Collectors.toSet());
     }
 
     @Override

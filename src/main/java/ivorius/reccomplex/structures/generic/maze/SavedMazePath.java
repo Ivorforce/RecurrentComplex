@@ -37,6 +37,13 @@ public class SavedMazePath implements NBTCompoundObject, Comparable<SavedMazePat
         this.pathGoesUp = pathGoesUp;
     }
 
+    public void set(SavedMazePath path)
+    {
+        pathDimension = path.pathDimension;
+        sourceRoom = path.sourceRoom;
+        pathGoesUp = path.pathGoesUp;
+    }
+
     public MazePassage build()
     {
         return new MazePassage(getSourceRoom(), getDestRoom());
@@ -50,6 +57,11 @@ public class SavedMazePath implements NBTCompoundObject, Comparable<SavedMazePat
     public MazeRoom getDestRoom()
     {
         return sourceRoom.addInDimension(pathDimension, pathGoesUp ? 1 : -1);
+    }
+
+    public SavedMazePath inverse()
+    {
+        return new SavedMazePath(pathDimension, sourceRoom.addInDimension(pathDimension, pathGoesUp ? 1 : -1), !pathGoesUp);
     }
 
     public SavedMazePath copy()

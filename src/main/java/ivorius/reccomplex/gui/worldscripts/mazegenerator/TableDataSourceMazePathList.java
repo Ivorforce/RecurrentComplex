@@ -51,6 +51,6 @@ public class TableDataSourceMazePathList extends TableDataSourceList<SavedMazePa
     @Override
     public TableDataSource editEntryDataSource(SavedMazePath entry)
     {
-        return new TableDataSourceMazePath(entry, boundsLower, boundsHigher);
+        return new TableDataSourceMazePath(entry, boundsLower, boundsHigher, tableDelegate);
     }
 }

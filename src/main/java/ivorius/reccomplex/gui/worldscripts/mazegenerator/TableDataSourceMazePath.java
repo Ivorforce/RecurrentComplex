@@ -5,6 +5,8 @@
 
 package ivorius.reccomplex.gui.worldscripts.mazegenerator;
 
+import gnu.trove.list.TIntList;
+import ivorius.ivtoolkit.math.IvVecMathHelper;
 import ivorius.ivtoolkit.maze.components.MazeRoom;
 import ivorius.reccomplex.gui.TableDirections;
 import ivorius.reccomplex.gui.table.*;
@@ -17,23 +19,25 @@ import net.minecraftforge.common.util.ForgeDirection;
 /**
  * Created by lukas on 22.06.14.
  */
-public class TableDataSourceMazePath extends TableDataSourceSegmented implements TableCellPropertyListener
+public class TableDataSourceMazePath extends TableDataSourceSegmented implements TableCellPropertyListener, TableCellActionListener
 {
     private SavedMazePath mazePath;
     private int[] boundsLower;
     private int[] boundsHigher;
+    private TableDelegate tableDelegate;
 
-    public TableDataSourceMazePath(SavedMazePath mazePath, int[] boundsLower, int[] boundsHigher)
+    public TableDataSourceMazePath(SavedMazePath mazePath, int[] boundsLower, int[] boundsHigher, TableDelegate tableDelegate)
     {
         this.mazePath = mazePath;
         this.boundsLower = boundsLower;
         this.boundsHigher = boundsHigher;
+        this.tableDelegate = tableDelegate;
     }
 
     @Override
     public int numberOfSegments()
     {
-        return 3;
+        return 4;
     }
 
     @Override
@@ -44,6 +48,8 @@ public class TableDataSourceMazePath extends TableDataSourceSegmented implements
             case 1:
                 return boundsLower.length;
             case 2:
+                return 1;
+            case 3:
                 return 1;
             default:
                 return super.sizeOfSegment(segment);
@@ -69,8 +75,25 @@ public class TableDataSourceMazePath extends TableDataSourceSegmented implements
             cell.addPropertyListener(this);
             return new TableElementCell("Side", cell);
         }
+        else if (segment == 3)
+        {
+            TableCellButton cell = new TableCellButton("actions", new TableCellButton.Action("inverse", "Invert", contains(mazePath.inverse().getSourceRoom().getCoordinates(), boundsLower, boundsHigher)));
+            cell.addListener(this);
+            return new TableElementCell(cell);
+        }
 
         return super.elementForIndexInSegment(table, index, segment);
+    }
+
+    public static boolean contains(int[] array, int[] lower, int[] higher)
+    {
+        for (int i = 0; i < array.length; i++)
+        {
+            if (array[i] < lower[i] || array[i] > higher[i])
+                return false;
+        }
+
+        return true;
     }
 
     @Override
@@ -81,11 +104,13 @@ public class TableDataSourceMazePath extends TableDataSourceSegmented implements
             SavedMazePathConnection path = pathFromDirection((ForgeDirection) cell.getPropertyValue(), mazePath.sourceRoom.getCoordinates());
             mazePath.pathDimension = path.path.pathDimension;
             mazePath.pathGoesUp = path.path.pathGoesUp;
+            tableDelegate.reloadData();
         }
         else if (cell.getID() != null)
         {
             int index = Integer.valueOf(cell.getID().substring(3));
             mazePath.sourceRoom = mazePath.sourceRoom.addInDimension(index, (int) cell.getPropertyValue() - mazePath.sourceRoom.getCoordinate(index));;
+            tableDelegate.reloadData();
         }
     }
 
@@ -110,5 +135,15 @@ public class TableDataSourceMazePath extends TableDataSourceSegmented implements
         int offset = side.offsetX + side.offsetY + side.offsetZ;
 
         return new SavedMazePathConnection(pathDim, new MazeRoom(room[0], room[1], room[2]), offset > 0, ConnectorStrategy.DEFAULT_PATH);
+    }
+
+    @Override
+    public void actionPerformed(TableCell cell, String action)
+    {
+        if ("inverse".equals(action))
+        {
+            mazePath.set(mazePath.inverse());
+            tableDelegate.reloadData();
+        }
     }
 }

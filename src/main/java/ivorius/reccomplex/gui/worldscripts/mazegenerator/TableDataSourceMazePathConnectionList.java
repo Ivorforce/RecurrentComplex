@@ -47,6 +47,6 @@ public class TableDataSourceMazePathConnectionList extends TableDataSourceList<S
     @Override
     public TableDataSource editEntryDataSource(SavedMazePathConnection entry)
     {
-        return new TableDataSourceMazePathConnection(entry, boundsLower, boundsHigher);
+        return new TableDataSourceMazePathConnection(entry, boundsLower, boundsHigher, tableDelegate);
     }
 }

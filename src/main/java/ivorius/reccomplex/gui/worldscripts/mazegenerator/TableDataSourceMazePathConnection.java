@@ -18,9 +18,9 @@ import net.minecraftforge.common.util.ForgeDirection;
  */
 public class TableDataSourceMazePathConnection extends TableDataSourceSegmented
 {
-    public TableDataSourceMazePathConnection(SavedMazePathConnection mazePath, int[] boundsLower, int[] boundsHigher)
+    public TableDataSourceMazePathConnection(SavedMazePathConnection mazePath, int[] boundsLower, int[] boundsHigher, TableDelegate tableDelegate)
     {
         addManagedSection(0, new TableDataSourceConnector(mazePath.connector, IvTranslations.get("reccomplex.maze.connector")));
-        addManagedSection(1, new TableDataSourceMazePath(mazePath.path, boundsLower, boundsHigher));
+        addManagedSection(1, new TableDataSourceMazePath(mazePath.path, boundsLower, boundsHigher, tableDelegate));
     }
 }

@@ -59,9 +59,9 @@ public class TableDataSourcePathConnectionList extends TableDataSourceList<Immut
     {
         return new TableDataSourceMulti(
                 new TableDataSourcePreloaded(new TableElementCell(new TableCellTitle("", "Source"))),
-                new TableDataSourceMazePath(pair.getLeft(), boundsLower, boundsHigher),
+                new TableDataSourceMazePath(pair.getLeft(), boundsLower, boundsHigher,  tableDelegate),
                 new TableDataSourcePreloaded(new TableElementCell(new TableCellTitle("", "Destination"))),
-                new TableDataSourceMazePath(pair.getRight(), boundsLower, boundsHigher)
+                new TableDataSourceMazePath(pair.getRight(), boundsLower, boundsHigher, tableDelegate)
         );
     }
 }

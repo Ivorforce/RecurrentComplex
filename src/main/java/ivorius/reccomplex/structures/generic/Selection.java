@@ -92,7 +92,7 @@ public class Selection extends ArrayList<Selection.Area>
         for (Area area : this)
         {
             if (min == null)
-                min = area.minCoord;
+                min = area.minCoord.clone();
             else
             {
                 for (int d = 0; d < area.minCoord.length; d++)
@@ -110,7 +110,7 @@ public class Selection extends ArrayList<Selection.Area>
         for (Area area : this)
         {
             if (max == null)
-                max = area.maxCoord;
+                max = area.maxCoord.clone();
             else
             {
                 for (int d = 0; d < area.maxCoord.length; d++)

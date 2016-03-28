@@ -12,6 +12,7 @@ import ivorius.ivtoolkit.tools.Visitor;
 
 import java.util.*;
 import java.util.function.Predicate;
+import java.util.stream.Collectors;
 
 /**
  * Created by lukas on 05.10.15.
@@ -32,7 +33,9 @@ public class ReachabilityStrategy<M extends MazeComponent<C>, C> implements Maze
     public ReachabilityStrategy(Set<MazePassage> start, Set<MazePassage> end, Predicate<C> traverser, Predicate<MazeRoom> confiner)
     {
         leftTraversed.addAll(start);
+        leftTraversed.addAll(start.stream().map(MazePassage::inverse).collect(Collectors.toList())); // It's an exit so we're on both sides
         rightTraversed.addAll(end);
+        rightTraversed.addAll(end.stream().map(MazePassage::inverse).collect(Collectors.toList()));
         this.traverser = traverser;
         this.confiner = confiner;
     }

@@ -58,12 +58,16 @@ public class ReachabilityStrategy<M extends MazeComponent<C>, C> implements Maze
                     {
                         if (traverser.test(maze.exits().get(dest)))
                         {
-                            traversed.add(dest);
-                            added.add(dest);
+                            MazePassage rDest = dest.inverse(); // We are now on the other side of the connection/'wall'
+
+                            traversed.add(rDest);
+                            dirty.add(rDest);
+                            added.add(rDest);
                         }
 
-                        // Can't go through the wall, but can still move on within the room
+                        traversed.add(dest);
                         dirty.add(dest);
+                        added.add(dest);
                     }
                 });
             }
@@ -79,7 +83,7 @@ public class ReachabilityStrategy<M extends MazeComponent<C>, C> implements Maze
 
         // TODO Better success prediction
         final Set<MazeRoom> roomsFromBoth = Sets.union(maze.rooms(), component.rooms());
-        Predicate<MazePassage> isDirty = input -> (confiner.test(input.getLeft()) && !roomsFromBoth.contains(input.getLeft())) || (confiner.test(input.getRight()) && !roomsFromBoth.contains(input.getRight()));
+        Predicate<MazePassage> isDirty = input -> confiner.test(input.getSource()) && !roomsFromBoth.contains(input.getSource());
 
         place(maze, component, true);
         boolean canPlace = stepsGoalReached >= 0 || (leftTraversed.stream().anyMatch(isDirty) && rightTraversed.stream().anyMatch(isDirty));
@@ -92,9 +96,6 @@ public class ReachabilityStrategy<M extends MazeComponent<C>, C> implements Maze
     public void willPlace(MorphingMazeComponent<C> maze, ShiftedMazeComponent<M, C> component)
     {
         place(maze, component, false);
-        final Set<MazeRoom> roomsFromBoth = Sets.union(maze.rooms(), component.rooms());
-        Predicate<MazeRoomConnection> isDirty = input -> (confiner.test(input.getLeft()) && !roomsFromBoth.contains(input.getLeft())) || (confiner.test(input.getRight()) && !roomsFromBoth.contains(input.getRight()));
-        System.out.print("");
     }
 
     @Override
@@ -138,8 +139,6 @@ public class ReachabilityStrategy<M extends MazeComponent<C>, C> implements Maze
     public void didUnplace(MorphingMazeComponent<C> maze, ShiftedMazeComponent<M, C> component)
     {
         unplace(maze, component, false);
-        Predicate<MazeRoomConnection> isDirty = input -> (confiner.test(input.getLeft()) && !maze.rooms().contains(input.getLeft())) || (confiner.test(input.getRight()) && !maze.rooms().contains(input.getRight()));
-        System.out.print("");
     }
 
     protected void unplace(MorphingMazeComponent<C> maze, ShiftedMazeComponent<M, C> component, boolean simulate)

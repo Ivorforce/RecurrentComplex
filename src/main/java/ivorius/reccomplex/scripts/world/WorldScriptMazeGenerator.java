@@ -75,7 +75,7 @@ public class WorldScriptMazeGenerator implements WorldScript<WorldScriptMazeGene
 
     public static void addExits(ConnectorFactory factory, MorphingMazeComponent<Connector> maze, List<SavedMazePathConnection> mazeExits)
     {
-        SavedMazePaths.putAll(maze.exits(), mazeExits.stream().map(SavedMazePaths.buildFunction(factory)).map(e -> Pair.of(e.getKey().inverse(), e.getValue())).collect(Collectors.toList()));
+        SavedMazePaths.putAll(maze.exits(), mazeExits.stream().map(SavedMazePaths.buildFunction(factory)).map(e -> maze.rooms().contains(e.getKey().getSource()) ? e : Pair.of(e.getKey().inverse(), e.getValue())).collect(Collectors.toList()));
     }
 
     public static <C> void blockRooms(MorphingMazeComponent<C> component, Set<MazeRoom> rooms, C wallConnector)

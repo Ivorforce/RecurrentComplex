@@ -37,7 +37,7 @@ public class WorldGenStructures implements IWorldGenerator
 
         generatePartialStructuresInChunk(random, chunkX, chunkZ, world, chunkGenerator, chunkProvider);
 
-        if (worldWantsStructures)
+        if (!RCConfig.honorStructureGenerationOption || worldWantsStructures)
         {
             BiomeGenBase biomeGen = world.getBiomeGenForCoords(chunkX * 16, chunkZ * 16);
             ChunkCoordinates spawnPos = world.getSpawnPoint();

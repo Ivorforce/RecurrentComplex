@@ -33,6 +33,7 @@ public class RCConfig
     public static float minDistToSpawnForGeneration;
     public static float structureSpawnChanceModifier = 1.0f;
     public static boolean avoidOverlappingGeneration;
+    public static boolean honorStructureGenerationOption;
 
     public static int baseVillageSpawnWeight;
 
@@ -70,6 +71,7 @@ public class RCConfig
             lightweightMode = RecurrentComplex.config.getBoolean("lightweightMode", CATEGORY_BALANCING, false, "Enabling this will make the mod register as little as possible, which enables it to be used server-side only.");
 
             avoidOverlappingGeneration = RecurrentComplex.config.getBoolean("avoidOverlappingGeneration", CATEGORY_BALANCING, true, "Enabling this will cancel any structure generation if another structure is present at the cooridnate already.");
+            honorStructureGenerationOption = RecurrentComplex.config.getBoolean("honorStructureGenerationOption", CATEGORY_BALANCING, true, "If disabled, Recurrent Complex will generate structures in worlds without the structure generation option.");
             baseVillageSpawnWeight = RecurrentComplex.config.getInt("baseVillageSpawnWeight", CATEGORY_BALANCING, 10, 0, 100000, "The base weight of RC village generation types. Vanilla average is about 10 - if you want to fully replace vanilla structures in villages, crank this up to something big.");
 
             minDistToSpawnForGeneration = RecurrentComplex.config.getFloat("minDistToSpawnForGeneration", CATEGORY_BALANCING, 30.0f, 0.0f, 500.0f, "Within this block radius, default structures won't spawn (in the main dimension).");

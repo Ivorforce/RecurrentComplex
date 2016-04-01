@@ -112,6 +112,8 @@ public class WorldScriptMulti implements WorldScript<WorldScriptMulti.InstanceDa
                 else
                     instanceDates.add(null);
             }
+            for (int i = compoundsFrom.size(); i < expectedScripts.size(); i++)
+                instanceDates.add(null);
         }
 
         public void addInstanceData(NBTStorable instanceData, String id)

@@ -57,7 +57,7 @@ commands.strucExport.usage=/#export [blueprintName]
 
 commands.strucEdit.usage=/#edit <structureName>
 
-commands.strucGen.usage=/#gen <structureName> [x] [z]
+commands.strucGen.usage=/#gen <structureName> [x] [z] [dimension]
 commands.strucGen.noStructure=No structure registered by the name of '%s'
 
 commands.strucImport.usage=/#import <structureName> [x] [y] [z]

@@ -21,6 +21,7 @@ import net.minecraft.command.CommandBase;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.util.MathHelper;
 import net.minecraft.world.World;
+import net.minecraftforge.common.DimensionManager;
 
 import java.util.List;
 import java.util.Random;
@@ -52,7 +53,7 @@ public class CommandGenerateStructure extends CommandBase
 
         String structureName = args[0];
         StructureInfo structureInfo = StructureRegistry.INSTANCE.getStructure(structureName);
-        World world = commandSender.getEntityWorld();
+        World world = args.length >= 4 ? DimensionManager.getWorld(parseInt(commandSender, args[2])) : commandSender.getEntityWorld();
 
         if (structureInfo == null)
         {

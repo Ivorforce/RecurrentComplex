@@ -58,7 +58,16 @@ public class BiomeMatcher extends PrefixedTypeExpressionCache<Boolean> implement
         }
 
         for (BiomeDictionary.Type type : BiomeDictionary.Type.values())
-            Collections.addAll(set, BiomeDictionary.getBiomesForType(type));
+        {
+            try
+            {
+                Collections.addAll(set, BiomeDictionary.getBiomesForType(type));
+            }
+            catch (Exception ignored) // list f'd up by a biome mod
+            {
+
+            }
+        }
 
         return set;
     }

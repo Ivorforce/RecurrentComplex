@@ -170,7 +170,7 @@ public class SavedMazeReachability implements NBTCompoundObject
         @Override
         public SavedMazeReachability deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException
         {
-            JsonObject jsonObject = JsonUtils.getJsonElementAsJsonObject(json, "MazeRoom");
+            JsonObject jsonObject = JsonUtils.getJsonElementAsJsonObject(json, "MazeReachability");
 
             List<Set<SavedMazePath>> groups = context.deserialize(jsonObject.get("groups"), new TypeToken<List<Set<SavedMazePath>>>(){}.getType());
             if (groups == null)

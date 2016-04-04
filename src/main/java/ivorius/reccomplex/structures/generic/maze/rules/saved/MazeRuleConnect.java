@@ -5,6 +5,7 @@
 
 package ivorius.reccomplex.structures.generic.maze.rules.saved;
 
+import ivorius.ivtoolkit.maze.components.MazeComponent;
 import ivorius.ivtoolkit.maze.components.MazePassage;
 import ivorius.ivtoolkit.maze.components.MazeRoomConnection;
 import ivorius.ivtoolkit.tools.NBTCompoundObjects;
@@ -20,8 +21,10 @@ import ivorius.reccomplex.structures.generic.maze.rules.ReachabilityStrategy;
 import net.minecraft.nbt.NBTTagCompound;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Set;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 /**
@@ -55,10 +58,19 @@ public class MazeRuleConnect extends MazeRule
     }
 
     @Override
-    public ReachabilityStrategy<MazeComponentStructure<Connector>, Connector> build(WorldScriptMazeGenerator script, Set<Connector> blockedConnections, ConnectorFactory connectorFactory)
+    public ReachabilityStrategy<MazeComponentStructure<Connector>, Connector> build(WorldScriptMazeGenerator script, Set<Connector> blockedConnections, ConnectorFactory connectorFactory, Collection<? extends MazeComponent<Connector>> components)
     {
         if (start.size() > 0 && end.size() > 0)
-            return new ReachabilityStrategy<>(buildPaths(start), buildPaths(end), ReachabilityStrategy.connectorTraverser(blockedConnections), new LimitAABBStrategy<>(script.rooms.boundsSize()));
+        {
+            Predicate<Connector> traverser = ReachabilityStrategy.connectorTraverser(blockedConnections);
+            return new ReachabilityStrategy<>(
+                    buildPaths(start),
+                    buildPaths(end),
+                    traverser,
+                    new LimitAABBStrategy<>(script.rooms.boundsSize()),
+                    ReachabilityStrategy.compileAbilities(components, traverser)
+            );
+        }
         else
             return null;
     }

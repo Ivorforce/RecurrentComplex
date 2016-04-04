@@ -137,9 +137,8 @@ public class WorldGenMaze
         addMissingExits(transformedRooms, transformedExits, comp.defaultConnector.toConnector(factory));
 
         ImmutableMultimap<MazePassage, MazePassage> reachability = comp.reachability.build(transform, size, SavedMazeReachability.notBlocked(blockedConnections, transformedExits), transformedExits.keySet());
-        ImmutableMultimap<MazePassage, MazePassage> transformedReachability = reachability.keySet().stream().collect(GuavaCollectors.toMultimap((Function<MazePassage, MazePassage>) l -> MazePassages.rotated(l, transform, size), (Function<MazePassage, Iterable<? extends MazePassage>>) c -> reachability.get(c).stream().map(r -> MazePassages.rotated(r, transform, size))::iterator));
 
-        return new MazeComponentStructure<>(weight, StructureRegistry.INSTANCE.structureID(info), transform, ImmutableSet.copyOf(transformedRooms), ImmutableMap.copyOf(transformedExits), transformedReachability);
+        return new MazeComponentStructure<>(weight, StructureRegistry.INSTANCE.structureID(info), transform, ImmutableSet.copyOf(transformedRooms), ImmutableMap.copyOf(transformedExits), reachability);
     }
 
     public static <C> SetMazeComponent<C> createCompleteComponent(Set<MazeRoom> rooms, Map<MazePassage, C> exits, C wallConnector)
@@ -152,6 +151,6 @@ public class WorldGenMaze
     public static <C> void addMissingExits(Set<MazeRoom> rooms, Map<MazePassage, C> exits, C connector)
     {
         for (MazeRoom room : rooms)
-            MazeRooms.neighbors(room).stream().filter(connection -> !exits.containsKey(connection) && !(rooms.contains(connection.getLeft()) && rooms.contains(connection.getRight()))).forEach(connection -> exits.put(connection, connector));
+            MazeRooms.neighborPassages(room).filter(passage -> !exits.containsKey(passage) && !(rooms.contains(passage.getLeft()) && rooms.contains(passage.getRight()))).forEach(passage -> exits.put(passage, connector));
     }
 }

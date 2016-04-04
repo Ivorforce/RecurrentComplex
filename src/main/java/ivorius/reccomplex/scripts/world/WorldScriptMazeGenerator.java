@@ -263,7 +263,7 @@ public class WorldScriptMazeGenerator implements WorldScript<WorldScriptMazeGene
         WorldScriptMazeGenerator.addExits(factory, maze, exitPaths);
         WorldScriptMazeGenerator.addRandomPaths(random, outsideBoundsHigher, maze, transformedComponents, roomConnector, outsideBoundsHigher[0] * outsideBoundsHigher[1] * outsideBoundsHigher[2] / (5 * 5 * 5) + 1);
 
-        List<MazePredicate<MazeComponentStructure<Connector>, Connector>> predicates = rules.stream().map(r -> r.build(this, blockedConnections, factory)).filter(Objects::nonNull).collect(Collectors.toCollection(ArrayList::new));
+        List<MazePredicate<MazeComponentStructure<Connector>, Connector>> predicates = rules.stream().map(r -> r.build(this, blockedConnections, factory, transformedComponents)).filter(Objects::nonNull).collect(Collectors.toCollection(ArrayList::new));
         predicates.add(new LimitAABBStrategy<>(outsideBoundsHigher));
         predicates.add(new BlockedConnectorStrategy<>(blockedConnections));
 

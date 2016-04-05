@@ -116,7 +116,7 @@ public class TableDataSourceMazePath extends TableDataSourceSegmented implements
         else if (cell.getID() != null)
         {
             int index = Integer.valueOf(cell.getID().substring(3));
-            mazePath.sourceRoom = mazePath.sourceRoom.addInDimension(index, (int) cell.getPropertyValue() - mazePath.sourceRoom.getCoordinate(index));;
+            mazePath.sourceRoom = mazePath.sourceRoom.addInDimension(index, (int) cell.getPropertyValue() - mazePath.sourceRoom.getCoordinate(index));
 
             if (invertableButton != null)
                 invertableButton.setEnabled("inverse", isInvertable());

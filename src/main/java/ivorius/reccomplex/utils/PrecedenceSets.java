@@ -5,8 +5,6 @@
 
 package ivorius.reccomplex.utils;
 
-import com.google.common.base.Function;
-import com.google.common.collect.Iterables;
 import gnu.trove.map.TFloatObjectMap;
 import gnu.trove.map.hash.TFloatObjectHashMap;
 
@@ -14,6 +12,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.function.Function;
 
 /**
  * Created by lukas on 11.03.15.

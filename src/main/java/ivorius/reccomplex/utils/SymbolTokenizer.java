@@ -193,7 +193,7 @@ public class SymbolTokenizer
         }
     }
 
-    public static interface TokenFactory
+    public interface TokenFactory
     {
         @Nullable
         Token tryConstructSymbolTokenAt(int index, @Nonnull String string);

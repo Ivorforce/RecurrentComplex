@@ -10,11 +10,14 @@ import gnu.trove.set.TIntSet;
 import gnu.trove.set.hash.TIntHashSet;
 import ivorius.ivtoolkit.maze.components.MazePassage;
 import ivorius.ivtoolkit.maze.components.MazeRoom;
+import ivorius.ivtoolkit.maze.components.MazeRooms;
 import ivorius.ivtoolkit.tools.Ranges;
 
 import java.util.Map;
 import java.util.Set;
 import java.util.function.Function;
+import java.util.stream.IntStream;
+import java.util.stream.Stream;
 
 /**
  * Created by lukas on 14.04.15.
@@ -43,20 +46,14 @@ public class SavedMazePaths
      * @param dimensions
      * @return
      */
-    public static Set<SavedMazePath> neighbors(final MazeRoom room, TIntSet dimensions)
+    public static Stream<SavedMazePath> neighborPaths(final MazeRoom room, IntStream dimensions)
     {
-        final ImmutableSet.Builder<SavedMazePath> set = ImmutableSet.builder();
-        dimensions.forEach(value -> {
-            set.add(new SavedMazePath(value, room, true));
-            set.add(new SavedMazePath(value, room, false));
-            return true;
-        });
-        return set.build();
+        return dimensions.mapToObj(d -> IntStream.of(1, -1).mapToObj(m -> new SavedMazePath(d, room, m > 0))).flatMap(t -> t);
     }
 
-    public static Set<SavedMazePath> neighbors(MazeRoom room)
+    public static Stream<SavedMazePath> neighborPaths(MazeRoom room)
     {
-        return neighbors(room, new TIntHashSet(Ranges.to(room.getDimensions())));
+        return neighborPaths(room, IntStream.range(0, room.getDimensions()));
     }
 }
 

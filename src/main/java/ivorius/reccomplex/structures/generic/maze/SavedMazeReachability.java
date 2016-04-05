@@ -77,8 +77,9 @@ public class SavedMazeReachability implements NBTCompoundObject
      */
     public static void completeExitPaths(Set<SavedMazePath> exits, Selection rooms)
     {
-        for (MazeRoom room : rooms.mazeRooms(true))
-            SavedMazePaths.neighbors(room).stream().filter(connection -> !exits.contains(connection) && !(rooms.contains(connection.getSourceRoom()) && rooms.contains(connection.getDestRoom()))).forEach(exits::add);
+        Set<MazeRoom> roomSet = rooms.mazeRooms(true);
+        for (MazeRoom room : roomSet)
+            SavedMazePaths.neighborPaths(room).filter(connection -> !exits.contains(connection) && !(roomSet.contains(connection.getSourceRoom()) && roomSet.contains(connection.getDestRoom()))).forEach(exits::add);
     }
 
     public void set(SavedMazeReachability reachability)

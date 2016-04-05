@@ -5,6 +5,7 @@
 
 package ivorius.reccomplex.utils;
 
+import javax.annotation.Nonnull;
 import java.util.*;
 
 /**
@@ -37,6 +38,7 @@ public class PrecedenceSet<T> extends AbstractSet<T> implements Comparable<Prece
         return Float.compare(precedence, o.precedence);
     }
 
+    @Nonnull
     @Override
     public Iterator<T> iterator()
     {
@@ -49,7 +51,7 @@ public class PrecedenceSet<T> extends AbstractSet<T> implements Comparable<Prece
         return set.size();
     }
 
-    public static interface NativeEntry
+    public interface NativeEntry
     {
         float getPrecedence();
     }

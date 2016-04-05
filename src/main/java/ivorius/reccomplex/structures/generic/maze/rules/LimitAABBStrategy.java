@@ -63,7 +63,7 @@ public class LimitAABBStrategy<M extends MazeComponent<C>, C> implements MazePre
     }
 
     @Override
-    public boolean test(@Nullable MazeRoom input)
+    public boolean test(MazeRoom input)
     {
         for (int i = 0; i < input.getDimensions(); i++)
             if (input.getCoordinate(i) < 0 || input.getCoordinate(i) >= roomNumbers[i])

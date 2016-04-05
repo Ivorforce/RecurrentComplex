@@ -46,7 +46,7 @@ public class RCCommands
         if (!RecurrentComplex.isLite())
         {
             event.registerServerCommand(new CommandPreview());
-            ;event.registerServerCommand(confirm = new CommandConfirm());
+            event.registerServerCommand(confirm = new CommandConfirm());
             event.registerServerCommand(cancel = new CommandCancel());
         }
 

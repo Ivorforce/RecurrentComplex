@@ -5,16 +5,15 @@
 
 package ivorius.reccomplex.gui.table;
 
-import com.google.common.base.Function;
 import com.google.common.collect.Lists;
 import ivorius.ivtoolkit.tools.IvGsonHelper;
 import ivorius.reccomplex.utils.IvTranslations;
 import net.minecraft.client.gui.GuiButton;
 
-import javax.annotation.Nullable;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
+import java.util.function.Function;
 
 /**
  * Created by lukas on 02.06.14.

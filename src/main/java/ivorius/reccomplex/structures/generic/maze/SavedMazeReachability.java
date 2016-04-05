@@ -89,15 +89,13 @@ public class SavedMazeReachability implements NBTCompoundObject
 
     public <T extends Map.Entry<SavedMazePath, SavedMazePath>> void set(List<Set<SavedMazePath>> groups, List<T> crossConnections)
     {
-        groups.clear();
+        this.groups.clear();
         for (Set<SavedMazePath> group : groups)
-            groups.add(Sets.newHashSet(group.stream().map(SavedMazePath::copy).collect(Collectors.toList())));
+            this.groups.add(Sets.newHashSet(group.stream().map(SavedMazePath::copy).collect(Collectors.toList())));
 
-        crossConnections.clear();
+        this.crossConnections.clear();
         for (Map.Entry<SavedMazePath, SavedMazePath> entry : crossConnections)
-        {
             this.crossConnections.add(ImmutablePair.of(entry.getKey().copy(), entry.getValue().copy()));
-        }
     }
 
     public ImmutableMultimap<MazePassage, MazePassage> build(final AxisAlignedTransform2D transform, final int[] size, Predicate<MazePassage> filter, Set<MazePassage> connections)
@@ -177,7 +175,7 @@ public class SavedMazeReachability implements NBTCompoundObject
             if (groups == null)
                 groups = Collections.emptyList();
 
-            List<ImmutablePair<SavedMazePath, SavedMazePath>> crossConnections = gson.fromJson(jsonObject.get("crossConnections"), new TypeToken<List<ImmutablePair<SavedMazePath, SavedMazePath>>>(){}.getType());
+            List<ImmutablePair<SavedMazePath, SavedMazePath>> crossConnections = gson.fromJson(JsonUtils.getJsonObjectJsonArrayFieldOrDefault(jsonObject, "crossConnections", new JsonArray()), new TypeToken<List<ImmutablePair<SavedMazePath, SavedMazePath>>>(){}.getType());
             if (crossConnections == null)
                 crossConnections = Collections.emptyList();
 
@@ -189,8 +187,8 @@ public class SavedMazeReachability implements NBTCompoundObject
         {
             JsonObject jsonObject = new JsonObject();
 
-            jsonObject.add("source", context.serialize(src.groups));
-            jsonObject.addProperty("pathDimension", gson.toJson(src.crossConnections));
+            jsonObject.add("groups", context.serialize(src.groups));
+            jsonObject.add("crossConnections", gson.toJsonTree(src.crossConnections));
 
             return jsonObject;
         }

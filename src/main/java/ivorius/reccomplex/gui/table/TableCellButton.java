@@ -5,9 +5,11 @@
 
 package ivorius.reccomplex.gui.table;
 
+import com.google.common.collect.Iterables;
 import net.minecraft.client.gui.GuiButton;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
@@ -45,6 +47,18 @@ public class TableCellButton extends TableCellDefault
     public Action[] getActions()
     {
         return actions;
+    }
+
+    public void setEnabled(String actionID, boolean enabled)
+    {
+        int index = Iterables.indexOf(Arrays.asList(actions), input -> input.id.equals(actionID));
+        if (index >= 0)
+        {
+            actions[index].enabled = enabled;
+
+            if (index < buttons.length)
+                buttons[index].enabled = enabled;
+        }
     }
 
     @Override

@@ -26,6 +26,8 @@ public class TableDataSourceMazePath extends TableDataSourceSegmented implements
     private int[] boundsHigher;
     private TableDelegate tableDelegate;
 
+    private TableCellButton invertableButton;
+
     public TableDataSourceMazePath(SavedMazePath mazePath, int[] boundsLower, int[] boundsHigher, TableDelegate tableDelegate)
     {
         this.mazePath = mazePath;
@@ -77,12 +79,17 @@ public class TableDataSourceMazePath extends TableDataSourceSegmented implements
         }
         else if (segment == 3)
         {
-            TableCellButton cell = new TableCellButton("actions", new TableCellButton.Action("inverse", "Invert", contains(mazePath.inverse().getSourceRoom().getCoordinates(), boundsLower, boundsHigher)));
-            cell.addListener(this);
-            return new TableElementCell(cell);
+            invertableButton = new TableCellButton("actions", new TableCellButton.Action("inverse", "Invert", isInvertable()));
+            invertableButton.addListener(this);
+            return new TableElementCell(invertableButton);
         }
 
         return super.elementForIndexInSegment(table, index, segment);
+    }
+
+    protected boolean isInvertable()
+    {
+        return contains(mazePath.inverse().getSourceRoom().getCoordinates(), boundsLower, boundsHigher);
     }
 
     public static boolean contains(int[] array, int[] lower, int[] higher)
@@ -110,7 +117,9 @@ public class TableDataSourceMazePath extends TableDataSourceSegmented implements
         {
             int index = Integer.valueOf(cell.getID().substring(3));
             mazePath.sourceRoom = mazePath.sourceRoom.addInDimension(index, (int) cell.getPropertyValue() - mazePath.sourceRoom.getCoordinate(index));;
-            tableDelegate.reloadData();
+
+            if (invertableButton != null)
+                invertableButton.setEnabled("inverse", isInvertable());
         }
     }
 

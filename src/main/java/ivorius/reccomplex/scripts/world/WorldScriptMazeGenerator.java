@@ -271,7 +271,7 @@ public class WorldScriptMazeGenerator implements WorldScript<WorldScriptMazeGene
 
         int totalRooms = rooms.mazeRooms(true).size();
 
-        return MazeComponentConnector.randomlyConnect(maze, transformedComponents, connectionStrategy, new MazePredicateMany<>(predicates), random, totalRooms * 10);
+        return MazeComponentConnector.randomlyConnect(maze, transformedComponents, connectionStrategy, new MazePredicateMany<>(predicates), random, totalRooms * 2);
     }
 
     public static class InstanceData implements NBTStorable

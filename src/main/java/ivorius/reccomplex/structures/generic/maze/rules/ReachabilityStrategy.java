@@ -146,7 +146,7 @@ public class ReachabilityStrategy<M extends MazeComponent<C>, C> implements Maze
         Predicate<MazeRoom> predicate = confiner != null ? confiner.and((o) -> !rooms.contains(o)) : rooms::contains;
         Predicate<MazePassage> passagePredicate = p -> predicate.test(p.getDest()) && !traversed.contains(p);
 
-        Multimap<MazeRoom, MazePassage> entryReachability = compileEntryReachability(mazes, passagePredicate);
+        Multimap<MazeRoom, MazePassage> entryReachability = compileEntryReachability(mazes, passagePredicate, traverser);
 
         Set<MazeRoom> visited = Sets.newHashSet(left);
         TreeSet<MazeRoom> dirty = Sets.newTreeSet((o1, o2) -> {
@@ -189,12 +189,12 @@ public class ReachabilityStrategy<M extends MazeComponent<C>, C> implements Maze
         return false;
     }
 
-    private static <C> Multimap<MazeRoom, MazePassage> compileEntryReachability(Collection<MazeComponent<C>> mazes, Predicate<MazePassage> passagePredicate)
+    private static <C> Multimap<MazeRoom, MazePassage> compileEntryReachability(Collection<MazeComponent<C>> mazes, Predicate<MazePassage> passagePredicate, Predicate<C> traverser)
     {
         Multimap<MazeRoom, MazePassage> iReachability = HashMultimap.create();
         for (MazeComponent<C> maze : mazes)
             iReachability.putAll(maze.reachability().keySet().stream()
-                    .filter(passagePredicate)
+                    .filter(passagePredicate.and(p -> traverser.test(maze.exits().get(p))))
                     .collect(GuavaCollectors.toMultimap(MazePassage::getDest, maze.reachability()::get))
             );
         return iReachability;

@@ -19,9 +19,23 @@ public class TableCellString extends TableCellPropertyDefault<String>
     protected boolean showsValidityState;
     protected GuiValidityStateIndicator.State validityState;
 
+    protected int maxStringLength = 300;
+
     public TableCellString(String id, String value)
     {
         super(id, value);
+    }
+
+    public int getMaxStringLength()
+    {
+        return maxStringLength;
+    }
+
+    public void setMaxStringLength(int maxStringLength)
+    {
+        this.maxStringLength = maxStringLength;
+        if (textField != null)
+            textField.setMaxStringLength(maxStringLength);
     }
 
     @Override
@@ -31,7 +45,7 @@ public class TableCellString extends TableCellPropertyDefault<String>
 
         Bounds bounds = bounds();
         textField = new GuiTextField(getFontRenderer(), bounds.getMinX(), bounds.getMinY() + (bounds.getHeight() - 20) / 2, bounds.getWidth() - (showsValidityState ? 15 : 0), 20);
-        textField.setMaxStringLength(300);
+        textField.setMaxStringLength(maxStringLength);
 
         textField.setText(getPropertyValue());
         textField.setVisible(!isHidden());

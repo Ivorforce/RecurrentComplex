@@ -49,6 +49,7 @@ public class TableDataSourceSpawnCommandEntry extends TableDataSourceSegmented i
         else if (index == 1)
         {
             TableCellString cell = new TableCellString("command", entry.command);
+            cell.setMaxStringLength(32767); // Same as GuiCommandBlock.
             cell.addPropertyListener(this);
             return new TableElementCell("Command", cell);
         }

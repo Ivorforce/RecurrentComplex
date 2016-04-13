@@ -5,8 +5,6 @@
 
 package ivorius.reccomplex.structures.generic.transformers;
 
-import com.google.common.base.Predicate;
-import com.google.common.collect.Iterables;
 import com.google.gson.*;
 import ivorius.ivtoolkit.blocks.*;
 import ivorius.ivtoolkit.tools.IvWorldData;
@@ -22,7 +20,6 @@ import ivorius.reccomplex.random.BlurredValueField;
 import ivorius.reccomplex.structures.StructureLoadContext;
 import ivorius.reccomplex.structures.StructurePrepareContext;
 import ivorius.reccomplex.structures.StructureSpawnContext;
-import ivorius.reccomplex.utils.BlockAreas2;
 import ivorius.reccomplex.utils.NBTStorable;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
@@ -34,7 +31,6 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.MathHelper;
 import net.minecraft.util.StatCollector;
 import net.minecraft.world.World;
-import net.minecraft.world.biome.BiomeGenBase;
 import net.minecraft.world.gen.structure.StructureBoundingBox;
 import net.minecraftforge.common.util.ForgeDirection;
 import org.apache.commons.lang3.tuple.Pair;
@@ -147,7 +143,7 @@ public class TransformerRuins implements Transformer<TransformerRuins.InstanceDa
             BlockArea sourceArea = new BlockArea(new BlockCoord(0, 0, 0), new BlockCoord(blockCollection.width, blockCollection.height, blockCollection.length));
             BlockArea decaySideArea = BlockAreas.side(sourceArea, decayDirection.getOpposite());
             BlockCoord decaySideAreaPos = decaySideArea.getLowerCorner();
-            int decaySideLength = BlockAreas2.sideLength(sourceArea, decayDirection.getOpposite());
+            int decaySideLength = BlockAreas.sideLength(sourceArea, decayDirection.getOpposite());
 
             for (int pass = 1; pass >= 0; pass--)
             {

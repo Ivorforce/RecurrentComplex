@@ -20,8 +20,6 @@ import ivorius.ivtoolkit.tools.NBTTagLists;
 import ivorius.reccomplex.json.JsonUtils;
 import ivorius.reccomplex.scripts.world.WorldScriptMazeGenerator;
 import ivorius.reccomplex.structures.generic.Selection;
-import ivorius.reccomplex.utils.NBTCompoundObjects2;
-import ivorius.reccomplex.utils.NBTTagLists2;
 import net.minecraft.nbt.NBTTagCompound;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 
@@ -145,21 +143,21 @@ public class SavedMazeReachability implements NBTCompoundObject
     public void readFromNBT(NBTTagCompound compound)
     {
         groups.clear();
-        groups.addAll(Lists.transform(NBTTagLists2.listsFrom(compound, "groups"), input -> Sets.newHashSet(NBTCompoundObjects.readList(input, SavedMazePath.class))));
+        groups.addAll(Lists.transform(NBTTagLists.listsFrom(compound, "groups"), input -> Sets.newHashSet(NBTCompoundObjects.readList(input, SavedMazePath.class))));
 
         crossConnections.clear();
-        crossConnections.addAll(Lists.transform(NBTTagLists.compoundsFrom(compound, "crossConnections"), input -> ImmutablePair.of(NBTCompoundObjects2.readFrom(input, "key", SavedMazePath.class), NBTCompoundObjects2.readFrom(input, "val", SavedMazePath.class))));
+        crossConnections.addAll(Lists.transform(NBTTagLists.compoundsFrom(compound, "crossConnections"), input -> ImmutablePair.of(NBTCompoundObjects.readFrom(input, "key", SavedMazePath.class), NBTCompoundObjects.readFrom(input, "val", SavedMazePath.class))));
     }
 
     @Override
     public void writeToNBT(NBTTagCompound compound)
     {
-        NBTTagLists2.writeNbt(compound, "groups", Lists.transform(groups, NBTCompoundObjects::writeList));
+        NBTTagLists.writeTo(compound, "groups", Lists.transform(groups, NBTCompoundObjects::writeList));
 
         NBTTagLists.writeCompoundsTo(compound, "crossConnections", Lists.transform(crossConnections, input -> {
             NBTTagCompound compound1 = new NBTTagCompound();
-            NBTCompoundObjects2.writeTo(compound1, "key", input.getKey());
-            NBTCompoundObjects2.writeTo(compound1, "val", input.getValue());
+            NBTCompoundObjects.writeTo(compound1, "key", input.getKey());
+            NBTCompoundObjects.writeTo(compound1, "val", input.getValue());
             return compound1;
         }));
     }

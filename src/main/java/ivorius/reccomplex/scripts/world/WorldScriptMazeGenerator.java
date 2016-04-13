@@ -46,6 +46,8 @@ import java.util.stream.Collectors;
  */
 public class WorldScriptMazeGenerator implements WorldScript<WorldScriptMazeGenerator.InstanceData>
 {
+    public static final int REVERSED_PER_ROOM = 4;
+
     // TODO Turn into SavedMazeComponent
     public final List<SavedMazePathConnection> exitPaths = new ArrayList<>();
     public String mazeID = "";
@@ -271,7 +273,7 @@ public class WorldScriptMazeGenerator implements WorldScript<WorldScriptMazeGene
 
         int totalRooms = rooms.mazeRooms(true).size();
 
-        return MazeComponentConnector.randomlyConnect(maze, transformedComponents, connectionStrategy, new MazePredicateMany<>(predicates), random, totalRooms * 2);
+        return MazeComponentConnector.randomlyConnect(maze, transformedComponents, connectionStrategy, new MazePredicateMany<>(predicates), random, totalRooms * REVERSED_PER_ROOM);
     }
 
     public static class InstanceData implements NBTStorable

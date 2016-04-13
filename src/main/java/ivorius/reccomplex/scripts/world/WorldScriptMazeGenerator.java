@@ -13,6 +13,7 @@ import ivorius.ivtoolkit.maze.components.*;
 import ivorius.ivtoolkit.tools.IvNBTHelper;
 import ivorius.ivtoolkit.tools.NBTCompoundObjects;
 import ivorius.ivtoolkit.tools.NBTTagLists;
+import ivorius.reccomplex.RCConfig;
 import ivorius.reccomplex.gui.table.TableDataSource;
 import ivorius.reccomplex.gui.table.TableDelegate;
 import ivorius.reccomplex.gui.table.TableNavigator;
@@ -46,7 +47,6 @@ import java.util.stream.Collectors;
  */
 public class WorldScriptMazeGenerator implements WorldScript<WorldScriptMazeGenerator.InstanceData>
 {
-    public static final int REVERSED_PER_ROOM = 4;
 
     // TODO Turn into SavedMazeComponent
     public final List<SavedMazePathConnection> exitPaths = new ArrayList<>();
@@ -273,7 +273,12 @@ public class WorldScriptMazeGenerator implements WorldScript<WorldScriptMazeGene
 
         int totalRooms = rooms.mazeRooms(true).size();
 
-        return MazeComponentConnector.randomlyConnect(maze, transformedComponents, connectionStrategy, new MazePredicateMany<>(predicates), random, totalRooms * REVERSED_PER_ROOM);
+        return MazeComponentConnector.randomlyConnect(maze,
+                transformedComponents, connectionStrategy,
+                new MazePredicateMany<>(predicates),
+                random,
+                RCConfig.mazePlacementReversesPerRoom >= 0 ? MathHelper.floor_float(totalRooms * RCConfig.mazePlacementReversesPerRoom + 0.5f) : MazeComponentConnector.INFINITE_REVERSES
+        );
     }
 
     public static class InstanceData implements NBTStorable

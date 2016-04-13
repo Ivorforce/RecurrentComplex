@@ -5,6 +5,7 @@
 
 package ivorius.reccomplex.gui.worldscripts.mazegenerator;
 
+import ivorius.reccomplex.gui.RCGuiTables;
 import ivorius.reccomplex.gui.table.*;
 import ivorius.reccomplex.gui.worldscripts.mazegenerator.reachability.TableDataSourceMazeReachability;
 import ivorius.reccomplex.structures.generic.maze.SavedMazeComponent;
@@ -59,13 +60,7 @@ public class TableDataSourceMazeComponent extends TableDataSourceSegmented imple
         switch (segment)
         {
             case 1:
-            {
-                TableCellFloatNullable cell = new TableCellFloatNullable("weight", TableElements.toFloat(component.weight), 1.0f, 0, 1000, "D", "C");
-                cell.setScale(Scales.pow(5));
-                cell.addPropertyListener(this);
-                cell.setTooltip(IvTranslations.formatLines("structures.gui.random.weight.tooltip"));
-                return new TableElementCell(IvTranslations.get("structures.gui.random.weight"), cell);
-            }
+                return RCGuiTables.defaultWeightElement(this, component.weight);
             case 2:
             {
                 TableCellButton cell = new TableCellButton("rooms", new TableCellButton.Action("edit", "Edit"));

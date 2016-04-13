@@ -43,8 +43,7 @@ public class CommandExportStructure extends CommandBase
     {
         EntityPlayerMP player = getCommandSenderAsPlayer(commandSender);
 
-        int x, y, z;
-        int width, height, length;
+        BlockArea area;
 
 //        if (args.length >= 6)
 //        {
@@ -65,14 +64,7 @@ public class CommandExportStructure extends CommandBase
 
             if (structureEntityInfo.hasValidSelection())
             {
-                BlockCoord smaller = structureEntityInfo.selectedPoint1.getLowerCorner(structureEntityInfo.selectedPoint2);
-                BlockCoord bigger = structureEntityInfo.selectedPoint1.getHigherCorner(structureEntityInfo.selectedPoint2);
-                x = smaller.x;
-                y = smaller.y;
-                z = smaller.z;
-                width = bigger.x - smaller.x + 1;
-                height = bigger.y - smaller.y + 1;
-                length = bigger.z - smaller.z + 1;
+                area = new BlockArea(structureEntityInfo.selectedPoint1, structureEntityInfo.selectedPoint2);
             }
             else
             {
@@ -98,8 +90,8 @@ public class CommandExportStructure extends CommandBase
             saveAsActive = false;
         }
 
-        BlockCoord lowerCoord = new BlockCoord(x, y, z);
-        BlockCoord higherCoord = new BlockCoord(x + width - 1, y + height - 1, z + length - 1);
+        BlockCoord lowerCoord = area.getLowerCorner();
+        BlockCoord higherCoord = area.getHigherCorner();
 
         IvWorldData data = new IvWorldData(player.getEntityWorld(), new BlockArea(lowerCoord, higherCoord), true);
         genericStructureInfo.worldDataCompound = data.createTagCompound(lowerCoord);

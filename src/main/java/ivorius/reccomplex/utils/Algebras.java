@@ -5,10 +5,9 @@
 
 package ivorius.reccomplex.utils;
 
-import com.google.common.base.Function;
-
 import javax.annotation.Nullable;
 import java.text.ParseException;
+import java.util.function.Function;
 
 /**
  * Created by lukas on 24.02.15.

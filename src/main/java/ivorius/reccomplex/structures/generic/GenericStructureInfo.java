@@ -299,7 +299,7 @@ public class GenericStructureInfo implements StructureInfo<GenericStructureInfo.
     @Override
     public GenericStructureInfo copyAsGenericStructureInfo()
     {
-        return (GenericStructureInfo) clone();
+        return copy();
     }
 
     @Override
@@ -315,12 +315,10 @@ public class GenericStructureInfo implements StructureInfo<GenericStructureInfo.
         return s != null ? s : "Generic Structure";
     }
 
-    @Override
-    public Object clone()
+    public GenericStructureInfo copy()
     {
         GenericStructureInfo genericStructureInfo = StructureRegistry.INSTANCE.createStructureFromJSON(StructureRegistry.INSTANCE.createJSONFromStructure(this));
         genericStructureInfo.worldDataCompound = (NBTTagCompound) worldDataCompound.copy();
-
         return genericStructureInfo;
     }
 

@@ -7,6 +7,8 @@ package ivorius.reccomplex.gui.editstructure.gentypes;
 
 import ivorius.ivtoolkit.blocks.BlockCoord;
 import ivorius.ivtoolkit.gui.FloatRange;
+import ivorius.ivtoolkit.gui.IntegerRange;
+import ivorius.reccomplex.gui.TableDataSourceBlockCoord;
 import ivorius.reccomplex.gui.TableDataSourceExpression;
 import ivorius.reccomplex.gui.TableDirections;
 import ivorius.reccomplex.gui.table.*;
@@ -34,6 +36,7 @@ public class TableDataSourceVanillaStructureGenerationInfo extends TableDataSour
 
         addManagedSection(0, new TableDataSourceGenerationInfo(generationInfo));
         addManagedSection(4, TableDataSourceExpression.constructDefault("Biomes", generationInfo.biomeMatcher));
+        addManagedSection(5, new TableDataSourceBlockCoord(generationInfo.spawnShift, generationInfo::setSpawnShift, new IntegerRange(-50, 50), "Spawn Shift %s"));
     }
 
     @Override
@@ -53,8 +56,6 @@ public class TableDataSourceVanillaStructureGenerationInfo extends TableDataSour
                 return 2;
             case 3:
                 return 2;
-            case 5:
-                return 3;
         }
         return super.sizeOfSegment(segment);
     }
@@ -109,29 +110,6 @@ public class TableDataSourceVanillaStructureGenerationInfo extends TableDataSour
                     }
                 }
                 break;
-            case 5:
-                switch (index)
-                {
-                    case 0:
-                    {
-                        TableCellInteger cell = new TableCellInteger("spawnX", generationInfo.spawnShift.x, -50, 50);
-                        cell.addPropertyListener(this);
-                        return new TableElementCell("Spawn Shift X", cell);
-                    }
-                    case 1:
-                    {
-                        TableCellInteger cell = new TableCellInteger("spawnY", generationInfo.spawnShift.y, -50, 50);
-                        cell.addPropertyListener(this);
-                        return new TableElementCell("Spawn Shift Y", cell);
-                    }
-                    case 2:
-                    {
-                        TableCellInteger cell = new TableCellInteger("spawnZ", generationInfo.spawnShift.z, -50, 50);
-                        cell.addPropertyListener(this);
-                        return new TableElementCell("Spawn Shift Z", cell);
-                    }
-                }
-                break;
         }
 
         return super.elementForIndexInSegment(table, index, segment);
@@ -159,24 +137,6 @@ public class TableDataSourceVanillaStructureGenerationInfo extends TableDataSour
                     FloatRange baseLimit = (FloatRange) cell.getPropertyValue();
                     generationInfo.minScaledLimit = baseLimit.getMin();
                     generationInfo.maxScaledLimit = baseLimit.getMax();
-                    break;
-                }
-                case "spawnX":
-                {
-                    BlockCoord coord = generationInfo.spawnShift;
-                    generationInfo.spawnShift = new BlockCoord((int) cell.getPropertyValue(), coord.y, coord.z);
-                    break;
-                }
-                case "spawnY":
-                {
-                    BlockCoord coord = generationInfo.spawnShift;
-                    generationInfo.spawnShift = new BlockCoord(coord.x, (int) cell.getPropertyValue(), coord.z);
-                    break;
-                }
-                case "spawnZ":
-                {
-                    BlockCoord coord = generationInfo.spawnShift;
-                    generationInfo.spawnShift = new BlockCoord(coord.x, coord.y, (int) cell.getPropertyValue());
                     break;
                 }
                 case "front":

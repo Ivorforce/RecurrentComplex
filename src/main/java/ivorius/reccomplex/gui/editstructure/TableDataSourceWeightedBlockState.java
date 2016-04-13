@@ -6,6 +6,7 @@
 package ivorius.reccomplex.gui.editstructure;
 
 import ivorius.reccomplex.gui.GuiValidityStateIndicator;
+import ivorius.reccomplex.gui.RCGuiTables;
 import ivorius.reccomplex.gui.editstructure.transformers.TableDataSourceBTNatural;
 import ivorius.reccomplex.gui.table.*;
 import ivorius.reccomplex.structures.generic.WeightedBlockState;
@@ -71,11 +72,7 @@ public class TableDataSourceWeightedBlockState extends TableDataSourceSegmented 
     {
         if (segment == 0)
         {
-            TableCellFloatNullable cell = new TableCellFloatNullable("weight", TableElements.toFloat(weightedBlockState.weight), 1.0f, 0, 1000, "D", "C");
-            cell.setScale(Scales.pow(5));
-            cell.addPropertyListener(this);
-            cell.setTooltip(IvTranslations.formatLines("structures.gui.random.weight.tooltip"));
-            return new TableElementCell(IvTranslations.get("structures.gui.random.weight"), cell);
+            return RCGuiTables.defaultWeightElement(this, weightedBlockState.weight);
         }
         else if (segment == 1)
         {

@@ -6,6 +6,9 @@
 package ivorius.reccomplex.gui.worldscripts.mazegenerator;
 
 import ivorius.ivtoolkit.blocks.BlockCoord;
+import ivorius.ivtoolkit.gui.IntegerRange;
+import ivorius.reccomplex.gui.RCGuiTables;
+import ivorius.reccomplex.gui.TableDataSourceBlockCoord;
 import ivorius.reccomplex.gui.table.*;
 import ivorius.reccomplex.gui.worldscripts.mazegenerator.rules.TableDataSourceMazeRuleList;
 import ivorius.reccomplex.scripts.world.WorldScriptMazeGenerator;
@@ -32,6 +35,8 @@ public class TableDataSourceWorldScriptMazeGenerator extends TableDataSourceSegm
         this.script = script;
         this.tableDelegate = tableDelegate;
         this.tableNavigator = tableNavigator;
+
+        addManagedSection(2, new TableDataSourceBlockCoord(script.getStructureShift(), script::setStructureShift, new IntegerRange(-50, 50), "Range: %s"));
     }
 
     public WorldScriptMazeGenerator getScript()
@@ -73,7 +78,16 @@ public class TableDataSourceWorldScriptMazeGenerator extends TableDataSourceSegm
     @Override
     public int sizeOfSegment(int segment)
     {
-        return segment == 0 ? 1 : segment == 1 ? 3 : 3;
+        switch (segment)
+        {
+            case 0:
+                return 1;
+            case 1:
+            case 3:
+                return 3;
+            default:
+                return super.sizeOfSegment(segment);
+        }
     }
 
     @Override
@@ -104,27 +118,6 @@ public class TableDataSourceWorldScriptMazeGenerator extends TableDataSourceSegm
                 TableCellButton cell = new TableCellButton("rules", new TableCellButton.Action("edit", "Edit"));
                 cell.addListener(this);
                 return new TableElementCell("Rules", cell);
-            }
-        }
-        else if (segment == 2)
-        {
-            if (index == 0)
-            {
-                TableCellInteger cell = new TableCellInteger("xShift", script.getStructureShift().x, -50, 50);
-                cell.addPropertyListener(this);
-                return new TableElementCell("Shift: X", cell);
-            }
-            else if (index == 1)
-            {
-                TableCellInteger cell = new TableCellInteger("yShift", script.getStructureShift().y, -50, 50);
-                cell.addPropertyListener(this);
-                return new TableElementCell("Shift: Y", cell);
-            }
-            else if (index == 2)
-            {
-                TableCellInteger cell = new TableCellInteger("zShift", script.getStructureShift().z, -50, 50);
-                cell.addPropertyListener(this);
-                return new TableElementCell("Shift: Z", cell);
             }
         }
         else if (segment == 3)
@@ -158,21 +151,6 @@ public class TableDataSourceWorldScriptMazeGenerator extends TableDataSourceSegm
         if ("mazeID".equals(cell.getID()))
         {
             script.setMazeID((String) cell.getPropertyValue());
-        }
-        else if ("xShift".equals(cell.getID()))
-        {
-            BlockCoord shift = script.getStructureShift();
-            script.setStructureShift(new BlockCoord((int) cell.getPropertyValue(), shift.y, shift.z));
-        }
-        else if ("yShift".equals(cell.getID()))
-        {
-            BlockCoord shift = script.getStructureShift();
-            script.setStructureShift(new BlockCoord(shift.x, (int) cell.getPropertyValue(), shift.z));
-        }
-        else if ("zShift".equals(cell.getID()))
-        {
-            BlockCoord shift = script.getStructureShift();
-            script.setStructureShift(new BlockCoord(shift.x, shift.y, (int) cell.getPropertyValue()));
         }
         else if ("roomSizeX".equals(cell.getID()))
         {

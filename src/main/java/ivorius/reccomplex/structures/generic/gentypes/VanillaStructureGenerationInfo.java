@@ -73,6 +73,11 @@ public class VanillaStructureGenerationInfo extends StructureGenerationInfo
         this.id = id;
     }
 
+    public void setSpawnShift(BlockCoord spawnShift)
+    {
+        this.spawnShift = spawnShift;
+    }
+
     @Override
     public String displayString()
     {

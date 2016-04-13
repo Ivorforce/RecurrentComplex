@@ -5,6 +5,7 @@
 
 package ivorius.reccomplex.gui.worldscripts.command;
 
+import ivorius.reccomplex.gui.RCGuiTables;
 import ivorius.reccomplex.gui.table.*;
 import ivorius.reccomplex.scripts.world.WorldScriptCommand;
 import ivorius.reccomplex.utils.IvTranslations;
@@ -55,11 +56,7 @@ public class TableDataSourceSpawnCommandEntry extends TableDataSourceSegmented i
         }
         else if (index == 2)
         {
-            TableCellFloatNullable cell = new TableCellFloatNullable("weight", TableElements.toFloat(entry.weight), 1.0f, 0, 1000, "D", "C");
-            cell.setScale(Scales.pow(5));
-            cell.addPropertyListener(this);
-            cell.setTooltip(IvTranslations.formatLines("structures.gui.random.weight.tooltip"));
-            return new TableElementCell(IvTranslations.get("structures.gui.random.weight"), cell);
+            return RCGuiTables.defaultWeightElement(this, entry.weight);
         }
 
         return null;

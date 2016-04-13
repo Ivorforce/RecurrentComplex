@@ -5,9 +5,7 @@
 
 package ivorius.reccomplex.utils;
 
-import com.google.common.base.Function;
-
-import javax.annotation.Nullable;
+import java.util.function.Function;
 
 /**
  * Created by lukas on 23.02.15.

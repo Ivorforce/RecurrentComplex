@@ -5,6 +5,7 @@
 
 package ivorius.reccomplex.gui.editstructure.gentypes;
 
+import ivorius.reccomplex.gui.RCGuiTables;
 import ivorius.reccomplex.gui.editstructure.TableDataSourceBiomeGenList;
 import ivorius.reccomplex.gui.editstructure.TableDataSourceDimensionGenList;
 import ivorius.reccomplex.gui.editstructure.TableDataSourceNaturalGenLimitation;
@@ -91,11 +92,7 @@ public class TableDataSourceNaturalGenerationInfo extends TableDataSourceSegment
             case 3:
                 if (index == 0)
                 {
-                    TableCellFloatNullable cell = new TableCellFloatNullable("weight", TableElements.toFloat(generationInfo.getGenerationWeight()), 1.0f, 0, 1000, "D", "C");
-                    cell.setScale(Scales.pow(5));
-                    cell.addPropertyListener(this);
-                    cell.setTooltip(IvTranslations.formatLines("structures.gui.random.weight.tooltip"));
-                    return new TableElementCell(IvTranslations.get("structures.gui.random.weight"), cell);
+                    return RCGuiTables.defaultWeightElement(this, generationInfo.getGenerationWeight());
                 }
                 else if (index == 1)
                 {

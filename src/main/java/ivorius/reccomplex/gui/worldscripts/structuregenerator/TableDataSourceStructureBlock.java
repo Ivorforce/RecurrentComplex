@@ -5,14 +5,14 @@
 
 package ivorius.reccomplex.gui.worldscripts.structuregenerator;
 
-import ivorius.ivtoolkit.blocks.BlockCoord;
-import ivorius.reccomplex.blocks.TileEntityStructureGenerator;
+import ivorius.ivtoolkit.blocks.Directions;
+import ivorius.ivtoolkit.gui.IntegerRange;
 import ivorius.reccomplex.gui.GuiValidityStateIndicator;
+import ivorius.reccomplex.gui.TableDataSourceBlockCoord;
 import ivorius.reccomplex.gui.TableDirections;
 import ivorius.reccomplex.gui.table.*;
 import ivorius.reccomplex.scripts.world.WorldScriptStructureGenerator;
 import ivorius.reccomplex.structures.StructureRegistry;
-import ivorius.ivtoolkit.blocks.Directions;
 import joptsimple.internal.Strings;
 import net.minecraftforge.common.util.ForgeDirection;
 import org.apache.commons.lang3.ArrayUtils;
@@ -36,6 +36,8 @@ public class TableDataSourceStructureBlock extends TableDataSourceSegmented impl
         this.script = script;
         this.tableNavigator = tableNavigator;
         this.tableDelegate = tableDelegate;
+
+        addManagedSection(2, new TableDataSourceBlockCoord(script.getStructureShift(), script::setStructureShift, new IntegerRange(-50, 50), "Range: %s"));
     }
 
     private static boolean doAllStructuresExist(Iterable<String> structures)
@@ -62,12 +64,10 @@ public class TableDataSourceStructureBlock extends TableDataSourceSegmented impl
             return 1;
         else if (segment == 1)
             return 1;
-        else if (segment == 2)
-            return 3;
         else if (segment == 3)
             return script.isSimpleMode() ? 2 : 1;
 
-        return 0;
+        return super.sizeOfSegment(segment);
     }
 
     @Override
@@ -94,27 +94,6 @@ public class TableDataSourceStructureBlock extends TableDataSourceSegmented impl
                 TableCellString cell = new TableCellString("listID", script.getStructureListID());
                 cell.addPropertyListener(this);
                 return new TableElementCell("List ID", cell);
-            }
-        }
-        else if (segment == 2)
-        {
-            if (index == 0)
-            {
-                TableCellInteger cell = new TableCellInteger("xShift", script.getStructureShift().x, -50, 50);
-                cell.addPropertyListener(this);
-                return new TableElementCell("Shift: X", cell);
-            }
-            else if (index == 1)
-            {
-                TableCellInteger cell = new TableCellInteger("yShift", script.getStructureShift().y, -50, 50);
-                cell.addPropertyListener(this);
-                return new TableElementCell("Shift: Y", cell);
-            }
-            else if (index == 2)
-            {
-                TableCellInteger cell = new TableCellInteger("zShift", script.getStructureShift().z, -50, 50);
-                cell.addPropertyListener(this);
-                return new TableElementCell("Shift: Z", cell);
             }
         }
         else if (segment == 3)
@@ -168,24 +147,6 @@ public class TableDataSourceStructureBlock extends TableDataSourceSegmented impl
                 case "listID":
                 {
                     script.setStructureListID((String) cell.getPropertyValue());
-                    break;
-                }
-                case "xShift":
-                {
-                    BlockCoord shift = script.getStructureShift();
-                    script.setStructureShift(new BlockCoord((int) cell.getPropertyValue(), shift.y, shift.z));
-                    break;
-                }
-                case "yShift":
-                {
-                    BlockCoord shift = script.getStructureShift();
-                    script.setStructureShift(new BlockCoord(shift.x, (int) cell.getPropertyValue(), shift.z));
-                    break;
-                }
-                case "zShift":
-                {
-                    BlockCoord shift = script.getStructureShift();
-                    script.setStructureShift(new BlockCoord(shift.x, shift.y, (int) cell.getPropertyValue()));
                     break;
                 }
                 case "rotation":

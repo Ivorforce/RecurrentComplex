@@ -58,7 +58,7 @@ public class WorldGenMaze
 
     public static List<PlacedStructure> convertToPlacedStructures(final Random random, final BlockCoord coord, final BlockCoord shift, List<ShiftedMazeComponent<MazeComponentStructure<Connector>, Connector>> placedComponents, final int[] roomSize, final AxisAlignedTransform2D mazeTransform)
     {
-        return Lists.newArrayList(placedComponents.stream().map((Function<ShiftedMazeComponent<MazeComponentStructure<Connector>, Connector>, PlacedStructure>) placedComponent -> {
+        return Lists.newArrayList(placedComponents.stream().map(placedComponent -> {
             MazeComponentStructure<Connector> componentInfo = placedComponent.getComponent();
             StructureInfo structureInfo = StructureRegistry.INSTANCE.getStructure(componentInfo.structureID);
 
@@ -113,9 +113,9 @@ public class WorldGenMaze
             if (comp.getWeight() > 0)
                 splitCompWeight = comp.getWeight() / roomVariations;
 
-            for (int rotations = 0; rotations < (info.isRotatable() ? 4 : 1); rotations++)
+            for (int rotations = 0; rotations < 4; rotations++)
             {
-                if (info.isRotatable() || (rotations + transform.getRotation()) % 4 == 0)
+                if (info.isRotatable() || transform.apply(rotations) == 0)
                 {
                     transformedComponents.add(transformedComponent(info, comp, AxisAlignedTransform2D.from(rotations, false), compSize, splitCompWeight, factory, blockedConnections));
 

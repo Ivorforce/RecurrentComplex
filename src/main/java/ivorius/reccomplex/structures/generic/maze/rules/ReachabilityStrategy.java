@@ -174,7 +174,7 @@ public class ReachabilityStrategy<M extends MazeComponent<C>, C> implements Maze
                     {
                         for (MazePassage passage : entryReachability.removeAll(next))
                         {
-                            List<MazeRoom> roomExits = traverse(mazes, traversed, true, Collections.singleton(passage), traverser, null).stream().map(MazePassage::getDest).collect(Collectors.toList());
+                            Set<MazeRoom> roomExits = traverse(mazes, traversed, true, Collections.singleton(passage), traverser, null).stream().map(MazePassage::getDest).collect(Collectors.toSet());
                             tryAdd.addAll(roomExits);
                             roomExits.forEach(entryReachability::removeAll);
                         }

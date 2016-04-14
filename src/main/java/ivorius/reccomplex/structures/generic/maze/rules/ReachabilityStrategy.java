@@ -120,7 +120,7 @@ public class ReachabilityStrategy<M extends MazeComponent<C>, C> implements Maze
                 maze.reachability().get(traversing).forEach(dest -> {
                     if ((traversed == null || !traversed.contains(dest))
                             && (addToTraversed || !added.contains(dest))
-                            && (visitor == null || visitor.visit(dest))) // TODO Cancel whole procedure on visitor.visit = false
+                            && (visitor == null || visitor.visit(dest)))
                     {
                         if (traverser.test(maze.exits().get(dest)))
                         {
@@ -348,6 +348,7 @@ public class ReachabilityStrategy<M extends MazeComponent<C>, C> implements Maze
         public final Set<MazePassage> traversed = new HashSet<>();
         public final List<Set<MazePassage>> order = new ArrayList<>();
 
+        @SafeVarargs
         public ConnectionPoint(Collection<MazePassage>... points)
         {
             for (Collection<MazePassage> point : points)

@@ -43,7 +43,7 @@ public class TableDataSourceMazeRuleConnectAll extends TableDataSourceSegmented 
     @Override
     public int numberOfSegments()
     {
-        return rule.additive ? 3 : 5;
+        return rule.additive ? 4 : 6;
     }
 
     @Override

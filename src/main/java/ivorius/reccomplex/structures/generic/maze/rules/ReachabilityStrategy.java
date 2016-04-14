@@ -9,6 +9,8 @@ import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Multimap;
 import com.google.common.collect.Sets;
+import gnu.trove.map.TObjectIntMap;
+import gnu.trove.map.hash.TObjectIntHashMap;
 import ivorius.ivtoolkit.maze.components.*;
 import ivorius.ivtoolkit.tools.GuavaCollectors;
 import ivorius.ivtoolkit.tools.Visitor;
@@ -16,6 +18,7 @@ import org.apache.commons.lang3.tuple.Pair;
 
 import javax.annotation.Nullable;
 import java.util.*;
+import java.util.function.Consumer;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
@@ -26,26 +29,35 @@ public class ReachabilityStrategy<M extends MazeComponent<C>, C> implements Maze
 {
     private final Set<Pair<MazeRoom, Set<MazeRoom>>> traversalAbilities = new HashSet<>();
 
-    private final Set<MazePassage> leftTraversed = new HashSet<>();
-    private final List<Set<MazePassage>> leftNew = new ArrayList<>();
-
-    private final Set<MazePassage> rightTraversed = new HashSet<>();
-    private final List<Set<MazePassage>> rightNew = new ArrayList<>();
+    private ConnectionPoint mainConnectionPoint;
+    private final List<ConnectionPoint> connectionPoints = new ArrayList<>();
+    private final TObjectIntMap<ConnectionPoint> stepsReached = new TObjectIntHashMap<>();
 
     private final Predicate<MazeRoom> confiner;
     private final Predicate<C> traverser;
 
-    private int stepsGoalReached = -1;
+    private boolean preventConnection;
 
-    public ReachabilityStrategy(Set<MazePassage> start, Set<MazePassage> end, Predicate<C> traverser, Predicate<MazeRoom> confiner, Set<Pair<MazeRoom, Set<MazeRoom>>> traversalAbilities)
+    public ReachabilityStrategy(Predicate<MazeRoom> confiner, Predicate<C> traverser, boolean preventConnection)
     {
-        leftTraversed.addAll(start);
-        leftTraversed.addAll(start.stream().map(MazePassage::inverse).collect(Collectors.toList())); // It's an exit so we're on both sides
-        rightTraversed.addAll(end);
-        rightTraversed.addAll(end.stream().map(MazePassage::inverse).collect(Collectors.toList()));
-        this.traverser = traverser;
         this.confiner = confiner;
-        this.traversalAbilities.addAll(traversalAbilities);
+        this.traverser = traverser;
+        this.preventConnection = preventConnection;
+    }
+
+    public static <M extends MazeComponent<C>, C> ReachabilityStrategy<M, C> connect(Collection<Collection<MazePassage>> points, Predicate<C> traverser, Predicate<MazeRoom> confiner, Set<Pair<MazeRoom, Set<MazeRoom>>> traversalAbilities)
+    {
+        ReachabilityStrategy<M, C> strategy = new ReachabilityStrategy<>(confiner, traverser, false);
+        strategy.setConnection(points);
+        strategy.traversalAbilities.addAll(traversalAbilities);
+        return strategy;
+    }
+
+    public static <M extends MazeComponent<C>, C> ReachabilityStrategy<M, C> preventConnection(Collection<Collection<MazePassage>> points, Predicate<C> traverser, Predicate<MazeRoom> confiner)
+    {
+        ReachabilityStrategy<M, C> strategy = new ReachabilityStrategy<>(confiner, traverser, true);
+        strategy.setConnection(points);
+        return strategy;
     }
 
     public static <C> Set<Pair<MazeRoom, Set<MazeRoom>>> compileAbilities(Collection<? extends MazeComponent<C>> components, Predicate<C> traverser)
@@ -108,7 +120,7 @@ public class ReachabilityStrategy<M extends MazeComponent<C>, C> implements Maze
                 maze.reachability().get(traversing).forEach(dest -> {
                     if ((traversed == null || !traversed.contains(dest))
                             && (addToTraversed || !added.contains(dest))
-                            && (visitor == null || visitor.visit(dest)))
+                            && (visitor == null || visitor.visit(dest))) // TODO Cancel whole procedure on visitor.visit = false
                     {
                         if (traverser.test(maze.exits().get(dest)))
                         {
@@ -217,25 +229,37 @@ public class ReachabilityStrategy<M extends MazeComponent<C>, C> implements Maze
         return rooms.stream().mapToDouble(r -> room.distanceSQ(room)).min().orElse(0);
     }
 
+    protected void setConnection(Collection<Collection<MazePassage>> points)
+    {
+        connectionPoints.addAll(points.stream().map(p -> new ConnectionPoint(p, p.stream().map(MazePassage::inverse).collect(Collectors.toList()))).collect(Collectors.toList()));
+
+        mainConnectionPoint = connectionPoints.size() > 0 ? connectionPoints.remove(0) : null;
+    }
+
     @Override
     public boolean canPlace(final MorphingMazeComponent<C> maze, final ShiftedMazeComponent<M, C> component)
     {
-        if (stepsGoalReached >= 0)
-            return true;
+        if (preventConnection && !stepsReached.isEmpty())
+            return true; // Already Connected: Give Up
+
+        if (stepsReached.size() == connectionPoints.size())
+            return true; // Done
+
+        place(maze, component, true);
 
         final Set<MazeRoom> roomsFromBoth = Sets.union(maze.rooms(), component.rooms());
         Predicate<MazePassage> isDirty = input -> confiner.test(input.getSource()) && !roomsFromBoth.contains(input.getSource());
-
-        place(maze, component, true);
-        boolean canPlace = stepsGoalReached >= 0
-                || canReach(roomsFromBoth,
+        boolean canPlace = preventConnection
+                ? stepsReached.isEmpty()
+                : connectionPoints.stream().allMatch(point -> stepsReached.containsKey(point) || canReach(roomsFromBoth,
                 traversalAbilities,
                 Arrays.asList(maze, component),
-                leftTraversed.stream().filter(isDirty).map(MazePassage::getDest).collect(Collectors.toSet()),
-                rightTraversed.stream().filter(isDirty).map(MazePassage::getDest).collect(Collectors.toSet()),
-                leftTraversed,
+                point.traversed.stream().filter(isDirty).map(MazePassage::getDest).collect(Collectors.toSet()),
+                mainConnectionPoint.traversed.stream().filter(isDirty).map(MazePassage::getDest).collect(Collectors.toSet()),
+                point.traversed,
                 confiner,
-                traverser);
+                traverser));
+
         unplace(maze, component, true);
 
         return canPlace;
@@ -260,25 +284,31 @@ public class ReachabilityStrategy<M extends MazeComponent<C>, C> implements Maze
 
     protected void place(MorphingMazeComponent<C> maze, ShiftedMazeComponent<M, C> component, boolean simulate)
     {
-        if (stepsGoalReached >= 0)
-            stepsGoalReached++;
+        if (stepsReached.size() == connectionPoints.size())
+            stepsReached.transformValues(i -> i + 1);
         else
         {
-            leftNew.add(traverse(maze, component, leftTraversed, rightTraversed));
+            for (ConnectionPoint point : connectionPoints)
+            {
+                if (stepsReached.containsKey(point))
+                    stepsReached.adjustValue(point, 1);
+                else
+                    point.order.add(traverse(maze, component, point.traversed, mainConnectionPoint.traversed, p -> stepsReached.put(point, 0)));
+            }
 
-            if (stepsGoalReached < 0)
-                rightNew.add(traverse(maze, component, rightTraversed, leftTraversed));
+            mainConnectionPoint.order.add(traverse(maze,
+                    component,
+                    mainConnectionPoint.traversed,
+                    connectionPoints.stream().filter(point -> !stepsReached.containsKey(point)).flatMap(point -> point.traversed.stream()).collect(Collectors.toList()),
+                    p -> connectionPoints.stream().filter(point -> point.traversed.contains(p)).forEach(point -> stepsReached.put(point, 0))));
         }
     }
 
-    protected Set<MazePassage> traverse(MazeComponent<C> maze, MazeComponent<C> component, Set<MazePassage> traversed, final Collection<MazePassage> goal)
+    protected Set<MazePassage> traverse(MazeComponent<C> maze, MazeComponent<C> component, Set<MazePassage> traversed, final Collection<MazePassage> goal, Consumer<MazePassage> goalConsumer)
     {
         return traverse(Arrays.asList(maze, component), traversed, true, Sets.intersection(component.exits().keySet(), traversed), traverser, connection -> {
             if (goal.contains(connection))
-            {
-                stepsGoalReached = 0;
-                return false;
-            }
+                goalConsumer.accept(connection);
 
             return true;
         });
@@ -292,15 +322,18 @@ public class ReachabilityStrategy<M extends MazeComponent<C>, C> implements Maze
 
     protected void unplace(MorphingMazeComponent<C> maze, ShiftedMazeComponent<M, C> component, boolean simulate)
     {
-        if (stepsGoalReached >= 0)
-            stepsGoalReached--;
+        stepsReached.transformValues(i -> i - 1);
+        stepsReached.retainEntries((a, i) -> i >= 0);
 
-        if (stepsGoalReached < 0)
+        if (stepsReached.size() < connectionPoints.size())
         {
-            leftTraversed.removeAll(leftNew.remove(leftNew.size() - 1));
+            mainConnectionPoint.reverseStep();
 
-            if (rightNew.size() > leftNew.size())
-                rightTraversed.removeAll(rightNew.remove(rightNew.size() - 1));
+            for (ConnectionPoint point : connectionPoints)
+            {
+                if (point.order.size() > mainConnectionPoint.order.size())
+                    point.reverseStep();
+            }
         }
     }
 
@@ -308,5 +341,22 @@ public class ReachabilityStrategy<M extends MazeComponent<C>, C> implements Maze
     public boolean isDirtyConnection(MazeRoom dest, MazeRoom source, C c)
     {
         return true;
+    }
+
+    private static class ConnectionPoint
+    {
+        public final Set<MazePassage> traversed = new HashSet<>();
+        public final List<Set<MazePassage>> order = new ArrayList<>();
+
+        public ConnectionPoint(Collection<MazePassage>... points)
+        {
+            for (Collection<MazePassage> point : points)
+                traversed.addAll(point);
+        }
+
+        public void reverseStep()
+        {
+            traversed.removeAll(order.remove(order.size() - 1));
+        }
     }
 }

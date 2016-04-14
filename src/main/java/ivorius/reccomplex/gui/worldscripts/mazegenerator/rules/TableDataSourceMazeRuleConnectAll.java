@@ -35,8 +35,9 @@ public class TableDataSourceMazeRuleConnectAll extends TableDataSourceSegmented 
         this.rule = rule;
         this.expected = expected;
         this.tableDelegate = tableDelegate;
-        addManagedSection(0, new TableDataSourcePreloaded(new TableElementCell(new TableCellTitle("", "Paths"))));
-        addManagedSection(2, new TableDataSourceMazePathList(rule.exits, tableDelegate, navigator, boundsLower, boundsHigher));
+
+        addManagedSection(1, new TableDataSourcePreloaded(new TableElementCell(new TableCellTitle("", "Paths"))));
+        addManagedSection(3, new TableDataSourceMazePathList(rule.exits, tableDelegate, navigator, boundsLower, boundsHigher));
     }
 
     @Override
@@ -50,11 +51,12 @@ public class TableDataSourceMazeRuleConnectAll extends TableDataSourceSegmented 
     {
         switch (segment)
         {
-            case 1:
-                return 1;
-            case 3:
+            case 0:
+            case 2:
                 return 1;
             case 4:
+                return 1;
+            case 5:
                 return expected.size() - rule.exits.size();
             default:
                 return super.sizeOfSegment(segment);
@@ -64,17 +66,23 @@ public class TableDataSourceMazeRuleConnectAll extends TableDataSourceSegmented 
     @Override
     public TableElement elementForIndexInSegment(GuiTable table, int index, int segment)
     {
-        if (segment == 1)
+        if (segment == 0)
+        {
+            TableCellBoolean preventCell = new TableCellBoolean("prevent", rule.preventConnection, EnumChatFormatting.GOLD + "Prevent Connection", EnumChatFormatting.GREEN + "Ensure Connection");
+            preventCell.addPropertyListener(cell -> rule.preventConnection = (boolean) cell.getPropertyValue());
+            return new TableElementCell(preventCell);
+        }
+        else if (segment == 2)
         {
             TableCellBoolean cell = new TableCellBoolean("additive", rule.additive, EnumChatFormatting.GREEN + "Additive", EnumChatFormatting.GOLD + "Subtractive");
             cell.addPropertyListener(this);
             return new TableElementCell(cell);
         }
-        else if (segment == 3)
+        else if (segment == 4)
         {
             return new TableElementCell(new TableCellTitle("", "Preview"));
         }
-        else if (segment == 4)
+        else if (segment == 5)
         {
             ConnectorFactory factory = new ConnectorFactory();
             Set<Connector> blockedConnections = Collections.singleton(factory.get("Wall"));

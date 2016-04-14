@@ -5,9 +5,7 @@
 
 package ivorius.reccomplex.structures.generic.maze.rules.saved;
 
-import ivorius.ivtoolkit.maze.components.MazeComponent;
-import ivorius.ivtoolkit.maze.components.MazePredicateMany;
-import ivorius.ivtoolkit.maze.components.MazeRoom;
+import ivorius.ivtoolkit.maze.components.*;
 import ivorius.ivtoolkit.tools.NBTCompoundObjects;
 import ivorius.reccomplex.gui.table.TableDataSource;
 import ivorius.reccomplex.gui.table.TableDelegate;
@@ -19,6 +17,7 @@ import ivorius.reccomplex.structures.generic.maze.rules.LimitAABBStrategy;
 import ivorius.reccomplex.structures.generic.maze.rules.MazeRule;
 import ivorius.reccomplex.structures.generic.maze.rules.ReachabilityStrategy;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.EnumChatFormatting;
 import org.apache.commons.lang3.tuple.Pair;
 
 import java.util.*;
@@ -34,6 +33,8 @@ public class MazeRuleConnectAll extends MazeRule
     public final List<SavedMazePath> exits = new ArrayList<>();
     public boolean additive = false;
 
+    public boolean preventConnection = false;
+
     public static Stream<SavedMazePath> getPaths(List<SavedMazePath> paths, List<SavedMazePathConnection> omega, Set<Connector> blockedConnections, ConnectorFactory connectorFactory)
     {
         return omega.stream().filter(e -> !blockedConnections.contains(e.connector.toConnector(connectorFactory))).map(e -> e.path).filter(e -> !paths.contains(e));
@@ -42,7 +43,7 @@ public class MazeRuleConnectAll extends MazeRule
     @Override
     public String displayString()
     {
-        return !additive && exits.size() == 0 ? "Connect All" : "Connect " + (additive ? "" : "All - ") + exits.size();
+        return String.format("%s%s %s", preventConnection ? EnumChatFormatting.GOLD + "Split" : EnumChatFormatting.GREEN + "Connect", EnumChatFormatting.RESET, !additive && exits.size() == 0 ? "All" : "Some");
     }
 
     @Override
@@ -52,28 +53,19 @@ public class MazeRuleConnectAll extends MazeRule
     }
 
     @Override
-    public MazePredicateMany<MazeComponentStructure<Connector>, Connector> build(WorldScriptMazeGenerator script, Set<Connector> blockedConnections, ConnectorFactory connectorFactory, Collection<? extends MazeComponent<Connector>> components)
+    public MazePredicate<MazeComponentStructure<Connector>, Connector> build(WorldScriptMazeGenerator script, Set<Connector> blockedConnections, ConnectorFactory connectorFactory, Collection<? extends MazeComponent<Connector>> components)
     {
         List<SavedMazePath> paths = additive ? exits : getPaths(exits, script.exitPaths, blockedConnections, connectorFactory).collect(Collectors.toList());
 
         if (paths.size() > 1)
         {
+            List<Collection<MazePassage>> points = paths.stream().map(SavedMazePath::build).map(Collections::singleton).collect(Collectors.toList());
             Predicate<Connector> traverser = ReachabilityStrategy.connectorTraverser(blockedConnections);
-            LimitAABBStrategy<MazeComponent<Object>, Object> limitStrategy = new LimitAABBStrategy<>(script.rooms.boundsSize());
-            Set<Pair<MazeRoom, Set<MazeRoom>>> abilities = ReachabilityStrategy.compileAbilities(components, traverser);
+            Predicate<MazeRoom> confiner = new LimitAABBStrategy<>(script.rooms.boundsSize());
 
-            MazePredicateMany<MazeComponentStructure<Connector>, Connector> predicate = new MazePredicateMany<>();
-
-            for (int i = 1; i < paths.size(); i++)
-                predicate.predicates.add(new ReachabilityStrategy<>(
-                        Collections.singleton(paths.get(i - 1).build()),
-                        Collections.singleton(paths.get(i).build()),
-                        traverser,
-                        limitStrategy,
-                        abilities
-                ));
-
-            return predicate;
+            return preventConnection ? ReachabilityStrategy.preventConnection(points, traverser, confiner)
+                    : ReachabilityStrategy.connect(points, traverser, confiner, ReachabilityStrategy.compileAbilities(components, traverser)
+            );
         }
         else
             return null;
@@ -85,6 +77,8 @@ public class MazeRuleConnectAll extends MazeRule
         additive = compound.getBoolean("additive");
         exits.clear();
         exits.addAll(NBTCompoundObjects.readListFrom(compound, "exits", SavedMazePath.class));
+
+        preventConnection = compound.getBoolean("preventConnection");
     }
 
     @Override
@@ -92,5 +86,7 @@ public class MazeRuleConnectAll extends MazeRule
     {
         compound.setBoolean("additive", additive);
         NBTCompoundObjects.writeListTo(compound, "exits", exits);
+
+        compound.setBoolean("preventConnection", preventConnection);
     }
 }

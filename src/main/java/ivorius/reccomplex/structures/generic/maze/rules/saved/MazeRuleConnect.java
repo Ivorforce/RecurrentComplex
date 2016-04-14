@@ -19,11 +19,9 @@ import ivorius.reccomplex.structures.generic.maze.rules.LimitAABBStrategy;
 import ivorius.reccomplex.structures.generic.maze.rules.MazeRule;
 import ivorius.reccomplex.structures.generic.maze.rules.ReachabilityStrategy;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.EnumChatFormatting;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
@@ -35,6 +33,8 @@ public class MazeRuleConnect extends MazeRule
     public final List<SavedMazePath> start = new ArrayList<>();
     public final List<SavedMazePath> end = new ArrayList<>();
 
+    public boolean preventConnection = false;
+
     protected static Set<MazePassage> buildPaths(List<SavedMazePath> start)
     {
         return start.stream().map(SavedMazePath::build).collect(Collectors.toSet());
@@ -43,7 +43,7 @@ public class MazeRuleConnect extends MazeRule
     @Override
     public String displayString()
     {
-        return String.format("%s -> %s", summarize(start), summarize(end));
+        return String.format("%s %s->%s %s", summarize(start), preventConnection ? EnumChatFormatting.GOLD : EnumChatFormatting.GREEN, EnumChatFormatting.RESET, summarize(end));
     }
 
     private String summarize(List<SavedMazePath> list)
@@ -62,14 +62,12 @@ public class MazeRuleConnect extends MazeRule
     {
         if (start.size() > 0 && end.size() > 0)
         {
+            List<Collection<MazePassage>> points = Arrays.asList(buildPaths(start), buildPaths(end));
             Predicate<Connector> traverser = ReachabilityStrategy.connectorTraverser(blockedConnections);
-            return new ReachabilityStrategy<>(
-                    buildPaths(start),
-                    buildPaths(end),
-                    traverser,
-                    new LimitAABBStrategy<>(script.rooms.boundsSize()),
-                    ReachabilityStrategy.compileAbilities(components, traverser)
-            );
+            LimitAABBStrategy<MazeComponent<Object>, Object> confiner = new LimitAABBStrategy<>(script.rooms.boundsSize());
+
+            return preventConnection ? ReachabilityStrategy.preventConnection(points, traverser, confiner)
+                    :  ReachabilityStrategy.connect(points, traverser, confiner, ReachabilityStrategy.compileAbilities(components, traverser));
         }
         else
             return null;
@@ -83,6 +81,8 @@ public class MazeRuleConnect extends MazeRule
 
         end.clear();
         end.addAll(NBTCompoundObjects.readListFrom(compound, "end", SavedMazePath.class));
+
+        preventConnection = compound.getBoolean("preventConnection");
     }
 
     @Override
@@ -90,5 +90,7 @@ public class MazeRuleConnect extends MazeRule
     {
         NBTCompoundObjects.writeListTo(compound, "start", start);
         NBTCompoundObjects.writeListTo(compound, "end", end);
+
+        compound.setBoolean("preventConnection", preventConnection);
     }
 }

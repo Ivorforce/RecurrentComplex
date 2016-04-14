@@ -142,7 +142,7 @@ public class TableDataSourceWorldScriptMazeGenerator extends TableDataSourceSegm
             }
         }
 
-        return null;
+        return super.elementForIndexInSegment(table, index, segment);
     }
 
     @Override

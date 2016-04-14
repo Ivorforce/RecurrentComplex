@@ -123,7 +123,7 @@ public class TableDataSourceStructureBlock extends TableDataSourceSegmented impl
             }
         }
 
-        return null;
+        return super.elementForIndexInSegment(table, index, segment);
     }
 
     @Override

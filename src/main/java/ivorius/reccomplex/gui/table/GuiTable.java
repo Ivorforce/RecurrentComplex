@@ -121,7 +121,7 @@ public class GuiTable extends Gui
                 element = dataSource.elementForIndex(this, roundedScrollIndex + index);
 
             if (element == null)
-                throw new NullPointerException("Element not initialized: at " + roundedScrollIndex + index);
+                throw new NullPointerException("Element not initialized: at " + (roundedScrollIndex + index));
 
             int elementY = index * HEIGHT_PER_SLOT;
 

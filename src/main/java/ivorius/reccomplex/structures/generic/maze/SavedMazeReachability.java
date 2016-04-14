@@ -25,6 +25,7 @@ import org.apache.commons.lang3.tuple.ImmutablePair;
 
 import java.lang.reflect.Type;
 import java.util.*;
+import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -105,11 +106,9 @@ public class SavedMazeReachability implements NBTCompoundObject
 
         for (Set<SavedMazePath> group : groups)
         {
-            Stream<MazePassage> existing = group.stream().map(savedMazePath -> MazePassages.rotated(savedMazePath.build(), transform, size)).filter(filter);
-
-            existing.forEach(defaultGroup::remove);
-
-            addInterconnections(builder, existing);
+            List<MazePassage> mazePassages = group.stream().map(savedMazePath -> MazePassages.rotated(savedMazePath.build(), transform, size)).filter(filter).collect(Collectors.toList());
+            defaultGroup.removeAll(mazePassages);
+            addInterconnections(builder, mazePassages.stream());
         }
 
         addInterconnections(builder, defaultGroup.stream());
@@ -134,7 +133,6 @@ public class SavedMazeReachability implements NBTCompoundObject
                 builder.put(last, current);
                 builder.put(current, last);
             }
-
             return current;
         });
     }

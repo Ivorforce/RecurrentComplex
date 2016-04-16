@@ -104,7 +104,7 @@ public class RCConfig
                     RecurrentComplex.config.getFloat("customBookChance", CATEGORY_BALANCING, 0.0f, 0, 1, "Chance to use the customArtifactTag when a book generation tag fires.")
             );
 
-            mazePlacementReversesPerRoom = RecurrentComplex.config.getFloat("mazePlacementReversesPerRoom", CATEGORY_BALANCING, 4, -1, 100, "Maximum number of reverses per room the maze generator can do. A higher number results in a better generation success rate, but may freeze the server temporarily.");
+            mazePlacementReversesPerRoom = RecurrentComplex.config.getFloat("mazePlacementReversesPerRoom", CATEGORY_BALANCING, 10, -1, 100, "Maximum number of reverses per room the maze generator can do. A higher number results in a better generation success rate, but may freeze the server temporarily.");
         }
 
         RecurrentComplex.proxy.loadConfig(configID);

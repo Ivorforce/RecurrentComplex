@@ -5,8 +5,7 @@
 
 package ivorius.reccomplex.utils;
 
-import com.google.common.collect.BiMap;
-import com.google.common.collect.HashBiMap;
+import com.google.common.collect.Maps;
 import cpw.mods.fml.common.event.FMLMissingMappingsEvent;
 import ivorius.ivtoolkit.tools.MCRegistry;
 import ivorius.ivtoolkit.tools.MCRegistryDefault;
@@ -14,6 +13,8 @@ import net.minecraft.block.Block;
 import net.minecraft.item.Item;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
+
+import java.util.Map;
 
 /**
  * Created by lukas on 04.09.15.
@@ -24,8 +25,8 @@ public class FMLRemapper implements MCRegistry
 
     protected MCRegistry parent = new MCRegistryDefault();
 
-    protected BiMap<String, Block> blockRemaps = HashBiMap.create();
-    protected BiMap<String, Item> itemRemaps = HashBiMap.create();
+    protected Map<String, Block> blockRemaps = Maps.newHashMap();
+    protected Map<String, Item> itemRemaps = Maps.newHashMap();
 
     public FMLRemapper(String domain, MCRegistry parent)
     {
@@ -41,7 +42,7 @@ public class FMLRemapper implements MCRegistry
 
             blockRemaps.put(fullID, block);
             if (inferItem)
-                itemRemaps.put(fullID, Item.getItemFromBlock(block));
+                itemRemaps.put(fullID, parent.itemFromID(parent.idFromBlock(block)));
         }
     }
 
@@ -79,8 +80,7 @@ public class FMLRemapper implements MCRegistry
     @Override
     public String idFromItem(Item item)
     {
-        String id = itemRemaps.inverse().get(item);
-        return id != null ? id : parent.idFromItem(item);
+        return parent.idFromItem(item);
     }
 
     @Override
@@ -99,8 +99,7 @@ public class FMLRemapper implements MCRegistry
     @Override
     public String idFromBlock(Block block)
     {
-        String id = blockRemaps.inverse().get(block);
-        return id != null ? id : parent.idFromBlock(block);
+        return parent.idFromBlock(block);
     }
 
     @Override

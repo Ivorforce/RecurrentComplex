@@ -93,8 +93,7 @@ public class RecurrentComplex
         config.save();
 
         fileTypeRegistry = new RCFileTypeRegistry();
-        remapper = new FMLRemapper(MODID, new MCRegistryDefault());
-        mcregistry = new MCRegistrySpecial(remapper);
+        remapper = new FMLRemapper(MODID, mcregistry = new MCRegistrySpecial(new MCRegistryDefault()));
 
         forgeEventHandler = new RCForgeEventHandler();
         forgeEventHandler.register();

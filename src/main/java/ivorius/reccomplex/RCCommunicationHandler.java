@@ -10,11 +10,9 @@ import ivorius.ivtoolkit.tools.IvFMLIntercommHandler;
 import ivorius.ivtoolkit.tools.IvNBTHelper;
 import ivorius.reccomplex.dimensions.DimensionDictionary;
 import ivorius.reccomplex.files.FileLoadContext;
-import ivorius.reccomplex.structures.StructureRegistry;
 import ivorius.reccomplex.structures.generic.matchers.DimensionMatcher;
 import ivorius.reccomplex.worldgen.StructureSelector;
 import ivorius.reccomplex.structures.generic.matchers.BiomeMatcher;
-import ivorius.reccomplex.worldgen.inventory.GenericItemCollectionRegistry;
 import net.minecraft.block.Block;
 import net.minecraft.item.Item;
 import net.minecraft.nbt.NBTTagCompound;
@@ -166,7 +164,7 @@ public class RCCommunicationHandler extends IvFMLIntercommHandler
         {
             NBTTagCompound cmp = message.getNBTValue();
 
-            Block block = RecurrentComplex.mcregistry.blockFromID(cmp.getString("block"));
+            Block block = RecurrentComplex.mcRegistry.blockFromID(cmp.getString("block"));
 
             if (block != null)
             {
@@ -182,7 +180,7 @@ public class RCCommunicationHandler extends IvFMLIntercommHandler
         {
             NBTTagCompound cmp = message.getNBTValue();
 
-            Item item = RecurrentComplex.mcregistry.itemFromID(cmp.getString("item"));
+            Item item = RecurrentComplex.mcRegistry.itemFromID(cmp.getString("item"));
 
             if (item != null)
             {

@@ -46,13 +46,13 @@ public class TransformerReplace extends TransformerSingleBlock<NBTNone>
 
     public TransformerReplace()
     {
-        this(BlockMatcher.of(RecurrentComplex.mcregistry, Blocks.wool));
+        this(BlockMatcher.of(RecurrentComplex.mcRegistry, Blocks.wool));
         destination.setToDefault();
     }
 
     public TransformerReplace(String sourceExpression)
     {
-        this.sourceMatcher = new BlockMatcher(RecurrentComplex.mcregistry, sourceExpression);
+        this.sourceMatcher = new BlockMatcher(RecurrentComplex.mcRegistry, sourceExpression);
     }
 
     public static NBTTagCompound tryParse(String json)
@@ -115,7 +115,7 @@ public class TransformerReplace extends TransformerSingleBlock<NBTNone>
 
     public static void setBlockWith(StructureSpawnContext context, BlockCoord coord, World world, WeightedBlockState blockState, NBTTagCompound parsedTileEntityInfo)
     {
-        if (blockState.block != null && RecurrentComplex.mcregistry.isSafe(blockState.block))
+        if (blockState.block != null && RecurrentComplex.specialRegistry.isSafe(blockState.block))
         {
             context.setBlock(coord.x, coord.y, coord.z, blockState.block, blockState.metadata);
 

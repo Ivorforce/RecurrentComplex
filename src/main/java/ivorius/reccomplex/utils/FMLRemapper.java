@@ -23,15 +23,26 @@ public class FMLRemapper implements MCRegistry
 {
     protected String domain;
 
-    protected MCRegistry parent = new MCRegistryDefault();
+    protected MCRegistry parent;
+    protected MCRegistry inferParent;
 
-    protected Map<String, Block> blockRemaps = Maps.newHashMap();
-    protected Map<String, Item> itemRemaps = Maps.newHashMap();
+    protected final Map<String, Block> blockRemaps = Maps.newHashMap();
+    protected final Map<String, Item> itemRemaps = Maps.newHashMap();
 
     public FMLRemapper(String domain, MCRegistry parent)
     {
-        this.parent = parent;
         this.domain = domain;
+        this.parent = parent;
+    }
+
+    public MCRegistry getInferParent()
+    {
+        return inferParent;
+    }
+
+    public void setInferParent(MCRegistry inferParent)
+    {
+        this.inferParent = inferParent;
     }
 
     public void registerLegacyIDs(Block block, boolean inferItem, String... oldIDs)
@@ -42,7 +53,7 @@ public class FMLRemapper implements MCRegistry
 
             blockRemaps.put(fullID, block);
             if (inferItem)
-                itemRemaps.put(fullID, parent.itemFromID(parent.idFromBlock(block)));
+                itemRemaps.put(fullID, inferParent.itemFromID(inferParent.idFromBlock(block)));
         }
     }
 

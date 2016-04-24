@@ -19,6 +19,7 @@ import ivorius.ivtoolkit.network.PacketExtendedEntityPropertiesData;
 import ivorius.ivtoolkit.network.PacketExtendedEntityPropertiesDataHandler;
 import ivorius.ivtoolkit.network.PacketGuiAction;
 import ivorius.ivtoolkit.network.PacketGuiActionHandler;
+import ivorius.ivtoolkit.tools.MCRegistry;
 import ivorius.ivtoolkit.tools.MCRegistryDefault;
 import ivorius.reccomplex.commands.RCCommands;
 import ivorius.reccomplex.events.RCFMLEventHandler;
@@ -59,8 +60,9 @@ public class RecurrentComplex
     public static Configuration config;
 
     public static RCFileTypeRegistry fileTypeRegistry;
+    public static MCRegistry mcRegistry;
     public static FMLRemapper remapper;
-    public static MCRegistrySpecial mcregistry;
+    public static MCRegistrySpecial specialRegistry;
 
     public static RCForgeEventHandler forgeEventHandler;
     public static RCFMLEventHandler fmlEventHandler;
@@ -93,7 +95,8 @@ public class RecurrentComplex
         config.save();
 
         fileTypeRegistry = new RCFileTypeRegistry();
-        remapper = new FMLRemapper(MODID, mcregistry = new MCRegistrySpecial(new MCRegistryDefault()));
+        mcRegistry = specialRegistry = new MCRegistrySpecial(remapper = new FMLRemapper(MODID, new MCRegistryDefault()));
+        remapper.setInferParent(specialRegistry);
 
         forgeEventHandler = new RCForgeEventHandler();
         forgeEventHandler.register();

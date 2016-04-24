@@ -37,12 +37,12 @@ public class TransformerNegativeSpace implements Transformer<NBTNone>
 
     public TransformerNegativeSpace()
     {
-        this(BlockMatcher.of(RecurrentComplex.mcregistry, RCBlocks.genericSpace, 0));
+        this(BlockMatcher.of(RecurrentComplex.mcRegistry, RCBlocks.genericSpace, 0));
     }
 
     public TransformerNegativeSpace(String sourceExpression)
     {
-        this.sourceMatcher = new BlockMatcher(RecurrentComplex.mcregistry, sourceExpression);
+        this.sourceMatcher = new BlockMatcher(RecurrentComplex.mcRegistry, sourceExpression);
     }
 
     @Override

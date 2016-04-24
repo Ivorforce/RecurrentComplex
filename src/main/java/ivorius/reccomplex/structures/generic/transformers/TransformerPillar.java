@@ -39,12 +39,12 @@ public class TransformerPillar extends TransformerSingleBlock<NBTNone>
 
     public TransformerPillar()
     {
-        this(BlockMatcher.of(RecurrentComplex.mcregistry, Blocks.stone, 0), Blocks.stone, 0);
+        this(BlockMatcher.of(RecurrentComplex.mcRegistry, Blocks.stone, 0), Blocks.stone, 0);
     }
 
     public TransformerPillar(String sourceExpression, Block destBlock, int destMetadata)
     {
-        this.sourceMatcher = new BlockMatcher(RecurrentComplex.mcregistry, sourceExpression);
+        this.sourceMatcher = new BlockMatcher(RecurrentComplex.mcRegistry, sourceExpression);
         this.destBlock = destBlock;
         this.destMetadata = destMetadata;
     }
@@ -58,7 +58,7 @@ public class TransformerPillar extends TransformerSingleBlock<NBTNone>
     @Override
     public void transformBlock(NBTNone instanceData, Phase phase, StructureSpawnContext context, BlockCoord coord, Block sourceBlock, int sourceMetadata)
     {
-        if (RecurrentComplex.mcregistry.isSafe(destBlock))
+        if (RecurrentComplex.specialRegistry.isSafe(destBlock))
         {
             // TODO Fix for partial generation
             World world = context.world;

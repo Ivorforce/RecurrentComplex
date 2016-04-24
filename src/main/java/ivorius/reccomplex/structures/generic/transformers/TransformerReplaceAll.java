@@ -45,13 +45,13 @@ public class TransformerReplaceAll extends TransformerSingleBlock<TransformerRep
 
     public TransformerReplaceAll()
     {
-        this(BlockMatcher.of(RecurrentComplex.mcregistry, Blocks.wool, new IntegerRange(0, 15)));
+        this(BlockMatcher.of(RecurrentComplex.mcRegistry, Blocks.wool, new IntegerRange(0, 15)));
         destination.setToDefault();
     }
 
     public TransformerReplaceAll(String sourceExpression)
     {
-        this.sourceMatcher = new BlockMatcher(RecurrentComplex.mcregistry, sourceExpression);
+        this.sourceMatcher = new BlockMatcher(RecurrentComplex.mcRegistry, sourceExpression);
     }
 
     public TransformerReplaceAll replaceWith(WeightedBlockState... states)
@@ -125,7 +125,7 @@ public class TransformerReplaceAll extends TransformerSingleBlock<TransformerRep
 
         public InstanceData(NBTTagCompound compound)
         {
-            this.blockState = new WeightedBlockState(RecurrentComplex.mcregistry, compound.getCompoundTag("blockState"));
+            this.blockState = new WeightedBlockState(RecurrentComplex.mcRegistry, compound.getCompoundTag("blockState"));
 
             this.tileEntityInfo = compound.hasKey("tileEntityInfo", Constants.NBT.TAG_COMPOUND)
                     ? (NBTTagCompound) compound.getCompoundTag("tileEntityInfo").copy()
@@ -137,7 +137,7 @@ public class TransformerReplaceAll extends TransformerSingleBlock<TransformerRep
         {
             NBTTagCompound compound = new NBTTagCompound();
 
-            compound.setTag("blockState", blockState.writeToNBT(RecurrentComplex.mcregistry));
+            compound.setTag("blockState", blockState.writeToNBT(RecurrentComplex.mcRegistry));
 
             if (tileEntityInfo != null)
                 compound.setTag("tileEntityInfo", tileEntityInfo.copy());

@@ -9,6 +9,7 @@ import cpw.mods.fml.client.registry.RenderingRegistry;
 import cpw.mods.fml.common.event.FMLInitializationEvent;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 import cpw.mods.fml.common.registry.GameRegistry;
+import ivorius.ivtoolkit.tools.MCRegistry;
 import ivorius.reccomplex.blocks.*;
 import ivorius.reccomplex.client.rendering.RCBlockRendering;
 import ivorius.reccomplex.dimensions.DimensionDictionary;
@@ -22,7 +23,6 @@ import ivorius.reccomplex.scripts.world.*;
 import ivorius.reccomplex.structures.generic.maze.rules.MazeRuleRegistry;
 import ivorius.reccomplex.structures.generic.maze.rules.saved.MazeRuleConnect;
 import ivorius.reccomplex.structures.generic.maze.rules.saved.MazeRuleConnectAll;
-import ivorius.reccomplex.structures.registry.MCRegistrySpecial;
 import ivorius.reccomplex.structures.OperationMoveStructure;
 import ivorius.reccomplex.structures.generic.BiomeGenerationInfo;
 import ivorius.reccomplex.structures.generic.DimensionGenerationInfo;
@@ -162,7 +162,7 @@ public class RCRegistryHandler
         if (!RecurrentComplex.isLite())
             GameRegistry.registerItem(item, id);
         else
-            mcregistry.register(FMLUtils.addPrefix(id), item);
+            specialRegistry.register(FMLUtils.addPrefix(id), item);
     }
 
     public static void register(Block block, String id)
@@ -171,8 +171,8 @@ public class RCRegistryHandler
             GameRegistry.registerBlock(block, id);
         else
         {
-            mcregistry.register(FMLUtils.addPrefix(id), block);
-            mcregistry.register(FMLUtils.addPrefix(id), new ItemBlock(block));
+            specialRegistry.register(FMLUtils.addPrefix(id), block);
+            specialRegistry.register(FMLUtils.addPrefix(id), new ItemBlock(block));
         }
     }
 
@@ -182,9 +182,9 @@ public class RCRegistryHandler
             GameRegistry.registerBlock(block, itemClass, id, itemArgs);
         else
         {
-            mcregistry.register(FMLUtils.addPrefix(id), block);
+            specialRegistry.register(FMLUtils.addPrefix(id), block);
             Item item = FMLUtils.constructItem(block, itemClass, itemArgs);
-            if (item != null) mcregistry.register(FMLUtils.addPrefix(id), item);
+            if (item != null) specialRegistry.register(FMLUtils.addPrefix(id), item);
         }
     }
 
@@ -194,14 +194,14 @@ public class RCRegistryHandler
             GameRegistry.registerTileEntityWithAlternatives(tileEntity, id, alternatives);
         else
         {
-            mcregistry.register(id, tileEntity);
-            for (String aid : alternatives) mcregistry.register(aid, tileEntity);
+            specialRegistry.register(id, tileEntity);
+            for (String aid : alternatives) specialRegistry.register(aid, tileEntity);
         }
     }
 
     public static void load(FMLInitializationEvent event, RecurrentComplex mod)
     {
-        MCRegistrySpecial mcRegistry = mcregistry;
+        MCRegistry mcRegistry = RecurrentComplex.mcRegistry;
 
         fileTypeRegistry.put(StructureSaveHandler.FILE_SUFFIX, StructureSaveHandler.INSTANCE);
         fileTypeRegistry.put(ItemCollectionSaveHandler.FILE_SUFFIX, ItemCollectionSaveHandler.INSTANCE);

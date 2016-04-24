@@ -42,7 +42,7 @@ public class GenericItemCollection implements WeightedItemCollection
 
         builder.registerTypeAdapter(Component.class, new Component.Serializer());
         builder.registerTypeAdapter(RandomizedItemStack.class, new RandomizedItemStack.Serializer());
-        builder.registerTypeAdapter(ItemStack.class, new ItemStackSerializer(RecurrentComplex.mcregistry));
+        builder.registerTypeAdapter(ItemStack.class, new ItemStackSerializer(RecurrentComplex.specialRegistry));
         builder.registerTypeAdapter(WeightedRandomChestContent.class, new WeightedRandomChestContentSerializer());
         NbtToJson.registerSafeNBTSerializer(builder);
 

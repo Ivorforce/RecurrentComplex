@@ -38,7 +38,7 @@ public abstract class ItemInventoryGenerationTag extends Item implements Generat
             if (!world.isRemote)
             {
                 generatingItem.generateInInventory((IInventory) rightClicked, world.rand, stack, world.rand.nextInt(((IInventory) rightClicked).getSizeInventory()));
-                InventoryGenerationHandler.generateAllTags((IInventory) rightClicked, RecurrentComplex.mcregistry.itemHidingMode(), world.rand);
+                InventoryGenerationHandler.generateAllTags((IInventory) rightClicked, RecurrentComplex.specialRegistry.itemHidingMode(), world.rand);
             }
 
             return true;

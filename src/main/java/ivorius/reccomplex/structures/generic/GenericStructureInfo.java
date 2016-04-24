@@ -5,8 +5,6 @@
 
 package ivorius.reccomplex.structures.generic;
 
-import com.google.common.base.Predicate;
-import com.google.common.collect.Iterables;
 import com.google.gson.*;
 import ivorius.ivtoolkit.blocks.BlockCoord;
 import ivorius.ivtoolkit.blocks.IvBlockCollection;
@@ -44,7 +42,6 @@ import net.minecraft.world.biome.BiomeGenBase;
 import net.minecraftforge.common.BiomeDictionary;
 import org.apache.commons.lang3.tuple.Pair;
 
-import javax.annotation.Nullable;
 import java.lang.reflect.Type;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -71,10 +68,10 @@ public class GenericStructureInfo implements StructureInfo<GenericStructureInfo.
         genericStructureInfo.rotatable = false;
         genericStructureInfo.mirrorable = false;
 
-        genericStructureInfo.transformers.add(new TransformerNaturalAir(BlockMatcher.of(RecurrentComplex.mcregistry, RCBlocks.genericSpace, 1), TransformerNaturalAir.DEFAULT_NATURAL_EXPANSION_DISTANCE, TransformerNaturalAir.DEFAULT_NATURAL_EXPANSION_RANDOMIZATION));
-        genericStructureInfo.transformers.add(new TransformerNegativeSpace(BlockMatcher.of(RecurrentComplex.mcregistry, RCBlocks.genericSpace, 0)));
-        genericStructureInfo.transformers.add(new TransformerNatural(BlockMatcher.of(RecurrentComplex.mcregistry, RCBlocks.genericSolid, 0), TransformerNatural.DEFAULT_NATURAL_EXPANSION_DISTANCE, TransformerNatural.DEFAULT_NATURAL_EXPANSION_RANDOMIZATION));
-        genericStructureInfo.transformers.add(new TransformerReplace(BlockMatcher.of(RecurrentComplex.mcregistry, RCBlocks.genericSolid, 1)).replaceWith(new WeightedBlockState(null, Blocks.air, 0, "")));
+        genericStructureInfo.transformers.add(new TransformerNaturalAir(BlockMatcher.of(RecurrentComplex.mcRegistry, RCBlocks.genericSpace, 1), TransformerNaturalAir.DEFAULT_NATURAL_EXPANSION_DISTANCE, TransformerNaturalAir.DEFAULT_NATURAL_EXPANSION_RANDOMIZATION));
+        genericStructureInfo.transformers.add(new TransformerNegativeSpace(BlockMatcher.of(RecurrentComplex.mcRegistry, RCBlocks.genericSpace, 0)));
+        genericStructureInfo.transformers.add(new TransformerNatural(BlockMatcher.of(RecurrentComplex.mcRegistry, RCBlocks.genericSolid, 0), TransformerNatural.DEFAULT_NATURAL_EXPANSION_DISTANCE, TransformerNatural.DEFAULT_NATURAL_EXPANSION_RANDOMIZATION));
+        genericStructureInfo.transformers.add(new TransformerReplace(BlockMatcher.of(RecurrentComplex.mcRegistry, RCBlocks.genericSolid, 1)).replaceWith(new WeightedBlockState(null, Blocks.air, 0, "")));
 
         genericStructureInfo.generationInfos.add(new NaturalGenerationInfo());
 
@@ -159,7 +156,7 @@ public class GenericStructureInfo implements StructureInfo<GenericStructureInfo.
                 int meta = blockCollection.getMetadata(sourceCoord);
 
                 BlockCoord worldPos = context.transform.apply(sourceCoord, areaSize).add(origin);
-                if (context.includes(worldPos) && RecurrentComplex.mcregistry.isSafe(block))
+                if (context.includes(worldPos) && RecurrentComplex.specialRegistry.isSafe(block))
                 {
                     TileEntity tileEntity = tileEntities.get(sourceCoord);
 
@@ -169,7 +166,7 @@ public class GenericStructureInfo implements StructureInfo<GenericStructureInfo.
                         {
                             if (context.setBlock(worldPos, block, meta))
                             {
-                                if (tileEntity != null && RecurrentComplex.mcregistry.isSafe(tileEntity))
+                                if (tileEntity != null && RecurrentComplex.specialRegistry.isSafe(tileEntity))
                                 {
                                     world.setBlockMetadataWithNotify(worldPos.x, worldPos.y, worldPos.z, meta, 2); // TODO Figure out why some blocks (chests, furnace) need this
 
@@ -181,7 +178,7 @@ public class GenericStructureInfo implements StructureInfo<GenericStructureInfo.
                                         if (tileEntity instanceof IInventory)
                                         {
                                             IInventory inventory = (IInventory) tileEntity;
-                                            InventoryGenerationHandler.generateAllTags(inventory, RecurrentComplex.mcregistry.itemHidingMode(), random);
+                                            InventoryGenerationHandler.generateAllTags(inventory, RecurrentComplex.specialRegistry.itemHidingMode(), random);
                                         }
                                     }
                                 }
@@ -268,7 +265,7 @@ public class GenericStructureInfo implements StructureInfo<GenericStructureInfo.
 
     public IvWorldData constructWorldData(World world)
     {
-        return new IvWorldData(worldDataCompound, world, RecurrentComplex.mcregistry.itemHidingMode());
+        return new IvWorldData(worldDataCompound, world, RecurrentComplex.specialRegistry.itemHidingMode());
     }
 
     @Override

@@ -99,11 +99,23 @@ public class StructureSpawnContext
 
     public boolean setBlock(BlockCoord coord, Block block, int meta)
     {
-        return includes(coord.x, coord.y, coord.z) && world.setBlock(coord.x, coord.y, coord.z, block, meta, 2);
+        if (includes(coord.x, coord.y, coord.z))
+        {
+            world.setBlock(coord.x, coord.y, coord.z, block, meta, 2);
+            return true;
+        }
+
+        return false; // world.setBlock returns false on 'no change'
     }
 
     public boolean setBlock(int x, int y, int z, Block block, int meta)
     {
-        return includes(x, y, z) && world.setBlock(x, y, z, block, meta, 2);
+        if (includes(x, y, z))
+        {
+            world.setBlock(x, y, z, block, meta, 2);
+            return true;
+        }
+
+        return false;  // world.setBlock returns false on 'no change'
     }
 }

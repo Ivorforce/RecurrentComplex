@@ -164,7 +164,7 @@ public class GenericStructureInfo implements StructureInfo<GenericStructureInfo.
                     {
                         if (context.generateAsSource || !(tileEntity instanceof GeneratingTileEntity) || ((GeneratingTileEntity) tileEntity).shouldPlaceInWorld(context, instanceData.tileEntities.get(sourceCoord)))
                         {
-                            if (context.setBlock(worldPos, block, meta))
+                            if (context.setBlock(worldPos, block, meta) && world.getBlock(worldPos.x, worldPos.y, worldPos.z) == block)
                             {
                                 if (tileEntity != null && RecurrentComplex.specialRegistry.isSafe(tileEntity))
                                 {

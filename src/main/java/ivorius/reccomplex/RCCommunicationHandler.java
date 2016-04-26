@@ -164,14 +164,14 @@ public class RCCommunicationHandler extends IvFMLIntercommHandler
         {
             NBTTagCompound cmp = message.getNBTValue();
 
-            Block block = RecurrentComplex.mcRegistry.blockFromID(cmp.getString("block"));
+            Block block = RecurrentComplex.specialRegistry.blockFromID(cmp.getString("block"));
 
             if (block != null)
             {
                 boolean inferItem = cmp.getBoolean("inferItem");
                 String[] legacyIDs = IvNBTHelper.readNBTStrings("legacyIDs", cmp); // NBTTagList of NBTTagString
 
-                RecurrentComplex.remapper.registerLegacyIDs(block, inferItem, legacyIDs);
+                RecurrentComplex.cremapper.registerLegacyIDs(block, inferItem, legacyIDs);
             }
             else
                 getLogger().warn("Could not handle message with key '" + message.key + "' - could not find block!");
@@ -180,13 +180,13 @@ public class RCCommunicationHandler extends IvFMLIntercommHandler
         {
             NBTTagCompound cmp = message.getNBTValue();
 
-            Item item = RecurrentComplex.mcRegistry.itemFromID(cmp.getString("item"));
+            Item item = RecurrentComplex.specialRegistry.itemFromID(cmp.getString("item"));
 
             if (item != null)
             {
                 String[] legacyIDs = IvNBTHelper.readNBTStrings("legacyIDs", cmp); // NBTTagList of NBTTagString
 
-                RecurrentComplex.remapper.registerLegacyIDs(item, legacyIDs);
+                RecurrentComplex.cremapper.registerLegacyIDs(item, legacyIDs);
             }
             else
                 getLogger().warn("Could not handle message with key '" + message.key + "' - could not find item!");

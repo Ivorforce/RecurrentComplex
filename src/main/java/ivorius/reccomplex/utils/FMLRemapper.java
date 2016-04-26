@@ -6,116 +6,83 @@
 package ivorius.reccomplex.utils;
 
 import com.google.common.collect.Maps;
-import cpw.mods.fml.common.event.FMLMissingMappingsEvent;
 import ivorius.ivtoolkit.tools.MCRegistry;
-import ivorius.ivtoolkit.tools.MCRegistryDefault;
 import net.minecraft.block.Block;
 import net.minecraft.item.Item;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.tileentity.TileEntity;
 
 import java.util.Map;
 
 /**
- * Created by lukas on 04.09.15.
+ * Created by lukas on 25.04.16.
  */
-public class FMLRemapper implements MCRegistry
+public class FMLRemapper
 {
     protected String domain;
 
-    protected MCRegistry parent;
-    protected MCRegistry inferParent;
+    protected final Map<String, String> blockRemaps = Maps.newHashMap();
+    protected final Map<String, String> itemRemaps = Maps.newHashMap();
+    protected final Map<String, String> tileEntityRemaps = Maps.newHashMap();
 
-    protected final Map<String, Block> blockRemaps = Maps.newHashMap();
-    protected final Map<String, Item> itemRemaps = Maps.newHashMap();
-
-    public FMLRemapper(String domain, MCRegistry parent)
+    public FMLRemapper(String domain)
     {
         this.domain = domain;
-        this.parent = parent;
     }
 
-    public MCRegistry getInferParent()
-    {
-        return inferParent;
-    }
-
-    public void setInferParent(MCRegistry inferParent)
-    {
-        this.inferParent = inferParent;
-    }
-
-    public void registerLegacyIDs(Block block, boolean inferItem, String... oldIDs)
+    public void registerLegacyBlockIDs(String blockID, boolean inferItem, String... oldIDs)
     {
         for (String oldID : oldIDs)
         {
             String fullID = String.format("%s:%s", domain, oldID);
 
-            blockRemaps.put(fullID, block);
+            blockRemaps.put(fullID, blockID);
             if (inferItem)
-                itemRemaps.put(fullID, inferParent.itemFromID(inferParent.idFromBlock(block)));
+                itemRemaps.put(fullID, blockID);
         }
     }
 
-    public void registerLegacyIDs(Item item, String... oldIDs)
+    public void registerLegacyItemIDs(String itemID, String... oldIDs)
     {
         for (String oldID : oldIDs)
-            itemRemaps.put(String.format("%s:%s", domain, oldID), item);
+            itemRemaps.put(String.format("%s:%s", domain, oldID), itemID);
     }
 
-    public void onMissingMapping(FMLMissingMappingsEvent event)
+    public void registerLegacyTileEntityIDs(String tileEntityID, String... oldIDs)
     {
-        for (FMLMissingMappingsEvent.MissingMapping missingMapping : event.get())
-        {
-            switch (missingMapping.type)
-            {
-                case BLOCK:
-                    if (blockRemaps.containsKey(missingMapping.name))
-                        missingMapping.remap(blockRemaps.get(missingMapping.name));
-                    break;
-                case ITEM:
-                    if (itemRemaps.containsKey(missingMapping.name))
-                        missingMapping.remap(itemRemaps.get(missingMapping.name));
-                    break;
-            }
-        }
+        for (String oldID : oldIDs)
+            tileEntityRemaps.put(String.format("%s:%s", domain, oldID), tileEntityID);
     }
 
-    @Override
-    public Item itemFromID(String itemID)
+    public String mapBlock(String id)
     {
-        Item item = itemRemaps.get(itemID);
-        return item != null ? item : parent.itemFromID(itemID);
+        String remap = blockRemaps.get(id);
+        return remap != null ? remap : id;
     }
 
-    @Override
-    public String idFromItem(Item item)
+    public String remapBlock(String id)
     {
-        return parent.idFromItem(item);
+        return blockRemaps.get(id);
     }
 
-    @Override
-    public void modifyItemStackCompound(NBTTagCompound compound, String itemID)
+    public String mapItem(String id)
     {
-        parent.modifyItemStackCompound(compound, itemID);
+        String remap = itemRemaps.get(id);
+        return remap != null ? remap : id;
     }
 
-    @Override
-    public Block blockFromID(String blockID)
+    public String remapItem(String id)
     {
-        Block block = blockRemaps.get(blockID);
-        return block != null ? block : parent.blockFromID(blockID);
+        return itemRemaps.get(id);
     }
 
-    @Override
-    public String idFromBlock(Block block)
+    public String mapTileEntity(String id)
     {
-        return parent.idFromBlock(block);
+        String remap = tileEntityRemaps.get(id);
+        return remap != null ? remap : id;
     }
 
-    @Override
-    public TileEntity loadTileEntity(NBTTagCompound compound)
+    public String remapTileEntity(String id)
     {
-        return parent.loadTileEntity(compound);
+        return tileEntityRemaps.get(id);
     }
+
 }

@@ -8,8 +8,8 @@ package ivorius.reccomplex.structures.registry;
 import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
 import ivorius.ivtoolkit.tools.MCRegistry;
-import ivorius.ivtoolkit.tools.MCRegistryDefault;
 import ivorius.reccomplex.RecurrentComplex;
+import ivorius.reccomplex.utils.FMLRemapper;
 import net.minecraft.block.Block;
 import net.minecraft.init.Items;
 import net.minecraft.item.Item;
@@ -30,17 +30,18 @@ public class MCRegistrySpecial implements MCRegistry
 {
     public static final String HIDDEN_ITEM_TAG = "RC_HIDDEN_ITEM";
 
-    protected MCRegistry parent;
-
     protected final BiMap<String, Item> itemMap = HashBiMap.create();
     protected final BiMap<String, Block> blockMap = HashBiMap.create();
     protected final Map<String, Class<? extends TileEntity>> tileEntityMap = new HashMap<>();
 
+    protected MCRegistry parent;
+    protected FMLRemapper remapper;
     protected ItemHidingRegistry itemHidingRegistry = new ItemHidingRegistry(this);
 
-    public MCRegistrySpecial(MCRegistry parent)
+    public MCRegistrySpecial(MCRegistry parent, FMLRemapper remapper)
     {
         this.parent = parent;
+        this.remapper = remapper;
     }
 
     public void register(String id, Item item)
@@ -66,6 +67,7 @@ public class MCRegistrySpecial implements MCRegistry
     @Override
     public Item itemFromID(String itemID)
     {
+        itemID = remapper.mapItem(itemID);
         Item item = itemMap.get(itemID);
         return item != null ? item : parent.itemFromID(itemID);
     }
@@ -91,6 +93,7 @@ public class MCRegistrySpecial implements MCRegistry
     @Override
     public Block blockFromID(String blockID)
     {
+        blockID = remapper.mapBlock(blockID);
         Block block = blockMap.get(blockID);
         return block != null ? block : parent.blockFromID(blockID);
     }
@@ -113,7 +116,7 @@ public class MCRegistrySpecial implements MCRegistry
         // From TileEntity
         try
         {
-            Class oclass = tileEntityMap.get(compound.getString("id"));
+            Class oclass = tileEntityMap.get(remapper.mapTileEntity(compound.getString("id")));
 
             if (oclass != null)
             {
@@ -147,7 +150,7 @@ public class MCRegistrySpecial implements MCRegistry
         @Override
         public Item itemFromID(String itemID)
         {
-            Item hidden = parent.itemMap.get(itemID);
+            Item hidden = parent.itemMap.get(parent.remapper.mapItem(itemID));
             return hidden != null ? Items.coal : parent.parent.itemFromID(itemID);
         }
 
@@ -197,7 +200,7 @@ public class MCRegistrySpecial implements MCRegistry
         @Override
         public void modifyItemStackCompound(NBTTagCompound compound, String itemID)
         {
-            Item item = parent.itemMap.get(itemID);
+            Item item = parent.itemMap.get(parent.remapper.mapItem(itemID));
             if (item != null)
             {
                 NBTTagCompound stackNBT;

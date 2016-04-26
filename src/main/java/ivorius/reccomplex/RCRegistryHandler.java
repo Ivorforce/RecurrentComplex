@@ -90,22 +90,22 @@ public class RCRegistryHandler
         blockSelector = new ItemBlockSelectorBlock().setUnlocalizedName("blockSelector").setTextureName(textureBase + "blockSelector");
         blockSelector.setCreativeTab(tabStructureTools);
         register(blockSelector, "block_selector");
-        RecurrentComplex.remapper.registerLegacyIDs(blockSelector, "blockSelector");
+        RecurrentComplex.cremapper.registerLegacyIDs(blockSelector, "blockSelector");
 
         blockSelectorFloating = new ItemBlockSelectorFloating().setUnlocalizedName("blockSelectorFloating").setTextureName(textureBase + "blockSelectorFloating");
         blockSelectorFloating.setCreativeTab(tabStructureTools);
         register(blockSelectorFloating, "block_selector_floating");
-        RecurrentComplex.remapper.registerLegacyIDs(blockSelectorFloating, "blockSelectorFloating");
+        RecurrentComplex.cremapper.registerLegacyIDs(blockSelectorFloating, "blockSelectorFloating");
 
         inventoryGenerationTag = (ItemInventoryGenMultiTag) new ItemInventoryGenMultiTag().setUnlocalizedName("inventoryGenerationTag").setTextureName(textureBase + "inventoryGenerationTag");
         inventoryGenerationTag.setCreativeTab(tabInventoryGenerators);
         register(inventoryGenerationTag, "inventory_generation_tag");
-        RecurrentComplex.remapper.registerLegacyIDs(inventoryGenerationTag, "inventoryGenerationTag");
+        RecurrentComplex.cremapper.registerLegacyIDs(inventoryGenerationTag, "inventoryGenerationTag");
 
         inventoryGenerationSingleTag = (ItemInventoryGenSingleTag) new ItemInventoryGenSingleTag().setUnlocalizedName("inventoryGenerationSingleTag").setTextureName(textureBase + "inventoryGenerationSingleTag");
         inventoryGenerationSingleTag.setCreativeTab(tabInventoryGenerators);
         register(inventoryGenerationSingleTag, "inventory_generation_single_tag");
-        RecurrentComplex.remapper.registerLegacyIDs(inventoryGenerationSingleTag, "inventoryGenerationSingleTag");
+        RecurrentComplex.cremapper.registerLegacyIDs(inventoryGenerationSingleTag, "inventoryGenerationSingleTag");
 
         inventoryGenerationComponentTag = (ItemInventoryGenComponentTag) new ItemInventoryGenComponentTag().setUnlocalizedName("inventoryGenerationComponentTag").setTextureName(textureBase + "inventoryGenerationComponentTag");
         inventoryGenerationComponentTag.setCreativeTab(tabInventoryGenerators);
@@ -114,37 +114,37 @@ public class RCRegistryHandler
         artifactGenerationTag = new ItemArtifactGenerator().setUnlocalizedName("artifactGenerationTag").setTextureName(textureBase + "artifactGenerationTag");
         artifactGenerationTag.setCreativeTab(tabInventoryGenerators);
         register(artifactGenerationTag, "artifact_generation_tag");
-        RecurrentComplex.remapper.registerLegacyIDs(artifactGenerationTag, "artifactGenerationTag");
+        RecurrentComplex.cremapper.registerLegacyIDs(artifactGenerationTag, "artifactGenerationTag");
 
         bookGenerationTag = new ItemBookGenerator().setUnlocalizedName("bookGenerationTag").setTextureName(textureBase + "bookGenerationTag");
         bookGenerationTag.setCreativeTab(tabInventoryGenerators);
         register(bookGenerationTag, "book_generation_tag");
-        RecurrentComplex.remapper.registerLegacyIDs(bookGenerationTag, "bookGenerationTag");
+        RecurrentComplex.cremapper.registerLegacyIDs(bookGenerationTag, "bookGenerationTag");
 
         genericSpace = new BlockGenericSpace().setBlockName("negativeSpace").setBlockTextureName(textureBase + "negativeSpace");
         genericSpace.setCreativeTab(tabStructureTools);
         register(genericSpace, ItemBlockNegativeSpace.class, "generic_space");
-        RecurrentComplex.remapper.registerLegacyIDs(genericSpace, true, "negativeSpace");
+        RecurrentComplex.cremapper.registerLegacyIDs(genericSpace, true, "negativeSpace");
 
         genericSolid = new BlockGenericSolid().setBlockName("naturalFloor").setBlockTextureName(textureBase + "naturalFloor");
         genericSolid.setCreativeTab(tabStructureTools);
         register(genericSolid, ItemBlockGenericSolid.class, "generic_solid");
-        RecurrentComplex.remapper.registerLegacyIDs(genericSolid, true, "naturalFloor");
+        RecurrentComplex.cremapper.registerLegacyIDs(genericSolid, true, "naturalFloor");
 
         structureGenerator = new BlockStructureGenerator().setBlockName("structureGenerator").setBlockTextureName(textureBase + "structureGenerator");
         register(structureGenerator, "structure_generator");
         register(TileEntityStructureGenerator.class, "RCStructureGenerator", "SGStructureGenerator");
-        RecurrentComplex.remapper.registerLegacyIDs(structureGenerator, true, "structureGenerator");
+        RecurrentComplex.cremapper.registerLegacyIDs(structureGenerator, true, "structureGenerator");
 
         mazeGenerator = new BlockMazeGenerator().setBlockName("mazeGenerator").setBlockTextureName(textureBase + "mazeGenerator");
         register(mazeGenerator, "maze_generator");
         register(TileEntityMazeGenerator.class, "RCMazeGenerator", "SGMazeGenerator");
-        RecurrentComplex.remapper.registerLegacyIDs(mazeGenerator, true, "mazeGenerator");
+        RecurrentComplex.cremapper.registerLegacyIDs(mazeGenerator, true, "mazeGenerator");
 
         spawnCommands = new BlockSpawnCommand().setBlockName("spawn_command").setBlockTextureName(textureBase + "spawnCommand");
         register(spawnCommands, "weighted_command_block");
         register(TileEntitySpawnCommand.class, "RCSpawnCommand");
-        RecurrentComplex.remapper.registerLegacyIDs(spawnCommands, true, "spawnCommand");
+        RecurrentComplex.cremapper.registerLegacyIDs(spawnCommands, true, "spawnCommand");
 
         spawnScript = new BlockSpawnScript().setBlockName("spawn_script").setBlockTextureName(textureBase + "spawnScript");
         spawnScript.setCreativeTab(tabStructureTools);
@@ -201,7 +201,7 @@ public class RCRegistryHandler
 
     public static void load(FMLInitializationEvent event, RecurrentComplex mod)
     {
-        MCRegistry mcRegistry = RecurrentComplex.mcRegistry;
+        MCRegistry mcRegistry = RecurrentComplex.specialRegistry;
 
         fileTypeRegistry.put(StructureSaveHandler.FILE_SUFFIX, StructureSaveHandler.INSTANCE);
         fileTypeRegistry.put(ItemCollectionSaveHandler.FILE_SUFFIX, ItemCollectionSaveHandler.INSTANCE);

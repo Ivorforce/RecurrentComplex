@@ -29,7 +29,10 @@ import ivorius.reccomplex.gui.RCGuiHandler;
 import ivorius.reccomplex.network.*;
 import ivorius.reccomplex.structures.registry.MCRegistrySpecial;
 import ivorius.reccomplex.structures.schematics.SchematicLoader;
+import ivorius.reccomplex.utils.FMLMissingRemapper;
 import ivorius.reccomplex.utils.FMLRemapper;
+import ivorius.reccomplex.utils.FMLRemapperConvenience;
+import ivorius.reccomplex.utils.MCRegistryRemapping;
 import net.minecraftforge.common.config.Configuration;
 import org.apache.logging.log4j.Logger;
 
@@ -61,8 +64,11 @@ public class RecurrentComplex
 
     public static RCFileTypeRegistry fileTypeRegistry;
     public static MCRegistry mcRegistry;
+
     public static FMLRemapper remapper;
+    public static FMLRemapperConvenience cremapper;
     public static MCRegistrySpecial specialRegistry;
+    public static FMLMissingRemapper missingRemapper;
 
     public static RCForgeEventHandler forgeEventHandler;
     public static RCFMLEventHandler fmlEventHandler;
@@ -95,8 +101,11 @@ public class RecurrentComplex
         config.save();
 
         fileTypeRegistry = new RCFileTypeRegistry();
-        mcRegistry = specialRegistry = new MCRegistrySpecial(remapper = new FMLRemapper(MODID, new MCRegistryDefault()));
-        remapper.setInferParent(specialRegistry);
+
+        remapper = new FMLRemapper(MODID);
+        specialRegistry = new MCRegistrySpecial(mcRegistry = new MCRegistryRemapping(new MCRegistryDefault(), remapper), remapper);
+        cremapper = new FMLRemapperConvenience(specialRegistry, remapper);
+        missingRemapper = new FMLMissingRemapper(new MCRegistryDefault(), remapper);
 
         forgeEventHandler = new RCForgeEventHandler();
         forgeEventHandler.register();
@@ -145,7 +154,7 @@ public class RecurrentComplex
     @EventHandler
     public void onMissingMapping(FMLMissingMappingsEvent event)
     {
-        remapper.onMissingMapping(event);
+        missingRemapper.onMissingMapping(event);
     }
 
     @EventHandler

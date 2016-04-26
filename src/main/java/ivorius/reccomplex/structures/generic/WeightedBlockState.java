@@ -49,7 +49,7 @@ public class WeightedBlockState implements WeightedSelector.Item
     {
         GsonBuilder builder = new GsonBuilder();
 
-        builder.registerTypeAdapter(WeightedBlockState.class, new WeightedBlockState.Serializer(RecurrentComplex.mcRegistry));
+        builder.registerTypeAdapter(WeightedBlockState.class, new WeightedBlockState.Serializer(RecurrentComplex.specialRegistry));
 
         return builder.create();
     }

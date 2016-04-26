@@ -46,13 +46,13 @@ public class TransformerReplace extends TransformerSingleBlock<NBTNone>
 
     public TransformerReplace()
     {
-        this(BlockMatcher.of(RecurrentComplex.mcRegistry, Blocks.wool));
+        this(BlockMatcher.of(RecurrentComplex.specialRegistry, Blocks.wool));
         destination.setToDefault();
     }
 
     public TransformerReplace(String sourceExpression)
     {
-        this.sourceMatcher = new BlockMatcher(RecurrentComplex.mcRegistry, sourceExpression);
+        this.sourceMatcher = new BlockMatcher(RecurrentComplex.specialRegistry, sourceExpression);
     }
 
     public static NBTTagCompound tryParse(String json)

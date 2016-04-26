@@ -39,12 +39,12 @@ public class TransformerPillar extends TransformerSingleBlock<NBTNone>
 
     public TransformerPillar()
     {
-        this(BlockMatcher.of(RecurrentComplex.mcRegistry, Blocks.stone, 0), Blocks.stone, 0);
+        this(BlockMatcher.of(RecurrentComplex.specialRegistry, Blocks.stone, 0), Blocks.stone, 0);
     }
 
     public TransformerPillar(String sourceExpression, Block destBlock, int destMetadata)
     {
-        this.sourceMatcher = new BlockMatcher(RecurrentComplex.mcRegistry, sourceExpression);
+        this.sourceMatcher = new BlockMatcher(RecurrentComplex.specialRegistry, sourceExpression);
         this.destBlock = destBlock;
         this.destMetadata = destMetadata;
     }

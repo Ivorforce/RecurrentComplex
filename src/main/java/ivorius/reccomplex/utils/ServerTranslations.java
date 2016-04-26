@@ -23,14 +23,16 @@ public class ServerTranslations
     {
         if (RecurrentComplex.isLite())
         {
-            Object[] array = Arrays.copyOf(params, params.length);
+            Object[] array = new Object[params.length];
 
             for (int i = 0; i < array.length; i++)
             {
-                if (array[i] instanceof ChatComponentTranslation)
-                    array[i] = IvTranslations.format(((ChatComponentTranslation) array[i]).getKey(), convertParams(((ChatComponentTranslation) array[i]).getFormatArgs()));
-                else if (array[i] instanceof IChatComponent)
-                    array[i] = ((IChatComponent) array[i]).getUnformattedText();
+                if (params[i] instanceof ChatComponentTranslation)
+                    array[i] = IvTranslations.format(((ChatComponentTranslation) params[i]).getKey(), convertParams(((ChatComponentTranslation) params[i]).getFormatArgs()));
+                else if (params[i] instanceof IChatComponent)
+                    array[i] = ((IChatComponent) params[i]).getUnformattedText();
+                else
+                    array[i] = params[i];
             }
 
             return array;

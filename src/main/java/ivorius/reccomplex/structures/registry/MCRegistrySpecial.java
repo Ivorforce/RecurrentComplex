@@ -90,6 +90,11 @@ public class MCRegistrySpecial implements MCRegistry
         return itemMap.isEmpty() || !itemMap.containsValue(item);
     }
 
+    public boolean isItemSafe(String itemID)
+    {
+        return itemMap.isEmpty() || !itemMap.containsKey(itemID);
+    }
+
     @Override
     public Block blockFromID(String blockID)
     {
@@ -108,6 +113,11 @@ public class MCRegistrySpecial implements MCRegistry
     public boolean isSafe(Block block)
     {
         return blockMap.isEmpty() || !blockMap.containsValue(block);
+    }
+
+    public boolean isBlockSafe(String blockID)
+    {
+        return blockMap.isEmpty() || !blockMap.containsKey(blockID);
     }
 
     @Override
@@ -140,6 +150,7 @@ public class MCRegistrySpecial implements MCRegistry
 
     public static class ItemHidingRegistry implements MCRegistry
     {
+        private static final Item DUMMY_ITEM = Items.coal;
         protected MCRegistrySpecial parent;
 
         public ItemHidingRegistry(MCRegistrySpecial parent)
@@ -150,8 +161,7 @@ public class MCRegistrySpecial implements MCRegistry
         @Override
         public Item itemFromID(String itemID)
         {
-            Item hidden = parent.itemMap.get(parent.remapper.mapItem(itemID));
-            return hidden != null ? Items.coal : parent.parent.itemFromID(itemID);
+            return !parent.isItemSafe(itemID) ? DUMMY_ITEM : parent.parent.itemFromID(itemID);
         }
 
         @Override
@@ -189,7 +199,7 @@ public class MCRegistrySpecial implements MCRegistry
             String hiddenID = parent.itemMap.inverse().get(item);
             if (hiddenID != null)
             {
-                ItemStack stack = new ItemStack(Items.coal, stackSize, metadata);
+                ItemStack stack = new ItemStack(DUMMY_ITEM, stackSize, metadata);
                 stack.setTagInfo(HIDDEN_ITEM_TAG, new NBTTagString(hiddenID));
                 return stack;
             }

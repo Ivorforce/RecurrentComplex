@@ -75,7 +75,7 @@ public class StructureInfos
     public static GuiValidityStateIndicator.State defaultIDValidityState(StructureGenerationInfo genInfo)
     {
         String id = genInfo.id();
-        return id.trim().isEmpty() || !StringUtils.isAlphanumeric(id)
+        return id.trim().isEmpty() || !id.chars().allMatch(Character::isJavaIdentifierPart)
                 ? GuiValidityStateIndicator.State.INVALID
                 : GuiValidityStateIndicator.State.VALID;
     }

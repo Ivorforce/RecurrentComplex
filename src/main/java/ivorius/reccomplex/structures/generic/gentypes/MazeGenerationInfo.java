@@ -33,7 +33,7 @@ public class MazeGenerationInfo extends StructureGenerationInfo
 
     public MazeGenerationInfo()
     {
-        this("MazeGen1", "", new SavedMazeComponent(null, ConnectorStrategy.DEFAULT_WALL));
+        this(randomID("Maze"), "", new SavedMazeComponent(null, ConnectorStrategy.DEFAULT_WALL));
         mazeComponent.rooms.addAll(Selection.zeroSelection(3));
     }
 

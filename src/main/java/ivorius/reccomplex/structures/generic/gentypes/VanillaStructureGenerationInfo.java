@@ -44,7 +44,7 @@ public class VanillaStructureGenerationInfo extends StructureGenerationInfo
 
     public VanillaStructureGenerationInfo()
     {
-        this("VanillaGen1", null, 2, 5, 3, 3, ForgeDirection.NORTH, new BlockCoord(0, 0, 0), "");
+        this(randomID("MC"), null, 2, 5, 3, 3, ForgeDirection.NORTH, new BlockCoord(0, 0, 0), "");
     }
 
     public VanillaStructureGenerationInfo(String id, Double generationWeight, double minBaseLimit, double maxBaseLimit, double minScaledLimit, double maxScaledLimit, ForgeDirection front, BlockCoord spawnShift, String biomeExpression)

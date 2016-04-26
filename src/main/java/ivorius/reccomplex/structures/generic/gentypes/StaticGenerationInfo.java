@@ -37,7 +37,7 @@ public class StaticGenerationInfo extends StructureGenerationInfo
 
     public StaticGenerationInfo()
     {
-        this("StaticGen1", new GenericYSelector(GenericYSelector.SelectionMode.SURFACE, 0, 0), new DimensionMatcher("0"), true, 0, 0);
+        this(randomID("Static"), new GenericYSelector(GenericYSelector.SelectionMode.SURFACE, 0, 0), new DimensionMatcher("0"), true, 0, 0);
     }
 
     public StaticGenerationInfo(String id, GenericYSelector ySelector, DimensionMatcher dimensionMatcher, boolean relativeToSpawn, int positionX, int positionZ)

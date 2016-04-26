@@ -38,7 +38,7 @@ public class StructureListGenerationInfo extends StructureGenerationInfo impleme
 
     public StructureListGenerationInfo()
     {
-        this("StructureListGen1", "", null, 0, 0, 0, ForgeDirection.NORTH);
+        this(randomID("List"), "", null, 0, 0, 0, ForgeDirection.NORTH);
     }
 
     public StructureListGenerationInfo(String id, String listID, Double weight, int shiftX, int shiftY, int shiftZ, ForgeDirection front)

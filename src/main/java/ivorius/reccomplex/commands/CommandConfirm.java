@@ -27,6 +27,11 @@ public class CommandConfirm extends CommandBase
         return RCConfig.commandPrefix + "confirm";
     }
 
+    public int getRequiredPermissionLevel()
+    {
+        return 2;
+    }
+
     @Override
     public String getCommandUsage(ICommandSender commandSender)
     {

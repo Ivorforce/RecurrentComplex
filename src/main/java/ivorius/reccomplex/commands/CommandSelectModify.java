@@ -20,6 +20,11 @@ import net.minecraft.entity.player.EntityPlayerMP;
  */
 public abstract class CommandSelectModify extends CommandBase
 {
+    public int getRequiredPermissionLevel()
+    {
+        return 2;
+    }
+
     @Override
     public void processCommand(ICommandSender commandSender, String[] args)
     {

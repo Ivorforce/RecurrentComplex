@@ -35,6 +35,11 @@ public class CommandBrowseFiles extends CommandBase
         return RCConfig.commandPrefix + "files";
     }
 
+    public int getRequiredPermissionLevel()
+    {
+        return 4;
+    }
+
     @Override
     public String getCommandUsage(ICommandSender commandSender)
     {

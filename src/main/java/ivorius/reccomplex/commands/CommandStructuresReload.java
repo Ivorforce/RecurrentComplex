@@ -24,6 +24,11 @@ public class CommandStructuresReload extends CommandBase
         return RCConfig.commandPrefix + "reload";
     }
 
+    public int getRequiredPermissionLevel()
+    {
+        return 4;
+    }
+
     @Override
     public String getCommandUsage(ICommandSender var1)
     {

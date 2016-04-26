@@ -37,6 +37,11 @@ public class CommandGenerateStructure extends CommandBase
         return RCConfig.commandPrefix + "gen";
     }
 
+    public int getRequiredPermissionLevel()
+    {
+        return 2;
+    }
+
     @Override
     public String getCommandUsage(ICommandSender var1)
     {

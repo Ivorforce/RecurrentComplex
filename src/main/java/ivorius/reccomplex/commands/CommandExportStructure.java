@@ -32,6 +32,11 @@ public class CommandExportStructure extends CommandBase
         return RCConfig.commandPrefix + "export";
     }
 
+    public int getRequiredPermissionLevel()
+    {
+        return 4;
+    }
+
     @Override
     public String getCommandUsage(ICommandSender var1)
     {

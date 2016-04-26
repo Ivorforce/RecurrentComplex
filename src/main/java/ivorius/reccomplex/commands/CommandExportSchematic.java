@@ -36,6 +36,11 @@ public class CommandExportSchematic extends CommandBase
         return RCConfig.commandPrefix + "exportschematic";
     }
 
+    public int getRequiredPermissionLevel()
+    {
+        return 4;
+    }
+
     @Override
     public String getCommandUsage(ICommandSender var1)
     {

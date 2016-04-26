@@ -27,6 +27,11 @@ public class CommandEditStructure extends CommandBase
         return RCConfig.commandPrefix + "edit";
     }
 
+    public int getRequiredPermissionLevel()
+    {
+        return 4;
+    }
+
     @Override
     public String getCommandUsage(ICommandSender var1)
     {

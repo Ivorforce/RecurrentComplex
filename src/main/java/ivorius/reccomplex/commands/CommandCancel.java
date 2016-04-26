@@ -24,6 +24,11 @@ public class CommandCancel extends CommandBase
         return RCConfig.commandPrefix + "cancel";
     }
 
+    public int getRequiredPermissionLevel()
+    {
+        return 2;
+    }
+
     @Override
     public String getCommandUsage(ICommandSender commandSender)
     {

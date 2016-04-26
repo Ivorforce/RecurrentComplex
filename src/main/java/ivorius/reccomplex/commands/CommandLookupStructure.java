@@ -32,6 +32,11 @@ public class CommandLookupStructure extends CommandBase
         return RCConfig.commandPrefix + "lookup";
     }
 
+    public int getRequiredPermissionLevel()
+    {
+        return 2;
+    }
+
     @Override
     public String getCommandUsage(ICommandSender var1)
     {

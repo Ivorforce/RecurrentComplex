@@ -29,6 +29,11 @@ public class CommandPreview extends CommandBase
         return RCConfig.commandPrefix + "preview";
     }
 
+    public int getRequiredPermissionLevel()
+    {
+        return 2;
+    }
+
     @Override
     public String getCommandUsage(ICommandSender commandSender)
     {

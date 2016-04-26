@@ -32,6 +32,11 @@ public class CommandImportSchematic extends CommandBase
         return RCConfig.commandPrefix + "importschematic";
     }
 
+    public int getRequiredPermissionLevel()
+    {
+        return 2;
+    }
+
     @Override
     public String getCommandUsage(ICommandSender var1)
     {

@@ -34,6 +34,11 @@ public class CommandImportStructure extends CommandBase
         return RCConfig.commandPrefix + "import";
     }
 
+    public int getRequiredPermissionLevel()
+    {
+        return 2;
+    }
+
     @Override
     public String getCommandUsage(ICommandSender var1)
     {

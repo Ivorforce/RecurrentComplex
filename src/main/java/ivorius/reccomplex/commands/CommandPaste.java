@@ -34,6 +34,11 @@ public class CommandPaste extends CommandBase
         return RCConfig.commandPrefix + "paste";
     }
 
+    public int getRequiredPermissionLevel()
+    {
+        return 2;
+    }
+
     @Override
     public String getCommandUsage(ICommandSender var1)
     {

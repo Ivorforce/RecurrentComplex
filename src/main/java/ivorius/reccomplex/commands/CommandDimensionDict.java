@@ -40,6 +40,11 @@ public class CommandDimensionDict extends CommandBase
         return RCConfig.commandPrefix + "dimensiondict";
     }
 
+    public int getRequiredPermissionLevel()
+    {
+        return 2;
+    }
+
     @Override
     public String getCommandUsage(ICommandSender commandSender)
     {

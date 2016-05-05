@@ -5,6 +5,7 @@
 
 package ivorius.reccomplex.utils;
 
+import java.io.ByteArrayOutputStream;
 import java.util.function.DoubleFunction;
 import java.util.function.Function;
 import java.util.function.IntFunction;
@@ -32,5 +33,11 @@ public class IvStreams
     public static <T> Stream<T> flatMapToObj(LongStream stream, LongFunction<Stream<? extends T>> function)
     {
         return stream.mapToObj(function).flatMap(Function.identity());
+    }
+
+    public static byte[] toByteArray(IntStream stream) {
+        return stream.collect(ByteArrayOutputStream::new, (baos, i) -> baos.write((byte) i),
+                (baos1, baos2) -> baos1.write(baos2.toByteArray(), 0, baos2.size()))
+                .toByteArray();
     }
 }

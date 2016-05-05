@@ -10,6 +10,8 @@ import ivorius.reccomplex.gui.table.TableDelegate;
 import ivorius.reccomplex.gui.table.TableNavigator;
 import ivorius.reccomplex.structures.generic.BiomeGenerationInfo;
 import ivorius.reccomplex.structures.generic.WeightedBlockState;
+import ivorius.reccomplex.utils.BlockState;
+import ivorius.reccomplex.utils.BlockStates;
 import ivorius.reccomplex.utils.PresettedList;
 import net.minecraft.block.Block;
 import net.minecraft.init.Blocks;
@@ -34,13 +36,13 @@ public class TableDataSourceWeightedBlockStateList extends TableDataSourcePreset
     @Override
     public String getDisplayString(WeightedBlockState entry)
     {
-        return String.format("%s$%d (%.2f)", StringUtils.abbreviate(Block.blockRegistry.getNameForObject(entry.block), 16), entry.metadata, entry.getWeight());
+        return String.format("%s$%d (%.2f)", StringUtils.abbreviate(Block.blockRegistry.getNameForObject(entry.state.getBlock()), 16), BlockStates.getMetadata(entry.state), entry.getWeight());
     }
 
     @Override
     public WeightedBlockState newEntry(String actionID)
     {
-        return new WeightedBlockState(null, Blocks.stone, 0, "");
+        return new WeightedBlockState(null, BlockStates.defaultState(Blocks.stone), "");
     }
 
     @Override

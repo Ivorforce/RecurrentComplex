@@ -8,6 +8,9 @@ package ivorius.reccomplex.structures.schematics;
 import ivorius.ivtoolkit.blocks.BlockArea;
 import ivorius.ivtoolkit.blocks.BlockCoord;
 import ivorius.ivtoolkit.tools.IvWorldData;
+import ivorius.reccomplex.utils.BlockState;
+import ivorius.reccomplex.utils.BlockStates;
+import ivorius.reccomplex.utils.IvStreams;
 import ivorius.reccomplex.utils.RCAccessorEntity;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
@@ -22,6 +25,7 @@ import net.minecraftforge.common.util.Constants;
 import net.minecraftforge.common.util.ForgeDirection;
 
 import java.util.*;
+import java.util.stream.Stream;
 
 /**
  * Created by lukas on 29.09.14.
@@ -32,8 +36,7 @@ public class SchematicFile
     public final List<NBTTagCompound> tileEntityCompounds = new ArrayList<>();
     public short width, height, length;
     public Short weOriginX, weOriginY, weOriginZ;
-    public Block[] blocks;
-    public byte[] metadatas;
+    public BlockState[] blockStates;
 
     public SchematicFile()
     {
@@ -44,8 +47,7 @@ public class SchematicFile
         this.width = width;
         this.height = height;
         this.length = length;
-        this.blocks = new Block[width * height * length];
-        this.metadatas = new byte[width * height * length];
+        this.blockStates = new BlockState[width * height * length];
     }
 
     public SchematicFile(NBTTagCompound tagCompound) throws UnsupportedSchematicFormatException
@@ -65,7 +67,7 @@ public class SchematicFile
         if (tagCompound.hasKey("WEOriginZ", Constants.NBT.TAG_SHORT))
             weOriginZ = tagCompound.getShort("WEOriginZ");
 
-        metadatas = tagCompound.getByteArray("Data");
+        byte[] metadatas = tagCompound.getByteArray("Data");
         byte[] blockIDs = tagCompound.getByteArray("Blocks");
         byte[] addBlocks = tagCompound.getByteArray("AddBlocks");
 
@@ -73,7 +75,7 @@ public class SchematicFile
                 ? new SchematicMapping(tagCompound.getCompoundTag(SchematicMapping.COMPOUND_KEY))
                 : null;
 
-        this.blocks = new Block[blockIDs.length];
+        this.blockStates = new BlockState[blockIDs.length];
         for (int i = 0; i < blockIDs.length; i++)
         {
             int blockID = blockIDs[i] & 0xff;
@@ -84,9 +86,10 @@ public class SchematicFile
                 blockID |= lowerNybble ? ((addBlocks[i >> 1] & 0x0F) << 8) : ((addBlocks[i >> 1] & 0xF0) << 4);
             }
 
-            this.blocks[i] = schematicMapping != null
+            Block block = schematicMapping != null
                     ? schematicMapping.blockFromID(blockID)
                     : Block.getBlockById(blockID);
+            this.blockStates[i] = BlockStates.defaultState(block);
         }
 
         NBTTagList entities = tagCompound.getTagList("Entities", Constants.NBT.TAG_COMPOUND);
@@ -103,28 +106,20 @@ public class SchematicFile
         return x + (y * length + z) * width;
     }
 
-    public Block getBlock(BlockCoord coord)
+    public BlockState getBlockState(BlockCoord coord)
     {
         if (coord.x < 0 || coord.y < 0 || coord.z < 0 || coord.x >= width || coord.y >= height || coord.z >= length)
-            return Blocks.air;
+            return BlockStates.defaultState(Blocks.air);
 
-        return blocks[getBlockIndex(coord.x, coord.y, coord.z)];
-    }
-
-    public int getMetadata(BlockCoord coord)
-    {
-        if (coord.x < 0 || coord.y < 0 || coord.z < 0 || coord.x >= width || coord.y >= height || coord.z >= length)
-            return 0;
-
-        return metadatas[getBlockIndex(coord.x, coord.y, coord.z)];
+        return blockStates[getBlockIndex(coord.x, coord.y, coord.z)];
     }
 
     public boolean shouldRenderSide(BlockCoord coord, ForgeDirection side)
     {
         BlockCoord sideCoord = coord.add(side.offsetX, side.offsetY, side.offsetZ);
 
-        Block block = getBlock(sideCoord);
-        return !block.isOpaqueCube();
+        BlockState blockState = getBlockState(sideCoord);
+        return !blockState.getBlock().isOpaqueCube();
     }
 
     public void generate(World world, int x, int y, int z)
@@ -143,18 +138,17 @@ public class SchematicFile
             for (BlockCoord srcCoord : blockArea)
             {
                 int index = getBlockIndex(srcCoord.x, srcCoord.y, srcCoord.z);
-                Block block = blocks[index];
-                byte meta = metadatas[index];
+                BlockState blockState = blockStates[index];
 
-                if (block != null && getPass(block, meta) == pass)
+                if (blockState != null && getPass(blockState) == pass)
                 {
                     BlockCoord worldPos = srcCoord.add(x, y, z);
-                    world.setBlock(worldPos.x, worldPos.y, worldPos.z, block, meta, 3);
+                    world.setBlock(worldPos.x, worldPos.y, worldPos.z, blockState.getBlock(), BlockStates.getMetadata(blockState), 3);
 
                     TileEntity tileEntity = tileEntities.get(srcCoord);
                     if (tileEntity != null)
                     {
-                        world.setBlockMetadataWithNotify(worldPos.x, worldPos.y, worldPos.z, meta, 2); // TODO Figure out why some blocks (chests, furnace) need this
+                        world.setBlockMetadataWithNotify(worldPos.x, worldPos.y, worldPos.z, BlockStates.getMetadata(blockState), 2); // TODO Figure out why some blocks (chests, furnace) need this
 
                         IvWorldData.setTileEntityPosForGeneration(tileEntity, worldPos);
                         world.setTileEntity(worldPos.x, worldPos.y, worldPos.z, tileEntity);
@@ -178,9 +172,9 @@ public class SchematicFile
         }
     }
 
-    private int getPass(Block block, int metadata)
+    private int getPass(BlockState blockState)
     {
-        return (block.isNormalCube() || block.getMaterial() == Material.air) ? 0 : 1;
+        return (blockState.getBlock().isNormalCube() || blockState.getBlock().getMaterial() == Material.air) ? 0 : 1;
     }
 
     public void writeToNBT(NBTTagCompound tagCompound)
@@ -198,15 +192,16 @@ public class SchematicFile
         if (weOriginZ != null)
             tagCompound.setShort("WEOriginZ", weOriginZ);
 
-        tagCompound.setByteArray("Data", metadatas);
+        tagCompound.setByteArray("Data", IvStreams.toByteArray(Stream.of(blockStates).mapToInt(BlockStates::getMetadata)));
 
-        byte[] blockIDs = new byte[blocks.length];
-        byte[] addBlocks = new byte[(blocks.length + 1) / 2];
+        byte[] blockIDs = new byte[blockStates.length];
+        byte[] addBlocks = new byte[(blockStates.length + 1) / 2];
         SchematicMapping schematicMapping = new SchematicMapping();
-        for (int i = 0; i < blocks.length; i++)
+        for (int i = 0; i < blockStates.length; i++)
         {
-            int blockID = getBlockID(blocks[i]);
-            schematicMapping.putBlock(blockID, blocks[i]);
+            Block block = blockStates[i].getBlock();
+            int blockID = getBlockID(block);
+            schematicMapping.putBlock(blockID, block);
 
             blockIDs[i] = (byte) (blockID & 0xff);
             boolean lowerNybble = (i & 1) == 0;

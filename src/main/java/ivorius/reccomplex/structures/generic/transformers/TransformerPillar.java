@@ -18,6 +18,8 @@ import ivorius.reccomplex.structures.StructureLoadContext;
 import ivorius.reccomplex.structures.StructurePrepareContext;
 import ivorius.reccomplex.structures.StructureSpawnContext;
 import ivorius.reccomplex.structures.generic.matchers.BlockMatcher;
+import ivorius.reccomplex.utils.BlockState;
+import ivorius.reccomplex.utils.BlockStates;
 import ivorius.reccomplex.utils.NBTNone;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
@@ -34,31 +36,29 @@ public class TransformerPillar extends TransformerSingleBlock<NBTNone>
 {
     public BlockMatcher sourceMatcher;
 
-    public Block destBlock;
-    public int destMetadata;
+    public BlockState destState;
 
     public TransformerPillar()
     {
-        this(BlockMatcher.of(RecurrentComplex.specialRegistry, Blocks.stone, 0), Blocks.stone, 0);
+        this(BlockMatcher.of(RecurrentComplex.specialRegistry, Blocks.stone, 0), BlockStates.defaultState(Blocks.stone));
     }
 
-    public TransformerPillar(String sourceExpression, Block destBlock, int destMetadata)
+    public TransformerPillar(String sourceExpression, BlockState destState)
     {
         this.sourceMatcher = new BlockMatcher(RecurrentComplex.specialRegistry, sourceExpression);
-        this.destBlock = destBlock;
-        this.destMetadata = destMetadata;
+        this.destState = destState;
     }
 
     @Override
-    public boolean matches(NBTNone instanceData, Block block, int metadata)
+    public boolean matches(NBTNone instanceData, BlockState state)
     {
-        return sourceMatcher.apply(new BlockMatcher.BlockFragment(block, metadata));
+        return sourceMatcher.apply(state);
     }
 
     @Override
-    public void transformBlock(NBTNone instanceData, Phase phase, StructureSpawnContext context, BlockCoord coord, Block sourceBlock, int sourceMetadata)
+    public void transformBlock(NBTNone instanceData, Phase phase, StructureSpawnContext context, BlockCoord coord, BlockState sourceState)
     {
-        if (RecurrentComplex.specialRegistry.isSafe(destBlock))
+        if (RecurrentComplex.specialRegistry.isSafe(destState.getBlock()))
         {
             // TODO Fix for partial generation
             World world = context.world;
@@ -67,7 +67,7 @@ public class TransformerPillar extends TransformerSingleBlock<NBTNone>
 
             do
             {
-                context.setBlock(coord.x, y--, coord.z, destBlock, destMetadata);
+                context.setBlock(coord.x, y--, coord.z, destState);
 
                 Block block = world.getBlock(coord.x, y, coord.z);
                 if (!(block.isReplaceable(world, coord.x, y, coord.z) || block.getMaterial() == Material.leaves || block.isFoliage(world, coord.x, y, coord.z)))
@@ -92,7 +92,7 @@ public class TransformerPillar extends TransformerSingleBlock<NBTNone>
     @Override
     public String getDisplayString()
     {
-        return "Pillar: " + sourceMatcher.getDisplayString() + "->" + destBlock.getLocalizedName();
+        return "Pillar: " + sourceMatcher.getDisplayString() + "->" + destState.getBlock().getLocalizedName();
     }
 
     @Override
@@ -127,9 +127,9 @@ public class TransformerPillar extends TransformerSingleBlock<NBTNone>
 
             String destBlock = JsonUtils.getJsonObjectStringFieldValue(jsonObject, "dest");
             Block dest = registry.blockFromID(destBlock);
-            int destMeta = JsonUtils.getJsonObjectIntegerFieldValue(jsonObject, "destMetadata");
+            BlockState destState = dest != null ? BlockStates.fromMetadata(dest, JsonUtils.getJsonObjectIntegerFieldValue(jsonObject, "destMetadata")) : null;
 
-            return new TransformerPillar(expression, dest, destMeta);
+            return new TransformerPillar(expression, destState);
         }
 
         @Override
@@ -139,8 +139,8 @@ public class TransformerPillar extends TransformerSingleBlock<NBTNone>
 
             jsonObject.addProperty("sourceExpression", transformer.sourceMatcher.getExpression());
 
-            jsonObject.addProperty("dest", registry.idFromBlock(transformer.destBlock));
-            jsonObject.addProperty("destMetadata", transformer.destMetadata);
+            jsonObject.addProperty("dest", registry.idFromBlock(transformer.destState.getBlock()));
+            jsonObject.addProperty("destMetadata", BlockStates.getMetadata(transformer.destState));
 
             return jsonObject;
         }

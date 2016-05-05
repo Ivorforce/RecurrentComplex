@@ -20,6 +20,8 @@ import ivorius.reccomplex.structures.StructureLoadContext;
 import ivorius.reccomplex.structures.StructurePrepareContext;
 import ivorius.reccomplex.structures.StructureSpawnContext;
 import ivorius.reccomplex.structures.generic.matchers.BlockMatcher;
+import ivorius.reccomplex.utils.BlockState;
+import ivorius.reccomplex.utils.BlockStates;
 import ivorius.reccomplex.utils.NBTNone;
 import net.minecraft.block.Block;
 import net.minecraft.init.Blocks;
@@ -58,13 +60,13 @@ public class TransformerNatural extends TransformerSingleBlock<NBTNone>
     }
 
     @Override
-    public boolean matches(NBTNone instanceData, Block block, int metadata)
+    public boolean matches(NBTNone instanceData, BlockState state)
     {
-        return sourceMatcher.apply(new BlockMatcher.BlockFragment(block, metadata));
+        return sourceMatcher.apply(state);
     }
 
     @Override
-    public void transformBlock(NBTNone instanceData, Phase phase, StructureSpawnContext context, BlockCoord coord, Block sourceBlock, int sourceMetadata)
+    public void transformBlock(NBTNone instanceData, Phase phase, StructureSpawnContext context, BlockCoord coord, BlockState sourceState)
     {
         // TODO Fix for partial generation
         World world = context.world;
@@ -101,7 +103,7 @@ public class TransformerNatural extends TransformerSingleBlock<NBTNone>
                     if (replaceable)
                     {
                         Block setBlock = useStoneBlock ? mainBlock : (isTopBlock(world, currentX, currentY, currentZ) ? topBlock : fillerBlock);
-                        context.setBlock(currentX, currentY, currentZ, setBlock, 0);
+                        context.setBlock(currentX, currentY, currentZ, BlockStates.defaultState(setBlock));
                     }
 
                     // Uncommenting makes performance shit
@@ -130,7 +132,7 @@ public class TransformerNatural extends TransformerSingleBlock<NBTNone>
         {
             // Get the top blocks right (grass rather than dirt)
             Block setBlock = useStoneBlock ? mainBlock : (isTopBlock(world, coord.x, coord.y, coord.z) ? topBlock : fillerBlock);
-            context.setBlock(coord.x, coord.y, coord.z, setBlock, 0);
+            context.setBlock(coord.x, coord.y, coord.z, BlockStates.defaultState(setBlock));
         }
     }
 

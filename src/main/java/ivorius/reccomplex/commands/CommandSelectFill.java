@@ -9,6 +9,8 @@ import ivorius.ivtoolkit.blocks.BlockArea;
 import ivorius.ivtoolkit.blocks.BlockCoord;
 import ivorius.reccomplex.RCConfig;
 import ivorius.reccomplex.entities.StructureEntityInfo;
+import ivorius.reccomplex.utils.BlockState;
+import ivorius.reccomplex.utils.BlockStates;
 import ivorius.reccomplex.utils.ServerTranslations;
 import net.minecraft.block.Block;
 import net.minecraft.command.ICommandSender;
@@ -18,6 +20,8 @@ import net.minecraft.world.World;
 
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 /**
  * Created by lukas on 09.06.14.
@@ -43,12 +47,14 @@ public class CommandSelectFill extends CommandSelectModify
         {
             World world = player.getEntityWorld();
 
-            Block dst = getBlockByText(player, args[0]);
+            Block dstBlock = getBlockByText(player, args[0]);
             int[] dstMeta = args.length >= 2 ? getMetadatas(args[1]) : new int[]{0};
+            List<BlockState> dst = IntStream.of(dstMeta).mapToObj(i -> BlockStates.fromMetadata(dstBlock, i)).collect(Collectors.toList());
 
             for (BlockCoord coord : new BlockArea(point1, point2))
             {
-                world.setBlock(coord.x, coord.y, coord.z, dst, dstMeta[player.getRNG().nextInt(dstMeta.length)], 3);
+                BlockState state = dst.get(player.getRNG().nextInt(dst.size()));
+                world.setBlock(coord.x, coord.y, coord.z, state.getBlock(), BlockStates.getMetadata(state), 3);
             }
         }
         else

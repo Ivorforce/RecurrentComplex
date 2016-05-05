@@ -10,6 +10,8 @@ import ivorius.ivtoolkit.tools.MCRegistry;
 import ivorius.reccomplex.RecurrentComplex;
 import ivorius.reccomplex.json.JsonUtils;
 import ivorius.ivtoolkit.random.WeightedSelector;
+import ivorius.reccomplex.utils.BlockState;
+import ivorius.reccomplex.utils.BlockStates;
 import net.minecraft.block.Block;
 import net.minecraft.nbt.NBTTagCompound;
 
@@ -24,24 +26,22 @@ public class WeightedBlockState implements WeightedSelector.Item
 
     public Double weight;
 
-    public Block block;
-    public int metadata;
+    public BlockState state;
 
     public String tileEntityInfo;
 
-    public WeightedBlockState(Double weight, Block block, int metadata, String tileEntityInfo)
+    public WeightedBlockState(Double weight, BlockState state, String tileEntityInfo)
     {
         this.weight = weight;
-        this.block = block;
-        this.metadata = metadata;
+        this.state = state;
         this.tileEntityInfo = tileEntityInfo;
     }
 
     public WeightedBlockState(MCRegistry registry, NBTTagCompound compound)
     {
         weight = compound.hasKey("weight") ? compound.getDouble("weight") : null;
-        block = compound.hasKey("block") ? registry.blockFromID(compound.getString("block")) : null;
-        metadata = compound.getInteger("meta");
+        Block block = compound.hasKey("block") ? registry.blockFromID(compound.getString("block")) : null;
+        state = block != null ? BlockStates.fromMetadata(block, compound.getInteger("meta")) : null;
         tileEntityInfo = compound.getString("tileEntityInfo");
     }
 
@@ -70,8 +70,8 @@ public class WeightedBlockState implements WeightedSelector.Item
         NBTTagCompound compound = new NBTTagCompound();
 
         if (weight != null) compound.setDouble("weight", weight);
-        if (block != null) compound.setString("block", registry.idFromBlock(block));
-        compound.setInteger("meta", metadata);
+        if (state != null) compound.setString("block", registry.idFromBlock(state.getBlock()));
+        compound.setInteger("meta", BlockStates.getMetadata(state));
         compound.setString("tileEntityInfo", tileEntityInfo);
 
         return compound;
@@ -93,26 +93,25 @@ public class WeightedBlockState implements WeightedSelector.Item
 
             Double weight = jsonObject.has("weight") ? JsonUtils.getJsonObjectDoubleFieldValue(jsonObject, "weight") : null;
 
-            String block = JsonUtils.getJsonObjectStringFieldValueOrDefault(jsonObject, "block", "air");
-            int metadata = JsonUtils.getJsonObjectIntegerFieldValueOrDefault(jsonObject, "metadata", 0);
+            BlockState state = BlockStates.fromMetadata(registry.blockFromID(JsonUtils.getJsonObjectStringFieldValueOrDefault(jsonObject, "block", "air")), JsonUtils.getJsonObjectIntegerFieldValueOrDefault(jsonObject, "metadata", 0));
 
             String tileEntityInfo = JsonUtils.getJsonObjectStringFieldValueOrDefault(jsonObject, "tileEntityInfo", "");
 
-            return new WeightedBlockState(weight, registry.blockFromID(block), metadata, tileEntityInfo);
+            return new WeightedBlockState(weight, state, tileEntityInfo);
         }
 
         @Override
-        public JsonElement serialize(WeightedBlockState generationInfo, Type par2Type, JsonSerializationContext context)
+        public JsonElement serialize(WeightedBlockState source, Type par2Type, JsonSerializationContext context)
         {
             JsonObject jsonObject = new JsonObject();
 
-            if (generationInfo.weight != null)
-                jsonObject.addProperty("weight", generationInfo.weight);
+            if (source.weight != null)
+                jsonObject.addProperty("weight", source.weight);
 
-            jsonObject.addProperty("block", registry.idFromBlock(generationInfo.block));
-            jsonObject.addProperty("metadata", generationInfo.metadata);
+            jsonObject.addProperty("block", registry.idFromBlock(source.state.getBlock()));
+            jsonObject.addProperty("metadata", BlockStates.getMetadata(source.state));
 
-            jsonObject.addProperty("tileEntityInfo", generationInfo.tileEntityInfo);
+            jsonObject.addProperty("tileEntityInfo", source.tileEntityInfo);
 
             return jsonObject;
         }

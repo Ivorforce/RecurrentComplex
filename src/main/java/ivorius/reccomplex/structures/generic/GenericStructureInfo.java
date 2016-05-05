@@ -22,12 +22,9 @@ import ivorius.reccomplex.structures.generic.gentypes.StructureGenerationInfo;
 import ivorius.reccomplex.structures.generic.matchers.BlockMatcher;
 import ivorius.reccomplex.structures.generic.matchers.DependencyMatcher;
 import ivorius.reccomplex.structures.generic.transformers.*;
-import ivorius.reccomplex.utils.NBTStorable;
+import ivorius.reccomplex.utils.*;
 import ivorius.ivtoolkit.tools.Pairs;
-import ivorius.reccomplex.utils.RCAccessorEntity;
-import ivorius.reccomplex.utils.RCAccessorWorldServer;
 import ivorius.reccomplex.worldgen.inventory.InventoryGenerationHandler;
-import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.entity.Entity;
 import net.minecraft.init.Blocks;
@@ -71,7 +68,7 @@ public class GenericStructureInfo implements StructureInfo<GenericStructureInfo.
         genericStructureInfo.transformers.add(new TransformerNaturalAir(BlockMatcher.of(RecurrentComplex.specialRegistry, RCBlocks.genericSpace, 1), TransformerNaturalAir.DEFAULT_NATURAL_EXPANSION_DISTANCE, TransformerNaturalAir.DEFAULT_NATURAL_EXPANSION_RANDOMIZATION));
         genericStructureInfo.transformers.add(new TransformerNegativeSpace(BlockMatcher.of(RecurrentComplex.specialRegistry, RCBlocks.genericSpace, 0)));
         genericStructureInfo.transformers.add(new TransformerNatural(BlockMatcher.of(RecurrentComplex.specialRegistry, RCBlocks.genericSolid, 0), TransformerNatural.DEFAULT_NATURAL_EXPANSION_DISTANCE, TransformerNatural.DEFAULT_NATURAL_EXPANSION_RANDOMIZATION));
-        genericStructureInfo.transformers.add(new TransformerReplace(BlockMatcher.of(RecurrentComplex.specialRegistry, RCBlocks.genericSolid, 1)).replaceWith(new WeightedBlockState(null, Blocks.air, 0, "")));
+        genericStructureInfo.transformers.add(new TransformerReplace(BlockMatcher.of(RecurrentComplex.specialRegistry, RCBlocks.genericSolid, 1)).replaceWith(new WeightedBlockState(null, BlockStates.fromMetadata(Blocks.air, 0), "")));
 
         genericStructureInfo.generationInfos.add(new NaturalGenerationInfo());
 
@@ -152,23 +149,22 @@ public class GenericStructureInfo implements StructureInfo<GenericStructureInfo.
         {
             for (BlockCoord sourceCoord : blockCollection)
             {
-                Block block = blockCollection.getBlock(sourceCoord);
-                int meta = blockCollection.getMetadata(sourceCoord);
+                BlockState state = BlockStates.at(blockCollection, sourceCoord);
 
                 BlockCoord worldPos = context.transform.apply(sourceCoord, areaSize).add(origin);
-                if (context.includes(worldPos) && RecurrentComplex.specialRegistry.isSafe(block))
+                if (context.includes(worldPos) && RecurrentComplex.specialRegistry.isSafe(state.getBlock()))
                 {
                     TileEntity tileEntity = tileEntities.get(sourceCoord);
 
-                    if (pass == getPass(block, meta) && (context.generateAsSource || !skips(transformers, block, meta)))
+                    if (pass == getPass(state) && (context.generateAsSource || !skips(transformers, state)))
                     {
                         if (context.generateAsSource || !(tileEntity instanceof GeneratingTileEntity) || ((GeneratingTileEntity) tileEntity).shouldPlaceInWorld(context, instanceData.tileEntities.get(sourceCoord)))
                         {
-                            if (context.setBlock(worldPos, block, meta) && world.getBlock(worldPos.x, worldPos.y, worldPos.z) == block)
+                            if (context.setBlock(worldPos, state) && world.getBlock(worldPos.x, worldPos.y, worldPos.z) == state.getBlock())
                             {
                                 if (tileEntity != null && RecurrentComplex.specialRegistry.isSafe(tileEntity))
                                 {
-                                    world.setBlockMetadataWithNotify(worldPos.x, worldPos.y, worldPos.z, meta, 2); // TODO Figure out why some blocks (chests, furnace) need this
+                                    world.setBlockMetadataWithNotify(worldPos.x, worldPos.y, worldPos.z, BlockStates.getMetadata(state), 2); // TODO Figure out why some blocks (chests, furnace) need this
 
                                     world.setTileEntity(worldPos.x, worldPos.y, worldPos.z, tileEntity);
                                     tileEntity.updateContainingBlockInfo();
@@ -182,11 +178,11 @@ public class GenericStructureInfo implements StructureInfo<GenericStructureInfo.
                                         }
                                     }
                                 }
-                                context.transform.rotateBlock(world, worldPos, block);
+                                context.transform.rotateBlock(world, worldPos, state.getBlock());
                             }
                         }
                         else
-                            context.setBlock(worldPos, Blocks.air, 0); // Replace with air
+                            context.setBlock(worldPos, BlockStates.defaultState(Blocks.air)); // Replace with air
                     }
                 }
             }
@@ -258,9 +254,9 @@ public class GenericStructureInfo implements StructureInfo<GenericStructureInfo.
         return instanceData;
     }
 
-    private boolean skips(List<Pair<Transformer, NBTStorable>> transformers, final Block block, final int metadata)
+    private boolean skips(List<Pair<Transformer, NBTStorable>> transformers, final BlockState state)
     {
-        return transformers.stream().anyMatch(input -> input.getLeft().skipGeneration(input.getRight(), block, metadata));
+        return transformers.stream().anyMatch(input -> input.getLeft().skipGeneration(input.getRight(), state));
     }
 
     public IvWorldData constructWorldData(World world)
@@ -286,9 +282,9 @@ public class GenericStructureInfo implements StructureInfo<GenericStructureInfo.
         return null;
     }
 
-    private int getPass(Block block, int metadata)
+    private int getPass(BlockState state)
     {
-        return (block.isNormalCube() || block.getMaterial() == Material.air) ? 0 : 1;
+        return (state.getBlock().isNormalCube() || state.getBlock().getMaterial() == Material.air) ? 0 : 1;
     }
 
     @Override

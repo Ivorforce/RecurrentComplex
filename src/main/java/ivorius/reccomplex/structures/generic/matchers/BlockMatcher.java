@@ -10,9 +10,7 @@ import com.google.common.base.Splitter;
 import com.google.common.primitives.Ints;
 import ivorius.ivtoolkit.gui.IntegerRange;
 import ivorius.ivtoolkit.tools.MCRegistry;
-import ivorius.reccomplex.utils.ExpressionCaches;
-import ivorius.reccomplex.utils.PrefixedTypeExpressionCache;
-import ivorius.reccomplex.utils.RCBoolAlgebra;
+import ivorius.reccomplex.utils.*;
 import net.minecraft.block.Block;
 import net.minecraft.util.EnumChatFormatting;
 
@@ -21,7 +19,7 @@ import java.util.List;
 /**
  * Created by lukas on 03.03.15.
  */
-public class BlockMatcher extends PrefixedTypeExpressionCache<Boolean> implements Predicate<BlockMatcher.BlockFragment>
+public class BlockMatcher extends PrefixedTypeExpressionCache<Boolean> implements Predicate<BlockState>
 {
     public static final String METADATA_PREFIX = "#";
 
@@ -49,21 +47,9 @@ public class BlockMatcher extends PrefixedTypeExpressionCache<Boolean> implement
     }
 
     @Override
-    public boolean apply(final BlockFragment input)
+    public boolean apply(final BlockState input)
     {
         return evaluate(input);
-    }
-
-    public static class BlockFragment
-    {
-        public Block block;
-        public int metadata;
-
-        public BlockFragment(Block block, int metadata)
-        {
-            this.block = block;
-            this.metadata = metadata;
-        }
     }
 
     public static class BlockVariableType extends ExpressionCaches.SimpleVariableType<Boolean>
@@ -79,7 +65,7 @@ public class BlockMatcher extends PrefixedTypeExpressionCache<Boolean> implement
         @Override
         public Boolean evaluate(String var, Object... args)
         {
-            return ((BlockFragment) args[0]).block == registry.blockFromID(var);
+            return ((BlockState) args[0]).getBlock() == registry.blockFromID(var);
         }
 
         @Override
@@ -125,7 +111,7 @@ public class BlockMatcher extends PrefixedTypeExpressionCache<Boolean> implement
         public Boolean evaluate(String var, Object... args)
         {
             IntegerRange range = parseMetadataExp(var);
-            int metadata = ((BlockFragment) args[0]).metadata;
+            int metadata = BlockStates.getMetadata(((BlockState) args[0]));
 
             return range != null && metadata >= range.min && metadata <= range.max;
         }

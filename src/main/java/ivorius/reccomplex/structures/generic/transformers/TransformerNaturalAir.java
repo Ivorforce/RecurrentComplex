@@ -20,6 +20,8 @@ import ivorius.reccomplex.structures.StructureLoadContext;
 import ivorius.reccomplex.structures.StructurePrepareContext;
 import ivorius.reccomplex.structures.StructureSpawnContext;
 import ivorius.reccomplex.structures.generic.matchers.BlockMatcher;
+import ivorius.reccomplex.utils.BlockState;
+import ivorius.reccomplex.utils.BlockStates;
 import ivorius.reccomplex.utils.NBTNone;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
@@ -59,13 +61,13 @@ public class TransformerNaturalAir extends TransformerSingleBlock<NBTNone>
     }
 
     @Override
-    public boolean matches(NBTNone instanceData, Block block, int metadata)
+    public boolean matches(NBTNone instanceData, BlockState state)
     {
-        return sourceMatcher.apply(new BlockMatcher.BlockFragment(block, metadata));
+        return sourceMatcher.apply(state);
     }
 
     @Override
-    public void transformBlock(NBTNone instanceData, Phase phase, StructureSpawnContext context, BlockCoord coord, Block sourceBlock, int sourceMetadata)
+    public void transformBlock(NBTNone instanceData, Phase phase, StructureSpawnContext context, BlockCoord coord, BlockState sourceState)
     {
         // TODO Fix for partial generation
         World world = context.world;
@@ -102,7 +104,7 @@ public class TransformerNaturalAir extends TransformerSingleBlock<NBTNone>
                         || isCommon || isFoliage;
 
                 if (replaceable)
-                    context.setBlock(currentX, currentY, currentZ, Blocks.air, 0);
+                    context.setBlock(currentX, currentY, currentZ, BlockStates.defaultState(Blocks.air));
 
                 if (replaceable || curBlock.getMaterial() == Material.air)
                 {

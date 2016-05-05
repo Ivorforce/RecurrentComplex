@@ -9,8 +9,9 @@ import ivorius.ivtoolkit.blocks.BlockCoord;
 import ivorius.ivtoolkit.blocks.IvBlockCollection;
 import ivorius.ivtoolkit.tools.IvWorldData;
 import ivorius.reccomplex.structures.StructureSpawnContext;
+import ivorius.reccomplex.utils.BlockState;
+import ivorius.reccomplex.utils.BlockStates;
 import ivorius.reccomplex.utils.NBTStorable;
-import net.minecraft.block.Block;
 import org.apache.commons.lang3.tuple.Pair;
 
 import java.util.List;
@@ -21,9 +22,9 @@ import java.util.List;
 public abstract class TransformerSingleBlock<S extends NBTStorable> implements Transformer<S>
 {
     @Override
-    public boolean skipGeneration(S instanceData, Block block, int metadata)
+    public boolean skipGeneration(S instanceData, BlockState state)
     {
-        return matches(instanceData, block, metadata);
+        return matches(instanceData, state);
     }
 
     @Override
@@ -39,16 +40,15 @@ public abstract class TransformerSingleBlock<S extends NBTStorable> implements T
 
             if (context.includes(worldCoord))
             {
-                Block block = blockCollection.getBlock(sourceCoord);
-                int meta = blockCollection.getMetadata(sourceCoord);
+                BlockState state = BlockStates.at(blockCollection, sourceCoord);
 
-                if (matches(instanceData, block, meta))
-                    transformBlock(instanceData, Phase.BEFORE, context, worldCoord, block, meta);
+                if (matches(instanceData, state))
+                    transformBlock(instanceData, Phase.BEFORE, context, worldCoord, state);
             }
         }
     }
 
-    public abstract boolean matches(S instanceData, Block block, int metadata);
+    public abstract boolean matches(S instanceData, BlockState state);
 
-    public abstract void transformBlock(S instanceData, Phase phase, StructureSpawnContext context, BlockCoord coord, Block sourceBlock, int sourceMetadata);
+    public abstract void transformBlock(S instanceData, Phase phase, StructureSpawnContext context, BlockCoord coord, BlockState sourceState);
 }

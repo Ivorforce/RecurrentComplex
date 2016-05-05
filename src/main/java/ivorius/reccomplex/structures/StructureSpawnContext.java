@@ -7,6 +7,8 @@ package ivorius.reccomplex.structures;
 
 import ivorius.ivtoolkit.blocks.BlockCoord;
 import ivorius.ivtoolkit.math.AxisAlignedTransform2D;
+import ivorius.reccomplex.utils.BlockState;
+import ivorius.reccomplex.utils.BlockStates;
 import net.minecraft.block.Block;
 import net.minecraft.util.MathHelper;
 import net.minecraft.world.World;
@@ -97,22 +99,22 @@ public class StructureSpawnContext
         return new BlockCoord(boundingBox.minX, boundingBox.minY, boundingBox.minZ);
     }
 
-    public boolean setBlock(BlockCoord coord, Block block, int meta)
+    public boolean setBlock(BlockCoord coord, BlockState state)
     {
         if (includes(coord.x, coord.y, coord.z))
         {
-            world.setBlock(coord.x, coord.y, coord.z, block, meta, 2);
+            world.setBlock(coord.x, coord.y, coord.z, state.getBlock(), BlockStates.getMetadata(state), 2);
             return true;
         }
 
         return false; // world.setBlock returns false on 'no change'
     }
 
-    public boolean setBlock(int x, int y, int z, Block block, int meta)
+    public boolean setBlock(int x, int y, int z, BlockState state)
     {
         if (includes(x, y, z))
         {
-            world.setBlock(x, y, z, block, meta, 2);
+            world.setBlock(x, y, z, state.getBlock(), BlockStates.getMetadata(state), 2);
             return true;
         }
 

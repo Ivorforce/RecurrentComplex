@@ -8,6 +8,7 @@ package ivorius.reccomplex.gui.editstructure.transformers;
 import ivorius.reccomplex.gui.TableDataSourceExpression;
 import ivorius.reccomplex.gui.table.*;
 import ivorius.reccomplex.structures.generic.transformers.TransformerPillar;
+import ivorius.reccomplex.utils.BlockStates;
 import net.minecraft.block.Block;
 
 /**
@@ -53,13 +54,13 @@ public class TableDataSourceBTPillar extends TableDataSourceSegmented implements
         {
             if (index == 0)
             {
-                TableCellString cell = TableDataSourceBTNatural.elementForBlock("destID", transformer.destBlock);
+                TableCellString cell = TableDataSourceBTNatural.elementForBlock("destID", transformer.destState.getBlock());
                 cell.addPropertyListener(this);
                 return new TableElementCell("Dest Block", cell);
             }
             else if (index == 1)
             {
-                TableCellInteger cell = new TableCellInteger("destMeta", transformer.destMetadata, 0, 16);
+                TableCellInteger cell = new TableCellInteger("destMeta", BlockStates.getMetadata(transformer.destState), 0, 16);
                 cell.addPropertyListener(this);
                 return new TableElementCell("Dest Metadata", cell);
             }
@@ -73,12 +74,12 @@ public class TableDataSourceBTPillar extends TableDataSourceSegmented implements
     {
         if ("destID".equals(cell.getID()))
         {
-            transformer.destBlock = (Block) Block.blockRegistry.getObject(cell.getPropertyValue());
+            transformer.destState = BlockStates.fromMetadata((Block) Block.blockRegistry.getObject(cell.getPropertyValue()), BlockStates.getMetadata(transformer.destState));
             TableDataSourceBTNatural.setStateForBlockTextfield(((TableCellString) cell));
         }
         else if ("destMeta".equals(cell.getID()))
         {
-            transformer.destMetadata = (int) cell.getPropertyValue();
+            transformer.destState = transformer.destState.with((int) cell.getPropertyValue());
         }
     }
 }

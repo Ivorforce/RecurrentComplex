@@ -10,6 +10,8 @@ import ivorius.reccomplex.gui.RCGuiTables;
 import ivorius.reccomplex.gui.editstructure.transformers.TableDataSourceBTNatural;
 import ivorius.reccomplex.gui.table.*;
 import ivorius.reccomplex.structures.generic.WeightedBlockState;
+import ivorius.reccomplex.utils.BlockState;
+import ivorius.reccomplex.utils.BlockStates;
 import ivorius.reccomplex.utils.IvTranslations;
 import ivorius.reccomplex.utils.scale.Scales;
 import net.minecraft.block.Block;
@@ -78,13 +80,13 @@ public class TableDataSourceWeightedBlockState extends TableDataSourceSegmented 
         {
             if (index == 0)
             {
-                TableCellString cell = TableDataSourceBTNatural.elementForBlock("block", weightedBlockState.block);
+                TableCellString cell = TableDataSourceBTNatural.elementForBlock("block", weightedBlockState.state.getBlock());
                 cell.addPropertyListener(this);
                 return new TableElementCell("Block", cell);
             }
             else if (index == 1)
             {
-                TableCellInteger cell = new TableCellInteger("metadata", weightedBlockState.metadata, 0, 15);
+                TableCellInteger cell = new TableCellInteger("metadata", BlockStates.getMetadata(weightedBlockState.state), 0, 15);
                 cell.addPropertyListener(this);
                 return new TableElementCell("Metadata", cell);
             }
@@ -110,12 +112,12 @@ public class TableDataSourceWeightedBlockState extends TableDataSourceSegmented 
         }
         else if ("block".equals(cell.getID()))
         {
-            weightedBlockState.block = (Block) Block.blockRegistry.getObject(cell.getPropertyValue());
+            weightedBlockState.state = BlockStates.fromMetadata((Block) Block.blockRegistry.getObject(cell.getPropertyValue()), BlockStates.getMetadata(weightedBlockState.state));
             TableDataSourceBTNatural.setStateForBlockTextfield(((TableCellString) cell));
         }
         else if ("metadata".equals(cell.getID()))
         {
-            weightedBlockState.metadata = (int) cell.getPropertyValue();
+            weightedBlockState.state = weightedBlockState.state.with((int) cell.getPropertyValue());
         }
         else if ("tileEntityInfo".equals(cell.getID()))
         {

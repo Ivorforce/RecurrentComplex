@@ -9,6 +9,8 @@ import ivorius.ivtoolkit.blocks.BlockArea;
 import ivorius.ivtoolkit.blocks.BlockCoord;
 import ivorius.reccomplex.RCConfig;
 import ivorius.reccomplex.entities.StructureEntityInfo;
+import ivorius.reccomplex.utils.BlockState;
+import ivorius.reccomplex.utils.BlockStates;
 import ivorius.reccomplex.utils.ServerTranslations;
 import net.minecraft.block.Block;
 import net.minecraft.command.ICommandSender;
@@ -18,6 +20,8 @@ import net.minecraft.world.World;
 
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 /**
  * Created by lukas on 09.06.14.
@@ -44,25 +48,22 @@ public class CommandSelectReplace extends CommandSelectModify
             World world = player.getEntityWorld();
 
             Block src = getBlockByText(player, args[0]);
-            Block dst = getBlockByText(player, args[1]);
             int[] srcMeta = args.length >= 3 ? getMetadatas(args[2]) : new int[]{0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15};
-            int[] dstMeta = args.length >= 4 ? getMetadatas(args[3]) : new int[]{0};
+
+            Block dstBlock = getBlockByText(player, args[1]);
+            int[] dstMeta = args.length >= 4 ? getMetadatas(args[1]) : new int[]{0};
+            List<BlockState> dst = IntStream.of(dstMeta).mapToObj(i -> BlockStates.fromMetadata(dstBlock, i)).collect(Collectors.toList());
 
             for (BlockCoord coord : new BlockArea(point1, point2))
             {
-                Block block = world.getBlock(coord.x, coord.y, coord.z);
-                int meta = world.getBlockMetadata(coord.x, coord.y, coord.z);
+                BlockState prev = BlockStates.at(world, coord);
 
-                boolean correctMeta = false;
-                for (int aMeta : srcMeta)
-                {
-                    if (aMeta == meta)
-                        correctMeta = true;
-                }
+                boolean correctMeta = IntStream.of(dstMeta).anyMatch(i -> i == BlockStates.getMetadata(prev));
 
-                if (correctMeta && src == block)
+                if (correctMeta && src == prev.getBlock())
                 {
-                    world.setBlock(coord.x, coord.y, coord.z, dst, dstMeta[player.getRNG().nextInt(dstMeta.length)], 3);
+                    BlockState state = dst.get(player.getRNG().nextInt(dst.size()));
+                    world.setBlock(coord.x, coord.y, coord.z, state.getBlock(), BlockStates.getMetadata(state), 3);
                 }
             }
         }

@@ -19,6 +19,7 @@ import ivorius.reccomplex.structures.StructureLoadContext;
 import ivorius.reccomplex.structures.StructurePrepareContext;
 import ivorius.reccomplex.structures.StructureSpawnContext;
 import ivorius.reccomplex.structures.generic.matchers.BlockMatcher;
+import ivorius.reccomplex.utils.BlockState;
 import ivorius.reccomplex.utils.NBTNone;
 import ivorius.reccomplex.utils.NBTStorable;
 import net.minecraft.block.Block;
@@ -46,9 +47,9 @@ public class TransformerNegativeSpace implements Transformer<NBTNone>
     }
 
     @Override
-    public boolean skipGeneration(NBTNone instanceData, Block block, int metadata)
+    public boolean skipGeneration(NBTNone instanceData, BlockState state)
     {
-        return sourceMatcher.apply(new BlockMatcher.BlockFragment(block, metadata));
+        return sourceMatcher.apply(state);
     }
 
     @Override

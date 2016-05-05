@@ -13,6 +13,7 @@ import ivorius.reccomplex.entities.StructureEntityInfo;
 import ivorius.reccomplex.structures.schematics.SchematicFile;
 import ivorius.reccomplex.structures.schematics.SchematicLoader;
 import ivorius.reccomplex.structures.StructureRegistry;
+import ivorius.reccomplex.utils.BlockStates;
 import ivorius.reccomplex.utils.ServerTranslations;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.CommandException;
@@ -105,8 +106,7 @@ public class CommandExportSchematic extends CommandBase
         for (BlockCoord coord : worldData.blockCollection)
         {
             int index = schematicFile.getBlockIndex(coord.x, coord.y, coord.z);
-            schematicFile.blocks[index] = worldData.blockCollection.getBlock(coord);
-            schematicFile.metadatas[index] = worldData.blockCollection.getMetadata(coord);
+            schematicFile.blockStates[index] = BlockStates.at(worldData.blockCollection, coord);
         }
 
         for (TileEntity tileEntity : worldData.tileEntities)

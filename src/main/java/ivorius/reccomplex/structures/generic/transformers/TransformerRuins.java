@@ -20,6 +20,8 @@ import ivorius.reccomplex.random.BlurredValueField;
 import ivorius.reccomplex.structures.StructureLoadContext;
 import ivorius.reccomplex.structures.StructurePrepareContext;
 import ivorius.reccomplex.structures.StructureSpawnContext;
+import ivorius.reccomplex.utils.BlockState;
+import ivorius.reccomplex.utils.BlockStates;
 import ivorius.reccomplex.utils.NBTStorable;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
@@ -70,14 +72,14 @@ public class TransformerRuins implements Transformer<TransformerRuins.InstanceDa
         this.vineGrowth = vineGrowth;
     }
 
-    private static boolean skipBlock(Collection<Pair<Transformer, NBTStorable>> transformers, final Block block, final int meta)
+    private static boolean skipBlock(Collection<Pair<Transformer, NBTStorable>> transformers, final BlockState state)
     {
-        return transformers.stream().anyMatch(input -> input.getLeft().skipGeneration(input.getRight(), block, meta));
+        return transformers.stream().anyMatch(input -> input.getLeft().skipGeneration(input.getRight(), state));
     }
 
-    private static int getPass(Block block, int metadata)
+    private static int getPass(BlockState state)
     {
-        return (block.isNormalCube() || block.getMaterial() == Material.air) ? 0 : 1;
+        return (state.getBlock().isNormalCube() || state.getBlock().getMaterial() == Material.air) ? 0 : 1;
     }
 
     public static void setBlockToAirClean(World world, BlockCoord blockCoord)
@@ -123,7 +125,7 @@ public class TransformerRuins implements Transformer<TransformerRuins.InstanceDa
     }
 
     @Override
-    public boolean skipGeneration(InstanceData instanceData, Block block, int metadata)
+    public boolean skipGeneration(InstanceData instanceData, BlockState state)
     {
         return false;
     }
@@ -159,10 +161,9 @@ public class TransformerRuins implements Transformer<TransformerRuins.InstanceDa
 
                         if (context.includes(worldCoord))
                         {
-                            Block block = blockCollection.getBlock(sourceCoord);
-                            int meta = blockCollection.getMetadata(sourceCoord);
+                            BlockState state = BlockStates.at(blockCollection, sourceCoord);
 
-                            if (getPass(block, meta) == pass && !skipBlock(transformers, block, meta))
+                            if (getPass(state) == pass && !skipBlock(transformers, state))
                                 setBlockToAirClean(context.world, worldCoord);
                         }
                     }
@@ -179,11 +180,10 @@ public class TransformerRuins implements Transformer<TransformerRuins.InstanceDa
 
                 if (context.includes(worldCoord))
                 {
-                    Block block = worldCoord.getBlock(context.world);
-                    int meta = worldCoord.getMetadata(context.world);
+                    BlockState state = BlockStates.at(context.world, worldCoord);
 
-                    if (!skipBlock(transformers, block, meta))
-                        decayBlock(context.world, context.random, block, meta, worldCoord);
+                    if (!skipBlock(transformers, state))
+                        decayBlock(context.world, context.random, state, worldCoord);
                 }
             }
         }
@@ -191,31 +191,27 @@ public class TransformerRuins implements Transformer<TransformerRuins.InstanceDa
         RecurrentComplex.forgeEventHandler.disabledTileDropAreas.remove(dropAreaBB);
     }
 
-    public void decayBlock(World world, Random random, Block block, int meta, BlockCoord coord)
+    public void decayBlock(World world, Random random, BlockState state, BlockCoord coord)
     {
-        Block newBlock = block;
-        int newMeta = meta;
+        BlockState newState = state;
 
         if (random.nextFloat() < blockErosion)
         {
-            if (newBlock == Blocks.stonebrick && newMeta == 0)
-                newMeta = 2;
-            else if (newBlock == Blocks.sandstone && (newMeta == 1 || newMeta == 2))
-                newMeta = 0;
+            if (newState.getBlock() == Blocks.stonebrick && BlockStates.getMetadata(newState) == 0)
+                newState = BlockStates.fromMetadata(Blocks.stonebrick, 2);
+            else if (newState.getBlock() == Blocks.sandstone && (BlockStates.getMetadata(newState) == 1 || BlockStates.getMetadata(newState) == 2))
+                newState = BlockStates.defaultState(Blocks.sandstone);
         }
 
         if (random.nextFloat() < vineGrowth)
         {
-            if (newBlock == Blocks.stonebrick && (newMeta == 2 || newMeta == 0))
-                newMeta = 1;
-            else if (newBlock == Blocks.cobblestone)
-            {
-                newBlock = Blocks.mossy_cobblestone;
-                newMeta = 0;
-            }
-            else if (newBlock == Blocks.cobblestone_wall && newMeta == 0)
-                newMeta = 1;
-            else if (newBlock == Blocks.air)
+            if (newState.getBlock() == Blocks.stonebrick && (BlockStates.getMetadata(newState) == 2 || BlockStates.getMetadata(newState) == 0))
+                newState = BlockStates.fromMetadata(Blocks.stonebrick, 1);
+            else if (newState.getBlock() == Blocks.cobblestone)
+                newState = BlockStates.defaultState(Blocks.mossy_cobblestone);
+            else if (newState.getBlock() == Blocks.cobblestone_wall && BlockStates.getMetadata(newState) == 0)
+                newState = BlockStates.fromMetadata(Blocks.cobblestone_wall, 1);
+            else if (newState.getBlock() == Blocks.air)
             {
                 ForgeDirection[] directions = Directions.HORIZONTAL.clone();
                 shuffleArray(directions, random);
@@ -224,14 +220,13 @@ public class TransformerRuins implements Transformer<TransformerRuins.InstanceDa
                 {
                     if (Blocks.vine.canPlaceBlockOnSide(world, coord.x, coord.y, coord.z, direction.ordinal()))
                     {
-                        newBlock = Blocks.vine;
-                        newMeta = vineMetadata(direction);
+                        newState = BlockStates.fromMetadata(Blocks.vine, vineMetadata(direction));
 
                         int length = 1 + random.nextInt(MathHelper.floor_float(vineGrowth * 10.0f + 3));
                         for (int y = 0; y < length; y++)
                         {
                             if (world.getBlock(coord.x, coord.y - y, coord.z) == Blocks.air)
-                                world.setBlock(coord.x, coord.y - y, coord.z, Blocks.vine, newMeta, 3);
+                                world.setBlock(coord.x, coord.y - y, coord.z, newState.getBlock(), BlockStates.getMetadata(newState), 3);
                             else
                                 break;
                         }
@@ -242,8 +237,8 @@ public class TransformerRuins implements Transformer<TransformerRuins.InstanceDa
             }
         }
 
-        if (block != newBlock || meta != newMeta)
-            world.setBlock(coord.x, coord.y, coord.z, newBlock, newMeta, 3);
+        if (state != newState)
+            world.setBlock(coord.x, coord.y, coord.z, newState.getBlock(), BlockStates.getMetadata(newState), 3);
     }
 
     @Override

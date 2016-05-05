@@ -38,6 +38,8 @@ import ivorius.reccomplex.structures.generic.presets.WeightedBlockStatePresets;
 import ivorius.reccomplex.structures.schematics.OperationGenerateSchematic;
 import ivorius.reccomplex.structures.OperationGenerateStructure;
 import ivorius.reccomplex.structures.StructureRegistry;
+import ivorius.reccomplex.utils.BlockState;
+import ivorius.reccomplex.utils.BlockStates;
 import ivorius.reccomplex.utils.FMLUtils;
 import ivorius.reccomplex.worldgen.CategoryLoader;
 import ivorius.reccomplex.worldgen.inventory.ItemCollectionSaveHandler;
@@ -51,6 +53,9 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.BiomeDictionary;
+
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 import static ivorius.reccomplex.RecurrentComplex.*;
 import static ivorius.reccomplex.blocks.RCBlocks.*;
@@ -311,10 +316,7 @@ public class RCRegistryHandler
     {
         WeightedBlockStatePresets.instance().register("clear");
 
-        WeightedBlockState[] wools = new WeightedBlockState[16];
-        for (int i = 0; i < wools.length; i++)
-            wools[i] = new WeightedBlockState(null, Blocks.wool, i, "");
-        WeightedBlockStatePresets.instance().register("allWool", wools);
+        WeightedBlockStatePresets.instance().register("allWool",  IntStream.range(0, 16).mapToObj(i -> new WeightedBlockState(null, BlockStates.fromMetadata(Blocks.wool, i), "")).collect(Collectors.toList()));
         WeightedBlockStatePresets.instance().setDefault("allWool");
     }
 }

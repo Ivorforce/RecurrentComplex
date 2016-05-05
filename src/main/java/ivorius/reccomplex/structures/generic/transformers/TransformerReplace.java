@@ -21,6 +21,8 @@ import ivorius.reccomplex.structures.StructureSpawnContext;
 import ivorius.reccomplex.structures.generic.WeightedBlockState;
 import ivorius.reccomplex.structures.generic.matchers.BlockMatcher;
 import ivorius.reccomplex.structures.generic.presets.WeightedBlockStatePresets;
+import ivorius.reccomplex.utils.BlockState;
+import ivorius.reccomplex.utils.BlockStates;
 import ivorius.reccomplex.utils.NBTNone;
 import ivorius.reccomplex.utils.PresettedList;
 import net.minecraft.block.Block;
@@ -92,19 +94,19 @@ public class TransformerReplace extends TransformerSingleBlock<NBTNone>
     }
 
     @Override
-    public boolean matches(NBTNone instanceData, Block block, int metadata)
+    public boolean matches(NBTNone instanceData, BlockState state)
     {
-        return sourceMatcher.apply(new BlockMatcher.BlockFragment(block, metadata));
+        return sourceMatcher.apply(state);
     }
 
     @Override
-    public void transformBlock(NBTNone instanceData, Phase phase, StructureSpawnContext context, BlockCoord coord, Block sourceBlock, int sourceMetadata)
+    public void transformBlock(NBTNone instanceData, Phase phase, StructureSpawnContext context, BlockCoord coord, BlockState sourceState)
     {
         WeightedBlockState blockState;
         if (destination.list.size() > 0)
             blockState = WeightedSelector.selectItem(context.random, destination.list);
         else
-            blockState = new WeightedBlockState(null, null, 0, "");
+            blockState = new WeightedBlockState(null, null, "");
 
         NBTTagCompound parsedTileEntityInfo = blockState.tileEntityInfo.trim().length() > 0
                 ? tryParse(blockState.tileEntityInfo)
@@ -113,14 +115,14 @@ public class TransformerReplace extends TransformerSingleBlock<NBTNone>
         setBlockWith(context, coord, context.world, blockState, parsedTileEntityInfo);
     }
 
-    public static void setBlockWith(StructureSpawnContext context, BlockCoord coord, World world, WeightedBlockState blockState, NBTTagCompound parsedTileEntityInfo)
+    public static void setBlockWith(StructureSpawnContext context, BlockCoord coord, World world, WeightedBlockState entry, NBTTagCompound parsedTileEntityInfo)
     {
-        if (blockState.block != null && RecurrentComplex.specialRegistry.isSafe(blockState.block))
+        if (entry.state != null && RecurrentComplex.specialRegistry.isSafe(entry.state.getBlock()))
         {
-            context.setBlock(coord.x, coord.y, coord.z, blockState.block, blockState.metadata);
+            context.setBlock(coord.x, coord.y, coord.z, entry.state);
 
             // Behavior as in CommandSetBlock
-            if (parsedTileEntityInfo != null && blockState.block.hasTileEntity(blockState.metadata))
+            if (parsedTileEntityInfo != null && entry.state.getBlock().hasTileEntity(BlockStates.getMetadata(entry.state)))
             {
                 NBTTagCompound nbtTagCompound = positionedCopy(parsedTileEntityInfo, coord);
                 if (nbtTagCompound != null)
@@ -212,7 +214,7 @@ public class TransformerReplace extends TransformerSingleBlock<NBTNone>
 
                 transformer.destination.setToCustom();
                 for (byte b : destMeta)
-                    transformer.destination.list.add(new WeightedBlockState(null, dest, b, ""));
+                    transformer.destination.list.add(new WeightedBlockState(null, BlockStates.fromMetadata(dest, b), ""));
             }
 
             return transformer;

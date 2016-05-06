@@ -8,8 +8,7 @@ package ivorius.reccomplex.client.rendering;
 import ivorius.ivtoolkit.blocks.BlockCoord;
 import ivorius.ivtoolkit.rendering.grid.GridQuadCache;
 import ivorius.reccomplex.structures.schematics.SchematicFile;
-import ivorius.reccomplex.utils.BlockState;
-import net.minecraft.block.Block;
+import ivorius.reccomplex.utils.IBlockState;
 import net.minecraftforge.common.util.ForgeDirection;
 
 /**
@@ -24,7 +23,7 @@ public class SchematicQuadCache
             BlockCoord coord = input.getLeft();
             ForgeDirection direction = input.getRight();
 
-            BlockState blockState = schematic.getBlockState(coord);
+            IBlockState blockState = schematic.getBlockState(coord);
             return blockState.getBlock().isOpaqueCube() && schematic.shouldRenderSide(coord, direction)
                     ? handle
                     : null;

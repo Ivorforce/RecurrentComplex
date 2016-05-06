@@ -38,7 +38,6 @@ import ivorius.reccomplex.structures.generic.presets.WeightedBlockStatePresets;
 import ivorius.reccomplex.structures.schematics.OperationGenerateSchematic;
 import ivorius.reccomplex.structures.OperationGenerateStructure;
 import ivorius.reccomplex.structures.StructureRegistry;
-import ivorius.reccomplex.utils.BlockState;
 import ivorius.reccomplex.utils.BlockStates;
 import ivorius.reccomplex.utils.FMLUtils;
 import ivorius.reccomplex.worldgen.CategoryLoader;

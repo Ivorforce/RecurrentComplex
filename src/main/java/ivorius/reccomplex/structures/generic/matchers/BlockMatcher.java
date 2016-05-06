@@ -19,7 +19,7 @@ import java.util.List;
 /**
  * Created by lukas on 03.03.15.
  */
-public class BlockMatcher extends PrefixedTypeExpressionCache<Boolean> implements Predicate<BlockState>
+public class BlockMatcher extends PrefixedTypeExpressionCache<Boolean> implements Predicate<IBlockState>
 {
     public static final String METADATA_PREFIX = "#";
 
@@ -47,7 +47,7 @@ public class BlockMatcher extends PrefixedTypeExpressionCache<Boolean> implement
     }
 
     @Override
-    public boolean apply(final BlockState input)
+    public boolean apply(final IBlockState input)
     {
         return evaluate(input);
     }
@@ -65,7 +65,7 @@ public class BlockMatcher extends PrefixedTypeExpressionCache<Boolean> implement
         @Override
         public Boolean evaluate(String var, Object... args)
         {
-            return ((BlockState) args[0]).getBlock() == registry.blockFromID(var);
+            return ((IBlockState) args[0]).getBlock() == registry.blockFromID(var);
         }
 
         @Override
@@ -111,7 +111,7 @@ public class BlockMatcher extends PrefixedTypeExpressionCache<Boolean> implement
         public Boolean evaluate(String var, Object... args)
         {
             IntegerRange range = parseMetadataExp(var);
-            int metadata = BlockStates.getMetadata(((BlockState) args[0]));
+            int metadata = BlockStates.getMetadata(((IBlockState) args[0]));
 
             return range != null && metadata >= range.min && metadata <= range.max;
         }

@@ -22,7 +22,7 @@ import ivorius.reccomplex.structures.StructureSpawnContext;
 import ivorius.reccomplex.structures.generic.WeightedBlockState;
 import ivorius.reccomplex.structures.generic.matchers.BlockMatcher;
 import ivorius.reccomplex.structures.generic.presets.WeightedBlockStatePresets;
-import ivorius.reccomplex.utils.BlockState;
+import ivorius.reccomplex.utils.IBlockState;
 import ivorius.reccomplex.utils.BlockStates;
 import ivorius.reccomplex.utils.NBTStorable;
 import ivorius.reccomplex.utils.PresettedList;
@@ -63,13 +63,13 @@ public class TransformerReplaceAll extends TransformerSingleBlock<TransformerRep
     }
 
     @Override
-    public boolean matches(InstanceData instanceData, BlockState state)
+    public boolean matches(InstanceData instanceData, IBlockState state)
     {
         return sourceMatcher.apply(state);
     }
 
     @Override
-    public void transformBlock(InstanceData instanceData, Phase phase, StructureSpawnContext context, BlockCoord coord, BlockState sourceState)
+    public void transformBlock(InstanceData instanceData, Phase phase, StructureSpawnContext context, BlockCoord coord, IBlockState sourceState)
     {
         TransformerReplace.setBlockWith(context, coord, context.world, instanceData.blockState, instanceData.tileEntityInfo);
     }

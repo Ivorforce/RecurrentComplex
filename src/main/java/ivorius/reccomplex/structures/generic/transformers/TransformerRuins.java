@@ -20,10 +20,9 @@ import ivorius.reccomplex.random.BlurredValueField;
 import ivorius.reccomplex.structures.StructureLoadContext;
 import ivorius.reccomplex.structures.StructurePrepareContext;
 import ivorius.reccomplex.structures.StructureSpawnContext;
-import ivorius.reccomplex.utils.BlockState;
+import ivorius.reccomplex.utils.IBlockState;
 import ivorius.reccomplex.utils.BlockStates;
 import ivorius.reccomplex.utils.NBTStorable;
-import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.init.Blocks;
 import net.minecraft.inventory.IInventory;
@@ -72,12 +71,12 @@ public class TransformerRuins implements Transformer<TransformerRuins.InstanceDa
         this.vineGrowth = vineGrowth;
     }
 
-    private static boolean skipBlock(Collection<Pair<Transformer, NBTStorable>> transformers, final BlockState state)
+    private static boolean skipBlock(Collection<Pair<Transformer, NBTStorable>> transformers, final IBlockState state)
     {
         return transformers.stream().anyMatch(input -> input.getLeft().skipGeneration(input.getRight(), state));
     }
 
-    private static int getPass(BlockState state)
+    private static int getPass(IBlockState state)
     {
         return (state.getBlock().isNormalCube() || state.getBlock().getMaterial() == Material.air) ? 0 : 1;
     }
@@ -125,7 +124,7 @@ public class TransformerRuins implements Transformer<TransformerRuins.InstanceDa
     }
 
     @Override
-    public boolean skipGeneration(InstanceData instanceData, BlockState state)
+    public boolean skipGeneration(InstanceData instanceData, IBlockState state)
     {
         return false;
     }
@@ -161,7 +160,7 @@ public class TransformerRuins implements Transformer<TransformerRuins.InstanceDa
 
                         if (context.includes(worldCoord))
                         {
-                            BlockState state = BlockStates.at(blockCollection, sourceCoord);
+                            IBlockState state = BlockStates.at(blockCollection, sourceCoord);
 
                             if (getPass(state) == pass && !skipBlock(transformers, state))
                                 setBlockToAirClean(context.world, worldCoord);
@@ -180,7 +179,7 @@ public class TransformerRuins implements Transformer<TransformerRuins.InstanceDa
 
                 if (context.includes(worldCoord))
                 {
-                    BlockState state = BlockStates.at(context.world, worldCoord);
+                    IBlockState state = BlockStates.at(context.world, worldCoord);
 
                     if (!skipBlock(transformers, state))
                         decayBlock(context.world, context.random, state, worldCoord);
@@ -191,9 +190,9 @@ public class TransformerRuins implements Transformer<TransformerRuins.InstanceDa
         RecurrentComplex.forgeEventHandler.disabledTileDropAreas.remove(dropAreaBB);
     }
 
-    public void decayBlock(World world, Random random, BlockState state, BlockCoord coord)
+    public void decayBlock(World world, Random random, IBlockState state, BlockCoord coord)
     {
-        BlockState newState = state;
+        IBlockState newState = state;
 
         if (random.nextFloat() < blockErosion)
         {

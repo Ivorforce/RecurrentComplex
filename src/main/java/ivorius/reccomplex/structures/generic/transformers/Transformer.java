@@ -12,9 +12,8 @@ import ivorius.reccomplex.gui.table.TableNavigator;
 import ivorius.reccomplex.structures.StructureLoadContext;
 import ivorius.reccomplex.structures.StructurePrepareContext;
 import ivorius.reccomplex.structures.StructureSpawnContext;
-import ivorius.reccomplex.utils.BlockState;
+import ivorius.reccomplex.utils.IBlockState;
 import ivorius.reccomplex.utils.NBTStorable;
-import net.minecraft.block.Block;
 import net.minecraft.nbt.NBTBase;
 import org.apache.commons.lang3.tuple.Pair;
 
@@ -33,7 +32,7 @@ public interface Transformer<S extends NBTStorable>
 
     S loadInstanceData(StructureLoadContext context, NBTBase nbt);
 
-    boolean skipGeneration(S instanceData, BlockState state);
+    boolean skipGeneration(S instanceData, IBlockState state);
 
     void transform(S instanceData, Phase phase, StructureSpawnContext context, IvWorldData worldData, List<Pair<Transformer, NBTStorable>> transformers);
 

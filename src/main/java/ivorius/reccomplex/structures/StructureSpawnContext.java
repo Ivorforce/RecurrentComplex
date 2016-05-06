@@ -7,9 +7,8 @@ package ivorius.reccomplex.structures;
 
 import ivorius.ivtoolkit.blocks.BlockCoord;
 import ivorius.ivtoolkit.math.AxisAlignedTransform2D;
-import ivorius.reccomplex.utils.BlockState;
+import ivorius.reccomplex.utils.IBlockState;
 import ivorius.reccomplex.utils.BlockStates;
-import net.minecraft.block.Block;
 import net.minecraft.util.MathHelper;
 import net.minecraft.world.World;
 import net.minecraft.world.gen.structure.StructureBoundingBox;
@@ -99,7 +98,7 @@ public class StructureSpawnContext
         return new BlockCoord(boundingBox.minX, boundingBox.minY, boundingBox.minZ);
     }
 
-    public boolean setBlock(BlockCoord coord, BlockState state)
+    public boolean setBlock(BlockCoord coord, IBlockState state)
     {
         if (includes(coord.x, coord.y, coord.z))
         {
@@ -110,7 +109,7 @@ public class StructureSpawnContext
         return false; // world.setBlock returns false on 'no change'
     }
 
-    public boolean setBlock(int x, int y, int z, BlockState state)
+    public boolean setBlock(int x, int y, int z, IBlockState state)
     {
         if (includes(x, y, z))
         {

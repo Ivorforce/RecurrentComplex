@@ -18,7 +18,7 @@ import ivorius.reccomplex.structures.StructureLoadContext;
 import ivorius.reccomplex.structures.StructurePrepareContext;
 import ivorius.reccomplex.structures.StructureSpawnContext;
 import ivorius.reccomplex.structures.generic.matchers.BlockMatcher;
-import ivorius.reccomplex.utils.BlockState;
+import ivorius.reccomplex.utils.IBlockState;
 import ivorius.reccomplex.utils.BlockStates;
 import ivorius.reccomplex.utils.NBTNone;
 import net.minecraft.block.Block;
@@ -36,27 +36,27 @@ public class TransformerPillar extends TransformerSingleBlock<NBTNone>
 {
     public BlockMatcher sourceMatcher;
 
-    public BlockState destState;
+    public IBlockState destState;
 
     public TransformerPillar()
     {
         this(BlockMatcher.of(RecurrentComplex.specialRegistry, Blocks.stone, 0), BlockStates.defaultState(Blocks.stone));
     }
 
-    public TransformerPillar(String sourceExpression, BlockState destState)
+    public TransformerPillar(String sourceExpression, IBlockState destState)
     {
         this.sourceMatcher = new BlockMatcher(RecurrentComplex.specialRegistry, sourceExpression);
         this.destState = destState;
     }
 
     @Override
-    public boolean matches(NBTNone instanceData, BlockState state)
+    public boolean matches(NBTNone instanceData, IBlockState state)
     {
         return sourceMatcher.apply(state);
     }
 
     @Override
-    public void transformBlock(NBTNone instanceData, Phase phase, StructureSpawnContext context, BlockCoord coord, BlockState sourceState)
+    public void transformBlock(NBTNone instanceData, Phase phase, StructureSpawnContext context, BlockCoord coord, IBlockState sourceState)
     {
         if (RecurrentComplex.specialRegistry.isSafe(destState.getBlock()))
         {
@@ -127,7 +127,7 @@ public class TransformerPillar extends TransformerSingleBlock<NBTNone>
 
             String destBlock = JsonUtils.getJsonObjectStringFieldValue(jsonObject, "dest");
             Block dest = registry.blockFromID(destBlock);
-            BlockState destState = dest != null ? BlockStates.fromMetadata(dest, JsonUtils.getJsonObjectIntegerFieldValue(jsonObject, "destMetadata")) : null;
+            IBlockState destState = dest != null ? BlockStates.fromMetadata(dest, JsonUtils.getJsonObjectIntegerFieldValue(jsonObject, "destMetadata")) : null;
 
             return new TransformerPillar(expression, destState);
         }

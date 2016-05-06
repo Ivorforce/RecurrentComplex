@@ -9,7 +9,7 @@ import ivorius.ivtoolkit.blocks.BlockCoord;
 import ivorius.ivtoolkit.blocks.IvBlockCollection;
 import ivorius.ivtoolkit.tools.IvWorldData;
 import ivorius.reccomplex.structures.StructureSpawnContext;
-import ivorius.reccomplex.utils.BlockState;
+import ivorius.reccomplex.utils.IBlockState;
 import ivorius.reccomplex.utils.BlockStates;
 import ivorius.reccomplex.utils.NBTStorable;
 import org.apache.commons.lang3.tuple.Pair;
@@ -22,7 +22,7 @@ import java.util.List;
 public abstract class TransformerSingleBlock<S extends NBTStorable> implements Transformer<S>
 {
     @Override
-    public boolean skipGeneration(S instanceData, BlockState state)
+    public boolean skipGeneration(S instanceData, IBlockState state)
     {
         return matches(instanceData, state);
     }
@@ -40,7 +40,7 @@ public abstract class TransformerSingleBlock<S extends NBTStorable> implements T
 
             if (context.includes(worldCoord))
             {
-                BlockState state = BlockStates.at(blockCollection, sourceCoord);
+                IBlockState state = BlockStates.at(blockCollection, sourceCoord);
 
                 if (matches(instanceData, state))
                     transformBlock(instanceData, Phase.BEFORE, context, worldCoord, state);
@@ -48,7 +48,7 @@ public abstract class TransformerSingleBlock<S extends NBTStorable> implements T
         }
     }
 
-    public abstract boolean matches(S instanceData, BlockState state);
+    public abstract boolean matches(S instanceData, IBlockState state);
 
-    public abstract void transformBlock(S instanceData, Phase phase, StructureSpawnContext context, BlockCoord coord, BlockState sourceState);
+    public abstract void transformBlock(S instanceData, Phase phase, StructureSpawnContext context, BlockCoord coord, IBlockState sourceState);
 }

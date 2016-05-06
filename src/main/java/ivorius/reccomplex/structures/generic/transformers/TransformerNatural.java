@@ -20,7 +20,7 @@ import ivorius.reccomplex.structures.StructureLoadContext;
 import ivorius.reccomplex.structures.StructurePrepareContext;
 import ivorius.reccomplex.structures.StructureSpawnContext;
 import ivorius.reccomplex.structures.generic.matchers.BlockMatcher;
-import ivorius.reccomplex.utils.BlockState;
+import ivorius.reccomplex.utils.IBlockState;
 import ivorius.reccomplex.utils.BlockStates;
 import ivorius.reccomplex.utils.NBTNone;
 import net.minecraft.block.Block;
@@ -60,13 +60,13 @@ public class TransformerNatural extends TransformerSingleBlock<NBTNone>
     }
 
     @Override
-    public boolean matches(NBTNone instanceData, BlockState state)
+    public boolean matches(NBTNone instanceData, IBlockState state)
     {
         return sourceMatcher.apply(state);
     }
 
     @Override
-    public void transformBlock(NBTNone instanceData, Phase phase, StructureSpawnContext context, BlockCoord coord, BlockState sourceState)
+    public void transformBlock(NBTNone instanceData, Phase phase, StructureSpawnContext context, BlockCoord coord, IBlockState sourceState)
     {
         // TODO Fix for partial generation
         World world = context.world;

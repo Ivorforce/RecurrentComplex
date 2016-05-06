@@ -10,7 +10,7 @@ import ivorius.ivtoolkit.tools.MCRegistry;
 import ivorius.reccomplex.RecurrentComplex;
 import ivorius.reccomplex.json.JsonUtils;
 import ivorius.ivtoolkit.random.WeightedSelector;
-import ivorius.reccomplex.utils.BlockState;
+import ivorius.reccomplex.utils.IBlockState;
 import ivorius.reccomplex.utils.BlockStates;
 import net.minecraft.block.Block;
 import net.minecraft.nbt.NBTTagCompound;
@@ -26,11 +26,11 @@ public class WeightedBlockState implements WeightedSelector.Item
 
     public Double weight;
 
-    public BlockState state;
+    public IBlockState state;
 
     public String tileEntityInfo;
 
-    public WeightedBlockState(Double weight, BlockState state, String tileEntityInfo)
+    public WeightedBlockState(Double weight, IBlockState state, String tileEntityInfo)
     {
         this.weight = weight;
         this.state = state;
@@ -93,7 +93,7 @@ public class WeightedBlockState implements WeightedSelector.Item
 
             Double weight = jsonObject.has("weight") ? JsonUtils.getJsonObjectDoubleFieldValue(jsonObject, "weight") : null;
 
-            BlockState state = BlockStates.fromMetadata(registry.blockFromID(JsonUtils.getJsonObjectStringFieldValueOrDefault(jsonObject, "block", "air")), JsonUtils.getJsonObjectIntegerFieldValueOrDefault(jsonObject, "metadata", 0));
+            IBlockState state = BlockStates.fromMetadata(registry.blockFromID(JsonUtils.getJsonObjectStringFieldValueOrDefault(jsonObject, "block", "air")), JsonUtils.getJsonObjectIntegerFieldValueOrDefault(jsonObject, "metadata", 0));
 
             String tileEntityInfo = JsonUtils.getJsonObjectStringFieldValueOrDefault(jsonObject, "tileEntityInfo", "");
 

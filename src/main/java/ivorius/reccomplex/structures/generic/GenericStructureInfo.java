@@ -149,7 +149,7 @@ public class GenericStructureInfo implements StructureInfo<GenericStructureInfo.
         {
             for (BlockCoord sourceCoord : blockCollection)
             {
-                BlockState state = BlockStates.at(blockCollection, sourceCoord);
+                IBlockState state = BlockStates.at(blockCollection, sourceCoord);
 
                 BlockCoord worldPos = context.transform.apply(sourceCoord, areaSize).add(origin);
                 if (context.includes(worldPos) && RecurrentComplex.specialRegistry.isSafe(state.getBlock()))
@@ -254,7 +254,7 @@ public class GenericStructureInfo implements StructureInfo<GenericStructureInfo.
         return instanceData;
     }
 
-    private boolean skips(List<Pair<Transformer, NBTStorable>> transformers, final BlockState state)
+    private boolean skips(List<Pair<Transformer, NBTStorable>> transformers, final IBlockState state)
     {
         return transformers.stream().anyMatch(input -> input.getLeft().skipGeneration(input.getRight(), state));
     }
@@ -282,7 +282,7 @@ public class GenericStructureInfo implements StructureInfo<GenericStructureInfo.
         return null;
     }
 
-    private int getPass(BlockState state)
+    private int getPass(IBlockState state)
     {
         return (state.getBlock().isNormalCube() || state.getBlock().getMaterial() == Material.air) ? 0 : 1;
     }

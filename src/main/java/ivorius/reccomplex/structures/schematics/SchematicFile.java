@@ -8,7 +8,7 @@ package ivorius.reccomplex.structures.schematics;
 import ivorius.ivtoolkit.blocks.BlockArea;
 import ivorius.ivtoolkit.blocks.BlockCoord;
 import ivorius.ivtoolkit.tools.IvWorldData;
-import ivorius.reccomplex.utils.BlockState;
+import ivorius.reccomplex.utils.IBlockState;
 import ivorius.reccomplex.utils.BlockStates;
 import ivorius.reccomplex.utils.IvStreams;
 import ivorius.reccomplex.utils.RCAccessorEntity;
@@ -36,7 +36,7 @@ public class SchematicFile
     public final List<NBTTagCompound> tileEntityCompounds = new ArrayList<>();
     public short width, height, length;
     public Short weOriginX, weOriginY, weOriginZ;
-    public BlockState[] blockStates;
+    public IBlockState[] blockStates;
 
     public SchematicFile()
     {
@@ -47,7 +47,7 @@ public class SchematicFile
         this.width = width;
         this.height = height;
         this.length = length;
-        this.blockStates = new BlockState[width * height * length];
+        this.blockStates = new IBlockState[width * height * length];
     }
 
     public SchematicFile(NBTTagCompound tagCompound) throws UnsupportedSchematicFormatException
@@ -75,7 +75,7 @@ public class SchematicFile
                 ? new SchematicMapping(tagCompound.getCompoundTag(SchematicMapping.COMPOUND_KEY))
                 : null;
 
-        this.blockStates = new BlockState[blockIDs.length];
+        this.blockStates = new IBlockState[blockIDs.length];
         for (int i = 0; i < blockIDs.length; i++)
         {
             int blockID = blockIDs[i] & 0xff;
@@ -106,7 +106,7 @@ public class SchematicFile
         return x + (y * length + z) * width;
     }
 
-    public BlockState getBlockState(BlockCoord coord)
+    public IBlockState getBlockState(BlockCoord coord)
     {
         if (coord.x < 0 || coord.y < 0 || coord.z < 0 || coord.x >= width || coord.y >= height || coord.z >= length)
             return BlockStates.defaultState(Blocks.air);
@@ -118,7 +118,7 @@ public class SchematicFile
     {
         BlockCoord sideCoord = coord.add(side.offsetX, side.offsetY, side.offsetZ);
 
-        BlockState blockState = getBlockState(sideCoord);
+        IBlockState blockState = getBlockState(sideCoord);
         return !blockState.getBlock().isOpaqueCube();
     }
 
@@ -138,7 +138,7 @@ public class SchematicFile
             for (BlockCoord srcCoord : blockArea)
             {
                 int index = getBlockIndex(srcCoord.x, srcCoord.y, srcCoord.z);
-                BlockState blockState = blockStates[index];
+                IBlockState blockState = blockStates[index];
 
                 if (blockState != null && getPass(blockState) == pass)
                 {
@@ -172,7 +172,7 @@ public class SchematicFile
         }
     }
 
-    private int getPass(BlockState blockState)
+    private int getPass(IBlockState blockState)
     {
         return (blockState.getBlock().isNormalCube() || blockState.getBlock().getMaterial() == Material.air) ? 0 : 1;
     }

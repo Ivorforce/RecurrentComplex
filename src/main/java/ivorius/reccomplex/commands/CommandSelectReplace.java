@@ -9,17 +9,15 @@ import ivorius.ivtoolkit.blocks.BlockArea;
 import ivorius.ivtoolkit.blocks.BlockCoord;
 import ivorius.reccomplex.RCConfig;
 import ivorius.reccomplex.entities.StructureEntityInfo;
-import ivorius.reccomplex.utils.BlockState;
+import ivorius.reccomplex.utils.IBlockState;
 import ivorius.reccomplex.utils.BlockStates;
 import ivorius.reccomplex.utils.ServerTranslations;
 import net.minecraft.block.Block;
 import net.minecraft.command.ICommandSender;
-import net.minecraft.command.WrongUsageException;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.world.World;
 
 import java.util.List;
-import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
@@ -52,17 +50,17 @@ public class CommandSelectReplace extends CommandSelectModify
 
             Block dstBlock = getBlockByText(player, args[1]);
             int[] dstMeta = args.length >= 4 ? getMetadatas(args[1]) : new int[]{0};
-            List<BlockState> dst = IntStream.of(dstMeta).mapToObj(i -> BlockStates.fromMetadata(dstBlock, i)).collect(Collectors.toList());
+            List<IBlockState> dst = IntStream.of(dstMeta).mapToObj(i -> BlockStates.fromMetadata(dstBlock, i)).collect(Collectors.toList());
 
             for (BlockCoord coord : new BlockArea(point1, point2))
             {
-                BlockState prev = BlockStates.at(world, coord);
+                IBlockState prev = BlockStates.at(world, coord);
 
                 boolean correctMeta = IntStream.of(dstMeta).anyMatch(i -> i == BlockStates.getMetadata(prev));
 
                 if (correctMeta && src == prev.getBlock())
                 {
-                    BlockState state = dst.get(player.getRNG().nextInt(dst.size()));
+                    IBlockState state = dst.get(player.getRNG().nextInt(dst.size()));
                     world.setBlock(coord.x, coord.y, coord.z, state.getBlock(), BlockStates.getMetadata(state), 3);
                 }
             }

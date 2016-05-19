@@ -8,9 +8,12 @@ package ivorius.reccomplex.blocks;
 import ivorius.reccomplex.scripts.world.WorldScript;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.BlockPos;
+import net.minecraft.util.EnumFacing;
 import net.minecraft.world.World;
 
 /**
@@ -24,15 +27,15 @@ public class BlockMazeGenerator extends Block
     }
 
     @Override
-    public boolean onBlockActivated(World world, int x, int y, int z, EntityPlayer player, int side, float hitX, float hitY, float hitZ)
+    public boolean onBlockActivated(World worldIn, BlockPos pos, IBlockState state, EntityPlayer playerIn, EnumFacing side, float hitX, float hitY, float hitZ)
     {
-        if (!world.isRemote && player instanceof EntityPlayerMP && player.canCommandSenderUseCommand(2, ""))
+        if (!worldIn.isRemote && playerIn instanceof EntityPlayerMP && playerIn.canCommandSenderUseCommand(2, ""))
         {
-            TileEntity tileEntity = world.getTileEntity(x, y, z);
+            TileEntity tileEntity = worldIn.getTileEntity(pos);
 
             WorldScript script = ((TileEntityMazeGenerator) tileEntity).script;
-            world.setBlock(x, y, z, RCBlocks.spawnScript);
-            ((TileEntitySpawnScript) world.getTileEntity(x, y, z)).script.scripts.add(script);
+            worldIn.setBlockState(pos, RCBlocks.spawnScript.getDefaultState());
+            ((TileEntitySpawnScript) worldIn.getTileEntity(pos)).script.scripts.add(script);
 
         }
 
@@ -40,13 +43,13 @@ public class BlockMazeGenerator extends Block
     }
 
     @Override
-    public boolean hasTileEntity(int metadata)
+    public boolean hasTileEntity(IBlockState state)
     {
         return true;
     }
 
     @Override
-    public TileEntity createTileEntity(World var1, int var2)
+    public TileEntity createTileEntity(World var1, IBlockState var2)
     {
         return new TileEntityMazeGenerator();
     }

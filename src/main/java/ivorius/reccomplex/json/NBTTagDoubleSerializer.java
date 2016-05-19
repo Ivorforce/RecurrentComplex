@@ -18,7 +18,7 @@ public class NBTTagDoubleSerializer implements JsonSerializer<NBTTagDouble>, Jso
     @Override
     public JsonElement serialize(NBTTagDouble src, Type typeOfSrc, JsonSerializationContext context)
     {
-        return new JsonPrimitive(src.func_150286_g());
+        return new JsonPrimitive(src.getDouble());
     }
 
     @Override

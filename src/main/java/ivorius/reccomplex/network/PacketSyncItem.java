@@ -5,7 +5,7 @@
 
 package ivorius.reccomplex.network;
 
-import cpw.mods.fml.common.network.ByteBufUtils;
+import net.minecraftforge.fml.common.network.ByteBufUtils;
 import io.netty.buffer.ByteBuf;
 import ivorius.reccomplex.items.ItemSyncable;
 import net.minecraft.item.ItemStack;

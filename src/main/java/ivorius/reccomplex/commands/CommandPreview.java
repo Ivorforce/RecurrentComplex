@@ -14,6 +14,7 @@ import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.command.WrongUsageException;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.util.BlockPos;
 import net.minecraft.util.ChatComponentTranslation;
 
 import java.util.List;
@@ -41,7 +42,7 @@ public class CommandPreview extends CommandBase
     }
 
     @Override
-    public void processCommand(ICommandSender commandSender, String[] args)
+    public void processCommand(ICommandSender commandSender, String[] args) throws CommandException
     {
         if (args.length < 1)
             throw ServerTranslations.wrongUsageException("commands.rcpreview.usage");
@@ -60,7 +61,7 @@ public class CommandPreview extends CommandBase
     }
 
     @Override
-    public List addTabCompletionOptions(ICommandSender commandSender, String[] args)
+    public List addTabCompletionOptions(ICommandSender commandSender, String[] args, BlockPos pos)
     {
         if (args.length == 1)
             return getListOfStringsMatchingLastWord(args, Operation.PreviewType.keys());

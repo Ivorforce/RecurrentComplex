@@ -5,7 +5,7 @@
 
 package ivorius.reccomplex;
 
-import cpw.mods.fml.common.event.FMLInterModComms;
+import net.minecraftforge.fml.common.event.FMLInterModComms;
 import ivorius.ivtoolkit.tools.IvFMLIntercommHandler;
 import ivorius.ivtoolkit.tools.IvNBTHelper;
 import ivorius.reccomplex.dimensions.DimensionDictionary;
@@ -164,7 +164,7 @@ public class RCCommunicationHandler extends IvFMLIntercommHandler
         {
             NBTTagCompound cmp = message.getNBTValue();
 
-            Block block = RecurrentComplex.specialRegistry.blockFromID(cmp.getString("block"));
+            Block block = RecurrentComplex.specialRegistry.blockFromID(new ResourceLocation(cmp.getString("block")));
 
             if (block != null)
             {
@@ -180,7 +180,7 @@ public class RCCommunicationHandler extends IvFMLIntercommHandler
         {
             NBTTagCompound cmp = message.getNBTValue();
 
-            Item item = RecurrentComplex.specialRegistry.itemFromID(cmp.getString("item"));
+            Item item = RecurrentComplex.specialRegistry.itemFromID(new ResourceLocation(cmp.getString("item")));
 
             if (item != null)
             {

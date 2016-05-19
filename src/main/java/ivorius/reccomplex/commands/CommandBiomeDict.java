@@ -12,10 +12,12 @@ import ivorius.reccomplex.structures.generic.matchers.BiomeMatcher;
 import ivorius.reccomplex.utils.ServerTranslations;
 import joptsimple.internal.Strings;
 import net.minecraft.command.CommandBase;
+import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.command.WrongUsageException;
 import net.minecraft.event.ClickEvent;
 import net.minecraft.event.HoverEvent;
+import net.minecraft.util.BlockPos;
 import net.minecraft.util.ChatComponentText;
 import net.minecraft.util.ChatComponentTranslation;
 import net.minecraft.util.IChatComponent;
@@ -49,7 +51,7 @@ public class CommandBiomeDict extends CommandBase
     }
 
     @Override
-    public void processCommand(ICommandSender commandSender, String[] args)
+    public void processCommand(ICommandSender commandSender, String[] args) throws CommandException
     {
         if (args.length < 2)
             throw ServerTranslations.wrongUsageException("commands.biomedict.usage");
@@ -62,7 +64,7 @@ public class CommandBiomeDict extends CommandBase
 
                 boolean didFindBiome = false;
 
-                String biomeName = func_147178_a(commandSender, args, 1).getUnformattedText();
+                String biomeName = buildString(args, 1);
 
                 for (BiomeGenBase biomeGenBase : biomes)
                 {
@@ -125,7 +127,7 @@ public class CommandBiomeDict extends CommandBase
     }
 
     @Override
-    public List addTabCompletionOptions(ICommandSender commandSender, String[] args)
+    public List addTabCompletionOptions(ICommandSender commandSender, String[] args, BlockPos pos)
     {
         if (args.length == 1)
             return getListOfStringsMatchingLastWord(args, "get", "list");

@@ -5,16 +5,22 @@
 
 package ivorius.reccomplex.client;
 
-import cpw.mods.fml.client.registry.RenderingRegistry;
 import ivorius.reccomplex.RCConfig;
 import ivorius.reccomplex.RCProxy;
 import ivorius.reccomplex.RecurrentComplex;
-import ivorius.reccomplex.client.rendering.RCBlockRendering;
-import ivorius.reccomplex.client.rendering.RenderNegativeSpace;
+import ivorius.reccomplex.blocks.RCBlocks;
+import ivorius.reccomplex.items.RCItems;
+import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.resources.model.ModelResourceLocation;
+import net.minecraft.item.Item;
+import net.minecraft.util.ResourceLocation;
 import org.lwjgl.input.Keyboard;
 
 import java.io.File;
+
+import static ivorius.reccomplex.blocks.RCBlocks.*;
+import static ivorius.reccomplex.items.RCItems.*;
 
 /**
  * Created by lukas on 24.05.14.
@@ -66,6 +72,47 @@ public class ClientProxy implements RCProxy
     @Override
     public void registerRenderers()
     {
-        RenderingRegistry.registerBlockHandler(RCBlockRendering.negativeSpaceRenderID, new RenderNegativeSpace());
+        registerItemsForDefaultRender(blockSelector, blockSelectorFloating);
+        registerItemsForDefaultRender(inventoryGenerationTag, inventoryGenerationSingleTag, inventoryGenerationComponentTag);
+        registerItemsForDefaultRender(artifactGenerationTag, bookGenerationTag);
+
+        registerTypeItemsForDefaultRender(genericSpace, genericSolid);
+        registerItemsForDefaultRender(structureGenerator, mazeGenerator, spawnCommands, spawnScript);
+    }
+
+    protected void registerTypeItemsForDefaultRender(Block... blocks)
+    {
+        for (Block block : blocks)
+            registerTypeItemForDefaultRender(block);
+    }
+
+    protected void registerItemsForDefaultRender(Block... blocks)
+    {
+        for (Block block : blocks)
+            registerItemForDefaultRender(block);
+    }
+
+    protected void registerItemsForDefaultRender(Item... items)
+    {
+        for (Item item : items)
+            registerItemForDefaultRender(item);
+    }
+
+    protected void registerItemForDefaultRender(Block block)
+    {
+        registerItemForDefaultRender(Item.getItemFromBlock(block));
+    }
+
+    protected void registerTypeItemForDefaultRender(Block block)
+    {
+        Item item = Item.getItemFromBlock(block);
+        ResourceLocation id = RecurrentComplex.mcRegistry.idFromItem(item);
+        for (int i = 0; i < 16; i++)
+            Minecraft.getMinecraft().getRenderItem().getItemModelMesher().register(item, i,  new ModelResourceLocation(String.format("%s_%d", id, i), "inventory"));
+    }
+
+    protected void registerItemForDefaultRender(Item item)
+    {
+        Minecraft.getMinecraft().getRenderItem().getItemModelMesher().register(item, 0, new ModelResourceLocation(RecurrentComplex.mcRegistry.idFromItem(item), "inventory"));
     }
 }

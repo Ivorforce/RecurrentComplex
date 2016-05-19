@@ -18,7 +18,7 @@ public class NBTTagByteSerializer implements JsonSerializer<NBTTagByte>, JsonDes
     @Override
     public JsonElement serialize(NBTTagByte src, Type typeOfSrc, JsonSerializationContext context)
     {
-        return new JsonPrimitive(src.func_150290_f());
+        return new JsonPrimitive(src.getByte());
     }
 
     @Override

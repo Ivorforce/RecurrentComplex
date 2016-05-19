@@ -5,15 +5,16 @@
 
 package ivorius.reccomplex.blocks;
 
-import ivorius.reccomplex.client.rendering.RCBlockRendering;
+import com.google.common.collect.Lists;
 import ivorius.reccomplex.blocks.materials.RCMaterials;
-import net.minecraft.block.Block;
-import net.minecraft.client.renderer.texture.IIconRegister;
+import net.minecraft.block.BlockColored;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.AxisAlignedBB;
-import net.minecraft.util.IIcon;
+import net.minecraft.util.BlockPos;
+import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 
 import java.util.List;
@@ -21,16 +22,14 @@ import java.util.List;
 /**
  * Created by lukas on 25.05.14.
  */
-public class BlockGenericSpace extends Block
+public class BlockGenericSpace extends BlockTyped
 {
-    private IIcon[] icons = new IIcon[16];
-
     public BlockGenericSpace()
     {
         super(RCMaterials.materialNegativeSpace);
 
-        float lowB = 1.0f / 16.0f * 5.5f;
-        float highB = 1.0f / 16.0f * 9.5f;
+        float lowB = 1.0f / 16.0f * 5.0f;
+        float highB = 1f - lowB;
         setBlockBounds(lowB, lowB, lowB, highB, highB, highB);
     }
 
@@ -47,46 +46,14 @@ public class BlockGenericSpace extends Block
     }
 
     @Override
-    public void dropBlockAsItemWithChance(World p_149690_1_, int p_149690_2_, int p_149690_3_, int p_149690_4_, int p_149690_5_, float p_149690_6_, int p_149690_7_)
+    public List<ItemStack> getDrops(IBlockAccess world, BlockPos pos, IBlockState state, int fortune)
     {
-
+        return Lists.newArrayList();
     }
 
     @Override
-    public AxisAlignedBB getCollisionBoundingBoxFromPool(World world, int x, int y, int z)
+    public AxisAlignedBB getCollisionBoundingBox(World worldIn, BlockPos pos, IBlockState state)
     {
         return null;
-    }
-
-    @Override
-    public void getSubBlocks(Item item, CreativeTabs tab, List list)
-    {
-        for (int i = 0; i < 16; i++)
-            list.add(new ItemStack(item, 1, i));
-    }
-
-    @Override
-    public void registerBlockIcons(IIconRegister iconRegister)
-    {
-        for (int i = 0; i < icons.length; i++)
-            icons[i] = iconRegister.registerIcon(getTextureName() + "." + i);
-    }
-
-    @Override
-    public IIcon getIcon(int side, int meta)
-    {
-        return meta < icons.length ? icons[meta] : icons[0];
-    }
-
-    @Override
-    public int getRenderType()
-    {
-        return RCBlockRendering.negativeSpaceRenderID;
-    }
-
-    @Override
-    public int damageDropped(int meta)
-    {
-        return meta;
     }
 }

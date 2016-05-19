@@ -6,7 +6,7 @@
 package ivorius.reccomplex.structures.generic.gentypes;
 
 import com.google.gson.*;
-import ivorius.ivtoolkit.blocks.BlockCoord;
+import net.minecraft.util.BlockPos;
 import ivorius.reccomplex.RCConfig;
 import ivorius.reccomplex.gui.editstructure.gentypes.TableDataSourceVanillaStructureGenerationInfo;
 import ivorius.reccomplex.gui.table.TableDataSource;
@@ -18,7 +18,7 @@ import ivorius.ivtoolkit.blocks.Directions;
 import net.minecraft.util.MathHelper;
 import net.minecraft.util.StatCollector;
 import net.minecraft.world.biome.BiomeGenBase;
-import net.minecraftforge.common.util.ForgeDirection;
+import net.minecraft.util.EnumFacing;
 
 import javax.annotation.Nonnull;
 import java.lang.reflect.Type;
@@ -36,18 +36,18 @@ public class VanillaStructureGenerationInfo extends StructureGenerationInfo
     public double minScaledLimit;
     public double maxScaledLimit;
 
-    public ForgeDirection front;
+    public EnumFacing front;
 
-    public BlockCoord spawnShift;
+    public BlockPos spawnShift;
 
     public BiomeMatcher biomeMatcher;
 
     public VanillaStructureGenerationInfo()
     {
-        this(randomID("MC"), null, 2, 5, 3, 3, ForgeDirection.NORTH, new BlockCoord(0, 0, 0), "");
+        this(randomID("MC"), null, 2, 5, 3, 3, EnumFacing.NORTH, new BlockPos(0, 0, 0), "");
     }
 
-    public VanillaStructureGenerationInfo(String id, Double generationWeight, double minBaseLimit, double maxBaseLimit, double minScaledLimit, double maxScaledLimit, ForgeDirection front, BlockCoord spawnShift, String biomeExpression)
+    public VanillaStructureGenerationInfo(String id, Double generationWeight, double minBaseLimit, double maxBaseLimit, double minScaledLimit, double maxScaledLimit, EnumFacing front, BlockPos spawnShift, String biomeExpression)
     {
         this.id = id;
         this.generationWeight = generationWeight;
@@ -73,7 +73,7 @@ public class VanillaStructureGenerationInfo extends StructureGenerationInfo
         this.id = id;
     }
 
-    public void setSpawnShift(BlockCoord spawnShift)
+    public void setSpawnShift(BlockPos spawnShift)
     {
         this.spawnShift = spawnShift;
     }
@@ -125,11 +125,11 @@ public class VanillaStructureGenerationInfo extends StructureGenerationInfo
             int spawnY = JsonUtils.getJsonObjectIntegerFieldValueOrDefault(jsonObject, "spawnShiftY", 0);
             int spawnZ = JsonUtils.getJsonObjectIntegerFieldValueOrDefault(jsonObject, "spawnShiftZ", 0);
 
-            ForgeDirection front = Directions.deserialize(JsonUtils.getJsonObjectStringFieldValueOrDefault(jsonObject, "front", "NORTH"));
+            EnumFacing front = Directions.deserialize(JsonUtils.getJsonObjectStringFieldValueOrDefault(jsonObject, "front", "NORTH"));
 
             String biomeExpression = JsonUtils.getJsonObjectStringFieldValueOrDefault(jsonObject, "biomeExpression", "");
 
-            return new VanillaStructureGenerationInfo(id, spawnWeight, minBaseLimit, maxBaseLimit, minScaledLimit, maxScaledLimit, front, new BlockCoord(spawnX, spawnY, spawnZ), biomeExpression);
+            return new VanillaStructureGenerationInfo(id, spawnWeight, minBaseLimit, maxBaseLimit, minScaledLimit, maxScaledLimit, front, new BlockPos(spawnX, spawnY, spawnZ), biomeExpression);
         }
 
         @Override
@@ -147,9 +147,9 @@ public class VanillaStructureGenerationInfo extends StructureGenerationInfo
             jsonObject.addProperty("minScaledLimit", src.minScaledLimit);
             jsonObject.addProperty("maxScaledLimit", src.maxScaledLimit);
 
-            jsonObject.addProperty("spawnShiftX", src.spawnShift.x);
-            jsonObject.addProperty("spawnShiftY", src.spawnShift.y);
-            jsonObject.addProperty("spawnShiftZ", src.spawnShift.z);
+            jsonObject.addProperty("spawnShiftX", src.spawnShift.getX());
+            jsonObject.addProperty("spawnShiftY", src.spawnShift.getY());
+            jsonObject.addProperty("spawnShiftZ", src.spawnShift.getZ());
 
             jsonObject.addProperty("front", Directions.serialize(src.front));
 

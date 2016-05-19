@@ -11,9 +11,11 @@ import ivorius.reccomplex.structures.generic.GenericStructureInfo;
 import ivorius.reccomplex.structures.generic.Metadata;
 import ivorius.reccomplex.utils.ServerTranslations;
 import net.minecraft.command.CommandBase;
+import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.event.ClickEvent;
 import net.minecraft.event.HoverEvent;
+import net.minecraft.util.BlockPos;
 import net.minecraft.util.ChatComponentText;
 import net.minecraft.util.IChatComponent;
 import org.apache.commons.lang3.StringUtils;
@@ -44,7 +46,7 @@ public class CommandLookupStructure extends CommandBase
     }
 
     @Override
-    public void processCommand(ICommandSender commandSender, String[] args)
+    public void processCommand(ICommandSender commandSender, String[] args) throws CommandException
     {
         if (args.length >= 1)
         {
@@ -79,13 +81,13 @@ public class CommandLookupStructure extends CommandBase
     }
 
     @Override
-    public List addTabCompletionOptions(ICommandSender commandSender, String[] args)
+    public List addTabCompletionOptions(ICommandSender commandSender, String[] args, BlockPos pos)
     {
         if (args.length == 1)
         {
             Set<String> allStructureNames = StructureRegistry.INSTANCE.allStructureIDs();
 
-            return getListOfStringsFromIterableMatchingLastWord(args, allStructureNames);
+            return getListOfStringsMatchingLastWord(args, allStructureNames);
         }
 
         return null;

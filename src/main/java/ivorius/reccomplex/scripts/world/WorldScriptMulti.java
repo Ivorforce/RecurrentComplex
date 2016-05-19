@@ -6,7 +6,7 @@
 package ivorius.reccomplex.scripts.world;
 
 import com.google.common.collect.Lists;
-import ivorius.ivtoolkit.blocks.BlockCoord;
+import net.minecraft.util.BlockPos;
 import ivorius.ivtoolkit.tools.NBTCompoundObjects;
 import ivorius.ivtoolkit.tools.NBTTagLists;
 import ivorius.reccomplex.RecurrentComplex;
@@ -38,7 +38,7 @@ public class WorldScriptMulti implements WorldScript<WorldScriptMulti.InstanceDa
     public final List<WorldScript> scripts = new ArrayList<>();
 
     @Override
-    public InstanceData prepareInstanceData(StructurePrepareContext context, BlockCoord coord, World world)
+    public InstanceData prepareInstanceData(StructurePrepareContext context, BlockPos coord, World world)
     {
         InstanceData instanceData = new InstanceData();
 
@@ -55,7 +55,7 @@ public class WorldScriptMulti implements WorldScript<WorldScriptMulti.InstanceDa
     }
 
     @Override
-    public void generate(StructureSpawnContext context, InstanceData instanceData, BlockCoord coord)
+    public void generate(StructureSpawnContext context, InstanceData instanceData, BlockPos coord)
     {
         for (int i = 0; i < scripts.size(); i++)
         {

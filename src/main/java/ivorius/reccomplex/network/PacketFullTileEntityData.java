@@ -5,61 +5,43 @@
 
 package ivorius.reccomplex.network;
 
-import cpw.mods.fml.common.network.ByteBufUtils;
-import cpw.mods.fml.common.network.simpleimpl.IMessage;
+import ivorius.ivtoolkit.blocks.BlockPositions;
+import net.minecraft.util.BlockPos;
+import net.minecraftforge.fml.common.network.ByteBufUtils;
+import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.nbt.NBTTagCompound;
+
+import javax.annotation.Nonnull;
 
 /**
  * Created by lukas on 03.08.14.
  */
 public class PacketFullTileEntityData implements IMessage
 {
-    private int x;
-    private int y;
-    private int z;
+    @Nonnull
+    private BlockPos pos;
     private NBTTagCompound data;
 
     public PacketFullTileEntityData()
     {
     }
 
-    public PacketFullTileEntityData(int x, int y, int z, NBTTagCompound data)
+    public PacketFullTileEntityData(@Nonnull BlockPos pos, NBTTagCompound data)
     {
-        this.x = x;
-        this.y = y;
-        this.z = z;
+        this.pos = pos;
         this.data = data;
     }
 
-    public int getX()
+    @Nonnull
+    public BlockPos getPos()
     {
-        return x;
+        return pos;
     }
 
-    public void setX(int x)
+    public void setPos(@Nonnull BlockPos pos)
     {
-        this.x = x;
-    }
-
-    public int getY()
-    {
-        return y;
-    }
-
-    public void setY(int y)
-    {
-        this.y = y;
-    }
-
-    public int getZ()
-    {
-        return z;
-    }
-
-    public void setZ(int z)
-    {
-        this.z = z;
+        this.pos = pos;
     }
 
     public NBTTagCompound getData()
@@ -75,18 +57,14 @@ public class PacketFullTileEntityData implements IMessage
     @Override
     public void fromBytes(ByteBuf buf)
     {
-        x = buf.readInt();
-        y = buf.readInt();
-        z = buf.readInt();
+        pos = BlockPositions.readFromBuffer(buf);
         data = ByteBufUtils.readTag(buf);
     }
 
     @Override
     public void toBytes(ByteBuf buf)
     {
-        buf.writeInt(x);
-        buf.writeInt(y);
-        buf.writeInt(z);
+        BlockPositions.writeToBuffer(pos, buf);
         ByteBufUtils.writeTag(buf, data);
     }
 }

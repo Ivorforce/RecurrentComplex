@@ -7,7 +7,8 @@ package ivorius.reccomplex.worldgen;
 
 import com.google.common.base.Predicate;
 import com.google.common.collect.*;
-import ivorius.ivtoolkit.blocks.BlockCoord;
+import ivorius.ivtoolkit.blocks.BlockPositions;
+import net.minecraft.util.BlockPos;
 import ivorius.ivtoolkit.math.AxisAlignedTransform2D;
 import ivorius.reccomplex.RecurrentComplex;
 import ivorius.reccomplex.structures.StructureInfo;
@@ -67,13 +68,13 @@ public class StructureGenerationData extends WorldSavedData
         return chunkMap.get(coords);
     }
 
-    public Set<Entry> getEntriesAt(final BlockCoord coords)
+    public Set<Entry> getEntriesAt(final BlockPos coords)
     {
-        Set<Entry> entries = getEntriesAt(new ChunkCoordIntPair(coords.x >> 4, coords.z >> 4), false);
+        Set<Entry> entries = getEntriesAt(new ChunkCoordIntPair(coords.getX() >> 4, coords.getZ() >> 4), false);
 
         return Sets.filter(entries, input -> {
             StructureBoundingBox bb = input.boundingBox();
-            return bb != null && bb.isVecInside(coords.x, coords.y, coords.z);
+            return bb != null && bb.isVecInside(coords);
         });
     }
 
@@ -88,12 +89,12 @@ public class StructureGenerationData extends WorldSavedData
         return entries.build();
     }
 
-    public Set<ChunkCoordIntPair> addCompleteEntry(String structureID, BlockCoord lowerCoord, AxisAlignedTransform2D transform)
+    public Set<ChunkCoordIntPair> addCompleteEntry(String structureID, BlockPos lowerCoord, AxisAlignedTransform2D transform)
     {
         return addEntry(new Entry(UUID.randomUUID(), structureID, lowerCoord, transform, true));
     }
 
-    public Set<ChunkCoordIntPair> addGeneratingEntry(String structureID, BlockCoord lowerCoord, AxisAlignedTransform2D transform)
+    public Set<ChunkCoordIntPair> addGeneratingEntry(String structureID, BlockPos lowerCoord, AxisAlignedTransform2D transform)
     {
         return addEntry(new Entry(UUID.randomUUID(), structureID, lowerCoord, transform, false));
     }
@@ -176,7 +177,7 @@ public class StructureGenerationData extends WorldSavedData
         protected UUID uuid;
 
         protected String structureID;
-        protected BlockCoord lowerCoord;
+        protected BlockPos lowerCoord;
         protected AxisAlignedTransform2D transform;
 
         protected NBTTagCompound instanceData;
@@ -188,7 +189,7 @@ public class StructureGenerationData extends WorldSavedData
         {
         }
 
-        public Entry(@Nonnull UUID uuid, String structureID, BlockCoord lowerCoord, AxisAlignedTransform2D transform, boolean hasBeenGenerated)
+        public Entry(@Nonnull UUID uuid, String structureID, BlockPos lowerCoord, AxisAlignedTransform2D transform, boolean hasBeenGenerated)
         {
             this.uuid = uuid;
             this.structureID = structureID;
@@ -213,7 +214,7 @@ public class StructureGenerationData extends WorldSavedData
             return structureID;
         }
 
-        public BlockCoord getLowerCoord()
+        public BlockPos getLowerCoord()
         {
             return lowerCoord;
         }
@@ -236,7 +237,7 @@ public class StructureGenerationData extends WorldSavedData
 
             transform = AxisAlignedTransform2D.from(compound.getInteger("rotation"), compound.getBoolean("mirrorX"));
 
-            lowerCoord = BlockCoord.readCoordFromNBT("lowerCoord", compound);
+            lowerCoord = BlockPositions.readFromNBT("lowerCoord", compound);
 
             if (compound.hasKey("instanceData", Constants.NBT.TAG_COMPOUND))
                 instanceData = compound.getCompoundTag("instanceData");
@@ -254,7 +255,7 @@ public class StructureGenerationData extends WorldSavedData
             compound.setInteger("rotation", transform.getRotation());
             compound.setBoolean("mirrorX", transform.isMirrorX());
 
-            BlockCoord.writeCoordToNBT("lowerCoord", lowerCoord, compound);
+            BlockPositions.writeToNBT("lowerCoord", lowerCoord, compound);
 
             if (instanceData != null)
                 compound.setTag("instanceData", instanceData);

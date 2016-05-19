@@ -5,11 +5,12 @@
 
 package ivorius.reccomplex.structures;
 
-import ivorius.ivtoolkit.blocks.BlockCoord;
+import net.minecraft.util.BlockPos;
 import ivorius.ivtoolkit.math.AxisAlignedTransform2D;
-import ivorius.reccomplex.utils.IBlockState;
+import net.minecraft.block.state.IBlockState;
 import ivorius.reccomplex.utils.BlockStates;
 import net.minecraft.util.MathHelper;
+import net.minecraft.util.Vec3i;
 import net.minecraft.world.World;
 import net.minecraft.world.gen.structure.StructureBoundingBox;
 
@@ -56,7 +57,7 @@ public class StructureSpawnContext
         return new StructureSpawnContext(world, random, transform, boundingBox, null, generationLayer, generateAsSource, true);
     }
 
-    public static StructureSpawnContext complete(@Nonnull World world, @Nonnull Random random, @Nonnull AxisAlignedTransform2D transform, BlockCoord coord, StructureInfo structureInfo, int generationLayer, boolean generateAsSource)
+    public static StructureSpawnContext complete(@Nonnull World world, @Nonnull Random random, @Nonnull AxisAlignedTransform2D transform, BlockPos coord, StructureInfo structureInfo, int generationLayer, boolean generateAsSource)
     {
         StructureBoundingBox boundingBox = StructureInfos.structureBoundingBox(coord, StructureInfos.structureSize(structureInfo, transform));
         return new StructureSpawnContext(world, random, transform, boundingBox, null, generationLayer, generateAsSource, true);
@@ -67,25 +68,20 @@ public class StructureSpawnContext
         return new StructureSpawnContext(world, random, transform, boundingBox, generationBB, generationLayer, generateAsSource, isFirstTime);
     }
 
-    public static StructureSpawnContext partial(@Nonnull World world, @Nonnull Random random, @Nonnull AxisAlignedTransform2D transform, BlockCoord coord, StructureInfo structureInfo, @Nonnull StructureBoundingBox generationBB, int generationLayer, boolean generateAsSource, boolean isFirstTime)
+    public static StructureSpawnContext partial(@Nonnull World world, @Nonnull Random random, @Nonnull AxisAlignedTransform2D transform, BlockPos coord, StructureInfo structureInfo, @Nonnull StructureBoundingBox generationBB, int generationLayer, boolean generateAsSource, boolean isFirstTime)
     {
         StructureBoundingBox boundingBox = StructureInfos.structureBoundingBox(coord, StructureInfos.structureSize(structureInfo, transform));
         return new StructureSpawnContext(world, random, transform, boundingBox, generationBB, generationLayer, generateAsSource, isFirstTime);
     }
 
-    public boolean includes(BlockCoord coord)
+    public boolean includes(BlockPos coord)
     {
-        return generationBB == null || generationBB.isVecInside(coord.x, coord.y, coord.z);
-    }
-
-    public boolean includes(int x, int y, int z)
-    {
-        return generationBB == null || generationBB.isVecInside(x, y, z);
+        return generationBB == null || generationBB.isVecInside(coord);
     }
 
     public boolean includes(double x, double y, double z)
     {
-        return generationBB == null || generationBB.isVecInside(MathHelper.floor_double(x), MathHelper.floor_double(y), MathHelper.floor_double(z));
+        return generationBB == null || (x >= generationBB.minX && x <= generationBB.maxX && z >= generationBB.minZ && z <= generationBB.maxZ && y >= generationBB.minY && y <= generationBB.maxY);
     }
 
     public int[] boundingBoxSize()
@@ -93,30 +89,19 @@ public class StructureSpawnContext
         return new int[]{boundingBox.getXSize(), boundingBox.getYSize(), boundingBox.getZSize()};
     }
 
-    public BlockCoord lowerCoord()
+    public BlockPos lowerCoord()
     {
-        return new BlockCoord(boundingBox.minX, boundingBox.minY, boundingBox.minZ);
+        return new BlockPos(boundingBox.minX, boundingBox.minY, boundingBox.minZ);
     }
 
-    public boolean setBlock(BlockCoord coord, IBlockState state)
+    public boolean setBlock(BlockPos coord, IBlockState state)
     {
-        if (includes(coord.x, coord.y, coord.z))
+        if (includes(coord))
         {
-            world.setBlock(coord.x, coord.y, coord.z, state.getBlock(), BlockStates.getMetadata(state), 2);
+            world.setBlockState(coord, state, 2);
             return true;
         }
 
         return false; // world.setBlock returns false on 'no change'
-    }
-
-    public boolean setBlock(int x, int y, int z, IBlockState state)
-    {
-        if (includes(x, y, z))
-        {
-            world.setBlock(x, y, z, state.getBlock(), BlockStates.getMetadata(state), 2);
-            return true;
-        }
-
-        return false;  // world.setBlock returns false on 'no change'
     }
 }

@@ -5,7 +5,8 @@
 
 package ivorius.reccomplex.structures;
 
-import ivorius.ivtoolkit.blocks.BlockCoord;
+import ivorius.ivtoolkit.blocks.BlockPositions;
+import net.minecraft.util.BlockPos;
 import ivorius.ivtoolkit.math.AxisAlignedTransform2D;
 import ivorius.ivtoolkit.rendering.grid.BlockQuadCache;
 import ivorius.ivtoolkit.rendering.grid.GridQuadCache;
@@ -16,7 +17,7 @@ import ivorius.reccomplex.structures.generic.GenericStructureInfo;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.Constants;
-import org.lwjgl.opengl.GL11;
+import net.minecraft.client.renderer.GlStateManager;
 
 /**
  * Created by lukas on 10.02.15.
@@ -26,7 +27,7 @@ public class OperationGenerateStructure implements Operation
     public GenericStructureInfo structure;
 
     public AxisAlignedTransform2D transform;
-    public BlockCoord lowerCoord;
+    public BlockPos lowerCoord;
 
     public boolean generateAsSource;
 
@@ -38,7 +39,7 @@ public class OperationGenerateStructure implements Operation
     {
     }
 
-    public OperationGenerateStructure(GenericStructureInfo structure, AxisAlignedTransform2D transform, BlockCoord lowerCoord, boolean generateAsSource)
+    public OperationGenerateStructure(GenericStructureInfo structure, AxisAlignedTransform2D transform, BlockPos lowerCoord, boolean generateAsSource)
     {
         this.structure = structure;
         this.transform = transform;
@@ -46,7 +47,7 @@ public class OperationGenerateStructure implements Operation
         this.generateAsSource = generateAsSource;
     }
 
-    public OperationGenerateStructure(GenericStructureInfo structure, AxisAlignedTransform2D transform, BlockCoord lowerCoord, boolean generateAsSource, String structureIDForSaving)
+    public OperationGenerateStructure(GenericStructureInfo structure, AxisAlignedTransform2D transform, BlockPos lowerCoord, boolean generateAsSource, String structureIDForSaving)
     {
         this.structure = structure;
         this.transform = transform;
@@ -83,7 +84,7 @@ public class OperationGenerateStructure implements Operation
         compound.setInteger("rotation", transform.getRotation());
         compound.setBoolean("mirrorX", transform.isMirrorX());
 
-        BlockCoord.writeCoordToNBT("lowerCoord", lowerCoord, compound);
+        BlockPositions.writeToNBT("lowerCoord", lowerCoord, compound);
 
         compound.setBoolean("generateAsSource", generateAsSource);
 
@@ -99,7 +100,7 @@ public class OperationGenerateStructure implements Operation
 
         transform = AxisAlignedTransform2D.from(compound.getInteger("rotation"), compound.getBoolean("mirrorX"));
 
-        lowerCoord = BlockCoord.readCoordFromNBT("lowerCoord", compound);
+        lowerCoord = BlockPositions.readFromNBT("lowerCoord", compound);
 
         generateAsSource = compound.getBoolean("generateAsSource");
 
@@ -119,7 +120,7 @@ public class OperationGenerateStructure implements Operation
         int[] size = structure.structureBoundingBox();
         if (previewType == PreviewType.SHAPE)
         {
-            GL11.glColor3f(0.8f, 0.75f, 1.0f);
+            GlStateManager.color(0.8f, 0.75f, 1.0f);
             OperationRenderer.renderGridQuadCache(
                     cachedShapeGrid != null ? cachedShapeGrid : (cachedShapeGrid = BlockQuadCache.createQuadCache(structure.constructWorldData(world).blockCollection, new float[]{1, 1, 1})),
                     transform, lowerCoord, ticks, partialTicks);

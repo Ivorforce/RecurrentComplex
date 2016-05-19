@@ -34,13 +34,13 @@ public class TableDataSourceWeightedBlockStateList extends TableDataSourcePreset
     @Override
     public String getDisplayString(WeightedBlockState entry)
     {
-        return String.format("%s$%d (%.2f)", StringUtils.abbreviate(Block.blockRegistry.getNameForObject(entry.state.getBlock()), 16), BlockStates.getMetadata(entry.state), entry.getWeight());
+        return String.format("%s$%d (%.2f)", StringUtils.abbreviate(Block.blockRegistry.getNameForObject(entry.state.getBlock()).toString(), 16), BlockStates.toMetadata(entry.state), entry.getWeight());
     }
 
     @Override
     public WeightedBlockState newEntry(String actionID)
     {
-        return new WeightedBlockState(null, BlockStates.defaultState(Blocks.stone), "");
+        return new WeightedBlockState(null, Blocks.stone.getDefaultState(), "");
     }
 
     @Override

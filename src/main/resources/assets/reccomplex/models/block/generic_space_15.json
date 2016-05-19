@@ -1,0 +1,6 @@
+{
+  "parent": "reccomplex:block/generic_space",
+  "textures": {
+    "all": "reccomplex:blocks/generic_space_15"
+  }
+}

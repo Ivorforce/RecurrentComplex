@@ -7,7 +7,8 @@ package ivorius.reccomplex.commands;
 
 import ivorius.ivtoolkit.blocks.BlockArea;
 import ivorius.ivtoolkit.blocks.BlockAreas;
-import ivorius.ivtoolkit.blocks.BlockCoord;
+import net.minecraft.command.CommandException;
+import net.minecraft.util.BlockPos;
 import ivorius.reccomplex.RCConfig;
 import ivorius.reccomplex.entities.StructureEntityInfo;
 import ivorius.reccomplex.utils.ServerTranslations;
@@ -32,12 +33,12 @@ public class CommandSelectShift extends CommandSelectModify
     }
 
     @Override
-    public void processCommandSelection(EntityPlayerMP player, StructureEntityInfo structureEntityInfo, BlockCoord point1, BlockCoord point2, String[] args)
+    public void processCommandSelection(EntityPlayerMP player, StructureEntityInfo structureEntityInfo, BlockPos point1, BlockPos point2, String[] args) throws CommandException
     {
         if (args.length < 3)
             throw ServerTranslations.wrongUsageException("commands.selectShift.usage");
 
-        int x = parseInt(player, args[0]), y = parseInt(player, args[1]), z = parseInt(player, args[2]);
+        int x = parseInt(args[0]), y = parseInt(args[1]), z = parseInt(args[2]);
 
         structureEntityInfo.selectedPoint1 = point1.add(x, y, z);
         structureEntityInfo.selectedPoint2 = point2.add(x, y, z);

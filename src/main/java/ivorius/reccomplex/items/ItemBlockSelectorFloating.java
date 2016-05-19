@@ -5,9 +5,9 @@
 
 package ivorius.reccomplex.items;
 
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
-import ivorius.ivtoolkit.blocks.BlockCoord;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
+import net.minecraft.util.BlockPos;
 import ivorius.reccomplex.RecurrentComplex;
 import ivorius.reccomplex.network.PacketSyncItem;
 import net.minecraft.entity.EntityLivingBase;
@@ -32,14 +32,14 @@ public class ItemBlockSelectorFloating extends ItemBlockSelector implements Item
 
     }
 
-    public static BlockCoord getHoveredBlock(EntityLivingBase entity, float selectionRange)
+    public static BlockPos getHoveredBlock(EntityLivingBase entity, float selectionRange)
     {
         Vec3 look = entity.getLookVec();
         int blockX = MathHelper.floor_double(look.xCoord * selectionRange + entity.posX);
         int blockY = MathHelper.floor_double(look.yCoord * selectionRange + entity.posY + entity.getEyeHeight());
         int blockZ = MathHelper.floor_double(look.zCoord * selectionRange + entity.posZ);
 
-        return new BlockCoord(blockX, blockY, blockZ);
+        return new BlockPos(blockX, blockY, blockZ);
     }
 
     @Override
@@ -47,7 +47,7 @@ public class ItemBlockSelectorFloating extends ItemBlockSelector implements Item
     {
         if (world.isRemote)
         {
-            BlockCoord position = getHoveredBlock(player, getSelectionRange(usedItem));
+            BlockPos position = getHoveredBlock(player, getSelectionRange(usedItem));
             sendClickToServer(usedItem, world, player, position);
         }
 

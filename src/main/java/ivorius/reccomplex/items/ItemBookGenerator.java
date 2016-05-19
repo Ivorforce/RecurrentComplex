@@ -15,6 +15,8 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.nbt.NBTTagString;
+import net.minecraft.util.BlockPos;
+import net.minecraft.util.EnumFacing;
 import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
 
@@ -29,9 +31,9 @@ import java.util.Scanner;
 public class ItemBookGenerator extends Item implements GeneratingItem
 {
     @Override
-    public boolean onItemUse(ItemStack usedItem, EntityPlayer player, World world, int x, int y, int z, int par7, float par8, float par9, float par10)
+    public boolean onItemUse(ItemStack stack, EntityPlayer playerIn, World worldIn, BlockPos pos, EnumFacing side, float hitX, float hitY, float hitZ)
     {
-        return ItemInventoryGenerationTag.applyGeneratorToInventory(world, x, y, z, this, usedItem);
+        return ItemInventoryGenerationTag.applyGeneratorToInventory(worldIn, pos, this, stack);
     }
 
     @Override

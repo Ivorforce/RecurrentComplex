@@ -5,7 +5,7 @@
 
 package ivorius.reccomplex.blocks;
 
-import ivorius.ivtoolkit.blocks.BlockCoord;
+import net.minecraft.util.BlockPos;
 import ivorius.reccomplex.scripts.world.WorldScriptStructureGenerator;
 import ivorius.reccomplex.structures.StructureLoadContext;
 import ivorius.reccomplex.structures.StructurePrepareContext;
@@ -40,7 +40,7 @@ public class TileEntityStructureGenerator extends TileEntity implements Generati
     @Override
     public WorldScriptStructureGenerator.InstanceData prepareInstanceData(StructurePrepareContext context)
     {
-        return script.prepareInstanceData(context, new BlockCoord(this), worldObj);
+        return script.prepareInstanceData(context, pos, worldObj);
     }
 
     @Override
@@ -52,7 +52,7 @@ public class TileEntityStructureGenerator extends TileEntity implements Generati
     @Override
     public void generate(StructureSpawnContext context, WorldScriptStructureGenerator.InstanceData instanceData)
     {
-        script.generate(context, instanceData, new BlockCoord(this));
+        script.generate(context, instanceData, pos);
     }
 
     @Override

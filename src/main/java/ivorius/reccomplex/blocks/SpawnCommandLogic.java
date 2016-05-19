@@ -5,17 +5,14 @@
 
 package ivorius.reccomplex.blocks;
 
-import ivorius.ivtoolkit.blocks.BlockCoord;
+import net.minecraft.command.*;
+import net.minecraft.entity.Entity;
+import net.minecraft.tileentity.TileEntityCommandBlock;
+import net.minecraft.util.*;
 import ivorius.reccomplex.RCConfig;
 import ivorius.reccomplex.utils.RCAccessorCommandBase;
-import net.minecraft.command.CommandBase;
-import net.minecraft.command.IAdminCommand;
-import net.minecraft.command.ICommandManager;
-import net.minecraft.command.ICommandSender;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.util.ChatComponentText;
-import net.minecraft.util.ChunkCoordinates;
-import net.minecraft.util.IChatComponent;
+import net.minecraft.util.BlockPos;
 import net.minecraft.world.World;
 
 /**
@@ -24,10 +21,10 @@ import net.minecraft.world.World;
 public class SpawnCommandLogic implements ICommandSender
 {
     private World world;
-    BlockCoord coord;
+    BlockPos coord;
     private String command = "";
 
-    public SpawnCommandLogic(World world, BlockCoord coord, String command)
+    public SpawnCommandLogic(World world, BlockPos coord, String command)
     {
         this.world = world;
         this.coord = coord;
@@ -41,15 +38,39 @@ public class SpawnCommandLogic implements ICommandSender
     }
 
     @Override
-    public ChunkCoordinates getPlayerCoordinates()
+    public BlockPos getPosition()
     {
-        return new ChunkCoordinates(coord.x, coord.y, coord.z);
+        return coord;
+    }
+
+    @Override
+    public Vec3 getPositionVector()
+    {
+        return new Vec3((double)coord.getX() + 0.5D, (double)coord.getY() + 0.5D, (double)coord.getZ() + 0.5D);
     }
 
     @Override
     public World getEntityWorld()
     {
         return world;
+
+    }
+
+    @Override
+    public Entity getCommandSenderEntity()
+    {
+        return null;
+    }
+
+    @Override
+    public boolean sendCommandFeedback()
+    {
+        return false;
+    }
+
+    @Override
+    public void setCommandStat(CommandResultStats.Type type, int amount)
+    {
 
     }
 
@@ -91,7 +112,7 @@ public class SpawnCommandLogic implements ICommandSender
     }
 
     @Override
-    public IChatComponent func_145748_c_()
+    public IChatComponent getDisplayName()
     {
         return new ChatComponentText(this.getCommandSenderName());
     }

@@ -5,7 +5,8 @@
 
 package ivorius.reccomplex.commands;
 
-import ivorius.ivtoolkit.blocks.BlockCoord;
+import net.minecraft.command.CommandException;
+import net.minecraft.util.BlockPos;
 import ivorius.reccomplex.RCConfig;
 import ivorius.reccomplex.entities.StructureEntityInfo;
 import ivorius.reccomplex.utils.ServerTranslations;
@@ -41,7 +42,7 @@ public class CommandSelect extends CommandBase
     }
 
     @Override
-    public void processCommand(ICommandSender commandSender, String[] args)
+    public void processCommand(ICommandSender commandSender, String[] args) throws CommandException
     {
         EntityPlayerMP entityPlayerMP = getCommandSenderAsPlayer(commandSender);
         StructureEntityInfo structureEntityInfo = RCCommands.getStructureEntityInfo(entityPlayerMP);
@@ -66,24 +67,16 @@ public class CommandSelect extends CommandBase
                         if (!args[0].equals("point2"))
                         {
                             if (structureEntityInfo.selectedPoint1 == null)
-                                structureEntityInfo.selectedPoint1 = new BlockCoord(MathHelper.floor_double(entityPlayerMP.posX), MathHelper.floor_double(entityPlayerMP.posY), MathHelper.floor_double(entityPlayerMP.posZ));
+                                structureEntityInfo.selectedPoint1 = new BlockPos(MathHelper.floor_double(entityPlayerMP.posX), MathHelper.floor_double(entityPlayerMP.posY), MathHelper.floor_double(entityPlayerMP.posZ));
 
-                            structureEntityInfo.selectedPoint1 = new BlockCoord(
-                                    MathHelper.floor_double(func_110666_a(commandSender, structureEntityInfo.selectedPoint1.x, args[1])),
-                                    MathHelper.floor_double(func_110666_a(commandSender, structureEntityInfo.selectedPoint1.y, args[2])),
-                                    MathHelper.floor_double(func_110666_a(commandSender, structureEntityInfo.selectedPoint1.z, args[3]))
-                            );
+                            structureEntityInfo.selectedPoint1 = RCCommands.parseBlockPos(structureEntityInfo.selectedPoint1, args, 1, false);
                         }
                         if (!args[0].equals("point1"))
                         {
                             if (structureEntityInfo.selectedPoint2 == null)
-                                structureEntityInfo.selectedPoint2 = new BlockCoord(MathHelper.floor_double(entityPlayerMP.posX), MathHelper.floor_double(entityPlayerMP.posY), MathHelper.floor_double(entityPlayerMP.posZ));
+                                structureEntityInfo.selectedPoint2 = new BlockPos(MathHelper.floor_double(entityPlayerMP.posX), MathHelper.floor_double(entityPlayerMP.posY), MathHelper.floor_double(entityPlayerMP.posZ));
 
-                            structureEntityInfo.selectedPoint2 = new BlockCoord(
-                                    MathHelper.floor_double(func_110666_a(commandSender, structureEntityInfo.selectedPoint2.x, args[1])),
-                                    MathHelper.floor_double(func_110666_a(commandSender, structureEntityInfo.selectedPoint2.y, args[2])),
-                                    MathHelper.floor_double(func_110666_a(commandSender, structureEntityInfo.selectedPoint2.z, args[3]))
-                            );
+                            structureEntityInfo.selectedPoint2 = RCCommands.parseBlockPos(structureEntityInfo.selectedPoint2, args, 1, false);
                         }
 
                         structureEntityInfo.sendSelectionToClients(entityPlayerMP);
@@ -103,15 +96,15 @@ public class CommandSelect extends CommandBase
         }
     }
 
-    protected Object translatePoint(BlockCoord coord)
+    protected Object translatePoint(BlockPos coord)
     {
         return coord != null
-                ? String.format("[%d,%d,%d]", coord.x, coord.y, coord.z)
+                ? String.format("[%d,%d,%d]", coord.getX(), coord.getY(), coord.getZ())
                 : ServerTranslations.format("commands.selectSet.point.none");
     }
 
     @Override
-    public List addTabCompletionOptions(ICommandSender commandSender, String[] args)
+    public List addTabCompletionOptions(ICommandSender sender, String[] args, BlockPos pos)
     {
         if (args.length == 1)
         {

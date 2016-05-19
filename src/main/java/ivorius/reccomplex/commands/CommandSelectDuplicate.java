@@ -6,7 +6,9 @@
 package ivorius.reccomplex.commands;
 
 import ivorius.ivtoolkit.blocks.BlockArea;
-import ivorius.ivtoolkit.blocks.BlockCoord;
+import net.minecraft.command.CommandException;
+import net.minecraft.command.NumberInvalidException;
+import net.minecraft.util.BlockPos;
 import ivorius.ivtoolkit.math.AxisAlignedTransform2D;
 import ivorius.ivtoolkit.tools.IvWorldData;
 import ivorius.reccomplex.RCConfig;
@@ -39,22 +41,20 @@ public class CommandSelectDuplicate extends CommandSelectModify
     }
 
     @Override
-    public void processCommandSelection(EntityPlayerMP player, StructureEntityInfo structureEntityInfo, BlockCoord point1, BlockCoord point2, String[] args)
+    public void processCommandSelection(EntityPlayerMP player, StructureEntityInfo structureEntityInfo, BlockPos point1, BlockPos point2, String[] args) throws CommandException
     {
         if (args.length < 3)
         {
             throw ServerTranslations.wrongUsageException("commands.selectDuplicate.usage");
         }
 
-        int rotations = args.length >= 4 ? parseInt(player, args[3]) : 0;
-        boolean mirrorX = args.length >= 5 && parseBoolean(player, args[4]);
+        int rotations = args.length >= 4 ? parseInt(args[3]) : 0;
+        boolean mirrorX = args.length >= 5 && parseBoolean(args[4]);
 
         BlockArea area = new BlockArea(point1, point2);
-        BlockCoord lowerCorner = area.getLowerCorner();
+        BlockPos lowerCorner = area.getLowerCorner();
 
-        int x = MathHelper.floor_double(func_110666_a(player, (double) lowerCorner.x, args[0]));
-        int y = MathHelper.floor_double(func_110666_a(player, (double) lowerCorner.y, args[1]));
-        int z = MathHelper.floor_double(func_110666_a(player, (double) lowerCorner.z, args[2]));
+        BlockPos coord = RCCommands.parseBlockPos(lowerCorner, args, 0, false);
 
         IvWorldData worldData = new IvWorldData(player.worldObj, area, true);
         NBTTagCompound worldDataCompound = worldData.createTagCompound(area.getLowerCorner());
@@ -62,7 +62,6 @@ public class CommandSelectDuplicate extends CommandSelectModify
         GenericStructureInfo structureInfo = GenericStructureInfo.createDefaultStructure();
         structureInfo.worldDataCompound = worldDataCompound;
 
-        BlockCoord coord = new BlockCoord(x, y, z);
         AxisAlignedTransform2D transform = AxisAlignedTransform2D.from(rotations, mirrorX);
 
         OperationRegistry.queueOperation(new OperationGenerateStructure(structureInfo, transform, coord, true), player);

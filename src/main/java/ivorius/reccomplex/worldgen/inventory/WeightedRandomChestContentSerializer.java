@@ -37,8 +37,8 @@ public class WeightedRandomChestContentSerializer implements JsonSerializer<Weig
         JsonObject jsonObject = new JsonObject();
 
         jsonObject.addProperty("weight", src.itemWeight);
-        jsonObject.addProperty("genMin", src.theMinimumChanceToGenerateItem);
-        jsonObject.addProperty("genMax", src.theMaximumChanceToGenerateItem);
+        jsonObject.addProperty("genMin", src.minStackSize);
+        jsonObject.addProperty("genMax", src.maxStackSize);
         jsonObject.add("item", context.serialize(src.theItemId, ItemStack.class));
 
         return jsonObject;

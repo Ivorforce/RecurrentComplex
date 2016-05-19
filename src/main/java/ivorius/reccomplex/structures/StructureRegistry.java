@@ -11,7 +11,7 @@ import com.google.common.collect.Sets;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonSyntaxException;
-import cpw.mods.fml.common.eventhandler.Event;
+import net.minecraftforge.fml.common.eventhandler.Event;
 import ivorius.reccomplex.RCConfig;
 import ivorius.reccomplex.RecurrentComplex;
 import ivorius.reccomplex.events.RCEventBus;
@@ -26,12 +26,12 @@ import ivorius.reccomplex.utils.CustomizableMap;
 import ivorius.reccomplex.worldgen.StructureSelector;
 import ivorius.reccomplex.worldgen.villages.GenericVillageCreationHandler;
 import ivorius.reccomplex.worldgen.villages.TemporaryVillagerRegistry;
-import net.minecraft.util.ChunkCoordinates;
+import net.minecraft.util.BlockPos;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldProvider;
 import net.minecraft.world.biome.BiomeGenBase;
 import net.minecraft.world.gen.structure.MapGenStructureIO;
-import net.minecraftforge.common.util.ForgeDirection;
+import net.minecraft.util.EnumFacing;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
 
@@ -235,7 +235,7 @@ public class StructureRegistry
 
     public StructureSelector getStructureSelector(BiomeGenBase biome, WorldProvider provider)
     {
-        Pair<Integer, String> pair = new ImmutablePair<>(provider.dimensionId, biome.biomeName);
+        Pair<Integer, String> pair = new ImmutablePair<>(provider.getDimensionId(), biome.biomeName);
         StructureSelector structureSelector = structureSelectors.get(pair);
 
         if (structureSelector == null || !structureSelector.isValid(biome, provider))
@@ -247,7 +247,7 @@ public class StructureRegistry
         return structureSelector;
     }
 
-    public Collection<Pair<StructureInfo, StructureListGenerationInfo>> getStructuresInList(final String listID, final ForgeDirection front)
+    public Collection<Pair<StructureInfo, StructureListGenerationInfo>> getStructuresInList(final String listID, final EnumFacing front)
     {
         return getStructureGenerations(StructureListGenerationInfo.class, input -> listID.equals(input.getRight().listID)
                 && (front == null || input.getLeft().isRotatable() || input.getRight().front == front));
@@ -266,7 +266,7 @@ public class StructureRegistry
         return (x >> 4) == chunkX && (z >> 4) == chunkZ;
     }
 
-    public Collection<Pair<StructureInfo, StaticGenerationInfo>> getStaticStructuresAt(final int chunkX, final int chunkZ, final World world, final ChunkCoordinates spawnPos)
+    public Collection<Pair<StructureInfo, StaticGenerationInfo>> getStaticStructuresAt(final int chunkX, final int chunkZ, final World world, final BlockPos spawnPos)
     {
         return getStructureGenerations(StaticGenerationInfo.class, input -> {
             StaticGenerationInfo info = input.getRight();
@@ -299,7 +299,7 @@ public class StructureRegistry
             String generationID = pair.getRight().id();
             Class clazz = GenericVillageCreationHandler.getPieceClass(structureID, generationID);
             if (clazz != null)
-                MapGenStructureIO.func_143031_a(clazz, "Rc:" + structureID + "_" + generationID);
+                MapGenStructureIO.registerStructure(clazz, "Rc:" + structureID + "_" + generationID);
         }
     }
 

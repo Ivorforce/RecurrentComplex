@@ -6,7 +6,7 @@
 package ivorius.reccomplex.structures.generic.maze;
 
 import com.google.common.collect.*;
-import ivorius.ivtoolkit.blocks.BlockCoord;
+import net.minecraft.util.BlockPos;
 import ivorius.ivtoolkit.math.AxisAlignedTransform2D;
 import ivorius.ivtoolkit.math.IvVecMathHelper;
 import ivorius.ivtoolkit.maze.components.*;
@@ -40,7 +40,7 @@ public class WorldGenMaze
                 AxisAlignedTransform2D componentTransform = placedComponent.transform;
                 StructureBoundingBox compBoundingBox = StructureInfos.structureBoundingBox(placedComponent.lowerCoord, StructureInfos.structureSize(structureInfo, componentTransform));
 
-                BlockCoord coord = new BlockCoord(compBoundingBox.minX, compBoundingBox.minY, compBoundingBox.minZ);
+                BlockPos coord = new BlockPos(compBoundingBox.minX, compBoundingBox.minY, compBoundingBox.minZ);
 
                 StructureGenerator.partially(structureInfo, context.world, context.random, coord, componentTransform, context.generationBB, context.generationLayer + 1, placedComponent.structureID, placedComponent.instanceData, context.isFirstTime);
 
@@ -56,7 +56,7 @@ public class WorldGenMaze
         return true;
     }
 
-    public static List<PlacedStructure> convertToPlacedStructures(final Random random, final BlockCoord coord, final BlockCoord shift, List<ShiftedMazeComponent<MazeComponentStructure<Connector>, Connector>> placedComponents, final int[] roomSize, final AxisAlignedTransform2D mazeTransform)
+    public static List<PlacedStructure> convertToPlacedStructures(final Random random, final BlockPos coord, final BlockPos shift, List<ShiftedMazeComponent<MazeComponentStructure<Connector>, Connector>> placedComponents, final int[] roomSize, final AxisAlignedTransform2D mazeTransform)
     {
         return Lists.newArrayList(placedComponents.stream().map(placedComponent -> {
             MazeComponentStructure<Connector> componentInfo = placedComponent.getComponent();
@@ -68,7 +68,7 @@ public class WorldGenMaze
                 StructureBoundingBox compBoundingBox = getBoundingBox(coord, shift, roomSize, placedComponent, structureInfo, componentTransform, mazeTransform);
                 NBTStorable instanceData = structureInfo.prepareInstanceData(new StructurePrepareContext(random, componentTransform, compBoundingBox, false));
 
-                return new PlacedStructure(componentInfo.structureID, componentTransform, new BlockCoord(compBoundingBox.minX, compBoundingBox.minY, compBoundingBox.minZ), instanceData);
+                return new PlacedStructure(componentInfo.structureID, componentTransform, new BlockPos(compBoundingBox.minX, compBoundingBox.minY, compBoundingBox.minZ), instanceData);
             }
             else
             {
@@ -79,7 +79,7 @@ public class WorldGenMaze
         }).filter(Objects::nonNull).collect(Collectors.toList()));
     }
 
-    protected static StructureBoundingBox getBoundingBox(BlockCoord coord, BlockCoord shift, int[] roomSize, ShiftedMazeComponent<MazeComponentStructure<Connector>, Connector> placedComponent, StructureInfo structureInfo, AxisAlignedTransform2D componentTransform, AxisAlignedTransform2D mazeTransform)
+    protected static StructureBoundingBox getBoundingBox(BlockPos coord, BlockPos shift, int[] roomSize, ShiftedMazeComponent<MazeComponentStructure<Connector>, Connector> placedComponent, StructureInfo structureInfo, AxisAlignedTransform2D componentTransform, AxisAlignedTransform2D mazeTransform)
     {
         MazeRoom mazePosition = placedComponent.getShift();
         int[] scaledMazePosition = IvVecMathHelper.mul(mazePosition.getCoordinates(), roomSize);
@@ -90,7 +90,7 @@ public class WorldGenMaze
         for (int i = 0; i < structureBB.length; i++)
             sizeDependentShift[i] = (compRoomSize[i] - structureBB[i]) / 2;
 
-        BlockCoord lowerCoord = StructureInfos.transformedLowerCoord(
+        BlockPos lowerCoord = StructureInfos.transformedLowerCoord(
                 coord.add(mazeTransform.apply(shift.add(scaledMazePosition[0], scaledMazePosition[1], scaledMazePosition[2]), new int[]{1, 1, 1}))
                         .add(sizeDependentShift[0], sizeDependentShift[1], sizeDependentShift[2]),
                 structureBB, mazeTransform);

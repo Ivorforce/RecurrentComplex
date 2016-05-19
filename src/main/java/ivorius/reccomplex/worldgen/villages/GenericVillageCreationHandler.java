@@ -5,8 +5,9 @@
 
 package ivorius.reccomplex.worldgen.villages;
 
-import cpw.mods.fml.common.registry.VillagerRegistry;
-import ivorius.ivtoolkit.blocks.BlockCoord;
+import net.minecraft.util.EnumFacing;
+import net.minecraftforge.fml.common.registry.VillagerRegistry;
+import net.minecraft.util.BlockPos;
 import ivorius.ivtoolkit.math.AxisAlignedTransform2D;
 import ivorius.reccomplex.structures.StructureInfo;
 import ivorius.reccomplex.structures.StructureInfos;
@@ -75,7 +76,7 @@ public class GenericVillageCreationHandler implements VillagerRegistry.IVillageC
     }
 
     @Override
-    public Object buildComponent(StructureVillagePieces.PieceWeight villagePiece, StructureVillagePieces.Start start, List components, Random random, int x, int y, int z, int front, int generationDepth)
+    public Object buildComponent(StructureVillagePieces.PieceWeight villagePiece, StructureVillagePieces.Start startPiece, List pieces, Random random, int x, int y, int z, EnumFacing front, int generationDepth)
     {
         StructureInfo structureInfo = StructureRegistry.INSTANCE.getStructure(structureID);
 
@@ -89,24 +90,24 @@ public class GenericVillageCreationHandler implements VillagerRegistry.IVillageC
                 boolean mirrorX = structureInfo.isMirrorable() && random.nextBoolean();
                 AxisAlignedTransform2D transform = GenericVillagePiece.getTransform(vanillaGenInfo, front, mirrorX);
 
-                if (vanillaGenInfo.generatesIn(start.biome) && structureInfo.isRotatable() || transform.getRotation() == 0)
+                if (vanillaGenInfo.generatesIn(startPiece.biome) && structureInfo.isRotatable() || transform.getRotation() == 0)
                 {
                     int[] structureSize = StructureInfos.structureSize(structureInfo, transform);
-                    BlockCoord structureShift = new BlockCoord(0, 0, 0); // Reserved for future shifts where allowed
+                    BlockPos structureShift = new BlockPos(0, 0, 0); // TODO Reserved for future shifts where allowed
 
                     StructureBoundingBox strucBB = StructureInfos.structureBoundingBox(structureShift, structureSize);
-                    int derotatedX = front % 2 == 0 ? strucBB.getXSize() : strucBB.getZSize();
-                    int derotatedZ = front % 2 == 1 ? strucBB.getXSize() : strucBB.getZSize();
+                    int derotatedX = front.getAxis() == EnumFacing.Axis.X ? strucBB.getXSize() : strucBB.getZSize(); // TODO is correct?
+                    int derotatedZ = front.getAxis() == EnumFacing.Axis.Z ? strucBB.getXSize() : strucBB.getZSize();
                     strucBB = StructureBoundingBox.getComponentToAddBoundingBox(x + strucBB.minX, y + strucBB.minY, z + strucBB.minZ, 0, 0, 0, derotatedX, strucBB.getYSize(), derotatedZ, front);
 
-                    if (GenericVillagePiece.canVillageGoDeeperC(strucBB) && StructureComponent.findIntersecting(components, strucBB) == null)
+                    if (GenericVillagePiece.canVillageGoDeeperC(strucBB) && StructureComponent.findIntersecting(pieces, strucBB) == null)
                     {
-                        GenericVillagePiece genericVillagePiece = GenericVillagePiece.create(structureID, generationID, start, generationDepth);
+                        GenericVillagePiece genericVillagePiece = GenericVillagePiece.create(structureID, generationID, startPiece, generationDepth);
 
                         if (genericVillagePiece != null)
                         {
                             // Do this after the test because this is raw structure movement
-                            strucBB.offset(structureShift.x, structureShift.y, structureShift.z);
+                            strucBB.offset(structureShift.getX(), structureShift.getY(), structureShift.getZ());
 
                             genericVillagePiece.setIds(structureID, generationID);
                             genericVillagePiece.setOrientation(front, mirrorX, strucBB);

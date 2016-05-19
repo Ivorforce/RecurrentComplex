@@ -5,10 +5,11 @@
 
 package ivorius.reccomplex.structures;
 
-import ivorius.ivtoolkit.blocks.BlockCoord;
+import net.minecraft.util.BlockPos;
 import ivorius.ivtoolkit.math.AxisAlignedTransform2D;
 import ivorius.reccomplex.gui.GuiValidityStateIndicator;
 import ivorius.reccomplex.structures.generic.gentypes.StructureGenerationInfo;
+import net.minecraft.util.Vec3i;
 import net.minecraft.world.gen.structure.StructureBoundingBox;
 import org.apache.commons.lang3.StringUtils;
 
@@ -17,9 +18,9 @@ import org.apache.commons.lang3.StringUtils;
  */
 public class StructureInfos
 {
-    public static StructureBoundingBox structureBoundingBox(BlockCoord coord, int[] size)
+    public static StructureBoundingBox structureBoundingBox(BlockPos coord, int[] size)
     {
-        return new StructureBoundingBox(coord.x, coord.y, coord.z, coord.x + size[0], coord.y + size[1], coord.z + size[2]);
+        return new StructureBoundingBox(coord, coord.add(new Vec3i(size[0], size[1], size[2])));
     }
 
     public static int[] structureSize(StructureInfo info, AxisAlignedTransform2D transform)
@@ -38,13 +39,13 @@ public class StructureInfos
         return size;
     }
 
-    public static BlockCoord transformedLowerCoord(BlockCoord coord, int[] size, AxisAlignedTransform2D transform)
+    public static BlockPos transformedLowerCoord(BlockPos coord, int[] size, AxisAlignedTransform2D transform)
     {
         // TODO Fix for mirror
         if (transform.getRotation() == 1 || transform.getRotation() == 2)
-            coord = coord.subtract(size[0] - 1, 0, 0);
+            coord = coord.subtract(new Vec3i(size[0] - 1, 0, 0));
         if (transform.getRotation() == 3 || transform.getRotation() == 2)
-            coord = coord.subtract(0, 0, size[2] - 1);
+            coord = coord.subtract(new Vec3i(0, 0, size[2] - 1));
         return coord;
     }
 

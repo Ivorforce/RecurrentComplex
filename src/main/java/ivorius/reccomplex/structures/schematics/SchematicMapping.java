@@ -28,7 +28,7 @@ public class SchematicMapping
 
     public SchematicMapping(NBTTagCompound compound)
     {
-        Set<String> names = compound.func_150296_c();
+        Set<String> names = compound.getKeySet();
         for (String name : names)
         {
             Block block = Block.getBlockFromName(name);
@@ -56,7 +56,7 @@ public class SchematicMapping
     {
         final NBTTagCompound compound = new NBTTagCompound();
         blockMapping.forEachEntry((a, b) -> {
-            compound.setShort(Block.blockRegistry.getNameForObject(b), a);
+            compound.setShort(Block.blockRegistry.getNameForObject(b).toString(), a);
             return true;
         });
         return compound;

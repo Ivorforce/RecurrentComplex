@@ -13,7 +13,7 @@ import ivorius.reccomplex.structures.generic.gentypes.StructureListGenerationInf
 import ivorius.ivtoolkit.blocks.Directions;
 import ivorius.reccomplex.utils.IvTranslations;
 import ivorius.reccomplex.utils.scale.Scales;
-import net.minecraftforge.common.util.ForgeDirection;
+import net.minecraft.util.EnumFacing;
 
 /**
  * Created by lukas on 07.10.14.
@@ -154,7 +154,7 @@ public class TableDataSourceStructureListGenerationInfo extends TableDataSourceS
                 }
                 case "front":
                 {
-                    generationInfo.front = (ForgeDirection) cell.getPropertyValue();
+                    generationInfo.front = (EnumFacing) cell.getPropertyValue();
                     break;
                 }
             }

@@ -18,7 +18,7 @@ public class NBTTagShortSerializer implements JsonSerializer<NBTTagShort>, JsonD
     @Override
     public JsonElement serialize(NBTTagShort src, Type typeOfSrc, JsonSerializationContext context)
     {
-        return new JsonPrimitive(src.func_150289_e());
+        return new JsonPrimitive(src.getShort());
     }
 
     @Override

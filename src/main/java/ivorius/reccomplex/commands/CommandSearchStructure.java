@@ -18,6 +18,7 @@ import ivorius.reccomplex.structures.generic.Metadata;
 import ivorius.reccomplex.utils.ServerTranslations;
 import joptsimple.internal.Strings;
 import net.minecraft.command.CommandBase;
+import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.event.ClickEvent;
 import net.minecraft.event.HoverEvent;
@@ -86,7 +87,7 @@ public class CommandSearchStructure extends CommandBase
     }
 
     @Override
-    public void processCommand(ICommandSender commandSender, String[] args)
+    public void processCommand(ICommandSender commandSender, String[] args) throws CommandException
     {
         if (args.length >= 1)
         {

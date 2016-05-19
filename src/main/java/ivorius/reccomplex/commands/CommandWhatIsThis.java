@@ -7,7 +7,8 @@ package ivorius.reccomplex.commands;
 
 import com.google.common.base.Function;
 import com.google.common.collect.Lists;
-import ivorius.ivtoolkit.blocks.BlockCoord;
+import net.minecraft.command.NumberInvalidException;
+import net.minecraft.util.BlockPos;
 import ivorius.reccomplex.RCConfig;
 import ivorius.reccomplex.utils.ServerTranslations;
 import ivorius.reccomplex.worldgen.StructureGenerationData;
@@ -44,24 +45,16 @@ public class CommandWhatIsThis extends CommandBase
     }
 
     @Override
-    public void processCommand(ICommandSender commandSender, String[] args)
+    public void processCommand(ICommandSender commandSender, String[] args) throws NumberInvalidException
     {
-        int x, y, z;
-
         World world = commandSender.getEntityWorld();
 
-        x = commandSender.getPlayerCoordinates().posX;
-        y = commandSender.getPlayerCoordinates().posY;
-        z = commandSender.getPlayerCoordinates().posZ;
+        BlockPos pos = commandSender.getPosition();
 
         if (args.length >= 3)
-        {
-            x = MathHelper.floor_double(func_110666_a(commandSender, (double) x, args[0]));
-            y = MathHelper.floor_double(func_110666_a(commandSender, (double) y, args[1]));
-            z = MathHelper.floor_double(func_110666_a(commandSender, (double) z, args[2]));
-        }
+            pos = parseBlockPos(commandSender, args, 0, false);
 
-        Collection<StructureGenerationData.Entry> entries = StructureGenerationData.get(world).getEntriesAt(new BlockCoord(x, y, z));
+        Collection<StructureGenerationData.Entry> entries = StructureGenerationData.get(world).getEntriesAt(pos);
         if (entries.size() > 0)
         {
             List<StructureGenerationData.Entry> ordered = Lists.newArrayList(entries);
@@ -75,7 +68,7 @@ public class CommandWhatIsThis extends CommandBase
     }
 
     @Override
-    public List addTabCompletionOptions(ICommandSender commandSender, String[] args)
+    public List addTabCompletionOptions(ICommandSender commandSender, String[] args, BlockPos pos)
     {
         if (args.length == 1 || args.length == 2 || args.length == 3)
         {

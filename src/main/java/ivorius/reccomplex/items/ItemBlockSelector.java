@@ -6,11 +6,12 @@
 package ivorius.reccomplex.items;
 
 import com.google.common.collect.Iterables;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
+import ivorius.ivtoolkit.blocks.BlockPositions;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
-import ivorius.ivtoolkit.blocks.BlockCoord;
+import net.minecraft.util.BlockPos;
 import ivorius.reccomplex.RCConfig;
 import ivorius.reccomplex.RecurrentComplex;
 import ivorius.reccomplex.entities.StructureEntityInfo;
@@ -29,11 +30,11 @@ import java.util.Arrays;
 public class ItemBlockSelector extends Item implements ItemEventHandler
 {
     @SideOnly(Side.CLIENT)
-    public void sendClickToServer(ItemStack usedItem, World world, EntityPlayer player, BlockCoord position)
+    public void sendClickToServer(ItemStack usedItem, World world, EntityPlayer player, BlockPos position)
     {
         ByteBuf buf = Unpooled.buffer();
 
-        BlockCoord.writeCoordToBuffer(position, buf);
+        BlockPositions.maybeWriteToBuffer(position, buf);
         buf.writeBoolean(modifierKeyDown());
         RecurrentComplex.network.sendToServer(new PacketItemEvent(player.inventory.currentItem, buf, "select"));
     }
@@ -52,7 +53,7 @@ public class ItemBlockSelector extends Item implements ItemEventHandler
     {
         if ("select".equals(context))
         {
-            BlockCoord coord = BlockCoord.readCoordFromBuffer(payload);
+            BlockPos coord = BlockPositions.maybeReadFromBuffer(payload);
             boolean secondary = payload.readBoolean();
 
             StructureEntityInfo structureEntityInfo = StructureEntityInfo.getStructureEntityInfo(sender);

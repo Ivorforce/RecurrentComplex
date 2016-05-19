@@ -10,6 +10,7 @@ import ivorius.reccomplex.structures.StructureRegistry;
 import ivorius.reccomplex.utils.ServerTranslations;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.ICommandSender;
+import net.minecraft.command.NumberInvalidException;
 import net.minecraft.event.ClickEvent;
 import net.minecraft.event.HoverEvent;
 import net.minecraft.util.ChatComponentText;
@@ -47,9 +48,9 @@ public class CommandListStructures extends CommandBase
     }
 
     @Override
-    public void processCommand(ICommandSender commandSender, String[] args)
+    public void processCommand(ICommandSender commandSender, String[] args) throws NumberInvalidException
     {
-        int page = args.length >= 1 ? parseInt(commandSender, args[0]) : 0;
+        int page = args.length >= 1 ? parseInt(args[0]) : 0;
 
         List<String> structureNames = new ArrayList<>();
         structureNames.addAll(StructureRegistry.INSTANCE.allStructureIDs());

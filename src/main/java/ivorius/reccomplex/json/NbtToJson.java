@@ -6,9 +6,11 @@
 package ivorius.reccomplex.json;
 
 import com.google.gson.*;
+import ivorius.reccomplex.utils.ByteArrays;
 import net.minecraft.nbt.*;
 
 import javax.xml.bind.DatatypeConverter;
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
 
 /**
@@ -140,7 +142,7 @@ public class NbtToJson
 
         try
         {
-            return CompressedStreamTools.func_152457_a(nbtBytes, NBTSizeTracker.field_152451_a);
+            return CompressedStreamTools.readCompressed(new ByteArrayInputStream(nbtBytes));
         }
         catch (IOException e)
         {
@@ -156,14 +158,14 @@ public class NbtToJson
 
         try
         {
-            worldDataByteArray = CompressedStreamTools.compress(compound);
-            return DatatypeConverter.printBase64Binary(worldDataByteArray);
+            worldDataByteArray = ByteArrays.toByteArray(s -> CompressedStreamTools.writeCompressed(compound, s));
         }
         catch (IOException e)
         {
             e.printStackTrace();
+            return null;
         }
 
-        return null;
+        return DatatypeConverter.printBase64Binary(worldDataByteArray);
     }
 }

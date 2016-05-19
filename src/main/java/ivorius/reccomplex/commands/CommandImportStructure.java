@@ -5,7 +5,8 @@
 
 package ivorius.reccomplex.commands;
 
-import ivorius.ivtoolkit.blocks.BlockCoord;
+import net.minecraft.command.CommandException;
+import net.minecraft.util.BlockPos;
 import ivorius.ivtoolkit.math.AxisAlignedTransform2D;
 import ivorius.reccomplex.RCConfig;
 import ivorius.reccomplex.operation.OperationRegistry;
@@ -46,7 +47,7 @@ public class CommandImportStructure extends CommandBase
     }
 
     @Override
-    public void processCommand(ICommandSender commandSender, String[] args)
+    public void processCommand(ICommandSender commandSender, String[] args) throws CommandException
     {
         int x, y, z;
 
@@ -64,19 +65,14 @@ public class CommandImportStructure extends CommandBase
             throw ServerTranslations.commandException("commands.strucImport.noStructure", structureName);
         }
 
-        x = commandSender.getPlayerCoordinates().posX;
-        y = commandSender.getPlayerCoordinates().posY;
-        z = commandSender.getPlayerCoordinates().posZ;
+        BlockPos coord;
 
         if (args.length >= 4)
-        {
-            x = MathHelper.floor_double(func_110666_a(commandSender, (double) x, args[1]));
-            y = MathHelper.floor_double(func_110666_a(commandSender, (double) y, args[2]));
-            z = MathHelper.floor_double(func_110666_a(commandSender, (double) z, args[3]));
-        }
+            coord = parseBlockPos(commandSender, args, 1, false);
+        else
+            coord = commandSender.getPosition();
 
         AxisAlignedTransform2D transform = AxisAlignedTransform2D.ORIGINAL;
-        BlockCoord coord = new BlockCoord(x, y, z);
 
         if (structureInfo instanceof GenericStructureInfo)
             OperationRegistry.queueOperation(new OperationGenerateStructure((GenericStructureInfo) structureInfo, transform, coord, true), commandSender);
@@ -85,10 +81,10 @@ public class CommandImportStructure extends CommandBase
     }
 
     @Override
-    public List addTabCompletionOptions(ICommandSender commandSender, String[] args)
+    public List addTabCompletionOptions(ICommandSender commandSender, String[] args, BlockPos pos)
     {
         if (args.length == 1)
-            return getListOfStringsFromIterableMatchingLastWord(args, StructureRegistry.INSTANCE.allStructureIDs());
+            return getListOfStringsMatchingLastWord(args, StructureRegistry.INSTANCE.allStructureIDs());
         else if (args.length == 2 || args.length == 3 || args.length == 4)
         {
             return getListOfStringsMatchingLastWord(args, "~");

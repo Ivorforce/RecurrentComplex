@@ -14,10 +14,12 @@ import ivorius.reccomplex.dimensions.DimensionDictionary;
 import ivorius.reccomplex.utils.ServerTranslations;
 import joptsimple.internal.Strings;
 import net.minecraft.command.CommandBase;
+import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.command.WrongUsageException;
 import net.minecraft.event.ClickEvent;
 import net.minecraft.event.HoverEvent;
+import net.minecraft.util.BlockPos;
 import net.minecraft.util.ChatComponentText;
 import net.minecraft.util.ChatComponentTranslation;
 import net.minecraft.util.IChatComponent;
@@ -52,7 +54,7 @@ public class CommandDimensionDict extends CommandBase
     }
 
     @Override
-    public void processCommand(ICommandSender commandSender, String[] args)
+    public void processCommand(ICommandSender commandSender, String[] args) throws CommandException
     {
         if (args.length < 2)
             throw ServerTranslations.wrongUsageException("commands.dimensiondict.usage");
@@ -61,7 +63,7 @@ public class CommandDimensionDict extends CommandBase
         {
             case "get":
             {
-                int dimensionID = parseInt(commandSender, args[1]);
+                int dimensionID = parseInt(args[1]);
 
                 List<String> types = Lists.newArrayList(DimensionDictionary.getDimensionTypes(DimensionManager.getProvider(dimensionID)));
                 IChatComponent[] components = new IChatComponent[types.size()];
@@ -118,7 +120,7 @@ public class CommandDimensionDict extends CommandBase
     }
 
     @Override
-    public List addTabCompletionOptions(ICommandSender commandSender, String[] args)
+    public List addTabCompletionOptions(ICommandSender commandSender, String[] args, BlockPos pos)
     {
         if (args.length == 1)
             return getListOfStringsMatchingLastWord(args, "get", "list");
@@ -134,7 +136,7 @@ public class CommandDimensionDict extends CommandBase
             return getListOfStringsMatchingLastWord(args, dimensionStrings);
         }
         else if (args[0].equals("list"))
-            return getListOfStringsFromIterableMatchingLastWord(args, DimensionDictionary.allRegisteredTypes());
+            return getListOfStringsMatchingLastWord(args, DimensionDictionary.allRegisteredTypes());
 
         return null;
     }

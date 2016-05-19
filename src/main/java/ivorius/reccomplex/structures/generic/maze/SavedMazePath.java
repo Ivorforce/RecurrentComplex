@@ -13,7 +13,7 @@ import ivorius.ivtoolkit.tools.NBTCompoundObject;
 import ivorius.reccomplex.json.JsonUtils;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.common.util.Constants;
-import net.minecraftforge.common.util.ForgeDirection;
+import net.minecraft.util.EnumFacing;
 
 import java.lang.reflect.Type;
 
@@ -92,19 +92,19 @@ public class SavedMazePath implements NBTCompoundObject, Comparable<SavedMazePat
     @Override
     public String toString()
     {
-        return String.format("%s %s", sourceRoom, getForgeDirection());
+        return String.format("%s %s", sourceRoom, getEnumFacing());
     }
 
-    public ForgeDirection getForgeDirection()
+    public EnumFacing getEnumFacing()
     {
         switch (pathDimension)
         {
             case 0:
-                return pathGoesUp ? ForgeDirection.EAST : ForgeDirection.WEST;
+                return pathGoesUp ? EnumFacing.EAST : EnumFacing.WEST;
             case 1:
-                return pathGoesUp ? ForgeDirection.UP : ForgeDirection.DOWN;
+                return pathGoesUp ? EnumFacing.UP : EnumFacing.DOWN;
             case 2:
-                return pathGoesUp ? ForgeDirection.SOUTH : ForgeDirection.NORTH;
+                return pathGoesUp ? EnumFacing.SOUTH : EnumFacing.NORTH;
         }
 
         throw new InternalError();

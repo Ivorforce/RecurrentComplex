@@ -5,7 +5,8 @@
 
 package ivorius.reccomplex.structures.schematics;
 
-import ivorius.ivtoolkit.blocks.BlockCoord;
+import ivorius.ivtoolkit.blocks.BlockPositions;
+import net.minecraft.util.BlockPos;
 import ivorius.ivtoolkit.math.AxisAlignedTransform2D;
 import ivorius.ivtoolkit.rendering.grid.GridQuadCache;
 import ivorius.reccomplex.client.rendering.OperationRenderer;
@@ -13,7 +14,7 @@ import ivorius.reccomplex.client.rendering.SchematicQuadCache;
 import ivorius.reccomplex.operation.Operation;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.world.World;
-import org.lwjgl.opengl.GL11;
+import net.minecraft.client.renderer.GlStateManager;
 
 /**
  * Created by lukas on 10.02.15.
@@ -22,7 +23,7 @@ public class OperationGenerateSchematic implements Operation
 {
     public SchematicFile file;
 
-    public BlockCoord lowerCoord;
+    public BlockPos lowerCoord;
 
     protected GridQuadCache cachedShapeGrid;
 
@@ -30,7 +31,7 @@ public class OperationGenerateSchematic implements Operation
     {
     }
 
-    public OperationGenerateSchematic(SchematicFile file, BlockCoord lowerCoord)
+    public OperationGenerateSchematic(SchematicFile file, BlockPos lowerCoord)
     {
         this.file = file;
         this.lowerCoord = lowerCoord;
@@ -39,7 +40,7 @@ public class OperationGenerateSchematic implements Operation
     @Override
     public void perform(World world)
     {
-        file.generate(world, lowerCoord.x, lowerCoord.y, lowerCoord.z);
+        file.generate(world, lowerCoord);
     }
 
     @Override
@@ -49,7 +50,7 @@ public class OperationGenerateSchematic implements Operation
         file.writeToNBT(fileCompound);
         compound.setTag("schematic", fileCompound);
 
-        BlockCoord.writeCoordToNBT("lowerCoord", lowerCoord, compound);
+        BlockPositions.writeToNBT("lowerCoord", lowerCoord, compound);
     }
 
     @Override
@@ -65,7 +66,7 @@ public class OperationGenerateSchematic implements Operation
             file = new SchematicFile((short) 0, (short) 0, (short) 0);
         }
 
-        lowerCoord = BlockCoord.readCoordFromNBT("lowerCoord", compound);
+        lowerCoord = BlockPositions.readFromNBT("lowerCoord", compound);
     }
 
     public void invalidateCache()
@@ -79,7 +80,7 @@ public class OperationGenerateSchematic implements Operation
         int[] size = {file.width, file.height, file.length};
         if (previewType == PreviewType.SHAPE)
         {
-            GL11.glColor3f(0.8f, 0.75f, 1.0f);
+            GlStateManager.color(0.8f, 0.75f, 1.0f);
             OperationRenderer.renderGridQuadCache(
                     cachedShapeGrid != null ? cachedShapeGrid : (cachedShapeGrid = SchematicQuadCache.createQuadCache(file, new float[]{1, 1, 1})),
                     AxisAlignedTransform2D.ORIGINAL, lowerCoord, ticks, partialTicks);

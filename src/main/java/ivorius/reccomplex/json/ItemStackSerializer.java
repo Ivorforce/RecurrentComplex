@@ -10,6 +10,7 @@ import ivorius.reccomplex.RecurrentComplex;
 import ivorius.reccomplex.structures.registry.MCRegistrySpecial;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.ResourceLocation;
 
 import java.lang.reflect.Type;
 
@@ -30,7 +31,7 @@ public class ItemStackSerializer implements JsonSerializer<ItemStack>, JsonDeser
     {
         JsonObject jsonObject = new JsonObject();
 
-        jsonObject.addProperty("id", registry.itemHidingMode().containedItemID(src));
+        jsonObject.addProperty("id", registry.itemHidingMode().containedItemID(src).toString());
         jsonObject.addProperty("damage", src.getItemDamage());
         jsonObject.addProperty("count", src.stackSize);
 
@@ -54,7 +55,7 @@ public class ItemStackSerializer implements JsonSerializer<ItemStack>, JsonDeser
         int damage = JsonUtils.getJsonObjectIntegerFieldValue(jsonObject, "damage");
         int count = JsonUtils.getJsonObjectIntegerFieldValue(jsonObject, "count");
 
-        ItemStack stack = registry.itemHidingMode().constructItemStack(id, count, damage);
+        ItemStack stack = registry.itemHidingMode().constructItemStack(new ResourceLocation(id), count, damage);
 
         if (jsonObject.has("tag"))
         {

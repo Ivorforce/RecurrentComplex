@@ -5,7 +5,7 @@
 
 package ivorius.reccomplex.worldgen;
 
-import ivorius.ivtoolkit.blocks.BlockCoord;
+import net.minecraft.util.BlockPos;
 import ivorius.ivtoolkit.math.AxisAlignedTransform2D;
 import ivorius.reccomplex.RCConfig;
 import ivorius.reccomplex.RecurrentComplex;
@@ -29,14 +29,14 @@ public class StructureGenerator
 {
     public static final int MIN_DIST_TO_LIMIT = 1;
 
-    public static <I extends NBTStorable> void partially(StructureInfo<I> structureInfo, World world, Random random, BlockCoord coord, AxisAlignedTransform2D transform, @Nullable StructureBoundingBox generationBB, int layer, String structureID, NBTTagCompound instanceData, boolean firstTime)
+    public static <I extends NBTStorable> void partially(StructureInfo<I> structureInfo, World world, Random random, BlockPos coord, AxisAlignedTransform2D transform, @Nullable StructureBoundingBox generationBB, int layer, String structureID, NBTTagCompound instanceData, boolean firstTime)
     {
         partially(structureInfo, world, random, coord, transform, generationBB, layer, structureID,
                 structureInfo.loadInstanceData(new StructureLoadContext(transform, StructureInfos.structureBoundingBox(coord, StructureInfos.structureSize(structureInfo, transform)), false), instanceData),
                 firstTime);
     }
 
-    public static <I extends NBTStorable> void partially(StructureInfo<I> structureInfo, World world, Random random, BlockCoord coord, AxisAlignedTransform2D transform, @Nullable StructureBoundingBox generationBB, int layer, String structureID, I instanceData, boolean firstTime)
+    public static <I extends NBTStorable> void partially(StructureInfo<I> structureInfo, World world, Random random, BlockPos coord, AxisAlignedTransform2D transform, @Nullable StructureBoundingBox generationBB, int layer, String structureID, I instanceData, boolean firstTime)
     {
         StructureSpawnContext structureSpawnContext = StructureSpawnContext.partial(world, random, transform, coord, structureInfo, generationBB, layer, false, firstTime);
         int[] coordInts = coordInts(structureSpawnContext.boundingBox);
@@ -72,22 +72,22 @@ public class StructureGenerator
 
         int genX = x - size[0] / 2;
         int genZ = z - size[2] / 2;
-        int genY = ySelector != null ? ySelector.selectY(world, random, StructureInfos.structureBoundingBox(new BlockCoord(genX, 0, genZ), size)) : world.getHeightValue(x, z);
-        BlockCoord coord = new BlockCoord(genX, genY, genZ);
+        int genY = ySelector != null ? ySelector.selectY(world, random, StructureInfos.structureBoundingBox(new BlockPos(genX, 0, genZ), size)) : world.getHeight(new BlockPos(x, 0, z)).getY();
+        BlockPos coord = new BlockPos(genX, genY, genZ);
 
         instantly(info, world, random, coord, transform, 0, suggest, structureName, false);
 
         return genY;
     }
 
-    public static <I extends NBTStorable> boolean instantly(StructureInfo<I> structureInfo, World world, Random random, BlockCoord coord, AxisAlignedTransform2D transform, int layer, boolean suggest, String structureID, boolean asSource)
+    public static <I extends NBTStorable> boolean instantly(StructureInfo<I> structureInfo, World world, Random random, BlockPos coord, AxisAlignedTransform2D transform, int layer, boolean suggest, String structureID, boolean asSource)
     {
         StructureSpawnContext structureSpawnContext = StructureSpawnContext.complete(world, random, transform, coord, structureInfo, layer, asSource);
         int[] size = sizeInts(structureSpawnContext.boundingBox);
         int[] coordInts = coordInts(structureSpawnContext.boundingBox);
 
         if (!suggest || (
-                coord.y >= MIN_DIST_TO_LIMIT && coord.y + size[1] <= world.getHeight() - 1 - MIN_DIST_TO_LIMIT
+                coord.getY() >= MIN_DIST_TO_LIMIT && coord.getY() + size[1] <= world.getHeight() - 1 - MIN_DIST_TO_LIMIT
                         && (!RCConfig.avoidOverlappingGeneration || StructureGenerationData.get(world).getEntriesAt(structureSpawnContext.boundingBox).size() == 0)
                         && !RCEventBus.INSTANCE.post(new StructureGenerationEvent.Suggest(structureInfo, structureSpawnContext))
                         && !MinecraftForge.EVENT_BUS.post(new StructureGenerationEventLite.Suggest(world, structureID, coordInts, size, layer))

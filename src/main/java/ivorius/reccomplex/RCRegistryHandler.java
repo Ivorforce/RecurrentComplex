@@ -5,60 +5,62 @@
 
 package ivorius.reccomplex;
 
-import cpw.mods.fml.client.registry.RenderingRegistry;
-import cpw.mods.fml.common.event.FMLInitializationEvent;
-import cpw.mods.fml.common.event.FMLPreInitializationEvent;
-import cpw.mods.fml.common.registry.GameRegistry;
 import ivorius.ivtoolkit.tools.MCRegistry;
 import ivorius.reccomplex.blocks.*;
-import ivorius.reccomplex.client.rendering.RCBlockRendering;
-import ivorius.reccomplex.dimensions.DimensionDictionary;
-import ivorius.reccomplex.items.*;
 import ivorius.reccomplex.blocks.materials.MaterialNegativeSpace;
 import ivorius.reccomplex.blocks.materials.RCMaterials;
+import ivorius.reccomplex.dimensions.DimensionDictionary;
+import ivorius.reccomplex.items.*;
 import ivorius.reccomplex.json.SerializableStringTypeRegistry;
 import ivorius.reccomplex.operation.OperationRegistry;
 import ivorius.reccomplex.random.PoemLoader;
 import ivorius.reccomplex.scripts.world.*;
-import ivorius.reccomplex.structures.generic.maze.rules.MazeRuleRegistry;
-import ivorius.reccomplex.structures.generic.maze.rules.saved.MazeRuleConnect;
-import ivorius.reccomplex.structures.generic.maze.rules.saved.MazeRuleConnectAll;
+import ivorius.reccomplex.structures.OperationGenerateStructure;
 import ivorius.reccomplex.structures.OperationMoveStructure;
+import ivorius.reccomplex.structures.StructureRegistry;
 import ivorius.reccomplex.structures.generic.BiomeGenerationInfo;
 import ivorius.reccomplex.structures.generic.DimensionGenerationInfo;
 import ivorius.reccomplex.structures.generic.StructureSaveHandler;
 import ivorius.reccomplex.structures.generic.WeightedBlockState;
-import ivorius.reccomplex.structures.generic.transformers.*;
 import ivorius.reccomplex.structures.generic.gentypes.*;
 import ivorius.reccomplex.structures.generic.matchers.BiomeMatcher;
 import ivorius.reccomplex.structures.generic.matchers.DimensionMatcher;
+import ivorius.reccomplex.structures.generic.maze.rules.MazeRuleRegistry;
+import ivorius.reccomplex.structures.generic.maze.rules.saved.MazeRuleConnect;
+import ivorius.reccomplex.structures.generic.maze.rules.saved.MazeRuleConnectAll;
 import ivorius.reccomplex.structures.generic.presets.BiomeMatcherPresets;
 import ivorius.reccomplex.structures.generic.presets.DimensionMatcherPresets;
 import ivorius.reccomplex.structures.generic.presets.WeightedBlockStatePresets;
+import ivorius.reccomplex.structures.generic.transformers.*;
 import ivorius.reccomplex.structures.schematics.OperationGenerateSchematic;
-import ivorius.reccomplex.structures.OperationGenerateStructure;
-import ivorius.reccomplex.structures.StructureRegistry;
-import ivorius.reccomplex.utils.BlockStates;
 import ivorius.reccomplex.utils.FMLUtils;
 import ivorius.reccomplex.worldgen.CategoryLoader;
 import ivorius.reccomplex.worldgen.inventory.ItemCollectionSaveHandler;
 import ivorius.reccomplex.worldgen.inventory.RCInventoryGenerators;
 import net.minecraft.block.Block;
+import net.minecraft.block.BlockColored;
 import net.minecraft.block.material.MapColor;
 import net.minecraft.block.material.Material;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.init.Blocks;
+import net.minecraft.item.EnumDyeColor;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.BiomeDictionary;
+import net.minecraftforge.fml.common.event.FMLInitializationEvent;
+import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
+import net.minecraftforge.fml.common.registry.GameRegistry;
 
 import java.util.stream.Collectors;
-import java.util.stream.IntStream;
+import java.util.stream.Stream;
 
-import static ivorius.reccomplex.RecurrentComplex.*;
+import static ivorius.reccomplex.RecurrentComplex.fileTypeRegistry;
+import static ivorius.reccomplex.RecurrentComplex.specialRegistry;
 import static ivorius.reccomplex.blocks.RCBlocks.*;
-import static ivorius.reccomplex.gui.RCCreativeTabs.*;
+import static ivorius.reccomplex.gui.RCCreativeTabs.tabInventoryGenerators;
+import static ivorius.reccomplex.gui.RCCreativeTabs.tabStructureTools;
 import static ivorius.reccomplex.items.RCItems.*;
 
 /**
@@ -91,66 +93,66 @@ public class RCRegistryHandler
         RCMaterials.materialNegativeSpace = new MaterialNegativeSpace();
         RCMaterials.materialGenericSolid = (new Material(MapColor.stoneColor));
 
-        blockSelector = new ItemBlockSelectorBlock().setUnlocalizedName("blockSelector").setTextureName(textureBase + "blockSelector");
+        blockSelector = new ItemBlockSelectorBlock().setUnlocalizedName("blockSelector");
         blockSelector.setCreativeTab(tabStructureTools);
         register(blockSelector, "block_selector");
         RecurrentComplex.cremapper.registerLegacyIDs(blockSelector, "blockSelector");
 
-        blockSelectorFloating = new ItemBlockSelectorFloating().setUnlocalizedName("blockSelectorFloating").setTextureName(textureBase + "blockSelectorFloating");
+        blockSelectorFloating = new ItemBlockSelectorFloating().setUnlocalizedName("blockSelectorFloating");
         blockSelectorFloating.setCreativeTab(tabStructureTools);
         register(blockSelectorFloating, "block_selector_floating");
         RecurrentComplex.cremapper.registerLegacyIDs(blockSelectorFloating, "blockSelectorFloating");
 
-        inventoryGenerationTag = (ItemInventoryGenMultiTag) new ItemInventoryGenMultiTag().setUnlocalizedName("inventoryGenerationTag").setTextureName(textureBase + "inventoryGenerationTag");
+        inventoryGenerationTag = (ItemInventoryGenMultiTag) new ItemInventoryGenMultiTag().setUnlocalizedName("inventoryGenerationTag");
         inventoryGenerationTag.setCreativeTab(tabInventoryGenerators);
         register(inventoryGenerationTag, "inventory_generation_tag");
         RecurrentComplex.cremapper.registerLegacyIDs(inventoryGenerationTag, "inventoryGenerationTag");
 
-        inventoryGenerationSingleTag = (ItemInventoryGenSingleTag) new ItemInventoryGenSingleTag().setUnlocalizedName("inventoryGenerationSingleTag").setTextureName(textureBase + "inventoryGenerationSingleTag");
+        inventoryGenerationSingleTag = (ItemInventoryGenSingleTag) new ItemInventoryGenSingleTag().setUnlocalizedName("inventoryGenerationSingleTag");
         inventoryGenerationSingleTag.setCreativeTab(tabInventoryGenerators);
         register(inventoryGenerationSingleTag, "inventory_generation_single_tag");
         RecurrentComplex.cremapper.registerLegacyIDs(inventoryGenerationSingleTag, "inventoryGenerationSingleTag");
 
-        inventoryGenerationComponentTag = (ItemInventoryGenComponentTag) new ItemInventoryGenComponentTag().setUnlocalizedName("inventoryGenerationComponentTag").setTextureName(textureBase + "inventoryGenerationComponentTag");
+        inventoryGenerationComponentTag = (ItemInventoryGenComponentTag) new ItemInventoryGenComponentTag().setUnlocalizedName("inventoryGenerationComponentTag");
         inventoryGenerationComponentTag.setCreativeTab(tabInventoryGenerators);
         register(inventoryGenerationComponentTag, "inventory_generation_component_tag");
 
-        artifactGenerationTag = new ItemArtifactGenerator().setUnlocalizedName("artifactGenerationTag").setTextureName(textureBase + "artifactGenerationTag");
+        artifactGenerationTag = new ItemArtifactGenerator().setUnlocalizedName("artifactGenerationTag");
         artifactGenerationTag.setCreativeTab(tabInventoryGenerators);
         register(artifactGenerationTag, "artifact_generation_tag");
         RecurrentComplex.cremapper.registerLegacyIDs(artifactGenerationTag, "artifactGenerationTag");
 
-        bookGenerationTag = new ItemBookGenerator().setUnlocalizedName("bookGenerationTag").setTextureName(textureBase + "bookGenerationTag");
+        bookGenerationTag = new ItemBookGenerator().setUnlocalizedName("bookGenerationTag");
         bookGenerationTag.setCreativeTab(tabInventoryGenerators);
         register(bookGenerationTag, "book_generation_tag");
         RecurrentComplex.cremapper.registerLegacyIDs(bookGenerationTag, "bookGenerationTag");
 
-        genericSpace = new BlockGenericSpace().setBlockName("negativeSpace").setBlockTextureName(textureBase + "negativeSpace");
+        genericSpace = new BlockGenericSpace().setUnlocalizedName("negativeSpace");
         genericSpace.setCreativeTab(tabStructureTools);
         register(genericSpace, ItemBlockNegativeSpace.class, "generic_space");
         RecurrentComplex.cremapper.registerLegacyIDs(genericSpace, true, "negativeSpace");
 
-        genericSolid = new BlockGenericSolid().setBlockName("naturalFloor").setBlockTextureName(textureBase + "naturalFloor");
+        genericSolid = new BlockGenericSolid().setUnlocalizedName("naturalFloor");
         genericSolid.setCreativeTab(tabStructureTools);
         register(genericSolid, ItemBlockGenericSolid.class, "generic_solid");
         RecurrentComplex.cremapper.registerLegacyIDs(genericSolid, true, "naturalFloor");
 
-        structureGenerator = new BlockStructureGenerator().setBlockName("structureGenerator").setBlockTextureName(textureBase + "structureGenerator");
+        structureGenerator = new BlockStructureGenerator().setUnlocalizedName("structureGenerator");
         register(structureGenerator, "structure_generator");
         register(TileEntityStructureGenerator.class, "RCStructureGenerator", "SGStructureGenerator");
         RecurrentComplex.cremapper.registerLegacyIDs(structureGenerator, true, "structureGenerator");
 
-        mazeGenerator = new BlockMazeGenerator().setBlockName("mazeGenerator").setBlockTextureName(textureBase + "mazeGenerator");
+        mazeGenerator = new BlockMazeGenerator().setUnlocalizedName("mazeGenerator");
         register(mazeGenerator, "maze_generator");
         register(TileEntityMazeGenerator.class, "RCMazeGenerator", "SGMazeGenerator");
         RecurrentComplex.cremapper.registerLegacyIDs(mazeGenerator, true, "mazeGenerator");
 
-        spawnCommands = new BlockSpawnCommand().setBlockName("spawn_command").setBlockTextureName(textureBase + "spawnCommand");
+        spawnCommands = new BlockSpawnCommand().setUnlocalizedName("spawn_command");
         register(spawnCommands, "weighted_command_block");
         register(TileEntitySpawnCommand.class, "RCSpawnCommand");
         RecurrentComplex.cremapper.registerLegacyIDs(spawnCommands, true, "spawnCommand");
 
-        spawnScript = new BlockSpawnScript().setBlockName("spawn_script").setBlockTextureName(textureBase + "spawnScript");
+        spawnScript = new BlockSpawnScript().setUnlocalizedName("spawn_script");
         spawnScript.setCreativeTab(tabStructureTools);
         register(spawnScript, "spawn_script");
         register(TileEntitySpawnScript.class, "RCSpawnScript");
@@ -166,7 +168,7 @@ public class RCRegistryHandler
         if (!RecurrentComplex.isLite())
             GameRegistry.registerItem(item, id);
         else
-            specialRegistry.register(FMLUtils.addPrefix(id), item);
+            specialRegistry.register(new ResourceLocation(FMLUtils.addPrefix(id)), item);
     }
 
     public static void register(Block block, String id)
@@ -175,8 +177,8 @@ public class RCRegistryHandler
             GameRegistry.registerBlock(block, id);
         else
         {
-            specialRegistry.register(FMLUtils.addPrefix(id), block);
-            specialRegistry.register(FMLUtils.addPrefix(id), new ItemBlock(block));
+            specialRegistry.register(new ResourceLocation(FMLUtils.addPrefix(id)), block);
+            specialRegistry.register(new ResourceLocation(FMLUtils.addPrefix(id)), new ItemBlock(block));
         }
     }
 
@@ -186,13 +188,13 @@ public class RCRegistryHandler
             GameRegistry.registerBlock(block, itemClass, id, itemArgs);
         else
         {
-            specialRegistry.register(FMLUtils.addPrefix(id), block);
+            specialRegistry.register(new ResourceLocation(FMLUtils.addPrefix(id)), block);
             Item item = FMLUtils.constructItem(block, itemClass, itemArgs);
-            if (item != null) specialRegistry.register(FMLUtils.addPrefix(id), item);
+            if (item != null) specialRegistry.register(new ResourceLocation(FMLUtils.addPrefix(id)), item);
         }
     }
 
-    public static void register(Class<? extends TileEntity> tileEntity, String id, String...alternatives)
+    public static void register(Class<? extends TileEntity> tileEntity, String id, String... alternatives)
     {
         if (!RecurrentComplex.isLite())
             GameRegistry.registerTileEntityWithAlternatives(tileEntity, id, alternatives);
@@ -244,8 +246,6 @@ public class RCRegistryHandler
         RCInventoryGenerators.registerVanillaInventoryGenerators();
 //        MapGenStructureIO.func_143031_a(GenericVillagePiece.class, "RcGSP");
 //        VillagerRegistry.instance().registerVillageCreationHandler(new GenericVillageCreationHandler("DesertHut"));
-
-        RCBlockRendering.negativeSpaceRenderID = RenderingRegistry.getNextAvailableRenderId();
     }
 
     protected static void registerDimensionPresets()
@@ -315,7 +315,7 @@ public class RCRegistryHandler
     {
         WeightedBlockStatePresets.instance().register("clear");
 
-        WeightedBlockStatePresets.instance().register("allWool",  IntStream.range(0, 16).mapToObj(i -> new WeightedBlockState(null, BlockStates.fromMetadata(Blocks.wool, i), "")).collect(Collectors.toList()));
+        WeightedBlockStatePresets.instance().register("allWool", Stream.of(EnumDyeColor.values()).map(c -> new WeightedBlockState(null, Blocks.wool.getDefaultState().withProperty(BlockColored.COLOR, c), "")).collect(Collectors.toList()));
         WeightedBlockStatePresets.instance().setDefault("allWool");
     }
 }

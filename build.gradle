@@ -1,6 +1,6 @@
 buildscript {
     repositories {
-        mavenCentral()
+        jcenter()
         maven {
             name = "forge"
             url = "http://files.minecraftforge.net/maven"
@@ -11,11 +11,12 @@ buildscript {
         }
     }
     dependencies {
-        classpath 'net.minecraftforge.gradle:ForgeGradle:1.2-SNAPSHOT'
+        classpath 'net.minecraftforge.gradle:ForgeGradle:2.0-SNAPSHOT'
     }
 }
 
-apply plugin: 'forge'
+apply plugin: 'net.minecraftforge.gradle.forge'
+apply plugin: 'maven-publish'
 
 version = "0.9.7.1"
 def ENV = System.getenv()
@@ -27,38 +28,14 @@ group= "ivorius.reccomplex" // http://maven.apache.org/guides/mini/guide-naming-
 archivesBaseName = "RecurrentComplex"
 
 minecraft {
-    version = "1.7.10-10.13.4.1558-1.7.10"
+    version = "1.8-11.14.4.1563"
     runDir = "eclipse"
+    mappings = "stable_18"
+    useDepAts = true
 }
-
-// Provided - Start
-// FML doesnt load coremods and ATs from the classpath
-
-apply plugin: 'idea'
-
-configurations {
-    provided
-//    provided.extendsFrom(compile)
-}
-
-sourceSets {
-    main {
-        compileClasspath += [configurations.provided]
-    }
-}
-
-idea.module.inheritOutputDirs = true
-
-idea {
-    module {
-        scopes.PROVIDED.plus += [configurations.provided]
-    }
-}
-
-// Provided - Stop
 
 dependencies {
-    provided 'ivorius.ivtoolkit:IvToolkit:1.2.1:dev'
+    deobfCompile 'ivorius.ivtoolkit:IvToolkit:1.2.2'
 }
 
 processResources
@@ -81,97 +58,36 @@ processResources
     }
 }
 
-// FML doesnt laod coremods and ATs from the classpath
-task copyMods(type: Copy, dependsOn: "extractUserDev") {
-    from { configurations.provided }
-    include "**/*.jar"
-    into file(minecraft.runDir + "/mods")
-    mustRunAfter "deobfBinJar"
-    mustRunAfter "repackMinecraft"
-}
-tasks.setupDevWorkspace.dependsOn copyMods
-tasks.setupDecompWorkspace.dependsOn copyMods
-
-
 sourceCompatibility = 1.8
 targetCompatibility = 1.8
 
-
-task sourceJar(type: Jar) {
-    from sourceSets.main.allSource
-    classifier = 'sources'
-}
-
-task deobfJar(type: Jar) {
-    from sourceSets.main.output
-    classifier = 'dev'
-}
-
-artifacts {
-    archives sourceJar
-    archives deobfJar
-}
-
-uploadArchives() {
-    dependsOn reobf
-
-    if (project.hasProperty("mavenUrl") && project.hasProperty("mavenUser") && project.hasProperty("mavenPassword")) {
-        repositories {
-            logger.info('Publishing to files server')
-
-            mavenDeployer {
-
-                repository(url: project."mavenUrl") {
-                    authentication(userName: project."mavenUser", password: project."mavenPassword")
-                }
-
-                addFilter('deobf') {artifact, file ->
-                    artifact.attributes['classifier'] == 'dev'
-                }
-                pom('deobf').version = project.version
-                addFilter('sources') {artifact, file ->
-                    artifact.attributes['classifier'] == 'sources'
-                }
-                pom('sources').version = project.version
-                addFilter('universal') {artifact, file ->
-                    artifact.attributes['classifier'] == null
-                }
-                pom('universal').version = project.version
-
-                pom {
-                    groupId = project.group
-                    version = project.version
-                    artifactId = project.archivesBaseName
-                    project {
-                        name project.archivesBaseName
-                        packaging 'jar'
-                        description 'Handles structures for the game Minecraft'
-                        url 'https://github.com/Ivorforce/RecurrentComplex'
-
-                        scm {
-                            url 'scm:git:git@github.com:Ivorforce/RecurrentComplex.git'
-                            connection 'scm:git:git@github.com:Ivorforce/RecurrentComplex.git'
-                            developerConnection 'scm:git:git@github.com:Ivorforce/RecurrentComplex.git'
-                        }
-
-                        issueManagement {
-                            system 'github'
-                            url 'https://github.com/Ivorforce/RecurrentComplex/issues'
-                        }
-
-                        developers {
-                            developer {
-                                id 'Ivorius'
-                                name 'Ivorius'
-                                roles { role 'developer' }
-                            }
-                        }
-                    }
-                }
+publishing {
+    tasks.publish.dependsOn 'build'
+    publications {
+        mavenJava(MavenPublication) {
+            artifact jar
+            artifact sourceJar
+        }
+        mavenCustom(MavenPublication) {
+            pom.withXml {
+                asNode().appendNode('description', 'Handles structures for the game Minecraft')
+                asNode().appendNode('url', 'https://github.com/Ivorforce/RecurrentComplex')
             }
         }
     }
-    else {
-        logger.log(LogLevel.ERROR, 'No upload variables defined!');
+    repositories {
+        if (project.hasProperty('mavenUrl')) {
+            maven {
+                url project."mavenUrl"
+                if (project.hasProperty('mavenUser') && project.hasProperty('mavenPassword')) {
+                    credentials {
+                        username project."mavenUser"
+                        password project."mavenPassword"
+                    }
+                }
+            }
+        } else {
+            mavenLocal()
+        }
     }
 }

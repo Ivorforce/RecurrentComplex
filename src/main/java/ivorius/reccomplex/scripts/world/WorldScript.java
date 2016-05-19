@@ -5,7 +5,7 @@
 
 package ivorius.reccomplex.scripts.world;
 
-import ivorius.ivtoolkit.blocks.BlockCoord;
+import net.minecraft.util.BlockPos;
 import ivorius.ivtoolkit.tools.NBTCompoundObject;
 import ivorius.reccomplex.gui.table.TableDataSource;
 import ivorius.reccomplex.gui.table.TableDelegate;
@@ -22,11 +22,11 @@ import net.minecraft.world.World;
  */
 public interface WorldScript<S extends NBTStorable> extends NBTCompoundObject
 {
-    S prepareInstanceData(StructurePrepareContext context, BlockCoord coord, World world);
+    S prepareInstanceData(StructurePrepareContext context, BlockPos coord, World world);
 
     S loadInstanceData(StructureLoadContext context, NBTBase nbt);
 
-    void generate(StructureSpawnContext context, S instanceData, BlockCoord coord);
+    void generate(StructureSpawnContext context, S instanceData, BlockPos coord);
 
     String getDisplayString();
 

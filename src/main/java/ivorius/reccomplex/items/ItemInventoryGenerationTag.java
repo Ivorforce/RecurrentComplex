@@ -17,6 +17,8 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagString;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.BlockPos;
+import net.minecraft.util.EnumFacing;
 import net.minecraft.util.StatCollector;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.Constants;
@@ -29,9 +31,9 @@ public abstract class ItemInventoryGenerationTag extends Item implements Generat
     {
     }
 
-    public static boolean applyGeneratorToInventory(World world, int x, int y, int z, GeneratingItem generatingItem, ItemStack stack)
+    public static boolean applyGeneratorToInventory(World world, BlockPos pos, GeneratingItem generatingItem, ItemStack stack)
     {
-        TileEntity rightClicked = world.getTileEntity(x, y, z);
+        TileEntity rightClicked = world.getTileEntity(pos);
 
         if (rightClicked instanceof IInventory)
         {
@@ -51,9 +53,9 @@ public abstract class ItemInventoryGenerationTag extends Item implements Generat
     {
         if (stack.hasTagCompound() && stack.getTagCompound().hasKey("itemCollectionKey", Constants.NBT.TAG_STRING))
             return stack.getTagCompound().getString("itemCollectionKey");
-        if (stack.stackTagCompound != null && stack.stackTagCompound.hasKey("display", Constants.NBT.TAG_COMPOUND)) // Legacy - Display Name
+        if (stack.getTagCompound() != null && stack.getTagCompound().hasKey("display", Constants.NBT.TAG_COMPOUND)) // Legacy - Display Name
         {
-            NBTTagCompound nbttagcompound = stack.stackTagCompound.getCompoundTag("display");
+            NBTTagCompound nbttagcompound = stack.getTagCompound().getCompoundTag("display");
             if (nbttagcompound.hasKey("Name", Constants.NBT.TAG_STRING))
                 return nbttagcompound.getString("Name");
         }
@@ -72,9 +74,9 @@ public abstract class ItemInventoryGenerationTag extends Item implements Generat
     }
 
     @Override
-    public boolean onItemUse(ItemStack usedItem, EntityPlayer player, World world, int x, int y, int z, int par7, float par8, float par9, float par10)
+    public boolean onItemUse(ItemStack stack, EntityPlayer playerIn, World worldIn, BlockPos pos, EnumFacing side, float hitX, float hitY, float hitZ)
     {
-        return applyGeneratorToInventory(world, x, y, z, this, usedItem);
+        return applyGeneratorToInventory(worldIn, pos, this, stack);
     }
 
     @Override

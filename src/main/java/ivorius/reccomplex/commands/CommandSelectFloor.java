@@ -7,7 +7,9 @@ package ivorius.reccomplex.commands;
 
 import ivorius.ivtoolkit.blocks.BlockArea;
 import ivorius.ivtoolkit.blocks.BlockAreas;
-import ivorius.ivtoolkit.blocks.BlockCoord;
+import net.minecraft.block.state.IBlockState;
+import net.minecraft.command.NumberInvalidException;
+import net.minecraft.util.BlockPos;
 import ivorius.reccomplex.RCConfig;
 import ivorius.reccomplex.blocks.RCBlocks;
 import ivorius.reccomplex.entities.StructureEntityInfo;
@@ -18,7 +20,7 @@ import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.util.MathHelper;
 import net.minecraft.world.World;
-import net.minecraftforge.common.util.ForgeDirection;
+import net.minecraft.util.EnumFacing;
 
 import java.util.HashSet;
 import java.util.List;
@@ -33,28 +35,28 @@ public class CommandSelectFloor extends CommandSelectModify
     {
         lowerExpansion += 0.01; // Rounding and stuff
 
-        Block floorBlock = RCBlocks.genericSolid;
+        IBlockState floorBlock = RCBlocks.genericSolid.getDefaultState();
         Block airBlock1 = RCBlocks.genericSpace;
 
-        BlockCoord lowerPoint = area.getLowerCorner();
-        BlockCoord higherPoint = area.getHigherCorner();
+        BlockPos lowerPoint = area.getLowerCorner();
+        BlockPos higherPoint = area.getHigherCorner();
 
-        Set<BlockCoord> stopped = new HashSet<>();
-        Set<BlockCoord> stopping = new HashSet<>();
+        Set<BlockPos> stopped = new HashSet<>();
+        Set<BlockPos> stopping = new HashSet<>();
 
-        for (int y = lowerPoint.y + 1; y <= higherPoint.y; y++)
+        for (int y = lowerPoint.getY() + 1; y <= higherPoint.getY(); y++)
         {
-            for (BlockCoord surfaceCoord : BlockAreas.side(area, ForgeDirection.DOWN))
+            for (BlockPos surfaceCoord : BlockAreas.side(area, EnumFacing.DOWN))
             {
                 if (!stopped.contains(surfaceCoord))
                 {
-                    Block block = world.getBlock(surfaceCoord.x, y, surfaceCoord.z);
+                    IBlockState block = world.getBlockState(new BlockPos(surfaceCoord.getX(), y, surfaceCoord.getZ()));
 
-                    if ((block.getMaterial() != Material.air && block != airBlock1))
+                    if ((block.getBlock().getMaterial() != Material.air && block.getBlock() != airBlock1))
                     {
-                        if (block.isNormalCube(world, surfaceCoord.x, y, surfaceCoord.z) && block != floorBlock && y > lowerPoint.y)
+                        if (block.getBlock().isNormalCube(world, new BlockPos(surfaceCoord.getX(), y, surfaceCoord.getZ())) && block != floorBlock && y > lowerPoint.getY())
                         {
-                            setBlockIfAirInArea(world, new BlockCoord(surfaceCoord.x, y - 1, surfaceCoord.z), floorBlock, area);
+                            setBlockIfAirInArea(world, new BlockPos(surfaceCoord.getX(), y - 1, surfaceCoord.getZ()), floorBlock, area);
 
                             fillSurface(world, area, lowerExpansion, floorBlock, surfaceCoord, y, stopping);
                         }
@@ -67,7 +69,7 @@ public class CommandSelectFloor extends CommandSelectModify
         }
     }
 
-    private static void fillSurface(World world, BlockArea area, double expansion, Block floorBlock, BlockCoord surfaceCoord, int y, Set<BlockCoord> coords)
+    private static void fillSurface(World world, BlockArea area, double expansion, IBlockState floorBlock, BlockPos surfaceCoord, int y, Set<BlockPos> coords)
     {
         for (int expX = MathHelper.ceiling_double_int(-expansion); expX <= expansion; expX++)
         {
@@ -75,7 +77,7 @@ public class CommandSelectFloor extends CommandSelectModify
             {
                 if (expX * expX + expZ * expZ <= expansion * expansion)
                 {
-                    BlockCoord coord = new BlockCoord(surfaceCoord.x + expX, y - 1, surfaceCoord.z + expZ);
+                    BlockPos coord = new BlockPos(surfaceCoord.getX() + expX, y - 1, surfaceCoord.getZ() + expZ);
                     setBlockIfAirInArea(world, coord, floorBlock, area);
                     coords.add(coord);
                 }
@@ -83,13 +85,13 @@ public class CommandSelectFloor extends CommandSelectModify
         }
     }
 
-    public static void setBlockIfAirInArea(World world, BlockCoord coord, Block block, BlockArea area)
+    public static void setBlockIfAirInArea(World world, BlockPos coord, IBlockState block, BlockArea area)
     {
         if (area.contains(coord))
         {
-            Block prevBlock = world.getBlock(coord.x, coord.y, coord.z);
-            if (prevBlock.getMaterial() == Material.air || prevBlock == RCBlocks.genericSpace)
-                world.setBlock(coord.x, coord.y, coord.z, block);
+            IBlockState prevBlock = world.getBlockState(coord);
+            if (prevBlock.getBlock().getMaterial() == Material.air || prevBlock.getBlock() == RCBlocks.genericSpace)
+                world.setBlockState(coord, block);
         }
     }
 
@@ -106,22 +108,22 @@ public class CommandSelectFloor extends CommandSelectModify
     }
 
     @Override
-    public void processCommandSelection(EntityPlayerMP player, StructureEntityInfo structureEntityInfo, BlockCoord point1, BlockCoord point2, String[] args)
+    public void processCommandSelection(EntityPlayerMP player, StructureEntityInfo structureEntityInfo, BlockPos point1, BlockPos point2, String[] args) throws NumberInvalidException
     {
         World world = player.getEntityWorld();
 
         BlockArea area = new BlockArea(point1, point2);
-        double expandFloor = args.length >= 1 ? parseDouble(player, args[0]) : 1;
+        double expandFloor = args.length >= 1 ? parseDouble(args[0]) : 1;
 
         placeNaturalFloor(world, area, expandFloor);
     }
 
     @Override
-    public List addTabCompletionOptions(ICommandSender commandSender, String[] args)
+    public List addTabCompletionOptions(ICommandSender commandSender, String[] args, BlockPos pos)
     {
         if (args.length == 1)
             return getListOfStringsMatchingLastWord(args, "0", "1", "2");
 
-        return super.addTabCompletionOptions(commandSender, args);
+        return super.addTabCompletionOptions(commandSender, args, pos);
     }
 }

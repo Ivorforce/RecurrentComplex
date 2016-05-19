@@ -5,7 +5,8 @@
 
 package ivorius.reccomplex.structures.generic.maze;
 
-import ivorius.ivtoolkit.blocks.BlockCoord;
+import ivorius.ivtoolkit.blocks.BlockPositions;
+import net.minecraft.util.BlockPos;
 import ivorius.ivtoolkit.math.AxisAlignedTransform2D;
 import ivorius.ivtoolkit.tools.NBTCompoundObject;
 import ivorius.reccomplex.structures.StructureInfo;
@@ -23,11 +24,11 @@ public class PlacedStructure implements NBTCompoundObject
 {
     public String structureID;
     public AxisAlignedTransform2D transform;
-    public BlockCoord lowerCoord;
+    public BlockPos lowerCoord;
 
     public NBTStorable instanceData;
 
-    public PlacedStructure(String structureID, AxisAlignedTransform2D transform, BlockCoord lowerCoord, NBTStorable instanceData)
+    public PlacedStructure(String structureID, AxisAlignedTransform2D transform, BlockPos lowerCoord, NBTStorable instanceData)
     {
         this.structureID = structureID;
         this.transform = transform;
@@ -40,7 +41,7 @@ public class PlacedStructure implements NBTCompoundObject
     {
         structureID = compound.getString("structureID");
         transform = AxisAlignedTransform2D.from(compound.getInteger("rotation"), compound.getBoolean("mirrorX"));
-        lowerCoord = BlockCoord.readCoordFromNBT("lowerCoord", compound);
+        lowerCoord = BlockPositions.readFromNBT("lowerCoord", compound);
 
         StructureInfo structureInfo = StructureRegistry.INSTANCE.getStructure(structureID);
 
@@ -55,7 +56,7 @@ public class PlacedStructure implements NBTCompoundObject
         compound.setString("structureID", structureID);
         compound.setInteger("rotation", transform.getRotation());
         compound.setBoolean("mirrorX", transform.isMirrorX());
-        BlockCoord.writeCoordToNBT("lowerCoord", lowerCoord, compound);
+        BlockPositions.writeToNBT("lowerCoord", lowerCoord, compound);
         if (instanceData != null)
             compound.setTag("instanceData", instanceData.writeToNBT());
     }

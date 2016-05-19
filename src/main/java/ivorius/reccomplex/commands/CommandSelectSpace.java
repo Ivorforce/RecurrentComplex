@@ -7,7 +7,9 @@ package ivorius.reccomplex.commands;
 
 import ivorius.ivtoolkit.blocks.BlockArea;
 import ivorius.ivtoolkit.blocks.BlockAreas;
-import ivorius.ivtoolkit.blocks.BlockCoord;
+import net.minecraft.block.state.IBlockState;
+import net.minecraft.command.NumberInvalidException;
+import net.minecraft.util.BlockPos;
 import ivorius.reccomplex.RCConfig;
 import ivorius.reccomplex.blocks.RCBlocks;
 import ivorius.reccomplex.entities.StructureEntityInfo;
@@ -17,7 +19,7 @@ import net.minecraft.block.material.Material;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.world.World;
-import net.minecraftforge.common.util.ForgeDirection;
+import net.minecraft.util.EnumFacing;
 
 import java.util.List;
 
@@ -26,35 +28,33 @@ import java.util.List;
  */
 public class CommandSelectSpace extends CommandSelectModify
 {
-    public static int sidesClosed(World world, BlockCoord coord, BlockArea area)
+    public static int sidesClosed(World world, BlockPos coord, BlockArea area)
     {
         int sides = 0;
 
-        BlockCoord lower = area.getLowerCorner();
-        BlockCoord higher = area.getHigherCorner();
+        BlockPos lower = area.getLowerCorner();
+        BlockPos higher = area.getHigherCorner();
 
-        if (sideClosed(world, new BlockCoord(lower.x, coord.y, coord.z), coord.x - lower.x, 1, 0, 0))
+        if (sideClosed(world, new BlockPos(lower.getX(), coord.getY(), coord.getZ()), coord.getX() - lower.getX(), 1, 0, 0))
             sides++;
-        if (sideClosed(world, new BlockCoord(higher.x, coord.y, coord.z), higher.x - coord.x, -1, 0, 0))
+        if (sideClosed(world, new BlockPos(higher.getX(), coord.getY(), coord.getZ()), higher.getX() - coord.getX(), -1, 0, 0))
             sides++;
-        if (sideClosed(world, new BlockCoord(coord.x, coord.y, lower.z), coord.z - lower.z, 0, 0, 1))
+        if (sideClosed(world, new BlockPos(coord.getX(), coord.getY(), lower.getZ()), coord.getZ() - lower.getZ(), 0, 0, 1))
             sides++;
-        if (sideClosed(world, new BlockCoord(coord.x, coord.y, higher.z), higher.z - coord.z, 0, 0, -1))
+        if (sideClosed(world, new BlockPos(coord.getX(), coord.getY(), higher.getZ()), higher.getZ() - coord.getZ(), 0, 0, -1))
             sides++;
 
         return sides;
     }
 
-    public static boolean sideClosed(World world, BlockCoord coord, int iterations, int xP, int yP, int zP)
+    public static boolean sideClosed(World world, BlockPos coord, int iterations, int xP, int yP, int zP)
     {
         for (int i = 0; i < iterations; i++)
         {
-            int x = coord.x + xP * i;
-            int y = coord.y + yP * i;
-            int z = coord.z + zP * i;
-            Block block = world.getBlock(x, y, z);
+            BlockPos pos = coord.add(xP * i, yP * i, zP * i);
+            IBlockState blockState = world.getBlockState(pos);
 
-            if (!block.isReplaceable(world, x, y, z))
+            if (!blockState.getBlock().isReplaceable(world, pos))
                 return true;
         }
 
@@ -65,34 +65,34 @@ public class CommandSelectSpace extends CommandSelectModify
     {
         Block spaceBlock = RCBlocks.genericSpace;
 
-        BlockCoord lowerPoint = area.getLowerCorner();
-        BlockCoord higherPoint = area.getHigherCorner();
+        BlockPos lowerPoint = area.getLowerCorner();
+        BlockPos higherPoint = area.getHigherCorner();
 
-        for (BlockCoord surfaceCoord : BlockAreas.side(area, ForgeDirection.DOWN))
+        for (BlockPos surfaceCoord : BlockAreas.side(area, EnumFacing.DOWN))
         {
-            int safePoint = lowerPoint.y;
+            int safePoint = lowerPoint.getY();
 
-            for (int y = higherPoint.y; y >= lowerPoint.y; y--)
+            for (int y = higherPoint.getY(); y >= lowerPoint.getY(); y--)
             {
-                Block block = world.getBlock(surfaceCoord.x, y, surfaceCoord.z);
+                IBlockState blockState = world.getBlockState(new BlockPos(surfaceCoord.getX(), y, surfaceCoord.getZ()));
 
-                if ((block.getMaterial() != Material.air && block != spaceBlock) || sidesClosed(world, new BlockCoord(surfaceCoord.x, y, surfaceCoord.z), area) >= maxClosedSides)
+                if ((blockState.getBlock().getMaterial() != Material.air && blockState.getBlock() != spaceBlock) || sidesClosed(world, new BlockPos(surfaceCoord.getX(), y, surfaceCoord.getZ()), area) >= maxClosedSides)
                 {
-                    safePoint = y + (block == RCBlocks.genericSolid ? 1 : floorDistance);
+                    safePoint = y + (blockState.getBlock() == RCBlocks.genericSolid ? 1 : floorDistance);
                     break;
                 }
             }
 
-            for (int y = safePoint; y <= higherPoint.y; y++)
-                world.setBlock(surfaceCoord.x, y, surfaceCoord.z, spaceBlock);
+            for (int y = safePoint; y <= higherPoint.getY(); y++)
+                world.setBlockState(new BlockPos(surfaceCoord.getX(), y, surfaceCoord.getZ()), spaceBlock.getDefaultState());
 
-            if (safePoint > lowerPoint.y)
+            if (safePoint > lowerPoint.getY())
             {
-                for (int y = lowerPoint.y; y <= higherPoint.y; y++)
+                for (int y = lowerPoint.getY(); y <= higherPoint.getY(); y++)
                 {
-                    Block block = world.getBlock(surfaceCoord.x, y, surfaceCoord.z);
+                    IBlockState blockState = world.getBlockState(new BlockPos(surfaceCoord.getX(), y, surfaceCoord.getZ()));
 
-                    if ((block.getMaterial() != Material.air && block != spaceBlock) || sidesClosed(world, new BlockCoord(surfaceCoord.x, y, surfaceCoord.z), area) >= maxClosedSides)
+                    if ((blockState.getBlock().getMaterial() != Material.air && blockState.getBlock() != spaceBlock) || sidesClosed(world, new BlockPos(surfaceCoord.getX(), y, surfaceCoord.getZ()), area) >= maxClosedSides)
                     {
                         safePoint = y - 1;
                         break;
@@ -100,8 +100,8 @@ public class CommandSelectSpace extends CommandSelectModify
                 }
             }
 
-            for (int y = lowerPoint.y; y <= safePoint; y++)
-                world.setBlock(surfaceCoord.x, y, surfaceCoord.z, spaceBlock);
+            for (int y = lowerPoint.getY(); y <= safePoint; y++)
+                world.setBlockState(new BlockPos(surfaceCoord.getX(), y, surfaceCoord.getZ()), spaceBlock.getDefaultState());
         }
     }
 
@@ -118,26 +118,26 @@ public class CommandSelectSpace extends CommandSelectModify
     }
 
     @Override
-    public void processCommandSelection(EntityPlayerMP player, StructureEntityInfo structureEntityInfo, BlockCoord point1, BlockCoord point2, String[] args)
+    public void processCommandSelection(EntityPlayerMP player, StructureEntityInfo structureEntityInfo, BlockPos point1, BlockPos point2, String[] args) throws NumberInvalidException
     {
         World world = player.getEntityWorld();
 
         BlockArea area = new BlockArea(point1, point2);
 
-        int floorDistance = args.length >= 1 ? parseInt(player, args[0]) : 3;
-        int maxClosedSides = args.length >= 2 ? parseInt(player, args[1]) : 3;
+        int floorDistance = args.length >= 1 ? parseInt(args[0]) : 3;
+        int maxClosedSides = args.length >= 2 ? parseInt(args[1]) : 3;
 
         placeNaturalAir(world, area, floorDistance, maxClosedSides);
     }
 
     @Override
-    public List addTabCompletionOptions(ICommandSender commandSender, String[] args)
+    public List addTabCompletionOptions(ICommandSender commandSender, String[] args, BlockPos pos)
     {
         if (args.length == 1)
             return getListOfStringsMatchingLastWord(args, "3", "2", "1");
         else if (args.length == 2)
             return getListOfStringsMatchingLastWord(args, "3", "4", "5");
 
-        return super.addTabCompletionOptions(commandSender, args);
+        return super.addTabCompletionOptions(commandSender, args, pos);
     }
 }

@@ -5,7 +5,8 @@
 
 package ivorius.reccomplex.scripts.world;
 
-import ivorius.ivtoolkit.blocks.BlockCoord;
+import ivorius.ivtoolkit.blocks.BlockPositions;
+import net.minecraft.util.BlockPos;
 import ivorius.ivtoolkit.blocks.Directions;
 import ivorius.ivtoolkit.math.AxisAlignedTransform2D;
 import ivorius.ivtoolkit.random.WeightedSelector;
@@ -26,7 +27,7 @@ import net.minecraft.nbt.NBTTagString;
 import net.minecraft.world.World;
 import net.minecraft.world.gen.structure.StructureBoundingBox;
 import net.minecraftforge.common.util.Constants;
-import net.minecraftforge.common.util.ForgeDirection;
+import net.minecraft.util.EnumFacing;
 import org.apache.commons.lang3.tuple.Pair;
 
 import java.util.*;
@@ -38,11 +39,11 @@ public class WorldScriptStructureGenerator implements WorldScript<WorldScriptStr
 {
     protected boolean simpleMode;
 
-    protected BlockCoord structureShift = new BlockCoord(0, 0, 0);
+    protected BlockPos structureShift = new BlockPos(0, 0, 0);
 
     // List Type
     protected String structureListID = "";
-    protected ForgeDirection front;
+    protected EnumFacing front;
 
     // Simple Type
     protected List<String> structureNames = new ArrayList<>();
@@ -59,12 +60,12 @@ public class WorldScriptStructureGenerator implements WorldScript<WorldScriptStr
         this.simpleMode = simpleMode;
     }
 
-    public BlockCoord getStructureShift()
+    public BlockPos getStructureShift()
     {
         return structureShift;
     }
 
-    public void setStructureShift(BlockCoord structureShift)
+    public void setStructureShift(BlockPos structureShift)
     {
         this.structureShift = structureShift;
     }
@@ -79,12 +80,12 @@ public class WorldScriptStructureGenerator implements WorldScript<WorldScriptStr
         this.structureListID = structureListID;
     }
 
-    public ForgeDirection getFront()
+    public EnumFacing getFront()
     {
         return front;
     }
 
-    public void setFront(ForgeDirection front)
+    public void setFront(EnumFacing front)
     {
         this.front = front;
     }
@@ -122,7 +123,7 @@ public class WorldScriptStructureGenerator implements WorldScript<WorldScriptStr
     @Override
     public void readFromNBT(NBTTagCompound nbtTagCompound)
     {
-        structureShift = BlockCoord.readCoordFromNBT("structureShift", nbtTagCompound);
+        structureShift = BlockPositions.readFromNBT("structureShift", nbtTagCompound);
 
         simpleMode = !nbtTagCompound.hasKey("simpleMode", Constants.NBT.TAG_BYTE)
                 || nbtTagCompound.getBoolean("simpleMode"); // Legacy
@@ -143,7 +144,7 @@ public class WorldScriptStructureGenerator implements WorldScript<WorldScriptStr
     @Override
     public void writeToNBT(NBTTagCompound nbtTagCompound)
     {
-        BlockCoord.writeCoordToNBT("structureShift", structureShift, nbtTagCompound);
+        BlockPositions.writeToNBT("structureShift", structureShift, nbtTagCompound);
 
         nbtTagCompound.setBoolean("simpleMode", simpleMode);
 
@@ -170,7 +171,7 @@ public class WorldScriptStructureGenerator implements WorldScript<WorldScriptStr
     }
 
     @Override
-    public InstanceData prepareInstanceData(StructurePrepareContext context, BlockCoord coord, World world)
+    public InstanceData prepareInstanceData(StructurePrepareContext context, BlockPos coord, World world)
     {
         WorldScriptStructureGenerator.InstanceData instanceData = null;
         Random random = context.random;
@@ -190,8 +191,8 @@ public class WorldScriptStructureGenerator implements WorldScript<WorldScriptStr
                     AxisAlignedTransform2D strucTransform = AxisAlignedTransform2D.from(rotations, mirrorX);
 
                     int[] strucSize = structureInfo.structureBoundingBox();
-                    BlockCoord strucCoord = transform.apply(structureShift, new int[]{1, 1, 1})
-                            .subtract(transform.apply(new BlockCoord(0, 0, 0), strucSize)).add(coord);
+                    BlockPos strucCoord = transform.apply(structureShift, new int[]{1, 1, 1})
+                            .subtract(transform.apply(new BlockPos(0, 0, 0), strucSize)).add(coord);
 
                     instanceData = new WorldScriptStructureGenerator.InstanceData(structureID, strucCoord, strucTransform, structureInfo.prepareInstanceData(new StructurePrepareContext(random, strucTransform, StructureInfos.structureBoundingBox(strucCoord, strucSize), context.generateAsSource)));
                 }
@@ -212,7 +213,7 @@ public class WorldScriptStructureGenerator implements WorldScript<WorldScriptStr
                 int rotations;
                 if (front != null)
                 {
-                    ForgeDirection curFront = Directions.rotate(front, transform);
+                    EnumFacing curFront = Directions.rotate(front, transform);
                     mirrorX = structureInfo.isMirrorable() && structureInfo.isRotatable() && random.nextBoolean();
                     Integer neededRotations = Directions.getHorizontalClockwiseRotations(curFront, generationInfo.front, mirrorX);
                     rotations = neededRotations != null ? neededRotations : 0;
@@ -226,8 +227,8 @@ public class WorldScriptStructureGenerator implements WorldScript<WorldScriptStr
                 AxisAlignedTransform2D strucTransform = AxisAlignedTransform2D.from(rotations, mirrorX);
 
                 int[] strucSize = structureInfo.structureBoundingBox();
-                BlockCoord strucCoord = transform.apply(structureShift.add(generationInfo.shiftX, generationInfo.shiftY, generationInfo.shiftZ), new int[]{1, 1, 1})
-                        .subtract(transform.apply(new BlockCoord(0, 0, 0), strucSize)).add(coord);
+                BlockPos strucCoord = transform.apply(structureShift.add(generationInfo.shiftX, generationInfo.shiftY, generationInfo.shiftZ), new int[]{1, 1, 1})
+                        .subtract(transform.apply(new BlockPos(0, 0, 0), strucSize)).add(coord);
 
                 instanceData = new WorldScriptStructureGenerator.InstanceData(structureID, strucCoord, strucTransform, structureInfo.prepareInstanceData(new StructurePrepareContext(random, strucTransform, StructureInfos.structureBoundingBox(strucCoord, strucSize), context.generateAsSource)));
             }
@@ -237,7 +238,7 @@ public class WorldScriptStructureGenerator implements WorldScript<WorldScriptStr
     }
 
     @Override
-    public void generate(StructureSpawnContext context, InstanceData instanceData, BlockCoord coord)
+    public void generate(StructureSpawnContext context, InstanceData instanceData, BlockPos coord)
     {
         World world = context.world;
         Random random = context.random;
@@ -263,7 +264,7 @@ public class WorldScriptStructureGenerator implements WorldScript<WorldScriptStr
     public static class InstanceData implements NBTStorable
     {
         public String structureID;
-        public BlockCoord lowerCoord;
+        public BlockPos lowerCoord;
         public AxisAlignedTransform2D structureTransform;
 
         public NBTStorable structureData;
@@ -273,7 +274,7 @@ public class WorldScriptStructureGenerator implements WorldScript<WorldScriptStr
             structureID = "";
         }
 
-        public InstanceData(String structureID, BlockCoord lowerCoord, AxisAlignedTransform2D structureTransform, NBTStorable structureData)
+        public InstanceData(String structureID, BlockPos lowerCoord, AxisAlignedTransform2D structureTransform, NBTStorable structureData)
         {
             this.structureID = structureID;
             this.lowerCoord = lowerCoord;
@@ -284,7 +285,7 @@ public class WorldScriptStructureGenerator implements WorldScript<WorldScriptStr
         public InstanceData(NBTTagCompound compound)
         {
             structureID = compound.getString("structureID");
-            lowerCoord = BlockCoord.readCoordFromNBT("lowerCoord", compound);
+            lowerCoord = BlockPositions.readFromNBT("lowerCoord", compound);
             structureTransform = AxisAlignedTransform2D.from(compound.getInteger("rotation"), compound.getBoolean("mirrorX"));
 
             StructureInfo structureInfo = StructureRegistry.INSTANCE.getStructure(structureID);
@@ -298,7 +299,7 @@ public class WorldScriptStructureGenerator implements WorldScript<WorldScriptStr
             NBTTagCompound compound = new NBTTagCompound();
 
             compound.setString("structureID", structureID);
-            BlockCoord.writeCoordToNBT("lowerCoord", lowerCoord, compound);
+            BlockPositions.writeToNBT("lowerCoord", lowerCoord, compound);
             compound.setInteger("rotation", structureTransform.getRotation());
             compound.setBoolean("mirrorX", structureTransform.isMirrorX());
             compound.setTag("structureData", structureData.writeToNBT());

@@ -6,7 +6,8 @@
 package ivorius.reccomplex.commands;
 
 import ivorius.ivtoolkit.blocks.BlockArea;
-import ivorius.ivtoolkit.blocks.BlockCoord;
+import net.minecraft.command.CommandException;
+import net.minecraft.util.BlockPos;
 import ivorius.ivtoolkit.tools.IvWorldData;
 import ivorius.reccomplex.RCConfig;
 import ivorius.reccomplex.entities.StructureEntityInfo;
@@ -44,7 +45,7 @@ public class CommandExportStructure extends CommandBase
     }
 
     @Override
-    public void processCommand(ICommandSender commandSender, String[] args)
+    public void processCommand(ICommandSender commandSender, String[] args) throws CommandException
     {
         EntityPlayerMP player = getCommandSenderAsPlayer(commandSender);
 
@@ -95,8 +96,8 @@ public class CommandExportStructure extends CommandBase
             saveAsActive = false;
         }
 
-        BlockCoord lowerCoord = area.getLowerCorner();
-        BlockCoord higherCoord = area.getHigherCorner();
+        BlockPos lowerCoord = area.getLowerCorner();
+        BlockPos higherCoord = area.getHigherCorner();
 
         IvWorldData data = new IvWorldData(player.getEntityWorld(), new BlockArea(lowerCoord, higherCoord), true);
         genericStructureInfo.worldDataCompound = data.createTagCompound(lowerCoord);
@@ -104,15 +105,15 @@ public class CommandExportStructure extends CommandBase
     }
 
     @Override
-    public List addTabCompletionOptions(ICommandSender commandSender, String[] args)
+    public List addTabCompletionOptions(ICommandSender commandSender, String[] args, BlockPos pos)
     {
         if (args.length == 1)
-            return getListOfStringsFromIterableMatchingLastWord(args, StructureRegistry.INSTANCE.allStructureIDs());
+            return getListOfStringsMatchingLastWord(args, StructureRegistry.INSTANCE.allStructureIDs());
 
         return null;
     }
 
-    public static GenericStructureInfo getGenericStructureInfo(String name)
+    public static GenericStructureInfo getGenericStructureInfo(String name) throws CommandException
     {
         StructureInfo structureInfo = StructureRegistry.INSTANCE.getStructure(name);
 

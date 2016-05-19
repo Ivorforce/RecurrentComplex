@@ -13,6 +13,8 @@ import ivorius.reccomplex.structures.generic.GenericStructureInfo;
 import net.minecraft.client.gui.GuiButton;
 import org.lwjgl.input.Keyboard;
 
+import java.io.IOException;
+
 /**
  * Created by lukas on 26.05.14.
  */
@@ -47,7 +49,7 @@ public class GuiEditGenericStructure extends GuiScreenModalTable
     }
 
     @Override
-    protected void keyTyped(char keyChar, int keyCode)
+    protected void keyTyped(char keyChar, int keyCode) throws IOException
     {
         if (keyCode != Keyboard.KEY_ESCAPE) // Prevent quitting without saving
         {
@@ -56,7 +58,7 @@ public class GuiEditGenericStructure extends GuiScreenModalTable
     }
 
     @Override
-    protected void actionPerformed(GuiButton button)
+    protected void actionPerformed(GuiButton button) throws IOException
     {
         super.actionPerformed(button);
 

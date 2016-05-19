@@ -15,6 +15,8 @@ import ivorius.reccomplex.structures.YSelector;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockLiquid;
 import net.minecraft.block.material.Material;
+import net.minecraft.block.state.IBlockState;
+import net.minecraft.util.BlockPos;
 import net.minecraft.util.MathHelper;
 import net.minecraft.world.World;
 import net.minecraft.world.gen.structure.StructureBoundingBox;
@@ -119,12 +121,12 @@ public class GenericYSelector implements YSelector
 
     protected static int surfaceHeightUnderwater(World world, int x, int z)
     {
-        int curYWater = world.getTopSolidOrLiquidBlock(x, z);
+        int curYWater = world.getTopSolidOrLiquidBlock(new BlockPos(x, 0, z)).getY();
 
         while (curYWater > 0)
         {
-            Block block = world.getBlock(x, curYWater, z);
-            if (!(block instanceof BlockLiquid || block.getMaterial() == Material.ice))
+            IBlockState blockState = world.getBlockState(new BlockPos(x, curYWater, z));
+            if (!(blockState.getBlock() instanceof BlockLiquid || blockState.getBlock().getMaterial() == Material.ice))
             {
                 curYWater++;
                 break;
@@ -137,12 +139,13 @@ public class GenericYSelector implements YSelector
 
     protected static int surfaceHeight(World world, int x, int z)
     {
-        int curY = world.getTopSolidOrLiquidBlock(x, z);
+        int curY = world.getTopSolidOrLiquidBlock(new BlockPos(x, 0, z)).getY();
 
         while (curY > 0)
         {
-            Block block = world.getBlock(x, curY, z);
-            if (!(block.isFoliage(world, x, curY, z) || block.getMaterial() == Material.leaves || block.getMaterial() == Material.plants || block.getMaterial() == Material.wood))
+            IBlockState blockState = world.getBlockState(new BlockPos(x, curY, z));
+            Material material = blockState.getBlock().getMaterial();
+            if (!(blockState.getBlock().isFoliage(world, new BlockPos(x, curY, z)) || material == Material.leaves || material == Material.plants || material == Material.wood))
             {
                 break;
             }
@@ -151,7 +154,7 @@ public class GenericYSelector implements YSelector
         }
         while (curY < world.getHeight())
         {
-            if (!(world.getBlock(x, curY, z) instanceof BlockLiquid))
+            if (!(world.getBlockState(new BlockPos(x, curY, z)).getBlock() instanceof BlockLiquid))
             {
                 break;
             }
@@ -183,7 +186,7 @@ public class GenericYSelector implements YSelector
         for (int x = boundingBox.minX; x <= boundingBox.maxX; x++)
             for (int z = boundingBox.minZ; z <= boundingBox.maxZ; z++)
             {
-                if (world.blockExists(x, 0, z))
+                if (world.isBlockLoaded(new BlockPos(x, 0, z), false))
                     list.add(selector.select(x, z));
             }
         return list;

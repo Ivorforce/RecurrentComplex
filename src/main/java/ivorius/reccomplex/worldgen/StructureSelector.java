@@ -17,6 +17,7 @@ import ivorius.reccomplex.structures.generic.gentypes.NaturalGenerationInfo;
 import ivorius.ivtoolkit.random.WeightedSelector;
 import ivorius.reccomplex.structures.generic.matchers.DimensionMatcher;
 import ivorius.reccomplex.utils.CustomizableMap;
+import net.minecraft.util.BlockPos;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldProvider;
 import net.minecraft.world.biome.BiomeGenBase;
@@ -98,7 +99,7 @@ public class StructureSelector
     public List<Pair<StructureInfo, NaturalGenerationInfo>> generatedStructures(Random random, int chunkX, int chunkZ, World world, IChunkProvider chunkGenerator, IChunkProvider chunkProvider)
     {
         List<Pair<StructureInfo, NaturalGenerationInfo>> infos = new ArrayList<>();
-        BiomeGenBase biome = world.getBiomeGenForCoords(chunkX * 16, chunkZ * 16);
+        BiomeGenBase biome = world.getBiomeGenForCoords(new BlockPos(chunkX * 16, 0, chunkZ * 16));
 
         weightedStructureInfos.keySet().stream().filter(category -> random.nextFloat() < generationChance(category, biome, world.provider)).forEach(category -> infos.add(WeightedSelector.select(random, weightedStructureInfos.get(category))));
 

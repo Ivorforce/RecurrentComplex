@@ -43,7 +43,7 @@ public class SlotDynamicIndex extends Slot
     }
 
     @Override
-    public boolean isSlotInInventory(IInventory par1IInventory, int par2)
+    public boolean isHere(IInventory par1IInventory, int par2)
     {
         return par1IInventory == this.inventory && par2 == this.slotIndex;
     }

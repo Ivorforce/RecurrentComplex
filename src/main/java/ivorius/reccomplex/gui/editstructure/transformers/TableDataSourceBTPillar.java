@@ -5,16 +5,15 @@
 
 package ivorius.reccomplex.gui.editstructure.transformers;
 
+import ivorius.reccomplex.gui.TableDataSourceBlockState;
 import ivorius.reccomplex.gui.TableDataSourceExpression;
-import ivorius.reccomplex.gui.table.*;
+import ivorius.reccomplex.gui.table.TableDataSourceSegmented;
 import ivorius.reccomplex.structures.generic.transformers.TransformerPillar;
-import ivorius.reccomplex.utils.BlockStates;
-import net.minecraft.block.Block;
 
 /**
  * Created by lukas on 05.06.14.
  */
-public class TableDataSourceBTPillar extends TableDataSourceSegmented implements TableCellPropertyListener
+public class TableDataSourceBTPillar extends TableDataSourceSegmented
 {
     private TransformerPillar transformer;
 
@@ -23,6 +22,7 @@ public class TableDataSourceBTPillar extends TableDataSourceSegmented implements
         this.transformer = transformer;
 
         addManagedSection(0, TableDataSourceExpression.constructDefault("Sources", transformer.sourceMatcher));
+        addManagedSection(1, new TableDataSourceBlockState(transformer.destState, state -> transformer.destState = state, "Dest Block", "Dest Metadata"));
     }
 
     public TransformerPillar getTransformer()
@@ -33,53 +33,5 @@ public class TableDataSourceBTPillar extends TableDataSourceSegmented implements
     public void setTransformer(TransformerPillar transformer)
     {
         this.transformer = transformer;
-    }
-
-    @Override
-    public int numberOfSegments()
-    {
-        return 2;
-    }
-
-    @Override
-    public int sizeOfSegment(int segment)
-    {
-        return segment == 1 ? 2 : super.sizeOfSegment(segment);
-    }
-
-    @Override
-    public TableElement elementForIndexInSegment(GuiTable table, int index, int segment)
-    {
-        if (segment == 1)
-        {
-            if (index == 0)
-            {
-                TableCellString cell = TableDataSourceBTNatural.elementForBlock("destID", transformer.destState.getBlock());
-                cell.addPropertyListener(this);
-                return new TableElementCell("Dest Block", cell);
-            }
-            else if (index == 1)
-            {
-                TableCellInteger cell = new TableCellInteger("destMeta", BlockStates.getMetadata(transformer.destState), 0, 16);
-                cell.addPropertyListener(this);
-                return new TableElementCell("Dest Metadata", cell);
-            }
-        }
-
-        return super.elementForIndexInSegment(table, index, segment);
-    }
-
-    @Override
-    public void valueChanged(TableCellPropertyDefault cell)
-    {
-        if ("destID".equals(cell.getID()))
-        {
-            transformer.destState = BlockStates.fromMetadata((Block) Block.blockRegistry.getObject(cell.getPropertyValue()), BlockStates.getMetadata(transformer.destState));
-            TableDataSourceBTNatural.setStateForBlockTextfield(((TableCellString) cell));
-        }
-        else if ("destMeta".equals(cell.getID()))
-        {
-            transformer.destState = transformer.destState.with((int) cell.getPropertyValue());
-        }
     }
 }

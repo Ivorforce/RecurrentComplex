@@ -20,7 +20,11 @@ import ivorius.reccomplex.random.BlurredValueField;
 import ivorius.reccomplex.structures.StructureLoadContext;
 import ivorius.reccomplex.structures.StructurePrepareContext;
 import ivorius.reccomplex.structures.StructureSpawnContext;
-import ivorius.reccomplex.utils.IBlockState;
+import net.minecraft.block.BlockSandStone;
+import net.minecraft.block.BlockStoneBrick;
+import net.minecraft.block.BlockVine;
+import net.minecraft.block.BlockWall;
+import net.minecraft.block.state.IBlockState;
 import ivorius.reccomplex.utils.BlockStates;
 import ivorius.reccomplex.utils.NBTStorable;
 import net.minecraft.block.material.Material;
@@ -29,11 +33,12 @@ import net.minecraft.inventory.IInventory;
 import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.BlockPos;
 import net.minecraft.util.MathHelper;
 import net.minecraft.util.StatCollector;
 import net.minecraft.world.World;
 import net.minecraft.world.gen.structure.StructureBoundingBox;
-import net.minecraftforge.common.util.ForgeDirection;
+import net.minecraft.util.EnumFacing;
 import org.apache.commons.lang3.tuple.Pair;
 
 import java.lang.reflect.Type;
@@ -46,7 +51,7 @@ import java.util.Random;
  */
 public class TransformerRuins implements Transformer<TransformerRuins.InstanceData>
 {
-    public ForgeDirection decayDirection;
+    public EnumFacing decayDirection;
     public float minDecay;
     public float maxDecay;
     public float decayChaos;
@@ -57,10 +62,10 @@ public class TransformerRuins implements Transformer<TransformerRuins.InstanceDa
 
     public TransformerRuins()
     {
-        this(ForgeDirection.DOWN, 0.0f, 0.9f, 0.3f, 1f / 25.0f, 0.3f, 0.1f);
+        this(EnumFacing.DOWN, 0.0f, 0.9f, 0.3f, 1f / 25.0f, 0.3f, 0.1f);
     }
 
-    public TransformerRuins(ForgeDirection decayDirection, float minDecay, float maxDecay, float decayChaos, float decayValueDensity, float blockErosion, float vineGrowth)
+    public TransformerRuins(EnumFacing decayDirection, float minDecay, float maxDecay, float decayChaos, float decayValueDensity, float blockErosion, float vineGrowth)
     {
         this.decayDirection = decayDirection;
         this.minDecay = minDecay;
@@ -81,9 +86,9 @@ public class TransformerRuins implements Transformer<TransformerRuins.InstanceDa
         return (state.getBlock().isNormalCube() || state.getBlock().getMaterial() == Material.air) ? 0 : 1;
     }
 
-    public static void setBlockToAirClean(World world, BlockCoord blockCoord)
+    public static void setBlockToAirClean(World world, BlockPos pos)
     {
-        TileEntity tileEntity = world.getTileEntity(blockCoord.x, blockCoord.y, blockCoord.z);
+        TileEntity tileEntity = world.getTileEntity(pos);
         if (tileEntity instanceof IInventory)
         {
             IInventory inventory = (IInventory) tileEntity;
@@ -91,7 +96,7 @@ public class TransformerRuins implements Transformer<TransformerRuins.InstanceDa
                 inventory.setInventorySlotContents(i, null);
         }
 
-        world.setBlockToAir(blockCoord.x, blockCoord.y, blockCoord.z);
+        world.setBlockToAir(pos);
     }
 
     public static void shuffleArray(Object[] ar, Random rand)
@@ -104,23 +109,6 @@ public class TransformerRuins implements Transformer<TransformerRuins.InstanceDa
             ar[index] = ar[i];
             ar[i] = a;
         }
-    }
-
-    public static int vineMetadata(ForgeDirection direction)
-    {
-        switch (direction)
-        {
-            case NORTH:
-                return 1;
-            case SOUTH:
-                return 4;
-            case WEST:
-                return 8;
-            case EAST:
-                return 2;
-        }
-
-        throw new IllegalArgumentException();
     }
 
     @Override
@@ -141,26 +129,26 @@ public class TransformerRuins implements Transformer<TransformerRuins.InstanceDa
         BlurredValueField field = instanceData.blurredValueField;
         if (field != null && field.getSize().length == 3)
         {
-            BlockArea sourceArea = new BlockArea(new BlockCoord(0, 0, 0), new BlockCoord(blockCollection.width, blockCollection.height, blockCollection.length));
+            BlockArea sourceArea = new BlockArea(new BlockPos(0, 0, 0), new BlockPos(blockCollection.width, blockCollection.height, blockCollection.length));
             BlockArea decaySideArea = BlockAreas.side(sourceArea, decayDirection.getOpposite());
-            BlockCoord decaySideAreaPos = decaySideArea.getLowerCorner();
+            BlockPos decaySideAreaPos = decaySideArea.getLowerCorner();
             int decaySideLength = BlockAreas.sideLength(sourceArea, decayDirection.getOpposite());
 
             for (int pass = 1; pass >= 0; pass--)
             {
-                for (BlockCoord surfaceSourceCoord : decaySideArea)
+                for (BlockPos surfaceSourceCoord : decaySideArea)
                 {
-                    float decay = field.getValue(surfaceSourceCoord.x - decaySideAreaPos.x, surfaceSourceCoord.y - decaySideAreaPos.y, surfaceSourceCoord.z - decaySideAreaPos.z);
+                    float decay = field.getValue(surfaceSourceCoord.getX() - decaySideAreaPos.getX(), surfaceSourceCoord.getY() - decaySideAreaPos.getY(), surfaceSourceCoord.getZ() - decaySideAreaPos.getZ());
                     int removedBlocks = MathHelper.floor_float(decay * decaySideLength + 0.5f);
 
                     for (int decayPos = 0; decayPos < removedBlocks && decayPos < decaySideLength; decayPos++)
                     {
-                        BlockCoord sourceCoord = surfaceSourceCoord.add(decayDirection.offsetX * decayPos, decayDirection.offsetY * decayPos, decayDirection.offsetZ * decayPos);
-                        BlockCoord worldCoord = context.transform.apply(sourceCoord, size).add(context.lowerCoord());
+                        BlockPos sourceCoord = surfaceSourceCoord.add(decayDirection.getFrontOffsetX() * decayPos, decayDirection.getFrontOffsetY() * decayPos, decayDirection.getFrontOffsetZ() * decayPos);
+                        BlockPos worldCoord = context.transform.apply(sourceCoord, size).add(context.lowerCoord());
 
                         if (context.includes(worldCoord))
                         {
-                            IBlockState state = BlockStates.at(blockCollection, sourceCoord);
+                            IBlockState state = blockCollection.getBlockState(sourceCoord);
 
                             if (getPass(state) == pass && !skipBlock(transformers, state))
                                 setBlockToAirClean(context.world, worldCoord);
@@ -173,13 +161,13 @@ public class TransformerRuins implements Transformer<TransformerRuins.InstanceDa
         int[] areaSize = new int[]{blockCollection.width, blockCollection.height, blockCollection.length};
         if (blockErosion > 0.0f || vineGrowth > 0.0f)
         {
-            for (BlockCoord sourceCoord : blockCollection)
+            for (BlockPos sourceCoord : blockCollection.area())
             {
-                BlockCoord worldCoord = context.transform.apply(sourceCoord, areaSize).add(context.lowerCoord());
+                BlockPos worldCoord = context.transform.apply(sourceCoord, areaSize).add(context.lowerCoord());
 
                 if (context.includes(worldCoord))
                 {
-                    IBlockState state = BlockStates.at(context.world, worldCoord);
+                    IBlockState state = context.world.getBlockState(worldCoord);
 
                     if (!skipBlock(transformers, state))
                         decayBlock(context.world, context.random, state, worldCoord);
@@ -190,54 +178,57 @@ public class TransformerRuins implements Transformer<TransformerRuins.InstanceDa
         RecurrentComplex.forgeEventHandler.disabledTileDropAreas.remove(dropAreaBB);
     }
 
-    public void decayBlock(World world, Random random, IBlockState state, BlockCoord coord)
+    public void decayBlock(World world, Random random, IBlockState state, BlockPos coord)
     {
         IBlockState newState = state;
 
         if (random.nextFloat() < blockErosion)
         {
-            if (newState.getBlock() == Blocks.stonebrick && BlockStates.getMetadata(newState) == 0)
-                newState = BlockStates.fromMetadata(Blocks.stonebrick, 2);
-            else if (newState.getBlock() == Blocks.sandstone && (BlockStates.getMetadata(newState) == 1 || BlockStates.getMetadata(newState) == 2))
-                newState = BlockStates.defaultState(Blocks.sandstone);
+            if (newState.getBlock() == Blocks.stonebrick
+                    && newState.getProperties().get(BlockStoneBrick.VARIANT) != BlockStoneBrick.EnumType.MOSSY)
+                newState = Blocks.stonebrick.getDefaultState().withProperty(BlockStoneBrick.VARIANT, BlockStoneBrick.EnumType.CRACKED);
+            else if (newState.getBlock() == Blocks.sandstone)
+                newState = Blocks.sandstone.getDefaultState().withProperty(BlockSandStone.TYPE, BlockSandStone.EnumType.DEFAULT);
         }
 
         if (random.nextFloat() < vineGrowth)
         {
-            if (newState.getBlock() == Blocks.stonebrick && (BlockStates.getMetadata(newState) == 2 || BlockStates.getMetadata(newState) == 0))
-                newState = BlockStates.fromMetadata(Blocks.stonebrick, 1);
+            if (newState.getBlock() == Blocks.stonebrick)
+                newState = Blocks.stonebrick.getDefaultState().withProperty(BlockStoneBrick.VARIANT, BlockStoneBrick.EnumType.MOSSY);
             else if (newState.getBlock() == Blocks.cobblestone)
-                newState = BlockStates.defaultState(Blocks.mossy_cobblestone);
-            else if (newState.getBlock() == Blocks.cobblestone_wall && BlockStates.getMetadata(newState) == 0)
-                newState = BlockStates.fromMetadata(Blocks.cobblestone_wall, 1);
-            else if (newState.getBlock() == Blocks.air)
+                newState = Blocks.mossy_cobblestone.getDefaultState();
+            else if (newState.getBlock() == Blocks.cobblestone_wall)
+                newState = Blocks.cobblestone_wall.getDefaultState().withProperty(BlockWall.VARIANT, BlockWall.EnumType.MOSSY);
+        }
+
+        if (newState.getBlock() == Blocks.air)
+        {
+            newState = null;
+            for (EnumFacing direction : EnumFacing.HORIZONTALS)
             {
-                ForgeDirection[] directions = Directions.HORIZONTAL.clone();
-                shuffleArray(directions, random);
-
-                for (ForgeDirection direction : directions)
+                if (random.nextFloat() < vineGrowth && Blocks.vine.canPlaceBlockOnSide(world, coord, direction))
                 {
-                    if (Blocks.vine.canPlaceBlockOnSide(world, coord.x, coord.y, coord.z, direction.ordinal()))
+                    IBlockState downState = world.getBlockState(coord.offset(EnumFacing.DOWN));
+                    downState = downState.getBlock() == Blocks.vine ? downState : Blocks.vine.getDefaultState();
+                    downState = downState.withProperty(BlockVine.getPropertyFor(direction), true);
+
+                    int length = 1 + random.nextInt(MathHelper.floor_float(vineGrowth * 10.0f + 3));
+                    for (int y = 0; y < length; y++)
                     {
-                        newState = BlockStates.fromMetadata(Blocks.vine, vineMetadata(direction));
-
-                        int length = 1 + random.nextInt(MathHelper.floor_float(vineGrowth * 10.0f + 3));
-                        for (int y = 0; y < length; y++)
-                        {
-                            if (world.getBlock(coord.x, coord.y - y, coord.z) == Blocks.air)
-                                world.setBlock(coord.x, coord.y - y, coord.z, newState.getBlock(), BlockStates.getMetadata(newState), 3);
-                            else
-                                break;
-                        }
-
-                        break;
+                        BlockPos downPos = coord.offset(EnumFacing.DOWN, y);
+                        if (world.getBlockState(downPos) == Blocks.air)
+                            world.setBlockState(downPos, downState, 3);
+                        else
+                            break;
                     }
+
+                    break;
                 }
             }
         }
 
-        if (state != newState)
-            world.setBlock(coord.x, coord.y, coord.z, newState.getBlock(), BlockStates.getMetadata(newState), 3);
+        if (newState != null && state != newState)
+            world.setBlockState(coord, newState, 3);
     }
 
     @Override
@@ -260,7 +251,7 @@ public class TransformerRuins implements Transformer<TransformerRuins.InstanceDa
         if (minDecay > 0.0f || maxDecay > 0.0f)
         {
             int[] size = context.boundingBoxSize();
-            BlockArea sourceArea = new BlockArea(new BlockCoord(0, 0, 0), new BlockCoord(size[0], size[1], size[2]));
+            BlockArea sourceArea = new BlockArea(new BlockPos(0, 0, 0), new BlockPos(size[0], size[1], size[2]));
 
             float decayChaos = context.random.nextFloat() * this.decayChaos;
             if (this.maxDecay - this.minDecay > decayChaos)
@@ -330,7 +321,7 @@ public class TransformerRuins implements Transformer<TransformerRuins.InstanceDa
         {
             JsonObject jsonObject = JsonUtils.getJsonElementAsJsonObject(jsonElement, "transformerRuins");
 
-            ForgeDirection decayDirection = Directions.deserialize(JsonUtils.getJsonObjectStringFieldValueOrDefault(jsonObject, "decayDirection", "DOWN"));
+            EnumFacing decayDirection = Directions.deserialize(JsonUtils.getJsonObjectStringFieldValueOrDefault(jsonObject, "decayDirection", "DOWN"));
             float minDecay = JsonUtils.getJsonObjectFloatFieldValueOrDefault(jsonObject, "minDecay", 0.0f);
             float maxDecay = JsonUtils.getJsonObjectFloatFieldValueOrDefault(jsonObject, "maxDecay", 0.9f);
             float decayChaos = JsonUtils.getJsonObjectFloatFieldValueOrDefault(jsonObject, "decayChaos", 0.3f);

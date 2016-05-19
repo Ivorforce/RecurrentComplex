@@ -6,25 +6,22 @@
 package ivorius.reccomplex.items;
 
 import net.minecraft.block.Block;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.init.Blocks;
-import net.minecraft.item.ItemBlockWithMetadata;
+import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
-import net.minecraft.world.World;
 
 /**
  * Created by lukas on 25.05.14.
  */
-public class ItemBlockGenericSolid extends ItemBlockWithMetadata
+public class ItemBlockGenericSolid extends ItemBlock
 {
     public ItemBlockGenericSolid(Block block)
     {
-        super(block, block);
+        super(block);
     }
 
     @Override
-    public String getUnlocalizedName(ItemStack par1ItemStack)
+    public String getUnlocalizedName(ItemStack stack)
     {
-        return super.getUnlocalizedName(par1ItemStack) + ".meta." + par1ItemStack.getItemDamage();
+        return super.getUnlocalizedName(stack) + ".meta." + stack.getItemDamage();
     }
 }

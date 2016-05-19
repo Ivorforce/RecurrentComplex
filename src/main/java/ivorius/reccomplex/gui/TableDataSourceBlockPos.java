@@ -5,7 +5,7 @@
 
 package ivorius.reccomplex.gui;
 
-import ivorius.ivtoolkit.blocks.BlockCoord;
+import net.minecraft.util.BlockPos;
 import ivorius.ivtoolkit.gui.IntegerRange;
 import ivorius.reccomplex.gui.table.*;
 
@@ -14,10 +14,10 @@ import java.util.function.Consumer;
 /**
  * Created by lukas on 13.04.16.
  */
-public class TableDataSourceBlockCoord extends TableDataSourceSegmented implements TableCellPropertyListener
+public class TableDataSourceBlockPos extends TableDataSourceSegmented implements TableCellPropertyListener
 {
-    private BlockCoord coord;
-    private Consumer<BlockCoord> consumer;
+    private BlockPos coord;
+    private Consumer<BlockPos> consumer;
 
     private IntegerRange rangeX;
     private IntegerRange rangeY;
@@ -26,7 +26,7 @@ public class TableDataSourceBlockCoord extends TableDataSourceSegmented implemen
     private String titleY;
     private String titleZ;
 
-    public TableDataSourceBlockCoord(BlockCoord coord, Consumer<BlockCoord> consumer, IntegerRange rangeX, IntegerRange rangeY, IntegerRange rangeZ, String titleX, String titleY, String titleZ)
+    public TableDataSourceBlockPos(BlockPos coord, Consumer<BlockPos> consumer, IntegerRange rangeX, IntegerRange rangeY, IntegerRange rangeZ, String titleX, String titleY, String titleZ)
     {
         this.coord = coord;
         this.consumer = consumer;
@@ -38,7 +38,7 @@ public class TableDataSourceBlockCoord extends TableDataSourceSegmented implemen
         this.titleZ = titleZ;
     }
 
-    public TableDataSourceBlockCoord(BlockCoord coord, Consumer<BlockCoord> consumer, IntegerRange range, String titleFormat)
+    public TableDataSourceBlockPos(BlockPos coord, Consumer<BlockPos> consumer, IntegerRange range, String titleFormat)
     {
         this.coord = coord;
         this.consumer = consumer;
@@ -69,19 +69,19 @@ public class TableDataSourceBlockCoord extends TableDataSourceSegmented implemen
         {
             case 0:
             {
-                TableCellInteger cell = new TableCellInteger("x", coord.x, rangeX.min, rangeX.max);
+                TableCellInteger cell = new TableCellInteger("x", coord.getX(), rangeX.min, rangeX.max);
                 cell.addPropertyListener(this);
                 return new TableElementCell(titleX, cell);
             }
             case 1:
             {
-                TableCellInteger cell = new TableCellInteger("y", coord.y, rangeY.min, rangeY.max);
+                TableCellInteger cell = new TableCellInteger("y", coord.getY(), rangeY.min, rangeY.max);
                 cell.addPropertyListener(this);
                 return new TableElementCell(titleY, cell);
             }
             case 2:
             {
-                TableCellInteger cell = new TableCellInteger("z", coord.z, rangeZ.min, rangeZ.max);
+                TableCellInteger cell = new TableCellInteger("z", coord.getZ(), rangeZ.min, rangeZ.max);
                 cell.addPropertyListener(this);
                 return new TableElementCell(titleZ, cell);
             }
@@ -99,17 +99,17 @@ public class TableDataSourceBlockCoord extends TableDataSourceSegmented implemen
             {
                 case "x":
                 {
-                    consumer.accept(coord = new BlockCoord((int) cell.getPropertyValue(), coord.y, coord.z));
+                    consumer.accept(coord = new BlockPos((int) cell.getPropertyValue(), coord.getY(), coord.getZ()));
                     break;
                 }
                 case "y":
                 {
-                    consumer.accept(coord = new BlockCoord(coord.x, (int) cell.getPropertyValue(), coord.z));
+                    consumer.accept(coord = new BlockPos(coord.getX(), (int) cell.getPropertyValue(), coord.getZ()));
                     break;
                 }
                 case "z":
                 {
-                    consumer.accept(coord = new BlockCoord(coord.x, coord.y, (int) cell.getPropertyValue()));
+                    consumer.accept(coord = new BlockPos(coord.getX(), coord.getY(), (int) cell.getPropertyValue()));
                     break;
                 }
             }

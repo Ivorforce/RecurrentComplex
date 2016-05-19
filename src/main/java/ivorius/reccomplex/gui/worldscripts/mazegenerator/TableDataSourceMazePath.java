@@ -14,7 +14,7 @@ import ivorius.reccomplex.structures.generic.maze.ConnectorStrategy;
 import ivorius.reccomplex.structures.generic.maze.SavedMazePath;
 import ivorius.reccomplex.structures.generic.maze.SavedMazePathConnection;
 import ivorius.reccomplex.utils.IvTranslations;
-import net.minecraftforge.common.util.ForgeDirection;
+import net.minecraft.util.EnumFacing;
 
 /**
  * Created by lukas on 22.06.14.
@@ -71,7 +71,7 @@ public class TableDataSourceMazePath extends TableDataSourceSegmented implements
         }
         else if (segment == 2)
         {
-            TableCellEnum.Option<ForgeDirection>[] optionList = TableDirections.getDirectionOptions(ForgeDirection.VALID_DIRECTIONS);
+            TableCellEnum.Option<EnumFacing>[] optionList = TableDirections.getDirectionOptions(EnumFacing.VALUES);
 
             TableCellEnum cell = new TableCellEnum<>("side", directionFromPath(mazePath), optionList);
             cell.addPropertyListener(this);
@@ -108,7 +108,7 @@ public class TableDataSourceMazePath extends TableDataSourceSegmented implements
     {
         if ("side".equals(cell.getID()))
         {
-            SavedMazePathConnection path = pathFromDirection((ForgeDirection) cell.getPropertyValue(), mazePath.sourceRoom.getCoordinates());
+            SavedMazePathConnection path = pathFromDirection((EnumFacing) cell.getPropertyValue(), mazePath.sourceRoom.getCoordinates());
             mazePath.pathDimension = path.path.pathDimension;
             mazePath.pathGoesUp = path.path.pathGoesUp;
             tableDelegate.reloadData();
@@ -123,25 +123,25 @@ public class TableDataSourceMazePath extends TableDataSourceSegmented implements
         }
     }
 
-    public static ForgeDirection directionFromPath(SavedMazePath path)
+    public static EnumFacing directionFromPath(SavedMazePath path)
     {
         switch (path.pathDimension)
         {
             case 0:
-                return path.pathGoesUp ? ForgeDirection.EAST : ForgeDirection.WEST;
+                return path.pathGoesUp ? EnumFacing.EAST : EnumFacing.WEST;
             case 1:
-                return path.pathGoesUp ? ForgeDirection.UP : ForgeDirection.DOWN;
+                return path.pathGoesUp ? EnumFacing.UP : EnumFacing.DOWN;
             case 2:
-                return path.pathGoesUp ? ForgeDirection.SOUTH : ForgeDirection.NORTH;
+                return path.pathGoesUp ? EnumFacing.SOUTH : EnumFacing.NORTH;
         }
 
         return null;
     }
 
-    public static SavedMazePathConnection pathFromDirection(ForgeDirection side, int[] room)
+    public static SavedMazePathConnection pathFromDirection(EnumFacing side, int[] room)
     {
-        int pathDim = side.offsetX != 0 ? 0 : side.offsetY != 0 ? 1 : side.offsetZ != 0 ? 2 : -1;
-        int offset = side.offsetX + side.offsetY + side.offsetZ;
+        int pathDim = side.getFrontOffsetX() != 0 ? 0 : side.getFrontOffsetY() != 0 ? 1 : side.getFrontOffsetZ() != 0 ? 2 : -1;
+        int offset = side.getFrontOffsetX() + side.getFrontOffsetY() + side.getFrontOffsetZ();
 
         return new SavedMazePathConnection(pathDim, new MazeRoom(room[0], room[1], room[2]), offset > 0, ConnectorStrategy.DEFAULT_PATH);
     }

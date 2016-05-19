@@ -5,7 +5,7 @@
 
 package ivorius.reccomplex.scripts.world;
 
-import ivorius.ivtoolkit.blocks.BlockCoord;
+import net.minecraft.util.BlockPos;
 import ivorius.ivtoolkit.random.WeightedSelector;
 import ivorius.ivtoolkit.tools.IvCollections;
 import ivorius.reccomplex.RecurrentComplex;
@@ -65,7 +65,7 @@ public class WorldScriptCommand implements WorldScript<NBTNone>
     }
 
     @Override
-    public NBTNone prepareInstanceData(StructurePrepareContext context, BlockCoord coord, World world)
+    public NBTNone prepareInstanceData(StructurePrepareContext context, BlockPos coord, World world)
     {
         return new NBTNone();
     }
@@ -77,7 +77,7 @@ public class WorldScriptCommand implements WorldScript<NBTNone>
     }
 
     @Override
-    public void generate(StructureSpawnContext context, NBTNone instanceData, BlockCoord coord)
+    public void generate(StructureSpawnContext context, NBTNone instanceData, BlockPos coord)
     {
         // TODO Fix for partial generation (if areas are affected?)
         if (context.includes(coord))

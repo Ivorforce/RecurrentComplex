@@ -27,7 +27,7 @@ public class MaterialNegativeSpace extends Material
     }
 
     @Override
-    public boolean getCanBlockGrass()
+    public boolean blocksLight()
     {
         return false;
     }

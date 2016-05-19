@@ -6,7 +6,7 @@
 package ivorius.reccomplex.structures.generic.transformers;
 
 import com.google.gson.*;
-import ivorius.ivtoolkit.blocks.BlockCoord;
+import net.minecraft.util.BlockPos;
 import ivorius.ivtoolkit.math.IvVecMathHelper;
 import ivorius.ivtoolkit.tools.MCRegistry;
 import ivorius.reccomplex.RecurrentComplex;
@@ -20,7 +20,7 @@ import ivorius.reccomplex.structures.StructureLoadContext;
 import ivorius.reccomplex.structures.StructurePrepareContext;
 import ivorius.reccomplex.structures.StructureSpawnContext;
 import ivorius.reccomplex.structures.generic.matchers.BlockMatcher;
-import ivorius.reccomplex.utils.IBlockState;
+import net.minecraft.block.state.IBlockState;
 import ivorius.reccomplex.utils.BlockStates;
 import ivorius.reccomplex.utils.NBTNone;
 import net.minecraft.block.Block;
@@ -67,22 +67,22 @@ public class TransformerNaturalAir extends TransformerSingleBlock<NBTNone>
     }
 
     @Override
-    public void transformBlock(NBTNone instanceData, Phase phase, StructureSpawnContext context, BlockCoord coord, IBlockState sourceState)
+    public void transformBlock(NBTNone instanceData, Phase phase, StructureSpawnContext context, BlockPos coord, IBlockState sourceState)
     {
         // TODO Fix for partial generation
         World world = context.world;
         Random random = context.random;
 
-        BiomeGenBase biome = world.getBiomeGenForCoords(coord.x, coord.z);
-        Block topBlock = biome.topBlock != null ? biome.topBlock : Blocks.air;
-        Block fillerBlock = biome.fillerBlock != null ? biome.fillerBlock : Blocks.air;
+        BiomeGenBase biome = world.getBiomeGenForCoords(coord);
+        IBlockState topBlock = biome.topBlock != null ? biome.topBlock : Blocks.air.getDefaultState();
+        IBlockState fillerBlock = biome.fillerBlock != null ? biome.fillerBlock : Blocks.air.getDefaultState();
 
-        coord = coord.subtract(0, 4, 0);
+        coord = coord.up(4);
 
-        int currentY = coord.y;
+        int currentY = coord.getY();
         List<int[]> currentList = new ArrayList<>();
         List<int[]> nextList = new ArrayList<>();
-        nextList.add(new int[]{coord.x, coord.z});
+        nextList.add(new int[]{coord.getX(), coord.getZ()});
 
         int worldHeight = world.getHeight();
         while (nextList.size() > 0 && currentY < worldHeight)
@@ -96,19 +96,22 @@ public class TransformerNaturalAir extends TransformerSingleBlock<NBTNone>
                 int[] currentPos = currentList.remove(0);
                 int currentX = currentPos[0];
                 int currentZ = currentPos[1];
-                Block curBlock = world.getBlock(currentX, currentY, currentZ);
 
-                boolean isFoliage = curBlock.isFoliage(world, currentX, currentY, currentZ) || curBlock.getMaterial() == Material.leaves || curBlock.getMaterial() == Material.plants || curBlock.getMaterial() == Material.wood;
+                BlockPos curBlockPos = new BlockPos(currentX, currentY, currentZ);
+                IBlockState curBlock = world.getBlockState(curBlockPos);
+
+                Material material = curBlock.getBlock().getMaterial();
+                boolean isFoliage = curBlock.getBlock().isFoliage(world, curBlockPos) || material == Material.leaves || material == Material.plants || material == Material.wood;
                 boolean isCommon = curBlock == Blocks.stone || curBlock == Blocks.dirt || curBlock == Blocks.sand || curBlock == Blocks.stained_hardened_clay || curBlock == Blocks.gravel;
-                boolean replaceable = currentY == coord.y || curBlock == topBlock || curBlock == fillerBlock || curBlock.isReplaceable(world, currentX, currentY, currentZ)
+                boolean replaceable = currentY == coord.getY() || curBlock == topBlock || curBlock == fillerBlock || curBlock.getBlock().isReplaceable(world, curBlockPos)
                         || isCommon || isFoliage;
 
                 if (replaceable)
-                    context.setBlock(currentX, currentY, currentZ, BlockStates.defaultState(Blocks.air));
+                    context.setBlock(curBlockPos, Blocks.air.getDefaultState());
 
-                if (replaceable || curBlock.getMaterial() == Material.air)
+                if (replaceable || material == Material.air)
                 {
-                    double distToOrigSQ = IvVecMathHelper.distanceSQ(new double[]{coord.x, coord.y, coord.z}, new double[]{currentX, currentY, currentZ});
+                    double distToOrigSQ = IvVecMathHelper.distanceSQ(new double[]{coord.getX(), coord.getY(), coord.getZ()}, new double[]{currentX, currentY, currentZ});
                     double add = (random.nextDouble() - random.nextDouble()) * naturalExpansionRandomization;
                     distToOrigSQ += add < 0 ? -(add * add) : (add * add);
 

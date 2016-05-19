@@ -1,0 +1,6 @@
+{
+    "parent": "block/cube_all",
+    "textures": {
+        "all": "reccomplex:blocks/generic_solid_2"
+    }
+}

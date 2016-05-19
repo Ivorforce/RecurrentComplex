@@ -18,7 +18,7 @@ public class NBTTagByteArraySerializer implements JsonSerializer<NBTTagByteArray
     @Override
     public JsonElement serialize(NBTTagByteArray src, Type typeOfSrc, JsonSerializationContext context)
     {
-        return context.serialize(src.func_150292_c(), byte[].class);
+        return context.serialize(src.getByteArray(), byte[].class);
     }
 
     @Override

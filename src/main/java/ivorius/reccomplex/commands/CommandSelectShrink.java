@@ -6,7 +6,8 @@
 package ivorius.reccomplex.commands;
 
 import ivorius.ivtoolkit.blocks.BlockArea;
-import ivorius.ivtoolkit.blocks.BlockCoord;
+import net.minecraft.command.CommandException;
+import net.minecraft.util.BlockPos;
 import ivorius.reccomplex.RCConfig;
 import ivorius.reccomplex.entities.StructureEntityInfo;
 import ivorius.ivtoolkit.blocks.BlockAreas;
@@ -33,14 +34,14 @@ public class CommandSelectShrink extends CommandSelectModify
     }
 
     @Override
-    public void processCommandSelection(EntityPlayerMP player, StructureEntityInfo structureEntityInfo, BlockCoord point1, BlockCoord point2, String[] args)
+    public void processCommandSelection(EntityPlayerMP player, StructureEntityInfo structureEntityInfo, BlockPos point1, BlockPos point2, String[] args) throws CommandException
     {
         if (args.length < 3)
             throw ServerTranslations.wrongUsageException("commands.selectShrink.usage");
 
-        int x = parseInt(player, args[0]), y = parseInt(player, args[1]), z = parseInt(player, args[2]);
+        int x = parseInt(args[0]), y = parseInt(args[1]), z = parseInt(args[2]);
 
-        BlockArea area = BlockAreas.shrink(new BlockArea(point1, point2), new BlockCoord(x, y, z), new BlockCoord(x, y, z));
+        BlockArea area = BlockAreas.shrink(new BlockArea(point1, point2), new BlockPos(x, y, z), new BlockPos(x, y, z));
 
         structureEntityInfo.setSelection(area);
         structureEntityInfo.sendSelectionToClients(player);

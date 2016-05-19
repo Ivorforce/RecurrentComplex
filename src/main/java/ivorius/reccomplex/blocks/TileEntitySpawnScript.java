@@ -5,9 +5,9 @@
 
 package ivorius.reccomplex.blocks;
 
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
-import ivorius.ivtoolkit.blocks.BlockCoord;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
+import net.minecraft.util.BlockPos;
 import ivorius.ivtoolkit.tools.NBTCompoundObjects;
 import ivorius.reccomplex.gui.worldscripts.multi.GuiEditSpawnScript;
 import ivorius.reccomplex.scripts.world.WorldScriptMulti;
@@ -45,7 +45,7 @@ public class TileEntitySpawnScript extends TileEntity implements GeneratingTileE
     @Override
     public WorldScriptMulti.InstanceData prepareInstanceData(StructurePrepareContext context)
     {
-        return script.prepareInstanceData(context, new BlockCoord(this), worldObj);
+        return script.prepareInstanceData(context, pos, worldObj);
     }
 
     @Override
@@ -57,7 +57,7 @@ public class TileEntitySpawnScript extends TileEntity implements GeneratingTileE
     @Override
     public void generate(StructureSpawnContext context, WorldScriptMulti.InstanceData instanceData)
     {
-        script.generate(context, instanceData, new BlockCoord(this));
+        script.generate(context, instanceData, pos);
     }
 
     @Override

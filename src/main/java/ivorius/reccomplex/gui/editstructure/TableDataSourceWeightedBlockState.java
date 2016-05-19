@@ -5,17 +5,21 @@
 
 package ivorius.reccomplex.gui.editstructure;
 
+import ivorius.reccomplex.RecurrentComplex;
 import ivorius.reccomplex.gui.GuiValidityStateIndicator;
 import ivorius.reccomplex.gui.RCGuiTables;
+import ivorius.reccomplex.gui.TableDataSourceBlockState;
 import ivorius.reccomplex.gui.editstructure.transformers.TableDataSourceBTNatural;
 import ivorius.reccomplex.gui.table.*;
 import ivorius.reccomplex.structures.generic.WeightedBlockState;
 import ivorius.reccomplex.utils.BlockStates;
 import net.minecraft.block.Block;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.nbt.JsonToNBT;
 import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTException;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.ResourceLocation;
 
 /**
  * Created by lukas on 05.06.14.
@@ -27,10 +31,15 @@ public class TableDataSourceWeightedBlockState extends TableDataSourceSegmented 
     private TableDelegate tableDelegate;
     private TableCellTitle parsed;
 
+    private TableCellString idCell;
+    private TableCellInteger metaCell;
+
     public TableDataSourceWeightedBlockState(WeightedBlockState weightedBlockState, TableDelegate tableDelegate)
     {
         this.weightedBlockState = weightedBlockState;
         this.tableDelegate = tableDelegate;
+
+        addManagedSection(1, new TableDataSourceBlockState(weightedBlockState.state, state -> weightedBlockState.state = state, "Block", "Metadata"));
     }
 
     public static GuiValidityStateIndicator.State stateForNBTCompoundJson(String json)
@@ -38,12 +47,12 @@ public class TableDataSourceWeightedBlockState extends TableDataSourceSegmented 
         if (json.length() == 0)
             return GuiValidityStateIndicator.State.VALID;
 
-        NBTBase nbtbase;
+        NBTTagCompound nbtbase;
 
         try
         {
-            nbtbase = JsonToNBT.func_150315_a(json);
-            if (nbtbase instanceof NBTTagCompound)
+            nbtbase = JsonToNBT.getTagFromJson(json);
+            if (nbtbase != null)
                 return GuiValidityStateIndicator.State.VALID;
         }
         catch (NBTException ignored)
@@ -63,7 +72,14 @@ public class TableDataSourceWeightedBlockState extends TableDataSourceSegmented 
     @Override
     public int sizeOfSegment(int segment)
     {
-        return segment == 1 ? 2 : 1;
+        switch (segment)
+        {
+            case 0:
+            case 2:
+                return 2;
+            default:
+                return super.sizeOfSegment(segment);
+        }
     }
 
     @Override
@@ -72,21 +88,6 @@ public class TableDataSourceWeightedBlockState extends TableDataSourceSegmented 
         if (segment == 0)
         {
             return RCGuiTables.defaultWeightElement(this, weightedBlockState.weight);
-        }
-        else if (segment == 1)
-        {
-            if (index == 0)
-            {
-                TableCellString cell = TableDataSourceBTNatural.elementForBlock("block", weightedBlockState.state.getBlock());
-                cell.addPropertyListener(this);
-                return new TableElementCell("Block", cell);
-            }
-            else if (index == 1)
-            {
-                TableCellInteger cell = new TableCellInteger("metadata", BlockStates.getMetadata(weightedBlockState.state), 0, 15);
-                cell.addPropertyListener(this);
-                return new TableElementCell("Metadata", cell);
-            }
         }
         else if (segment == 2)
         {
@@ -106,15 +107,6 @@ public class TableDataSourceWeightedBlockState extends TableDataSourceSegmented 
         if ("weight".equals(cell.getID()))
         {
             weightedBlockState.weight = TableElements.toDouble((Float) cell.getPropertyValue());
-        }
-        else if ("block".equals(cell.getID()))
-        {
-            weightedBlockState.state = BlockStates.fromMetadata((Block) Block.blockRegistry.getObject(cell.getPropertyValue()), BlockStates.getMetadata(weightedBlockState.state));
-            TableDataSourceBTNatural.setStateForBlockTextfield(((TableCellString) cell));
-        }
-        else if ("metadata".equals(cell.getID()))
-        {
-            weightedBlockState.state = weightedBlockState.state.with((int) cell.getPropertyValue());
         }
         else if ("tileEntityInfo".equals(cell.getID()))
         {

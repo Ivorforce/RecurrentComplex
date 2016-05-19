@@ -5,10 +5,10 @@
 
 package ivorius.reccomplex.gui.editstructure.gentypes;
 
-import ivorius.ivtoolkit.blocks.BlockCoord;
+import net.minecraft.util.BlockPos;
 import ivorius.ivtoolkit.gui.FloatRange;
 import ivorius.ivtoolkit.gui.IntegerRange;
-import ivorius.reccomplex.gui.TableDataSourceBlockCoord;
+import ivorius.reccomplex.gui.TableDataSourceBlockPos;
 import ivorius.reccomplex.gui.TableDataSourceExpression;
 import ivorius.reccomplex.gui.TableDirections;
 import ivorius.reccomplex.gui.table.*;
@@ -16,7 +16,7 @@ import ivorius.reccomplex.structures.generic.gentypes.VanillaStructureGeneration
 import ivorius.ivtoolkit.blocks.Directions;
 import ivorius.reccomplex.utils.IvTranslations;
 import ivorius.reccomplex.utils.scale.Scales;
-import net.minecraftforge.common.util.ForgeDirection;
+import net.minecraft.util.EnumFacing;
 
 /**
  * Created by lukas on 07.10.14.
@@ -36,7 +36,7 @@ public class TableDataSourceVanillaStructureGenerationInfo extends TableDataSour
 
         addManagedSection(0, new TableDataSourceGenerationInfo(generationInfo));
         addManagedSection(4, TableDataSourceExpression.constructDefault("Biomes", generationInfo.biomeMatcher));
-        addManagedSection(5, new TableDataSourceBlockCoord(generationInfo.spawnShift, generationInfo::setSpawnShift, new IntegerRange(-50, 50), "Spawn Shift %s"));
+        addManagedSection(5, new TableDataSourceBlockPos(generationInfo.spawnShift, generationInfo::setSpawnShift, new IntegerRange(-50, 50), "Spawn Shift %s"));
     }
 
     @Override
@@ -140,7 +140,7 @@ public class TableDataSourceVanillaStructureGenerationInfo extends TableDataSour
                     break;
                 }
                 case "front":
-                    generationInfo.front = (ForgeDirection) cell.getPropertyValue();
+                    generationInfo.front = (EnumFacing) cell.getPropertyValue();
                     break;
             }
         }

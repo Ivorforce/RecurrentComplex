@@ -11,8 +11,8 @@ import ivorius.reccomplex.files.FileLoadContext;
 import ivorius.reccomplex.files.FileTypeHandler;
 import ivorius.reccomplex.files.RCFileTypeRegistry;
 import ivorius.reccomplex.structures.StructureRegistry;
+import ivorius.reccomplex.utils.ByteArrays;
 import net.minecraft.nbt.CompressedStreamTools;
-import net.minecraft.nbt.NBTSizeTracker;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ResourceLocation;
 import org.apache.commons.io.FileUtils;
@@ -21,8 +21,6 @@ import org.apache.commons.io.FilenameUtils;
 import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 import java.util.zip.ZipOutputStream;
@@ -43,26 +41,6 @@ public class StructureSaveHandler implements FileTypeHandler
     public StructureSaveHandler(StructureRegistry registry)
     {
         this.registry = registry;
-    }
-
-    public static byte[] completeByteArray(InputStream inputStream)
-    {
-        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-        int aByte;
-
-        try
-        {
-            while ((aByte = inputStream.read()) >= 0)
-            {
-                byteArrayOutputStream.write(aByte);
-            }
-        }
-        catch (Exception ignored)
-        {
-            return null;
-        }
-
-        return byteArrayOutputStream.toByteArray();
     }
 
     protected static void addZipEntry(ZipOutputStream zip, String path, byte[] bytes) throws IOException
@@ -91,7 +69,7 @@ public class StructureSaveHandler implements FileTypeHandler
                     ZipOutputStream zipOutputStream = new ZipOutputStream(new FileOutputStream(newFile));
 
                     addZipEntry(zipOutputStream, STRUCTURE_INFO_JSON_FILENAME, json.getBytes());
-                    addZipEntry(zipOutputStream, WORLD_DATA_NBT_FILENAME, CompressedStreamTools.compress(info.worldDataCompound));
+                    addZipEntry(zipOutputStream, WORLD_DATA_NBT_FILENAME, ByteArrays.toByteArray(s -> CompressedStreamTools.writeCompressed(info.worldDataCompound, s)));
 
                     zipOutputStream.close();
                 }
@@ -188,14 +166,14 @@ public class StructureSaveHandler implements FileTypeHandler
 
             while ((zipEntry = zipInputStream.getNextEntry()) != null)
             {
-                byte[] bytes = completeByteArray(zipInputStream);
+                byte[] bytes = ByteArrays.completeByteArray(zipInputStream);
 
                 if (bytes != null)
                 {
                     if (STRUCTURE_INFO_JSON_FILENAME.equals(zipEntry.getName()))
                         json = new String(bytes);
                     else if (WORLD_DATA_NBT_FILENAME.equals(zipEntry.getName()))
-                        worldData = CompressedStreamTools.func_152457_a(bytes, NBTSizeTracker.field_152451_a);
+                        worldData = CompressedStreamTools.readCompressed(new ByteArrayInputStream(bytes));
                 }
 
                 zipInputStream.closeEntry();

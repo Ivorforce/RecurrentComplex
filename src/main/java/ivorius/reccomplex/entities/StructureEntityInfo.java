@@ -5,10 +5,11 @@
 
 package ivorius.reccomplex.entities;
 
-import cpw.mods.fml.common.network.ByteBufUtils;
+import ivorius.ivtoolkit.blocks.BlockPositions;
+import net.minecraftforge.fml.common.network.ByteBufUtils;
 import io.netty.buffer.ByteBuf;
 import ivorius.ivtoolkit.blocks.BlockArea;
-import ivorius.ivtoolkit.blocks.BlockCoord;
+import net.minecraft.util.BlockPos;
 import ivorius.ivtoolkit.network.IvNetworkHelperServer;
 import ivorius.ivtoolkit.network.PartialUpdateHandler;
 import ivorius.reccomplex.RCConfig;
@@ -31,8 +32,8 @@ public class StructureEntityInfo implements IExtendedEntityProperties, PartialUp
     public static final String EEP_KEY = "structureEntityInfo";
     public static final String EEP_CMP_KEY = "rc-structureEntityInfo";
 
-    public BlockCoord selectedPoint1;
-    public BlockCoord selectedPoint2;
+    public BlockPos selectedPoint1;
+    public BlockPos selectedPoint2;
     private Operation.PreviewType previewType = Operation.PreviewType.SHAPE;
     public Operation danglingOperation;
     public boolean showGrid = false;
@@ -160,8 +161,8 @@ public class StructureEntityInfo implements IExtendedEntityProperties, PartialUp
     {
         NBTTagCompound compound = new NBTTagCompound();
 
-        BlockCoord.writeCoordToNBT("selectedPoint1", selectedPoint1, compound);
-        BlockCoord.writeCoordToNBT("selectedPoint2", selectedPoint2, compound);
+        BlockPositions.writeToNBT("selectedPoint1", selectedPoint1, compound);
+        BlockPositions.writeToNBT("selectedPoint2", selectedPoint2, compound);
 
         compound.setString("previewType", previewType.key);
 
@@ -185,8 +186,8 @@ public class StructureEntityInfo implements IExtendedEntityProperties, PartialUp
                 ? parent.getCompoundTag(EEP_CMP_KEY)
                 : parent; // Legacy
 
-        selectedPoint1 = BlockCoord.readCoordFromNBT("selectedPoint1", compound);
-        selectedPoint2 = BlockCoord.readCoordFromNBT("selectedPoint2", compound);
+        selectedPoint1 = BlockPositions.readFromNBT("selectedPoint1", compound);
+        selectedPoint2 = BlockPositions.readFromNBT("selectedPoint2", compound);
 
         previewType = Operation.PreviewType.findOrDefault(compound.getString("previewType"), Operation.PreviewType.SHAPE);
 
@@ -226,8 +227,8 @@ public class StructureEntityInfo implements IExtendedEntityProperties, PartialUp
     {
         if ("selection".equals(context))
         {
-            BlockCoord.writeCoordToBuffer(selectedPoint1, buffer);
-            BlockCoord.writeCoordToBuffer(selectedPoint2, buffer);
+            BlockPositions.maybeWriteToBuffer(selectedPoint1, buffer);
+            BlockPositions.maybeWriteToBuffer(selectedPoint2, buffer);
         }
         else if ("previewType".equals(context))
         {
@@ -248,8 +249,8 @@ public class StructureEntityInfo implements IExtendedEntityProperties, PartialUp
     {
         if ("selection".equals(context))
         {
-            selectedPoint1 = BlockCoord.readCoordFromBuffer(buffer);
-            selectedPoint2 = BlockCoord.readCoordFromBuffer(buffer);
+            selectedPoint1 = BlockPositions.maybeReadFromBuffer(buffer);
+            selectedPoint2 = BlockPositions.maybeReadFromBuffer(buffer);
         }
         else if ("previewType".equals(context))
         {

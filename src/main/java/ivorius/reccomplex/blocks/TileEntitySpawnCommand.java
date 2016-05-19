@@ -5,7 +5,7 @@
 
 package ivorius.reccomplex.blocks;
 
-import ivorius.ivtoolkit.blocks.BlockCoord;
+import net.minecraft.util.BlockPos;
 import ivorius.reccomplex.scripts.world.WorldScriptCommand;
 import ivorius.reccomplex.structures.StructureLoadContext;
 import ivorius.reccomplex.structures.StructurePrepareContext;
@@ -59,7 +59,7 @@ public class TileEntitySpawnCommand extends TileEntity implements GeneratingTile
     @Override
     public void generate(StructureSpawnContext context, NBTNone instanceData)
     {
-        script.generate(context, instanceData, new BlockCoord(this));
+        script.generate(context, instanceData, pos);
     }
 
     @Override
@@ -71,7 +71,7 @@ public class TileEntitySpawnCommand extends TileEntity implements GeneratingTile
     @Override
     public NBTNone prepareInstanceData(StructurePrepareContext context)
     {
-        return script.prepareInstanceData(context, new BlockCoord(this), worldObj);
+        return script.prepareInstanceData(context, pos, worldObj);
     }
 
     @Override
@@ -83,7 +83,7 @@ public class TileEntitySpawnCommand extends TileEntity implements GeneratingTile
     @Override
     public void onDataPacket(NetworkManager net, S35PacketUpdateTileEntity pkt)
     {
-        readSyncedNBT(pkt.func_148857_g());
+        readSyncedNBT(pkt.getNbtCompound());
     }
 
     @Override
@@ -91,6 +91,6 @@ public class TileEntitySpawnCommand extends TileEntity implements GeneratingTile
     {
         NBTTagCompound nbttagcompound = new NBTTagCompound();
         this.writeSyncedNBT(nbttagcompound);
-        return new S35PacketUpdateTileEntity(this.xCoord, this.yCoord, this.zCoord, 0, nbttagcompound);
+        return new S35PacketUpdateTileEntity(pos, 0, nbttagcompound);
     }
 }

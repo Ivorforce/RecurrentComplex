@@ -18,7 +18,7 @@ public class NBTTagFloatSerializer implements JsonSerializer<NBTTagFloat>, JsonD
     @Override
     public JsonElement serialize(NBTTagFloat src, Type typeOfSrc, JsonSerializationContext context)
     {
-        return new JsonPrimitive(src.func_150288_h());
+        return new JsonPrimitive(src.getFloat());
     }
 
     @Override

@@ -61,7 +61,7 @@ public class DimensionMatcher extends PrefixedTypeExpressionCache<Boolean> imple
         public Boolean evaluate(String var, Object... args)
         {
             Integer dimID = Ints.tryParse(var);
-            return dimID != null && ((WorldProvider) args[0]).dimensionId == dimID;
+            return dimID != null && ((WorldProvider) args[0]).getDimensionId() == dimID;
         }
 
         @Override

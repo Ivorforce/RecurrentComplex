@@ -5,7 +5,7 @@
 
 package ivorius.reccomplex.structures;
 
-import ivorius.ivtoolkit.blocks.BlockCoord;
+import net.minecraft.util.BlockPos;
 import ivorius.ivtoolkit.math.AxisAlignedTransform2D;
 import net.minecraft.world.gen.structure.StructureBoundingBox;
 
@@ -36,9 +36,9 @@ public class StructureLoadContext
         return new int[]{boundingBox.getXSize(), boundingBox.getYSize(), boundingBox.getZSize()};
     }
 
-    public BlockCoord lowerCoord()
+    public BlockPos lowerCoord()
     {
-        return new BlockCoord(boundingBox.minX, boundingBox.minY, boundingBox.minZ);
+        return new BlockPos(boundingBox.minX, boundingBox.minY, boundingBox.minZ);
     }
 
 }

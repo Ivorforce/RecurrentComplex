@@ -79,7 +79,7 @@ public abstract class TableCellDefault implements TableCell
 
     public FontRenderer getFontRenderer()
     {
-        return Minecraft.getMinecraft().fontRenderer;
+        return Minecraft.getMinecraft().fontRendererObj;
     }
 
     @Override

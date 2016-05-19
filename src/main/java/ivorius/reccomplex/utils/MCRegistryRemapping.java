@@ -6,7 +6,8 @@
 package ivorius.reccomplex.utils;
 
 import com.google.common.collect.Maps;
-import cpw.mods.fml.common.event.FMLMissingMappingsEvent;
+import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.fml.common.event.FMLMissingMappingsEvent;
 import ivorius.ivtoolkit.tools.MCRegistry;
 import ivorius.ivtoolkit.tools.MCRegistryDefault;
 import net.minecraft.block.Block;
@@ -31,31 +32,31 @@ public class MCRegistryRemapping implements MCRegistry
     }
 
     @Override
-    public Item itemFromID(String itemID)
+    public Item itemFromID(ResourceLocation itemID)
     {
         return parent.itemFromID(remapper.mapItem(itemID));
     }
 
     @Override
-    public String idFromItem(Item item)
+    public ResourceLocation idFromItem(Item item)
     {
         return parent.idFromItem(item);
     }
 
     @Override
-    public void modifyItemStackCompound(NBTTagCompound compound, String itemID)
+    public void modifyItemStackCompound(NBTTagCompound compound, ResourceLocation itemID)
     {
         parent.modifyItemStackCompound(compound, itemID);
     }
 
     @Override
-    public Block blockFromID(String blockID)
+    public Block blockFromID(ResourceLocation blockID)
     {
         return parent.blockFromID(remapper.mapBlock(blockID));
     }
 
     @Override
-    public String idFromBlock(Block block)
+    public ResourceLocation idFromBlock(Block block)
     {
         return parent.idFromBlock(block);
     }

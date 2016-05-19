@@ -18,7 +18,7 @@ public class NBTTagLongSerializer implements JsonSerializer<NBTTagLong>, JsonDes
     @Override
     public JsonElement serialize(NBTTagLong src, Type typeOfSrc, JsonSerializationContext context)
     {
-        return new JsonPrimitive(src.func_150291_c());
+        return new JsonPrimitive(src.getLong());
     }
 
     @Override

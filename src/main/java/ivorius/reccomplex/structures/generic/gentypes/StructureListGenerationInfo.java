@@ -14,7 +14,7 @@ import ivorius.reccomplex.json.JsonUtils;
 import ivorius.ivtoolkit.blocks.Directions;
 import ivorius.ivtoolkit.random.WeightedSelector;
 import net.minecraft.util.StatCollector;
-import net.minecraftforge.common.util.ForgeDirection;
+import net.minecraft.util.EnumFacing;
 
 import javax.annotation.Nonnull;
 import java.lang.reflect.Type;
@@ -34,14 +34,14 @@ public class StructureListGenerationInfo extends StructureGenerationInfo impleme
     public int shiftY;
     public int shiftZ;
 
-    public ForgeDirection front;
+    public EnumFacing front;
 
     public StructureListGenerationInfo()
     {
-        this(randomID("List"), "", null, 0, 0, 0, ForgeDirection.NORTH);
+        this(randomID("List"), "", null, 0, 0, 0, EnumFacing.NORTH);
     }
 
-    public StructureListGenerationInfo(String id, String listID, Double weight, int shiftX, int shiftY, int shiftZ, ForgeDirection front)
+    public StructureListGenerationInfo(String id, String listID, Double weight, int shiftX, int shiftY, int shiftZ, EnumFacing front)
     {
         this.id = id;
         this.listID = listID;
@@ -100,7 +100,7 @@ public class StructureListGenerationInfo extends StructureGenerationInfo impleme
             int positionY = JsonUtils.getJsonObjectIntegerFieldValueOrDefault(jsonObject, "positionY", 0);
             int positionZ = JsonUtils.getJsonObjectIntegerFieldValueOrDefault(jsonObject, "positionZ", 0);
 
-            ForgeDirection front = Directions.deserialize(JsonUtils.getJsonObjectStringFieldValueOrDefault(jsonObject, "front", "NORTH"));
+            EnumFacing front = Directions.deserialize(JsonUtils.getJsonObjectStringFieldValueOrDefault(jsonObject, "front", "NORTH"));
 
             return new StructureListGenerationInfo(id, listID, weight, positionX, positionY, positionZ, front);
         }

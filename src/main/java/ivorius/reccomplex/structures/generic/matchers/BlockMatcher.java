@@ -12,7 +12,9 @@ import ivorius.ivtoolkit.gui.IntegerRange;
 import ivorius.ivtoolkit.tools.MCRegistry;
 import ivorius.reccomplex.utils.*;
 import net.minecraft.block.Block;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.util.EnumChatFormatting;
+import net.minecraft.util.ResourceLocation;
 
 import java.util.List;
 
@@ -33,7 +35,7 @@ public class BlockMatcher extends PrefixedTypeExpressionCache<Boolean> implement
 
     public static String of(MCRegistry registry, Block block)
     {
-        return registry.idFromBlock(block);
+        return registry.idFromBlock(block).toString();
     }
 
     public static String of(MCRegistry registry, Block block, Integer metadata)
@@ -65,13 +67,13 @@ public class BlockMatcher extends PrefixedTypeExpressionCache<Boolean> implement
         @Override
         public Boolean evaluate(String var, Object... args)
         {
-            return ((IBlockState) args[0]).getBlock() == registry.blockFromID(var);
+            return ((IBlockState) args[0]).getBlock() == registry.blockFromID(new ResourceLocation(var));
         }
 
         @Override
         public boolean isKnown(String var, Object... args)
         {
-            return registry.blockFromID(var) != null;
+            return registry.blockFromID(new ResourceLocation(var)) != null;
         }
     }
 
@@ -111,7 +113,7 @@ public class BlockMatcher extends PrefixedTypeExpressionCache<Boolean> implement
         public Boolean evaluate(String var, Object... args)
         {
             IntegerRange range = parseMetadataExp(var);
-            int metadata = BlockStates.getMetadata(((IBlockState) args[0]));
+            int metadata = BlockStates.toMetadata((IBlockState) args[0]);
 
             return range != null && metadata >= range.min && metadata <= range.max;
         }

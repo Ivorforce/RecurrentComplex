@@ -8,13 +8,13 @@ package ivorius.reccomplex.gui.worldscripts.structuregenerator;
 import ivorius.ivtoolkit.blocks.Directions;
 import ivorius.ivtoolkit.gui.IntegerRange;
 import ivorius.reccomplex.gui.GuiValidityStateIndicator;
-import ivorius.reccomplex.gui.TableDataSourceBlockCoord;
+import ivorius.reccomplex.gui.TableDataSourceBlockPos;
 import ivorius.reccomplex.gui.TableDirections;
 import ivorius.reccomplex.gui.table.*;
 import ivorius.reccomplex.scripts.world.WorldScriptStructureGenerator;
 import ivorius.reccomplex.structures.StructureRegistry;
 import joptsimple.internal.Strings;
-import net.minecraftforge.common.util.ForgeDirection;
+import net.minecraft.util.EnumFacing;
 import org.apache.commons.lang3.ArrayUtils;
 
 import java.util.Arrays;
@@ -37,7 +37,7 @@ public class TableDataSourceStructureBlock extends TableDataSourceSegmented impl
         this.tableNavigator = tableNavigator;
         this.tableDelegate = tableDelegate;
 
-        addManagedSection(2, new TableDataSourceBlockCoord(script.getStructureShift(), script::setStructureShift, new IntegerRange(-50, 50), "Range: %s"));
+        addManagedSection(2, new TableDataSourceBlockPos(script.getStructureShift(), script::setStructureShift, new IntegerRange(-50, 50), "Range: %s"));
     }
 
     private static boolean doAllStructuresExist(Iterable<String> structures)
@@ -161,7 +161,7 @@ public class TableDataSourceStructureBlock extends TableDataSourceSegmented impl
                 }
                 case "front":
                 {
-                    script.setFront((ForgeDirection) cell.getPropertyValue());
+                    script.setFront((EnumFacing) cell.getPropertyValue());
                     break;
                 }
             }

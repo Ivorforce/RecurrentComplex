@@ -6,7 +6,8 @@
 package ivorius.reccomplex.commands;
 
 import ivorius.ivtoolkit.blocks.BlockArea;
-import ivorius.ivtoolkit.blocks.BlockCoord;
+import ivorius.ivtoolkit.tools.Mover;
+import net.minecraft.util.BlockPos;
 import ivorius.ivtoolkit.tools.IvWorldData;
 import ivorius.reccomplex.RCConfig;
 import ivorius.reccomplex.entities.StructureEntityInfo;
@@ -49,7 +50,7 @@ public class CommandExportSchematic extends CommandBase
     }
 
     @Override
-    public void processCommand(ICommandSender commandSender, String[] args)
+    public void processCommand(ICommandSender commandSender, String[] args) throws CommandException
     {
         EntityPlayerMP player = getCommandSenderAsPlayer(commandSender);
 
@@ -89,8 +90,8 @@ public class CommandExportSchematic extends CommandBase
         else
             structureName = "NewStructure_" + commandSender.getEntityWorld().rand.nextInt(1000);
 
-        BlockCoord lowerCoord = area.getLowerCorner();
-        BlockCoord higherCoord = area.getHigherCorner();
+        BlockPos lowerCoord = area.getLowerCorner();
+        BlockPos higherCoord = area.getHigherCorner();
 
         IvWorldData data = new IvWorldData(player.getEntityWorld(), new BlockArea(lowerCoord, higherCoord), true);
         SchematicFile schematicFile = convert(data, lowerCoord);
@@ -99,23 +100,23 @@ public class CommandExportSchematic extends CommandBase
         commandSender.addChatMessage(ServerTranslations.format("commands.strucExportSchematic.success", structureName));
     }
 
-    public static SchematicFile convert(IvWorldData worldData, BlockCoord referenceCoord)
+    public static SchematicFile convert(IvWorldData worldData, BlockPos referenceCoord)
     {
         SchematicFile schematicFile = new SchematicFile((short) worldData.blockCollection.width, (short) worldData.blockCollection.height, (short) worldData.blockCollection.length);
 
-        for (BlockCoord coord : worldData.blockCollection)
+        for (BlockPos coord : worldData.blockCollection.area())
         {
-            int index = schematicFile.getBlockIndex(coord.x, coord.y, coord.z);
-            schematicFile.blockStates[index] = BlockStates.at(worldData.blockCollection, coord);
+            int index = schematicFile.getBlockIndex(coord);
+            schematicFile.blockStates[index] = worldData.blockCollection.getBlockState(coord);
         }
 
         for (TileEntity tileEntity : worldData.tileEntities)
         {
             NBTTagCompound teCompound = new NBTTagCompound();
 
-            IvWorldData.moveTileEntityForGeneration(tileEntity, referenceCoord.invert());
+            Mover.moveTileEntity(tileEntity, referenceCoord.multiply(-1));
             tileEntity.writeToNBT(teCompound);
-            IvWorldData.moveTileEntityForGeneration(tileEntity, referenceCoord);
+            Mover.moveTileEntity(tileEntity, referenceCoord);
 
             schematicFile.tileEntityCompounds.add(teCompound);
         }
@@ -124,9 +125,9 @@ public class CommandExportSchematic extends CommandBase
         {
             NBTTagCompound entityCompound = new NBTTagCompound();
 
-            IvWorldData.moveEntityForGeneration(entity, referenceCoord.invert());
+            Mover.moveEntity(entity, referenceCoord.multiply(-1));
             entity.writeToNBTOptional(entityCompound);
-            IvWorldData.moveEntityForGeneration(entity, referenceCoord);
+            Mover.moveEntity(entity, referenceCoord);
 
             schematicFile.entityCompounds.add(entityCompound);
         }
@@ -135,10 +136,10 @@ public class CommandExportSchematic extends CommandBase
     }
 
     @Override
-    public List addTabCompletionOptions(ICommandSender commandSender, String[] args)
+    public List addTabCompletionOptions(ICommandSender commandSender, String[] args, BlockPos pos)
     {
         if (args.length == 1)
-            return getListOfStringsFromIterableMatchingLastWord(args, StructureRegistry.INSTANCE.allStructureIDs());
+            return getListOfStringsMatchingLastWord(args, StructureRegistry.INSTANCE.allStructureIDs());
 
         return null;
     }

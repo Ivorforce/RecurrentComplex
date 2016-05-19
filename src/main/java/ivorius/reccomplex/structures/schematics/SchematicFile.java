@@ -6,10 +6,11 @@
 package ivorius.reccomplex.structures.schematics;
 
 import ivorius.ivtoolkit.blocks.BlockArea;
-import ivorius.ivtoolkit.blocks.BlockCoord;
-import ivorius.ivtoolkit.tools.IvWorldData;
-import ivorius.reccomplex.utils.IBlockState;
+import ivorius.ivtoolkit.tools.Mover;
 import ivorius.reccomplex.utils.BlockStates;
+import net.minecraft.util.BlockPos;
+import ivorius.ivtoolkit.tools.IvWorldData;
+import net.minecraft.block.state.IBlockState;
 import ivorius.reccomplex.utils.IvStreams;
 import ivorius.reccomplex.utils.RCAccessorEntity;
 import net.minecraft.block.Block;
@@ -22,7 +23,7 @@ import net.minecraft.nbt.NBTTagList;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.Constants;
-import net.minecraftforge.common.util.ForgeDirection;
+import net.minecraft.util.EnumFacing;
 
 import java.util.*;
 import java.util.stream.Stream;
@@ -89,7 +90,7 @@ public class SchematicFile
             Block block = schematicMapping != null
                     ? schematicMapping.blockFromID(blockID)
                     : Block.getBlockById(blockID);
-            this.blockStates[i] = BlockStates.defaultState(block);
+            this.blockStates[i] = block.getDefaultState();
         }
 
         NBTTagList entities = tagCompound.getTagList("Entities", Constants.NBT.TAG_COMPOUND);
@@ -101,57 +102,57 @@ public class SchematicFile
             tileEntityCompounds.add(tileEntities.getCompoundTagAt(i));
     }
 
-    public int getBlockIndex(int x, int y, int z)
+    public int getBlockIndex(BlockPos pos)
     {
-        return x + (y * length + z) * width;
+        return pos.getX() + (pos.getY() * length + pos.getZ()) * width;
     }
 
-    public IBlockState getBlockState(BlockCoord coord)
+    public IBlockState getBlockState(BlockPos coord)
     {
-        if (coord.x < 0 || coord.y < 0 || coord.z < 0 || coord.x >= width || coord.y >= height || coord.z >= length)
-            return BlockStates.defaultState(Blocks.air);
+        if (coord.getX() < 0 || coord.getY() < 0 || coord.getZ() < 0 || coord.getX() >= width || coord.getY() >= height || coord.getZ() >= length)
+            return Blocks.air.getDefaultState();
 
-        return blockStates[getBlockIndex(coord.x, coord.y, coord.z)];
+        return blockStates[getBlockIndex(coord)];
     }
 
-    public boolean shouldRenderSide(BlockCoord coord, ForgeDirection side)
+    public boolean shouldRenderSide(BlockPos coord, EnumFacing side)
     {
-        BlockCoord sideCoord = coord.add(side.offsetX, side.offsetY, side.offsetZ);
+        BlockPos sideCoord = coord.add(side.getFrontOffsetX(), side.getFrontOffsetY(), side.getFrontOffsetZ());
 
         IBlockState blockState = getBlockState(sideCoord);
         return !blockState.getBlock().isOpaqueCube();
     }
 
-    public void generate(World world, int x, int y, int z)
+    public void generate(World world, BlockPos pos)
     {
-        Map<BlockCoord, TileEntity> tileEntities = new HashMap<>();
+        Map<BlockPos, TileEntity> tileEntities = new HashMap<>();
         for (NBTTagCompound tileTagCompound : tileEntityCompounds)
         {
             TileEntity tileEntity = TileEntity.createAndLoadEntity(tileTagCompound);
             if (tileEntity != null)
-                tileEntities.put(new BlockCoord(tileEntity), tileEntity);
+                tileEntities.put(tileEntity.getPos(), tileEntity);
         }
 
-        BlockArea blockArea = BlockArea.areaFromSize(new BlockCoord(0, 0, 0), new int[]{width, height, length});
+        BlockArea blockArea = BlockArea.areaFromSize(new BlockPos(0, 0, 0), new int[]{width, height, length});
         for (int pass = 0; pass < 2; pass++)
         {
-            for (BlockCoord srcCoord : blockArea)
+            for (BlockPos srcCoord : blockArea)
             {
-                int index = getBlockIndex(srcCoord.x, srcCoord.y, srcCoord.z);
+                int index = getBlockIndex(srcCoord);
                 IBlockState blockState = blockStates[index];
 
                 if (blockState != null && getPass(blockState) == pass)
                 {
-                    BlockCoord worldPos = srcCoord.add(x, y, z);
-                    world.setBlock(worldPos.x, worldPos.y, worldPos.z, blockState.getBlock(), BlockStates.getMetadata(blockState), 3);
+                    BlockPos worldPos = srcCoord.add(pos);
+                    world.setBlockState(worldPos, blockState, 3);
 
                     TileEntity tileEntity = tileEntities.get(srcCoord);
                     if (tileEntity != null)
                     {
-                        world.setBlockMetadataWithNotify(worldPos.x, worldPos.y, worldPos.z, BlockStates.getMetadata(blockState), 2); // TODO Figure out why some blocks (chests, furnace) need this
+//                        world.setBlockMetadataWithNotify(worldPos.x, worldPos.y, worldPos.z, BlockStates.getMetadata(blockState), 2);
 
-                        IvWorldData.setTileEntityPosForGeneration(tileEntity, worldPos);
-                        world.setTileEntity(worldPos.x, worldPos.y, worldPos.z, tileEntity);
+                        Mover.setTileEntityPos(tileEntity, worldPos);
+                        world.setTileEntity(worldPos, tileEntity);
                         tileEntity.updateContainingBlockInfo();
                     }
                 }
@@ -164,9 +165,7 @@ public class SchematicFile
             if (entity != null)
             {
                 RCAccessorEntity.setEntityUniqueID(entity, UUID.randomUUID());
-
-                IvWorldData.moveEntityForGeneration(entity, new BlockCoord(x, y, z));
-
+                Mover.moveEntity(entity, pos);
                 world.spawnEntityInWorld(entity);
             }
         }
@@ -192,7 +191,7 @@ public class SchematicFile
         if (weOriginZ != null)
             tagCompound.setShort("WEOriginZ", weOriginZ);
 
-        tagCompound.setByteArray("Data", IvStreams.toByteArray(Stream.of(blockStates).mapToInt(BlockStates::getMetadata)));
+        tagCompound.setByteArray("Data", IvStreams.toByteArray(Stream.of(blockStates).mapToInt(BlockStates::toMetadata)));
 
         byte[] blockIDs = new byte[blockStates.length];
         byte[] addBlocks = new byte[(blockStates.length + 1) / 2];

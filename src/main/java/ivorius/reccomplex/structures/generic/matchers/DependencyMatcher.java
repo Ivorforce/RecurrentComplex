@@ -9,7 +9,7 @@ import com.google.common.base.Function;
 import com.google.common.base.Predicate;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
-import cpw.mods.fml.common.Loader;
+import net.minecraftforge.fml.common.Loader;
 import ivorius.ivtoolkit.tools.IvGsonHelper;
 import ivorius.reccomplex.json.RCGsonHelper;
 import ivorius.reccomplex.structures.StructureRegistry;

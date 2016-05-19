@@ -5,8 +5,9 @@
 
 package ivorius.reccomplex.utils;
 
-import cpw.mods.fml.common.event.FMLMissingMappingsEvent;
-import cpw.mods.fml.common.eventhandler.SubscribeEvent;
+import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.fml.common.event.FMLMissingMappingsEvent;
+import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import ivorius.ivtoolkit.tools.MCRegistry;
 
 /**
@@ -36,14 +37,14 @@ public class FMLMissingRemapper
             {
                 case BLOCK:
                 {
-                    String remap = remapper.remapBlock(missingMapping.name);
+                    ResourceLocation remap = remapper.remapBlock(new ResourceLocation(missingMapping.name));
                     if (remap != null)
                         missingMapping.remap(parent.blockFromID(remap));
                     break;
                 }
                 case ITEM:
                 {
-                    String remap = remapper.remapItem(missingMapping.name);
+                    ResourceLocation remap = remapper.remapItem(new ResourceLocation(missingMapping.name));
                     if (remap != null)
                         missingMapping.remap(parent.itemFromID(remap));
                     break;

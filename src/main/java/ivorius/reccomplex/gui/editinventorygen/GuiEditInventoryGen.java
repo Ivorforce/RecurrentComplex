@@ -29,8 +29,9 @@ import net.minecraft.util.MathHelper;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.StringUtils;
 import org.lwjgl.input.Keyboard;
-import org.lwjgl.opengl.GL11;
+import net.minecraft.client.renderer.GlStateManager;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -87,18 +88,18 @@ public class GuiEditInventoryGen extends GuiContainer implements InventoryWatche
         int shiftTop = height / 2 - ySize / 2;
         int shiftRightPage = shiftRight + ContainerEditInventoryGen.ITEM_COLUMNS * ContainerEditInventoryGen.SEGMENT_WIDTH;
 
-        this.nameTextField = new GuiTextField(this.fontRendererObj, this.width / 2 - 150, this.height / 2 - 110, 142, 20);
+        this.nameTextField = new GuiTextField(0, this.fontRendererObj, this.width / 2 - 150, this.height / 2 - 110, 142, 20);
         this.nameTextField.setMaxStringLength(32767);
         this.nameTextField.setFocused(true);
         this.nameTextField.setText(key);
         this.buttonList.add(this.saveBtn = new GuiButton(0, this.width / 2, this.height / 2 - 110, 70, 20, I18n.format("guiGenericInventory.save")));
         this.buttonList.add(this.cancelBtn = new GuiButton(1, this.width / 2 + 75, this.height / 2 - 110, 70, 20, I18n.format("gui.cancel")));
 
-        inventoryGenIDTextField = new GuiTextField(this.fontRendererObj, this.width / 2 - 150, this.height / 2 - 85, 142, 20);
+        inventoryGenIDTextField = new GuiTextField(0, this.fontRendererObj, this.width / 2 - 150, this.height / 2 - 85, 142, 20);
         inventoryGenIDTextField.setMaxStringLength(32767);
         inventoryGenIDTextField.setText(inventoryGenerator.inventoryGeneratorID);
 
-        dependencyTextField = new GuiTextField(fontRendererObj, this.width / 2, this.height / 2 - 85, 130, 20);
+        dependencyTextField = new GuiTextField(0, fontRendererObj, this.width / 2, this.height / 2 - 85, 130, 20);
         dependencyTextField.setText(inventoryGenerator.dependencies.getExpression());
         dependencyStateIndicator = new GuiValidityStateIndicator(this.width / 2 + 135, this.height / 2 - 80, TableDataSourceExpression.getValidityState(inventoryGenerator.dependencies));
 
@@ -227,7 +228,7 @@ public class GuiEditInventoryGen extends GuiContainer implements InventoryWatche
     }
 
     @Override
-    protected void keyTyped(char par1, int par2)
+    protected void keyTyped(char par1, int par2) throws IOException
     {
         if (!(par2 == Keyboard.KEY_ESCAPE || par2 == this.mc.gameSettings.keyBindInventory.getKeyCode())) // Escape!
         {
@@ -275,7 +276,7 @@ public class GuiEditInventoryGen extends GuiContainer implements InventoryWatche
     }
 
     @Override
-    protected void mouseClicked(int par1, int par2, int par3)
+    protected void mouseClicked(int par1, int par2, int par3) throws IOException
     {
         super.mouseClicked(par1, par2, par3);
 
@@ -306,7 +307,7 @@ public class GuiEditInventoryGen extends GuiContainer implements InventoryWatche
         dependencyStateIndicator.draw();
 
         mc.getTextureManager().bindTexture(textureBackground);
-        GL11.glColor3f(1.0f, 1.0f, 1.0f);
+        GlStateManager.color(1.0f, 1.0f, 1.0f);
         drawTexturedModalRect(width / 2 - 176 / 2 - 20 / 2 - 1, MathHelper.ceiling_float_int(height * 0.5f) + 17, 0, 0, 176, 90);
 
         for (int i = 0; i < ContainerEditInventoryGen.ITEM_ROWS; i++)
@@ -381,16 +382,16 @@ public class GuiEditInventoryGen extends GuiContainer implements InventoryWatche
     }
 
     @Override
-    protected void mouseMovedOrUp(int p_146286_1_, int p_146286_2_, int p_146286_3_)
+    protected void mouseReleased(int mouseX, int mouseY, int state)
     {
-        super.mouseMovedOrUp(p_146286_1_, p_146286_2_, p_146286_3_);
+        super.mouseReleased(mouseX, mouseY, state);
 
-        if (p_146286_3_ == 0)
+        if (state == 0)
         {
             for (Object object : buttonList)
             {
                 GuiButton button = (GuiButton) object;
-                button.mouseReleased(p_146286_1_, p_146286_2_);
+                button.mouseReleased(mouseX, mouseY);
             }
         }
     }

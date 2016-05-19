@@ -6,7 +6,8 @@
 package ivorius.reccomplex.scripts.world;
 
 import gnu.trove.list.array.TIntArrayList;
-import ivorius.ivtoolkit.blocks.BlockCoord;
+import ivorius.ivtoolkit.blocks.BlockPositions;
+import net.minecraft.util.BlockPos;
 import ivorius.ivtoolkit.math.AxisAlignedTransform2D;
 import ivorius.ivtoolkit.math.IvVecMathHelper;
 import ivorius.ivtoolkit.maze.components.*;
@@ -52,7 +53,7 @@ public class WorldScriptMazeGenerator implements WorldScript<WorldScriptMazeGene
     public final List<SavedMazePathConnection> exitPaths = new ArrayList<>();
     public String mazeID = "";
     public Selection rooms = Selection.zeroSelection(3);
-    public BlockCoord structureShift = new BlockCoord(0, 0, 0);
+    public BlockPos structureShift = new BlockPos(0, 0, 0);
     public int[] roomSize = new int[]{3, 5, 3};
     public final List<MazeRule> rules = new ArrayList<>();
 
@@ -112,7 +113,7 @@ public class WorldScriptMazeGenerator implements WorldScript<WorldScriptMazeGene
     }
 
     @Override
-    public void generate(StructureSpawnContext context, InstanceData instanceData, BlockCoord coord)
+    public void generate(StructureSpawnContext context, InstanceData instanceData, BlockPos coord)
     {
         List<PlacedStructure> placedStructures = instanceData.placedStructures;
         if (placedStructures == null)
@@ -142,12 +143,12 @@ public class WorldScriptMazeGenerator implements WorldScript<WorldScriptMazeGene
         this.mazeID = mazeID;
     }
 
-    public BlockCoord getStructureShift()
+    public BlockPos getStructureShift()
     {
         return structureShift;
     }
 
-    public void setStructureShift(BlockCoord structureShift)
+    public void setStructureShift(BlockPos structureShift)
     {
         this.structureShift = structureShift;
     }
@@ -196,7 +197,7 @@ public class WorldScriptMazeGenerator implements WorldScript<WorldScriptMazeGene
         exitPaths.clear();
         exitPaths.addAll(NBTCompoundObjects.readListFrom(compound, "mazeExits", SavedMazePathConnection.class));
 
-        structureShift = BlockCoord.readCoordFromNBT("structureShift", compound);
+        structureShift = BlockPositions.readFromNBT("structureShift", compound);
 
         roomSize = IvNBTHelper.readIntArrayFixedSize("roomSize", 3, compound);
 
@@ -215,7 +216,7 @@ public class WorldScriptMazeGenerator implements WorldScript<WorldScriptMazeGene
 
         NBTCompoundObjects.writeListTo(compound, "mazeExits", exitPaths);
 
-        BlockCoord.writeCoordToNBT("structureShift", structureShift, compound);
+        BlockPositions.writeToNBT("structureShift", structureShift, compound);
 
         compound.setIntArray("roomSize", roomSize);
 
@@ -223,7 +224,7 @@ public class WorldScriptMazeGenerator implements WorldScript<WorldScriptMazeGene
     }
 
     @Override
-    public InstanceData prepareInstanceData(StructurePrepareContext context, BlockCoord coord, World world)
+    public InstanceData prepareInstanceData(StructurePrepareContext context, BlockPos coord, World world)
     {
         InstanceData instanceData = new InstanceData();
         instanceData.placedStructures.addAll(WorldGenMaze.convertToPlacedStructures(context.random, coord, structureShift, getPlacedRooms(context.random, context.transform), roomSize, context.transform));

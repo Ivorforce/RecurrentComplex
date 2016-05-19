@@ -22,7 +22,7 @@ public class NBTTagCompoundSerializer implements JsonSerializer<NBTTagCompound>,
     {
         JsonObject jsonObject = new JsonObject();
 
-        for (Object key : src.func_150296_c())
+        for (Object key : src.getKeySet())
         {
             String keyString = (String) key;
             jsonObject.add(keyString, context.serialize(src.getTag(keyString)));

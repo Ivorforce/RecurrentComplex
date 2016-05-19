@@ -44,7 +44,7 @@ public class TableCellString extends TableCellPropertyDefault<String>
         super.initGui(screen);
 
         Bounds bounds = bounds();
-        textField = new GuiTextField(getFontRenderer(), bounds.getMinX(), bounds.getMinY() + (bounds.getHeight() - 20) / 2, bounds.getWidth() - (showsValidityState ? 15 : 0), 20);
+        textField = new GuiTextField(0, getFontRenderer(), bounds.getMinX(), bounds.getMinY() + (bounds.getHeight() - 20) / 2, bounds.getWidth() - (showsValidityState ? 15 : 0), 20);
         textField.setMaxStringLength(maxStringLength);
 
         textField.setText(getPropertyValue());

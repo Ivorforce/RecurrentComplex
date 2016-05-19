@@ -6,7 +6,7 @@
 package ivorius.reccomplex.structures.generic.transformers;
 
 import com.google.gson.*;
-import ivorius.ivtoolkit.blocks.BlockCoord;
+import net.minecraft.util.BlockPos;
 import ivorius.ivtoolkit.gui.IntegerRange;
 import ivorius.ivtoolkit.random.WeightedSelector;
 import ivorius.ivtoolkit.tools.MCRegistry;
@@ -22,7 +22,7 @@ import ivorius.reccomplex.structures.StructureSpawnContext;
 import ivorius.reccomplex.structures.generic.WeightedBlockState;
 import ivorius.reccomplex.structures.generic.matchers.BlockMatcher;
 import ivorius.reccomplex.structures.generic.presets.WeightedBlockStatePresets;
-import ivorius.reccomplex.utils.IBlockState;
+import net.minecraft.block.state.IBlockState;
 import ivorius.reccomplex.utils.BlockStates;
 import ivorius.reccomplex.utils.NBTStorable;
 import ivorius.reccomplex.utils.PresettedList;
@@ -30,6 +30,7 @@ import net.minecraft.block.Block;
 import net.minecraft.init.Blocks;
 import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.util.Constants;
 
 import java.lang.reflect.Type;
@@ -69,7 +70,7 @@ public class TransformerReplaceAll extends TransformerSingleBlock<TransformerRep
     }
 
     @Override
-    public void transformBlock(InstanceData instanceData, Phase phase, StructureSpawnContext context, BlockCoord coord, IBlockState sourceState)
+    public void transformBlock(InstanceData instanceData, Phase phase, StructureSpawnContext context, BlockPos coord, IBlockState sourceState)
     {
         TransformerReplace.setBlockWith(context, coord, context.world, instanceData.blockState, instanceData.tileEntityInfo);
     }
@@ -94,9 +95,9 @@ public class TransformerReplaceAll extends TransformerSingleBlock<TransformerRep
         if (destination.list.size() > 0)
             blockState = WeightedSelector.selectItem(context.random, destination.list);
         else
-            blockState = new WeightedBlockState(null, BlockStates.defaultState(Blocks.air), "");
+            blockState = new WeightedBlockState(null, Blocks.air.getDefaultState(), "");
 
-        NBTTagCompound tileEntityInfo = blockState.tileEntityInfo.trim().length() > 0 && blockState.state.getBlock().hasTileEntity(BlockStates.getMetadata(blockState.state))
+        NBTTagCompound tileEntityInfo = blockState.tileEntityInfo.trim().length() > 0 && blockState.state.getBlock().hasTileEntity(blockState.state)
                 ? TransformerReplace.tryParse(blockState.tileEntityInfo) : null;
 
         return new InstanceData(blockState, tileEntityInfo);
@@ -180,12 +181,12 @@ public class TransformerReplaceAll extends TransformerSingleBlock<TransformerRep
             {
                 // Legacy
                 String destBlock = JsonUtils.getJsonObjectStringFieldValue(jsonObject, "dest");
-                Block dest = registry.blockFromID(destBlock);
+                Block dest = registry.blockFromID(new ResourceLocation(destBlock));
                 byte[] destMeta = context.deserialize(jsonObject.get("destMetadata"), byte[].class);
 
                 transformer.destination.setToCustom();
                 for (byte b : destMeta)
-                    transformer.destination.list.add(new WeightedBlockState(null, BlockStates.fromMetadata(dest, b), ""));
+                    transformer.destination.list.add(new WeightedBlockState(null, dest.getStateFromMeta(b), ""));
             }
 
             return transformer;

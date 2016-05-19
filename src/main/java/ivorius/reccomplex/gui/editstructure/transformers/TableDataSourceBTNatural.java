@@ -29,7 +29,7 @@ public class TableDataSourceBTNatural extends TableDataSourceSegmented implement
 
     public static TableCellString elementForBlock(String id, Block block)
     {
-        TableCellString element = new TableCellString(id, Block.blockRegistry.getNameForObject(block));
+        TableCellString element = new TableCellString(id, Block.blockRegistry.getNameForObject(block).toString());
         element.setShowsValidityState(true);
         setStateForBlockTextfield(element);
         return element;

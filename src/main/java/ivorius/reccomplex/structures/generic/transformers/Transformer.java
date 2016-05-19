@@ -12,7 +12,7 @@ import ivorius.reccomplex.gui.table.TableNavigator;
 import ivorius.reccomplex.structures.StructureLoadContext;
 import ivorius.reccomplex.structures.StructurePrepareContext;
 import ivorius.reccomplex.structures.StructureSpawnContext;
-import ivorius.reccomplex.utils.IBlockState;
+import net.minecraft.block.state.IBlockState;
 import ivorius.reccomplex.utils.NBTStorable;
 import net.minecraft.nbt.NBTBase;
 import org.apache.commons.lang3.tuple.Pair;

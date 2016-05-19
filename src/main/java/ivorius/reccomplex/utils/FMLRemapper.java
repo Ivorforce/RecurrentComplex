@@ -9,6 +9,7 @@ import com.google.common.collect.Maps;
 import ivorius.ivtoolkit.tools.MCRegistry;
 import net.minecraft.block.Block;
 import net.minecraft.item.Item;
+import net.minecraft.util.ResourceLocation;
 
 import java.util.Map;
 
@@ -17,59 +18,50 @@ import java.util.Map;
  */
 public class FMLRemapper
 {
-    protected String domain;
-
-    protected final Map<String, String> blockRemaps = Maps.newHashMap();
-    protected final Map<String, String> itemRemaps = Maps.newHashMap();
+    protected final Map<ResourceLocation, ResourceLocation> blockRemaps = Maps.newHashMap();
+    protected final Map<ResourceLocation, ResourceLocation> itemRemaps = Maps.newHashMap();
     protected final Map<String, String> tileEntityRemaps = Maps.newHashMap();
 
-    public FMLRemapper(String domain)
+    public void registerLegacyBlockIDs(ResourceLocation blockID, boolean inferItem, ResourceLocation... oldIDs)
     {
-        this.domain = domain;
-    }
-
-    public void registerLegacyBlockIDs(String blockID, boolean inferItem, String... oldIDs)
-    {
-        for (String oldID : oldIDs)
+        for (ResourceLocation oldID : oldIDs)
         {
-            String fullID = String.format("%s:%s", domain, oldID);
-
-            blockRemaps.put(fullID, blockID);
+            blockRemaps.put(oldID, blockID);
             if (inferItem)
-                itemRemaps.put(fullID, blockID);
+                itemRemaps.put(oldID, blockID);
         }
     }
 
-    public void registerLegacyItemIDs(String itemID, String... oldIDs)
+    public void registerLegacyItemIDs(ResourceLocation itemID, ResourceLocation... oldIDs)
     {
-        for (String oldID : oldIDs)
-            itemRemaps.put(String.format("%s:%s", domain, oldID), itemID);
+        for (ResourceLocation oldID : oldIDs)
+            itemRemaps.put(oldID, itemID);
     }
 
     public void registerLegacyTileEntityIDs(String tileEntityID, String... oldIDs)
     {
         for (String oldID : oldIDs)
-            tileEntityRemaps.put(String.format("%s:%s", domain, oldID), tileEntityID);
+            tileEntityRemaps.put(oldID, tileEntityID);
     }
 
-    public String mapBlock(String id)
+    public ResourceLocation mapBlock(ResourceLocation id)
     {
-        String remap = blockRemaps.get(id);
+        ResourceLocation remap = blockRemaps.get(id);
         return remap != null ? remap : id;
     }
 
-    public String remapBlock(String id)
+    public ResourceLocation remapBlock(ResourceLocation id)
     {
         return blockRemaps.get(id);
     }
 
-    public String mapItem(String id)
+    public ResourceLocation mapItem(ResourceLocation id)
     {
-        String remap = itemRemaps.get(id);
+        ResourceLocation remap = itemRemaps.get(id);
         return remap != null ? remap : id;
     }
 
-    public String remapItem(String id)
+    public ResourceLocation remapItem(ResourceLocation id)
     {
         return itemRemaps.get(id);
     }

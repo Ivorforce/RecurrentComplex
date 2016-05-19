@@ -9,6 +9,7 @@ import ivorius.reccomplex.gui.InventoryWatcher;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.IChatComponent;
 import net.minecraft.util.WeightedRandomChestContent;
 
 import java.util.ArrayList;
@@ -70,16 +71,16 @@ public class InventoryGenericInvGen implements IInventory
 
             if (var1 % 2 == 0)
             {
-                chestContent.theMinimumChanceToGenerateItem -= var2;
+                chestContent.minStackSize -= var2;
             }
             else
             {
-                chestContent.theMaximumChanceToGenerateItem -= var2;
+                chestContent.maxStackSize -= var2;
             }
 
             validateMinMax(chestContent);
 
-//            if (chestContent.theMinimumChanceToGenerateItem <= 0 || chestContent.theMaximumChanceToGenerateItem <= 0)
+//            if (chestContent.minStackSize <= 0 || chestContent.maxStackSize <= 0)
 //                chestContents.remove(stackIndex);
 
             ItemStack returnStack = cachedItemStacks.get(var1).splitStack(var2);
@@ -112,11 +113,11 @@ public class InventoryGenericInvGen implements IInventory
 
                 if (var1 % 2 == 0)
                 {
-                    chestContent.theMinimumChanceToGenerateItem = var2.stackSize;
+                    chestContent.minStackSize = var2.stackSize;
                 }
                 else
                 {
-                    chestContent.theMaximumChanceToGenerateItem = var2.stackSize;
+                    chestContent.maxStackSize = var2.stackSize;
                 }
 
                 validateMinMax(chestContent);
@@ -143,24 +144,12 @@ public class InventoryGenericInvGen implements IInventory
 
     private static void validateMinMax(WeightedRandomChestContent chestContent)
     {
-        if (chestContent.theMaximumChanceToGenerateItem < chestContent.theMinimumChanceToGenerateItem)
+        if (chestContent.maxStackSize < chestContent.minStackSize)
         {
-            int tmp = chestContent.theMaximumChanceToGenerateItem;
-            chestContent.theMaximumChanceToGenerateItem = chestContent.theMinimumChanceToGenerateItem;
-            chestContent.theMinimumChanceToGenerateItem = tmp;
+            int tmp = chestContent.maxStackSize;
+            chestContent.maxStackSize = chestContent.minStackSize;
+            chestContent.minStackSize = tmp;
         }
-    }
-
-    @Override
-    public String getInventoryName()
-    {
-        return null;
-    }
-
-    @Override
-    public boolean hasCustomInventoryName()
-    {
-        return false;
     }
 
     @Override
@@ -204,11 +193,11 @@ public class InventoryGenericInvGen implements IInventory
 
                 if (i % 2 == 0)
                 {
-                    chestContent.theMinimumChanceToGenerateItem = stack.stackSize;
+                    chestContent.minStackSize = stack.stackSize;
                 }
                 else
                 {
-                    chestContent.theMaximumChanceToGenerateItem = stack.stackSize;
+                    chestContent.maxStackSize = stack.stackSize;
                 }
             }
         }
@@ -222,9 +211,9 @@ public class InventoryGenericInvGen implements IInventory
         for (WeightedRandomChestContent chestContent : chestContents)
         {
             ItemStack stackLow = chestContent.theItemId.copy();
-            stackLow.stackSize = chestContent.theMinimumChanceToGenerateItem;
+            stackLow.stackSize = chestContent.minStackSize;
             ItemStack stackHigh = chestContent.theItemId.copy();
-            stackHigh.stackSize = chestContent.theMaximumChanceToGenerateItem;
+            stackHigh.stackSize = chestContent.maxStackSize;
 
             cachedItemStacks.add(stackLow);
             cachedItemStacks.add(stackHigh);
@@ -238,20 +227,62 @@ public class InventoryGenericInvGen implements IInventory
     }
 
     @Override
-    public void openInventory()
+    public void openInventory(EntityPlayer player)
     {
 
     }
 
     @Override
-    public void closeInventory()
+    public void closeInventory(EntityPlayer player)
     {
 
     }
-
+    
     @Override
     public boolean isItemValidForSlot(int var1, ItemStack var2)
     {
         return true;
+    }
+
+    @Override
+    public int getField(int id)
+    {
+        return 0;
+    }
+
+    @Override
+    public void setField(int id, int value)
+    {
+
+    }
+
+    @Override
+    public int getFieldCount()
+    {
+        return 0;
+    }
+
+    @Override
+    public void clear()
+    {
+
+    }
+
+    @Override
+    public String getCommandSenderName()
+    {
+        return null;
+    }
+
+    @Override
+    public boolean hasCustomName()
+    {
+        return false;
+    }
+
+    @Override
+    public IChatComponent getDisplayName()
+    {
+        return null;
     }
 }

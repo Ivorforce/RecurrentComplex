@@ -17,6 +17,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagString;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.util.Constants;
 
 import javax.annotation.Nullable;
@@ -30,8 +31,8 @@ public class MCRegistrySpecial implements MCRegistry
 {
     public static final String HIDDEN_ITEM_TAG = "RC_HIDDEN_ITEM";
 
-    protected final BiMap<String, Item> itemMap = HashBiMap.create();
-    protected final BiMap<String, Block> blockMap = HashBiMap.create();
+    protected final BiMap<ResourceLocation, Item> itemMap = HashBiMap.create();
+    protected final BiMap<ResourceLocation, Block> blockMap = HashBiMap.create();
     protected final Map<String, Class<? extends TileEntity>> tileEntityMap = new HashMap<>();
 
     protected MCRegistry parent;
@@ -44,12 +45,12 @@ public class MCRegistrySpecial implements MCRegistry
         this.remapper = remapper;
     }
 
-    public void register(String id, Item item)
+    public void register(ResourceLocation id, Item item)
     {
         itemMap.put(id, item);
     }
 
-    public void register(String id, Block block)
+    public void register(ResourceLocation id, Block block)
     {
         blockMap.put(id, block);
     }
@@ -65,7 +66,7 @@ public class MCRegistrySpecial implements MCRegistry
     }
 
     @Override
-    public Item itemFromID(String itemID)
+    public Item itemFromID(ResourceLocation itemID)
     {
         itemID = remapper.mapItem(itemID);
         Item item = itemMap.get(itemID);
@@ -73,14 +74,14 @@ public class MCRegistrySpecial implements MCRegistry
     }
 
     @Override
-    public String idFromItem(Item item)
+    public ResourceLocation idFromItem(Item item)
     {
-        String id = itemMap.inverse().get(item);
+        ResourceLocation id = itemMap.inverse().get(item);
         return id != null ? id : parent.idFromItem(item);
     }
 
     @Override
-    public void modifyItemStackCompound(NBTTagCompound compound, String itemID)
+    public void modifyItemStackCompound(NBTTagCompound compound, ResourceLocation itemID)
     {
         parent.modifyItemStackCompound(compound, itemID);
     }
@@ -90,13 +91,13 @@ public class MCRegistrySpecial implements MCRegistry
         return itemMap.isEmpty() || !itemMap.containsValue(item);
     }
 
-    public boolean isItemSafe(String itemID)
+    public boolean isItemSafe(ResourceLocation itemID)
     {
         return itemMap.isEmpty() || !itemMap.containsKey(itemID);
     }
 
     @Override
-    public Block blockFromID(String blockID)
+    public Block blockFromID(ResourceLocation blockID)
     {
         blockID = remapper.mapBlock(blockID);
         Block block = blockMap.get(blockID);
@@ -104,9 +105,9 @@ public class MCRegistrySpecial implements MCRegistry
     }
 
     @Override
-    public String idFromBlock(Block block)
+    public ResourceLocation idFromBlock(Block block)
     {
-        String id = blockMap.inverse().get(block);
+        ResourceLocation id = blockMap.inverse().get(block);
         return id != null ? id : parent.idFromBlock(block);
     }
 
@@ -115,7 +116,7 @@ public class MCRegistrySpecial implements MCRegistry
         return blockMap.isEmpty() || !blockMap.containsValue(block);
     }
 
-    public boolean isBlockSafe(String blockID)
+    public boolean isBlockSafe(ResourceLocation blockID)
     {
         return blockMap.isEmpty() || !blockMap.containsKey(blockID);
     }
@@ -159,18 +160,18 @@ public class MCRegistrySpecial implements MCRegistry
         }
 
         @Override
-        public Item itemFromID(String itemID)
+        public Item itemFromID(ResourceLocation itemID)
         {
             return !parent.isItemSafe(itemID) ? DUMMY_ITEM : parent.parent.itemFromID(itemID);
         }
 
         @Override
-        public String idFromItem(Item item)
+        public ResourceLocation idFromItem(Item item)
         {
             return parent.idFromItem(item);
         }
 
-        public String containedItemID(ItemStack stack)
+        public ResourceLocation containedItemID(ItemStack stack)
         {
             return parent.idFromItem(containedItem(stack));
         }
@@ -185,22 +186,22 @@ public class MCRegistrySpecial implements MCRegistry
         public Item hiddenItem(ItemStack stack)
         {
             return stack.hasTagCompound() && stack.getTagCompound().hasKey(HIDDEN_ITEM_TAG, Constants.NBT.TAG_STRING)
-                    ? parent.itemFromID(stack.getTagCompound().getString(HIDDEN_ITEM_TAG))
+                    ? parent.itemFromID(new ResourceLocation(stack.getTagCompound().getString(HIDDEN_ITEM_TAG)))
                     : null;
         }
 
-        public ItemStack constructItemStack(String itemID, int stackSize, int metadata)
+        public ItemStack constructItemStack(ResourceLocation itemID, int stackSize, int metadata)
         {
             return constructItemStack(parent.itemFromID(itemID), stackSize, metadata);
         }
 
         public ItemStack constructItemStack(Item item, int stackSize, int metadata)
         {
-            String hiddenID = parent.itemMap.inverse().get(item);
+            ResourceLocation hiddenID = parent.itemMap.inverse().get(item);
             if (hiddenID != null)
             {
                 ItemStack stack = new ItemStack(DUMMY_ITEM, stackSize, metadata);
-                stack.setTagInfo(HIDDEN_ITEM_TAG, new NBTTagString(hiddenID));
+                stack.setTagInfo(HIDDEN_ITEM_TAG, new NBTTagString(hiddenID.toString()));
                 return stack;
             }
             else
@@ -208,7 +209,7 @@ public class MCRegistrySpecial implements MCRegistry
         }
 
         @Override
-        public void modifyItemStackCompound(NBTTagCompound compound, String itemID)
+        public void modifyItemStackCompound(NBTTagCompound compound, ResourceLocation itemID)
         {
             Item item = parent.itemMap.get(parent.remapper.mapItem(itemID));
             if (item != null)
@@ -219,18 +220,18 @@ public class MCRegistrySpecial implements MCRegistry
                 else
                     compound.setTag("tag", stackNBT = new NBTTagCompound());
 
-                stackNBT.setString(HIDDEN_ITEM_TAG, itemID);
+                stackNBT.setString(HIDDEN_ITEM_TAG, itemID.toString());
             }
         }
 
         @Override
-        public Block blockFromID(String blockID)
+        public Block blockFromID(ResourceLocation blockID)
         {
             return parent.blockFromID(blockID);
         }
 
         @Override
-        public String idFromBlock(Block block)
+        public ResourceLocation idFromBlock(Block block)
         {
             return parent.idFromBlock(block);
         }

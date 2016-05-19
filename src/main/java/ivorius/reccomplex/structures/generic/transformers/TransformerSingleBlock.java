@@ -5,11 +5,11 @@
 
 package ivorius.reccomplex.structures.generic.transformers;
 
-import ivorius.ivtoolkit.blocks.BlockCoord;
+import net.minecraft.util.BlockPos;
 import ivorius.ivtoolkit.blocks.IvBlockCollection;
 import ivorius.ivtoolkit.tools.IvWorldData;
 import ivorius.reccomplex.structures.StructureSpawnContext;
-import ivorius.reccomplex.utils.IBlockState;
+import net.minecraft.block.state.IBlockState;
 import ivorius.reccomplex.utils.BlockStates;
 import ivorius.reccomplex.utils.NBTStorable;
 import org.apache.commons.lang3.tuple.Pair;
@@ -32,15 +32,15 @@ public abstract class TransformerSingleBlock<S extends NBTStorable> implements T
     {
         IvBlockCollection blockCollection = worldData.blockCollection;
         int[] areaSize = new int[]{blockCollection.width, blockCollection.height, blockCollection.length};
-        BlockCoord lowerCoord = context.lowerCoord();
+        BlockPos lowerCoord = context.lowerCoord();
 
-        for (BlockCoord sourceCoord : blockCollection)
+        for (BlockPos sourceCoord : blockCollection.area())
         {
-            BlockCoord worldCoord = context.transform.apply(sourceCoord, areaSize).add(lowerCoord);
+            BlockPos worldCoord = context.transform.apply(sourceCoord, areaSize).add(lowerCoord);
 
             if (context.includes(worldCoord))
             {
-                IBlockState state = BlockStates.at(blockCollection, sourceCoord);
+                IBlockState state = blockCollection.getBlockState(sourceCoord);
 
                 if (matches(instanceData, state))
                     transformBlock(instanceData, Phase.BEFORE, context, worldCoord, state);
@@ -50,5 +50,5 @@ public abstract class TransformerSingleBlock<S extends NBTStorable> implements T
 
     public abstract boolean matches(S instanceData, IBlockState state);
 
-    public abstract void transformBlock(S instanceData, Phase phase, StructureSpawnContext context, BlockCoord coord, IBlockState sourceState);
+    public abstract void transformBlock(S instanceData, Phase phase, StructureSpawnContext context, BlockPos coord, IBlockState sourceState);
 }

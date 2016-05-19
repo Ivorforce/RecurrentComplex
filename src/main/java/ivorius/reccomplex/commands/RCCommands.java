@@ -5,11 +5,12 @@
 
 package ivorius.reccomplex.commands;
 
-import cpw.mods.fml.common.event.FMLServerStartingEvent;
+import net.minecraft.command.*;
+import net.minecraft.util.BlockPos;
+import net.minecraftforge.fml.common.event.FMLServerStartingEvent;
 import ivorius.reccomplex.RecurrentComplex;
 import ivorius.reccomplex.entities.StructureEntityInfo;
 import ivorius.reccomplex.utils.ServerTranslations;
-import net.minecraft.command.ICommand;
 import net.minecraft.entity.Entity;
 
 import javax.annotation.Nonnull;
@@ -85,7 +86,7 @@ public class RCCommands
     }
 
     @Nonnull
-    public static StructureEntityInfo getStructureEntityInfo(Entity entity)
+    public static StructureEntityInfo getStructureEntityInfo(Entity entity) throws CommandException
     {
         StructureEntityInfo info = StructureEntityInfo.getStructureEntityInfo(entity);
 
@@ -93,5 +94,20 @@ public class RCCommands
             throw ServerTranslations.commandException("commands.rc.noEntityInfo");
 
         return info;
+    }
+
+    public static BlockPos parseBlockPos(BlockPos blockpos, String[] args, int startIndex, boolean centerBlock) throws NumberInvalidException
+    {
+        return new BlockPos(CommandBase.parseDouble((double)blockpos.getX(), args[startIndex], -30000000, 30000000, centerBlock), CommandBase.parseDouble((double)blockpos.getY(), args[startIndex + 1], 0, 256, false), CommandBase.parseDouble((double)blockpos.getZ(), args[startIndex + 2], -30000000, 30000000, centerBlock));
+    }
+
+    public static BlockPos parseXZBlockPos(ICommandSender sender, String[] args, int startIndex, boolean centerBlock) throws NumberInvalidException
+    {
+        return parseXZBlockPos(sender.getPosition(), args, startIndex, centerBlock);
+    }
+
+    public static BlockPos parseXZBlockPos(BlockPos blockpos, String[] args, int startIndex, boolean centerBlock) throws NumberInvalidException
+    {
+        return new BlockPos(CommandBase.parseDouble((double)blockpos.getX(), args[startIndex], -30000000, 30000000, centerBlock), 0, CommandBase.parseDouble((double)blockpos.getZ(), args[startIndex + 1], -30000000, 30000000, centerBlock));
     }
 }

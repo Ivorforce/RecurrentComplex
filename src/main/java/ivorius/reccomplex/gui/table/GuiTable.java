@@ -15,7 +15,7 @@ import net.minecraft.util.MathHelper;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
 import org.lwjgl.input.Mouse;
-import org.lwjgl.opengl.GL11;
+import net.minecraft.client.renderer.GlStateManager;
 
 import java.util.*;
 
@@ -144,8 +144,8 @@ public class GuiTable extends Gui
             {
                 Bounds bounds = element.bounds();
 
-                int stringWidth = screen.mc.fontRenderer.getStringWidth(title);
-                screen.drawString(screen.mc.fontRenderer, title, bounds.getMinX() - stringWidth - 10, bounds.getCenterY() - 4, 0xffffffff);
+                int stringWidth = screen.mc.fontRendererObj.getStringWidth(title);
+                screen.drawString(screen.mc.fontRendererObj, title, bounds.getMinX() - stringWidth - 10, bounds.getCenterY() - 4, 0xffffffff);
             }
         });
 
@@ -286,7 +286,7 @@ public class GuiTable extends Gui
     {
         if (!lines.isEmpty())
         {
-            GL11.glDisable(GL11.GL_DEPTH_TEST);
+            GlStateManager.disableDepth(); // depthTest
             int k = 0;
 
             for (String s : lines)

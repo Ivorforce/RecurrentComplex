@@ -18,7 +18,7 @@ public class NBTTagStringSerializer implements JsonSerializer<NBTTagString>, Jso
     @Override
     public JsonElement serialize(NBTTagString src, Type typeOfSrc, JsonSerializationContext context)
     {
-        return new JsonPrimitive(src.func_150285_a_());
+        return new JsonPrimitive(src.getString());
     }
 
     @Override

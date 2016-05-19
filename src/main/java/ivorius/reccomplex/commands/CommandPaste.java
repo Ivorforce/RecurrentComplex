@@ -5,7 +5,8 @@
 
 package ivorius.reccomplex.commands;
 
-import ivorius.ivtoolkit.blocks.BlockCoord;
+import net.minecraft.command.NumberInvalidException;
+import net.minecraft.util.BlockPos;
 import ivorius.ivtoolkit.math.AxisAlignedTransform2D;
 import ivorius.reccomplex.RCConfig;
 import ivorius.reccomplex.entities.StructureEntityInfo;
@@ -46,7 +47,7 @@ public class CommandPaste extends CommandBase
     }
 
     @Override
-    public void processCommand(ICommandSender commandSender, String[] args)
+    public void processCommand(ICommandSender commandSender, String[] args) throws CommandException
     {
         int x, y, z;
 
@@ -57,24 +58,19 @@ public class CommandPaste extends CommandBase
 
         if (worldData != null)
         {
-            x = commandSender.getPlayerCoordinates().posX;
-            y = commandSender.getPlayerCoordinates().posY;
-            z = commandSender.getPlayerCoordinates().posZ;
+            BlockPos coord;
 
             if (args.length >= 3)
-            {
-                x = MathHelper.floor_double(func_110666_a(commandSender, (double) x, args[0]));
-                y = MathHelper.floor_double(func_110666_a(commandSender, (double) y, args[1]));
-                z = MathHelper.floor_double(func_110666_a(commandSender, (double) z, args[2]));
-            }
+                coord = parseBlockPos(commandSender, args, 0, false);
+            else
+                coord = commandSender.getPosition();
 
-            int rotation = args.length >= 4 ? parseInt(commandSender, args[3]) : 0;
-            boolean mirror = args.length >= 5 && parseBoolean(commandSender, args[4]);
+            int rotation = args.length >= 4 ? parseInt(args[3]) : 0;
+            boolean mirror = args.length >= 5 && parseBoolean(args[4]);
 
             GenericStructureInfo structureInfo = GenericStructureInfo.createDefaultStructure();
             structureInfo.worldDataCompound = worldData;
 
-            BlockCoord coord = new BlockCoord(x, y, z);
             AxisAlignedTransform2D transform = AxisAlignedTransform2D.from(rotation, mirror);
 
             OperationRegistry.queueOperation(new OperationGenerateStructure(structureInfo, transform, coord, true), commandSender);
@@ -86,7 +82,7 @@ public class CommandPaste extends CommandBase
     }
 
     @Override
-    public List addTabCompletionOptions(ICommandSender commandSender, String[] args)
+    public List addTabCompletionOptions(ICommandSender commandSender, String[] args, BlockPos pos)
     {
         if (args.length == 1 || args.length == 2 || args.length == 3)
         {

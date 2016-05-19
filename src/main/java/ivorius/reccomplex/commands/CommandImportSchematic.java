@@ -5,7 +5,7 @@
 
 package ivorius.reccomplex.commands;
 
-import ivorius.ivtoolkit.blocks.BlockCoord;
+import net.minecraft.util.BlockPos;
 import ivorius.reccomplex.RCConfig;
 import ivorius.reccomplex.operation.OperationRegistry;
 import ivorius.reccomplex.structures.schematics.OperationGenerateSchematic;
@@ -44,18 +44,16 @@ public class CommandImportSchematic extends CommandBase
     }
 
     @Override
-    public void processCommand(ICommandSender commandSender, String[] args)
+    public void processCommand(ICommandSender commandSender, String[] args) throws CommandException
     {
         if (args.length < 4)
         {
             throw ServerTranslations.wrongUsageException("commands.strucImportSchematic.usage");
         }
 
-        int x = MathHelper.floor_double(func_110666_a(commandSender, commandSender.getPlayerCoordinates().posX, args[0]));
-        int y = MathHelper.floor_double(func_110666_a(commandSender, commandSender.getPlayerCoordinates().posY, args[1]));
-        int z = MathHelper.floor_double(func_110666_a(commandSender, commandSender.getPlayerCoordinates().posZ, args[2]));
+        BlockPos pos = parseBlockPos(commandSender, args, 0, false);
 
-        String schematicName = func_147178_a(commandSender, args, 3).getUnformattedText();
+        String schematicName = buildString(args, 3);
         SchematicFile schematicFile;
 
         try
@@ -70,11 +68,11 @@ public class CommandImportSchematic extends CommandBase
         if (schematicFile == null)
             throw ServerTranslations.commandException("commands.strucImportSchematic.missing", schematicName, SchematicLoader.getLookupFolderName());
 
-        OperationRegistry.queueOperation(new OperationGenerateSchematic(schematicFile, new BlockCoord(x, y, z)), commandSender);
+        OperationRegistry.queueOperation(new OperationGenerateSchematic(schematicFile, pos), commandSender);
     }
 
     @Override
-    public List addTabCompletionOptions(ICommandSender commandSender, String[] args)
+    public List addTabCompletionOptions(ICommandSender commandSender, String[] args, BlockPos pos)
     {
         if (args.length == 4)
         {

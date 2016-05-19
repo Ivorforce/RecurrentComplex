@@ -5,13 +5,14 @@
 
 package ivorius.reccomplex.gui.table;
 
-import cpw.mods.fml.relauncher.ReflectionHelper;
+import net.minecraftforge.fml.relauncher.ReflectionHelper;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraftforge.client.event.GuiScreenEvent;
 import net.minecraftforge.common.MinecraftForge;
 import org.lwjgl.input.Keyboard;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Stack;
@@ -36,7 +37,7 @@ public class GuiScreenModalTable extends GuiScreen implements TableDelegate, Tab
     }
 
     @Override
-    protected void mouseClicked(int x, int y, int button)
+    protected void mouseClicked(int x, int y, int button) throws IOException
     {
 //        super.mouseClicked(x, y, button);
         if (button == 0) // Simulated from private GuiScreen behavior
@@ -58,7 +59,7 @@ public class GuiScreenModalTable extends GuiScreen implements TableDelegate, Tab
 //                    this.selectedButton = event.button;
                     ReflectionHelper.setPrivateValue(GuiScreen.class, this, event.button, "selectedButton", "field_146290_a");
                     ////////
-                    event.button.func_146113_a(this.mc.getSoundHandler());
+                    event.button.playPressSound(this.mc.getSoundHandler());
                     this.actionPerformed(event.button);
                     if (this.equals(this.mc.currentScreen))
                     {
@@ -75,7 +76,7 @@ public class GuiScreenModalTable extends GuiScreen implements TableDelegate, Tab
     }
 
     @Override
-    public void handleMouseInput()
+    public void handleMouseInput() throws IOException
     {
         super.handleMouseInput();
 
@@ -83,7 +84,7 @@ public class GuiScreenModalTable extends GuiScreen implements TableDelegate, Tab
     }
 
     @Override
-    protected void keyTyped(char keyChar, int keyCode)
+    protected void keyTyped(char keyChar, int keyCode) throws IOException
     {
         super.keyTyped(keyChar, keyCode);
 
@@ -107,7 +108,7 @@ public class GuiScreenModalTable extends GuiScreen implements TableDelegate, Tab
     }
 
     @Override
-    protected void actionPerformed(GuiButton button)
+    protected void actionPerformed(GuiButton button) throws IOException
     {
         super.actionPerformed(button);
 

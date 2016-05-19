@@ -5,11 +5,12 @@
 
 package ivorius.reccomplex.items;
 
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
+import net.minecraft.util.EnumFacing;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
-import ivorius.ivtoolkit.blocks.BlockCoord;
+import net.minecraft.util.BlockPos;
 import ivorius.reccomplex.RecurrentComplex;
 import ivorius.reccomplex.entities.StructureEntityInfo;
 import ivorius.reccomplex.network.PacketItemEvent;
@@ -29,10 +30,10 @@ public class ItemBlockSelectorBlock extends ItemBlockSelector
     }
 
     @Override
-    public boolean onItemUse(ItemStack usedItem, EntityPlayer player, World world, int x, int y, int z, int par7, float par8, float par9, float par10)
+    public boolean onItemUse(ItemStack stack, EntityPlayer playerIn, World worldIn, BlockPos pos, EnumFacing side, float hitX, float hitY, float hitZ)
     {
-        if (world.isRemote)
-            sendClickToServer(usedItem, world, player, new BlockCoord(x, y, z));
+        if (worldIn.isRemote)
+            sendClickToServer(stack, worldIn, playerIn, pos);
 
         return true;
     }

@@ -209,7 +209,7 @@ public class GenericItemCollection implements WeightedItemCollection
         public static RandomizedItemStack from(WeightedRandomChestContent chestContent, int defaultWeight)
         {
             return new RandomizedItemStack(chestContent.theItemId.copy(),
-                    chestContent.theMinimumChanceToGenerateItem, chestContent.theMaximumChanceToGenerateItem,
+                    chestContent.minStackSize, chestContent.maxStackSize,
                     (double) chestContent.itemWeight / (double) defaultWeight);
         }
 

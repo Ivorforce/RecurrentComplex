@@ -14,6 +14,8 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import org.lwjgl.input.Keyboard;
 
+import java.io.IOException;
+
 /**
  * Created by lukas on 17.01.15.
  */
@@ -53,7 +55,7 @@ public class GuiEditInvGenMultiTag extends GuiScreenModalTable
     }
 
     @Override
-    protected void keyTyped(char keyChar, int keyCode)
+    protected void keyTyped(char keyChar, int keyCode) throws IOException
     {
         if (keyCode == Keyboard.KEY_ESCAPE)
         {
@@ -67,7 +69,7 @@ public class GuiEditInvGenMultiTag extends GuiScreenModalTable
     }
 
     @Override
-    protected void actionPerformed(GuiButton button)
+    protected void actionPerformed(GuiButton button) throws IOException
     {
         super.actionPerformed(button);
 

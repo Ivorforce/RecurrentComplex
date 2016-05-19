@@ -5,7 +5,8 @@
 
 package ivorius.reccomplex.commands;
 
-import ivorius.ivtoolkit.blocks.BlockCoord;
+import net.minecraft.command.CommandException;
+import net.minecraft.util.BlockPos;
 import ivorius.ivtoolkit.math.AxisAlignedTransform2D;
 import ivorius.reccomplex.RCConfig;
 import ivorius.reccomplex.operation.OperationRegistry;
@@ -49,30 +50,26 @@ public class CommandGenerateStructure extends CommandBase
     }
 
     @Override
-    public void processCommand(ICommandSender commandSender, String[] args)
+    public void processCommand(ICommandSender commandSender, String[] args) throws CommandException
     {
-        int x, z;
-
         if (args.length <= 0)
             throw ServerTranslations.wrongUsageException("commands.strucGen.usage");
 
         String structureName = args[0];
         StructureInfo structureInfo = StructureRegistry.INSTANCE.getStructure(structureName);
-        World world = args.length >= 4 ? DimensionManager.getWorld(parseInt(commandSender, args[2])) : commandSender.getEntityWorld();
+        World world = args.length >= 4 ? DimensionManager.getWorld(parseInt(args[2])) : commandSender.getEntityWorld();
 
         if (structureInfo == null)
         {
             throw ServerTranslations.commandException("commands.strucGen.noStructure", structureName);
         }
 
-        x = commandSender.getPlayerCoordinates().posX;
-        z = commandSender.getPlayerCoordinates().posZ;
+        BlockPos coord;
 
         if (args.length >= 3)
-        {
-            x = MathHelper.floor_double(func_110666_a(commandSender, (double) x, args[1]));
-            z = MathHelper.floor_double(func_110666_a(commandSender, (double) z, args[2]));
-        }
+            coord = RCCommands.parseXZBlockPos(commandSender, args, 1, false);
+        else
+            coord = commandSender.getPosition();
 
         if (structureInfo instanceof GenericStructureInfo)
         {
@@ -82,28 +79,28 @@ public class CommandGenerateStructure extends CommandBase
 
             int[] size = StructureInfos.structureSize(structureInfo, transform);
 
-            int genX = x - size[0] / 2;
-            int genZ = z - size[2] / 2;
+            int genX = coord.getX() - size[0] / 2;
+            int genZ = coord.getZ() - size[2] / 2;
             int genY;
             List<NaturalGenerationInfo> naturalGenerationInfos = structureInfo.generationInfos(NaturalGenerationInfo.class);
             if (naturalGenerationInfos.size() > 0)
-                genY = naturalGenerationInfos.get(0).ySelector.selectY(world, random, StructureInfos.structureBoundingBox(new BlockCoord(genX, 0, genZ), size));
+                genY = naturalGenerationInfos.get(0).ySelector.selectY(world, random, StructureInfos.structureBoundingBox(new BlockPos(genX, 0, genZ), size));
             else
-                genY = world.getHeightValue(x, z);
+                genY = world.getHeight(coord).getY();
 
-            BlockCoord coord = new BlockCoord(genX, genY, genZ);
+            coord = new BlockPos(genX, genY, genZ);
 
             OperationRegistry.queueOperation(new OperationGenerateStructure((GenericStructureInfo) structureInfo, transform, coord, false, structureName), commandSender);
         }
         else
-            StructureGenerator.randomInstantly(world, world.rand, structureInfo, null, x, z, false, structureName);
+            StructureGenerator.randomInstantly(world, world.rand, structureInfo, null, coord.getX(), coord.getZ(), false, structureName);
     }
 
     @Override
-    public List addTabCompletionOptions(ICommandSender commandSender, String[] args)
+    public List addTabCompletionOptions(ICommandSender commandSender, String[] args, BlockPos pos)
     {
         if (args.length == 1)
-            return getListOfStringsFromIterableMatchingLastWord(args, StructureRegistry.INSTANCE.allStructureIDs());
+            return getListOfStringsMatchingLastWord(args, StructureRegistry.INSTANCE.allStructureIDs());
         else if (args.length == 2 || args.length == 3)
         {
             return getListOfStringsMatchingLastWord(args, "~");

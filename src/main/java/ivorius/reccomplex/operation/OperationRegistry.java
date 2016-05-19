@@ -15,6 +15,7 @@ import ivorius.reccomplex.entities.StructureEntityInfo;
 import ivorius.reccomplex.utils.ServerTranslations;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.ICommandSender;
+import net.minecraft.command.PlayerNotFoundException;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.event.ClickEvent;
 import net.minecraft.event.HoverEvent;
@@ -72,7 +73,7 @@ public class OperationRegistry
         return compound;
     }
 
-    public static void queueOperation(Operation operation, ICommandSender commandSender)
+    public static void queueOperation(Operation operation, ICommandSender commandSender) throws PlayerNotFoundException
     {
         boolean instant = true;
 

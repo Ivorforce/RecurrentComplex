@@ -33,9 +33,9 @@ public class ItemInventoryGenComponentTag extends Item implements GeneratingItem
     {
         if (stack.hasTagCompound() && stack.getTagCompound().hasKey("itemCollectionKey", Constants.NBT.TAG_STRING))
             return stack.getTagCompound().getString("itemCollectionKey");
-        if (stack.stackTagCompound != null && stack.stackTagCompound.hasKey("display", Constants.NBT.TAG_COMPOUND)) // Legacy - Display Name
+        if (stack.hasTagCompound() && stack.getTagCompound().hasKey("display", Constants.NBT.TAG_COMPOUND)) // Legacy - Display Name
         {
-            NBTTagCompound nbttagcompound = stack.stackTagCompound.getCompoundTag("display");
+            NBTTagCompound nbttagcompound = stack.getTagCompound().getCompoundTag("display");
             if (nbttagcompound.hasKey("Name", Constants.NBT.TAG_STRING))
                 return nbttagcompound.getString("Name");
         }

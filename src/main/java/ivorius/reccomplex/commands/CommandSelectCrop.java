@@ -8,7 +8,7 @@ package ivorius.reccomplex.commands;
 import com.google.common.base.Predicate;
 import com.google.common.collect.Iterables;
 import ivorius.ivtoolkit.blocks.BlockArea;
-import ivorius.ivtoolkit.blocks.BlockCoord;
+import net.minecraft.util.BlockPos;
 import ivorius.reccomplex.RCConfig;
 import ivorius.reccomplex.entities.StructureEntityInfo;
 import ivorius.ivtoolkit.blocks.BlockAreas;
@@ -17,7 +17,7 @@ import net.minecraft.block.material.Material;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.world.World;
-import net.minecraftforge.common.util.ForgeDirection;
+import net.minecraft.util.EnumFacing;
 
 import java.util.stream.StreamSupport;
 
@@ -39,12 +39,12 @@ public class CommandSelectCrop extends CommandSelectModify
     }
 
     @Override
-    public void processCommandSelection(EntityPlayerMP player, StructureEntityInfo structureEntityInfo, BlockCoord point1, BlockCoord point2, String[] args)
+    public void processCommandSelection(EntityPlayerMP player, StructureEntityInfo structureEntityInfo, BlockPos point1, BlockPos point2, String[] args)
     {
         World world = player.getEntityWorld();
         BlockArea area = new BlockArea(point1, point2);
 
-        for (ForgeDirection direction : ForgeDirection.VALID_DIRECTIONS)
+        for (EnumFacing direction : EnumFacing.VALUES)
             while (area != null && isSideEmpty(world, area, direction))
                 area = BlockAreas.shrink(area, direction, 1);
 
@@ -52,8 +52,8 @@ public class CommandSelectCrop extends CommandSelectModify
         structureEntityInfo.sendSelectionToClients(player);
     }
 
-    public static boolean isSideEmpty(final World world, BlockArea area, ForgeDirection direction)
+    public static boolean isSideEmpty(final World world, BlockArea area, EnumFacing direction)
     {
-        return StreamSupport.stream(BlockAreas.side(area, direction).spliterator(), false).allMatch(coord -> coord.getBlock(world).getMaterial() == Material.air);
+        return StreamSupport.stream(BlockAreas.side(area, direction).spliterator(), false).allMatch(coord -> world.getBlockState(coord).getBlock().getMaterial() == Material.air);
     }
 }

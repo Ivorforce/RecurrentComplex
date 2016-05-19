@@ -10,10 +10,11 @@ import ivorius.ivtoolkit.tools.MCRegistry;
 import ivorius.reccomplex.RecurrentComplex;
 import ivorius.reccomplex.json.JsonUtils;
 import ivorius.ivtoolkit.random.WeightedSelector;
-import ivorius.reccomplex.utils.IBlockState;
+import net.minecraft.block.state.IBlockState;
 import ivorius.reccomplex.utils.BlockStates;
 import net.minecraft.block.Block;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.ResourceLocation;
 
 import java.lang.reflect.Type;
 
@@ -40,8 +41,8 @@ public class WeightedBlockState implements WeightedSelector.Item
     public WeightedBlockState(MCRegistry registry, NBTTagCompound compound)
     {
         weight = compound.hasKey("weight") ? compound.getDouble("weight") : null;
-        Block block = compound.hasKey("block") ? registry.blockFromID(compound.getString("block")) : null;
-        state = block != null ? BlockStates.fromMetadata(block, compound.getInteger("meta")) : null;
+        Block block = compound.hasKey("block") ? registry.blockFromID(new ResourceLocation(compound.getString("block"))) : null;
+        state = block != null ? block.getStateFromMeta(compound.getInteger("meta")) : null;
         tileEntityInfo = compound.getString("tileEntityInfo");
     }
 
@@ -70,8 +71,8 @@ public class WeightedBlockState implements WeightedSelector.Item
         NBTTagCompound compound = new NBTTagCompound();
 
         if (weight != null) compound.setDouble("weight", weight);
-        if (state != null) compound.setString("block", registry.idFromBlock(state.getBlock()));
-        compound.setInteger("meta", BlockStates.getMetadata(state));
+        if (state != null) compound.setString("block", registry.idFromBlock(state.getBlock()).toString());
+        compound.setInteger("meta", BlockStates.toMetadata(state));
         compound.setString("tileEntityInfo", tileEntityInfo);
 
         return compound;
@@ -93,7 +94,8 @@ public class WeightedBlockState implements WeightedSelector.Item
 
             Double weight = jsonObject.has("weight") ? JsonUtils.getJsonObjectDoubleFieldValue(jsonObject, "weight") : null;
 
-            IBlockState state = BlockStates.fromMetadata(registry.blockFromID(JsonUtils.getJsonObjectStringFieldValueOrDefault(jsonObject, "block", "air")), JsonUtils.getJsonObjectIntegerFieldValueOrDefault(jsonObject, "metadata", 0));
+            IBlockState state = registry.blockFromID(new ResourceLocation(JsonUtils.getJsonObjectStringFieldValueOrDefault(jsonObject, "block", "air")))
+                    .getStateFromMeta(JsonUtils.getJsonObjectIntegerFieldValueOrDefault(jsonObject, "metadata", 0));
 
             String tileEntityInfo = JsonUtils.getJsonObjectStringFieldValueOrDefault(jsonObject, "tileEntityInfo", "");
 
@@ -108,8 +110,8 @@ public class WeightedBlockState implements WeightedSelector.Item
             if (source.weight != null)
                 jsonObject.addProperty("weight", source.weight);
 
-            jsonObject.addProperty("block", registry.idFromBlock(source.state.getBlock()));
-            jsonObject.addProperty("metadata", BlockStates.getMetadata(source.state));
+            jsonObject.addProperty("block", registry.idFromBlock(source.state.getBlock()).toString());
+            jsonObject.addProperty("metadata", BlockStates.toMetadata(source.state));
 
             jsonObject.addProperty("tileEntityInfo", source.tileEntityInfo);
 

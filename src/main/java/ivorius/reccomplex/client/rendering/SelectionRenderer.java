@@ -6,7 +6,7 @@
 package ivorius.reccomplex.client.rendering;
 
 import ivorius.ivtoolkit.blocks.BlockArea;
-import ivorius.ivtoolkit.blocks.BlockCoord;
+import net.minecraft.util.BlockPos;
 import ivorius.ivtoolkit.rendering.grid.AreaRenderer;
 import ivorius.reccomplex.RecurrentComplex;
 import ivorius.reccomplex.entities.StructureEntityInfo;
@@ -17,6 +17,7 @@ import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.MathHelper;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.client.renderer.GlStateManager;
 import org.lwjgl.opengl.GL11;
 
 /**
@@ -41,8 +42,8 @@ public class SelectionRenderer
     public static void renderSelection(EntityLivingBase entity, int ticks, float partialTicks)
     {
         Minecraft mc = Minecraft.getMinecraft();
-        BlockCoord selPoint1 = null;
-        BlockCoord selPoint2 = null;
+        BlockPos selPoint1 = null;
+        BlockPos selPoint2 = null;
 
         StructureEntityInfo structureEntityInfo = StructureEntityInfo.getStructureEntityInfo(entity);
         if (structureEntityInfo != null)
@@ -57,20 +58,20 @@ public class SelectionRenderer
 
         if (selPoint1 != null)
         {
-            GL11.glColor3f(0.6f, 0.8f, 0.95f);
+            GlStateManager.color(0.6f, 0.8f, 0.95f);
             AreaRenderer.renderAreaLined(new BlockArea(selPoint1, selPoint1), 0.03f);
         }
         if (selPoint2 != null)
         {
-            GL11.glColor3f(0.2f, 0.45f, 0.65f);
+            GlStateManager.color(0.2f, 0.45f, 0.65f);
             AreaRenderer.renderAreaLined(new BlockArea(selPoint2, selPoint2), 0.04f);
         }
 
         if (heldItem != null && heldItem.getItem() instanceof ItemBlockSelectorFloating)
         {
             float selectionRange = ((ItemBlockSelectorFloating) heldItem.getItem()).getSelectionRange(heldItem);
-            BlockCoord hoverPoint = ItemBlockSelectorFloating.getHoveredBlock(entity, selectionRange);
-            GL11.glColor3f(0.6f, 0.6f, 1.0f);
+            BlockPos hoverPoint = ItemBlockSelectorFloating.getHoveredBlock(entity, selectionRange);
+            GlStateManager.color(0.6f, 0.6f, 1.0f);
             AreaRenderer.renderAreaLined(new BlockArea(hoverPoint, hoverPoint), 0.05f);
         }
 
@@ -78,24 +79,24 @@ public class SelectionRenderer
         {
             BlockArea selArea = new BlockArea(selPoint1, selPoint2);
 
-            GL11.glColor3f(0.4f, 0.65f, 0.8f);
+            GlStateManager.color(0.4f, 0.65f, 0.8f);
             AreaRenderer.renderAreaLined(selArea, 0.02f);
 
-            GL11.glEnable(GL11.GL_BLEND);
+            GlStateManager.enableBlend();
             OpenGlHelper.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA, GL11.GL_ONE, GL11.GL_ZERO);
-            GL11.glAlphaFunc(GL11.GL_GREATER, 0.0001f);
+            GlStateManager.alphaFunc(GL11.GL_GREATER, 0.0001f);
 
             ResourceLocation curTex = TEXTURE[MathHelper.floor_float((ticks + partialTicks) * 0.75f) % TEXTURE.length];
             mc.renderEngine.bindTexture(curTex);
 
-            GL11.glColor4f(0.2f, 0.5f, 0.6f, 0.5f);
+            GlStateManager.color(0.2f, 0.5f, 0.6f, 0.5f);
             AreaRenderer.renderArea(selArea, false, true, 0.01f);
 
-            GL11.glColor4f(0.4f, 0.65f, 0.8f, 0.75f);
+            GlStateManager.color(0.4f, 0.65f, 0.8f, 0.75f);
             AreaRenderer.renderArea(selArea, false, false, 0.01f);
 
-            GL11.glAlphaFunc(GL11.GL_GREATER, 0.002f);
-            GL11.glDisable(GL11.GL_BLEND);
+            GlStateManager.alphaFunc(GL11.GL_GREATER, 0.002f);
+            GlStateManager.disableBlend();
         }
     }
 }

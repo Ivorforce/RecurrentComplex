@@ -13,7 +13,7 @@ import ivorius.reccomplex.gui.table.TableNavigator;
 import ivorius.reccomplex.json.JsonUtils;
 import ivorius.reccomplex.structures.generic.GenericYSelector;
 import ivorius.reccomplex.structures.generic.matchers.DimensionMatcher;
-import net.minecraft.util.ChunkCoordinates;
+import net.minecraft.util.BlockPos;
 import net.minecraft.util.StatCollector;
 
 import javax.annotation.Nonnull;
@@ -93,14 +93,14 @@ public class StaticGenerationInfo extends StructureGenerationInfo
         return new TableDataSourceStaticGenerationInfo(navigator, delegate, this);
     }
 
-    public int getPositionX(ChunkCoordinates spawnPos)
+    public int getPositionX(BlockPos spawnPos)
     {
-        return relativeToSpawn ? spawnPos.posX + positionX : positionX;
+        return relativeToSpawn ? spawnPos.getX() + positionX : positionX;
     }
 
-    public int getPositionZ(ChunkCoordinates spawnPos)
+    public int getPositionZ(BlockPos spawnPos)
     {
-        return relativeToSpawn ? spawnPos.posZ + positionZ : positionZ;
+        return relativeToSpawn ? spawnPos.getZ() + positionZ : positionZ;
     }
 
     public static class Serializer implements JsonSerializer<StaticGenerationInfo>, JsonDeserializer<StaticGenerationInfo>

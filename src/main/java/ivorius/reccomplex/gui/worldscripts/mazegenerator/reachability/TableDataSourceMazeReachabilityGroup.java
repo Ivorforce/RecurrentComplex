@@ -124,7 +124,7 @@ public class TableDataSourceMazeReachabilityGroup extends TableDataSourceSegment
 
     private String getDisplayString(SavedMazePath path)
     {
-        return String.format("%s%s%s %s", EnumChatFormatting.BLUE, path.getForgeDirection(), EnumChatFormatting.RESET, path.getSourceRoom());
+        return String.format("%s%s%s %s", EnumChatFormatting.BLUE, path.getEnumFacing(), EnumChatFormatting.RESET, path.getSourceRoom());
     }
 
     @Override

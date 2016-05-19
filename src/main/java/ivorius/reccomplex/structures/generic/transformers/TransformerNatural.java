@@ -6,7 +6,6 @@
 package ivorius.reccomplex.structures.generic.transformers;
 
 import com.google.gson.*;
-import ivorius.ivtoolkit.blocks.BlockCoord;
 import ivorius.ivtoolkit.math.IvVecMathHelper;
 import ivorius.ivtoolkit.tools.MCRegistry;
 import ivorius.reccomplex.RecurrentComplex;
@@ -20,12 +19,11 @@ import ivorius.reccomplex.structures.StructureLoadContext;
 import ivorius.reccomplex.structures.StructurePrepareContext;
 import ivorius.reccomplex.structures.StructureSpawnContext;
 import ivorius.reccomplex.structures.generic.matchers.BlockMatcher;
-import ivorius.reccomplex.utils.IBlockState;
-import ivorius.reccomplex.utils.BlockStates;
 import ivorius.reccomplex.utils.NBTNone;
-import net.minecraft.block.Block;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.init.Blocks;
 import net.minecraft.nbt.NBTBase;
+import net.minecraft.util.BlockPos;
 import net.minecraft.world.World;
 import net.minecraft.world.biome.BiomeGenBase;
 
@@ -66,25 +64,25 @@ public class TransformerNatural extends TransformerSingleBlock<NBTNone>
     }
 
     @Override
-    public void transformBlock(NBTNone instanceData, Phase phase, StructureSpawnContext context, BlockCoord coord, IBlockState sourceState)
+    public void transformBlock(NBTNone instanceData, Phase phase, StructureSpawnContext context, BlockPos coord, IBlockState sourceState)
     {
         // TODO Fix for partial generation
         World world = context.world;
         Random random = context.random;
 
-        BiomeGenBase biome = world.getBiomeGenForCoords(coord.x, coord.z);
-        Block topBlock = biome.topBlock != null ? biome.topBlock : Blocks.air;
-        Block fillerBlock = biome.fillerBlock != null ? biome.fillerBlock : Blocks.air;
-        Block mainBlock = world.provider.dimensionId == -1 ? Blocks.netherrack : (world.provider.dimensionId == 1 ? Blocks.end_stone : Blocks.stone);
+        BiomeGenBase biome = world.getBiomeGenForCoords(coord);
+        IBlockState topBlock = biome.topBlock != null ? biome.topBlock : Blocks.air.getDefaultState();
+        IBlockState fillerBlock = biome.fillerBlock != null ? biome.fillerBlock : Blocks.air.getDefaultState();
+        IBlockState mainBlock = world.provider.getDimensionId() == -1 ? Blocks.netherrack.getDefaultState() : (world.provider.getDimensionId() == 1 ? Blocks.end_stone.getDefaultState() : Blocks.stone.getDefaultState());
 
-        boolean useStoneBlock = hasBlockAbove(world, coord.x, coord.y, coord.z, mainBlock);
+        boolean useStoneBlock = hasBlockAbove(world, coord, mainBlock);
 
         if (phase == Phase.BEFORE)
         {
-            int currentY = coord.y;
+            int currentY = coord.getY();
             List<int[]> currentList = new ArrayList<>();
             List<int[]> nextList = new ArrayList<>();
-            nextList.add(new int[]{coord.x, coord.z});
+            nextList.add(new int[]{coord.getX(), coord.getZ()});
 
             while (nextList.size() > 0 && currentY > 1)
             {
@@ -97,20 +95,22 @@ public class TransformerNatural extends TransformerSingleBlock<NBTNone>
                     int[] currentPos = currentList.remove(0);
                     int currentX = currentPos[0];
                     int currentZ = currentPos[1];
-                    Block curBlock = world.getBlock(currentX, currentY, currentZ);
 
-                    boolean replaceable = currentY == coord.y || curBlock.isReplaceable(world, currentX, currentY, currentZ);
+                    BlockPos curBlockPos = new BlockPos(currentX, currentY, currentZ);
+                    IBlockState curBlock = world.getBlockState(curBlockPos);
+
+                    boolean replaceable = currentY == coord.getY() || curBlock.getBlock().isReplaceable(world, curBlockPos);
                     if (replaceable)
                     {
-                        Block setBlock = useStoneBlock ? mainBlock : (isTopBlock(world, currentX, currentY, currentZ) ? topBlock : fillerBlock);
-                        context.setBlock(currentX, currentY, currentZ, BlockStates.defaultState(setBlock));
+                        IBlockState setBlock = useStoneBlock ? mainBlock : (isTopBlock(world, curBlockPos) ? topBlock : fillerBlock);
+                        context.setBlock(curBlockPos, setBlock);
                     }
 
                     // Uncommenting makes performance shit
                     if (replaceable/* || curBlock == topBlock || curBlock == fillerBlock || curBlock == mainBlock*/)
                     {
-                        double yForDistance = coord.y * 0.3 + currentY * 0.7;
-                        double distToOrigSQ = IvVecMathHelper.distanceSQ(new double[]{coord.x, coord.y, coord.z}, new double[]{currentX, yForDistance, currentZ});
+                        double yForDistance = coord.getY() * 0.3 + currentY * 0.7;
+                        double distToOrigSQ = IvVecMathHelper.distanceSQ(new double[]{coord.getX(), coord.getY(), coord.getZ()}, new double[]{currentX, yForDistance, currentZ});
                         double add = (random.nextDouble() - random.nextDouble()) * naturalExpansionRandomization;
                         distToOrigSQ += add < 0 ? -(add * add) : (add * add);
 
@@ -131,8 +131,8 @@ public class TransformerNatural extends TransformerSingleBlock<NBTNone>
         else
         {
             // Get the top blocks right (grass rather than dirt)
-            Block setBlock = useStoneBlock ? mainBlock : (isTopBlock(world, coord.x, coord.y, coord.z) ? topBlock : fillerBlock);
-            context.setBlock(coord.x, coord.y, coord.z, BlockStates.defaultState(setBlock));
+            IBlockState setBlock = useStoneBlock ? mainBlock : (isTopBlock(world, coord) ? topBlock : fillerBlock);
+            context.setBlock(coord, setBlock);
         }
     }
 
@@ -144,21 +144,21 @@ public class TransformerNatural extends TransformerSingleBlock<NBTNone>
         }
     }
 
-    private boolean hasBlockAbove(World world, int x, int y, int z, Block blockType)
+    private boolean hasBlockAbove(World world, BlockPos pos, IBlockState blockType)
     {
-        int origY = y;
-        for (; y < world.getHeight() && y < origY + 60; y++)
+        int y = pos.getY();
+        for (; y < world.getHeight() && y < pos.getY() + 60; y++)
         {
-            if (world.getBlock(x, y, z) == blockType)
+            if (world.getBlockState(new BlockPos(pos.getX(), y, pos.getZ())) == blockType)
                 return true;
         }
 
         return false;
     }
 
-    private boolean isTopBlock(World world, int x, int y, int z)
+    private boolean isTopBlock(World world, BlockPos pos)
     {
-        return !world.isBlockNormalCubeDefault(x, y + 1, z, false);
+        return !world.isBlockNormalCube(pos.up(), false);
     }
 
     @Override

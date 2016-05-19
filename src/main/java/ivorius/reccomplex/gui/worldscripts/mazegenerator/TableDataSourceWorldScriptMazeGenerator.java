@@ -5,10 +5,10 @@
 
 package ivorius.reccomplex.gui.worldscripts.mazegenerator;
 
-import ivorius.ivtoolkit.blocks.BlockCoord;
+import net.minecraft.util.BlockPos;
 import ivorius.ivtoolkit.gui.IntegerRange;
 import ivorius.reccomplex.gui.RCGuiTables;
-import ivorius.reccomplex.gui.TableDataSourceBlockCoord;
+import ivorius.reccomplex.gui.TableDataSourceBlockPos;
 import ivorius.reccomplex.gui.table.*;
 import ivorius.reccomplex.gui.worldscripts.mazegenerator.rules.TableDataSourceMazeRuleList;
 import ivorius.reccomplex.scripts.world.WorldScriptMazeGenerator;
@@ -36,7 +36,7 @@ public class TableDataSourceWorldScriptMazeGenerator extends TableDataSourceSegm
         this.tableDelegate = tableDelegate;
         this.tableNavigator = tableNavigator;
 
-        addManagedSection(2, new TableDataSourceBlockCoord(script.getStructureShift(), script::setStructureShift, new IntegerRange(-50, 50), "Range: %s"));
+        addManagedSection(2, new TableDataSourceBlockPos(script.getStructureShift(), script::setStructureShift, new IntegerRange(-50, 50), "Range: %s"));
     }
 
     public WorldScriptMazeGenerator getScript()

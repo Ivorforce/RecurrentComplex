@@ -18,7 +18,7 @@ public class NBTTagIntSerializer implements JsonSerializer<NBTTagInt>, JsonDeser
     @Override
     public JsonElement serialize(NBTTagInt src, Type typeOfSrc, JsonSerializationContext context)
     {
-        return new JsonPrimitive(src.func_150287_d());
+        return new JsonPrimitive(src.getInt());
     }
 
     @Override

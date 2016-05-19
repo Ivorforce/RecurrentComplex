@@ -5,7 +5,7 @@
 
 package ivorius.reccomplex.events;
 
-import cpw.mods.fml.common.eventhandler.EventBus;
+import net.minecraftforge.fml.common.eventhandler.EventBus;
 
 /**
  * Created by lukas on 18.09.14.

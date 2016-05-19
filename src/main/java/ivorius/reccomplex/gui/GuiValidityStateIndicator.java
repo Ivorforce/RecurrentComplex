@@ -9,7 +9,7 @@ import ivorius.reccomplex.RecurrentComplex;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.util.ResourceLocation;
-import org.lwjgl.opengl.GL11;
+import net.minecraft.client.renderer.GlStateManager;
 
 /**
  * Created by lukas on 12.06.14.
@@ -69,7 +69,7 @@ public class GuiValidityStateIndicator extends Gui
     {
         if (isVisible)
         {
-            GL11.glColor3f(1.0f, 1.0f, 1.0f);
+            GlStateManager.color(1.0f, 1.0f, 1.0f);
             Minecraft.getMinecraft().getTextureManager().bindTexture(textureSprite);
             drawTexturedModalRect(xPosition, yPosition, state.getUvX(), state.getUvY(), width, height);
         }

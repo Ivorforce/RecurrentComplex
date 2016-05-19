@@ -11,7 +11,7 @@ import ivorius.reccomplex.gui.table.*;
 import ivorius.reccomplex.structures.generic.transformers.TransformerRuins;
 import ivorius.reccomplex.utils.IvTranslations;
 import ivorius.reccomplex.utils.scale.Scales;
-import net.minecraftforge.common.util.ForgeDirection;
+import net.minecraft.util.EnumFacing;
 
 /**
  * Created by lukas on 05.06.14.
@@ -83,7 +83,7 @@ public class TableDataSourceBTRuins extends TableDataSourceSegmented implements 
                     }
                     case 4:
                     {
-                        TableCellEnum cell = new TableCellEnum<>("decaySide", transformer.decayDirection, TableDirections.getDirectionOptions(ForgeDirection.VALID_DIRECTIONS));
+                        TableCellEnum cell = new TableCellEnum<>("decaySide", transformer.decayDirection, TableDirections.getDirectionOptions(EnumFacing.VALUES));
                         cell.setTooltip(IvTranslations.formatLines("reccomplex.transformer.ruins.decay.direction.tooltip"));
                         cell.addPropertyListener(this);
                         return new TableElementCell(IvTranslations.get("reccomplex.transformer.ruins.decay.direction"), cell);
@@ -126,7 +126,7 @@ public class TableDataSourceBTRuins extends TableDataSourceSegmented implements 
             switch (cell.getID())
             {
                 case "decaySide":
-                    transformer.decayDirection = (ForgeDirection) cell.getPropertyValue();
+                    transformer.decayDirection = (EnumFacing) cell.getPropertyValue();
                     break;
                 case "decay":
                     FloatRange range = (FloatRange) cell.getPropertyValue();

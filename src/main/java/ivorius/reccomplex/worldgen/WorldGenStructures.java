@@ -5,7 +5,7 @@
 
 package ivorius.reccomplex.worldgen;
 
-import cpw.mods.fml.common.IWorldGenerator;
+import net.minecraftforge.fml.common.IWorldGenerator;
 import ivorius.ivtoolkit.math.IvVecMathHelper;
 import ivorius.reccomplex.RCConfig;
 import ivorius.reccomplex.RecurrentComplex;
@@ -14,7 +14,7 @@ import ivorius.reccomplex.structures.StructureInfos;
 import ivorius.reccomplex.structures.StructureRegistry;
 import ivorius.reccomplex.structures.generic.gentypes.NaturalGenerationInfo;
 import ivorius.reccomplex.structures.generic.gentypes.StaticGenerationInfo;
-import net.minecraft.util.ChunkCoordinates;
+import net.minecraft.util.BlockPos;
 import net.minecraft.world.ChunkCoordIntPair;
 import net.minecraft.world.World;
 import net.minecraft.world.biome.BiomeGenBase;
@@ -39,8 +39,8 @@ public class WorldGenStructures implements IWorldGenerator
 
         if (!RCConfig.honorStructureGenerationOption || worldWantsStructures)
         {
-            BiomeGenBase biomeGen = world.getBiomeGenForCoords(chunkX * 16, chunkZ * 16);
-            ChunkCoordinates spawnPos = world.getSpawnPoint();
+            BiomeGenBase biomeGen = world.getBiomeGenForCoords(new BlockPos(chunkX * 16, 0, chunkZ * 16));
+            BlockPos spawnPos = world.getSpawnPoint();
 
             for (Pair<StructureInfo, StaticGenerationInfo> pair : StructureRegistry.INSTANCE.getStaticStructuresAt(chunkX, chunkZ, world, spawnPos))
             {
@@ -60,9 +60,9 @@ public class WorldGenStructures implements IWorldGenerator
             {
                 boolean mayGenerate = RCConfig.isGenerationEnabled(biomeGen) && RCConfig.isGenerationEnabled(world.provider);
 
-                if (world.provider.dimensionId == 0)
+                if (world.provider.getDimensionId() == 0)
                 {
-                    double distToSpawn = IvVecMathHelper.distanceSQ(new double[]{chunkX * 16 + 8, chunkZ * 16 + 8}, new double[]{spawnPos.posX, spawnPos.posZ});
+                    double distToSpawn = IvVecMathHelper.distanceSQ(new double[]{chunkX * 16 + 8, chunkZ * 16 + 8}, new double[]{spawnPos.getX(), spawnPos.getZ()});
                     mayGenerate &= distToSpawn >= RCConfig.minDistToSpawnForGeneration * RCConfig.minDistToSpawnForGeneration;
                 }
 

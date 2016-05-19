@@ -7,9 +7,14 @@ package ivorius.reccomplex.events;
 
 import com.google.common.base.Predicate;
 import com.google.common.collect.Iterables;
-import cpw.mods.fml.common.eventhandler.SubscribeEvent;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
+import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.client.renderer.Tessellator;
+import net.minecraft.entity.Entity;
+import net.minecraft.util.BlockPos;
+import net.minecraft.util.Vec3i;
+import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 import ivorius.ivtoolkit.rendering.grid.GridRenderer;
 import ivorius.reccomplex.RCConfig;
 import ivorius.reccomplex.client.rendering.SelectionRenderer;
@@ -32,7 +37,7 @@ import net.minecraftforge.event.entity.EntityEvent;
 import net.minecraftforge.event.entity.EntityJoinWorldEvent;
 import net.minecraftforge.event.terraingen.PopulateChunkEvent;
 import org.apache.commons.lang3.tuple.Pair;
-import org.lwjgl.opengl.GL11;
+import net.minecraft.client.renderer.GlStateManager;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -75,11 +80,7 @@ public class RCForgeEventHandler
     {
         if (event.entity instanceof EntityItem)
         {
-            final int entityX = MathHelper.floor_double(event.entity.posX);
-            final int entityY = MathHelper.floor_double(event.entity.posY);
-            final int entityZ = MathHelper.floor_double(event.entity.posZ);
-
-            if (disabledTileDropAreas.stream().anyMatch(input -> input.isVecInside(entityX, entityY, entityZ)))
+            if (disabledTileDropAreas.stream().anyMatch(input -> input.isVecInside(new BlockPos(event.entity))))
                 event.setCanceled(true);
         }
     }
@@ -91,25 +92,25 @@ public class RCForgeEventHandler
         Minecraft mc = Minecraft.getMinecraft();
         int ticks = mc.thePlayer.ticksExisted;
 
-        EntityLivingBase renderEntity = mc.renderViewEntity;
+        Entity renderEntity = mc.getRenderViewEntity();
         StructureEntityInfo info = StructureEntityInfo.getStructureEntityInfo(mc.thePlayer);
         double entityX = renderEntity.lastTickPosX + (renderEntity.posX - renderEntity.lastTickPosX) * (double) event.partialTicks;
         double entityY = renderEntity.lastTickPosY + (renderEntity.posY - renderEntity.lastTickPosY) * (double) event.partialTicks;
         double entityZ = renderEntity.lastTickPosZ + (renderEntity.posZ - renderEntity.lastTickPosZ) * (double) event.partialTicks;
 
-        GL11.glPushMatrix();
-        GL11.glTranslated(-entityX, -entityY, -entityZ);
+        GlStateManager.pushMatrix();
+        GlStateManager.translate(-entityX, -entityY, -entityZ);
 
         if (info != null && info.showGrid)
         {
             int spacing = 10;
-            GL11.glDisable(GL11.GL_TEXTURE_2D);
-            GL11.glColor3f(0.5f, 0.5f, 0.5f);
-            GL11.glPushMatrix();
-            GL11.glTranslatef(MathHelper.floor_double(entityX / spacing) * spacing, MathHelper.floor_double(entityY / spacing) * spacing, MathHelper.floor_double(entityZ / spacing) * spacing);
+            GlStateManager.disableTexture2D();
+            GlStateManager.color(0.5f, 0.5f, 0.5f);
+            GlStateManager.pushMatrix();
+            GlStateManager.translate(MathHelper.floor_double(entityX / spacing) * spacing, MathHelper.floor_double(entityY / spacing) * spacing, MathHelper.floor_double(entityZ / spacing) * spacing);
             GridRenderer.renderGrid(8, spacing, 100, 0.05f);
-            GL11.glPopMatrix();
-            GL11.glEnable(GL11.GL_TEXTURE_2D);
+            GlStateManager.popMatrix();
+            GlStateManager.enableTexture2D();
         }
 
         SelectionRenderer.renderSelection(mc.thePlayer, ticks, event.partialTicks);
@@ -117,7 +118,7 @@ public class RCForgeEventHandler
         if (info != null && info.danglingOperation != null)
             info.danglingOperation.renderPreview(info.getPreviewType(), mc.theWorld, ticks, event.partialTicks);
 
-        GL11.glPopMatrix();
+        GlStateManager.popMatrix();
     }
 
     @SideOnly(Side.CLIENT)

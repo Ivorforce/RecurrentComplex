@@ -25,7 +25,7 @@ public class NBTTagVanillaDeserializer implements JsonDeserializer<NBTBase>
     {
         try
         {
-            NBTBase nbtBase = JsonToNBT.func_150315_a(json.toString());
+            NBTBase nbtBase = JsonToNBT.getTagFromJson(json.toString());
             return nbtBase;
         }
         catch (NBTException e)

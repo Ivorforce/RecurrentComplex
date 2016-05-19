@@ -5,7 +5,7 @@
 
 package ivorius.reccomplex.gui;
 
-import cpw.mods.fml.common.network.IGuiHandler;
+import net.minecraftforge.fml.common.network.IGuiHandler;
 import ivorius.reccomplex.gui.editinventorygen.ContainerEditInventoryGen;
 import ivorius.reccomplex.gui.editinventorygen.GuiEditInventoryGen;
 import ivorius.reccomplex.items.ItemInventoryGenComponentTag;

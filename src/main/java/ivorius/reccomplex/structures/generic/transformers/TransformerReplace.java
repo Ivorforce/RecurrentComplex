@@ -6,7 +6,7 @@
 package ivorius.reccomplex.structures.generic.transformers;
 
 import com.google.gson.*;
-import ivorius.ivtoolkit.blocks.BlockCoord;
+import net.minecraft.util.BlockPos;
 import ivorius.ivtoolkit.random.WeightedSelector;
 import ivorius.ivtoolkit.tools.MCRegistry;
 import ivorius.reccomplex.RecurrentComplex;
@@ -21,7 +21,7 @@ import ivorius.reccomplex.structures.StructureSpawnContext;
 import ivorius.reccomplex.structures.generic.WeightedBlockState;
 import ivorius.reccomplex.structures.generic.matchers.BlockMatcher;
 import ivorius.reccomplex.structures.generic.presets.WeightedBlockStatePresets;
-import ivorius.reccomplex.utils.IBlockState;
+import net.minecraft.block.state.IBlockState;
 import ivorius.reccomplex.utils.BlockStates;
 import ivorius.reccomplex.utils.NBTNone;
 import ivorius.reccomplex.utils.PresettedList;
@@ -32,6 +32,7 @@ import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTException;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
 
 import java.lang.reflect.Type;
@@ -59,30 +60,27 @@ public class TransformerReplace extends TransformerSingleBlock<NBTNone>
 
     public static NBTTagCompound tryParse(String json)
     {
-        NBTBase nbtbase = null;
+        NBTTagCompound nbt = null;
 
         try
         {
-            nbtbase = JsonToNBT.func_150315_a(json);
+            nbt = JsonToNBT.getTagFromJson(json);
         }
         catch (NBTException ignored)
         {
 
         }
 
-        if (nbtbase instanceof NBTTagCompound)
-            return (NBTTagCompound) nbtbase;
-
-        return null;
+        return nbt;
     }
 
-    public static NBTTagCompound positionedCopy(NBTTagCompound compound, BlockCoord teCoord)
+    public static NBTTagCompound positionedCopy(NBTTagCompound compound, BlockPos teCoord)
     {
         NBTTagCompound positioned = (NBTTagCompound) compound.copy();
 
-        positioned.setInteger("x", teCoord.x);
-        positioned.setInteger("y", teCoord.y);
-        positioned.setInteger("z", teCoord.z);
+        positioned.setInteger("x", teCoord.getX());
+        positioned.setInteger("y", teCoord.getY());
+        positioned.setInteger("z", teCoord.getZ());
 
         return positioned;
     }
@@ -100,7 +98,7 @@ public class TransformerReplace extends TransformerSingleBlock<NBTNone>
     }
 
     @Override
-    public void transformBlock(NBTNone instanceData, Phase phase, StructureSpawnContext context, BlockCoord coord, IBlockState sourceState)
+    public void transformBlock(NBTNone instanceData, Phase phase, StructureSpawnContext context, BlockPos coord, IBlockState sourceState)
     {
         WeightedBlockState blockState;
         if (destination.list.size() > 0)
@@ -115,19 +113,19 @@ public class TransformerReplace extends TransformerSingleBlock<NBTNone>
         setBlockWith(context, coord, context.world, blockState, parsedTileEntityInfo);
     }
 
-    public static void setBlockWith(StructureSpawnContext context, BlockCoord coord, World world, WeightedBlockState entry, NBTTagCompound parsedTileEntityInfo)
+    public static void setBlockWith(StructureSpawnContext context, BlockPos coord, World world, WeightedBlockState entry, NBTTagCompound parsedTileEntityInfo)
     {
         if (entry.state != null && RecurrentComplex.specialRegistry.isSafe(entry.state.getBlock()))
         {
-            context.setBlock(coord.x, coord.y, coord.z, entry.state);
+            context.setBlock(coord, entry.state);
 
             // Behavior as in CommandSetBlock
-            if (parsedTileEntityInfo != null && entry.state.getBlock().hasTileEntity(BlockStates.getMetadata(entry.state)))
+            if (parsedTileEntityInfo != null && entry.state.getBlock().hasTileEntity(entry.state))
             {
                 NBTTagCompound nbtTagCompound = positionedCopy(parsedTileEntityInfo, coord);
                 if (nbtTagCompound != null)
                 {
-                    TileEntity tileentity = world.getTileEntity(coord.x, coord.y, coord.z);
+                    TileEntity tileentity = world.getTileEntity(coord);
                     if (tileentity != null)
                         tileentity.readFromNBT(nbtTagCompound);
                 }
@@ -208,13 +206,12 @@ public class TransformerReplace extends TransformerSingleBlock<NBTNone>
             if (jsonObject.has("dest"))
             {
                 // Legacy
-                String destBlock = JsonUtils.getJsonObjectStringFieldValue(jsonObject, "dest");
-                Block dest = registry.blockFromID(destBlock);
+                Block dest = registry.blockFromID(new ResourceLocation(JsonUtils.getJsonObjectStringFieldValue(jsonObject, "dest")));
                 byte[] destMeta = context.deserialize(jsonObject.get("destMetadata"), byte[].class);
 
                 transformer.destination.setToCustom();
                 for (byte b : destMeta)
-                    transformer.destination.list.add(new WeightedBlockState(null, BlockStates.fromMetadata(dest, b), ""));
+                    transformer.destination.list.add(new WeightedBlockState(null, dest.getStateFromMeta(b), ""));
             }
 
             return transformer;

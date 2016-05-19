@@ -20,7 +20,7 @@ public class PacketEditTileEntity extends PacketFullTileEntityData
 
     public <TE extends TileEntity & TileEntityWithGUI> PacketEditTileEntity(TE tileEntity)
     {
-        super(tileEntity.xCoord, tileEntity.yCoord, tileEntity.zCoord, getSyncedNBT(tileEntity));
+        super(tileEntity.getPos(), getSyncedNBT(tileEntity));
     }
 
     private static NBTTagCompound getSyncedNBT(TileEntityWithGUI structureGenerator)

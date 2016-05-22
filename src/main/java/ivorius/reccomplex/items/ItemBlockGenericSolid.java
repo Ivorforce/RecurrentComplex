@@ -17,6 +17,14 @@ public class ItemBlockGenericSolid extends ItemBlock
     public ItemBlockGenericSolid(Block block)
     {
         super(block);
+        this.setMaxDamage(0);
+        this.setHasSubtypes(true);
+    }
+
+    @Override
+    public int getMetadata(int damage)
+    {
+        return damage;
     }
 
     @Override

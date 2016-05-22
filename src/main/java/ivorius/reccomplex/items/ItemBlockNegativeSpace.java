@@ -27,6 +27,14 @@ public class ItemBlockNegativeSpace extends ItemBlock
     public ItemBlockNegativeSpace(Block block)
     {
         super(block);
+        this.setMaxDamage(0);
+        this.setHasSubtypes(true);
+    }
+
+    @Override
+    public int getMetadata(int damage)
+    {
+        return damage;
     }
 
     // TODO Restore placing capability?

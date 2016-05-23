@@ -18,7 +18,7 @@ buildscript {
 apply plugin: 'net.minecraftforge.gradle.forge'
 apply plugin: 'maven-publish'
 
-version = "0.9.7.3"
+version = "0.9.7.4"
 def ENV = System.getenv()
 if (ENV.DRONE_BUILD_NUMBER) {
     version += ".n" + ENV.DRONE_BUILD_NUMBER
@@ -28,14 +28,14 @@ group= "ivorius.reccomplex" // http://maven.apache.org/guides/mini/guide-naming-
 archivesBaseName = "RecurrentComplex"
 
 minecraft {
-    version = "1.8.8-11.15.0.1655"
+    version = "1.8.9-11.15.1.1722"
     runDir = "eclipse"
     mappings = "stable_20"
     useDepAts = true
 }
 
 dependencies {
-    deobfCompile 'ivorius.ivtoolkit:IvToolkit:1.2.2'
+    deobfCompile 'ivorius.ivtoolkit:IvToolkit:1.2.4'
 }
 
 processResources

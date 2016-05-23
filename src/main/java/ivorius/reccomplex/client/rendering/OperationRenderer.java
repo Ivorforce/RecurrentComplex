@@ -58,7 +58,7 @@ public class OperationRenderer
         applyTransformVisual(transform, cached.getSize());
 
         Tessellator tessellator = Tessellator.getInstance();
-        tessellator.getWorldRenderer().begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX_COLOR);
+        tessellator.getWorldRenderer().begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX);
         for (GridQuadCache.CachedQuadLevel<?> cachedQuadLevel : cached)
         {
             EnumFacing direction = cachedQuadLevel.direction;

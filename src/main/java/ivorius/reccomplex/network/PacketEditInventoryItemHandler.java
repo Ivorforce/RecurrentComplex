@@ -5,33 +5,26 @@
 
 package ivorius.reccomplex.network;
 
-import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
-import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
-import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
-import net.minecraftforge.fml.relauncher.Side;
-import io.netty.buffer.ByteBuf;
-import net.minecraft.entity.player.EntityPlayer;
+import ivorius.ivtoolkit.network.SchedulingMessageHandler;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.NetHandlerPlayServer;
+import net.minecraft.world.WorldServer;
+import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
+import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
 
 /**
  * Created by lukas on 17.01.15.
  */
-public abstract class PacketEditInventoryItemHandler<P extends PacketEditInventoryItem> implements IMessageHandler<P, IMessage>
+public abstract class PacketEditInventoryItemHandler<P extends PacketEditInventoryItem> extends SchedulingMessageHandler<P, IMessage>
 {
     @Override
-    public IMessage onMessage(P message, MessageContext ctx)
+    public void processServer(P message, MessageContext ctx, WorldServer server)
     {
-        if (ctx.side == Side.SERVER)
-        {
-            NetHandlerPlayServer playServer = ctx.getServerHandler();
-            EntityPlayerMP player = playServer.playerEntity;
-            affectItem(player, player.inventory.getStackInSlot(message.getInventorySlot()), message);
-            player.openContainer.detectAndSendChanges();
-        }
-
-        return null;
+        NetHandlerPlayServer playServer = ctx.getServerHandler();
+        EntityPlayerMP player = playServer.playerEntity;
+        affectItem(player, player.inventory.getStackInSlot(message.getInventorySlot()), message);
+        player.openContainer.detectAndSendChanges();
     }
 
     public abstract void affectItem(EntityPlayerMP player, ItemStack stack, P message);

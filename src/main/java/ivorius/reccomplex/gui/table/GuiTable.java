@@ -38,7 +38,7 @@ public class GuiTable extends Gui
     private boolean hideScrollbarIfUnnecessary;
 
     private TIntObjectHashMap<TableElement> cachedElements = new TIntObjectHashMap<>();
-    private final List<TableElement> currentElements = new ArrayList<>();
+    private List<TableElement> currentElements = new ArrayList<>();
 
     private Map<GuiButton, Pair<TableCell, Integer>> buttonMap = new HashMap<>();
 
@@ -85,87 +85,78 @@ public class GuiTable extends Gui
     {
         buttonMap.clear();
 
-        synchronized (currentElements)
+        for (TableElement element : currentElements)
+            element.setHidden(true);
+        currentElements.clear();
+
+        ////////
+
+        int roundedScrollIndex = MathHelper.floor_float(currentScroll + 0.5f);
+
+        scrollUpButton = new GuiButton(-1, propertiesBounds.getMinX(), propertiesBounds.getMinY(), propertiesBounds.getWidth() / 2 - 1, 20, "Up");
+        delegate.addButton(scrollUpButton);
+        scrollDownButton = new GuiButton(-1, propertiesBounds.getCenterX() + 1, propertiesBounds.getMinY(), propertiesBounds.getWidth() / 2 - 1, 20, "Down");
+        delegate.addButton(scrollDownButton);
+
+        int supportedSlotNumber = (propertiesBounds.getHeight() - SCROLL_BAR_HEIGHT) / HEIGHT_PER_SLOT;
+        int numberOfElements = dataSource.numberOfElements();
+        cachedMaxIndex = roundedScrollIndex + supportedSlotNumber - 1;
+
+        boolean needsUpScroll = canScrollUp();
+        boolean needsDownScroll = canScrollDown(numberOfElements);
+        boolean needsScroll = needsUpScroll || needsDownScroll;
+
+        scrollUpButton.enabled = needsUpScroll;
+        scrollDownButton.enabled = needsDownScroll;
+        scrollUpButton.visible = needsScroll || !hideScrollbarIfUnnecessary;
+        scrollDownButton.visible = needsScroll || !hideScrollbarIfUnnecessary;
+
+        int baseY = propertiesBounds.getMinY() + SCROLL_BAR_HEIGHT;
+        for (int index = 0; index < supportedSlotNumber && roundedScrollIndex + index < numberOfElements; index++)
         {
-            for (TableElement element : currentElements)
-                element.setHidden(true);
-            currentElements.clear();
+            TableElement element = cachedElements.get(roundedScrollIndex + index);
+            boolean initElement = element == null;
 
-            ////////
+            if (initElement)
+                element = dataSource.elementForIndex(this, roundedScrollIndex + index);
 
-            int roundedScrollIndex = MathHelper.floor_float(currentScroll + 0.5f);
+            if (element == null)
+                throw new NullPointerException("Element not initialized: at " + (roundedScrollIndex + index));
 
-            scrollUpButton = new GuiButton(-1, propertiesBounds.getMinX(), propertiesBounds.getMinY(), propertiesBounds.getWidth() / 2 - 1, 20, "Up");
-            delegate.addButton(scrollUpButton);
-            scrollDownButton = new GuiButton(-1, propertiesBounds.getCenterX() + 1, propertiesBounds.getMinY(), propertiesBounds.getWidth() / 2 - 1, 20, "Down");
-            delegate.addButton(scrollDownButton);
+            int elementY = index * HEIGHT_PER_SLOT;
 
-            int supportedSlotNumber = (propertiesBounds.getHeight() - SCROLL_BAR_HEIGHT) / HEIGHT_PER_SLOT;
-            int numberOfElements = dataSource.numberOfElements();
-            cachedMaxIndex = roundedScrollIndex + supportedSlotNumber - 1;
+            element.setBounds(Bounds.fromSize(propertiesBounds.getMinX() + 100, propertiesBounds.getWidth() - 100, baseY + elementY, 20));
+            element.setHidden(false);
+            element.initGui(this);
 
-            boolean needsUpScroll = canScrollUp();
-            boolean needsDownScroll = canScrollDown(numberOfElements);
-            boolean needsScroll = needsUpScroll || needsDownScroll;
+            if (initElement)
+                cachedElements.put(roundedScrollIndex + index, element);
 
-            scrollUpButton.enabled = needsUpScroll;
-            scrollDownButton.enabled = needsDownScroll;
-            scrollUpButton.visible = needsScroll || !hideScrollbarIfUnnecessary;
-            scrollDownButton.visible = needsScroll || !hideScrollbarIfUnnecessary;
-
-            int baseY = propertiesBounds.getMinY() + SCROLL_BAR_HEIGHT;
-            for (int index = 0; index < supportedSlotNumber && roundedScrollIndex + index < numberOfElements; index++)
-            {
-                TableElement element = cachedElements.get(roundedScrollIndex + index);
-                boolean initElement = element == null;
-
-                if (initElement)
-                    element = dataSource.elementForIndex(this, roundedScrollIndex + index);
-
-                if (element == null)
-                    throw new NullPointerException("Element not initialized: at " + (roundedScrollIndex + index));
-
-                int elementY = index * HEIGHT_PER_SLOT;
-
-                element.setBounds(Bounds.fromSize(propertiesBounds.getMinX() + 100, propertiesBounds.getWidth() - 100, baseY + elementY, 20));
-                element.setHidden(false);
-                element.initGui(this);
-
-                if (initElement)
-                    cachedElements.put(roundedScrollIndex + index, element);
-
-                currentElements.add(element);
-            }
+            currentElements.add(element);
         }
     }
 
     public void drawScreen(GuiScreen screen, int mouseX, int mouseY, float partialTicks)
     {
-        synchronized (currentElements)
-        {
-            currentElements.stream().filter(element -> !element.isHidden()).forEach(element -> {
-                String title = element.getTitle();
-                if (title != null)
-                {
-                    Bounds bounds = element.bounds();
+        currentElements.stream().filter(element -> !element.isHidden()).forEach(element -> {
+            String title = element.getTitle();
+            if (title != null)
+            {
+                Bounds bounds = element.bounds();
 
-                    int stringWidth = screen.mc.fontRendererObj.getStringWidth(title);
-                    screen.drawString(screen.mc.fontRendererObj, title, bounds.getMinX() - stringWidth - 10, bounds.getCenterY() - 4, 0xffffffff);
-                }
-            });
+                int stringWidth = screen.mc.fontRendererObj.getStringWidth(title);
+                screen.drawString(screen.mc.fontRendererObj, title, bounds.getMinX() - stringWidth - 10, bounds.getCenterY() - 4, 0xffffffff);
+            }
+        });
 
-            currentElements.stream().filter(element -> !element.isHidden()).forEach(element -> element.draw(this, mouseX, mouseY, partialTicks));
+        currentElements.stream().filter(element -> !element.isHidden()).forEach(element -> element.draw(this, mouseX, mouseY, partialTicks));
 
-            currentElements.stream().filter(element -> !element.isHidden()).forEach(element -> element.drawFloating(this, mouseX, mouseY, partialTicks));
-        }
+        currentElements.stream().filter(element -> !element.isHidden()).forEach(element -> element.drawFloating(this, mouseX, mouseY, partialTicks));
     }
 
     public void updateScreen()
     {
-        synchronized (currentElements)
-        {
-            currentElements.stream().forEach(tableElement -> tableElement.update(this));
-        }
+        currentElements.stream().forEach(tableElement -> tableElement.update(this));
     }
 
     protected void actionPerformed(GuiButton button)
@@ -196,14 +187,11 @@ public class GuiTable extends Gui
 
     protected boolean keyTyped(char keyChar, int keyCode)
     {
-        synchronized (currentElements)
+        for (TableElement element : currentElements)
         {
-            for (TableElement element : currentElements)
+            if (element.keyTyped(keyChar, keyCode))
             {
-                if (element.keyTyped(keyChar, keyCode))
-                {
-                    return true;
-                }
+                return true;
             }
         }
 
@@ -212,12 +200,9 @@ public class GuiTable extends Gui
 
     protected void mouseClicked(int x, int y, int button)
     {
-        synchronized (currentElements)
+        for (TableElement element : currentElements)
         {
-            for (TableElement element : currentElements)
-            {
-                element.mouseClicked(button, x, y);
-            }
+            element.mouseClicked(button, x, y);
         }
     }
 

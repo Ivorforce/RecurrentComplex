@@ -5,52 +5,45 @@
 
 package ivorius.reccomplex.network;
 
-import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
-import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
-import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
+import ivorius.ivtoolkit.network.SchedulingMessageHandler;
 import ivorius.ivtoolkit.tools.IvSideClient;
 import ivorius.reccomplex.RecurrentComplex;
 import ivorius.reccomplex.blocks.TileEntityWithGUI;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
+import net.minecraft.world.WorldServer;
+import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
+import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 /**
  * Created by lukas on 03.08.14.
  */
-public class PacketEditTileEntityHandler implements IMessageHandler<PacketEditTileEntity, IMessage>
+public class PacketEditTileEntityHandler extends SchedulingMessageHandler<PacketEditTileEntity, IMessage>
 {
     @Override
-    public IMessage onMessage(PacketEditTileEntity message, MessageContext ctx)
+    public void processServer(PacketEditTileEntity message, MessageContext ctx, WorldServer server)
     {
-        if (ctx.side == Side.CLIENT)
+        EntityPlayer player = ctx.getServerHandler().playerEntity;
+        World world = player.worldObj;
+
+        TileEntity tileEntity = world.getTileEntity(message.getPos());
+
+        if (tileEntity instanceof TileEntityWithGUI)
         {
-            onMessageClient(message, ctx);
+            ((TileEntityWithGUI) tileEntity).readSyncedNBT(message.getData());
+            tileEntity.markDirty();
+            world.markBlockForUpdate(message.getPos());
         }
         else
-        {
-            EntityPlayer player = ctx.getServerHandler().playerEntity;
-            World world = player.worldObj;
-
-            TileEntity tileEntity = world.getTileEntity(message.getPos());
-
-            if (tileEntity instanceof TileEntityWithGUI)
-            {
-                ((TileEntityWithGUI) tileEntity).readSyncedNBT(message.getData());
-                tileEntity.markDirty();
-                world.markBlockForUpdate(message.getPos());
-            }
-            else
-                RecurrentComplex.logger.error("Invalid server TileEntity edit packet: " + tileEntity);
-        }
-
-        return null;
+            RecurrentComplex.logger.error("Invalid server TileEntity edit packet: " + tileEntity);
     }
 
     @SideOnly(Side.CLIENT)
-    private void onMessageClient(PacketEditTileEntity message, MessageContext ctx)
+    @Override
+    public void processClient(PacketEditTileEntity message, MessageContext ctx)
     {
         TileEntity tileEntity = IvSideClient.getClientWorld().getTileEntity(message.getPos());
         if (tileEntity instanceof TileEntityWithGUI)

@@ -92,8 +92,9 @@ public class InventoryGenericInvGen_Single implements IInventory
         return null;
     }
 
+
     @Override
-    public ItemStack getStackInSlotOnClosing(int var1)
+    public ItemStack removeStackFromSlot(int var1)
     {
         return null;
     }
@@ -184,7 +185,7 @@ public class InventoryGenericInvGen_Single implements IInventory
     }
 
     @Override
-    public String getCommandSenderName()
+    public String getName()
     {
         return null;
     }

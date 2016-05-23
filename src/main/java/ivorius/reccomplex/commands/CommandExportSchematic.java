@@ -114,7 +114,7 @@ public class CommandExportSchematic extends CommandBase
         {
             NBTTagCompound teCompound = new NBTTagCompound();
 
-            Mover.moveTileEntity(tileEntity, referenceCoord.multiply(-1));
+            Mover.moveTileEntity(tileEntity, multiply(referenceCoord, -1));
             tileEntity.writeToNBT(teCompound);
             Mover.moveTileEntity(tileEntity, referenceCoord);
 
@@ -125,7 +125,7 @@ public class CommandExportSchematic extends CommandBase
         {
             NBTTagCompound entityCompound = new NBTTagCompound();
 
-            Mover.moveEntity(entity, referenceCoord.multiply(-1));
+            Mover.moveEntity(entity, multiply(referenceCoord, -1));
             entity.writeToNBTOptional(entityCompound);
             Mover.moveEntity(entity, referenceCoord);
 
@@ -133,6 +133,11 @@ public class CommandExportSchematic extends CommandBase
         }
 
         return schematicFile;
+    }
+
+    private static BlockPos multiply(BlockPos pos, int m)
+    {
+        return new BlockPos(pos.getX() * m, pos.getY() * m, pos.getZ() * m);
     }
 
     @Override

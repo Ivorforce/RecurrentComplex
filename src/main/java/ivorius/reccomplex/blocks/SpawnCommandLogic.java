@@ -106,7 +106,7 @@ public class SpawnCommandLogic implements ICommandSender
     }
 
     @Override
-    public String getCommandSenderName()
+    public String getName()
     {
         return "@";
     }
@@ -114,7 +114,7 @@ public class SpawnCommandLogic implements ICommandSender
     @Override
     public IChatComponent getDisplayName()
     {
-        return new ChatComponentText(this.getCommandSenderName());
+        return new ChatComponentText(this.getName());
     }
 
     @Override

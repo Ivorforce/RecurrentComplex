@@ -12,6 +12,7 @@ import ivorius.reccomplex.structures.generic.transformers.TransformerNatural;
 import ivorius.reccomplex.utils.IvTranslations;
 import ivorius.reccomplex.utils.scale.Scales;
 import net.minecraft.block.Block;
+import net.minecraft.util.ResourceLocation;
 
 /**
  * Created by lukas on 05.06.14.
@@ -42,7 +43,7 @@ public class TableDataSourceBTNatural extends TableDataSourceSegmented implement
 
     public static GuiValidityStateIndicator.State stateForBlock(String blockID)
     {
-        return Block.blockRegistry.containsKey(blockID) ? GuiValidityStateIndicator.State.VALID : GuiValidityStateIndicator.State.INVALID;
+        return Block.blockRegistry.containsKey(new ResourceLocation(blockID)) ? GuiValidityStateIndicator.State.VALID : GuiValidityStateIndicator.State.INVALID;
     }
 
     public TransformerNatural getTransformer()

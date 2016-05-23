@@ -1,0 +1,6 @@
+{
+  "parent": "reccomplex:block/none",
+  "textures": {
+    "particle": "reccomplex:blocks/generic_space_15"
+  }
+}

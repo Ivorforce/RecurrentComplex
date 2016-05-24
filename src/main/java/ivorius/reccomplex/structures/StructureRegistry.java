@@ -299,7 +299,7 @@ public class StructureRegistry
             String generationID = pair.getRight().id();
             Class clazz = GenericVillageCreationHandler.getPieceClass(structureID, generationID);
             if (clazz != null)
-                MapGenStructureIO.registerStructure(clazz, "Rc:" + structureID + "_" + generationID);
+                MapGenStructureIO.registerStructureComponent(clazz, "Rc:" + structureID + "_" + generationID);
         }
     }
 

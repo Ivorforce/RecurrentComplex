@@ -19,7 +19,7 @@ public class RCGuiTables
         TableCellFloatNullable cell = new TableCellFloatNullable("value", TableElements.toFloat(value), 1.0f, 0, 1000, "D", "C");
         cell.setScale(Scales.pow(5));
         cell.addPropertyListener(listener);
-        cell.setTooltip(IvTranslations.formatLines("structures.gui.random.value.tooltip"));
-        return new TableElementCell(IvTranslations.get("structures.gui.random.value"), cell);
+        cell.setTooltip(IvTranslations.formatLines("structures.gui.random.weight.tooltip"));
+        return new TableElementCell(IvTranslations.get("structures.gui.random.weight"), cell);
     }
 }

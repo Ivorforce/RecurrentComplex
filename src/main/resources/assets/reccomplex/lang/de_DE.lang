@@ -1,0 +1,357 @@
+item.blockSelector.name=Block-Auswahlwerkzeug
+item.blockSelectorFloating.name=Schwebender-Block-Auswahlwerkzeug
+item.inventoryGenerationTag.name=Inventarerzeugung Marker
+item.inventoryGenerationSingleTag.name=Einzelitemerzeugung Marker
+item.inventoryGenerationComponentTag.name=Itemerzeugungskomponente Marker
+item.artifactGenerationTag.name=Artefakterzeugung Marker
+item.bookGenerationTag.name=Bucherzeugung Marker
+
+tile.negativeSpace.name=Generischer Raum
+tile.negativeSpace.meta.0.name=Raum (0 ~ Negativer Raum)
+tile.negativeSpace.meta.1.name=Raum (1 ~ Natürliche Luft)
+tile.negativeSpace.meta.2.name=Raum (2)
+tile.negativeSpace.meta.3.name=Raum (3)
+tile.negativeSpace.meta.4.name=Raum (4)
+tile.negativeSpace.meta.5.name=Raum (5)
+tile.negativeSpace.meta.6.name=Raum (6)
+tile.negativeSpace.meta.7.name=Raum (7)
+tile.negativeSpace.meta.8.name=Raum (8)
+tile.negativeSpace.meta.9.name=Raum (9)
+tile.negativeSpace.meta.10.name=Raum (10)
+tile.negativeSpace.meta.11.name=Raum (11)
+tile.negativeSpace.meta.12.name=Raum (12)
+tile.negativeSpace.meta.13.name=Raum (13)
+tile.negativeSpace.meta.14.name=Raum (14)
+tile.negativeSpace.meta.15.name=Raum (15)
+tile.naturalFloor.name=Generischer Solider Block
+tile.naturalFloor.meta.0.name=Solider Block (0 ~ Natürlicher Boden)
+tile.naturalFloor.meta.1.name=Solider Block (1 ~ Barriere)
+tile.naturalFloor.meta.2.name=Solider Block (2)
+tile.naturalFloor.meta.3.name=Solider Block (3)
+tile.naturalFloor.meta.4.name=Solider Block (4)
+tile.naturalFloor.meta.5.name=Solider Block (5)
+tile.naturalFloor.meta.6.name=Solider Block (6)
+tile.naturalFloor.meta.7.name=Solider Block (7)
+tile.naturalFloor.meta.8.name=Solider Block (8)
+tile.naturalFloor.meta.9.name=Solider Block (9)
+tile.naturalFloor.meta.10.name=Solider Block (10)
+tile.naturalFloor.meta.11.name=Solider Block (11)
+tile.naturalFloor.meta.12.name=Solider Block (12)
+tile.naturalFloor.meta.13.name=Solider Block (13)
+tile.naturalFloor.meta.14.name=Solider Block (14)
+tile.naturalFloor.meta.15.name=Solider Block (15)
+tile.structureGenerator.name=Strukturgenerator
+tile.mazeGenerator.name=Irrgartengenerator
+tile.spawnCommand.name=Spawnbefehlsblock
+tile.spawn_script.name=Spawnscriptblock
+
+itemGroup.structureTools=Strukturwerkzeuge
+itemGroup.inventoryGenerators=Inventargeneratoren
+
+commands.rc.noEntityInfo=Der Eintrag beinhaltet keine Strukturinfo! Dies ist ein Bug!
+
+commands.structure.notGeneric=Struktur '%s' ist nicht generisch!
+commands.structure.notRegistered=Keine Struktur mit dem Namen '%s' gefunden!
+
+commands.strucExport.usage=/#export [Entwurfsname]
+
+commands.strucEdit.usage=/#edit <Strukturname>
+
+commands.strucGen.usage=/#gen <Strukturname> [x] [z] [Dimension]
+commands.strucGen.noStructure=Keine Struktur mit dem Namen '%s' registriert.
+
+commands.strucImport.usage=/#import <structureName> [x] [y] [z]
+commands.strucImport.noStructure=Keine Struktur mit dem Namen '%s' registriert.
+
+commands.selectSet.usage=/#select <both|clear|point1|point2> [x] [y] [z]
+commands.selectSet.get=Auswahl: %s zu %s
+commands.selectSet.point.none=§oNirgendwo§r
+
+commands.selectShift.usage=/#shift <x> <y> <z>
+commands.selectCrop.usage=/#crop
+commands.selectShrink.usage=/#shrink <x> <y> <z>
+commands.selectExpand.usage=/#expand <x> <y> <z>
+
+commands.selectModify.noSelection=Spieler hat keine komplette Auswahl.
+commands.selectModify.invalidMetadata=Metadata muss auf diese weise angegeben werden: '0,1,5', aber war: '%s'
+
+commands.selectFill.usage=/#fill <block> [metadata1,metadata2,metadata3...]
+
+commands.selectReplace.usage=/#replace <Quelle> <Ziel> [Quellenmetadata1,metadata2,metadata3...] [Zielmetadata1,metadata2,metadata3...]
+
+commands.selectFillSphere.usage=/#sphere <Block> [metadata1,metadata2,metadata3...]
+
+commands.selectFloor.usage=/#floor [Ausdehnung]
+commands.selectSpace.usage=/#space[ [Entfernung-zum-Boden] [max-geschlossene-seiten]
+commands.selectNatural.usage=/#natural [/#floor-ausdehnung]
+
+commands.strucReload.usage=/#reload <Strukturname> [x] [y] [z]
+commands.strucReload.success=Alle Strukturen and Inventargeneratoren wurden neugeladen.
+
+commands.selectCopy.usage=/#copy
+commands.selectCopy.success=Kopierte %s, %s, %s bis %s, %s, %s in die Zwischenablage.
+
+commands.strucPaste.usage=/#paste [x] [y] [z] [Rotation] [Spiegeln:true|false]
+commands.strucPaste.noClipboard=Zuerst muss ein Gebiet kopiert werden!
+commands.strucPasteGen.usage=/#pastegen [x] [y] [z] [Rotation] [Spiegeln:true|false]
+
+commands.selectMove.usage=/#move <x> <y> <z> [Rotationen (im Uhrzeigersinn)] [Spiegeln (an x):true|false]
+
+commands.selectDuplicate.usage=/#duplicate <x> <y> <z> [Rotationen (im Uhrzeigersinn)] [Spiegeln (an x):true|false]
+
+commands.rcpreview.usage=/#preview <none|bounds|shape>
+commands.rcpreview.invalid=Ungültiger Vorschautyp
+commands.rcpreview.success=Vorschautyp wurde auf '%s' gesetzt
+
+commands.rc.noOperation=Keine Operation in der Warteschleife
+commands.rc.queuedOp=Operation in der Vorschau - %s oder %s
+commands.rcconfirm.usage=/#confirm
+commands.rcconfirm.run=Führt die Operation aus
+commands.rccancel.usage=/#cancel
+commands.rccancel.run=Bricht die Operation ab
+
+commands.strucImportSchematic.usage=/#importschematic <x> <y> <z> <Schematic Name>
+commands.strucImportSchematic.missing=Die Datei '%s' in %s konnte nicht gefunden werden
+commands.strucImportSchematic.format=Die Datei '%s' ist in einem ununterstüzten Format (%s)
+
+commands.strucExportSchematic.usage=/#exportschematic <Schematic Name>
+commands.strucExportSchematic.success=Exportiert Schematic nach '%s'
+
+commands.biomedict.usage=/#biomedict <get|list> id (get: Biom ID, list: Biomtyp ID)
+commands.biomedict.get=Biometypen für %s: %s
+commands.biomedict.get.number=%s biome
+commands.biomedict.list=Biome des Typs %s: %s
+commands.biomedict.list.number=%s Biomtypen
+commands.biomedict.nobiome=Kein Biom mit der ID '%s'
+commands.biomedict.notype=Kein Biomtyp mit der ID '%s'
+
+commands.dimensiondict.usage=/#dimensiondict <get|list> id (get: Dimension ID, list: Dimensionstyp ID)
+commands.dimensiondict.get=Dimensionstypen for %d: %s
+commands.dimensiondict.get.number=%s Dimensionen
+commands.dimensiondict.list=Dimensionen des Typs %s: %s
+commands.dimensiondict.list.number=%s Typen
+
+commands.rcvisual.usage=/#visual rulers <true|false>
+commands.rcvisual.enabled='%s' Erfolgreich aktiviert
+commands.rcvisual.disabled='%s' Erfolgreich deaktiviert
+
+commands.whatisthis.usage=/#whatisthis [x] [y] [z]
+commands.whatisthis.none=Dort ist Nichts!
+commands.whatisthis.one=Das ist: %s
+commands.whatisthis.many=Das ist irgenwas von, oder alles von: %s
+
+commands.rclookup.usage=/#lookup <Struktur>
+commands.rclookup.reply.silent=%s: §bInaktiv§r, von: '%s', %s
+commands.rclookup.reply.generates=%s: §bGeneriert§r, von: '%s', %s
+commands.rclookup.reply.noauthor=§oUnbekannt§r
+commands.rclookup.reply.nolink=§oKein Link verfügbar§r
+commands.rclookup.reply.comment=Kommentar: %s
+
+commands.rclist.usage=/#list [Seite]
+commands.rclist.previous=Vorherige Seite
+commands.rclist.next=Nächste Seite
+
+commands.rcsearch.usage=/#search
+commands.rcsearch.lookup=Nachschlagen
+
+commands.rcfiles.usage=/#files
+
+inventoryGen.vanilla=Vanilla Generator
+inventoryGen.custom=Eigener Generator
+inventoryGen.create=Erstelle neuen Generator
+inventoryGen.none=Kein Generator
+inventoryGen.mod=Mod Generator
+inventoryGen.active=%sAktiv%s
+inventoryGen.inactive=%sInaktiv%s
+
+guiGenericInventory.save=Speichern
+guiGenericInventory.minMax=Min: %s, Max: %s
+guiGenericInventory.minMaxItems=Min Items: %s, Max Items: %s
+guiGenericInventory.weightNumber=Gewichtung: %s
+
+inventorygen.save.success=Exportieren des Inventargenerators nach '%s' erfolgreich
+inventorygen.save.failure=Exportieren des Inventargenerators nach '%s' fehlgeschlagen
+
+structure.save.failure=Speichern der Struktur in die Datei '%s' fehlgeschlagen
+structure.save.success=Speichern der Struktur in die Datei '%s' erfolgreich
+structure.delete.failure=Löschen der Struktur in der Datei '%s' fehlgeschlagen
+structure.delete.success=Löschen der Struktur in der Datei '%s' erfolgreich
+
+structures.gui.true=True
+structures.gui.false=False
+
+structures.gui.random.weight=Gewichtung
+structures.gui.random.weight.tooltip=Gewichtung dieses Elements im Zufallsgenerator .<br>§aWahrscheinlichkeit = Gewichtung / Summe_aller_Gewichtungen §r<br>Mit anderen Worten, doppelte Gewichtung heißt<br>doppelt so wahrscheinlich.
+
+structures.gui.random.weight=Gewichtung
+structures.gui.random.weight.tooltip=Gewichtung dieses Elements im Zufallsgenerator .<br>§aWahrscheinlichkeit = Gewichtung / Summe_aller_Gewichtungen §r<br>Mit anderen Worten, doppelte Gewichtung heißt<br>doppelt so wahrscheinlich.
+
+structures.genY.bedrock=Bedrock
+structures.genY.bedrock.tooltip=Untere Weltgrenze: y=0
+structures.genY.surface=Oberfläche
+structures.genY.surface.tooltip=Der oberste Block oder Flüssikeitsblock
+structures.genY.sealevel=Meeresspiegel
+structures.genY.sealevel.tooltip=Die Meeresspiegel: y=63
+structures.genY.underwater=Ozeanboden
+structures.genY.underwater.tooltip=Der oberste solide Block
+structures.genY.top=Oben (Himmel)
+structures.genY.top.tooltip=Obere Weltgrenze: y=255
+structures.genY.lowestedge=Unterste Stelle (Ozeanboden)
+structures.genY.lowestedge.tooltip=Wie Ozeanboden, aber so weit vergraben wie nötig
+
+reccomplex.configgui.title=Recurrent Complex Einstellungen
+reccomplex.configgui.ctgy.general=Allgemein
+reccomplex.configgui.ctgy.general.tooltip=Allgemeine Einstellungen
+reccomplex.configgui.ctgy.visual=Optisch
+reccomplex.configgui.ctgy.visual.tooltip=Optische Einstellungen
+reccomplex.configgui.ctgy.balancing=Balancing
+reccomplex.configgui.ctgy.balancing.tooltip=Balancing Einstellungen
+reccomplex.configgui.ctgy.controls=Steuerung
+reccomplex.configgui.ctgy.controls.tooltip=Steuerungseinstellungen
+
+reccomplex.structure.rotatable.true=§aRotierbar§r
+reccomplex.structure.rotatable.false=§eNicht Rotierbar§r
+reccomplex.structure.rotatable.tooltip=Regelt ob die Struktur rotiert wird. <br>Dies könnte auf false gesezt werden müssen<br>, dammit einige entitys und TiteEntitys funktionieren
+reccomplex.structure.mirrorable.true=§aSpiegelbar§r
+reccomplex.structure.mirrorable.false=§eNicht Spiegelbar§r
+reccomplex.structure.mirrorable.tooltip=Regelt ob die Struktur gepiegelt wird. <br>Dies könnte auf false gesezt werden müssen<br>, dammit einige entitys und TiteEntitys funktionieren
+reccomplex.structure.randomrange=Zufällig zwischen den zwei Werten.
+
+reccomplex.structure.id=Struktur ID
+reccomplex.structure.id.tooltip=Einzigartiger Identifier für die Struktur
+reccomplex.structure.savePath=Speichern in %s
+reccomplex.structure.deleteOther.true=%Enferne%s aus %s
+reccomplex.structure.deleteOther.false=%sBehalte%s in %s
+reccomplex.structure.deleteOther.tooltip=Hinweis: Strukturen in dem %s<br>Ordner haben gegenüber denen im %s Ordner beim Laden Vorrang<br>.
+
+reccomplex.structure.generation.id=Generierungs ID
+reccomplex.structure.generation.id.tooltip=Identifier für den Generationstyp.<br>Einzigartig innerhalb der Strukturdatei.
+
+reccomplex.generationInfo.natural=Natürlich
+reccomplex.generationInfo.natural.tooltip=Zufällige Generation in jedem Biom
+reccomplex.generationInfo.natural.limitation.context.world=Pro Welt
+reccomplex.generationInfo.natural.limitation.context.dimension=Pro Dimension
+reccomplex.generationInfo.natural.limitation.context.dimension.tooltip=Struktur taucht höchstens x-mal auf, <br>pro Dimension.
+reccomplex.generationInfo.natural.limitation.context.x_chunks=Alle x Chunks
+
+reccomplex.generationInfo.mazeComponent=Irrgartenkomponent
+reccomplex.generationInfo.mazeComponent.tooltip=Ein Raum im Irrgarten
+reccomplex.generationInfo.mazeComponent.title=Im Irrgarten: %s
+
+reccomplex.generationInfo.static=Statisch
+reccomplex.generationInfo.static.tooltip=Konstante Position in einer spezifischen Dimension.<br>Auch nützlich für Spawnstrukturen.
+reccomplex.generationInfo.static.spawn=Von dem Spawn %s, %s
+reccomplex.generationInfo.static.nospawn=Bei %s, %s
+
+reccomplex.generationInfo.structureList=Strukturliste
+reccomplex.generationInfo.structureList.tooltip=Als Teil einer Strukturliste<br>(Genutzt in Strukturblöcken)
+reccomplex.generationInfo.structureList.title=In der Liste %s
+
+reccomplex.generationInfo.vanilla=Struktur
+reccomplex.generationInfo.vanilla.tooltip=Als teil einer Vanilla-Struktur<br>(Wie ein Dorf)
+reccomplex.generationInfo.vanilla.title=In einer komplexen Struktur
+
+reccomplex.transformer.natural=Natürlicher Untergrund
+reccomplex.transformer.natural.tooltip=Spawnt biom-spezifischen natürlichen Untergrund unter Blöcken
+reccomplex.transformer.natural.naturalExpansionDistance=Distanz
+reccomplex.transformer.natural.naturalExpansionDistance.tooltip=Der Radius in Blocken.
+reccomplex.transformer.natural.naturalExpansionRandomization=Zufälligkeit
+reccomplex.transformer.natural.naturalExpansionRandomization.tooltip=Die Zufallsmenge in der Entfernung.
+
+reccomplex.transformer.naturalAir=Natürliche Luft
+reccomplex.transformer.naturalAir.tooltip=Erstellt Luftpakete um Blöcke
+reccomplex.transformer.naturalAir.naturalExpansionDistance=Distanz
+reccomplex.transformer.naturalAir.naturalExpansionDistance.tooltip=Der Radius in Blocken.
+reccomplex.transformer.naturalAir.naturalExpansionRandomization=Zufälligkeit
+reccomplex.transformer.naturalAir.naturalExpansionRandomization.tooltip=Die Zufallsmenge in der Entfernung.
+
+reccomplex.transformer.pillar=Säule
+reccomplex.transformer.pillar.tooltiLp=Erstellt Säulen bis zum Boden
+reccomplex.transformer.replaceAll=Ersetze alle
+reccomplex.transformer.replaceAll.tooltip=Ersetzt Blöcke uniform
+reccomplex.transformer.replace=Ersetze
+reccomplex.transformer.replace.tooltip=Ersetzt Blöcke individuell
+
+reccomplex.transformer.ruins=Ruinen
+reccomplex.transformer.ruins.tooltip=Verrottet die Struktur und lasst sie zerfallen
+reccomplex.transformer.ruins.decay.title=Zerfall
+reccomplex.transformer.ruins.decay.base=Basis Zerfall
+reccomplex.transformer.ruins.decay.base.tooltip=Die Blockmenge,<br>die beim Generieren der Struktur enfernt wird.
+reccomplex.transformer.ruins.decay.chaos=Chaos
+reccomplex.transformer.ruins.decay.chaos.tooltip=Wie stark der Zerfall<br> in verschiedenenen Teilen der Struktur unterschedlich sein darf.
+reccomplex.transformer.ruins.decay.density=Dichte
+reccomplex.transformer.ruins.decay.density.tooltip=Die Dichte verscheidener Zerfallsvortschritte.<br>Kurz gesagt, setze das auf etwas niedriges für große Löcher<br>und auf etwas hohes für kleine Löcher.
+reccomplex.transformer.ruins.decay.direction=Richtung
+reccomplex.transformer.ruins.decay.direction.tooltip=Die Zerfallsrichtung.
+reccomplex.transformer.ruins.other.title=Andere
+reccomplex.transformer.ruins.erosion=Erosion
+reccomplex.transformer.ruins.erosion.tooltip=Die Ersatzwahrscheinlichkeit <br>von Blöcken mit ihrer kaputten Version.
+reccomplex.transformer.ruins.vines=Rankenwachstum
+reccomplex.transformer.ruins.vines.tooltip=Die Wahrscheinlichkeit für Ranken und Moos<br>an einem Block zu Spawnen.
+
+reccomplex.transformer.negativeSpace=Negativer Raum
+reccomplex.transformer.negativeSpace.tooltip=Lasst den Generator Blöcke ignorieren
+
+reccomplex.biomePreset.clear=Leeren
+reccomplex.biomePreset.clear.tooltip=Keine Biome
+reccomplex.biomePreset.overworld=Oberwelt
+reccomplex.biomePreset.overworld.tooltip=Biome mit einer bespawnbaren Oberfläche
+reccomplex.biomePreset.underground=Untergrund
+reccomplex.biomePreset.underground.tooltip=Biome mit Untergrundbereichen
+reccomplex.biomePreset.ocean=Ozean
+reccomplex.biomePreset.ocean.tooltip=Biome mit viel wasser
+
+reccomplex.dimensionPreset.clear=Leeren
+reccomplex.dimensionPreset.clear.tooltip=Keine Dimensionen
+reccomplex.dimensionPreset.overworld=Oberwelt
+reccomplex.dimensionPreset.overworld.tooltip=Dimensionen ähnlich der normalen Welt
+reccomplex.dimensionPreset.anyplanet=Planetoberfläche
+reccomplex.dimensionPreset.anyplanet.tooltip=Dimensionen ähnlich einer Planetenoberfläche
+reccomplex.dimensionPreset.nether=Nether
+reccomplex.dimensionPreset.nether.tooltip=Dimensionen ähnlich dem Nether
+reccomplex.dimensionPreset.end=End
+reccomplex.dimensionPreset.end.tooltip=Dimensionen ähnlich dem End
+
+reccomplex.weightedBlockStatePreset.clear=Leeren
+reccomplex.weightedBlockStatePreset.clear.tooltip=Keine Blöcke
+reccomplex.weightedBlockStatePreset.allWool=Wolle
+reccomplex.weightedBlockStatePreset.allWool.tooltip=Alle 16 Wolleblöcke
+
+reccomplex.expression.biome.tooltip=Dies ist eine §obiome expression§r.<br>Besuche die Wiki für syntax Informationen.
+reccomplex.expression.dimension.tooltip=Dies ist eine §odimension expression§r.<br>Besuche die Wiki für syntax Informationen.
+reccomplex.expression.block.tooltip=Dies ist eine §oblock expression§r.<br>Besuche die Wiki für syntax Informationen.
+reccomplex.expression.dependency.tooltip=Dies ist eine §odependency expression§r.<br>Besuche die Wiki für syntax Informationen.
+
+reccomplex.direction.up=Hoch (+Y)
+reccomplex.direction.down=Runter (-Y)
+reccomplex.direction.north=Nord (-Z)
+reccomplex.direction.south=Süd (+Z)
+reccomplex.direction.east=Ost (+X)
+reccomplex.direction.west=West (-X)
+reccomplex.direction.none=Keine
+reccomplex.direction.random=Zufällig
+
+reccomplex.maze.connector=Anschluss
+reccomplex.maze.connector.tooltip=Die ID des Anschlusses.<br>Diese funkionieren wie elektrische Anschlüsse.<br><br>§bZwittrig§r (Standart): Verbindet mit sich selbst.<br><br>Falls die ID mit ... startet<br>§bMännlich:§r Verbindet sich mit Weiblich.<br>§bWeiblich:§r Verbindet sich mit Männlich.
+reccomplex.maze.connector.default=Standartanschluss
+
+reccomplex.reachability.tooltip=Beschreibt Erreichbarkeit zwischen<br>den Ausgängen dieses Teils.
+reccomplex.reachability.groups.tooltip=Alle Pfade in einer Gruppe<br>können sich gegensetig erreichen.
+reccomplex.reachability.crossconnections.tooltip=One-Way-Verbindungen herrschen<br>zwischen Pfaden verschidener<br>Gruppen.
+
+reccomplex.mazerule.connect=Verknüpfe
+reccomplex.mazerule.connect.tooltip=Stellt sicher dass ein Pfad zwischen zwei existiert.
+reccomplex.mazerule.connectall=Verknüpfe Alle
+reccomplex.mazerule.connectall.tooltip=Stellt sicher dass ein Pfad zwischen allen existiert.
+
+reccomplex.mazerule.connect.start.tooltip=Verbinde irgendeinen von diesen<br> mit irgendeinem Endpfad.
+reccomplex.mazerule.connect.end.tooltip=Verbinde irgendeinen von diesen<br> mit irgendeinem Startpfad.
+
+reccomplex.worldscript.command=Führt Befehle aus
+reccomplex.worldscript.command.tooltip=Führt ein Vanilla Befehl aus
+reccomplex.worldscript.multi=Mehrere
+reccomplex.worldscript.multi.tooltip=Führt mehrere Befehle nacheinander aus.
+reccomplex.worldscript.mazeGen=Generiert Irrgarten
+reccomplex.worldscript.mazeGen.tooltip=Generiert ein Irrgarten aus gewichteten Teilen.
+reccomplex.worldscript.strucGen=Generiert Structure
+reccomplex.worldscript.strucGen.tooltip=Generiert eine Struktur aus gewichteten Optionen.

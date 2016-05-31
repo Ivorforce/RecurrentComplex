@@ -24,7 +24,7 @@ public abstract class TableDataSourcePresettedList<T> extends TableDataSourceLis
 
     public TableDataSourcePresettedList(PresettedList<T> list, TableDelegate tableDelegate, TableNavigator navigator)
     {
-        super(list.list, tableDelegate, navigator);
+        super(list.getList(), tableDelegate, navigator);
         this.presettedList = list;
     }
 

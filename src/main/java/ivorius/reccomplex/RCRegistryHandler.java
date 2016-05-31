@@ -9,7 +9,7 @@ import ivorius.ivtoolkit.tools.MCRegistry;
 import ivorius.reccomplex.blocks.*;
 import ivorius.reccomplex.blocks.materials.MaterialNegativeSpace;
 import ivorius.reccomplex.blocks.materials.RCMaterials;
-import ivorius.reccomplex.dimensions.DimensionDictionary;
+import ivorius.reccomplex.files.RCFileTypeRegistry;
 import ivorius.reccomplex.items.*;
 import ivorius.reccomplex.json.SerializableStringTypeRegistry;
 import ivorius.reccomplex.operation.OperationRegistry;
@@ -18,13 +18,8 @@ import ivorius.reccomplex.scripts.world.*;
 import ivorius.reccomplex.structures.OperationGenerateStructure;
 import ivorius.reccomplex.structures.OperationMoveStructure;
 import ivorius.reccomplex.structures.StructureRegistry;
-import ivorius.reccomplex.structures.generic.BiomeGenerationInfo;
-import ivorius.reccomplex.structures.generic.DimensionGenerationInfo;
 import ivorius.reccomplex.structures.generic.StructureSaveHandler;
-import ivorius.reccomplex.structures.generic.WeightedBlockState;
 import ivorius.reccomplex.structures.generic.gentypes.*;
-import ivorius.reccomplex.structures.generic.matchers.BiomeMatcher;
-import ivorius.reccomplex.structures.generic.matchers.DimensionMatcher;
 import ivorius.reccomplex.structures.generic.maze.rules.MazeRuleRegistry;
 import ivorius.reccomplex.structures.generic.maze.rules.saved.MazeRuleConnect;
 import ivorius.reccomplex.structures.generic.maze.rules.saved.MazeRuleConnectAll;
@@ -34,27 +29,24 @@ import ivorius.reccomplex.structures.generic.presets.WeightedBlockStatePresets;
 import ivorius.reccomplex.structures.generic.transformers.*;
 import ivorius.reccomplex.structures.schematics.OperationGenerateSchematic;
 import ivorius.reccomplex.utils.FMLUtils;
+import ivorius.reccomplex.utils.ListPresets;
 import ivorius.reccomplex.worldgen.CategoryLoader;
 import ivorius.reccomplex.worldgen.inventory.ItemCollectionSaveHandler;
 import ivorius.reccomplex.worldgen.inventory.RCInventoryGenerators;
 import net.minecraft.block.Block;
-import net.minecraft.block.BlockColored;
 import net.minecraft.block.material.MapColor;
 import net.minecraft.block.material.Material;
 import net.minecraft.creativetab.CreativeTabs;
-import net.minecraft.init.Blocks;
-import net.minecraft.item.EnumDyeColor;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.common.BiomeDictionary;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.registry.GameRegistry;
+import org.apache.commons.io.FileUtils;
 
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
+import java.io.IOException;
 
 import static ivorius.reccomplex.RecurrentComplex.fileTypeRegistry;
 import static ivorius.reccomplex.RecurrentComplex.specialRegistry;
@@ -157,10 +149,10 @@ public class RCRegistryHandler
         register(spawnScript, "spawn_script");
         register(TileEntitySpawnScript.class, "RCSpawnScript");
 
-        // Register early to allow proper loading
-        registerDimensionPresets();
-        registerBiomePresets();
-        registerBlockStatePresets();
+        // Set preset defaults
+        DimensionMatcherPresets.instance().setDefault("overworld");
+        BiomeMatcherPresets.instance().setDefault("overworld");
+        WeightedBlockStatePresets.instance().setDefault("allWool");
     }
 
     public static void register(Item item, String id)
@@ -213,6 +205,9 @@ public class RCRegistryHandler
         fileTypeRegistry.put(ItemCollectionSaveHandler.FILE_SUFFIX, ItemCollectionSaveHandler.INSTANCE);
         fileTypeRegistry.put(PoemLoader.FILE_SUFFIX, new PoemLoader());
         fileTypeRegistry.put(CategoryLoader.FILE_SUFFIX, new CategoryLoader());
+        fileTypeRegistry.put(BiomeMatcherPresets.FILE_SUFFIX, BiomeMatcherPresets.instance());
+        fileTypeRegistry.put(DimensionMatcherPresets.FILE_SUFFIX, DimensionMatcherPresets.instance());
+        fileTypeRegistry.put(WeightedBlockStatePresets.FILE_SUFFIX, WeightedBlockStatePresets.instance());
 
         WorldScriptRegistry.INSTANCE.register("multi", WorldScriptMulti.class);
         WorldScriptRegistry.INSTANCE.register("strucGen", WorldScriptStructureGenerator.class);
@@ -248,74 +243,17 @@ public class RCRegistryHandler
 //        VillagerRegistry.instance().registerVillageCreationHandler(new GenericVillageCreationHandler("DesertHut"));
     }
 
-    protected static void registerDimensionPresets()
+    protected static <T> void dumpAll(ListPresets<T> presets)
     {
-        DimensionMatcherPresets.instance().register("clear");
-
-        DimensionMatcherPresets.instance().register("overworld",
-                new DimensionGenerationInfo(DimensionMatcher.ofTypes(DimensionDictionary.UNCATEGORIZED), null),
-                new DimensionGenerationInfo(DimensionMatcher.ofTypes(DimensionDictionary.NO_TOP_LIMIT, DimensionDictionary.BOTTOM_LIMIT, DimensionDictionary.INFINITE, DimensionDictionary.EARTH), null)
-        );
-        DimensionMatcherPresets.instance().setDefault("overworld");
-
-        DimensionMatcherPresets.instance().register("anyplanet",
-                new DimensionGenerationInfo(DimensionMatcher.ofTypes(DimensionDictionary.UNCATEGORIZED), null),
-                new DimensionGenerationInfo(DimensionMatcher.ofTypes(DimensionDictionary.NO_TOP_LIMIT, DimensionDictionary.BOTTOM_LIMIT, DimensionDictionary.INFINITE), null)
-        );
-
-        DimensionMatcherPresets.instance().register("nether",
-                new DimensionGenerationInfo(DimensionMatcher.ofTypes(DimensionDictionary.HELL, DimensionDictionary.TOP_LIMIT, DimensionDictionary.BOTTOM_LIMIT), null)
-        );
-
-        DimensionMatcherPresets.instance().register("end",
-                new DimensionGenerationInfo(DimensionMatcher.ofTypes(DimensionDictionary.ENDER, DimensionDictionary.NO_TOP_LIMIT, DimensionDictionary.NO_BOTTOM_LIMIT), null)
-        );
-    }
-
-    protected static void registerBiomePresets()
-    {
-        BiomeMatcherPresets.instance().register("clear");
-
-        BiomeMatcherPresets.instance().register("overworld",
-                new BiomeGenerationInfo(BiomeMatcher.ofTypes(BiomeDictionary.Type.WATER), 0.0),
-                new BiomeGenerationInfo(BiomeMatcher.ofTypes(BiomeDictionary.Type.PLAINS), null),
-                new BiomeGenerationInfo(BiomeMatcher.ofTypes(BiomeDictionary.Type.FOREST), null),
-                new BiomeGenerationInfo(BiomeMatcher.ofTypes(BiomeDictionary.Type.MOUNTAIN), null),
-                new BiomeGenerationInfo(BiomeMatcher.ofTypes(BiomeDictionary.Type.HILLS), null),
-                new BiomeGenerationInfo(BiomeMatcher.ofTypes(BiomeDictionary.Type.SWAMP), null),
-                new BiomeGenerationInfo(BiomeMatcher.ofTypes(BiomeDictionary.Type.SANDY), null),
-                new BiomeGenerationInfo(BiomeMatcher.ofTypes(BiomeDictionary.Type.MESA), null),
-                new BiomeGenerationInfo(BiomeMatcher.ofTypes(BiomeDictionary.Type.SAVANNA), null),
-                new BiomeGenerationInfo(BiomeMatcher.ofTypes(BiomeDictionary.Type.WASTELAND), null),
-                new BiomeGenerationInfo(BiomeMatcher.ofTypes(BiomeDictionary.Type.MUSHROOM), null),
-                new BiomeGenerationInfo(BiomeMatcher.ofTypes(BiomeDictionary.Type.JUNGLE), null));
-        BiomeMatcherPresets.instance().setDefault("overworld");
-
-        BiomeMatcherPresets.instance().register("underground",
-                new BiomeGenerationInfo(BiomeMatcher.ofTypes(BiomeDictionary.Type.PLAINS), null),
-                new BiomeGenerationInfo(BiomeMatcher.ofTypes(BiomeDictionary.Type.FOREST), null),
-                new BiomeGenerationInfo(BiomeMatcher.ofTypes(BiomeDictionary.Type.MOUNTAIN), null),
-                new BiomeGenerationInfo(BiomeMatcher.ofTypes(BiomeDictionary.Type.HILLS), null),
-                new BiomeGenerationInfo(BiomeMatcher.ofTypes(BiomeDictionary.Type.SWAMP), null),
-                new BiomeGenerationInfo(BiomeMatcher.ofTypes(BiomeDictionary.Type.SANDY), null),
-                new BiomeGenerationInfo(BiomeMatcher.ofTypes(BiomeDictionary.Type.MESA), null),
-                new BiomeGenerationInfo(BiomeMatcher.ofTypes(BiomeDictionary.Type.SAVANNA), null),
-                new BiomeGenerationInfo(BiomeMatcher.ofTypes(BiomeDictionary.Type.RIVER), null),
-                new BiomeGenerationInfo(BiomeMatcher.ofTypes(BiomeDictionary.Type.OCEAN), null),
-                new BiomeGenerationInfo(BiomeMatcher.ofTypes(BiomeDictionary.Type.WASTELAND), null),
-                new BiomeGenerationInfo(BiomeMatcher.ofTypes(BiomeDictionary.Type.MUSHROOM), null),
-                new BiomeGenerationInfo(BiomeMatcher.ofTypes(BiomeDictionary.Type.JUNGLE), null));
-
-        BiomeMatcherPresets.instance().register("ocean",
-                new BiomeGenerationInfo(BiomeMatcher.ofTypes(BiomeDictionary.Type.OCEAN, BiomeDictionary.Type.SNOWY), 0.0),
-                new BiomeGenerationInfo(BiomeMatcher.ofTypes(BiomeDictionary.Type.OCEAN), null));
-    }
-
-    protected static void registerBlockStatePresets()
-    {
-        WeightedBlockStatePresets.instance().register("clear");
-
-        WeightedBlockStatePresets.instance().register("allWool", Stream.of(EnumDyeColor.values()).map(c -> new WeightedBlockState(null, Blocks.wool.getDefaultState().withProperty(BlockColored.COLOR, c), "")).collect(Collectors.toList()));
-        WeightedBlockStatePresets.instance().setDefault("allWool");
+        presets.allTypes().stream().forEach(s -> {
+            try
+            {
+                FileUtils.write(FileUtils.getFile(RCFileTypeRegistry.getDirectory(false), String.format("%s.%s", s, presets.getFileSuffix())), presets.write(s));
+            }
+            catch (IOException e)
+            {
+                e.printStackTrace();
+            }
+        });
     }
 }

@@ -8,6 +8,7 @@ package ivorius.reccomplex.utils;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
@@ -16,7 +17,7 @@ import java.util.List;
  */
 public class PresettedList<T>
 {
-    public final List<T> list = new ArrayList<>();
+    protected final List<T> list = new ArrayList<>();
     @Nonnull
     protected ListPresets<T> listPresets;
     @Nullable
@@ -48,7 +49,7 @@ public class PresettedList<T>
     public boolean setPreset(@Nullable String preset)
     {
         this.preset = preset;
-        return loadListFromPreset();
+        return tryLoadFromPreset();
     }
 
     public void setToCustom()
@@ -69,9 +70,7 @@ public class PresettedList<T>
     @SafeVarargs
     public final void setContents(T... ts)
     {
-        setToCustom();
-        list.clear();
-        Collections.addAll(list, ts);
+        setContents(Arrays.asList(ts));
     }
 
     public void setContents(List<T> ts)
@@ -81,20 +80,23 @@ public class PresettedList<T>
         list.addAll(ts);
     }
 
-    public boolean loadListFromPreset()
+    public List<T> getList()
     {
-        list.clear();
+        tryLoadFromPreset();
+        return list;
+    }
 
-        if (preset != null)
+    protected boolean tryLoadFromPreset()
+    {
+        if (this.preset != null)
         {
-            List<T> presetList = listPresets.preset(preset);
-            if (presetList != null)
+            List<T> preset = listPresets.preset(this.preset);
+            if (preset != null)
             {
-                list.addAll(presetList);
+                list.clear();
+                list.addAll(preset);
                 return true;
             }
-
-            return false;
         }
 
         return false;

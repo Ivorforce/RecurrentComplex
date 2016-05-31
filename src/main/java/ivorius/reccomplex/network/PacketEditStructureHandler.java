@@ -56,7 +56,7 @@ public class PacketEditStructureHandler extends SchedulingMessageHandler<PacketE
         if (structureEntityInfo != null)
             genericStructureInfo.worldDataCompound = structureEntityInfo.getCachedExportStructureBlockDataNBT();
 
-        String path = RCFileTypeRegistry.getStructuresDirectoryName(message.isSaveAsActive()) + "/";
+        String path = RCFileTypeRegistry.getDirectoryName(message.isSaveAsActive()) + "/";
         String structureID = message.getStructureID();
 
         if (!StructureSaveHandler.INSTANCE.saveGenericStructure(genericStructureInfo, structureID, message.isSaveAsActive()))
@@ -69,7 +69,7 @@ public class PacketEditStructureHandler extends SchedulingMessageHandler<PacketE
 
             if (message.isDeleteOther() && StructureSaveHandler.INSTANCE.hasGenericStructure(structureID, !message.isSaveAsActive()))
             {
-                String otherPath = RCFileTypeRegistry.getStructuresDirectoryName(!message.isSaveAsActive()) + "/";
+                String otherPath = RCFileTypeRegistry.getDirectoryName(!message.isSaveAsActive()) + "/";
 
                 if (StructureSaveHandler.INSTANCE.deleteGenericStructure(structureID, !message.isSaveAsActive()))
                     player.addChatMessage(ServerTranslations.format("structure.delete.success", otherPath + structureID));

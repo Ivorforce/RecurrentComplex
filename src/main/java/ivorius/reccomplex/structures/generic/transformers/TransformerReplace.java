@@ -101,8 +101,8 @@ public class TransformerReplace extends TransformerSingleBlock<NBTNone>
     public void transformBlock(NBTNone instanceData, Phase phase, StructureSpawnContext context, BlockPos coord, IBlockState sourceState)
     {
         WeightedBlockState blockState;
-        if (destination.list.size() > 0)
-            blockState = WeightedSelector.selectItem(context.random, destination.list);
+        if (destination.getList().size() > 0)
+            blockState = WeightedSelector.selectItem(context.random, destination.getList());
         else
             blockState = new WeightedBlockState(null, null, "");
 
@@ -200,7 +200,7 @@ public class TransformerReplace extends TransformerSingleBlock<NBTNone>
             if (!transformer.destination.setPreset(JsonUtils.getJsonObjectStringFieldValueOrDefault(jsonObject, "destinationPreset", null)))
             {
                 if (jsonObject.has("destination"))
-                    Collections.addAll(transformer.destination.list, gson.fromJson(jsonObject.get("destination"), WeightedBlockState[].class));
+                    Collections.addAll(transformer.destination.getList(), gson.fromJson(jsonObject.get("destination"), WeightedBlockState[].class));
             }
 
             if (jsonObject.has("dest"))
@@ -211,7 +211,7 @@ public class TransformerReplace extends TransformerSingleBlock<NBTNone>
 
                 transformer.destination.setToCustom();
                 for (byte b : destMeta)
-                    transformer.destination.list.add(new WeightedBlockState(null, dest.getStateFromMeta(b), ""));
+                    transformer.destination.getList().add(new WeightedBlockState(null, dest.getStateFromMeta(b), ""));
             }
 
             return transformer;
@@ -226,7 +226,7 @@ public class TransformerReplace extends TransformerSingleBlock<NBTNone>
 
             if (transformer.destination.getPreset() != null)
                 jsonObject.addProperty("destinationPreset", transformer.destination.getPreset());
-            jsonObject.add("destination", gson.toJsonTree(transformer.destination.list));
+            jsonObject.add("destination", gson.toJsonTree(transformer.destination.getList()));
 
             return jsonObject;
         }

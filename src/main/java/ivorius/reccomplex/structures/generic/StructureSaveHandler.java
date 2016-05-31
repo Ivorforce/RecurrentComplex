@@ -54,7 +54,7 @@ public class StructureSaveHandler implements FileTypeHandler
 
     public boolean saveGenericStructure(GenericStructureInfo info, String structureName, boolean activeFolder)
     {
-        File parent = RCFileTypeRegistry.getStructuresDirectory(activeFolder);
+        File parent = RCFileTypeRegistry.getDirectory(activeFolder);
         if (parent != null)
         {
             String json = registry.createJSONFromStructure(info);
@@ -107,7 +107,7 @@ public class StructureSaveHandler implements FileTypeHandler
     {
         try
         {
-            File parent = RCFileTypeRegistry.getStructuresDirectory(activeFolder);
+            File parent = RCFileTypeRegistry.getDirectory(activeFolder);
             return parent != null && (new File(parent, structureName + "." + FILE_SUFFIX).exists() || /* Legacy */ new File(parent, structureName + ".zip").exists());
         }
         catch (Throwable e)
@@ -122,7 +122,7 @@ public class StructureSaveHandler implements FileTypeHandler
     {
         try
         {
-            File parent = RCFileTypeRegistry.getStructuresDirectory(activeFolder);
+            File parent = RCFileTypeRegistry.getDirectory(activeFolder);
             return parent != null && (new File(parent, structureName + "." + FILE_SUFFIX).delete() || /* Legacy */ new File(parent, structureName + ".zip").delete());
         }
         catch (Throwable e)

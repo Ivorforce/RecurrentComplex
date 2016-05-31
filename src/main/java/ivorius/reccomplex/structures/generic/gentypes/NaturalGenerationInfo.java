@@ -118,7 +118,7 @@ public class NaturalGenerationInfo extends StructureGenerationInfo
 
     public double generationWeightInDimension(WorldProvider provider)
     {
-        for (DimensionGenerationInfo generationInfo : dimensionWeights.list)
+        for (DimensionGenerationInfo generationInfo : dimensionWeights.getList())
         {
             if (generationInfo.matches(provider))
                 return generationInfo.getActiveGenerationWeight();
@@ -129,7 +129,7 @@ public class NaturalGenerationInfo extends StructureGenerationInfo
 
     public double generationWeightInBiome(BiomeGenBase biome)
     {
-        for (BiomeGenerationInfo generationInfo : biomeWeights.list)
+        for (BiomeGenerationInfo generationInfo : biomeWeights.getList())
         {
             if (generationInfo.matches(biome))
                 return generationInfo.getActiveGenerationWeight();
@@ -261,7 +261,7 @@ public class NaturalGenerationInfo extends StructureGenerationInfo
             if (!list.setPreset(JsonUtils.getJsonObjectStringFieldValueOrDefault(jsonObject, presetKey, null)))
             {
                 if (jsonObject.has(listKey))
-                    Collections.addAll(list.list, gson.fromJson(jsonObject.get(listKey), clazz));
+                    Collections.addAll(list.getList(), gson.fromJson(jsonObject.get(listKey), clazz));
                 else
                     list.setToDefault();
             }
@@ -271,7 +271,7 @@ public class NaturalGenerationInfo extends StructureGenerationInfo
         {
             if (list.getPreset() != null)
                 jsonObject.addProperty(presetKey, list.getPreset());
-            jsonObject.add(listKey, gson.toJsonTree(list.list));
+            jsonObject.add(listKey, gson.toJsonTree(list.getList()));
         }
     }
 }

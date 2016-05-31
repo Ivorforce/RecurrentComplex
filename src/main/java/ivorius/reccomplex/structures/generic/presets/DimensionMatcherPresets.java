@@ -15,11 +15,18 @@ import ivorius.reccomplex.utils.ListPresets;
  */
 public class DimensionMatcherPresets extends ListPresets<DimensionGenerationInfo>
 {
+    public static final String FILE_SUFFIX = "rcdp";
+
     private static DimensionMatcherPresets instance;
+
+    public DimensionMatcherPresets(String fileSuffix)
+    {
+        super(fileSuffix);
+    }
 
     public static DimensionMatcherPresets instance()
     {
-        return instance != null ? instance : (instance = new DimensionMatcherPresets());
+        return instance != null ? instance : (instance = new DimensionMatcherPresets(FILE_SUFFIX));
     }
 
     @Override

@@ -7,14 +7,10 @@ package ivorius.reccomplex.commands;
 
 import ivorius.reccomplex.RCConfig;
 import ivorius.reccomplex.RecurrentComplex;
-import ivorius.reccomplex.entities.StructureEntityInfo;
 import ivorius.reccomplex.files.RCFileTypeRegistry;
-import ivorius.reccomplex.operation.Operation;
-import ivorius.reccomplex.structures.generic.StructureSaveHandler;
 import ivorius.reccomplex.utils.ServerTranslations;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.ICommandSender;
-import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.Util;
 import org.apache.logging.log4j.Logger;
 import org.lwjgl.Sys;
@@ -22,7 +18,6 @@ import org.lwjgl.Sys;
 import java.io.File;
 import java.io.IOException;
 import java.net.URI;
-import java.util.List;
 
 /**
  * Created by lukas on 03.08.14.
@@ -49,7 +44,7 @@ public class CommandBrowseFiles extends CommandBase
     @Override
     public void processCommand(ICommandSender commandSender, String[] args)
     {
-        openFile(RCFileTypeRegistry.getBaseStructuresDirectory(), RecurrentComplex.logger);
+        openFile(RCFileTypeRegistry.getBaseDirectory(), RecurrentComplex.logger);
     }
 
     /**

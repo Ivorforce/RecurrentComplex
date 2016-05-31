@@ -15,11 +15,18 @@ import ivorius.reccomplex.utils.ListPresets;
  */
 public class BiomeMatcherPresets extends ListPresets<BiomeGenerationInfo>
 {
+    public static final String FILE_SUFFIX = "rcbp";
+
     private static BiomeMatcherPresets instance;
+
+    public BiomeMatcherPresets(String fileSuffix)
+    {
+        super(fileSuffix);
+    }
 
     public static BiomeMatcherPresets instance()
     {
-        return instance != null ? instance : (instance = new BiomeMatcherPresets());
+        return instance != null ? instance : (instance = new BiomeMatcherPresets(FILE_SUFFIX));
     }
 
     @Override

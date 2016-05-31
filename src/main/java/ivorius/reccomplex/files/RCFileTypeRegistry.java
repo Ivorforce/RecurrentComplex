@@ -7,7 +7,6 @@ package ivorius.reccomplex.files;
 
 import ivorius.ivtoolkit.tools.IvFileHelper;
 import ivorius.reccomplex.RecurrentComplex;
-import ivorius.reccomplex.structures.schematics.SchematicLoader;
 import net.minecraft.util.ResourceLocation;
 
 import java.io.File;
@@ -21,19 +20,19 @@ public class RCFileTypeRegistry extends FileTypeRegistry
     public static final String ACTIVE_DIR_NAME = "active";
     public static final String INACTIVE_DIR_NAME = "inactive";
 
-    public static String getStructuresDirectoryName(boolean activeFolder)
+    public static String getDirectoryName(boolean activeFolder)
     {
         return activeFolder ? ACTIVE_DIR_NAME : INACTIVE_DIR_NAME;
     }
 
-    public static File getBaseStructuresDirectory()
+    public static File getBaseDirectory()
     {
         return RecurrentComplex.proxy.getBaseFolderFile("structures");
     }
 
-    public static File getStructuresDirectory(boolean activeFolder)
+    public static File getDirectory(boolean activeFolder)
     {
-        return RCFileHelper.getValidatedFolder(getBaseStructuresDirectory(), getStructuresDirectoryName(activeFolder), true);
+        return RCFileHelper.getValidatedFolder(getBaseDirectory(), getDirectoryName(activeFolder), true);
     }
 
     public void reloadCustomFiles()
@@ -45,7 +44,7 @@ public class RCFileTypeRegistry extends FileTypeRegistry
     {
         clearCustomFiles(suffices);
 
-        File structuresFile = IvFileHelper.getValidatedFolder(getBaseStructuresDirectory());
+        File structuresFile = IvFileHelper.getValidatedFolder(getBaseDirectory());
         if (structuresFile != null)
         {
             tryLoadAll(suffices, structuresFile, RCFileTypeRegistry.ACTIVE_DIR_NAME, true, "", true, true);

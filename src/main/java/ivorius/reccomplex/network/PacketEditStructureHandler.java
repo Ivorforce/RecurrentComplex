@@ -19,6 +19,8 @@ import net.minecraft.network.NetHandlerPlayServer;
 import net.minecraft.world.WorldServer;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 import java.util.Collections;
 
@@ -81,6 +83,7 @@ public class PacketEditStructureHandler extends SchedulingMessageHandler<PacketE
         }
     }
 
+    @SideOnly(Side.CLIENT)
     @Override
     public void processClient(PacketEditStructure message, MessageContext ctx)
     {

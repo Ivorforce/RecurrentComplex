@@ -22,7 +22,6 @@ import ivorius.ivtoolkit.network.PacketGuiActionHandler;
 import ivorius.ivtoolkit.tools.MCRegistry;
 import ivorius.ivtoolkit.tools.MCRegistryDefault;
 import ivorius.reccomplex.commands.RCCommands;
-import ivorius.reccomplex.events.RCFMLEventHandler;
 import ivorius.reccomplex.events.RCForgeEventHandler;
 import ivorius.reccomplex.files.RCFileTypeRegistry;
 import ivorius.reccomplex.gui.RCGuiHandler;
@@ -71,7 +70,6 @@ public class RecurrentComplex
     public static FMLMissingRemapper missingRemapper;
 
     public static RCForgeEventHandler forgeEventHandler;
-    public static RCFMLEventHandler fmlEventHandler;
 
     public static SimpleNetworkWrapper network;
 
@@ -109,9 +107,6 @@ public class RecurrentComplex
 
         forgeEventHandler = new RCForgeEventHandler();
         forgeEventHandler.register();
-
-        fmlEventHandler = new RCFMLEventHandler();
-        fmlEventHandler.register();
 
         guiHandler = new RCGuiHandler();
         NetworkRegistry.INSTANCE.registerGuiHandler(this, guiHandler);

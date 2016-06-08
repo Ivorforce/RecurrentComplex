@@ -20,7 +20,7 @@ public class ExpressionCache<T>
     protected String emptyResultRepresentation;
 
     @Nonnull
-    protected String expression;
+    protected String expression = "";
     @Nullable
     protected Algebra.Expression<T> parsedExpression;
     @Nullable

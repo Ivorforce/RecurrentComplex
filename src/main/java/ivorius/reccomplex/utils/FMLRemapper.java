@@ -6,9 +6,6 @@
 package ivorius.reccomplex.utils;
 
 import com.google.common.collect.Maps;
-import ivorius.ivtoolkit.tools.MCRegistry;
-import net.minecraft.block.Block;
-import net.minecraft.item.Item;
 import net.minecraft.util.ResourceLocation;
 
 import java.util.Map;

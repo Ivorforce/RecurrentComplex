@@ -14,7 +14,6 @@ import ivorius.reccomplex.entities.StructureEntityInfo;
 import ivorius.reccomplex.structures.schematics.SchematicFile;
 import ivorius.reccomplex.structures.schematics.SchematicLoader;
 import ivorius.reccomplex.structures.StructureRegistry;
-import ivorius.reccomplex.utils.BlockStates;
 import ivorius.reccomplex.utils.ServerTranslations;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.CommandException;
@@ -23,7 +22,6 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.ChatComponentTranslation;
 
 import java.util.List;
 

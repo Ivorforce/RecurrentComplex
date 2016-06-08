@@ -5,15 +5,12 @@
 
 package ivorius.reccomplex.gui.worldscripts.mazegenerator;
 
-import gnu.trove.list.TIntList;
-import ivorius.ivtoolkit.math.IvVecMathHelper;
 import ivorius.ivtoolkit.maze.components.MazeRoom;
 import ivorius.reccomplex.gui.TableDirections;
 import ivorius.reccomplex.gui.table.*;
 import ivorius.reccomplex.structures.generic.maze.ConnectorStrategy;
 import ivorius.reccomplex.structures.generic.maze.SavedMazePath;
 import ivorius.reccomplex.structures.generic.maze.SavedMazePathConnection;
-import ivorius.reccomplex.utils.IvTranslations;
 import net.minecraft.util.EnumFacing;
 
 /**

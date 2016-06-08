@@ -5,7 +5,6 @@
 
 package ivorius.reccomplex.gui.worldscripts.command;
 
-import ivorius.reccomplex.blocks.TileEntitySpawnCommand;
 import ivorius.reccomplex.gui.table.*;
 import ivorius.reccomplex.scripts.world.WorldScriptCommand;
 import org.apache.commons.lang3.StringUtils;

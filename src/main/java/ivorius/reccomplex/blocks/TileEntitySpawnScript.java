@@ -7,7 +7,6 @@ package ivorius.reccomplex.blocks;
 
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
-import net.minecraft.util.BlockPos;
 import ivorius.ivtoolkit.tools.NBTCompoundObjects;
 import ivorius.reccomplex.gui.worldscripts.multi.GuiEditSpawnScript;
 import ivorius.reccomplex.scripts.world.WorldScriptMulti;

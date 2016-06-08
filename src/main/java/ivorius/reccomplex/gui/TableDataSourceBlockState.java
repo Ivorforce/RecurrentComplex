@@ -11,7 +11,6 @@ import ivorius.reccomplex.gui.table.*;
 import ivorius.reccomplex.utils.BlockStates;
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
-import net.minecraft.util.BlockPos;
 import net.minecraft.util.ResourceLocation;
 
 import java.util.function.Consumer;

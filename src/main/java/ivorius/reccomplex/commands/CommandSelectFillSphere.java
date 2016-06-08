@@ -7,13 +7,11 @@ package ivorius.reccomplex.commands;
 
 import ivorius.ivtoolkit.blocks.BlockArea;
 import net.minecraft.command.CommandException;
-import net.minecraft.command.NumberInvalidException;
 import net.minecraft.util.BlockPos;
 import ivorius.ivtoolkit.math.IvShapeHelper;
 import ivorius.reccomplex.RCConfig;
 import ivorius.reccomplex.entities.StructureEntityInfo;
 import net.minecraft.block.state.IBlockState;
-import ivorius.reccomplex.utils.BlockStates;
 import ivorius.reccomplex.utils.ServerTranslations;
 import net.minecraft.block.Block;
 import net.minecraft.command.ICommandSender;

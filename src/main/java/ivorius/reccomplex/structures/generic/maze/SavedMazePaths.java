@@ -5,16 +5,10 @@
 
 package ivorius.reccomplex.structures.generic.maze;
 
-import com.google.common.collect.ImmutableSet;
-import gnu.trove.set.TIntSet;
-import gnu.trove.set.hash.TIntHashSet;
 import ivorius.ivtoolkit.maze.components.MazePassage;
 import ivorius.ivtoolkit.maze.components.MazeRoom;
-import ivorius.ivtoolkit.maze.components.MazeRooms;
-import ivorius.ivtoolkit.tools.Ranges;
 
 import java.util.Map;
-import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
@@ -42,9 +36,6 @@ public class SavedMazePaths
 
     /**
      * Analogous to MazeRooms.neighbors
-     * @param room
-     * @param dimensions
-     * @return
      */
     public static Stream<SavedMazePath> neighborPaths(final MazeRoom room, IntStream dimensions)
     {

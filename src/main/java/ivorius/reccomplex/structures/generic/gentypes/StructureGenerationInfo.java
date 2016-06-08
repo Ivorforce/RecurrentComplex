@@ -11,7 +11,6 @@ import ivorius.reccomplex.gui.table.TableNavigator;
 
 import javax.annotation.Nonnull;
 import java.util.Random;
-import java.util.UUID;
 
 /**
  * Created by lukas on 19.02.15.

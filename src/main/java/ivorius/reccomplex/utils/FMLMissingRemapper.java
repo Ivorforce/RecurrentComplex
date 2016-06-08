@@ -7,7 +7,6 @@ package ivorius.reccomplex.utils;
 
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.common.event.FMLMissingMappingsEvent;
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import ivorius.ivtoolkit.tools.MCRegistry;
 
 /**

@@ -8,9 +8,6 @@ package ivorius.reccomplex.network;
 import net.minecraftforge.fml.common.network.ByteBufUtils;
 import io.netty.buffer.ByteBuf;
 import ivorius.ivtoolkit.network.IvPacketHelper;
-import ivorius.reccomplex.items.ItemSyncable;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
 
 /**
  * Created by lukas on 17.01.15.

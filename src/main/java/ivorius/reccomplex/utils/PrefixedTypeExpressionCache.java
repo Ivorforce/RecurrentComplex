@@ -5,14 +5,9 @@
 
 package ivorius.reccomplex.utils;
 
-import com.google.common.base.Function;
-import com.google.common.base.Predicate;
-import com.google.common.collect.Iterables;
-import ivorius.ivtoolkit.tools.Visitor;
 import net.minecraft.util.EnumChatFormatting;
 
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import java.util.Collections;
 import java.util.SortedSet;
 import java.util.TreeSet;

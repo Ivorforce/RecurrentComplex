@@ -7,7 +7,6 @@ package ivorius.reccomplex.structures.schematics;
 
 import gnu.trove.map.TShortObjectMap;
 import gnu.trove.map.hash.TShortObjectHashMap;
-import gnu.trove.procedure.TShortObjectProcedure;
 import gnu.trove.set.TShortSet;
 import net.minecraft.block.Block;
 import net.minecraft.nbt.NBTTagCompound;

@@ -5,7 +5,6 @@
 
 package ivorius.reccomplex.blocks;
 
-import net.minecraft.util.BlockPos;
 import ivorius.reccomplex.scripts.world.WorldScriptMazeGenerator;
 import ivorius.reccomplex.structures.StructureLoadContext;
 import ivorius.reccomplex.structures.StructurePrepareContext;

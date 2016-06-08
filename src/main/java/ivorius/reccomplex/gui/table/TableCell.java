@@ -5,7 +5,6 @@
 
 package ivorius.reccomplex.gui.table;
 
-import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 /**

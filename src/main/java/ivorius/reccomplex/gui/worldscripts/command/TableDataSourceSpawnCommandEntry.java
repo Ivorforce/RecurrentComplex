@@ -8,8 +8,6 @@ package ivorius.reccomplex.gui.worldscripts.command;
 import ivorius.reccomplex.gui.RCGuiTables;
 import ivorius.reccomplex.gui.table.*;
 import ivorius.reccomplex.scripts.world.WorldScriptCommand;
-import ivorius.reccomplex.utils.IvTranslations;
-import ivorius.reccomplex.utils.scale.Scales;
 
 /**
  * Created by lukas on 05.06.14.

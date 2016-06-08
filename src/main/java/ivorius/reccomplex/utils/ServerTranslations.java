@@ -12,8 +12,6 @@ import net.minecraft.util.ChatComponentText;
 import net.minecraft.util.ChatComponentTranslation;
 import net.minecraft.util.IChatComponent;
 
-import java.util.Arrays;
-
 /**
  * Created by lukas on 01.04.15.
  */

@@ -5,19 +5,11 @@
 
 package ivorius.reccomplex.gui.worldscripts.mazegenerator;
 
-import net.minecraft.util.BlockPos;
 import ivorius.ivtoolkit.gui.IntegerRange;
-import ivorius.reccomplex.gui.RCGuiTables;
 import ivorius.reccomplex.gui.TableDataSourceBlockPos;
 import ivorius.reccomplex.gui.table.*;
 import ivorius.reccomplex.gui.worldscripts.mazegenerator.rules.TableDataSourceMazeRuleList;
 import ivorius.reccomplex.scripts.world.WorldScriptMazeGenerator;
-import ivorius.reccomplex.structures.generic.maze.*;
-import ivorius.reccomplex.structures.generic.maze.rules.saved.MazeRuleConnectAll;
-
-import java.util.Collections;
-import java.util.Set;
-import java.util.stream.Collectors;
 
 /**
  * Created by lukas on 05.06.14.

@@ -8,15 +8,12 @@ package ivorius.reccomplex.client;
 import ivorius.reccomplex.RCConfig;
 import ivorius.reccomplex.RCProxy;
 import ivorius.reccomplex.RecurrentComplex;
-import ivorius.reccomplex.blocks.BlockTyped;
 import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.block.statemap.StateMap;
 import net.minecraft.client.resources.model.ModelBakery;
 import net.minecraft.client.resources.model.ModelResourceLocation;
 import net.minecraft.item.Item;
 import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.client.model.ModelLoader;
 import org.lwjgl.input.Keyboard;
 
 import java.io.File;

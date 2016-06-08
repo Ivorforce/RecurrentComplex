@@ -5,13 +5,10 @@
 
 package ivorius.reccomplex.worldgen.inventory;
 
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.StatCollector;
 import net.minecraftforge.common.ChestGenHooks;
 
-import java.util.List;
 import java.util.Random;
 
 /**

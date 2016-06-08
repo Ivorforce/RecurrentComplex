@@ -5,7 +5,6 @@
 
 package ivorius.reccomplex.commands;
 
-import com.google.common.base.Function;
 import com.google.common.collect.Lists;
 import net.minecraft.command.NumberInvalidException;
 import net.minecraft.util.BlockPos;
@@ -15,10 +14,8 @@ import ivorius.reccomplex.worldgen.StructureGenerationData;
 import joptsimple.internal.Strings;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.ICommandSender;
-import net.minecraft.util.MathHelper;
 import net.minecraft.world.World;
 
-import javax.annotation.Nullable;
 import java.util.Collection;
 import java.util.List;
 

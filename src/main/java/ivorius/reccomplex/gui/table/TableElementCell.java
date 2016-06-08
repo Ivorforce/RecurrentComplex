@@ -5,8 +5,6 @@
 
 package ivorius.reccomplex.gui.table;
 
-import net.minecraft.client.gui.FontRenderer;
-
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 

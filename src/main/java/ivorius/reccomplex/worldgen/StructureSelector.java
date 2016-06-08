@@ -6,7 +6,6 @@
 package ivorius.reccomplex.worldgen;
 
 import com.google.common.collect.ArrayListMultimap;
-import com.google.common.collect.Lists;
 import com.google.common.collect.Multimap;
 import com.google.gson.annotations.SerializedName;
 import ivorius.reccomplex.RCConfig;

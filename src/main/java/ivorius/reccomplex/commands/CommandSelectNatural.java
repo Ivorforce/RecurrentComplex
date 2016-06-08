@@ -9,21 +9,13 @@ import ivorius.ivtoolkit.blocks.BlockArea;
 import net.minecraft.command.NumberInvalidException;
 import net.minecraft.util.BlockPos;
 import ivorius.reccomplex.RCConfig;
-import ivorius.reccomplex.blocks.RCBlocks;
 import ivorius.reccomplex.entities.StructureEntityInfo;
-import ivorius.ivtoolkit.blocks.BlockAreas;
 import ivorius.reccomplex.utils.ServerTranslations;
-import net.minecraft.block.Block;
-import net.minecraft.block.material.Material;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.util.MathHelper;
 import net.minecraft.world.World;
-import net.minecraft.util.EnumFacing;
 
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 /**
  * Created by lukas on 09.06.14.

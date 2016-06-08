@@ -5,17 +5,12 @@
 
 package ivorius.reccomplex.utils;
 
-import com.google.common.collect.Maps;
 import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.fml.common.event.FMLMissingMappingsEvent;
 import ivorius.ivtoolkit.tools.MCRegistry;
-import ivorius.ivtoolkit.tools.MCRegistryDefault;
 import net.minecraft.block.Block;
 import net.minecraft.item.Item;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
-
-import java.util.Map;
 
 /**
  * Created by lukas on 04.09.15.

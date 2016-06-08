@@ -5,8 +5,6 @@
 
 package ivorius.reccomplex.commands;
 
-import ivorius.ivtoolkit.blocks.BlockArea;
-import ivorius.ivtoolkit.blocks.BlockAreas;
 import net.minecraft.command.CommandException;
 import net.minecraft.util.BlockPos;
 import ivorius.reccomplex.RCConfig;

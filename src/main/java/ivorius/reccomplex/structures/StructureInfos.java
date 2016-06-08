@@ -11,7 +11,6 @@ import ivorius.reccomplex.gui.GuiValidityStateIndicator;
 import ivorius.reccomplex.structures.generic.gentypes.StructureGenerationInfo;
 import net.minecraft.util.Vec3i;
 import net.minecraft.world.gen.structure.StructureBoundingBox;
-import org.apache.commons.lang3.StringUtils;
 
 /**
  * Created by lukas on 22.02.15.

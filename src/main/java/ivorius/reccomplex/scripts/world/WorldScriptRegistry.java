@@ -5,11 +5,7 @@
 
 package ivorius.reccomplex.scripts.world;
 
-import com.google.common.collect.BiMap;
-import com.google.common.collect.HashBiMap;
 import ivorius.reccomplex.utils.NBTStringTypeRegistry;
-
-import java.util.Set;
 
 /**
  * Created by lukas on 14.09.15.

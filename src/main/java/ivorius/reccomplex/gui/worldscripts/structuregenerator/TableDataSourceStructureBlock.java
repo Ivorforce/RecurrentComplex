@@ -103,14 +103,14 @@ public class TableDataSourceStructureBlock extends TableDataSourceSegmented impl
                 if (index == 0)
                 {
                     TableCellEnum cell = new TableCellEnum<>("rotation", script.getStructureRotation(),
-                            new Option<>(0, "0 Clockwise"), new Option<>(1, "1 Clockwise"), new Option<>(2, "2 Clockwise"), new Option<>(3, "3 Clockwise"), new Option<Integer>(null, "Random (if rotatable)"));
+                            new Option<>(0, "0 Clockwise"), new Option<>(1, "1 Clockwise"), new Option<>(2, "2 Clockwise"), new Option<>(3, "3 Clockwise"), new Option<>(null, "Random (if rotatable)"));
                     cell.addPropertyListener(this);
                     return new TableElementCell("Rotation", cell);
                 }
                 else if (index == 1)
                 {
                     TableCellEnum cell = new TableCellEnum<>("mirror", script.getStructureMirror(),
-                            new Option<>(false, "false"), new Option<>(true, "true"), new Option<Boolean>(null, "Random (if mirrorable)"));
+                            new Option<>(false, "false"), new Option<>(true, "true"), new Option<>(null, "Random (if mirrorable)"));
                     cell.addPropertyListener(this);
                     return new TableElementCell("Mirror", cell);
                 }

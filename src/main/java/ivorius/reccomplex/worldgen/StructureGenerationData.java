@@ -5,7 +5,6 @@
 
 package ivorius.reccomplex.worldgen;
 
-import com.google.common.base.Predicate;
 import com.google.common.collect.*;
 import ivorius.ivtoolkit.blocks.BlockPositions;
 import net.minecraft.util.BlockPos;
@@ -174,7 +173,7 @@ public class StructureGenerationData extends WorldSavedData
     public static class Entry
     {
         @Nonnull
-        protected UUID uuid;
+        protected UUID uuid = UUID.randomUUID();
 
         protected String structureID;
         protected BlockPos lowerCoord;

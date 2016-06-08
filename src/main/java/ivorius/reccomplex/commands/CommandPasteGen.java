@@ -5,7 +5,6 @@
 
 package ivorius.reccomplex.commands;
 
-import net.minecraft.command.PlayerNotFoundException;
 import net.minecraft.util.BlockPos;
 import ivorius.ivtoolkit.math.AxisAlignedTransform2D;
 import ivorius.reccomplex.RCConfig;
@@ -19,7 +18,6 @@ import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.MathHelper;
 import net.minecraft.world.World;
 
 import java.util.List;

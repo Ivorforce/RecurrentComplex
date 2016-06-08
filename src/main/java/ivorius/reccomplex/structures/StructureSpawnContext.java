@@ -8,9 +8,6 @@ package ivorius.reccomplex.structures;
 import net.minecraft.util.BlockPos;
 import ivorius.ivtoolkit.math.AxisAlignedTransform2D;
 import net.minecraft.block.state.IBlockState;
-import ivorius.reccomplex.utils.BlockStates;
-import net.minecraft.util.MathHelper;
-import net.minecraft.util.Vec3i;
 import net.minecraft.world.World;
 import net.minecraft.world.gen.structure.StructureBoundingBox;
 

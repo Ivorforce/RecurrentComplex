@@ -8,7 +8,6 @@ package ivorius.reccomplex.blocks;
 import ivorius.reccomplex.structures.StructureLoadContext;
 import ivorius.reccomplex.structures.StructurePrepareContext;
 import ivorius.reccomplex.structures.StructureSpawnContext;
-import ivorius.reccomplex.utils.NBTStorable;
 import net.minecraft.nbt.NBTBase;
 
 /**

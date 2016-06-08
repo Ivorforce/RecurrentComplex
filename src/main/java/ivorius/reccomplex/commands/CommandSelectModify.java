@@ -9,7 +9,6 @@ import net.minecraft.command.*;
 import net.minecraft.util.BlockPos;
 import ivorius.reccomplex.entities.StructureEntityInfo;
 import ivorius.reccomplex.utils.ServerTranslations;
-import net.minecraft.block.Block;
 import net.minecraft.entity.player.EntityPlayerMP;
 
 /**

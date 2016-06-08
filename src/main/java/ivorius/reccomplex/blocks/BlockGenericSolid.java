@@ -6,7 +6,6 @@
 package ivorius.reccomplex.blocks;
 
 import ivorius.reccomplex.blocks.materials.RCMaterials;
-import net.minecraft.block.BlockColored;
 
 /**
  * Created by lukas on 06.06.14.

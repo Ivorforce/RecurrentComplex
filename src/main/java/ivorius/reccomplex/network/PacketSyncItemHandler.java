@@ -6,7 +6,6 @@
 package ivorius.reccomplex.network;
 
 import ivorius.reccomplex.items.ItemSyncable;
-import ivorius.reccomplex.items.RCItems;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemStack;
 

@@ -5,12 +5,9 @@
 
 package ivorius.reccomplex.structures.generic.maze.rules;
 
-import com.google.common.collect.Iterables;
 import ivorius.ivtoolkit.maze.components.*;
 
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-import java.util.Collection;
 import java.util.function.Predicate;
 
 /**

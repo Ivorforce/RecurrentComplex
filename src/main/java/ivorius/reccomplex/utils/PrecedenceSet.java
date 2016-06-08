@@ -33,7 +33,7 @@ public class PrecedenceSet<T> extends AbstractSet<T> implements Comparable<Prece
     }
 
     @Override
-    public int compareTo(PrecedenceSet o)
+    public int compareTo(@Nonnull PrecedenceSet o)
     {
         return Float.compare(precedence, o.precedence);
     }

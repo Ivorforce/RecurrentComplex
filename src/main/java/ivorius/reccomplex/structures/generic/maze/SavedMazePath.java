@@ -8,13 +8,13 @@ package ivorius.reccomplex.structures.generic.maze;
 import com.google.gson.*;
 import ivorius.ivtoolkit.maze.components.MazePassage;
 import ivorius.ivtoolkit.maze.components.MazeRoom;
-import ivorius.ivtoolkit.maze.components.MazeRoomConnection;
 import ivorius.ivtoolkit.tools.NBTCompoundObject;
 import ivorius.reccomplex.json.JsonUtils;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.common.util.Constants;
 import net.minecraft.util.EnumFacing;
 
+import javax.annotation.Nonnull;
 import java.lang.reflect.Type;
 
 /**
@@ -111,7 +111,7 @@ public class SavedMazePath implements NBTCompoundObject, Comparable<SavedMazePat
     }
 
     @Override
-    public int compareTo(SavedMazePath o)
+    public int compareTo(@Nonnull SavedMazePath o)
     {
         return toString().compareTo(o.toString()); // lol
     }

@@ -63,7 +63,7 @@ public class Algebra<T>
         {
             tokens.remove(0);
             ExpressionToken<T> exp = new ExpressionToken<>(startToken.startIndex, startToken.endIndex,
-                    new Constant<T>(((ConstantToken) startToken).identifier));
+                    new Constant<>(((ConstantToken) startToken).identifier));
             tokens.add(exp);
             return exp;
         }
@@ -71,7 +71,7 @@ public class Algebra<T>
         for (PrecedenceSet<Operator<T>> curOperators : operators)
         {
             Stack<BuildingExpression<T>> expressionStack = new Stack<>();
-            expressionStack.push(new BuildingExpression<T>(null, stringIndex, tokens.get(tokens.size() - 1).endIndex, 0, -1));
+            expressionStack.push(new BuildingExpression<>(null, stringIndex, tokens.get(tokens.size() - 1).endIndex, 0, -1));
 
             for (int t = 0; t < tokens.size(); t++)
             {

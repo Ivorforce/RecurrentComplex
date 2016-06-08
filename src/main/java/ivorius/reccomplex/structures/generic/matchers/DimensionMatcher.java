@@ -5,25 +5,15 @@
 
 package ivorius.reccomplex.structures.generic.matchers;
 
-import com.google.common.base.Function;
 import com.google.common.base.Predicate;
-import com.google.common.collect.Iterables;
 import com.google.common.primitives.Ints;
 import ivorius.reccomplex.dimensions.DimensionDictionary;
-import ivorius.reccomplex.json.RCGsonHelper;
 import ivorius.reccomplex.utils.*;
 import joptsimple.internal.Strings;
 import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.world.WorldProvider;
-import net.minecraft.world.biome.BiomeGenBase;
-import net.minecraftforge.common.BiomeDictionary;
 import net.minecraftforge.common.DimensionManager;
 import org.apache.commons.lang3.ArrayUtils;
-
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-import java.util.Arrays;
-import java.util.Collection;
 
 /**
  * Created by lukas on 19.09.14.

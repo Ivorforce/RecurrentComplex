@@ -20,7 +20,7 @@ import javax.annotation.Nonnull;
 public class PacketFullTileEntityData implements IMessage
 {
     @Nonnull
-    private BlockPos pos;
+    private BlockPos pos = BlockPos.ORIGIN;
     private NBTTagCompound data;
 
     public PacketFullTileEntityData()

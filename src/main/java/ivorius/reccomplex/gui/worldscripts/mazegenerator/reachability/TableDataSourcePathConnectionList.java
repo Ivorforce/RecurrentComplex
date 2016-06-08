@@ -9,13 +9,9 @@ import ivorius.ivtoolkit.maze.components.MazeRoom;
 import ivorius.reccomplex.gui.table.*;
 import ivorius.reccomplex.gui.worldscripts.mazegenerator.TableDataSourceMazePath;
 import ivorius.reccomplex.structures.generic.maze.SavedMazePath;
-import ivorius.reccomplex.structures.generic.maze.SavedMazeReachability;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 /**
  * Created by lukas on 16.03.16.

@@ -5,10 +5,6 @@
 
 package ivorius.reccomplex.gui.table;
 
-import net.minecraft.client.gui.FontRenderer;
-
-import javax.annotation.Nonnull;
-
 /**
  * Created by lukas on 02.06.14.
  */

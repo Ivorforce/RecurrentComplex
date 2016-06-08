@@ -5,8 +5,6 @@
 
 package ivorius.reccomplex.commands;
 
-import com.google.common.base.Predicate;
-import com.google.common.collect.Iterables;
 import ivorius.ivtoolkit.blocks.BlockArea;
 import net.minecraft.util.BlockPos;
 import ivorius.reccomplex.RCConfig;

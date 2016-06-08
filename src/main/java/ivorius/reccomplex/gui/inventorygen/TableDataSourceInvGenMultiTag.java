@@ -8,8 +8,6 @@ package ivorius.reccomplex.gui.inventorygen;
 import ivorius.ivtoolkit.gui.IntegerRange;
 import ivorius.reccomplex.gui.table.*;
 
-import java.util.Objects;
-
 /**
  * Created by lukas on 17.01.15.
  */

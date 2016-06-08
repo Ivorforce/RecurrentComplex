@@ -10,9 +10,7 @@ import ivorius.reccomplex.gui.table.*;
 import ivorius.reccomplex.structures.generic.GenericYSelector;
 import ivorius.reccomplex.utils.IvTranslations;
 
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
 
 /**
  * Created by lukas on 04.04.15.

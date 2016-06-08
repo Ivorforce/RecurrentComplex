@@ -329,11 +329,7 @@ public class ReachabilityStrategy<M extends MazeComponent<C>, C> implements Maze
         {
             mainConnectionPoint.reverseStep();
 
-            for (ConnectionPoint point : connectionPoints)
-            {
-                if (point.order.size() > mainConnectionPoint.order.size())
-                    point.reverseStep();
-            }
+            connectionPoints.stream().filter(point -> point.order.size() > mainConnectionPoint.order.size()).forEach(ConnectionPoint::reverseStep);
         }
     }
 
@@ -351,8 +347,7 @@ public class ReachabilityStrategy<M extends MazeComponent<C>, C> implements Maze
         @SafeVarargs
         public ConnectionPoint(Collection<MazePassage>... points)
         {
-            for (Collection<MazePassage> point : points)
-                traversed.addAll(point);
+            Arrays.stream(points).forEach(traversed::addAll);
         }
 
         public void reverseStep()

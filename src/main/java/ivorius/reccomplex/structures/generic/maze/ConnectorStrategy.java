@@ -7,7 +7,6 @@ package ivorius.reccomplex.structures.generic.maze;
 
 import ivorius.ivtoolkit.maze.components.ConnectionStrategy;
 import ivorius.ivtoolkit.maze.components.MazePassage;
-import ivorius.ivtoolkit.maze.components.MazeRoomConnection;
 
 import javax.annotation.Nonnull;
 

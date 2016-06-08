@@ -5,16 +5,13 @@
 
 package ivorius.reccomplex.files;
 
-import ivorius.reccomplex.RecurrentComplex;
 import net.minecraft.util.ResourceLocation;
 
 import java.io.File;
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
-import java.net.URLEncoder;
 import java.nio.file.*;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.util.ArrayList;

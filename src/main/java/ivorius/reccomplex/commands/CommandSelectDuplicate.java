@@ -7,7 +7,6 @@ package ivorius.reccomplex.commands;
 
 import ivorius.ivtoolkit.blocks.BlockArea;
 import net.minecraft.command.CommandException;
-import net.minecraft.command.NumberInvalidException;
 import net.minecraft.util.BlockPos;
 import ivorius.ivtoolkit.math.AxisAlignedTransform2D;
 import ivorius.ivtoolkit.tools.IvWorldData;
@@ -18,10 +17,8 @@ import ivorius.reccomplex.structures.OperationGenerateStructure;
 import ivorius.reccomplex.structures.generic.GenericStructureInfo;
 import ivorius.reccomplex.utils.ServerTranslations;
 import net.minecraft.command.ICommandSender;
-import net.minecraft.command.WrongUsageException;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.MathHelper;
 
 /**
  * Created by lukas on 09.06.14.

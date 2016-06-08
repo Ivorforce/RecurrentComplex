@@ -11,7 +11,6 @@ import ivorius.reccomplex.gui.worldscripts.mazegenerator.reachability.TableDataS
 import ivorius.reccomplex.structures.generic.maze.SavedMazeComponent;
 import ivorius.reccomplex.structures.generic.maze.SavedMazeReachability;
 import ivorius.reccomplex.utils.IvTranslations;
-import ivorius.reccomplex.utils.scale.Scales;
 
 /**
  * Created by lukas on 26.04.15.

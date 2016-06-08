@@ -8,7 +8,6 @@ package ivorius.reccomplex.utils;
 import net.minecraftforge.fml.relauncher.ReflectionHelper;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.IAdminCommand;
-import net.minecraft.entity.Entity;
 
 import java.lang.reflect.Field;
 

@@ -5,7 +5,6 @@
 
 package ivorius.reccomplex.gui.editstructure.gentypes;
 
-import net.minecraft.util.BlockPos;
 import ivorius.ivtoolkit.gui.FloatRange;
 import ivorius.ivtoolkit.gui.IntegerRange;
 import ivorius.reccomplex.gui.TableDataSourceBlockPos;

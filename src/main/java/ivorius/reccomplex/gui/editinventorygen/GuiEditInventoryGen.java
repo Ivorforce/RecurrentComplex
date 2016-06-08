@@ -12,7 +12,6 @@ import ivorius.reccomplex.gui.GuiValidityStateIndicator;
 import ivorius.reccomplex.gui.InventoryWatcher;
 import ivorius.reccomplex.gui.TableDataSourceExpression;
 import ivorius.reccomplex.gui.table.Bounds;
-import ivorius.reccomplex.gui.table.TableDataSource;
 import ivorius.reccomplex.network.PacketEditInventoryGenerator;
 import ivorius.reccomplex.utils.IvTranslations;
 import ivorius.reccomplex.utils.RangeHelper;
@@ -33,7 +32,6 @@ import net.minecraft.client.renderer.GlStateManager;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 

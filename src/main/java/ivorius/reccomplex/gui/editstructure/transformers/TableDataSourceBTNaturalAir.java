@@ -10,7 +10,6 @@ import ivorius.reccomplex.gui.table.*;
 import ivorius.reccomplex.structures.generic.transformers.TransformerNaturalAir;
 import ivorius.reccomplex.utils.IvTranslations;
 import ivorius.reccomplex.utils.scale.Scales;
-import org.apache.commons.lang3.StringUtils;
 
 /**
  * Created by lukas on 05.06.14.

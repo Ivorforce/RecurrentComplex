@@ -5,7 +5,6 @@
 
 package ivorius.reccomplex.items;
 
-import com.google.common.collect.Iterables;
 import ivorius.ivtoolkit.blocks.BlockPositions;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -21,8 +20,6 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
 import org.lwjgl.input.Keyboard;
-
-import java.util.Arrays;
 
 /**
  * Created by lukas on 11.02.15.

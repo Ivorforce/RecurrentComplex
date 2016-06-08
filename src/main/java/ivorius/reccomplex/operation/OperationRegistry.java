@@ -8,8 +8,6 @@ package ivorius.reccomplex.operation;
 import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
 import ivorius.reccomplex.RecurrentComplex;
-import ivorius.reccomplex.commands.CommandCancel;
-import ivorius.reccomplex.commands.CommandConfirm;
 import ivorius.reccomplex.commands.RCCommands;
 import ivorius.reccomplex.entities.StructureEntityInfo;
 import ivorius.reccomplex.utils.ServerTranslations;

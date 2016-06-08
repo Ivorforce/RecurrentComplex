@@ -24,7 +24,7 @@ public class CustomizableMap<K, V>
 
     public CustomizableMap()
     {
-        this(new HashMap<K, V>(), new HashMap<K, V>());
+        this(new HashMap<>(), new HashMap<>());
     }
 
     public boolean hasCustom(K k)

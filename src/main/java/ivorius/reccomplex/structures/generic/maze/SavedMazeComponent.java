@@ -5,7 +5,6 @@
 
 package ivorius.reccomplex.structures.generic.maze;
 
-import com.google.common.base.Function;
 import com.google.common.collect.Lists;
 import com.google.gson.*;
 import ivorius.ivtoolkit.math.IvVecMathHelper;
@@ -19,7 +18,6 @@ import ivorius.reccomplex.structures.generic.Selection;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.common.util.Constants;
 
-import javax.annotation.Nullable;
 import java.lang.reflect.Type;
 import java.util.*;
 

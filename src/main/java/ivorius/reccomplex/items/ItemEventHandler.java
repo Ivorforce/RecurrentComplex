@@ -5,7 +5,6 @@
 
 package ivorius.reccomplex.items;
 
-import net.minecraftforge.fml.relauncher.Side;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;

@@ -10,7 +10,6 @@ import ivorius.ivtoolkit.blocks.IvBlockCollection;
 import ivorius.ivtoolkit.tools.IvWorldData;
 import ivorius.reccomplex.structures.StructureSpawnContext;
 import net.minecraft.block.state.IBlockState;
-import ivorius.reccomplex.utils.BlockStates;
 import ivorius.reccomplex.utils.NBTStorable;
 import org.apache.commons.lang3.tuple.Pair;
 

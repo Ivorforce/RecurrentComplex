@@ -10,7 +10,6 @@ import ivorius.ivtoolkit.math.AxisAlignedTransform2D;
 import net.minecraft.world.gen.structure.StructureBoundingBox;
 
 import javax.annotation.Nonnull;
-import java.util.Random;
 
 /**
  * Created by lukas on 30.03.15.

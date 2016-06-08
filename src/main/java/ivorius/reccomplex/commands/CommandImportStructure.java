@@ -19,7 +19,6 @@ import ivorius.reccomplex.utils.ServerTranslations;
 import ivorius.reccomplex.worldgen.StructureGenerator;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.ICommandSender;
-import net.minecraft.util.MathHelper;
 import net.minecraft.world.World;
 
 import java.util.List;

@@ -48,7 +48,7 @@ public class PrecedenceSets
 
             PrecedenceSet<T> precedenceSet = map.get(precedence);
             if (precedenceSet == null)
-                map.put(precedence, precedenceSet = new PrecedenceSet<>(precedence, new HashSet<T>()));
+                map.put(precedence, precedenceSet = new PrecedenceSet<>(precedence, new HashSet<>()));
 
             precedenceSet.getSet().add(t);
         }
@@ -66,7 +66,7 @@ public class PrecedenceSets
 
             PrecedenceSet<T> precedenceSet = map.get(precedence);
             if (precedenceSet == null)
-                map.put(precedence, precedenceSet = new PrecedenceSet<>(precedence, new HashSet<T>()));
+                map.put(precedence, precedenceSet = new PrecedenceSet<>(precedence, new HashSet<>()));
 
             precedenceSet.getSet().add(t);
         }

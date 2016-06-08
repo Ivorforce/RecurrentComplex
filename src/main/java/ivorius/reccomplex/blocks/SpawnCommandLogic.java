@@ -7,12 +7,10 @@ package ivorius.reccomplex.blocks;
 
 import net.minecraft.command.*;
 import net.minecraft.entity.Entity;
-import net.minecraft.tileentity.TileEntityCommandBlock;
 import net.minecraft.util.*;
 import ivorius.reccomplex.RCConfig;
 import ivorius.reccomplex.utils.RCAccessorCommandBase;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.util.BlockPos;
 import net.minecraft.world.World;
 
 /**

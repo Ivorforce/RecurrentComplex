@@ -13,11 +13,8 @@ import ivorius.ivtoolkit.math.AxisAlignedTransform2D;
 import ivorius.ivtoolkit.math.IvVecMathHelper;
 import ivorius.ivtoolkit.maze.components.MazePassage;
 import ivorius.ivtoolkit.maze.components.MazeRoom;
-import ivorius.ivtoolkit.maze.components.MazeRoomConnection;
 import ivorius.ivtoolkit.maze.components.WeightedMazeComponent;
-import org.apache.commons.lang3.tuple.Pair;
 
-import java.util.Arrays;
 import java.util.Map;
 import java.util.Set;
 

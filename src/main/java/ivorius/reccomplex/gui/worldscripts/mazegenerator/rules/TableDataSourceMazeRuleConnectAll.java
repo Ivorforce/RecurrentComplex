@@ -5,14 +5,10 @@
 
 package ivorius.reccomplex.gui.worldscripts.mazegenerator.rules;
 
-import com.google.common.collect.Lists;
 import ivorius.reccomplex.gui.table.*;
 import ivorius.reccomplex.gui.worldscripts.mazegenerator.TableDataSourceMazePathList;
-import ivorius.reccomplex.gui.worldscripts.mazegenerator.reachability.TableDataSourceMazeReachability;
 import ivorius.reccomplex.structures.generic.maze.*;
-import ivorius.reccomplex.structures.generic.maze.rules.saved.MazeRuleConnect;
 import ivorius.reccomplex.structures.generic.maze.rules.saved.MazeRuleConnectAll;
-import ivorius.reccomplex.utils.IvTranslations;
 import net.minecraft.util.EnumChatFormatting;
 
 import java.util.Collections;

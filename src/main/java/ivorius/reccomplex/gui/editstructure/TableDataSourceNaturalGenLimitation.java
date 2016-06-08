@@ -5,16 +5,9 @@
 
 package ivorius.reccomplex.gui.editstructure;
 
-import com.google.common.base.Function;
-import com.google.common.collect.FluentIterable;
-import com.google.common.collect.Lists;
-import ivorius.ivtoolkit.tools.IvGsonHelper;
-import ivorius.reccomplex.gui.TableDataSourceExpression;
 import ivorius.reccomplex.gui.table.*;
 import ivorius.reccomplex.structures.generic.gentypes.NaturalGenerationInfo;
-import ivorius.reccomplex.utils.IvTranslations;
 
-import javax.annotation.Nullable;
 import java.util.Arrays;
 
 /**

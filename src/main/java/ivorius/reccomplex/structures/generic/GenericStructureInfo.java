@@ -7,7 +7,6 @@ package ivorius.reccomplex.structures.generic;
 
 import com.google.gson.*;
 import ivorius.ivtoolkit.tools.*;
-import ivorius.reccomplex.structures.generic.transformers.Transformer;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.util.BlockPos;
 import ivorius.ivtoolkit.blocks.IvBlockCollection;

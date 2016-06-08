@@ -5,26 +5,13 @@
 
 package ivorius.reccomplex.structures.generic.matchers;
 
-import com.google.common.base.Function;
-import com.google.common.base.Predicate;
-import com.google.common.collect.Iterables;
-import com.google.common.collect.Lists;
 import net.minecraftforge.fml.common.Loader;
-import ivorius.ivtoolkit.tools.IvGsonHelper;
-import ivorius.reccomplex.json.RCGsonHelper;
 import ivorius.reccomplex.structures.StructureRegistry;
 import ivorius.reccomplex.utils.*;
 import joptsimple.internal.Strings;
 import net.minecraft.util.EnumChatFormatting;
-import net.minecraft.world.biome.BiomeGenBase;
-import net.minecraftforge.common.BiomeDictionary;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.Set;
 
 /**
  * Created by lukas on 19.09.14.

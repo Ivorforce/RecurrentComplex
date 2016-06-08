@@ -132,8 +132,9 @@ public class Poem
     public static Poem randomPoem(Random random, Theme theme)
     {
         PoemContext poemContext = new PoemContext();
-        while (poemContext.add(random, poemContext.names, 0.3f, Person.randomHuman(random, random.nextBoolean()).getFirstName()))
-            ;
+        //noinspection StatementWithEmptyBody
+        while (poemContext.add(random, poemContext.names, 0.3f, Person.randomHuman(random, random.nextBoolean()).getFirstName())) ;
+        //noinspection StatementWithEmptyBody
         while (poemContext.add(random, poemContext.places, 0.3f, Place.randomPlace(random).getFullPlaceType())) ;
 
         String title = getRandomPhrase(random, theme, sentencePatterns, poemContext).trim();

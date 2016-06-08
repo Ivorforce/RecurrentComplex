@@ -25,7 +25,6 @@ import net.minecraft.block.BlockStoneBrick;
 import net.minecraft.block.BlockVine;
 import net.minecraft.block.BlockWall;
 import net.minecraft.block.state.IBlockState;
-import ivorius.reccomplex.utils.BlockStates;
 import ivorius.reccomplex.utils.NBTStorable;
 import net.minecraft.block.material.Material;
 import net.minecraft.init.Blocks;

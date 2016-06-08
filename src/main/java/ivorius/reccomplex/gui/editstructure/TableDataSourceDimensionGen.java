@@ -9,8 +9,6 @@ import ivorius.reccomplex.gui.RCGuiTables;
 import ivorius.reccomplex.gui.TableDataSourceExpression;
 import ivorius.reccomplex.gui.table.*;
 import ivorius.reccomplex.structures.generic.DimensionGenerationInfo;
-import ivorius.reccomplex.utils.IvTranslations;
-import ivorius.reccomplex.utils.scale.Scales;
 
 /**
  * Created by lukas on 05.06.14.

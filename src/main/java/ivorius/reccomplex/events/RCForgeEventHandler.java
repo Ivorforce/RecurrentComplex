@@ -5,13 +5,8 @@
 
 package ivorius.reccomplex.events;
 
-import com.google.common.base.Predicate;
-import com.google.common.collect.Iterables;
-import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.entity.Entity;
 import net.minecraft.util.BlockPos;
-import net.minecraft.util.Vec3i;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -24,7 +19,6 @@ import ivorius.reccomplex.worldgen.WorldGenStructures;
 import ivorius.reccomplex.worldgen.inventory.WeightedItemCollection;
 import ivorius.reccomplex.worldgen.inventory.WeightedItemCollectionRegistry;
 import net.minecraft.client.Minecraft;
-import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;

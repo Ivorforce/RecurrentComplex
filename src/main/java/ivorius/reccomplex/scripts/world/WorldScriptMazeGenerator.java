@@ -83,7 +83,7 @@ public class WorldScriptMazeGenerator implements WorldScript<WorldScriptMazeGene
 
     public static <C> void blockRooms(MorphingMazeComponent<C> component, Set<MazeRoom> rooms, C wallConnector)
     {
-        component.add(WorldGenMaze.createCompleteComponent(rooms, Collections.<MazePassage, C>emptyMap(), wallConnector));
+        component.add(WorldGenMaze.createCompleteComponent(rooms, Collections.emptyMap(), wallConnector));
     }
 
     public static <C> void enclose(MorphingMazeComponent<C> component, MazeRoom lower, MazeRoom higher, C wallConnector)

@@ -68,7 +68,7 @@ public class RCFileHelper
         }
         catch (FileSystemNotFoundException ignored) {}
 
-        FileSystem fs = FileSystems.newFileSystem(fileURI, Collections.<String, Object>emptyMap());
+        FileSystem fs = FileSystems.newFileSystem(fileURI, Collections.emptyMap());
         return fs.getPath(entryName);
     }
 

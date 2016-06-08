@@ -89,7 +89,7 @@ public class CommandSearchStructure extends CommandBase
         {
             final List<String> query = Arrays.asList(args);
 
-            PriorityQueue<String> strucs = new PriorityQueue<>(10, (Comparator<String>) (o1, o2) -> {
+            PriorityQueue<String> strucs = new PriorityQueue<>(10, (o1, o2) -> {
                 float r1 = searchRank(query, o1, StructureRegistry.INSTANCE.getStructure(o1));
                 float r2 = searchRank(query, o2, StructureRegistry.INSTANCE.getStructure(o2));
                 return Floats.compare(r1, r2);

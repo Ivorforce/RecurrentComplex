@@ -60,7 +60,7 @@ public class GenericItemCollection implements WeightedItemCollection
         }
 
         if (max > 0)
-            return ((Component) WeightedRandom.getRandomItem(random, components, max)).getRandomItemStack(random);
+            return WeightedRandom.getRandomItem(random, components, max).getRandomItemStack(random);
 
         return null;
     }
@@ -158,7 +158,7 @@ public class GenericItemCollection implements WeightedItemCollection
 
                 if (version == 1 && jsonObject.has("contents")) // Legacy
                 {
-                    List<WeightedRandomChestContent> chestContents = Lists.newArrayList(gson.<WeightedRandomChestContent[]>fromJson(jsonObject.get("contents"), WeightedRandomChestContent[].class));
+                    List<WeightedRandomChestContent> chestContents = Lists.newArrayList(gson.fromJson(jsonObject.get("contents"), WeightedRandomChestContent[].class));
                     stacks.addAll(Collections2.transform(chestContents, input -> RandomizedItemStack.from(input, 100)));
                 }
 

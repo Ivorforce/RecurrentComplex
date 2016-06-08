@@ -15,6 +15,7 @@ import net.minecraft.util.Util;
 import org.apache.logging.log4j.Logger;
 import org.lwjgl.Sys;
 
+import java.awt.*;
 import java.io.File;
 import java.io.IOException;
 import java.net.URI;
@@ -69,7 +70,7 @@ public class CommandBrowseFiles extends CommandBase
         }
         else if (Util.getOSType() == Util.EnumOS.WINDOWS)
         {
-            String s1 = String.format("cmd.exe /C start \"Open file\" \"%s\"", new Object[] {s});
+            String s1 = String.format("cmd.exe /C start \"Open file\" \"%s\"", s);
 
             try
             {
@@ -86,9 +87,9 @@ public class CommandBrowseFiles extends CommandBase
 
         try
         {
-            Class oclass = Class.forName("java.awt.Desktop");
-            Object object = oclass.getMethod("getDesktop", new Class[0]).invoke((Object)null, new Object[0]);
-            oclass.getMethod("browse", new Class[] {URI.class}).invoke(object, new Object[] {file.toURI()});
+            Class<Desktop> oclass = (Class<Desktop>) Class.forName("java.awt.Desktop");
+            Object object = oclass.getMethod("getDesktop", new Class[0]).invoke(null);
+            oclass.getMethod("browse", new Class[] {URI.class}).invoke(object, file.toURI());
         }
         catch (Throwable throwable)
         {

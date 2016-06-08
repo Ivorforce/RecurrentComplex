@@ -40,7 +40,7 @@ public class NBTTagListSerializer implements JsonSerializer<NBTTagList>, JsonDes
 
             for (JsonElement element : jsonArray)
             {
-                list.appendTag(context.<NBTBase>deserialize(element, NbtToJson.getNBTTypeSmart(element)));
+                list.appendTag(context.deserialize(element, NbtToJson.getNBTTypeSmart(element)));
             }
 
             return list;

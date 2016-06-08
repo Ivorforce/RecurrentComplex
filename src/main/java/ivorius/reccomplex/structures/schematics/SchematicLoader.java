@@ -94,7 +94,7 @@ public class SchematicLoader
     public static Collection<File> currentSchematicFiles()
     {
         File schematicsFile = getValidatedSchematicsFile();
-        return schematicsFile != null ? FileUtils.listFiles(schematicsFile, new String[]{"schematic"}, true) : Collections.<File>emptyList();
+        return schematicsFile != null ? FileUtils.listFiles(schematicsFile, new String[]{"schematic"}, true) : Collections.emptyList();
     }
 
     public static String getLookupFolderName()

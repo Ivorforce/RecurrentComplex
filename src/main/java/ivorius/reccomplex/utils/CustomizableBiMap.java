@@ -15,7 +15,7 @@ public class CustomizableBiMap<K, V> extends CustomizableMap<K, V>
 {
     public CustomizableBiMap()
     {
-        super(HashBiMap.<K, V>create(), HashBiMap.<K, V>create());
+        super(HashBiMap.create(), HashBiMap.create());
     }
 
     @Override

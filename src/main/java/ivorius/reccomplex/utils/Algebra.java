@@ -222,7 +222,7 @@ public class Algebra<T>
             @Override
             public SymbolTokenizer.Token tryConstructSymbolTokenAt(int index, @Nonnull String string)
             {
-                SortedSet<Pair<Operator<T>, Integer>> sortedSymbols = new TreeSet<>((Comparator<Pair<Operator<T>, Integer>>) (o1, o2) -> o2.getLeft().getSymbols()[o2.getRight()].compareTo(o1.getLeft().getSymbols()[o1.getRight()]));
+                SortedSet<Pair<Operator<T>, Integer>> sortedSymbols = new TreeSet<>((o1, o2) -> o2.getLeft().getSymbols()[o2.getRight()].compareTo(o1.getLeft().getSymbols()[o1.getRight()]));
                 sortedSymbols.addAll(Lists.newArrayList(Iterables.concat(operators.stream().map(operator -> Pairs.pairLeft(operator, Ranges.toIterable(operator.symbols.length))).collect(Collectors.toList()))));
 
                 for (Pair<Operator<T>, Integer> symbolPair : sortedSymbols)

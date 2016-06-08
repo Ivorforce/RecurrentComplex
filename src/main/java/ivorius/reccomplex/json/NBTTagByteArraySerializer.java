@@ -24,6 +24,6 @@ public class NBTTagByteArraySerializer implements JsonSerializer<NBTTagByteArray
     @Override
     public NBTTagByteArray deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException
     {
-        return new NBTTagByteArray(context.<byte[]>deserialize(json, byte[].class));
+        return new NBTTagByteArray(context.deserialize(json, byte[].class));
     }
 }

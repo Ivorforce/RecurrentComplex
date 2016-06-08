@@ -77,6 +77,6 @@ public class BlockGenericSpace extends BlockTyped
 
     protected BlockState createBlockState()
     {
-        return new BlockState(this, new IProperty[]{TYPE, VISIBLE});
+        return new BlockState(this, TYPE, VISIBLE);
     }
 }

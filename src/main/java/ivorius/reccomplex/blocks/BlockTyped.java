@@ -27,7 +27,7 @@ public class BlockTyped extends Block
 
     public int damageDropped(IBlockState state)
     {
-        return (int) state.getValue(TYPE);
+        return state.getValue(TYPE);
     }
 
     @SideOnly(Side.CLIENT)
@@ -44,11 +44,11 @@ public class BlockTyped extends Block
 
     public int getMetaFromState(IBlockState state)
     {
-        return (int) state.getValue(TYPE);
+        return state.getValue(TYPE);
     }
 
     protected BlockState createBlockState()
     {
-        return new BlockState(this, new IProperty[]{TYPE});
+        return new BlockState(this, TYPE);
     }
 }

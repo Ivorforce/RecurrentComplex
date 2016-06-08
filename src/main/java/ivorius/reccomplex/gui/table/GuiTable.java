@@ -334,7 +334,7 @@ public class GuiTable extends Gui
 
             for (int i2 = 0; i2 < lines.size(); ++i2)
             {
-                String s1 = (String)lines.get(i2);
+                String s1 = lines.get(i2);
                 font.drawStringWithShadow(s1, j2, k2, -1);
 
                 if (i2 == 0)

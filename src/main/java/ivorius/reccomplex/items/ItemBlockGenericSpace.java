@@ -61,22 +61,25 @@ public class ItemBlockGenericSpace extends ItemBlock
         {
             return false;
         }
-        else if (worldIn.canBlockBePlaced(this.block, pos, false, side, (Entity) null, stack))
-        {
-            int i = this.getMetadata(stack.getMetadata());
-            IBlockState iblockstate1 = this.block.onBlockPlaced(worldIn, pos, side, hitX, hitY, hitZ, i, playerIn);
-
-            if (placeBlockAt(stack, playerIn, worldIn, pos, side, hitX, hitY, hitZ, iblockstate1))
-            {
-                worldIn.playSoundEffect((double) ((float) pos.getX() + 0.5F), (double) ((float) pos.getY() + 0.5F), (double) ((float) pos.getZ() + 0.5F), this.block.stepSound.getPlaceSound(), (this.block.stepSound.getVolume() + 1.0F) / 2.0F, this.block.stepSound.getFrequency() * 0.8F);
-                --stack.stackSize;
-            }
-
-            return true;
-        }
         else
         {
-            return false;
+            if (worldIn.canBlockBePlaced(this.block, pos, false, side, (Entity) null, stack))
+            {
+                int i = this.getMetadata(stack.getMetadata());
+                IBlockState iblockstate1 = this.block.onBlockPlaced(worldIn, pos, side, hitX, hitY, hitZ, i, playerIn);
+
+                if (placeBlockAt(stack, playerIn, worldIn, pos, side, hitX, hitY, hitZ, iblockstate1))
+                {
+                    worldIn.playSoundEffect((double) ((float) pos.getX() + 0.5F), (double) ((float) pos.getY() + 0.5F), (double) ((float) pos.getZ() + 0.5F), this.block.stepSound.getPlaceSound(), (this.block.stepSound.getVolume() + 1.0F) / 2.0F, this.block.stepSound.getFrequency() * 0.8F);
+                    --stack.stackSize;
+                }
+
+                return true;
+            }
+            else
+            {
+                return false;
+            }
         }
     }
 

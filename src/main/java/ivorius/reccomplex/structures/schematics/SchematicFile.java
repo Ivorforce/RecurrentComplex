@@ -90,7 +90,7 @@ public class SchematicFile
             Block block = schematicMapping != null
                     ? schematicMapping.blockFromID(blockID)
                     : Block.getBlockById(blockID);
-            this.blockStates[i] = block.getDefaultState();
+            this.blockStates[i] = block.getStateFromMeta(metadatas[i]);
         }
 
         NBTTagList entities = tagCompound.getTagList("Entities", Constants.NBT.TAG_COMPOUND);

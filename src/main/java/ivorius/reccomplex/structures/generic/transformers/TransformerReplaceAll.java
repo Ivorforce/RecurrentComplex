@@ -6,6 +6,7 @@
 package ivorius.reccomplex.structures.generic.transformers;
 
 import com.google.gson.*;
+import ivorius.reccomplex.utils.PresettedLists;
 import net.minecraft.util.BlockPos;
 import ivorius.ivtoolkit.gui.IntegerRange;
 import ivorius.ivtoolkit.random.WeightedSelector;
@@ -23,7 +24,6 @@ import ivorius.reccomplex.structures.generic.WeightedBlockState;
 import ivorius.reccomplex.structures.generic.matchers.BlockMatcher;
 import ivorius.reccomplex.structures.generic.presets.WeightedBlockStatePresets;
 import net.minecraft.block.state.IBlockState;
-import ivorius.reccomplex.utils.BlockStates;
 import ivorius.reccomplex.utils.NBTStorable;
 import ivorius.reccomplex.utils.PresettedList;
 import net.minecraft.block.Block;
@@ -35,7 +35,6 @@ import net.minecraftforge.common.util.Constants;
 
 import java.lang.reflect.Type;
 import java.util.Arrays;
-import java.util.Collections;
 
 /**
  * Created by lukas on 25.05.14.
@@ -171,11 +170,7 @@ public class TransformerReplaceAll extends TransformerSingleBlock<TransformerRep
 
             TransformerReplaceAll transformer = new TransformerReplaceAll(expression);
 
-            if (!transformer.destination.setPreset(JsonUtils.getJsonObjectStringFieldValueOrDefault(jsonObject, "destinationPreset", null)))
-            {
-                if (jsonObject.has("destination"))
-                    Collections.addAll(transformer.destination.getList(), gson.fromJson(jsonObject.get("destination"), WeightedBlockState[].class));
-            }
+            PresettedLists.read(jsonObject, gson, transformer.destination, "destinationPreset", "destination", WeightedBlockState[].class);
 
             if (jsonObject.has("dest"))
             {
@@ -199,9 +194,7 @@ public class TransformerReplaceAll extends TransformerSingleBlock<TransformerRep
 
             jsonObject.addProperty("sourceExpression", transformer.sourceMatcher.getExpression());
 
-            if (transformer.destination.getPreset() != null)
-                jsonObject.addProperty("destinationPreset", transformer.destination.getPreset());
-            jsonObject.add("destination", gson.toJsonTree(transformer.destination.getList()));
+            PresettedLists.write(jsonObject, gson, transformer.destination, "destinationPreset", "destination");
 
             return jsonObject;
         }

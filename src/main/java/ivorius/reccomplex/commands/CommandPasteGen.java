@@ -49,8 +49,6 @@ public class CommandPasteGen extends CommandBase
     @Override
     public void processCommand(ICommandSender commandSender, String[] args) throws CommandException
     {
-        int x, y, z;
-
         EntityPlayerMP entityPlayerMP = getCommandSenderAsPlayer(commandSender);
         StructureEntityInfo structureEntityInfo = RCCommands.getStructureEntityInfo(entityPlayerMP);
 
@@ -58,8 +56,6 @@ public class CommandPasteGen extends CommandBase
 
         if (worldData != null)
         {
-            World world = commandSender.getEntityWorld();
-
             BlockPos coord;
 
             if (args.length >= 3)

@@ -19,6 +19,7 @@ import ivorius.reccomplex.structures.generic.GenericYSelector;
 import ivorius.reccomplex.structures.generic.presets.BiomeMatcherPresets;
 import ivorius.reccomplex.structures.generic.presets.DimensionMatcherPresets;
 import ivorius.reccomplex.utils.PresettedList;
+import ivorius.reccomplex.utils.PresettedLists;
 import ivorius.reccomplex.worldgen.StructureGenerationData;
 import net.minecraft.util.StatCollector;
 import net.minecraft.world.World;
@@ -28,7 +29,6 @@ import net.minecraft.world.biome.BiomeGenBase;
 import javax.annotation.Nonnull;
 import java.lang.reflect.Type;
 import java.util.Arrays;
-import java.util.Collections;
 
 /**
  * Created by lukas on 07.10.14.
@@ -225,8 +225,8 @@ public class NaturalGenerationInfo extends StructureGenerationInfo
             if (jsonObject.has("generationWeight"))
                 naturalGenerationInfo.generationWeight = JsonUtils.getJsonObjectDoubleFieldValue(jsonObject, "generationWeight");
 
-            loadPresettedList(jsonObject, naturalGenerationInfo.biomeWeights, "biomeWeightsPreset", "generationBiomes", BiomeGenerationInfo[].class);
-            loadPresettedList(jsonObject, naturalGenerationInfo.dimensionWeights, "dimensionWeightsPreset", "generationDimensions", DimensionGenerationInfo[].class);
+            PresettedLists.read(jsonObject, gson, naturalGenerationInfo.biomeWeights, "biomeWeightsPreset", "generationBiomes", BiomeGenerationInfo[].class);
+            PresettedLists.read(jsonObject, gson, naturalGenerationInfo.dimensionWeights, "dimensionWeightsPreset", "generationDimensions", DimensionGenerationInfo[].class);
 
             if (jsonObject.has("spawnLimitation"))
                 naturalGenerationInfo.spawnLimitation = context.deserialize(jsonObject.get("spawnLimitation"), SpawnLimitation.class);
@@ -247,8 +247,8 @@ public class NaturalGenerationInfo extends StructureGenerationInfo
 
             jsonObject.add("generationY", gson.toJsonTree(src.ySelector));
 
-            writePresettedList(jsonObject, src.biomeWeights, "biomeWeightsPreset", "generationBiomes");
-            writePresettedList(jsonObject, src.dimensionWeights, "dimensionWeightsPreset", "generationDimensions");
+            PresettedLists.write(jsonObject, gson, src.biomeWeights, "biomeWeightsPreset", "generationBiomes");
+            PresettedLists.write(jsonObject, gson, src.dimensionWeights, "dimensionWeightsPreset", "generationDimensions");
 
             if (src.spawnLimitation != null)
                 jsonObject.add("spawnLimitation", context.serialize(src.spawnLimitation));
@@ -256,22 +256,5 @@ public class NaturalGenerationInfo extends StructureGenerationInfo
             return jsonObject;
         }
 
-        protected static <T> void loadPresettedList(JsonObject jsonObject, PresettedList<T> list, String presetKey, String listKey, Class<T[]> clazz)
-        {
-            if (!list.setPreset(JsonUtils.getJsonObjectStringFieldValueOrDefault(jsonObject, presetKey, null)))
-            {
-                if (jsonObject.has(listKey))
-                    Collections.addAll(list.getList(), gson.fromJson(jsonObject.get(listKey), clazz));
-                else
-                    list.setToDefault();
-            }
-        }
-
-        protected static <T> void writePresettedList(JsonObject jsonObject, PresettedList<T> list, String presetKey, String listKey)
-        {
-            if (list.getPreset() != null)
-                jsonObject.addProperty(presetKey, list.getPreset());
-            jsonObject.add(listKey, gson.toJsonTree(list.getList()));
-        }
     }
 }

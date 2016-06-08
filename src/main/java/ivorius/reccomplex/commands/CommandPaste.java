@@ -49,8 +49,6 @@ public class CommandPaste extends CommandBase
     @Override
     public void processCommand(ICommandSender commandSender, String[] args) throws CommandException
     {
-        int x, y, z;
-
         EntityPlayerMP entityPlayerMP = getCommandSenderAsPlayer(commandSender);
         StructureEntityInfo structureEntityInfo = RCCommands.getStructureEntityInfo(entityPlayerMP);
 

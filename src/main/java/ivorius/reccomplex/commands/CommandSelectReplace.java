@@ -58,7 +58,7 @@ public class CommandSelectReplace extends CommandSelectModify
             {
                 IBlockState prev = world.getBlockState(coord);
 
-                boolean correctMeta = IntStream.of(dstMeta).anyMatch(i -> i == BlockStates.toMetadata(prev));
+                boolean correctMeta = IntStream.of(srcMeta).anyMatch(i -> i == BlockStates.toMetadata(prev));
 
                 if (correctMeta && src == prev.getBlock())
                 {

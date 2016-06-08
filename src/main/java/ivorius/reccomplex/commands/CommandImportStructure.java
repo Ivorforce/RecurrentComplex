@@ -49,8 +49,6 @@ public class CommandImportStructure extends CommandBase
     @Override
     public void processCommand(ICommandSender commandSender, String[] args) throws CommandException
     {
-        int x, y, z;
-
         if (args.length <= 0)
         {
             throw ServerTranslations.wrongUsageException("commands.strucImport.usage");

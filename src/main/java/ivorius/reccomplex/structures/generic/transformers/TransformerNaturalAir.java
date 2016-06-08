@@ -114,25 +114,11 @@ public class TransformerNaturalAir extends TransformerSingleBlock<NBTNone>
                     distToOrigSQ += add < 0 ? -(add * add) : (add * add);
 
                     if (distToOrigSQ < naturalExpansionDistance * naturalExpansionDistance)
-                    {
-                        addIfNew(nextList, currentX, currentZ);
-                        addIfNew(nextList, currentX - 1, currentZ);
-                        addIfNew(nextList, currentX + 1, currentZ);
-                        addIfNew(nextList, currentX, currentZ - 1);
-                        addIfNew(nextList, currentX, currentZ + 1);
-                    }
+                        TransformerNatural.addNewNeighbors(nextList, currentX, currentZ);
                 }
             }
 
             currentY++;
-        }
-    }
-
-    private void addIfNew(List<int[]> list, int... object)
-    {
-        if (!list.contains(object))
-        {
-            list.add(object);
         }
     }
 

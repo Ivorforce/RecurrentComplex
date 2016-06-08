@@ -57,6 +57,12 @@ public class TransformerNatural extends TransformerSingleBlock<NBTNone>
         this.naturalExpansionRandomization = naturalExpansionRandomization;
     }
 
+    public static void addIfNew(List<int[]> list, int... object)
+    {
+        if (!list.contains(object))
+            list.add(object);
+    }
+
     @Override
     public boolean matches(NBTNone instanceData, IBlockState state)
     {
@@ -115,13 +121,7 @@ public class TransformerNatural extends TransformerSingleBlock<NBTNone>
                         distToOrigSQ += add < 0 ? -(add * add) : (add * add);
 
                         if (distToOrigSQ < naturalExpansionDistance * naturalExpansionDistance)
-                        {
-                            addIfNew(nextList, currentX, currentZ);
-                            addIfNew(nextList, currentX - 1, currentZ);
-                            addIfNew(nextList, currentX + 1, currentZ);
-                            addIfNew(nextList, currentX, currentZ - 1);
-                            addIfNew(nextList, currentX, currentZ + 1);
-                        }
+                            addNewNeighbors(nextList, currentX, currentZ);
                     }
                 }
 
@@ -136,12 +136,13 @@ public class TransformerNatural extends TransformerSingleBlock<NBTNone>
         }
     }
 
-    private void addIfNew(List<int[]> list, int... object)
+    public static void addNewNeighbors(List<int[]> list, int x, int z)
     {
-        if (!list.contains(object))
-        {
-            list.add(object);
-        }
+        addIfNew(list, x, z);
+        addIfNew(list, x - 1, z);
+        addIfNew(list, x + 1, z);
+        addIfNew(list, x, z - 1);
+        addIfNew(list, x, z + 1);
     }
 
     private boolean hasBlockAbove(World world, BlockPos pos, IBlockState blockType)

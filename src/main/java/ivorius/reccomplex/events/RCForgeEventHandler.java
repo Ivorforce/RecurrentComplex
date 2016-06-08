@@ -5,9 +5,12 @@
 
 package ivorius.reccomplex.events;
 
+import ivorius.reccomplex.RecurrentComplex;
 import net.minecraft.entity.Entity;
 import net.minecraft.util.BlockPos;
+import net.minecraftforge.fml.client.event.ConfigChangedEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.fml.common.gameevent.TickEvent;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import ivorius.ivtoolkit.rendering.grid.GridRenderer;
@@ -144,6 +147,37 @@ public class RCForgeEventHandler
                 event.inventory.setInventorySlotContents(event.fromSlot, weightedItemCollection.getRandomItemStack(event.random));
 
             event.setCanceled(true);
+        }
+    }
+
+    @SubscribeEvent
+    public void onPlayerTick(TickEvent.PlayerTickEvent event)
+    {
+        StructureEntityInfo structureEntityInfo = StructureEntityInfo.getStructureEntityInfo(event.player);
+        if (structureEntityInfo != null)
+        {
+            structureEntityInfo.update(event.player);
+        }
+    }
+
+    @SubscribeEvent
+    public void onTick(TickEvent event)
+    {
+        if ((event.type == TickEvent.Type.CLIENT || event.type == TickEvent.Type.SERVER) && event.phase == TickEvent.Phase.END)
+        {
+            RecurrentComplex.communicationHandler.handleMessages(event.type == TickEvent.Type.SERVER, true);
+        }
+    }
+
+    @SubscribeEvent
+    public void onConfigChanged(ConfigChangedEvent event)
+    {
+        if (event instanceof ConfigChangedEvent.OnConfigChangedEvent && event.modID.equals(RecurrentComplex.MODID))
+        {
+            RCConfig.loadConfig(event.configID);
+
+            if (RecurrentComplex.config.hasChanged())
+                RecurrentComplex.config.save();
         }
     }
 }

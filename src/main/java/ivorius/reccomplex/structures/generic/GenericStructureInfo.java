@@ -151,38 +151,32 @@ public class GenericStructureInfo implements StructureInfo<GenericStructureInfo.
                 IBlockState state = blockCollection.getBlockState(sourceCoord);
 
                 BlockPos worldPos = context.transform.apply(sourceCoord, areaSize).add(origin);
-                if (context.includes(worldPos) && RecurrentComplex.specialRegistry.isSafe(state.getBlock()))
+                if (context.includes(worldPos) && RecurrentComplex.specialRegistry.isSafe(state.getBlock())
+                        && pass == getPass(state) && (context.generateAsSource || !skips(transformers, state)))
                 {
                     TileEntity tileEntity = tileEntities.get(sourceCoord);
-
-                    if (pass == getPass(state) && (context.generateAsSource || !skips(transformers, state)))
+                    if (context.generateAsSource || !(tileEntity instanceof GeneratingTileEntity) || ((GeneratingTileEntity) tileEntity).shouldPlaceInWorld(context, instanceData.tileEntities.get(sourceCoord)))
                     {
-                        if (context.generateAsSource || !(tileEntity instanceof GeneratingTileEntity) || ((GeneratingTileEntity) tileEntity).shouldPlaceInWorld(context, instanceData.tileEntities.get(sourceCoord)))
+                        if (context.setBlock(worldPos, state) && world.getBlockState(worldPos).getBlock() == state.getBlock())
                         {
-                            if (context.setBlock(worldPos, state) && world.getBlockState(worldPos).getBlock() == state.getBlock())
+                            if (tileEntity != null && RecurrentComplex.specialRegistry.isSafe(tileEntity))
                             {
-                                if (tileEntity != null && RecurrentComplex.specialRegistry.isSafe(tileEntity))
+                                context.setBlock(worldPos, state); // Second time to ensure state, see BlockFurnace
+
+                                world.setTileEntity(worldPos, tileEntity);
+                                tileEntity.updateContainingBlockInfo();
+
+                                if (!context.generateAsSource && tileEntity instanceof IInventory)
                                 {
-                                    context.setBlock(worldPos, state); // Second time to ensure state, see BlockFurnace
-
-                                    world.setTileEntity(worldPos, tileEntity);
-                                    tileEntity.updateContainingBlockInfo();
-
-                                    if (!context.generateAsSource)
-                                    {
-                                        if (tileEntity instanceof IInventory)
-                                        {
-                                            IInventory inventory = (IInventory) tileEntity;
-                                            InventoryGenerationHandler.generateAllTags(inventory, RecurrentComplex.specialRegistry.itemHidingMode(), random);
-                                        }
-                                    }
+                                    IInventory inventory = (IInventory) tileEntity;
+                                    InventoryGenerationHandler.generateAllTags(inventory, RecurrentComplex.specialRegistry.itemHidingMode(), random);
                                 }
-                                PosTransformer.transformBlock(context.transform, world, state, worldPos, state.getBlock());
                             }
+                            PosTransformer.transformBlock(context.transform, world, state, worldPos, state.getBlock());
                         }
-                        else
-                            context.setBlock(worldPos, Blocks.air.getDefaultState()); // Replace with air
                     }
+                    else
+                        context.setBlock(worldPos, Blocks.air.getDefaultState()); // Replace with air
                 }
             }
         }

@@ -148,7 +148,7 @@ public class SchematicFile
                     TileEntity tileEntity = tileEntities.get(srcCoord);
                     if (tileEntity != null)
                     {
-//                        world.setBlockMetadataWithNotify(worldPos.x, worldPos.y, worldPos.z, BlockStates.getMetadata(blockState), 2);
+                        world.setBlockState(worldPos, blockState, 3); // Second time to ensure state, see BlockFurnace
 
                         Mover.setTileEntityPos(tileEntity, worldPos);
                         world.setTileEntity(worldPos, tileEntity);

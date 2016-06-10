@@ -163,7 +163,7 @@ public class GenericStructureInfo implements StructureInfo<GenericStructureInfo.
                             {
                                 if (tileEntity != null && RecurrentComplex.specialRegistry.isSafe(tileEntity))
                                 {
-//                                    world.setBlockMetadataWithNotify(worldPos.x, worldPos.y, worldPos.z, BlockStates.getMetadata(state), 2);
+                                    context.setBlock(worldPos, state); // Second time to ensure state, see BlockFurnace
 
                                     world.setTileEntity(worldPos, tileEntity);
                                     tileEntity.updateContainingBlockInfo();

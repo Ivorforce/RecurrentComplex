@@ -80,9 +80,11 @@ public class CommandPaste extends CommandBase
     public List addTabCompletionOptions(ICommandSender commandSender, String[] args, BlockPos pos)
     {
         if (args.length == 1 || args.length == 2 || args.length == 3)
-        {
             return getListOfStringsMatchingLastWord(args, "~");
-        }
+        else if (args.length == 4)
+            return getListOfStringsMatchingLastWord(args, "0", "1", "2", "3");
+        else if (args.length == 5)
+            return getListOfStringsMatchingLastWord(args, "true", "false");
 
         return null;
     }

@@ -105,7 +105,7 @@ public class TransformerNaturalAir extends TransformerSingleBlock<NBTNone>
                         || isCommon || isFoliage;
 
                 if (replaceable)
-                    context.setBlock(curBlockPos, Blocks.air.getDefaultState());
+                    context.setBlock(curBlockPos, Blocks.air.getDefaultState(), 2);
 
                 if (replaceable || material == Material.air)
                 {

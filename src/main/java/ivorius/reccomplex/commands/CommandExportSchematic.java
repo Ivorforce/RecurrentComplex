@@ -6,7 +6,9 @@
 package ivorius.reccomplex.commands;
 
 import ivorius.ivtoolkit.blocks.BlockArea;
+import ivorius.ivtoolkit.blocks.BlockPositions;
 import ivorius.ivtoolkit.tools.Mover;
+import net.minecraft.nbt.NBTBase;
 import net.minecraft.util.BlockPos;
 import ivorius.ivtoolkit.tools.IvWorldData;
 import ivorius.reccomplex.RCConfig;
@@ -24,6 +26,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * Created by lukas on 25.05.14.
@@ -91,7 +94,7 @@ public class CommandExportSchematic extends CommandBase
         BlockPos lowerCoord = area.getLowerCorner();
         BlockPos higherCoord = area.getHigherCorner();
 
-        IvWorldData data = new IvWorldData(player.getEntityWorld(), new BlockArea(lowerCoord, higherCoord), true);
+        IvWorldData data = IvWorldData.capture(player.getEntityWorld(), new BlockArea(lowerCoord, higherCoord), true);
         SchematicFile schematicFile = convert(data, lowerCoord);
         SchematicLoader.writeSchematicByName(schematicFile, structureName);
 
@@ -101,6 +104,7 @@ public class CommandExportSchematic extends CommandBase
     public static SchematicFile convert(IvWorldData worldData, BlockPos referenceCoord)
     {
         SchematicFile schematicFile = new SchematicFile((short) worldData.blockCollection.width, (short) worldData.blockCollection.height, (short) worldData.blockCollection.length);
+        BlockPos inverseReference = BlockPositions.invert(referenceCoord);
 
         for (BlockPos coord : worldData.blockCollection.area())
         {
@@ -108,34 +112,12 @@ public class CommandExportSchematic extends CommandBase
             schematicFile.blockStates[index] = worldData.blockCollection.getBlockState(coord);
         }
 
-        for (TileEntity tileEntity : worldData.tileEntities)
-        {
-            NBTTagCompound teCompound = new NBTTagCompound();
-
-            Mover.moveTileEntity(tileEntity, multiply(referenceCoord, -1));
-            tileEntity.writeToNBT(teCompound);
-            Mover.moveTileEntity(tileEntity, referenceCoord);
-
-            schematicFile.tileEntityCompounds.add(teCompound);
-        }
-
-        for (Entity entity : worldData.entities)
-        {
-            NBTTagCompound entityCompound = new NBTTagCompound();
-
-            Mover.moveEntity(entity, multiply(referenceCoord, -1));
-            entity.writeToNBTOptional(entityCompound);
-            Mover.moveEntity(entity, referenceCoord);
-
-            schematicFile.entityCompounds.add(entityCompound);
-        }
+        schematicFile.entityCompounds.clear();
+        schematicFile.entityCompounds.addAll(worldData.entities);
+        schematicFile.tileEntityCompounds.addAll(worldData.entities);
+        schematicFile.tileEntityCompounds.addAll(worldData.tileEntities);
 
         return schematicFile;
-    }
-
-    private static BlockPos multiply(BlockPos pos, int m)
-    {
-        return new BlockPos(pos.getX() * m, pos.getY() * m, pos.getZ() * m);
     }
 
     @Override

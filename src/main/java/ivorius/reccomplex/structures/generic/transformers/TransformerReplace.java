@@ -116,7 +116,7 @@ public class TransformerReplace extends TransformerSingleBlock<NBTNone>
     {
         if (entry.state != null && RecurrentComplex.specialRegistry.isSafe(entry.state.getBlock()))
         {
-            context.setBlock(coord, entry.state);
+            context.setBlock(coord, entry.state, 2);
 
             // Behavior as in CommandSetBlock
             if (parsedTileEntityInfo != null && entry.state.getBlock().hasTileEntity(entry.state))

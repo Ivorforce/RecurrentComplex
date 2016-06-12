@@ -91,11 +91,11 @@ public class StructureSpawnContext
         return new BlockPos(boundingBox.minX, boundingBox.minY, boundingBox.minZ);
     }
 
-    public boolean setBlock(BlockPos coord, IBlockState state)
+    public boolean setBlock(BlockPos coord, IBlockState state, int flag)
     {
         if (includes(coord))
         {
-            world.setBlockState(coord, state, 2);
+            world.setBlockState(coord, state, flag);
             return true;
         }
 

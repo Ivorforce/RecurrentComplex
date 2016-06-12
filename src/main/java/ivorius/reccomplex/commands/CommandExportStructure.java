@@ -99,7 +99,7 @@ public class CommandExportStructure extends CommandBase
         BlockPos lowerCoord = area.getLowerCorner();
         BlockPos higherCoord = area.getHigherCorner();
 
-        IvWorldData data = new IvWorldData(player.getEntityWorld(), new BlockArea(lowerCoord, higherCoord), true);
+        IvWorldData data = IvWorldData.capture(player.getEntityWorld(), new BlockArea(lowerCoord, higherCoord), true);
         genericStructureInfo.worldDataCompound = data.createTagCompound(lowerCoord);
         PacketEditStructureHandler.openEditStructure(genericStructureInfo, structureID, saveAsActive, player);
     }

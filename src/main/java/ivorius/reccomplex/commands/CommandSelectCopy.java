@@ -35,7 +35,7 @@ public class CommandSelectCopy extends CommandSelectModify
     public void processCommandSelection(EntityPlayerMP player, StructureEntityInfo structureEntityInfo, BlockPos point1, BlockPos point2, String[] args)
     {
         BlockArea area = new BlockArea(point1, point2);
-        IvWorldData worldData = new IvWorldData(player.worldObj, area, true);
+        IvWorldData worldData = IvWorldData.capture(player.worldObj, area, true);
 
         BlockPos lowerCorner = area.getLowerCorner();
         BlockPos higherCorner = area.getHigherCorner();

@@ -109,7 +109,7 @@ public class TransformerNatural extends TransformerSingleBlock<NBTNone>
                     if (replaceable)
                     {
                         IBlockState setBlock = useStoneBlock ? mainBlock : (isTopBlock(world, curBlockPos) ? topBlock : fillerBlock);
-                        context.setBlock(curBlockPos, setBlock);
+                        context.setBlock(curBlockPos, setBlock, 2);
                     }
 
                     // Uncommenting makes performance shit
@@ -132,7 +132,7 @@ public class TransformerNatural extends TransformerSingleBlock<NBTNone>
         {
             // Get the top blocks right (grass rather than dirt)
             IBlockState setBlock = useStoneBlock ? mainBlock : (isTopBlock(world, coord) ? topBlock : fillerBlock);
-            context.setBlock(coord, setBlock);
+            context.setBlock(coord, setBlock, 2);
         }
     }
 

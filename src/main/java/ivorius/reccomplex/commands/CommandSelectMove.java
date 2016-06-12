@@ -52,7 +52,7 @@ public class CommandSelectMove extends CommandSelectModify
 
         BlockPos coord = RCCommands.parseBlockPos(area.getLowerCorner(), args, 0, false);
 
-        IvWorldData worldData = new IvWorldData(player.worldObj, area, true);
+        IvWorldData worldData = IvWorldData.capture(player.worldObj, area, true);
         NBTTagCompound worldDataCompound = worldData.createTagCompound(area.getLowerCorner());
 
         GenericStructureInfo structureInfo = GenericStructureInfo.createDefaultStructure();

@@ -8,6 +8,7 @@ package ivorius.reccomplex.structures.generic;
 import com.google.gson.*;
 import ivorius.ivtoolkit.tools.*;
 import net.minecraft.block.state.IBlockState;
+import net.minecraft.entity.EntityList;
 import net.minecraft.util.BlockPos;
 import ivorius.ivtoolkit.blocks.IvBlockCollection;
 import ivorius.reccomplex.RecurrentComplex;
@@ -112,7 +113,7 @@ public class GenericStructureInfo implements StructureInfo<GenericStructureInfo.
     {
         World world = context.world;
         Random random = context.random;
-        IvWorldData worldData = constructWorldData(world);
+        IvWorldData worldData = constructWorldData();
 
         // The world initializes the block event array after it generates the world - in the constructor
         // This hackily sets the field to a temporary value. Yay.
@@ -123,12 +124,17 @@ public class GenericStructureInfo implements StructureInfo<GenericStructureInfo.
         int[] areaSize = new int[]{blockCollection.width, blockCollection.height, blockCollection.length};
         BlockPos origin = context.lowerCoord();
 
-        Map<BlockPos, TileEntity> tileEntities = new HashMap<>();
-        for (TileEntity tileEntity : worldData.tileEntities)
+        Map<BlockPos, TileEntity> origTileEntities = new HashMap<>();
+        Map<BlockPos, NBTTagCompound> tileEntityCompounds = new HashMap<>();
+        for (NBTTagCompound tileEntityCompound : worldData.tileEntities)
         {
-            BlockPos key = tileEntity.getPos();
-            tileEntities.put(key, tileEntity);
-            Mover.setTileEntityPos(tileEntity, context.transform.apply(key, areaSize).add(origin));
+            BlockPos key = new BlockPos(tileEntityCompound.getInteger("x"), tileEntityCompound.getInteger("y"), tileEntityCompound.getInteger("z"));
+
+            TileEntity origTileEntity = RecurrentComplex.specialRegistry.loadTileEntity(tileEntityCompound);
+            Mover.setTileEntityPos(origTileEntity, context.transform.apply(key, areaSize).add(origin));
+
+            origTileEntities.put(key, origTileEntity);
+            tileEntityCompounds.put(key, tileEntityCompound);
         }
 
         List<Pair<Transformer, NBTStorable>> transformers = Pairs.of(this.transformers, instanceData.transformers);
@@ -154,29 +160,35 @@ public class GenericStructureInfo implements StructureInfo<GenericStructureInfo.
                 if (context.includes(worldPos) && RecurrentComplex.specialRegistry.isSafe(state.getBlock())
                         && pass == getPass(state) && (context.generateAsSource || !skips(transformers, state)))
                 {
-                    TileEntity tileEntity = tileEntities.get(sourceCoord);
-                    if (context.generateAsSource || !(tileEntity instanceof GeneratingTileEntity) || ((GeneratingTileEntity) tileEntity).shouldPlaceInWorld(context, instanceData.tileEntities.get(sourceCoord)))
+                    TileEntity origTileEntity = origTileEntities.get(sourceCoord);
+
+                    if (context.generateAsSource || !(origTileEntity instanceof GeneratingTileEntity) || ((GeneratingTileEntity) origTileEntity).shouldPlaceInWorld(context, instanceData.tileEntities.get(sourceCoord)))
                     {
-                        if (context.setBlock(worldPos, state) && world.getBlockState(worldPos).getBlock() == state.getBlock())
+                        if (context.setBlock(worldPos, state, 2) && world.getBlockState(worldPos).getBlock() == state.getBlock())
                         {
-                            if (tileEntity != null && RecurrentComplex.specialRegistry.isSafe(tileEntity))
+                            NBTTagCompound tileEntityCompound = tileEntityCompounds.get(sourceCoord);
+
+                            if (tileEntityCompound != null)
                             {
-                                context.setBlock(worldPos, state); // Second time to ensure state, see BlockFurnace
+                                TileEntity tileEntity = world.getTileEntity(worldPos);
 
-                                world.setTileEntity(worldPos, tileEntity);
-                                tileEntity.updateContainingBlockInfo();
-
-                                if (!context.generateAsSource && tileEntity instanceof IInventory)
+                                if (tileEntity != null)
                                 {
-                                    IInventory inventory = (IInventory) tileEntity;
-                                    InventoryGenerationHandler.generateAllTags(inventory, RecurrentComplex.specialRegistry.itemHidingMode(), random);
+                                    tileEntity.readFromNBT(tileEntityCompound);
+                                    Mover.setTileEntityPos(tileEntity, worldPos);
+
+                                    if (!context.generateAsSource && tileEntity instanceof IInventory)
+                                    {
+                                        IInventory inventory = (IInventory) tileEntity;
+                                        InventoryGenerationHandler.generateAllTags(inventory, RecurrentComplex.specialRegistry.itemHidingMode(), random);
+                                    }
                                 }
                             }
                             PosTransformer.transformBlock(context.transform, world, state, worldPos, state.getBlock());
                         }
                     }
                     else
-                        context.setBlock(worldPos, Blocks.air.getDefaultState()); // Replace with air
+                        context.setBlock(worldPos, Blocks.air.getDefaultState(), 2); // Replace with air
                 }
             }
         }
@@ -192,8 +204,10 @@ public class GenericStructureInfo implements StructureInfo<GenericStructureInfo.
             }
         }
 
-        for (Entity entity : worldData.entities)
+        for (NBTTagCompound entityCompound : worldData.entities)
         {
+            Entity entity = EntityList.createEntityFromNBT(entityCompound, world);
+
             PosTransformer.transformEntityPos(entity, context.transform, areaSize);
             Mover.moveEntity(entity, origin);
 
@@ -206,7 +220,7 @@ public class GenericStructureInfo implements StructureInfo<GenericStructureInfo.
 
         if (!context.generateAsSource && context.generationLayer < MAX_GENERATING_LAYERS)
         {
-            tileEntities.entrySet().stream().filter(entry -> entry.getValue() instanceof GeneratingTileEntity).forEach(entry -> ((GeneratingTileEntity) entry.getValue()).generate(context, instanceData.tileEntities.get(entry.getKey())));
+            origTileEntities.entrySet().stream().filter(entry -> entry.getValue() instanceof GeneratingTileEntity).forEach(entry -> ((GeneratingTileEntity) entry.getValue()).generate(context, instanceData.tileEntities.get(entry.getKey())));
         }
         else
         {
@@ -221,7 +235,7 @@ public class GenericStructureInfo implements StructureInfo<GenericStructureInfo.
 
         if (!context.generateAsSource)
         {
-            IvWorldData worldData = constructWorldData(null);
+            IvWorldData worldData = constructWorldData();
             IvBlockCollection blockCollection = worldData.blockCollection;
 
             int[] areaSize = new int[]{blockCollection.width, blockCollection.height, blockCollection.length};
@@ -229,10 +243,14 @@ public class GenericStructureInfo implements StructureInfo<GenericStructureInfo.
 
             instanceData.transformers.addAll(transformers.stream().map(transformer -> transformer.prepareInstanceData(context)).collect(Collectors.toList()));
 
-            worldData.tileEntities.stream().filter(tileEntity -> tileEntity instanceof GeneratingTileEntity).forEach(tileEntity -> {
-                BlockPos key = tileEntity.getPos();
-                Mover.setTileEntityPos(tileEntity, context.transform.apply(key, areaSize).add(origin));
-                instanceData.tileEntities.put(key, (NBTStorable) ((GeneratingTileEntity) tileEntity).prepareInstanceData(context));
+            worldData.tileEntities.stream().forEach(teCompound -> {
+                TileEntity tileEntity = RecurrentComplex.specialRegistry.loadTileEntity(teCompound);
+                if (tileEntity instanceof GeneratingTileEntity)
+                {
+                    BlockPos key = tileEntity.getPos();
+                    Mover.setTileEntityPos(tileEntity, context.transform.apply(key, areaSize).add(origin));
+                    instanceData.tileEntities.put(key, (NBTStorable) ((GeneratingTileEntity) tileEntity).prepareInstanceData(context));
+                }
             });
         }
 
@@ -243,7 +261,7 @@ public class GenericStructureInfo implements StructureInfo<GenericStructureInfo.
     public InstanceData loadInstanceData(StructureLoadContext context, final NBTBase nbt)
     {
         InstanceData instanceData = new InstanceData();
-        instanceData.readFromNBT(context, nbt, transformers, constructWorldData(null));
+        instanceData.readFromNBT(context, nbt, transformers, constructWorldData());
         return instanceData;
     }
 
@@ -252,9 +270,9 @@ public class GenericStructureInfo implements StructureInfo<GenericStructureInfo.
         return transformers.stream().anyMatch(input -> input.getLeft().skipGeneration(input.getRight(), state));
     }
 
-    public IvWorldData constructWorldData(World world)
+    public IvWorldData constructWorldData()
     {
-        return new IvWorldData(worldDataCompound, world, RecurrentComplex.specialRegistry.itemHidingMode());
+        return new IvWorldData(worldDataCompound, RecurrentComplex.specialRegistry.itemHidingMode());
     }
 
     @Override
@@ -429,7 +447,8 @@ public class GenericStructureInfo implements StructureInfo<GenericStructureInfo.
             BlockPos origin = context.lowerCoord();
 
             NBTTagCompound tileEntityCompound = compound.getCompoundTag(InstanceData.KEY_TILE_ENTITIES);
-            worldData.tileEntities.stream().filter(tileEntity -> tileEntity instanceof GeneratingTileEntity).forEach(tileEntity -> {
+            worldData.tileEntities.stream().filter(tileEntity -> tileEntity instanceof GeneratingTileEntity).forEach(teCompound -> {
+                TileEntity tileEntity = RecurrentComplex.specialRegistry.loadTileEntity(teCompound);
                 BlockPos key = tileEntity.getPos();
                 Mover.setTileEntityPos(tileEntity, context.transform.apply(key, areaSize).add(origin));
                 tileEntities.put(key, (NBTStorable) ((GeneratingTileEntity) tileEntity).loadInstanceData(context, getTileEntityTag(tileEntityCompound, key)));

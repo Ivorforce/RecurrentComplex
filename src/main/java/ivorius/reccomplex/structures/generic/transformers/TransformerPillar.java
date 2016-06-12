@@ -69,7 +69,7 @@ public class TransformerPillar extends TransformerSingleBlock<NBTNone>
             do
             {
                 BlockPos pos = new BlockPos(coord.getX(), y--, coord.getZ());
-                context.setBlock(pos, destState);
+                context.setBlock(pos, destState, 2);
 
                 IBlockState blockState = world.getBlockState(pos);
                 if (!(blockState.getBlock().isReplaceable(world, pos) || blockState.getBlock().getMaterial() == Material.leaves || blockState.getBlock().isFoliage(world, pos)))

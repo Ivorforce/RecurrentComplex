@@ -18,9 +18,8 @@ public class ConnectorStrategy implements ConnectionStrategy<Connector>
     public static final String DEFAULT_WALL = "Wall";
     public static final String DEFAULT_PATH = "Path";
 
-    @Override
-    public boolean connect(@Nonnull MazePassage connection, Connector a, Connector b)
+    public float connect(@Nonnull MazePassage connection, Connector a, Connector b)
     {
-        return a != null ? a.accepts(b) : b == null || b.accepts(null);
+        return (a != null && a.accepts(b)) || (b != null && b.accepts(null)) ? 1 : -1;
     }
 }

@@ -219,11 +219,8 @@ public class GenericStructureInfo implements StructureInfo<GenericStructureInfo.
                     PosTransformer.transformEntityPos(entity, context.transform, areaSize);
                     Mover.moveEntity(entity, origin);
 
-                    if (context.includes(entity.posX, entity.posY, entity.posZ))
-                    {
-                        RCAccessorEntity.setEntityUniqueID(entity, UUID.randomUUID());
-                        world.spawnEntityInWorld(entity);
-                    }
+                    RCAccessorEntity.setEntityUniqueID(entity, UUID.randomUUID());
+                    world.spawnEntityInWorld(entity);
                 }
                 else
                 {

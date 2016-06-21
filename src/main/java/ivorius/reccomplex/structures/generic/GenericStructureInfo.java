@@ -6,6 +6,7 @@
 package ivorius.reccomplex.structures.generic;
 
 import com.google.gson.*;
+import ivorius.ivtoolkit.math.IvVecMathHelper;
 import ivorius.ivtoolkit.tools.*;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.EntityList;
@@ -37,6 +38,7 @@ import net.minecraft.world.World;
 import net.minecraft.world.WorldServer;
 import net.minecraft.world.biome.BiomeGenBase;
 import net.minecraftforge.common.BiomeDictionary;
+import net.minecraftforge.common.util.Constants;
 import org.apache.commons.lang3.tuple.Pair;
 
 import java.lang.reflect.Type;
@@ -206,15 +208,27 @@ public class GenericStructureInfo implements StructureInfo<GenericStructureInfo.
 
         for (NBTTagCompound entityCompound : worldData.entities)
         {
-            Entity entity = EntityList.createEntityFromNBT(entityCompound, world);
-
-            PosTransformer.transformEntityPos(entity, context.transform, areaSize);
-            Mover.moveEntity(entity, origin);
-
-            if (context.includes(entity.posX, entity.posY, entity.posZ))
+            double[] entityPos = getEntityPos(entityCompound);
+            double[] transformedEntityPos = context.transform.apply(entityPos, areaSize);
+            if (context.includes(transformedEntityPos[0] + origin.getX(), transformedEntityPos[1] + origin.getY(), transformedEntityPos[2] + origin.getZ()))
             {
-                RCAccessorEntity.setEntityUniqueID(entity, UUID.randomUUID());
-                world.spawnEntityInWorld(entity);
+                Entity entity = EntityList.createEntityFromNBT(entityCompound, world);
+
+                if (entity != null)
+                {
+                    PosTransformer.transformEntityPos(entity, context.transform, areaSize);
+                    Mover.moveEntity(entity, origin);
+
+                    if (context.includes(entity.posX, entity.posY, entity.posZ))
+                    {
+                        RCAccessorEntity.setEntityUniqueID(entity, UUID.randomUUID());
+                        world.spawnEntityInWorld(entity);
+                    }
+                }
+                else
+                {
+                    RecurrentComplex.logger.error("Error loading entity with ID '" + entityCompound.getString("id") + "'");
+                }
             }
         }
 
@@ -226,6 +240,12 @@ public class GenericStructureInfo implements StructureInfo<GenericStructureInfo.
         {
             RecurrentComplex.logger.warn("Structure generated with over " + MAX_GENERATING_LAYERS + " layers; most likely infinite loop!");
         }
+    }
+
+    private static double[] getEntityPos(NBTTagCompound compound)
+    {
+        NBTTagList pos = compound.getTagList("Pos", Constants.NBT.TAG_DOUBLE);
+        return new double[]{pos.getDoubleAt(0), pos.getDoubleAt(1), pos.getDoubleAt(2)};
     }
 
     @Override

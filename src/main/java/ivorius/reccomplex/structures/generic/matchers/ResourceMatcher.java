@@ -8,7 +8,7 @@ package ivorius.reccomplex.structures.generic.matchers;
 import ivorius.reccomplex.structures.StructureRegistry;
 import ivorius.reccomplex.utils.ExpressionCaches;
 import ivorius.reccomplex.utils.PrefixedTypeExpressionCache;
-import ivorius.reccomplex.utils.RCBoolAlgebra;
+import ivorius.reccomplex.utils.algebra.RCBoolAlgebra;
 import net.minecraft.util.EnumChatFormatting;
 
 /**

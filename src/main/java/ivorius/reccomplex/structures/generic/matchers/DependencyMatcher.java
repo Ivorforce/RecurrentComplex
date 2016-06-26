@@ -5,6 +5,7 @@
 
 package ivorius.reccomplex.structures.generic.matchers;
 
+import ivorius.reccomplex.utils.algebra.RCBoolAlgebra;
 import net.minecraftforge.fml.common.Loader;
 import ivorius.reccomplex.structures.StructureRegistry;
 import ivorius.reccomplex.utils.*;

@@ -5,6 +5,8 @@
 
 package ivorius.reccomplex.utils;
 
+import ivorius.reccomplex.utils.algebra.Algebra;
+
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.text.ParseException;

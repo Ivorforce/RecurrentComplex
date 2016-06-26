@@ -9,6 +9,7 @@ import com.google.common.base.Predicate;
 import com.google.common.primitives.Ints;
 import ivorius.reccomplex.dimensions.DimensionDictionary;
 import ivorius.reccomplex.utils.*;
+import ivorius.reccomplex.utils.algebra.RCBoolAlgebra;
 import joptsimple.internal.Strings;
 import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.world.WorldProvider;

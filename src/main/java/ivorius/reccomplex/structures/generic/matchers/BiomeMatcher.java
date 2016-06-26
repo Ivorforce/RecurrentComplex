@@ -11,7 +11,7 @@ import ivorius.ivtoolkit.tools.IvGsonHelper;
 import ivorius.reccomplex.json.RCGsonHelper;
 import ivorius.reccomplex.utils.ExpressionCaches;
 import ivorius.reccomplex.utils.PrefixedTypeExpressionCache;
-import ivorius.reccomplex.utils.RCBoolAlgebra;
+import ivorius.reccomplex.utils.algebra.RCBoolAlgebra;
 import joptsimple.internal.Strings;
 import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.world.biome.BiomeGenBase;

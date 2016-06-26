@@ -1,15 +1,18 @@
 /*
  *  Copyright (c) 2014, Lukas Tenbrink.
- *  * http://lukas.axxim.net
+ *  * http://ivorius.net
  */
 
-package ivorius.reccomplex.utils;
+package ivorius.reccomplex.utils.algebra;
 
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
 import ivorius.ivtoolkit.tools.Pairs;
 import ivorius.ivtoolkit.tools.Ranges;
 import ivorius.ivtoolkit.tools.Visitor;
+import ivorius.reccomplex.utils.PrecedenceSet;
+import ivorius.reccomplex.utils.PrecedenceSets;
+import ivorius.reccomplex.utils.SymbolTokenizer;
 import org.apache.commons.lang3.tuple.Pair;
 
 import javax.annotation.Nonnull;
@@ -81,7 +84,7 @@ public class Algebra<T>
                     OperatorToken<T> operatorToken = (OperatorToken<T>) token;
                     Operator<T> operator = operatorToken.operator;
 
-                    if (operator.precedence < curOperators.precedence)
+                    if (operator.precedence < curOperators.getPrecedence())
                         throw new ParseException("Internal Error (Operator Sorting)", operatorToken.startIndex);
                     else if (curOperators.contains(operator))
                     {

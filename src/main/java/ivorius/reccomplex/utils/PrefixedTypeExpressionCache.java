@@ -5,6 +5,7 @@
 
 package ivorius.reccomplex.utils;
 
+import ivorius.reccomplex.utils.algebra.Algebra;
 import net.minecraft.util.EnumChatFormatting;
 
 import javax.annotation.Nonnull;

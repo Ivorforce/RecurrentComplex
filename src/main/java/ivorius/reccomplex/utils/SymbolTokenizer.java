@@ -181,7 +181,7 @@ public class SymbolTokenizer
         return string.regionMatches(index, symbol, 0, symbol.length());
     }
 
-    protected static abstract class Token
+    public static abstract class Token
     {
         public int startIndex;
         public int endIndex;

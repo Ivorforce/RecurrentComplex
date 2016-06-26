@@ -11,6 +11,7 @@ import com.google.common.primitives.Ints;
 import ivorius.ivtoolkit.gui.IntegerRange;
 import ivorius.ivtoolkit.tools.MCRegistry;
 import ivorius.reccomplex.utils.*;
+import ivorius.reccomplex.utils.algebra.RCBoolAlgebra;
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.util.EnumChatFormatting;

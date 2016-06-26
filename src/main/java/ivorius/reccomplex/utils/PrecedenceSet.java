@@ -22,6 +22,16 @@ public class PrecedenceSet<T> extends AbstractSet<T> implements Comparable<Prece
         this.set = set;
     }
 
+    public float getPrecedence()
+    {
+        return precedence;
+    }
+
+    public void setPrecedence(float precedence)
+    {
+        this.precedence = precedence;
+    }
+
     public Set<T> getSet()
     {
         return set;

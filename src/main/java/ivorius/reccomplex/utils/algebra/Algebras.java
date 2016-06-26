@@ -1,9 +1,9 @@
 /*
  *  Copyright (c) 2014, Lukas Tenbrink.
- *  * http://lukas.axxim.net
+ *  * http://ivorius.net
  */
 
-package ivorius.reccomplex.utils;
+package ivorius.reccomplex.utils.algebra;
 
 import javax.annotation.Nullable;
 import java.text.ParseException;

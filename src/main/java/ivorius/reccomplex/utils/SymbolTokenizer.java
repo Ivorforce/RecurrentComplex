@@ -183,8 +183,8 @@ public class SymbolTokenizer
 
     public static abstract class Token
     {
-        public int startIndex;
-        public int endIndex;
+        public final int startIndex;
+        public final int endIndex;
 
         public Token(int startIndex, int endIndex)
         {

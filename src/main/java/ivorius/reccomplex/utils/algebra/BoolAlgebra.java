@@ -88,8 +88,8 @@ public abstract class BoolAlgebra
         };
     }
 
-    public static Algebras.Parentheses parentheses(String left, String right)
+    public static Algebras.Parentheses<Boolean> parentheses(String left, String right)
     {
-        return new Algebras.Parentheses(1f, left, right);
+        return new Algebras.Parentheses<>(1f, left, right);
     }
 }

@@ -5,8 +5,11 @@
 
 package ivorius.reccomplex.utils.algebra;
 
+import com.google.common.base.Preconditions;
+import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
+import com.google.common.collect.Multimap;
 import ivorius.ivtoolkit.tools.Pairs;
 import ivorius.ivtoolkit.tools.Ranges;
 import ivorius.ivtoolkit.tools.Visitor;
@@ -79,7 +82,10 @@ public class Algebra<T>
             for (int t = 0; t < tokens.size(); t++)
             {
                 SymbolTokenizer.Token token = tokens.get(t);
-                if (token instanceof OperatorToken)
+
+                if (token instanceof AmbiguousOperatorToken)
+                    throw new IllegalArgumentException("Ambiguous operators are not supported at this point"); // TODO
+                else if (token instanceof OperatorToken)
                 {
                     OperatorToken<T> operatorToken = (OperatorToken<T>) token;
                     Operator<T> operator = operatorToken.operator;
@@ -225,17 +231,41 @@ public class Algebra<T>
             @Override
             public SymbolTokenizer.Token tryConstructSymbolTokenAt(int index, @Nonnull String string)
             {
-                SortedSet<Pair<Operator<T>, Integer>> sortedSymbols = new TreeSet<>((o1, o2) -> o2.getLeft().getSymbols()[o2.getRight()].compareTo(o1.getLeft().getSymbols()[o1.getRight()]));
-                sortedSymbols.addAll(Lists.newArrayList(Iterables.concat(operators.stream().map(operator -> Pairs.pairLeft(operator, Ranges.toIterable(operator.symbols.length))).collect(Collectors.toList()))));
+                SortedSet<List<Pair<Operator<T>, Integer>>> sortedSymbols = sortedSymbols();
 
-                for (Pair<Operator<T>, Integer> symbolPair : sortedSymbols)
+                // Try each symbol string
+                for (List<Pair<Operator<T>, Integer>> symbolPairList : sortedSymbols)
                 {
-                    String symbol = symbolPair.getLeft().getSymbols()[symbolPair.getRight()];
+                    String symbol = getStringSymbol(symbolPairList.get(0));
                     if (hasAt(string, index, symbol))
-                        return new OperatorToken<>(index, index + symbol.length(), symbolPair.getLeft(), symbolPair.getRight());
+                    {
+                        return symbolPairList.size() > 1
+                                ? new AmbiguousOperatorToken<>(index, index + symbol.length(), symbolPairList)
+                                : new OperatorToken<>(index, index + symbol.length(), symbolPairList.get(0).getLeft(), symbolPairList.get(0).getRight());
+                    }
                 }
 
                 return null;
+            }
+
+            @Nonnull
+            protected TreeSet<List<Pair<Operator<T>, Integer>>> sortedSymbols()
+            {
+                // Extract individual symbols
+                ArrayList<Pair<Operator<T>, Integer>> symbols = Lists.newArrayList(Iterables.concat(operators.stream().map(operator -> Pairs.pairLeft(operator, Ranges.toIterable(operator.symbols.length))).collect(Collectors.toList())));
+
+                // Sort by length
+                TreeSet<List<Pair<Operator<T>, Integer>>> sortedSymbols = new TreeSet<>((o1, o2) -> getStringSymbol(o2.get(0)).compareTo(getStringSymbol(o1.get(0))));
+
+                // Group by symbol string
+                sortedSymbols.addAll(group(symbols, this::getStringSymbol).stream().map(Lists::newArrayList).collect(Collectors.toList()));
+
+                return sortedSymbols;
+            }
+
+            private String getStringSymbol(Pair<Operator<T>, Integer> symbol)
+            {
+                return symbol.getLeft().getSymbols()[symbol.getRight()];
             }
 
             @Nonnull
@@ -245,6 +275,13 @@ public class Algebra<T>
                 return new ConstantToken(index, index + string.length(), string);
             }
         };
+    }
+
+    public static <T> Collection<Collection<T>> group(List<T> list, Function<T, Object> group)
+    {
+        Multimap<Object, T> groupedSymbols = HashMultimap.create();
+        list.forEach(o -> groupedSymbols.put(group.apply(o), o));
+        return groupedSymbols.asMap().values();
     }
 
     @Nonnull
@@ -333,8 +370,7 @@ public class Algebra<T>
         @Override
         public T evaluate(@Nullable Function<String, T> input)
         {
-            if (input == null)
-                throw new NullPointerException();
+            Preconditions.checkNotNull(input);
 
             return input.apply(identifier);
         }
@@ -540,10 +576,26 @@ public class Algebra<T>
         }
     }
 
+    protected static class AmbiguousOperatorToken<T> extends SymbolTokenizer.Token
+    {
+        final List<Pair<Operator<T>, Integer>> operators;
+
+        public AmbiguousOperatorToken(int startIndex, int endIndex, List<Pair<Operator<T>, Integer>> operators)
+        {
+            super(startIndex, endIndex);
+            this.operators = Collections.unmodifiableList(operators);
+        }
+
+        public OperatorToken<T> toOperatorToken(Pair<Operator<T>, Integer> pair)
+        {
+            return new OperatorToken<T>(startIndex, endIndex, pair.getKey(), pair.getValue());
+        }
+    }
+
     protected static class OperatorToken<T> extends SymbolTokenizer.Token
     {
-        public Operator<T> operator;
-        public int symbolIndex;
+        public final Operator<T> operator;
+        public final int symbolIndex;
 
         public OperatorToken(int startIndex, int endIndex, Operator<T> operator, int symbolIndex)
         {

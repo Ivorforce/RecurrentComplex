@@ -8,6 +8,9 @@ package ivorius.reccomplex.events;
 import ivorius.reccomplex.RecurrentComplex;
 import net.minecraft.entity.Entity;
 import net.minecraft.util.BlockPos;
+import net.minecraft.util.ChatComponentTranslation;
+import net.minecraft.util.EnumChatFormatting;
+import net.minecraftforge.event.CommandEvent;
 import net.minecraftforge.fml.client.event.ConfigChangedEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
@@ -178,6 +181,20 @@ public class RCForgeEventHandler
 
             if (RecurrentComplex.config.hasChanged())
                 RecurrentComplex.config.save();
+        }
+    }
+
+    @SubscribeEvent
+    public void onCommand(CommandEvent event)
+    {
+        if (!RCConfig.canUseCommand(event.command.getCommandName(), event.sender))
+        {
+            event.setCanceled(true);
+
+            // From CommandHandler.executeCommand
+            ChatComponentTranslation chatComponent = new ChatComponentTranslation("commands.generic.permission");
+            chatComponent.getChatStyle().setColor(EnumChatFormatting.RED);
+            event.sender.addChatMessage(chatComponent);
         }
     }
 }

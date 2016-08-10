@@ -5,14 +5,21 @@
 
 package ivorius.reccomplex;
 
+import com.google.common.collect.Lists;
 import ivorius.reccomplex.structures.generic.matchers.BiomeMatcher;
+import ivorius.reccomplex.structures.generic.matchers.CommandMatcher;
 import ivorius.reccomplex.structures.generic.matchers.DimensionMatcher;
 import ivorius.reccomplex.structures.generic.matchers.ResourceMatcher;
 import ivorius.reccomplex.utils.ExpressionCache;
+import net.minecraft.command.ICommandSender;
 import net.minecraft.world.WorldProvider;
 import net.minecraft.world.biome.BiomeGenBase;
 import org.apache.commons.lang3.tuple.Pair;
 import org.apache.logging.log4j.Logger;
+
+import java.util.HashMap;
+import java.util.Map;
+import java.util.function.Consumer;
 
 import static net.minecraftforge.common.config.Configuration.CATEGORY_GENERAL;
 
@@ -38,6 +45,7 @@ public class RCConfig
     public static int baseVillageSpawnWeight;
 
     public static String commandPrefix;
+    private static final Map<String, CommandMatcher> commandMatchers = new HashMap<>();
 
     public static boolean savePlayerCache;
     public static boolean notifyAdminOnBlockCommands;
@@ -62,6 +70,17 @@ public class RCConfig
         if (configID == null || configID.equals(CATEGORY_GENERAL))
         {
             commandPrefix = RecurrentComplex.config.getString("commandPrefix", CATEGORY_GENERAL, "#", "The String that will be prefixed to every command, e.g. '#' -> '/#gen', '#paste' etc.");
+
+            commandMatchers.clear();
+            Lists.newArrayList(RecurrentComplex.config.getStringList("commandMatchers", CATEGORY_GENERAL, new String[0], "List of Command Expressions determining if a command can be executed. Example: #export:#3 | $Ivorforce")).forEach(string -> {
+                parseMap(string, parts -> {
+                    CommandMatcher value = new CommandMatcher(parts[1]);
+                    if (value.getParseException() == null)
+                        commandMatchers.put(parts[0], value);
+                    else
+                        RecurrentComplex.logger.error("Failed parsing command matcher ''" + parts[1] + "'");
+                });
+            });
 
             savePlayerCache = RecurrentComplex.config.getBoolean("savePlayerCache", CATEGORY_GENERAL, true, "Whether player caches like the clipboard and previewed operations will be saved and loaded.");
 
@@ -110,6 +129,15 @@ public class RCConfig
         RecurrentComplex.proxy.loadConfig(configID);
     }
 
+    private static void parseMap(String string, Consumer<String[]> consumer)
+    {
+        String[] parts = string.split(":", 2);
+        if (parts.length > 1)
+            consumer.accept(parts);
+        else
+            RecurrentComplex.logger.error("Failed finding key in command matcher ''" + string + "'");
+    }
+
     private static void logExpressionException(ExpressionCache<?> cache, String name, Logger logger)
     {
         if (cache.getParseException() != null)
@@ -149,5 +177,11 @@ public class RCConfig
     public static boolean isGenerationEnabled(WorldProvider provider)
     {
         return !universalDimensionMatcher.isExpressionValid() || universalDimensionMatcher.apply(provider);
+    }
+
+    public static boolean canUseCommand(String command, ICommandSender sender)
+    {
+        CommandMatcher matcher = commandMatchers.get(command);
+        return matcher == null || matcher.apply(command, sender);
     }
 }

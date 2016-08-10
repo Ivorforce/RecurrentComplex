@@ -7,7 +7,7 @@ package ivorius.reccomplex.items;
 
 import ivorius.reccomplex.RecurrentComplex;
 import ivorius.reccomplex.gui.RCGuiHandler;
-import ivorius.reccomplex.utils.IvTranslations;
+import ivorius.ivtoolkit.tools.IvTranslations;
 import ivorius.reccomplex.worldgen.inventory.GenericItemCollection.Component;
 import ivorius.reccomplex.worldgen.inventory.GenericItemCollectionRegistry;
 import net.minecraft.creativetab.CreativeTabs;

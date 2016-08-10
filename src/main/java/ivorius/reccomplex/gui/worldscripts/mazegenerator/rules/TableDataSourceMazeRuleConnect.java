@@ -8,7 +8,7 @@ package ivorius.reccomplex.gui.worldscripts.mazegenerator.rules;
 import ivorius.reccomplex.gui.table.*;
 import ivorius.reccomplex.gui.worldscripts.mazegenerator.TableDataSourceMazePathList;
 import ivorius.reccomplex.structures.generic.maze.rules.saved.MazeRuleConnect;
-import ivorius.reccomplex.utils.IvTranslations;
+import ivorius.ivtoolkit.tools.IvTranslations;
 import net.minecraft.util.EnumChatFormatting;
 
 /**

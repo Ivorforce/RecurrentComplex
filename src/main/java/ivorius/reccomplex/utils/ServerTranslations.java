@@ -5,6 +5,7 @@
 
 package ivorius.reccomplex.utils;
 
+import ivorius.ivtoolkit.tools.IvTranslations;
 import ivorius.reccomplex.RecurrentComplex;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.WrongUsageException;

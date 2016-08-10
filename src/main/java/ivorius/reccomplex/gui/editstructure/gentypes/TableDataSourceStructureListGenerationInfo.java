@@ -11,7 +11,7 @@ import ivorius.reccomplex.gui.TableDirections;
 import ivorius.reccomplex.gui.table.*;
 import ivorius.reccomplex.structures.generic.gentypes.StructureListGenerationInfo;
 import ivorius.ivtoolkit.blocks.Directions;
-import ivorius.reccomplex.utils.IvTranslations;
+import ivorius.ivtoolkit.tools.IvTranslations;
 import ivorius.reccomplex.utils.scale.Scales;
 import net.minecraft.util.EnumFacing;
 

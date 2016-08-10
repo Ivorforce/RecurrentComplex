@@ -11,7 +11,7 @@ import ivorius.reccomplex.structures.generic.matchers.BlockMatcher;
 import ivorius.reccomplex.structures.generic.matchers.DependencyMatcher;
 import ivorius.reccomplex.structures.generic.matchers.DimensionMatcher;
 import ivorius.reccomplex.utils.ExpressionCache;
-import ivorius.reccomplex.utils.IvTranslations;
+import ivorius.ivtoolkit.tools.IvTranslations;
 import net.minecraft.util.EnumChatFormatting;
 import org.apache.commons.lang3.StringUtils;
 

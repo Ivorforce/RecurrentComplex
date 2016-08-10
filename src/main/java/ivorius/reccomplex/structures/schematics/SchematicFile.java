@@ -6,11 +6,11 @@
 package ivorius.reccomplex.structures.schematics;
 
 import ivorius.ivtoolkit.blocks.BlockArea;
-import ivorius.ivtoolkit.tools.Mover;
+import ivorius.ivtoolkit.transform.Mover;
 import ivorius.reccomplex.utils.BlockStates;
 import net.minecraft.util.BlockPos;
 import net.minecraft.block.state.IBlockState;
-import ivorius.reccomplex.utils.IvStreams;
+import ivorius.ivtoolkit.tools.IvStreams;
 import ivorius.reccomplex.utils.RCAccessorEntity;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;

@@ -9,7 +9,7 @@ import ivorius.reccomplex.gui.GuiValidityStateIndicator;
 import ivorius.reccomplex.gui.TableDataSourceExpression;
 import ivorius.reccomplex.gui.table.*;
 import ivorius.reccomplex.structures.generic.transformers.TransformerNatural;
-import ivorius.reccomplex.utils.IvTranslations;
+import ivorius.ivtoolkit.tools.IvTranslations;
 import ivorius.reccomplex.utils.scale.Scales;
 import net.minecraft.block.Block;
 import net.minecraft.util.ResourceLocation;

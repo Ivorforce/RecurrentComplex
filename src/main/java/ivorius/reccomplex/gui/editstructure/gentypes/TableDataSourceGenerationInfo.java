@@ -8,7 +8,7 @@ package ivorius.reccomplex.gui.editstructure.gentypes;
 import ivorius.reccomplex.gui.table.*;
 import ivorius.reccomplex.structures.StructureInfos;
 import ivorius.reccomplex.structures.generic.gentypes.StructureGenerationInfo;
-import ivorius.reccomplex.utils.IvTranslations;
+import ivorius.ivtoolkit.tools.IvTranslations;
 
 /**
  * Created by lukas on 26.03.15.

@@ -8,6 +8,8 @@ package ivorius.reccomplex.structures.generic;
 import com.google.gson.*;
 import ivorius.ivtoolkit.math.IvVecMathHelper;
 import ivorius.ivtoolkit.tools.*;
+import ivorius.ivtoolkit.transform.Mover;
+import ivorius.ivtoolkit.transform.PosTransformer;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.EntityList;
 import net.minecraft.util.BlockPos;

@@ -9,7 +9,7 @@ import ivorius.reccomplex.gui.table.*;
 import ivorius.reccomplex.scripts.world.WorldScript;
 import ivorius.reccomplex.scripts.world.WorldScriptRegistry;
 import ivorius.reccomplex.utils.IvClasses;
-import ivorius.reccomplex.utils.IvTranslations;
+import ivorius.ivtoolkit.tools.IvTranslations;
 import net.minecraft.util.StatCollector;
 import org.apache.commons.lang3.StringUtils;
 

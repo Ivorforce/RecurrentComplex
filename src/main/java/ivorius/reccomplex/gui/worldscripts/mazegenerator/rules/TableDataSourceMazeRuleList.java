@@ -10,7 +10,7 @@ import ivorius.reccomplex.structures.generic.maze.SavedMazePathConnection;
 import ivorius.reccomplex.structures.generic.maze.rules.MazeRule;
 import ivorius.reccomplex.structures.generic.maze.rules.MazeRuleRegistry;
 import ivorius.reccomplex.utils.IvClasses;
-import ivorius.reccomplex.utils.IvTranslations;
+import ivorius.ivtoolkit.tools.IvTranslations;
 import net.minecraft.util.StatCollector;
 import org.apache.commons.lang3.StringUtils;
 

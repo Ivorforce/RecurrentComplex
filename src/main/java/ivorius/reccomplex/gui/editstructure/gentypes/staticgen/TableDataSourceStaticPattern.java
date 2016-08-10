@@ -7,7 +7,7 @@ package ivorius.reccomplex.gui.editstructure.gentypes.staticgen;
 
 import ivorius.reccomplex.gui.table.*;
 import ivorius.reccomplex.structures.generic.gentypes.StaticGenerationInfo;
-import ivorius.reccomplex.utils.IvTranslations;
+import ivorius.ivtoolkit.tools.IvTranslations;
 
 /**
  * Created by lukas on 05.06.14.

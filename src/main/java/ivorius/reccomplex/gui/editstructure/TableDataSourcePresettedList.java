@@ -7,7 +7,7 @@ package ivorius.reccomplex.gui.editstructure;
 
 import ivorius.reccomplex.gui.table.*;
 import ivorius.reccomplex.utils.PresettedList;
-import ivorius.reccomplex.utils.IvTranslations;
+import ivorius.ivtoolkit.tools.IvTranslations;
 import net.minecraft.util.StatCollector;
 
 import java.util.ArrayList;

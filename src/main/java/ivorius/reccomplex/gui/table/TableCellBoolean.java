@@ -5,7 +5,7 @@
 
 package ivorius.reccomplex.gui.table;
 
-import ivorius.reccomplex.utils.IvTranslations;
+import ivorius.ivtoolkit.tools.IvTranslations;
 import net.minecraft.client.gui.GuiButton;
 
 /**

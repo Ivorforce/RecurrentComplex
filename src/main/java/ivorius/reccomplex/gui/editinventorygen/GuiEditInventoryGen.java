@@ -13,7 +13,7 @@ import ivorius.reccomplex.gui.InventoryWatcher;
 import ivorius.reccomplex.gui.TableDataSourceExpression;
 import ivorius.reccomplex.gui.table.Bounds;
 import ivorius.reccomplex.network.PacketEditInventoryGenerator;
-import ivorius.reccomplex.utils.IvTranslations;
+import ivorius.ivtoolkit.tools.IvTranslations;
 import ivorius.reccomplex.utils.RangeHelper;
 import ivorius.reccomplex.worldgen.inventory.GenericItemCollection;
 import ivorius.reccomplex.worldgen.inventory.GenericItemCollection.Component;

@@ -5,6 +5,8 @@
 
 package ivorius.reccomplex.utils;
 
+import ivorius.ivtoolkit.tools.IvStreams;
+
 import java.util.Iterator;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;

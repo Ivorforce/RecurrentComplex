@@ -5,6 +5,7 @@
 
 package ivorius.reccomplex.utils;
 
+import ivorius.ivtoolkit.tools.IvStreams;
 import net.minecraft.world.ChunkCoordIntPair;
 
 import java.util.stream.IntStream;

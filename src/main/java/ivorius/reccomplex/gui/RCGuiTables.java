@@ -6,7 +6,7 @@
 package ivorius.reccomplex.gui;
 
 import ivorius.reccomplex.gui.table.*;
-import ivorius.reccomplex.utils.IvTranslations;
+import ivorius.ivtoolkit.tools.IvTranslations;
 import ivorius.reccomplex.utils.scale.Scales;
 
 /**

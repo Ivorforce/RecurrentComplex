@@ -158,6 +158,7 @@ commands.rcfiles.usage=/#files
 
 commands.rcdecorate.usage=/#decorate <x min> <z min> <x max> <z max>
 commands.rcdecorateone.usage=/#decorateone [x] [z]
+commands.rcdecorateone.none=No suitable structures found!
 
 inventoryGen.vanilla=Vanilla Generator
 inventoryGen.custom=Custom Generator

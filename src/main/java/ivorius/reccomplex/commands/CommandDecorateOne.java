@@ -48,7 +48,10 @@ public class CommandDecorateOne extends CommandBase
         else
             coord = BlockSurfacePos.from(commandSender.getPosition());
 
-        WorldGenStructures.generateRandomStructureInChunk(commandSender.getEntityWorld().rand, coord.chunkCoord(), commandSender.getEntityWorld(), commandSender.getEntityWorld().getChunkProvider(), commandSender.getEntityWorld().getChunkProvider(), commandSender.getEntityWorld().getBiomeGenForCoords(coord.blockPos(0)));
+        if (!WorldGenStructures.generateRandomStructureInChunk(commandSender.getEntityWorld().rand, coord.chunkCoord(), commandSender.getEntityWorld(), commandSender.getEntityWorld().getChunkProvider(), commandSender.getEntityWorld().getChunkProvider(), commandSender.getEntityWorld().getBiomeGenForCoords(coord.blockPos(0))))
+        {
+            throw ServerTranslations.commandException("commands.rcdecorateone.none");
+        }
     }
 
     @Override

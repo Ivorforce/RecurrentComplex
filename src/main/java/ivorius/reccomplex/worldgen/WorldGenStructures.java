@@ -55,12 +55,19 @@ public class WorldGenStructures implements IWorldGenerator
             generateStructureInChunk(random, chunkPos, world, pair);
     }
 
-    public static void generateRandomStructureInChunk(Random random, ChunkCoordIntPair chunkPos, World world, IChunkProvider chunkGenerator, IChunkProvider chunkProvider, BiomeGenBase biomeGen)
+    public static boolean generateRandomStructureInChunk(Random random, ChunkCoordIntPair chunkPos, World world, IChunkProvider chunkGenerator, IChunkProvider chunkProvider, BiomeGenBase biomeGen)
     {
         StructureSelector structureSelector = StructureRegistry.INSTANCE.getStructureSelector(biomeGen, world.provider);
 
         Pair<StructureInfo, NaturalGenerationInfo> pair = structureSelector.selectOne(random, chunkPos, world, chunkGenerator, chunkProvider);
-        generateStructureInChunk(random, chunkPos, world, pair);
+
+        if (pair != null)
+        {
+            generateStructureInChunk(random, chunkPos, world, pair);
+            return true;
+        }
+
+        return false;
     }
 
     protected static void generateStructureInChunk(Random random, ChunkCoordIntPair chunkPos, World world, Pair<StructureInfo, NaturalGenerationInfo> pair)
@@ -69,7 +76,7 @@ public class WorldGenStructures implements IWorldGenerator
         NaturalGenerationInfo naturalGenInfo = pair.getRight();
         String structureName = StructureRegistry.INSTANCE.structureID(structureInfo);
 
-        BlockSurfacePos genPos = new BlockSurfacePos(chunkPos.chunkXPos << 4 + random.nextInt(16), chunkPos.chunkZPos << 4 + random.nextInt(16));
+        BlockSurfacePos genPos = new BlockSurfacePos((chunkPos.chunkXPos << 4) + random.nextInt(16), (chunkPos.chunkZPos << 4) + random.nextInt(16));
 
         if (!naturalGenInfo.hasLimitations() || naturalGenInfo.getLimitations().areResolved(world, structureName))
             StructureGenerator.randomInstantly(world, random, structureInfo, naturalGenInfo.ySelector, genPos, true, structureName);

@@ -25,6 +25,7 @@ import net.minecraft.world.biome.BiomeGenBase;
 import net.minecraft.world.chunk.IChunkProvider;
 import org.apache.commons.lang3.tuple.Pair;
 
+import javax.annotation.Nullable;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -108,6 +109,7 @@ public class StructureSelector
                 .collect(Collectors.toList());
     }
 
+    @Nullable
     public Pair<StructureInfo, NaturalGenerationInfo> selectOne(Random random, ChunkCoordIntPair chunkPos, World world, IChunkProvider chunkGenerator, IChunkProvider chunkProvider)
     {
         BiomeGenBase biome = world.getBiomeGenForCoords(chunkPos.getBlock(0, 0, 0));
@@ -115,7 +117,10 @@ public class StructureSelector
         List<WeightedSelector.SimpleItem<String>> list = weightedStructureInfos.keySet().stream()
                 .map(category -> new WeightedSelector.SimpleItem<>(generationChance(category, biome, world.provider), category)).collect(Collectors.toList());
 
-        return WeightedSelector.select(random, weightedStructureInfos.get(WeightedSelector.select(random, list)));
+        if (WeightedSelector.canSelect(list))
+            return WeightedSelector.select(random, weightedStructureInfos.get(WeightedSelector.select(random, list)));
+        else
+            return null;
     }
 
     public interface Category

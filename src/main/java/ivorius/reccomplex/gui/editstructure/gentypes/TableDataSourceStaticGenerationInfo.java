@@ -8,14 +8,17 @@ package ivorius.reccomplex.gui.editstructure.gentypes;
 import com.google.common.primitives.Ints;
 import ivorius.reccomplex.gui.GuiValidityStateIndicator;
 import ivorius.reccomplex.gui.TableDataSourceExpression;
+import ivorius.reccomplex.gui.editstructure.TableDataSourceNaturalGenLimitation;
 import ivorius.reccomplex.gui.editstructure.TableDataSourceYSelector;
+import ivorius.reccomplex.gui.editstructure.gentypes.staticgen.TableDataSourceStaticPattern;
 import ivorius.reccomplex.gui.table.*;
+import ivorius.reccomplex.structures.generic.gentypes.NaturalGenerationInfo;
 import ivorius.reccomplex.structures.generic.gentypes.StaticGenerationInfo;
 
 /**
  * Created by lukas on 07.10.14.
  */
-public class TableDataSourceStaticGenerationInfo extends TableDataSourceSegmented implements TableCellPropertyListener
+public class TableDataSourceStaticGenerationInfo extends TableDataSourceSegmented implements TableCellPropertyListener, TableCellActionListener
 {
     private TableNavigator navigator;
     private TableDelegate tableDelegate;
@@ -36,7 +39,7 @@ public class TableDataSourceStaticGenerationInfo extends TableDataSourceSegmente
     @Override
     public int numberOfSegments()
     {
-        return 4;
+        return 5;
     }
 
     @Override
@@ -46,6 +49,8 @@ public class TableDataSourceStaticGenerationInfo extends TableDataSourceSegmente
         {
             case 1:
                 return 3;
+            case 4:
+                return 1;
         }
         return super.sizeOfSegment(segment);
     }
@@ -65,20 +70,23 @@ public class TableDataSourceStaticGenerationInfo extends TableDataSourceSegmente
                 }
                 else if (index == 1)
                 {
-                    TableCellString cell = new TableCellString("positionX", String.valueOf(generationInfo.positionX));
-                    cell.setShowsValidityState(true);
-                    cell.setValidityState(GuiValidityStateIndicator.State.VALID);
+                    TableCellStringInt cell = new TableCellStringInt("positionX", generationInfo.positionX);
                     cell.addPropertyListener(this);
                     return new TableElementCell("Position (x)", cell);
                 }
                 else if (index == 2)
                 {
-                    TableCellString cell = new TableCellString("positionZ", String.valueOf(generationInfo.positionZ));
-                    cell.setShowsValidityState(true);
-                    cell.setValidityState(GuiValidityStateIndicator.State.VALID);
+                    TableCellStringInt cell = new TableCellStringInt("positionZ", generationInfo.positionZ);
                     cell.addPropertyListener(this);
                     return new TableElementCell("Position (z)", cell);
                 }
+                break;
+            }
+            case 4:
+            {
+                TableCellButton cell = new TableCellButton("editPattern", new TableCellButton.Action("edit", "Edit", generationInfo.hasPattern()), generationInfo.hasPattern() ? new TableCellButton.Action("remove", "Remove") : new TableCellButton.Action("add", "Add"));
+                cell.addListener(this);
+                return new TableElementCell("Pattern", cell);
             }
         }
 
@@ -94,20 +102,39 @@ public class TableDataSourceStaticGenerationInfo extends TableDataSourceSegmente
             {
                 case "positionX":
                 {
-                    Integer val = Ints.tryParse((String) cell.getPropertyValue());
-                    generationInfo.positionX = val != null ? val : 0;
-                    ((TableCellString) cell).setValidityState(val != null ? GuiValidityStateIndicator.State.VALID : GuiValidityStateIndicator.State.INVALID);
+                    generationInfo.positionX = (Integer) cell.getPropertyValue();
                     break;
                 }
                 case "positionZ":
                 {
-                    Integer val = Ints.tryParse((String) cell.getPropertyValue());
-                    generationInfo.positionZ = val != null ? val : 0;
-                    ((TableCellString) cell).setValidityState(val != null ? GuiValidityStateIndicator.State.VALID : GuiValidityStateIndicator.State.INVALID);
+                    generationInfo.positionZ = (Integer) cell.getPropertyValue();
                     break;
                 }
                 case "relativeToSpawn":
                     generationInfo.relativeToSpawn = (boolean) cell.getPropertyValue();
+                    break;
+            }
+        }
+    }
+
+    @Override
+    public void actionPerformed(TableCell cell, String actionID)
+    {
+        if ("editPattern".equals(cell.getID()))
+        {
+            switch (actionID)
+            {
+                case "edit":
+                    GuiTable table = new GuiTable(tableDelegate, new TableDataSourceStaticPattern(generationInfo.pattern, tableDelegate));
+                    navigator.pushTable(table);
+                    break;
+                case "remove":
+                    generationInfo.pattern = null;
+                    tableDelegate.reloadData();
+                    break;
+                case "add":
+                    generationInfo.pattern = new StaticGenerationInfo.Pattern();
+                    tableDelegate.reloadData();
                     break;
             }
         }

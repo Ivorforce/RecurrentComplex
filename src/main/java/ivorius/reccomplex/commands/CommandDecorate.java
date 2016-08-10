@@ -7,6 +7,8 @@ package ivorius.reccomplex.commands;
 
 import ivorius.ivtoolkit.blocks.BlockArea;
 import ivorius.reccomplex.RCConfig;
+import ivorius.reccomplex.utils.BlockSurfaceArea;
+import ivorius.reccomplex.utils.BlockSurfacePos;
 import ivorius.reccomplex.utils.ServerTranslations;
 import ivorius.reccomplex.worldgen.WorldGenStructures;
 import net.minecraft.command.CommandBase;
@@ -14,6 +16,7 @@ import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.command.WrongUsageException;
 import net.minecraft.util.BlockPos;
+import net.minecraft.world.ChunkCoordIntPair;
 
 import javax.annotation.Nonnull;
 import java.util.List;
@@ -46,16 +49,16 @@ public class CommandDecorate extends CommandBase
         if (args.length < 4)
             throw new WrongUsageException("commands.decorate.usage");
 
-        BlockArea area = new BlockArea(RCCommands.parseXZBlockPos(commandSender, args, 0, false), RCCommands.parseXZBlockPos(commandSender, args, 2, false));
-        BlockArea chunkArea =  new BlockArea(getChunkPos(area.getPoint1()), getChunkPos(area.getPoint2()));
+        BlockSurfaceArea area = new BlockSurfaceArea(RCCommands.parseSurfaceBlockPos(commandSender, args, 0, false), RCCommands.parseSurfaceBlockPos(commandSender, args, 2, false));
+        BlockSurfaceArea chunkArea =  new BlockSurfaceArea(getChunkPos(area.getPoint1()), getChunkPos(area.getPoint2()));
 
-        chunkArea.forEach(coord -> WorldGenStructures.generateRandomStructuresInChunk(commandSender.getEntityWorld().rand, coord.getX(), coord.getZ(), commandSender.getEntityWorld(), commandSender.getEntityWorld().getChunkProvider(), commandSender.getEntityWorld().getChunkProvider(), commandSender.getEntityWorld().getBiomeGenForCoords(coord)));
+        chunkArea.forEach(coord -> WorldGenStructures.generateRandomStructuresInChunk(commandSender.getEntityWorld().rand, new ChunkCoordIntPair(coord.x, coord.z), commandSender.getEntityWorld(), commandSender.getEntityWorld().getChunkProvider(), commandSender.getEntityWorld().getChunkProvider(), commandSender.getEntityWorld().getBiomeGenForCoords(coord.blockPos(0))));
     }
 
     @Nonnull
-    protected static BlockPos getChunkPos(BlockPos point)
+    protected static BlockSurfacePos getChunkPos(BlockSurfacePos point)
     {
-        return new BlockPos(point.getX() >> 4, point.getY() >> 4, point.getZ() >> 4);
+        return new BlockSurfacePos(point.getX() >> 4, point.getZ() >> 4);
     }
 
     @Override

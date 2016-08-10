@@ -6,6 +6,7 @@
 package ivorius.reccomplex.structures.generic.gentypes;
 
 import com.google.gson.*;
+import com.google.gson.annotations.SerializedName;
 import ivorius.reccomplex.gui.editstructure.gentypes.TableDataSourceStaticGenerationInfo;
 import ivorius.reccomplex.gui.table.TableDataSource;
 import ivorius.reccomplex.gui.table.TableDelegate;
@@ -13,10 +14,12 @@ import ivorius.reccomplex.gui.table.TableNavigator;
 import ivorius.reccomplex.json.JsonUtils;
 import ivorius.reccomplex.structures.generic.GenericYSelector;
 import ivorius.reccomplex.structures.generic.matchers.DimensionMatcher;
+import ivorius.reccomplex.utils.BlockSurfacePos;
 import net.minecraft.util.BlockPos;
 import net.minecraft.util.StatCollector;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.lang.reflect.Type;
 
 /**
@@ -35,12 +38,15 @@ public class StaticGenerationInfo extends StructureGenerationInfo
     public int positionX;
     public int positionZ;
 
+    @Nullable
+    public Pattern pattern;
+
     public StaticGenerationInfo()
     {
-        this(randomID("Static"), new GenericYSelector(GenericYSelector.SelectionMode.SURFACE, 0, 0), new DimensionMatcher("0"), true, 0, 0);
+        this(randomID("Static"), new GenericYSelector(GenericYSelector.SelectionMode.SURFACE, 0, 0), new DimensionMatcher("0"), true, 0, 0, null);
     }
 
-    public StaticGenerationInfo(String id, GenericYSelector ySelector, DimensionMatcher dimensionMatcher, boolean relativeToSpawn, int positionX, int positionZ)
+    public StaticGenerationInfo(String id, GenericYSelector ySelector, DimensionMatcher dimensionMatcher, boolean relativeToSpawn, int positionX, int positionZ, Pattern pattern)
     {
         this.id = id;
         this.ySelector = ySelector;
@@ -48,6 +54,7 @@ public class StaticGenerationInfo extends StructureGenerationInfo
         this.relativeToSpawn = relativeToSpawn;
         this.positionX = positionX;
         this.positionZ = positionZ;
+        this.pattern = pattern;
     }
 
     public static Gson createGson()
@@ -81,7 +88,9 @@ public class StaticGenerationInfo extends StructureGenerationInfo
     @Override
     public String displayString()
     {
-        if (relativeToSpawn)
+        if (hasPattern())
+            return StatCollector.translateToLocalFormatted("reccomplex.generationInfo.static.pattern", String.valueOf(pattern.repeatX), String.valueOf(pattern.repeatZ));
+        else if (relativeToSpawn)
             return StatCollector.translateToLocalFormatted("reccomplex.generationInfo.static.spawn", String.valueOf(positionX), String.valueOf(positionZ));
         else
             return StatCollector.translateToLocalFormatted("reccomplex.generationInfo.static.nospawn", String.valueOf(positionX), String.valueOf(positionZ));
@@ -93,14 +102,27 @@ public class StaticGenerationInfo extends StructureGenerationInfo
         return new TableDataSourceStaticGenerationInfo(navigator, delegate, this);
     }
 
-    public int getPositionX(BlockPos spawnPos)
+    public BlockSurfacePos getPos(BlockPos spawnPos)
     {
-        return relativeToSpawn ? spawnPos.getX() + positionX : positionX;
+        return new BlockSurfacePos(relativeToSpawn ? spawnPos.getX() + positionX : positionX, relativeToSpawn ? spawnPos.getZ() + positionZ : positionZ);
     }
 
-    public int getPositionZ(BlockPos spawnPos)
+    public boolean hasPattern()
     {
-        return relativeToSpawn ? spawnPos.getZ() + positionZ : positionZ;
+        return pattern != null;
+    }
+
+    public static class Pattern
+    {
+        @SerializedName("repeatX")
+        public int repeatX = 16;
+        @SerializedName("repeatZ")
+        public int repeatZ = 16;
+
+        @SerializedName("randomShiftX")
+        public int randomShiftX = 0;
+        @SerializedName("randomShiftZ")
+        public int randomShiftZ = 0;
     }
 
     public static class Serializer implements JsonSerializer<StaticGenerationInfo>, JsonDeserializer<StaticGenerationInfo>
@@ -119,7 +141,9 @@ public class StaticGenerationInfo extends StructureGenerationInfo
             int positionX = JsonUtils.getJsonObjectIntegerFieldValueOrDefault(jsonObject, "positionX", 0);
             int positionZ = JsonUtils.getJsonObjectIntegerFieldValueOrDefault(jsonObject, "positionZ", 0);
 
-            return new StaticGenerationInfo(id, ySelector, new DimensionMatcher(dimension), relativeToSpawn, positionX, positionZ);
+            Pattern pattern = jsonObject.has("pattern") ? gson.fromJson(jsonObject.get("pattern"), Pattern.class) : null;
+
+            return new StaticGenerationInfo(id, ySelector, new DimensionMatcher(dimension), relativeToSpawn, positionX, positionZ, pattern);
         }
 
         @Override
@@ -135,6 +159,9 @@ public class StaticGenerationInfo extends StructureGenerationInfo
             jsonObject.addProperty("relativeToSpawn", src.relativeToSpawn);
             jsonObject.addProperty("positionX", src.positionX);
             jsonObject.addProperty("positionZ", src.positionZ);
+
+            if (src.pattern != null)
+                jsonObject.add("pattern", gson.toJsonTree(src.pattern));
 
             return jsonObject;
         }

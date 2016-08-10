@@ -5,6 +5,7 @@
 
 package ivorius.reccomplex.commands;
 
+import ivorius.reccomplex.utils.BlockSurfacePos;
 import net.minecraft.command.*;
 import net.minecraft.util.BlockPos;
 import net.minecraftforge.fml.common.event.FMLServerStartingEvent;
@@ -104,13 +105,13 @@ public class RCCommands
         return new BlockPos(CommandBase.parseDouble((double)blockpos.getX(), args[startIndex], -30000000, 30000000, centerBlock), CommandBase.parseDouble((double)blockpos.getY(), args[startIndex + 1], 0, 256, false), CommandBase.parseDouble((double)blockpos.getZ(), args[startIndex + 2], -30000000, 30000000, centerBlock));
     }
 
-    public static BlockPos parseXZBlockPos(ICommandSender sender, String[] args, int startIndex, boolean centerBlock) throws NumberInvalidException
+    public static BlockSurfacePos parseSurfaceBlockPos(ICommandSender sender, String[] args, int startIndex, boolean centerBlock) throws NumberInvalidException
     {
-        return parseXZBlockPos(sender.getPosition(), args, startIndex, centerBlock);
+        return parseSurfaceBlockPos(sender.getPosition(), args, startIndex, centerBlock);
     }
 
-    public static BlockPos parseXZBlockPos(BlockPos blockpos, String[] args, int startIndex, boolean centerBlock) throws NumberInvalidException
+    public static BlockSurfacePos parseSurfaceBlockPos(BlockPos blockpos, String[] args, int startIndex, boolean centerBlock) throws NumberInvalidException
     {
-        return new BlockPos(CommandBase.parseDouble((double)blockpos.getX(), args[startIndex], -30000000, 30000000, centerBlock), 0, CommandBase.parseDouble((double)blockpos.getZ(), args[startIndex + 1], -30000000, 30000000, centerBlock));
+        return BlockSurfacePos.from(new BlockPos(CommandBase.parseDouble((double)blockpos.getX(), args[startIndex], -30000000, 30000000, centerBlock), 0, CommandBase.parseDouble((double)blockpos.getZ(), args[startIndex + 1], -30000000, 30000000, centerBlock)));
     }
 }

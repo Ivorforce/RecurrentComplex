@@ -5,6 +5,7 @@
 
 package ivorius.reccomplex.commands;
 
+import ivorius.reccomplex.utils.BlockSurfacePos;
 import net.minecraft.command.CommandException;
 import net.minecraft.util.BlockPos;
 import ivorius.ivtoolkit.math.AxisAlignedTransform2D;
@@ -63,12 +64,12 @@ public class CommandGenerateStructure extends CommandBase
             throw ServerTranslations.commandException("commands.strucGen.noStructure", structureName);
         }
 
-        BlockPos coord;
+        BlockSurfacePos coord;
 
         if (args.length >= 3)
-            coord = RCCommands.parseXZBlockPos(commandSender, args, 1, false);
+            coord = RCCommands.parseSurfaceBlockPos(commandSender, args, 1, false);
         else
-            coord = commandSender.getPosition();
+            coord = BlockSurfacePos.from(commandSender.getPosition());
 
         if (structureInfo instanceof GenericStructureInfo)
         {
@@ -85,14 +86,14 @@ public class CommandGenerateStructure extends CommandBase
             if (naturalGenerationInfos.size() > 0)
                 genY = naturalGenerationInfos.get(0).ySelector.selectY(world, random, StructureInfos.structureBoundingBox(new BlockPos(genX, 0, genZ), size));
             else
-                genY = world.getHeight(coord).getY();
+                genY = world.getHeight(coord.blockPos(0)).getY();
 
-            coord = new BlockPos(genX, genY, genZ);
+            BlockPos genCoord = new BlockPos(genX, genY, genZ);
 
-            OperationRegistry.queueOperation(new OperationGenerateStructure((GenericStructureInfo) structureInfo, transform, coord, false, structureName), commandSender);
+            OperationRegistry.queueOperation(new OperationGenerateStructure((GenericStructureInfo) structureInfo, transform, genCoord, false, structureName), commandSender);
         }
         else
-            StructureGenerator.randomInstantly(world, world.rand, structureInfo, null, coord.getX(), coord.getZ(), false, structureName);
+            StructureGenerator.randomInstantly(world, world.rand, structureInfo, null, coord, false, structureName);
     }
 
     @Override

@@ -11,7 +11,6 @@ import com.google.common.collect.Sets;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonSyntaxException;
-import net.minecraftforge.fml.common.eventhandler.Event;
 import ivorius.reccomplex.RCConfig;
 import ivorius.reccomplex.RecurrentComplex;
 import ivorius.reccomplex.events.RCEventBus;
@@ -21,23 +20,29 @@ import ivorius.reccomplex.json.SerializableStringTypeRegistry;
 import ivorius.reccomplex.structures.generic.GenericStructureInfo;
 import ivorius.reccomplex.structures.generic.gentypes.*;
 import ivorius.reccomplex.structures.generic.transformers.Transformer;
+import ivorius.reccomplex.utils.BlockSurfacePos;
+import ivorius.reccomplex.utils.Chunks;
 import ivorius.reccomplex.utils.CustomizableBiMap;
 import ivorius.reccomplex.utils.CustomizableMap;
 import ivorius.reccomplex.worldgen.StructureSelector;
 import ivorius.reccomplex.worldgen.villages.GenericVillageCreationHandler;
 import ivorius.reccomplex.worldgen.villages.TemporaryVillagerRegistry;
 import net.minecraft.util.BlockPos;
+import net.minecraft.util.EnumFacing;
+import net.minecraft.world.ChunkCoordIntPair;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldProvider;
 import net.minecraft.world.biome.BiomeGenBase;
 import net.minecraft.world.gen.structure.MapGenStructureIO;
-import net.minecraft.util.EnumFacing;
+import net.minecraftforge.fml.common.eventhandler.Event;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
+import org.apache.commons.lang3.tuple.Triple;
 
 import java.util.*;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * Created by lukas on 24.05.14.
@@ -255,24 +260,29 @@ public class StructureRegistry
 
     public Collection<Pair<StructureInfo, MazeGenerationInfo>> getStructuresInMaze(final String mazeID)
     {
-        return getStructureGenerations(MazeGenerationInfo.class, input -> {
+        return getStructureGenerations(MazeGenerationInfo.class, input ->
+        {
             MazeGenerationInfo info = input.getRight();
             return mazeID.equals(info.mazeID) && info.mazeComponent.isValid();
         });
     }
 
-    private boolean chunkContains(int chunkX, int chunkZ, int x, int z)
+    public Stream<Triple<StructureInfo, StaticGenerationInfo, BlockSurfacePos>> getStaticStructuresAt(ChunkCoordIntPair chunkPos, final World world, final BlockPos spawnPos)
     {
-        return (x >> 4) == chunkX && (z >> 4) == chunkZ;
-    }
-
-    public Collection<Pair<StructureInfo, StaticGenerationInfo>> getStaticStructuresAt(final int chunkX, final int chunkZ, final World world, final BlockPos spawnPos)
-    {
-        return getStructureGenerations(StaticGenerationInfo.class, input -> {
+        Collection<Pair<StructureInfo, StaticGenerationInfo>> statics = getStructureGenerations(StaticGenerationInfo.class, input ->
+        {
             StaticGenerationInfo info = input.getRight();
+
             return info.dimensionMatcher.apply(world.provider)
-                    && chunkContains(chunkX, chunkZ, info.getPositionX(spawnPos), info.getPositionZ(spawnPos)
-            );
+                    && (info.pattern != null || Chunks.contains(chunkPos, info.getPos(spawnPos)));
+        });
+
+        return statics.stream().flatMap(pair ->
+        {
+            StaticGenerationInfo info = pair.getRight();
+            return info.hasPattern()
+                    ? Chunks.repeatIntersections(chunkPos, info.getPos(spawnPos), info.pattern.repeatX, info.pattern.repeatZ).map(pos -> Triple.of(pair.getLeft(), info, pos))
+                    : Stream.of(Triple.of(pair.getLeft(), info, info.getPos(spawnPos)));
         });
     }
 

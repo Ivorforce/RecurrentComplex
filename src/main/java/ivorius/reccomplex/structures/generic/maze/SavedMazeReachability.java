@@ -151,7 +151,7 @@ public class SavedMazeReachability implements NBTCompoundObject
     {
         NBTTagLists.writeTo(compound, "groups", Lists.transform(groups, NBTCompoundObjects::writeList));
 
-        NBTTagLists.writeCompoundsTo(compound, "crossConnections", Lists.transform(crossConnections, input -> {
+        NBTTagLists.writeTo(compound, "crossConnections", Lists.transform(crossConnections, input -> {
             NBTTagCompound compound1 = new NBTTagCompound();
             NBTCompoundObjects.writeTo(compound1, "key", input.getKey());
             NBTCompoundObjects.writeTo(compound1, "val", input.getValue());

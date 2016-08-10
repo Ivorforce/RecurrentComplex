@@ -220,7 +220,7 @@ public class WorldScriptMazeGenerator implements WorldScript<WorldScriptMazeGene
 
         compound.setIntArray("roomSize", roomSize);
 
-        NBTTagLists.writeCompoundsTo(compound, "rules", rules.stream().map(MazeRuleRegistry.INSTANCE::write).collect(Collectors.toList()));
+        NBTTagLists.writeTo(compound, "rules", rules.stream().map(MazeRuleRegistry.INSTANCE::write).collect(Collectors.toList()));
     }
 
     @Override

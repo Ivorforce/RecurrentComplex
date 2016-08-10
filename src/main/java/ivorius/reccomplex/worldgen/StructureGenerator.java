@@ -5,6 +5,7 @@
 
 package ivorius.reccomplex.worldgen;
 
+import ivorius.reccomplex.utils.BlockSurfacePos;
 import net.minecraft.util.BlockPos;
 import ivorius.ivtoolkit.math.AxisAlignedTransform2D;
 import ivorius.reccomplex.RCConfig;
@@ -64,15 +65,15 @@ public class StructureGenerator
         structureInfo.generate(context, structureInfo.prepareInstanceData(new StructurePrepareContext(context.random, context.transform, context.boundingBox, context.generateAsSource)));
     }
 
-    public static int randomInstantly(World world, Random random, StructureInfo info, @Nullable YSelector ySelector, int x, int z, boolean suggest, String structureName)
+    public static int randomInstantly(World world, Random random, StructureInfo info, @Nullable YSelector ySelector, BlockSurfacePos pos, boolean suggest, String structureName)
     {
         AxisAlignedTransform2D transform = AxisAlignedTransform2D.from(info.isRotatable() ? random.nextInt(4) : 0, info.isMirrorable() && random.nextBoolean());
 
         int[] size = StructureInfos.structureSize(info, transform);
 
-        int genX = x - size[0] / 2;
-        int genZ = z - size[2] / 2;
-        int genY = ySelector != null ? ySelector.selectY(world, random, StructureInfos.structureBoundingBox(new BlockPos(genX, 0, genZ), size)) : world.getHeight(new BlockPos(x, 0, z)).getY();
+        int genX = pos.x - size[0] / 2;
+        int genZ = pos.z - size[2] / 2;
+        int genY = ySelector != null ? ySelector.selectY(world, random, StructureInfos.structureBoundingBox(new BlockPos(genX, 0, genZ), size)) : world.getHeight(pos.blockPos(0)).getY();
         BlockPos coord = new BlockPos(genX, genY, genZ);
 
         instantly(info, world, random, coord, transform, 0, suggest, structureName, false);

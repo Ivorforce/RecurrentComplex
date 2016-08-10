@@ -15,8 +15,10 @@ import ivorius.reccomplex.structures.generic.matchers.BiomeMatcher;
 import ivorius.reccomplex.structures.generic.gentypes.NaturalGenerationInfo;
 import ivorius.ivtoolkit.random.WeightedSelector;
 import ivorius.reccomplex.structures.generic.matchers.DimensionMatcher;
+import ivorius.reccomplex.utils.BlockSurfacePos;
 import ivorius.reccomplex.utils.CustomizableMap;
 import net.minecraft.util.BlockPos;
+import net.minecraft.world.ChunkCoordIntPair;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldProvider;
 import net.minecraft.world.biome.BiomeGenBase;
@@ -96,9 +98,9 @@ public class StructureSelector
         return 0.0f;
     }
 
-    public List<Pair<StructureInfo, NaturalGenerationInfo>> generatedStructures(Random random, int chunkX, int chunkZ, World world, IChunkProvider chunkGenerator, IChunkProvider chunkProvider)
+    public List<Pair<StructureInfo, NaturalGenerationInfo>> generatedStructures(Random random, ChunkCoordIntPair chunkPos, World world, IChunkProvider chunkGenerator, IChunkProvider chunkProvider)
     {
-        BiomeGenBase biome = world.getBiomeGenForCoords(new BlockPos(chunkX * 16, 0, chunkZ * 16));
+        BiomeGenBase biome = world.getBiomeGenForCoords(chunkPos.getBlock(0, 0, 0));
 
         return weightedStructureInfos.keySet().stream()
                 .filter(category -> random.nextFloat() < generationChance(category, biome, world.provider))
@@ -106,9 +108,9 @@ public class StructureSelector
                 .collect(Collectors.toList());
     }
 
-    public Pair<StructureInfo, NaturalGenerationInfo> selectOne(Random random, int chunkX, int chunkZ, World world, IChunkProvider chunkGenerator, IChunkProvider chunkProvider)
+    public Pair<StructureInfo, NaturalGenerationInfo> selectOne(Random random, ChunkCoordIntPair chunkPos, World world, IChunkProvider chunkGenerator, IChunkProvider chunkProvider)
     {
-        BiomeGenBase biome = world.getBiomeGenForCoords(new BlockPos(chunkX * 16, 0, chunkZ * 16));
+        BiomeGenBase biome = world.getBiomeGenForCoords(chunkPos.getBlock(0, 0, 0));
 
         List<WeightedSelector.SimpleItem<String>> list = weightedStructureInfos.keySet().stream()
                 .map(category -> new WeightedSelector.SimpleItem<>(generationChance(category, biome, world.provider), category)).collect(Collectors.toList());

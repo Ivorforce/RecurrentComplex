@@ -10,6 +10,7 @@ import ivorius.ivtoolkit.math.AxisAlignedTransform2D;
 import ivorius.reccomplex.gui.GuiValidityStateIndicator;
 import ivorius.reccomplex.structures.generic.gentypes.StructureGenerationInfo;
 import net.minecraft.util.Vec3i;
+import net.minecraft.world.ChunkCoordIntPair;
 import net.minecraft.world.gen.structure.StructureBoundingBox;
 
 /**
@@ -48,9 +49,9 @@ public class StructureInfos
         return coord;
     }
 
-    public static StructureBoundingBox chunkBoundingBox(int chunkX, int chunkZ)
+    public static StructureBoundingBox chunkBoundingBox(ChunkCoordIntPair chunkPos)
     {
-        return new StructureBoundingBox(chunkX << 4, chunkZ << 4, chunkX << 4 + 15, chunkZ << 4 + 15);
+        return new StructureBoundingBox(chunkPos.chunkXPos << 4, chunkPos.chunkZPos << 4, chunkPos.chunkXPos << 4 + 15, chunkPos.chunkZPos << 4 + 15);
     }
 
     public static StructureBoundingBox intersection(StructureBoundingBox bb1, StructureBoundingBox bb2)

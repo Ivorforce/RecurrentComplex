@@ -6,6 +6,7 @@
 package ivorius.reccomplex.commands;
 
 import ivorius.reccomplex.RCConfig;
+import ivorius.reccomplex.utils.BlockSurfacePos;
 import ivorius.reccomplex.utils.ServerTranslations;
 import ivorius.reccomplex.worldgen.WorldGenStructures;
 import net.minecraft.command.CommandBase;
@@ -40,14 +41,14 @@ public class CommandDecorateOne extends CommandBase
     @Override
     public void processCommand(ICommandSender commandSender, String[] args) throws CommandException
     {
-        BlockPos coord;
+        BlockSurfacePos coord;
 
         if (args.length >= 2)
-            coord = RCCommands.parseXZBlockPos(commandSender, args, 0, false);
+            coord = RCCommands.parseSurfaceBlockPos(commandSender, args, 0, false);
         else
-            coord = commandSender.getPosition();
+            coord = BlockSurfacePos.from(commandSender.getPosition());
 
-        WorldGenStructures.generateRandomStructureInChunk(commandSender.getEntityWorld().rand, coord.getX() >> 4, coord.getZ() >> 4, commandSender.getEntityWorld(), commandSender.getEntityWorld().getChunkProvider(), commandSender.getEntityWorld().getChunkProvider(), commandSender.getEntityWorld().getBiomeGenForCoords(coord));
+        WorldGenStructures.generateRandomStructureInChunk(commandSender.getEntityWorld().rand, coord.chunkCoord(), commandSender.getEntityWorld(), commandSender.getEntityWorld().getChunkProvider(), commandSender.getEntityWorld().getChunkProvider(), commandSender.getEntityWorld().getBiomeGenForCoords(coord.blockPos(0)));
     }
 
     @Override

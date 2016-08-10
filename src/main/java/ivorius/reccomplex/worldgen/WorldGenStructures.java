@@ -42,19 +42,7 @@ public class WorldGenStructures implements IWorldGenerator
             BiomeGenBase biomeGen = world.getBiomeGenForCoords(new BlockPos(chunkX * 16, 0, chunkZ * 16));
             BlockPos spawnPos = world.getSpawnPoint();
 
-            for (Pair<StructureInfo, StaticGenerationInfo> pair : StructureRegistry.INSTANCE.getStaticStructuresAt(chunkX, chunkZ, world, spawnPos))
-            {
-                RecurrentComplex.logger.trace(String.format("Spawning static structure at x = %d, z = %d", chunkX << 4, chunkZ << 4));
-
-                StaticGenerationInfo staticGenInfo = pair.getRight();
-                StructureInfo structureInfo = pair.getLeft();
-                String structureName = StructureRegistry.INSTANCE.structureID(structureInfo);
-
-                int strucX = staticGenInfo.getPositionX(spawnPos);
-                int strucZ = staticGenInfo.getPositionZ(spawnPos);
-
-                StructureGenerator.randomInstantly(world, random, structureInfo, staticGenInfo.ySelector, strucX, strucZ, false, structureName);
-            }
+            generateStaticStructuresInChunk(random, chunkX, chunkZ, world, spawnPos);
 
             if (data.checkChunk(new ChunkCoordIntPair(chunkX, chunkZ)))
             {
@@ -67,25 +55,57 @@ public class WorldGenStructures implements IWorldGenerator
                 }
 
                 if (mayGenerate)
-                {
-                    StructureSelector structureSelector = StructureRegistry.INSTANCE.getStructureSelector(biomeGen, world.provider);
-                    List<Pair<StructureInfo, NaturalGenerationInfo>> generated = structureSelector.generatedStructures(random, chunkX, chunkZ, world, chunkGenerator, chunkProvider);
-
-                    for (Pair<StructureInfo, NaturalGenerationInfo> pair : generated)
-                    {
-                        StructureInfo structureInfo = pair.getLeft();
-                        NaturalGenerationInfo naturalGenInfo = pair.getRight();
-                        String structureName = StructureRegistry.INSTANCE.structureID(structureInfo);
-
-                        int genX = chunkX * 16 + random.nextInt(16);
-                        int genZ = chunkZ * 16 + random.nextInt(16);
-
-                        if (!naturalGenInfo.hasLimitations() || naturalGenInfo.getLimitations().areResolved(world, structureName))
-                            StructureGenerator.randomInstantly(world, random, structureInfo, naturalGenInfo.ySelector, genX, genZ, true, structureName);
-                    }
-                }
+                    generateRandomStructuresInChunk(random, chunkX, chunkZ, world, chunkGenerator, chunkProvider, biomeGen);
             }
         }
+    }
+
+    public static void generateStaticStructuresInChunk(Random random, int chunkX, int chunkZ, World world, BlockPos spawnPos)
+    {
+        for (Pair<StructureInfo, StaticGenerationInfo> pair : StructureRegistry.INSTANCE.getStaticStructuresAt(chunkX, chunkZ, world, spawnPos))
+        {
+            RecurrentComplex.logger.trace(String.format("Spawning static structure at x = %d, z = %d", chunkX << 4, chunkZ << 4));
+
+            StaticGenerationInfo staticGenInfo = pair.getRight();
+            StructureInfo structureInfo = pair.getLeft();
+            String structureName = StructureRegistry.INSTANCE.structureID(structureInfo);
+
+            int strucX = staticGenInfo.getPositionX(spawnPos);
+            int strucZ = staticGenInfo.getPositionZ(spawnPos);
+
+            StructureGenerator.randomInstantly(world, random, structureInfo, staticGenInfo.ySelector, strucX, strucZ, false, structureName);
+        }
+    }
+
+    public static void generateRandomStructuresInChunk(Random random, int chunkX, int chunkZ, World world, IChunkProvider chunkGenerator, IChunkProvider chunkProvider, BiomeGenBase biomeGen)
+    {
+        StructureSelector structureSelector = StructureRegistry.INSTANCE.getStructureSelector(biomeGen, world.provider);
+
+        List<Pair<StructureInfo, NaturalGenerationInfo>> generated = structureSelector.generatedStructures(random, chunkX, chunkZ, world, chunkGenerator, chunkProvider);
+
+        for (Pair<StructureInfo, NaturalGenerationInfo> pair : generated)
+            generateStructureInChunk(random, chunkX, chunkZ, world, pair);
+    }
+
+    public static void generateRandomStructureInChunk(Random random, int chunkX, int chunkZ, World world, IChunkProvider chunkGenerator, IChunkProvider chunkProvider, BiomeGenBase biomeGen)
+    {
+        StructureSelector structureSelector = StructureRegistry.INSTANCE.getStructureSelector(biomeGen, world.provider);
+
+        Pair<StructureInfo, NaturalGenerationInfo> pair = structureSelector.selectOne(random, chunkX, chunkZ, world, chunkGenerator, chunkProvider);
+        generateStructureInChunk(random, chunkX, chunkZ, world, pair);
+    }
+
+    protected static void generateStructureInChunk(Random random, int chunkX, int chunkZ, World world, Pair<StructureInfo, NaturalGenerationInfo> pair)
+    {
+        StructureInfo structureInfo = pair.getLeft();
+        NaturalGenerationInfo naturalGenInfo = pair.getRight();
+        String structureName = StructureRegistry.INSTANCE.structureID(structureInfo);
+
+        int genX = chunkX * 16 + random.nextInt(16);
+        int genZ = chunkZ * 16 + random.nextInt(16);
+
+        if (!naturalGenInfo.hasLimitations() || naturalGenInfo.getLimitations().areResolved(world, structureName))
+            StructureGenerator.randomInstantly(world, random, structureInfo, naturalGenInfo.ySelector, genX, genZ, true, structureName);
     }
 
     public static void generatePartialStructuresInChunk(Random random, final int chunkX, final int chunkZ, final World world, IChunkProvider chunkGenerator, IChunkProvider chunkProvider)

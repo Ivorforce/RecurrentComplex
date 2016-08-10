@@ -156,6 +156,8 @@ commands.rcsearch.lookup=Nachschlagen
 
 commands.rcfiles.usage=/#files
 
+commands.rcdecorate.usage=/#decorate [x] [y] [z]
+
 inventoryGen.vanilla=Vanilla Generator
 inventoryGen.custom=Eigener Generator
 inventoryGen.create=Erstelle neuen Generator

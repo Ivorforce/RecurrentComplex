@@ -24,6 +24,7 @@ import net.minecraft.world.chunk.IChunkProvider;
 import org.apache.commons.lang3.tuple.Pair;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * Created by lukas on 24.05.14.
@@ -97,12 +98,22 @@ public class StructureSelector
 
     public List<Pair<StructureInfo, NaturalGenerationInfo>> generatedStructures(Random random, int chunkX, int chunkZ, World world, IChunkProvider chunkGenerator, IChunkProvider chunkProvider)
     {
-        List<Pair<StructureInfo, NaturalGenerationInfo>> infos = new ArrayList<>();
         BiomeGenBase biome = world.getBiomeGenForCoords(new BlockPos(chunkX * 16, 0, chunkZ * 16));
 
-        weightedStructureInfos.keySet().stream().filter(category -> random.nextFloat() < generationChance(category, biome, world.provider)).forEach(category -> infos.add(WeightedSelector.select(random, weightedStructureInfos.get(category))));
+        return weightedStructureInfos.keySet().stream()
+                .filter(category -> random.nextFloat() < generationChance(category, biome, world.provider))
+                .map(category -> WeightedSelector.select(random, weightedStructureInfos.get(category)))
+                .collect(Collectors.toList());
+    }
 
-        return infos;
+    public Pair<StructureInfo, NaturalGenerationInfo> selectOne(Random random, int chunkX, int chunkZ, World world, IChunkProvider chunkGenerator, IChunkProvider chunkProvider)
+    {
+        BiomeGenBase biome = world.getBiomeGenForCoords(new BlockPos(chunkX * 16, 0, chunkZ * 16));
+
+        List<WeightedSelector.SimpleItem<String>> list = weightedStructureInfos.keySet().stream()
+                .map(category -> new WeightedSelector.SimpleItem<>(generationChance(category, biome, world.provider), category)).collect(Collectors.toList());
+
+        return WeightedSelector.select(random, weightedStructureInfos.get(WeightedSelector.select(random, list)));
     }
 
     public interface Category

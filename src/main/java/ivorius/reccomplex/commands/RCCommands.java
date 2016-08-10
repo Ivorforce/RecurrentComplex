@@ -83,6 +83,8 @@ public class RCCommands
         event.registerServerCommand(new CommandSearchStructure());
 
         event.registerServerCommand(new CommandBrowseFiles());
+
+        event.registerServerCommand(new CommandDecorate());
     }
 
     @Nonnull

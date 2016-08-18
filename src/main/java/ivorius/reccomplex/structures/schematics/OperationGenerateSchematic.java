@@ -6,7 +6,7 @@
 package ivorius.reccomplex.structures.schematics;
 
 import ivorius.ivtoolkit.blocks.BlockPositions;
-import net.minecraft.util.BlockPos;
+import net.minecraft.util.math.BlockPos;
 import ivorius.ivtoolkit.math.AxisAlignedTransform2D;
 import ivorius.ivtoolkit.rendering.grid.GridQuadCache;
 import ivorius.reccomplex.client.rendering.OperationRenderer;
@@ -15,6 +15,7 @@ import ivorius.reccomplex.operation.Operation;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.world.World;
 import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.world.WorldServer;
 
 /**
  * Created by lukas on 10.02.15.
@@ -38,7 +39,7 @@ public class OperationGenerateSchematic implements Operation
     }
 
     @Override
-    public void perform(World world)
+    public void perform(WorldServer world)
     {
         file.generate(world, lowerCoord);
     }

@@ -13,8 +13,8 @@ import ivorius.reccomplex.utils.ExpressionCaches;
 import ivorius.reccomplex.utils.PrefixedTypeExpressionCache;
 import ivorius.reccomplex.utils.algebra.RCBoolAlgebra;
 import joptsimple.internal.Strings;
-import net.minecraft.util.EnumChatFormatting;
-import net.minecraft.world.biome.BiomeGenBase;
+import com.mojang.realmsclient.gui.ChatFormatting;
+import net.minecraft.world.biome.Biome;
 import net.minecraftforge.common.BiomeDictionary;
 
 import javax.annotation.Nonnull;
@@ -27,13 +27,13 @@ import java.util.stream.StreamSupport;
 /**
  * Created by lukas on 19.09.14.
  */
-public class BiomeMatcher extends PrefixedTypeExpressionCache<Boolean> implements Predicate<BiomeGenBase>
+public class BiomeMatcher extends PrefixedTypeExpressionCache<Boolean> implements Predicate<Biome>
 {
     public static final String BIOME_TYPE_PREFIX = "$";
 
     public BiomeMatcher(String expression)
     {
-        super(RCBoolAlgebra.algebra(), true, EnumChatFormatting.GREEN + "Any Biome", expression);
+        super(RCBoolAlgebra.algebra(), true, ChatFormatting.GREEN + "Any Biome", expression);
 
         addType(new BiomeVariableType(""));
         addType(new BiomeDictVariableType(BIOME_TYPE_PREFIX));
@@ -44,14 +44,14 @@ public class BiomeMatcher extends PrefixedTypeExpressionCache<Boolean> implement
         return BIOME_TYPE_PREFIX + Strings.join(Lists.transform(Arrays.asList(biomeTypes), input -> input != null ? IvGsonHelper.serializedName(input) : null), " & " + BIOME_TYPE_PREFIX);
     }
 
-    public static Set<BiomeGenBase> gatherAllBiomes()
+    public static Set<Biome> gatherAllBiomes()
     {
-        Set<BiomeGenBase> set = new HashSet<>();
+        Set<Biome> set = new HashSet<>();
 
-        for (BiomeGenBase biomeGenBase : BiomeGenBase.getBiomeGenArray())
+        for (Biome biome : Biome.REGISTRY)
         {
-            if (biomeGenBase != null)
-                set.add(biomeGenBase);
+            if (biome != null)
+                set.add(biome);
         }
 
         for (BiomeDictionary.Type type : BiomeDictionary.Type.values())
@@ -83,7 +83,7 @@ public class BiomeMatcher extends PrefixedTypeExpressionCache<Boolean> implement
     }
 
     @Override
-    public boolean apply(final BiomeGenBase input)
+    public boolean apply(final Biome input)
     {
         return evaluate(input);
     }
@@ -98,13 +98,13 @@ public class BiomeMatcher extends PrefixedTypeExpressionCache<Boolean> implement
         @Override
         public Boolean evaluate(String var, Object... args)
         {
-            return ((BiomeGenBase) args[0]).biomeName.equals(var);
+            return ((Biome) args[0]).getBiomeName().equals(var);
         }
 
         @Override
         public boolean isKnown(final String var, final Object... args)
         {
-            return StreamSupport.stream(((Iterable<BiomeGenBase>) args[0]).spliterator(), false).anyMatch(input -> input.biomeName.equals(var));
+            return StreamSupport.stream(((Iterable<Biome>) args[0]).spliterator(), false).anyMatch(input -> input.getBiomeName().equals(var));
         }
     }
 
@@ -119,7 +119,7 @@ public class BiomeMatcher extends PrefixedTypeExpressionCache<Boolean> implement
         public Boolean evaluate(String var, Object... args)
         {
             BiomeDictionary.Type type = RCGsonHelper.enumForNameIgnoreCase(var, BiomeDictionary.Type.values());
-            return type != null && BiomeDictionary.isBiomeOfType((BiomeGenBase) args[0], type);
+            return type != null && BiomeDictionary.isBiomeOfType((Biome) args[0], type);
         }
 
         @Override

@@ -13,7 +13,7 @@ import ivorius.reccomplex.structures.generic.matchers.ResourceMatcher;
 import ivorius.reccomplex.utils.ExpressionCache;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.world.WorldProvider;
-import net.minecraft.world.biome.BiomeGenBase;
+import net.minecraft.world.biome.Biome;
 import org.apache.commons.lang3.tuple.Pair;
 import org.apache.logging.log4j.Logger;
 
@@ -169,7 +169,7 @@ public class RCConfig
         return inventoryGeneratorGenerationMatcher.apply(id, domain);
     }
 
-    public static boolean isGenerationEnabled(BiomeGenBase biome)
+    public static boolean isGenerationEnabled(Biome biome)
     {
         return !universalBiomeMatcher.isExpressionValid() || universalBiomeMatcher.apply(biome);
     }

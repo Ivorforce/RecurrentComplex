@@ -15,7 +15,7 @@ public class MaterialNegativeSpace extends Material
 {
     public MaterialNegativeSpace()
     {
-        super(MapColor.airColor);
+        super(MapColor.AIR);
 
         setReplaceable();
     }

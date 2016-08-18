@@ -5,8 +5,8 @@
 
 package ivorius.reccomplex.utils;
 
-import net.minecraft.util.BlockPos;
-import net.minecraft.world.ChunkCoordIntPair;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.ChunkPos;
 
 /**
  * Created by lukas on 10.08.16.
@@ -28,7 +28,7 @@ public class BlockSurfacePos
         this.z = z;
     }
 
-    public static BlockSurfacePos from(ChunkCoordIntPair chunkCoords, int x, int z)
+    public static BlockSurfacePos from(ChunkPos chunkCoords, int x, int z)
     {
         return new BlockSurfacePos(chunkCoords.chunkXPos << 4 + x, chunkCoords.chunkZPos << 4 + z);
     }
@@ -38,9 +38,9 @@ public class BlockSurfacePos
         return new BlockSurfacePos(pos.getX(), pos.getZ());
     }
 
-    public ChunkCoordIntPair chunkCoord()
+    public ChunkPos chunkCoord()
     {
-        return new ChunkCoordIntPair(x >> 4, z >> 4);
+        return new ChunkPos(x >> 4, z >> 4);
     }
 
     public BlockPos blockPos(int y)
@@ -79,14 +79,14 @@ public class BlockSurfacePos
         {
             return true;
         }
-        else if (!(p_equals_1_ instanceof ChunkCoordIntPair))
+        else if (!(p_equals_1_ instanceof ChunkPos))
         {
             return false;
         }
         else
         {
-            ChunkCoordIntPair chunkcoordintpair = (ChunkCoordIntPair) p_equals_1_;
-            return this.x == chunkcoordintpair.chunkXPos && this.z == chunkcoordintpair.chunkZPos;
+            ChunkPos ChunkPos = (ChunkPos) p_equals_1_;
+            return this.x == ChunkPos.chunkXPos && this.z == ChunkPos.chunkZPos;
         }
     }
 

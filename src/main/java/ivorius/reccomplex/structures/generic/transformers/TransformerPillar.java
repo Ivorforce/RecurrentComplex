@@ -6,7 +6,7 @@
 package ivorius.reccomplex.structures.generic.transformers;
 
 import com.google.gson.*;
-import net.minecraft.util.BlockPos;
+import net.minecraft.util.math.BlockPos;
 import ivorius.ivtoolkit.tools.MCRegistry;
 import ivorius.reccomplex.RecurrentComplex;
 import ivorius.reccomplex.gui.editstructure.transformers.TableDataSourceBTPillar;
@@ -41,7 +41,7 @@ public class TransformerPillar extends TransformerSingleBlock<NBTNone>
 
     public TransformerPillar()
     {
-        this(BlockMatcher.of(RecurrentComplex.specialRegistry, Blocks.stone, 0), Blocks.stone.getDefaultState());
+        this(BlockMatcher.of(RecurrentComplex.specialRegistry, Blocks.STONE, 0), Blocks.STONE.getDefaultState());
     }
 
     public TransformerPillar(String sourceExpression, IBlockState destState)
@@ -72,7 +72,7 @@ public class TransformerPillar extends TransformerSingleBlock<NBTNone>
                 context.setBlock(pos, destState, 2);
 
                 IBlockState blockState = world.getBlockState(pos);
-                if (!(blockState.getBlock().isReplaceable(world, pos) || blockState.getBlock().getMaterial() == Material.leaves || blockState.getBlock().isFoliage(world, pos)))
+                if (!(blockState.getBlock().isReplaceable(world, pos) || blockState.getMaterial() == Material.LEAVES || blockState.getBlock().isFoliage(world, pos)))
                     break;
             }
             while (y > 0);

@@ -5,9 +5,13 @@
 
 package ivorius.reccomplex.items;
 
+import net.minecraft.util.ActionResult;
+import net.minecraft.util.EnumActionResult;
+import net.minecraft.util.EnumHand;
+import net.minecraft.util.math.Vec3d;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
-import net.minecraft.util.BlockPos;
+import net.minecraft.util.math.BlockPos;
 import ivorius.reccomplex.RecurrentComplex;
 import ivorius.reccomplex.network.PacketSyncItem;
 import net.minecraft.entity.EntityLivingBase;
@@ -15,11 +19,11 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagFloat;
-import net.minecraft.util.MathHelper;
-import net.minecraft.util.Vec3;
+import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.Constants;
 
+import javax.annotation.Nonnull;
 import java.util.List;
 
 public class ItemBlockSelectorFloating extends ItemBlockSelector implements ItemSyncable, ItemInputHandler
@@ -33,7 +37,7 @@ public class ItemBlockSelectorFloating extends ItemBlockSelector implements Item
 
     public static BlockPos getHoveredBlock(EntityLivingBase entity, float selectionRange)
     {
-        Vec3 look = entity.getLookVec();
+        Vec3d look = entity.getLookVec();
         int blockX = MathHelper.floor_double(look.xCoord * selectionRange + entity.posX);
         int blockY = MathHelper.floor_double(look.yCoord * selectionRange + entity.posY + entity.getEyeHeight());
         int blockZ = MathHelper.floor_double(look.zCoord * selectionRange + entity.posZ);
@@ -41,16 +45,17 @@ public class ItemBlockSelectorFloating extends ItemBlockSelector implements Item
         return new BlockPos(blockX, blockY, blockZ);
     }
 
+    @Nonnull
     @Override
-    public ItemStack onItemRightClick(ItemStack usedItem, World world, EntityPlayer player)
+    public ActionResult<ItemStack> onItemRightClick(@Nonnull ItemStack itemStackIn, World worldIn, EntityPlayer playerIn, EnumHand hand)
     {
-        if (world.isRemote)
+        if (worldIn.isRemote)
         {
-            BlockPos position = getHoveredBlock(player, getSelectionRange(usedItem));
-            sendClickToServer(usedItem, world, player, position);
+            BlockPos position = getHoveredBlock(playerIn, getSelectionRange(itemStackIn));
+            sendClickToServer(itemStackIn, worldIn, playerIn, position);
         }
 
-        return usedItem;
+        return new ActionResult<>(EnumActionResult.SUCCESS, itemStackIn);
     }
 
     public float getSelectionRange(ItemStack stack)
@@ -66,7 +71,7 @@ public class ItemBlockSelectorFloating extends ItemBlockSelector implements Item
     }
 
     @Override
-    public void addInformation(ItemStack stack, EntityPlayer player, List list, boolean advanced)
+    public void addInformation(ItemStack stack, EntityPlayer player, List<String> list, boolean advanced)
     {
         super.addInformation(stack, player, list, advanced);
 

@@ -9,6 +9,7 @@ import ivorius.ivtoolkit.network.SchedulingMessageHandler;
 import ivorius.ivtoolkit.tools.IvSideClient;
 import ivorius.reccomplex.RecurrentComplex;
 import ivorius.reccomplex.blocks.TileEntityWithGUI;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
@@ -35,7 +36,8 @@ public class PacketEditTileEntityHandler extends SchedulingMessageHandler<Packet
         {
             ((TileEntityWithGUI) tileEntity).readSyncedNBT(message.getData());
             tileEntity.markDirty();
-            world.markBlockForUpdate(message.getPos());
+            IBlockState iblockstate = tileEntity.getWorld().getBlockState(message.getPos());
+            world.notifyBlockUpdate(message.getPos(), iblockstate, iblockstate, 3);
         }
         else
             RecurrentComplex.logger.error("Invalid server TileEntity edit packet: " + tileEntity);

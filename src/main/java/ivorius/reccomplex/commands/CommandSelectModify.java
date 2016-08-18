@@ -6,7 +6,8 @@
 package ivorius.reccomplex.commands;
 
 import net.minecraft.command.*;
-import net.minecraft.util.BlockPos;
+import net.minecraft.server.MinecraftServer;
+import net.minecraft.util.math.BlockPos;
 import ivorius.reccomplex.entities.StructureEntityInfo;
 import ivorius.reccomplex.utils.ServerTranslations;
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -22,7 +23,7 @@ public abstract class CommandSelectModify extends CommandBase
     }
 
     @Override
-    public void processCommand(ICommandSender commandSender, String[] args) throws CommandException
+    public void execute(MinecraftServer server, ICommandSender commandSender, String[] args) throws CommandException
     {
         EntityPlayerMP entityPlayerMP = getCommandSenderAsPlayer(commandSender);
         StructureEntityInfo structureEntityInfo = RCCommands.getStructureEntityInfo(entityPlayerMP);
@@ -31,7 +32,7 @@ public abstract class CommandSelectModify extends CommandBase
         {
             if (structureEntityInfo.hasValidSelection())
             {
-                processCommandSelection(entityPlayerMP, structureEntityInfo, structureEntityInfo.selectedPoint1, structureEntityInfo.selectedPoint2, args);
+                executeSelection(entityPlayerMP, structureEntityInfo, structureEntityInfo.selectedPoint1, structureEntityInfo.selectedPoint2, args);
             }
             else
             {
@@ -60,5 +61,5 @@ public abstract class CommandSelectModify extends CommandBase
         }
     }
 
-    public abstract void processCommandSelection(EntityPlayerMP player, StructureEntityInfo structureEntityInfo, BlockPos point1, BlockPos point2, String[] args) throws CommandException;
+    public abstract void executeSelection(EntityPlayerMP player, StructureEntityInfo structureEntityInfo, BlockPos point1, BlockPos point2, String[] args) throws CommandException;
 }

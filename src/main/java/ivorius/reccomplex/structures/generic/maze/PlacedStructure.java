@@ -6,7 +6,7 @@
 package ivorius.reccomplex.structures.generic.maze;
 
 import ivorius.ivtoolkit.blocks.BlockPositions;
-import net.minecraft.util.BlockPos;
+import net.minecraft.util.math.BlockPos;
 import ivorius.ivtoolkit.math.AxisAlignedTransform2D;
 import ivorius.ivtoolkit.tools.NBTCompoundObject;
 import ivorius.reccomplex.structures.StructureInfo;

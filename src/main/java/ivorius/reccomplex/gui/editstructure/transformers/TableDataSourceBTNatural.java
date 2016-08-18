@@ -30,7 +30,7 @@ public class TableDataSourceBTNatural extends TableDataSourceSegmented implement
 
     public static TableCellString elementForBlock(String id, Block block)
     {
-        TableCellString element = new TableCellString(id, Block.blockRegistry.getNameForObject(block).toString());
+        TableCellString element = new TableCellString(id, Block.REGISTRY.getNameForObject(block).toString());
         element.setShowsValidityState(true);
         setStateForBlockTextfield(element);
         return element;
@@ -43,7 +43,7 @@ public class TableDataSourceBTNatural extends TableDataSourceSegmented implement
 
     public static GuiValidityStateIndicator.State stateForBlock(String blockID)
     {
-        return Block.blockRegistry.containsKey(new ResourceLocation(blockID)) ? GuiValidityStateIndicator.State.VALID : GuiValidityStateIndicator.State.INVALID;
+        return Block.REGISTRY.containsKey(new ResourceLocation(blockID)) ? GuiValidityStateIndicator.State.VALID : GuiValidityStateIndicator.State.INVALID;
     }
 
     public TransformerNatural getTransformer()

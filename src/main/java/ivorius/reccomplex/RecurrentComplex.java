@@ -5,6 +5,8 @@
 
 package ivorius.reccomplex;
 
+import ivorius.ivtoolkit.network.PacketEntityCapabilityData;
+import ivorius.ivtoolkit.network.PacketEntityCapabilityDataHandler;
 import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.Mod.EventHandler;
@@ -15,8 +17,6 @@ import net.minecraftforge.fml.common.network.NetworkCheckHandler;
 import net.minecraftforge.fml.common.network.NetworkRegistry;
 import net.minecraftforge.fml.common.network.simpleimpl.SimpleNetworkWrapper;
 import net.minecraftforge.fml.relauncher.Side;
-import ivorius.ivtoolkit.network.PacketExtendedEntityPropertiesData;
-import ivorius.ivtoolkit.network.PacketExtendedEntityPropertiesDataHandler;
 import ivorius.ivtoolkit.network.PacketGuiAction;
 import ivorius.ivtoolkit.network.PacketGuiActionHandler;
 import ivorius.ivtoolkit.tools.MCRegistry;
@@ -37,18 +37,18 @@ import org.apache.logging.log4j.Logger;
 
 import java.util.Map;
 
-@Mod(modid = RecurrentComplex.MODID, version = RecurrentComplex.VERSION, name = RecurrentComplex.NAME, guiFactory = "ivorius.reccomplex.gui.RCConfigGuiFactory",
+@Mod(modid = RecurrentComplex.MOD_ID, version = RecurrentComplex.VERSION, name = RecurrentComplex.NAME, guiFactory = "ivorius.reccomplex.gui.RCConfigGuiFactory",
         dependencies = "required-after:ivtoolkit")
 public class RecurrentComplex
 {
     public static final String NAME = "Recurrent Complex";
-    public static final String MODID = "reccomplex";
+    public static final String MOD_ID = "reccomplex";
     public static final String VERSION = "0.9.7.8";
 
     public static final boolean USE_JSON_FOR_NBT = true;
     public static final boolean USE_ZIP_FOR_STRUCTURE_FILES = true;
 
-    @Instance(value = MODID)
+    @Instance(value = MOD_ID)
     public static RecurrentComplex instance;
 
     @SidedProxy(clientSide = "ivorius.reccomplex.client.ClientProxy", serverSide = "ivorius.reccomplex.server.ServerProxy")
@@ -85,7 +85,7 @@ public class RecurrentComplex
     @NetworkCheckHandler
     public boolean checkNetwork(Map<String, String> mods, Side side)
     {
-        return isLite() || mods.containsKey(MODID); // If Lite, it's considered server-side only
+        return isLite() || mods.containsKey(MOD_ID); // If Lite, it's considered server-side only
     }
 
     @EventHandler
@@ -102,7 +102,7 @@ public class RecurrentComplex
 
         remapper = new FMLRemapper();
         specialRegistry = new MCRegistrySpecial(mcRegistry = new MCRegistryRemapping(new MCRegistryDefault(), remapper), remapper);
-        cremapper = new FMLRemapperConvenience(MODID, specialRegistry, remapper);
+        cremapper = new FMLRemapperConvenience(MOD_ID, specialRegistry, remapper);
         missingRemapper = new FMLMissingRemapper(new MCRegistryDefault(), remapper);
 
         forgeEventHandler = new RCForgeEventHandler();
@@ -111,7 +111,7 @@ public class RecurrentComplex
         guiHandler = new RCGuiHandler();
         NetworkRegistry.INSTANCE.registerGuiHandler(this, guiHandler);
 
-        communicationHandler = new RCCommunicationHandler(logger, MODID, instance);
+        communicationHandler = new RCCommunicationHandler(logger, MOD_ID, instance);
 
         RCRegistryHandler.preInit(event, this);
     }
@@ -119,7 +119,7 @@ public class RecurrentComplex
     @EventHandler
     public void load(FMLInitializationEvent event)
     {
-        network = NetworkRegistry.INSTANCE.newSimpleChannel(MODID);
+        network = NetworkRegistry.INSTANCE.newSimpleChannel(MOD_ID);
 
         if (event.getSide().isClient())
             registerClientPackets();
@@ -141,7 +141,7 @@ public class RecurrentComplex
 
     protected void registerClientPackets()
     {
-        network.registerMessage(PacketExtendedEntityPropertiesDataHandler.class, PacketExtendedEntityPropertiesData.class, 0, Side.CLIENT);
+        network.registerMessage(PacketEntityCapabilityDataHandler.class, PacketEntityCapabilityData.class, 0, Side.CLIENT);
         network.registerMessage(PacketEditInventoryGeneratorHandler.class, PacketEditInventoryGenerator.class, 2, Side.CLIENT);
         network.registerMessage(PacketEditTileEntityHandler.class, PacketEditTileEntity.class, 4, Side.CLIENT);
         network.registerMessage(PacketEditStructureHandler.class, PacketEditStructure.class, 6, Side.CLIENT);

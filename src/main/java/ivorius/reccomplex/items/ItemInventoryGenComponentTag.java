@@ -17,8 +17,11 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagString;
-import net.minecraft.util.EnumChatFormatting;
+import com.mojang.realmsclient.gui.ChatFormatting;
+import net.minecraft.util.ActionResult;
+import net.minecraft.util.EnumHand;
 import net.minecraft.world.World;
+import net.minecraft.world.WorldServer;
 import net.minecraftforge.common.util.Constants;
 
 import java.util.List;
@@ -55,19 +58,19 @@ public class ItemInventoryGenComponentTag extends Item implements GeneratingItem
     }
 
     @Override
-    public ItemStack onItemRightClick(ItemStack stack, World world, EntityPlayer player)
+    public ActionResult<ItemStack> onItemRightClick(ItemStack itemStackIn, World worldIn, EntityPlayer playerIn, EnumHand hand)
     {
-        if (component(stack) != null || componentKey(stack) == null)
+        if (component(itemStackIn) != null || componentKey(itemStackIn) == null)
         {
-            if (!world.isRemote)
-                player.openGui(RecurrentComplex.instance, RCGuiHandler.editInventoryGen, world, player.inventory.currentItem, 0, 0);
+            if (!worldIn.isRemote)
+                playerIn.openGui(RecurrentComplex.instance, RCGuiHandler.editInventoryGen, worldIn, playerIn.inventory.currentItem, 0, 0);
         }
 
-        return super.onItemRightClick(stack, world, player);
+        return super.onItemRightClick(itemStackIn, worldIn, playerIn, hand);
     }
 
     @Override
-    public void generateInInventory(IInventory inventory, Random random, ItemStack stack, int fromSlot)
+    public void generateInInventory(WorldServer server, IInventory inventory, Random random, ItemStack stack, int fromSlot)
     {
         Component component = component(stack);
 
@@ -94,8 +97,8 @@ public class ItemInventoryGenComponentTag extends Item implements GeneratingItem
         {
             list.add(component.inventoryGeneratorID);
             list.add(GenericItemCollectionRegistry.INSTANCE.isActive(componentKey(stack))
-                    ? IvTranslations.format("inventoryGen.active", EnumChatFormatting.GREEN, EnumChatFormatting.RESET)
-                    : IvTranslations.format("inventoryGen.inactive", EnumChatFormatting.RED, EnumChatFormatting.RESET));
+                    ? IvTranslations.format("inventoryGen.active", ChatFormatting.GREEN, ChatFormatting.RESET)
+                    : IvTranslations.format("inventoryGen.inactive", ChatFormatting.RED, ChatFormatting.RESET));
         }
         else
             list.add(IvTranslations.get("inventoryGen.create"));

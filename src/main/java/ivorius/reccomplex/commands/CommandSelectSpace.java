@@ -9,7 +9,8 @@ import ivorius.ivtoolkit.blocks.BlockArea;
 import ivorius.ivtoolkit.blocks.BlockAreas;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.command.NumberInvalidException;
-import net.minecraft.util.BlockPos;
+import net.minecraft.server.MinecraftServer;
+import net.minecraft.util.math.BlockPos;
 import ivorius.reccomplex.RCConfig;
 import ivorius.reccomplex.blocks.RCBlocks;
 import ivorius.reccomplex.entities.StructureEntityInfo;
@@ -21,6 +22,7 @@ import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.world.World;
 import net.minecraft.util.EnumFacing;
 
+import javax.annotation.Nullable;
 import java.util.List;
 
 /**
@@ -76,7 +78,7 @@ public class CommandSelectSpace extends CommandSelectModify
             {
                 IBlockState blockState = world.getBlockState(new BlockPos(surfaceCoord.getX(), y, surfaceCoord.getZ()));
 
-                if ((blockState.getBlock().getMaterial() != Material.air && blockState.getBlock() != spaceBlock) || sidesClosed(world, new BlockPos(surfaceCoord.getX(), y, surfaceCoord.getZ()), area) >= maxClosedSides)
+                if ((blockState.getMaterial() != Material.AIR && blockState.getBlock() != spaceBlock) || sidesClosed(world, new BlockPos(surfaceCoord.getX(), y, surfaceCoord.getZ()), area) >= maxClosedSides)
                 {
                     safePoint = y + (blockState.getBlock() == RCBlocks.genericSolid ? 1 : floorDistance);
                     break;
@@ -92,7 +94,7 @@ public class CommandSelectSpace extends CommandSelectModify
                 {
                     IBlockState blockState = world.getBlockState(new BlockPos(surfaceCoord.getX(), y, surfaceCoord.getZ()));
 
-                    if ((blockState.getBlock().getMaterial() != Material.air && blockState.getBlock() != spaceBlock) || sidesClosed(world, new BlockPos(surfaceCoord.getX(), y, surfaceCoord.getZ()), area) >= maxClosedSides)
+                    if ((blockState.getMaterial() != Material.AIR && blockState.getBlock() != spaceBlock) || sidesClosed(world, new BlockPos(surfaceCoord.getX(), y, surfaceCoord.getZ()), area) >= maxClosedSides)
                     {
                         safePoint = y - 1;
                         break;
@@ -118,7 +120,7 @@ public class CommandSelectSpace extends CommandSelectModify
     }
 
     @Override
-    public void processCommandSelection(EntityPlayerMP player, StructureEntityInfo structureEntityInfo, BlockPos point1, BlockPos point2, String[] args) throws NumberInvalidException
+    public void executeSelection(EntityPlayerMP player, StructureEntityInfo structureEntityInfo, BlockPos point1, BlockPos point2, String[] args) throws NumberInvalidException
     {
         World world = player.getEntityWorld();
 
@@ -131,13 +133,13 @@ public class CommandSelectSpace extends CommandSelectModify
     }
 
     @Override
-    public List addTabCompletionOptions(ICommandSender commandSender, String[] args, BlockPos pos)
+    public List<String> getTabCompletionOptions(MinecraftServer server, ICommandSender sender, String[] args, @Nullable BlockPos pos)
     {
         if (args.length == 1)
             return getListOfStringsMatchingLastWord(args, "3", "2", "1");
         else if (args.length == 2)
             return getListOfStringsMatchingLastWord(args, "3", "4", "5");
 
-        return super.addTabCompletionOptions(commandSender, args, pos);
+        return super.getTabCompletionOptions(server, sender, args, pos);
     }
 }

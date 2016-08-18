@@ -14,8 +14,10 @@ import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.NetworkManager;
 import net.minecraft.network.Packet;
-import net.minecraft.network.play.server.S35PacketUpdateTileEntity;
+import net.minecraft.network.play.server.SPacketUpdateTileEntity;
 import net.minecraft.tileentity.TileEntity;
+
+import javax.annotation.Nullable;
 
 /**
  * Created by lukas on 06.06.14.
@@ -41,11 +43,13 @@ public class TileEntitySpawnCommand extends TileEntity implements GeneratingTile
     }
 
     @Override
-    public void writeToNBT(NBTTagCompound nbtTagCompound)
+    public NBTTagCompound writeToNBT(NBTTagCompound nbtTagCompound)
     {
         super.writeToNBT(nbtTagCompound);
 
         writeSyncedNBT(nbtTagCompound);
+
+        return nbtTagCompound;
     }
 
     public void writeSyncedNBT(NBTTagCompound compound)
@@ -80,16 +84,17 @@ public class TileEntitySpawnCommand extends TileEntity implements GeneratingTile
     }
 
     @Override
-    public void onDataPacket(NetworkManager net, S35PacketUpdateTileEntity pkt)
+    public void onDataPacket(NetworkManager net, SPacketUpdateTileEntity pkt)
     {
         readSyncedNBT(pkt.getNbtCompound());
     }
 
+    @Nullable
     @Override
-    public Packet getDescriptionPacket()
+    public SPacketUpdateTileEntity getUpdatePacket()
     {
         NBTTagCompound nbttagcompound = new NBTTagCompound();
         this.writeSyncedNBT(nbttagcompound);
-        return new S35PacketUpdateTileEntity(pos, 0, nbttagcompound);
+        return new SPacketUpdateTileEntity(pos, 0, nbttagcompound);
     }
 }

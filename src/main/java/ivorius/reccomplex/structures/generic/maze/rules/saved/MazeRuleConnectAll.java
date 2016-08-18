@@ -17,7 +17,7 @@ import ivorius.reccomplex.structures.generic.maze.rules.LimitAABBStrategy;
 import ivorius.reccomplex.structures.generic.maze.rules.MazeRule;
 import ivorius.reccomplex.structures.generic.maze.rules.ReachabilityStrategy;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.EnumChatFormatting;
+import com.mojang.realmsclient.gui.ChatFormatting;
 
 import java.util.*;
 import java.util.function.Predicate;
@@ -42,7 +42,7 @@ public class MazeRuleConnectAll extends MazeRule
     @Override
     public String displayString()
     {
-        return String.format("%s%s %s", preventConnection ? EnumChatFormatting.GOLD + "Split" : EnumChatFormatting.GREEN + "Connect", EnumChatFormatting.RESET, !additive && exits.size() == 0 ? "All" : "Some");
+        return String.format("%s%s %s", preventConnection ? ChatFormatting.GOLD + "Split" : ChatFormatting.GREEN + "Connect", ChatFormatting.RESET, !additive && exits.size() == 0 ? "All" : "Some");
     }
 
     @Override

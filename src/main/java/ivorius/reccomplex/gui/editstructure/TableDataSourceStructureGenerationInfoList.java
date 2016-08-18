@@ -10,7 +10,7 @@ import ivorius.reccomplex.gui.table.*;
 import ivorius.reccomplex.structures.StructureRegistry;
 import ivorius.reccomplex.structures.generic.gentypes.StructureGenerationInfo;
 import ivorius.ivtoolkit.tools.IvTranslations;
-import net.minecraft.util.StatCollector;
+import net.minecraft.util.text.translation.I18n;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -38,7 +38,7 @@ public class TableDataSourceStructureGenerationInfoList extends TableDataSourceL
         {
             String baseKey = "reccomplex.generationInfo." + type;
             actions.add(new TableCellButton.Action(type,
-                    StatCollector.translateToLocal(baseKey),
+                    I18n.translateToLocal(baseKey),
                     IvTranslations.formatLines(baseKey + ".tooltip")
             ));
         }

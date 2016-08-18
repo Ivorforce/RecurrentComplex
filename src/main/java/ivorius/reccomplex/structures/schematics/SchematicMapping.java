@@ -55,7 +55,7 @@ public class SchematicMapping
     {
         final NBTTagCompound compound = new NBTTagCompound();
         blockMapping.forEachEntry((a, b) -> {
-            compound.setShort(Block.blockRegistry.getNameForObject(b).toString(), a);
+            compound.setShort(Block.REGISTRY.getNameForObject(b).toString(), a);
             return true;
         });
         return compound;

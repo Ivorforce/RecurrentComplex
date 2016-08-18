@@ -6,10 +6,11 @@
 package ivorius.reccomplex.structures;
 
 import ivorius.ivtoolkit.blocks.BlockPositions;
+import net.minecraft.world.WorldServer;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import ivorius.ivtoolkit.blocks.BlockArea;
-import net.minecraft.util.BlockPos;
+import net.minecraft.util.math.BlockPos;
 import ivorius.ivtoolkit.math.AxisAlignedTransform2D;
 import ivorius.ivtoolkit.rendering.grid.AreaRenderer;
 import ivorius.ivtoolkit.rendering.grid.BlockQuadCache;
@@ -21,7 +22,7 @@ import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.MathHelper;
+import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
 import net.minecraft.client.renderer.GlStateManager;
@@ -62,7 +63,7 @@ public class OperationMoveStructure extends OperationGenerateStructure
     }
 
     @Override
-    public void perform(World world)
+    public void perform(WorldServer world)
     {
         for (BlockPos coord : sourceArea)
             setBlockToAirClean(world, coord);

@@ -9,8 +9,6 @@ import com.google.gson.*;
 import net.minecraft.item.ItemStack;
 import ivorius.reccomplex.json.JsonUtils;
 
-import net.minecraft.util.WeightedRandomChestContent;
-
 import java.lang.reflect.Type;
 
 /**
@@ -43,4 +41,5 @@ public class WeightedRandomChestContentSerializer implements JsonSerializer<Weig
 
         return jsonObject;
     }
+
 }

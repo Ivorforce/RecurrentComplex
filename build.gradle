@@ -11,7 +11,7 @@ buildscript {
         }
     }
     dependencies {
-        classpath 'net.minecraftforge.gradle:ForgeGradle:2.1-SNAPSHOT'
+        classpath 'net.minecraftforge.gradle:ForgeGradle:2.2-SNAPSHOT'
     }
 }
 
@@ -28,14 +28,14 @@ group= "ivorius.reccomplex" // http://maven.apache.org/guides/mini/guide-naming-
 archivesBaseName = "RecurrentComplex"
 
 minecraft {
-    version = "1.8.9-11.15.1.1722"
+    version = "1.9.4-12.17.0.1976"
     runDir = "eclipse"
-    mappings = "stable_20"
+    mappings = "stable_26"
     useDepAts = true
 }
 
 dependencies {
-    deobfCompile 'ivorius.ivtoolkit:IvToolkit:1.2.6'
+    deobfCompile 'ivorius.ivtoolkit:IvToolkit:1.2.7'
 }
 
 processResources

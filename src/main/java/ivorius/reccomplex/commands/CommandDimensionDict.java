@@ -14,15 +14,17 @@ import ivorius.reccomplex.utils.ServerTranslations;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
-import net.minecraft.event.ClickEvent;
-import net.minecraft.event.HoverEvent;
-import net.minecraft.util.BlockPos;
-import net.minecraft.util.ChatComponentText;
-import net.minecraft.util.ChatComponentTranslation;
-import net.minecraft.util.IChatComponent;
+import net.minecraft.server.MinecraftServer;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.TextComponentString;
+import net.minecraft.util.text.TextComponentTranslation;
+import net.minecraft.util.text.event.ClickEvent;
+import net.minecraft.util.text.event.HoverEvent;
 import net.minecraftforge.common.DimensionManager;
 import org.apache.commons.lang3.StringUtils;
 
+import javax.annotation.Nullable;
 import java.util.List;
 
 /**
@@ -48,7 +50,7 @@ public class CommandDimensionDict extends CommandBase
     }
 
     @Override
-    public void processCommand(ICommandSender commandSender, String[] args) throws CommandException
+    public void execute(MinecraftServer server, ICommandSender commandSender, String[] args) throws CommandException
     {
         if (args.length < 2)
             throw ServerTranslations.wrongUsageException("commands.dimensiondict.usage");
@@ -60,20 +62,20 @@ public class CommandDimensionDict extends CommandBase
                 int dimensionID = parseInt(args[1]);
 
                 List<String> types = Lists.newArrayList(DimensionDictionary.getDimensionTypes(DimensionManager.getProvider(dimensionID)));
-                IChatComponent[] components = new IChatComponent[types.size()];
+                ITextComponent[] components = new ITextComponent[types.size()];
 
                 for (int i = 0; i < components.length; i++)
                 {
                     String type = types.get(i);
-                    components[i] = new ChatComponentText(type);
-                    components[i].getChatStyle().setChatClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND,
+                    components[i] = new TextComponentString(type);
+                    components[i].getStyle().setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND,
                             String.format("/%s list %s", getCommandName(), type)));
-                    components[i].getChatStyle().setChatHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT,
+                    components[i].getStyle().setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT,
                             ServerTranslations.format("commands.dimensiondict.get.number", allDimensionsOfType(type).size())));
                 }
 
                 commandSender.addChatMessage(ServerTranslations.format("commands.dimensiondict.get", dimensionID,
-                        new ChatComponentTranslation(StringUtils.repeat("%s", ", ", components.length), components)));
+                        new TextComponentTranslation(StringUtils.repeat("%s", ", ", components.length), components)));
                 break;
             }
             case "list":
@@ -81,20 +83,20 @@ public class CommandDimensionDict extends CommandBase
                 String type = args[1];
 
                 TIntList typeDimensions = allDimensionsOfType(type);
-                IChatComponent[] components = new IChatComponent[typeDimensions.size()];
+                ITextComponent[] components = new ITextComponent[typeDimensions.size()];
 
                 for (int i = 0; i < components.length; i++)
                 {
                     int dimensionID = typeDimensions.get(i);
-                    components[i] = new ChatComponentText(String.valueOf(dimensionID));
-                    components[i].getChatStyle().setChatClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND,
+                    components[i] = new TextComponentString(String.valueOf(dimensionID));
+                    components[i].getStyle().setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND,
                             String.format("/%s get %s", getCommandName(), dimensionID)));
-                    components[i].getChatStyle().setChatHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT,
+                    components[i].getStyle().setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT,
                             ServerTranslations.format("commands.dimensiondict.list.number", DimensionDictionary.getDimensionTypes(DimensionManager.getProvider(dimensionID)).size())));
                 }
 
                 commandSender.addChatMessage(ServerTranslations.format("commands.dimensiondict.list", type,
-                        new ChatComponentTranslation(StringUtils.repeat("%s", ", ", components.length), components)));
+                        new TextComponentTranslation(StringUtils.repeat("%s", ", ", components.length), components)));
                 break;
             }
             default:
@@ -114,7 +116,7 @@ public class CommandDimensionDict extends CommandBase
     }
 
     @Override
-    public List addTabCompletionOptions(ICommandSender commandSender, String[] args, BlockPos pos)
+    public List<String> getTabCompletionOptions(MinecraftServer server, ICommandSender sender, String[] args, @Nullable BlockPos pos)
     {
         if (args.length == 1)
             return getListOfStringsMatchingLastWord(args, "get", "list");

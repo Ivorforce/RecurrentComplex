@@ -5,6 +5,7 @@
 
 package ivorius.reccomplex.events;
 
+import net.minecraft.world.WorldServer;
 import net.minecraftforge.fml.common.eventhandler.Cancelable;
 import net.minecraftforge.fml.common.eventhandler.Event;
 import net.minecraft.inventory.IInventory;
@@ -18,13 +19,15 @@ import java.util.Random;
 @Cancelable
 public class ItemGenerationEvent extends Event
 {
+    public final WorldServer server;
     public final IInventory inventory;
     public final Random random;
     public final ItemStack fromStack;
     public final int fromSlot;
 
-    public ItemGenerationEvent(IInventory inventory, Random random, ItemStack fromStack, int fromSlot)
+    public ItemGenerationEvent(WorldServer server, IInventory inventory, Random random, ItemStack fromStack, int fromSlot)
     {
+        this.server = server;
         this.inventory = inventory;
         this.random = random;
         this.fromStack = fromStack;
@@ -33,17 +36,17 @@ public class ItemGenerationEvent extends Event
 
     public static class Artifact extends ItemGenerationEvent
     {
-        public Artifact(IInventory inventory, Random random, ItemStack fromStack, int fromSlot)
+        public Artifact(WorldServer server, IInventory inventory, Random random, ItemStack fromStack, int fromSlot)
         {
-            super(inventory, random, fromStack, fromSlot);
+            super(server, inventory, random, fromStack, fromSlot);
         }
     }
 
     public static class Book extends ItemGenerationEvent
     {
-        public Book(IInventory inventory, Random random, ItemStack fromStack, int fromSlot)
+        public Book(WorldServer server, IInventory inventory, Random random, ItemStack fromStack, int fromSlot)
         {
-            super(inventory, random, fromStack, fromSlot);
+            super(server, inventory, random, fromStack, fromSlot);
         }
     }
 }

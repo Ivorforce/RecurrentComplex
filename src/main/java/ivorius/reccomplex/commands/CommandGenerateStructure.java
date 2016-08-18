@@ -7,7 +7,8 @@ package ivorius.reccomplex.commands;
 
 import ivorius.reccomplex.utils.BlockSurfacePos;
 import net.minecraft.command.CommandException;
-import net.minecraft.util.BlockPos;
+import net.minecraft.server.MinecraftServer;
+import net.minecraft.util.math.BlockPos;
 import ivorius.ivtoolkit.math.AxisAlignedTransform2D;
 import ivorius.reccomplex.RCConfig;
 import ivorius.reccomplex.operation.OperationRegistry;
@@ -22,8 +23,10 @@ import ivorius.reccomplex.structures.generic.GenericStructureInfo;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.world.World;
+import net.minecraft.world.WorldServer;
 import net.minecraftforge.common.DimensionManager;
 
+import javax.annotation.Nullable;
 import java.util.List;
 import java.util.Random;
 
@@ -50,14 +53,14 @@ public class CommandGenerateStructure extends CommandBase
     }
 
     @Override
-    public void processCommand(ICommandSender commandSender, String[] args) throws CommandException
+    public void execute(MinecraftServer server, ICommandSender commandSender, String[] args) throws CommandException
     {
         if (args.length <= 0)
             throw ServerTranslations.wrongUsageException("commands.strucGen.usage");
 
         String structureName = args[0];
         StructureInfo structureInfo = StructureRegistry.INSTANCE.getStructure(structureName);
-        World world = args.length >= 4 ? DimensionManager.getWorld(parseInt(args[2])) : commandSender.getEntityWorld();
+        WorldServer world = args.length >= 4 ? DimensionManager.getWorld(parseInt(args[2])) : (WorldServer) commandSender.getEntityWorld();
 
         if (structureInfo == null)
         {
@@ -97,7 +100,7 @@ public class CommandGenerateStructure extends CommandBase
     }
 
     @Override
-    public List addTabCompletionOptions(ICommandSender commandSender, String[] args, BlockPos pos)
+    public List<String> getTabCompletionOptions(MinecraftServer server, ICommandSender sender, String[] args, @Nullable BlockPos pos)
     {
         if (args.length == 1)
             return getListOfStringsMatchingLastWord(args, StructureRegistry.INSTANCE.allStructureIDs());

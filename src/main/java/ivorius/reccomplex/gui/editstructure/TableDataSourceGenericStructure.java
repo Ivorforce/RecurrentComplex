@@ -12,7 +12,7 @@ import ivorius.reccomplex.gui.table.*;
 import ivorius.reccomplex.structures.StructureRegistry;
 import ivorius.reccomplex.structures.generic.GenericStructureInfo;
 import ivorius.ivtoolkit.tools.IvTranslations;
-import net.minecraft.util.EnumChatFormatting;
+import com.mojang.realmsclient.gui.ChatFormatting;
 
 /**
  * Created by lukas on 05.06.14.
@@ -167,20 +167,20 @@ public class TableDataSourceGenericStructure extends TableDataSourceSegmented im
                 else if (index == 1)
                 {
                     TableCellBoolean cellFolder = new TableCellBoolean("activeFolder", saveAsActive,
-                            IvTranslations.format("reccomplex.structure.savePath", String.format("%s/%s%s", EnumChatFormatting.AQUA, RCFileTypeRegistry.getDirectoryName(true), EnumChatFormatting.RESET)),
-                            IvTranslations.format("reccomplex.structure.savePath", String.format("%s/%s%s", EnumChatFormatting.AQUA, RCFileTypeRegistry.getDirectoryName(false), EnumChatFormatting.RESET)));
+                            IvTranslations.format("reccomplex.structure.savePath", String.format("%s/%s%s", ChatFormatting.AQUA, RCFileTypeRegistry.getDirectoryName(true), ChatFormatting.RESET)),
+                            IvTranslations.format("reccomplex.structure.savePath", String.format("%s/%s%s", ChatFormatting.AQUA, RCFileTypeRegistry.getDirectoryName(false), ChatFormatting.RESET)));
                     cellFolder.addPropertyListener(this);
 
                     if (saveAsActive ? structureInInactive : structureInActive)
                     {
                         String path = RCFileTypeRegistry.getDirectoryName(!saveAsActive);
                         TableCellBoolean cellDelete = new TableCellBoolean("deleteOther", deleteOther,
-                                IvTranslations.format("reccomplex.structure.deleteOther.true", EnumChatFormatting.RED, EnumChatFormatting.RESET, String.format("%s/%s%s", EnumChatFormatting.AQUA, path, EnumChatFormatting.RESET)),
-                                IvTranslations.format("reccomplex.structure.deleteOther.false", EnumChatFormatting.YELLOW, EnumChatFormatting.RESET, String.format("%s/%s%s", EnumChatFormatting.AQUA, path, EnumChatFormatting.RESET)));
+                                IvTranslations.format("reccomplex.structure.deleteOther.true", ChatFormatting.RED, ChatFormatting.RESET, String.format("%s/%s%s", ChatFormatting.AQUA, path, ChatFormatting.RESET)),
+                                IvTranslations.format("reccomplex.structure.deleteOther.false", ChatFormatting.YELLOW, ChatFormatting.RESET, String.format("%s/%s%s", ChatFormatting.AQUA, path, ChatFormatting.RESET)));
                         cellDelete.addPropertyListener(this);
                         cellDelete.setTooltip(IvTranslations.formatLines("reccomplex.structure.deleteOther.tooltip",
-                                EnumChatFormatting.AQUA + RCFileTypeRegistry.getDirectoryName(false) + EnumChatFormatting.RESET,
-                                EnumChatFormatting.AQUA + RCFileTypeRegistry.getDirectoryName(true) + EnumChatFormatting.RESET));
+                                ChatFormatting.AQUA + RCFileTypeRegistry.getDirectoryName(false) + ChatFormatting.RESET,
+                                ChatFormatting.AQUA + RCFileTypeRegistry.getDirectoryName(true) + ChatFormatting.RESET));
 
                         return new TableElementCell(new TableCellMulti(cellFolder, cellDelete));
                     }

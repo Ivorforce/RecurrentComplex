@@ -6,7 +6,7 @@
 package ivorius.reccomplex.scripts.world;
 
 import ivorius.ivtoolkit.blocks.BlockPositions;
-import net.minecraft.util.BlockPos;
+import net.minecraft.util.math.BlockPos;
 import ivorius.ivtoolkit.blocks.Directions;
 import ivorius.ivtoolkit.math.AxisAlignedTransform2D;
 import ivorius.ivtoolkit.random.WeightedSelector;
@@ -25,6 +25,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.nbt.NBTTagString;
 import net.minecraft.world.World;
+import net.minecraft.world.WorldServer;
 import net.minecraftforge.common.util.Constants;
 import net.minecraft.util.EnumFacing;
 import org.apache.commons.lang3.tuple.Pair;
@@ -239,7 +240,7 @@ public class WorldScriptStructureGenerator implements WorldScript<WorldScriptStr
     @Override
     public void generate(StructureSpawnContext context, InstanceData instanceData, BlockPos coord)
     {
-        World world = context.world;
+        WorldServer world = context.world;
         Random random = context.random;
         int layer = context.generationLayer;
 

@@ -21,10 +21,10 @@ import ivorius.reccomplex.structures.generic.presets.DimensionMatcherPresets;
 import ivorius.reccomplex.utils.PresettedList;
 import ivorius.reccomplex.utils.PresettedLists;
 import ivorius.reccomplex.worldgen.StructureGenerationData;
-import net.minecraft.util.StatCollector;
+import net.minecraft.util.text.translation.I18n;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldProvider;
-import net.minecraft.world.biome.BiomeGenBase;
+import net.minecraft.world.biome.Biome;
 
 import javax.annotation.Nonnull;
 import java.lang.reflect.Type;
@@ -109,7 +109,7 @@ public class NaturalGenerationInfo extends StructureGenerationInfo
         this.generationWeight = generationWeight;
     }
 
-    public double getGenerationWeight(BiomeGenBase biome, WorldProvider provider)
+    public double getGenerationWeight(Biome biome, WorldProvider provider)
     {
         return getActiveSpawnWeight()
                 * generationWeightInBiome(biome)
@@ -127,7 +127,7 @@ public class NaturalGenerationInfo extends StructureGenerationInfo
         return 0;
     }
 
-    public double generationWeightInBiome(BiomeGenBase biome)
+    public double generationWeightInBiome(Biome biome)
     {
         for (BiomeGenerationInfo generationInfo : biomeWeights.getList())
         {
@@ -174,7 +174,7 @@ public class NaturalGenerationInfo extends StructureGenerationInfo
     @Override
     public String displayString()
     {
-        return StatCollector.translateToLocal("reccomplex.generationInfo.natural");
+        return I18n.translateToLocal("reccomplex.generationInfo.natural");
     }
 
     @Override

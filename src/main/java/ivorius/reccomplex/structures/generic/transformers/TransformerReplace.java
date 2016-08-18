@@ -7,7 +7,7 @@ package ivorius.reccomplex.structures.generic.transformers;
 
 import com.google.gson.*;
 import ivorius.reccomplex.utils.PresettedLists;
-import net.minecraft.util.BlockPos;
+import net.minecraft.util.math.BlockPos;
 import ivorius.ivtoolkit.random.WeightedSelector;
 import ivorius.ivtoolkit.tools.MCRegistry;
 import ivorius.reccomplex.RecurrentComplex;
@@ -48,7 +48,7 @@ public class TransformerReplace extends TransformerSingleBlock<NBTNone>
 
     public TransformerReplace()
     {
-        this(BlockMatcher.of(RecurrentComplex.specialRegistry, Blocks.wool));
+        this(BlockMatcher.of(RecurrentComplex.specialRegistry, Blocks.WOOL));
         destination.setToDefault();
     }
 

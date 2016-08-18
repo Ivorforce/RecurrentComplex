@@ -8,7 +8,7 @@ package ivorius.reccomplex.gui.editstructure;
 import ivorius.reccomplex.gui.table.*;
 import ivorius.reccomplex.utils.PresettedList;
 import ivorius.ivtoolkit.tools.IvTranslations;
-import net.minecraft.util.StatCollector;
+import net.minecraft.util.text.translation.I18n;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -65,7 +65,7 @@ public abstract class TableDataSourcePresettedList<T> extends TableDataSourceLis
 
         String baseKey = getBasePresetKey();
         actions.addAll(allTypes.stream().map(type -> new TableCellButton.Action(type,
-                StatCollector.translateToLocal(baseKey + type),
+                I18n.translateToLocal(baseKey + type),
                 IvTranslations.formatLines(baseKey + type + ".tooltip")
         )).collect(Collectors.toList()));
         return actions.toArray(new TableCellButton.Action[actions.size()]);
@@ -86,7 +86,7 @@ public abstract class TableDataSourcePresettedList<T> extends TableDataSourceLis
             }
             else if (index == 1)
             {
-                String title = !presettedList.isCustom() ? StatCollector.translateToLocal(getBasePresetKey() + presettedList.getPreset()) : "Custom";
+                String title = !presettedList.isCustom() ? I18n.translateToLocal(getBasePresetKey() + presettedList.getPreset()) : "Custom";
                 TableCellButton cell = new TableCellButton("customize", new TableCellButton.Action("customize", "Customize", !presettedList.isCustom()));
                 cell.addListener(this);
                 return new TableElementCell(title, cell);

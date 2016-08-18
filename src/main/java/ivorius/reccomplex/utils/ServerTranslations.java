@@ -9,9 +9,9 @@ import ivorius.ivtoolkit.tools.IvTranslations;
 import ivorius.reccomplex.RecurrentComplex;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.WrongUsageException;
-import net.minecraft.util.ChatComponentText;
-import net.minecraft.util.ChatComponentTranslation;
-import net.minecraft.util.IChatComponent;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.TextComponentString;
+import net.minecraft.util.text.TextComponentTranslation;
 
 /**
  * Created by lukas on 01.04.15.
@@ -26,10 +26,10 @@ public class ServerTranslations
 
             for (int i = 0; i < array.length; i++)
             {
-                if (params[i] instanceof ChatComponentTranslation)
-                    array[i] = IvTranslations.format(((ChatComponentTranslation) params[i]).getKey(), convertParams(((ChatComponentTranslation) params[i]).getFormatArgs()));
-                else if (params[i] instanceof IChatComponent)
-                    array[i] = ((IChatComponent) params[i]).getUnformattedText();
+                if (params[i] instanceof TextComponentTranslation)
+                    array[i] = IvTranslations.format(((TextComponentTranslation) params[i]).getKey(), convertParams(((TextComponentTranslation) params[i]).getFormatArgs()));
+                else if (params[i] instanceof ITextComponent)
+                    array[i] = ((ITextComponent) params[i]).getUnformattedText();
                 else
                     array[i] = params[i];
             }
@@ -48,20 +48,20 @@ public class ServerTranslations
             return key;
     }
 
-    public static IChatComponent get(String key)
+    public static ITextComponent get(String key)
     {
         if (RecurrentComplex.isLite())
-            return new ChatComponentText(IvTranslations.get(key));
+            return new TextComponentString(IvTranslations.get(key));
         else
-            return new ChatComponentTranslation(key);
+            return new TextComponentTranslation(key);
     }
 
-    public static IChatComponent format(String key, Object... params)
+    public static ITextComponent format(String key, Object... params)
     {
         if (RecurrentComplex.isLite())
-            return new ChatComponentText(IvTranslations.format(key, convertParams(params)));
+            return new TextComponentString(IvTranslations.format(key, convertParams(params)));
         else
-            return new ChatComponentTranslation(key, params);
+            return new TextComponentTranslation(key, params);
     }
 
     public static CommandException wrongUsageException(String key, Object... params)

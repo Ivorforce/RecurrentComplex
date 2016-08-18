@@ -6,7 +6,7 @@
 package ivorius.reccomplex.structures.generic.transformers;
 
 import com.google.gson.*;
-import net.minecraft.util.BlockPos;
+import net.minecraft.util.math.BlockPos;
 import ivorius.ivtoolkit.math.IvVecMathHelper;
 import ivorius.ivtoolkit.tools.MCRegistry;
 import ivorius.reccomplex.RecurrentComplex;
@@ -26,7 +26,7 @@ import net.minecraft.block.material.Material;
 import net.minecraft.init.Blocks;
 import net.minecraft.nbt.NBTBase;
 import net.minecraft.world.World;
-import net.minecraft.world.biome.BiomeGenBase;
+import net.minecraft.world.biome.Biome;
 
 import java.lang.reflect.Type;
 import java.util.ArrayList;
@@ -71,9 +71,9 @@ public class TransformerNaturalAir extends TransformerSingleBlock<NBTNone>
         World world = context.world;
         Random random = context.random;
 
-        BiomeGenBase biome = world.getBiomeGenForCoords(coord);
-        IBlockState topBlock = biome.topBlock != null ? biome.topBlock : Blocks.air.getDefaultState();
-        IBlockState fillerBlock = biome.fillerBlock != null ? biome.fillerBlock : Blocks.air.getDefaultState();
+        Biome biome = world.getBiome(coord);
+        IBlockState topBlock = biome.topBlock != null ? biome.topBlock : Blocks.AIR.getDefaultState();
+        IBlockState fillerBlock = biome.fillerBlock != null ? biome.fillerBlock : Blocks.AIR.getDefaultState();
 
         coord = coord.up(4);
 
@@ -98,16 +98,16 @@ public class TransformerNaturalAir extends TransformerSingleBlock<NBTNone>
                 BlockPos curBlockPos = new BlockPos(currentX, currentY, currentZ);
                 IBlockState curBlock = world.getBlockState(curBlockPos);
 
-                Material material = curBlock.getBlock().getMaterial();
-                boolean isFoliage = curBlock.getBlock().isFoliage(world, curBlockPos) || material == Material.leaves || material == Material.plants || material == Material.wood;
-                boolean isCommon = curBlock == Blocks.stone || curBlock == Blocks.dirt || curBlock == Blocks.sand || curBlock == Blocks.stained_hardened_clay || curBlock == Blocks.gravel;
+                Material material = curBlock.getMaterial();
+                boolean isFoliage = curBlock.getBlock().isFoliage(world, curBlockPos) || material == Material.LEAVES || material == Material.PLANTS || material == Material.WOOD;
+                boolean isCommon = curBlock == Blocks.STONE || curBlock == Blocks.DIRT || curBlock == Blocks.SAND || curBlock == Blocks.STAINED_HARDENED_CLAY || curBlock == Blocks.GRAVEL;
                 boolean replaceable = currentY == coord.getY() || curBlock == topBlock || curBlock == fillerBlock || curBlock.getBlock().isReplaceable(world, curBlockPos)
                         || isCommon || isFoliage;
 
                 if (replaceable)
-                    context.setBlock(curBlockPos, Blocks.air.getDefaultState(), 2);
+                    context.setBlock(curBlockPos, Blocks.AIR.getDefaultState(), 2);
 
-                if (replaceable || material == Material.air)
+                if (replaceable || material == Material.AIR)
                 {
                     double distToOrigSQ = IvVecMathHelper.distanceSQ(new double[]{coord.getX(), coord.getY(), coord.getZ()}, new double[]{currentX, currentY, currentZ});
                     double add = (random.nextDouble() - random.nextDouble()) * naturalExpansionRandomization;

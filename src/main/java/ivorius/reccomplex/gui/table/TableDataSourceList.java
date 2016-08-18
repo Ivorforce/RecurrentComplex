@@ -5,7 +5,7 @@
 
 package ivorius.reccomplex.gui.table;
 
-import net.minecraft.util.EnumChatFormatting;
+import com.mojang.realmsclient.gui.ChatFormatting;
 
 import java.util.List;
 
@@ -22,8 +22,8 @@ public abstract class TableDataSourceList<T, L extends List<T>> extends TableDat
     protected String earlierTitle = "Earlier";
     protected String laterTitle = "Later";
     protected String editTitle = "Edit";
-    protected String deleteTitle = EnumChatFormatting.RED + "-";
-    protected String addTitle = EnumChatFormatting.GREEN + "+";
+    protected String deleteTitle = ChatFormatting.RED + "-";
+    protected String addTitle = ChatFormatting.GREEN + "+";
 
     protected boolean usesPresetActionForAdding;
 

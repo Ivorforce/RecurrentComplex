@@ -6,7 +6,8 @@
 package ivorius.reccomplex.commands;
 
 import net.minecraft.command.CommandException;
-import net.minecraft.util.BlockPos;
+import net.minecraft.server.MinecraftServer;
+import net.minecraft.util.math.BlockPos;
 import ivorius.ivtoolkit.math.AxisAlignedTransform2D;
 import ivorius.reccomplex.RCConfig;
 import ivorius.reccomplex.operation.OperationRegistry;
@@ -20,7 +21,9 @@ import ivorius.reccomplex.worldgen.StructureGenerator;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.world.World;
+import net.minecraft.world.WorldServer;
 
+import javax.annotation.Nullable;
 import java.util.List;
 
 /**
@@ -46,7 +49,7 @@ public class CommandImportStructure extends CommandBase
     }
 
     @Override
-    public void processCommand(ICommandSender commandSender, String[] args) throws CommandException
+    public void execute(MinecraftServer server, ICommandSender commandSender, String[] args) throws CommandException
     {
         if (args.length <= 0)
         {
@@ -74,11 +77,11 @@ public class CommandImportStructure extends CommandBase
         if (structureInfo instanceof GenericStructureInfo)
             OperationRegistry.queueOperation(new OperationGenerateStructure((GenericStructureInfo) structureInfo, transform, coord, true), commandSender);
         else
-            StructureGenerator.directly(structureInfo, StructureSpawnContext.complete(world, world.rand, transform, coord, structureInfo, 0, true));
+            StructureGenerator.directly(structureInfo, StructureSpawnContext.complete((WorldServer) world, world.rand, transform, coord, structureInfo, 0, true));
     }
 
     @Override
-    public List addTabCompletionOptions(ICommandSender commandSender, String[] args, BlockPos pos)
+    public List<String> getTabCompletionOptions(MinecraftServer server, ICommandSender sender, String[] args, @Nullable BlockPos pos)
     {
         if (args.length == 1)
             return getListOfStringsMatchingLastWord(args, StructureRegistry.INSTANCE.allStructureIDs());

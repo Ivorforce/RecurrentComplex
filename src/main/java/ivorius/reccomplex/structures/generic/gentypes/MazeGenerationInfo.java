@@ -14,7 +14,7 @@ import ivorius.reccomplex.gui.table.TableNavigator;
 import ivorius.reccomplex.json.JsonUtils;
 import ivorius.reccomplex.structures.generic.maze.*;
 import ivorius.reccomplex.structures.generic.Selection;
-import net.minecraft.util.StatCollector;
+import net.minecraft.util.text.translation.I18n;
 
 import javax.annotation.Nonnull;
 import java.lang.reflect.Type;
@@ -79,7 +79,7 @@ public class MazeGenerationInfo extends StructureGenerationInfo
     @Override
     public String displayString()
     {
-        return StatCollector.translateToLocalFormatted("reccomplex.generationInfo.mazeComponent.title", mazeID);
+        return I18n.translateToLocalFormatted("reccomplex.generationInfo.mazeComponent.title", mazeID);
     }
 
     @Override

@@ -5,10 +5,11 @@
 
 package ivorius.reccomplex.structures;
 
-import net.minecraft.util.BlockPos;
+import net.minecraft.util.math.BlockPos;
 import ivorius.ivtoolkit.math.AxisAlignedTransform2D;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.world.World;
+import net.minecraft.world.WorldServer;
 import net.minecraft.world.gen.structure.StructureBoundingBox;
 
 import javax.annotation.Nonnull;
@@ -21,7 +22,7 @@ import java.util.Random;
 public class StructureSpawnContext
 {
     @Nonnull
-    public final World world;
+    public final WorldServer world;
     @Nonnull
     public final Random random;
 
@@ -37,7 +38,7 @@ public class StructureSpawnContext
     public final boolean generateAsSource;
     public final boolean isFirstTime;
 
-    public StructureSpawnContext(@Nonnull World world, @Nonnull Random random, @Nonnull AxisAlignedTransform2D transform, @Nonnull StructureBoundingBox boundingBox, @Nullable StructureBoundingBox generationBB, int generationLayer, boolean generateAsSource, boolean isFirstTime)
+    public StructureSpawnContext(@Nonnull WorldServer world, @Nonnull Random random, @Nonnull AxisAlignedTransform2D transform, @Nonnull StructureBoundingBox boundingBox, @Nullable StructureBoundingBox generationBB, int generationLayer, boolean generateAsSource, boolean isFirstTime)
     {
         this.world = world;
         this.random = random;
@@ -49,23 +50,23 @@ public class StructureSpawnContext
         this.isFirstTime = isFirstTime;
     }
 
-    public static StructureSpawnContext complete(@Nonnull World world, @Nonnull Random random, @Nonnull AxisAlignedTransform2D transform, @Nonnull StructureBoundingBox boundingBox, int generationLayer, boolean generateAsSource)
+    public static StructureSpawnContext complete(@Nonnull WorldServer world, @Nonnull Random random, @Nonnull AxisAlignedTransform2D transform, @Nonnull StructureBoundingBox boundingBox, int generationLayer, boolean generateAsSource)
     {
         return new StructureSpawnContext(world, random, transform, boundingBox, null, generationLayer, generateAsSource, true);
     }
 
-    public static StructureSpawnContext complete(@Nonnull World world, @Nonnull Random random, @Nonnull AxisAlignedTransform2D transform, BlockPos coord, StructureInfo structureInfo, int generationLayer, boolean generateAsSource)
+    public static StructureSpawnContext complete(@Nonnull WorldServer world, @Nonnull Random random, @Nonnull AxisAlignedTransform2D transform, BlockPos coord, StructureInfo structureInfo, int generationLayer, boolean generateAsSource)
     {
         StructureBoundingBox boundingBox = StructureInfos.structureBoundingBox(coord, StructureInfos.structureSize(structureInfo, transform));
         return new StructureSpawnContext(world, random, transform, boundingBox, null, generationLayer, generateAsSource, true);
     }
 
-    public static StructureSpawnContext partial(@Nonnull World world, @Nonnull Random random, @Nonnull AxisAlignedTransform2D transform, @Nonnull StructureBoundingBox boundingBox, StructureBoundingBox generationBB, int generationLayer, boolean generateAsSource, boolean isFirstTime)
+    public static StructureSpawnContext partial(@Nonnull WorldServer world, @Nonnull Random random, @Nonnull AxisAlignedTransform2D transform, @Nonnull StructureBoundingBox boundingBox, StructureBoundingBox generationBB, int generationLayer, boolean generateAsSource, boolean isFirstTime)
     {
         return new StructureSpawnContext(world, random, transform, boundingBox, generationBB, generationLayer, generateAsSource, isFirstTime);
     }
 
-    public static StructureSpawnContext partial(@Nonnull World world, @Nonnull Random random, @Nonnull AxisAlignedTransform2D transform, BlockPos coord, StructureInfo structureInfo, @Nonnull StructureBoundingBox generationBB, int generationLayer, boolean generateAsSource, boolean isFirstTime)
+    public static StructureSpawnContext partial(@Nonnull WorldServer world, @Nonnull Random random, @Nonnull AxisAlignedTransform2D transform, BlockPos coord, StructureInfo structureInfo, @Nonnull StructureBoundingBox generationBB, int generationLayer, boolean generateAsSource, boolean isFirstTime)
     {
         StructureBoundingBox boundingBox = StructureInfos.structureBoundingBox(coord, StructureInfos.structureSize(structureInfo, transform));
         return new StructureSpawnContext(world, random, transform, boundingBox, generationBB, generationLayer, generateAsSource, isFirstTime);

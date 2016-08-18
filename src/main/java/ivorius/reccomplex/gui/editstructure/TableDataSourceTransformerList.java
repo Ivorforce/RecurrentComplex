@@ -10,7 +10,7 @@ import ivorius.reccomplex.gui.table.*;
 import ivorius.reccomplex.structures.StructureRegistry;
 import ivorius.reccomplex.structures.generic.transformers.Transformer;
 import ivorius.ivtoolkit.tools.IvTranslations;
-import net.minecraft.util.StatCollector;
+import net.minecraft.util.text.translation.I18n;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.ArrayList;
@@ -57,7 +57,7 @@ public class TableDataSourceTransformerList extends TableDataSourceList<Transfor
         {
             String baseKey = "reccomplex.transformer." + type;
             actions.add(new TableCellButton.Action(type,
-                    StatCollector.translateToLocal(baseKey),
+                    I18n.translateToLocal(baseKey),
                     IvTranslations.formatLines(baseKey + ".tooltip")
             ));
         }

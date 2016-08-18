@@ -7,7 +7,7 @@ package ivorius.reccomplex.structures.generic.transformers;
 
 import com.google.gson.*;
 import ivorius.reccomplex.utils.PresettedLists;
-import net.minecraft.util.BlockPos;
+import net.minecraft.util.math.BlockPos;
 import ivorius.ivtoolkit.gui.IntegerRange;
 import ivorius.ivtoolkit.random.WeightedSelector;
 import ivorius.ivtoolkit.tools.MCRegistry;
@@ -47,7 +47,7 @@ public class TransformerReplaceAll extends TransformerSingleBlock<TransformerRep
 
     public TransformerReplaceAll()
     {
-        this(BlockMatcher.of(RecurrentComplex.specialRegistry, Blocks.wool, new IntegerRange(0, 15)));
+        this(BlockMatcher.of(RecurrentComplex.specialRegistry, Blocks.WOOL, new IntegerRange(0, 15)));
         destination.setToDefault();
     }
 
@@ -94,7 +94,7 @@ public class TransformerReplaceAll extends TransformerSingleBlock<TransformerRep
         if (destination.getList().size() > 0)
             blockState = WeightedSelector.selectItem(context.random, destination.getList());
         else
-            blockState = new WeightedBlockState(null, Blocks.air.getDefaultState(), "");
+            blockState = new WeightedBlockState(null, Blocks.AIR.getDefaultState(), "");
 
         NBTTagCompound tileEntityInfo = blockState.tileEntityInfo.trim().length() > 0 && blockState.state.getBlock().hasTileEntity(blockState.state)
                 ? TransformerReplace.tryParse(blockState.tileEntityInfo) : null;

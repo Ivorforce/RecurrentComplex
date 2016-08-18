@@ -10,6 +10,7 @@ import ivorius.reccomplex.structures.registry.MCRegistrySpecial;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.world.WorldServer;
 import org.apache.commons.lang3.tuple.Triple;
 
 import java.util.ArrayList;
@@ -21,7 +22,7 @@ import java.util.Random;
  */
 public class InventoryGenerationHandler
 {
-    public static void generateAllTags(IInventory inventory, MCRegistrySpecial.ItemHidingRegistry registry, Random random)
+    public static void generateAllTags(WorldServer server, IInventory inventory, MCRegistrySpecial.ItemHidingRegistry registry, Random random)
     {
         List<Triple<ItemStack, GeneratingItem, Integer>> foundGenerators = new ArrayList<>();
         boolean didChange = true;
@@ -52,7 +53,7 @@ public class InventoryGenerationHandler
             if (foundGenerators.size() > 0)
             {
                 Triple<ItemStack, GeneratingItem, Integer> pair = foundGenerators.get(0);
-                pair.getMiddle().generateInInventory(inventory, random, pair.getLeft(), pair.getRight());
+                pair.getMiddle().generateInInventory(server, inventory, random, pair.getLeft(), pair.getRight());
 
                 foundGenerators.remove(0);
                 didChange = true;

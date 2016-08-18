@@ -6,11 +6,11 @@
 package ivorius.reccomplex.gui.editinventorygen;
 
 import ivorius.reccomplex.gui.InventoryWatcher;
+import ivorius.reccomplex.worldgen.inventory.WeightedRandomChestContent;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.IChatComponent;
-import net.minecraft.util.WeightedRandomChestContent;
+import net.minecraft.util.text.ITextComponent;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -281,7 +281,7 @@ public class InventoryGenericInvGen implements IInventory
     }
 
     @Override
-    public IChatComponent getDisplayName()
+    public ITextComponent getDisplayName()
     {
         return null;
     }

@@ -7,7 +7,7 @@ package ivorius.reccomplex.worldgen;
 
 import com.google.common.collect.*;
 import ivorius.ivtoolkit.blocks.BlockPositions;
-import net.minecraft.util.BlockPos;
+import net.minecraft.util.math.BlockPos;
 import ivorius.ivtoolkit.math.AxisAlignedTransform2D;
 import ivorius.reccomplex.RecurrentComplex;
 import ivorius.reccomplex.structures.StructureInfo;
@@ -16,7 +16,7 @@ import ivorius.reccomplex.structures.StructureRegistry;
 import ivorius.reccomplex.utils.StructureBoundingBoxes;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
-import net.minecraft.world.ChunkCoordIntPair;
+import net.minecraft.util.math.ChunkPos;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldSavedData;
 import net.minecraft.world.gen.structure.StructureBoundingBox;
@@ -30,13 +30,13 @@ import java.util.*;
  */
 public class StructureGenerationData extends WorldSavedData
 {
-    private static final String IDENTIFIER = RecurrentComplex.MODID + ":structuredata";
+    private static final String IDENTIFIER = RecurrentComplex.MOD_ID + ":structuredata";
 
-    protected final Set<ChunkCoordIntPair> checkedChunks = new HashSet<>();
-    protected final Set<ChunkCoordIntPair> checkedChunksFinal = new HashSet<>();
+    protected final Set<ChunkPos> checkedChunks = new HashSet<>();
+    protected final Set<ChunkPos> checkedChunksFinal = new HashSet<>();
 
     protected final Map<UUID, Entry> entryMap = new HashMap<>();
-    protected final SetMultimap<ChunkCoordIntPair, Entry> chunkMap = HashMultimap.create();
+    protected final SetMultimap<ChunkPos, Entry> chunkMap = HashMultimap.create();
     protected final SetMultimap<String, Entry> instanceMap = HashMultimap.create();
 
     public StructureGenerationData(String id)
@@ -60,7 +60,7 @@ public class StructureGenerationData extends WorldSavedData
         return data;
     }
 
-    public Set<Entry> getEntriesAt(ChunkCoordIntPair coords, boolean onlyPartial)
+    public Set<Entry> getEntriesAt(ChunkPos coords, boolean onlyPartial)
     {
         if (onlyPartial)
             return Sets.filter(chunkMap.get(coords), input -> !input.hasBeenGenerated);
@@ -69,7 +69,7 @@ public class StructureGenerationData extends WorldSavedData
 
     public Set<Entry> getEntriesAt(final BlockPos coords)
     {
-        Set<Entry> entries = getEntriesAt(new ChunkCoordIntPair(coords.getX() >> 4, coords.getZ() >> 4), false);
+        Set<Entry> entries = getEntriesAt(new ChunkPos(coords.getX() >> 4, coords.getZ() >> 4), false);
 
         return Sets.filter(entries, input -> {
             StructureBoundingBox bb = input.boundingBox();
@@ -80,7 +80,7 @@ public class StructureGenerationData extends WorldSavedData
     public Set<Entry> getEntriesAt(final StructureBoundingBox boundingBox)
     {
         ImmutableSet.Builder<Entry> entries = ImmutableSet.builder();
-        for (ChunkCoordIntPair chunkCoords : StructureBoundingBoxes.rasterize(boundingBox))
+        for (ChunkPos chunkCoords : StructureBoundingBoxes.rasterize(boundingBox))
                 entries.addAll(Sets.filter(getEntriesAt(chunkCoords, false), input -> {
                     StructureBoundingBox bb = input.boundingBox();
                     return bb != null && bb.intersectsWith(boundingBox);
@@ -88,22 +88,22 @@ public class StructureGenerationData extends WorldSavedData
         return entries.build();
     }
 
-    public Set<ChunkCoordIntPair> addCompleteEntry(String structureID, BlockPos lowerCoord, AxisAlignedTransform2D transform)
+    public Set<ChunkPos> addCompleteEntry(String structureID, BlockPos lowerCoord, AxisAlignedTransform2D transform)
     {
         return addEntry(new Entry(UUID.randomUUID(), structureID, lowerCoord, transform, true));
     }
 
-    public Set<ChunkCoordIntPair> addGeneratingEntry(String structureID, BlockPos lowerCoord, AxisAlignedTransform2D transform)
+    public Set<ChunkPos> addGeneratingEntry(String structureID, BlockPos lowerCoord, AxisAlignedTransform2D transform)
     {
         return addEntry(new Entry(UUID.randomUUID(), structureID, lowerCoord, transform, false));
     }
 
-    public Set<ChunkCoordIntPair> addEntry(Entry entry)
+    public Set<ChunkPos> addEntry(Entry entry)
     {
         entryMap.put(entry.getUuid(), entry);
 
-        Set<ChunkCoordIntPair> rasterized = entry.rasterize();
-        for (ChunkCoordIntPair coords : rasterized)
+        Set<ChunkPos> rasterized = entry.rasterize();
+        for (ChunkPos coords : rasterized)
             chunkMap.put(coords, entry);
 
         instanceMap.put(entry.getStructureID(), entry);
@@ -123,7 +123,7 @@ public class StructureGenerationData extends WorldSavedData
         return instanceMap.get(id);
     }
 
-    public boolean checkChunk(ChunkCoordIntPair coords)
+    public boolean checkChunk(ChunkPos coords)
     {
         if (checkedChunks.contains(coords))
             return false;
@@ -133,7 +133,7 @@ public class StructureGenerationData extends WorldSavedData
         return true;
     }
 
-    public boolean checkChunkFinal(ChunkCoordIntPair coords)
+    public boolean checkChunkFinal(ChunkPos coords)
     {
         if (checkedChunksFinal.contains(coords))
             return false;
@@ -158,7 +158,7 @@ public class StructureGenerationData extends WorldSavedData
     }
 
     @Override
-    public void writeToNBT(NBTTagCompound compound)
+    public NBTTagCompound writeToNBT(NBTTagCompound compound)
     {
         NBTTagList entries = new NBTTagList();
         for (Entry entry : entryMap.values())
@@ -168,6 +168,8 @@ public class StructureGenerationData extends WorldSavedData
             entries.appendTag(entryCompound);
         }
         compound.setTag("entries", entries);
+
+        return compound;
     }
 
     public static class Entry
@@ -262,7 +264,7 @@ public class StructureGenerationData extends WorldSavedData
             compound.setBoolean("hasBeenGenerated", hasBeenGenerated);
         }
 
-        public Set<ChunkCoordIntPair> rasterize()
+        public Set<ChunkPos> rasterize()
         {
             return StructureBoundingBoxes.rasterize(boundingBox());
         }

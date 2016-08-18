@@ -6,7 +6,7 @@
 package ivorius.reccomplex.utils;
 
 import ivorius.ivtoolkit.tools.IvStreams;
-import net.minecraft.world.ChunkCoordIntPair;
+import net.minecraft.util.math.ChunkPos;
 
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
@@ -16,12 +16,12 @@ import java.util.stream.Stream;
  */
 public class Chunks
 {
-    public static boolean contains(ChunkCoordIntPair chunkPos, BlockSurfacePos pos)
+    public static boolean contains(ChunkPos chunkPos, BlockSurfacePos pos)
     {
         return (chunkPos.chunkXPos >> 4) == pos.x && (chunkPos.chunkZPos >> 4) == pos.z;
     }
 
-    public static Stream<BlockSurfacePos> repeatIntersections(ChunkCoordIntPair chunkPos, BlockSurfacePos pos, int repeatX, int repeatZ)
+    public static Stream<BlockSurfacePos> repeatIntersections(ChunkPos chunkPos, BlockSurfacePos pos, int repeatX, int repeatZ)
     {
         int lowestX = pos.x + (((chunkPos.chunkXPos << 4) - pos.x) / repeatX) * repeatX;
         int lowestZ = pos.z + (((chunkPos.chunkZPos << 4) - pos.z) / repeatZ) * repeatZ;

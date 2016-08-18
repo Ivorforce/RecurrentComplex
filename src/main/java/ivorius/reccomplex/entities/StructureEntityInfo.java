@@ -6,10 +6,14 @@
 package ivorius.reccomplex.entities;
 
 import ivorius.ivtoolkit.blocks.BlockPositions;
+import ivorius.ivtoolkit.tools.NBTCompoundObject;
+import net.minecraft.world.WorldServer;
+import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.common.capabilities.CapabilityInject;
 import net.minecraftforge.fml.common.network.ByteBufUtils;
 import io.netty.buffer.ByteBuf;
 import ivorius.ivtoolkit.blocks.BlockArea;
-import net.minecraft.util.BlockPos;
+import net.minecraft.util.math.BlockPos;
 import ivorius.ivtoolkit.network.IvNetworkHelperServer;
 import ivorius.ivtoolkit.network.PartialUpdateHandler;
 import ivorius.reccomplex.RCConfig;
@@ -19,7 +23,6 @@ import ivorius.reccomplex.operation.OperationRegistry;
 import net.minecraft.entity.Entity;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.world.World;
-import net.minecraftforge.common.IExtendedEntityProperties;
 import net.minecraftforge.common.util.Constants;
 
 import javax.annotation.Nullable;
@@ -27,10 +30,12 @@ import javax.annotation.Nullable;
 /**
  * Created by lukas on 24.05.14.
  */
-public class StructureEntityInfo implements IExtendedEntityProperties, PartialUpdateHandler
+public class StructureEntityInfo implements NBTCompoundObject, PartialUpdateHandler
 {
-    public static final String EEP_KEY = "structureEntityInfo";
-    public static final String EEP_CMP_KEY = "rc-structureEntityInfo";
+    public static final String CAPABILITY_KEY = "structureEntityInfo";
+
+    @CapabilityInject(StructureEntityInfo.class)
+    public static Capability<StructureEntityInfo> CAPABILITY;
 
     public BlockPos selectedPoint1;
     public BlockPos selectedPoint2;
@@ -44,12 +49,7 @@ public class StructureEntityInfo implements IExtendedEntityProperties, PartialUp
     @Nullable
     public static StructureEntityInfo getStructureEntityInfo(Entity entity)
     {
-        return (StructureEntityInfo) entity.getExtendedProperties(EEP_KEY);
-    }
-
-    public static void initInEntity(Entity entity)
-    {
-        entity.registerExtendedProperties(EEP_KEY, new StructureEntityInfo());
+        return (StructureEntityInfo) entity.getCapability(CAPABILITY, null);
     }
 
     public boolean hasValidSelection()
@@ -84,25 +84,25 @@ public class StructureEntityInfo implements IExtendedEntityProperties, PartialUp
     public void sendSelectionToClients(Entity entity)
     {
         if (!entity.worldObj.isRemote && !RecurrentComplex.isLite())
-            IvNetworkHelperServer.sendEEPUpdatePacket(entity, EEP_KEY, "selection", RecurrentComplex.network);
+            IvNetworkHelperServer.sendEEPUpdatePacket(entity, CAPABILITY_KEY, null, "selection", RecurrentComplex.network);
     }
 
     public void sendPreviewTypeToClients(Entity entity)
     {
         if (!entity.worldObj.isRemote && !RecurrentComplex.isLite())
-            IvNetworkHelperServer.sendEEPUpdatePacket(entity, EEP_KEY, "previewType", RecurrentComplex.network);
+            IvNetworkHelperServer.sendEEPUpdatePacket(entity, CAPABILITY_KEY, null, "previewType", RecurrentComplex.network);
     }
 
     public void sendOperationToClients(Entity entity)
     {
         if (!entity.worldObj.isRemote && !RecurrentComplex.isLite())
-            IvNetworkHelperServer.sendEEPUpdatePacket(entity, EEP_KEY, "operation", RecurrentComplex.network);
+            IvNetworkHelperServer.sendEEPUpdatePacket(entity, CAPABILITY_KEY, null, "operation", RecurrentComplex.network);
     }
 
     public void sendOptionsToClients(Entity entity)
     {
         if (!entity.worldObj.isRemote && !RecurrentComplex.isLite())
-            IvNetworkHelperServer.sendEEPUpdatePacket(entity, EEP_KEY, "options", RecurrentComplex.network);
+            IvNetworkHelperServer.sendEEPUpdatePacket(entity, CAPABILITY_KEY, null, "options", RecurrentComplex.network);
     }
 
     public NBTTagCompound getCachedExportStructureBlockDataNBT()
@@ -131,7 +131,7 @@ public class StructureEntityInfo implements IExtendedEntityProperties, PartialUp
         sendOperationToClients(owner);
     }
 
-    public boolean performOperation(World world, Entity owner)
+    public boolean performOperation(WorldServer world, Entity owner)
     {
         if (danglingOperation != null)
         {
@@ -157,10 +157,8 @@ public class StructureEntityInfo implements IExtendedEntityProperties, PartialUp
     }
 
     @Override
-    public void saveNBTData(NBTTagCompound parent)
+    public void writeToNBT(NBTTagCompound compound)
     {
-        NBTTagCompound compound = new NBTTagCompound();
-
         BlockPositions.writeToNBT("selectedPoint1", selectedPoint1, compound);
         BlockPositions.writeToNBT("selectedPoint2", selectedPoint2, compound);
 
@@ -175,17 +173,11 @@ public class StructureEntityInfo implements IExtendedEntityProperties, PartialUp
         }
 
         compound.setBoolean("showGrid", showGrid);
-
-        parent.setTag(EEP_CMP_KEY, compound);
     }
 
     @Override
-    public void loadNBTData(NBTTagCompound parent)
+    public void readFromNBT(NBTTagCompound compound)
     {
-        NBTTagCompound compound = parent.hasKey(EEP_CMP_KEY)
-                ? parent.getCompoundTag(EEP_CMP_KEY)
-                : parent; // Legacy
-
         selectedPoint1 = BlockPositions.readFromNBT("selectedPoint1", compound);
         selectedPoint2 = BlockPositions.readFromNBT("selectedPoint2", compound);
 
@@ -202,12 +194,6 @@ public class StructureEntityInfo implements IExtendedEntityProperties, PartialUp
         showGrid = compound.getBoolean("showGrid");
 
         hasChanges = true;
-    }
-
-    @Override
-    public void init(Entity entity, World world)
-    {
-
     }
 
     public void update(Entity entity)

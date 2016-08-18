@@ -6,7 +6,7 @@
 package ivorius.reccomplex.structures;
 
 import ivorius.ivtoolkit.blocks.BlockPositions;
-import net.minecraft.util.BlockPos;
+import net.minecraft.util.math.BlockPos;
 import ivorius.ivtoolkit.math.AxisAlignedTransform2D;
 import ivorius.ivtoolkit.rendering.grid.BlockQuadCache;
 import ivorius.ivtoolkit.rendering.grid.GridQuadCache;
@@ -16,6 +16,7 @@ import ivorius.reccomplex.worldgen.StructureGenerator;
 import ivorius.reccomplex.structures.generic.GenericStructureInfo;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.world.World;
+import net.minecraft.world.WorldServer;
 import net.minecraftforge.common.util.Constants;
 import net.minecraft.client.renderer.GlStateManager;
 
@@ -67,7 +68,7 @@ public class OperationGenerateStructure implements Operation
     }
 
     @Override
-    public void perform(World world)
+    public void perform(WorldServer world)
     {
         if (generateAsSource)
             StructureGenerator.directly(structure, StructureSpawnContext.complete(world, world.rand, transform, lowerCoord, structure, 0, generateAsSource));

@@ -151,7 +151,7 @@ public class MCRegistrySpecial implements MCRegistry
 
     public static class ItemHidingRegistry implements MCRegistry
     {
-        private static final Item DUMMY_ITEM = Items.coal;
+        private static final Item DUMMY_ITEM = Items.COAL;
         protected MCRegistrySpecial parent;
 
         public ItemHidingRegistry(MCRegistrySpecial parent)

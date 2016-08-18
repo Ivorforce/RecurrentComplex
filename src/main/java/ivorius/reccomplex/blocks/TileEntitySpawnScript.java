@@ -34,11 +34,13 @@ public class TileEntitySpawnScript extends TileEntity implements GeneratingTileE
     }
 
     @Override
-    public void writeToNBT(NBTTagCompound nbtTagCompound)
+    public NBTTagCompound writeToNBT(NBTTagCompound nbtTagCompound)
     {
         super.writeToNBT(nbtTagCompound);
 
         writeSyncedNBT(nbtTagCompound);
+
+        return nbtTagCompound;
     }
 
     @Override

@@ -9,7 +9,8 @@ import ivorius.ivtoolkit.blocks.BlockArea;
 import ivorius.ivtoolkit.blocks.BlockAreas;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.command.NumberInvalidException;
-import net.minecraft.util.BlockPos;
+import net.minecraft.server.MinecraftServer;
+import net.minecraft.util.math.BlockPos;
 import ivorius.reccomplex.RCConfig;
 import ivorius.reccomplex.blocks.RCBlocks;
 import ivorius.reccomplex.entities.StructureEntityInfo;
@@ -18,10 +19,11 @@ import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.util.MathHelper;
+import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.World;
 import net.minecraft.util.EnumFacing;
 
+import javax.annotation.Nullable;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -52,9 +54,9 @@ public class CommandSelectFloor extends CommandSelectModify
                 {
                     IBlockState block = world.getBlockState(new BlockPos(surfaceCoord.getX(), y, surfaceCoord.getZ()));
 
-                    if ((block.getBlock().getMaterial() != Material.air && block.getBlock() != airBlock1))
+                    if ((block.getMaterial() != Material.AIR && block.getBlock() != airBlock1))
                     {
-                        if (block.getBlock().isNormalCube(world, new BlockPos(surfaceCoord.getX(), y, surfaceCoord.getZ())) && block != floorBlock && y > lowerPoint.getY())
+                        if (block.getBlock().isNormalCube(block, world, new BlockPos(surfaceCoord.getX(), y, surfaceCoord.getZ())) && block != floorBlock && y > lowerPoint.getY())
                         {
                             setBlockIfAirInArea(world, new BlockPos(surfaceCoord.getX(), y - 1, surfaceCoord.getZ()), floorBlock, area);
 
@@ -90,7 +92,7 @@ public class CommandSelectFloor extends CommandSelectModify
         if (area.contains(coord))
         {
             IBlockState prevBlock = world.getBlockState(coord);
-            if (prevBlock.getBlock().getMaterial() == Material.air || prevBlock.getBlock() == RCBlocks.genericSpace)
+            if (prevBlock.getMaterial() == Material.AIR || prevBlock.getBlock() == RCBlocks.genericSpace)
                 world.setBlockState(coord, block);
         }
     }
@@ -108,7 +110,7 @@ public class CommandSelectFloor extends CommandSelectModify
     }
 
     @Override
-    public void processCommandSelection(EntityPlayerMP player, StructureEntityInfo structureEntityInfo, BlockPos point1, BlockPos point2, String[] args) throws NumberInvalidException
+    public void executeSelection(EntityPlayerMP player, StructureEntityInfo structureEntityInfo, BlockPos point1, BlockPos point2, String[] args) throws NumberInvalidException
     {
         World world = player.getEntityWorld();
 
@@ -119,11 +121,11 @@ public class CommandSelectFloor extends CommandSelectModify
     }
 
     @Override
-    public List addTabCompletionOptions(ICommandSender commandSender, String[] args, BlockPos pos)
+    public List<String> getTabCompletionOptions(MinecraftServer server, ICommandSender sender, String[] args, @Nullable BlockPos pos)
     {
         if (args.length == 1)
             return getListOfStringsMatchingLastWord(args, "0", "1", "2");
 
-        return super.addTabCompletionOptions(commandSender, args, pos);
+        return super.getTabCompletionOptions(server, sender, args, pos);
     }
 }

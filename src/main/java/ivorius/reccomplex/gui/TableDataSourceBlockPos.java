@@ -5,7 +5,7 @@
 
 package ivorius.reccomplex.gui;
 
-import net.minecraft.util.BlockPos;
+import net.minecraft.util.math.BlockPos;
 import ivorius.ivtoolkit.gui.IntegerRange;
 import ivorius.reccomplex.gui.table.*;
 

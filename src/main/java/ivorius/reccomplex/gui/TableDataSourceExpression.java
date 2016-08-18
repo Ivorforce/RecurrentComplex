@@ -12,7 +12,7 @@ import ivorius.reccomplex.structures.generic.matchers.DependencyMatcher;
 import ivorius.reccomplex.structures.generic.matchers.DimensionMatcher;
 import ivorius.reccomplex.utils.ExpressionCache;
 import ivorius.ivtoolkit.tools.IvTranslations;
-import net.minecraft.util.EnumChatFormatting;
+import com.mojang.realmsclient.gui.ChatFormatting;
 import org.apache.commons.lang3.StringUtils;
 
 import java.text.ParseException;
@@ -58,7 +58,7 @@ public class TableDataSourceExpression<T> implements TableDataSource, TableCellP
         else
         {
             ParseException parseException = expressionCache.getParseException();
-            return String.format("%s%s%s: at %d", EnumChatFormatting.RED, parseException.getMessage(), EnumChatFormatting.RESET,
+            return String.format("%s%s%s: at %d", ChatFormatting.RED, parseException.getMessage(), ChatFormatting.RESET,
                     parseException.getErrorOffset());
         }
     }

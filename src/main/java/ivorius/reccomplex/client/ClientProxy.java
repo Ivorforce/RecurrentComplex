@@ -10,8 +10,8 @@ import ivorius.reccomplex.RCProxy;
 import ivorius.reccomplex.RecurrentComplex;
 import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.resources.model.ModelBakery;
-import net.minecraft.client.resources.model.ModelResourceLocation;
+import net.minecraft.client.renderer.block.model.ModelBakery;
+import net.minecraft.client.renderer.block.model.ModelResourceLocation;
 import net.minecraft.item.Item;
 import net.minecraft.util.ResourceLocation;
 import org.lwjgl.input.Keyboard;
@@ -109,7 +109,7 @@ public class ClientProxy implements RCProxy
         for (int i = 0; i < 16; i++)
         {
             Minecraft.getMinecraft().getRenderItem().getItemModelMesher().register(item, i, new ModelResourceLocation(String.format("%s_%d", id, i), "inventory"));
-            ModelBakery.addVariantName(item, String.format("%s_%d", id, i));
+            ModelBakery.registerItemVariants(item, new ResourceLocation(String.format("%s_%d", id, i)));
         }
     }
 

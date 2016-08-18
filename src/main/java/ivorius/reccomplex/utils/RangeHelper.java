@@ -7,7 +7,7 @@ package ivorius.reccomplex.utils;
 
 import ivorius.ivtoolkit.gui.FloatRange;
 import ivorius.ivtoolkit.gui.IntegerRange;
-import net.minecraft.util.MathHelper;
+import net.minecraft.util.math.MathHelper;
 
 /**
  * Created by lukas on 08.10.14.

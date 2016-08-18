@@ -7,13 +7,14 @@ package ivorius.reccomplex.operation;
 
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.world.World;
+import net.minecraft.world.WorldServer;
 
 /**
  * Created by lukas on 10.02.15.
  */
 public interface Operation
 {
-    void perform(World world);
+    void perform(WorldServer world);
 
     void writeToNBT(NBTTagCompound compound);
 

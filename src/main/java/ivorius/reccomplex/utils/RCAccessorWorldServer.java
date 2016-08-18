@@ -16,7 +16,7 @@ import java.lang.reflect.*;
 public class RCAccessorWorldServer
 {
     private static Class<?> worldServerServerBlockEventListClass;
-    private static Field blockEventListArrayField;
+    private static Field blockEventQueueField;
     private static Constructor<?> blockEventListConstructor;
 
     public static void ensureBlockEventArray(WorldServer worldServer)
@@ -32,8 +32,8 @@ public class RCAccessorWorldServer
                 e.printStackTrace();
             }
         }
-        if (blockEventListArrayField == null)
-            blockEventListArrayField = ReflectionHelper.findField(WorldServer.class, "field_147490_S");
+        if (blockEventQueueField == null)
+            blockEventQueueField = ReflectionHelper.findField(WorldServer.class, "field_147490_S", "blockEventQueue");
         if (blockEventListConstructor == null)
         {
             blockEventListConstructor = worldServerServerBlockEventListClass.getDeclaredConstructors()[0];
@@ -42,12 +42,12 @@ public class RCAccessorWorldServer
 
         try
         {
-            if (blockEventListArrayField.get(worldServer) == null)
+            if (blockEventQueueField.get(worldServer) == null)
             {
                 Object instance = Array.newInstance(worldServerServerBlockEventListClass, 2);
                 Array.set(instance, 0, blockEventListConstructor.newInstance());
                 Array.set(instance, 1, blockEventListConstructor.newInstance());
-                blockEventListArrayField.set(worldServer, instance);
+                blockEventQueueField.set(worldServer, instance);
             }
         }
         catch (IllegalAccessException | InstantiationException | InvocationTargetException e)

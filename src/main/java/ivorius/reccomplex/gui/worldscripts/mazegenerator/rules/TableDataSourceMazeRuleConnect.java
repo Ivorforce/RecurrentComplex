@@ -9,7 +9,7 @@ import ivorius.reccomplex.gui.table.*;
 import ivorius.reccomplex.gui.worldscripts.mazegenerator.TableDataSourceMazePathList;
 import ivorius.reccomplex.structures.generic.maze.rules.saved.MazeRuleConnect;
 import ivorius.ivtoolkit.tools.IvTranslations;
-import net.minecraft.util.EnumChatFormatting;
+import com.mojang.realmsclient.gui.ChatFormatting;
 
 /**
  * Created by lukas on 21.03.16.
@@ -45,7 +45,7 @@ public class TableDataSourceMazeRuleConnect extends TableDataSourceSegmented
     {
         if (segment == 0)
         {
-            TableCellBoolean preventCell = new TableCellBoolean("prevent", rule.preventConnection, EnumChatFormatting.GOLD + "Prevent Connection", EnumChatFormatting.GREEN + "Ensure Connection");
+            TableCellBoolean preventCell = new TableCellBoolean("prevent", rule.preventConnection, ChatFormatting.GOLD + "Prevent Connection", ChatFormatting.GREEN + "Ensure Connection");
             preventCell.addPropertyListener(cell -> rule.preventConnection = (boolean) cell.getPropertyValue());
             return new TableElementCell(preventCell);
         }

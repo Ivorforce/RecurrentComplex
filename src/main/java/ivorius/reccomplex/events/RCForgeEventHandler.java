@@ -7,9 +7,18 @@ package ivorius.reccomplex.events;
 
 import ivorius.reccomplex.RecurrentComplex;
 import net.minecraft.entity.Entity;
-import net.minecraft.util.BlockPos;
-import net.minecraft.util.ChatComponentTranslation;
-import net.minecraft.util.EnumChatFormatting;
+import net.minecraft.nbt.NBTBase;
+import net.minecraft.util.EnumFacing;
+import net.minecraft.util.EnumHand;
+import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.text.TextComponentTranslation;
+import net.minecraft.util.text.TextFormatting;
+import net.minecraft.world.WorldServer;
+import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.common.capabilities.ICapabilityProvider;
+import net.minecraftforge.common.util.INBTSerializable;
+import net.minecraftforge.event.AttachCapabilitiesEvent;
 import net.minecraftforge.event.CommandEvent;
 import net.minecraftforge.fml.client.event.ConfigChangedEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
@@ -28,17 +37,17 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.MathHelper;
+import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.gen.structure.StructureBoundingBox;
 import net.minecraftforge.client.event.MouseEvent;
 import net.minecraftforge.client.event.RenderWorldLastEvent;
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.event.entity.EntityEvent;
 import net.minecraftforge.event.entity.EntityJoinWorldEvent;
 import net.minecraftforge.event.terraingen.PopulateChunkEvent;
 import org.apache.commons.lang3.tuple.Pair;
 import net.minecraft.client.renderer.GlStateManager;
 
+import javax.annotation.Nullable;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -63,24 +72,15 @@ public class RCForgeEventHandler
     @SubscribeEvent
     public void onPreChunkDecoration(PopulateChunkEvent.Pre event)
     {
-        worldGenStructures.generate(event.rand, event.chunkX, event.chunkZ, event.world, event.chunkProvider, event.chunkProvider);
-    }
-
-    @SubscribeEvent
-    public void onEntityConstruction(EntityEvent.EntityConstructing event)
-    {
-        if (event.entity instanceof EntityPlayer)
-        {
-            StructureEntityInfo.initInEntity(event.entity);
-        }
+        worldGenStructures.generate(event.getRand(), event.getChunkX(), event.getChunkZ(), (WorldServer) event.getWorld());
     }
 
     @SubscribeEvent
     public void onEntityDrop(EntityJoinWorldEvent event)
     {
-        if (event.entity instanceof EntityItem)
+        if (event.getEntity() instanceof EntityItem)
         {
-            if (disabledTileDropAreas.stream().anyMatch(input -> input.isVecInside(new BlockPos(event.entity))))
+            if (disabledTileDropAreas.stream().anyMatch(input -> input.isVecInside(new BlockPos(event.getEntity()))))
                 event.setCanceled(true);
         }
     }
@@ -94,9 +94,9 @@ public class RCForgeEventHandler
 
         Entity renderEntity = mc.getRenderViewEntity();
         StructureEntityInfo info = StructureEntityInfo.getStructureEntityInfo(mc.thePlayer);
-        double entityX = renderEntity.lastTickPosX + (renderEntity.posX - renderEntity.lastTickPosX) * (double) event.partialTicks;
-        double entityY = renderEntity.lastTickPosY + (renderEntity.posY - renderEntity.lastTickPosY) * (double) event.partialTicks;
-        double entityZ = renderEntity.lastTickPosZ + (renderEntity.posZ - renderEntity.lastTickPosZ) * (double) event.partialTicks;
+        double entityX = renderEntity.lastTickPosX + (renderEntity.posX - renderEntity.lastTickPosX) * (double) event.getPartialTicks();
+        double entityY = renderEntity.lastTickPosY + (renderEntity.posY - renderEntity.lastTickPosY) * (double) event.getPartialTicks();
+        double entityZ = renderEntity.lastTickPosZ + (renderEntity.posZ - renderEntity.lastTickPosZ) * (double) event.getPartialTicks();
 
         GlStateManager.pushMatrix();
         GlStateManager.translate(-entityX, -entityY, -entityZ);
@@ -113,10 +113,10 @@ public class RCForgeEventHandler
             GlStateManager.enableTexture2D();
         }
 
-        SelectionRenderer.renderSelection(mc.thePlayer, ticks, event.partialTicks);
+        SelectionRenderer.renderSelection(mc.thePlayer, ticks, event.getPartialTicks());
 
         if (info != null && info.danglingOperation != null)
-            info.danglingOperation.renderPreview(info.getPreviewType(), mc.theWorld, ticks, event.partialTicks);
+            info.danglingOperation.renderPreview(info.getPreviewType(), mc.theWorld, ticks, event.getPartialTicks());
 
         GlStateManager.popMatrix();
     }
@@ -126,10 +126,10 @@ public class RCForgeEventHandler
     public void onMouseInput(MouseEvent event)
     {
         EntityPlayer player = Minecraft.getMinecraft().thePlayer;
-        ItemStack heldItem = player.getHeldItem();
+        ItemStack heldItem = player.getHeldItem(EnumHand.MAIN_HAND);
         if (heldItem != null && heldItem.getItem() instanceof ItemInputHandler)
         {
-            if (((ItemInputHandler) heldItem.getItem()).onMouseInput(player, heldItem, event.button, event.buttonstate, event.dwheel))
+            if (((ItemInputHandler) heldItem.getItem()).onMouseInput(player, heldItem, event.getButton(), event.isButtonstate(), event.getDwheel()))
                 event.setCanceled(true);
         }
     }
@@ -147,7 +147,7 @@ public class RCForgeEventHandler
         {
             WeightedItemCollection weightedItemCollection = WeightedItemCollectionRegistry.itemCollection(pair.getLeft());
             if (weightedItemCollection != null)
-                event.inventory.setInventorySlotContents(event.fromSlot, weightedItemCollection.getRandomItemStack(event.random));
+                event.inventory.setInventorySlotContents(event.fromSlot, weightedItemCollection.getRandomItemStack(event.server, event.random));
 
             event.setCanceled(true);
         }
@@ -175,9 +175,9 @@ public class RCForgeEventHandler
     @SubscribeEvent
     public void onConfigChanged(ConfigChangedEvent event)
     {
-        if (event instanceof ConfigChangedEvent.OnConfigChangedEvent && event.modID.equals(RecurrentComplex.MODID))
+        if (event instanceof ConfigChangedEvent.OnConfigChangedEvent && event.getModID().equals(RecurrentComplex.MOD_ID))
         {
-            RCConfig.loadConfig(event.configID);
+            RCConfig.loadConfig(event.getConfigID());
 
             if (RecurrentComplex.config.hasChanged())
                 RecurrentComplex.config.save();
@@ -187,14 +187,59 @@ public class RCForgeEventHandler
     @SubscribeEvent
     public void onCommand(CommandEvent event)
     {
-        if (!RCConfig.canUseCommand(event.command.getCommandName(), event.sender))
+        if (!RCConfig.canUseCommand(event.getCommand().getCommandName(), event.getSender()))
         {
             event.setCanceled(true);
 
             // From CommandHandler.executeCommand
-            ChatComponentTranslation chatComponent = new ChatComponentTranslation("commands.generic.permission");
-            chatComponent.getChatStyle().setColor(EnumChatFormatting.RED);
-            event.sender.addChatMessage(chatComponent);
+            TextComponentTranslation TextComponent = new TextComponentTranslation("commands.generic.permission");
+            TextComponent.getStyle().setColor(TextFormatting.RED);
+            event.getSender().addChatMessage(TextComponent);
+        }
+    }
+
+    @SubscribeEvent
+    public void onEntityCapapabilityAttach(AttachCapabilitiesEvent.Entity event)
+    {
+        if (event.getEntity() instanceof EntityPlayer)
+        {
+            event.addCapability(new ResourceLocation(RecurrentComplex.MOD_ID, StructureEntityInfo.CAPABILITY_KEY), new SimpleCapabilityProvider(StructureEntityInfo.CAPABILITY));
+        }
+    }
+
+    private static class SimpleCapabilityProvider<T> implements ICapabilityProvider, INBTSerializable
+    {
+        public Capability<T> capability;
+        public T t;
+
+        public SimpleCapabilityProvider(Capability<T> capability)
+        {
+            this.capability = capability;
+            this.t = capability.getDefaultInstance();
+        }
+
+        @Override
+        public boolean hasCapability(Capability<?> capability, @Nullable EnumFacing facing)
+        {
+            return capability == this.capability;
+        }
+
+        @Override
+        public <TI> TI getCapability(Capability<TI> capability, @Nullable EnumFacing facing)
+        {
+            return capability == this.capability ? this.capability.cast(t) : null;
+        }
+
+        @Override
+        public NBTBase serializeNBT()
+        {
+            return capability.writeNBT(t, null);
+        }
+
+        @Override
+        public void deserializeNBT(NBTBase nbt)
+        {
+            capability.readNBT(t, null, nbt);
         }
     }
 }

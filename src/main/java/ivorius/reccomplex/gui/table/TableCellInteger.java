@@ -7,7 +7,7 @@ package ivorius.reccomplex.gui.table;
 
 import ivorius.ivtoolkit.gui.GuiControlListener;
 import ivorius.ivtoolkit.gui.GuiSlider;
-import net.minecraft.util.MathHelper;
+import net.minecraft.util.math.MathHelper;
 
 /**
  * Created by lukas on 02.06.14.

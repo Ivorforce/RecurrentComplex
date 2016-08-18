@@ -9,7 +9,7 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 import ivorius.reccomplex.gui.table.*;
 import ivorius.reccomplex.structures.generic.maze.SavedMazePath;
-import net.minecraft.util.EnumChatFormatting;
+import com.mojang.realmsclient.gui.ChatFormatting;
 
 import java.util.*;
 
@@ -124,7 +124,7 @@ public class TableDataSourceMazeReachabilityGroup extends TableDataSourceSegment
 
     private String getDisplayString(SavedMazePath path)
     {
-        return String.format("%s%s%s %s", EnumChatFormatting.BLUE, path.getEnumFacing(), EnumChatFormatting.RESET, path.getSourceRoom());
+        return String.format("%s%s%s %s", ChatFormatting.BLUE, path.getEnumFacing(), ChatFormatting.RESET, path.getSourceRoom());
     }
 
     @Override

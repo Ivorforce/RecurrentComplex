@@ -9,7 +9,7 @@ import ivorius.reccomplex.gui.table.*;
 import ivorius.reccomplex.gui.worldscripts.mazegenerator.TableDataSourceMazePathList;
 import ivorius.reccomplex.structures.generic.maze.*;
 import ivorius.reccomplex.structures.generic.maze.rules.saved.MazeRuleConnectAll;
-import net.minecraft.util.EnumChatFormatting;
+import com.mojang.realmsclient.gui.ChatFormatting;
 
 import java.util.Collections;
 import java.util.List;
@@ -64,13 +64,13 @@ public class TableDataSourceMazeRuleConnectAll extends TableDataSourceSegmented 
     {
         if (segment == 0)
         {
-            TableCellBoolean preventCell = new TableCellBoolean("prevent", rule.preventConnection, EnumChatFormatting.GOLD + "Prevent Connection", EnumChatFormatting.GREEN + "Ensure Connection");
+            TableCellBoolean preventCell = new TableCellBoolean("prevent", rule.preventConnection, ChatFormatting.GOLD + "Prevent Connection", ChatFormatting.GREEN + "Ensure Connection");
             preventCell.addPropertyListener(cell -> rule.preventConnection = (boolean) cell.getPropertyValue());
             return new TableElementCell(preventCell);
         }
         else if (segment == 2)
         {
-            TableCellBoolean cell = new TableCellBoolean("additive", rule.additive, EnumChatFormatting.GREEN + "Additive", EnumChatFormatting.GOLD + "Subtractive");
+            TableCellBoolean cell = new TableCellBoolean("additive", rule.additive, ChatFormatting.GREEN + "Additive", ChatFormatting.GOLD + "Subtractive");
             cell.addPropertyListener(this);
             return new TableElementCell(cell);
         }

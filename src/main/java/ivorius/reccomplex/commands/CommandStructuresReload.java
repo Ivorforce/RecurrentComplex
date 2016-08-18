@@ -10,6 +10,7 @@ import ivorius.reccomplex.RecurrentComplex;
 import ivorius.reccomplex.utils.ServerTranslations;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.ICommandSender;
+import net.minecraft.server.MinecraftServer;
 
 /**
  * Created by lukas on 25.05.14.
@@ -34,7 +35,7 @@ public class CommandStructuresReload extends CommandBase
     }
 
     @Override
-    public void processCommand(ICommandSender commandSender, String[] args)
+    public void execute(MinecraftServer server, ICommandSender commandSender, String[] args)
     {
         RecurrentComplex.fileTypeRegistry.reloadCustomFiles();
         commandSender.addChatMessage(ServerTranslations.format("commands.strucReload.success"));

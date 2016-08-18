@@ -14,10 +14,12 @@ import ivorius.reccomplex.structures.StructureRegistry;
 import ivorius.reccomplex.structures.generic.gentypes.NaturalGenerationInfo;
 import ivorius.reccomplex.structures.generic.gentypes.StaticGenerationInfo;
 import ivorius.reccomplex.utils.BlockSurfacePos;
-import net.minecraft.util.BlockPos;
-import net.minecraft.world.ChunkCoordIntPair;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.ChunkPos;
 import net.minecraft.world.World;
-import net.minecraft.world.biome.BiomeGenBase;
+import net.minecraft.world.WorldServer;
+import net.minecraft.world.biome.Biome;
+import net.minecraft.world.chunk.IChunkGenerator;
 import net.minecraft.world.chunk.IChunkProvider;
 import net.minecraftforge.fml.common.IWorldGenerator;
 import org.apache.commons.lang3.tuple.Pair;
@@ -28,9 +30,9 @@ import java.util.Random;
 /**
  * Created by lukas on 24.05.14.
  */
-public class WorldGenStructures implements IWorldGenerator
+public class WorldGenStructures
 {
-    public static void generateStaticStructuresInChunk(Random random, ChunkCoordIntPair chunkPos, World world, BlockPos spawnPos)
+    public static void generateStaticStructuresInChunk(Random random, ChunkPos chunkPos, WorldServer world, BlockPos spawnPos)
     {
         StructureRegistry.INSTANCE.getStaticStructuresAt(chunkPos, world, spawnPos).forEach(triple ->
         {
@@ -45,21 +47,21 @@ public class WorldGenStructures implements IWorldGenerator
         });
     }
 
-    public static void generateRandomStructuresInChunk(Random random, ChunkCoordIntPair chunkPos, World world, IChunkProvider chunkGenerator, IChunkProvider chunkProvider, BiomeGenBase biomeGen)
+    public static void generateRandomStructuresInChunk(Random random, ChunkPos chunkPos, WorldServer world, Biome biomeGen)
     {
         StructureSelector structureSelector = StructureRegistry.INSTANCE.getStructureSelector(biomeGen, world.provider);
 
-        List<Pair<StructureInfo, NaturalGenerationInfo>> generated = structureSelector.generatedStructures(random, chunkPos, world, chunkGenerator, chunkProvider);
+        List<Pair<StructureInfo, NaturalGenerationInfo>> generated = structureSelector.generatedStructures(random, chunkPos, world);
 
         for (Pair<StructureInfo, NaturalGenerationInfo> pair : generated)
             generateStructureInChunk(random, chunkPos, world, pair);
     }
 
-    public static boolean generateRandomStructureInChunk(Random random, ChunkCoordIntPair chunkPos, World world, IChunkProvider chunkGenerator, IChunkProvider chunkProvider, BiomeGenBase biomeGen)
+    public static boolean generateRandomStructureInChunk(Random random, ChunkPos chunkPos, WorldServer world, Biome biomeGen)
     {
         StructureSelector structureSelector = StructureRegistry.INSTANCE.getStructureSelector(biomeGen, world.provider);
 
-        Pair<StructureInfo, NaturalGenerationInfo> pair = structureSelector.selectOne(random, chunkPos, world, chunkGenerator, chunkProvider);
+        Pair<StructureInfo, NaturalGenerationInfo> pair = structureSelector.selectOne(random, chunkPos, world);
 
         if (pair != null)
         {
@@ -70,7 +72,7 @@ public class WorldGenStructures implements IWorldGenerator
         return false;
     }
 
-    protected static void generateStructureInChunk(Random random, ChunkCoordIntPair chunkPos, World world, Pair<StructureInfo, NaturalGenerationInfo> pair)
+    protected static void generateStructureInChunk(Random random, ChunkPos chunkPos, WorldServer world, Pair<StructureInfo, NaturalGenerationInfo> pair)
     {
         StructureInfo structureInfo = pair.getLeft();
         NaturalGenerationInfo naturalGenInfo = pair.getRight();
@@ -82,7 +84,7 @@ public class WorldGenStructures implements IWorldGenerator
             StructureGenerator.randomInstantly(world, random, structureInfo, naturalGenInfo.ySelector, genPos, true, structureName);
     }
 
-    public static void generatePartialStructuresInChunk(Random random, final ChunkCoordIntPair chunkPos, final World world, IChunkProvider chunkGenerator, IChunkProvider chunkProvider)
+    public static void generatePartialStructuresInChunk(Random random, final ChunkPos chunkPos, final WorldServer world)
     {
         StructureGenerationData data = StructureGenerationData.get(world);
 
@@ -103,18 +105,17 @@ public class WorldGenStructures implements IWorldGenerator
         }
     }
 
-    @Override
-    public void generate(Random random, final int chunkX, final int chunkZ, final World world, IChunkProvider chunkGenerator, IChunkProvider chunkProvider)
+    public void generate(Random random, int chunkX, int chunkZ, WorldServer world)
     {
-        ChunkCoordIntPair chunkPos = new ChunkCoordIntPair(chunkX, chunkZ);
+        ChunkPos chunkPos = new ChunkPos(chunkX, chunkZ);
         boolean worldWantsStructures = world.getWorldInfo().isMapFeaturesEnabled();
         StructureGenerationData data = StructureGenerationData.get(world);
 
-        generatePartialStructuresInChunk(random, chunkPos, world, chunkGenerator, chunkProvider);
+        generatePartialStructuresInChunk(random, chunkPos, world);
 
         if (!RCConfig.honorStructureGenerationOption || worldWantsStructures)
         {
-            BiomeGenBase biomeGen = world.getBiomeGenForCoords(chunkPos.getBlock(8, 0, 8));
+            Biome biomeGen = world.getBiome(chunkPos.getBlock(8, 0, 8));
             BlockPos spawnPos = world.getSpawnPoint();
 
             generateStaticStructuresInChunk(random, chunkPos, world, spawnPos);
@@ -123,14 +124,14 @@ public class WorldGenStructures implements IWorldGenerator
             {
                 boolean mayGenerate = RCConfig.isGenerationEnabled(biomeGen) && RCConfig.isGenerationEnabled(world.provider);
 
-                if (world.provider.getDimensionId() == 0)
+                if (world.provider.getDimension() == 0)
                 {
                     double distToSpawn = IvVecMathHelper.distanceSQ(new double[]{chunkPos.chunkXPos * 16 + 8, chunkPos.chunkZPos * 16 + 8}, new double[]{spawnPos.getX(), spawnPos.getZ()});
                     mayGenerate &= distToSpawn >= RCConfig.minDistToSpawnForGeneration * RCConfig.minDistToSpawnForGeneration;
                 }
 
                 if (mayGenerate)
-                    generateRandomStructuresInChunk(random, chunkPos, world, chunkGenerator, chunkProvider, biomeGen);
+                    generateRandomStructuresInChunk(random, chunkPos, world, biomeGen);
             }
         }
     }

@@ -8,7 +8,7 @@ package ivorius.reccomplex.client.rendering;
 import ivorius.ivtoolkit.blocks.BlockArea;
 import ivorius.reccomplex.utils.Icons;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
-import net.minecraft.util.BlockPos;
+import net.minecraft.util.math.BlockPos;
 import ivorius.ivtoolkit.math.AxisAlignedTransform2D;
 import ivorius.ivtoolkit.rendering.grid.AreaRenderer;
 import ivorius.ivtoolkit.rendering.grid.CubeMesh;
@@ -58,7 +58,7 @@ public class OperationRenderer
         applyTransformVisual(transform, cached.getSize());
 
         Tessellator tessellator = Tessellator.getInstance();
-        tessellator.getWorldRenderer().begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX);
+        tessellator.getBuffer().begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX);
         for (GridQuadCache.CachedQuadLevel<?> cachedQuadLevel : cached)
         {
             EnumFacing direction = cachedQuadLevel.direction;

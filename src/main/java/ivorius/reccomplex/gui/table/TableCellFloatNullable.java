@@ -10,7 +10,7 @@ import ivorius.ivtoolkit.gui.GuiSlider;
 import ivorius.reccomplex.utils.scale.Scale;
 import ivorius.reccomplex.utils.scale.Scales;
 import net.minecraft.client.gui.GuiButton;
-import net.minecraft.util.MathHelper;
+import net.minecraft.util.math.MathHelper;
 
 /**
  * Created by lukas on 02.06.14.

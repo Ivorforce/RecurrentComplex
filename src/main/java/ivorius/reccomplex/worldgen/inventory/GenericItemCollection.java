@@ -15,10 +15,9 @@ import ivorius.reccomplex.json.JsonUtils;
 import ivorius.reccomplex.json.NbtToJson;
 import ivorius.reccomplex.structures.generic.matchers.DependencyMatcher;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.StatCollector;
+import net.minecraft.util.text.translation.I18n;
 import net.minecraft.util.WeightedRandom;
-import net.minecraft.util.WeightedRandomChestContent;
-import net.minecraftforge.common.ChestGenHooks;
+import net.minecraft.world.WorldServer;
 
 import java.lang.reflect.Type;
 import java.util.ArrayList;
@@ -50,7 +49,7 @@ public class GenericItemCollection implements WeightedItemCollection
     }
 
     @Override
-    public ItemStack getRandomItemStack(Random random)
+    public ItemStack getRandomItemStack(WorldServer server, Random random)
     {
         int max = 0;
         for (Component component : components)
@@ -68,7 +67,7 @@ public class GenericItemCollection implements WeightedItemCollection
     @Override
     public String getDescriptor()
     {
-        return StatCollector.translateToLocal("inventoryGen.custom");
+        return I18n.translateToLocal("inventoryGen.custom");
     }
 
     public static class Component extends WeightedRandom.Item
@@ -103,8 +102,7 @@ public class GenericItemCollection implements WeightedItemCollection
 
             RandomizedItemStack item = WeightedSelector.selectItem(random, items);
 
-            ItemStack[] stacks = ChestGenHooks.generateStacks(random, item.itemStack, item.min, item.max);
-            return stacks.length > 0 ? stacks[0] : null;
+            return item.generateStack(random);
 
         }
 
@@ -211,6 +209,17 @@ public class GenericItemCollection implements WeightedItemCollection
             return new RandomizedItemStack(chestContent.theItemId.copy(),
                     chestContent.minStackSize, chestContent.maxStackSize,
                     (double) chestContent.itemWeight / (double) defaultWeight);
+        }
+
+        public ItemStack generateStack(Random random)
+        {
+            // safety
+            int min = Math.min(this.max, this.min);
+            int max = Math.max(this.max, this.min);
+
+            ItemStack stack = itemStack.copy();
+            stack.stackSize = random.nextInt(max - min + 1) + min;
+            return stack;
         }
 
         @Override

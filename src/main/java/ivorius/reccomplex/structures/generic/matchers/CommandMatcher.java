@@ -10,7 +10,7 @@ import ivorius.reccomplex.utils.ExpressionCaches;
 import ivorius.reccomplex.utils.PrefixedTypeExpressionCache;
 import ivorius.reccomplex.utils.algebra.RCBoolAlgebra;
 import net.minecraft.command.ICommandSender;
-import net.minecraft.util.EnumChatFormatting;
+import com.mojang.realmsclient.gui.ChatFormatting;
 
 /**
  * Created by lukas on 01.05.15.
@@ -22,7 +22,7 @@ public class CommandMatcher extends PrefixedTypeExpressionCache<Boolean>
 
     public CommandMatcher(String expression)
     {
-        super(RCBoolAlgebra.algebra(), true, EnumChatFormatting.GREEN + "Any Resource", expression);
+        super(RCBoolAlgebra.algebra(), true, ChatFormatting.GREEN + "Any Resource", expression);
         addType(new NameType(NAME_PREFIX));
         addType(new PermType(PERM_PREFIX));
     }

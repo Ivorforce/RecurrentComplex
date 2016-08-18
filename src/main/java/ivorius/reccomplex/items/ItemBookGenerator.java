@@ -15,9 +15,12 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.nbt.NBTTagString;
-import net.minecraft.util.BlockPos;
+import net.minecraft.util.EnumActionResult;
+import net.minecraft.util.EnumHand;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.world.World;
+import net.minecraft.world.WorldServer;
 import net.minecraftforge.common.MinecraftForge;
 
 import java.util.ArrayList;
@@ -31,15 +34,18 @@ import java.util.Scanner;
 public class ItemBookGenerator extends Item implements GeneratingItem
 {
     @Override
-    public boolean onItemUse(ItemStack stack, EntityPlayer playerIn, World worldIn, BlockPos pos, EnumFacing side, float hitX, float hitY, float hitZ)
+    public EnumActionResult onItemUse(ItemStack stack, EntityPlayer playerIn, World worldIn, BlockPos pos, EnumHand hand, EnumFacing facing, float hitX, float hitY, float hitZ)
     {
-        return ItemInventoryGenerationTag.applyGeneratorToInventory(worldIn, pos, this, stack);
+        if (!worldIn.isRemote)
+            return ItemInventoryGenerationTag.applyGeneratorToInventory((WorldServer) worldIn, pos, this, stack) ? EnumActionResult.SUCCESS : EnumActionResult.PASS;
+
+        return super.onItemUse(stack, playerIn, worldIn, pos, hand, facing, hitX, hitY, hitZ);
     }
 
     @Override
-    public void generateInInventory(IInventory inventory, Random random, ItemStack stack, int fromSlot)
+    public void generateInInventory(WorldServer server, IInventory inventory, Random random, ItemStack stack, int fromSlot)
     {
-        if (!MinecraftForge.EVENT_BUS.post(new ItemGenerationEvent.Book(inventory, random, stack, fromSlot)))
+        if (!MinecraftForge.EVENT_BUS.post(new ItemGenerationEvent.Book(server, inventory, random, stack, fromSlot)))
             inventory.setInventorySlotContents(fromSlot, getRandomBook(random));
     }
 
@@ -56,7 +62,7 @@ public class ItemBookGenerator extends Item implements GeneratingItem
 
     public static ItemStack getRandomGenericBook(Random random)
     {
-        ItemStack stack = new ItemStack(Items.book);
+        ItemStack stack = new ItemStack(Items.BOOK);
         String bookName = Person.chaoticName(random, random.nextFloat() < 0.8f);
 
         stack.setStackDisplayName(bookName);
@@ -66,7 +72,7 @@ public class ItemBookGenerator extends Item implements GeneratingItem
 
     public static ItemStack getRandomPoemBook(Random random)
     {
-        ItemStack stack = new ItemStack(Items.written_book);
+        ItemStack stack = new ItemStack(Items.WRITTEN_BOOK);
         Poem poem = Poem.randomPoem(random);
         Person author = Person.randomHuman(random, random.nextFloat() < 0.9f);
 

@@ -6,23 +6,23 @@
 package ivorius.reccomplex.structures.schematics;
 
 import ivorius.ivtoolkit.blocks.BlockArea;
+import ivorius.ivtoolkit.tools.IvStreams;
 import ivorius.ivtoolkit.transform.Mover;
 import ivorius.reccomplex.utils.BlockStates;
-import net.minecraft.util.BlockPos;
-import net.minecraft.block.state.IBlockState;
-import ivorius.ivtoolkit.tools.IvStreams;
 import ivorius.reccomplex.utils.RCAccessorEntity;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityList;
 import net.minecraft.init.Blocks;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.EnumFacing;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.Constants;
-import net.minecraft.util.EnumFacing;
 
 import java.util.*;
 import java.util.stream.Stream;
@@ -109,7 +109,7 @@ public class SchematicFile
     public IBlockState getBlockState(BlockPos coord)
     {
         if (coord.getX() < 0 || coord.getY() < 0 || coord.getZ() < 0 || coord.getX() >= width || coord.getY() >= height || coord.getZ() >= length)
-            return Blocks.air.getDefaultState();
+            return Blocks.AIR.getDefaultState();
 
         return blockStates[getBlockIndex(coord)];
     }
@@ -119,7 +119,7 @@ public class SchematicFile
         BlockPos sideCoord = coord.add(side.getFrontOffsetX(), side.getFrontOffsetY(), side.getFrontOffsetZ());
 
         IBlockState blockState = getBlockState(sideCoord);
-        return !blockState.getBlock().isOpaqueCube();
+        return !blockState.isOpaqueCube();
     }
 
     public void generate(World world, BlockPos pos)
@@ -127,7 +127,7 @@ public class SchematicFile
         Map<BlockPos, TileEntity> tileEntities = new HashMap<>();
         for (NBTTagCompound tileTagCompound : tileEntityCompounds)
         {
-            TileEntity tileEntity = TileEntity.createAndLoadEntity(tileTagCompound);
+            TileEntity tileEntity = TileEntity.create(tileTagCompound);
             if (tileEntity != null)
                 tileEntities.put(tileEntity.getPos(), tileEntity);
         }
@@ -172,7 +172,7 @@ public class SchematicFile
 
     private int getPass(IBlockState blockState)
     {
-        return (blockState.getBlock().isNormalCube() || blockState.getBlock().getMaterial() == Material.air) ? 0 : 1;
+        return (blockState.isNormalCube() || blockState.getMaterial() == Material.AIR) ? 0 : 1;
     }
 
     public void writeToNBT(NBTTagCompound tagCompound)
@@ -220,7 +220,7 @@ public class SchematicFile
 
     private int getBlockID(Block block)
     {
-        return Block.blockRegistry.getIDForObject(block);
+        return Block.REGISTRY.getIDForObject(block);
     }
 
     public static class UnsupportedSchematicFormatException extends Exception

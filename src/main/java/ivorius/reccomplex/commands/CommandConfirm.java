@@ -12,6 +12,8 @@ import net.minecraft.command.CommandBase;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.server.MinecraftServer;
+import net.minecraft.world.WorldServer;
 
 /**
  * Created by lukas on 03.08.14.
@@ -36,12 +38,12 @@ public class CommandConfirm extends CommandBase
     }
 
     @Override
-    public void processCommand(ICommandSender commandSender, String[] args) throws CommandException
+    public void execute(MinecraftServer server, ICommandSender commandSender, String[] args) throws CommandException
     {
         EntityPlayer player = getCommandSenderAsPlayer(commandSender);
         StructureEntityInfo structureEntityInfo = RCCommands.getStructureEntityInfo(player);
 
-        if (!structureEntityInfo.performOperation(commandSender.getEntityWorld(), player))
+        if (!structureEntityInfo.performOperation((WorldServer) commandSender.getEntityWorld(), player))
             throw ServerTranslations.commandException("commands.rc.noOperation");
     }
 }

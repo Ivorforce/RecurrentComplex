@@ -23,9 +23,9 @@ import ivorius.reccomplex.utils.NBTNone;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.init.Blocks;
 import net.minecraft.nbt.NBTBase;
-import net.minecraft.util.BlockPos;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
-import net.minecraft.world.biome.BiomeGenBase;
+import net.minecraft.world.biome.Biome;
 
 import java.lang.reflect.Type;
 import java.util.ArrayList;
@@ -76,10 +76,10 @@ public class TransformerNatural extends TransformerSingleBlock<NBTNone>
         World world = context.world;
         Random random = context.random;
 
-        BiomeGenBase biome = world.getBiomeGenForCoords(coord);
-        IBlockState topBlock = biome.topBlock != null ? biome.topBlock : Blocks.air.getDefaultState();
-        IBlockState fillerBlock = biome.fillerBlock != null ? biome.fillerBlock : Blocks.air.getDefaultState();
-        IBlockState mainBlock = world.provider.getDimensionId() == -1 ? Blocks.netherrack.getDefaultState() : (world.provider.getDimensionId() == 1 ? Blocks.end_stone.getDefaultState() : Blocks.stone.getDefaultState());
+        Biome biome = world.getBiome(coord);
+        IBlockState topBlock = biome.topBlock != null ? biome.topBlock : Blocks.AIR.getDefaultState();
+        IBlockState fillerBlock = biome.fillerBlock != null ? biome.fillerBlock : Blocks.AIR.getDefaultState();
+        IBlockState mainBlock = world.provider.getDimension() == -1 ? Blocks.NETHERRACK.getDefaultState() : (world.provider.getDimension() == 1 ? Blocks.END_STONE.getDefaultState() : Blocks.STONE.getDefaultState());
 
         boolean useStoneBlock = hasBlockAbove(world, coord, mainBlock);
 

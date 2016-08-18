@@ -5,10 +5,13 @@
 
 package ivorius.reccomplex;
 
+import ivorius.ivtoolkit.network.CapabilityUpdateRegistry;
 import ivorius.ivtoolkit.tools.MCRegistry;
+import ivorius.ivtoolkit.tools.NBTCompoundObjectCapabilityStorage;
 import ivorius.reccomplex.blocks.*;
 import ivorius.reccomplex.blocks.materials.MaterialNegativeSpace;
 import ivorius.reccomplex.blocks.materials.RCMaterials;
+import ivorius.reccomplex.entities.StructureEntityInfo;
 import ivorius.reccomplex.files.RCFileTypeRegistry;
 import ivorius.reccomplex.items.*;
 import ivorius.reccomplex.json.SerializableStringTypeRegistry;
@@ -41,6 +44,7 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.common.capabilities.CapabilityManager;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.registry.GameRegistry;
@@ -83,7 +87,9 @@ public class RCRegistryHandler
         }
 
         RCMaterials.materialNegativeSpace = new MaterialNegativeSpace();
-        RCMaterials.materialGenericSolid = (new Material(MapColor.stoneColor));
+        RCMaterials.materialGenericSolid = (new Material(MapColor.STONE));
+
+        CapabilityManager.INSTANCE.register(StructureEntityInfo.class, new NBTCompoundObjectCapabilityStorage<>(StructureEntityInfo.class), StructureEntityInfo::new);
 
         blockSelector = new ItemBlockSelectorBlock().setUnlocalizedName("blockSelector");
         blockSelector.setCreativeTab(tabStructureTools);
@@ -201,6 +207,8 @@ public class RCRegistryHandler
     {
         MCRegistry mcRegistry = RecurrentComplex.specialRegistry;
 
+        CapabilityUpdateRegistry.INSTANCE.register(StructureEntityInfo.CAPABILITY_KEY, StructureEntityInfo.CAPABILITY);
+
         fileTypeRegistry.put(StructureSaveHandler.FILE_SUFFIX, StructureSaveHandler.INSTANCE);
         fileTypeRegistry.put(ItemCollectionSaveHandler.FILE_SUFFIX, ItemCollectionSaveHandler.INSTANCE);
         fileTypeRegistry.put(PoemLoader.FILE_SUFFIX, new PoemLoader());
@@ -245,7 +253,8 @@ public class RCRegistryHandler
 
     protected static <T> void dumpAll(ListPresets<T> presets)
     {
-        presets.allTypes().stream().forEach(s -> {
+        presets.allTypes().forEach(s ->
+        {
             try
             {
                 FileUtils.write(FileUtils.getFile(RCFileTypeRegistry.getDirectory(false), String.format("%s.%s", s, presets.getFileSuffix())), presets.write(s));

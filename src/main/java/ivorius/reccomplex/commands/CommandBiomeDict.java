@@ -13,16 +13,18 @@ import ivorius.reccomplex.utils.ServerTranslations;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
-import net.minecraft.event.ClickEvent;
-import net.minecraft.event.HoverEvent;
-import net.minecraft.util.BlockPos;
-import net.minecraft.util.ChatComponentText;
-import net.minecraft.util.ChatComponentTranslation;
-import net.minecraft.util.IChatComponent;
-import net.minecraft.world.biome.BiomeGenBase;
+import net.minecraft.server.MinecraftServer;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.TextComponentString;
+import net.minecraft.util.text.TextComponentTranslation;
+import net.minecraft.util.text.event.ClickEvent;
+import net.minecraft.util.text.event.HoverEvent;
+import net.minecraft.world.biome.Biome;
 import net.minecraftforge.common.BiomeDictionary;
 import org.apache.commons.lang3.StringUtils;
 
+import javax.annotation.Nullable;
 import java.util.List;
 import java.util.Set;
 
@@ -49,7 +51,7 @@ public class CommandBiomeDict extends CommandBase
     }
 
     @Override
-    public void processCommand(ICommandSender commandSender, String[] args) throws CommandException
+    public void execute(MinecraftServer server, ICommandSender commandSender, String[] args) throws CommandException
     {
         if (args.length < 2)
             throw ServerTranslations.wrongUsageException("commands.biomedict.usage");
@@ -58,31 +60,31 @@ public class CommandBiomeDict extends CommandBase
         {
             case "get":
             {
-                Set<BiomeGenBase> biomes = BiomeMatcher.gatherAllBiomes();
+                Set<Biome> biomes = BiomeMatcher.gatherAllBiomes();
 
                 boolean didFindBiome = false;
 
                 String biomeName = buildString(args, 1);
 
-                for (BiomeGenBase biomeGenBase : biomes)
+                for (Biome Biome : biomes)
                 {
-                    if (biomeGenBase.biomeName.equals(biomeName))
+                    if (Biome.getBiomeName().equals(biomeName))
                     {
-                        BiomeDictionary.Type[] types = BiomeDictionary.getTypesForBiome(biomeGenBase);
-                        IChatComponent[] components = new IChatComponent[types.length];
+                        BiomeDictionary.Type[] types = BiomeDictionary.getTypesForBiome(Biome);
+                        ITextComponent[] components = new ITextComponent[types.length];
 
                         for (int i = 0; i < types.length; i++)
                         {
                             BiomeDictionary.Type type = types[i];
-                            components[i] = new ChatComponentText(IvGsonHelper.serializedName(type));
-                            components[i].getChatStyle().setChatClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND,
+                            components[i] = new TextComponentString(IvGsonHelper.serializedName(type));
+                            components[i].getStyle().setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND,
                                     String.format("/%s list %s", getCommandName(), type)));
-                            components[i].getChatStyle().setChatHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT,
+                            components[i].getStyle().setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT,
                                     ServerTranslations.format("commands.biomedict.get.number", BiomeDictionary.getBiomesForType(type).length)));
                         }
 
                         commandSender.addChatMessage(ServerTranslations.format("commands.biomedict.get", biomeName,
-                                new ChatComponentTranslation(StringUtils.repeat("%s", ", ", components.length), components)));
+                                new TextComponentTranslation(StringUtils.repeat("%s", ", ", components.length), components)));
 
                         didFindBiome = true;
                         break;
@@ -99,21 +101,21 @@ public class CommandBiomeDict extends CommandBase
 
                 if (type != null)
                 {
-                    BiomeGenBase[] biomes = BiomeDictionary.getBiomesForType(type);
-                    IChatComponent[] components = new IChatComponent[biomes.length];
+                    Biome[] biomes = BiomeDictionary.getBiomesForType(type);
+                    ITextComponent[] components = new ITextComponent[biomes.length];
 
                     for (int i = 0; i < biomes.length; i++)
                     {
-                        BiomeGenBase biome = biomes[i];
-                        components[i] = new ChatComponentText(biome.biomeName);
-                        components[i].getChatStyle().setChatClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND,
-                                String.format("/%s get %s", getCommandName(), biome.biomeName)));
-                        components[i].getChatStyle().setChatHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT,
+                        Biome biome = biomes[i];
+                        components[i] = new TextComponentString(biome.getBiomeName());
+                        components[i].getStyle().setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND,
+                                String.format("/%s get %s", getCommandName(), biome.getBiomeName())));
+                        components[i].getStyle().setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT,
                                 ServerTranslations.format("commands.biomedict.list.number", BiomeDictionary.getTypesForBiome(biome).length)));
                     }
 
                     commandSender.addChatMessage(ServerTranslations.format("commands.biomedict.list", args[1],
-                            new ChatComponentTranslation(StringUtils.repeat("%s", ", ", components.length), components)));
+                            new TextComponentTranslation(StringUtils.repeat("%s", ", ", components.length), components)));
                 }
                 else
                     commandSender.addChatMessage(ServerTranslations.format("commands.biomedict.notype", args[1]));
@@ -125,19 +127,19 @@ public class CommandBiomeDict extends CommandBase
     }
 
     @Override
-    public List addTabCompletionOptions(ICommandSender commandSender, String[] args, BlockPos pos)
+    public List<String> getTabCompletionOptions(MinecraftServer server, ICommandSender sender, String[] args, @Nullable BlockPos pos)
     {
         if (args.length == 1)
             return getListOfStringsMatchingLastWord(args, "get", "list");
 
         if (args[0].equals("get"))
         {
-            Set<BiomeGenBase> biomes = BiomeMatcher.gatherAllBiomes();
+            Set<Biome> biomes = BiomeMatcher.gatherAllBiomes();
             String[] biomeNames = new String[biomes.size()];
 
             int index = 0;
-            for (BiomeGenBase biome : biomes)
-                biomeNames[index ++] = biome.biomeName;
+            for (Biome biome : biomes)
+                biomeNames[index ++] = biome.getBiomeName();
 
             return getListOfStringsMatchingLastWord(args, biomeNames);
         }

@@ -15,7 +15,7 @@ import ivorius.reccomplex.structures.YSelector;
 import net.minecraft.block.BlockLiquid;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
-import net.minecraft.util.BlockPos;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraft.world.gen.structure.StructureBoundingBox;
 
@@ -124,7 +124,7 @@ public class GenericYSelector implements YSelector
         while (curYWater > 0)
         {
             IBlockState blockState = world.getBlockState(new BlockPos(x, curYWater, z));
-            if (!(blockState.getBlock() instanceof BlockLiquid || blockState.getBlock().getMaterial() == Material.ice))
+            if (!(blockState.getBlock() instanceof BlockLiquid || blockState.getMaterial() == Material.ICE))
             {
                 curYWater++;
                 break;
@@ -142,8 +142,8 @@ public class GenericYSelector implements YSelector
         while (curY > 0)
         {
             IBlockState blockState = world.getBlockState(new BlockPos(x, curY, z));
-            Material material = blockState.getBlock().getMaterial();
-            if (!(blockState.getBlock().isFoliage(world, new BlockPos(x, curY, z)) || material == Material.leaves || material == Material.plants || material == Material.wood))
+            Material material = blockState.getMaterial();
+            if (!(blockState.getBlock().isFoliage(world, new BlockPos(x, curY, z)) || material == Material.LEAVES || material == Material.PLANTS || material == Material.WOOD))
             {
                 break;
             }

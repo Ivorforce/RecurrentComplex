@@ -4,7 +4,7 @@ import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.properties.IProperty;
 import net.minecraft.block.properties.PropertyInteger;
-import net.minecraft.block.state.BlockState;
+import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.Item;
@@ -22,9 +22,10 @@ public class BlockTyped extends Block
     {
         super(materialIn);
         this.setDefaultState(this.blockState.getBaseState().withProperty(TYPE, 0));
-        this.setCreativeTab(CreativeTabs.tabBlock);
+        this.setCreativeTab(CreativeTabs.BUILDING_BLOCKS);
     }
 
+    @Override
     public int damageDropped(IBlockState state)
     {
         return state.getValue(TYPE);
@@ -37,18 +38,21 @@ public class BlockTyped extends Block
             list.add(new ItemStack(itemIn, 1, j));
     }
 
+    @Override
     public IBlockState getStateFromMeta(int meta)
     {
         return this.getDefaultState().withProperty(TYPE, meta);
     }
 
+    @Override
     public int getMetaFromState(IBlockState state)
     {
         return state.getValue(TYPE);
     }
 
-    protected BlockState createBlockState()
+    @Override
+    protected BlockStateContainer createBlockState()
     {
-        return new BlockState(this, TYPE);
+        return new BlockStateContainer(this, TYPE);
     }
 }

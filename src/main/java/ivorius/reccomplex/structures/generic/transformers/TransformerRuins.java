@@ -32,9 +32,9 @@ import net.minecraft.inventory.IInventory;
 import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.BlockPos;
-import net.minecraft.util.MathHelper;
-import net.minecraft.util.StatCollector;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.MathHelper;
+import net.minecraft.util.text.translation.I18n;
 import net.minecraft.world.World;
 import net.minecraft.world.gen.structure.StructureBoundingBox;
 import net.minecraft.util.EnumFacing;
@@ -82,7 +82,7 @@ public class TransformerRuins implements Transformer<TransformerRuins.InstanceDa
 
     private static int getPass(IBlockState state)
     {
-        return (state.getBlock().isNormalCube() || state.getBlock().getMaterial() == Material.air) ? 0 : 1;
+        return (state.isNormalCube() || state.getMaterial() == Material.AIR) ? 0 : 1;
     }
 
     public static void setBlockToAirClean(World world, BlockPos pos)
@@ -183,39 +183,39 @@ public class TransformerRuins implements Transformer<TransformerRuins.InstanceDa
 
         if (random.nextFloat() < blockErosion)
         {
-            if (newState.getBlock() == Blocks.stonebrick
+            if (newState.getBlock() == Blocks.STONEBRICK
                     && newState.getProperties().get(BlockStoneBrick.VARIANT) != BlockStoneBrick.EnumType.MOSSY)
-                newState = Blocks.stonebrick.getDefaultState().withProperty(BlockStoneBrick.VARIANT, BlockStoneBrick.EnumType.CRACKED);
-            else if (newState.getBlock() == Blocks.sandstone)
-                newState = Blocks.sandstone.getDefaultState().withProperty(BlockSandStone.TYPE, BlockSandStone.EnumType.DEFAULT);
+                newState = Blocks.STONEBRICK.getDefaultState().withProperty(BlockStoneBrick.VARIANT, BlockStoneBrick.EnumType.CRACKED);
+            else if (newState.getBlock() == Blocks.SANDSTONE)
+                newState = Blocks.SANDSTONE.getDefaultState().withProperty(BlockSandStone.TYPE, BlockSandStone.EnumType.DEFAULT);
         }
 
         if (random.nextFloat() < vineGrowth)
         {
-            if (newState.getBlock() == Blocks.stonebrick)
-                newState = Blocks.stonebrick.getDefaultState().withProperty(BlockStoneBrick.VARIANT, BlockStoneBrick.EnumType.MOSSY);
-            else if (newState.getBlock() == Blocks.cobblestone)
-                newState = Blocks.mossy_cobblestone.getDefaultState();
-            else if (newState.getBlock() == Blocks.cobblestone_wall)
-                newState = Blocks.cobblestone_wall.getDefaultState().withProperty(BlockWall.VARIANT, BlockWall.EnumType.MOSSY);
+            if (newState.getBlock() == Blocks.STONEBRICK)
+                newState = Blocks.STONEBRICK.getDefaultState().withProperty(BlockStoneBrick.VARIANT, BlockStoneBrick.EnumType.MOSSY);
+            else if (newState.getBlock() == Blocks.COBBLESTONE)
+                newState = Blocks.MOSSY_COBBLESTONE.getDefaultState();
+            else if (newState.getBlock() == Blocks.COBBLESTONE_WALL)
+                newState = Blocks.COBBLESTONE_WALL.getDefaultState().withProperty(BlockWall.VARIANT, BlockWall.EnumType.MOSSY);
         }
 
-        if (newState.getBlock() == Blocks.air)
+        if (newState.getBlock() == Blocks.AIR)
         {
             newState = null;
             for (EnumFacing direction : EnumFacing.HORIZONTALS)
             {
-                if (random.nextFloat() < vineGrowth && Blocks.vine.canPlaceBlockOnSide(world, coord, direction))
+                if (random.nextFloat() < vineGrowth && Blocks.VINE.canPlaceBlockOnSide(world, coord, direction))
                 {
                     IBlockState downState = world.getBlockState(coord.offset(EnumFacing.DOWN));
-                    downState = downState.getBlock() == Blocks.vine ? downState : Blocks.vine.getDefaultState();
+                    downState = downState.getBlock() == Blocks.VINE ? downState : Blocks.VINE.getDefaultState();
                     downState = downState.withProperty(BlockVine.getPropertyFor(direction), true);
 
                     int length = 1 + random.nextInt(MathHelper.floor_float(vineGrowth * 10.0f + 3));
                     for (int y = 0; y < length; y++)
                     {
                         BlockPos downPos = coord.offset(EnumFacing.DOWN, y);
-                        if (world.getBlockState(downPos) == Blocks.air)
+                        if (world.getBlockState(downPos) == Blocks.AIR)
                             world.setBlockState(downPos, downState, 3);
                         else
                             break;
@@ -233,7 +233,7 @@ public class TransformerRuins implements Transformer<TransformerRuins.InstanceDa
     @Override
     public String getDisplayString()
     {
-        return StatCollector.translateToLocal("reccomplex.transformer.ruins");
+        return I18n.translateToLocal("reccomplex.transformer.ruins");
     }
 
     @Override

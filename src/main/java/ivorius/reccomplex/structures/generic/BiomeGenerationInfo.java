@@ -8,7 +8,7 @@ package ivorius.reccomplex.structures.generic;
 import com.google.gson.*;
 import ivorius.reccomplex.json.JsonUtils;
 import ivorius.reccomplex.structures.generic.matchers.BiomeMatcher;
-import net.minecraft.world.biome.BiomeGenBase;
+import net.minecraft.world.biome.Biome;
 
 import java.lang.reflect.Type;
 import java.util.regex.Matcher;
@@ -47,7 +47,7 @@ public class BiomeGenerationInfo
         return generationWeight == null;
     }
 
-    public boolean matches(BiomeGenBase biome)
+    public boolean matches(Biome biome)
     {
         return biomeMatcher.apply(biome);
     }

@@ -27,12 +27,12 @@ import ivorius.reccomplex.utils.CustomizableMap;
 import ivorius.reccomplex.worldgen.StructureSelector;
 import ivorius.reccomplex.worldgen.villages.GenericVillageCreationHandler;
 import ivorius.reccomplex.worldgen.villages.TemporaryVillagerRegistry;
-import net.minecraft.util.BlockPos;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.EnumFacing;
-import net.minecraft.world.ChunkCoordIntPair;
+import net.minecraft.util.math.ChunkPos;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldProvider;
-import net.minecraft.world.biome.BiomeGenBase;
+import net.minecraft.world.biome.Biome;
 import net.minecraft.world.gen.structure.MapGenStructureIO;
 import net.minecraftforge.fml.common.eventhandler.Event;
 import org.apache.commons.lang3.tuple.ImmutablePair;
@@ -238,9 +238,9 @@ public class StructureRegistry
         return Collections2.filter(getStructureGenerations(clazz), predicate::test);
     }
 
-    public StructureSelector getStructureSelector(BiomeGenBase biome, WorldProvider provider)
+    public StructureSelector getStructureSelector(Biome biome, WorldProvider provider)
     {
-        Pair<Integer, String> pair = new ImmutablePair<>(provider.getDimensionId(), biome.biomeName);
+        Pair<Integer, String> pair = new ImmutablePair<>(provider.getDimension(), biome.getBiomeName());
         StructureSelector structureSelector = structureSelectors.get(pair);
 
         if (structureSelector == null || !structureSelector.isValid(biome, provider))
@@ -267,7 +267,7 @@ public class StructureRegistry
         });
     }
 
-    public Stream<Triple<StructureInfo, StaticGenerationInfo, BlockSurfacePos>> getStaticStructuresAt(ChunkCoordIntPair chunkPos, final World world, final BlockPos spawnPos)
+    public Stream<Triple<StructureInfo, StaticGenerationInfo, BlockSurfacePos>> getStaticStructuresAt(ChunkPos chunkPos, final World world, final BlockPos spawnPos)
     {
         Collection<Pair<StructureInfo, StaticGenerationInfo>> statics = getStructureGenerations(StaticGenerationInfo.class, input ->
         {

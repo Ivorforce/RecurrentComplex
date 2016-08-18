@@ -29,11 +29,13 @@ public class TileEntityMazeGenerator extends TileEntity implements GeneratingTil
     }
 
     @Override
-    public void writeToNBT(NBTTagCompound nbtTagCompound)
+    public NBTTagCompound writeToNBT(NBTTagCompound nbtTagCompound)
     {
         super.writeToNBT(nbtTagCompound);
 
         writeSyncedNBT(nbtTagCompound);
+
+        return nbtTagCompound;
     }
 
     @Override

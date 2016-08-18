@@ -5,119 +5,174 @@
 
 package ivorius.reccomplex.blocks;
 
+import io.netty.buffer.ByteBuf;
 import net.minecraft.command.*;
+import net.minecraft.crash.CrashReport;
+import net.minecraft.crash.CrashReportCategory;
+import net.minecraft.crash.ICrashReportDetail;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.tileentity.CommandBlockBaseLogic;
 import net.minecraft.util.*;
 import ivorius.reccomplex.RCConfig;
 import ivorius.reccomplex.utils.RCAccessorCommandBase;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.TextComponentString;
 import net.minecraft.world.World;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
+
+import javax.annotation.Nullable;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 /**
  * Created by lukas on 11.02.15.
  */
-public class SpawnCommandLogic implements ICommandSender
+public abstract class SpawnCommandLogic implements ICommandSender
 {
-    private World world;
-    BlockPos coord;
-    private String command = "";
+    /** The formatting for the timestamp on commands run. */
+    private static final SimpleDateFormat TIMESTAMP_FORMAT = new SimpleDateFormat("HH:mm:ss");
+    /** The command stored in the command block. */
+    private String commandStored = "";
+    /** The custom name of the command block. (defaults to "@") */
+    private String customName = "@";
+    private final CommandResultStats resultStats = new CommandResultStats();
 
-    public SpawnCommandLogic(World world, BlockPos coord, String command)
+    public NBTTagCompound writeToNBT(NBTTagCompound p_189510_1_)
     {
-        this.world = world;
-        this.coord = coord;
-        this.command = command;
+        p_189510_1_.setString("Command", this.commandStored);
+        p_189510_1_.setString("CustomName", this.customName);
+
+        this.resultStats.writeStatsToNBT(p_189510_1_);
+        return p_189510_1_;
+    }
+
+    public void readDataFromNBT(NBTTagCompound nbt)
+    {
+        this.commandStored = nbt.getString("Command");
+
+        if (nbt.hasKey("CustomName", 8))
+        {
+            this.customName = nbt.getString("CustomName");
+        }
+
+        this.resultStats.readStatsFromNBT(nbt);
     }
 
     @Override
-    public boolean canCommandSenderUseCommand(int p_70003_1_, String p_70003_2_)
+    public boolean canCommandSenderUseCommand(int permLevel, String commandName)
     {
-        return p_70003_1_ <= 2;
+        return permLevel <= 2;
     }
 
-    @Override
-    public BlockPos getPosition()
+    public void setCommand(String command)
     {
-        return coord;
-    }
-
-    @Override
-    public Vec3 getPositionVector()
-    {
-        return new Vec3((double)coord.getX() + 0.5D, (double)coord.getY() + 0.5D, (double)coord.getZ() + 0.5D);
-    }
-
-    @Override
-    public World getEntityWorld()
-    {
-        return world;
-
-    }
-
-    @Override
-    public Entity getCommandSenderEntity()
-    {
-        return null;
-    }
-
-    @Override
-    public boolean sendCommandFeedback()
-    {
-        return false;
-    }
-
-    @Override
-    public void setCommandStat(CommandResultStats.Type type, int amount)
-    {
-
-    }
-
-    public void setCommand(String p_145752_1_)
-    {
-        this.command = p_145752_1_;
+        this.commandStored = command;
     }
 
     public String getCommand()
     {
-        return this.command;
+        return this.commandStored;
     }
 
-    public void executeCommand(World world)
+    public void trigger(World worldIn)
     {
-        MinecraftServer minecraftserver = MinecraftServer.getServer();
-
-        if (minecraftserver != null)
+        if (!worldIn.isRemote)
         {
-            IAdminCommand cachedAdmin = null;
-            if (!RCConfig.notifyAdminOnBlockCommands)
+            MinecraftServer minecraftserver = this.getServer();
+
+            if (minecraftserver != null && minecraftserver.isAnvilFileSet() && minecraftserver.isCommandBlockEnabled())
             {
-                cachedAdmin = RCAccessorCommandBase.getCommandAdmin();
-                CommandBase.setAdminCommander(null);
+                ICommandManager icommandmanager = minecraftserver.getCommandManager();
+
+                ICommandListener cachedAdmin = null;
+                if (!RCConfig.notifyAdminOnBlockCommands)
+                {
+                    cachedAdmin = RCAccessorCommandBase.getCommandAdmin();
+                    CommandBase.setCommandListener(null);
+                }
+
+                try
+                {
+                    icommandmanager.executeCommand(this, this.commandStored);
+                }
+                catch (Throwable throwable)
+                {
+                    CrashReport crashreport = CrashReport.makeCrashReport(throwable, "Executing command block");
+                    CrashReportCategory crashreportcategory = crashreport.makeCategory("Command to be executed");
+                    crashreportcategory.setDetail("Command", new ICrashReportDetail<String>()
+                    {
+                        public String call() throws Exception
+                        {
+                            return getCommand();
+                        }
+                    });
+                    crashreportcategory.setDetail("Name", new ICrashReportDetail<String>()
+                    {
+                        public String call() throws Exception
+                        {
+                            return getName();
+                        }
+                    });
+                    throw new ReportedException(crashreport);
+                }
+
+                if (!RCConfig.notifyAdminOnBlockCommands)
+                    CommandBase.setCommandListener(cachedAdmin);
             }
-
-            ICommandManager icommandmanager = minecraftserver.getCommandManager();
-            icommandmanager.executeCommand(this, command);
-
-            if (!RCConfig.notifyAdminOnBlockCommands)
-                CommandBase.setAdminCommander(cachedAdmin);
         }
     }
 
     @Override
     public String getName()
     {
-        return "@";
+        return this.customName;
     }
 
     @Override
-    public IChatComponent getDisplayName()
+    public ITextComponent getDisplayName()
     {
-        return new ChatComponentText(this.getName());
+        return new TextComponentString(this.getName());
+    }
+
+    public void setName(String name)
+    {
+        this.customName = name;
     }
 
     @Override
-    public void addChatMessage(IChatComponent message)
+    public void addChatMessage(ITextComponent component)
     {
+    }
 
+    @Override
+    public boolean sendCommandFeedback()
+    {
+        MinecraftServer minecraftserver = this.getServer();
+        return minecraftserver == null || !minecraftserver.isAnvilFileSet() || minecraftserver.worldServers[0].getGameRules().getBoolean("commandBlockOutput");
+    }
+
+    @Override
+    public void setCommandStat(CommandResultStats.Type type, int amount)
+    {
+        this.resultStats.setCommandStatForSender(this.getServer(), this, type, amount);
+    }
+
+    public abstract void updateCommand();
+
+    @SideOnly(Side.CLIENT)
+    public abstract int getCommandBlockType();
+
+    @SideOnly(Side.CLIENT)
+    public abstract void fillInInfo(ByteBuf buf);
+
+    public CommandResultStats getCommandResultStats()
+    {
+        return this.resultStats;
     }
 }

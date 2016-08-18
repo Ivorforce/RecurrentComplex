@@ -12,8 +12,12 @@ import ivorius.reccomplex.worldgen.WorldGenStructures;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
-import net.minecraft.util.BlockPos;
+import net.minecraft.server.MinecraftServer;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.World;
+import net.minecraft.world.WorldServer;
 
+import javax.annotation.Nullable;
 import java.util.List;
 
 /**
@@ -39,7 +43,7 @@ public class CommandDecorateOne extends CommandBase
     }
 
     @Override
-    public void processCommand(ICommandSender commandSender, String[] args) throws CommandException
+    public void execute(MinecraftServer server, ICommandSender commandSender, String[] args) throws CommandException
     {
         BlockSurfacePos coord;
 
@@ -48,14 +52,15 @@ public class CommandDecorateOne extends CommandBase
         else
             coord = BlockSurfacePos.from(commandSender.getPosition());
 
-        if (!WorldGenStructures.generateRandomStructureInChunk(commandSender.getEntityWorld().rand, coord.chunkCoord(), commandSender.getEntityWorld(), commandSender.getEntityWorld().getChunkProvider(), commandSender.getEntityWorld().getChunkProvider(), commandSender.getEntityWorld().getBiomeGenForCoords(coord.blockPos(0))))
+        WorldServer entityWorld = (WorldServer) commandSender.getEntityWorld();
+        if (!WorldGenStructures.generateRandomStructureInChunk(entityWorld.rand, coord.chunkCoord(), entityWorld, entityWorld.getBiome(coord.blockPos(0))))
         {
             throw ServerTranslations.commandException("commands.rcdecorateone.none");
         }
     }
 
     @Override
-    public List addTabCompletionOptions(ICommandSender commandSender, String[] args, BlockPos pos)
+    public List<String> getTabCompletionOptions(MinecraftServer server, ICommandSender sender, String[] args, @Nullable BlockPos pos)
     {
         if (args.length == 1 || args.length == 2)
             return getListOfStringsMatchingLastWord(args, "~");

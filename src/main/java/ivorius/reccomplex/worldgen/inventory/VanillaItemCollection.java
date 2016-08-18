@@ -6,9 +6,13 @@
 package ivorius.reccomplex.worldgen.inventory;
 
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.StatCollector;
-import net.minecraftforge.common.ChestGenHooks;
+import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.text.translation.I18n;
+import net.minecraft.world.WorldServer;
+import net.minecraft.world.storage.loot.LootContext;
+import net.minecraft.world.storage.loot.LootTable;
 
+import java.util.List;
 import java.util.Random;
 
 /**
@@ -16,22 +20,24 @@ import java.util.Random;
  */
 public class VanillaItemCollection implements WeightedItemCollection
 {
-    public String vanillaKey;
+    public ResourceLocation vanillaKey;
 
-    public VanillaItemCollection(String vanillaKey)
+    public VanillaItemCollection(ResourceLocation lootTableKey)
     {
-        this.vanillaKey = vanillaKey;
+        this.vanillaKey = lootTableKey;
     }
 
     @Override
-    public ItemStack getRandomItemStack(Random random)
+    public ItemStack getRandomItemStack(WorldServer server, Random random)
     {
-        return ChestGenHooks.getOneItem(vanillaKey, random);
+        LootTable loottable = server.getLootTableManager().getLootTableFromLocation(this.vanillaKey);
+        List<ItemStack> loot = loottable.generateLootForPools(random, new LootContext.Builder(server).build());
+        return loot.size() > 0 ? loot.get(0) : null; // TODO generate tile entities with loot? TileEntityLockedLoot
     }
 
     @Override
     public String getDescriptor()
     {
-        return StatCollector.translateToLocal("inventoryGen.vanilla");
+        return I18n.translateToLocal("inventoryGen.vanilla");
     }
 }

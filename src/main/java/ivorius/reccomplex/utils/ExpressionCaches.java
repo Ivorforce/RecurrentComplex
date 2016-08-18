@@ -5,7 +5,7 @@
 
 package ivorius.reccomplex.utils;
 
-import net.minecraft.util.EnumChatFormatting;
+import com.mojang.realmsclient.gui.ChatFormatting;
 
 /**
  * Created by lukas on 24.03.15.
@@ -22,8 +22,8 @@ public class ExpressionCaches
         @Override
         public String getRepresentation(String var, Object... args)
         {
-            EnumChatFormatting variableColor = isKnown(var, args) ? EnumChatFormatting.GREEN : EnumChatFormatting.YELLOW;
-            return EnumChatFormatting.BLUE + prefix + variableColor + var + EnumChatFormatting.RESET;
+            ChatFormatting variableColor = isKnown(var, args) ? ChatFormatting.GREEN : ChatFormatting.YELLOW;
+            return ChatFormatting.BLUE + prefix + variableColor + var + ChatFormatting.RESET;
         }
     }
 }

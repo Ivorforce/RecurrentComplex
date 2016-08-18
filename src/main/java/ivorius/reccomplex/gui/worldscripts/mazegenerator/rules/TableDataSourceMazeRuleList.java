@@ -11,7 +11,7 @@ import ivorius.reccomplex.structures.generic.maze.rules.MazeRule;
 import ivorius.reccomplex.structures.generic.maze.rules.MazeRuleRegistry;
 import ivorius.reccomplex.utils.IvClasses;
 import ivorius.ivtoolkit.tools.IvTranslations;
-import net.minecraft.util.StatCollector;
+import net.minecraft.util.text.translation.I18n;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.ArrayList;
@@ -63,7 +63,7 @@ public class TableDataSourceMazeRuleList extends TableDataSourceList<MazeRule, L
         {
             String baseKey = "reccomplex.mazerule." + type;
             actions.add(new TableCellButton.Action(type,
-                    StatCollector.translateToLocal(baseKey),
+                    I18n.translateToLocal(baseKey),
                     IvTranslations.formatLines(baseKey + ".tooltip")
             ));
         }

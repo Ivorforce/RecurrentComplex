@@ -13,8 +13,8 @@ import ivorius.reccomplex.gui.table.TableNavigator;
 import ivorius.reccomplex.json.JsonUtils;
 import ivorius.ivtoolkit.blocks.Directions;
 import ivorius.ivtoolkit.random.WeightedSelector;
-import net.minecraft.util.StatCollector;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.text.translation.I18n;
 
 import javax.annotation.Nonnull;
 import java.lang.reflect.Type;
@@ -68,7 +68,7 @@ public class StructureListGenerationInfo extends StructureGenerationInfo impleme
     @Override
     public String displayString()
     {
-        return StatCollector.translateToLocalFormatted("reccomplex.generationInfo.structureList.title", listID);
+        return I18n.translateToLocalFormatted("reccomplex.generationInfo.structureList.title", listID);
     }
 
     @Override

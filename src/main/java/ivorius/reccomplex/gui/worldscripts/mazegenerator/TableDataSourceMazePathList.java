@@ -11,7 +11,7 @@ import ivorius.reccomplex.gui.table.TableDataSourceList;
 import ivorius.reccomplex.gui.table.TableDelegate;
 import ivorius.reccomplex.gui.table.TableNavigator;
 import ivorius.reccomplex.structures.generic.maze.SavedMazePath;
-import net.minecraft.util.EnumChatFormatting;
+import com.mojang.realmsclient.gui.ChatFormatting;
 
 import java.util.Arrays;
 import java.util.List;
@@ -37,7 +37,7 @@ public class TableDataSourceMazePathList extends TableDataSourceList<SavedMazePa
     public String getDisplayString(SavedMazePath mazePath)
     {
         return String.format("%s %s%s%s", Arrays.toString(mazePath.sourceRoom.getCoordinates()),
-                EnumChatFormatting.BLUE, TableDataSourceMazePath.directionFromPath(mazePath).toString(), EnumChatFormatting.RESET);
+                ChatFormatting.BLUE, TableDataSourceMazePath.directionFromPath(mazePath).toString(), ChatFormatting.RESET);
     }
 
     @Override

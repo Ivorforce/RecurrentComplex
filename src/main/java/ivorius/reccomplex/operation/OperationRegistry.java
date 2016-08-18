@@ -15,12 +15,14 @@ import net.minecraft.command.CommandBase;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.command.PlayerNotFoundException;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.event.ClickEvent;
-import net.minecraft.event.HoverEvent;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.ChatComponentText;
-import net.minecraft.util.EnumChatFormatting;
-import net.minecraft.util.IChatComponent;
+import com.mojang.realmsclient.gui.ChatFormatting;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.TextComponentString;
+import net.minecraft.util.text.TextFormatting;
+import net.minecraft.util.text.event.ClickEvent;
+import net.minecraft.util.text.event.HoverEvent;
+import net.minecraft.world.WorldServer;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -86,23 +88,23 @@ public class OperationRegistry
                     info.queueOperation(operation, player);
                     instant = false;
 
-                    IChatComponent confirmComponent = new ChatComponentText("/" + RCCommands.confirm.getCommandName());
-                    confirmComponent.getChatStyle().setColor(EnumChatFormatting.GREEN);
-                    confirmComponent.getChatStyle().setChatClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/" + RCCommands.confirm.getCommandName()));
-                    confirmComponent.getChatStyle().setChatHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, ServerTranslations.get("commands.rcconfirm.run")));
+                    ITextComponent confirmComponent = new TextComponentString("/" + RCCommands.confirm.getCommandName());
+                    confirmComponent.getStyle().setColor(TextFormatting.GREEN);
+                    confirmComponent.getStyle().setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/" + RCCommands.confirm.getCommandName()));
+                    confirmComponent.getStyle().setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, ServerTranslations.get("commands.rcconfirm.run")));
 
-                    IChatComponent cancelComponent = new ChatComponentText("/" + RCCommands.cancel.getCommandName());
-                    cancelComponent.getChatStyle().setColor(EnumChatFormatting.RED);
-                    cancelComponent.getChatStyle().setChatClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/" + RCCommands.cancel.getCommandName()));
-                    cancelComponent.getChatStyle().setChatHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, ServerTranslations.get("commands.rccancel.run")));
+                    ITextComponent cancelComponent = new TextComponentString("/" + RCCommands.cancel.getCommandName());
+                    cancelComponent.getStyle().setColor(TextFormatting.RED);
+                    cancelComponent.getStyle().setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/" + RCCommands.cancel.getCommandName()));
+                    cancelComponent.getStyle().setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, ServerTranslations.get("commands.rccancel.run")));
 
-                    IChatComponent component = ServerTranslations.format("commands.rc.queuedOp", confirmComponent, cancelComponent);
+                    ITextComponent component = ServerTranslations.format("commands.rc.queuedOp", confirmComponent, cancelComponent);
                     commandSender.addChatMessage(component);
                 }
             }
         }
 
         if (instant)
-            operation.perform(commandSender.getEntityWorld());
+            operation.perform((WorldServer) commandSender.getEntityWorld());
     }
 }

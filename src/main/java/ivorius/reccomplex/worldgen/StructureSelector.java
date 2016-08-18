@@ -17,11 +17,12 @@ import ivorius.ivtoolkit.random.WeightedSelector;
 import ivorius.reccomplex.structures.generic.matchers.DimensionMatcher;
 import ivorius.reccomplex.utils.BlockSurfacePos;
 import ivorius.reccomplex.utils.CustomizableMap;
-import net.minecraft.util.BlockPos;
-import net.minecraft.world.ChunkCoordIntPair;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.ChunkPos;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldProvider;
-import net.minecraft.world.biome.BiomeGenBase;
+import net.minecraft.world.biome.Biome;
+import net.minecraft.world.chunk.IChunkGenerator;
 import net.minecraft.world.chunk.IChunkProvider;
 import org.apache.commons.lang3.tuple.Pair;
 
@@ -42,7 +43,7 @@ public class StructureSelector
 
     private final Set<String> cachedDimensionTypes = new HashSet<>();
 
-    public StructureSelector(Collection<StructureInfo> structures, BiomeGenBase biome, WorldProvider provider)
+    public StructureSelector(Collection<StructureInfo> structures, Biome biome, WorldProvider provider)
     {
         cachedDimensionTypes.addAll(DimensionDictionary.getDimensionTypes(provider));
 
@@ -84,12 +85,12 @@ public class StructureSelector
         return categories.getMap().keySet();
     }
 
-    public boolean isValid(BiomeGenBase biome, WorldProvider provider)
+    public boolean isValid(Biome biome, WorldProvider provider)
     {
         return DimensionDictionary.getDimensionTypes(provider).equals(cachedDimensionTypes);
     }
 
-    public float generationChance(String category, BiomeGenBase biome, WorldProvider worldProvider)
+    public float generationChance(String category, Biome biome, WorldProvider worldProvider)
     {
         Category categoryObj = categoryForID(category);
 
@@ -99,9 +100,9 @@ public class StructureSelector
         return 0.0f;
     }
 
-    public List<Pair<StructureInfo, NaturalGenerationInfo>> generatedStructures(Random random, ChunkCoordIntPair chunkPos, World world, IChunkProvider chunkGenerator, IChunkProvider chunkProvider)
+    public List<Pair<StructureInfo, NaturalGenerationInfo>> generatedStructures(Random random, ChunkPos chunkPos, World world)
     {
-        BiomeGenBase biome = world.getBiomeGenForCoords(chunkPos.getBlock(0, 0, 0));
+        Biome biome = world.getBiome(chunkPos.getBlock(0, 0, 0));
 
         return weightedStructureInfos.keySet().stream()
                 .filter(category -> random.nextFloat() < generationChance(category, biome, world.provider))
@@ -110,9 +111,9 @@ public class StructureSelector
     }
 
     @Nullable
-    public Pair<StructureInfo, NaturalGenerationInfo> selectOne(Random random, ChunkCoordIntPair chunkPos, World world, IChunkProvider chunkGenerator, IChunkProvider chunkProvider)
+    public Pair<StructureInfo, NaturalGenerationInfo> selectOne(Random random, ChunkPos chunkPos, World world)
     {
-        BiomeGenBase biome = world.getBiomeGenForCoords(chunkPos.getBlock(0, 0, 0));
+        Biome biome = world.getBiome(chunkPos.getBlock(0, 0, 0));
 
         List<WeightedSelector.SimpleItem<String>> list = weightedStructureInfos.keySet().stream()
                 .map(category -> new WeightedSelector.SimpleItem<>(generationChance(category, biome, world.provider), category)).collect(Collectors.toList());
@@ -125,7 +126,7 @@ public class StructureSelector
 
     public interface Category
     {
-        float structureSpawnChance(BiomeGenBase biome, WorldProvider worldProvider, int registeredStructures);
+        float structureSpawnChance(Biome biome, WorldProvider worldProvider, int registeredStructures);
 
         boolean selectableInGUI();
 
@@ -168,7 +169,7 @@ public class StructureSelector
         }
 
         @Override
-        public float structureSpawnChance(BiomeGenBase biome, WorldProvider worldProvider, int registeredStructures)
+        public float structureSpawnChance(Biome biome, WorldProvider worldProvider, int registeredStructures)
         {
             float amountMultiplier = Math.min((float) registeredStructures / (float) getActiveStructureMinCap(), 1.0f);
 

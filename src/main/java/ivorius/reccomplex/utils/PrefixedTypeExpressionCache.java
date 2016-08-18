@@ -5,8 +5,8 @@
 
 package ivorius.reccomplex.utils;
 
+import com.mojang.realmsclient.gui.ChatFormatting;
 import ivorius.reccomplex.utils.algebra.Algebra;
-import net.minecraft.util.EnumChatFormatting;
 
 import javax.annotation.Nonnull;
 import java.util.Collections;
@@ -92,8 +92,8 @@ public class PrefixedTypeExpressionCache<T> extends ExpressionCache<T>
             VariableType<T> type = type(input);
             return type != null
                     ? type.getRepresentation(input.substring(type.prefix.length()), args)
-                    : EnumChatFormatting.RED + input;
-        }) : EnumChatFormatting.RED + expression;
+                    : ChatFormatting.RED + input;
+        }) : ChatFormatting.RED + expression;
     }
 
     public static abstract class VariableType<T> implements Comparable<VariableType>

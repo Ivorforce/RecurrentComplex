@@ -5,7 +5,7 @@
 
 package ivorius.reccomplex.worldgen.villages;
 
-import net.minecraft.util.BlockPos;
+import net.minecraft.util.math.BlockPos;
 import ivorius.ivtoolkit.math.AxisAlignedTransform2D;
 import ivorius.reccomplex.structures.*;
 import ivorius.reccomplex.structures.generic.gentypes.StructureGenerationInfo;
@@ -18,6 +18,7 @@ import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.world.World;
+import net.minecraft.world.WorldServer;
 import net.minecraft.world.gen.structure.StructureBoundingBox;
 import net.minecraft.world.gen.structure.StructureVillagePieces;
 
@@ -53,7 +54,7 @@ public class GenericVillagePiece extends StructureVillagePieces.Village
 
     public void setOrientation(EnumFacing front, boolean mirrorX, StructureBoundingBox boundingBox)
     {
-        coordBaseMode = front;
+        setCoordBaseMode(front);
         this.mirrorX = mirrorX;
         this.boundingBox = boundingBox;
     }
@@ -68,7 +69,7 @@ public class GenericVillagePiece extends StructureVillagePieces.Village
             if (generationInfo instanceof VanillaStructureGenerationInfo)
             {
                 VanillaStructureGenerationInfo vanillaGenInfo = (VanillaStructureGenerationInfo) generationInfo;
-                AxisAlignedTransform2D transform = getTransform(vanillaGenInfo, coordBaseMode, mirrorX);
+                AxisAlignedTransform2D transform = getTransform(vanillaGenInfo, getCoordBaseMode(), mirrorX);
 
                 instanceData = structureInfo.prepareInstanceData(new StructurePrepareContext(random, transform, boundingBox, false)).writeToNBT();
             }
@@ -114,24 +115,24 @@ public class GenericVillagePiece extends StructureVillagePieces.Village
             if (generationInfo instanceof VanillaStructureGenerationInfo)
             {
                 VanillaStructureGenerationInfo vanillaGenInfo = (VanillaStructureGenerationInfo) generationInfo;
-                AxisAlignedTransform2D transform = getTransform(vanillaGenInfo, coordBaseMode, mirrorX);
+                AxisAlignedTransform2D transform = getTransform(vanillaGenInfo, getCoordBaseMode(), mirrorX);
 
                 BlockPos structureShift = transform.apply(vanillaGenInfo.spawnShift, new int[]{1, 1, 1});
 
-                if (this.field_143015_k < 0)
+                if (this.averageGroundLvl < 0)
                 {
-                    this.field_143015_k = this.getAverageGroundLevel(world, boundingBox);
+                    this.averageGroundLvl = this.getAverageGroundLevel(world, boundingBox);
 
-                    if (this.field_143015_k < 0)
+                    if (this.averageGroundLvl < 0)
                         return true;
 
-                    this.boundingBox.offset(0, this.field_143015_k - this.boundingBox.minY + structureShift.getY(), 0);
+                    this.boundingBox.offset(0, this.averageGroundLvl - this.boundingBox.minY + structureShift.getY(), 0);
                 }
 
                 BlockPos lowerCoord = new BlockPos(this.boundingBox.minX, this.boundingBox.minY, this.boundingBox.minZ);
                 NBTStorable instanceData = structureInfo.loadInstanceData(new StructureLoadContext(transform, boundingBox, false), this.instanceData);
 
-                StructureGenerator.partially(structureInfo, world, random, lowerCoord, transform, boundingBox, componentType, structureID, instanceData, !startedGeneration);
+                StructureGenerator.partially(structureInfo, (WorldServer) world, random, lowerCoord, transform, boundingBox, componentType, structureID, instanceData, !startedGeneration);
 
                 if (structureID != null && !startedGeneration)
                     StructureGenerationData.get(world).addCompleteEntry(structureID, lowerCoord, transform);

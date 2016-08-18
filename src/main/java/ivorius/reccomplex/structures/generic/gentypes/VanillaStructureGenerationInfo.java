@@ -6,7 +6,7 @@
 package ivorius.reccomplex.structures.generic.gentypes;
 
 import com.google.gson.*;
-import net.minecraft.util.BlockPos;
+import net.minecraft.util.math.BlockPos;
 import ivorius.reccomplex.RCConfig;
 import ivorius.reccomplex.gui.editstructure.gentypes.TableDataSourceVanillaStructureGenerationInfo;
 import ivorius.reccomplex.gui.table.TableDataSource;
@@ -15,9 +15,9 @@ import ivorius.reccomplex.gui.table.TableNavigator;
 import ivorius.reccomplex.json.JsonUtils;
 import ivorius.reccomplex.structures.generic.matchers.BiomeMatcher;
 import ivorius.ivtoolkit.blocks.Directions;
-import net.minecraft.util.MathHelper;
-import net.minecraft.util.StatCollector;
-import net.minecraft.world.biome.BiomeGenBase;
+import net.minecraft.util.math.MathHelper;
+import net.minecraft.util.text.translation.I18n;
+import net.minecraft.world.biome.Biome;
 import net.minecraft.util.EnumFacing;
 
 import javax.annotation.Nonnull;
@@ -81,7 +81,7 @@ public class VanillaStructureGenerationInfo extends StructureGenerationInfo
     @Override
     public String displayString()
     {
-        return StatCollector.translateToLocal("reccomplex.generationInfo.vanilla.title");
+        return I18n.translateToLocal("reccomplex.generationInfo.vanilla.title");
     }
 
     @Override
@@ -90,7 +90,7 @@ public class VanillaStructureGenerationInfo extends StructureGenerationInfo
         return new TableDataSourceVanillaStructureGenerationInfo(navigator, delegate, this);
     }
 
-    public boolean generatesIn(BiomeGenBase biome)
+    public boolean generatesIn(Biome biome)
     {
         return biomeMatcher.apply(biome);
     }

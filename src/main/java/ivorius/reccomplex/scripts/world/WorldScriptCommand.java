@@ -5,9 +5,10 @@
 
 package ivorius.reccomplex.scripts.world;
 
-import net.minecraft.util.BlockPos;
+import io.netty.buffer.ByteBuf;
 import ivorius.ivtoolkit.random.WeightedSelector;
 import ivorius.ivtoolkit.tools.IvCollections;
+import ivorius.ivtoolkit.tools.IvTranslations;
 import ivorius.reccomplex.RecurrentComplex;
 import ivorius.reccomplex.blocks.SpawnCommandLogic;
 import ivorius.reccomplex.gui.table.TableDataSource;
@@ -17,13 +18,19 @@ import ivorius.reccomplex.gui.worldscripts.command.TableDataSourceWorldScriptCom
 import ivorius.reccomplex.structures.StructureLoadContext;
 import ivorius.reccomplex.structures.StructurePrepareContext;
 import ivorius.reccomplex.structures.StructureSpawnContext;
-import ivorius.ivtoolkit.tools.IvTranslations;
 import ivorius.reccomplex.utils.NBTNone;
+import net.minecraft.block.state.IBlockState;
+import net.minecraft.entity.Entity;
 import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
+import net.minecraft.server.MinecraftServer;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.Constants;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -85,11 +92,71 @@ public class WorldScriptCommand implements WorldScript<NBTNone>
             if (entries.size() > 0)
             {
                 WorldScriptCommand.Entry entry = WeightedSelector.selectItem(context.random, entries);
-                SpawnCommandLogic logic = new SpawnCommandLogic(context.world, coord, entry.command);
+                SpawnCommandLogic logic = new SpawnCommandLogic()
+                {
+                    @Override
+                    public BlockPos getPosition()
+                    {
+                        return coord;
+                    }
+
+                    @Override
+                    public Vec3d getPositionVector()
+                    {
+                        return new Vec3d((double) coord.getX() + 0.5D, (double) coord.getY() + 0.5D, (double) coord.getZ() + 0.5D);
+                    }
+
+                    @Override
+                    public World getEntityWorld()
+                    {
+                        return context.world;
+                    }
+
+                    @Override
+                    public void setCommand(String command)
+                    {
+                        super.setCommand(command);
+                    }
+
+                    @Override
+                    public void updateCommand()
+                    {
+                        IBlockState iblockstate = context.world.getBlockState(coord);
+                        context.world.notifyBlockUpdate(coord, iblockstate, iblockstate, 3);
+                    }
+
+                    @Override
+                    @SideOnly(Side.CLIENT)
+                    public int getCommandBlockType()
+                    {
+                        return 0;
+                    }
+
+                    @Override
+                    @SideOnly(Side.CLIENT)
+                    public void fillInInfo(ByteBuf buf)
+                    {
+                        buf.writeInt(coord.getX());
+                        buf.writeInt(coord.getY());
+                        buf.writeInt(coord.getZ());
+                    }
+
+                    @Override
+                    public Entity getCommandSenderEntity()
+                    {
+                        return null;
+                    }
+
+                    @Override
+                    public MinecraftServer getServer()
+                    {
+                        return context.world.getMinecraftServer();
+                    }
+                };
 
                 try
                 {
-                    logic.executeCommand(context.world);
+                    logic.trigger(context.world);
                 }
                 catch (Throwable t)
                 {

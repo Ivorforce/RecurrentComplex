@@ -5,7 +5,7 @@
 
 package ivorius.reccomplex.client.rendering;
 
-import net.minecraft.util.BlockPos;
+import net.minecraft.util.math.BlockPos;
 import ivorius.ivtoolkit.rendering.grid.GridQuadCache;
 import ivorius.reccomplex.structures.schematics.SchematicFile;
 import net.minecraft.block.state.IBlockState;
@@ -24,7 +24,7 @@ public class SchematicQuadCache
             EnumFacing direction = input.getRight();
 
             IBlockState blockState = schematic.getBlockState(coord);
-            return blockState.getBlock().isOpaqueCube() && schematic.shouldRenderSide(coord, direction)
+            return blockState.isOpaqueCube() && schematic.shouldRenderSide(coord, direction)
                     ? handle
                     : null;
         });

@@ -5,7 +5,7 @@
 
 package ivorius.reccomplex.utils;
 
-import net.minecraft.world.ChunkCoordIntPair;
+import net.minecraft.util.math.ChunkPos;
 import net.minecraft.world.gen.structure.StructureBoundingBox;
 
 import java.util.Collections;
@@ -17,7 +17,7 @@ import java.util.Set;
  */
 public class StructureBoundingBoxes
 {
-    public static Set<ChunkCoordIntPair> rasterize(StructureBoundingBox boundingBox)
+    public static Set<ChunkPos> rasterize(StructureBoundingBox boundingBox)
     {
         if (boundingBox != null)
         {
@@ -27,10 +27,10 @@ public class StructureBoundingBoxes
             int minZ = boundingBox.minZ >> 4;
             int maxZ = boundingBox.maxZ >> 4;
 
-            Set<ChunkCoordIntPair> pairs = new HashSet<>((maxX - minX + 1) * (maxZ - minZ + 1));
+            Set<ChunkPos> pairs = new HashSet<>((maxX - minX + 1) * (maxZ - minZ + 1));
             for (int x = minX; x <= maxX; x++)
                 for (int z = minZ; z <= maxZ; z++)
-                    pairs.add(new ChunkCoordIntPair(x, z));
+                    pairs.add(new ChunkPos(x, z));
 
             return pairs;
         }

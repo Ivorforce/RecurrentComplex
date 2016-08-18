@@ -6,13 +6,12 @@
 package ivorius.reccomplex.structures.generic;
 
 import com.google.gson.*;
-import ivorius.ivtoolkit.math.IvVecMathHelper;
 import ivorius.ivtoolkit.tools.*;
 import ivorius.ivtoolkit.transform.Mover;
 import ivorius.ivtoolkit.transform.PosTransformer;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.EntityList;
-import net.minecraft.util.BlockPos;
+import net.minecraft.util.math.BlockPos;
 import ivorius.ivtoolkit.blocks.IvBlockCollection;
 import ivorius.reccomplex.RecurrentComplex;
 import ivorius.reccomplex.blocks.GeneratingTileEntity;
@@ -38,7 +37,7 @@ import net.minecraft.nbt.NBTTagList;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldServer;
-import net.minecraft.world.biome.BiomeGenBase;
+import net.minecraft.world.biome.Biome;
 import net.minecraftforge.common.BiomeDictionary;
 import net.minecraftforge.common.util.Constants;
 import org.apache.commons.lang3.tuple.Pair;
@@ -72,18 +71,18 @@ public class GenericStructureInfo implements StructureInfo<GenericStructureInfo.
         genericStructureInfo.transformers.add(new TransformerNaturalAir(BlockMatcher.of(RecurrentComplex.specialRegistry, RCBlocks.genericSpace, 1), TransformerNaturalAir.DEFAULT_NATURAL_EXPANSION_DISTANCE, TransformerNaturalAir.DEFAULT_NATURAL_EXPANSION_RANDOMIZATION));
         genericStructureInfo.transformers.add(new TransformerNegativeSpace(BlockMatcher.of(RecurrentComplex.specialRegistry, RCBlocks.genericSpace, 0)));
         genericStructureInfo.transformers.add(new TransformerNatural(BlockMatcher.of(RecurrentComplex.specialRegistry, RCBlocks.genericSolid, 0), TransformerNatural.DEFAULT_NATURAL_EXPANSION_DISTANCE, TransformerNatural.DEFAULT_NATURAL_EXPANSION_RANDOMIZATION));
-        genericStructureInfo.transformers.add(new TransformerReplace(BlockMatcher.of(RecurrentComplex.specialRegistry, RCBlocks.genericSolid, 1)).replaceWith(new WeightedBlockState(null, Blocks.air.getDefaultState(), "")));
+        genericStructureInfo.transformers.add(new TransformerReplace(BlockMatcher.of(RecurrentComplex.specialRegistry, RCBlocks.genericSolid, 1)).replaceWith(new WeightedBlockState(null, Blocks.AIR.getDefaultState(), "")));
 
         genericStructureInfo.generationInfos.add(new NaturalGenerationInfo());
 
         return genericStructureInfo;
     }
 
-    private static boolean isBiomeAllTypes(BiomeGenBase biomeGenBase, List<BiomeDictionary.Type> types)
+    private static boolean isBiomeAllTypes(Biome Biome, List<BiomeDictionary.Type> types)
     {
         for (BiomeDictionary.Type type : types)
         {
-            if (!BiomeDictionary.isBiomeOfType(biomeGenBase, type))
+            if (!BiomeDictionary.isBiomeOfType(Biome, type))
                 return false;
         }
 
@@ -184,7 +183,7 @@ public class GenericStructureInfo implements StructureInfo<GenericStructureInfo.
                                     if (!context.generateAsSource && tileEntity instanceof IInventory)
                                     {
                                         IInventory inventory = (IInventory) tileEntity;
-                                        InventoryGenerationHandler.generateAllTags(inventory, RecurrentComplex.specialRegistry.itemHidingMode(), random);
+                                        InventoryGenerationHandler.generateAllTags(context.world, inventory, RecurrentComplex.specialRegistry.itemHidingMode(), random);
                                     }
                                 }
                             }
@@ -192,7 +191,7 @@ public class GenericStructureInfo implements StructureInfo<GenericStructureInfo.
                         }
                     }
                     else
-                        context.setBlock(worldPos, Blocks.air.getDefaultState(), 2); // Replace with air
+                        context.setBlock(worldPos, Blocks.AIR.getDefaultState(), 2); // Replace with air
                 }
             }
         }
@@ -314,7 +313,7 @@ public class GenericStructureInfo implements StructureInfo<GenericStructureInfo.
 
     private int getPass(IBlockState state)
     {
-        return (state.getBlock().isNormalCube() || state.getBlock().getMaterial() == Material.air) ? 0 : 1;
+        return (state.isNormalCube() || state.getMaterial() == Material.AIR) ? 0 : 1;
     }
 
     @Override

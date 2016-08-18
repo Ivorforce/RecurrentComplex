@@ -11,6 +11,7 @@ import ivorius.reccomplex.files.RCFileTypeRegistry;
 import ivorius.reccomplex.utils.ServerTranslations;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.ICommandSender;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.Util;
 import org.apache.logging.log4j.Logger;
 import org.lwjgl.Sys;
@@ -43,7 +44,7 @@ public class CommandBrowseFiles extends CommandBase
     }
 
     @Override
-    public void processCommand(ICommandSender commandSender, String[] args)
+    public void execute(MinecraftServer server, ICommandSender commandSender, String[] args)
     {
         openFile(RCFileTypeRegistry.getBaseDirectory(), RecurrentComplex.logger);
     }

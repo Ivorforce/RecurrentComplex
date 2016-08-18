@@ -6,7 +6,7 @@
 package ivorius.reccomplex.commands;
 
 import ivorius.ivtoolkit.blocks.BlockArea;
-import net.minecraft.util.BlockPos;
+import net.minecraft.util.math.BlockPos;
 import ivorius.reccomplex.RCConfig;
 import ivorius.reccomplex.entities.StructureEntityInfo;
 import ivorius.ivtoolkit.blocks.BlockAreas;
@@ -37,7 +37,7 @@ public class CommandSelectCrop extends CommandSelectModify
     }
 
     @Override
-    public void processCommandSelection(EntityPlayerMP player, StructureEntityInfo structureEntityInfo, BlockPos point1, BlockPos point2, String[] args)
+    public void executeSelection(EntityPlayerMP player, StructureEntityInfo structureEntityInfo, BlockPos point1, BlockPos point2, String[] args)
     {
         World world = player.getEntityWorld();
         BlockArea area = new BlockArea(point1, point2);
@@ -52,6 +52,6 @@ public class CommandSelectCrop extends CommandSelectModify
 
     public static boolean isSideEmpty(final World world, BlockArea area, EnumFacing direction)
     {
-        return StreamSupport.stream(BlockAreas.side(area, direction).spliterator(), false).allMatch(coord -> world.getBlockState(coord).getBlock().getMaterial() == Material.air);
+        return StreamSupport.stream(BlockAreas.side(area, direction).spliterator(), false).allMatch(coord -> world.getBlockState(coord).getMaterial() == Material.AIR);
     }
 }

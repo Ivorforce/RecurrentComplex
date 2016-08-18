@@ -5,7 +5,10 @@
 
 package ivorius.reccomplex.worldgen.inventory;
 
-import net.minecraftforge.common.ChestGenHooks;
+import net.minecraft.util.ResourceLocation;
+import net.minecraft.world.storage.loot.LootTableList;
+
+import java.util.Collection;
 
 /**
  * Created by lukas on 07.06.14.
@@ -14,23 +17,12 @@ public class RCInventoryGenerators
 {
     public static void registerVanillaInventoryGenerators()
     {
-        registerVanillaInventoryGenerators(
-                ChestGenHooks.MINESHAFT_CORRIDOR,
-                ChestGenHooks.PYRAMID_DESERT_CHEST,
-                ChestGenHooks.PYRAMID_JUNGLE_CHEST,
-                ChestGenHooks.PYRAMID_JUNGLE_DISPENSER,
-                ChestGenHooks.STRONGHOLD_CORRIDOR,
-                ChestGenHooks.STRONGHOLD_LIBRARY,
-                ChestGenHooks.STRONGHOLD_CROSSING,
-                ChestGenHooks.VILLAGE_BLACKSMITH,
-                ChestGenHooks.BONUS_CHEST,
-                ChestGenHooks.DUNGEON_CHEST
-        );
+        registerVanillaInventoryGenerators(LootTableList.getAll());
     }
 
-    private static void registerVanillaInventoryGenerators(String... keys)
+    private static void registerVanillaInventoryGenerators(Collection<ResourceLocation> keys)
     {
-        for (String key : keys)
-            WeightedItemCollectionRegistry.register(new VanillaItemCollection(key), key);
+        for (ResourceLocation key : keys)
+            WeightedItemCollectionRegistry.register(new VanillaItemCollection(key), key.toString());
     }
 }

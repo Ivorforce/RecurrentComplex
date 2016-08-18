@@ -14,9 +14,12 @@ import net.minecraft.init.Items;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.BlockPos;
+import net.minecraft.util.EnumActionResult;
+import net.minecraft.util.EnumHand;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.world.World;
+import net.minecraft.world.WorldServer;
 import net.minecraftforge.common.MinecraftForge;
 
 import java.util.*;
@@ -33,14 +36,14 @@ public class ItemArtifactGenerator extends Item implements GeneratingItem
         if (artifacts == null)
         {
             artifacts = new HashMap<>();
-            addItems(artifacts, Arrays.asList("Sword", "Sabre", "Khopesh", "Xiphos", "Asi", "Makhaira", "Falcata", "Acinaces", "Harpe", "Gladius", "Spatha", "Longsword", "Curtana", "Sabina", "Flamberge", "Two-Hander", "Broadsword", "Schiavona", "Claymore", "Katzbalger", "Rapier", "Smallsword", "Shortsword", "Dirk", "Shotel", "Takoba", "Billao", "Kaskara", "Ida", "Scimitar", "Jian", "Dao", "Nihonto", "Katana", "Saingeom", "Yedo"), Items.diamond_sword, Items.golden_sword, Items.iron_sword);
-            addItems(artifacts, Arrays.asList("Axe", "Battle Axe", "Broad Axe", "Hatchet", "Ono", "Sagaris", "Parashu"), Items.diamond_axe, Items.golden_axe, Items.iron_axe);
-            addItems(artifacts, Arrays.asList("Bow"), Items.bow);
-            addItems(artifacts, Arrays.asList("Helmet", "Helm", "Corinthian", "Chalcidian", "Thracian", "Cavalry Helmet", "Bascinet", "Galeo", "Armet", "Great Helm", "Frog-Mouth Helm"), Items.chainmail_helmet, Items.diamond_helmet, Items.golden_helmet, Items.iron_helmet, Items.leather_helmet);
-            addItems(artifacts, Arrays.asList("Chainmail"), Items.chainmail_chestplate);
-            addItems(artifacts, Arrays.asList("Armour", "Chestplate"), Items.chainmail_chestplate, Items.diamond_chestplate, Items.golden_chestplate, Items.iron_chestplate, Items.leather_chestplate);
-            addItems(artifacts, Arrays.asList("Leggings"), Items.chainmail_leggings, Items.diamond_leggings, Items.golden_leggings, Items.iron_leggings, Items.leather_leggings);
-            addItems(artifacts, Arrays.asList("Boots", "Shoes"), Items.chainmail_boots, Items.diamond_boots, Items.golden_boots, Items.iron_boots, Items.leather_boots);
+            addItems(artifacts, Arrays.asList("Sword", "Sabre", "Khopesh", "Xiphos", "Asi", "Makhaira", "Falcata", "Acinaces", "Harpe", "Gladius", "Spatha", "Longsword", "Curtana", "Sabina", "Flamberge", "Two-Hander", "Broadsword", "Schiavona", "Claymore", "Katzbalger", "Rapier", "Smallsword", "Shortsword", "Dirk", "Shotel", "Takoba", "Billao", "Kaskara", "Ida", "Scimitar", "Jian", "Dao", "Nihonto", "Katana", "Saingeom", "Yedo"), Items.DIAMOND_SWORD, Items.GOLDEN_SWORD, Items.IRON_SWORD);
+            addItems(artifacts, Arrays.asList("Axe", "Battle Axe", "Broad Axe", "Hatchet", "Ono", "Sagaris", "Parashu"), Items.DIAMOND_AXE, Items.GOLDEN_AXE, Items.IRON_AXE);
+            addItems(artifacts, Arrays.asList("Bow"), Items.BOW);
+            addItems(artifacts, Arrays.asList("Helmet", "Helm", "Corinthian", "Chalcidian", "Thracian", "Cavalry Helmet", "Bascinet", "Galeo", "Armet", "Great Helm", "Frog-Mouth Helm"), Items.CHAINMAIL_HELMET, Items.DIAMOND_HELMET, Items.GOLDEN_HELMET, Items.IRON_HELMET, Items.LEATHER_HELMET);
+            addItems(artifacts, Arrays.asList("Chainmail"), Items.CHAINMAIL_CHESTPLATE);
+            addItems(artifacts, Arrays.asList("Armour", "Chestplate"), Items.CHAINMAIL_CHESTPLATE, Items.DIAMOND_CHESTPLATE, Items.GOLDEN_CHESTPLATE, Items.IRON_CHESTPLATE, Items.LEATHER_CHESTPLATE);
+            addItems(artifacts, Arrays.asList("Leggings"), Items.CHAINMAIL_LEGGINGS, Items.DIAMOND_LEGGINGS, Items.GOLDEN_LEGGINGS, Items.IRON_LEGGINGS, Items.LEATHER_LEGGINGS);
+            addItems(artifacts, Arrays.asList("Boots", "Shoes"), Items.CHAINMAIL_BOOTS, Items.DIAMOND_BOOTS, Items.GOLDEN_BOOTS, Items.IRON_BOOTS, Items.LEATHER_BOOTS);
         }
 
         return artifacts;
@@ -66,15 +69,19 @@ public class ItemArtifactGenerator extends Item implements GeneratingItem
     }
 
     @Override
-    public boolean onItemUse(ItemStack stack, EntityPlayer playerIn, World worldIn, BlockPos pos, EnumFacing side, float hitX, float hitY, float hitZ)
+    public EnumActionResult onItemUse(ItemStack stack, EntityPlayer playerIn, World worldIn, BlockPos pos, EnumHand hand, EnumFacing facing, float hitX, float hitY, float hitZ)
     {
-        return ItemInventoryGenerationTag.applyGeneratorToInventory(worldIn, pos, this, stack);
+        if (!worldIn.isRemote)
+            return ItemInventoryGenerationTag.applyGeneratorToInventory((WorldServer) worldIn, pos, this, stack) ? EnumActionResult.SUCCESS : EnumActionResult.PASS;
+
+        return super.onItemUse(stack, playerIn, worldIn, pos, hand, facing, hitX, hitY, hitZ);
     }
 
+
     @Override
-    public void generateInInventory(IInventory inventory, Random random, ItemStack stack, int fromSlot)
+    public void generateInInventory(WorldServer server, IInventory inventory, Random random, ItemStack stack, int fromSlot)
     {
-        if (!MinecraftForge.EVENT_BUS.post(new ItemGenerationEvent.Artifact(inventory, random, stack, fromSlot)))
+        if (!MinecraftForge.EVENT_BUS.post(new ItemGenerationEvent.Artifact(server, inventory, random, stack, fromSlot)))
         {
             Set<ItemStack> stacks = getArtifacts().keySet();
             ItemStack[] stackArray = stacks.toArray(new ItemStack[stacks.size()]);
@@ -83,11 +90,11 @@ public class ItemArtifactGenerator extends Item implements GeneratingItem
 
             int enchantLevel = random.nextInt(20);
 
-            List enchantments = EnchantmentHelper.buildEnchantmentList(random, artifactStack, enchantLevel);
+            List enchantments = EnchantmentHelper.buildEnchantmentList(random, artifactStack, enchantLevel, false);
 
             if (enchantments == null)
             {
-                enchantments = EnchantmentHelper.buildEnchantmentList(random, new ItemStack(Items.iron_axe), enchantLevel);
+                enchantments = EnchantmentHelper.buildEnchantmentList(random, new ItemStack(Items.IRON_AXE), enchantLevel, false);
             }
 
             if (enchantments != null)

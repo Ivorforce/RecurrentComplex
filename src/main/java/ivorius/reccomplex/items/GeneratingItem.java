@@ -7,6 +7,7 @@ package ivorius.reccomplex.items;
 
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
+import net.minecraft.world.WorldServer;
 
 import java.util.Random;
 
@@ -15,5 +16,5 @@ import java.util.Random;
  */
 public interface GeneratingItem
 {
-    void generateInInventory(IInventory inventory, Random random, ItemStack stack, int fromSlot);
+    void generateInInventory(WorldServer server, IInventory inventory, Random random, ItemStack stack, int fromSlot);
 }

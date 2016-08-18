@@ -7,6 +7,7 @@ package ivorius.reccomplex.server;
 
 import ivorius.reccomplex.RCProxy;
 import net.minecraft.server.MinecraftServer;
+import net.minecraftforge.fml.common.FMLCommonHandler;
 
 import java.io.File;
 
@@ -18,7 +19,7 @@ public class ServerProxy implements RCProxy
     @Override
     public File getBaseFolderFile(String filename)
     {
-        return MinecraftServer.getServer().getFile(filename);
+        return FMLCommonHandler.instance().getSidedDelegate().getServer().getFile(filename);
     }
 
     @Override

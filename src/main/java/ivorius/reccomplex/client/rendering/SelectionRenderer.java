@@ -6,7 +6,8 @@
 package ivorius.reccomplex.client.rendering;
 
 import ivorius.ivtoolkit.blocks.BlockArea;
-import net.minecraft.util.BlockPos;
+import net.minecraft.util.EnumHand;
+import net.minecraft.util.math.BlockPos;
 import ivorius.ivtoolkit.rendering.grid.AreaRenderer;
 import ivorius.reccomplex.RecurrentComplex;
 import ivorius.reccomplex.entities.StructureEntityInfo;
@@ -15,7 +16,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.MathHelper;
+import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.client.renderer.GlStateManager;
 import org.lwjgl.opengl.GL11;
@@ -32,11 +33,11 @@ public class SelectionRenderer
     {
         TEXTURE = new ResourceLocation[100];
         for (int i = 0; i < TEXTURE.length; i++)
-            TEXTURE[i] = new ResourceLocation(RecurrentComplex.MODID, String.format("%sselection/selection_%05d.png", RecurrentComplex.filePathTextures, i));
+            TEXTURE[i] = new ResourceLocation(RecurrentComplex.MOD_ID, String.format("%sselection/selection_%05d.png", RecurrentComplex.filePathTextures, i));
 
         LATTICE_TEXTURE = new ResourceLocation[100];
         for (int i = 0; i < LATTICE_TEXTURE.length; i++)
-            LATTICE_TEXTURE[i] = new ResourceLocation(RecurrentComplex.MODID, String.format("%sselection-lattice/lattice_%05d.png", RecurrentComplex.filePathTextures, i));
+            LATTICE_TEXTURE[i] = new ResourceLocation(RecurrentComplex.MOD_ID, String.format("%sselection-lattice/lattice_%05d.png", RecurrentComplex.filePathTextures, i));
     }
 
     public static void renderSelection(EntityLivingBase entity, int ticks, float partialTicks)
@@ -52,8 +53,6 @@ public class SelectionRenderer
             selPoint2 = structureEntityInfo.selectedPoint2;
         }
 
-        ItemStack heldItem = entity.getHeldItem();
-
         GL11.glLineWidth(3.0f);
 
         if (selPoint1 != null)
@@ -67,12 +66,17 @@ public class SelectionRenderer
             AreaRenderer.renderAreaLined(new BlockArea(selPoint2, selPoint2), 0.04f);
         }
 
-        if (heldItem != null && heldItem.getItem() instanceof ItemBlockSelectorFloating)
+        for (EnumHand enumHand : EnumHand.values())
         {
-            float selectionRange = ((ItemBlockSelectorFloating) heldItem.getItem()).getSelectionRange(heldItem);
-            BlockPos hoverPoint = ItemBlockSelectorFloating.getHoveredBlock(entity, selectionRange);
-            GlStateManager.color(0.6f, 0.6f, 1.0f);
-            AreaRenderer.renderAreaLined(new BlockArea(hoverPoint, hoverPoint), 0.05f);
+            ItemStack heldItem = entity.getHeldItem(enumHand);
+
+            if (heldItem != null && heldItem.getItem() instanceof ItemBlockSelectorFloating)
+            {
+                float selectionRange = ((ItemBlockSelectorFloating) heldItem.getItem()).getSelectionRange(heldItem);
+                BlockPos hoverPoint = ItemBlockSelectorFloating.getHoveredBlock(entity, selectionRange);
+                GlStateManager.color(0.6f, 0.6f, 1.0f);
+                AreaRenderer.renderAreaLined(new BlockArea(hoverPoint, hoverPoint), 0.05f);
+            }
         }
 
         if (selPoint1 != null && selPoint2 != null)

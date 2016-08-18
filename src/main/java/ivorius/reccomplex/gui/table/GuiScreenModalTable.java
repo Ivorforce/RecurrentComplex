@@ -57,13 +57,13 @@ public class GuiScreenModalTable extends GuiScreen implements TableDelegate, Tab
                     }
                     ////////
 //                    this.selectedButton = event.button;
-                    ReflectionHelper.setPrivateValue(GuiScreen.class, this, event.button, "selectedButton", "field_146290_a");
+                    ReflectionHelper.setPrivateValue(GuiScreen.class, this, event.getButton(), "selectedButton", "field_146290_a");
                     ////////
-                    event.button.playPressSound(this.mc.getSoundHandler());
-                    this.actionPerformed(event.button);
+                    event.getButton().playPressSound(this.mc.getSoundHandler());
+                    this.actionPerformed(event.getButton());
                     if (this.equals(this.mc.currentScreen))
                     {
-                        MinecraftForge.EVENT_BUS.post(new GuiScreenEvent.ActionPerformedEvent.Post(this, event.button, buttonListCopy));
+                        MinecraftForge.EVENT_BUS.post(new GuiScreenEvent.ActionPerformedEvent.Post(this, event.getButton(), buttonListCopy));
                     }
                 }
             }

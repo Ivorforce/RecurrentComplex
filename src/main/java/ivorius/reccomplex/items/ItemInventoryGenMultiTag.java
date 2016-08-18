@@ -5,6 +5,9 @@
 
 package ivorius.reccomplex.items;
 
+import net.minecraft.util.ActionResult;
+import net.minecraft.util.EnumHand;
+import net.minecraft.world.WorldServer;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import gnu.trove.list.TIntList;
@@ -38,12 +41,12 @@ public class ItemInventoryGenMultiTag extends ItemInventoryGenerationTag impleme
     }
 
     @Override
-    public ItemStack onItemRightClick(ItemStack stack, World world, EntityPlayer player)
+    public ActionResult<ItemStack> onItemRightClick(ItemStack itemStackIn, World worldIn, EntityPlayer playerIn, EnumHand hand)
     {
-        if (world.isRemote)
-            openGui(player, player.inventory.currentItem);
+        if (worldIn.isRemote)
+            openGui(playerIn, playerIn.inventory.currentItem);
 
-        return super.onItemRightClick(stack, world, player);
+        return super.onItemRightClick(itemStackIn, worldIn, playerIn, hand);
     }
 
     @SideOnly(Side.CLIENT)
@@ -53,7 +56,7 @@ public class ItemInventoryGenMultiTag extends ItemInventoryGenerationTag impleme
     }
 
     @Override
-    public void generateInInventory(IInventory inventory, Random random, ItemStack stack, int fromSlot)
+    public void generateInInventory(WorldServer server, IInventory inventory, Random random, ItemStack stack, int fromSlot)
     {
         WeightedItemCollection weightedItemCollection = inventoryGenerator(stack);
 
@@ -71,7 +74,7 @@ public class ItemInventoryGenMultiTag extends ItemInventoryGenerationTag impleme
                 int slot = emptySlots.isEmpty()
                         ? random.nextInt(inventory.getSizeInventory())
                         : emptySlots.removeAt(random.nextInt(emptySlots.size()));
-                inventory.setInventorySlotContents(slot, weightedItemCollection.getRandomItemStack(random));
+                inventory.setInventorySlotContents(slot, weightedItemCollection.getRandomItemStack(server, random));
             }
         }
     }

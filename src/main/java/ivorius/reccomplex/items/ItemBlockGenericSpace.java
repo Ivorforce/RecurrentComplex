@@ -7,13 +7,15 @@ package ivorius.reccomplex.items;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockSnow;
+import net.minecraft.block.SoundType;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.BlockPos;
+import net.minecraft.util.SoundCategory;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.world.World;
 
@@ -40,7 +42,7 @@ public class ItemBlockGenericSpace extends ItemBlock
         IBlockState iblockstate = worldIn.getBlockState(pos);
         Block block = iblockstate.getBlock();
 
-        if (block == Blocks.snow_layer && iblockstate.getValue(BlockSnow.LAYERS) < 1)
+        if (block == Blocks.SNOW_LAYER && iblockstate.getValue(BlockSnow.LAYERS) < 1)
         {
             side = EnumFacing.UP;
         }
@@ -57,7 +59,7 @@ public class ItemBlockGenericSpace extends ItemBlock
         {
             return false;
         }
-        else if (pos.getY() == 255 && this.block.getMaterial().isSolid())
+        else if (pos.getY() == 255 && this.block.getMaterial(this.block.getDefaultState()).isSolid())
         {
             return false;
         }
@@ -70,7 +72,8 @@ public class ItemBlockGenericSpace extends ItemBlock
 
                 if (placeBlockAt(stack, playerIn, worldIn, pos, side, hitX, hitY, hitZ, iblockstate1))
                 {
-                    worldIn.playSoundEffect((double) ((float) pos.getX() + 0.5F), (double) ((float) pos.getY() + 0.5F), (double) ((float) pos.getZ() + 0.5F), this.block.stepSound.getPlaceSound(), (this.block.stepSound.getVolume() + 1.0F) / 2.0F, this.block.stepSound.getFrequency() * 0.8F);
+                    SoundType soundtype = this.block.getSoundType();
+                    worldIn.playSound(playerIn, pos, soundtype.getPlaceSound(), SoundCategory.BLOCKS, (soundtype.getVolume() + 1.0F) / 2.0F, soundtype.getPitch() * 0.8F);
                     --stack.stackSize;
                 }
 

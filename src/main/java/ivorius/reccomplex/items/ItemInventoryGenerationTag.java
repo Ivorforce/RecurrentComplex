@@ -17,10 +17,13 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagString;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.BlockPos;
+import net.minecraft.util.EnumActionResult;
+import net.minecraft.util.EnumHand;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.EnumFacing;
-import net.minecraft.util.StatCollector;
+import net.minecraft.util.text.translation.I18n;
 import net.minecraft.world.World;
+import net.minecraft.world.WorldServer;
 import net.minecraftforge.common.util.Constants;
 
 import java.util.List;
@@ -31,7 +34,7 @@ public abstract class ItemInventoryGenerationTag extends Item implements Generat
     {
     }
 
-    public static boolean applyGeneratorToInventory(World world, BlockPos pos, GeneratingItem generatingItem, ItemStack stack)
+    public static boolean applyGeneratorToInventory(WorldServer world, BlockPos pos, GeneratingItem generatingItem, ItemStack stack)
     {
         TileEntity rightClicked = world.getTileEntity(pos);
 
@@ -39,8 +42,8 @@ public abstract class ItemInventoryGenerationTag extends Item implements Generat
         {
             if (!world.isRemote)
             {
-                generatingItem.generateInInventory((IInventory) rightClicked, world.rand, stack, world.rand.nextInt(((IInventory) rightClicked).getSizeInventory()));
-                InventoryGenerationHandler.generateAllTags((IInventory) rightClicked, RecurrentComplex.specialRegistry.itemHidingMode(), world.rand);
+                generatingItem.generateInInventory(world, (IInventory) rightClicked, world.rand, stack, world.rand.nextInt(((IInventory) rightClicked).getSizeInventory()));
+                InventoryGenerationHandler.generateAllTags(world, (IInventory) rightClicked, RecurrentComplex.specialRegistry.itemHidingMode(), world.rand);
             }
 
             return true;
@@ -74,9 +77,11 @@ public abstract class ItemInventoryGenerationTag extends Item implements Generat
     }
 
     @Override
-    public boolean onItemUse(ItemStack stack, EntityPlayer playerIn, World worldIn, BlockPos pos, EnumFacing side, float hitX, float hitY, float hitZ)
+    public EnumActionResult onItemUse(ItemStack stack, EntityPlayer playerIn, World worldIn, BlockPos pos, EnumHand hand, EnumFacing facing, float hitX, float hitY, float hitZ)
     {
-        return applyGeneratorToInventory(worldIn, pos, this, stack);
+        if (!worldIn.isRemote)
+            return applyGeneratorToInventory((WorldServer) worldIn, pos, this, stack) ? EnumActionResult.SUCCESS : EnumActionResult.PASS;
+        return EnumActionResult.SUCCESS;
     }
 
     @Override
@@ -105,6 +110,6 @@ public abstract class ItemInventoryGenerationTag extends Item implements Generat
         if (generator != null)
             list.add(generator.getDescriptor());
         else
-            list.add(StatCollector.translateToLocal("inventoryGen.none"));
+            list.add(I18n.translateToLocal("inventoryGen.none"));
     }
 }

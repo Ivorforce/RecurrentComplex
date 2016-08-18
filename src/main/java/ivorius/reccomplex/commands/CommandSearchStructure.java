@@ -18,11 +18,12 @@ import joptsimple.internal.Strings;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
-import net.minecraft.event.ClickEvent;
-import net.minecraft.event.HoverEvent;
-import net.minecraft.util.ChatComponentText;
-import net.minecraft.util.ChatComponentTranslation;
-import net.minecraft.util.EnumChatFormatting;
+import net.minecraft.server.MinecraftServer;
+import net.minecraft.util.text.TextComponentString;
+import net.minecraft.util.text.TextComponentTranslation;
+import net.minecraft.util.text.TextFormatting;
+import net.minecraft.util.text.event.ClickEvent;
+import net.minecraft.util.text.event.HoverEvent;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.Arrays;
@@ -39,14 +40,14 @@ public class CommandSearchStructure extends CommandBase
 {
     public static final int MAX_RESULTS = 20;
 
-    public static ChatComponentText createStructureChatComponent(String strucID)
+    public static TextComponentString createStructureTextComponent(String strucID)
     {
-        ChatComponentText comp = new ChatComponentText(strucID);
-        comp.getChatStyle().setChatClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND,
+        TextComponentString comp = new TextComponentString(strucID);
+        comp.getStyle().setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND,
                 String.format("/%s %s", RCCommands.lookup.getCommandName(), strucID)));
-        comp.getChatStyle().setChatHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT,
+        comp.getStyle().setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT,
                 ServerTranslations.format("commands.rcsearch.lookup")));
-        comp.getChatStyle().setColor(EnumChatFormatting.BLUE);
+        comp.getStyle().setColor(TextFormatting.BLUE);
         return comp;
     }
 
@@ -83,7 +84,7 @@ public class CommandSearchStructure extends CommandBase
     }
 
     @Override
-    public void processCommand(ICommandSender commandSender, String[] args) throws CommandException
+    public void execute(MinecraftServer server, ICommandSender commandSender, String[] args) throws CommandException
     {
         if (args.length >= 1)
         {
@@ -97,16 +98,16 @@ public class CommandSearchStructure extends CommandBase
             strucs.addAll(StructureRegistry.INSTANCE.allStructureIDs().stream().filter(s -> searchRank(query, s, StructureRegistry.INSTANCE.getStructure(s)) > 0).collect(Collectors.toList()));
 
             boolean cut = strucs.size() > MAX_RESULTS;
-            ChatComponentText[] components = new ChatComponentText[cut ? MAX_RESULTS : strucs.size()];
+            TextComponentString[] components = new TextComponentString[cut ? MAX_RESULTS : strucs.size()];
             for (int i = 0; i < components.length; i++)
             {
                 if (cut && i == components.length - 1)
-                    components[i] = new ChatComponentText("... (" + strucs.size() + ")");
+                    components[i] = new TextComponentString("... (" + strucs.size() + ")");
                 else
-                    components[i] = createStructureChatComponent(strucs.remove());
+                    components[i] = createStructureTextComponent(strucs.remove());
             }
 
-            commandSender.addChatMessage(new ChatComponentTranslation(StringUtils.repeat("%s", ", ", components.length), (Object[]) components));
+            commandSender.addChatMessage(new TextComponentTranslation(StringUtils.repeat("%s", ", ", components.length), (Object[]) components));
         }
         else
         {

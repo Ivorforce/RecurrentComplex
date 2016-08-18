@@ -10,15 +10,16 @@ import ivorius.reccomplex.RCConfig;
 import ivorius.reccomplex.blocks.materials.RCMaterials;
 import net.minecraft.block.properties.IProperty;
 import net.minecraft.block.properties.PropertyBool;
-import net.minecraft.block.state.BlockState;
+import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.AxisAlignedBB;
-import net.minecraft.util.BlockPos;
+import net.minecraft.util.math.AxisAlignedBB;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 
+import javax.annotation.Nullable;
 import java.util.List;
 import java.util.stream.Stream;
 
@@ -29,25 +30,35 @@ public class BlockGenericSpace extends BlockTyped
 {
     public static final PropertyBool VISIBLE = PropertyBool.create("visible");
 
+    public static final AxisAlignedBB SPACE_AABB;
+
+    static {
+        float lowB = 1.0f / 16.0f * 5.0f;
+        float highB = 1f - lowB;
+        SPACE_AABB = new AxisAlignedBB(lowB, lowB, lowB, highB, highB, highB);
+    }
+
     public BlockGenericSpace()
     {
         super(RCMaterials.materialNegativeSpace);
-
-        float lowB = 1.0f / 16.0f * 5.0f;
-        float highB = 1f - lowB;
-        setBlockBounds(lowB, lowB, lowB, highB, highB, highB);
 
         this.setDefaultState(this.blockState.getBaseState().withProperty(TYPE, 0).withProperty(VISIBLE, true));
     }
 
     @Override
-    public boolean isOpaqueCube()
+    public AxisAlignedBB getBoundingBox(IBlockState state, IBlockAccess source, BlockPos pos)
+    {
+        return SPACE_AABB;
+    }
+
+    @Override
+    public boolean isOpaqueCube(IBlockState state)
     {
         return false;
     }
 
     @Override
-    public boolean isNormalCube()
+    public boolean isNormalCube(IBlockState state)
     {
         return false;
     }
@@ -58,10 +69,9 @@ public class BlockGenericSpace extends BlockTyped
         return Lists.newArrayList();
     }
 
-    @Override
-    public AxisAlignedBB getCollisionBoundingBox(World worldIn, BlockPos pos, IBlockState state)
+    public AxisAlignedBB getCollisionBoundingBox(IBlockState blockState, World worldIn, BlockPos pos)
     {
-        return null;
+        return NULL_AABB;
     }
 
     @Override
@@ -75,8 +85,9 @@ public class BlockGenericSpace extends BlockTyped
         return worldIn.getBlockState(pos.offset(f)).getProperties().get(TYPE) == state.getValue(TYPE);
     }
 
-    protected BlockState createBlockState()
+    @Override
+    protected BlockStateContainer createBlockState()
     {
-        return new BlockState(this, TYPE, VISIBLE);
+        return new BlockStateContainer(this, TYPE, VISIBLE);
     }
 }

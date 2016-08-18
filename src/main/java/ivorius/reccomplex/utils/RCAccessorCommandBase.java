@@ -5,9 +5,9 @@
 
 package ivorius.reccomplex.utils;
 
-import net.minecraftforge.fml.relauncher.ReflectionHelper;
 import net.minecraft.command.CommandBase;
-import net.minecraft.command.IAdminCommand;
+import net.minecraft.command.ICommandListener;
+import net.minecraftforge.fml.relauncher.ReflectionHelper;
 
 import java.lang.reflect.Field;
 
@@ -21,16 +21,16 @@ public class RCAccessorCommandBase
     private static void initializeUniqueID()
     {
         if (commandAdmin == null)
-            commandAdmin = ReflectionHelper.findField(CommandBase.class, "field_71533_a", "theAdmin");
+            commandAdmin = ReflectionHelper.findField(CommandBase.class, "field_71533_a", "commandListener");
     }
 
-    public static IAdminCommand getCommandAdmin()
+    public static ICommandListener getCommandAdmin()
     {
         initializeUniqueID();
 
         try
         {
-            return (IAdminCommand) commandAdmin.get(null);
+            return (ICommandListener) commandAdmin.get(null);
         }
         catch (IllegalAccessException e)
         {

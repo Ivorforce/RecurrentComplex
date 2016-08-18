@@ -14,7 +14,7 @@ import ivorius.reccomplex.utils.*;
 import ivorius.reccomplex.utils.algebra.RCBoolAlgebra;
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
-import net.minecraft.util.EnumChatFormatting;
+import com.mojang.realmsclient.gui.ChatFormatting;
 import net.minecraft.util.ResourceLocation;
 
 import java.util.List;
@@ -28,7 +28,7 @@ public class BlockMatcher extends PrefixedTypeExpressionCache<Boolean> implement
 
     public BlockMatcher(MCRegistry registry, String expression)
     {
-        super(RCBoolAlgebra.algebra(), true, EnumChatFormatting.GREEN + "Any Block", expression);
+        super(RCBoolAlgebra.algebra(), true, ChatFormatting.GREEN + "Any Block", expression);
 
         addType(new BlockVariableType("", registry));
         addType(new MetadataVariableType(METADATA_PREFIX));

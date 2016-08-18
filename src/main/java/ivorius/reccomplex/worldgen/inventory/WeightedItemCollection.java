@@ -6,6 +6,7 @@
 package ivorius.reccomplex.worldgen.inventory;
 
 import net.minecraft.item.ItemStack;
+import net.minecraft.world.WorldServer;
 
 import java.util.Random;
 
@@ -14,7 +15,7 @@ import java.util.Random;
  */
 public interface WeightedItemCollection
 {
-    ItemStack getRandomItemStack(Random random);
+    ItemStack getRandomItemStack(WorldServer server, Random random);
 
     String getDescriptor();
 }

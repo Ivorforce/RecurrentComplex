@@ -10,7 +10,7 @@ import ivorius.reccomplex.scripts.world.WorldScript;
 import ivorius.reccomplex.scripts.world.WorldScriptRegistry;
 import ivorius.reccomplex.utils.IvClasses;
 import ivorius.ivtoolkit.tools.IvTranslations;
-import net.minecraft.util.StatCollector;
+import net.minecraft.util.text.translation.I18n;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.ArrayList;
@@ -55,7 +55,7 @@ public class TableDataSourceWorldScriptList extends TableDataSourceList<WorldScr
         {
             String baseKey = "reccomplex.worldscript." + type;
             actions.add(new TableCellButton.Action(type,
-                    StatCollector.translateToLocal(baseKey),
+                    I18n.translateToLocal(baseKey),
                     IvTranslations.formatLines(baseKey + ".tooltip")
             ));
         }

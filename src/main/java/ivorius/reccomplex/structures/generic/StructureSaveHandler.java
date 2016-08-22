@@ -5,6 +5,7 @@
 
 package ivorius.reccomplex.structures.generic;
 
+import com.google.common.collect.Sets;
 import ivorius.ivtoolkit.tools.IvFileHelper;
 import ivorius.reccomplex.RecurrentComplex;
 import ivorius.reccomplex.files.FileLoadContext;
@@ -17,10 +18,15 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ResourceLocation;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
+import org.apache.commons.io.filefilter.FileFilterUtils;
 
 import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Set;
+import java.util.stream.Collectors;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 import java.util.zip.ZipOutputStream;
@@ -101,6 +107,23 @@ public class StructureSaveHandler implements FileTypeHandler
         }
 
         return false;
+    }
+
+    public Set<String> listGenericStructures(boolean activeFolder)
+    {
+        try
+        {
+            File parent = RCFileTypeRegistry.getDirectory(activeFolder);
+            return Arrays.stream(parent.list(FileFilterUtils.or(FileFilterUtils.suffixFileFilter(FILE_SUFFIX), /* Legacy */ FileFilterUtils.suffixFileFilter("zip"))))
+                    .map(FilenameUtils::removeExtension)
+                    .collect(Collectors.toSet());
+        }
+        catch (Throwable e)
+        {
+            RecurrentComplex.logger.error("Error when looking up structure", e);
+        }
+
+        return Collections.emptySet();
     }
 
     public boolean hasGenericStructure(String structureName, boolean activeFolder)

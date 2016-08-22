@@ -14,29 +14,32 @@ import ivorius.reccomplex.structures.generic.GenericStructureInfo;
 import ivorius.ivtoolkit.tools.IvTranslations;
 import com.mojang.realmsclient.gui.ChatFormatting;
 
+import java.util.Set;
+
 /**
  * Created by lukas on 05.06.14.
  */
 public class TableDataSourceGenericStructure extends TableDataSourceSegmented implements TableCellActionListener, TableCellPropertyListener
 {
+    private Set<String> structuresInActive;
+    private Set<String> structuresInInactive;
+
     private GenericStructureInfo structureInfo;
     private String structureKey;
 
     private boolean saveAsActive;
     private boolean deleteOther = true;
-    private boolean structureInActive;
-    private boolean structureInInactive;
 
     private TableDelegate tableDelegate;
     private TableNavigator navigator;
 
-    public TableDataSourceGenericStructure(GenericStructureInfo structureInfo, String structureKey, boolean saveAsActive, boolean structureInActive, boolean structureInInactive, TableDelegate tableDelegate, TableNavigator navigator)
+    public TableDataSourceGenericStructure(GenericStructureInfo structureInfo, String structureKey, boolean saveAsActive, Set<String> structuresInActive, Set<String> structuresInInactive, TableDelegate tableDelegate, TableNavigator navigator)
     {
         this.structureInfo = structureInfo;
         this.structureKey = structureKey;
         this.saveAsActive = saveAsActive;
-        this.structureInActive = structureInActive;
-        this.structureInInactive = structureInInactive;
+        this.structuresInActive = structuresInActive;
+        this.structuresInInactive = structuresInInactive;
         this.tableDelegate = tableDelegate;
         this.navigator = navigator;
 
@@ -81,26 +84,6 @@ public class TableDataSourceGenericStructure extends TableDataSourceSegmented im
     public void setDeleteOther(boolean deleteOther)
     {
         this.deleteOther = deleteOther;
-    }
-
-    public boolean isStructureInActive()
-    {
-        return structureInActive;
-    }
-
-    public void setStructureInActive(boolean structureInActive)
-    {
-        this.structureInActive = structureInActive;
-    }
-
-    public boolean isStructureInInactive()
-    {
-        return structureInInactive;
-    }
-
-    public void setStructureInInactive(boolean structureInInactive)
-    {
-        this.structureInInactive = structureInInactive;
     }
 
     public TableDelegate getTableDelegate()
@@ -171,7 +154,7 @@ public class TableDataSourceGenericStructure extends TableDataSourceSegmented im
                             IvTranslations.format("reccomplex.structure.savePath", String.format("%s/%s%s", ChatFormatting.AQUA, RCFileTypeRegistry.getDirectoryName(false), ChatFormatting.RESET)));
                     cellFolder.addPropertyListener(this);
 
-                    if (saveAsActive ? structureInInactive : structureInActive)
+                    if (saveAsActive ? structuresInInactive.contains(structureKey) : structuresInActive.contains(structureKey))
                     {
                         String path = RCFileTypeRegistry.getDirectoryName(!saveAsActive);
                         TableCellBoolean cellDelete = new TableCellBoolean("deleteOther", deleteOther,

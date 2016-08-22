@@ -52,8 +52,7 @@ public class CommandEditStructure extends CommandBase
             String structureID = args[0];
 
             GenericStructureInfo structureInfo = CommandExportStructure.getGenericStructureInfo(structureID);
-            boolean saveAsActive = StructureRegistry.INSTANCE.isStructureGenerating(structureID);
-            PacketEditStructureHandler.openEditStructure(structureInfo, structureID, saveAsActive, entityPlayerMP);
+            PacketEditStructureHandler.openEditStructure(structureInfo, structureID, entityPlayerMP);
         }
         else
         {

@@ -5,11 +5,19 @@
 
 package ivorius.reccomplex.network;
 
+import com.google.common.collect.ImmutableList;
 import net.minecraftforge.fml.common.network.ByteBufUtils;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 import io.netty.buffer.ByteBuf;
 import ivorius.reccomplex.structures.StructureRegistry;
 import ivorius.reccomplex.structures.generic.GenericStructureInfo;
+
+import java.util.Collection;
+import java.util.Set;
+import java.util.function.Consumer;
+import java.util.function.Function;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 /**
  * Created by lukas on 03.08.14.
@@ -18,30 +26,31 @@ public class PacketEditStructure implements IMessage
 {
     private GenericStructureInfo structureInfo;
     private String structureID;
-    private boolean saveAsActive;
 
-    private boolean deleteOtherOrStructureInActive;
-    private boolean structureInInactive;
+    private Set<String> structuresInActive;
+    private Set<String> structuresInInactive;
 
     public PacketEditStructure()
     {
     }
 
-    public PacketEditStructure(GenericStructureInfo structureInfo, String structureID, boolean saveAsActive, boolean deleteOther)
+    public PacketEditStructure(GenericStructureInfo structureInfo, String structureID, Set<String> structuresInActive, Set<String> structuresInInactive)
     {
         this.structureInfo = structureInfo;
         this.structureID = structureID;
-        this.saveAsActive = saveAsActive;
-        this.deleteOtherOrStructureInActive = deleteOther;
+        this.structuresInActive = structuresInActive;
+        this.structuresInInactive = structuresInInactive;
     }
 
-    public PacketEditStructure(GenericStructureInfo structureInfo, String structureID, boolean saveAsActive, boolean structureInActive, boolean structureInInactive)
+    public static <T> void writeCollection(ByteBuf buf, Collection<T> collection, Consumer<T> consumer)
     {
-        this.structureInfo = structureInfo;
-        this.structureID = structureID;
-        this.saveAsActive = saveAsActive;
-        this.deleteOtherOrStructureInActive = structureInActive;
-        this.structureInInactive = structureInInactive;
+        buf.writeInt(collection.size());
+        collection.forEach(consumer);
+    }
+
+    public static <T> Collection<T> readCollection(ByteBuf buf, Function<ByteBuf, T> supplier)
+    {
+        return IntStream.range(0, buf.readInt()).mapToObj(i -> supplier.apply(buf)).collect(Collectors.toList());
     }
 
     public String getStructureID()
@@ -54,16 +63,6 @@ public class PacketEditStructure implements IMessage
         this.structureID = structureID;
     }
 
-    public boolean isSaveAsActive()
-    {
-        return saveAsActive;
-    }
-
-    public void setSaveAsActive(boolean saveAsActive)
-    {
-        this.saveAsActive = saveAsActive;
-    }
-
     public GenericStructureInfo getStructureInfo()
     {
         return structureInfo;
@@ -74,45 +73,33 @@ public class PacketEditStructure implements IMessage
         this.structureInfo = structureInfo;
     }
 
-    public boolean isDeleteOther()
+    public Set<String> getStructuresInActive()
     {
-        return deleteOtherOrStructureInActive;
+        return structuresInActive;
     }
 
-    public boolean isStructureInActive()
+    public void setStructuresInActive(Set<String> structuresInActive)
     {
-        return deleteOtherOrStructureInActive;
+        this.structuresInActive = structuresInActive;
     }
 
-    public void setDeleteOther(boolean deleteOtherOrStructureInActive)
+    public Set<String> getStructuresInInactive()
     {
-        this.deleteOtherOrStructureInActive = deleteOtherOrStructureInActive;
+        return structuresInInactive;
     }
 
-    public void setStructureInActive(boolean deleteOtherOrStructureInActive)
+    public void setStructuresInInactive(Set<String> structuresInInactive)
     {
-        this.deleteOtherOrStructureInActive = deleteOtherOrStructureInActive;
-    }
-
-    public boolean isStructureInInactive()
-    {
-        return structureInInactive;
-    }
-
-    public void setStructureInInactive(boolean structureInInactive)
-    {
-        this.structureInInactive = structureInInactive;
+        this.structuresInInactive = structuresInInactive;
     }
 
     @Override
     public void fromBytes(ByteBuf buf)
     {
         structureID = ByteBufUtils.readUTF8String(buf);
-        String json = ByteBufUtils.readUTF8String(buf);
-        structureInfo = StructureRegistry.INSTANCE.createStructureFromJSON(json);
-        saveAsActive = buf.readBoolean();
-        deleteOtherOrStructureInActive = buf.readBoolean();
-        structureInInactive = buf.readBoolean();
+        structureInfo = StructureRegistry.INSTANCE.createStructureFromJSON(ByteBufUtils.readUTF8String(buf));
+        structuresInActive = readCollection(buf, ByteBufUtils::readUTF8String).stream().collect(Collectors.toSet());
+        structuresInInactive = readCollection(buf, ByteBufUtils::readUTF8String).stream().collect(Collectors.toSet());
     }
 
     @Override
@@ -120,8 +107,7 @@ public class PacketEditStructure implements IMessage
     {
         ByteBufUtils.writeUTF8String(buf, structureID);
         ByteBufUtils.writeUTF8String(buf, StructureRegistry.INSTANCE.createJSONFromStructure(structureInfo));
-        buf.writeBoolean(saveAsActive);
-        buf.writeBoolean(deleteOtherOrStructureInActive);
-        buf.writeBoolean(structureInInactive);
+        writeCollection(buf, structuresInActive, s -> ByteBufUtils.writeUTF8String(buf, s));
+        writeCollection(buf, structuresInInactive, s -> ByteBufUtils.writeUTF8String(buf, s));
     }
 }

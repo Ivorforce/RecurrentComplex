@@ -82,20 +82,17 @@ public class CommandExportStructure extends CommandBase
 
         GenericStructureInfo genericStructureInfo;
         String structureID;
-        boolean saveAsActive;
 
         if (args.length >= 1)
         {
             genericStructureInfo = getGenericStructureInfo(args[0]);
             structureID = args[0];
-            saveAsActive = StructureRegistry.INSTANCE.isStructureGenerating(structureID);
         }
         else
         {
             genericStructureInfo = GenericStructureInfo.createDefaultStructure();
             structureID = "NewStructure";
             genericStructureInfo.metadata.authors = commandSender.getName();
-            saveAsActive = false;
         }
 
         BlockPos lowerCoord = area.getLowerCorner();
@@ -103,7 +100,7 @@ public class CommandExportStructure extends CommandBase
 
         IvWorldData data = IvWorldData.capture(player.getEntityWorld(), new BlockArea(lowerCoord, higherCoord), true);
         genericStructureInfo.worldDataCompound = data.createTagCompound(lowerCoord);
-        PacketEditStructureHandler.openEditStructure(genericStructureInfo, structureID, saveAsActive, player);
+        PacketEditStructureHandler.openEditStructure(genericStructureInfo, structureID, player);
     }
 
     @Override

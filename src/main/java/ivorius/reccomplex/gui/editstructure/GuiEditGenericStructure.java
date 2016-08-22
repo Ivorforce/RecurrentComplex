@@ -8,12 +8,13 @@ package ivorius.reccomplex.gui.editstructure;
 import ivorius.reccomplex.gui.table.Bounds;
 import ivorius.reccomplex.gui.table.GuiScreenModalTable;
 import ivorius.reccomplex.gui.table.GuiTable;
-import ivorius.reccomplex.network.PacketEditStructureHandler;
+import ivorius.reccomplex.network.PacketSaveStructureHandler;
 import ivorius.reccomplex.structures.generic.GenericStructureInfo;
 import net.minecraft.client.gui.GuiButton;
 import org.lwjgl.input.Keyboard;
 
 import java.io.IOException;
+import java.util.Set;
 
 /**
  * Created by lukas on 26.05.14.
@@ -22,9 +23,9 @@ public class GuiEditGenericStructure extends GuiScreenModalTable
 {
     TableDataSourceGenericStructure structureDataSource;
 
-    public GuiEditGenericStructure(String key, GenericStructureInfo structureInfo, boolean saveAsActive, boolean structureInActive, boolean structureInInactive)
+    public GuiEditGenericStructure(String key, GenericStructureInfo structureInfo, Set<String> structuresInActive, Set<String> structuresInInactive)
     {
-        GuiTable structureProperties = new GuiTable(this, structureDataSource = new TableDataSourceGenericStructure(structureInfo, key, saveAsActive, structureInActive, structureInInactive, this, this));
+        GuiTable structureProperties = new GuiTable(this, structureDataSource = new TableDataSourceGenericStructure(structureInfo, key, !structuresInInactive.contains(key), structuresInActive, structuresInInactive, this, this));
         setTable(structureProperties);
     }
 
@@ -64,7 +65,7 @@ public class GuiEditGenericStructure extends GuiScreenModalTable
 
         if (button.id == 0)
         {
-            PacketEditStructureHandler.finishEditStructure(structureDataSource.getStructureInfo(), structureDataSource.getStructureKey(), structureDataSource.isSaveAsActive(), structureDataSource.isDeleteOther());
+            PacketSaveStructureHandler.saveStructure(structureDataSource.getStructureInfo(), structureDataSource.getStructureKey(), structureDataSource.isSaveAsActive(), structureDataSource.isDeleteOther());
             this.mc.thePlayer.closeScreen();
         }
         else if (button.id == 1)

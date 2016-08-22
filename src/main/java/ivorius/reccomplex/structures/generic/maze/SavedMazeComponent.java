@@ -9,6 +9,7 @@ import com.google.common.collect.Lists;
 import com.google.gson.*;
 import ivorius.ivtoolkit.math.IvVecMathHelper;
 import ivorius.ivtoolkit.maze.components.MazeRoom;
+import ivorius.ivtoolkit.tools.IvNBTHelper;
 import ivorius.ivtoolkit.tools.NBTCompoundObject;
 import ivorius.ivtoolkit.tools.NBTCompoundObjects;
 import ivorius.ivtoolkit.tools.NBTTagLists;
@@ -77,7 +78,7 @@ public class SavedMazeComponent implements NBTCompoundObject
         {
             rooms.clear();
             rooms.addAll(Lists.transform(NBTTagLists.compoundsFrom(compound, "rooms"), input -> {
-                MazeRoom room = new MazeRoom(input.getIntArray("coordinates"));
+                MazeRoom room = new MazeRoom(IvNBTHelper.readIntArrayFixedSize("coordinates", 3, compound));
                 int[] coordinates = room.getCoordinates();
                 return new Selection.Area(true, coordinates, coordinates.clone());
             }));

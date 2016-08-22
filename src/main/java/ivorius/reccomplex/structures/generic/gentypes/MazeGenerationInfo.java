@@ -116,7 +116,7 @@ public class MazeGenerationInfo extends StructureGenerationInfo implements Weigh
 
             JsonObject componentJson = JsonUtils.getJsonObjectFieldOrDefault(jsonObject, "component", new JsonObject());
 
-            Double weight = jsonObject.has("weight") ? JsonUtils.getJsonElementDoubleValue(jsonObject, "weight") : null;
+            Double weight = jsonObject.has("weight") ? JsonUtils.getJsonObjectDoubleFieldValue(jsonObject, "weight") : null;
             if (weight == null) // Legacy, weight was in SavedMazeComponent's JSON
             {
                 if (componentJson.has("weightD"))

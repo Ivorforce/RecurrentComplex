@@ -10,17 +10,27 @@ import ivorius.ivtoolkit.gui.IntegerRange;
 import ivorius.ivtoolkit.math.IvVecMathHelper;
 import ivorius.ivtoolkit.maze.components.MazeRoom;
 import ivorius.ivtoolkit.tools.IvNBTHelper;
+import ivorius.ivtoolkit.tools.NBTCompoundObject;
+import ivorius.ivtoolkit.tools.NBTTagLists;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraftforge.common.util.Constants;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * Created by lukas on 01.02.15.
  */
-public class Selection extends ArrayList<Selection.Area>
+public class Selection extends ArrayList<Selection.Area> implements NBTCompoundObject
 {
+    public final int dimensions;
+
+    public Selection(int dimensions)
+    {
+        this.dimensions = dimensions;
+    }
+
     private static void mergeRooms(boolean additive, int dimIndex, int[] min, int[] max, int[] position, Set<MazeRoom> rooms)
     {
         for (int i = min[dimIndex]; i <= max[dimIndex]; i++)
@@ -41,7 +51,7 @@ public class Selection extends ArrayList<Selection.Area>
 
     public static Selection zeroSelection(int dimensions)
     {
-        Selection selection = new Selection();
+        Selection selection = new Selection(dimensions);
         selection.add(new Area(true, new int[dimensions], new int[dimensions]));
         return selection;
     }
@@ -69,20 +79,17 @@ public class Selection extends ArrayList<Selection.Area>
         }
     }
 
-    public void readFromNBT(NBTTagCompound compound, int dimensions)
+    @Override
+    public void readFromNBT(NBTTagCompound compound)
     {
         clear();
-        NBTTagList list = compound.getTagList("areas", Constants.NBT.TAG_COMPOUND);
-        for (int i = 0; i < list.tagCount(); i++)
-            add(new Area(list.getCompoundTagAt(i), dimensions));
+        NBTTagLists.compoundsFrom(compound, "areas").forEach(cmp -> add(new Area(cmp, dimensions)));
     }
 
+    @Override
     public void writeToNBT(NBTTagCompound compound)
     {
-        NBTTagList list = new NBTTagList();
-        for (Area area : this)
-            list.appendTag(area.writeToNBT());
-        compound.setTag("areas", list);
+        NBTTagLists.writeTo(compound, "areas", stream().map(Area::writeToNBT).collect(Collectors.toList()));
     }
 
     public int[] boundsLower()

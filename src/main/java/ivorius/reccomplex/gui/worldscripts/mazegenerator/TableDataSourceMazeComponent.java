@@ -5,7 +5,6 @@
 
 package ivorius.reccomplex.gui.worldscripts.mazegenerator;
 
-import ivorius.reccomplex.gui.RCGuiTables;
 import ivorius.reccomplex.gui.table.*;
 import ivorius.reccomplex.gui.worldscripts.mazegenerator.reachability.TableDataSourceMazeReachability;
 import ivorius.reccomplex.structures.generic.maze.SavedMazeComponent;
@@ -24,9 +23,12 @@ public class TableDataSourceMazeComponent extends TableDataSourceSegmented imple
     private TableNavigator navigator;
     private TableDelegate tableDelegate;
 
-    public TableDataSourceMazeComponent(SavedMazeComponent component, TableNavigator navigator, TableDelegate tableDelegate)
+    private boolean showReachability;
+
+    public TableDataSourceMazeComponent(SavedMazeComponent component, boolean showReachability, TableNavigator navigator, TableDelegate tableDelegate)
     {
         this.component = component;
+        this.showReachability = showReachability;
         this.navigator = navigator;
         this.tableDelegate = tableDelegate;
         addManagedSection(0, new TableDataSourceConnector(component.defaultConnector, IvTranslations.get("reccomplex.maze.connector.default")));
@@ -35,7 +37,7 @@ public class TableDataSourceMazeComponent extends TableDataSourceSegmented imple
     @Override
     public int numberOfSegments()
     {
-        return 4;
+        return showReachability ? 4 : 3;
     }
 
     @Override

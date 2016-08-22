@@ -54,13 +54,6 @@ public class SavedMazeReachability implements NBTCompoundObject
         return input -> !blockedConnections.contains(connections.get(input));
     }
 
-    public static Set<SavedMazePath> buildExpected(WorldScriptMazeGenerator script)
-    {
-        Set<SavedMazePath> complete = Sets.newHashSet(script.exitPaths.stream().map(input -> input.path).collect(Collectors.toList()));
-        completeExitPaths(complete, script.rooms);
-        return complete;
-    }
-
     public static Set<SavedMazePath> buildExpected(SavedMazeComponent savedMazeComponent)
     {
         Set<SavedMazePath> complete = Sets.newHashSet(savedMazeComponent.exitPaths.stream().map(input -> input.path).collect(Collectors.toList()));
@@ -70,8 +63,6 @@ public class SavedMazeReachability implements NBTCompoundObject
 
     /**
      * Analogous to WorldGenMaze.completeExitPaths
-     * @param exits
-     * @param rooms
      */
     public static void completeExitPaths(Set<SavedMazePath> exits, Selection rooms)
     {

@@ -54,13 +54,13 @@ public class MazeRuleConnectAll extends MazeRule
     @Override
     public MazePredicate<MazeComponentStructure<Connector>, Connector> build(WorldScriptMazeGenerator script, Set<Connector> blockedConnections, ConnectorFactory connectorFactory, Collection<? extends MazeComponent<Connector>> components)
     {
-        List<SavedMazePath> paths = additive ? exits : getPaths(exits, script.exitPaths, blockedConnections, connectorFactory).collect(Collectors.toList());
+        List<SavedMazePath> paths = additive ? exits : getPaths(exits, script.mazeComponent.exitPaths, blockedConnections, connectorFactory).collect(Collectors.toList());
 
         if (paths.size() > 1)
         {
             List<Collection<MazePassage>> points = paths.stream().map(SavedMazePath::build).map(Collections::singleton).collect(Collectors.toList());
             Predicate<Connector> traverser = ReachabilityStrategy.connectorTraverser(blockedConnections);
-            Predicate<MazeRoom> confiner = new LimitAABBStrategy<>(script.rooms.boundsSize());
+            Predicate<MazeRoom> confiner = new LimitAABBStrategy<>(script.mazeComponent.boundsSize());
 
             return preventConnection ? ReachabilityStrategy.preventConnection(points, traverser, confiner)
                     : ReachabilityStrategy.connect(points, traverser, confiner, ReachabilityStrategy.compileAbilities(components, traverser)

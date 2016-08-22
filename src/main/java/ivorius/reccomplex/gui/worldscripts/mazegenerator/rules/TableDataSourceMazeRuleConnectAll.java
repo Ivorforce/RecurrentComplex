@@ -81,7 +81,7 @@ public class TableDataSourceMazeRuleConnectAll extends TableDataSourceSegmented 
         else if (segment == 5)
         {
             ConnectorFactory factory = new ConnectorFactory();
-            Set<Connector> blockedConnections = Collections.singleton(factory.get("Wall"));
+            Set<Connector> blockedConnections = Collections.singleton(factory.get(ConnectorStrategy.DEFAULT_WALL));
             List<SavedMazePath> exitPaths = MazeRuleConnectAll.getPaths(rule.exits, expected, blockedConnections, factory).collect(Collectors.toList());
 
             return new TableElementCell(new TableCellTitle("", exitPaths.get(index).toString()));

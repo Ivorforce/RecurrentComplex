@@ -63,7 +63,7 @@ public class MazeRuleConnect extends MazeRule
         {
             List<Collection<MazePassage>> points = Arrays.asList(buildPaths(start), buildPaths(end));
             Predicate<Connector> traverser = ReachabilityStrategy.connectorTraverser(blockedConnections);
-            LimitAABBStrategy<MazeComponent<Object>, Object> confiner = new LimitAABBStrategy<>(script.rooms.boundsSize());
+            LimitAABBStrategy<MazeComponent<Object>, Object> confiner = new LimitAABBStrategy<>(script.mazeComponent.boundsSize());
 
             return preventConnection ? ReachabilityStrategy.preventConnection(points, traverser, confiner)
                     :  ReachabilityStrategy.connect(points, traverser, confiner, ReachabilityStrategy.compileAbilities(components, traverser));

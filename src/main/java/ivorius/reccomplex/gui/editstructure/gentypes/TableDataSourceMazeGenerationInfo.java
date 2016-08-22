@@ -27,7 +27,7 @@ public class TableDataSourceMazeGenerationInfo extends TableDataSourceSegmented 
         this.generationInfo = generationInfo;
 
         addManagedSection(0, new TableDataSourceGenerationInfo(generationInfo));
-        addManagedSection(3, new TableDataSourceMazeComponent(generationInfo.mazeComponent, navigator, tableDelegate));
+        addManagedSection(3, new TableDataSourceMazeComponent(generationInfo.mazeComponent, true, navigator, tableDelegate));
     }
 
     @Override

@@ -75,6 +75,7 @@ public class TableDataSourceWorldScriptMazeGenerator extends TableDataSourceSegm
             case 0:
                 return 1;
             case 1:
+                return 2;
             case 3:
                 return 3;
             default:
@@ -95,17 +96,11 @@ public class TableDataSourceWorldScriptMazeGenerator extends TableDataSourceSegm
         {
             if (index == 0)
             {
-                TableCellButton cell = new TableCellButton("rooms", new TableCellButton.Action("edit", "Edit"));
+                TableCellButton cell = new TableCellButton("mazeComponent", new TableCellButton.Action("edit", "Edit"));
                 cell.addListener(this);
-                return new TableElementCell("Rooms", cell);
+                return new TableElementCell("Maze", cell);
             }
             else if (index == 1)
-            {
-                TableCellButton cell = new TableCellButton("exits", new TableCellButton.Action("edit", "Edit"));
-                cell.addListener(this);
-                return new TableElementCell("Exits", cell);
-            }
-            else if (index == 2)
             {
                 TableCellButton cell = new TableCellButton("rules", new TableCellButton.Action("edit", "Edit"));
                 cell.addListener(this);
@@ -167,17 +162,13 @@ public class TableDataSourceWorldScriptMazeGenerator extends TableDataSourceSegm
     @Override
     public void actionPerformed(TableCell tableElementButton, String actionID)
     {
-        if ("exits".equals(tableElementButton.getID()))
+        if ("mazeComponent".equals(tableElementButton.getID()))
         {
-            tableNavigator.pushTable(new GuiTable(tableDelegate, new TableDataSourceMazePathConnectionList(script.exitPaths, tableDelegate, tableNavigator, script.rooms.boundsLower(), script.rooms.boundsHigher())));
-        }
-        else if ("rooms".equals(tableElementButton.getID()))
-        {
-            tableNavigator.pushTable(new GuiTable(tableDelegate, new TableDataSourceSelection(script.rooms, DIMENSIONS, tableDelegate, tableNavigator)));
+            tableNavigator.pushTable(new GuiTable(tableDelegate, new TableDataSourceMazeComponent(script.mazeComponent, false, tableNavigator, tableDelegate)));
         }
         else if ("rules".equals(tableElementButton.getID()))
         {
-            tableNavigator.pushTable(new GuiTable(tableDelegate, new TableDataSourceMazeRuleList(script.rules, tableDelegate, tableNavigator, script.exitPaths, script.rooms.boundsLower(), script.rooms.boundsHigher())));
+            tableNavigator.pushTable(new GuiTable(tableDelegate, new TableDataSourceMazeRuleList(script.rules, tableDelegate, tableNavigator, script.mazeComponent.exitPaths, script.mazeComponent.rooms.boundsLower(), script.mazeComponent.rooms.boundsHigher())));
         }
     }
 }

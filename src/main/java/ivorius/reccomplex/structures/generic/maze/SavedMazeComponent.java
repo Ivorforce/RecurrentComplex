@@ -24,9 +24,9 @@ import java.util.*;
 /**
  * Created by lukas on 07.10.14.
  */
-public class SavedMazeComponent
+public class SavedMazeComponent implements NBTCompoundObject
 {
-    public final Selection rooms = new Selection();
+    public final Selection rooms = new Selection(3);
     public final List<SavedMazePathConnection> exitPaths = new ArrayList<>();
     public final SavedConnector defaultConnector = new SavedConnector(ConnectorStrategy.DEFAULT_WALL);
     public final SavedMazeReachability reachability = new SavedMazeReachability();
@@ -61,27 +61,44 @@ public class SavedMazeComponent
         this.exitPaths.addAll(exitPaths);
     }
 
-    public int[] getSize()
+    public int[] boundsSize()
     {
-        int[] lowest = rooms.get(0).getMinCoord();
-        int[] highest = rooms.get(0).getMaxCoord();
-        for (MazeRoom room : getRooms())
+        return rooms.boundsSize();
+    }
+
+    @Override
+    public void readFromNBT(NBTTagCompound compound)
+    {
+        if (compound.hasKey("roomArea", Constants.NBT.TAG_COMPOUND))
         {
-            int[] coordinates = room.getCoordinates();
-            for (int i = 0; i < coordinates.length; i++)
-            {
-                if (coordinates[i] < lowest[i])
-                    lowest[i] = coordinates[i];
-                else if (coordinates[i] > highest[i])
-                    highest[i] = coordinates[i];
-            }
+            rooms.readFromNBT(compound.getCompoundTag("roomArea"));
+        }
+        else if (compound.hasKey("rooms", Constants.NBT.TAG_LIST)) // Legacy
+        {
+            rooms.clear();
+            rooms.addAll(Lists.transform(NBTTagLists.compoundsFrom(compound, "rooms"), input -> {
+                MazeRoom room = new MazeRoom(input.getIntArray("coordinates"));
+                int[] coordinates = room.getCoordinates();
+                return new Selection.Area(true, coordinates, coordinates.clone());
+            }));
         }
 
-        int[] size = IvVecMathHelper.sub(highest, lowest);
-        for (int i = 0; i < size.length; i++)
-            size[i]++;
+        exitPaths.clear();
+        exitPaths.addAll(NBTCompoundObjects.readListFrom(compound, "exits", SavedMazePathConnection.class));
 
-        return size;
+        defaultConnector.id = compound.hasKey("defaultConnector", Constants.NBT.TAG_STRING)
+                ? compound.getString("defaultConnector")
+                : ConnectorStrategy.DEFAULT_PATH;
+    }
+
+    @Override
+    public void writeToNBT(NBTTagCompound compound)
+    {
+        compound.setTag("roomArea", NBTCompoundObjects.write(rooms));
+
+        NBTCompoundObjects.writeListTo(compound, "exits", exitPaths);
+
+        compound.setString("defaultConnector", defaultConnector.id);
     }
 
     public static class Serializer implements JsonSerializer<SavedMazeComponent>, JsonDeserializer<SavedMazeComponent>

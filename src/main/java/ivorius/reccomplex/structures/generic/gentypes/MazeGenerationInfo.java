@@ -7,6 +7,7 @@ package ivorius.reccomplex.structures.generic.gentypes;
 
 import com.google.gson.*;
 import ivorius.ivtoolkit.maze.components.MazeRoom;
+import ivorius.ivtoolkit.random.WeightedSelector;
 import ivorius.reccomplex.gui.editstructure.gentypes.TableDataSourceMazeGenerationInfo;
 import ivorius.reccomplex.gui.table.TableDataSource;
 import ivorius.reccomplex.gui.table.TableDelegate;
@@ -22,24 +23,27 @@ import java.lang.reflect.Type;
 /**
  * Created by lukas on 07.10.14.
  */
-public class MazeGenerationInfo extends StructureGenerationInfo
+public class MazeGenerationInfo extends StructureGenerationInfo implements WeightedSelector.Item
 {
     private static Gson gson = createGson();
 
     public String id = "";
 
     public String mazeID;
+    public Double weight;
+
     public SavedMazeComponent mazeComponent;
 
     public MazeGenerationInfo()
     {
-        this(randomID("Maze"), "", new SavedMazeComponent(null, ConnectorStrategy.DEFAULT_WALL));
+        this(randomID("Maze"), null, "", new SavedMazeComponent(ConnectorStrategy.DEFAULT_WALL));
         mazeComponent.rooms.addAll(Selection.zeroSelection(3));
     }
 
-    public MazeGenerationInfo(String id, String mazeID, SavedMazeComponent mazeComponent)
+    public MazeGenerationInfo(String id, Double weight, String mazeID, SavedMazeComponent mazeComponent)
     {
         this.id = id;
+        this.weight = weight;
         this.mazeID = mazeID;
         this.mazeComponent = mazeComponent;
     }
@@ -77,6 +81,17 @@ public class MazeGenerationInfo extends StructureGenerationInfo
     }
 
     @Override
+    public double getWeight()
+    {
+        return weight != null ? weight : 1.0;
+    }
+
+    public boolean hasDefaultWeight()
+    {
+        return weight == null;
+    }
+
+    @Override
     public String displayString()
     {
         return I18n.translateToLocalFormatted("reccomplex.generationInfo.mazeComponent.title", mazeID);
@@ -98,9 +113,21 @@ public class MazeGenerationInfo extends StructureGenerationInfo
             String id = JsonUtils.getJsonObjectStringFieldValueOrDefault(jsonObject, "id", "");
 
             String mazeID = JsonUtils.getJsonObjectStringFieldValue(jsonObject, "mazeID");
-            SavedMazeComponent mazeComponent = gson.fromJson(jsonObject.get("component"), SavedMazeComponent.class);
 
-            return new MazeGenerationInfo(id, mazeID, mazeComponent);
+            JsonObject componentJson = JsonUtils.getJsonObjectFieldOrDefault(jsonObject, "component", new JsonObject());
+
+            Double weight = jsonObject.has("weight") ? JsonUtils.getJsonElementDoubleValue(jsonObject, "weight") : null;
+            if (weight == null) // Legacy, weight was in SavedMazeComponent's JSON
+            {
+                if (componentJson.has("weightD"))
+                    weight = JsonUtils.getJsonObjectDoubleFieldValue(componentJson, "weightD");
+                else if (componentJson.has("weight"))
+                    weight = JsonUtils.getJsonObjectIntegerFieldValue(componentJson, "weight") * 0.01; // 100 was default
+            }
+
+            SavedMazeComponent mazeComponent = gson.fromJson(componentJson, SavedMazeComponent.class);
+
+            return new MazeGenerationInfo(id, weight, mazeID, mazeComponent);
         }
 
         @Override
@@ -109,6 +136,9 @@ public class MazeGenerationInfo extends StructureGenerationInfo
             JsonObject jsonObject = new JsonObject();
 
             jsonObject.addProperty("id", src.id);
+
+            if (src.weight != null)
+                jsonObject.addProperty("weight", src.weight);
 
             jsonObject.addProperty("mazeID", src.mazeID);
             jsonObject.add("component", gson.toJsonTree(src.mazeComponent));

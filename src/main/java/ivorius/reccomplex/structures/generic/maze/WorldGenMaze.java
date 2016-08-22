@@ -102,14 +102,15 @@ public class WorldGenMaze
         for (Pair<StructureInfo, MazeGenerationInfo> pair : componentStructures)
         {
             StructureInfo info = pair.getLeft();
-            SavedMazeComponent comp = pair.getRight().mazeComponent;
+            MazeGenerationInfo mazeInfo = pair.getRight();
+            SavedMazeComponent comp = mazeInfo.mazeComponent;
 
             int[] compSize = comp.getSize();
             int roomVariations = (info.isRotatable() ? 4 : 1) * (info.isMirrorable() ? 2 : 1);
 
             double splitCompWeight = 0;
-            if (comp.getWeight() > 0)
-                splitCompWeight = comp.getWeight() / roomVariations;
+            if (mazeInfo.getWeight() > 0)
+                splitCompWeight = mazeInfo.getWeight() / roomVariations;
 
             for (int rotations = 0; rotations < 4; rotations++)
             {

@@ -15,7 +15,7 @@ import ivorius.ivtoolkit.tools.IvTranslations;
 /**
  * Created by lukas on 26.04.15.
  */
-public class TableDataSourceMazeComponent extends TableDataSourceSegmented implements TableCellPropertyListener, TableCellActionListener
+public class TableDataSourceMazeComponent extends TableDataSourceSegmented implements TableCellActionListener
 {
     public static final int[] DEFAULT_MAX_COMPONENT_SIZE = {100, 100, 100};
 
@@ -35,7 +35,7 @@ public class TableDataSourceMazeComponent extends TableDataSourceSegmented imple
     @Override
     public int numberOfSegments()
     {
-        return 5;
+        return 4;
     }
 
     @Override
@@ -46,7 +46,6 @@ public class TableDataSourceMazeComponent extends TableDataSourceSegmented imple
             case 1:
             case 2:
             case 3:
-            case 4:
                 return 1;
         }
 
@@ -59,20 +58,18 @@ public class TableDataSourceMazeComponent extends TableDataSourceSegmented imple
         switch (segment)
         {
             case 1:
-                return RCGuiTables.defaultWeightElement(this, component.weight);
-            case 2:
             {
                 TableCellButton cell = new TableCellButton("rooms", new TableCellButton.Action("edit", "Edit"));
                 cell.addListener(this);
                 return new TableElementCell("Rooms", cell);
             }
-            case 3:
+            case 2:
             {
                 TableCellButton cell = new TableCellButton("exits", new TableCellButton.Action("edit", "Edit"));
                 cell.addListener(this);
                 return new TableElementCell("Exits", cell);
             }
-            case 4:
+            case 3:
             {
                 TableCellButton cell = new TableCellButton("reachability", new TableCellButton.Action("edit", "Edit"));
                 cell.setTooltip(IvTranslations.formatLines("reccomplex.reachability.tooltip"));
@@ -98,15 +95,6 @@ public class TableDataSourceMazeComponent extends TableDataSourceSegmented imple
         else if ("reachability".equals(cell.getID()))
         {
             navigator.pushTable(new GuiTable(tableDelegate, new TableDataSourceMazeReachability(component.reachability, tableDelegate, navigator, SavedMazeReachability.buildExpected(component), component.rooms.boundsLower(), component.rooms.boundsHigher())));
-        }
-    }
-
-    @Override
-    public void valueChanged(TableCellPropertyDefault cell)
-    {
-        if ("weight".equals(cell.getID()))
-        {
-            component.weight = TableElements.toDouble((Float) cell.getPropertyValue());
         }
     }
 }

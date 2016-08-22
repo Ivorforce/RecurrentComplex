@@ -24,9 +24,8 @@ import java.util.*;
 /**
  * Created by lukas on 07.10.14.
  */
-public class SavedMazeComponent implements NBTCompoundObject, WeightedSelector.Item
+public class SavedMazeComponent
 {
-    public Double weight;
     public final Selection rooms = new Selection();
     public final List<SavedMazePathConnection> exitPaths = new ArrayList<>();
     public final SavedConnector defaultConnector = new SavedConnector(ConnectorStrategy.DEFAULT_WALL);
@@ -36,9 +35,8 @@ public class SavedMazeComponent implements NBTCompoundObject, WeightedSelector.I
     {
     }
 
-    public SavedMazeComponent(Double weight, String defaultConnector)
+    public SavedMazeComponent(String defaultConnector)
     {
-        this.weight = weight;
         this.defaultConnector.id = defaultConnector;
     }
 
@@ -86,60 +84,6 @@ public class SavedMazeComponent implements NBTCompoundObject, WeightedSelector.I
         return size;
     }
 
-    @Override
-    public void readFromNBT(NBTTagCompound compound)
-    {
-        weight = compound.hasKey("weight", Constants.NBT.TAG_DOUBLE) ? compound.getDouble("weight") : null;
-
-        if (compound.hasKey("roomArea", Constants.NBT.TAG_COMPOUND))
-        {
-            rooms.readFromNBT(compound.getCompoundTag("roomArea"), 3);
-        }
-        else if (compound.hasKey("rooms", Constants.NBT.TAG_LIST))
-        {
-            // Legacy
-            rooms.clear();
-            rooms.addAll(Lists.transform(NBTTagLists.compoundsFrom(compound, "rooms"), input -> {
-                MazeRoom room = new MazeRoom(input.getIntArray("coordinates"));
-                int[] coordinates = room.getCoordinates();
-                return new Selection.Area(true, coordinates, coordinates.clone());
-            }));
-        }
-
-        exitPaths.clear();
-        exitPaths.addAll(NBTCompoundObjects.readListFrom(compound, "exits", SavedMazePathConnection.class));
-
-        defaultConnector.id = compound.hasKey("defaultConnector", Constants.NBT.TAG_STRING)
-                ? compound.getString("defaultConnector")
-                : ConnectorStrategy.DEFAULT_PATH;
-    }
-
-    @Override
-    public void writeToNBT(NBTTagCompound compound)
-    {
-        if (weight != null)
-            compound.setDouble("weight", weight);
-
-        NBTTagCompound roomsCompound = new NBTTagCompound();
-        rooms.writeToNBT(roomsCompound);
-        compound.setTag("rooms", roomsCompound);
-
-        NBTCompoundObjects.writeListTo(compound, "exits", exitPaths);
-
-        compound.setString("defaultConnector", defaultConnector.id);
-    }
-
-    @Override
-    public double getWeight()
-    {
-        return weight != null ? weight : 1.0;
-    }
-
-    public boolean hasDefaultWeight()
-    {
-        return weight == null;
-    }
-
     public static class Serializer implements JsonSerializer<SavedMazeComponent>, JsonDeserializer<SavedMazeComponent>
     {
         @Override
@@ -147,12 +91,9 @@ public class SavedMazeComponent implements NBTCompoundObject, WeightedSelector.I
         {
             JsonObject jsonObject = JsonUtils.getJsonElementAsJsonObject(json, "MazeComponent");
 
-            Double weight = jsonObject.has("weightD") ? JsonUtils.getJsonObjectDoubleFieldValue(jsonObject, "weightD") : null;
-            if (weight == null && jsonObject.has("weight")) // legacy
-                weight = JsonUtils.getJsonObjectIntegerFieldValue(jsonObject, "weight") * 0.01; // 100 was default
             String defaultConnector = JsonUtils.getJsonObjectStringFieldValueOrDefault(jsonObject, "defaultConnector", ConnectorStrategy.DEFAULT_WALL);
 
-            SavedMazeComponent mazeComponent = new SavedMazeComponent(weight, defaultConnector);
+            SavedMazeComponent mazeComponent = new SavedMazeComponent(defaultConnector);
 
             if (jsonObject.has("roomArea"))
             {
@@ -179,9 +120,6 @@ public class SavedMazeComponent implements NBTCompoundObject, WeightedSelector.I
         public JsonElement serialize(SavedMazeComponent src, Type typeOfSrc, JsonSerializationContext context)
         {
             JsonObject jsonObject = new JsonObject();
-
-            if (src.weight != null)
-                jsonObject.addProperty("weightD", src.weight);
 
             jsonObject.add("roomArea", context.serialize(src.rooms));
             jsonObject.add("exits", context.serialize(src.exitPaths));

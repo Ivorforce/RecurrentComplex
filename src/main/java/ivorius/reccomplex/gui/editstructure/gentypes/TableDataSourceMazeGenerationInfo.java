@@ -5,6 +5,7 @@
 
 package ivorius.reccomplex.gui.editstructure.gentypes;
 
+import ivorius.reccomplex.gui.RCGuiTables;
 import ivorius.reccomplex.gui.worldscripts.mazegenerator.TableDataSourceMazeComponent;
 import ivorius.reccomplex.gui.table.*;
 import ivorius.reccomplex.structures.generic.gentypes.MazeGenerationInfo;
@@ -26,30 +27,44 @@ public class TableDataSourceMazeGenerationInfo extends TableDataSourceSegmented 
         this.generationInfo = generationInfo;
 
         addManagedSection(0, new TableDataSourceGenerationInfo(generationInfo));
-        addManagedSection(2, new TableDataSourceMazeComponent(generationInfo.mazeComponent, navigator, tableDelegate));
+        addManagedSection(3, new TableDataSourceMazeComponent(generationInfo.mazeComponent, navigator, tableDelegate));
     }
 
     @Override
     public int numberOfSegments()
     {
-        return 3;
+        return 4;
     }
 
     @Override
     public int sizeOfSegment(int segment)
     {
-        return segment == 1 ? 1 : super.sizeOfSegment(segment);
+        switch (segment)
+        {
+            case 1:
+            case 2:
+                return 1;
+            default:
+                return super.sizeOfSegment(segment);
+        }
 
     }
 
     @Override
     public TableElement elementForIndexInSegment(GuiTable table, int index, int segment)
     {
-        if (segment == 1)
+        switch (segment)
         {
-            TableCellString cell = new TableCellString("mazeID", generationInfo.mazeID);
-            cell.addPropertyListener(this);
-            return new TableElementCell("Maze ID", cell);
+            case 1:
+            {
+                TableCellString cell = new TableCellString("mazeID", generationInfo.mazeID);
+                cell.addPropertyListener(this);
+                return new TableElementCell("Maze ID", cell);
+            }
+            case 2:
+            {
+                return RCGuiTables.defaultWeightElement(this, generationInfo.weight);
+            }
         }
 
         return super.elementForIndexInSegment(table, index, segment);
@@ -58,9 +73,17 @@ public class TableDataSourceMazeGenerationInfo extends TableDataSourceSegmented 
     @Override
     public void valueChanged(TableCellPropertyDefault cell)
     {
-        if ("mazeID".equals(cell.getID()))
+        if (cell.getID() != null)
         {
-            generationInfo.mazeID = (String) cell.getPropertyValue();
+            switch (cell.getID())
+            {
+                case "mazeID":
+                    generationInfo.mazeID = (String) cell.getPropertyValue();
+                    break;
+                case "weight":
+                    generationInfo.weight = TableElements.toDouble((Float) cell.getPropertyValue());
+                    break;
+            }
         }
     }
 }

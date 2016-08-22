@@ -48,14 +48,14 @@ import java.util.stream.Collectors;
  */
 public class WorldScriptMazeGenerator implements WorldScript<WorldScriptMazeGenerator.InstanceData>
 {
-
-    // TODO Turn into SavedMazeComponent
-    public final List<SavedMazePathConnection> exitPaths = new ArrayList<>();
     public String mazeID = "";
-    public Selection rooms = Selection.zeroSelection(3);
     public BlockPos structureShift = new BlockPos(0, 0, 0);
     public int[] roomSize = new int[]{3, 5, 3};
     public final List<MazeRule> rules = new ArrayList<>();
+
+    // TODO Turn into SavedMazeComponent
+    public final Selection rooms = Selection.zeroSelection(3);
+    public final List<SavedMazePathConnection> exitPaths = new ArrayList<>();
 
     public static <C> void addRandomPaths(Random random, int[] size, MorphingMazeComponent<C> maze, List<? extends MazeComponent<C>> components, C roomConnector, int number)
     {
@@ -166,11 +166,6 @@ public class WorldScriptMazeGenerator implements WorldScript<WorldScriptMazeGene
     public Selection getRooms()
     {
         return rooms;
-    }
-
-    public void setRooms(Selection rooms)
-    {
-        this.rooms = rooms;
     }
 
     @Override

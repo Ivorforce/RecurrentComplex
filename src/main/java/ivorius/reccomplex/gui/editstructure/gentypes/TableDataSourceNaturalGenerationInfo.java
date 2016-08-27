@@ -22,7 +22,7 @@ import java.util.Set;
 /**
  * Created by lukas on 07.10.14.
  */
-public class TableDataSourceNaturalGenerationInfo extends TableDataSourceSegmented implements TableCellActionListener, TableCellPropertyListener
+public class TableDataSourceNaturalGenerationInfo extends TableDataSourceSegmented implements TableCellPropertyListener
 {
     private TableNavigator navigator;
     private TableDelegate tableDelegate;
@@ -38,13 +38,22 @@ public class TableDataSourceNaturalGenerationInfo extends TableDataSourceSegment
         addManagedSection(2, new TableDataSourceYSelector(generationInfo.ySelector));
 
         addManagedSection(4, TableCellMultiBuilder.create(navigator, tableDelegate)
-                .addNavigation(() -> "Edit", null,
+                .addNavigation(() -> IvTranslations.get("reccomplex.gui.edit"), null,
                         () -> new GuiTable(tableDelegate, new TableDataSourceBiomeGenList(generationInfo.biomeWeights, tableDelegate, navigator))
-                ).buildPreloaded(IvTranslations.get("reccomplex.gui.biomes")));
+                ).buildDataSource(IvTranslations.get("reccomplex.gui.biomes")));
+
         addManagedSection(5, TableCellMultiBuilder.create(navigator, tableDelegate)
-                .addNavigation(() -> "Edit", null,
+                .addNavigation(() -> IvTranslations.get("reccomplex.gui.edit"), null,
                         () -> new GuiTable(tableDelegate, new TableDataSourceDimensionGenList(generationInfo.dimensionWeights, tableDelegate, navigator))
-                ).buildPreloaded(IvTranslations.get("reccomplex.gui.dimensions")));
+                ).buildDataSource(IvTranslations.get("reccomplex.gui.dimensions")));
+
+        addManagedSection(6, TableCellMultiBuilder.create(navigator, tableDelegate)
+                .addNavigation(() -> IvTranslations.get("reccomplex.gui.edit"), null,
+                        () -> new GuiTable(tableDelegate, new TableDataSourceNaturalGenLimitation(generationInfo.spawnLimitation, tableDelegate))
+                ).enabled(generationInfo::hasLimitations)
+                .addAction(() -> generationInfo.hasLimitations() ? "Remove" : "Add", null,
+                        () -> generationInfo.spawnLimitation = generationInfo.hasLimitations() ? null : new NaturalGenerationInfo.SpawnLimitation()
+                ).buildDataSource(IvTranslations.get("reccomplex.generationInfo.natural.limitations")));
     }
 
     public static List<TableCellEnum.Option<String>> allGenerationCategories()
@@ -95,40 +104,9 @@ public class TableDataSourceNaturalGenerationInfo extends TableDataSourceSegment
             }
             case 3:
                 return RCGuiTables.defaultWeightElement(this, generationInfo.getGenerationWeight());
-            case 6:
-            {
-                TableCellButton editCell = new TableCellButton("editLimitations", "edit", "Edit", generationInfo.hasLimitations());
-                editCell.addListener(this);
-                TableCellButton actionCell = new TableCellButton("editLimitations", generationInfo.hasLimitations() ? "remove" : "add", generationInfo.hasLimitations() ? "Remove" : "Add");
-                editCell.addListener(this);
-                return new TableElementCell(IvTranslations.get("reccomplex.generationInfo.natural.limitations"), new TableCellMulti(editCell, actionCell));
-            }
         }
 
         return super.elementForIndexInSegment(table, index, segment);
-    }
-
-    @Override
-    public void actionPerformed(TableCell cell, String actionID)
-    {
-        if ("editLimitations".equals(cell.getID()))
-        {
-            switch (actionID)
-            {
-                case "edit":
-                    GuiTable table = new GuiTable(tableDelegate, new TableDataSourceNaturalGenLimitation(generationInfo.spawnLimitation, tableDelegate));
-                    navigator.pushTable(table);
-                    break;
-                case "remove":
-                    generationInfo.spawnLimitation = null;
-                    tableDelegate.reloadData();
-                    break;
-                case "add":
-                    generationInfo.spawnLimitation = new NaturalGenerationInfo.SpawnLimitation();
-                    tableDelegate.reloadData();
-                    break;
-            }
-        }
     }
 
     @Override

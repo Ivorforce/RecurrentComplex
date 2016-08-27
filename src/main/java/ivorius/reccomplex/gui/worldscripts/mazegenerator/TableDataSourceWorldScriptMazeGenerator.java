@@ -6,6 +6,7 @@
 package ivorius.reccomplex.gui.worldscripts.mazegenerator;
 
 import ivorius.ivtoolkit.gui.IntegerRange;
+import ivorius.ivtoolkit.tools.IvTranslations;
 import ivorius.reccomplex.gui.TableDataSourceBlockPos;
 import ivorius.reccomplex.gui.table.*;
 import ivorius.reccomplex.gui.worldscripts.mazegenerator.rules.TableDataSourceMazeRuleList;
@@ -29,13 +30,13 @@ public class TableDataSourceWorldScriptMazeGenerator extends TableDataSourceSegm
         this.navigator = navigator;
 
         addManagedSection(1, TableCellMultiBuilder.create(navigator, delegate)
-                .addNavigation(() -> "Edit", null,
+                .addNavigation(() -> IvTranslations.get("reccomplex.gui.edit"), null,
                         () -> new GuiTable(delegate, new TableDataSourceMazeComponent(script.mazeComponent, false, navigator, delegate))
-                ).buildPreloaded("Maze"));
+                ).buildDataSource("Maze"));
         addManagedSection(2, TableCellMultiBuilder.create(navigator, delegate)
-                .addNavigation(() -> "Edit", null,
+                .addNavigation(() -> IvTranslations.get("reccomplex.gui.edit"), null,
                         () -> new GuiTable(delegate, new TableDataSourceMazeRuleList(script.rules, delegate, navigator, script.mazeComponent.exitPaths, script.mazeComponent.rooms.boundsLower(), script.mazeComponent.rooms.boundsHigher()))
-                ).buildPreloaded("Rules"));
+                ).buildDataSource("Rules"));
         addManagedSection(3, new TableDataSourceBlockPos(script.getStructureShift(), script::setStructureShift, new IntegerRange(-50, 50), "Range: %s"));
     }
 

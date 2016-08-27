@@ -9,6 +9,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.BooleanSupplier;
 import java.util.function.Supplier;
 
 /**
@@ -19,6 +20,7 @@ public class TableCellMultiBuilder
     protected final List<Supplier<String>> titles = new ArrayList<>();
     protected final List<Supplier<List<String>>> tooltips = new ArrayList<>();
     protected final List<Runnable> actions = new ArrayList<>();
+    protected final List<BooleanSupplier> enabledSuppliers = new ArrayList<>();
 
     public TableNavigator navigator;
     public TableDelegate delegate;
@@ -43,6 +45,7 @@ public class TableCellMultiBuilder
             action.run();
             delegate.reloadData();
         });
+        enabledSuppliers.add(null);
         return this;
     }
 
@@ -50,24 +53,28 @@ public class TableCellMultiBuilder
     {
         titles.add(title);
         tooltips.add(tooltip);
-        actions.add(() ->
-        {
-            navigator.pushTable(table.get());
-            delegate.reloadData();
-        });
+        actions.add(() -> navigator.pushTable(table.get()));
+        enabledSuppliers.add(null);
+        return this;
+    }
+
+    public TableCellMultiBuilder enabled(BooleanSupplier enabled)
+    {
+        enabledSuppliers.remove(enabledSuppliers.size() - 1);
+        enabledSuppliers.add(enabled);
         return this;
     }
 
     @Nonnull
-    public TableDataSource buildPreloaded(@Nullable String title)
+    public TableDataSource buildDataSource(@Nullable String title)
     {
-        return new TableDataSourcePreloaded(buildElement(title));
+        return new TableDataSourceSupplied((Supplier<TableElement>) () -> buildElement(title));
     }
 
     @Nonnull
-    public TableDataSource buildPreloaded()
+    public TableDataSource buildDataSource()
     {
-        return new TableDataSourcePreloaded(buildElement());
+        return new TableDataSourceSupplied(this::buildElement);
     }
 
     @Nonnull
@@ -93,9 +100,12 @@ public class TableCellMultiBuilder
             int finalI = i;
             cell.addListener((cell1, action) -> actions.get(finalI).run());
 
-            Supplier<List<String>> tooltip = this.tooltips.get(i);
+            Supplier<List<String>> tooltip = tooltips.get(i);
             if (tooltip != null)
                 cell.setTooltip(tooltip.get());
+            BooleanSupplier enabledSupplier = enabledSuppliers.get(i);
+            if (enabledSupplier != null)
+                cell.setEnabled(enabledSupplier.getAsBoolean());
 
             cells.add(cell);
         }

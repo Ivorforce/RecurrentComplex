@@ -5,6 +5,7 @@
 
 package ivorius.reccomplex.gui.editstructure.transformers;
 
+import ivorius.ivtoolkit.tools.IvTranslations;
 import ivorius.reccomplex.gui.TableDataSourceExpression;
 import ivorius.reccomplex.gui.editstructure.TableDataSourceWeightedBlockStateList;
 import ivorius.reccomplex.gui.table.*;
@@ -28,9 +29,9 @@ public class TableDataSourceBTReplace extends TableDataSourceSegmented
 
         addManagedSection(0, TableDataSourceExpression.constructDefault("Sources", transformer.sourceMatcher));
         addManagedSection(1, TableCellMultiBuilder.create(navigator, tableDelegate)
-                .addNavigation(() -> "Edit", null,
+                .addNavigation(() -> IvTranslations.get("reccomplex.gui.edit"), null,
                 () -> new GuiTable(tableDelegate, new TableDataSourceWeightedBlockStateList(transformer.destination, tableDelegate, navigator))
-                ).buildPreloaded("Destinations"));
+                ).buildDataSource("Destinations"));
     }
 
     public TransformerReplace getTransformer()

@@ -44,18 +44,18 @@ public class TableDataSourceGenericStructure extends TableDataSourceSegmented im
         this.navigator = navigator;
 
         addManagedSection(1, TableCellMultiBuilder.create(navigator, tableDelegate)
-                .addNavigation(() -> "Edit", null,
+                .addNavigation(() -> IvTranslations.get("reccomplex.gui.edit"), null,
                         () -> new GuiTable(tableDelegate, new TableDataSourceMetadata(structureInfo.metadata))
-                ).buildPreloaded("Metadata"));
+                ).buildDataSource(IvTranslations.get("reccomplex.structure.metadata")));
         addManagedSection(3, TableDataSourceExpression.constructDefault("Dependencies", structureInfo.dependencies));
         addManagedSection(4, TableCellMultiBuilder.create(navigator, tableDelegate)
-                .addNavigation(() -> "Edit", null,
+                .addNavigation(() -> IvTranslations.get("reccomplex.gui.edit"), null,
                         () -> new GuiTable(tableDelegate, new TableDataSourceStructureGenerationInfoList(structureInfo.generationInfos, tableDelegate, navigator))
-                ).buildPreloaded("Generation"));
+                ).buildDataSource(IvTranslations.get("reccomplex.structure.generation")));
         addManagedSection(5, TableCellMultiBuilder.create(navigator, tableDelegate)
-                .addNavigation(() -> "Edit", null,
+                .addNavigation(() -> IvTranslations.get("reccomplex.gui.edit"), null,
                         () -> new GuiTable(tableDelegate, new TableDataSourceTransformerList(structureInfo.transformers, tableDelegate, navigator))
-                ).buildPreloaded("Transformers"));
+                ).buildDataSource(IvTranslations.get("reccomplex.structure.transformers")));
     }
 
     public GenericStructureInfo getStructureInfo()

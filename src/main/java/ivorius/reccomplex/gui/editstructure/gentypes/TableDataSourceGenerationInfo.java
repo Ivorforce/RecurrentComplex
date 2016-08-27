@@ -23,7 +23,7 @@ public class TableDataSourceGenerationInfo extends TableDataSourceSegmented
         addManagedSection(1, TableCellMultiBuilder.create(navigator, delegate)
                 .addAction(() -> "Randomize", null,
                         () -> genInfo.setID(StructureGenerationInfo.randomID()))
-                .buildPreloaded());
+                .buildDataSource());
     }
 
     @Override

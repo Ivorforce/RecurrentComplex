@@ -15,7 +15,7 @@ import ivorius.reccomplex.structures.generic.gentypes.StaticGenerationInfo;
 /**
  * Created by lukas on 07.10.14.
  */
-public class TableDataSourceStaticGenerationInfo extends TableDataSourceSegmented implements TableCellPropertyListener, TableCellActionListener
+public class TableDataSourceStaticGenerationInfo extends TableDataSourceSegmented implements TableCellPropertyListener
 {
     private TableNavigator navigator;
     private TableDelegate tableDelegate;
@@ -31,6 +31,14 @@ public class TableDataSourceStaticGenerationInfo extends TableDataSourceSegmente
         addManagedSection(0, new TableDataSourceGenerationInfo(generationInfo, navigator, tableDelegate));
         addManagedSection(2, new TableDataSourceYSelector(generationInfo.ySelector));
         addManagedSection(3, TableDataSourceExpression.constructDefault(IvTranslations.get("reccomplex.gui.biomes"), generationInfo.dimensionMatcher));
+
+        addManagedSection(4, TableCellMultiBuilder.create(navigator, tableDelegate)
+                .addNavigation(() -> IvTranslations.get("reccomplex.gui.edit"), null,
+                        () -> new GuiTable(tableDelegate, new TableDataSourceStaticPattern(generationInfo.pattern, tableDelegate))
+                ).enabled(generationInfo::hasPattern)
+                .addAction(() -> generationInfo.hasPattern() ? "Remove" : "Add", null,
+                        () -> generationInfo.pattern = generationInfo.hasPattern() ? null : new StaticGenerationInfo.Pattern()
+                ).buildDataSource("Pattern"));
     }
 
     @Override
@@ -42,14 +50,7 @@ public class TableDataSourceStaticGenerationInfo extends TableDataSourceSegmente
     @Override
     public int sizeOfSegment(int segment)
     {
-        switch (segment)
-        {
-            case 1:
-                return 3;
-            case 4:
-                return 1;
-        }
-        return super.sizeOfSegment(segment);
+        return segment == 1 ? 3 : super.sizeOfSegment(segment);
     }
 
     @Override
@@ -79,14 +80,6 @@ public class TableDataSourceStaticGenerationInfo extends TableDataSourceSegmente
                 }
                 break;
             }
-            case 4:
-            {
-                TableCellButton editCell = new TableCellButton("editPattern", "edit", "Edit", generationInfo.hasPattern());
-                editCell.addListener(this);
-                TableCellButton actionCell = new TableCellButton("togglePattern", generationInfo.hasPattern() ? "remove" : "add", generationInfo.hasPattern() ? "Remove" : "Add");
-                actionCell.addListener(this);
-                return new TableElementCell("Pattern", new TableCellMulti(editCell, actionCell));
-            }
         }
 
         return super.elementForIndexInSegment(table, index, segment);
@@ -111,29 +104,6 @@ public class TableDataSourceStaticGenerationInfo extends TableDataSourceSegmente
                 }
                 case "relativeToSpawn":
                     generationInfo.relativeToSpawn = (boolean) cell.getPropertyValue();
-                    break;
-            }
-        }
-    }
-
-    @Override
-    public void actionPerformed(TableCell cell, String actionID)
-    {
-        if ("editPattern".equals(cell.getID()))
-        {
-            switch (actionID)
-            {
-                case "edit":
-                    GuiTable table = new GuiTable(tableDelegate, new TableDataSourceStaticPattern(generationInfo.pattern, tableDelegate));
-                    navigator.pushTable(table);
-                    break;
-                case "remove":
-                    generationInfo.pattern = null;
-                    tableDelegate.reloadData();
-                    break;
-                case "add":
-                    generationInfo.pattern = new StaticGenerationInfo.Pattern();
-                    tableDelegate.reloadData();
                     break;
             }
         }

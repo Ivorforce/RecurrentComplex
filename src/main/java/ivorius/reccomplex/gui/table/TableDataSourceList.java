@@ -6,6 +6,7 @@
 package ivorius.reccomplex.gui.table;
 
 import com.mojang.realmsclient.gui.ChatFormatting;
+import ivorius.ivtoolkit.tools.IvTranslations;
 
 import java.util.List;
 
@@ -19,9 +20,9 @@ public abstract class TableDataSourceList<T, L extends List<T>> extends TableDat
     protected TableDelegate tableDelegate;
     protected TableNavigator navigator;
 
-    protected String earlierTitle = "Earlier";
-    protected String laterTitle = "Later";
-    protected String editTitle = "Edit";
+    protected String earlierTitle = IvTranslations.get("reccomplex.gui.later");
+    protected String laterTitle = IvTranslations.get("reccomplex.gui.earlier");
+    protected String editTitle = IvTranslations.get("reccomplex.gui.edit");
     protected String deleteTitle = ChatFormatting.RED + "-";
     protected String addTitle = ChatFormatting.GREEN + "+";
 

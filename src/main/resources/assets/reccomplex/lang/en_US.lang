@@ -210,6 +210,12 @@ reccomplex.configgui.ctgy.balancing.tooltip=Settings affecting the mod's balanci
 reccomplex.configgui.ctgy.controls=Controls
 reccomplex.configgui.ctgy.controls.tooltip=Settings affecting the controls
 
+reccomplex.structure.metadata=Metadata
+reccomplex.structure.generation=Generation
+reccomplex.structure.generation.tooltip=How the structure generates in the world.
+reccomplex.structure.transformers=Transformers
+reccomplex.structure.transformers.tooltip=Scripts that alter generation of<br>the structure randomly.
+reccomplex.structure.dependencies=Dependencies
 reccomplex.structure.rotatable.true=§aRotatable§r
 reccomplex.structure.rotatable.false=§eNot Rotatable§r
 reccomplex.structure.rotatable.tooltip=Whether the structure can rotate.<br>This may need to be set to false<br>for some TileEntities or Entities.
@@ -374,6 +380,9 @@ reccomplex.worldscript.mazeGen.tooltip=Generates a maze from weighted components
 reccomplex.worldscript.strucGen=Generate Structure
 reccomplex.worldscript.strucGen.tooltip=Generates a structure from weighted options.
 
+reccomplex.gui.edit=Edit
+reccomplex.gui.later=Später
+reccomplex.gui.earlier=Früher
 reccomplex.gui.biomes=Biomes
 reccomplex.gui.dimensions=Dimensions
 

@@ -30,7 +30,7 @@ public class TableDataSourceWeightedBlockState extends TableDataSourceSegmented 
     {
         this.weightedBlockState = weightedBlockState;
 
-        addManagedSection(1, new TableDataSourceBlockState(weightedBlockState.state, state -> weightedBlockState.state = state, "Block", "Metadata", navigator, delegate));
+        addManagedSection(1, new TableDataSourceBlockState(weightedBlockState.state, state -> weightedBlockState.state = state, navigator, delegate, "Block", "Metadata"));
     }
 
     public static GuiValidityStateIndicator.State stateForNBTCompoundJson(String json)

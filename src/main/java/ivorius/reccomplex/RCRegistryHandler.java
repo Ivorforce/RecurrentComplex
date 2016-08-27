@@ -155,6 +155,10 @@ public class RCRegistryHandler
         register(spawnScript, "spawn_script");
         register(TileEntitySpawnScript.class, "RCSpawnScript");
 
+        inspector = new ItemInspector().setUnlocalizedName("recinspector");
+        inspector.setCreativeTab(tabStructureTools);
+        register(inspector, "inspector");
+
         // Set preset defaults
         DimensionMatcherPresets.instance().setDefault("overworld");
         BiomeMatcherPresets.instance().setDefault("overworld");

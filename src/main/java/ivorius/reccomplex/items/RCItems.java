@@ -21,4 +21,6 @@ public class RCItems
 
     public static Item artifactGenerationTag;
     public static Item bookGenerationTag;
+
+    public static Item inspector;
 }

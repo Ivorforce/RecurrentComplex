@@ -74,6 +74,7 @@ public class ClientProxy implements RCProxy
         registerItemsForDefaultRender(blockSelector, blockSelectorFloating);
         registerItemsForDefaultRender(inventoryGenerationTag, inventoryGenerationSingleTag, inventoryGenerationComponentTag);
         registerItemsForDefaultRender(artifactGenerationTag, bookGenerationTag);
+        registerItemsForDefaultRender(inspector);
 
         registerTypeItemsForDefaultRender(genericSpace, genericSolid);
         registerItemsForDefaultRender(structureGenerator, mazeGenerator, spawnCommands, spawnScript);

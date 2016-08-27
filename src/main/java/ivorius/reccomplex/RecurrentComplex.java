@@ -137,6 +137,7 @@ public class RecurrentComplex
         network.registerMessage(PacketSaveStructureHandler.class, PacketSaveStructure.class, 7, Side.SERVER);
         network.registerMessage(PacketSyncItemHandler.class, PacketSyncItem.class, 9, Side.SERVER);
         network.registerMessage(PacketItemEventHandler.class, PacketItemEvent.class, 11, Side.SERVER);
+        network.registerMessage(PacketInspectBlockHandler.class, PacketInspectBlock.class, 12, Side.SERVER);
     }
 
     protected void registerClientPackets()
@@ -147,6 +148,8 @@ public class RecurrentComplex
         network.registerMessage(PacketEditStructureHandler.class, PacketEditStructure.class, 6, Side.CLIENT);
         network.registerMessage(PacketSyncItemHandler.class, PacketSyncItem.class, 8, Side.CLIENT);
         network.registerMessage(PacketItemEventHandler.class, PacketItemEvent.class, 10, Side.CLIENT);
+        network.registerMessage(PacketItemEventHandler.class, PacketItemEvent.class, 10, Side.CLIENT);
+        network.registerMessage(PacketInspectBlockHandler.class, PacketInspectBlock.class, 13, Side.CLIENT);
     }
 
     @EventHandler

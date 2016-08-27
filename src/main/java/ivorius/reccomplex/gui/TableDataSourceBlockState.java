@@ -7,6 +7,7 @@ package ivorius.reccomplex.gui;
 
 import com.google.common.collect.Lists;
 import com.mojang.realmsclient.gui.ChatFormatting;
+import ivorius.ivtoolkit.tools.IvTranslations;
 import ivorius.reccomplex.RecurrentComplex;
 import ivorius.reccomplex.gui.editstructure.transformers.TableDataSourceBTNatural;
 import ivorius.reccomplex.gui.table.*;
@@ -41,7 +42,7 @@ public class TableDataSourceBlockState extends TableDataSourceSegmented implemen
     private TableNavigator navigator;
     private TableDelegate delegate;
 
-    public TableDataSourceBlockState(IBlockState state, Consumer<IBlockState> consumer, String blockTitle, String metadataTitle, TableNavigator navigator, TableDelegate delegate)
+    public TableDataSourceBlockState(IBlockState state, Consumer<IBlockState> consumer, TableNavigator navigator, TableDelegate delegate, String blockTitle, String metadataTitle)
     {
         setBlockState(state);
         this.consumer = consumer;
@@ -49,6 +50,11 @@ public class TableDataSourceBlockState extends TableDataSourceSegmented implemen
         this.metadataTitle = metadataTitle;
         this.navigator = navigator;
         this.delegate = delegate;
+    }
+
+    public TableDataSourceBlockState(IBlockState state, Consumer<IBlockState> consumer, TableNavigator navigator, TableDelegate delegate)
+    {
+        this(state, consumer, navigator, delegate, IvTranslations.get("reccomplex.gui.block"), IvTranslations.get("reccomplex.gui.metadata"));
     }
 
     @Override

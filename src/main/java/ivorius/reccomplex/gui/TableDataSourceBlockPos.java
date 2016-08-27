@@ -9,12 +9,13 @@ import net.minecraft.util.math.BlockPos;
 import ivorius.ivtoolkit.gui.IntegerRange;
 import ivorius.reccomplex.gui.table.*;
 
+import javax.annotation.Nonnull;
 import java.util.function.Consumer;
 
 /**
  * Created by lukas on 13.04.16.
  */
-public class TableDataSourceBlockPos extends TableDataSourceSegmented implements TableCellPropertyListener
+public class TableDataSourceBlockPos extends TableDataSourceSegmented
 {
     private BlockPos coord;
     private Consumer<BlockPos> consumer;
@@ -65,54 +66,50 @@ public class TableDataSourceBlockPos extends TableDataSourceSegmented implements
     @Override
     public TableElement elementForIndexInSegment(GuiTable table, int index, int segment)
     {
+        IntegerRange range;
+        int val;
+        String title;
+
         switch (index)
         {
             case 0:
-            {
-                TableCellInteger cell = new TableCellInteger("x", coord.getX(), rangeX.min, rangeX.max);
-                cell.addPropertyListener(this);
-                return new TableElementCell(titleX, cell);
-            }
+                range = rangeX;
+                val = coord.getX();
+                title = titleX;
+                break;
             case 1:
-            {
-                TableCellInteger cell = new TableCellInteger("y", coord.getY(), rangeY.min, rangeY.max);
-                cell.addPropertyListener(this);
-                return new TableElementCell(titleY, cell);
-            }
-            case 2:
-            {
-                TableCellInteger cell = new TableCellInteger("z", coord.getZ(), rangeZ.min, rangeZ.max);
-                cell.addPropertyListener(this);
-                return new TableElementCell(titleZ, cell);
-            }
+                range = rangeY;
+                val = coord.getY();
+                title = titleY;
+                break;
+            default:
+                range = rangeZ;
+                val = coord.getZ();
+                title = titleZ;
+                break;
         }
 
-        return null;
+        if (range != null)
+        {
+            TableCellInteger cell = new TableCellInteger(null, val, range.min, range.max);
+            cell.addPropertyListener(createListener(cell, index));
+            return new TableElementCell(title, cell);
+        }
+        else
+        {
+            TableCellStringInt cell = new TableCellStringInt(null, val);
+            cell.addPropertyListener(createListener(cell, index));
+            return new TableElementCell(title, cell);
+        }
     }
 
-    @Override
-    public void valueChanged(TableCellPropertyDefault cell)
+    @Nonnull
+    protected TableCellPropertyListener createListener(TableCellProperty<Integer> cell, int idx)
     {
-        if (cell.getID() != null)
-        {
-            switch (cell.getID())
-            {
-                case "x":
-                {
-                    consumer.accept(coord = new BlockPos((int) cell.getPropertyValue(), coord.getY(), coord.getZ()));
-                    break;
-                }
-                case "y":
-                {
-                    consumer.accept(coord = new BlockPos(coord.getX(), (int) cell.getPropertyValue(), coord.getZ()));
-                    break;
-                }
-                case "z":
-                {
-                    consumer.accept(coord = new BlockPos(coord.getX(), coord.getY(), (int) cell.getPropertyValue()));
-                    break;
-                }
-            }
-        }
+        return cell1 -> consumer.accept(coord = new BlockPos(
+                idx == 0 ? cell.getPropertyValue() : coord.getX(),
+                idx == 1 ? cell.getPropertyValue() : coord.getY(),
+                idx == 2 ? cell.getPropertyValue() : coord.getZ()
+        ));
     }
 }

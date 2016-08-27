@@ -5,6 +5,7 @@ item.inventoryGenerationSingleTag.name=Single Item Generation Tag
 item.inventoryGenerationComponentTag.name=Item Generation Component Tag
 item.artifactGenerationTag.name=Artifact Generation Tag
 item.bookGenerationTag.name=Book Generation Tag
+item.recinspector.name=Inspector
 
 tile.negativeSpace.name=Generic Space
 tile.negativeSpace.meta.0.name=Space (0 ~ Negative Space)
@@ -394,6 +395,8 @@ reccomplex.worldscript.mazeGen.tooltip=Generates a maze from weighted components
 reccomplex.worldscript.strucGen=Generate Structure
 reccomplex.worldscript.strucGen.tooltip=Generates a structure from weighted options.
 
+reccomplex.gui.block=Block
+reccomplex.gui.metadata=Metadata
 reccomplex.gui.add=Add
 reccomplex.gui.remove=Remove
 reccomplex.gui.edit=Edit
@@ -407,3 +410,7 @@ reccomplex.gui.destinations=Destinations
 
 reccomplex.gui.inventorygen.componentid=Component ID
 reccomplex.gui.inventorygen.groupid=Group ID
+
+reccomplex.inspector.position.x=Position (x)
+reccomplex.inspector.position.y=Position (y)
+reccomplex.inspector.position.z=Position (z)

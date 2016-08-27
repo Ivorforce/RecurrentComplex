@@ -5,9 +5,12 @@
 
 package ivorius.reccomplex.gui.editstructure.transformers;
 
+import ivorius.ivtoolkit.tools.IvTranslations;
 import ivorius.reccomplex.gui.TableDataSourceBlockState;
 import ivorius.reccomplex.gui.TableDataSourceExpression;
 import ivorius.reccomplex.gui.table.TableDataSourceSegmented;
+import ivorius.reccomplex.gui.table.TableDelegate;
+import ivorius.reccomplex.gui.table.TableNavigator;
 import ivorius.reccomplex.structures.generic.transformers.TransformerPillar;
 
 /**
@@ -17,12 +20,12 @@ public class TableDataSourceBTPillar extends TableDataSourceSegmented
 {
     private TransformerPillar transformer;
 
-    public TableDataSourceBTPillar(TransformerPillar transformer)
+    public TableDataSourceBTPillar(TransformerPillar transformer, TableNavigator navigator, TableDelegate delegate)
     {
         this.transformer = transformer;
 
-        addManagedSection(0, TableDataSourceExpression.constructDefault("Sources", transformer.sourceMatcher));
-        addManagedSection(1, new TableDataSourceBlockState(transformer.destState, state -> transformer.destState = state, "Dest Block", "Dest Metadata"));
+        addManagedSection(0, TableDataSourceExpression.constructDefault(IvTranslations.get("reccomplex.gui.sources"), transformer.sourceMatcher));
+        addManagedSection(1, new TableDataSourceBlockState(transformer.destState, state -> transformer.destState = state, IvTranslations.get("reccomplex.transformer.pillar.dest.block"), IvTranslations.get("reccomplex.transformer.pillar.dest.metadata"), navigator, delegate));
     }
 
     public TransformerPillar getTransformer()

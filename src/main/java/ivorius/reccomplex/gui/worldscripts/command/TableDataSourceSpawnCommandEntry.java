@@ -54,7 +54,7 @@ public class TableDataSourceSpawnCommandEntry extends TableDataSourceSegmented i
         }
         else if (index == 2)
         {
-            return RCGuiTables.defaultWeightElement(this, entry.weight);
+            return RCGuiTables.defaultWeightElement(cell -> entry.weight = TableElements.toDouble((Float) cell.getPropertyValue()), entry.weight);
         }
 
         return null;
@@ -66,10 +66,6 @@ public class TableDataSourceSpawnCommandEntry extends TableDataSourceSegmented i
         if ("command".equals(cell.getID()))
         {
             entry.command = (String) cell.getPropertyValue();
-        }
-        else if ("weight".equals(cell.getID()))
-        {
-            entry.weight = TableElements.toDouble((Float) cell.getPropertyValue());
         }
     }
 

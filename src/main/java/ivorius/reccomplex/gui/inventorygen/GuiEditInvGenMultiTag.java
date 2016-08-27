@@ -44,7 +44,7 @@ public class GuiEditInvGenMultiTag extends GuiScreenModalTable
     {
         if (currentTable() != null)
         {
-            currentTable().setPropertiesBounds(Bounds.fromSize(width / 2 - 155, 310, height / 2 - 110, 195));
+            currentTable().setPropertiesBounds(Bounds.fromAxes(width / 2 - 155, 310, height / 2 - 110, 195));
         }
         super.initGui();
 

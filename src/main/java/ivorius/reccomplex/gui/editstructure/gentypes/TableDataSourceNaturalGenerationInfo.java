@@ -51,7 +51,7 @@ public class TableDataSourceNaturalGenerationInfo extends TableDataSourceSegment
                 .addNavigation(() -> IvTranslations.get("reccomplex.gui.edit"), null,
                         () -> new GuiTable(tableDelegate, new TableDataSourceNaturalGenLimitation(generationInfo.spawnLimitation, tableDelegate))
                 ).enabled(generationInfo::hasLimitations)
-                .addAction(() -> generationInfo.hasLimitations() ? "Remove" : "Add", null,
+                .addAction(() -> generationInfo.hasLimitations() ? IvTranslations.get("reccomplex.gui.remove") : IvTranslations.get("reccomplex.gui.add"), null,
                         () -> generationInfo.spawnLimitation = generationInfo.hasLimitations() ? null : new NaturalGenerationInfo.SpawnLimitation()
                 ).buildDataSource(IvTranslations.get("reccomplex.generationInfo.natural.limitations")));
     }
@@ -103,7 +103,7 @@ public class TableDataSourceNaturalGenerationInfo extends TableDataSourceSegment
                 return new TableElementCell(IvTranslations.get("reccomplex.generationInfo.natural.category"), cell);
             }
             case 3:
-                return RCGuiTables.defaultWeightElement(this, generationInfo.getGenerationWeight());
+                return RCGuiTables.defaultWeightElement(cell -> generationInfo.setGenerationWeight(TableElements.toDouble((Float) cell.getPropertyValue())), generationInfo.getGenerationWeight());
         }
 
         return super.elementForIndexInSegment(table, index, segment);
@@ -118,9 +118,6 @@ public class TableDataSourceNaturalGenerationInfo extends TableDataSourceSegment
             {
                 case "category":
                     generationInfo.generationCategory = (String) cell.getPropertyValue();
-                    break;
-                case "weight":
-                    generationInfo.setGenerationWeight(TableElements.toDouble((Float) cell.getPropertyValue()));
                     break;
             }
         }

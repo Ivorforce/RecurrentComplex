@@ -5,6 +5,9 @@
 
 package ivorius.reccomplex.gui.table;
 
+import net.minecraft.client.gui.GuiButton;
+import net.minecraft.client.gui.GuiTextField;
+
 /**
  * Created by lukas on 02.06.14.
  */
@@ -21,9 +24,30 @@ public class Bounds
         this.maxY = maxY;
     }
 
-    public static Bounds fromSize(int x, int width, int y, int height)
+    public static Bounds fromAxes(int x, int width, int y, int height)
     {
         return new Bounds(x, x + width, y, y + height);
+    }
+
+    public static Bounds fromSize(int x, int y, int width, int height)
+    {
+        return new Bounds(x, x + width, y, y + height);
+    }
+
+    public static void set(GuiButton button, Bounds bounds)
+    {
+        button.xPosition = bounds.getMinX();
+        button.yPosition = bounds.getMinY();
+        button.width = bounds.getWidth();
+        button.height = bounds.getHeight();
+    }
+
+    public static void set(GuiTextField textField, Bounds bounds)
+    {
+        textField.xPosition = bounds.getMinX();
+        textField.yPosition = bounds.getMinY();
+        textField.width = bounds.getWidth();
+        textField.height = bounds.getHeight();
     }
 
     public int getMinX()

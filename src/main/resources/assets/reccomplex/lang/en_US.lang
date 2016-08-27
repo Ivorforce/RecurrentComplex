@@ -266,10 +266,22 @@ reccomplex.generationInfo.static.pattern.rshift.z=Random shift (z)
 reccomplex.generationInfo.structureList=Structure List
 reccomplex.generationInfo.structureList.tooltip=As part of a structure list<br>(Used in structure blocks)
 reccomplex.generationInfo.structureList.title=In List %s
+reccomplex.generationInfo.structureList.id=List ID
+reccomplex.generationInfo.structureList.shift.x=Shift (x)
+reccomplex.generationInfo.structureList.shift.y=Shift (y)
+reccomplex.generationInfo.structureList.shift.z=Shift (z)
 
 reccomplex.generationInfo.vanilla=Structure
 reccomplex.generationInfo.vanilla.tooltip=As part of a vanilla structure<br>(Like villages)
 reccomplex.generationInfo.vanilla.title=In Complex Structure
+reccomplex.generationInfo.vanilla.type=Type
+reccomplex.generationInfo.vanilla.type.village=Village
+reccomplex.generationInfo.vanilla.front=Front
+reccomplex.generationInfo.vanilla.shift.x=Shift (x)
+reccomplex.generationInfo.vanilla.shift.y=Shift (y)
+reccomplex.generationInfo.vanilla.shift.z=Shift (z)
+reccomplex.generationInfo.vanilla.amount.pervillage=Amount (per v.)
+reccomplex.generationInfo.vanilla.amount.scaled=Amount (scaled)
 
 reccomplex.transformer.natural=Natural Floor
 reccomplex.transformer.natural.tooltip=Spawns biome-native floor blocks below blocks
@@ -286,7 +298,9 @@ reccomplex.transformer.naturalAir.naturalExpansionRandomization=Randomization
 reccomplex.transformer.naturalAir.naturalExpansionRandomization.tooltip=The amount of randomization in the distance.
 
 reccomplex.transformer.pillar=Pillar
-reccomplex.transformer.pillar.tooltiLp=Constructs pillars down to the floor
+reccomplex.transformer.pillar.dest.block=Dest Block
+reccomplex.transformer.pillar.dest.metadata= Dest Metadata
+reccomplex.transformer.pillar.tooltip=Constructs pillars down to the floor
 reccomplex.transformer.replaceAll=Replace All
 reccomplex.transformer.replaceAll.tooltip=Replaces blocks uniformly
 reccomplex.transformer.replace=Replace
@@ -380,11 +394,16 @@ reccomplex.worldscript.mazeGen.tooltip=Generates a maze from weighted components
 reccomplex.worldscript.strucGen=Generate Structure
 reccomplex.worldscript.strucGen.tooltip=Generates a structure from weighted options.
 
+reccomplex.gui.add=Add
+reccomplex.gui.remove=Remove
 reccomplex.gui.edit=Edit
-reccomplex.gui.later=Später
-reccomplex.gui.earlier=Früher
+reccomplex.gui.later=Later
+reccomplex.gui.earlier=Earlier
+reccomplex.gui.randomize=Randomize
 reccomplex.gui.biomes=Biomes
 reccomplex.gui.dimensions=Dimensions
+reccomplex.gui.sources=Sources
+reccomplex.gui.destinations=Destinations
 
 reccomplex.gui.inventorygen.componentid=Component ID
 reccomplex.gui.inventorygen.groupid=Group ID

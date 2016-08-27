@@ -21,7 +21,7 @@ public class TableDataSourceGenerationInfo extends TableDataSourceSegmented
     {
         this.genInfo = genInfo;
         addManagedSection(1, TableCellMultiBuilder.create(navigator, delegate)
-                .addAction(() -> "Randomize", null,
+                .addAction(() -> IvTranslations.get("reccomplex.gui.randomize"), null,
                         () -> genInfo.setID(StructureGenerationInfo.randomID()))
                 .buildDataSource());
     }

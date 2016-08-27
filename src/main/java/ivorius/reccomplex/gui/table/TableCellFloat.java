@@ -91,11 +91,16 @@ public class TableCellFloat extends TableCellPropertyDefault<Float> implements G
         super.initGui(screen);
 
         Bounds bounds = bounds();
-        slider = new GuiSlider(-1, bounds.getMinX(), bounds.getMinY() + (bounds.getHeight() - 20) / 2, bounds.getWidth(), 20, String.format(titleFormat, property));
+        if (slider == null)
+        {
+            slider = new GuiSlider(-1, 0, 0, 0, 0, String.format(titleFormat, property));
+            slider.addListener(this);
+        }
+        updateSliderBounds(bounds);
+
         slider.setMinValue(scale.out(min));
         slider.setMaxValue(scale.out(max));
         slider.enabled = enabled;
-        slider.addListener(this);
 
         slider.setValue(scale.out(property));
         slider.visible = !isHidden();
@@ -131,5 +136,19 @@ public class TableCellFloat extends TableCellPropertyDefault<Float> implements G
             slider.setValue(scale.out(property));
             slider.displayString = String.format(titleFormat, property);
         }
+    }
+
+    protected void updateSliderBounds(Bounds bounds)
+    {
+        Bounds.set(slider, Bounds.fromSize(bounds.getMinX(), bounds.getMinY() + (bounds.getHeight() - 20) / 2, bounds.getWidth(), 20));
+    }
+
+    @Override
+    public void setBounds(Bounds bounds)
+    {
+        super.setBounds(bounds);
+
+        if (slider != null)
+            updateSliderBounds(bounds);
     }
 }

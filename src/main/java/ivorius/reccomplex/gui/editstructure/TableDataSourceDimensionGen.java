@@ -5,6 +5,7 @@
 
 package ivorius.reccomplex.gui.editstructure;
 
+import ivorius.ivtoolkit.tools.IvTranslations;
 import ivorius.reccomplex.gui.RCGuiTables;
 import ivorius.reccomplex.gui.TableDataSourceExpression;
 import ivorius.reccomplex.gui.table.*;
@@ -13,7 +14,7 @@ import ivorius.reccomplex.structures.generic.DimensionGenerationInfo;
 /**
  * Created by lukas on 05.06.14.
  */
-public class TableDataSourceDimensionGen extends TableDataSourceSegmented implements TableCellPropertyListener
+public class TableDataSourceDimensionGen extends TableDataSourceSegmented
 {
     private DimensionGenerationInfo generationInfo;
 
@@ -24,7 +25,7 @@ public class TableDataSourceDimensionGen extends TableDataSourceSegmented implem
         this.generationInfo = generationInfo;
         this.tableDelegate = tableDelegate;
         
-        addManagedSection(0, TableDataSourceExpression.constructDefault("Dimensions", generationInfo.getDimensionMatcher()));
+        addManagedSection(0, TableDataSourceExpression.constructDefault(IvTranslations.get("reccomplex.gui.dimensions"), generationInfo.getDimensionMatcher()));
     }
 
     @Override
@@ -44,18 +45,9 @@ public class TableDataSourceDimensionGen extends TableDataSourceSegmented implem
     {
         if (segment == 1)
         {
-            return RCGuiTables.defaultWeightElement(this, generationInfo.getGenerationWeight());
+            return RCGuiTables.defaultWeightElement(cell -> generationInfo.setGenerationWeight(TableElements.toDouble((Float) cell.getPropertyValue())), generationInfo.getGenerationWeight());
         }
 
         return super.elementForIndexInSegment(table, index, segment);
-    }
-
-    @Override
-    public void valueChanged(TableCellPropertyDefault cell)
-    {
-        if ("weight".equals(cell.getID()))
-        {
-            generationInfo.setGenerationWeight(TableElements.toDouble((Float) cell.getPropertyValue()));
-        }
     }
 }

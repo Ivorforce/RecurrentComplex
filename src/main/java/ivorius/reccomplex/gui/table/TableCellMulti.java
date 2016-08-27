@@ -34,12 +34,12 @@ public class TableCellMulti implements TableCell
         this(null, cells);
     }
 
-    public TableCellMulti(String id, @Nonnull List<TableCell> cells)
+    public TableCellMulti(String id, @Nonnull List<? extends TableCell> cells)
     {
         this(id, cells.toArray(new TableCell[cells.size()]));
     }
 
-    public TableCellMulti(@Nonnull List<TableCell> cells)
+    public TableCellMulti(@Nonnull List<? extends TableCell> cells)
     {
         this(null, cells.toArray(new TableCell[cells.size()]));
     }
@@ -83,7 +83,7 @@ public class TableCellMulti implements TableCell
         {
             TableCell cell = cells[i];
             int realWidth = buttonWidth - (i == cells.length - 1 ? 0 : 2);
-            cell.setBounds(Bounds.fromSize(bounds.getMinX() + buttonWidth * i, realWidth, bounds.getMinY(), bounds.getHeight()));
+            cell.setBounds(Bounds.fromAxes(bounds.getMinX() + buttonWidth * i, realWidth, bounds.getMinY(), bounds.getHeight()));
         }
 
         this.bounds = bounds;

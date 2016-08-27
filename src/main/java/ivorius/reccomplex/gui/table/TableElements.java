@@ -19,4 +19,15 @@ public class TableElements
     {
         return value != null ? (double) value : null;
     }
+
+    public static void reloadExcept(TableDelegate delegate, String... elementIDs)
+    {
+        for (String element : elementIDs)
+            delegate.setLocked(element, true);
+
+        delegate.reloadData();
+
+        for (String element : elementIDs)
+            delegate.setLocked(element, false);
+    }
 }

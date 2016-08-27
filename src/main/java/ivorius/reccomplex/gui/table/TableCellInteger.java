@@ -49,11 +49,16 @@ public class TableCellInteger extends TableCellPropertyDefault<Integer> implemen
         super.initGui(screen);
 
         Bounds bounds = bounds();
-        slider = new GuiSlider(-1, bounds.getMinX(), bounds.getMinY() + (bounds.getHeight() - 20) / 2, bounds.getWidth(), 20, String.valueOf(property));
+        if (slider == null)
+        {
+            slider = new GuiSlider(-1, 0, 0, 0, 0, String.valueOf(property));
+            slider.addListener(this);
+        }
+        updateSliderBounds(bounds);
+
         slider.setMinValue(min);
         slider.setMaxValue(max);
         slider.enabled = enabled;
-        slider.addListener(this);
 
         slider.setValue(property);
         slider.visible = !isHidden();
@@ -81,6 +86,20 @@ public class TableCellInteger extends TableCellPropertyDefault<Integer> implemen
         gui.displayString = String.valueOf(property);
 
         alertListenersOfChange();
+    }
+
+    protected void updateSliderBounds(Bounds bounds)
+    {
+        Bounds.set(slider, Bounds.fromSize(bounds.getMinX(), bounds.getMinY() + (bounds.getHeight() - 20) / 2, bounds.getWidth(), 20));
+    }
+
+    @Override
+    public void setBounds(Bounds bounds)
+    {
+        super.setBounds(bounds);
+
+        if (slider != null)
+            updateSliderBounds(bounds);
     }
 
     @Override

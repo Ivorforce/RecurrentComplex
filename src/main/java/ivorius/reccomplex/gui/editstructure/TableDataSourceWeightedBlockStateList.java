@@ -46,6 +46,6 @@ public class TableDataSourceWeightedBlockStateList extends TableDataSourcePreset
     @Override
     public TableDataSource editEntryDataSource(WeightedBlockState entry)
     {
-        return new TableDataSourceWeightedBlockState(entry, tableDelegate);
+        return new TableDataSourceWeightedBlockState(entry, navigator, tableDelegate);
     }
 }

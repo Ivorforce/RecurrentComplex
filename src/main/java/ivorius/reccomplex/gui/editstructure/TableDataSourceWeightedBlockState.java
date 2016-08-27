@@ -21,18 +21,16 @@ public class TableDataSourceWeightedBlockState extends TableDataSourceSegmented 
 {
     private WeightedBlockState weightedBlockState;
 
-    private TableDelegate tableDelegate;
     private TableCellTitle parsed;
 
     private TableCellString idCell;
     private TableCellInteger metaCell;
 
-    public TableDataSourceWeightedBlockState(WeightedBlockState weightedBlockState, TableDelegate tableDelegate)
+    public TableDataSourceWeightedBlockState(WeightedBlockState weightedBlockState, TableNavigator navigator, TableDelegate delegate)
     {
         this.weightedBlockState = weightedBlockState;
-        this.tableDelegate = tableDelegate;
 
-        addManagedSection(1, new TableDataSourceBlockState(weightedBlockState.state, state -> weightedBlockState.state = state, "Block", "Metadata"));
+        addManagedSection(1, new TableDataSourceBlockState(weightedBlockState.state, state -> weightedBlockState.state = state, "Block", "Metadata", navigator, delegate));
     }
 
     public static GuiValidityStateIndicator.State stateForNBTCompoundJson(String json)
@@ -80,7 +78,7 @@ public class TableDataSourceWeightedBlockState extends TableDataSourceSegmented 
     {
         if (segment == 0)
         {
-            return RCGuiTables.defaultWeightElement(this, weightedBlockState.weight);
+            return RCGuiTables.defaultWeightElement(cell -> weightedBlockState.weight = TableElements.toDouble((Float) cell.getPropertyValue()), weightedBlockState.weight);
         }
         else if (segment == 2)
         {
@@ -97,11 +95,7 @@ public class TableDataSourceWeightedBlockState extends TableDataSourceSegmented 
     @Override
     public void valueChanged(TableCellPropertyDefault cell)
     {
-        if ("weight".equals(cell.getID()))
-        {
-            weightedBlockState.weight = TableElements.toDouble((Float) cell.getPropertyValue());
-        }
-        else if ("tileEntityInfo".equals(cell.getID()))
+        if ("tileEntityInfo".equals(cell.getID()))
         {
             weightedBlockState.tileEntityInfo = (String) cell.getPropertyValue();
             ((TableCellString) cell).setValidityState(stateForNBTCompoundJson(weightedBlockState.tileEntityInfo));

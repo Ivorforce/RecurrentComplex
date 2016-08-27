@@ -319,7 +319,7 @@ public class GuiEditInventoryGen extends GuiContainer implements InventoryWatche
 //            drawCenteredString(fontRendererObj, IvTranslations.format("guiGenericInventory.weight"), baseX + 60, this.height / 2 - 75, 0xffffffff);
 //        }
 
-        if (Bounds.fromSize(dependencyStateIndicator.xPosition, dependencyStateIndicator.getWidth(), dependencyStateIndicator.yPosition, dependencyStateIndicator.getHeight()).contains(mouseX, mouseY))
+        if (Bounds.fromAxes(dependencyStateIndicator.xPosition, dependencyStateIndicator.getWidth(), dependencyStateIndicator.yPosition, dependencyStateIndicator.getHeight()).contains(mouseX, mouseY))
             drawHoveringText(Collections.singletonList(TableDataSourceExpression.parsedString(inventoryGenerator.dependencies)), mouseX, mouseY, fontRendererObj);
     }
 

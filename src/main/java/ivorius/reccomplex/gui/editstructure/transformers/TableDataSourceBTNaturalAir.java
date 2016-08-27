@@ -22,7 +22,7 @@ public class TableDataSourceBTNaturalAir extends TableDataSourceSegmented implem
     {
         this.transformer = transformer;
 
-        addManagedSection(0, TableDataSourceExpression.constructDefault("Sources", transformer.sourceMatcher));
+        addManagedSection(0, TableDataSourceExpression.constructDefault(IvTranslations.get("reccomplex.gui.sources"), transformer.sourceMatcher));
     }
 
     public TransformerNaturalAir getTransformer()

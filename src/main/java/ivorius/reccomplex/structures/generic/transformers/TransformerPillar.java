@@ -100,7 +100,7 @@ public class TransformerPillar extends TransformerSingleBlock<NBTNone>
     @Override
     public TableDataSource tableDataSource(TableNavigator navigator, TableDelegate delegate)
     {
-        return new TableDataSourceBTPillar(this);
+        return new TableDataSourceBTPillar(this, navigator, delegate);
     }
 
     @Override

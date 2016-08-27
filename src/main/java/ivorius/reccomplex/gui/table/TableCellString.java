@@ -44,7 +44,9 @@ public class TableCellString extends TableCellPropertyDefault<String>
         super.initGui(screen);
 
         Bounds bounds = bounds();
-        textField = new GuiTextField(0, getFontRenderer(), bounds.getMinX(), bounds.getMinY() + (bounds.getHeight() - 20) / 2, bounds.getWidth() - (showsValidityState ? 15 : 0), 20);
+        if (textField == null)
+            textField = new GuiTextField(0, getFontRenderer(), 0, 0, 0, 0);
+        updateTextFieldBounds(bounds);
         textField.setMaxStringLength(maxStringLength);
 
         textField.setText(getPropertyValue());
@@ -122,6 +124,20 @@ public class TableCellString extends TableCellPropertyDefault<String>
 
         if (textField != null)
             textField.setText(value);
+    }
+
+    protected void updateTextFieldBounds(Bounds bounds)
+    {
+        Bounds.set(textField, Bounds.fromSize(bounds.getMinX(), bounds.getMinY() + (bounds.getHeight() - 20) / 2, bounds.getWidth() - (showsValidityState ? 15 : 0), 20));
+    }
+
+    @Override
+    public void setBounds(Bounds bounds)
+    {
+        super.setBounds(bounds);
+
+        if (textField != null)
+            updateTextFieldBounds(bounds);
     }
 
     public GuiValidityStateIndicator.State getValidityState()

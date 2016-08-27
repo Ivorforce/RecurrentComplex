@@ -37,8 +37,9 @@ public class GuiTable extends Gui
 
     private boolean hideScrollbarIfUnnecessary;
 
-    private TIntObjectHashMap<TableElement> cachedElements = new TIntObjectHashMap<>();
-    private List<TableElement> currentElements = new ArrayList<>();
+    private final TIntObjectHashMap<TableElement> cachedElements = new TIntObjectHashMap<>();
+    private final List<TableElement> currentElements = new ArrayList<>();
+    private final Set<String> lockedElements = new HashSet<>();
 
     private Map<GuiButton, Pair<TableCell, Integer>> buttonMap = new HashMap<>();
 
@@ -125,7 +126,7 @@ public class GuiTable extends Gui
 
             int elementY = index * HEIGHT_PER_SLOT;
 
-            element.setBounds(Bounds.fromSize(propertiesBounds.getMinX() + 100, propertiesBounds.getWidth() - 100, baseY + elementY, 20));
+            element.setBounds(Bounds.fromAxes(propertiesBounds.getMinX() + 100, propertiesBounds.getWidth() - 100, baseY + elementY, 20));
             element.setHidden(false);
             element.initGui(this);
 
@@ -271,7 +272,15 @@ public class GuiTable extends Gui
 
     public void clearElementCache()
     {
-        cachedElements.clear();
+        cachedElements.retainEntries((key, element) -> lockedElements.contains(element.getID()));
+    }
+
+    public void setLocked(String element, boolean lock)
+    {
+        if (lock)
+            lockedElements.add(element);
+        else
+            lockedElements.remove(element);
     }
 
     // Accessors

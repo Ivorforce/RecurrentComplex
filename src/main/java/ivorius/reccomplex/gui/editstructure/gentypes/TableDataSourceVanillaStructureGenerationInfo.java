@@ -7,6 +7,7 @@ package ivorius.reccomplex.gui.editstructure.gentypes;
 
 import ivorius.ivtoolkit.gui.FloatRange;
 import ivorius.ivtoolkit.gui.IntegerRange;
+import ivorius.reccomplex.gui.RCGuiTables;
 import ivorius.reccomplex.gui.TableDataSourceBlockPos;
 import ivorius.reccomplex.gui.TableDataSourceExpression;
 import ivorius.reccomplex.gui.TableDirections;
@@ -34,8 +35,9 @@ public class TableDataSourceVanillaStructureGenerationInfo extends TableDataSour
         this.generationInfo = generationInfo;
 
         addManagedSection(0, new TableDataSourceGenerationInfo(generationInfo, navigator, tableDelegate));
-        addManagedSection(4, TableDataSourceExpression.constructDefault("Biomes", generationInfo.biomeMatcher));
-        addManagedSection(5, new TableDataSourceBlockPos(generationInfo.spawnShift, generationInfo::setSpawnShift, new IntegerRange(-50, 50), "Spawn Shift %s"));
+        addManagedSection(4, TableDataSourceExpression.constructDefault(IvTranslations.get("reccomplex.gui.biomes"), generationInfo.biomeMatcher));
+        addManagedSection(5, new TableDataSourceBlockPos(generationInfo.spawnShift, generationInfo::setSpawnShift, new IntegerRange(-50, 50), new IntegerRange(-50, 50), new IntegerRange(-50, 50),
+                IvTranslations.get("reccomplex.generationInfo.vanilla.shift.x"), IvTranslations.get("reccomplex.generationInfo.vanilla.shift.y"), IvTranslations.get("reccomplex.generationInfo.vanilla.shift.z")));
     }
 
     @Override
@@ -66,27 +68,21 @@ public class TableDataSourceVanillaStructureGenerationInfo extends TableDataSour
         {
             case 1:
             {
-                TableCellEnum cell = new TableCellEnum<>("type", "village", new TableCellEnum.Option<>("village", "Village"));
+                TableCellEnum cell = new TableCellEnum<>("type", "village", new TableCellEnum.Option<>("village", IvTranslations.get("reccomplex.generationInfo.vanilla.type.village")));
                 cell.addPropertyListener(this);
-                return new TableElementCell("Type", cell);
+                return new TableElementCell(IvTranslations.get("reccomplex.generationInfo.vanilla.type"), cell);
             }
             case 2:
             {
                 switch (index)
                 {
                     case 0:
-                    {
-                        TableCellFloatNullable cell = new TableCellFloatNullable("weight", TableElements.toFloat(generationInfo.generationWeight), 1.0f, 0, 1000, "D", "C");
-                        cell.setScale(Scales.pow(5));
-                        cell.addPropertyListener(this);
-                        cell.setTooltip(IvTranslations.formatLines("structures.gui.random.weight.tooltip"));
-                        return new TableElementCell(IvTranslations.get("structures.gui.random.weight"), cell);
-                    }
+                        return RCGuiTables.defaultWeightElement(cell -> generationInfo.generationWeight = TableElements.toDouble((Float) cell.getPropertyValue()), generationInfo.generationWeight);
                     case 1:
                     {
                         TableCellEnum cell = new TableCellEnum<>("front", generationInfo.front, TableDirections.getDirectionOptions(Directions.HORIZONTAL));
                         cell.addPropertyListener(this);
-                        return new TableElementCell("Front", cell);
+                        return new TableElementCell(IvTranslations.get("reccomplex.generationInfo.vanilla.front"), cell);
                     }
                 }
             }
@@ -98,14 +94,14 @@ public class TableDataSourceVanillaStructureGenerationInfo extends TableDataSour
                         TableCellFloatRange cell = new TableCellFloatRange("baseLimit", new FloatRange((float) generationInfo.minBaseLimit, (float) generationInfo.maxBaseLimit), 0, 1000, "%.2f");
                         cell.setScale(Scales.pow(5));
                         cell.addPropertyListener(this);
-                        return new TableElementCell("Amount (p. V.)", cell);
+                        return new TableElementCell(IvTranslations.get("reccomplex.generationInfo.vanilla.amount.pervillage"), cell);
                     }
                     case 1:
                     {
                         TableCellFloatRange cell = new TableCellFloatRange("scaledLimit", new FloatRange((float) generationInfo.minScaledLimit, (float) generationInfo.maxScaledLimit), 0, 1000, "%.2f");
                         cell.setScale(Scales.pow(5));
                         cell.addPropertyListener(this);
-                        return new TableElementCell("Amount (scaled)", cell);
+                        return new TableElementCell(IvTranslations.get("reccomplex.generationInfo.vanilla.amount.scaled"), cell);
                     }
                 }
                 break;
@@ -121,9 +117,6 @@ public class TableDataSourceVanillaStructureGenerationInfo extends TableDataSour
         {
             switch (cell.getID())
             {
-                case "weight":
-                    generationInfo.generationWeight = TableElements.toDouble((Float) cell.getPropertyValue());
-                    break;
                 case "baseLimit":
                 {
                     FloatRange baseLimit = (FloatRange) cell.getPropertyValue();

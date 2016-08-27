@@ -64,7 +64,7 @@ public class TableDataSourceMazeGenerationInfo extends TableDataSourceSegmented 
             }
             case 2:
             {
-                return RCGuiTables.defaultWeightElement(this, generationInfo.weight);
+                return RCGuiTables.defaultWeightElement(cell -> generationInfo.mazeID = (String) cell.getPropertyValue(), generationInfo.weight);
             }
         }
 
@@ -78,9 +78,6 @@ public class TableDataSourceMazeGenerationInfo extends TableDataSourceSegmented 
         {
             switch (cell.getID())
             {
-                case "mazeID":
-                    generationInfo.mazeID = (String) cell.getPropertyValue();
-                    break;
                 case "weight":
                     generationInfo.weight = TableElements.toDouble((Float) cell.getPropertyValue());
                     break;

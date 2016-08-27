@@ -113,10 +113,14 @@ public class TableCellFloatNullable extends TableCellPropertyDefault<Float> impl
 
         Bounds bounds = bounds();
         int sliderWidth = MathHelper.floor_float(bounds.getWidth() * (1.0f - nullButtonWidth)) - 2;
-        slider = new GuiSlider(-1, bounds.getMinX(), bounds.getMinY() + (bounds.getHeight() - 20) / 2, sliderWidth, 20, "");
+        if (slider == null)
+        {
+            slider = new GuiSlider(-1, 0, 0, 0, 0, "");
+            slider.addListener(this);
+        }
+        updateSliderBounds(bounds);
         slider.setMinValue(scale.out(min));
         slider.setMaxValue(scale.out(max));
-        slider.addListener(this);
 
         updateSliderValue();
         slider.visible = !isHidden();
@@ -187,5 +191,19 @@ public class TableCellFloatNullable extends TableCellPropertyDefault<Float> impl
 
         if (slider != null)
             updateSliderValue();
+    }
+
+    protected void updateSliderBounds(Bounds bounds)
+    {
+        Bounds.set(slider, Bounds.fromSize(bounds.getMinX(), bounds.getMinY() + (bounds.getHeight() - 20) / 2, bounds.getWidth(), 20));
+    }
+
+    @Override
+    public void setBounds(Bounds bounds)
+    {
+        super.setBounds(bounds);
+
+        if (slider != null)
+            updateSliderBounds(bounds);
     }
 }

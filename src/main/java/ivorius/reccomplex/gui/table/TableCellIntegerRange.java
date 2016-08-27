@@ -48,11 +48,17 @@ public class TableCellIntegerRange extends TableCellPropertyDefault<IntegerRange
         super.initGui(screen);
 
         Bounds bounds = bounds();
-        slider = new GuiSliderRange(-1, bounds.getMinX(), bounds.getMinY() + (bounds.getHeight() - 20) / 2, bounds.getWidth(), 20, property.getMin() + " - " + property.getMax());
+        if (slider == null)
+        {
+            slider = new GuiSliderRange(-1, 0, 0, 0, 0, "");
+            slider.addListener(this);
+        }
+        updateSliderBounds(bounds);
+        updateSliderString();
+
         slider.setMinValue(min);
         slider.setMaxValue(max);
         slider.enabled = enabled;
-        slider.addListener(this);
 
         slider.setRange(new FloatRange(property));
         slider.visible = !isHidden();
@@ -77,7 +83,7 @@ public class TableCellIntegerRange extends TableCellPropertyDefault<IntegerRange
         property = RangeHelper.roundedIntRange(slider.getRange());
 
         slider.setRange(new FloatRange(property));
-        slider.displayString = property.getMin() + " - " + property.getMax();
+        updateSliderString();
 
         alertListenersOfChange();
     }
@@ -90,7 +96,26 @@ public class TableCellIntegerRange extends TableCellPropertyDefault<IntegerRange
         if (slider != null)
         {
             slider.setRange(new FloatRange(value));
-            slider.displayString = property.getMin() + " - " + property.getMax();
+            updateSliderString();
         }
+    }
+
+    protected void updateSliderString()
+    {
+        slider.displayString = property.getMin() + " - " + property.getMax();
+    }
+
+    protected void updateSliderBounds(Bounds bounds)
+    {
+        Bounds.set(slider, Bounds.fromSize(bounds.getMinX(), bounds.getMinY() + (bounds.getHeight() - 20) / 2, bounds.getWidth(), 20));
+    }
+
+    @Override
+    public void setBounds(Bounds bounds)
+    {
+        super.setBounds(bounds);
+
+        if (slider != null)
+            updateSliderBounds(bounds);
     }
 }

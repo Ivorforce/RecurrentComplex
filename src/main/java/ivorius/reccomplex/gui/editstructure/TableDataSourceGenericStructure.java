@@ -47,7 +47,7 @@ public class TableDataSourceGenericStructure extends TableDataSourceSegmented im
                 .addNavigation(() -> IvTranslations.get("reccomplex.gui.edit"), null,
                         () -> new GuiTable(tableDelegate, new TableDataSourceMetadata(structureInfo.metadata))
                 ).buildDataSource(IvTranslations.get("reccomplex.structure.metadata")));
-        addManagedSection(3, TableDataSourceExpression.constructDefault("Dependencies", structureInfo.dependencies));
+        addManagedSection(3, TableDataSourceExpression.constructDefault(IvTranslations.get("reccomplex.structure.dependencies"), structureInfo.dependencies));
         addManagedSection(4, TableCellMultiBuilder.create(navigator, tableDelegate)
                 .addNavigation(() -> IvTranslations.get("reccomplex.gui.edit"), null,
                         () -> new GuiTable(tableDelegate, new TableDataSourceStructureGenerationInfoList(structureInfo.generationInfos, tableDelegate, navigator))

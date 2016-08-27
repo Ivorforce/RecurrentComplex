@@ -5,6 +5,7 @@
 
 package ivorius.reccomplex.gui.editstructure;
 
+import ivorius.ivtoolkit.tools.IvTranslations;
 import ivorius.reccomplex.gui.RCGuiTables;
 import ivorius.reccomplex.gui.TableDataSourceExpression;
 import ivorius.reccomplex.gui.table.*;
@@ -13,7 +14,7 @@ import ivorius.reccomplex.structures.generic.BiomeGenerationInfo;
 /**
  * Created by lukas on 05.06.14.
  */
-public class TableDataSourceBiomeGen extends TableDataSourceSegmented implements TableCellPropertyListener
+public class TableDataSourceBiomeGen extends TableDataSourceSegmented
 {
     private BiomeGenerationInfo generationInfo;
 
@@ -24,7 +25,7 @@ public class TableDataSourceBiomeGen extends TableDataSourceSegmented implements
         this.generationInfo = generationInfo;
         this.tableDelegate = tableDelegate;
 
-        addManagedSection(0, TableDataSourceExpression.constructDefault("Biomes", generationInfo.getBiomeMatcher()));
+        addManagedSection(0, TableDataSourceExpression.constructDefault(IvTranslations.get("reccomplex.gui.biomes"), generationInfo.getBiomeMatcher()));
     }
 
     @Override
@@ -44,18 +45,9 @@ public class TableDataSourceBiomeGen extends TableDataSourceSegmented implements
     {
         if (segment == 1)
         {
-            return RCGuiTables.defaultWeightElement(this, generationInfo.getGenerationWeight());
+            return RCGuiTables.defaultWeightElement(cell -> generationInfo.setGenerationWeight(TableElements.toDouble((Float) cell.getPropertyValue())), generationInfo.getGenerationWeight());
         }
 
         return super.elementForIndexInSegment(table, index, segment);
-    }
-
-    @Override
-    public void valueChanged(TableCellPropertyDefault cell)
-    {
-        if ("weight".equals(cell.getID()))
-        {
-            generationInfo.setGenerationWeight(TableElements.toDouble((Float) cell.getPropertyValue()));
-        }
     }
 }

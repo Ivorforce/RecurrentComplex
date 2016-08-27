@@ -17,4 +17,6 @@ public interface TableDelegate
     void redrawTable();
 
     void reloadData();
+
+    void setLocked(String element, boolean lock);
 }

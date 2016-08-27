@@ -25,12 +25,12 @@ public class TableDataSourceBTNatural extends TableDataSourceSegmented implement
     {
         this.transformer = transformer;
 
-        addManagedSection(0, TableDataSourceExpression.constructDefault("Sources", transformer.sourceMatcher));
+        addManagedSection(0, TableDataSourceExpression.constructDefault(IvTranslations.get("reccomplex.gui.sources"), transformer.sourceMatcher));
     }
 
-    public static TableCellString elementForBlock(String id, Block block)
+    public static TableCellString elementForBlock(String id, String block)
     {
-        TableCellString element = new TableCellString(id, Block.REGISTRY.getNameForObject(block).toString());
+        TableCellString element = new TableCellString(id, block);
         element.setShowsValidityState(true);
         setStateForBlockTextfield(element);
         return element;

@@ -36,7 +36,7 @@ public class TableDataSourceStaticGenerationInfo extends TableDataSourceSegmente
                 .addNavigation(() -> IvTranslations.get("reccomplex.gui.edit"), null,
                         () -> new GuiTable(tableDelegate, new TableDataSourceStaticPattern(generationInfo.pattern, tableDelegate))
                 ).enabled(generationInfo::hasPattern)
-                .addAction(() -> generationInfo.hasPattern() ? "Remove" : "Add", null,
+                .addAction(() -> generationInfo.hasPattern() ? IvTranslations.get("reccomplex.gui.remove") : IvTranslations.get("reccomplex.gui.add"), null,
                         () -> generationInfo.pattern = generationInfo.hasPattern() ? null : new StaticGenerationInfo.Pattern()
                 ).buildDataSource("Pattern"));
     }

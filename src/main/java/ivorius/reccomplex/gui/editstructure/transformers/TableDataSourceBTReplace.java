@@ -27,11 +27,11 @@ public class TableDataSourceBTReplace extends TableDataSourceSegmented
         this.navigator = navigator;
         this.tableDelegate = tableDelegate;
 
-        addManagedSection(0, TableDataSourceExpression.constructDefault("Sources", transformer.sourceMatcher));
+        addManagedSection(0, TableDataSourceExpression.constructDefault(IvTranslations.get("reccomplex.gui.sources"), transformer.sourceMatcher));
         addManagedSection(1, TableCellMultiBuilder.create(navigator, tableDelegate)
                 .addNavigation(() -> IvTranslations.get("reccomplex.gui.edit"), null,
                 () -> new GuiTable(tableDelegate, new TableDataSourceWeightedBlockStateList(transformer.destination, tableDelegate, navigator))
-                ).buildDataSource("Destinations"));
+                ).buildDataSource(IvTranslations.get("reccomplex.gui.destinations")));
     }
 
     public TransformerReplace getTransformer()

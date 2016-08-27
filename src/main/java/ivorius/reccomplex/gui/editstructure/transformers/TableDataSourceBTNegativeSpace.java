@@ -5,6 +5,7 @@
 
 package ivorius.reccomplex.gui.editstructure.transformers;
 
+import ivorius.ivtoolkit.tools.IvTranslations;
 import ivorius.reccomplex.gui.TableDataSourceExpression;
 import ivorius.reccomplex.gui.table.*;
 import ivorius.reccomplex.structures.generic.transformers.TransformerNegativeSpace;
@@ -20,7 +21,7 @@ public class TableDataSourceBTNegativeSpace extends TableDataSourceSegmented
     {
         this.transformer = transformer;
 
-        addManagedSection(0, TableDataSourceExpression.constructDefault("Sources", transformer.sourceMatcher));
+        addManagedSection(0, TableDataSourceExpression.constructDefault(IvTranslations.get("reccomplex.gui.sources"), transformer.sourceMatcher));
     }
 
     public TransformerNegativeSpace getTransformer()

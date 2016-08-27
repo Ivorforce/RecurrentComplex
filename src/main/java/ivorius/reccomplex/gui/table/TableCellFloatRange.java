@@ -96,11 +96,16 @@ public class TableCellFloatRange extends TableCellPropertyDefault<FloatRange> im
         super.initGui(screen);
 
         Bounds bounds = bounds();
-        slider = new GuiSliderRange(-1, bounds.getMinX(), bounds.getMinY() + (bounds.getHeight() - 20) / 2, bounds.getWidth(), 20, getRangeString());
+        if (slider == null)
+        {
+            slider = new GuiSliderRange(-1, 0, 0, 0, 0, getRangeString());
+            slider.addListener(this);
+        }
+        updateSliderBounds(bounds);
+
         slider.setMinValue(scale.out(min));
         slider.setMaxValue(scale.out(max));
         slider.enabled = enabled;
-        slider.addListener(this);
 
         slider.setRange(Scales.out(scale, property));
         slider.visible = !isHidden();
@@ -136,6 +141,20 @@ public class TableCellFloatRange extends TableCellPropertyDefault<FloatRange> im
             slider.setRange(Scales.out(scale, property));
             slider.displayString = getRangeString();
         }
+    }
+
+    protected void updateSliderBounds(Bounds bounds)
+    {
+        Bounds.set(slider, Bounds.fromSize(bounds.getMinX(), bounds.getMinY() + (bounds.getHeight() - 20) / 2, bounds.getWidth(), 20));
+    }
+
+    @Override
+    public void setBounds(Bounds bounds)
+    {
+        super.setBounds(bounds);
+
+        if (slider != null)
+            updateSliderBounds(bounds);
     }
 
     private String getRangeString()

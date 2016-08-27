@@ -28,7 +28,7 @@ public class TableDataSourceStaticGenerationInfo extends TableDataSourceSegmente
         this.tableDelegate = tableDelegate;
         this.generationInfo = generationInfo;
 
-        addManagedSection(0, new TableDataSourceGenerationInfo(generationInfo));
+        addManagedSection(0, new TableDataSourceGenerationInfo(generationInfo, navigator, tableDelegate));
         addManagedSection(2, new TableDataSourceYSelector(generationInfo.ySelector));
         addManagedSection(3, TableDataSourceExpression.constructDefault(IvTranslations.get("reccomplex.gui.biomes"), generationInfo.dimensionMatcher));
     }

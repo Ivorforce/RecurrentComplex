@@ -59,15 +59,27 @@ public class TableCellMultiBuilder
     }
 
     @Nonnull
-    public TableDataSource buildPreloaded(String title)
+    public TableDataSource buildPreloaded(@Nullable String title)
     {
         return new TableDataSourcePreloaded(buildElement(title));
     }
 
     @Nonnull
-    public TableElementCell buildElement(String title)
+    public TableDataSource buildPreloaded()
+    {
+        return new TableDataSourcePreloaded(buildElement());
+    }
+
+    @Nonnull
+    public TableElementCell buildElement(@Nullable String title)
     {
         return new TableElementCell(title, build());
+    }
+
+    @Nonnull
+    public TableElementCell buildElement()
+    {
+        return new TableElementCell(build());
     }
 
     @Nonnull

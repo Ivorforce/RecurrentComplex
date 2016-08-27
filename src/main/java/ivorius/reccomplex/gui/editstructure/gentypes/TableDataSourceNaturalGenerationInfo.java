@@ -34,7 +34,7 @@ public class TableDataSourceNaturalGenerationInfo extends TableDataSourceSegment
         this.tableDelegate = tableDelegate;
         this.generationInfo = generationInfo;
 
-        addManagedSection(0, new TableDataSourceGenerationInfo(generationInfo));
+        addManagedSection(0, new TableDataSourceGenerationInfo(generationInfo, navigator, tableDelegate));
         addManagedSection(2, new TableDataSourceYSelector(generationInfo.ySelector));
 
         addManagedSection(4, TableCellMultiBuilder.create(navigator, tableDelegate)

@@ -104,7 +104,8 @@ public class TableCellButton extends TableCellDefault
     {
         super.setHidden(hidden);
 
-        button.visible = !hidden;
+        if (button != null)
+            button.visible = !hidden;
     }
 
     @Override
@@ -121,7 +122,7 @@ public class TableCellButton extends TableCellDefault
     {
         super.drawFloating(screen, mouseX, mouseY, partialTicks);
 
-        if (tooltip != null)
+        if (tooltip != null && button != null)
             screen.drawTooltipRect(tooltip, TableCellPresetAction.getBounds(button), mouseX, mouseY, getFontRenderer());
     }
 }

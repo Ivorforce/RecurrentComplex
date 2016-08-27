@@ -33,7 +33,7 @@ public class TableDataSourceVanillaStructureGenerationInfo extends TableDataSour
         this.tableDelegate = tableDelegate;
         this.generationInfo = generationInfo;
 
-        addManagedSection(0, new TableDataSourceGenerationInfo(generationInfo));
+        addManagedSection(0, new TableDataSourceGenerationInfo(generationInfo, navigator, tableDelegate));
         addManagedSection(4, TableDataSourceExpression.constructDefault("Biomes", generationInfo.biomeMatcher));
         addManagedSection(5, new TableDataSourceBlockPos(generationInfo.spawnShift, generationInfo::setSpawnShift, new IntegerRange(-50, 50), "Spawn Shift %s"));
     }

@@ -31,7 +31,7 @@ public class TableDataSourceStructureListGenerationInfo extends TableDataSourceS
         this.tableDelegate = tableDelegate;
         this.generationInfo = generationInfo;
 
-        addManagedSection(0, new TableDataSourceGenerationInfo(generationInfo));
+        addManagedSection(0, new TableDataSourceGenerationInfo(generationInfo, navigator, tableDelegate));
     }
 
     @Override

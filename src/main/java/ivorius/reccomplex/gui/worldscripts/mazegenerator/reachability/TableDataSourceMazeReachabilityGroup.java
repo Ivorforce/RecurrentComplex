@@ -7,11 +7,13 @@ package ivorius.reccomplex.gui.worldscripts.mazegenerator.reachability;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
+import com.mojang.realmsclient.gui.ChatFormatting;
 import ivorius.reccomplex.gui.table.*;
 import ivorius.reccomplex.structures.generic.maze.SavedMazePath;
-import com.mojang.realmsclient.gui.ChatFormatting;
 
-import java.util.*;
+import java.util.Collections;
+import java.util.List;
+import java.util.Set;
 
 /**
  * Created by lukas on 16.03.16.
@@ -85,13 +87,17 @@ public class TableDataSourceMazeReachabilityGroup extends TableDataSourceSegment
         {
             SavedMazePath t = getVirtualGroup(group).get(index);
 
-            TableCellButton cell = new TableCellButton("entry" + group + "," + index, getEntryActions(group, index));
-            cell.addListener(this);
-            return new TableElementCell(getDisplayString(t), cell);
+            TableCellButton[] entryActions = getEntryActions(group, index);
+            for (TableCellButton entryAction : entryActions)
+            {
+                entryAction.addListener(this);
+                entryAction.actionID = String.format("entry%d,%d", group, index);
+            }
+            return new TableElementCell(getDisplayString(t), new TableCellMulti(entryActions));
         }
     }
 
-    public TableCellButton.Action[] getEntryActions(int group, int index)
+    public TableCellButton[] getEntryActions(int group, int index)
     {
         boolean first = group < 0;
         boolean second = group == 0;
@@ -99,9 +105,9 @@ public class TableDataSourceMazeReachabilityGroup extends TableDataSourceSegment
         List<SavedMazePath> groupL = getVirtualGroup(group);
 
         boolean enabled = true;
-        return new TableCellButton.Action[]{
-                new TableCellButton.Action(second ? "default" : "earlier", "Previous Group", enabled && !first),
-                new TableCellButton.Action(last ? "new" : "later", last ? "New Group" : "Next Group", enabled && (!last || groupL.size() > 1))
+        return new TableCellButton[]{
+                new TableCellButton("", second ? "default" : "earlier", "Previous Group", enabled && !first),
+                new TableCellButton("", last ? "new" : "later", last ? "New Group" : "Next Group", enabled && (!last || groupL.size() > 1))
         };
     }
 

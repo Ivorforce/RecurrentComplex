@@ -5,14 +5,11 @@
 
 package ivorius.reccomplex.gui.editstructure.gentypes;
 
-import com.google.common.primitives.Ints;
-import ivorius.reccomplex.gui.GuiValidityStateIndicator;
+import ivorius.ivtoolkit.tools.IvTranslations;
 import ivorius.reccomplex.gui.TableDataSourceExpression;
-import ivorius.reccomplex.gui.editstructure.TableDataSourceNaturalGenLimitation;
 import ivorius.reccomplex.gui.editstructure.TableDataSourceYSelector;
 import ivorius.reccomplex.gui.editstructure.gentypes.staticgen.TableDataSourceStaticPattern;
 import ivorius.reccomplex.gui.table.*;
-import ivorius.reccomplex.structures.generic.gentypes.NaturalGenerationInfo;
 import ivorius.reccomplex.structures.generic.gentypes.StaticGenerationInfo;
 
 /**
@@ -33,7 +30,7 @@ public class TableDataSourceStaticGenerationInfo extends TableDataSourceSegmente
 
         addManagedSection(0, new TableDataSourceGenerationInfo(generationInfo));
         addManagedSection(2, new TableDataSourceYSelector(generationInfo.ySelector));
-        addManagedSection(3, TableDataSourceExpression.constructDefault("Dimensions", generationInfo.dimensionMatcher));
+        addManagedSection(3, TableDataSourceExpression.constructDefault(IvTranslations.get("reccomplex.gui.biomes"), generationInfo.dimensionMatcher));
     }
 
     @Override
@@ -66,27 +63,29 @@ public class TableDataSourceStaticGenerationInfo extends TableDataSourceSegmente
                 {
                     TableCellBoolean cell = new TableCellBoolean("relativeToSpawn", generationInfo.relativeToSpawn);
                     cell.addPropertyListener(this);
-                    return new TableElementCell("At Spawn", cell);
+                    return new TableElementCell(IvTranslations.get("reccomplex.generationInfo.static.spaw"), cell);
                 }
                 else if (index == 1)
                 {
                     TableCellStringInt cell = new TableCellStringInt("positionX", generationInfo.positionX);
                     cell.addPropertyListener(this);
-                    return new TableElementCell("Position (x)", cell);
+                    return new TableElementCell(IvTranslations.get("reccomplex.generationInfo.static.position.x"), cell);
                 }
                 else if (index == 2)
                 {
                     TableCellStringInt cell = new TableCellStringInt("positionZ", generationInfo.positionZ);
                     cell.addPropertyListener(this);
-                    return new TableElementCell("Position (z)", cell);
+                    return new TableElementCell(IvTranslations.get("reccomplex.generationInfo.static.position.z"), cell);
                 }
                 break;
             }
             case 4:
             {
-                TableCellButton cell = new TableCellButton("editPattern", new TableCellButton.Action("edit", "Edit", generationInfo.hasPattern()), generationInfo.hasPattern() ? new TableCellButton.Action("remove", "Remove") : new TableCellButton.Action("add", "Add"));
-                cell.addListener(this);
-                return new TableElementCell("Pattern", cell);
+                TableCellButton editCell = new TableCellButton("editPattern", "edit", "Edit", generationInfo.hasPattern());
+                editCell.addListener(this);
+                TableCellButton actionCell = new TableCellButton("togglePattern", generationInfo.hasPattern() ? "remove" : "add", generationInfo.hasPattern() ? "Remove" : "Add");
+                actionCell.addListener(this);
+                return new TableElementCell("Pattern", new TableCellMulti(editCell, actionCell));
             }
         }
 

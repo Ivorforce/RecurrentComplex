@@ -9,13 +9,13 @@ import com.google.common.collect.Collections2;
 import com.google.common.collect.Lists;
 import com.google.gson.*;
 import ivorius.ivtoolkit.random.WeightedSelector;
+import ivorius.ivtoolkit.tools.IvTranslations;
 import ivorius.reccomplex.RecurrentComplex;
 import ivorius.reccomplex.json.ItemStackSerializer;
 import ivorius.reccomplex.json.JsonUtils;
 import ivorius.reccomplex.json.NbtToJson;
 import ivorius.reccomplex.structures.generic.matchers.DependencyMatcher;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.text.translation.I18n;
 import net.minecraft.util.WeightedRandom;
 import net.minecraft.world.WorldServer;
 
@@ -67,7 +67,7 @@ public class GenericItemCollection implements WeightedItemCollection
     @Override
     public String getDescriptor()
     {
-        return I18n.translateToLocal("inventoryGen.custom");
+        return IvTranslations.get("inventoryGen.custom");
     }
 
     public static class Component extends WeightedRandom.Item

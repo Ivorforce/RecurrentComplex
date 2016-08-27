@@ -23,18 +23,18 @@ public class TableCellPresetAction extends TableCellDefault
     protected String currentActionID;
 
     protected String actionTitle;
-    protected TableCellButton.Action[] actions;
+    protected TableCellButton[] actions;
 
     protected List<TableCellActionListener> listeners = new ArrayList<>();
 
     protected float actionButtonWidth = 0.4f;
 
-    public TableCellPresetAction(String id, String actionTitle, TableCellButton.Action... actions)
+    public TableCellPresetAction(String id, String actionTitle, TableCellButton... actions)
     {
         super(id);
         this.actionTitle = actionTitle;
         this.actions = actions;
-        currentActionID = actions[0].id;
+        currentActionID = actions[0].actionID;
     }
 
     public static Bounds getBounds(GuiButton button)
@@ -57,7 +57,7 @@ public class TableCellPresetAction extends TableCellDefault
         return Collections.unmodifiableList(listeners);
     }
 
-    public TableCellButton.Action[] getActions()
+    public TableCellButton[] getActions()
     {
         return actions;
     }
@@ -112,8 +112,8 @@ public class TableCellPresetAction extends TableCellDefault
 
         if (buttonID == 0)
         {
-            TableCellButton.Action newAction = actions[(currentActionIndex() + 1) % actions.length];
-            currentActionID = newAction.id;
+            TableCellButton newAction = actions[(currentActionIndex() + 1) % actions.length];
+            currentActionID = newAction.actionID;
             changePresetButton.displayString = newAction.title;
 
             setActionButtonActive();
@@ -130,12 +130,12 @@ public class TableCellPresetAction extends TableCellDefault
     {
         super.drawFloating(screen, mouseX, mouseY, partialTicks);
 
-        TableCellButton.Action action = currentAction();
+        TableCellButton action = currentAction();
         if (action != null && action.tooltip != null)
             screen.drawTooltipRect(action.tooltip, getBounds(changePresetButton), mouseX, mouseY, getFontRenderer());
     }
 
-    private TableCellButton.Action currentAction()
+    private TableCellButton currentAction()
     {
         int index = currentActionIndex();
         return index >= 0 ? actions[index] : null;
@@ -147,9 +147,9 @@ public class TableCellPresetAction extends TableCellDefault
 
         for (int i = 0; i < actions.length; i++)
         {
-            TableCellButton.Action action = actions[i];
+            TableCellButton action = actions[i];
 
-            if (action.id.equals(currentActionID))
+            if (action.actionID.equals(currentActionID))
                 currentIndex = i;
         }
 

@@ -5,21 +5,21 @@
 
 package ivorius.reccomplex.gui.editstructure;
 
+import com.mojang.realmsclient.gui.ChatFormatting;
+import ivorius.ivtoolkit.tools.IvTranslations;
 import ivorius.reccomplex.files.RCFileTypeRegistry;
 import ivorius.reccomplex.gui.GuiValidityStateIndicator;
 import ivorius.reccomplex.gui.TableDataSourceExpression;
 import ivorius.reccomplex.gui.table.*;
 import ivorius.reccomplex.structures.StructureRegistry;
 import ivorius.reccomplex.structures.generic.GenericStructureInfo;
-import ivorius.ivtoolkit.tools.IvTranslations;
-import com.mojang.realmsclient.gui.ChatFormatting;
 
 import java.util.Set;
 
 /**
  * Created by lukas on 05.06.14.
  */
-public class TableDataSourceGenericStructure extends TableDataSourceSegmented implements TableCellActionListener, TableCellPropertyListener
+public class TableDataSourceGenericStructure extends TableDataSourceSegmented implements TableCellPropertyListener
 {
     private Set<String> structuresInActive;
     private Set<String> structuresInInactive;
@@ -43,7 +43,19 @@ public class TableDataSourceGenericStructure extends TableDataSourceSegmented im
         this.tableDelegate = tableDelegate;
         this.navigator = navigator;
 
+        addManagedSection(1, TableCellMultiBuilder.create(navigator, tableDelegate)
+                .addNavigation(() -> "Edit", null,
+                        () -> new GuiTable(tableDelegate, new TableDataSourceMetadata(structureInfo.metadata))
+                ).buildPreloaded("Metadata"));
         addManagedSection(3, TableDataSourceExpression.constructDefault("Dependencies", structureInfo.dependencies));
+        addManagedSection(4, TableCellMultiBuilder.create(navigator, tableDelegate)
+                .addNavigation(() -> "Edit", null,
+                        () -> new GuiTable(tableDelegate, new TableDataSourceStructureGenerationInfoList(structureInfo.generationInfos, tableDelegate, navigator))
+                ).buildPreloaded("Generation"));
+        addManagedSection(5, TableCellMultiBuilder.create(navigator, tableDelegate)
+                .addNavigation(() -> "Edit", null,
+                        () -> new GuiTable(tableDelegate, new TableDataSourceTransformerList(structureInfo.transformers, tableDelegate, navigator))
+                ).buildPreloaded("Transformers"));
     }
 
     public GenericStructureInfo getStructureInfo()
@@ -119,13 +131,7 @@ public class TableDataSourceGenericStructure extends TableDataSourceSegmented im
         {
             case 0:
                 return 2;
-            case 1:
-                return 1;
             case 2:
-                return 1;
-            case 4:
-                return 1;
-            case 5:
                 return 1;
         }
 
@@ -168,15 +174,9 @@ public class TableDataSourceGenericStructure extends TableDataSourceSegmented im
                         return new TableElementCell(new TableCellMulti(cellFolder, cellDelete));
                     }
 
-                    return new TableElementCell(new TableCellMulti(cellFolder, new TableCellButton("", new TableCellButton.Action("", "-", false))));
+                    return new TableElementCell(new TableCellMulti(cellFolder, new TableCellButton("", "", "-", false)));
                 }
                 break;
-            case 1:
-            {
-                TableCellButton cell = new TableCellButton("metadata", new TableCellButton.Action("metadata", "Metadata"));
-                cell.addListener(this);
-                return new TableElementCell(cell);
-            }
             case 2:
             {
                 TableCellBoolean cellRotatable = new TableCellBoolean("rotatable", structureInfo.rotatable,
@@ -193,41 +193,9 @@ public class TableDataSourceGenericStructure extends TableDataSourceSegmented im
 
                 return new TableElementCell(new TableCellMulti(cellRotatable, cellMirrorable));
             }
-            case 4:
-            {
-                TableCellButton cell = new TableCellButton("editGenerationInfos", new TableCellButton.Action("edit", "Edit"));
-                cell.addListener(this);
-                return new TableElementCell("Generation", cell);
-            }
-            case 5:
-            {
-                TableCellButton cell = new TableCellButton("editTransformers", new TableCellButton.Action("edit", "Edit"));
-                cell.addListener(this);
-                return new TableElementCell("Transformers", cell);
-            }
         }
 
         return super.elementForIndexInSegment(table, index, segment);
-    }
-
-    @Override
-    public void actionPerformed(TableCell cell, String actionID)
-    {
-        if ("metadata".equals(actionID))
-        {
-            GuiTable table = new GuiTable(tableDelegate, new TableDataSourceMetadata(structureInfo.metadata));
-            navigator.pushTable(table);
-        }
-        else if ("editTransformers".equals(cell.getID()) && "edit".equals(actionID))
-        {
-            GuiTable editTransformersProperties = new GuiTable(tableDelegate, new TableDataSourceTransformerList(structureInfo.transformers, tableDelegate, navigator));
-            navigator.pushTable(editTransformersProperties);
-        }
-        else if ("editGenerationInfos".equals(cell.getID()) && "edit".equals(actionID))
-        {
-            GuiTable editGenerationProperties = new GuiTable(tableDelegate, new TableDataSourceStructureGenerationInfoList(structureInfo.generationInfos, tableDelegate, navigator));
-            navigator.pushTable(editGenerationProperties);
-        }
     }
 
     @Override

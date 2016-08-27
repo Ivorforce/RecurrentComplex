@@ -7,6 +7,7 @@ package ivorius.reccomplex.structures.generic.gentypes;
 
 import com.google.gson.*;
 import com.google.gson.annotations.SerializedName;
+import ivorius.ivtoolkit.tools.IvTranslations;
 import ivorius.reccomplex.gui.editstructure.gentypes.TableDataSourceStaticGenerationInfo;
 import ivorius.reccomplex.gui.table.TableDataSource;
 import ivorius.reccomplex.gui.table.TableDelegate;
@@ -16,7 +17,6 @@ import ivorius.reccomplex.structures.generic.GenericYSelector;
 import ivorius.reccomplex.structures.generic.matchers.DimensionMatcher;
 import ivorius.reccomplex.utils.BlockSurfacePos;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.text.translation.I18n;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -89,11 +89,11 @@ public class StaticGenerationInfo extends StructureGenerationInfo
     public String displayString()
     {
         if (hasPattern())
-            return I18n.translateToLocalFormatted("reccomplex.generationInfo.static.pattern", String.valueOf(pattern.repeatX), String.valueOf(pattern.repeatZ));
+            return IvTranslations.format("reccomplex.generationInfo.static.summary.pattern", String.valueOf(pattern.repeatX), String.valueOf(pattern.repeatZ));
         else if (relativeToSpawn)
-            return I18n.translateToLocalFormatted("reccomplex.generationInfo.static.spawn", String.valueOf(positionX), String.valueOf(positionZ));
+            return IvTranslations.format("reccomplex.generationInfo.static.summary.spawn", String.valueOf(positionX), String.valueOf(positionZ));
         else
-            return I18n.translateToLocalFormatted("reccomplex.generationInfo.static.nospawn", String.valueOf(positionX), String.valueOf(positionZ));
+            return IvTranslations.format("reccomplex.generationInfo.static.summary.nospawn", String.valueOf(positionX), String.valueOf(positionZ));
     }
 
     @Override

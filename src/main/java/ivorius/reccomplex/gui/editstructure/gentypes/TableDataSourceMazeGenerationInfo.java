@@ -5,6 +5,7 @@
 
 package ivorius.reccomplex.gui.editstructure.gentypes;
 
+import ivorius.ivtoolkit.tools.IvTranslations;
 import ivorius.reccomplex.gui.RCGuiTables;
 import ivorius.reccomplex.gui.worldscripts.mazegenerator.TableDataSourceMazeComponent;
 import ivorius.reccomplex.gui.table.*;
@@ -59,7 +60,7 @@ public class TableDataSourceMazeGenerationInfo extends TableDataSourceSegmented 
             {
                 TableCellString cell = new TableCellString("mazeID", generationInfo.mazeID);
                 cell.addPropertyListener(this);
-                return new TableElementCell("Maze ID", cell);
+                return new TableElementCell(IvTranslations.get("reccomplex.generationInfo.mazeComponent.mazeid"), cell);
             }
             case 2:
             {

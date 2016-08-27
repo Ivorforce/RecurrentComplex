@@ -5,17 +5,17 @@
 
 package ivorius.reccomplex.gui;
 
-import net.minecraftforge.fml.client.IModGuiFactory;
-import net.minecraftforge.fml.client.config.GuiConfig;
-import net.minecraftforge.fml.client.config.GuiConfigEntries;
-import net.minecraftforge.fml.client.config.IConfigElement;
+import ivorius.ivtoolkit.tools.IvTranslations;
 import ivorius.reccomplex.RCConfig;
 import ivorius.reccomplex.RecurrentComplex;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiScreen;
-import net.minecraft.util.text.translation.I18n;
 import net.minecraftforge.common.config.ConfigElement;
 import net.minecraftforge.common.config.Configuration;
+import net.minecraftforge.fml.client.IModGuiFactory;
+import net.minecraftforge.fml.client.config.GuiConfig;
+import net.minecraftforge.fml.client.config.GuiConfigEntries;
+import net.minecraftforge.fml.client.config.IConfigElement;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -56,7 +56,7 @@ public class RCConfigGuiFactory implements IModGuiFactory
     {
         public ConfigGui(GuiScreen parentScreen)
         {
-            super(parentScreen, getConfigElements(), RecurrentComplex.MOD_ID, false, false, I18n.translateToLocalFormatted("reccomplex.configgui.title"));
+            super(parentScreen, getConfigElements(), RecurrentComplex.MOD_ID, false, false, IvTranslations.format("reccomplex.configgui.title"));
         }
 
         private static List<IConfigElement> getConfigElements()

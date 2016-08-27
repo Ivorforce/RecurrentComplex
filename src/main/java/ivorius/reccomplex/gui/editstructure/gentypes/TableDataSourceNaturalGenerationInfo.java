@@ -5,6 +5,7 @@
 
 package ivorius.reccomplex.gui.editstructure.gentypes;
 
+import ivorius.ivtoolkit.tools.IvTranslations;
 import ivorius.reccomplex.gui.RCGuiTables;
 import ivorius.reccomplex.gui.editstructure.TableDataSourceBiomeGenList;
 import ivorius.reccomplex.gui.editstructure.TableDataSourceDimensionGenList;
@@ -35,6 +36,15 @@ public class TableDataSourceNaturalGenerationInfo extends TableDataSourceSegment
 
         addManagedSection(0, new TableDataSourceGenerationInfo(generationInfo));
         addManagedSection(2, new TableDataSourceYSelector(generationInfo.ySelector));
+
+        addManagedSection(4, TableCellMultiBuilder.create(navigator, tableDelegate)
+                .addNavigation(() -> "Edit", null,
+                        () -> new GuiTable(tableDelegate, new TableDataSourceBiomeGenList(generationInfo.biomeWeights, tableDelegate, navigator))
+                ).buildPreloaded(IvTranslations.get("reccomplex.gui.biomes")));
+        addManagedSection(5, TableCellMultiBuilder.create(navigator, tableDelegate)
+                .addNavigation(() -> "Edit", null,
+                        () -> new GuiTable(tableDelegate, new TableDataSourceDimensionGenList(generationInfo.dimensionWeights, tableDelegate, navigator))
+                ).buildPreloaded(IvTranslations.get("reccomplex.gui.dimensions")));
     }
 
     public static List<TableCellEnum.Option<String>> allGenerationCategories()
@@ -56,7 +66,7 @@ public class TableDataSourceNaturalGenerationInfo extends TableDataSourceSegment
     @Override
     public int numberOfSegments()
     {
-        return 4;
+        return 7;
     }
 
     @Override
@@ -65,9 +75,8 @@ public class TableDataSourceNaturalGenerationInfo extends TableDataSourceSegment
         switch (segment)
         {
             case 1:
-                return 1;
             case 3:
-                return 4;
+                return 1;
         }
 
         return super.sizeOfSegment(segment);
@@ -79,37 +88,21 @@ public class TableDataSourceNaturalGenerationInfo extends TableDataSourceSegment
         switch (segment)
         {
             case 1:
-                if (index == 0)
-                {
-                    TableCellEnum cell = new TableCellEnum<>("category", generationInfo.generationCategory, allGenerationCategories());
-                    cell.addPropertyListener(this);
-                    return new TableElementCell("Category", cell);
-                }
-                break;
+            {
+                TableCellEnum cell = new TableCellEnum<>("category", generationInfo.generationCategory, allGenerationCategories());
+                cell.addPropertyListener(this);
+                return new TableElementCell(IvTranslations.get("reccomplex.generationInfo.natural.category"), cell);
+            }
             case 3:
-                if (index == 0)
-                {
-                    return RCGuiTables.defaultWeightElement(this, generationInfo.getGenerationWeight());
-                }
-                else if (index == 1)
-                {
-                    TableCellButton cell = new TableCellButton("editBiomes", new TableCellButton.Action("edit", "Edit"));
-                    cell.addListener(this);
-                    return new TableElementCell("Biomes", cell);
-                }
-                else if (index == 2)
-                {
-                    TableCellButton cell = new TableCellButton("editDimensions", new TableCellButton.Action("edit", "Edit"));
-                    cell.addListener(this);
-                    return new TableElementCell("Dimensions", cell);
-                }
-                else if (index == 3)
-                {
-                    TableCellButton cell = new TableCellButton("editLimitations", new TableCellButton.Action("edit", "Edit", generationInfo.hasLimitations()), generationInfo.hasLimitations() ? new TableCellButton.Action("remove", "Remove") : new TableCellButton.Action("add", "Add"));
-                    cell.addListener(this);
-                    return new TableElementCell("Limitations", cell);
-                }
-                break;
+                return RCGuiTables.defaultWeightElement(this, generationInfo.getGenerationWeight());
+            case 6:
+            {
+                TableCellButton editCell = new TableCellButton("editLimitations", "edit", "Edit", generationInfo.hasLimitations());
+                editCell.addListener(this);
+                TableCellButton actionCell = new TableCellButton("editLimitations", generationInfo.hasLimitations() ? "remove" : "add", generationInfo.hasLimitations() ? "Remove" : "Add");
+                editCell.addListener(this);
+                return new TableElementCell(IvTranslations.get("reccomplex.generationInfo.natural.limitations"), new TableCellMulti(editCell, actionCell));
+            }
         }
 
         return super.elementForIndexInSegment(table, index, segment);
@@ -118,17 +111,7 @@ public class TableDataSourceNaturalGenerationInfo extends TableDataSourceSegment
     @Override
     public void actionPerformed(TableCell cell, String actionID)
     {
-        if ("editBiomes".equals(cell.getID()) && "edit".equals(actionID))
-        {
-            GuiTable table = new GuiTable(tableDelegate, new TableDataSourceBiomeGenList(generationInfo.biomeWeights, tableDelegate, navigator));
-            navigator.pushTable(table);
-        }
-        else if ("editDimensions".equals(cell.getID()) && "edit".equals(actionID))
-        {
-            GuiTable table = new GuiTable(tableDelegate, new TableDataSourceDimensionGenList(generationInfo.dimensionWeights, tableDelegate, navigator));
-            navigator.pushTable(table);
-        }
-        else if ("editLimitations".equals(cell.getID()))
+        if ("editLimitations".equals(cell.getID()))
         {
             switch (actionID)
             {

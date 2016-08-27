@@ -7,6 +7,7 @@ package ivorius.reccomplex.structures.generic.gentypes;
 
 import com.google.gson.*;
 import com.google.gson.annotations.SerializedName;
+import ivorius.ivtoolkit.tools.IvTranslations;
 import ivorius.reccomplex.RecurrentComplex;
 import ivorius.reccomplex.gui.editstructure.gentypes.TableDataSourceNaturalGenerationInfo;
 import ivorius.reccomplex.gui.table.TableDataSource;
@@ -21,7 +22,6 @@ import ivorius.reccomplex.structures.generic.presets.DimensionMatcherPresets;
 import ivorius.reccomplex.utils.PresettedList;
 import ivorius.reccomplex.utils.PresettedLists;
 import ivorius.reccomplex.worldgen.StructureGenerationData;
-import net.minecraft.util.text.translation.I18n;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldProvider;
 import net.minecraft.world.biome.Biome;
@@ -37,14 +37,15 @@ public class NaturalGenerationInfo extends StructureGenerationInfo
 {
     private static Gson gson = createGson();
 
-    public String id = "";
-
     public final PresettedList<BiomeGenerationInfo> biomeWeights = new PresettedList<>(BiomeMatcherPresets.instance(), null);
     public final PresettedList<DimensionGenerationInfo> dimensionWeights = new PresettedList<>(DimensionMatcherPresets.instance(), null);
 
-    public String generationCategory;
-    public GenericYSelector ySelector;
+    public String id = "";
     private Double generationWeight;
+
+    public String generationCategory;
+
+    public GenericYSelector ySelector;
 
     public SpawnLimitation spawnLimitation;
 
@@ -174,7 +175,7 @@ public class NaturalGenerationInfo extends StructureGenerationInfo
     @Override
     public String displayString()
     {
-        return I18n.translateToLocal("reccomplex.generationInfo.natural");
+        return IvTranslations.get("reccomplex.generationInfo.natural");
     }
 
     @Override

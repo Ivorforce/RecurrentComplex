@@ -5,10 +5,9 @@
 
 package ivorius.reccomplex.gui.editstructure;
 
+import ivorius.ivtoolkit.tools.IvTranslations;
 import ivorius.reccomplex.gui.table.*;
 import ivorius.reccomplex.utils.PresettedList;
-import ivorius.ivtoolkit.tools.IvTranslations;
-import net.minecraft.util.text.translation.I18n;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -58,17 +57,17 @@ public abstract class TableDataSourcePresettedList<T> extends TableDataSourceLis
         return super.getAddIndex(segment - 1);
     }
 
-    public TableCellButton.Action[] getPresetActions()
+    public TableCellButton[] getPresetActions()
     {
         Collection<String> allTypes = presettedList.getListPresets().allTypes();
-        List<TableCellButton.Action> actions = new ArrayList<>(allTypes.size());
+        List<TableCellButton> actions = new ArrayList<>(allTypes.size());
 
         String baseKey = getBasePresetKey();
-        actions.addAll(allTypes.stream().map(type -> new TableCellButton.Action(type,
-                I18n.translateToLocal(baseKey + type),
+        actions.addAll(allTypes.stream().map(type -> new TableCellButton(type, type,
+                IvTranslations.get(baseKey + type),
                 IvTranslations.formatLines(baseKey + type + ".tooltip")
         )).collect(Collectors.toList()));
-        return actions.toArray(new TableCellButton.Action[actions.size()]);
+        return actions.toArray(new TableCellButton[actions.size()]);
     }
 
     protected abstract String getBasePresetKey();
@@ -86,8 +85,8 @@ public abstract class TableDataSourcePresettedList<T> extends TableDataSourceLis
             }
             else if (index == 1)
             {
-                String title = !presettedList.isCustom() ? I18n.translateToLocal(getBasePresetKey() + presettedList.getPreset()) : "Custom";
-                TableCellButton cell = new TableCellButton("customize", new TableCellButton.Action("customize", "Customize", !presettedList.isCustom()));
+                String title = !presettedList.isCustom() ? IvTranslations.get(getBasePresetKey() + presettedList.getPreset()) : "Custom";
+                TableCellButton cell = new TableCellButton("customize", "customize", "Customize", !presettedList.isCustom());
                 cell.addListener(this);
                 return new TableElementCell(title, cell);
             }

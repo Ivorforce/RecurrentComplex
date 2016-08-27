@@ -5,12 +5,11 @@
 
 package ivorius.reccomplex.gui.worldscripts.multi;
 
+import ivorius.ivtoolkit.tools.IvTranslations;
 import ivorius.reccomplex.gui.table.*;
 import ivorius.reccomplex.scripts.world.WorldScript;
 import ivorius.reccomplex.scripts.world.WorldScriptRegistry;
 import ivorius.reccomplex.utils.IvClasses;
-import ivorius.ivtoolkit.tools.IvTranslations;
-import net.minecraft.util.text.translation.I18n;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.ArrayList;
@@ -47,19 +46,19 @@ public class TableDataSourceWorldScriptList extends TableDataSourceList<WorldScr
     }
 
     @Override
-    public TableCellButton.Action[] getAddActions()
+    public TableCellButton[] getAddActions()
     {
         Collection<String> allTypes = WorldScriptRegistry.INSTANCE.allIDs();
-        List<TableCellButton.Action> actions = new ArrayList<>(allTypes.size());
+        List<TableCellButton> actions = new ArrayList<>(allTypes.size());
         for (String type : allTypes)
         {
             String baseKey = "reccomplex.worldscript." + type;
-            actions.add(new TableCellButton.Action(type,
-                    I18n.translateToLocal(baseKey),
+            actions.add(new TableCellButton(type, type,
+                    IvTranslations.get(baseKey),
                     IvTranslations.formatLines(baseKey + ".tooltip")
             ));
         }
-        return actions.toArray(new TableCellButton.Action[actions.size()]);
+        return actions.toArray(new TableCellButton[actions.size()]);
     }
 
 }

@@ -6,7 +6,8 @@
 package ivorius.reccomplex.structures.generic.gentypes;
 
 import com.google.gson.*;
-import net.minecraft.util.math.BlockPos;
+import ivorius.ivtoolkit.blocks.Directions;
+import ivorius.ivtoolkit.tools.IvTranslations;
 import ivorius.reccomplex.RCConfig;
 import ivorius.reccomplex.gui.editstructure.gentypes.TableDataSourceVanillaStructureGenerationInfo;
 import ivorius.reccomplex.gui.table.TableDataSource;
@@ -14,11 +15,10 @@ import ivorius.reccomplex.gui.table.TableDelegate;
 import ivorius.reccomplex.gui.table.TableNavigator;
 import ivorius.reccomplex.json.JsonUtils;
 import ivorius.reccomplex.structures.generic.matchers.BiomeMatcher;
-import ivorius.ivtoolkit.blocks.Directions;
-import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.text.translation.I18n;
-import net.minecraft.world.biome.Biome;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.MathHelper;
+import net.minecraft.world.biome.Biome;
 
 import javax.annotation.Nonnull;
 import java.lang.reflect.Type;
@@ -81,7 +81,7 @@ public class VanillaStructureGenerationInfo extends StructureGenerationInfo
     @Override
     public String displayString()
     {
-        return I18n.translateToLocal("reccomplex.generationInfo.vanilla.title");
+        return IvTranslations.get("reccomplex.generationInfo.vanilla.title");
     }
 
     @Override

@@ -18,15 +18,45 @@ import java.util.List;
  */
 public class TableCellButton extends TableCellDefault
 {
-    private GuiButton[] buttons = new GuiButton[0];
-    private Action[] actions;
+    private GuiButton button = null;
+
+    public String actionID;
+    public String title;
+    public List<String> tooltip;
+    public boolean enabled = true;
 
     private List<TableCellActionListener> listeners = new ArrayList<>();
 
-    public TableCellButton(String id, Action... actions)
+    public TableCellButton(String id, String actionID, String title, List<String> tooltip, boolean enabled)
     {
         super(id);
-        this.actions = actions;
+        this.actionID = actionID;
+        this.title = title;
+        this.tooltip = tooltip;
+        this.enabled = enabled;
+    }
+
+    public TableCellButton(String id, String actionID, String title, List<String> tooltip)
+    {
+        super(id);
+        this.actionID = actionID;
+        this.title = title;
+        this.tooltip = tooltip;
+    }
+
+    public TableCellButton(String id, String actionID, String title, boolean enabled)
+    {
+        super(id);
+        this.actionID = actionID;
+        this.title = title;
+        this.enabled = enabled;
+    }
+
+    public TableCellButton(String id, String actionID, String title)
+    {
+        super(id);
+        this.actionID = actionID;
+        this.title = title;
     }
 
     public void addListener(TableCellActionListener listener)
@@ -44,21 +74,14 @@ public class TableCellButton extends TableCellDefault
         return Collections.unmodifiableList(listeners);
     }
 
-    public Action[] getActions()
+    public boolean isEnabled()
     {
-        return actions;
+        return enabled;
     }
 
-    public void setEnabled(String actionID, boolean enabled)
+    public void setEnabled(boolean enabled)
     {
-        int index = Iterables.indexOf(Arrays.asList(actions), input -> input.id.equals(actionID));
-        if (index >= 0)
-        {
-            actions[index].enabled = enabled;
-
-            if (index < buttons.length)
-                buttons[index].enabled = enabled;
-        }
+        this.enabled = enabled;
     }
 
     @Override
@@ -68,17 +91,12 @@ public class TableCellButton extends TableCellDefault
 
         Bounds bounds = bounds();
 
-        buttons = new GuiButton[actions.length];
-        int buttonWidth = bounds.getWidth() / actions.length;
-        for (int i = 0; i < actions.length; i++)
-        {
-            Action action = actions[i];
-            int realWidth = buttonWidth - (i == actions.length - 1 ? 0 : 2);
-            buttons[i] = new GuiButton(-1, bounds.getMinX() + buttonWidth * i, bounds.getMinY() + (bounds.getHeight() - 20) / 2, realWidth, 20, action.title);
-            buttons[i].visible = !isHidden();
-            buttons[i].enabled = action.enabled;
-            screen.addButton(this, i, buttons[i]);
-        }
+        int buttonWidth = bounds.getWidth();
+
+        button = new GuiButton(-1, bounds.getMinX(), bounds.getMinY() + (bounds.getHeight() - 20) / 2, buttonWidth, 20, title);
+        button.visible = !isHidden();
+        button.enabled = enabled;
+        screen.addButton(this, 0, button);
     }
 
     @Override
@@ -86,10 +104,7 @@ public class TableCellButton extends TableCellDefault
     {
         super.setHidden(hidden);
 
-        for (GuiButton button : buttons)
-        {
-            button.visible = !hidden;
-        }
+        button.visible = !hidden;
     }
 
     @Override
@@ -98,7 +113,7 @@ public class TableCellButton extends TableCellDefault
         super.buttonClicked(buttonID);
 
         for (TableCellActionListener listener : listeners)
-            listener.actionPerformed(this, actions[buttonID].id);
+            listener.actionPerformed(this, actionID);
     }
 
     @Override
@@ -106,43 +121,7 @@ public class TableCellButton extends TableCellDefault
     {
         super.drawFloating(screen, mouseX, mouseY, partialTicks);
 
-        for (int i = 0; i < actions.length; i++)
-        {
-            Action action = actions[i];
-            GuiButton button = buttons[i];
-            if (action.tooltip != null)
-                screen.drawTooltipRect(action.tooltip, TableCellPresetAction.getBounds(button), mouseX, mouseY, getFontRenderer());
-        }
-    }
-
-    public static class Action
-    {
-        public String id;
-        public String title;
-        public List<String> tooltip;
-        public boolean enabled;
-
-        public Action(String id, String title, List<String> tooltip, boolean enabled)
-        {
-            this.id = id;
-            this.title = title;
-            this.tooltip = tooltip;
-            this.enabled = enabled;
-        }
-
-        public Action(String id, String title, boolean enabled)
-        {
-            this(id, title, null, enabled);
-        }
-
-        public Action(String id, String title, List<String> tooltip)
-        {
-            this(id, title, tooltip, true);
-        }
-
-        public Action(String id, String title)
-        {
-            this(id, title, null, true);
-        }
+        if (tooltip != null)
+            screen.drawTooltipRect(tooltip, TableCellPresetAction.getBounds(button), mouseX, mouseY, getFontRenderer());
     }
 }

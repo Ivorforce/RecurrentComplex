@@ -6,7 +6,11 @@
 package ivorius.reccomplex.structures.generic.transformers;
 
 import com.google.gson.*;
-import ivorius.ivtoolkit.blocks.*;
+import ivorius.ivtoolkit.blocks.BlockArea;
+import ivorius.ivtoolkit.blocks.BlockAreas;
+import ivorius.ivtoolkit.blocks.Directions;
+import ivorius.ivtoolkit.blocks.IvBlockCollection;
+import ivorius.ivtoolkit.tools.IvTranslations;
 import ivorius.ivtoolkit.tools.IvWorldData;
 import ivorius.ivtoolkit.tools.MCRegistry;
 import ivorius.ivtoolkit.tools.NBTCompoundObjects;
@@ -20,24 +24,23 @@ import ivorius.reccomplex.random.BlurredValueField;
 import ivorius.reccomplex.structures.StructureLoadContext;
 import ivorius.reccomplex.structures.StructurePrepareContext;
 import ivorius.reccomplex.structures.StructureSpawnContext;
+import ivorius.reccomplex.utils.NBTStorable;
 import net.minecraft.block.BlockSandStone;
 import net.minecraft.block.BlockStoneBrick;
 import net.minecraft.block.BlockVine;
 import net.minecraft.block.BlockWall;
-import net.minecraft.block.state.IBlockState;
-import ivorius.reccomplex.utils.NBTStorable;
 import net.minecraft.block.material.Material;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.init.Blocks;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.text.translation.I18n;
 import net.minecraft.world.World;
 import net.minecraft.world.gen.structure.StructureBoundingBox;
-import net.minecraft.util.EnumFacing;
 import org.apache.commons.lang3.tuple.Pair;
 
 import java.lang.reflect.Type;
@@ -233,7 +236,7 @@ public class TransformerRuins implements Transformer<TransformerRuins.InstanceDa
     @Override
     public String getDisplayString()
     {
-        return I18n.translateToLocal("reccomplex.transformer.ruins");
+        return IvTranslations.get("reccomplex.transformer.ruins");
     }
 
     @Override

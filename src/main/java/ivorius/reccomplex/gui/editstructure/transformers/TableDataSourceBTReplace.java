@@ -13,7 +13,7 @@ import ivorius.reccomplex.structures.generic.transformers.TransformerReplace;
 /**
  * Created by lukas on 05.06.14.
  */
-public class TableDataSourceBTReplace extends TableDataSourceSegmented implements TableCellActionListener
+public class TableDataSourceBTReplace extends TableDataSourceSegmented
 {
     private TransformerReplace transformer;
 
@@ -27,6 +27,10 @@ public class TableDataSourceBTReplace extends TableDataSourceSegmented implement
         this.tableDelegate = tableDelegate;
 
         addManagedSection(0, TableDataSourceExpression.constructDefault("Sources", transformer.sourceMatcher));
+        addManagedSection(1, TableCellMultiBuilder.create(navigator, tableDelegate)
+                .addNavigation(() -> "Edit", null,
+                () -> new GuiTable(tableDelegate, new TableDataSourceWeightedBlockStateList(transformer.destination, tableDelegate, navigator))
+                ).buildPreloaded("Destinations"));
     }
 
     public TransformerReplace getTransformer()
@@ -37,40 +41,5 @@ public class TableDataSourceBTReplace extends TableDataSourceSegmented implement
     public void setTransformer(TransformerReplace transformer)
     {
         this.transformer = transformer;
-    }
-
-    @Override
-    public int numberOfSegments()
-    {
-        return 2;
-    }
-
-    @Override
-    public int sizeOfSegment(int segment)
-    {
-        return segment == 1 ? 1 : super.sizeOfSegment(segment);
-    }
-
-    @Override
-    public TableElement elementForIndexInSegment(GuiTable table, int index, int segment)
-    {
-        if (segment == 1)
-        {
-            TableCellButton cell = new TableCellButton("dest", new TableCellButton.Action("edit", "Edit"));
-            cell.addListener(this);
-            return new TableElementCell("Destinations", cell);
-        }
-
-        return super.elementForIndexInSegment(table, index, segment);
-    }
-
-    @Override
-    public void actionPerformed(TableCell cell, String action)
-    {
-        if ("dest".equals(cell.getID()))
-        {
-            GuiTable table = new GuiTable(tableDelegate, new TableDataSourceWeightedBlockStateList(transformer.destination, tableDelegate, navigator));
-            navigator.pushTable(table);
-        }
     }
 }

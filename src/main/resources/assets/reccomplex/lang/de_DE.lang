@@ -244,9 +244,9 @@ reccomplex.generationInfo.mazeComponent.title=Im Irrgarten: %s
 
 reccomplex.generationInfo.static=Statisch
 reccomplex.generationInfo.static.tooltip=Konstante Position in einer spezifischen Dimension.<br>Auch nützlich für Spawnstrukturen.
-reccomplex.generationInfo.static.spawn=Von dem Spawn %s, %s
-reccomplex.generationInfo.static.nospawn=Bei %s, %s
-reccomplex.generationInfo.static.pattern=Alle %s, %s Blöcke
+reccomplex.generationInfo.static.summary.spawn=Vom Spawn %s, %s
+reccomplex.generationInfo.static.summary.nospawn=Bei %s, %s
+reccomplex.generationInfo.static.summary.pattern=Alle %s, %s Blöcke
 
 reccomplex.generationInfo.structureList=Strukturliste
 reccomplex.generationInfo.structureList.tooltip=Als Teil einer Strukturliste<br>(Genutzt in Strukturblöcken)

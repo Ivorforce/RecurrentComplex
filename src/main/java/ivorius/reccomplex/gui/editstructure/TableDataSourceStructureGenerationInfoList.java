@@ -5,12 +5,11 @@
 
 package ivorius.reccomplex.gui.editstructure;
 
+import ivorius.ivtoolkit.tools.IvTranslations;
 import ivorius.reccomplex.RecurrentComplex;
 import ivorius.reccomplex.gui.table.*;
 import ivorius.reccomplex.structures.StructureRegistry;
 import ivorius.reccomplex.structures.generic.gentypes.StructureGenerationInfo;
-import ivorius.ivtoolkit.tools.IvTranslations;
-import net.minecraft.util.text.translation.I18n;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -30,19 +29,19 @@ public class TableDataSourceStructureGenerationInfoList extends TableDataSourceL
     }
 
     @Override
-    public TableCellButton.Action[] getAddActions()
+    public TableCellButton[] getAddActions()
     {
         Collection<String> allTypes = StructureRegistry.INSTANCE.getStructureGenerationInfoRegistry().allIDs();
-        List<TableCellButton.Action> actions = new ArrayList<>(allTypes.size());
+        List<TableCellButton> actions = new ArrayList<>(allTypes.size());
         for (String type : allTypes)
         {
             String baseKey = "reccomplex.generationInfo." + type;
-            actions.add(new TableCellButton.Action(type,
-                    I18n.translateToLocal(baseKey),
+            actions.add(new TableCellButton(type, type,
+                    IvTranslations.get(baseKey),
                     IvTranslations.formatLines(baseKey + ".tooltip")
             ));
         }
-        return actions.toArray(new TableCellButton.Action[actions.size()]);
+        return actions.toArray(new TableCellButton[actions.size()]);
     }
 
     @Override

@@ -6,7 +6,7 @@
 package ivorius.reccomplex.utils;
 
 import ivorius.ivtoolkit.blocks.Directions;
-import net.minecraft.util.text.translation.I18n;
+import ivorius.ivtoolkit.tools.IvTranslations;
 import net.minecraft.util.EnumFacing;
 
 /**
@@ -21,6 +21,6 @@ public class DirectionNames
 
     public static String of(EnumFacing direction, String nullTitle)
     {
-        return I18n.translateToLocal("reccomplex.direction." + (direction == null ? nullTitle : Directions.serialize(direction).toLowerCase()));
+        return IvTranslations.get("reccomplex.direction." + (direction == null ? nullTitle : Directions.serialize(direction).toLowerCase()));
     }
 }

@@ -7,6 +7,7 @@ package ivorius.reccomplex.gui.table;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import java.util.List;
 
 /**
  * Created by lukas on 02.06.14.
@@ -31,6 +32,16 @@ public class TableCellMulti implements TableCell
     public TableCellMulti(@Nonnull TableCell... cells)
     {
         this(null, cells);
+    }
+
+    public TableCellMulti(String id, @Nonnull List<TableCell> cells)
+    {
+        this(id, cells.toArray(new TableCell[cells.size()]));
+    }
+
+    public TableCellMulti(@Nonnull List<TableCell> cells)
+    {
+        this(null, cells.toArray(new TableCell[cells.size()]));
     }
 
     @Nullable
@@ -74,6 +85,8 @@ public class TableCellMulti implements TableCell
             int realWidth = buttonWidth - (i == cells.length - 1 ? 0 : 2);
             cell.setBounds(Bounds.fromSize(bounds.getMinX() + buttonWidth * i, realWidth, bounds.getMinY(), bounds.getHeight()));
         }
+
+        this.bounds = bounds;
     }
 
     @Override

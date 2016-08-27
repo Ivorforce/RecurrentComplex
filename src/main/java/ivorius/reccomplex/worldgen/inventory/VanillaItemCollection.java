@@ -5,9 +5,9 @@
 
 package ivorius.reccomplex.worldgen.inventory;
 
+import ivorius.ivtoolkit.tools.IvTranslations;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.text.translation.I18n;
 import net.minecraft.world.WorldServer;
 import net.minecraft.world.storage.loot.LootContext;
 import net.minecraft.world.storage.loot.LootTable;
@@ -38,6 +38,6 @@ public class VanillaItemCollection implements WeightedItemCollection
     @Override
     public String getDescriptor()
     {
-        return I18n.translateToLocal("inventoryGen.vanilla");
+        return IvTranslations.get("inventoryGen.vanilla");
     }
 }

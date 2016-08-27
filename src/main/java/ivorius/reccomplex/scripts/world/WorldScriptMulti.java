@@ -83,7 +83,7 @@ public class WorldScriptMulti implements WorldScript<WorldScriptMulti.InstanceDa
     @Override
     public void writeToNBT(NBTTagCompound compound)
     {
-        NBTTagLists.writeCompoundsTo(compound, "scripts", scripts.stream().map(WorldScriptRegistry.INSTANCE::write).collect(Collectors.toList()));
+        NBTTagLists.writeTo(compound, "scripts", scripts.stream().map(WorldScriptRegistry.INSTANCE::write).collect(Collectors.toList()));
     }
 
     public static class InstanceData implements NBTStorable

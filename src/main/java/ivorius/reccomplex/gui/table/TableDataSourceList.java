@@ -150,9 +150,13 @@ public abstract class TableDataSourceList<T, L extends List<T>> extends TableDat
         {
             T t = list.get(index);
 
-            TableCellButton cell = new TableCellButton("entry" + index, getEntryActions(index));
-            cell.addListener(this);
-            return new TableElementCell(getDisplayString(t), cell);
+            TableCellButton[] cells = getEntryActions(index);
+            for (TableCellButton cell : cells)
+            {
+                cell.addListener(this);
+                cell.id = "entry" + index;
+            }
+            return new TableElementCell(getDisplayString(t), new TableCellMulti(cells));
         }
 
         int addIndex = getAddIndex(segment);
@@ -167,9 +171,13 @@ public abstract class TableDataSourceList<T, L extends List<T>> extends TableDat
             }
             else
             {
-                TableCellButton cell = new TableCellButton("add" + addIndex, getAddActions());
-                cell.addListener(this);
-                return new TableElementCell(cell);
+                TableCellButton[] cells = getAddActions();
+                for (TableCellButton cell : cells)
+                {
+                    cell.addListener(this);
+                    cell.id = "add" + addIndex;
+                }
+                return new TableElementCell(new TableCellMulti(cells));
             }
         }
 
@@ -190,20 +198,20 @@ public abstract class TableDataSourceList<T, L extends List<T>> extends TableDat
                 : -1;
     }
 
-    public TableCellButton.Action[] getAddActions()
+    public TableCellButton[] getAddActions()
     {
         boolean enabled = canEditList();
-        return new TableCellButton.Action[]{new TableCellButton.Action("add", getAddTitle(), enabled)};
+        return new TableCellButton[]{new TableCellButton("", "add", getAddTitle(), enabled)};
     }
 
-    public TableCellButton.Action[] getEntryActions(int index)
+    public TableCellButton[] getEntryActions(int index)
     {
         boolean enabled = canEditList();
-        return new TableCellButton.Action[]{
-                new TableCellButton.Action("earlier", getEarlierTitle(), index > 0 && enabled),
-                new TableCellButton.Action("later", getLaterTitle(), index < list.size() - 1 && enabled),
-                new TableCellButton.Action("edit", getEditTitle(), enabled),
-                new TableCellButton.Action("delete", getDeleteTitle(), enabled)
+        return new TableCellButton[]{
+                new TableCellButton("", "earlier", getEarlierTitle(), index > 0 && enabled),
+                new TableCellButton("", "later", getLaterTitle(), index < list.size() - 1 && enabled),
+                new TableCellButton("", "edit", getEditTitle(), enabled),
+                new TableCellButton("", "delete", getDeleteTitle(), enabled)
         };
     }
 

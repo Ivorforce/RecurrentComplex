@@ -230,24 +230,37 @@ reccomplex.structure.generation.id.tooltip=Identifier for the generation type.<b
 
 reccomplex.generationInfo.natural=Natural
 reccomplex.generationInfo.natural.tooltip=Randomized generation in any biome
+reccomplex.generationInfo.natural.category=Category
+reccomplex.generationInfo.natural.limitations=Limitations
 reccomplex.generationInfo.natural.limitation.context.world=Per World
 reccomplex.generationInfo.natural.limitation.context.dimension=Per Dimension
 reccomplex.generationInfo.natural.limitation.context.dimension.tooltip=Structure occurs x times at max, <br>per dimension.
 reccomplex.generationInfo.natural.limitation.context.x_chunks=Every X Chunks
 
 reccomplex.generationInfo.mazeComponent=Maze Component
+reccomplex.generationInfo.mazeComponent.mazeid=Maze ID
 reccomplex.generationInfo.mazeComponent.tooltip=A room in a maze
 reccomplex.generationInfo.mazeComponent.title=In Maze: %s
+
 reccomplex.generationInfo.static=Static
+reccomplex.generationInfo.static.summary.pattern=Every %s, %s blocks
+reccomplex.generationInfo.static.summary.spawn=From Spawn %s, %s
+reccomplex.generationInfo.static.summary.nospawn=At %s, %s
 reccomplex.generationInfo.static.tooltip=Constant Position in a specific dimension<br>Also useful for spawn structures
-reccomplex.generationInfo.static.spawn=From Spawn %s, %s
-reccomplex.generationInfo.static.nospawn=At %s, %s
-reccomplex.generationInfo.static.pattern=Every %s, %s blocks
-reccomplex.generationInfo.static.pattern.repeat=Number of blocks after which<br>the structure is generated again.
-reccomplex.generationInfo.static.pattern.rshift=Random displacement for each<br>placement of the structure.
+reccomplex.generationInfo.static.spawn=From Spawn
+reccomplex.generationInfo.static.position.x=Position (x)
+reccomplex.generationInfo.static.position.z=Position (z)
+reccomplex.generationInfo.static.pattern.repeat.x=Repeat (x)
+reccomplex.generationInfo.static.pattern.repeat.z=Repeat (y)
+reccomplex.generationInfo.static.pattern.repeat.tooltip=Number of blocks after which<br>the structure is generated again.
+reccomplex.generationInfo.static.pattern.rshift.tooltip=Random displacement for each<br>placement of the structure.
+reccomplex.generationInfo.static.pattern.rshift.x=Random shift (x)
+reccomplex.generationInfo.static.pattern.rshift.z=Random shift (z)
+
 reccomplex.generationInfo.structureList=Structure List
 reccomplex.generationInfo.structureList.tooltip=As part of a structure list<br>(Used in structure blocks)
 reccomplex.generationInfo.structureList.title=In List %s
+
 reccomplex.generationInfo.vanilla=Structure
 reccomplex.generationInfo.vanilla.tooltip=As part of a vanilla structure<br>(Like villages)
 reccomplex.generationInfo.vanilla.title=In Complex Structure
@@ -318,9 +331,13 @@ reccomplex.weightedBlockStatePreset.clear.tooltip=No Blocks
 reccomplex.weightedBlockStatePreset.allWool=Wool
 reccomplex.weightedBlockStatePreset.allWool.tooltip=All 16 wool blocks
 
+reccomplex.expression.biome=Biome Expression
 reccomplex.expression.biome.tooltip=This is a §obiome expression§r.<br>Visit the wiki for syntax information.
+reccomplex.expression.dimension=Dimension Expression
 reccomplex.expression.dimension.tooltip=This is a §odimension expression§r.<br>Visit the wiki for syntax information.
+reccomplex.expression.block=Block Expression
 reccomplex.expression.block.tooltip=This is a §oblock expression§r.<br>Visit the wiki for syntax information.
+reccomplex.expression.dependency=Dependency Expression
 reccomplex.expression.dependency.tooltip=This is a §odependency expression§r.<br>Visit the wiki for syntax information.
 
 reccomplex.direction.up=Up (+Y)
@@ -356,3 +373,9 @@ reccomplex.worldscript.mazeGen=Generate Maze
 reccomplex.worldscript.mazeGen.tooltip=Generates a maze from weighted components.
 reccomplex.worldscript.strucGen=Generate Structure
 reccomplex.worldscript.strucGen.tooltip=Generates a structure from weighted options.
+
+reccomplex.gui.biomes=Biomes
+reccomplex.gui.dimensions=Dimensions
+
+reccomplex.gui.inventorygen.componentid=Component ID
+reccomplex.gui.inventorygen.groupid=Group ID

@@ -21,21 +21,21 @@ public class TableElementCell implements TableElement
     @Nonnull
     protected TableCell cell;
 
-    public TableElementCell(String id, String title, @Nonnull TableCell cell)
+    public TableElementCell(@Nullable String id, @Nullable String title, @Nonnull TableCell cell)
     {
         this.id = id;
         this.title = title;
         this.cell = cell;
     }
 
-    public TableElementCell(String title, @Nonnull TableCell cell)
+    public TableElementCell(@Nullable String title, @Nonnull TableCell cell)
     {
         this(null, title, cell);
     }
 
     public TableElementCell(@Nonnull TableCell cell)
     {
-        this(null, "", cell);
+        this(null, null, cell);
     }
 
     @Nullable
@@ -50,6 +50,7 @@ public class TableElementCell implements TableElement
         this.id = id;
     }
 
+    @Nullable
     @Override
     public String getTitle()
     {

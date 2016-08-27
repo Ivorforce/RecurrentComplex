@@ -7,13 +7,13 @@ package ivorius.reccomplex.gui.editinventorygen;
 
 import ivorius.ivtoolkit.gui.*;
 import ivorius.ivtoolkit.network.PacketGuiAction;
+import ivorius.ivtoolkit.tools.IvTranslations;
 import ivorius.reccomplex.RecurrentComplex;
 import ivorius.reccomplex.gui.GuiValidityStateIndicator;
 import ivorius.reccomplex.gui.InventoryWatcher;
 import ivorius.reccomplex.gui.TableDataSourceExpression;
 import ivorius.reccomplex.gui.table.Bounds;
 import ivorius.reccomplex.network.PacketEditInventoryGenerator;
-import ivorius.ivtoolkit.tools.IvTranslations;
 import ivorius.reccomplex.utils.RangeHelper;
 import ivorius.reccomplex.worldgen.inventory.GenericItemCollection;
 import ivorius.reccomplex.worldgen.inventory.GenericItemCollection.Component;
@@ -21,14 +21,13 @@ import net.minecraft.client.gui.Gui;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiTextField;
 import net.minecraft.client.gui.inventory.GuiContainer;
-import net.minecraft.util.text.translation.I18n;
+import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
-import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.StringUtils;
+import net.minecraft.util.math.MathHelper;
 import org.lwjgl.input.Keyboard;
-import net.minecraft.client.renderer.GlStateManager;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -90,8 +89,8 @@ public class GuiEditInventoryGen extends GuiContainer implements InventoryWatche
         this.nameTextField.setMaxStringLength(32767);
         this.nameTextField.setFocused(true);
         this.nameTextField.setText(key);
-        this.buttonList.add(this.saveBtn = new GuiButton(0, this.width / 2, this.height / 2 - 110, 70, 20, I18n.translateToLocalFormatted("guiGenericInventory.save")));
-        this.buttonList.add(this.cancelBtn = new GuiButton(1, this.width / 2 + 75, this.height / 2 - 110, 70, 20, I18n.translateToLocalFormatted("gui.cancel")));
+        this.buttonList.add(this.saveBtn = new GuiButton(0, this.width / 2, this.height / 2 - 110, 70, 20, IvTranslations.format("guiGenericInventory.save")));
+        this.buttonList.add(this.cancelBtn = new GuiButton(1, this.width / 2 + 75, this.height / 2 - 110, 70, 20, IvTranslations.format("gui.cancel")));
 
         inventoryGenIDTextField = new GuiTextField(0, this.fontRendererObj, this.width / 2 - 150, this.height / 2 - 85, 142, 20);
         inventoryGenIDTextField.setMaxStringLength(32767);
@@ -159,11 +158,11 @@ public class GuiEditInventoryGen extends GuiContainer implements InventoryWatche
                 minMaxSlider.setRange(new FloatRange(chestContent.min, chestContent.max));
                 minMaxSlider.setMaxValue(chestContent.itemStack.getMaxStackSize());
                 minMaxSlider.enabled = true;
-                minMaxSlider.displayString = I18n.translateToLocalFormatted("guiGenericInventory.minMax", chestContent.min, chestContent.max);
+                minMaxSlider.displayString = IvTranslations.format("guiGenericInventory.minMax", chestContent.min, chestContent.max);
 
                 weightSlider.setValue((float) chestContent.weight);
                 weightSlider.enabled = true;
-                weightSlider.displayString = I18n.translateToLocalFormatted("guiGenericInventory.weightNumber", String.format("%.2f", weightSlider.getValue()));
+                weightSlider.displayString = IvTranslations.format("guiGenericInventory.weightNumber", String.format("%.2f", weightSlider.getValue()));
             }
             else
             {
@@ -174,7 +173,7 @@ public class GuiEditInventoryGen extends GuiContainer implements InventoryWatche
 
                 weightSlider.setValue(weightSlider.getMinValue());
                 weightSlider.enabled = false;
-                weightSlider.displayString = I18n.translateToLocalFormatted("structures.gui.random.weight");
+                weightSlider.displayString = IvTranslations.format("structures.gui.random.weight");
             }
         }
     }
@@ -295,13 +294,13 @@ public class GuiEditInventoryGen extends GuiContainer implements InventoryWatche
     protected void drawGuiContainerBackgroundLayer(float var1, int mouseX, int mouseY)
     {
         nameTextField.drawTextBox();
-        drawPlaceholderString(nameTextField, "Component ID");
+        drawPlaceholderString(nameTextField, IvTranslations.get("reccomplex.gui.inventorygen.componentid"));
 
         inventoryGenIDTextField.drawTextBox();
-        drawPlaceholderString(inventoryGenIDTextField, "Group ID");
+        drawPlaceholderString(inventoryGenIDTextField, IvTranslations.get("reccomplex.gui.inventorygen.groupid"));
 
         dependencyTextField.drawTextBox();
-        drawPlaceholderString(dependencyTextField, "Dependency Expression");
+        drawPlaceholderString(dependencyTextField, IvTranslations.get("reccomplex.expression.dependency"));
         dependencyStateIndicator.draw();
 
         mc.getTextureManager().bindTexture(textureBackground);
@@ -315,9 +314,9 @@ public class GuiEditInventoryGen extends GuiContainer implements InventoryWatche
 //        for (int i = 0; i < ContainerEditInventoryGen.ITEM_COLUMNS; i++)
 //        {
 //            int baseX = width / 2 + i * ContainerEditInventoryGen.SEGMENT_WIDTH;
-//            drawCenteredString(fontRendererObj, I18n.translateToLocalFormatted("guiGenericInventory.min"), baseX + 20, this.height / 2 - 75, 0xffffffff);
-//            drawCenteredString(fontRendererObj, I18n.translateToLocalFormatted("guiGenericInventory.max"), baseX + 40, this.height / 2 - 75, 0xffffffff);
-//            drawCenteredString(fontRendererObj, I18n.translateToLocalFormatted("guiGenericInventory.weight"), baseX + 60, this.height / 2 - 75, 0xffffffff);
+//            drawCenteredString(fontRendererObj, IvTranslations.format("guiGenericInventory.min"), baseX + 20, this.height / 2 - 75, 0xffffffff);
+//            drawCenteredString(fontRendererObj, IvTranslations.format("guiGenericInventory.max"), baseX + 40, this.height / 2 - 75, 0xffffffff);
+//            drawCenteredString(fontRendererObj, IvTranslations.format("guiGenericInventory.weight"), baseX + 60, this.height / 2 - 75, 0xffffffff);
 //        }
 
         if (Bounds.fromSize(dependencyStateIndicator.xPosition, dependencyStateIndicator.getWidth(), dependencyStateIndicator.yPosition, dependencyStateIndicator.getHeight()).contains(mouseX, mouseY))

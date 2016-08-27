@@ -14,21 +14,29 @@ import ivorius.reccomplex.scripts.world.WorldScriptMazeGenerator;
 /**
  * Created by lukas on 05.06.14.
  */
-public class TableDataSourceWorldScriptMazeGenerator extends TableDataSourceSegmented implements TableCellPropertyListener, TableCellActionListener
+public class TableDataSourceWorldScriptMazeGenerator extends TableDataSourceSegmented implements TableCellPropertyListener
 {
     public static final int[] DIMENSIONS = new int[]{100, 100, 100};
     private WorldScriptMazeGenerator script;
 
-    private TableDelegate tableDelegate;
-    private TableNavigator tableNavigator;
+    private TableDelegate delegate;
+    private TableNavigator navigator;
 
-    public TableDataSourceWorldScriptMazeGenerator(WorldScriptMazeGenerator script, TableDelegate tableDelegate, TableNavigator tableNavigator)
+    public TableDataSourceWorldScriptMazeGenerator(WorldScriptMazeGenerator script, TableDelegate delegate, TableNavigator navigator)
     {
         this.script = script;
-        this.tableDelegate = tableDelegate;
-        this.tableNavigator = tableNavigator;
+        this.delegate = delegate;
+        this.navigator = navigator;
 
-        addManagedSection(2, new TableDataSourceBlockPos(script.getStructureShift(), script::setStructureShift, new IntegerRange(-50, 50), "Range: %s"));
+        addManagedSection(1, TableCellMultiBuilder.create(navigator, delegate)
+                .addNavigation(() -> "Edit", null,
+                        () -> new GuiTable(delegate, new TableDataSourceMazeComponent(script.mazeComponent, false, navigator, delegate))
+                ).buildPreloaded("Maze"));
+        addManagedSection(2, TableCellMultiBuilder.create(navigator, delegate)
+                .addNavigation(() -> "Edit", null,
+                        () -> new GuiTable(delegate, new TableDataSourceMazeRuleList(script.rules, delegate, navigator, script.mazeComponent.exitPaths, script.mazeComponent.rooms.boundsLower(), script.mazeComponent.rooms.boundsHigher()))
+                ).buildPreloaded("Rules"));
+        addManagedSection(3, new TableDataSourceBlockPos(script.getStructureShift(), script::setStructureShift, new IntegerRange(-50, 50), "Range: %s"));
     }
 
     public WorldScriptMazeGenerator getScript()
@@ -43,28 +51,28 @@ public class TableDataSourceWorldScriptMazeGenerator extends TableDataSourceSegm
 
     public TableDelegate getTableDelegate()
     {
-        return tableDelegate;
+        return delegate;
     }
 
     public void setTableDelegate(TableDelegate tableDelegate)
     {
-        this.tableDelegate = tableDelegate;
+        this.delegate = tableDelegate;
     }
 
-    public TableNavigator getTableNavigator()
+    public TableNavigator getNavigator()
     {
-        return tableNavigator;
+        return navigator;
     }
 
-    public void setTableNavigator(TableNavigator tableNavigator)
+    public void setNavigator(TableNavigator navigator)
     {
-        this.tableNavigator = tableNavigator;
+        this.navigator = navigator;
     }
 
     @Override
     public int numberOfSegments()
     {
-        return 4;
+        return 5;
     }
 
     @Override
@@ -74,9 +82,7 @@ public class TableDataSourceWorldScriptMazeGenerator extends TableDataSourceSegm
         {
             case 0:
                 return 1;
-            case 1:
-                return 2;
-            case 3:
+            case 4:
                 return 3;
             default:
                 return super.sizeOfSegment(segment);
@@ -86,47 +92,37 @@ public class TableDataSourceWorldScriptMazeGenerator extends TableDataSourceSegm
     @Override
     public TableElement elementForIndexInSegment(GuiTable table, int index, int segment)
     {
-        if (segment == 0)
+        switch (segment)
         {
-            TableCellString cell = new TableCellString("mazeID", script.getMazeID());
-            cell.addPropertyListener(this);
-            return new TableElementCell("Maze ID", cell);
-        }
-        else if (segment == 1)
-        {
-            if (index == 0)
+            case 0:
             {
-                TableCellButton cell = new TableCellButton("mazeComponent", new TableCellButton.Action("edit", "Edit"));
-                cell.addListener(this);
-                return new TableElementCell("Maze", cell);
-            }
-            else if (index == 1)
-            {
-                TableCellButton cell = new TableCellButton("rules", new TableCellButton.Action("edit", "Edit"));
-                cell.addListener(this);
-                return new TableElementCell("Rules", cell);
-            }
-        }
-        else if (segment == 3)
-        {
-            if (index == 0)
-            {
-                TableCellInteger cell = new TableCellInteger("roomSizeX", script.getRoomSize()[0], 1, 64);
+                TableCellString cell = new TableCellString("mazeID", script.getMazeID());
                 cell.addPropertyListener(this);
-                return new TableElementCell("Room Size: X", cell);
+                return new TableElementCell("Maze ID", cell);
             }
-            else if (index == 1)
-            {
-                TableCellInteger cell = new TableCellInteger("roomSizeY", script.getRoomSize()[1], 1, 64);
-                cell.addPropertyListener(this);
-                return new TableElementCell("Room Size: Y", cell);
-            }
-            else if (index == 2)
-            {
-                TableCellInteger cell = new TableCellInteger("roomSizeZ", script.getRoomSize()[2], 1, 64);
-                cell.addPropertyListener(this);
-                return new TableElementCell("Room Size: Z", cell);
-            }
+            case 4:
+                switch (index)
+                {
+                    case 0:
+                    {
+                        TableCellInteger cell = new TableCellInteger("roomSizeX", script.getRoomSize()[0], 1, 64);
+                        cell.addPropertyListener(this);
+                        return new TableElementCell("Room Size: X", cell);
+                    }
+                    case 1:
+                    {
+                        TableCellInteger cell = new TableCellInteger("roomSizeY", script.getRoomSize()[1], 1, 64);
+                        cell.addPropertyListener(this);
+                        return new TableElementCell("Room Size: Y", cell);
+                    }
+                    case 2:
+                    {
+                        TableCellInteger cell = new TableCellInteger("roomSizeZ", script.getRoomSize()[2], 1, 64);
+                        cell.addPropertyListener(this);
+                        return new TableElementCell("Room Size: Z", cell);
+                    }
+                }
+                break;
         }
 
         return super.elementForIndexInSegment(table, index, segment);
@@ -156,19 +152,6 @@ public class TableDataSourceWorldScriptMazeGenerator extends TableDataSourceSegm
             int[] size = script.getRoomSize();
             size[2] = (int) cell.getPropertyValue();
             script.setRoomSize(size);
-        }
-    }
-
-    @Override
-    public void actionPerformed(TableCell tableElementButton, String actionID)
-    {
-        if ("mazeComponent".equals(tableElementButton.getID()))
-        {
-            tableNavigator.pushTable(new GuiTable(tableDelegate, new TableDataSourceMazeComponent(script.mazeComponent, false, tableNavigator, tableDelegate)));
-        }
-        else if ("rules".equals(tableElementButton.getID()))
-        {
-            tableNavigator.pushTable(new GuiTable(tableDelegate, new TableDataSourceMazeRuleList(script.rules, tableDelegate, tableNavigator, script.mazeComponent.exitPaths, script.mazeComponent.rooms.boundsLower(), script.mazeComponent.rooms.boundsHigher())));
         }
     }
 }

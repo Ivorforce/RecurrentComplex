@@ -33,6 +33,40 @@ public class TableDataSourceMazePath extends TableDataSourceSegmented implements
         this.tableDelegate = tableDelegate;
     }
 
+    public static boolean contains(int[] array, int[] lower, int[] higher)
+    {
+        for (int i = 0; i < array.length; i++)
+        {
+            if (array[i] < lower[i] || array[i] > higher[i])
+                return false;
+        }
+
+        return true;
+    }
+
+    public static EnumFacing directionFromPath(SavedMazePath path)
+    {
+        switch (path.pathDimension)
+        {
+            case 0:
+                return path.pathGoesUp ? EnumFacing.EAST : EnumFacing.WEST;
+            case 1:
+                return path.pathGoesUp ? EnumFacing.UP : EnumFacing.DOWN;
+            case 2:
+                return path.pathGoesUp ? EnumFacing.SOUTH : EnumFacing.NORTH;
+        }
+
+        return null;
+    }
+
+    public static SavedMazePathConnection pathFromDirection(EnumFacing side, int[] room)
+    {
+        int pathDim = side.getFrontOffsetX() != 0 ? 0 : side.getFrontOffsetY() != 0 ? 1 : side.getFrontOffsetZ() != 0 ? 2 : -1;
+        int offset = side.getFrontOffsetX() + side.getFrontOffsetY() + side.getFrontOffsetZ();
+
+        return new SavedMazePathConnection(pathDim, new MazeRoom(room[0], room[1], room[2]), offset > 0, ConnectorStrategy.DEFAULT_PATH);
+    }
+
     @Override
     public int numberOfSegments()
     {
@@ -76,7 +110,7 @@ public class TableDataSourceMazePath extends TableDataSourceSegmented implements
         }
         else if (segment == 3)
         {
-            invertableButton = new TableCellButton("actions", new TableCellButton.Action("inverse", "Invert", isInvertable()));
+            invertableButton = new TableCellButton("actions", "inverse", "Invert", isInvertable());
             invertableButton.addListener(this);
             return new TableElementCell(invertableButton);
         }
@@ -87,17 +121,6 @@ public class TableDataSourceMazePath extends TableDataSourceSegmented implements
     protected boolean isInvertable()
     {
         return contains(mazePath.inverse().getSourceRoom().getCoordinates(), boundsLower, boundsHigher);
-    }
-
-    public static boolean contains(int[] array, int[] lower, int[] higher)
-    {
-        for (int i = 0; i < array.length; i++)
-        {
-            if (array[i] < lower[i] || array[i] > higher[i])
-                return false;
-        }
-
-        return true;
     }
 
     @Override
@@ -116,31 +139,8 @@ public class TableDataSourceMazePath extends TableDataSourceSegmented implements
             mazePath.sourceRoom = mazePath.sourceRoom.addInDimension(index, (int) cell.getPropertyValue() - mazePath.sourceRoom.getCoordinate(index));
 
             if (invertableButton != null)
-                invertableButton.setEnabled("inverse", isInvertable());
+                invertableButton.setEnabled(isInvertable());
         }
-    }
-
-    public static EnumFacing directionFromPath(SavedMazePath path)
-    {
-        switch (path.pathDimension)
-        {
-            case 0:
-                return path.pathGoesUp ? EnumFacing.EAST : EnumFacing.WEST;
-            case 1:
-                return path.pathGoesUp ? EnumFacing.UP : EnumFacing.DOWN;
-            case 2:
-                return path.pathGoesUp ? EnumFacing.SOUTH : EnumFacing.NORTH;
-        }
-
-        return null;
-    }
-
-    public static SavedMazePathConnection pathFromDirection(EnumFacing side, int[] room)
-    {
-        int pathDim = side.getFrontOffsetX() != 0 ? 0 : side.getFrontOffsetY() != 0 ? 1 : side.getFrontOffsetZ() != 0 ? 2 : -1;
-        int offset = side.getFrontOffsetX() + side.getFrontOffsetY() + side.getFrontOffsetZ();
-
-        return new SavedMazePathConnection(pathDim, new MazeRoom(room[0], room[1], room[2]), offset > 0, ConnectorStrategy.DEFAULT_PATH);
     }
 
     @Override

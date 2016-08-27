@@ -54,15 +54,15 @@ public class TableDataSourceStaticPattern extends TableDataSourceSegmented imple
                 {
                     TableCellStringInt cell = new TableCellStringInt("repeatX", pattern.repeatX);
                     cell.addPropertyListener(this);
-                    cell.setTooltip(IvTranslations.getLines("reccomplex.generationInfo.static.pattern.repeat"));
-                    return new TableElementCell("Repeat (x)", cell);
+                    cell.setTooltip(IvTranslations.getLines("reccomplex.generationInfo.static.pattern.repeat.tooltip"));
+                    return new TableElementCell(IvTranslations.get("reccomplex.generationInfo.static.pattern.repeat.x"), cell);
                 }
                 else if (index == 1)
                 {
                     TableCellStringInt cell = new TableCellStringInt("repeatZ", pattern.repeatZ);
                     cell.addPropertyListener(this);
-                    cell.setTooltip(IvTranslations.getLines("reccomplex.generationInfo.static.pattern.repeat"));
-                    return new TableElementCell("Repeat (z)", cell);
+                    cell.setTooltip(IvTranslations.getLines("reccomplex.generationInfo.static.pattern.repeat.tooltip"));
+                    return new TableElementCell(IvTranslations.get("reccomplex.generationInfo.static.pattern.repeat.z"), cell);
                 }
             }
             case 1:
@@ -71,15 +71,15 @@ public class TableDataSourceStaticPattern extends TableDataSourceSegmented imple
                 {
                     TableCellInteger cell = new TableCellInteger("shiftX", pattern.randomShiftX, 0, 10);
                     cell.addPropertyListener(this);
-                    cell.setTooltip(IvTranslations.getLines("reccomplex.generationInfo.static.pattern.rshift"));
-                    return new TableElementCell("Random shift (x)", cell);
+                    cell.setTooltip(IvTranslations.getLines("reccomplex.generationInfo.static.pattern.rshift.tooltip"));
+                    return new TableElementCell(IvTranslations.get("reccomplex.generationInfo.static.pattern.rshift.x"), cell);
                 }
                 else if (index == 1)
                 {
                     TableCellInteger cell = new TableCellInteger("shiftZ", pattern.randomShiftZ, 0, 10);
                     cell.addPropertyListener(this);
-                    cell.setTooltip(IvTranslations.getLines("reccomplex.generationInfo.static.pattern.rshift"));
-                    return new TableElementCell("Random shift (z)", cell);
+                    cell.setTooltip(IvTranslations.getLines("reccomplex.generationInfo.static.pattern.rshift.tooltip"));
+                    return new TableElementCell(IvTranslations.get("reccomplex.generationInfo.static.pattern.rshift.z"), cell);
                 }
             }
         }

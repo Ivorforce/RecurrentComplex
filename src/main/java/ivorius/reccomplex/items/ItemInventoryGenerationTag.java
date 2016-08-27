@@ -5,6 +5,7 @@
 
 package ivorius.reccomplex.items;
 
+import ivorius.ivtoolkit.tools.IvTranslations;
 import ivorius.reccomplex.RecurrentComplex;
 import ivorius.reccomplex.worldgen.inventory.InventoryGenerationHandler;
 import ivorius.reccomplex.worldgen.inventory.WeightedItemCollection;
@@ -18,10 +19,9 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagString;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumActionResult;
+import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.EnumFacing;
-import net.minecraft.util.text.translation.I18n;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldServer;
 import net.minecraftforge.common.util.Constants;
@@ -110,6 +110,6 @@ public abstract class ItemInventoryGenerationTag extends Item implements Generat
         if (generator != null)
             list.add(generator.getDescriptor());
         else
-            list.add(I18n.translateToLocal("inventoryGen.none"));
+            list.add(IvTranslations.get("inventoryGen.none"));
     }
 }

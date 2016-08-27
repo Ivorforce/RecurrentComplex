@@ -8,14 +8,14 @@ package ivorius.reccomplex.structures.generic.gentypes;
 import com.google.gson.*;
 import ivorius.ivtoolkit.maze.components.MazeRoom;
 import ivorius.ivtoolkit.random.WeightedSelector;
+import ivorius.ivtoolkit.tools.IvTranslations;
 import ivorius.reccomplex.gui.editstructure.gentypes.TableDataSourceMazeGenerationInfo;
 import ivorius.reccomplex.gui.table.TableDataSource;
 import ivorius.reccomplex.gui.table.TableDelegate;
 import ivorius.reccomplex.gui.table.TableNavigator;
 import ivorius.reccomplex.json.JsonUtils;
-import ivorius.reccomplex.structures.generic.maze.*;
 import ivorius.reccomplex.structures.generic.Selection;
-import net.minecraft.util.text.translation.I18n;
+import ivorius.reccomplex.structures.generic.maze.*;
 
 import javax.annotation.Nonnull;
 import java.lang.reflect.Type;
@@ -94,7 +94,7 @@ public class MazeGenerationInfo extends StructureGenerationInfo implements Weigh
     @Override
     public String displayString()
     {
-        return I18n.translateToLocalFormatted("reccomplex.generationInfo.mazeComponent.title", mazeID);
+        return IvTranslations.format("reccomplex.generationInfo.mazeComponent.title", mazeID);
     }
 
     @Override

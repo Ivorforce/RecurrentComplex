@@ -41,7 +41,7 @@ public class TableDataSourceSpawnCommandEntry extends TableDataSourceSegmented i
     {
         if (index == 0)
         {
-            TableCellPresetAction cell = new TableCellPresetAction("default", "Apply", new TableCellButton.Action("spawner", "Mob Spawner"), new TableCellButton.Action("entity", "Spawn Entity"));
+            TableCellPresetAction cell = new TableCellPresetAction("default", "Apply", new TableCellButton("", "spawner", "Mob Spawner"), new TableCellButton("", "entity", "Spawn Entity"));
             cell.addListener(this);
             return new TableElementCell("Preset", cell);
         }

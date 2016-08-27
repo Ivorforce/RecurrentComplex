@@ -5,16 +5,16 @@
 
 package ivorius.reccomplex.gui.worldscripts.mazegenerator;
 
+import ivorius.ivtoolkit.tools.IvTranslations;
 import ivorius.reccomplex.gui.table.*;
 import ivorius.reccomplex.gui.worldscripts.mazegenerator.reachability.TableDataSourceMazeReachability;
 import ivorius.reccomplex.structures.generic.maze.SavedMazeComponent;
 import ivorius.reccomplex.structures.generic.maze.SavedMazeReachability;
-import ivorius.ivtoolkit.tools.IvTranslations;
 
 /**
  * Created by lukas on 26.04.15.
  */
-public class TableDataSourceMazeComponent extends TableDataSourceSegmented implements TableCellActionListener
+public class TableDataSourceMazeComponent extends TableDataSourceSegmented
 {
     public static final int[] DEFAULT_MAX_COMPONENT_SIZE = {100, 100, 100};
 
@@ -32,71 +32,24 @@ public class TableDataSourceMazeComponent extends TableDataSourceSegmented imple
         this.navigator = navigator;
         this.tableDelegate = tableDelegate;
         addManagedSection(0, new TableDataSourceConnector(component.defaultConnector, IvTranslations.get("reccomplex.maze.connector.default")));
+        addManagedSection(1, TableCellMultiBuilder.create(navigator, tableDelegate)
+                .addNavigation(() -> "Edit", null,
+                        () -> new GuiTable(tableDelegate, new TableDataSourceSelection(component.rooms, DEFAULT_MAX_COMPONENT_SIZE, tableDelegate, navigator))
+                ).buildPreloaded("Rooms"));
+        addManagedSection(2, TableCellMultiBuilder.create(navigator, tableDelegate)
+                .addNavigation(() -> "Edit", null,
+                        () -> new GuiTable(tableDelegate, new TableDataSourceMazePathConnectionList(component.exitPaths, tableDelegate, navigator, component.rooms.boundsLower(), component.rooms.boundsHigher()))
+                ).buildPreloaded("Exits"));
+        addManagedSection(3, TableCellMultiBuilder.create(navigator, tableDelegate)
+                .addNavigation(() -> "Edit", () -> IvTranslations.formatLines("reccomplex.reachability.tooltip"),
+                        () -> new GuiTable(tableDelegate, new TableDataSourceMazeReachability(component.reachability, tableDelegate, navigator, SavedMazeReachability.buildExpected(component), component.rooms.boundsLower(), component.rooms.boundsHigher()))
+                ).buildPreloaded("Reachability"));
+
     }
 
     @Override
     public int numberOfSegments()
     {
         return showReachability ? 4 : 3;
-    }
-
-    @Override
-    public int sizeOfSegment(int segment)
-    {
-        switch (segment)
-        {
-            case 1:
-            case 2:
-            case 3:
-                return 1;
-        }
-
-        return super.sizeOfSegment(segment);
-    }
-
-    @Override
-    public TableElement elementForIndexInSegment(GuiTable table, int index, int segment)
-    {
-        switch (segment)
-        {
-            case 1:
-            {
-                TableCellButton cell = new TableCellButton("rooms", new TableCellButton.Action("edit", "Edit"));
-                cell.addListener(this);
-                return new TableElementCell("Rooms", cell);
-            }
-            case 2:
-            {
-                TableCellButton cell = new TableCellButton("exits", new TableCellButton.Action("edit", "Edit"));
-                cell.addListener(this);
-                return new TableElementCell("Exits", cell);
-            }
-            case 3:
-            {
-                TableCellButton cell = new TableCellButton("reachability", new TableCellButton.Action("edit", "Edit"));
-                cell.setTooltip(IvTranslations.formatLines("reccomplex.reachability.tooltip"));
-                cell.addListener(this);
-                return new TableElementCell("Reachability", cell);
-            }
-        }
-
-        return super.elementForIndexInSegment(table, index, segment);
-    }
-
-    @Override
-    public void actionPerformed(TableCell cell, String actionID)
-    {
-        if ("rooms".equals(cell.getID()))
-        {
-            navigator.pushTable(new GuiTable(tableDelegate, new TableDataSourceSelection(component.rooms, DEFAULT_MAX_COMPONENT_SIZE, tableDelegate, navigator)));
-        }
-        else if ("exits".equals(cell.getID()))
-        {
-            navigator.pushTable(new GuiTable(tableDelegate, new TableDataSourceMazePathConnectionList(component.exitPaths, tableDelegate, navigator, component.rooms.boundsLower(), component.rooms.boundsHigher())));
-        }
-        else if ("reachability".equals(cell.getID()))
-        {
-            navigator.pushTable(new GuiTable(tableDelegate, new TableDataSourceMazeReachability(component.reachability, tableDelegate, navigator, SavedMazeReachability.buildExpected(component), component.rooms.boundsLower(), component.rooms.boundsHigher())));
-        }
     }
 }

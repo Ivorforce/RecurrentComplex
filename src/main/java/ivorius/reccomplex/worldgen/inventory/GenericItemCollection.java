@@ -21,6 +21,7 @@ import net.minecraft.util.WeightedRandom;
 import net.minecraft.world.WorldServer;
 import net.minecraftforge.fml.common.network.ByteBufUtils;
 
+import javax.annotation.Nullable;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
@@ -48,21 +49,6 @@ public class GenericItemCollection implements WeightedItemCollection
         NbtToJson.registerSafeNBTSerializer(builder);
 
         return builder.create();
-    }
-
-    public static Gson getGson()
-    {
-        return gson;
-    }
-
-    public static Component readComponent(ByteBuf data)
-    {
-        return getGson().fromJson(ByteBufUtils.readUTF8String(data), Component.class);
-    }
-
-    public static void writeComponent(ByteBuf data, Component component)
-    {
-        ByteBufUtils.writeUTF8String(data, getGson().toJson(component));
     }
 
     @Override

@@ -9,12 +9,15 @@ import com.google.common.collect.Sets;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonSyntaxException;
+import io.netty.buffer.ByteBuf;
 import ivorius.reccomplex.RCConfig;
 import ivorius.reccomplex.RecurrentComplex;
 import ivorius.reccomplex.json.NbtToJson;
 import ivorius.reccomplex.utils.CustomizableMap;
 import ivorius.reccomplex.worldgen.inventory.GenericItemCollection.Component;
+import net.minecraftforge.fml.common.network.ByteBufUtils;
 
+import javax.annotation.Nullable;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Map;
@@ -92,6 +95,26 @@ public class GenericItemCollectionRegistry
     public boolean isActive(String key)
     {
         return generatingComponents.contains(key);
+    }
+
+    @Nullable
+    public Component readComponent(ByteBuf data)
+    {
+        try
+        {
+            return createComponentFromJSON(ByteBufUtils.readUTF8String(data));
+        }
+        catch (InventoryLoadException e)
+        {
+            e.printStackTrace();
+        }
+
+        return null;
+    }
+
+    public void writeComponent(ByteBuf data, Component component)
+    {
+        ByteBufUtils.writeUTF8String(data, createJSONFromComponent(component));
     }
 
     public String createJSONFromComponent(Component inventoryGenerator)

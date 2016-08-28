@@ -13,6 +13,7 @@ import ivorius.reccomplex.worldgen.inventory.GenericItemCollection.Component;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
 
+import javax.annotation.Nonnull;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -62,7 +63,7 @@ public class ItemCollectionSaveHandler implements FileTypeHandler
         GenericItemCollectionRegistry.INSTANCE.clearCustom();
     }
 
-    public static boolean saveInventoryGenerator(Component info, String name)
+    public static boolean saveInventoryGenerator(@Nonnull Component info, @Nonnull String name)
     {
         File structuresFile = IvFileHelper.getValidatedFolder(RecurrentComplex.proxy.getBaseFolderFile("structures"));
         if (structuresFile != null)
@@ -75,6 +76,7 @@ public class ItemCollectionSaveHandler implements FileTypeHandler
 
                 try
                 {
+                    newFile.delete(); // Prevent case mismatching
                     FileUtils.writeStringToFile(newFile, json);
                 }
                 catch (IOException e)

@@ -8,7 +8,6 @@ package ivorius.reccomplex.network;
 import io.netty.buffer.ByteBuf;
 import ivorius.reccomplex.worldgen.inventory.GenericItemCollection.Component;
 import ivorius.reccomplex.worldgen.inventory.GenericItemCollectionRegistry;
-import ivorius.reccomplex.worldgen.inventory.InventoryLoadException;
 import net.minecraftforge.fml.common.network.ByteBufUtils;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 
@@ -54,23 +53,13 @@ public class PacketEditInvGen implements IMessage
     public void fromBytes(ByteBuf buf)
     {
         key = ByteBufUtils.readUTF8String(buf);
-        String json = ByteBufUtils.readUTF8String(buf);
-
-        try
-        {
-            inventoryGenerator = GenericItemCollectionRegistry.INSTANCE.createComponentFromJSON(json);
-        }
-        catch (InventoryLoadException e)
-        {
-            e.printStackTrace();
-        }
+        inventoryGenerator = GenericItemCollectionRegistry.INSTANCE.readComponent(buf);
     }
 
     @Override
     public void toBytes(ByteBuf buf)
     {
         ByteBufUtils.writeUTF8String(buf, key);
-        String json = GenericItemCollectionRegistry.INSTANCE.createJSONFromComponent(inventoryGenerator);
-        ByteBufUtils.writeUTF8String(buf, json);
+        GenericItemCollectionRegistry.INSTANCE.writeComponent(buf, inventoryGenerator);
     }
 }

@@ -38,7 +38,8 @@ public class PacketEditInvGenHandler extends SchedulingMessageHandler<PacketEdit
 
         if (RecurrentComplex.checkPerms(player)) return;
 
-        if (ItemCollectionSaveHandler.saveInventoryGenerator(message.getInventoryGenerator(), message.getKey()))
+        if ((message.getInventoryGenerator() != null && message.getKey() != null) &&
+                ItemCollectionSaveHandler.saveInventoryGenerator(message.getInventoryGenerator(), message.getKey()))
         {
             player.addChatMessage(ServerTranslations.format("inventorygen.save.success", message.getKey()));
 

@@ -72,6 +72,7 @@ public class StructureSaveHandler implements FileTypeHandler
 
                 try
                 {
+                    newFile.delete(); // Prevent case mismatching
                     ZipOutputStream zipOutputStream = new ZipOutputStream(new FileOutputStream(newFile));
 
                     addZipEntry(zipOutputStream, STRUCTURE_INFO_JSON_FILENAME, json.getBytes());
@@ -94,6 +95,7 @@ public class StructureSaveHandler implements FileTypeHandler
 
                 try
                 {
+                    newFile.delete(); // Prevent case mismatching
                     FileUtils.writeStringToFile(newFile, json);
                 }
                 catch (Exception e)

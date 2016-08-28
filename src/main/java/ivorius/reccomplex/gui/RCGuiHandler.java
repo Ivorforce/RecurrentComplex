@@ -11,7 +11,7 @@ import ivorius.reccomplex.RecurrentComplex;
 import ivorius.reccomplex.gui.container.IvGuiHandler;
 import ivorius.reccomplex.gui.container.IvGuiRegistry;
 import ivorius.reccomplex.gui.inventorygen.GuiEditInventoryGen;
-import ivorius.reccomplex.worldgen.inventory.GenericItemCollection;
+import ivorius.reccomplex.worldgen.inventory.GenericItemCollectionRegistry;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.inventory.Container;
 import net.minecraftforge.fml.common.network.ByteBufUtils;
@@ -19,7 +19,6 @@ import ivorius.reccomplex.gui.inventorygen.ContainerEditInventoryGenItems;
 import ivorius.reccomplex.gui.inventorygen.GuiEditInventoryGenItems;
 import ivorius.reccomplex.worldgen.inventory.GenericItemCollection.Component;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.world.World;
 
 /**
  * Created by lukas on 26.05.14.
@@ -38,7 +37,7 @@ public class RCGuiHandler implements IvGuiHandler
 
         ByteBuf buf = Unpooled.buffer();
         ByteBufUtils.writeUTF8String(buf, key);
-        GenericItemCollection.writeComponent(buf, component);
+        GenericItemCollectionRegistry.INSTANCE.writeComponent(buf, component);
         IvGuiRegistry.INSTANCE.openGui(player, RecurrentComplex.MOD_ID, editInventoryGen, buf);
     }
 
@@ -65,7 +64,7 @@ public class RCGuiHandler implements IvGuiHandler
                 return null; // Potential source of spoof otherwise
 
             String key = ByteBufUtils.readUTF8String(data);
-            Component component = GenericItemCollection.readComponent(data);
+            Component component = GenericItemCollectionRegistry.INSTANCE.readComponent(data);
 
             if (component != null)
                 return new ContainerEditInventoryGenItems(player, key, component);
@@ -80,7 +79,7 @@ public class RCGuiHandler implements IvGuiHandler
         if (id == editInventoryGen)
         {
             String key = ByteBufUtils.readUTF8String(data);
-            Component component = GenericItemCollection.readComponent(data);
+            Component component = GenericItemCollectionRegistry.INSTANCE.readComponent(data);
 
             if (component != null)
                 return new GuiEditInventoryGen(player, component, key);
@@ -88,7 +87,7 @@ public class RCGuiHandler implements IvGuiHandler
         else if (id == editInventoryGenItems)
         {
             String key = ByteBufUtils.readUTF8String(data);
-            Component component = GenericItemCollection.readComponent(data);
+            Component component = GenericItemCollectionRegistry.INSTANCE.readComponent(data);
 
             if (component != null)
                 return new GuiEditInventoryGenItems(player, component, key);

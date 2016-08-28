@@ -169,10 +169,7 @@ inventoryGen.mod=Mod Generator
 inventoryGen.active=%sActive%s
 inventoryGen.inactive=%sInactive%s
 
-guiGenericInventory.save=Save
-guiGenericInventory.minMax=Min: %s, Max: %s
-guiGenericInventory.minMaxItems=Min Items: %s, Max Items: %s
-guiGenericInventory.weightNumber=Weight: %s
+reccomplex.save.permission=You do not have permission to save!
 
 inventorygen.save.success=Exported inventory generator to '%s'
 inventorygen.save.failure=Failed to export inventory generator to '%s'
@@ -408,6 +405,16 @@ reccomplex.gui.dimensions=Dimensions
 reccomplex.gui.sources=Sources
 reccomplex.gui.destinations=Destinations
 
+reccomplex.gui.inventorygen.save=Save
+reccomplex.gui.inventorygen.minMax=Min: %s, Max: %s
+reccomplex.gui.inventorygen.minMaxItems=Min Items: %s, Max Items: %s
+reccomplex.gui.inventorygen.weightNumber=Weight: %s
+reccomplex.gui.inventorygen.componentid=Component ID
+reccomplex.gui.inventorygen.componentid.tooltip=The unique ID of this component.
+reccomplex.gui.inventorygen.groupid=Group ID
+reccomplex.gui.inventorygen.groupid.tooltip=The shared group ID of this component.<br>All components using this ID<br>will be added to the inventory<br>generator of this name.
+reccomplex.inventorygen.dependencies=Dependencies
+reccomplex.gui.inventorygen.items.summary=%s Items
 reccomplex.gui.inventorygen.componentid=Component ID
 reccomplex.gui.inventorygen.groupid=Group ID
 

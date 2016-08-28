@@ -1,9 +1,9 @@
 /*
  *  Copyright (c) 2014, Lukas Tenbrink.
- *  * http://lukas.axxim.net
+ *  * http://ivorius.net
  */
 
-package ivorius.reccomplex.gui.editinventorygen;
+package ivorius.reccomplex.gui.inventorygen;
 
 import ivorius.reccomplex.gui.InventoryWatcher;
 import ivorius.reccomplex.worldgen.inventory.WeightedRandomChestContent;

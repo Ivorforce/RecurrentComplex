@@ -5,26 +5,26 @@
 
 package ivorius.reccomplex.network;
 
-import net.minecraftforge.fml.common.network.ByteBufUtils;
-import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 import io.netty.buffer.ByteBuf;
 import ivorius.reccomplex.worldgen.inventory.GenericItemCollection.Component;
 import ivorius.reccomplex.worldgen.inventory.GenericItemCollectionRegistry;
 import ivorius.reccomplex.worldgen.inventory.InventoryLoadException;
+import net.minecraftforge.fml.common.network.ByteBufUtils;
+import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 
 /**
  * Created by lukas on 03.08.14.
  */
-public class PacketEditInventoryGenerator implements IMessage
+public class PacketEditInvGen implements IMessage
 {
     private String key;
     private Component inventoryGenerator;
 
-    public PacketEditInventoryGenerator()
+    public PacketEditInvGen()
     {
     }
 
-    public PacketEditInventoryGenerator(String key, Component inventoryGenerator)
+    public PacketEditInvGen(String key, Component inventoryGenerator)
     {
         this.key = key;
         this.inventoryGenerator = inventoryGenerator;

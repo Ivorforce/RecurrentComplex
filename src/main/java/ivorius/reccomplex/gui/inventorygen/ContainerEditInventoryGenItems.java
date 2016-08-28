@@ -1,13 +1,14 @@
 /*
  *  Copyright (c) 2014, Lukas Tenbrink.
- *  * http://lukas.axxim.net
+ *  * http://ivorius.net
  */
 
-package ivorius.reccomplex.gui.editinventorygen;
+package ivorius.reccomplex.gui.inventorygen;
 
 import io.netty.buffer.ByteBuf;
 import ivorius.ivtoolkit.network.PacketGuiAction;
 import ivorius.reccomplex.gui.SlotDynamicIndex;
+import ivorius.reccomplex.worldgen.inventory.GenericItemCollection;
 import ivorius.reccomplex.worldgen.inventory.GenericItemCollection.Component;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
@@ -21,22 +22,25 @@ import java.util.List;
 /**
  * Created by lukas on 26.05.14.
  */
-public class ContainerEditInventoryGen extends Container implements PacketGuiAction.ActionHandler
+public class ContainerEditInventoryGenItems extends Container implements PacketGuiAction.ActionHandler
 {
     public static final int ITEM_ROWS = 4;
     public static final int ITEM_COLUMNS = 1;
     public static final int SEGMENT_WIDTH = 288;
 
+    private final String key;
+    private final Component component;
+
     public InventoryGenericInvGen_Single inventory;
-    private Component inventoryGenerator;
 
     private List<SlotDynamicIndex> scrollableSlots = new ArrayList<>();
 
-    public ContainerEditInventoryGen(EntityPlayer player, Component inventoryGenerator)
+    public ContainerEditInventoryGenItems(EntityPlayer player, String key, Component component)
     {
-        inventory = new InventoryGenericInvGen_Single(inventoryGenerator.items);
+        inventory = new InventoryGenericInvGen_Single(component.items);
 
-        this.inventoryGenerator = inventoryGenerator;
+        this.key = key;
+        this.component = component;
 
         InventoryPlayer inventoryplayer = player.inventory;
 

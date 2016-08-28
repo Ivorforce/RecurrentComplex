@@ -7,6 +7,21 @@ package ivorius.reccomplex;
 
 import ivorius.ivtoolkit.network.PacketEntityCapabilityData;
 import ivorius.ivtoolkit.network.PacketEntityCapabilityDataHandler;
+import ivorius.ivtoolkit.network.PacketGuiAction;
+import ivorius.ivtoolkit.network.PacketGuiActionHandler;
+import ivorius.ivtoolkit.tools.MCRegistry;
+import ivorius.ivtoolkit.tools.MCRegistryDefault;
+import ivorius.reccomplex.commands.RCCommands;
+import ivorius.reccomplex.events.RCForgeEventHandler;
+import ivorius.reccomplex.files.RCFileTypeRegistry;
+import ivorius.reccomplex.gui.RCGuiHandler;
+import ivorius.reccomplex.gui.container.IvGuiRegistry;
+import ivorius.reccomplex.network.*;
+import ivorius.reccomplex.structures.registry.MCRegistrySpecial;
+import ivorius.reccomplex.structures.schematics.SchematicLoader;
+import ivorius.reccomplex.utils.*;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.Mod.EventHandler;
@@ -17,22 +32,6 @@ import net.minecraftforge.fml.common.network.NetworkCheckHandler;
 import net.minecraftforge.fml.common.network.NetworkRegistry;
 import net.minecraftforge.fml.common.network.simpleimpl.SimpleNetworkWrapper;
 import net.minecraftforge.fml.relauncher.Side;
-import ivorius.ivtoolkit.network.PacketGuiAction;
-import ivorius.ivtoolkit.network.PacketGuiActionHandler;
-import ivorius.ivtoolkit.tools.MCRegistry;
-import ivorius.ivtoolkit.tools.MCRegistryDefault;
-import ivorius.reccomplex.commands.RCCommands;
-import ivorius.reccomplex.events.RCForgeEventHandler;
-import ivorius.reccomplex.files.RCFileTypeRegistry;
-import ivorius.reccomplex.gui.RCGuiHandler;
-import ivorius.reccomplex.network.*;
-import ivorius.reccomplex.structures.registry.MCRegistrySpecial;
-import ivorius.reccomplex.structures.schematics.SchematicLoader;
-import ivorius.reccomplex.utils.FMLMissingRemapper;
-import ivorius.reccomplex.utils.FMLRemapper;
-import ivorius.reccomplex.utils.FMLRemapperConvenience;
-import ivorius.reccomplex.utils.MCRegistryRemapping;
-import net.minecraftforge.common.config.Configuration;
 import org.apache.logging.log4j.Logger;
 
 import java.util.Map;
@@ -82,6 +81,19 @@ public class RecurrentComplex
         return RCConfig.isLightweightMode();
     }
 
+    public static boolean checkPerms(EntityPlayer player)
+    {
+        boolean b = canHandleSaving(player);
+        if (!b)
+            ServerTranslations.get("reccomplex.save.permission");
+        return !b;
+    }
+
+    public static boolean canHandleSaving(EntityPlayer player)
+    {
+        return player.canCommandSenderUseCommand(2, "setblock");
+    }
+
     @NetworkCheckHandler
     public boolean checkNetwork(Map<String, String> mods, Side side)
     {
@@ -109,7 +121,7 @@ public class RecurrentComplex
         forgeEventHandler.register();
 
         guiHandler = new RCGuiHandler();
-        NetworkRegistry.INSTANCE.registerGuiHandler(this, guiHandler);
+        IvGuiRegistry.INSTANCE.register(MOD_ID, guiHandler);
 
         communicationHandler = new RCCommunicationHandler(logger, MOD_ID, instance);
 
@@ -132,24 +144,24 @@ public class RecurrentComplex
     protected void registerServerPackets()
     {
         network.registerMessage(PacketGuiActionHandler.class, PacketGuiAction.class, 1, Side.SERVER);
-        network.registerMessage(PacketEditInventoryGeneratorHandler.class, PacketEditInventoryGenerator.class, 3, Side.SERVER);
         network.registerMessage(PacketEditTileEntityHandler.class, PacketEditTileEntity.class, 5, Side.SERVER);
         network.registerMessage(PacketSaveStructureHandler.class, PacketSaveStructure.class, 7, Side.SERVER);
         network.registerMessage(PacketSyncItemHandler.class, PacketSyncItem.class, 9, Side.SERVER);
         network.registerMessage(PacketItemEventHandler.class, PacketItemEvent.class, 11, Side.SERVER);
         network.registerMessage(PacketInspectBlockHandler.class, PacketInspectBlock.class, 12, Side.SERVER);
+        network.registerMessage(PacketOpenGuiHandler.class, PacketOpenGui.class, 15, Side.SERVER);
     }
 
     protected void registerClientPackets()
     {
         network.registerMessage(PacketEntityCapabilityDataHandler.class, PacketEntityCapabilityData.class, 0, Side.CLIENT);
-        network.registerMessage(PacketEditInventoryGeneratorHandler.class, PacketEditInventoryGenerator.class, 2, Side.CLIENT);
         network.registerMessage(PacketEditTileEntityHandler.class, PacketEditTileEntity.class, 4, Side.CLIENT);
         network.registerMessage(PacketEditStructureHandler.class, PacketEditStructure.class, 6, Side.CLIENT);
         network.registerMessage(PacketSyncItemHandler.class, PacketSyncItem.class, 8, Side.CLIENT);
         network.registerMessage(PacketItemEventHandler.class, PacketItemEvent.class, 10, Side.CLIENT);
         network.registerMessage(PacketItemEventHandler.class, PacketItemEvent.class, 10, Side.CLIENT);
         network.registerMessage(PacketInspectBlockHandler.class, PacketInspectBlock.class, 13, Side.CLIENT);
+        network.registerMessage(PacketOpenGuiHandler.class, PacketOpenGui.class, 14, Side.CLIENT);
     }
 
     @EventHandler

@@ -123,11 +123,11 @@ inventoryGen.create=Criar Novo Gerador
 inventoryGen.none=Sem Gerador
 inventoryGen.mod=Gerador Mod
 
-guiGenericInventory.save=Salvar
-guiGenericInventory.weight=Peso
-guiGenericInventory.minMax=Min.: %s, Máx.: %s
-guiGenericInventory.minMaxItems=Itens Min.: %s, Itens Máx.: %s
-guiGenericInventory.weightNumber=Peso: %s
+reccomplex.gui.inventorygen.save=Salvar
+reccomplex.gui.inventorygen.weight=Peso
+reccomplex.gui.inventorygen.minMax=Min.: %s, Máx.: %s
+reccomplex.gui.inventorygen.minMaxItems=Itens Min.: %s, Itens Máx.: %s
+reccomplex.gui.inventorygen.weightNumber=Peso: %s
 inventorygen.save.success=Gerador de Inventário exportado para '%s'
 inventorygen.save.failure=Falha ao exportar gerador de inventário para '%s'
 

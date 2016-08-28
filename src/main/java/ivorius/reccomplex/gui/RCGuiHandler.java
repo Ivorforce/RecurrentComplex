@@ -5,66 +5,93 @@
 
 package ivorius.reccomplex.gui;
 
-import net.minecraftforge.fml.common.network.IGuiHandler;
-import ivorius.reccomplex.gui.editinventorygen.ContainerEditInventoryGen;
-import ivorius.reccomplex.gui.editinventorygen.GuiEditInventoryGen;
-import ivorius.reccomplex.items.ItemInventoryGenComponentTag;
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
+import ivorius.reccomplex.RecurrentComplex;
+import ivorius.reccomplex.gui.container.IvGuiHandler;
+import ivorius.reccomplex.gui.container.IvGuiRegistry;
+import ivorius.reccomplex.gui.inventorygen.GuiEditInventoryGen;
+import ivorius.reccomplex.worldgen.inventory.GenericItemCollection;
+import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.inventory.Container;
+import net.minecraftforge.fml.common.network.ByteBufUtils;
+import ivorius.reccomplex.gui.inventorygen.ContainerEditInventoryGenItems;
+import ivorius.reccomplex.gui.inventorygen.GuiEditInventoryGenItems;
 import ivorius.reccomplex.worldgen.inventory.GenericItemCollection.Component;
-import ivorius.reccomplex.worldgen.inventory.GenericItemCollectionRegistry;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
 
 /**
  * Created by lukas on 26.05.14.
  */
-public class RCGuiHandler implements IGuiHandler
+public class RCGuiHandler implements IvGuiHandler
 {
     public static final int editInventoryGen = 0;
+    public static final int editInventoryGenItems = 1;
+
+    protected static void openComponentGui(EntityPlayer player, String key, Component component, int editInventoryGen)
+    {
+        if (key == null)
+            key = "New Generator";
+        if (component == null)
+            component = Component.createDefaultComponent();
+
+        ByteBuf buf = Unpooled.buffer();
+        ByteBufUtils.writeUTF8String(buf, key);
+        GenericItemCollection.writeComponent(buf, component);
+        IvGuiRegistry.INSTANCE.openGui(player, RecurrentComplex.MOD_ID, editInventoryGen, buf);
+    }
+
+    public static void editInventoryGenComponent(EntityPlayer player, String key, Component component)
+    {
+        openComponentGui(player, key, component, RCGuiHandler.editInventoryGen);
+    }
+
+    public static void editInventoryGenComponentItems(EntityPlayer player, String key, Component component)
+    {
+        openComponentGui(player, key, component, editInventoryGenItems);
+    }
 
     @Override
-    public Object getServerGuiElement(int ID, EntityPlayer player, World world, int x, int y, int z)
+    public Container getServerGuiElement(int id, EntityPlayerMP player, ByteBuf data)
     {
-        if (ID == editInventoryGen)
+        if (id == editInventoryGen)
         {
-            ItemStack refStack = player.inventory.getStackInSlot(x);
-            String key = ItemInventoryGenComponentTag.componentKey(refStack);
+            return null;
+        }
+        else if (id == editInventoryGenItems)
+        {
+            if (!player.canCommandSenderUseCommand(2, "give"))
+                return null; // Potential source of spoof otherwise
 
-            if (key == null)
-            {
-                return new ContainerEditInventoryGen(player, Component.createDefaultComponent());
-            }
-            else
-            {
-                Component generator = GenericItemCollectionRegistry.INSTANCE.component(key);
+            String key = ByteBufUtils.readUTF8String(data);
+            Component component = GenericItemCollection.readComponent(data);
 
-                if (generator != null)
-                    return new ContainerEditInventoryGen(player, generator.copy());
-            }
+            if (component != null)
+                return new ContainerEditInventoryGenItems(player, key, component);
         }
 
         return null;
     }
 
     @Override
-    public Object getClientGuiElement(int ID, EntityPlayer player, World world, int x, int y, int z)
+    public Object getClientGuiElement(int id, EntityPlayer player, ByteBuf data)
     {
-        if (ID == editInventoryGen)
+        if (id == editInventoryGen)
         {
-            ItemStack refStack = player.inventory.getStackInSlot(x);
-            String key = ItemInventoryGenComponentTag.componentKey(refStack);
+            String key = ByteBufUtils.readUTF8String(data);
+            Component component = GenericItemCollection.readComponent(data);
 
-            if (key == null)
-            {
-                return new GuiEditInventoryGen(player, Component.createDefaultComponent(), "NewGenerator");
-            }
-            else
-            {
-                Component generator = GenericItemCollectionRegistry.INSTANCE.component(key);
+            if (component != null)
+                return new GuiEditInventoryGen(player, component, key);
+        }
+        else if (id == editInventoryGenItems)
+        {
+            String key = ByteBufUtils.readUTF8String(data);
+            Component component = GenericItemCollection.readComponent(data);
 
-                if (generator != null)
-                    return new GuiEditInventoryGen(player, generator, key);
-            }
+            if (component != null)
+                return new GuiEditInventoryGenItems(player, component, key);
         }
 
         return null;

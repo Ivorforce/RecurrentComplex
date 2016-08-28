@@ -53,13 +53,18 @@ public class GenericStructureInfo implements StructureInfo<GenericStructureInfo.
 {
     public static final int LATEST_VERSION = 3;
     public static final int MAX_GENERATING_LAYERS = 30;
+
     public final List<StructureGenerationInfo> generationInfos = new ArrayList<>();
     public final List<Transformer> transformers = new ArrayList<>();
     public final DependencyMatcher dependencies = new DependencyMatcher("");
+
     public NBTTagCompound worldDataCompound;
+
     public boolean rotatable;
     public boolean mirrorable;
+
     public Metadata metadata = new Metadata();
+
     public JsonObject customData;
 
     public static GenericStructureInfo createDefaultStructure()

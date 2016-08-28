@@ -1,13 +1,14 @@
 /*
  *  Copyright (c) 2014, Lukas Tenbrink.
- *  * http://lukas.axxim.net
+ *  * http://ivorius.net
  */
 
 package ivorius.reccomplex.network;
 
 import ivorius.ivtoolkit.network.SchedulingMessageHandler;
 import ivorius.reccomplex.RecurrentComplex;
-import ivorius.reccomplex.gui.editinventorygen.GuiEditInventoryGen;
+import ivorius.reccomplex.gui.inventorygen.GuiEditInventoryGen;
+import ivorius.reccomplex.gui.inventorygen.GuiEditInventoryGenItems;
 import ivorius.reccomplex.items.ItemInventoryGenComponentTag;
 import ivorius.reccomplex.utils.ServerTranslations;
 import ivorius.reccomplex.worldgen.inventory.ItemCollectionSaveHandler;
@@ -27,13 +28,15 @@ import java.util.Collections;
 /**
  * Created by lukas on 03.08.14.
  */
-public class PacketEditInventoryGeneratorHandler extends SchedulingMessageHandler<PacketEditInventoryGenerator, IMessage>
+public class PacketEditInvGenHandler extends SchedulingMessageHandler<PacketEditInvGen, IMessage>
 {
     @Override
-    public void processServer(PacketEditInventoryGenerator message, MessageContext ctx, WorldServer server)
+    public void processServer(PacketEditInvGen message, MessageContext ctx, WorldServer server)
     {
         NetHandlerPlayServer playServer = ctx.getServerHandler();
         EntityPlayerMP player = playServer.playerEntity;
+
+        if (RecurrentComplex.checkPerms(player)) return;
 
         if (ItemCollectionSaveHandler.saveInventoryGenerator(message.getInventoryGenerator(), message.getKey()))
         {
@@ -54,7 +57,7 @@ public class PacketEditInventoryGeneratorHandler extends SchedulingMessageHandle
 
     @SideOnly(Side.CLIENT)
     @Override
-    public void processClient(PacketEditInventoryGenerator message, MessageContext ctx)
+    public void processClient(PacketEditInvGen message, MessageContext ctx)
     {
         Minecraft.getMinecraft().displayGuiScreen(new GuiEditInventoryGen(Minecraft.getMinecraft().thePlayer, message.getInventoryGenerator(), message.getKey()));
     }

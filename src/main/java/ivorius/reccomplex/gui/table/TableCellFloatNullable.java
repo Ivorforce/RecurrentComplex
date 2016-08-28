@@ -112,7 +112,6 @@ public class TableCellFloatNullable extends TableCellPropertyDefault<Float> impl
         super.initGui(screen);
 
         Bounds bounds = bounds();
-        int sliderWidth = MathHelper.floor_float(bounds.getWidth() * (1.0f - nullButtonWidth)) - 2;
         if (slider == null)
         {
             slider = new GuiSlider(-1, 0, 0, 0, 0, "");
@@ -128,7 +127,7 @@ public class TableCellFloatNullable extends TableCellPropertyDefault<Float> impl
         screen.addButton(this, 0, slider);
 
         int nullButtonWidth = MathHelper.floor_float(bounds.getWidth() * this.nullButtonWidth) - 2;
-        nullButton = new GuiButton(-1, bounds.getMinX() + sliderWidth + 2, bounds.getMinY() + (bounds.getHeight() - 20) / 2, nullButtonWidth, 20, property != null ? buttonTitleCustom : buttonTitleNull);
+        nullButton = new GuiButton(-1, bounds.getMinX() + slider.width + 2, bounds.getMinY() + (bounds.getHeight() - 20) / 2, nullButtonWidth, 20, property != null ? buttonTitleCustom : buttonTitleNull);
 
         nullButton.enabled = enabled;
         nullButton.visible = !isHidden();
@@ -195,7 +194,8 @@ public class TableCellFloatNullable extends TableCellPropertyDefault<Float> impl
 
     protected void updateSliderBounds(Bounds bounds)
     {
-        Bounds.set(slider, Bounds.fromSize(bounds.getMinX(), bounds.getMinY() + (bounds.getHeight() - 20) / 2, bounds.getWidth(), 20));
+        int sliderWidth = MathHelper.floor_float(bounds.getWidth() * (1.0f - nullButtonWidth)) - 2;
+        Bounds.set(slider, Bounds.fromSize(bounds.getMinX(), bounds.getMinY() + (bounds.getHeight() - 20) / 2, sliderWidth, 20));
     }
 
     @Override

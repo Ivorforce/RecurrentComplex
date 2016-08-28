@@ -22,7 +22,7 @@ public class TableCellBoolean extends TableCellPropertyDefault<Boolean>
 
     public TableCellBoolean(String id, boolean value)
     {
-        this(id, value, IvTranslations.get("structures.gui.true"), IvTranslations.get("structures.gui.false"));
+        this(id, value, IvTranslations.get("reccomplex.gui.true"), IvTranslations.get("reccomplex.gui.false"));
     }
 
     public TableCellBoolean(String id, Boolean value, String trueTitle, String falseTitle)

@@ -181,14 +181,14 @@ structure.save.success=Speichern der Struktur in die Datei '%s' erfolgreich
 structure.delete.failure=Löschen der Struktur in der Datei '%s' fehlgeschlagen
 structure.delete.success=Löschen der Struktur in der Datei '%s' erfolgreich
 
-structures.gui.true=True
-structures.gui.false=False
+reccomplex.gui.true=Wahr
+reccomplex.gui.false=Falsch
 
-structures.gui.random.weight=Gewichtung
-structures.gui.random.weight.tooltip=Gewichtung dieses Elements im Zufallsgenerator .<br>§aWahrscheinlichkeit = Gewichtung / Summe_aller_Gewichtungen §r<br>Mit anderen Worten, doppelte Gewichtung heißt<br>doppelt so wahrscheinlich.
+reccomplex.gui.random.weight=Gewichtung
+reccomplex.gui.random.weight.tooltip=Gewichtung dieses Elements im Zufallsgenerator .<br>§aWahrscheinlichkeit = Gewichtung / Summe_aller_Gewichtungen §r<br>Mit anderen Worten, doppelte Gewichtung heißt<br>doppelt so wahrscheinlich.
 
-structures.gui.random.weight=Gewichtung
-structures.gui.random.weight.tooltip=Gewichtung dieses Elements im Zufallsgenerator .<br>§aWahrscheinlichkeit = Gewichtung / Summe_aller_Gewichtungen §r<br>Mit anderen Worten, doppelte Gewichtung heißt<br>doppelt so wahrscheinlich.
+reccomplex.gui.random.weight=Gewichtung
+reccomplex.gui.random.weight.tooltip=Gewichtung dieses Elements im Zufallsgenerator .<br>§aWahrscheinlichkeit = Gewichtung / Summe_aller_Gewichtungen §r<br>Mit anderen Worten, doppelte Gewichtung heißt<br>doppelt so wahrscheinlich.
 
 structures.genY.bedrock=Bedrock
 structures.genY.bedrock.tooltip=Untere Weltgrenze: y=0

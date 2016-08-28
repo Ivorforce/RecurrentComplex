@@ -95,7 +95,7 @@ public class GuiEditInventoryGenItems extends GuiContainer implements InventoryW
                 this.buttonList.add(minMaxSlider);
                 minMaxSliders.add(minMaxSlider);
 
-                GuiSlider weightSlider = new GuiSlider(200, baseX + onePart * 2, shiftTop + 48 + row * 18, onePart * 3, 18, IvTranslations.get("structures.gui.random.weight"));
+                GuiSlider weightSlider = new GuiSlider(200, baseX + onePart * 2, shiftTop + 48 + row * 18, onePart * 3, 18, IvTranslations.get("reccomplex.gui.random.weight"));
                 weightSlider.addListener(this);
                 weightSlider.setMinValue(0);
                 weightSlider.setMaxValue(10);
@@ -149,7 +149,7 @@ public class GuiEditInventoryGenItems extends GuiContainer implements InventoryW
 
                 weightSlider.setValue(weightSlider.getMinValue());
                 weightSlider.enabled = false;
-                weightSlider.displayString = IvTranslations.format("structures.gui.random.weight");
+                weightSlider.displayString = IvTranslations.format("reccomplex.gui.random.weight");
             }
         }
     }

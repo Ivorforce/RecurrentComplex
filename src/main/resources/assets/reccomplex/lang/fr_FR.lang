@@ -164,8 +164,8 @@ structure.save.success=Structure enregistrée dans le fichier '%s'
 structure.delete.failure=Impossible d'effacer la structure du fichier '%s'
 structure.delete.success=Structure effacée du fichier '%s'
 
-structures.gui.true=Vrai
-structures.gui.false=Faux
+reccomplex.gui.true=Vrai
+reccomplex.gui.false=Faux
 
 structures.category.frequent=Fréquente
 structures.category.frequent.tooltip=Petites structures ou scènes<br>structure aléatoire tous les 10 chunks

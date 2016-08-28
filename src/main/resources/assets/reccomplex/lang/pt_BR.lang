@@ -131,8 +131,8 @@ reccomplex.gui.inventorygen.weightNumber=Peso: %s
 inventorygen.save.success=Gerador de Inventário exportado para '%s'
 inventorygen.save.failure=Falha ao exportar gerador de inventário para '%s'
 
-structures.gui.true=Verdadeiro
-structures.gui.false=Falso
+reccomplex.gui.true=Verdadeiro
+reccomplex.gui.false=Falso
 
 structures.category.frequent=Frequente
 structures.category.frequent.tooltip=Pequenas estruturas ou cenário <br>Estruturas aleatórias a cada 10 ´chunks´

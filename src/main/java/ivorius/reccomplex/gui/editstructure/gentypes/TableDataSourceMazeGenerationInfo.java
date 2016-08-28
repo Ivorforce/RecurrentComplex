@@ -7,14 +7,14 @@ package ivorius.reccomplex.gui.editstructure.gentypes;
 
 import ivorius.ivtoolkit.tools.IvTranslations;
 import ivorius.reccomplex.gui.RCGuiTables;
-import ivorius.reccomplex.gui.worldscripts.mazegenerator.TableDataSourceMazeComponent;
 import ivorius.reccomplex.gui.table.*;
+import ivorius.reccomplex.gui.worldscripts.mazegenerator.TableDataSourceMazeComponent;
 import ivorius.reccomplex.structures.generic.gentypes.MazeGenerationInfo;
 
 /**
  * Created by lukas on 07.10.14.
  */
-public class TableDataSourceMazeGenerationInfo extends TableDataSourceSegmented implements TableCellPropertyListener
+public class TableDataSourceMazeGenerationInfo extends TableDataSourceSegmented
 {
     private TableNavigator navigator;
     private TableDelegate tableDelegate;
@@ -59,29 +59,15 @@ public class TableDataSourceMazeGenerationInfo extends TableDataSourceSegmented 
             case 1:
             {
                 TableCellString cell = new TableCellString("mazeID", generationInfo.mazeID);
-                cell.addPropertyListener(this);
+                cell.addPropertyListener(cell1 -> generationInfo.setID((String) cell1.getPropertyValue()));
                 return new TableElementCell(IvTranslations.get("reccomplex.generationInfo.mazeComponent.mazeid"), cell);
             }
             case 2:
             {
-                return RCGuiTables.defaultWeightElement(cell -> generationInfo.mazeID = (String) cell.getPropertyValue(), generationInfo.weight);
+                return RCGuiTables.defaultWeightElement(cell -> generationInfo.weight = TableElements.toDouble((Float) cell.getPropertyValue()), generationInfo.weight);
             }
         }
 
         return super.elementForIndexInSegment(table, index, segment);
-    }
-
-    @Override
-    public void valueChanged(TableCellPropertyDefault cell)
-    {
-        if (cell.getID() != null)
-        {
-            switch (cell.getID())
-            {
-                case "weight":
-                    generationInfo.weight = TableElements.toDouble((Float) cell.getPropertyValue());
-                    break;
-            }
-        }
     }
 }

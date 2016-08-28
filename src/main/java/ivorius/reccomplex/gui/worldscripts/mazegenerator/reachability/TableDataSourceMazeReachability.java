@@ -5,11 +5,13 @@
 
 package ivorius.reccomplex.gui.worldscripts.mazegenerator.reachability;
 
+import ivorius.ivtoolkit.gui.IntegerRange;
 import ivorius.reccomplex.gui.table.*;
 import ivorius.reccomplex.structures.generic.maze.SavedMazePath;
 import ivorius.reccomplex.structures.generic.maze.SavedMazeReachability;
 import ivorius.ivtoolkit.tools.IvTranslations;
 
+import java.util.List;
 import java.util.Set;
 
 /**
@@ -22,21 +24,21 @@ public class TableDataSourceMazeReachability extends TableDataSourceSegmented
     private TableDelegate tableDelegate;
     private TableNavigator tableNavigator;
 
-    public TableDataSourceMazeReachability(SavedMazeReachability reachability, TableDelegate tableDelegate, TableNavigator tableNavigator, Set<SavedMazePath> expected, int[] boundsLower, int[] boundsHigher)
+    public TableDataSourceMazeReachability(SavedMazeReachability reachability, TableDelegate tableDelegate, TableNavigator tableNavigator, Set<SavedMazePath> expected, List<IntegerRange> bounds)
     {
         this.reachability = reachability;
         this.tableDelegate = tableDelegate;
         this.tableNavigator = tableNavigator;
 
-        TableCellTitle groupTitle = new TableCellTitle("", "Groups");
+        TableCellTitle groupTitle = new TableCellTitle("", IvTranslations.get("reccomplex.reachability.groups"));
         groupTitle.setTooltip(IvTranslations.formatLines("reccomplex.reachability.groups.tooltip"));
         addManagedSection(0, new TableDataSourcePreloaded(new TableElementCell(groupTitle)));
         addManagedSection(1, new TableDataSourceMazeReachabilityGroup(reachability.groups, expected, tableDelegate, tableNavigator));
 
-        TableCellTitle crossConnectionsTitle = new TableCellTitle("", "Cross-Connections");
+        TableCellTitle crossConnectionsTitle = new TableCellTitle("", IvTranslations.get("reccomplex.reachability.crossconnections"));
         crossConnectionsTitle.setTooltip(IvTranslations.formatLines("reccomplex.reachability.crossconnections.tooltip"));
         addManagedSection(2, new TableDataSourcePreloaded(new TableElementCell(crossConnectionsTitle)));
-        addManagedSection(3, new TableDataSourcePathConnectionList(reachability.crossConnections, tableDelegate, tableNavigator, boundsLower, boundsHigher));
+        addManagedSection(3, new TableDataSourcePathConnectionList(reachability.crossConnections, tableDelegate, tableNavigator, bounds));
     }
 
     public SavedMazeReachability getReachability()

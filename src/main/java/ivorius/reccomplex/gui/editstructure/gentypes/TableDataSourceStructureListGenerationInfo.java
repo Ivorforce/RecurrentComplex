@@ -6,8 +6,10 @@
 package ivorius.reccomplex.gui.editstructure.gentypes;
 
 import com.google.common.primitives.Ints;
+import ivorius.ivtoolkit.gui.IntegerRange;
 import ivorius.reccomplex.gui.GuiValidityStateIndicator;
 import ivorius.reccomplex.gui.RCGuiTables;
+import ivorius.reccomplex.gui.TableDataSourceBlockPos;
 import ivorius.reccomplex.gui.TableDirections;
 import ivorius.reccomplex.gui.table.*;
 import ivorius.reccomplex.structures.generic.gentypes.StructureListGenerationInfo;
@@ -33,6 +35,8 @@ public class TableDataSourceStructureListGenerationInfo extends TableDataSourceS
         this.generationInfo = generationInfo;
 
         addManagedSection(0, new TableDataSourceGenerationInfo(generationInfo, navigator, tableDelegate));
+        addManagedSection(3, new TableDataSourceBlockPos(generationInfo.shift, generationInfo::setShift, new IntegerRange(-50, 50), new IntegerRange(-50, 50), new IntegerRange(-50, 50),
+                IvTranslations.get("reccomplex.generationInfo.structureList.shift.x"), IvTranslations.get("reccomplex.generationInfo.structureList.shift.y"), IvTranslations.get("reccomplex.generationInfo.structureList.shift.z")));
     }
 
     @Override
@@ -50,8 +54,6 @@ public class TableDataSourceStructureListGenerationInfo extends TableDataSourceS
                 return 1;
             case 2:
                 return 1;
-            case 3:
-                return 3;
             case 4:
                 return 1;
         }
@@ -71,32 +73,11 @@ public class TableDataSourceStructureListGenerationInfo extends TableDataSourceS
             }
             case 2:
                 return RCGuiTables.defaultWeightElement(cell -> generationInfo.weight = TableElements.toDouble((Float) cell.getPropertyValue()), generationInfo.weight);
-            case 3:
-            {
-                if (index == 0)
-                {
-                    TableCellStringInt cell = new TableCellStringInt("positionX", generationInfo.shiftX);
-                    cell.addPropertyListener(this);
-                    return new TableElementCell(IvTranslations.get("reccomplex.generationInfo.structureList.shift.x"), cell);
-                }
-                else if (index == 1)
-                {
-                    TableCellStringInt cell = new TableCellStringInt("positionY", generationInfo.shiftY);
-                    cell.addPropertyListener(this);
-                    return new TableElementCell(IvTranslations.get("reccomplex.generationInfo.structureList.shift.y"), cell);
-                }
-                else if (index == 2)
-                {
-                    TableCellStringInt cell = new TableCellStringInt("positionZ", generationInfo.shiftZ);
-                    cell.addPropertyListener(this);
-                    return new TableElementCell(IvTranslations.get("reccomplex.generationInfo.structureList.shift.z"), cell);
-                }
-            }
             case 4:
             {
                 TableCellEnum cell = new TableCellEnum<>("front", generationInfo.front, TableDirections.getDirectionOptions(Directions.HORIZONTAL));
                 cell.addPropertyListener(this);
-                return new TableElementCell("Front", cell);
+                return new TableElementCell(IvTranslations.get("reccomplex.generationInfo.structureList.front"), cell);
             }
         }
 
@@ -113,21 +94,6 @@ public class TableDataSourceStructureListGenerationInfo extends TableDataSourceS
                 case "listID":
                 {
                     generationInfo.listID = (String) cell.getPropertyValue();
-                    break;
-                }
-                case "positionX":
-                {
-                    generationInfo.shiftX = (Integer) (int) cell.getPropertyValue();
-                    break;
-                }
-                case "positionY":
-                {
-                    generationInfo.shiftY = (Integer) (int) cell.getPropertyValue();
-                    break;
-                }
-                case "positionZ":
-                {
-                    generationInfo.shiftZ = (Integer) (int) cell.getPropertyValue();
                     break;
                 }
                 case "front":

@@ -5,6 +5,7 @@
 
 package ivorius.reccomplex.gui.editstructure;
 
+import ivorius.ivtoolkit.tools.IvTranslations;
 import ivorius.reccomplex.gui.GuiValidityStateIndicator;
 import ivorius.reccomplex.gui.RCGuiTables;
 import ivorius.reccomplex.gui.TableDataSourceBlockState;
@@ -86,7 +87,7 @@ public class TableDataSourceWeightedBlockState extends TableDataSourceSegmented 
             cell.addPropertyListener(this);
             cell.setShowsValidityState(true);
             cell.setValidityState(stateForNBTCompoundJson(weightedBlockState.tileEntityInfo));
-            return new TableElementCell("Tile Entity NBT", cell);
+            return new TableElementCell(IvTranslations.get("reccomplex.tileentity.nbt"), cell);
         }
 
         return null;

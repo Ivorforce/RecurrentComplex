@@ -14,7 +14,7 @@ import ivorius.ivtoolkit.tools.IvCollections;
 import ivorius.reccomplex.gui.table.TableDataSource;
 import ivorius.reccomplex.gui.table.TableDelegate;
 import ivorius.reccomplex.gui.table.TableNavigator;
-import ivorius.reccomplex.gui.worldscripts.structuregenerator.TableDataSourceStructureBlock;
+import ivorius.reccomplex.gui.worldscripts.structuregenerator.TableDataSourceStructureGenerator;
 import ivorius.reccomplex.structures.*;
 import ivorius.reccomplex.structures.generic.gentypes.StructureListGenerationInfo;
 import ivorius.ivtoolkit.tools.IvTranslations;
@@ -227,7 +227,7 @@ public class WorldScriptStructureGenerator implements WorldScript<WorldScriptStr
                 AxisAlignedTransform2D strucTransform = AxisAlignedTransform2D.from(rotations, mirrorX);
 
                 int[] strucSize = structureInfo.structureBoundingBox();
-                BlockPos strucCoord = transform.apply(structureShift.add(generationInfo.shiftX, generationInfo.shiftY, generationInfo.shiftZ), new int[]{1, 1, 1})
+                BlockPos strucCoord = transform.apply(structureShift.add(generationInfo.shift), new int[]{1, 1, 1})
                         .subtract(transform.apply(new BlockPos(0, 0, 0), strucSize)).add(coord);
 
                 instanceData = new WorldScriptStructureGenerator.InstanceData(structureID, strucCoord, strucTransform, structureInfo.prepareInstanceData(new StructurePrepareContext(random, strucTransform, StructureInfos.structureBoundingBox(strucCoord, strucSize), context.generateAsSource)));
@@ -258,7 +258,7 @@ public class WorldScriptStructureGenerator implements WorldScript<WorldScriptStr
     @Override
     public TableDataSource tableDataSource(TableNavigator navigator, TableDelegate tableDelegate)
     {
-        return new TableDataSourceStructureBlock(this, navigator, tableDelegate);
+        return new TableDataSourceStructureGenerator(this, navigator, tableDelegate);
     }
 
     public static class InstanceData implements NBTStorable

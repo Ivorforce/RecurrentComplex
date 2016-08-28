@@ -15,6 +15,7 @@ import ivorius.reccomplex.gui.table.TableDelegate;
 import ivorius.reccomplex.gui.table.TableNavigator;
 import ivorius.reccomplex.json.JsonUtils;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.math.BlockPos;
 
 import javax.annotation.Nonnull;
 import java.lang.reflect.Type;
@@ -30,25 +31,21 @@ public class StructureListGenerationInfo extends StructureGenerationInfo impleme
 
     public Double weight;
 
-    public int shiftX;
-    public int shiftY;
-    public int shiftZ;
+    public BlockPos shift;
 
     public EnumFacing front;
 
     public StructureListGenerationInfo()
     {
-        this(randomID("List"), "", null, 0, 0, 0, EnumFacing.NORTH);
+        this(randomID("List"), "", null, BlockPos.ORIGIN, EnumFacing.NORTH);
     }
 
-    public StructureListGenerationInfo(String id, String listID, Double weight, int shiftX, int shiftY, int shiftZ, EnumFacing front)
+    public StructureListGenerationInfo(String id, String listID, Double weight, BlockPos shift, EnumFacing front)
     {
         this.id = id;
         this.listID = listID;
         this.weight = weight;
-        this.shiftX = shiftX;
-        this.shiftY = shiftY;
-        this.shiftZ = shiftZ;
+        this.shift = shift;
         this.front = front;
     }
 
@@ -63,6 +60,16 @@ public class StructureListGenerationInfo extends StructureGenerationInfo impleme
     public void setID(@Nonnull String id)
     {
         this.id = id;
+    }
+
+    public BlockPos getShift()
+    {
+        return shift;
+    }
+
+    public void setShift(BlockPos shift)
+    {
+        this.shift = shift;
     }
 
     @Override
@@ -102,7 +109,7 @@ public class StructureListGenerationInfo extends StructureGenerationInfo impleme
 
             EnumFacing front = Directions.deserialize(JsonUtils.getJsonObjectStringFieldValueOrDefault(jsonObject, "front", "NORTH"));
 
-            return new StructureListGenerationInfo(id, listID, weight, positionX, positionY, positionZ, front);
+            return new StructureListGenerationInfo(id, listID, weight, new BlockPos(positionX, positionY, positionZ), front);
         }
 
         @Override
@@ -117,9 +124,9 @@ public class StructureListGenerationInfo extends StructureGenerationInfo impleme
             if (src.weight != null)
                 jsonObject.addProperty("weight", src.weight);
 
-            jsonObject.addProperty("positionX", src.shiftX);
-            jsonObject.addProperty("positionY", src.shiftY);
-            jsonObject.addProperty("positionZ", src.shiftZ);
+            jsonObject.addProperty("positionX", src.shift.getX());
+            jsonObject.addProperty("positionY", src.shift.getY());
+            jsonObject.addProperty("positionZ", src.shift.getZ());
 
             jsonObject.addProperty("front", Directions.serialize(src.front));
 

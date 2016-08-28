@@ -5,9 +5,11 @@
 
 package ivorius.reccomplex.gui.worldscripts.command;
 
+import ivorius.ivtoolkit.tools.IvTranslations;
 import ivorius.reccomplex.gui.RCGuiTables;
 import ivorius.reccomplex.gui.table.*;
 import ivorius.reccomplex.scripts.world.WorldScriptCommand;
+import net.minecraft.init.Blocks;
 
 /**
  * Created by lukas on 05.06.14.
@@ -41,16 +43,19 @@ public class TableDataSourceSpawnCommandEntry extends TableDataSourceSegmented i
     {
         if (index == 0)
         {
-            TableCellPresetAction cell = new TableCellPresetAction("default", "Apply", new TableCellButton("", "spawner", "Mob Spawner"), new TableCellButton("", "entity", "Spawn Entity"));
+            TableCellPresetAction cell = new TableCellPresetAction("default", IvTranslations.get("reccomplex.gui.apply"),
+                    new TableCellButton("", "spawner", Blocks.MOB_SPAWNER.getLocalizedName()),
+                    new TableCellButton("", "entity", IvTranslations.get("reccomplex.spawncommand.preset.entity"))
+            );
             cell.addListener(this);
-            return new TableElementCell("Preset", cell);
+            return new TableElementCell(IvTranslations.get("reccomplex.gui.preset"), cell);
         }
         else if (index == 1)
         {
             TableCellString cell = new TableCellString("command", entry.command);
             cell.setMaxStringLength(32767); // Same as GuiCommandBlock.
             cell.addPropertyListener(this);
-            return new TableElementCell("Command", cell);
+            return new TableElementCell(IvTranslations.get("reccomplex.gui.command"), cell);
         }
         else if (index == 2)
         {

@@ -5,6 +5,7 @@
 
 package ivorius.reccomplex.gui.inventorygen;
 
+import ivorius.ivtoolkit.tools.IvTranslations;
 import ivorius.reccomplex.RecurrentComplex;
 import ivorius.reccomplex.gui.table.*;
 import ivorius.reccomplex.items.RCItems;
@@ -49,9 +50,9 @@ public class GuiEditInvGenMultiTag extends GuiScreenModalTable
         super.initGui();
 
         if (tableStack().size() == 1)
-            buttonList.add(new GuiButton(0, width / 2 - 155, height / 2 + 90, 310, 20, "Done"));
+            buttonList.add(new GuiButton(0, width / 2 - 155, height / 2 + 90, 310, 20, IvTranslations.get("gui.done")));
         else
-            buttonList.add(new GuiButton(2, width / 2 - 155, height / 2 + 90, 310, 20, "Back"));
+            buttonList.add(new GuiButton(2, width / 2 - 155, height / 2 + 90, 310, 20, IvTranslations.get("gui.back")));
     }
 
     @Override

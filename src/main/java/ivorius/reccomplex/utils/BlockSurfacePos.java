@@ -13,6 +13,8 @@ import net.minecraft.util.math.ChunkPos;
  */
 public class BlockSurfacePos
 {
+    public static final BlockSurfacePos ORIGIN = new BlockSurfacePos(0, 0);
+
     /**
      * The X position of this Chunk Coordinate Pair
      */

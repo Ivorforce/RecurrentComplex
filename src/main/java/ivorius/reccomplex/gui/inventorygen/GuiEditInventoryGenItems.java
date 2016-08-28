@@ -145,7 +145,7 @@ public class GuiEditInventoryGenItems extends GuiContainer implements InventoryW
                 minMaxSlider.setRange(new FloatRange(1, 1));
                 minMaxSlider.setMaxValue(64);
                 minMaxSlider.enabled = false;
-                minMaxSlider.displayString = "Min - Max";
+                minMaxSlider.displayString = IvTranslations.get("reccomplex.gui.inventorygen.range");
 
                 weightSlider.setValue(weightSlider.getMinValue());
                 weightSlider.enabled = false;

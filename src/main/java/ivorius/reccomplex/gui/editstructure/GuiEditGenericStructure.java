@@ -5,6 +5,7 @@
 
 package ivorius.reccomplex.gui.editstructure;
 
+import ivorius.ivtoolkit.tools.IvTranslations;
 import ivorius.reccomplex.gui.table.Bounds;
 import ivorius.reccomplex.gui.table.GuiScreenModalTable;
 import ivorius.reccomplex.gui.table.GuiTable;
@@ -40,12 +41,12 @@ public class GuiEditGenericStructure extends GuiScreenModalTable
 
         if (tableStack().size() == 1)
         {
-            buttonList.add(new GuiButton(1, width / 2 - 155, height / 2 + 95, 154, 20, "Cancel"));
-            buttonList.add(new GuiButton(0, width / 2 + 1, height / 2 + 95, 154, 20, "Save"));
+            buttonList.add(new GuiButton(1, width / 2 - 155, height / 2 + 95, 154, 20, IvTranslations.get("gui.cancel")));
+            buttonList.add(new GuiButton(0, width / 2 + 1, height / 2 + 95, 154, 20, IvTranslations.get("reccomplex.gui.save")));
         }
         else
         {
-            buttonList.add(new GuiButton(2, width / 2 - 155, height / 2 + 95, 310, 20, "Back"));
+            buttonList.add(new GuiButton(2, width / 2 - 155, height / 2 + 95, 310, 20, IvTranslations.get("gui.back")));
         }
     }
 

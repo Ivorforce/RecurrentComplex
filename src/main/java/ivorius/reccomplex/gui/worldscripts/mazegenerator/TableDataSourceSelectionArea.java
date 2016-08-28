@@ -6,9 +6,13 @@
 package ivorius.reccomplex.gui.worldscripts.mazegenerator;
 
 import ivorius.ivtoolkit.gui.IntegerRange;
+import ivorius.ivtoolkit.tools.IvTranslations;
 import ivorius.reccomplex.gui.table.*;
 import ivorius.reccomplex.structures.generic.Selection;
 import com.mojang.realmsclient.gui.ChatFormatting;
+
+import java.util.Arrays;
+import java.util.stream.Collectors;
 
 /**
 * Created by lukas on 08.10.14.
@@ -42,13 +46,15 @@ public class TableDataSourceSelectionArea extends TableDataSourceSegmented imple
     {
         if (segment == 0)
         {
-            TableCellBoolean cell = new TableCellBoolean("additive", area.isAdditive(), ChatFormatting.GREEN + "Additive", ChatFormatting.GOLD + "Subtractive");
+            TableCellBoolean cell = new TableCellBoolean("additive", area.isAdditive(),
+                    ChatFormatting.GREEN + IvTranslations.get("reccomplex.selection.area.additive"),
+                    ChatFormatting.GOLD + IvTranslations.get("reccomplex.selection.area.subtractive"));
             cell.addPropertyListener(this);
             return new TableElementCell(cell);
         }
         else if (segment == 1)
         {
-            String title = String.format("Range: %s", index == 0 ? "X" : index == 1 ? "Y" : index == 2 ? "Z" : "" + index);
+            String title = IvTranslations.get("reccomplex.selection.area.range." + new String[]{"x", "y", "z"}[index]);
             IntegerRange intRange = new IntegerRange(area.getMinCoord()[index], area.getMaxCoord()[index]);
             TableCellIntegerRange cell = new TableCellIntegerRange("area" + index, intRange, 0, dimensions[index] - 1);
             cell.addPropertyListener(this);

@@ -79,14 +79,14 @@ public abstract class TableDataSourcePresettedList<T> extends TableDataSourceLis
         {
             if (index == 0)
             {
-                TableCellPresetAction cell = new TableCellPresetAction("preset", "Apply", getPresetActions());
+                TableCellPresetAction cell = new TableCellPresetAction("preset", IvTranslations.get("reccomplex.gui.apply"), getPresetActions());
                 cell.addListener(this);
-                return new TableElementCell("Presets", cell);
+                return new TableElementCell(IvTranslations.get("reccomplex.gui.presets"), cell);
             }
             else if (index == 1)
             {
-                String title = !presettedList.isCustom() ? IvTranslations.get(getBasePresetKey() + presettedList.getPreset()) : "Custom";
-                TableCellButton cell = new TableCellButton("customize", "customize", "Customize", !presettedList.isCustom());
+                String title = !presettedList.isCustom() ? IvTranslations.get(getBasePresetKey() + presettedList.getPreset()) : IvTranslations.get("reccomplex.gui.custom");
+                TableCellButton cell = new TableCellButton("customize", "customize", IvTranslations.get("reccomplex.gui.customize"), !presettedList.isCustom());
                 cell.addListener(this);
                 return new TableElementCell(title, cell);
             }

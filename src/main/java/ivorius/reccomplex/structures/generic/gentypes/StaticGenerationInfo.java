@@ -35,25 +35,23 @@ public class StaticGenerationInfo extends StructureGenerationInfo
     public DimensionMatcher dimensionMatcher;
 
     public boolean relativeToSpawn;
-    public int positionX;
-    public int positionZ;
+    public BlockSurfacePos position;
 
     @Nullable
     public Pattern pattern;
 
     public StaticGenerationInfo()
     {
-        this(randomID("Static"), new GenericYSelector(GenericYSelector.SelectionMode.SURFACE, 0, 0), new DimensionMatcher("0"), true, 0, 0, null);
+        this(randomID("Static"), new GenericYSelector(GenericYSelector.SelectionMode.SURFACE, 0, 0), new DimensionMatcher("0"), true, BlockSurfacePos.ORIGIN, null);
     }
 
-    public StaticGenerationInfo(String id, GenericYSelector ySelector, DimensionMatcher dimensionMatcher, boolean relativeToSpawn, int positionX, int positionZ, Pattern pattern)
+    public StaticGenerationInfo(String id, GenericYSelector ySelector, DimensionMatcher dimensionMatcher, boolean relativeToSpawn, BlockSurfacePos position, Pattern pattern)
     {
         this.id = id;
         this.ySelector = ySelector;
         this.dimensionMatcher = dimensionMatcher;
         this.relativeToSpawn = relativeToSpawn;
-        this.positionX = positionX;
-        this.positionZ = positionZ;
+        this.position = position;
         this.pattern = pattern;
     }
 
@@ -70,6 +68,16 @@ public class StaticGenerationInfo extends StructureGenerationInfo
     public static Gson getGson()
     {
         return gson;
+    }
+
+    public BlockSurfacePos getPosition()
+    {
+        return position;
+    }
+
+    public void setPosition(BlockSurfacePos position)
+    {
+        this.position = position;
     }
 
     @Nonnull
@@ -91,9 +99,9 @@ public class StaticGenerationInfo extends StructureGenerationInfo
         if (hasPattern())
             return IvTranslations.format("reccomplex.generationInfo.static.summary.pattern", String.valueOf(pattern.repeatX), String.valueOf(pattern.repeatZ));
         else if (relativeToSpawn)
-            return IvTranslations.format("reccomplex.generationInfo.static.summary.spawn", String.valueOf(positionX), String.valueOf(positionZ));
+            return IvTranslations.format("reccomplex.generationInfo.static.summary.spawn", String.valueOf(position.x), String.valueOf(position.z));
         else
-            return IvTranslations.format("reccomplex.generationInfo.static.summary.nospawn", String.valueOf(positionX), String.valueOf(positionZ));
+            return IvTranslations.format("reccomplex.generationInfo.static.summary.nospawn", String.valueOf(position.x), String.valueOf(position.z));
     }
 
     @Override
@@ -104,7 +112,7 @@ public class StaticGenerationInfo extends StructureGenerationInfo
 
     public BlockSurfacePos getPos(BlockPos spawnPos)
     {
-        return new BlockSurfacePos(relativeToSpawn ? spawnPos.getX() + positionX : positionX, relativeToSpawn ? spawnPos.getZ() + positionZ : positionZ);
+        return new BlockSurfacePos(relativeToSpawn ? spawnPos.getX() + position.x : position.x, relativeToSpawn ? spawnPos.getZ() + position.z : position.z);
     }
 
     public boolean hasPattern()
@@ -143,7 +151,7 @@ public class StaticGenerationInfo extends StructureGenerationInfo
 
             Pattern pattern = jsonObject.has("pattern") ? gson.fromJson(jsonObject.get("pattern"), Pattern.class) : null;
 
-            return new StaticGenerationInfo(id, ySelector, new DimensionMatcher(dimension), relativeToSpawn, positionX, positionZ, pattern);
+            return new StaticGenerationInfo(id, ySelector, new DimensionMatcher(dimension), relativeToSpawn, new BlockSurfacePos(positionX, positionZ), pattern);
         }
 
         @Override
@@ -157,8 +165,8 @@ public class StaticGenerationInfo extends StructureGenerationInfo
             jsonObject.addProperty("dimensions", src.dimensionMatcher.getExpression());
 
             jsonObject.addProperty("relativeToSpawn", src.relativeToSpawn);
-            jsonObject.addProperty("positionX", src.positionX);
-            jsonObject.addProperty("positionZ", src.positionZ);
+            jsonObject.addProperty("positionX", src.position.x);
+            jsonObject.addProperty("positionZ", src.position.z);
 
             if (src.pattern != null)
                 jsonObject.add("pattern", gson.toJsonTree(src.pattern));

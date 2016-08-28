@@ -5,7 +5,10 @@
 
 package ivorius.reccomplex.gui.editstructure.gentypes;
 
+import ivorius.ivtoolkit.gui.IntegerRange;
 import ivorius.ivtoolkit.tools.IvTranslations;
+import ivorius.reccomplex.gui.TableDataSourceBlockPos;
+import ivorius.reccomplex.gui.TableDataSourceBlockSurfacePos;
 import ivorius.reccomplex.gui.TableDataSourceExpression;
 import ivorius.reccomplex.gui.editstructure.TableDataSourceYSelector;
 import ivorius.reccomplex.gui.editstructure.gentypes.staticgen.TableDataSourceStaticPattern;
@@ -29,28 +32,30 @@ public class TableDataSourceStaticGenerationInfo extends TableDataSourceSegmente
         this.generationInfo = generationInfo;
 
         addManagedSection(0, new TableDataSourceGenerationInfo(generationInfo, navigator, tableDelegate));
-        addManagedSection(2, new TableDataSourceYSelector(generationInfo.ySelector));
-        addManagedSection(3, TableDataSourceExpression.constructDefault(IvTranslations.get("reccomplex.gui.biomes"), generationInfo.dimensionMatcher));
+        addManagedSection(2, new TableDataSourceBlockSurfacePos(generationInfo.position, generationInfo::setPosition, null, null,
+                IvTranslations.get("reccomplex.generationInfo.static.position.x"), IvTranslations.get("reccomplex.generationInfo.static.position.z")));
+        addManagedSection(3, new TableDataSourceYSelector(generationInfo.ySelector));
+        addManagedSection(4, TableDataSourceExpression.constructDefault(IvTranslations.get("reccomplex.gui.biomes"), generationInfo.dimensionMatcher));
 
-        addManagedSection(4, TableCellMultiBuilder.create(navigator, tableDelegate)
+        addManagedSection(5, TableCellMultiBuilder.create(navigator, tableDelegate)
                 .addNavigation(() -> IvTranslations.get("reccomplex.gui.edit"), null,
                         () -> new GuiTable(tableDelegate, new TableDataSourceStaticPattern(generationInfo.pattern, tableDelegate))
                 ).enabled(generationInfo::hasPattern)
                 .addAction(() -> generationInfo.hasPattern() ? IvTranslations.get("reccomplex.gui.remove") : IvTranslations.get("reccomplex.gui.add"), null,
                         () -> generationInfo.pattern = generationInfo.hasPattern() ? null : new StaticGenerationInfo.Pattern()
-                ).buildDataSource("Pattern"));
+                ).buildDataSource(IvTranslations.get("reccomplex.generationInfo.static.pattern")));
     }
 
     @Override
     public int numberOfSegments()
     {
-        return 5;
+        return 6;
     }
 
     @Override
     public int sizeOfSegment(int segment)
     {
-        return segment == 1 ? 3 : super.sizeOfSegment(segment);
+        return segment == 1 ? 1 : super.sizeOfSegment(segment);
     }
 
     @Override
@@ -60,25 +65,9 @@ public class TableDataSourceStaticGenerationInfo extends TableDataSourceSegmente
         {
             case 1:
             {
-                if (index == 0)
-                {
-                    TableCellBoolean cell = new TableCellBoolean("relativeToSpawn", generationInfo.relativeToSpawn);
-                    cell.addPropertyListener(this);
-                    return new TableElementCell(IvTranslations.get("reccomplex.generationInfo.static.spaw"), cell);
-                }
-                else if (index == 1)
-                {
-                    TableCellStringInt cell = new TableCellStringInt("positionX", generationInfo.positionX);
-                    cell.addPropertyListener(this);
-                    return new TableElementCell(IvTranslations.get("reccomplex.generationInfo.static.position.x"), cell);
-                }
-                else if (index == 2)
-                {
-                    TableCellStringInt cell = new TableCellStringInt("positionZ", generationInfo.positionZ);
-                    cell.addPropertyListener(this);
-                    return new TableElementCell(IvTranslations.get("reccomplex.generationInfo.static.position.z"), cell);
-                }
-                break;
+                TableCellBoolean cell = new TableCellBoolean("relativeToSpawn", generationInfo.relativeToSpawn);
+                cell.addPropertyListener(this);
+                return new TableElementCell(IvTranslations.get("reccomplex.generationInfo.static.spawn"), cell);
             }
         }
 
@@ -92,16 +81,6 @@ public class TableDataSourceStaticGenerationInfo extends TableDataSourceSegmente
         {
             switch (cell.getID())
             {
-                case "positionX":
-                {
-                    generationInfo.positionX = (Integer) cell.getPropertyValue();
-                    break;
-                }
-                case "positionZ":
-                {
-                    generationInfo.positionZ = (Integer) cell.getPropertyValue();
-                    break;
-                }
                 case "relativeToSpawn":
                     generationInfo.relativeToSpawn = (boolean) cell.getPropertyValue();
                     break;

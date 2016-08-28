@@ -5,6 +5,7 @@
 
 package ivorius.reccomplex.gui.worldscripts.mazegenerator.rules;
 
+import ivorius.ivtoolkit.gui.IntegerRange;
 import ivorius.ivtoolkit.tools.IvTranslations;
 import ivorius.reccomplex.gui.table.*;
 import ivorius.reccomplex.structures.generic.maze.SavedMazePathConnection;
@@ -23,15 +24,13 @@ import java.util.List;
 public class TableDataSourceMazeRuleList extends TableDataSourceList<MazeRule, List<MazeRule>>
 {
     private List<SavedMazePathConnection> expected;
-    private int[] boundsLower;
-    private int[] boundsHigher;
+    private List<IntegerRange> bounds;
 
-    public TableDataSourceMazeRuleList(List<MazeRule> list, TableDelegate tableDelegate, TableNavigator navigator, List<SavedMazePathConnection> expected, int[] boundsLower, int[] boundsHigher)
+    public TableDataSourceMazeRuleList(List<MazeRule> list, TableDelegate tableDelegate, TableNavigator navigator, List<SavedMazePathConnection> expected, List<IntegerRange> bounds)
     {
         super(list, tableDelegate, navigator);
         this.expected = expected;
-        this.boundsLower = boundsLower;
-        this.boundsHigher = boundsHigher;
+        this.bounds = bounds;
         setUsesPresetActionForAdding(true);
     }
 
@@ -50,7 +49,7 @@ public class TableDataSourceMazeRuleList extends TableDataSourceList<MazeRule, L
     @Override
     public TableDataSource editEntryDataSource(MazeRule mazeRule)
     {
-        return mazeRule.tableDataSource(navigator, tableDelegate, expected, boundsLower, boundsHigher);
+        return mazeRule.tableDataSource(navigator, tableDelegate, expected, bounds);
     }
 
     @Override

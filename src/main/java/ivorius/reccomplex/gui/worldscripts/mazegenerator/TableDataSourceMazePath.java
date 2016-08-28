@@ -5,13 +5,22 @@
 
 package ivorius.reccomplex.gui.worldscripts.mazegenerator;
 
+import ivorius.ivtoolkit.gui.IntegerRange;
 import ivorius.ivtoolkit.maze.components.MazeRoom;
+import ivorius.ivtoolkit.tools.IvTranslations;
+import ivorius.reccomplex.gui.TableDataSourceBlockPos;
 import ivorius.reccomplex.gui.TableDirections;
 import ivorius.reccomplex.gui.table.*;
 import ivorius.reccomplex.structures.generic.maze.ConnectorStrategy;
 import ivorius.reccomplex.structures.generic.maze.SavedMazePath;
 import ivorius.reccomplex.structures.generic.maze.SavedMazePathConnection;
+import ivorius.reccomplex.utils.MCMazes;
 import net.minecraft.util.EnumFacing;
+
+import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 /**
  * Created by lukas on 22.06.14.
@@ -19,25 +28,27 @@ import net.minecraft.util.EnumFacing;
 public class TableDataSourceMazePath extends TableDataSourceSegmented implements TableCellPropertyListener, TableCellActionListener
 {
     private SavedMazePath mazePath;
-    private int[] boundsLower;
-    private int[] boundsHigher;
+    private List<IntegerRange> bounds;
     private TableDelegate tableDelegate;
 
     private TableCellButton invertableButton;
 
-    public TableDataSourceMazePath(SavedMazePath mazePath, int[] boundsLower, int[] boundsHigher, TableDelegate tableDelegate)
+    public TableDataSourceMazePath(SavedMazePath mazePath, List<IntegerRange> bounds, TableDelegate tableDelegate)
     {
         this.mazePath = mazePath;
-        this.boundsLower = boundsLower;
-        this.boundsHigher = boundsHigher;
+        this.bounds = bounds;
         this.tableDelegate = tableDelegate;
+
+        addManagedSection(1, new TableDataSourceMazeRoom(mazePath.sourceRoom, mazeRoom -> mazePath.sourceRoom = mazeRoom,
+                bounds, Arrays.stream(new String[]{"x", "y", "z"}).map(s -> IvTranslations.get("reccomplex.generationInfo.mazeComponent.position." + s)).collect(Collectors.toList()))
+        );
     }
 
-    public static boolean contains(int[] array, int[] lower, int[] higher)
+    public static boolean contains(int[] array, List<IntegerRange> bounds)
     {
         for (int i = 0; i < array.length; i++)
         {
-            if (array[i] < lower[i] || array[i] > higher[i])
+            if (array[i] < bounds.get(i).getMin() || array[i] > bounds.get(i).getMax())
                 return false;
         }
 
@@ -78,8 +89,6 @@ public class TableDataSourceMazePath extends TableDataSourceSegmented implements
     {
         switch (segment)
         {
-            case 1:
-                return boundsLower.length;
             case 2:
                 return 1;
             case 3:
@@ -92,25 +101,17 @@ public class TableDataSourceMazePath extends TableDataSourceSegmented implements
     @Override
     public TableElement elementForIndexInSegment(GuiTable table, int index, int segment)
     {
-        if (segment == 1)
-        {
-            String id = "pos" + index;
-            String title = String.format("Position: %s", index == 0 ? "X" : index == 1 ? "Y" : index == 2 ? "Z" : "" + index);
-            TableCellInteger cell = new TableCellInteger(id, mazePath.sourceRoom.getCoordinates()[index], boundsLower[index], boundsHigher[index]);
-            cell.addPropertyListener(this);
-            return new TableElementCell(title, cell);
-        }
-        else if (segment == 2)
+        if (segment == 2)
         {
             TableCellEnum.Option<EnumFacing>[] optionList = TableDirections.getDirectionOptions(EnumFacing.VALUES);
 
             TableCellEnum cell = new TableCellEnum<>("side", directionFromPath(mazePath), optionList);
             cell.addPropertyListener(this);
-            return new TableElementCell("Side", cell);
+            return new TableElementCell(IvTranslations.get("reccomplex.generationInfo.mazeComponent.path.side"), cell);
         }
         else if (segment == 3)
         {
-            invertableButton = new TableCellButton("actions", "inverse", "Invert", isInvertable());
+            invertableButton = new TableCellButton("actions", "inverse", IvTranslations.get("reccomplex.generationInfo.mazeComponent.path.invert"), isInvertable());
             invertableButton.addListener(this);
             return new TableElementCell(invertableButton);
         }
@@ -120,7 +121,7 @@ public class TableDataSourceMazePath extends TableDataSourceSegmented implements
 
     protected boolean isInvertable()
     {
-        return contains(mazePath.inverse().getSourceRoom().getCoordinates(), boundsLower, boundsHigher);
+        return contains(mazePath.inverse().getSourceRoom().getCoordinates(), bounds);
     }
 
     @Override

@@ -5,13 +5,15 @@
 
 package ivorius.reccomplex.gui.worldscripts.mazegenerator;
 
+import com.mojang.realmsclient.gui.ChatFormatting;
+import ivorius.ivtoolkit.gui.IntegerRange;
 import ivorius.ivtoolkit.maze.components.MazeRoom;
+import ivorius.ivtoolkit.tools.IvTranslations;
 import ivorius.reccomplex.gui.table.TableDataSource;
 import ivorius.reccomplex.gui.table.TableDataSourceList;
 import ivorius.reccomplex.gui.table.TableDelegate;
 import ivorius.reccomplex.gui.table.TableNavigator;
 import ivorius.reccomplex.structures.generic.maze.SavedMazePath;
-import com.mojang.realmsclient.gui.ChatFormatting;
 
 import java.util.Arrays;
 import java.util.List;
@@ -21,16 +23,14 @@ import java.util.List;
  */
 public class TableDataSourceMazePathList extends TableDataSourceList<SavedMazePath, List<SavedMazePath>>
 {
-    private int[] boundsLower;
-    private int[] boundsHigher;
+    private List<IntegerRange> bounds;
 
-    public TableDataSourceMazePathList(List<SavedMazePath> list, TableDelegate tableDelegate, TableNavigator navigator, int[] boundsLower, int[] boundsHigher)
+    public TableDataSourceMazePathList(List<SavedMazePath> list, TableDelegate tableDelegate, TableNavigator navigator, List<IntegerRange> bounds)
     {
         super(list, tableDelegate, navigator);
-        this.boundsLower = boundsLower;
-        this.boundsHigher = boundsHigher;
-        setEarlierTitle("Up");
-        setLaterTitle("Down");
+        this.bounds = bounds;
+        setEarlierTitle(IvTranslations.get("gui.up"));
+        setLaterTitle(IvTranslations.get("gui.down"));
     }
 
     @Override
@@ -43,12 +43,12 @@ public class TableDataSourceMazePathList extends TableDataSourceList<SavedMazePa
     @Override
     public SavedMazePath newEntry(String actionID)
     {
-        return new SavedMazePath(2, new MazeRoom(new int[boundsLower.length]), false);
+        return new SavedMazePath(2, new MazeRoom(new int[bounds.size()]), false);
     }
 
     @Override
     public TableDataSource editEntryDataSource(SavedMazePath entry)
     {
-        return new TableDataSourceMazePath(entry, boundsLower, boundsHigher, tableDelegate);
+        return new TableDataSourceMazePath(entry, bounds, tableDelegate);
     }
 }

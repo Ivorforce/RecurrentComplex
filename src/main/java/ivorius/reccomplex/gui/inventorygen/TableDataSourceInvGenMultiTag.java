@@ -6,6 +6,7 @@
 package ivorius.reccomplex.gui.inventorygen;
 
 import ivorius.ivtoolkit.gui.IntegerRange;
+import ivorius.ivtoolkit.tools.IvTranslations;
 import ivorius.reccomplex.gui.table.*;
 
 /**
@@ -41,7 +42,7 @@ public class TableDataSourceInvGenMultiTag extends TableDataSourceSegmented impl
             {
                 TableCellIntegerRange cell = new TableCellIntegerRange("itemCount", itemCount, 0, 64);
                 cell.addPropertyListener(this);
-                return new TableElementCell("Item Count", cell);
+                return new TableElementCell(IvTranslations.get("reccomplex.gui.inventorygen.multi.count"), cell);
             }
         }
 

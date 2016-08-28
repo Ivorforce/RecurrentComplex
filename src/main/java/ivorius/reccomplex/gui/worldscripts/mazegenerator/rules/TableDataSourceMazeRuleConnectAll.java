@@ -5,6 +5,8 @@
 
 package ivorius.reccomplex.gui.worldscripts.mazegenerator.rules;
 
+import ivorius.ivtoolkit.gui.IntegerRange;
+import ivorius.ivtoolkit.tools.IvTranslations;
 import ivorius.reccomplex.gui.table.*;
 import ivorius.reccomplex.gui.worldscripts.mazegenerator.TableDataSourceMazePathList;
 import ivorius.reccomplex.structures.generic.maze.*;
@@ -26,14 +28,14 @@ public class TableDataSourceMazeRuleConnectAll extends TableDataSourceSegmented 
 
     private TableDelegate tableDelegate;
 
-    public TableDataSourceMazeRuleConnectAll(MazeRuleConnectAll rule, TableDelegate tableDelegate, TableNavigator navigator, List<SavedMazePathConnection> expected, int[] boundsLower, int[] boundsHigher)
+    public TableDataSourceMazeRuleConnectAll(MazeRuleConnectAll rule, TableDelegate tableDelegate, TableNavigator navigator, List<SavedMazePathConnection> expected, List<IntegerRange> bounds)
     {
         this.rule = rule;
         this.expected = expected;
         this.tableDelegate = tableDelegate;
 
         addManagedSection(1, new TableDataSourcePreloaded(new TableElementCell(new TableCellTitle("", "Paths"))));
-        addManagedSection(3, new TableDataSourceMazePathList(rule.exits, tableDelegate, navigator, boundsLower, boundsHigher));
+        addManagedSection(3, new TableDataSourceMazePathList(rule.exits, tableDelegate, navigator, bounds));
     }
 
     @Override
@@ -64,19 +66,23 @@ public class TableDataSourceMazeRuleConnectAll extends TableDataSourceSegmented 
     {
         if (segment == 0)
         {
-            TableCellBoolean preventCell = new TableCellBoolean("prevent", rule.preventConnection, ChatFormatting.GOLD + "Prevent Connection", ChatFormatting.GREEN + "Ensure Connection");
+            TableCellBoolean preventCell = new TableCellBoolean("prevent", rule.preventConnection,
+                    ChatFormatting.GOLD + IvTranslations.get("reccomplex.mazerule.connect.prevent"),
+                    ChatFormatting.GREEN + IvTranslations.get("reccomplex.mazerule.connect.prevent"));
             preventCell.addPropertyListener(cell -> rule.preventConnection = (boolean) cell.getPropertyValue());
             return new TableElementCell(preventCell);
         }
         else if (segment == 2)
         {
-            TableCellBoolean cell = new TableCellBoolean("additive", rule.additive, ChatFormatting.GREEN + "Additive", ChatFormatting.GOLD + "Subtractive");
+            TableCellBoolean cell = new TableCellBoolean("additive", rule.additive,
+                    ChatFormatting.GREEN + IvTranslations.get("reccomplex.mazerule.connectall.additive"),
+                    ChatFormatting.GOLD + IvTranslations.get("reccomplex.mazerule.connectall.subtractive"));
             cell.addPropertyListener(this);
             return new TableElementCell(cell);
         }
         else if (segment == 4)
         {
-            return new TableElementCell(new TableCellTitle("", "Preview"));
+            return new TableElementCell(new TableCellTitle("", IvTranslations.get("reccomplex.mazerule.connectall.preview")));
         }
         else if (segment == 5)
         {

@@ -5,6 +5,7 @@
 
 package ivorius.reccomplex.gui.inventorygen;
 
+import ivorius.ivtoolkit.tools.IvTranslations;
 import ivorius.reccomplex.RecurrentComplex;
 import ivorius.reccomplex.gui.RCGuiHandler;
 import ivorius.reccomplex.gui.container.IvGuiRegistry;
@@ -44,12 +45,12 @@ public class GuiEditInventoryGen extends GuiScreenModalTable
 
         if (tableStack().size() == 1)
         {
-            buttonList.add(new GuiButton(1, width / 2 - 155, height / 2 + 95, 154, 20, "Cancel"));
-            buttonList.add(new GuiButton(0, width / 2 + 1, height / 2 + 95, 154, 20, "Save"));
+            buttonList.add(new GuiButton(1, width / 2 - 155, height / 2 + 95, 154, 20, IvTranslations.get("gui.cancel")));
+            buttonList.add(new GuiButton(0, width / 2 + 1, height / 2 + 95, 154, 20, IvTranslations.get("reccomplex.gui.save")));
         }
         else
         {
-            buttonList.add(new GuiButton(2, width / 2 - 155, height / 2 + 95, 310, 20, "Back"));
+            buttonList.add(new GuiButton(2, width / 2 - 155, height / 2 + 95, 310, 20, IvTranslations.get("gui.back")));
         }
     }
 

@@ -5,11 +5,16 @@
 
 package ivorius.reccomplex.gui.worldscripts.mazegenerator;
 
+import com.mojang.realmsclient.gui.ChatFormatting;
+import ivorius.ivtoolkit.gui.IntegerRange;
 import ivorius.ivtoolkit.maze.components.MazeRoom;
-import ivorius.reccomplex.gui.table.*;
+import ivorius.ivtoolkit.tools.IvTranslations;
+import ivorius.reccomplex.gui.table.TableDataSource;
+import ivorius.reccomplex.gui.table.TableDataSourceList;
+import ivorius.reccomplex.gui.table.TableDelegate;
+import ivorius.reccomplex.gui.table.TableNavigator;
 import ivorius.reccomplex.structures.generic.maze.ConnectorStrategy;
 import ivorius.reccomplex.structures.generic.maze.SavedMazePathConnection;
-import com.mojang.realmsclient.gui.ChatFormatting;
 
 import java.util.Arrays;
 import java.util.List;
@@ -19,16 +24,14 @@ import java.util.List;
  */
 public class TableDataSourceMazePathConnectionList extends TableDataSourceList<SavedMazePathConnection, List<SavedMazePathConnection>>
 {
-    private int[] boundsLower;
-    private int[] boundsHigher;
+    private List<IntegerRange> bounds;
 
-    public TableDataSourceMazePathConnectionList(List<SavedMazePathConnection> list, TableDelegate tableDelegate, TableNavigator navigator, int[] boundsLower, int[] boundsHigher)
+    public TableDataSourceMazePathConnectionList(List<SavedMazePathConnection> list, TableDelegate tableDelegate, TableNavigator navigator, List<IntegerRange> bounds)
     {
         super(list, tableDelegate, navigator);
-        this.boundsLower = boundsLower;
-        this.boundsHigher = boundsHigher;
-        setEarlierTitle("Up");
-        setLaterTitle("Down");
+        this.bounds = bounds;
+        setEarlierTitle(IvTranslations.get("gui.up"));
+        setLaterTitle(IvTranslations.get("gui.down"));
     }
 
     @Override
@@ -41,12 +44,12 @@ public class TableDataSourceMazePathConnectionList extends TableDataSourceList<S
     @Override
     public SavedMazePathConnection newEntry(String actionID)
     {
-        return new SavedMazePathConnection(2, new MazeRoom(new int[boundsLower.length]), false, ConnectorStrategy.DEFAULT_PATH);
+        return new SavedMazePathConnection(2, new MazeRoom(bounds.size()), false, ConnectorStrategy.DEFAULT_PATH);
     }
 
     @Override
     public TableDataSource editEntryDataSource(SavedMazePathConnection entry)
     {
-        return new TableDataSourceMazePathConnection(entry, boundsLower, boundsHigher, tableDelegate);
+        return new TableDataSourceMazePathConnection(entry, bounds, tableDelegate);
     }
 }

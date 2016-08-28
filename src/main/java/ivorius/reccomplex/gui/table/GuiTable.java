@@ -7,6 +7,7 @@ package ivorius.reccomplex.gui.table;
 
 import gnu.trove.map.hash.TIntObjectHashMap;
 import ivorius.ivtoolkit.math.IvMathHelper;
+import ivorius.ivtoolkit.tools.IvTranslations;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.client.gui.GuiButton;
@@ -94,9 +95,9 @@ public class GuiTable extends Gui
 
         int roundedScrollIndex = MathHelper.floor_float(currentScroll + 0.5f);
 
-        scrollUpButton = new GuiButton(-1, propertiesBounds.getMinX(), propertiesBounds.getMinY(), propertiesBounds.getWidth() / 2 - 1, 20, "Up");
+        scrollUpButton = new GuiButton(-1, propertiesBounds.getMinX(), propertiesBounds.getMinY(), propertiesBounds.getWidth() / 2 - 1, 20, IvTranslations.get("gui.up"));
         delegate.addButton(scrollUpButton);
-        scrollDownButton = new GuiButton(-1, propertiesBounds.getCenterX() + 1, propertiesBounds.getMinY(), propertiesBounds.getWidth() / 2 - 1, 20, "Down");
+        scrollDownButton = new GuiButton(-1, propertiesBounds.getCenterX() + 1, propertiesBounds.getMinY(), propertiesBounds.getWidth() / 2 - 1, 20, IvTranslations.get("gui.down"));
         delegate.addButton(scrollDownButton);
 
         int supportedSlotNumber = (propertiesBounds.getHeight() - SCROLL_BAR_HEIGHT) / HEIGHT_PER_SLOT;

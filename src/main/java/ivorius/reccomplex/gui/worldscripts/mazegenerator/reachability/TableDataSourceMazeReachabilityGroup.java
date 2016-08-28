@@ -8,6 +8,7 @@ package ivorius.reccomplex.gui.worldscripts.mazegenerator.reachability;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 import com.mojang.realmsclient.gui.ChatFormatting;
+import ivorius.ivtoolkit.tools.IvTranslations;
 import ivorius.reccomplex.gui.table.*;
 import ivorius.reccomplex.structures.generic.maze.SavedMazePath;
 
@@ -82,7 +83,9 @@ public class TableDataSourceMazeReachabilityGroup extends TableDataSourceSegment
         int group = segment / 2 - 1;
 
         if (segment % 2 == 0)
-            return new TableElementCell(new TableCellTitle("groupTitle" + group, group < 0 ? "Default" : "Group " + (group + 1)));
+            return new TableElementCell(new TableCellTitle("groupTitle" + group, group < 0
+                    ? IvTranslations.get("reccomplex.reachability.groups.default")
+                    : IvTranslations.format("reccomplex.reachability.groups.group", "" + (group + 1))));
         else
         {
             SavedMazePath t = getVirtualGroup(group).get(index);
@@ -106,8 +109,11 @@ public class TableDataSourceMazeReachabilityGroup extends TableDataSourceSegment
 
         boolean enabled = true;
         return new TableCellButton[]{
-                new TableCellButton("", second ? "default" : "earlier", "Previous Group", enabled && !first),
-                new TableCellButton("", last ? "new" : "later", last ? "New Group" : "Next Group", enabled && (!last || groupL.size() > 1))
+                new TableCellButton("", second ? "default" : "earlier", IvTranslations.get("reccomplex.reachability.groups.previous"), enabled && !first),
+                new TableCellButton("", last ? "new" : "later", last
+                        ? IvTranslations.get("reccomplex.reachability.groups.new")
+                        : IvTranslations.get("reccomplex.reachability.groups.next"),
+                        enabled && (!last || groupL.size() > 1))
         };
     }
 

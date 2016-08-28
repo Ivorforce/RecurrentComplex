@@ -17,7 +17,6 @@ import ivorius.reccomplex.scripts.world.WorldScriptMazeGenerator;
  */
 public class TableDataSourceWorldScriptMazeGenerator extends TableDataSourceSegmented implements TableCellPropertyListener
 {
-    public static final int[] DIMENSIONS = new int[]{100, 100, 100};
     private WorldScriptMazeGenerator script;
 
     private TableDelegate delegate;
@@ -32,12 +31,14 @@ public class TableDataSourceWorldScriptMazeGenerator extends TableDataSourceSegm
         addManagedSection(1, TableCellMultiBuilder.create(navigator, delegate)
                 .addNavigation(() -> IvTranslations.get("reccomplex.gui.edit"), null,
                         () -> new GuiTable(delegate, new TableDataSourceMazeComponent(script.mazeComponent, false, navigator, delegate))
-                ).buildDataSource("Maze"));
+                ).buildDataSource(IvTranslations.get("reccomplex.maze")));
         addManagedSection(2, TableCellMultiBuilder.create(navigator, delegate)
                 .addNavigation(() -> IvTranslations.get("reccomplex.gui.edit"), null,
-                        () -> new GuiTable(delegate, new TableDataSourceMazeRuleList(script.rules, delegate, navigator, script.mazeComponent.exitPaths, script.mazeComponent.rooms.boundsLower(), script.mazeComponent.rooms.boundsHigher()))
-                ).buildDataSource("Rules"));
-        addManagedSection(3, new TableDataSourceBlockPos(script.getStructureShift(), script::setStructureShift, new IntegerRange(-50, 50), "Range: %s"));
+                        () -> new GuiTable(delegate, new TableDataSourceMazeRuleList(script.rules, delegate, navigator, script.mazeComponent.exitPaths, script.mazeComponent.rooms.bounds()))
+                ).buildDataSource(IvTranslations.get("reccomplex.worldscript.mazeGen.rules")));
+        addManagedSection(3, new TableDataSourceBlockPos(script.getStructureShift(), script::setStructureShift,
+                new IntegerRange(-50, 50), new IntegerRange(-50, 50), new IntegerRange(-50, 50),
+                IvTranslations.get("reccomplex.worldscript.mazeGen.shift.x"), IvTranslations.get("reccomplex.worldscript.mazeGen.shift.y"), IvTranslations.get("reccomplex.worldscript.mazeGen.shift.z")));
     }
 
     public WorldScriptMazeGenerator getScript()
@@ -99,7 +100,7 @@ public class TableDataSourceWorldScriptMazeGenerator extends TableDataSourceSegm
             {
                 TableCellString cell = new TableCellString("mazeID", script.getMazeID());
                 cell.addPropertyListener(this);
-                return new TableElementCell("Maze ID", cell);
+                return new TableElementCell(IvTranslations.get("reccomplex.maze.id"), cell);
             }
             case 4:
                 switch (index)
@@ -108,19 +109,19 @@ public class TableDataSourceWorldScriptMazeGenerator extends TableDataSourceSegm
                     {
                         TableCellInteger cell = new TableCellInteger("roomSizeX", script.getRoomSize()[0], 1, 64);
                         cell.addPropertyListener(this);
-                        return new TableElementCell("Room Size: X", cell);
+                        return new TableElementCell(IvTranslations.get("reccomplex.maze.rooms.size.x"), cell);
                     }
                     case 1:
                     {
                         TableCellInteger cell = new TableCellInteger("roomSizeY", script.getRoomSize()[1], 1, 64);
                         cell.addPropertyListener(this);
-                        return new TableElementCell("Room Size: Y", cell);
+                        return new TableElementCell(IvTranslations.get("reccomplex.maze.rooms.size.y"), cell);
                     }
                     case 2:
                     {
                         TableCellInteger cell = new TableCellInteger("roomSizeZ", script.getRoomSize()[2], 1, 64);
                         cell.addPropertyListener(this);
-                        return new TableElementCell("Room Size: Z", cell);
+                        return new TableElementCell(IvTranslations.get("reccomplex.maze.rooms.size.z"), cell);
                     }
                 }
                 break;

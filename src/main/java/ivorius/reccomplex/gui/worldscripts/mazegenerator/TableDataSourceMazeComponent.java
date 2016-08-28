@@ -35,15 +35,15 @@ public class TableDataSourceMazeComponent extends TableDataSourceSegmented
         addManagedSection(1, TableCellMultiBuilder.create(navigator, tableDelegate)
                 .addNavigation(() -> IvTranslations.get("reccomplex.gui.edit"), null,
                         () -> new GuiTable(tableDelegate, new TableDataSourceSelection(component.rooms, DEFAULT_MAX_COMPONENT_SIZE, tableDelegate, navigator))
-                ).buildDataSource("Rooms"));
+                ).buildDataSource(IvTranslations.get("reccomplex.generationInfo.mazeComponent.rooms")));
         addManagedSection(2, TableCellMultiBuilder.create(navigator, tableDelegate)
                 .addNavigation(() -> IvTranslations.get("reccomplex.gui.edit"), null,
-                        () -> new GuiTable(tableDelegate, new TableDataSourceMazePathConnectionList(component.exitPaths, tableDelegate, navigator, component.rooms.boundsLower(), component.rooms.boundsHigher()))
-                ).buildDataSource("Exits"));
+                        () -> new GuiTable(tableDelegate, new TableDataSourceMazePathConnectionList(component.exitPaths, tableDelegate, navigator, component.rooms.bounds()))
+                ).buildDataSource(IvTranslations.get("reccomplex.generationInfo.mazeComponent.exits")));
         addManagedSection(3, TableCellMultiBuilder.create(navigator, tableDelegate)
                 .addNavigation(() -> IvTranslations.get("reccomplex.gui.edit"), () -> IvTranslations.formatLines("reccomplex.reachability.tooltip"),
-                        () -> new GuiTable(tableDelegate, new TableDataSourceMazeReachability(component.reachability, tableDelegate, navigator, SavedMazeReachability.buildExpected(component), component.rooms.boundsLower(), component.rooms.boundsHigher()))
-                ).buildDataSource("Reachability"));
+                        () -> new GuiTable(tableDelegate, new TableDataSourceMazeReachability(component.reachability, tableDelegate, navigator, SavedMazeReachability.buildExpected(component), component.rooms.bounds()))
+                ).buildDataSource(IvTranslations.get("reccomplex.generationInfo.mazeComponent.reachability")));
 
     }
 

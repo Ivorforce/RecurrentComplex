@@ -5,11 +5,14 @@
 
 package ivorius.reccomplex.gui.worldscripts.mazegenerator.rules;
 
+import ivorius.ivtoolkit.gui.IntegerRange;
 import ivorius.reccomplex.gui.table.*;
 import ivorius.reccomplex.gui.worldscripts.mazegenerator.TableDataSourceMazePathList;
 import ivorius.reccomplex.structures.generic.maze.rules.saved.MazeRuleConnect;
 import ivorius.ivtoolkit.tools.IvTranslations;
 import com.mojang.realmsclient.gui.ChatFormatting;
+
+import java.util.List;
 
 /**
  * Created by lukas on 21.03.16.
@@ -19,19 +22,19 @@ public class TableDataSourceMazeRuleConnect extends TableDataSourceSegmented
 
     private final MazeRuleConnect rule;
 
-    public TableDataSourceMazeRuleConnect(MazeRuleConnect rule, TableDelegate tableDelegate, TableNavigator navigator, int[] boundsLower, int[] boundsHigher)
+    public TableDataSourceMazeRuleConnect(MazeRuleConnect rule, TableDelegate tableDelegate, TableNavigator navigator, List<IntegerRange> bounds)
     {
         this.rule = rule;
 
-        TableCellTitle startTitle = new TableCellTitle("", "Start");
+        TableCellTitle startTitle = new TableCellTitle("", IvTranslations.get("reccomplex.mazerule.connect.start"));
         startTitle.setTooltip(IvTranslations.formatLines("reccomplex.mazerule.connect.start.tooltip"));
         addManagedSection(1, new TableDataSourcePreloaded(new TableElementCell(startTitle)));
-        addManagedSection(2, new TableDataSourceMazePathList(rule.start, tableDelegate, navigator, boundsLower, boundsHigher));
+        addManagedSection(2, new TableDataSourceMazePathList(rule.start, tableDelegate, navigator, bounds));
 
-        TableCellTitle endTitle = new TableCellTitle("", "End");
+        TableCellTitle endTitle = new TableCellTitle("", IvTranslations.get("reccomplex.mazerule.connect.end"));
         endTitle.setTooltip(IvTranslations.formatLines("reccomplex.mazerule.connect.end.tooltip"));
         addManagedSection(3, new TableDataSourcePreloaded(new TableElementCell(endTitle)));
-        addManagedSection(4, new TableDataSourceMazePathList(rule.end, tableDelegate, navigator, boundsLower, boundsHigher));
+        addManagedSection(4, new TableDataSourceMazePathList(rule.end, tableDelegate, navigator, bounds));
     }
 
     @Override
@@ -45,7 +48,9 @@ public class TableDataSourceMazeRuleConnect extends TableDataSourceSegmented
     {
         if (segment == 0)
         {
-            TableCellBoolean preventCell = new TableCellBoolean("prevent", rule.preventConnection, ChatFormatting.GOLD + "Prevent Connection", ChatFormatting.GREEN + "Ensure Connection");
+            TableCellBoolean preventCell = new TableCellBoolean("prevent", rule.preventConnection,
+                    ChatFormatting.GOLD + IvTranslations.get("reccomplex.mazerule.connect.prevent"),
+                    ChatFormatting.GREEN + IvTranslations.get("reccomplex.mazerule.connect.prevent"));
             preventCell.addPropertyListener(cell -> rule.preventConnection = (boolean) cell.getPropertyValue());
             return new TableElementCell(preventCell);
         }

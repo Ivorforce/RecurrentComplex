@@ -37,14 +37,14 @@ public class TableDataSourceYSelector implements TableDataSource, TableCellPrope
         {
             TableCellEnum cell = new TableCellEnum<>("ySelType", ySelector.selectionMode, TableCellEnum.options(Arrays.asList(GenericYSelector.SelectionMode.values()), "structures.genY.", true));
             cell.addPropertyListener(this);
-            return new TableElementCell("Generation Base", cell);
+            return new TableElementCell(IvTranslations.get("reccomplex.yselector.base"), cell);
         }
         else if (index == 1)
         {
             TableCellIntegerRange cell = new TableCellIntegerRange("ySelShift", new IntegerRange(ySelector.minYShift, ySelector.maxYShift), -100, 100);
             cell.setTooltip(IvTranslations.formatLines("reccomplex.structure.randomrange"));
             cell.addPropertyListener(this);
-            return new TableElementCell("Y Shift", cell);
+            return new TableElementCell(IvTranslations.get("reccomplex.yselector.shift"), cell);
         }
 
         return null;

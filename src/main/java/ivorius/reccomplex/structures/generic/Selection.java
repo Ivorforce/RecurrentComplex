@@ -13,11 +13,10 @@ import ivorius.ivtoolkit.tools.IvNBTHelper;
 import ivorius.ivtoolkit.tools.NBTCompoundObject;
 import ivorius.ivtoolkit.tools.NBTTagLists;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.nbt.NBTTagList;
-import net.minecraftforge.common.util.Constants;
 
 import java.util.*;
 import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 /**
  * Created by lukas on 01.02.15.
@@ -56,6 +55,11 @@ public class Selection extends ArrayList<Selection.Area> implements NBTCompoundO
         return selection;
     }
 
+    public static List<IntegerRange> toRanges(int[] lower, int[] higher)
+    {
+        return IntStream.range(0, lower.length).mapToObj(i -> new IntegerRange(lower[i], higher[i])).collect(Collectors.toList());
+    }
+
     public Set<MazeRoom> mazeRooms(boolean additive)
     {
         if (additive)
@@ -90,6 +94,11 @@ public class Selection extends ArrayList<Selection.Area> implements NBTCompoundO
     public void writeToNBT(NBTTagCompound compound)
     {
         NBTTagLists.writeTo(compound, "areas", stream().map(Area::writeToNBT).collect(Collectors.toList()));
+    }
+
+    public List<IntegerRange> bounds()
+    {
+        return toRanges(boundsLower(), boundsHigher());
     }
 
     public int[] boundsLower()

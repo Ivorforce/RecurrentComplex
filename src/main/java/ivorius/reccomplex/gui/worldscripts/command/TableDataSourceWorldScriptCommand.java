@@ -5,6 +5,7 @@
 
 package ivorius.reccomplex.gui.worldscripts.command;
 
+import ivorius.ivtoolkit.tools.IvTranslations;
 import ivorius.reccomplex.gui.table.*;
 import ivorius.reccomplex.scripts.world.WorldScriptCommand;
 import org.apache.commons.lang3.StringUtils;
@@ -19,8 +20,8 @@ public class TableDataSourceWorldScriptCommand extends TableDataSourceList<World
     public TableDataSourceWorldScriptCommand(WorldScriptCommand script, TableDelegate tableDelegate, TableNavigator navigator)
     {
         super(script.entries, tableDelegate, navigator);
-        setEarlierTitle("Up");
-        setLaterTitle("Down");
+        setEarlierTitle(IvTranslations.get("gui.up"));
+        setLaterTitle(IvTranslations.get("gui.down"));
     }
 
     @Override

@@ -1,13 +1,13 @@
 /*
  *  Copyright (c) 2014, Lukas Tenbrink.
- *  * http://lukas.axxim.net
+ *  * http://ivorius.net
  */
 
 package ivorius.reccomplex.gui;
 
-import net.minecraft.util.math.BlockPos;
 import ivorius.ivtoolkit.gui.IntegerRange;
 import ivorius.reccomplex.gui.table.*;
+import ivorius.reccomplex.utils.BlockSurfacePos;
 
 import javax.annotation.Nonnull;
 import java.util.function.Consumer;
@@ -15,28 +15,34 @@ import java.util.function.Consumer;
 /**
  * Created by lukas on 13.04.16.
  */
-public class TableDataSourceBlockPos extends TableDataSourceSegmented
+public class TableDataSourceBlockSurfacePos extends TableDataSourceSegmented
 {
-    private BlockPos coord;
-    private Consumer<BlockPos> consumer;
+    private BlockSurfacePos coord;
+    private Consumer<BlockSurfacePos> consumer;
 
     private IntegerRange rangeX;
-    private IntegerRange rangeY;
     private IntegerRange rangeZ;
     private String titleX;
-    private String titleY;
     private String titleZ;
 
-    public TableDataSourceBlockPos(BlockPos coord, Consumer<BlockPos> consumer, IntegerRange rangeX, IntegerRange rangeY, IntegerRange rangeZ, String titleX, String titleY, String titleZ)
+    public TableDataSourceBlockSurfacePos(BlockSurfacePos coord, Consumer<BlockSurfacePos> consumer, IntegerRange rangeX, IntegerRange rangeZ, String titleX, String titleZ)
     {
         this.coord = coord;
         this.consumer = consumer;
         this.rangeX = rangeX;
-        this.rangeY = rangeY;
         this.rangeZ = rangeZ;
         this.titleX = titleX;
-        this.titleY = titleY;
         this.titleZ = titleZ;
+    }
+
+    public TableDataSourceBlockSurfacePos(BlockSurfacePos coord, Consumer<BlockSurfacePos> consumer, IntegerRange range, String titleFormat)
+    {
+        this.coord = coord;
+        this.consumer = consumer;
+        this.rangeX = range;
+        this.rangeZ = range;
+        this.titleX = String.format(titleFormat, "X");
+        this.titleZ = String.format(titleFormat, "Z");
     }
 
     @Override
@@ -48,7 +54,7 @@ public class TableDataSourceBlockPos extends TableDataSourceSegmented
     @Override
     public int sizeOfSegment(int segment)
     {
-        return 3;
+        return 2;
     }
 
     @Override
@@ -64,11 +70,6 @@ public class TableDataSourceBlockPos extends TableDataSourceSegmented
                 range = rangeX;
                 val = coord.getX();
                 title = titleX;
-                break;
-            case 1:
-                range = rangeY;
-                val = coord.getY();
-                title = titleY;
                 break;
             default:
                 range = rangeZ;
@@ -94,10 +95,9 @@ public class TableDataSourceBlockPos extends TableDataSourceSegmented
     @Nonnull
     protected TableCellPropertyListener createListener(TableCellProperty<Integer> cell, int idx)
     {
-        return cell1 -> consumer.accept(coord = new BlockPos(
+        return cell1 -> consumer.accept(coord = new BlockSurfacePos(
                 idx == 0 ? cell.getPropertyValue() : coord.getX(),
-                idx == 1 ? cell.getPropertyValue() : coord.getY(),
-                idx == 2 ? cell.getPropertyValue() : coord.getZ()
+                idx == 1 ? cell.getPropertyValue() : coord.getZ()
         ));
     }
 }

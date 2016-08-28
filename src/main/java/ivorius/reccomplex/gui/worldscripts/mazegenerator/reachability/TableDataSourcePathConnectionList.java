@@ -5,7 +5,9 @@
 
 package ivorius.reccomplex.gui.worldscripts.mazegenerator.reachability;
 
+import ivorius.ivtoolkit.gui.IntegerRange;
 import ivorius.ivtoolkit.maze.components.MazeRoom;
+import ivorius.ivtoolkit.tools.IvTranslations;
 import ivorius.reccomplex.gui.table.*;
 import ivorius.reccomplex.gui.worldscripts.mazegenerator.TableDataSourceMazePath;
 import ivorius.reccomplex.structures.generic.maze.SavedMazePath;
@@ -18,14 +20,12 @@ import java.util.List;
  */
 public class TableDataSourcePathConnectionList extends TableDataSourceList<ImmutablePair<SavedMazePath, SavedMazePath>, List<ImmutablePair<SavedMazePath, SavedMazePath>>>
 {
-    private int[] boundsLower;
-    private int[] boundsHigher;
+    private List<IntegerRange> bounds;
 
-    public TableDataSourcePathConnectionList(List<ImmutablePair<SavedMazePath, SavedMazePath>> list, TableDelegate tableDelegate, TableNavigator navigator, int[] boundsLower, int[] boundsHigher)
+    public TableDataSourcePathConnectionList(List<ImmutablePair<SavedMazePath, SavedMazePath>> list, TableDelegate tableDelegate, TableNavigator navigator, List<IntegerRange> bounds)
     {
         super(list, tableDelegate, navigator);
-        this.boundsLower = boundsLower;
-        this.boundsHigher = boundsHigher;
+        this.bounds = bounds;
     }
 
     public TableDelegate getTableDelegate()
@@ -54,10 +54,10 @@ public class TableDataSourcePathConnectionList extends TableDataSourceList<Immut
     public TableDataSource editEntryDataSource(ImmutablePair<SavedMazePath, SavedMazePath> pair)
     {
         return new TableDataSourceMulti(
-                new TableDataSourcePreloaded(new TableElementCell(new TableCellTitle("", "Source"))),
-                new TableDataSourceMazePath(pair.getLeft(), boundsLower, boundsHigher,  tableDelegate),
-                new TableDataSourcePreloaded(new TableElementCell(new TableCellTitle("", "Destination"))),
-                new TableDataSourceMazePath(pair.getRight(), boundsLower, boundsHigher, tableDelegate)
+                new TableDataSourcePreloaded(new TableElementCell(new TableCellTitle("", IvTranslations.get("reccomplex.gui.source")))),
+                new TableDataSourceMazePath(pair.getLeft(), bounds, tableDelegate),
+                new TableDataSourcePreloaded(new TableElementCell(new TableCellTitle("", IvTranslations.get("reccomplex.gui.destination")))),
+                new TableDataSourceMazePath(pair.getRight(), bounds, tableDelegate)
         );
     }
 }

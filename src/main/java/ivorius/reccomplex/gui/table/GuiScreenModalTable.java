@@ -201,10 +201,9 @@ public class GuiScreenModalTable extends GuiScreen implements TableDelegate, Tab
     @Nonnull
     @Override
     @ParametersAreNonnullByDefault
-    public <T extends GuiButton> T addButton(T button)
+    public <T extends GuiButton> T addButtonToTable(T button)
     {
-        buttonList.add(button);
-        return button;
+        return addButton(button);
     }
 
     @Override

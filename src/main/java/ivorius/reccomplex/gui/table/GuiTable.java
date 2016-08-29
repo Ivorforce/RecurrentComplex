@@ -96,9 +96,9 @@ public class GuiTable extends Gui
         int roundedScrollIndex = MathHelper.floor_float(currentScroll + 0.5f);
 
         scrollUpButton = new GuiButton(-1, propertiesBounds.getMinX(), propertiesBounds.getMinY(), propertiesBounds.getWidth() / 2 - 1, 20, IvTranslations.get("gui.up"));
-        delegate.addButton(scrollUpButton);
+        delegate.addButtonToTable(scrollUpButton);
         scrollDownButton = new GuiButton(-1, propertiesBounds.getCenterX() + 1, propertiesBounds.getMinY(), propertiesBounds.getWidth() / 2 - 1, 20, IvTranslations.get("gui.down"));
-        delegate.addButton(scrollDownButton);
+        delegate.addButtonToTable(scrollDownButton);
 
         int supportedSlotNumber = (propertiesBounds.getHeight() - SCROLL_BAR_HEIGHT) / HEIGHT_PER_SLOT;
         int numberOfElements = dataSource.numberOfElements();
@@ -210,7 +210,7 @@ public class GuiTable extends Gui
 
     public void addButton(TableCell property, int id, GuiButton button)
     {
-        delegate.addButton(button);
+        delegate.addButtonToTable(button);
 
         buttonMap.put(button, new ImmutablePair<>(property, id));
     }

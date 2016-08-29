@@ -15,7 +15,7 @@ import javax.annotation.Nonnull;
 public interface TableDelegate
 {
     @Nonnull
-    <T extends GuiButton> T addButton(T button);
+    <T extends GuiButton> T addButtonToTable(T button);
 
     void redrawTable();
 

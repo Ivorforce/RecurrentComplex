@@ -13,6 +13,8 @@ import net.minecraftforge.client.event.GuiScreenEvent;
 import net.minecraftforge.common.MinecraftForge;
 import org.lwjgl.input.Keyboard;
 
+import javax.annotation.Nonnull;
+import javax.annotation.ParametersAreNonnullByDefault;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -196,10 +198,12 @@ public class GuiScreenModalTable extends GuiScreen implements TableDelegate, Tab
         }
     }
 
+    @Nonnull
     @Override
-    public void addButton(GuiButton button)
+    @ParametersAreNonnullByDefault
+    public <T extends GuiButton> T addButtonToTable(T button)
     {
-        buttonList.add(button);
+        return addButton(button);
     }
 
     @Override

@@ -7,12 +7,15 @@ package ivorius.reccomplex.gui.table;
 
 import net.minecraft.client.gui.GuiButton;
 
+import javax.annotation.Nonnull;
+
 /**
  * Created by lukas on 03.06.14.
  */
 public interface TableDelegate
 {
-    void addButton(GuiButton button);
+    @Nonnull
+    <T extends GuiButton> T addButtonToTable(T button);
 
     void redrawTable();
 

@@ -6,6 +6,7 @@
 package ivorius.reccomplex.gui.editstructure.transformers;
 
 import ivorius.ivtoolkit.tools.IvTranslations;
+import ivorius.reccomplex.gui.GuiValidityStateIndicator;
 import ivorius.reccomplex.gui.table.*;
 import ivorius.reccomplex.structures.StructureInfos;
 import ivorius.reccomplex.structures.generic.transformers.Transformer;
@@ -40,15 +41,20 @@ public class TableDataSourceTransformer extends TableDataSourceSegmented
             TableCellString cell = new TableCellString("transformerID", transformer.id());
             cell.setTooltip(IvTranslations.formatLines("reccomplex.transformer.id.tooltip"));
             cell.setShowsValidityState(true);
-            cell.setValidityState(StructureInfos.isSimpleIDState(transformer.id()));
+            cell.setValidityState(currentIDState());
             cell.addPropertyListener(cell1 ->
             {
                 transformer.setID((String) cell1.getPropertyValue());
-                ((TableCellString) cell1).setValidityState(StructureInfos.isSimpleIDState(transformer.id()));
+                ((TableCellString) cell1).setValidityState(currentIDState());
             });
             return new TableElementCell(IvTranslations.get("reccomplex.transformer.id"), cell);
         }
 
         return super.elementForIndexInSegment(table, index, segment);
+    }
+
+    protected GuiValidityStateIndicator.State currentIDState()
+    {
+        return StructureInfos.isSimpleIDState(transformer.id());
     }
 }

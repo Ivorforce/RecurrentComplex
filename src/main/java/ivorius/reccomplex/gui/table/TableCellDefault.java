@@ -29,6 +29,11 @@ public abstract class TableCellDefault implements TableCell
         this.id = id;
     }
 
+    public void setId(String id)
+    {
+        this.id = id;
+    }
+
     @Nullable
     @Override
     public String getID()

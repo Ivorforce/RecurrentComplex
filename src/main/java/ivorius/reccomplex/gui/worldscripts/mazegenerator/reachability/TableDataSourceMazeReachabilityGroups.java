@@ -19,7 +19,7 @@ import java.util.Set;
 /**
  * Created by lukas on 16.03.16.
  */
-public class TableDataSourceMazeReachabilityGroup extends TableDataSourceSegmented implements TableCellActionListener
+public class TableDataSourceMazeReachabilityGroups extends TableDataSourceSegmented implements TableCellActionListener
 {
     private List<Set<SavedMazePath>> groups;
     private Set<SavedMazePath> expected;
@@ -27,7 +27,7 @@ public class TableDataSourceMazeReachabilityGroup extends TableDataSourceSegment
     private TableDelegate tableDelegate;
     private TableNavigator tableNavigator;
 
-    public TableDataSourceMazeReachabilityGroup(List<Set<SavedMazePath>> groups, Set<SavedMazePath> expected, TableDelegate tableDelegate, TableNavigator tableNavigator)
+    public TableDataSourceMazeReachabilityGroups(List<Set<SavedMazePath>> groups, Set<SavedMazePath> expected, TableDelegate tableDelegate, TableNavigator tableNavigator)
     {
         this.groups = groups;
         this.expected = expected;
@@ -94,7 +94,7 @@ public class TableDataSourceMazeReachabilityGroup extends TableDataSourceSegment
             for (TableCellButton entryAction : entryActions)
             {
                 entryAction.addListener(this);
-                entryAction.actionID = String.format("entry%d,%d", group, index);
+                entryAction.setId(String.format("entry%d,%d", group, index));
             }
             return new TableElementCell(getDisplayString(t), new TableCellMulti(entryActions));
         }

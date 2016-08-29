@@ -39,6 +39,7 @@ import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
 import org.apache.commons.lang3.tuple.Triple;
 
+import javax.annotation.Nullable;
 import java.util.*;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
@@ -252,7 +253,7 @@ public class StructureRegistry
         return structureSelector;
     }
 
-    public Collection<Pair<StructureInfo, StructureListGenerationInfo>> getStructuresInList(final String listID, final EnumFacing front)
+    public Collection<Pair<StructureInfo, StructureListGenerationInfo>> getStructuresInList(final String listID, @Nullable final EnumFacing front)
     {
         return getStructureGenerations(StructureListGenerationInfo.class, input -> listID.equals(input.getRight().listID)
                 && (front == null || input.getLeft().isRotatable() || input.getRight().front == front));

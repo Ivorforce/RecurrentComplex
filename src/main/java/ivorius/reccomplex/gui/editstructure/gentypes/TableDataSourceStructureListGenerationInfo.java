@@ -5,20 +5,25 @@
 
 package ivorius.reccomplex.gui.editstructure.gentypes;
 
+import ivorius.ivtoolkit.blocks.Directions;
 import ivorius.ivtoolkit.gui.IntegerRange;
+import ivorius.ivtoolkit.tools.IvTranslations;
+import ivorius.reccomplex.gui.GuiValidityStateIndicator;
 import ivorius.reccomplex.gui.RCGuiTables;
 import ivorius.reccomplex.gui.TableDataSourceBlockPos;
 import ivorius.reccomplex.gui.TableDirections;
 import ivorius.reccomplex.gui.table.*;
+import ivorius.reccomplex.structures.StructureInfos;
+import ivorius.reccomplex.structures.StructureRegistry;
 import ivorius.reccomplex.structures.generic.gentypes.StructureListGenerationInfo;
-import ivorius.ivtoolkit.blocks.Directions;
-import ivorius.ivtoolkit.tools.IvTranslations;
 import net.minecraft.util.EnumFacing;
+
+import javax.annotation.Nonnull;
 
 /**
  * Created by lukas on 07.10.14.
  */
-public class TableDataSourceStructureListGenerationInfo extends TableDataSourceSegmented implements TableCellPropertyListener
+public class TableDataSourceStructureListGenerationInfo extends TableDataSourceSegmented
 {
     private TableNavigator navigator;
     private TableDelegate tableDelegate;
@@ -65,7 +70,13 @@ public class TableDataSourceStructureListGenerationInfo extends TableDataSourceS
             case 1:
             {
                 TableCellString cell = new TableCellString("listID", generationInfo.listID);
-                cell.addPropertyListener(this);
+                cell.setShowsValidityState(true);
+                cell.setValidityState(currentStructureListIDState());
+                cell.addPropertyListener(cell1 ->
+                {
+                    generationInfo.listID = cell.getPropertyValue();
+                    cell.setValidityState(currentStructureListIDState());
+                });
                 return new TableElementCell(IvTranslations.get("reccomplex.generationInfo.structureList.id"), cell);
             }
             case 2:
@@ -73,7 +84,7 @@ public class TableDataSourceStructureListGenerationInfo extends TableDataSourceS
             case 4:
             {
                 TableCellEnum cell = new TableCellEnum<>("front", generationInfo.front, TableDirections.getDirectionOptions(Directions.HORIZONTAL));
-                cell.addPropertyListener(this);
+                cell.addPropertyListener(cell1 -> generationInfo.front = (EnumFacing) cell.getPropertyValue());
                 return new TableElementCell(IvTranslations.get("reccomplex.generationInfo.structureList.front"), cell);
             }
         }
@@ -81,24 +92,13 @@ public class TableDataSourceStructureListGenerationInfo extends TableDataSourceS
         return super.elementForIndexInSegment(table, index, segment);
     }
 
-    @Override
-    public void valueChanged(TableCellPropertyDefault cell)
+    @Nonnull
+    protected GuiValidityStateIndicator.State currentStructureListIDState()
     {
-        if (cell.getID() != null)
-        {
-            switch (cell.getID())
-            {
-                case "listID":
-                {
-                    generationInfo.listID = (String) cell.getPropertyValue();
-                    break;
-                }
-                case "front":
-                {
-                    generationInfo.front = (EnumFacing) cell.getPropertyValue();
-                    break;
-                }
-            }
-        }
+        return StructureInfos.isSimpleID(generationInfo.listID)
+                ? StructureRegistry.INSTANCE.getStructuresInList(generationInfo.listID, null).size() > 0
+                ? GuiValidityStateIndicator.State.VALID
+                : GuiValidityStateIndicator.State.SEMI_VALID
+                : GuiValidityStateIndicator.State.INVALID;
     }
 }

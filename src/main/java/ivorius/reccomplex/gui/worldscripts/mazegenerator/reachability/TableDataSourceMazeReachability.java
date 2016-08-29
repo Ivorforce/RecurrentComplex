@@ -33,7 +33,7 @@ public class TableDataSourceMazeReachability extends TableDataSourceSegmented
         TableCellTitle groupTitle = new TableCellTitle("", IvTranslations.get("reccomplex.reachability.groups"));
         groupTitle.setTooltip(IvTranslations.formatLines("reccomplex.reachability.groups.tooltip"));
         addManagedSection(0, new TableDataSourcePreloaded(new TableElementCell(groupTitle)));
-        addManagedSection(1, new TableDataSourceMazeReachabilityGroup(reachability.groups, expected, tableDelegate, tableNavigator));
+        addManagedSection(1, new TableDataSourceMazeReachabilityGroups(reachability.groups, expected, tableDelegate, tableNavigator));
 
         TableCellTitle crossConnectionsTitle = new TableCellTitle("", IvTranslations.get("reccomplex.reachability.crossconnections"));
         crossConnectionsTitle.setTooltip(IvTranslations.formatLines("reccomplex.reachability.crossconnections.tooltip"));

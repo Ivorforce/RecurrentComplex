@@ -15,6 +15,7 @@ import ivorius.reccomplex.utils.algebra.RCBoolAlgebra;
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
 import com.mojang.realmsclient.gui.ChatFormatting;
+import net.minecraft.init.Blocks;
 import net.minecraft.util.ResourceLocation;
 
 import java.util.List;
@@ -74,7 +75,8 @@ public class BlockMatcher extends PrefixedTypeExpressionCache<Boolean> implement
         @Override
         public boolean isKnown(String var, Object... args)
         {
-            return registry.blockFromID(new ResourceLocation(var)) != null;
+            ResourceLocation location = new ResourceLocation(var); // Since MC defaults to air now
+            return registry.blockFromID(location) != Blocks.AIR || location.equals(Block.REGISTRY.getNameForObject(Blocks.AIR));
         }
     }
 

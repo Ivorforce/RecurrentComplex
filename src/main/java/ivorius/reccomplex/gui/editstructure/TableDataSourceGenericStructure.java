@@ -11,6 +11,7 @@ import ivorius.reccomplex.files.RCFileTypeRegistry;
 import ivorius.reccomplex.gui.GuiValidityStateIndicator;
 import ivorius.reccomplex.gui.TableDataSourceExpression;
 import ivorius.reccomplex.gui.table.*;
+import ivorius.reccomplex.structures.StructureInfos;
 import ivorius.reccomplex.structures.StructureRegistry;
 import ivorius.reccomplex.structures.generic.GenericStructureInfo;
 
@@ -228,11 +229,10 @@ public class TableDataSourceGenericStructure extends TableDataSourceSegmented im
 
     private GuiValidityStateIndicator.State currentNameState()
     {
-        if (StructureRegistry.INSTANCE.allStructureIDs().contains(structureKey))
-            return GuiValidityStateIndicator.State.SEMI_VALID;
-
-        return structureKey.trim().length() > 0 && !structureKey.contains(" ")
-                ? GuiValidityStateIndicator.State.VALID
+        return StructureInfos.isSimpleID(structureKey)
+                ? StructureRegistry.INSTANCE.allStructureIDs().contains(structureKey)
+                ? GuiValidityStateIndicator.State.SEMI_VALID
+                : GuiValidityStateIndicator.State.VALID
                 : GuiValidityStateIndicator.State.INVALID;
     }
 }

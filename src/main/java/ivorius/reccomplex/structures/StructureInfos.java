@@ -75,12 +75,12 @@ public class StructureInfos
     public static GuiValidityStateIndicator.State isSimpleIDState(String id)
     {
         return isSimpleID(id)
-                ? GuiValidityStateIndicator.State.INVALID
-                : GuiValidityStateIndicator.State.VALID;
+                ? GuiValidityStateIndicator.State.VALID
+                : GuiValidityStateIndicator.State.INVALID;
     }
 
     public static boolean isSimpleID(String id)
     {
-        return id.trim().isEmpty() || !id.chars().allMatch(Character::isJavaIdentifierPart);
+        return !id.trim().isEmpty() && id.chars().allMatch(Character::isJavaIdentifierPart);
     }
 }

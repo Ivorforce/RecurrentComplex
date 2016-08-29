@@ -6,6 +6,7 @@
 package ivorius.reccomplex.gui.editstructure.gentypes;
 
 import ivorius.ivtoolkit.tools.IvTranslations;
+import ivorius.reccomplex.gui.GuiValidityStateIndicator;
 import ivorius.reccomplex.gui.table.*;
 import ivorius.reccomplex.structures.StructureInfos;
 import ivorius.reccomplex.structures.generic.gentypes.StructureGenerationInfo;
@@ -40,15 +41,20 @@ public class TableDataSourceGenerationInfo extends TableDataSourceSegmented
             TableCellString cell = new TableCellString("genInfoID", genInfo.id());
             cell.setTooltip(IvTranslations.formatLines("reccomplex.structure.generation.id.tooltip"));
             cell.setShowsValidityState(true);
-            cell.setValidityState(StructureInfos.isSimpleIDState(genInfo.id()));
+            cell.setValidityState(currentIDState());
             cell.addPropertyListener(cell1 ->
             {
                 genInfo.setID((String) cell1.getPropertyValue());
-                ((TableCellString) cell1).setValidityState(StructureInfos.isSimpleIDState(genInfo.id()));
+                ((TableCellString) cell1).setValidityState(currentIDState());
             });
             return new TableElementCell(IvTranslations.get("reccomplex.structure.generation.id"), cell);
         }
 
         return super.elementForIndexInSegment(table, index, segment);
+    }
+
+    protected GuiValidityStateIndicator.State currentIDState()
+    {
+        return StructureInfos.isSimpleIDState(genInfo.id());
     }
 }

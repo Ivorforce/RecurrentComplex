@@ -57,7 +57,7 @@ public class TableDataSourceBTNaturalAir extends TableDataSourceSegmented implem
             {
                 case 0:
                 {
-                    TableCellFloatNullable cell = new TableCellFloatNullable("naturalExpansionDistance", TableElements.toFloat(transformer.naturalExpansionDistance), 1.0f, 0, 40, "D", "C");
+                    TableCellFloat cell = new TableCellFloat("naturalExpansionDistance", TableElements.toFloat(transformer.naturalExpansionDistance), 0, 40);
                     cell.setScale(Scales.pow(5));
                     cell.addPropertyListener(this);
                     cell.setTooltip(IvTranslations.formatLines("reccomplex.transformer.naturalAir.naturalExpansionDistance.tooltip"));
@@ -65,7 +65,7 @@ public class TableDataSourceBTNaturalAir extends TableDataSourceSegmented implem
                 }
                 case 1:
                 {
-                    TableCellFloatNullable cell = new TableCellFloatNullable("naturalExpansionRandomization", TableElements.toFloat(transformer.naturalExpansionRandomization), 1.0f, 0, 40, "D", "C");
+                    TableCellFloat cell = new TableCellFloat("naturalExpansionRandomization", TableElements.toFloat(transformer.naturalExpansionRandomization), 0, 40);
                     cell.setScale(Scales.pow(5));
                     cell.addPropertyListener(this);
                     cell.setTooltip(IvTranslations.formatLines("reccomplex.transformer.naturalAir.naturalExpansionRandomization.tooltip"));

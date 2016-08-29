@@ -19,6 +19,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 public class PacketInspectBlockHandler extends SchedulingMessageHandler<PacketInspectBlock, IMessage>
 {
     @Override
+    @SideOnly(Side.CLIENT)
     public void processClient(PacketInspectBlock message, MessageContext ctx)
     {
         Minecraft.getMinecraft().displayGuiScreen(new GuiBlockInspector(message.getPos(), message.getState()));

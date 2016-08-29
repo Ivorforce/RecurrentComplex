@@ -8,21 +8,15 @@ package ivorius.reccomplex.network;
 import ivorius.ivtoolkit.network.SchedulingMessageHandler;
 import ivorius.reccomplex.RecurrentComplex;
 import ivorius.reccomplex.entities.StructureEntityInfo;
-import ivorius.reccomplex.files.RCFileTypeRegistry;
 import ivorius.reccomplex.gui.editstructure.GuiEditGenericStructure;
 import ivorius.reccomplex.structures.generic.GenericStructureInfo;
 import ivorius.reccomplex.structures.generic.StructureSaveHandler;
-import ivorius.reccomplex.utils.ServerTranslations;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.network.NetHandlerPlayServer;
-import net.minecraft.world.WorldServer;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
-
-import java.util.Collections;
 
 /**
  * Created by lukas on 03.08.14.

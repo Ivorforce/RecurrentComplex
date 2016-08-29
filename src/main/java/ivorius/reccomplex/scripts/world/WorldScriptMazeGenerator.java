@@ -41,7 +41,6 @@ import net.minecraftforge.common.util.Constants;
 
 import java.util.*;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 /**
  * Created by lukas on 13.09.15.

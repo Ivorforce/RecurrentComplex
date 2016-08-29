@@ -203,7 +203,7 @@ public class RCForgeEventHandler
     {
         if (event.getEntity() instanceof EntityPlayer)
         {
-            event.addCapability(new ResourceLocation(RecurrentComplex.MOD_ID, StructureEntityInfo.CAPABILITY_KEY), new SimpleCapabilityProvider(StructureEntityInfo.CAPABILITY));
+            event.addCapability(new ResourceLocation(RecurrentComplex.MOD_ID, StructureEntityInfo.CAPABILITY_KEY), new SimpleCapabilityProvider<>(StructureEntityInfo.CAPABILITY));
         }
     }
 

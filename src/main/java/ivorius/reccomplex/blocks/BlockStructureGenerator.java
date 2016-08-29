@@ -18,7 +18,9 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.world.World;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import javax.annotation.ParametersAreNonnullByDefault;
 
 /**
  * Created by lukas on 06.06.14.
@@ -51,7 +53,9 @@ public class BlockStructureGenerator extends Block
         return true;
     }
 
+    @Nonnull
     @Override
+    @ParametersAreNonnullByDefault
     public TileEntity createTileEntity(World world, IBlockState state)
     {
         return new TileEntityStructureGenerator();

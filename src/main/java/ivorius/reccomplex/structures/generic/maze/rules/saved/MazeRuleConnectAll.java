@@ -13,7 +13,6 @@ import ivorius.reccomplex.gui.table.TableDelegate;
 import ivorius.reccomplex.gui.table.TableNavigator;
 import ivorius.reccomplex.gui.worldscripts.mazegenerator.rules.TableDataSourceMazeRuleConnectAll;
 import ivorius.reccomplex.scripts.world.WorldScriptMazeGenerator;
-import ivorius.reccomplex.structures.generic.Selection;
 import ivorius.reccomplex.structures.generic.maze.*;
 import ivorius.reccomplex.structures.generic.maze.rules.LimitAABBStrategy;
 import ivorius.reccomplex.structures.generic.maze.rules.MazeRule;

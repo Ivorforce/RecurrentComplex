@@ -72,15 +72,16 @@ public class RCConfig
             commandPrefix = RecurrentComplex.config.getString("commandPrefix", CATEGORY_GENERAL, "#", "The String that will be prefixed to every command, e.g. '#' -> '/#gen', '#paste' etc.");
 
             commandMatchers.clear();
-            Lists.newArrayList(RecurrentComplex.config.getStringList("commandMatchers", CATEGORY_GENERAL, new String[0], "List of Command Expressions determining if a command can be executed. Example: #export:#3 | $Ivorforce")).forEach(string -> {
-                parseMap(string, parts -> {
-                    CommandMatcher value = new CommandMatcher(parts[1]);
-                    if (value.getParseException() == null)
-                        commandMatchers.put(parts[0], value);
-                    else
-                        RecurrentComplex.logger.error("Failed parsing command matcher ''" + parts[1] + "'");
-                });
-            });
+            Lists.newArrayList(RecurrentComplex.config.getStringList("commandMatchers", CATEGORY_GENERAL, new String[0], "List of Command Expressions determining if a command can be executed. Example: #export:#3 | $Ivorforce")).forEach(string ->
+                    parseMap(string, parts ->
+                    {
+                        CommandMatcher value = new CommandMatcher(parts[1]);
+                        if (value.getParseException() == null)
+                            commandMatchers.put(parts[0], value);
+                        else
+                            RecurrentComplex.logger.error("Failed parsing command matcher ''" + parts[1] + "'");
+                    })
+            );
 
             savePlayerCache = RecurrentComplex.config.getBoolean("savePlayerCache", CATEGORY_GENERAL, true, "Whether player caches like the clipboard and previewed operations will be saved and loaded.");
 

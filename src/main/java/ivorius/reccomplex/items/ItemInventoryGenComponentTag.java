@@ -5,7 +5,6 @@
 
 package ivorius.reccomplex.items;
 
-import ivorius.reccomplex.RecurrentComplex;
 import ivorius.reccomplex.gui.RCGuiHandler;
 import ivorius.ivtoolkit.tools.IvTranslations;
 import ivorius.reccomplex.worldgen.inventory.GenericItemCollection.Component;
@@ -24,6 +23,8 @@ import net.minecraft.world.World;
 import net.minecraft.world.WorldServer;
 import net.minecraftforge.common.util.Constants;
 
+import javax.annotation.Nonnull;
+import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.List;
 import java.util.Random;
 
@@ -75,7 +76,9 @@ public class ItemInventoryGenComponentTag extends Item implements GeneratingItem
             inventory.setInventorySlotContents(fromSlot, component.getRandomItemStack(random));
     }
 
+    @Nonnull
     @Override
+    @ParametersAreNonnullByDefault
     public String getItemStackDisplayName(ItemStack stack)
     {
         String key = componentKey(stack);
@@ -84,7 +87,7 @@ public class ItemInventoryGenComponentTag extends Item implements GeneratingItem
     }
 
     @Override
-    public void addInformation(ItemStack stack, EntityPlayer player, List list, boolean advancedInformation)
+    public void addInformation(ItemStack stack, EntityPlayer player, List<String> list, boolean advancedInformation)
     {
         super.addInformation(stack, player, list, advancedInformation);
 
@@ -102,7 +105,8 @@ public class ItemInventoryGenComponentTag extends Item implements GeneratingItem
     }
 
     @Override
-    public void getSubItems(Item item, CreativeTabs creativeTabs, List list)
+    @ParametersAreNonnullByDefault
+    public void getSubItems(Item item, CreativeTabs creativeTabs, List<ItemStack> list)
     {
         super.getSubItems(item, creativeTabs, list);
 

@@ -26,6 +26,8 @@ import net.minecraft.world.World;
 import net.minecraft.world.WorldServer;
 import net.minecraftforge.common.util.Constants;
 
+import javax.annotation.Nonnull;
+import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.List;
 
 public abstract class ItemInventoryGenerationTag extends Item implements GeneratingItem
@@ -85,7 +87,8 @@ public abstract class ItemInventoryGenerationTag extends Item implements Generat
     }
 
     @Override
-    public void getSubItems(Item item, CreativeTabs creativeTabs, List list)
+    @ParametersAreNonnullByDefault
+    public void getSubItems(Item item, CreativeTabs creativeTabs, List<ItemStack> list)
     {
         for (String key : WeightedItemCollectionRegistry.allItemCollectionKeys())
         {
@@ -95,7 +98,9 @@ public abstract class ItemInventoryGenerationTag extends Item implements Generat
         }
     }
 
+    @Nonnull
     @Override
+    @ParametersAreNonnullByDefault
     public String getItemStackDisplayName(ItemStack stack)
     {
         String key = inventoryGeneratorKey(stack);
@@ -104,7 +109,7 @@ public abstract class ItemInventoryGenerationTag extends Item implements Generat
     }
 
     @Override
-    public void addInformation(ItemStack stack, EntityPlayer player, List list, boolean advancedInformation)
+    public void addInformation(ItemStack stack, EntityPlayer player, List<String> list, boolean advancedInformation)
     {
         WeightedItemCollection generator = inventoryGenerator(stack);
         if (generator != null)

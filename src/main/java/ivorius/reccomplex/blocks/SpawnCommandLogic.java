@@ -10,25 +10,18 @@ import net.minecraft.command.*;
 import net.minecraft.crash.CrashReport;
 import net.minecraft.crash.CrashReportCategory;
 import net.minecraft.crash.ICrashReportDetail;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.tileentity.CommandBlockBaseLogic;
 import net.minecraft.util.*;
 import ivorius.reccomplex.RCConfig;
 import ivorius.reccomplex.utils.RCAccessorCommandBase;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
-import javax.annotation.Nullable;
 import java.text.SimpleDateFormat;
-import java.util.Date;
 
 /**
  * Created by lukas on 11.02.15.
@@ -105,20 +98,8 @@ public abstract class SpawnCommandLogic implements ICommandSender
                 {
                     CrashReport crashreport = CrashReport.makeCrashReport(throwable, "Executing command block");
                     CrashReportCategory crashreportcategory = crashreport.makeCategory("Command to be executed");
-                    crashreportcategory.setDetail("Command", new ICrashReportDetail<String>()
-                    {
-                        public String call() throws Exception
-                        {
-                            return getCommand();
-                        }
-                    });
-                    crashreportcategory.setDetail("Name", new ICrashReportDetail<String>()
-                    {
-                        public String call() throws Exception
-                        {
-                            return getName();
-                        }
-                    });
+                    crashreportcategory.setDetail("Command", this::getCommand);
+                    crashreportcategory.setDetail("Name", this::getName);
                     throw new ReportedException(crashreport);
                 }
 

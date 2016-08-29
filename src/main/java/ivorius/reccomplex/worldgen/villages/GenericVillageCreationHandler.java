@@ -76,7 +76,7 @@ public class GenericVillageCreationHandler implements VillagerRegistry.IVillageC
     }
 
     @Override
-    public StructureVillagePieces.Village buildComponent(StructureVillagePieces.PieceWeight villagePiece, StructureVillagePieces.Start startPiece, List pieces, Random random, int x, int y, int z, EnumFacing front, int generationDepth)
+    public StructureVillagePieces.Village buildComponent(StructureVillagePieces.PieceWeight villagePiece, StructureVillagePieces.Start startPiece, List<StructureComponent> pieces, Random random, int x, int y, int z, EnumFacing front, int generationDepth)
     {
         StructureInfo structureInfo = StructureRegistry.INSTANCE.getStructure(structureID);
 

@@ -5,11 +5,9 @@
 
 package ivorius.reccomplex.gui.table;
 
-import com.google.common.collect.Iterables;
 import net.minecraft.client.gui.GuiButton;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 

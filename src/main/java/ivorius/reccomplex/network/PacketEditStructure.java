@@ -5,7 +5,6 @@
 
 package ivorius.reccomplex.network;
 
-import com.google.common.collect.ImmutableList;
 import net.minecraftforge.fml.common.network.ByteBufUtils;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 import io.netty.buffer.ByteBuf;

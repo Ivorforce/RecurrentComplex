@@ -7,14 +7,11 @@ package ivorius.reccomplex.gui.inventorygen;
 
 import ivorius.ivtoolkit.tools.IvTranslations;
 import ivorius.reccomplex.RecurrentComplex;
-import ivorius.reccomplex.gui.RCGuiHandler;
-import ivorius.reccomplex.gui.container.IvGuiRegistry;
 import ivorius.reccomplex.gui.table.Bounds;
 import ivorius.reccomplex.gui.table.GuiScreenModalTable;
 import ivorius.reccomplex.gui.table.GuiTable;
 import ivorius.reccomplex.network.PacketEditInvGen;
 import ivorius.reccomplex.worldgen.inventory.GenericItemCollection;
-import ivorius.reccomplex.worldgen.inventory.ItemCollectionSaveHandler;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.entity.player.EntityPlayer;
 import org.lwjgl.input.Keyboard;
@@ -80,10 +77,5 @@ public class GuiEditInventoryGen extends GuiScreenModalTable
         {
             popTable();
         }
-    }
-
-    public void updateSaveButtonEnabled()
-    {
-//        saveBtn.enabled = key.trim().length() > 0 && inventoryGenerator.inventoryGeneratorID.trim().length() > 0;
     }
 }

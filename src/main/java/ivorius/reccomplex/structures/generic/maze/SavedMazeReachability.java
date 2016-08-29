@@ -18,7 +18,6 @@ import ivorius.ivtoolkit.tools.NBTCompoundObject;
 import ivorius.ivtoolkit.tools.NBTCompoundObjects;
 import ivorius.ivtoolkit.tools.NBTTagLists;
 import ivorius.reccomplex.json.JsonUtils;
-import ivorius.reccomplex.scripts.world.WorldScriptMazeGenerator;
 import ivorius.reccomplex.structures.generic.Selection;
 import net.minecraft.nbt.NBTTagCompound;
 import org.apache.commons.lang3.tuple.ImmutablePair;

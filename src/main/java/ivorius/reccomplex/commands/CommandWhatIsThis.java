@@ -7,7 +7,6 @@ package ivorius.reccomplex.commands;
 
 import com.google.common.collect.Lists;
 import net.minecraft.command.CommandException;
-import net.minecraft.command.NumberInvalidException;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.math.BlockPos;
 import ivorius.reccomplex.RCConfig;

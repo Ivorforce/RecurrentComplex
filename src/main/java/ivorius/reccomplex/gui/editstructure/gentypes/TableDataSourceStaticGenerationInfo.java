@@ -5,9 +5,7 @@
 
 package ivorius.reccomplex.gui.editstructure.gentypes;
 
-import ivorius.ivtoolkit.gui.IntegerRange;
 import ivorius.ivtoolkit.tools.IvTranslations;
-import ivorius.reccomplex.gui.TableDataSourceBlockPos;
 import ivorius.reccomplex.gui.TableDataSourceBlockSurfacePos;
 import ivorius.reccomplex.gui.TableDataSourceExpression;
 import ivorius.reccomplex.gui.editstructure.TableDataSourceYSelector;

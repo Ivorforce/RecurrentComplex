@@ -11,8 +11,6 @@ import ivorius.reccomplex.structures.generic.GenericStructureInfo;
 import net.minecraftforge.fml.common.network.ByteBufUtils;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 
-import java.util.Set;
-
 /**
  * Created by lukas on 03.08.14.
  */

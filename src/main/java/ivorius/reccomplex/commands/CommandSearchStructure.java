@@ -27,7 +27,6 @@ import net.minecraft.util.text.event.HoverEvent;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.Arrays;
-import java.util.Comparator;
 import java.util.List;
 import java.util.PriorityQueue;
 import java.util.regex.Pattern;

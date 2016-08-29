@@ -8,7 +8,6 @@ package ivorius.reccomplex.gui.inventorygen;
 import io.netty.buffer.ByteBuf;
 import ivorius.ivtoolkit.network.PacketGuiAction;
 import ivorius.reccomplex.gui.SlotDynamicIndex;
-import ivorius.reccomplex.worldgen.inventory.GenericItemCollection;
 import ivorius.reccomplex.worldgen.inventory.GenericItemCollection.Component;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;

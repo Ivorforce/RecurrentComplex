@@ -158,7 +158,7 @@ public class GuiTable extends Gui
 
     public void updateScreen()
     {
-        currentElements.stream().forEach(tableElement -> tableElement.update(this));
+        currentElements.forEach(tableElement -> tableElement.update(this));
     }
 
     protected void actionPerformed(GuiButton button)

@@ -5,14 +5,12 @@
 
 package ivorius.reccomplex.commands;
 
-import com.mojang.realmsclient.gui.ChatFormatting;
 import ivorius.reccomplex.RCConfig;
 import ivorius.reccomplex.structures.StructureRegistry;
 import ivorius.reccomplex.utils.ServerTranslations;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
-import net.minecraft.command.NumberInvalidException;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.text.*;
 import net.minecraft.util.text.event.ClickEvent;

@@ -24,7 +24,9 @@ import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.Constants;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import javax.annotation.ParametersAreNonnullByDefault;
 
 /**
  * Created by lukas on 06.06.14.
@@ -49,7 +51,9 @@ public class BlockSpawnScript extends Block
         return true;
     }
 
+    @Nonnull
     @Override
+    @ParametersAreNonnullByDefault
     public ItemStack getPickBlock(IBlockState state, RayTraceResult target, World world, BlockPos pos, EntityPlayer player)
     {
         TileEntity tileEntity = world.getTileEntity(pos);
@@ -79,7 +83,9 @@ public class BlockSpawnScript extends Block
         return true;
     }
 
+    @Nonnull
     @Override
+    @ParametersAreNonnullByDefault
     public TileEntity createTileEntity(World world, IBlockState state)
     {
         return new TileEntitySpawnScript();

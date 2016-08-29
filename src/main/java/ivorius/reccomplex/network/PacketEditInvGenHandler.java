@@ -8,7 +8,6 @@ package ivorius.reccomplex.network;
 import ivorius.ivtoolkit.network.SchedulingMessageHandler;
 import ivorius.reccomplex.RecurrentComplex;
 import ivorius.reccomplex.gui.inventorygen.GuiEditInventoryGen;
-import ivorius.reccomplex.gui.inventorygen.GuiEditInventoryGenItems;
 import ivorius.reccomplex.items.ItemInventoryGenComponentTag;
 import ivorius.reccomplex.utils.ServerTranslations;
 import ivorius.reccomplex.worldgen.inventory.ItemCollectionSaveHandler;

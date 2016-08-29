@@ -14,6 +14,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 import java.util.function.Function;
+import java.util.stream.Collectors;
 
 /**
  * Created by lukas on 02.06.14.
@@ -43,7 +44,7 @@ public class TableCellEnum<T> extends TableCellPropertyDefault<T>
 
     public static <T extends Enum> List<Option<T>> options(List<T> values, final Function<T, String> titleFunc, final Function<T, List<String>> tooltipFunc)
     {
-        return Lists.transform(values, input -> new Option<>(input, titleFunc != null ? titleFunc.apply(input) : null, tooltipFunc != null ? tooltipFunc.apply(input) : null));
+        return values.stream().map(input -> new Option<>(input, titleFunc != null ? titleFunc.apply(input) : null, tooltipFunc != null ? tooltipFunc.apply(input) : null)).collect(Collectors.toList());
     }
 
     @Override

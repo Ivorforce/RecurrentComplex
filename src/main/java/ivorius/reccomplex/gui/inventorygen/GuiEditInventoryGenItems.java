@@ -33,7 +33,7 @@ import java.util.List;
 /**
  * Created by lukas on 26.05.14.
  */
-public class GuiEditInventoryGenItems extends GuiContainer implements InventoryWatcher, GuiControlListener
+public class GuiEditInventoryGenItems extends GuiContainer implements InventoryWatcher
 {
     public static ResourceLocation textureBackground = new ResourceLocation(RecurrentComplex.MOD_ID, RecurrentComplex.filePathTextures + "guiEditInventoryGen.png");
 
@@ -90,13 +90,42 @@ public class GuiEditInventoryGenItems extends GuiContainer implements InventoryW
                 int onePart = availableSize / 5;
 
                 GuiSliderRange minMaxSlider = new GuiSliderRange(100, baseX, shiftTop + 48 + row * 18, onePart * 2 - 2, 18, "");
-                minMaxSlider.addListener(this);
+                minMaxSlider.addListener(slider -> {
+                    List<GenericItemCollection.RandomizedItemStack> chestContents = component.items;
+                    if (slider.id < 300)
+                    {
+                        int stackIndex = slider.id - 200;
+
+                        if (stackIndex < chestContents.size())
+                        {
+                            GenericItemCollection.RandomizedItemStack chestContent = chestContents.get(stackIndex);
+                            IntegerRange intRange = RangeHelper.roundedIntRange(minMaxSlider.getRange());
+                            chestContent.min = intRange.getMin();
+                            chestContent.max = intRange.getMax();
+
+                            minMaxSlider.setRange(new FloatRange(chestContent.min, chestContent.max));
+
+                            updateAllItemSliders();
+                        }
+                    }
+                });
                 minMaxSlider.setMinValue(1);
                 this.buttonList.add(minMaxSlider);
                 minMaxSliders.add(minMaxSlider);
 
                 GuiSlider weightSlider = new GuiSlider(200, baseX + onePart * 2, shiftTop + 48 + row * 18, onePart * 3, 18, IvTranslations.get("reccomplex.gui.random.weight"));
-                weightSlider.addListener(this);
+                weightSlider.addListener(slider -> {
+                    List<GenericItemCollection.RandomizedItemStack> chestContents = component.items;
+                    if (slider.id < 200 && slider.id >= 100)
+                    {
+                        int stackIndex = slider.id - 100;
+                        if (stackIndex < chestContents.size())
+                        {
+                            chestContents.get(stackIndex).weight = slider.getValue();
+                            updateAllItemSliders();
+                        }
+                    }
+                });
                 weightSlider.setMinValue(0);
                 weightSlider.setMaxValue(10);
                 this.buttonList.add(weightSlider);
@@ -253,48 +282,6 @@ public class GuiEditInventoryGenItems extends GuiContainer implements InventoryW
     {
         updateAllItemSliders();
         updatePageButtons();
-    }
-
-    @Override
-    public void valueChanged(Gui gui)
-    {
-        List<GenericItemCollection.RandomizedItemStack> chestContents = component.items;
-
-        if (gui instanceof GuiSlider)
-        {
-            GuiSlider slider = (GuiSlider) gui;
-
-            if (slider.id < 200 && slider.id >= 100)
-            {
-                int stackIndex = slider.id - 100;
-                if (stackIndex < chestContents.size())
-                {
-                    chestContents.get(stackIndex).weight = slider.getValue();
-                    updateAllItemSliders();
-                }
-            }
-        }
-        else if (gui instanceof GuiSliderRange)
-        {
-            GuiSliderRange slider = (GuiSliderRange) gui;
-
-            if (slider.id < 300)
-            {
-                int stackIndex = slider.id - 200;
-
-                if (stackIndex < chestContents.size())
-                {
-                    GenericItemCollection.RandomizedItemStack chestContent = chestContents.get(stackIndex);
-                    IntegerRange intRange = RangeHelper.roundedIntRange(slider.getRange());
-                    chestContent.min = intRange.getMin();
-                    chestContent.max = intRange.getMax();
-
-                    slider.setRange(new FloatRange(chestContent.min, chestContent.max));
-
-                    updateAllItemSliders();
-                }
-            }
-        }
     }
 
     @Override

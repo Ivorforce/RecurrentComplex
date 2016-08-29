@@ -588,7 +588,7 @@ public class Algebra<T>
 
         public OperatorToken<T> toOperatorToken(Pair<Operator<T>, Integer> pair)
         {
-            return new OperatorToken<T>(startIndex, endIndex, pair.getKey(), pair.getValue());
+            return new OperatorToken<>(startIndex, endIndex, pair.getKey(), pair.getValue());
         }
     }
 

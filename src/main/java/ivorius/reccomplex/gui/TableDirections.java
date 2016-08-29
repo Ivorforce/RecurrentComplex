@@ -16,6 +16,7 @@ public class TableDirections
 {
     public static TableCellEnum.Option<EnumFacing>[] getDirectionOptions(EnumFacing[] directions)
     {
+        @SuppressWarnings("unchecked")
         TableCellEnum.Option<EnumFacing>[] options = new TableCellEnum.Option[directions.length];
         for (int i = 0; i < options.length; i++)
             options[i] = new TableCellEnum.Option<>(directions[i], DirectionNames.of(directions[i]));
@@ -24,6 +25,7 @@ public class TableDirections
 
     public static TableCellEnum.Option<EnumFacing>[] getDirectionOptions(EnumFacing[] directions, String nullTitle)
     {
+        @SuppressWarnings("unchecked")
         TableCellEnum.Option<EnumFacing>[] options = new TableCellEnum.Option[directions.length];
         for (int i = 0; i < options.length; i++)
             options[i] = new TableCellEnum.Option<>(directions[i], DirectionNames.of(directions[i], nullTitle));

@@ -5,6 +5,7 @@
 
 package ivorius.reccomplex.gui.table;
 
+import com.google.common.collect.Lists;
 import net.minecraftforge.fml.relauncher.ReflectionHelper;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiScreen;
@@ -15,7 +16,6 @@ import org.lwjgl.input.Keyboard;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 import java.util.Stack;
 
 /**
@@ -43,7 +43,7 @@ public class GuiScreenModalTable extends GuiScreen implements TableDelegate, Tab
 //        super.mouseClicked(x, y, button);
         if (button == 0) // Simulated from private GuiScreen behavior
         {
-            List buttonListCopy = (List) ((ArrayList) buttonList).clone();
+            List<GuiButton> buttonListCopy = Lists.newArrayList(buttonList);
 
             for (int l = 0; l < buttonListCopy.size(); ++l)
             {

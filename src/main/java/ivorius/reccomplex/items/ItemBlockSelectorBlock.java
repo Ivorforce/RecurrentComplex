@@ -13,6 +13,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
 
+import javax.annotation.Nonnull;
 import java.util.List;
 
 public class ItemBlockSelectorBlock extends ItemBlockSelector
@@ -21,6 +22,7 @@ public class ItemBlockSelectorBlock extends ItemBlockSelector
     {
     }
 
+    @Nonnull
     @Override
     public EnumActionResult onItemUse(ItemStack stack, EntityPlayer playerIn, World worldIn, BlockPos pos, EnumHand hand, EnumFacing facing, float hitX, float hitY, float hitZ)
     {
@@ -31,7 +33,7 @@ public class ItemBlockSelectorBlock extends ItemBlockSelector
     }
 
     @Override
-    public void addInformation(ItemStack stack, EntityPlayer player, List list, boolean advanced)
+    public void addInformation(ItemStack stack, EntityPlayer player, List<String> list, boolean advanced)
     {
         super.addInformation(stack, player, list, advanced);
 

@@ -8,7 +8,6 @@ package ivorius.reccomplex.worldgen.inventory;
 import com.google.common.collect.Collections2;
 import com.google.common.collect.Lists;
 import com.google.gson.*;
-import io.netty.buffer.ByteBuf;
 import ivorius.ivtoolkit.random.WeightedSelector;
 import ivorius.ivtoolkit.tools.IvTranslations;
 import ivorius.reccomplex.RecurrentComplex;
@@ -19,9 +18,7 @@ import ivorius.reccomplex.structures.generic.matchers.DependencyMatcher;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.WeightedRandom;
 import net.minecraft.world.WorldServer;
-import net.minecraftforge.fml.common.network.ByteBufUtils;
 
-import javax.annotation.Nullable;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;

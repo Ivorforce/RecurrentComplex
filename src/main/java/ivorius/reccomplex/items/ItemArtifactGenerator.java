@@ -92,12 +92,12 @@ public class ItemArtifactGenerator extends Item implements GeneratingItem
 
             List enchantments = EnchantmentHelper.buildEnchantmentList(random, artifactStack, enchantLevel, false);
 
-            if (enchantments == null)
+            if (enchantments.isEmpty())
             {
                 enchantments = EnchantmentHelper.buildEnchantmentList(random, new ItemStack(Items.IRON_AXE), enchantLevel, false);
             }
 
-            if (enchantments != null)
+            if (!enchantments.isEmpty())
             {
                 for (Object enchantment : enchantments)
                 {

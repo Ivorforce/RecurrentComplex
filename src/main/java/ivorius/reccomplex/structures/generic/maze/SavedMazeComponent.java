@@ -7,14 +7,12 @@ package ivorius.reccomplex.structures.generic.maze;
 
 import com.google.common.collect.Lists;
 import com.google.gson.*;
-import ivorius.ivtoolkit.math.IvVecMathHelper;
 import ivorius.ivtoolkit.maze.components.MazeRoom;
 import ivorius.ivtoolkit.tools.IvNBTHelper;
 import ivorius.ivtoolkit.tools.NBTCompoundObject;
 import ivorius.ivtoolkit.tools.NBTCompoundObjects;
 import ivorius.ivtoolkit.tools.NBTTagLists;
 import ivorius.reccomplex.json.JsonUtils;
-import ivorius.ivtoolkit.random.WeightedSelector;
 import ivorius.reccomplex.structures.generic.Selection;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.common.util.Constants;

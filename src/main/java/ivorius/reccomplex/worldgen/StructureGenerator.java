@@ -16,7 +16,6 @@ import ivorius.reccomplex.events.StructureGenerationEventLite;
 import ivorius.reccomplex.structures.*;
 import ivorius.reccomplex.utils.NBTStorable;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.world.World;
 import net.minecraft.world.WorldServer;
 import net.minecraft.world.gen.structure.StructureBoundingBox;
 import net.minecraftforge.common.MinecraftForge;

@@ -16,12 +16,8 @@ import ivorius.reccomplex.structures.generic.gentypes.StaticGenerationInfo;
 import ivorius.reccomplex.utils.BlockSurfacePos;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.ChunkPos;
-import net.minecraft.world.World;
 import net.minecraft.world.WorldServer;
 import net.minecraft.world.biome.Biome;
-import net.minecraft.world.chunk.IChunkGenerator;
-import net.minecraft.world.chunk.IChunkProvider;
-import net.minecraftforge.fml.common.IWorldGenerator;
 import org.apache.commons.lang3.tuple.Pair;
 
 import java.util.List;

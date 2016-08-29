@@ -11,7 +11,6 @@ import gnu.trove.map.hash.TIntObjectHashMap;
 import ivorius.ivtoolkit.tools.*;
 import ivorius.ivtoolkit.transform.Mover;
 import ivorius.ivtoolkit.transform.PosTransformer;
-import ivorius.reccomplex.structures.generic.maze.SavedMazePaths;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.EntityList;
 import net.minecraft.util.math.BlockPos;
@@ -122,14 +121,13 @@ public class GenericStructureInfo implements StructureInfo<GenericStructureInfo.
     @Override
     public void generate(final StructureSpawnContext context, InstanceData instanceData)
     {
-        World world = context.world;
+        WorldServer world = context.world;
         Random random = context.random;
         IvWorldData worldData = constructWorldData();
 
         // The world initializes the block event array after it generates the world - in the constructor
         // This hackily sets the field to a temporary value. Yay.
-        if (world instanceof WorldServer)
-            RCAccessorWorldServer.ensureBlockEventArray((WorldServer) world); // Hax
+        RCAccessorWorldServer.ensureBlockEventArray(world); // Hax
 
         IvBlockCollection blockCollection = worldData.blockCollection;
         int[] areaSize = new int[]{blockCollection.width, blockCollection.height, blockCollection.length};
@@ -451,7 +449,7 @@ public class GenericStructureInfo implements StructureInfo<GenericStructureInfo.
         public static final String KEY_TILE_ENTITIES = "tileEntities";
 
         public final Map<String, NBTStorable> transformers = new HashMap<>();
-        public final TIntObjectMap<NBTStorable> transformerIndices = new TIntObjectHashMap(); // Legacy
+        public final TIntObjectMap<NBTStorable> transformerIndices = new TIntObjectHashMap<>(); // Legacy
         public final Map<BlockPos, NBTStorable> tileEntities = new HashMap<>();
 
         protected static NBTBase getTileEntityTag(NBTTagCompound tileEntityCompound, BlockPos coord)

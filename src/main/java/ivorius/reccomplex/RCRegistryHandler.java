@@ -43,7 +43,6 @@ import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.capabilities.CapabilityManager;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
@@ -127,12 +126,12 @@ public class RCRegistryHandler
 
         genericSpace = new BlockGenericSpace().setUnlocalizedName("negativeSpace");
         genericSpace.setCreativeTab(tabStructureTools);
-        register(genericSpace, ItemBlockGenericSpace.class, "generic_space");
+        register(genericSpace, "generic_space", ItemBlockGenericSpace.class);
         RecurrentComplex.cremapper.registerLegacyIDs(genericSpace, true, "negativeSpace");
 
         genericSolid = new BlockGenericSolid().setUnlocalizedName("naturalFloor");
         genericSolid.setCreativeTab(tabStructureTools);
-        register(genericSolid, ItemBlockGenericSolid.class, "generic_solid");
+        register(genericSolid, "generic_solid", ItemBlockGenericSolid.class);
         RecurrentComplex.cremapper.registerLegacyIDs(genericSolid, true, "naturalFloor");
 
         structureGenerator = new BlockStructureGenerator().setUnlocalizedName("structureGenerator");
@@ -167,33 +166,41 @@ public class RCRegistryHandler
 
     public static void register(Item item, String id)
     {
+        item.setRegistryName(id);
+
         if (!RecurrentComplex.isLite())
-            GameRegistry.registerItem(item, id);
+            GameRegistry.register(item);
         else
-            specialRegistry.register(new ResourceLocation(FMLUtils.addPrefix(id)), item);
+            specialRegistry.register(item.getRegistryName(), item);
+    }
+
+    public static void register(Block block, String id, ItemBlock item)
+    {
+        block.setRegistryName(id);
+        item.setRegistryName(id);
+
+        if (!RecurrentComplex.isLite())
+        {
+            GameRegistry.register(block);
+            GameRegistry.register(item);
+        }
+        else
+        {
+            specialRegistry.register(block.getRegistryName(), block);
+            specialRegistry.register(item.getRegistryName(), item);
+        }
     }
 
     public static void register(Block block, String id)
     {
-        if (!RecurrentComplex.isLite())
-            GameRegistry.registerBlock(block, id);
-        else
-        {
-            specialRegistry.register(new ResourceLocation(FMLUtils.addPrefix(id)), block);
-            specialRegistry.register(new ResourceLocation(FMLUtils.addPrefix(id)), new ItemBlock(block));
-        }
+        register(block, id, new ItemBlock(block));
     }
 
-    public static void register(Block block, Class<? extends ItemBlock> itemClass, String id, Object... itemArgs)
+    @Deprecated
+    public static void register(Block block, String id, Class<? extends ItemBlock> itemClass, Object... itemArgs)
     {
-        if (!RecurrentComplex.isLite())
-            GameRegistry.registerBlock(block, itemClass, id, itemArgs);
-        else
-        {
-            specialRegistry.register(new ResourceLocation(FMLUtils.addPrefix(id)), block);
-            Item item = FMLUtils.constructItem(block, itemClass, itemArgs);
-            if (item != null) specialRegistry.register(new ResourceLocation(FMLUtils.addPrefix(id)), item);
-        }
+        ItemBlock item = FMLUtils.constructItem(block, itemClass, itemArgs);
+        register(block, id, item != null ? item : new ItemBlock(block));
     }
 
     public static void register(Class<? extends TileEntity> tileEntity, String id, String... alternatives)

@@ -20,7 +20,9 @@ import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.nbt.NBTTagCompound;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -78,6 +80,7 @@ public class CommandPaste extends CommandBase
         }
     }
 
+    @Nonnull
     @Override
     public List<String> getTabCompletionOptions(MinecraftServer server, ICommandSender sender, String[] args, @Nullable BlockPos pos)
     {
@@ -88,6 +91,6 @@ public class CommandPaste extends CommandBase
         else if (args.length == 5)
             return getListOfStringsMatchingLastWord(args, "true", "false");
 
-        return null;
+        return Collections.emptyList();
     }
 }

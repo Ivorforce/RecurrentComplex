@@ -5,7 +5,6 @@
 
 package ivorius.reccomplex.structures.generic;
 
-import com.google.common.collect.Sets;
 import ivorius.ivtoolkit.tools.IvFileHelper;
 import ivorius.reccomplex.RecurrentComplex;
 import ivorius.reccomplex.files.FileLoadContext;

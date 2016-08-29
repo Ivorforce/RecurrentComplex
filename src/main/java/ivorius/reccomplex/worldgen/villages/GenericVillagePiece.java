@@ -23,6 +23,7 @@ import net.minecraft.world.gen.structure.StructureBoundingBox;
 import net.minecraft.world.gen.structure.StructureVillagePieces;
 
 import javax.annotation.Nullable;
+import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.Random;
 
 /**
@@ -105,6 +106,7 @@ public class GenericVillagePiece extends StructureVillagePieces.Village
     }
 
     @Override
+    @ParametersAreNonnullByDefault
     public boolean addComponentParts(World world, Random random, StructureBoundingBox boundingBox)
     {
         StructureInfo structureInfo = StructureRegistry.INSTANCE.getStructure(structureID);
@@ -129,21 +131,26 @@ public class GenericVillagePiece extends StructureVillagePieces.Village
                     this.boundingBox.offset(0, this.averageGroundLvl - this.boundingBox.minY + structureShift.getY(), 0);
                 }
 
-                BlockPos lowerCoord = new BlockPos(this.boundingBox.minX, this.boundingBox.minY, this.boundingBox.minZ);
-                NBTStorable instanceData = structureInfo.loadInstanceData(new StructureLoadContext(transform, boundingBox, false), this.instanceData);
-
-                StructureGenerator.partially(structureInfo, (WorldServer) world, random, lowerCoord, transform, boundingBox, componentType, structureID, instanceData, !startedGeneration);
-
-                if (structureID != null && !startedGeneration)
-                    StructureGenerationData.get(world).addCompleteEntry(structureID, lowerCoord, transform);
-
-                startedGeneration = true;
+                generate(world, random, boundingBox, structureInfo, transform);
 
                 return true;
             }
         }
 
         return false;
+    }
+
+    protected <T extends NBTStorable> void generate(World world, Random random, StructureBoundingBox boundingBox, StructureInfo<T> structureInfo, AxisAlignedTransform2D transform)
+    {
+        BlockPos lowerCoord = new BlockPos(this.boundingBox.minX, this.boundingBox.minY, this.boundingBox.minZ);
+        T instanceData = structureInfo.loadInstanceData(new StructureLoadContext(transform, boundingBox, false), this.instanceData);
+
+        StructureGenerator.partially(structureInfo, (WorldServer) world, random, lowerCoord, transform, boundingBox, componentType, structureID, instanceData, !startedGeneration);
+
+        if (structureID != null && !startedGeneration)
+            StructureGenerationData.get(world).addCompleteEntry(structureID, lowerCoord, transform);
+
+        startedGeneration = true;
     }
 
     @Override

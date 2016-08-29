@@ -49,7 +49,7 @@ public class StructureEntityInfo implements NBTCompoundObject, PartialUpdateHand
     @Nullable
     public static StructureEntityInfo getStructureEntityInfo(Entity entity)
     {
-        return (StructureEntityInfo) entity.getCapability(CAPABILITY, null);
+        return entity.getCapability(CAPABILITY, null);
     }
 
     public boolean hasValidSelection()

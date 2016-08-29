@@ -59,7 +59,7 @@ public class ItemBlockGenericSpace extends ItemBlock
         {
             return false;
         }
-        else if (pos.getY() == 255 && this.block.getMaterial(this.block.getDefaultState()).isSolid())
+        else if (pos.getY() == 255 && this.block.getDefaultState().getMaterial().isSolid())
         {
             return false;
         }

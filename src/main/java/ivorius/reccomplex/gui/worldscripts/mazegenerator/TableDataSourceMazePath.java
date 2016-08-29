@@ -8,19 +8,16 @@ package ivorius.reccomplex.gui.worldscripts.mazegenerator;
 import ivorius.ivtoolkit.gui.IntegerRange;
 import ivorius.ivtoolkit.maze.components.MazeRoom;
 import ivorius.ivtoolkit.tools.IvTranslations;
-import ivorius.reccomplex.gui.TableDataSourceBlockPos;
 import ivorius.reccomplex.gui.TableDirections;
 import ivorius.reccomplex.gui.table.*;
 import ivorius.reccomplex.structures.generic.maze.ConnectorStrategy;
 import ivorius.reccomplex.structures.generic.maze.SavedMazePath;
 import ivorius.reccomplex.structures.generic.maze.SavedMazePathConnection;
-import ivorius.reccomplex.utils.MCMazes;
 import net.minecraft.util.EnumFacing;
 
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
-import java.util.stream.IntStream;
 
 /**
  * Created by lukas on 22.06.14.

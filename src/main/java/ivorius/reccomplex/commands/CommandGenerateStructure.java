@@ -22,11 +22,13 @@ import ivorius.reccomplex.worldgen.StructureGenerator;
 import ivorius.reccomplex.structures.generic.GenericStructureInfo;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.ICommandSender;
-import net.minecraft.world.World;
 import net.minecraft.world.WorldServer;
 import net.minecraftforge.common.DimensionManager;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import javax.annotation.ParametersAreNonnullByDefault;
+import java.util.Collections;
 import java.util.List;
 import java.util.Random;
 
@@ -35,6 +37,7 @@ import java.util.Random;
  */
 public class CommandGenerateStructure extends CommandBase
 {
+    @Nonnull
     @Override
     public String getCommandName()
     {
@@ -46,20 +49,23 @@ public class CommandGenerateStructure extends CommandBase
         return 2;
     }
 
+    @Nonnull
     @Override
+    @ParametersAreNonnullByDefault
     public String getCommandUsage(ICommandSender var1)
     {
         return ServerTranslations.usage("commands.strucGen.usage");
     }
 
     @Override
+    @ParametersAreNonnullByDefault
     public void execute(MinecraftServer server, ICommandSender commandSender, String[] args) throws CommandException
     {
         if (args.length <= 0)
             throw ServerTranslations.wrongUsageException("commands.strucGen.usage");
 
         String structureName = args[0];
-        StructureInfo structureInfo = StructureRegistry.INSTANCE.getStructure(structureName);
+        StructureInfo<?> structureInfo = StructureRegistry.INSTANCE.getStructure(structureName);
         WorldServer world = args.length >= 4 ? DimensionManager.getWorld(parseInt(args[2])) : (WorldServer) commandSender.getEntityWorld();
 
         if (structureInfo == null)
@@ -99,6 +105,7 @@ public class CommandGenerateStructure extends CommandBase
             StructureGenerator.randomInstantly(world, world.rand, structureInfo, null, coord, false, structureName);
     }
 
+    @Nonnull
     @Override
     public List<String> getTabCompletionOptions(MinecraftServer server, ICommandSender sender, String[] args, @Nullable BlockPos pos)
     {
@@ -109,6 +116,6 @@ public class CommandGenerateStructure extends CommandBase
             return getListOfStringsMatchingLastWord(args, "~");
         }
 
-        return null;
+        return Collections.emptyList();
     }
 }

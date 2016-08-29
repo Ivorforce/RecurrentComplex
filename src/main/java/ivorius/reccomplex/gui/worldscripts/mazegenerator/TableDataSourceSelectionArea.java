@@ -11,9 +11,6 @@ import ivorius.reccomplex.gui.table.*;
 import ivorius.reccomplex.structures.generic.Selection;
 import com.mojang.realmsclient.gui.ChatFormatting;
 
-import java.util.Arrays;
-import java.util.stream.Collectors;
-
 /**
 * Created by lukas on 08.10.14.
 */

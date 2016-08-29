@@ -5,7 +5,6 @@
 
 package ivorius.reccomplex.commands;
 
-import ivorius.ivtoolkit.blocks.BlockArea;
 import ivorius.reccomplex.RCConfig;
 import ivorius.reccomplex.utils.BlockSurfaceArea;
 import ivorius.reccomplex.utils.BlockSurfacePos;

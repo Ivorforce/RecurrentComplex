@@ -113,12 +113,6 @@ public class WorldScriptCommand implements WorldScript<NBTNone>
                     }
 
                     @Override
-                    public void setCommand(String command)
-                    {
-                        super.setCommand(command);
-                    }
-
-                    @Override
                     public void updateCommand()
                     {
                         IBlockState iblockstate = context.world.getBlockState(coord);

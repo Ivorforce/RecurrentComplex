@@ -6,7 +6,6 @@
 package ivorius.reccomplex.json;
 
 import com.google.gson.*;
-import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTTagCompound;
 
 import java.lang.reflect.Type;

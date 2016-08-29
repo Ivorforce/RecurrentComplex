@@ -23,11 +23,6 @@ public class FMLMissingRemapper
         this.remapper = remapper;
     }
 
-    public void register()
-    {
-
-    }
-
     public void onMissingMapping(FMLMissingMappingsEvent event)
     {
         for (FMLMissingMappingsEvent.MissingMapping missingMapping : event.get())

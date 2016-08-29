@@ -15,15 +15,11 @@ import ivorius.reccomplex.structures.generic.matchers.BiomeMatcher;
 import ivorius.reccomplex.structures.generic.gentypes.NaturalGenerationInfo;
 import ivorius.ivtoolkit.random.WeightedSelector;
 import ivorius.reccomplex.structures.generic.matchers.DimensionMatcher;
-import ivorius.reccomplex.utils.BlockSurfacePos;
 import ivorius.reccomplex.utils.CustomizableMap;
-import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.ChunkPos;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldProvider;
 import net.minecraft.world.biome.Biome;
-import net.minecraft.world.chunk.IChunkGenerator;
-import net.minecraft.world.chunk.IChunkProvider;
 import org.apache.commons.lang3.tuple.Pair;
 
 import javax.annotation.Nullable;
@@ -47,7 +43,7 @@ public class StructureSelector
     {
         cachedDimensionTypes.addAll(DimensionDictionary.getDimensionTypes(provider));
 
-        for (StructureInfo structureInfo : structures)
+        for (StructureInfo<?> structureInfo : structures)
         {
             List<NaturalGenerationInfo> generationInfos = structureInfo.generationInfos(NaturalGenerationInfo.class);
             for (NaturalGenerationInfo naturalGenerationInfo : generationInfos)

@@ -80,7 +80,7 @@ public class ItemInventoryGenMultiTag extends ItemInventoryGenerationTag impleme
     }
 
     @Override
-    public void addInformation(ItemStack stack, EntityPlayer player, List list, boolean advancedInformation)
+    public void addInformation(ItemStack stack, EntityPlayer player, List<String> list, boolean advancedInformation)
     {
         super.addInformation(stack, player, list, advancedInformation);
         IntegerRange range = getGenerationCount(stack);

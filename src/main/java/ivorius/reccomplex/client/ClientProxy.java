@@ -71,13 +71,16 @@ public class ClientProxy implements RCProxy
     @Override
     public void registerRenderers()
     {
-        registerItemsForDefaultRender(blockSelector, blockSelectorFloating);
-        registerItemsForDefaultRender(inventoryGenerationTag, inventoryGenerationSingleTag, inventoryGenerationComponentTag);
-        registerItemsForDefaultRender(artifactGenerationTag, bookGenerationTag);
-        registerItemsForDefaultRender(inspector);
+        if (!RecurrentComplex.isLite())
+        {
+            registerItemsForDefaultRender(blockSelector, blockSelectorFloating);
+            registerItemsForDefaultRender(inventoryGenerationTag, inventoryGenerationSingleTag, inventoryGenerationComponentTag);
+            registerItemsForDefaultRender(artifactGenerationTag, bookGenerationTag);
+            registerItemsForDefaultRender(inspector);
 
-        registerTypeItemsForDefaultRender(genericSpace, genericSolid);
-        registerItemsForDefaultRender(structureGenerator, mazeGenerator, spawnCommands, spawnScript);
+            registerTypeItemsForDefaultRender(genericSpace, genericSolid);
+            registerItemsForDefaultRender(structureGenerator, mazeGenerator, spawnCommands, spawnScript);
+        }
     }
 
     protected void registerTypeItemsForDefaultRender(Block... blocks)

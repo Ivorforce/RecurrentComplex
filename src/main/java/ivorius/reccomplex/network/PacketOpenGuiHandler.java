@@ -12,6 +12,8 @@ import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.world.WorldServer;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 /**
  * Created by lukas on 03.08.14.
@@ -19,6 +21,7 @@ import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
 public class PacketOpenGuiHandler extends SchedulingMessageHandler<PacketOpenGui, IMessage>
 {
     @Override
+    @SideOnly(Side.CLIENT)
     public void processClient(PacketOpenGui message, MessageContext ctx)
     {
         IvGuiRegistry.INSTANCE.openGuiJustClient(IvSideClient.getClientPlayer(), message.modId, message.modGuiId, message.data);

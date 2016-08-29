@@ -10,6 +10,8 @@ import ivorius.reccomplex.gui.inspector.GuiBlockInspector;
 import net.minecraft.client.Minecraft;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 /**
  * Created by lukas on 03.08.14.
@@ -17,6 +19,7 @@ import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
 public class PacketInspectBlockHandler extends SchedulingMessageHandler<PacketInspectBlock, IMessage>
 {
     @Override
+    @SideOnly(Side.CLIENT)
     public void processClient(PacketInspectBlock message, MessageContext ctx)
     {
         Minecraft.getMinecraft().displayGuiScreen(new GuiBlockInspector(message.getPos(), message.getState()));

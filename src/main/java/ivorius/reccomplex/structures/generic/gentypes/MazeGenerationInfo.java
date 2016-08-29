@@ -36,7 +36,7 @@ public class MazeGenerationInfo extends StructureGenerationInfo implements Weigh
 
     public MazeGenerationInfo()
     {
-        this(randomID("Maze"), null, "", new SavedMazeComponent(ConnectorStrategy.DEFAULT_WALL));
+        this(randomID(MazeGenerationInfo.class), null, "", new SavedMazeComponent(ConnectorStrategy.DEFAULT_WALL));
         mazeComponent.rooms.addAll(Selection.zeroSelection(3));
     }
 

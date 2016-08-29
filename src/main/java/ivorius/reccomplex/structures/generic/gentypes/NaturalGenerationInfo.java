@@ -51,7 +51,7 @@ public class NaturalGenerationInfo extends StructureGenerationInfo
 
     public NaturalGenerationInfo()
     {
-        this(randomID("Natural"), "decoration", new GenericYSelector(GenericYSelector.SelectionMode.SURFACE, 0, 0));
+        this(randomID(NaturalGenerationInfo.class), "decoration", new GenericYSelector(GenericYSelector.SelectionMode.SURFACE, 0, 0));
 
         biomeWeights.setToDefault();
         dimensionWeights.setToDefault();

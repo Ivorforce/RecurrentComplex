@@ -31,7 +31,7 @@ public class TableDataSourceStructureGenerationInfoList extends TableDataSourceL
     @Override
     public TableCellButton[] getAddActions()
     {
-        Collection<String> allTypes = StructureRegistry.INSTANCE.getStructureGenerationInfoRegistry().allIDs();
+        Collection<String> allTypes = StructureRegistry.INSTANCE.getGenerationInfoRegistry().allIDs();
         List<TableCellButton> actions = new ArrayList<>(allTypes.size());
         for (String type : allTypes)
         {
@@ -53,7 +53,7 @@ public class TableDataSourceStructureGenerationInfoList extends TableDataSourceL
     @Override
     public StructureGenerationInfo newEntry(String actionID)
     {
-        Class<? extends StructureGenerationInfo> clazz = StructureRegistry.INSTANCE.getStructureGenerationInfoRegistry().typeForID(actionID);
+        Class<? extends StructureGenerationInfo> clazz = StructureRegistry.INSTANCE.getGenerationInfoRegistry().typeForID(actionID);
 
         return instantiateStructureGenerationInfo(clazz);
     }

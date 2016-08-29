@@ -8,6 +8,7 @@ package ivorius.reccomplex.structures.generic.gentypes;
 import ivorius.reccomplex.gui.table.TableDataSource;
 import ivorius.reccomplex.gui.table.TableDelegate;
 import ivorius.reccomplex.gui.table.TableNavigator;
+import ivorius.reccomplex.structures.StructureRegistry;
 
 import javax.annotation.Nonnull;
 import java.util.Random;
@@ -17,15 +18,16 @@ import java.util.Random;
  */
 public abstract class StructureGenerationInfo
 {
-    public static String randomID(String prefix)
-    {
-        return prefix + "_" + randomID();
-    }
-
-    public static String randomID()
+    public static String randomID(Class<? extends StructureGenerationInfo> type)
     {
         Random random = new Random();
-        return String.format("%s_%s", Integer.toHexString(random.nextInt()), Integer.toHexString(random.nextInt()));
+        return String.format("%s_%s", StructureRegistry.INSTANCE.getGenerationInfoRegistry().iDForType(type), Integer.toHexString(random.nextInt()));
+    }
+
+    public static String randomID(String type)
+    {
+        Random random = new Random();
+        return String.format("%s_%s", type, Integer.toHexString(random.nextInt()));
     }
 
     @Nonnull

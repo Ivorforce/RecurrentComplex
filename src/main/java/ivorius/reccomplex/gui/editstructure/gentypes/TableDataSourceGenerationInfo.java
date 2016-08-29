@@ -8,6 +8,7 @@ package ivorius.reccomplex.gui.editstructure.gentypes;
 import ivorius.ivtoolkit.tools.IvTranslations;
 import ivorius.reccomplex.gui.table.*;
 import ivorius.reccomplex.structures.StructureInfos;
+import ivorius.reccomplex.structures.StructureRegistry;
 import ivorius.reccomplex.structures.generic.gentypes.StructureGenerationInfo;
 
 /**
@@ -22,7 +23,7 @@ public class TableDataSourceGenerationInfo extends TableDataSourceSegmented
         this.genInfo = genInfo;
         addManagedSection(1, TableCellMultiBuilder.create(navigator, delegate)
                 .addAction(() -> IvTranslations.get("reccomplex.gui.randomize"), null,
-                        () -> genInfo.setID(StructureGenerationInfo.randomID()))
+                        () -> genInfo.setID(StructureGenerationInfo.randomID(genInfo.getClass())))
                 .buildDataSource());
     }
 

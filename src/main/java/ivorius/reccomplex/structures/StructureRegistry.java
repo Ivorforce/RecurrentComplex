@@ -50,7 +50,7 @@ import java.util.stream.Stream;
 public class StructureRegistry
 {
     private static SerializableStringTypeRegistry<Transformer> transformerRegistry = new SerializableStringTypeRegistry<>("transformer", "type", Transformer.class);
-    private static SerializableStringTypeRegistry<StructureGenerationInfo> structureGenerationInfoRegistry = new SerializableStringTypeRegistry<>("generationInfo", "type", StructureGenerationInfo.class);
+    private static SerializableStringTypeRegistry<StructureGenerationInfo> generationInfoRegistry = new SerializableStringTypeRegistry<>("generationInfo", "type", StructureGenerationInfo.class);
 
     public static final StructureRegistry INSTANCE = new StructureRegistry();
 
@@ -72,7 +72,7 @@ public class StructureRegistry
 
         builder.registerTypeAdapter(GenericStructureInfo.class, new GenericStructureInfo.Serializer());
         transformerRegistry.constructGson(builder);
-        structureGenerationInfoRegistry.constructGson(builder);
+        generationInfoRegistry.constructGson(builder);
 
         NbtToJson.registerSafeNBTSerializer(builder);
 
@@ -291,9 +291,9 @@ public class StructureRegistry
         return transformerRegistry;
     }
 
-    public SerializableStringTypeRegistry<StructureGenerationInfo> getStructureGenerationInfoRegistry()
+    public SerializableStringTypeRegistry<StructureGenerationInfo> getGenerationInfoRegistry()
     {
-        return structureGenerationInfoRegistry;
+        return generationInfoRegistry;
     }
 
     private void clearCaches()

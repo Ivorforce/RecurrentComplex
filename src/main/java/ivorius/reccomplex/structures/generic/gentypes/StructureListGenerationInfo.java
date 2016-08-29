@@ -37,7 +37,7 @@ public class StructureListGenerationInfo extends StructureGenerationInfo impleme
 
     public StructureListGenerationInfo()
     {
-        this(randomID("List"), "", null, BlockPos.ORIGIN, EnumFacing.NORTH);
+        this(randomID(StructureListGenerationInfo.class), "", null, BlockPos.ORIGIN, EnumFacing.NORTH);
     }
 
     public StructureListGenerationInfo(String id, String listID, Double weight, BlockPos shift, EnumFacing front)

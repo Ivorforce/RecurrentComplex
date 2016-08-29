@@ -51,7 +51,7 @@ import java.util.Random;
 /**
  * Created by lukas on 25.05.14.
  */
-public class TransformerRuins implements Transformer<TransformerRuins.InstanceData>
+public class TransformerRuins extends Transformer<TransformerRuins.InstanceData>
 {
     public EnumFacing decayDirection;
     public float minDecay;
@@ -64,11 +64,12 @@ public class TransformerRuins implements Transformer<TransformerRuins.InstanceDa
 
     public TransformerRuins()
     {
-        this(EnumFacing.DOWN, 0.0f, 0.9f, 0.3f, 1f / 25.0f, 0.3f, 0.1f);
+        this(randomID(TransformerRuins.class), EnumFacing.DOWN, 0.0f, 0.9f, 0.3f, 1f / 25.0f, 0.3f, 0.1f);
     }
 
-    public TransformerRuins(EnumFacing decayDirection, float minDecay, float maxDecay, float decayChaos, float decayValueDensity, float blockErosion, float vineGrowth)
+    public TransformerRuins(String id, EnumFacing decayDirection, float minDecay, float maxDecay, float decayChaos, float decayValueDensity, float blockErosion, float vineGrowth)
     {
+        super(id);
         this.decayDirection = decayDirection;
         this.minDecay = minDecay;
         this.maxDecay = maxDecay;
@@ -242,7 +243,7 @@ public class TransformerRuins implements Transformer<TransformerRuins.InstanceDa
     @Override
     public TableDataSource tableDataSource(TableNavigator navigator, TableDelegate delegate)
     {
-        return new TableDataSourceBTRuins(this);
+        return new TableDataSourceBTRuins(this, navigator, delegate);
     }
 
     @Override
@@ -323,6 +324,8 @@ public class TransformerRuins implements Transformer<TransformerRuins.InstanceDa
         {
             JsonObject jsonObject = JsonUtils.getJsonElementAsJsonObject(jsonElement, "transformerRuins");
 
+            String id = JsonUtils.getJsonObjectStringFieldValueOrDefault(jsonObject, "id", randomID(TransformerRuins.class));
+
             EnumFacing decayDirection = Directions.deserialize(JsonUtils.getJsonObjectStringFieldValueOrDefault(jsonObject, "decayDirection", "DOWN"));
             float minDecay = JsonUtils.getJsonObjectFloatFieldValueOrDefault(jsonObject, "minDecay", 0.0f);
             float maxDecay = JsonUtils.getJsonObjectFloatFieldValueOrDefault(jsonObject, "maxDecay", 0.9f);
@@ -332,24 +335,26 @@ public class TransformerRuins implements Transformer<TransformerRuins.InstanceDa
             float blockErosion = JsonUtils.getJsonObjectFloatFieldValueOrDefault(jsonObject, "blockErosion", 0.0f);
             float vineGrowth = JsonUtils.getJsonObjectFloatFieldValueOrDefault(jsonObject, "vineGrowth", 0.0f);
 
-            return new TransformerRuins(decayDirection, minDecay, maxDecay, decayChaos, decayValueDensity, blockErosion, vineGrowth);
+            return new TransformerRuins(id, decayDirection, minDecay, maxDecay, decayChaos, decayValueDensity, blockErosion, vineGrowth);
         }
 
         @Override
         public JsonElement serialize(TransformerRuins transformer, Type par2Type, JsonSerializationContext context)
         {
-            JsonObject jsonobject = new JsonObject();
+            JsonObject jsonObject = new JsonObject();
 
-            jsonobject.addProperty("decayDirection", Directions.serialize(transformer.decayDirection));
-            jsonobject.addProperty("minDecay", transformer.minDecay);
-            jsonobject.addProperty("maxDecay", transformer.maxDecay);
-            jsonobject.addProperty("decayChaos", transformer.decayChaos);
-            jsonobject.addProperty("decayValueDensity", transformer.decayValueDensity);
+            jsonObject.addProperty("id", transformer.id());
 
-            jsonobject.addProperty("blockErosion", transformer.blockErosion);
-            jsonobject.addProperty("vineGrowth", transformer.vineGrowth);
+            jsonObject.addProperty("decayDirection", Directions.serialize(transformer.decayDirection));
+            jsonObject.addProperty("minDecay", transformer.minDecay);
+            jsonObject.addProperty("maxDecay", transformer.maxDecay);
+            jsonObject.addProperty("decayChaos", transformer.decayChaos);
+            jsonObject.addProperty("decayValueDensity", transformer.decayValueDensity);
 
-            return jsonobject;
+            jsonObject.addProperty("blockErosion", transformer.blockErosion);
+            jsonObject.addProperty("vineGrowth", transformer.vineGrowth);
+
+            return jsonObject;
         }
     }
 }

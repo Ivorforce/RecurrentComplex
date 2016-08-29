@@ -47,12 +47,13 @@ public class TransformerReplaceAll extends TransformerSingleBlock<TransformerRep
 
     public TransformerReplaceAll()
     {
-        this(BlockMatcher.of(RecurrentComplex.specialRegistry, Blocks.WOOL, new IntegerRange(0, 15)));
+        this(randomID(TransformerReplaceAll.class), BlockMatcher.of(RecurrentComplex.specialRegistry, Blocks.WOOL, new IntegerRange(0, 15)));
         destination.setToDefault();
     }
 
-    public TransformerReplaceAll(String sourceExpression)
+    public TransformerReplaceAll(String id, String sourceExpression)
     {
+        super(id);
         this.sourceMatcher = new BlockMatcher(RecurrentComplex.specialRegistry, sourceExpression);
     }
 
@@ -164,11 +165,13 @@ public class TransformerReplaceAll extends TransformerSingleBlock<TransformerRep
         {
             JsonObject jsonObject = JsonUtils.getJsonElementAsJsonObject(jsonElement, "transformerReplace");
 
+            String id = JsonUtils.getJsonObjectStringFieldValueOrDefault(jsonObject, "id", randomID(TransformerReplaceAll.class));
+
             String expression = TransformerReplace.Serializer.readLegacyMatcher(jsonObject, "source", "sourceMetadata"); // Legacy
             if (expression == null)
                 expression = JsonUtils.getJsonObjectStringFieldValueOrDefault(jsonObject, "sourceExpression", "");
 
-            TransformerReplaceAll transformer = new TransformerReplaceAll(expression);
+            TransformerReplaceAll transformer = new TransformerReplaceAll(id, expression);
 
             PresettedLists.read(jsonObject, gson, transformer.destination, "destinationPreset", "destination", WeightedBlockState[].class);
 
@@ -192,6 +195,7 @@ public class TransformerReplaceAll extends TransformerSingleBlock<TransformerRep
         {
             JsonObject jsonObject = new JsonObject();
 
+            jsonObject.addProperty("id", transformer.id());
             jsonObject.addProperty("sourceExpression", transformer.sourceMatcher.getExpression());
 
             PresettedLists.write(jsonObject, gson, transformer.destination, "destinationPreset", "destination");

@@ -31,17 +31,18 @@ import java.util.List;
 /**
  * Created by lukas on 25.05.14.
  */
-public class TransformerNegativeSpace implements Transformer<NBTNone>
+public class TransformerNegativeSpace extends Transformer<NBTNone>
 {
     public BlockMatcher sourceMatcher;
 
     public TransformerNegativeSpace()
     {
-        this(BlockMatcher.of(RecurrentComplex.specialRegistry, RCBlocks.genericSpace, 0));
+        this(randomID(TransformerNegativeSpace.class), BlockMatcher.of(RecurrentComplex.specialRegistry, RCBlocks.genericSpace, 0));
     }
 
-    public TransformerNegativeSpace(String sourceExpression)
+    public TransformerNegativeSpace(String id, String sourceExpression)
     {
+        super(id);
         this.sourceMatcher = new BlockMatcher(RecurrentComplex.specialRegistry, sourceExpression);
     }
 
@@ -66,7 +67,7 @@ public class TransformerNegativeSpace implements Transformer<NBTNone>
     @Override
     public TableDataSource tableDataSource(TableNavigator navigator, TableDelegate delegate)
     {
-        return new TableDataSourceBTNegativeSpace(this);
+        return new TableDataSourceBTNegativeSpace(this, navigator, delegate);
     }
 
     @Override
@@ -101,11 +102,13 @@ public class TransformerNegativeSpace implements Transformer<NBTNone>
         {
             JsonObject jsonObject = JsonUtils.getJsonElementAsJsonObject(jsonElement, "transformerNegativeSpace");
 
+            String id = JsonUtils.getJsonObjectStringFieldValueOrDefault(jsonObject, "id", randomID(TransformerNegativeSpace.class));
+
             String expression = TransformerReplace.Serializer.readLegacyMatcher(jsonObject, "source", "sourceMetadata"); // Legacy
             if (expression == null)
                 expression = JsonUtils.getJsonObjectStringFieldValueOrDefault(jsonObject, "sourceExpression", "");
 
-            return new TransformerNegativeSpace(expression);
+            return new TransformerNegativeSpace(id, expression);
         }
 
         @Override
@@ -113,6 +116,7 @@ public class TransformerNegativeSpace implements Transformer<NBTNone>
         {
             JsonObject jsonObject = new JsonObject();
 
+            jsonObject.addProperty("id", transformer.id());
             jsonObject.addProperty("sourceExpression", transformer.sourceMatcher.getExpression());
 
             return jsonObject;

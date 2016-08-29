@@ -8,7 +8,6 @@ package ivorius.reccomplex.structures;
 import net.minecraft.util.math.BlockPos;
 import ivorius.ivtoolkit.math.AxisAlignedTransform2D;
 import ivorius.reccomplex.gui.GuiValidityStateIndicator;
-import ivorius.reccomplex.structures.generic.gentypes.StructureGenerationInfo;
 import net.minecraft.util.math.ChunkPos;
 import net.minecraft.util.math.Vec3i;
 import net.minecraft.world.gen.structure.StructureBoundingBox;
@@ -73,11 +72,15 @@ public class StructureInfos
         );
     }
 
-    public static GuiValidityStateIndicator.State defaultIDValidityState(StructureGenerationInfo genInfo)
+    public static GuiValidityStateIndicator.State isSimpleIDState(String id)
     {
-        String id = genInfo.id();
-        return id.trim().isEmpty() || !id.chars().allMatch(Character::isJavaIdentifierPart)
+        return isSimpleID(id)
                 ? GuiValidityStateIndicator.State.INVALID
                 : GuiValidityStateIndicator.State.VALID;
+    }
+
+    public static boolean isSimpleID(String id)
+    {
+        return id.trim().isEmpty() || !id.chars().allMatch(Character::isJavaIdentifierPart);
     }
 }

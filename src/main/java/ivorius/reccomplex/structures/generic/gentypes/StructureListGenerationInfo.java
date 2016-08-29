@@ -25,8 +25,6 @@ import java.lang.reflect.Type;
  */
 public class StructureListGenerationInfo extends StructureGenerationInfo implements WeightedSelector.Item
 {
-    public String id = "";
-
     public String listID;
 
     public Double weight;
@@ -42,7 +40,7 @@ public class StructureListGenerationInfo extends StructureGenerationInfo impleme
 
     public StructureListGenerationInfo(String id, String listID, Double weight, BlockPos shift, EnumFacing front)
     {
-        this.id = id;
+        super(id);
         this.listID = listID;
         this.weight = weight;
         this.shift = shift;

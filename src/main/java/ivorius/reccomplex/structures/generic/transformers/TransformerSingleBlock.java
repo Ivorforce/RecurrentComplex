@@ -13,13 +13,19 @@ import net.minecraft.block.state.IBlockState;
 import ivorius.reccomplex.utils.NBTStorable;
 import org.apache.commons.lang3.tuple.Pair;
 
+import javax.annotation.Nonnull;
 import java.util.List;
 
 /**
  * Created by lukas on 17.09.14.
  */
-public abstract class TransformerSingleBlock<S extends NBTStorable> implements Transformer<S>
+public abstract class TransformerSingleBlock<S extends NBTStorable> extends Transformer<S>
 {
+    public TransformerSingleBlock(@Nonnull String id)
+    {
+        super(id);
+    }
+
     @Override
     public boolean skipGeneration(S instanceData, IBlockState state)
     {

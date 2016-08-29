@@ -47,11 +47,12 @@ public class TransformerNatural extends TransformerSingleBlock<NBTNone>
 
     public TransformerNatural()
     {
-        this(BlockMatcher.of(RecurrentComplex.specialRegistry, RCBlocks.genericSolid, 0), DEFAULT_NATURAL_EXPANSION_DISTANCE, DEFAULT_NATURAL_EXPANSION_RANDOMIZATION);
+        this(randomID(TransformerNatural.class), BlockMatcher.of(RecurrentComplex.specialRegistry, RCBlocks.genericSolid, 0), DEFAULT_NATURAL_EXPANSION_DISTANCE, DEFAULT_NATURAL_EXPANSION_RANDOMIZATION);
     }
 
-    public TransformerNatural(String sourceMatcherExpression, double naturalExpansionDistance, double naturalExpansionRandomization)
+    public TransformerNatural(String id, String sourceMatcherExpression, double naturalExpansionDistance, double naturalExpansionRandomization)
     {
+        super(id);
         this.sourceMatcher = new BlockMatcher(RecurrentComplex.specialRegistry, sourceMatcherExpression);
         this.naturalExpansionDistance = naturalExpansionDistance;
         this.naturalExpansionRandomization = naturalExpansionRandomization;
@@ -189,7 +190,7 @@ public class TransformerNatural extends TransformerSingleBlock<NBTNone>
     @Override
     public TableDataSource tableDataSource(TableNavigator navigator, TableDelegate delegate)
     {
-        return new TableDataSourceBTNatural(this);
+        return new TableDataSourceBTNatural(this, navigator, delegate);
     }
 
     public static class Serializer implements JsonDeserializer<TransformerNatural>, JsonSerializer<TransformerNatural>
@@ -206,6 +207,8 @@ public class TransformerNatural extends TransformerSingleBlock<NBTNone>
         {
             JsonObject jsonObject = JsonUtils.getJsonElementAsJsonObject(jsonElement, "transformerNatural");
 
+            String id = JsonUtils.getJsonObjectStringFieldValueOrDefault(jsonObject, "id", randomID(TransformerNatural.class));
+
             String expression = TransformerReplace.Serializer.readLegacyMatcher(jsonObject, "source", "sourceMetadata"); // Legacy
             if (expression == null)
                 expression = JsonUtils.getJsonObjectStringFieldValueOrDefault(jsonObject, "sourceExpression", "");
@@ -213,7 +216,7 @@ public class TransformerNatural extends TransformerSingleBlock<NBTNone>
             double naturalExpansionDistance = JsonUtils.getJsonObjectDoubleFieldValueOrDefault(jsonObject, "naturalExpansionDistance", DEFAULT_NATURAL_EXPANSION_DISTANCE);
             double naturalExpansionRandomization = JsonUtils.getJsonObjectDoubleFieldValueOrDefault(jsonObject, "naturalExpansionRandomization", DEFAULT_NATURAL_EXPANSION_RANDOMIZATION);
 
-            return new TransformerNatural(expression, naturalExpansionDistance, naturalExpansionRandomization);
+            return new TransformerNatural(id, expression, naturalExpansionDistance, naturalExpansionRandomization);
         }
 
         @Override
@@ -221,6 +224,7 @@ public class TransformerNatural extends TransformerSingleBlock<NBTNone>
         {
             JsonObject jsonObject = new JsonObject();
 
+            jsonObject.addProperty("id", transformer.id());
             jsonObject.addProperty("sourceExpression", transformer.sourceMatcher.getExpression());
 
             jsonObject.addProperty("naturalExpansionDistance", transformer.naturalExpansionDistance);

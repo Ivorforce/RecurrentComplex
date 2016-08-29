@@ -27,8 +27,6 @@ public class MazeGenerationInfo extends StructureGenerationInfo implements Weigh
 {
     private static Gson gson = createGson();
 
-    public String id = "";
-
     public String mazeID;
     public Double weight;
 
@@ -42,7 +40,7 @@ public class MazeGenerationInfo extends StructureGenerationInfo implements Weigh
 
     public MazeGenerationInfo(String id, Double weight, String mazeID, SavedMazeComponent mazeComponent)
     {
-        this.id = id;
+        super(id);
         this.weight = weight;
         this.mazeID = mazeID;
         this.mazeComponent = mazeComponent;

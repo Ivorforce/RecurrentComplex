@@ -11,34 +11,68 @@ import ivorius.reccomplex.gui.table.TableDelegate;
 import ivorius.reccomplex.gui.table.TableNavigator;
 import ivorius.reccomplex.structures.StructureLoadContext;
 import ivorius.reccomplex.structures.StructurePrepareContext;
+import ivorius.reccomplex.structures.StructureRegistry;
 import ivorius.reccomplex.structures.StructureSpawnContext;
-import net.minecraft.block.state.IBlockState;
 import ivorius.reccomplex.utils.NBTStorable;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.nbt.NBTBase;
 import org.apache.commons.lang3.tuple.Pair;
 
+import javax.annotation.Nonnull;
 import java.util.List;
+import java.util.Random;
 
 /**
  * Created by lukas on 25.05.14.
  */
-public interface Transformer<S extends NBTStorable>
+public abstract class Transformer<S extends NBTStorable>
 {
-    String getDisplayString();
+    @Nonnull
+    private String id;
 
-    TableDataSource tableDataSource(TableNavigator navigator, TableDelegate delegate);
+    public Transformer(@Nonnull String id)
+    {
+        this.id = id;
+    }
 
-    S prepareInstanceData(StructurePrepareContext context);
+    public static String randomID(Class<? extends Transformer> type)
+    {
+        Random random = new Random();
+        return String.format("%s_%s", StructureRegistry.INSTANCE.getTransformerRegistry().iDForType(type), Integer.toHexString(random.nextInt()));
+    }
 
-    S loadInstanceData(StructureLoadContext context, NBTBase nbt);
+    public static String randomID(String type)
+    {
+        Random random = new Random();
+        return String.format("%s_%s", type, Integer.toHexString(random.nextInt()));
+    }
 
-    boolean skipGeneration(S instanceData, IBlockState state);
+    @Nonnull
+    public String id()
+    {
+        return id;
+    }
 
-    void transform(S instanceData, Phase phase, StructureSpawnContext context, IvWorldData worldData, List<Pair<Transformer, NBTStorable>> transformers);
+    public void setID(@Nonnull String id)
+    {
+        this.id = id;
+    }
 
-    boolean generatesInPhase(S instanceData, Phase phase);
+    public abstract String getDisplayString();
 
-    enum Phase
+    public abstract TableDataSource tableDataSource(TableNavigator navigator, TableDelegate delegate);
+
+    public abstract S prepareInstanceData(StructurePrepareContext context);
+
+    public abstract S loadInstanceData(StructureLoadContext context, NBTBase nbt);
+
+    public abstract boolean skipGeneration(S instanceData, IBlockState state);
+
+    public abstract void transform(S instanceData, Phase phase, StructureSpawnContext context, IvWorldData worldData, List<Pair<Transformer, NBTStorable>> transformers);
+
+    public abstract boolean generatesInPhase(S instanceData, Phase phase);
+
+    public enum Phase
     {
         BEFORE,
         AFTER

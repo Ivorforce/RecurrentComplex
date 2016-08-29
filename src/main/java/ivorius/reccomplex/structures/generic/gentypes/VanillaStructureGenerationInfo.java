@@ -28,8 +28,6 @@ import java.lang.reflect.Type;
  */
 public class VanillaStructureGenerationInfo extends StructureGenerationInfo
 {
-    public String id = "";
-
     public Double generationWeight;
     public double minBaseLimit;
     public double maxBaseLimit;
@@ -49,7 +47,7 @@ public class VanillaStructureGenerationInfo extends StructureGenerationInfo
 
     public VanillaStructureGenerationInfo(String id, Double generationWeight, double minBaseLimit, double maxBaseLimit, double minScaledLimit, double maxScaledLimit, EnumFacing front, BlockPos spawnShift, String biomeExpression)
     {
-        this.id = id;
+        super(id);
         this.generationWeight = generationWeight;
         this.minBaseLimit = minBaseLimit;
         this.maxBaseLimit = maxBaseLimit;

@@ -1,0 +1,54 @@
+/*
+ *  Copyright (c) 2014, Lukas Tenbrink.
+ *  * http://ivorius.net
+ */
+
+package ivorius.reccomplex.gui.editstructure.transformers;
+
+import ivorius.ivtoolkit.tools.IvTranslations;
+import ivorius.reccomplex.gui.table.*;
+import ivorius.reccomplex.structures.StructureInfos;
+import ivorius.reccomplex.structures.generic.transformers.Transformer;
+
+/**
+ * Created by lukas on 29.08.16.
+ */
+public class TableDataSourceTransformer extends TableDataSourceSegmented
+{
+    public Transformer transformer;
+
+    public TableDataSourceTransformer(Transformer transformer, TableNavigator navigator, TableDelegate delegate)
+    {
+        this.transformer = transformer;
+        addManagedSection(1, TableCellMultiBuilder.create(navigator, delegate)
+                .addAction(() -> IvTranslations.get("reccomplex.gui.randomize"), null,
+                        () -> transformer.setID(Transformer.randomID(transformer.getClass())))
+                .buildDataSource());
+    }
+
+    @Override
+    public int sizeOfSegment(int segment)
+    {
+        return segment == 0 ? 1 : super.sizeOfSegment(segment);
+    }
+
+    @Override
+    public TableElement elementForIndexInSegment(GuiTable table, int index, int segment)
+    {
+        if (segment == 0)
+        {
+            TableCellString cell = new TableCellString("transformerID", transformer.id());
+            cell.setTooltip(IvTranslations.formatLines("reccomplex.transformer.id.tooltip"));
+            cell.setShowsValidityState(true);
+            cell.setValidityState(StructureInfos.isSimpleIDState(transformer.id()));
+            cell.addPropertyListener(cell1 ->
+            {
+                transformer.setID((String) cell1.getPropertyValue());
+                ((TableCellString) cell1).setValidityState(StructureInfos.isSimpleIDState(transformer.id()));
+            });
+            return new TableElementCell(IvTranslations.get("reccomplex.transformer.id"), cell);
+        }
+
+        return super.elementForIndexInSegment(table, index, segment);
+    }
+}

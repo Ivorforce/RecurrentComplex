@@ -20,9 +20,11 @@ public class TableDataSourceBTRuins extends TableDataSourceSegmented implements 
 {
     private TransformerRuins transformer;
 
-    public TableDataSourceBTRuins(TransformerRuins transformer)
+    public TableDataSourceBTRuins(TransformerRuins transformer, TableNavigator navigator, TableDelegate delegate)
     {
         this.transformer = transformer;
+
+        addManagedSection(0, new TableDataSourceTransformer(transformer, navigator, delegate));
     }
 
     public TransformerRuins getTransformer()
@@ -38,13 +40,21 @@ public class TableDataSourceBTRuins extends TableDataSourceSegmented implements 
     @Override
     public int numberOfSegments()
     {
-        return 2;
+        return 3;
     }
 
     @Override
     public int sizeOfSegment(int segment)
     {
-        return segment == 0 ? 5 : 3;
+        switch (segment)
+        {
+            case 1:
+                return 5;
+            case 2:
+                return 3;
+            default:
+                return super.sizeOfSegment(segment);
+        }
     }
 
     @Override
@@ -52,7 +62,7 @@ public class TableDataSourceBTRuins extends TableDataSourceSegmented implements 
     {
         switch (segment)
         {
-            case 0:
+            case 1:
                 switch (index)
                 {
                     case 0:
@@ -90,7 +100,7 @@ public class TableDataSourceBTRuins extends TableDataSourceSegmented implements 
                     }
                 }
                 break;
-            case 1:
+            case 2:
                 switch (index)
                 {
                     case 0:

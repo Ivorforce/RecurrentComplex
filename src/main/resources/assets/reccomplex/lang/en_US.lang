@@ -218,7 +218,7 @@ reccomplex.structure.mirrorable.tooltip=Whether the structure can be mirrored.<b
 reccomplex.structure.randomrange=Randomized between the two values.
 
 reccomplex.structure.id=Structure ID
-reccomplex.structure.id.tooltip=Unique Identifier for the structure
+reccomplex.structure.id.tooltip=Unique Identifier for the structure.
 reccomplex.structure.savePath=Saving in %s
 reccomplex.structure.deleteOther.true=%sDel.%s from %s
 reccomplex.structure.deleteOther.false=%sKeeping%s in %s
@@ -287,6 +287,9 @@ reccomplex.generationInfo.vanilla.shift.y=Shift (y)
 reccomplex.generationInfo.vanilla.shift.z=Shift (z)
 reccomplex.generationInfo.vanilla.amount.pervillage=Amount (per v.)
 reccomplex.generationInfo.vanilla.amount.scaled=Amount (scaled)
+
+reccomplex.transformer.id=Transformer ID
+reccomplex.transformer.id.tooltip=Unique Identifier for the transformer.
 
 reccomplex.transformer.natural=Natural Floor
 reccomplex.transformer.natural.tooltip=Spawns biome-native floor blocks below blocks

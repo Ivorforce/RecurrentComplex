@@ -8,7 +8,6 @@ package ivorius.reccomplex.gui.editstructure.gentypes;
 import ivorius.ivtoolkit.tools.IvTranslations;
 import ivorius.reccomplex.gui.table.*;
 import ivorius.reccomplex.structures.StructureInfos;
-import ivorius.reccomplex.structures.StructureRegistry;
 import ivorius.reccomplex.structures.generic.gentypes.StructureGenerationInfo;
 
 /**
@@ -41,11 +40,11 @@ public class TableDataSourceGenerationInfo extends TableDataSourceSegmented
             TableCellString cell = new TableCellString("genInfoID", genInfo.id());
             cell.setTooltip(IvTranslations.formatLines("reccomplex.structure.generation.id.tooltip"));
             cell.setShowsValidityState(true);
-            cell.setValidityState(StructureInfos.defaultIDValidityState(genInfo));
+            cell.setValidityState(StructureInfos.isSimpleIDState(genInfo.id()));
             cell.addPropertyListener(cell1 ->
             {
                 genInfo.setID((String) cell1.getPropertyValue());
-                ((TableCellString) cell1).setValidityState(StructureInfos.defaultIDValidityState(genInfo));
+                ((TableCellString) cell1).setValidityState(StructureInfos.isSimpleIDState(genInfo.id()));
             });
             return new TableElementCell(IvTranslations.get("reccomplex.structure.generation.id"), cell);
         }

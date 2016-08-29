@@ -22,11 +22,6 @@ public class TableDataSourceWeightedBlockState extends TableDataSourceSegmented 
 {
     private WeightedBlockState weightedBlockState;
 
-    private TableCellTitle parsed;
-
-    private TableCellString idCell;
-    private TableCellInteger metaCell;
-
     public TableDataSourceWeightedBlockState(WeightedBlockState weightedBlockState, TableNavigator navigator, TableDelegate delegate)
     {
         this.weightedBlockState = weightedBlockState;
@@ -68,7 +63,7 @@ public class TableDataSourceWeightedBlockState extends TableDataSourceSegmented 
         {
             case 0:
             case 2:
-                return 2;
+                return 1;
             default:
                 return super.sizeOfSegment(segment);
         }
@@ -90,7 +85,7 @@ public class TableDataSourceWeightedBlockState extends TableDataSourceSegmented 
             return new TableElementCell(IvTranslations.get("reccomplex.tileentity.nbt"), cell);
         }
 
-        return null;
+        return super.elementForIndexInSegment(table, index, segment);
     }
 
     @Override

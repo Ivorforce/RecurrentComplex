@@ -48,11 +48,12 @@ public class TransformerNaturalAir extends TransformerSingleBlock<NBTNone>
 
     public TransformerNaturalAir()
     {
-        this(BlockMatcher.of(RecurrentComplex.specialRegistry, RCBlocks.genericSpace, 1), DEFAULT_NATURAL_EXPANSION_DISTANCE, DEFAULT_NATURAL_EXPANSION_RANDOMIZATION);
+        this(randomID(TransformerNaturalAir.class), BlockMatcher.of(RecurrentComplex.specialRegistry, RCBlocks.genericSpace, 1), DEFAULT_NATURAL_EXPANSION_DISTANCE, DEFAULT_NATURAL_EXPANSION_RANDOMIZATION);
     }
 
-    public TransformerNaturalAir(String sourceMatcherExpression, double naturalExpansionDistance, double naturalExpansionRandomization)
+    public TransformerNaturalAir(String id, String sourceMatcherExpression, double naturalExpansionDistance, double naturalExpansionRandomization)
     {
+        super(id);
         this.sourceMatcher = new BlockMatcher(RecurrentComplex.specialRegistry, sourceMatcherExpression);
         this.naturalExpansionDistance = naturalExpansionDistance;
         this.naturalExpansionRandomization = naturalExpansionRandomization;
@@ -131,7 +132,7 @@ public class TransformerNaturalAir extends TransformerSingleBlock<NBTNone>
     @Override
     public TableDataSource tableDataSource(TableNavigator navigator, TableDelegate delegate)
     {
-        return new TableDataSourceBTNaturalAir(this);
+        return new TableDataSourceBTNaturalAir(this, navigator, delegate);
     }
 
     @Override
@@ -166,6 +167,8 @@ public class TransformerNaturalAir extends TransformerSingleBlock<NBTNone>
         {
             JsonObject jsonObject = JsonUtils.getJsonElementAsJsonObject(jsonElement, "transformerNatural");
 
+            String id = JsonUtils.getJsonObjectStringFieldValueOrDefault(jsonObject, "id", randomID(TransformerNaturalAir.class));
+
             String expression = TransformerReplace.Serializer.readLegacyMatcher(jsonObject, "source", "sourceMetadata"); // Legacy
             if (expression == null)
                 expression = JsonUtils.getJsonObjectStringFieldValueOrDefault(jsonObject, "sourceExpression", "");
@@ -173,7 +176,7 @@ public class TransformerNaturalAir extends TransformerSingleBlock<NBTNone>
             double naturalExpansionDistance = JsonUtils.getJsonObjectDoubleFieldValueOrDefault(jsonObject, "naturalExpansionDistance", DEFAULT_NATURAL_EXPANSION_DISTANCE);
             double naturalExpansionRandomization = JsonUtils.getJsonObjectDoubleFieldValueOrDefault(jsonObject, "naturalExpansionRandomization", DEFAULT_NATURAL_EXPANSION_RANDOMIZATION);
 
-            return new TransformerNaturalAir(expression, naturalExpansionDistance, naturalExpansionRandomization);
+            return new TransformerNaturalAir(id, expression, naturalExpansionDistance, naturalExpansionRandomization);
         }
 
         @Override
@@ -181,6 +184,7 @@ public class TransformerNaturalAir extends TransformerSingleBlock<NBTNone>
         {
             JsonObject jsonObject = new JsonObject();
 
+            jsonObject.addProperty("id", transformer.id());
             jsonObject.addProperty("sourceExpression", transformer.sourceMatcher.getExpression());
 
             jsonObject.addProperty("naturalExpansionDistance", transformer.naturalExpansionDistance);

@@ -40,7 +40,6 @@ public class NaturalGenerationInfo extends StructureGenerationInfo
     public final PresettedList<BiomeGenerationInfo> biomeWeights = new PresettedList<>(BiomeMatcherPresets.instance(), null);
     public final PresettedList<DimensionGenerationInfo> dimensionWeights = new PresettedList<>(DimensionMatcherPresets.instance(), null);
 
-    public String id = "";
     private Double generationWeight;
 
     public String generationCategory;
@@ -59,7 +58,7 @@ public class NaturalGenerationInfo extends StructureGenerationInfo
 
     public NaturalGenerationInfo(String id, String generationCategory, GenericYSelector ySelector)
     {
-        this.id = id;
+        super(id);
         this.generationCategory = generationCategory;
         this.ySelector = ySelector;
     }

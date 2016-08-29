@@ -48,12 +48,13 @@ public class TransformerReplace extends TransformerSingleBlock<NBTNone>
 
     public TransformerReplace()
     {
-        this(BlockMatcher.of(RecurrentComplex.specialRegistry, Blocks.WOOL));
+        this(randomID(TransformerReplace.class), BlockMatcher.of(RecurrentComplex.specialRegistry, Blocks.WOOL));
         destination.setToDefault();
     }
 
-    public TransformerReplace(String sourceExpression)
+    public TransformerReplace(String id, String sourceExpression)
     {
+        super(id);
         this.sourceMatcher = new BlockMatcher(RecurrentComplex.specialRegistry, sourceExpression);
     }
 
@@ -190,11 +191,13 @@ public class TransformerReplace extends TransformerSingleBlock<NBTNone>
         {
             JsonObject jsonObject = JsonUtils.getJsonElementAsJsonObject(jsonElement, "transformerReplace");
 
+            String id = JsonUtils.getJsonObjectStringFieldValueOrDefault(jsonObject, "id", randomID(TransformerReplace.class));
+
             String expression = readLegacyMatcher(jsonObject, "source", "sourceMetadata"); // Legacy
             if (expression == null)
                 expression = JsonUtils.getJsonObjectStringFieldValueOrDefault(jsonObject, "sourceExpression", "");
 
-            TransformerReplace transformer = new TransformerReplace(expression);
+            TransformerReplace transformer = new TransformerReplace(id, expression);
 
             PresettedLists.read(jsonObject, gson, transformer.destination, "destinationPreset", "destination", WeightedBlockState[].class);
 
@@ -217,6 +220,7 @@ public class TransformerReplace extends TransformerSingleBlock<NBTNone>
         {
             JsonObject jsonObject = new JsonObject();
 
+            jsonObject.addProperty("id", transformer.id());
             jsonObject.addProperty("sourceExpression", transformer.sourceMatcher.getExpression());
 
             PresettedLists.write(jsonObject, gson, transformer.destination, "destinationPreset", "destination");

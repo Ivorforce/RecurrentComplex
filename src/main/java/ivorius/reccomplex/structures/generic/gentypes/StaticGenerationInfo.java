@@ -29,8 +29,6 @@ public class StaticGenerationInfo extends StructureGenerationInfo
 {
     private static Gson gson = createGson();
 
-    public String id = "";
-
     public GenericYSelector ySelector;
     public DimensionMatcher dimensionMatcher;
 
@@ -47,7 +45,7 @@ public class StaticGenerationInfo extends StructureGenerationInfo
 
     public StaticGenerationInfo(String id, GenericYSelector ySelector, DimensionMatcher dimensionMatcher, boolean relativeToSpawn, BlockSurfacePos position, Pattern pattern)
     {
-        this.id = id;
+        super(id);
         this.ySelector = ySelector;
         this.dimensionMatcher = dimensionMatcher;
         this.relativeToSpawn = relativeToSpawn;

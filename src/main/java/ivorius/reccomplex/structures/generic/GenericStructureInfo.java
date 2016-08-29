@@ -6,9 +6,12 @@
 package ivorius.reccomplex.structures.generic;
 
 import com.google.gson.*;
+import gnu.trove.map.TIntObjectMap;
+import gnu.trove.map.hash.TIntObjectHashMap;
 import ivorius.ivtoolkit.tools.*;
 import ivorius.ivtoolkit.transform.Mover;
 import ivorius.ivtoolkit.transform.PosTransformer;
+import ivorius.reccomplex.structures.generic.maze.SavedMazePaths;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.EntityList;
 import net.minecraft.util.math.BlockPos;
@@ -73,10 +76,10 @@ public class GenericStructureInfo implements StructureInfo<GenericStructureInfo.
         genericStructureInfo.rotatable = false;
         genericStructureInfo.mirrorable = false;
 
-        genericStructureInfo.transformers.add(new TransformerNaturalAir(BlockMatcher.of(RecurrentComplex.specialRegistry, RCBlocks.genericSpace, 1), TransformerNaturalAir.DEFAULT_NATURAL_EXPANSION_DISTANCE, TransformerNaturalAir.DEFAULT_NATURAL_EXPANSION_RANDOMIZATION));
-        genericStructureInfo.transformers.add(new TransformerNegativeSpace(BlockMatcher.of(RecurrentComplex.specialRegistry, RCBlocks.genericSpace, 0)));
-        genericStructureInfo.transformers.add(new TransformerNatural(BlockMatcher.of(RecurrentComplex.specialRegistry, RCBlocks.genericSolid, 0), TransformerNatural.DEFAULT_NATURAL_EXPANSION_DISTANCE, TransformerNatural.DEFAULT_NATURAL_EXPANSION_RANDOMIZATION));
-        genericStructureInfo.transformers.add(new TransformerReplace(BlockMatcher.of(RecurrentComplex.specialRegistry, RCBlocks.genericSolid, 1)).replaceWith(new WeightedBlockState(null, Blocks.AIR.getDefaultState(), "")));
+        genericStructureInfo.transformers.add(new TransformerNaturalAir(Transformer.randomID(TransformerNaturalAir.class), BlockMatcher.of(RecurrentComplex.specialRegistry, RCBlocks.genericSpace, 1), TransformerNaturalAir.DEFAULT_NATURAL_EXPANSION_DISTANCE, TransformerNaturalAir.DEFAULT_NATURAL_EXPANSION_RANDOMIZATION));
+        genericStructureInfo.transformers.add(new TransformerNegativeSpace(Transformer.randomID(TransformerNegativeSpace.class), BlockMatcher.of(RecurrentComplex.specialRegistry, RCBlocks.genericSpace, 0)));
+        genericStructureInfo.transformers.add(new TransformerNatural(Transformer.randomID(TransformerNatural.class), BlockMatcher.of(RecurrentComplex.specialRegistry, RCBlocks.genericSolid, 0), TransformerNatural.DEFAULT_NATURAL_EXPANSION_DISTANCE, TransformerNatural.DEFAULT_NATURAL_EXPANSION_RANDOMIZATION));
+        genericStructureInfo.transformers.add(new TransformerReplace(Transformer.randomID(TransformerReplace.class), BlockMatcher.of(RecurrentComplex.specialRegistry, RCBlocks.genericSolid, 1)).replaceWith(new WeightedBlockState(null, Blocks.AIR.getDefaultState(), "")));
 
         genericStructureInfo.generationInfos.add(new NaturalGenerationInfo());
 
@@ -145,7 +148,12 @@ public class GenericStructureInfo implements StructureInfo<GenericStructureInfo.
             tileEntityCompounds.put(key, tileEntityCompound);
         }
 
-        List<Pair<Transformer, NBTStorable>> transformers = Pairs.of(this.transformers, instanceData.transformers);
+        List<Pair<Transformer, NBTStorable>> transformers = new ArrayList<>();
+        for (int index = 0; index < this.transformers.size(); index++)
+        {
+            Transformer transformer = this.transformers.get(index);
+            transformers.add(Pair.of(transformer, instanceData.findTransformerData(transformer, index)));
+        }
 
         if (!context.generateAsSource)
         {
@@ -264,9 +272,10 @@ public class GenericStructureInfo implements StructureInfo<GenericStructureInfo.
             int[] areaSize = new int[]{blockCollection.width, blockCollection.height, blockCollection.length};
             BlockPos origin = context.lowerCoord();
 
-            instanceData.transformers.addAll(transformers.stream().map(transformer -> transformer.prepareInstanceData(context)).collect(Collectors.toList()));
+            transformers.forEach(transformer -> instanceData.transformers.put(transformer.id(), transformer.prepareInstanceData(context)));
 
-            worldData.tileEntities.stream().forEach(teCompound -> {
+            worldData.tileEntities.forEach(teCompound ->
+            {
                 TileEntity tileEntity = RecurrentComplex.specialRegistry.loadTileEntity(teCompound);
                 if (tileEntity instanceof GeneratingTileEntity)
                 {
@@ -441,7 +450,8 @@ public class GenericStructureInfo implements StructureInfo<GenericStructureInfo.
         public static final String KEY_TRANSFORMERS = "transformers";
         public static final String KEY_TILE_ENTITIES = "tileEntities";
 
-        public final List<NBTStorable> transformers = new ArrayList<>();
+        public final Map<String, NBTStorable> transformers = new HashMap<>();
+        public final TIntObjectMap<NBTStorable> transformerIndices = new TIntObjectHashMap(); // Legacy
         public final Map<BlockPos, NBTStorable> tileEntities = new HashMap<>();
 
         protected static NBTBase getTileEntityTag(NBTTagCompound tileEntityCompound, BlockPos coord)
@@ -463,7 +473,16 @@ public class GenericStructureInfo implements StructureInfo<GenericStructureInfo.
             for (int i = 0; i < transformerCompounds.size(); i++)
             {
                 NBTTagCompound transformerCompound = transformerCompounds.get(i);
-                this.transformers.add(transformers.get(i).loadInstanceData(context, transformerCompound.getTag("data")));
+                String transformerID = transformerCompound.getString("id");
+
+                Transformer transformer = findTransformer(transformers, i, transformerID); // Legacy - if no ID was saved, use the one in line if any.
+
+                if (transformer != null)
+                {
+                    NBTStorable instanceData = transformer.loadInstanceData(context, transformerCompound.getTag("data"));
+                    this.transformers.put(transformerID, instanceData);
+                    transformerIndices.put(i, instanceData);
+                }
             }
 
             int[] areaSize = new int[]{blockCollection.width, blockCollection.height, blockCollection.length};
@@ -478,18 +497,31 @@ public class GenericStructureInfo implements StructureInfo<GenericStructureInfo.
             });
         }
 
+        protected Transformer findTransformer(List<Transformer> transformers, int i, String transformerID)
+        {
+            return transformers.stream().filter(tr -> tr.id().equals(transformerID)).findAny()
+                    .orElse(transformers.size() > i ? transformers.get(i) : null);
+        }
+
+        protected NBTStorable findTransformerData(Transformer transformer, int index)
+        {
+            return transformers.entrySet().stream().filter(pair -> transformer.id().equals(pair.getKey()))
+                    .map(Map.Entry::getValue)
+                    .findAny().orElse(transformers.size() > index ? this.transformerIndices.get(index) : null);
+        }
+
         @Override
         public NBTBase writeToNBT()
         {
             NBTTagCompound compound = new NBTTagCompound();
 
             NBTTagList transformerDatas = new NBTTagList();
-            for (NBTStorable transformerData : this.transformers)
-            {
+            transformers.forEach((id, transformerData) -> {
                 NBTTagCompound transformerCompound = new NBTTagCompound();
                 transformerCompound.setTag("data", transformerData.writeToNBT());
+                transformerCompound.setString("id", id);
                 transformerDatas.appendTag(transformerCompound);
-            }
+            });
             compound.setTag(KEY_TRANSFORMERS, transformerDatas);
 
             NBTTagCompound tileEntityCompound = new NBTTagCompound();

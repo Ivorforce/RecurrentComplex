@@ -18,6 +18,14 @@ import java.util.Random;
  */
 public abstract class StructureGenerationInfo
 {
+    @Nonnull
+    protected String id;
+
+    public StructureGenerationInfo(@Nonnull String id)
+    {
+        this.id = id;
+    }
+
     public static String randomID(Class<? extends StructureGenerationInfo> type)
     {
         Random random = new Random();
@@ -31,9 +39,15 @@ public abstract class StructureGenerationInfo
     }
 
     @Nonnull
-    public abstract String id();
+    public String id()
+    {
+        return id;
+    }
 
-    public abstract void setID(@Nonnull String id);
+    public void setID(@Nonnull String id)
+    {
+        this.id = id;
+    }
 
     public abstract String displayString();
 

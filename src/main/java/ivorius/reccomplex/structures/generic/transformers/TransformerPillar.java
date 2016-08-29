@@ -41,11 +41,12 @@ public class TransformerPillar extends TransformerSingleBlock<NBTNone>
 
     public TransformerPillar()
     {
-        this(BlockMatcher.of(RecurrentComplex.specialRegistry, Blocks.STONE, 0), Blocks.STONE.getDefaultState());
+        this(randomID(TransformerPillar.class), BlockMatcher.of(RecurrentComplex.specialRegistry, Blocks.STONE, 0), Blocks.STONE.getDefaultState());
     }
 
-    public TransformerPillar(String sourceExpression, IBlockState destState)
+    public TransformerPillar(String id, String sourceExpression, IBlockState destState)
     {
+        super(id);
         this.sourceMatcher = new BlockMatcher(RecurrentComplex.specialRegistry, sourceExpression);
         this.destState = destState;
     }
@@ -123,6 +124,8 @@ public class TransformerPillar extends TransformerSingleBlock<NBTNone>
         {
             JsonObject jsonObject = JsonUtils.getJsonElementAsJsonObject(jsonElement, "transformerPillar");
 
+            String id = JsonUtils.getJsonObjectStringFieldValueOrDefault(jsonObject, "id", randomID(TransformerPillar.class));
+
             String expression = TransformerReplace.Serializer.readLegacyMatcher(jsonObject, "source", "sourceMetadata"); // Legacy
             if (expression == null)
                 expression = JsonUtils.getJsonObjectStringFieldValueOrDefault(jsonObject, "sourceExpression", "");
@@ -131,7 +134,7 @@ public class TransformerPillar extends TransformerSingleBlock<NBTNone>
             Block dest = registry.blockFromID(new ResourceLocation(destBlock));
             IBlockState destState = dest != null ? dest.getStateFromMeta(JsonUtils.getJsonObjectIntegerFieldValue(jsonObject, "destMetadata")) : null;
 
-            return new TransformerPillar(expression, destState);
+            return new TransformerPillar(id, expression, destState);
         }
 
         @Override
@@ -139,6 +142,7 @@ public class TransformerPillar extends TransformerSingleBlock<NBTNone>
         {
             JsonObject jsonObject = new JsonObject();
 
+            jsonObject.addProperty("id", transformer.id());
             jsonObject.addProperty("sourceExpression", transformer.sourceMatcher.getExpression());
 
             jsonObject.addProperty("dest", registry.idFromBlock(transformer.destState.getBlock()).toString());

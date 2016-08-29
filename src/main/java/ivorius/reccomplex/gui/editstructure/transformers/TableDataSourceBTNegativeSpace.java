@@ -17,11 +17,12 @@ public class TableDataSourceBTNegativeSpace extends TableDataSourceSegmented
 {
     private TransformerNegativeSpace transformer;
 
-    public TableDataSourceBTNegativeSpace(TransformerNegativeSpace transformer)
+    public TableDataSourceBTNegativeSpace(TransformerNegativeSpace transformer, TableNavigator navigator, TableDelegate delegate)
     {
         this.transformer = transformer;
 
-        addManagedSection(0, TableDataSourceExpression.constructDefault(IvTranslations.get("reccomplex.gui.sources"), transformer.sourceMatcher));
+        addManagedSection(0, new TableDataSourceTransformer(transformer, navigator, delegate));
+        addManagedSection(1, TableDataSourceExpression.constructDefault(IvTranslations.get("reccomplex.gui.sources"), transformer.sourceMatcher));
     }
 
     public TransformerNegativeSpace getTransformer()

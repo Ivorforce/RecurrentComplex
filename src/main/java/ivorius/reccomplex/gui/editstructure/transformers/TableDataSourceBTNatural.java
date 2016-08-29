@@ -21,11 +21,12 @@ public class TableDataSourceBTNatural extends TableDataSourceSegmented implement
 {
     private TransformerNatural transformer;
 
-    public TableDataSourceBTNatural(TransformerNatural transformer)
+    public TableDataSourceBTNatural(TransformerNatural transformer, TableNavigator navigator, TableDelegate delegate)
     {
         this.transformer = transformer;
 
-        addManagedSection(0, TableDataSourceExpression.constructDefault(IvTranslations.get("reccomplex.gui.sources"), transformer.sourceMatcher));
+        addManagedSection(0, new TableDataSourceTransformer(transformer, navigator, delegate));
+        addManagedSection(1, TableDataSourceExpression.constructDefault(IvTranslations.get("reccomplex.gui.sources"), transformer.sourceMatcher));
     }
 
     public static TableCellString elementForBlock(String id, String block)
@@ -59,19 +60,19 @@ public class TableDataSourceBTNatural extends TableDataSourceSegmented implement
     @Override
     public int numberOfSegments()
     {
-        return 2;
+        return 3;
     }
 
     @Override
     public int sizeOfSegment(int segment)
     {
-        return segment == 1 ? 2 : super.sizeOfSegment(segment);
+        return segment == 2 ? 2 : super.sizeOfSegment(segment);
     }
 
     @Override
     public TableElement elementForIndexInSegment(GuiTable table, int index, int segment)
     {
-        if (segment == 1)
+        if (segment == 2)
         {
             switch (index)
             {

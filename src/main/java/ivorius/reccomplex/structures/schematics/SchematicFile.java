@@ -127,7 +127,7 @@ public class SchematicFile
         Map<BlockPos, TileEntity> tileEntities = new HashMap<>();
         for (NBTTagCompound tileTagCompound : tileEntityCompounds)
         {
-            TileEntity tileEntity = TileEntity.create(tileTagCompound);
+            TileEntity tileEntity = TileEntity.create(world, tileTagCompound);
             if (tileEntity != null)
                 tileEntities.put(tileEntity.getPos(), tileEntity);
         }

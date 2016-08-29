@@ -129,7 +129,7 @@ public class NbtToJson
             }
             else if (primitive.isNumber())
             {
-                return NBTBase.NBTPrimitive.class;
+                return NBTPrimitive.class;
             }
         }
 

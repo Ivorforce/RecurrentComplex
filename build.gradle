@@ -28,14 +28,14 @@ group= "ivorius.reccomplex" // http://maven.apache.org/guides/mini/guide-naming-
 archivesBaseName = "RecurrentComplex"
 
 minecraft {
-    version = "1.9.4-12.17.0.1976"
+    version = "1.10-12.18.0.1999-1.10.0"
     runDir = "eclipse"
-    mappings = "stable_26"
+    mappings = "snapshot_20160829"
     useDepAts = true
 }
 
 dependencies {
-    deobfCompile 'ivorius.ivtoolkit:IvToolkit:1.2.7'
+    deobfCompile 'ivorius.ivtoolkit:IvToolkit:1.2.8'
 }
 
 processResources

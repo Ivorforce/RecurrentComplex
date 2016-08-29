@@ -18,6 +18,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagString;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.world.World;
 import net.minecraftforge.common.util.Constants;
 
 import javax.annotation.Nullable;
@@ -122,7 +123,7 @@ public class MCRegistrySpecial implements MCRegistry
     }
 
     @Override
-    public TileEntity loadTileEntity(NBTTagCompound compound)
+    public TileEntity loadTileEntity(World world, NBTTagCompound compound)
     {
         // From TileEntity
         try
@@ -141,7 +142,7 @@ public class MCRegistrySpecial implements MCRegistry
             RecurrentComplex.logger.error("Error loading special TileEntity", e);
         }
 
-        return parent.loadTileEntity(compound);
+        return parent.loadTileEntity(world, compound);
     }
 
     public boolean isSafe(TileEntity tileEntity)
@@ -237,9 +238,9 @@ public class MCRegistrySpecial implements MCRegistry
         }
 
         @Override
-        public TileEntity loadTileEntity(NBTTagCompound compound)
+        public TileEntity loadTileEntity(World world, NBTTagCompound compound)
         {
-            return parent.loadTileEntity(compound);
+            return parent.loadTileEntity(world, compound);
         }
     }
 }

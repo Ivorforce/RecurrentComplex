@@ -11,6 +11,7 @@ import net.minecraft.block.Block;
 import net.minecraft.item.Item;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.world.World;
 
 /**
  * Created by lukas on 04.09.15.
@@ -57,17 +58,17 @@ public class MCRegistryRemapping implements MCRegistry
     }
 
     @Override
-    public TileEntity loadTileEntity(NBTTagCompound compound)
+    public TileEntity loadTileEntity(World world, NBTTagCompound compound)
     {
         String remap = remapper.remapTileEntity(compound.getString("id"));
 
         if (remap != null)
         {
-            NBTTagCompound copy = (NBTTagCompound) compound.copy();
+            NBTTagCompound copy = compound.copy();
             copy.setString("id", remap);
-            return parent.loadTileEntity(copy);
+            return parent.loadTileEntity(world, copy);
         }
         else
-            return parent.loadTileEntity(compound);
+            return parent.loadTileEntity(world, compound);
     }
 }

@@ -42,6 +42,7 @@ import net.minecraft.world.WorldServer;
 import net.minecraft.world.biome.Biome;
 import net.minecraftforge.common.BiomeDictionary;
 import net.minecraftforge.common.util.Constants;
+import net.minecraftforge.fml.common.FMLCommonHandler;
 import org.apache.commons.lang3.tuple.Pair;
 
 import java.lang.reflect.Type;
@@ -139,7 +140,7 @@ public class GenericStructureInfo implements StructureInfo<GenericStructureInfo.
         {
             BlockPos key = new BlockPos(tileEntityCompound.getInteger("x"), tileEntityCompound.getInteger("y"), tileEntityCompound.getInteger("z"));
 
-            TileEntity origTileEntity = RecurrentComplex.specialRegistry.loadTileEntity(tileEntityCompound);
+            TileEntity origTileEntity = RecurrentComplex.specialRegistry.loadTileEntity(world, tileEntityCompound);
             Mover.setTileEntityPos(origTileEntity, context.transform.apply(key, areaSize).add(origin));
 
             origTileEntities.put(key, origTileEntity);
@@ -274,7 +275,7 @@ public class GenericStructureInfo implements StructureInfo<GenericStructureInfo.
 
             worldData.tileEntities.forEach(teCompound ->
             {
-                TileEntity tileEntity = RecurrentComplex.specialRegistry.loadTileEntity(teCompound);
+                TileEntity tileEntity = RecurrentComplex.specialRegistry.loadTileEntity(TileEntities.getAnyWorld(), teCompound);
                 if (tileEntity instanceof GeneratingTileEntity)
                 {
                     BlockPos key = tileEntity.getPos();
@@ -488,7 +489,7 @@ public class GenericStructureInfo implements StructureInfo<GenericStructureInfo.
 
             NBTTagCompound tileEntityCompound = compound.getCompoundTag(InstanceData.KEY_TILE_ENTITIES);
             worldData.tileEntities.stream().filter(tileEntity -> tileEntity instanceof GeneratingTileEntity).forEach(teCompound -> {
-                TileEntity tileEntity = RecurrentComplex.specialRegistry.loadTileEntity(teCompound);
+                TileEntity tileEntity = RecurrentComplex.specialRegistry.loadTileEntity(TileEntities.getAnyWorld(), teCompound);
                 BlockPos key = tileEntity.getPos();
                 Mover.setTileEntityPos(tileEntity, context.transform.apply(key, areaSize).add(origin));
                 tileEntities.put(key, (NBTStorable) ((GeneratingTileEntity) tileEntity).loadInstanceData(context, getTileEntityTag(tileEntityCompound, key)));

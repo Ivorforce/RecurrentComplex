@@ -6,7 +6,7 @@
 package ivorius.reccomplex.gui;
 
 import com.google.common.collect.Lists;
-import com.mojang.realmsclient.gui.ChatFormatting;
+import net.minecraft.util.text.TextFormatting;
 import ivorius.ivtoolkit.tools.IvTranslations;
 import ivorius.reccomplex.RecurrentComplex;
 import ivorius.reccomplex.gui.editstructure.transformers.TableDataSourceBTNatural;
@@ -138,7 +138,7 @@ public class TableDataSourceBlockState extends TableDataSourceSegmented implemen
         {
             List<TableCellButton> buttons = properties.stream().map(property ->
             {
-                TableCellButton button = new TableCellButton(null, null, (property == currentProperty ? ChatFormatting.GREEN : "") + ((IProperty) name).getName(property));
+                TableCellButton button = new TableCellButton(null, null, (property == currentProperty ? TextFormatting.GREEN : "") + ((IProperty) name).getName(property));
                 button.setEnabled(!extended);
                 button.addListener((cell, action) ->
                 {
@@ -152,7 +152,7 @@ public class TableDataSourceBlockState extends TableDataSourceSegmented implemen
             return new TableElementCell(name.getName(), new TableCellMulti(buttons));
         }
 
-        TableCellButton button = new TableCellButton(null, null, ChatFormatting.GREEN + ((IProperty) name).getName(currentProperty));
+        TableCellButton button = new TableCellButton(null, null, TextFormatting.GREEN + ((IProperty) name).getName(currentProperty));
         button.setEnabled(!extended);
         button.addListener((cell, action) ->
         {

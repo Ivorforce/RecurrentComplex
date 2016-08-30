@@ -11,7 +11,7 @@ import ivorius.reccomplex.gui.table.*;
 import ivorius.reccomplex.gui.worldscripts.mazegenerator.TableDataSourceMazePathList;
 import ivorius.reccomplex.structures.generic.maze.*;
 import ivorius.reccomplex.structures.generic.maze.rules.saved.MazeRuleConnectAll;
-import com.mojang.realmsclient.gui.ChatFormatting;
+import net.minecraft.util.text.TextFormatting;
 
 import java.util.Collections;
 import java.util.List;
@@ -67,16 +67,16 @@ public class TableDataSourceMazeRuleConnectAll extends TableDataSourceSegmented 
         if (segment == 0)
         {
             TableCellBoolean preventCell = new TableCellBoolean("prevent", rule.preventConnection,
-                    ChatFormatting.GOLD + IvTranslations.get("reccomplex.mazerule.connect.prevent"),
-                    ChatFormatting.GREEN + IvTranslations.get("reccomplex.mazerule.connect.prevent"));
+                    TextFormatting.GOLD + IvTranslations.get("reccomplex.mazerule.connect.prevent"),
+                    TextFormatting.GREEN + IvTranslations.get("reccomplex.mazerule.connect.prevent"));
             preventCell.addPropertyListener(cell -> rule.preventConnection = (boolean) cell.getPropertyValue());
             return new TableElementCell(preventCell);
         }
         else if (segment == 2)
         {
             TableCellBoolean cell = new TableCellBoolean("additive", rule.additive,
-                    ChatFormatting.GREEN + IvTranslations.get("reccomplex.mazerule.connectall.additive"),
-                    ChatFormatting.GOLD + IvTranslations.get("reccomplex.mazerule.connectall.subtractive"));
+                    TextFormatting.GREEN + IvTranslations.get("reccomplex.mazerule.connectall.additive"),
+                    TextFormatting.GOLD + IvTranslations.get("reccomplex.mazerule.connectall.subtractive"));
             cell.addPropertyListener(this);
             return new TableElementCell(cell);
         }

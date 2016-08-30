@@ -5,7 +5,7 @@
 
 package ivorius.reccomplex.structures.generic.matchers;
 
-import com.mojang.realmsclient.gui.ChatFormatting;
+import net.minecraft.util.text.TextFormatting;
 import ivorius.reccomplex.utils.algebra.RCBoolAlgebra;
 import net.minecraftforge.fml.common.Loader;
 import ivorius.reccomplex.structures.StructureRegistry;
@@ -24,7 +24,7 @@ public class DependencyMatcher extends PrefixedTypeExpressionCache<Boolean>
 
     public DependencyMatcher(String expression)
     {
-        super(RCBoolAlgebra.algebra(), true, ChatFormatting.GREEN + "No Dependencies", expression);
+        super(RCBoolAlgebra.algebra(), true, TextFormatting.GREEN + "No Dependencies", expression);
 
         addType(new ModVariableType(MOD_PREFIX));
         addType(new StructureVariableType(STRUCTURE_PREFIX));

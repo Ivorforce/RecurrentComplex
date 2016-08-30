@@ -206,6 +206,14 @@ public class GuiScreenModalTable extends GuiScreen implements TableDelegate, Tab
         return addButton(button);
     }
 
+    @Nonnull
+    @ParametersAreNonnullByDefault
+    private <T extends GuiButton> T addButton(T button)
+    {
+        this.buttonList.add(button);
+        return button;
+    }
+
     @Override
     public void redrawTable()
     {

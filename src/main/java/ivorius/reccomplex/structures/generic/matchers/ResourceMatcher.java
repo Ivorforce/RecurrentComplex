@@ -9,7 +9,7 @@ import ivorius.reccomplex.structures.StructureRegistry;
 import ivorius.reccomplex.utils.ExpressionCaches;
 import ivorius.reccomplex.utils.PrefixedTypeExpressionCache;
 import ivorius.reccomplex.utils.algebra.RCBoolAlgebra;
-import com.mojang.realmsclient.gui.ChatFormatting;
+import net.minecraft.util.text.TextFormatting;
 
 /**
  * Created by lukas on 01.05.15.
@@ -20,7 +20,7 @@ public class ResourceMatcher extends PrefixedTypeExpressionCache<Boolean>
 
     public ResourceMatcher(String expression)
     {
-        super(RCBoolAlgebra.algebra(), true, ChatFormatting.GREEN + "Any Resource", expression);
+        super(RCBoolAlgebra.algebra(), true, TextFormatting.GREEN + "Any Resource", expression);
         addType(new ResourceIDType(""));
         addType(new DomainType(DOMAIN_PREFIX));
     }

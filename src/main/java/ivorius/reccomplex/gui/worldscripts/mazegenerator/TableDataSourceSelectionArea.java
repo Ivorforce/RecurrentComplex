@@ -9,7 +9,7 @@ import ivorius.ivtoolkit.gui.IntegerRange;
 import ivorius.ivtoolkit.tools.IvTranslations;
 import ivorius.reccomplex.gui.table.*;
 import ivorius.reccomplex.structures.generic.Selection;
-import com.mojang.realmsclient.gui.ChatFormatting;
+import net.minecraft.util.text.TextFormatting;
 
 /**
 * Created by lukas on 08.10.14.
@@ -44,8 +44,8 @@ public class TableDataSourceSelectionArea extends TableDataSourceSegmented imple
         if (segment == 0)
         {
             TableCellBoolean cell = new TableCellBoolean("additive", area.isAdditive(),
-                    ChatFormatting.GREEN + IvTranslations.get("reccomplex.selection.area.additive"),
-                    ChatFormatting.GOLD + IvTranslations.get("reccomplex.selection.area.subtractive"));
+                    TextFormatting.GREEN + IvTranslations.get("reccomplex.selection.area.additive"),
+                    TextFormatting.GOLD + IvTranslations.get("reccomplex.selection.area.subtractive"));
             cell.addPropertyListener(this);
             return new TableElementCell(cell);
         }

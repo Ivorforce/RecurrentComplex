@@ -11,7 +11,7 @@ import ivorius.reccomplex.dimensions.DimensionDictionary;
 import ivorius.reccomplex.utils.*;
 import ivorius.reccomplex.utils.algebra.RCBoolAlgebra;
 import joptsimple.internal.Strings;
-import com.mojang.realmsclient.gui.ChatFormatting;
+import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.WorldProvider;
 import net.minecraftforge.common.DimensionManager;
 import org.apache.commons.lang3.ArrayUtils;
@@ -25,7 +25,7 @@ public class DimensionMatcher extends PrefixedTypeExpressionCache<Boolean> imple
 
     public DimensionMatcher(String expression)
     {
-        super(RCBoolAlgebra.algebra(), true, ChatFormatting.GREEN + "Any Dimension", expression);
+        super(RCBoolAlgebra.algebra(), true, TextFormatting.GREEN + "Any Dimension", expression);
         addType(new DimensionVariableType(""));
         addType(new DimensionDictVariableType(DIMENSION_TYPE_PREFIX));
     }

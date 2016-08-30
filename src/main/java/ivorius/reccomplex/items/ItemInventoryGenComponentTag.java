@@ -16,7 +16,7 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagString;
-import com.mojang.realmsclient.gui.ChatFormatting;
+import net.minecraft.util.text.TextFormatting;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.EnumHand;
 import net.minecraft.world.World;
@@ -97,8 +97,8 @@ public class ItemInventoryGenComponentTag extends Item implements GeneratingItem
         {
             list.add(component.inventoryGeneratorID);
             list.add(GenericItemCollectionRegistry.INSTANCE.isActive(componentKey(stack))
-                    ? IvTranslations.format("inventoryGen.active", ChatFormatting.GREEN, ChatFormatting.RESET)
-                    : IvTranslations.format("inventoryGen.inactive", ChatFormatting.RED, ChatFormatting.RESET));
+                    ? IvTranslations.format("inventoryGen.active", TextFormatting.GREEN, TextFormatting.RESET)
+                    : IvTranslations.format("inventoryGen.inactive", TextFormatting.RED, TextFormatting.RESET));
         }
         else
             list.add(IvTranslations.get("inventoryGen.create"));

@@ -7,7 +7,7 @@ package ivorius.reccomplex.gui.worldscripts.mazegenerator;
 
 import ivorius.reccomplex.gui.table.*;
 import ivorius.reccomplex.structures.generic.Selection;
-import com.mojang.realmsclient.gui.ChatFormatting;
+import net.minecraft.util.text.TextFormatting;
 
 import java.util.Arrays;
 
@@ -27,8 +27,8 @@ public class TableDataSourceSelection extends TableDataSourceList<Selection.Area
     @Override
     public String getDisplayString(Selection.Area area)
     {
-        ChatFormatting color = area.isAdditive() ? ChatFormatting.GREEN : ChatFormatting.RED;
-        return String.format("%s%s%s - %s%s", color, Arrays.toString(area.getMinCoord()), ChatFormatting.RESET, color, Arrays.toString(area.getMaxCoord()));
+        TextFormatting color = area.isAdditive() ? TextFormatting.GREEN : TextFormatting.RED;
+        return String.format("%s%s%s - %s%s", color, Arrays.toString(area.getMinCoord()), TextFormatting.RESET, color, Arrays.toString(area.getMaxCoord()));
     }
 
     @Override

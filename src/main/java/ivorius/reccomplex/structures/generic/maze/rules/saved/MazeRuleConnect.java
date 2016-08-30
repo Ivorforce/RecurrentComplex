@@ -19,7 +19,7 @@ import ivorius.reccomplex.structures.generic.maze.rules.LimitAABBStrategy;
 import ivorius.reccomplex.structures.generic.maze.rules.MazeRule;
 import ivorius.reccomplex.structures.generic.maze.rules.ReachabilityStrategy;
 import net.minecraft.nbt.NBTTagCompound;
-import com.mojang.realmsclient.gui.ChatFormatting;
+import net.minecraft.util.text.TextFormatting;
 
 import java.util.*;
 import java.util.function.Predicate;
@@ -43,7 +43,7 @@ public class MazeRuleConnect extends MazeRule
     @Override
     public String displayString()
     {
-        return String.format("%s %s->%s %s", summarize(start), preventConnection ? ChatFormatting.GOLD : ChatFormatting.GREEN, ChatFormatting.RESET, summarize(end));
+        return String.format("%s %s->%s %s", summarize(start), preventConnection ? TextFormatting.GOLD : TextFormatting.GREEN, TextFormatting.RESET, summarize(end));
     }
 
     private String summarize(List<SavedMazePath> list)

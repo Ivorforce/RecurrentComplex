@@ -5,7 +5,7 @@
 
 package ivorius.reccomplex.utils;
 
-import com.mojang.realmsclient.gui.ChatFormatting;
+import net.minecraft.util.text.TextFormatting;
 
 /**
  * Created by lukas on 24.03.15.
@@ -22,8 +22,8 @@ public class ExpressionCaches
         @Override
         public String getRepresentation(String var, Object... args)
         {
-            ChatFormatting variableColor = isKnown(var, args) ? ChatFormatting.GREEN : ChatFormatting.YELLOW;
-            return ChatFormatting.BLUE + prefix + variableColor + var + ChatFormatting.RESET;
+            TextFormatting variableColor = isKnown(var, args) ? TextFormatting.GREEN : TextFormatting.YELLOW;
+            return TextFormatting.BLUE + prefix + variableColor + var + TextFormatting.RESET;
         }
     }
 }

@@ -80,7 +80,7 @@ public class TableDataSourceSpawnCommandEntry extends TableDataSourceSegmented i
         if ("default".equals(cell.getID()))
         {
             if ("spawner".equals(actionID))
-                entry.command = "/setblock ~ ~ ~ mob_spawner 0 replace {EntityId:Zombie}";
+                entry.command = "/setblock ~ ~ ~ mob_spawner 0 replace {SpawnData:{id:Zombie}}";
             else if ("entity".equals(actionID))
                 entry.command = "/summon Zombie ~ ~ ~";
 

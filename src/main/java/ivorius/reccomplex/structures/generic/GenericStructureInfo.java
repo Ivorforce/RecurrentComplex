@@ -8,6 +8,7 @@ package ivorius.reccomplex.structures.generic;
 import com.google.gson.*;
 import gnu.trove.map.TIntObjectMap;
 import gnu.trove.map.hash.TIntObjectHashMap;
+import ivorius.ivtoolkit.math.AxisAlignedTransform2D;
 import ivorius.ivtoolkit.tools.*;
 import ivorius.ivtoolkit.transform.Mover;
 import ivorius.ivtoolkit.transform.PosTransformer;
@@ -169,7 +170,7 @@ public class GenericStructureInfo implements StructureInfo<GenericStructureInfo.
         {
             for (BlockPos sourceCoord : blockCollection.area())
             {
-                IBlockState state = blockCollection.getBlockState(sourceCoord);
+                IBlockState state = PosTransformer.transformBlockState(blockCollection.getBlockState(sourceCoord), context.transform);
 
                 BlockPos worldPos = context.transform.apply(sourceCoord, areaSize).add(origin);
                 if (context.includes(worldPos) && RecurrentComplex.specialRegistry.isSafe(state.getBlock())
@@ -199,7 +200,8 @@ public class GenericStructureInfo implements StructureInfo<GenericStructureInfo.
                                     }
                                 }
                             }
-                            PosTransformer.transformBlock(context.transform, world, state, worldPos, state.getBlock());
+
+                            PosTransformer.transformBlock(world, worldPos, context.transform);
                         }
                     }
                     else

@@ -5,7 +5,7 @@
 
 package ivorius.reccomplex.gui.table;
 
-import com.mojang.realmsclient.gui.ChatFormatting;
+import net.minecraft.util.text.TextFormatting;
 import ivorius.ivtoolkit.tools.IvTranslations;
 
 import java.util.List;
@@ -23,8 +23,8 @@ public abstract class TableDataSourceList<T, L extends List<T>> extends TableDat
     protected String earlierTitle = IvTranslations.get("reccomplex.gui.earlier");
     protected String laterTitle = IvTranslations.get("reccomplex.gui.later");
     protected String editTitle = IvTranslations.get("reccomplex.gui.edit");
-    protected String deleteTitle = ChatFormatting.RED + "-";
-    protected String addTitle = ChatFormatting.GREEN + "+";
+    protected String deleteTitle = TextFormatting.RED + "-";
+    protected String addTitle = TextFormatting.GREEN + "+";
 
     protected boolean usesPresetActionForAdding;
 

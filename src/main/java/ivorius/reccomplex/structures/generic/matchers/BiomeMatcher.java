@@ -13,7 +13,7 @@ import ivorius.reccomplex.utils.ExpressionCaches;
 import ivorius.reccomplex.utils.PrefixedTypeExpressionCache;
 import ivorius.reccomplex.utils.algebra.RCBoolAlgebra;
 import joptsimple.internal.Strings;
-import com.mojang.realmsclient.gui.ChatFormatting;
+import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.biome.Biome;
 import net.minecraftforge.common.BiomeDictionary;
 
@@ -33,7 +33,7 @@ public class BiomeMatcher extends PrefixedTypeExpressionCache<Boolean> implement
 
     public BiomeMatcher(String expression)
     {
-        super(RCBoolAlgebra.algebra(), true, ChatFormatting.GREEN + "Any Biome", expression);
+        super(RCBoolAlgebra.algebra(), true, TextFormatting.GREEN + "Any Biome", expression);
 
         addType(new BiomeVariableType(""));
         addType(new BiomeDictVariableType(BIOME_TYPE_PREFIX));

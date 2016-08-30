@@ -5,7 +5,7 @@
 
 package ivorius.reccomplex.gui.worldscripts.mazegenerator;
 
-import com.mojang.realmsclient.gui.ChatFormatting;
+import net.minecraft.util.text.TextFormatting;
 import ivorius.ivtoolkit.gui.IntegerRange;
 import ivorius.ivtoolkit.maze.components.MazeRoom;
 import ivorius.ivtoolkit.tools.IvTranslations;
@@ -38,7 +38,7 @@ public class TableDataSourceMazePathConnectionList extends TableDataSourceList<S
     public String getDisplayString(SavedMazePathConnection mazePath)
     {
         return String.format("%s %s%s%s", Arrays.toString(mazePath.path.sourceRoom.getCoordinates()),
-                ChatFormatting.BLUE, TableDataSourceMazePath.directionFromPath(mazePath.path).toString(), ChatFormatting.RESET);
+                TextFormatting.BLUE, TableDataSourceMazePath.directionFromPath(mazePath.path).toString(), TextFormatting.RESET);
     }
 
     @Override

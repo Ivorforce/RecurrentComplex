@@ -7,7 +7,7 @@ package ivorius.reccomplex.gui.worldscripts.mazegenerator.reachability;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
-import com.mojang.realmsclient.gui.ChatFormatting;
+import net.minecraft.util.text.TextFormatting;
 import ivorius.ivtoolkit.tools.IvTranslations;
 import ivorius.reccomplex.gui.table.*;
 import ivorius.reccomplex.structures.generic.maze.SavedMazePath;
@@ -136,7 +136,7 @@ public class TableDataSourceMazeReachabilityGroups extends TableDataSourceSegmen
 
     private String getDisplayString(SavedMazePath path)
     {
-        return String.format("%s%s%s %s", ChatFormatting.BLUE, path.getEnumFacing(), ChatFormatting.RESET, path.getSourceRoom());
+        return String.format("%s%s%s %s", TextFormatting.BLUE, path.getEnumFacing(), TextFormatting.RESET, path.getSourceRoom());
     }
 
     @Override

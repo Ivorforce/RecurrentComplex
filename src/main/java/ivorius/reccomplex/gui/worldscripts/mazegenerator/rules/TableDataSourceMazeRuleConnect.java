@@ -10,7 +10,7 @@ import ivorius.reccomplex.gui.table.*;
 import ivorius.reccomplex.gui.worldscripts.mazegenerator.TableDataSourceMazePathList;
 import ivorius.reccomplex.structures.generic.maze.rules.saved.MazeRuleConnect;
 import ivorius.ivtoolkit.tools.IvTranslations;
-import com.mojang.realmsclient.gui.ChatFormatting;
+import net.minecraft.util.text.TextFormatting;
 
 import java.util.List;
 
@@ -49,8 +49,8 @@ public class TableDataSourceMazeRuleConnect extends TableDataSourceSegmented
         if (segment == 0)
         {
             TableCellBoolean preventCell = new TableCellBoolean("prevent", rule.preventConnection,
-                    ChatFormatting.GOLD + IvTranslations.get("reccomplex.mazerule.connect.prevent"),
-                    ChatFormatting.GREEN + IvTranslations.get("reccomplex.mazerule.connect.prevent"));
+                    TextFormatting.GOLD + IvTranslations.get("reccomplex.mazerule.connect.prevent"),
+                    TextFormatting.GREEN + IvTranslations.get("reccomplex.mazerule.connect.prevent"));
             preventCell.addPropertyListener(cell -> rule.preventConnection = (boolean) cell.getPropertyValue());
             return new TableElementCell(preventCell);
         }

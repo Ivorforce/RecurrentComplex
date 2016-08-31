@@ -12,6 +12,7 @@ import gnu.trove.list.array.TIntArrayList;
 import ivorius.ivtoolkit.tools.IvGsonHelper;
 import ivorius.reccomplex.json.JsonUtils;
 import ivorius.reccomplex.structures.YSelector;
+import ivorius.reccomplex.utils.RCBlockLogic;
 import net.minecraft.block.BlockLiquid;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
@@ -142,20 +143,17 @@ public class GenericYSelector implements YSelector
         while (curY > 0)
         {
             IBlockState blockState = world.getBlockState(new BlockPos(x, curY, z));
-            Material material = blockState.getMaterial();
-            if (!(blockState.getBlock().isFoliage(world, new BlockPos(x, curY, z)) || material == Material.LEAVES || material == Material.PLANTS || material == Material.WOOD))
-            {
+            BlockPos curBlockPos = new BlockPos(x, curY, z);
+
+            if (RCBlockLogic.isFoliage(blockState, world, curBlockPos))
                 break;
-            }
 
             curY--;
         }
         while (curY < world.getHeight())
         {
             if (!(world.getBlockState(new BlockPos(x, curY, z)).getBlock() instanceof BlockLiquid))
-            {
                 break;
-            }
 
             curY++;
         }

@@ -6,6 +6,7 @@
 package ivorius.reccomplex.structures.generic.transformers;
 
 import com.google.gson.*;
+import ivorius.reccomplex.utils.RCBlockLogic;
 import net.minecraft.util.math.BlockPos;
 import ivorius.ivtoolkit.math.IvVecMathHelper;
 import ivorius.ivtoolkit.tools.MCRegistry;
@@ -100,10 +101,10 @@ public class TransformerNaturalAir extends TransformerSingleBlock<NBTNone>
                 IBlockState curBlock = world.getBlockState(curBlockPos);
 
                 Material material = curBlock.getMaterial();
-                boolean isFoliage = curBlock.getBlock().isFoliage(world, curBlockPos) || material == Material.LEAVES || material == Material.PLANTS || material == Material.WOOD;
-                boolean isCommon = curBlock == Blocks.STONE || curBlock == Blocks.DIRT || curBlock == Blocks.SAND || curBlock == Blocks.STAINED_HARDENED_CLAY || curBlock == Blocks.GRAVEL;
-                boolean replaceable = currentY == coord.getY() || curBlock == topBlock || curBlock == fillerBlock || curBlock.getBlock().isReplaceable(world, curBlockPos)
-                        || isCommon || isFoliage;
+                boolean isFoliage = RCBlockLogic.isFoliage(curBlock, world, curBlockPos);
+                boolean isTerrain = RCBlockLogic.isTerrain(curBlock);
+                boolean replaceable = currentY == coord.getY() || curBlock == topBlock || curBlock == fillerBlock
+                        || curBlock.getBlock().isReplaceable(world, curBlockPos) || isTerrain || isFoliage;
 
                 if (replaceable)
                     context.setBlock(curBlockPos, Blocks.AIR.getDefaultState(), 2);

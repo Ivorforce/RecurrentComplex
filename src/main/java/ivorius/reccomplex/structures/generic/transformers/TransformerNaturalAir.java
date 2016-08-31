@@ -77,7 +77,7 @@ public class TransformerNaturalAir extends TransformerSingleBlock<NBTNone>
         IBlockState topBlock = biome.topBlock != null ? biome.topBlock : Blocks.AIR.getDefaultState();
         IBlockState fillerBlock = biome.fillerBlock != null ? biome.fillerBlock : Blocks.AIR.getDefaultState();
 
-        coord = coord.up(4);
+        coord = coord.down(4);
 
         int currentY = coord.getY();
         List<int[]> currentList = new ArrayList<>();

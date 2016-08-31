@@ -147,12 +147,16 @@ public class TableDataSourceGenericStructure extends TableDataSourceSegmented im
             case 0:
                 if (index == 0)
                 {
-                    TableCellString cell = new TableCellString("name", structureKey);
+                    TableCellString cell = new TableCellString(null, structureKey);
                     cell.setTooltip(IvTranslations.formatLines("reccomplex.structure.id.tooltip"));
-                    cell.addPropertyListener(this);
+                    cell.addPropertyListener(cell1 -> {
+                        structureKey = cell.getPropertyValue();
+                        cell.setValidityState(currentNameState());
+                        TableElements.reloadExcept(tableDelegate, "structureID");
+                    });
                     cell.setShowsValidityState(true);
                     cell.setValidityState(currentNameState());
-                    return new TableElementCell(IvTranslations.get("reccomplex.structure.id"), cell);
+                    return new TableElementCell("structureID", IvTranslations.get("reccomplex.structure.id"), cell);
                 }
                 else if (index == 1)
                 {
@@ -206,10 +210,6 @@ public class TableDataSourceGenericStructure extends TableDataSourceSegmented im
         {
             switch (cell.getID())
             {
-                case "name":
-                    structureKey = (String) cell.getPropertyValue();
-                    ((TableCellString) cell).setValidityState(currentNameState());
-                    break;
                 case "activeFolder":
                     saveAsActive = (boolean) cell.getPropertyValue();
                     tableDelegate.reloadData(); // Delete other cell might get added

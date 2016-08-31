@@ -11,7 +11,10 @@ import ivorius.reccomplex.RecurrentComplex;
 import ivorius.reccomplex.gui.container.IvGuiHandler;
 import ivorius.reccomplex.gui.container.IvGuiRegistry;
 import ivorius.reccomplex.gui.inventorygen.GuiEditInventoryGen;
+import ivorius.reccomplex.structures.generic.StructureSaveHandler;
+import ivorius.reccomplex.utils.SaveDirectoryData;
 import ivorius.reccomplex.worldgen.inventory.GenericItemCollectionRegistry;
+import ivorius.reccomplex.worldgen.inventory.ItemCollectionSaveHandler;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.inventory.Container;
 import net.minecraftforge.fml.common.network.ByteBufUtils;
@@ -28,27 +31,32 @@ public class RCGuiHandler implements IvGuiHandler
     public static final int editInventoryGen = 0;
     public static final int editInventoryGenItems = 1;
 
-    protected static void openComponentGui(EntityPlayer player, String key, Component component, int editInventoryGen)
+    protected static void openComponentGui(EntityPlayer player, String key, Component component, SaveDirectoryData saveDirectoryData, int guiID)
     {
         if (key == null)
             key = "New Generator";
         if (component == null)
             component = Component.createDefaultComponent();
+        if (saveDirectoryData == null)
+            saveDirectoryData = SaveDirectoryData.defaultData(key, ItemCollectionSaveHandler.INSTANCE.list(true), ItemCollectionSaveHandler.INSTANCE.list(false));
 
         ByteBuf buf = Unpooled.buffer();
+
         ByteBufUtils.writeUTF8String(buf, key);
         GenericItemCollectionRegistry.INSTANCE.writeComponent(buf, component);
-        IvGuiRegistry.INSTANCE.openGui(player, RecurrentComplex.MOD_ID, editInventoryGen, buf);
+        saveDirectoryData.writeTo(buf);
+
+        IvGuiRegistry.INSTANCE.openGui(player, RecurrentComplex.MOD_ID, guiID, buf);
     }
 
-    public static void editInventoryGenComponent(EntityPlayer player, String key, Component component)
+    public static void editInventoryGenComponent(EntityPlayer player, String key, Component component, SaveDirectoryData saveDirectoryData)
     {
-        openComponentGui(player, key, component, RCGuiHandler.editInventoryGen);
+        openComponentGui(player, key, component, saveDirectoryData, RCGuiHandler.editInventoryGen);
     }
 
-    public static void editInventoryGenComponentItems(EntityPlayer player, String key, Component component)
+    public static void editInventoryGenComponentItems(EntityPlayer player, String key, Component component, SaveDirectoryData saveDirectoryData)
     {
-        openComponentGui(player, key, component, editInventoryGenItems);
+        openComponentGui(player, key, component, saveDirectoryData, editInventoryGenItems);
     }
 
     @Override
@@ -76,21 +84,19 @@ public class RCGuiHandler implements IvGuiHandler
     @Override
     public Object getClientGuiElement(int id, EntityPlayer player, ByteBuf data)
     {
-        if (id == editInventoryGen)
+        if (id == editInventoryGen || id == editInventoryGenItems)
         {
             String key = ByteBufUtils.readUTF8String(data);
             Component component = GenericItemCollectionRegistry.INSTANCE.readComponent(data);
+            SaveDirectoryData saveDirectoryData = SaveDirectoryData.readFrom(data);
 
             if (component != null)
-                return new GuiEditInventoryGen(player, component, key);
-        }
-        else if (id == editInventoryGenItems)
-        {
-            String key = ByteBufUtils.readUTF8String(data);
-            Component component = GenericItemCollectionRegistry.INSTANCE.readComponent(data);
-
-            if (component != null)
-                return new GuiEditInventoryGenItems(player, component, key);
+            {
+                if (id == editInventoryGen)
+                    return new GuiEditInventoryGen(player, component, key, saveDirectoryData);
+                else
+                    return new GuiEditInventoryGenItems(player, component, key, saveDirectoryData);
+            }
         }
 
         return null;

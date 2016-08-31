@@ -18,6 +18,7 @@ import net.minecraft.util.ResourceLocation;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.filefilter.FileFilterUtils;
+import org.apache.commons.io.filefilter.IOFileFilter;
 
 import java.io.*;
 import java.nio.file.Files;
@@ -57,7 +58,7 @@ public class StructureSaveHandler implements FileTypeHandler
         zip.closeEntry();
     }
 
-    public boolean saveGenericStructure(GenericStructureInfo info, String structureName, boolean activeFolder)
+    public boolean save(GenericStructureInfo info, String structureName, boolean activeFolder)
     {
         File parent = RCFileTypeRegistry.getDirectory(activeFolder);
         if (parent != null)
@@ -110,12 +111,12 @@ public class StructureSaveHandler implements FileTypeHandler
         return false;
     }
 
-    public Set<String> listGenericStructures(boolean activeFolder)
+    public static Set<String> listFiles(boolean activeFolder, IOFileFilter... filter)
     {
         try
         {
             File parent = RCFileTypeRegistry.getDirectory(activeFolder);
-            return Arrays.stream(parent.list(FileFilterUtils.or(FileFilterUtils.suffixFileFilter(FILE_SUFFIX), /* Legacy */ FileFilterUtils.suffixFileFilter("zip"))))
+            return Arrays.stream(parent.list(FileFilterUtils.or(filter)))
                     .map(FilenameUtils::removeExtension)
                     .collect(Collectors.toSet());
         }
@@ -127,12 +128,17 @@ public class StructureSaveHandler implements FileTypeHandler
         return Collections.emptySet();
     }
 
-    public boolean hasGenericStructure(String structureName, boolean activeFolder)
+    public Set<String> list(boolean activeFolder)
+    {
+        return listFiles(activeFolder, FileFilterUtils.suffixFileFilter(FILE_SUFFIX), FileFilterUtils.suffixFileFilter("zip"));
+    }
+
+    public boolean has(String name, boolean activeFolder)
     {
         try
         {
             File parent = RCFileTypeRegistry.getDirectory(activeFolder);
-            return parent != null && (new File(parent, structureName + "." + FILE_SUFFIX).exists() || /* Legacy */ new File(parent, structureName + ".zip").exists());
+            return parent != null && (new File(parent, name + "." + FILE_SUFFIX).exists() || /* Legacy */ new File(parent, name + ".zip").exists());
         }
         catch (Throwable e)
         {
@@ -142,12 +148,12 @@ public class StructureSaveHandler implements FileTypeHandler
         return false;
     }
 
-    public boolean deleteGenericStructure(String structureName, boolean activeFolder)
+    public boolean delete(String name, boolean activeFolder)
     {
         try
         {
             File parent = RCFileTypeRegistry.getDirectory(activeFolder);
-            return parent != null && (new File(parent, structureName + "." + FILE_SUFFIX).delete() || /* Legacy */ new File(parent, structureName + ".zip").delete());
+            return parent != null && (new File(parent, name + "." + FILE_SUFFIX).delete() || /* Legacy */ new File(parent, name + ".zip").delete());
         }
         catch (Throwable e)
         {
@@ -157,7 +163,7 @@ public class StructureSaveHandler implements FileTypeHandler
         return false;
     }
 
-    public GenericStructureInfo readGenericStructure(Path file) throws StructureLoadException, IOException
+    public GenericStructureInfo read(Path file) throws StructureLoadException, IOException
     {
         try (ZipInputStream zip = new ZipInputStream(Files.newInputStream(file)))
         {
@@ -223,7 +229,7 @@ public class StructureSaveHandler implements FileTypeHandler
     {
         try
         {
-            GenericStructureInfo genericStructureInfo = readGenericStructure(path);
+            GenericStructureInfo genericStructureInfo = read(path);
 
             String structureID = context.customID != null ? context.customID : FilenameUtils.getBaseName(path.getFileName().toString());
 

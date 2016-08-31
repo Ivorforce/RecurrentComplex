@@ -5,57 +5,52 @@
 
 package ivorius.reccomplex.gui.editstructure;
 
-import net.minecraft.util.text.TextFormatting;
+import ivorius.reccomplex.gui.TableElementSaveDirectory;
 import ivorius.ivtoolkit.tools.IvTranslations;
-import ivorius.reccomplex.files.RCFileTypeRegistry;
 import ivorius.reccomplex.gui.GuiValidityStateIndicator;
 import ivorius.reccomplex.gui.TableDataSourceExpression;
 import ivorius.reccomplex.gui.table.*;
 import ivorius.reccomplex.structures.StructureInfos;
 import ivorius.reccomplex.structures.StructureRegistry;
 import ivorius.reccomplex.structures.generic.GenericStructureInfo;
+import ivorius.reccomplex.utils.SaveDirectoryData;
 
 import java.util.Set;
 
 /**
  * Created by lukas on 05.06.14.
  */
-public class TableDataSourceGenericStructure extends TableDataSourceSegmented implements TableCellPropertyListener
+public class TableDataSourceGenericStructure extends TableDataSourceSegmented
 {
-    private Set<String> structuresInActive;
-    private Set<String> structuresInInactive;
-
     private GenericStructureInfo structureInfo;
     private String structureKey;
 
-    private boolean saveAsActive;
-    private boolean deleteOther = true;
+    private SaveDirectoryData saveDirectoryData;
 
     private TableDelegate tableDelegate;
     private TableNavigator navigator;
 
-    public TableDataSourceGenericStructure(GenericStructureInfo structureInfo, String structureKey, boolean saveAsActive, Set<String> structuresInActive, Set<String> structuresInInactive, TableDelegate tableDelegate, TableNavigator navigator)
+    public TableDataSourceGenericStructure(GenericStructureInfo structureInfo, String structureKey, SaveDirectoryData saveDirectoryData, TableDelegate delegate, TableNavigator navigator)
     {
         this.structureInfo = structureInfo;
         this.structureKey = structureKey;
-        this.saveAsActive = saveAsActive;
-        this.structuresInActive = structuresInActive;
-        this.structuresInInactive = structuresInInactive;
-        this.tableDelegate = tableDelegate;
+        this.saveDirectoryData = saveDirectoryData;
+        this.tableDelegate = delegate;
         this.navigator = navigator;
 
-        addManagedSection(1, TableCellMultiBuilder.create(navigator, tableDelegate)
+        addManagedSection(1, new TableDataSourceSupplied(() -> TableElementSaveDirectory.create(saveDirectoryData, () -> structureKey, delegate)));
+        addManagedSection(2, TableCellMultiBuilder.create(navigator, delegate)
                 .addNavigation(() -> IvTranslations.get("reccomplex.gui.edit"), () -> IvTranslations.getLines("reccomplex.structure.metadata.tooltip"),
-                        () -> new GuiTable(tableDelegate, new TableDataSourceMetadata(structureInfo.metadata))
+                        () -> new GuiTable(delegate, new TableDataSourceMetadata(structureInfo.metadata))
                 ).buildDataSource(IvTranslations.get("reccomplex.structure.metadata")));
-        addManagedSection(3, TableDataSourceExpression.constructDefault(IvTranslations.get("reccomplex.structure.dependencies"), structureInfo.dependencies));
-        addManagedSection(4, TableCellMultiBuilder.create(navigator, tableDelegate)
+        addManagedSection(4, TableDataSourceExpression.constructDefault(IvTranslations.get("reccomplex.structure.dependencies"), structureInfo.dependencies));
+        addManagedSection(5, TableCellMultiBuilder.create(navigator, delegate)
                 .addNavigation(() -> IvTranslations.get("reccomplex.gui.edit"), () -> IvTranslations.getLines("reccomplex.structure.generation.tooltip"),
-                        () -> new GuiTable(tableDelegate, new TableDataSourceStructureGenerationInfoList(structureInfo.generationInfos, tableDelegate, navigator))
+                        () -> new GuiTable(delegate, new TableDataSourceStructureGenerationInfoList(structureInfo.generationInfos, delegate, navigator))
                 ).buildDataSource(IvTranslations.get("reccomplex.structure.generation")));
-        addManagedSection(5, TableCellMultiBuilder.create(navigator, tableDelegate)
+        addManagedSection(6, TableCellMultiBuilder.create(navigator, delegate)
                 .addNavigation(() -> IvTranslations.get("reccomplex.gui.edit"), () -> IvTranslations.getLines("reccomplex.structure.transformers.tooltip"),
-                        () -> new GuiTable(tableDelegate, new TableDataSourceTransformerList(structureInfo.transformers, tableDelegate, navigator))
+                        () -> new GuiTable(delegate, new TableDataSourceTransformerList(structureInfo.transformers, delegate, navigator))
                 ).buildDataSource(IvTranslations.get("reccomplex.structure.transformers")));
     }
 
@@ -79,24 +74,14 @@ public class TableDataSourceGenericStructure extends TableDataSourceSegmented im
         this.structureKey = structureKey;
     }
 
-    public boolean isSaveAsActive()
+    public SaveDirectoryData getSaveDirectoryData()
     {
-        return saveAsActive;
+        return saveDirectoryData;
     }
 
-    public void setSaveAsActive(boolean saveAsActive)
+    public void setSaveDirectoryData(SaveDirectoryData saveDirectoryData)
     {
-        this.saveAsActive = saveAsActive;
-    }
-
-    public boolean isDeleteOther()
-    {
-        return deleteOther;
-    }
-
-    public void setDeleteOther(boolean deleteOther)
-    {
-        this.deleteOther = deleteOther;
+        this.saveDirectoryData = saveDirectoryData;
     }
 
     public TableDelegate getTableDelegate()
@@ -122,7 +107,7 @@ public class TableDataSourceGenericStructure extends TableDataSourceSegmented im
     @Override
     public int numberOfSegments()
     {
-        return 6;
+        return 7;
     }
 
     @Override
@@ -131,8 +116,8 @@ public class TableDataSourceGenericStructure extends TableDataSourceSegmented im
         switch (segment)
         {
             case 0:
-                return 2;
-            case 2:
+                return 1;
+            case 3:
                 return 1;
         }
 
@@ -158,73 +143,25 @@ public class TableDataSourceGenericStructure extends TableDataSourceSegmented im
                     cell.setValidityState(currentNameState());
                     return new TableElementCell("structureID", IvTranslations.get("reccomplex.structure.id"), cell);
                 }
-                else if (index == 1)
-                {
-                    TableCellBoolean cellFolder = new TableCellBoolean("activeFolder", saveAsActive,
-                            IvTranslations.format("reccomplex.structure.savePath", String.format("%s/%s%s", TextFormatting.AQUA, RCFileTypeRegistry.getDirectoryName(true), TextFormatting.RESET)),
-                            IvTranslations.format("reccomplex.structure.savePath", String.format("%s/%s%s", TextFormatting.AQUA, RCFileTypeRegistry.getDirectoryName(false), TextFormatting.RESET)));
-                    cellFolder.addPropertyListener(this);
-
-                    if (saveAsActive ? structuresInInactive.contains(structureKey) : structuresInActive.contains(structureKey))
-                    {
-                        String path = RCFileTypeRegistry.getDirectoryName(!saveAsActive);
-                        TableCellBoolean cellDelete = new TableCellBoolean("deleteOther", deleteOther,
-                                IvTranslations.format("reccomplex.structure.deleteOther.true", TextFormatting.RED, TextFormatting.RESET, String.format("%s/%s%s", TextFormatting.AQUA, path, TextFormatting.RESET)),
-                                IvTranslations.format("reccomplex.structure.deleteOther.false", TextFormatting.YELLOW, TextFormatting.RESET, String.format("%s/%s%s", TextFormatting.AQUA, path, TextFormatting.RESET)));
-                        cellDelete.addPropertyListener(this);
-                        cellDelete.setTooltip(IvTranslations.formatLines("reccomplex.structure.deleteOther.tooltip",
-                                TextFormatting.AQUA + RCFileTypeRegistry.getDirectoryName(false) + TextFormatting.RESET,
-                                TextFormatting.AQUA + RCFileTypeRegistry.getDirectoryName(true) + TextFormatting.RESET));
-
-                        return new TableElementCell(new TableCellMulti(cellFolder, cellDelete));
-                    }
-
-                    return new TableElementCell(new TableCellMulti(cellFolder, new TableCellButton("", "", "-", false)));
-                }
-                break;
-            case 2:
+            case 3:
             {
                 TableCellBoolean cellRotatable = new TableCellBoolean("rotatable", structureInfo.rotatable,
                         IvTranslations.get("reccomplex.structure.rotatable.true"),
                         IvTranslations.get("reccomplex.structure.rotatable.false"));
                 cellRotatable.setTooltip(IvTranslations.formatLines("reccomplex.structure.rotatable.tooltip"));
-                cellRotatable.addPropertyListener(this);
+                cellRotatable.addPropertyListener(cell -> structureInfo.rotatable = cellRotatable.getPropertyValue());
 
                 TableCellBoolean cellMirrorable = new TableCellBoolean("mirrorable", structureInfo.mirrorable,
                         IvTranslations.format("reccomplex.structure.mirrorable.true"),
                         IvTranslations.format("reccomplex.structure.mirrorable.false"));
                 cellMirrorable.setTooltip(IvTranslations.formatLines("reccomplex.structure.mirrorable.tooltip"));
-                cellMirrorable.addPropertyListener(this);
+                cellMirrorable.addPropertyListener(cell -> structureInfo.mirrorable = cellMirrorable.getPropertyValue());
 
                 return new TableElementCell(new TableCellMulti(cellRotatable, cellMirrorable));
             }
         }
 
         return super.elementForIndexInSegment(table, index, segment);
-    }
-
-    @Override
-    public void valueChanged(TableCellPropertyDefault cell)
-    {
-        if (cell.getID() != null)
-        {
-            switch (cell.getID())
-            {
-                case "activeFolder":
-                    saveAsActive = (boolean) cell.getPropertyValue();
-                    tableDelegate.reloadData(); // Delete other cell might get added
-                    break;
-                case "deleteOther":
-                    deleteOther = (boolean) cell.getPropertyValue();
-                    break;
-                case "rotatable":
-                    structureInfo.rotatable = (boolean) cell.getPropertyValue();
-                    break;
-                case "mirrorable":
-                    structureInfo.mirrorable = (boolean) cell.getPropertyValue();
-                    break;
-            }
-        }
     }
 
     private GuiValidityStateIndicator.State currentNameState()

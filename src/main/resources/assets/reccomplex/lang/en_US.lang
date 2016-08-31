@@ -171,13 +171,15 @@ inventoryGen.inactive=%sInactive%s
 
 reccomplex.save.permission=You do not have permission to save!
 
-inventorygen.save.success=Exported inventory generator to '%s'
 inventorygen.save.failure=Failed to export inventory generator to '%s'
+inventorygen.save.success=Exported inventory generator to '%s'
+inventorygen.delete.failure=Failed to delete inventory generator in file '%s'
+inventorygen.delete.success=Deleted inventory generator in file '%s'
 
 structure.save.failure=Failed to save structure to file '%s'
 structure.save.success=Saved structure to file '%s'
 structure.delete.failure=Failed to delete structure in file '%s'
-structure.delete.success=Deleted structure structure in file '%s'
+structure.delete.success=Deleted structure in file '%s'
 
 structures.genY.bedrock=Bedrock
 structures.genY.bedrock.tooltip=Bottom of the world: y=0

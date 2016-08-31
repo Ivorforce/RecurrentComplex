@@ -11,6 +11,7 @@ import ivorius.reccomplex.entities.StructureEntityInfo;
 import ivorius.reccomplex.files.RCFileTypeRegistry;
 import ivorius.reccomplex.structures.generic.GenericStructureInfo;
 import ivorius.reccomplex.structures.generic.StructureSaveHandler;
+import ivorius.reccomplex.utils.SaveDirectoryData;
 import ivorius.reccomplex.utils.ServerTranslations;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.network.NetHandlerPlayServer;
@@ -25,9 +26,9 @@ import java.util.Collections;
  */
 public class PacketSaveStructureHandler extends SchedulingMessageHandler<PacketSaveStructure, IMessage>
 {
-    public static void saveStructure(GenericStructureInfo structureInfo, String structureID, boolean saveAsActive, boolean deleteOther)
+    public static void saveStructure(GenericStructureInfo structureInfo, String structureID, SaveDirectoryData.Result saveDirectoryDataResult)
     {
-        RecurrentComplex.network.sendToServer(new PacketSaveStructure(structureInfo, structureID, saveAsActive, deleteOther));
+        RecurrentComplex.network.sendToServer(new PacketSaveStructure(structureInfo, structureID, saveDirectoryDataResult));
     }
 
     @Override
@@ -44,28 +45,30 @@ public class PacketSaveStructureHandler extends SchedulingMessageHandler<PacketS
         if (structureEntityInfo != null)
             genericStructureInfo.worldDataCompound = structureEntityInfo.getCachedExportStructureBlockDataNBT();
 
-        String path = RCFileTypeRegistry.getDirectoryName(message.isSaveAsActive()) + "/";
-        String structureID = message.getStructureID();
+        SaveDirectoryData.Result saveDirectoryDataResult = message.getSaveDirectoryDataResult();
 
-        if (!StructureSaveHandler.INSTANCE.saveGenericStructure(genericStructureInfo, structureID, message.isSaveAsActive()))
-        {
-            player.addChatMessage(ServerTranslations.format("structure.save.failure", path + structureID));
-        }
-        else
-        {
-            player.addChatMessage(ServerTranslations.format("structure.save.success", path + structureID));
+        String path = RCFileTypeRegistry.getDirectoryName(saveDirectoryDataResult.saveAsActive) + "/";
+        String id = message.getStructureID();
 
-            if (message.isDeleteOther() && StructureSaveHandler.INSTANCE.hasGenericStructure(structureID, !message.isSaveAsActive()))
+        if (StructureSaveHandler.INSTANCE.save(genericStructureInfo, id, saveDirectoryDataResult.saveAsActive))
+        {
+            player.addChatMessage(ServerTranslations.format("structure.save.success", path + id));
+
+            if (saveDirectoryDataResult.deleteOther && StructureSaveHandler.INSTANCE.has(id, !saveDirectoryDataResult.saveAsActive))
             {
-                String otherPath = RCFileTypeRegistry.getDirectoryName(!message.isSaveAsActive()) + "/";
+                String otherPath = RCFileTypeRegistry.getDirectoryName(!saveDirectoryDataResult.saveAsActive) + "/";
 
-                if (StructureSaveHandler.INSTANCE.deleteGenericStructure(structureID, !message.isSaveAsActive()))
-                    player.addChatMessage(ServerTranslations.format("structure.delete.success", otherPath + structureID));
+                if (StructureSaveHandler.INSTANCE.delete(id, !saveDirectoryDataResult.saveAsActive))
+                    player.addChatMessage(ServerTranslations.format("structure.delete.success", otherPath + id));
                 else
-                    player.addChatMessage(ServerTranslations.format("structure.delete.failure", otherPath + structureID));
+                    player.addChatMessage(ServerTranslations.format("structure.delete.failure", otherPath + id));
             }
 
             RecurrentComplex.fileTypeRegistry.reloadCustomFiles(Collections.singletonList(StructureSaveHandler.FILE_SUFFIX));
+        }
+        else
+        {
+            player.addChatMessage(ServerTranslations.format("structure.save.failure", path + id));
         }
     }
 }

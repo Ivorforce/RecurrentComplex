@@ -11,6 +11,7 @@ import ivorius.reccomplex.gui.table.GuiScreenModalTable;
 import ivorius.reccomplex.gui.table.GuiTable;
 import ivorius.reccomplex.network.PacketSaveStructureHandler;
 import ivorius.reccomplex.structures.generic.GenericStructureInfo;
+import ivorius.reccomplex.utils.SaveDirectoryData;
 import net.minecraft.client.gui.GuiButton;
 import org.lwjgl.input.Keyboard;
 
@@ -24,9 +25,9 @@ public class GuiEditGenericStructure extends GuiScreenModalTable
 {
     TableDataSourceGenericStructure structureDataSource;
 
-    public GuiEditGenericStructure(String key, GenericStructureInfo structureInfo, Set<String> structuresInActive, Set<String> structuresInInactive)
+    public GuiEditGenericStructure(String key, GenericStructureInfo structureInfo, SaveDirectoryData data)
     {
-        GuiTable structureProperties = new GuiTable(this, structureDataSource = new TableDataSourceGenericStructure(structureInfo, key, !structuresInInactive.contains(key), structuresInActive, structuresInInactive, this, this));
+        GuiTable structureProperties = new GuiTable(this, structureDataSource = new TableDataSourceGenericStructure(structureInfo, key, data, this, this));
         setTable(structureProperties);
     }
 
@@ -66,7 +67,7 @@ public class GuiEditGenericStructure extends GuiScreenModalTable
 
         if (button.id == 0)
         {
-            PacketSaveStructureHandler.saveStructure(structureDataSource.getStructureInfo(), structureDataSource.getStructureKey(), structureDataSource.isSaveAsActive(), structureDataSource.isDeleteOther());
+            PacketSaveStructureHandler.saveStructure(structureDataSource.getStructureInfo(), structureDataSource.getStructureKey(), structureDataSource.getSaveDirectoryData().getResult());
             this.mc.thePlayer.closeScreen();
         }
         else if (button.id == 1)

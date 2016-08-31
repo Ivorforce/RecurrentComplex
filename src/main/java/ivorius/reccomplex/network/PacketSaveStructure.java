@@ -8,6 +8,7 @@ package ivorius.reccomplex.network;
 import io.netty.buffer.ByteBuf;
 import ivorius.reccomplex.structures.StructureRegistry;
 import ivorius.reccomplex.structures.generic.GenericStructureInfo;
+import ivorius.reccomplex.utils.SaveDirectoryData;
 import net.minecraftforge.fml.common.network.ByteBufUtils;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 
@@ -19,20 +20,17 @@ public class PacketSaveStructure implements IMessage
     private GenericStructureInfo structureInfo;
     private String structureID;
 
-    private boolean saveAsActive;
-    private boolean deleteOther;
+    private SaveDirectoryData.Result saveDirectoryDataResult;
 
     public PacketSaveStructure()
     {
     }
 
-    public PacketSaveStructure(GenericStructureInfo structureInfo, String structureID, boolean saveAsActive, boolean deleteOther)
+    public PacketSaveStructure(GenericStructureInfo structureInfo, String structureID, SaveDirectoryData.Result saveDirectoryDataResult)
     {
         this.structureInfo = structureInfo;
         this.structureID = structureID;
-        this.saveAsActive = saveAsActive;
-        this.saveAsActive = saveAsActive;
-        this.deleteOther = deleteOther;
+        this.saveDirectoryDataResult = saveDirectoryDataResult;
     }
 
     public String getStructureID()
@@ -45,16 +43,6 @@ public class PacketSaveStructure implements IMessage
         this.structureID = structureID;
     }
 
-    public boolean isSaveAsActive()
-    {
-        return saveAsActive;
-    }
-
-    public void setSaveAsActive(boolean saveAsActive)
-    {
-        this.saveAsActive = saveAsActive;
-    }
-
     public GenericStructureInfo getStructureInfo()
     {
         return structureInfo;
@@ -65,14 +53,14 @@ public class PacketSaveStructure implements IMessage
         this.structureInfo = structureInfo;
     }
 
-    public boolean isDeleteOther()
+    public SaveDirectoryData.Result getSaveDirectoryDataResult()
     {
-        return deleteOther;
+        return saveDirectoryDataResult;
     }
 
-    public void setDeleteOther(boolean deleteOther)
+    public void setSaveDirectoryDataResult(SaveDirectoryData.Result saveDirectoryDataResult)
     {
-        this.deleteOther = deleteOther;
+        this.saveDirectoryDataResult = saveDirectoryDataResult;
     }
 
     @Override
@@ -80,8 +68,7 @@ public class PacketSaveStructure implements IMessage
     {
         structureID = ByteBufUtils.readUTF8String(buf);
         structureInfo = StructureRegistry.INSTANCE.createStructureFromJSON(ByteBufUtils.readUTF8String(buf));
-        saveAsActive = buf.readBoolean();
-        deleteOther = buf.readBoolean();
+        saveDirectoryDataResult = SaveDirectoryData.Result.readFrom(buf);
     }
 
     @Override
@@ -89,7 +76,6 @@ public class PacketSaveStructure implements IMessage
     {
         ByteBufUtils.writeUTF8String(buf, structureID);
         ByteBufUtils.writeUTF8String(buf, StructureRegistry.INSTANCE.createJSONFromStructure(structureInfo));
-        buf.writeBoolean(saveAsActive);
-        buf.writeBoolean(deleteOther);
+        saveDirectoryDataResult.writeTo(buf);
     }
 }

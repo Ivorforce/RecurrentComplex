@@ -8,12 +8,15 @@ package ivorius.reccomplex.json;
 import com.google.gson.*;
 import ivorius.reccomplex.RecurrentComplex;
 import ivorius.reccomplex.structures.registry.MCRegistrySpecial;
+import net.minecraft.init.Blocks;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.datafix.DataFixer;
 import net.minecraft.util.datafix.DataFixesManager;
 import net.minecraft.util.datafix.FixTypes;
+import net.minecraftforge.common.util.Constants;
 
 import javax.annotation.Nonnull;
 import java.lang.reflect.Type;
@@ -74,19 +77,22 @@ public class ItemStackSerializer implements JsonSerializer<ItemStack>, JsonDeser
             stack.setTagCompound(compound);
         }
 
-        stack = fixItemStack(stack, id);
+        // Convert to NBT, let vanilla fix it and then load it through ReC again
+        NBTTagCompound fixed = fixItemStack(stack);
+        ItemStack loadedFixed = ItemStack.loadItemStackFromNBT(fixed);
+        stack = registry.itemHidingMode().constructItemStack(new ResourceLocation(fixed.getString("id")), loadedFixed.stackSize, loadedFixed.getMetadata());
+        if (loadedFixed.hasTagCompound())
+            stack.setTagCompound(loadedFixed.getTagCompound());
 
         return stack;
     }
 
     @Nonnull
-    protected ItemStack fixItemStack(ItemStack stack, String itemID)
+    protected NBTTagCompound fixItemStack(ItemStack stack)
     {
         NBTTagCompound postCompound = new NBTTagCompound();
         stack.writeToNBT(postCompound);
-        postCompound.setString("id", itemID); // If the item was unproperly loaded before, here it gets to try again
         fixer.process(FixTypes.ITEM_INSTANCE, postCompound);
-        stack = ItemStack.loadItemStackFromNBT(postCompound);
-        return stack;
+        return postCompound;
     }
 }

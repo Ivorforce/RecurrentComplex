@@ -10,7 +10,8 @@ import ivorius.reccomplex.RecurrentComplex;
 import ivorius.reccomplex.gui.table.Bounds;
 import ivorius.reccomplex.gui.table.GuiScreenModalTable;
 import ivorius.reccomplex.gui.table.GuiTable;
-import ivorius.reccomplex.network.PacketEditInvGen;
+import ivorius.reccomplex.network.PacketSaveInvGenComponent;
+import ivorius.reccomplex.utils.SaveDirectoryData;
 import ivorius.reccomplex.worldgen.inventory.GenericItemCollection;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.entity.player.EntityPlayer;
@@ -23,11 +24,11 @@ import java.io.IOException;
  */
 public class GuiEditInventoryGen extends GuiScreenModalTable
 {
-    TableDataSourceEditInventoryGen dataSource;
+    TableDataSourceItemCollectionComponent dataSource;
 
-    public GuiEditInventoryGen(EntityPlayer player, GenericItemCollection.Component component, String key)
+    public GuiEditInventoryGen(EntityPlayer player, GenericItemCollection.Component component, String key, SaveDirectoryData saveDirectoryData)
     {
-        GuiTable table = new GuiTable(this, dataSource = new TableDataSourceEditInventoryGen(key, component, player, this, this));
+        GuiTable table = new GuiTable(this, dataSource = new TableDataSourceItemCollectionComponent(key, component, saveDirectoryData, player, this, this));
         setTable(table);
     }
 
@@ -65,7 +66,7 @@ public class GuiEditInventoryGen extends GuiScreenModalTable
 
         if (button.id == 0)
         {
-            RecurrentComplex.network.sendToServer(new PacketEditInvGen(dataSource.key, dataSource.component));
+            RecurrentComplex.network.sendToServer(new PacketSaveInvGenComponent(dataSource.key, dataSource.component, dataSource.getSaveDirectoryData().getResult()));
 
             this.mc.thePlayer.closeScreen();
         }

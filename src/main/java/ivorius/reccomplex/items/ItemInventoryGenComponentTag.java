@@ -62,7 +62,7 @@ public class ItemInventoryGenComponentTag extends Item implements GeneratingItem
     public ActionResult<ItemStack> onItemRightClick(ItemStack itemStackIn, World worldIn, EntityPlayer playerIn, EnumHand hand)
     {
         if (!worldIn.isRemote)
-            RCGuiHandler.editInventoryGenComponent(playerIn, componentKey(itemStackIn), component(itemStackIn));
+            RCGuiHandler.editInventoryGenComponent(playerIn, componentKey(itemStackIn), component(itemStackIn), null);
 
         return super.onItemRightClick(itemStackIn, worldIn, playerIn, hand);
     }

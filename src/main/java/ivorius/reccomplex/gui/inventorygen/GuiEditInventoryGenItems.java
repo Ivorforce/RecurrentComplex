@@ -12,6 +12,7 @@ import ivorius.reccomplex.RecurrentComplex;
 import ivorius.reccomplex.gui.InventoryWatcher;
 import ivorius.reccomplex.gui.RCGuiHandler;
 import ivorius.reccomplex.utils.RangeHelper;
+import ivorius.reccomplex.utils.SaveDirectoryData;
 import ivorius.reccomplex.worldgen.inventory.GenericItemCollection;
 import ivorius.reccomplex.worldgen.inventory.GenericItemCollection.Component;
 import net.minecraft.client.gui.Gui;
@@ -39,6 +40,7 @@ public class GuiEditInventoryGenItems extends GuiContainer implements InventoryW
 
     public String key;
     public Component component;
+    public SaveDirectoryData saveDirectoryData;
 
     private GuiButton backBtn;
 
@@ -50,12 +52,13 @@ public class GuiEditInventoryGenItems extends GuiContainer implements InventoryW
 
     private int currentColShift;
 
-    public GuiEditInventoryGenItems(EntityPlayer player, GenericItemCollection.Component component, String key)
+    public GuiEditInventoryGenItems(EntityPlayer player, GenericItemCollection.Component component, String key, SaveDirectoryData saveDirectoryData)
     {
         super(new ContainerEditInventoryGenItems(player, key, component));
 
         this.key = key;
         this.component = component;
+        this.saveDirectoryData = saveDirectoryData;
 
         this.xSize = ContainerEditInventoryGenItems.SEGMENT_WIDTH * ContainerEditInventoryGenItems.ITEM_COLUMNS + 20;
         this.ySize = 219;
@@ -198,7 +201,7 @@ public class GuiEditInventoryGenItems extends GuiContainer implements InventoryW
         {
             if (button.id == 0)
             {
-                RCGuiHandler.editInventoryGenComponent(mc.thePlayer, key, component);
+                RCGuiHandler.editInventoryGenComponent(mc.thePlayer, key, component, saveDirectoryData);
             }
             else if (button.id == 2)
             {

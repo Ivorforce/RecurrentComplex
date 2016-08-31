@@ -144,7 +144,7 @@ public class RecurrentComplex
     protected void registerServerPackets()
     {
         network.registerMessage(PacketGuiActionHandler.class, PacketGuiAction.class, 1, Side.SERVER);
-        network.registerMessage(PacketEditInvGenHandler.class, PacketEditInvGen.class, 2, Side.SERVER);
+        network.registerMessage(PacketSaveInvGenComponentHandler.class, PacketSaveInvGenComponent.class, 2, Side.SERVER);
         network.registerMessage(PacketEditTileEntityHandler.class, PacketEditTileEntity.class, 5, Side.SERVER);
         network.registerMessage(PacketSaveStructureHandler.class, PacketSaveStructure.class, 7, Side.SERVER);
         network.registerMessage(PacketSyncItemHandler.class, PacketSyncItem.class, 9, Side.SERVER);
@@ -156,7 +156,7 @@ public class RecurrentComplex
     protected void registerClientPackets()
     {
         network.registerMessage(PacketEntityCapabilityDataHandler.class, PacketEntityCapabilityData.class, 0, Side.CLIENT);
-        network.registerMessage(PacketEditInvGenHandler.class, PacketEditInvGen.class, 3, Side.CLIENT);
+        network.registerMessage(PacketEditInvGenComponentHandler.class, PacketEditInvGenComponent.class, 3, Side.CLIENT);
         network.registerMessage(PacketEditTileEntityHandler.class, PacketEditTileEntity.class, 4, Side.CLIENT);
         network.registerMessage(PacketEditStructureHandler.class, PacketEditStructure.class, 6, Side.CLIENT);
         network.registerMessage(PacketSyncItemHandler.class, PacketSyncItem.class, 8, Side.CLIENT);

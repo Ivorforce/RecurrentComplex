@@ -5,6 +5,7 @@
 
 package ivorius.reccomplex.network;
 
+import ivorius.reccomplex.utils.SaveDirectoryData;
 import net.minecraftforge.fml.common.network.ByteBufUtils;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 import io.netty.buffer.ByteBuf;
@@ -26,30 +27,17 @@ public class PacketEditStructure implements IMessage
     private GenericStructureInfo structureInfo;
     private String structureID;
 
-    private Set<String> structuresInActive;
-    private Set<String> structuresInInactive;
+    private SaveDirectoryData saveDirectoryData;
 
     public PacketEditStructure()
     {
     }
 
-    public PacketEditStructure(GenericStructureInfo structureInfo, String structureID, Set<String> structuresInActive, Set<String> structuresInInactive)
+    public PacketEditStructure(GenericStructureInfo structureInfo, String structureID, SaveDirectoryData saveDirectoryData)
     {
         this.structureInfo = structureInfo;
         this.structureID = structureID;
-        this.structuresInActive = structuresInActive;
-        this.structuresInInactive = structuresInInactive;
-    }
-
-    public static <T> void writeCollection(ByteBuf buf, Collection<T> collection, Consumer<T> consumer)
-    {
-        buf.writeInt(collection.size());
-        collection.forEach(consumer);
-    }
-
-    public static <T> Collection<T> readCollection(ByteBuf buf, Function<ByteBuf, T> supplier)
-    {
-        return IntStream.range(0, buf.readInt()).mapToObj(i -> supplier.apply(buf)).collect(Collectors.toList());
+        this.saveDirectoryData = saveDirectoryData;
     }
 
     public String getStructureID()
@@ -72,24 +60,14 @@ public class PacketEditStructure implements IMessage
         this.structureInfo = structureInfo;
     }
 
-    public Set<String> getStructuresInActive()
+    public SaveDirectoryData getSaveDirectoryData()
     {
-        return structuresInActive;
+        return saveDirectoryData;
     }
 
-    public void setStructuresInActive(Set<String> structuresInActive)
+    public void setSaveDirectoryData(SaveDirectoryData saveDirectoryData)
     {
-        this.structuresInActive = structuresInActive;
-    }
-
-    public Set<String> getStructuresInInactive()
-    {
-        return structuresInInactive;
-    }
-
-    public void setStructuresInInactive(Set<String> structuresInInactive)
-    {
-        this.structuresInInactive = structuresInInactive;
+        this.saveDirectoryData = saveDirectoryData;
     }
 
     @Override
@@ -97,8 +75,7 @@ public class PacketEditStructure implements IMessage
     {
         structureID = ByteBufUtils.readUTF8String(buf);
         structureInfo = StructureRegistry.INSTANCE.createStructureFromJSON(ByteBufUtils.readUTF8String(buf));
-        structuresInActive = readCollection(buf, ByteBufUtils::readUTF8String).stream().collect(Collectors.toSet());
-        structuresInInactive = readCollection(buf, ByteBufUtils::readUTF8String).stream().collect(Collectors.toSet());
+        saveDirectoryData = SaveDirectoryData.readFrom(buf);
     }
 
     @Override
@@ -106,7 +83,6 @@ public class PacketEditStructure implements IMessage
     {
         ByteBufUtils.writeUTF8String(buf, structureID);
         ByteBufUtils.writeUTF8String(buf, StructureRegistry.INSTANCE.createJSONFromStructure(structureInfo));
-        writeCollection(buf, structuresInActive, s -> ByteBufUtils.writeUTF8String(buf, s));
-        writeCollection(buf, structuresInInactive, s -> ByteBufUtils.writeUTF8String(buf, s));
+        saveDirectoryData.writeTo(buf);
     }
 }

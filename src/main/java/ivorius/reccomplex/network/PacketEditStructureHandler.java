@@ -11,6 +11,7 @@ import ivorius.reccomplex.entities.StructureEntityInfo;
 import ivorius.reccomplex.gui.editstructure.GuiEditGenericStructure;
 import ivorius.reccomplex.structures.generic.GenericStructureInfo;
 import ivorius.reccomplex.structures.generic.StructureSaveHandler;
+import ivorius.reccomplex.utils.SaveDirectoryData;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
@@ -31,14 +32,14 @@ public class PacketEditStructureHandler extends SchedulingMessageHandler<PacketE
             structureEntityInfo.setCachedExportStructureBlockDataNBT(structureInfo.worldDataCompound);
 
         RecurrentComplex.network.sendTo(new PacketEditStructure(structureInfo, structureID,
-                StructureSaveHandler.INSTANCE.listGenericStructures(true),
-                StructureSaveHandler.INSTANCE.listGenericStructures(false)), player);
+                SaveDirectoryData.defaultData(structureID, StructureSaveHandler.INSTANCE.list(true), StructureSaveHandler.INSTANCE.list(false))
+        ), player);
     }
 
     @SideOnly(Side.CLIENT)
     @Override
     public void processClient(PacketEditStructure message, MessageContext ctx)
     {
-        Minecraft.getMinecraft().displayGuiScreen(new GuiEditGenericStructure(message.getStructureID(), message.getStructureInfo(), message.getStructuresInActive(), message.getStructuresInInactive()));
+        Minecraft.getMinecraft().displayGuiScreen(new GuiEditGenericStructure(message.getStructureID(), message.getStructureInfo(), message.getSaveDirectoryData()));
     }
 }

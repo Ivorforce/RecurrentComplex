@@ -21,7 +21,7 @@ import java.util.List;
 /**
  * Created by lukas on 26.03.15.
  */
-public class TableDataSourceExpression<T> implements TableDataSource, TableCellPropertyListener
+public class TableDataSourceExpression<T> implements TableDataSource
 {
     public String title;
     private List<String> tooltip;
@@ -88,7 +88,12 @@ public class TableDataSourceExpression<T> implements TableDataSource, TableCellP
                 cell.setTooltip(tooltip);
             cell.setShowsValidityState(true);
             cell.setValidityState(getValidityState(expressionCache));
-            cell.addPropertyListener(this);
+            cell.addPropertyConsumer(val -> {
+                expressionCache.setExpression(val);
+                cell.setValidityState(getValidityState(expressionCache));
+                if (parsed != null)
+                    parsed.setDisplayString(StringUtils.abbreviate(parsedString(expressionCache), 60));
+            });
             return new TableElementCell(title, cell);
         }
         else if (index == 1)
@@ -99,17 +104,5 @@ public class TableDataSourceExpression<T> implements TableDataSource, TableCellP
         }
 
         return null;
-    }
-
-    @Override
-    public void valueChanged(TableCellPropertyDefault cell)
-    {
-        if ("expression".equals(cell.getID()))
-        {
-            expressionCache.setExpression((String) cell.getPropertyValue());
-            ((TableCellString) cell).setValidityState(getValidityState(expressionCache));
-            if (parsed != null)
-                parsed.setDisplayString(StringUtils.abbreviate(parsedString(expressionCache), 60));
-        }
     }
 }

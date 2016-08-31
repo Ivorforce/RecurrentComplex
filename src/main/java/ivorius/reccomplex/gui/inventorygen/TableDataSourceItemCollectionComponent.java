@@ -89,10 +89,10 @@ public class TableDataSourceItemCollectionComponent extends TableDataSourceSegme
             cell.setTooltip(IvTranslations.formatLines("reccomplex.gui.inventorygen.componentid.tooltip"));
             cell.setShowsValidityState(true);
             cell.setValidityState(currentKeyState());
-            cell.addPropertyListener(cell1 ->
+            cell.addPropertyConsumer(val ->
             {
-                key = (String) cell1.getPropertyValue();
-                ((TableCellString) cell1).setValidityState(currentKeyState());
+                key = val;
+                cell.setValidityState(currentKeyState());
             });
             return new TableElementCell(IvTranslations.get("reccomplex.gui.inventorygen.componentid"), cell);
         }
@@ -102,10 +102,10 @@ public class TableDataSourceItemCollectionComponent extends TableDataSourceSegme
             cell.setTooltip(IvTranslations.formatLines("reccomplex.gui.inventorygen.groupid.tooltip"));
             cell.setShowsValidityState(true);
             cell.setValidityState(currentGroupIDState());
-            cell.addPropertyListener(cell1 ->
+            cell.addPropertyConsumer(val ->
             {
-                component.inventoryGeneratorID = (String) cell1.getPropertyValue();
-                ((TableCellString) cell1).setValidityState(currentGroupIDState());
+                component.inventoryGeneratorID = val;
+                cell.setValidityState(currentGroupIDState());
             });
             return new TableElementCell(IvTranslations.get("reccomplex.gui.inventorygen.groupid"), cell);
         }

@@ -16,7 +16,7 @@ import ivorius.reccomplex.structures.generic.gentypes.StaticGenerationInfo;
 /**
  * Created by lukas on 07.10.14.
  */
-public class TableDataSourceStaticGenerationInfo extends TableDataSourceSegmented implements TableCellPropertyListener
+public class TableDataSourceStaticGenerationInfo extends TableDataSourceSegmented
 {
     private TableNavigator navigator;
     private TableDelegate tableDelegate;
@@ -64,25 +64,11 @@ public class TableDataSourceStaticGenerationInfo extends TableDataSourceSegmente
             case 1:
             {
                 TableCellBoolean cell = new TableCellBoolean("relativeToSpawn", generationInfo.relativeToSpawn);
-                cell.addPropertyListener(this);
+                cell.addPropertyConsumer(val -> generationInfo.relativeToSpawn = val);
                 return new TableElementCell(IvTranslations.get("reccomplex.generationInfo.static.spawn"), cell);
             }
         }
 
         return super.elementForIndexInSegment(table, index, segment);
-    }
-
-    @Override
-    public void valueChanged(TableCellPropertyDefault cell)
-    {
-        if (cell.getID() != null)
-        {
-            switch (cell.getID())
-            {
-                case "relativeToSpawn":
-                    generationInfo.relativeToSpawn = (boolean) cell.getPropertyValue();
-                    break;
-            }
-        }
     }
 }

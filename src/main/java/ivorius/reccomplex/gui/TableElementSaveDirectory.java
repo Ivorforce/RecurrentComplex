@@ -25,7 +25,7 @@ public class TableElementSaveDirectory
         TableCellBoolean cellFolder = new TableCellBoolean("activeFolder", data.isSaveAsActive(),
                 IvTranslations.format("reccomplex.structure.savePath", String.format("%s/%s%s", TextFormatting.AQUA, RCFileTypeRegistry.getDirectoryName(true), TextFormatting.RESET)),
                 IvTranslations.format("reccomplex.structure.savePath", String.format("%s/%s%s", TextFormatting.AQUA, RCFileTypeRegistry.getDirectoryName(false), TextFormatting.RESET)));
-        cellFolder.addPropertyListener(cell ->
+        cellFolder.addPropertyConsumer(cell ->
         {
             data.setSaveAsActive(cellFolder.getPropertyValue());
             delegate.reloadData(); // Delete other cell might get added
@@ -37,7 +37,7 @@ public class TableElementSaveDirectory
             TableCellBoolean cellDelete = new TableCellBoolean("deleteOther", data.isDeleteOther(),
                     IvTranslations.format("reccomplex.structure.deleteOther.true", TextFormatting.RED, TextFormatting.RESET, String.format("%s/%s%s", TextFormatting.AQUA, path, TextFormatting.RESET)),
                     IvTranslations.format("reccomplex.structure.deleteOther.false", TextFormatting.YELLOW, TextFormatting.RESET, String.format("%s/%s%s", TextFormatting.AQUA, path, TextFormatting.RESET)));
-            cellDelete.addPropertyListener(cell -> data.setDeleteOther(cellDelete.getPropertyValue()));
+            cellDelete.addPropertyConsumer(cell -> data.setDeleteOther(cellDelete.getPropertyValue()));
             cellDelete.setTooltip(IvTranslations.formatLines("reccomplex.structure.deleteOther.tooltip",
                     TextFormatting.AQUA + RCFileTypeRegistry.getDirectoryName(false) + TextFormatting.RESET,
                     TextFormatting.AQUA + RCFileTypeRegistry.getDirectoryName(true) + TextFormatting.RESET));

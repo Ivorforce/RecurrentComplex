@@ -72,7 +72,7 @@ public class TableDataSourceStructureListGenerationInfo extends TableDataSourceS
                 TableCellString cell = new TableCellString("listID", generationInfo.listID);
                 cell.setShowsValidityState(true);
                 cell.setValidityState(currentStructureListIDState());
-                cell.addPropertyListener(cell1 ->
+                cell.addPropertyConsumer(cell1 ->
                 {
                     generationInfo.listID = cell.getPropertyValue();
                     cell.setValidityState(currentStructureListIDState());
@@ -80,11 +80,11 @@ public class TableDataSourceStructureListGenerationInfo extends TableDataSourceS
                 return new TableElementCell(IvTranslations.get("reccomplex.generationInfo.structureList.id"), cell);
             }
             case 2:
-                return RCGuiTables.defaultWeightElement(cell -> generationInfo.weight = TableElements.toDouble((Float) cell.getPropertyValue()), generationInfo.weight);
+                return RCGuiTables.defaultWeightElement(val -> generationInfo.weight = TableElements.toDouble(val), generationInfo.weight);
             case 4:
             {
                 TableCellEnum cell = new TableCellEnum<>("front", generationInfo.front, TableDirections.getDirectionOptions(Directions.HORIZONTAL));
-                cell.addPropertyListener(cell1 -> generationInfo.front = (EnumFacing) cell.getPropertyValue());
+                cell.addPropertyConsumer(cell1 -> generationInfo.front = (EnumFacing) cell.getPropertyValue());
                 return new TableElementCell(IvTranslations.get("reccomplex.generationInfo.structureList.front"), cell);
             }
         }

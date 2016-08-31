@@ -8,12 +8,13 @@ package ivorius.reccomplex.gui.table;
 import net.minecraft.util.text.TextFormatting;
 import ivorius.ivtoolkit.tools.IvTranslations;
 
+import javax.annotation.Nonnull;
 import java.util.List;
 
 /**
  * Created by lukas on 20.02.15.
  */
-public abstract class TableDataSourceList<T, L extends List<T>> extends TableDataSourceSegmented implements TableCellActionListener
+public abstract class TableDataSourceList<T, L extends List<T>> extends TableDataSourceSegmented
 {
     protected L list;
 
@@ -154,7 +155,10 @@ public abstract class TableDataSourceList<T, L extends List<T>> extends TableDat
             TableCellButton[] cells = getEntryActions(index);
             for (TableCellButton cell : cells)
             {
-                cell.addListener(this);
+                cell.addAction(() -> {
+                    T entry = list.get(index);
+                    performEntryAction(cell.actionID, index, entry);
+                });
                 cell.id = "entry" + index;
             }
             return new TableElementCell(getDisplayString(t), new TableCellMulti(cells));
@@ -167,7 +171,7 @@ public abstract class TableDataSourceList<T, L extends List<T>> extends TableDat
             {
                 TableCellPresetAction cell = new TableCellPresetAction("add" + addIndex, getAddTitle(), getAddActions());
                 cell.setActionButtonWidth(0.2f);
-                cell.addListener(this);
+                cell.addAction(actionID -> createAddAction(addIndex, actionID));
                 return new TableElementCell(cell);
             }
             else
@@ -175,7 +179,7 @@ public abstract class TableDataSourceList<T, L extends List<T>> extends TableDat
                 TableCellButton[] cells = getAddActions();
                 for (TableCellButton cell : cells)
                 {
-                    cell.addListener(this);
+                    cell.addAction(createAddAction(addIndex, cell.actionID));
                     cell.id = "add" + addIndex;
                 }
                 return new TableElementCell(new TableCellMulti(cells));
@@ -183,6 +187,19 @@ public abstract class TableDataSourceList<T, L extends List<T>> extends TableDat
         }
 
         return null;
+    }
+
+    @Nonnull
+    protected Runnable createAddAction(int addIndex, String actionID)
+    {
+        return () -> {
+            T entry = newEntry(actionID);
+            if (entry != null)
+            {
+                list.add(addIndex, entry);
+                navigator.pushTable(new GuiTable(tableDelegate, editEntryDataSource(entry)));
+            }
+        };
     }
 
     public boolean isListSegment(int segment)
@@ -219,32 +236,6 @@ public abstract class TableDataSourceList<T, L extends List<T>> extends TableDat
     public boolean canEditList()
     {
         return true;
-    }
-
-    @Override
-    public void actionPerformed(TableCell cell, String actionID)
-    {
-        if (cell.getID() != null)
-        {
-            if (cell.getID().startsWith("add"))
-            {
-                T entry = newEntry(actionID);
-                if (entry != null)
-                {
-                    int addIndex = Integer.valueOf(cell.getID().substring("add".length()));
-                    list.add(addIndex, entry);
-
-                    navigator.pushTable(new GuiTable(tableDelegate, editEntryDataSource(entry)));
-                }
-            }
-            else if (cell.getID().startsWith("entry"))
-            {
-                int index = Integer.valueOf(cell.getID().substring("entry".length()));
-                T entry = list.get(index);
-
-                performEntryAction(actionID, index, entry);
-            }
-        }
     }
 
     public void performEntryAction(String actionID, int index, T t)

@@ -140,7 +140,7 @@ public class TableDataSourceBlockState extends TableDataSourceSegmented implemen
             {
                 TableCellButton button = new TableCellButton(null, null, (property == currentProperty ? TextFormatting.GREEN : "") + ((IProperty) name).getName(property));
                 button.setEnabled(!extended);
-                button.addListener((cell, action) ->
+                button.addAction(() ->
                 {
                     setBlockStateAndNotify(state.withProperty((IProperty) name, (Comparable) property));
                     delegate.reloadData();
@@ -154,7 +154,7 @@ public class TableDataSourceBlockState extends TableDataSourceSegmented implemen
 
         TableCellButton button = new TableCellButton(null, null, TextFormatting.GREEN + ((IProperty) name).getName(currentProperty));
         button.setEnabled(!extended);
-        button.addListener((cell, action) ->
+        button.addAction(() ->
         {
             setBlockStateAndNotify(state.cycleProperty((IProperty) name));
             delegate.reloadData();

@@ -14,7 +14,7 @@ import net.minecraft.init.Blocks;
 /**
  * Created by lukas on 05.06.14.
  */
-public class TableDataSourceSpawnCommandEntry extends TableDataSourceSegmented implements TableCellPropertyListener, TableCellActionListener
+public class TableDataSourceSpawnCommandEntry extends TableDataSourceSegmented
 {
     private WorldScriptCommand.Entry entry;
 
@@ -47,44 +47,28 @@ public class TableDataSourceSpawnCommandEntry extends TableDataSourceSegmented i
                     new TableCellButton("", "spawner", Blocks.MOB_SPAWNER.getLocalizedName()),
                     new TableCellButton("", "entity", IvTranslations.get("reccomplex.spawncommand.preset.entity"))
             );
-            cell.addListener(this);
+            cell.addAction(action -> {
+                if ("spawner".equals(action))
+                    entry.command = "/setblock ~ ~ ~ mob_spawner 0 replace {SpawnData:{id:Zombie}}";
+                else if ("entity".equals(action))
+                    entry.command = "/summon Zombie ~ ~ ~";
+
+                tableDelegate.reloadData();
+            });
             return new TableElementCell(IvTranslations.get("reccomplex.gui.preset"), cell);
         }
         else if (index == 1)
         {
             TableCellString cell = new TableCellString("command", entry.command);
             cell.setMaxStringLength(32767); // Same as GuiCommandBlock.
-            cell.addPropertyListener(this);
+            cell.addPropertyConsumer(val -> entry.command = val);
             return new TableElementCell(IvTranslations.get("reccomplex.gui.command"), cell);
         }
         else if (index == 2)
         {
-            return RCGuiTables.defaultWeightElement(cell -> entry.weight = TableElements.toDouble((Float) cell.getPropertyValue()), entry.weight);
+            return RCGuiTables.defaultWeightElement(val -> entry.weight = TableElements.toDouble(val), entry.weight);
         }
 
         return null;
-    }
-
-    @Override
-    public void valueChanged(TableCellPropertyDefault cell)
-    {
-        if ("command".equals(cell.getID()))
-        {
-            entry.command = (String) cell.getPropertyValue();
-        }
-    }
-
-    @Override
-    public void actionPerformed(TableCell cell, String actionID)
-    {
-        if ("default".equals(cell.getID()))
-        {
-            if ("spawner".equals(actionID))
-                entry.command = "/setblock ~ ~ ~ mob_spawner 0 replace {SpawnData:{id:Zombie}}";
-            else if ("entity".equals(actionID))
-                entry.command = "/summon Zombie ~ ~ ~";
-
-            tableDelegate.reloadData();
-        }
     }
 }

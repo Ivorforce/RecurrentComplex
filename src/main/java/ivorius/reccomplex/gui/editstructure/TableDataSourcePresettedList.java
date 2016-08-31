@@ -17,7 +17,7 @@ import java.util.stream.Collectors;
 /**
  * Created by lukas on 04.06.14.
  */
-public abstract class TableDataSourcePresettedList<T> extends TableDataSourceList<T, List<T>> implements TableCellActionListener
+public abstract class TableDataSourcePresettedList<T> extends TableDataSourceList<T, List<T>>
 {
     public PresettedList<T> presettedList;
 
@@ -80,35 +80,24 @@ public abstract class TableDataSourcePresettedList<T> extends TableDataSourceLis
             if (index == 0)
             {
                 TableCellPresetAction cell = new TableCellPresetAction("preset", IvTranslations.get("reccomplex.gui.apply"), getPresetActions());
-                cell.addListener(this);
+                cell.addAction((actionID) -> {
+                    presettedList.setPreset(actionID);
+                    tableDelegate.reloadData();
+                });
                 return new TableElementCell(IvTranslations.get("reccomplex.gui.presets"), cell);
             }
             else if (index == 1)
             {
                 String title = !presettedList.isCustom() ? IvTranslations.get(getBasePresetKey() + presettedList.getPreset()) : IvTranslations.get("reccomplex.gui.custom");
                 TableCellButton cell = new TableCellButton("customize", "customize", IvTranslations.get("reccomplex.gui.customize"), !presettedList.isCustom());
-                cell.addListener(this);
+                cell.addAction(() -> {
+                    presettedList.setToCustom();
+                    tableDelegate.reloadData();
+                });
                 return new TableElementCell(title, cell);
             }
         }
 
         return super.elementForIndexInSegment(table, index, segment);
-    }
-
-    @Override
-    public void actionPerformed(TableCell cell, String actionID)
-    {
-        if ("preset".equals(cell.getID()))
-        {
-            presettedList.setPreset(actionID);
-            tableDelegate.reloadData();
-        }
-        else if (actionID.equals("customize"))
-        {
-            presettedList.setToCustom();
-            tableDelegate.reloadData();
-        }
-
-        super.actionPerformed(cell, actionID);
     }
 }

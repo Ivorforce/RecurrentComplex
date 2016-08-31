@@ -22,7 +22,7 @@ import java.util.Set;
 /**
  * Created by lukas on 07.10.14.
  */
-public class TableDataSourceNaturalGenerationInfo extends TableDataSourceSegmented implements TableCellPropertyListener
+public class TableDataSourceNaturalGenerationInfo extends TableDataSourceSegmented
 {
     private TableNavigator navigator;
     private TableDelegate tableDelegate;
@@ -98,28 +98,14 @@ public class TableDataSourceNaturalGenerationInfo extends TableDataSourceSegment
         {
             case 1:
             {
-                TableCellEnum cell = new TableCellEnum<>("category", generationInfo.generationCategory, allGenerationCategories());
-                cell.addPropertyListener(this);
+                TableCellEnum<String> cell = new TableCellEnum<>("category", generationInfo.generationCategory, allGenerationCategories());
+                cell.addPropertyConsumer(val -> generationInfo.generationCategory = val);
                 return new TableElementCell(IvTranslations.get("reccomplex.generationInfo.natural.category"), cell);
             }
             case 3:
-                return RCGuiTables.defaultWeightElement(cell -> generationInfo.setGenerationWeight(TableElements.toDouble((Float) cell.getPropertyValue())), generationInfo.getGenerationWeight());
+                return RCGuiTables.defaultWeightElement(val -> generationInfo.setGenerationWeight(TableElements.toDouble(val)), generationInfo.getGenerationWeight());
         }
 
         return super.elementForIndexInSegment(table, index, segment);
-    }
-
-    @Override
-    public void valueChanged(TableCellPropertyDefault cell)
-    {
-        if (cell.getID() != null)
-        {
-            switch (cell.getID())
-            {
-                case "category":
-                    generationInfo.generationCategory = (String) cell.getPropertyValue();
-                    break;
-            }
-        }
     }
 }

@@ -14,7 +14,7 @@ import net.minecraft.util.text.TextFormatting;
 /**
 * Created by lukas on 08.10.14.
 */
-public class TableDataSourceSelectionArea extends TableDataSourceSegmented implements TableCellPropertyListener
+public class TableDataSourceSelectionArea extends TableDataSourceSegmented
 {
     private Selection.Area area;
 
@@ -46,7 +46,7 @@ public class TableDataSourceSelectionArea extends TableDataSourceSegmented imple
             TableCellBoolean cell = new TableCellBoolean("additive", area.isAdditive(),
                     TextFormatting.GREEN + IvTranslations.get("reccomplex.selection.area.additive"),
                     TextFormatting.GOLD + IvTranslations.get("reccomplex.selection.area.subtractive"));
-            cell.addPropertyListener(this);
+            cell.addPropertyConsumer(area::setAdditive);
             return new TableElementCell(cell);
         }
         else if (segment == 1)
@@ -54,28 +54,10 @@ public class TableDataSourceSelectionArea extends TableDataSourceSegmented imple
             String title = IvTranslations.get("reccomplex.selection.area.range." + new String[]{"x", "y", "z"}[index]);
             IntegerRange intRange = new IntegerRange(area.getMinCoord()[index], area.getMaxCoord()[index]);
             TableCellIntegerRange cell = new TableCellIntegerRange("area" + index, intRange, 0, dimensions[index] - 1);
-            cell.addPropertyListener(this);
+            cell.addPropertyConsumer(val -> area.setCoord(index, val.getMin(), val.getMax()));
             return new TableElementCell(title, cell);
         }
 
         return null;
-    }
-
-    @Override
-    public void valueChanged(TableCellPropertyDefault cell)
-    {
-        if (cell.getID() != null)
-        {
-            if (cell.getID().startsWith("area"))
-            {
-                int dim = Integer.valueOf(cell.getID().substring(4));
-                IntegerRange range = (IntegerRange) cell.getPropertyValue();
-                area.setCoord(dim, range.getMin(), range.getMax());
-            }
-            else if ("additive".equals(cell.getID()))
-            {
-                area.setAdditive((Boolean) cell.getPropertyValue());
-            }
-        }
     }
 }

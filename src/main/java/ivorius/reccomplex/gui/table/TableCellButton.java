@@ -62,6 +62,13 @@ public class TableCellButton extends TableCellDefault
         listeners.add(listener);
     }
 
+    public TableCellActionListener addAction(Runnable runnable)
+    {
+        TableCellActionListener listener = (cell, action) -> runnable.run();
+        listeners.add(listener);
+        return listener;
+    }
+
     public void removeListener(TableCellActionListener listener)
     {
         listeners.remove(listener);

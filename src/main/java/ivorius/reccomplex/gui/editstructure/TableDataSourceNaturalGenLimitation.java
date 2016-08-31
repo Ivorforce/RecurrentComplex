@@ -13,7 +13,7 @@ import java.util.Arrays;
 /**
  * Created by lukas on 05.06.14.
  */
-public class TableDataSourceNaturalGenLimitation extends TableDataSourceSegmented implements TableCellPropertyListener
+public class TableDataSourceNaturalGenLimitation extends TableDataSourceSegmented
 {
     private NaturalGenerationInfo.SpawnLimitation limitation;
 
@@ -57,13 +57,16 @@ public class TableDataSourceNaturalGenLimitation extends TableDataSourceSegmente
                 {
 
                     TableCellEnum<NaturalGenerationInfo.SpawnLimitation.Context> cell = new TableCellEnum<>("context", limitation.context, TableCellEnum.options(Arrays.asList(NaturalGenerationInfo.SpawnLimitation.Context.values()), "reccomplex.generationInfo.natural.limitation.context.", false));
-                    cell.addPropertyListener(this);
+                    cell.addPropertyConsumer(val -> {
+                        limitation.context = val;
+                        tableDelegate.reloadData();
+                    });
                     return new TableElementCell("Context", cell);
                 }
                 case 1:
                 {
                     TableCellInteger cell = new TableCellInteger("max", limitation.maxCount, 1, 50);
-                    cell.addPropertyListener(this);
+                    cell.addPropertyConsumer(val -> limitation.maxCount = val);
                     return new TableElementCell("Max Occurrences", cell);
                 }
             }
@@ -71,28 +74,10 @@ public class TableDataSourceNaturalGenLimitation extends TableDataSourceSegmente
 //        else if (segment == 1)
 //        {
 //            TableCellInteger cell = new TableCellInteger("chunks", limitation.chunkCount, 1, 100);
-//            cell.addPropertyListener(this);
+//            cell.addPropertyConsumer(this);
 //            return new TableElementCell("Chunk Range", cell);
 //        }
 
         return super.elementForIndexInSegment(table, index, segment);
-    }
-
-    @Override
-    public void valueChanged(TableCellPropertyDefault cell)
-    {
-        if ("context".equals(cell.getID()))
-        {
-            limitation.context = (NaturalGenerationInfo.SpawnLimitation.Context) cell.getPropertyValue();
-            tableDelegate.reloadData();
-        }
-        else if ("max".equals(cell.getID()))
-        {
-            limitation.maxCount = (int) cell.getPropertyValue();
-        }
-//        else if ("chunks".equals(cell.getID()))
-//        {
-//            limitation.chunkCount = (int) cell.getPropertyValue();
-//        }
     }
 }

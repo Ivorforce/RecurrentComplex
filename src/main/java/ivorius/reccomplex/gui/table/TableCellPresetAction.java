@@ -11,6 +11,7 @@ import net.minecraft.util.math.MathHelper;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.function.Consumer;
 
 /**
  * Created by lukas on 02.06.14.
@@ -45,6 +46,13 @@ public class TableCellPresetAction extends TableCellDefault
     public void addListener(TableCellActionListener listener)
     {
         listeners.add(listener);
+    }
+
+    public TableCellActionListener addAction(Consumer<String> consumer)
+    {
+        TableCellActionListener listener = (cell, action) -> consumer.accept(action);
+        listeners.add(listener);
+        return listener;
     }
 
     public void removeListener(TableCellActionListener listener)

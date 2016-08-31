@@ -8,6 +8,7 @@ package ivorius.reccomplex.gui.table;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.function.Consumer;
 
 /**
  * Created by lukas on 02.06.14.
@@ -22,6 +23,13 @@ public abstract class TableCellPropertyDefault<P> extends TableCellDefault imple
     {
         super(id);
         setPropertyValue(value);
+    }
+
+    public TableCellPropertyListener addPropertyConsumer(Consumer<P> consumer)
+    {
+        TableCellPropertyListener listener = cell -> consumer.accept(property);
+        listeners.add(listener);
+        return listener;
     }
 
     public void addPropertyListener(TableCellPropertyListener listener)

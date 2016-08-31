@@ -42,10 +42,10 @@ public class TableDataSourceTransformer extends TableDataSourceSegmented
             cell.setTooltip(IvTranslations.formatLines("reccomplex.transformer.id.tooltip"));
             cell.setShowsValidityState(true);
             cell.setValidityState(currentIDState());
-            cell.addPropertyListener(cell1 ->
+            cell.addPropertyConsumer(val ->
             {
-                transformer.setID((String) cell1.getPropertyValue());
-                ((TableCellString) cell1).setValidityState(currentIDState());
+                transformer.setID(val);
+                cell.setValidityState(currentIDState());
             });
             return new TableElementCell(IvTranslations.get("reccomplex.transformer.id"), cell);
         }

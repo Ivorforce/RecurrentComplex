@@ -21,7 +21,7 @@ import net.minecraft.util.EnumFacing;
 /**
  * Created by lukas on 07.10.14.
  */
-public class TableDataSourceVanillaStructureGenerationInfo extends TableDataSourceSegmented implements TableCellPropertyListener
+public class TableDataSourceVanillaStructureGenerationInfo extends TableDataSourceSegmented
 {
     private TableNavigator navigator;
     private TableDelegate tableDelegate;
@@ -68,8 +68,7 @@ public class TableDataSourceVanillaStructureGenerationInfo extends TableDataSour
         {
             case 1:
             {
-                TableCellEnum cell = new TableCellEnum<>("type", "village", new TableCellEnum.Option<>("village", IvTranslations.get("reccomplex.generationInfo.vanilla.type.village")));
-                cell.addPropertyListener(this);
+                TableCellEnum<String> cell = new TableCellEnum<>("type", "village", new TableCellEnum.Option<>("village", IvTranslations.get("reccomplex.generationInfo.vanilla.type.village")));
                 return new TableElementCell(IvTranslations.get("reccomplex.generationInfo.vanilla.type"), cell);
             }
             case 2:
@@ -77,11 +76,11 @@ public class TableDataSourceVanillaStructureGenerationInfo extends TableDataSour
                 switch (index)
                 {
                     case 0:
-                        return RCGuiTables.defaultWeightElement(cell -> generationInfo.generationWeight = TableElements.toDouble((Float) cell.getPropertyValue()), generationInfo.generationWeight);
+                        return RCGuiTables.defaultWeightElement(val -> generationInfo.generationWeight = TableElements.toDouble(val), generationInfo.generationWeight);
                     case 1:
                     {
-                        TableCellEnum cell = new TableCellEnum<>("front", generationInfo.front, TableDirections.getDirectionOptions(Directions.HORIZONTAL));
-                        cell.addPropertyListener(this);
+                        TableCellEnum<EnumFacing> cell = new TableCellEnum<>("front", generationInfo.front, TableDirections.getDirectionOptions(Directions.HORIZONTAL));
+                        cell.addPropertyConsumer(val -> generationInfo.front = val);
                         return new TableElementCell(IvTranslations.get("reccomplex.generationInfo.vanilla.front"), cell);
                     }
                 }
@@ -93,14 +92,20 @@ public class TableDataSourceVanillaStructureGenerationInfo extends TableDataSour
                     {
                         TableCellFloatRange cell = new TableCellFloatRange("baseLimit", new FloatRange((float) generationInfo.minBaseLimit, (float) generationInfo.maxBaseLimit), 0, 1000, "%.2f");
                         cell.setScale(Scales.pow(5));
-                        cell.addPropertyListener(this);
+                        cell.addPropertyConsumer(val -> {
+                            generationInfo.minBaseLimit = val.getMin();
+                            generationInfo.maxBaseLimit = val.getMax();
+                        });
                         return new TableElementCell(IvTranslations.get("reccomplex.generationInfo.vanilla.amount.pervillage"), cell);
                     }
                     case 1:
                     {
                         TableCellFloatRange cell = new TableCellFloatRange("scaledLimit", new FloatRange((float) generationInfo.minScaledLimit, (float) generationInfo.maxScaledLimit), 0, 1000, "%.2f");
                         cell.setScale(Scales.pow(5));
-                        cell.addPropertyListener(this);
+                        cell.addPropertyConsumer(val -> {
+                            generationInfo.minScaledLimit = val.getMin();
+                            generationInfo.maxScaledLimit = val.getMax();
+                        });
                         return new TableElementCell(IvTranslations.get("reccomplex.generationInfo.vanilla.amount.scaled"), cell);
                     }
                 }
@@ -108,33 +113,5 @@ public class TableDataSourceVanillaStructureGenerationInfo extends TableDataSour
         }
 
         return super.elementForIndexInSegment(table, index, segment);
-    }
-
-    @Override
-    public void valueChanged(TableCellPropertyDefault cell)
-    {
-        if (cell.getID() != null)
-        {
-            switch (cell.getID())
-            {
-                case "baseLimit":
-                {
-                    FloatRange baseLimit = (FloatRange) cell.getPropertyValue();
-                    generationInfo.minBaseLimit = baseLimit.getMin();
-                    generationInfo.maxBaseLimit = baseLimit.getMax();
-                    break;
-                }
-                case "scaledLimit":
-                {
-                    FloatRange baseLimit = (FloatRange) cell.getPropertyValue();
-                    generationInfo.minScaledLimit = baseLimit.getMin();
-                    generationInfo.maxScaledLimit = baseLimit.getMax();
-                    break;
-                }
-                case "front":
-                    generationInfo.front = (EnumFacing) cell.getPropertyValue();
-                    break;
-            }
-        }
     }
 }

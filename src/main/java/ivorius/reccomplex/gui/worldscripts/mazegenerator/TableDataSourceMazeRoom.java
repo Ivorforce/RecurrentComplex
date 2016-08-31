@@ -58,21 +58,21 @@ public class TableDataSourceMazeRoom extends TableDataSourceSegmented
         if (range != null)
         {
             TableCellInteger cell = new TableCellInteger(null, val, range.min, range.max);
-            cell.addPropertyListener(createListener(cell, index));
+            cell.addPropertyConsumer(createConsumer(index));
             return new TableElementCell(title, cell);
         }
         else
         {
             TableCellStringInt cell = new TableCellStringInt(null, val);
-            cell.addPropertyListener(createListener(cell, index));
+            cell.addPropertyConsumer(createConsumer(index));
             return new TableElementCell(title, cell);
         }
     }
 
     @Nonnull
-    protected TableCellPropertyListener createListener(TableCellProperty<Integer> cell, int idx)
+    protected Consumer<Integer> createConsumer(int idx)
     {
-        return cell1 -> consumer.accept(room = setInDimension(room, idx, (int) cell1.getPropertyValue()));
+        return val -> consumer.accept(room = setInDimension(room, idx, val));
     }
 
     private MazeRoom setInDimension(MazeRoom room, int dimension, int value)

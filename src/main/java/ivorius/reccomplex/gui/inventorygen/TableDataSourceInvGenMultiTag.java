@@ -12,7 +12,7 @@ import ivorius.reccomplex.gui.table.*;
 /**
  * Created by lukas on 17.01.15.
  */
-public class TableDataSourceInvGenMultiTag extends TableDataSourceSegmented implements TableCellPropertyListener
+public class TableDataSourceInvGenMultiTag extends TableDataSourceSegmented
 {
     public IntegerRange itemCount;
 
@@ -41,18 +41,11 @@ public class TableDataSourceInvGenMultiTag extends TableDataSourceSegmented impl
             if (index == 0)
             {
                 TableCellIntegerRange cell = new TableCellIntegerRange("itemCount", itemCount, 0, 64);
-                cell.addPropertyListener(this);
+                cell.addPropertyConsumer(val -> itemCount = val);
                 return new TableElementCell(IvTranslations.get("reccomplex.gui.inventorygen.multi.count"), cell);
             }
         }
 
         return null;
-    }
-
-    @Override
-    public void valueChanged(TableCellPropertyDefault cell)
-    {
-        if ("itemCount".equals(cell.getID()))
-            itemCount = (IntegerRange) cell.getPropertyValue();
     }
 }

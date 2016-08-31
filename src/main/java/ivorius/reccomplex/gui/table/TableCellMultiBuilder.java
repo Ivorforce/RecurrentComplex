@@ -98,7 +98,7 @@ public class TableCellMultiBuilder
         {
             TableCellButton cell = new TableCellButton("action." + i, "action." + i, this.titles.get(i).get());
             int finalI = i;
-            cell.addListener((cell1, action) -> actions.get(finalI).run());
+            cell.addAction(() -> actions.get(finalI).run());
 
             Supplier<List<String>> tooltip = tooltips.get(i);
             if (tooltip != null)

@@ -21,7 +21,7 @@ import java.util.stream.Collectors;
 /**
  * Created by lukas on 21.03.16.
  */
-public class TableDataSourceMazeRuleConnectAll extends TableDataSourceSegmented implements TableCellPropertyListener
+public class TableDataSourceMazeRuleConnectAll extends TableDataSourceSegmented
 {
     private final MazeRuleConnectAll rule;
     private List<SavedMazePathConnection> expected;
@@ -69,7 +69,7 @@ public class TableDataSourceMazeRuleConnectAll extends TableDataSourceSegmented 
             TableCellBoolean preventCell = new TableCellBoolean("prevent", rule.preventConnection,
                     TextFormatting.GOLD + IvTranslations.get("reccomplex.mazerule.connect.prevent"),
                     TextFormatting.GREEN + IvTranslations.get("reccomplex.mazerule.connect.prevent"));
-            preventCell.addPropertyListener(cell -> rule.preventConnection = (boolean) cell.getPropertyValue());
+            preventCell.addPropertyConsumer(val -> rule.preventConnection = val);
             return new TableElementCell(preventCell);
         }
         else if (segment == 2)
@@ -77,7 +77,10 @@ public class TableDataSourceMazeRuleConnectAll extends TableDataSourceSegmented 
             TableCellBoolean cell = new TableCellBoolean("additive", rule.additive,
                     TextFormatting.GREEN + IvTranslations.get("reccomplex.mazerule.connectall.additive"),
                     TextFormatting.GOLD + IvTranslations.get("reccomplex.mazerule.connectall.subtractive"));
-            cell.addPropertyListener(this);
+            cell.addPropertyConsumer(val -> {
+                rule.additive = val;
+                tableDelegate.reloadData();
+            });
             return new TableElementCell(cell);
         }
         else if (segment == 4)
@@ -94,15 +97,5 @@ public class TableDataSourceMazeRuleConnectAll extends TableDataSourceSegmented 
         }
 
         return super.elementForIndexInSegment(table, index, segment);
-    }
-
-    @Override
-    public void valueChanged(TableCellPropertyDefault cell)
-    {
-        if ("additive".equals(cell.getID()))
-        {
-            rule.additive = (Boolean) cell.getPropertyValue();
-            tableDelegate.reloadData();
-        }
     }
 }

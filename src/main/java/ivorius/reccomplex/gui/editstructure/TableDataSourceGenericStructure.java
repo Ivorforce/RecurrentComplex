@@ -134,7 +134,7 @@ public class TableDataSourceGenericStructure extends TableDataSourceSegmented
                 {
                     TableCellString cell = new TableCellString(null, structureKey);
                     cell.setTooltip(IvTranslations.formatLines("reccomplex.structure.id.tooltip"));
-                    cell.addPropertyListener(cell1 -> {
+                    cell.addPropertyConsumer(cell1 -> {
                         structureKey = cell.getPropertyValue();
                         cell.setValidityState(currentNameState());
                         TableElements.reloadExcept(tableDelegate, "structureID");
@@ -149,13 +149,13 @@ public class TableDataSourceGenericStructure extends TableDataSourceSegmented
                         IvTranslations.get("reccomplex.structure.rotatable.true"),
                         IvTranslations.get("reccomplex.structure.rotatable.false"));
                 cellRotatable.setTooltip(IvTranslations.formatLines("reccomplex.structure.rotatable.tooltip"));
-                cellRotatable.addPropertyListener(cell -> structureInfo.rotatable = cellRotatable.getPropertyValue());
+                cellRotatable.addPropertyConsumer(cell -> structureInfo.rotatable = cellRotatable.getPropertyValue());
 
                 TableCellBoolean cellMirrorable = new TableCellBoolean("mirrorable", structureInfo.mirrorable,
                         IvTranslations.format("reccomplex.structure.mirrorable.true"),
                         IvTranslations.format("reccomplex.structure.mirrorable.false"));
                 cellMirrorable.setTooltip(IvTranslations.formatLines("reccomplex.structure.mirrorable.tooltip"));
-                cellMirrorable.addPropertyListener(cell -> structureInfo.mirrorable = cellMirrorable.getPropertyValue());
+                cellMirrorable.addPropertyConsumer(cell -> structureInfo.mirrorable = cellMirrorable.getPropertyValue());
 
                 return new TableElementCell(new TableCellMulti(cellRotatable, cellMirrorable));
             }

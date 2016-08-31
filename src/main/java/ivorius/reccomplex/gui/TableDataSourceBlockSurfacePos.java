@@ -81,23 +81,23 @@ public class TableDataSourceBlockSurfacePos extends TableDataSourceSegmented
         if (range != null)
         {
             TableCellInteger cell = new TableCellInteger(null, val, range.min, range.max);
-            cell.addPropertyListener(createListener(cell, index));
+            cell.addPropertyConsumer(createConsumer(index));
             return new TableElementCell(title, cell);
         }
         else
         {
             TableCellStringInt cell = new TableCellStringInt(null, val);
-            cell.addPropertyListener(createListener(cell, index));
+            cell.addPropertyConsumer(createConsumer(index));
             return new TableElementCell(title, cell);
         }
     }
 
     @Nonnull
-    protected TableCellPropertyListener createListener(TableCellProperty<Integer> cell, int idx)
+    protected Consumer<Integer> createConsumer(int idx)
     {
-        return cell1 -> consumer.accept(coord = new BlockSurfacePos(
-                idx == 0 ? cell.getPropertyValue() : coord.getX(),
-                idx == 1 ? cell.getPropertyValue() : coord.getZ()
+        return val -> consumer.accept(coord = new BlockSurfacePos(
+                idx == 0 ? val : coord.getX(),
+                idx == 1 ? val : coord.getZ()
         ));
     }
 }

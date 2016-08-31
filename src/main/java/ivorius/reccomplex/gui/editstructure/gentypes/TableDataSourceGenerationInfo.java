@@ -42,10 +42,10 @@ public class TableDataSourceGenerationInfo extends TableDataSourceSegmented
             cell.setTooltip(IvTranslations.formatLines("reccomplex.structure.generation.id.tooltip"));
             cell.setShowsValidityState(true);
             cell.setValidityState(currentIDState());
-            cell.addPropertyListener(cell1 ->
+            cell.addPropertyConsumer(val ->
             {
-                genInfo.setID((String) cell1.getPropertyValue());
-                ((TableCellString) cell1).setValidityState(currentIDState());
+                genInfo.setID(val);
+                cell.setValidityState(currentIDState());
             });
             return new TableElementCell(IvTranslations.get("reccomplex.structure.generation.id"), cell);
         }

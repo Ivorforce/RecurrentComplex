@@ -18,7 +18,7 @@ import net.minecraft.nbt.NBTTagCompound;
 /**
  * Created by lukas on 05.06.14.
  */
-public class TableDataSourceWeightedBlockState extends TableDataSourceSegmented implements TableCellPropertyListener
+public class TableDataSourceWeightedBlockState extends TableDataSourceSegmented
 {
     private WeightedBlockState weightedBlockState;
 
@@ -74,27 +74,20 @@ public class TableDataSourceWeightedBlockState extends TableDataSourceSegmented 
     {
         if (segment == 0)
         {
-            return RCGuiTables.defaultWeightElement(cell -> weightedBlockState.weight = TableElements.toDouble((Float) cell.getPropertyValue()), weightedBlockState.weight);
+            return RCGuiTables.defaultWeightElement(val -> weightedBlockState.weight = TableElements.toDouble(val), weightedBlockState.weight);
         }
         else if (segment == 2)
         {
             TableCellString cell = new TableCellString("tileEntityInfo", weightedBlockState.tileEntityInfo);
-            cell.addPropertyListener(this);
+            cell.addPropertyConsumer(val -> {
+                weightedBlockState.tileEntityInfo = val;
+                cell.setValidityState(stateForNBTCompoundJson(weightedBlockState.tileEntityInfo));
+            });
             cell.setShowsValidityState(true);
             cell.setValidityState(stateForNBTCompoundJson(weightedBlockState.tileEntityInfo));
             return new TableElementCell(IvTranslations.get("reccomplex.tileentity.nbt"), cell);
         }
 
         return super.elementForIndexInSegment(table, index, segment);
-    }
-
-    @Override
-    public void valueChanged(TableCellPropertyDefault cell)
-    {
-        if ("tileEntityInfo".equals(cell.getID()))
-        {
-            weightedBlockState.tileEntityInfo = (String) cell.getPropertyValue();
-            ((TableCellString) cell).setValidityState(stateForNBTCompoundJson(weightedBlockState.tileEntityInfo));
-        }
     }
 }

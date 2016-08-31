@@ -12,7 +12,7 @@ import ivorius.ivtoolkit.tools.IvTranslations;
 /**
  * Created by lukas on 26.04.15.
  */
-public class TableDataSourceConnector implements TableDataSource, TableCellPropertyListener
+public class TableDataSourceConnector implements TableDataSource
 {
     public SavedConnector connector;
     public String title;
@@ -33,14 +33,8 @@ public class TableDataSourceConnector implements TableDataSource, TableCellPrope
     public TableElement elementForIndex(GuiTable table, int index)
     {
         TableCellString cell = new TableCellString("connectorID", connector.id);
-        cell.addPropertyListener(this);
+        cell.addPropertyConsumer(val -> connector.id = val);
         cell.setTooltip(IvTranslations.formatLines("reccomplex.maze.connector.tooltip"));
         return new TableElementCell(title, cell);
-    }
-
-    @Override
-    public void valueChanged(TableCellPropertyDefault cell)
-    {
-        connector.id = (String) cell.getPropertyValue();
     }
 }

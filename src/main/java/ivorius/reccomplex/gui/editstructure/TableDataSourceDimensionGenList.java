@@ -13,7 +13,7 @@ import org.apache.commons.lang3.StringUtils;
 /**
  * Created by lukas on 04.06.14.
  */
-public class TableDataSourceDimensionGenList extends TableDataSourcePresettedList<DimensionGenerationInfo> implements TableCellActionListener
+public class TableDataSourceDimensionGenList extends TableDataSourcePresettedList<DimensionGenerationInfo>
 {
     public TableDataSourceDimensionGenList(PresettedList<DimensionGenerationInfo> list, TableDelegate tableDelegate, TableNavigator navigator)
     {

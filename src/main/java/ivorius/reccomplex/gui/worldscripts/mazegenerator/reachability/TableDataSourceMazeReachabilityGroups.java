@@ -19,7 +19,7 @@ import java.util.Set;
 /**
  * Created by lukas on 16.03.16.
  */
-public class TableDataSourceMazeReachabilityGroups extends TableDataSourceSegmented implements TableCellActionListener
+public class TableDataSourceMazeReachabilityGroups extends TableDataSourceSegmented
 {
     private List<Set<SavedMazePath>> groups;
     private Set<SavedMazePath> expected;
@@ -93,7 +93,29 @@ public class TableDataSourceMazeReachabilityGroups extends TableDataSourceSegmen
             TableCellButton[] entryActions = getEntryActions(group, index);
             for (TableCellButton entryAction : entryActions)
             {
-                entryAction.addListener(this);
+                entryAction.addAction(() -> {
+                    SavedMazePath element = getVirtualGroup(group).get(index);
+                    if (group >= 0)
+                        groups.get(group).remove(element);
+
+                    switch (entryAction.actionID)
+                    {
+                        case "earlier":
+                            groups.get(group - 1).add(element);
+                            break;
+                        case "later":
+                            groups.get(group + 1).add(element);
+                            break;
+                        case "new":
+                            groups.add(Sets.newHashSet(element));
+                            break;
+                    }
+
+                    if (group >= 0 && groups.get(group).isEmpty())
+                        groups.remove(group);
+
+                    tableDelegate.reloadData();
+                });
                 entryAction.setId(String.format("entry%d,%d", group, index));
             }
             return new TableElementCell(getDisplayString(t), new TableCellMulti(entryActions));
@@ -137,38 +159,5 @@ public class TableDataSourceMazeReachabilityGroups extends TableDataSourceSegmen
     private String getDisplayString(SavedMazePath path)
     {
         return String.format("%s%s%s %s", TextFormatting.BLUE, path.getEnumFacing(), TextFormatting.RESET, path.getSourceRoom());
-    }
-
-    @Override
-    public void actionPerformed(TableCell cell, String action)
-    {
-        if (cell.getID() != null && cell.getID().startsWith("entry"))
-        {
-            String[] split = cell.getID().substring(5).split(",");
-            int groupIndex = Integer.valueOf(split[0]);
-            int index = Integer.valueOf(split[1]);
-
-            SavedMazePath element = getVirtualGroup(groupIndex).get(index);
-            if (groupIndex >= 0)
-                groups.get(groupIndex).remove(element);
-
-            switch (action)
-            {
-                case "earlier":
-                    groups.get(groupIndex - 1).add(element);
-                    break;
-                case "later":
-                    groups.get(groupIndex + 1).add(element);
-                    break;
-                case "new":
-                    groups.add(Sets.newHashSet(element));
-                    break;
-            }
-
-            if (groupIndex >= 0 && groups.get(groupIndex).isEmpty())
-                groups.remove(groupIndex);
-
-            tableDelegate.reloadData();
-        }
     }
 }

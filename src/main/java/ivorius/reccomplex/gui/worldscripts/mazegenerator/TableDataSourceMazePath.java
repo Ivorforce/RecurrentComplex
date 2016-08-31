@@ -22,7 +22,7 @@ import java.util.stream.Collectors;
 /**
  * Created by lukas on 22.06.14.
  */
-public class TableDataSourceMazePath extends TableDataSourceSegmented implements TableCellPropertyListener, TableCellActionListener
+public class TableDataSourceMazePath extends TableDataSourceSegmented
 {
     private SavedMazePath mazePath;
     private List<IntegerRange> bounds;
@@ -102,14 +102,22 @@ public class TableDataSourceMazePath extends TableDataSourceSegmented implements
         {
             TableCellEnum.Option<EnumFacing>[] optionList = TableDirections.getDirectionOptions(EnumFacing.VALUES);
 
-            TableCellEnum cell = new TableCellEnum<>("side", directionFromPath(mazePath), optionList);
-            cell.addPropertyListener(this);
+            TableCellEnum<EnumFacing> cell = new TableCellEnum<>("side", directionFromPath(mazePath), optionList);
+            cell.addPropertyConsumer(val -> {
+                SavedMazePathConnection path = pathFromDirection(val, mazePath.sourceRoom.getCoordinates());
+                mazePath.pathDimension = path.path.pathDimension;
+                mazePath.pathGoesUp = path.path.pathGoesUp;
+                tableDelegate.reloadData();
+            });
             return new TableElementCell(IvTranslations.get("reccomplex.generationInfo.mazeComponent.path.side"), cell);
         }
         else if (segment == 3)
         {
             invertableButton = new TableCellButton("actions", "inverse", IvTranslations.get("reccomplex.generationInfo.mazeComponent.path.invert"), isInvertable());
-            invertableButton.addListener(this);
+            invertableButton.addAction(() -> {
+                mazePath.set(mazePath.inverse());
+                tableDelegate.reloadData();
+            });
             return new TableElementCell(invertableButton);
         }
 
@@ -119,35 +127,5 @@ public class TableDataSourceMazePath extends TableDataSourceSegmented implements
     protected boolean isInvertable()
     {
         return contains(mazePath.inverse().getSourceRoom().getCoordinates(), bounds);
-    }
-
-    @Override
-    public void valueChanged(TableCellPropertyDefault cell)
-    {
-        if ("side".equals(cell.getID()))
-        {
-            SavedMazePathConnection path = pathFromDirection((EnumFacing) cell.getPropertyValue(), mazePath.sourceRoom.getCoordinates());
-            mazePath.pathDimension = path.path.pathDimension;
-            mazePath.pathGoesUp = path.path.pathGoesUp;
-            tableDelegate.reloadData();
-        }
-        else if (cell.getID() != null)
-        {
-            int index = Integer.valueOf(cell.getID().substring(3));
-            mazePath.sourceRoom = mazePath.sourceRoom.addInDimension(index, (int) cell.getPropertyValue() - mazePath.sourceRoom.getCoordinate(index));
-
-            if (invertableButton != null)
-                invertableButton.setEnabled(isInvertable());
-        }
-    }
-
-    @Override
-    public void actionPerformed(TableCell cell, String action)
-    {
-        if ("inverse".equals(action))
-        {
-            mazePath.set(mazePath.inverse());
-            tableDelegate.reloadData();
-        }
     }
 }

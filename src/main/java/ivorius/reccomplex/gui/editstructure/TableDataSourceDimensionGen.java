@@ -45,7 +45,7 @@ public class TableDataSourceDimensionGen extends TableDataSourceSegmented
     {
         if (segment == 1)
         {
-            return RCGuiTables.defaultWeightElement(cell -> generationInfo.setGenerationWeight(TableElements.toDouble((Float) cell.getPropertyValue())), generationInfo.getGenerationWeight());
+            return RCGuiTables.defaultWeightElement(val -> generationInfo.setGenerationWeight(TableElements.toDouble(val)), generationInfo.getGenerationWeight());
         }
 
         return super.elementForIndexInSegment(table, index, segment);

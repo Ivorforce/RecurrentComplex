@@ -14,7 +14,7 @@ import ivorius.reccomplex.utils.scale.Scales;
 /**
  * Created by lukas on 05.06.14.
  */
-public class TableDataSourceBTNaturalAir extends TableDataSourceSegmented implements TableCellPropertyListener
+public class TableDataSourceBTNaturalAir extends TableDataSourceSegmented
 {
     private TransformerNaturalAir transformer;
 
@@ -59,7 +59,7 @@ public class TableDataSourceBTNaturalAir extends TableDataSourceSegmented implem
                 {
                     TableCellFloat cell = new TableCellFloat("naturalExpansionDistance", TableElements.toFloat(transformer.naturalExpansionDistance), 0, 40);
                     cell.setScale(Scales.pow(5));
-                    cell.addPropertyListener(this);
+                    cell.addPropertyConsumer(val -> transformer.naturalExpansionDistance = TableElements.toDouble(val));
                     cell.setTooltip(IvTranslations.formatLines("reccomplex.transformer.naturalAir.naturalExpansionDistance.tooltip"));
                     return new TableElementCell(IvTranslations.get("reccomplex.transformer.naturalAir.naturalExpansionDistance"), cell);
                 }
@@ -67,7 +67,7 @@ public class TableDataSourceBTNaturalAir extends TableDataSourceSegmented implem
                 {
                     TableCellFloat cell = new TableCellFloat("naturalExpansionRandomization", TableElements.toFloat(transformer.naturalExpansionRandomization), 0, 40);
                     cell.setScale(Scales.pow(5));
-                    cell.addPropertyListener(this);
+                    cell.addPropertyConsumer(val -> transformer.naturalExpansionRandomization = TableElements.toDouble(val));
                     cell.setTooltip(IvTranslations.formatLines("reccomplex.transformer.naturalAir.naturalExpansionRandomization.tooltip"));
                     return new TableElementCell(IvTranslations.get("reccomplex.transformer.naturalAir.naturalExpansionRandomization"), cell);
                 }
@@ -75,22 +75,5 @@ public class TableDataSourceBTNaturalAir extends TableDataSourceSegmented implem
         }
 
         return super.elementForIndexInSegment(table, index, segment);
-    }
-
-    @Override
-    public void valueChanged(TableCellPropertyDefault cell)
-    {
-        if (cell.getID() != null)
-        {
-            switch (cell.getID())
-            {
-                case "naturalExpansionDistance":
-                    transformer.naturalExpansionDistance = TableElements.toDouble((Float) cell.getPropertyValue());
-                    break;
-                case "naturalExpansionRandomization":
-                    transformer.naturalExpansionRandomization = TableElements.toDouble((Float) cell.getPropertyValue());
-                    break;
-            }
-        }
     }
 }

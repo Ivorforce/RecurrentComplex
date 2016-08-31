@@ -11,7 +11,11 @@ import ivorius.reccomplex.structures.registry.MCRegistrySpecial;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.datafix.DataFixer;
+import net.minecraft.util.datafix.DataFixesManager;
+import net.minecraft.util.datafix.FixTypes;
 
+import javax.annotation.Nonnull;
 import java.lang.reflect.Type;
 
 /**
@@ -20,10 +24,12 @@ import java.lang.reflect.Type;
 public class ItemStackSerializer implements JsonSerializer<ItemStack>, JsonDeserializer<ItemStack>
 {
     private MCRegistrySpecial registry;
+    private DataFixer fixer;
 
     public ItemStackSerializer(MCRegistrySpecial registry)
     {
         this.registry = registry;
+        this.fixer = DataFixesManager.createFixer();
     }
 
     @Override
@@ -68,6 +74,19 @@ public class ItemStackSerializer implements JsonSerializer<ItemStack>, JsonDeser
             stack.setTagCompound(compound);
         }
 
+        stack = fixItemStack(stack, id);
+
+        return stack;
+    }
+
+    @Nonnull
+    protected ItemStack fixItemStack(ItemStack stack, String itemID)
+    {
+        NBTTagCompound postCompound = new NBTTagCompound();
+        stack.writeToNBT(postCompound);
+        postCompound.setString("id", itemID); // If the item was unproperly loaded before, here it gets to try again
+        fixer.process(FixTypes.ITEM_INSTANCE, postCompound);
+        stack = ItemStack.loadItemStackFromNBT(postCompound);
         return stack;
     }
 }

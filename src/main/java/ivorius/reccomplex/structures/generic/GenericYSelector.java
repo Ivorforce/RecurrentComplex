@@ -145,7 +145,7 @@ public class GenericYSelector implements YSelector
             IBlockState blockState = world.getBlockState(new BlockPos(x, curY, z));
             BlockPos curBlockPos = new BlockPos(x, curY, z);
 
-            if (RCBlockLogic.isFoliage(blockState, world, curBlockPos))
+            if (!RCBlockLogic.isFoliage(blockState, world, curBlockPos))
                 break;
 
             curY--;

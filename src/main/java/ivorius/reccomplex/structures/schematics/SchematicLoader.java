@@ -16,6 +16,8 @@ import org.apache.commons.io.FilenameUtils;
 import java.io.*;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.List;
+import java.util.stream.Collectors;
 import java.util.zip.GZIPOutputStream;
 
 /**
@@ -81,14 +83,9 @@ public class SchematicLoader
         }
     }
 
-    public static String[] currentSchematicFileNames()
+    public static List<String> currentSchematicFileNames()
     {
-        Collection<File> files = currentSchematicFiles();
-        String[] filenames = new String[files.size()];
-        int i = 0;
-        for (File file : files)
-            filenames[i++] = FilenameUtils.getBaseName(file.getName());
-        return filenames;
+        return currentSchematicFiles().stream().map(file -> FilenameUtils.getBaseName(file.getName())).collect(Collectors.toList());
     }
 
     public static Collection<File> currentSchematicFiles()

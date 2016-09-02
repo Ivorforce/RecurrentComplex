@@ -24,6 +24,7 @@ import net.minecraft.world.World;
 import net.minecraft.world.WorldServer;
 
 import javax.annotation.Nullable;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -72,7 +73,9 @@ public class CommandImportStructure extends CommandBase
         else
             coord = commandSender.getPosition();
 
-        AxisAlignedTransform2D transform = AxisAlignedTransform2D.ORIGINAL;
+        int rotation = args.length >= 5 ? parseInt(args[4]) : 0;
+        boolean mirror = args.length >= 6 && parseBoolean(args[5]);
+        AxisAlignedTransform2D transform = AxisAlignedTransform2D.from(rotation, mirror);
 
         if (structureInfo instanceof GenericStructureInfo)
             OperationRegistry.queueOperation(new OperationGenerateStructure((GenericStructureInfo) structureInfo, transform, coord, true), commandSender);
@@ -86,10 +89,12 @@ public class CommandImportStructure extends CommandBase
         if (args.length == 1)
             return getListOfStringsMatchingLastWord(args, StructureRegistry.INSTANCE.allStructureIDs());
         else if (args.length == 2 || args.length == 3 || args.length == 4)
-        {
             return getListOfStringsMatchingLastWord(args, "~");
-        }
+        else if (args.length == 5)
+            return getListOfStringsMatchingLastWord(args, "0", "1", "2", "3");
+        else if (args.length == 6)
+            return getListOfStringsMatchingLastWord(args, "true", "false");
 
-        return null;
+        return Collections.emptyList();
     }
 }

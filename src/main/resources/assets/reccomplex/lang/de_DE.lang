@@ -60,7 +60,7 @@ commands.strucEdit.usage=/#edit <Strukturname>
 commands.strucGen.usage=/#gen <Strukturname> [x] [z] [Dimension]
 commands.strucGen.noStructure=Keine Struktur mit dem Namen '%s' registriert.
 
-commands.strucImport.usage=/#import <structureName> [x] [y] [z]
+commands.strucImport.usage=/#import <structureName> [x] [y] [z] [Rotationen (im Uhrzeigersinn)] [Spiegeln (an x):true|false]
 commands.strucImport.noStructure=Keine Struktur mit dem Namen '%s' registriert.
 
 commands.selectSet.usage=/#select <both|clear|point1|point2> [x] [y] [z]
@@ -110,7 +110,7 @@ commands.rcconfirm.run=Führt die Operation aus
 commands.rccancel.usage=/#cancel
 commands.rccancel.run=Bricht die Operation ab
 
-commands.strucImportSchematic.usage=/#importschematic <x> <y> <z> <Schematic Name>
+commands.strucImportSchematic.usage=/#importschematic "<Schematic Name>" [x] [y] [z] [Rotationen (im Uhrzeigersinn)] [Spiegeln (an x):true|false]
 commands.strucImportSchematic.missing=Die Datei '%s' in %s konnte nicht gefunden werden
 commands.strucImportSchematic.format=Die Datei '%s' ist in einem ununterstüzten Format (%s)
 

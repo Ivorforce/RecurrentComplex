@@ -6,8 +6,11 @@
 package ivorius.reccomplex.structures.schematics;
 
 import ivorius.ivtoolkit.blocks.BlockArea;
+import ivorius.ivtoolkit.math.AxisAlignedTransform2D;
+import ivorius.ivtoolkit.math.MinecraftTransforms;
 import ivorius.ivtoolkit.tools.IvStreams;
 import ivorius.ivtoolkit.transform.Mover;
+import ivorius.ivtoolkit.transform.PosTransformer;
 import ivorius.reccomplex.utils.BlockStates;
 import ivorius.reccomplex.utils.RCAccessorEntity;
 import net.minecraft.block.Block;
@@ -124,6 +127,14 @@ public class SchematicFile
 
     public void generate(World world, BlockPos pos)
     {
+        generate(world, pos, AxisAlignedTransform2D.ORIGINAL);
+    }
+
+    /**
+     * Mirror is applied first
+     */
+    public void generate(World world, BlockPos pos, AxisAlignedTransform2D transform)
+    {
         Map<BlockPos, TileEntity> tileEntities = new HashMap<>();
         for (NBTTagCompound tileTagCompound : tileEntityCompounds)
         {
@@ -132,17 +143,18 @@ public class SchematicFile
                 tileEntities.put(tileEntity.getPos(), tileEntity);
         }
 
-        BlockArea blockArea = BlockArea.areaFromSize(new BlockPos(0, 0, 0), new int[]{width, height, length});
+        int[] size = {width, height, length};
+        BlockArea blockArea = BlockArea.areaFromSize(new BlockPos(0, 0, 0), size);
         for (int pass = 0; pass < 2; pass++)
         {
             for (BlockPos srcCoord : blockArea)
             {
                 int index = getBlockIndex(srcCoord);
-                IBlockState blockState = blockStates[index];
+                IBlockState blockState = PosTransformer.transformBlockState(blockStates[index], transform);
 
                 if (blockState != null && getPass(blockState) == pass)
                 {
-                    BlockPos worldPos = srcCoord.add(pos);
+                    BlockPos worldPos = transform.apply(srcCoord, size).add(pos);
                     world.setBlockState(worldPos, blockState, 3);
 
                     TileEntity tileEntity = tileEntities.get(srcCoord);
@@ -150,10 +162,13 @@ public class SchematicFile
                     {
                         world.setBlockState(worldPos, blockState, 3); // Second time to ensure state, see BlockFurnace
 
+                        PosTransformer.transformTileEntityPos(tileEntity, transform, size);
                         Mover.setTileEntityPos(tileEntity, worldPos);
                         world.setTileEntity(worldPos, tileEntity);
                         tileEntity.updateContainingBlockInfo();
                     }
+
+                    PosTransformer.transformBlock(world, worldPos, transform);
                 }
             }
         }
@@ -164,6 +179,7 @@ public class SchematicFile
             if (entity != null)
             {
                 RCAccessorEntity.setEntityUniqueID(entity, UUID.randomUUID());
+                PosTransformer.transformEntityPos(entity, transform, size);
                 Mover.moveEntity(entity, pos);
                 world.spawnEntityInWorld(entity);
             }

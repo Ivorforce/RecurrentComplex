@@ -2,6 +2,7 @@ Recurrent Complex
 ============
 
 [![Build Status](https://drone.io/github.com/Ivorforce/RecurrentComplex/status.png)](https://drone.io/github.com/Ivorforce/RecurrentComplex/latest)
+[![Curse Version](http://cf.way2muchnoise.eu/versions/223150_latest.svg)](https://mods.curse.com/mc-mods/minecraft/223150-recurrent-complex)
 [![Curse Downloads](http://cf.way2muchnoise.eu/full_223150_downloads.svg)](https://mods.curse.com/mc-mods/minecraft/223150-recurrent-complex)
 
 Structure mod for Minecraft.

@@ -62,7 +62,7 @@ public class CommandSearchStructure extends CommandBase
         keywords.add(metadata.comment);
         keywords.add(metadata.weblink);
 
-        return keywords.stream().anyMatch(Predicates.contains(Pattern.compile(Strings.join(Lists.transform(query, Pattern::quote), "|")))::apply) ? 1 : 0;
+        return keywords.stream().anyMatch(Predicates.contains(Pattern.compile(Strings.join(Lists.transform(query, Pattern::quote), "|"), Pattern.CASE_INSENSITIVE))::apply) ? 1 : 0;
     }
 
     @Override

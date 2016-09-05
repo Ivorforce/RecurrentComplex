@@ -52,7 +52,7 @@ public class CommandSelectReplace extends CommandSelectModify
             int[] srcMeta = args.length >= 3 ? getMetadatas(args[2]) : new int[]{0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15};
 
             Block dstBlock = getBlockByText(player, args[1]);
-            int[] dstMeta = args.length >= 4 ? getMetadatas(args[1]) : new int[]{0};
+            int[] dstMeta = args.length >= 4 ? getMetadatas(args[3]) : new int[]{0};
             List<IBlockState> dst = IntStream.of(dstMeta).mapToObj(dstBlock::getStateFromMeta).collect(Collectors.toList());
 
             for (BlockPos coord : new BlockArea(point1, point2))

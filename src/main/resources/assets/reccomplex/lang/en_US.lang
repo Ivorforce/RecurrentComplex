@@ -153,6 +153,7 @@ commands.rclist.previous=Previous Page
 commands.rclist.next=Next Page
 
 commands.rcsearch.usage=/#search
+commands.rcsearch.empty=No results!
 commands.rcsearch.lookup=Look Up
 
 commands.rcfiles.usage=/#files

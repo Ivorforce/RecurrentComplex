@@ -45,7 +45,7 @@ public class CommandSearchStructure extends CommandBase
         comp.getStyle().setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND,
                 String.format("/%s %s", RCCommands.lookup.getCommandName(), strucID)));
         comp.getStyle().setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT,
-                ServerTranslations.format("commands.rcsearch.lookup")));
+                ServerTranslations.get("commands.rcsearch.lookup")));
         comp.getStyle().setColor(TextFormatting.BLUE);
         return comp;
     }
@@ -96,17 +96,24 @@ public class CommandSearchStructure extends CommandBase
             });
             strucs.addAll(StructureRegistry.INSTANCE.allStructureIDs().stream().filter(s -> searchRank(query, s, StructureRegistry.INSTANCE.getStructure(s)) > 0).collect(Collectors.toList()));
 
-            boolean cut = strucs.size() > MAX_RESULTS;
-            TextComponentString[] components = new TextComponentString[cut ? MAX_RESULTS : strucs.size()];
-            for (int i = 0; i < components.length; i++)
+            if (strucs.size() > 0)
             {
-                if (cut && i == components.length - 1)
-                    components[i] = new TextComponentString("... (" + strucs.size() + ")");
-                else
-                    components[i] = createStructureTextComponent(strucs.remove());
-            }
+                boolean cut = strucs.size() > MAX_RESULTS;
+                TextComponentString[] components = new TextComponentString[cut ? MAX_RESULTS : strucs.size()];
+                for (int i = 0; i < components.length; i++)
+                {
+                    if (cut && i == components.length - 1)
+                        components[i] = new TextComponentString("... (" + strucs.size() + ")");
+                    else
+                        components[i] = createStructureTextComponent(strucs.remove());
+                }
 
-            commandSender.addChatMessage(new TextComponentTranslation(StringUtils.repeat("%s", ", ", components.length), (Object[]) components));
+                commandSender.addChatMessage(new TextComponentTranslation(StringUtils.repeat("%s", ", ", components.length), (Object[]) components));
+            }
+            else
+            {
+                commandSender.addChatMessage(ServerTranslations.get("commands.rcsearch.empty"));
+            }
         }
         else
         {

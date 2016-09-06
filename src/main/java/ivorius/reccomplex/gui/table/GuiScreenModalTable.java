@@ -45,8 +45,10 @@ public class GuiScreenModalTable extends GuiScreen implements TableDelegate, Tab
 //        super.mouseClicked(x, y, button);
         if (button == 0) // Simulated from private GuiScreen behavior
         {
+            ////////
+            // Copy to avoid concurrent modifications, in case the click redraws the table
             List<GuiButton> buttonListCopy = Lists.newArrayList(buttonList);
-
+            ////////
             for (int l = 0; l < buttonListCopy.size(); ++l)
             {
                 GuiButton guibutton = (GuiButton) buttonListCopy.get(l);

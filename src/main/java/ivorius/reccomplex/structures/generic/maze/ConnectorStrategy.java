@@ -20,6 +20,6 @@ public class ConnectorStrategy implements ConnectionStrategy<Connector>
 
     public float connect(@Nonnull MazePassage connection, Connector a, Connector b)
     {
-        return (a != null && a.accepts(b)) || (b != null && b.accepts(null)) ? 1 : -1;
+        return (a != null ? a.accepts(b) : (b == null || b.accepts(null))) ? 1 : -1;
     }
 }

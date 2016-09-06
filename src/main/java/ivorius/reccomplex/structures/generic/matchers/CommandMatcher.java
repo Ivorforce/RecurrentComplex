@@ -22,7 +22,7 @@ public class CommandMatcher extends PrefixedTypeExpressionCache<Boolean>
 
     public CommandMatcher(String expression)
     {
-        super(RCBoolAlgebra.algebra(), true, TextFormatting.GREEN + "Any Resource", expression);
+        super(RCBoolAlgebra.algebra(), true, TextFormatting.GREEN + "Any Command", expression);
         addType(new NameType(NAME_PREFIX));
         addType(new PermType(PERM_PREFIX));
     }

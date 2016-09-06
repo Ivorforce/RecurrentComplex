@@ -147,6 +147,7 @@ public class WorldScriptCommand implements WorldScript<NBTNone>
                         return context.world.getMinecraftServer();
                     }
                 };
+                logic.setCommand(entry.command);
 
                 try
                 {

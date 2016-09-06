@@ -59,15 +59,14 @@ public class TransformerWorldScript extends TransformerSingleBlock<TransformerWo
     @Override
     public void transformBlock(InstanceData instanceData, Phase phase, StructureSpawnContext context, BlockPos coord, IBlockState sourceState)
     {
-        script.generate(context, instanceData.scriptInstanceData, coord);
+        WorldScriptMulti.InstanceData scriptInstanceData = script.prepareInstanceData(new StructurePrepareContext(context.random, context.transform, context.boundingBox, context.generateAsSource), coord);
+        script.generate(context, scriptInstanceData, coord);
     }
 
     @Override
     public InstanceData prepareInstanceData(StructurePrepareContext context)
     {
-        InstanceData instanceData = new InstanceData();
-        instanceData.scriptInstanceData = script.prepareInstanceData(context);
-        return instanceData;
+        return new InstanceData();
     }
 
     @Override
@@ -98,22 +97,15 @@ public class TransformerWorldScript extends TransformerSingleBlock<TransformerWo
 
     public static class InstanceData implements NBTStorable
     {
-        public static final String SCRIPT_KEY = "script";
-
-        public WorldScriptMulti.InstanceData scriptInstanceData;
-
         @Override
         public NBTBase writeToNBT()
         {
             NBTTagCompound compound = new NBTTagCompound();
-            compound.setTag(SCRIPT_KEY, scriptInstanceData.writeToNBT());
             return compound;
         }
 
         public void readFromNBT(TransformerWorldScript transformer, StructureLoadContext context, NBTBase nbt)
         {
-            NBTTagCompound compound = nbt instanceof NBTTagCompound ? (NBTTagCompound) nbt : new NBTTagCompound();
-            scriptInstanceData = transformer.script.loadInstanceData(context, compound.getTag(SCRIPT_KEY));
         }
     }
 

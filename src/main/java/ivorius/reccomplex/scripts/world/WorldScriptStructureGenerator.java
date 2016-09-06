@@ -171,7 +171,7 @@ public class WorldScriptStructureGenerator implements WorldScript<WorldScriptStr
     }
 
     @Override
-    public InstanceData prepareInstanceData(StructurePrepareContext context)
+    public InstanceData prepareInstanceData(StructurePrepareContext context, BlockPos pos)
     {
         WorldScriptStructureGenerator.InstanceData instanceData = null;
         Random random = context.random;
@@ -192,7 +192,7 @@ public class WorldScriptStructureGenerator implements WorldScript<WorldScriptStr
 
                     int[] strucSize = structureInfo.structureBoundingBox();
                     BlockPos strucCoord = transform.apply(structureShift, new int[]{1, 1, 1})
-                            .subtract(transform.apply(new BlockPos(0, 0, 0), strucSize));
+                            .subtract(transform.apply(new BlockPos(0, 0, 0), strucSize)).add(pos);
 
                     instanceData = new WorldScriptStructureGenerator.InstanceData(structureID, strucCoord, strucTransform, structureInfo.prepareInstanceData(new StructurePrepareContext(random, strucTransform, StructureInfos.structureBoundingBox(strucCoord, strucSize), context.generateAsSource)));
                 }
@@ -228,7 +228,7 @@ public class WorldScriptStructureGenerator implements WorldScript<WorldScriptStr
 
                 int[] strucSize = structureInfo.structureBoundingBox();
                 BlockPos strucCoord = transform.apply(structureShift.add(generationInfo.shift), new int[]{1, 1, 1})
-                        .subtract(transform.apply(new BlockPos(0, 0, 0), strucSize));
+                        .subtract(transform.apply(new BlockPos(0, 0, 0), strucSize)).add(pos);
 
                 instanceData = new WorldScriptStructureGenerator.InstanceData(structureID, strucCoord, strucTransform, structureInfo.prepareInstanceData(new StructurePrepareContext(random, strucTransform, StructureInfos.structureBoundingBox(strucCoord, strucSize), context.generateAsSource)));
             }
@@ -246,7 +246,7 @@ public class WorldScriptStructureGenerator implements WorldScript<WorldScriptStr
 
         StructureInfo structureInfo = StructureRegistry.INSTANCE.getStructure(instanceData.structureID);
         if (structureInfo != null && instanceData.structureData != null)
-            StructureGenerator.partially(structureInfo, world, random, instanceData.lowerCoord.add(coord), instanceData.structureTransform, context.generationBB, layer + 1, instanceData.structureID, instanceData.structureData, context.isFirstTime);
+            StructureGenerator.partially(structureInfo, world, random, instanceData.lowerCoord, instanceData.structureTransform, context.generationBB, layer + 1, instanceData.structureID, instanceData.structureData, context.isFirstTime);
     }
 
     @Override

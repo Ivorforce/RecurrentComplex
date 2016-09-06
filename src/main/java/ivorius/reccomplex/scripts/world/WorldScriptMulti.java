@@ -33,12 +33,12 @@ public class WorldScriptMulti implements WorldScript<WorldScriptMulti.InstanceDa
     public final List<WorldScript> scripts = new ArrayList<>();
 
     @Override
-    public InstanceData prepareInstanceData(StructurePrepareContext context)
+    public InstanceData prepareInstanceData(StructurePrepareContext context, BlockPos pos)
     {
         InstanceData instanceData = new InstanceData();
 
         for (WorldScript script : scripts)
-            instanceData.addInstanceData(script.prepareInstanceData(context), WorldScriptRegistry.INSTANCE.type(script.getClass()));
+            instanceData.addInstanceData(script.prepareInstanceData(context, pos), WorldScriptRegistry.INSTANCE.type(script.getClass()));
 
         return instanceData;
     }

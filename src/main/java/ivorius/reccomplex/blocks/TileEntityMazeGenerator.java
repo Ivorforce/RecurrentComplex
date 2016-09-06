@@ -41,7 +41,7 @@ public class TileEntityMazeGenerator extends TileEntity implements GeneratingTil
     @Override
     public WorldScriptMazeGenerator.InstanceData prepareInstanceData(StructurePrepareContext context)
     {
-        return script.prepareInstanceData(context);
+        return script.prepareInstanceData(context, getPos());
     }
 
     @Override

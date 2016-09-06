@@ -28,7 +28,7 @@ import java.util.stream.Stream;
  */
 public class WorldGenMaze
 {
-    public static boolean generatePlacedStructures(BlockPos shift, List<PlacedStructure> placedStructures, StructureSpawnContext context)
+    public static boolean generatePlacedStructures(List<PlacedStructure> placedStructures, StructureSpawnContext context)
     {
         for (PlacedStructure placedComponent : placedStructures)
         {
@@ -38,12 +38,10 @@ public class WorldGenMaze
             {
                 AxisAlignedTransform2D componentTransform = placedComponent.transform;
 
-                BlockPos coord = placedComponent.lowerCoord.add(shift);
-
-                StructureGenerator.partially(structureInfo, context.world, context.random, coord, componentTransform, context.generationBB, context.generationLayer + 1, placedComponent.structureID, placedComponent.instanceData, context.isFirstTime);
+                StructureGenerator.partially(structureInfo, context.world, context.random, placedComponent.lowerCoord, componentTransform, context.generationBB, context.generationLayer + 1, placedComponent.structureID, placedComponent.instanceData, context.isFirstTime);
 
                 if (context.isFirstTime)
-                    StructureGenerationData.get(context.world).addCompleteEntry(placedComponent.structureID, coord, componentTransform);
+                    StructureGenerationData.get(context.world).addCompleteEntry(placedComponent.structureID, placedComponent.lowerCoord, componentTransform);
             }
             else
             {

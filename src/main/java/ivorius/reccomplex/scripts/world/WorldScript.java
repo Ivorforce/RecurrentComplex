@@ -21,7 +21,7 @@ import net.minecraft.nbt.NBTBase;
  */
 public interface WorldScript<S extends NBTStorable> extends NBTCompoundObject
 {
-    S prepareInstanceData(StructurePrepareContext context);
+    S prepareInstanceData(StructurePrepareContext context, BlockPos pos);
 
     S loadInstanceData(StructureLoadContext context, NBTBase nbt);
 

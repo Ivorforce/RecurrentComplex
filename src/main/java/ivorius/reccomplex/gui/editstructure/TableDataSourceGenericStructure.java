@@ -50,7 +50,7 @@ public class TableDataSourceGenericStructure extends TableDataSourceSegmented
                 ).buildDataSource(IvTranslations.get("reccomplex.structure.generation")));
         addManagedSection(6, TableCellMultiBuilder.create(navigator, delegate)
                 .addNavigation(() -> IvTranslations.get("reccomplex.gui.edit"), () -> IvTranslations.getLines("reccomplex.structure.transformers.tooltip"),
-                        () -> new GuiTable(delegate, new TableDataSourceTransformerList(structureInfo.transformers, delegate, navigator))
+                        () -> new GuiTable(delegate, structureInfo.transformer.tableDataSource(navigator, delegate))
                 ).buildDataSource(IvTranslations.get("reccomplex.structure.transformers")));
     }
 

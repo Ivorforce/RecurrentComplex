@@ -56,7 +56,7 @@ public class GenericStructureInfo implements StructureInfo<GenericStructureInfo.
     public static final int MAX_GENERATING_LAYERS = 30;
 
     public final List<StructureGenerationInfo> generationInfos = new ArrayList<>();
-    public final List<Transformer> transformers = new ArrayList<>();
+    public TransformerMulti transformer = new TransformerMulti();
     public final DependencyMatcher dependencies = new DependencyMatcher("");
 
     public NBTTagCompound worldDataCompound;
@@ -74,10 +74,12 @@ public class GenericStructureInfo implements StructureInfo<GenericStructureInfo.
         genericStructureInfo.rotatable = true;
         genericStructureInfo.mirrorable = true;
 
-        genericStructureInfo.transformers.add(new TransformerNaturalAir(Transformer.randomID(TransformerNaturalAir.class), BlockMatcher.of(RecurrentComplex.specialRegistry, RCBlocks.genericSpace, 1), TransformerNaturalAir.DEFAULT_NATURAL_EXPANSION_DISTANCE, TransformerNaturalAir.DEFAULT_NATURAL_EXPANSION_RANDOMIZATION));
-        genericStructureInfo.transformers.add(new TransformerNegativeSpace(Transformer.randomID(TransformerNegativeSpace.class), BlockMatcher.of(RecurrentComplex.specialRegistry, RCBlocks.genericSpace, 0)));
-        genericStructureInfo.transformers.add(new TransformerNatural(Transformer.randomID(TransformerNatural.class), BlockMatcher.of(RecurrentComplex.specialRegistry, RCBlocks.genericSolid, 0), TransformerNatural.DEFAULT_NATURAL_EXPANSION_DISTANCE, TransformerNatural.DEFAULT_NATURAL_EXPANSION_RANDOMIZATION));
-        genericStructureInfo.transformers.add(new TransformerReplace(Transformer.randomID(TransformerReplace.class), BlockMatcher.of(RecurrentComplex.specialRegistry, RCBlocks.genericSolid, 1)).replaceWith(new WeightedBlockState(null, Blocks.AIR.getDefaultState(), "")));
+        Collections.addAll(genericStructureInfo.transformer.getTransformers(),
+                new TransformerNaturalAir(Transformer.randomID(TransformerNaturalAir.class), BlockMatcher.of(RecurrentComplex.specialRegistry, RCBlocks.genericSpace, 1), TransformerNaturalAir.DEFAULT_NATURAL_EXPANSION_DISTANCE, TransformerNaturalAir.DEFAULT_NATURAL_EXPANSION_RANDOMIZATION),
+                new TransformerNegativeSpace(Transformer.randomID(TransformerNegativeSpace.class), BlockMatcher.of(RecurrentComplex.specialRegistry, RCBlocks.genericSpace, 0)),
+                new TransformerNatural(Transformer.randomID(TransformerNatural.class), BlockMatcher.of(RecurrentComplex.specialRegistry, RCBlocks.genericSolid, 0), TransformerNatural.DEFAULT_NATURAL_EXPANSION_DISTANCE, TransformerNatural.DEFAULT_NATURAL_EXPANSION_RANDOMIZATION),
+                new TransformerReplace(Transformer.randomID(TransformerReplace.class), BlockMatcher.of(RecurrentComplex.specialRegistry, RCBlocks.genericSolid, 1)).replaceWith(new WeightedBlockState(null, Blocks.AIR.getDefaultState(), ""))
+        );
 
         genericStructureInfo.generationInfos.add(new NaturalGenerationInfo());
 
@@ -145,22 +147,10 @@ public class GenericStructureInfo implements StructureInfo<GenericStructureInfo.
             tileEntityCompounds.put(key, tileEntityCompound);
         }
 
-        List<Pair<Transformer, NBTStorable>> transformers = new ArrayList<>();
-        for (int index = 0; index < this.transformers.size(); index++)
-        {
-            Transformer transformer = this.transformers.get(index);
-            transformers.add(Pair.of(transformer, instanceData.findTransformerData(transformer, index)));
-        }
-
         if (!context.generateAsSource)
         {
-            for (Pair<Transformer, NBTStorable> pair : transformers)
-            {
-                Transformer transformer = pair.getLeft();
-                NBTStorable transformerData = pair.getRight();
-                if (transformer.generatesInPhase(transformerData, Transformer.Phase.BEFORE))
-                    transformer.transform(transformerData, Transformer.Phase.BEFORE, context, worldData, transformers);
-            }
+            if (transformer.generatesInPhase(instanceData.transformerData, Transformer.Phase.BEFORE))
+                transformer.transform(instanceData.transformerData, Transformer.Phase.BEFORE, context, worldData, transformer.getTransformers());
         }
 
         for (int pass = 0; pass < 2; pass++)
@@ -171,7 +161,7 @@ public class GenericStructureInfo implements StructureInfo<GenericStructureInfo.
 
                 BlockPos worldPos = context.transform.apply(sourceCoord, areaSize).add(origin);
                 if (context.includes(worldPos) && RecurrentComplex.specialRegistry.isSafe(state.getBlock())
-                        && pass == getPass(state) && (context.generateAsSource || !TransformerMulti.skips(transformers, state)))
+                        && pass == getPass(state) && (context.generateAsSource || !transformer.skipGeneration(instanceData.transformerData, state)))
                 {
                     TileEntity origTileEntity = origTileEntities.get(sourceCoord);
 
@@ -209,13 +199,8 @@ public class GenericStructureInfo implements StructureInfo<GenericStructureInfo.
 
         if (!context.generateAsSource)
         {
-            for (Pair<Transformer, NBTStorable> pair : transformers)
-            {
-                Transformer transformer = pair.getLeft();
-                NBTStorable transformerData = pair.getRight();
-                if (transformer.generatesInPhase(transformerData, Transformer.Phase.AFTER))
-                    transformer.transform(transformerData, Transformer.Phase.AFTER, context, worldData, transformers);
-            }
+            if (transformer.generatesInPhase(instanceData.transformerData, Transformer.Phase.AFTER))
+                transformer.transform(instanceData.transformerData, Transformer.Phase.AFTER, context, worldData, transformer.getTransformers());
         }
 
         for (NBTTagCompound entityCompound : worldData.entities)
@@ -270,7 +255,7 @@ public class GenericStructureInfo implements StructureInfo<GenericStructureInfo.
             int[] areaSize = new int[]{blockCollection.width, blockCollection.height, blockCollection.length};
             BlockPos origin = context.lowerCoord();
 
-            transformers.forEach(transformer -> instanceData.transformers.put(transformer.id(), transformer.prepareInstanceData(context)));
+            instanceData.transformerData = transformer.prepareInstanceData(context);
 
             worldData.tileEntities.forEach(teCompound ->
             {
@@ -291,7 +276,7 @@ public class GenericStructureInfo implements StructureInfo<GenericStructureInfo.
     public InstanceData loadInstanceData(StructureLoadContext context, final NBTBase nbt)
     {
         InstanceData instanceData = new InstanceData();
-        instanceData.readFromNBT(context, nbt, transformers, constructWorldData());
+        instanceData.readFromNBT(context, nbt, transformer, constructWorldData());
         return instanceData;
     }
 
@@ -382,10 +367,12 @@ public class GenericStructureInfo implements StructureInfo<GenericStructureInfo.
                     structureInfo.generationInfos.add(MazeGenerationInfo.getGson().fromJson(jsonObject.get("mazeGenerationInfo"), MazeGenerationInfo.class));
             }
 
-            if (jsonObject.has("transformers"))
-                Collections.addAll(structureInfo.transformers, context.<Transformer[]>deserialize(jsonObject.get("transformers"), Transformer[].class));
-            if (jsonObject.has("blockTransformers")) // Legacy
-                Collections.addAll(structureInfo.transformers, context.<Transformer[]>deserialize(jsonObject.get("blockTransformers"), Transformer[].class));
+            if (jsonObject.has("transformer"))
+                structureInfo.transformer = context.deserialize(jsonObject.get("transformer"), TransformerMulti.class);
+            else if (jsonObject.has("transformers")) // Legacy
+                Collections.addAll(structureInfo.transformer.getTransformers(), context.<Transformer[]>deserialize(jsonObject.get("transformers"), Transformer[].class));
+            else if (jsonObject.has("blockTransformers")) // Legacy
+                Collections.addAll(structureInfo.transformer.getTransformers(), context.<Transformer[]>deserialize(jsonObject.get("blockTransformers"), Transformer[].class));
 
             structureInfo.rotatable = JsonUtils.getJsonObjectBooleanFieldValueOrDefault(jsonObject, "rotatable", false);
             structureInfo.mirrorable = JsonUtils.getJsonObjectBooleanFieldValueOrDefault(jsonObject, "mirrorable", false);
@@ -416,7 +403,7 @@ public class GenericStructureInfo implements StructureInfo<GenericStructureInfo.
             jsonObject.addProperty("version", LATEST_VERSION);
 
             jsonObject.add("generationInfos", context.serialize(structureInfo.generationInfos));
-            jsonObject.add("transformers", context.serialize(structureInfo.transformers));
+            jsonObject.add("transformer", context.serialize(structureInfo.transformer));
 
             jsonObject.addProperty("rotatable", structureInfo.rotatable);
             jsonObject.addProperty("mirrorable", structureInfo.mirrorable);
@@ -440,11 +427,10 @@ public class GenericStructureInfo implements StructureInfo<GenericStructureInfo.
 
     public static class InstanceData implements NBTStorable
     {
-        public static final String KEY_TRANSFORMERS = "transformers";
+        public static final String KEY_TRANSFORMER = "transformer";
         public static final String KEY_TILE_ENTITIES = "tileEntities";
 
-        public final Map<String, NBTStorable> transformers = new HashMap<>();
-        public final TIntObjectMap<NBTStorable> transformerIndices = new TIntObjectHashMap<>(); // Legacy
+        public TransformerMulti.InstanceData transformerData;
         public final Map<BlockPos, NBTStorable> tileEntities = new HashMap<>();
 
         protected static NBTBase getTileEntityTag(NBTTagCompound tileEntityCompound, BlockPos coord)
@@ -457,26 +443,12 @@ public class GenericStructureInfo implements StructureInfo<GenericStructureInfo.
             return String.format("%d,%d,%d", coord.getX(), coord.getY(), coord.getZ());
         }
 
-        public void readFromNBT(StructureLoadContext context, NBTBase nbt, List<Transformer> transformers, IvWorldData worldData)
+        public void readFromNBT(StructureLoadContext context, NBTBase nbt, TransformerMulti transformer, IvWorldData worldData)
         {
             IvBlockCollection blockCollection = worldData.blockCollection;
             NBTTagCompound compound = nbt instanceof NBTTagCompound ? (NBTTagCompound) nbt : new NBTTagCompound();
 
-            List<NBTTagCompound> transformerCompounds = NBTTagLists.compoundsFrom(compound, KEY_TRANSFORMERS);
-            for (int i = 0; i < transformerCompounds.size(); i++)
-            {
-                NBTTagCompound transformerCompound = transformerCompounds.get(i);
-                String transformerID = transformerCompound.getString("id");
-
-                Transformer transformer = findTransformer(transformers, i, transformerID);
-
-                if (transformer != null)
-                {
-                    NBTStorable instanceData = transformer.loadInstanceData(context, transformerCompound.getTag("data"));
-                    this.transformers.put(transformerID, instanceData);
-                    transformerIndices.put(i, instanceData);
-                }
-            }
+            transformer.loadInstanceData(context, compound.getTag(KEY_TRANSFORMER));
 
             int[] areaSize = new int[]{blockCollection.width, blockCollection.height, blockCollection.length};
             BlockPos origin = context.lowerCoord();
@@ -490,32 +462,12 @@ public class GenericStructureInfo implements StructureInfo<GenericStructureInfo.
             });
         }
 
-        public static Transformer findTransformer(List<Transformer> transformers, int i, String transformerID)
-        {
-            return transformers.stream().filter(tr -> tr.id().equals(transformerID)).findAny()
-                    .orElse(transformers.size() > i ? transformers.get(i) : null);
-        }
-
-        protected NBTStorable findTransformerData(Transformer transformer, int index)
-        {
-            return transformers.entrySet().stream().filter(pair -> transformer.id().equals(pair.getKey()))
-                    .map(Map.Entry::getValue)
-                    .findAny().orElse(transformers.size() > index ? this.transformerIndices.get(index) : null); // Legacy - if no ID was saved, use the one in line if any.
-        }
-
         @Override
         public NBTBase writeToNBT()
         {
             NBTTagCompound compound = new NBTTagCompound();
 
-            NBTTagList transformerDatas = new NBTTagList();
-            transformers.forEach((id, transformerData) -> {
-                NBTTagCompound transformerCompound = new NBTTagCompound();
-                transformerCompound.setTag("data", transformerData.writeToNBT());
-                transformerCompound.setString("id", id);
-                transformerDatas.appendTag(transformerCompound);
-            });
-            compound.setTag(KEY_TRANSFORMERS, transformerDatas);
+            compound.setTag(KEY_TRANSFORMER, transformerData.writeToNBT());
 
             NBTTagCompound tileEntityCompound = new NBTTagCompound();
             for (Map.Entry<BlockPos, NBTStorable> entry : tileEntities.entrySet())

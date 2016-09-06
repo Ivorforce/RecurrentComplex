@@ -52,6 +52,11 @@ public class TransformerMulti extends Transformer<TransformerMulti.InstanceData>
         return transformers.stream().anyMatch(input -> input.getLeft().skipGeneration(input.getRight(), state));
     }
 
+    public List<Transformer> getTransformers()
+    {
+        return transformers;
+    }
+
     @Override
     public String getDisplayString()
     {

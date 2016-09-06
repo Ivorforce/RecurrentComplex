@@ -5,18 +5,21 @@
 
 package ivorius.reccomplex.worldgen.villages;
 
-import net.minecraft.util.math.BlockPos;
 import ivorius.ivtoolkit.math.AxisAlignedTransform2D;
-import ivorius.reccomplex.structures.*;
+import ivorius.reccomplex.structures.StructureInfo;
+import ivorius.reccomplex.structures.StructureLoadContext;
+import ivorius.reccomplex.structures.StructurePrepareContext;
+import ivorius.reccomplex.structures.StructureRegistry;
 import ivorius.reccomplex.structures.generic.gentypes.StructureGenerationInfo;
 import ivorius.reccomplex.structures.generic.gentypes.VanillaStructureGenerationInfo;
-import ivorius.ivtoolkit.blocks.Directions;
 import ivorius.reccomplex.utils.NBTStorable;
+import ivorius.reccomplex.utils.RCDirections;
 import ivorius.reccomplex.worldgen.StructureGenerationData;
 import ivorius.reccomplex.worldgen.StructureGenerator;
 import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldServer;
 import net.minecraft.world.gen.structure.StructureBoundingBox;
@@ -47,6 +50,34 @@ public class GenericVillagePiece extends StructureVillagePieces.Village
         super(start, generationDepth);
     }
 
+    public static AxisAlignedTransform2D getTransform(VanillaStructureGenerationInfo vanillaGenInfo, EnumFacing front, boolean mirrorX)
+    {
+        return AxisAlignedTransform2D.from(getRotations(vanillaGenInfo, front, mirrorX), mirrorX);
+    }
+
+    public static int getRotations(VanillaStructureGenerationInfo vanillaGenInfo, EnumFacing front, boolean mirrorX)
+    {
+        Integer rotations = RCDirections.getHorizontalClockwiseRotations(vanillaGenInfo.front, front, mirrorX);
+        return rotations == null ? 0 : rotations;
+    }
+
+    @Nullable
+    public static GenericVillagePiece create(String structureID, String generationID)
+    {
+        return VanillaGenerationClassFactory.instance().create(structureID, generationID);
+    }
+
+    @Nullable
+    public static GenericVillagePiece create(String structureID, String generationID, StructureVillagePieces.Start start, int generationDepth)
+    {
+        return VanillaGenerationClassFactory.instance().create(structureID, generationID, start, generationDepth);
+    }
+
+    public static boolean canVillageGoDeeperC(StructureBoundingBox box)
+    {
+        return canVillageGoDeeper(box);
+    }
+
     public void setIds(String structureID, String generationID)
     {
         this.structureID = structureID;
@@ -70,39 +101,11 @@ public class GenericVillagePiece extends StructureVillagePieces.Village
             if (generationInfo instanceof VanillaStructureGenerationInfo)
             {
                 VanillaStructureGenerationInfo vanillaGenInfo = (VanillaStructureGenerationInfo) generationInfo;
-                AxisAlignedTransform2D transform = getTransform(vanillaGenInfo, getCoordBaseMode(), mirrorX);
+                AxisAlignedTransform2D transform = getTransform(vanillaGenInfo, getCoordBaseMode().getOpposite(), mirrorX);
 
                 instanceData = structureInfo.prepareInstanceData(new StructurePrepareContext(random, transform, boundingBox, false)).writeToNBT();
             }
         }
-    }
-
-    public static AxisAlignedTransform2D getTransform(VanillaStructureGenerationInfo vanillaGenInfo, EnumFacing front, boolean mirrorX)
-    {
-        return AxisAlignedTransform2D.from(getRotations(vanillaGenInfo, front, mirrorX), mirrorX);
-    }
-
-    public static int getRotations(VanillaStructureGenerationInfo vanillaGenInfo, EnumFacing front, boolean mirrorX)
-    {
-        Integer rotations = Directions.getHorizontalClockwiseRotations(vanillaGenInfo.front, front, mirrorX);
-        return rotations == null ? 0 : rotations;
-    }
-
-    @Nullable
-    public static GenericVillagePiece create(String structureID, String generationID)
-    {
-        return VanillaGenerationClassFactory.instance().create(structureID, generationID);
-    }
-
-    @Nullable
-    public static GenericVillagePiece create(String structureID, String generationID, StructureVillagePieces.Start start, int generationDepth)
-    {
-        return VanillaGenerationClassFactory.instance().create(structureID, generationID, start, generationDepth);
-    }
-
-    public static boolean canVillageGoDeeperC(StructureBoundingBox box)
-    {
-        return canVillageGoDeeper(box);
     }
 
     @Override
@@ -117,7 +120,7 @@ public class GenericVillagePiece extends StructureVillagePieces.Village
             if (generationInfo instanceof VanillaStructureGenerationInfo)
             {
                 VanillaStructureGenerationInfo vanillaGenInfo = (VanillaStructureGenerationInfo) generationInfo;
-                AxisAlignedTransform2D transform = getTransform(vanillaGenInfo, getCoordBaseMode(), mirrorX);
+                AxisAlignedTransform2D transform = getTransform(vanillaGenInfo, getCoordBaseMode().getOpposite(), mirrorX);
 
                 BlockPos structureShift = transform.apply(vanillaGenInfo.spawnShift, new int[]{1, 1, 1});
 
@@ -128,6 +131,7 @@ public class GenericVillagePiece extends StructureVillagePieces.Village
                     if (this.averageGroundLvl < 0)
                         return true;
 
+                    // Structure shift y was included in bounding box, but must be re-added because it is overwritten
                     this.boundingBox.offset(0, this.averageGroundLvl - this.boundingBox.minY + structureShift.getY(), 0);
                 }
 

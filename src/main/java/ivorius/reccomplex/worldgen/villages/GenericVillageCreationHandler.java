@@ -88,17 +88,14 @@ public class GenericVillageCreationHandler implements VillagerRegistry.IVillageC
                 VanillaStructureGenerationInfo vanillaGenInfo = (VanillaStructureGenerationInfo) generationInfo;
 
                 boolean mirrorX = structureInfo.isMirrorable() && random.nextBoolean();
-                AxisAlignedTransform2D transform = GenericVillagePiece.getTransform(vanillaGenInfo, front, mirrorX);
+                AxisAlignedTransform2D transform = GenericVillagePiece.getTransform(vanillaGenInfo, front.getOpposite(), mirrorX);
 
-                if (vanillaGenInfo.generatesIn(startPiece.biome) && structureInfo.isRotatable() || transform.getRotation() == 0)
+                if (vanillaGenInfo.generatesIn(startPiece.biome) && (structureInfo.isRotatable() || transform.getRotation() == 0))
                 {
                     int[] structureSize = StructureInfos.structureSize(structureInfo, transform);
-                    BlockPos structureShift = new BlockPos(0, 0, 0); // TODO Reserved for future shifts where allowed
+                    BlockPos rotatedSpawnShift = transform.apply(vanillaGenInfo.spawnShift, new int[]{1, 1, 1});
 
-                    StructureBoundingBox strucBB = StructureInfos.structureBoundingBox(structureShift, structureSize);
-                    int derotatedX = front.getAxis() == EnumFacing.Axis.X ? strucBB.getXSize() : strucBB.getZSize(); // TODO is correct?
-                    int derotatedZ = front.getAxis() == EnumFacing.Axis.Z ? strucBB.getXSize() : strucBB.getZSize();
-                    strucBB = StructureBoundingBox.getComponentToAddBoundingBox(x + strucBB.minX, y + strucBB.minY, z + strucBB.minZ, 0, 0, 0, derotatedX, strucBB.getYSize(), derotatedZ, front);
+                    StructureBoundingBox strucBB = StructureInfos.structureBoundingBox(new BlockPos(x, y, z).add(rotatedSpawnShift), structureSize);
 
                     if (GenericVillagePiece.canVillageGoDeeperC(strucBB) && StructureComponent.findIntersecting(pieces, strucBB) == null)
                     {
@@ -106,9 +103,6 @@ public class GenericVillageCreationHandler implements VillagerRegistry.IVillageC
 
                         if (genericVillagePiece != null)
                         {
-                            // Do this after the test because this is raw structure movement
-                            strucBB.offset(structureShift.getX(), structureShift.getY(), structureShift.getZ());
-
                             genericVillagePiece.setIds(structureID, generationID);
                             genericVillagePiece.setOrientation(front, mirrorX, strucBB);
                             genericVillagePiece.prepare(random);

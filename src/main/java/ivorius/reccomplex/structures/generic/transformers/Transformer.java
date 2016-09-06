@@ -70,8 +70,6 @@ public abstract class Transformer<S extends NBTStorable>
 
     public abstract void transform(S instanceData, Phase phase, StructureSpawnContext context, IvWorldData worldData, List<Pair<Transformer, NBTStorable>> transformers);
 
-    public abstract boolean generatesInPhase(S instanceData, Phase phase);
-
     public enum Phase
     {
         BEFORE,

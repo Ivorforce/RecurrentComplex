@@ -92,12 +92,6 @@ public class TransformerMulti extends Transformer<TransformerMulti.InstanceData>
     }
 
     @Override
-    public boolean generatesInPhase(InstanceData instanceData, Phase phase)
-    {
-        return instanceData.pairedTransformers.stream().anyMatch(pair -> pair.getLeft().generatesInPhase(pair.getRight(), phase));
-    }
-
-    @Override
     public void transform(InstanceData instanceData, Phase phase, StructureSpawnContext context, IvWorldData worldData, List transformers)
     {
         instanceData.pairedTransformers.forEach(pair -> pair.getLeft().transform(pair.getRight(), phase, context, worldData, transformers));
@@ -126,7 +120,8 @@ public class TransformerMulti extends Transformer<TransformerMulti.InstanceData>
         {
             NBTTagCompound compound = new NBTTagCompound();
 
-            NBTTagLists.writeTo(compound, KEY_TRANSFORMERS, pairedTransformers.stream().map(pair -> {
+            NBTTagLists.writeTo(compound, KEY_TRANSFORMERS, pairedTransformers.stream().map(pair ->
+            {
                 NBTTagCompound transformerCompound = new NBTTagCompound();
                 transformerCompound.setTag("data", pair.getRight().writeToNBT());
                 transformerCompound.setString("id", pair.getLeft().id());

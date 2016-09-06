@@ -82,12 +82,6 @@ public class TransformerNegativeSpace extends Transformer<NBTNone>
         return new NBTNone();
     }
 
-    @Override
-    public boolean generatesInPhase(NBTNone instanceData, Phase phase)
-    {
-        return false;
-    }
-
     public static class Serializer implements JsonDeserializer<TransformerNegativeSpace>, JsonSerializer<TransformerNegativeSpace>
     {
         private MCRegistry registry;

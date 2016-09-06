@@ -123,62 +123,65 @@ public class TransformerRuins extends Transformer<TransformerRuins.InstanceData>
     @Override
     public void transform(InstanceData instanceData, Phase phase, StructureSpawnContext context, IvWorldData worldData, List<Pair<Transformer, NBTStorable>> transformers)
     {
-        IvBlockCollection blockCollection = worldData.blockCollection;
-        int[] size = context.boundingBoxSize();
-
-        StructureBoundingBox dropAreaBB = context.boundingBox;
-        RecurrentComplex.forgeEventHandler.disabledTileDropAreas.add(dropAreaBB);
-
-        BlurredValueField field = instanceData.blurredValueField;
-        if (field != null && field.getSize().length == 3)
+        if (phase == Phase.AFTER)
         {
-            BlockArea sourceArea = new BlockArea(new BlockPos(0, 0, 0), new BlockPos(blockCollection.width, blockCollection.height, blockCollection.length));
-            BlockArea decaySideArea = BlockAreas.side(sourceArea, decayDirection.getOpposite());
-            BlockPos decaySideAreaPos = decaySideArea.getLowerCorner();
-            int decaySideLength = BlockAreas.sideLength(sourceArea, decayDirection.getOpposite());
+            IvBlockCollection blockCollection = worldData.blockCollection;
+            int[] size = context.boundingBoxSize();
 
-            for (int pass = 1; pass >= 0; pass--)
+            StructureBoundingBox dropAreaBB = context.boundingBox;
+            RecurrentComplex.forgeEventHandler.disabledTileDropAreas.add(dropAreaBB);
+
+            BlurredValueField field = instanceData.blurredValueField;
+            if (field != null && field.getSize().length == 3)
             {
-                for (BlockPos surfaceSourceCoord : decaySideArea)
+                BlockArea sourceArea = new BlockArea(new BlockPos(0, 0, 0), new BlockPos(blockCollection.width, blockCollection.height, blockCollection.length));
+                BlockArea decaySideArea = BlockAreas.side(sourceArea, decayDirection.getOpposite());
+                BlockPos decaySideAreaPos = decaySideArea.getLowerCorner();
+                int decaySideLength = BlockAreas.sideLength(sourceArea, decayDirection.getOpposite());
+
+                for (int pass = 1; pass >= 0; pass--)
                 {
-                    float decay = field.getValue(surfaceSourceCoord.getX() - decaySideAreaPos.getX(), surfaceSourceCoord.getY() - decaySideAreaPos.getY(), surfaceSourceCoord.getZ() - decaySideAreaPos.getZ());
-                    int removedBlocks = MathHelper.floor_float(decay * decaySideLength + 0.5f);
-
-                    for (int decayPos = 0; decayPos < removedBlocks && decayPos < decaySideLength; decayPos++)
+                    for (BlockPos surfaceSourceCoord : decaySideArea)
                     {
-                        BlockPos sourceCoord = surfaceSourceCoord.add(decayDirection.getFrontOffsetX() * decayPos, decayDirection.getFrontOffsetY() * decayPos, decayDirection.getFrontOffsetZ() * decayPos);
-                        BlockPos worldCoord = context.transform.apply(sourceCoord, size).add(context.lowerCoord());
+                        float decay = field.getValue(surfaceSourceCoord.getX() - decaySideAreaPos.getX(), surfaceSourceCoord.getY() - decaySideAreaPos.getY(), surfaceSourceCoord.getZ() - decaySideAreaPos.getZ());
+                        int removedBlocks = MathHelper.floor_float(decay * decaySideLength + 0.5f);
 
-                        if (context.includes(worldCoord))
+                        for (int decayPos = 0; decayPos < removedBlocks && decayPos < decaySideLength; decayPos++)
                         {
-                            IBlockState state = blockCollection.getBlockState(sourceCoord);
+                            BlockPos sourceCoord = surfaceSourceCoord.add(decayDirection.getFrontOffsetX() * decayPos, decayDirection.getFrontOffsetY() * decayPos, decayDirection.getFrontOffsetZ() * decayPos);
+                            BlockPos worldCoord = context.transform.apply(sourceCoord, size).add(context.lowerCoord());
 
-                            if (getPass(state) == pass && !skipBlock(transformers, state))
-                                setBlockToAirClean(context.world, worldCoord);
+                            if (context.includes(worldCoord))
+                            {
+                                IBlockState state = blockCollection.getBlockState(sourceCoord);
+
+                                if (getPass(state) == pass && !skipBlock(transformers, state))
+                                    setBlockToAirClean(context.world, worldCoord);
+                            }
                         }
                     }
                 }
             }
-        }
 
-        int[] areaSize = new int[]{blockCollection.width, blockCollection.height, blockCollection.length};
-        if (blockErosion > 0.0f || vineGrowth > 0.0f)
-        {
-            for (BlockPos sourceCoord : blockCollection.area())
+            int[] areaSize = new int[]{blockCollection.width, blockCollection.height, blockCollection.length};
+            if (blockErosion > 0.0f || vineGrowth > 0.0f)
             {
-                BlockPos worldCoord = context.transform.apply(sourceCoord, areaSize).add(context.lowerCoord());
-
-                if (context.includes(worldCoord))
+                for (BlockPos sourceCoord : blockCollection.area())
                 {
-                    IBlockState state = context.world.getBlockState(worldCoord);
+                    BlockPos worldCoord = context.transform.apply(sourceCoord, areaSize).add(context.lowerCoord());
 
-                    if (!skipBlock(transformers, state))
-                        decayBlock(context.world, context.random, state, worldCoord);
+                    if (context.includes(worldCoord))
+                    {
+                        IBlockState state = context.world.getBlockState(worldCoord);
+
+                        if (!skipBlock(transformers, state))
+                            decayBlock(context.world, context.random, state, worldCoord);
+                    }
                 }
             }
-        }
 
-        RecurrentComplex.forgeEventHandler.disabledTileDropAreas.remove(dropAreaBB);
+            RecurrentComplex.forgeEventHandler.disabledTileDropAreas.remove(dropAreaBB);
+        }
     }
 
     public void decayBlock(World world, Random random, IBlockState state, BlockPos coord)
@@ -280,12 +283,6 @@ public class TransformerRuins extends Transformer<TransformerRuins.InstanceData>
     public InstanceData loadInstanceData(StructureLoadContext context, NBTBase nbt)
     {
         return new InstanceData(nbt instanceof NBTTagCompound ? (NBTTagCompound) nbt : new NBTTagCompound());
-    }
-
-    @Override
-    public boolean generatesInPhase(InstanceData instanceData, Phase phase)
-    {
-        return phase == Phase.AFTER;
     }
 
     public static class InstanceData implements NBTStorable

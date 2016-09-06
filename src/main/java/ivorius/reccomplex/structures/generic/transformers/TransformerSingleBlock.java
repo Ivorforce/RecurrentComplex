@@ -5,6 +5,7 @@
 
 package ivorius.reccomplex.structures.generic.transformers;
 
+import ivorius.reccomplex.utils.NBTNone;
 import net.minecraft.util.math.BlockPos;
 import ivorius.ivtoolkit.blocks.IvBlockCollection;
 import ivorius.ivtoolkit.tools.IvWorldData;
@@ -35,23 +36,28 @@ public abstract class TransformerSingleBlock<S extends NBTStorable> extends Tran
     @Override
     public void transform(S instanceData, Phase phase, StructureSpawnContext context, IvWorldData worldData, List<Pair<Transformer, NBTStorable>> transformers)
     {
-        IvBlockCollection blockCollection = worldData.blockCollection;
-        int[] areaSize = new int[]{blockCollection.width, blockCollection.height, blockCollection.length};
-        BlockPos lowerCoord = context.lowerCoord();
-
-        for (BlockPos sourceCoord : blockCollection.area())
+        if (generatesInPhase(instanceData, phase))
         {
-            BlockPos worldCoord = context.transform.apply(sourceCoord, areaSize).add(lowerCoord);
+            IvBlockCollection blockCollection = worldData.blockCollection;
+            int[] areaSize = new int[]{blockCollection.width, blockCollection.height, blockCollection.length};
+            BlockPos lowerCoord = context.lowerCoord();
 
-            if (context.includes(worldCoord))
+            for (BlockPos sourceCoord : blockCollection.area())
             {
-                IBlockState state = blockCollection.getBlockState(sourceCoord);
+                BlockPos worldCoord = context.transform.apply(sourceCoord, areaSize).add(lowerCoord);
 
-                if (matches(instanceData, state))
-                    transformBlock(instanceData, Phase.BEFORE, context, worldCoord, state);
+                if (context.includes(worldCoord))
+                {
+                    IBlockState state = blockCollection.getBlockState(sourceCoord);
+
+                    if (matches(instanceData, state))
+                        transformBlock(instanceData, Phase.BEFORE, context, worldCoord, state);
+                }
             }
         }
     }
+
+    public abstract boolean generatesInPhase(S instanceData, Phase phase);
 
     public abstract boolean matches(S instanceData, IBlockState state);
 

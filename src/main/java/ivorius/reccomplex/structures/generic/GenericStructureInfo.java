@@ -6,8 +6,6 @@
 package ivorius.reccomplex.structures.generic;
 
 import com.google.gson.*;
-import gnu.trove.map.TIntObjectMap;
-import gnu.trove.map.hash.TIntObjectHashMap;
 import ivorius.ivtoolkit.tools.*;
 import ivorius.ivtoolkit.transform.Mover;
 import ivorius.ivtoolkit.transform.PosTransformer;
@@ -41,7 +39,6 @@ import net.minecraft.world.WorldServer;
 import net.minecraft.world.biome.Biome;
 import net.minecraftforge.common.BiomeDictionary;
 import net.minecraftforge.common.util.Constants;
-import org.apache.commons.lang3.tuple.Pair;
 
 import java.lang.reflect.Type;
 import java.util.*;
@@ -148,10 +145,7 @@ public class GenericStructureInfo implements StructureInfo<GenericStructureInfo.
         }
 
         if (!context.generateAsSource)
-        {
-            if (transformer.generatesInPhase(instanceData.transformerData, Transformer.Phase.BEFORE))
-                transformer.transform(instanceData.transformerData, Transformer.Phase.BEFORE, context, worldData, transformer.getTransformers());
-        }
+            transformer.transform(instanceData.transformerData, Transformer.Phase.BEFORE, context, worldData, transformer.getTransformers());
 
         for (int pass = 0; pass < 2; pass++)
         {
@@ -198,10 +192,7 @@ public class GenericStructureInfo implements StructureInfo<GenericStructureInfo.
         }
 
         if (!context.generateAsSource)
-        {
-            if (transformer.generatesInPhase(instanceData.transformerData, Transformer.Phase.AFTER))
-                transformer.transform(instanceData.transformerData, Transformer.Phase.AFTER, context, worldData, transformer.getTransformers());
-        }
+            transformer.transform(instanceData.transformerData, Transformer.Phase.AFTER, context, worldData, transformer.getTransformers());
 
         for (NBTTagCompound entityCompound : worldData.entities)
         {

@@ -28,7 +28,7 @@ import java.util.stream.Stream;
  */
 public class WorldGenMaze
 {
-    public static boolean generatePlacedStructures(List<PlacedStructure> placedStructures, StructureSpawnContext context)
+    public static boolean generatePlacedStructures(BlockPos shift, List<PlacedStructure> placedStructures, StructureSpawnContext context)
     {
         for (PlacedStructure placedComponent : placedStructures)
         {
@@ -37,9 +37,8 @@ public class WorldGenMaze
             if (structureInfo != null && placedComponent.instanceData != null)
             {
                 AxisAlignedTransform2D componentTransform = placedComponent.transform;
-                StructureBoundingBox compBoundingBox = StructureInfos.structureBoundingBox(placedComponent.lowerCoord, StructureInfos.structureSize(structureInfo, componentTransform));
 
-                BlockPos coord = new BlockPos(compBoundingBox.minX, compBoundingBox.minY, compBoundingBox.minZ);
+                BlockPos coord = placedComponent.lowerCoord.add(shift);
 
                 StructureGenerator.partially(structureInfo, context.world, context.random, coord, componentTransform, context.generationBB, context.generationLayer + 1, placedComponent.structureID, placedComponent.instanceData, context.isFirstTime);
 

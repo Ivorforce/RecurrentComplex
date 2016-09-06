@@ -15,14 +15,13 @@ import ivorius.reccomplex.structures.StructurePrepareContext;
 import ivorius.reccomplex.structures.StructureSpawnContext;
 import ivorius.reccomplex.utils.NBTStorable;
 import net.minecraft.nbt.NBTBase;
-import net.minecraft.world.World;
 
 /**
  * Created by lukas on 13.09.15.
  */
 public interface WorldScript<S extends NBTStorable> extends NBTCompoundObject
 {
-    S prepareInstanceData(StructurePrepareContext context, BlockPos coord, World world);
+    S prepareInstanceData(StructurePrepareContext context);
 
     S loadInstanceData(StructureLoadContext context, NBTBase nbt);
 

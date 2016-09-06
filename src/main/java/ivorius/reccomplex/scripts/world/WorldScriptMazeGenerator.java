@@ -36,7 +36,6 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
-import net.minecraft.world.World;
 import net.minecraftforge.common.util.Constants;
 
 import java.util.*;
@@ -107,10 +106,7 @@ public class WorldScriptMazeGenerator implements WorldScript<WorldScriptMazeGene
     @Override
     public void generate(StructureSpawnContext context, InstanceData instanceData, BlockPos coord)
     {
-        List<PlacedStructure> placedStructures = instanceData.placedStructures;
-        if (placedStructures == null)
-            return;
-        WorldGenMaze.generatePlacedStructures(placedStructures, context);
+        WorldGenMaze.generatePlacedStructures(coord, instanceData.placedStructures, context);
     }
 
     @Override
@@ -215,10 +211,10 @@ public class WorldScriptMazeGenerator implements WorldScript<WorldScriptMazeGene
     }
 
     @Override
-    public InstanceData prepareInstanceData(StructurePrepareContext context, BlockPos coord, World world)
+    public InstanceData prepareInstanceData(StructurePrepareContext context)
     {
         InstanceData instanceData = new InstanceData();
-        instanceData.placedStructures.addAll(WorldGenMaze.convertToPlacedStructures(context.random, coord, structureShift, getPlacedRooms(context.random, context.transform), roomSize, context.transform));
+        instanceData.placedStructures.addAll(WorldGenMaze.convertToPlacedStructures(context.random, BlockPos.ORIGIN, structureShift, getPlacedRooms(context.random, context.transform), roomSize, context.transform));
         return instanceData;
     }
 

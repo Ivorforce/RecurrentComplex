@@ -5,21 +5,20 @@
 
 package ivorius.reccomplex.scripts.world;
 
-import net.minecraft.util.math.BlockPos;
+import ivorius.ivtoolkit.tools.IvTranslations;
 import ivorius.ivtoolkit.tools.NBTTagLists;
 import ivorius.reccomplex.gui.table.TableDataSource;
 import ivorius.reccomplex.gui.table.TableDelegate;
 import ivorius.reccomplex.gui.table.TableNavigator;
-import ivorius.reccomplex.gui.worldscripts.multi.TableDataSourceWorldScriptList;
+import ivorius.reccomplex.gui.worldscripts.multi.TableDataSourceWorldScriptMulti;
 import ivorius.reccomplex.structures.StructureLoadContext;
 import ivorius.reccomplex.structures.StructurePrepareContext;
 import ivorius.reccomplex.structures.StructureSpawnContext;
-import ivorius.ivtoolkit.tools.IvTranslations;
 import ivorius.reccomplex.utils.NBTStorable;
 import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
-import net.minecraft.world.World;
+import net.minecraft.util.math.BlockPos;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -34,12 +33,12 @@ public class WorldScriptMulti implements WorldScript<WorldScriptMulti.InstanceDa
     public final List<WorldScript> scripts = new ArrayList<>();
 
     @Override
-    public InstanceData prepareInstanceData(StructurePrepareContext context, BlockPos coord, World world)
+    public InstanceData prepareInstanceData(StructurePrepareContext context)
     {
         InstanceData instanceData = new InstanceData();
 
         for (WorldScript script : scripts)
-            instanceData.addInstanceData(script.prepareInstanceData(context, coord, world), WorldScriptRegistry.INSTANCE.type(script.getClass()));
+            instanceData.addInstanceData(script.prepareInstanceData(context), WorldScriptRegistry.INSTANCE.type(script.getClass()));
 
         return instanceData;
     }
@@ -70,7 +69,7 @@ public class WorldScriptMulti implements WorldScript<WorldScriptMulti.InstanceDa
     @Override
     public TableDataSource tableDataSource(TableNavigator navigator, TableDelegate tableDelegate)
     {
-        return new TableDataSourceWorldScriptList(scripts, tableDelegate, navigator);
+        return new TableDataSourceWorldScriptMulti(this, tableDelegate, navigator);
     }
 
     @Override

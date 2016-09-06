@@ -296,6 +296,8 @@ reccomplex.transformer.id.tooltip=Unique Identifier for the transformer.
 
 reccomplex.transformer.multi=Multiple
 reccomplex.transformer.multi.tooltip=Wraps multiple transformers.
+reccomplex.transformer.worldscript=World Script
+reccomplex.transformer.worldscript.tooltip=Runs a world script from matched blocks.
 
 reccomplex.transformer.natural=Natural Floor
 reccomplex.transformer.natural.tooltip=Spawns biome-native floor blocks below blocks

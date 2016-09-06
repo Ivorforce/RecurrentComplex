@@ -24,7 +24,7 @@ public class TableDataSourceBTRuins extends TableDataSourceSegmented
     {
         this.transformer = transformer;
 
-        addManagedSection(0, new TableDataSourceTransformer(transformer, navigator, delegate));
+        addManagedSection(0, new TableDataSourceTransformer(transformer, delegate, navigator));
     }
 
     public TransformerRuins getTransformer()

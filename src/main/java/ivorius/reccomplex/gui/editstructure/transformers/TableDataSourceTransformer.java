@@ -18,7 +18,7 @@ public class TableDataSourceTransformer extends TableDataSourceSegmented
 {
     public Transformer transformer;
 
-    public TableDataSourceTransformer(Transformer transformer, TableNavigator navigator, TableDelegate delegate)
+    public TableDataSourceTransformer(Transformer transformer, TableDelegate delegate, TableNavigator navigator)
     {
         this.transformer = transformer;
         addManagedSection(1, TableCellMultiBuilder.create(navigator, delegate)

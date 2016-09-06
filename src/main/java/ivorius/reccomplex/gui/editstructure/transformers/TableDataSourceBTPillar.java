@@ -24,7 +24,7 @@ public class TableDataSourceBTPillar extends TableDataSourceSegmented
     {
         this.transformer = transformer;
 
-        addManagedSection(0, new TableDataSourceTransformer(transformer, navigator, delegate));
+        addManagedSection(0, new TableDataSourceTransformer(transformer, delegate, navigator));
         addManagedSection(1, TableDataSourceExpression.constructDefault(IvTranslations.get("reccomplex.gui.sources"), transformer.sourceMatcher));
         addManagedSection(2, new TableDataSourceBlockState(transformer.destState, state -> transformer.destState = state, navigator, delegate, IvTranslations.get("reccomplex.transformer.pillar.dest.block"), IvTranslations.get("reccomplex.transformer.pillar.dest.metadata")));
     }

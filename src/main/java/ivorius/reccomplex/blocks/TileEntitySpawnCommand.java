@@ -73,7 +73,7 @@ public class TileEntitySpawnCommand extends TileEntity implements GeneratingTile
     @Override
     public NBTNone prepareInstanceData(StructurePrepareContext context)
     {
-        return script.prepareInstanceData(context, pos, worldObj);
+        return script.prepareInstanceData(context);
     }
 
     @Override

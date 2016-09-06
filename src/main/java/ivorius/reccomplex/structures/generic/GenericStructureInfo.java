@@ -145,7 +145,7 @@ public class GenericStructureInfo implements StructureInfo<GenericStructureInfo.
         }
 
         if (!context.generateAsSource)
-            transformer.transform(instanceData.transformerData, Transformer.Phase.BEFORE, context, worldData, transformer.getTransformers());
+            transformer.transform(instanceData.transformerData, Transformer.Phase.BEFORE, context, worldData, instanceData.transformerData.pairedTransformers);
 
         for (int pass = 0; pass < 2; pass++)
         {
@@ -192,7 +192,7 @@ public class GenericStructureInfo implements StructureInfo<GenericStructureInfo.
         }
 
         if (!context.generateAsSource)
-            transformer.transform(instanceData.transformerData, Transformer.Phase.AFTER, context, worldData, transformer.getTransformers());
+            transformer.transform(instanceData.transformerData, Transformer.Phase.AFTER, context, worldData, instanceData.transformerData.pairedTransformers);
 
         for (NBTTagCompound entityCompound : worldData.entities)
         {
@@ -439,7 +439,7 @@ public class GenericStructureInfo implements StructureInfo<GenericStructureInfo.
             IvBlockCollection blockCollection = worldData.blockCollection;
             NBTTagCompound compound = nbt instanceof NBTTagCompound ? (NBTTagCompound) nbt : new NBTTagCompound();
 
-            transformer.loadInstanceData(context, compound.getTag(KEY_TRANSFORMER));
+            transformerData = transformer.loadInstanceData(context, compound.getTag(KEY_TRANSFORMER));
 
             int[] areaSize = new int[]{blockCollection.width, blockCollection.height, blockCollection.length};
             BlockPos origin = context.lowerCoord();

@@ -41,7 +41,7 @@ public class TileEntityStructureGenerator extends TileEntity implements Generati
     @Override
     public WorldScriptStructureGenerator.InstanceData prepareInstanceData(StructurePrepareContext context)
     {
-        return script.prepareInstanceData(context, pos, worldObj);
+        return script.prepareInstanceData(context);
     }
 
     @Override

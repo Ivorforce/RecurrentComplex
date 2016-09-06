@@ -9,7 +9,7 @@ import com.google.gson.*;
 import ivorius.ivtoolkit.tools.IvTranslations;
 import ivorius.ivtoolkit.tools.IvWorldData;
 import ivorius.ivtoolkit.tools.NBTTagLists;
-import ivorius.reccomplex.gui.editstructure.TableDataSourceTransformerList;
+import ivorius.reccomplex.gui.editstructure.transformers.TableDataSourceBTMulti;
 import ivorius.reccomplex.gui.table.TableDataSource;
 import ivorius.reccomplex.gui.table.TableDelegate;
 import ivorius.reccomplex.gui.table.TableNavigator;
@@ -66,7 +66,7 @@ public class TransformerMulti extends Transformer<TransformerMulti.InstanceData>
     @Override
     public TableDataSource tableDataSource(TableNavigator navigator, TableDelegate delegate)
     {
-        return new TableDataSourceTransformerList(transformers, delegate, navigator);
+        return new TableDataSourceBTMulti(this, navigator, delegate);
     }
 
     @Override
@@ -92,7 +92,7 @@ public class TransformerMulti extends Transformer<TransformerMulti.InstanceData>
     }
 
     @Override
-    public void transform(InstanceData instanceData, Phase phase, StructureSpawnContext context, IvWorldData worldData, List transformers)
+    public void transform(InstanceData instanceData, Phase phase, StructureSpawnContext context, IvWorldData worldData, List<Pair<Transformer, NBTStorable>> transformers)
     {
         instanceData.pairedTransformers.forEach(pair -> pair.getLeft().transform(pair.getRight(), phase, context, worldData, transformers));
     }

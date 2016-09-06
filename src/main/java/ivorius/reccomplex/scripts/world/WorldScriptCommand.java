@@ -72,7 +72,7 @@ public class WorldScriptCommand implements WorldScript<NBTNone>
     }
 
     @Override
-    public NBTNone prepareInstanceData(StructurePrepareContext context, BlockPos coord, World world)
+    public NBTNone prepareInstanceData(StructurePrepareContext context)
     {
         return new NBTNone();
     }

@@ -46,7 +46,7 @@ public class TileEntitySpawnScript extends TileEntity implements GeneratingTileE
     @Override
     public WorldScriptMulti.InstanceData prepareInstanceData(StructurePrepareContext context)
     {
-        return script.prepareInstanceData(context, pos, worldObj);
+        return script.prepareInstanceData(context);
     }
 
     @Override

@@ -27,7 +27,7 @@ public class TableDataSourceBTReplaceAll extends TableDataSourceSegmented
         this.navigator = navigator;
         this.tableDelegate = delegate;
 
-        addManagedSection(0, new TableDataSourceTransformer(transformer, navigator, delegate));
+        addManagedSection(0, new TableDataSourceTransformer(transformer, delegate, navigator));
         addManagedSection(1, TableDataSourceExpression.constructDefault(IvTranslations.get("reccomplex.gui.sources"), transformer.sourceMatcher));
         addManagedSection(2, TableCellMultiBuilder.create(navigator, delegate)
                 .addNavigation(() -> IvTranslations.get("reccomplex.gui.edit"), null,

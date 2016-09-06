@@ -294,6 +294,9 @@ reccomplex.generationInfo.vanilla.amount.scaled=Amount (scaled)
 reccomplex.transformer.id=Transformer ID
 reccomplex.transformer.id.tooltip=Unique Identifier for the transformer.
 
+reccomplex.transformer.multi=Multiple
+reccomplex.transformer.multi.tooltip=Wraps multiple transformers.
+
 reccomplex.transformer.natural=Natural Floor
 reccomplex.transformer.natural.tooltip=Spawns biome-native floor blocks below blocks
 reccomplex.transformer.natural.naturalExpansionDistance=Distance

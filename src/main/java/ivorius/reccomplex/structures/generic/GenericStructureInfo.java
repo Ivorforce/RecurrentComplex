@@ -8,7 +8,6 @@ package ivorius.reccomplex.structures.generic;
 import com.google.gson.*;
 import gnu.trove.map.TIntObjectMap;
 import gnu.trove.map.hash.TIntObjectHashMap;
-import ivorius.ivtoolkit.math.AxisAlignedTransform2D;
 import ivorius.ivtoolkit.tools.*;
 import ivorius.ivtoolkit.transform.Mover;
 import ivorius.ivtoolkit.transform.PosTransformer;
@@ -38,12 +37,10 @@ import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.world.World;
 import net.minecraft.world.WorldServer;
 import net.minecraft.world.biome.Biome;
 import net.minecraftforge.common.BiomeDictionary;
 import net.minecraftforge.common.util.Constants;
-import net.minecraftforge.fml.common.FMLCommonHandler;
 import org.apache.commons.lang3.tuple.Pair;
 
 import java.lang.reflect.Type;
@@ -174,7 +171,7 @@ public class GenericStructureInfo implements StructureInfo<GenericStructureInfo.
 
                 BlockPos worldPos = context.transform.apply(sourceCoord, areaSize).add(origin);
                 if (context.includes(worldPos) && RecurrentComplex.specialRegistry.isSafe(state.getBlock())
-                        && pass == getPass(state) && (context.generateAsSource || !skips(transformers, state)))
+                        && pass == getPass(state) && (context.generateAsSource || !TransformerMulti.skips(transformers, state)))
                 {
                     TileEntity origTileEntity = origTileEntities.get(sourceCoord);
 
@@ -298,11 +295,6 @@ public class GenericStructureInfo implements StructureInfo<GenericStructureInfo.
         return instanceData;
     }
 
-    private boolean skips(List<Pair<Transformer, NBTStorable>> transformers, final IBlockState state)
-    {
-        return transformers.stream().anyMatch(input -> input.getLeft().skipGeneration(input.getRight(), state));
-    }
-
     public IvWorldData constructWorldData()
     {
         return new IvWorldData(worldDataCompound, RecurrentComplex.specialRegistry.itemHidingMode());
@@ -361,13 +353,13 @@ public class GenericStructureInfo implements StructureInfo<GenericStructureInfo.
     {
         public GenericStructureInfo deserialize(JsonElement jsonElement, Type par2Type, JsonDeserializationContext context)
         {
-            JsonObject jsonobject = JsonUtils.getJsonElementAsJsonObject(jsonElement, "status");
+            JsonObject jsonObject = JsonUtils.getJsonElementAsJsonObject(jsonElement, "status");
             GenericStructureInfo structureInfo = new GenericStructureInfo();
 
             Integer version;
-            if (jsonobject.has("version"))
+            if (jsonObject.has("version"))
             {
-                version = JsonUtils.getJsonObjectIntegerFieldValue(jsonobject, "version");
+                version = JsonUtils.getJsonObjectIntegerFieldValue(jsonObject, "version");
             }
             else
             {
@@ -375,74 +367,74 @@ public class GenericStructureInfo implements StructureInfo<GenericStructureInfo.
                 RecurrentComplex.logger.warn("Structure JSON missing 'version', using latest (" + LATEST_VERSION + ")");
             }
 
-            if (jsonobject.has("generationInfos"))
-                Collections.addAll(structureInfo.generationInfos, context.<StructureGenerationInfo[]>deserialize(jsonobject.get("generationInfos"), StructureGenerationInfo[].class));
+            if (jsonObject.has("generationInfos"))
+                Collections.addAll(structureInfo.generationInfos, context.<StructureGenerationInfo[]>deserialize(jsonObject.get("generationInfos"), StructureGenerationInfo[].class));
 
             if (version == 1)
-                structureInfo.generationInfos.add(NaturalGenerationInfo.deserializeFromVersion1(jsonobject, context));
+                structureInfo.generationInfos.add(NaturalGenerationInfo.deserializeFromVersion1(jsonObject, context));
 
             {
                 // Legacy version 2
-                if (jsonobject.has("naturalGenerationInfo"))
-                    structureInfo.generationInfos.add(NaturalGenerationInfo.getGson().fromJson(jsonobject.get("naturalGenerationInfo"), NaturalGenerationInfo.class));
+                if (jsonObject.has("naturalGenerationInfo"))
+                    structureInfo.generationInfos.add(NaturalGenerationInfo.getGson().fromJson(jsonObject.get("naturalGenerationInfo"), NaturalGenerationInfo.class));
 
-                if (jsonobject.has("mazeGenerationInfo"))
-                    structureInfo.generationInfos.add(MazeGenerationInfo.getGson().fromJson(jsonobject.get("mazeGenerationInfo"), MazeGenerationInfo.class));
+                if (jsonObject.has("mazeGenerationInfo"))
+                    structureInfo.generationInfos.add(MazeGenerationInfo.getGson().fromJson(jsonObject.get("mazeGenerationInfo"), MazeGenerationInfo.class));
             }
 
-            if (jsonobject.has("transformers"))
-                Collections.addAll(structureInfo.transformers, context.<Transformer[]>deserialize(jsonobject.get("transformers"), Transformer[].class));
-            if (jsonobject.has("blockTransformers")) // Legacy
-                Collections.addAll(structureInfo.transformers, context.<Transformer[]>deserialize(jsonobject.get("blockTransformers"), Transformer[].class));
+            if (jsonObject.has("transformers"))
+                Collections.addAll(structureInfo.transformers, context.<Transformer[]>deserialize(jsonObject.get("transformers"), Transformer[].class));
+            if (jsonObject.has("blockTransformers")) // Legacy
+                Collections.addAll(structureInfo.transformers, context.<Transformer[]>deserialize(jsonObject.get("blockTransformers"), Transformer[].class));
 
-            structureInfo.rotatable = JsonUtils.getJsonObjectBooleanFieldValueOrDefault(jsonobject, "rotatable", false);
-            structureInfo.mirrorable = JsonUtils.getJsonObjectBooleanFieldValueOrDefault(jsonobject, "mirrorable", false);
+            structureInfo.rotatable = JsonUtils.getJsonObjectBooleanFieldValueOrDefault(jsonObject, "rotatable", false);
+            structureInfo.mirrorable = JsonUtils.getJsonObjectBooleanFieldValueOrDefault(jsonObject, "mirrorable", false);
 
-            if (jsonobject.has("dependencyExpression"))
-                structureInfo.dependencies.setExpression(JsonUtils.getJsonObjectStringFieldValue(jsonobject, "dependencyExpression"));
-            else if (jsonobject.has("dependencies")) // Legacy
-                structureInfo.dependencies.setExpression(DependencyMatcher.ofMods(context.<String[]>deserialize(jsonobject.get("dependencies"), String[].class)));
+            if (jsonObject.has("dependencyExpression"))
+                structureInfo.dependencies.setExpression(JsonUtils.getJsonObjectStringFieldValue(jsonObject, "dependencyExpression"));
+            else if (jsonObject.has("dependencies")) // Legacy
+                structureInfo.dependencies.setExpression(DependencyMatcher.ofMods(context.<String[]>deserialize(jsonObject.get("dependencies"), String[].class)));
 
-            if (jsonobject.has("worldData"))
-                structureInfo.worldDataCompound = context.deserialize(jsonobject.get("worldData"), NBTTagCompound.class);
-            else if (jsonobject.has("worldDataBase64"))
-                structureInfo.worldDataCompound = NbtToJson.getNBTFromBase64(JsonUtils.getJsonObjectStringFieldValue(jsonobject, "worldDataBase64"));
+            if (jsonObject.has("worldData"))
+                structureInfo.worldDataCompound = context.deserialize(jsonObject.get("worldData"), NBTTagCompound.class);
+            else if (jsonObject.has("worldDataBase64"))
+                structureInfo.worldDataCompound = NbtToJson.getNBTFromBase64(JsonUtils.getJsonObjectStringFieldValue(jsonObject, "worldDataBase64"));
             // And else it is taken out for packet size, or stored in the zip
 
-            if (jsonobject.has("metadata")) // Else, use default
-                structureInfo.metadata = context.deserialize(jsonobject.get("metadata"), Metadata.class);
+            if (jsonObject.has("metadata")) // Else, use default
+                structureInfo.metadata = context.deserialize(jsonObject.get("metadata"), Metadata.class);
 
-            structureInfo.customData = JsonUtils.getJsonObjectFieldOrDefault(jsonobject, "customData", new JsonObject());
+            structureInfo.customData = JsonUtils.getJsonObjectFieldOrDefault(jsonObject, "customData", new JsonObject());
 
             return structureInfo;
         }
 
         public JsonElement serialize(GenericStructureInfo structureInfo, Type par2Type, JsonSerializationContext context)
         {
-            JsonObject jsonobject = new JsonObject();
+            JsonObject jsonObject = new JsonObject();
 
-            jsonobject.addProperty("version", LATEST_VERSION);
+            jsonObject.addProperty("version", LATEST_VERSION);
 
-            jsonobject.add("generationInfos", context.serialize(structureInfo.generationInfos));
-            jsonobject.add("transformers", context.serialize(structureInfo.transformers));
+            jsonObject.add("generationInfos", context.serialize(structureInfo.generationInfos));
+            jsonObject.add("transformers", context.serialize(structureInfo.transformers));
 
-            jsonobject.addProperty("rotatable", structureInfo.rotatable);
-            jsonobject.addProperty("mirrorable", structureInfo.mirrorable);
+            jsonObject.addProperty("rotatable", structureInfo.rotatable);
+            jsonObject.addProperty("mirrorable", structureInfo.mirrorable);
 
-            jsonobject.add("dependencyExpression", context.serialize(structureInfo.dependencies.getExpression()));
+            jsonObject.add("dependencyExpression", context.serialize(structureInfo.dependencies.getExpression()));
 
             if (!RecurrentComplex.USE_ZIP_FOR_STRUCTURE_FILES && structureInfo.worldDataCompound != null)
             {
                 if (RecurrentComplex.USE_JSON_FOR_NBT)
-                    jsonobject.add("worldData", context.serialize(structureInfo.worldDataCompound));
+                    jsonObject.add("worldData", context.serialize(structureInfo.worldDataCompound));
                 else
-                    jsonobject.addProperty("worldDataBase64", NbtToJson.getBase64FromNBT(structureInfo.worldDataCompound));
+                    jsonObject.addProperty("worldDataBase64", NbtToJson.getBase64FromNBT(structureInfo.worldDataCompound));
             }
 
-            jsonobject.add("metadata", context.serialize(structureInfo.metadata));
-            jsonobject.add("customData", structureInfo.customData);
+            jsonObject.add("metadata", context.serialize(structureInfo.metadata));
+            jsonObject.add("customData", structureInfo.customData);
 
-            return jsonobject;
+            return jsonObject;
         }
     }
 
@@ -476,7 +468,7 @@ public class GenericStructureInfo implements StructureInfo<GenericStructureInfo.
                 NBTTagCompound transformerCompound = transformerCompounds.get(i);
                 String transformerID = transformerCompound.getString("id");
 
-                Transformer transformer = findTransformer(transformers, i, transformerID); // Legacy - if no ID was saved, use the one in line if any.
+                Transformer transformer = findTransformer(transformers, i, transformerID);
 
                 if (transformer != null)
                 {
@@ -498,7 +490,7 @@ public class GenericStructureInfo implements StructureInfo<GenericStructureInfo.
             });
         }
 
-        protected Transformer findTransformer(List<Transformer> transformers, int i, String transformerID)
+        public static Transformer findTransformer(List<Transformer> transformers, int i, String transformerID)
         {
             return transformers.stream().filter(tr -> tr.id().equals(transformerID)).findAny()
                     .orElse(transformers.size() > i ? transformers.get(i) : null);
@@ -508,7 +500,7 @@ public class GenericStructureInfo implements StructureInfo<GenericStructureInfo.
         {
             return transformers.entrySet().stream().filter(pair -> transformer.id().equals(pair.getKey()))
                     .map(Map.Entry::getValue)
-                    .findAny().orElse(transformers.size() > index ? this.transformerIndices.get(index) : null);
+                    .findAny().orElse(transformers.size() > index ? this.transformerIndices.get(index) : null); // Legacy - if no ID was saved, use the one in line if any.
         }
 
         @Override

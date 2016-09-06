@@ -6,7 +6,6 @@
 package ivorius.reccomplex.scripts.world;
 
 import ivorius.ivtoolkit.blocks.BlockPositions;
-import ivorius.reccomplex.utils.RCDirections;
 import net.minecraft.util.math.BlockPos;
 import ivorius.ivtoolkit.blocks.Directions;
 import ivorius.ivtoolkit.math.AxisAlignedTransform2D;
@@ -215,7 +214,7 @@ public class WorldScriptStructureGenerator implements WorldScript<WorldScriptStr
                 {
                     EnumFacing curFront = Directions.rotate(front, transform);
                     mirrorX = structureInfo.isMirrorable() && structureInfo.isRotatable() && random.nextBoolean();
-                    Integer neededRotations = RCDirections.getHorizontalClockwiseRotations(curFront, generationInfo.front, mirrorX);
+                    Integer neededRotations = Directions.getHorizontalClockwiseRotations(curFront, generationInfo.front, mirrorX);
                     rotations = neededRotations != null ? neededRotations : 0;
                 }
                 else

@@ -5,6 +5,7 @@
 
 package ivorius.reccomplex.worldgen.villages;
 
+import ivorius.ivtoolkit.blocks.Directions;
 import ivorius.ivtoolkit.math.AxisAlignedTransform2D;
 import ivorius.reccomplex.structures.StructureInfo;
 import ivorius.reccomplex.structures.StructureLoadContext;
@@ -13,7 +14,6 @@ import ivorius.reccomplex.structures.StructureRegistry;
 import ivorius.reccomplex.structures.generic.gentypes.StructureGenerationInfo;
 import ivorius.reccomplex.structures.generic.gentypes.VanillaStructureGenerationInfo;
 import ivorius.reccomplex.utils.NBTStorable;
-import ivorius.reccomplex.utils.RCDirections;
 import ivorius.reccomplex.worldgen.StructureGenerationData;
 import ivorius.reccomplex.worldgen.StructureGenerator;
 import net.minecraft.nbt.NBTBase;
@@ -57,7 +57,7 @@ public class GenericVillagePiece extends StructureVillagePieces.Village
 
     public static int getRotations(VanillaStructureGenerationInfo vanillaGenInfo, EnumFacing front, boolean mirrorX)
     {
-        Integer rotations = RCDirections.getHorizontalClockwiseRotations(vanillaGenInfo.front, front, mirrorX);
+        Integer rotations = Directions.getHorizontalClockwiseRotations(vanillaGenInfo.front, front, mirrorX);
         return rotations == null ? 0 : rotations;
     }
 

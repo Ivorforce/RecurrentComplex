@@ -9,6 +9,7 @@ import ivorius.ivtoolkit.maze.components.ConnectionStrategy;
 import ivorius.ivtoolkit.maze.components.MazePassage;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 /**
  * Created by lukas on 16.04.15.
@@ -18,8 +19,8 @@ public class ConnectorStrategy implements ConnectionStrategy<Connector>
     public static final String DEFAULT_WALL = "Wall";
     public static final String DEFAULT_PATH = "Path";
 
-    public float connect(@Nonnull MazePassage connection, Connector a, Connector b)
+    public float connect(@Nonnull MazePassage connection, @Nullable Connector existing, @Nonnull Connector add)
     {
-        return (a != null ? a.accepts(b) : (b == null || b.accepts(null))) ? 1 : -1;
+        return add.accepts(existing) ? 1 : -1;
     }
 }

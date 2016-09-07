@@ -23,16 +23,17 @@ import java.util.List;
 /**
  * Created by lukas on 03.03.15.
  */
-public class BlockMatcher extends PrefixedTypeExpressionCache<Boolean> implements Predicate<IBlockState>
+public class BlockMatcher extends FunctionExpressionCache<Boolean> implements Predicate<IBlockState>
 {
-    public static final String METADATA_PREFIX = "#";
+    public static final String BLOCK_ID_PREFIX = "id=";
+    public static final String METADATA_PREFIX = "metadata=";
 
     public BlockMatcher(MCRegistry registry, String expression)
     {
         super(RCBoolAlgebra.algebra(), true, TextFormatting.GREEN + "Any Block", expression);
 
-        addType(new BlockVariableType("", registry));
-        addType(new MetadataVariableType(METADATA_PREFIX));
+        addTypes(new BlockVariableType(BLOCK_ID_PREFIX, "", registry), t -> t.alias("", ""));
+        addTypes(new MetadataVariableType(METADATA_PREFIX, ""), t -> t.alias("#", ""));
     }
 
     public static String of(MCRegistry registry, Block block)
@@ -60,9 +61,9 @@ public class BlockMatcher extends PrefixedTypeExpressionCache<Boolean> implement
     {
         public MCRegistry registry;
 
-        public BlockVariableType(String prefix, MCRegistry registry)
+        public BlockVariableType(String prefix, String suffix, MCRegistry registry)
         {
-            super(prefix);
+            super(prefix, suffix);
             this.registry = registry;
         }
 
@@ -82,9 +83,9 @@ public class BlockMatcher extends PrefixedTypeExpressionCache<Boolean> implement
 
     public static class MetadataVariableType extends ExpressionCaches.SimpleVariableType<Boolean>
     {
-        public MetadataVariableType(String prefix)
+        public MetadataVariableType(String prefix, String suffix)
         {
-            super(prefix);
+            super(prefix, suffix);
         }
 
         public static IntegerRange parseMetadataExp(String var)

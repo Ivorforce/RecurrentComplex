@@ -13,21 +13,24 @@ import ivorius.reccomplex.utils.*;
 import joptsimple.internal.Strings;
 
 import java.util.Arrays;
+import java.util.List;
 
 /**
  * Created by lukas on 19.09.14.
  */
-public class DependencyMatcher extends PrefixedTypeExpressionCache<Boolean>
+public class DependencyMatcher extends FunctionExpressionCache<Boolean>
 {
-    public static final String MOD_PREFIX = "$";
-    public static final String STRUCTURE_PREFIX = "#";
+    public static final String MOD_PREFIX = "mod(";
+    public static final String MOD_SUFFIX = ")";
+    public static final String STRUCTURE_PREFIX = "structure(";
+    public static final String STRUCTURE_SUFFIX = ")";
 
     public DependencyMatcher(String expression)
     {
         super(RCBoolAlgebra.algebra(), true, TextFormatting.GREEN + "No Dependencies", expression);
 
-        addType(new ModVariableType(MOD_PREFIX));
-        addType(new StructureVariableType(STRUCTURE_PREFIX));
+        addTypes(new ModVariableType(MOD_PREFIX, MOD_SUFFIX), t -> t.alias("$", ""));
+        addTypes(new StructureVariableType(STRUCTURE_PREFIX, STRUCTURE_SUFFIX), t -> t.alias("#", ""));
     }
 
     public static String ofMods(String... ids)
@@ -44,9 +47,9 @@ public class DependencyMatcher extends PrefixedTypeExpressionCache<Boolean>
 
     protected static class ModVariableType extends ExpressionCaches.SimpleVariableType<Boolean>
     {
-        public ModVariableType(String prefix)
+        public ModVariableType(String prefix, String suffix)
         {
-            super(prefix);
+            super(prefix, suffix);
         }
 
         @Override
@@ -64,9 +67,9 @@ public class DependencyMatcher extends PrefixedTypeExpressionCache<Boolean>
 
     protected static class StructureVariableType extends ExpressionCaches.SimpleVariableType<Boolean>
     {
-        public StructureVariableType(String prefix)
+        public StructureVariableType(String prefix, String suffix)
         {
-            super(prefix);
+            super(prefix, suffix);
         }
 
         @Override

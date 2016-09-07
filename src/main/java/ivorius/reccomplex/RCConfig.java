@@ -6,12 +6,15 @@
 package ivorius.reccomplex;
 
 import com.google.common.collect.Lists;
+import ivorius.reccomplex.structures.StructureRegistry;
 import ivorius.reccomplex.structures.generic.matchers.BiomeMatcher;
 import ivorius.reccomplex.structures.generic.matchers.CommandMatcher;
 import ivorius.reccomplex.structures.generic.matchers.DimensionMatcher;
 import ivorius.reccomplex.structures.generic.matchers.ResourceMatcher;
 import ivorius.reccomplex.utils.ExpressionCache;
+import ivorius.reccomplex.worldgen.inventory.GenericItemCollectionRegistry;
 import net.minecraft.command.ICommandSender;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.WorldProvider;
 import net.minecraft.world.biome.Biome;
 import org.apache.commons.lang3.tuple.Pair;
@@ -54,11 +57,11 @@ public class RCConfig
 
     private static boolean lightweightMode;
 
-    private static ResourceMatcher structureLoadMatcher = new ResourceMatcher("");
-    private static ResourceMatcher structureGenerationMatcher = new ResourceMatcher("");
+    private static ResourceMatcher structureLoadMatcher = new ResourceMatcher("", StructureRegistry.INSTANCE::hasStructure);
+    private static ResourceMatcher structureGenerationMatcher = new ResourceMatcher("", StructureRegistry.INSTANCE::hasStructure);
 
-    private static ResourceMatcher inventoryGeneratorLoadMatcher = new ResourceMatcher("");
-    private static ResourceMatcher inventoryGeneratorGenerationMatcher = new ResourceMatcher("");
+    private static ResourceMatcher inventoryGeneratorLoadMatcher = new ResourceMatcher("", GenericItemCollectionRegistry.INSTANCE::isLoaded);
+    private static ResourceMatcher inventoryGeneratorGenerationMatcher = new ResourceMatcher("", GenericItemCollectionRegistry.INSTANCE::isLoaded);
 
     private static BiomeMatcher universalBiomeMatcher = new BiomeMatcher("");
     private static DimensionMatcher universalDimensionMatcher = new DimensionMatcher("");
@@ -152,22 +155,22 @@ public class RCConfig
 
     public static boolean shouldStructureLoad(String id, String domain)
     {
-        return structureLoadMatcher.apply(id, domain);
+        return structureLoadMatcher.test(new ResourceLocation(domain, id));
     }
 
     public static boolean shouldStructureGenerate(String id, String domain)
     {
-        return structureGenerationMatcher.apply(id, domain);
+        return structureGenerationMatcher.test(new ResourceLocation(domain, id));
     }
 
     public static boolean shouldInventoryGeneratorLoad(String id, String domain)
     {
-        return inventoryGeneratorLoadMatcher.apply(id, domain);
+        return inventoryGeneratorLoadMatcher.test(new ResourceLocation(domain, id));
     }
 
     public static boolean shouldInventoryGeneratorGenerate(String id, String domain)
     {
-        return inventoryGeneratorGenerationMatcher.apply(id, domain);
+        return inventoryGeneratorGenerationMatcher.test(new ResourceLocation(domain, id));
     }
 
     public static boolean isGenerationEnabled(Biome biome)

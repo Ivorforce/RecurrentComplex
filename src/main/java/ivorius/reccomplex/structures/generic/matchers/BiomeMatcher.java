@@ -10,7 +10,8 @@ import com.google.common.collect.Lists;
 import ivorius.ivtoolkit.tools.IvGsonHelper;
 import ivorius.reccomplex.json.RCGsonHelper;
 import ivorius.reccomplex.utils.ExpressionCaches;
-import ivorius.reccomplex.utils.PrefixedTypeExpressionCache;
+import ivorius.reccomplex.utils.FunctionExpressionCache;
+import ivorius.reccomplex.utils.IvLists;
 import ivorius.reccomplex.utils.algebra.RCBoolAlgebra;
 import joptsimple.internal.Strings;
 import net.minecraft.util.text.TextFormatting;
@@ -27,16 +28,17 @@ import java.util.stream.StreamSupport;
 /**
  * Created by lukas on 19.09.14.
  */
-public class BiomeMatcher extends PrefixedTypeExpressionCache<Boolean> implements Predicate<Biome>
+public class BiomeMatcher extends FunctionExpressionCache<Boolean> implements Predicate<Biome>
 {
-    public static final String BIOME_TYPE_PREFIX = "$";
+    public static final String BIOME_NAME_PREFIX = "name=";
+    public static final String BIOME_TYPE_PREFIX = "type=";
 
     public BiomeMatcher(String expression)
     {
         super(RCBoolAlgebra.algebra(), true, TextFormatting.GREEN + "Any Biome", expression);
 
-        addType(new BiomeVariableType(""));
-        addType(new BiomeDictVariableType(BIOME_TYPE_PREFIX));
+        addTypes(new BiomeVariableType(BIOME_NAME_PREFIX, ""), t -> t.alias("", ""));
+        addTypes(new BiomeDictVariableType(BIOME_TYPE_PREFIX, ""), t -> t.alias("$", ""));
     }
 
     public static String ofTypes(BiomeDictionary.Type... biomeTypes)
@@ -90,9 +92,9 @@ public class BiomeMatcher extends PrefixedTypeExpressionCache<Boolean> implement
 
     protected static class BiomeVariableType extends ExpressionCaches.SimpleVariableType<Boolean>
     {
-        public BiomeVariableType(String prefix)
+        public BiomeVariableType(String prefix, String suffix)
         {
-            super(prefix);
+            super(prefix, suffix);
         }
 
         @Override
@@ -110,9 +112,9 @@ public class BiomeMatcher extends PrefixedTypeExpressionCache<Boolean> implement
 
     protected static class BiomeDictVariableType extends ExpressionCaches.SimpleVariableType<Boolean>
     {
-        public BiomeDictVariableType(String prefix)
+        public BiomeDictVariableType(String prefix, String suffix)
         {
-            super(prefix);
+            super(prefix, suffix);
         }
 
         @Override

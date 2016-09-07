@@ -7,16 +7,18 @@ package ivorius.reccomplex.utils;
 
 import net.minecraft.util.text.TextFormatting;
 
+import java.util.List;
+
 /**
  * Created by lukas on 24.03.15.
  */
 public class ExpressionCaches
 {
-    public static abstract class SimpleVariableType<T> extends PrefixedTypeExpressionCache.VariableType<T>
+    public static abstract class SimpleVariableType<T> extends FunctionExpressionCache.VariableType<T>
     {
-        public SimpleVariableType(String prefix)
+        public SimpleVariableType(String prefix, String suffix)
         {
-            super(prefix);
+            super(prefix, suffix);
         }
 
         @Override

@@ -7,24 +7,27 @@ package ivorius.reccomplex.structures.generic.matchers;
 
 import com.google.common.primitives.Ints;
 import ivorius.reccomplex.utils.ExpressionCaches;
-import ivorius.reccomplex.utils.PrefixedTypeExpressionCache;
+import ivorius.reccomplex.utils.FunctionExpressionCache;
 import ivorius.reccomplex.utils.algebra.RCBoolAlgebra;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.util.text.TextFormatting;
 
+import java.util.List;
+
 /**
  * Created by lukas on 01.05.15.
  */
-public class CommandMatcher extends PrefixedTypeExpressionCache<Boolean>
+public class CommandMatcher extends FunctionExpressionCache<Boolean>
 {
-    public static final String NAME_PREFIX = "$";
-    public static final String PERM_PREFIX = "#";
+    public static final String NAME_PREFIX = "name=";
+    public static final String PERM_PREFIX = "canUseLevel(";
+    public static final String PERM_SUFFIX = ")";
 
     public CommandMatcher(String expression)
     {
         super(RCBoolAlgebra.algebra(), true, TextFormatting.GREEN + "Any Command", expression);
-        addType(new NameType(NAME_PREFIX));
-        addType(new PermType(PERM_PREFIX));
+        addTypes(new NameType(NAME_PREFIX, ""), t -> t.alias("$", ""));
+        addTypes(new PermType(PERM_PREFIX, PERM_SUFFIX), t -> t.alias("#", ""));
     }
 
     public boolean apply(String commandName, ICommandSender sender)
@@ -34,9 +37,9 @@ public class CommandMatcher extends PrefixedTypeExpressionCache<Boolean>
 
     protected static class NameType extends ExpressionCaches.SimpleVariableType<Boolean>
     {
-        public NameType(String prefix)
+        public NameType(String prefix, String suffix)
         {
-            super(prefix);
+            super(prefix, suffix);
         }
 
         @Override
@@ -54,9 +57,9 @@ public class CommandMatcher extends PrefixedTypeExpressionCache<Boolean>
 
     protected static class PermType extends ExpressionCaches.SimpleVariableType<Boolean>
     {
-        public PermType(String prefix)
+        public PermType(String prefix, String suffix)
         {
-            super(prefix);
+            super(prefix, suffix);
         }
 
         public static Integer parseNumber(String var)

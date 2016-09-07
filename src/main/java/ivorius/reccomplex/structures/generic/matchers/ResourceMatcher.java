@@ -5,62 +5,69 @@
 
 package ivorius.reccomplex.structures.generic.matchers;
 
-import ivorius.reccomplex.structures.StructureRegistry;
 import ivorius.reccomplex.utils.ExpressionCaches;
-import ivorius.reccomplex.utils.PrefixedTypeExpressionCache;
+import ivorius.reccomplex.utils.FunctionExpressionCache;
 import ivorius.reccomplex.utils.algebra.RCBoolAlgebra;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.TextFormatting;
+
+import java.util.function.Predicate;
 
 /**
  * Created by lukas on 01.05.15.
  */
-public class ResourceMatcher extends PrefixedTypeExpressionCache<Boolean>
+public class ResourceMatcher extends FunctionExpressionCache<Boolean> implements Predicate<ResourceLocation>
 {
-    public static final String DOMAIN_PREFIX = "$";
+    public static final String ID_PREFIX = "id=";
+    public static final String DOMAIN_PREFIX = "domain=";
 
-    public ResourceMatcher(String expression)
+    public ResourceMatcher(String expression, Predicate<String> isKnown)
     {
-        super(RCBoolAlgebra.algebra(), true, TextFormatting.GREEN + "Any Resource", expression);
-        addType(new ResourceIDType(""));
-        addType(new DomainType(DOMAIN_PREFIX));
+        super(RCBoolAlgebra.algebra(), true, TextFormatting.GREEN + "Any Structure", expression);
+        addTypes(new ResourceIDType(ID_PREFIX, "", isKnown), t -> t.alias("", ""));
+        addTypes(new DomainType(DOMAIN_PREFIX, ""), t -> t.alias("$", ""));
     }
 
-    public boolean apply(String resourceID, String domain)
+    @Override
+    public boolean test(ResourceLocation location)
     {
-        return evaluate(resourceID, domain);
+        return evaluate(location);
     }
 
     protected static class ResourceIDType extends ExpressionCaches.SimpleVariableType<Boolean>
     {
-        public ResourceIDType(String prefix)
+        private Predicate<String> isKnown;
+
+        public ResourceIDType(String prefix, String suffix, Predicate<String> isKnown)
         {
-            super(prefix);
+            super(prefix, suffix);
+            this.isKnown = isKnown;
         }
 
         @Override
         public Boolean evaluate(String var, Object... args)
         {
-            return args[0].equals(var);
+            return ((ResourceLocation) args[0]).getResourcePath().equals(var);
         }
 
         @Override
         public boolean isKnown(final String var, final Object... args)
         {
-            return StructureRegistry.INSTANCE.hasStructure(var);
+            return isKnown.test(var);
         }
     }
 
     protected static class DomainType extends ExpressionCaches.SimpleVariableType<Boolean>
     {
-        public DomainType(String prefix)
+        public DomainType(String prefix, String suffix)
         {
-            super(prefix);
+            super(prefix, suffix);
         }
 
         @Override
         public Boolean evaluate(String var, Object... args)
         {
-            return args[1].equals(var);
+            return ((ResourceLocation) args[0]).getResourceDomain().equals(var);
         }
 
         @Override

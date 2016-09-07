@@ -13,7 +13,6 @@ import ivorius.reccomplex.utils.*;
 import joptsimple.internal.Strings;
 
 import java.util.Arrays;
-import java.util.List;
 
 /**
  * Created by lukas on 19.09.14.
@@ -31,6 +30,8 @@ public class DependencyMatcher extends FunctionExpressionCache<Boolean>
 
         addTypes(new ModVariableType(MOD_PREFIX, MOD_SUFFIX), t -> t.alias("$", ""));
         addTypes(new StructureVariableType(STRUCTURE_PREFIX, STRUCTURE_SUFFIX), t -> t.alias("#", ""));
+
+        testVariables();
     }
 
     public static String ofMods(String... ids)
@@ -45,7 +46,7 @@ public class DependencyMatcher extends FunctionExpressionCache<Boolean>
         return evaluate();
     }
 
-    protected static class ModVariableType extends ExpressionCaches.SimpleVariableType<Boolean>
+    protected static class ModVariableType extends VariableType<Boolean>
     {
         public ModVariableType(String prefix, String suffix)
         {
@@ -65,7 +66,7 @@ public class DependencyMatcher extends FunctionExpressionCache<Boolean>
         }
     }
 
-    protected static class StructureVariableType extends ExpressionCaches.SimpleVariableType<Boolean>
+    protected static class StructureVariableType extends VariableType<Boolean>
     {
         public StructureVariableType(String prefix, String suffix)
         {

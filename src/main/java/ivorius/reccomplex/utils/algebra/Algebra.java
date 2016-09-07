@@ -69,7 +69,7 @@ public class Algebra<T>
         {
             tokens.remove(0);
             ExpressionToken<T> exp = new ExpressionToken<>(startToken.startIndex, startToken.endIndex,
-                    new Constant<>(((ConstantToken) startToken).identifier));
+                    new Constant<>(startToken.startIndex, ((ConstantToken) startToken).identifier));
             tokens.add(exp);
             return exp;
         }
@@ -163,7 +163,7 @@ public class Algebra<T>
         }
         tokens.clear();
 
-        tokens.add(new ExpressionToken<>(startIndex, endIndex, new Operation<>(operator, expressions)));
+        tokens.add(new ExpressionToken<>(startIndex, endIndex, new Operation<>(startIndex, operator, expressions)));
     }
 
     protected static <T> int reduceBuildingExpression(BuildingExpression<T> buildingExpression, List<SymbolTokenizer.Token> tokens, NavigableSet<PrecedenceSet<Operator<T>>> followingOperators, int currentTokenIndex) throws ParseException
@@ -351,19 +351,27 @@ public class Algebra<T>
 
     public abstract static class Expression<T>
     {
+        public final int index;
+
+        public Expression(int index)
+        {
+            this.index = index;
+        }
+
         public abstract T evaluate(@Nullable Function<String, T> input);
 
-        public abstract boolean walkVariables(Visitor<String> visitor);
+        public abstract boolean walkVariables(Visitor<Constant<T>> visitor);
 
         public abstract String toString(Function<String, String> stringMapper);
     }
 
     public static class Constant<T> extends Expression<T>
     {
-        public String identifier;
+        public final String identifier;
 
-        public Constant(String identifier)
+        public Constant(int index, String identifier)
         {
+            super(index);
             this.identifier = identifier;
         }
 
@@ -376,9 +384,9 @@ public class Algebra<T>
         }
 
         @Override
-        public boolean walkVariables(Visitor<String> visitor)
+        public boolean walkVariables(Visitor<Constant<T>> visitor)
         {
-            return visitor.visit(identifier);
+            return visitor.visit(this);
         }
 
         @Override
@@ -393,8 +401,9 @@ public class Algebra<T>
         public T value;
         public String representation;
 
-        public Value(T value, String representation)
+        public Value(int index, T value, String representation)
         {
+            super(index);
             this.value = value;
             this.representation = representation;
         }
@@ -406,7 +415,7 @@ public class Algebra<T>
         }
 
         @Override
-        public boolean walkVariables(Visitor<String> visitor)
+        public boolean walkVariables(Visitor<Constant<T>> visitor)
         {
             return true;
         }
@@ -424,8 +433,9 @@ public class Algebra<T>
         protected Expression<T>[] expressions;
 
         @SafeVarargs
-        public Operation(Operator<T> operator, Expression<T>... expressions)
+        public Operation(int index, Operator<T> operator, Expression<T>... expressions)
         {
+            super(index);
             this.operator = operator;
             this.expressions = expressions;
         }
@@ -447,7 +457,7 @@ public class Algebra<T>
         }
 
         @Override
-        public boolean walkVariables(Visitor<String> visitor)
+        public boolean walkVariables(Visitor<Constant<T>> visitor)
         {
             for (Expression expression : expressions)
                 if (!expression.walkVariables(visitor))

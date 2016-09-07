@@ -28,13 +28,13 @@ public class ExpressionCache<T>
     @Nullable
     protected ParseException parseException;
 
-    public ExpressionCache(@Nonnull Algebra<T> algebra, String expression)
+    public ExpressionCache(@Nonnull Algebra<T> algebra, @Nonnull String expression)
     {
         this.algebra = algebra;
         setExpression(expression);
     }
 
-    public ExpressionCache(@Nonnull Algebra<T> algebra, T emptyExpressionResult, String emptyResultRepresentation, String expression)
+    public ExpressionCache(@Nonnull Algebra<T> algebra, T emptyExpressionResult, String emptyResultRepresentation, @Nonnull String expression)
     {
         this.algebra = algebra;
         this.emptyExpressionResult = emptyExpressionResult;
@@ -46,7 +46,7 @@ public class ExpressionCache<T>
     {
         if (expressionIsEmpty() && acceptsEmptyExpression())
         {
-            parsedExpression = new Algebra.Value<>(emptyExpressionResult, emptyResultRepresentation);
+            parsedExpression = new Algebra.Value<>(0, emptyExpressionResult, emptyResultRepresentation);
             parseException = null;
         }
         else
@@ -55,6 +55,8 @@ public class ExpressionCache<T>
             {
                 parsedExpression = algebra.parse(expression);
                 parseException = null;
+
+                testVariables();
             }
             catch (ParseException e)
             {
@@ -62,6 +64,27 @@ public class ExpressionCache<T>
                 parseException = e;
             }
         }
+    }
+
+    protected void testVariables()
+    {
+        if (parsedExpression != null)
+        {
+            try
+            {
+                testVariables(parsedExpression);
+            }
+            catch (ParseException e)
+            {
+                parsedExpression = null;
+                parseException = e;
+            }
+        }
+    }
+
+    protected void testVariables(@Nonnull Algebra.Expression<T> expression) throws ParseException
+    {
+
     }
 
     @Nonnull

@@ -34,6 +34,8 @@ public class BlockMatcher extends FunctionExpressionCache<Boolean> implements Pr
 
         addTypes(new BlockVariableType(BLOCK_ID_PREFIX, "", registry), t -> t.alias("", ""));
         addTypes(new MetadataVariableType(METADATA_PREFIX, ""), t -> t.alias("#", ""));
+
+        testVariables();
     }
 
     public static String of(MCRegistry registry, Block block)
@@ -57,7 +59,7 @@ public class BlockMatcher extends FunctionExpressionCache<Boolean> implements Pr
         return evaluate(input);
     }
 
-    public static class BlockVariableType extends ExpressionCaches.SimpleVariableType<Boolean>
+    public static class BlockVariableType extends VariableType<Boolean>
     {
         public MCRegistry registry;
 
@@ -81,7 +83,7 @@ public class BlockMatcher extends FunctionExpressionCache<Boolean> implements Pr
         }
     }
 
-    public static class MetadataVariableType extends ExpressionCaches.SimpleVariableType<Boolean>
+    public static class MetadataVariableType extends VariableType<Boolean>
     {
         public MetadataVariableType(String prefix, String suffix)
         {

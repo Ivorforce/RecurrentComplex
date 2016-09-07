@@ -6,7 +6,6 @@
 package ivorius.reccomplex.structures.generic.matchers;
 
 import ivorius.reccomplex.structures.StructureSpawnContext;
-import ivorius.reccomplex.utils.ExpressionCaches;
 import ivorius.reccomplex.utils.FunctionExpressionCache;
 import ivorius.reccomplex.utils.algebra.RCBoolAlgebra;
 import net.minecraft.util.text.TextFormatting;
@@ -29,6 +28,8 @@ public class GenerationMatcher extends FunctionExpressionCache<Boolean> implemen
         addType(new BiomeVariableType(BIOME_PREFIX, ""));
         addType(new DimensionVariableType(DIMENSION_PREFIX, ""));
         addType(new DependencyVariableType(DEPENDENCY_PREFIX, ""));
+
+        testVariables();
     }
 
     @Override
@@ -37,7 +38,7 @@ public class GenerationMatcher extends FunctionExpressionCache<Boolean> implemen
         return evaluate(structureSpawnContext);
     }
 
-    public class BiomeVariableType extends ExpressionCaches.SimpleVariableType<Boolean>
+    public class BiomeVariableType extends VariableType<Boolean>
     {
         public BiomeVariableType(String prefix, String suffix)
         {
@@ -58,7 +59,7 @@ public class GenerationMatcher extends FunctionExpressionCache<Boolean> implemen
         }
     }
 
-    public class DimensionVariableType extends ExpressionCaches.SimpleVariableType<Boolean>
+    public class DimensionVariableType extends VariableType<Boolean>
     {
         public DimensionVariableType(String prefix, String suffix)
         {
@@ -79,7 +80,7 @@ public class GenerationMatcher extends FunctionExpressionCache<Boolean> implemen
         }
     }
 
-    public class DependencyVariableType extends ExpressionCaches.SimpleVariableType<Boolean>
+    public class DependencyVariableType extends VariableType<Boolean>
     {
         public DependencyVariableType(String prefix, String suffix)
         {

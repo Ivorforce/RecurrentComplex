@@ -16,8 +16,6 @@ import net.minecraft.world.WorldProvider;
 import net.minecraftforge.common.DimensionManager;
 import org.apache.commons.lang3.ArrayUtils;
 
-import java.util.List;
-
 /**
  * Created by lukas on 19.09.14.
  */
@@ -29,8 +27,10 @@ public class DimensionMatcher extends FunctionExpressionCache<Boolean> implement
     public DimensionMatcher(String expression)
     {
         super(RCBoolAlgebra.algebra(), true, TextFormatting.GREEN + "Any Dimension", expression);
-        addType(new DimensionVariableType(DIMENSION_ID_PREFIX, ""));
-        addType(new DimensionDictVariableType( DIMENSION_TYPE_PREFIX, "$"));
+        addTypes(new DimensionVariableType(DIMENSION_ID_PREFIX, ""), t -> t.alias("", ""));
+        addTypes(new DimensionDictVariableType( DIMENSION_TYPE_PREFIX, ""), t -> t.alias("$", ""));
+
+        testVariables();
     }
 
     public static String ofTypes(String... dimensionTypes)
@@ -44,7 +44,7 @@ public class DimensionMatcher extends FunctionExpressionCache<Boolean> implement
         return evaluate(input);
     }
 
-    protected static class DimensionVariableType extends ExpressionCaches.SimpleVariableType<Boolean>
+    protected static class DimensionVariableType extends VariableType<Boolean>
     {
         public DimensionVariableType(String prefix, String suffix)
         {
@@ -66,7 +66,7 @@ public class DimensionMatcher extends FunctionExpressionCache<Boolean> implement
         }
     }
 
-    protected static class DimensionDictVariableType extends ExpressionCaches.SimpleVariableType<Boolean>
+    protected static class DimensionDictVariableType extends VariableType<Boolean>
     {
         public DimensionDictVariableType(String prefix, String suffix)
         {

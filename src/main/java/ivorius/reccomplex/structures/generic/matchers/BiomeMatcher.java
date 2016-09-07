@@ -9,9 +9,7 @@ import com.google.common.base.Predicate;
 import com.google.common.collect.Lists;
 import ivorius.ivtoolkit.tools.IvGsonHelper;
 import ivorius.reccomplex.json.RCGsonHelper;
-import ivorius.reccomplex.utils.ExpressionCaches;
 import ivorius.reccomplex.utils.FunctionExpressionCache;
-import ivorius.reccomplex.utils.IvLists;
 import ivorius.reccomplex.utils.algebra.RCBoolAlgebra;
 import joptsimple.internal.Strings;
 import net.minecraft.util.text.TextFormatting;
@@ -39,6 +37,8 @@ public class BiomeMatcher extends FunctionExpressionCache<Boolean> implements Pr
 
         addTypes(new BiomeVariableType(BIOME_NAME_PREFIX, ""), t -> t.alias("", ""));
         addTypes(new BiomeDictVariableType(BIOME_TYPE_PREFIX, ""), t -> t.alias("$", ""));
+
+        testVariables();
     }
 
     public static String ofTypes(BiomeDictionary.Type... biomeTypes)
@@ -90,7 +90,7 @@ public class BiomeMatcher extends FunctionExpressionCache<Boolean> implements Pr
         return evaluate(input);
     }
 
-    protected static class BiomeVariableType extends ExpressionCaches.SimpleVariableType<Boolean>
+    protected static class BiomeVariableType extends VariableType<Boolean>
     {
         public BiomeVariableType(String prefix, String suffix)
         {
@@ -110,7 +110,7 @@ public class BiomeMatcher extends FunctionExpressionCache<Boolean> implements Pr
         }
     }
 
-    protected static class BiomeDictVariableType extends ExpressionCaches.SimpleVariableType<Boolean>
+    protected static class BiomeDictVariableType extends VariableType<Boolean>
     {
         public BiomeDictVariableType(String prefix, String suffix)
         {

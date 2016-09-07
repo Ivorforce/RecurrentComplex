@@ -6,13 +6,10 @@
 package ivorius.reccomplex.structures.generic.matchers;
 
 import com.google.common.primitives.Ints;
-import ivorius.reccomplex.utils.ExpressionCaches;
 import ivorius.reccomplex.utils.FunctionExpressionCache;
 import ivorius.reccomplex.utils.algebra.RCBoolAlgebra;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.util.text.TextFormatting;
-
-import java.util.List;
 
 /**
  * Created by lukas on 01.05.15.
@@ -28,6 +25,8 @@ public class CommandMatcher extends FunctionExpressionCache<Boolean>
         super(RCBoolAlgebra.algebra(), true, TextFormatting.GREEN + "Any Command", expression);
         addTypes(new NameType(NAME_PREFIX, ""), t -> t.alias("$", ""));
         addTypes(new PermType(PERM_PREFIX, PERM_SUFFIX), t -> t.alias("#", ""));
+
+        testVariables();
     }
 
     public boolean apply(String commandName, ICommandSender sender)
@@ -35,7 +34,7 @@ public class CommandMatcher extends FunctionExpressionCache<Boolean>
         return evaluate(commandName, sender);
     }
 
-    protected static class NameType extends ExpressionCaches.SimpleVariableType<Boolean>
+    protected static class NameType extends VariableType<Boolean>
     {
         public NameType(String prefix, String suffix)
         {
@@ -55,7 +54,7 @@ public class CommandMatcher extends FunctionExpressionCache<Boolean>
         }
     }
 
-    protected static class PermType extends ExpressionCaches.SimpleVariableType<Boolean>
+    protected static class PermType extends VariableType<Boolean>
     {
         public PermType(String prefix, String suffix)
         {

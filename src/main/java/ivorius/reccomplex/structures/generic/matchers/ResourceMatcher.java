@@ -5,7 +5,6 @@
 
 package ivorius.reccomplex.structures.generic.matchers;
 
-import ivorius.reccomplex.utils.ExpressionCaches;
 import ivorius.reccomplex.utils.FunctionExpressionCache;
 import ivorius.reccomplex.utils.algebra.RCBoolAlgebra;
 import net.minecraft.util.ResourceLocation;
@@ -26,6 +25,8 @@ public class ResourceMatcher extends FunctionExpressionCache<Boolean> implements
         super(RCBoolAlgebra.algebra(), true, TextFormatting.GREEN + "Any Structure", expression);
         addTypes(new ResourceIDType(ID_PREFIX, "", isKnown), t -> t.alias("", ""));
         addTypes(new DomainType(DOMAIN_PREFIX, ""), t -> t.alias("$", ""));
+
+        testVariables();
     }
 
     @Override
@@ -34,7 +35,7 @@ public class ResourceMatcher extends FunctionExpressionCache<Boolean> implements
         return evaluate(location);
     }
 
-    protected static class ResourceIDType extends ExpressionCaches.SimpleVariableType<Boolean>
+    protected static class ResourceIDType extends VariableType<Boolean>
     {
         private Predicate<String> isKnown;
 
@@ -57,7 +58,7 @@ public class ResourceMatcher extends FunctionExpressionCache<Boolean> implements
         }
     }
 
-    protected static class DomainType extends ExpressionCaches.SimpleVariableType<Boolean>
+    protected static class DomainType extends VariableType<Boolean>
     {
         public DomainType(String prefix, String suffix)
         {

@@ -5,12 +5,12 @@
 
 package ivorius.reccomplex.utils;
 
-import com.google.common.collect.Lists;
 import net.minecraft.util.text.TextFormatting;
 import ivorius.reccomplex.utils.algebra.Algebra;
-import org.apache.commons.lang3.tuple.Pair;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import java.text.ParseException;
 import java.util.*;
 import java.util.function.Function;
 
@@ -56,6 +56,7 @@ public class FunctionExpressionCache<T> extends ExpressionCache<T>
         return Collections.unmodifiableSet(types);
     }
 
+    @Nullable
     protected VariableType<T> type(final String var)
     {
         return types.stream()
@@ -83,12 +84,32 @@ public class FunctionExpressionCache<T> extends ExpressionCache<T>
 
     protected boolean containsUnknownVariables(final Object... args)
     {
-        return parsedExpression != null && !parsedExpression.walkVariables(s -> isKnownVariable(s, args));
+        return parsedExpression != null && !parsedExpression.walkVariables(s -> isKnownVariable(s.identifier, args));
+    }
+
+    @Override
+    protected void testVariables(@Nonnull Algebra.Expression<T> expression) throws ParseException
+    {
+        super.testVariables(expression);
+
+        // Pre-setup
+        if (types != null)
+        {
+            ParseException[] exception = new ParseException[1];
+            expression.walkVariables(s -> {
+                if (type(s.identifier) == null)
+                    exception[0] = new ParseException(String.format("Type of '%s' unknown", s.identifier), s.index);
+                return true;
+            });
+
+            if (exception[0] != null)
+                throw exception[0];
+        }
     }
 
     protected T evaluate(final Object... args)
     {
-        return parsedExpression != null ? parsedExpression.evaluate(var -> evaluateVariable(var, args)) : null;
+        return parsedExpression != null ? parsedExpression.evaluate(var -> evaluateVariable(var, args)) : emptyExpressionResult;
     }
 
     @Nonnull
@@ -130,12 +151,6 @@ public class FunctionExpressionCache<T> extends ExpressionCache<T>
         {
             return parent.isKnown(var, args);
         }
-
-        @Override
-        public String getRepresentation(String var, Object... args)
-        {
-            return parent.getRepresentation(var, args);
-        }
     }
 
     public static abstract class VariableType<T> implements Comparable<VariableType>
@@ -153,7 +168,11 @@ public class FunctionExpressionCache<T> extends ExpressionCache<T>
 
         public abstract boolean isKnown(String var, Object... args);
 
-        public abstract String getRepresentation(String var, Object... args);
+        public String getRepresentation(String var, Object... args)
+        {
+            TextFormatting variableColor = isKnown(var, args) ? TextFormatting.GREEN : TextFormatting.YELLOW;
+            return TextFormatting.BLUE + prefix + variableColor + var + TextFormatting.BLUE + suffix + TextFormatting.RESET;
+        }
 
         @Override
         public int compareTo(@Nonnull VariableType o)
@@ -163,7 +182,7 @@ public class FunctionExpressionCache<T> extends ExpressionCache<T>
 
         public AliasType<T, VariableType<T>> alias(String prefix, String suffix)
         {
-            return new AliasType<T, VariableType<T>>(prefix, suffix, this);
+            return new AliasType<>(prefix, suffix, this);
         }
     }
 }

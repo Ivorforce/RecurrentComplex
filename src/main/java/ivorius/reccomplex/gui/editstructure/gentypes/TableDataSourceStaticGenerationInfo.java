@@ -33,7 +33,7 @@ public class TableDataSourceStaticGenerationInfo extends TableDataSourceSegmente
         addManagedSection(2, new TableDataSourceBlockSurfacePos(generationInfo.position, generationInfo::setPosition, null, null,
                 IvTranslations.get("reccomplex.generationInfo.static.position.x"), IvTranslations.get("reccomplex.generationInfo.static.position.z")));
         addManagedSection(3, new TableDataSourceYSelector(generationInfo.ySelector));
-        addManagedSection(4, TableDataSourceExpression.constructDefault(IvTranslations.get("reccomplex.gui.biomes"), generationInfo.dimensionMatcher));
+        addManagedSection(4, TableDataSourceExpression.constructDefault(IvTranslations.get("reccomplex.gui.biomes"), generationInfo.dimensionMatcher, null));
 
         addManagedSection(5, TableCellMultiBuilder.create(navigator, tableDelegate)
                 .addNavigation(() -> IvTranslations.get("reccomplex.gui.edit"), null,

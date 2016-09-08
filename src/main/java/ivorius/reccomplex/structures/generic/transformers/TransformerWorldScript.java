@@ -53,13 +53,13 @@ public class TransformerWorldScript extends TransformerSingleBlock<TransformerWo
     @Override
     public boolean matches(InstanceData instanceData, IBlockState state)
     {
-        return sourceMatcher.apply(state);
+        return sourceMatcher.test(state);
     }
 
     @Override
     public void transformBlock(InstanceData instanceData, Phase phase, StructureSpawnContext context, BlockPos coord, IBlockState sourceState)
     {
-        WorldScriptMulti.InstanceData scriptInstanceData = script.prepareInstanceData(new StructurePrepareContext(context.random, context.transform, context.boundingBox, context.generateAsSource), coord);
+        WorldScriptMulti.InstanceData scriptInstanceData = script.prepareInstanceData(new StructurePrepareContext(context.random, context.world, context.transform, context.boundingBox, context.generateAsSource), coord);
         script.generate(context, scriptInstanceData, coord);
     }
 

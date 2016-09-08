@@ -54,7 +54,7 @@ public class TransformerPillar extends TransformerSingleBlock<NBTNone>
     @Override
     public boolean matches(NBTNone instanceData, IBlockState state)
     {
-        return sourceMatcher.apply(state);
+        return sourceMatcher.test(state);
     }
 
     @Override
@@ -95,7 +95,7 @@ public class TransformerPillar extends TransformerSingleBlock<NBTNone>
     @Override
     public String getDisplayString()
     {
-        return "Pillar: " + sourceMatcher.getDisplayString() + "->" + destState.getBlock().getLocalizedName();
+        return "Pillar: " + sourceMatcher.getDisplayString(null) + "->" + destState.getBlock().getLocalizedName();
     }
 
     @Override

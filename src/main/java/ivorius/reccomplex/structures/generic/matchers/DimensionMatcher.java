@@ -5,10 +5,9 @@
 
 package ivorius.reccomplex.structures.generic.matchers;
 
-import com.google.common.base.Predicate;
 import com.google.common.primitives.Ints;
 import ivorius.reccomplex.dimensions.DimensionDictionary;
-import ivorius.reccomplex.utils.*;
+import ivorius.reccomplex.utils.FunctionExpressionCache;
 import ivorius.reccomplex.utils.algebra.RCBoolAlgebra;
 import joptsimple.internal.Strings;
 import net.minecraft.util.text.TextFormatting;
@@ -16,10 +15,12 @@ import net.minecraft.world.WorldProvider;
 import net.minecraftforge.common.DimensionManager;
 import org.apache.commons.lang3.ArrayUtils;
 
+import java.util.function.Predicate;
+
 /**
  * Created by lukas on 19.09.14.
  */
-public class DimensionMatcher extends FunctionExpressionCache<Boolean> implements Predicate<WorldProvider>
+public class DimensionMatcher extends FunctionExpressionCache<Boolean, WorldProvider, Object> implements Predicate<WorldProvider>
 {
     public static final String DIMENSION_ID_PREFIX = "id=";
     public static final String DIMENSION_TYPE_PREFIX = "type=";
@@ -28,7 +29,7 @@ public class DimensionMatcher extends FunctionExpressionCache<Boolean> implement
     {
         super(RCBoolAlgebra.algebra(), true, TextFormatting.GREEN + "Any Dimension", expression);
         addTypes(new DimensionVariableType(DIMENSION_ID_PREFIX, ""), t -> t.alias("", ""));
-        addTypes(new DimensionDictVariableType( DIMENSION_TYPE_PREFIX, ""), t -> t.alias("$", ""));
+        addTypes(new DimensionDictVariableType(DIMENSION_TYPE_PREFIX, ""), t -> t.alias("$", ""));
 
         testVariables();
     }
@@ -39,12 +40,12 @@ public class DimensionMatcher extends FunctionExpressionCache<Boolean> implement
     }
 
     @Override
-    public boolean apply(final WorldProvider input)
+    public boolean test(final WorldProvider input)
     {
         return evaluate(input);
     }
 
-    protected static class DimensionVariableType extends VariableType<Boolean>
+    protected class DimensionVariableType extends VariableType<Boolean, WorldProvider, Object>
     {
         public DimensionVariableType(String prefix, String suffix)
         {
@@ -52,21 +53,22 @@ public class DimensionMatcher extends FunctionExpressionCache<Boolean> implement
         }
 
         @Override
-        public Boolean evaluate(String var, Object... args)
+        public Boolean evaluate(String var, WorldProvider provider)
         {
             Integer dimID = Ints.tryParse(var);
-            return dimID != null && ((WorldProvider) args[0]).getDimension() == dimID;
+            return dimID != null && provider.getDimension() == dimID;
         }
 
         @Override
-        public boolean isKnown(final String var, final Object... args)
+        public Validity validity(final String var, final Object args)
         {
             Integer dimID = Ints.tryParse(var);
-            return dimID != null && ArrayUtils.contains(DimensionManager.getIDs(), dimID);
+            return dimID != null && ArrayUtils.contains(DimensionManager.getIDs(), dimID)
+                    ? Validity.KNOWN : Validity.UNKNOWN;
         }
     }
 
-    protected static class DimensionDictVariableType extends VariableType<Boolean>
+    protected class DimensionDictVariableType extends VariableType<Boolean, WorldProvider, Object>
     {
         public DimensionDictVariableType(String prefix, String suffix)
         {
@@ -74,15 +76,16 @@ public class DimensionMatcher extends FunctionExpressionCache<Boolean> implement
         }
 
         @Override
-        public Boolean evaluate(String var, Object... args)
+        public Boolean evaluate(String var, WorldProvider provider)
         {
-            return DimensionDictionary.dimensionMatchesType((WorldProvider) args[0], var);
+            return DimensionDictionary.dimensionMatchesType(provider, var);
         }
 
         @Override
-        public boolean isKnown(String var, Object... args)
+        public Validity validity(String var, Object args)
         {
-            return DimensionDictionary.allRegisteredTypes().contains(var);
+            return DimensionDictionary.allRegisteredTypes().contains(var)
+                    ? Validity.KNOWN : Validity.UNKNOWN;
         }
     }
 }

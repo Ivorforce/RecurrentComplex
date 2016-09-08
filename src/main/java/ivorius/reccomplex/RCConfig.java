@@ -175,17 +175,17 @@ public class RCConfig
 
     public static boolean isGenerationEnabled(Biome biome)
     {
-        return !universalBiomeMatcher.isExpressionValid() || universalBiomeMatcher.apply(biome);
+        return !universalBiomeMatcher.isExpressionValid() || universalBiomeMatcher.test(biome);
     }
 
     public static boolean isGenerationEnabled(WorldProvider provider)
     {
-        return !universalDimensionMatcher.isExpressionValid() || universalDimensionMatcher.apply(provider);
+        return !universalDimensionMatcher.isExpressionValid() || universalDimensionMatcher.test(provider);
     }
 
     public static boolean canUseCommand(String command, ICommandSender sender)
     {
         CommandMatcher matcher = commandMatchers.get(command);
-        return matcher == null || matcher.apply(command, sender);
+        return matcher == null || matcher.test(new CommandMatcher.Argument(command, sender));
     }
 }

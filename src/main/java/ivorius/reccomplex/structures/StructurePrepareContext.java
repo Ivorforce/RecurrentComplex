@@ -7,6 +7,8 @@ package ivorius.reccomplex.structures;
 
 import net.minecraft.util.math.BlockPos;
 import ivorius.ivtoolkit.math.AxisAlignedTransform2D;
+import net.minecraft.world.World;
+import net.minecraft.world.WorldServer;
 import net.minecraft.world.gen.structure.StructureBoundingBox;
 
 import javax.annotation.Nonnull;
@@ -19,7 +21,8 @@ public class StructurePrepareContext
 {
     @Nonnull
     public final Random random;
-
+    @Nonnull
+    public final WorldServer world;
     @Nonnull
     public final AxisAlignedTransform2D transform;
     @Nonnull
@@ -27,9 +30,10 @@ public class StructurePrepareContext
 
     public final boolean generateAsSource;
 
-    public StructurePrepareContext(@Nonnull Random random, @Nonnull AxisAlignedTransform2D transform, @Nonnull StructureBoundingBox boundingBox, boolean generateAsSource)
+    public StructurePrepareContext(@Nonnull Random random, WorldServer world, @Nonnull AxisAlignedTransform2D transform, @Nonnull StructureBoundingBox boundingBox, boolean generateAsSource)
     {
         this.random = random;
+        this.world = world;
         this.transform = transform;
         this.boundingBox = boundingBox;
         this.generateAsSource = generateAsSource;
@@ -44,5 +48,4 @@ public class StructurePrepareContext
     {
         return new BlockPos(boundingBox.minX, boundingBox.minY, boundingBox.minZ);
     }
-
 }

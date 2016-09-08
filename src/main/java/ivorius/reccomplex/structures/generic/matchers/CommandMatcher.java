@@ -11,10 +11,12 @@ import ivorius.reccomplex.utils.algebra.RCBoolAlgebra;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.util.text.TextFormatting;
 
+import java.util.function.Predicate;
+
 /**
  * Created by lukas on 01.05.15.
  */
-public class CommandMatcher extends FunctionExpressionCache<Boolean>
+public class CommandMatcher extends FunctionExpressionCache<Boolean, CommandMatcher.Argument, Object> implements Predicate<CommandMatcher.Argument>
 {
     public static final String NAME_PREFIX = "name=";
     public static final String PERM_PREFIX = "canUseLevel(";
@@ -29,12 +31,25 @@ public class CommandMatcher extends FunctionExpressionCache<Boolean>
         testVariables();
     }
 
-    public boolean apply(String commandName, ICommandSender sender)
+    @Override
+    public boolean test(Argument argument)
     {
-        return evaluate(commandName, sender);
+        return evaluate(argument);
     }
 
-    protected static class NameType extends VariableType<Boolean>
+    public static class Argument
+    {
+        public final String name;
+        public final ICommandSender sender;
+
+        public Argument(String name, ICommandSender sender)
+        {
+            this.name = name;
+            this.sender = sender;
+        }
+    }
+
+    protected class NameType extends VariableType<Boolean, CommandMatcher.Argument, Object>
     {
         public NameType(String prefix, String suffix)
         {
@@ -42,41 +57,41 @@ public class CommandMatcher extends FunctionExpressionCache<Boolean>
         }
 
         @Override
-        public Boolean evaluate(String var, Object... args)
+        public Boolean evaluate(String var, Argument argument)
         {
-            return ((ICommandSender) args[1]).getName().equals(var);
+            return argument.sender.getName().equals(var);
         }
 
         @Override
-        public boolean isKnown(final String var, final Object... args)
+        public Validity validity(final String var, final Object object)
         {
-            return true;
+            return Validity.KNOWN;
         }
     }
 
-    protected static class PermType extends VariableType<Boolean>
+    protected class PermType extends VariableType<Boolean, CommandMatcher.Argument, Object>
     {
         public PermType(String prefix, String suffix)
         {
             super(prefix, suffix);
         }
 
-        public static Integer parseNumber(String var)
+        public Integer parseNumber(String var)
         {
             Integer integer = Ints.tryParse(var);
             return integer != null ? integer : 0;
         }
 
         @Override
-        public Boolean evaluate(String var, Object... args)
+        public Boolean evaluate(String var, Argument argument)
         {
-            return ((ICommandSender) args[1]).canCommandSenderUseCommand(parseNumber(var), (String) args[0]);
+            return argument.sender.canCommandSenderUseCommand(parseNumber(var), argument.name);
         }
 
         @Override
-        public boolean isKnown(final String var, final Object... args)
+        public Validity validity(final String var, final Object object)
         {
-            return true;
+            return Validity.KNOWN;
         }
     }
 }

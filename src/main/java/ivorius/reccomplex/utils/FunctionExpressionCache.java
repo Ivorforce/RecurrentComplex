@@ -17,9 +17,9 @@ import java.util.function.Function;
 /**
  * Created by lukas on 23.03.15.
  */
-public class FunctionExpressionCache<T> extends ExpressionCache<T>
+public class FunctionExpressionCache<T, A, U> extends ExpressionCache<T>
 {
-    protected final SortedSet<VariableType<T>> types = new TreeSet<>();
+    protected final SortedSet<VariableType<T, A, U>> types = new TreeSet<>();
 
     public FunctionExpressionCache(Algebra<T> algebra, String expression)
     {
@@ -31,60 +31,65 @@ public class FunctionExpressionCache<T> extends ExpressionCache<T>
         super(algebra, emptyResult, emptyResultRepresentation, expression);
     }
 
-    public void addType(VariableType<T> type)
+    public void addType(VariableType<T, A, U> type)
     {
         types.add(type);
     }
 
-    public void addTypes(Collection<VariableType<T>> types)
+    public void addTypes(Collection<VariableType<T, A, U>> types)
     {
         this.types.addAll(types);
     }
 
-    public void addTypes(VariableType<T> type, Function<VariableType<T>, VariableType<T>> functions)
+    public void addTypes(VariableType<T, A, U> type, Function<VariableType<T, A, U>, VariableType<T, A, U>> functions)
     {
         addTypes(IvLists.enumerate(type, functions));
     }
 
-    public void removeType(VariableType<T> type)
+    public void removeType(VariableType<T, A, U> type)
     {
         types.remove(type);
     }
 
-    public Set<VariableType<T>> types()
+    public Set<VariableType<T, A, U>> types()
     {
         return Collections.unmodifiableSet(types);
     }
 
     @Nullable
-    protected VariableType<T> type(final String var)
+    public VariableType<T, A, U> type(final String var)
     {
         return types.stream()
                 .filter(input -> var.startsWith(input.prefix) && var.endsWith(input.suffix))
                 .findFirst().orElseGet(() -> null);
     }
 
-    protected boolean isKnownVariable(String var, Object... args)
+    public Validity variableValidity(String var, U u)
     {
-        VariableType<T> type = type(var);
-        return type != null && type.isKnown(var.substring(type.prefix.length()), args);
+        VariableType<T, A, U> type = type(var);
+        return type == null ? Validity.ERROR : type.validity(var.substring(type.prefix.length()), u);
     }
 
-    protected T evaluateVariable(String var, Object... args)
+    public T evaluateVariable(String var, A a)
     {
-        VariableType<T> type = type(var);
-        return type != null ? type.evaluate(var.substring(type.prefix.length()), args) : null;
+        VariableType<T, A, U> type = type(var);
+        return type != null ? type.evaluate(var.substring(type.prefix.length()), a) : null;
     }
 
-    @Override
-    public boolean containsUnknownVariables()
+    public Validity validity(final U u)
     {
-        return containsUnknownVariables(new Object[0]);
-    }
-
-    protected boolean containsUnknownVariables(final Object... args)
-    {
-        return parsedExpression != null && !parsedExpression.walkVariables(s -> isKnownVariable(s.identifier, args));
+        Validity[] worst = new Validity[]{Validity.KNOWN};
+        if (parsedExpression != null)
+        {
+            parsedExpression.walkVariables(s -> {
+                Validity validity = variableValidity(s.identifier, u);
+                if (validity.ordinal() > worst[0].ordinal())
+                    worst[0] = validity;
+                return validity.ordinal() < Validity.values().length - 1;
+            });
+            return worst[0];
+        }
+        return Validity.ERROR;
     }
 
     @Override
@@ -97,7 +102,8 @@ public class FunctionExpressionCache<T> extends ExpressionCache<T>
         {
             ParseException[] exception = new ParseException[1];
             expression.walkVariables(s -> {
-                if (type(s.identifier) == null)
+                VariableType<T, A, U> type = type(s.identifier);
+                if (type == null) // TODO Ask the type for an error too (requires an instance of U)
                     exception[0] = new ParseException(String.format("Type of '%s' unknown", s.identifier), s.index);
                 return true;
             });
@@ -107,30 +113,30 @@ public class FunctionExpressionCache<T> extends ExpressionCache<T>
         }
     }
 
-    protected T evaluate(final Object... args)
+    public T evaluate(final A a)
     {
-        return parsedExpression != null ? parsedExpression.evaluate(var -> evaluateVariable(var, args)) : emptyExpressionResult;
+        return parsedExpression != null ? parsedExpression.evaluate(var -> evaluateVariable(var, a)) : emptyExpressionResult;
     }
 
     @Nonnull
-    @Override
-    public String getDisplayString()
-    {
-        return getDisplayString(new Object[0]);
-    }
-
-    @Nonnull
-    public String getDisplayString(final Object... args)
+    public String getDisplayString(final U u)
     {
         return parsedExpression != null ? parsedExpression.toString(input -> {
-            VariableType<T> type = type(input);
+            VariableType<T, A, U> type = type(input);
             return type != null
-                    ? type.getRepresentation(input.substring(type.prefix.length()), args)
+                    ? type.getRepresentation(input.substring(type.prefix.length()), u)
                     : TextFormatting.RED + input;
         }) : TextFormatting.RED + expression;
     }
 
-    public static class AliasType<T, V extends VariableType<T>> extends VariableType<T>
+    public enum Validity
+    {
+        KNOWN,
+        UNKNOWN,
+        ERROR
+    }
+
+    public static class AliasType<T, A, U, V extends VariableType<T, A, U>> extends VariableType<T, A, U>
     {
         public V parent;
 
@@ -141,19 +147,19 @@ public class FunctionExpressionCache<T> extends ExpressionCache<T>
         }
 
         @Override
-        public T evaluate(String var, Object... args)
+        public T evaluate(String var, A a)
         {
-            return parent.evaluate(var, args);
+            return parent.evaluate(var, a);
         }
 
         @Override
-        public boolean isKnown(String var, Object... args)
+        public Validity validity(String var, U u)
         {
-            return parent.isKnown(var, args);
+            return parent.validity(var, u);
         }
     }
 
-    public static abstract class VariableType<T> implements Comparable<VariableType>
+    public static abstract class VariableType<T, A, U> implements Comparable<VariableType>
     {
         protected String prefix;
         protected String suffix;
@@ -164,14 +170,30 @@ public class FunctionExpressionCache<T> extends ExpressionCache<T>
             this.suffix = suffix;
         }
 
-        public abstract T evaluate(String var, Object... args);
-
-        public abstract boolean isKnown(String var, Object... args);
-
-        public String getRepresentation(String var, Object... args)
+        public String getPrefix()
         {
-            TextFormatting variableColor = isKnown(var, args) ? TextFormatting.GREEN : TextFormatting.YELLOW;
-            return TextFormatting.BLUE + prefix + variableColor + var + TextFormatting.BLUE + suffix + TextFormatting.RESET;
+            return prefix;
+        }
+
+        public String getSuffix()
+        {
+            return suffix;
+        }
+
+        public abstract T evaluate(String var, A a);
+
+        public abstract Validity validity(String var, U u);
+
+        public TextFormatting getRepresentation(Validity validity)
+        {
+            return validity == Validity.KNOWN ? TextFormatting.GREEN
+                    : validity == Validity.UNKNOWN ? TextFormatting.YELLOW
+                    : TextFormatting.RED;
+        }
+
+        public String getRepresentation(String var, U u)
+        {
+            return TextFormatting.BLUE + prefix + getRepresentation(validity(var, u)) + var + TextFormatting.BLUE + suffix + TextFormatting.RESET;
         }
 
         @Override
@@ -180,7 +202,7 @@ public class FunctionExpressionCache<T> extends ExpressionCache<T>
             return o.prefix.compareTo(prefix);
         }
 
-        public AliasType<T, VariableType<T>> alias(String prefix, String suffix)
+        public AliasType<T, A, U, VariableType<T, A, U>> alias(String prefix, String suffix)
         {
             return new AliasType<>(prefix, suffix, this);
         }

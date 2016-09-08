@@ -308,7 +308,7 @@ public class GenericStructureInfo implements StructureInfo<GenericStructureInfo.
     @Override
     public boolean areDependenciesResolved()
     {
-        return dependencies.apply();
+        return dependencies.getAsBoolean();
     }
 
     @Override

@@ -49,7 +49,7 @@ public class BiomeGenerationInfo
 
     public boolean matches(Biome biome)
     {
-        return biomeMatcher.apply(biome);
+        return biomeMatcher.test(biome);
     }
 
     public BiomeMatcher getBiomeMatcher()

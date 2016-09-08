@@ -66,7 +66,7 @@ public class TransformerReplaceAll extends TransformerSingleBlock<TransformerRep
     @Override
     public boolean matches(InstanceData instanceData, IBlockState state)
     {
-        return sourceMatcher.apply(state);
+        return sourceMatcher.test(state);
     }
 
     @Override
@@ -78,7 +78,7 @@ public class TransformerReplaceAll extends TransformerSingleBlock<TransformerRep
     @Override
     public String getDisplayString()
     {
-        return "Replace All: " + sourceMatcher.getDisplayString();
+        return "Replace All: " + sourceMatcher.getDisplayString(null);
     }
 
     @Override

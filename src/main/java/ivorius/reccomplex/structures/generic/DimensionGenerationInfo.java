@@ -49,7 +49,7 @@ public class DimensionGenerationInfo
 
     public boolean matches(WorldProvider provider)
     {
-        return dimensionMatcher.apply(provider);
+        return dimensionMatcher.test(provider);
     }
 
     public DimensionMatcher getDimensionMatcher()
@@ -59,7 +59,7 @@ public class DimensionGenerationInfo
 
     public String getDisplayString()
     {
-        return dimensionMatcher.getDisplayString();
+        return dimensionMatcher.getDisplayString(null);
     }
 
     public static class Serializer implements JsonDeserializer<DimensionGenerationInfo>, JsonSerializer<DimensionGenerationInfo>

@@ -49,7 +49,7 @@ public class TransformerNegativeSpace extends Transformer<NBTNone>
     @Override
     public boolean skipGeneration(NBTNone instanceData, IBlockState state)
     {
-        return sourceMatcher.apply(state);
+        return sourceMatcher.test(state);
     }
 
     @Override
@@ -61,7 +61,7 @@ public class TransformerNegativeSpace extends Transformer<NBTNone>
     @Override
     public String getDisplayString()
     {
-        return "Space: " + sourceMatcher.getDisplayString();
+        return "Space: " + sourceMatcher.getDisplayString(null);
     }
 
     @Override

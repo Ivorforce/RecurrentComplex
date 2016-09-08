@@ -274,7 +274,7 @@ public class StructureRegistry
         {
             StaticGenerationInfo info = input.getRight();
 
-            return info.dimensionMatcher.apply(world.provider)
+            return info.dimensionMatcher.test(world.provider)
                     && (info.pattern != null || Chunks.contains(chunkPos, info.getPos(spawnPos)));
         });
 

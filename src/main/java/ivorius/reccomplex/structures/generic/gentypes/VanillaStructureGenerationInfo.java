@@ -90,7 +90,7 @@ public class VanillaStructureGenerationInfo extends StructureGenerationInfo
 
     public boolean generatesIn(Biome biome)
     {
-        return biomeMatcher.apply(biome);
+        return biomeMatcher.test(biome);
     }
 
     public double getActiveWeight()

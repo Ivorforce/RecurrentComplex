@@ -62,7 +62,7 @@ public class StructureGenerator
 
     public static <I extends NBTStorable> void directly(StructureInfo<I> structureInfo, StructureSpawnContext context)
     {
-        structureInfo.generate(context, structureInfo.prepareInstanceData(new StructurePrepareContext(context.random, context.transform, context.boundingBox, context.generateAsSource)));
+        structureInfo.generate(context, structureInfo.prepareInstanceData(new StructurePrepareContext(context.random, context.world, context.transform, context.boundingBox, context.generateAsSource)));
     }
 
     public static int randomInstantly(WorldServer world, Random random, StructureInfo info, @Nullable YSelector ySelector, BlockSurfacePos pos, boolean suggest, String structureName)
@@ -97,7 +97,7 @@ public class StructureGenerator
             RCEventBus.INSTANCE.post(new StructureGenerationEvent.Pre(structureInfo, structureSpawnContext));
             MinecraftForge.EVENT_BUS.post(new StructureGenerationEventLite.Pre(world, structureID, coordInts, size, layer));
 
-            structureInfo.generate(structureSpawnContext, structureInfo.prepareInstanceData(new StructurePrepareContext(random, transform, structureSpawnContext.boundingBox, structureSpawnContext.generateAsSource)));
+            structureInfo.generate(structureSpawnContext, structureInfo.prepareInstanceData(new StructurePrepareContext(random, world, transform, structureSpawnContext.boundingBox, structureSpawnContext.generateAsSource)));
 
             RecurrentComplex.logger.trace(String.format("Generated structure '%s' in %s", name(structureID), structureSpawnContext.boundingBox));
 

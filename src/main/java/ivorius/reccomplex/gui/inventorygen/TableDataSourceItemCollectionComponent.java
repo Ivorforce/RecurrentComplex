@@ -44,7 +44,7 @@ public class TableDataSourceItemCollectionComponent extends TableDataSourceSegme
         this.delegate = delegate;
 
         addManagedSection(1, new TableDataSourceSupplied(() -> TableElementSaveDirectory.create(saveDirectoryData, () -> key, delegate)));
-        addManagedSection(3, TableDataSourceExpression.constructDefault(IvTranslations.get("reccomplex.inventorygen.dependencies"), this.component.dependencies));
+        addManagedSection(3, TableDataSourceExpression.constructDefault(IvTranslations.get("reccomplex.inventorygen.dependencies"), this.component.dependencies, null));
         addManagedSection(4, TableCellMultiBuilder.create(navigator, delegate)
                 .addAction(() -> IvTranslations.get("reccomplex.gui.edit"), null,
                         () -> RCGuiHandler.editInventoryGenComponentItems(this.player, this.key, this.component, this.saveDirectoryData))

@@ -5,25 +5,26 @@
 
 package ivorius.reccomplex.structures.generic.matchers;
 
-import com.google.common.base.Predicate;
 import com.google.common.base.Splitter;
 import com.google.common.primitives.Ints;
 import ivorius.ivtoolkit.gui.IntegerRange;
 import ivorius.ivtoolkit.tools.MCRegistry;
-import ivorius.reccomplex.utils.*;
+import ivorius.reccomplex.utils.BlockStates;
+import ivorius.reccomplex.utils.FunctionExpressionCache;
 import ivorius.reccomplex.utils.algebra.RCBoolAlgebra;
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
-import net.minecraft.util.text.TextFormatting;
 import net.minecraft.init.Blocks;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.text.TextFormatting;
 
 import java.util.List;
+import java.util.function.Predicate;
 
 /**
  * Created by lukas on 03.03.15.
  */
-public class BlockMatcher extends FunctionExpressionCache<Boolean> implements Predicate<IBlockState>
+public class BlockMatcher extends FunctionExpressionCache<Boolean, IBlockState, Object> implements Predicate<IBlockState>
 {
     public static final String BLOCK_ID_PREFIX = "id=";
     public static final String METADATA_PREFIX = "metadata=";
@@ -54,12 +55,12 @@ public class BlockMatcher extends FunctionExpressionCache<Boolean> implements Pr
     }
 
     @Override
-    public boolean apply(final IBlockState input)
+    public boolean test(final IBlockState input)
     {
         return evaluate(input);
     }
 
-    public static class BlockVariableType extends VariableType<Boolean>
+    public class BlockVariableType extends VariableType<Boolean, IBlockState, Object>
     {
         public MCRegistry registry;
 
@@ -70,27 +71,28 @@ public class BlockMatcher extends FunctionExpressionCache<Boolean> implements Pr
         }
 
         @Override
-        public Boolean evaluate(String var, Object... args)
+        public Boolean evaluate(String var, IBlockState state)
         {
-            return ((IBlockState) args[0]).getBlock() == registry.blockFromID(new ResourceLocation(var));
+            return state.getBlock() == registry.blockFromID(new ResourceLocation(var));
         }
 
         @Override
-        public boolean isKnown(String var, Object... args)
+        public Validity validity(String var, Object object)
         {
             ResourceLocation location = new ResourceLocation(var); // Since MC defaults to air now
-            return registry.blockFromID(location) != Blocks.AIR || location.equals(Block.REGISTRY.getNameForObject(Blocks.AIR));
+            return registry.blockFromID(location) != Blocks.AIR || location.equals(Block.REGISTRY.getNameForObject(Blocks.AIR))
+                    ? Validity.KNOWN : Validity.UNKNOWN;
         }
     }
 
-    public static class MetadataVariableType extends VariableType<Boolean>
+    public class MetadataVariableType extends VariableType<Boolean, IBlockState, Object>
     {
         public MetadataVariableType(String prefix, String suffix)
         {
             super(prefix, suffix);
         }
 
-        public static IntegerRange parseMetadataExp(String var)
+        public IntegerRange parseMetadataExp(String var)
         {
             if (var.contains("-"))
             {
@@ -109,25 +111,25 @@ public class BlockMatcher extends FunctionExpressionCache<Boolean> implements Pr
             return meta != null ? new IntegerRange(meta, meta) : null;
         }
 
-        public static Integer parseMetadata(String var)
+        public Integer parseMetadata(String var)
         {
             Integer integer = Ints.tryParse(var);
             return integer != null && integer >= 0 && integer < 16 ? integer : null;
         }
 
         @Override
-        public Boolean evaluate(String var, Object... args)
+        public Boolean evaluate(String var, IBlockState state)
         {
             IntegerRange range = parseMetadataExp(var);
-            int metadata = BlockStates.toMetadata((IBlockState) args[0]);
+            int metadata = BlockStates.toMetadata(state);
 
             return range != null && metadata >= range.min && metadata <= range.max;
         }
 
         @Override
-        public boolean isKnown(String var, Object... args)
+        public Validity validity(String var, Object object)
         {
-            return parseMetadataExp(var) != null;
+            return parseMetadataExp(var) != null ? Validity.KNOWN : Validity.ERROR;
         }
     }
 }

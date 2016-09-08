@@ -108,7 +108,7 @@ public class GenericItemCollection implements WeightedItemCollection
 
         public boolean areDependenciesResolved()
         {
-            return dependencies.apply();
+            return dependencies.getAsBoolean();
         }
 
         public void updateWeightCache()

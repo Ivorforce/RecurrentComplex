@@ -171,7 +171,7 @@ public class StructureSelector
 
             for (GenerationInfo info : generationInfos)
             {
-                if (info.biomeMatcher.apply(biome) && info.dimensionMatcher.apply(worldProvider))
+                if (info.biomeMatcher.test(biome) && info.dimensionMatcher.test(worldProvider))
                     return info.spawnChance * amountMultiplier;
             }
 

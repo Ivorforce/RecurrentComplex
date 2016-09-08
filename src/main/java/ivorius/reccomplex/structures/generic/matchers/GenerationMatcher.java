@@ -5,17 +5,20 @@
 
 package ivorius.reccomplex.structures.generic.matchers;
 
-import ivorius.reccomplex.structures.StructureSpawnContext;
+import ivorius.reccomplex.structures.StructurePrepareContext;
 import ivorius.reccomplex.utils.FunctionExpressionCache;
 import ivorius.reccomplex.utils.algebra.RCBoolAlgebra;
 import net.minecraft.util.text.TextFormatting;
+import net.minecraft.world.WorldProvider;
+import net.minecraft.world.biome.Biome;
 
+import java.util.Set;
 import java.util.function.Predicate;
 
 /**
  * Created by lukas on 07.09.16.
  */
-public class GenerationMatcher extends FunctionExpressionCache<Boolean> implements Predicate<StructureSpawnContext>
+public class GenerationMatcher extends FunctionExpressionCache<Boolean, GenerationMatcher.Argument, StructurePrepareContext> implements Predicate<GenerationMatcher.Argument>
 {
     public static final String BIOME_PREFIX = "biome.";
     public static final String DIMENSION_PREFIX = "dimension.";
@@ -33,12 +36,24 @@ public class GenerationMatcher extends FunctionExpressionCache<Boolean> implemen
     }
 
     @Override
-    public boolean test(StructureSpawnContext structureSpawnContext)
+    public boolean test(Argument argument)
     {
-        return evaluate(structureSpawnContext);
+        return evaluate(argument);
     }
 
-    public class BiomeVariableType extends VariableType<Boolean>
+    public static class Argument
+    {
+        public final StructurePrepareContext context;
+        public final Biome biome;
+
+        public Argument(StructurePrepareContext context, Biome biome)
+        {
+            this.context = context;
+            this.biome = biome;
+        }
+    }
+
+    public static class BiomeVariableType extends DelegatingVariableType<Boolean, Argument, StructurePrepareContext, Biome, Set<Biome>, BiomeMatcher>
     {
         public BiomeVariableType(String prefix, String suffix)
         {
@@ -46,20 +61,25 @@ public class GenerationMatcher extends FunctionExpressionCache<Boolean> implemen
         }
 
         @Override
-        public Boolean evaluate(String var, Object... args)
+        public Biome convertEvaluateArgument(Argument argument)
         {
-            StructureSpawnContext context = (StructureSpawnContext) args[0];
-            return new BiomeMatcher(var).apply(context.world.getBiome(context.lowerCoord())); // TODO
+            return argument.biome;
         }
 
         @Override
-        public boolean isKnown(String var, Object... args)
+        public Set<Biome> convertIsKnownArgument(StructurePrepareContext structurePrepareContext)
         {
-            return !new BiomeMatcher(var).containsUnknownVariables();
+            return BiomeMatcher.gatherAllBiomes();
+        }
+
+        @Override
+        public BiomeMatcher createCache(String var)
+        {
+            return new BiomeMatcher(var);
         }
     }
 
-    public class DimensionVariableType extends VariableType<Boolean>
+    public static class DimensionVariableType extends DelegatingVariableType<Boolean, Argument, StructurePrepareContext, WorldProvider, Object, DimensionMatcher>
     {
         public DimensionVariableType(String prefix, String suffix)
         {
@@ -67,20 +87,19 @@ public class GenerationMatcher extends FunctionExpressionCache<Boolean> implemen
         }
 
         @Override
-        public Boolean evaluate(String var, Object... args)
+        public WorldProvider convertEvaluateArgument(Argument argument)
         {
-            StructureSpawnContext context = (StructureSpawnContext) args[0];
-            return new DimensionMatcher(var).apply(context.world.provider);
+            return argument.context.world.provider;
         }
 
         @Override
-        public boolean isKnown(String var, Object... args)
+        public DimensionMatcher createCache(String var)
         {
-            return !new DimensionMatcher(var).containsUnknownVariables();
+            return new DimensionMatcher(var);
         }
     }
 
-    public class DependencyVariableType extends VariableType<Boolean>
+    public static class DependencyVariableType extends DelegatingVariableType<Boolean, Argument, StructurePrepareContext, Object, Object, DependencyMatcher>
     {
         public DependencyVariableType(String prefix, String suffix)
         {
@@ -88,15 +107,9 @@ public class GenerationMatcher extends FunctionExpressionCache<Boolean> implemen
         }
 
         @Override
-        public Boolean evaluate(String var, Object... args)
+        public DependencyMatcher createCache(String var)
         {
-            return new DependencyMatcher(var).apply(); // TODO
-        }
-
-        @Override
-        public boolean isKnown(String var, Object... args)
-        {
-            return !new DependencyMatcher(var).containsUnknownVariables();
+            return new DependencyMatcher(var);
         }
     }
 }

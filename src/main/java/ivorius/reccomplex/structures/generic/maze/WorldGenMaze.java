@@ -16,6 +16,8 @@ import ivorius.reccomplex.structures.generic.gentypes.MazeGenerationInfo;
 import ivorius.reccomplex.utils.NBTStorable;
 import ivorius.reccomplex.worldgen.StructureGenerationData;
 import ivorius.reccomplex.worldgen.StructureGenerator;
+import net.minecraft.world.World;
+import net.minecraft.world.WorldServer;
 import net.minecraft.world.gen.structure.StructureBoundingBox;
 import org.apache.commons.lang3.tuple.Pair;
 
@@ -52,7 +54,7 @@ public class WorldGenMaze
         return true;
     }
 
-    public static List<PlacedStructure> convertToPlacedStructures(final Random random, final BlockPos coord, final BlockPos shift, List<ShiftedMazeComponent<MazeComponentStructure<Connector>, Connector>> placedComponents, final int[] roomSize, final AxisAlignedTransform2D mazeTransform)
+    public static List<PlacedStructure> convertToPlacedStructures(final Random random, WorldServer world, final BlockPos coord, final BlockPos shift, List<ShiftedMazeComponent<MazeComponentStructure<Connector>, Connector>> placedComponents, final int[] roomSize, final AxisAlignedTransform2D mazeTransform)
     {
         return Lists.newArrayList(placedComponents.stream().map(placedComponent -> {
             MazeComponentStructure<Connector> componentInfo = placedComponent.getComponent();
@@ -62,7 +64,7 @@ public class WorldGenMaze
             {
                 AxisAlignedTransform2D componentTransform = componentInfo.transform.rotateClockwise(mazeTransform.getRotation());
                 StructureBoundingBox compBoundingBox = getBoundingBox(coord, shift, roomSize, placedComponent, structureInfo, componentTransform, mazeTransform);
-                NBTStorable instanceData = structureInfo.prepareInstanceData(new StructurePrepareContext(random, componentTransform, compBoundingBox, false));
+                NBTStorable instanceData = structureInfo.prepareInstanceData(new StructurePrepareContext(random, world, componentTransform, compBoundingBox, false));
 
                 return new PlacedStructure(componentInfo.structureID, componentTransform, new BlockPos(compBoundingBox.minX, compBoundingBox.minY, compBoundingBox.minZ), instanceData);
             }

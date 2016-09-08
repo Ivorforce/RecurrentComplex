@@ -91,7 +91,7 @@ public class GenericVillagePiece extends StructureVillagePieces.Village
         this.boundingBox = boundingBox;
     }
 
-    public void prepare(Random random)
+    public void prepare(Random random, WorldServer world)
     {
         StructureInfo structureInfo = StructureRegistry.INSTANCE.getStructure(structureID);
         if (structureInfo != null)
@@ -103,7 +103,7 @@ public class GenericVillagePiece extends StructureVillagePieces.Village
                 VanillaStructureGenerationInfo vanillaGenInfo = (VanillaStructureGenerationInfo) generationInfo;
                 AxisAlignedTransform2D transform = getTransform(vanillaGenInfo, getCoordBaseMode().getOpposite(), mirrorX);
 
-                instanceData = structureInfo.prepareInstanceData(new StructurePrepareContext(random, transform, boundingBox, false)).writeToNBT();
+                instanceData = structureInfo.prepareInstanceData(new StructurePrepareContext(random, world, transform, boundingBox, false)).writeToNBT();
             }
         }
     }
@@ -135,7 +135,8 @@ public class GenericVillagePiece extends StructureVillagePieces.Village
                     this.boundingBox.offset(0, this.averageGroundLvl - this.boundingBox.minY + structureShift.getY(), 0);
                 }
 
-                generate(world, random, boundingBox, structureInfo, transform);
+                if (world instanceof WorldServer)
+                    generate((WorldServer) world, random, boundingBox, structureInfo, transform);
 
                 return true;
             }
@@ -144,8 +145,11 @@ public class GenericVillagePiece extends StructureVillagePieces.Village
         return false;
     }
 
-    protected <T extends NBTStorable> void generate(World world, Random random, StructureBoundingBox boundingBox, StructureInfo<T> structureInfo, AxisAlignedTransform2D transform)
+    protected <T extends NBTStorable> void generate(WorldServer world, Random random, StructureBoundingBox boundingBox, StructureInfo<T> structureInfo, AxisAlignedTransform2D transform)
     {
+        if (structureID != null && !startedGeneration)
+            prepare(random, world);
+
         BlockPos lowerCoord = new BlockPos(this.boundingBox.minX, this.boundingBox.minY, this.boundingBox.minZ);
         T instanceData = structureInfo.loadInstanceData(new StructureLoadContext(transform, boundingBox, false), this.instanceData);
 

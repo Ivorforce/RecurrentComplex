@@ -17,10 +17,13 @@ import ivorius.reccomplex.json.JsonUtils;
 import ivorius.reccomplex.structures.StructureLoadContext;
 import ivorius.reccomplex.structures.StructurePrepareContext;
 import ivorius.reccomplex.structures.StructureSpawnContext;
+import ivorius.reccomplex.structures.generic.matchers.GenerationMatcher;
 import ivorius.reccomplex.utils.NBTStorable;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.biome.Biome;
 import org.apache.commons.lang3.tuple.Pair;
 
 import javax.annotation.Nonnull;
@@ -36,6 +39,7 @@ import java.util.stream.Collectors;
 public class TransformerMulti extends Transformer<TransformerMulti.InstanceData>
 {
     private final List<Transformer> transformers = new ArrayList<>();
+    private final GenerationMatcher generationMatcher = new GenerationMatcher("");
 
     public TransformerMulti()
     {
@@ -55,6 +59,11 @@ public class TransformerMulti extends Transformer<TransformerMulti.InstanceData>
     public List<Transformer> getTransformers()
     {
         return transformers;
+    }
+
+    public GenerationMatcher getGenerationMatcher()
+    {
+        return generationMatcher;
     }
 
     @Override
@@ -77,6 +86,8 @@ public class TransformerMulti extends Transformer<TransformerMulti.InstanceData>
     {
         InstanceData instanceData = new InstanceData();
         transformers.forEach(transformer -> instanceData.pairedTransformers.add(Pair.of(transformer, transformer.prepareInstanceData(context))));
+        Biome biome = context.world.getBiome(new BlockPos(context.boundingBox.getCenter()));
+        instanceData.activated = generationMatcher.test(new GenerationMatcher.Argument(context, biome));
         return instanceData;
     }
 
@@ -91,13 +102,14 @@ public class TransformerMulti extends Transformer<TransformerMulti.InstanceData>
     @Override
     public boolean skipGeneration(InstanceData instanceData, IBlockState state)
     {
-        return skips(instanceData.pairedTransformers, state);
+        return instanceData.activated && skips(instanceData.pairedTransformers, state);
     }
 
     @Override
     public void transform(InstanceData instanceData, Phase phase, StructureSpawnContext context, IvWorldData worldData, List<Pair<Transformer, NBTStorable>> transformers)
     {
-        instanceData.pairedTransformers.forEach(pair -> pair.getLeft().transform(pair.getRight(), phase, context, worldData, transformers));
+        if (instanceData.activated)
+            instanceData.pairedTransformers.forEach(pair -> pair.getLeft().transform(pair.getRight(), phase, context, worldData, transformers));
     }
 
     public static class InstanceData implements NBTStorable
@@ -105,6 +117,7 @@ public class TransformerMulti extends Transformer<TransformerMulti.InstanceData>
         public static final String KEY_TRANSFORMERS = "transformers";
 
         public final List<Pair<Transformer, NBTStorable>> pairedTransformers = new ArrayList<>();
+        public boolean activated;
 
         public void readFromNBT(StructureLoadContext context, NBTBase nbt, List<Transformer> transformers)
         {
@@ -116,6 +129,7 @@ public class TransformerMulti extends Transformer<TransformerMulti.InstanceData>
                 transformers.stream().filter(t -> t.id().equals(transformerID)).findAny().ifPresent(transformer ->
                         pairedTransformers.add(Pair.of(transformer, transformer.loadInstanceData(context, transformerCompound.getTag("data")))));
             });
+            activated = compound.getBoolean("activated");
         }
 
         @Override
@@ -130,6 +144,7 @@ public class TransformerMulti extends Transformer<TransformerMulti.InstanceData>
                 transformerCompound.setString("id", pair.getLeft().id());
                 return transformerCompound;
             }).collect(Collectors.toList()));
+            compound.setBoolean("activated", activated);
 
             return compound;
         }

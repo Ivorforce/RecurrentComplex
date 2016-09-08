@@ -105,7 +105,6 @@ public class GenericVillageCreationHandler implements VillagerRegistry.IVillageC
                         {
                             genericVillagePiece.setIds(structureID, generationID);
                             genericVillagePiece.setOrientation(front, mirrorX, strucBB);
-                            genericVillagePiece.prepare(random);
 
                             return genericVillagePiece;
                         }

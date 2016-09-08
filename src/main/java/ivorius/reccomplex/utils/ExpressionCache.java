@@ -144,12 +144,6 @@ public class ExpressionCache<T>
         return expression.trim().isEmpty();
     }
 
-    @Nonnull
-    public String getDisplayString()
-    {
-        return getExpression();
-    }
-
     @Nullable
     public Algebra.Expression<T> getParsedExpression()
     {
@@ -165,10 +159,5 @@ public class ExpressionCache<T>
     public boolean isExpressionValid()
     {
         return parsedExpression != null && parseException == null;
-    }
-
-    public boolean containsUnknownVariables()
-    {
-        return false;
     }
 }

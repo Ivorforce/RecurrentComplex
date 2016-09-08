@@ -5,6 +5,8 @@
 
 package ivorius.reccomplex.gui.editstructure.transformers;
 
+import ivorius.ivtoolkit.tools.IvTranslations;
+import ivorius.reccomplex.gui.TableDataSourceExpression;
 import ivorius.reccomplex.gui.editstructure.TableDataSourceTransformerList;
 import ivorius.reccomplex.gui.table.TableDataSourceSegmented;
 import ivorius.reccomplex.gui.table.TableDelegate;
@@ -28,7 +30,8 @@ public class TableDataSourceBTMulti extends TableDataSourceSegmented
         this.delegate = delegate;
 
         addManagedSection(0, new TableDataSourceTransformer(transformer, delegate, navigator));
-        addManagedSection(1, new TableDataSourceTransformerList(transformer.getTransformers(), delegate, navigator));
+        addManagedSection(1, TableDataSourceExpression.constructDefault(IvTranslations.get("reccomplex.transformer.multi.condition"), transformer.getGenerationMatcher(), null));
+        addManagedSection(2, new TableDataSourceTransformerList(transformer.getTransformers(), delegate, navigator));
     }
 
     public TransformerMulti getTransformer()

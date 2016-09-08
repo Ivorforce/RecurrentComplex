@@ -15,7 +15,7 @@ import java.util.function.Predicate;
 /**
  * Created by lukas on 01.05.15.
  */
-public class ResourceMatcher extends FunctionExpressionCache<Boolean> implements Predicate<ResourceLocation>
+public class ResourceMatcher extends FunctionExpressionCache<Boolean, ResourceLocation, Object> implements Predicate<ResourceLocation>
 {
     public static final String ID_PREFIX = "id=";
     public static final String DOMAIN_PREFIX = "domain=";
@@ -35,7 +35,7 @@ public class ResourceMatcher extends FunctionExpressionCache<Boolean> implements
         return evaluate(location);
     }
 
-    protected static class ResourceIDType extends VariableType<Boolean>
+    protected static class ResourceIDType extends VariableType<Boolean, ResourceLocation, Object>
     {
         private Predicate<String> isKnown;
 
@@ -46,19 +46,19 @@ public class ResourceMatcher extends FunctionExpressionCache<Boolean> implements
         }
 
         @Override
-        public Boolean evaluate(String var, Object... args)
+        public Boolean evaluate(String var, ResourceLocation location)
         {
-            return ((ResourceLocation) args[0]).getResourcePath().equals(var);
+            return location.getResourcePath().equals(var);
         }
 
         @Override
-        public boolean isKnown(final String var, final Object... args)
+        public Validity validity(final String var, final Object args)
         {
-            return isKnown.test(var);
+            return isKnown.test(var) ? Validity.KNOWN : Validity.UNKNOWN;
         }
     }
 
-    protected static class DomainType extends VariableType<Boolean>
+    protected static class DomainType extends VariableType<Boolean, ResourceLocation, Object>
     {
         public DomainType(String prefix, String suffix)
         {
@@ -66,15 +66,15 @@ public class ResourceMatcher extends FunctionExpressionCache<Boolean> implements
         }
 
         @Override
-        public Boolean evaluate(String var, Object... args)
+        public Boolean evaluate(String var, ResourceLocation location)
         {
-            return ((ResourceLocation) args[0]).getResourceDomain().equals(var);
+            return location.getResourceDomain().equals(var);
         }
 
         @Override
-        public boolean isKnown(final String var, final Object... args)
+        public Validity validity(final String var, final Object args)
         {
-            return true;
+            return Validity.KNOWN;
         }
     }
 }

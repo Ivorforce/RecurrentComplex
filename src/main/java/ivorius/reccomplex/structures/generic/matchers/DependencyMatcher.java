@@ -13,11 +13,12 @@ import ivorius.reccomplex.utils.*;
 import joptsimple.internal.Strings;
 
 import java.util.Arrays;
+import java.util.function.BooleanSupplier;
 
 /**
  * Created by lukas on 19.09.14.
  */
-public class DependencyMatcher extends FunctionExpressionCache<Boolean>
+public class DependencyMatcher extends FunctionExpressionCache<Boolean, Object, Object> implements BooleanSupplier
 {
     public static final String MOD_PREFIX = "mod(";
     public static final String MOD_SUFFIX = ")";
@@ -41,12 +42,13 @@ public class DependencyMatcher extends FunctionExpressionCache<Boolean>
                 : "";
     }
 
-    public boolean apply()
+    @Override
+    public boolean getAsBoolean()
     {
-        return evaluate();
+        return evaluate(null);
     }
 
-    protected static class ModVariableType extends VariableType<Boolean>
+    protected static class ModVariableType extends VariableType<Boolean, Object, Object>
     {
         public ModVariableType(String prefix, String suffix)
         {
@@ -54,19 +56,19 @@ public class DependencyMatcher extends FunctionExpressionCache<Boolean>
         }
 
         @Override
-        public Boolean evaluate(String var, Object... args)
+        public Boolean evaluate(String var, Object args)
         {
             return Loader.isModLoaded(var);
         }
 
         @Override
-        public boolean isKnown(String var, Object... args)
+        public Validity validity(String var, Object args)
         {
-            return evaluate(var, args);
+            return evaluate(var, args) ? Validity.KNOWN : Validity.UNKNOWN;
         }
     }
 
-    protected static class StructureVariableType extends VariableType<Boolean>
+    protected static class StructureVariableType extends VariableType<Boolean, Object, Object>
     {
         public StructureVariableType(String prefix, String suffix)
         {
@@ -74,15 +76,15 @@ public class DependencyMatcher extends FunctionExpressionCache<Boolean>
         }
 
         @Override
-        public Boolean evaluate(String var, Object... args)
+        public Boolean evaluate(String var, Object args)
         {
             return StructureRegistry.INSTANCE.hasStructure(var);
         }
 
         @Override
-        public boolean isKnown(String var, Object... args)
+        public Validity validity(String var, Object args)
         {
-            return evaluate(var, args);
+            return evaluate(var, args) ? Validity.KNOWN : Validity.UNKNOWN;
         }
     }
 }

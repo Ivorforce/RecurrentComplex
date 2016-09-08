@@ -295,6 +295,7 @@ reccomplex.transformer.id=Transformer ID
 reccomplex.transformer.id.tooltip=Unique Identifier for the transformer.
 
 reccomplex.transformer.multi=Multiple
+reccomplex.transformer.multi.condition=Condition
 reccomplex.transformer.multi.tooltip=Wraps multiple transformers.
 reccomplex.transformer.multi.none=No transformers
 reccomplex.transformer.multi.multiple=%s transformers
@@ -377,6 +378,8 @@ reccomplex.expression.block=Block Expression
 reccomplex.expression.block.tooltip=This is a §oblock expression§r.<br>Visit the wiki for syntax information.
 reccomplex.expression.dependency=Dependency Expression
 reccomplex.expression.dependency.tooltip=This is a §odependency expression§r.<br>Visit the wiki for syntax information.
+reccomplex.expression.generation=Generation Expression
+reccomplex.expression.generation.tooltip=This is a §ogeneration expression§r.<br>Visit the wiki for syntax information.
 
 reccomplex.direction.up=Up (+Y)
 reccomplex.direction.down=Down (-Y)

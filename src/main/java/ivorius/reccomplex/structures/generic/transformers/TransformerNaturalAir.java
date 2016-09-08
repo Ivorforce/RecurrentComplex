@@ -63,7 +63,7 @@ public class TransformerNaturalAir extends TransformerSingleBlock<NBTNone>
     @Override
     public boolean matches(NBTNone instanceData, IBlockState state)
     {
-        return sourceMatcher.apply(state);
+        return sourceMatcher.test(state);
     }
 
     @Override
@@ -127,7 +127,7 @@ public class TransformerNaturalAir extends TransformerSingleBlock<NBTNone>
     @Override
     public String getDisplayString()
     {
-        return "Natural Air: " + sourceMatcher.getDisplayString();
+        return "Natural Air: " + sourceMatcher.getDisplayString(null);
     }
 
     @Override

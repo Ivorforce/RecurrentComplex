@@ -5,7 +5,6 @@
 
 package ivorius.reccomplex.structures.generic.matchers;
 
-import com.google.common.base.Predicate;
 import com.google.common.collect.Lists;
 import ivorius.ivtoolkit.tools.IvGsonHelper;
 import ivorius.reccomplex.json.RCGsonHelper;
@@ -21,12 +20,13 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.function.Predicate;
 import java.util.stream.StreamSupport;
 
 /**
  * Created by lukas on 19.09.14.
  */
-public class BiomeMatcher extends FunctionExpressionCache<Boolean> implements Predicate<Biome>
+public class BiomeMatcher extends FunctionExpressionCache<Boolean, Biome, Set<Biome>> implements Predicate<Biome>
 {
     public static final String BIOME_NAME_PREFIX = "name=";
     public static final String BIOME_TYPE_PREFIX = "type=";
@@ -71,26 +71,24 @@ public class BiomeMatcher extends FunctionExpressionCache<Boolean> implements Pr
         return set;
     }
 
-    @Override
-    public boolean containsUnknownVariables()
+    public Validity variableValidity()
     {
-        return super.containsUnknownVariables(gatherAllBiomes());
+        return validity(gatherAllBiomes());
     }
 
     @Nonnull
-    @Override
     public String getDisplayString()
     {
-        return super.getDisplayString(gatherAllBiomes());
+        return getDisplayString(gatherAllBiomes());
     }
 
     @Override
-    public boolean apply(final Biome input)
+    public boolean test(final Biome input)
     {
         return evaluate(input);
     }
 
-    protected static class BiomeVariableType extends VariableType<Boolean>
+    protected class BiomeVariableType extends VariableType<Boolean, Biome, Set<Biome>>
     {
         public BiomeVariableType(String prefix, String suffix)
         {
@@ -98,19 +96,20 @@ public class BiomeMatcher extends FunctionExpressionCache<Boolean> implements Pr
         }
 
         @Override
-        public Boolean evaluate(String var, Object... args)
+        public Boolean evaluate(String var, Biome biome)
         {
-            return ((Biome) args[0]).getBiomeName().equals(var);
+            return biome.getBiomeName().equals(var);
         }
 
         @Override
-        public boolean isKnown(final String var, final Object... args)
+        public Validity validity(final String var, final Set<Biome> biomes)
         {
-            return StreamSupport.stream(((Iterable<Biome>) args[0]).spliterator(), false).anyMatch(input -> input.getBiomeName().equals(var));
+            return StreamSupport.stream(biomes.spliterator(), false).anyMatch(input -> input.getBiomeName().equals(var))
+                    ? Validity.KNOWN : Validity.UNKNOWN;
         }
     }
 
-    protected static class BiomeDictVariableType extends VariableType<Boolean>
+    protected class BiomeDictVariableType extends VariableType<Boolean, Biome, Set<Biome>>
     {
         public BiomeDictVariableType(String prefix, String suffix)
         {
@@ -118,16 +117,17 @@ public class BiomeMatcher extends FunctionExpressionCache<Boolean> implements Pr
         }
 
         @Override
-        public Boolean evaluate(String var, Object... args)
+        public Boolean evaluate(String var, Biome biome)
         {
             BiomeDictionary.Type type = RCGsonHelper.enumForNameIgnoreCase(var, BiomeDictionary.Type.values());
-            return type != null && BiomeDictionary.isBiomeOfType((Biome) args[0], type);
+            return type != null && BiomeDictionary.isBiomeOfType(biome, type);
         }
 
         @Override
-        public boolean isKnown(String var, Object... args)
+        public Validity validity(String var, Set<Biome> biomes)
         {
-            return RCGsonHelper.enumForNameIgnoreCase(var, BiomeDictionary.Type.values()) != null;
+            return RCGsonHelper.enumForNameIgnoreCase(var, BiomeDictionary.Type.values()) != null
+                    ? Validity.KNOWN : Validity.UNKNOWN;
         }
     }
 }

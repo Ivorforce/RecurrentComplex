@@ -46,8 +46,8 @@ public class TableDataSourceExpression<T, U, E extends FunctionExpressionCache<T
             return new TableDataSourceExpression<>(title, IvTranslations.formatLines("reccomplex.expression.dependency.tooltip"), e, u);
         else if (e instanceof DimensionMatcher)
             return new TableDataSourceExpression<>(title, IvTranslations.formatLines("reccomplex.expression.dimension.tooltip"), e, u);
-        else if (e instanceof GenerationMatcher)
-            return new TableDataSourceExpression<>(title, IvTranslations.formatLines("reccomplex.expression.generation.tooltip"), e, u);
+        else if (e instanceof EnvironmentMatcher)
+            return new TableDataSourceExpression<>(title, IvTranslations.formatLines("reccomplex.expression.environment.tooltip"), e, u);
 
         throw new IllegalArgumentException();
     }

@@ -380,8 +380,8 @@ reccomplex.expression.block=Block Expression
 reccomplex.expression.block.tooltip=This is a §oblock expression§r.<br>Visit the wiki for syntax information.
 reccomplex.expression.dependency=Dependency Expression
 reccomplex.expression.dependency.tooltip=This is a §odependency expression§r.<br>Visit the wiki for syntax information.
-reccomplex.expression.generation=Generation Expression
-reccomplex.expression.generation.tooltip=This is a §ogeneration expression§r.<br>Visit the wiki for syntax information.
+reccomplex.expression.environment=Environment Expression
+reccomplex.expression.environment.tooltip=This is an §oenvironment expression§r.<br>Visit the wiki for syntax information.
 
 reccomplex.direction.up=Up (+Y)
 reccomplex.direction.down=Down (-Y)

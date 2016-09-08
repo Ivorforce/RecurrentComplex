@@ -30,7 +30,7 @@ public class TableDataSourceBTMulti extends TableDataSourceSegmented
         this.delegate = delegate;
 
         addManagedSection(0, new TableDataSourceTransformer(transformer, delegate, navigator));
-        addManagedSection(1, TableDataSourceExpression.constructDefault(IvTranslations.get("reccomplex.transformer.multi.condition"), transformer.getGenerationMatcher(), null));
+        addManagedSection(1, TableDataSourceExpression.constructDefault(IvTranslations.get("reccomplex.transformer.multi.condition"), transformer.getEnvironmentMatcher(), null));
         addManagedSection(2, new TableDataSourceTransformerList(transformer.getTransformers(), delegate, navigator));
     }
 

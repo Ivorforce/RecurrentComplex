@@ -17,13 +17,11 @@ import ivorius.reccomplex.json.JsonUtils;
 import ivorius.reccomplex.structures.StructureLoadContext;
 import ivorius.reccomplex.structures.StructurePrepareContext;
 import ivorius.reccomplex.structures.StructureSpawnContext;
-import ivorius.reccomplex.structures.generic.matchers.GenerationMatcher;
+import ivorius.reccomplex.structures.generic.matchers.EnvironmentMatcher;
 import ivorius.reccomplex.utils.NBTStorable;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.biome.Biome;
 import org.apache.commons.lang3.tuple.Pair;
 
 import javax.annotation.Nonnull;
@@ -39,7 +37,7 @@ import java.util.stream.Collectors;
 public class TransformerMulti extends Transformer<TransformerMulti.InstanceData>
 {
     private final List<Transformer> transformers = new ArrayList<>();
-    private final GenerationMatcher generationMatcher;
+    private final EnvironmentMatcher environmentMatcher;
 
     public TransformerMulti()
     {
@@ -49,7 +47,7 @@ public class TransformerMulti extends Transformer<TransformerMulti.InstanceData>
     public TransformerMulti(@Nonnull String id, String expression)
     {
         super(id);
-        this.generationMatcher = new GenerationMatcher(expression);
+        this.environmentMatcher = new EnvironmentMatcher(expression);
     }
 
     public static boolean skips(StructureSpawnContext context, List<Pair<Transformer, NBTStorable>> transformers, final IBlockState state)
@@ -62,9 +60,9 @@ public class TransformerMulti extends Transformer<TransformerMulti.InstanceData>
         return transformers;
     }
 
-    public GenerationMatcher getGenerationMatcher()
+    public EnvironmentMatcher getEnvironmentMatcher()
     {
-        return generationMatcher;
+        return environmentMatcher;
     }
 
     @Override
@@ -87,7 +85,7 @@ public class TransformerMulti extends Transformer<TransformerMulti.InstanceData>
     {
         InstanceData instanceData = new InstanceData();
         transformers.forEach(transformer -> instanceData.pairedTransformers.add(Pair.of(transformer, transformer.prepareInstanceData(context))));
-        instanceData.deactivated = !generationMatcher.test(new GenerationMatcher.Argument(context, context.environment.biome));
+        instanceData.deactivated = !environmentMatcher.test(context.environment);
         return instanceData;
     }
 
@@ -158,7 +156,7 @@ public class TransformerMulti extends Transformer<TransformerMulti.InstanceData>
             JsonObject jsonObject = JsonUtils.getJsonElementAsJsonObject(json, "transformerNatural");
 
             String id = JsonUtils.getJsonObjectStringFieldValueOrDefault(jsonObject, "id", randomID(TransformerNatural.class));
-            String expression = JsonUtils.getJsonObjectStringFieldValueOrDefault(jsonObject, "generationMatcher", "");
+            String expression = JsonUtils.getJsonObjectStringFieldValueOrDefault(jsonObject, "environmentMatcher", "");
             TransformerMulti transformer = new TransformerMulti(id, expression);
 
             Collections.addAll(transformer.transformers, context.<Transformer[]>deserialize(jsonObject.get("transformers"), Transformer[].class));
@@ -171,7 +169,7 @@ public class TransformerMulti extends Transformer<TransformerMulti.InstanceData>
             JsonObject jsonObject = new JsonObject();
 
             jsonObject.addProperty("id", src.id());
-            jsonObject.addProperty("generationMatcher", src.generationMatcher.getExpression());
+            jsonObject.addProperty("environmentMatcher", src.environmentMatcher.getExpression());
 
             jsonObject.add("transformers", context.serialize(src.transformers));
 

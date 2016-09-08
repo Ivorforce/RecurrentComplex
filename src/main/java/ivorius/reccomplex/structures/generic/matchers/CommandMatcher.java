@@ -19,14 +19,13 @@ import java.util.function.Predicate;
 public class CommandMatcher extends FunctionExpressionCache<Boolean, CommandMatcher.Argument, Object> implements Predicate<CommandMatcher.Argument>
 {
     public static final String NAME_PREFIX = "name=";
-    public static final String PERM_PREFIX = "canUseLevel(";
-    public static final String PERM_SUFFIX = ")";
+    public static final String PERM_PREFIX = "canUseLevel:";
 
     public CommandMatcher(String expression)
     {
         super(RCBoolAlgebra.algebra(), true, TextFormatting.GREEN + "Any Command", expression);
         addTypes(new NameType(NAME_PREFIX, ""), t -> t.alias("$", ""));
-        addTypes(new PermType(PERM_PREFIX, PERM_SUFFIX), t -> t.alias("#", ""));
+        addTypes(new PermType(PERM_PREFIX, ""), t -> t.alias("#", ""));
 
         testVariables();
     }

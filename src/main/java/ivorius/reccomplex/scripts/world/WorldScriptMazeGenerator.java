@@ -214,7 +214,7 @@ public class WorldScriptMazeGenerator implements WorldScript<WorldScriptMazeGene
     public InstanceData prepareInstanceData(StructurePrepareContext context, BlockPos pos)
     {
         InstanceData instanceData = new InstanceData();
-        instanceData.placedStructures.addAll(WorldGenMaze.convertToPlacedStructures(context.random, context.world, pos, structureShift, getPlacedRooms(context.random, context.transform), roomSize, context.transform));
+        instanceData.placedStructures.addAll(WorldGenMaze.convertToPlacedStructures(context.random, context.world, context.biome, pos, structureShift, getPlacedRooms(context.random, context.transform), roomSize, context.transform));
         return instanceData;
     }
 

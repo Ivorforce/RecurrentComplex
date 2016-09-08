@@ -23,11 +23,11 @@ import java.io.IOException;
 public class GuiEditSpawnScript extends GuiScreenModalTable
 {
     TileEntitySpawnScript tileEntity;
-    TableDataSourceWorldScriptList structureDataSource;
+    TableDataSourceWorldScriptMulti structureDataSource;
 
     public GuiEditSpawnScript(TileEntitySpawnScript tileEntity)
     {
-        GuiTable structureGenProperties = new GuiTable(this, structureDataSource = new TableDataSourceWorldScriptList(tileEntity.script.scripts, this, this));
+        GuiTable structureGenProperties = new GuiTable(this, structureDataSource = new TableDataSourceWorldScriptMulti(tileEntity.script, this, this));
         structureGenProperties.setHideScrollbarIfUnnecessary(true);
         setTable(structureGenProperties);
         this.tileEntity = tileEntity;

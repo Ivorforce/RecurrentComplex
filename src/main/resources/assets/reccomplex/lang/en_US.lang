@@ -437,6 +437,7 @@ reccomplex.worldscript.multi=Multiple
 reccomplex.worldscript.multi.tooltip=Runs multiple commands in succession.
 reccomplex.worldscript.multi.none=No scripts
 reccomplex.worldscript.multi.multiple=%s scripts
+reccomplex.worldscript.multi.condition=Condition
 reccomplex.worldscript.mazeGen=Generate Maze
 reccomplex.worldscript.mazeGen.rules=Rules
 reccomplex.worldscript.mazeGen.tooltip=Generates a maze from weighted components.

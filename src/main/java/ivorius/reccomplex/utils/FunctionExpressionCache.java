@@ -41,8 +41,9 @@ public class FunctionExpressionCache<T, A, U> extends ExpressionCache<T>
         this.types.addAll(types);
     }
 
-    public void addTypes(VariableType<T, A, U> type, Function<VariableType<T, A, U>, VariableType<T, A, U>> functions)
+    public void addTypes(VariableType<T, A, U> type, Function<VariableType<T, A, U>, VariableType<T, A, U>>... functions)
     {
+        addType(type);
         addTypes(IvLists.enumerate(type, functions));
     }
 
@@ -124,7 +125,7 @@ public class FunctionExpressionCache<T, A, U> extends ExpressionCache<T>
         return parsedExpression != null ? parsedExpression.toString(input -> {
             VariableType<T, A, U> type = type(input);
             return type != null
-                    ? type.getRepresentation(input.substring(type.prefix.length()), u)
+                    ? type.getRepresentation(input.substring(type.prefix.length()), type.prefix, type.suffix, u)
                     : TextFormatting.RED + input;
         }) : TextFormatting.RED + expression;
     }
@@ -156,6 +157,12 @@ public class FunctionExpressionCache<T, A, U> extends ExpressionCache<T>
         public Validity validity(String var, U u)
         {
             return parent.validity(var, u);
+        }
+
+        @Override
+        public String getRepresentation(String var, String prefix, String suffix, U u)
+        {
+            return parent.getRepresentation(var, prefix, suffix, u);
         }
     }
 
@@ -191,9 +198,11 @@ public class FunctionExpressionCache<T, A, U> extends ExpressionCache<T>
                     : TextFormatting.RED;
         }
 
-        public String getRepresentation(String var, U u)
+        public String getRepresentation(String var, String prefix, String suffix, U u)
         {
-            return TextFormatting.BLUE + prefix + getRepresentation(validity(var, u)) + var + TextFormatting.BLUE + suffix + TextFormatting.RESET;
+            return TextFormatting.BLUE + prefix
+                    + getRepresentation(validity(var, u)) + var
+                    + TextFormatting.BLUE + suffix + TextFormatting.RESET;
         }
 
         @Override

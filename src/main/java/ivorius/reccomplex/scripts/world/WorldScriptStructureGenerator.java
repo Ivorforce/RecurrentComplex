@@ -193,7 +193,7 @@ public class WorldScriptStructureGenerator implements WorldScript<WorldScriptStr
                     BlockPos strucCoord = transform.apply(structureShift, new int[]{1, 1, 1})
                             .subtract(transform.apply(new BlockPos(0, 0, 0), strucSize)).add(pos);
 
-                    instanceData = new WorldScriptStructureGenerator.InstanceData(structureID, strucCoord, strucTransform, structureInfo.prepareInstanceData(new StructurePrepareContext(random, context.world, strucTransform, StructureInfos.structureBoundingBox(strucCoord, strucSize), context.generateAsSource)));
+                    instanceData = new WorldScriptStructureGenerator.InstanceData(structureID, strucCoord, strucTransform, structureInfo.prepareInstanceData(new StructurePrepareContext(random, context.world, context.biome, strucTransform, StructureInfos.structureBoundingBox(strucCoord, strucSize), context.generateAsSource)));
                 }
             }
         }
@@ -229,7 +229,7 @@ public class WorldScriptStructureGenerator implements WorldScript<WorldScriptStr
                 BlockPos strucCoord = transform.apply(structureShift.add(generationInfo.shift), new int[]{1, 1, 1})
                         .subtract(transform.apply(new BlockPos(0, 0, 0), strucSize)).add(pos);
 
-                instanceData = new WorldScriptStructureGenerator.InstanceData(structureID, strucCoord, strucTransform, structureInfo.prepareInstanceData(new StructurePrepareContext(random, context.world, strucTransform, StructureInfos.structureBoundingBox(strucCoord, strucSize), context.generateAsSource)));
+                instanceData = new WorldScriptStructureGenerator.InstanceData(structureID, strucCoord, strucTransform, structureInfo.prepareInstanceData(new StructurePrepareContext(random, context.world, context.biome, strucTransform, StructureInfos.structureBoundingBox(strucCoord, strucSize), context.generateAsSource)));
             }
         }
 

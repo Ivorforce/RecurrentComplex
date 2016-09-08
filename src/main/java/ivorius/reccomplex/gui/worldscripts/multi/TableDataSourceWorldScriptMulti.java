@@ -5,6 +5,8 @@
 
 package ivorius.reccomplex.gui.worldscripts.multi;
 
+import ivorius.ivtoolkit.tools.IvTranslations;
+import ivorius.reccomplex.gui.TableDataSourceExpression;
 import ivorius.reccomplex.gui.table.TableDataSourceSegmented;
 import ivorius.reccomplex.gui.table.TableDelegate;
 import ivorius.reccomplex.gui.table.TableNavigator;
@@ -17,6 +19,7 @@ public class TableDataSourceWorldScriptMulti extends TableDataSourceSegmented
 {
     public TableDataSourceWorldScriptMulti(WorldScriptMulti script, TableDelegate delegate, TableNavigator navigator)
     {
-        addManagedSection(0, new TableDataSourceWorldScriptList(script.scripts, delegate, navigator));
+        addManagedSection(0, TableDataSourceExpression.constructDefault(IvTranslations.get("reccomplex.worldscript.multi.condition"), script.generationMatcher, null));
+        addManagedSection(1, new TableDataSourceWorldScriptList(script.scripts, delegate, navigator));
     }
 }

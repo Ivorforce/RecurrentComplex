@@ -18,19 +18,19 @@ import java.util.function.Predicate;
 /**
  * Created by lukas on 07.09.16.
  */
-public class GenerationMatcher extends FunctionExpressionCache<Boolean, GenerationMatcher.Argument, StructurePrepareContext> implements Predicate<GenerationMatcher.Argument>
+public class GenerationMatcher extends FunctionExpressionCache<Boolean, GenerationMatcher.Argument, Object> implements Predicate<GenerationMatcher.Argument>
 {
     public static final String BIOME_PREFIX = "biome.";
     public static final String DIMENSION_PREFIX = "dimension.";
-    public static final String DEPENDENCY_PREFIX = "structure.";
+    public static final String DEPENDENCY_PREFIX = "dependency.";
 
     public GenerationMatcher(String expression)
     {
         super(RCBoolAlgebra.algebra(), true, TextFormatting.GREEN + "Always", expression);
 
         addType(new BiomeVariableType(BIOME_PREFIX, ""));
-        addType(new DimensionVariableType(DIMENSION_PREFIX, ""));
-        addType(new DependencyVariableType(DEPENDENCY_PREFIX, ""));
+        addTypes(new DimensionVariableType(DIMENSION_PREFIX, ""), t -> t.alias("dim.", ""));
+        addTypes(new DependencyVariableType(DEPENDENCY_PREFIX, ""), t -> t.alias("dep.", ""));
 
         testVariables();
     }
@@ -53,7 +53,7 @@ public class GenerationMatcher extends FunctionExpressionCache<Boolean, Generati
         }
     }
 
-    public static class BiomeVariableType extends DelegatingVariableType<Boolean, Argument, StructurePrepareContext, Biome, Set<Biome>, BiomeMatcher>
+    public static class BiomeVariableType extends DelegatingVariableType<Boolean, Argument, Object, Biome, Set<Biome>, BiomeMatcher>
     {
         public BiomeVariableType(String prefix, String suffix)
         {
@@ -67,7 +67,7 @@ public class GenerationMatcher extends FunctionExpressionCache<Boolean, Generati
         }
 
         @Override
-        public Set<Biome> convertIsKnownArgument(StructurePrepareContext structurePrepareContext)
+        public Set<Biome> convertIsKnownArgument(Object object)
         {
             return BiomeMatcher.gatherAllBiomes();
         }
@@ -79,7 +79,7 @@ public class GenerationMatcher extends FunctionExpressionCache<Boolean, Generati
         }
     }
 
-    public static class DimensionVariableType extends DelegatingVariableType<Boolean, Argument, StructurePrepareContext, WorldProvider, Object, DimensionMatcher>
+    public static class DimensionVariableType extends DelegatingVariableType<Boolean, Argument, Object, WorldProvider, Object, DimensionMatcher>
     {
         public DimensionVariableType(String prefix, String suffix)
         {
@@ -99,7 +99,7 @@ public class GenerationMatcher extends FunctionExpressionCache<Boolean, Generati
         }
     }
 
-    public static class DependencyVariableType extends DelegatingVariableType<Boolean, Argument, StructurePrepareContext, Object, Object, DependencyMatcher>
+    public static class DependencyVariableType extends DelegatingVariableType<Boolean, Argument, Object, Object, Object, DependencyMatcher>
     {
         public DependencyVariableType(String prefix, String suffix)
         {

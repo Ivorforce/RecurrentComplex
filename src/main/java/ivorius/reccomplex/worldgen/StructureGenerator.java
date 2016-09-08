@@ -16,7 +16,9 @@ import ivorius.reccomplex.events.StructureGenerationEventLite;
 import ivorius.reccomplex.structures.*;
 import ivorius.reccomplex.utils.NBTStorable;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.world.World;
 import net.minecraft.world.WorldServer;
+import net.minecraft.world.biome.Biome;
 import net.minecraft.world.gen.structure.StructureBoundingBox;
 import net.minecraftforge.common.MinecraftForge;
 
@@ -62,7 +64,7 @@ public class StructureGenerator
 
     public static <I extends NBTStorable> void directly(StructureInfo<I> structureInfo, StructureSpawnContext context)
     {
-        structureInfo.generate(context, structureInfo.prepareInstanceData(new StructurePrepareContext(context.random, context.world, context.transform, context.boundingBox, context.generateAsSource)));
+        structureInfo.generate(context, structureInfo.prepareInstanceData(new StructurePrepareContext(context.random, context.world, context.biome, context.transform, context.boundingBox, context.generateAsSource)));
     }
 
     public static int randomInstantly(WorldServer world, Random random, StructureInfo info, @Nullable YSelector ySelector, BlockSurfacePos pos, boolean suggest, String structureName)
@@ -83,25 +85,25 @@ public class StructureGenerator
 
     public static <I extends NBTStorable> boolean instantly(StructureInfo<I> structureInfo, WorldServer world, Random random, BlockPos coord, AxisAlignedTransform2D transform, int layer, boolean suggest, String structureID, boolean asSource)
     {
-        StructureSpawnContext structureSpawnContext = StructureSpawnContext.complete(world, random, transform, coord, structureInfo, layer, asSource);
-        int[] size = sizeInts(structureSpawnContext.boundingBox);
-        int[] coordInts = coordInts(structureSpawnContext.boundingBox);
+        StructureSpawnContext spawnContext = StructureSpawnContext.complete(world, random, transform, coord, structureInfo, layer, asSource);
+        int[] size = sizeInts(spawnContext.boundingBox);
+        int[] coordInts = coordInts(spawnContext.boundingBox);
 
         if (!suggest || (
                 coord.getY() >= MIN_DIST_TO_LIMIT && coord.getY() + size[1] <= world.getHeight() - 1 - MIN_DIST_TO_LIMIT
-                        && (!RCConfig.avoidOverlappingGeneration || StructureGenerationData.get(world).getEntriesAt(structureSpawnContext.boundingBox).size() == 0)
-                        && !RCEventBus.INSTANCE.post(new StructureGenerationEvent.Suggest(structureInfo, structureSpawnContext))
+                        && (!RCConfig.avoidOverlappingGeneration || StructureGenerationData.get(world).getEntriesAt(spawnContext.boundingBox).size() == 0)
+                        && !RCEventBus.INSTANCE.post(new StructureGenerationEvent.Suggest(structureInfo, spawnContext))
                         && !MinecraftForge.EVENT_BUS.post(new StructureGenerationEventLite.Suggest(world, structureID, coordInts, size, layer))
         ))
         {
-            RCEventBus.INSTANCE.post(new StructureGenerationEvent.Pre(structureInfo, structureSpawnContext));
+            RCEventBus.INSTANCE.post(new StructureGenerationEvent.Pre(structureInfo, spawnContext));
             MinecraftForge.EVENT_BUS.post(new StructureGenerationEventLite.Pre(world, structureID, coordInts, size, layer));
 
-            structureInfo.generate(structureSpawnContext, structureInfo.prepareInstanceData(new StructurePrepareContext(random, world, transform, structureSpawnContext.boundingBox, structureSpawnContext.generateAsSource)));
+            structureInfo.generate(spawnContext, structureInfo.prepareInstanceData(new StructurePrepareContext(random, world, spawnContext.biome, transform, spawnContext.boundingBox, spawnContext.generateAsSource)));
 
-            RecurrentComplex.logger.trace(String.format("Generated structure '%s' in %s", name(structureID), structureSpawnContext.boundingBox));
+            RecurrentComplex.logger.trace(String.format("Generated structure '%s' in %s", name(structureID), spawnContext.boundingBox));
 
-            RCEventBus.INSTANCE.post(new StructureGenerationEvent.Post(structureInfo, structureSpawnContext));
+            RCEventBus.INSTANCE.post(new StructureGenerationEvent.Post(structureInfo, spawnContext));
             MinecraftForge.EVENT_BUS.post(new StructureGenerationEventLite.Post(world, structureID, coordInts, size, layer));
 
             if (structureID != null)
@@ -110,7 +112,7 @@ public class StructureGenerator
             return true;
         }
         else
-            RecurrentComplex.logger.trace(String.format("Canceled structure '%s' generation in %s", structureID, structureSpawnContext.boundingBox));
+            RecurrentComplex.logger.trace(String.format("Canceled structure '%s' generation in %s", structureID, spawnContext.boundingBox));
 
         return false;
     }
@@ -128,5 +130,10 @@ public class StructureGenerator
     private static int[] sizeInts(StructureBoundingBox bb)
     {
         return new int[]{bb.getXSize(), bb.getYSize(), bb.getZSize()};
+    }
+
+    public static Biome getBiome(World world, StructureBoundingBox boundingBox)
+    {
+        return world.getBiome(new BlockPos(boundingBox.getCenter()));
     }
 }

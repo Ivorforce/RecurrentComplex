@@ -39,16 +39,17 @@ import java.util.stream.Collectors;
 public class TransformerMulti extends Transformer<TransformerMulti.InstanceData>
 {
     private final List<Transformer> transformers = new ArrayList<>();
-    private final GenerationMatcher generationMatcher = new GenerationMatcher("");
+    private final GenerationMatcher generationMatcher;
 
     public TransformerMulti()
     {
-        this(randomID(TransformerMulti.class));
+        this(randomID(TransformerMulti.class), "");
     }
 
-    public TransformerMulti(@Nonnull String id)
+    public TransformerMulti(@Nonnull String id, String expression)
     {
         super(id);
+        this.generationMatcher = new GenerationMatcher(expression);
     }
 
     public static boolean skips(List<Pair<Transformer, NBTStorable>> transformers, final IBlockState state)
@@ -87,7 +88,7 @@ public class TransformerMulti extends Transformer<TransformerMulti.InstanceData>
         InstanceData instanceData = new InstanceData();
         transformers.forEach(transformer -> instanceData.pairedTransformers.add(Pair.of(transformer, transformer.prepareInstanceData(context))));
         Biome biome = context.world.getBiome(new BlockPos(context.boundingBox.getCenter()));
-        instanceData.activated = generationMatcher.test(new GenerationMatcher.Argument(context, biome));
+        instanceData.deactivated = !generationMatcher.test(new GenerationMatcher.Argument(context, biome));
         return instanceData;
     }
 
@@ -102,13 +103,13 @@ public class TransformerMulti extends Transformer<TransformerMulti.InstanceData>
     @Override
     public boolean skipGeneration(InstanceData instanceData, IBlockState state)
     {
-        return instanceData.activated && skips(instanceData.pairedTransformers, state);
+        return !instanceData.deactivated && skips(instanceData.pairedTransformers, state);
     }
 
     @Override
     public void transform(InstanceData instanceData, Phase phase, StructureSpawnContext context, IvWorldData worldData, List<Pair<Transformer, NBTStorable>> transformers)
     {
-        if (instanceData.activated)
+        if (!instanceData.deactivated)
             instanceData.pairedTransformers.forEach(pair -> pair.getLeft().transform(pair.getRight(), phase, context, worldData, transformers));
     }
 
@@ -117,7 +118,7 @@ public class TransformerMulti extends Transformer<TransformerMulti.InstanceData>
         public static final String KEY_TRANSFORMERS = "transformers";
 
         public final List<Pair<Transformer, NBTStorable>> pairedTransformers = new ArrayList<>();
-        public boolean activated;
+        public boolean deactivated;
 
         public void readFromNBT(StructureLoadContext context, NBTBase nbt, List<Transformer> transformers)
         {
@@ -129,7 +130,7 @@ public class TransformerMulti extends Transformer<TransformerMulti.InstanceData>
                 transformers.stream().filter(t -> t.id().equals(transformerID)).findAny().ifPresent(transformer ->
                         pairedTransformers.add(Pair.of(transformer, transformer.loadInstanceData(context, transformerCompound.getTag("data")))));
             });
-            activated = compound.getBoolean("activated");
+            deactivated = compound.getBoolean("deactivated");
         }
 
         @Override
@@ -144,7 +145,7 @@ public class TransformerMulti extends Transformer<TransformerMulti.InstanceData>
                 transformerCompound.setString("id", pair.getLeft().id());
                 return transformerCompound;
             }).collect(Collectors.toList()));
-            compound.setBoolean("activated", activated);
+            compound.setBoolean("deactivated", deactivated);
 
             return compound;
         }
@@ -158,7 +159,8 @@ public class TransformerMulti extends Transformer<TransformerMulti.InstanceData>
             JsonObject jsonObject = JsonUtils.getJsonElementAsJsonObject(json, "transformerNatural");
 
             String id = JsonUtils.getJsonObjectStringFieldValueOrDefault(jsonObject, "id", randomID(TransformerNatural.class));
-            TransformerMulti transformer = new TransformerMulti(id);
+            String expression = JsonUtils.getJsonObjectStringFieldValueOrDefault(jsonObject, "generationMatcher", "");
+            TransformerMulti transformer = new TransformerMulti(id, expression);
 
             Collections.addAll(transformer.transformers, context.<Transformer[]>deserialize(jsonObject.get("transformers"), Transformer[].class));
             return transformer;
@@ -170,6 +172,7 @@ public class TransformerMulti extends Transformer<TransformerMulti.InstanceData>
             JsonObject jsonObject = new JsonObject();
 
             jsonObject.addProperty("id", src.id());
+            jsonObject.addProperty("generationMatcher", src.generationMatcher.getExpression());
 
             jsonObject.add("transformers", context.serialize(src.transformers));
 

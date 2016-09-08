@@ -103,7 +103,7 @@ public class GenericVillagePiece extends StructureVillagePieces.Village
                 VanillaStructureGenerationInfo vanillaGenInfo = (VanillaStructureGenerationInfo) generationInfo;
                 AxisAlignedTransform2D transform = getTransform(vanillaGenInfo, getCoordBaseMode().getOpposite(), mirrorX);
 
-                instanceData = structureInfo.prepareInstanceData(new StructurePrepareContext(random, world, transform, boundingBox, false)).writeToNBT();
+                instanceData = structureInfo.prepareInstanceData(new StructurePrepareContext(random, world, startPiece.biome, transform, boundingBox, false)).writeToNBT();
             }
         }
     }

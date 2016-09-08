@@ -20,17 +20,15 @@ import java.util.function.BooleanSupplier;
  */
 public class DependencyMatcher extends FunctionExpressionCache<Boolean, Object, Object> implements BooleanSupplier
 {
-    public static final String MOD_PREFIX = "mod(";
-    public static final String MOD_SUFFIX = ")";
-    public static final String STRUCTURE_PREFIX = "structure(";
-    public static final String STRUCTURE_SUFFIX = ")";
+    public static final String MOD_PREFIX = "mod:";
+    public static final String STRUCTURE_PREFIX = "structure:";
 
     public DependencyMatcher(String expression)
     {
         super(RCBoolAlgebra.algebra(), true, TextFormatting.GREEN + "No Dependencies", expression);
 
-        addTypes(new ModVariableType(MOD_PREFIX, MOD_SUFFIX), t -> t.alias("$", ""));
-        addTypes(new StructureVariableType(STRUCTURE_PREFIX, STRUCTURE_SUFFIX), t -> t.alias("#", ""));
+        addTypes(new ModVariableType(MOD_PREFIX, ""), t -> t.alias("$", ""));
+        addTypes(new StructureVariableType(STRUCTURE_PREFIX, ""), t -> t.alias("#", ""), t -> t.alias("strc:", ""));
 
         testVariables();
     }

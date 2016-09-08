@@ -22,6 +22,7 @@ import ivorius.reccomplex.structures.StructureSpawnContext;
 import ivorius.reccomplex.structures.generic.WeightedBlockState;
 import ivorius.reccomplex.structures.generic.matchers.BlockMatcher;
 import ivorius.reccomplex.utils.NBTStorable;
+import ivorius.reccomplex.worldgen.StructureGenerator;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.init.Blocks;
 import net.minecraft.nbt.NBTBase;
@@ -59,7 +60,7 @@ public class TransformerWorldScript extends TransformerSingleBlock<TransformerWo
     @Override
     public void transformBlock(InstanceData instanceData, Phase phase, StructureSpawnContext context, BlockPos coord, IBlockState sourceState)
     {
-        WorldScriptMulti.InstanceData scriptInstanceData = script.prepareInstanceData(new StructurePrepareContext(context.random, context.world, context.transform, context.boundingBox, context.generateAsSource), coord);
+        WorldScriptMulti.InstanceData scriptInstanceData = script.prepareInstanceData(new StructurePrepareContext(context.random, context.world, context.biome, context.transform, context.boundingBox, context.generateAsSource), coord);
         script.generate(context, scriptInstanceData, coord);
     }
 

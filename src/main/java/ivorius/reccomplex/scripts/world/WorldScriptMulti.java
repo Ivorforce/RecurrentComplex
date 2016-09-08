@@ -14,6 +14,7 @@ import ivorius.reccomplex.gui.worldscripts.multi.TableDataSourceWorldScriptMulti
 import ivorius.reccomplex.structures.StructureLoadContext;
 import ivorius.reccomplex.structures.StructurePrepareContext;
 import ivorius.reccomplex.structures.StructureSpawnContext;
+import ivorius.reccomplex.structures.generic.matchers.GenerationMatcher;
 import ivorius.reccomplex.utils.NBTStorable;
 import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTTagCompound;
@@ -31,6 +32,7 @@ import java.util.stream.Collectors;
 public class WorldScriptMulti implements WorldScript<WorldScriptMulti.InstanceData>
 {
     public final List<WorldScript> scripts = new ArrayList<>();
+    public final GenerationMatcher generationMatcher = new GenerationMatcher("");
 
     @Override
     public InstanceData prepareInstanceData(StructurePrepareContext context, BlockPos pos)
@@ -39,6 +41,8 @@ public class WorldScriptMulti implements WorldScript<WorldScriptMulti.InstanceDa
 
         for (WorldScript script : scripts)
             instanceData.addInstanceData(script.prepareInstanceData(context, pos), WorldScriptRegistry.INSTANCE.type(script.getClass()));
+
+        instanceData.deactivated = !generationMatcher.test(new GenerationMatcher.Argument(context, context.biome));
 
         return instanceData;
     }
@@ -52,11 +56,14 @@ public class WorldScriptMulti implements WorldScript<WorldScriptMulti.InstanceDa
     @Override
     public void generate(StructureSpawnContext context, InstanceData instanceData, BlockPos coord)
     {
-        for (int i = 0; i < scripts.size(); i++)
+        if (!instanceData.deactivated)
         {
-            NBTStorable scriptData = instanceData.instanceDates.get(i);
-            if (scriptData != null)
-                scripts.get(i).generate(context, scriptData, coord);
+            for (int i = 0; i < scripts.size(); i++)
+            {
+                NBTStorable scriptData = instanceData.instanceDates.get(i);
+                if (scriptData != null)
+                    scripts.get(i).generate(context, scriptData, coord);
+            }
         }
     }
 
@@ -80,18 +87,24 @@ public class WorldScriptMulti implements WorldScript<WorldScriptMulti.InstanceDa
     {
         scripts.clear();
         scripts.addAll(NBTTagLists.compoundsFrom(compound, "scripts").stream().map(WorldScriptRegistry.INSTANCE::read).filter(Objects::nonNull).collect(Collectors.toList()));
+
+        generationMatcher.setExpression(compound.getString("generationMatcher"));
     }
 
     @Override
     public void writeToNBT(NBTTagCompound compound)
     {
         NBTTagLists.writeTo(compound, "scripts", scripts.stream().map(WorldScriptRegistry.INSTANCE::write).collect(Collectors.toList()));
+
+        compound.setString("generationMatcher", generationMatcher.getExpression());
     }
 
     public static class InstanceData implements NBTStorable
     {
         public final List<NBTStorable> instanceDates = new ArrayList<>();
         public final List<String> ids = new ArrayList<>();
+
+        public boolean deactivated;
 
         public InstanceData()
         {
@@ -112,6 +125,8 @@ public class WorldScriptMulti implements WorldScript<WorldScriptMulti.InstanceDa
             }
             for (int i = compoundsFrom.size(); i < expectedScripts.size(); i++)
                 instanceDates.add(null);
+
+            deactivated = compound.getBoolean("deactivated");
         }
 
         public void addInstanceData(NBTStorable instanceData, String id)
@@ -135,7 +150,9 @@ public class WorldScriptMulti implements WorldScript<WorldScriptMulti.InstanceDa
             }
             nbt.setTag("instanceDates", dataList);
 
-            return null;
+            nbt.setBoolean("deactivated", deactivated);
+
+            return nbt;
         }
     }
 }

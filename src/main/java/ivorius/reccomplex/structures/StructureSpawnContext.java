@@ -5,12 +5,10 @@
 
 package ivorius.reccomplex.structures;
 
-import ivorius.reccomplex.worldgen.StructureGenerator;
 import net.minecraft.util.math.BlockPos;
 import ivorius.ivtoolkit.math.AxisAlignedTransform2D;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.world.WorldServer;
-import net.minecraft.world.biome.Biome;
 import net.minecraft.world.gen.structure.StructureBoundingBox;
 
 import javax.annotation.Nonnull;
@@ -23,9 +21,7 @@ import java.util.Random;
 public class StructureSpawnContext
 {
     @Nonnull
-    public final WorldServer world;
-    @Nonnull
-    public final Biome biome;
+    public Environment environment;
     @Nonnull
     public final Random random;
 
@@ -41,10 +37,9 @@ public class StructureSpawnContext
     public final boolean generateAsSource;
     public final boolean isFirstTime;
 
-    public StructureSpawnContext(@Nonnull WorldServer world, Biome biome, @Nonnull Random random, @Nonnull AxisAlignedTransform2D transform, @Nonnull StructureBoundingBox boundingBox, @Nullable StructureBoundingBox generationBB, int generationLayer, boolean generateAsSource, boolean isFirstTime)
+    public StructureSpawnContext(@Nonnull Environment environment, @Nonnull Random random, @Nonnull AxisAlignedTransform2D transform, @Nonnull StructureBoundingBox boundingBox, @Nullable StructureBoundingBox generationBB, int generationLayer, boolean generateAsSource, boolean isFirstTime)
     {
-        this.world = world;
-        this.biome = biome;
+        this.environment = environment;
         this.random = random;
         this.transform = transform;
         this.boundingBox = boundingBox;
@@ -54,26 +49,26 @@ public class StructureSpawnContext
         this.isFirstTime = isFirstTime;
     }
 
-    public static StructureSpawnContext complete(@Nonnull WorldServer world, @Nonnull Random random, @Nonnull AxisAlignedTransform2D transform, @Nonnull StructureBoundingBox boundingBox, int generationLayer, boolean generateAsSource)
+    public static StructureSpawnContext complete(@Nonnull Environment environment, @Nonnull Random random, @Nonnull AxisAlignedTransform2D transform, @Nonnull StructureBoundingBox boundingBox, int generationLayer, boolean generateAsSource)
     {
-        return new StructureSpawnContext(world, StructureGenerator.getBiome(world, boundingBox), random, transform, boundingBox, null, generationLayer, generateAsSource, true);
+        return new StructureSpawnContext(environment, random, transform, boundingBox, null, generationLayer, generateAsSource, true);
     }
 
-    public static StructureSpawnContext complete(@Nonnull WorldServer world, @Nonnull Random random, @Nonnull AxisAlignedTransform2D transform, BlockPos coord, StructureInfo structureInfo, int generationLayer, boolean generateAsSource)
+    public static StructureSpawnContext complete(@Nonnull WorldServer worldServer, @Nonnull Random random, @Nonnull AxisAlignedTransform2D transform, BlockPos coord, StructureInfo structureInfo, int generationLayer, boolean generateAsSource)
     {
         StructureBoundingBox boundingBox = StructureInfos.structureBoundingBox(coord, StructureInfos.structureSize(structureInfo, transform));
-        return new StructureSpawnContext(world, StructureGenerator.getBiome(world, boundingBox), random, transform, boundingBox, null, generationLayer, generateAsSource, true);
+        return new StructureSpawnContext(Environment.inNature(worldServer, boundingBox), random, transform, boundingBox, null, generationLayer, generateAsSource, true);
     }
 
-    public static StructureSpawnContext partial(@Nonnull WorldServer world, @Nonnull Random random, @Nonnull AxisAlignedTransform2D transform, @Nonnull StructureBoundingBox boundingBox, StructureBoundingBox generationBB, int generationLayer, boolean generateAsSource, boolean isFirstTime)
+    public static StructureSpawnContext partial(@Nonnull Environment environment, @Nonnull Random random, @Nonnull AxisAlignedTransform2D transform, @Nonnull StructureBoundingBox boundingBox, StructureBoundingBox generationBB, int generationLayer, boolean generateAsSource, boolean isFirstTime)
     {
-        return new StructureSpawnContext(world, StructureGenerator.getBiome(world, boundingBox), random, transform, boundingBox, generationBB, generationLayer, generateAsSource, isFirstTime);
+        return new StructureSpawnContext(environment, random, transform, boundingBox, generationBB, generationLayer, generateAsSource, isFirstTime);
     }
 
-    public static StructureSpawnContext partial(@Nonnull WorldServer world, @Nonnull Random random, @Nonnull AxisAlignedTransform2D transform, BlockPos coord, StructureInfo structureInfo, @Nonnull StructureBoundingBox generationBB, int generationLayer, boolean generateAsSource, boolean isFirstTime)
+    public static StructureSpawnContext partial(@Nonnull Environment environment, @Nonnull Random random, @Nonnull AxisAlignedTransform2D transform, BlockPos coord, StructureInfo structureInfo, @Nonnull StructureBoundingBox generationBB, int generationLayer, boolean generateAsSource, boolean isFirstTime)
     {
         StructureBoundingBox boundingBox = StructureInfos.structureBoundingBox(coord, StructureInfos.structureSize(structureInfo, transform));
-        return new StructureSpawnContext(world, StructureGenerator.getBiome(world, boundingBox), random, transform, boundingBox, generationBB, generationLayer, generateAsSource, isFirstTime);
+        return new StructureSpawnContext(environment, random, transform, boundingBox, generationBB, generationLayer, generateAsSource, isFirstTime);
     }
 
     public boolean includes(BlockPos coord)
@@ -100,7 +95,7 @@ public class StructureSpawnContext
     {
         if (includes(coord))
         {
-            world.setBlockState(coord, state, flag);
+            environment.world.setBlockState(coord, state, flag);
             return true;
         }
 

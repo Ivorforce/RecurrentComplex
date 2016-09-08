@@ -47,7 +47,7 @@ public class TransformerNegativeSpace extends Transformer<NBTNone>
     }
 
     @Override
-    public boolean skipGeneration(NBTNone instanceData, IBlockState state)
+    public boolean skipGeneration(StructureSpawnContext context, NBTNone instanceData, IBlockState state)
     {
         return sourceMatcher.test(state);
     }

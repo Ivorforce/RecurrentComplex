@@ -301,6 +301,8 @@ reccomplex.transformer.multi.none=No transformers
 reccomplex.transformer.multi.multiple=%s transformers
 reccomplex.transformer.worldscript=World Script
 reccomplex.transformer.worldscript.tooltip=Runs a world script from matched blocks.
+reccomplex.transformer.villagereplace=Village Specific
+reccomplex.transformer.villagereplace.tooltip=Replaces all applicable blocks<br>to the version native to<br>the village.
 
 reccomplex.transformer.natural=Natural Floor
 reccomplex.transformer.natural.tooltip=Spawns biome-native floor blocks below blocks

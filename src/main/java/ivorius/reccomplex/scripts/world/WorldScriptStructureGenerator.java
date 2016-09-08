@@ -193,7 +193,7 @@ public class WorldScriptStructureGenerator implements WorldScript<WorldScriptStr
                     BlockPos strucCoord = transform.apply(structureShift, new int[]{1, 1, 1})
                             .subtract(transform.apply(new BlockPos(0, 0, 0), strucSize)).add(pos);
 
-                    instanceData = new WorldScriptStructureGenerator.InstanceData(structureID, strucCoord, strucTransform, structureInfo.prepareInstanceData(new StructurePrepareContext(random, context.world, context.biome, strucTransform, StructureInfos.structureBoundingBox(strucCoord, strucSize), context.generateAsSource)));
+                    instanceData = new WorldScriptStructureGenerator.InstanceData(structureID, strucCoord, strucTransform, structureInfo.prepareInstanceData(new StructurePrepareContext(random, context.environment, strucTransform, StructureInfos.structureBoundingBox(strucCoord, strucSize), context.generateAsSource)));
                 }
             }
         }
@@ -229,7 +229,7 @@ public class WorldScriptStructureGenerator implements WorldScript<WorldScriptStr
                 BlockPos strucCoord = transform.apply(structureShift.add(generationInfo.shift), new int[]{1, 1, 1})
                         .subtract(transform.apply(new BlockPos(0, 0, 0), strucSize)).add(pos);
 
-                instanceData = new WorldScriptStructureGenerator.InstanceData(structureID, strucCoord, strucTransform, structureInfo.prepareInstanceData(new StructurePrepareContext(random, context.world, context.biome, strucTransform, StructureInfos.structureBoundingBox(strucCoord, strucSize), context.generateAsSource)));
+                instanceData = new WorldScriptStructureGenerator.InstanceData(structureID, strucCoord, strucTransform, structureInfo.prepareInstanceData(new StructurePrepareContext(random, context.environment, strucTransform, StructureInfos.structureBoundingBox(strucCoord, strucSize), context.generateAsSource)));
             }
         }
 
@@ -239,13 +239,13 @@ public class WorldScriptStructureGenerator implements WorldScript<WorldScriptStr
     @Override
     public void generate(StructureSpawnContext context, InstanceData instanceData, BlockPos coord)
     {
-        WorldServer world = context.world;
+        WorldServer world = context.environment.world;
         Random random = context.random;
         int layer = context.generationLayer;
 
         StructureInfo structureInfo = StructureRegistry.INSTANCE.getStructure(instanceData.structureID);
         if (structureInfo != null && instanceData.structureData != null)
-            StructureGenerator.partially(structureInfo, world, random, instanceData.lowerCoord, instanceData.structureTransform, context.generationBB, layer + 1, instanceData.structureID, instanceData.structureData, context.isFirstTime);
+            StructureGenerator.partially(structureInfo, context.environment, random, instanceData.lowerCoord, instanceData.structureTransform, context.generationBB, layer + 1, instanceData.structureID, instanceData.structureData, context.isFirstTime);
     }
 
     @Override

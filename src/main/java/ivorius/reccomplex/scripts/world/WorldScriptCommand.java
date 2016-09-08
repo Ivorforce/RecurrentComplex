@@ -109,14 +109,14 @@ public class WorldScriptCommand implements WorldScript<NBTNone>
                     @Override
                     public World getEntityWorld()
                     {
-                        return context.world;
+                        return context.environment.world;
                     }
 
                     @Override
                     public void updateCommand()
                     {
-                        IBlockState iblockstate = context.world.getBlockState(coord);
-                        context.world.notifyBlockUpdate(coord, iblockstate, iblockstate, 3);
+                        IBlockState iblockstate = context.environment.world.getBlockState(coord);
+                        context.environment.world.notifyBlockUpdate(coord, iblockstate, iblockstate, 3);
                     }
 
                     @Override
@@ -144,14 +144,14 @@ public class WorldScriptCommand implements WorldScript<NBTNone>
                     @Override
                     public MinecraftServer getServer()
                     {
-                        return context.world.getMinecraftServer();
+                        return context.environment.world.getMinecraftServer();
                     }
                 };
                 logic.setCommand(entry.command);
 
                 try
                 {
-                    logic.trigger(context.world);
+                    logic.trigger(context.environment.world);
                 }
                 catch (Throwable t)
                 {

@@ -22,9 +22,7 @@ public class StructurePrepareContext
     @Nonnull
     public final Random random;
     @Nonnull
-    public final WorldServer world;
-    @Nonnull
-    public final Biome biome;
+    public final Environment environment;
     @Nonnull
     public final AxisAlignedTransform2D transform;
     @Nonnull
@@ -32,11 +30,10 @@ public class StructurePrepareContext
 
     public final boolean generateAsSource;
 
-    public StructurePrepareContext(@Nonnull Random random, WorldServer world, Biome biome, @Nonnull AxisAlignedTransform2D transform, @Nonnull StructureBoundingBox boundingBox, boolean generateAsSource)
+    public StructurePrepareContext(@Nonnull Random random, Environment environment, @Nonnull AxisAlignedTransform2D transform, @Nonnull StructureBoundingBox boundingBox, boolean generateAsSource)
     {
         this.random = random;
-        this.world = world;
-        this.biome = biome;
+        this.environment = environment;
         this.transform = transform;
         this.boundingBox = boundingBox;
         this.generateAsSource = generateAsSource;

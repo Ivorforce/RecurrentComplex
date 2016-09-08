@@ -66,7 +66,7 @@ public abstract class Transformer<S extends NBTStorable>
 
     public abstract S loadInstanceData(StructureLoadContext context, NBTBase nbt);
 
-    public abstract boolean skipGeneration(S instanceData, IBlockState state);
+    public abstract boolean skipGeneration(StructureSpawnContext context, S instanceData, IBlockState state);
 
     public abstract void transform(S instanceData, Phase phase, StructureSpawnContext context, IvWorldData worldData, List<Pair<Transformer, NBTStorable>> transformers);
 

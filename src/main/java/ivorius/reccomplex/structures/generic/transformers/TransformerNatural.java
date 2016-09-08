@@ -65,7 +65,7 @@ public class TransformerNatural extends TransformerSingleBlock<NBTNone>
     }
 
     @Override
-    public boolean matches(NBTNone instanceData, IBlockState state)
+    public boolean matches(StructureSpawnContext context, NBTNone instanceData, IBlockState state)
     {
         return sourceMatcher.test(state);
     }
@@ -74,7 +74,7 @@ public class TransformerNatural extends TransformerSingleBlock<NBTNone>
     public void transformBlock(NBTNone instanceData, Phase phase, StructureSpawnContext context, BlockPos coord, IBlockState sourceState)
     {
         // TODO Fix for partial generation
-        World world = context.world;
+        World world = context.environment.world;
         Random random = context.random;
 
         Biome biome = world.getBiome(coord);

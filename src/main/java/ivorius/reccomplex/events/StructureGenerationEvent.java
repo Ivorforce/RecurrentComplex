@@ -27,7 +27,7 @@ public class StructureGenerationEvent extends WorldEvent
 
     public StructureGenerationEvent(StructureInfo structureInfo, StructureSpawnContext spawnContext)
     {
-        super(spawnContext.world);
+        super(spawnContext.environment.world);
         this.structureInfo = structureInfo;
         this.spawnContext = spawnContext;
     }

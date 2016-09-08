@@ -5,7 +5,6 @@
 
 package ivorius.reccomplex.structures.generic.transformers;
 
-import ivorius.reccomplex.utils.NBTNone;
 import net.minecraft.util.math.BlockPos;
 import ivorius.ivtoolkit.blocks.IvBlockCollection;
 import ivorius.ivtoolkit.tools.IvWorldData;
@@ -28,9 +27,9 @@ public abstract class TransformerSingleBlock<S extends NBTStorable> extends Tran
     }
 
     @Override
-    public boolean skipGeneration(S instanceData, IBlockState state)
+    public boolean skipGeneration(StructureSpawnContext context, S instanceData, IBlockState state)
     {
-        return matches(instanceData, state);
+        return matches(context, instanceData, state);
     }
 
     @Override
@@ -50,7 +49,7 @@ public abstract class TransformerSingleBlock<S extends NBTStorable> extends Tran
                 {
                     IBlockState state = blockCollection.getBlockState(sourceCoord);
 
-                    if (matches(instanceData, state))
+                    if (matches(context, instanceData, state))
                         transformBlock(instanceData, Phase.BEFORE, context, worldCoord, state);
                 }
             }
@@ -59,7 +58,7 @@ public abstract class TransformerSingleBlock<S extends NBTStorable> extends Tran
 
     public abstract boolean generatesInPhase(S instanceData, Phase phase);
 
-    public abstract boolean matches(S instanceData, IBlockState state);
+    public abstract boolean matches(StructureSpawnContext context, S instanceData, IBlockState state);
 
     public abstract void transformBlock(S instanceData, Phase phase, StructureSpawnContext context, BlockPos coord, IBlockState sourceState);
 }

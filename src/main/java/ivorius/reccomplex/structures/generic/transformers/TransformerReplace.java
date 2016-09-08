@@ -92,7 +92,7 @@ public class TransformerReplace extends TransformerSingleBlock<NBTNone>
     }
 
     @Override
-    public boolean matches(NBTNone instanceData, IBlockState state)
+    public boolean matches(StructureSpawnContext context, NBTNone instanceData, IBlockState state)
     {
         return sourceMatcher.test(state);
     }
@@ -110,7 +110,7 @@ public class TransformerReplace extends TransformerSingleBlock<NBTNone>
                 ? tryParse(blockState.tileEntityInfo)
                 : null;
 
-        setBlockWith(context, coord, context.world, blockState, parsedTileEntityInfo);
+        setBlockWith(context, coord, context.environment.world, blockState, parsedTileEntityInfo);
     }
 
     public static void setBlockWith(StructureSpawnContext context, BlockPos coord, World world, WeightedBlockState entry, NBTTagCompound parsedTileEntityInfo)

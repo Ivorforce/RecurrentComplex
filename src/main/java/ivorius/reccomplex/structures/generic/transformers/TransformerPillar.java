@@ -52,7 +52,7 @@ public class TransformerPillar extends TransformerSingleBlock<NBTNone>
     }
 
     @Override
-    public boolean matches(NBTNone instanceData, IBlockState state)
+    public boolean matches(StructureSpawnContext context, NBTNone instanceData, IBlockState state)
     {
         return sourceMatcher.test(state);
     }
@@ -63,7 +63,7 @@ public class TransformerPillar extends TransformerSingleBlock<NBTNone>
         if (RecurrentComplex.specialRegistry.isSafe(destState.getBlock()))
         {
             // TODO Fix for partial generation
-            World world = context.world;
+            World world = context.environment.world;
 
             int y = coord.getY();
 

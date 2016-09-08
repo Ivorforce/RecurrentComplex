@@ -79,9 +79,9 @@ public class TransformerRuins extends Transformer<TransformerRuins.InstanceData>
         this.vineGrowth = vineGrowth;
     }
 
-    private static boolean skipBlock(Collection<Pair<Transformer, NBTStorable>> transformers, final IBlockState state)
+    private static boolean skipBlock(StructureSpawnContext context, Collection<Pair<Transformer, NBTStorable>> transformers, final IBlockState state)
     {
-        return transformers.stream().anyMatch(input -> input.getLeft().skipGeneration(input.getRight(), state));
+        return transformers.stream().anyMatch(input -> input.getLeft().skipGeneration(context, input.getRight(), state));
     }
 
     private static int getPass(IBlockState state)
@@ -115,7 +115,7 @@ public class TransformerRuins extends Transformer<TransformerRuins.InstanceData>
     }
 
     @Override
-    public boolean skipGeneration(InstanceData instanceData, IBlockState state)
+    public boolean skipGeneration(StructureSpawnContext context, InstanceData instanceData, IBlockState state)
     {
         return false;
     }
@@ -155,8 +155,8 @@ public class TransformerRuins extends Transformer<TransformerRuins.InstanceData>
                             {
                                 IBlockState state = blockCollection.getBlockState(sourceCoord);
 
-                                if (getPass(state) == pass && !skipBlock(transformers, state))
-                                    setBlockToAirClean(context.world, worldCoord);
+                                if (getPass(state) == pass && !skipBlock(context, transformers, state))
+                                    setBlockToAirClean(context.environment.world, worldCoord);
                             }
                         }
                     }
@@ -172,10 +172,10 @@ public class TransformerRuins extends Transformer<TransformerRuins.InstanceData>
 
                     if (context.includes(worldCoord))
                     {
-                        IBlockState state = context.world.getBlockState(worldCoord);
+                        IBlockState state = context.environment.world.getBlockState(worldCoord);
 
-                        if (!skipBlock(transformers, state))
-                            decayBlock(context.world, context.random, state, worldCoord);
+                        if (!skipBlock(context, transformers, state))
+                            decayBlock(context.environment.world, context.random, state, worldCoord);
                     }
                 }
             }

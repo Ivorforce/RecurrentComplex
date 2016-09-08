@@ -119,7 +119,7 @@ public class GenericStructureInfo implements StructureInfo<GenericStructureInfo.
     @Override
     public void generate(final StructureSpawnContext context, InstanceData instanceData)
     {
-        WorldServer world = context.world;
+        WorldServer world = context.environment.world;
         Random random = context.random;
         IvWorldData worldData = constructWorldData();
 
@@ -155,7 +155,7 @@ public class GenericStructureInfo implements StructureInfo<GenericStructureInfo.
 
                 BlockPos worldPos = context.transform.apply(sourceCoord, areaSize).add(origin);
                 if (context.includes(worldPos) && RecurrentComplex.specialRegistry.isSafe(state.getBlock())
-                        && pass == getPass(state) && (context.generateAsSource || !transformer.skipGeneration(instanceData.transformerData, state)))
+                        && pass == getPass(state) && (context.generateAsSource || !transformer.skipGeneration(context, instanceData.transformerData, state)))
                 {
                     TileEntity origTileEntity = origTileEntities.get(sourceCoord);
 
@@ -177,7 +177,7 @@ public class GenericStructureInfo implements StructureInfo<GenericStructureInfo.
                                     if (!context.generateAsSource && tileEntity instanceof IInventory)
                                     {
                                         IInventory inventory = (IInventory) tileEntity;
-                                        InventoryGenerationHandler.generateAllTags(context.world, inventory, RecurrentComplex.specialRegistry.itemHidingMode(), random);
+                                        InventoryGenerationHandler.generateAllTags(world, inventory, RecurrentComplex.specialRegistry.itemHidingMode(), random);
                                     }
                                 }
                             }

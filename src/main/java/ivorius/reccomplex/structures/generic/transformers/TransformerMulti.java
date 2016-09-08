@@ -52,9 +52,9 @@ public class TransformerMulti extends Transformer<TransformerMulti.InstanceData>
         this.generationMatcher = new GenerationMatcher(expression);
     }
 
-    public static boolean skips(List<Pair<Transformer, NBTStorable>> transformers, final IBlockState state)
+    public static boolean skips(StructureSpawnContext context, List<Pair<Transformer, NBTStorable>> transformers, final IBlockState state)
     {
-        return transformers.stream().anyMatch(input -> input.getLeft().skipGeneration(input.getRight(), state));
+        return transformers.stream().anyMatch(input -> input.getLeft().skipGeneration(context, input.getRight(), state));
     }
 
     public List<Transformer> getTransformers()
@@ -87,8 +87,7 @@ public class TransformerMulti extends Transformer<TransformerMulti.InstanceData>
     {
         InstanceData instanceData = new InstanceData();
         transformers.forEach(transformer -> instanceData.pairedTransformers.add(Pair.of(transformer, transformer.prepareInstanceData(context))));
-        Biome biome = context.world.getBiome(new BlockPos(context.boundingBox.getCenter()));
-        instanceData.deactivated = !generationMatcher.test(new GenerationMatcher.Argument(context, biome));
+        instanceData.deactivated = !generationMatcher.test(new GenerationMatcher.Argument(context, context.environment.biome));
         return instanceData;
     }
 
@@ -101,9 +100,9 @@ public class TransformerMulti extends Transformer<TransformerMulti.InstanceData>
     }
 
     @Override
-    public boolean skipGeneration(InstanceData instanceData, IBlockState state)
+    public boolean skipGeneration(StructureSpawnContext context, InstanceData instanceData, IBlockState state)
     {
-        return !instanceData.deactivated && skips(instanceData.pairedTransformers, state);
+        return !instanceData.deactivated && skips(context, instanceData.pairedTransformers, state);
     }
 
     @Override

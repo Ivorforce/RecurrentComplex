@@ -89,7 +89,7 @@ public class GenerationMatcher extends FunctionExpressionCache<Boolean, Generati
         @Override
         public WorldProvider convertEvaluateArgument(Argument argument)
         {
-            return argument.context.world.provider;
+            return argument.context.environment.world.provider;
         }
 
         @Override

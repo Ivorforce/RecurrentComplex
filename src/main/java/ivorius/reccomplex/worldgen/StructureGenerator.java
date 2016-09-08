@@ -17,6 +17,7 @@ import ivorius.reccomplex.structures.*;
 import ivorius.reccomplex.utils.NBTStorable;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.world.World;
+import net.minecraft.world.WorldProvider;
 import net.minecraft.world.WorldServer;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.gen.structure.StructureBoundingBox;
@@ -34,21 +35,23 @@ public class StructureGenerator
 
     public static <I extends NBTStorable> void partially(StructureInfo<I> structureInfo, WorldServer world, Random random, BlockPos coord, AxisAlignedTransform2D transform, @Nullable StructureBoundingBox generationBB, int layer, String structureID, NBTTagCompound instanceData, boolean firstTime)
     {
-        partially(structureInfo, world, random, coord, transform, generationBB, layer, structureID,
-                structureInfo.loadInstanceData(new StructureLoadContext(transform, StructureInfos.structureBoundingBox(coord, StructureInfos.structureSize(structureInfo, transform)), false), instanceData),
+        StructureBoundingBox boundingBox = StructureInfos.structureBoundingBox(coord, StructureInfos.structureSize(structureInfo, transform));
+
+        partially(structureInfo, Environment.inNature(world, boundingBox), random, coord, transform, generationBB, layer, structureID,
+                structureInfo.loadInstanceData(new StructureLoadContext(transform, boundingBox, false), instanceData),
                 firstTime);
     }
 
-    public static <I extends NBTStorable> void partially(StructureInfo<I> structureInfo, WorldServer world, Random random, BlockPos coord, AxisAlignedTransform2D transform, @Nullable StructureBoundingBox generationBB, int layer, String structureID, I instanceData, boolean firstTime)
+    public static <I extends NBTStorable> void partially(StructureInfo<I> structureInfo, Environment environment, Random random, BlockPos coord, AxisAlignedTransform2D transform, @Nullable StructureBoundingBox generationBB, int layer, String structureID, I instanceData, boolean firstTime)
     {
-        StructureSpawnContext structureSpawnContext = StructureSpawnContext.partial(world, random, transform, coord, structureInfo, generationBB, layer, false, firstTime);
+        StructureSpawnContext structureSpawnContext = StructureSpawnContext.partial(environment, random, transform, coord, structureInfo, generationBB, layer, false, firstTime);
         int[] coordInts = coordInts(structureSpawnContext.boundingBox);
         int[] sizeInts = sizeInts(structureSpawnContext.boundingBox);
 
         if (firstTime)
         {
             RCEventBus.INSTANCE.post(new StructureGenerationEvent.Pre(structureInfo, structureSpawnContext));
-            MinecraftForge.EVENT_BUS.post(new StructureGenerationEventLite.Pre(world, structureID, coordInts, sizeInts, layer));
+            MinecraftForge.EVENT_BUS.post(new StructureGenerationEventLite.Pre(environment.world, structureID, coordInts, sizeInts, layer));
         }
 
         structureInfo.generate(structureSpawnContext, instanceData);
@@ -58,13 +61,13 @@ public class StructureGenerator
             RecurrentComplex.logger.trace(String.format("Generated structure '%s' in %s", name(structureID), structureSpawnContext.boundingBox));
 
             RCEventBus.INSTANCE.post(new StructureGenerationEvent.Post(structureInfo, structureSpawnContext));
-            MinecraftForge.EVENT_BUS.post(new StructureGenerationEventLite.Post(world, structureID, coordInts, sizeInts, layer));
+            MinecraftForge.EVENT_BUS.post(new StructureGenerationEventLite.Post(environment.world, structureID, coordInts, sizeInts, layer));
         }
     }
 
     public static <I extends NBTStorable> void directly(StructureInfo<I> structureInfo, StructureSpawnContext context)
     {
-        structureInfo.generate(context, structureInfo.prepareInstanceData(new StructurePrepareContext(context.random, context.world, context.biome, context.transform, context.boundingBox, context.generateAsSource)));
+        structureInfo.generate(context, structureInfo.prepareInstanceData(new StructurePrepareContext(context.random, context.environment, context.transform, context.boundingBox, context.generateAsSource)));
     }
 
     public static int randomInstantly(WorldServer world, Random random, StructureInfo info, @Nullable YSelector ySelector, BlockSurfacePos pos, boolean suggest, String structureName)
@@ -99,7 +102,7 @@ public class StructureGenerator
             RCEventBus.INSTANCE.post(new StructureGenerationEvent.Pre(structureInfo, spawnContext));
             MinecraftForge.EVENT_BUS.post(new StructureGenerationEventLite.Pre(world, structureID, coordInts, size, layer));
 
-            structureInfo.generate(spawnContext, structureInfo.prepareInstanceData(new StructurePrepareContext(random, world, spawnContext.biome, transform, spawnContext.boundingBox, spawnContext.generateAsSource)));
+            structureInfo.generate(spawnContext, structureInfo.prepareInstanceData(new StructurePrepareContext(random, spawnContext.environment, transform, spawnContext.boundingBox, spawnContext.generateAsSource)));
 
             RecurrentComplex.logger.trace(String.format("Generated structure '%s' in %s", name(structureID), spawnContext.boundingBox));
 

@@ -42,7 +42,7 @@ public class WorldScriptMulti implements WorldScript<WorldScriptMulti.InstanceDa
         for (WorldScript script : scripts)
             instanceData.addInstanceData(script.prepareInstanceData(context, pos), WorldScriptRegistry.INSTANCE.type(script.getClass()));
 
-        instanceData.deactivated = !generationMatcher.test(new GenerationMatcher.Argument(context, context.biome));
+        instanceData.deactivated = !generationMatcher.test(new GenerationMatcher.Argument(context, context.environment.biome));
 
         return instanceData;
     }

@@ -7,10 +7,7 @@ package ivorius.reccomplex.worldgen.villages;
 
 import ivorius.ivtoolkit.blocks.Directions;
 import ivorius.ivtoolkit.math.AxisAlignedTransform2D;
-import ivorius.reccomplex.structures.StructureInfo;
-import ivorius.reccomplex.structures.StructureLoadContext;
-import ivorius.reccomplex.structures.StructurePrepareContext;
-import ivorius.reccomplex.structures.StructureRegistry;
+import ivorius.reccomplex.structures.*;
 import ivorius.reccomplex.structures.generic.gentypes.StructureGenerationInfo;
 import ivorius.reccomplex.structures.generic.gentypes.VanillaStructureGenerationInfo;
 import ivorius.reccomplex.utils.NBTStorable;
@@ -25,6 +22,7 @@ import net.minecraft.world.WorldServer;
 import net.minecraft.world.gen.structure.StructureBoundingBox;
 import net.minecraft.world.gen.structure.StructureVillagePieces;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.Random;
@@ -91,6 +89,12 @@ public class GenericVillagePiece extends StructureVillagePieces.Village
         this.boundingBox = boundingBox;
     }
 
+    @Nonnull
+    protected Environment environment(WorldServer world)
+    {
+        return new Environment(world, startPiece.biome, field_189928_h);
+    }
+
     public void prepare(Random random, WorldServer world)
     {
         StructureInfo structureInfo = StructureRegistry.INSTANCE.getStructure(structureID);
@@ -103,7 +107,7 @@ public class GenericVillagePiece extends StructureVillagePieces.Village
                 VanillaStructureGenerationInfo vanillaGenInfo = (VanillaStructureGenerationInfo) generationInfo;
                 AxisAlignedTransform2D transform = getTransform(vanillaGenInfo, getCoordBaseMode().getOpposite(), mirrorX);
 
-                instanceData = structureInfo.prepareInstanceData(new StructurePrepareContext(random, world, startPiece.biome, transform, boundingBox, false)).writeToNBT();
+                instanceData = structureInfo.prepareInstanceData(new StructurePrepareContext(random, environment(world), transform, boundingBox, false)).writeToNBT();
             }
         }
     }
@@ -153,7 +157,7 @@ public class GenericVillagePiece extends StructureVillagePieces.Village
         BlockPos lowerCoord = new BlockPos(this.boundingBox.minX, this.boundingBox.minY, this.boundingBox.minZ);
         T instanceData = structureInfo.loadInstanceData(new StructureLoadContext(transform, boundingBox, false), this.instanceData);
 
-        StructureGenerator.partially(structureInfo, (WorldServer) world, random, lowerCoord, transform, boundingBox, componentType, structureID, instanceData, !startedGeneration);
+        StructureGenerator.partially(structureInfo, environment(world), random, lowerCoord, transform, boundingBox, componentType, structureID, instanceData, !startedGeneration);
 
         if (structureID != null && !startedGeneration)
             StructureGenerationData.get(world).addCompleteEntry(structureID, lowerCoord, transform);

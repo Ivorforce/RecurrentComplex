@@ -64,7 +64,7 @@ public class TransformerReplaceAll extends TransformerSingleBlock<TransformerRep
     }
 
     @Override
-    public boolean matches(InstanceData instanceData, IBlockState state)
+    public boolean matches(StructureSpawnContext context, InstanceData instanceData, IBlockState state)
     {
         return sourceMatcher.test(state);
     }
@@ -72,7 +72,7 @@ public class TransformerReplaceAll extends TransformerSingleBlock<TransformerRep
     @Override
     public void transformBlock(InstanceData instanceData, Phase phase, StructureSpawnContext context, BlockPos coord, IBlockState sourceState)
     {
-        TransformerReplace.setBlockWith(context, coord, context.world, instanceData.blockState, instanceData.tileEntityInfo);
+        TransformerReplace.setBlockWith(context, coord, context.environment.world, instanceData.blockState, instanceData.tileEntityInfo);
     }
 
     @Override

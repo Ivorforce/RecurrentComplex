@@ -40,10 +40,10 @@ public class WorldGenMaze
             {
                 AxisAlignedTransform2D componentTransform = placedComponent.transform;
 
-                StructureGenerator.partially(structureInfo, context.world, context.random, placedComponent.lowerCoord, componentTransform, context.generationBB, context.generationLayer + 1, placedComponent.structureID, placedComponent.instanceData, context.isFirstTime);
+                StructureGenerator.partially(structureInfo, context.environment, context.random, placedComponent.lowerCoord, componentTransform, context.generationBB, context.generationLayer + 1, placedComponent.structureID, placedComponent.instanceData, context.isFirstTime);
 
                 if (context.isFirstTime)
-                    StructureGenerationData.get(context.world).addCompleteEntry(placedComponent.structureID, placedComponent.lowerCoord, componentTransform);
+                    StructureGenerationData.get(context.environment.world).addCompleteEntry(placedComponent.structureID, placedComponent.lowerCoord, componentTransform);
             }
             else
             {
@@ -54,7 +54,7 @@ public class WorldGenMaze
         return true;
     }
 
-    public static List<PlacedStructure> convertToPlacedStructures(final Random random, WorldServer world, Biome biome, final BlockPos coord, final BlockPos shift, List<ShiftedMazeComponent<MazeComponentStructure<Connector>, Connector>> placedComponents, final int[] roomSize, final AxisAlignedTransform2D mazeTransform)
+    public static List<PlacedStructure> convertToPlacedStructures(final Random random, Environment environment, final BlockPos coord, final BlockPos shift, List<ShiftedMazeComponent<MazeComponentStructure<Connector>, Connector>> placedComponents, final int[] roomSize, final AxisAlignedTransform2D mazeTransform)
     {
         return Lists.newArrayList(placedComponents.stream().map(placedComponent -> {
             MazeComponentStructure<Connector> componentInfo = placedComponent.getComponent();
@@ -64,7 +64,7 @@ public class WorldGenMaze
             {
                 AxisAlignedTransform2D componentTransform = componentInfo.transform.rotateClockwise(mazeTransform.getRotation());
                 StructureBoundingBox compBoundingBox = getBoundingBox(coord, shift, roomSize, placedComponent, structureInfo, componentTransform, mazeTransform);
-                NBTStorable instanceData = structureInfo.prepareInstanceData(new StructurePrepareContext(random, world, biome, componentTransform, compBoundingBox, false));
+                NBTStorable instanceData = structureInfo.prepareInstanceData(new StructurePrepareContext(random, environment, componentTransform, compBoundingBox, false));
 
                 return new PlacedStructure(componentInfo.structureID, componentTransform, new BlockPos(compBoundingBox.minX, compBoundingBox.minY, compBoundingBox.minZ), instanceData);
             }

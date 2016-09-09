@@ -25,9 +25,7 @@ import net.minecraft.util.math.MathHelper;
 import org.apache.commons.lang3.tuple.Pair;
 
 import javax.annotation.Nonnull;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Random;
+import java.util.*;
 
 /**
  * Created by lukas on 09.09.16.
@@ -69,13 +67,16 @@ public abstract class TransformerAbstractCloud<S extends TransformerAbstractClou
                 cloud.put(pos, 1);
         });
 
-        final boolean[] changed = new boolean[]{true};
         final double falloff = 1.0 / naturalExpansionDistance();
-        while (changed[0])
-        {
-            changed[0] = false;
 
-            cloud.forEachEntry((pos, density) ->
+        Set<BlockPos> changedL = new HashSet<>();
+        changedL.addAll(cloud.keySet());
+        Set<BlockPos> changedR = new HashSet<>();
+        while (changedL.size() > 0 || changedR.size() > 0)
+        {
+            Set<BlockPos> prev = changedL.size() > 0 ? changedL : changedR;
+            final Set<BlockPos> changed = prev == changedL ? changedR : changedL;
+            prev.forEach(pos ->
             {
                 for (EnumFacing side : EnumFacing.values())
                 {
@@ -83,18 +84,17 @@ public abstract class TransformerAbstractCloud<S extends TransformerAbstractClou
                     if (modifier > 0.000001)
                     {
                         BlockPos sidePos = pos.offset(side);
-                        double sideDensity = density - (falloff * (1.0f / modifier) * blurredValueField.getValue(sidePos.getX(), sidePos.getY(), sidePos.getZ()));
+                        double sideDensity = cloud.get(pos) - (falloff * (1.0f / modifier) * blurredValueField.getValue(sidePos.getX(), sidePos.getY(), sidePos.getZ()));
 
-                        if (sideDensity > 0 && !cloud.containsKey(sidePos))
+                        if (sideDensity > 0 && cloud.get(sidePos) < sideDensity)
                         {
                             cloud.put(sidePos, sideDensity);
-                            changed[0] = true;
+                            changed.add(sidePos);
                         }
                     }
                 }
-
-                return true;
             });
+            prev.clear();
         }
 
         return cloud;

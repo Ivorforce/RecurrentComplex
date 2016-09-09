@@ -62,7 +62,7 @@ public abstract class Transformer<S extends NBTStorable>
 
     public abstract TableDataSource tableDataSource(TableNavigator navigator, TableDelegate delegate);
 
-    public abstract S prepareInstanceData(StructurePrepareContext context);
+    public abstract S prepareInstanceData(StructurePrepareContext context, IvWorldData worldData);
 
     public abstract S loadInstanceData(StructureLoadContext context, NBTBase nbt);
 

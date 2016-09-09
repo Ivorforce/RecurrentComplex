@@ -6,6 +6,7 @@
 package ivorius.reccomplex.structures.generic.transformers;
 
 import com.google.gson.*;
+import ivorius.ivtoolkit.tools.IvWorldData;
 import ivorius.reccomplex.utils.PresettedLists;
 import net.minecraft.util.math.BlockPos;
 import ivorius.ivtoolkit.random.WeightedSelector;
@@ -134,7 +135,7 @@ public class TransformerReplace extends TransformerSingleBlock<NBTNone>
     }
 
     @Override
-    public NBTNone prepareInstanceData(StructurePrepareContext context)
+    public NBTNone prepareInstanceData(StructurePrepareContext context, IvWorldData worldData)
     {
         return new NBTNone();
     }

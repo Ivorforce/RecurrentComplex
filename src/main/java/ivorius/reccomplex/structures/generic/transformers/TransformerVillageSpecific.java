@@ -7,6 +7,7 @@ package ivorius.reccomplex.structures.generic.transformers;
 
 import com.google.gson.*;
 import ivorius.ivtoolkit.tools.IvTranslations;
+import ivorius.ivtoolkit.tools.IvWorldData;
 import ivorius.ivtoolkit.tools.MCRegistry;
 import ivorius.ivtoolkit.transform.PosTransformer;
 import ivorius.reccomplex.RecurrentComplex;
@@ -22,7 +23,6 @@ import ivorius.reccomplex.structures.generic.WeightedBlockState;
 import ivorius.reccomplex.structures.generic.matchers.BlockMatcher;
 import ivorius.reccomplex.utils.NBTNone;
 import net.minecraft.block.state.IBlockState;
-import net.minecraft.init.Blocks;
 import net.minecraft.nbt.NBTBase;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
@@ -70,7 +70,7 @@ public class TransformerVillageSpecific extends TransformerSingleBlock<NBTNone>
     }
 
     @Override
-    public NBTNone prepareInstanceData(StructurePrepareContext context)
+    public NBTNone prepareInstanceData(StructurePrepareContext context, IvWorldData worldData)
     {
         return new NBTNone();
     }

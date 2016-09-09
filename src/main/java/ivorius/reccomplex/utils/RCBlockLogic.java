@@ -5,10 +5,14 @@
 
 package ivorius.reccomplex.utils;
 
+import ivorius.ivtoolkit.blocks.BlockArea;
+import net.minecraft.block.BlockLog;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.init.Blocks;
+import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Vec3i;
 import net.minecraft.world.World;
 
 /**
@@ -16,6 +20,21 @@ import net.minecraft.world.World;
  */
 public class RCBlockLogic
 {
+    public static boolean isDyingFoliage(IBlockState state, World world, BlockPos pos)
+    {
+        return isFoliage(state, world, pos) && !isOnFloor(state, world, pos) && !hasLogBelow(state, world, pos);
+    }
+
+    public static boolean isOnFloor(IBlockState state, World world, BlockPos pos)
+    {
+        return world.getBlockState(pos.down()).isSideSolid(world, pos.down(), EnumFacing.UP);
+    }
+
+    public static boolean hasLogBelow(IBlockState state, World world, BlockPos pos)
+    {
+        return new BlockArea(pos.subtract(new Vec3i(1, 2, 1)), pos.add(new Vec3i(1, -1, 1))).stream().anyMatch(p -> world.getBlockState(p).getBlock().isWood(world, p));
+    }
+
     public static boolean isFoliage(IBlockState state, World world, BlockPos pos)
     {
         Material material = state.getMaterial();

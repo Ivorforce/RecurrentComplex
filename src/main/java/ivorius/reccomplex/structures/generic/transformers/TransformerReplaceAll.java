@@ -6,6 +6,7 @@
 package ivorius.reccomplex.structures.generic.transformers;
 
 import com.google.gson.*;
+import ivorius.ivtoolkit.tools.IvWorldData;
 import ivorius.reccomplex.utils.PresettedLists;
 import net.minecraft.util.math.BlockPos;
 import ivorius.ivtoolkit.gui.IntegerRange;
@@ -88,7 +89,7 @@ public class TransformerReplaceAll extends TransformerSingleBlock<TransformerRep
     }
 
     @Override
-    public InstanceData prepareInstanceData(StructurePrepareContext context)
+    public InstanceData prepareInstanceData(StructurePrepareContext context, IvWorldData worldData)
     {
         WeightedBlockState blockState;
 

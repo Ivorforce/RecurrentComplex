@@ -124,7 +124,7 @@ public class RCRegistryHandler
         register(bookGenerationTag, "book_generation_tag");
         RecurrentComplex.cremapper.registerLegacyIDs(bookGenerationTag, "bookGenerationTag");
 
-        genericSpace = new BlockGenericSpace().setUnlocalizedName("negativeSpace");
+        genericSpace = (BlockGenericSpace) new BlockGenericSpace().setUnlocalizedName("negativeSpace");
         genericSpace.setCreativeTab(tabStructureTools);
         register(genericSpace, "generic_space", ItemBlockGenericSpace.class);
         RecurrentComplex.cremapper.registerLegacyIDs(genericSpace, true, "negativeSpace");

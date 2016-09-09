@@ -6,7 +6,7 @@
 package ivorius.reccomplex.structures.generic.transformers;
 
 import com.google.gson.*;
-import ivorius.ivtoolkit.math.IvVecMathHelper;
+import ivorius.ivtoolkit.tools.IvWorldData;
 import ivorius.ivtoolkit.tools.MCRegistry;
 import ivorius.reccomplex.RecurrentComplex;
 import ivorius.reccomplex.blocks.RCBlocks;
@@ -19,23 +19,21 @@ import ivorius.reccomplex.structures.StructureLoadContext;
 import ivorius.reccomplex.structures.StructurePrepareContext;
 import ivorius.reccomplex.structures.StructureSpawnContext;
 import ivorius.reccomplex.structures.generic.matchers.BlockMatcher;
-import ivorius.reccomplex.utils.NBTNone;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.init.Blocks;
 import net.minecraft.nbt.NBTBase;
+import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraft.world.biome.Biome;
 
 import java.lang.reflect.Type;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
 
 /**
  * Created by lukas on 25.05.14.
  */
-public class TransformerNatural extends TransformerSingleBlock<NBTNone>
+public class TransformerNatural extends TransformerAbstractCloud<TransformerNatural.InstanceData>
 {
     public static final double DEFAULT_NATURAL_EXPANSION_DISTANCE = 4.0;
     public static final double DEFAULT_NATURAL_EXPANSION_RANDOMIZATION = 6.0;
@@ -65,120 +63,61 @@ public class TransformerNatural extends TransformerSingleBlock<NBTNone>
     }
 
     @Override
-    public boolean matches(StructureSpawnContext context, NBTNone instanceData, IBlockState state)
+    public boolean matches(InstanceData instanceData, IBlockState state)
     {
         return sourceMatcher.test(state);
     }
 
     @Override
-    public void transformBlock(NBTNone instanceData, Phase phase, StructureSpawnContext context, BlockPos coord, IBlockState sourceState)
+    protected double naturalExpansionDistance(EnumFacing side)
     {
-        // TODO Fix for partial generation
-        World world = context.environment.world;
-        Random random = context.random;
+        return side == EnumFacing.UP ? 0
+                : side.getHorizontalIndex() >= 0 ? 0.5f
+                : super.naturalExpansionDistance(side);
+    }
 
-        Biome biome = world.getBiome(coord);
+    @Override
+    public void transformBlock(InstanceData instanceData, Phase phase, StructureSpawnContext context, BlockPos sourcePos, BlockPos pos, IBlockState sourceState, double density)
+    {
+        World world = context.environment.world;
+        Biome biome = context.environment.biome;
         IBlockState topBlock = biome.topBlock != null ? biome.topBlock : Blocks.AIR.getDefaultState();
         IBlockState fillerBlock = biome.fillerBlock != null ? biome.fillerBlock : Blocks.AIR.getDefaultState();
         IBlockState mainBlock = world.provider.getDimension() == -1 ? Blocks.NETHERRACK.getDefaultState() : (world.provider.getDimension() == 1 ? Blocks.END_STONE.getDefaultState() : Blocks.STONE.getDefaultState());
 
-        boolean useStoneBlock = hasBlockAbove(world, coord, mainBlock);
-
-        if (phase == Phase.BEFORE)
-        {
-            int currentY = coord.getY();
-            List<int[]> currentList = new ArrayList<>();
-            List<int[]> nextList = new ArrayList<>();
-            nextList.add(new int[]{coord.getX(), coord.getZ()});
-
-            while (nextList.size() > 0 && currentY > 1)
-            {
-                List<int[]> cachedList = currentList;
-                currentList = nextList;
-                nextList = cachedList;
-
-                while (currentList.size() > 0)
-                {
-                    int[] currentPos = currentList.remove(0);
-                    int currentX = currentPos[0];
-                    int currentZ = currentPos[1];
-
-                    BlockPos curBlockPos = new BlockPos(currentX, currentY, currentZ);
-                    IBlockState curBlock = world.getBlockState(curBlockPos);
-
-                    boolean replaceable = currentY == coord.getY() || curBlock.getBlock().isReplaceable(world, curBlockPos);
-                    if (replaceable)
-                    {
-                        IBlockState setBlock = useStoneBlock ? mainBlock : (isTopBlock(world, curBlockPos) ? topBlock : fillerBlock);
-                        context.setBlock(curBlockPos, setBlock, 2);
-                    }
-
-                    // Uncommenting makes performance shit
-                    if (replaceable/* || curBlock == topBlock || curBlock == fillerBlock || curBlock == mainBlock*/)
-                    {
-                        double yForDistance = coord.getY() * 0.3 + currentY * 0.7;
-                        double distToOrigSQ = IvVecMathHelper.distanceSQ(new double[]{coord.getX(), coord.getY(), coord.getZ()}, new double[]{currentX, yForDistance, currentZ});
-                        double add = (random.nextDouble() - random.nextDouble()) * naturalExpansionRandomization;
-                        distToOrigSQ += add < 0 ? -(add * add) : (add * add);
-
-                        if (distToOrigSQ < naturalExpansionDistance * naturalExpansionDistance)
-                            addNewNeighbors(nextList, currentX, currentZ);
-                    }
-                }
-
-                currentY--;
-            }
-        }
-        else
-        {
-            // Get the top blocks right (grass rather than dirt)
-            IBlockState setBlock = useStoneBlock ? mainBlock : (isTopBlock(world, coord) ? topBlock : fillerBlock);
-            context.setBlock(coord, setBlock, 2);
-        }
-    }
-
-    public static void addNewNeighbors(List<int[]> list, int x, int z)
-    {
-        addIfNew(list, x, z);
-        addIfNew(list, x - 1, z);
-        addIfNew(list, x + 1, z);
-        addIfNew(list, x, z - 1);
-        addIfNew(list, x, z + 1);
-    }
-
-    private boolean hasBlockAbove(World world, BlockPos pos, IBlockState blockType)
-    {
-        int y = pos.getY();
-        for (; y < world.getHeight() && y < pos.getY() + 60; y++)
-        {
-            if (world.getBlockState(new BlockPos(pos.getX(), y, pos.getZ())) == blockType)
-                return true;
-        }
-
-        return false;
-    }
-
-    private boolean isTopBlock(World world, BlockPos pos)
-    {
-        return !world.isBlockNormalCube(pos.up(), false);
+        boolean useStoneBlock = false;
+        IBlockState setBlock = useStoneBlock ? mainBlock : (instanceData.cloud.containsKey(sourcePos.up()) ? fillerBlock : topBlock);
+        context.environment.world.setBlockState(pos, setBlock);
     }
 
     @Override
-    public boolean generatesInPhase(NBTNone instanceData, Phase phase)
+    public double naturalExpansionDistance()
+    {
+        return naturalExpansionDistance;
+    }
+
+    @Override
+    public double naturalExpansionRandomization()
+    {
+        return naturalExpansionRandomization;
+    }
+
+    @Override
+    public boolean generatesInPhase(InstanceData instanceData, Phase phase)
     {
         return phase == Phase.BEFORE;
     }
 
     @Override
-    public NBTNone prepareInstanceData(StructurePrepareContext context)
+    public InstanceData prepareInstanceDataCloud(StructurePrepareContext context, IvWorldData worldData)
     {
-        return new NBTNone();
+        return new InstanceData();
     }
 
     @Override
-    public NBTNone loadInstanceData(StructureLoadContext context, NBTBase nbt)
+    public InstanceData loadInstanceData(StructureLoadContext context, NBTBase nbt)
     {
-        return new NBTNone();
+        return new InstanceData();
     }
 
     @Override
@@ -191,6 +130,11 @@ public class TransformerNatural extends TransformerSingleBlock<NBTNone>
     public TableDataSource tableDataSource(TableNavigator navigator, TableDelegate delegate)
     {
         return new TableDataSourceBTNatural(this, navigator, delegate);
+    }
+
+    public static class InstanceData extends TransformerAbstractCloud.InstanceData
+    {
+
     }
 
     public static class Serializer implements JsonDeserializer<TransformerNatural>, JsonSerializer<TransformerNatural>

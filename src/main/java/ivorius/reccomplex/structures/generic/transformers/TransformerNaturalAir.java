@@ -6,9 +6,11 @@
 package ivorius.reccomplex.structures.generic.transformers;
 
 import com.google.gson.*;
+import ivorius.ivtoolkit.tools.IvWorldData;
 import ivorius.reccomplex.utils.RCBlockLogic;
+import net.minecraft.init.Blocks;
+import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
-import ivorius.ivtoolkit.math.IvVecMathHelper;
 import ivorius.ivtoolkit.tools.MCRegistry;
 import ivorius.reccomplex.RecurrentComplex;
 import ivorius.reccomplex.blocks.RCBlocks;
@@ -22,22 +24,15 @@ import ivorius.reccomplex.structures.StructurePrepareContext;
 import ivorius.reccomplex.structures.StructureSpawnContext;
 import ivorius.reccomplex.structures.generic.matchers.BlockMatcher;
 import net.minecraft.block.state.IBlockState;
-import ivorius.reccomplex.utils.NBTNone;
-import net.minecraft.block.material.Material;
-import net.minecraft.init.Blocks;
 import net.minecraft.nbt.NBTBase;
-import net.minecraft.world.World;
-import net.minecraft.world.biome.Biome;
+import net.minecraft.world.WorldServer;
 
 import java.lang.reflect.Type;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Random;
 
 /**
  * Created by lukas on 25.05.14.
  */
-public class TransformerNaturalAir extends TransformerSingleBlock<NBTNone>
+public class TransformerNaturalAir extends TransformerAbstractCloud<TransformerNaturalAir.InstanceData>
 {
     public static final double DEFAULT_NATURAL_EXPANSION_DISTANCE = 4.0;
     public static final double DEFAULT_NATURAL_EXPANSION_RANDOMIZATION = 10.0;
@@ -61,67 +56,33 @@ public class TransformerNaturalAir extends TransformerSingleBlock<NBTNone>
     }
 
     @Override
-    public boolean matches(StructureSpawnContext context, NBTNone instanceData, IBlockState state)
+    public boolean matches(InstanceData instanceData, IBlockState state)
     {
         return sourceMatcher.test(state);
     }
 
     @Override
-    public void transformBlock(NBTNone instanceData, Phase phase, StructureSpawnContext context, BlockPos coord, IBlockState sourceState)
+    protected double naturalExpansionDistance(EnumFacing side)
     {
-        // TODO Fix for partial generation
-        World world = context.environment.world;
-        Random random = context.random;
+        return side == EnumFacing.DOWN ? 0.2f
+                : side.getHorizontalIndex() >= 0 ? 0.5f
+                : super.naturalExpansionDistance(side);
+    }
 
-        Biome biome = world.getBiome(coord);
-        IBlockState topBlock = biome.topBlock != null ? biome.topBlock : Blocks.AIR.getDefaultState();
-        IBlockState fillerBlock = biome.fillerBlock != null ? biome.fillerBlock : Blocks.AIR.getDefaultState();
+    @Override
+    public void transformBlock(InstanceData instanceData, Phase phase, StructureSpawnContext context, BlockPos sourcePos, BlockPos pos, IBlockState sourceState, double density)
+    {
+        WorldServer world = context.environment.world;
 
-        coord = coord.down(4);
-
-        int currentY = coord.getY();
-        List<int[]> currentList = new ArrayList<>();
-        List<int[]> nextList = new ArrayList<>();
-        nextList.add(new int[]{coord.getX(), coord.getZ()});
-
-        int worldHeight = world.getHeight();
-        while (nextList.size() > 0 && currentY < worldHeight)
+        boolean replaceable = true;
+        if (phase == Phase.AFTER)
         {
-            List<int[]> cachedList = currentList;
-            currentList = nextList;
-            nextList = cachedList;
-
-            while (currentList.size() > 0)
-            {
-                int[] currentPos = currentList.remove(0);
-                int currentX = currentPos[0];
-                int currentZ = currentPos[1];
-
-                BlockPos curBlockPos = new BlockPos(currentX, currentY, currentZ);
-                IBlockState curBlock = world.getBlockState(curBlockPos);
-
-                Material material = curBlock.getMaterial();
-                boolean isFoliage = RCBlockLogic.isFoliage(curBlock, world, curBlockPos);
-                boolean isTerrain = RCBlockLogic.isTerrain(curBlock);
-                boolean replaceable = currentY == coord.getY() || curBlock == topBlock || curBlock == fillerBlock
-                        || curBlock.getBlock().isReplaceable(world, curBlockPos) || isTerrain || isFoliage;
-
-                if (replaceable)
-                    context.setBlock(curBlockPos, Blocks.AIR.getDefaultState(), 2);
-
-                if (replaceable || material == Material.AIR)
-                {
-                    double distToOrigSQ = IvVecMathHelper.distanceSQ(new double[]{coord.getX(), coord.getY(), coord.getZ()}, new double[]{currentX, currentY, currentZ});
-                    double add = (random.nextDouble() - random.nextDouble()) * naturalExpansionRandomization;
-                    distToOrigSQ += add < 0 ? -(add * add) : (add * add);
-
-                    if (distToOrigSQ < naturalExpansionDistance * naturalExpansionDistance)
-                        TransformerNatural.addNewNeighbors(nextList, currentX, currentZ);
-                }
-            }
-
-            currentY++;
+            boolean isFoliage = RCBlockLogic.isFoliage(world.getBlockState(pos), world, pos);
+            replaceable = isFoliage;
         }
+
+        if (replaceable)
+            context.setBlock(pos, Blocks.AIR.getDefaultState(), 2);
     }
 
     @Override
@@ -137,21 +98,40 @@ public class TransformerNaturalAir extends TransformerSingleBlock<NBTNone>
     }
 
     @Override
-    public NBTNone prepareInstanceData(StructurePrepareContext context)
+    public InstanceData prepareInstanceDataCloud(StructurePrepareContext context, IvWorldData worldData)
     {
-        return new NBTNone();
+        return new InstanceData();
     }
 
     @Override
-    public NBTNone loadInstanceData(StructureLoadContext context, NBTBase nbt)
+    public InstanceData loadInstanceData(StructureLoadContext context, NBTBase nbt)
     {
-        return new NBTNone();
+        InstanceData instanceData = new InstanceData();
+        instanceData.readFromNBT(nbt);
+        return instanceData;
     }
 
     @Override
-    public boolean generatesInPhase(NBTNone instanceData, Phase phase)
+    public double naturalExpansionDistance()
     {
-        return phase == Phase.BEFORE;
+        return naturalExpansionDistance;
+    }
+
+    @Override
+    public double naturalExpansionRandomization()
+    {
+        return naturalExpansionRandomization;
+    }
+
+    @Override
+    public boolean generatesInPhase(InstanceData instanceData, Phase phase)
+    {
+        return true;
+    }
+
+    public static class InstanceData extends TransformerAbstractCloud.InstanceData
+    {
+
     }
 
     public static class Serializer implements JsonDeserializer<TransformerNaturalAir>, JsonSerializer<TransformerNaturalAir>

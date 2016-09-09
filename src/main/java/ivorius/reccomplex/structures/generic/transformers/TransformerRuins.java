@@ -250,7 +250,7 @@ public class TransformerRuins extends Transformer<TransformerRuins.InstanceData>
     }
 
     @Override
-    public InstanceData prepareInstanceData(StructurePrepareContext context)
+    public InstanceData prepareInstanceData(StructurePrepareContext context, IvWorldData worldData)
     {
         InstanceData instanceData = new InstanceData();
 

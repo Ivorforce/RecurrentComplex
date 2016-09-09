@@ -71,7 +71,7 @@ public class TransformerNegativeSpace extends Transformer<NBTNone>
     }
 
     @Override
-    public NBTNone prepareInstanceData(StructurePrepareContext context)
+    public NBTNone prepareInstanceData(StructurePrepareContext context, IvWorldData worldData)
     {
         return new NBTNone();
     }

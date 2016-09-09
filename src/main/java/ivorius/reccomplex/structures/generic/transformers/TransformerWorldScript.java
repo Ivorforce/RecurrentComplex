@@ -6,6 +6,7 @@
 package ivorius.reccomplex.structures.generic.transformers;
 
 import com.google.gson.*;
+import ivorius.ivtoolkit.tools.IvWorldData;
 import ivorius.ivtoolkit.tools.MCRegistry;
 import ivorius.ivtoolkit.tools.NBTCompoundObjects;
 import ivorius.reccomplex.RecurrentComplex;
@@ -64,7 +65,7 @@ public class TransformerWorldScript extends TransformerSingleBlock<TransformerWo
     }
 
     @Override
-    public InstanceData prepareInstanceData(StructurePrepareContext context)
+    public InstanceData prepareInstanceData(StructurePrepareContext context, IvWorldData worldData)
     {
         return new InstanceData();
     }

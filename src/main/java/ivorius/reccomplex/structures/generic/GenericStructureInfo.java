@@ -246,7 +246,7 @@ public class GenericStructureInfo implements StructureInfo<GenericStructureInfo.
             int[] areaSize = new int[]{blockCollection.width, blockCollection.height, blockCollection.length};
             BlockPos origin = context.lowerCoord();
 
-            instanceData.transformerData = transformer.prepareInstanceData(context);
+            instanceData.transformerData = transformer.prepareInstanceData(context, worldData);
 
             worldData.tileEntities.forEach(teCompound ->
             {

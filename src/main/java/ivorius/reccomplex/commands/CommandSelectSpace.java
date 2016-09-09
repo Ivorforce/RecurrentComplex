@@ -7,20 +7,21 @@ package ivorius.reccomplex.commands;
 
 import ivorius.ivtoolkit.blocks.BlockArea;
 import ivorius.ivtoolkit.blocks.BlockAreas;
-import net.minecraft.block.state.IBlockState;
-import net.minecraft.command.NumberInvalidException;
-import net.minecraft.server.MinecraftServer;
-import net.minecraft.util.math.BlockPos;
 import ivorius.reccomplex.RCConfig;
+import ivorius.reccomplex.blocks.BlockGenericSpace;
 import ivorius.reccomplex.blocks.RCBlocks;
 import ivorius.reccomplex.entities.StructureEntityInfo;
 import ivorius.reccomplex.utils.ServerTranslations;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.command.ICommandSender;
+import net.minecraft.command.NumberInvalidException;
 import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.world.World;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.World;
 
 import javax.annotation.Nullable;
 import java.util.List;
@@ -65,7 +66,7 @@ public class CommandSelectSpace extends CommandSelectModify
 
     public static void placeNaturalAir(World world, BlockArea area, int floorDistance, int maxClosedSides)
     {
-        Block spaceBlock = RCBlocks.genericSpace;
+        BlockGenericSpace spaceBlock = RCBlocks.genericSpace;
 
         BlockPos lowerPoint = area.getLowerCorner();
         BlockPos higherPoint = area.getHigherCorner();
@@ -73,6 +74,7 @@ public class CommandSelectSpace extends CommandSelectModify
         for (BlockPos surfaceCoord : BlockAreas.side(area, EnumFacing.DOWN))
         {
             int safePoint = lowerPoint.getY();
+            boolean needsAir = false;
 
             for (int y = higherPoint.getY(); y >= lowerPoint.getY(); y--)
             {
@@ -80,13 +82,20 @@ public class CommandSelectSpace extends CommandSelectModify
 
                 if ((blockState.getMaterial() != Material.AIR && blockState.getBlock() != spaceBlock) || sidesClosed(world, new BlockPos(surfaceCoord.getX(), y, surfaceCoord.getZ()), area) >= maxClosedSides)
                 {
-                    safePoint = y + (blockState.getBlock() == RCBlocks.genericSolid ? 1 : floorDistance);
+                    boolean isFloor = blockState == RCBlocks.genericSolid.getDefaultState();
+                    safePoint = y + (isFloor ? 1 : floorDistance);
+                    needsAir = !isFloor;
                     break;
                 }
             }
 
             for (int y = safePoint; y <= higherPoint.getY(); y++)
-                world.setBlockState(new BlockPos(surfaceCoord.getX(), y, surfaceCoord.getZ()), spaceBlock.getDefaultState());
+            {
+                IBlockState defaultState = y == safePoint && needsAir
+                        ? spaceBlock.getDefaultState().withProperty(BlockGenericSpace.TYPE, 1)
+                        : spaceBlock.getDefaultState();
+                world.setBlockState(new BlockPos(surfaceCoord.getX(), y, surfaceCoord.getZ()), defaultState);
+            }
 
             if (safePoint > lowerPoint.getY())
             {

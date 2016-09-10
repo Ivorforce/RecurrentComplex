@@ -5,8 +5,10 @@
 
 package ivorius.reccomplex.structures.generic.transformers;
 
+import com.google.common.collect.Sets;
 import com.google.gson.*;
 import ivorius.ivtoolkit.blocks.BlockArea;
+import ivorius.ivtoolkit.blocks.IvBlockCollection;
 import ivorius.ivtoolkit.tools.IvWorldData;
 import ivorius.reccomplex.utils.RCBlockLogic;
 import net.minecraft.init.Blocks;
@@ -80,34 +82,47 @@ public class TransformerNaturalAir extends TransformerAbstractCloud<TransformerN
     @Override
     public void transformBlock(InstanceData instanceData, Phase phase, StructureSpawnContext context, BlockPos sourcePos, BlockPos worldPos, IBlockState sourceState, double density)
     {
-        WorldServer world = context.environment.world;
+        context.setBlock(worldPos, Blocks.AIR.getDefaultState(), 2);
+    }
+
+    @Override
+    public void transform(InstanceData instanceData, Phase phase, StructureSpawnContext context, IvWorldData worldData, TransformerMulti transformer, TransformerMulti.InstanceData transformerID)
+    {
+        super.transform(instanceData, phase, context, worldData, transformer, transformerID);
 
         if (phase == Phase.AFTER)
         {
+            WorldServer world = context.environment.world;
+            IvBlockCollection blockCollection = worldData.blockCollection;
+            int[] areaSize = new int[]{blockCollection.width, blockCollection.height, blockCollection.length};
+            BlockPos lowerCoord = context.lowerCoord();
+
             // Remove dying foliage
             Set<BlockPos> remove = new HashSet<>();
-            HashSet<BlockPos> check = new BlockArea(worldPos.subtract(new Vec3i(2, 2, 2)), worldPos.add(new Vec3i(2, 2, 2)))
-                    .stream().filter(pos -> !instanceData.cloud.containsKey(pos)).collect(Collectors.toCollection(HashSet::new));
+            HashSet<BlockPos> check = instanceData.cloud.keySet().stream()
+                    .flatMap(pos -> new BlockArea(pos.subtract(new Vec3i(2, 2, 2)), pos.add(new Vec3i(2, 2, 2))).stream())
+                    .filter(pos -> !instanceData.cloud.containsKey(pos))
+                    .map(pos -> context.transform.apply(pos, areaSize).add(lowerCoord))
+                    .collect(Collectors.toCollection(HashSet::new));
 
-            if (visitRecursively(check, (changed, pos) -> {
-                IBlockState state = world.getBlockState(pos);
-                boolean isFoliage = RCBlockLogic.isFoliage(state, world, pos);
-                if (!RCBlockLogic.canStay(state, world, pos))
-                    context.setBlock(pos, Blocks.AIR.getDefaultState(), 2);
-                else if (!isFoliage && !state.getBlock().isReplaceable(world, pos))
-                    return false;
-                else if (isFoliage && remove.size() < MAX_TREE_SIZE && remove.add(pos))
-                    neighbors(pos).forEach(changed::add);
+            // Do each one separately, since each block needs to be connected to floor separately
+            check.forEach(checking -> {
+                if (visitRecursively(Sets.newHashSet(checking), (changed, pos) -> {
+                    IBlockState state = world.getBlockState(pos);
+                    boolean isFoliage = RCBlockLogic.isFoliage(state, world, pos);
+                    if (!RCBlockLogic.canStay(state, world, pos))
+                        context.setBlock(pos, Blocks.AIR.getDefaultState(), 2);
+                    else if (!isFoliage && !state.getBlock().isReplaceable(world, pos))
+                        return false;
+                    else if (isFoliage && remove.size() < MAX_TREE_SIZE && remove.add(pos))
+                        neighbors(pos).forEach(changed::add);
 
-                return true;
-            }))
-            {
-                remove.forEach(pos -> context.setBlock(pos, Blocks.AIR.getDefaultState(), 2));
-            }
-        }
-        else
-        {
-            context.setBlock(worldPos, Blocks.AIR.getDefaultState(), 2);
+                    return true;
+                }))
+                {
+                    remove.forEach(pos -> context.setBlock(pos, Blocks.AIR.getDefaultState(), 2));
+                }
+            });
         }
     }
 
@@ -157,7 +172,7 @@ public class TransformerNaturalAir extends TransformerAbstractCloud<TransformerN
     @Override
     public boolean generatesInPhase(InstanceData instanceData, Phase phase)
     {
-        return true;
+        return phase == Phase.BEFORE;
     }
 
     public static class InstanceData extends TransformerAbstractCloud.InstanceData

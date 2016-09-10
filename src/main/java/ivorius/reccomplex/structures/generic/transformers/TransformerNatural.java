@@ -15,10 +15,12 @@ import ivorius.reccomplex.gui.table.TableDataSource;
 import ivorius.reccomplex.gui.table.TableDelegate;
 import ivorius.reccomplex.gui.table.TableNavigator;
 import ivorius.reccomplex.json.JsonUtils;
+import ivorius.reccomplex.structures.Environment;
 import ivorius.reccomplex.structures.StructureLoadContext;
 import ivorius.reccomplex.structures.StructurePrepareContext;
 import ivorius.reccomplex.structures.StructureSpawnContext;
 import ivorius.reccomplex.structures.generic.matchers.BlockMatcher;
+import ivorius.reccomplex.utils.RCBlockLogic;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.init.Blocks;
 import net.minecraft.nbt.NBTBase;
@@ -77,6 +79,14 @@ public class TransformerNatural extends TransformerAbstractCloud<TransformerNatu
     }
 
     @Override
+    public boolean canPenetrate(Environment environment, IvWorldData worldData, BlockPos pos, double density, TransformerMulti transformer, TransformerMulti.InstanceData transformerID)
+    {
+        IBlockState state = environment.world.getBlockState(pos);
+        return density >= 1 || state.getBlock().isReplaceable(environment.world, pos)
+                || RCBlockLogic.isFoliage(state, environment.world, pos);
+    }
+
+    @Override
     public void transformBlock(InstanceData instanceData, Phase phase, StructureSpawnContext context, BlockPos sourcePos, BlockPos pos, IBlockState sourceState, double density)
     {
         World world = context.environment.world;
@@ -109,7 +119,7 @@ public class TransformerNatural extends TransformerAbstractCloud<TransformerNatu
     }
 
     @Override
-    public InstanceData prepareInstanceDataCloud(StructurePrepareContext context, IvWorldData worldData)
+    public InstanceData prepareInstanceData(StructurePrepareContext context, IvWorldData worldData)
     {
         return new InstanceData();
     }

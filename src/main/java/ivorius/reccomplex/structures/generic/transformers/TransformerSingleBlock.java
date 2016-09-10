@@ -5,16 +5,15 @@
 
 package ivorius.reccomplex.structures.generic.transformers;
 
+import ivorius.reccomplex.structures.Environment;
 import net.minecraft.util.math.BlockPos;
 import ivorius.ivtoolkit.blocks.IvBlockCollection;
 import ivorius.ivtoolkit.tools.IvWorldData;
 import ivorius.reccomplex.structures.StructureSpawnContext;
 import net.minecraft.block.state.IBlockState;
 import ivorius.reccomplex.utils.NBTStorable;
-import org.apache.commons.lang3.tuple.Pair;
 
 import javax.annotation.Nonnull;
-import java.util.List;
 
 /**
  * Created by lukas on 17.09.14.
@@ -27,13 +26,13 @@ public abstract class TransformerSingleBlock<S extends NBTStorable> extends Tran
     }
 
     @Override
-    public boolean skipGeneration(StructureSpawnContext context, S instanceData, IBlockState state)
+    public boolean skipGeneration(Environment environment, S instanceData, IBlockState state)
     {
-        return matches(context, instanceData, state);
+        return matches(environment, instanceData, state);
     }
 
     @Override
-    public void transform(S instanceData, Phase phase, StructureSpawnContext context, IvWorldData worldData, List<Pair<Transformer, NBTStorable>> transformers)
+    public void transform(S instanceData, Phase phase, StructureSpawnContext context, IvWorldData worldData, TransformerMulti transformer, TransformerMulti.InstanceData transformerID)
     {
         if (generatesInPhase(instanceData, phase))
         {
@@ -49,7 +48,7 @@ public abstract class TransformerSingleBlock<S extends NBTStorable> extends Tran
                 {
                     IBlockState state = blockCollection.getBlockState(sourceCoord);
 
-                    if (matches(context, instanceData, state))
+                    if (matches(context.environment, instanceData, state))
                         transformBlock(instanceData, Phase.BEFORE, context, worldCoord, state);
                 }
             }
@@ -58,7 +57,7 @@ public abstract class TransformerSingleBlock<S extends NBTStorable> extends Tran
 
     public abstract boolean generatesInPhase(S instanceData, Phase phase);
 
-    public abstract boolean matches(StructureSpawnContext context, S instanceData, IBlockState state);
+    public abstract boolean matches(Environment environment, S instanceData, IBlockState state);
 
     public abstract void transformBlock(S instanceData, Phase phase, StructureSpawnContext context, BlockPos coord, IBlockState sourceState);
 }

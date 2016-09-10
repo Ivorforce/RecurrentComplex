@@ -145,7 +145,7 @@ public class GenericStructureInfo implements StructureInfo<GenericStructureInfo.
         }
 
         if (!context.generateAsSource)
-            transformer.transform(instanceData.transformerData, Transformer.Phase.BEFORE, context, worldData, instanceData.transformerData.pairedTransformers);
+            transformer.transform(instanceData.transformerData, Transformer.Phase.BEFORE, context, worldData, transformer, instanceData.transformerData);
 
         for (int pass = 0; pass < 2; pass++)
         {
@@ -155,7 +155,7 @@ public class GenericStructureInfo implements StructureInfo<GenericStructureInfo.
 
                 BlockPos worldPos = context.transform.apply(sourceCoord, areaSize).add(origin);
                 if (context.includes(worldPos) && RecurrentComplex.specialRegistry.isSafe(state.getBlock())
-                        && pass == getPass(state) && (context.generateAsSource || !transformer.skipGeneration(context, instanceData.transformerData, state)))
+                        && pass == getPass(state) && (context.generateAsSource || !transformer.skipGeneration(context.environment, instanceData.transformerData, state)))
                 {
                     TileEntity origTileEntity = origTileEntities.get(sourceCoord);
 
@@ -192,7 +192,7 @@ public class GenericStructureInfo implements StructureInfo<GenericStructureInfo.
         }
 
         if (!context.generateAsSource)
-            transformer.transform(instanceData.transformerData, Transformer.Phase.AFTER, context, worldData, instanceData.transformerData.pairedTransformers);
+            transformer.transform(instanceData.transformerData, Transformer.Phase.AFTER, context, worldData, transformer, instanceData.transformerData);
 
         for (NBTTagCompound entityCompound : worldData.entities)
         {
@@ -247,6 +247,7 @@ public class GenericStructureInfo implements StructureInfo<GenericStructureInfo.
             BlockPos origin = context.lowerCoord();
 
             instanceData.transformerData = transformer.prepareInstanceData(context, worldData);
+            transformer.configureInstanceData(instanceData.transformerData, context, worldData, transformer, instanceData.transformerData);
 
             worldData.tileEntities.forEach(teCompound ->
             {

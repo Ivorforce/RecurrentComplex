@@ -21,10 +21,13 @@ import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Vec3i;
 import net.minecraft.world.World;
 
 import javax.annotation.Nullable;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 /**
  * Created by lukas on 09.06.14.
@@ -71,10 +74,11 @@ public class CommandSelectSpace extends CommandSelectModify
         BlockPos lowerPoint = area.getLowerCorner();
         BlockPos higherPoint = area.getHigherCorner();
 
+        Set<BlockPos> set = new HashSet<>();
+
         for (BlockPos surfaceCoord : BlockAreas.side(area, EnumFacing.DOWN))
         {
             int safePoint = lowerPoint.getY();
-            boolean needsAir = false;
 
             for (int y = higherPoint.getY(); y >= lowerPoint.getY(); y--)
             {
@@ -84,18 +88,12 @@ public class CommandSelectSpace extends CommandSelectModify
                 {
                     boolean isFloor = blockState == RCBlocks.genericSolid.getDefaultState();
                     safePoint = y + (isFloor ? 1 : floorDistance);
-                    needsAir = !isFloor;
                     break;
                 }
             }
 
             for (int y = safePoint; y <= higherPoint.getY(); y++)
-            {
-                IBlockState defaultState = y == safePoint && needsAir
-                        ? spaceBlock.getDefaultState().withProperty(BlockGenericSpace.TYPE, 1)
-                        : spaceBlock.getDefaultState();
-                world.setBlockState(new BlockPos(surfaceCoord.getX(), y, surfaceCoord.getZ()), defaultState);
-            }
+                set.add(new BlockPos(surfaceCoord.getX(), y, surfaceCoord.getZ()));
 
             if (safePoint > lowerPoint.getY())
             {
@@ -112,8 +110,19 @@ public class CommandSelectSpace extends CommandSelectModify
             }
 
             for (int y = lowerPoint.getY(); y <= safePoint; y++)
-                world.setBlockState(new BlockPos(surfaceCoord.getX(), y, surfaceCoord.getZ()), spaceBlock.getDefaultState());
+                set.add(new BlockPos(surfaceCoord.getX(), y, surfaceCoord.getZ()));
         }
+
+        set.forEach(pos -> {
+            BlockPos down = pos.down();
+            BlockPos down2 = pos.down(2);
+            IBlockState defaultState = pos.getY() > lowerPoint.getY() && !set.contains(down)
+                    && world.getBlockState(down).getBlock().isReplaceable(world, down) && world.getBlockState(down2).getBlock().isReplaceable(world, down2)
+                    && new BlockArea(pos.subtract(new Vec3i(1, 0, 1)), pos.add(new Vec3i(1, 0, 0))).stream().allMatch(set::contains)
+                    ? spaceBlock.getDefaultState().withProperty(BlockGenericSpace.TYPE, 1)
+                    : spaceBlock.getDefaultState();
+            world.setBlockState(pos, defaultState);
+        });
     }
 
     @Override
@@ -135,7 +144,7 @@ public class CommandSelectSpace extends CommandSelectModify
 
         BlockArea area = new BlockArea(point1, point2);
 
-        int floorDistance = args.length >= 1 ? parseInt(args[0]) : 3;
+        int floorDistance = (args.length >= 1 ? parseInt(args[0]) : 0) + 1;
         int maxClosedSides = args.length >= 2 ? parseInt(args[1]) : 3;
 
         placeNaturalAir(world, area, floorDistance, maxClosedSides);

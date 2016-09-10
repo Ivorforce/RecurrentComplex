@@ -16,6 +16,7 @@ import ivorius.reccomplex.gui.table.TableDataSource;
 import ivorius.reccomplex.gui.table.TableDelegate;
 import ivorius.reccomplex.gui.table.TableNavigator;
 import ivorius.reccomplex.json.JsonUtils;
+import ivorius.reccomplex.structures.Environment;
 import ivorius.reccomplex.structures.StructureLoadContext;
 import ivorius.reccomplex.structures.StructurePrepareContext;
 import ivorius.reccomplex.structures.StructureSpawnContext;
@@ -53,9 +54,9 @@ public class TransformerVillageSpecific extends TransformerSingleBlock<NBTNone>
     }
 
     @Override
-    public boolean matches(StructureSpawnContext context, NBTNone instanceData, IBlockState state)
+    public boolean matches(Environment environment, NBTNone instanceData, IBlockState state)
     {
-        return village.trySetType(context.environment.villageType) && sourceMatcher.test(state) && village.getBiomeSpecificBlockState(state) != state;
+        return village.trySetType(environment.villageType) && sourceMatcher.test(state) && village.getBiomeSpecificBlockState(state) != state;
     }
 
     @Override

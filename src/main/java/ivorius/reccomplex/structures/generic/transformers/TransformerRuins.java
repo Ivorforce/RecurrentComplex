@@ -21,6 +21,7 @@ import ivorius.reccomplex.gui.table.TableDelegate;
 import ivorius.reccomplex.gui.table.TableNavigator;
 import ivorius.reccomplex.json.JsonUtils;
 import ivorius.reccomplex.random.BlurredValueField;
+import ivorius.reccomplex.structures.Environment;
 import ivorius.reccomplex.structures.StructureLoadContext;
 import ivorius.reccomplex.structures.StructurePrepareContext;
 import ivorius.reccomplex.structures.StructureSpawnContext;
@@ -41,11 +42,8 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.World;
 import net.minecraft.world.gen.structure.StructureBoundingBox;
-import org.apache.commons.lang3.tuple.Pair;
 
 import java.lang.reflect.Type;
-import java.util.Collection;
-import java.util.List;
 import java.util.Random;
 
 /**
@@ -79,11 +77,6 @@ public class TransformerRuins extends Transformer<TransformerRuins.InstanceData>
         this.vineGrowth = vineGrowth;
     }
 
-    private static boolean skipBlock(StructureSpawnContext context, Collection<Pair<Transformer, NBTStorable>> transformers, final IBlockState state)
-    {
-        return transformers.stream().anyMatch(input -> input.getLeft().skipGeneration(context, input.getRight(), state));
-    }
-
     private static int getPass(IBlockState state)
     {
         return (state.isNormalCube() || state.getMaterial() == Material.AIR) ? 0 : 1;
@@ -115,13 +108,13 @@ public class TransformerRuins extends Transformer<TransformerRuins.InstanceData>
     }
 
     @Override
-    public boolean skipGeneration(StructureSpawnContext context, InstanceData instanceData, IBlockState state)
+    public boolean skipGeneration(Environment environment, InstanceData instanceData, IBlockState state)
     {
         return false;
     }
 
     @Override
-    public void transform(InstanceData instanceData, Phase phase, StructureSpawnContext context, IvWorldData worldData, List<Pair<Transformer, NBTStorable>> transformers)
+    public void transform(InstanceData instanceData, Phase phase, StructureSpawnContext context, IvWorldData worldData, TransformerMulti transformer, TransformerMulti.InstanceData transformerID)
     {
         if (phase == Phase.AFTER)
         {
@@ -155,7 +148,7 @@ public class TransformerRuins extends Transformer<TransformerRuins.InstanceData>
                             {
                                 IBlockState state = blockCollection.getBlockState(sourceCoord);
 
-                                if (getPass(state) == pass && !skipBlock(context, transformers, state))
+                                if (getPass(state) == pass && !transformer.skipGeneration(context.environment, transformerID, state))
                                     setBlockToAirClean(context.environment.world, worldCoord);
                             }
                         }
@@ -174,7 +167,7 @@ public class TransformerRuins extends Transformer<TransformerRuins.InstanceData>
                     {
                         IBlockState state = context.environment.world.getBlockState(worldCoord);
 
-                        if (!skipBlock(context, transformers, state))
+                        if (!transformer.skipGeneration(context.environment, transformerID, state))
                             decayBlock(context.environment.world, context.random, state, worldCoord);
                     }
                 }

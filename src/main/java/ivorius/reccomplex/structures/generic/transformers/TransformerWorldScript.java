@@ -17,6 +17,7 @@ import ivorius.reccomplex.gui.table.TableNavigator;
 import ivorius.reccomplex.json.JsonUtils;
 import ivorius.reccomplex.json.NbtToJson;
 import ivorius.reccomplex.scripts.world.WorldScriptMulti;
+import ivorius.reccomplex.structures.Environment;
 import ivorius.reccomplex.structures.StructureLoadContext;
 import ivorius.reccomplex.structures.StructurePrepareContext;
 import ivorius.reccomplex.structures.StructureSpawnContext;
@@ -52,7 +53,7 @@ public class TransformerWorldScript extends TransformerSingleBlock<TransformerWo
     }
 
     @Override
-    public boolean matches(StructureSpawnContext context, InstanceData instanceData, IBlockState state)
+    public boolean matches(Environment environment, InstanceData instanceData, IBlockState state)
     {
         return sourceMatcher.test(state);
     }

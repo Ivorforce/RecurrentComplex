@@ -14,6 +14,7 @@ import ivorius.reccomplex.gui.table.TableDataSource;
 import ivorius.reccomplex.gui.table.TableDelegate;
 import ivorius.reccomplex.gui.table.TableNavigator;
 import ivorius.reccomplex.json.JsonUtils;
+import ivorius.reccomplex.structures.Environment;
 import ivorius.reccomplex.structures.StructureLoadContext;
 import ivorius.reccomplex.structures.StructurePrepareContext;
 import ivorius.reccomplex.structures.StructureSpawnContext;
@@ -50,9 +51,9 @@ public class TransformerMulti extends Transformer<TransformerMulti.InstanceData>
         this.environmentMatcher = new EnvironmentMatcher(expression);
     }
 
-    public static boolean skips(StructureSpawnContext context, List<Pair<Transformer, NBTStorable>> transformers, final IBlockState state)
+    public static boolean skips(Environment environment, List<Pair<Transformer, NBTStorable>> transformers, final IBlockState state)
     {
-        return transformers.stream().anyMatch(input -> input.getLeft().skipGeneration(context, input.getRight(), state));
+        return transformers.stream().anyMatch(input -> input.getLeft().skipGeneration(environment, input.getRight(), state));
     }
 
     public List<Transformer> getTransformers()
@@ -84,9 +85,15 @@ public class TransformerMulti extends Transformer<TransformerMulti.InstanceData>
     public InstanceData prepareInstanceData(StructurePrepareContext context, IvWorldData worldData)
     {
         InstanceData instanceData = new InstanceData();
-        transformers.forEach(transformer -> instanceData.pairedTransformers.add(Pair.of(transformer, transformer.prepareInstanceData(context, worldData))));
+        transformers.forEach(t -> instanceData.pairedTransformers.add(Pair.of(t, t.prepareInstanceData(context, worldData))));
         instanceData.deactivated = !environmentMatcher.test(context.environment);
         return instanceData;
+    }
+
+    @Override
+    public void configureInstanceData(InstanceData instanceData, StructurePrepareContext context, IvWorldData worldData, TransformerMulti transformer, InstanceData transformerID)
+    {
+        instanceData.pairedTransformers.forEach(pair -> pair.getLeft().configureInstanceData(pair.getRight(), context, worldData, transformer, transformerID));
     }
 
     @Override
@@ -98,16 +105,16 @@ public class TransformerMulti extends Transformer<TransformerMulti.InstanceData>
     }
 
     @Override
-    public boolean skipGeneration(StructureSpawnContext context, InstanceData instanceData, IBlockState state)
+    public boolean skipGeneration(Environment environment, InstanceData instanceData, IBlockState state)
     {
-        return !instanceData.deactivated && skips(context, instanceData.pairedTransformers, state);
+        return !instanceData.deactivated && skips(environment, instanceData.pairedTransformers, state);
     }
 
     @Override
-    public void transform(InstanceData instanceData, Phase phase, StructureSpawnContext context, IvWorldData worldData, List<Pair<Transformer, NBTStorable>> transformers)
+    public void transform(InstanceData instanceData, Phase phase, StructureSpawnContext context, IvWorldData worldData, TransformerMulti transformer, InstanceData transformerID)
     {
         if (!instanceData.deactivated)
-            instanceData.pairedTransformers.forEach(pair -> pair.getLeft().transform(pair.getRight(), phase, context, worldData, transformers));
+            instanceData.pairedTransformers.forEach(pair -> pair.getLeft().transform(pair.getRight(), phase, context, worldData, transformer, transformerID));
     }
 
     public static class InstanceData implements NBTStorable

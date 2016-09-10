@@ -7,6 +7,7 @@ package ivorius.reccomplex.structures.generic.transformers;
 
 import com.google.gson.*;
 import ivorius.ivtoolkit.tools.IvWorldData;
+import ivorius.reccomplex.structures.Environment;
 import ivorius.reccomplex.utils.PresettedLists;
 import net.minecraft.util.math.BlockPos;
 import ivorius.ivtoolkit.gui.IntegerRange;
@@ -65,7 +66,7 @@ public class TransformerReplaceAll extends TransformerSingleBlock<TransformerRep
     }
 
     @Override
-    public boolean matches(StructureSpawnContext context, InstanceData instanceData, IBlockState state)
+    public boolean matches(Environment environment, InstanceData instanceData, IBlockState state)
     {
         return sourceMatcher.test(state);
     }

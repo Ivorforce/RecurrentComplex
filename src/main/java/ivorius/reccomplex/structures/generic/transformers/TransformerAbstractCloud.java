@@ -5,14 +5,15 @@
 
 package ivorius.reccomplex.structures.generic.transformers;
 
+import com.google.common.collect.Sets;
 import gnu.trove.map.TObjectDoubleMap;
 import gnu.trove.map.hash.TObjectDoubleHashMap;
-import ivorius.ivtoolkit.blocks.BlockAreas;
 import ivorius.ivtoolkit.blocks.BlockPositions;
 import ivorius.ivtoolkit.blocks.IvBlockCollection;
 import ivorius.ivtoolkit.tools.IvWorldData;
 import ivorius.ivtoolkit.tools.NBTTagLists;
 import ivorius.reccomplex.random.BlurredValueField;
+import ivorius.reccomplex.structures.Environment;
 import ivorius.reccomplex.structures.StructurePrepareContext;
 import ivorius.reccomplex.structures.StructureSpawnContext;
 import ivorius.reccomplex.utils.NBTStorable;
@@ -22,10 +23,10 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
-import org.apache.commons.lang3.tuple.Pair;
 
 import javax.annotation.Nonnull;
 import java.util.*;
+import java.util.function.BiPredicate;
 
 /**
  * Created by lukas on 09.09.16.
@@ -37,18 +38,39 @@ public abstract class TransformerAbstractCloud<S extends TransformerAbstractClou
         super(id);
     }
 
+    public static <T> boolean visitRecursively(HashSet<T> start, BiPredicate<Set<T>, T> changedConsumer)
+    {
+        Set<T> changedR = new HashSet<>();
+        while (start.size() > 0 || changedR.size() > 0)
+        {
+            Set<T> prev = start.size() > 0 ? start : changedR;
+            final Set<T> changed = prev == start ? changedR : start;
+            for (T t : prev)
+                if (!changedConsumer.test(changed, t))
+                    return false;
+            prev.clear();
+        }
+
+        return true;
+    }
+
     public abstract double naturalExpansionDistance();
 
     public abstract double naturalExpansionRandomization();
 
     @Override
-    public boolean skipGeneration(StructureSpawnContext context, S instanceData, IBlockState state)
+    public boolean skipGeneration(Environment environment, S instanceData, IBlockState state)
     {
         return matches(instanceData, state);
     }
 
-    public TObjectDoubleMap<BlockPos> buildCloud(S instanceData, Random random, IvWorldData worldData)
+    public TObjectDoubleMap<BlockPos> buildCloud(S instanceData, IvWorldData worldData, StructurePrepareContext context, TransformerMulti transformer, TransformerMulti.InstanceData transformerInstanceData)
     {
+        Random random = context.random;
+        Environment environment = context.environment;
+        BlockPos lowerCoord = context.lowerCoord();
+        int[] strucSize = context.boundingBoxSize();
+
         TObjectDoubleMap<BlockPos> cloud = new TObjectDoubleHashMap<>();
         int[] blurredFieldSize = new int[]{worldData.blockCollection.width, worldData.blockCollection.height, worldData.blockCollection.length};
         BlurredValueField blurredValueField = new BlurredValueField(blurredFieldSize);
@@ -63,20 +85,17 @@ public abstract class TransformerAbstractCloud<S extends TransformerAbstractClou
         worldData.blockCollection.area().stream().forEach(pos ->
         {
             IBlockState state = worldData.blockCollection.getBlockState(pos);
-            if (matches(instanceData, state))
+            BlockPos worldCoord = context.transform.apply(pos, strucSize).add(lowerCoord);
+            if (matches(instanceData, state) && canPenetrate(environment, worldData, worldCoord, 1, transformer, transformerInstanceData))
                 cloud.put(pos, 1);
         });
 
-        final double falloff = 1.0 / naturalExpansionDistance();
-
-        Set<BlockPos> changedL = new HashSet<>();
-        changedL.addAll(cloud.keySet());
-        Set<BlockPos> changedR = new HashSet<>();
-        while (changedL.size() > 0 || changedR.size() > 0)
+        double naturalExpansionDistance = naturalExpansionDistance();
+        if (naturalExpansionDistance > 0.000001)
         {
-            Set<BlockPos> prev = changedL.size() > 0 ? changedL : changedR;
-            final Set<BlockPos> changed = prev == changedL ? changedR : changedL;
-            prev.forEach(pos ->
+            final double falloff = 1.0 / naturalExpansionDistance;
+
+            visitRecursively(Sets.newHashSet(cloud.keySet()), (changed, pos) ->
             {
                 for (EnumFacing side : EnumFacing.values())
                 {
@@ -84,20 +103,26 @@ public abstract class TransformerAbstractCloud<S extends TransformerAbstractClou
                     if (modifier > 0.000001)
                     {
                         BlockPos sidePos = pos.offset(side);
-                        double sideDensity = cloud.get(pos) - (falloff * (1.0f / modifier) * blurredValueField.getValue(sidePos.getX(), sidePos.getY(), sidePos.getZ()));
+                        BlockPos sideWorldCoord = context.transform.apply(pos, strucSize).add(lowerCoord);
+                        double sideDensity = cloud.get(pos) - (falloff * (1.0 / modifier) * blurredValueField.getValue(sidePos.getX(), sidePos.getY(), sidePos.getZ()));
 
-                        if (sideDensity > 0 && cloud.get(sidePos) < sideDensity)
+                        if (sideDensity > 0 && cloud.get(sidePos) < sideDensity && canPenetrate(environment, worldData, sideWorldCoord, sideDensity, transformer, transformerInstanceData))
                         {
                             cloud.put(sidePos, sideDensity);
                             changed.add(sidePos);
                         }
                     }
                 }
+                return true;
             });
-            prev.clear();
         }
 
         return cloud;
+    }
+
+    public boolean canPenetrate(Environment environment, IvWorldData worldData, BlockPos pos, double density, TransformerMulti transformer, TransformerMulti.InstanceData transformerID)
+    {
+        return true;
     }
 
     protected double naturalExpansionDistance(EnumFacing side)
@@ -106,17 +131,13 @@ public abstract class TransformerAbstractCloud<S extends TransformerAbstractClou
     }
 
     @Override
-    public S prepareInstanceData(StructurePrepareContext context, IvWorldData worldData)
+    public void configureInstanceData(S s, StructurePrepareContext context, IvWorldData worldData, TransformerMulti transformer, TransformerMulti.InstanceData transformerID)
     {
-        S s = prepareInstanceDataCloud(context, worldData);
-        s.cloud = buildCloud(s, context.random, worldData);
-        return s;
+        s.cloud = buildCloud(s, worldData, context, transformer, transformerID);
     }
 
-    public abstract S prepareInstanceDataCloud(StructurePrepareContext context, IvWorldData worldData);
-
     @Override
-    public void transform(S instanceData, Transformer.Phase phase, StructureSpawnContext context, IvWorldData worldData, List<Pair<Transformer, NBTStorable>> transformers)
+    public void transform(S instanceData, Transformer.Phase phase, StructureSpawnContext context, IvWorldData worldData, TransformerMulti transformer, TransformerMulti.InstanceData transformerID)
     {
         if (generatesInPhase(instanceData, phase))
         {
@@ -146,7 +167,8 @@ public abstract class TransformerAbstractCloud<S extends TransformerAbstractClou
         public void readFromNBT(NBTBase base)
         {
             NBTTagCompound compound = base instanceof NBTTagCompound ? (NBTTagCompound) base : new NBTTagCompound();
-            NBTTagLists.compoundsFrom(compound, "cloud").stream().forEach(cloudCompound -> {
+            NBTTagLists.compoundsFrom(compound, "cloud").stream().forEach(cloudCompound ->
+            {
                 BlockPos pos = BlockPositions.readFromNBT("particle", cloudCompound);
                 if (pos != null)
                     cloud.put(pos, cloudCompound.getDouble("density"));
@@ -159,7 +181,8 @@ public abstract class TransformerAbstractCloud<S extends TransformerAbstractClou
             NBTTagCompound compound = new NBTTagCompound();
 
             List<NBTTagCompound> cloudCompounds = new ArrayList<>();
-            cloud.forEachEntry((pos, density) -> {
+            cloud.forEachEntry((pos, density) ->
+            {
                 NBTTagCompound cloudCompound = new NBTTagCompound();
                 BlockPositions.writeToNBT("particle", pos, cloudCompound);
                 cloudCompound.setDouble("density", density);

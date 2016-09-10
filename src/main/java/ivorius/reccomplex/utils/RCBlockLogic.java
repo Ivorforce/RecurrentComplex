@@ -6,7 +6,7 @@
 package ivorius.reccomplex.utils;
 
 import ivorius.ivtoolkit.blocks.BlockArea;
-import net.minecraft.block.BlockLog;
+import net.minecraft.block.BlockBush;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.init.Blocks;
@@ -20,19 +20,19 @@ import net.minecraft.world.World;
  */
 public class RCBlockLogic
 {
-    public static boolean isDyingFoliage(IBlockState state, World world, BlockPos pos)
+    public static boolean canStay(IBlockState state, World world, BlockPos pos)
     {
-        return isFoliage(state, world, pos) && !isOnFloor(state, world, pos) && !hasLogBelow(state, world, pos);
+        return (state.getBlock() != Blocks.SNOW_LAYER && !(state.getBlock() instanceof BlockBush)) || state.getBlock().canPlaceBlockAt(world, pos);
     }
 
-    public static boolean isOnFloor(IBlockState state, World world, BlockPos pos)
+    public static boolean isOnFloor(World world, BlockPos pos)
     {
         return world.getBlockState(pos.down()).isSideSolid(world, pos.down(), EnumFacing.UP);
     }
 
-    public static boolean hasLogBelow(IBlockState state, World world, BlockPos pos)
+    public static boolean hasLogBelow(World world, BlockPos pos)
     {
-        return new BlockArea(pos.subtract(new Vec3i(1, 2, 1)), pos.add(new Vec3i(1, -1, 1))).stream().anyMatch(p -> world.getBlockState(p).getBlock().isWood(world, p));
+        return new BlockArea(pos.subtract(new Vec3i(1, 1, 1)), pos.add(new Vec3i(1, -1, 1))).stream().anyMatch(p -> world.getBlockState(p).getBlock().isWood(world, p));
     }
 
     public static boolean isFoliage(IBlockState state, World world, BlockPos pos)

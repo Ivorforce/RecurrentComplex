@@ -15,18 +15,16 @@ import ivorius.reccomplex.gui.table.TableDataSource;
 import ivorius.reccomplex.gui.table.TableDelegate;
 import ivorius.reccomplex.gui.table.TableNavigator;
 import ivorius.reccomplex.json.JsonUtils;
+import ivorius.reccomplex.structures.Environment;
 import ivorius.reccomplex.structures.StructureLoadContext;
 import ivorius.reccomplex.structures.StructurePrepareContext;
 import ivorius.reccomplex.structures.StructureSpawnContext;
 import ivorius.reccomplex.structures.generic.matchers.BlockMatcher;
 import net.minecraft.block.state.IBlockState;
 import ivorius.reccomplex.utils.NBTNone;
-import ivorius.reccomplex.utils.NBTStorable;
 import net.minecraft.nbt.NBTBase;
-import org.apache.commons.lang3.tuple.Pair;
 
 import java.lang.reflect.Type;
-import java.util.List;
 
 /**
  * Created by lukas on 25.05.14.
@@ -47,13 +45,13 @@ public class TransformerNegativeSpace extends Transformer<NBTNone>
     }
 
     @Override
-    public boolean skipGeneration(StructureSpawnContext context, NBTNone instanceData, IBlockState state)
+    public boolean skipGeneration(Environment environment, NBTNone instanceData, IBlockState state)
     {
         return sourceMatcher.test(state);
     }
 
     @Override
-    public void transform(NBTNone instanceData, Phase phase, StructureSpawnContext context, IvWorldData worldData, List<Pair<Transformer, NBTStorable>> transformers)
+    public void transform(NBTNone instanceData, Phase phase, StructureSpawnContext context, IvWorldData worldData, TransformerMulti transformer, TransformerMulti.InstanceData transformerID)
     {
 
     }

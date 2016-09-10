@@ -6,6 +6,7 @@
 package ivorius.reccomplex.structures.generic.transformers;
 
 import com.google.gson.*;
+import ivorius.ivtoolkit.blocks.BlockArea;
 import ivorius.ivtoolkit.tools.IvWorldData;
 import ivorius.reccomplex.utils.RCBlockLogic;
 import net.minecraft.init.Blocks;
@@ -25,9 +26,15 @@ import ivorius.reccomplex.structures.StructureSpawnContext;
 import ivorius.reccomplex.structures.generic.matchers.BlockMatcher;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.nbt.NBTBase;
+import net.minecraft.util.math.Vec3i;
 import net.minecraft.world.WorldServer;
 
 import java.lang.reflect.Type;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Set;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * Created by lukas on 25.05.14.
@@ -36,6 +43,7 @@ public class TransformerNaturalAir extends TransformerAbstractCloud<TransformerN
 {
     public static final double DEFAULT_NATURAL_EXPANSION_DISTANCE = 4.0;
     public static final double DEFAULT_NATURAL_EXPANSION_RANDOMIZATION = 10.0;
+    public static final int MAX_TREE_SIZE = 300;
 
     public BlockMatcher sourceMatcher;
 
@@ -70,19 +78,40 @@ public class TransformerNaturalAir extends TransformerAbstractCloud<TransformerN
     }
 
     @Override
-    public void transformBlock(InstanceData instanceData, Phase phase, StructureSpawnContext context, BlockPos sourcePos, BlockPos pos, IBlockState sourceState, double density)
+    public void transformBlock(InstanceData instanceData, Phase phase, StructureSpawnContext context, BlockPos sourcePos, BlockPos worldPos, IBlockState sourceState, double density)
     {
         WorldServer world = context.environment.world;
 
-        boolean replaceable = true;
         if (phase == Phase.AFTER)
         {
-            boolean isFoliage = RCBlockLogic.isFoliage(world.getBlockState(pos), world, pos);
-            replaceable = isFoliage;
-        }
+            // Remove dying foliage
+            Set<BlockPos> remove = new HashSet<>();
+            if (visitRecursively(new BlockArea(worldPos.subtract(new Vec3i(2, 2, 2)), worldPos.add(new Vec3i(2, 2, 2)))
+                    .stream().filter(pos -> !instanceData.cloud.containsKey(pos)).collect(Collectors.toCollection(HashSet::new)), (changed, pos) -> {
+                IBlockState state = world.getBlockState(pos);
+                boolean isFoliage = RCBlockLogic.isFoliage(state, world, pos);
+                if (!RCBlockLogic.canStay(state, world, pos))
+                    context.setBlock(pos, Blocks.AIR.getDefaultState(), 2);
+                else if (!isFoliage && !state.getBlock().isReplaceable(world, pos))
+                    return false;
+                else if (isFoliage && remove.size() < MAX_TREE_SIZE && remove.add(pos))
+                    neighbors(pos).forEach(changed::add);
 
-        if (replaceable)
-            context.setBlock(pos, Blocks.AIR.getDefaultState(), 2);
+                return true;
+            }))
+            {
+                remove.forEach(pos -> context.setBlock(pos, Blocks.AIR.getDefaultState(), 2));
+            }
+        }
+        else
+        {
+            context.setBlock(worldPos, Blocks.AIR.getDefaultState(), 2);
+        }
+    }
+
+    protected static Stream<BlockPos> neighbors(BlockPos worldPos)
+    {
+        return Arrays.stream(EnumFacing.values()).map(worldPos::offset);
     }
 
     @Override
@@ -98,7 +127,7 @@ public class TransformerNaturalAir extends TransformerAbstractCloud<TransformerN
     }
 
     @Override
-    public InstanceData prepareInstanceDataCloud(StructurePrepareContext context, IvWorldData worldData)
+    public InstanceData prepareInstanceData(StructurePrepareContext context, IvWorldData worldData)
     {
         return new InstanceData();
     }

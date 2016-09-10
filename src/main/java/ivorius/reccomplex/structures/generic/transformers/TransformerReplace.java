@@ -7,6 +7,7 @@ package ivorius.reccomplex.structures.generic.transformers;
 
 import com.google.gson.*;
 import ivorius.ivtoolkit.tools.IvWorldData;
+import ivorius.reccomplex.structures.Environment;
 import ivorius.reccomplex.utils.PresettedLists;
 import net.minecraft.util.math.BlockPos;
 import ivorius.ivtoolkit.random.WeightedSelector;
@@ -93,7 +94,7 @@ public class TransformerReplace extends TransformerSingleBlock<NBTNone>
     }
 
     @Override
-    public boolean matches(StructureSpawnContext context, NBTNone instanceData, IBlockState state)
+    public boolean matches(Environment environment, NBTNone instanceData, IBlockState state)
     {
         return sourceMatcher.test(state);
     }

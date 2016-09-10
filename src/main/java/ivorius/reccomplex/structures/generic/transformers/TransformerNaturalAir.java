@@ -86,8 +86,10 @@ public class TransformerNaturalAir extends TransformerAbstractCloud<TransformerN
         {
             // Remove dying foliage
             Set<BlockPos> remove = new HashSet<>();
-            if (visitRecursively(new BlockArea(worldPos.subtract(new Vec3i(2, 2, 2)), worldPos.add(new Vec3i(2, 2, 2)))
-                    .stream().filter(pos -> !instanceData.cloud.containsKey(pos)).collect(Collectors.toCollection(HashSet::new)), (changed, pos) -> {
+            HashSet<BlockPos> check = new BlockArea(worldPos.subtract(new Vec3i(2, 2, 2)), worldPos.add(new Vec3i(2, 2, 2)))
+                    .stream().filter(pos -> !instanceData.cloud.containsKey(pos)).collect(Collectors.toCollection(HashSet::new));
+
+            if (visitRecursively(check, (changed, pos) -> {
                 IBlockState state = world.getBlockState(pos);
                 boolean isFoliage = RCBlockLogic.isFoliage(state, world, pos);
                 if (!RCBlockLogic.canStay(state, world, pos))

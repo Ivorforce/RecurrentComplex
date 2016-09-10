@@ -98,16 +98,19 @@ public class TransformerNaturalAir extends TransformerAbstractCloud<TransformerN
             BlockPos lowerCoord = context.lowerCoord();
 
             // Remove dying foliage
-            Set<BlockPos> remove = new HashSet<>();
             HashSet<BlockPos> check = instanceData.cloud.keySet().stream()
                     .flatMap(pos -> new BlockArea(pos.subtract(new Vec3i(2, 2, 2)), pos.add(new Vec3i(2, 2, 2))).stream())
                     .filter(pos -> !instanceData.cloud.containsKey(pos))
                     .map(pos -> context.transform.apply(pos, areaSize).add(lowerCoord))
                     .collect(Collectors.toCollection(HashSet::new));
 
+            Set<BlockPos> remove = new HashSet<>();
+            HashSet<BlockPos> start = new HashSet<>();
+
             // Do each one separately, since each block needs to be connected to floor separately
             check.forEach(checking -> {
-                if (visitRecursively(Sets.newHashSet(checking), (changed, pos) -> {
+                start.add(checking);
+                if (visitRecursively(start, (changed, pos) -> {
                     IBlockState state = world.getBlockState(pos);
                     boolean isFoliage = RCBlockLogic.isFoliage(state, world, pos);
                     if (!RCBlockLogic.canStay(state, world, pos))
@@ -122,6 +125,9 @@ public class TransformerNaturalAir extends TransformerAbstractCloud<TransformerN
                 {
                     remove.forEach(pos -> context.setBlock(pos, Blocks.AIR.getDefaultState(), 2));
                 }
+
+                start.clear();
+                remove.clear();
             });
         }
     }

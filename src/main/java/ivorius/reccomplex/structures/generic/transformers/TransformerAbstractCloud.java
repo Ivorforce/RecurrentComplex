@@ -69,14 +69,13 @@ public abstract class TransformerAbstractCloud<S extends TransformerAbstractClou
         Random random = context.random;
         Environment environment = context.environment;
         BlockPos lowerCoord = context.lowerCoord();
-        int[] strucSize = context.boundingBoxSize();
+        int[] strucSize = new int[]{worldData.blockCollection.width, worldData.blockCollection.height, worldData.blockCollection.length};
 
         TObjectDoubleMap<BlockPos> cloud = new TObjectDoubleHashMap<>();
-        int[] blurredFieldSize = new int[]{worldData.blockCollection.width, worldData.blockCollection.height, worldData.blockCollection.length};
-        BlurredValueField blurredValueField = new BlurredValueField(blurredFieldSize);
+        BlurredValueField blurredValueField = new BlurredValueField(strucSize);
 
         int gridCoords = 1;
-        for (int d : blurredFieldSize) gridCoords *= d;
+        for (int d : strucSize) gridCoords *= d;
         int values = MathHelper.floor_float(gridCoords * (1f / 25f) + 0.5f);
 
         for (int i = 0; i < values; i++)

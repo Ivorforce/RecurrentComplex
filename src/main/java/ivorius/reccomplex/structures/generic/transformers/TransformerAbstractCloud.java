@@ -166,7 +166,7 @@ public abstract class TransformerAbstractCloud<S extends TransformerAbstractClou
         public void readFromNBT(NBTBase base)
         {
             NBTTagCompound compound = base instanceof NBTTagCompound ? (NBTTagCompound) base : new NBTTagCompound();
-            NBTTagLists.compoundsFrom(compound, "cloud").stream().forEach(cloudCompound ->
+            NBTTagLists.compoundsFrom(compound, "cloud").forEach(cloudCompound ->
             {
                 BlockPos pos = BlockPositions.readFromNBT("particle", cloudCompound);
                 if (pos != null)

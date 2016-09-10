@@ -239,7 +239,6 @@ public class WorldScriptStructureGenerator implements WorldScript<WorldScriptStr
     @Override
     public void generate(StructureSpawnContext context, InstanceData instanceData, BlockPos coord)
     {
-        WorldServer world = context.environment.world;
         Random random = context.random;
         int layer = context.generationLayer;
 

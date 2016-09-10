@@ -83,17 +83,6 @@ public class GenericStructureInfo implements StructureInfo<GenericStructureInfo.
         return genericStructureInfo;
     }
 
-    private static boolean isBiomeAllTypes(Biome Biome, List<BiomeDictionary.Type> types)
-    {
-        for (BiomeDictionary.Type type : types)
-        {
-            if (!BiomeDictionary.isBiomeOfType(Biome, type))
-                return false;
-        }
-
-        return true;
-    }
-
     @Override
     public int[] structureBoundingBox()
     {
@@ -322,7 +311,7 @@ public class GenericStructureInfo implements StructureInfo<GenericStructureInfo.
     public GenericStructureInfo copy()
     {
         GenericStructureInfo genericStructureInfo = StructureRegistry.INSTANCE.createStructureFromJSON(StructureRegistry.INSTANCE.createJSONFromStructure(this));
-        genericStructureInfo.worldDataCompound = (NBTTagCompound) worldDataCompound.copy();
+        genericStructureInfo.worldDataCompound = worldDataCompound.copy();
         return genericStructureInfo;
     }
 

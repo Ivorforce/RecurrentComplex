@@ -6,7 +6,6 @@
 package ivorius.reccomplex.commands;
 
 import ivorius.ivtoolkit.blocks.BlockArea;
-import ivorius.ivtoolkit.blocks.BlockPositions;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.math.BlockPos;
 import ivorius.ivtoolkit.tools.IvWorldData;
@@ -91,16 +90,15 @@ public class CommandExportSchematic extends CommandBase
         BlockPos higherCoord = area.getHigherCorner();
 
         IvWorldData data = IvWorldData.capture(player.getEntityWorld(), new BlockArea(lowerCoord, higherCoord), true);
-        SchematicFile schematicFile = convert(data, lowerCoord);
+        SchematicFile schematicFile = convert(data);
         SchematicLoader.writeSchematicByName(schematicFile, structureName);
 
         commandSender.addChatMessage(ServerTranslations.format("commands.strucExportSchematic.success", structureName));
     }
 
-    public static SchematicFile convert(IvWorldData worldData, BlockPos referenceCoord)
+    public static SchematicFile convert(IvWorldData worldData)
     {
         SchematicFile schematicFile = new SchematicFile((short) worldData.blockCollection.width, (short) worldData.blockCollection.height, (short) worldData.blockCollection.length);
-        BlockPos inverseReference = BlockPositions.invert(referenceCoord);
 
         for (BlockPos coord : worldData.blockCollection.area())
         {

@@ -39,7 +39,6 @@ public class TableDataSourceGenerationInfo extends TableDataSourceSegmented
         if (segment == 0)
         {
             TableCellString cell = new TableCellString("genInfoID", genInfo.id());
-            cell.setTooltip(IvTranslations.formatLines("reccomplex.structure.generation.id.tooltip"));
             cell.setShowsValidityState(true);
             cell.setValidityState(currentIDState());
             cell.addPropertyConsumer(val ->
@@ -47,7 +46,7 @@ public class TableDataSourceGenerationInfo extends TableDataSourceSegmented
                 genInfo.setID(val);
                 cell.setValidityState(currentIDState());
             });
-            return new TableElementCell(IvTranslations.get("reccomplex.structure.generation.id"), cell);
+            return new TableElementCell(IvTranslations.get("reccomplex.structure.generation.id"), cell).withTitleTooltip(IvTranslations.formatLines("reccomplex.structure.generation.id.tooltip"));
         }
 
         return super.elementForIndexInSegment(table, index, segment);

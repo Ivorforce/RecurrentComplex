@@ -40,18 +40,18 @@ public class TableDataSourceGenericStructure extends TableDataSourceSegmented
 
         addManagedSection(1, new TableDataSourceSupplied(() -> TableElementSaveDirectory.create(saveDirectoryData, () -> structureKey, delegate)));
         addManagedSection(2, TableCellMultiBuilder.create(navigator, delegate)
-                .addNavigation(() -> IvTranslations.get("reccomplex.gui.edit"), () -> IvTranslations.getLines("reccomplex.structure.metadata.tooltip"),
+                .addNavigation(() -> IvTranslations.get("reccomplex.gui.edit"), null,
                         () -> new GuiTable(delegate, new TableDataSourceMetadata(structureInfo.metadata))
-                ).buildDataSource(IvTranslations.get("reccomplex.structure.metadata")));
+                ).buildDataSource(IvTranslations.get("reccomplex.structure.metadata"), IvTranslations.getLines("reccomplex.structure.metadata.tooltip")));
         addManagedSection(4, TableDataSourceExpression.constructDefault(IvTranslations.get("reccomplex.structure.dependencies"), structureInfo.dependencies, null));
         addManagedSection(5, TableCellMultiBuilder.create(navigator, delegate)
-                .addNavigation(() -> IvTranslations.get("reccomplex.gui.edit"), () -> IvTranslations.getLines("reccomplex.structure.generation.tooltip"),
+                .addNavigation(() -> IvTranslations.get("reccomplex.gui.edit"), null,
                         () -> new GuiTable(delegate, new TableDataSourceStructureGenerationInfoList(structureInfo.generationInfos, delegate, navigator))
-                ).buildDataSource(IvTranslations.get("reccomplex.structure.generation")));
+                ).buildDataSource(IvTranslations.get("reccomplex.structure.generation"), IvTranslations.getLines("reccomplex.structure.generation.tooltip")));
         addManagedSection(6, TableCellMultiBuilder.create(navigator, delegate)
-                .addNavigation(() -> IvTranslations.get("reccomplex.gui.edit"), () -> IvTranslations.getLines("reccomplex.structure.transformers.tooltip"),
+                .addNavigation(() -> IvTranslations.get("reccomplex.gui.edit"), null,
                         () -> new GuiTable(delegate, structureInfo.transformer.tableDataSource(navigator, delegate))
-                ).buildDataSource(IvTranslations.get("reccomplex.structure.transformers")));
+                ).buildDataSource(IvTranslations.get("reccomplex.structure.transformers"), IvTranslations.getLines("reccomplex.structure.transformers.tooltip")));
     }
 
     public GenericStructureInfo getStructureInfo()
@@ -133,7 +133,6 @@ public class TableDataSourceGenericStructure extends TableDataSourceSegmented
                 if (index == 0)
                 {
                     TableCellString cell = new TableCellString(null, structureKey);
-                    cell.setTooltip(IvTranslations.formatLines("reccomplex.structure.id.tooltip"));
                     cell.addPropertyConsumer(cell1 -> {
                         structureKey = cell.getPropertyValue();
                         cell.setValidityState(currentNameState());
@@ -141,7 +140,7 @@ public class TableDataSourceGenericStructure extends TableDataSourceSegmented
                     });
                     cell.setShowsValidityState(true);
                     cell.setValidityState(currentNameState());
-                    return new TableElementCell("structureID", IvTranslations.get("reccomplex.structure.id"), cell);
+                    return new TableElementCell("structureID", IvTranslations.get("reccomplex.structure.id"), cell).withTitleTooltip(IvTranslations.formatLines("reccomplex.structure.id.tooltip"));
                 }
             case 3:
             {

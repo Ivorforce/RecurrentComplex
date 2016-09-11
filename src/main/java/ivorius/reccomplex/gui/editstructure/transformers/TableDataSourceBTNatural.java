@@ -81,16 +81,16 @@ public class TableDataSourceBTNatural extends TableDataSourceSegmented
                     TableCellFloat cell = new TableCellFloat("naturalExpansionDistance", TableElements.toFloat(transformer.naturalExpansionDistance), 0, 40);
                     cell.setScale(Scales.pow(5));
                     cell.addPropertyConsumer(val -> transformer.naturalExpansionDistance = TableElements.toDouble(val));
-                    cell.setTooltip(IvTranslations.formatLines("reccomplex.transformer.natural.naturalExpansionDistance.tooltip"));
-                    return new TableElementCell(IvTranslations.get("reccomplex.transformer.natural.naturalExpansionDistance"), cell);
+                    return new TableElementCell(IvTranslations.get("reccomplex.transformer.natural.naturalExpansionDistance"), cell)
+                            .withTitleTooltip(IvTranslations.formatLines("reccomplex.transformer.natural.naturalExpansionDistance.tooltip"));
                 }
                 case 1:
                 {
                     TableCellFloat cell = new TableCellFloat("naturalExpansionRandomization", TableElements.toFloat(transformer.naturalExpansionRandomization), 0, 40);
                     cell.setScale(Scales.pow(5));
                     cell.addPropertyConsumer(val -> transformer.naturalExpansionRandomization = TableElements.toDouble(val));
-                    cell.setTooltip(IvTranslations.formatLines("reccomplex.transformer.natural.naturalExpansionRandomization.tooltip"));
-                    return new TableElementCell(IvTranslations.get("reccomplex.transformer.natural.naturalExpansionRandomization"), cell);
+                    return new TableElementCell(IvTranslations.get("reccomplex.transformer.natural.naturalExpansionRandomization"), cell)
+                            .withTitleTooltip(IvTranslations.formatLines("reccomplex.transformer.natural.naturalExpansionRandomization.tooltip"));
                 }
             }
         }

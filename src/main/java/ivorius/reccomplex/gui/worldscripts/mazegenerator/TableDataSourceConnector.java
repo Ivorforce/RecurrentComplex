@@ -34,7 +34,6 @@ public class TableDataSourceConnector implements TableDataSource
     {
         TableCellString cell = new TableCellString("connectorID", connector.id);
         cell.addPropertyConsumer(val -> connector.id = val);
-        cell.setTooltip(IvTranslations.formatLines("reccomplex.maze.connector.tooltip"));
-        return new TableElementCell(title, cell);
+        return new TableElementCell(title, cell).withTitleTooltip(IvTranslations.formatLines("reccomplex.maze.connector.tooltip"));
     }
 }

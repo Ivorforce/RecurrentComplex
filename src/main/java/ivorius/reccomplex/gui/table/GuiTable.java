@@ -8,6 +8,7 @@ package ivorius.reccomplex.gui.table;
 import gnu.trove.map.hash.TIntObjectHashMap;
 import ivorius.ivtoolkit.math.IvMathHelper;
 import ivorius.ivtoolkit.tools.IvTranslations;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.client.gui.GuiButton;
@@ -140,20 +141,36 @@ public class GuiTable extends Gui
 
     public void drawScreen(GuiScreen screen, int mouseX, int mouseY, float partialTicks)
     {
+        FontRenderer fontRenderer = screen.mc.fontRendererObj;
+
         currentElements.stream().filter(element -> !element.isHidden()).forEach(element -> {
+            Bounds bounds = element.bounds();
+
             String title = element.getTitle();
             if (title != null)
             {
-                Bounds bounds = element.bounds();
-
-                int stringWidth = screen.mc.fontRendererObj.getStringWidth(title);
-                screen.drawString(screen.mc.fontRendererObj, title, bounds.getMinX() - stringWidth - 10, bounds.getCenterY() - 4, 0xffffffff);
+                int stringWidth = fontRenderer.getStringWidth(title);
+                screen.drawString(fontRenderer, title, bounds.getMinX() - stringWidth - 10, bounds.getCenterY() - 4, 0xffffffff);
             }
         });
 
         currentElements.stream().filter(element -> !element.isHidden()).forEach(element -> element.draw(this, mouseX, mouseY, partialTicks));
 
         currentElements.stream().filter(element -> !element.isHidden()).forEach(element -> element.drawFloating(this, mouseX, mouseY, partialTicks));
+
+        currentElements.stream().filter(element -> !element.isHidden()).forEach(element -> {
+            Bounds bounds = element.bounds();
+
+            String title = element.getTitle();
+            if (title != null)
+            {
+                int stringWidth = Math.max(fontRenderer.getStringWidth(title), 100);
+
+                List<String> tooltip = element.getTitleTooltip();
+                if (tooltip != null)
+                    drawTooltipRect(tooltip, Bounds.fromSize(bounds.getMinX() - stringWidth - 10, bounds.getCenterY() - 6, stringWidth, 12), mouseX, mouseY, fontRenderer);
+            }
+        });
     }
 
     public void updateScreen()

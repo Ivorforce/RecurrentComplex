@@ -86,7 +86,6 @@ public class TableDataSourceItemCollectionComponent extends TableDataSourceSegme
         if (segment == 0)
         {
             TableCellString cell = new TableCellString(null, key);
-            cell.setTooltip(IvTranslations.formatLines("reccomplex.gui.inventorygen.componentid.tooltip"));
             cell.setShowsValidityState(true);
             cell.setValidityState(currentKeyState());
             cell.addPropertyConsumer(val ->
@@ -94,12 +93,12 @@ public class TableDataSourceItemCollectionComponent extends TableDataSourceSegme
                 key = val;
                 cell.setValidityState(currentKeyState());
             });
-            return new TableElementCell(IvTranslations.get("reccomplex.gui.inventorygen.componentid"), cell);
+            return new TableElementCell(IvTranslations.get("reccomplex.gui.inventorygen.componentid"), cell)
+                    .withTitleTooltip(IvTranslations.formatLines("reccomplex.gui.inventorygen.componentid.tooltip"));
         }
         else if (segment == 2)
         {
             TableCellString cell = new TableCellString(null, component.inventoryGeneratorID);
-            cell.setTooltip(IvTranslations.formatLines("reccomplex.gui.inventorygen.groupid.tooltip"));
             cell.setShowsValidityState(true);
             cell.setValidityState(currentGroupIDState());
             cell.addPropertyConsumer(val ->
@@ -107,7 +106,8 @@ public class TableDataSourceItemCollectionComponent extends TableDataSourceSegme
                 component.inventoryGeneratorID = val;
                 cell.setValidityState(currentGroupIDState());
             });
-            return new TableElementCell(IvTranslations.get("reccomplex.gui.inventorygen.groupid"), cell);
+            return new TableElementCell(IvTranslations.get("reccomplex.gui.inventorygen.groupid"), cell)
+                    .withTitleTooltip(IvTranslations.formatLines("reccomplex.gui.inventorygen.groupid.tooltip"));
         }
 
         return super.elementForIndexInSegment(table, index, segment);

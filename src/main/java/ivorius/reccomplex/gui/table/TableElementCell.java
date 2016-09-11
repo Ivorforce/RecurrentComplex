@@ -7,6 +7,7 @@ package ivorius.reccomplex.gui.table;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import java.util.List;
 
 /**
  * Created by lukas on 02.06.14.
@@ -20,6 +21,8 @@ public class TableElementCell implements TableElement
 
     @Nonnull
     protected TableCell cell;
+
+    protected List<String> titleTooltip;
 
     public TableElementCell(@Nullable String id, @Nullable String title, @Nonnull TableCell cell)
     {
@@ -71,6 +74,23 @@ public class TableElementCell implements TableElement
     public void setCell(@Nonnull TableCell cell)
     {
         this.cell = cell;
+    }
+
+    @Override
+    public List<String> getTitleTooltip()
+    {
+        return titleTooltip;
+    }
+
+    public void setTitleTooltip(List<String> titleTooltip)
+    {
+        this.titleTooltip = titleTooltip;
+    }
+
+    public TableElementCell withTitleTooltip(List<String> tooltip)
+    {
+        setTitleTooltip(tooltip);
+        return this;
     }
 
     @Override

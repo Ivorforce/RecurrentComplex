@@ -30,14 +30,14 @@ public class TableDataSourceMazeReachability extends TableDataSourceSegmented
         this.tableDelegate = tableDelegate;
         this.tableNavigator = tableNavigator;
 
-        TableCellTitle groupTitle = new TableCellTitle("", IvTranslations.get("reccomplex.reachability.groups"));
-        groupTitle.setTooltip(IvTranslations.formatLines("reccomplex.reachability.groups.tooltip"));
-        addManagedSection(0, new TableDataSourcePreloaded(new TableElementCell(groupTitle)));
+        addManagedSection(0, new TableDataSourcePreloaded(new TableElementCell(
+                new TableCellTitle("", IvTranslations.get("reccomplex.reachability.groups")))
+                .withTitleTooltip(IvTranslations.formatLines("reccomplex.reachability.groups.tooltip"))));
         addManagedSection(1, new TableDataSourceMazeReachabilityGroups(reachability.groups, expected, tableDelegate, tableNavigator));
 
-        TableCellTitle crossConnectionsTitle = new TableCellTitle("", IvTranslations.get("reccomplex.reachability.crossconnections"));
-        crossConnectionsTitle.setTooltip(IvTranslations.formatLines("reccomplex.reachability.crossconnections.tooltip"));
-        addManagedSection(2, new TableDataSourcePreloaded(new TableElementCell(crossConnectionsTitle)));
+        addManagedSection(2, new TableDataSourcePreloaded(new TableElementCell(
+                new TableCellTitle("", IvTranslations.get("reccomplex.reachability.crossconnections")))
+                .withTitleTooltip(IvTranslations.formatLines("reccomplex.reachability.crossconnections.tooltip"))));
         addManagedSection(3, new TableDataSourcePathConnectionList(reachability.crossConnections, tableDelegate, tableNavigator, bounds));
     }
 

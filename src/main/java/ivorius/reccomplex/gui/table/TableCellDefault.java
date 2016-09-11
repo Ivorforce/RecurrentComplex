@@ -51,6 +51,12 @@ public abstract class TableCellDefault implements TableCell
         this.tooltip = tooltip;
     }
 
+    public TableCellDefault withTooltip(List<String> tooltip)
+    {
+        setTooltip(tooltip);
+        return this;
+    }
+
     @Override
     public void initGui(GuiTable screen)
     {

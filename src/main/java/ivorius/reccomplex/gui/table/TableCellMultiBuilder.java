@@ -72,6 +72,12 @@ public class TableCellMultiBuilder
     }
 
     @Nonnull
+    public TableDataSource buildDataSource(@Nullable String title, List<String> tooltip)
+    {
+        return new TableDataSourceSupplied((Supplier<TableElement>) () -> buildElement(title).withTitleTooltip(tooltip));
+    }
+
+    @Nonnull
     public TableDataSource buildDataSource()
     {
         return new TableDataSourceSupplied(this::buildElement);

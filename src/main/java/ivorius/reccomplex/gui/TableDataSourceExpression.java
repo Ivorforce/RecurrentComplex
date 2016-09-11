@@ -89,8 +89,6 @@ public class TableDataSourceExpression<T, U, E extends FunctionExpressionCache<T
         if (index == 0)
         {
             TableCellString cell = new TableCellString("expression", e.getExpression());
-            if (tooltip != null)
-                cell.setTooltip(tooltip);
             cell.setShowsValidityState(true);
             cell.setValidityState(getValidityState(e, u));
             cell.addPropertyConsumer(val -> {
@@ -99,7 +97,7 @@ public class TableDataSourceExpression<T, U, E extends FunctionExpressionCache<T
                 if (parsed != null)
                     parsed.setDisplayString(StringUtils.abbreviate(parsedString(e, u), 60));
             });
-            return new TableElementCell(title, cell);
+            return new TableElementCell(title, cell).withTitleTooltip(tooltip);
         }
         else if (index == 1)
         {

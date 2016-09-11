@@ -96,8 +96,8 @@ public class TableDataSourceStructureGenerator extends TableDataSourceSegmented
                     script.setStructureNames(Arrays.asList(val.split(",")));
                     cell.setValidityState(doAllStructuresExist(script.getStructureNames()) ? GuiValidityStateIndicator.State.VALID : GuiValidityStateIndicator.State.SEMI_VALID);
                 });
-                cell.setTooltip(IvTranslations.getLines("reccomplex.worldscript.strucGen.simple.generators.tooltip"));
-                return new TableElementCell(IvTranslations.get("reccomplex.worldscript.strucGen.simple.generators"), cell);
+                return new TableElementCell(IvTranslations.get("reccomplex.worldscript.strucGen.simple.generators"), cell)
+                        .withTitleTooltip(IvTranslations.getLines("reccomplex.worldscript.strucGen.simple.generators.tooltip"));
             }
             else
             {

@@ -42,12 +42,11 @@ public class TableDataSourceYSelector implements TableDataSource
         else if (index == 1)
         {
             TableCellIntegerRange cell = new TableCellIntegerRange("ySelShift", new IntegerRange(ySelector.minYShift, ySelector.maxYShift), -100, 100);
-            cell.setTooltip(IvTranslations.formatLines("reccomplex.structure.randomrange"));
             cell.addPropertyConsumer(val -> {
                 ySelector.minYShift = val.getMin();
                 ySelector.maxYShift = val.getMax();
             });
-            return new TableElementCell(IvTranslations.get("reccomplex.yselector.shift"), cell);
+            return new TableElementCell(IvTranslations.get("reccomplex.yselector.shift"), cell).withTitleTooltip(IvTranslations.formatLines("reccomplex.structure.randomrange"));
         }
 
         return null;

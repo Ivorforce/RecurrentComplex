@@ -39,7 +39,6 @@ public class TableDataSourceTransformer extends TableDataSourceSegmented
         if (segment == 0)
         {
             TableCellString cell = new TableCellString("transformerID", transformer.id());
-            cell.setTooltip(IvTranslations.formatLines("reccomplex.transformer.id.tooltip"));
             cell.setShowsValidityState(true);
             cell.setValidityState(currentIDState());
             cell.addPropertyConsumer(val ->
@@ -47,7 +46,8 @@ public class TableDataSourceTransformer extends TableDataSourceSegmented
                 transformer.setID(val);
                 cell.setValidityState(currentIDState());
             });
-            return new TableElementCell(IvTranslations.get("reccomplex.transformer.id"), cell);
+            return new TableElementCell(IvTranslations.get("reccomplex.transformer.id"), cell)
+                    .withTitleTooltip(IvTranslations.formatLines("reccomplex.transformer.id.tooltip"));
         }
 
         return super.elementForIndexInSegment(table, index, segment);

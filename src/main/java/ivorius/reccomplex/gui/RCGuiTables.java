@@ -21,8 +21,7 @@ public class RCGuiTables
         TableCellFloatNullable cell = new TableCellFloatNullable("value", value, 1.0f, 0, 1000, "D", "C");
         cell.setScale(Scales.pow(5));
         cell.addPropertyConsumer(consumer);
-        cell.setTooltip(IvTranslations.formatLines("reccomplex.gui.random.weight.tooltip"));
-        return new TableElementCell(IvTranslations.get("reccomplex.gui.random.weight"), cell);
+        return new TableElementCell(IvTranslations.get("reccomplex.gui.random.weight"), cell).withTitleTooltip(IvTranslations.formatLines("reccomplex.gui.random.weight.tooltip"));
     }
 
     public static TableElement defaultWeightElement(Consumer<Float> listener, Double value)

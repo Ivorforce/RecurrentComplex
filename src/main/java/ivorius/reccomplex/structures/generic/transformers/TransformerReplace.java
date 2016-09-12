@@ -181,8 +181,8 @@ public class TransformerReplace extends TransformerSingleBlock<NBTNone>
         {
             if (jsonObject.has(blockKey))
             {
-                String sourceBlock = JsonUtils.getJsonObjectStringFieldValue(jsonObject, blockKey);
-                int sourceMeta = JsonUtils.getJsonObjectIntegerFieldValueOrDefault(jsonObject, metadataKey, -1);
+                String sourceBlock = JsonUtils.getString(jsonObject, blockKey);
+                int sourceMeta = JsonUtils.getInt(jsonObject, metadataKey, -1);
                 return sourceMeta >= 0 ? String.format("%s & %s%d", sourceBlock, BlockMatcher.METADATA_PREFIX, sourceMeta) : sourceBlock;
             }
 
@@ -192,13 +192,13 @@ public class TransformerReplace extends TransformerSingleBlock<NBTNone>
         @Override
         public TransformerReplace deserialize(JsonElement jsonElement, Type par2Type, JsonDeserializationContext context)
         {
-            JsonObject jsonObject = JsonUtils.getJsonElementAsJsonObject(jsonElement, "transformerReplace");
+            JsonObject jsonObject = JsonUtils.asJsonObject(jsonElement, "transformerReplace");
 
-            String id = JsonUtils.getJsonObjectStringFieldValueOrDefault(jsonObject, "id", null);
+            String id = JsonUtils.getString(jsonObject, "id", null);
 
             String expression = readLegacyMatcher(jsonObject, "source", "sourceMetadata"); // Legacy
             if (expression == null)
-                expression = JsonUtils.getJsonObjectStringFieldValueOrDefault(jsonObject, "sourceExpression", "");
+                expression = JsonUtils.getString(jsonObject, "sourceExpression", "");
 
             TransformerReplace transformer = new TransformerReplace(id, expression);
 
@@ -207,7 +207,7 @@ public class TransformerReplace extends TransformerSingleBlock<NBTNone>
             if (jsonObject.has("dest"))
             {
                 // Legacy
-                Block dest = registry.blockFromID(new ResourceLocation(JsonUtils.getJsonObjectStringFieldValue(jsonObject, "dest")));
+                Block dest = registry.blockFromID(new ResourceLocation(JsonUtils.getString(jsonObject, "dest")));
                 byte[] destMeta = context.deserialize(jsonObject.get("destMetadata"), byte[].class);
 
                 transformer.destination.setToCustom();

@@ -233,14 +233,14 @@ public class GenericYSelector implements YSelector
         @Override
         public GenericYSelector deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException
         {
-            JsonObject jsonObject = JsonUtils.getJsonElementAsJsonObject(json, "ySelector");
+            JsonObject jsonObject = JsonUtils.asJsonObject(json, "ySelector");
 
             SelectionMode selectionMode = jsonObject.has("selectionMode")
                     ? (SelectionMode) context.deserialize(jsonObject.get("selectionMode"), SelectionMode.class)
                     : SelectionMode.SURFACE;
 
-            int minYShift = JsonUtils.getJsonObjectIntegerFieldValueOrDefault(jsonObject, "minY", 0);
-            int maxYShift = JsonUtils.getJsonObjectIntegerFieldValueOrDefault(jsonObject, "maxY", 0);
+            int minYShift = JsonUtils.getInt(jsonObject, "minY", 0);
+            int maxYShift = JsonUtils.getInt(jsonObject, "maxY", 0);
 
             return new GenericYSelector(selectionMode, minYShift, maxYShift);
         }

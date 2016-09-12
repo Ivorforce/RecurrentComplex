@@ -107,21 +107,21 @@ public class MazeGenerationInfo extends StructureGenerationInfo implements Weigh
         @Override
         public MazeGenerationInfo deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException
         {
-            JsonObject jsonObject = JsonUtils.getJsonElementAsJsonObject(json, "MazeGenerationInfo");
+            JsonObject jsonObject = JsonUtils.asJsonObject(json, "MazeGenerationInfo");
 
-            String id = JsonUtils.getJsonObjectStringFieldValueOrDefault(jsonObject, "id", null);
+            String id = JsonUtils.getString(jsonObject, "id", null);
 
-            String mazeID = JsonUtils.getJsonObjectStringFieldValue(jsonObject, "mazeID");
+            String mazeID = JsonUtils.getString(jsonObject, "mazeID");
 
-            JsonObject componentJson = JsonUtils.getJsonObjectFieldOrDefault(jsonObject, "component", new JsonObject());
+            JsonObject componentJson = JsonUtils.getJsonobject(jsonObject, "component", new JsonObject());
 
-            Double weight = jsonObject.has("weight") ? JsonUtils.getJsonObjectDoubleFieldValue(jsonObject, "weight") : null;
+            Double weight = jsonObject.has("weight") ? JsonUtils.getDouble(jsonObject, "weight") : null;
             if (weight == null) // Legacy, weight was in SavedMazeComponent's JSON
             {
                 if (componentJson.has("weightD"))
-                    weight = JsonUtils.getJsonObjectDoubleFieldValue(componentJson, "weightD");
+                    weight = JsonUtils.getDouble(componentJson, "weightD");
                 else if (componentJson.has("weight"))
-                    weight = JsonUtils.getJsonObjectIntegerFieldValue(componentJson, "weight") * 0.01; // 100 was default
+                    weight = JsonUtils.getInt(componentJson, "weight") * 0.01; // 100 was default
             }
 
             SavedMazeComponent mazeComponent = gson.fromJson(componentJson, SavedMazeComponent.class);

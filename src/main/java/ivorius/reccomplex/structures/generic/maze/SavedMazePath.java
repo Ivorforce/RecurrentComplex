@@ -144,11 +144,11 @@ public class SavedMazePath implements NBTCompoundObject, Comparable<SavedMazePat
         @Override
         public SavedMazePath deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException
         {
-            JsonObject jsonObject = JsonUtils.getJsonElementAsJsonObject(json, "MazeRoom");
+            JsonObject jsonObject = JsonUtils.asJsonObject(json, "MazeRoom");
 
             MazeRoom src = context.deserialize(jsonObject.get("source"), MazeRoom.class);
-            int pathDimension = JsonUtils.getJsonObjectIntegerFieldValue(jsonObject, "pathDimension");
-            boolean pathGoesUp = JsonUtils.getJsonObjectBooleanFieldValue(jsonObject, "pathGoesUp");
+            int pathDimension = JsonUtils.getInt(jsonObject, "pathDimension");
+            boolean pathGoesUp = JsonUtils.getBoolean(jsonObject, "pathGoesUp");
 
             return new SavedMazePath(pathDimension, src, pathGoesUp);
         }

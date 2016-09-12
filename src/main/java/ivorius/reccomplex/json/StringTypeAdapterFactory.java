@@ -8,7 +8,6 @@ package ivorius.reccomplex.json;
 import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
 import com.google.gson.*;
-import ivorius.reccomplex.json.JsonUtils;
 
 
 import java.lang.reflect.Type;
@@ -97,7 +96,7 @@ public class StringTypeAdapterFactory<B> implements JsonSerializer<B>, JsonDeser
             JsonObject jsonObject = json.getAsJsonObject();
             if (jsonObject.has(typeKey) && jsonObject.has(objectKey))
             {
-                String type = JsonUtils.getJsonObjectStringFieldValue(jsonObject, typeKey);
+                String type = JsonUtils.getString(jsonObject, typeKey);
                 JsonDeserializer<? extends B> deserializer = deserializer(type);
 
                 if (deserializer != null)

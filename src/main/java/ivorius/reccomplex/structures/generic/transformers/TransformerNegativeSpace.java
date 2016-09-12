@@ -93,13 +93,13 @@ public class TransformerNegativeSpace extends Transformer<NBTNone>
         @Override
         public TransformerNegativeSpace deserialize(JsonElement jsonElement, Type par2Type, JsonDeserializationContext context)
         {
-            JsonObject jsonObject = JsonUtils.getJsonElementAsJsonObject(jsonElement, "transformerNegativeSpace");
+            JsonObject jsonObject = JsonUtils.asJsonObject(jsonElement, "transformerNegativeSpace");
 
-            String id = JsonUtils.getJsonObjectStringFieldValueOrDefault(jsonObject, "id", null);
+            String id = JsonUtils.getString(jsonObject, "id", null);
 
             String expression = TransformerReplace.Serializer.readLegacyMatcher(jsonObject, "source", "sourceMetadata"); // Legacy
             if (expression == null)
-                expression = JsonUtils.getJsonObjectStringFieldValueOrDefault(jsonObject, "sourceExpression", "");
+                expression = JsonUtils.getString(jsonObject, "sourceExpression", "");
 
             return new TransformerNegativeSpace(id, expression);
         }

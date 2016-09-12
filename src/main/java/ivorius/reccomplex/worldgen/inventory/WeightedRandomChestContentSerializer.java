@@ -19,11 +19,11 @@ public class WeightedRandomChestContentSerializer implements JsonSerializer<Weig
     @Override
     public WeightedRandomChestContent deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException
     {
-        JsonObject jsonObject = JsonUtils.getJsonElementAsJsonObject(json, "weightedRandomChestContent");
+        JsonObject jsonObject = JsonUtils.asJsonObject(json, "weightedRandomChestContent");
 
-        int weight = JsonUtils.getJsonObjectIntegerFieldValue(jsonObject, "weight");
-        int genMin = JsonUtils.getJsonObjectIntegerFieldValue(jsonObject, "genMin");
-        int genMax = JsonUtils.getJsonObjectIntegerFieldValue(jsonObject, "genMax");
+        int weight = JsonUtils.getInt(jsonObject, "weight");
+        int genMin = JsonUtils.getInt(jsonObject, "genMin");
+        int genMax = JsonUtils.getInt(jsonObject, "genMax");
         ItemStack stack = context.deserialize(jsonObject.get("item"), ItemStack.class);
 
         return new WeightedRandomChestContent(stack, genMin, genMax, weight);

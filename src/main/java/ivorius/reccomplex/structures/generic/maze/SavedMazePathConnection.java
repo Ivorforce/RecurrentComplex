@@ -99,10 +99,10 @@ public class SavedMazePathConnection implements NBTCompoundObject
         @Override
         public SavedMazePathConnection deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException
         {
-            JsonObject jsonObject = JsonUtils.getJsonElementAsJsonObject(json, "MazeRoom");
+            JsonObject jsonObject = JsonUtils.asJsonObject(json, "MazeRoom");
 
             SavedMazePath path = context.deserialize(json, SavedMazePath.class); // Don't do this, kids.
-            String connector = JsonUtils.getJsonObjectStringFieldValueOrDefault(jsonObject, "connector", ConnectorStrategy.DEFAULT_PATH);
+            String connector = JsonUtils.getString(jsonObject, "connector", ConnectorStrategy.DEFAULT_PATH);
 
             return new SavedMazePathConnection(path, new SavedConnector(connector));
         }

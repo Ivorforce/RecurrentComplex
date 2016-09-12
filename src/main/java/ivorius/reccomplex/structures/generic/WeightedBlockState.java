@@ -90,14 +90,14 @@ public class WeightedBlockState implements WeightedSelector.Item
         @Override
         public WeightedBlockState deserialize(JsonElement jsonElement, Type par2Type, JsonDeserializationContext context)
         {
-            JsonObject jsonObject = JsonUtils.getJsonElementAsJsonObject(jsonElement, "blockState");
+            JsonObject jsonObject = JsonUtils.asJsonObject(jsonElement, "blockState");
 
-            Double weight = jsonObject.has("weight") ? JsonUtils.getJsonObjectDoubleFieldValue(jsonObject, "weight") : null;
+            Double weight = jsonObject.has("weight") ? JsonUtils.getDouble(jsonObject, "weight") : null;
 
-            IBlockState state = registry.blockFromID(new ResourceLocation(JsonUtils.getJsonObjectStringFieldValueOrDefault(jsonObject, "block", "air")))
-                    .getStateFromMeta(JsonUtils.getJsonObjectIntegerFieldValueOrDefault(jsonObject, "metadata", 0));
+            IBlockState state = registry.blockFromID(new ResourceLocation(JsonUtils.getString(jsonObject, "block", "air")))
+                    .getStateFromMeta(JsonUtils.getInt(jsonObject, "metadata", 0));
 
-            String tileEntityInfo = JsonUtils.getJsonObjectStringFieldValueOrDefault(jsonObject, "tileEntityInfo", "");
+            String tileEntityInfo = JsonUtils.getString(jsonObject, "tileEntityInfo", "");
 
             return new WeightedBlockState(weight, state, tileEntityInfo);
         }

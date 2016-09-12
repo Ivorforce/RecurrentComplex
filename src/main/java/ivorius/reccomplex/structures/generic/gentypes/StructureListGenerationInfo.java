@@ -94,19 +94,19 @@ public class StructureListGenerationInfo extends StructureGenerationInfo impleme
         @Override
         public StructureListGenerationInfo deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException
         {
-            JsonObject jsonObject = JsonUtils.getJsonElementAsJsonObject(json, "vanillaStructureSpawnInfo");
+            JsonObject jsonObject = JsonUtils.asJsonObject(json, "vanillaStructureSpawnInfo");
 
-            String id = JsonUtils.getJsonObjectStringFieldValueOrDefault(jsonObject, "id", null);
+            String id = JsonUtils.getString(jsonObject, "id", null);
 
-            String listID = JsonUtils.getJsonObjectStringFieldValueOrDefault(jsonObject, "listID", "");
+            String listID = JsonUtils.getString(jsonObject, "listID", "");
 
-            Double weight = jsonObject.has("weight") ? JsonUtils.getJsonObjectDoubleFieldValue(jsonObject, "weight") : null;
+            Double weight = jsonObject.has("weight") ? JsonUtils.getDouble(jsonObject, "weight") : null;
 
-            int positionX = JsonUtils.getJsonObjectIntegerFieldValueOrDefault(jsonObject, "positionX", 0);
-            int positionY = JsonUtils.getJsonObjectIntegerFieldValueOrDefault(jsonObject, "positionY", 0);
-            int positionZ = JsonUtils.getJsonObjectIntegerFieldValueOrDefault(jsonObject, "positionZ", 0);
+            int positionX = JsonUtils.getInt(jsonObject, "positionX", 0);
+            int positionY = JsonUtils.getInt(jsonObject, "positionY", 0);
+            int positionZ = JsonUtils.getInt(jsonObject, "positionZ", 0);
 
-            EnumFacing front = Directions.deserialize(JsonUtils.getJsonObjectStringFieldValueOrDefault(jsonObject, "front", "NORTH"));
+            EnumFacing front = Directions.deserialize(JsonUtils.getString(jsonObject, "front", "NORTH"));
 
             return new StructureListGenerationInfo(id, listID, weight, new BlockPos(positionX, positionY, positionZ), front);
         }

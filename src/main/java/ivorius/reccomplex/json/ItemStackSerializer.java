@@ -8,15 +8,12 @@ package ivorius.reccomplex.json;
 import com.google.gson.*;
 import ivorius.reccomplex.RecurrentComplex;
 import ivorius.reccomplex.structures.registry.MCRegistrySpecial;
-import net.minecraft.init.Blocks;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.datafix.DataFixer;
 import net.minecraft.util.datafix.DataFixesManager;
 import net.minecraft.util.datafix.FixTypes;
-import net.minecraftforge.common.util.Constants;
 
 import javax.annotation.Nonnull;
 import java.lang.reflect.Type;
@@ -58,11 +55,11 @@ public class ItemStackSerializer implements JsonSerializer<ItemStack>, JsonDeser
     @Override
     public ItemStack deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException
     {
-        JsonObject jsonObject = JsonUtils.getJsonElementAsJsonObject(json, "ItemStack");
+        JsonObject jsonObject = JsonUtils.asJsonObject(json, "ItemStack");
 
-        String id = JsonUtils.getJsonObjectStringFieldValue(jsonObject, "id");
-        int damage = JsonUtils.getJsonObjectIntegerFieldValue(jsonObject, "damage");
-        int count = JsonUtils.getJsonObjectIntegerFieldValue(jsonObject, "count");
+        String id = JsonUtils.getString(jsonObject, "id");
+        int damage = JsonUtils.getInt(jsonObject, "damage");
+        int count = JsonUtils.getInt(jsonObject, "count");
 
         ItemStack stack = registry.itemHidingMode().constructItemStack(new ResourceLocation(id), count, damage);
 
@@ -73,7 +70,7 @@ public class ItemStackSerializer implements JsonSerializer<ItemStack>, JsonDeser
         }
         else if (jsonObject.has("tagBase64"))
         {
-            NBTTagCompound compound = NbtToJson.getNBTFromBase64(JsonUtils.getJsonObjectStringFieldValue(jsonObject, "tagBase64"));
+            NBTTagCompound compound = NbtToJson.getNBTFromBase64(JsonUtils.getString(jsonObject, "tagBase64"));
             stack.setTagCompound(compound);
         }
 

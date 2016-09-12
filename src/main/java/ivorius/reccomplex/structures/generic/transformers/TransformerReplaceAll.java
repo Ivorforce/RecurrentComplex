@@ -166,13 +166,13 @@ public class TransformerReplaceAll extends TransformerSingleBlock<TransformerRep
         @Override
         public TransformerReplaceAll deserialize(JsonElement jsonElement, Type par2Type, JsonDeserializationContext context)
         {
-            JsonObject jsonObject = JsonUtils.getJsonElementAsJsonObject(jsonElement, "transformerReplace");
+            JsonObject jsonObject = JsonUtils.asJsonObject(jsonElement, "transformerReplace");
 
-            String id = JsonUtils.getJsonObjectStringFieldValueOrDefault(jsonObject, "id", null);
+            String id = JsonUtils.getString(jsonObject, "id", null);
 
             String expression = TransformerReplace.Serializer.readLegacyMatcher(jsonObject, "source", "sourceMetadata"); // Legacy
             if (expression == null)
-                expression = JsonUtils.getJsonObjectStringFieldValueOrDefault(jsonObject, "sourceExpression", "");
+                expression = JsonUtils.getString(jsonObject, "sourceExpression", "");
 
             TransformerReplaceAll transformer = new TransformerReplaceAll(id, expression);
 
@@ -181,7 +181,7 @@ public class TransformerReplaceAll extends TransformerSingleBlock<TransformerRep
             if (jsonObject.has("dest"))
             {
                 // Legacy
-                String destBlock = JsonUtils.getJsonObjectStringFieldValue(jsonObject, "dest");
+                String destBlock = JsonUtils.getString(jsonObject, "dest");
                 Block dest = registry.blockFromID(new ResourceLocation(destBlock));
                 byte[] destMeta = context.deserialize(jsonObject.get("destMetadata"), byte[].class);
 

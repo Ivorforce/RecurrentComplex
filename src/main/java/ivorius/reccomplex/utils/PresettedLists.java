@@ -18,7 +18,7 @@ public class PresettedLists
 {
     public static <T> void read(JsonObject jsonObject, Gson gson, PresettedList<T> list, String presetKey, String listKey, Class<T[]> clazz)
     {
-        if (!list.setPreset(JsonUtils.getJsonObjectStringFieldValueOrDefault(jsonObject, presetKey, null)))
+        if (!list.setPreset(JsonUtils.getString(jsonObject, presetKey, null)))
         {
             if (jsonObject.has(listKey))
                 Collections.addAll(list.getList(), gson.fromJson(jsonObject.get(listKey), clazz));

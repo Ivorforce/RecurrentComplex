@@ -36,8 +36,6 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.WorldServer;
-import net.minecraft.world.biome.Biome;
-import net.minecraftforge.common.BiomeDictionary;
 import net.minecraftforge.common.util.Constants;
 
 import java.lang.reflect.Type;
@@ -319,13 +317,13 @@ public class GenericStructureInfo implements StructureInfo<GenericStructureInfo.
     {
         public GenericStructureInfo deserialize(JsonElement jsonElement, Type par2Type, JsonDeserializationContext context)
         {
-            JsonObject jsonObject = JsonUtils.getJsonElementAsJsonObject(jsonElement, "status");
+            JsonObject jsonObject = JsonUtils.asJsonObject(jsonElement, "status");
             GenericStructureInfo structureInfo = new GenericStructureInfo();
 
             Integer version;
             if (jsonObject.has("version"))
             {
-                version = JsonUtils.getJsonObjectIntegerFieldValue(jsonObject, "version");
+                version = JsonUtils.getInt(jsonObject, "version");
             }
             else
             {
@@ -355,24 +353,24 @@ public class GenericStructureInfo implements StructureInfo<GenericStructureInfo.
             else if (jsonObject.has("blockTransformers")) // Legacy
                 Collections.addAll(structureInfo.transformer.getTransformers(), context.<Transformer[]>deserialize(jsonObject.get("blockTransformers"), Transformer[].class));
 
-            structureInfo.rotatable = JsonUtils.getJsonObjectBooleanFieldValueOrDefault(jsonObject, "rotatable", false);
-            structureInfo.mirrorable = JsonUtils.getJsonObjectBooleanFieldValueOrDefault(jsonObject, "mirrorable", false);
+            structureInfo.rotatable = JsonUtils.getBoolean(jsonObject, "rotatable", false);
+            structureInfo.mirrorable = JsonUtils.getBoolean(jsonObject, "mirrorable", false);
 
             if (jsonObject.has("dependencyExpression"))
-                structureInfo.dependencies.setExpression(JsonUtils.getJsonObjectStringFieldValue(jsonObject, "dependencyExpression"));
+                structureInfo.dependencies.setExpression(JsonUtils.getString(jsonObject, "dependencyExpression"));
             else if (jsonObject.has("dependencies")) // Legacy
                 structureInfo.dependencies.setExpression(DependencyMatcher.ofMods(context.<String[]>deserialize(jsonObject.get("dependencies"), String[].class)));
 
             if (jsonObject.has("worldData"))
                 structureInfo.worldDataCompound = context.deserialize(jsonObject.get("worldData"), NBTTagCompound.class);
             else if (jsonObject.has("worldDataBase64"))
-                structureInfo.worldDataCompound = NbtToJson.getNBTFromBase64(JsonUtils.getJsonObjectStringFieldValue(jsonObject, "worldDataBase64"));
+                structureInfo.worldDataCompound = NbtToJson.getNBTFromBase64(JsonUtils.getString(jsonObject, "worldDataBase64"));
             // And else it is taken out for packet size, or stored in the zip
 
             if (jsonObject.has("metadata")) // Else, use default
                 structureInfo.metadata = context.deserialize(jsonObject.get("metadata"), Metadata.class);
 
-            structureInfo.customData = JsonUtils.getJsonObjectFieldOrDefault(jsonObject, "customData", new JsonObject());
+            structureInfo.customData = JsonUtils.getJsonobject(jsonObject, "customData", new JsonObject());
 
             return structureInfo;
         }

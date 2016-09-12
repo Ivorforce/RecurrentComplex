@@ -109,24 +109,24 @@ public class VanillaStructureGenerationInfo extends StructureGenerationInfo
         @Override
         public VanillaStructureGenerationInfo deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException
         {
-            JsonObject jsonObject = JsonUtils.getJsonElementAsJsonObject(json, "vanillaStructureSpawnInfo");
+            JsonObject jsonObject = JsonUtils.asJsonObject(json, "vanillaStructureSpawnInfo");
 
-            String id = JsonUtils.getJsonObjectStringFieldValueOrDefault(jsonObject, "id", null);
+            String id = JsonUtils.getString(jsonObject, "id", null);
 
-            Double spawnWeight = jsonObject.has("generationWeight") ? JsonUtils.getJsonObjectDoubleFieldValue(jsonObject, "generationWeight") : null;
+            Double spawnWeight = jsonObject.has("generationWeight") ? JsonUtils.getDouble(jsonObject, "generationWeight") : null;
 
-            double minBaseLimit = JsonUtils.getJsonObjectDoubleFieldValueOrDefault(jsonObject, "minBaseLimit", 0);
-            double maxBaseLimit = JsonUtils.getJsonObjectDoubleFieldValueOrDefault(jsonObject, "maxBaseLimit", 0);
-            double minScaledLimit = JsonUtils.getJsonObjectDoubleFieldValueOrDefault(jsonObject, "minScaledLimit", 0);
-            double maxScaledLimit = JsonUtils.getJsonObjectDoubleFieldValueOrDefault(jsonObject, "maxScaledLimit", 0);
+            double minBaseLimit = JsonUtils.getDouble(jsonObject, "minBaseLimit", 0);
+            double maxBaseLimit = JsonUtils.getDouble(jsonObject, "maxBaseLimit", 0);
+            double minScaledLimit = JsonUtils.getDouble(jsonObject, "minScaledLimit", 0);
+            double maxScaledLimit = JsonUtils.getDouble(jsonObject, "maxScaledLimit", 0);
 
-            int spawnX = JsonUtils.getJsonObjectIntegerFieldValueOrDefault(jsonObject, "spawnShiftX", 0);
-            int spawnY = JsonUtils.getJsonObjectIntegerFieldValueOrDefault(jsonObject, "spawnShiftY", 0);
-            int spawnZ = JsonUtils.getJsonObjectIntegerFieldValueOrDefault(jsonObject, "spawnShiftZ", 0);
+            int spawnX = JsonUtils.getInt(jsonObject, "spawnShiftX", 0);
+            int spawnY = JsonUtils.getInt(jsonObject, "spawnShiftY", 0);
+            int spawnZ = JsonUtils.getInt(jsonObject, "spawnShiftZ", 0);
 
-            EnumFacing front = Directions.deserialize(JsonUtils.getJsonObjectStringFieldValueOrDefault(jsonObject, "front", "NORTH"));
+            EnumFacing front = Directions.deserialize(JsonUtils.getString(jsonObject, "front", "NORTH"));
 
-            String biomeExpression = JsonUtils.getJsonObjectStringFieldValueOrDefault(jsonObject, "biomeExpression", "");
+            String biomeExpression = JsonUtils.getString(jsonObject, "biomeExpression", "");
 
             return new VanillaStructureGenerationInfo(id, spawnWeight, minBaseLimit, maxBaseLimit, minScaledLimit, maxScaledLimit, front, new BlockPos(spawnX, spawnY, spawnZ), biomeExpression);
         }

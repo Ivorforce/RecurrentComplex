@@ -114,11 +114,11 @@ public class TransformerVillageSpecific extends TransformerSingleBlock<NBTNone>
         @Override
         public TransformerVillageSpecific deserialize(JsonElement jsonElement, Type par2Type, JsonDeserializationContext context)
         {
-            JsonObject jsonObject = JsonUtils.getJsonElementAsJsonObject(jsonElement, "transformerReplace");
+            JsonObject jsonObject = JsonUtils.asJsonObject(jsonElement, "transformerReplace");
 
-            String id = JsonUtils.getJsonObjectStringFieldValueOrDefault(jsonObject, "id", null);
+            String id = JsonUtils.getString(jsonObject, "id", null);
 
-            String expression = JsonUtils.getJsonObjectStringFieldValueOrDefault(jsonObject, "sourceExpression", "");
+            String expression = JsonUtils.getString(jsonObject, "sourceExpression", "");
 
             return new TransformerVillageSpecific(id, expression);
         }

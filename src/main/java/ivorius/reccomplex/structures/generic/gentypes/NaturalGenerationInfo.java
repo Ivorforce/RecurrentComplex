@@ -83,7 +83,7 @@ public class NaturalGenerationInfo extends StructureGenerationInfo
 
     public static NaturalGenerationInfo deserializeFromVersion1(JsonObject jsonObject, JsonDeserializationContext context)
     {
-        String generationCategory = JsonUtils.getJsonObjectStringFieldValue(jsonObject, "generationCategory");
+        String generationCategory = JsonUtils.getString(jsonObject, "generationCategory");
         GenericYSelector ySelector = gson.fromJson(jsonObject.get("generationY"), GenericYSelector.class);
 
         NaturalGenerationInfo naturalGenerationInfo = new NaturalGenerationInfo("", generationCategory, ySelector);
@@ -206,11 +206,11 @@ public class NaturalGenerationInfo extends StructureGenerationInfo
         @Override
         public NaturalGenerationInfo deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException
         {
-            JsonObject jsonObject = JsonUtils.getJsonElementAsJsonObject(json, "naturalGenerationInfo");
+            JsonObject jsonObject = JsonUtils.asJsonObject(json, "naturalGenerationInfo");
 
-            String id = JsonUtils.getJsonObjectStringFieldValueOrDefault(jsonObject, "id", null);
+            String id = JsonUtils.getString(jsonObject, "id", null);
 
-            String generationCategory = JsonUtils.getJsonObjectStringFieldValue(jsonObject, "generationCategory");
+            String generationCategory = JsonUtils.getString(jsonObject, "generationCategory");
             GenericYSelector ySelector;
 
             if (jsonObject.has("generationY"))
@@ -224,7 +224,7 @@ public class NaturalGenerationInfo extends StructureGenerationInfo
             NaturalGenerationInfo naturalGenerationInfo = new NaturalGenerationInfo(id, generationCategory, ySelector);
 
             if (jsonObject.has("generationWeight"))
-                naturalGenerationInfo.generationWeight = JsonUtils.getJsonObjectDoubleFieldValue(jsonObject, "generationWeight");
+                naturalGenerationInfo.generationWeight = JsonUtils.getDouble(jsonObject, "generationWeight");
 
             PresettedLists.read(jsonObject, gson, naturalGenerationInfo.biomeWeights, "biomeWeightsPreset", "generationBiomes", BiomeGenerationInfo[].class);
             PresettedLists.read(jsonObject, gson, naturalGenerationInfo.dimensionWeights, "dimensionWeightsPreset", "generationDimensions", DimensionGenerationInfo[].class);

@@ -129,12 +129,12 @@ public class TransformerWorldScript extends TransformerSingleBlock<TransformerWo
         @Override
         public TransformerWorldScript deserialize(JsonElement jsonElement, Type par2Type, JsonDeserializationContext context)
         {
-            JsonObject jsonObject = JsonUtils.getJsonElementAsJsonObject(jsonElement, "transformerReplace");
+            JsonObject jsonObject = JsonUtils.asJsonObject(jsonElement, "transformerReplace");
 
-            String id = JsonUtils.getJsonObjectStringFieldValueOrDefault(jsonObject, "id", null);
+            String id = JsonUtils.getString(jsonObject, "id", null);
 
-            String expression = JsonUtils.getJsonObjectStringFieldValueOrDefault(jsonObject, "sourceExpression", "");
-            WorldScriptMulti script = NBTCompoundObjects.read(gson.fromJson(JsonUtils.getJsonObjectFieldOrDefault(jsonObject, "script", new JsonObject()), NBTTagCompound.class), WorldScriptMulti.class);
+            String expression = JsonUtils.getString(jsonObject, "sourceExpression", "");
+            WorldScriptMulti script = NBTCompoundObjects.read(gson.fromJson(JsonUtils.getJsonobject(jsonObject, "script", new JsonObject()), NBTTagCompound.class), WorldScriptMulti.class);
 
             return new TransformerWorldScript(id, script, expression);
         }

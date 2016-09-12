@@ -313,18 +313,18 @@ public class TransformerRuins extends Transformer<TransformerRuins.InstanceData>
         @Override
         public TransformerRuins deserialize(JsonElement jsonElement, Type par2Type, JsonDeserializationContext context)
         {
-            JsonObject jsonObject = JsonUtils.getJsonElementAsJsonObject(jsonElement, "transformerRuins");
+            JsonObject jsonObject = JsonUtils.asJsonObject(jsonElement, "transformerRuins");
 
-            String id = JsonUtils.getJsonObjectStringFieldValueOrDefault(jsonObject, "id", null);
+            String id = JsonUtils.getString(jsonObject, "id", null);
 
-            EnumFacing decayDirection = Directions.deserialize(JsonUtils.getJsonObjectStringFieldValueOrDefault(jsonObject, "decayDirection", "DOWN"));
-            float minDecay = JsonUtils.getJsonObjectFloatFieldValueOrDefault(jsonObject, "minDecay", 0.0f);
-            float maxDecay = JsonUtils.getJsonObjectFloatFieldValueOrDefault(jsonObject, "maxDecay", 0.9f);
-            float decayChaos = JsonUtils.getJsonObjectFloatFieldValueOrDefault(jsonObject, "decayChaos", 0.3f);
-            float decayValueDensity = JsonUtils.getJsonObjectFloatFieldValueOrDefault(jsonObject, "decayValueDensity", 1.0f / 25.0f);
+            EnumFacing decayDirection = Directions.deserialize(JsonUtils.getString(jsonObject, "decayDirection", "DOWN"));
+            float minDecay = JsonUtils.getFloat(jsonObject, "minDecay", 0.0f);
+            float maxDecay = JsonUtils.getFloat(jsonObject, "maxDecay", 0.9f);
+            float decayChaos = JsonUtils.getFloat(jsonObject, "decayChaos", 0.3f);
+            float decayValueDensity = JsonUtils.getFloat(jsonObject, "decayValueDensity", 1.0f / 25.0f);
 
-            float blockErosion = JsonUtils.getJsonObjectFloatFieldValueOrDefault(jsonObject, "blockErosion", 0.0f);
-            float vineGrowth = JsonUtils.getJsonObjectFloatFieldValueOrDefault(jsonObject, "vineGrowth", 0.0f);
+            float blockErosion = JsonUtils.getFloat(jsonObject, "blockErosion", 0.0f);
+            float vineGrowth = JsonUtils.getFloat(jsonObject, "vineGrowth", 0.0f);
 
             return new TransformerRuins(id, decayDirection, minDecay, maxDecay, decayChaos, decayValueDensity, blockErosion, vineGrowth);
         }

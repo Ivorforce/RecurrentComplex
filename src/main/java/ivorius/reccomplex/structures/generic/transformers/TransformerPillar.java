@@ -125,17 +125,17 @@ public class TransformerPillar extends TransformerSingleBlock<NBTNone>
         @Override
         public TransformerPillar deserialize(JsonElement jsonElement, Type par2Type, JsonDeserializationContext context)
         {
-            JsonObject jsonObject = JsonUtils.getJsonElementAsJsonObject(jsonElement, "transformerPillar");
+            JsonObject jsonObject = JsonUtils.asJsonObject(jsonElement, "transformerPillar");
 
-            String id = JsonUtils.getJsonObjectStringFieldValueOrDefault(jsonObject, "id", null);
+            String id = JsonUtils.getString(jsonObject, "id", null);
 
             String expression = TransformerReplace.Serializer.readLegacyMatcher(jsonObject, "source", "sourceMetadata"); // Legacy
             if (expression == null)
-                expression = JsonUtils.getJsonObjectStringFieldValueOrDefault(jsonObject, "sourceExpression", "");
+                expression = JsonUtils.getString(jsonObject, "sourceExpression", "");
 
-            String destBlock = JsonUtils.getJsonObjectStringFieldValue(jsonObject, "dest");
+            String destBlock = JsonUtils.getString(jsonObject, "dest");
             Block dest = registry.blockFromID(new ResourceLocation(destBlock));
-            IBlockState destState = dest != null ? dest.getStateFromMeta(JsonUtils.getJsonObjectIntegerFieldValue(jsonObject, "destMetadata")) : null;
+            IBlockState destState = dest != null ? dest.getStateFromMeta(JsonUtils.getInt(jsonObject, "destMetadata")) : null;
 
             return new TransformerPillar(id, expression, destState);
         }

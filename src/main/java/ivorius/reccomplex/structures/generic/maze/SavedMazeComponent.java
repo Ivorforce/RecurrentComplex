@@ -105,9 +105,9 @@ public class SavedMazeComponent implements NBTCompoundObject
         @Override
         public SavedMazeComponent deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException
         {
-            JsonObject jsonObject = JsonUtils.getJsonElementAsJsonObject(json, "MazeComponent");
+            JsonObject jsonObject = JsonUtils.asJsonObject(json, "MazeComponent");
 
-            String defaultConnector = JsonUtils.getJsonObjectStringFieldValueOrDefault(jsonObject, "defaultConnector", ConnectorStrategy.DEFAULT_WALL);
+            String defaultConnector = JsonUtils.getString(jsonObject, "defaultConnector", ConnectorStrategy.DEFAULT_WALL);
 
             SavedMazeComponent mazeComponent = new SavedMazeComponent(defaultConnector);
 
@@ -154,7 +154,7 @@ public class SavedMazeComponent implements NBTCompoundObject
         @Override
         public MazeRoom deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException
         {
-            JsonObject jsonObject = JsonUtils.getJsonElementAsJsonObject(json, "MazeRoom");
+            JsonObject jsonObject = JsonUtils.asJsonObject(json, "MazeRoom");
 
             return new MazeRoom(context.<int[]>deserialize(jsonObject.get("coordinates"), int[].class));
         }

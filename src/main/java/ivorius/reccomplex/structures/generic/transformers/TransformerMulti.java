@@ -25,7 +25,6 @@ import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTTagCompound;
 import org.apache.commons.lang3.tuple.Pair;
 
-import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
@@ -161,10 +160,10 @@ public class TransformerMulti extends Transformer<TransformerMulti.InstanceData>
         @Override
         public TransformerMulti deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException
         {
-            JsonObject jsonObject = JsonUtils.getJsonElementAsJsonObject(json, "transformerNatural");
+            JsonObject jsonObject = JsonUtils.asJsonObject(json, "transformerNatural");
 
-            String id = JsonUtils.getJsonObjectStringFieldValueOrDefault(jsonObject, "id", null);
-            String expression = JsonUtils.getJsonObjectStringFieldValueOrDefault(jsonObject, "environmentMatcher", "");
+            String id = JsonUtils.getString(jsonObject, "id", null);
+            String expression = JsonUtils.getString(jsonObject, "environmentMatcher", "");
             TransformerMulti transformer = new TransformerMulti(id, expression);
 
             Collections.addAll(transformer.transformers, context.<Transformer[]>deserialize(jsonObject.get("transformers"), Transformer[].class));

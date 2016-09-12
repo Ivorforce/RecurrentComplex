@@ -67,20 +67,20 @@ public class BiomeGenerationInfo
         @Override
         public BiomeGenerationInfo deserialize(JsonElement jsonElement, Type par2Type, JsonDeserializationContext context)
         {
-            JsonObject jsonobject = JsonUtils.getJsonElementAsJsonObject(jsonElement, "generationInfo");
+            JsonObject jsonobject = JsonUtils.asJsonObject(jsonElement, "generationInfo");
 
             String expression;
             if (jsonobject.has("biome"))
             {
                 // Legacy
-                expression = JsonUtils.getJsonObjectStringFieldValue(jsonobject, "biome");
+                expression = JsonUtils.getString(jsonobject, "biome");
                 if (expression.startsWith("Type:"))
                     expression = "$" + expression.substring(5).replaceAll(",", Matcher.quoteReplacement(" & $"));
             }
             else
-                expression = JsonUtils.getJsonObjectStringFieldValue(jsonobject, "biomes");
+                expression = JsonUtils.getString(jsonobject, "biomes");
 
-            Double weight = jsonobject.has("weight") ? JsonUtils.getJsonObjectDoubleFieldValue(jsonobject, "weight") : null;
+            Double weight = jsonobject.has("weight") ? JsonUtils.getDouble(jsonobject, "weight") : null;
 
             return new BiomeGenerationInfo(expression, weight);
         }

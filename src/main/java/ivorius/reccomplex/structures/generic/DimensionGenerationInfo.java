@@ -67,20 +67,20 @@ public class DimensionGenerationInfo
         @Override
         public DimensionGenerationInfo deserialize(JsonElement jsonElement, Type par2Type, JsonDeserializationContext context)
         {
-            JsonObject jsonobject = JsonUtils.getJsonElementAsJsonObject(jsonElement, "generationInfo");
+            JsonObject jsonobject = JsonUtils.asJsonObject(jsonElement, "generationInfo");
 
             String expression;
             if (jsonobject.has("dimensionID"))
             {
                 // Legacy
-                expression = JsonUtils.getJsonObjectStringFieldValue(jsonobject, "dimensionID");
+                expression = JsonUtils.getString(jsonobject, "dimensionID");
                 if (expression.startsWith("Type:"))
                     expression = "$" + expression.substring(5).replaceAll(",", Matcher.quoteReplacement(" & $"));
             }
             else
-                expression = JsonUtils.getJsonObjectStringFieldValue(jsonobject, "dimensions");
+                expression = JsonUtils.getString(jsonobject, "dimensions");
 
-            Double weight = jsonobject.has("weight") ? JsonUtils.getJsonObjectDoubleFieldValue(jsonobject, "weight") : null;
+            Double weight = jsonobject.has("weight") ? JsonUtils.getDouble(jsonobject, "weight") : null;
 
             return new DimensionGenerationInfo(expression, weight);
         }

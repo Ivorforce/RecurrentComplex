@@ -134,12 +134,12 @@ public class GenericItemCollection implements WeightedItemCollection
         {
             public Component deserialize(JsonElement jsonElement, Type par2Type, JsonDeserializationContext context)
             {
-                JsonObject jsonObject = JsonUtils.getJsonElementAsJsonObject(jsonElement, "status");
+                JsonObject jsonObject = JsonUtils.asJsonObject(jsonElement, "status");
 
                 int version;
                 if (jsonObject.has("version"))
                 {
-                    version = JsonUtils.getJsonObjectIntegerFieldValue(jsonObject, "version");
+                    version = JsonUtils.getInt(jsonObject, "version");
                 }
                 else
                 {
@@ -147,7 +147,7 @@ public class GenericItemCollection implements WeightedItemCollection
                     RecurrentComplex.logger.warn("InventoryGen JSON missing 'version', using latest (" + LATEST_VERSION + ")");
                 }
 
-                String generatorID = JsonUtils.getJsonObjectStringFieldValueOrDefault(jsonObject, "inventoryGeneratorID", "");
+                String generatorID = JsonUtils.getString(jsonObject, "inventoryGeneratorID", "");
 
                 List<RandomizedItemStack> stacks = new ArrayList<>();
 
@@ -160,7 +160,7 @@ public class GenericItemCollection implements WeightedItemCollection
                     stacks.addAll(Collections2.transform(chestContents, input -> RandomizedItemStack.from(input, 100)));
                 }
 
-                String dependencyExpression = JsonUtils.getJsonObjectStringFieldValueOrDefault(jsonObject, "dependencyExpression", "");
+                String dependencyExpression = JsonUtils.getString(jsonObject, "dependencyExpression", "");
                 if (version == 1 && jsonObject.has("dependencies")) // Legacy
                 {
                     String[] dependencies = context.deserialize(jsonObject.get("dependencies"), String[].class);
@@ -233,11 +233,11 @@ public class GenericItemCollection implements WeightedItemCollection
             @Override
             public RandomizedItemStack deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException
             {
-                JsonObject jsonObject = JsonUtils.getJsonElementAsJsonObject(json, "randomizedItem");
+                JsonObject jsonObject = JsonUtils.asJsonObject(json, "randomizedItem");
 
-                double weight = JsonUtils.getJsonObjectDoubleFieldValue(jsonObject, "weight");
-                int min = JsonUtils.getJsonObjectIntegerFieldValue(jsonObject, "min");
-                int max = JsonUtils.getJsonObjectIntegerFieldValue(jsonObject, "max");
+                double weight = JsonUtils.getDouble(jsonObject, "weight");
+                int min = JsonUtils.getInt(jsonObject, "min");
+                int max = JsonUtils.getInt(jsonObject, "max");
                 ItemStack stack = context.deserialize(jsonObject.get("item"), ItemStack.class);
 
                 return new RandomizedItemStack(stack, min, max, weight);

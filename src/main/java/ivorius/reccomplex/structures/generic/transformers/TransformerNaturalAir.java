@@ -200,16 +200,16 @@ public class TransformerNaturalAir extends TransformerAbstractCloud<TransformerN
         @Override
         public TransformerNaturalAir deserialize(JsonElement jsonElement, Type par2Type, JsonDeserializationContext context)
         {
-            JsonObject jsonObject = JsonUtils.getJsonElementAsJsonObject(jsonElement, "transformerNatural");
+            JsonObject jsonObject = JsonUtils.asJsonObject(jsonElement, "transformerNatural");
 
-            String id = JsonUtils.getJsonObjectStringFieldValueOrDefault(jsonObject, "id", null);
+            String id = JsonUtils.getString(jsonObject, "id", null);
 
             String expression = TransformerReplace.Serializer.readLegacyMatcher(jsonObject, "source", "sourceMetadata"); // Legacy
             if (expression == null)
-                expression = JsonUtils.getJsonObjectStringFieldValueOrDefault(jsonObject, "sourceExpression", "");
+                expression = JsonUtils.getString(jsonObject, "sourceExpression", "");
 
-            double naturalExpansionDistance = JsonUtils.getJsonObjectDoubleFieldValueOrDefault(jsonObject, "naturalExpansionDistance", DEFAULT_NATURAL_EXPANSION_DISTANCE);
-            double naturalExpansionRandomization = JsonUtils.getJsonObjectDoubleFieldValueOrDefault(jsonObject, "naturalExpansionRandomization", DEFAULT_NATURAL_EXPANSION_RANDOMIZATION);
+            double naturalExpansionDistance = JsonUtils.getDouble(jsonObject, "naturalExpansionDistance", DEFAULT_NATURAL_EXPANSION_DISTANCE);
+            double naturalExpansionRandomization = JsonUtils.getDouble(jsonObject, "naturalExpansionRandomization", DEFAULT_NATURAL_EXPANSION_RANDOMIZATION);
 
             return new TransformerNaturalAir(id, expression, naturalExpansionDistance, naturalExpansionRandomization);
         }

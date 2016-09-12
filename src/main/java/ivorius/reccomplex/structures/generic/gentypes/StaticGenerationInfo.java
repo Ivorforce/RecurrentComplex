@@ -136,16 +136,16 @@ public class StaticGenerationInfo extends StructureGenerationInfo
         @Override
         public StaticGenerationInfo deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException
         {
-            JsonObject jsonObject = JsonUtils.getJsonElementAsJsonObject(json, "vanillaStructureSpawnInfo");
+            JsonObject jsonObject = JsonUtils.asJsonObject(json, "vanillaStructureSpawnInfo");
 
-            String id = JsonUtils.getJsonObjectStringFieldValueOrDefault(jsonObject, "id", null);
+            String id = JsonUtils.getString(jsonObject, "id", null);
 
             GenericYSelector ySelector = gson.fromJson(jsonObject.get("generationY"), GenericYSelector.class);
-            String dimension = JsonUtils.getJsonObjectStringFieldValueOrDefault(jsonObject, "dimensions", "");
+            String dimension = JsonUtils.getString(jsonObject, "dimensions", "");
 
-            boolean relativeToSpawn = JsonUtils.getJsonObjectBooleanFieldValueOrDefault(jsonObject, "relativeToSpawn", false);
-            int positionX = JsonUtils.getJsonObjectIntegerFieldValueOrDefault(jsonObject, "positionX", 0);
-            int positionZ = JsonUtils.getJsonObjectIntegerFieldValueOrDefault(jsonObject, "positionZ", 0);
+            boolean relativeToSpawn = JsonUtils.getBoolean(jsonObject, "relativeToSpawn", false);
+            int positionX = JsonUtils.getInt(jsonObject, "positionX", 0);
+            int positionZ = JsonUtils.getInt(jsonObject, "positionZ", 0);
 
             Pattern pattern = jsonObject.has("pattern") ? gson.fromJson(jsonObject.get("pattern"), Pattern.class) : null;
 

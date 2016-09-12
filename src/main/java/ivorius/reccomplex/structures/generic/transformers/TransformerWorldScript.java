@@ -30,6 +30,7 @@ import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.math.BlockPos;
 
+import javax.annotation.Nullable;
 import java.lang.reflect.Type;
 
 /**
@@ -42,12 +43,12 @@ public class TransformerWorldScript extends TransformerSingleBlock<TransformerWo
 
     public TransformerWorldScript()
     {
-        this(randomID(TransformerWorldScript.class), new WorldScriptMulti(), BlockMatcher.of(RecurrentComplex.specialRegistry, Blocks.WOOL));
+        this(null, new WorldScriptMulti(), BlockMatcher.of(RecurrentComplex.specialRegistry, Blocks.WOOL));
     }
 
-    public TransformerWorldScript(String id, WorldScriptMulti script, String sourceExpression)
+    public TransformerWorldScript(@Nullable String id, WorldScriptMulti script, String sourceExpression)
     {
-        super(id);
+        super(id != null ? id : randomID(TransformerWorldScript.class));
         this.script = script;
         this.sourceMatcher = new BlockMatcher(RecurrentComplex.specialRegistry, sourceExpression);
     }
@@ -130,7 +131,7 @@ public class TransformerWorldScript extends TransformerSingleBlock<TransformerWo
         {
             JsonObject jsonObject = JsonUtils.getJsonElementAsJsonObject(jsonElement, "transformerReplace");
 
-            String id = JsonUtils.getJsonObjectStringFieldValueOrDefault(jsonObject, "id", randomID(TransformerWorldScript.class));
+            String id = JsonUtils.getJsonObjectStringFieldValueOrDefault(jsonObject, "id", null);
 
             String expression = JsonUtils.getJsonObjectStringFieldValueOrDefault(jsonObject, "sourceExpression", "");
             WorldScriptMulti script = NBTCompoundObjects.read(gson.fromJson(JsonUtils.getJsonObjectFieldOrDefault(jsonObject, "script", new JsonObject()), NBTTagCompound.class), WorldScriptMulti.class);

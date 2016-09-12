@@ -40,12 +40,12 @@ public class StaticGenerationInfo extends StructureGenerationInfo
 
     public StaticGenerationInfo()
     {
-        this(randomID(StaticGenerationInfo.class), new GenericYSelector(GenericYSelector.SelectionMode.SURFACE, 0, 0), new DimensionMatcher("0"), true, BlockSurfacePos.ORIGIN, null);
+        this(null, new GenericYSelector(GenericYSelector.SelectionMode.SURFACE, 0, 0), new DimensionMatcher("0"), true, BlockSurfacePos.ORIGIN, null);
     }
 
-    public StaticGenerationInfo(String id, GenericYSelector ySelector, DimensionMatcher dimensionMatcher, boolean relativeToSpawn, BlockSurfacePos position, Pattern pattern)
+    public StaticGenerationInfo(@Nullable String id, GenericYSelector ySelector, DimensionMatcher dimensionMatcher, boolean relativeToSpawn, BlockSurfacePos position, Pattern pattern)
     {
-        super(id);
+        super(id != null ? id : randomID(StaticGenerationInfo.class));
         this.ySelector = ySelector;
         this.dimensionMatcher = dimensionMatcher;
         this.relativeToSpawn = relativeToSpawn;
@@ -138,7 +138,7 @@ public class StaticGenerationInfo extends StructureGenerationInfo
         {
             JsonObject jsonObject = JsonUtils.getJsonElementAsJsonObject(json, "vanillaStructureSpawnInfo");
 
-            String id = JsonUtils.getJsonObjectStringFieldValueOrDefault(jsonObject, "id", "");
+            String id = JsonUtils.getJsonObjectStringFieldValueOrDefault(jsonObject, "id", null);
 
             GenericYSelector ySelector = gson.fromJson(jsonObject.get("generationY"), GenericYSelector.class);
             String dimension = JsonUtils.getJsonObjectStringFieldValueOrDefault(jsonObject, "dimensions", "");

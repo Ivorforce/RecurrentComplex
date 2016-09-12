@@ -30,6 +30,7 @@ import net.minecraft.nbt.NBTBase;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
 
+import javax.annotation.Nullable;
 import java.lang.reflect.Type;
 
 /**
@@ -43,12 +44,12 @@ public class TransformerPillar extends TransformerSingleBlock<NBTNone>
 
     public TransformerPillar()
     {
-        this(randomID(TransformerPillar.class), BlockMatcher.of(RecurrentComplex.specialRegistry, Blocks.STONE, 0), Blocks.STONE.getDefaultState());
+        this(null, BlockMatcher.of(RecurrentComplex.specialRegistry, Blocks.STONE, 0), Blocks.STONE.getDefaultState());
     }
 
-    public TransformerPillar(String id, String sourceExpression, IBlockState destState)
+    public TransformerPillar(@Nullable String id, String sourceExpression, IBlockState destState)
     {
-        super(id);
+        super(id != null ? id : randomID(TransformerPillar.class));
         this.sourceMatcher = new BlockMatcher(RecurrentComplex.specialRegistry, sourceExpression);
         this.destState = destState;
     }
@@ -126,7 +127,7 @@ public class TransformerPillar extends TransformerSingleBlock<NBTNone>
         {
             JsonObject jsonObject = JsonUtils.getJsonElementAsJsonObject(jsonElement, "transformerPillar");
 
-            String id = JsonUtils.getJsonObjectStringFieldValueOrDefault(jsonObject, "id", randomID(TransformerPillar.class));
+            String id = JsonUtils.getJsonObjectStringFieldValueOrDefault(jsonObject, "id", null);
 
             String expression = TransformerReplace.Serializer.readLegacyMatcher(jsonObject, "source", "sourceMetadata"); // Legacy
             if (expression == null)

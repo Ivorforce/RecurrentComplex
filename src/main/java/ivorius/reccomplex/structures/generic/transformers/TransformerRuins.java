@@ -43,6 +43,7 @@ import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.World;
 import net.minecraft.world.gen.structure.StructureBoundingBox;
 
+import javax.annotation.Nullable;
 import java.lang.reflect.Type;
 import java.util.Random;
 
@@ -62,12 +63,12 @@ public class TransformerRuins extends Transformer<TransformerRuins.InstanceData>
 
     public TransformerRuins()
     {
-        this(randomID(TransformerRuins.class), EnumFacing.DOWN, 0.0f, 0.9f, 0.3f, 1f / 25.0f, 0.3f, 0.1f);
+        this(null, EnumFacing.DOWN, 0.0f, 0.9f, 0.3f, 1f / 25.0f, 0.3f, 0.1f);
     }
 
-    public TransformerRuins(String id, EnumFacing decayDirection, float minDecay, float maxDecay, float decayChaos, float decayValueDensity, float blockErosion, float vineGrowth)
+    public TransformerRuins(@Nullable String id, EnumFacing decayDirection, float minDecay, float maxDecay, float decayChaos, float decayValueDensity, float blockErosion, float vineGrowth)
     {
-        super(id);
+        super(id != null ? id : randomID(TransformerRuins.class));
         this.decayDirection = decayDirection;
         this.minDecay = minDecay;
         this.maxDecay = maxDecay;
@@ -314,7 +315,7 @@ public class TransformerRuins extends Transformer<TransformerRuins.InstanceData>
         {
             JsonObject jsonObject = JsonUtils.getJsonElementAsJsonObject(jsonElement, "transformerRuins");
 
-            String id = JsonUtils.getJsonObjectStringFieldValueOrDefault(jsonObject, "id", randomID(TransformerRuins.class));
+            String id = JsonUtils.getJsonObjectStringFieldValueOrDefault(jsonObject, "id", null);
 
             EnumFacing decayDirection = Directions.deserialize(JsonUtils.getJsonObjectStringFieldValueOrDefault(jsonObject, "decayDirection", "DOWN"));
             float minDecay = JsonUtils.getJsonObjectFloatFieldValueOrDefault(jsonObject, "minDecay", 0.0f);

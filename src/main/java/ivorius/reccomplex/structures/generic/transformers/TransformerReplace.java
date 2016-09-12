@@ -37,6 +37,7 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
 
+import javax.annotation.Nullable;
 import java.lang.reflect.Type;
 import java.util.Arrays;
 
@@ -50,13 +51,13 @@ public class TransformerReplace extends TransformerSingleBlock<NBTNone>
 
     public TransformerReplace()
     {
-        this(randomID(TransformerReplace.class), BlockMatcher.of(RecurrentComplex.specialRegistry, Blocks.WOOL));
+        this(null, BlockMatcher.of(RecurrentComplex.specialRegistry, Blocks.WOOL));
         destination.setToDefault();
     }
 
-    public TransformerReplace(String id, String sourceExpression)
+    public TransformerReplace(@Nullable String id, String sourceExpression)
     {
-        super(id);
+        super(id != null ? id : randomID(TransformerReplace.class));
         this.sourceMatcher = new BlockMatcher(RecurrentComplex.specialRegistry, sourceExpression);
     }
 
@@ -193,7 +194,7 @@ public class TransformerReplace extends TransformerSingleBlock<NBTNone>
         {
             JsonObject jsonObject = JsonUtils.getJsonElementAsJsonObject(jsonElement, "transformerReplace");
 
-            String id = JsonUtils.getJsonObjectStringFieldValueOrDefault(jsonObject, "id", randomID(TransformerReplace.class));
+            String id = JsonUtils.getJsonObjectStringFieldValueOrDefault(jsonObject, "id", null);
 
             String expression = readLegacyMatcher(jsonObject, "source", "sourceMetadata"); // Legacy
             if (expression == null)

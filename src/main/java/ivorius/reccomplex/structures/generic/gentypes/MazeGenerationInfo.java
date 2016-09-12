@@ -18,6 +18,7 @@ import ivorius.reccomplex.structures.generic.Selection;
 import ivorius.reccomplex.structures.generic.maze.*;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.lang.reflect.Type;
 
 /**
@@ -34,13 +35,13 @@ public class MazeGenerationInfo extends StructureGenerationInfo implements Weigh
 
     public MazeGenerationInfo()
     {
-        this(randomID(MazeGenerationInfo.class), null, "", new SavedMazeComponent(ConnectorStrategy.DEFAULT_WALL));
+        this(null, null, "", new SavedMazeComponent(ConnectorStrategy.DEFAULT_WALL));
         mazeComponent.rooms.addAll(Selection.zeroSelection(3));
     }
 
-    public MazeGenerationInfo(String id, Double weight, String mazeID, SavedMazeComponent mazeComponent)
+    public MazeGenerationInfo(@Nullable String id, Double weight, String mazeID, SavedMazeComponent mazeComponent)
     {
-        super(id);
+        super(id != null ? id : randomID(MazeGenerationInfo.class));
         this.weight = weight;
         this.mazeID = mazeID;
         this.mazeComponent = mazeComponent;
@@ -108,7 +109,7 @@ public class MazeGenerationInfo extends StructureGenerationInfo implements Weigh
         {
             JsonObject jsonObject = JsonUtils.getJsonElementAsJsonObject(json, "MazeGenerationInfo");
 
-            String id = JsonUtils.getJsonObjectStringFieldValueOrDefault(jsonObject, "id", "");
+            String id = JsonUtils.getJsonObjectStringFieldValueOrDefault(jsonObject, "id", null);
 
             String mazeID = JsonUtils.getJsonObjectStringFieldValue(jsonObject, "mazeID");
 

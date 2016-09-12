@@ -27,6 +27,7 @@ import net.minecraft.world.WorldProvider;
 import net.minecraft.world.biome.Biome;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.lang.reflect.Type;
 import java.util.Arrays;
 
@@ -50,15 +51,15 @@ public class NaturalGenerationInfo extends StructureGenerationInfo
 
     public NaturalGenerationInfo()
     {
-        this(randomID(NaturalGenerationInfo.class), "decoration", new GenericYSelector(GenericYSelector.SelectionMode.SURFACE, 0, 0));
+        this(null, "decoration", new GenericYSelector(GenericYSelector.SelectionMode.SURFACE, 0, 0));
 
         biomeWeights.setToDefault();
         dimensionWeights.setToDefault();
     }
 
-    public NaturalGenerationInfo(String id, String generationCategory, GenericYSelector ySelector)
+    public NaturalGenerationInfo(@Nullable String id, String generationCategory, GenericYSelector ySelector)
     {
-        super(id);
+        super(id != null ? id : randomID(NaturalGenerationInfo.class));
         this.generationCategory = generationCategory;
         this.ySelector = ySelector;
     }
@@ -207,7 +208,7 @@ public class NaturalGenerationInfo extends StructureGenerationInfo
         {
             JsonObject jsonObject = JsonUtils.getJsonElementAsJsonObject(json, "naturalGenerationInfo");
 
-            String id = JsonUtils.getJsonObjectStringFieldValueOrDefault(jsonObject, "id", "");
+            String id = JsonUtils.getJsonObjectStringFieldValueOrDefault(jsonObject, "id", null);
 
             String generationCategory = JsonUtils.getJsonObjectStringFieldValue(jsonObject, "generationCategory");
             GenericYSelector ySelector;

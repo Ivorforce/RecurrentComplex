@@ -5,15 +5,10 @@
 
 package ivorius.reccomplex.structures.generic.transformers;
 
-import com.google.common.collect.Sets;
 import com.google.gson.*;
 import ivorius.ivtoolkit.blocks.BlockArea;
 import ivorius.ivtoolkit.blocks.IvBlockCollection;
 import ivorius.ivtoolkit.tools.IvWorldData;
-import ivorius.reccomplex.utils.RCBlockLogic;
-import net.minecraft.init.Blocks;
-import net.minecraft.util.EnumFacing;
-import net.minecraft.util.math.BlockPos;
 import ivorius.ivtoolkit.tools.MCRegistry;
 import ivorius.reccomplex.RecurrentComplex;
 import ivorius.reccomplex.blocks.RCBlocks;
@@ -26,11 +21,16 @@ import ivorius.reccomplex.structures.StructureLoadContext;
 import ivorius.reccomplex.structures.StructurePrepareContext;
 import ivorius.reccomplex.structures.StructureSpawnContext;
 import ivorius.reccomplex.structures.generic.matchers.BlockMatcher;
+import ivorius.reccomplex.utils.RCBlockLogic;
 import net.minecraft.block.state.IBlockState;
+import net.minecraft.init.Blocks;
 import net.minecraft.nbt.NBTBase;
+import net.minecraft.util.EnumFacing;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3i;
 import net.minecraft.world.WorldServer;
 
+import javax.annotation.Nullable;
 import java.lang.reflect.Type;
 import java.util.Arrays;
 import java.util.HashSet;
@@ -54,15 +54,20 @@ public class TransformerNaturalAir extends TransformerAbstractCloud<TransformerN
 
     public TransformerNaturalAir()
     {
-        this(randomID(TransformerNaturalAir.class), BlockMatcher.of(RecurrentComplex.specialRegistry, RCBlocks.genericSpace, 1), DEFAULT_NATURAL_EXPANSION_DISTANCE, DEFAULT_NATURAL_EXPANSION_RANDOMIZATION);
+        this(null, BlockMatcher.of(RecurrentComplex.specialRegistry, RCBlocks.genericSpace, 1), DEFAULT_NATURAL_EXPANSION_DISTANCE, DEFAULT_NATURAL_EXPANSION_RANDOMIZATION);
     }
 
-    public TransformerNaturalAir(String id, String sourceMatcherExpression, double naturalExpansionDistance, double naturalExpansionRandomization)
+    public TransformerNaturalAir(@Nullable String id, String sourceMatcherExpression, double naturalExpansionDistance, double naturalExpansionRandomization)
     {
-        super(id);
+        super(id != null ? id : randomID(TransformerNaturalAir.class));
         this.sourceMatcher = new BlockMatcher(RecurrentComplex.specialRegistry, sourceMatcherExpression);
         this.naturalExpansionDistance = naturalExpansionDistance;
         this.naturalExpansionRandomization = naturalExpansionRandomization;
+    }
+
+    protected static Stream<BlockPos> neighbors(BlockPos worldPos)
+    {
+        return Arrays.stream(EnumFacing.values()).map(worldPos::offset);
     }
 
     @Override
@@ -108,9 +113,11 @@ public class TransformerNaturalAir extends TransformerAbstractCloud<TransformerN
             HashSet<BlockPos> start = new HashSet<>();
 
             // Do each one separately, since each block needs to be connected to floor separately
-            check.forEach(checking -> {
+            check.forEach(checking ->
+            {
                 start.add(checking);
-                if (visitRecursively(start, (changed, pos) -> {
+                if (visitRecursively(start, (changed, pos) ->
+                {
                     IBlockState state = world.getBlockState(pos);
                     boolean isFoliage = RCBlockLogic.isFoliage(state, world, pos);
                     if (!RCBlockLogic.canStay(state, world, pos))
@@ -130,11 +137,6 @@ public class TransformerNaturalAir extends TransformerAbstractCloud<TransformerN
                 remove.clear();
             });
         }
-    }
-
-    protected static Stream<BlockPos> neighbors(BlockPos worldPos)
-    {
-        return Arrays.stream(EnumFacing.values()).map(worldPos::offset);
     }
 
     @Override
@@ -200,7 +202,7 @@ public class TransformerNaturalAir extends TransformerAbstractCloud<TransformerN
         {
             JsonObject jsonObject = JsonUtils.getJsonElementAsJsonObject(jsonElement, "transformerNatural");
 
-            String id = JsonUtils.getJsonObjectStringFieldValueOrDefault(jsonObject, "id", randomID(TransformerNaturalAir.class));
+            String id = JsonUtils.getJsonObjectStringFieldValueOrDefault(jsonObject, "id", null);
 
             String expression = TransformerReplace.Serializer.readLegacyMatcher(jsonObject, "source", "sourceMetadata"); // Legacy
             if (expression == null)

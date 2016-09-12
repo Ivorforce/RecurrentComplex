@@ -26,6 +26,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import org.apache.commons.lang3.tuple.Pair;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -42,12 +43,12 @@ public class TransformerMulti extends Transformer<TransformerMulti.InstanceData>
 
     public TransformerMulti()
     {
-        this(randomID(TransformerMulti.class), "");
+        this(null, "");
     }
 
-    public TransformerMulti(@Nonnull String id, String expression)
+    public TransformerMulti(@Nullable String id, String expression)
     {
-        super(id);
+        super(id != null ? id : randomID(TransformerMulti.class));
         this.environmentMatcher = new EnvironmentMatcher(expression);
     }
 
@@ -162,7 +163,7 @@ public class TransformerMulti extends Transformer<TransformerMulti.InstanceData>
         {
             JsonObject jsonObject = JsonUtils.getJsonElementAsJsonObject(json, "transformerNatural");
 
-            String id = JsonUtils.getJsonObjectStringFieldValueOrDefault(jsonObject, "id", randomID(TransformerNatural.class));
+            String id = JsonUtils.getJsonObjectStringFieldValueOrDefault(jsonObject, "id", null);
             String expression = JsonUtils.getJsonObjectStringFieldValueOrDefault(jsonObject, "environmentMatcher", "");
             TransformerMulti transformer = new TransformerMulti(id, expression);
 

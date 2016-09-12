@@ -35,6 +35,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.util.Constants;
 
+import javax.annotation.Nullable;
 import java.lang.reflect.Type;
 import java.util.Arrays;
 
@@ -49,13 +50,13 @@ public class TransformerReplaceAll extends TransformerSingleBlock<TransformerRep
 
     public TransformerReplaceAll()
     {
-        this(randomID(TransformerReplaceAll.class), BlockMatcher.of(RecurrentComplex.specialRegistry, Blocks.WOOL, new IntegerRange(0, 15)));
+        this(null, BlockMatcher.of(RecurrentComplex.specialRegistry, Blocks.WOOL, new IntegerRange(0, 15)));
         destination.setToDefault();
     }
 
-    public TransformerReplaceAll(String id, String sourceExpression)
+    public TransformerReplaceAll(@Nullable String id, String sourceExpression)
     {
-        super(id);
+        super(id != null ? id : randomID(TransformerReplaceAll.class));
         this.sourceMatcher = new BlockMatcher(RecurrentComplex.specialRegistry, sourceExpression);
     }
 
@@ -167,7 +168,7 @@ public class TransformerReplaceAll extends TransformerSingleBlock<TransformerRep
         {
             JsonObject jsonObject = JsonUtils.getJsonElementAsJsonObject(jsonElement, "transformerReplace");
 
-            String id = JsonUtils.getJsonObjectStringFieldValueOrDefault(jsonObject, "id", randomID(TransformerReplaceAll.class));
+            String id = JsonUtils.getJsonObjectStringFieldValueOrDefault(jsonObject, "id", null);
 
             String expression = TransformerReplace.Serializer.readLegacyMatcher(jsonObject, "source", "sourceMetadata"); // Legacy
             if (expression == null)

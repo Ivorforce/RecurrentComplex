@@ -29,6 +29,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraft.world.biome.Biome;
 
+import javax.annotation.Nullable;
 import java.lang.reflect.Type;
 import java.util.List;
 
@@ -47,12 +48,12 @@ public class TransformerNatural extends TransformerAbstractCloud<TransformerNatu
 
     public TransformerNatural()
     {
-        this(randomID(TransformerNatural.class), BlockMatcher.of(RecurrentComplex.specialRegistry, RCBlocks.genericSolid, 0), DEFAULT_NATURAL_EXPANSION_DISTANCE, DEFAULT_NATURAL_EXPANSION_RANDOMIZATION);
+        this(null, BlockMatcher.of(RecurrentComplex.specialRegistry, RCBlocks.genericSolid, 0), DEFAULT_NATURAL_EXPANSION_DISTANCE, DEFAULT_NATURAL_EXPANSION_RANDOMIZATION);
     }
 
-    public TransformerNatural(String id, String sourceMatcherExpression, double naturalExpansionDistance, double naturalExpansionRandomization)
+    public TransformerNatural(@Nullable String id, String sourceMatcherExpression, double naturalExpansionDistance, double naturalExpansionRandomization)
     {
-        super(id);
+        super(id != null ? id : randomID(TransformerNatural.class));
         this.sourceMatcher = new BlockMatcher(RecurrentComplex.specialRegistry, sourceMatcherExpression);
         this.naturalExpansionDistance = naturalExpansionDistance;
         this.naturalExpansionRandomization = naturalExpansionRandomization;
@@ -161,7 +162,7 @@ public class TransformerNatural extends TransformerAbstractCloud<TransformerNatu
         {
             JsonObject jsonObject = JsonUtils.getJsonElementAsJsonObject(jsonElement, "transformerNatural");
 
-            String id = JsonUtils.getJsonObjectStringFieldValueOrDefault(jsonObject, "id", randomID(TransformerNatural.class));
+            String id = JsonUtils.getJsonObjectStringFieldValueOrDefault(jsonObject, "id", null);
 
             String expression = TransformerReplace.Serializer.readLegacyMatcher(jsonObject, "source", "sourceMetadata"); // Legacy
             if (expression == null)

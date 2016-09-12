@@ -18,6 +18,7 @@ import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.lang.reflect.Type;
 
 /**
@@ -35,12 +36,12 @@ public class StructureListGenerationInfo extends StructureGenerationInfo impleme
 
     public StructureListGenerationInfo()
     {
-        this(randomID(StructureListGenerationInfo.class), "", null, BlockPos.ORIGIN, EnumFacing.NORTH);
+        this(null, "", null, BlockPos.ORIGIN, EnumFacing.NORTH);
     }
 
-    public StructureListGenerationInfo(String id, String listID, Double weight, BlockPos shift, EnumFacing front)
+    public StructureListGenerationInfo(@Nullable String id, String listID, Double weight, BlockPos shift, EnumFacing front)
     {
-        super(id);
+        super(id != null ? id : randomID(StructureListGenerationInfo.class));
         this.listID = listID;
         this.weight = weight;
         this.shift = shift;
@@ -95,7 +96,7 @@ public class StructureListGenerationInfo extends StructureGenerationInfo impleme
         {
             JsonObject jsonObject = JsonUtils.getJsonElementAsJsonObject(json, "vanillaStructureSpawnInfo");
 
-            String id = JsonUtils.getJsonObjectStringFieldValueOrDefault(jsonObject, "id", "");
+            String id = JsonUtils.getJsonObjectStringFieldValueOrDefault(jsonObject, "id", null);
 
             String listID = JsonUtils.getJsonObjectStringFieldValueOrDefault(jsonObject, "listID", "");
 

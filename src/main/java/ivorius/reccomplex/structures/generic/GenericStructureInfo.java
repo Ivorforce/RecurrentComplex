@@ -72,10 +72,10 @@ public class GenericStructureInfo implements StructureInfo<GenericStructureInfo.
         genericStructureInfo.mirrorable = true;
 
         Collections.addAll(genericStructureInfo.transformer.getTransformers(),
-                new TransformerNaturalAir(Transformer.randomID(TransformerNaturalAir.class), BlockMatcher.of(RecurrentComplex.specialRegistry, RCBlocks.genericSpace, 1), TransformerNaturalAir.DEFAULT_NATURAL_EXPANSION_DISTANCE, TransformerNaturalAir.DEFAULT_NATURAL_EXPANSION_RANDOMIZATION),
-                new TransformerNegativeSpace(Transformer.randomID(TransformerNegativeSpace.class), BlockMatcher.of(RecurrentComplex.specialRegistry, RCBlocks.genericSpace, 0)),
-                new TransformerNatural(Transformer.randomID(TransformerNatural.class), BlockMatcher.of(RecurrentComplex.specialRegistry, RCBlocks.genericSolid, 0), TransformerNatural.DEFAULT_NATURAL_EXPANSION_DISTANCE, TransformerNatural.DEFAULT_NATURAL_EXPANSION_RANDOMIZATION),
-                new TransformerReplace(Transformer.randomID(TransformerReplace.class), BlockMatcher.of(RecurrentComplex.specialRegistry, RCBlocks.genericSolid, 1)).replaceWith(new WeightedBlockState(null, Blocks.AIR.getDefaultState(), ""))
+                new TransformerNaturalAir(null, BlockMatcher.of(RecurrentComplex.specialRegistry, RCBlocks.genericSpace, 1), TransformerNaturalAir.DEFAULT_NATURAL_EXPANSION_DISTANCE, TransformerNaturalAir.DEFAULT_NATURAL_EXPANSION_RANDOMIZATION),
+                new TransformerNegativeSpace(null, BlockMatcher.of(RecurrentComplex.specialRegistry, RCBlocks.genericSpace, 0)),
+                new TransformerNatural(null, BlockMatcher.of(RecurrentComplex.specialRegistry, RCBlocks.genericSolid, 0), TransformerNatural.DEFAULT_NATURAL_EXPANSION_DISTANCE, TransformerNatural.DEFAULT_NATURAL_EXPANSION_RANDOMIZATION),
+                new TransformerReplace(null, BlockMatcher.of(RecurrentComplex.specialRegistry, RCBlocks.genericSolid, 1)).replaceWith(new WeightedBlockState(null, Blocks.AIR.getDefaultState(), ""))
         );
 
         genericStructureInfo.generationInfos.add(new NaturalGenerationInfo());

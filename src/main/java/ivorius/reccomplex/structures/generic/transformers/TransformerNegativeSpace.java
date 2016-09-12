@@ -24,6 +24,7 @@ import net.minecraft.block.state.IBlockState;
 import ivorius.reccomplex.utils.NBTNone;
 import net.minecraft.nbt.NBTBase;
 
+import javax.annotation.Nullable;
 import java.lang.reflect.Type;
 
 /**
@@ -35,12 +36,12 @@ public class TransformerNegativeSpace extends Transformer<NBTNone>
 
     public TransformerNegativeSpace()
     {
-        this(randomID(TransformerNegativeSpace.class), BlockMatcher.of(RecurrentComplex.specialRegistry, RCBlocks.genericSpace, 0));
+        this(null, BlockMatcher.of(RecurrentComplex.specialRegistry, RCBlocks.genericSpace, 0));
     }
 
-    public TransformerNegativeSpace(String id, String sourceExpression)
+    public TransformerNegativeSpace(@Nullable String id, String sourceExpression)
     {
-        super(id);
+        super(id != null ? id : randomID(TransformerNegativeSpace.class));
         this.sourceMatcher = new BlockMatcher(RecurrentComplex.specialRegistry, sourceExpression);
     }
 
@@ -94,7 +95,7 @@ public class TransformerNegativeSpace extends Transformer<NBTNone>
         {
             JsonObject jsonObject = JsonUtils.getJsonElementAsJsonObject(jsonElement, "transformerNegativeSpace");
 
-            String id = JsonUtils.getJsonObjectStringFieldValueOrDefault(jsonObject, "id", randomID(TransformerNegativeSpace.class));
+            String id = JsonUtils.getJsonObjectStringFieldValueOrDefault(jsonObject, "id", null);
 
             String expression = TransformerReplace.Serializer.readLegacyMatcher(jsonObject, "source", "sourceMetadata"); // Legacy
             if (expression == null)

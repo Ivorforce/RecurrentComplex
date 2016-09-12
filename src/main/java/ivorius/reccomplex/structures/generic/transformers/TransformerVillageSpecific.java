@@ -44,12 +44,12 @@ public class TransformerVillageSpecific extends TransformerSingleBlock<NBTNone>
 
     public TransformerVillageSpecific()
     {
-        this(randomID(TransformerVillageSpecific.class), "");
+        this(null, "");
     }
 
-    public TransformerVillageSpecific(String id, String sourceExpression)
+    public TransformerVillageSpecific(@Nullable String id, String sourceExpression)
     {
-        super(id);
+        super(id != null ? id : randomID(TransformerVillageSpecific.class));
         this.sourceMatcher = new BlockMatcher(RecurrentComplex.specialRegistry, sourceExpression);
     }
 
@@ -116,7 +116,7 @@ public class TransformerVillageSpecific extends TransformerSingleBlock<NBTNone>
         {
             JsonObject jsonObject = JsonUtils.getJsonElementAsJsonObject(jsonElement, "transformerReplace");
 
-            String id = JsonUtils.getJsonObjectStringFieldValueOrDefault(jsonObject, "id", randomID(TransformerVillageSpecific.class));
+            String id = JsonUtils.getJsonObjectStringFieldValueOrDefault(jsonObject, "id", null);
 
             String expression = JsonUtils.getJsonObjectStringFieldValueOrDefault(jsonObject, "sourceExpression", "");
 

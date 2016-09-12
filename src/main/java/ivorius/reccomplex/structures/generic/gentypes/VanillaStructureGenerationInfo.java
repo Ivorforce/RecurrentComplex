@@ -21,6 +21,7 @@ import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.biome.Biome;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.lang.reflect.Type;
 
 /**
@@ -42,12 +43,12 @@ public class VanillaStructureGenerationInfo extends StructureGenerationInfo
 
     public VanillaStructureGenerationInfo()
     {
-        this(randomID(VanillaStructureGenerationInfo.class), null, 2, 5, 3, 3, EnumFacing.NORTH, new BlockPos(0, 0, 0), "");
+        this(null, null, 2, 5, 3, 3, EnumFacing.NORTH, new BlockPos(0, 0, 0), "");
     }
 
-    public VanillaStructureGenerationInfo(String id, Double generationWeight, double minBaseLimit, double maxBaseLimit, double minScaledLimit, double maxScaledLimit, EnumFacing front, BlockPos spawnShift, String biomeExpression)
+    public VanillaStructureGenerationInfo(@Nullable String id, Double generationWeight, double minBaseLimit, double maxBaseLimit, double minScaledLimit, double maxScaledLimit, EnumFacing front, BlockPos spawnShift, String biomeExpression)
     {
-        super(id);
+        super(id != null ? id : randomID(VanillaStructureGenerationInfo.class));
         this.generationWeight = generationWeight;
         this.minBaseLimit = minBaseLimit;
         this.maxBaseLimit = maxBaseLimit;
@@ -110,7 +111,7 @@ public class VanillaStructureGenerationInfo extends StructureGenerationInfo
         {
             JsonObject jsonObject = JsonUtils.getJsonElementAsJsonObject(json, "vanillaStructureSpawnInfo");
 
-            String id = JsonUtils.getJsonObjectStringFieldValueOrDefault(jsonObject, "id", "");
+            String id = JsonUtils.getJsonObjectStringFieldValueOrDefault(jsonObject, "id", null);
 
             Double spawnWeight = jsonObject.has("generationWeight") ? JsonUtils.getJsonObjectDoubleFieldValue(jsonObject, "generationWeight") : null;
 

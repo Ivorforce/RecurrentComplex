@@ -43,7 +43,7 @@ public class VanillaStructureGenerationInfo extends StructureGenerationInfo
 
     public VanillaStructureGenerationInfo()
     {
-        this(null, null, 2, 5, 3, 3, EnumFacing.NORTH, new BlockPos(0, 0, 0), "");
+        this(null, null, 2, 5, 3, 3, EnumFacing.NORTH, BlockPos.ORIGIN, "");
     }
 
     public VanillaStructureGenerationInfo(@Nullable String id, Double generationWeight, double minBaseLimit, double maxBaseLimit, double minScaledLimit, double maxScaledLimit, EnumFacing front, BlockPos spawnShift, String biomeExpression)

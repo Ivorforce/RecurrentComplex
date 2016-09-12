@@ -144,7 +144,7 @@ public class SchematicFile
         }
 
         int[] size = {width, height, length};
-        BlockArea blockArea = BlockArea.areaFromSize(new BlockPos(0, 0, 0), size);
+        BlockArea blockArea = BlockArea.areaFromSize(BlockPos.ORIGIN, size);
         for (int pass = 0; pass < 2; pass++)
         {
             for (BlockPos srcCoord : blockArea)

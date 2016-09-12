@@ -128,7 +128,7 @@ public class TransformerRuins extends Transformer<TransformerRuins.InstanceData>
             BlurredValueField field = instanceData.blurredValueField;
             if (field != null && field.getSize().length == 3)
             {
-                BlockArea sourceArea = new BlockArea(new BlockPos(0, 0, 0), new BlockPos(blockCollection.width, blockCollection.height, blockCollection.length));
+                BlockArea sourceArea = new BlockArea(BlockPos.ORIGIN, new BlockPos(blockCollection.width, blockCollection.height, blockCollection.length));
                 BlockArea decaySideArea = BlockAreas.side(sourceArea, decayDirection.getOpposite());
                 BlockPos decaySideAreaPos = decaySideArea.getLowerCorner();
                 int decaySideLength = BlockAreas.sideLength(sourceArea, decayDirection.getOpposite());
@@ -251,7 +251,7 @@ public class TransformerRuins extends Transformer<TransformerRuins.InstanceData>
         if (minDecay > 0.0f || maxDecay > 0.0f)
         {
             int[] size = context.boundingBoxSize();
-            BlockArea sourceArea = new BlockArea(new BlockPos(0, 0, 0), new BlockPos(size[0], size[1], size[2]));
+            BlockArea sourceArea = new BlockArea(BlockPos.ORIGIN, new BlockPos(size[0], size[1], size[2]));
 
             float decayChaos = context.random.nextFloat() * this.decayChaos;
             if (this.maxDecay - this.minDecay > decayChaos)

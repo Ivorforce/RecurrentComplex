@@ -38,7 +38,7 @@ public class WorldScriptStructureGenerator implements WorldScript<WorldScriptStr
 {
     protected boolean simpleMode;
 
-    protected BlockPos structureShift = new BlockPos(0, 0, 0);
+    protected BlockPos structureShift = BlockPos.ORIGIN;
 
     // List Type
     protected String structureListID = "";
@@ -191,7 +191,7 @@ public class WorldScriptStructureGenerator implements WorldScript<WorldScriptStr
 
                     int[] strucSize = structureInfo.structureBoundingBox();
                     BlockPos strucCoord = transform.apply(structureShift, new int[]{1, 1, 1})
-                            .subtract(transform.apply(new BlockPos(0, 0, 0), strucSize)).add(pos);
+                            .subtract(transform.apply(BlockPos.ORIGIN, strucSize)).add(pos);
 
                     instanceData = new WorldScriptStructureGenerator.InstanceData(structureID, strucCoord, strucTransform, structureInfo.prepareInstanceData(new StructurePrepareContext(random, context.environment, strucTransform, StructureInfos.structureBoundingBox(strucCoord, strucSize), context.generateAsSource)));
                 }
@@ -227,7 +227,7 @@ public class WorldScriptStructureGenerator implements WorldScript<WorldScriptStr
 
                 int[] strucSize = structureInfo.structureBoundingBox();
                 BlockPos strucCoord = transform.apply(structureShift.add(generationInfo.shift), new int[]{1, 1, 1})
-                        .subtract(transform.apply(new BlockPos(0, 0, 0), strucSize)).add(pos);
+                        .subtract(transform.apply(BlockPos.ORIGIN, strucSize)).add(pos);
 
                 instanceData = new WorldScriptStructureGenerator.InstanceData(structureID, strucCoord, strucTransform, structureInfo.prepareInstanceData(new StructurePrepareContext(random, context.environment, strucTransform, StructureInfos.structureBoundingBox(strucCoord, strucSize), context.generateAsSource)));
             }

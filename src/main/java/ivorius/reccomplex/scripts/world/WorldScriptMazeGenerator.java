@@ -48,7 +48,7 @@ public class WorldScriptMazeGenerator implements WorldScript<WorldScriptMazeGene
 {
     public final List<MazeRule> rules = new ArrayList<>();
     public String mazeID = "";
-    public BlockPos structureShift = new BlockPos(0, 0, 0);
+    public BlockPos structureShift = BlockPos.ORIGIN;
     public int[] roomSize = new int[]{3, 5, 3};
     public SavedMazeComponent mazeComponent = new SavedMazeComponent();
 

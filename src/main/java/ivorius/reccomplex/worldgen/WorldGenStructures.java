@@ -8,19 +8,14 @@ package ivorius.reccomplex.worldgen;
 import ivorius.ivtoolkit.math.IvVecMathHelper;
 import ivorius.reccomplex.RCConfig;
 import ivorius.reccomplex.RecurrentComplex;
-import ivorius.reccomplex.structures.StructureInfo;
-import ivorius.reccomplex.structures.StructureInfos;
-import ivorius.reccomplex.structures.StructureRegistry;
+import ivorius.reccomplex.structures.*;
 import ivorius.reccomplex.structures.generic.gentypes.NaturalGenerationInfo;
 import ivorius.reccomplex.structures.generic.gentypes.StaticGenerationInfo;
 import ivorius.reccomplex.utils.BlockSurfacePos;
-import ivorius.reccomplex.utils.StructureBoundingBoxes;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.ChunkPos;
-import net.minecraft.world.World;
 import net.minecraft.world.WorldServer;
 import net.minecraft.world.biome.Biome;
-import net.minecraft.world.gen.structure.StructureBoundingBox;
 import org.apache.commons.lang3.tuple.Pair;
 
 import java.util.List;
@@ -39,11 +34,11 @@ public class WorldGenStructures
             StaticGenerationInfo staticGenInfo = triple.getMiddle();
             StructureInfo structureInfo = triple.getLeft();
             BlockSurfacePos pos = triple.getRight();
-            String structureName = StructureRegistry.INSTANCE.structureID(structureInfo);
 
             RecurrentComplex.logger.trace(String.format("Spawning static structure at %s", pos));
 
-            StructureGenerator.randomInstantly(world, random, structureInfo, staticGenInfo.ySelector, pos, false, structureName);
+            new StructureGenerator<>(structureInfo).world(world)
+                    .random(random).randomPosition(pos, staticGenInfo.ySelector).fromCenter(true).generate();
         });
     }
 
@@ -81,7 +76,11 @@ public class WorldGenStructures
         BlockSurfacePos genPos = new BlockSurfacePos((chunkPos.chunkXPos << 4) + random.nextInt(16), (chunkPos.chunkZPos << 4) + random.nextInt(16));
 
         if (!naturalGenInfo.hasLimitations() || naturalGenInfo.getLimitations().areResolved(world, structureName))
-            StructureGenerator.randomInstantly(world, random, structureInfo, naturalGenInfo.ySelector, genPos, true, structureName);
+        {
+            new StructureGenerator<>(structureInfo).world(world)
+                    .random(random).maturity(StructureGenerator.Maturity.SUGGEST)
+                    .randomPosition(genPos, naturalGenInfo.ySelector).fromCenter(true).generate();
+        }
     }
 
     public static void generatePartialStructuresInChunk(Random random, final ChunkPos chunkPos, final WorldServer world)
@@ -94,7 +93,9 @@ public class WorldGenStructures
 
             if (structureInfo != null)
             {
-                StructureGenerator.partially(structureInfo, world, random, entry.lowerCoord, entry.transform, StructureInfos.chunkBoundingBox(chunkPos), 0, entry.getStructureID(), entry.instanceData, entry.firstTime);
+                new StructureGenerator<>().structure(structureInfo).world(world)
+                        .random(random).lowerCoord(entry.lowerCoord).transform(entry.transform).generationBB(StructureInfos.chunkBoundingBox(chunkPos))
+                        .structureID(entry.getStructureID()).instanceData(entry.instanceData).maturity(entry.firstTime ? StructureGenerator.Maturity.FIRST : StructureGenerator.Maturity.COMPLEMENT).generate();
 
                 if (entry.firstTime)
                 {

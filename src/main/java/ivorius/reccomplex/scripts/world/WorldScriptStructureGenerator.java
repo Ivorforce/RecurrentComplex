@@ -6,6 +6,7 @@
 package ivorius.reccomplex.scripts.world;
 
 import ivorius.ivtoolkit.blocks.BlockPositions;
+import ivorius.reccomplex.worldgen.StructureGenerator;
 import net.minecraft.util.math.BlockPos;
 import ivorius.ivtoolkit.blocks.Directions;
 import ivorius.ivtoolkit.math.AxisAlignedTransform2D;
@@ -19,12 +20,10 @@ import ivorius.reccomplex.structures.*;
 import ivorius.reccomplex.structures.generic.gentypes.StructureListGenerationInfo;
 import ivorius.ivtoolkit.tools.IvTranslations;
 import ivorius.reccomplex.utils.NBTStorable;
-import ivorius.reccomplex.worldgen.StructureGenerator;
 import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.nbt.NBTTagString;
-import net.minecraft.world.WorldServer;
 import net.minecraftforge.common.util.Constants;
 import net.minecraft.util.EnumFacing;
 import org.apache.commons.lang3.tuple.Pair;
@@ -239,12 +238,18 @@ public class WorldScriptStructureGenerator implements WorldScript<WorldScriptStr
     @Override
     public void generate(StructureSpawnContext context, InstanceData instanceData, BlockPos coord)
     {
-        Random random = context.random;
-        int layer = context.generationLayer;
-
         StructureInfo structureInfo = StructureRegistry.INSTANCE.getStructure(instanceData.structureID);
-        if (structureInfo != null && instanceData.structureData != null)
-            StructureGenerator.partially(structureInfo, context.environment, random, instanceData.lowerCoord, instanceData.structureTransform, context.generationBB, layer + 1, instanceData.structureID, instanceData.structureData, context.isFirstTime);
+        NBTStorable structureData = instanceData.structureData;
+
+        if (structureInfo != null && structureData != null)
+            generate(context, instanceData, structureInfo, structureData);
+    }
+
+    protected <I extends NBTStorable> StructureSpawnContext generate(StructureSpawnContext context, InstanceData instanceData, StructureInfo<I> structureInfo, I structureData)
+    {
+        return new StructureGenerator<>(structureInfo).structureID(instanceData.structureID).asChild(context)
+                .lowerCoord(instanceData.lowerCoord).transform(instanceData.structureTransform).instanceData(structureData).generate(
+                );
     }
 
     @Override

@@ -1,12 +1,10 @@
 /*
  *  Copyright (c) 2014, Lukas Tenbrink.
- *  * http://lukas.axxim.net
+ *  * http://ivorius.net
  */
 
 package ivorius.reccomplex.worldgen;
 
-import ivorius.reccomplex.utils.BlockSurfacePos;
-import net.minecraft.util.math.BlockPos;
 import ivorius.ivtoolkit.math.AxisAlignedTransform2D;
 import ivorius.reccomplex.RCConfig;
 import ivorius.reccomplex.RecurrentComplex;
@@ -14,129 +12,364 @@ import ivorius.reccomplex.events.RCEventBus;
 import ivorius.reccomplex.events.StructureGenerationEvent;
 import ivorius.reccomplex.events.StructureGenerationEventLite;
 import ivorius.reccomplex.structures.*;
+import ivorius.reccomplex.utils.BlockSurfacePos;
 import ivorius.reccomplex.utils.NBTStorable;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.world.World;
-import net.minecraft.world.WorldProvider;
+import net.minecraft.nbt.NBTBase;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Vec3i;
 import net.minecraft.world.WorldServer;
-import net.minecraft.world.biome.Biome;
 import net.minecraft.world.gen.structure.StructureBoundingBox;
 import net.minecraftforge.common.MinecraftForge;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.Random;
 
 /**
- * Created by lukas on 24.05.14.
+ * Created by lukas on 19.01.15.
  */
-public class StructureGenerator
+public class StructureGenerator<S extends NBTStorable>
 {
     public static final int MIN_DIST_TO_LIMIT = 1;
+    
+    @Nullable
+    private WorldServer world;
+    @Nullable
+    private StructureInfo<S> structureInfo;
+    @Nullable
+    private String structureID;
 
-    public static <I extends NBTStorable> void partially(StructureInfo<I> structureInfo, WorldServer world, Random random, BlockPos coord, AxisAlignedTransform2D transform, @Nullable StructureBoundingBox generationBB, int layer, String structureID, NBTTagCompound instanceData, boolean firstTime)
+    @Nullable
+    private BlockPos lowerCoord;
+    @Nullable
+    private BlockSurfacePos surfacePos;
+    @Nullable
+    private YSelector ySelector;
+    private boolean fromCenter;
+
+    @Nullable
+    private Environment environment;
+    @Nullable
+    private Random random;
+
+    @Nullable
+    private AxisAlignedTransform2D transform;
+    @Nullable
+    private StructureBoundingBox boundingBox;
+    @Nullable
+    private StructureBoundingBox generationBB;
+
+    private int generationLayer = 0;
+
+    private boolean generateAsSource = false;
+    private Maturity maturity = Maturity.FIRST;
+
+    @Nullable
+    private S instanceData;
+    @Nullable
+    private NBTBase instanceDataNBT;
+
+    public StructureGenerator(StructureInfo<S> structureInfo)
     {
-        StructureBoundingBox boundingBox = StructureInfos.structureBoundingBox(coord, StructureInfos.structureSize(structureInfo, transform));
-
-        partially(structureInfo, Environment.inNature(world, boundingBox), random, coord, transform, generationBB, layer, structureID,
-                structureInfo.loadInstanceData(new StructureLoadContext(transform, boundingBox, false), instanceData),
-                firstTime);
+        structure(structureInfo);
     }
 
-    public static <I extends NBTStorable> void partially(StructureInfo<I> structureInfo, Environment environment, Random random, BlockPos coord, AxisAlignedTransform2D transform, @Nullable StructureBoundingBox generationBB, int layer, String structureID, I instanceData, boolean firstTime)
+    public StructureGenerator()
     {
-        StructureSpawnContext structureSpawnContext = StructureSpawnContext.partial(environment, random, transform, coord, structureInfo, generationBB, layer, false, firstTime);
-        int[] coordInts = coordInts(structureSpawnContext.boundingBox);
-        int[] sizeInts = sizeInts(structureSpawnContext.boundingBox);
 
-        if (firstTime)
-        {
-            RCEventBus.INSTANCE.post(new StructureGenerationEvent.Pre(structureInfo, structureSpawnContext));
-            MinecraftForge.EVENT_BUS.post(new StructureGenerationEventLite.Pre(environment.world, structureID, coordInts, sizeInts, layer));
-        }
-
-        structureInfo.generate(structureSpawnContext, instanceData);
-
-        if (firstTime)
-        {
-            RecurrentComplex.logger.trace(String.format("Generated structure '%s' in %s", name(structureID), structureSpawnContext.boundingBox));
-
-            RCEventBus.INSTANCE.post(new StructureGenerationEvent.Post(structureInfo, structureSpawnContext));
-            MinecraftForge.EVENT_BUS.post(new StructureGenerationEventLite.Post(environment.world, structureID, coordInts, sizeInts, layer));
-        }
     }
 
-    public static <I extends NBTStorable> void directly(StructureInfo<I> structureInfo, StructureSpawnContext context)
+    @Nonnull
+    public static YSelector worldHeightYSelector()
     {
-        structureInfo.generate(context, structureInfo.prepareInstanceData(new StructurePrepareContext(context.random, context.environment, context.transform, context.boundingBox, context.generateAsSource)));
+        return (world1, random1, boundingBox) -> world1.getHeight(new BlockPos(boundingBox.getCenter())).getY();
     }
 
-    public static int randomInstantly(WorldServer world, Random random, StructureInfo info, @Nullable YSelector ySelector, BlockSurfacePos pos, boolean suggest, String structureName)
-    {
-        AxisAlignedTransform2D transform = AxisAlignedTransform2D.from(info.isRotatable() ? random.nextInt(4) : 0, info.isMirrorable() && random.nextBoolean());
-
-        int[] size = StructureInfos.structureSize(info, transform);
-
-        int genX = pos.x - size[0] / 2;
-        int genZ = pos.z - size[2] / 2;
-        int genY = ySelector != null ? ySelector.selectY(world, random, StructureInfos.structureBoundingBox(new BlockPos(genX, 0, genZ), size)) : world.getHeight(pos.blockPos(0)).getY();
-        BlockPos coord = new BlockPos(genX, genY, genZ);
-
-        instantly(info, world, random, coord, transform, 0, suggest, structureName, false);
-
-        return genY;
-    }
-
-    public static <I extends NBTStorable> boolean instantly(StructureInfo<I> structureInfo, WorldServer world, Random random, BlockPos coord, AxisAlignedTransform2D transform, int layer, boolean suggest, String structureID, boolean asSource)
-    {
-        StructureSpawnContext spawnContext = StructureSpawnContext.complete(world, random, transform, coord, structureInfo, layer, asSource);
-        int[] size = sizeInts(spawnContext.boundingBox);
-        int[] coordInts = coordInts(spawnContext.boundingBox);
-
-        if (!suggest || (
-                coord.getY() >= MIN_DIST_TO_LIMIT && coord.getY() + size[1] <= world.getHeight() - 1 - MIN_DIST_TO_LIMIT
-                        && (!RCConfig.avoidOverlappingGeneration || StructureGenerationData.get(world).getEntriesAt(spawnContext.boundingBox).size() == 0)
-                        && !RCEventBus.INSTANCE.post(new StructureGenerationEvent.Suggest(structureInfo, spawnContext))
-                        && !MinecraftForge.EVENT_BUS.post(new StructureGenerationEventLite.Suggest(world, structureID, coordInts, size, layer))
-        ))
-        {
-            RCEventBus.INSTANCE.post(new StructureGenerationEvent.Pre(structureInfo, spawnContext));
-            MinecraftForge.EVENT_BUS.post(new StructureGenerationEventLite.Pre(world, structureID, coordInts, size, layer));
-
-            structureInfo.generate(spawnContext, structureInfo.prepareInstanceData(new StructurePrepareContext(random, spawnContext.environment, transform, spawnContext.boundingBox, spawnContext.generateAsSource)));
-
-            RecurrentComplex.logger.trace(String.format("Generated structure '%s' in %s", name(structureID), spawnContext.boundingBox));
-
-            RCEventBus.INSTANCE.post(new StructureGenerationEvent.Post(structureInfo, spawnContext));
-            MinecraftForge.EVENT_BUS.post(new StructureGenerationEventLite.Post(world, structureID, coordInts, size, layer));
-
-            if (structureID != null)
-                StructureGenerationData.get(world).addCompleteEntry(structureID, coord, transform);
-
-            return true;
-        }
-        else
-            RecurrentComplex.logger.trace(String.format("Canceled structure '%s' generation in %s", structureID, spawnContext.boundingBox));
-
-        return false;
-    }
-
-    private static String name(String structureName)
+    public static String name(String structureName)
     {
         return structureName != null ? structureName : "Unknown";
     }
 
-    private static int[] coordInts(StructureBoundingBox bb)
+    public static int[] coordInts(StructureBoundingBox bb)
     {
         return new int[]{bb.minX, bb.minY, bb.minZ};
     }
 
-    private static int[] sizeInts(StructureBoundingBox bb)
+    public static int[] sizeInts(StructureBoundingBox bb)
     {
         return new int[]{bb.getXSize(), bb.getYSize(), bb.getZSize()};
     }
 
-    public static Biome getBiome(World world, StructureBoundingBox boundingBox)
+    @Nullable
+    public StructureSpawnContext generate()
     {
-        return world.getBiome(new BlockPos(boundingBox.getCenter()));
+        StructureSpawnContext context = spawn();
+
+        StructureInfo<S> structureInfo = structure();
+        String structureID = structureID();
+        boolean firstTime = context.isFirstTime;
+
+        WorldServer world = context.environment.world;
+
+        int[] sizeInts = sizeInts(context.boundingBox);
+        int[] coordInts = coordInts(context.boundingBox);
+
+        if (maturity() != Maturity.SUGGEST || (
+                context.boundingBox.minY >= MIN_DIST_TO_LIMIT && context.boundingBox.maxY <= world.getHeight() - 1 - MIN_DIST_TO_LIMIT
+                        && (!RCConfig.avoidOverlappingGeneration || StructureGenerationData.get(world).getEntriesAt(context.boundingBox).size() == 0)
+                        && !RCEventBus.INSTANCE.post(new StructureGenerationEvent.Suggest(structureInfo, context))
+                        && !MinecraftForge.EVENT_BUS.post(new StructureGenerationEventLite.Suggest(world, structureID, coordInts, sizeInts, context.generationLayer))
+        ))
+        {
+            if (firstTime)
+            {
+                RCEventBus.INSTANCE.post(new StructureGenerationEvent.Pre(structureInfo, context));
+                MinecraftForge.EVENT_BUS.post(new StructureGenerationEventLite.Pre(world, structureID, coordInts, sizeInts, context.generationLayer));
+            }
+
+            structureInfo.generate(context, instanceData());
+
+            if (firstTime)
+            {
+                RecurrentComplex.logger.trace(String.format("Generated structure '%s' in %s", name(structureID), context.boundingBox));
+
+                RCEventBus.INSTANCE.post(new StructureGenerationEvent.Post(structureInfo, context));
+                MinecraftForge.EVENT_BUS.post(new StructureGenerationEventLite.Post(world, structureID, coordInts, sizeInts, context.generationLayer));
+
+                if (structureID != null)
+                    StructureGenerationData.get(world).addCompleteEntry(structureID, context.lowerCoord(), context.transform);
+            }
+
+            return context;
+        }
+        else
+            RecurrentComplex.logger.trace(String.format("Canceled structure '%s' generation in %s", structureID, context.boundingBox));
+
+        return null;
+    }
+
+    public StructureGenerator<S> asChild(StructureSpawnContext context)
+    {
+        return environment(context.environment).random(context.random).transform(context.transform)
+                .generationBB(context.generationBB).generationLayer(context.generationLayer + 1)
+                .asSource(context.generateAsSource).maturity(context.isFirstTime ? Maturity.FIRST : Maturity.COMPLEMENT);
+    }
+
+    public StructureGenerator<S> world(@Nonnull WorldServer world)
+    {
+        this.world = world;
+        return this;
+    }
+
+    @Nonnull
+    public WorldServer world()
+    {
+        WorldServer world = this.world != null ? this.world : environment != null ? environment.world : null;
+        if (world == null) throw new IllegalArgumentException("No world!");
+        return world;
+    }
+
+    @Nonnull
+    public Random random()
+    {
+        return this.random != null ? this.random : world().rand;
+    }
+
+    public StructureGenerator<S> structure(@Nonnull StructureInfo<S> structureInfo)
+    {
+        this.structureInfo = structureInfo;
+        return this;
+    }
+
+    public StructureGenerator<S> structureID(@Nonnull String structureID)
+    {
+        this.structureID = structureID;
+        return this;
+    }
+
+    @Nonnull
+    public StructureInfo<S> structure()
+    {
+        StructureInfo<S> structureInfo = this.structureInfo != null ? this.structureInfo : structureID != null ? StructureRegistry.INSTANCE.getStructure(structureID) : null;
+        if (structureInfo == null) throw new IllegalArgumentException();
+        return structureInfo;
+    }
+
+    @Nullable
+    public String structureID()
+    {
+        return this.structureID != null ? this.structureID : this.structureInfo != null ? StructureRegistry.INSTANCE.structureID(structureInfo) : null;
+    }
+
+    public StructureGenerator<S> lowerCoord(@Nonnull BlockPos lowerCoord)
+    {
+        this.lowerCoord = lowerCoord;
+        return this;
+    }
+
+    public StructureGenerator<S> randomPosition(@Nonnull BlockSurfacePos surfacePos, @Nullable YSelector ySelector)
+    {
+        this.surfacePos = surfacePos;
+        this.ySelector = ySelector != null ? ySelector : worldHeightYSelector();
+        return this;
+    }
+
+    public StructureGenerator<S> fromCenter(boolean fromCenter)
+    {
+        this.fromCenter = fromCenter;
+        return this;
+    }
+
+    public StructureGenerator<S> environment(@Nonnull Environment environment)
+    {
+        this.environment = environment;
+        return this;
+    }
+
+    @Nonnull
+    protected Environment environment()
+    {
+        return environment != null ? environment : Environment.inNature(world(), boundingBox());
+    }
+
+    public StructureGenerator<S> random(@Nonnull Random random)
+    {
+        this.random = random;
+        return this;
+    }
+
+    public StructureGenerator<S> transform(@Nonnull AxisAlignedTransform2D transform)
+    {
+        this.transform = transform;
+        return this;
+    }
+
+    @Nonnull
+    protected AxisAlignedTransform2D transform()
+    {
+        if (this.transform != null)
+            return this.transform;
+        else
+        {
+            StructureInfo<S> structureInfo = structure();
+            Random random = random();
+
+            return AxisAlignedTransform2D.from(structureInfo.isRotatable() ? random.nextInt(4) : 0, structureInfo.isMirrorable() && random.nextBoolean());
+        }
+    }
+
+    public StructureGenerator<S> boundingBox(@Nonnull StructureBoundingBox boundingBox)
+    {
+        this.boundingBox = boundingBox;
+        return this;
+    }
+
+    @Nonnull
+    public StructureBoundingBox boundingBox()
+    {
+        WorldServer world = world();
+        Random random = random();
+
+        StructureBoundingBox boundingBox = this.boundingBox != null ? this.boundingBox : null;
+
+        if (boundingBox == null)
+        {
+            int[] size = structureSize();
+
+            if (this.lowerCoord != null)
+                boundingBox = StructureInfos.structureBoundingBox(fromCenter ? lowerCoord.subtract(new Vec3i(size[0] / 2, 0, size[2] / 2)) : lowerCoord, structureSize());
+            else if (surfacePos != null && ySelector != null)
+            {
+                boundingBox = StructureInfos.structureBoundingBox((fromCenter ? surfacePos.subtract(size[0] / 2, size[2] / 2) : surfacePos).blockPos(0), structureSize());
+                int y = ySelector.selectY(world, random, boundingBox);
+                boundingBox.minY += y;
+                boundingBox.maxY += y;
+            }
+            else
+                throw new IllegalArgumentException("No place!");
+        }
+        return boundingBox;
+    }
+
+    public int[] structureSize()
+    {
+        return StructureInfos.structureSize(structure(), transform());
+    }
+
+    @Nullable
+    public StructureBoundingBox generationBB()
+    {
+        return generationBB;
+    }
+
+    public StructureGenerator<S> generationBB(@Nullable StructureBoundingBox generationBB)
+    {
+        this.generationBB = generationBB;
+        return this;
+    }
+
+    public StructureGenerator<S> generationLayer(int generationLayer)
+    {
+        this.generationLayer = generationLayer;
+        return this;
+    }
+
+    public StructureGenerator<S> asSource(boolean generateAsSource)
+    {
+        this.generateAsSource = generateAsSource;
+        return this;
+    }
+
+    public StructureGenerator<S> maturity(Maturity maturity)
+    {
+        this.maturity = maturity;
+        return this;
+    }
+
+    public Maturity maturity()
+    {
+        return maturity;
+    }
+
+    public StructureGenerator<S> instanceData(S s)
+    {
+        instanceData = s;
+        return this;
+    }
+
+    public StructureGenerator<S> instanceData(NBTBase nbt)
+    {
+        this.instanceDataNBT = nbt;
+        return this;
+    }
+
+    @Nonnull
+    public S instanceData()
+    {
+        return this.instanceData != null ? this.instanceData :
+                this.instanceDataNBT != null ? structure().loadInstanceData(load(), this.instanceDataNBT)
+                        : structure().prepareInstanceData(prepare());
+    }
+
+    @Nonnull
+    public StructurePrepareContext prepare()
+    {
+        return new StructurePrepareContext(random(), environment(), transform(), boundingBox(), generateAsSource);
+    }
+
+    @Nonnull
+    public StructureLoadContext load()
+    {
+        return new StructureLoadContext(transform(), boundingBox(), generateAsSource);
+    }
+
+    public StructureSpawnContext spawn()
+    {
+        return new StructureSpawnContext(environment(), random(), transform(), boundingBox(), generationBB, generationLayer, generateAsSource, maturity != Maturity.COMPLEMENT);
+    }
+
+    public enum Maturity
+    {
+        SUGGEST, FIRST, COMPLEMENT
     }
 }

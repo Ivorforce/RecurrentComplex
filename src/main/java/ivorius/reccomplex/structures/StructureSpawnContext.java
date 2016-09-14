@@ -49,28 +49,6 @@ public class StructureSpawnContext
         this.isFirstTime = isFirstTime;
     }
 
-    public static StructureSpawnContext complete(@Nonnull Environment environment, @Nonnull Random random, @Nonnull AxisAlignedTransform2D transform, @Nonnull StructureBoundingBox boundingBox, int generationLayer, boolean generateAsSource)
-    {
-        return new StructureSpawnContext(environment, random, transform, boundingBox, null, generationLayer, generateAsSource, true);
-    }
-
-    public static StructureSpawnContext complete(@Nonnull WorldServer worldServer, @Nonnull Random random, @Nonnull AxisAlignedTransform2D transform, BlockPos coord, StructureInfo structureInfo, int generationLayer, boolean generateAsSource)
-    {
-        StructureBoundingBox boundingBox = StructureInfos.structureBoundingBox(coord, StructureInfos.structureSize(structureInfo, transform));
-        return new StructureSpawnContext(Environment.inNature(worldServer, boundingBox), random, transform, boundingBox, null, generationLayer, generateAsSource, true);
-    }
-
-    public static StructureSpawnContext partial(@Nonnull Environment environment, @Nonnull Random random, @Nonnull AxisAlignedTransform2D transform, @Nonnull StructureBoundingBox boundingBox, StructureBoundingBox generationBB, int generationLayer, boolean generateAsSource, boolean isFirstTime)
-    {
-        return new StructureSpawnContext(environment, random, transform, boundingBox, generationBB, generationLayer, generateAsSource, isFirstTime);
-    }
-
-    public static StructureSpawnContext partial(@Nonnull Environment environment, @Nonnull Random random, @Nonnull AxisAlignedTransform2D transform, BlockPos coord, StructureInfo structureInfo, @Nonnull StructureBoundingBox generationBB, int generationLayer, boolean generateAsSource, boolean isFirstTime)
-    {
-        StructureBoundingBox boundingBox = StructureInfos.structureBoundingBox(coord, StructureInfos.structureSize(structureInfo, transform));
-        return new StructureSpawnContext(environment, random, transform, boundingBox, generationBB, generationLayer, generateAsSource, isFirstTime);
-    }
-
     public boolean includes(BlockPos coord)
     {
         return generationBB == null || generationBB.isVecInside(coord);

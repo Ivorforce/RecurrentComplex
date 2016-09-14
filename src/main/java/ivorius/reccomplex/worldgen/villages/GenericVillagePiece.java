@@ -11,7 +11,6 @@ import ivorius.reccomplex.structures.*;
 import ivorius.reccomplex.structures.generic.gentypes.StructureGenerationInfo;
 import ivorius.reccomplex.structures.generic.gentypes.VanillaStructureGenerationInfo;
 import ivorius.reccomplex.utils.NBTStorable;
-import ivorius.reccomplex.worldgen.StructureGenerationData;
 import ivorius.reccomplex.worldgen.StructureGenerator;
 import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTTagCompound;
@@ -151,18 +150,18 @@ public class GenericVillagePiece extends StructureVillagePieces.Village
 
     protected <T extends NBTStorable> void generate(WorldServer world, Random random, StructureBoundingBox generationBB, StructureInfo<T> structureInfo, AxisAlignedTransform2D transform)
     {
-        if (structureID != null && !startedGeneration)
+        if (!startedGeneration)
             prepare(random, world);
 
         BlockPos lowerCoord = new BlockPos(this.boundingBox.minX, this.boundingBox.minY, this.boundingBox.minZ);
-        T instanceData = structureInfo.loadInstanceData(new StructureLoadContext(transform, this.boundingBox, false), this.instanceData);
 
         StructureBoundingBox toFloorBB = new StructureBoundingBox(generationBB);
         toFloorBB.minY = 1;
-        StructureGenerator.partially(structureInfo, environment(world), random, lowerCoord, transform, toFloorBB, componentType, structureID, instanceData, !startedGeneration);
-
-        if (structureID != null && !startedGeneration)
-            StructureGenerationData.get(world).addCompleteEntry(structureID, lowerCoord, transform);
+        boolean firstTime = !startedGeneration;
+        new StructureGenerator<T>().structure(structureInfo).environment(environment(world))
+                .random(random).lowerCoord(lowerCoord).transform(transform).generationBB(toFloorBB)
+                .generationLayer(componentType).structureID(structureID).maturity(firstTime ? StructureGenerator.Maturity.FIRST : StructureGenerator.Maturity.COMPLEMENT)
+                .instanceData(this.instanceData).generate();
 
         startedGeneration = true;
     }

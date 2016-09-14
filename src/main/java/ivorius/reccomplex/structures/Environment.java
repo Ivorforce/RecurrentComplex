@@ -5,7 +5,8 @@
 
 package ivorius.reccomplex.structures;
 
-import ivorius.reccomplex.worldgen.StructureGenerator;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.World;
 import net.minecraft.world.WorldServer;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.gen.structure.StructureBoundingBox;
@@ -35,6 +36,11 @@ public class Environment
     @Nonnull
     public static Environment inNature(@Nonnull WorldServer world, @Nonnull StructureBoundingBox boundingBox)
     {
-        return new Environment(world, StructureGenerator.getBiome(world, boundingBox), null);
+        return new Environment(world, getBiome(world, boundingBox), null);
+    }
+
+    public static Biome getBiome(World world, StructureBoundingBox boundingBox)
+    {
+        return world.getBiome(new BlockPos(boundingBox.getCenter()));
     }
 }

@@ -6,6 +6,7 @@
 package ivorius.reccomplex.structures.generic.maze;
 
 import com.google.common.collect.*;
+import ivorius.reccomplex.worldgen.StructureGenerator;
 import net.minecraft.util.math.BlockPos;
 import ivorius.ivtoolkit.math.AxisAlignedTransform2D;
 import ivorius.ivtoolkit.math.IvVecMathHelper;
@@ -14,10 +15,6 @@ import ivorius.reccomplex.RecurrentComplex;
 import ivorius.reccomplex.structures.*;
 import ivorius.reccomplex.structures.generic.gentypes.MazeGenerationInfo;
 import ivorius.reccomplex.utils.NBTStorable;
-import ivorius.reccomplex.worldgen.StructureGenerationData;
-import ivorius.reccomplex.worldgen.StructureGenerator;
-import net.minecraft.world.WorldServer;
-import net.minecraft.world.biome.Biome;
 import net.minecraft.world.gen.structure.StructureBoundingBox;
 import org.apache.commons.lang3.tuple.Pair;
 
@@ -34,20 +31,18 @@ public class WorldGenMaze
     {
         for (PlacedStructure placedComponent : placedStructures)
         {
-            StructureInfo structureInfo = StructureRegistry.INSTANCE.getStructure(placedComponent.structureID);
+            String structureID = placedComponent.structureID;
+            StructureInfo structureInfo = StructureRegistry.INSTANCE.getStructure(structureID);
 
             if (structureInfo != null && placedComponent.instanceData != null)
             {
-                AxisAlignedTransform2D componentTransform = placedComponent.transform;
-
-                StructureGenerator.partially(structureInfo, context.environment, context.random, placedComponent.lowerCoord, componentTransform, context.generationBB, context.generationLayer + 1, placedComponent.structureID, placedComponent.instanceData, context.isFirstTime);
-
-                if (context.isFirstTime)
-                    StructureGenerationData.get(context.environment.world).addCompleteEntry(placedComponent.structureID, placedComponent.lowerCoord, componentTransform);
+                new StructureGenerator<>(structureInfo).asChild(context)
+                        .lowerCoord(placedComponent.lowerCoord).transform(placedComponent.transform)
+                        .structureID(structureID).instanceData(placedComponent.instanceData).generate();
             }
             else
             {
-                RecurrentComplex.logger.error(String.format("Could not find structure '%s' for maze", placedComponent.structureID));
+                RecurrentComplex.logger.error(String.format("Could not find structure '%s' for maze", structureID));
             }
         }
 

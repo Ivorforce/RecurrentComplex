@@ -5,19 +5,16 @@
 
 package ivorius.reccomplex.commands;
 
+import ivorius.reccomplex.structures.*;
+import ivorius.reccomplex.worldgen.StructureGenerator;
 import net.minecraft.command.CommandException;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.math.BlockPos;
 import ivorius.ivtoolkit.math.AxisAlignedTransform2D;
 import ivorius.reccomplex.RCConfig;
 import ivorius.reccomplex.operation.OperationRegistry;
-import ivorius.reccomplex.structures.OperationGenerateStructure;
-import ivorius.reccomplex.structures.StructureRegistry;
-import ivorius.reccomplex.structures.StructureInfo;
-import ivorius.reccomplex.structures.StructureSpawnContext;
 import ivorius.reccomplex.structures.generic.GenericStructureInfo;
 import ivorius.reccomplex.utils.ServerTranslations;
-import ivorius.reccomplex.worldgen.StructureGenerator;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.world.World;
@@ -58,7 +55,7 @@ public class CommandImportStructure extends CommandBase
         }
 
         String structureName = args[0];
-        StructureInfo structureInfo = StructureRegistry.INSTANCE.getStructure(structureName);
+        StructureInfo<?> structureInfo = StructureRegistry.INSTANCE.getStructure(structureName);
         World world = commandSender.getEntityWorld();
 
         if (structureInfo == null)
@@ -80,7 +77,10 @@ public class CommandImportStructure extends CommandBase
         if (structureInfo instanceof GenericStructureInfo)
             OperationRegistry.queueOperation(new OperationGenerateStructure((GenericStructureInfo) structureInfo, transform, coord, true), commandSender);
         else
-            StructureGenerator.directly(structureInfo, StructureSpawnContext.complete((WorldServer) world, world.rand, transform, coord, structureInfo, 0, true));
+        {
+            new StructureGenerator<>(structureInfo).world((WorldServer) world)
+                    .transform(transform).lowerCoord(coord).asSource(true).generate();
+        }
     }
 
     @Override

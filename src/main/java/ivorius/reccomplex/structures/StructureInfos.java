@@ -12,17 +12,19 @@ import net.minecraft.util.math.ChunkPos;
 import net.minecraft.util.math.Vec3i;
 import net.minecraft.world.gen.structure.StructureBoundingBox;
 
+import javax.annotation.Nonnull;
+
 /**
  * Created by lukas on 22.02.15.
  */
 public class StructureInfos
 {
-    public static StructureBoundingBox structureBoundingBox(BlockPos coord, int[] size)
+    public static StructureBoundingBox structureBoundingBox(@Nonnull BlockPos coord, @Nonnull int[] size)
     {
         return new StructureBoundingBox(coord, coord.add(new Vec3i(size[0], size[1], size[2])));
     }
 
-    public static int[] structureSize(StructureInfo info, AxisAlignedTransform2D transform)
+    public static int[] structureSize(@Nonnull StructureInfo info, @Nonnull AxisAlignedTransform2D transform)
     {
         return structureSize(info.structureBoundingBox(), transform);
     }

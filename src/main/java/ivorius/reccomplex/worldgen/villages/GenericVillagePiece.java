@@ -149,15 +149,17 @@ public class GenericVillagePiece extends StructureVillagePieces.Village
         return false;
     }
 
-    protected <T extends NBTStorable> void generate(WorldServer world, Random random, StructureBoundingBox boundingBox, StructureInfo<T> structureInfo, AxisAlignedTransform2D transform)
+    protected <T extends NBTStorable> void generate(WorldServer world, Random random, StructureBoundingBox generationBB, StructureInfo<T> structureInfo, AxisAlignedTransform2D transform)
     {
         if (structureID != null && !startedGeneration)
             prepare(random, world);
 
         BlockPos lowerCoord = new BlockPos(this.boundingBox.minX, this.boundingBox.minY, this.boundingBox.minZ);
-        T instanceData = structureInfo.loadInstanceData(new StructureLoadContext(transform, boundingBox, false), this.instanceData);
+        T instanceData = structureInfo.loadInstanceData(new StructureLoadContext(transform, this.boundingBox, false), this.instanceData);
 
-        StructureGenerator.partially(structureInfo, environment(world), random, lowerCoord, transform, boundingBox, componentType, structureID, instanceData, !startedGeneration);
+        StructureBoundingBox toFloorBB = new StructureBoundingBox(generationBB);
+        toFloorBB.minY = 1;
+        StructureGenerator.partially(structureInfo, environment(world), random, lowerCoord, transform, toFloorBB, componentType, structureID, instanceData, !startedGeneration);
 
         if (structureID != null && !startedGeneration)
             StructureGenerationData.get(world).addCompleteEntry(structureID, lowerCoord, transform);

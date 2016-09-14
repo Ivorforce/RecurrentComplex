@@ -38,7 +38,8 @@ public class RCBlockLogic
     public static boolean isFoliage(IBlockState state, World world, BlockPos pos)
     {
         Material material = state.getMaterial();
-        return state.getBlock().isFoliage(world, pos) || state.getBlock().isWood(world, pos) || state.getBlock().isLeaves(state, world, pos) || material == Material.PLANTS;
+        return state.getBlock().isFoliage(world, pos) || state.getBlock().isWood(world, pos) || state.getBlock().isLeaves(state, world, pos)
+                || material == Material.LEAVES || material == Material.PLANTS || material == Material.VINE;
     }
 
     public static boolean isTerrain(IBlockState block)

@@ -38,6 +38,7 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.WorldServer;
 import net.minecraftforge.common.util.Constants;
 
+import javax.annotation.Nonnull;
 import java.lang.reflect.Type;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -81,6 +82,7 @@ public class GenericStructureInfo implements StructureInfo<GenericStructureInfo.
         return genericStructureInfo;
     }
 
+    @Nonnull
     @Override
     public int[] structureBoundingBox()
     {
@@ -104,7 +106,7 @@ public class GenericStructureInfo implements StructureInfo<GenericStructureInfo.
     }
 
     @Override
-    public void generate(final StructureSpawnContext context, InstanceData instanceData)
+    public void generate(@Nonnull final StructureSpawnContext context, @Nonnull InstanceData instanceData)
     {
         WorldServer world = context.environment.world;
         Random random = context.random;
@@ -220,8 +222,9 @@ public class GenericStructureInfo implements StructureInfo<GenericStructureInfo.
         return new double[]{pos.getDoubleAt(0), pos.getDoubleAt(1), pos.getDoubleAt(2)};
     }
 
+    @Nonnull
     @Override
-    public InstanceData prepareInstanceData(StructurePrepareContext context)
+    public InstanceData prepareInstanceData(@Nonnull StructurePrepareContext context)
     {
         InstanceData instanceData = new InstanceData();
 
@@ -251,8 +254,9 @@ public class GenericStructureInfo implements StructureInfo<GenericStructureInfo.
         return instanceData;
     }
 
+    @Nonnull
     @Override
-    public InstanceData loadInstanceData(StructureLoadContext context, final NBTBase nbt)
+    public InstanceData loadInstanceData(@Nonnull StructureLoadContext context, @Nonnull final NBTBase nbt)
     {
         InstanceData instanceData = new InstanceData();
         instanceData.readFromNBT(context, nbt, transformer, constructWorldData());
@@ -264,14 +268,15 @@ public class GenericStructureInfo implements StructureInfo<GenericStructureInfo.
         return new IvWorldData(worldDataCompound, RecurrentComplex.specialRegistry.itemHidingMode());
     }
 
+    @Nonnull
     @Override
-    public <I extends StructureGenerationInfo> List<I> generationInfos(Class<I> clazz)
+    public <I extends StructureGenerationInfo> List<I> generationInfos(@Nonnull Class<I> clazz)
     {
         return generationInfos.stream().filter(info -> clazz.isAssignableFrom(info.getClass())).map(info -> (I) info).collect(Collectors.toList());
     }
 
     @Override
-    public StructureGenerationInfo generationInfo(String id)
+    public StructureGenerationInfo generationInfo(@Nonnull String id)
     {
         for (StructureGenerationInfo info : generationInfos)
         {
@@ -288,6 +293,7 @@ public class GenericStructureInfo implements StructureInfo<GenericStructureInfo.
     }
 
     @Override
+    @Nonnull
     public GenericStructureInfo copyAsGenericStructureInfo()
     {
         return copy();

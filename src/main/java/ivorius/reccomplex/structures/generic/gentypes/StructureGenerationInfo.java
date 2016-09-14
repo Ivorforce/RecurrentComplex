@@ -9,8 +9,10 @@ import ivorius.reccomplex.gui.table.TableDataSource;
 import ivorius.reccomplex.gui.table.TableDelegate;
 import ivorius.reccomplex.gui.table.TableNavigator;
 import ivorius.reccomplex.structures.StructureRegistry;
+import ivorius.reccomplex.structures.YSelector;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.util.Random;
 
 /**
@@ -50,6 +52,9 @@ public abstract class StructureGenerationInfo
     }
 
     public abstract String displayString();
+
+    @Nullable
+    public abstract YSelector ySelector();
 
     public abstract TableDataSource tableDataSource(TableNavigator navigator, TableDelegate delegate);
 }

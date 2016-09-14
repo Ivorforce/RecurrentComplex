@@ -14,6 +14,7 @@ import ivorius.reccomplex.gui.table.TableDataSource;
 import ivorius.reccomplex.gui.table.TableDelegate;
 import ivorius.reccomplex.gui.table.TableNavigator;
 import ivorius.reccomplex.json.JsonUtils;
+import ivorius.reccomplex.structures.YSelector;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
 
@@ -75,6 +76,13 @@ public class StructureListGenerationInfo extends StructureGenerationInfo impleme
     public String displayString()
     {
         return IvTranslations.format("reccomplex.generationInfo.structureList.title", listID);
+    }
+
+    @Nullable
+    @Override
+    public YSelector ySelector()
+    {
+        return null;
     }
 
     @Override

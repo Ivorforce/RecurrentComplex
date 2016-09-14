@@ -14,6 +14,8 @@ import ivorius.reccomplex.gui.table.TableDataSource;
 import ivorius.reccomplex.gui.table.TableDelegate;
 import ivorius.reccomplex.gui.table.TableNavigator;
 import ivorius.reccomplex.json.JsonUtils;
+import ivorius.reccomplex.structures.YSelector;
+import ivorius.reccomplex.structures.generic.GenericYSelector;
 import ivorius.reccomplex.structures.generic.matchers.BiomeMatcher;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
@@ -81,6 +83,13 @@ public class VanillaStructureGenerationInfo extends StructureGenerationInfo
     public String displayString()
     {
         return IvTranslations.get("reccomplex.generationInfo.vanilla.title");
+    }
+
+    @Nullable
+    @Override
+    public YSelector ySelector()
+    {
+        return new GenericYSelector(GenericYSelector.SelectionMode.SURFACE, spawnShift.getY(), spawnShift.getY());
     }
 
     @Override

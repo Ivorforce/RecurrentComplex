@@ -5,6 +5,9 @@
 
 package ivorius.reccomplex.commands;
 
+import ivorius.reccomplex.structures.*;
+import ivorius.reccomplex.structures.generic.GenericYSelector;
+import ivorius.reccomplex.structures.generic.gentypes.StructureGenerationInfo;
 import ivorius.reccomplex.utils.BlockSurfacePos;
 import net.minecraft.command.CommandException;
 import net.minecraft.server.MinecraftServer;
@@ -12,10 +15,6 @@ import net.minecraft.util.math.BlockPos;
 import ivorius.ivtoolkit.math.AxisAlignedTransform2D;
 import ivorius.reccomplex.RCConfig;
 import ivorius.reccomplex.operation.OperationRegistry;
-import ivorius.reccomplex.structures.OperationGenerateStructure;
-import ivorius.reccomplex.structures.StructureInfos;
-import ivorius.reccomplex.structures.StructureRegistry;
-import ivorius.reccomplex.structures.StructureInfo;
 import ivorius.reccomplex.structures.generic.gentypes.NaturalGenerationInfo;
 import ivorius.reccomplex.utils.ServerTranslations;
 import ivorius.reccomplex.worldgen.StructureGenerator;
@@ -28,9 +27,11 @@ import net.minecraftforge.common.DimensionManager;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Random;
+import java.util.stream.Collectors;
 
 /**
  * Created by lukas on 25.05.14.
@@ -66,7 +67,7 @@ public class CommandGenerateStructure extends CommandBase
 
         String structureName = args[0];
         StructureInfo<?> structureInfo = StructureRegistry.INSTANCE.getStructure(structureName);
-        WorldServer world = args.length >= 4 ? DimensionManager.getWorld(parseInt(args[2])) : (WorldServer) commandSender.getEntityWorld();
+        WorldServer world = args.length >= 4 ? DimensionManager.getWorld(parseInt(args[3])) : (WorldServer) commandSender.getEntityWorld();
 
         if (structureInfo == null)
         {
@@ -90,12 +91,19 @@ public class CommandGenerateStructure extends CommandBase
 
             int genX = coord.getX() - size[0] / 2;
             int genZ = coord.getZ() - size[2] / 2;
-            int genY;
-            List<NaturalGenerationInfo> naturalGenerationInfos = structureInfo.generationInfos(NaturalGenerationInfo.class);
-            if (naturalGenerationInfos.size() > 0)
-                genY = naturalGenerationInfos.get(0).ySelector.selectY(world, random, StructureInfos.structureBoundingBox(new BlockPos(genX, 0, genZ), size));
+
+            StructureGenerationInfo generationInfo;
+
+            if (args.length >= 5)
+                generationInfo = structureInfo.generationInfo(args[4]);
             else
-                genY = world.getHeight(coord.blockPos(0)).getY();
+                generationInfo = structureInfo.<StructureGenerationInfo>generationInfos(NaturalGenerationInfo.class).stream()
+                        .findFirst().orElse(structureInfo.generationInfos(StructureGenerationInfo.class).stream().findFirst().orElse(null));
+
+            YSelector ySelector = generationInfo.ySelector();
+            int genY = ySelector != null
+                    ? ySelector.selectY(world, random, StructureInfos.structureBoundingBox(new BlockPos(genX, 0, genZ), size))
+                    : world.getHeight(coord.blockPos(0)).getY();
 
             BlockPos genCoord = new BlockPos(genX, genY, genZ);
 
@@ -112,8 +120,15 @@ public class CommandGenerateStructure extends CommandBase
         if (args.length == 1)
             return getListOfStringsMatchingLastWord(args, StructureRegistry.INSTANCE.allStructureIDs());
         else if (args.length == 2 || args.length == 3)
-        {
             return getListOfStringsMatchingLastWord(args, "~");
+        else if (args.length == 4)
+            return getListOfStringsMatchingLastWord(args, Arrays.stream(DimensionManager.getIDs()).map(String::valueOf).collect(Collectors.toList()));
+        else if (args.length == 5)
+        {
+            String structureName = args[0];
+            StructureInfo<?> structureInfo = StructureRegistry.INSTANCE.getStructure(structureName);
+            if (structureInfo instanceof GenericStructureInfo)
+                return getListOfStringsMatchingLastWord(args, structureInfo.generationInfos(StructureGenerationInfo.class).stream().map(StructureGenerationInfo::id).collect(Collectors.toList()));
         }
 
         return Collections.emptyList();

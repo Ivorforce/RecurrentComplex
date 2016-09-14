@@ -10,6 +10,8 @@ import ivorius.reccomplex.structures.generic.gentypes.StructureGenerationInfo;
 import ivorius.reccomplex.utils.NBTStorable;
 import net.minecraft.nbt.NBTBase;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.util.List;
 
 /**
@@ -17,22 +19,27 @@ import java.util.List;
  */
 public interface StructureInfo<S extends NBTStorable>
 {
-    void generate(StructureSpawnContext context, S instanceData);
+    void generate(@Nonnull StructureSpawnContext context, @Nonnull S instanceData);
 
-    S prepareInstanceData(StructurePrepareContext context);
+    @Nonnull
+    S prepareInstanceData(@Nonnull StructurePrepareContext context);
 
-    S loadInstanceData(StructureLoadContext context, NBTBase nbt);
+    @Nonnull
+    S loadInstanceData(@Nonnull StructureLoadContext context, @Nonnull NBTBase nbt);
 
-    <I extends StructureGenerationInfo> List<I> generationInfos(Class<I> clazz);
+    @Nonnull
+    <I extends StructureGenerationInfo> List<I> generationInfos(@Nonnull Class<? extends I> clazz);
 
-    StructureGenerationInfo generationInfo(String id);
+    StructureGenerationInfo generationInfo(@Nonnull String id);
 
+    @Nonnull
     int[] structureBoundingBox();
 
     boolean isRotatable();
 
     boolean isMirrorable();
 
+    @Nullable
     GenericStructureInfo copyAsGenericStructureInfo();
 
     boolean areDependenciesResolved();

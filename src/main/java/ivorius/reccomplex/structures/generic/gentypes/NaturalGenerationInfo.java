@@ -14,6 +14,7 @@ import ivorius.reccomplex.gui.table.TableDataSource;
 import ivorius.reccomplex.gui.table.TableDelegate;
 import ivorius.reccomplex.gui.table.TableNavigator;
 import ivorius.reccomplex.json.JsonUtils;
+import ivorius.reccomplex.structures.YSelector;
 import ivorius.reccomplex.structures.generic.BiomeGenerationInfo;
 import ivorius.reccomplex.structures.generic.DimensionGenerationInfo;
 import ivorius.reccomplex.structures.generic.GenericYSelector;
@@ -176,6 +177,13 @@ public class NaturalGenerationInfo extends StructureGenerationInfo
     public String displayString()
     {
         return IvTranslations.get("reccomplex.generationInfo.natural");
+    }
+
+    @Nullable
+    @Override
+    public YSelector ySelector()
+    {
+        return ySelector;
     }
 
     @Override

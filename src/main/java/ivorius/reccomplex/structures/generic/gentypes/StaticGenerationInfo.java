@@ -13,6 +13,7 @@ import ivorius.reccomplex.gui.table.TableDataSource;
 import ivorius.reccomplex.gui.table.TableDelegate;
 import ivorius.reccomplex.gui.table.TableNavigator;
 import ivorius.reccomplex.json.JsonUtils;
+import ivorius.reccomplex.structures.YSelector;
 import ivorius.reccomplex.structures.generic.GenericYSelector;
 import ivorius.reccomplex.structures.generic.matchers.DimensionMatcher;
 import ivorius.reccomplex.utils.BlockSurfacePos;
@@ -100,6 +101,13 @@ public class StaticGenerationInfo extends StructureGenerationInfo
             return IvTranslations.format("reccomplex.generationInfo.static.summary.spawn", String.valueOf(position.x), String.valueOf(position.z));
         else
             return IvTranslations.format("reccomplex.generationInfo.static.summary.nospawn", String.valueOf(position.x), String.valueOf(position.z));
+    }
+
+    @Nullable
+    @Override
+    public YSelector ySelector()
+    {
+        return ySelector;
     }
 
     @Override

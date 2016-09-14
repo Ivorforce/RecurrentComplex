@@ -13,6 +13,7 @@ import ivorius.ivtoolkit.tools.MCRegistry;
 import ivorius.ivtoolkit.tools.MCRegistryDefault;
 import ivorius.reccomplex.commands.RCCommands;
 import ivorius.reccomplex.events.RCForgeEventHandler;
+import ivorius.reccomplex.events.RCTerrainGenEventHandler;
 import ivorius.reccomplex.files.RCFileTypeRegistry;
 import ivorius.reccomplex.gui.RCGuiHandler;
 import ivorius.reccomplex.gui.container.IvGuiRegistry;
@@ -69,6 +70,7 @@ public class RecurrentComplex
     public static FMLMissingRemapper missingRemapper;
 
     public static RCForgeEventHandler forgeEventHandler;
+    public static RCTerrainGenEventHandler terrainEventHandler;
 
     public static SimpleNetworkWrapper network;
 
@@ -119,6 +121,9 @@ public class RecurrentComplex
 
         forgeEventHandler = new RCForgeEventHandler();
         forgeEventHandler.register();
+
+        terrainEventHandler = new RCTerrainGenEventHandler();
+        terrainEventHandler.register();
 
         guiHandler = new RCGuiHandler();
         IvGuiRegistry.INSTANCE.register(MOD_ID, guiHandler);

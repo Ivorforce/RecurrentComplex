@@ -291,6 +291,10 @@ reccomplex.generationInfo.vanilla.shift.z=Shift (z)
 reccomplex.generationInfo.vanilla.amount.pervillage=Amount (per v.)
 reccomplex.generationInfo.vanilla.amount.scaled=Amount (scaled)
 
+reccomplex.generationInfo.sapling=Sapling
+reccomplex.generationInfo.sapling.tooltip=As a tree from a sapling.
+reccomplex.generationInfo.sapling.title=Sapling
+
 reccomplex.transformer.id=Transformer ID
 reccomplex.transformer.id.tooltip=Unique Identifier for the transformer.
 
@@ -477,6 +481,7 @@ reccomplex.gui.earlier=Earlier
 reccomplex.gui.randomize=Randomize
 reccomplex.gui.biomes=Biomes
 reccomplex.gui.dimensions=Dimensions
+reccomplex.gui.environment=Environment
 reccomplex.gui.source=Source
 reccomplex.gui.sources=Sources
 reccomplex.gui.destination=Destination

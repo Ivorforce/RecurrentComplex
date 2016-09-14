@@ -93,7 +93,7 @@ public class WorldGenStructures
 
             if (structureInfo != null)
             {
-                new StructureGenerator<>().structure(structureInfo).world(world)
+                new StructureGenerator<>(structureInfo).world(world)
                         .random(random).lowerCoord(entry.lowerCoord).transform(entry.transform).generationBB(StructureInfos.chunkBoundingBox(chunkPos))
                         .structureID(entry.getStructureID()).instanceData(entry.instanceData).maturity(entry.firstTime ? StructureGenerator.Maturity.FIRST : StructureGenerator.Maturity.COMPLEMENT).generate();
 

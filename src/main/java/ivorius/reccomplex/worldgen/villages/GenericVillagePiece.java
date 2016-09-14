@@ -158,7 +158,7 @@ public class GenericVillagePiece extends StructureVillagePieces.Village
         StructureBoundingBox toFloorBB = new StructureBoundingBox(generationBB);
         toFloorBB.minY = 1;
         boolean firstTime = !startedGeneration;
-        new StructureGenerator<T>().structure(structureInfo).environment(environment(world))
+        new StructureGenerator<T>(structureInfo).environment(environment(world))
                 .random(random).lowerCoord(lowerCoord).transform(transform).generationBB(toFloorBB)
                 .generationLayer(componentType).structureID(structureID).maturity(firstTime ? StructureGenerator.Maturity.FIRST : StructureGenerator.Maturity.COMPLEMENT)
                 .instanceData(this.instanceData).generate();

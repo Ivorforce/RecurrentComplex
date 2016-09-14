@@ -202,8 +202,13 @@ public class FunctionExpressionCache<T, A, U> extends ExpressionCache<T>
         public String getRepresentation(String var, String prefix, String suffix, U u)
         {
             return TextFormatting.BLUE + prefix
-                    + getRepresentation(validity(var, u)) + var
+                    + getVarRepresentation(var, u)
                     + TextFormatting.BLUE + suffix + TextFormatting.RESET;
+        }
+
+        protected String getVarRepresentation(String var, U u)
+        {
+            return getRepresentation(validity(var, u)) + var;
         }
 
         @Override

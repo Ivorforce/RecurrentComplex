@@ -13,12 +13,15 @@ import ivorius.reccomplex.utils.BlockStates;
 import ivorius.reccomplex.utils.FunctionExpressionCache;
 import ivorius.reccomplex.utils.algebra.RCBoolAlgebra;
 import net.minecraft.block.Block;
+import net.minecraft.block.properties.IProperty;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.init.Blocks;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.TextFormatting;
+import org.apache.commons.lang3.tuple.Pair;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.function.Predicate;
 
 /**
@@ -28,6 +31,7 @@ public class BlockMatcher extends FunctionExpressionCache<Boolean, IBlockState, 
 {
     public static final String BLOCK_ID_PREFIX = "id=";
     public static final String METADATA_PREFIX = "metadata=";
+    public static final String PROPERTY_PREFIX = "property[";
 
     public BlockMatcher(MCRegistry registry, String expression)
     {
@@ -35,6 +39,7 @@ public class BlockMatcher extends FunctionExpressionCache<Boolean, IBlockState, 
 
         addTypes(new BlockVariableType(BLOCK_ID_PREFIX, "", registry), t -> t.alias("", ""));
         addTypes(new MetadataVariableType(METADATA_PREFIX, ""), t -> t.alias("#", ""));
+        addTypes(new PropertyVariableType(PROPERTY_PREFIX, ""), t -> t.alias("$[", ""));
 
         testVariables();
     }
@@ -130,6 +135,72 @@ public class BlockMatcher extends FunctionExpressionCache<Boolean, IBlockState, 
         public Validity validity(String var, Object object)
         {
             return parseMetadataExp(var) != null ? Validity.KNOWN : Validity.ERROR;
+        }
+    }
+
+    public class PropertyVariableType extends VariableType<Boolean, IBlockState, Object>
+    {
+        public PropertyVariableType(String prefix, String suffix)
+        {
+            super(prefix, suffix);
+        }
+
+        public Pair<String, String> parsePropery(String var)
+        {
+            int close = var.indexOf("]=");
+            return close >= 0 ? Pair.of(var.substring(0, close), var.substring(close + 2)) : null;
+        }
+
+        @Override
+        public Boolean evaluate(String var, IBlockState state)
+        {
+            Pair<String, String> pair = parsePropery(var);
+
+            return pair != null && getProperty(state.getBlock(), pair.getLeft())
+                    .filter(property -> property.parseValue(pair.getRight()).orNull() == state.getValue(property)).isPresent();
+        }
+
+        @Override
+        public Validity validity(String var, Object object)
+        {
+            Pair<String, String> pair = parsePropery(var);
+
+            if (pair != null)
+            {
+                return Block.REGISTRY.getKeys().stream().map(Block.REGISTRY::getObject)
+                    .anyMatch(block -> hasPropertyEntry(pair, block))
+                        ? Validity.KNOWN : Validity.UNKNOWN;
+            }
+            else
+                return Validity.ERROR;
+        }
+
+        protected boolean hasPropertyEntry(Pair<String, String> pair, Block block)
+        {
+            return getProperty(block, pair.getLeft()).filter(property -> property.parseValue(pair.getRight()).isPresent()).isPresent();
+        }
+
+        private Optional<IProperty<?>> getProperty(Block block, String key)
+        {
+            return block.getDefaultState().getProperties().keySet().stream().filter(
+                    property -> property.getName().equals(key)).findFirst();
+        }
+
+        @Override
+        protected String getVarRepresentation(String var, Object o)
+        {
+            Pair<String, String> pair = parsePropery(var);
+            return pair != null ? getRepresentation(keyValidity(pair.getLeft(), o))
+                    + pair.getLeft() + TextFormatting.BLUE + "]="
+                    + getRepresentation(validity(var, o)) + pair.getRight()
+                    : super.getVarRepresentation(var, o);
+        }
+
+        protected Validity keyValidity(String var, Object o)
+        {
+            return Block.REGISTRY.getKeys().stream().map(Block.REGISTRY::getObject)
+                    .anyMatch(block -> getProperty(block, var).isPresent())
+                    ? Validity.KNOWN : Validity.UNKNOWN;
         }
     }
 }

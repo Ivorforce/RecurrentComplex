@@ -270,7 +270,7 @@ public class GenericStructureInfo implements StructureInfo<GenericStructureInfo.
 
     @Nonnull
     @Override
-    public <I extends StructureGenerationInfo> List<I> generationInfos(@Nonnull Class<I> clazz)
+    public <I extends StructureGenerationInfo> List<I> generationInfos(@Nonnull Class<? extends I> clazz)
     {
         return generationInfos.stream().filter(info -> clazz.isAssignableFrom(info.getClass())).map(info -> (I) info).collect(Collectors.toList());
     }

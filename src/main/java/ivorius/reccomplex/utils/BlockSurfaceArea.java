@@ -5,6 +5,7 @@
 
 package ivorius.reccomplex.utils;
 
+import ivorius.ivtoolkit.blocks.BlockArea;
 import ivorius.ivtoolkit.tools.IvStreams;
 
 import java.util.Iterator;
@@ -31,6 +32,11 @@ public class BlockSurfaceArea implements Iterable<BlockSurfacePos>
             throw new IllegalArgumentException();
 
         return new BlockSurfaceArea(coord, new BlockSurfacePos(coord.getX() + size[0] - 1, coord.getZ() + size[2] - 1));
+    }
+
+    public static BlockSurfaceArea from(BlockArea area)
+    {
+        return new BlockSurfaceArea(BlockSurfacePos.from(area.getPoint1()), BlockSurfacePos.from(area.getPoint2()));
     }
 
     public BlockSurfacePos getPoint1()

@@ -60,40 +60,44 @@ public class BlockSurfacePos
         return z;
     }
 
-    /**
-     * converts a chunk coordinate pair to an integer (suitable for hashing)
-     */
-    public static long chunkXZ2Int(int x, int z)
+    public static long toLong(int x, int z)
     {
         return (long) x & 4294967295L | ((long) z & 4294967295L) << 32;
     }
 
-    public int hashCode()
+    @Override
+    public boolean equals(Object o)
     {
-        int i = 1664525 * this.x + 1013904223;
-        int j = 1664525 * (this.z ^ -559038737) + 1013904223;
-        return i ^ j;
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        BlockSurfacePos that = (BlockSurfacePos) o;
+
+        if (x != that.x) return false;
+        return z == that.z;
+
     }
 
-    public boolean equals(Object p_equals_1_)
+    @Override
+    public int hashCode()
     {
-        if (this == p_equals_1_)
-        {
-            return true;
-        }
-        else if (!(p_equals_1_ instanceof ChunkPos))
-        {
-            return false;
-        }
-        else
-        {
-            ChunkPos ChunkPos = (ChunkPos) p_equals_1_;
-            return this.x == ChunkPos.chunkXPos && this.z == ChunkPos.chunkZPos;
-        }
+        int result = x;
+        result = 31 * result + z;
+        return result;
     }
 
     public String toString()
     {
         return "[" + this.x + ", " + this.z + "]";
+    }
+
+    public BlockSurfacePos add(int x, int z)
+    {
+        return new BlockSurfacePos(this.x + x, this.z + z);
+    }
+
+    public BlockSurfacePos subtract(int x, int z)
+    {
+        return new BlockSurfacePos(this.x - x, this.z - z);
     }
 }

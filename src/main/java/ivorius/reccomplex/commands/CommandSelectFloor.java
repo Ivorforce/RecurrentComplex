@@ -6,7 +6,8 @@
 package ivorius.reccomplex.commands;
 
 import ivorius.ivtoolkit.blocks.BlockArea;
-import ivorius.ivtoolkit.blocks.BlockAreas;
+import ivorius.reccomplex.utils.BlockSurfaceArea;
+import ivorius.reccomplex.utils.BlockSurfacePos;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.command.NumberInvalidException;
 import net.minecraft.server.MinecraftServer;
@@ -21,7 +22,6 @@ import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.World;
-import net.minecraft.util.EnumFacing;
 
 import javax.annotation.Nullable;
 import java.util.HashSet;
@@ -43,25 +43,24 @@ public class CommandSelectFloor extends CommandSelectModify
         BlockPos lowerPoint = area.getLowerCorner();
         BlockPos higherPoint = area.getHigherCorner();
 
-        Set<BlockPos> stopped = new HashSet<>();
-        Set<BlockPos> stopping = new HashSet<>();
+        Set<BlockSurfacePos> stopped = new HashSet<>();
+        Set<BlockSurfacePos> stopping = new HashSet<>();
 
         for (int y = lowerPoint.getY() + 1; y <= higherPoint.getY(); y++)
         {
-            for (BlockPos surfaceCoord : BlockAreas.side(area, EnumFacing.DOWN))
+            for (BlockSurfacePos surfaceCoord : (Iterable<BlockSurfacePos>) BlockSurfaceArea.from(area).stream().filter((o) -> !stopped.contains(o))::iterator)
             {
-                if (!stopped.contains(surfaceCoord))
+                IBlockState block = world.getBlockState(surfaceCoord.blockPos(y));
+
+                if ((block.getMaterial() != Material.AIR && block.getBlock() != airBlock1))
                 {
-                    IBlockState block = world.getBlockState(new BlockPos(surfaceCoord.getX(), y, surfaceCoord.getZ()));
+                    stopping.add(surfaceCoord);
 
-                    if ((block.getMaterial() != Material.AIR && block.getBlock() != airBlock1))
+                    if (block != floorBlock)
                     {
-                        if (block.getBlock().isNormalCube(block, world, new BlockPos(surfaceCoord.getX(), y, surfaceCoord.getZ())) && block != floorBlock && y > lowerPoint.getY())
-                        {
-                            setBlockIfAirInArea(world, new BlockPos(surfaceCoord.getX(), y - 1, surfaceCoord.getZ()), floorBlock, area);
+                        setBlockIfAirInArea(world, surfaceCoord.blockPos(y - 1), floorBlock, area);
 
-                            fillSurface(world, area, lowerExpansion, floorBlock, surfaceCoord, y, stopping);
-                        }
+                        fillSurface(world, area, lowerExpansion, floorBlock, surfaceCoord.blockPos(y), stopping);
                     }
                 }
             }
@@ -71,17 +70,19 @@ public class CommandSelectFloor extends CommandSelectModify
         }
     }
 
-    private static void fillSurface(World world, BlockArea area, double expansion, IBlockState floorBlock, BlockPos surfaceCoord, int y, Set<BlockPos> coords)
+    private static void fillSurface(World world, BlockArea area, double expansion, IBlockState floorBlock, BlockPos pos, Set<BlockSurfacePos> coords)
     {
+        BlockSurfacePos surfacePos = BlockSurfacePos.from(pos);
+
         for (int expX = MathHelper.ceiling_double_int(-expansion); expX <= expansion; expX++)
         {
             for (int expZ = MathHelper.ceiling_double_int(-expansion); expZ <= expansion; expZ++)
             {
                 if (expX * expX + expZ * expZ <= expansion * expansion)
                 {
-                    BlockPos coord = new BlockPos(surfaceCoord.getX() + expX, y - 1, surfaceCoord.getZ() + expZ);
-                    setBlockIfAirInArea(world, coord, floorBlock, area);
-                    coords.add(coord);
+                    BlockSurfacePos scoord = surfacePos.add(expX, expZ);
+                    setBlockIfAirInArea(world, scoord.blockPos(pos.getY()), floorBlock, area);
+                    coords.add(scoord);
                 }
             }
         }

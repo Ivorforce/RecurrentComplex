@@ -88,7 +88,7 @@ public class GenericVillageCreationHandler implements VillagerRegistry.IVillageC
                 VanillaStructureGenerationInfo vanillaGenInfo = (VanillaStructureGenerationInfo) generationInfo;
 
                 boolean mirrorX = structureInfo.isMirrorable() && random.nextBoolean();
-                AxisAlignedTransform2D transform = GenericVillagePiece.getTransform(vanillaGenInfo, front.getOpposite(), mirrorX);
+                AxisAlignedTransform2D transform = GenericVillagePiece.getTransform(vanillaGenInfo.front, mirrorX, front.getOpposite());
 
                 if (vanillaGenInfo.generatesIn(startPiece.biome) && (structureInfo.isRotatable() || transform.getRotation() == 0))
                 {

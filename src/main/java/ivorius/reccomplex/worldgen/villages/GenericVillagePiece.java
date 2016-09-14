@@ -47,14 +47,14 @@ public class GenericVillagePiece extends StructureVillagePieces.Village
         super(start, generationDepth);
     }
 
-    public static AxisAlignedTransform2D getTransform(VanillaStructureGenerationInfo vanillaGenInfo, EnumFacing front, boolean mirrorX)
+    public static AxisAlignedTransform2D getTransform(EnumFacing front, boolean mirrorX, EnumFacing toFront)
     {
-        return AxisAlignedTransform2D.from(getRotations(vanillaGenInfo, front, mirrorX), mirrorX);
+        return AxisAlignedTransform2D.from(getRotations(front, mirrorX, toFront), mirrorX);
     }
 
-    public static int getRotations(VanillaStructureGenerationInfo vanillaGenInfo, EnumFacing front, boolean mirrorX)
+    public static int getRotations(EnumFacing front, boolean mirrorX, EnumFacing toFront)
     {
-        Integer rotations = Directions.getHorizontalClockwiseRotations(vanillaGenInfo.front, front, mirrorX);
+        Integer rotations = Directions.getHorizontalClockwiseRotations(front, toFront, mirrorX);
         return rotations == null ? 0 : rotations;
     }
 
@@ -104,7 +104,7 @@ public class GenericVillagePiece extends StructureVillagePieces.Village
             if (generationInfo instanceof VanillaStructureGenerationInfo)
             {
                 VanillaStructureGenerationInfo vanillaGenInfo = (VanillaStructureGenerationInfo) generationInfo;
-                AxisAlignedTransform2D transform = getTransform(vanillaGenInfo, getCoordBaseMode().getOpposite(), mirrorX);
+                AxisAlignedTransform2D transform = getTransform(vanillaGenInfo.front, mirrorX, getCoordBaseMode().getOpposite());
 
                 instanceData = structureInfo.prepareInstanceData(new StructurePrepareContext(random, environment(world), transform, boundingBox, false)).writeToNBT();
             }
@@ -123,7 +123,7 @@ public class GenericVillagePiece extends StructureVillagePieces.Village
             if (generationInfo instanceof VanillaStructureGenerationInfo)
             {
                 VanillaStructureGenerationInfo vanillaGenInfo = (VanillaStructureGenerationInfo) generationInfo;
-                AxisAlignedTransform2D transform = getTransform(vanillaGenInfo, getCoordBaseMode().getOpposite(), mirrorX);
+                AxisAlignedTransform2D transform = getTransform(vanillaGenInfo.front, mirrorX, getCoordBaseMode().getOpposite());
 
                 BlockPos structureShift = transform.apply(vanillaGenInfo.spawnShift, new int[]{1, 1, 1});
 
@@ -171,7 +171,7 @@ public class GenericVillagePiece extends StructureVillagePieces.Village
     {
         super.writeStructureToNBT(tagCompound);
         tagCompound.setString("RcSId", structureID);
-        tagCompound.setString("RcGtId", structureID);
+        tagCompound.setString("RcGtId", generationID);
         tagCompound.setBoolean("RcMirror", mirrorX);
         tagCompound.setBoolean("RcStartGen", startedGeneration);
         tagCompound.setTag("RcInstDat", instanceData);

@@ -20,6 +20,7 @@ import net.minecraft.world.World;
 
 import javax.annotation.Nonnull;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Stream;
 
 /**
@@ -85,7 +86,8 @@ public class BlockGenericSpace extends BlockTyped
 
     protected boolean hideableAtSide(IBlockState state, IBlockAccess worldIn, BlockPos pos, EnumFacing f)
     {
-        return worldIn.getBlockState(pos.offset(f)).getProperties().get(TYPE) == state.getValue(TYPE);
+        IBlockState sideState = worldIn.getBlockState(pos.offset(f));
+        return sideState.getBlock() == this && Objects.equals(sideState.getValue(TYPE), sideState.getValue(TYPE));
     }
 
     @Nonnull

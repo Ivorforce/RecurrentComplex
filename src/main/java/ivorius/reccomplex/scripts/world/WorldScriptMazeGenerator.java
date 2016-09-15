@@ -250,7 +250,7 @@ public class WorldScriptMazeGenerator implements WorldScript<WorldScriptMazeGene
         MorphingMazeComponent<Connector> maze = new SetMazeComponent<>();
 
         WorldScriptMazeGenerator.enclose(maze, new MazeRoom(outsideBoundsLower), new MazeRoom(outsideBoundsHigher), defaultConnector);
-        WorldScriptMazeGenerator.blockRooms(maze, mazeComponent.rooms.mazeRooms(false), defaultConnector);
+        WorldScriptMazeGenerator.blockRooms(maze, mazeComponent.rooms.compile(false).keySet().stream().map(MazeRoom::new).collect(Collectors.toSet()), defaultConnector);
 
         WorldGenMaze.buildExitPaths(factory, mazeComponent.exitPaths, maze.rooms()).forEach(path -> maze.exits().put(path.getKey(), path.getValue()));
 
@@ -264,7 +264,7 @@ public class WorldScriptMazeGenerator implements WorldScript<WorldScriptMazeGene
 
         ConnectorStrategy connectorStrategy = new ConnectorStrategy();
 
-        int totalRooms = mazeComponent.rooms.mazeRooms(true).size();
+        int totalRooms = mazeComponent.rooms.compile(true).size();
 
         return MazeComponentConnector.randomlyConnect(maze,
                 transformedComponents, connectorStrategy,

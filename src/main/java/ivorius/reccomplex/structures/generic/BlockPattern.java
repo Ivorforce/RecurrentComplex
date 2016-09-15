@@ -62,10 +62,10 @@ public class BlockPattern implements NBTCompoundObject
     }
 
     @Nonnull
-    public static BlockPos toBlockPos(MazeRoom room)
+    public static BlockPos toBlockPos(int[] room)
     {
-        if (room.getDimensions() != 3) throw new IllegalArgumentException();
-        return new BlockPos(room.getCoordinate(0), room.getCoordinate(1), room.getCoordinate(2));
+        if (room.length != 3) throw new IllegalArgumentException();
+        return new BlockPos(room[0], room[1], room[2]);
     }
 
     public BlockPattern copy()

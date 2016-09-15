@@ -8,8 +8,6 @@ package ivorius.reccomplex.structures.generic;
 import com.google.gson.annotations.SerializedName;
 import ivorius.ivtoolkit.gui.IntegerRange;
 import ivorius.ivtoolkit.math.AxisAlignedTransform2D;
-import ivorius.ivtoolkit.math.IvVecMathHelper;
-import ivorius.ivtoolkit.maze.components.MazeRoom;
 import ivorius.ivtoolkit.tools.IvNBTHelper;
 import ivorius.ivtoolkit.tools.NBTCompoundObject;
 import ivorius.ivtoolkit.tools.NBTTagLists;
@@ -33,7 +31,7 @@ public class Selection extends ArrayList<Selection.Area> implements NBTCompoundO
         this.dimensions = dimensions;
     }
 
-    private static void mergeRooms(boolean additive, int dimIndex, int[] min, int[] max, int[] position, String id, Map<MazeRoom, String> rooms)
+    private static void mergeRooms(boolean additive, int dimIndex, int[] min, int[] max, int[] position, String id, Map<int[], String> rooms)
     {
         for (int i = min[dimIndex]; i <= max[dimIndex]; i++)
         {
@@ -42,9 +40,9 @@ public class Selection extends ArrayList<Selection.Area> implements NBTCompoundO
             if (dimIndex == position.length - 1)
             {
                 if (additive)
-                    rooms.put(new MazeRoom(position.clone()), id);
+                    rooms.put(position.clone(), id);
                 else
-                    rooms.remove(new MazeRoom(position));
+                    rooms.remove(position);
             }
             else
                 mergeRooms(additive, dimIndex + 1, min, max, position, id, rooms);
@@ -63,18 +61,18 @@ public class Selection extends ArrayList<Selection.Area> implements NBTCompoundO
         return IntStream.range(0, lower.length).mapToObj(i -> new IntegerRange(lower[i], higher[i])).collect(Collectors.toList());
     }
 
-    public Map<MazeRoom, String> compile(boolean additive)
+    public Map<int[], String> compile(boolean additive)
     {
         if (additive)
         {
-            Map<MazeRoom, String> rooms = new HashMap<>();
+            Map<int[], String> rooms = new HashMap<>();
             for (Area area : this)
                 mergeRooms(area.additive, 0, area.minCoord, area.maxCoord, area.minCoord.clone(), area.identifier, rooms);
             return rooms;
         }
         else
         {
-            Map<MazeRoom, String> spaces = new HashMap<>();
+            Map<int[], String> spaces = new HashMap<>();
             int[] min = boundsLower();
             int[] max = boundsHigher();
             mergeRooms(true, 0, min, max, min.clone(), null, spaces);
@@ -84,12 +82,6 @@ public class Selection extends ArrayList<Selection.Area> implements NBTCompoundO
 
             return spaces;
         }
-    }
-
-    @Deprecated
-    public Set<MazeRoom> mazeRooms(boolean additive)
-    {
-        return compile(additive).keySet();
     }
 
     @Override

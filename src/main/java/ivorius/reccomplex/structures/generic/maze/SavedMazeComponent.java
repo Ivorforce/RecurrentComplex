@@ -20,6 +20,7 @@ import net.minecraftforge.common.util.Constants;
 
 import java.lang.reflect.Type;
 import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * Created by lukas on 07.10.14.
@@ -47,7 +48,7 @@ public class SavedMazeComponent implements NBTCompoundObject
 
     public Collection<MazeRoom> getRooms()
     {
-        return rooms.mazeRooms(true);
+        return rooms.compile(true).keySet().stream().map(MazeRoom::new).collect(Collectors.toList());
     }
 
     public List<SavedMazePathConnection> getExitPaths()

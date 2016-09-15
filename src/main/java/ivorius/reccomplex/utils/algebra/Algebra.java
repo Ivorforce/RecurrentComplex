@@ -6,15 +6,14 @@
 package ivorius.reccomplex.utils.algebra;
 
 import com.google.common.base.Preconditions;
-import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
-import com.google.common.collect.Multimap;
 import ivorius.ivtoolkit.tools.Pairs;
 import ivorius.ivtoolkit.tools.Ranges;
 import ivorius.ivtoolkit.tools.Visitor;
 import ivorius.reccomplex.utils.PrecedenceSet;
 import ivorius.reccomplex.utils.PrecedenceSets;
+import ivorius.reccomplex.utils.RCFunctions;
 import ivorius.reccomplex.utils.SymbolTokenizer;
 import org.apache.commons.lang3.tuple.Pair;
 
@@ -258,7 +257,7 @@ public class Algebra<T>
                 TreeSet<List<Pair<Operator<T>, Integer>>> sortedSymbols = new TreeSet<>((o1, o2) -> getStringSymbol(o2.get(0)).compareTo(getStringSymbol(o1.get(0))));
 
                 // Group by symbol string
-                sortedSymbols.addAll(group(symbols, this::getStringSymbol).stream().map(Lists::newArrayList).collect(Collectors.toList()));
+                sortedSymbols.addAll(RCFunctions.group(symbols, this::getStringSymbol).stream().map(Lists::newArrayList).collect(Collectors.toList()));
 
                 return sortedSymbols;
             }
@@ -275,13 +274,6 @@ public class Algebra<T>
                 return new ConstantToken(index, index + string.length(), string);
             }
         };
-    }
-
-    public static <T> Collection<Collection<T>> group(List<T> list, Function<T, Object> group)
-    {
-        Multimap<Object, T> groupedSymbols = HashMultimap.create();
-        list.forEach(o -> groupedSymbols.put(group.apply(o), o));
-        return groupedSymbols.asMap().values();
     }
 
     @Nonnull

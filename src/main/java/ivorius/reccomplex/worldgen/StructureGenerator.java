@@ -31,7 +31,7 @@ import java.util.Random;
 public class StructureGenerator<S extends NBTStorable>
 {
     public static final int MIN_DIST_TO_LIMIT = 1;
-    
+
     @Nullable
     private WorldServer world;
     @Nullable
@@ -68,6 +68,8 @@ public class StructureGenerator<S extends NBTStorable>
     private S instanceData;
     @Nullable
     private NBTBase instanceDataNBT;
+
+    private boolean memorize = true;
 
     public StructureGenerator(StructureInfo<S> structureInfo)
     {
@@ -116,7 +118,7 @@ public class StructureGenerator<S extends NBTStorable>
 
         if (maturity() != Maturity.SUGGEST || (
                 context.boundingBox.minY >= MIN_DIST_TO_LIMIT && context.boundingBox.maxY <= world.getHeight() - 1 - MIN_DIST_TO_LIMIT
-                        && (!RCConfig.avoidOverlappingGeneration || StructureGenerationData.get(world).getEntriesAt(context.boundingBox).size() == 0)
+                        && (!RCConfig.avoidOverlappingGeneration || !memorize || StructureGenerationData.get(world).getEntriesAt(context.boundingBox).size() == 0)
                         && !RCEventBus.INSTANCE.post(new StructureGenerationEvent.Suggest(structureInfo, context))
                         && !MinecraftForge.EVENT_BUS.post(new StructureGenerationEventLite.Suggest(world, structureID, coordInts, sizeInts, context.generationLayer))
         ))
@@ -136,7 +138,7 @@ public class StructureGenerator<S extends NBTStorable>
                 RCEventBus.INSTANCE.post(new StructureGenerationEvent.Post(structureInfo, context));
                 MinecraftForge.EVENT_BUS.post(new StructureGenerationEventLite.Post(world, structureID, coordInts, sizeInts, context.generationLayer));
 
-                if (structureID != null)
+                if (structureID != null && memorize)
                     StructureGenerationData.get(world).addCompleteEntry(structureID, context.lowerCoord(), context.transform);
             }
 
@@ -349,6 +351,12 @@ public class StructureGenerator<S extends NBTStorable>
         return this.instanceData != null ? this.instanceData :
                 this.instanceDataNBT != null ? structure().loadInstanceData(load(), this.instanceDataNBT)
                         : structure().prepareInstanceData(prepare());
+    }
+
+    public StructureGenerator<S> memorize(boolean memorize)
+    {
+        this.memorize = memorize;
+        return this;
     }
 
     @Nonnull

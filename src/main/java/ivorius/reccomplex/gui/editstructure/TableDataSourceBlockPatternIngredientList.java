@@ -21,7 +21,6 @@ public class TableDataSourceBlockPatternIngredientList extends TableDataSourceLi
     public TableDataSourceBlockPatternIngredientList(List<BlockPattern.Ingredient> list, TableDelegate tableDelegate, TableNavigator navigator)
     {
         super(list, tableDelegate, navigator);
-        setUsesPresetActionForAdding(true);
     }
 
     @Override

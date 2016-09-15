@@ -29,6 +29,7 @@ import org.apache.commons.lang3.tuple.Pair;
 import javax.annotation.Nullable;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -50,6 +51,12 @@ public class TransformerMulti extends Transformer<TransformerMulti.InstanceData>
     {
         super(id != null ? id : randomID(TransformerMulti.class));
         this.environmentMatcher = new EnvironmentMatcher(expression);
+    }
+
+    public TransformerMulti(@Nullable String id, String expression, Collection<Transformer> transformers)
+    {
+        this(id, expression);
+        this.transformers.addAll(transformers);
     }
 
     public static boolean skips(Environment environment, List<Pair<Transformer, NBTStorable>> transformers, BlockPos pos, final IBlockState state)

@@ -88,14 +88,14 @@ public class StructureGenerationData extends WorldSavedData
         return entries.build();
     }
 
-    public Set<ChunkPos> addCompleteEntry(String structureID, BlockPos lowerCoord, AxisAlignedTransform2D transform)
+    public Set<ChunkPos> addCompleteEntry(String structureID, String generationInfoID, BlockPos lowerCoord, AxisAlignedTransform2D transform)
     {
-        return addEntry(new Entry(UUID.randomUUID(), structureID, lowerCoord, transform, true));
+        return addEntry(new Entry(UUID.randomUUID(), structureID, generationInfoID, lowerCoord, transform, true));
     }
 
-    public Set<ChunkPos> addGeneratingEntry(String structureID, BlockPos lowerCoord, AxisAlignedTransform2D transform)
+    public Set<ChunkPos> addGeneratingEntry(String structureID, String generationInfoID, BlockPos lowerCoord, AxisAlignedTransform2D transform)
     {
-        return addEntry(new Entry(UUID.randomUUID(), structureID, lowerCoord, transform, false));
+        return addEntry(new Entry(UUID.randomUUID(), structureID, generationInfoID, lowerCoord, transform, false));
     }
 
     public Set<ChunkPos> addEntry(Entry entry)
@@ -178,6 +178,7 @@ public class StructureGenerationData extends WorldSavedData
         protected UUID uuid = UUID.randomUUID();
 
         protected String structureID;
+        protected String generationInfoID;
         protected BlockPos lowerCoord;
         protected AxisAlignedTransform2D transform;
 
@@ -190,10 +191,11 @@ public class StructureGenerationData extends WorldSavedData
         {
         }
 
-        public Entry(@Nonnull UUID uuid, String structureID, BlockPos lowerCoord, AxisAlignedTransform2D transform, boolean hasBeenGenerated)
+        public Entry(@Nonnull UUID uuid, String structureID, String generationInfoID, BlockPos lowerCoord, AxisAlignedTransform2D transform, boolean hasBeenGenerated)
         {
             this.uuid = uuid;
             this.structureID = structureID;
+            this.generationInfoID = generationInfoID;
             this.lowerCoord = lowerCoord;
             this.transform = transform;
             this.hasBeenGenerated = hasBeenGenerated;
@@ -235,6 +237,7 @@ public class StructureGenerationData extends WorldSavedData
             uuid = new UUID(compound.getLong("UUIDMS"), compound.getLong("UUIDLS"));
 
             structureID = compound.getString("structureID");
+            generationInfoID = compound.hasKey(generationInfoID, Constants.NBT.TAG_STRING) ? compound.getString("generationInfoID") : null;
 
             transform = AxisAlignedTransform2D.from(compound.getInteger("rotation"), compound.getBoolean("mirrorX"));
 
@@ -252,6 +255,7 @@ public class StructureGenerationData extends WorldSavedData
             compound.setLong("UUIDLS", uuid.getLeastSignificantBits());
 
             compound.setString("structureID", structureID);
+            if (generationInfoID != null) compound.setString("generationInfoID", generationInfoID);
 
             compound.setInteger("rotation", transform.getRotation());
             compound.setBoolean("mirrorX", transform.isMirrorX());

@@ -61,6 +61,6 @@ public class CommandSelectDuplicate extends CommandSelectModify
 
         AxisAlignedTransform2D transform = AxisAlignedTransform2D.from(rotations, mirrorX);
 
-        OperationRegistry.queueOperation(new OperationGenerateStructure(structureInfo, transform, coord, true), player);
+        OperationRegistry.queueOperation(new OperationGenerateStructure(structureInfo, null, transform, coord, true), player);
     }
 }

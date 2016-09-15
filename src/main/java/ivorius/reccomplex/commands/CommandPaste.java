@@ -72,7 +72,7 @@ public class CommandPaste extends CommandBase
 
             AxisAlignedTransform2D transform = AxisAlignedTransform2D.from(rotation, mirror);
 
-            OperationRegistry.queueOperation(new OperationGenerateStructure(structureInfo, transform, coord, true), commandSender);
+            OperationRegistry.queueOperation(new OperationGenerateStructure(structureInfo, null, transform, coord, true), commandSender);
         }
         else
         {

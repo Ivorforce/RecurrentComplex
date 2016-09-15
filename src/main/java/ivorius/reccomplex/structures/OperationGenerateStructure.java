@@ -33,6 +33,7 @@ public class OperationGenerateStructure implements Operation
     public boolean generateAsSource;
 
     public String structureIDForSaving;
+    public String generationInfoID;
 
     protected GridQuadCache cachedShapeGrid;
 
@@ -40,17 +41,19 @@ public class OperationGenerateStructure implements Operation
     {
     }
 
-    public OperationGenerateStructure(GenericStructureInfo structure, AxisAlignedTransform2D transform, BlockPos lowerCoord, boolean generateAsSource)
+    public OperationGenerateStructure(GenericStructureInfo structure, String generationInfoID, AxisAlignedTransform2D transform, BlockPos lowerCoord, boolean generateAsSource)
     {
         this.structure = structure;
+        this.generationInfoID = generationInfoID;
         this.transform = transform;
         this.lowerCoord = lowerCoord;
         this.generateAsSource = generateAsSource;
     }
 
-    public OperationGenerateStructure(GenericStructureInfo structure, AxisAlignedTransform2D transform, BlockPos lowerCoord, boolean generateAsSource, String structureIDForSaving)
+    public OperationGenerateStructure(GenericStructureInfo structure, String generationInfoID, AxisAlignedTransform2D transform, BlockPos lowerCoord, boolean generateAsSource, String structureIDForSaving)
     {
         this.structure = structure;
+        this.generationInfoID = generationInfoID;
         this.transform = transform;
         this.lowerCoord = lowerCoord;
         this.generateAsSource = generateAsSource;
@@ -72,13 +75,13 @@ public class OperationGenerateStructure implements Operation
     {
         if (generateAsSource)
         {
-            new StructureGenerator<>(structure).world(world)
+            new StructureGenerator<>(structure).world(world).generationInfo(generationInfoID)
                     .transform(transform).lowerCoord(lowerCoord).asSource(true).generate(
             );
         }
         else
         {
-            new StructureGenerator<>(structure).world(world)
+            new StructureGenerator<>(structure).world(world).generationInfo(generationInfoID)
                     .structureID(structureIDForSaving).transform(transform).lowerCoord(lowerCoord).maturity(StructureSpawnContext.GenerateMaturity.FIRST).generate();
         }
     }

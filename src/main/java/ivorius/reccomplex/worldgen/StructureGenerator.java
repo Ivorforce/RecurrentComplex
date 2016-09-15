@@ -12,6 +12,7 @@ import ivorius.reccomplex.events.RCEventBus;
 import ivorius.reccomplex.events.StructureGenerationEvent;
 import ivorius.reccomplex.events.StructureGenerationEventLite;
 import ivorius.reccomplex.structures.*;
+import ivorius.reccomplex.structures.generic.gentypes.StructureGenerationInfo;
 import ivorius.reccomplex.utils.BlockSurfacePos;
 import ivorius.reccomplex.utils.NBTStorable;
 import net.minecraft.nbt.NBTBase;
@@ -59,6 +60,8 @@ public class StructureGenerator<S extends NBTStorable>
     @Nullable
     private StructureBoundingBox generationBB;
 
+    private String generationInfoID;
+    private StructureGenerationInfo generationInfo;
     private int generationLayer = 0;
 
     private boolean generateAsSource = false;
@@ -139,7 +142,7 @@ public class StructureGenerator<S extends NBTStorable>
                 MinecraftForge.EVENT_BUS.post(new StructureGenerationEventLite.Post(world, structureID, coordInts, sizeInts, context.generationLayer));
 
                 if (structureID != null && memorize)
-                    StructureGenerationData.get(world).addCompleteEntry(structureID, context.lowerCoord(), context.transform);
+                    StructureGenerationData.get(world).addCompleteEntry(structureID, generationInfo.id(), context.lowerCoord(), context.transform);
             }
 
             return success ? context : null;
@@ -231,7 +234,8 @@ public class StructureGenerator<S extends NBTStorable>
     @Nonnull
     protected Environment environment()
     {
-        return environment != null ? environment : Environment.inNature(world(), boundingBox());
+        return environment != null ? environment : Environment.inNature(world(), boundingBox(),
+                generationInfo != null ? generationInfo : generationInfoID != null ? structure().generationInfo(generationInfoID) : null);
     }
 
     public StructureGenerator<S> random(@Nonnull Random random)
@@ -307,6 +311,18 @@ public class StructureGenerator<S extends NBTStorable>
     public StructureGenerator<S> generationBB(@Nullable StructureBoundingBox generationBB)
     {
         this.generationBB = generationBB;
+        return this;
+    }
+
+    public StructureGenerator<S> generationInfo(@Nullable StructureGenerationInfo generationInfo)
+    {
+        this.generationInfo = generationInfo;
+        return this;
+    }
+
+    public StructureGenerator<S> generationInfo(@Nullable String generationInfo)
+    {
+        this.generationInfoID = generationInfo;
         return this;
     }
 

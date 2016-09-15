@@ -41,7 +41,7 @@ public class OperationMoveStructure extends OperationGenerateStructure
 
     public OperationMoveStructure(GenericStructureInfo structure, AxisAlignedTransform2D transform, BlockPos lowerCoord, boolean generateAsSource, BlockArea sourceArea)
     {
-        super(structure, transform, lowerCoord, generateAsSource);
+        super(structure, null, transform, lowerCoord, generateAsSource, null);
         this.sourceArea = sourceArea;
     }
 

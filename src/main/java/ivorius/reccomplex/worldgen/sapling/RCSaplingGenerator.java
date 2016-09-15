@@ -20,6 +20,7 @@ import ivorius.reccomplex.worldgen.StructureGenerator;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.WorldServer;
+import net.minecraft.world.biome.Biome;
 import net.minecraft.world.gen.structure.StructureBoundingBox;
 import org.apache.commons.lang3.tuple.Pair;
 
@@ -34,10 +35,10 @@ public class RCSaplingGenerator
 {
     public static boolean maybeGrowSapling(WorldServer world, BlockPos pos, Random random)
     {
-        Environment environment = Environment.inNature(world, new StructureBoundingBox(pos, pos));
+        Biome biome = Environment.getBiome(world, new StructureBoundingBox(pos, pos));
 
         List<Pair<StructureInfo, SaplingGenerationInfo>> applicable = Lists.newArrayList(StructureRegistry.INSTANCE.getStructureGenerations(
-                SaplingGenerationInfo.class, pair -> pair.getRight().generatesIn(environment)
+                SaplingGenerationInfo.class, pair -> pair.getRight().generatesIn(new Environment(world, biome, null, pair.getRight()))
         ));
 
         ImmutableMultimap<Integer, Pair<StructureInfo, SaplingGenerationInfo>> groups = RCFunctions.groupMap(applicable, pair -> pair.getRight().pattern.pattern.compile(true).size());
@@ -89,8 +90,8 @@ public class RCSaplingGenerator
 
         BlockPos spawnPos = transform.apply(saplingGenInfo.spawnShift, new int[]{1, 1, 1}).add(startPos);
 
-        boolean success = new StructureGenerator<>(structure).world(world).transform(transform)
-                .random(random).maturity(StructureSpawnContext.GenerateMaturity.SUGGEST).memorize(false)
+        boolean success = new StructureGenerator<>(structure).world(world).generationInfo(saplingGenInfo)
+                .transform(transform).random(random).maturity(StructureSpawnContext.GenerateMaturity.SUGGEST).memorize(false)
                 .randomPosition(BlockSurfacePos.from(spawnPos), (w, r, b) -> spawnPos.getY()).generate() != null;
 
         if (!success)

@@ -8,6 +8,7 @@ package ivorius.reccomplex.structures.generic.matchers;
 import com.google.common.primitives.Ints;
 import ivorius.reccomplex.structures.Environment;
 import ivorius.reccomplex.structures.StructurePrepareContext;
+import ivorius.reccomplex.structures.generic.gentypes.StructureGenerationInfo;
 import ivorius.reccomplex.utils.FunctionExpressionCache;
 import ivorius.reccomplex.utils.algebra.RCBoolAlgebra;
 import net.minecraft.util.text.TextFormatting;
@@ -27,6 +28,7 @@ public class EnvironmentMatcher extends FunctionExpressionCache<Boolean, Environ
     public static final String DIMENSION_PREFIX = "dimension.";
     public static final String DEPENDENCY_PREFIX = "dependency.";
     public static final String VILLAGE_TYPE_PREFIX = "villagetype=";
+    public static final String GENERATION_INFO_PREFIX = "generation.";
 
     public EnvironmentMatcher(String expression)
     {
@@ -35,7 +37,8 @@ public class EnvironmentMatcher extends FunctionExpressionCache<Boolean, Environ
         addType(new BiomeVariableType(BIOME_PREFIX, ""));
         addTypes(new DimensionVariableType(DIMENSION_PREFIX, ""), t -> t.alias("dim.", ""));
         addTypes(new DependencyVariableType(DEPENDENCY_PREFIX, ""), t -> t.alias("dep.", ""));
-        addTypes(new VillageTypeType(VILLAGE_TYPE_PREFIX, ""), t -> t.alias("vtype", "vtype"));
+        addTypes(new VillageTypeType(VILLAGE_TYPE_PREFIX, ""), t -> t.alias("vtype.", ""));
+        addTypes(new VillageTypeType(GENERATION_INFO_PREFIX, ""), t -> t.alias("gen.", ""));
 
         testVariables();
     }
@@ -106,7 +109,7 @@ public class EnvironmentMatcher extends FunctionExpressionCache<Boolean, Environ
         }
     }
 
-    protected static class VillageTypeType extends VariableType<Boolean, Environment, Object>
+    protected static class VillageTypeType extends DelegatingVariableType<Boolean, Environment, Object, StructureGenerationInfo, Object, StructureGenerationInfoMatcher>
     {
         public VillageTypeType(String prefix, String suffix)
         {
@@ -114,21 +117,15 @@ public class EnvironmentMatcher extends FunctionExpressionCache<Boolean, Environ
         }
 
         @Override
-        public Boolean evaluate(String var, Environment environment)
+        public StructureGenerationInfo convertEvaluateArgument(Environment environment)
         {
-            return Objects.equals(parseVillageType(var), environment.villageType);
-        }
-
-        public Integer parseVillageType(String var)
-        {
-            Integer integer = Ints.tryParse(var);
-            return integer != null && integer >= 0 && integer < 4 ? integer : null;
+            return environment.generationInfo;
         }
 
         @Override
-        public Validity validity(final String var, final Object args)
+        protected StructureGenerationInfoMatcher createCache(String var)
         {
-            return parseVillageType(var) != null ? Validity.KNOWN : Validity.ERROR;
+            return new StructureGenerationInfoMatcher(var);
         }
     }
 }

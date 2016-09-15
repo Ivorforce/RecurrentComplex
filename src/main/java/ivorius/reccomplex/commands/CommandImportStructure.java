@@ -54,13 +54,13 @@ public class CommandImportStructure extends CommandBase
             throw ServerTranslations.wrongUsageException("commands.strucImport.usage");
         }
 
-        String structureName = args[0];
-        StructureInfo<?> structureInfo = StructureRegistry.INSTANCE.getStructure(structureName);
+        String structureID = args[0];
+        StructureInfo<?> structureInfo = StructureRegistry.INSTANCE.getStructure(structureID);
         World world = commandSender.getEntityWorld();
 
         if (structureInfo == null)
         {
-            throw ServerTranslations.commandException("commands.strucImport.noStructure", structureName);
+            throw ServerTranslations.commandException("commands.strucImport.noStructure", structureID);
         }
 
         BlockPos coord;
@@ -75,7 +75,7 @@ public class CommandImportStructure extends CommandBase
         AxisAlignedTransform2D transform = AxisAlignedTransform2D.from(rotation, mirror);
 
         if (structureInfo instanceof GenericStructureInfo)
-            OperationRegistry.queueOperation(new OperationGenerateStructure((GenericStructureInfo) structureInfo, transform, coord, true), commandSender);
+            OperationRegistry.queueOperation(new OperationGenerateStructure((GenericStructureInfo) structureInfo, null, transform, coord, true, structureID), commandSender);
         else
         {
             new StructureGenerator<>(structureInfo).world((WorldServer) world)

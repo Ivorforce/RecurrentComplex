@@ -106,10 +106,10 @@ public class CommandGenerateStructure extends CommandBase
 
                 BlockPos genCoord = new BlockPos(genX, genY, genZ);
 
-                OperationRegistry.queueOperation(new OperationGenerateStructure((GenericStructureInfo) structureInfo, transform, genCoord, false, structureName), commandSender);
+                OperationRegistry.queueOperation(new OperationGenerateStructure((GenericStructureInfo) structureInfo, generationInfo.id(), transform, genCoord, false, structureName), commandSender);
             }
             else
-                ((StructureGenerator) new StructureGenerator<>(structureInfo).world(world)
+                ((StructureGenerator) new StructureGenerator<>(structureInfo).world(world).generationInfo(generationInfo)
                                         .structureID(structureName).randomPosition(pos, ySelector).fromCenter(true)).generate();
         }
     }

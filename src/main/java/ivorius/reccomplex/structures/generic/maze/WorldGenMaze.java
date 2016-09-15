@@ -36,7 +36,7 @@ public class WorldGenMaze
 
             if (structureInfo != null && placedComponent.instanceData != null)
             {
-                new StructureGenerator<>(structureInfo).asChild(context)
+                new StructureGenerator<>(structureInfo).asChild(context).generationInfo(placedComponent.generationInfoID)
                         .lowerCoord(placedComponent.lowerCoord).transform(placedComponent.transform)
                         .structureID(structureID).instanceData(placedComponent.instanceData).generate();
             }
@@ -61,7 +61,7 @@ public class WorldGenMaze
                 StructureBoundingBox compBoundingBox = getBoundingBox(coord, shift, roomSize, placedComponent, structureInfo, componentTransform, mazeTransform);
                 NBTStorable instanceData = structureInfo.prepareInstanceData(new StructurePrepareContext(random, environment, componentTransform, compBoundingBox, false));
 
-                return new PlacedStructure(componentInfo.structureID, componentTransform, new BlockPos(compBoundingBox.minX, compBoundingBox.minY, compBoundingBox.minZ), instanceData);
+                return new PlacedStructure(componentInfo.structureID, componentInfo.structureID, componentTransform, new BlockPos(compBoundingBox.minX, compBoundingBox.minY, compBoundingBox.minZ), instanceData);
             }
             else
             {

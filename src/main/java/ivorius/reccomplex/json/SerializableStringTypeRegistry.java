@@ -9,6 +9,7 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.JsonDeserializer;
 import com.google.gson.JsonSerializer;
 
+import javax.annotation.Nullable;
 import java.util.Collection;
 
 /**
@@ -55,11 +56,13 @@ public class SerializableStringTypeRegistry<T>
         return adapterFactory.getObjectKey();
     }
 
+    @Nullable
     public Class<? extends T> typeForID(String id)
     {
         return adapterFactory.objectClass(id);
     }
 
+    @Nullable
     public String iDForType(Class<? extends T> type)
     {
         return adapterFactory.type(type);

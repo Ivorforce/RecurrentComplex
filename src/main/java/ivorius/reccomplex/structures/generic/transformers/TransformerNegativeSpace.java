@@ -34,22 +34,24 @@ import java.lang.reflect.Type;
 public class TransformerNegativeSpace extends Transformer<NBTNone>
 {
     public BlockMatcher sourceMatcher;
+    public BlockMatcher destMatcher;
 
     public TransformerNegativeSpace()
     {
-        this(null, BlockMatcher.of(RecurrentComplex.specialRegistry, RCBlocks.genericSpace, 0));
+        this(null, BlockMatcher.of(RecurrentComplex.specialRegistry, RCBlocks.genericSpace, 0), "");
     }
 
-    public TransformerNegativeSpace(@Nullable String id, String sourceExpression)
+    public TransformerNegativeSpace(@Nullable String id, String sourceExpression, String destExpression)
     {
         super(id != null ? id : randomID(TransformerNegativeSpace.class));
         this.sourceMatcher = new BlockMatcher(RecurrentComplex.specialRegistry, sourceExpression);
+        this.destMatcher = new BlockMatcher(RecurrentComplex.specialRegistry, destExpression);
     }
 
     @Override
     public boolean skipGeneration(NBTNone instanceData, Environment environment, BlockPos pos, IBlockState state)
     {
-        return sourceMatcher.test(state);
+        return sourceMatcher.test(state) && (destMatcher.expressionIsEmpty() || destMatcher.test(environment.world.getBlockState(pos)));
     }
 
     @Override
@@ -102,7 +104,9 @@ public class TransformerNegativeSpace extends Transformer<NBTNone>
             if (expression == null)
                 expression = JsonUtils.getString(jsonObject, "sourceExpression", "");
 
-            return new TransformerNegativeSpace(id, expression);
+            String destExpression = JsonUtils.getString(jsonObject, "destExpression", "");
+
+            return new TransformerNegativeSpace(id, expression, destExpression);
         }
 
         @Override
@@ -112,6 +116,7 @@ public class TransformerNegativeSpace extends Transformer<NBTNone>
 
             jsonObject.addProperty("id", transformer.id());
             jsonObject.addProperty("sourceExpression", transformer.sourceMatcher.getExpression());
+            jsonObject.addProperty("destExpression", transformer.destMatcher.getExpression());
 
             return jsonObject;
         }

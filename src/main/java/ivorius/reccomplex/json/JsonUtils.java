@@ -320,7 +320,7 @@ public class JsonUtils
      * Gets the JsonObject field on the JsonObject with the given name, or the given default value if the field is
      * missing.
      */
-    public static JsonObject getJsonobject(JsonObject p_151218_0_, String p_151218_1_, JsonObject p_151218_2_)
+    public static JsonObject getJsonObject(JsonObject p_151218_0_, String p_151218_1_, JsonObject p_151218_2_)
     {
         return p_151218_0_.has(p_151218_1_) ? asJsonObject(p_151218_0_.get(p_151218_1_), p_151218_1_) : p_151218_2_;
     }

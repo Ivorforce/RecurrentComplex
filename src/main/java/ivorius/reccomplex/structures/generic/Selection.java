@@ -7,13 +7,16 @@ package ivorius.reccomplex.structures.generic;
 
 import com.google.gson.annotations.SerializedName;
 import ivorius.ivtoolkit.gui.IntegerRange;
+import ivorius.ivtoolkit.math.AxisAlignedTransform2D;
 import ivorius.ivtoolkit.math.IvVecMathHelper;
 import ivorius.ivtoolkit.maze.components.MazeRoom;
 import ivorius.ivtoolkit.tools.IvNBTHelper;
 import ivorius.ivtoolkit.tools.NBTCompoundObject;
 import ivorius.ivtoolkit.tools.NBTTagLists;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraftforge.common.util.Constants;
 
+import javax.annotation.Nullable;
 import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
@@ -30,7 +33,7 @@ public class Selection extends ArrayList<Selection.Area> implements NBTCompoundO
         this.dimensions = dimensions;
     }
 
-    private static void mergeRooms(boolean additive, int dimIndex, int[] min, int[] max, int[] position, Set<MazeRoom> rooms)
+    private static void mergeRooms(boolean additive, int dimIndex, int[] min, int[] max, int[] position, String id, Map<MazeRoom, String> rooms)
     {
         for (int i = min[dimIndex]; i <= max[dimIndex]; i++)
         {
@@ -39,12 +42,12 @@ public class Selection extends ArrayList<Selection.Area> implements NBTCompoundO
             if (dimIndex == position.length - 1)
             {
                 if (additive)
-                    rooms.add(new MazeRoom(position.clone()));
+                    rooms.put(new MazeRoom(position.clone()), id);
                 else
                     rooms.remove(new MazeRoom(position));
             }
             else
-                mergeRooms(additive, dimIndex + 1, min, max, position, rooms);
+                mergeRooms(additive, dimIndex + 1, min, max, position, id, rooms);
         }
     }
 
@@ -60,27 +63,33 @@ public class Selection extends ArrayList<Selection.Area> implements NBTCompoundO
         return IntStream.range(0, lower.length).mapToObj(i -> new IntegerRange(lower[i], higher[i])).collect(Collectors.toList());
     }
 
-    public Set<MazeRoom> mazeRooms(boolean additive)
+    public Map<MazeRoom, String> compile(boolean additive)
     {
         if (additive)
         {
-            Set<MazeRoom> rooms = new HashSet<>();
+            Map<MazeRoom, String> rooms = new HashMap<>();
             for (Area area : this)
-                mergeRooms(area.additive, 0, area.minCoord, area.maxCoord, area.minCoord.clone(), rooms);
+                mergeRooms(area.additive, 0, area.minCoord, area.maxCoord, area.minCoord.clone(), area.identifier, rooms);
             return rooms;
         }
         else
         {
-            Set<MazeRoom> spaces = new HashSet<>();
+            Map<MazeRoom, String> spaces = new HashMap<>();
             int[] min = boundsLower();
             int[] max = boundsHigher();
-            mergeRooms(true, 0, min, max, min.clone(), spaces);
+            mergeRooms(true, 0, min, max, min.clone(), null, spaces);
 
             for (Area area : this)
-                mergeRooms(!area.additive, 0, area.minCoord, area.maxCoord, area.minCoord.clone(), spaces);
+                mergeRooms(!area.additive, 0, area.minCoord, area.maxCoord, area.minCoord.clone(), area.identifier, spaces);
 
             return spaces;
         }
+    }
+
+    @Deprecated
+    public Set<MazeRoom> mazeRooms(boolean additive)
+    {
+        return compile(additive).keySet();
     }
 
     @Override
@@ -141,9 +150,20 @@ public class Selection extends ArrayList<Selection.Area> implements NBTCompoundO
     {
         int[] min = boundsLower();
         int[] max = boundsHigher();
-        int[] minusOne = new int[min.length];
-        Arrays.fill(minusOne, -1);
-        return IvVecMathHelper.sub(max, min, minusOne);
+        for (int i = 0; i < max.length; i++) max[i] += 1 - min[i];
+        return min;
+    }
+
+    public Selection copy()
+    {
+        Selection selection = new Selection(dimensions);
+        selection.addAll(stream().map(Area::copy).collect(Collectors.toList()));
+        return selection;
+    }
+
+    public void transform(AxisAlignedTransform2D transform, int[] size)
+    {
+        forEach((area) -> area.transform(transform, size));
     }
 
     public static class Area
@@ -154,19 +174,9 @@ public class Selection extends ArrayList<Selection.Area> implements NBTCompoundO
         private int[] minCoord;
         @SerializedName("maxCoord")
         private int[] maxCoord;
-
-        public Area(boolean additive, IntegerRange... ranges)
-        {
-            this.additive = additive;
-            minCoord = new int[ranges.length];
-            maxCoord = new int[ranges.length];
-
-            for (int i = 0; i < ranges.length; i++)
-            {
-                minCoord[i] = ranges[i].getMin();
-                maxCoord[i] = ranges[i].getMax();
-            }
-        }
+        @Nullable
+        @SerializedName("identifier")
+        private String identifier;
 
         public Area(boolean additive, int[] minCoord, int[] maxCoord)
         {
@@ -175,11 +185,21 @@ public class Selection extends ArrayList<Selection.Area> implements NBTCompoundO
             this.maxCoord = maxCoord;
         }
 
+        public Area(boolean additive, int[] minCoord, int[] maxCoord, @Nullable String identifier)
+        {
+            this.additive = additive;
+            this.minCoord = minCoord;
+            this.maxCoord = maxCoord;
+            this.identifier = identifier;
+        }
+
         public Area(NBTTagCompound tagCompound, int dimensions)
         {
             additive = tagCompound.getBoolean("additive");
             minCoord = IvNBTHelper.readIntArrayFixedSize("min", dimensions, tagCompound);
             maxCoord = IvNBTHelper.readIntArrayFixedSize("max", dimensions, tagCompound);
+            identifier = tagCompound.hasKey("identifier", Constants.NBT.TAG_STRING)
+                    ? tagCompound.getString("identifier") : null;
         }
 
         public NBTTagCompound writeToNBT()
@@ -189,6 +209,7 @@ public class Selection extends ArrayList<Selection.Area> implements NBTCompoundO
             compound.setBoolean("additive", additive);
             compound.setIntArray("min", minCoord);
             compound.setIntArray("max", maxCoord);
+            if (identifier != null) compound.setString("identifier", identifier);
 
             return compound;
         }
@@ -227,6 +248,34 @@ public class Selection extends ArrayList<Selection.Area> implements NBTCompoundO
         public void setAdditive(boolean additive)
         {
             this.additive = additive;
+        }
+
+        @Nullable
+        public String getIdentifier()
+        {
+            return identifier;
+        }
+
+        public void setIdentifier(@Nullable String identifier)
+        {
+            this.identifier = identifier;
+        }
+
+        public Area copy()
+        {
+            return new Area(additive, minCoord.clone(), maxCoord.clone(), identifier);
+        }
+
+        public void transform(AxisAlignedTransform2D transform, int[] size)
+        {
+            int[] minCoord = transform.apply(this.minCoord, size);
+            int[] maxCoord = transform.apply(this.maxCoord, size);
+
+            for (int i = 0; i < minCoord.length; i++)
+            {
+                this.minCoord[i] = Math.min(minCoord[i], maxCoord[i]);
+                this.maxCoord[i] = Math.max(minCoord[i], maxCoord[i]);
+            }
         }
     }
 }

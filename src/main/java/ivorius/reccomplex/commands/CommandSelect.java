@@ -5,6 +5,7 @@
 
 package ivorius.reccomplex.commands;
 
+import ivorius.ivtoolkit.blocks.BlockArea;
 import net.minecraft.command.CommandException;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.math.BlockPos;
@@ -45,19 +46,21 @@ public class CommandSelect extends CommandBase
     public void execute(MinecraftServer server, ICommandSender commandSender, String[] args) throws CommandException
     {
         EntityPlayerMP entityPlayerMP = getCommandSenderAsPlayer(commandSender);
-        StructureEntityInfo structureEntityInfo = RCCommands.getStructureEntityInfo(entityPlayerMP);
+        StructureEntityInfo seInfo = RCCommands.getStructureEntityInfo(entityPlayerMP);
 
         if (args.length >= 1)
         {
             switch (args[0])
             {
                 case "clear":
-                    structureEntityInfo.selectedPoint1 = null;
-                    structureEntityInfo.selectedPoint2 = null;
-                    structureEntityInfo.sendSelectionToClients(entityPlayerMP);
+                    seInfo.selectedPoint1 = null;
+                    seInfo.selectedPoint2 = null;
+                    seInfo.sendSelectionToClients(entityPlayerMP);
                     break;
                 case "get":
-                    commandSender.addChatMessage(ServerTranslations.format("commands.selectSet.get", translatePoint(structureEntityInfo.selectedPoint1), translatePoint(structureEntityInfo.selectedPoint2)));
+                    commandSender.addChatMessage(ServerTranslations.format("commands.selectSet.get", translatePoint(seInfo.selectedPoint1), translatePoint(seInfo.selectedPoint2), translatePoint(seInfo.selectedPoint2)));
+                    if (seInfo.hasValidSelection())
+                        commandSender.addChatMessage(ServerTranslations.format("commands.selectSet.size", translateSize(new BlockArea(seInfo.selectedPoint1, seInfo.selectedPoint2).areaSize())));
                     break;
                 case "both":
                 case "point1":
@@ -66,20 +69,20 @@ public class CommandSelect extends CommandBase
                     {
                         if (!args[0].equals("point2"))
                         {
-                            if (structureEntityInfo.selectedPoint1 == null)
-                                structureEntityInfo.selectedPoint1 = new BlockPos(MathHelper.floor_double(entityPlayerMP.posX), MathHelper.floor_double(entityPlayerMP.posY), MathHelper.floor_double(entityPlayerMP.posZ));
+                            if (seInfo.selectedPoint1 == null)
+                                seInfo.selectedPoint1 = new BlockPos(MathHelper.floor_double(entityPlayerMP.posX), MathHelper.floor_double(entityPlayerMP.posY), MathHelper.floor_double(entityPlayerMP.posZ));
 
-                            structureEntityInfo.selectedPoint1 = RCCommands.parseBlockPos(structureEntityInfo.selectedPoint1, args, 1, false);
+                            seInfo.selectedPoint1 = RCCommands.parseBlockPos(seInfo.selectedPoint1, args, 1, false);
                         }
                         if (!args[0].equals("point1"))
                         {
-                            if (structureEntityInfo.selectedPoint2 == null)
-                                structureEntityInfo.selectedPoint2 = new BlockPos(MathHelper.floor_double(entityPlayerMP.posX), MathHelper.floor_double(entityPlayerMP.posY), MathHelper.floor_double(entityPlayerMP.posZ));
+                            if (seInfo.selectedPoint2 == null)
+                                seInfo.selectedPoint2 = new BlockPos(MathHelper.floor_double(entityPlayerMP.posX), MathHelper.floor_double(entityPlayerMP.posY), MathHelper.floor_double(entityPlayerMP.posZ));
 
-                            structureEntityInfo.selectedPoint2 = RCCommands.parseBlockPos(structureEntityInfo.selectedPoint2, args, 1, false);
+                            seInfo.selectedPoint2 = RCCommands.parseBlockPos(seInfo.selectedPoint2, args, 1, false);
                         }
 
-                        structureEntityInfo.sendSelectionToClients(entityPlayerMP);
+                        seInfo.sendSelectionToClients(entityPlayerMP);
                     }
                     else
                     {
@@ -100,6 +103,13 @@ public class CommandSelect extends CommandBase
     {
         return coord != null
                 ? String.format("[%d,%d,%d]", coord.getX(), coord.getY(), coord.getZ())
+                : ServerTranslations.format("commands.selectSet.point.none");
+    }
+
+    protected Object translateSize(int[] size)
+    {
+        return size != null
+                ? String.format("[%d,%d,%d]", size[0], size[1], size[2])
                 : ServerTranslations.format("commands.selectSet.point.none");
     }
 

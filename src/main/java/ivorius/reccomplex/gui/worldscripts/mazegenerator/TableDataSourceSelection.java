@@ -10,6 +10,7 @@ import ivorius.reccomplex.structures.generic.Selection;
 import net.minecraft.util.text.TextFormatting;
 
 import java.util.Arrays;
+import java.util.function.Function;
 
 /**
  * Created by lukas on 04.06.14.
@@ -17,11 +18,13 @@ import java.util.Arrays;
 public class TableDataSourceSelection extends TableDataSourceList<Selection.Area, Selection>
 {
     private int[] dimensions;
+    public boolean showIdentifier;
 
-    public TableDataSourceSelection(Selection list, int[] dimensions, TableDelegate tableDelegate, TableNavigator navigator)
+    public TableDataSourceSelection(Selection list, int[] dimensions, TableDelegate tableDelegate, TableNavigator navigator, boolean showIdentifier)
     {
         super(list, tableDelegate, navigator);
         this.dimensions = dimensions;
+        this.showIdentifier = showIdentifier;
     }
 
     @Override
@@ -34,13 +37,14 @@ public class TableDataSourceSelection extends TableDataSourceList<Selection.Area
     @Override
     public Selection.Area newEntry(String actionID)
     {
-        return new Selection.Area(true, new int[dimensions.length], new int[dimensions.length]);
+        String identifier = list.size() > 0 ? list.get(0).getIdentifier() : showIdentifier ? "" : null;
+        return new Selection.Area(true, new int[dimensions.length], new int[dimensions.length], identifier);
     }
 
     @Override
     public TableDataSource editEntryDataSource(Selection.Area entry)
     {
-        return new TableDataSourceSelectionArea(entry, dimensions);
+        return new TableDataSourceSelectionArea(entry, dimensions, showIdentifier);
     }
 
 }

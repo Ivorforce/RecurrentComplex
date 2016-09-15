@@ -121,7 +121,7 @@ public class MazeGenerationInfo extends StructureGenerationInfo implements Weigh
 
             String mazeID = JsonUtils.getString(jsonObject, "mazeID");
 
-            JsonObject componentJson = JsonUtils.getJsonobject(jsonObject, "component", new JsonObject());
+            JsonObject componentJson = JsonUtils.getJsonObject(jsonObject, "component", new JsonObject());
 
             Double weight = jsonObject.has("weight") ? JsonUtils.getDouble(jsonObject, "weight") : null;
             if (weight == null) // Legacy, weight was in SavedMazeComponent's JSON

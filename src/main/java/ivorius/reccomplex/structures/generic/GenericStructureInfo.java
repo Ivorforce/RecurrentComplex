@@ -376,7 +376,7 @@ public class GenericStructureInfo implements StructureInfo<GenericStructureInfo.
             if (jsonObject.has("metadata")) // Else, use default
                 structureInfo.metadata = context.deserialize(jsonObject.get("metadata"), Metadata.class);
 
-            structureInfo.customData = JsonUtils.getJsonobject(jsonObject, "customData", new JsonObject());
+            structureInfo.customData = JsonUtils.getJsonObject(jsonObject, "customData", new JsonObject());
 
             return structureInfo;
         }

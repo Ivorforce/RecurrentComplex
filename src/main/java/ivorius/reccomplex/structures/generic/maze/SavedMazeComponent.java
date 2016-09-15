@@ -7,6 +7,7 @@ package ivorius.reccomplex.structures.generic.maze;
 
 import com.google.common.collect.Lists;
 import com.google.gson.*;
+import com.google.gson.reflect.TypeToken;
 import ivorius.ivtoolkit.maze.components.MazeRoom;
 import ivorius.ivtoolkit.tools.IvNBTHelper;
 import ivorius.ivtoolkit.tools.NBTCompoundObject;
@@ -113,7 +114,7 @@ public class SavedMazeComponent implements NBTCompoundObject
 
             if (jsonObject.has("roomArea"))
             {
-                mazeComponent.rooms.addAll(context.<Selection>deserialize(jsonObject.get("roomArea"), Selection.class));
+                mazeComponent.rooms.addAll(context.deserialize(jsonObject.get("roomArea"), new TypeToken<List<Selection.Area>>(){}.getType()));
             }
             if (jsonObject.has("rooms"))
             {

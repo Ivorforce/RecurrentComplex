@@ -18,7 +18,9 @@ import ivorius.reccomplex.gui.table.TableNavigator;
 import ivorius.reccomplex.json.JsonUtils;
 import ivorius.reccomplex.structures.Environment;
 import ivorius.reccomplex.structures.YSelector;
+import ivorius.reccomplex.structures.generic.BlockPattern;
 import ivorius.reccomplex.structures.generic.GenericYSelector;
+import ivorius.reccomplex.structures.generic.Selection;
 import ivorius.reccomplex.structures.generic.matchers.BiomeMatcher;
 import ivorius.reccomplex.structures.generic.matchers.BlockMatcher;
 import ivorius.reccomplex.structures.generic.matchers.EnvironmentMatcher;
@@ -32,6 +34,7 @@ import net.minecraft.world.biome.Biome;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.lang.reflect.Type;
+import java.util.List;
 
 /**
  * Created by lukas on 19.01.15.
@@ -43,20 +46,22 @@ public class SaplingGenerationInfo extends StructureGenerationInfo
     public BlockPos spawnShift;
 
     public EnvironmentMatcher environmentMatcher;
-    public BlockMatcher blockMatcher;
+
+    @Nonnull
+    public BlockPattern pattern;
 
     public SaplingGenerationInfo()
     {
-        this(null, null, BlockPos.ORIGIN, "", "");
+        this(null, null, BlockPos.ORIGIN, "", new BlockPattern());
     }
 
-    public SaplingGenerationInfo(@Nullable String id, Double generationWeight, BlockPos spawnShift, String environmentExpression, String blockExpression)
+    public SaplingGenerationInfo(@Nullable String id, Double generationWeight, BlockPos spawnShift, String environmentExpression, BlockPattern pattern)
     {
         super(id != null ? id : randomID(SaplingGenerationInfo.class));
         this.generationWeight = generationWeight;
         this.spawnShift = spawnShift;
         environmentMatcher = new EnvironmentMatcher(environmentExpression);
-        blockMatcher = new BlockMatcher(RecurrentComplex.specialRegistry, blockExpression);
+        this.pattern = pattern;
     }
 
     @Nonnull
@@ -101,14 +106,10 @@ public class SaplingGenerationInfo extends StructureGenerationInfo
         return environmentMatcher.test(environment);
     }
 
-    public boolean generatesFor(IBlockState state)
+    @Nonnull
+    public BlockPattern getPattern()
     {
-        return blockMatcher.test(state);
-    }
-
-    public boolean generatesFor(Environment environment, IBlockState state)
-    {
-        return environmentMatcher.test(environment) && generatesFor(state);
+        return pattern;
     }
 
     public double getActiveWeight()
@@ -137,9 +138,9 @@ public class SaplingGenerationInfo extends StructureGenerationInfo
             int spawnZ = JsonUtils.getInt(jsonObject, "spawnShiftZ", 0);
 
             String environmentExpression = JsonUtils.getString(jsonObject, "environmentExpression", "");
-            String blockExpression = JsonUtils.getString(jsonObject, "blockExpression", "");
+            BlockPattern pattern = BlockPattern.gson.fromJson(JsonUtils.getJsonObject(jsonObject, "pattern", new JsonObject()), BlockPattern.class);
 
-            return new SaplingGenerationInfo(id, spawnWeight, new BlockPos(spawnX, spawnY, spawnZ), environmentExpression, blockExpression);
+            return new SaplingGenerationInfo(id, spawnWeight, new BlockPos(spawnX, spawnY, spawnZ), environmentExpression, pattern);
         }
 
         @Override
@@ -157,7 +158,7 @@ public class SaplingGenerationInfo extends StructureGenerationInfo
             jsonObject.addProperty("spawnShiftZ", src.spawnShift.getZ());
 
             jsonObject.addProperty("environmentExpression", src.environmentMatcher.getExpression());
-            jsonObject.addProperty("blockExpression", src.blockMatcher.getExpression());
+            jsonObject.add("pattern", BlockPattern.gson.toJsonTree(src.pattern));
 
             return jsonObject;
         }

@@ -33,9 +33,13 @@ public class BlockMatcher extends FunctionExpressionCache<Boolean, IBlockState, 
     public static final String METADATA_PREFIX = "metadata=";
     public static final String PROPERTY_PREFIX = "property[";
 
+    public final MCRegistry registry;
+
     public BlockMatcher(MCRegistry registry, String expression)
     {
         super(RCBoolAlgebra.algebra(), true, TextFormatting.GREEN + "Any Block", expression);
+
+        this.registry = registry;
 
         addTypes(new BlockVariableType(BLOCK_ID_PREFIX, "", registry), t -> t.alias("", ""));
         addTypes(new MetadataVariableType(METADATA_PREFIX, ""), t -> t.alias("#", ""));

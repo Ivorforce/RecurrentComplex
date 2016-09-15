@@ -34,7 +34,7 @@ public class TableDataSourceMazeComponent extends TableDataSourceSegmented
         addManagedSection(0, new TableDataSourceConnector(component.defaultConnector, IvTranslations.get("reccomplex.maze.connector.default")));
         addManagedSection(1, TableCellMultiBuilder.create(navigator, tableDelegate)
                 .addNavigation(() -> IvTranslations.get("reccomplex.gui.edit"), () -> IvTranslations.getLines("reccomplex.generationInfo.mazeComponent.rooms.tooltip"),
-                        () -> new GuiTable(tableDelegate, new TableDataSourceSelection(component.rooms, DEFAULT_MAX_COMPONENT_SIZE, tableDelegate, navigator))
+                        () -> new GuiTable(tableDelegate, new TableDataSourceSelection(component.rooms, DEFAULT_MAX_COMPONENT_SIZE, tableDelegate, navigator, false))
                 ).buildDataSource(IvTranslations.get("reccomplex.generationInfo.mazeComponent.rooms")));
         addManagedSection(2, TableCellMultiBuilder.create(navigator, tableDelegate)
                 .addNavigation(() -> IvTranslations.get("reccomplex.gui.edit"), () -> IvTranslations.getLines("reccomplex.generationInfo.mazeComponent.exits.tooltip"),

@@ -19,23 +19,35 @@ public class TableDataSourceSelectionArea extends TableDataSourceSegmented
     private Selection.Area area;
 
     private int[] dimensions;
+    private boolean showIdentifier;
 
-    public TableDataSourceSelectionArea(Selection.Area area, int[] dimensions)
+    public TableDataSourceSelectionArea(Selection.Area area, int[] dimensions, boolean showIdentifier)
     {
         this.area = area;
         this.dimensions = dimensions;
+        this.showIdentifier = showIdentifier;
     }
 
     @Override
     public int numberOfSegments()
     {
-        return 2;
+        return showIdentifier ? 3 : 2;
     }
 
     @Override
     public int sizeOfSegment(int segment)
     {
-        return segment == 1 ? 3 : 1;
+        switch (segment)
+        {
+            case 0:
+                return 1;
+            case 1:
+                return 3;
+            case 2:
+                return 1;
+            default:
+                return super.sizeOfSegment(segment);
+        }
     }
 
     @Override
@@ -57,7 +69,13 @@ public class TableDataSourceSelectionArea extends TableDataSourceSegmented
             cell.addPropertyConsumer(val -> area.setCoord(index, val.getMin(), val.getMax()));
             return new TableElementCell(title, cell);
         }
+        else if (segment == 2)
+        {
+            TableCellString cell = new TableCellString("", area.getIdentifier() != null ? area.getIdentifier() : "");
+            cell.addPropertyConsumer(area::setIdentifier);
+            return new TableElementCell(IvTranslations.get("reccomplex.selection.area.identifier"), cell);
+        }
 
-        return null;
+        return super.elementForIndexInSegment(table, index, segment);
     }
 }

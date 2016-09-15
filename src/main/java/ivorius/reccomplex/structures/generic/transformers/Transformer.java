@@ -13,6 +13,7 @@ import ivorius.reccomplex.structures.*;
 import ivorius.reccomplex.utils.NBTStorable;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.nbt.NBTBase;
+import net.minecraft.util.math.BlockPos;
 
 import javax.annotation.Nonnull;
 import java.util.Random;
@@ -66,7 +67,7 @@ public abstract class Transformer<S extends NBTStorable>
 
     public abstract S loadInstanceData(StructureLoadContext context, NBTBase nbt);
 
-    public abstract boolean skipGeneration(Environment environment, S instanceData, IBlockState state);
+    public abstract boolean skipGeneration(S instanceData, Environment environment, BlockPos pos, IBlockState state);
 
     public abstract void transform(S instanceData, Phase phase, StructureSpawnContext context, IvWorldData worldData, TransformerMulti transformer, TransformerMulti.InstanceData transformerID);
 

@@ -144,7 +144,7 @@ public class GenericStructureInfo implements StructureInfo<GenericStructureInfo.
 
                 BlockPos worldPos = context.transform.apply(sourceCoord, areaSize).add(origin);
                 if (context.includes(worldPos) && RecurrentComplex.specialRegistry.isSafe(state.getBlock())
-                        && pass == getPass(state) && (context.generateAsSource || !transformer.skipGeneration(context.environment, instanceData.transformerData, state)))
+                        && pass == getPass(state) && (context.generateAsSource || !transformer.skipGeneration(instanceData.transformerData, context.environment, worldPos, state)))
                 {
                     TileEntity origTileEntity = origTileEntities.get(sourceCoord);
 

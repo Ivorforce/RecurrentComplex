@@ -23,6 +23,7 @@ import ivorius.reccomplex.utils.NBTStorable;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.math.BlockPos;
 import org.apache.commons.lang3.tuple.Pair;
 
 import javax.annotation.Nullable;
@@ -51,9 +52,9 @@ public class TransformerMulti extends Transformer<TransformerMulti.InstanceData>
         this.environmentMatcher = new EnvironmentMatcher(expression);
     }
 
-    public static boolean skips(Environment environment, List<Pair<Transformer, NBTStorable>> transformers, final IBlockState state)
+    public static boolean skips(Environment environment, List<Pair<Transformer, NBTStorable>> transformers, BlockPos pos, final IBlockState state)
     {
-        return transformers.stream().anyMatch(input -> input.getLeft().skipGeneration(environment, input.getRight(), state));
+        return transformers.stream().anyMatch(input -> input.getLeft().skipGeneration(input.getRight(), environment, pos, state));
     }
 
     public List<Transformer> getTransformers()
@@ -105,9 +106,10 @@ public class TransformerMulti extends Transformer<TransformerMulti.InstanceData>
     }
 
     @Override
-    public boolean skipGeneration(Environment environment, InstanceData instanceData, IBlockState state)
+    public boolean skipGeneration(InstanceData instanceData, Environment environment, BlockPos pos, IBlockState state)
     {
-        return !instanceData.deactivated && skips(environment, instanceData.pairedTransformers, state);
+        return !instanceData.deactivated && instanceData.pairedTransformers.stream()
+                .anyMatch(input -> input.getLeft().skipGeneration(input.getRight(), environment, pos, state));
     }
 
     @Override

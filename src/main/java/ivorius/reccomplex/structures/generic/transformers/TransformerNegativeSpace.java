@@ -23,6 +23,7 @@ import ivorius.reccomplex.structures.generic.matchers.BlockMatcher;
 import net.minecraft.block.state.IBlockState;
 import ivorius.reccomplex.utils.NBTNone;
 import net.minecraft.nbt.NBTBase;
+import net.minecraft.util.math.BlockPos;
 
 import javax.annotation.Nullable;
 import java.lang.reflect.Type;
@@ -46,7 +47,7 @@ public class TransformerNegativeSpace extends Transformer<NBTNone>
     }
 
     @Override
-    public boolean skipGeneration(Environment environment, NBTNone instanceData, IBlockState state)
+    public boolean skipGeneration(NBTNone instanceData, Environment environment, BlockPos pos, IBlockState state)
     {
         return sourceMatcher.test(state);
     }

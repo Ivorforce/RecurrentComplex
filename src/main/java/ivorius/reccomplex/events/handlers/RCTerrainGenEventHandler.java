@@ -3,7 +3,7 @@
  *  * http://ivorius.net
  */
 
-package ivorius.reccomplex.events;
+package ivorius.reccomplex.events.handlers;
 
 import ivorius.reccomplex.worldgen.sapling.RCSaplingGenerator;
 import net.minecraft.world.WorldServer;

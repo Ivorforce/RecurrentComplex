@@ -1,11 +1,12 @@
 /*
  *  Copyright (c) 2014, Lukas Tenbrink.
- *  * http://lukas.axxim.net
+ *  * http://ivorius.net
  */
 
-package ivorius.reccomplex.events;
+package ivorius.reccomplex.events.handlers;
 
 import ivorius.reccomplex.RecurrentComplex;
+import ivorius.reccomplex.events.ItemGenerationEvent;
 import ivorius.reccomplex.worldgen.sapling.RCSaplingGenerator;
 import net.minecraft.entity.Entity;
 import net.minecraft.nbt.NBTBase;

@@ -40,6 +40,7 @@ import org.apache.commons.lang3.tuple.Pair;
 import org.apache.commons.lang3.tuple.Triple;
 
 import javax.annotation.Nullable;
+import java.nio.file.Path;
 import java.util.*;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
@@ -80,21 +81,21 @@ public class StructureRegistry
         return builder.create();
     }
 
-    public boolean registerStructure(StructureInfo info, String key, String domain, boolean generates, boolean custom)
+    public boolean registerStructure(StructureInfo info, String id, String domain, Path path, boolean generates, boolean custom)
     {
-        StructureRegistrationEvent.Pre event = new StructureRegistrationEvent.Pre(key, info, generates);
+        StructureRegistrationEvent.Pre event = new StructureRegistrationEvent.Pre(info, id, domain, path, generates);
         RCEventBus.INSTANCE.post(event);
 
-        if (event.getResult() != Event.Result.DENY && RCConfig.shouldStructureLoad(key, domain))
+        if (event.getResult() != Event.Result.DENY && RCConfig.shouldStructureLoad(id, domain))
         {
-            String baseString = allStructures.put(key, info, custom) != null ? "Replaced structure '%s'" : "Registered structure '%s'";
-            RecurrentComplex.logger.info(String.format(baseString, key));
+            String baseString = allStructures.put(id, info, custom) != null ? "Replaced structure '%s'" : "Registered structure '%s'";
+            RecurrentComplex.logger.info(String.format(baseString, id));
 
-            structureData.put(key, new StructureData(!event.shouldGenerate, domain), custom);
+            structureData.put(id, new StructureData(!event.shouldGenerate, domain), custom);
 
             clearCaches();
 
-            RCEventBus.INSTANCE.post(new StructureRegistrationEvent.Post(key, info, generates));
+            RCEventBus.INSTANCE.post(new StructureRegistrationEvent.Post(info, id, domain, path, generates));
 
             return true;
         }

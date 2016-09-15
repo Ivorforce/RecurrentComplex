@@ -233,7 +233,7 @@ public class StructureSaveHandler implements FileTypeHandler
 
             String structureID = context.customID != null ? context.customID : FilenameUtils.getBaseName(path.getFileName().toString());
 
-            if (registry.registerStructure(genericStructureInfo, structureID, context.domain, context.active, context.custom))
+            if (registry.registerStructure(genericStructureInfo, structureID, context.domain, path, context.active, context.custom))
                 return true;
         }
         catch (IOException | StructureLoadException e)

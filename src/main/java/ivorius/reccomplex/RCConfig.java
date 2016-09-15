@@ -45,6 +45,8 @@ public class RCConfig
     public static boolean avoidOverlappingGeneration;
     public static boolean honorStructureGenerationOption;
 
+    public static boolean generateTrees;
+
     public static int baseVillageSpawnWeight;
     public static double baseSaplingSpawnWeight;
 
@@ -100,6 +102,8 @@ public class RCConfig
             honorStructureGenerationOption = RecurrentComplex.config.getBoolean("honorStructureGenerationOption", CATEGORY_BALANCING, true, "If disabled, Recurrent Complex will generate structures in worlds without the structure generation option.");
             baseVillageSpawnWeight = RecurrentComplex.config.getInt("baseVillageSpawnWeight", CATEGORY_BALANCING, 10, 0, 100000, "The base weight of RC village generation types. Vanilla average is about 10 - if you want to fully replace vanilla structures in villages, crank this up to something big.");
             baseSaplingSpawnWeight = RecurrentComplex.config.getFloat("baseSaplingSpawnWeight", CATEGORY_BALANCING, 0.2f, 0, 1000, "The base weight of RC sapling generation types. The vanilla tree weight is 1 - if you want to fully replace vanilla trees, crank this up to something big.");
+
+            generateTrees = RecurrentComplex.config.getBoolean("generateTrees", CATEGORY_BALANCING, true, "Whether the trees added by the mod should be actively generating.");
 
             minDistToSpawnForGeneration = RecurrentComplex.config.getFloat("minDistToSpawnForGeneration", CATEGORY_BALANCING, 30.0f, 0.0f, 500.0f, "Within this block radius, default structures won't spawn (in the main dimension).");
             structureSpawnChanceModifier = RecurrentComplex.config.getFloat("structureSpawnChance", CATEGORY_BALANCING, 1.0f, 0.0f, 10.0f, "How often do structures spawn?");

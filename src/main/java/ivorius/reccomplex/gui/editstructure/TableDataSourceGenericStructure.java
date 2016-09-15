@@ -13,8 +13,10 @@ import ivorius.reccomplex.gui.table.*;
 import ivorius.reccomplex.structures.StructureInfos;
 import ivorius.reccomplex.structures.StructureRegistry;
 import ivorius.reccomplex.structures.generic.GenericStructureInfo;
+import ivorius.reccomplex.structures.generic.transformers.TransformerMulti;
 import ivorius.reccomplex.utils.SaveDirectoryData;
 
+import java.util.Arrays;
 import java.util.Set;
 
 /**
@@ -51,7 +53,9 @@ public class TableDataSourceGenericStructure extends TableDataSourceSegmented
         addManagedSection(6, TableCellMultiBuilder.create(navigator, delegate)
                 .addNavigation(() -> IvTranslations.get("reccomplex.gui.edit"), null,
                         () -> new GuiTable(delegate, structureInfo.transformer.tableDataSource(navigator, delegate))
-                ).buildDataSource(IvTranslations.get("reccomplex.structure.transformers"), IvTranslations.getLines("reccomplex.structure.transformers.tooltip")));
+                )
+                .addAction(() -> IvTranslations.get("reccomplex.gui.reset"), null, () -> structureInfo.transformer = new TransformerMulti(null, "", Arrays.asList(GenericStructureInfo.createDefaultTransformers())))
+                .buildDataSource(IvTranslations.get("reccomplex.structure.transformers"), IvTranslations.getLines("reccomplex.structure.transformers.tooltip")));
     }
 
     public GenericStructureInfo getStructureInfo()

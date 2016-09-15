@@ -496,6 +496,7 @@ reccomplex.gui.presets=Presets
 reccomplex.gui.command=Command
 reccomplex.gui.custom=Custom
 reccomplex.gui.customize=Customize
+reccomplex.gui.reset=Reset
 
 reccomplex.rotation=Rotation
 reccomplex.mirror=Rotation

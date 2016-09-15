@@ -8,7 +8,6 @@ package ivorius.reccomplex.structures;
 import net.minecraft.util.math.BlockPos;
 import ivorius.ivtoolkit.math.AxisAlignedTransform2D;
 import net.minecraft.block.state.IBlockState;
-import net.minecraft.world.WorldServer;
 import net.minecraft.world.gen.structure.StructureBoundingBox;
 
 import javax.annotation.Nonnull;
@@ -35,9 +34,9 @@ public class StructureSpawnContext
     public final int generationLayer;
 
     public final boolean generateAsSource;
-    public final boolean isFirstTime;
+    public final GenerateMaturity generateMaturity;
 
-    public StructureSpawnContext(@Nonnull Environment environment, @Nonnull Random random, @Nonnull AxisAlignedTransform2D transform, @Nonnull StructureBoundingBox boundingBox, @Nullable StructureBoundingBox generationBB, int generationLayer, boolean generateAsSource, boolean isFirstTime)
+    public StructureSpawnContext(@Nonnull Environment environment, @Nonnull Random random, @Nonnull AxisAlignedTransform2D transform, @Nonnull StructureBoundingBox boundingBox, @Nullable StructureBoundingBox generationBB, int generationLayer, boolean generateAsSource, GenerateMaturity generateMaturity)
     {
         this.environment = environment;
         this.random = random;
@@ -46,7 +45,7 @@ public class StructureSpawnContext
         this.generationBB = generationBB;
         this.generationLayer = generationLayer;
         this.generateAsSource = generateAsSource;
-        this.isFirstTime = isFirstTime;
+        this.generateMaturity = generateMaturity;
     }
 
     public boolean includes(BlockPos coord)
@@ -78,5 +77,15 @@ public class StructureSpawnContext
         }
 
         return false; // world.setBlock returns false on 'no change'
+    }
+
+    public boolean isFirstTime()
+    {
+        return generateMaturity != GenerateMaturity.COMPLEMENT;
+    }
+
+    public enum GenerateMaturity
+    {
+        SUGGEST, FIRST, COMPLEMENT
     }
 }

@@ -26,6 +26,12 @@ public abstract class TransformerSingleBlock<S extends NBTStorable> extends Tran
     }
 
     @Override
+    public boolean mayGenerate(S instanceData, StructureSpawnContext context, IvWorldData worldData, TransformerMulti transformer, TransformerMulti.InstanceData transformerID)
+    {
+        return true;
+    }
+
+    @Override
     public boolean skipGeneration(S instanceData, Environment environment, BlockPos pos, IBlockState state)
     {
         return matches(environment, instanceData, state);

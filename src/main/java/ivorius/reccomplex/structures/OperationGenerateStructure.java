@@ -79,7 +79,7 @@ public class OperationGenerateStructure implements Operation
         else
         {
             new StructureGenerator<>(structure).world(world)
-                    .structureID(structureIDForSaving).transform(transform).lowerCoord(lowerCoord).maturity(StructureGenerator.Maturity.FIRST).generate();
+                    .structureID(structureIDForSaving).transform(transform).lowerCoord(lowerCoord).maturity(StructureSpawnContext.GenerateMaturity.FIRST).generate();
         }
     }
 

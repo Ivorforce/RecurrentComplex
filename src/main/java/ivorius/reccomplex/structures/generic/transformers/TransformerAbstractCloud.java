@@ -136,6 +136,12 @@ public abstract class TransformerAbstractCloud<S extends TransformerAbstractClou
     }
 
     @Override
+    public boolean mayGenerate(S instanceData, StructureSpawnContext context, IvWorldData worldData, TransformerMulti transformer, TransformerMulti.InstanceData transformerID)
+    {
+        return true;
+    }
+
+    @Override
     public void transform(S instanceData, Transformer.Phase phase, StructureSpawnContext context, IvWorldData worldData, TransformerMulti transformer, TransformerMulti.InstanceData transformerID)
     {
         if (generatesInPhase(instanceData, phase))

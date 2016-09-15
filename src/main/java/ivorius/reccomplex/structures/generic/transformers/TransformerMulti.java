@@ -106,6 +106,13 @@ public class TransformerMulti extends Transformer<TransformerMulti.InstanceData>
     }
 
     @Override
+    public boolean mayGenerate(InstanceData instanceData, StructureSpawnContext context, IvWorldData worldData, TransformerMulti transformer, InstanceData transformerID)
+    {
+        return instanceData.deactivated || instanceData.pairedTransformers.stream()
+                .allMatch(input -> input.getLeft().mayGenerate(input.getRight(), context, worldData, transformer, transformerID));
+    }
+
+    @Override
     public boolean skipGeneration(InstanceData instanceData, Environment environment, BlockPos pos, IBlockState state)
     {
         return !instanceData.deactivated && instanceData.pairedTransformers.stream()

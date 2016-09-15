@@ -19,7 +19,7 @@ import java.util.List;
  */
 public interface StructureInfo<S extends NBTStorable>
 {
-    void generate(@Nonnull StructureSpawnContext context, @Nonnull S instanceData);
+    boolean generate(@Nonnull StructureSpawnContext context, @Nonnull S instanceData);
 
     @Nonnull
     S prepareInstanceData(@Nonnull StructurePrepareContext context);

@@ -106,11 +106,17 @@ public class GenericStructureInfo implements StructureInfo<GenericStructureInfo.
     }
 
     @Override
-    public void generate(@Nonnull final StructureSpawnContext context, @Nonnull InstanceData instanceData)
+    public boolean generate(@Nonnull final StructureSpawnContext context, @Nonnull InstanceData instanceData)
     {
         WorldServer world = context.environment.world;
         Random random = context.random;
         IvWorldData worldData = constructWorldData();
+
+        if (context.generateMaturity == StructureSpawnContext.GenerateMaturity.SUGGEST)
+        {
+            if (!transformer.mayGenerate(instanceData.transformerData, context, worldData, transformer, instanceData.transformerData))
+                return false;
+        }
 
         // The world initializes the block event array after it generates the world - in the constructor
         // This hackily sets the field to a temporary value. Yay.
@@ -214,6 +220,8 @@ public class GenericStructureInfo implements StructureInfo<GenericStructureInfo.
         {
             RecurrentComplex.logger.warn("Structure generated with over " + MAX_GENERATING_LAYERS + " layers; most likely infinite loop!");
         }
+
+        return true;
     }
 
     private static double[] getEntityPos(NBTTagCompound compound)

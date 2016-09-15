@@ -12,16 +12,19 @@ import ivorius.ivtoolkit.math.AxisAlignedTransform2D;
 import ivorius.ivtoolkit.random.WeightedSelector;
 import ivorius.reccomplex.RCConfig;
 import ivorius.reccomplex.structures.*;
+import ivorius.reccomplex.structures.generic.BlockPattern;
 import ivorius.reccomplex.structures.generic.gentypes.SaplingGenerationInfo;
 import ivorius.reccomplex.utils.BlockSurfacePos;
 import ivorius.reccomplex.utils.RCFunctions;
 import ivorius.reccomplex.worldgen.StructureGenerator;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.WorldServer;
 import net.minecraft.world.gen.structure.StructureBoundingBox;
 import org.apache.commons.lang3.tuple.Pair;
 
 import java.util.*;
+import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
 /**
@@ -76,13 +79,22 @@ public class RCSaplingGenerator
         Collection<BlockPos> transformedPositions = placeables.get(transform);
         BlockPos startPos = Lists.newArrayList(transformedPositions).get(random.nextInt(transformedPositions.size()));
 
-        saplingGenInfo.pattern.setToAir(world, startPos, transform, strucSize);
+        Map<BlockPos, IBlockState> before = new HashMap<>();
+        Consumer<Map.Entry<int[],String>> consumer = entry -> {
+            BlockPos ePos = BlockPattern.toBlockPos(entry.getKey()).add(startPos);
+            before.put(ePos, world.getBlockState(ePos));
+            world.setBlockToAir(ePos);
+        };
+        saplingGenInfo.pattern.copy(transform, strucSize).forEach(consumer);
 
         BlockPos spawnPos = transform.apply(saplingGenInfo.spawnShift, new int[]{1, 1, 1}).add(startPos);
 
-        new StructureGenerator<>(structure).world(world).transform(transform)
-                .random(random).maturity(StructureGenerator.Maturity.SUGGEST).memorize(false)
-                .randomPosition(BlockSurfacePos.from(spawnPos), (w, r, b) -> spawnPos.getY()).generate();
+        boolean success = new StructureGenerator<>(structure).world(world).transform(transform)
+                .random(random).maturity(StructureSpawnContext.GenerateMaturity.SUGGEST).memorize(false)
+                .randomPosition(BlockSurfacePos.from(spawnPos), (w, r, b) -> spawnPos.getY()).generate() != null;
+
+        if (!success)
+            before.forEach(world::setBlockState);
 
         return true;
     }

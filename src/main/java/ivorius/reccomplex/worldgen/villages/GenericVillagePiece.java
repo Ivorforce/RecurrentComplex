@@ -160,7 +160,7 @@ public class GenericVillagePiece extends StructureVillagePieces.Village
         boolean firstTime = !startedGeneration;
         new StructureGenerator<T>(structureInfo).environment(environment(world))
                 .random(random).lowerCoord(lowerCoord).transform(transform).generationBB(toFloorBB)
-                .generationLayer(componentType).structureID(structureID).maturity(firstTime ? StructureGenerator.Maturity.FIRST : StructureGenerator.Maturity.COMPLEMENT)
+                .generationLayer(componentType).structureID(structureID).maturity(firstTime ? StructureSpawnContext.GenerateMaturity.FIRST : StructureSpawnContext.GenerateMaturity.COMPLEMENT)
                 .instanceData(this.instanceData).generate();
 
         startedGeneration = true;

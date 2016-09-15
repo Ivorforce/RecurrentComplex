@@ -9,7 +9,6 @@ import com.google.common.collect.Multimap;
 import com.google.gson.*;
 import com.google.gson.reflect.TypeToken;
 import ivorius.ivtoolkit.math.AxisAlignedTransform2D;
-import ivorius.ivtoolkit.maze.components.MazeRoom;
 import ivorius.ivtoolkit.tools.GuavaCollectors;
 import ivorius.ivtoolkit.tools.MCRegistry;
 import ivorius.ivtoolkit.tools.NBTCompoundObject;
@@ -18,6 +17,7 @@ import ivorius.reccomplex.RecurrentComplex;
 import ivorius.reccomplex.json.JsonUtils;
 import ivorius.reccomplex.structures.generic.matchers.BlockMatcher;
 import ivorius.reccomplex.utils.Transforms;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
@@ -26,7 +26,9 @@ import javax.annotation.Nonnull;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+import java.util.function.Consumer;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -79,7 +81,7 @@ public class BlockPattern implements NBTCompoundObject
     }
 
     @Nonnull
-    protected BlockPattern copy(AxisAlignedTransform2D transform, int[] size)
+    public BlockPattern copy(AxisAlignedTransform2D transform, int[] size)
     {
         BlockPattern transformed = copy();
         transformed.transform(transform, size);
@@ -135,17 +137,11 @@ public class BlockPattern implements NBTCompoundObject
         NBTCompoundObjects.writeListTo(compound, "ingredients", ingredients);
     }
 
-    public void setToAir(World world, BlockPos pos, AxisAlignedTransform2D transform, int[] size)
-    {
-        BlockPattern transformed = copy(transform, size);
-        transformed.setToAir(world, pos);
-    }
-
-    public void setToAir(World world, BlockPos pos)
+    public void forEach(Consumer<Map.Entry<int[], String>> consumer)
     {
         pattern.compile(true).entrySet().stream()
                 .filter(entry -> findIngredient(entry.getValue()).filter(i -> i.delete).isPresent())
-                .forEach(entry -> world.setBlockToAir(toBlockPos(entry.getKey()).add(pos)));
+                .forEach(consumer);
     }
 
     public static class Ingredient implements NBTCompoundObject

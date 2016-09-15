@@ -351,6 +351,8 @@ reccomplex.transformer.ruins.vines.tooltip=The chance for vines and moss<br>to s
 
 reccomplex.transformer.negativeSpace=Negative Space
 reccomplex.transformer.negativeSpace.tooltip=Makes the generation ignore blocks
+reccomplex.transformer.ensureSpace=Ensure Space
+reccomplex.transformer.ensureSpace.tooltip=Cancels the generation if<br>any placed blocks don't have space.
 
 reccomplex.biomePreset.clear=Clear
 reccomplex.biomePreset.clear.tooltip=No Biomes

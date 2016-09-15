@@ -1,16 +1,17 @@
 /*
  *  Copyright (c) 2014, Lukas Tenbrink.
- *  * http://lukas.axxim.net
+ *  * http://ivorius.net
  */
 
 package ivorius.reccomplex.structures.generic.transformers;
 
 import com.google.gson.*;
+import ivorius.ivtoolkit.blocks.IvBlockCollection;
 import ivorius.ivtoolkit.tools.IvWorldData;
 import ivorius.ivtoolkit.tools.MCRegistry;
 import ivorius.reccomplex.RecurrentComplex;
 import ivorius.reccomplex.blocks.RCBlocks;
-import ivorius.reccomplex.gui.editstructure.transformers.TableDataSourceBTNegativeSpace;
+import ivorius.reccomplex.gui.editstructure.transformers.TableDataSourceBTEnsureSpace;
 import ivorius.reccomplex.gui.table.TableDataSource;
 import ivorius.reccomplex.gui.table.TableDelegate;
 import ivorius.reccomplex.gui.table.TableNavigator;
@@ -20,8 +21,8 @@ import ivorius.reccomplex.structures.StructureLoadContext;
 import ivorius.reccomplex.structures.StructurePrepareContext;
 import ivorius.reccomplex.structures.StructureSpawnContext;
 import ivorius.reccomplex.structures.generic.matchers.BlockMatcher;
-import net.minecraft.block.state.IBlockState;
 import ivorius.reccomplex.utils.NBTNone;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.nbt.NBTBase;
 import net.minecraft.util.math.BlockPos;
 
@@ -31,19 +32,19 @@ import java.lang.reflect.Type;
 /**
  * Created by lukas on 25.05.14.
  */
-public class TransformerNegativeSpace extends Transformer<NBTNone>
+public class TransformerEnsureSpace extends Transformer<NBTNone>
 {
     public BlockMatcher sourceMatcher;
     public BlockMatcher destMatcher;
 
-    public TransformerNegativeSpace()
+    public TransformerEnsureSpace()
     {
-        this(null, BlockMatcher.of(RecurrentComplex.specialRegistry, RCBlocks.genericSpace, 0), "");
+        this(null, BlockMatcher.of(RecurrentComplex.specialRegistry, RCBlocks.genericSpace, 0), "!(is.air | is.leaves)");
     }
 
-    public TransformerNegativeSpace(@Nullable String id, String sourceExpression, String destExpression)
+    public TransformerEnsureSpace(@Nullable String id, String sourceExpression, String destExpression)
     {
-        super(id != null ? id : randomID(TransformerNegativeSpace.class));
+        super(id != null ? id : randomID(TransformerEnsureSpace.class));
         this.sourceMatcher = new BlockMatcher(RecurrentComplex.specialRegistry, sourceExpression);
         this.destMatcher = new BlockMatcher(RecurrentComplex.specialRegistry, destExpression);
     }
@@ -51,13 +52,26 @@ public class TransformerNegativeSpace extends Transformer<NBTNone>
     @Override
     public boolean mayGenerate(NBTNone instanceData, StructureSpawnContext context, IvWorldData worldData, TransformerMulti transformer, TransformerMulti.InstanceData transformerID)
     {
+        IvBlockCollection blockCollection = worldData.blockCollection;
+        int[] areaSize = new int[]{blockCollection.width, blockCollection.height, blockCollection.length};
+        BlockPos lowerCoord = context.lowerCoord();
+
+        for (BlockPos sourceCoord : blockCollection.area())
+        {
+            BlockPos worldCoord = context.transform.apply(sourceCoord, areaSize).add(lowerCoord);
+            IBlockState state = blockCollection.getBlockState(sourceCoord);
+
+            if (!sourceMatcher.test(state) && (destMatcher.expressionIsEmpty() || destMatcher.test(context.environment.world.getBlockState(worldCoord))))
+                return false;
+        }
+
         return true;
     }
 
     @Override
     public boolean skipGeneration(NBTNone instanceData, Environment environment, BlockPos pos, IBlockState state)
     {
-        return sourceMatcher.test(state) && (destMatcher.expressionIsEmpty() || destMatcher.test(environment.world.getBlockState(pos)));
+        return false;
     }
 
     @Override
@@ -69,13 +83,13 @@ public class TransformerNegativeSpace extends Transformer<NBTNone>
     @Override
     public String getDisplayString()
     {
-        return "Space: " + sourceMatcher.getDisplayString(null);
+        return "Ensure Space: " + sourceMatcher.getDisplayString(null);
     }
 
     @Override
     public TableDataSource tableDataSource(TableNavigator navigator, TableDelegate delegate)
     {
-        return new TableDataSourceBTNegativeSpace(this, navigator, delegate);
+        return new TableDataSourceBTEnsureSpace(this, navigator, delegate);
     }
 
     @Override
@@ -90,7 +104,7 @@ public class TransformerNegativeSpace extends Transformer<NBTNone>
         return new NBTNone();
     }
 
-    public static class Serializer implements JsonDeserializer<TransformerNegativeSpace>, JsonSerializer<TransformerNegativeSpace>
+    public static class Serializer implements JsonDeserializer<TransformerEnsureSpace>, JsonSerializer<TransformerEnsureSpace>
     {
         private MCRegistry registry;
 
@@ -100,23 +114,20 @@ public class TransformerNegativeSpace extends Transformer<NBTNone>
         }
 
         @Override
-        public TransformerNegativeSpace deserialize(JsonElement jsonElement, Type par2Type, JsonDeserializationContext context)
+        public TransformerEnsureSpace deserialize(JsonElement jsonElement, Type par2Type, JsonDeserializationContext context)
         {
-            JsonObject jsonObject = JsonUtils.asJsonObject(jsonElement, "transformerNegativeSpace");
+            JsonObject jsonObject = JsonUtils.asJsonObject(jsonElement, "transformerEnsureSpace");
 
             String id = JsonUtils.getString(jsonObject, "id", null);
 
-            String expression = TransformerReplace.Serializer.readLegacyMatcher(jsonObject, "source", "sourceMetadata"); // Legacy
-            if (expression == null)
-                expression = JsonUtils.getString(jsonObject, "sourceExpression", "");
-
+            String expression = JsonUtils.getString(jsonObject, "sourceExpression", "");
             String destExpression = JsonUtils.getString(jsonObject, "destExpression", "");
 
-            return new TransformerNegativeSpace(id, expression, destExpression);
+            return new TransformerEnsureSpace(id, expression, destExpression);
         }
 
         @Override
-        public JsonElement serialize(TransformerNegativeSpace transformer, Type par2Type, JsonSerializationContext context)
+        public JsonElement serialize(TransformerEnsureSpace transformer, Type par2Type, JsonSerializationContext context)
         {
             JsonObject jsonObject = new JsonObject();
 

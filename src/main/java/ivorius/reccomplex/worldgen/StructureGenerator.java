@@ -62,7 +62,7 @@ public class StructureGenerator<S extends NBTStorable>
     private int generationLayer = 0;
 
     private boolean generateAsSource = false;
-    private Maturity maturity = Maturity.FIRST;
+    private StructureSpawnContext.GenerateMaturity generateMaturity = StructureSpawnContext.GenerateMaturity.FIRST;
 
     @Nullable
     private S instanceData;
@@ -109,14 +109,14 @@ public class StructureGenerator<S extends NBTStorable>
 
         StructureInfo<S> structureInfo = structure();
         String structureID = structureID();
-        boolean firstTime = context.isFirstTime;
+        boolean firstTime = context.isFirstTime();
 
         WorldServer world = context.environment.world;
 
         int[] sizeInts = sizeInts(context.boundingBox);
         int[] coordInts = coordInts(context.boundingBox);
 
-        if (maturity() != Maturity.SUGGEST || (
+        if (maturity() != StructureSpawnContext.GenerateMaturity.SUGGEST || (
                 context.boundingBox.minY >= MIN_DIST_TO_LIMIT && context.boundingBox.maxY <= world.getHeight() - 1 - MIN_DIST_TO_LIMIT
                         && (!RCConfig.avoidOverlappingGeneration || !memorize || StructureGenerationData.get(world).getEntriesAt(context.boundingBox).size() == 0)
                         && !RCEventBus.INSTANCE.post(new StructureGenerationEvent.Suggest(structureInfo, context))
@@ -129,9 +129,9 @@ public class StructureGenerator<S extends NBTStorable>
                 MinecraftForge.EVENT_BUS.post(new StructureGenerationEventLite.Pre(world, structureID, coordInts, sizeInts, context.generationLayer));
             }
 
-            structureInfo.generate(context, instanceData());
+            boolean success = structureInfo.generate(context, instanceData());
 
-            if (firstTime)
+            if (firstTime && success)
             {
                 RecurrentComplex.logger.trace(String.format("Generated structure '%s' in %s", name(structureID), context.boundingBox));
 
@@ -142,7 +142,7 @@ public class StructureGenerator<S extends NBTStorable>
                     StructureGenerationData.get(world).addCompleteEntry(structureID, context.lowerCoord(), context.transform);
             }
 
-            return context;
+            return success ? context : null;
         }
         else
             RecurrentComplex.logger.trace(String.format("Canceled structure '%s' generation in %s", structureID, context.boundingBox));
@@ -154,7 +154,7 @@ public class StructureGenerator<S extends NBTStorable>
     {
         return environment(context.environment).random(context.random).transform(context.transform)
                 .generationBB(context.generationBB).generationLayer(context.generationLayer + 1)
-                .asSource(context.generateAsSource).maturity(context.isFirstTime ? Maturity.FIRST : Maturity.COMPLEMENT);
+                .asSource(context.generateAsSource).maturity(context.isFirstTime() ? StructureSpawnContext.GenerateMaturity.FIRST : StructureSpawnContext.GenerateMaturity.COMPLEMENT);
     }
 
     public StructureGenerator<S> world(@Nonnull WorldServer world)
@@ -322,15 +322,15 @@ public class StructureGenerator<S extends NBTStorable>
         return this;
     }
 
-    public StructureGenerator<S> maturity(Maturity maturity)
+    public StructureGenerator<S> maturity(StructureSpawnContext.GenerateMaturity generateMaturity)
     {
-        this.maturity = maturity;
+        this.generateMaturity = generateMaturity;
         return this;
     }
 
-    public Maturity maturity()
+    public StructureSpawnContext.GenerateMaturity maturity()
     {
-        return maturity;
+        return generateMaturity;
     }
 
     public StructureGenerator<S> instanceData(S s)
@@ -373,11 +373,7 @@ public class StructureGenerator<S extends NBTStorable>
 
     public StructureSpawnContext spawn()
     {
-        return new StructureSpawnContext(environment(), random(), transform(), boundingBox(), generationBB, generationLayer, generateAsSource, maturity != Maturity.COMPLEMENT);
+        return new StructureSpawnContext(environment(), random(), transform(), boundingBox(), generationBB, generationLayer, generateAsSource, generateMaturity);
     }
 
-    public enum Maturity
-    {
-        SUGGEST, FIRST, COMPLEMENT
-    }
 }

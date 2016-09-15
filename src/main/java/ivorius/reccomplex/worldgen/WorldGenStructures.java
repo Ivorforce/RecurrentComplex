@@ -78,7 +78,7 @@ public class WorldGenStructures
         if (!naturalGenInfo.hasLimitations() || naturalGenInfo.getLimitations().areResolved(world, structureName))
         {
             new StructureGenerator<>(structureInfo).world(world)
-                    .random(random).maturity(StructureGenerator.Maturity.SUGGEST)
+                    .random(random).maturity(StructureSpawnContext.GenerateMaturity.SUGGEST)
                     .randomPosition(genPos, naturalGenInfo.ySelector).fromCenter(true).generate();
         }
     }
@@ -95,7 +95,7 @@ public class WorldGenStructures
             {
                 new StructureGenerator<>(structureInfo).world(world)
                         .random(random).lowerCoord(entry.lowerCoord).transform(entry.transform).generationBB(StructureInfos.chunkBoundingBox(chunkPos))
-                        .structureID(entry.getStructureID()).instanceData(entry.instanceData).maturity(entry.firstTime ? StructureGenerator.Maturity.FIRST : StructureGenerator.Maturity.COMPLEMENT).generate();
+                        .structureID(entry.getStructureID()).instanceData(entry.instanceData).maturity(entry.firstTime ? StructureSpawnContext.GenerateMaturity.FIRST : StructureSpawnContext.GenerateMaturity.COMPLEMENT).generate();
 
                 if (entry.firstTime)
                 {

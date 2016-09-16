@@ -9,6 +9,7 @@ import com.google.gson.annotations.SerializedName;
 import ivorius.ivtoolkit.random.WeightedSelector;
 import ivorius.ivtoolkit.tools.IvGsonHelper;
 import ivorius.reccomplex.RCConfig;
+import ivorius.reccomplex.RecurrentComplex;
 import ivorius.reccomplex.structures.Environment;
 import ivorius.reccomplex.structures.StructureInfo;
 import ivorius.reccomplex.structures.StructureRegistry;
@@ -34,6 +35,20 @@ public class RCBiomeDecorator
 {
     @ParametersAreNonnullByDefault
     public static boolean decorate(WorldServer worldIn, Random random, BlockPos chunkPos, DecorationType type)
+    {
+        try
+        {
+            return doDecorate(worldIn, random, chunkPos, type);
+        }
+        catch (Exception e)
+        {
+            RecurrentComplex.logger.error("Exception when decorating", e);
+        }
+
+        return false;
+    }
+
+    protected static boolean doDecorate(WorldServer worldIn, Random random, BlockPos chunkPos, DecorationType type)
     {
         double baseWeight = RCConfig.baseDecorationWeights.get(type);
 

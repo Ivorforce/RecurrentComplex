@@ -43,8 +43,19 @@ public class Environment
         return new Environment(world, getBiome(world, boundingBox), null, generationInfo);
     }
 
+    @Nonnull
+    public static Environment inNature(@Nonnull WorldServer world, @Nonnull StructureBoundingBox boundingBox)
+    {
+        return inNature(world, boundingBox, null);
+    }
+
     public static Biome getBiome(World world, StructureBoundingBox boundingBox)
     {
         return world.getBiome(new BlockPos(boundingBox.getCenter()));
+    }
+
+    public Environment withGeneration(StructureGenerationInfo generation)
+    {
+        return new Environment(world, biome, villageType, generationInfo);
     }
 }

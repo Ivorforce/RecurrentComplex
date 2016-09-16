@@ -253,6 +253,7 @@ public class RCRegistryHandler
         genInfoRegistry.registerType("static", StaticGenerationInfo.class, new StaticGenerationInfo.Serializer());
         genInfoRegistry.registerType("vanilla", VanillaStructureGenerationInfo.class, new VanillaStructureGenerationInfo.Serializer());
         genInfoRegistry.registerType("sapling", SaplingGenerationInfo.class, new SaplingGenerationInfo.Serializer());
+        genInfoRegistry.registerType("decoration", VanillaDecorationGenerationInfo.class, new VanillaDecorationGenerationInfo.Serializer());
 
         MazeRuleRegistry.INSTANCE.register("connect", MazeRuleConnect.class);
         MazeRuleRegistry.INSTANCE.register("connectall", MazeRuleConnectAll.class);

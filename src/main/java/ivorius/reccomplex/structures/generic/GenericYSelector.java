@@ -45,14 +45,14 @@ public class GenericYSelector implements YSelector
         @SerializedName("lowestedge")
         LOWEST_EDGE;
 
-        public String serializedName()
+        public String id()
         {
             return IvGsonHelper.serializedName(this);
         }
 
-        public static SelectionMode selectionMode(String serializedName)
+        public static SelectionMode byID(String id)
         {
-            return IvGsonHelper.enumForName(serializedName, values());
+            return IvGsonHelper.enumForName(id, values());
         }
     }
 

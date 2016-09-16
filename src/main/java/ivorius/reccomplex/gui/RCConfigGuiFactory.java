@@ -66,6 +66,7 @@ public class RCConfigGuiFactory implements IModGuiFactory
             list.add(new DummyCategoryElement("reccomplex.configgui.balancing", "reccomplex.configgui.ctgy.balancing", BalancingEntry.class));
             list.add(new DummyCategoryElement("reccomplex.configgui.visual", "reccomplex.configgui.ctgy.visual", VisualEntry.class));
             list.add(new DummyCategoryElement("reccomplex.configgui.controls", "reccomplex.configgui.ctgy.controls", ControlsEntry.class));
+            list.add(new DummyCategoryElement("reccomplex.configgui.decoration", "reccomplex.configgui.ctgy.decoration", DecorationEntry.class));
             return list;
         }
 
@@ -141,4 +142,23 @@ public class RCConfigGuiFactory implements IModGuiFactory
             }
         }
     }
+
+    public static class DecorationEntry extends GuiConfigEntries.CategoryEntry
+    {
+        public DecorationEntry(GuiConfig owningScreen, GuiConfigEntries owningEntryList, IConfigElement prop)
+        {
+            super(owningScreen, owningEntryList, prop);
+        }
+
+        @Override
+        protected GuiScreen buildChildScreen()
+        {
+            return new GuiConfig(this.owningScreen,
+                    (new ConfigElement(RecurrentComplex.config.getCategory(RCConfig.CATEGORY_DECORATION))).getChildElements(),
+                    this.owningScreen.modID, RCConfig.CATEGORY_DECORATION, this.configElement.requiresWorldRestart() || this.owningScreen.allRequireWorldRestart,
+                    this.configElement.requiresMcRestart() || this.owningScreen.allRequireMcRestart,
+                    GuiConfig.getAbridgedConfigPath(RecurrentComplex.config.toString()));
+        }
+    }
 }
+

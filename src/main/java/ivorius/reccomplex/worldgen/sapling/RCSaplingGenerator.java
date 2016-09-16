@@ -35,11 +35,11 @@ public class RCSaplingGenerator
 {
     public static boolean maybeGrowSapling(WorldServer world, BlockPos pos, Random random)
     {
-        Biome biome = Environment.getBiome(world, new StructureBoundingBox(pos, pos));
+        Environment baseEnv = Environment.inNature(world, new StructureBoundingBox(pos, pos));
 
         List<Pair<StructureInfo, SaplingGenerationInfo>> applicable = Lists.newArrayList(StructureRegistry.INSTANCE.getStructureGenerations(
-                SaplingGenerationInfo.class, pair -> pair.getRight().generatesIn(new Environment(world, biome, null, pair.getRight()))
-        ));
+                SaplingGenerationInfo.class, pair -> pair.getRight().generatesIn(baseEnv.withGeneration(pair.getRight()))
+                ));
 
         ImmutableMultimap<Integer, Pair<StructureInfo, SaplingGenerationInfo>> groups = RCFunctions.groupMap(applicable, pair -> pair.getRight().pattern.pattern.compile(true).size());
         List<Integer> complexities = Lists.newArrayList(groups.keys());

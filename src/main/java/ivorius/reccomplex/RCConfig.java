@@ -6,12 +6,18 @@
 package ivorius.reccomplex;
 
 import com.google.common.collect.Lists;
+import gnu.trove.map.TDoubleObjectMap;
+import gnu.trove.map.TFloatObjectMap;
+import gnu.trove.map.TObjectDoubleMap;
+import gnu.trove.map.hash.TDoubleObjectHashMap;
+import gnu.trove.map.hash.TObjectDoubleHashMap;
 import ivorius.reccomplex.structures.StructureRegistry;
 import ivorius.reccomplex.structures.generic.matchers.BiomeMatcher;
 import ivorius.reccomplex.structures.generic.matchers.CommandMatcher;
 import ivorius.reccomplex.structures.generic.matchers.DimensionMatcher;
 import ivorius.reccomplex.structures.generic.matchers.ResourceMatcher;
 import ivorius.reccomplex.utils.ExpressionCache;
+import ivorius.reccomplex.worldgen.decoration.RCBiomeDecorator;
 import ivorius.reccomplex.worldgen.inventory.GenericItemCollectionRegistry;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.util.ResourceLocation;
@@ -33,6 +39,7 @@ public class RCConfig
 {
     public static final String CATEGORY_VISUAL = "visual";
     public static final String CATEGORY_BALANCING = "balancing";
+    public static final String CATEGORY_DECORATION = "decoration";
     public static final String CATEGORY_CONTROLS = "controls";
 
     public static Pair<String, Float> customArtifactTag = Pair.of("", 0.0f);
@@ -46,6 +53,7 @@ public class RCConfig
     public static boolean honorStructureGenerationOption;
 
     public static boolean generateTrees;
+    public static final TObjectDoubleMap<RCBiomeDecorator.DecorationType> baseDecorationWeights = new TObjectDoubleHashMap<>();
 
     public static int baseVillageSpawnWeight;
     public static double baseSaplingSpawnWeight;
@@ -100,8 +108,6 @@ public class RCConfig
 
             avoidOverlappingGeneration = RecurrentComplex.config.getBoolean("avoidOverlappingGeneration", CATEGORY_BALANCING, true, "Enabling this will cancel any structure generation if another structure is present at the cooridnate already.");
             honorStructureGenerationOption = RecurrentComplex.config.getBoolean("honorStructureGenerationOption", CATEGORY_BALANCING, true, "If disabled, Recurrent Complex will generate structures in worlds without the structure generation option.");
-            baseVillageSpawnWeight = RecurrentComplex.config.getInt("baseVillageSpawnWeight", CATEGORY_BALANCING, 10, 0, 100000, "The base weight of RC village generation types. Vanilla average is about 10 - if you want to fully replace vanilla structures in villages, crank this up to something big.");
-            baseSaplingSpawnWeight = RecurrentComplex.config.getFloat("baseSaplingSpawnWeight", CATEGORY_BALANCING, 0.2f, 0, 1000, "The base weight of RC sapling generation types. The vanilla tree weight is 1 - if you want to fully replace vanilla trees, crank this up to something big.");
 
             generateTrees = RecurrentComplex.config.getBoolean("generateTrees", CATEGORY_BALANCING, true, "Whether the trees added by the mod should be actively generating.");
 
@@ -134,6 +140,15 @@ public class RCConfig
             );
 
             mazePlacementReversesPerRoom = RecurrentComplex.config.getFloat("mazePlacementReversesPerRoom", CATEGORY_BALANCING, 10, -1, 100, "Maximum number of reverses per room the maze generator can do. A higher number results in a better generation success rate, but may freeze the server temporarily.");
+        }
+        if (configID == null || configID.equals(CATEGORY_DECORATION))
+        {
+            baseVillageSpawnWeight = RecurrentComplex.config.getInt("baseVillageSpawnWeight", CATEGORY_BALANCING, 10, 0, 100000, "The base weight of RC village generation types. Vanilla average is about 10 - if you want to fully replace vanilla structures in villages, crank this up to something big.");
+            baseSaplingSpawnWeight = RecurrentComplex.config.getFloat("baseSaplingSpawnWeight", CATEGORY_DECORATION, 0.2f, 0, 1000, "The base weight of RC sapling generation types. The vanilla tree weight is 1 - if you want to fully replace vanilla trees, crank this up to something big.");
+
+            baseDecorationWeights.clear();
+            for (RCBiomeDecorator.DecorationType decorationType : RCBiomeDecorator.DecorationType.values())
+                baseDecorationWeights.put(decorationType, RecurrentComplex.config.getFloat("baseWeight_" + decorationType.id(), CATEGORY_DECORATION, 0.2f, 0, 1000, "The base weight of this decoration type. The vanilla decorator has a weight of 1 - if you want to fully replace vanilla decoration, crank this up to something big."));
         }
 
         RecurrentComplex.proxy.loadConfig(configID);

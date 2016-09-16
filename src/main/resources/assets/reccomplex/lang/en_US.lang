@@ -205,6 +205,8 @@ reccomplex.configgui.ctgy.balancing=Balancing
 reccomplex.configgui.ctgy.balancing.tooltip=Settings affecting the mod's balancing
 reccomplex.configgui.ctgy.controls=Controls
 reccomplex.configgui.ctgy.controls.tooltip=Settings affecting the controls
+reccomplex.configgui.ctgy.decoration=Decoration
+reccomplex.configgui.ctgy.decoration.tooltip=Vanilla decoration override settings
 
 reccomplex.structure.metadata=Metadata
 reccomplex.structure.metadata.tooltip=Text data describing the structure,<br>like the author or a comment.
@@ -295,6 +297,13 @@ reccomplex.generationInfo.vanilla.amount.scaled=Amount (scaled)
 reccomplex.generationInfo.sapling=Sapling
 reccomplex.generationInfo.sapling.tooltip=As a tree from a sapling.
 reccomplex.generationInfo.sapling.title=Sapling
+
+reccomplex.generationInfo.decoration=Vanilla Decoration
+reccomplex.generationInfo.decoration.tooltip=Instead of a vanilla decoration entry<br>(e.g. trees, mushrooms, cacti).
+reccomplex.generationInfo.decoration.title=Vanilla Decoration
+reccomplex.generationInfo.decoration.types.tree=Tree
+reccomplex.generationInfo.decoration.types.cactus=Cactus
+reccomplex.generationInfo.decoration.types.big_mushroom=Big Mushroom
 
 reccomplex.transformer.id=Transformer ID
 reccomplex.transformer.id.tooltip=Unique Identifier for the transformer.

@@ -72,7 +72,6 @@ public class WorldScriptMulti implements WorldScript<WorldScriptMulti.InstanceDa
     {
         int amount = scripts.size();
         return amount == 0 ? IvTranslations.get("reccomplex.worldscript.multi.none")
-                : amount == 1 ? scripts.get(0).getDisplayString()
                 : IvTranslations.format("reccomplex.worldscript.multi.multiple", amount);
     }
 

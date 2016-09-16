@@ -79,7 +79,6 @@ public class TransformerMulti extends Transformer<TransformerMulti.InstanceData>
     {
         int amount = transformers.size();
         return amount == 0 ? IvTranslations.get("reccomplex.transformer.multi.none")
-                : amount == 1 ? transformers.get(0).getDisplayString()
                 : IvTranslations.format("reccomplex.transformer.multi.multiple", amount);
     }
 

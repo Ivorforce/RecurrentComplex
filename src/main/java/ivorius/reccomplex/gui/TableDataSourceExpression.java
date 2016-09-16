@@ -42,6 +42,8 @@ public class TableDataSourceExpression<T, U, E extends FunctionExpressionCache<T
             return new TableDataSourceExpression<>(title, IvTranslations.formatLines("reccomplex.expression.biome.tooltip"), e, u);
         else if (e instanceof BlockMatcher)
             return new TableDataSourceExpression<>(title, IvTranslations.formatLines("reccomplex.expression.block.tooltip"), e, u);
+        else if (e instanceof PositionedBlockMatcher)
+            return new TableDataSourceExpression<>(title, IvTranslations.formatLines("reccomplex.expression.positioned_block.tooltip"), e, u);
         else if (e instanceof DependencyMatcher)
             return new TableDataSourceExpression<>(title, IvTranslations.formatLines("reccomplex.expression.dependency.tooltip"), e, u);
         else if (e instanceof DimensionMatcher)

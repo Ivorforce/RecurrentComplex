@@ -21,6 +21,7 @@ import ivorius.reccomplex.structures.StructureLoadContext;
 import ivorius.reccomplex.structures.StructurePrepareContext;
 import ivorius.reccomplex.structures.StructureSpawnContext;
 import ivorius.reccomplex.structures.generic.matchers.BlockMatcher;
+import ivorius.reccomplex.structures.generic.matchers.PositionedBlockMatcher;
 import ivorius.reccomplex.utils.NBTNone;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.nbt.NBTBase;
@@ -32,21 +33,21 @@ import java.lang.reflect.Type;
 /**
  * Created by lukas on 25.05.14.
  */
-public class TransformerEnsureSpace extends Transformer<NBTNone>
+public class TransformerEnsureBlocks extends Transformer<NBTNone>
 {
     public BlockMatcher sourceMatcher;
-    public BlockMatcher destMatcher;
+    public PositionedBlockMatcher destMatcher;
 
-    public TransformerEnsureSpace()
+    public TransformerEnsureBlocks()
     {
-        this(null, BlockMatcher.of(RecurrentComplex.specialRegistry, RCBlocks.genericSpace, 0), "!(is.air | is.leaves)");
+        this(null, BlockMatcher.of(RecurrentComplex.specialRegistry, RCBlocks.genericSpace, 0), "!(is.air | is.leaves | is.replaceable)");
     }
 
-    public TransformerEnsureSpace(@Nullable String id, String sourceExpression, String destExpression)
+    public TransformerEnsureBlocks(@Nullable String id, String sourceExpression, String destExpression)
     {
-        super(id != null ? id : randomID(TransformerEnsureSpace.class));
+        super(id != null ? id : randomID(TransformerEnsureBlocks.class));
         this.sourceMatcher = new BlockMatcher(RecurrentComplex.specialRegistry, sourceExpression);
-        this.destMatcher = new BlockMatcher(RecurrentComplex.specialRegistry, destExpression);
+        this.destMatcher = new PositionedBlockMatcher(RecurrentComplex.specialRegistry, destExpression);
     }
 
     @Override
@@ -61,7 +62,7 @@ public class TransformerEnsureSpace extends Transformer<NBTNone>
             BlockPos worldCoord = context.transform.apply(sourceCoord, areaSize).add(lowerCoord);
             IBlockState state = blockCollection.getBlockState(sourceCoord);
 
-            if (!sourceMatcher.test(state) && (destMatcher.expressionIsEmpty() || destMatcher.test(context.environment.world.getBlockState(worldCoord))))
+            if (!sourceMatcher.test(state) && (destMatcher.expressionIsEmpty() || destMatcher.test(PositionedBlockMatcher.Argument.at(context.environment.world, worldCoord))))
                 return false;
         }
 
@@ -83,7 +84,7 @@ public class TransformerEnsureSpace extends Transformer<NBTNone>
     @Override
     public String getDisplayString()
     {
-        return "Ensure Space: " + sourceMatcher.getDisplayString(null);
+        return String.format("Ensure: %s", sourceMatcher.getDisplayString(null));
     }
 
     @Override
@@ -104,7 +105,7 @@ public class TransformerEnsureSpace extends Transformer<NBTNone>
         return new NBTNone();
     }
 
-    public static class Serializer implements JsonDeserializer<TransformerEnsureSpace>, JsonSerializer<TransformerEnsureSpace>
+    public static class Serializer implements JsonDeserializer<TransformerEnsureBlocks>, JsonSerializer<TransformerEnsureBlocks>
     {
         private MCRegistry registry;
 
@@ -114,7 +115,7 @@ public class TransformerEnsureSpace extends Transformer<NBTNone>
         }
 
         @Override
-        public TransformerEnsureSpace deserialize(JsonElement jsonElement, Type par2Type, JsonDeserializationContext context)
+        public TransformerEnsureBlocks deserialize(JsonElement jsonElement, Type par2Type, JsonDeserializationContext context)
         {
             JsonObject jsonObject = JsonUtils.asJsonObject(jsonElement, "transformerEnsureSpace");
 
@@ -123,15 +124,16 @@ public class TransformerEnsureSpace extends Transformer<NBTNone>
             String expression = JsonUtils.getString(jsonObject, "sourceExpression", "");
             String destExpression = JsonUtils.getString(jsonObject, "destExpression", "");
 
-            return new TransformerEnsureSpace(id, expression, destExpression);
+            return new TransformerEnsureBlocks(id, expression, destExpression);
         }
 
         @Override
-        public JsonElement serialize(TransformerEnsureSpace transformer, Type par2Type, JsonSerializationContext context)
+        public JsonElement serialize(TransformerEnsureBlocks transformer, Type par2Type, JsonSerializationContext context)
         {
             JsonObject jsonObject = new JsonObject();
 
             jsonObject.addProperty("id", transformer.id());
+
             jsonObject.addProperty("sourceExpression", transformer.sourceMatcher.getExpression());
             jsonObject.addProperty("destExpression", transformer.destMatcher.getExpression());
 

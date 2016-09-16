@@ -20,6 +20,7 @@ import ivorius.reccomplex.structures.StructureLoadContext;
 import ivorius.reccomplex.structures.StructurePrepareContext;
 import ivorius.reccomplex.structures.StructureSpawnContext;
 import ivorius.reccomplex.structures.generic.matchers.BlockMatcher;
+import ivorius.reccomplex.structures.generic.matchers.PositionedBlockMatcher;
 import net.minecraft.block.state.IBlockState;
 import ivorius.reccomplex.utils.NBTNone;
 import net.minecraft.nbt.NBTBase;
@@ -34,7 +35,7 @@ import java.lang.reflect.Type;
 public class TransformerNegativeSpace extends Transformer<NBTNone>
 {
     public BlockMatcher sourceMatcher;
-    public BlockMatcher destMatcher;
+    public PositionedBlockMatcher destMatcher;
 
     public TransformerNegativeSpace()
     {
@@ -45,7 +46,7 @@ public class TransformerNegativeSpace extends Transformer<NBTNone>
     {
         super(id != null ? id : randomID(TransformerNegativeSpace.class));
         this.sourceMatcher = new BlockMatcher(RecurrentComplex.specialRegistry, sourceExpression);
-        this.destMatcher = new BlockMatcher(RecurrentComplex.specialRegistry, destExpression);
+        this.destMatcher = new PositionedBlockMatcher(RecurrentComplex.specialRegistry, destExpression);
     }
 
     @Override
@@ -57,7 +58,7 @@ public class TransformerNegativeSpace extends Transformer<NBTNone>
     @Override
     public boolean skipGeneration(NBTNone instanceData, Environment environment, BlockPos pos, IBlockState state)
     {
-        return sourceMatcher.test(state) && (destMatcher.expressionIsEmpty() || destMatcher.test(environment.world.getBlockState(pos)));
+        return sourceMatcher.test(state) && (destMatcher.expressionIsEmpty() || destMatcher.test(PositionedBlockMatcher.Argument.at(environment.world, pos)));
     }
 
     @Override

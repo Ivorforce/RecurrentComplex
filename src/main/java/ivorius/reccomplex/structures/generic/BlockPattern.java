@@ -15,9 +15,8 @@ import ivorius.ivtoolkit.tools.NBTCompoundObject;
 import ivorius.ivtoolkit.tools.NBTCompoundObjects;
 import ivorius.reccomplex.RecurrentComplex;
 import ivorius.reccomplex.json.JsonUtils;
-import ivorius.reccomplex.structures.generic.matchers.BlockMatcher;
+import ivorius.reccomplex.structures.generic.matchers.PositionedBlockMatcher;
 import ivorius.reccomplex.utils.Transforms;
-import net.minecraft.block.state.IBlockState;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
@@ -50,7 +49,7 @@ public class BlockPattern implements NBTCompoundObject
     public BlockPattern()
     {
         pattern.add(new Selection.Area(true, new int[]{0, 0, 0}, new int[]{0, 0, 0}, "Sapling"));
-        ingredients.add(new Ingredient("Sapling", new BlockMatcher(RecurrentComplex.specialRegistry, "id=minecraft:sapling"), true));
+        ingredients.add(new Ingredient("Sapling", new PositionedBlockMatcher(RecurrentComplex.specialRegistry, "block.id=minecraft:sapling"), true));
     }
 
     private static Gson createGson()
@@ -96,7 +95,7 @@ public class BlockPattern implements NBTCompoundObject
     public boolean test(World world, BlockPos pos)
     {
         return pattern.compile(true).entrySet().stream().allMatch(
-                entry -> findIngredient(entry.getValue()).filter(i -> i.matcher.test(world.getBlockState(toBlockPos(entry.getKey()).add(pos)))).isPresent()
+                entry -> findIngredient(entry.getValue()).filter(i -> i.matcher.test(PositionedBlockMatcher.Argument.at(world, pos.add(toBlockPos(entry.getKey()))))).isPresent()
         );
     }
 
@@ -147,17 +146,17 @@ public class BlockPattern implements NBTCompoundObject
     public static class Ingredient implements NBTCompoundObject
     {
         public String identifier;
-        public BlockMatcher matcher;
+        public PositionedBlockMatcher matcher;
         public boolean delete;
 
         public Ingredient()
         {
             identifier = "";
-            matcher = new BlockMatcher(RecurrentComplex.specialRegistry, "");
+            matcher = new PositionedBlockMatcher(RecurrentComplex.specialRegistry, "");
             delete = true;
         }
 
-        public Ingredient(String identifier, BlockMatcher matcher, boolean delete)
+        public Ingredient(String identifier, PositionedBlockMatcher matcher, boolean delete)
         {
             this.identifier = identifier;
             this.matcher = matcher;
@@ -168,7 +167,7 @@ public class BlockPattern implements NBTCompoundObject
         public void readFromNBT(NBTTagCompound compound)
         {
             identifier = compound.getString("identifier");
-            matcher = new BlockMatcher(RecurrentComplex.specialRegistry, compound.getString("blockExpression"));
+            matcher = new PositionedBlockMatcher(RecurrentComplex.specialRegistry, compound.getString("blockExpression"));
             delete = compound.getBoolean("delete");
         }
 
@@ -182,7 +181,7 @@ public class BlockPattern implements NBTCompoundObject
 
         public Ingredient copy()
         {
-            return new Ingredient(identifier, new BlockMatcher(matcher.registry, matcher.getExpression()), delete);
+            return new Ingredient(identifier, new PositionedBlockMatcher(matcher.registry, matcher.getExpression()), delete);
         }
     }
 
@@ -193,8 +192,12 @@ public class BlockPattern implements NBTCompoundObject
         {
             JsonObject jsonObject = JsonUtils.asJsonObject(json, "blockPattern");
 
-            List<Selection.Area> pattern = context.deserialize(jsonObject.get("pattern"), new TypeToken<List<Selection.Area>>(){}.getType());
-            List<Ingredient> ingredients = gson.fromJson(jsonObject.get("ingredients"), new TypeToken<List<Ingredient>>(){}.getType());
+            List<Selection.Area> pattern = context.deserialize(jsonObject.get("pattern"), new TypeToken<List<Selection.Area>>()
+            {
+            }.getType());
+            List<Ingredient> ingredients = gson.fromJson(jsonObject.get("ingredients"), new TypeToken<List<Ingredient>>()
+            {
+            }.getType());
 
             return new BlockPattern(pattern, ingredients);
         }
@@ -229,7 +232,7 @@ public class BlockPattern implements NBTCompoundObject
             String blockExpression = JsonUtils.getString(jsonObject, "blockExpression", "");
             boolean delete = JsonUtils.getBoolean(jsonObject, "delete", true);
 
-            return new Ingredient(id, new BlockMatcher(registry, blockExpression), delete);
+            return new Ingredient(id, new PositionedBlockMatcher(registry, blockExpression), delete);
         }
 
         @Override

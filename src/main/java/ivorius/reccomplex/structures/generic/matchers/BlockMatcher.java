@@ -33,7 +33,6 @@ public class BlockMatcher extends FunctionExpressionCache<Boolean, IBlockState, 
     public static final String BLOCK_ID_PREFIX = "id=";
     public static final String METADATA_PREFIX = "metadata=";
     public static final String PROPERTY_PREFIX = "property[";
-    public static final String IS_PREFIX = "is.";
 
     public final MCRegistry registry;
 
@@ -46,7 +45,6 @@ public class BlockMatcher extends FunctionExpressionCache<Boolean, IBlockState, 
         addTypes(new BlockVariableType(BLOCK_ID_PREFIX, "", registry), t -> t.alias("", ""));
         addTypes(new MetadataVariableType(METADATA_PREFIX, ""), t -> t.alias("#", ""));
         addTypes(new PropertyVariableType(PROPERTY_PREFIX, ""), t -> t.alias("$[", ""));
-        addTypes(new IsVariableType(IS_PREFIX, ""));
 
         testVariables();
     }
@@ -94,34 +92,6 @@ public class BlockMatcher extends FunctionExpressionCache<Boolean, IBlockState, 
             ResourceLocation location = new ResourceLocation(var); // Since MC defaults to air now
             return registry.blockFromID(location) != Blocks.AIR || location.equals(Block.REGISTRY.getNameForObject(Blocks.AIR))
                     ? Validity.KNOWN : Validity.UNKNOWN;
-        }
-    }
-
-    public class IsVariableType extends VariableType<Boolean, IBlockState, Object>
-    {
-        public IsVariableType(String prefix, String suffix)
-        {
-            super(prefix, suffix);
-        }
-
-        @Override
-        public Boolean evaluate(String var, IBlockState state)
-        {
-            switch (var)
-            {
-                case "leaves":
-                    return state.getMaterial() == Material.LEAVES;
-                case "air":
-                    return state.getMaterial() == Material.AIR;
-                default:
-                    return true;
-            }
-        }
-
-        @Override
-        public Validity validity(String var, Object object)
-        {
-            return var.equals("leaves") || var.equals("air") ? Validity.KNOWN : Validity.ERROR;
         }
     }
 

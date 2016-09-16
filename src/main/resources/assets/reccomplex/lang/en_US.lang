@@ -360,8 +360,17 @@ reccomplex.transformer.ruins.vines.tooltip=The chance for vines and moss<br>to s
 
 reccomplex.transformer.negativeSpace=Negative Space
 reccomplex.transformer.negativeSpace.tooltip=Makes the generation ignore blocks
-reccomplex.transformer.ensureSpace=Ensure Space
-reccomplex.transformer.ensureSpace.tooltip=Cancels the generation if<br>any placed blocks don't have space.
+
+reccomplex.transformer.ensureBlocks=Ensure Blocks
+reccomplex.transformer.ensureBlocks.tooltip=Cancels the generation if<br>any placed blocks don't have space.
+reccomplex.transformer.ensureBlocks.mode.air=Air
+reccomplex.transformer.ensureBlocks.mode.air.tooltip=Ensure there is space to generate
+reccomplex.transformer.ensureBlocks.mode.tree=Tree
+reccomplex.transformer.ensureBlocks.mode.tree.tooltip=Ensure a tree can grow on top
+reccomplex.transformer.ensureBlocks.mode.mushroom=Mushroom
+reccomplex.transformer.ensureBlocks.mode.mushroom.tooltip=Ensure a mushroom can grow on top
+reccomplex.transformer.ensureBlocks.mode.cactus=Cactus
+reccomplex.transformer.ensureBlocks.mode.cactus.tooltip=Ensure a cactus can grow on top
 
 reccomplex.biomePreset.clear=Clear
 reccomplex.biomePreset.clear.tooltip=No Biomes
@@ -394,6 +403,8 @@ reccomplex.expression.dimension=Dimension Expression
 reccomplex.expression.dimension.tooltip=This is a §odimension expression§r.<br>Visit the wiki for syntax information.
 reccomplex.expression.block=Block Expression
 reccomplex.expression.block.tooltip=This is a §oblock expression§r.<br>Visit the wiki for syntax information.
+reccomplex.expression.positioned_block=Positioned Block Expression
+reccomplex.expression.positioned_block.tooltip=This is a §opositioned block expression§r.<br>Visit the wiki for syntax information.
 reccomplex.expression.dependency=Dependency Expression
 reccomplex.expression.dependency.tooltip=This is a §odependency expression§r.<br>Visit the wiki for syntax information.
 reccomplex.expression.environment=Environment Expression

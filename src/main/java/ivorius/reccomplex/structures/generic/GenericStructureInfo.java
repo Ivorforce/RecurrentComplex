@@ -85,7 +85,7 @@ public class GenericStructureInfo implements StructureInfo<GenericStructureInfo.
                         new TransformerNatural(null, BlockMatcher.of(RecurrentComplex.specialRegistry, RCBlocks.genericSolid, 0), TransformerNatural.DEFAULT_NATURAL_EXPANSION_DISTANCE, TransformerNatural.DEFAULT_NATURAL_EXPANSION_RANDOMIZATION)
                 )),
                 new TransformerMulti(null, "gen.type=sapling", Collections.singleton(
-                        new TransformerEnsureSpace(null, BlockMatcher.of(RecurrentComplex.specialRegistry, RCBlocks.genericSpace, 0), "!(is.air | is.leaves)")
+                        new TransformerEnsureBlocks(null, "id=reccomplex:generic_space | id=reccomplex:generic_solid", "!(is.air | is.leaves | replaceable)")
                 )),
                 new TransformerNegativeSpace(null, "id=reccomplex:generic_space | id=reccomplex:generic_solid", "")};
     }

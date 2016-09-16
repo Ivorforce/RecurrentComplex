@@ -48,7 +48,9 @@ public class CommandSelectWand extends CommandSelectModify
             int exp = 0;
             while (!isSideEmpty(world, area, direction) && (exp++) < 100)
                 area = RCBlockAreas.expand(area, direction, 1);
-            area = BlockAreas.shrink(area, direction, 1);
+
+            // Reverse last
+            if (exp > 0) area = BlockAreas.shrink(area, direction, 1);
         }
 
         structureEntityInfo.setSelection(area);

@@ -128,11 +128,11 @@ public class CommandGenerateStructure extends CommandBase
     @Nonnull
     public static List<String> tabCompletionOptions(String[] args, int idIndex, int dimIndex, int genInfoIndex)
     {
-        if (args.length == idIndex - 1)
+        if (args.length == idIndex + 1)
             return getListOfStringsMatchingLastWord(args, StructureRegistry.INSTANCE.allStructureIDs());
-        else if (args.length == dimIndex - 1)
+        else if (args.length == dimIndex + 1)
             return getListOfStringsMatchingLastWord(args, Arrays.stream(DimensionManager.getIDs()).map(String::valueOf).collect(Collectors.toList()));
-        else if (args.length == genInfoIndex)
+        else if (args.length == genInfoIndex + 1)
         {
             String structureName = args[idIndex];
             StructureInfo<?> structureInfo = StructureRegistry.INSTANCE.getStructure(structureName);

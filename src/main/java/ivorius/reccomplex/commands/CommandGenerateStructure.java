@@ -64,17 +64,10 @@ public class CommandGenerateStructure extends CommandBase
         if (args.length <= 0)
             throw ServerTranslations.wrongUsageException("commands.strucGen.usage");
 
-        BlockSurfacePos pos;
-
-        if (args.length >= 3)
-            pos = RCCommands.parseSurfaceBlockPos(commandSender, args, 1, false);
-        else
-            pos = BlockSurfacePos.from(commandSender.getPosition());
-
-        generateStructure(commandSender, args, pos, 0, 3, 4);
+        generateStructure(commandSender, args, 0, 1, commandSender, 3, 4);
     }
 
-    public static void generateStructure(ICommandSender commandSender, String[] args, BlockSurfacePos pos, int idIndex, int dimIndex, int genInfoIndex) throws CommandException
+    public static void generateStructure(ICommandSender commandSender, String[] args, int idIndex, int posIndex, ICommandSender posRef, int dimIndex, int genInfoIndex) throws CommandException
     {
         String structureName = args[idIndex];
         StructureInfo<?> structureInfo = StructureRegistry.INSTANCE.getStructure(structureName);
@@ -83,9 +76,16 @@ public class CommandGenerateStructure extends CommandBase
         if (structureInfo == null)
             throw ServerTranslations.commandException("commands.strucGen.noStructure", structureName);
 
+        BlockSurfacePos pos;
+
+        if (args.length > posIndex + 1)
+            pos = RCCommands.parseSurfaceBlockPos(posRef, args, posIndex, false);
+        else
+            pos = BlockSurfacePos.from(posRef.getPosition());
+
         StructureGenerationInfo generationInfo;
 
-        if (args.length >= 5)
+        if (args.length > genInfoIndex)
             generationInfo = structureInfo.generationInfo(args[genInfoIndex]);
         else
             generationInfo = structureInfo.<StructureGenerationInfo>generationInfos(NaturalGenerationInfo.class).stream()

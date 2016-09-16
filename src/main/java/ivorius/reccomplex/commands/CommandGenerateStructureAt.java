@@ -6,7 +6,6 @@
 package ivorius.reccomplex.commands;
 
 import ivorius.reccomplex.RCConfig;
-import ivorius.reccomplex.utils.BlockSurfacePos;
 import ivorius.reccomplex.utils.ServerTranslations;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.CommandException;
@@ -56,9 +55,8 @@ public class CommandGenerateStructureAt extends CommandBase
             throw ServerTranslations.wrongUsageException("commands.strucGenAt.usage");
 
         Entity entity = getEntity(server, commandSender, args[1]);
-        BlockSurfacePos pos = RCCommands.parseSurfaceBlockPos(entity, args, 1, false);
 
-        generateStructure(commandSender, args, pos, 0, 2, 3);
+        generateStructure(commandSender, args, 0, 2, entity, 4, 5);
     }
 
     @Nonnull

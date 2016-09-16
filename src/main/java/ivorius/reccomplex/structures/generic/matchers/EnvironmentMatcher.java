@@ -5,9 +5,7 @@
 
 package ivorius.reccomplex.structures.generic.matchers;
 
-import com.google.common.primitives.Ints;
 import ivorius.reccomplex.structures.Environment;
-import ivorius.reccomplex.structures.StructurePrepareContext;
 import ivorius.reccomplex.structures.generic.gentypes.StructureGenerationInfo;
 import ivorius.reccomplex.utils.FunctionExpressionCache;
 import ivorius.reccomplex.utils.algebra.RCBoolAlgebra;
@@ -15,7 +13,6 @@ import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.WorldProvider;
 import net.minecraft.world.biome.Biome;
 
-import java.util.Objects;
 import java.util.Set;
 import java.util.function.Predicate;
 
@@ -34,6 +31,7 @@ public class EnvironmentMatcher extends FunctionExpressionCache<Boolean, Environ
     {
         super(RCBoolAlgebra.algebra(), true, TextFormatting.GREEN + "Always", expression);
 
+        addType(unknown(false));
         addType(new BiomeVariableType(BIOME_PREFIX, ""));
         addTypes(new DimensionVariableType(DIMENSION_PREFIX, ""), t -> t.alias("dim.", ""));
         addTypes(new DependencyVariableType(DEPENDENCY_PREFIX, ""), t -> t.alias("dep.", ""));

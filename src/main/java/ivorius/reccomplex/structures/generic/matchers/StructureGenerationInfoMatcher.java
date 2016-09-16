@@ -9,7 +9,6 @@ import ivorius.reccomplex.structures.StructureRegistry;
 import ivorius.reccomplex.structures.generic.gentypes.StructureGenerationInfo;
 import ivorius.reccomplex.utils.FunctionExpressionCache;
 import ivorius.reccomplex.utils.algebra.RCBoolAlgebra;
-import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.TextFormatting;
 
 import java.util.function.Predicate;
@@ -25,6 +24,8 @@ public class StructureGenerationInfoMatcher extends FunctionExpressionCache<Bool
     public StructureGenerationInfoMatcher(String expression)
     {
         super(RCBoolAlgebra.algebra(), true, TextFormatting.GREEN + "Any Generation", expression);
+
+        addType(unknown(false));
         addTypes(new IdentifierType(ID_PREFIX, ""));
         addTypes(new TypeType(TYPE_PREFIX, ""), t -> t.alias("$", ""));
 

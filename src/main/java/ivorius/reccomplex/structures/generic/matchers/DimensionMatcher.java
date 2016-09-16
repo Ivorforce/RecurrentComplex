@@ -28,6 +28,7 @@ public class DimensionMatcher extends FunctionExpressionCache<Boolean, WorldProv
     public DimensionMatcher(String expression)
     {
         super(RCBoolAlgebra.algebra(), true, TextFormatting.GREEN + "Any Dimension", expression);
+
         addTypes(new DimensionVariableType(DIMENSION_ID_PREFIX, ""), t -> t.alias("", ""));
         addTypes(new DimensionDictVariableType(DIMENSION_TYPE_PREFIX, ""), t -> t.alias("$", ""));
 

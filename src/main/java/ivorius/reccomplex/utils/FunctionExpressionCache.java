@@ -19,7 +19,7 @@ import java.util.function.Function;
  */
 public class FunctionExpressionCache<T, A, U> extends ExpressionCache<T>
 {
-    protected final SortedSet<VariableType<T, A, U>> types = new TreeSet<>();
+    protected final SortedSet<VariableType<T, ? super A, ? super U>> types = new TreeSet<>();
 
     public FunctionExpressionCache(Algebra<T> algebra, String expression)
     {
@@ -31,7 +31,7 @@ public class FunctionExpressionCache<T, A, U> extends ExpressionCache<T>
         super(algebra, emptyResult, emptyResultRepresentation, expression);
     }
 
-    public void addType(VariableType<T, A, U> type)
+    public void addType(VariableType<T, ? super A, ? super U> type)
     {
         types.add(type);
     }
@@ -53,13 +53,13 @@ public class FunctionExpressionCache<T, A, U> extends ExpressionCache<T>
         types.remove(type);
     }
 
-    public Set<VariableType<T, A, U>> types()
+    public Set<VariableType<T, ? super A, ? super U>> types()
     {
         return Collections.unmodifiableSet(types);
     }
 
     @Nullable
-    public VariableType<T, A, U> type(final String var)
+    public VariableType<T, ? super A, ? super U> type(final String var)
     {
         return types.stream()
                 .filter(input -> var.startsWith(input.prefix) && var.endsWith(input.suffix))
@@ -68,13 +68,13 @@ public class FunctionExpressionCache<T, A, U> extends ExpressionCache<T>
 
     public Validity variableValidity(String var, U u)
     {
-        VariableType<T, A, U> type = type(var);
+        VariableType<T, ? super A, ? super U> type = type(var);
         return type == null ? Validity.ERROR : type.validity(var.substring(type.prefix.length()), u);
     }
 
     public T evaluateVariable(String var, A a)
     {
-        VariableType<T, A, U> type = type(var);
+        VariableType<T, ? super A, ? super U> type = type(var);
         return type != null ? type.evaluate(var.substring(type.prefix.length()), a) : null;
     }
 
@@ -104,7 +104,7 @@ public class FunctionExpressionCache<T, A, U> extends ExpressionCache<T>
         {
             ParseException[] exception = new ParseException[1];
             expression.walkVariables(s -> {
-                VariableType<T, A, U> type = type(s.identifier);
+                VariableType<T, ? super A, ? super U> type = type(s.identifier);
                 if (type == null) // TODO Ask the type for an error too (requires an instance of U)
                     exception[0] = new ParseException(String.format("Type of '%s' unknown", s.identifier), s.index);
                 return true;
@@ -124,7 +124,7 @@ public class FunctionExpressionCache<T, A, U> extends ExpressionCache<T>
     public String getDisplayString(final U u)
     {
         return parsedExpression != null ? parsedExpression.toString(input -> {
-            VariableType<T, A, U> type = type(input);
+            VariableType<T, ? super A, ? super U> type = type(input);
             return type != null
                     ? type.getRepresentation(input.substring(type.prefix.length()), type.prefix, type.suffix, u)
                     : TextFormatting.RED + input;
@@ -136,6 +136,24 @@ public class FunctionExpressionCache<T, A, U> extends ExpressionCache<T>
         KNOWN,
         UNKNOWN,
         ERROR
+    }
+
+    public static <T> VariableType<T, Object, Object> unknown(T val)
+    {
+        return new VariableType<T, Object, Object>("", "")
+        {
+            @Override
+            public T evaluate(String var, Object o)
+            {
+                return val;
+            }
+
+            @Override
+            public Validity validity(String var, Object o)
+            {
+                return Validity.ERROR;
+            }
+        };
     }
 
     public static class AliasType<T, A, U, V extends VariableType<T, A, U>> extends VariableType<T, A, U>

@@ -24,6 +24,7 @@ public class CommandMatcher extends FunctionExpressionCache<Boolean, CommandMatc
     public CommandMatcher(String expression)
     {
         super(RCBoolAlgebra.algebra(), true, TextFormatting.GREEN + "Any Command", expression);
+        addType(unknown(false));
         addTypes(new NameType(NAME_PREFIX, ""), t -> t.alias("$", ""));
         addTypes(new PermType(PERM_PREFIX, ""), t -> t.alias("#", ""));
 

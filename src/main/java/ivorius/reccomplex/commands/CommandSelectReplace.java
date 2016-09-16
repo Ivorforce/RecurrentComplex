@@ -6,19 +6,18 @@
 package ivorius.reccomplex.commands;
 
 import ivorius.ivtoolkit.blocks.BlockArea;
-import ivorius.reccomplex.RecurrentComplex;
-import ivorius.reccomplex.structures.generic.matchers.PositionedBlockMatcher;
-import net.minecraft.command.CommandException;
-import net.minecraft.server.MinecraftServer;
-import net.minecraft.util.math.BlockPos;
 import ivorius.reccomplex.RCConfig;
+import ivorius.reccomplex.RecurrentComplex;
 import ivorius.reccomplex.entities.StructureEntityInfo;
-import net.minecraft.block.state.IBlockState;
-import ivorius.reccomplex.utils.BlockStates;
+import ivorius.reccomplex.structures.generic.matchers.PositionedBlockMatcher;
 import ivorius.reccomplex.utils.ServerTranslations;
 import net.minecraft.block.Block;
+import net.minecraft.block.state.IBlockState;
+import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.server.MinecraftServer;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
 import javax.annotation.Nullable;
@@ -76,12 +75,10 @@ public class CommandSelectReplace extends CommandSelectModify
     @Override
     public List<String> getTabCompletionOptions(MinecraftServer server, ICommandSender sender, String[] args, @Nullable BlockPos pos)
     {
-        if (args.length == 1 || args.length == 2)
+        if (args.length == 1)
             return getListOfStringsMatchingLastWord(args, Block.REGISTRY.getKeys());
-        else if (args.length == 3 || args.length == 4)
-        {
-            return getListOfStringsMatchingLastWord(args, "0");
-        }
+        else if (args.length == 2)
+            return getListOfStringsMatchingLastWord(args, IntStream.range(0, 16).mapToObj(String::valueOf).collect(Collectors.toList()));
 
         return null;
     }

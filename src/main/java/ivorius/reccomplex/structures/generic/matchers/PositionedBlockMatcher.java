@@ -9,9 +9,11 @@ import ivorius.ivtoolkit.tools.MCRegistry;
 import ivorius.reccomplex.utils.FunctionExpressionCache;
 import ivorius.reccomplex.utils.RCBlockLogic;
 import ivorius.reccomplex.utils.algebra.RCBoolAlgebra;
+import net.minecraft.block.BlockSapling;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.init.Blocks;
+import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.World;
@@ -140,7 +142,7 @@ public class PositionedBlockMatcher extends FunctionExpressionCache<Boolean, Pos
             switch (var)
             {
                 case "trees":
-                    return state.getBlock().canSustainPlant(state, argument.world, argument.pos.down(), net.minecraft.util.EnumFacing.UP, (net.minecraft.block.BlockSapling) Blocks.SAPLING);
+                    return state.getBlock().canSustainPlant(state, argument.world, argument.pos, EnumFacing.UP, (BlockSapling) Blocks.SAPLING);
                 case "mushrooms":
                     return state.getBlock() == Blocks.DIRT || state.getBlock() == Blocks.GRASS || state.getBlock() == Blocks.MYCELIUM;
                 case "cacti":

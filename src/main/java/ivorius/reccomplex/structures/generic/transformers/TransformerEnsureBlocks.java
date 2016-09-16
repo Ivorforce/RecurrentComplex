@@ -40,7 +40,7 @@ public class TransformerEnsureBlocks extends Transformer<NBTNone>
 
     public TransformerEnsureBlocks()
     {
-        this(null, BlockMatcher.of(RecurrentComplex.specialRegistry, RCBlocks.genericSpace, 0), "!(is.air | is.leaves | is.replaceable)");
+        this(null, "!(id=reccomplex:generic_space | id=reccomplex:generic_solid)", "is.air | is.leaves | is.replaceable");
     }
 
     public TransformerEnsureBlocks(@Nullable String id, String sourceExpression, String destExpression)
@@ -62,7 +62,7 @@ public class TransformerEnsureBlocks extends Transformer<NBTNone>
             BlockPos worldCoord = context.transform.apply(sourceCoord, areaSize).add(lowerCoord);
             IBlockState state = blockCollection.getBlockState(sourceCoord);
 
-            if (!sourceMatcher.test(state) && (destMatcher.expressionIsEmpty() || destMatcher.test(PositionedBlockMatcher.Argument.at(context.environment.world, worldCoord))))
+            if (sourceMatcher.test(state) && !(destMatcher.expressionIsEmpty() || destMatcher.test(PositionedBlockMatcher.Argument.at(context.environment.world, worldCoord))))
                 return false;
         }
 

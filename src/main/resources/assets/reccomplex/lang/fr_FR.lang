@@ -76,7 +76,7 @@ commands.selectModify.invalidMetadata=les metadata devraient être saisi comme '
 
 commands.selectFill.usage=/#fill <bloc> [metadata1,metadata2,metadata3...]
 
-commands.selectReplace.usage=/#replace <source> <destination> [srcmetadata1,metadata2,metadata3...] [destmetadata1,metadata2,metadata3...]
+commands.selectReplace.usage=/#replace <dest> <destmetadata1,metadata2,metadata3...> <src positioned block expression>
 
 commands.selectFillSphere.usage=/#sphere <bloc> [metadata1,metadata2,metadata3...]
 

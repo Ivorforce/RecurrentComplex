@@ -6,6 +6,8 @@
 package ivorius.reccomplex.commands;
 
 import ivorius.ivtoolkit.blocks.BlockArea;
+import ivorius.reccomplex.RecurrentComplex;
+import ivorius.reccomplex.structures.generic.matchers.PositionedBlockMatcher;
 import net.minecraft.command.CommandException;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.math.BlockPos;
@@ -44,24 +46,21 @@ public class CommandSelectReplace extends CommandSelectModify
     @Override
     public void executeSelection(EntityPlayerMP player, StructureEntityInfo structureEntityInfo, BlockPos point1, BlockPos point2, String[] args) throws CommandException
     {
-        if (args.length >= 2)
+        if (args.length >= 3)
         {
             World world = player.getEntityWorld();
 
-            Block src = getBlockByText(player, args[0]);
-            int[] srcMeta = args.length >= 3 ? getMetadatas(args[2]) : new int[]{0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15};
+            String src = buildString(args, 2);
 
-            Block dstBlock = getBlockByText(player, args[1]);
-            int[] dstMeta = args.length >= 4 ? getMetadatas(args[3]) : new int[]{0};
+            Block dstBlock = getBlockByText(player, args[0]);
+            int[] dstMeta = getMetadatas(args[1]);
             List<IBlockState> dst = IntStream.of(dstMeta).mapToObj(dstBlock::getStateFromMeta).collect(Collectors.toList());
+
+            PositionedBlockMatcher matcher = new PositionedBlockMatcher(RecurrentComplex.specialRegistry, src);
 
             for (BlockPos coord : new BlockArea(point1, point2))
             {
-                IBlockState prev = world.getBlockState(coord);
-
-                boolean correctMeta = IntStream.of(srcMeta).anyMatch(i -> i == BlockStates.toMetadata(prev));
-
-                if (correctMeta && src == prev.getBlock())
+                if (matcher.test(PositionedBlockMatcher.Argument.at(world, coord)))
                 {
                     IBlockState state = dst.get(player.getRNG().nextInt(dst.size()));
                     world.setBlockState(coord, state, 3);

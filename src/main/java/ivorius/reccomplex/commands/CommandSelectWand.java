@@ -1,35 +1,34 @@
 /*
  *  Copyright (c) 2014, Lukas Tenbrink.
- *  * http://lukas.axxim.net
+ *  * http://ivorius.net
  */
 
 package ivorius.reccomplex.commands;
 
 import ivorius.ivtoolkit.blocks.BlockArea;
-import net.minecraft.util.math.BlockPos;
+import ivorius.ivtoolkit.blocks.BlockAreas;
 import ivorius.reccomplex.RCConfig;
 import ivorius.reccomplex.entities.StructureEntityInfo;
-import ivorius.ivtoolkit.blocks.BlockAreas;
+import ivorius.reccomplex.utils.RCBlockAreas;
 import ivorius.reccomplex.utils.ServerTranslations;
 import net.minecraft.block.material.Material;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.world.World;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.World;
 
 import java.util.stream.StreamSupport;
-
-import static ivorius.reccomplex.commands.CommandSelectWand.isSideEmpty;
 
 /**
  * Created by lukas on 09.06.14.
  */
-public class CommandSelectCrop extends CommandSelectModify
+public class CommandSelectWand extends CommandSelectModify
 {
     @Override
     public String getCommandName()
     {
-        return RCConfig.commandPrefix + "crop";
+        return RCConfig.commandPrefix + "wand";
     }
 
     @Override
@@ -45,11 +44,19 @@ public class CommandSelectCrop extends CommandSelectModify
         BlockArea area = new BlockArea(point1, point2);
 
         for (EnumFacing direction : EnumFacing.VALUES)
-            while (area != null && isSideEmpty(world, area, direction))
-                area = BlockAreas.shrink(area, direction, 1);
+        {
+            int exp = 0;
+            while (!isSideEmpty(world, area, direction) && (exp++) < 100)
+                area = RCBlockAreas.expand(area, direction, 1);
+            area = BlockAreas.shrink(area, direction, 1);
+        }
 
         structureEntityInfo.setSelection(area);
         structureEntityInfo.sendSelectionToClients(player);
     }
 
+    public static boolean isSideEmpty(final World world, BlockArea area, EnumFacing direction)
+    {
+        return StreamSupport.stream(BlockAreas.side(area, direction).spliterator(), false).allMatch(coord -> world.getBlockState(coord).getMaterial() == Material.AIR);
+    }
 }

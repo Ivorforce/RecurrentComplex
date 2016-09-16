@@ -71,6 +71,7 @@ commands.selectSet.point.none=§onowhere§r
 
 commands.selectShift.usage=/#shift <x> <y> <z>
 commands.selectCrop.usage=/#crop
+commands.selectWand.usage=/#wand
 commands.selectShrink.usage=/#shrink <x> <y> <z>
 commands.selectExpand.usage=/#expand <x> <y> <z>
 

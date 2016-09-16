@@ -43,14 +43,22 @@ public class CommandSelectWand extends CommandSelectModify
         World world = player.getEntityWorld();
         BlockArea area = new BlockArea(point1, point2);
 
-        for (EnumFacing direction : EnumFacing.VALUES)
-        {
-            int exp = 0;
-            while (!isSideEmpty(world, area, direction) && (exp++) < 100)
-                area = RCBlockAreas.expand(area, direction, 1);
+        boolean changed = true;
+        int total = 0;
 
-            // Reverse last
-            if (exp > 0) area = BlockAreas.shrink(area, direction, 1);
+        while(changed)
+        {
+            changed = false;
+
+            for (EnumFacing direction : EnumFacing.VALUES)
+            {
+                BlockArea expand;
+                while (!isSideEmpty(world, (expand = RCBlockAreas.expand(area, direction, 1)), direction) && (total ++) < 300)
+                {
+                    area = expand;
+                    changed = true;
+                }
+            }
         }
 
         structureEntityInfo.setSelection(area);

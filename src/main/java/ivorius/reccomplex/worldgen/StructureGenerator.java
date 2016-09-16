@@ -142,7 +142,7 @@ public class StructureGenerator<S extends NBTStorable>
                 MinecraftForge.EVENT_BUS.post(new StructureGenerationEventLite.Post(world, structureID, coordInts, sizeInts, context.generationLayer));
 
                 if (structureID != null && memorize)
-                    StructureGenerationData.get(world).addCompleteEntry(structureID, generationInfo.id(), context.lowerCoord(), context.transform);
+                    StructureGenerationData.get(world).addCompleteEntry(structureID, generationInfo != null ? generationInfo.id() : null, context.lowerCoord(), context.transform);
             }
 
             return success ? context : null;

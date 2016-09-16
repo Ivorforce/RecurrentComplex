@@ -35,6 +35,7 @@ public class RCCommands
             event.registerServerCommand(new CommandEditStructure());
         }
         event.registerServerCommand(new CommandGenerateStructure());
+        event.registerServerCommand(new CommandGenerateStructureAt());
         event.registerServerCommand(new CommandImportStructure());
 
         event.registerServerCommand(new CommandStructuresReload());

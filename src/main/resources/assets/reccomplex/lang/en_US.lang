@@ -60,6 +60,7 @@ commands.strucEdit.usage=/#edit <structureName>
 
 commands.strucGen.usage=/#gen <structureName> [x] [z] [dimension]
 commands.strucGen.noStructure=No structure registered by the name of '%s'
+commands.strucGenAt.usage=/#genat <structureName> <entity> [dimension]
 
 commands.strucImport.usage=/#import <structureName> [x] [y] [z] [rotation] [mirror:true|false]
 commands.strucImport.noStructure=No structure registered by the name of '%s'

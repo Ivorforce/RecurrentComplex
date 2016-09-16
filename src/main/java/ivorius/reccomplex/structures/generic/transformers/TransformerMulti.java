@@ -59,11 +59,6 @@ public class TransformerMulti extends Transformer<TransformerMulti.InstanceData>
         this.transformers.addAll(transformers);
     }
 
-    public static boolean skips(Environment environment, List<Pair<Transformer, NBTStorable>> transformers, BlockPos pos, final IBlockState state)
-    {
-        return transformers.stream().anyMatch(input -> input.getLeft().skipGeneration(input.getRight(), environment, pos, state));
-    }
-
     public List<Transformer> getTransformers()
     {
         return transformers;

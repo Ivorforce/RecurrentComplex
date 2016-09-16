@@ -115,12 +115,13 @@ public class CommandSelectSpace extends CommandSelectModify
         set.forEach(pos -> {
             BlockPos down = pos.down();
             BlockPos down2 = pos.down(2);
-            IBlockState defaultState = pos.getY() > lowerPoint.getY() && !set.contains(down)
+            world.setBlockState(pos,
+                    pos.getY() > lowerPoint.getY() && !set.contains(down)
                     && world.getBlockState(down).getBlock().isReplaceable(world, down) && world.getBlockState(down2).getBlock().isReplaceable(world, down2)
-                    && new BlockArea(pos.subtract(new Vec3i(1, 0, 1)), pos.add(new Vec3i(1, 0, 0))).stream().allMatch(set::contains)
+                    && new BlockArea(pos.subtract(new Vec3i(2, 0, 2)), pos.add(new Vec3i(2, 0, 2))).stream().allMatch(set::contains)
                     ? spaceBlock.getDefaultState().withProperty(BlockGenericSpace.TYPE, 1)
-                    : spaceBlock.getDefaultState();
-            world.setBlockState(pos, defaultState);
+                    : spaceBlock.getDefaultState()
+            );
         });
     }
 

@@ -77,14 +77,6 @@ public class TransformerNaturalAir extends TransformerAbstractCloud<TransformerN
     }
 
     @Override
-    protected double naturalExpansionDistance(EnumFacing side)
-    {
-        return side == EnumFacing.DOWN ? 0.2f
-                : side.getHorizontalIndex() >= 0 ? 0.5f
-                : super.naturalExpansionDistance(side);
-    }
-
-    @Override
     public void transformBlock(InstanceData instanceData, Phase phase, StructureSpawnContext context, BlockPos sourcePos, BlockPos worldPos, IBlockState sourceState, double density)
     {
         context.setBlock(worldPos, Blocks.AIR.getDefaultState(), 2);

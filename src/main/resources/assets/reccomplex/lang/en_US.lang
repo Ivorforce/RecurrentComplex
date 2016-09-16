@@ -364,14 +364,7 @@ reccomplex.transformer.negativeSpace.tooltip=Makes the generation ignore blocks
 
 reccomplex.transformer.ensureBlocks=Ensure Blocks
 reccomplex.transformer.ensureBlocks.tooltip=Cancels the generation if<br>any placed blocks don't have space.
-reccomplex.transformer.ensureBlocks.mode.air=Air
-reccomplex.transformer.ensureBlocks.mode.air.tooltip=Ensure there is space to generate
-reccomplex.transformer.ensureBlocks.mode.tree=Tree
-reccomplex.transformer.ensureBlocks.mode.tree.tooltip=Ensure a tree can grow on top
-reccomplex.transformer.ensureBlocks.mode.mushroom=Mushroom
-reccomplex.transformer.ensureBlocks.mode.mushroom.tooltip=Ensure a mushroom can grow on top
-reccomplex.transformer.ensureBlocks.mode.cactus=Cactus
-reccomplex.transformer.ensureBlocks.mode.cactus.tooltip=Ensure a cactus can grow on top
+reccomplex.transformer.ensureBlocks.dest=Ensure
 
 reccomplex.biomePreset.clear=Clear
 reccomplex.biomePreset.clear.tooltip=No Biomes

@@ -84,7 +84,7 @@ public class TransformerEnsureBlocks extends Transformer<NBTNone>
     @Override
     public String getDisplayString()
     {
-        return String.format("Ensure: %s", sourceMatcher.getDisplayString(null));
+        return String.format("Ensure: %s", destMatcher.getDisplayString(null));
     }
 
     @Override

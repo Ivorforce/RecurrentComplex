@@ -37,8 +37,8 @@ public class TableDataSourceSelection extends TableDataSourceList<Selection.Area
     @Override
     public Selection.Area newEntry(String actionID)
     {
-        String identifier = list.size() > 0 ? list.get(0).getIdentifier() : showIdentifier ? "" : null;
-        return new Selection.Area(true, new int[dimensions.length], new int[dimensions.length], identifier);
+        return list.size() > 0 ? list.get(list.size() - 1).copy()
+                : new Selection.Area(true, new int[dimensions.length], new int[dimensions.length], showIdentifier ? "" : null);
     }
 
     @Override

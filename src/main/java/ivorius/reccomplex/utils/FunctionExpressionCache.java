@@ -99,7 +99,7 @@ public class FunctionExpressionCache<T, A, U> extends ExpressionCache<T>
     {
         super.testVariables(expression);
 
-        // Pre-setup
+        // Pre-setup?
         if (types != null)
         {
             ParseException[] exception = new ParseException[1];
@@ -151,7 +151,7 @@ public class FunctionExpressionCache<T, A, U> extends ExpressionCache<T>
             @Override
             public Validity validity(String var, Object o)
             {
-                return Validity.ERROR;
+                return Validity.KNOWN;
             }
         };
     }

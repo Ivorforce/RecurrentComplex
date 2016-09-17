@@ -31,7 +31,6 @@ public class EnvironmentMatcher extends FunctionExpressionCache<Boolean, Environ
     {
         super(RCBoolAlgebra.algebra(), true, TextFormatting.GREEN + "Always", expression);
 
-        addType(unknown(false));
         addType(new BiomeVariableType(BIOME_PREFIX, ""));
         addTypes(new DimensionVariableType(DIMENSION_PREFIX, ""), t -> t.alias("dim.", ""));
         addTypes(new DependencyVariableType(DEPENDENCY_PREFIX, ""), t -> t.alias("dep.", ""));

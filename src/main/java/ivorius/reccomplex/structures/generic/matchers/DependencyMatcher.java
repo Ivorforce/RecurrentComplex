@@ -27,7 +27,6 @@ public class DependencyMatcher extends FunctionExpressionCache<Boolean, Object, 
     {
         super(RCBoolAlgebra.algebra(), true, TextFormatting.GREEN + "No Dependencies", expression);
 
-        addType(unknown(false));
         addTypes(new ModVariableType(MOD_PREFIX, ""), t -> t.alias("$", ""));
         addTypes(new StructureVariableType(STRUCTURE_PREFIX, ""), t -> t.alias("#", ""), t -> t.alias("strc:", ""));
 

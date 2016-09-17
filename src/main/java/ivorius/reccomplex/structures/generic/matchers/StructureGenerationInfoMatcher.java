@@ -25,7 +25,6 @@ public class StructureGenerationInfoMatcher extends FunctionExpressionCache<Bool
     {
         super(RCBoolAlgebra.algebra(), true, TextFormatting.GREEN + "Any Generation", expression);
 
-        addType(unknown(false));
         addTypes(new IdentifierType(ID_PREFIX, ""));
         addTypes(new TypeType(TYPE_PREFIX, ""), t -> t.alias("$", ""));
 

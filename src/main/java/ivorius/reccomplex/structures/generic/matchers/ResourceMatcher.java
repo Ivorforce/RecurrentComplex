@@ -23,6 +23,7 @@ public class ResourceMatcher extends FunctionExpressionCache<Boolean, ResourceLo
     public ResourceMatcher(String expression, Predicate<String> isKnown)
     {
         super(RCBoolAlgebra.algebra(), true, TextFormatting.GREEN + "Any Structure", expression);
+
         addTypes(new ResourceIDType(ID_PREFIX, "", isKnown), t -> t.alias("", ""));
         addTypes(new DomainType(DOMAIN_PREFIX, ""), t -> t.alias("$", ""));
 

@@ -37,7 +37,7 @@ public class PositionedBlockMatcher extends FunctionExpressionCache<Boolean, Pos
 
         this.registry = registry;
 
-        addType(new BlockVariableType(BLOCK_PREFIX, "", registry));
+        addTypes(new BlockVariableType(BLOCK_PREFIX, "", registry), v -> v.alias("", ""));
         addType(new IsVariableType(IS_PREFIX, ""));
         addType(new SustainVariableType(SUSTAIN_PREFIX, ""));
 

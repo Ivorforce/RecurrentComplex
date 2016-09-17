@@ -53,6 +53,12 @@ public class RCTerrainGenEventHandler
                 case CACTUS:
                     type = RCBiomeDecorator.DecorationType.CACTUS;
                     break;
+                case FOSSIL:
+                    type = RCBiomeDecorator.DecorationType.FOSSIL;
+                    break;
+                case DESERT_WELL:
+                    type = RCBiomeDecorator.DecorationType.DESERT_WELL;
+                    break;
                 default:
                     type = null;
             }

@@ -306,6 +306,8 @@ reccomplex.generationInfo.decoration.title=Vanilla Decoration
 reccomplex.generationInfo.decoration.types.tree=Tree
 reccomplex.generationInfo.decoration.types.cactus=Cactus
 reccomplex.generationInfo.decoration.types.big_mushroom=Big Mushroom
+reccomplex.generationInfo.decoration.types.desert_well=Desert Well
+reccomplex.generationInfo.decoration.types.fossil=Fossil
 
 reccomplex.transformer.id=Transformer ID
 reccomplex.transformer.id.tooltip=Unique Identifier for the transformer.

@@ -22,6 +22,8 @@ import net.minecraft.world.WorldServer;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.biome.BiomeDecorator;
 import net.minecraft.world.gen.feature.WorldGenAbstractTree;
+import net.minecraft.world.gen.feature.WorldGenDesertWells;
+import net.minecraft.world.gen.feature.WorldGenFossils;
 import org.apache.commons.lang3.tuple.Pair;
 
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -77,7 +79,7 @@ public class RCBiomeDecorator
                 if (random.nextFloat() < decorator.field_189870_A)
                     ++vanillaAmount;
 
-                if ((vanillaAmount = trySurface(worldIn, random, chunkPos, generations, totalWeight, vanillaAmount)) < 0)
+                if ((vanillaAmount = trySurface(worldIn, random, chunkPos, generations, totalWeight, vanillaAmount, decorator.treesPerChunk <= 0)) < 0)
                     return false;
 
                 for (int j2 = 0; j2 < vanillaAmount; ++j2)
@@ -100,7 +102,7 @@ public class RCBiomeDecorator
             {
                 int vanillaAmount = decorator.bigMushroomsPerChunk;
 
-                if ((vanillaAmount = trySurface(worldIn, random, chunkPos, generations, totalWeight, vanillaAmount)) < 0)
+                if ((vanillaAmount = trySurface(worldIn, random, chunkPos, generations, totalWeight, vanillaAmount, false)) < 0)
                     return false;
 
                 for (int k2 = 0; k2 < vanillaAmount; ++k2)
@@ -110,13 +112,13 @@ public class RCBiomeDecorator
                     decorator.bigMushroomGen.generate(worldIn, random, worldIn.getHeight(chunkPos.add(l6, 0, k10)));
                 }
 
-                return false;
+                return true;
             }
             case CACTUS:
             {
                 int vanillaAmount = decorator.cactiPerChunk;
 
-                if ((vanillaAmount = trySurface(worldIn, random, chunkPos, generations, totalWeight, vanillaAmount)) < 0)
+                if ((vanillaAmount = trySurface(worldIn, random, chunkPos, generations, totalWeight, vanillaAmount, false)) < 0)
                     return false;
 
                 for (int j5 = 0; j5 < vanillaAmount; ++j5)
@@ -131,27 +133,54 @@ public class RCBiomeDecorator
                         decorator.cactusGen.generate(worldIn, random, chunkPos.add(l9, j19, k13));
                     }
                 }
-                return false;
+
+                return true;
+            }
+            case DESERT_WELL:
+            {
+                int vanillaAmount = random.nextInt(100) == 0 ? 1 : 0;
+
+                if ((vanillaAmount = trySurface(worldIn, random, chunkPos, generations, totalWeight, vanillaAmount, true)) < 0)
+                    return false;
+
+                for (int j5 = 0; j5 < vanillaAmount; ++j5)
+                {
+                    int i = random.nextInt(16) + 8;
+                    int j = random.nextInt(16) + 8;
+                    BlockPos blockpos = worldIn.getHeight(chunkPos.add(i, 0, j)).up();
+                    (new WorldGenDesertWells()).generate(worldIn, random, blockpos);
+                }
+
+                return true;
+            }
+            case FOSSIL:
+            {
+                int vanillaAmount = random.nextInt(64) == 0 ? 1 : 0;
+
+                if ((vanillaAmount = trySurface(worldIn, random, chunkPos, generations, totalWeight, vanillaAmount, true)) < 0)
+                    return false;
+
+                for (int j5 = 0; j5 < vanillaAmount; ++j5)
+                {
+                    (new WorldGenFossils()).generate(worldIn, random, chunkPos);
+                }
             }
             default:
                 return false;
         }
     }
 
-    protected static int trySurface(WorldServer worldIn, Random random, BlockPos chunkPos, Collection<Pair<StructureInfo, VanillaDecorationGenerationInfo>> generations, double totalWeight, int vanillaAmount)
+    protected static int trySurface(WorldServer worldIn, Random random, BlockPos chunkPos, Collection<Pair<StructureInfo, VanillaDecorationGenerationInfo>> generations, double totalWeight, int vanillaAmount, boolean lowChance)
     {
         int rcAmount = amount(random, totalWeight, vanillaAmount);
 
-        if (rcAmount <= 0) return -1;
-        generateSurface(worldIn, random, chunkPos, generations, rcAmount);
+        // When the chance is low, we don't give back to vanilla to try once again, to avoid double the spawn rate
+        if (rcAmount <= 0 && !lowChance) return -1;
 
-        return vanillaAmount - rcAmount;
-    }
-
-    protected static void generateSurface(WorldServer worldIn, Random random, BlockPos chunkPos, Collection<Pair<StructureInfo, VanillaDecorationGenerationInfo>> generations, int rcAmount)
-    {
         for (int i = 0; i < rcAmount; i++)
             generateSurface(WeightedSelector.select(random, generations, pair -> pair.getRight().getActiveWeight()), worldIn, chunkPos, random);
+
+        return vanillaAmount - rcAmount;
     }
 
     protected static void generateSurface(Pair<StructureInfo, VanillaDecorationGenerationInfo> generation, WorldServer worldIn, BlockPos chunkPos, Random random)
@@ -186,7 +215,11 @@ public class RCBiomeDecorator
         @SerializedName("cactus")
         CACTUS,
         @SerializedName("tree")
-        TREE;
+        TREE,
+        @SerializedName("desert_well")
+        DESERT_WELL,
+        @SerializedName("fossil")
+        FOSSIL;
 
         public static DecorationType byID(String id)
         {

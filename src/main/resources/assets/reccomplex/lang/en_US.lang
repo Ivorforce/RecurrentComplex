@@ -82,6 +82,7 @@ commands.selectModify.invalidMetadata=Metadata must be entered like '0,1,5', but
 commands.selectFill.usage=/#fill <block> [metadata1,metadata2,metadata3...]
 
 commands.selectReplace.usage=/#replace <dest> <destmetadata1,metadata2,metadata3...> <src positioned block expression>
+commands.selectProperty.usage=/#property <key> <value> [positioned block matcher]
 
 commands.selectFillSphere.usage=/#sphere <block> [metadata1,metadata2,metadata3...]
 

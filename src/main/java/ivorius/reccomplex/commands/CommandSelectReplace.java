@@ -20,7 +20,9 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
@@ -72,6 +74,7 @@ public class CommandSelectReplace extends CommandSelectModify
         }
     }
 
+    @Nonnull
     @Override
     public List<String> getTabCompletionOptions(MinecraftServer server, ICommandSender sender, String[] args, @Nullable BlockPos pos)
     {
@@ -79,7 +82,7 @@ public class CommandSelectReplace extends CommandSelectModify
             return getListOfStringsMatchingLastWord(args, Block.REGISTRY.getKeys());
         else if (args.length == 2)
             return getListOfStringsMatchingLastWord(args, IntStream.range(0, 16).mapToObj(String::valueOf).collect(Collectors.toList()));
-
-        return null;
+        else
+            return getListOfStringsMatchingLastWord(args, Block.REGISTRY.getKeys());
     }
 }

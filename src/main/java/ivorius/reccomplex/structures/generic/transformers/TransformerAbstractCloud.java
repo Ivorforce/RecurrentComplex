@@ -46,8 +46,10 @@ public abstract class TransformerAbstractCloud<S extends TransformerAbstractClou
             Set<T> prev = start.size() > 0 ? start : changedR;
             final Set<T> changed = prev == start ? changedR : start;
             for (T t : prev)
+            {
                 if (!changedConsumer.test(changed, t))
                     return false;
+            }
             prev.clear();
         }
 
@@ -96,6 +98,8 @@ public abstract class TransformerAbstractCloud<S extends TransformerAbstractClou
 
             visitRecursively(Sets.newHashSet(cloud.keySet()), (changed, pos) ->
             {
+                double density = cloud.get(pos);
+
                 for (EnumFacing side : EnumFacing.values())
                 {
                     double modifier = naturalExpansionDistance(side);
@@ -103,7 +107,7 @@ public abstract class TransformerAbstractCloud<S extends TransformerAbstractClou
                     {
                         BlockPos sidePos = pos.offset(side);
                         BlockPos sideWorldCoord = context.transform.apply(pos, strucSize).add(lowerCoord);
-                        double sideDensity = cloud.get(pos) - (falloff * (1.0 / modifier) * blurredValueField.getValue(sidePos.getX(), sidePos.getY(), sidePos.getZ()));
+                        double sideDensity = density - (falloff * (1.0 / modifier) * blurredValueField.getValue(sidePos.getX(), sidePos.getY(), sidePos.getZ()));
 
                         if (sideDensity > 0 && cloud.get(sidePos) < sideDensity && canPenetrate(environment, worldData, sideWorldCoord, sideDensity, transformer, transformerInstanceData))
                         {

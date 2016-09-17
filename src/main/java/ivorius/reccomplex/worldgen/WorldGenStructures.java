@@ -73,7 +73,7 @@ public class WorldGenStructures
         NaturalGenerationInfo naturalGenInfo = pair.getRight();
         String structureName = StructureRegistry.INSTANCE.structureID(structureInfo);
 
-        BlockSurfacePos genPos = new BlockSurfacePos((chunkPos.chunkXPos << 4) + random.nextInt(16), (chunkPos.chunkZPos << 4) + random.nextInt(16));
+        BlockSurfacePos genPos = new BlockSurfacePos((chunkPos.chunkXPos << 4) + 8 + random.nextInt(16), (chunkPos.chunkZPos << 4) + 8 + random.nextInt(16));
 
         if (!naturalGenInfo.hasLimitations() || naturalGenInfo.getLimitations().areResolved(world, structureName))
         {

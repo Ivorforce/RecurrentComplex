@@ -98,7 +98,7 @@ public class TransformerNatural extends TransformerAbstractCloud<TransformerNatu
 
         boolean useStoneBlock = false;
         IBlockState setBlock = useStoneBlock ? mainBlock : (instanceData.cloud.containsKey(sourcePos.up()) ? fillerBlock : topBlock);
-        context.environment.world.setBlockState(pos, setBlock);
+        context.setBlock(pos, setBlock, 2);
     }
 
     @Override

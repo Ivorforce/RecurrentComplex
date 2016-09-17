@@ -62,7 +62,7 @@ public class RCBiomeDecorator
         BiomeDecorator decorator = biomeIn.theBiomeDecorator;
 
         Collection<Pair<StructureInfo, VanillaDecorationGenerationInfo>> generations = StructureRegistry.INSTANCE.getStructureGenerations(VanillaDecorationGenerationInfo.class,
-                pair -> pair.getRight().generatesIn(baseEnv.withGeneration(pair.getRight()))
+                pair -> pair.getRight().type == type && pair.getRight().generatesIn(baseEnv.withGeneration(pair.getRight()))
         );
 
         double totalWeight = generations.stream().mapToDouble(pair -> pair.getRight().getActiveWeight()).sum() * baseWeight;

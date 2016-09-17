@@ -71,8 +71,8 @@ commands.selectSet.size=Size: %s
 commands.selectSet.point.none=§onowhere§r
 
 commands.selectShift.usage=/#shift <x> <y> <z>
-commands.selectCrop.usage=/#crop
-commands.selectWand.usage=/#wand
+commands.selectCrop.usage=/#crop [positioned block expression]
+commands.selectWand.usage=/#wand [positioned block expression]
 commands.selectShrink.usage=/#shrink <x> <y> <z>
 commands.selectExpand.usage=/#expand <x> <y> <z>
 

@@ -6,10 +6,7 @@
 package ivorius.reccomplex;
 
 import com.google.common.collect.Lists;
-import gnu.trove.map.TDoubleObjectMap;
-import gnu.trove.map.TFloatObjectMap;
 import gnu.trove.map.TObjectDoubleMap;
-import gnu.trove.map.hash.TDoubleObjectHashMap;
 import gnu.trove.map.hash.TObjectDoubleHashMap;
 import ivorius.reccomplex.structures.StructureRegistry;
 import ivorius.reccomplex.structures.generic.matchers.BiomeMatcher;
@@ -52,7 +49,7 @@ public class RCConfig
     public static boolean avoidOverlappingGeneration;
     public static boolean honorStructureGenerationOption;
 
-    public static boolean generateTrees;
+    public static boolean generateNature;
     public static final TObjectDoubleMap<RCBiomeDecorator.DecorationType> baseDecorationWeights = new TObjectDoubleHashMap<>();
 
     public static int baseVillageSpawnWeight;
@@ -115,7 +112,7 @@ public class RCConfig
             avoidOverlappingGeneration = RecurrentComplex.config.getBoolean("avoidOverlappingGeneration", CATEGORY_BALANCING, true, "Enabling this will cancel any structure generation if another structure is present at the cooridnate already.");
             honorStructureGenerationOption = RecurrentComplex.config.getBoolean("honorStructureGenerationOption", CATEGORY_BALANCING, true, "If disabled, Recurrent Complex will generate structures in worlds without the structure generation option.");
 
-            generateTrees = RecurrentComplex.config.getBoolean("generateTrees", CATEGORY_BALANCING, true, "Whether the trees added by the mod should be actively generating.");
+            generateNature = RecurrentComplex.config.getBoolean("generateNature", CATEGORY_BALANCING, true, "Whether the nature (e.g. trees, mushrooms) added by the mod should be actively generating.");
 
             minDistToSpawnForGeneration = RecurrentComplex.config.getFloat("minDistToSpawnForGeneration", CATEGORY_BALANCING, 30.0f, 0.0f, 500.0f, "Within this block radius, default structures won't spawn (in the main dimension).");
             structureSpawnChanceModifier = RecurrentComplex.config.getFloat("structureSpawnChance", CATEGORY_BALANCING, 1.0f, 0.0f, 10.0f, "How often do structures spawn?");

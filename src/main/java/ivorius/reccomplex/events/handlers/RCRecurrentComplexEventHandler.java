@@ -9,10 +9,6 @@ import ivorius.reccomplex.RCConfig;
 import ivorius.reccomplex.RecurrentComplex;
 import ivorius.reccomplex.events.RCEventBus;
 import ivorius.reccomplex.events.StructureRegistrationEvent;
-import ivorius.reccomplex.worldgen.sapling.RCSaplingGenerator;
-import net.minecraft.world.WorldServer;
-import net.minecraftforge.event.terraingen.SaplingGrowTreeEvent;
-import net.minecraftforge.fml.common.eventhandler.Event;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
 /**
@@ -28,7 +24,7 @@ public class RCRecurrentComplexEventHandler
     @SubscribeEvent
     public void onRegistration(StructureRegistrationEvent.Pre event)
     {
-        if (event.domain.equals(RecurrentComplex.MOD_ID) && event.path.getParent().endsWith("trees") && !RCConfig.generateTrees)
+        if (event.domain.equals(RecurrentComplex.MOD_ID) && event.path.getParent().endsWith("nature") && !RCConfig.generateNature)
             event.shouldGenerate = false;
     }
 }

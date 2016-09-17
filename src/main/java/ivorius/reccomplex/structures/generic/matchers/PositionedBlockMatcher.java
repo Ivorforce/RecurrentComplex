@@ -41,6 +41,8 @@ public class PositionedBlockMatcher extends FunctionExpressionCache<Boolean, Pos
         addType(new BlockVariableType(BLOCK_PREFIX, "", registry));
         addType(new IsVariableType(IS_PREFIX, ""));
         addType(new SustainVariableType(SUSTAIN_PREFIX, ""));
+
+        testVariables();
     }
 
     @Override

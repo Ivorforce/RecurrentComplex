@@ -91,7 +91,8 @@ public class RCSaplingGenerator
         BlockPos spawnPos = transform.apply(saplingGenInfo.spawnShift, new int[]{1, 1, 1}).add(startPos);
 
         boolean success = new StructureGenerator<>(structure).world(world).generationInfo(saplingGenInfo)
-                .transform(transform).random(random).maturity(StructureSpawnContext.GenerateMaturity.SUGGEST).memorize(false)
+                .transform(transform).random(random).maturity(StructureSpawnContext.GenerateMaturity.SUGGEST)
+                .memorize(RCConfig.memorizeSaplings).allowOverlaps(true)
                 .randomPosition(BlockSurfacePos.from(spawnPos), (w, r, b) -> spawnPos.getY()).generate() != null;
 
         if (!success)

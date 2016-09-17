@@ -64,6 +64,9 @@ public class RCConfig
     public static boolean savePlayerCache;
     public static boolean notifyAdminOnBlockCommands;
 
+    public static boolean memorizeDecoration;
+    public static boolean memorizeSaplings;
+
     public static int[] blockSelectorModifierKeys;
 
     private static boolean lightweightMode;
@@ -100,6 +103,9 @@ public class RCConfig
             savePlayerCache = RecurrentComplex.config.getBoolean("savePlayerCache", CATEGORY_GENERAL, true, "Whether player caches like the clipboard and previewed operations will be saved and loaded.");
 
             notifyAdminOnBlockCommands = RecurrentComplex.config.getBoolean("notifyAdminOnBlockCommands", CATEGORY_GENERAL, false, "Disabling this will prevent spawn command blocks from notifying the server admins, as normal commands would.");
+
+            memorizeDecoration = RecurrentComplex.config.getBoolean("memorizeDecoration", CATEGORY_GENERAL, false, "Memorize decoration spawns like trees or mushrooms (for /#whatisthis). Since decoration is so common, it is recommended to use this only for debugging / balancing purposes.");
+            memorizeSaplings = RecurrentComplex.config.getBoolean("memorizeSaplings", CATEGORY_GENERAL, false, "Memorize sapling spawns (for /#whatisthis). Since saplings are so common, it is recommended to use this only for debugging / balancing purposes.");
         }
 
         if (configID == null || configID.equals(CATEGORY_BALANCING))

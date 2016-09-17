@@ -72,6 +72,7 @@ public class StructureGenerator<S extends NBTStorable>
     @Nullable
     private NBTBase instanceDataNBT;
 
+    private boolean allowOverlaps = false;
     private boolean memorize = true;
 
     public StructureGenerator(StructureInfo<S> structureInfo)
@@ -121,7 +122,7 @@ public class StructureGenerator<S extends NBTStorable>
 
         if (maturity() != StructureSpawnContext.GenerateMaturity.SUGGEST || (
                 context.boundingBox.minY >= MIN_DIST_TO_LIMIT && context.boundingBox.maxY <= world.getHeight() - 1 - MIN_DIST_TO_LIMIT
-                        && (!RCConfig.avoidOverlappingGeneration || !memorize || StructureGenerationData.get(world).getEntriesAt(context.boundingBox).size() == 0)
+                        && (!RCConfig.avoidOverlappingGeneration || allowOverlaps || StructureGenerationData.get(world).getEntriesAt(context.boundingBox).size() == 0)
                         && !RCEventBus.INSTANCE.post(new StructureGenerationEvent.Suggest(structureInfo, context))
                         && !MinecraftForge.EVENT_BUS.post(new StructureGenerationEventLite.Suggest(world, structureID, coordInts, sizeInts, context.generationLayer))
         ))
@@ -372,6 +373,12 @@ public class StructureGenerator<S extends NBTStorable>
     public StructureGenerator<S> memorize(boolean memorize)
     {
         this.memorize = memorize;
+        return this;
+    }
+
+    public StructureGenerator<S> allowOverlaps(boolean allowOverlaps)
+    {
+        this.allowOverlaps = allowOverlaps;
         return this;
     }
 

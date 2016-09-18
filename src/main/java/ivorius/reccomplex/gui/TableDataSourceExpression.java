@@ -119,7 +119,7 @@ public class TableDataSourceExpression<T, U, E extends FunctionExpressionCache<T
     @Nullable
     protected String parsedString()
     {
-        return StringUtils.abbreviate(parsedString(e, u), getCursorOffset(), 60);
+        return StringUtils.abbreviate(parsedString(e, u), getCursorOffset(), 70);
     }
 
     protected int getCursorOffset()

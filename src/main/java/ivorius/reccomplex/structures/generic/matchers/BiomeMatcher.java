@@ -11,6 +11,7 @@ import ivorius.reccomplex.json.RCGsonHelper;
 import ivorius.reccomplex.utils.FunctionExpressionCache;
 import ivorius.reccomplex.utils.algebra.RCBoolAlgebra;
 import joptsimple.internal.Strings;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.biome.Biome;
 import net.minecraftforge.common.BiomeDictionary;
@@ -26,16 +27,18 @@ import java.util.stream.StreamSupport;
 /**
  * Created by lukas on 19.09.14.
  */
-public class BiomeMatcher extends FunctionExpressionCache<Boolean, Biome, Set<Biome>> implements Predicate<Biome>
+public class BiomeMatcher extends FunctionExpressionCache<Boolean, Biome, Object> implements Predicate<Biome>
 {
     public static final String BIOME_NAME_PREFIX = "name=";
+    public static final String BIOME_ID_PREFIX = "id=";
     public static final String BIOME_TYPE_PREFIX = "type=";
 
     public BiomeMatcher(String expression)
     {
         super(RCBoolAlgebra.algebra(), true, TextFormatting.GREEN + "Any Biome", expression);
 
-        addTypes(new BiomeVariableType(BIOME_NAME_PREFIX, ""), t -> t.alias("", ""));
+        addTypes(new BiomeNameVariableType(BIOME_NAME_PREFIX, ""));
+        addTypes(new BiomeIDVariableType(BIOME_ID_PREFIX, ""), t -> t.alias("", ""));
         addTypes(new BiomeDictVariableType(BIOME_TYPE_PREFIX, ""), t -> t.alias("$", ""));
 
         testVariables();
@@ -88,9 +91,9 @@ public class BiomeMatcher extends FunctionExpressionCache<Boolean, Biome, Set<Bi
         return evaluate(input);
     }
 
-    protected class BiomeVariableType extends VariableType<Boolean, Biome, Set<Biome>>
+    protected class BiomeNameVariableType extends VariableType<Boolean, Biome, Object>
     {
-        public BiomeVariableType(String prefix, String suffix)
+        public BiomeNameVariableType(String prefix, String suffix)
         {
             super(prefix, suffix);
         }
@@ -102,14 +105,35 @@ public class BiomeMatcher extends FunctionExpressionCache<Boolean, Biome, Set<Bi
         }
 
         @Override
-        public Validity validity(final String var, final Set<Biome> biomes)
+        public Validity validity(final String var, final Object biomes)
         {
-            return StreamSupport.stream(biomes.spliterator(), false).anyMatch(input -> input.getBiomeName().equals(var))
+            return Biome.REGISTRY.getKeys().stream().map(Biome.REGISTRY::getObject).anyMatch(b -> b.getBiomeName().equals(var))
                     ? Validity.KNOWN : Validity.UNKNOWN;
         }
     }
 
-    protected class BiomeDictVariableType extends VariableType<Boolean, Biome, Set<Biome>>
+    protected class BiomeIDVariableType extends VariableType<Boolean, Biome, Object>
+    {
+        public BiomeIDVariableType(String prefix, String suffix)
+        {
+            super(prefix, suffix);
+        }
+
+        @Override
+        public Boolean evaluate(String var, Biome biome)
+        {
+            return Biome.REGISTRY.getObject(new ResourceLocation(var)) == biome;
+        }
+
+        @Override
+        public Validity validity(final String var, final Object biomes)
+        {
+            return Biome.REGISTRY.containsKey(new ResourceLocation(var))
+                    ? Validity.KNOWN : Validity.UNKNOWN;
+        }
+    }
+
+    protected class BiomeDictVariableType extends VariableType<Boolean, Biome, Object>
     {
         public BiomeDictVariableType(String prefix, String suffix)
         {
@@ -124,7 +148,7 @@ public class BiomeMatcher extends FunctionExpressionCache<Boolean, Biome, Set<Bi
         }
 
         @Override
-        public Validity validity(String var, Set<Biome> biomes)
+        public Validity validity(String var, Object biomes)
         {
             return RCGsonHelper.enumForNameIgnoreCase(var, BiomeDictionary.Type.values()) != null
                     ? Validity.KNOWN : Validity.UNKNOWN;

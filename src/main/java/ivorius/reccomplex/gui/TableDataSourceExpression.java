@@ -124,8 +124,15 @@ public class TableDataSourceExpression<T, U, E extends FunctionExpressionCache<T
         if (abbreviate.startsWith("...") && abbreviate.length() > 3 )
         {
             char first = abbreviate.charAt(3);
-            return first == '§' ? abbreviate : ("..." + abbreviate.substring(4)); // Cut off one char to avoid destroying §
+            abbreviate = first == '§' ? abbreviate : ("..." + abbreviate.substring(4)); // Cut off one char to avoid destroying §
         }
+
+        if (abbreviate.endsWith("..."))
+        {
+            char last = abbreviate.charAt(abbreviate.length() - 4);
+            abbreviate = abbreviate.substring(0, abbreviate.length() - (last == '§' ? 4 : 3)) + TextFormatting.RESET + "...";
+        }
+
         return abbreviate;
     }
 

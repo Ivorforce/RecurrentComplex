@@ -8,9 +8,6 @@ package ivorius.reccomplex.commands;
 import ivorius.ivtoolkit.tools.IvGsonHelper;
 import ivorius.reccomplex.RCConfig;
 import ivorius.reccomplex.json.RCGsonHelper;
-import ivorius.reccomplex.structures.StructureInfo;
-import ivorius.reccomplex.structures.generic.GenericStructureInfo;
-import ivorius.reccomplex.structures.generic.matchers.BiomeMatcher;
 import ivorius.reccomplex.utils.ServerTranslations;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.CommandException;
@@ -30,17 +27,26 @@ import org.apache.commons.lang3.StringUtils;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import java.util.*;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
 
 /**
  * Created by lukas on 03.08.14.
  */
 public class CommandBiomeDict extends CommandBase
 {
+    @Nonnull
+    public static Collection<String> keywords(ResourceLocation id, Biome biome)
+    {
+        return Arrays.asList(id.toString(), biome.getBiomeName());
+    }
+
     @Override
     public String getCommandName()
     {
-        return RCConfig.commandPrefix + "biomedict";
+        return RCConfig.commandPrefix + "biome";
     }
 
     public int getRequiredPermissionLevel()
@@ -54,17 +60,11 @@ public class CommandBiomeDict extends CommandBase
         return ServerTranslations.usage("commands.biomedict.usage");
     }
 
-    @Nonnull
-    public static Collection<String> keywords(ResourceLocation id, Biome biome)
-    {
-        return Arrays.asList(id.toString(), biome.getBiomeName());
-    }
-
     public TextComponentString createBiomeTextComponent(ResourceLocation id)
     {
         TextComponentString comp = new TextComponentString(id.toString());
         comp.getStyle().setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND,
-                String.format("/%s get %s", getCommandName(), id.toString())));
+                String.format("/%s types %s", getCommandName(), id.toString())));
         comp.getStyle().setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT,
                 ServerTranslations.get("commands.rcsearch.lookup")));
         comp.getStyle().setColor(TextFormatting.BLUE);
@@ -84,10 +84,10 @@ public class CommandBiomeDict extends CommandBase
                 CommandSearchStructure.outputSearch(commandSender, Biome.REGISTRY.getKeys(),
                         loc -> CommandSearchStructure.searchRank(Arrays.asList(args), keywords(loc, Biome.REGISTRY.getObject(loc))),
                         this::createBiomeTextComponent
-                        );
+                );
                 break;
             }
-            case "get":
+            case "types":
             {
                 String biomeID = args[1];
                 Biome biome = Biome.REGISTRY.getObject(new ResourceLocation(biomeID));
@@ -129,7 +129,7 @@ public class CommandBiomeDict extends CommandBase
                         String biomeID = Biome.REGISTRY.getNameForObject(biome).toString();
                         components[i] = new TextComponentString(biomeID);
                         components[i].getStyle().setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND,
-                                String.format("/%s get %s", getCommandName(), biomeID)));
+                                String.format("/%s types %s", getCommandName(), biomeID)));
                         components[i].getStyle().setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT,
                                 ServerTranslations.format("commands.biomedict.list.number", BiomeDictionary.getTypesForBiome(biome).length)));
                     }
@@ -150,9 +150,9 @@ public class CommandBiomeDict extends CommandBase
     public List<String> getTabCompletionOptions(MinecraftServer server, ICommandSender sender, String[] args, @Nullable BlockPos pos)
     {
         if (args.length == 1)
-            return getListOfStringsMatchingLastWord(args, "get", "list", "search");
+            return getListOfStringsMatchingLastWord(args, "types", "list", "search");
 
-        if (args[0].equals("get"))
+        if (args[0].equals("types"))
         {
             return getListOfStringsMatchingLastWord(args, Biome.REGISTRY.getKeys());
         }

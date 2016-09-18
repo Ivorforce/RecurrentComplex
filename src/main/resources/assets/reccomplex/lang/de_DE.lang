@@ -117,7 +117,7 @@ commands.strucImportSchematic.format=Die Datei '%s' ist in einem ununterstüzten
 commands.strucExportSchematic.usage=/#exportschematic <Schematic Name>
 commands.strucExportSchematic.success=Exportiert Schematic nach '%s'
 
-commands.biomedict.usage=/#biomedict <get|list> id (get: Biom ID, list: Biomtyp ID)
+commands.biomedict.usage=/#biome <types|list> id (get: Biom ID, list: Biomtyp ID)
 commands.biomedict.get=Biometypen für %s: %s
 commands.biomedict.get.number=%s biome
 commands.biomedict.list=Biome des Typs %s: %s
@@ -125,7 +125,7 @@ commands.biomedict.list.number=%s Biomtypen
 commands.biomedict.nobiome=Kein Biom mit der ID '%s'
 commands.biomedict.notype=Kein Biomtyp mit der ID '%s'
 
-commands.dimensiondict.usage=/#dimensiondict <get|list> id (get: Dimension ID, list: Dimensionstyp ID)
+commands.dimensiondict.usage=/#dimension <types|list> id (get: Dimension ID, list: Dimensionstyp ID)
 commands.dimensiondict.get=Dimensionstypen for %d: %s
 commands.dimensiondict.get.number=%s Dimensionen
 commands.dimensiondict.list=Dimensionen des Typs %s: %s

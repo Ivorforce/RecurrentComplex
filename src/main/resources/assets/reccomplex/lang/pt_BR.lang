@@ -107,13 +107,13 @@ commands.strucImportSchematic.format=O arquivo '%s' tem um formato não suportad
 commands.strucExportSchematic.usage=/#exportschematic <schematic name>
 commands.strucExportSchematic.success=Esquema exportado para '%s'
 
-commands.biomedict.usage=/#biomedict <get|list> id (get: Biome ID, list: Biome Type ID)
+commands.biomedict.usage=/#biome <types|list> id (get: Biome ID, list: Biome Type ID)
 commands.biomedict.get=Tipos de Bioma para %s: %s
 commands.biomedict.list=Biomas do Tipo %s: %s
 commands.biomedict.nobiome=Nenhum Bioma com o ID '%s'
 commands.biomedict.notype=Nenhum Tipo de Bioma com o ID '%s'
 
-commands.dimensiondict.usage=/#dimensiondict <get|list> id (get: Dimension ID, list: Dimension Type ID)
+commands.dimensiondict.usage=/#dimension <types|list> id (get: Dimension ID, list: Dimension Type ID)
 commands.dimensiondict.get=Tipo de Dimensões para %d: %s
 commands.dimensiondict.list=Dimensões do Tipo %s: %s
 

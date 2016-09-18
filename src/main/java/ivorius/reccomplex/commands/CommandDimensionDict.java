@@ -25,6 +25,7 @@ import net.minecraftforge.common.DimensionManager;
 import org.apache.commons.lang3.StringUtils;
 
 import javax.annotation.Nullable;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -35,7 +36,7 @@ public class CommandDimensionDict extends CommandBase
     @Override
     public String getCommandName()
     {
-        return RCConfig.commandPrefix + "dimensiondict";
+        return RCConfig.commandPrefix + "dimension";
     }
 
     public int getRequiredPermissionLevel()
@@ -57,7 +58,7 @@ public class CommandDimensionDict extends CommandBase
 
         switch (args[0])
         {
-            case "get":
+            case "types":
             {
                 int dimensionID = parseInt(args[1]);
 
@@ -90,7 +91,7 @@ public class CommandDimensionDict extends CommandBase
                     int dimensionID = typeDimensions.get(i);
                     components[i] = new TextComponentString(String.valueOf(dimensionID));
                     components[i].getStyle().setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND,
-                            String.format("/%s get %s", getCommandName(), dimensionID)));
+                            String.format("/%s types %s", getCommandName(), dimensionID)));
                     components[i].getStyle().setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT,
                             ServerTranslations.format("commands.dimensiondict.list.number", DimensionDictionary.getDimensionTypes(DimensionManager.getProvider(dimensionID)).size())));
                 }
@@ -119,9 +120,9 @@ public class CommandDimensionDict extends CommandBase
     public List<String> getTabCompletionOptions(MinecraftServer server, ICommandSender sender, String[] args, @Nullable BlockPos pos)
     {
         if (args.length == 1)
-            return getListOfStringsMatchingLastWord(args, "get", "list");
+            return getListOfStringsMatchingLastWord(args, "types", "list");
 
-        if (args[0].equals("get"))
+        if (args[0].equals("types"))
         {
             Integer[] dimensions = DimensionManager.getIDs();
             String[] dimensionStrings = new String[dimensions.length];
@@ -134,6 +135,6 @@ public class CommandDimensionDict extends CommandBase
         else if (args[0].equals("list"))
             return getListOfStringsMatchingLastWord(args, DimensionDictionary.allRegisteredTypes());
 
-        return null;
+        return Collections.emptyList();
     }
 }

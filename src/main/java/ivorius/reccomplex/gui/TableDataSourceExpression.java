@@ -119,7 +119,8 @@ public class TableDataSourceExpression<T, U, E extends FunctionExpressionCache<T
     @Nullable
     protected String parsedString()
     {
-        return StringUtils.abbreviate(parsedString(e, u), getCursorOffset(), 70);
+        String abbreviate = StringUtils.abbreviate(parsedString(e, u), getCursorOffset(), 71);
+        return abbreviate.charAt(0) == '§' ? abbreviate : abbreviate.substring(1); // Cut off one char to avoid destroying §
     }
 
     protected int getCursorOffset()

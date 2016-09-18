@@ -8,6 +8,7 @@ package ivorius.reccomplex;
 import ivorius.ivtoolkit.network.CapabilityUpdateRegistry;
 import ivorius.ivtoolkit.tools.MCRegistry;
 import ivorius.ivtoolkit.tools.NBTCompoundObjectCapabilityStorage;
+import ivorius.reccomplex.biome.RCBiomeDictionary;
 import ivorius.reccomplex.blocks.*;
 import ivorius.reccomplex.blocks.materials.MaterialNegativeSpace;
 import ivorius.reccomplex.blocks.materials.RCMaterials;
@@ -219,6 +220,8 @@ public class RCRegistryHandler
         MCRegistry mcRegistry = RecurrentComplex.specialRegistry;
 
         CapabilityUpdateRegistry.INSTANCE.register(StructureEntityInfo.CAPABILITY_KEY, StructureEntityInfo.CAPABILITY);
+
+        RCBiomeDictionary.registerTypes();
 
         fileTypeRegistry.put(StructureSaveHandler.FILE_SUFFIX, StructureSaveHandler.INSTANCE);
         fileTypeRegistry.put(ItemCollectionSaveHandler.FILE_SUFFIX, ItemCollectionSaveHandler.INSTANCE);

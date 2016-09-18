@@ -26,7 +26,7 @@ public class TableDataSourceBiomeGen extends TableDataSourceSegmented
         this.generationInfo = generationInfo;
         this.tableDelegate = tableDelegate;
 
-        addManagedSection(0, TableDataSourceExpression.constructDefault(IvTranslations.get("reccomplex.gui.biomes"), generationInfo.getBiomeMatcher(), BiomeMatcher.gatherAllBiomes()));
+        addManagedSection(0, TableDataSourceExpression.constructDefault(IvTranslations.get("reccomplex.gui.biomes"), generationInfo.getBiomeMatcher(), null));
     }
 
     @Override

@@ -27,6 +27,7 @@ import ivorius.reccomplex.utils.CustomizableMap;
 import ivorius.reccomplex.worldgen.StructureSelector;
 import ivorius.reccomplex.worldgen.villages.GenericVillageCreationHandler;
 import ivorius.reccomplex.worldgen.villages.TemporaryVillagerRegistry;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.ChunkPos;
@@ -64,7 +65,7 @@ public class StructureRegistry
 
     private Map<Class<? extends StructureGenerationInfo>, Collection<Pair<StructureInfo, ? extends StructureGenerationInfo>>> cachedGeneration = new HashMap<>();
 
-    private Map<Pair<Integer, String>, StructureSelector> structureSelectors = new HashMap<>();
+    private Map<Pair<Integer, ResourceLocation>, StructureSelector> structureSelectors = new HashMap<>();
 
     private Gson gson = createGson();
 
@@ -242,7 +243,7 @@ public class StructureRegistry
 
     public StructureSelector getStructureSelector(Biome biome, WorldProvider provider)
     {
-        Pair<Integer, String> pair = new ImmutablePair<>(provider.getDimension(), biome.getBiomeName());
+        Pair<Integer, ResourceLocation> pair = new ImmutablePair<>(provider.getDimension(), Biome.REGISTRY.getNameForObject(biome));
         StructureSelector structureSelector = structureSelectors.get(pair);
 
         if (structureSelector == null || !structureSelector.isValid(biome, provider))

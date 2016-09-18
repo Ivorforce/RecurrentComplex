@@ -60,12 +60,6 @@ public class EnvironmentMatcher extends FunctionExpressionCache<Boolean, Environ
         }
 
         @Override
-        public Set<Biome> convertIsKnownArgument(Object object)
-        {
-            return BiomeMatcher.gatherAllBiomes();
-        }
-
-        @Override
         public BiomeMatcher createCache(String var)
         {
             return new BiomeMatcher(var);

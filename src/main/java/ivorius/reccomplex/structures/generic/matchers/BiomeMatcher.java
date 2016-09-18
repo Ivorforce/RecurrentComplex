@@ -49,42 +49,6 @@ public class BiomeMatcher extends FunctionExpressionCache<Boolean, Biome, Object
         return BIOME_TYPE_PREFIX + Strings.join(Lists.transform(Arrays.asList(biomeTypes), input -> input != null ? IvGsonHelper.serializedName(input) : null), " & " + BIOME_TYPE_PREFIX);
     }
 
-    public static Set<Biome> gatherAllBiomes()
-    {
-        Set<Biome> set = new HashSet<>();
-
-        for (Biome biome : Biome.REGISTRY)
-        {
-            if (biome != null)
-                set.add(biome);
-        }
-
-        for (BiomeDictionary.Type type : BiomeDictionary.Type.values())
-        {
-            try
-            {
-                Collections.addAll(set, BiomeDictionary.getBiomesForType(type));
-            }
-            catch (Exception ignored) // list f'd up by a biome mod
-            {
-
-            }
-        }
-
-        return set;
-    }
-
-    public Validity variableValidity()
-    {
-        return validity(gatherAllBiomes());
-    }
-
-    @Nonnull
-    public String getDisplayString()
-    {
-        return getDisplayString(gatherAllBiomes());
-    }
-
     @Override
     public boolean test(final Biome input)
     {

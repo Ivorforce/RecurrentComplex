@@ -59,7 +59,7 @@ public class BiomeGenerationInfo
 
     public String getDisplayString()
     {
-        return biomeMatcher.getDisplayString();
+        return biomeMatcher.getDisplayString(null);
     }
 
     public static class Serializer implements JsonDeserializer<BiomeGenerationInfo>, JsonSerializer<BiomeGenerationInfo>

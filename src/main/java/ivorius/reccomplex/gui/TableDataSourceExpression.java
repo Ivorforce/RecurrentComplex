@@ -16,6 +16,7 @@ import javax.annotation.Nullable;
 import java.text.ParseException;
 import java.util.List;
 import java.util.Optional;
+import java.util.regex.Pattern;
 
 /**
  * Created by lukas on 26.03.15.
@@ -120,8 +121,12 @@ public class TableDataSourceExpression<T, U, E extends FunctionExpressionCache<T
     protected String parsedString()
     {
         String abbreviate = StringUtils.abbreviate(parsedString(e, u), getCursorOffset(), 71);
-        char first = abbreviate.charAt(3);
-        return first == '§' ? abbreviate : abbreviate.replaceFirst("..." + first, "..."); // Cut off one char to avoid destroying §
+        if (abbreviate.startsWith("...") && abbreviate.length() > 3 )
+        {
+            char first = abbreviate.charAt(3);
+            return first == '§' ? abbreviate : ("..." + abbreviate.substring(4)); // Cut off one char to avoid destroying §
+        }
+        return abbreviate;
     }
 
     protected int getCursorOffset()

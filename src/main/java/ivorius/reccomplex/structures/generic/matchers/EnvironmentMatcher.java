@@ -46,7 +46,7 @@ public class EnvironmentMatcher extends FunctionExpressionCache<Boolean, Environ
         return evaluate(argument);
     }
 
-    public static class BiomeVariableType extends DelegatingVariableType<Boolean, Environment, Object, Biome, Set<Biome>, BiomeMatcher>
+    public static class BiomeVariableType extends DelegatingVariableType<Boolean, Environment, Object, Biome, Object, BiomeMatcher>
     {
         public BiomeVariableType(String prefix, String suffix)
         {

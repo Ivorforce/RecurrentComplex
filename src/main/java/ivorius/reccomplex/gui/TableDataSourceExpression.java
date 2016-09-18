@@ -12,8 +12,10 @@ import ivorius.reccomplex.utils.FunctionExpressionCache;
 import net.minecraft.util.text.TextFormatting;
 import org.apache.commons.lang3.StringUtils;
 
+import javax.annotation.Nullable;
 import java.text.ParseException;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * Created by lukas on 26.03.15.
@@ -27,6 +29,7 @@ public class TableDataSourceExpression<T, U, E extends FunctionExpressionCache<T
     public U u;
 
     protected TableCellTitle parsed;
+    private TableCellString expressionCell;
 
     public TableDataSourceExpression(String title, List<String> tooltip, E e, U u)
     {
@@ -90,24 +93,40 @@ public class TableDataSourceExpression<T, U, E extends FunctionExpressionCache<T
     {
         if (index == 0)
         {
-            TableCellString cell = new TableCellString("expression", e.getExpression());
-            cell.setShowsValidityState(true);
-            cell.setValidityState(getValidityState(e, u));
-            cell.addPropertyConsumer(val -> {
+            expressionCell = new TableCellString("expression", e.getExpression());
+            expressionCell.setShowsValidityState(true);
+            expressionCell.setValidityState(getValidityState(e, u));
+            expressionCell.addPropertyConsumer(val -> {
                 e.setExpression(val);
-                cell.setValidityState(getValidityState(e, u));
-                if (parsed != null)
-                    parsed.setDisplayString(StringUtils.abbreviate(parsedString(e, u), 60));
+                expressionCell.setValidityState(getValidityState(e, u));
             });
-            return new TableElementCell(title, cell).withTitleTooltip(tooltip);
+            expressionCell.setChangeListener(() -> {
+                if (parsed != null)
+                    parsed.setDisplayString(parsedString());
+            });
+            return new TableElementCell(title, expressionCell).withTitleTooltip(tooltip);
         }
         else if (index == 1)
         {
-            parsed = new TableCellTitle("parsedExpression", StringUtils.abbreviate(parsedString(e, u), 60));
+            parsed = new TableCellTitle("parsedExpression", parsedString());
             parsed.setPositioning(TableCellTitle.Positioning.TOP);
             return new TableElementCell(parsed);
         }
 
         return null;
+    }
+
+    @Nullable
+    protected String parsedString()
+    {
+        return StringUtils.abbreviate(parsedString(e, u), getCursorOffset(), 60);
+    }
+
+    protected int getCursorOffset()
+    {
+        int offset = 0;
+        if (expressionCell != null && expressionCell.getTextField() != null)
+            offset = expressionCell.getTextField().getCursorPosition();
+        return offset;
     }
 }

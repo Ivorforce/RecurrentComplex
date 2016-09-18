@@ -8,18 +8,27 @@ package ivorius.reccomplex.gui.table;
 import ivorius.reccomplex.gui.GuiValidityStateIndicator;
 import net.minecraft.client.gui.GuiTextField;
 
+import javax.annotation.Nullable;
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * Created by lukas on 02.06.14.
  */
 public class TableCellString extends TableCellPropertyDefault<String>
 {
+    @Nullable
     protected GuiTextField textField;
+    @Nullable
     protected GuiValidityStateIndicator stateIndicator;
 
     protected boolean showsValidityState;
     protected GuiValidityStateIndicator.State validityState;
 
     protected int maxStringLength = 300;
+
+    @Nullable
+    private Runnable changeListener;
 
     public TableCellString(String id, String value)
     {
@@ -36,6 +45,29 @@ public class TableCellString extends TableCellPropertyDefault<String>
         this.maxStringLength = maxStringLength;
         if (textField != null)
             textField.setMaxStringLength(maxStringLength);
+    }
+
+    @Nullable
+    public Runnable getChangeListener()
+    {
+        return changeListener;
+    }
+
+    public void setChangeListener(@Nullable Runnable changeListener)
+    {
+        this.changeListener = changeListener;
+    }
+
+    @Nullable
+    public GuiTextField getTextField()
+    {
+        return textField;
+    }
+
+    @Nullable
+    public GuiValidityStateIndicator getStateIndicator()
+    {
+        return stateIndicator;
     }
 
     @Override
@@ -93,6 +125,8 @@ public class TableCellString extends TableCellPropertyDefault<String>
 
         if (!text.equals(property))
             alertListenersOfChange();
+        if (changeListener != null)
+            changeListener.run();
 
         return used;
     }
@@ -103,6 +137,8 @@ public class TableCellString extends TableCellPropertyDefault<String>
         super.mouseClicked(button, x, y);
 
         textField.mouseClicked(x, y, button);
+        if (changeListener != null)
+            changeListener.run();
     }
 
     @Override
@@ -124,6 +160,8 @@ public class TableCellString extends TableCellPropertyDefault<String>
 
         if (textField != null)
             textField.setText(value);
+        if (changeListener != null)
+            changeListener.run();
     }
 
     protected void updateTextFieldBounds(Bounds bounds)

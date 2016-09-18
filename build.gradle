@@ -28,7 +28,7 @@ group= "ivorius.reccomplex" // http://maven.apache.org/guides/mini/guide-naming-
 archivesBaseName = "RecurrentComplex"
 
 minecraft {
-    version = "1.10.2-12.18.1.2074"
+    version = "1.10.2-12.18.1.2091"
     runDir = "eclipse"
     mappings = "snapshot_20160829"
     useDepAts = true

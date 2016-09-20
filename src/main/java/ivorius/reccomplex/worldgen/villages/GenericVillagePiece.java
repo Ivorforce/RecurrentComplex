@@ -173,7 +173,8 @@ public class GenericVillagePiece extends StructureVillagePieces.Village
         tagCompound.setString("RcGtId", generationID);
         tagCompound.setBoolean("RcMirror", mirrorX);
         tagCompound.setBoolean("RcStartGen", startedGeneration);
-        tagCompound.setTag("RcInstDat", instanceData);
+        if (instanceData != null)
+            tagCompound.setTag("RcInstDat", instanceData);
     }
 
     @Override
@@ -184,6 +185,6 @@ public class GenericVillagePiece extends StructureVillagePieces.Village
         generationID = tagCompound.getString("RcGtId");
         mirrorX = tagCompound.getBoolean("RcMirror");
         startedGeneration = tagCompound.getBoolean("RcStartGen");
-        instanceData = tagCompound.getTag("RcInstDat");
+        instanceData = tagCompound.hasKey("RcInstDat") ? tagCompound.getTag("RcInstDat") : null;
     }
 }

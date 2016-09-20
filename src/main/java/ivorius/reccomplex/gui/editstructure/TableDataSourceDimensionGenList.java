@@ -24,14 +24,7 @@ public class TableDataSourceDimensionGenList extends TableDataSourceSegmented
 {
     public TableDataSourceDimensionGenList(PresettedList<DimensionGenerationInfo> list, TableDelegate delegate, TableNavigator navigator)
     {
-        addManagedSection(0, new TableDataSourcePresettedObject<ArrayList<DimensionGenerationInfo>>(list, delegate, navigator)
-        {
-            @Override
-            public String getBasePresetKey()
-            {
-                return "reccomplex.dimensionPreset.";
-            }
-        });
+        addManagedSection(0, new TableDataSourcePresettedObject<>(list, delegate, navigator));
 
         addManagedSection(1, new TableDataSourcePresettedList<DimensionGenerationInfo>(list, delegate, navigator)
         {

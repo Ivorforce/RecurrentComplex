@@ -9,6 +9,8 @@ import ivorius.reccomplex.utils.PresetRegistry;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import java.util.List;
+import java.util.Optional;
 
 /**
  * Created by lukas on 19.09.16.
@@ -43,6 +45,24 @@ public class PresettedObject<T>
     public String getPreset()
     {
         return preset;
+    }
+
+    @Nonnull
+    public Optional<String> presetTitle()
+    {
+        return Optional.ofNullable(getPreset()).flatMap(id -> presetRegistry.title(id));
+    }
+
+    @Nonnull
+    public Optional<String> presetDescription()
+    {
+        return Optional.ofNullable(getPreset()).flatMap(id -> presetRegistry.description(id));
+    }
+
+    @Nonnull
+    public Optional<List<String>> presetMultilineDescription()
+    {
+        return Optional.ofNullable(getPreset()).flatMap(id -> presetRegistry.multilineDescription(id));
     }
 
     public boolean setPreset(@Nullable String preset)

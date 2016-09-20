@@ -18,7 +18,7 @@ import java.util.stream.Collectors;
 /**
  * Created by lukas on 19.09.16.
  */
-public abstract class TableDataSourcePresettedObject<T> extends TableDataSourceSegmented
+public class TableDataSourcePresettedObject<T> extends TableDataSourceSegmented
 {
     public TableDelegate delegate;
     public TableNavigator navigator;
@@ -33,9 +33,10 @@ public abstract class TableDataSourcePresettedObject<T> extends TableDataSourceS
     }
 
     @Nonnull
-    public static <T> TableElement getCustomizeElement(PresettedObject<T> object, TableDelegate delegate, String basePresetKey)
+    public static <T> TableElement getCustomizeElement(PresettedObject<T> object, TableDelegate delegate)
     {
-        String title = !object.isCustom() ? IvTranslations.get(basePresetKey + object.getPreset()) : IvTranslations.get("reccomplex.gui.custom");
+        @SuppressWarnings("OptionalGetWithoutIsPresent")
+        String title = !object.isCustom() ? object.presetTitle().get() : IvTranslations.get("reccomplex.gui.custom");
         TableCellButton cell = new TableCellButton("customize", "customize", IvTranslations.get("reccomplex.gui.customize"), !object.isCustom());
         cell.addAction(() ->
         {
@@ -58,14 +59,15 @@ public abstract class TableDataSourcePresettedObject<T> extends TableDataSourceS
     }
 
     @Nonnull
-    public static <T> TableCellButton[] getPresetActions(PresettedObject<T> object, String basePresetKey)
+    public static <T> TableCellButton[] getPresetActions(PresettedObject<T> object)
     {
         Collection<String> allTypes = object.getPresetRegistry().allIDs();
         List<TableCellButton> actions = new ArrayList<>(allTypes.size());
 
+        //noinspection OptionalGetWithoutIsPresent
         actions.addAll(allTypes.stream().map(type -> new TableCellButton(type, type,
-                IvTranslations.get(basePresetKey + type),
-                IvTranslations.formatLines(basePresetKey + type + ".tooltip")
+                object.getPresetRegistry().title(type).get(),
+                object.getPresetRegistry().multilineDescription(type).get()
         )).collect(Collectors.toList()));
         return actions.toArray(new TableCellButton[actions.size()]);
     }
@@ -90,16 +92,14 @@ public abstract class TableDataSourcePresettedObject<T> extends TableDataSourceS
             if (index == 0)
                 return getSetElement(object, delegate, getPresetActions());
             else if (index == 1)
-                return getCustomizeElement(object, delegate, getBasePresetKey());
+                return getCustomizeElement(object, delegate);
         }
 
         return super.elementForIndexInSegment(table, index, segment);
     }
 
-    public abstract String getBasePresetKey();
-
     public TableCellButton[] getPresetActions()
     {
-        return getPresetActions(object, getBasePresetKey());
+        return getPresetActions(object);
     }
 }

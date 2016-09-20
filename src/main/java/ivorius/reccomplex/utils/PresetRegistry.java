@@ -6,9 +6,13 @@
 package ivorius.reccomplex.utils;
 
 import com.google.gson.Gson;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
+import ivorius.ivtoolkit.tools.IvTranslations;
 import ivorius.reccomplex.RecurrentComplex;
 import ivorius.reccomplex.files.FileLoadContext;
 import ivorius.reccomplex.files.FileTypeHandler;
+import ivorius.reccomplex.json.JsonUtils;
 import org.apache.commons.io.FilenameUtils;
 
 import javax.annotation.Nonnull;
@@ -18,6 +22,8 @@ import java.lang.reflect.Type;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Collection;
+import java.util.List;
+import java.util.Optional;
 
 /**
  * Created by lukas on 26.02.15.
@@ -25,6 +31,7 @@ import java.util.Collection;
 public abstract class PresetRegistry<T> implements FileTypeHandler
 {
     protected final CustomizableMap<String, T> presets = new CustomizableMap<>();
+    protected final CustomizableMap<String, Metadata> metadata = new CustomizableMap<>();
     protected Gson gson = createGson();
     @Nullable
     protected String defaultID;
@@ -46,9 +53,10 @@ public abstract class PresetRegistry<T> implements FileTypeHandler
         return fileSuffix;
     }
 
-    public void register(@Nonnull String id, boolean custom, @Nonnull T values)
+    public void register(@Nonnull String id, boolean custom, @Nonnull T values, @Nonnull Metadata metadata)
     {
         presets.put(id, values, custom);
+        this.metadata.put(id, metadata, custom);
     }
 
     public void setDefault(@Nonnull String type)
@@ -65,10 +73,37 @@ public abstract class PresetRegistry<T> implements FileTypeHandler
     @Nullable
     public T preset(String id)
     {
-        T list = presets.getMap().get(id);
-        if (list != null)
-            return gson.fromJson(gson.toJsonTree(list), getType());
+        T t = presets.getMap().get(id);
+        if (t != null)
+            return gson.fromJson(gson.toJsonTree(t), getType());
         return null;
+    }
+
+    @Nonnull
+    public Optional<String> title(String id)
+    {
+        return metadata(id).map(m -> m.title);
+    }
+
+    @Nonnull
+    public Optional<String> description(String id)
+    {
+        return metadata(id).map(m -> m.description);
+    }
+
+    @Nonnull
+    public Optional<List<String>> multilineDescription(String id)
+    {
+        return description(id).map(IvTranslations::splitLines);
+    }
+
+    @Nonnull
+    protected Optional<Metadata> metadata(String id)
+    {
+        Metadata meta = metadata.getMap().get(id);
+        if (meta != null)
+            return Optional.ofNullable(gson.fromJson(gson.toJsonTree(meta), Metadata.class));
+        return Optional.empty();
     }
 
     public Collection<String> allIDs()
@@ -88,21 +123,22 @@ public abstract class PresetRegistry<T> implements FileTypeHandler
     @Override
     public boolean loadFile(Path path, FileLoadContext context)
     {
-        T t = null;
+        Preset<T> preset = null;
         String name = context.customID != null ? context.customID : FilenameUtils.getBaseName(path.getFileName().toString());
 
         try
         {
-            t = read(new String(Files.readAllBytes(path)));
+            String file = new String(Files.readAllBytes(path));
+            preset = read(file);
         }
         catch (IOException e)
         {
             RecurrentComplex.logger.warn("Error reading preset", e);
         }
 
-        if (t != null)
+        if (preset != null)
         {
-            register(name, context.custom, t);
+            register(name, context.custom, preset.t, preset.metadata);
 
             return true;
         }
@@ -116,13 +152,37 @@ public abstract class PresetRegistry<T> implements FileTypeHandler
         presets.clearCustom();
     }
 
-    public T read(String file)
+    protected Preset<T> read(String file)
     {
-        return gson.fromJson(file, getType());
+        JsonParser parser = new JsonParser();
+        JsonObject jsonObject = parser.parse(file).getAsJsonObject();
+
+        T t = gson.fromJson(jsonObject.get("data"), getType());
+        Metadata metadata = gson.fromJson(jsonObject.get("metadata"), Metadata.class);
+
+        return new Preset<T>(t, metadata);
     }
 
     public String write(String key)
     {
         return gson.toJson(preset(key));
+    }
+
+    protected static class Metadata
+    {
+        public String title;
+        public String description;
+    }
+
+    protected static class Preset<T>
+    {
+        public T t;
+        public Metadata metadata;
+
+        public Preset(T t, Metadata metadata)
+        {
+            this.t = t;
+            this.metadata = metadata;
+        }
     }
 }

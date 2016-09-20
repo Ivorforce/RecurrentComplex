@@ -1,5 +1,11 @@
-[
-  {
-    "dimensions": "$HELL \u0026 $TOP_LIMIT \u0026 $BOTTOM_LIMIT"
+{
+  "data": [
+    {
+      "dimensions": "$HELL \u0026 $TOP_LIMIT \u0026 $BOTTOM_LIMIT"
+    }
+  ],
+  "metadata": {
+    "title": "Nether",
+    "description": "Dimensions resembling the Nether"
   }
-]
+}

@@ -27,14 +27,7 @@ public class TableDataSourceWeightedBlockStateList extends TableDataSourceSegmen
 {
     public TableDataSourceWeightedBlockStateList(PresettedList<WeightedBlockState> list, TableDelegate delegate, TableNavigator navigator)
     {
-        addManagedSection(0, new TableDataSourcePresettedObject<ArrayList<WeightedBlockState>>(list, delegate, navigator)
-        {
-            @Override
-            public String getBasePresetKey()
-            {
-                return "reccomplex.weightedBlockStatePreset.";
-            }
-        });
+        addManagedSection(0, new TableDataSourcePresettedObject<>(list, delegate, navigator));
 
         addManagedSection(1, new TableDataSourcePresettedList<WeightedBlockState>(list, delegate, navigator)
         {

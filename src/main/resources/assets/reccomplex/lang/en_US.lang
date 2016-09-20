@@ -358,31 +358,6 @@ reccomplex.transformer.ensureBlocks=Ensure Blocks
 reccomplex.transformer.ensureBlocks.tooltip=Cancels the generation if<br>any placed blocks don't have space.
 reccomplex.transformer.ensureBlocks.dest=Ensure
 
-reccomplex.biomePreset.clear=Clear
-reccomplex.biomePreset.clear.tooltip=No Biomes
-reccomplex.biomePreset.overworld=Overworld
-reccomplex.biomePreset.overworld.tooltip=Biomes decent surface to spawn on
-reccomplex.biomePreset.underground=Underground
-reccomplex.biomePreset.underground.tooltip=Biomes with underground area
-reccomplex.biomePreset.ocean=Ocean
-reccomplex.biomePreset.ocean.tooltip=Biomes with lots of water
-
-reccomplex.dimensionPreset.clear=Clear
-reccomplex.dimensionPreset.clear.tooltip=No Dimensions
-reccomplex.dimensionPreset.overworld=Overworld
-reccomplex.dimensionPreset.overworld.tooltip=Dimensions resembling the real world surface
-reccomplex.dimensionPreset.anyplanet=Planet Surface
-reccomplex.dimensionPreset.anyplanet.tooltip=Dimensions resembling a planet-like surface
-reccomplex.dimensionPreset.nether=Nether
-reccomplex.dimensionPreset.nether.tooltip=Dimensions resembling the Nether
-reccomplex.dimensionPreset.end=End
-reccomplex.dimensionPreset.end.tooltip=Dimensions resembling the End
-
-reccomplex.weightedBlockStatePreset.clear=Clear
-reccomplex.weightedBlockStatePreset.clear.tooltip=No Blocks
-reccomplex.weightedBlockStatePreset.allWool=Wool
-reccomplex.weightedBlockStatePreset.allWool.tooltip=All 16 wool blocks
-
 reccomplex.expression.biome=Biome Expression
 reccomplex.expression.biome.tooltip=This is a §obiome expression§r.<br>Visit the wiki for syntax information.
 reccomplex.expression.dimension=Dimension Expression
@@ -533,13 +508,6 @@ reccomplex.tileentity.nbt=Tile Entity NBT
 
 reccomplex.placer=Placer
 reccomplex.placer.tooltip=Determines the height to<br>spawn at.
-
-reccomplex.placer.presets.surface=Surface
-reccomplex.placer.presets.surface.tooltip=Spawn at the topmost surface.
-reccomplex.placer.presets.underwater=Underwater
-reccomplex.placer.presets.underwater.tooltip=Spawn on the topmost surface underwater.
-reccomplex.placer.presets.half_buried=Half Buried
-reccomplex.placer.presets.underwater.tooltip=Spawn half buried in the ground.
 
 reccomplex.placer.factor.priority=Priority
 reccomplex.placer.factor.priority.tooltip=Priority that this factor<br>will be considered to.

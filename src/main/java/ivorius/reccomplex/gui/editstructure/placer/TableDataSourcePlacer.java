@@ -19,14 +19,7 @@ public class TableDataSourcePlacer extends TableDataSourceSegmented
 {
     public TableDataSourcePlacer(PresettedObject<GenericPlacer> object, TableDelegate delegate, TableNavigator navigator)
     {
-        addManagedSection(0, new TableDataSourcePresettedObject<GenericPlacer>(object, delegate, navigator)
-        {
-            @Override
-            public String getBasePresetKey()
-            {
-                return "reccomplex.placer.presets.";
-            }
-        });
+        addManagedSection(0, new TableDataSourcePresettedObject<>(object, delegate, navigator));
 
         addManagedSection(1, new TableDataSourcePlacerFactorList(object.getContents().factors, delegate, navigator)
         {

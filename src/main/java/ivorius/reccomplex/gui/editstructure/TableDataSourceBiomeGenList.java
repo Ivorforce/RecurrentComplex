@@ -21,14 +21,7 @@ public class TableDataSourceBiomeGenList extends TableDataSourceSegmented
 {
     public TableDataSourceBiomeGenList(PresettedList<BiomeGenerationInfo> list, TableDelegate tableDelegate, TableNavigator navigator)
     {
-        addManagedSection(0, new TableDataSourcePresettedObject<ArrayList<BiomeGenerationInfo>>(list, tableDelegate, navigator)
-        {
-            @Override
-            public String getBasePresetKey()
-            {
-                return "reccomplex.biomePreset.";
-            }
-        });
+        addManagedSection(0, new TableDataSourcePresettedObject<>(list, tableDelegate, navigator));
 
         addManagedSection(1, new TableDataSourcePresettedList<BiomeGenerationInfo>(list, tableDelegate, navigator)
         {

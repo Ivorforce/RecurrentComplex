@@ -6,9 +6,10 @@
 package ivorius.reccomplex.structures.generic.transformers;
 
 import com.google.gson.*;
+import com.google.gson.reflect.TypeToken;
 import ivorius.ivtoolkit.tools.IvWorldData;
 import ivorius.reccomplex.structures.Environment;
-import ivorius.reccomplex.utils.PresettedLists;
+import ivorius.reccomplex.utils.presets.PresettedObjects;
 import net.minecraft.util.math.BlockPos;
 import ivorius.ivtoolkit.random.WeightedSelector;
 import ivorius.ivtoolkit.tools.MCRegistry;
@@ -26,7 +27,7 @@ import ivorius.reccomplex.structures.generic.matchers.BlockMatcher;
 import ivorius.reccomplex.structures.generic.presets.WeightedBlockStatePresets;
 import net.minecraft.block.state.IBlockState;
 import ivorius.reccomplex.utils.NBTNone;
-import ivorius.reccomplex.utils.PresettedList;
+import ivorius.reccomplex.utils.presets.PresettedList;
 import net.minecraft.block.Block;
 import net.minecraft.init.Blocks;
 import net.minecraft.nbt.JsonToNBT;
@@ -39,6 +40,7 @@ import net.minecraft.world.World;
 
 import javax.annotation.Nullable;
 import java.lang.reflect.Type;
+import java.util.ArrayList;
 import java.util.Arrays;
 
 /**
@@ -104,8 +106,8 @@ public class TransformerReplace extends TransformerSingleBlock<NBTNone>
     public void transformBlock(NBTNone instanceData, Phase phase, StructureSpawnContext context, BlockPos coord, IBlockState sourceState)
     {
         WeightedBlockState blockState;
-        if (destination.getList().size() > 0)
-            blockState = WeightedSelector.selectItem(context.random, destination.getList());
+        if (destination.getContents().size() > 0)
+            blockState = WeightedSelector.selectItem(context.random, destination.getContents());
         else
             blockState = new WeightedBlockState(null, null, "");
 
@@ -202,7 +204,7 @@ public class TransformerReplace extends TransformerSingleBlock<NBTNone>
 
             TransformerReplace transformer = new TransformerReplace(id, expression);
 
-            PresettedLists.read(jsonObject, gson, transformer.destination, "destinationPreset", "destination", WeightedBlockState[].class);
+            PresettedObjects.read(jsonObject, gson, transformer.destination, "destinationPreset", "destination", new TypeToken<ArrayList<WeightedBlockState>>(){}.getType());
 
             if (jsonObject.has("dest"))
             {
@@ -212,7 +214,7 @@ public class TransformerReplace extends TransformerSingleBlock<NBTNone>
 
                 transformer.destination.setToCustom();
                 for (byte b : destMeta)
-                    transformer.destination.getList().add(new WeightedBlockState(null, dest.getStateFromMeta(b), ""));
+                    transformer.destination.getContents().add(new WeightedBlockState(null, dest.getStateFromMeta(b), ""));
             }
 
             return transformer;
@@ -226,7 +228,7 @@ public class TransformerReplace extends TransformerSingleBlock<NBTNone>
             jsonObject.addProperty("id", transformer.id());
             jsonObject.addProperty("sourceExpression", transformer.sourceMatcher.getExpression());
 
-            PresettedLists.write(jsonObject, gson, transformer.destination, "destinationPreset", "destination");
+            PresettedObjects.write(jsonObject, gson, transformer.destination, "destinationPreset", "destination");
 
             return jsonObject;
         }

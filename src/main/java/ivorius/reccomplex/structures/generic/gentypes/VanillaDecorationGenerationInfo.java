@@ -13,9 +13,9 @@ import ivorius.reccomplex.gui.table.TableDelegate;
 import ivorius.reccomplex.gui.table.TableNavigator;
 import ivorius.reccomplex.json.JsonUtils;
 import ivorius.reccomplex.structures.Environment;
-import ivorius.reccomplex.structures.YSelector;
-import ivorius.reccomplex.structures.generic.GenericYSelector;
+import ivorius.reccomplex.structures.Placer;
 import ivorius.reccomplex.structures.generic.matchers.EnvironmentMatcher;
+import ivorius.reccomplex.structures.generic.placement.GenericPlacer;
 import ivorius.reccomplex.worldgen.decoration.RCBiomeDecorator;
 import net.minecraft.util.math.BlockPos;
 
@@ -75,9 +75,9 @@ public class VanillaDecorationGenerationInfo extends StructureGenerationInfo
 
     @Nullable
     @Override
-    public YSelector ySelector()
+    public Placer placer()
     {
-        return new GenericYSelector(GenericYSelector.SelectionMode.SURFACE, spawnShift.getY(), spawnShift.getY());
+        return GenericPlacer.surfacePlacer();
     }
 
     @Override

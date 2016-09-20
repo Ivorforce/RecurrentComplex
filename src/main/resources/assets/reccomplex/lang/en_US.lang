@@ -59,6 +59,7 @@ commands.strucExport.usage=/#export [blueprintName]
 commands.strucEdit.usage=/#edit <structureName>
 
 commands.strucGen.usage=/#gen <structureName> [x] [z] [dimension]
+commands.strucGen.noPlace=The structure can't find anywhere suitable to spawn!
 commands.strucGen.noStructure=No structure registered by the name of '%s'
 commands.strucGenAt.usage=/#genat <structureName> <entity> [dimension]
 
@@ -185,19 +186,6 @@ structure.save.failure=Failed to save structure to file '%s'
 structure.save.success=Saved structure to file '%s'
 structure.delete.failure=Failed to delete structure in file '%s'
 structure.delete.success=Deleted structure in file '%s'
-
-structures.genY.bedrock=Bedrock
-structures.genY.bedrock.tooltip=Bottom of the world: y=0
-structures.genY.surface=Surface
-structures.genY.surface.tooltip=The topmost solid or liquid block
-structures.genY.sealevel=Sealevel
-structures.genY.sealevel.tooltip=The ocean height: y=63
-structures.genY.underwater=Ocean Floor
-structures.genY.underwater.tooltip=The topmost solid block
-structures.genY.top=Top (Sky)
-structures.genY.top.tooltip=Top of the world: y=255
-structures.genY.lowestedge=Lowest Edge (Ocean Floor)
-structures.genY.lowestedge.tooltip=Like ocean floor, but buried as much as needed
 
 reccomplex.configgui.title=Structure Gen Config
 reccomplex.configgui.ctgy.general=General
@@ -543,8 +531,60 @@ reccomplex.inspector.position.z=Position (z)
 
 reccomplex.tileentity.nbt=Tile Entity NBT
 
-reccomplex.yselector.base=Generation Base
-reccomplex.yselector.shift=Y Shift
+reccomplex.placer=Placer
+reccomplex.placer.tooltip=Determines the height to<br>spawn at.
+
+reccomplex.placer.presets.surface=Surface
+reccomplex.placer.presets.surface.tooltip=Spawn at the topmost surface.
+reccomplex.placer.presets.underwater=Underwater
+reccomplex.placer.presets.underwater.tooltip=Spawn on the topmost surface underwater.
+reccomplex.placer.presets.half_buried=Half Buried
+reccomplex.placer.presets.underwater.tooltip=Spawn half buried in the ground.
+
+reccomplex.placer.factor.priority=Priority
+reccomplex.placer.factor.priority.tooltip=Priority that this factor<br>will be considered to.
+
+reccomplex.placer.factors.limit=Limit
+reccomplex.placer.factors.limit.tooltip=Limit placement to specific heights.<br>Casts rays that set the acceptance for the<br> terrain they pass by until they hit.
+reccomplex.placer.factors.limit.ray.weight=Acceptance
+reccomplex.placer.factors.limit.ray.weight.tooltip=The ratio to which this<br>area is accepted.<br>Set to ignore to just move<br>without changing acceptance.
+
+reccomplex.placer.factors.limit.rays.move=Move
+reccomplex.placer.factors.limit.rays.move.tooltip=Move a specific amount of blocks.
+reccomplex.placer.factors.limit.rays.move.title=Move %s
+reccomplex.placer.factors.limit.rays.move.title.mark=Mark %s
+reccomplex.placer.factors.limit.rays.move.tooltip=Move up or down a specified distance
+reccomplex.placer.factors.limit.rays.move.distance=Distance
+
+reccomplex.placer.factors.limit.rays.dynpos=Dynamic Position
+reccomplex.placer.factors.limit.rays.dynpos.tooltip=Move to a specific position.
+reccomplex.placer.factors.limit.rays.dynpos.type=Position
+reccomplex.placer.factors.limit.rays.dynpos.type.bedrock=Bedrock
+reccomplex.placer.factors.limit.rays.dynpos.type.bedrock.tooltip=Bottom of the world: y=0
+reccomplex.placer.factors.limit.rays.dynpos.type.sealevel=Sea level
+reccomplex.placer.factors.limit.rays.dynpos.type.sealevel.tooltip=The ocean height: y=63
+reccomplex.placer.factors.limit.rays.dynpos.type.world_height=Top (World Height)
+reccomplex.placer.factors.limit.rays.dynpos.type.world_height.tooltip=Top of the world: y=255
+
+reccomplex.placer.factors.limit.rays.matcher=Finder
+reccomplex.placer.factors.limit.rays.matcher.tooltip=Move until the terrain fulfills<br>the set criteria.
+reccomplex.placer.factors.limit.rays.matcher.title.up=Finder (upwards)
+reccomplex.placer.factors.limit.rays.matcher.title.down=Finder (downwards)
+reccomplex.placer.factors.limit.rays.matcher.condition=Condition
+reccomplex.placer.factors.limit.rays.matcher.direction=Ray Direction
+reccomplex.placer.factors.limit.rays.matcher.ratio=Required Ratio
+reccomplex.placer.factors.limit.rays.matcher.ratio.tooltip=The ratio of matched blocks<br>required until the ray stops.
+
+reccomplex.placer.factors.limit.rays.average=Finder
+reccomplex.placer.factors.limit.rays.average.tooltip=Find the average surface height<br>fulfilling the criteria.
+reccomplex.placer.factors.limit.rays.average.title.up=Average Ceiling
+reccomplex.placer.factors.limit.rays.average.title.down=Average Surface
+
+reccomplex.placer.factors.match=Match
+reccomplex.placer.factors.match.tooltip=Ensure specific blocks from the<br>structure to have fitting<br>terrain to spawn in.
+reccomplex.placer.factors.match.dest=Ensure
+reccomplex.placer.factors.match.conformity=Required Conformity
+reccomplex.placer.factors.match.conformity.tooltip=How much conformity to the match<br>is required to allow the structure<br>to spawn.
 
 reccomplex.spawncommand.preset.entity=Spawn Entity
 

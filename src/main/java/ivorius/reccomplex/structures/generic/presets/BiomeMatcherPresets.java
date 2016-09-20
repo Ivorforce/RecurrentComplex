@@ -5,15 +5,20 @@
 
 package ivorius.reccomplex.structures.generic.presets;
 
+import com.google.common.reflect.TypeToken;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import ivorius.reccomplex.structures.generic.BiomeGenerationInfo;
-import ivorius.reccomplex.utils.ListPresets;
+import ivorius.reccomplex.utils.PresetRegistry;
+
+import java.lang.reflect.Type;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by lukas on 26.02.15.
  */
-public class BiomeMatcherPresets extends ListPresets<BiomeGenerationInfo>
+public class BiomeMatcherPresets extends PresetRegistry<ArrayList<BiomeGenerationInfo>>
 {
     public static final String FILE_SUFFIX = "rcbp";
 
@@ -36,8 +41,8 @@ public class BiomeMatcherPresets extends ListPresets<BiomeGenerationInfo>
     }
 
     @Override
-    protected Class<BiomeGenerationInfo[]> getType()
+    protected Type getType()
     {
-        return BiomeGenerationInfo[].class;
+        return new TypeToken<ArrayList<BiomeGenerationInfo>>(){}.getType();
     }
 }

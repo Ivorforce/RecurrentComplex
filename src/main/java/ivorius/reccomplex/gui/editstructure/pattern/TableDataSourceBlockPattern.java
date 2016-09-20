@@ -3,7 +3,7 @@
  *  * http://ivorius.net
  */
 
-package ivorius.reccomplex.gui.editstructure;
+package ivorius.reccomplex.gui.editstructure.pattern;
 
 import ivorius.ivtoolkit.tools.IvTranslations;
 import ivorius.reccomplex.gui.table.*;
@@ -21,8 +21,8 @@ public class TableDataSourceBlockPattern extends TableDataSourceSegmented
     {
         this.pattern = pattern;
 
-        addManagedSection(0, TableCellMultiBuilder.create(navigator, delegate).addNavigation(() -> IvTranslations.get("reccomplex.gui.edit"), null,
-                () -> new GuiTable(delegate, new TableDataSourceSelection(pattern.pattern, new int[]{50, 50, 50}, delegate, navigator, true)))
+        addManagedSection(0, TableCellMultiBuilder.create(navigator, delegate)
+                .addNavigation(() -> new TableDataSourceSelection(pattern.pattern, new int[]{50, 50, 50}, delegate, navigator, true))
                 .buildDataSource(IvTranslations.get("reccomplex.blockpattern.pattern"), IvTranslations.getLines("reccomplex.blockpattern.pattern.tooltip")));
         addManagedSection(1, new TableDataSourceBlockPatternIngredientList(pattern.ingredients, delegate, navigator));
     }

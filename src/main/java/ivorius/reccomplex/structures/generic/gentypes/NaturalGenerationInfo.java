@@ -7,6 +7,7 @@ package ivorius.reccomplex.structures.generic.gentypes;
 
 import com.google.gson.*;
 import com.google.gson.annotations.SerializedName;
+import com.google.gson.reflect.TypeToken;
 import ivorius.ivtoolkit.tools.IvTranslations;
 import ivorius.reccomplex.RecurrentComplex;
 import ivorius.reccomplex.gui.editstructure.gentypes.TableDataSourceNaturalGenerationInfo;
@@ -14,14 +15,16 @@ import ivorius.reccomplex.gui.table.TableDataSource;
 import ivorius.reccomplex.gui.table.TableDelegate;
 import ivorius.reccomplex.gui.table.TableNavigator;
 import ivorius.reccomplex.json.JsonUtils;
-import ivorius.reccomplex.structures.YSelector;
+import ivorius.reccomplex.structures.Placer;
 import ivorius.reccomplex.structures.generic.BiomeGenerationInfo;
 import ivorius.reccomplex.structures.generic.DimensionGenerationInfo;
-import ivorius.reccomplex.structures.generic.GenericYSelector;
+import ivorius.reccomplex.structures.generic.placement.GenericPlacer;
 import ivorius.reccomplex.structures.generic.presets.BiomeMatcherPresets;
 import ivorius.reccomplex.structures.generic.presets.DimensionMatcherPresets;
-import ivorius.reccomplex.utils.PresettedList;
-import ivorius.reccomplex.utils.PresettedLists;
+import ivorius.reccomplex.structures.generic.presets.GenericPlacerPresets;
+import ivorius.reccomplex.utils.presets.PresettedList;
+import ivorius.reccomplex.utils.presets.PresettedObjects;
+import ivorius.reccomplex.utils.presets.PresettedObject;
 import ivorius.reccomplex.worldgen.StructureGenerationData;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldProvider;
@@ -30,6 +33,7 @@ import net.minecraft.world.biome.Biome;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.lang.reflect.Type;
+import java.util.ArrayList;
 import java.util.Arrays;
 
 /**
@@ -46,23 +50,23 @@ public class NaturalGenerationInfo extends StructureGenerationInfo
 
     public String generationCategory;
 
-    public GenericYSelector ySelector;
+    public PresettedObject<GenericPlacer> placer = new PresettedObject<GenericPlacer>(GenericPlacerPresets.instance(), null);
 
     public SpawnLimitation spawnLimitation;
 
     public NaturalGenerationInfo()
     {
-        this(null, "decoration", new GenericYSelector(GenericYSelector.SelectionMode.SURFACE, 0, 0));
+        this(null, "decoration");
 
         biomeWeights.setToDefault();
         dimensionWeights.setToDefault();
+        placer.setToDefault();
     }
 
-    public NaturalGenerationInfo(@Nullable String id, String generationCategory, GenericYSelector ySelector)
+    public NaturalGenerationInfo(@Nullable String id, String generationCategory)
     {
         super(id != null ? id : randomID(NaturalGenerationInfo.class));
         this.generationCategory = generationCategory;
-        this.ySelector = ySelector;
     }
 
     public static Gson createGson()
@@ -72,7 +76,7 @@ public class NaturalGenerationInfo extends StructureGenerationInfo
         builder.registerTypeAdapter(NaturalGenerationInfo.class, new NaturalGenerationInfo.Serializer());
         builder.registerTypeAdapter(BiomeGenerationInfo.class, new BiomeGenerationInfo.Serializer());
         builder.registerTypeAdapter(DimensionGenerationInfo.class, new DimensionGenerationInfo.Serializer());
-        builder.registerTypeAdapter(GenericYSelector.class, new GenericYSelector.Serializer());
+        builder.registerTypeAdapter(GenericPlacer.class, new GenericPlacer.Serializer());
 
         return builder.create();
     }
@@ -85,9 +89,8 @@ public class NaturalGenerationInfo extends StructureGenerationInfo
     public static NaturalGenerationInfo deserializeFromVersion1(JsonObject jsonObject, JsonDeserializationContext context)
     {
         String generationCategory = JsonUtils.getString(jsonObject, "generationCategory");
-        GenericYSelector ySelector = gson.fromJson(jsonObject.get("generationY"), GenericYSelector.class);
 
-        NaturalGenerationInfo naturalGenerationInfo = new NaturalGenerationInfo("", generationCategory, ySelector);
+        NaturalGenerationInfo naturalGenerationInfo = new NaturalGenerationInfo("", generationCategory);
         if (jsonObject.has("generationBiomes"))
         {
             BiomeGenerationInfo[] infos = gson.fromJson(jsonObject.get("generationBiomes"), BiomeGenerationInfo[].class);
@@ -97,6 +100,8 @@ public class NaturalGenerationInfo extends StructureGenerationInfo
             naturalGenerationInfo.biomeWeights.setToDefault();
 
         naturalGenerationInfo.dimensionWeights.setToDefault();
+
+        GenericPlacer.Serializer.readLegacyPlacer(naturalGenerationInfo.placer, context, JsonUtils.getJsonObject(jsonObject, "generationY", new JsonObject()));
 
         return naturalGenerationInfo;
     }
@@ -120,7 +125,7 @@ public class NaturalGenerationInfo extends StructureGenerationInfo
 
     public double generationWeightInDimension(WorldProvider provider)
     {
-        for (DimensionGenerationInfo generationInfo : dimensionWeights.getList())
+        for (DimensionGenerationInfo generationInfo : dimensionWeights.getContents())
         {
             if (generationInfo.matches(provider))
                 return generationInfo.getActiveGenerationWeight();
@@ -131,7 +136,7 @@ public class NaturalGenerationInfo extends StructureGenerationInfo
 
     public double generationWeightInBiome(Biome biome)
     {
-        for (BiomeGenerationInfo generationInfo : biomeWeights.getList())
+        for (BiomeGenerationInfo generationInfo : biomeWeights.getContents())
         {
             if (generationInfo.matches(biome))
                 return generationInfo.getActiveGenerationWeight();
@@ -181,9 +186,9 @@ public class NaturalGenerationInfo extends StructureGenerationInfo
 
     @Nullable
     @Override
-    public YSelector ySelector()
+    public Placer placer()
     {
-        return ySelector;
+        return placer.getContents();
     }
 
     @Override
@@ -219,23 +224,21 @@ public class NaturalGenerationInfo extends StructureGenerationInfo
             String id = JsonUtils.getString(jsonObject, "id", null);
 
             String generationCategory = JsonUtils.getString(jsonObject, "generationCategory");
-            GenericYSelector ySelector;
 
-            if (jsonObject.has("generationY"))
-                ySelector = gson.fromJson(jsonObject.get("generationY"), GenericYSelector.class);
-            else
+            NaturalGenerationInfo naturalGenerationInfo = new NaturalGenerationInfo(id, generationCategory);
+
+            if (!PresettedObjects.read(jsonObject, gson, naturalGenerationInfo.placer, "placerPreset", "placer", new TypeToken<GenericPlacer>(){}.getType())
+                    && jsonObject.has("generationY"))
             {
-                RecurrentComplex.logger.warn("Structure JSON missing 'generationY'! Using 'surface'!");
-                ySelector = new GenericYSelector(GenericYSelector.SelectionMode.SURFACE, 0, 0);
+                // Legacy
+                GenericPlacer.Serializer.readLegacyPlacer(naturalGenerationInfo.placer, context, JsonUtils.getJsonObject(jsonObject, "generationY", new JsonObject()));
             }
-
-            NaturalGenerationInfo naturalGenerationInfo = new NaturalGenerationInfo(id, generationCategory, ySelector);
 
             if (jsonObject.has("generationWeight"))
                 naturalGenerationInfo.generationWeight = JsonUtils.getDouble(jsonObject, "generationWeight");
 
-            PresettedLists.read(jsonObject, gson, naturalGenerationInfo.biomeWeights, "biomeWeightsPreset", "generationBiomes", BiomeGenerationInfo[].class);
-            PresettedLists.read(jsonObject, gson, naturalGenerationInfo.dimensionWeights, "dimensionWeightsPreset", "generationDimensions", DimensionGenerationInfo[].class);
+            PresettedObjects.read(jsonObject, gson, naturalGenerationInfo.biomeWeights, "biomeWeightsPreset", "generationBiomes", new TypeToken<ArrayList<BiomeGenerationInfo>>(){}.getType());
+            PresettedObjects.read(jsonObject, gson, naturalGenerationInfo.dimensionWeights, "dimensionWeightsPreset", "generationDimensions", new TypeToken<ArrayList<DimensionGenerationInfo>>(){}.getType());
 
             if (jsonObject.has("spawnLimitation"))
                 naturalGenerationInfo.spawnLimitation = context.deserialize(jsonObject.get("spawnLimitation"), SpawnLimitation.class);
@@ -254,10 +257,10 @@ public class NaturalGenerationInfo extends StructureGenerationInfo
             if (src.generationWeight != null)
                 jsonObject.addProperty("generationWeight", src.generationWeight);
 
-            jsonObject.add("generationY", gson.toJsonTree(src.ySelector));
+            PresettedObjects.write(jsonObject, gson, src.placer, "placerPreset", "placer");
 
-            PresettedLists.write(jsonObject, gson, src.biomeWeights, "biomeWeightsPreset", "generationBiomes");
-            PresettedLists.write(jsonObject, gson, src.dimensionWeights, "dimensionWeightsPreset", "generationDimensions");
+            PresettedObjects.write(jsonObject, gson, src.biomeWeights, "biomeWeightsPreset", "generationBiomes");
+            PresettedObjects.write(jsonObject, gson, src.dimensionWeights, "dimensionWeightsPreset", "generationDimensions");
 
             if (src.spawnLimitation != null)
                 jsonObject.add("spawnLimitation", context.serialize(src.spawnLimitation));

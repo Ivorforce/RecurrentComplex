@@ -28,6 +28,7 @@ import net.minecraftforge.common.util.Constants;
 import net.minecraft.util.EnumFacing;
 import org.apache.commons.lang3.tuple.Pair;
 
+import javax.annotation.Nonnull;
 import java.util.*;
 
 /**
@@ -245,7 +246,8 @@ public class WorldScriptStructureGenerator implements WorldScript<WorldScriptStr
             generate(context, instanceData, structureInfo, structureData, instanceData.generationInfoID);
     }
 
-    protected <I extends NBTStorable> StructureSpawnContext generate(StructureSpawnContext context, InstanceData instanceData, StructureInfo<I> structureInfo, I structureData, String generationInfo)
+    @Nonnull
+    protected <I extends NBTStorable> Optional<StructureSpawnContext> generate(StructureSpawnContext context, InstanceData instanceData, StructureInfo<I> structureInfo, I structureData, String generationInfo)
     {
         return new StructureGenerator<>(structureInfo).structureID(instanceData.structureID).asChild(context).generationInfo(generationInfo)
                 .lowerCoord(instanceData.lowerCoord).transform(instanceData.structureTransform).instanceData(structureData).generate(

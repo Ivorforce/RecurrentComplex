@@ -5,15 +5,12 @@
 
 package ivorius.reccomplex.gui.editstructure;
 
-import ivorius.ivtoolkit.tools.IvTranslations;
-import ivorius.reccomplex.RecurrentComplex;
+import ivorius.reccomplex.gui.editstructure.preset.TableDataSourcePresettedList;
 import ivorius.reccomplex.gui.table.*;
 import ivorius.reccomplex.structures.StructureRegistry;
 import ivorius.reccomplex.structures.generic.transformers.Transformer;
 import org.apache.commons.lang3.StringUtils;
 
-import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 
 /**
@@ -37,8 +34,7 @@ public class TableDataSourceTransformerList extends TableDataSourceList<Transfor
     public Transformer newEntry(String actionID)
     {
         Class<? extends Transformer> clazz = StructureRegistry.INSTANCE.getTransformerRegistry().typeForID(actionID);
-
-        return instantiateTransformer(clazz);
+        return tryInstantiate(actionID, clazz, "Failed instantiating transformer: %s");
     }
 
     @Override
@@ -50,32 +46,6 @@ public class TableDataSourceTransformerList extends TableDataSourceList<Transfor
     @Override
     public TableCellButton[] getAddActions()
     {
-        Collection<String> allTypes = StructureRegistry.INSTANCE.getTransformerRegistry().allIDs();
-        List<TableCellButton> actions = new ArrayList<>(allTypes.size());
-        for (String type : allTypes)
-        {
-            String baseKey = "reccomplex.transformer." + type;
-            actions.add(new TableCellButton(type, type,
-                    IvTranslations.get(baseKey),
-                    IvTranslations.formatLines(baseKey + ".tooltip")
-            ));
-        }
-        return actions.toArray(new TableCellButton[actions.size()]);
-    }
-
-    public Transformer instantiateTransformer(Class<? extends Transformer> clazz)
-    {
-        Transformer transformer = null;
-
-        try
-        {
-            transformer = clazz.newInstance();
-        }
-        catch (InstantiationException | IllegalAccessException e)
-        {
-            RecurrentComplex.logger.error(e);
-        }
-
-        return transformer;
+        return TableDataSourcePresettedList.addActions(StructureRegistry.INSTANCE.getTransformerRegistry().allIDs(), "reccomplex.transformer.", canEditList());
     }
 }

@@ -7,13 +7,18 @@ package ivorius.reccomplex.structures.generic.presets;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.google.gson.reflect.TypeToken;
 import ivorius.reccomplex.structures.generic.DimensionGenerationInfo;
-import ivorius.reccomplex.utils.ListPresets;
+import ivorius.reccomplex.utils.PresetRegistry;
+
+import java.lang.reflect.Type;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by lukas on 26.02.15.
  */
-public class DimensionMatcherPresets extends ListPresets<DimensionGenerationInfo>
+public class DimensionMatcherPresets extends PresetRegistry<ArrayList<DimensionGenerationInfo>>
 {
     public static final String FILE_SUFFIX = "rcdp";
 
@@ -36,8 +41,8 @@ public class DimensionMatcherPresets extends ListPresets<DimensionGenerationInfo
     }
 
     @Override
-    protected Class<DimensionGenerationInfo[]> getType()
+    protected Type getType()
     {
-        return DimensionGenerationInfo[].class;
+        return new TypeToken<ArrayList<DimensionGenerationInfo>>(){}.getType();
     }
 }

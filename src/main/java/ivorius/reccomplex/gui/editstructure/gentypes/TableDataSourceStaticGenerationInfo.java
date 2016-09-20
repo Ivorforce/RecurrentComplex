@@ -8,7 +8,7 @@ package ivorius.reccomplex.gui.editstructure.gentypes;
 import ivorius.ivtoolkit.tools.IvTranslations;
 import ivorius.reccomplex.gui.TableDataSourceBlockSurfacePos;
 import ivorius.reccomplex.gui.TableDataSourceExpression;
-import ivorius.reccomplex.gui.editstructure.TableDataSourceYSelector;
+import ivorius.reccomplex.gui.editstructure.placer.TableDataSourcePlacer;
 import ivorius.reccomplex.gui.editstructure.gentypes.staticgen.TableDataSourceStaticPattern;
 import ivorius.reccomplex.gui.table.*;
 import ivorius.reccomplex.structures.generic.gentypes.StaticGenerationInfo;
@@ -23,21 +23,25 @@ public class TableDataSourceStaticGenerationInfo extends TableDataSourceSegmente
 
     private StaticGenerationInfo generationInfo;
 
-    public TableDataSourceStaticGenerationInfo(TableNavigator navigator, TableDelegate tableDelegate, StaticGenerationInfo generationInfo)
+    public TableDataSourceStaticGenerationInfo(TableNavigator navigator, TableDelegate delegate, StaticGenerationInfo generationInfo)
     {
         this.navigator = navigator;
-        this.tableDelegate = tableDelegate;
+        this.tableDelegate = delegate;
         this.generationInfo = generationInfo;
 
-        addManagedSection(0, new TableDataSourceGenerationInfo(generationInfo, navigator, tableDelegate));
+        addManagedSection(0, new TableDataSourceGenerationInfo(generationInfo, navigator, delegate));
+
         addManagedSection(2, new TableDataSourceBlockSurfacePos(generationInfo.position, generationInfo::setPosition, null, null,
                 IvTranslations.get("reccomplex.generationInfo.static.position.x"), IvTranslations.get("reccomplex.generationInfo.static.position.z")));
-        addManagedSection(3, new TableDataSourceYSelector(generationInfo.ySelector));
+
+        addManagedSection(3, TableCellMultiBuilder.create(navigator, delegate)
+                .addNavigation(() -> new TableDataSourcePlacer(generationInfo.placer, delegate, navigator))
+                .buildDataSource(IvTranslations.get("reccomplex.placer"), IvTranslations.getLines("reccomplex.placer.tooltip")));
+
         addManagedSection(4, TableDataSourceExpression.constructDefault(IvTranslations.get("reccomplex.gui.biomes"), generationInfo.dimensionMatcher, null));
 
-        addManagedSection(5, TableCellMultiBuilder.create(navigator, tableDelegate)
-                .addNavigation(() -> IvTranslations.get("reccomplex.gui.edit"), null,
-                        () -> new GuiTable(tableDelegate, new TableDataSourceStaticPattern(generationInfo.pattern, tableDelegate))
+        addManagedSection(5, TableCellMultiBuilder.create(navigator, delegate)
+                .addNavigation(() -> new TableDataSourceStaticPattern(generationInfo.pattern, delegate)
                 ).enabled(generationInfo::hasPattern)
                 .addAction(() -> generationInfo.hasPattern() ? IvTranslations.get("reccomplex.gui.remove") : IvTranslations.get("reccomplex.gui.add"), null,
                         () -> generationInfo.pattern = generationInfo.hasPattern() ? null : new StaticGenerationInfo.Pattern()

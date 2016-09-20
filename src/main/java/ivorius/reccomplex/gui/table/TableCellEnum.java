@@ -37,6 +37,16 @@ public class TableCellEnum<T> extends TableCellPropertyDefault<T>
         this(id, value, Arrays.asList(options));
     }
 
+    public static <T extends Enum> List<Option<T>> options(T[] values, final String baseKey, boolean tooltip)
+    {
+        return options(Arrays.asList(values), baseKey, tooltip);
+    }
+
+    public static <T extends Enum> List<Option<T>> options(T[] values, final Function<T, String> titleFunc, final Function<T, List<String>> tooltipFunc)
+    {
+        return options(Arrays.asList(values), titleFunc, tooltipFunc);
+    }
+
     public static <T extends Enum> List<Option<T>> options(List<T> values, final String baseKey, boolean tooltip)
     {
         return options(values, input -> IvTranslations.get(baseKey + IvGsonHelper.serializedName(input)), tooltip ? (Function<T, List<String>>) input -> IvTranslations.getLines(baseKey + IvGsonHelper.serializedName(input) + ".tooltip") : null);

@@ -20,7 +20,6 @@ import ivorius.reccomplex.worldgen.StructureGenerator;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.WorldServer;
-import net.minecraft.world.biome.Biome;
 import net.minecraft.world.gen.structure.StructureBoundingBox;
 import org.apache.commons.lang3.tuple.Pair;
 
@@ -81,8 +80,8 @@ public class RCSaplingGenerator
         BlockPos startPos = Lists.newArrayList(transformedPositions).get(random.nextInt(transformedPositions.size()));
 
         Map<BlockPos, IBlockState> before = new HashMap<>();
-        Consumer<Map.Entry<int[],String>> consumer = entry -> {
-            BlockPos ePos = BlockPattern.toBlockPos(entry.getKey()).add(startPos);
+        Consumer<Map.Entry<BlockPos,String>> consumer = entry -> {
+            BlockPos ePos = entry.getKey().add(startPos);
             before.put(ePos, world.getBlockState(ePos));
             world.setBlockToAir(ePos);
         };
@@ -93,7 +92,7 @@ public class RCSaplingGenerator
         boolean success = new StructureGenerator<>(structure).world(world).generationInfo(saplingGenInfo)
                 .transform(transform).random(random).maturity(StructureSpawnContext.GenerateMaturity.SUGGEST)
                 .memorize(RCConfig.memorizeSaplings).allowOverlaps(true)
-                .randomPosition(BlockSurfacePos.from(spawnPos), (w, r, b) -> spawnPos.getY()).generate() != null;
+                .randomPosition(BlockSurfacePos.from(spawnPos), (context, blockCollection) -> spawnPos.getY()).generate() != null;
 
         if (!success)
             before.forEach(world::setBlockState);

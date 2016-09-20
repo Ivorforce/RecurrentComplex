@@ -48,7 +48,7 @@ public class SavedMazeComponent implements NBTCompoundObject
 
     public Collection<MazeRoom> getRooms()
     {
-        return rooms.compile(true).keySet().stream().map(MazeRoom::new).collect(Collectors.toList());
+        return rooms.compile(true).keySet();
     }
 
     public List<SavedMazePathConnection> getExitPaths()

@@ -27,13 +27,22 @@ import ivorius.reccomplex.structures.generic.gentypes.*;
 import ivorius.reccomplex.structures.generic.maze.rules.MazeRuleRegistry;
 import ivorius.reccomplex.structures.generic.maze.rules.saved.MazeRuleConnect;
 import ivorius.reccomplex.structures.generic.maze.rules.saved.MazeRuleConnectAll;
+import ivorius.reccomplex.structures.generic.placement.FactorLimit;
+import ivorius.reccomplex.structures.generic.placement.FactorMatch;
+import ivorius.reccomplex.structures.generic.placement.FactorRegistry;
+import ivorius.reccomplex.structures.generic.placement.GenericPlacer;
+import ivorius.reccomplex.structures.generic.placement.rays.RayAverageMatcher;
+import ivorius.reccomplex.structures.generic.placement.rays.RayDynamicPosition;
+import ivorius.reccomplex.structures.generic.placement.rays.RayMatcher;
+import ivorius.reccomplex.structures.generic.placement.rays.RayMove;
 import ivorius.reccomplex.structures.generic.presets.BiomeMatcherPresets;
 import ivorius.reccomplex.structures.generic.presets.DimensionMatcherPresets;
+import ivorius.reccomplex.structures.generic.presets.GenericPlacerPresets;
 import ivorius.reccomplex.structures.generic.presets.WeightedBlockStatePresets;
 import ivorius.reccomplex.structures.generic.transformers.*;
 import ivorius.reccomplex.structures.schematics.OperationGenerateSchematic;
 import ivorius.reccomplex.utils.FMLUtils;
-import ivorius.reccomplex.utils.ListPresets;
+import ivorius.reccomplex.utils.PresetRegistry;
 import ivorius.reccomplex.worldgen.CategoryLoader;
 import ivorius.reccomplex.worldgen.inventory.ItemCollectionSaveHandler;
 import ivorius.reccomplex.worldgen.inventory.RCInventoryGenerators;
@@ -160,6 +169,7 @@ public class RCRegistryHandler
         register(inspector, "inspector");
 
         // Set preset defaults
+        GenericPlacerPresets.instance().setDefault("surface");
         DimensionMatcherPresets.instance().setDefault("overworld");
         BiomeMatcherPresets.instance().setDefault("overworld");
         WeightedBlockStatePresets.instance().setDefault("allWool");
@@ -230,6 +240,7 @@ public class RCRegistryHandler
         fileTypeRegistry.put(BiomeMatcherPresets.FILE_SUFFIX, BiomeMatcherPresets.instance());
         fileTypeRegistry.put(DimensionMatcherPresets.FILE_SUFFIX, DimensionMatcherPresets.instance());
         fileTypeRegistry.put(WeightedBlockStatePresets.FILE_SUFFIX, WeightedBlockStatePresets.instance());
+        fileTypeRegistry.put(GenericPlacerPresets.FILE_SUFFIX, GenericPlacerPresets.instance());
 
         WorldScriptRegistry.INSTANCE.register("multi", WorldScriptMulti.class);
         WorldScriptRegistry.INSTANCE.register("strucGen", WorldScriptStructureGenerator.class);
@@ -258,6 +269,16 @@ public class RCRegistryHandler
         genInfoRegistry.registerType("sapling", SaplingGenerationInfo.class, new SaplingGenerationInfo.Serializer());
         genInfoRegistry.registerType("decoration", VanillaDecorationGenerationInfo.class, new VanillaDecorationGenerationInfo.Serializer());
 
+        SerializableStringTypeRegistry<GenericPlacer.Factor> placerFactorRegistry = FactorRegistry.INSTANCE.getTypeRegistry();
+        placerFactorRegistry.registerType("limit", FactorLimit.class, new FactorLimit.Serializer());
+        placerFactorRegistry.registerType("match", FactorMatch.class, new FactorMatch.Serializer());
+
+        SerializableStringTypeRegistry<FactorLimit.Ray> rayRegistry = FactorLimit.getRayRegistry();
+        rayRegistry.registerType("dynpos", RayDynamicPosition.class, null);
+        rayRegistry.registerType("move", RayMove.class, null);
+        rayRegistry.registerType("matcher", RayMatcher.class, new RayMatcher.Serializer());
+        rayRegistry.registerType("average", RayAverageMatcher.class, new RayAverageMatcher.Serializer());
+
         MazeRuleRegistry.INSTANCE.register("connect", MazeRuleConnect.class);
         MazeRuleRegistry.INSTANCE.register("connectall", MazeRuleConnectAll.class);
 
@@ -271,9 +292,9 @@ public class RCRegistryHandler
 //        VillagerRegistry.instance().registerVillageCreationHandler(new GenericVillageCreationHandler("DesertHut"));
     }
 
-    protected static <T> void dumpAll(ListPresets<T> presets)
+    protected static <T> void dumpAll(PresetRegistry<T> presets)
     {
-        presets.allTypes().forEach(s ->
+        presets.allIDs().forEach(s ->
         {
             try
             {

@@ -7,6 +7,7 @@ package ivorius.reccomplex.utils;
 
 import ivorius.ivtoolkit.blocks.BlockArea;
 import ivorius.ivtoolkit.tools.IvStreams;
+import net.minecraft.world.gen.structure.StructureBoundingBox;
 
 import java.util.Iterator;
 import java.util.stream.IntStream;
@@ -37,6 +38,11 @@ public class BlockSurfaceArea implements Iterable<BlockSurfacePos>
     public static BlockSurfaceArea from(BlockArea area)
     {
         return new BlockSurfaceArea(BlockSurfacePos.from(area.getPoint1()), BlockSurfacePos.from(area.getPoint2()));
+    }
+
+    public static BlockSurfaceArea from(StructureBoundingBox boundingBox)
+    {
+        return new BlockSurfaceArea(new BlockSurfacePos(boundingBox.minX, boundingBox.minZ), new BlockSurfacePos(boundingBox.maxX, boundingBox.maxZ));
     }
 
     public BlockSurfacePos getPoint1()
@@ -96,5 +102,12 @@ public class BlockSurfaceArea implements Iterable<BlockSurfacePos>
         BlockSurfacePos lower = getLowerCorner();
         BlockSurfacePos higher = getHigherCorner();
         return IvStreams.flatMapToObj(IntStream.range(lower.x, higher.x + 1), x -> IntStream.range(lower.z, higher.z + 1).mapToObj(z -> new BlockSurfacePos(x, z)));
+    }
+
+    public StructureBoundingBox toStructureBoundingBox(int minY, int maxY)
+    {
+        BlockSurfacePos lower = getLowerCorner();
+        BlockSurfacePos higher = getHigherCorner();
+        return new StructureBoundingBox(lower.getX(), minY, lower.getZ(), higher.getX(), maxY, higher.getZ());
     }
 }

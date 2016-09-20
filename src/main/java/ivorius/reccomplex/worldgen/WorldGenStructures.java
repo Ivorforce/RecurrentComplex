@@ -38,7 +38,7 @@ public class WorldGenStructures
             RecurrentComplex.logger.trace(String.format("Spawning static structure at %s", pos));
 
             new StructureGenerator<>(structureInfo).world(world).generationInfo(staticGenInfo)
-                    .random(random).randomPosition(pos, staticGenInfo.ySelector).fromCenter(true).generate();
+                    .random(random).randomPosition(pos, staticGenInfo.placer.getContents()).fromCenter(true).generate();
         });
     }
 
@@ -79,7 +79,7 @@ public class WorldGenStructures
         {
             new StructureGenerator<>(structureInfo).world(world).generationInfo(naturalGenInfo)
                     .random(random).maturity(StructureSpawnContext.GenerateMaturity.SUGGEST)
-                    .randomPosition(genPos, naturalGenInfo.ySelector).fromCenter(true).generate();
+                    .randomPosition(genPos, naturalGenInfo.placer.getContents()).fromCenter(true).generate();
         }
     }
 

@@ -10,6 +10,7 @@ import com.google.common.collect.HashBiMap;
 import com.google.gson.*;
 
 
+import javax.annotation.Nullable;
 import java.lang.reflect.Type;
 import java.util.Collection;
 import java.util.HashMap;
@@ -23,6 +24,8 @@ public class StringTypeAdapterFactory<B> implements JsonSerializer<B>, JsonDeser
     private Map<String, JsonDeserializer<? extends B>> deserializerMap = new HashMap<>();
     private Map<Class<? extends B>, JsonSerializer<? extends B>> serializerMap = new HashMap<>();
     private BiMap<Class<? extends B>, String> classMap = HashBiMap.create();
+
+    private Gson gson = new Gson();
 
     private String typeKey;
     private String objectKey;
@@ -51,23 +54,25 @@ public class StringTypeAdapterFactory<B> implements JsonSerializer<B>, JsonDeser
         return objectKey;
     }
 
-    public <T extends B> void register(String id, Class<? extends T> clazz, JsonSerializer<T> serializer, JsonDeserializer<T> deserializer)
+    public <T extends B> void register(String id, Class<? extends T> clazz, @Nullable JsonSerializer<T> serializer, @Nullable JsonDeserializer<T> deserializer)
     {
         deserializerMap.put(id, deserializer);
         serializerMap.put(clazz, serializer);
         classMap.put(clazz, id);
     }
 
-    public <K extends B, MultiSerializer extends JsonSerializer<K> & JsonDeserializer<K>> void register(String id, Class<K> clazz, MultiSerializer multiSerializer)
+    public <K extends B, MultiSerializer extends JsonSerializer<K> & JsonDeserializer<K>> void register(String id, Class<K> clazz, @Nullable MultiSerializer multiSerializer)
     {
         register(id, clazz, multiSerializer, multiSerializer);
     }
 
+    @Nullable
     public JsonDeserializer<? extends B> deserializer(String key)
     {
         return deserializerMap.get(key);
     }
 
+    @Nullable
     public <T extends B> JsonSerializer<T> serializer(Class<? extends T> aClass)
     {
         return (JsonSerializer<T>) serializerMap.get(aClass);
@@ -97,10 +102,16 @@ public class StringTypeAdapterFactory<B> implements JsonSerializer<B>, JsonDeser
             if (jsonObject.has(typeKey) && jsonObject.has(objectKey))
             {
                 String type = JsonUtils.getString(jsonObject, typeKey);
-                JsonDeserializer<? extends B> deserializer = deserializer(type);
+                Class<? extends B> typeClass = objectClass(type);
 
-                if (deserializer != null)
-                    return deserializer.deserialize(jsonObject.get(objectKey), typeOfT, context);
+                if (typeClass != null)
+                {
+                    JsonDeserializer<? extends B> deserializer = deserializer(type);
+
+                    return deserializer != null
+                        ? deserializer.deserialize(jsonObject.get(objectKey), typeClass, context)
+                        : gson.fromJson(jsonObject.get(objectKey), typeClass);
+                }
                 else
                     throw new JsonParseException("Unknown type: " + type);
             }
@@ -117,11 +128,14 @@ public class StringTypeAdapterFactory<B> implements JsonSerializer<B>, JsonDeser
         String id = type(objectClass);
         JsonSerializer serializer = serializer(objectClass);
 
-        if (id != null && serializer != null)
+        if (id != null)
         {
             JsonObject jsonObject = new JsonObject();
             jsonObject.addProperty(typeKey, id);
-            jsonObject.add(objectKey, serializer.serialize(src, typeOfSrc, context));
+            jsonObject.add(objectKey, serializer != null
+                    ? serializer.serialize(src, typeOfSrc, context)
+                    : gson.toJsonTree(src, typeOfSrc)
+            );
             return jsonObject;
         }
 

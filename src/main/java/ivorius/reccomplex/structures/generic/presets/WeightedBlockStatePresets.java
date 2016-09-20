@@ -6,13 +6,18 @@
 package ivorius.reccomplex.structures.generic.presets;
 
 import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import ivorius.reccomplex.structures.generic.WeightedBlockState;
-import ivorius.reccomplex.utils.ListPresets;
+import ivorius.reccomplex.utils.PresetRegistry;
+
+import java.lang.reflect.Type;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by lukas on 03.03.15.
  */
-public class WeightedBlockStatePresets extends ListPresets<WeightedBlockState>
+public class WeightedBlockStatePresets extends PresetRegistry<ArrayList<WeightedBlockState>>
 {
     public static final String FILE_SUFFIX = "rcbm";
 
@@ -35,8 +40,8 @@ public class WeightedBlockStatePresets extends ListPresets<WeightedBlockState>
     }
 
     @Override
-    protected Class<WeightedBlockState[]> getType()
+    protected Type getType()
     {
-        return WeightedBlockState[].class;
+        return new TypeToken<ArrayList<WeightedBlockState>>(){}.getType();
     }
 }

@@ -5,6 +5,7 @@
 
 package ivorius.reccomplex.structures;
 
+import ivorius.ivtoolkit.blocks.IvBlockCollection;
 import ivorius.reccomplex.structures.generic.GenericStructureInfo;
 import ivorius.reccomplex.structures.generic.gentypes.StructureGenerationInfo;
 import ivorius.reccomplex.utils.NBTStorable;
@@ -43,4 +44,7 @@ public interface StructureInfo<S extends NBTStorable>
     GenericStructureInfo copyAsGenericStructureInfo();
 
     boolean areDependenciesResolved();
+
+    @Nullable
+    IvBlockCollection blockCollection();
 }

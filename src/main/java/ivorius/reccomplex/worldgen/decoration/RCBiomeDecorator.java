@@ -188,7 +188,7 @@ public class RCBiomeDecorator
         new StructureGenerator<>(generation.getLeft()).generationInfo(generation.getRight()).world(worldIn)
                 .random(random).maturity(StructureSpawnContext.GenerateMaturity.SUGGEST)
                 .memorize(RCConfig.memorizeDecoration).allowOverlaps(true)
-                .randomPosition(randomSurfacePos(random, chunkPos), generation.getRight().ySelector()).fromCenter(true)
+                .randomPosition(randomSurfacePos(random, chunkPos), generation.getRight().placer()).fromCenter(true)
                 .generate();
     }
 

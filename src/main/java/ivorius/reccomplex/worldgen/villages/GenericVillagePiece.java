@@ -11,6 +11,7 @@ import ivorius.reccomplex.structures.*;
 import ivorius.reccomplex.structures.generic.gentypes.StructureGenerationInfo;
 import ivorius.reccomplex.structures.generic.gentypes.VanillaStructureGenerationInfo;
 import ivorius.reccomplex.utils.NBTStorable;
+import ivorius.reccomplex.utils.StructureBoundingBoxes;
 import ivorius.reccomplex.worldgen.StructureGenerator;
 import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTTagCompound;
@@ -155,11 +156,9 @@ public class GenericVillagePiece extends StructureVillagePieces.Village
 
         BlockPos lowerCoord = new BlockPos(this.boundingBox.minX, this.boundingBox.minY, this.boundingBox.minZ);
 
-        StructureBoundingBox toFloorBB = new StructureBoundingBox(generationBB);
-        toFloorBB.minY = 1;
         boolean firstTime = !startedGeneration;
         new StructureGenerator<T>(structureInfo).environment(environment(world, generationInfo))
-                .random(random).lowerCoord(lowerCoord).transform(transform).generationBB(toFloorBB)
+                .random(random).lowerCoord(lowerCoord).transform(transform).generationBB(StructureBoundingBoxes.wholeHeightBoundingBox(world, generationBB))
                 .generationLayer(componentType).structureID(structureID).maturity(firstTime ? StructureSpawnContext.GenerateMaturity.FIRST : StructureSpawnContext.GenerateMaturity.COMPLEMENT)
                 .instanceData(this.instanceData).generate();
 

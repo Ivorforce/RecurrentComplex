@@ -6,8 +6,10 @@
 package ivorius.reccomplex.utils;
 
 import net.minecraft.util.math.ChunkPos;
+import net.minecraft.world.WorldServer;
 import net.minecraft.world.gen.structure.StructureBoundingBox;
 
+import javax.annotation.Nonnull;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
@@ -41,5 +43,14 @@ public class StructureBoundingBoxes
     public static boolean fitsY(StructureBoundingBox boundingBox, int minY, int maxY)
     {
         return boundingBox.minY >= minY && boundingBox.maxY < maxY;
+    }
+
+    @Nonnull
+    public static StructureBoundingBox wholeHeightBoundingBox(WorldServer world, StructureBoundingBox generationBB)
+    {
+        StructureBoundingBox toFloorBB = new StructureBoundingBox(generationBB);
+        toFloorBB.minY = 1;
+        toFloorBB.maxY = world.getHeight();
+        return toFloorBB;
     }
 }

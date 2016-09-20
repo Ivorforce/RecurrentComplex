@@ -6,10 +6,11 @@
 package ivorius.reccomplex.gui.editstructure;
 
 import ivorius.ivtoolkit.tools.IvTranslations;
-import ivorius.reccomplex.RecurrentComplex;
+import ivorius.reccomplex.gui.editstructure.preset.TableDataSourcePresettedList;
 import ivorius.reccomplex.gui.table.*;
 import ivorius.reccomplex.structures.StructureRegistry;
 import ivorius.reccomplex.structures.generic.gentypes.StructureGenerationInfo;
+import ivorius.reccomplex.utils.IvClasses;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -31,17 +32,7 @@ public class TableDataSourceStructureGenerationInfoList extends TableDataSourceL
     @Override
     public TableCellButton[] getAddActions()
     {
-        Collection<String> allTypes = StructureRegistry.INSTANCE.getGenerationInfoRegistry().allIDs();
-        List<TableCellButton> actions = new ArrayList<>(allTypes.size());
-        for (String type : allTypes)
-        {
-            String baseKey = "reccomplex.generationInfo." + type;
-            actions.add(new TableCellButton(type, type,
-                    IvTranslations.get(baseKey),
-                    IvTranslations.formatLines(baseKey + ".tooltip")
-            ));
-        }
-        return actions.toArray(new TableCellButton[actions.size()]);
+        return TableDataSourcePresettedList.addActions(StructureRegistry.INSTANCE.getGenerationInfoRegistry().allIDs(), "reccomplex.generationInfo.", canEditList());
     }
 
     @Override
@@ -53,30 +44,12 @@ public class TableDataSourceStructureGenerationInfoList extends TableDataSourceL
     @Override
     public StructureGenerationInfo newEntry(String actionID)
     {
-        Class<? extends StructureGenerationInfo> clazz = StructureRegistry.INSTANCE.getGenerationInfoRegistry().typeForID(actionID);
-
-        return instantiateStructureGenerationInfo(clazz);
+        return tryInstantiate(actionID, StructureRegistry.INSTANCE.getGenerationInfoRegistry().typeForID(actionID), "Failed instantiating generation info: %s");
     }
 
     @Override
     public TableDataSource editEntryDataSource(StructureGenerationInfo entry)
     {
         return entry.tableDataSource(navigator, tableDelegate);
-    }
-
-    public StructureGenerationInfo instantiateStructureGenerationInfo(Class<? extends StructureGenerationInfo> clazz)
-    {
-        StructureGenerationInfo generationInfo = null;
-
-        try
-        {
-            generationInfo = clazz.newInstance();
-        }
-        catch (InstantiationException | IllegalAccessException e)
-        {
-            RecurrentComplex.logger.error(e);
-        }
-
-        return generationInfo;
     }
 }

@@ -6,16 +6,13 @@
 package ivorius.reccomplex.gui.worldscripts.mazegenerator.rules;
 
 import ivorius.ivtoolkit.gui.IntegerRange;
-import ivorius.ivtoolkit.tools.IvTranslations;
+import ivorius.reccomplex.gui.editstructure.preset.TableDataSourcePresettedList;
 import ivorius.reccomplex.gui.table.*;
 import ivorius.reccomplex.structures.generic.maze.SavedMazePathConnection;
 import ivorius.reccomplex.structures.generic.maze.rules.MazeRule;
 import ivorius.reccomplex.structures.generic.maze.rules.MazeRuleRegistry;
-import ivorius.reccomplex.utils.IvClasses;
 import org.apache.commons.lang3.StringUtils;
 
-import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 
 /**
@@ -43,7 +40,7 @@ public class TableDataSourceMazeRuleList extends TableDataSourceList<MazeRule, L
     @Override
     public MazeRule newEntry(String actionID)
     {
-        return IvClasses.instantiate(MazeRuleRegistry.INSTANCE.objectClass(actionID));
+        return tryInstantiate(actionID, MazeRuleRegistry.INSTANCE.objectClass(actionID), "Failed instantiating maze rule: %s");
     }
 
     @Override
@@ -55,16 +52,6 @@ public class TableDataSourceMazeRuleList extends TableDataSourceList<MazeRule, L
     @Override
     public TableCellButton[] getAddActions()
     {
-        Collection<String> allTypes = MazeRuleRegistry.INSTANCE.allIDs();
-        List<TableCellButton> actions = new ArrayList<>(allTypes.size());
-        for (String type : allTypes)
-        {
-            String baseKey = "reccomplex.mazerule." + type;
-            actions.add(new TableCellButton(type, type,
-                    IvTranslations.get(baseKey),
-                    IvTranslations.formatLines(baseKey + ".tooltip")
-            ));
-        }
-        return actions.toArray(new TableCellButton[actions.size()]);
+        return TableDataSourcePresettedList.addActions(MazeRuleRegistry.INSTANCE.allIDs(), "reccomplex.mazerule.", canEditList());
     }
 }

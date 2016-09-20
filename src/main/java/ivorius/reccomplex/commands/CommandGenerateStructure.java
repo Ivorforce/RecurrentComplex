@@ -12,7 +12,6 @@ import ivorius.reccomplex.worldgen.StructureGenerator;
 import net.minecraft.command.CommandException;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.math.BlockPos;
-import ivorius.ivtoolkit.math.AxisAlignedTransform2D;
 import ivorius.reccomplex.RCConfig;
 import ivorius.reccomplex.operation.OperationRegistry;
 import ivorius.reccomplex.structures.generic.gentypes.NaturalGenerationInfo;
@@ -21,6 +20,7 @@ import ivorius.reccomplex.structures.generic.GenericStructureInfo;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.world.WorldServer;
+import net.minecraft.world.gen.structure.StructureBoundingBox;
 import net.minecraftforge.common.DimensionManager;
 
 import javax.annotation.Nonnull;
@@ -29,7 +29,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
-import java.util.Random;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 /**
@@ -91,28 +91,27 @@ public class CommandGenerateStructure extends CommandBase
             generationInfo = structureInfo.<StructureGenerationInfo>generationInfos(NaturalGenerationInfo.class).stream()
                     .findFirst().orElse(structureInfo.generationInfos(StructureGenerationInfo.class).stream().findFirst().orElse(null));
 
-        YSelector ySelector = generationInfo.ySelector();
+        Placer placer = generationInfo.placer();
 
         if (structureInfo instanceof GenericStructureInfo)
         {
-            Random random = world.rand;
+            GenericStructureInfo genericStructureInfo = (GenericStructureInfo) structureInfo;
 
-            AxisAlignedTransform2D transform = AxisAlignedTransform2D.from(structureInfo.isRotatable() ? random.nextInt(4) : 0, structureInfo.isMirrorable() && random.nextBoolean());
-            int[] size = StructureInfos.structureSize(structureInfo, transform);
+            StructureGenerator<GenericStructureInfo.InstanceData> generator = new StructureGenerator<>(genericStructureInfo).world(world)
+                    .randomPosition(pos, placer).fromCenter(true);
 
-            int genX = pos.getX() - size[0] / 2;
-            int genZ = pos.getZ() - size[2] / 2;
-            int genY = ySelector != null
-                    ? ySelector.selectY(world, random, StructureInfos.structureBoundingBox(new BlockPos(genX, 0, genZ), size))
-                    : world.getHeight(pos.blockPos(0)).getY();
-
-            BlockPos genCoord = new BlockPos(genX, genY, genZ);
-
-            OperationRegistry.queueOperation(new OperationGenerateStructure((GenericStructureInfo) structureInfo, generationInfo.id(), transform, genCoord, false, structureName), commandSender);
+            Optional<BlockPos> lowerCoord = generator.lowerCoord();
+            if (lowerCoord.isPresent())
+                OperationRegistry.queueOperation(new OperationGenerateStructure(genericStructureInfo, generationInfo.id(), generator.transform(), lowerCoord.get(), false, structureName), commandSender);
+            else
+                throw ServerTranslations.commandException("commands.strucGen.noPlace");
         }
         else
-            ((StructureGenerator) new StructureGenerator<>(structureInfo).world(world).generationInfo(generationInfo)
-                                    .structureID(structureName).randomPosition(pos, ySelector).fromCenter(true)).generate();
+        {
+            if (!new StructureGenerator<>(structureInfo).world(world).generationInfo(generationInfo)
+                    .structureID(structureName).randomPosition(pos, placer).fromCenter(true).generate().isPresent())
+                throw ServerTranslations.commandException("commands.strucGen.noPlace");
+        }
     }
 
     @Nonnull

@@ -9,7 +9,7 @@ import ivorius.reccomplex.gui.table.TableDataSource;
 import ivorius.reccomplex.gui.table.TableDelegate;
 import ivorius.reccomplex.gui.table.TableNavigator;
 import ivorius.reccomplex.structures.StructureRegistry;
-import ivorius.reccomplex.structures.YSelector;
+import ivorius.reccomplex.structures.Placer;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -54,7 +54,7 @@ public abstract class StructureGenerationInfo
     public abstract String displayString();
 
     @Nullable
-    public abstract YSelector ySelector();
+    public abstract Placer placer();
 
     public abstract TableDataSource tableDataSource(TableNavigator navigator, TableDelegate delegate);
 }

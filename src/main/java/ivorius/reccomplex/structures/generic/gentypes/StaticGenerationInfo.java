@@ -7,16 +7,19 @@ package ivorius.reccomplex.structures.generic.gentypes;
 
 import com.google.gson.*;
 import com.google.gson.annotations.SerializedName;
+import com.google.gson.reflect.TypeToken;
 import ivorius.ivtoolkit.tools.IvTranslations;
 import ivorius.reccomplex.gui.editstructure.gentypes.TableDataSourceStaticGenerationInfo;
 import ivorius.reccomplex.gui.table.TableDataSource;
 import ivorius.reccomplex.gui.table.TableDelegate;
 import ivorius.reccomplex.gui.table.TableNavigator;
 import ivorius.reccomplex.json.JsonUtils;
-import ivorius.reccomplex.structures.YSelector;
-import ivorius.reccomplex.structures.generic.GenericYSelector;
+import ivorius.reccomplex.structures.Placer;
+import ivorius.reccomplex.structures.generic.placement.GenericPlacer;
 import ivorius.reccomplex.structures.generic.matchers.DimensionMatcher;
 import ivorius.reccomplex.utils.BlockSurfacePos;
+import ivorius.reccomplex.utils.presets.PresettedObject;
+import ivorius.reccomplex.utils.presets.PresettedObjects;
 import net.minecraft.util.math.BlockPos;
 
 import javax.annotation.Nonnull;
@@ -30,7 +33,7 @@ public class StaticGenerationInfo extends StructureGenerationInfo
 {
     private static Gson gson = createGson();
 
-    public GenericYSelector ySelector;
+    public PresettedObject<GenericPlacer> placer;
     public DimensionMatcher dimensionMatcher;
 
     public boolean relativeToSpawn;
@@ -41,17 +44,18 @@ public class StaticGenerationInfo extends StructureGenerationInfo
 
     public StaticGenerationInfo()
     {
-        this(null, new GenericYSelector(GenericYSelector.SelectionMode.SURFACE, 0, 0), new DimensionMatcher("0"), true, BlockSurfacePos.ORIGIN, null);
+        this(null, new DimensionMatcher("0"), true, BlockSurfacePos.ORIGIN, null);
     }
 
-    public StaticGenerationInfo(@Nullable String id, GenericYSelector ySelector, DimensionMatcher dimensionMatcher, boolean relativeToSpawn, BlockSurfacePos position, Pattern pattern)
+    public StaticGenerationInfo(@Nullable String id, DimensionMatcher dimensionMatcher, boolean relativeToSpawn, BlockSurfacePos position, Pattern pattern)
     {
         super(id != null ? id : randomID(StaticGenerationInfo.class));
-        this.ySelector = ySelector;
         this.dimensionMatcher = dimensionMatcher;
         this.relativeToSpawn = relativeToSpawn;
         this.position = position;
         this.pattern = pattern;
+
+        this.placer.setToDefault();
     }
 
     public static Gson createGson()
@@ -59,7 +63,7 @@ public class StaticGenerationInfo extends StructureGenerationInfo
         GsonBuilder builder = new GsonBuilder();
 
         builder.registerTypeAdapter(StaticGenerationInfo.class, new StaticGenerationInfo.Serializer());
-        builder.registerTypeAdapter(GenericYSelector.class, new GenericYSelector.Serializer());
+        builder.registerTypeAdapter(GenericPlacer.class, new GenericPlacer.Serializer());
 
         return builder.create();
     }
@@ -105,9 +109,9 @@ public class StaticGenerationInfo extends StructureGenerationInfo
 
     @Nullable
     @Override
-    public YSelector ySelector()
+    public Placer placer()
     {
-        return ySelector;
+        return placer.getContents();
     }
 
     @Override
@@ -148,7 +152,6 @@ public class StaticGenerationInfo extends StructureGenerationInfo
 
             String id = JsonUtils.getString(jsonObject, "id", null);
 
-            GenericYSelector ySelector = gson.fromJson(jsonObject.get("generationY"), GenericYSelector.class);
             String dimension = JsonUtils.getString(jsonObject, "dimensions", "");
 
             boolean relativeToSpawn = JsonUtils.getBoolean(jsonObject, "relativeToSpawn", false);
@@ -157,7 +160,16 @@ public class StaticGenerationInfo extends StructureGenerationInfo
 
             Pattern pattern = jsonObject.has("pattern") ? gson.fromJson(jsonObject.get("pattern"), Pattern.class) : null;
 
-            return new StaticGenerationInfo(id, ySelector, new DimensionMatcher(dimension), relativeToSpawn, new BlockSurfacePos(positionX, positionZ), pattern);
+            StaticGenerationInfo staticGenInfo = new StaticGenerationInfo(id, new DimensionMatcher(dimension), relativeToSpawn, new BlockSurfacePos(positionX, positionZ), pattern);
+
+            if (!PresettedObjects.read(jsonObject, gson, staticGenInfo.placer, "placerPreset", "placer", new TypeToken<GenericPlacer>(){}.getType())
+                    && jsonObject.has("generationY"))
+            {
+                // Legacy
+                GenericPlacer.Serializer.readLegacyPlacer(staticGenInfo.placer, context, JsonUtils.getJsonObject(jsonObject, "generationY", new JsonObject()));
+            }
+
+            return staticGenInfo;
         }
 
         @Override
@@ -167,7 +179,7 @@ public class StaticGenerationInfo extends StructureGenerationInfo
 
             jsonObject.addProperty("id", src.id);
 
-            jsonObject.add("generationY", gson.toJsonTree(src.ySelector));
+            PresettedObjects.write(jsonObject, gson, src.placer, "placerPreset", "placer");
             jsonObject.addProperty("dimensions", src.dimensionMatcher.getExpression());
 
             jsonObject.addProperty("relativeToSpawn", src.relativeToSpawn);

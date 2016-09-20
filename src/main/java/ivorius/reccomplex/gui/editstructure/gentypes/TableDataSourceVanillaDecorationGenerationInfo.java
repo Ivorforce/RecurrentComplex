@@ -5,25 +5,16 @@
 
 package ivorius.reccomplex.gui.editstructure.gentypes;
 
-import ivorius.ivtoolkit.blocks.Directions;
-import ivorius.ivtoolkit.gui.FloatRange;
 import ivorius.ivtoolkit.gui.IntegerRange;
 import ivorius.ivtoolkit.tools.IvTranslations;
 import ivorius.reccomplex.gui.RCGuiTables;
 import ivorius.reccomplex.gui.TableDataSourceBlockPos;
 import ivorius.reccomplex.gui.TableDataSourceExpression;
-import ivorius.reccomplex.gui.TableDirections;
 import ivorius.reccomplex.gui.table.*;
-import ivorius.reccomplex.structures.generic.GenericYSelector;
 import ivorius.reccomplex.structures.generic.gentypes.VanillaDecorationGenerationInfo;
-import ivorius.reccomplex.structures.generic.gentypes.VanillaStructureGenerationInfo;
-import ivorius.reccomplex.structures.generic.matchers.BiomeMatcher;
-import ivorius.reccomplex.utils.scale.Scales;
 import ivorius.reccomplex.worldgen.decoration.RCBiomeDecorator;
-import net.minecraft.util.EnumFacing;
 
 import java.util.Arrays;
-import java.util.List;
 
 /**
  * Created by lukas on 07.10.14.
@@ -73,7 +64,7 @@ public class TableDataSourceVanillaDecorationGenerationInfo extends TableDataSou
         {
             case 1:
             {
-                TableCellEnum<RCBiomeDecorator.DecorationType> cell = new TableCellEnum<>("type", generationInfo.type, TableCellEnum.options(Arrays.asList(RCBiomeDecorator.DecorationType.values()), "reccomplex.generationInfo.decoration.types.", true));
+                TableCellEnum<RCBiomeDecorator.DecorationType> cell = new TableCellEnum<>("type", generationInfo.type, TableCellEnum.options(RCBiomeDecorator.DecorationType.values(), "reccomplex.generationInfo.decoration.types.", true));
                 cell.addPropertyConsumer(v -> generationInfo.type = v);
                 return new TableElementCell(IvTranslations.get("reccomplex.generationInfo.vanilla.type"), cell);
             }

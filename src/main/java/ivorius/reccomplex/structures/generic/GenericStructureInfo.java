@@ -39,6 +39,7 @@ import net.minecraft.world.WorldServer;
 import net.minecraftforge.common.util.Constants;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.lang.reflect.Type;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -319,6 +320,13 @@ public class GenericStructureInfo implements StructureInfo<GenericStructureInfo.
     public boolean areDependenciesResolved()
     {
         return dependencies.getAsBoolean();
+    }
+
+    @Nullable
+    @Override
+    public IvBlockCollection blockCollection()
+    {
+        return constructWorldData().blockCollection;
     }
 
     @Override

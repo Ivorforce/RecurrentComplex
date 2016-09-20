@@ -9,6 +9,7 @@ import com.google.common.collect.Multimap;
 import com.google.gson.*;
 import com.google.gson.reflect.TypeToken;
 import ivorius.ivtoolkit.math.AxisAlignedTransform2D;
+import ivorius.ivtoolkit.maze.components.MazeRoom;
 import ivorius.ivtoolkit.tools.GuavaCollectors;
 import ivorius.ivtoolkit.tools.MCRegistry;
 import ivorius.ivtoolkit.tools.NBTCompoundObject;
@@ -20,6 +21,7 @@ import ivorius.reccomplex.utils.Transforms;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
+import org.apache.commons.lang3.tuple.Pair;
 
 import javax.annotation.Nonnull;
 import java.lang.reflect.Type;
@@ -63,10 +65,10 @@ public class BlockPattern implements NBTCompoundObject
     }
 
     @Nonnull
-    public static BlockPos toBlockPos(int[] room)
+    public static BlockPos toBlockPos(MazeRoom room)
     {
-        if (room.length != 3) throw new IllegalArgumentException();
-        return new BlockPos(room[0], room[1], room[2]);
+        if (room.getDimensions() != 3) throw new IllegalArgumentException();
+        return new BlockPos(room.getCoordinate(0), room.getCoordinate(1), room.getCoordinate(2));
     }
 
     public BlockPattern copy()
@@ -115,7 +117,7 @@ public class BlockPattern implements NBTCompoundObject
     public Stream<BlockPos> testAll(World world, BlockPos pos)
     {
         return pattern.compile(true).keySet().stream()
-                .map((room) -> pos.subtract(toBlockPos(room)))
+                .map(room -> pos.subtract(toBlockPos(room)))
                 .filter(p -> test(world, p));
     }
 
@@ -136,10 +138,11 @@ public class BlockPattern implements NBTCompoundObject
         NBTCompoundObjects.writeListTo(compound, "ingredients", ingredients);
     }
 
-    public void forEach(Consumer<Map.Entry<int[], String>> consumer)
+    public void forEach(Consumer<Map.Entry<BlockPos, String>> consumer)
     {
         pattern.compile(true).entrySet().stream()
                 .filter(entry -> findIngredient(entry.getValue()).filter(i -> i.delete).isPresent())
+                .map(entry -> Pair.of(toBlockPos(entry.getKey()), entry.getValue()))
                 .forEach(consumer);
     }
 

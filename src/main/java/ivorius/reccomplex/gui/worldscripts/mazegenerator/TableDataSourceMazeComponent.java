@@ -32,18 +32,18 @@ public class TableDataSourceMazeComponent extends TableDataSourceSegmented
         this.navigator = navigator;
         this.tableDelegate = tableDelegate;
         addManagedSection(0, new TableDataSourceConnector(component.defaultConnector, IvTranslations.get("reccomplex.maze.connector.default")));
+
         addManagedSection(1, TableCellMultiBuilder.create(navigator, tableDelegate)
-                .addNavigation(() -> IvTranslations.get("reccomplex.gui.edit"), () -> IvTranslations.getLines("reccomplex.generationInfo.mazeComponent.rooms.tooltip"),
-                        () -> new GuiTable(tableDelegate, new TableDataSourceSelection(component.rooms, DEFAULT_MAX_COMPONENT_SIZE, tableDelegate, navigator, false))
-                ).buildDataSource(IvTranslations.get("reccomplex.generationInfo.mazeComponent.rooms")));
+                .addNavigation(() -> new TableDataSourceSelection(component.rooms, DEFAULT_MAX_COMPONENT_SIZE, tableDelegate, navigator, false)
+                ).buildDataSource(IvTranslations.get("reccomplex.generationInfo.mazeComponent.rooms"), IvTranslations.getLines("reccomplex.generationInfo.mazeComponent.rooms.tooltip")));
+
         addManagedSection(2, TableCellMultiBuilder.create(navigator, tableDelegate)
-                .addNavigation(() -> IvTranslations.get("reccomplex.gui.edit"), () -> IvTranslations.getLines("reccomplex.generationInfo.mazeComponent.exits.tooltip"),
-                        () -> new GuiTable(tableDelegate, new TableDataSourceMazePathConnectionList(component.exitPaths, tableDelegate, navigator, component.rooms.bounds()))
-                ).buildDataSource(IvTranslations.get("reccomplex.generationInfo.mazeComponent.exits")));
+                .addNavigation(() -> new TableDataSourceMazePathConnectionList(component.exitPaths, tableDelegate, navigator, component.rooms.bounds())
+                ).buildDataSource(IvTranslations.get("reccomplex.generationInfo.mazeComponent.exits"), IvTranslations.getLines("reccomplex.generationInfo.mazeComponent.exits.tooltip")));
+
         addManagedSection(3, TableCellMultiBuilder.create(navigator, tableDelegate)
-                .addNavigation(() -> IvTranslations.get("reccomplex.gui.edit"), () -> IvTranslations.formatLines("reccomplex.reachability.tooltip"),
-                        () -> new GuiTable(tableDelegate, new TableDataSourceMazeReachability(component.reachability, tableDelegate, navigator, SavedMazeReachability.buildExpected(component), component.rooms.bounds()))
-                ).buildDataSource(IvTranslations.get("reccomplex.generationInfo.mazeComponent.reachability")));
+                .addNavigation(() -> new TableDataSourceMazeReachability(component.reachability, tableDelegate, navigator, SavedMazeReachability.buildExpected(component), component.rooms.bounds())
+                ).buildDataSource(IvTranslations.get("reccomplex.generationInfo.mazeComponent.reachability"), IvTranslations.formatLines("reccomplex.reachability.tooltip")));
 
     }
 

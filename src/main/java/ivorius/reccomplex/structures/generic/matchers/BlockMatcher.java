@@ -11,9 +11,9 @@ import ivorius.ivtoolkit.gui.IntegerRange;
 import ivorius.ivtoolkit.tools.MCRegistry;
 import ivorius.reccomplex.utils.BlockStates;
 import ivorius.reccomplex.utils.FunctionExpressionCache;
+import ivorius.reccomplex.utils.IntegerRanges;
 import ivorius.reccomplex.utils.algebra.RCBoolAlgebra;
 import net.minecraft.block.Block;
-import net.minecraft.block.material.Material;
 import net.minecraft.block.properties.IProperty;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.init.Blocks;
@@ -114,7 +114,7 @@ public class BlockMatcher extends FunctionExpressionCache<Boolean, IBlockState, 
                 Integer left = parseMetadata(split.get(0));
                 Integer right = parseMetadata(split.get(1));
 
-                return left != null && right != null ? new IntegerRange(Math.min(left, right), Math.max(left, right)) : null;
+                return left != null && right != null ? IntegerRanges.from(left, right) : null;
             }
 
             Integer meta = parseMetadata(var);

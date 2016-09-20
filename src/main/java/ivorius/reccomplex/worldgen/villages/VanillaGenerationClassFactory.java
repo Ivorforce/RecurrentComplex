@@ -6,6 +6,7 @@
 package ivorius.reccomplex.worldgen.villages;
 
 import ivorius.reccomplex.RecurrentComplex;
+import ivorius.reccomplex.utils.IvClasses;
 import net.minecraft.world.gen.structure.StructureVillagePieces;
 import org.objectweb.asm.ClassVisitor;
 import org.objectweb.asm.ClassWriter;
@@ -48,16 +49,7 @@ public class VanillaGenerationClassFactory extends ClassLoader
     {
         Class<? extends GenericVillagePiece> aClass = getClass(structureID, generationID);
 
-        try
-        {
-            return aClass != null ? aClass.newInstance() : null;
-        }
-        catch (InstantiationException | IllegalAccessException e)
-        {
-            e.printStackTrace();
-        }
-
-        return null;
+        return aClass != null ? IvClasses.instantiate(aClass) : null;
     }
 
     @Nullable

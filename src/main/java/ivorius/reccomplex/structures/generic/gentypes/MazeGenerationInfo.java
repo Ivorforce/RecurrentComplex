@@ -14,7 +14,7 @@ import ivorius.reccomplex.gui.table.TableDataSource;
 import ivorius.reccomplex.gui.table.TableDelegate;
 import ivorius.reccomplex.gui.table.TableNavigator;
 import ivorius.reccomplex.json.JsonUtils;
-import ivorius.reccomplex.structures.YSelector;
+import ivorius.reccomplex.structures.Placer;
 import ivorius.reccomplex.structures.generic.Selection;
 import ivorius.reccomplex.structures.generic.maze.*;
 
@@ -99,7 +99,7 @@ public class MazeGenerationInfo extends StructureGenerationInfo implements Weigh
 
     @Nullable
     @Override
-    public YSelector ySelector()
+    public Placer placer()
     {
         return null;
     }

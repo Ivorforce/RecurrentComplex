@@ -5,10 +5,14 @@
 
 package ivorius.reccomplex.gui.table;
 
+import ivorius.reccomplex.RecurrentComplex;
+import ivorius.reccomplex.structures.generic.transformers.Transformer;
+import ivorius.reccomplex.utils.IvClasses;
 import net.minecraft.util.text.TextFormatting;
 import ivorius.ivtoolkit.tools.IvTranslations;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.util.List;
 
 /**
@@ -34,6 +38,17 @@ public abstract class TableDataSourceList<T, L extends List<T>> extends TableDat
         this.list = list;
         this.tableDelegate = tableDelegate;
         this.navigator = navigator;
+    }
+
+    @Nullable
+    protected T tryInstantiate(String actionID, Class<? extends T> clazz, String format)
+    {
+        if (clazz == null)
+        {
+            RecurrentComplex.logger.error(String.format(format, actionID));
+            return null;
+        }
+        return IvClasses.instantiate(clazz);
     }
 
     public L getList()

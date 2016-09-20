@@ -5,6 +5,8 @@
 
 package ivorius.reccomplex.gui.table;
 
+import ivorius.ivtoolkit.tools.IvTranslations;
+
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.ArrayList;
@@ -49,13 +51,18 @@ public class TableCellMultiBuilder
         return this;
     }
 
-    public TableCellMultiBuilder addNavigation(Supplier<String> title, @Nullable Supplier<List<String>> tooltip, Supplier<GuiTable> table)
+    public TableCellMultiBuilder addNavigation(Supplier<String> title, @Nullable Supplier<List<String>> tooltip, Supplier<TableDataSource> dataSource)
     {
         titles.add(title);
         tooltips.add(tooltip);
-        actions.add(() -> navigator.pushTable(table.get()));
+        actions.add(() -> navigator.pushTable(new GuiTable(delegate, dataSource.get())));
         enabledSuppliers.add(null);
         return this;
+    }
+
+    public TableCellMultiBuilder addNavigation(Supplier<TableDataSource> dataSource)
+    {
+        return addNavigation(() -> IvTranslations.get("reccomplex.gui.edit"), null, dataSource);
     }
 
     public TableCellMultiBuilder enabled(BooleanSupplier enabled)

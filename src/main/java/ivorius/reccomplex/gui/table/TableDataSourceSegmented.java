@@ -10,12 +10,30 @@ import gnu.trove.map.TIntObjectMap;
 import gnu.trove.map.hash.TIntObjectHashMap;
 import gnu.trove.set.TIntSet;
 
+import java.util.Arrays;
+import java.util.List;
+
 /**
  * Created by lukas on 22.06.14.
  */
-public abstract class TableDataSourceSegmented implements TableDataSource
+public class TableDataSourceSegmented implements TableDataSource
 {
     protected final TIntObjectMap<TableDataSource> managedSections = new TIntObjectHashMap<>();
+
+    public TableDataSourceSegmented()
+    {
+    }
+
+    public TableDataSourceSegmented(List<TableDataSource> segments)
+    {
+        for (int i = 0; i < segments.size(); i++)
+            managedSections.put(i, segments.get(i));
+    }
+
+    public TableDataSourceSegmented(TableDataSource... segments)
+    {
+        this(Arrays.asList(segments));
+    }
 
     public void addManagedSection(int section, TableDataSource source)
     {

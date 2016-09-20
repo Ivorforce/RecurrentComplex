@@ -10,7 +10,7 @@ import ivorius.reccomplex.gui.RCGuiTables;
 import ivorius.reccomplex.gui.editstructure.TableDataSourceBiomeGenList;
 import ivorius.reccomplex.gui.editstructure.TableDataSourceDimensionGenList;
 import ivorius.reccomplex.gui.editstructure.TableDataSourceNaturalGenLimitation;
-import ivorius.reccomplex.gui.editstructure.TableDataSourceYSelector;
+import ivorius.reccomplex.gui.editstructure.placer.TableDataSourcePlacer;
 import ivorius.reccomplex.gui.table.*;
 import ivorius.reccomplex.structures.generic.gentypes.NaturalGenerationInfo;
 import ivorius.reccomplex.worldgen.StructureSelector;
@@ -28,28 +28,28 @@ public class TableDataSourceNaturalGenerationInfo extends TableDataSourceSegment
     private TableDelegate tableDelegate;
     private NaturalGenerationInfo generationInfo;
 
-    public TableDataSourceNaturalGenerationInfo(TableNavigator navigator, TableDelegate tableDelegate, NaturalGenerationInfo generationInfo)
+    public TableDataSourceNaturalGenerationInfo(TableNavigator navigator, TableDelegate delegate, NaturalGenerationInfo generationInfo)
     {
         this.navigator = navigator;
-        this.tableDelegate = tableDelegate;
+        this.tableDelegate = delegate;
         this.generationInfo = generationInfo;
 
-        addManagedSection(0, new TableDataSourceGenerationInfo(generationInfo, navigator, tableDelegate));
-        addManagedSection(2, new TableDataSourceYSelector(generationInfo.ySelector));
+        addManagedSection(0, new TableDataSourceGenerationInfo(generationInfo, navigator, delegate));
 
-        addManagedSection(4, TableCellMultiBuilder.create(navigator, tableDelegate)
-                .addNavigation(() -> IvTranslations.get("reccomplex.gui.edit"), null,
-                        () -> new GuiTable(tableDelegate, new TableDataSourceBiomeGenList(generationInfo.biomeWeights, tableDelegate, navigator))
+        addManagedSection(2, TableCellMultiBuilder.create(navigator, delegate)
+                .addNavigation(() -> new TableDataSourcePlacer(generationInfo.placer, delegate, navigator))
+                .buildDataSource(IvTranslations.get("reccomplex.placer"), IvTranslations.getLines("reccomplex.placer.tooltip")));
+
+        addManagedSection(4, TableCellMultiBuilder.create(navigator, delegate)
+                .addNavigation(() -> new TableDataSourceBiomeGenList(generationInfo.biomeWeights, delegate, navigator)
                 ).buildDataSource(IvTranslations.get("reccomplex.gui.biomes")));
 
-        addManagedSection(5, TableCellMultiBuilder.create(navigator, tableDelegate)
-                .addNavigation(() -> IvTranslations.get("reccomplex.gui.edit"), null,
-                        () -> new GuiTable(tableDelegate, new TableDataSourceDimensionGenList(generationInfo.dimensionWeights, tableDelegate, navigator))
+        addManagedSection(5, TableCellMultiBuilder.create(navigator, delegate)
+                .addNavigation(() -> new TableDataSourceDimensionGenList(generationInfo.dimensionWeights, delegate, navigator)
                 ).buildDataSource(IvTranslations.get("reccomplex.gui.dimensions")));
 
-        addManagedSection(6, TableCellMultiBuilder.create(navigator, tableDelegate)
-                .addNavigation(() -> IvTranslations.get("reccomplex.gui.edit"), null,
-                        () -> new GuiTable(tableDelegate, new TableDataSourceNaturalGenLimitation(generationInfo.spawnLimitation, tableDelegate))
+        addManagedSection(6, TableCellMultiBuilder.create(navigator, delegate)
+                .addNavigation(() -> new TableDataSourceNaturalGenLimitation(generationInfo.spawnLimitation, delegate)
                 ).enabled(generationInfo::hasLimitations)
                 .addAction(() -> generationInfo.hasLimitations() ? IvTranslations.get("reccomplex.gui.remove") : IvTranslations.get("reccomplex.gui.add"), null,
                         () -> generationInfo.spawnLimitation = generationInfo.hasLimitations() ? null : new NaturalGenerationInfo.SpawnLimitation()

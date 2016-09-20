@@ -41,18 +41,19 @@ public class TableDataSourceGenericStructure extends TableDataSourceSegmented
         this.navigator = navigator;
 
         addManagedSection(1, new TableDataSourceSupplied(() -> TableElementSaveDirectory.create(saveDirectoryData, () -> structureKey, delegate)));
+
         addManagedSection(2, TableCellMultiBuilder.create(navigator, delegate)
-                .addNavigation(() -> IvTranslations.get("reccomplex.gui.edit"), null,
-                        () -> new GuiTable(delegate, new TableDataSourceMetadata(structureInfo.metadata))
+                .addNavigation(() -> new TableDataSourceMetadata(structureInfo.metadata)
                 ).buildDataSource(IvTranslations.get("reccomplex.structure.metadata"), IvTranslations.getLines("reccomplex.structure.metadata.tooltip")));
+
         addManagedSection(4, TableDataSourceExpression.constructDefault(IvTranslations.get("reccomplex.structure.dependencies"), structureInfo.dependencies, null));
+
         addManagedSection(5, TableCellMultiBuilder.create(navigator, delegate)
-                .addNavigation(() -> IvTranslations.get("reccomplex.gui.edit"), null,
-                        () -> new GuiTable(delegate, new TableDataSourceStructureGenerationInfoList(structureInfo.generationInfos, delegate, navigator))
+                .addNavigation(() -> new TableDataSourceStructureGenerationInfoList(structureInfo.generationInfos, delegate, navigator)
                 ).buildDataSource(IvTranslations.get("reccomplex.structure.generation"), IvTranslations.getLines("reccomplex.structure.generation.tooltip")));
+
         addManagedSection(6, TableCellMultiBuilder.create(navigator, delegate)
-                .addNavigation(() -> IvTranslations.get("reccomplex.gui.edit"), null,
-                        () -> new GuiTable(delegate, structureInfo.transformer.tableDataSource(navigator, delegate))
+                .addNavigation(() -> structureInfo.transformer.tableDataSource(navigator, delegate)
                 )
                 .addAction(() -> IvTranslations.get("reccomplex.gui.reset"), null, () -> structureInfo.transformer = new TransformerMulti(null, "", Arrays.asList(GenericStructureInfo.createDefaultTransformers())))
                 .buildDataSource(IvTranslations.get("reccomplex.structure.transformers"), IvTranslations.getLines("reccomplex.structure.transformers.tooltip")));

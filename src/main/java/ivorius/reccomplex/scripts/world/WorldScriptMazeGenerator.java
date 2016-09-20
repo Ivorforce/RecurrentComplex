@@ -214,7 +214,10 @@ public class WorldScriptMazeGenerator implements WorldScript<WorldScriptMazeGene
     public InstanceData prepareInstanceData(StructurePrepareContext context, BlockPos pos)
     {
         InstanceData instanceData = new InstanceData();
-        instanceData.placedStructures.addAll(WorldGenMaze.convertToPlacedStructures(context.random, context.environment, pos, structureShift, getPlacedRooms(context.random, context.transform), roomSize, context.transform));
+
+        List<ShiftedMazeComponent<MazeComponentStructure<Connector>, Connector>> placedRooms = getPlacedRooms(context.random, context.transform);
+        instanceData.placedStructures.addAll(WorldGenMaze.convertToPlacedStructures(context.random, context.environment, pos, structureShift, placedRooms, roomSize, context.transform));
+
         return instanceData;
     }
 
@@ -250,7 +253,7 @@ public class WorldScriptMazeGenerator implements WorldScript<WorldScriptMazeGene
         MorphingMazeComponent<Connector> maze = new SetMazeComponent<>();
 
         WorldScriptMazeGenerator.enclose(maze, new MazeRoom(outsideBoundsLower), new MazeRoom(outsideBoundsHigher), defaultConnector);
-        WorldScriptMazeGenerator.blockRooms(maze, mazeComponent.rooms.compile(false).keySet().stream().map(MazeRoom::new).collect(Collectors.toSet()), defaultConnector);
+        WorldScriptMazeGenerator.blockRooms(maze, mazeComponent.rooms.compile(false).keySet(), defaultConnector);
 
         WorldGenMaze.buildExitPaths(factory, mazeComponent.exitPaths, maze.rooms()).forEach(path -> maze.exits().put(path.getKey(), path.getValue()));
 

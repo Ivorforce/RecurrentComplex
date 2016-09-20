@@ -5,21 +5,14 @@
 
 package ivorius.reccomplex.gui.editstructure.gentypes;
 
-import ivorius.ivtoolkit.blocks.Directions;
-import ivorius.ivtoolkit.gui.FloatRange;
 import ivorius.ivtoolkit.gui.IntegerRange;
 import ivorius.ivtoolkit.tools.IvTranslations;
 import ivorius.reccomplex.gui.RCGuiTables;
 import ivorius.reccomplex.gui.TableDataSourceBlockPos;
 import ivorius.reccomplex.gui.TableDataSourceExpression;
-import ivorius.reccomplex.gui.TableDirections;
-import ivorius.reccomplex.gui.editstructure.TableDataSourceBlockPattern;
+import ivorius.reccomplex.gui.editstructure.pattern.TableDataSourceBlockPattern;
 import ivorius.reccomplex.gui.table.*;
 import ivorius.reccomplex.structures.generic.gentypes.SaplingGenerationInfo;
-import ivorius.reccomplex.structures.generic.gentypes.VanillaStructureGenerationInfo;
-import ivorius.reccomplex.structures.generic.matchers.BiomeMatcher;
-import ivorius.reccomplex.utils.scale.Scales;
-import net.minecraft.util.EnumFacing;
 
 /**
  * Created by lukas on 07.10.14.

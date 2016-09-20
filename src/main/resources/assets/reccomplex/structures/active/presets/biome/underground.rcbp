@@ -1,0 +1,41 @@
+[
+  {
+    "biomes": "$PLAINS"
+  },
+  {
+    "biomes": "$FOREST"
+  },
+  {
+    "biomes": "$MOUNTAIN"
+  },
+  {
+    "biomes": "$HILLS"
+  },
+  {
+    "biomes": "$SWAMP"
+  },
+  {
+    "biomes": "$SANDY"
+  },
+  {
+    "biomes": "$MESA"
+  },
+  {
+    "biomes": "$SAVANNA"
+  },
+  {
+    "biomes": "$RIVER"
+  },
+  {
+    "biomes": "$OCEAN"
+  },
+  {
+    "biomes": "$WASTELAND"
+  },
+  {
+    "biomes": "$MUSHROOM"
+  },
+  {
+    "biomes": "$JUNGLE"
+  }
+]

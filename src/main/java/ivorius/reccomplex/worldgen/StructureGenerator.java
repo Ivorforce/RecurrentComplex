@@ -280,7 +280,8 @@ public class StructureGenerator<S extends NBTStorable>
             StructureInfo<S> structureInfo = structure();
             Random random = random();
 
-            return AxisAlignedTransform2D.from(structureInfo.isRotatable() ? random.nextInt(4) : 0, structureInfo.isMirrorable() && random.nextBoolean());
+            AxisAlignedTransform2D transform = AxisAlignedTransform2D.from(structureInfo.isRotatable() ? random.nextInt(4) : 0, structureInfo.isMirrorable() && random.nextBoolean());
+            return this.transform = transform;
         }
     }
 
@@ -312,10 +313,10 @@ public class StructureGenerator<S extends NBTStorable>
             int[] size = structureSize();
 
             if (this.lowerCoord != null)
-                boundingBox = StructureInfos.structureBoundingBox(fromCenter ? lowerCoord.subtract(new Vec3i(size[0] / 2, 0, size[2] / 2)) : lowerCoord, structureSize());
+                boundingBox = StructureInfos.structureBoundingBox(fromCenter ? lowerCoord.subtract(new Vec3i(size[0] / 2, 0, size[2] / 2)) : lowerCoord, size);
             else if (surfacePos != null && placer != null)
             {
-                boundingBox = StructureInfos.structureBoundingBox((fromCenter ? surfacePos.subtract(size[0] / 2, size[2] / 2) : surfacePos).blockPos(0), structureSize());
+                boundingBox = StructureInfos.structureBoundingBox((fromCenter ? surfacePos.subtract(size[0] / 2, size[2] / 2) : surfacePos).blockPos(0), size);
 
                 if (placed)
                 {

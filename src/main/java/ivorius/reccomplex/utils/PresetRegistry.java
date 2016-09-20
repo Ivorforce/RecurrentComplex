@@ -5,14 +5,16 @@
 
 package ivorius.reccomplex.utils;
 
+import com.google.common.collect.Lists;
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
-import ivorius.ivtoolkit.tools.IvTranslations;
 import ivorius.reccomplex.RecurrentComplex;
 import ivorius.reccomplex.files.FileLoadContext;
 import ivorius.reccomplex.files.FileTypeHandler;
-import ivorius.reccomplex.json.JsonUtils;
+import ivorius.reccomplex.files.RCFileTypeRegistry;
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
 
 import javax.annotation.Nonnull;
@@ -32,7 +34,7 @@ public abstract class PresetRegistry<T> implements FileTypeHandler
 {
     protected final CustomizableMap<String, T> presets = new CustomizableMap<>();
     protected final CustomizableMap<String, Metadata> metadata = new CustomizableMap<>();
-    protected Gson gson = createGson();
+    protected Gson gson;
     @Nullable
     protected String defaultID;
     protected String fileSuffix;
@@ -40,6 +42,10 @@ public abstract class PresetRegistry<T> implements FileTypeHandler
     public PresetRegistry(String fileSuffix)
     {
         this.fileSuffix = fileSuffix;
+
+        GsonBuilder builder = new GsonBuilder().setPrettyPrinting();
+        registerGson(builder);
+        gson = builder.create();
     }
 
     @Nullable
@@ -86,19 +92,13 @@ public abstract class PresetRegistry<T> implements FileTypeHandler
     }
 
     @Nonnull
-    public Optional<String> description(String id)
+    public Optional<List<String>> description(String id)
     {
-        return metadata(id).map(m -> m.description);
+        return metadata(id).map(d -> Lists.newArrayList(d.description));
     }
 
     @Nonnull
-    public Optional<List<String>> multilineDescription(String id)
-    {
-        return description(id).map(IvTranslations::splitLines);
-    }
-
-    @Nonnull
-    protected Optional<Metadata> metadata(String id)
+    public Optional<Metadata> metadata(String id)
     {
         Metadata meta = metadata.getMap().get(id);
         if (meta != null)
@@ -116,7 +116,7 @@ public abstract class PresetRegistry<T> implements FileTypeHandler
         return presets.getMap().containsKey(id);
     }
 
-    protected abstract Gson createGson();
+    protected abstract void registerGson(GsonBuilder builder);
 
     protected abstract Type getType();
 
@@ -152,7 +152,7 @@ public abstract class PresetRegistry<T> implements FileTypeHandler
         presets.clearCustom();
     }
 
-    protected Preset<T> read(String file)
+    public Preset<T> read(String file)
     {
         JsonParser parser = new JsonParser();
         JsonObject jsonObject = parser.parse(file).getAsJsonObject();
@@ -163,15 +163,26 @@ public abstract class PresetRegistry<T> implements FileTypeHandler
         return new Preset<T>(t, metadata);
     }
 
-    public String write(String key)
+    public String write(String id)
     {
-        return gson.toJson(preset(key));
+        return gson.toJson(preset(id));
     }
 
-    protected static class Metadata
+    public void save(String id, boolean activeFolder) throws IOException
+    {
+        FileUtils.write(FileUtils.getFile(RCFileTypeRegistry.getDirectory(activeFolder), String.format("%s.%s", id, getFileSuffix())), write(id));
+    }
+
+    public static class Metadata
     {
         public String title;
-        public String description;
+        public String[] description;
+
+        public Metadata(String title, String[] description)
+        {
+            this.title = title;
+            this.description = description;
+        }
     }
 
     protected static class Preset<T>

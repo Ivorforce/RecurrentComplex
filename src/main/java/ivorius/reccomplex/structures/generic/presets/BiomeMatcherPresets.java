@@ -6,14 +6,12 @@
 package ivorius.reccomplex.structures.generic.presets;
 
 import com.google.common.reflect.TypeToken;
-import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import ivorius.reccomplex.structures.generic.BiomeGenerationInfo;
 import ivorius.reccomplex.utils.PresetRegistry;
 
 import java.lang.reflect.Type;
 import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Created by lukas on 26.02.15.
@@ -35,9 +33,9 @@ public class BiomeMatcherPresets extends PresetRegistry<ArrayList<BiomeGeneratio
     }
 
     @Override
-    protected Gson createGson()
+    protected void registerGson(GsonBuilder builder)
     {
-        return new GsonBuilder().registerTypeAdapter(BiomeGenerationInfo.class, new BiomeGenerationInfo.Serializer()).create();
+        builder.registerTypeAdapter(BiomeGenerationInfo.class, new BiomeGenerationInfo.Serializer());
     }
 
     @Override

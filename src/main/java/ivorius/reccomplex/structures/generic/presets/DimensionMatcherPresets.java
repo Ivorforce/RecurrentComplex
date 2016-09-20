@@ -5,7 +5,6 @@
 
 package ivorius.reccomplex.structures.generic.presets;
 
-import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 import ivorius.reccomplex.structures.generic.DimensionGenerationInfo;
@@ -13,7 +12,6 @@ import ivorius.reccomplex.utils.PresetRegistry;
 
 import java.lang.reflect.Type;
 import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Created by lukas on 26.02.15.
@@ -35,9 +33,9 @@ public class DimensionMatcherPresets extends PresetRegistry<ArrayList<DimensionG
     }
 
     @Override
-    protected Gson createGson()
+    protected void registerGson(GsonBuilder builder)
     {
-        return new GsonBuilder().registerTypeAdapter(DimensionGenerationInfo.class, new DimensionGenerationInfo.Serializer()).create();
+        builder.registerTypeAdapter(DimensionGenerationInfo.class, new DimensionGenerationInfo.Serializer());
     }
 
     @Override

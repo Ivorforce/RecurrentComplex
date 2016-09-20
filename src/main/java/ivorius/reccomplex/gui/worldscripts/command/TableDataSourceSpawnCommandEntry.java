@@ -55,7 +55,7 @@ public class TableDataSourceSpawnCommandEntry extends TableDataSourceSegmented
 
                 tableDelegate.reloadData();
             });
-            return new TableElementCell(IvTranslations.get("reccomplex.gui.preset"), cell);
+            return new TableElementCell(IvTranslations.get("reccomplex.preset"), cell);
         }
         else if (index == 1)
         {

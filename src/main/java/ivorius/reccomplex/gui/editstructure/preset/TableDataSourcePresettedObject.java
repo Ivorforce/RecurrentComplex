@@ -33,17 +33,27 @@ public class TableDataSourcePresettedObject<T> extends TableDataSourceSegmented
     }
 
     @Nonnull
-    public static <T> TableElement getCustomizeElement(PresettedObject<T> object, TableDelegate delegate)
+    public static <T> TableElement getCustomizeElement(PresettedObject<T> object, TableDelegate delegate, TableNavigator navigator)
     {
-        @SuppressWarnings("OptionalGetWithoutIsPresent")
-        String title = !object.isCustom() ? object.presetTitle().get() : IvTranslations.get("reccomplex.gui.custom");
-        TableCellButton cell = new TableCellButton("customize", "customize", IvTranslations.get("reccomplex.gui.customize"), !object.isCustom());
-        cell.addAction(() ->
+        if (!object.isCustom())
         {
-            object.setToCustom();
-            delegate.reloadData();
-        });
-        return new TableElementCell(title, cell);
+            @SuppressWarnings("OptionalGetWithoutIsPresent")
+            String title = !object.isCustom() ? object.presetTitle().get() : IvTranslations.get("reccomplex.gui.custom");
+            TableCellButton cell = new TableCellButton("customize", "customize", IvTranslations.get("reccomplex.gui.customize"), true);
+            cell.addAction(() ->
+            {
+                object.setToCustom();
+                delegate.reloadData();
+            });
+            return new TableElementCell(title, cell);
+        }
+        else
+        {
+            return TableCellMultiBuilder.create(navigator, delegate)
+                    .addNavigation(() -> IvTranslations.get("reccomplex.preset.save"), null,
+                            () -> new TableDataSourceSavePreset<>(object, delegate, navigator)
+                    ).buildElement();
+        }
     }
 
     @Nonnull
@@ -55,7 +65,7 @@ public class TableDataSourcePresettedObject<T> extends TableDataSourceSegmented
             object.setPreset(actionID);
             delegate.reloadData();
         });
-        return new TableElementCell(IvTranslations.get("reccomplex.gui.presets"), cell);
+        return new TableElementCell(IvTranslations.get("reccomplex.presets"), cell);
     }
 
     @Nonnull
@@ -67,7 +77,7 @@ public class TableDataSourcePresettedObject<T> extends TableDataSourceSegmented
         //noinspection OptionalGetWithoutIsPresent
         actions.addAll(allTypes.stream().map(type -> new TableCellButton(type, type,
                 object.getPresetRegistry().title(type).get(),
-                object.getPresetRegistry().multilineDescription(type).get()
+                object.getPresetRegistry().description(type).get()
         )).collect(Collectors.toList()));
         return actions.toArray(new TableCellButton[actions.size()]);
     }
@@ -92,7 +102,7 @@ public class TableDataSourcePresettedObject<T> extends TableDataSourceSegmented
             if (index == 0)
                 return getSetElement(object, delegate, getPresetActions());
             else if (index == 1)
-                return getCustomizeElement(object, delegate);
+                return getCustomizeElement(object, delegate, navigator);
         }
 
         return super.elementForIndexInSegment(table, index, segment);

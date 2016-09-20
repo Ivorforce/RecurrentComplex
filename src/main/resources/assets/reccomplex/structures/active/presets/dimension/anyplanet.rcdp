@@ -9,6 +9,6 @@
   ],
   "metadata": {
     "title": "Planet Surface",
-    "description": "Dimensions resembling a planet-like surface"
+    "description": ["Dimensions resembling a planet-like surface"]
   }
 }

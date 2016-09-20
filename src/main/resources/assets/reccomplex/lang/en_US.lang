@@ -472,8 +472,6 @@ reccomplex.gui.source=Source
 reccomplex.gui.sources=Sources
 reccomplex.gui.destination=Destination
 reccomplex.gui.destinations=Destinations
-reccomplex.gui.preset=Preset
-reccomplex.gui.presets=Presets
 reccomplex.gui.command=Command
 reccomplex.gui.custom=Custom
 reccomplex.gui.customize=Customize
@@ -485,6 +483,16 @@ reccomplex.rotation.clockwise.0=No rotation
 reccomplex.rotation.clockwise.1=90° Clockwise
 reccomplex.rotation.clockwise.2=180° Clockwise
 reccomplex.rotation.clockwise.3=270° Clockwise
+
+reccomplex.preset=Preset
+reccomplex.preset.save=Save as Preset
+reccomplex.preset.id=ID
+reccomplex.preset.id.tooltip=Unique identifier for the preset
+reccomplex.preset.title=Title
+reccomplex.preset.title.tooltip=Title=Visible title of the preset
+reccomplex.preset.description=Description
+reccomplex.preset.description.tooltip=Visible description for the preset.<br>Use <BR> to start a new line.
+reccomplex.presets=Presets
 
 reccomplex.gui.inventorygen.minMax=Min: %s, Max: %s
 reccomplex.gui.inventorygen.minMaxItems=Min Items: %s, Max Items: %s

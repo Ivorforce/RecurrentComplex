@@ -9,6 +9,6 @@
   ],
   "metadata": {
     "title": "Overworld",
-    "description": "Dimensions resembling the real world surface"
+    "description": ["Dimensions resembling the real world surface"]
   }
 }

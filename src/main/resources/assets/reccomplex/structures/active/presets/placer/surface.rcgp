@@ -41,6 +41,6 @@
   },
   "metadata": {
     "title": "Surface",
-    "description": "Spawn at the topmost surface."
+    "description": ["Spawn at the topmost surface."]
   }
 }

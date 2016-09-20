@@ -6,7 +6,6 @@
 package ivorius.reccomplex.structures.generic.presets;
 
 import com.google.common.reflect.TypeToken;
-import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import ivorius.reccomplex.structures.generic.placement.GenericPlacer;
 import ivorius.reccomplex.utils.PresetRegistry;
@@ -33,9 +32,9 @@ public class GenericPlacerPresets extends PresetRegistry<GenericPlacer>
     }
 
     @Override
-    protected Gson createGson()
+    protected void registerGson(GsonBuilder builder)
     {
-        return new GsonBuilder().registerTypeAdapter(GenericPlacer.class, new GenericPlacer.Serializer()).create();
+        builder.registerTypeAdapter(GenericPlacer.class, new GenericPlacer.Serializer());
     }
 
     @Override

@@ -13,7 +13,6 @@ import ivorius.reccomplex.blocks.*;
 import ivorius.reccomplex.blocks.materials.MaterialNegativeSpace;
 import ivorius.reccomplex.blocks.materials.RCMaterials;
 import ivorius.reccomplex.entities.StructureEntityInfo;
-import ivorius.reccomplex.files.RCFileTypeRegistry;
 import ivorius.reccomplex.items.*;
 import ivorius.reccomplex.json.SerializableStringTypeRegistry;
 import ivorius.reccomplex.operation.OperationRegistry;
@@ -57,7 +56,6 @@ import net.minecraftforge.common.capabilities.CapabilityManager;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.registry.GameRegistry;
-import org.apache.commons.io.FileUtils;
 
 import java.io.IOException;
 
@@ -294,16 +292,19 @@ public class RCRegistryHandler
 
     protected static <T> void dumpAll(PresetRegistry<T> presets)
     {
-        presets.allIDs().forEach(s ->
-        {
-            try
-            {
-                FileUtils.write(FileUtils.getFile(RCFileTypeRegistry.getDirectory(false), String.format("%s.%s", s, presets.getFileSuffix())), presets.write(s));
-            }
-            catch (IOException e)
-            {
-                e.printStackTrace();
-            }
-        });
+        presets.allIDs().forEach(s -> savePreset(presets, s));
     }
+
+    private static <T> void savePreset(PresetRegistry<T> registry, String s)
+    {
+        try
+        {
+            registry.save(s, true);
+        }
+        catch (IOException e)
+        {
+            RecurrentComplex.logger.error("Error saving preset: " + s, e);
+        }
+    }
+
 }

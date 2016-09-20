@@ -54,15 +54,9 @@ public class PresettedObject<T>
     }
 
     @Nonnull
-    public Optional<String> presetDescription()
+    public Optional<List<String>> presetDescription()
     {
         return Optional.ofNullable(getPreset()).flatMap(id -> presetRegistry.description(id));
-    }
-
-    @Nonnull
-    public Optional<List<String>> presetMultilineDescription()
-    {
-        return Optional.ofNullable(getPreset()).flatMap(id -> presetRegistry.multilineDescription(id));
     }
 
     public boolean setPreset(@Nullable String preset)

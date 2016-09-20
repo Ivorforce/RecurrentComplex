@@ -41,6 +41,6 @@
   },
   "metadata": {
     "title": "Underwater",
-    "description": "Spawn on the topmost surface underwater."
+    "description": ["Spawn on the topmost surface underwater."]
   }
 }

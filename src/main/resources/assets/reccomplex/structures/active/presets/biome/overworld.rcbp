@@ -40,6 +40,6 @@
   ],
   "metadata": {
     "title": "Overworld",
-    "description": "Biomes decent surface to spawn on"
+    "description": ["Biomes decent surface to spawn on"]
   }
 }

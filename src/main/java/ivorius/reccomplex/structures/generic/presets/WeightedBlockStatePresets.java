@@ -5,14 +5,14 @@
 
 package ivorius.reccomplex.structures.generic.presets;
 
-import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
+import ivorius.reccomplex.RecurrentComplex;
 import ivorius.reccomplex.structures.generic.WeightedBlockState;
 import ivorius.reccomplex.utils.PresetRegistry;
 
 import java.lang.reflect.Type;
 import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Created by lukas on 03.03.15.
@@ -34,9 +34,9 @@ public class WeightedBlockStatePresets extends PresetRegistry<ArrayList<Weighted
     }
 
     @Override
-    protected Gson createGson()
+    protected void registerGson(GsonBuilder builder)
     {
-        return WeightedBlockState.getGson();
+        builder.registerTypeAdapter(WeightedBlockState.class, new WeightedBlockState.Serializer(RecurrentComplex.specialRegistry));
     }
 
     @Override

@@ -83,6 +83,6 @@
   ],
   "metadata": {
     "title": "Wool",
-    "description": "All 16 wool blocks"
+    "description": ["All 16 wool blocks"]
   }
 }

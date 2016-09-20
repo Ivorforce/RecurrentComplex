@@ -42,6 +42,6 @@
   ],
   "metadata": {
     "title": "Underground",
-    "description": "Biomes with underground area"
+    "description": ["Biomes with underground area"]
   }
 }

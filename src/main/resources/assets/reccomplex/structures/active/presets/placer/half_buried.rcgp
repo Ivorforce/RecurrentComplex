@@ -42,6 +42,6 @@
   },
   "metadata": {
     "title": "Half Buried",
-    "description": "Spawn half buried in the ground."
+    "description": ["Spawn half buried in the ground."]
   }
 }

@@ -13,6 +13,8 @@ import ivorius.reccomplex.structures.generic.WorldCache;
 import ivorius.reccomplex.structures.generic.placement.FactorLimit;
 import ivorius.reccomplex.structures.generic.placement.StructurePlaceContext;
 
+import java.util.OptionalInt;
+
 /**
  * Created by lukas on 19.09.16.
  */
@@ -32,16 +34,16 @@ public class RayDynamicPosition extends FactorLimit.Ray
     }
 
     @Override
-    public int cast(WorldCache cache, StructurePlaceContext context, int y)
+    public OptionalInt cast(WorldCache cache, StructurePlaceContext context, int y)
     {
         switch (type)
         {
             case BEDROCK:
-                return 0;
+                return OptionalInt.of(0);
             case SEALEVEL:
-                return cache.world.getSeaLevel();
+                return OptionalInt.of(cache.world.getSeaLevel());
             case WORLD_HEIGHT:
-                return cache.world.getHeight() - 1;
+                return OptionalInt.of(cache.world.getHeight() - 1);
             default:
                 throw new IllegalStateException();
         }

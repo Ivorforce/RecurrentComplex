@@ -19,6 +19,7 @@ import ivorius.reccomplex.utils.BlockSurfaceArea;
 import ivorius.reccomplex.utils.RCStreams;
 
 import java.lang.reflect.Type;
+import java.util.OptionalInt;
 
 import static ivorius.reccomplex.structures.generic.placement.FactorLimit.getRayRegistry;
 
@@ -64,19 +65,23 @@ public class RayMatcher extends FactorLimit.Ray
     }
 
     @Override
-    public int cast(WorldCache cache, StructurePlaceContext context, int y)
+    public OptionalInt cast(WorldCache cache, StructurePlaceContext context, int y)
     {
         BlockSurfaceArea surfaceArea = BlockSurfaceArea.from(context.boundingBox);
 
         int height = cache.world.getHeight();
-        while (y > 0 && y < height)
+        while (true)
         {
+            if (y < 0 || y >= height) // Found none
+                return OptionalInt.empty();
+
             if (matches(cache, surfaceArea, y, requiredRatio))
                 break;
 
             y += up ? 1 : -1;
         }
-        return y;
+
+        return OptionalInt.of(y);
     }
 
     @Override

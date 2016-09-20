@@ -21,6 +21,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.gen.structure.StructureBoundingBox;
 
 import java.lang.reflect.Type;
+import java.util.OptionalInt;
 import java.util.function.Predicate;
 
 import static ivorius.reccomplex.structures.generic.placement.FactorLimit.getRayRegistry;
@@ -118,11 +119,11 @@ public class RayAverageMatcher extends FactorLimit.Ray
     }
 
     @Override
-    public int cast(WorldCache cache, StructurePlaceContext context, int y)
+    public OptionalInt cast(WorldCache cache, StructurePlaceContext context, int y)
     {
         int averageGroundLevel = getAverageGroundLevel(up, y, context.boundingBox,
                 blockPos -> destMatcher.test(PositionedBlockMatcher.Argument.at(cache, blockPos)), cache.world.getHeight());
-        return averageGroundLevel >= 0 ? averageGroundLevel : y;
+        return averageGroundLevel >= 0 ? OptionalInt.of(averageGroundLevel) : OptionalInt.empty();
     }
 
     @Override

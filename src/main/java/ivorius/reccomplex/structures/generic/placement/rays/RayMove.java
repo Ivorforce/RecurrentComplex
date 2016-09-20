@@ -11,6 +11,8 @@ import ivorius.reccomplex.structures.generic.WorldCache;
 import ivorius.reccomplex.structures.generic.placement.FactorLimit;
 import ivorius.reccomplex.structures.generic.placement.StructurePlaceContext;
 
+import java.util.OptionalInt;
+
 import static ivorius.reccomplex.structures.generic.placement.FactorLimit.getRayRegistry;
 
 /**
@@ -32,9 +34,10 @@ public class RayMove extends FactorLimit.Ray
     }
 
     @Override
-    public int cast(WorldCache cache, StructurePlaceContext context, int y)
+    public OptionalInt cast(WorldCache cache, StructurePlaceContext context, int y)
     {
-        return y + distance;
+        y += distance;
+        return y >= 0 && y < cache.world.getHeight() ? OptionalInt.of(y) : OptionalInt.empty();
     }
 
     @Override

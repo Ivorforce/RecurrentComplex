@@ -8,7 +8,6 @@ package ivorius.reccomplex.structures.generic.placement;
 import com.google.common.reflect.TypeToken;
 import com.google.gson.*;
 import ivorius.ivtoolkit.blocks.IvBlockCollection;
-import ivorius.ivtoolkit.gui.IntegerRange;
 import ivorius.ivtoolkit.tools.IvTranslations;
 import ivorius.reccomplex.gui.editstructure.placer.TableDataSourceFactorLimit;
 import ivorius.reccomplex.gui.table.*;
@@ -22,11 +21,7 @@ import org.apache.commons.lang3.tuple.Pair;
 
 import javax.annotation.Nullable;
 import java.lang.reflect.Type;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
-import java.util.function.Consumer;
+import java.util.*;
 
 /**
  * Created by lukas on 18.09.16.
@@ -78,12 +73,18 @@ public class FactorLimit extends GenericPlacer.Factor
         for (Ray ray : rays)
         {
             int before = pos;
-            pos = ray.cast(cache, context, pos);
+            OptionalInt cast = ray.cast(cache, context, pos);
+            if (cast.isPresent())
+            {
+                pos = cast.getAsInt();
 
-            LineSelection selection = LineSelection.fromRange(IntegerRanges.from(pos, before), true);
-            selection.set(considerable, false);
-            if (ray.weight != null && !selection.isUniform())
-                consideration.add(Pair.of(selection, weight(ray.weight)));
+                LineSelection selection = LineSelection.fromRange(IntegerRanges.from(pos, before), true);
+                selection.set(considerable, false);
+                if (ray.weight != null && !selection.isUniform())
+                    consideration.add(Pair.of(selection, weight(ray.weight)));
+            }
+            else
+                break;
         }
 
         return consideration;
@@ -97,9 +98,7 @@ public class FactorLimit extends GenericPlacer.Factor
             JsonObject jsonObject = JsonUtils.asJsonObject(json, "factorLimit");
 
             float priority = JsonUtils.getFloat(jsonObject, "priority", 1);
-            List<Ray> rays = gson.fromJson(jsonObject.get("rays"), new TypeToken<List<Ray>>()
-            {
-            }.getType());
+            List<Ray> rays = gson.fromJson(jsonObject.get("rays"), new TypeToken<List<Ray>>(){}.getType());
 
             return new FactorLimit(priority, rays);
         }
@@ -126,7 +125,7 @@ public class FactorLimit extends GenericPlacer.Factor
             this.weight = weight;
         }
 
-        public abstract int cast(WorldCache cache, StructurePlaceContext context, int y);
+        public abstract OptionalInt cast(WorldCache cache, StructurePlaceContext context, int y);
 
         public TableDataSource rayTableDataSource(TableNavigator navigator, TableDelegate delegate)
         {

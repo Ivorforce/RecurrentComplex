@@ -16,7 +16,7 @@
             "type": "matcher",
             "ray": {
               "up": false,
-              "requiredRatio": 0.1,
+              "requiredRatio": 0.9,
               "destExpression": "!(is.air | is.foliage | is.replaceable) \u0026 !is.liquid"
             }
           },

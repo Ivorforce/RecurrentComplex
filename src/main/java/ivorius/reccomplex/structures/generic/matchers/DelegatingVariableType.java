@@ -44,8 +44,9 @@ public abstract class DelegatingVariableType<T, A, U, CA, CU, C extends Function
     @Override
     public String getRepresentation(String var, String prefix, String suffix, U u)
     {
-        return TextFormatting.GREEN + prefix.substring(0, prefix.length() - 1)
-                + TextFormatting.YELLOW + prefix.substring(prefix.length() - 1)
+        int prefixSymbolStart = prefix.length() > 0 ? prefix.length() - 1 : 0;
+        return TextFormatting.GREEN + prefix.substring(0, prefixSymbolStart)
+                + TextFormatting.YELLOW + prefix.substring(prefixSymbolStart)
                 + TextFormatting.RESET + createUnknownCache(var, u).getDisplayString(convertIsKnownArgument(u)) + TextFormatting.RESET
                 + TextFormatting.GREEN + suffix;
     }

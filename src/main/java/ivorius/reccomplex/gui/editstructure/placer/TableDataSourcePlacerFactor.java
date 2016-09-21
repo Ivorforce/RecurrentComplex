@@ -21,7 +21,7 @@ public class TableDataSourcePlacerFactor extends TableDataSourceSegmented
         this.placer = factor;
 
         addManagedSegment(0, new TableDataSourceSupplied(() -> {
-            TableCellFloat priority = new TableCellFloat(null, factor.priority, 0, 1);
+            TableCellFloat priority = new TableCellFloat(null, factor.priority, 0, 10);
             priority.addPropertyConsumer(v -> factor.priority = v);
             return new TableElementCell(IvTranslations.get("reccomplex.placer.factor.priority"), priority)
                     .withTitleTooltip(IvTranslations.getLines("reccomplex.placer.factor.priority.tooltip"));

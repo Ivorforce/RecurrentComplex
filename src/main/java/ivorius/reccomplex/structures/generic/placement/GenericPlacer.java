@@ -103,7 +103,7 @@ public class GenericPlacer implements Placer
 
         public float weight(float weight)
         {
-            return priority * weight;
+            return (float) Math.pow(weight, priority);
         }
 
         public String displayString()

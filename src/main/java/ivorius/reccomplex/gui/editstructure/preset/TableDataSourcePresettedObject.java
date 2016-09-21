@@ -31,7 +31,7 @@ public class TableDataSourcePresettedObject<T> extends TableDataSourceSegmented
     }
 
     @Nonnull
-    public static <T> TableElement getCustomizeElement(PresettedObject<T> object, TableDelegate delegate, TableNavigator navigator)
+    public static <T> TableElement getCustomizeElement(PresettedObject<T> object, TableDelegate delegate, TableNavigator navigator, Runnable applyPresetAction)
     {
         if (!object.isCustom())
         {
@@ -41,6 +41,8 @@ public class TableDataSourcePresettedObject<T> extends TableDataSourceSegmented
             cell.addAction(() ->
             {
                 object.setToCustom();
+                if (applyPresetAction != null)
+                    applyPresetAction.run();
                 delegate.reloadData();
             });
             return new TableElementCell(title, cell);
@@ -108,7 +110,7 @@ public class TableDataSourcePresettedObject<T> extends TableDataSourceSegmented
             if (index == 0)
                 return getSetElement(object, delegate, getPresetActions(), applyPresetAction);
             else if (index == 1)
-                return getCustomizeElement(object, delegate, navigator);
+                return getCustomizeElement(object, delegate, navigator, applyPresetAction);
         }
 
         return super.elementForIndexInSegment(table, index, segment);

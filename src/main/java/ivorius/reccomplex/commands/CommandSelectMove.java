@@ -7,6 +7,7 @@ package ivorius.reccomplex.commands;
 
 import ivorius.ivtoolkit.blocks.BlockArea;
 import net.minecraft.command.CommandException;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.math.BlockPos;
 import ivorius.ivtoolkit.math.AxisAlignedTransform2D;
 import ivorius.ivtoolkit.tools.IvWorldData;
@@ -19,6 +20,9 @@ import ivorius.reccomplex.utils.ServerTranslations;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.nbt.NBTTagCompound;
+
+import javax.annotation.Nullable;
+import java.util.List;
 
 /**
  * Created by lukas on 09.06.14.
@@ -61,5 +65,19 @@ public class CommandSelectMove extends CommandSelectModify
         AxisAlignedTransform2D transform = AxisAlignedTransform2D.from(rotations, mirrorX);
 
         OperationRegistry.queueOperation(new OperationMoveStructure(structureInfo, transform, coord, true, area), player);
+    }
+
+    @Override
+    public List<String> getTabCompletionOptions(MinecraftServer server, ICommandSender sender, String[] args, @Nullable BlockPos pos)
+    {
+        if (args.length <= 3)
+            return getTabCompletionCoordinate(args, args.length - 1, pos);
+        else if (args.length == 4)
+            return getListOfStringsMatchingLastWord(args, "0", "1", "2", "3");
+        else if (args.length == 5)
+            return getListOfStringsMatchingLastWord(args, "true", "false");
+
+
+        return super.getTabCompletionOptions(server, sender, args, pos);
     }
 }

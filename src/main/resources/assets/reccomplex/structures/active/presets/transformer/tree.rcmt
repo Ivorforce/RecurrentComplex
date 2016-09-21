@@ -1,0 +1,91 @@
+{
+  "data": {
+    "environmentMatcher": "",
+    "transformers": [
+      {
+        "type": "ensureBlocks",
+        "transformer": {
+          "id": "ensureBlocks_2ba2ce8c",
+          "sourceExpression": "reccomplex:generic_solid \u0026 metadata\u003d0",
+          "destExpression": "sustains.trees"
+        }
+      },
+      {
+        "type": "replace",
+        "transformer": {
+          "id": "replace_108c69a7",
+          "sourceExpression": "reccomplex:generic_solid \u0026 metadata\u003d1",
+          "destination": [
+            {
+              "block": "minecraft:air",
+              "metadata": 0,
+              "tileEntityInfo": ""
+            }
+          ]
+        }
+      },
+      {
+        "type": "multi",
+        "transformer": {
+          "id": "multi_22f7b2a",
+          "data": {
+            "environmentMatcher": "!gen.type\u003dsapling \u0026!gen.type\u003ddecoration",
+            "transformers": [
+              {
+                "type": "naturalAir",
+                "transformer": {
+                  "id": "naturalAir_c02fe1f1",
+                  "sourceExpression": "reccomplex:generic_space \u0026 metadata\u003d1",
+                  "naturalExpansionDistance": 4.0,
+                  "naturalExpansionRandomization": 10.0
+                }
+              },
+              {
+                "type": "natural",
+                "transformer": {
+                  "id": "natural_b3ff52bb",
+                  "sourceExpression": "reccomplex:generic_solid \u0026 metadata\u003d0",
+                  "naturalExpansionDistance": 4.0,
+                  "naturalExpansionRandomization": 6.0
+                }
+              }
+            ]
+          }
+        }
+      },
+      {
+        "type": "multi",
+        "transformer": {
+          "id": "multi_7de49dd2",
+          "data": {
+            "environmentMatcher": "gen.type\u003dsapling",
+            "transformers": [
+              {
+                "type": "ensureBlocks",
+                "transformer": {
+                  "id": "ensureBlocks_79cc2a92",
+                  "sourceExpression": "!(reccomplex:generic_space | reccomplex:generic_solid)",
+                  "destExpression": "is.air | is.leaves | is.replaceable"
+                }
+              }
+            ]
+          }
+        }
+      },
+      {
+        "type": "negativeSpace",
+        "transformer": {
+          "id": "negativeSpace_8329ad92",
+          "sourceExpression": "id\u003dreccomplex:generic_space | id\u003dreccomplex:generic_solid",
+          "destExpression": ""
+        }
+      }
+    ]
+  },
+  "metadata": {
+    "title": "Tree",
+    "description": [
+      "Transformers designed for a tree"
+    ]
+  }
+}

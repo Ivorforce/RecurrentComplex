@@ -18,13 +18,19 @@ public class TableDataSourceTransformer extends TableDataSourceSegmented
 {
     public Transformer transformer;
 
+    public TableDelegate delegate;
+
     public TableDataSourceTransformer(Transformer transformer, TableDelegate delegate, TableNavigator navigator)
     {
         this.transformer = transformer;
-        addManagedSection(1, TableCellMultiBuilder.create(navigator, delegate)
-                .addAction(() -> IvTranslations.get("reccomplex.gui.randomize"), null,
-                        () -> transformer.setID(Transformer.randomID(transformer.getClass())))
-                .buildDataSource());
+
+        this.delegate = delegate;
+    }
+
+    @Override
+    public int numberOfSegments()
+    {
+        return 1;
     }
 
     @Override
@@ -38,14 +44,23 @@ public class TableDataSourceTransformer extends TableDataSourceSegmented
     {
         if (segment == 0)
         {
-            TableCellString cell = new TableCellString("transformerID", transformer.id());
-            cell.setShowsValidityState(true);
-            cell.setValidityState(currentIDState());
-            cell.addPropertyConsumer(val ->
+            TableCellString idCell = new TableCellString("transformerID", transformer.id());
+            idCell.setShowsValidityState(true);
+            idCell.setValidityState(currentIDState());
+            idCell.addPropertyConsumer(val ->
             {
                 transformer.setID(val);
-                cell.setValidityState(currentIDState());
+                idCell.setValidityState(currentIDState());
             });
+
+            TableCellButton randomizeCell = new TableCellButton(null, null, IvTranslations.get("reccomplex.gui.randomize.short"), IvTranslations.getLines("reccomplex.gui.randomize"));
+            randomizeCell.addAction(() -> {
+                transformer.setID(Transformer.randomID(transformer.getClass()));
+                delegate.reloadData();
+            });
+
+            TableCellMulti cell = new TableCellMulti(idCell, randomizeCell);
+            cell.setSize(1, 0.1f);
             return new TableElementCell(IvTranslations.get("reccomplex.transformer.id"), cell)
                     .withTitleTooltip(IvTranslations.formatLines("reccomplex.transformer.id.tooltip"));
         }

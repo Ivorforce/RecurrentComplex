@@ -5,8 +5,13 @@
 
 package ivorius.reccomplex.gui.table;
 
+import gnu.trove.impl.Constants;
+import gnu.trove.map.TIntFloatMap;
+import gnu.trove.map.hash.TIntFloatHashMap;
+
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -22,6 +27,7 @@ public class TableCellMulti implements TableCell
 
     @Nonnull
     protected TableCell[] cells;
+    protected TIntFloatMap cellsSize = new TIntFloatHashMap(Constants.DEFAULT_CAPACITY, Constants.DEFAULT_LOAD_FACTOR, -1, 1);
 
     public TableCellMulti(String id, @Nonnull TableCell... cells)
     {
@@ -67,6 +73,16 @@ public class TableCellMulti implements TableCell
         this.cells = cells;
     }
 
+    public void setSize(int cell, float size)
+    {
+        cellsSize.put(cell, size);
+    }
+
+    public float getSize(int cell)
+    {
+        return cellsSize.get(cell);
+    }
+
     @Override
     public void initGui(GuiTable screen)
     {
@@ -77,13 +93,19 @@ public class TableCellMulti implements TableCell
     @Override
     public void setBounds(Bounds bounds)
     {
-        int buttonWidth = bounds.getWidth() / cells.length;
+        float total = 0;
+        for (int i = 0; i < cells.length; i++)
+            total += getSize(i);
 
+        int curPos = 0;
         for (int i = 0; i < cells.length; i++)
         {
+            int buttonWidth = (int) (bounds.getWidth() * (getSize(i) / total));
             TableCell cell = cells[i];
             int realWidth = buttonWidth - (i == cells.length - 1 ? 0 : 2);
-            cell.setBounds(Bounds.fromAxes(bounds.getMinX() + buttonWidth * i, realWidth, bounds.getMinY(), bounds.getHeight()));
+            cell.setBounds(Bounds.fromAxes(bounds.getMinX() + curPos, realWidth, bounds.getMinY(), bounds.getHeight()));
+
+            curPos += buttonWidth;
         }
 
         this.bounds = bounds;

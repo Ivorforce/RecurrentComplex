@@ -465,6 +465,7 @@ reccomplex.gui.apply=Apply
 reccomplex.gui.later=Later
 reccomplex.gui.earlier=Earlier
 reccomplex.gui.randomize=Randomize
+reccomplex.gui.randomize.short=??
 reccomplex.gui.biomes=Biomes
 reccomplex.gui.dimensions=Dimensions
 reccomplex.gui.environment=Environment

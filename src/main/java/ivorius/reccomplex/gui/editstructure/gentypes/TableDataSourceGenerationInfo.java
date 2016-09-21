@@ -10,6 +10,7 @@ import ivorius.reccomplex.gui.GuiValidityStateIndicator;
 import ivorius.reccomplex.gui.table.*;
 import ivorius.reccomplex.structures.StructureInfos;
 import ivorius.reccomplex.structures.generic.gentypes.StructureGenerationInfo;
+import ivorius.reccomplex.structures.generic.transformers.Transformer;
 
 /**
  * Created by lukas on 26.03.15.
@@ -18,13 +19,18 @@ public class TableDataSourceGenerationInfo extends TableDataSourceSegmented
 {
     public StructureGenerationInfo genInfo;
 
+    public TableDelegate delegate;
+
     public TableDataSourceGenerationInfo(StructureGenerationInfo genInfo, TableNavigator navigator, TableDelegate delegate)
     {
         this.genInfo = genInfo;
-        addManagedSection(1, TableCellMultiBuilder.create(navigator, delegate)
-                .addAction(() -> IvTranslations.get("reccomplex.gui.randomize"), null,
-                        () -> genInfo.setID(StructureGenerationInfo.randomID(genInfo.getClass())))
-                .buildDataSource());
+        this.delegate = delegate;
+    }
+
+    @Override
+    public int numberOfSegments()
+    {
+        return 1;
     }
 
     @Override
@@ -38,15 +44,25 @@ public class TableDataSourceGenerationInfo extends TableDataSourceSegmented
     {
         if (segment == 0)
         {
-            TableCellString cell = new TableCellString("genInfoID", genInfo.id());
-            cell.setShowsValidityState(true);
-            cell.setValidityState(currentIDState());
-            cell.addPropertyConsumer(val ->
+            TableCellString idCell = new TableCellString("genInfoID", genInfo.id());
+            idCell.setShowsValidityState(true);
+            idCell.setValidityState(currentIDState());
+            idCell.addPropertyConsumer(val ->
             {
                 genInfo.setID(val);
-                cell.setValidityState(currentIDState());
+                idCell.setValidityState(currentIDState());
             });
-            return new TableElementCell(IvTranslations.get("reccomplex.structure.generation.id"), cell).withTitleTooltip(IvTranslations.formatLines("reccomplex.structure.generation.id.tooltip"));
+
+            TableCellButton randomizeCell = new TableCellButton(null, null, IvTranslations.get("reccomplex.gui.randomize.short"), IvTranslations.getLines("reccomplex.gui.randomize"));
+            randomizeCell.addAction(() -> {
+                genInfo.setID(StructureGenerationInfo.randomID(genInfo.getClass()));
+                delegate.reloadData();
+            });
+
+            TableCellMulti cell = new TableCellMulti(idCell, randomizeCell);
+            cell.setSize(1, 0.1f);
+            return new TableElementCell(IvTranslations.get("reccomplex.structure.generation.id"), cell)
+                    .withTitleTooltip(IvTranslations.formatLines("reccomplex.structure.generation.id.tooltip"));
         }
 
         return super.elementForIndexInSegment(table, index, segment);

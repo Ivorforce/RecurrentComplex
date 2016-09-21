@@ -24,7 +24,7 @@ public class RayMove extends FactorLimit.Ray
 
     public RayMove()
     {
-        this(null, 1);
+        this(null, 0);
     }
 
     public RayMove(Float weight, int distance)

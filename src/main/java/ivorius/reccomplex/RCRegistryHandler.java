@@ -30,10 +30,7 @@ import ivorius.reccomplex.structures.generic.placement.FactorLimit;
 import ivorius.reccomplex.structures.generic.placement.FactorMatch;
 import ivorius.reccomplex.structures.generic.placement.FactorRegistry;
 import ivorius.reccomplex.structures.generic.placement.GenericPlacer;
-import ivorius.reccomplex.structures.generic.placement.rays.RayAverageMatcher;
-import ivorius.reccomplex.structures.generic.placement.rays.RayDynamicPosition;
-import ivorius.reccomplex.structures.generic.placement.rays.RayMatcher;
-import ivorius.reccomplex.structures.generic.placement.rays.RayMove;
+import ivorius.reccomplex.structures.generic.placement.rays.*;
 import ivorius.reccomplex.structures.generic.presets.*;
 import ivorius.reccomplex.structures.generic.transformers.*;
 import ivorius.reccomplex.structures.schematics.OperationGenerateSchematic;
@@ -275,6 +272,7 @@ public class RCRegistryHandler
         rayRegistry.registerType("move", RayMove.class, null);
         rayRegistry.registerType("matcher", RayMatcher.class, new RayMatcher.Serializer());
         rayRegistry.registerType("average", RayAverageMatcher.class, new RayAverageMatcher.Serializer());
+        rayRegistry.registerType("dynmove", RayDynamicMove.class, null);
 
         MazeRuleRegistry.INSTANCE.register("connect", MazeRuleConnect.class);
         MazeRuleRegistry.INSTANCE.register("connectall", MazeRuleConnectAll.class);

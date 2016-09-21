@@ -545,6 +545,14 @@ reccomplex.placer.factors.limit.rays.dynpos.type.sealevel.tooltip=The ocean heig
 reccomplex.placer.factors.limit.rays.dynpos.type.world_height=Top (World Height)
 reccomplex.placer.factors.limit.rays.dynpos.type.world_height.tooltip=Top of the world: y=255
 
+reccomplex.placer.factors.limit.rays.dynmove=Dynamic Move
+reccomplex.placer.factors.limit.rays.dynmove.tooltip=Move a dynamic amount of blocks
+reccomplex.placer.factors.limit.rays.dynmove.title.up=Up: %s
+reccomplex.placer.factors.limit.rays.dynmove.title.down=Down: %s
+reccomplex.placer.factors.limit.rays.dynmove.type=Amount
+reccomplex.placer.factors.limit.rays.dynmove.type.structure_height=Structure Height
+reccomplex.placer.factors.limit.rays.dynmove.type.structure_height.tooltip=The height of the spawning structure
+
 reccomplex.placer.factors.limit.rays.matcher=Finder
 reccomplex.placer.factors.limit.rays.matcher.tooltip=Move until the terrain fulfills<br>the set criteria.
 reccomplex.placer.factors.limit.rays.matcher.title.up=Finder (upwards)

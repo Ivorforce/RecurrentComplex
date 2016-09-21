@@ -52,6 +52,7 @@ import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 
 import java.io.IOException;
+import java.util.ArrayList;
 
 import static ivorius.reccomplex.RecurrentComplex.fileTypeRegistry;
 import static ivorius.reccomplex.RecurrentComplex.specialRegistry;
@@ -161,10 +162,19 @@ public class RCRegistryHandler
         register(inspector, "inspector");
 
         // Set preset defaults
+        GenericPlacerPresets.instance().register("surface", false, new GenericPlacer(), null);
         GenericPlacerPresets.instance().setDefault("surface");
+
+        DimensionMatcherPresets.instance().register("overworld", false, new ArrayList<>(), null);
         DimensionMatcherPresets.instance().setDefault("overworld");
+
+        BiomeMatcherPresets.instance().register("overworld", false, new ArrayList<>(), null);
         BiomeMatcherPresets.instance().setDefault("overworld");
-        WeightedBlockStatePresets.instance().setDefault("allWool");
+
+        WeightedBlockStatePresets.instance().register("clear", false, new ArrayList<>(), null);
+        WeightedBlockStatePresets.instance().setDefault("clear");
+
+        TransfomerPresets.instance().register("clear", false, new TransformerMulti.Data(), null);
         TransfomerPresets.instance().setDefault("clear");
     }
 

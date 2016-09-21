@@ -24,7 +24,7 @@ public class PresettedObject<T>
 
     protected T t;
 
-    public PresettedObject(@Nonnull PresetRegistry<T> presetRegistry, String preset)
+    public PresettedObject(@Nonnull PresetRegistry<T> presetRegistry, @Nullable String preset)
     {
         this.presetRegistry = presetRegistry;
         setPreset(preset);
@@ -61,13 +61,22 @@ public class PresettedObject<T>
 
     public boolean setPreset(@Nullable String preset)
     {
-        this.preset = preset;
-        t = null;
-        return presetRegistry.has(preset);
+        boolean has = preset != null && presetRegistry.has(preset);
+
+        if (!has)
+            setToDefault();
+        else
+        {
+            this.preset = preset;
+            t = null;
+        }
+
+        return has;
     }
 
     public void setToCustom()
     {
+        loadFromPreset();
         preset = null;
     }
 
@@ -83,18 +92,30 @@ public class PresettedObject<T>
 
     public T getContents()
     {
-        tryLoadFromPreset();
+        if (!isCustom())
+            loadFromPreset();
         return t;
     }
 
     public void setContents(T ts)
     {
-        setToCustom();
+        preset = null;
         t = ts;
     }
 
-    protected boolean tryLoadFromPreset()
+    protected boolean loadFromPreset()
     {
-        return this.preset != null && (t = presetRegistry.preset(this.preset).orElse(null)) != null;
+        if (this.preset != null && (t = presetContents()) != null)
+            return true;
+
+        setToDefault();
+        t = presetContents();
+
+        return false;
+    }
+
+    private T presetContents()
+    {
+        return presetRegistry.preset(this.preset).orElse(null);
     }
 }

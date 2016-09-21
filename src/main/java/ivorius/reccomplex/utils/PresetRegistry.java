@@ -53,10 +53,10 @@ public abstract class PresetRegistry<T> implements FileTypeHandler
         return fileSuffix;
     }
 
-    public void register(@Nonnull String id, boolean custom, @Nonnull T t, @Nonnull Metadata metadata)
+    public void register(@Nonnull String id, boolean custom, @Nonnull T t, @Nullable Metadata metadata)
     {
         presets.put(id, t, custom);
-        this.metadata.put(id, metadata, custom);
+        this.metadata.put(id, metadata != null ? metadata : new Metadata(id, new String[0]), custom);
     }
 
     public void setDefault(@Nonnull String type)

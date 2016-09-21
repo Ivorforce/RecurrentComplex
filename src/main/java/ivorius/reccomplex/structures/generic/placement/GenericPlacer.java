@@ -42,6 +42,10 @@ public class GenericPlacer implements Placer
 {
     public final List<Factor> factors = new ArrayList<>();
 
+    public GenericPlacer()
+    {
+    }
+
     public GenericPlacer(List<Factor> factors)
     {
         this.factors.addAll(factors);

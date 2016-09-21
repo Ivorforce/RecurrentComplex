@@ -14,7 +14,6 @@ import ivorius.reccomplex.utils.PresetRegistry;
 import ivorius.reccomplex.utils.presets.PresettedObject;
 
 import java.io.IOException;
-import java.util.Collections;
 import java.util.stream.Collectors;
 
 /**
@@ -37,7 +36,7 @@ public class TableDataSourceSavePreset<T> extends TableDataSourceSegmented
         this.delegate = delegate;
         this.navigator = navigator;
 
-        addManagedSection(0, new TableDataSourceSupplied(() ->
+        addManagedSegment(0, new TableDataSourceSupplied(() ->
         {
             TableCellString cell = new TableCellString("id", id);
             cell.setShowsValidityState(true);
@@ -71,7 +70,7 @@ public class TableDataSourceSavePreset<T> extends TableDataSourceSegmented
                     .withTitleTooltip(IvTranslations.getLines("reccomplex.preset.description.tooltip").stream()
                             .map(s -> s.replaceAll("<BR>", "<br>")).collect(Collectors.toList()));
         }));
-        addManagedSection(1, TableCellMultiBuilder.create(navigator, delegate)
+        addManagedSegment(1, TableCellMultiBuilder.create(navigator, delegate)
                 .addAction(() -> IvTranslations.get("reccomplex.gui.save"), null, this::save).buildDataSource());
     }
 

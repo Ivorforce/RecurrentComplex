@@ -34,8 +34,8 @@ public class TableDataSourceMazeRuleConnectAll extends TableDataSourceSegmented
         this.expected = expected;
         this.tableDelegate = tableDelegate;
 
-        addManagedSection(1, new TableDataSourcePreloaded(new TableElementCell(new TableCellTitle("", "Paths"))));
-        addManagedSection(3, new TableDataSourceMazePathList(rule.exits, tableDelegate, navigator, bounds));
+        addManagedSegment(1, new TableDataSourcePreloaded(new TableElementCell(new TableCellTitle("", "Paths"))));
+        addManagedSegment(3, new TableDataSourceMazePathList(rule.exits, tableDelegate, navigator, bounds));
     }
 
     @Override

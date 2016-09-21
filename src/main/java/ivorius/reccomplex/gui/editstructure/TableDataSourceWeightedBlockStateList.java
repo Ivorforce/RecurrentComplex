@@ -18,8 +18,6 @@ import net.minecraft.block.Block;
 import net.minecraft.init.Blocks;
 import org.apache.commons.lang3.StringUtils;
 
-import java.util.ArrayList;
-
 /**
  * Created by lukas on 04.06.14.
  */
@@ -27,9 +25,15 @@ public class TableDataSourceWeightedBlockStateList extends TableDataSourceSegmen
 {
     public TableDataSourceWeightedBlockStateList(PresettedList<WeightedBlockState> list, TableDelegate delegate, TableNavigator navigator)
     {
-        addManagedSection(0, new TableDataSourcePresettedObject<>(list, delegate, navigator));
+        addManagedSegment(0, new TableDataSourcePresettedObject<>(list, delegate, navigator)
+                .withApplyPresetAction(() -> addPresetSegments(list, delegate, navigator)));
 
-        addManagedSection(1, new TableDataSourcePresettedList<WeightedBlockState>(list, delegate, navigator)
+        addPresetSegments(list, delegate, navigator);
+    }
+
+    public void addPresetSegments(final PresettedList<WeightedBlockState> list, final TableDelegate delegate, final TableNavigator navigator)
+    {
+        addManagedSegment(1, new TableDataSourcePresettedList<WeightedBlockState>(list, delegate, navigator)
         {
             @Override
             public String getDisplayString(WeightedBlockState entry)

@@ -19,7 +19,7 @@ public class TableDataSourceWorldScriptMulti extends TableDataSourceSegmented
 {
     public TableDataSourceWorldScriptMulti(WorldScriptMulti script, TableDelegate delegate, TableNavigator navigator)
     {
-        addManagedSection(0, TableDataSourceExpression.constructDefault(IvTranslations.get("reccomplex.worldscript.multi.condition"), script.environmentMatcher, null));
-        addManagedSection(1, new TableDataSourceWorldScriptList(script.scripts, delegate, navigator));
+        addManagedSegment(0, TableDataSourceExpression.constructDefault(IvTranslations.get("reccomplex.worldscript.multi.condition"), script.environmentMatcher, null));
+        addManagedSegment(1, new TableDataSourceWorldScriptList(script.scripts, delegate, navigator));
     }
 }

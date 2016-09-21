@@ -34,21 +34,21 @@ public class TableDataSourceNaturalGenerationInfo extends TableDataSourceSegment
         this.tableDelegate = delegate;
         this.generationInfo = generationInfo;
 
-        addManagedSection(0, new TableDataSourceGenerationInfo(generationInfo, navigator, delegate));
+        addManagedSegment(0, new TableDataSourceGenerationInfo(generationInfo, navigator, delegate));
 
-        addManagedSection(3, TableCellMultiBuilder.create(navigator, delegate)
+        addManagedSegment(3, TableCellMultiBuilder.create(navigator, delegate)
                 .addNavigation(() -> new TableDataSourcePlacer(generationInfo.placer, delegate, navigator))
                 .buildDataSource(IvTranslations.get("reccomplex.placer"), IvTranslations.getLines("reccomplex.placer.tooltip")));
 
-        addManagedSection(4, TableCellMultiBuilder.create(navigator, delegate)
+        addManagedSegment(4, TableCellMultiBuilder.create(navigator, delegate)
                 .addNavigation(() -> new TableDataSourceBiomeGenList(generationInfo.biomeWeights, delegate, navigator)
                 ).buildDataSource(IvTranslations.get("reccomplex.gui.biomes")));
 
-        addManagedSection(5, TableCellMultiBuilder.create(navigator, delegate)
+        addManagedSegment(5, TableCellMultiBuilder.create(navigator, delegate)
                 .addNavigation(() -> new TableDataSourceDimensionGenList(generationInfo.dimensionWeights, delegate, navigator)
                 ).buildDataSource(IvTranslations.get("reccomplex.gui.dimensions")));
 
-        addManagedSection(6, TableCellMultiBuilder.create(navigator, delegate)
+        addManagedSegment(6, TableCellMultiBuilder.create(navigator, delegate)
                 .addNavigation(() -> new TableDataSourceNaturalGenLimitation(generationInfo.spawnLimitation, delegate)
                 ).enabled(generationInfo::hasLimitations)
                 .addAction(() -> generationInfo.hasLimitations() ? IvTranslations.get("reccomplex.gui.remove") : IvTranslations.get("reccomplex.gui.add"), null,

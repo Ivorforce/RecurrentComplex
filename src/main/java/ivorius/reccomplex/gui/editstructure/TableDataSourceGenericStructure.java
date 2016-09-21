@@ -36,21 +36,21 @@ public class TableDataSourceGenericStructure extends TableDataSourceSegmented
         this.tableDelegate = delegate;
         this.navigator = navigator;
 
-        addManagedSection(1, new TableDataSourceSupplied(() -> TableElementSaveDirectory.create(saveDirectoryData, () -> structureKey, delegate)));
+        addManagedSegment(1, new TableDataSourceSupplied(() -> TableElementSaveDirectory.create(saveDirectoryData, () -> structureKey, delegate)));
 
-        addManagedSection(2, TableCellMultiBuilder.create(navigator, delegate)
+        addManagedSegment(2, TableCellMultiBuilder.create(navigator, delegate)
                 .addNavigation(() -> new TableDataSourceMetadata(structureInfo.metadata)
                 ).buildDataSource(IvTranslations.get("reccomplex.structure.metadata"), IvTranslations.getLines("reccomplex.structure.metadata.tooltip")));
 
-        addManagedSection(4, TableCellMultiBuilder.create(navigator, delegate)
+        addManagedSegment(4, TableCellMultiBuilder.create(navigator, delegate)
                 .addNavigation(() -> new TableDataSourceStructureGenerationInfoList(structureInfo.generationInfos, delegate, navigator)
                 ).buildDataSource(IvTranslations.get("reccomplex.structure.generation"), IvTranslations.getLines("reccomplex.structure.generation.tooltip")));
 
-        addManagedSection(5, TableCellMultiBuilder.create(navigator, delegate)
+        addManagedSegment(5, TableCellMultiBuilder.create(navigator, delegate)
                 .addNavigation(() -> structureInfo.transformer.tableDataSource(navigator, delegate))
                 .buildDataSource(IvTranslations.get("reccomplex.structure.transformers"), IvTranslations.getLines("reccomplex.structure.transformers.tooltip")));
 
-        addManagedSection(6, TableDataSourceExpression.constructDefault(IvTranslations.get("reccomplex.structure.dependencies"), structureInfo.dependencies, null));
+        addManagedSegment(6, TableDataSourceExpression.constructDefault(IvTranslations.get("reccomplex.structure.dependencies"), structureInfo.dependencies, null));
     }
 
     public GenericStructureInfo getStructureInfo()

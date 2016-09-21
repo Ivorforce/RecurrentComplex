@@ -14,8 +14,6 @@ import ivorius.reccomplex.gui.table.*;
 import ivorius.reccomplex.structures.generic.gentypes.VanillaDecorationGenerationInfo;
 import ivorius.reccomplex.worldgen.decoration.RCBiomeDecorator;
 
-import java.util.Arrays;
-
 /**
  * Created by lukas on 07.10.14.
  */
@@ -32,9 +30,9 @@ public class TableDataSourceVanillaDecorationGenerationInfo extends TableDataSou
         this.tableDelegate = tableDelegate;
         this.generationInfo = generationInfo;
 
-        addManagedSection(0, new TableDataSourceGenerationInfo(generationInfo, navigator, tableDelegate));
-        addManagedSection(3, TableDataSourceExpression.constructDefault(IvTranslations.get("reccomplex.gui.environment"), generationInfo.environmentMatcher, null));
-        addManagedSection(4, new TableDataSourceBlockPos(generationInfo.spawnShift, generationInfo::setSpawnShift, new IntegerRange(-50, 50), new IntegerRange(-50, 50), new IntegerRange(-50, 50),
+        addManagedSegment(0, new TableDataSourceGenerationInfo(generationInfo, navigator, tableDelegate));
+        addManagedSegment(3, TableDataSourceExpression.constructDefault(IvTranslations.get("reccomplex.gui.environment"), generationInfo.environmentMatcher, null));
+        addManagedSegment(4, new TableDataSourceBlockPos(generationInfo.spawnShift, generationInfo::setSpawnShift, new IntegerRange(-50, 50), new IntegerRange(-50, 50), new IntegerRange(-50, 50),
                 IvTranslations.get("reccomplex.generationInfo.vanilla.shift.x"), IvTranslations.get("reccomplex.generationInfo.vanilla.shift.y"), IvTranslations.get("reccomplex.generationInfo.vanilla.shift.z")));
     }
 

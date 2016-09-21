@@ -6,7 +6,6 @@
 package ivorius.reccomplex.gui.editstructure.pattern;
 
 import ivorius.ivtoolkit.tools.IvTranslations;
-import ivorius.reccomplex.gui.RCGuiTables;
 import ivorius.reccomplex.gui.TableDataSourceExpression;
 import ivorius.reccomplex.gui.table.*;
 import ivorius.reccomplex.structures.generic.BlockPattern;
@@ -25,7 +24,7 @@ public class TableDataSourceBlockPatternIngredient extends TableDataSourceSegmen
         this.ingredient = ingredient;
         this.tableDelegate = tableDelegate;
 
-        addManagedSection(1, TableDataSourceExpression.constructDefault(IvTranslations.get("reccomplex.gui.blocks"), ingredient.matcher, null));
+        addManagedSegment(1, TableDataSourceExpression.constructDefault(IvTranslations.get("reccomplex.gui.blocks"), ingredient.matcher, null));
     }
 
     @Override

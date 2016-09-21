@@ -31,17 +31,17 @@ public class TableDataSourceMazeComponent extends TableDataSourceSegmented
         this.showReachability = showReachability;
         this.navigator = navigator;
         this.tableDelegate = tableDelegate;
-        addManagedSection(0, new TableDataSourceConnector(component.defaultConnector, IvTranslations.get("reccomplex.maze.connector.default")));
+        addManagedSegment(0, new TableDataSourceConnector(component.defaultConnector, IvTranslations.get("reccomplex.maze.connector.default")));
 
-        addManagedSection(1, TableCellMultiBuilder.create(navigator, tableDelegate)
+        addManagedSegment(1, TableCellMultiBuilder.create(navigator, tableDelegate)
                 .addNavigation(() -> new TableDataSourceSelection(component.rooms, DEFAULT_MAX_COMPONENT_SIZE, tableDelegate, navigator, false)
                 ).buildDataSource(IvTranslations.get("reccomplex.generationInfo.mazeComponent.rooms"), IvTranslations.getLines("reccomplex.generationInfo.mazeComponent.rooms.tooltip")));
 
-        addManagedSection(2, TableCellMultiBuilder.create(navigator, tableDelegate)
+        addManagedSegment(2, TableCellMultiBuilder.create(navigator, tableDelegate)
                 .addNavigation(() -> new TableDataSourceMazePathConnectionList(component.exitPaths, tableDelegate, navigator, component.rooms.bounds())
                 ).buildDataSource(IvTranslations.get("reccomplex.generationInfo.mazeComponent.exits"), IvTranslations.getLines("reccomplex.generationInfo.mazeComponent.exits.tooltip")));
 
-        addManagedSection(3, TableCellMultiBuilder.create(navigator, tableDelegate)
+        addManagedSegment(3, TableCellMultiBuilder.create(navigator, tableDelegate)
                 .addNavigation(() -> new TableDataSourceMazeReachability(component.reachability, tableDelegate, navigator, SavedMazeReachability.buildExpected(component), component.rooms.bounds())
                 ).buildDataSource(IvTranslations.get("reccomplex.generationInfo.mazeComponent.reachability"), IvTranslations.formatLines("reccomplex.reachability.tooltip")));
 

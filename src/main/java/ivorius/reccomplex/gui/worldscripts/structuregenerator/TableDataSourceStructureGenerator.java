@@ -38,7 +38,7 @@ public class TableDataSourceStructureGenerator extends TableDataSourceSegmented
         this.tableNavigator = tableNavigator;
         this.tableDelegate = tableDelegate;
 
-        addManagedSection(2, new TableDataSourceBlockPos(script.getStructureShift(), script::setStructureShift,
+        addManagedSegment(2, new TableDataSourceBlockPos(script.getStructureShift(), script::setStructureShift,
                 new IntegerRange(-50, 50), new IntegerRange(-50, 50), new IntegerRange(-50, 50),
                 IvTranslations.get("reccomplex.worldscript.strucGen.shift.x"), IvTranslations.get("reccomplex.worldscript.strucGen.shift.y"), IvTranslations.get("reccomplex.worldscript.strucGen.shift.z")));
     }

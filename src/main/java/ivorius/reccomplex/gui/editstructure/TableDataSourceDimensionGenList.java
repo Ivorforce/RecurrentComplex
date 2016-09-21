@@ -15,8 +15,6 @@ import ivorius.reccomplex.structures.generic.DimensionGenerationInfo;
 import ivorius.reccomplex.utils.presets.PresettedList;
 import org.apache.commons.lang3.StringUtils;
 
-import java.util.ArrayList;
-
 /**
  * Created by lukas on 04.06.14.
  */
@@ -24,9 +22,15 @@ public class TableDataSourceDimensionGenList extends TableDataSourceSegmented
 {
     public TableDataSourceDimensionGenList(PresettedList<DimensionGenerationInfo> list, TableDelegate delegate, TableNavigator navigator)
     {
-        addManagedSection(0, new TableDataSourcePresettedObject<>(list, delegate, navigator));
+        addManagedSegment(0, new TableDataSourcePresettedObject<>(list, delegate, navigator)
+            .withApplyPresetAction(() -> addPresetSegments(list, delegate, navigator)));
 
-        addManagedSection(1, new TableDataSourcePresettedList<DimensionGenerationInfo>(list, delegate, navigator)
+        addPresetSegments(list, delegate, navigator);
+    }
+
+    public void addPresetSegments(final PresettedList<DimensionGenerationInfo> list, final TableDelegate delegate, final TableNavigator navigator)
+    {
+        addManagedSegment(1, new TableDataSourcePresettedList<DimensionGenerationInfo>(list, delegate, navigator)
         {
             @Override
             public String getDisplayString(DimensionGenerationInfo generationInfo)

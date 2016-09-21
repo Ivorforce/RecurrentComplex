@@ -35,7 +35,7 @@ public class TableDataSourceSegmented implements TableDataSource
         this(Arrays.asList(segments));
     }
 
-    public void addManagedSection(int section, TableDataSource source)
+    public void addManagedSegment(int section, TableDataSource source)
     {
         managedSections.put(section, source);
     }

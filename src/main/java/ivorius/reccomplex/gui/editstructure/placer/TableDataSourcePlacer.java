@@ -19,9 +19,15 @@ public class TableDataSourcePlacer extends TableDataSourceSegmented
 {
     public TableDataSourcePlacer(PresettedObject<GenericPlacer> object, TableDelegate delegate, TableNavigator navigator)
     {
-        addManagedSection(0, new TableDataSourcePresettedObject<>(object, delegate, navigator));
+        addManagedSegment(0, new TableDataSourcePresettedObject<>(object, delegate, navigator)
+                .withApplyPresetAction(() -> addPresetSegments(object, delegate, navigator)));
 
-        addManagedSection(1, new TableDataSourcePlacerFactorList(object.getContents().factors, delegate, navigator)
+        addPresetSegments(object, delegate, navigator);
+    }
+
+    public void addPresetSegments(final PresettedObject<GenericPlacer> object, final TableDelegate delegate, final TableNavigator navigator)
+    {
+        addManagedSegment(1, new TableDataSourcePlacerFactorList(object.getContents().factors, delegate, navigator)
         {
             @Override
             public boolean canEditList()

@@ -21,9 +21,9 @@ public class TableDataSourceBlockPattern extends TableDataSourceSegmented
     {
         this.pattern = pattern;
 
-        addManagedSection(0, TableCellMultiBuilder.create(navigator, delegate)
+        addManagedSegment(0, TableCellMultiBuilder.create(navigator, delegate)
                 .addNavigation(() -> new TableDataSourceSelection(pattern.pattern, new int[]{50, 50, 50}, delegate, navigator, true))
                 .buildDataSource(IvTranslations.get("reccomplex.blockpattern.pattern"), IvTranslations.getLines("reccomplex.blockpattern.pattern.tooltip")));
-        addManagedSection(1, new TableDataSourceBlockPatternIngredientList(pattern.ingredients, delegate, navigator));
+        addManagedSegment(1, new TableDataSourceBlockPatternIngredientList(pattern.ingredients, delegate, navigator));
     }
 }

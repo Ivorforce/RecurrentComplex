@@ -10,8 +10,6 @@ import ivorius.reccomplex.gui.TableDataSourceExpression;
 import ivorius.reccomplex.gui.table.*;
 import ivorius.reccomplex.structures.generic.transformers.TransformerEnsureBlocks;
 
-import java.util.Arrays;
-
 /**
  * Created by lukas on 05.06.14.
  */
@@ -23,10 +21,10 @@ public class TableDataSourceBTEnsureSpace extends TableDataSourceSegmented
     {
         this.transformer = transformer;
 
-        addManagedSection(0, new TableDataSourceTransformer(transformer, delegate, navigator));
+        addManagedSegment(0, new TableDataSourceTransformer(transformer, delegate, navigator));
 
-        addManagedSection(1, TableDataSourceExpression.constructDefault(IvTranslations.get("reccomplex.gui.sources"), transformer.sourceMatcher, null));
-        addManagedSection(2, TableDataSourceExpression.constructDefault(IvTranslations.get("reccomplex.transformer.ensureBlocks.dest"), transformer.destMatcher, null));
+        addManagedSegment(1, TableDataSourceExpression.constructDefault(IvTranslations.get("reccomplex.gui.sources"), transformer.sourceMatcher, null));
+        addManagedSegment(2, TableDataSourceExpression.constructDefault(IvTranslations.get("reccomplex.transformer.ensureBlocks.dest"), transformer.destMatcher, null));
     }
 
     public TransformerEnsureBlocks getTransformer()

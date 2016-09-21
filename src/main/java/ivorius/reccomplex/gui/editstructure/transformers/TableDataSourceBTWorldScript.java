@@ -27,9 +27,9 @@ public class TableDataSourceBTWorldScript extends TableDataSourceSegmented
         this.navigator = navigator;
         this.delegate = delegate;
 
-        addManagedSection(0, new TableDataSourceTransformer(transformer, delegate, navigator));
-        addManagedSection(1, TableDataSourceExpression.constructDefault(IvTranslations.get("reccomplex.gui.sources"), transformer.sourceMatcher, null));
-        addManagedSection(2, new TableDataSourceWorldScriptMulti(transformer.script, delegate, navigator));
+        addManagedSegment(0, new TableDataSourceTransformer(transformer, delegate, navigator));
+        addManagedSegment(1, TableDataSourceExpression.constructDefault(IvTranslations.get("reccomplex.gui.sources"), transformer.sourceMatcher, null));
+        addManagedSegment(2, new TableDataSourceWorldScriptMulti(transformer.script, delegate, navigator));
     }
 
     public TransformerWorldScript getTransformer()

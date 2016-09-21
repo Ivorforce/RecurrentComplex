@@ -19,7 +19,7 @@ public class TableDataSourceMazePathConnection extends TableDataSourceSegmented
 {
     public TableDataSourceMazePathConnection(SavedMazePathConnection mazePath, List<IntegerRange> bounds, TableDelegate tableDelegate)
     {
-        addManagedSection(0, new TableDataSourceConnector(mazePath.connector, IvTranslations.get("reccomplex.maze.connector")));
-        addManagedSection(1, new TableDataSourceMazePath(mazePath.path, bounds, tableDelegate));
+        addManagedSegment(0, new TableDataSourceConnector(mazePath.connector, IvTranslations.get("reccomplex.maze.connector")));
+        addManagedSegment(1, new TableDataSourceMazePath(mazePath.path, bounds, tableDelegate));
     }
 }

@@ -7,12 +7,13 @@ package ivorius.reccomplex.gui.editstructure;
 
 import ivorius.reccomplex.gui.editstructure.preset.TableDataSourcePresettedList;
 import ivorius.reccomplex.gui.editstructure.preset.TableDataSourcePresettedObject;
-import ivorius.reccomplex.gui.table.*;
+import ivorius.reccomplex.gui.table.TableDataSource;
+import ivorius.reccomplex.gui.table.TableDataSourceSegmented;
+import ivorius.reccomplex.gui.table.TableDelegate;
+import ivorius.reccomplex.gui.table.TableNavigator;
 import ivorius.reccomplex.structures.generic.BiomeGenerationInfo;
 import ivorius.reccomplex.utils.presets.PresettedList;
 import org.apache.commons.lang3.StringUtils;
-
-import java.util.ArrayList;
 
 /**
  * Created by lukas on 04.06.14.
@@ -21,9 +22,15 @@ public class TableDataSourceBiomeGenList extends TableDataSourceSegmented
 {
     public TableDataSourceBiomeGenList(PresettedList<BiomeGenerationInfo> list, TableDelegate tableDelegate, TableNavigator navigator)
     {
-        addManagedSection(0, new TableDataSourcePresettedObject<>(list, tableDelegate, navigator));
+        addManagedSegment(0, new TableDataSourcePresettedObject<>(list, tableDelegate, navigator)
+                .withApplyPresetAction(() -> addPresetSegments(list, tableDelegate, navigator)));
 
-        addManagedSection(1, new TableDataSourcePresettedList<BiomeGenerationInfo>(list, tableDelegate, navigator)
+        addPresetSegments(list, tableDelegate, navigator);
+    }
+
+    public void addPresetSegments(final PresettedList<BiomeGenerationInfo> list, final TableDelegate tableDelegate, final TableNavigator navigator)
+    {
+        addManagedSegment(1, new TableDataSourcePresettedList<BiomeGenerationInfo>(list, tableDelegate, navigator)
         {
             @Override
             public String getDisplayString(BiomeGenerationInfo biomeGenerationInfo)

@@ -36,7 +36,7 @@ public class TableDataSourceMazePath extends TableDataSourceSegmented
         this.bounds = bounds;
         this.tableDelegate = tableDelegate;
 
-        addManagedSection(1, new TableDataSourceMazeRoom(mazePath.sourceRoom, mazeRoom -> mazePath.sourceRoom = mazeRoom,
+        addManagedSegment(1, new TableDataSourceMazeRoom(mazePath.sourceRoom, mazeRoom -> mazePath.sourceRoom = mazeRoom,
                 bounds, Arrays.stream(new String[]{"x", "y", "z"}).map(s -> IvTranslations.get("reccomplex.generationInfo.mazeComponent.position." + s)).collect(Collectors.toList()))
         );
     }

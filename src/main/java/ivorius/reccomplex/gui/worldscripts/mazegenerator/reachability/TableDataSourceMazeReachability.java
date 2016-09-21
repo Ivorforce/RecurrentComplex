@@ -30,15 +30,15 @@ public class TableDataSourceMazeReachability extends TableDataSourceSegmented
         this.tableDelegate = tableDelegate;
         this.tableNavigator = tableNavigator;
 
-        addManagedSection(0, new TableDataSourcePreloaded(new TableElementCell(
+        addManagedSegment(0, new TableDataSourcePreloaded(new TableElementCell(
                 new TableCellTitle("", IvTranslations.get("reccomplex.reachability.groups")))
                 .withTitleTooltip(IvTranslations.formatLines("reccomplex.reachability.groups.tooltip"))));
-        addManagedSection(1, new TableDataSourceMazeReachabilityGroups(reachability.groups, expected, tableDelegate, tableNavigator));
+        addManagedSegment(1, new TableDataSourceMazeReachabilityGroups(reachability.groups, expected, tableDelegate, tableNavigator));
 
-        addManagedSection(2, new TableDataSourcePreloaded(new TableElementCell(
+        addManagedSegment(2, new TableDataSourcePreloaded(new TableElementCell(
                 new TableCellTitle("", IvTranslations.get("reccomplex.reachability.crossconnections")))
                 .withTitleTooltip(IvTranslations.formatLines("reccomplex.reachability.crossconnections.tooltip"))));
-        addManagedSection(3, new TableDataSourcePathConnectionList(reachability.crossConnections, tableDelegate, tableNavigator, bounds));
+        addManagedSegment(3, new TableDataSourcePathConnectionList(reachability.crossConnections, tableDelegate, tableNavigator, bounds));
     }
 
     public SavedMazeReachability getReachability()

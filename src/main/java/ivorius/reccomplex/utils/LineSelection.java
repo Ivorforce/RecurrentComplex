@@ -51,6 +51,13 @@ public class LineSelection
         startsAdditive = !startsAdditive;
     }
 
+    public LineSelection inverted()
+    {
+        LineSelection copy = copy();
+        copy.invert();
+        return copy;
+    }
+
     public void set(LineSelection selection)
     {
         cuts.clear();
@@ -58,9 +65,9 @@ public class LineSelection
         startsAdditive = selection.startsAdditive;
     }
 
-    public void set(LineSelection selection, boolean additive)
+    public void set(LineSelection selection, boolean additive, boolean setAdditive)
     {
-        selection.streamSections(null, additive).forEach(range -> setSection(range, additive));
+        selection.streamSections(null, additive).forEach(range -> setSection(range, setAdditive));
     }
 
     public void setSection(@Nullable IntegerRange range, boolean additive)

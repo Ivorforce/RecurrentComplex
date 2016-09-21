@@ -16,7 +16,7 @@ public class LineSelections
     public static LineSelection combine(Stream<LineSelection> selections, boolean additive)
     {
         LineSelection selection = new LineSelection(!additive);
-        selections.forEach(s -> selection.set(s, additive));
+        selections.forEach(s -> selection.set(s, additive, additive));
         return selection;
     }
 }

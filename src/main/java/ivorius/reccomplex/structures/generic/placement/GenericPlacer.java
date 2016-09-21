@@ -24,6 +24,7 @@ import ivorius.reccomplex.structures.generic.placement.rays.RayMatcher;
 import ivorius.reccomplex.structures.generic.placement.rays.RayMove;
 import ivorius.reccomplex.structures.generic.presets.GenericPlacerPresets;
 import ivorius.reccomplex.utils.LineSelection;
+import ivorius.reccomplex.utils.LineSelections;
 import ivorius.reccomplex.utils.StructureBoundingBoxes;
 import ivorius.reccomplex.utils.presets.PresettedObject;
 import net.minecraft.world.WorldServer;
@@ -55,34 +56,6 @@ public class GenericPlacer implements Placer
     public static GenericPlacer surfacePlacer()
     {
         return GenericPlacerPresets.instance().preset("surface").get();
-//        return new GenericPlacer(Arrays.asList(
-//                // Keep above caves
-//                new FactorLimit(1, Arrays.asList(
-//                        new RayDynamicPosition(null, RayDynamicPosition.Type.WORLD_HEIGHT),
-//                        new RayMatcher(1f, false, .5f, "!(is.air | is.foliage | is.replaceable) & !is.liquid"),
-//                        new RayMove(1f, -5))),
-//                // Spawn in air or foliage
-//                new FactorMatch(1, "!(reccomplex:generic_space | reccomplex:generic_solid)", "(is.air | is.foliage | is.replaceable) & !is.liquid", 0.5f),
-//                // Spawn on top of solids
-//                new FactorMatch(1, "reccomplex:generic_solid & #0", "!(is.air | is.foliage | is.replaceable)", 0.5f)
-//        ));
-    }
-
-    @Nonnull
-    public static GenericPlacer underwaterPlacer()
-    {
-        return GenericPlacerPresets.instance().preset("underwater").get();
-//        return new GenericPlacer(Arrays.asList(
-//                // Keep above caves
-//                new FactorLimit(1, Arrays.asList(
-//                        new RayDynamicPosition(null, RayDynamicPosition.Type.WORLD_HEIGHT),
-//                        new RayMatcher(1f, false, .5f, "!(is.air | is.foliage | is.replaceable)"),
-//                        new RayMove(1f, -5))),
-//                // Spawn in air or foliage
-//                new FactorMatch(1, "!(reccomplex:generic_space | reccomplex:generic_solid)", "(is.liquid | is.foliage | is.replaceable) & !is.air", 0.5f),
-//                // Spawn on top of solids
-//                new FactorMatch(1, "reccomplex:generic_solid & #0", "!(is.air | is.foliage | is.replaceable)", 0.5f)
-//        ));
     }
 
     @Override
@@ -101,19 +74,18 @@ public class GenericPlacer implements Placer
             List<Pair<LineSelection, Float>> consideration = factor.consider(cache, considerable, blockCollection, context);
 
             // Quick remove null considerations
-            consideration.stream().filter(p -> p.getRight() <= 0).forEach(p -> considerable.set(p.getLeft(), false));
+            consideration.stream().filter(p -> p.getRight() <= 0).forEach(p -> considerable.set(p.getLeft(), true, false));
             consideration = consideration.stream().filter(p -> p.getRight() > 0).collect(Collectors.toList());
 
-            LineSelection considered = new LineSelection(false);
-            consideration.forEach(p -> considered.set(p.getLeft(), true));
-            considerable.set(considered, false);
+            // Remove everything not even considered
+            considerable.set(LineSelections.combine(consideration.stream().map(Pair::getLeft), true), false, false);
 
             considerations.addAll(consideration);
         });
 
         Set<Pair<Integer, Double>> applicable = considerable.streamElements(null, true).
                 mapToObj(y -> Pair.of(y, considerations.stream()
-                        .mapToDouble(pair -> pair.getLeft().isSectionAdditive(pair.getLeft().sectionForIndex(y)) ? pair.getRight() : 0)
+                        .mapToDouble(pair -> pair.getLeft().isSectionAdditive(pair.getLeft().sectionForIndex(y)) ? pair.getRight() : 1)
                         .reduce(1f, (left, right) -> left * right)))
                 .filter(p -> p.getRight() > 0).collect(Collectors.toSet());
 
@@ -131,7 +103,7 @@ public class GenericPlacer implements Placer
 
         public float weight(float weight)
         {
-            return 1f - priority * (1f - weight);
+            return priority * weight;
         }
 
         public String displayString()

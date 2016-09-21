@@ -79,7 +79,7 @@ public class FactorLimit extends GenericPlacer.Factor
                 pos = cast.getAsInt();
 
                 LineSelection selection = LineSelection.fromRange(IntegerRanges.from(pos, before), true);
-                selection.set(considerable, false);
+                selection.set(considerable, false, false);
                 if (ray.weight != null && !selection.isUniform())
                     consideration.add(Pair.of(selection, weight(ray.weight)));
             }

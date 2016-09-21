@@ -55,7 +55,7 @@ public class FactorMatch extends GenericPlacer.Factor
 
     protected float weight(WorldCache cache, Set<BlockPos> sources, int y, float needed)
     {
-        int[] chances = new int[]{(int) (sources.size() * needed)};
+        int[] failChances = new int[]{(int) (sources.size() * (1f - needed))};
         int[] matched = new int[]{0};
 
         RCStreams.visit(sources.stream(), pos ->
@@ -66,10 +66,10 @@ public class FactorMatch extends GenericPlacer.Factor
                 return true;
             }
             else
-                return --chances[0] > 0; // Already lost
+                return --failChances[0] > 0; // Already lost
         });
 
-        return chances[0] > 0 ? (float) matched[0] / sources.size() : 0;
+        return failChances[0] > 0 ? (float) matched[0] / sources.size() : 0;
     }
 
     @Override
@@ -110,8 +110,10 @@ public class FactorMatch extends GenericPlacer.Factor
                 }
                 else if (!DoubleMath.fuzzyEquals(conformity, curConformity, 0.01))
                 {
-                    consideration.add(Pair.of(LineSelection.fromRange(IntegerRanges.from(lastY, y), true), weight(curConformity)));
+                    consideration.add(Pair.of(LineSelection.fromRange(IntegerRanges.from(lastY, y + 1), true), weight(curConformity)));
+
                     curConformity = conformity;
+                    lastY = y;
                 }
             }
 

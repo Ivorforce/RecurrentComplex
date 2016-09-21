@@ -86,7 +86,7 @@ commands.selectSpace.usage=/#space[ [Entfernung-zum-Boden] [max-geschlossene-sei
 commands.selectNatural.usage=/#natural [/#floor-ausdehnung]
 
 commands.strucReload.usage=/#reload <Strukturname> [x] [y] [z]
-commands.strucReload.success=Alle Strukturen and Inventargeneratoren wurden neugeladen.
+commands.strucReload.success=Alle benutzerdefinierten Dateien wurden neu geladen.
 
 commands.selectCopy.usage=/#copy
 commands.selectCopy.success=Kopierte %s, %s, %s bis %s, %s, %s in die Zwischenablage.

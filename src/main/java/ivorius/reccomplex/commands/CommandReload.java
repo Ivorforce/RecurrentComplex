@@ -15,7 +15,7 @@ import net.minecraft.server.MinecraftServer;
 /**
  * Created by lukas on 25.05.14.
  */
-public class CommandStructuresReload extends CommandBase
+public class CommandReload extends CommandBase
 {
     @Override
     public String getCommandName()

@@ -92,7 +92,7 @@ commands.selectSpace.usage=/#space[ [distance-to-floor] [max-closed-sides]
 commands.selectNatural.usage=/#natural [/#floor-expansion]
 
 commands.strucReload.usage=/#reload <structureName> [x] [y] [z]
-commands.strucReload.success=Reloaded all structures and inventory generators
+commands.strucReload.success=Reloaded all custom files.
 
 commands.selectCopy.usage=/#copy
 commands.selectCopy.success=Copied %s, %s, %s to %s, %s, %s to clipboard

@@ -5,7 +5,6 @@
 
 package ivorius.reccomplex.commands;
 
-import com.google.common.collect.Lists;
 import ivorius.ivtoolkit.math.AxisAlignedTransform2D;
 import ivorius.reccomplex.RecurrentComplex;
 import ivorius.reccomplex.entities.StructureEntityInfo;
@@ -17,7 +16,6 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.fml.common.event.FMLServerStartingEvent;
 
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import java.util.Collections;
 import java.util.List;
 
@@ -43,7 +41,7 @@ public class RCCommands
         event.registerServerCommand(new CommandGenerateStructureAt());
         event.registerServerCommand(new CommandImportStructure());
 
-        event.registerServerCommand(new CommandStructuresReload());
+        event.registerServerCommand(new CommandReload());
 
         event.registerServerCommand(new CommandSelect());
         event.registerServerCommand(new CommandSelectShift());

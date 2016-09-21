@@ -94,10 +94,16 @@ public class TransformerNatural extends TransformerAbstractCloud<TransformerNatu
         Biome biome = context.environment.biome;
         IBlockState topBlock = biome.topBlock != null ? biome.topBlock : Blocks.AIR.getDefaultState();
         IBlockState fillerBlock = biome.fillerBlock != null ? biome.fillerBlock : Blocks.AIR.getDefaultState();
-        IBlockState mainBlock = world.provider.getDimension() == -1 ? Blocks.NETHERRACK.getDefaultState() : (world.provider.getDimension() == 1 ? Blocks.END_STONE.getDefaultState() : Blocks.STONE.getDefaultState());
+        IBlockState mainBlock = Blocks.STONE.getDefaultState();
 
-        boolean useStoneBlock = false;
+        boolean useStoneBlock = pos.getY() < world.getSeaLevel();
         IBlockState setBlock = useStoneBlock ? mainBlock : (instanceData.cloud.containsKey(sourcePos.up()) ? fillerBlock : topBlock);
+
+        if (world.provider.getDimension() == -1)
+            setBlock = Blocks.NETHERRACK.getDefaultState();
+        else if (world.provider.getDimension() == 1)
+            setBlock = Blocks.END_STONE.getDefaultState();
+
         context.setBlock(pos, setBlock, 2);
     }
 

@@ -63,16 +63,9 @@ public class CommandImportStructure extends CommandBase
             throw ServerTranslations.commandException("commands.strucImport.noStructure", structureID);
         }
 
-        BlockPos coord;
+        BlockPos coord = parseBlockPos(commandSender, args, 1, false);
 
-        if (args.length >= 4)
-            coord = parseBlockPos(commandSender, args, 1, false);
-        else
-            coord = commandSender.getPosition();
-
-        int rotation = args.length >= 5 ? parseInt(args[4]) : 0;
-        boolean mirror = args.length >= 6 && parseBoolean(args[5]);
-        AxisAlignedTransform2D transform = AxisAlignedTransform2D.from(rotation, mirror);
+        AxisAlignedTransform2D transform = RCCommands.tryParseTransform(args, 4);
 
         if (structureInfo instanceof GenericStructureInfo)
             OperationRegistry.queueOperation(new OperationGenerateStructure((GenericStructureInfo) structureInfo, structureID, transform, coord, true, structureID), commandSender);
@@ -89,11 +82,9 @@ public class CommandImportStructure extends CommandBase
         if (args.length == 1)
             return getListOfStringsMatchingLastWord(args, StructureRegistry.INSTANCE.allStructureIDs());
         else if (args.length == 2 || args.length == 3 || args.length == 4)
-            return getListOfStringsMatchingLastWord(args, "~");
-        else if (args.length == 5)
-            return getListOfStringsMatchingLastWord(args, "0", "1", "2", "3");
-        else if (args.length == 6)
-            return getListOfStringsMatchingLastWord(args, "true", "false");
+            return getTabCompletionCoordinate(args, args.length - 1, pos);
+        else if (args.length == 5 || args.length == 6)
+            return RCCommands.completeTransform(args, args.length - 5);
 
         return Collections.emptyList();
     }

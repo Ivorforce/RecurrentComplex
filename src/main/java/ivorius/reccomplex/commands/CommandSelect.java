@@ -117,13 +117,9 @@ public class CommandSelect extends CommandBase
     public List<String> getTabCompletionOptions(MinecraftServer server, ICommandSender sender, String[] args, @Nullable BlockPos pos)
     {
         if (args.length == 1)
-        {
             return getListOfStringsMatchingLastWord(args, "both", "clear", "point1", "point2", "get");
-        }
         else if (args.length == 2 || args.length == 3 || args.length == 4)
-        {
-            return getListOfStringsMatchingLastWord(args, "~");
-        }
+            return getTabCompletionCoordinate(args, args.length - 1, pos);
 
         return super.getTabCompletionOptions(server, sender, args, pos);
     }

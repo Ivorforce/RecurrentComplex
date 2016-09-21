@@ -76,9 +76,7 @@ public class CommandImportSchematic extends CommandBase
             throw ServerTranslations.commandException("commands.strucImportSchematic.missing", schematicName, SchematicLoader.getLookupFolderName());
 
         BlockPos pos = args.length >= 4 ? parseBlockPos(commandSender, args, 1, false) : commandSender.getPosition();
-        int rotation = args.length >= 5 ? parseInt(args[4]) : 0;
-        boolean mirror = args.length >= 6 && parseBoolean(args[5]);
-        AxisAlignedTransform2D transform = AxisAlignedTransform2D.from(rotation, mirror);
+        AxisAlignedTransform2D transform = RCCommands.tryParseTransform(args, 4);
 
         OperationRegistry.queueOperation(new OperationGenerateSchematic(schematicFile, transform, pos), commandSender);
     }
@@ -92,11 +90,9 @@ public class CommandImportSchematic extends CommandBase
             return getListOfStringsMatchingLastWord(args, SchematicLoader.currentSchematicFileNames()
             .stream().map(name -> name.contains(" ") ? String.format("\"%s\"", name) : name).collect(Collectors.toList()));
         else if (args.length == 2 || args.length == 3 || args.length == 4)
-            return getListOfStringsMatchingLastWord(args, "~");
-        else if (args.length == 5)
-            return getListOfStringsMatchingLastWord(args, "0", "1", "2", "3");
-        else if (args.length == 6)
-            return getListOfStringsMatchingLastWord(args, "true", "false");
+            return getTabCompletionCoordinate(args, args.length - 1, pos);
+        else if (args.length == 5 || args.length == 6)
+            return RCCommands.completeTransform(args, args.length - 5);
 
         return Collections.emptyList();
     }

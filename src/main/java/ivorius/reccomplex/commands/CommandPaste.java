@@ -57,20 +57,12 @@ public class CommandPaste extends CommandBase
 
         if (worldData != null)
         {
-            BlockPos coord;
-
-            if (args.length >= 3)
-                coord = parseBlockPos(commandSender, args, 0, false);
-            else
-                coord = commandSender.getPosition();
-
-            int rotation = args.length >= 4 ? parseInt(args[3]) : 0;
-            boolean mirror = args.length >= 5 && parseBoolean(args[4]);
+            BlockPos coord = parseBlockPos(commandSender, args, 0, false);
 
             GenericStructureInfo structureInfo = GenericStructureInfo.createDefaultStructure();
             structureInfo.worldDataCompound = worldData;
 
-            AxisAlignedTransform2D transform = AxisAlignedTransform2D.from(rotation, mirror);
+            AxisAlignedTransform2D transform = RCCommands.tryParseTransform(args, 3);
 
             OperationRegistry.queueOperation(new OperationGenerateStructure(structureInfo, null, transform, coord, true), commandSender);
         }
@@ -85,11 +77,9 @@ public class CommandPaste extends CommandBase
     public List<String> getTabCompletionOptions(MinecraftServer server, ICommandSender sender, String[] args, @Nullable BlockPos pos)
     {
         if (args.length == 1 || args.length == 2 || args.length == 3)
-            return getListOfStringsMatchingLastWord(args, "~");
-        else if (args.length == 4)
-            return getListOfStringsMatchingLastWord(args, "0", "1", "2", "3");
-        else if (args.length == 5)
-            return getListOfStringsMatchingLastWord(args, "true", "false");
+            return getTabCompletionCoordinate(args, args.length, pos);
+        else if (args.length == 4 || args.length == 5)
+            return RCCommands.completeTransform(args, args.length - 4);
 
         return Collections.emptyList();
     }

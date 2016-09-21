@@ -21,6 +21,7 @@ import net.minecraft.world.WorldServer;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -67,8 +68,8 @@ public class CommandDecorate extends CommandBase
     public List<String> getTabCompletionOptions(MinecraftServer server, ICommandSender sender, String[] args, @Nullable BlockPos pos)
     {
         if (args.length > 0 && args.length < 5)
-            return getListOfStringsMatchingLastWord(args, "~");
+            return getTabCompletionCoordinateXZ(args, args.length, pos);
 
-        return null;
+        return Collections.emptyList();
     }
 }

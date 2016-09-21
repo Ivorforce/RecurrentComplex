@@ -49,8 +49,7 @@ public class CommandSelectMove extends CommandSelectModify
             throw ServerTranslations.wrongUsageException("commands.selectMove.usage");
         }
 
-        int rotations = args.length >= 4 ? parseInt(args[3]) : 0;
-        boolean mirrorX = args.length >= 5 && parseBoolean(args[4]);
+        AxisAlignedTransform2D transform = RCCommands.tryParseTransform(args, 3);
 
         BlockArea area = new BlockArea(point1, point2);
 
@@ -62,8 +61,6 @@ public class CommandSelectMove extends CommandSelectModify
         GenericStructureInfo structureInfo = GenericStructureInfo.createDefaultStructure();
         structureInfo.worldDataCompound = worldDataCompound;
 
-        AxisAlignedTransform2D transform = AxisAlignedTransform2D.from(rotations, mirrorX);
-
         OperationRegistry.queueOperation(new OperationMoveStructure(structureInfo, transform, coord, true, area), player);
     }
 
@@ -72,11 +69,8 @@ public class CommandSelectMove extends CommandSelectModify
     {
         if (args.length <= 3)
             return getTabCompletionCoordinate(args, args.length - 1, pos);
-        else if (args.length == 4)
-            return getListOfStringsMatchingLastWord(args, "0", "1", "2", "3");
-        else if (args.length == 5)
-            return getListOfStringsMatchingLastWord(args, "true", "false");
-
+        else if (args.length == 4 || args.length == 5)
+            return RCCommands.completeTransform(args, args.length - 4);
 
         return super.getTabCompletionOptions(server, sender, args, pos);
     }

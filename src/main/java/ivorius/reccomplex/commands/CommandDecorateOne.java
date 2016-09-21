@@ -17,6 +17,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.WorldServer;
 
 import javax.annotation.Nullable;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -44,12 +45,7 @@ public class CommandDecorateOne extends CommandBase
     @Override
     public void execute(MinecraftServer server, ICommandSender commandSender, String[] args) throws CommandException
     {
-        BlockSurfacePos coord;
-
-        if (args.length >= 2)
-            coord = RCCommands.parseSurfaceBlockPos(commandSender, args, 0, false);
-        else
-            coord = BlockSurfacePos.from(commandSender.getPosition());
+        BlockSurfacePos coord = RCCommands.tryParseSurfaceBlockPos(commandSender, args, 0, false);
 
         WorldServer entityWorld = (WorldServer) commandSender.getEntityWorld();
         if (!WorldGenStructures.generateRandomStructureInChunk(entityWorld.rand, coord.chunkCoord(), entityWorld, entityWorld.getBiome(coord.blockPos(0))))
@@ -62,8 +58,8 @@ public class CommandDecorateOne extends CommandBase
     public List<String> getTabCompletionOptions(MinecraftServer server, ICommandSender sender, String[] args, @Nullable BlockPos pos)
     {
         if (args.length == 1 || args.length == 2)
-            return getListOfStringsMatchingLastWord(args, "~");
+            return getTabCompletionCoordinateXZ(args, args.length, pos);
 
-        return null;
+        return Collections.emptyList();
     }
 }

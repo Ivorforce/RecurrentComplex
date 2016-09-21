@@ -20,7 +20,6 @@ import ivorius.reccomplex.structures.generic.GenericStructureInfo;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.world.WorldServer;
-import net.minecraft.world.gen.structure.StructureBoundingBox;
 import net.minecraftforge.common.DimensionManager;
 
 import javax.annotation.Nonnull;
@@ -78,10 +77,7 @@ public class CommandGenerateStructure extends CommandBase
 
         BlockSurfacePos pos;
 
-        if (args.length > posIndex + 1)
-            pos = RCCommands.parseSurfaceBlockPos(posRef, args, posIndex, false);
-        else
-            pos = BlockSurfacePos.from(posRef.getPosition());
+        pos = RCCommands.tryParseSurfaceBlockPos(posRef, args, posIndex, false);
 
         StructureGenerationInfo generationInfo;
 
@@ -119,7 +115,7 @@ public class CommandGenerateStructure extends CommandBase
     public List<String> getTabCompletionOptions(MinecraftServer server, ICommandSender sender, String[] args, @Nullable BlockPos pos)
     {
         if (args.length == 2 || args.length == 3)
-            return getListOfStringsMatchingLastWord(args, "~");
+            return getTabCompletionCoordinateXZ(args, args.length - 1, pos);
 
         return tabCompletionOptions(args, 0, 3, 4);
     }

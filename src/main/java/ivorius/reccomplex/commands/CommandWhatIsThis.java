@@ -70,9 +70,7 @@ public class CommandWhatIsThis extends CommandBase
     public List<String> getTabCompletionOptions(MinecraftServer server, ICommandSender sender, String[] args, @Nullable BlockPos pos)
     {
         if (args.length == 1 || args.length == 2 || args.length == 3)
-        {
-            return getListOfStringsMatchingLastWord(args, "~");
-        }
+            return getTabCompletionCoordinate(args, args.length, pos);
 
         return null;
     }

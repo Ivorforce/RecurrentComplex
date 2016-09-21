@@ -521,7 +521,7 @@ reccomplex.placer=Placer
 reccomplex.placer.tooltip=Determines the height to<br>spawn at.
 
 reccomplex.placer.factor.priority=Priority
-reccomplex.placer.factor.priority.tooltip=Priority that this factor<br>will be considered to.
+reccomplex.placer.factor.priority.tooltip=Priority that this factor<br>will be considered at.<br>This value is fed into a pow scale:<br>weight ^ priority
 
 reccomplex.placer.factors.limit=Limit
 reccomplex.placer.factors.limit.tooltip=Limit placement to specific heights.<br>Casts rays that set the acceptance for the<br> terrain they pass by until they hit.

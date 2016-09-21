@@ -36,7 +36,7 @@ public class TableDataSourceNaturalGenerationInfo extends TableDataSourceSegment
 
         addManagedSection(0, new TableDataSourceGenerationInfo(generationInfo, navigator, delegate));
 
-        addManagedSection(2, TableCellMultiBuilder.create(navigator, delegate)
+        addManagedSection(3, TableCellMultiBuilder.create(navigator, delegate)
                 .addNavigation(() -> new TableDataSourcePlacer(generationInfo.placer, delegate, navigator))
                 .buildDataSource(IvTranslations.get("reccomplex.placer"), IvTranslations.getLines("reccomplex.placer.tooltip")));
 
@@ -102,7 +102,7 @@ public class TableDataSourceNaturalGenerationInfo extends TableDataSourceSegment
                 cell.addPropertyConsumer(val -> generationInfo.generationCategory = val);
                 return new TableElementCell(IvTranslations.get("reccomplex.generationInfo.natural.category"), cell);
             }
-            case 3:
+            case 2:
                 return RCGuiTables.defaultWeightElement(val -> generationInfo.setGenerationWeight(TableElements.toDouble(val)), generationInfo.getGenerationWeight());
         }
 

@@ -1,5 +1,6 @@
 {
   "defaultSpawnChance": 0.0666,
+  "structureMinCap": 5,
   "generationInfos": [],
   "selectableInGUI": true,
   "title": "Frequent",

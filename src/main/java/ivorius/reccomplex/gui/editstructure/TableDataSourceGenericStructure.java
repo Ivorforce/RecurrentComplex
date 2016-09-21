@@ -42,15 +42,15 @@ public class TableDataSourceGenericStructure extends TableDataSourceSegmented
                 .addNavigation(() -> new TableDataSourceMetadata(structureInfo.metadata)
                 ).buildDataSource(IvTranslations.get("reccomplex.structure.metadata"), IvTranslations.getLines("reccomplex.structure.metadata.tooltip")));
 
-        addManagedSection(4, TableDataSourceExpression.constructDefault(IvTranslations.get("reccomplex.structure.dependencies"), structureInfo.dependencies, null));
-
-        addManagedSection(5, TableCellMultiBuilder.create(navigator, delegate)
+        addManagedSection(4, TableCellMultiBuilder.create(navigator, delegate)
                 .addNavigation(() -> new TableDataSourceStructureGenerationInfoList(structureInfo.generationInfos, delegate, navigator)
                 ).buildDataSource(IvTranslations.get("reccomplex.structure.generation"), IvTranslations.getLines("reccomplex.structure.generation.tooltip")));
 
-        addManagedSection(6, TableCellMultiBuilder.create(navigator, delegate)
+        addManagedSection(5, TableCellMultiBuilder.create(navigator, delegate)
                 .addNavigation(() -> structureInfo.transformer.tableDataSource(navigator, delegate))
                 .buildDataSource(IvTranslations.get("reccomplex.structure.transformers"), IvTranslations.getLines("reccomplex.structure.transformers.tooltip")));
+
+        addManagedSection(6, TableDataSourceExpression.constructDefault(IvTranslations.get("reccomplex.structure.dependencies"), structureInfo.dependencies, null));
     }
 
     public GenericStructureInfo getStructureInfo()

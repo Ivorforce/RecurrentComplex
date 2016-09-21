@@ -1,0 +1,13 @@
+{
+  "data": [
+    {
+      "biomes": "$NETHER"
+    }
+  ],
+  "metadata": {
+    "title": "Nether",
+    "description": [
+      "Spawn in nether biomes."
+    ]
+  }
+}

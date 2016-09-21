@@ -1,0 +1,65 @@
+{
+  "data": {
+    "factors": [
+      {
+        "type": "limit",
+        "factor": {
+          "priority": 1.0,
+          "rays": [
+            {
+              "type": "dynpos",
+              "ray": {
+                "type": "bedrock"
+              }
+            },
+            {
+              "type": "move",
+              "ray": {
+                "distance": 125
+              }
+            },
+            {
+              "type": "dynmove",
+              "ray": {
+                "type": "structure_height",
+                "up": false
+              }
+            },
+            {
+              "type": "dynpos",
+              "ray": {
+                "type": "bedrock",
+                "weight": 1.0035378
+              }
+            }
+          ]
+        }
+      },
+      {
+        "type": "match",
+        "factor": {
+          "priority": 3.0693069,
+          "sourceExpression": "reccomplex:generic_solid \u0026 #0",
+          "destExpression": "netherrack",
+          "requiredConformity": 0.5
+        }
+      },
+      {
+        "type": "match",
+        "factor": {
+          "priority": 3.0693069,
+          "sourceExpression": "!(reccomplex:generic_solid | reccomplex:generic_space)",
+          "destExpression": "air",
+          "requiredConformity": 0.4059406
+        }
+      }
+    ]
+  },
+  "metadata": {
+    "title": "Nether Surface",
+    "description": [
+      "Any netherrack surface.",
+      "Note that this requires natural floor blocks."
+    ]
+  }
+}

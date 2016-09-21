@@ -84,7 +84,7 @@ public class TableDataSourceNaturalGenerationInfo extends TableDataSourceSegment
         switch (segment)
         {
             case 1:
-            case 3:
+            case 2:
                 return 1;
         }
 

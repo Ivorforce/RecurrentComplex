@@ -19,6 +19,7 @@ import org.apache.commons.io.FilenameUtils;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.Type;
 import java.nio.file.Files;
@@ -180,7 +181,10 @@ public abstract class PresetRegistry<T> implements FileTypeHandler
 
     public void save(String id, boolean activeFolder) throws IOException
     {
-        FileUtils.write(FileUtils.getFile(RCFileTypeRegistry.getDirectory(activeFolder), String.format("%s.%s", id, getFileSuffix())), write(id));
+        File file = FileUtils.getFile(RCFileTypeRegistry.getDirectory(activeFolder), String.format("%s.%s", id, getFileSuffix()));
+        if (file.exists())
+            file.delete();
+        FileUtils.write(file, write(id));
     }
 
     public static class Metadata

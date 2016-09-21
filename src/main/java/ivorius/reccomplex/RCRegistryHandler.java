@@ -34,10 +34,7 @@ import ivorius.reccomplex.structures.generic.placement.rays.RayAverageMatcher;
 import ivorius.reccomplex.structures.generic.placement.rays.RayDynamicPosition;
 import ivorius.reccomplex.structures.generic.placement.rays.RayMatcher;
 import ivorius.reccomplex.structures.generic.placement.rays.RayMove;
-import ivorius.reccomplex.structures.generic.presets.BiomeMatcherPresets;
-import ivorius.reccomplex.structures.generic.presets.DimensionMatcherPresets;
-import ivorius.reccomplex.structures.generic.presets.GenericPlacerPresets;
-import ivorius.reccomplex.structures.generic.presets.WeightedBlockStatePresets;
+import ivorius.reccomplex.structures.generic.presets.*;
 import ivorius.reccomplex.structures.generic.transformers.*;
 import ivorius.reccomplex.structures.schematics.OperationGenerateSchematic;
 import ivorius.reccomplex.utils.FMLUtils;
@@ -171,6 +168,7 @@ public class RCRegistryHandler
         DimensionMatcherPresets.instance().setDefault("overworld");
         BiomeMatcherPresets.instance().setDefault("overworld");
         WeightedBlockStatePresets.instance().setDefault("allWool");
+        TransfomerPresets.instance().setDefault("clear");
     }
 
     public static void register(Item item, String id)
@@ -239,6 +237,7 @@ public class RCRegistryHandler
         fileTypeRegistry.put(DimensionMatcherPresets.FILE_SUFFIX, DimensionMatcherPresets.instance());
         fileTypeRegistry.put(WeightedBlockStatePresets.FILE_SUFFIX, WeightedBlockStatePresets.instance());
         fileTypeRegistry.put(GenericPlacerPresets.FILE_SUFFIX, GenericPlacerPresets.instance());
+        fileTypeRegistry.put(TransfomerPresets.FILE_SUFFIX, TransfomerPresets.instance());
 
         WorldScriptRegistry.INSTANCE.register("multi", WorldScriptMulti.class);
         WorldScriptRegistry.INSTANCE.register("strucGen", WorldScriptStructureGenerator.class);

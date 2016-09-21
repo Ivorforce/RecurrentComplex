@@ -6,6 +6,7 @@
 package ivorius.reccomplex.structures.generic.transformers;
 
 import com.google.gson.*;
+import com.google.gson.reflect.TypeToken;
 import ivorius.ivtoolkit.tools.IvTranslations;
 import ivorius.ivtoolkit.tools.IvWorldData;
 import ivorius.ivtoolkit.tools.NBTTagLists;
@@ -14,12 +15,14 @@ import ivorius.reccomplex.gui.table.TableDataSource;
 import ivorius.reccomplex.gui.table.TableDelegate;
 import ivorius.reccomplex.gui.table.TableNavigator;
 import ivorius.reccomplex.json.JsonUtils;
-import ivorius.reccomplex.structures.Environment;
-import ivorius.reccomplex.structures.StructureLoadContext;
-import ivorius.reccomplex.structures.StructurePrepareContext;
-import ivorius.reccomplex.structures.StructureSpawnContext;
+import ivorius.reccomplex.structures.*;
+import ivorius.reccomplex.structures.generic.DimensionGenerationInfo;
+import ivorius.reccomplex.structures.generic.GenericStructureInfo;
 import ivorius.reccomplex.structures.generic.matchers.EnvironmentMatcher;
+import ivorius.reccomplex.structures.generic.presets.TransfomerPresets;
 import ivorius.reccomplex.utils.NBTStorable;
+import ivorius.reccomplex.utils.presets.PresettedObject;
+import ivorius.reccomplex.utils.presets.PresettedObjects;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTTagCompound;
@@ -39,8 +42,9 @@ import java.util.stream.Collectors;
  */
 public class TransformerMulti extends Transformer<TransformerMulti.InstanceData>
 {
-    private final List<Transformer> transformers = new ArrayList<>();
-    private final EnvironmentMatcher environmentMatcher;
+    public static Gson gson = createGson();
+
+    protected final PresettedObject<Data> data = new PresettedObject<>(TransfomerPresets.instance(), null);
 
     public TransformerMulti()
     {
@@ -49,30 +53,45 @@ public class TransformerMulti extends Transformer<TransformerMulti.InstanceData>
 
     public TransformerMulti(@Nullable String id, String expression)
     {
-        super(id != null ? id : randomID(TransformerMulti.class));
-        this.environmentMatcher = new EnvironmentMatcher(expression);
+        this(id, expression, Collections.emptyList());
     }
 
     public TransformerMulti(@Nullable String id, String expression, Collection<Transformer> transformers)
     {
-        this(id, expression);
-        this.transformers.addAll(transformers);
+        super(id != null ? id : randomID(TransformerMulti.class));
+
+        data.setContents(new Data());
+        data.getContents().environmentMatcher.setExpression(expression);
+        data.getContents().transformers.addAll(transformers);
+    }
+
+    private static Gson createGson()
+    {
+        GsonBuilder builder = new GsonBuilder();
+        builder.registerTypeAdapter(Data.class, new DataSerializer());
+        StructureRegistry.INSTANCE.getTransformerRegistry().constructGson(builder);
+        return builder.create();
     }
 
     public List<Transformer> getTransformers()
     {
-        return transformers;
+        return data.getContents().transformers;
     }
 
     public EnvironmentMatcher getEnvironmentMatcher()
     {
-        return environmentMatcher;
+        return data.getContents().environmentMatcher;
+    }
+
+    public PresettedObject<Data> getData()
+    {
+        return data;
     }
 
     @Override
     public String getDisplayString()
     {
-        int amount = transformers.size();
+        int amount = getTransformers().size();
         return amount == 0 ? IvTranslations.get("reccomplex.transformer.multi.none")
                 : IvTranslations.format("reccomplex.transformer.multi.multiple", amount);
     }
@@ -87,8 +106,8 @@ public class TransformerMulti extends Transformer<TransformerMulti.InstanceData>
     public InstanceData prepareInstanceData(StructurePrepareContext context, IvWorldData worldData)
     {
         InstanceData instanceData = new InstanceData();
-        transformers.forEach(t -> instanceData.pairedTransformers.add(Pair.of(t, t.prepareInstanceData(context, worldData))));
-        instanceData.deactivated = !environmentMatcher.test(context.environment);
+        getTransformers().forEach(t -> instanceData.pairedTransformers.add(Pair.of(t, t.prepareInstanceData(context, worldData))));
+        instanceData.deactivated = !getEnvironmentMatcher().test(context.environment);
         return instanceData;
     }
 
@@ -102,7 +121,7 @@ public class TransformerMulti extends Transformer<TransformerMulti.InstanceData>
     public InstanceData loadInstanceData(StructureLoadContext context, NBTBase nbt)
     {
         InstanceData instanceData = new InstanceData();
-        instanceData.readFromNBT(context, nbt, transformers);
+        instanceData.readFromNBT(context, nbt, getTransformers());
         return instanceData;
     }
 
@@ -165,18 +184,58 @@ public class TransformerMulti extends Transformer<TransformerMulti.InstanceData>
         }
     }
 
+    public static class Data
+    {
+        public final List<Transformer> transformers = new ArrayList<>();
+        public final EnvironmentMatcher environmentMatcher = new EnvironmentMatcher("");
+    }
+
+    public static class DataSerializer implements JsonDeserializer<Data>, JsonSerializer<Data>
+    {
+        @Override
+        public Data deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException
+        {
+            JsonObject jsonObject = JsonUtils.asJsonObject(json, "transformerMultiData");
+
+            Data data = new Data();
+
+            data.environmentMatcher.setExpression(JsonUtils.getString(jsonObject, "environmentMatcher", ""));
+            Transformer[] transformers = gson.fromJson(jsonObject.get("transformers"), Transformer[].class);
+            if (transformers != null)
+                Collections.addAll(data.transformers, transformers);
+
+            return data;
+        }
+
+        @Override
+        public JsonElement serialize(Data src, Type typeOfSrc, JsonSerializationContext context)
+        {
+            JsonObject jsonObject = new JsonObject();
+
+            jsonObject.addProperty("environmentMatcher", src.environmentMatcher.getExpression());
+            jsonObject.add("transformers", gson.toJsonTree(src.transformers));
+
+            return jsonObject;
+        }
+    }
+
     public static class Serializer implements JsonDeserializer<TransformerMulti>, JsonSerializer<TransformerMulti>
     {
         @Override
         public TransformerMulti deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException
         {
-            JsonObject jsonObject = JsonUtils.asJsonObject(json, "transformerNatural");
+            JsonObject jsonObject = JsonUtils.asJsonObject(json, "transformerMulti");
 
-            String id = JsonUtils.getString(jsonObject, "id", null);
-            String expression = JsonUtils.getString(jsonObject, "environmentMatcher", "");
-            TransformerMulti transformer = new TransformerMulti(id, expression);
+            TransformerMulti transformer = new TransformerMulti();
 
-            Collections.addAll(transformer.transformers, context.<Transformer[]>deserialize(jsonObject.get("transformers"), Transformer[].class));
+            transformer.setID(JsonUtils.getString(jsonObject, "id", null));
+            if (!PresettedObjects.read(jsonObject, gson, transformer.data, "dataPreset", "data", Data.class)
+                    && jsonObject.has("environmentMatcher") && jsonObject.has("transformers"))
+            {
+                // Legacy
+                transformer.getData().setContents(gson.fromJson(jsonObject, Data.class));
+            }
+
             return transformer;
         }
 
@@ -186,9 +245,7 @@ public class TransformerMulti extends Transformer<TransformerMulti.InstanceData>
             JsonObject jsonObject = new JsonObject();
 
             jsonObject.addProperty("id", src.id());
-            jsonObject.addProperty("environmentMatcher", src.environmentMatcher.getExpression());
-
-            jsonObject.add("transformers", context.serialize(src.transformers));
+            PresettedObjects.write(jsonObject, gson, src.data, "dataPreset", "data");
 
             return jsonObject;
         }

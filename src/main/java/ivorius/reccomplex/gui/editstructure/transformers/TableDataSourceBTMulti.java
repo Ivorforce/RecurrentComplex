@@ -8,6 +8,7 @@ package ivorius.reccomplex.gui.editstructure.transformers;
 import ivorius.ivtoolkit.tools.IvTranslations;
 import ivorius.reccomplex.gui.TableDataSourceExpression;
 import ivorius.reccomplex.gui.editstructure.TableDataSourceTransformerList;
+import ivorius.reccomplex.gui.editstructure.preset.TableDataSourcePresettedObject;
 import ivorius.reccomplex.gui.table.TableDataSourceSegmented;
 import ivorius.reccomplex.gui.table.TableDelegate;
 import ivorius.reccomplex.gui.table.TableNavigator;
@@ -30,8 +31,26 @@ public class TableDataSourceBTMulti extends TableDataSourceSegmented
         this.delegate = delegate;
 
         addManagedSection(0, new TableDataSourceTransformer(transformer, delegate, navigator));
-        addManagedSection(1, TableDataSourceExpression.constructDefault(IvTranslations.get("reccomplex.transformer.multi.condition"), transformer.getEnvironmentMatcher(), null));
-        addManagedSection(2, new TableDataSourceTransformerList(transformer.getTransformers(), delegate, navigator));
+
+        addPresetSections(transformer, navigator, delegate);
+
+        addManagedSection(3, new TableDataSourcePresettedObject<>(transformer.getData(), delegate, navigator)
+                .withApplyPresetAction(() -> addPresetSections(transformer, navigator, delegate)));
+    }
+
+    public void addPresetSections(final TransformerMulti transformer, final TableNavigator navigator, final TableDelegate delegate)
+    {
+        addManagedSection(1, TableDataSourceExpression.constructDefault(IvTranslations.get("reccomplex.transformer.multi.condition"), transformer.getEnvironmentMatcher(), null)
+                .enabled(() -> transformer.getData().isCustom()));
+
+        addManagedSection(2, new TableDataSourceTransformerList(transformer.getTransformers(), delegate, navigator)
+        {
+            @Override
+            public boolean canEditList()
+            {
+                return transformer.getData().isCustom();
+            }
+        });
     }
 
     public TransformerMulti getTransformer()

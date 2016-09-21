@@ -1,0 +1,83 @@
+{
+  "data": {
+    "environmentMatcher": "",
+    "transformers": [
+      {
+        "type": "replace",
+        "transformer": {
+          "id": "replace_32c0355b",
+          "sourceExpression": "reccomplex:generic_solid \u0026 metadata\u003d1",
+          "destination": [
+            {
+              "block": "minecraft:air",
+              "metadata": 0,
+              "tileEntityInfo": ""
+            }
+          ]
+        }
+      },
+      {
+        "type": "multi",
+        "transformer": {
+          "id": "multi_8e6cad41",
+          "data": {
+            "environmentMatcher": "!gen.type\u003dsapling",
+            "transformers": [
+              {
+                "type": "naturalAir",
+                "transformer": {
+                  "id": "naturalAir_62f77b91",
+                  "sourceExpression": "reccomplex:generic_space \u0026 metadata\u003d1",
+                  "naturalExpansionDistance": 4.0,
+                  "naturalExpansionRandomization": 10.0
+                }
+              },
+              {
+                "type": "natural",
+                "transformer": {
+                  "id": "natural_eed52750",
+                  "sourceExpression": "reccomplex:generic_solid \u0026 metadata\u003d0",
+                  "naturalExpansionDistance": 4.0,
+                  "naturalExpansionRandomization": 6.0
+                }
+              }
+            ]
+          }
+        }
+      },
+      {
+        "type": "multi",
+        "transformer": {
+          "id": "multi_cd3733ca",
+          "data": {
+            "environmentMatcher": "gen.type\u003dsapling",
+            "transformers": [
+              {
+                "type": "ensureBlocks",
+                "transformer": {
+                  "id": "ensureBlocks_6b500399",
+                  "sourceExpression": "!(id\u003dreccomplex:generic_space | id\u003dreccomplex:generic_solid)",
+                  "destExpression": "is.air | is.leaves | replaceable"
+                }
+              }
+            ]
+          }
+        }
+      },
+      {
+        "type": "negativeSpace",
+        "transformer": {
+          "id": "negativeSpace_69ff30bc",
+          "sourceExpression": "id\u003dreccomplex:generic_space | id\u003dreccomplex:generic_solid",
+          "destExpression": ""
+        }
+      }
+    ]
+  },
+  "metadata": {
+    "title": "Structure",
+    "description": [
+      "The default set of transformers"
+    ]
+  }
+}

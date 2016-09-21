@@ -50,7 +50,7 @@ public class GenericPlacer implements Placer
     @Nonnull
     public static GenericPlacer surfacePlacer()
     {
-        return GenericPlacerPresets.instance().preset("surface");
+        return GenericPlacerPresets.instance().preset("surface").get();
 //        return new GenericPlacer(Arrays.asList(
 //                // Keep above caves
 //                new FactorLimit(1, Arrays.asList(
@@ -67,7 +67,7 @@ public class GenericPlacer implements Placer
     @Nonnull
     public static GenericPlacer underwaterPlacer()
     {
-        return GenericPlacerPresets.instance().preset("underwater");
+        return GenericPlacerPresets.instance().preset("underwater").get();
 //        return new GenericPlacer(Arrays.asList(
 //                // Keep above caves
 //                new FactorLimit(1, Arrays.asList(

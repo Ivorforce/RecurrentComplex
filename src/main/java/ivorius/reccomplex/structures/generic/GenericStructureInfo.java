@@ -71,24 +71,10 @@ public class GenericStructureInfo implements StructureInfo<GenericStructureInfo.
         genericStructureInfo.rotatable = true;
         genericStructureInfo.mirrorable = true;
 
-        Collections.addAll(genericStructureInfo.transformer.getTransformers(), createDefaultTransformers());
+        genericStructureInfo.transformer.getData().setPreset("structure");
         genericStructureInfo.generationInfos.add(new NaturalGenerationInfo());
 
         return genericStructureInfo;
-    }
-
-    @Nonnull
-    public static Transformer[] createDefaultTransformers()
-    {
-        return new Transformer[]{new TransformerReplace(null, BlockMatcher.of(RecurrentComplex.specialRegistry, RCBlocks.genericSolid, 1)).replaceWith(new WeightedBlockState(null, Blocks.AIR.getDefaultState(), "")),
-                new TransformerMulti(null, "!gen.type=sapling", Arrays.asList(
-                        new TransformerNaturalAir(null, BlockMatcher.of(RecurrentComplex.specialRegistry, RCBlocks.genericSpace, 1), TransformerNaturalAir.DEFAULT_NATURAL_EXPANSION_DISTANCE, TransformerNaturalAir.DEFAULT_NATURAL_EXPANSION_RANDOMIZATION),
-                        new TransformerNatural(null, BlockMatcher.of(RecurrentComplex.specialRegistry, RCBlocks.genericSolid, 0), TransformerNatural.DEFAULT_NATURAL_EXPANSION_DISTANCE, TransformerNatural.DEFAULT_NATURAL_EXPANSION_RANDOMIZATION)
-                )),
-                new TransformerMulti(null, "gen.type=sapling", Collections.singleton(
-                        new TransformerEnsureBlocks(null, "!(id=reccomplex:generic_space | id=reccomplex:generic_solid)", "is.air | is.leaves | replaceable")
-                )),
-                new TransformerNegativeSpace(null, "id=reccomplex:generic_space | id=reccomplex:generic_solid", "")};
     }
 
     @Nonnull

@@ -16,6 +16,7 @@ import javax.annotation.Nullable;
 import java.text.ParseException;
 import java.util.List;
 import java.util.Optional;
+import java.util.function.BooleanSupplier;
 import java.util.regex.Pattern;
 
 /**
@@ -30,7 +31,10 @@ public class TableDataSourceExpression<T, U, E extends FunctionExpressionCache<T
     public U u;
 
     protected TableCellTitle parsed;
-    private TableCellString expressionCell;
+    protected TableCellString expressionCell;
+
+    @Nullable
+    protected BooleanSupplier enabledSupplier;
 
     public TableDataSourceExpression(String title, List<String> tooltip, E e, U u)
     {
@@ -83,6 +87,12 @@ public class TableDataSourceExpression<T, U, E extends FunctionExpressionCache<T
         }
     }
 
+    public TableDataSourceExpression<T, U, E> enabled(BooleanSupplier enabledSupplier)
+    {
+        this.enabledSupplier = enabledSupplier;
+        return this;
+    }
+
     @Override
     public int numberOfElements()
     {
@@ -95,6 +105,7 @@ public class TableDataSourceExpression<T, U, E extends FunctionExpressionCache<T
         if (index == 0)
         {
             expressionCell = new TableCellString("expression", e.getExpression());
+            expressionCell.setEnabled(canEdit());
             expressionCell.setShowsValidityState(true);
             expressionCell.setValidityState(getValidityState(e, u));
             expressionCell.addPropertyConsumer(val -> {
@@ -142,5 +153,10 @@ public class TableDataSourceExpression<T, U, E extends FunctionExpressionCache<T
         if (expressionCell != null && expressionCell.getTextField() != null)
             offset = expressionCell.getTextField().getCursorPosition();
         return offset;
+    }
+
+    public boolean canEdit()
+    {
+        return enabledSupplier == null || enabledSupplier.getAsBoolean();
     }
 }

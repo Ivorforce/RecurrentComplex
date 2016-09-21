@@ -14,6 +14,7 @@ import ivorius.reccomplex.utils.PresetRegistry;
 import ivorius.reccomplex.utils.presets.PresettedObject;
 
 import java.io.IOException;
+import java.util.Collections;
 import java.util.stream.Collectors;
 
 /**
@@ -47,8 +48,10 @@ public class TableDataSourceSavePreset<T> extends TableDataSourceSegmented
                 cell.setValidityState(currentIDState());
                 if (object.getPresetRegistry().has(s))
                 {
-                    title = object.getPresetRegistry().title(s).get();
-                    description = object.getPresetRegistry().description(s).get().stream().reduce((s1, s2) -> s1 + "<br>" + s2).orElse("");
+                    title = object.getPresetRegistry().title(s).orElse("");
+                    description = object.getPresetRegistry().description(s)
+                            .flatMap(d -> d.stream().reduce((s1, s2) -> s1 + "<br>" + s2))
+                            .orElse("");
                     TableElements.reloadExcept(delegate, "id");
                 }
             });

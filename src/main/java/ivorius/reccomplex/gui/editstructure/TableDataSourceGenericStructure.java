@@ -5,19 +5,15 @@
 
 package ivorius.reccomplex.gui.editstructure;
 
-import ivorius.reccomplex.gui.TableElementSaveDirectory;
 import ivorius.ivtoolkit.tools.IvTranslations;
 import ivorius.reccomplex.gui.GuiValidityStateIndicator;
 import ivorius.reccomplex.gui.TableDataSourceExpression;
+import ivorius.reccomplex.gui.TableElementSaveDirectory;
 import ivorius.reccomplex.gui.table.*;
 import ivorius.reccomplex.structures.StructureInfos;
 import ivorius.reccomplex.structures.StructureRegistry;
 import ivorius.reccomplex.structures.generic.GenericStructureInfo;
-import ivorius.reccomplex.structures.generic.transformers.TransformerMulti;
 import ivorius.reccomplex.utils.SaveDirectoryData;
-
-import java.util.Arrays;
-import java.util.Set;
 
 /**
  * Created by lukas on 05.06.14.
@@ -53,9 +49,7 @@ public class TableDataSourceGenericStructure extends TableDataSourceSegmented
                 ).buildDataSource(IvTranslations.get("reccomplex.structure.generation"), IvTranslations.getLines("reccomplex.structure.generation.tooltip")));
 
         addManagedSection(6, TableCellMultiBuilder.create(navigator, delegate)
-                .addNavigation(() -> structureInfo.transformer.tableDataSource(navigator, delegate)
-                )
-                .addAction(() -> IvTranslations.get("reccomplex.gui.reset"), null, () -> structureInfo.transformer = new TransformerMulti(null, "", Arrays.asList(GenericStructureInfo.createDefaultTransformers())))
+                .addNavigation(() -> structureInfo.transformer.tableDataSource(navigator, delegate))
                 .buildDataSource(IvTranslations.get("reccomplex.structure.transformers"), IvTranslations.getLines("reccomplex.structure.transformers.tooltip")));
     }
 
@@ -138,7 +132,8 @@ public class TableDataSourceGenericStructure extends TableDataSourceSegmented
                 if (index == 0)
                 {
                     TableCellString cell = new TableCellString(null, structureKey);
-                    cell.addPropertyConsumer(cell1 -> {
+                    cell.addPropertyConsumer(cell1 ->
+                    {
                         structureKey = cell.getPropertyValue();
                         cell.setValidityState(currentNameState());
                         TableElements.reloadExcept(tableDelegate, "structureID");

@@ -28,7 +28,9 @@ public class TableCellString extends TableCellPropertyDefault<String>
     protected int maxStringLength = 300;
 
     @Nullable
-    private Runnable changeListener;
+    protected Runnable changeListener;
+
+    protected boolean enabled = true;
 
     public TableCellString(String id, String value)
     {
@@ -70,6 +72,18 @@ public class TableCellString extends TableCellPropertyDefault<String>
         return stateIndicator;
     }
 
+    public boolean isEnabled()
+    {
+        return enabled;
+    }
+
+    public void setEnabled(boolean enabled)
+    {
+        this.enabled = enabled;
+        if (textField != null)
+            textField.setEnabled(enabled);
+    }
+
     @Override
     public void initGui(GuiTable screen)
     {
@@ -83,6 +97,7 @@ public class TableCellString extends TableCellPropertyDefault<String>
 
         textField.setText(getPropertyValue());
         textField.setVisible(!isHidden());
+        textField.setEnabled(enabled);
 
         if (showsValidityState)
         {

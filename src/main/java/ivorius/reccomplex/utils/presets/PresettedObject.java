@@ -62,7 +62,8 @@ public class PresettedObject<T>
     public boolean setPreset(@Nullable String preset)
     {
         this.preset = preset;
-        return tryLoadFromPreset();
+        t = null;
+        return presetRegistry.has(preset);
     }
 
     public void setToCustom()
@@ -94,16 +95,6 @@ public class PresettedObject<T>
 
     protected boolean tryLoadFromPreset()
     {
-        if (this.preset != null)
-        {
-            T preset = presetRegistry.preset(this.preset);
-            if (preset != null)
-            {
-                t = preset;
-                return true;
-            }
-        }
-
-        return false;
+        return this.preset != null && (t = presetRegistry.preset(this.preset).orElse(null)) != null;
     }
 }

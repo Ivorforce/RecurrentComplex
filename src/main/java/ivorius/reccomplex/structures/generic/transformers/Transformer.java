@@ -24,7 +24,7 @@ import java.util.Random;
 public abstract class Transformer<S extends NBTStorable>
 {
     @Nonnull
-    private String id;
+    protected String id;
 
     public Transformer(@Nonnull String id)
     {

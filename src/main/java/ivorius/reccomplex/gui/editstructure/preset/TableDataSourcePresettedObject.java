@@ -7,13 +7,10 @@ package ivorius.reccomplex.gui.editstructure.preset;
 
 import ivorius.ivtoolkit.tools.IvTranslations;
 import ivorius.reccomplex.gui.table.*;
+import ivorius.reccomplex.utils.PresetRegistry;
 import ivorius.reccomplex.utils.presets.PresettedObject;
 
 import javax.annotation.Nonnull;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.stream.Collectors;
 
 /**
  * Created by lukas on 19.09.16.
@@ -22,7 +19,8 @@ public class TableDataSourcePresettedObject<T> extends TableDataSourceSegmented
 {
     public TableDelegate delegate;
     public TableNavigator navigator;
-    PresettedObject<T> object;
+    public PresettedObject<T> object;
+    public Runnable applyPresetAction;
 
     public TableDataSourcePresettedObject(PresettedObject<T> object, TableDelegate delegate, TableNavigator navigator)
     {
@@ -57,12 +55,17 @@ public class TableDataSourcePresettedObject<T> extends TableDataSourceSegmented
     }
 
     @Nonnull
-    public static <T> TableElement getSetElement(PresettedObject<T> object, TableDelegate delegate, TableCellButton[] actions)
+    public static <T> TableElement getSetElement(PresettedObject<T> object, TableDelegate delegate, TableCellButton[] actions, Runnable applyPresetAction)
     {
+        if (actions.length == 0)
+            return new TableElementCell(new TableCellButton(null, null, IvTranslations.get("reccomplex.presets"), false));
+
         TableCellPresetAction cell = new TableCellPresetAction("preset", IvTranslations.get("reccomplex.gui.apply"), actions);
         cell.addAction((actionID) ->
         {
             object.setPreset(actionID);
+            if (applyPresetAction != null)
+                applyPresetAction.run();
             delegate.reloadData();
         });
         return new TableElementCell(IvTranslations.get("reccomplex.presets"), cell);
@@ -71,15 +74,18 @@ public class TableDataSourcePresettedObject<T> extends TableDataSourceSegmented
     @Nonnull
     public static <T> TableCellButton[] getPresetActions(PresettedObject<T> object)
     {
-        Collection<String> allTypes = object.getPresetRegistry().allIDs();
-        List<TableCellButton> actions = new ArrayList<>(allTypes.size());
-
+        PresetRegistry<T> registry = object.getPresetRegistry();
         //noinspection OptionalGetWithoutIsPresent
-        actions.addAll(allTypes.stream().map(type -> new TableCellButton(type, type,
-                object.getPresetRegistry().title(type).get(),
-                object.getPresetRegistry().description(type).get()
-        )).collect(Collectors.toList()));
-        return actions.toArray(new TableCellButton[actions.size()]);
+        return registry.allIDs().stream().map(type -> new TableCellButton(type, type,
+                registry.title(type).orElse(type),
+                registry.description(type).orElse(null)
+        )).toArray(TableCellButton[]::new);
+    }
+
+    public TableDataSourcePresettedObject<T> withApplyPresetAction(Runnable applyPresetAction)
+    {
+        this.applyPresetAction = applyPresetAction;
+        return this;
     }
 
     @Override
@@ -100,7 +106,7 @@ public class TableDataSourcePresettedObject<T> extends TableDataSourceSegmented
         if (segment == 0)
         {
             if (index == 0)
-                return getSetElement(object, delegate, getPresetActions());
+                return getSetElement(object, delegate, getPresetActions(), applyPresetAction);
             else if (index == 1)
                 return getCustomizeElement(object, delegate, navigator);
         }

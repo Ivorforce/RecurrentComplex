@@ -20,7 +20,7 @@ public class RCGuiTables
 {
     public static TableElement defaultWeightElement(Consumer<Float> consumer, Float value, String title, @Nullable List<String> tooltip)
     {
-        TableCellFloatNullable cell = new TableCellFloatNullable("value", value, 1.0f, 0, 1000, "D", "C");
+        TableCellFloatNullable cell = new TableCellFloatNullable("value", value, 1.0f, 0, 1000, IvTranslations.get("reccomplex.gui.random.weight.default.short"), IvTranslations.get("reccomplex.gui.random.weight.custom.short"));
         cell.setScale(Scales.pow(5));
         cell.addPropertyConsumer(consumer);
         return new TableElementCell(title, cell).withTitleTooltip(tooltip);

@@ -452,7 +452,9 @@ reccomplex.gui.true=True
 reccomplex.gui.false=False
 
 reccomplex.gui.random.weight=Weight
-reccomplex.gui.random.weight.tooltip=Weight of this element for random selection.<br>§achance = weight / sum_of_all_weights§r<br>In other words, twice the weight means<br>twice as likely.
+reccomplex.gui.random.weight.default.short=D
+reccomplex.gui.random.weight.custom.short=C
+reccomplex.gui.random.weight.tooltip=Weight of this element for random selection.<br>§achance = weight / sum_of_all_weights§r<br>In other words, twice the weight means<br>twice as likely.<br>Set to D for the default value.
 
 reccomplex.gui.block=Block
 reccomplex.gui.blocks=Blocks

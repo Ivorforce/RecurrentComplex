@@ -24,7 +24,8 @@ public class RCRecurrentComplexEventHandler
     @SubscribeEvent
     public void onRegistration(StructureRegistrationEvent.Pre event)
     {
-        if (event.domain.equals(RecurrentComplex.MOD_ID) && event.path.getParent().endsWith("nature") && !RCConfig.generateNature)
+        if (!RCConfig.generateNature && event.domain.equals(RecurrentComplex.MOD_ID) &&
+                (event.path.getParent().endsWith("nature") || event.path.getParent().getParent().endsWith("nature")))
             event.shouldGenerate = false;
     }
 }

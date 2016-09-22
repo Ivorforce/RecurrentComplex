@@ -139,7 +139,7 @@ public class GenericStructureInfo implements StructureInfo<GenericStructureInfo.
 
         for (int pass = 0; pass < 2; pass++)
         {
-            for (BlockPos sourceCoord : blockCollection.area())
+            for (BlockPos sourceCoord : RCBlockAreas.mutablePositions(blockCollection.area()))
             {
                 IBlockState state = PosTransformer.transformBlockState(blockCollection.getBlockState(sourceCoord), context.transform);
 

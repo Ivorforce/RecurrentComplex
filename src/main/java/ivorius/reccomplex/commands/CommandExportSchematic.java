@@ -6,6 +6,7 @@
 package ivorius.reccomplex.commands;
 
 import ivorius.ivtoolkit.blocks.BlockArea;
+import ivorius.reccomplex.utils.RCBlockAreas;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.math.BlockPos;
 import ivorius.ivtoolkit.tools.IvWorldData;
@@ -100,7 +101,7 @@ public class CommandExportSchematic extends CommandBase
     {
         SchematicFile schematicFile = new SchematicFile((short) worldData.blockCollection.width, (short) worldData.blockCollection.height, (short) worldData.blockCollection.length);
 
-        for (BlockPos coord : worldData.blockCollection.area())
+        for (BlockPos coord : RCBlockAreas.mutablePositions(worldData.blockCollection.area()))
         {
             int index = schematicFile.getBlockIndex(coord);
             schematicFile.blockStates[index] = worldData.blockCollection.getBlockState(coord);

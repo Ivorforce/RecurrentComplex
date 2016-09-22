@@ -26,6 +26,7 @@ import ivorius.reccomplex.structures.StructureLoadContext;
 import ivorius.reccomplex.structures.StructurePrepareContext;
 import ivorius.reccomplex.structures.StructureSpawnContext;
 import ivorius.reccomplex.utils.NBTStorable;
+import ivorius.reccomplex.utils.RCBlockAreas;
 import net.minecraft.block.BlockSandStone;
 import net.minecraft.block.BlockStoneBrick;
 import net.minecraft.block.BlockVine;
@@ -160,7 +161,7 @@ public class TransformerRuins extends Transformer<TransformerRuins.InstanceData>
             int[] areaSize = new int[]{blockCollection.width, blockCollection.height, blockCollection.length};
             if (blockErosion > 0.0f || vineGrowth > 0.0f)
             {
-                for (BlockPos sourceCoord : blockCollection.area())
+                for (BlockPos sourceCoord : RCBlockAreas.mutablePositions(blockCollection.area()))
                 {
                     BlockPos worldCoord = context.transform.apply(sourceCoord, areaSize).add(context.lowerCoord());
 

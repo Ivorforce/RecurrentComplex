@@ -23,6 +23,7 @@ import ivorius.reccomplex.structures.StructureSpawnContext;
 import ivorius.reccomplex.structures.generic.matchers.BlockMatcher;
 import ivorius.reccomplex.structures.generic.matchers.PositionedBlockMatcher;
 import ivorius.reccomplex.utils.NBTNone;
+import ivorius.reccomplex.utils.RCBlockAreas;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.nbt.NBTBase;
 import net.minecraft.util.math.BlockPos;
@@ -57,7 +58,7 @@ public class TransformerEnsureBlocks extends Transformer<NBTNone>
         int[] areaSize = new int[]{blockCollection.width, blockCollection.height, blockCollection.length};
         BlockPos lowerCoord = context.lowerCoord();
 
-        for (BlockPos sourceCoord : blockCollection.area())
+        for (BlockPos sourceCoord : RCBlockAreas.mutablePositions(blockCollection.area()))
         {
             BlockPos worldCoord = context.transform.apply(sourceCoord, areaSize).add(lowerCoord);
             IBlockState state = blockCollection.getBlockState(sourceCoord);

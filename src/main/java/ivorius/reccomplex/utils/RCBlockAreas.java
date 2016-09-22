@@ -11,6 +11,8 @@ import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
 
 import javax.annotation.Nonnull;
+import java.util.stream.Stream;
+import java.util.stream.StreamSupport;
 
 /**
  * Created by lukas on 16.09.16.
@@ -37,5 +39,25 @@ public class RCBlockAreas
             default:
                 throw new IllegalArgumentException();
         }
+    }
+
+    public static Iterable<BlockPos> positions(BlockArea area)
+    {
+        return BlockPos.getAllInBox(area.getPoint1(), area.getPoint2());
+    }
+
+    public static Iterable<BlockPos.MutableBlockPos> mutablePositions(BlockArea area)
+    {
+        return BlockPos.getAllInBoxMutable(area.getPoint1(), area.getPoint2());
+    }
+
+    public static Stream<BlockPos> streamPositions(BlockArea area)
+    {
+        return StreamSupport.stream(BlockPos.getAllInBox(area.getPoint1(), area.getPoint2()).spliterator(), false);
+    }
+
+    public static Stream<BlockPos.MutableBlockPos> streamMutablePositions(BlockArea area)
+    {
+        return StreamSupport.stream(BlockPos.getAllInBoxMutable(area.getPoint1(), area.getPoint2()).spliterator(), false);
     }
 }

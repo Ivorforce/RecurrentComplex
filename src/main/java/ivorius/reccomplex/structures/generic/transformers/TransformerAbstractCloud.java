@@ -17,6 +17,7 @@ import ivorius.reccomplex.structures.Environment;
 import ivorius.reccomplex.structures.StructurePrepareContext;
 import ivorius.reccomplex.structures.StructureSpawnContext;
 import ivorius.reccomplex.utils.NBTStorable;
+import ivorius.reccomplex.utils.RCBlockAreas;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTTagCompound;
@@ -83,12 +84,12 @@ public abstract class TransformerAbstractCloud<S extends TransformerAbstractClou
         for (int i = 0; i < values; i++)
             blurredValueField.addValue(1 + (random.nextFloat() - random.nextFloat()) * (float) naturalExpansionRandomization() / 100f, random);
 
-        worldData.blockCollection.area().stream().forEach(pos ->
+        RCBlockAreas.mutablePositions(worldData.blockCollection.area()).forEach(pos ->
         {
             IBlockState state = worldData.blockCollection.getBlockState(pos);
             BlockPos worldCoord = context.transform.apply(pos, strucSize).add(lowerCoord);
             if (matches(instanceData, state) && canPenetrate(environment, worldData, worldCoord, 1, transformer, transformerInstanceData))
-                cloud.put(pos, 1);
+                cloud.put(pos.toImmutable(), 1);
         });
 
         double naturalExpansionDistance = naturalExpansionDistance();

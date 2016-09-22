@@ -20,6 +20,7 @@ import ivorius.reccomplex.structures.generic.matchers.BlockMatcher;
 import ivorius.reccomplex.structures.generic.matchers.PositionedBlockMatcher;
 import ivorius.reccomplex.utils.IntegerRanges;
 import ivorius.reccomplex.utils.LineSelection;
+import ivorius.reccomplex.utils.RCBlockAreas;
 import ivorius.reccomplex.utils.RCStreams;
 import net.minecraft.util.math.BlockPos;
 import org.apache.commons.lang3.tuple.Pair;
@@ -88,7 +89,7 @@ public class FactorMatch extends GenericPlacer.Factor
 
         int[] size = context.boundingBoxSize();
         BlockPos lowerCoord = context.lowerCoord();
-        Set<BlockPos> sources = blockCollection.area().stream()
+        Set<BlockPos> sources = RCBlockAreas.streamMutablePositions(blockCollection.area())
                 .filter(p -> sourceMatcher.test(blockCollection.getBlockState(p)))
                 .map(p -> context.transform.apply(p, size).add(lowerCoord.getX(), 0, lowerCoord.getZ()))
                 .collect(Collectors.toSet());

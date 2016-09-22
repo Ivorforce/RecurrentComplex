@@ -72,7 +72,7 @@ public class StructureSpawnContext
     {
         if (includes(coord))
         {
-            environment.world.setBlockState(coord, state, flag);
+            environment.world.setBlockState(coord.toImmutable(), state, flag);
             return true;
         }
 

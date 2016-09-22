@@ -21,6 +21,7 @@ import ivorius.reccomplex.structures.StructureLoadContext;
 import ivorius.reccomplex.structures.StructurePrepareContext;
 import ivorius.reccomplex.structures.StructureSpawnContext;
 import ivorius.reccomplex.structures.generic.matchers.BlockMatcher;
+import ivorius.reccomplex.utils.RCBlockAreas;
 import ivorius.reccomplex.utils.RCBlockLogic;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.init.Blocks;
@@ -67,7 +68,7 @@ public class TransformerNaturalAir extends TransformerAbstractCloud<TransformerN
 
     protected static Stream<BlockPos> neighbors(BlockPos worldPos)
     {
-        return Arrays.stream(EnumFacing.values()).map(worldPos::offset);
+        return RCBlockAreas.streamPositions(new BlockArea(worldPos.add(-1, -1, -1), worldPos.add(1, 1, 1)));
     }
 
     @Override

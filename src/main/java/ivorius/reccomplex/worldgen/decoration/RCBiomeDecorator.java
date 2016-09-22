@@ -17,6 +17,7 @@ import ivorius.reccomplex.structures.StructureSpawnContext;
 import ivorius.reccomplex.structures.generic.gentypes.VanillaDecorationGenerationInfo;
 import ivorius.reccomplex.utils.BlockSurfacePos;
 import ivorius.reccomplex.worldgen.StructureGenerator;
+import net.minecraft.init.Biomes;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.WorldServer;
 import net.minecraft.world.biome.Biome;
@@ -69,6 +70,10 @@ public class RCBiomeDecorator
 
         if (totalWeight <= 0)
             return false;
+
+        if ((biomeIn == Biomes.ROOFED_FOREST || biomeIn == Biomes.MUTATED_ROOFED_FOREST)
+                && (type == DecorationType.TREE || type == DecorationType.BIG_SHROOM))
+            return false; // This is the roofed forest override, don't touch because the event impl is shit
 
         switch (type)
         {

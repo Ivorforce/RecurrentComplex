@@ -136,7 +136,7 @@ public class GenericPlacer implements Placer
                 default:
                     placer.setContents(new GenericPlacer(Collections.singletonList(new FactorLimit(1, Arrays.asList(
                             new RayDynamicPosition(null, RayDynamicPosition.Type.WORLD_HEIGHT),
-                            new RayAverageMatcher(null, false, "(blocks:movement & !is.foliage) | is.liquid"),
+                            new RayAverageMatcher(null, false, "(blocks:movement & !is:foliage) | is:liquid"),
                             new RayMove(null, minYShift),
                             new RayMove(1f, maxYShift - minYShift)
                     )))));
@@ -144,7 +144,7 @@ public class GenericPlacer implements Placer
                 case UNDERWATER:
                     placer.setContents(new GenericPlacer(Collections.singletonList(new FactorLimit(1, Arrays.asList(
                             new RayDynamicPosition(null, RayDynamicPosition.Type.WORLD_HEIGHT),
-                            new RayAverageMatcher(null, false, "blocks:movement & !is.foliage"),
+                            new RayAverageMatcher(null, false, "blocks:movement & !is:foliage"),
                             new RayMove(null, minYShift),
                             new RayMove(1f, maxYShift - minYShift)
                     )))));
@@ -152,7 +152,7 @@ public class GenericPlacer implements Placer
                 case LOWEST_EDGE:
                     placer.setContents(new GenericPlacer(Collections.singletonList(new FactorLimit(1, Arrays.asList(
                             new RayDynamicPosition(null, RayDynamicPosition.Type.WORLD_HEIGHT),
-                            new RayMatcher(null, false, .9f, "!(is.air | is.foliage | is.replaceable) & !is.liquid"),
+                            new RayMatcher(null, false, .9f, "!(is:air | is:foliage | is:replaceable) & !is:liquid"),
                             new RayMove(null, minYShift),
                             new RayMove(1f, maxYShift - minYShift)
                     )))));

@@ -65,7 +65,7 @@
                 "transformer": {
                   "id": "ensureBlocks_79cc2a92",
                   "sourceExpression": "!(reccomplex:generic_space | reccomplex:generic_solid)",
-                  "destExpression": "is.air | is.leaves | is.replaceable"
+                  "destExpression": "is:air | is:leaves | is:replaceable"
                 }
               }
             ]

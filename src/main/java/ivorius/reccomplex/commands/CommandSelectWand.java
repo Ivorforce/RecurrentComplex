@@ -54,7 +54,7 @@ public class CommandSelectWand extends CommandSelectModify
         {
             changed = false;
 
-            String exp = args.length > 0 ? buildString(args, 0) : "!is.air";
+            String exp = args.length > 0 ? buildString(args, 0) : "!is:air";
             PositionedBlockMatcher matcher = new PositionedBlockMatcher(RecurrentComplex.specialRegistry, exp);
 
             for (EnumFacing direction : EnumFacing.VALUES)

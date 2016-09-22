@@ -36,7 +36,7 @@ public class RayAverageMatcher extends FactorLimit.Ray
 
     public RayAverageMatcher()
     {
-        this(null, false, "blocks:movement & !is.foliage");
+        this(null, false, "blocks:movement & !is:foliage");
     }
 
     public RayAverageMatcher(Float weight, boolean up, String destExpression)

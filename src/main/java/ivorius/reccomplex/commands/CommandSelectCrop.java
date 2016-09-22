@@ -43,7 +43,7 @@ public class CommandSelectCrop extends CommandSelectModify
         World world = player.getEntityWorld();
         BlockArea area = new BlockArea(point1, point2);
 
-        String exp = args.length > 0 ? buildString(args, 0) : "is.air";
+        String exp = args.length > 0 ? buildString(args, 0) : "is:air";
         PositionedBlockMatcher matcher = new PositionedBlockMatcher(RecurrentComplex.specialRegistry, exp);
 
         for (EnumFacing direction : EnumFacing.VALUES)

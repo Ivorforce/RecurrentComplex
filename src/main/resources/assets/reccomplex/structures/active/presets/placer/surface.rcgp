@@ -17,7 +17,7 @@
               "type": "average",
               "ray": {
                 "up": false,
-                "destExpression": "(blocks:movement \u0026 !is.foliage) | is.liquid"
+                "destExpression": "(blocks:movement \u0026 !is:foliage) | is:liquid"
               }
             },
             {

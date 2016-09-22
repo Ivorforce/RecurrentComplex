@@ -43,7 +43,7 @@ public class TransformerEnsureBlocks extends Transformer<NBTNone>
 
     public TransformerEnsureBlocks()
     {
-        this(null, "!(id=reccomplex:generic_space | id=reccomplex:generic_solid)", "is.air | is.leaves | is.replaceable");
+        this(null, "!(id=reccomplex:generic_space | id=reccomplex:generic_solid)", "is:air | is:leaves | is:replaceable");
     }
 
     public TransformerEnsureBlocks(@Nullable String id, String sourceExpression, String destExpression)

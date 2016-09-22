@@ -18,7 +18,7 @@
               "ray": {
                 "up": false,
                 "requiredRatio": 0.1,
-                "destExpression": "!(is.air | is.foliage | is.replaceable) \u0026 !is.liquid"
+                "destExpression": "!(is:air | is:foliage | is:replaceable) \u0026 !is:liquid"
               }
             },
             {

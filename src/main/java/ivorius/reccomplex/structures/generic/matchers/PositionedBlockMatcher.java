@@ -28,7 +28,7 @@ import java.util.function.Predicate;
 public class PositionedBlockMatcher extends FunctionExpressionCache<Boolean, PositionedBlockMatcher.Argument, Object> implements Predicate<PositionedBlockMatcher.Argument>
 {
     public static final String BLOCK_PREFIX = "block.";
-    public static final String IS_PREFIX = "is.";
+    public static final String IS_PREFIX = "is:";
     public static final String SUSTAIN_PREFIX = "sustains.";
     public static final String BLOCKS_PREFIX = "blocks:";
 
@@ -41,7 +41,7 @@ public class PositionedBlockMatcher extends FunctionExpressionCache<Boolean, Pos
         this.registry = registry;
 
         addTypes(new BlockVariableType(BLOCK_PREFIX, "", registry), v -> v.alias("", ""));
-        addType(new IsVariableType(IS_PREFIX, ""));
+        addTypes(new IsVariableType(IS_PREFIX, ""));
         addType(new SustainVariableType(SUSTAIN_PREFIX, ""));
         addType(new BlocksVariableType(PositionedBlockMatcher.BLOCKS_PREFIX, ""));
 

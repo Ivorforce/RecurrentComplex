@@ -57,14 +57,14 @@
               "ray": {
                 "up": false,
                 "requiredRatio": 0.7029703,
-                "destExpression": "is.air"
+                "destExpression": "is:air"
               }
             },
             {
               "type": "average",
               "ray": {
                 "up": false,
-                "destExpression": "blocks:movement \u0026 !is.foliage"
+                "destExpression": "blocks:movement \u0026 !is:foliage"
               }
             },
             {

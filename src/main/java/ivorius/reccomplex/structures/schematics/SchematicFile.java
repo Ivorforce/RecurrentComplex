@@ -13,6 +13,8 @@ import ivorius.ivtoolkit.transform.Mover;
 import ivorius.ivtoolkit.transform.PosTransformer;
 import ivorius.reccomplex.utils.BlockStates;
 import ivorius.reccomplex.utils.RCAccessorEntity;
+import ivorius.reccomplex.utils.RCAxisAlignedTransform;
+import ivorius.reccomplex.utils.RCMutableBlockPos;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
@@ -145,19 +147,21 @@ public class SchematicFile
 
         int[] size = {width, height, length};
         BlockArea blockArea = BlockArea.areaFromSize(BlockPos.ORIGIN, size);
+
+        BlockPos.MutableBlockPos worldPos = new BlockPos.MutableBlockPos();
         for (int pass = 0; pass < 2; pass++)
         {
-            for (BlockPos srcCoord : blockArea)
+            for (BlockPos sourcePos : blockArea)
             {
-                int index = getBlockIndex(srcCoord);
+                int index = getBlockIndex(sourcePos);
                 IBlockState blockState = PosTransformer.transformBlockState(blockStates[index], transform);
 
                 if (blockState != null && getPass(blockState) == pass)
                 {
-                    BlockPos worldPos = transform.apply(srcCoord, size).add(pos);
+                    RCMutableBlockPos.add(RCAxisAlignedTransform.apply(sourcePos, worldPos, size, transform), pos);
                     world.setBlockState(worldPos, blockState, 3);
 
-                    TileEntity tileEntity = tileEntities.get(srcCoord);
+                    TileEntity tileEntity = tileEntities.get(sourcePos);
                     if (tileEntity != null)
                     {
                         world.setBlockState(worldPos, blockState, 3); // Second time to ensure state, see BlockFurnace

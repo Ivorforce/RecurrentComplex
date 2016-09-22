@@ -143,7 +143,7 @@ public class TransformerRuins extends Transformer<TransformerRuins.InstanceData>
 
                         for (int decayPos = 0; decayPos < removedBlocks && decayPos < decaySideLength; decayPos++)
                         {
-                            BlockPos sourceCoord = surfaceSourceCoord.add(decayDirection.getFrontOffsetX() * decayPos, decayDirection.getFrontOffsetY() * decayPos, decayDirection.getFrontOffsetZ() * decayPos);
+                            BlockPos sourceCoord = surfaceSourceCoord.offset(decayDirection, decayPos);
                             BlockPos worldCoord = context.transform.apply(sourceCoord, size).add(context.lowerCoord());
 
                             if (context.includes(worldCoord))

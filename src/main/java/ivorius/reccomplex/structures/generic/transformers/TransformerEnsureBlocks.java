@@ -23,7 +23,9 @@ import ivorius.reccomplex.structures.StructureSpawnContext;
 import ivorius.reccomplex.structures.generic.matchers.BlockMatcher;
 import ivorius.reccomplex.structures.generic.matchers.PositionedBlockMatcher;
 import ivorius.reccomplex.utils.NBTNone;
+import ivorius.reccomplex.utils.RCAxisAlignedTransform;
 import ivorius.reccomplex.utils.RCBlockAreas;
+import ivorius.reccomplex.utils.RCMutableBlockPos;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.nbt.NBTBase;
 import net.minecraft.util.math.BlockPos;
@@ -58,10 +60,11 @@ public class TransformerEnsureBlocks extends Transformer<NBTNone>
         int[] areaSize = new int[]{blockCollection.width, blockCollection.height, blockCollection.length};
         BlockPos lowerCoord = context.lowerCoord();
 
-        for (BlockPos sourceCoord : RCBlockAreas.mutablePositions(blockCollection.area()))
+        BlockPos.MutableBlockPos worldCoord = new BlockPos.MutableBlockPos();
+        for (BlockPos sourcePos : RCBlockAreas.mutablePositions(blockCollection.area()))
         {
-            BlockPos worldCoord = context.transform.apply(sourceCoord, areaSize).add(lowerCoord);
-            IBlockState state = blockCollection.getBlockState(sourceCoord);
+            RCMutableBlockPos.add(RCAxisAlignedTransform.apply(sourcePos, worldCoord, areaSize, context.transform), lowerCoord);
+            IBlockState state = blockCollection.getBlockState(sourcePos);
 
             if (sourceMatcher.test(state) && !(destMatcher.expressionIsEmpty() || destMatcher.test(PositionedBlockMatcher.Argument.at(context.environment.world, worldCoord))))
                 return false;

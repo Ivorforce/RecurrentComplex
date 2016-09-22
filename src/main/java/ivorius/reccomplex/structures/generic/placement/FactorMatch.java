@@ -18,10 +18,8 @@ import ivorius.reccomplex.json.JsonUtils;
 import ivorius.reccomplex.structures.generic.WorldCache;
 import ivorius.reccomplex.structures.generic.matchers.BlockMatcher;
 import ivorius.reccomplex.structures.generic.matchers.PositionedBlockMatcher;
-import ivorius.reccomplex.utils.IntegerRanges;
-import ivorius.reccomplex.utils.LineSelection;
-import ivorius.reccomplex.utils.RCBlockAreas;
-import ivorius.reccomplex.utils.RCStreams;
+import ivorius.reccomplex.utils.*;
+import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
 import org.apache.commons.lang3.tuple.Pair;
 
@@ -54,21 +52,21 @@ public class FactorMatch extends GenericPlacer.Factor
         this.requiredConformity = requiredConformity;
     }
 
-    protected float weight(WorldCache cache, Set<BlockPos> sources, int y, float needed)
+    protected float weight(WorldCache cache, Set<? extends BlockPos> sources, float needed)
     {
         int[] failChances = new int[]{(int) (sources.size() * (1f - needed))};
         int[] matched = new int[]{0};
 
-        RCStreams.visit(sources.stream(), pos ->
+        for (BlockPos pos : sources)
         {
-            if (destMatcher.test(PositionedBlockMatcher.Argument.at(cache, pos.up(y))))
-            {
+            if (destMatcher.test(PositionedBlockMatcher.Argument.at(cache, pos)))
                 matched[0]++;
-                return true;
-            }
             else
-                return --failChances[0] > 0; // Already lost
-        });
+            {
+                if (--failChances[0] > 0)
+                    break;  // Already lost
+            }
+        }
 
         return failChances[0] > 0 ? (float) matched[0] / sources.size() : 0;
     }
@@ -89,9 +87,9 @@ public class FactorMatch extends GenericPlacer.Factor
 
         int[] size = context.boundingBoxSize();
         BlockPos lowerCoord = context.lowerCoord();
-        Set<BlockPos> sources = RCBlockAreas.streamMutablePositions(blockCollection.area())
+        Set<BlockPos.MutableBlockPos> sources = RCBlockAreas.streamMutablePositions(blockCollection.area())
                 .filter(p -> sourceMatcher.test(blockCollection.getBlockState(p)))
-                .map(p -> context.transform.apply(p, size).add(lowerCoord.getX(), 0, lowerCoord.getZ()))
+                .map(p -> new BlockPos.MutableBlockPos(context.transform.apply(p, size).add(lowerCoord.getX(), 0, lowerCoord.getZ())))
                 .collect(Collectors.toSet());
 
         for (IntegerRange range : (Iterable<IntegerRange>) considerable.streamSections(null, true)::iterator)
@@ -102,7 +100,12 @@ public class FactorMatch extends GenericPlacer.Factor
 
             for (int y = lastY; y >= end; y--)
             {
-                float conformity = weight(cache, sources, y, requiredConformity);
+                int finalY = y;
+                sources.forEach(p -> p.move(EnumFacing.UP, finalY));
+
+                float conformity = weight(cache, sources, requiredConformity);
+
+                sources.forEach(p -> p.move(EnumFacing.DOWN, finalY));
 
                 if (curConformity == null)
                 {

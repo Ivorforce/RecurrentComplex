@@ -6,7 +6,9 @@
 package ivorius.reccomplex.structures.generic.transformers;
 
 import ivorius.reccomplex.structures.Environment;
+import ivorius.reccomplex.utils.RCAxisAlignedTransform;
 import ivorius.reccomplex.utils.RCBlockAreas;
+import ivorius.reccomplex.utils.RCMutableBlockPos;
 import net.minecraft.util.math.BlockPos;
 import ivorius.ivtoolkit.blocks.IvBlockCollection;
 import ivorius.ivtoolkit.tools.IvWorldData;
@@ -47,9 +49,10 @@ public abstract class TransformerSingleBlock<S extends NBTStorable> extends Tran
             int[] areaSize = new int[]{blockCollection.width, blockCollection.height, blockCollection.length};
             BlockPos lowerCoord = context.lowerCoord();
 
+            BlockPos.MutableBlockPos worldCoord = new BlockPos.MutableBlockPos();
             for (BlockPos sourceCoord : RCBlockAreas.mutablePositions(blockCollection.area()))
             {
-                BlockPos worldCoord = context.transform.apply(sourceCoord, areaSize).add(lowerCoord);
+                RCMutableBlockPos.add(RCAxisAlignedTransform.apply(sourceCoord, worldCoord, areaSize, context.transform), lowerCoord);
 
                 if (context.includes(worldCoord))
                 {

@@ -137,13 +137,14 @@ public class GenericStructureInfo implements StructureInfo<GenericStructureInfo.
         if (!context.generateAsSource)
             transformer.transform(instanceData.transformerData, Transformer.Phase.BEFORE, context, worldData, transformer, instanceData.transformerData);
 
+        BlockPos.MutableBlockPos worldPos = new BlockPos.MutableBlockPos();
         for (int pass = 0; pass < 2; pass++)
         {
             for (BlockPos sourceCoord : RCBlockAreas.mutablePositions(blockCollection.area()))
             {
                 IBlockState state = PosTransformer.transformBlockState(blockCollection.getBlockState(sourceCoord), context.transform);
+                worldPos = RCMutableBlockPos.add(RCAxisAlignedTransform.apply(sourceCoord, worldPos, areaSize, context.transform), origin);
 
-                BlockPos worldPos = context.transform.apply(sourceCoord, areaSize).add(origin);
                 if (context.includes(worldPos) && RecurrentComplex.specialRegistry.isSafe(state.getBlock())
                         && pass == getPass(state) && (context.generateAsSource || !transformer.skipGeneration(instanceData.transformerData, context.environment, worldPos, state)))
                 {

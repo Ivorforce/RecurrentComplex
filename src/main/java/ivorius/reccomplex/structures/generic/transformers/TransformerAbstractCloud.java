@@ -17,7 +17,9 @@ import ivorius.reccomplex.structures.Environment;
 import ivorius.reccomplex.structures.StructurePrepareContext;
 import ivorius.reccomplex.structures.StructureSpawnContext;
 import ivorius.reccomplex.utils.NBTStorable;
+import ivorius.reccomplex.utils.RCAxisAlignedTransform;
 import ivorius.reccomplex.utils.RCBlockAreas;
+import ivorius.reccomplex.utils.RCMutableBlockPos;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTTagCompound;
@@ -93,6 +95,8 @@ public abstract class TransformerAbstractCloud<S extends TransformerAbstractClou
         });
 
         double naturalExpansionDistance = naturalExpansionDistance();
+        BlockPos.MutableBlockPos sidePos = new BlockPos.MutableBlockPos();
+        BlockPos.MutableBlockPos sideWorldCoord = new BlockPos.MutableBlockPos();
         if (naturalExpansionDistance > 0.000001)
         {
             final double falloff = 1.0 / naturalExpansionDistance;
@@ -106,14 +110,17 @@ public abstract class TransformerAbstractCloud<S extends TransformerAbstractClou
                     double modifier = naturalExpansionDistance(side);
                     if (modifier > 0.000001)
                     {
-                        BlockPos sidePos = pos.offset(side);
-                        BlockPos sideWorldCoord = context.transform.apply(pos, strucSize).add(lowerCoord);
+                        RCMutableBlockPos.offset(pos, sidePos, side);
+                        RCMutableBlockPos.add(RCAxisAlignedTransform.apply(sidePos, sideWorldCoord, strucSize, context.transform), lowerCoord);
+
                         double sideDensity = density - (falloff * (1.0 / modifier) * blurredValueField.getValue(sidePos.getX(), sidePos.getY(), sidePos.getZ()));
 
                         if (sideDensity > 0 && cloud.get(sidePos) < sideDensity && canPenetrate(environment, worldData, sideWorldCoord, sideDensity, transformer, transformerInstanceData))
                         {
-                            cloud.put(sidePos, sideDensity);
-                            changed.add(sidePos);
+                            BlockPos immutableSidePos = sidePos.toImmutable();
+
+                            cloud.put(immutableSidePos, sideDensity);
+                            changed.add(immutableSidePos);
                         }
                     }
                 }
@@ -155,10 +162,11 @@ public abstract class TransformerAbstractCloud<S extends TransformerAbstractClou
             int[] areaSize = new int[]{blockCollection.width, blockCollection.height, blockCollection.length};
             BlockPos lowerCoord = context.lowerCoord();
 
-            instanceData.cloud.forEachEntry((pos, density) ->
+            BlockPos.MutableBlockPos worldCoord = new BlockPos.MutableBlockPos();
+            instanceData.cloud.forEachEntry((sourcePos, density) ->
             {
-                BlockPos worldCoord = context.transform.apply(pos, areaSize).add(lowerCoord);
-                transformBlock(instanceData, phase, context, pos, worldCoord, worldData.blockCollection.getBlockState(pos), density);
+                RCMutableBlockPos.add(RCAxisAlignedTransform.apply(sourcePos, worldCoord, areaSize, context.transform), lowerCoord);
+                transformBlock(instanceData, phase, context, sourcePos, worldCoord, worldData.blockCollection.getBlockState(sourcePos), density);
                 return true;
             });
         }

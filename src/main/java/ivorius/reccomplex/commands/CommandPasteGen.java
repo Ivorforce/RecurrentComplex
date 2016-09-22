@@ -57,7 +57,7 @@ public class CommandPasteGen extends CommandBase
 
         if (worldData != null)
         {
-            BlockPos coord = parseBlockPos(commandSender, args, 0, false);
+            BlockPos coord = RCCommands.tryParseBlockPos(commandSender, args, 0, false);
             AxisAlignedTransform2D transform = RCCommands.tryParseTransform(args, 3);
 
             GenericStructureInfo structureInfo = GenericStructureInfo.createDefaultStructure();

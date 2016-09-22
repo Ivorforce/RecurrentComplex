@@ -48,10 +48,7 @@ public class CommandWhatIsThis extends CommandBase
     {
         World world = commandSender.getEntityWorld();
 
-        BlockPos pos = commandSender.getPosition();
-
-        if (args.length >= 3)
-            pos = parseBlockPos(commandSender, args, 0, false);
+        BlockPos pos = RCCommands.tryParseBlockPos(commandSender, args, 0, false);
 
         Collection<StructureGenerationData.Entry> entries = StructureGenerationData.get(world).getEntriesAt(pos);
         if (entries.size() > 0)

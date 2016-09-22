@@ -75,7 +75,7 @@ public class CommandImportSchematic extends CommandBase
         if (schematicFile == null)
             throw ServerTranslations.commandException("commands.strucImportSchematic.missing", schematicName, SchematicLoader.getLookupFolderName());
 
-        BlockPos pos = args.length >= 4 ? parseBlockPos(commandSender, args, 1, false) : commandSender.getPosition();
+        BlockPos pos = RCCommands.tryParseBlockPos(commandSender, args, 1, false);
         AxisAlignedTransform2D transform = RCCommands.tryParseTransform(args, 4);
 
         OperationRegistry.queueOperation(new OperationGenerateSchematic(schematicFile, transform, pos), commandSender);

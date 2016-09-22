@@ -57,7 +57,7 @@ public class CommandPaste extends CommandBase
 
         if (worldData != null)
         {
-            BlockPos coord = parseBlockPos(commandSender, args, 0, false);
+            BlockPos coord = RCCommands.tryParseBlockPos(commandSender, args, 0, false);
 
             GenericStructureInfo structureInfo = GenericStructureInfo.createDefaultStructure();
             structureInfo.worldDataCompound = worldData;

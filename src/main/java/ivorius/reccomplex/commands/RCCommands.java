@@ -111,17 +111,19 @@ public class RCCommands
         return new BlockPos(CommandBase.parseDouble((double) blockpos.getX(), args[startIndex], -30000000, 30000000, centerBlock), CommandBase.parseDouble((double) blockpos.getY(), args[startIndex + 1], 0, 256, false), CommandBase.parseDouble((double) blockpos.getZ(), args[startIndex + 2], -30000000, 30000000, centerBlock));
     }
 
+    public static BlockPos tryParseBlockPos(ICommandSender sender, String[] args, int startIndex, boolean centerBlock) throws NumberInvalidException
+    {
+        return args.length >= startIndex + 3
+                ? CommandBase.parseBlockPos(sender, args, startIndex, centerBlock)
+                : sender.getPosition();
+    }
+
     @Nonnull
     public static BlockSurfacePos tryParseSurfaceBlockPos(ICommandSender sender, String[] args, int startIndex, boolean centerBlock) throws NumberInvalidException
     {
-        BlockSurfacePos pos;
-
-        if (args.length > startIndex + 1)
-            pos = parseSurfaceBlockPos(sender, args, startIndex, centerBlock);
-        else
-            pos = BlockSurfacePos.from(sender.getPosition());
-
-        return pos;
+        return args.length >= startIndex + 2
+                ? parseSurfaceBlockPos(sender, args, startIndex, centerBlock)
+                : BlockSurfacePos.from(sender.getPosition());
     }
 
     public static BlockSurfacePos parseSurfaceBlockPos(ICommandSender sender, String[] args, int startIndex, boolean centerBlock) throws NumberInvalidException

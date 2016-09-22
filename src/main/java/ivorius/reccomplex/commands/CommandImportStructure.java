@@ -63,7 +63,7 @@ public class CommandImportStructure extends CommandBase
             throw ServerTranslations.commandException("commands.strucImport.noStructure", structureID);
         }
 
-        BlockPos coord = parseBlockPos(commandSender, args, 1, false);
+        BlockPos coord = RCCommands.tryParseBlockPos(commandSender, args, 1, false);
 
         AxisAlignedTransform2D transform = RCCommands.tryParseTransform(args, 4);
 

@@ -358,6 +358,11 @@ reccomplex.transformer.ensureBlocks=Ensure Blocks
 reccomplex.transformer.ensureBlocks.tooltip=Cancels the generation if<br>any placed blocks don't have space.
 reccomplex.transformer.ensureBlocks.dest=Ensure
 
+reccomplex.transformer.propertyReplace=Replace Property
+reccomplex.transformer.propertyReplace.tooltip=Searches the block states for specific<br>properties and replaces them with<br>the given values.
+reccomplex.transformer.propertyReplace.id=Property ID
+reccomplex.transformer.propertyReplace.value=Property Value
+
 reccomplex.expression.biome=Biome Expression
 reccomplex.expression.biome.tooltip=This is a §obiome expression§r.<br>Visit the wiki for syntax information.
 reccomplex.expression.dimension=Dimension Expression

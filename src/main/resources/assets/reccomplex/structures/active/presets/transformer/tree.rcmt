@@ -79,6 +79,15 @@
           "sourceExpression": "id\u003dreccomplex:generic_space | id\u003dreccomplex:generic_solid",
           "destExpression": ""
         }
+      },
+      {
+        "type": "propertyReplace",
+        "transformer": {
+          "id": "propertyReplace_58f129a",
+          "sourceExpression": "",
+          "propertyName": "decayable",
+          "propertyValue": "true"
+        }
       }
     ]
   },

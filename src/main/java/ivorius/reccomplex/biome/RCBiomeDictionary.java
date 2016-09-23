@@ -14,20 +14,34 @@ import net.minecraftforge.common.BiomeDictionary;
 public class RCBiomeDictionary
 {
     private static BiomeDictionary.Type BIRCH_TREES;
+    private static BiomeDictionary.Type SUPER_BIRCH_TREES;
     private static BiomeDictionary.Type ROOFED_TREES;
+    private static BiomeDictionary.Type MEGA_TAIGA_TREES;
+    private static BiomeDictionary.Type MEGA_TAIGA_SPRUCE_TREES;
     private static BiomeDictionary.Type THEMED_TREES;
 
     public static void registerTypes()
     {
         BIRCH_TREES = BiomeDictionary.Type.getType("BIRCH_TREES");
+        SUPER_BIRCH_TREES = BiomeDictionary.Type.getType("SUPER_BIRCH_TREES");
         ROOFED_TREES = BiomeDictionary.Type.getType("ROOFED_TREES");
-        THEMED_TREES = BiomeDictionary.Type.getType("THEMED_TREES", BIRCH_TREES, ROOFED_TREES);
+        MEGA_TAIGA_TREES = BiomeDictionary.Type.getType("MEGA_TAIGA_TREES");
+        MEGA_TAIGA_SPRUCE_TREES = BiomeDictionary.Type.getType("MEGA_TAIGA_SPRUCE_TREES");
+        THEMED_TREES = BiomeDictionary.Type.getType("THEMED_TREES",
+                BIRCH_TREES, SUPER_BIRCH_TREES, ROOFED_TREES,
+                MEGA_TAIGA_TREES, MEGA_TAIGA_SPRUCE_TREES
+        );
 
         BiomeDictionary.registerBiomeType(Biomes.BIRCH_FOREST, BIRCH_TREES);
         BiomeDictionary.registerBiomeType(Biomes.BIRCH_FOREST_HILLS, BIRCH_TREES);
-        BiomeDictionary.registerBiomeType(Biomes.MUTATED_BIRCH_FOREST, BIRCH_TREES);
-        BiomeDictionary.registerBiomeType(Biomes.MUTATED_BIRCH_FOREST_HILLS, BIRCH_TREES);
+        BiomeDictionary.registerBiomeType(Biomes.MUTATED_BIRCH_FOREST, SUPER_BIRCH_TREES);
+        BiomeDictionary.registerBiomeType(Biomes.MUTATED_BIRCH_FOREST_HILLS, SUPER_BIRCH_TREES);
 
         BiomeDictionary.registerBiomeType(Biomes.ROOFED_FOREST, BIRCH_TREES);
+
+        BiomeDictionary.registerBiomeType(Biomes.REDWOOD_TAIGA, MEGA_TAIGA_TREES);
+        BiomeDictionary.registerBiomeType(Biomes.REDWOOD_TAIGA_HILLS, MEGA_TAIGA_TREES);
+        BiomeDictionary.registerBiomeType(Biomes.MUTATED_REDWOOD_TAIGA, MEGA_TAIGA_SPRUCE_TREES);
+        BiomeDictionary.registerBiomeType(Biomes.MUTATED_REDWOOD_TAIGA_HILLS, MEGA_TAIGA_SPRUCE_TREES);
     }
 }

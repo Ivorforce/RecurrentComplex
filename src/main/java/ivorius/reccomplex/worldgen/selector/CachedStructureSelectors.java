@@ -5,52 +5,42 @@
 
 package ivorius.reccomplex.worldgen.selector;
 
-import ivorius.reccomplex.structures.StructureInfo;
-import ivorius.reccomplex.structures.generic.gentypes.EnvironmentalSelection;
-import ivorius.reccomplex.structures.generic.gentypes.NaturalGenerationInfo;
-import ivorius.reccomplex.structures.generic.gentypes.StructureGenerationInfo;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.WorldProvider;
 import net.minecraft.world.biome.Biome;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
 
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.function.Supplier;
+import java.util.function.BiFunction;
 
 /**
  * Created by lukas on 23.09.16.
  */
-public class CachedStructureSelectors<T extends StructureGenerationInfo & EnvironmentalSelection<C>, C extends StructureSelector.Category>
+public class CachedStructureSelectors<S extends StructureSelector>
 {
-    private Map<Pair<Integer, ResourceLocation>, StructureSelector<T, C>> structureSelectors = new HashMap<>();
+    private Map<Pair<Integer, ResourceLocation>, S> structureSelectors = new HashMap<>();
 
-    private Supplier<Collection<StructureInfo>> structureSupplier;
+    private BiFunction<Biome, WorldProvider, S> selectorSupplier;
 
-    public CachedStructureSelectors(Supplier<Collection<StructureInfo>> structureSupplier)
+    public CachedStructureSelectors(BiFunction<Biome, WorldProvider, S> selectorSupplier)
     {
-        this.structureSupplier = structureSupplier;
+        this.selectorSupplier = selectorSupplier;
     }
 
-    public StructureSelector<T, C> get(Biome biome, WorldProvider provider)
+    public S get(Biome biome, WorldProvider provider)
     {
         Pair<Integer, ResourceLocation> pair = new ImmutablePair<>(provider.getDimension(), Biome.REGISTRY.getNameForObject(biome));
-        StructureSelector<T, C> structureSelector = structureSelectors.get(pair);
+        S structureSelector = structureSelectors.get(pair);
 
         if (structureSelector == null || !structureSelector.isValid(biome, provider))
         {
-            structureSelector = new StructureSelector(generatingStructures(), biome, provider, NaturalGenerationInfo.class);
+            structureSelector = selectorSupplier.apply(biome, provider);
             structureSelectors.put(pair, structureSelector);
         }
 
         return structureSelector;
-    }
-
-    protected Collection<StructureInfo> generatingStructures()
-    {
-        return structureSupplier.get();
     }
 
     public void clear()

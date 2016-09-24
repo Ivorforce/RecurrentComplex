@@ -51,7 +51,7 @@ public class NaturalStructureSelector
         return categories.getMap().keySet();
     }
 
-    public interface Category extends StructureSelector.Category
+    public interface Category extends MixingStructureSelector.Category
     {
         boolean selectableInGUI();
 

@@ -3,7 +3,7 @@
  *  * http://ivorius.net
  */
 
-package ivorius.reccomplex.structures.generic.gentypes;
+package ivorius.reccomplex.worldgen.selector;
 
 import net.minecraft.world.WorldProvider;
 import net.minecraft.world.biome.Biome;

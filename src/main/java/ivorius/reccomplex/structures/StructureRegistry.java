@@ -25,20 +25,16 @@ import ivorius.reccomplex.utils.Chunks;
 import ivorius.reccomplex.utils.CustomizableBiMap;
 import ivorius.reccomplex.utils.CustomizableMap;
 import ivorius.reccomplex.worldgen.selector.CachedStructureSelectors;
+import ivorius.reccomplex.worldgen.selector.MixingStructureSelector;
 import ivorius.reccomplex.worldgen.selector.NaturalStructureSelector;
-import ivorius.reccomplex.worldgen.selector.StructureSelector;
 import ivorius.reccomplex.worldgen.villages.GenericVillageCreationHandler;
 import ivorius.reccomplex.worldgen.villages.TemporaryVillagerRegistry;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.ChunkPos;
 import net.minecraft.world.World;
-import net.minecraft.world.WorldProvider;
-import net.minecraft.world.biome.Biome;
 import net.minecraft.world.gen.structure.MapGenStructureIO;
 import net.minecraftforge.fml.common.eventhandler.Event;
-import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
 import org.apache.commons.lang3.tuple.Triple;
 
@@ -54,11 +50,9 @@ import java.util.stream.Stream;
  */
 public class StructureRegistry
 {
+    public static final StructureRegistry INSTANCE = new StructureRegistry();
     private static SerializableStringTypeRegistry<Transformer> transformerRegistry = new SerializableStringTypeRegistry<>("transformer", "type", Transformer.class);
     private static SerializableStringTypeRegistry<StructureGenerationInfo> generationInfoRegistry = new SerializableStringTypeRegistry<>("generationInfo", "type", StructureGenerationInfo.class);
-
-    public static final StructureRegistry INSTANCE = new StructureRegistry();
-
     private CustomizableBiMap<String, StructureInfo> allStructures = new CustomizableBiMap<>();
     private CustomizableMap<String, StructureData> structureData = new CustomizableMap<>();
 
@@ -67,7 +61,8 @@ public class StructureRegistry
 
     private Map<Class<? extends StructureGenerationInfo>, Collection<Pair<StructureInfo, ? extends StructureGenerationInfo>>> cachedGeneration = new HashMap<>();
 
-    private CachedStructureSelectors<NaturalGenerationInfo, NaturalStructureSelector.Category> structureSelectors = new CachedStructureSelectors<>(this::getAllGeneratingStructures);
+    private CachedStructureSelectors<MixingStructureSelector<NaturalGenerationInfo, NaturalStructureSelector.Category>> naturalSelectors
+            = new CachedStructureSelectors<>((biome, worldProvider) -> new MixingStructureSelector<>(getAllGeneratingStructures(), worldProvider, biome, NaturalGenerationInfo.class));
 
     private Gson gson = createGson();
 
@@ -287,14 +282,14 @@ public class StructureRegistry
         return generationInfoRegistry;
     }
 
-    public CachedStructureSelectors<NaturalGenerationInfo, NaturalStructureSelector.Category> naturalStructureSelectors()
+    public CachedStructureSelectors<MixingStructureSelector<NaturalGenerationInfo, NaturalStructureSelector.Category>> naturalStructureSelectors()
     {
-        return structureSelectors;
+        return naturalSelectors;
     }
 
     private void clearCaches()
     {
-        structureSelectors.clear();
+        naturalSelectors.clear();
         cachedGeneration.clear();
         needsGenerationCacheUpdate = true;
 

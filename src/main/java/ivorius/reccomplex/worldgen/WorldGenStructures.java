@@ -12,6 +12,7 @@ import ivorius.reccomplex.structures.*;
 import ivorius.reccomplex.structures.generic.gentypes.NaturalGenerationInfo;
 import ivorius.reccomplex.structures.generic.gentypes.StaticGenerationInfo;
 import ivorius.reccomplex.utils.BlockSurfacePos;
+import ivorius.reccomplex.worldgen.selector.MixingStructureSelector;
 import ivorius.reccomplex.worldgen.selector.NaturalStructureSelector;
 import ivorius.reccomplex.worldgen.selector.StructureSelector;
 import net.minecraft.util.math.BlockPos;
@@ -46,9 +47,9 @@ public class WorldGenStructures
 
     public static void generateRandomStructuresInChunk(Random random, ChunkPos chunkPos, WorldServer world, Biome biomeGen)
     {
-        StructureSelector<NaturalGenerationInfo, NaturalStructureSelector.Category> structureSelector = StructureRegistry.INSTANCE.naturalStructureSelectors().get(biomeGen, world.provider);
+        MixingStructureSelector<NaturalGenerationInfo, NaturalStructureSelector.Category> structureSelector = StructureRegistry.INSTANCE.naturalStructureSelectors().get(biomeGen, world.provider);
 
-        List<Pair<StructureInfo, NaturalGenerationInfo>> generated = structureSelector.generatedStructures(random, chunkPos, world);
+        List<Pair<StructureInfo, NaturalGenerationInfo>> generated = structureSelector.generatedStructures(random, world.getBiome(chunkPos.getBlock(0, 0, 0)), world.provider);
 
         for (Pair<StructureInfo, NaturalGenerationInfo> pair : generated)
             generateStructureInChunk(random, chunkPos, world, pair);
@@ -58,7 +59,7 @@ public class WorldGenStructures
     {
         StructureSelector<NaturalGenerationInfo, NaturalStructureSelector.Category> structureSelector = StructureRegistry.INSTANCE.naturalStructureSelectors().get(biomeGen, world.provider);
 
-        Pair<StructureInfo, NaturalGenerationInfo> pair = structureSelector.selectOne(random, chunkPos, world);
+        Pair<StructureInfo, NaturalGenerationInfo> pair = structureSelector.selectOne(random, world.provider, world.getBiome(chunkPos.getBlock(0, 0, 0)), null);
 
         if (pair != null)
         {

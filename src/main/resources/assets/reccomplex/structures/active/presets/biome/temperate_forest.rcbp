@@ -1,0 +1,21 @@
+{
+  "data": [
+    {
+      "biomes": "$COLD",
+      "weight": 0.0
+    },
+    {
+      "biomes": "$HOT",
+      "weight": 0.0
+    },
+    {
+      "biomes": "$FOREST"
+    }
+  ],
+  "metadata": {
+    "title": "Temperate Forest",
+    "description": [
+      "Biomes for plants of temperate climates."
+    ]
+  }
+}

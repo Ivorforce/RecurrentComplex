@@ -1,0 +1,25 @@
+{
+  "data": [
+    {
+      "biomes": "$THEMED_TREES",
+      "weight": 0.0
+    },
+    {
+      "biomes": "$WATER",
+      "weight": 0.0
+    },
+    {
+      "biomes": "!$HOT",
+      "weight": 0.0
+    },
+    {
+      "biomes": ""
+    }
+  ],
+  "metadata": {
+    "title": "Palm Trees",
+    "description": [
+      "Biomes suitable for palm trees."
+    ]
+  }
+}

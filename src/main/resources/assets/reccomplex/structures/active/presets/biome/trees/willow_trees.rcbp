@@ -9,7 +9,7 @@
       "weight": 0.0
     },
     {
-      "biomes": "$HOT",
+      "biomes": "$HOT | $COLD",
       "weight": 0.0
     },
     {

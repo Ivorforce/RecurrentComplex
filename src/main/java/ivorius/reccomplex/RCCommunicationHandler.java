@@ -5,13 +5,13 @@
 
 package ivorius.reccomplex;
 
+import ivorius.reccomplex.worldgen.selector.NaturalStructureSelector;
 import net.minecraftforge.fml.common.event.FMLInterModComms;
 import ivorius.ivtoolkit.tools.IvFMLIntercommHandler;
 import ivorius.ivtoolkit.tools.IvNBTHelper;
 import ivorius.reccomplex.dimensions.DimensionDictionary;
 import ivorius.reccomplex.files.FileLoadContext;
 import ivorius.reccomplex.structures.generic.matchers.DimensionMatcher;
-import ivorius.reccomplex.worldgen.StructureSelector;
 import ivorius.reccomplex.structures.generic.matchers.BiomeMatcher;
 import net.minecraft.block.Block;
 import net.minecraft.item.Item;
@@ -145,14 +145,14 @@ public class RCCommunicationHandler extends IvFMLIntercommHandler
 
             if (!Strings.isEmpty(id))
             {
-                StructureSelector.GenerationInfo[] biomeInfos = new StructureSelector.GenerationInfo[biomeTypes.length];
+                NaturalStructureSelector.GenerationInfo[] biomeInfos = new NaturalStructureSelector.GenerationInfo[biomeTypes.length];
                 for (int i = 0; i < biomeTypes.length; i++)
                 {
                     String[] biomeParts = biomeTypes[i].split(":", 2);
-                    biomeInfos[i] = new StructureSelector.GenerationInfo(Float.valueOf(biomeParts[0]), new BiomeMatcher(biomeParts[1]), new DimensionMatcher(""));
+                    biomeInfos[i] = new NaturalStructureSelector.GenerationInfo(Float.valueOf(biomeParts[0]), new BiomeMatcher(biomeParts[1]), new DimensionMatcher(""));
                 }
 
-                StructureSelector.registerCategory(id, new StructureSelector.SimpleCategory(defaultSpawnChance,
+                NaturalStructureSelector.registerCategory(id, new NaturalStructureSelector.SimpleCategory(defaultSpawnChance,
                         Arrays.asList(biomeInfos), selectableInGui, structureMinCap), false);
             }
             else

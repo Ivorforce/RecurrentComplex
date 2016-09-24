@@ -26,6 +26,7 @@ import ivorius.reccomplex.utils.presets.PresettedList;
 import ivorius.reccomplex.utils.presets.PresettedObjects;
 import ivorius.reccomplex.utils.presets.PresettedObject;
 import ivorius.reccomplex.worldgen.StructureGenerationData;
+import ivorius.reccomplex.worldgen.selector.NaturalStructureSelector;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldProvider;
 import net.minecraft.world.biome.Biome;
@@ -39,7 +40,7 @@ import java.util.Arrays;
 /**
  * Created by lukas on 07.10.14.
  */
-public class NaturalGenerationInfo extends StructureGenerationInfo
+public class NaturalGenerationInfo extends StructureGenerationInfo implements EnvironmentalSelection<NaturalStructureSelector.Category>
 {
     private static Gson gson = createGson();
 
@@ -116,11 +117,18 @@ public class NaturalGenerationInfo extends StructureGenerationInfo
         this.generationWeight = generationWeight;
     }
 
+    @Override
     public double getGenerationWeight(Biome biome, WorldProvider provider)
     {
         return getActiveSpawnWeight()
                 * generationWeightInBiome(biome)
                 * generationWeightInDimension(provider);
+    }
+
+    @Override
+    public NaturalStructureSelector.Category generationCategory()
+    {
+        return NaturalStructureSelector.categoryForID(generationCategory);
     }
 
     public double generationWeightInDimension(WorldProvider provider)

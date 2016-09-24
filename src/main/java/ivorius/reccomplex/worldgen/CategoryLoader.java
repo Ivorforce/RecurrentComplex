@@ -10,6 +10,7 @@ import com.google.gson.GsonBuilder;
 import ivorius.reccomplex.RecurrentComplex;
 import ivorius.reccomplex.files.FileLoadContext;
 import ivorius.reccomplex.files.FileTypeHandler;
+import ivorius.reccomplex.worldgen.selector.NaturalStructureSelector;
 import org.apache.commons.io.FilenameUtils;
 
 import java.io.IOException;
@@ -33,7 +34,7 @@ public class CategoryLoader implements FileTypeHandler
     @Override
     public boolean loadFile(Path path, FileLoadContext context)
     {
-        StructureSelector.SimpleCategory category = null;
+        NaturalStructureSelector.SimpleCategory category = null;
         String name = context.customID != null ? context.customID : FilenameUtils.getBaseName(path.getFileName().toString());
 
         try
@@ -47,7 +48,7 @@ public class CategoryLoader implements FileTypeHandler
 
         if (category != null)
         {
-            StructureSelector.registerCategory(name, category, context.custom);
+            NaturalStructureSelector.registerCategory(name, category, context.custom);
 
             return true;
         }
@@ -58,11 +59,11 @@ public class CategoryLoader implements FileTypeHandler
     @Override
     public void clearCustomFiles()
     {
-        StructureSelector.clearCustom();
+        NaturalStructureSelector.clearCustom();
     }
 
-    public StructureSelector.SimpleCategory read(String file)
+    public NaturalStructureSelector.SimpleCategory read(String file)
     {
-        return gson.fromJson(file, StructureSelector.SimpleCategory.class);
+        return gson.fromJson(file, NaturalStructureSelector.SimpleCategory.class);
     }
 }

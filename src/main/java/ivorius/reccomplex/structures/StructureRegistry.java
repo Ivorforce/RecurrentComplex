@@ -24,7 +24,9 @@ import ivorius.reccomplex.utils.BlockSurfacePos;
 import ivorius.reccomplex.utils.Chunks;
 import ivorius.reccomplex.utils.CustomizableBiMap;
 import ivorius.reccomplex.utils.CustomizableMap;
-import ivorius.reccomplex.worldgen.StructureSelector;
+import ivorius.reccomplex.worldgen.selector.CachedStructureSelectors;
+import ivorius.reccomplex.worldgen.selector.NaturalStructureSelector;
+import ivorius.reccomplex.worldgen.selector.StructureSelector;
 import ivorius.reccomplex.worldgen.villages.GenericVillageCreationHandler;
 import ivorius.reccomplex.worldgen.villages.TemporaryVillagerRegistry;
 import net.minecraft.util.ResourceLocation;
@@ -65,7 +67,7 @@ public class StructureRegistry
 
     private Map<Class<? extends StructureGenerationInfo>, Collection<Pair<StructureInfo, ? extends StructureGenerationInfo>>> cachedGeneration = new HashMap<>();
 
-    private Map<Pair<Integer, ResourceLocation>, StructureSelector> structureSelectors = new HashMap<>();
+    private CachedStructureSelectors<NaturalGenerationInfo, NaturalStructureSelector.Category> structureSelectors = new CachedStructureSelectors<>(this::getAllGeneratingStructures);
 
     private Gson gson = createGson();
 
@@ -241,20 +243,6 @@ public class StructureRegistry
         return Collections2.filter(getStructureGenerations(clazz), predicate::test);
     }
 
-    public StructureSelector getStructureSelector(Biome biome, WorldProvider provider)
-    {
-        Pair<Integer, ResourceLocation> pair = new ImmutablePair<>(provider.getDimension(), Biome.REGISTRY.getNameForObject(biome));
-        StructureSelector structureSelector = structureSelectors.get(pair);
-
-        if (structureSelector == null || !structureSelector.isValid(biome, provider))
-        {
-            structureSelector = new StructureSelector(getAllGeneratingStructures(), biome, provider);
-            structureSelectors.put(pair, structureSelector);
-        }
-
-        return structureSelector;
-    }
-
     public Collection<Pair<StructureInfo, StructureListGenerationInfo>> getStructuresInList(final String listID, @Nullable final EnumFacing front)
     {
         return getStructureGenerations(StructureListGenerationInfo.class, input -> listID.equals(input.getRight().listID)
@@ -297,6 +285,11 @@ public class StructureRegistry
     public SerializableStringTypeRegistry<StructureGenerationInfo> getGenerationInfoRegistry()
     {
         return generationInfoRegistry;
+    }
+
+    public CachedStructureSelectors<NaturalGenerationInfo, NaturalStructureSelector.Category> naturalStructureSelectors()
+    {
+        return structureSelectors;
     }
 
     private void clearCaches()

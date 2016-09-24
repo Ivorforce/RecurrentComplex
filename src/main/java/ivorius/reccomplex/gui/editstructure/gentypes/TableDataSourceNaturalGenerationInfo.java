@@ -13,7 +13,7 @@ import ivorius.reccomplex.gui.editstructure.TableDataSourceNaturalGenLimitation;
 import ivorius.reccomplex.gui.editstructure.placer.TableDataSourcePlacer;
 import ivorius.reccomplex.gui.table.*;
 import ivorius.reccomplex.structures.generic.gentypes.NaturalGenerationInfo;
-import ivorius.reccomplex.worldgen.StructureSelector;
+import ivorius.reccomplex.worldgen.selector.NaturalStructureSelector;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -58,12 +58,12 @@ public class TableDataSourceNaturalGenerationInfo extends TableDataSourceSegment
 
     public static List<TableCellEnum.Option<String>> allGenerationCategories()
     {
-        Set<String> categories = StructureSelector.allCategoryIDs();
+        Set<String> categories = NaturalStructureSelector.allCategoryIDs();
         List<TableCellEnum.Option<String>> generationCategories = new ArrayList<>();
 
         for (String category : categories)
         {
-            StructureSelector.Category categoryObj = StructureSelector.categoryForID(category);
+            NaturalStructureSelector.Category categoryObj = NaturalStructureSelector.categoryForID(category);
 
             if (categoryObj.selectableInGUI())
                 generationCategories.add(new TableCellEnum.Option<>(category, categoryObj.title(), categoryObj.tooltip()));

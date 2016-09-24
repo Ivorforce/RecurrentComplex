@@ -9,7 +9,8 @@ import ivorius.ivtoolkit.gui.IntegerRange;
 import ivorius.ivtoolkit.tools.IvTranslations;
 import ivorius.reccomplex.gui.RCGuiTables;
 import ivorius.reccomplex.gui.TableDataSourceBlockPos;
-import ivorius.reccomplex.gui.TableDataSourceExpression;
+import ivorius.reccomplex.gui.editstructure.TableDataSourceBiomeGenList;
+import ivorius.reccomplex.gui.editstructure.TableDataSourceDimensionGenList;
 import ivorius.reccomplex.gui.table.*;
 import ivorius.reccomplex.structures.generic.gentypes.VanillaDecorationGenerationInfo;
 import ivorius.reccomplex.worldgen.decoration.RCBiomeDecorator;
@@ -24,15 +25,23 @@ public class TableDataSourceVanillaDecorationGenerationInfo extends TableDataSou
 
     private VanillaDecorationGenerationInfo generationInfo;
 
-    public TableDataSourceVanillaDecorationGenerationInfo(TableNavigator navigator, TableDelegate tableDelegate, VanillaDecorationGenerationInfo generationInfo)
+    public TableDataSourceVanillaDecorationGenerationInfo(TableNavigator navigator, TableDelegate delegate, VanillaDecorationGenerationInfo generationInfo)
     {
         this.navigator = navigator;
-        this.tableDelegate = tableDelegate;
+        this.tableDelegate = delegate;
         this.generationInfo = generationInfo;
 
-        addManagedSegment(0, new TableDataSourceGenerationInfo(generationInfo, navigator, tableDelegate));
-        addManagedSegment(3, TableDataSourceExpression.constructDefault(IvTranslations.get("reccomplex.gui.environment"), generationInfo.environmentMatcher, null));
-        addManagedSegment(4, new TableDataSourceBlockPos(generationInfo.spawnShift, generationInfo::setSpawnShift, new IntegerRange(-50, 50), new IntegerRange(-50, 50), new IntegerRange(-50, 50),
+        addManagedSegment(0, new TableDataSourceGenerationInfo(generationInfo, navigator, delegate));
+
+        addManagedSegment(3, TableCellMultiBuilder.create(navigator, delegate)
+                .addNavigation(() -> new TableDataSourceBiomeGenList(generationInfo.biomeWeights, delegate, navigator)
+                ).buildDataSource(IvTranslations.get("reccomplex.gui.biomes")));
+
+        addManagedSegment(4, TableCellMultiBuilder.create(navigator, delegate)
+                .addNavigation(() -> new TableDataSourceDimensionGenList(generationInfo.dimensionWeights, delegate, navigator)
+                ).buildDataSource(IvTranslations.get("reccomplex.gui.dimensions")));
+
+        addManagedSegment(5, new TableDataSourceBlockPos(generationInfo.spawnShift, generationInfo::setSpawnShift, new IntegerRange(-50, 50), new IntegerRange(-50, 50), new IntegerRange(-50, 50),
                 IvTranslations.get("reccomplex.generationInfo.vanilla.shift.x"), IvTranslations.get("reccomplex.generationInfo.vanilla.shift.y"), IvTranslations.get("reccomplex.generationInfo.vanilla.shift.z")));
     }
 

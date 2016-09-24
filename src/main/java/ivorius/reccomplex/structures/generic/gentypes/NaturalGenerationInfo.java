@@ -27,6 +27,7 @@ import ivorius.reccomplex.utils.presets.PresettedObject;
 import ivorius.reccomplex.worldgen.StructureGenerationData;
 import ivorius.reccomplex.worldgen.selector.EnvironmentalSelection;
 import ivorius.reccomplex.worldgen.selector.NaturalStructureSelector;
+import ivorius.reccomplex.worldgen.selector.StructureSelector;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldProvider;
 import net.minecraft.world.biome.Biome;
@@ -118,39 +119,15 @@ public class NaturalGenerationInfo extends StructureGenerationInfo implements En
     }
 
     @Override
-    public double getGenerationWeight(Biome biome, WorldProvider provider)
+    public double getGenerationWeight(WorldProvider provider, Biome biome)
     {
-        return getActiveSpawnWeight()
-                * generationWeightInBiome(biome)
-                * generationWeightInDimension(provider);
+        return getActiveSpawnWeight() * StructureSelector.generationWeight(provider, biome, this.biomeWeights, this.dimensionWeights);
     }
 
     @Override
     public NaturalStructureSelector.Category generationCategory()
     {
         return NaturalStructureSelector.categoryForID(generationCategory);
-    }
-
-    public double generationWeightInDimension(WorldProvider provider)
-    {
-        for (DimensionGenerationInfo generationInfo : dimensionWeights.getContents())
-        {
-            if (generationInfo.matches(provider))
-                return generationInfo.getActiveGenerationWeight();
-        }
-
-        return 0;
-    }
-
-    public double generationWeightInBiome(Biome biome)
-    {
-        for (BiomeGenerationInfo generationInfo : biomeWeights.getContents())
-        {
-            if (generationInfo.matches(biome))
-                return generationInfo.getActiveGenerationWeight();
-        }
-
-        return 0;
     }
 
     public double getActiveSpawnWeight()

@@ -13,7 +13,7 @@ import net.minecraft.world.biome.Biome;
  */
 public interface EnvironmentalSelection<C>
 {
-    double getGenerationWeight(Biome biome, WorldProvider provider);
+    double getGenerationWeight(WorldProvider provider, Biome biome);
 
     C generationCategory();
 }

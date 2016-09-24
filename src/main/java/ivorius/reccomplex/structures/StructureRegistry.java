@@ -24,9 +24,11 @@ import ivorius.reccomplex.utils.BlockSurfacePos;
 import ivorius.reccomplex.utils.Chunks;
 import ivorius.reccomplex.utils.CustomizableBiMap;
 import ivorius.reccomplex.utils.CustomizableMap;
+import ivorius.reccomplex.worldgen.decoration.RCBiomeDecorator;
 import ivorius.reccomplex.worldgen.selector.CachedStructureSelectors;
 import ivorius.reccomplex.worldgen.selector.MixingStructureSelector;
 import ivorius.reccomplex.worldgen.selector.NaturalStructureSelector;
+import ivorius.reccomplex.worldgen.selector.StructureSelector;
 import ivorius.reccomplex.worldgen.villages.GenericVillageCreationHandler;
 import ivorius.reccomplex.worldgen.villages.TemporaryVillagerRegistry;
 import net.minecraft.util.EnumFacing;
@@ -50,9 +52,11 @@ import java.util.stream.Stream;
  */
 public class StructureRegistry
 {
-    public static final StructureRegistry INSTANCE = new StructureRegistry();
     private static SerializableStringTypeRegistry<Transformer> transformerRegistry = new SerializableStringTypeRegistry<>("transformer", "type", Transformer.class);
     private static SerializableStringTypeRegistry<StructureGenerationInfo> generationInfoRegistry = new SerializableStringTypeRegistry<>("generationInfo", "type", StructureGenerationInfo.class);
+
+    public static final StructureRegistry INSTANCE = new StructureRegistry();
+
     private CustomizableBiMap<String, StructureInfo> allStructures = new CustomizableBiMap<>();
     private CustomizableMap<String, StructureData> structureData = new CustomizableMap<>();
 
@@ -63,6 +67,9 @@ public class StructureRegistry
 
     private CachedStructureSelectors<MixingStructureSelector<NaturalGenerationInfo, NaturalStructureSelector.Category>> naturalSelectors
             = new CachedStructureSelectors<>((biome, worldProvider) -> new MixingStructureSelector<>(getAllGeneratingStructures(), worldProvider, biome, NaturalGenerationInfo.class));
+
+    private CachedStructureSelectors<StructureSelector<VanillaDecorationGenerationInfo, RCBiomeDecorator.DecorationType>> decorationSelectors
+            = new CachedStructureSelectors<>((biome, worldProvider) -> new StructureSelector<>(getAllGeneratingStructures(), worldProvider, biome, VanillaDecorationGenerationInfo.class));
 
     private Gson gson = createGson();
 
@@ -285,6 +292,11 @@ public class StructureRegistry
     public CachedStructureSelectors<MixingStructureSelector<NaturalGenerationInfo, NaturalStructureSelector.Category>> naturalStructureSelectors()
     {
         return naturalSelectors;
+    }
+
+    public CachedStructureSelectors<StructureSelector<VanillaDecorationGenerationInfo, RCBiomeDecorator.DecorationType>> decorationSelectors()
+    {
+        return decorationSelectors;
     }
 
     private void clearCaches()

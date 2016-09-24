@@ -45,20 +45,16 @@ public class MixingStructureSelector<T extends StructureGenerationInfo & Environ
     }
 
     @Nullable
-    @Override
     public Pair<StructureInfo, T> selectOne(Random random, WorldProvider provider, Biome biome, @Nullable C c)
     {
         if (c != null)
-            return super.selectOne(random, provider, biome, c);
+            return super.selectOne(random, c);
 
         List<WeightedSelector.SimpleItem<C>> list = weightedStructureInfos.keySet().stream()
                 .map(category -> new WeightedSelector.SimpleItem<>(generationChance(category, provider, biome), category))
                 .collect(Collectors.toList());
 
-        if (WeightedSelector.canSelect(list))
-            return WeightedSelector.select(random, weightedStructureInfos.get(WeightedSelector.select(random, list)));
-        else
-            return null;
+        return selectOne(random, WeightedSelector.select(random, list));
     }
 
     interface Category

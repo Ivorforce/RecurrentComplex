@@ -6,7 +6,6 @@
 package ivorius.reccomplex.worldgen.decoration;
 
 import com.google.gson.annotations.SerializedName;
-import ivorius.ivtoolkit.random.WeightedSelector;
 import ivorius.ivtoolkit.tools.IvGsonHelper;
 import ivorius.reccomplex.RCConfig;
 import ivorius.reccomplex.RecurrentComplex;
@@ -17,6 +16,7 @@ import ivorius.reccomplex.structures.StructureSpawnContext;
 import ivorius.reccomplex.structures.generic.gentypes.VanillaDecorationGenerationInfo;
 import ivorius.reccomplex.utils.BlockSurfacePos;
 import ivorius.reccomplex.worldgen.StructureGenerator;
+import ivorius.reccomplex.worldgen.selector.StructureSelector;
 import net.minecraft.init.Biomes;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.WorldServer;
@@ -28,7 +28,6 @@ import net.minecraft.world.gen.feature.WorldGenFossils;
 import org.apache.commons.lang3.tuple.Pair;
 
 import javax.annotation.ParametersAreNonnullByDefault;
-import java.util.Collection;
 import java.util.Random;
 
 /**
@@ -62,11 +61,10 @@ public class RCBiomeDecorator
         Environment baseEnv = new Environment(worldIn, biomeIn, null, null);
         BiomeDecorator decorator = biomeIn.theBiomeDecorator;
 
-        Collection<Pair<StructureInfo, VanillaDecorationGenerationInfo>> generations = StructureRegistry.INSTANCE.getStructureGenerations(VanillaDecorationGenerationInfo.class,
-                pair -> pair.getRight().type == type && pair.getRight().generatesIn(baseEnv.withGeneration(pair.getRight()))
-        );
+        StructureSelector<VanillaDecorationGenerationInfo, DecorationType> selector = StructureRegistry.INSTANCE.decorationSelectors()
+                .get(biomeIn, worldIn.provider);
 
-        double totalWeight = generations.stream().mapToDouble(pair -> pair.getRight().getActiveWeight()).sum() * baseWeight;
+        double totalWeight = selector.totalWeight(type);
 
         if (totalWeight <= 0)
             return false;
@@ -84,7 +82,7 @@ public class RCBiomeDecorator
                 if (random.nextFloat() < decorator.field_189870_A)
                     ++vanillaAmount;
 
-                if ((vanillaAmount = trySurface(worldIn, random, chunkPos, generations, totalWeight, vanillaAmount, decorator.treesPerChunk <= 0)) < 0)
+                if ((vanillaAmount = trySurface(worldIn, random, chunkPos, selector, type, totalWeight, vanillaAmount, decorator.treesPerChunk <= 0)) < 0)
                     return false;
 
                 for (int j2 = 0; j2 < vanillaAmount; ++j2)
@@ -107,7 +105,7 @@ public class RCBiomeDecorator
             {
                 int vanillaAmount = decorator.bigMushroomsPerChunk;
 
-                if ((vanillaAmount = trySurface(worldIn, random, chunkPos, generations, totalWeight, vanillaAmount, false)) < 0)
+                if ((vanillaAmount = trySurface(worldIn, random, chunkPos, selector, type, totalWeight, vanillaAmount, false)) < 0)
                     return false;
 
                 for (int k2 = 0; k2 < vanillaAmount; ++k2)
@@ -123,7 +121,7 @@ public class RCBiomeDecorator
             {
                 int vanillaAmount = decorator.cactiPerChunk;
 
-                if ((vanillaAmount = trySurface(worldIn, random, chunkPos, generations, totalWeight, vanillaAmount, false)) < 0)
+                if ((vanillaAmount = trySurface(worldIn, random, chunkPos, selector, type, totalWeight, vanillaAmount, false)) < 0)
                     return false;
 
                 for (int j5 = 0; j5 < vanillaAmount; ++j5)
@@ -145,7 +143,7 @@ public class RCBiomeDecorator
             {
                 int vanillaAmount = random.nextInt(100) == 0 ? 1 : 0;
 
-                if ((vanillaAmount = trySurface(worldIn, random, chunkPos, generations, totalWeight, vanillaAmount, true)) < 0)
+                if ((vanillaAmount = trySurface(worldIn, random, chunkPos, selector, type, totalWeight, vanillaAmount, true)) < 0)
                     return false;
 
                 for (int j5 = 0; j5 < vanillaAmount; ++j5)
@@ -162,7 +160,7 @@ public class RCBiomeDecorator
             {
                 int vanillaAmount = random.nextInt(64) == 0 ? 1 : 0;
 
-                if ((vanillaAmount = trySurface(worldIn, random, chunkPos, generations, totalWeight, vanillaAmount, true)) < 0)
+                if ((vanillaAmount = trySurface(worldIn, random, chunkPos, selector, type, totalWeight, vanillaAmount, true)) < 0)
                     return false;
 
                 for (int j5 = 0; j5 < vanillaAmount; ++j5)
@@ -175,7 +173,7 @@ public class RCBiomeDecorator
         }
     }
 
-    protected static int trySurface(WorldServer worldIn, Random random, BlockPos chunkPos, Collection<Pair<StructureInfo, VanillaDecorationGenerationInfo>> generations, double totalWeight, int vanillaAmount, boolean lowChance)
+    protected static int trySurface(WorldServer worldIn, Random random, BlockPos chunkPos, StructureSelector<VanillaDecorationGenerationInfo, DecorationType> selector, DecorationType type, double totalWeight, int vanillaAmount, boolean lowChance)
     {
         int rcAmount = amount(random, totalWeight, vanillaAmount);
 
@@ -183,7 +181,7 @@ public class RCBiomeDecorator
         if (rcAmount <= 0 && !lowChance) return -1;
 
         for (int i = 0; i < rcAmount; i++)
-            generateSurface(WeightedSelector.select(random, generations, pair -> pair.getRight().getActiveWeight()), worldIn, chunkPos, random);
+            generateSurface(selector.selectOne(random, type, totalWeight), worldIn, chunkPos, random);
 
         return vanillaAmount - rcAmount;
     }

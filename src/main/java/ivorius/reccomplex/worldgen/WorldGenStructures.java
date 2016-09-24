@@ -8,13 +8,15 @@ package ivorius.reccomplex.worldgen;
 import ivorius.ivtoolkit.math.IvVecMathHelper;
 import ivorius.reccomplex.RCConfig;
 import ivorius.reccomplex.RecurrentComplex;
-import ivorius.reccomplex.structures.*;
+import ivorius.reccomplex.structures.StructureInfo;
+import ivorius.reccomplex.structures.StructureInfos;
+import ivorius.reccomplex.structures.StructureRegistry;
+import ivorius.reccomplex.structures.StructureSpawnContext;
 import ivorius.reccomplex.structures.generic.gentypes.NaturalGenerationInfo;
 import ivorius.reccomplex.structures.generic.gentypes.StaticGenerationInfo;
 import ivorius.reccomplex.utils.BlockSurfacePos;
 import ivorius.reccomplex.worldgen.selector.MixingStructureSelector;
 import ivorius.reccomplex.worldgen.selector.NaturalStructureSelector;
-import ivorius.reccomplex.worldgen.selector.StructureSelector;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.ChunkPos;
 import net.minecraft.world.WorldServer;
@@ -57,7 +59,7 @@ public class WorldGenStructures
 
     public static boolean generateRandomStructureInChunk(Random random, ChunkPos chunkPos, WorldServer world, Biome biomeGen)
     {
-        StructureSelector<NaturalGenerationInfo, NaturalStructureSelector.Category> structureSelector = StructureRegistry.INSTANCE.naturalStructureSelectors().get(biomeGen, world.provider);
+        MixingStructureSelector<NaturalGenerationInfo, NaturalStructureSelector.Category> structureSelector = StructureRegistry.INSTANCE.naturalStructureSelectors().get(biomeGen, world.provider);
 
         Pair<StructureInfo, NaturalGenerationInfo> pair = structureSelector.selectOne(random, world.provider, world.getBiome(chunkPos.getBlock(0, 0, 0)), null);
 

@@ -13,6 +13,10 @@
       "weight": 0.0
     },
     {
+      "biomes": "$DENSE",
+      "weight": 0.0
+    },
+    {
       "biomes": ""
     }
   ],

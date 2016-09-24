@@ -8,6 +8,7 @@ package ivorius.reccomplex.worldgen.inventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.WorldServer;
 
+import javax.annotation.Nullable;
 import java.util.Random;
 
 /**
@@ -15,6 +16,7 @@ import java.util.Random;
  */
 public interface WeightedItemCollection
 {
+    @Nullable
     ItemStack getRandomItemStack(WorldServer server, Random random);
 
     String getDescriptor();

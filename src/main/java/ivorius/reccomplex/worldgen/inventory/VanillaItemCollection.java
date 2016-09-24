@@ -6,6 +6,7 @@
 package ivorius.reccomplex.worldgen.inventory;
 
 import ivorius.ivtoolkit.tools.IvTranslations;
+import ivorius.reccomplex.RecurrentComplex;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.WorldServer;
@@ -30,9 +31,20 @@ public class VanillaItemCollection implements WeightedItemCollection
     @Override
     public ItemStack getRandomItemStack(WorldServer server, Random random)
     {
-        LootTable loottable = server.getLootTableManager().getLootTableFromLocation(this.vanillaKey);
-        List<ItemStack> loot = loottable.generateLootForPools(random, new LootContext.Builder(server).build());
-        return loot.size() > 0 ? loot.get(0) : null; // TODO generate tile entities with loot? TileEntityLockedLoot
+        List<ItemStack> loot = null;
+
+        try
+        {
+            LootTable loottable = server.getLootTableManager().getLootTableFromLocation(this.vanillaKey);
+            loot = loottable.generateLootForPools(random, new LootContext.Builder(server).build());
+            return loot.size() > 0 ? loot.get(0) : null; // TODO generate tile entities with loot? TileEntityLockedLoot
+        }
+        catch (Exception e)
+        {
+            RecurrentComplex.logger.error("Error generating vanilla loot", e);
+        }
+
+        return null;
     }
 
     @Override

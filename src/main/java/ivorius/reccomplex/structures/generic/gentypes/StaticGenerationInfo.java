@@ -17,6 +17,7 @@ import ivorius.reccomplex.json.JsonUtils;
 import ivorius.reccomplex.structures.Placer;
 import ivorius.reccomplex.structures.generic.placement.GenericPlacer;
 import ivorius.reccomplex.structures.generic.matchers.DimensionMatcher;
+import ivorius.reccomplex.structures.generic.presets.GenericPlacerPresets;
 import ivorius.reccomplex.utils.BlockSurfacePos;
 import ivorius.reccomplex.utils.presets.PresettedObject;
 import ivorius.reccomplex.utils.presets.PresettedObjects;
@@ -33,7 +34,7 @@ public class StaticGenerationInfo extends StructureGenerationInfo
 {
     private static Gson gson = createGson();
 
-    public PresettedObject<GenericPlacer> placer;
+    public final PresettedObject<GenericPlacer> placer = new PresettedObject<>(GenericPlacerPresets.instance(), null);
     public DimensionMatcher dimensionMatcher;
 
     public boolean relativeToSpawn;

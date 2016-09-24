@@ -18,7 +18,7 @@ public class Chunks
 {
     public static boolean contains(ChunkPos chunkPos, BlockSurfacePos pos)
     {
-        return (chunkPos.chunkXPos >> 4) == pos.x && (chunkPos.chunkZPos >> 4) == pos.z;
+        return chunkPos.chunkXPos == (pos.x >> 4) && chunkPos.chunkZPos == (pos.z >> 4);
     }
 
     public static Stream<BlockSurfacePos> repeatIntersections(ChunkPos chunkPos, BlockSurfacePos pos, int repeatX, int repeatZ)

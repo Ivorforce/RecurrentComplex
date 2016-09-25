@@ -146,7 +146,7 @@ public class RCConfig
         }
         if (configID == null || configID.equals(CATEGORY_DECORATION))
         {
-            baseVillageSpawnWeight = RecurrentComplex.config.getInt("baseVillageSpawnWeight", CATEGORY_BALANCING, 10, 0, 100000, "The base weight of RC village generation types. Vanilla average is about 10 - if you want to fully replace vanilla structures in villages, crank this up to something big.");
+            baseVillageSpawnWeight = RecurrentComplex.config.getInt("baseVillageSpawnWeight", CATEGORY_DECORATION, 10, 0, 100000, "The base weight of RC village generation types. Vanilla average is about 10 - if you want to fully replace vanilla structures in villages, crank this up to something big.");
             baseSaplingSpawnWeight = RecurrentComplex.config.getFloat("baseSaplingSpawnWeight", CATEGORY_DECORATION, 0.2f, 0, 1000, "The base weight of RC sapling generation types. The vanilla tree weight is 1 - if you want to fully replace vanilla trees, crank this up to something big.");
 
             baseDecorationWeights.clear();

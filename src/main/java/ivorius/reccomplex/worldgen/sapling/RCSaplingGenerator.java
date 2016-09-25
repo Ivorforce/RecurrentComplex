@@ -11,8 +11,10 @@ import com.google.common.collect.Multimap;
 import ivorius.ivtoolkit.math.AxisAlignedTransform2D;
 import ivorius.ivtoolkit.random.WeightedSelector;
 import ivorius.reccomplex.RCConfig;
-import ivorius.reccomplex.structures.*;
-import ivorius.reccomplex.structures.generic.BlockPattern;
+import ivorius.reccomplex.structures.Environment;
+import ivorius.reccomplex.structures.StructureInfo;
+import ivorius.reccomplex.structures.StructureRegistry;
+import ivorius.reccomplex.structures.StructureSpawnContext;
 import ivorius.reccomplex.structures.generic.gentypes.SaplingGenerationInfo;
 import ivorius.reccomplex.utils.BlockSurfacePos;
 import ivorius.reccomplex.utils.RCFunctions;
@@ -23,6 +25,7 @@ import net.minecraft.world.WorldServer;
 import net.minecraft.world.gen.structure.StructureBoundingBox;
 import org.apache.commons.lang3.tuple.Pair;
 
+import javax.annotation.Nullable;
 import java.util.*;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
@@ -34,11 +37,27 @@ public class RCSaplingGenerator
 {
     public static boolean maybeGrowSapling(WorldServer world, BlockPos pos, Random random)
     {
+        if (RCConfig.saplingTriggerChance <= 0 || (RCConfig.saplingTriggerChance < 1 && random.nextFloat() < RCConfig.saplingTriggerChance))
+            return false; // Don't trigger at all
+
+        Pair<StructureInfo, SaplingGenerationInfo> pair = findRandomSapling(world, pos, random, true);
+
+        if (pair == null) // Generate default
+            return false;
+
+        growSapling(world, pos, random, pair.getLeft(), pair.getRight());
+
+        return true;
+    }
+
+    @Nullable
+    public static Pair<StructureInfo, SaplingGenerationInfo> findRandomSapling(WorldServer world, BlockPos pos, Random random, boolean considerVanilla)
+    {
         Environment baseEnv = Environment.inNature(world, new StructureBoundingBox(pos, pos));
 
         List<Pair<StructureInfo, SaplingGenerationInfo>> applicable = Lists.newArrayList(StructureRegistry.INSTANCE.getStructureGenerations(
                 SaplingGenerationInfo.class, pair -> pair.getRight().generatesIn(baseEnv.withGeneration(pair.getRight()))
-                ));
+        ));
 
         ImmutableMultimap<Integer, Pair<StructureInfo, SaplingGenerationInfo>> groups = RCFunctions.groupMap(applicable, pair -> pair.getRight().pattern.pattern.compile(true).size());
         List<Integer> complexities = Lists.newArrayList(groups.keys());
@@ -54,23 +73,23 @@ public class RCSaplingGenerator
 
             double totalWeight = placeable.stream().mapToDouble(p -> p.getRight().getActiveWeight()).sum();
 
-            if (complexity == 1)
+            if (complexity == 1 && considerVanilla)
             {
                 // Vanilla as a simulated entry
 
                 if (random.nextDouble() * (totalWeight * RCConfig.baseSaplingSpawnWeight + 1) < 1)
-                    return false;
+                    break;
             }
 
             if (totalWeight > 0)
                 pair = WeightedSelector.select(random, placeable, p -> p.getRight().getActiveWeight());
         }
 
-        if (pair == null) // Generate default
-            return false;
+        return pair;
+    }
 
-        StructureInfo structure = pair.getLeft();
-        SaplingGenerationInfo saplingGenInfo = pair.getRight();
+    public static void growSapling(WorldServer world, BlockPos pos, Random random, StructureInfo structure, SaplingGenerationInfo saplingGenInfo)
+    {
         int[] strucSize = structure.structureBoundingBox();
 
         Multimap<AxisAlignedTransform2D, BlockPos> placeables = saplingGenInfo.pattern.testAll(world, pos, strucSize, structure.isRotatable(), structure.isMirrorable());
@@ -80,7 +99,8 @@ public class RCSaplingGenerator
         BlockPos startPos = Lists.newArrayList(transformedPositions).get(random.nextInt(transformedPositions.size()));
 
         Map<BlockPos, IBlockState> before = new HashMap<>();
-        Consumer<Map.Entry<BlockPos,String>> consumer = entry -> {
+        Consumer<Map.Entry<BlockPos, String>> consumer = entry ->
+        {
             BlockPos ePos = entry.getKey().add(startPos);
             before.put(ePos, world.getBlockState(ePos));
             world.setBlockToAir(ePos);
@@ -96,7 +116,5 @@ public class RCSaplingGenerator
 
         if (!success)
             before.forEach(world::setBlockState);
-
-        return true;
     }
 }

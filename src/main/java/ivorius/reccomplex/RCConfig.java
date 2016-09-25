@@ -53,6 +53,7 @@ public class RCConfig
     public static final TObjectDoubleMap<RCBiomeDecorator.DecorationType> baseDecorationWeights = new TObjectDoubleHashMap<>();
 
     public static int baseVillageSpawnWeight;
+    public static double saplingTriggerChance;
     public static double baseSaplingSpawnWeight;
 
     public static String commandPrefix;
@@ -147,6 +148,7 @@ public class RCConfig
         if (configID == null || configID.equals(CATEGORY_DECORATION))
         {
             baseVillageSpawnWeight = RecurrentComplex.config.getInt("baseVillageSpawnWeight", CATEGORY_DECORATION, 10, 0, 100000, "The base weight of RC village generation types. Vanilla average is about 10 - if you want to fully replace vanilla structures in villages, crank this up to something big.");
+            saplingTriggerChance = RecurrentComplex.config.getFloat("saplingTriggerChance", CATEGORY_DECORATION, 1f, 0, 1, "The chance to trigger any special sapling spawns at all. If you want to disable the big trees, set this to 0.");
             baseSaplingSpawnWeight = RecurrentComplex.config.getFloat("baseSaplingSpawnWeight", CATEGORY_DECORATION, 0.2f, 0, 1000, "The base weight of RC sapling generation types. The vanilla tree weight is 1 - if you want to fully replace vanilla trees, crank this up to something big.");
 
             baseDecorationWeights.clear();

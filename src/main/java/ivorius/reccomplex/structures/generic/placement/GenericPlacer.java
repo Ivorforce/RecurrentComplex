@@ -59,7 +59,7 @@ public class GenericPlacer implements Placer
     }
 
     @Override
-    public int selectY(StructurePlaceContext context, @Nullable IvBlockCollection blockCollection)
+    public int place(StructurePlaceContext context, @Nullable IvBlockCollection blockCollection)
     {
         WorldServer world = context.environment.world;
 

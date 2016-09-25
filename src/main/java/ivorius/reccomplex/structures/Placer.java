@@ -15,5 +15,5 @@ public interface Placer
 {
     int DONT_GENERATE = -1;
 
-    int selectY(StructurePlaceContext context, IvBlockCollection blockCollection);
+    int place(StructurePlaceContext context, IvBlockCollection blockCollection);
 }

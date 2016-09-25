@@ -320,7 +320,7 @@ public class StructureGenerator<S extends NBTStorable>
 
                 if (placed)
                 {
-                    int y = placer.selectY(place(), structure().blockCollection());
+                    int y = placer.place(place(), structure().blockCollection());
                     if (y < 0) return Optional.empty();
                     boundingBox.minY += y;
                     boundingBox.maxY += y;

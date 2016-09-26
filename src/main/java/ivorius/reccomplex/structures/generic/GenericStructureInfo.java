@@ -241,11 +241,10 @@ public class GenericStructureInfo implements StructureInfo<GenericStructureInfo.
             int[] areaSize = new int[]{blockCollection.width, blockCollection.height, blockCollection.length};
             BlockPos origin = context.lowerCoord();
 
-            TransformerMulti transformer = TransformerMulti.fuse(Arrays.asList(this.transformer, foreignTransformer));
-
-            instanceData.transformerData = transformer.prepareInstanceData(context, worldData);
+            instanceData.transformerData = this.transformer.prepareInstanceData(context, worldData);
             instanceData.foreignTransformerData = foreignTransformer.prepareInstanceData(context, worldData);
 
+            TransformerMulti transformer = TransformerMulti.fuse(Arrays.asList(this.transformer, foreignTransformer));
             TransformerMulti.InstanceData cInstanceData = transformer.fuseDatas(Arrays.asList(instanceData.transformerData, instanceData.foreignTransformerData));
 
             transformer.configureInstanceData(cInstanceData, context, worldData);

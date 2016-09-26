@@ -58,7 +58,6 @@ public class RCBiomeDecorator
             return false;
 
         Biome biomeIn = worldIn.getBiome(chunkPos.add(16, 0, 16));
-        Environment baseEnv = new Environment(worldIn, biomeIn, null, null);
         BiomeDecorator decorator = biomeIn.theBiomeDecorator;
 
         StructureSelector<VanillaDecorationGenerationInfo, DecorationType> selector = StructureRegistry.INSTANCE.decorationSelectors()

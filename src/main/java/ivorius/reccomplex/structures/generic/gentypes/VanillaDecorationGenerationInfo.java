@@ -117,10 +117,15 @@ public class VanillaDecorationGenerationInfo extends StructureGenerationInfo imp
         return new TableDataSourceVanillaDecorationGenerationInfo(navigator, delegate, this);
     }
 
+    public double getActiveGenerationWeight()
+    {
+        return generationWeight != null ? generationWeight : 1.0;
+    }
+
     @Override
     public double getGenerationWeight(WorldProvider provider, Biome biome)
     {
-        return StructureSelector.generationWeight(provider, biome, biomeWeights, dimensionWeights);
+        return getActiveGenerationWeight() * StructureSelector.generationWeight(provider, biome, biomeWeights, dimensionWeights);
     }
 
     @Override

@@ -121,7 +121,7 @@ public class NaturalGenerationInfo extends StructureGenerationInfo implements En
     @Override
     public double getGenerationWeight(WorldProvider provider, Biome biome)
     {
-        return getActiveSpawnWeight() * StructureSelector.generationWeight(provider, biome, this.biomeWeights, this.dimensionWeights);
+        return getActiveGenerationWeight() * StructureSelector.generationWeight(provider, biome, this.biomeWeights, this.dimensionWeights);
     }
 
     @Override
@@ -130,7 +130,7 @@ public class NaturalGenerationInfo extends StructureGenerationInfo implements En
         return NaturalStructureSelector.categoryForID(generationCategory);
     }
 
-    public double getActiveSpawnWeight()
+    public double getActiveGenerationWeight()
     {
         return generationWeight != null ? generationWeight : 1.0;
     }

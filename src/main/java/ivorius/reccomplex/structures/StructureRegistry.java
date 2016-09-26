@@ -302,6 +302,7 @@ public class StructureRegistry
     private void clearCaches()
     {
         naturalSelectors.clear();
+        decorationSelectors.clear();
         cachedGeneration.clear();
         needsGenerationCacheUpdate = true;
 

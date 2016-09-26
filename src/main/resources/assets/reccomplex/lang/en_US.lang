@@ -293,10 +293,15 @@ reccomplex.generationInfo.decoration=Vanilla Decoration
 reccomplex.generationInfo.decoration.tooltip=Instead of a vanilla decoration entry<br>(e.g. trees, mushrooms, cacti).
 reccomplex.generationInfo.decoration.title=Vanilla Decoration
 reccomplex.generationInfo.decoration.types.tree=Tree
+reccomplex.generationInfo.decoration.types.tree.tooltip=Trees
 reccomplex.generationInfo.decoration.types.cactus=Cactus
+reccomplex.generationInfo.decoration.types.cactus.tooltip=Cacti
 reccomplex.generationInfo.decoration.types.big_mushroom=Big Mushroom
+reccomplex.generationInfo.decoration.types.big_mushroom.tooltip=Big Mushrooms
 reccomplex.generationInfo.decoration.types.desert_well=Desert Well
+reccomplex.generationInfo.decoration.types.desert_well.tooltip=The wells spawning in deserts
 reccomplex.generationInfo.decoration.types.fossil=Fossil
+reccomplex.generationInfo.decoration.types.fossil.tooltip=Fossils
 
 reccomplex.transformer.id=Transformer ID
 reccomplex.transformer.id.tooltip=Unique Identifier for the transformer.

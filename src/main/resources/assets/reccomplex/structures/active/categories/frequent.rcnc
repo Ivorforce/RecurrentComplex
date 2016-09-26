@@ -4,5 +4,5 @@
   "generationInfos": [],
   "selectableInGUI": true,
   "title": "Frequent",
-  "tooltip": ["Small structures or scenery", "Random structure each 10 chunks"]
+  "tooltip": ["Small structures or scenery", "Random structure each 15 chunks"]
 }

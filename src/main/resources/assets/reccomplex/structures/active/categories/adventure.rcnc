@@ -1,7 +1,7 @@
 {
-  "defaultSpawnChance": 0.002,
+  "defaultSpawnChance": 0.003,
   "generationInfos": [],
   "selectableInGUI": true,
   "title": "Adventure",
-  "tooltip": ["Structures focusing around combat and loot", "Random structure each 250 chunks"]
+  "tooltip": ["Structures focusing around combat and loot", "Random structure each 330 chunks"]
 }

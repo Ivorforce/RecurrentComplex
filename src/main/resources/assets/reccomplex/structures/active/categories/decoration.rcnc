@@ -1,7 +1,7 @@
 {
-  "defaultSpawnChance": 0.0125,
+  "defaultSpawnChance": 0.015,
   "generationInfos": [],
   "selectableInGUI": true,
   "title": "Common",
-  "tooltip": ["Common structures", "Random structure each 30 chunks"]
+  "tooltip": ["Common structures", "Random structure each 66 chunks"]
 }

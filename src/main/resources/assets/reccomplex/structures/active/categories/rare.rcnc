@@ -1,7 +1,7 @@
 {
-  "defaultSpawnChance": 0.0004,
+  "defaultSpawnChance": 0.0006,
   "generationInfos": [],
   "selectableInGUI": true,
   "title": "Rare",
-  "tooltip": ["Special sights to behold", "Random structure each 1250 chunks"]
+  "tooltip": ["Special sights to behold", "Random structure each 1666 chunks"]
 }

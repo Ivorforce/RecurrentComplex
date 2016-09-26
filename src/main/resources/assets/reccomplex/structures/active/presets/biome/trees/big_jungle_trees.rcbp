@@ -13,7 +13,8 @@
       "weight": 0.0
     },
     {
-      "biomes": "$JUNGLE \u0026 $DENSE"
+      "biomes": "$JUNGLE \u0026 $DENSE",
+      "weight": 0.1
     }
   ],
   "metadata": {

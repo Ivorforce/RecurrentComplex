@@ -9,16 +9,14 @@ import com.google.gson.annotations.SerializedName;
 import ivorius.ivtoolkit.tools.IvGsonHelper;
 import ivorius.reccomplex.RCConfig;
 import ivorius.reccomplex.RecurrentComplex;
-import ivorius.reccomplex.structures.Environment;
-import ivorius.reccomplex.structures.StructureInfo;
-import ivorius.reccomplex.structures.StructureRegistry;
-import ivorius.reccomplex.structures.StructureSpawnContext;
+import ivorius.reccomplex.structures.*;
 import ivorius.reccomplex.structures.generic.gentypes.VanillaDecorationGenerationInfo;
 import ivorius.reccomplex.utils.BlockSurfacePos;
 import ivorius.reccomplex.worldgen.StructureGenerator;
 import ivorius.reccomplex.worldgen.selector.StructureSelector;
 import net.minecraft.init.Biomes;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.World;
 import net.minecraft.world.WorldServer;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.biome.BiomeDecorator;
@@ -190,8 +188,14 @@ public class RCBiomeDecorator
         new StructureGenerator<>(generation.getLeft()).generationInfo(generation.getRight()).world(worldIn)
                 .random(random).maturity(StructureSpawnContext.GenerateMaturity.SUGGEST)
                 .memorize(RCConfig.memorizeDecoration).allowOverlaps(true)
-                .randomPosition(randomSurfacePos(random, chunkPos), generation.getRight().placer()).fromCenter(true)
+                .randomPosition(randomSurfacePos(random, chunkPos.add(generation.getRight().spawnShift)), // Shift +1 because surface placer goes -1
+                        shift(generation.getRight().placer(), generation.getRight().spawnShift.getY() + 1)).fromCenter(true)
                 .generate();
+    }
+
+    protected static Placer shift(Placer placer, int y)
+    {
+        return (context, blockCollection) -> placer.place(context, blockCollection) + y;
     }
 
     protected static BlockSurfacePos randomSurfacePos(Random random, BlockPos chunkPos)

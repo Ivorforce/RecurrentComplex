@@ -17,6 +17,10 @@
       "weight": 0.0
     },
     {
+      "biomes": "$MOUNTAIN",
+      "weight": 0.0
+    },
+    {
       "biomes": ""
     }
   ],

@@ -1,0 +1,15 @@
+{
+  "data": [
+    {
+      "block": "minecraft:air",
+      "metadata": 0,
+      "tileEntityInfo": ""
+    }
+  ],
+  "metadata": {
+    "title": "Air",
+    "description": [
+      "An air block."
+    ]
+  }
+}

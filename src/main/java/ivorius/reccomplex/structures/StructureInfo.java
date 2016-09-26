@@ -8,6 +8,7 @@ package ivorius.reccomplex.structures;
 import ivorius.ivtoolkit.blocks.IvBlockCollection;
 import ivorius.reccomplex.structures.generic.GenericStructureInfo;
 import ivorius.reccomplex.structures.generic.gentypes.StructureGenerationInfo;
+import ivorius.reccomplex.structures.generic.transformers.TransformerMulti;
 import ivorius.reccomplex.utils.NBTStorable;
 import net.minecraft.nbt.NBTBase;
 
@@ -20,13 +21,13 @@ import java.util.List;
  */
 public interface StructureInfo<S extends NBTStorable>
 {
-    boolean generate(@Nonnull StructureSpawnContext context, @Nonnull S instanceData);
+    boolean generate(@Nonnull StructureSpawnContext context, @Nonnull S instanceData, @Nonnull TransformerMulti transformer);
 
     @Nonnull
-    S prepareInstanceData(@Nonnull StructurePrepareContext context);
+    S prepareInstanceData(@Nonnull StructurePrepareContext context, @Nonnull TransformerMulti transformer);
 
     @Nonnull
-    S loadInstanceData(@Nonnull StructureLoadContext context, @Nonnull NBTBase nbt);
+    S loadInstanceData(@Nonnull StructureLoadContext context, @Nonnull NBTBase nbt, @Nonnull TransformerMulti transformer);
 
     @Nonnull
     <I extends StructureGenerationInfo> List<I> generationInfos(@Nonnull Class<? extends I> clazz);

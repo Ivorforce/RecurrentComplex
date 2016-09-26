@@ -116,7 +116,7 @@ public class TransformerRuins extends Transformer<TransformerRuins.InstanceData>
     }
 
     @Override
-    public void transform(InstanceData instanceData, Phase phase, StructureSpawnContext context, IvWorldData worldData, TransformerMulti transformer, TransformerMulti.InstanceData transformerID)
+    public void transform(InstanceData instanceData, Phase phase, StructureSpawnContext context, IvWorldData worldData, TransformerMulti transformer, TransformerMulti.InstanceData transformerData)
     {
         if (phase == Phase.AFTER)
         {
@@ -150,7 +150,7 @@ public class TransformerRuins extends Transformer<TransformerRuins.InstanceData>
                             {
                                 IBlockState state = blockCollection.getBlockState(sourceCoord);
 
-                                if (getPass(state) == pass && !transformer.skipGeneration(transformerID, context.environment, worldCoord, state))
+                                if (getPass(state) == pass && !transformer.skipGeneration(transformerData, context.environment, worldCoord, state))
                                     setBlockToAirClean(context.environment.world, worldCoord);
                             }
                         }
@@ -169,7 +169,7 @@ public class TransformerRuins extends Transformer<TransformerRuins.InstanceData>
                     {
                         IBlockState state = context.environment.world.getBlockState(worldCoord);
 
-                        if (!transformer.skipGeneration(transformerID, context.environment, worldCoord, state))
+                        if (!transformer.skipGeneration(transformerData, context.environment, worldCoord, state))
                             decayBlock(context.environment.world, context.random, state, worldCoord);
                     }
                 }
@@ -281,7 +281,7 @@ public class TransformerRuins extends Transformer<TransformerRuins.InstanceData>
     }
 
     @Override
-    public boolean mayGenerate(InstanceData instanceData, StructureSpawnContext context, IvWorldData worldData, TransformerMulti transformer, TransformerMulti.InstanceData transformerID)
+    public boolean mayGenerate(InstanceData instanceData, StructureSpawnContext context, IvWorldData worldData, TransformerMulti transformer, TransformerMulti.InstanceData transformerData)
     {
         return true;
     }

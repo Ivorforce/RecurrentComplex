@@ -73,6 +73,45 @@ public class TransformerMulti extends Transformer<TransformerMulti.InstanceData>
         return builder.create();
     }
 
+    public static TransformerMulti fromPreset(String preset)
+    {
+        TransformerMulti transformer = new TransformerMulti();
+        transformer.setID("preset_" + preset);
+        transformer.data.setPreset(preset);
+        return transformer;
+    }
+
+    public static TransformerMulti fuse(List<TransformerMulti> transformers)
+    {
+        TransformerMulti transformer = new TransformerMulti();
+        transformers.forEach(t -> transformer.getTransformers().add(t));
+        return transformer;
+    }
+
+    public InstanceData fuseDatas(List<InstanceData> instanceDatas)
+    {
+        List<Transformer> transformers = getTransformers();
+        InstanceData instanceData = new InstanceData();
+        for (int i = 0; i < instanceDatas.size(); i++)
+            instanceData.pairedTransformers.add(Pair.of(transformers.get(i), instanceDatas.get(i)));
+        return instanceData;
+    }
+
+    public void configureInstanceData(InstanceData instanceData, StructurePrepareContext context, IvWorldData worldData)
+    {
+        configureInstanceData(instanceData, context, worldData, this, instanceData);
+    }
+
+    public boolean mayGenerate(InstanceData instanceData, StructureSpawnContext context, IvWorldData worldData)
+    {
+        return mayGenerate(instanceData, context, worldData, this, instanceData);
+    }
+
+    public void transform(InstanceData instanceData, Phase phase, StructureSpawnContext context, IvWorldData worldData)
+    {
+        transform(instanceData, phase, context, worldData, this, instanceData);
+    }
+
     public List<Transformer> getTransformers()
     {
         return data.getContents().transformers;

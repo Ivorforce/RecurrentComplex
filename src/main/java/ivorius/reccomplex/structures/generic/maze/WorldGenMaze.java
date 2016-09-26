@@ -53,13 +53,13 @@ public class WorldGenMaze
     {
         return Lists.newArrayList(placedComponents.stream().map(placedComponent -> {
             MazeComponentStructure<Connector> componentInfo = placedComponent.getComponent();
-            StructureInfo structureInfo = StructureRegistry.INSTANCE.getStructure(componentInfo.structureID);
+            StructureInfo<?> structureInfo = StructureRegistry.INSTANCE.getStructure(componentInfo.structureID);
 
             if (structureInfo != null)
             {
                 AxisAlignedTransform2D componentTransform = componentInfo.transform.rotateClockwise(mazeTransform.getRotation());
                 StructureBoundingBox compBoundingBox = getBoundingBox(coord, shift, roomSize, placedComponent, structureInfo, componentTransform, mazeTransform);
-                NBTStorable instanceData = structureInfo.prepareInstanceData(new StructurePrepareContext(random, environment, componentTransform, compBoundingBox, false));
+                NBTStorable instanceData = new StructureGenerator<>(structureInfo).random(random).environment(environment).transform(componentTransform).boundingBox(compBoundingBox).instanceData().orElse(null);
 
                 return new PlacedStructure(componentInfo.structureID, componentInfo.structureID, componentTransform, new BlockPos(compBoundingBox.minX, compBoundingBox.minY, compBoundingBox.minZ), instanceData);
             }

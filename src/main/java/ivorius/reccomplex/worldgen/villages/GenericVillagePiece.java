@@ -97,7 +97,7 @@ public class GenericVillagePiece extends StructureVillagePieces.Village
 
     public void prepare(Random random, WorldServer world)
     {
-        StructureInfo structureInfo = StructureRegistry.INSTANCE.getStructure(structureID);
+        StructureInfo<?> structureInfo = StructureRegistry.INSTANCE.getStructure(structureID);
         if (structureInfo != null)
         {
             StructureGenerationInfo generationInfo = structureInfo.generationInfo(generationID);
@@ -107,7 +107,8 @@ public class GenericVillagePiece extends StructureVillagePieces.Village
                 VanillaStructureGenerationInfo vanillaGenInfo = (VanillaStructureGenerationInfo) generationInfo;
                 AxisAlignedTransform2D transform = getTransform(vanillaGenInfo.front, mirrorX, getCoordBaseMode().getOpposite());
 
-                instanceData = structureInfo.prepareInstanceData(new StructurePrepareContext(random, environment(world, generationInfo), transform, boundingBox, false)).writeToNBT();
+                instanceData = new StructureGenerator<>(structureInfo).random(random).environment(environment(world, generationInfo)).transform(transform).boundingBox(boundingBox)
+                        .instanceData().map(NBTStorable::writeToNBT).orElse(null);
             }
         }
     }

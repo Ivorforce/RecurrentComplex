@@ -15,14 +15,12 @@ import net.minecraft.util.math.BlockPos;
 import ivorius.ivtoolkit.blocks.IvBlockCollection;
 import ivorius.reccomplex.RecurrentComplex;
 import ivorius.reccomplex.blocks.GeneratingTileEntity;
-import ivorius.reccomplex.blocks.RCBlocks;
 import ivorius.reccomplex.json.JsonUtils;
 import ivorius.reccomplex.json.NbtToJson;
 import ivorius.reccomplex.structures.*;
 import ivorius.reccomplex.structures.generic.gentypes.MazeGenerationInfo;
 import ivorius.reccomplex.structures.generic.gentypes.NaturalGenerationInfo;
 import ivorius.reccomplex.structures.generic.gentypes.StructureGenerationInfo;
-import ivorius.reccomplex.structures.generic.matchers.BlockMatcher;
 import ivorius.reccomplex.structures.generic.matchers.DependencyMatcher;
 import ivorius.reccomplex.structures.generic.transformers.*;
 import ivorius.reccomplex.utils.*;
@@ -101,15 +99,18 @@ public class GenericStructureInfo implements StructureInfo<GenericStructureInfo.
     }
 
     @Override
-    public boolean generate(@Nonnull final StructureSpawnContext context, @Nonnull InstanceData instanceData)
+    public boolean generate(@Nonnull final StructureSpawnContext context, @Nonnull InstanceData instanceData, @Nonnull TransformerMulti foreignTransformer)
     {
         WorldServer world = context.environment.world;
         Random random = context.random;
         IvWorldData worldData = constructWorldData();
 
+        TransformerMulti transformer = TransformerMulti.fuse(Arrays.asList(this.transformer, foreignTransformer));
+        TransformerMulti.InstanceData transformerData = transformer.fuseDatas(Arrays.asList(instanceData.transformerData, instanceData.foreignTransformerData));
+
         if (context.generateMaturity == StructureSpawnContext.GenerateMaturity.SUGGEST)
         {
-            if (!transformer.mayGenerate(instanceData.transformerData, context, worldData, transformer, instanceData.transformerData))
+            if (!transformer.mayGenerate(transformerData, context, worldData))
                 return false;
         }
 
@@ -135,7 +136,7 @@ public class GenericStructureInfo implements StructureInfo<GenericStructureInfo.
         }
 
         if (!context.generateAsSource)
-            transformer.transform(instanceData.transformerData, Transformer.Phase.BEFORE, context, worldData, transformer, instanceData.transformerData);
+            transformer.transform(transformerData, Transformer.Phase.BEFORE, context, worldData);
 
         BlockPos.MutableBlockPos worldPos = new BlockPos.MutableBlockPos();
         for (int pass = 0; pass < 2; pass++)
@@ -146,7 +147,7 @@ public class GenericStructureInfo implements StructureInfo<GenericStructureInfo.
                 worldPos = RCMutableBlockPos.add(RCAxisAlignedTransform.apply(sourceCoord, worldPos, areaSize, context.transform), origin);
 
                 if (context.includes(worldPos) && RecurrentComplex.specialRegistry.isSafe(state.getBlock())
-                        && pass == getPass(state) && (context.generateAsSource || !transformer.skipGeneration(instanceData.transformerData, context.environment, worldPos, state)))
+                        && pass == getPass(state) && (context.generateAsSource || !transformer.skipGeneration(transformerData, context.environment, worldPos, state)))
                 {
                     TileEntity origTileEntity = origTileEntities.get(sourceCoord);
 
@@ -183,7 +184,7 @@ public class GenericStructureInfo implements StructureInfo<GenericStructureInfo.
         }
 
         if (!context.generateAsSource)
-            transformer.transform(instanceData.transformerData, Transformer.Phase.AFTER, context, worldData, transformer, instanceData.transformerData);
+            transformer.transform(transformerData, Transformer.Phase.AFTER, context, worldData);
 
         for (NBTTagCompound entityCompound : worldData.entities)
         {
@@ -228,7 +229,7 @@ public class GenericStructureInfo implements StructureInfo<GenericStructureInfo.
 
     @Nonnull
     @Override
-    public InstanceData prepareInstanceData(@Nonnull StructurePrepareContext context)
+    public InstanceData prepareInstanceData(@Nonnull StructurePrepareContext context, @Nonnull TransformerMulti foreignTransformer)
     {
         InstanceData instanceData = new InstanceData();
 
@@ -240,8 +241,14 @@ public class GenericStructureInfo implements StructureInfo<GenericStructureInfo.
             int[] areaSize = new int[]{blockCollection.width, blockCollection.height, blockCollection.length};
             BlockPos origin = context.lowerCoord();
 
+            TransformerMulti transformer = TransformerMulti.fuse(Arrays.asList(this.transformer, foreignTransformer));
+
             instanceData.transformerData = transformer.prepareInstanceData(context, worldData);
-            transformer.configureInstanceData(instanceData.transformerData, context, worldData, transformer, instanceData.transformerData);
+            instanceData.foreignTransformerData = foreignTransformer.prepareInstanceData(context, worldData);
+
+            TransformerMulti.InstanceData cInstanceData = transformer.fuseDatas(Arrays.asList(instanceData.transformerData, instanceData.foreignTransformerData));
+
+            transformer.configureInstanceData(cInstanceData, context, worldData);
 
             worldData.tileEntities.forEach(teCompound ->
             {
@@ -260,10 +267,10 @@ public class GenericStructureInfo implements StructureInfo<GenericStructureInfo.
 
     @Nonnull
     @Override
-    public InstanceData loadInstanceData(@Nonnull StructureLoadContext context, @Nonnull final NBTBase nbt)
+    public InstanceData loadInstanceData(@Nonnull StructureLoadContext context, @Nonnull final NBTBase nbt, @Nonnull TransformerMulti transformer)
     {
         InstanceData instanceData = new InstanceData();
-        instanceData.readFromNBT(context, nbt, transformer, constructWorldData());
+        instanceData.readFromNBT(context, nbt, this.transformer, transformer, constructWorldData());
         return instanceData;
     }
 
@@ -424,9 +431,11 @@ public class GenericStructureInfo implements StructureInfo<GenericStructureInfo.
     public static class InstanceData implements NBTStorable
     {
         public static final String KEY_TRANSFORMER = "transformer";
+        public static final String KEY_FOREIGN_TRANSFORMER = "foreignTransformer";
         public static final String KEY_TILE_ENTITIES = "tileEntities";
 
         public TransformerMulti.InstanceData transformerData;
+        public TransformerMulti.InstanceData foreignTransformerData;
         public final Map<BlockPos, NBTStorable> tileEntities = new HashMap<>();
 
         protected static NBTBase getTileEntityTag(NBTTagCompound tileEntityCompound, BlockPos coord)
@@ -439,12 +448,13 @@ public class GenericStructureInfo implements StructureInfo<GenericStructureInfo.
             return String.format("%d,%d,%d", coord.getX(), coord.getY(), coord.getZ());
         }
 
-        public void readFromNBT(StructureLoadContext context, NBTBase nbt, TransformerMulti transformer, IvWorldData worldData)
+        public void readFromNBT(StructureLoadContext context, NBTBase nbt, TransformerMulti transformer, @Nonnull TransformerMulti foreignTransformer, IvWorldData worldData)
         {
             IvBlockCollection blockCollection = worldData.blockCollection;
             NBTTagCompound compound = nbt instanceof NBTTagCompound ? (NBTTagCompound) nbt : new NBTTagCompound();
 
             transformerData = transformer.loadInstanceData(context, compound.getTag(KEY_TRANSFORMER));
+            foreignTransformerData = foreignTransformer.loadInstanceData(context, compound.getTag(KEY_FOREIGN_TRANSFORMER));
 
             int[] areaSize = new int[]{blockCollection.width, blockCollection.height, blockCollection.length};
             BlockPos origin = context.lowerCoord();
@@ -464,6 +474,7 @@ public class GenericStructureInfo implements StructureInfo<GenericStructureInfo.
             NBTTagCompound compound = new NBTTagCompound();
 
             compound.setTag(KEY_TRANSFORMER, transformerData.writeToNBT());
+            compound.setTag(KEY_FOREIGN_TRANSFORMER, foreignTransformerData.writeToNBT());
 
             NBTTagCompound tileEntityCompound = new NBTTagCompound();
             for (Map.Entry<BlockPos, NBTStorable> entry : tileEntities.entrySet())

@@ -6,15 +6,14 @@
 package ivorius.reccomplex.structures.generic.maze;
 
 import ivorius.ivtoolkit.blocks.BlockPositions;
-import net.minecraft.util.math.BlockPos;
 import ivorius.ivtoolkit.math.AxisAlignedTransform2D;
 import ivorius.ivtoolkit.tools.NBTCompoundObject;
 import ivorius.reccomplex.structures.StructureInfo;
-import ivorius.reccomplex.structures.StructureInfos;
-import ivorius.reccomplex.structures.StructureLoadContext;
 import ivorius.reccomplex.structures.StructureRegistry;
 import ivorius.reccomplex.utils.NBTStorable;
+import ivorius.reccomplex.worldgen.StructureGenerator;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.common.util.Constants;
 
 /**
@@ -46,10 +45,11 @@ public class PlacedStructure implements NBTCompoundObject
         transform = AxisAlignedTransform2D.from(compound.getInteger("rotation"), compound.getBoolean("mirrorX"));
         lowerCoord = BlockPositions.readFromNBT("lowerCoord", compound);
 
-        StructureInfo structureInfo = StructureRegistry.INSTANCE.getStructure(structureID);
+        StructureInfo<?> structureInfo = StructureRegistry.INSTANCE.getStructure(structureID);
 
         instanceData = compound.hasKey("instanceData", Constants.NBT.TAG_COMPOUND) && structureInfo != null
-                ? structureInfo.loadInstanceData(new StructureLoadContext(transform, StructureInfos.structureBoundingBox(lowerCoord, StructureInfos.structureSize(structureInfo, transform)), false), compound.getTag("instanceData"))
+                ? new StructureGenerator<>().structure((StructureInfo<NBTStorable>) structureInfo).instanceData(compound.getTag("instanceData"))
+                .transform(transform).lowerCoord(lowerCoord).instanceData().orElse(null)
                 : null;
     }
 

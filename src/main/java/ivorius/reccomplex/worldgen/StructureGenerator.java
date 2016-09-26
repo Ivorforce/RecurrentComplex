@@ -14,6 +14,7 @@ import ivorius.reccomplex.events.StructureGenerationEventLite;
 import ivorius.reccomplex.structures.*;
 import ivorius.reccomplex.structures.generic.gentypes.StructureGenerationInfo;
 import ivorius.reccomplex.structures.generic.placement.StructurePlaceContext;
+import ivorius.reccomplex.structures.generic.transformers.TransformerMulti;
 import ivorius.reccomplex.utils.BlockSurfacePos;
 import ivorius.reccomplex.utils.NBTStorable;
 import net.minecraft.nbt.NBTBase;
@@ -143,7 +144,7 @@ public class StructureGenerator<S extends NBTStorable>
                 MinecraftForge.EVENT_BUS.post(new StructureGenerationEventLite.Pre(world, structureID, coordInts, sizeInts, spawn.generationLayer));
             }
 
-            boolean success = structureInfo.generate(spawn, instanceData);
+            boolean success = structureInfo.generate(spawn, instanceData, RCConfig.getUniversalTransformer());
 
             if (firstTime && success)
             {
@@ -404,8 +405,8 @@ public class StructureGenerator<S extends NBTStorable>
     public Optional<S> instanceData()
     {
         return this.instanceData != null ? Optional.of(this.instanceData)
-                : this.instanceDataNBT != null ? load().map(load -> structure().loadInstanceData(load, this.instanceDataNBT))
-                : prepare().map(prepare -> structure().prepareInstanceData(prepare));
+                : this.instanceDataNBT != null ? load().map(load -> structure().loadInstanceData(load, this.instanceDataNBT, RCConfig.getUniversalTransformer()))
+                : prepare().map(prepare -> structure().prepareInstanceData(prepare, RCConfig.getUniversalTransformer()));
     }
 
     public StructureGenerator<S> memorize(boolean memorize)

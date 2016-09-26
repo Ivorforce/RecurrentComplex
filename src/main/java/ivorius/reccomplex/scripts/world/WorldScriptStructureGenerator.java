@@ -6,26 +6,26 @@
 package ivorius.reccomplex.scripts.world;
 
 import ivorius.ivtoolkit.blocks.BlockPositions;
-import ivorius.reccomplex.worldgen.StructureGenerator;
-import net.minecraft.util.math.BlockPos;
 import ivorius.ivtoolkit.blocks.Directions;
 import ivorius.ivtoolkit.math.AxisAlignedTransform2D;
 import ivorius.ivtoolkit.random.WeightedSelector;
 import ivorius.ivtoolkit.tools.IvCollections;
+import ivorius.ivtoolkit.tools.IvTranslations;
 import ivorius.reccomplex.gui.table.TableDataSource;
 import ivorius.reccomplex.gui.table.TableDelegate;
 import ivorius.reccomplex.gui.table.TableNavigator;
 import ivorius.reccomplex.gui.worldscripts.structuregenerator.TableDataSourceStructureGenerator;
 import ivorius.reccomplex.structures.*;
 import ivorius.reccomplex.structures.generic.gentypes.StructureListGenerationInfo;
-import ivorius.ivtoolkit.tools.IvTranslations;
 import ivorius.reccomplex.utils.NBTStorable;
+import ivorius.reccomplex.worldgen.StructureGenerator;
 import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.nbt.NBTTagString;
-import net.minecraftforge.common.util.Constants;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.math.BlockPos;
+import net.minecraftforge.common.util.Constants;
 import org.apache.commons.lang3.tuple.Pair;
 
 import javax.annotation.Nonnull;
@@ -181,7 +181,7 @@ public class WorldScriptStructureGenerator implements WorldScript<WorldScriptStr
             if (structureNames.size() > 0)
             {
                 String structureID = structureNames.get(random.nextInt(structureNames.size()));
-                StructureInfo structureInfo = StructureRegistry.INSTANCE.getStructure(structureID);
+                StructureInfo<?> structureInfo = StructureRegistry.INSTANCE.getStructure(structureID);
 
                 if (structureInfo != null)
                 {
@@ -193,7 +193,9 @@ public class WorldScriptStructureGenerator implements WorldScript<WorldScriptStr
                     BlockPos strucCoord = transform.apply(structureShift, new int[]{1, 1, 1})
                             .subtract(transform.apply(BlockPos.ORIGIN, strucSize)).add(pos);
 
-                    instanceData = new WorldScriptStructureGenerator.InstanceData(structureID, null, strucCoord, strucTransform, structureInfo.prepareInstanceData(new StructurePrepareContext(random, context.environment, strucTransform, StructureInfos.structureBoundingBox(strucCoord, strucSize), context.generateAsSource)));
+                    instanceData = new WorldScriptStructureGenerator.InstanceData(structureID, null, strucCoord, strucTransform,
+                            new StructureGenerator<>(structureInfo).random(random).environment(context.environment).transform(strucTransform).lowerCoord(strucCoord).asSource(context.generateAsSource)
+                                    .instanceData().orElse(null));
                 }
             }
         }
@@ -229,7 +231,9 @@ public class WorldScriptStructureGenerator implements WorldScript<WorldScriptStr
                 BlockPos strucCoord = transform.apply(structureShift.add(generationInfo.shift), new int[]{1, 1, 1})
                         .subtract(transform.apply(BlockPos.ORIGIN, strucSize)).add(pos);
 
-                instanceData = new WorldScriptStructureGenerator.InstanceData(structureID, generationInfo.id(), strucCoord, strucTransform, structureInfo.prepareInstanceData(new StructurePrepareContext(random, context.environment, strucTransform, StructureInfos.structureBoundingBox(strucCoord, strucSize), context.generateAsSource)));
+                instanceData = new WorldScriptStructureGenerator.InstanceData(structureID, generationInfo.id(), strucCoord, strucTransform,
+                        (NBTStorable) new StructureGenerator<>(structureInfo).random(random).environment(context.environment).transform(strucTransform).asSource(context.generateAsSource)
+                                .lowerCoord(strucCoord).instanceData().orElse(null));
             }
         }
 
@@ -298,7 +302,8 @@ public class WorldScriptStructureGenerator implements WorldScript<WorldScriptStr
 
             StructureInfo structureInfo = StructureRegistry.INSTANCE.getStructure(structureID);
             if (structureInfo != null)
-                structureData = structureInfo.loadInstanceData(new StructureLoadContext(structureTransform, StructureInfos.structureBoundingBox(lowerCoord, StructureInfos.structureSize(structureInfo, structureTransform)), false), compound.getTag("structureData"));
+                new StructureGenerator<>(structureInfo).instanceData(compound.getTag("structureData"))
+                        .transform(structureTransform).lowerCoord(lowerCoord).instanceData().orElse(null);
         }
 
         @Override

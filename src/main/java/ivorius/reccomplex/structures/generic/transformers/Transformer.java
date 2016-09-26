@@ -60,18 +60,18 @@ public abstract class Transformer<S extends NBTStorable>
 
     public abstract S prepareInstanceData(StructurePrepareContext context, IvWorldData worldData);
 
-    public void configureInstanceData(S s, StructurePrepareContext context, IvWorldData worldData, TransformerMulti transformer, TransformerMulti.InstanceData transformerID)
+    public void configureInstanceData(S s, StructurePrepareContext context, IvWorldData worldData, TransformerMulti transformer, TransformerMulti.InstanceData transformerData)
     {
 
     }
 
     public abstract S loadInstanceData(StructureLoadContext context, NBTBase nbt);
 
-    public abstract boolean mayGenerate(S instanceData, StructureSpawnContext context, IvWorldData worldData, TransformerMulti transformer, TransformerMulti.InstanceData transformerID);
+    public abstract boolean mayGenerate(S instanceData, StructureSpawnContext context, IvWorldData worldData, TransformerMulti transformer, TransformerMulti.InstanceData transformerData);
 
     public abstract boolean skipGeneration(S instanceData, Environment environment, BlockPos pos, IBlockState state);
 
-    public abstract void transform(S instanceData, Phase phase, StructureSpawnContext context, IvWorldData worldData, TransformerMulti transformer, TransformerMulti.InstanceData transformerID);
+    public abstract void transform(S instanceData, Phase phase, StructureSpawnContext context, IvWorldData worldData, TransformerMulti transformer, TransformerMulti.InstanceData transformerData);
 
     public enum Phase
     {

@@ -19,6 +19,7 @@ import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldServer;
+import net.minecraft.world.biome.Biome;
 import net.minecraft.world.gen.structure.StructureBoundingBox;
 import net.minecraft.world.gen.structure.StructureVillagePieces;
 
@@ -90,9 +91,12 @@ public class GenericVillagePiece extends StructureVillagePieces.Village
     }
 
     @Nonnull
+    private Biome biome(WorldServer world) {return startPiece != null ? startPiece.biome : Environment.getBiome(world, boundingBox);}
+
+    @Nonnull
     protected Environment environment(WorldServer world, StructureGenerationInfo generationInfo)
     {
-        return new Environment(world, startPiece.biome, field_189928_h, generationInfo);
+        return new Environment(world, biome(world), field_189928_h, generationInfo);
     }
 
     public void prepare(Random random, WorldServer world)

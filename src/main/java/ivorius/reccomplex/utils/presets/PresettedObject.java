@@ -87,7 +87,12 @@ public class PresettedObject<T>
 
     public void setToDefault()
     {
-        setPreset(presetRegistry.defaultID());
+        String defaultPreset = presetRegistry.defaultID();
+
+        if (!presetRegistry.has(defaultPreset))
+            throw new IllegalStateException(String.format("Default preset named '%s' not found!", defaultPreset));
+
+        setPreset(defaultPreset);
     }
 
     public T getContents()

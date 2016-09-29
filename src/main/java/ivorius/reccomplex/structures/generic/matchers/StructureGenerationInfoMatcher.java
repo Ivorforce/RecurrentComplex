@@ -67,13 +67,13 @@ public class StructureGenerationInfoMatcher extends FunctionExpressionCache<Bool
         @Override
         public Boolean evaluate(String var, StructureGenerationInfo info)
         {
-            return info != null && var.equals(StructureRegistry.INSTANCE.getGenerationInfoRegistry().iDForType(info.getClass()));
+            return info != null && var.equals(StructureRegistry.GENERATION_INFOS.iDForType(info.getClass()));
         }
 
         @Override
         public Validity validity(final String var, final Object args)
         {
-            return StructureRegistry.INSTANCE.getGenerationInfoRegistry().typeForID(var) != null ? Validity.KNOWN : Validity.UNKNOWN;
+            return StructureRegistry.GENERATION_INFOS.typeForID(var) != null ? Validity.KNOWN : Validity.UNKNOWN;
         }
     }
 }

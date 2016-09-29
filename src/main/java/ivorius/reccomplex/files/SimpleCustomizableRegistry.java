@@ -6,49 +6,57 @@
 package ivorius.reccomplex.files;
 
 import ivorius.reccomplex.RecurrentComplex;
-import ivorius.reccomplex.utils.CustomizableMap;
+import ivorius.reccomplex.utils.CustomizableBiMap;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
  * Created by lukas on 29.09.16.
  */
-public class SimpleFileRegistry<S> implements FileRegistry<S>
+public class SimpleCustomizableRegistry<S> implements CustomizableRegistry<S>
 {
-    private CustomizableMap<String, S> items = new CustomizableMap<>();
-    private CustomizableMap<String, Data> datas = new CustomizableMap<>();
+    private CustomizableBiMap<String, S> items = new CustomizableBiMap<>();
+    private CustomizableBiMap<String, Data> datas = new CustomizableBiMap<>();
 
     private boolean generatesCacheValid = false;
-    private Set<String> generatesCache = new HashSet<>();
+    private Map<String, S> generatingMap = new HashMap<>();
 
     public String description;
 
-    public SimpleFileRegistry(String description)
+    public SimpleCustomizableRegistry(String description)
     {
         this.description = description;
     }
 
+    public Map<String, S> map()
+    {
+        return Collections.unmodifiableMap(items.getMap());
+    }
+
+    public Map<String, S> activeMap()
+    {
+        return Collections.unmodifiableMap(generatingMap);
+    }
+
     public Collection<S> all()
     {
-        return items.getMap().values();
+        return Collections.unmodifiableCollection(items.getMap().values());
     }
 
     public Collection<S> allActive()
     {
         ensureGeneratesCache();
-        return generatesCache.stream().map(items.getMap()::get).collect(Collectors.toList());
+        return generatingMap.values();
     }
 
     @Nullable
     public S getActive(String id)
     {
         ensureGeneratesCache();
-        return generatesCache.contains(id) ? items.getMap().get(id) : null;
+        return generatingMap.get(id);
     }
 
     @Nullable
@@ -61,13 +69,29 @@ public class SimpleFileRegistry<S> implements FileRegistry<S>
     public Set<String> activeIDs()
     {
         ensureGeneratesCache();
-        return generatesCache;
+        return generatingMap.keySet();
     }
 
     @Nonnull
     public Set<String> ids()
     {
         return items.getMap().keySet();
+    }
+
+    public boolean has(String id)
+    {
+        return items.getMap().containsKey(id);
+    }
+
+    public boolean hasActive(String id)
+    {
+        ensureGeneratesCache();
+        return generatingMap.containsKey(id);
+    }
+
+    public String id(S s)
+    {
+        return items.getMap().inverse().get(s);
     }
 
     @Override
@@ -94,6 +118,7 @@ public class SimpleFileRegistry<S> implements FileRegistry<S>
     @Override
     public void clearCustomFiles()
     {
+        invalidateGeneratesCache();
         items.clearCustom();
     }
 
@@ -101,9 +126,9 @@ public class SimpleFileRegistry<S> implements FileRegistry<S>
     {
         if (!generatesCacheValid)
         {
-            generatesCache = datas.getMap().values().stream()
+            generatingMap = datas.getMap().values().stream()
                     .filter(d -> d.active)
-                    .map(d -> d.id).collect(Collectors.toSet());
+                    .map(d -> d.id).collect(Collectors.toMap(s -> s, s -> items.getMap().get(s)));
             generatesCacheValid = true;
         }
     }

@@ -6,6 +6,8 @@
 package ivorius.reccomplex.commands;
 
 import ivorius.ivtoolkit.blocks.BlockArea;
+import ivorius.reccomplex.files.SimpleCustomizableRegistry;
+import ivorius.reccomplex.structures.StructureInfo;
 import ivorius.reccomplex.utils.RCBlockAreas;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.math.BlockPos;
@@ -119,7 +121,9 @@ public class CommandExportSchematic extends CommandBase
     public List<String> getTabCompletionOptions(MinecraftServer server, ICommandSender sender, String[] args, @Nullable BlockPos pos)
     {
         if (args.length == 1)
-            return getListOfStringsMatchingLastWord(args, StructureRegistry.INSTANCE.allStructureIDs());
+        {
+            return getListOfStringsMatchingLastWord(args, StructureRegistry.INSTANCE.ids());
+        }
 
         return null;
     }

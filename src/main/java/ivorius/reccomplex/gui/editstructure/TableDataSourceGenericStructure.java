@@ -6,10 +6,12 @@
 package ivorius.reccomplex.gui.editstructure;
 
 import ivorius.ivtoolkit.tools.IvTranslations;
+import ivorius.reccomplex.files.SimpleCustomizableRegistry;
 import ivorius.reccomplex.gui.GuiValidityStateIndicator;
 import ivorius.reccomplex.gui.TableDataSourceExpression;
 import ivorius.reccomplex.gui.TableElementSaveDirectory;
 import ivorius.reccomplex.gui.table.*;
+import ivorius.reccomplex.structures.StructureInfo;
 import ivorius.reccomplex.structures.StructureInfos;
 import ivorius.reccomplex.structures.StructureRegistry;
 import ivorius.reccomplex.structures.generic.GenericStructureInfo;
@@ -166,7 +168,7 @@ public class TableDataSourceGenericStructure extends TableDataSourceSegmented
     private GuiValidityStateIndicator.State currentNameState()
     {
         return StructureInfos.isSimpleID(structureKey)
-                ? StructureRegistry.INSTANCE.allStructureIDs().contains(structureKey)
+                ? StructureRegistry.INSTANCE.ids().contains(structureKey)
                 ? GuiValidityStateIndicator.State.SEMI_VALID
                 : GuiValidityStateIndicator.State.VALID
                 : GuiValidityStateIndicator.State.INVALID;

@@ -76,7 +76,7 @@ public class WorldGenStructures
     {
         StructureInfo structureInfo = pair.getLeft();
         NaturalGenerationInfo naturalGenInfo = pair.getRight();
-        String structureName = StructureRegistry.INSTANCE.structureID(structureInfo);
+        String structureName = StructureRegistry.INSTANCE.id(structureInfo);
 
         BlockSurfacePos genPos = new BlockSurfacePos((chunkPos.chunkXPos << 4) + 8 + random.nextInt(16), (chunkPos.chunkZPos << 4) + 8 + random.nextInt(16));
 
@@ -94,7 +94,7 @@ public class WorldGenStructures
 
         for (StructureGenerationData.Entry entry : data.getEntriesAt(chunkPos, true))
         {
-            StructureInfo structureInfo = StructureRegistry.INSTANCE.getStructure(entry.getStructureID());
+            StructureInfo structureInfo = StructureRegistry.INSTANCE.get(entry.getStructureID());
 
             if (structureInfo != null)
             {

@@ -76,7 +76,7 @@ public class DependencyMatcher extends FunctionExpressionCache<Boolean, Object, 
         @Override
         public Boolean evaluate(String var, Object args)
         {
-            return StructureRegistry.INSTANCE.hasStructure(var);
+            return StructureRegistry.INSTANCE.has(var);
         }
 
         @Override

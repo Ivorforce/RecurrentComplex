@@ -96,10 +96,15 @@ public class CommandSearchStructure extends CommandBase
     public void execute(MinecraftServer server, ICommandSender commandSender, String[] args) throws CommandException
     {
         if (args.length >= 1)
-            outputSearch(commandSender,  StructureRegistry.INSTANCE.allStructureIDs(),
-                    name -> searchRank(Arrays.asList(args), keywords(name, StructureRegistry.INSTANCE.getStructure(name))),
+        {
+            outputSearch(commandSender, StructureRegistry.INSTANCE.ids(),
+                    name ->
+                    {
+                        return searchRank(Arrays.asList(args), keywords(name, StructureRegistry.INSTANCE.get(name)));
+                    },
                     CommandSearchStructure::createStructureTextComponent
             );
+        }
         else
             throw ServerTranslations.commandException("commands.rclookup.usage");
     }

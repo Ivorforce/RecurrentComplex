@@ -31,7 +31,7 @@ public abstract class StructureGenerationInfo
     public static String randomID(Class<? extends StructureGenerationInfo> type)
     {
         Random random = new Random();
-        return String.format("%s_%s", StructureRegistry.INSTANCE.getGenerationInfoRegistry().iDForType(type), Integer.toHexString(random.nextInt()));
+        return String.format("%s_%s", StructureRegistry.GENERATION_INFOS.iDForType(type), Integer.toHexString(random.nextInt()));
     }
 
     public static String randomID(String type)

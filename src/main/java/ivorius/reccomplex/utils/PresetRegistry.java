@@ -123,10 +123,10 @@ public abstract class PresetRegistry<T> implements FileTypeHandler
     protected abstract Type getType();
 
     @Override
-    public boolean loadFile(Path path, FileLoadContext context)
+    public boolean loadFile(Path path, String customID, FileLoadContext context)
     {
         Preset<T> preset = null;
-        String name = context.customID != null ? context.customID : FilenameUtils.getBaseName(path.getFileName().toString());
+        String name = FileTypeHandler.defaultName(path, customID);
 
         try
         {

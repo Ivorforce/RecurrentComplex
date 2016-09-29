@@ -83,7 +83,7 @@ public class FileTypeRegistry
 
             for (Path file : paths)
             {
-                if (tryLoad(file, context))
+                if (tryLoad(file, null, context))
                     added ++;
             }
 
@@ -97,13 +97,13 @@ public class FileTypeRegistry
         return added;
     }
 
-    public boolean tryLoad(ResourceLocation resourceLocation, FileLoadContext context)
+    public boolean tryLoad(ResourceLocation resourceLocation, String customID, FileLoadContext context)
     {
         try
         {
             Path path = RCFileHelper.pathFromResourceLocation(resourceLocation);
             if (path != null)
-                return tryLoad(path, context);
+                return tryLoad(path, customID, context);
         }
         catch (Throwable e)
         {
@@ -113,12 +113,12 @@ public class FileTypeRegistry
         return false;
     }
 
-    public boolean tryLoad(Path file, FileLoadContext context)
+    public boolean tryLoad(Path file, String customID, FileLoadContext context)
     {
         try
         {
             FileTypeHandler handler = get(FilenameUtils.getExtension(file.getFileName().toString()));
-            return handler.loadFile(file, context);
+            return handler.loadFile(file, customID, context);
         }
         catch (Exception e)
         {

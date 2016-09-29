@@ -7,6 +7,7 @@ package ivorius.reccomplex.worldgen;
 
 import com.google.common.collect.*;
 import ivorius.ivtoolkit.blocks.BlockPositions;
+import ivorius.reccomplex.files.SimpleCustomizableRegistry;
 import net.minecraft.util.math.BlockPos;
 import ivorius.ivtoolkit.math.AxisAlignedTransform2D;
 import ivorius.reccomplex.RecurrentComplex;
@@ -275,7 +276,7 @@ public class StructureGenerationData extends WorldSavedData
 
         public StructureBoundingBox boundingBox()
         {
-            StructureInfo structureInfo = StructureRegistry.INSTANCE.getStructure(structureID);
+            StructureInfo structureInfo = StructureRegistry.INSTANCE.get(structureID);
 
             return structureInfo != null
                     ? StructureInfos.structureBoundingBox(lowerCoord, StructureInfos.structureSize(structureInfo, transform))

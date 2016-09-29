@@ -5,64 +5,69 @@
 
 package ivorius.reccomplex.files;
 
-import com.google.gson.Gson;
+import ivorius.reccomplex.RCConfig;
+import ivorius.reccomplex.RecurrentComplex;
+import ivorius.reccomplex.events.FileLoadEvent;
+import ivorius.reccomplex.events.RCEventBus;
+import net.minecraftforge.fml.common.eventhandler.Event;
 
-import java.util.function.Function;
+import javax.annotation.Nullable;
+import java.nio.file.Path;
 
 /**
  * Created by lukas on 29.09.16.
  */
-public class FileTypeHandlerRegistry<S> extends FileTypeHandlerString<S>
+public abstract class FileTypeHandlerRegistry<S> implements FileTypeHandler
 {
-    public Function<String, S> reader;
-    public FileRegistry<S> registry;
+    public String fileSuffix;
+    public CustomizableRegistry<? super S> registry;
 
-    public FileTypeHandlerRegistry(Function<String, S> reader, FileRegistry<S> registry)
+    public FileTypeHandlerRegistry(String fileSuffix, CustomizableRegistry<? super S> registry)
     {
-        this.reader = reader;
+        this.fileSuffix = fileSuffix;
         this.registry = registry;
     }
 
-    public FileTypeHandlerRegistry(Gson gson, Class<? extends S> type, FileRegistry<S> registry)
-    {
-        this(gsonReader(gson, type), registry);
-    }
-
-    public FileTypeHandlerRegistry(Class<? extends S> type, FileRegistry<S> registry)
-    {
-        this(gsonReader(type), registry);
-    }
-
-    public static <S> Function<String, S> gsonReader(Gson gson, Class<? extends S> type)
-    {
-        return s -> gson.fromJson(s, type);
-    }
-
-    public static <S> Function<String, S> gsonReader(Class<? extends S> type)
-    {
-        return gsonReader(new Gson(), type);
-    }
-
     @Override
-    public S read(String file)
+    public boolean loadFile(Path path, @Nullable String customID, FileLoadContext context)
     {
-        return reader.apply(file);
+        String domain = context.domain;
+        boolean active = context.active;
+        String id = FileTypeHandler.defaultName(path, customID);
+
+        S s = null;
+
+        try
+        {
+            s = read(path, id);
+        }
+        catch (Exception e)
+        {
+            RecurrentComplex.logger.error("Error reading file: " + path, e);
+        }
+
+        if (s != null)
+        {
+            FileLoadEvent.Pre<S> event = new FileLoadEvent.Pre<>(s, fileSuffix, id, domain, path, active);
+
+            if (event.getResult() != Event.Result.DENY && RCConfig.shouldResourceLoad(fileSuffix, id, domain))
+            {
+                registry.register(id, domain, s, active, context.custom);
+
+                RCEventBus.INSTANCE.post(new FileLoadEvent.Post<>(s, fileSuffix, id, domain, path, active));
+            }
+
+            return true;
+        }
+
+        return false;
     }
+
+    public abstract S read(Path path, String name) throws Exception;
 
     @Override
     public void clearCustomFiles()
     {
         registry.clearCustomFiles();
-    }
-
-    @Override
-    public void load(String id, S o, FileLoadContext context)
-    {
-        registry.register(id, context.domain, o, context.active, context.custom);
-    }
-
-    public interface Loader<S>
-    {
-        void load(String id, S o, FileLoadContext context);
     }
 }

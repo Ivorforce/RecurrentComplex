@@ -8,7 +8,7 @@ package ivorius.reccomplex.network;
 import io.netty.buffer.ByteBuf;
 import ivorius.reccomplex.utils.SaveDirectoryData;
 import ivorius.reccomplex.worldgen.inventory.GenericItemCollection.Component;
-import ivorius.reccomplex.worldgen.inventory.GenericItemCollectionRegistry;
+import ivorius.reccomplex.worldgen.inventory.ItemCollectionSaveHandler;
 import net.minecraftforge.fml.common.network.ByteBufUtils;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 
@@ -67,7 +67,7 @@ public class PacketSaveInvGenComponent implements IMessage
     public void fromBytes(ByteBuf buf)
     {
         key = ByteBufUtils.readUTF8String(buf);
-        inventoryGenerator = GenericItemCollectionRegistry.INSTANCE.readComponent(buf);
+        inventoryGenerator = ItemCollectionSaveHandler.INSTANCE.read(buf);
         saveDirectoryDataResult = SaveDirectoryData.Result.readFrom(buf);
     }
 
@@ -75,7 +75,7 @@ public class PacketSaveInvGenComponent implements IMessage
     public void toBytes(ByteBuf buf)
     {
         ByteBufUtils.writeUTF8String(buf, key);
-        GenericItemCollectionRegistry.INSTANCE.writeComponent(buf, inventoryGenerator);
+        ItemCollectionSaveHandler.INSTANCE.write(buf, inventoryGenerator);
         saveDirectoryDataResult.writeTo(buf);
     }
 }

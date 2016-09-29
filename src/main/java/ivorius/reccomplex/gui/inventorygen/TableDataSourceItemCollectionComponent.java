@@ -113,7 +113,7 @@ public class TableDataSourceItemCollectionComponent extends TableDataSourceSegme
 
     private GuiValidityStateIndicator.State currentKeyState()
     {
-        return GenericItemCollectionRegistry.INSTANCE.allComponentKeys().contains(key)
+        return GenericItemCollectionRegistry.INSTANCE.ids().contains(key)
                 ? GuiValidityStateIndicator.State.SEMI_VALID : GuiValidityStateIndicator.State.VALID;
     }
 

@@ -51,7 +51,7 @@ public class GenericVillageCreationHandler implements VillagerRegistry.IVillageC
     @Override
     public StructureVillagePieces.PieceWeight getVillagePieceWeight(Random random, int villageSize)
     {
-        StructureInfo structureInfo = StructureRegistry.INSTANCE.isStructureGenerating(structureID) ? StructureRegistry.INSTANCE.getStructure(structureID) : null;
+        StructureInfo structureInfo = StructureRegistry.INSTANCE.hasActive(structureID) ? StructureRegistry.INSTANCE.get(structureID) : null;
         if (structureInfo != null)
         {
             StructureGenerationInfo generationInfo = structureInfo.generationInfo(generationID);
@@ -78,7 +78,7 @@ public class GenericVillageCreationHandler implements VillagerRegistry.IVillageC
     @Override
     public StructureVillagePieces.Village buildComponent(StructureVillagePieces.PieceWeight villagePiece, StructureVillagePieces.Start startPiece, List<StructureComponent> pieces, Random random, int x, int y, int z, EnumFacing front, int generationDepth)
     {
-        StructureInfo structureInfo = StructureRegistry.INSTANCE.getStructure(structureID);
+        StructureInfo structureInfo = StructureRegistry.INSTANCE.get(structureID);
 
         if (structureInfo != null)
         {

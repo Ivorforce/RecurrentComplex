@@ -32,7 +32,7 @@ public class WorldGenMaze
         for (PlacedStructure placedComponent : placedStructures)
         {
             String structureID = placedComponent.structureID;
-            StructureInfo structureInfo = StructureRegistry.INSTANCE.getStructure(structureID);
+            StructureInfo structureInfo = StructureRegistry.INSTANCE.get(structureID);
 
             if (structureInfo != null && placedComponent.instanceData != null)
             {
@@ -53,7 +53,7 @@ public class WorldGenMaze
     {
         return Lists.newArrayList(placedComponents.stream().map(placedComponent -> {
             MazeComponentStructure<Connector> componentInfo = placedComponent.getComponent();
-            StructureInfo<?> structureInfo = StructureRegistry.INSTANCE.getStructure(componentInfo.structureID);
+            StructureInfo<?> structureInfo = StructureRegistry.INSTANCE.get(componentInfo.structureID);
 
             if (structureInfo != null)
             {
@@ -132,7 +132,7 @@ public class WorldGenMaze
 
         ImmutableMultimap<MazePassage, MazePassage> reachability = comp.reachability.build(transform, size, SavedMazeReachability.notBlocked(blockedConnections, transformedExits), transformedExits.keySet());
 
-        return new MazeComponentStructure<>(weight, StructureRegistry.INSTANCE.structureID(info), transform, ImmutableSet.copyOf(transformedRooms), ImmutableMap.copyOf(transformedExits), reachability);
+        return new MazeComponentStructure<>(weight, StructureRegistry.INSTANCE.id(info), transform, ImmutableSet.copyOf(transformedRooms), ImmutableMap.copyOf(transformedExits), reachability);
     }
 
     public static <C> SetMazeComponent<C> createCompleteComponent(Set<MazeRoom> rooms, Map<MazePassage, C> exits, C wallConnector)

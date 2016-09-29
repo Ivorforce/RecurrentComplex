@@ -55,7 +55,7 @@ public class ItemInventoryGenComponentTag extends Item implements GeneratingItem
 
     public static Component component(ItemStack stack)
     {
-        return GenericItemCollectionRegistry.INSTANCE.component(componentKey(stack));
+        return GenericItemCollectionRegistry.INSTANCE.get(componentKey(stack));
     }
 
     @Override
@@ -96,7 +96,7 @@ public class ItemInventoryGenComponentTag extends Item implements GeneratingItem
         if (component != null)
         {
             list.add(component.inventoryGeneratorID);
-            list.add(GenericItemCollectionRegistry.INSTANCE.isActive(componentKey(stack))
+            list.add(GenericItemCollectionRegistry.INSTANCE.hasActive(componentKey(stack))
                     ? IvTranslations.format("inventoryGen.active", TextFormatting.GREEN, TextFormatting.RESET)
                     : IvTranslations.format("inventoryGen.inactive", TextFormatting.RED, TextFormatting.RESET));
         }
@@ -110,7 +110,7 @@ public class ItemInventoryGenComponentTag extends Item implements GeneratingItem
     {
         super.getSubItems(item, creativeTabs, list);
 
-        for (String key : GenericItemCollectionRegistry.INSTANCE.allComponentKeys())
+        for (String key : GenericItemCollectionRegistry.INSTANCE.ids())
         {
             ItemStack stack = new ItemStack(item);
             setComponentKey(stack, key);

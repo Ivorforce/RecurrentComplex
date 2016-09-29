@@ -11,10 +11,10 @@ import ivorius.reccomplex.RecurrentComplex;
 import ivorius.reccomplex.events.RCEventBus;
 import ivorius.reccomplex.events.StructureGenerationEvent;
 import ivorius.reccomplex.events.StructureGenerationEventLite;
+import ivorius.reccomplex.files.SimpleCustomizableRegistry;
 import ivorius.reccomplex.structures.*;
 import ivorius.reccomplex.structures.generic.gentypes.StructureGenerationInfo;
 import ivorius.reccomplex.structures.generic.placement.StructurePlaceContext;
-import ivorius.reccomplex.structures.generic.transformers.TransformerMulti;
 import ivorius.reccomplex.utils.BlockSurfacePos;
 import ivorius.reccomplex.utils.NBTStorable;
 import net.minecraft.nbt.NBTBase;
@@ -207,7 +207,7 @@ public class StructureGenerator<S extends NBTStorable>
     @Nonnull
     public StructureInfo<S> structure()
     {
-        StructureInfo<S> structureInfo = this.structureInfo != null ? this.structureInfo : structureID != null ? StructureRegistry.INSTANCE.getStructure(structureID) : null;
+        StructureInfo<S> structureInfo = this.structureInfo != null ? this.structureInfo : structureID != null ? StructureRegistry.INSTANCE.get(structureID) : null;
         if (structureInfo == null) throw new IllegalStateException();
         return structureInfo;
     }
@@ -215,7 +215,7 @@ public class StructureGenerator<S extends NBTStorable>
     @Nullable
     public String structureID()
     {
-        return this.structureID != null ? this.structureID : this.structureInfo != null ? StructureRegistry.INSTANCE.structureID(structureInfo) : null;
+        return this.structureID != null ? this.structureID : this.structureInfo != null ? StructureRegistry.INSTANCE.id((StructureInfo) structureInfo) : null;
     }
 
     public StructureGenerator<S> lowerCoord(@Nonnull BlockPos lowerCoord)

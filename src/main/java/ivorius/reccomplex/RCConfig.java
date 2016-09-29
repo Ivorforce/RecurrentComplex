@@ -9,6 +9,7 @@ import com.google.common.collect.Lists;
 import gnu.trove.map.TObjectDoubleMap;
 import gnu.trove.map.hash.TObjectDoubleHashMap;
 import ivorius.reccomplex.structures.StructureRegistry;
+import ivorius.reccomplex.structures.generic.StructureSaveHandler;
 import ivorius.reccomplex.structures.generic.matchers.BiomeMatcher;
 import ivorius.reccomplex.structures.generic.matchers.CommandMatcher;
 import ivorius.reccomplex.structures.generic.matchers.DimensionMatcher;
@@ -17,6 +18,7 @@ import ivorius.reccomplex.structures.generic.transformers.TransformerMulti;
 import ivorius.reccomplex.utils.ExpressionCache;
 import ivorius.reccomplex.worldgen.decoration.RCBiomeDecorator;
 import ivorius.reccomplex.worldgen.inventory.GenericItemCollectionRegistry;
+import ivorius.reccomplex.worldgen.inventory.ItemCollectionSaveHandler;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.WorldProvider;
@@ -70,11 +72,17 @@ public class RCConfig
 
     private static boolean lightweightMode;
 
-    private static ResourceMatcher structureLoadMatcher = new ResourceMatcher("", StructureRegistry.INSTANCE::hasStructure);
-    private static ResourceMatcher structureGenerationMatcher = new ResourceMatcher("", StructureRegistry.INSTANCE::hasStructure);
+    private static ResourceMatcher structureLoadMatcher = new ResourceMatcher("", (key) ->
+    {
+        return StructureRegistry.INSTANCE.has(key);
+    });
+    private static ResourceMatcher structureGenerationMatcher = new ResourceMatcher("", (key) ->
+    {
+        return StructureRegistry.INSTANCE.has(key);
+    });
 
-    private static ResourceMatcher inventoryGeneratorLoadMatcher = new ResourceMatcher("", GenericItemCollectionRegistry.INSTANCE::isLoaded);
-    private static ResourceMatcher inventoryGeneratorGenerationMatcher = new ResourceMatcher("", GenericItemCollectionRegistry.INSTANCE::isLoaded);
+    private static ResourceMatcher inventoryGeneratorLoadMatcher = new ResourceMatcher("", (key) -> GenericItemCollectionRegistry.INSTANCE.has(key));
+    private static ResourceMatcher inventoryGeneratorGenerationMatcher = new ResourceMatcher("", (key) -> GenericItemCollectionRegistry.INSTANCE.has(key));
 
     private static BiomeMatcher universalBiomeMatcher = new BiomeMatcher("");
     private static DimensionMatcher universalDimensionMatcher = new DimensionMatcher("");
@@ -188,19 +196,19 @@ public class RCConfig
         return lightweightMode;
     }
 
-    public static boolean shouldStructureLoad(String id, String domain)
+    public static boolean shouldResourceLoad(String fileSuffix, String id, String domain)
     {
-        return structureLoadMatcher.test(new ResourceLocation(domain, id));
+        if (fileSuffix.equals(StructureSaveHandler.FILE_SUFFIX))
+            return structureLoadMatcher.test(new ResourceLocation(domain, id));
+        else if (fileSuffix.equals(ItemCollectionSaveHandler.FILE_SUFFIX))
+            return inventoryGeneratorLoadMatcher.test(new ResourceLocation(domain, id));
+
+        return true;
     }
 
     public static boolean shouldStructureGenerate(String id, String domain)
     {
         return structureGenerationMatcher.test(new ResourceLocation(domain, id));
-    }
-
-    public static boolean shouldInventoryGeneratorLoad(String id, String domain)
-    {
-        return inventoryGeneratorLoadMatcher.test(new ResourceLocation(domain, id));
     }
 
     public static boolean shouldInventoryGeneratorGenerate(String id, String domain)

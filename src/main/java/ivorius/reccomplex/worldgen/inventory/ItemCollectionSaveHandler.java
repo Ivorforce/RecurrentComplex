@@ -5,18 +5,21 @@
 
 package ivorius.reccomplex.worldgen.inventory;
 
-import ivorius.ivtoolkit.tools.IvFileHelper;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.JsonSyntaxException;
+import io.netty.buffer.ByteBuf;
 import ivorius.reccomplex.RecurrentComplex;
-import ivorius.reccomplex.files.FileLoadContext;
-import ivorius.reccomplex.files.FileTypeHandler;
 import ivorius.reccomplex.files.RCFileTypeRegistry;
+import ivorius.reccomplex.json.NbtToJson;
 import ivorius.reccomplex.structures.generic.StructureSaveHandler;
 import ivorius.reccomplex.worldgen.inventory.GenericItemCollection.Component;
+import net.minecraftforge.fml.common.network.ByteBufUtils;
 import org.apache.commons.io.FileUtils;
-import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.filefilter.FileFilterUtils;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -26,46 +29,13 @@ import java.util.Set;
 /**
  * Created by lukas on 25.05.14.
  */
-public class ItemCollectionSaveHandler implements FileTypeHandler
+public class ItemCollectionSaveHandler
 {
     public static final ItemCollectionSaveHandler INSTANCE = new ItemCollectionSaveHandler();
 
     public static final String FILE_SUFFIX = "rcig";
 
-    public static Component readInventoryGenerator(Path file) throws IOException, InventoryLoadException
-    {
-        return GenericItemCollectionRegistry.INSTANCE.createComponentFromJSON(new String(Files.readAllBytes(file)));
-    }
-
-    @Override
-    public boolean loadFile(Path path, FileLoadContext context)
-    {
-        try
-        {
-            Component component = readInventoryGenerator(path);
-
-            String name = context.customID != null ? context.customID : FilenameUtils.getBaseName(path.getFileName().toString());
-
-            if (component.inventoryGeneratorID == null || component.inventoryGeneratorID.length() == 0) // Legacy support
-                component.inventoryGeneratorID = name;
-
-            GenericItemCollectionRegistry.INSTANCE.register(component, name, context.domain, context.active, context.custom);
-
-            return true;
-        }
-        catch (IOException | InventoryLoadException e)
-        {
-            RecurrentComplex.logger.warn("Error reading inventory generator", e);
-        }
-
-        return false;
-    }
-
-    @Override
-    public void clearCustomFiles()
-    {
-        GenericItemCollectionRegistry.INSTANCE.clearCustom();
-    }
+    private Gson gson = createGson();
 
     public boolean save(@Nonnull Component info, @Nonnull String name, boolean active)
     {
@@ -73,7 +43,7 @@ public class ItemCollectionSaveHandler implements FileTypeHandler
         if (parent != null)
         {
             File newFile = new File(parent, String.format("%s.%s", name, FILE_SUFFIX));
-            String json = GenericItemCollectionRegistry.INSTANCE.createJSONFromComponent(info);
+            String json = toJSON(info);
 
             try
             {
@@ -89,6 +59,53 @@ public class ItemCollectionSaveHandler implements FileTypeHandler
         }
 
         return false;
+    }
+
+    public Gson createGson()
+    {
+        GsonBuilder builder = new GsonBuilder();
+
+        builder.registerTypeAdapter(Component.class, new Component.Serializer());
+        NbtToJson.registerSafeNBTSerializer(builder);
+
+        return builder.create();
+    }
+
+    public void write(ByteBuf data, Component component)
+    {
+        ByteBufUtils.writeUTF8String(data, toJSON(component));
+    }
+
+    @Nullable
+    public Component read(ByteBuf data)
+    {
+        try
+        {
+            return this.fromJSON(ByteBufUtils.readUTF8String(data));
+        }
+        catch (InventoryLoadException e)
+        {
+            e.printStackTrace();
+        }
+
+        return null;
+    }
+
+    public String toJSON(Component inventoryGenerator)
+    {
+        return gson.toJson(inventoryGenerator, Component.class);
+    }
+
+    public Component fromJSON(String json) throws InventoryLoadException
+    {
+        try
+        {
+            return gson.fromJson(json, Component.class);
+        }
+        catch (JsonSyntaxException e)
+        {
+            throw new InventoryLoadException(e);
+        }
     }
 
     public boolean has(String name, boolean activeFolder)

@@ -25,10 +25,7 @@ import net.minecraftforge.common.DimensionManager;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -69,7 +66,7 @@ public class CommandGenerateStructure extends CommandBase
     public static void generateStructure(ICommandSender commandSender, String[] args, int idIndex, int posIndex, ICommandSender posRef, int dimIndex, int genInfoIndex) throws CommandException
     {
         String structureName = args[idIndex];
-        StructureInfo<?> structureInfo = StructureRegistry.INSTANCE.getStructure(structureName);
+        StructureInfo<?> structureInfo = StructureRegistry.INSTANCE.get(structureName);
         WorldServer world = args.length > dimIndex ? DimensionManager.getWorld(parseInt(args[dimIndex])) : (WorldServer) commandSender.getEntityWorld();
 
         if (structureInfo == null)
@@ -124,13 +121,15 @@ public class CommandGenerateStructure extends CommandBase
     public static List<String> tabCompletionOptions(String[] args, int idIndex, int dimIndex, int genInfoIndex)
     {
         if (args.length == idIndex + 1)
-            return getListOfStringsMatchingLastWord(args, StructureRegistry.INSTANCE.allStructureIDs());
+        {
+            return getListOfStringsMatchingLastWord(args, StructureRegistry.INSTANCE.ids());
+        }
         else if (args.length == dimIndex + 1)
             return getListOfStringsMatchingLastWord(args, Arrays.stream(DimensionManager.getIDs()).map(String::valueOf).collect(Collectors.toList()));
         else if (args.length == genInfoIndex + 1)
         {
             String structureName = args[idIndex];
-            StructureInfo<?> structureInfo = StructureRegistry.INSTANCE.getStructure(structureName);
+            StructureInfo<?> structureInfo = StructureRegistry.INSTANCE.get(structureName);
             if (structureInfo instanceof GenericStructureInfo)
                 return getListOfStringsMatchingLastWord(args, structureInfo.generationInfos(StructureGenerationInfo.class).stream().map(StructureGenerationInfo::id).collect(Collectors.toList()));
         }

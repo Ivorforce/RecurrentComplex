@@ -11,9 +11,7 @@ import ivorius.reccomplex.RecurrentComplex;
 import ivorius.reccomplex.gui.container.IvGuiHandler;
 import ivorius.reccomplex.gui.container.IvGuiRegistry;
 import ivorius.reccomplex.gui.inventorygen.GuiEditInventoryGen;
-import ivorius.reccomplex.structures.generic.StructureSaveHandler;
 import ivorius.reccomplex.utils.SaveDirectoryData;
-import ivorius.reccomplex.worldgen.inventory.GenericItemCollectionRegistry;
 import ivorius.reccomplex.worldgen.inventory.ItemCollectionSaveHandler;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.inventory.Container;
@@ -43,7 +41,7 @@ public class RCGuiHandler implements IvGuiHandler
         ByteBuf buf = Unpooled.buffer();
 
         ByteBufUtils.writeUTF8String(buf, key);
-        GenericItemCollectionRegistry.INSTANCE.writeComponent(buf, component);
+        ItemCollectionSaveHandler.INSTANCE.write(buf, component);
         saveDirectoryData.writeTo(buf);
 
         IvGuiRegistry.INSTANCE.openGui(player, RecurrentComplex.MOD_ID, guiID, buf);
@@ -72,7 +70,7 @@ public class RCGuiHandler implements IvGuiHandler
                 return null; // Potential source of spoof otherwise
 
             String key = ByteBufUtils.readUTF8String(data);
-            Component component = GenericItemCollectionRegistry.INSTANCE.readComponent(data);
+            Component component = ItemCollectionSaveHandler.INSTANCE.read(data);
 
             if (component != null)
                 return new ContainerEditInventoryGenItems(player, key, component);
@@ -87,7 +85,7 @@ public class RCGuiHandler implements IvGuiHandler
         if (id == editInventoryGen || id == editInventoryGenItems)
         {
             String key = ByteBufUtils.readUTF8String(data);
-            Component component = GenericItemCollectionRegistry.INSTANCE.readComponent(data);
+            Component component = ItemCollectionSaveHandler.INSTANCE.read(data);
             SaveDirectoryData saveDirectoryData = SaveDirectoryData.readFrom(data);
 
             if (component != null)

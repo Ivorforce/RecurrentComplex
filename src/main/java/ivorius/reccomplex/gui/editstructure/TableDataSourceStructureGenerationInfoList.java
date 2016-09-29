@@ -10,10 +10,7 @@ import ivorius.reccomplex.gui.editstructure.preset.TableDataSourcePresettedList;
 import ivorius.reccomplex.gui.table.*;
 import ivorius.reccomplex.structures.StructureRegistry;
 import ivorius.reccomplex.structures.generic.gentypes.StructureGenerationInfo;
-import ivorius.reccomplex.utils.IvClasses;
 
-import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 
 /**
@@ -32,7 +29,7 @@ public class TableDataSourceStructureGenerationInfoList extends TableDataSourceL
     @Override
     public TableCellButton[] getAddActions()
     {
-        return TableDataSourcePresettedList.addActions(StructureRegistry.INSTANCE.getGenerationInfoRegistry().allIDs(), "reccomplex.generationInfo.", canEditList());
+        return TableDataSourcePresettedList.addActions(StructureRegistry.GENERATION_INFOS.allIDs(), "reccomplex.generationInfo.", canEditList());
     }
 
     @Override
@@ -44,7 +41,7 @@ public class TableDataSourceStructureGenerationInfoList extends TableDataSourceL
     @Override
     public StructureGenerationInfo newEntry(String actionID)
     {
-        return tryInstantiate(actionID, StructureRegistry.INSTANCE.getGenerationInfoRegistry().typeForID(actionID), "Failed instantiating generation info: %s");
+        return tryInstantiate(actionID, StructureRegistry.GENERATION_INFOS.typeForID(actionID), "Failed instantiating generation info: %s");
     }
 
     @Override

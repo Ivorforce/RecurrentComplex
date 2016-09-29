@@ -34,7 +34,7 @@ public abstract class Transformer<S extends NBTStorable>
     public static String randomID(Class<? extends Transformer> type)
     {
         Random random = new Random();
-        return String.format("%s_%s", StructureRegistry.INSTANCE.getTransformerRegistry().iDForType(type), Integer.toHexString(random.nextInt()));
+        return String.format("%s_%s", StructureRegistry.TRANSFORMERS.iDForType(type), Integer.toHexString(random.nextInt()));
     }
 
     public static String randomID(String type)

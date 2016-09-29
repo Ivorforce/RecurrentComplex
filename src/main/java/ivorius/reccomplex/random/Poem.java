@@ -7,7 +7,7 @@ package ivorius.reccomplex.random;
 
 import com.google.common.io.LineReader;
 import ivorius.reccomplex.RecurrentComplex;
-import ivorius.reccomplex.files.SimpleFileRegistry;
+import ivorius.reccomplex.files.SimpleCustomizableRegistry;
 
 import java.io.IOException;
 import java.io.StringReader;
@@ -104,7 +104,7 @@ public class Poem
     private String title;
     private String text;
 
-    public static SimpleFileRegistry<Theme> THEME_REGISTRY = new SimpleFileRegistry<>("poem theme");
+    public static SimpleCustomizableRegistry<Theme> THEME_REGISTRY = new SimpleCustomizableRegistry<>("poem theme");
 
     public Poem(String title, String text)
     {

@@ -6,8 +6,8 @@
 package ivorius.reccomplex.network;
 
 import io.netty.buffer.ByteBuf;
-import ivorius.reccomplex.structures.StructureRegistry;
 import ivorius.reccomplex.structures.generic.GenericStructureInfo;
+import ivorius.reccomplex.structures.generic.StructureSaveHandler;
 import ivorius.reccomplex.utils.SaveDirectoryData;
 import net.minecraftforge.fml.common.network.ByteBufUtils;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
@@ -67,7 +67,7 @@ public class PacketSaveStructure implements IMessage
     public void fromBytes(ByteBuf buf)
     {
         structureID = ByteBufUtils.readUTF8String(buf);
-        structureInfo = StructureRegistry.INSTANCE.createStructureFromJSON(ByteBufUtils.readUTF8String(buf));
+        structureInfo = StructureSaveHandler.INSTANCE.fromJSON(ByteBufUtils.readUTF8String(buf));
         saveDirectoryDataResult = SaveDirectoryData.Result.readFrom(buf);
     }
 
@@ -75,7 +75,7 @@ public class PacketSaveStructure implements IMessage
     public void toBytes(ByteBuf buf)
     {
         ByteBufUtils.writeUTF8String(buf, structureID);
-        ByteBufUtils.writeUTF8String(buf, StructureRegistry.INSTANCE.createJSONFromStructure(structureInfo));
+        ByteBufUtils.writeUTF8String(buf, StructureSaveHandler.INSTANCE.toJSON(structureInfo));
         saveDirectoryDataResult.writeTo(buf);
     }
 }

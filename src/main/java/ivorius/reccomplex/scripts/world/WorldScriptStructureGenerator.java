@@ -11,6 +11,7 @@ import ivorius.ivtoolkit.math.AxisAlignedTransform2D;
 import ivorius.ivtoolkit.random.WeightedSelector;
 import ivorius.ivtoolkit.tools.IvCollections;
 import ivorius.ivtoolkit.tools.IvTranslations;
+import ivorius.reccomplex.files.SimpleCustomizableRegistry;
 import ivorius.reccomplex.gui.table.TableDataSource;
 import ivorius.reccomplex.gui.table.TableDelegate;
 import ivorius.reccomplex.gui.table.TableNavigator;
@@ -181,7 +182,7 @@ public class WorldScriptStructureGenerator implements WorldScript<WorldScriptStr
             if (structureNames.size() > 0)
             {
                 String structureID = structureNames.get(random.nextInt(structureNames.size()));
-                StructureInfo<?> structureInfo = StructureRegistry.INSTANCE.getStructure(structureID);
+                StructureInfo<?> structureInfo = StructureRegistry.INSTANCE.get(structureID);
 
                 if (structureInfo != null)
                 {
@@ -207,7 +208,7 @@ public class WorldScriptStructureGenerator implements WorldScript<WorldScriptStr
             {
                 Pair<StructureInfo, StructureListGenerationInfo> pair = WeightedSelector.select(random, generationInfos, item -> item.getRight().getWeight());
                 StructureInfo structureInfo = pair.getLeft();
-                String structureID = StructureRegistry.INSTANCE.structureID(structureInfo);
+                String structureID = StructureRegistry.INSTANCE.id(structureInfo);
                 StructureListGenerationInfo generationInfo = pair.getRight();
 
                 boolean mirrorX;
@@ -243,7 +244,7 @@ public class WorldScriptStructureGenerator implements WorldScript<WorldScriptStr
     @Override
     public void generate(StructureSpawnContext context, InstanceData instanceData, BlockPos coord)
     {
-        StructureInfo structureInfo = StructureRegistry.INSTANCE.getStructure(instanceData.structureID);
+        StructureInfo structureInfo = StructureRegistry.INSTANCE.get(instanceData.structureID);
         NBTStorable structureData = instanceData.structureData;
 
         if (structureInfo != null && structureData != null)
@@ -300,7 +301,7 @@ public class WorldScriptStructureGenerator implements WorldScript<WorldScriptStr
             lowerCoord = BlockPositions.readFromNBT("lowerCoord", compound);
             structureTransform = AxisAlignedTransform2D.from(compound.getInteger("rotation"), compound.getBoolean("mirrorX"));
 
-            StructureInfo structureInfo = StructureRegistry.INSTANCE.getStructure(structureID);
+            StructureInfo structureInfo = StructureRegistry.INSTANCE.get(structureID);
             if (structureInfo != null)
                 new StructureGenerator<>(structureInfo).instanceData(compound.getTag("structureData"))
                         .transform(structureTransform).lowerCoord(lowerCoord).instanceData().orElse(null);

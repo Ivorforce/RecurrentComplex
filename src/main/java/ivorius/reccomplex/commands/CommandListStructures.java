@@ -51,7 +51,7 @@ public class CommandListStructures extends CommandBase
         int page = args.length >= 1 ? parseInt(args[0]) : 0;
 
         List<String> structureNames = new ArrayList<>();
-        structureNames.addAll(StructureRegistry.INSTANCE.allStructureIDs());
+        structureNames.addAll(StructureRegistry.INSTANCE.ids());
         Collections.sort(structureNames, String.CASE_INSENSITIVE_ORDER);
 
         int startIndex = page * MAX_RESULTS;

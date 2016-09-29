@@ -5,11 +5,15 @@
 
 package ivorius.reccomplex.structures.generic;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.JsonSyntaxException;
 import ivorius.ivtoolkit.tools.IvFileHelper;
 import ivorius.reccomplex.RecurrentComplex;
-import ivorius.reccomplex.files.FileLoadContext;
-import ivorius.reccomplex.files.FileTypeHandler;
+import ivorius.reccomplex.files.FileTypeHandlerRegistry;
 import ivorius.reccomplex.files.RCFileTypeRegistry;
+import ivorius.reccomplex.json.NbtToJson;
+import ivorius.reccomplex.structures.StructureInfo;
 import ivorius.reccomplex.structures.StructureRegistry;
 import ivorius.reccomplex.utils.ByteArrays;
 import net.minecraft.nbt.CompressedStreamTools;
@@ -20,7 +24,10 @@ import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.filefilter.FileFilterUtils;
 import org.apache.commons.io.filefilter.IOFileFilter;
 
-import java.io.*;
+import java.io.ByteArrayInputStream;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Arrays;
@@ -34,7 +41,7 @@ import java.util.zip.ZipOutputStream;
 /**
  * Created by lukas on 25.05.14.
  */
-public class StructureSaveHandler implements FileTypeHandler
+public class StructureSaveHandler
 {
     public static final StructureSaveHandler INSTANCE = new StructureSaveHandler(StructureRegistry.INSTANCE);
 
@@ -42,11 +49,13 @@ public class StructureSaveHandler implements FileTypeHandler
     public static final String STRUCTURE_INFO_JSON_FILENAME = "structure.json";
     public static final String WORLD_DATA_NBT_FILENAME = "worldData.nbt";
 
-    public StructureRegistry registry;
+    public final StructureRegistry registry;
+    public final Gson gson;
 
     public StructureSaveHandler(StructureRegistry registry)
     {
         this.registry = registry;
+        gson = createGson();
     }
 
     protected static void addZipEntry(ZipOutputStream zip, String path, byte[] bytes) throws IOException
@@ -58,12 +67,52 @@ public class StructureSaveHandler implements FileTypeHandler
         zip.closeEntry();
     }
 
+    public static Set<String> listFiles(boolean activeFolder, IOFileFilter... filter)
+    {
+        try
+        {
+            File parent = RCFileTypeRegistry.getDirectory(activeFolder);
+            return Arrays.stream(parent.list(FileFilterUtils.or(filter)))
+                    .map(FilenameUtils::removeExtension)
+                    .collect(Collectors.toSet());
+        }
+        catch (Throwable e)
+        {
+            RecurrentComplex.logger.error("Error when looking up structure", e);
+        }
+
+        return Collections.emptySet();
+    }
+
+    public Gson createGson()
+    {
+        GsonBuilder builder = new GsonBuilder();
+
+        builder.registerTypeAdapter(GenericStructureInfo.class, new GenericStructureInfo.Serializer());
+        StructureRegistry.TRANSFORMERS.constructGson(builder);
+        StructureRegistry.GENERATION_INFOS.constructGson(builder);
+
+        NbtToJson.registerSafeNBTSerializer(builder);
+
+        return builder.create();
+    }
+
+    public GenericStructureInfo fromJSON(String jsonData) throws JsonSyntaxException
+    {
+        return gson.fromJson(jsonData, GenericStructureInfo.class);
+    }
+
+    public String toJSON(GenericStructureInfo structureInfo)
+    {
+        return gson.toJson(structureInfo, GenericStructureInfo.class);
+    }
+
     public boolean save(GenericStructureInfo info, String structureName, boolean activeFolder)
     {
         File parent = RCFileTypeRegistry.getDirectory(activeFolder);
         if (parent != null)
         {
-            String json = registry.createJSONFromStructure(info);
+            String json = toJSON(info);
 
             if (RecurrentComplex.USE_ZIP_FOR_STRUCTURE_FILES)
             {
@@ -109,23 +158,6 @@ public class StructureSaveHandler implements FileTypeHandler
         }
 
         return false;
-    }
-
-    public static Set<String> listFiles(boolean activeFolder, IOFileFilter... filter)
-    {
-        try
-        {
-            File parent = RCFileTypeRegistry.getDirectory(activeFolder);
-            return Arrays.stream(parent.list(FileFilterUtils.or(filter)))
-                    .map(FilenameUtils::removeExtension)
-                    .collect(Collectors.toSet());
-        }
-        catch (Throwable e)
-        {
-            RecurrentComplex.logger.error("Error when looking up structure", e);
-        }
-
-        return Collections.emptySet();
     }
 
     public Set<String> list(boolean activeFolder)
@@ -213,7 +245,7 @@ public class StructureSaveHandler implements FileTypeHandler
             if (json == null || worldData == null)
                 throw new StructureInvalidZipException(json != null, worldData != null);
 
-            GenericStructureInfo genericStructureInfo = registry.createStructureFromJSON(json);
+            GenericStructureInfo genericStructureInfo = fromJSON(json);
             genericStructureInfo.worldDataCompound = worldData;
 
             return genericStructureInfo;
@@ -224,29 +256,15 @@ public class StructureSaveHandler implements FileTypeHandler
         }
     }
 
-    @Override
-    public boolean loadFile(Path path, FileLoadContext context)
+    public static class Loader extends FileTypeHandlerRegistry<StructureInfo>
     {
-        try
+        public Loader() {
+            super(FILE_SUFFIX, StructureRegistry.INSTANCE);}
+
+        @Override
+        public StructureInfo read(Path path, String name) throws Exception
         {
-            GenericStructureInfo genericStructureInfo = read(path);
-
-            String structureID = context.customID != null ? context.customID : FilenameUtils.getBaseName(path.getFileName().toString());
-
-            if (registry.registerStructure(genericStructureInfo, structureID, context.domain, path, context.active, context.custom))
-                return true;
+            return INSTANCE.read(path);
         }
-        catch (IOException | StructureLoadException e)
-        {
-            RecurrentComplex.logger.warn("Error reading structure", e);
-        }
-
-        return false;
-    }
-
-    @Override
-    public void clearCustomFiles()
-    {
-        StructureRegistry.INSTANCE.clearCustom();
     }
 }

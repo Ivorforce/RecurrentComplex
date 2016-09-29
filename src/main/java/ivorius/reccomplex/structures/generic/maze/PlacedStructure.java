@@ -45,7 +45,7 @@ public class PlacedStructure implements NBTCompoundObject
         transform = AxisAlignedTransform2D.from(compound.getInteger("rotation"), compound.getBoolean("mirrorX"));
         lowerCoord = BlockPositions.readFromNBT("lowerCoord", compound);
 
-        StructureInfo<?> structureInfo = StructureRegistry.INSTANCE.getStructure(structureID);
+        StructureInfo<?> structureInfo = StructureRegistry.INSTANCE.get(structureID);
 
         instanceData = compound.hasKey("instanceData", Constants.NBT.TAG_COMPOUND) && structureInfo != null
                 ? new StructureGenerator<>().structure((StructureInfo<NBTStorable>) structureInfo).instanceData(compound.getTag("instanceData"))

@@ -8,7 +8,7 @@ package ivorius.reccomplex.files;
 /**
  * Created by lukas on 29.09.16.
  */
-public interface FileRegistry<S>
+public interface CustomizableRegistry<S>
 {
     S register(String id, String domain, S s, boolean active, boolean custom);
 

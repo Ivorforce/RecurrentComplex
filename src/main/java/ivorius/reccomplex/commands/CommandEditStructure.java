@@ -64,7 +64,9 @@ public class CommandEditStructure extends CommandBase
     public List<String> getTabCompletionOptions(MinecraftServer server, ICommandSender sender, String[] args, @Nullable BlockPos pos)
     {
         if (args.length == 1)
-            return getListOfStringsMatchingLastWord(args, StructureRegistry.INSTANCE.allStructureIDs());
+        {
+            return getListOfStringsMatchingLastWord(args, StructureRegistry.INSTANCE.ids());
+        }
 
         return null;
     }

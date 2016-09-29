@@ -13,7 +13,7 @@ import ivorius.reccomplex.blocks.*;
 import ivorius.reccomplex.blocks.materials.MaterialNegativeSpace;
 import ivorius.reccomplex.blocks.materials.RCMaterials;
 import ivorius.reccomplex.entities.StructureEntityInfo;
-import ivorius.reccomplex.files.FileTypeHandlerRegistry;
+import ivorius.reccomplex.files.FileTypeHandlerString;
 import ivorius.reccomplex.files.RCFileSuffix;
 import ivorius.reccomplex.items.*;
 import ivorius.reccomplex.json.SerializableStringTypeRegistry;
@@ -38,6 +38,7 @@ import ivorius.reccomplex.structures.generic.transformers.*;
 import ivorius.reccomplex.structures.schematics.OperationGenerateSchematic;
 import ivorius.reccomplex.utils.FMLUtils;
 import ivorius.reccomplex.utils.PresetRegistry;
+import ivorius.reccomplex.worldgen.inventory.GenericItemCollectionRegistry;
 import ivorius.reccomplex.worldgen.inventory.ItemCollectionSaveHandler;
 import ivorius.reccomplex.worldgen.inventory.RCInventoryGenerators;
 import ivorius.reccomplex.worldgen.selector.NaturalStructureSelector;
@@ -238,11 +239,13 @@ public class RCRegistryHandler
 
         RCBiomeDictionary.registerTypes();
 
-        fileTypeRegistry.put(StructureSaveHandler.FILE_SUFFIX, StructureSaveHandler.INSTANCE);
-        fileTypeRegistry.put(ItemCollectionSaveHandler.FILE_SUFFIX, ItemCollectionSaveHandler.INSTANCE);
-        fileTypeRegistry.put(RCFileSuffix.POEM_THEME, new FileTypeHandlerRegistry<>(Poem.Theme::fromFile, Poem.THEME_REGISTRY));
-        fileTypeRegistry.put(RCFileSuffix.NATURAL_CATEGORY, new FileTypeHandlerRegistry<>(NaturalStructureSelector.SimpleCategory.class,
-                NaturalStructureSelector.CATEGORY_REGISTRY));
+        fileTypeRegistry.put(StructureSaveHandler.FILE_SUFFIX, new StructureSaveHandler.Loader());
+        fileTypeRegistry.put(ItemCollectionSaveHandler.FILE_SUFFIX, new FileTypeHandlerString<>(ItemCollectionSaveHandler.FILE_SUFFIX,
+                GenericItemCollectionRegistry.INSTANCE, ItemCollectionSaveHandler.INSTANCE::fromJSON));
+        fileTypeRegistry.put(RCFileSuffix.POEM_THEME, new FileTypeHandlerString<>(RCFileSuffix.POEM_THEME,
+                Poem.THEME_REGISTRY, Poem.Theme::fromFile));
+        fileTypeRegistry.put(RCFileSuffix.NATURAL_CATEGORY, new FileTypeHandlerString<>(RCFileSuffix.NATURAL_CATEGORY,
+                NaturalStructureSelector.CATEGORY_REGISTRY, NaturalStructureSelector.SimpleCategory.class));
         fileTypeRegistry.put(BiomeMatcherPresets.FILE_SUFFIX, BiomeMatcherPresets.instance());
         fileTypeRegistry.put(DimensionMatcherPresets.FILE_SUFFIX, DimensionMatcherPresets.instance());
         fileTypeRegistry.put(WeightedBlockStatePresets.FILE_SUFFIX, WeightedBlockStatePresets.instance());
@@ -254,7 +257,7 @@ public class RCRegistryHandler
         WorldScriptRegistry.INSTANCE.register("mazeGen", WorldScriptMazeGenerator.class);
         WorldScriptRegistry.INSTANCE.register("command", WorldScriptCommand.class);
 
-        SerializableStringTypeRegistry<Transformer> transformerRegistry = StructureRegistry.INSTANCE.getTransformerRegistry();
+        SerializableStringTypeRegistry<Transformer> transformerRegistry = StructureRegistry.TRANSFORMERS;
         transformerRegistry.registerType("multi", TransformerMulti.class, new TransformerMulti.Serializer());
         transformerRegistry.registerType("worldscript", TransformerWorldScript.class, new TransformerWorldScript.Serializer(mcRegistry));
         transformerRegistry.registerType("villagereplace", TransformerVillageSpecific.class, new TransformerVillageSpecific.Serializer(mcRegistry));
@@ -268,7 +271,7 @@ public class RCRegistryHandler
         transformerRegistry.registerType("ensureBlocks", TransformerEnsureBlocks.class, new TransformerEnsureBlocks.Serializer(mcRegistry));
         transformerRegistry.registerType("propertyReplace", TransformerProperty.class, new TransformerProperty.Serializer(mcRegistry));
 
-        SerializableStringTypeRegistry<StructureGenerationInfo> genInfoRegistry = StructureRegistry.INSTANCE.getGenerationInfoRegistry();
+        SerializableStringTypeRegistry<StructureGenerationInfo> genInfoRegistry = StructureRegistry.GENERATION_INFOS;
         genInfoRegistry.registerType("natural", NaturalGenerationInfo.class, new NaturalGenerationInfo.Serializer());
         genInfoRegistry.registerType("structureList", StructureListGenerationInfo.class, new StructureListGenerationInfo.Serializer());
         genInfoRegistry.registerType("mazeComponent", MazeGenerationInfo.class, new MazeGenerationInfo.Serializer());
@@ -317,5 +320,4 @@ public class RCRegistryHandler
             RecurrentComplex.logger.error("Error saving preset: " + s, e);
         }
     }
-
 }

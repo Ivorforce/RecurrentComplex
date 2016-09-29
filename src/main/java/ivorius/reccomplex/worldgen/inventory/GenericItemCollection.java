@@ -120,7 +120,7 @@ public class GenericItemCollection implements WeightedItemCollection
         {
             try
             {
-                return GenericItemCollectionRegistry.INSTANCE.createComponentFromJSON(GenericItemCollectionRegistry.INSTANCE.createJSONFromComponent(this));
+                return ItemCollectionSaveHandler.INSTANCE.fromJSON(ItemCollectionSaveHandler.INSTANCE.toJSON(this));
             }
             catch (InventoryLoadException e)
             {

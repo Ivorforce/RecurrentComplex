@@ -6,15 +6,13 @@
 package ivorius.reccomplex.structures.generic;
 
 import com.google.gson.*;
-import ivorius.ivtoolkit.tools.*;
+import ivorius.ivtoolkit.blocks.IvBlockCollection;
+import ivorius.ivtoolkit.tools.IvWorldData;
 import ivorius.ivtoolkit.transform.Mover;
 import ivorius.ivtoolkit.transform.PosTransformer;
-import net.minecraft.block.state.IBlockState;
-import net.minecraft.entity.EntityList;
-import net.minecraft.util.math.BlockPos;
-import ivorius.ivtoolkit.blocks.IvBlockCollection;
 import ivorius.reccomplex.RecurrentComplex;
 import ivorius.reccomplex.blocks.GeneratingTileEntity;
+import ivorius.reccomplex.files.SimpleCustomizableRegistry;
 import ivorius.reccomplex.json.JsonUtils;
 import ivorius.reccomplex.json.NbtToJson;
 import ivorius.reccomplex.structures.*;
@@ -22,17 +20,21 @@ import ivorius.reccomplex.structures.generic.gentypes.MazeGenerationInfo;
 import ivorius.reccomplex.structures.generic.gentypes.NaturalGenerationInfo;
 import ivorius.reccomplex.structures.generic.gentypes.StructureGenerationInfo;
 import ivorius.reccomplex.structures.generic.matchers.DependencyMatcher;
-import ivorius.reccomplex.structures.generic.transformers.*;
+import ivorius.reccomplex.structures.generic.transformers.Transformer;
+import ivorius.reccomplex.structures.generic.transformers.TransformerMulti;
 import ivorius.reccomplex.utils.*;
 import ivorius.reccomplex.worldgen.inventory.InventoryGenerationHandler;
 import net.minecraft.block.material.Material;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityList;
 import net.minecraft.init.Blocks;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.WorldServer;
 import net.minecraftforge.common.util.Constants;
 
@@ -73,6 +75,12 @@ public class GenericStructureInfo implements StructureInfo<GenericStructureInfo.
         genericStructureInfo.generationInfos.add(new NaturalGenerationInfo());
 
         return genericStructureInfo;
+    }
+
+    private static double[] getEntityPos(NBTTagCompound compound)
+    {
+        NBTTagList pos = compound.getTagList("Pos", Constants.NBT.TAG_DOUBLE);
+        return new double[]{pos.getDoubleAt(0), pos.getDoubleAt(1), pos.getDoubleAt(2)};
     }
 
     @Nonnull
@@ -221,12 +229,6 @@ public class GenericStructureInfo implements StructureInfo<GenericStructureInfo.
         return true;
     }
 
-    private static double[] getEntityPos(NBTTagCompound compound)
-    {
-        NBTTagList pos = compound.getTagList("Pos", Constants.NBT.TAG_DOUBLE);
-        return new double[]{pos.getDoubleAt(0), pos.getDoubleAt(1), pos.getDoubleAt(2)};
-    }
-
     @Nonnull
     @Override
     public InstanceData prepareInstanceData(@Nonnull StructurePrepareContext context, @Nonnull TransformerMulti foreignTransformer)
@@ -325,13 +327,13 @@ public class GenericStructureInfo implements StructureInfo<GenericStructureInfo.
     @Override
     public String toString()
     {
-        String s = StructureRegistry.INSTANCE.structureID(this);
+        String s = StructureRegistry.INSTANCE.id(this);
         return s != null ? s : "Generic Structure";
     }
 
     public GenericStructureInfo copy()
     {
-        GenericStructureInfo genericStructureInfo = StructureRegistry.INSTANCE.createStructureFromJSON(StructureRegistry.INSTANCE.createJSONFromStructure(this));
+        GenericStructureInfo genericStructureInfo = StructureSaveHandler.INSTANCE.fromJSON(StructureSaveHandler.INSTANCE.toJSON(this));
         genericStructureInfo.worldDataCompound = worldDataCompound.copy();
         return genericStructureInfo;
     }
@@ -459,7 +461,8 @@ public class GenericStructureInfo implements StructureInfo<GenericStructureInfo.
             BlockPos origin = context.lowerCoord();
 
             NBTTagCompound tileEntityCompound = compound.getCompoundTag(InstanceData.KEY_TILE_ENTITIES);
-            worldData.tileEntities.stream().filter(tileEntity -> tileEntity instanceof GeneratingTileEntity).forEach(teCompound -> {
+            worldData.tileEntities.stream().filter(tileEntity -> tileEntity instanceof GeneratingTileEntity).forEach(teCompound ->
+            {
                 TileEntity tileEntity = RecurrentComplex.specialRegistry.loadTileEntity(TileEntities.getAnyWorld(), teCompound);
                 BlockPos key = tileEntity.getPos();
                 Mover.setTileEntityPos(tileEntity, context.transform.apply(key, areaSize).add(origin));

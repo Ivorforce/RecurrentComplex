@@ -48,7 +48,7 @@ public class RCCommunicationHandler extends IvFMLIntercommHandler
             boolean generates = cmp.getBoolean("generates");
 
             ResourceLocation resourceLocation = new ResourceLocation(genPath);
-            RecurrentComplex.fileTypeRegistry.tryLoad(resourceLocation, new FileLoadContext(resourceLocation.getResourceDomain(), generates, false, genID));
+            RecurrentComplex.fileTypeRegistry.tryLoad(resourceLocation, genID, new FileLoadContext(resourceLocation.getResourceDomain(), generates, false));
 
             return true;
         }
@@ -63,7 +63,7 @@ public class RCCommunicationHandler extends IvFMLIntercommHandler
             boolean generates = cmp.getBoolean("generates");
 
             ResourceLocation resourceLocation = new ResourceLocation(structurePath);
-            RecurrentComplex.fileTypeRegistry.tryLoad(resourceLocation, new FileLoadContext(resourceLocation.getResourceDomain(), generates, false, structureID));
+            RecurrentComplex.fileTypeRegistry.tryLoad(resourceLocation, structureID, new FileLoadContext(resourceLocation.getResourceDomain(), generates, false));
 
             return true;
         }

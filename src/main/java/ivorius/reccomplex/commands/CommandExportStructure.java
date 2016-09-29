@@ -6,6 +6,7 @@
 package ivorius.reccomplex.commands;
 
 import ivorius.ivtoolkit.blocks.BlockArea;
+import ivorius.reccomplex.files.SimpleCustomizableRegistry;
 import net.minecraft.command.CommandException;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.math.BlockPos;
@@ -107,14 +108,16 @@ public class CommandExportStructure extends CommandBase
     public List<String> getTabCompletionOptions(MinecraftServer server, ICommandSender sender, String[] args, @Nullable BlockPos pos)
     {
         if (args.length == 1)
-            return getListOfStringsMatchingLastWord(args, StructureRegistry.INSTANCE.allStructureIDs());
+        {
+            return getListOfStringsMatchingLastWord(args, StructureRegistry.INSTANCE.ids());
+        }
 
         return null;
     }
 
     public static GenericStructureInfo getGenericStructureInfo(String name) throws CommandException
     {
-        StructureInfo structureInfo = StructureRegistry.INSTANCE.getStructure(name);
+        StructureInfo structureInfo = StructureRegistry.INSTANCE.get(name);
 
         if (structureInfo == null)
             throw ServerTranslations.commandException("commands.structure.notRegistered", name);

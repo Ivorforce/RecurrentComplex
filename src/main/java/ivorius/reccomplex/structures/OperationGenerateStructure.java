@@ -6,19 +6,20 @@
 package ivorius.reccomplex.structures;
 
 import ivorius.ivtoolkit.blocks.BlockPositions;
-import ivorius.reccomplex.worldgen.StructureGenerator;
-import net.minecraft.util.math.BlockPos;
 import ivorius.ivtoolkit.math.AxisAlignedTransform2D;
 import ivorius.ivtoolkit.rendering.grid.BlockQuadCache;
 import ivorius.ivtoolkit.rendering.grid.GridQuadCache;
-import ivorius.reccomplex.client.rendering.*;
+import ivorius.reccomplex.client.rendering.OperationRenderer;
 import ivorius.reccomplex.operation.Operation;
 import ivorius.reccomplex.structures.generic.GenericStructureInfo;
+import ivorius.reccomplex.structures.generic.StructureSaveHandler;
+import ivorius.reccomplex.worldgen.StructureGenerator;
+import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldServer;
 import net.minecraftforge.common.util.Constants;
-import net.minecraft.client.renderer.GlStateManager;
 
 /**
  * Created by lukas on 10.02.15.
@@ -89,7 +90,7 @@ public class OperationGenerateStructure implements Operation
     @Override
     public void writeToNBT(NBTTagCompound compound)
     {
-        compound.setString("structureInfo", StructureRegistry.INSTANCE.createJSONFromStructure(structure));
+        compound.setString("structureInfo", StructureSaveHandler.INSTANCE.toJSON(structure));
         compound.setTag("structureData", structure.worldDataCompound);
 
         compound.setInteger("rotation", transform.getRotation());
@@ -106,7 +107,7 @@ public class OperationGenerateStructure implements Operation
     @Override
     public void readFromNBT(NBTTagCompound compound)
     {
-        structure = StructureRegistry.INSTANCE.createStructureFromJSON(compound.getString("structureInfo"));
+        structure = StructureSaveHandler.INSTANCE.fromJSON(compound.getString("structureInfo"));
         structure.worldDataCompound = compound.getCompoundTag("structureData");
 
         transform = AxisAlignedTransform2D.from(compound.getInteger("rotation"), compound.getBoolean("mirrorX"));

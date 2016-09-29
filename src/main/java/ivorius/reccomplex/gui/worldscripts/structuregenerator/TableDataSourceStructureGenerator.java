@@ -47,7 +47,7 @@ public class TableDataSourceStructureGenerator extends TableDataSourceSegmented
     {
         for (String s : structures)
         {
-            if (s.length() != 0 && StructureRegistry.INSTANCE.getStructure(s) == null)
+            if (s.length() != 0 && StructureRegistry.INSTANCE.get(s) == null)
                 return false; // s==0 = "No structure"
         }
 

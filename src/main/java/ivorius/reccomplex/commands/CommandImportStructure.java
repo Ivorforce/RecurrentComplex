@@ -55,7 +55,7 @@ public class CommandImportStructure extends CommandBase
         }
 
         String structureID = args[0];
-        StructureInfo<?> structureInfo = StructureRegistry.INSTANCE.getStructure(structureID);
+        StructureInfo<?> structureInfo = StructureRegistry.INSTANCE.get(structureID);
         World world = commandSender.getEntityWorld();
 
         if (structureInfo == null)
@@ -80,7 +80,9 @@ public class CommandImportStructure extends CommandBase
     public List<String> getTabCompletionOptions(MinecraftServer server, ICommandSender sender, String[] args, @Nullable BlockPos pos)
     {
         if (args.length == 1)
-            return getListOfStringsMatchingLastWord(args, StructureRegistry.INSTANCE.allStructureIDs());
+        {
+            return getListOfStringsMatchingLastWord(args, StructureRegistry.INSTANCE.ids());
+        }
         else if (args.length == 2 || args.length == 3 || args.length == 4)
             return getTabCompletionCoordinate(args, args.length - 1, pos);
         else if (args.length == 5 || args.length == 6)

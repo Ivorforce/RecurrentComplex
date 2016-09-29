@@ -33,7 +33,7 @@ public class TableDataSourceTransformerList extends TableDataSourceList<Transfor
     @Override
     public Transformer newEntry(String actionID)
     {
-        Class<? extends Transformer> clazz = StructureRegistry.INSTANCE.getTransformerRegistry().typeForID(actionID);
+        Class<? extends Transformer> clazz = StructureRegistry.TRANSFORMERS.typeForID(actionID);
         return tryInstantiate(actionID, clazz, "Failed instantiating transformer: %s");
     }
 
@@ -46,6 +46,6 @@ public class TableDataSourceTransformerList extends TableDataSourceList<Transfor
     @Override
     public TableCellButton[] getAddActions()
     {
-        return TableDataSourcePresettedList.addActions(StructureRegistry.INSTANCE.getTransformerRegistry().allIDs(), "reccomplex.transformer.", canEditList());
+        return TableDataSourcePresettedList.addActions(StructureRegistry.TRANSFORMERS.allIDs(), "reccomplex.transformer.", canEditList());
     }
 }

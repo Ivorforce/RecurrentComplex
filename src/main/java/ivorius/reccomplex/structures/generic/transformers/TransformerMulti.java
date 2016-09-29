@@ -6,7 +6,6 @@
 package ivorius.reccomplex.structures.generic.transformers;
 
 import com.google.gson.*;
-import com.google.gson.reflect.TypeToken;
 import ivorius.ivtoolkit.tools.IvTranslations;
 import ivorius.ivtoolkit.tools.IvWorldData;
 import ivorius.ivtoolkit.tools.NBTTagLists;
@@ -16,8 +15,6 @@ import ivorius.reccomplex.gui.table.TableDelegate;
 import ivorius.reccomplex.gui.table.TableNavigator;
 import ivorius.reccomplex.json.JsonUtils;
 import ivorius.reccomplex.structures.*;
-import ivorius.reccomplex.structures.generic.DimensionGenerationInfo;
-import ivorius.reccomplex.structures.generic.GenericStructureInfo;
 import ivorius.reccomplex.structures.generic.matchers.EnvironmentMatcher;
 import ivorius.reccomplex.structures.generic.presets.TransfomerPresets;
 import ivorius.reccomplex.utils.NBTStorable;
@@ -69,7 +66,7 @@ public class TransformerMulti extends Transformer<TransformerMulti.InstanceData>
     {
         GsonBuilder builder = new GsonBuilder();
         builder.registerTypeAdapter(Data.class, new DataSerializer());
-        StructureRegistry.INSTANCE.getTransformerRegistry().constructGson(builder);
+        StructureRegistry.TRANSFORMERS.constructGson(builder);
         return builder.create();
     }
 

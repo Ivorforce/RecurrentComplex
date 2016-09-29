@@ -21,6 +21,8 @@ public class RCFileTypeRegistry extends FileTypeRegistry
     public static final String ACTIVE_DIR_NAME = "active";
     public static final String INACTIVE_DIR_NAME = "inactive";
 
+    public static final String RESOURCES_FILE_NAME = "structures";
+
     public static String getDirectoryName(boolean activeFolder)
     {
         return activeFolder ? ACTIVE_DIR_NAME : INACTIVE_DIR_NAME;
@@ -28,7 +30,7 @@ public class RCFileTypeRegistry extends FileTypeRegistry
 
     public static File getBaseDirectory()
     {
-        return RecurrentComplex.proxy.getBaseFolderFile("structures");
+        return RecurrentComplex.proxy.getBaseFolderFile(RESOURCES_FILE_NAME);
     }
 
     public static File getDirectory(boolean activeFolder)
@@ -75,8 +77,8 @@ public class RCFileTypeRegistry extends FileTypeRegistry
     {
         modid = modid.toLowerCase();
 
-        tryLoadAll(new ResourceLocation(modid, "structures/" + RCFileTypeRegistry.ACTIVE_DIR_NAME), new FileLoadContext(modid, true, false));
-        tryLoadAll(new ResourceLocation(modid, "structures/" + RCFileTypeRegistry.INACTIVE_DIR_NAME), new FileLoadContext(modid, false, false));
+        tryLoadAll(new ResourceLocation(modid, String.format("%s/%s", RESOURCES_FILE_NAME, RCFileTypeRegistry.ACTIVE_DIR_NAME)), new FileLoadContext(modid, true, false));
+        tryLoadAll(new ResourceLocation(modid, String.format("%s/%s", RESOURCES_FILE_NAME, RCFileTypeRegistry.INACTIVE_DIR_NAME)), new FileLoadContext(modid, false, false));
 
         // Legacy
         tryLoadAll(new ResourceLocation(modid, "structures/genericStructures"), new FileLoadContext(modid, true, false));

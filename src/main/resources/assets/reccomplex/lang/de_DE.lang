@@ -85,8 +85,8 @@ commands.selectFloor.usage=/#floor [Ausdehnung]
 commands.selectSpace.usage=/#space[ [Entfernung-zum-Boden] [max-geschlossene-seiten]
 commands.selectNatural.usage=/#natural [/#floor-ausdehnung]
 
-commands.strucReload.usage=/#reload <Strukturname> [x] [y] [z]
-commands.strucReload.success=Alle benutzerdefinierten Dateien wurden neu geladen.
+commands.strucReload.usage=/#reload [CUSTOM|MODDED]
+commands.strucReload.success=Alle %s-Dateien wurden neu geladen.
 
 commands.selectCopy.usage=/#copy
 commands.selectCopy.success=Kopierte %s, %s, %s bis %s, %s, %s in die Zwischenablage.

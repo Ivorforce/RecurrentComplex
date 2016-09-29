@@ -136,6 +136,7 @@ public class SimpleLeveledRegistry<S> implements LeveledRegistry<S>
         RecurrentComplex.logger.trace(String.format("Cleared all %s at level %s", description, level));
         invalidateActiveCache();
         items.clear(level.getLevel());
+        datas.clear(level.getLevel());
     }
 
     private void ensureActiveCache()

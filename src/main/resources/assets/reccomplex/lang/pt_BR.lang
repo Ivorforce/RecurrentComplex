@@ -77,8 +77,8 @@ commands.selectFillSphere.usage=/#sphere <block> [metadata1,metadata2,metadata3.
 
 commands.selectNatural.usage=/#natural [naturalFloorExpansion]
 
-commands.strucReload.usage=/#reload <structureName> [x] [y] [z]
-commands.strucReload.success=Recarregada todas as estruturas e geradores de inventário
+commands.strucReload.usage=/#reload [CUSTOM|MODDED]
+commands.strucReload.success=Recarregada todas as estruturas e geradores de inventário (%s)
 
 commands.selectCopy.usage=/#copy
 commands.selectCopy.success=Copiado %s, %s, %s para %s, %s, %s para área de transferência

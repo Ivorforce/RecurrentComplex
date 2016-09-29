@@ -252,10 +252,11 @@ public class RCRegistryHandler
         fileTypeRegistry.put(RCFileSuffix.PLACER_PRESET, GenericPlacerPresets.instance().loader());
         fileTypeRegistry.put(RCFileSuffix.TRANSFORMER_PRESET, TransfomerPresets.instance().loader());
 
-        WorldScriptRegistry.INSTANCE.register("multi", WorldScriptMulti.class);
-        WorldScriptRegistry.INSTANCE.register("strucGen", WorldScriptStructureGenerator.class);
-        WorldScriptRegistry.INSTANCE.register("mazeGen", WorldScriptMazeGenerator.class);
-        WorldScriptRegistry.INSTANCE.register("command", WorldScriptCommand.class);
+        WorldScriptRegistry worldScriptRegistry = WorldScriptRegistry.INSTANCE;
+        worldScriptRegistry.register("multi", WorldScriptMulti.class);
+        worldScriptRegistry.register("strucGen", WorldScriptStructureGenerator.class);
+        worldScriptRegistry.register("mazeGen", WorldScriptMazeGenerator.class);
+        worldScriptRegistry.register("command", WorldScriptCommand.class);
 
         SerializableStringTypeRegistry<Transformer> transformerRegistry = StructureRegistry.TRANSFORMERS;
         transformerRegistry.registerType("multi", TransformerMulti.class, new TransformerMulti.Serializer());
@@ -291,8 +292,9 @@ public class RCRegistryHandler
         rayRegistry.registerType("average", RayAverageMatcher.class, new RayAverageMatcher.Serializer());
         rayRegistry.registerType("dynmove", RayDynamicMove.class, null);
 
-        MazeRuleRegistry.INSTANCE.register("connect", MazeRuleConnect.class);
-        MazeRuleRegistry.INSTANCE.register("connectall", MazeRuleConnectAll.class);
+        MazeRuleRegistry mazeRuleRegistry = MazeRuleRegistry.INSTANCE;
+        mazeRuleRegistry.register("connect", MazeRuleConnect.class);
+        mazeRuleRegistry.register("connectall", MazeRuleConnectAll.class);
 
         OperationRegistry.register("strucGen", OperationGenerateStructure.class);
         OperationRegistry.register("schemGen", OperationGenerateSchematic.class);

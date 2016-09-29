@@ -21,8 +21,8 @@ public class SimpleCustomizableRegistry<S> implements CustomizableRegistry<S>
     private CustomizableBiMap<String, S> items = new CustomizableBiMap<>();
     private CustomizableBiMap<String, Data> datas = new CustomizableBiMap<>();
 
-    private boolean generatesCacheValid = false;
-    private Map<String, S> generatingMap = new HashMap<>();
+    private boolean activeCacheValid = false;
+    private Map<String, S> activeMap = new HashMap<>();
 
     public String description;
 
@@ -38,7 +38,7 @@ public class SimpleCustomizableRegistry<S> implements CustomizableRegistry<S>
 
     public Map<String, S> activeMap()
     {
-        return Collections.unmodifiableMap(generatingMap);
+        return Collections.unmodifiableMap(activeMap);
     }
 
     public Collection<S> all()
@@ -48,15 +48,15 @@ public class SimpleCustomizableRegistry<S> implements CustomizableRegistry<S>
 
     public Collection<S> allActive()
     {
-        ensureGeneratesCache();
-        return generatingMap.values();
+        ensureActiveCache();
+        return activeMap.values();
     }
 
     @Nullable
     public S getActive(String id)
     {
-        ensureGeneratesCache();
-        return generatingMap.get(id);
+        ensureActiveCache();
+        return activeMap.get(id);
     }
 
     @Nullable
@@ -68,8 +68,8 @@ public class SimpleCustomizableRegistry<S> implements CustomizableRegistry<S>
     @Nonnull
     public Set<String> activeIDs()
     {
-        ensureGeneratesCache();
-        return generatingMap.keySet();
+        ensureActiveCache();
+        return activeMap.keySet();
     }
 
     @Nonnull
@@ -85,8 +85,8 @@ public class SimpleCustomizableRegistry<S> implements CustomizableRegistry<S>
 
     public boolean hasActive(String id)
     {
-        ensureGeneratesCache();
-        return generatingMap.containsKey(id);
+        ensureActiveCache();
+        return activeMap.containsKey(id);
     }
 
     public String id(S s)
@@ -97,7 +97,7 @@ public class SimpleCustomizableRegistry<S> implements CustomizableRegistry<S>
     @Override
     public S register(String id, String domain, S s, boolean active, boolean custom)
     {
-        invalidateGeneratesCache();
+        invalidateActiveCache();
 
         datas.put(id, new Data(id, active, domain), custom);
         S old = items.put(id, s, custom);
@@ -110,7 +110,7 @@ public class SimpleCustomizableRegistry<S> implements CustomizableRegistry<S>
     @Override
     public S unregister(String id, boolean custom)
     {
-        invalidateGeneratesCache();
+        invalidateActiveCache();
         datas.remove(id, custom);
         return items.remove(id, custom);
     }
@@ -118,24 +118,24 @@ public class SimpleCustomizableRegistry<S> implements CustomizableRegistry<S>
     @Override
     public void clearCustomFiles()
     {
-        invalidateGeneratesCache();
+        invalidateActiveCache();
         items.clearCustom();
     }
 
-    private void ensureGeneratesCache()
+    private void ensureActiveCache()
     {
-        if (!generatesCacheValid)
+        if (!activeCacheValid)
         {
-            generatingMap = datas.getMap().values().stream()
+            activeMap = datas.getMap().values().stream()
                     .filter(d -> d.active)
                     .map(d -> d.id).collect(Collectors.toMap(s -> s, s -> items.getMap().get(s)));
-            generatesCacheValid = true;
+            activeCacheValid = true;
         }
     }
 
-    private void invalidateGeneratesCache()
+    private void invalidateActiveCache()
     {
-        generatesCacheValid = false;
+        activeCacheValid = false;
     }
 
     private class Data

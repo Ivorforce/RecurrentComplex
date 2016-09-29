@@ -5,6 +5,7 @@
 
 package ivorius.reccomplex;
 
+import ivorius.reccomplex.files.LeveledRegistry;
 import ivorius.reccomplex.worldgen.selector.NaturalStructureSelector;
 import net.minecraftforge.fml.common.event.FMLInterModComms;
 import ivorius.ivtoolkit.tools.IvFMLIntercommHandler;
@@ -48,7 +49,7 @@ public class RCCommunicationHandler extends IvFMLIntercommHandler
             boolean generates = cmp.getBoolean("generates");
 
             ResourceLocation resourceLocation = new ResourceLocation(genPath);
-            RecurrentComplex.fileTypeRegistry.tryLoad(resourceLocation, genID, new FileLoadContext(resourceLocation.getResourceDomain(), generates, false));
+            RecurrentComplex.fileTypeRegistry.tryLoad(resourceLocation, genID, new FileLoadContext(resourceLocation.getResourceDomain(), generates, LeveledRegistry.Level.INTERNAL));
 
             return true;
         }
@@ -63,7 +64,7 @@ public class RCCommunicationHandler extends IvFMLIntercommHandler
             boolean generates = cmp.getBoolean("generates");
 
             ResourceLocation resourceLocation = new ResourceLocation(structurePath);
-            RecurrentComplex.fileTypeRegistry.tryLoad(resourceLocation, structureID, new FileLoadContext(resourceLocation.getResourceDomain(), generates, false));
+            RecurrentComplex.fileTypeRegistry.tryLoad(resourceLocation, structureID, new FileLoadContext(resourceLocation.getResourceDomain(), generates, LeveledRegistry.Level.INTERNAL));
 
             return true;
         }
@@ -154,7 +155,7 @@ public class RCCommunicationHandler extends IvFMLIntercommHandler
                 }
 
                 NaturalStructureSelector.CATEGORY_REGISTRY.register(id, domain, new NaturalStructureSelector.SimpleCategory(defaultSpawnChance,
-                            Arrays.asList(biomeInfos), selectableInGui, structureMinCap), true, false);
+                            Arrays.asList(biomeInfos), selectableInGui, structureMinCap), true, LeveledRegistry.Level.MODDED);
             }
             else
                 getLogger().warn("Could not handle message with key '" + message.key + "' - missing 'id' key!");

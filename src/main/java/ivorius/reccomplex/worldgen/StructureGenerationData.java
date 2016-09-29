@@ -7,7 +7,6 @@ package ivorius.reccomplex.worldgen;
 
 import com.google.common.collect.*;
 import ivorius.ivtoolkit.blocks.BlockPositions;
-import ivorius.reccomplex.files.SimpleCustomizableRegistry;
 import net.minecraft.util.math.BlockPos;
 import ivorius.ivtoolkit.math.AxisAlignedTransform2D;
 import ivorius.reccomplex.RecurrentComplex;

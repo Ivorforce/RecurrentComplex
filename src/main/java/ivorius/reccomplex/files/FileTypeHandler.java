@@ -22,5 +22,5 @@ public interface FileTypeHandler
 
     boolean loadFile(Path path, @Nullable String customID, FileLoadContext context) throws Exception;
 
-    void clearCustomFiles();
+    void clearFiles(LeveledRegistry.Level level);
 }

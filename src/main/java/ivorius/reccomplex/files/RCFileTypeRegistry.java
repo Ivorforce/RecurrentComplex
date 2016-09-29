@@ -38,51 +38,59 @@ public class RCFileTypeRegistry extends FileTypeRegistry
         return RCFileHelper.getValidatedFolder(getBaseDirectory(), getDirectoryName(activeFolder), true);
     }
 
-    public void reloadModFiles()
+    public void loadModFiles()
     {
+        LeveledRegistry.Level level = LeveledRegistry.Level.MODDED;
+
+        clearFiles(level);
         for (String modid : Loader.instance().getIndexedModList().keySet())
-            loadFilesFromMod(modid);
+            loadFilesFromDomain(modid, level, keySet());
     }
 
-    public void reloadCustomFiles()
+    public void loadCustomFiles()
     {
-        reloadCustomFiles(keySet());
+        loadCustomFiles(keySet());
     }
 
-    public void reloadCustomFiles(Collection<String> suffices)
+    public void loadCustomFiles(Collection<String> suffices)
     {
-        clearCustomFiles(suffices);
+        LeveledRegistry.Level level = LeveledRegistry.Level.CUSTOM;
 
-        File structuresFile = IvFileHelper.getValidatedFolder(getBaseDirectory());
-        if (structuresFile != null)
-        {
-            tryLoadAll(suffices, structuresFile, RCFileTypeRegistry.ACTIVE_DIR_NAME, true, "", true, true);
-            tryLoadAll(suffices, structuresFile, RCFileTypeRegistry.INACTIVE_DIR_NAME, true, "", false, true);
+        clearFiles(level);
 
-            // Legacy
-            tryLoadAll(suffices, structuresFile, "genericStructures", false, "", true, true);
-            tryLoadAll(suffices, structuresFile, "silentStructures", false, "", false, true);
-            tryLoadAll(suffices, structuresFile, "inventoryGenerators", false, "", true, true);
-        }
+        File directory = IvFileHelper.getValidatedFolder(getBaseDirectory());
+        if (directory != null)
+            loadFilesFromDirectory(directory, level, suffices);
     }
 
-    protected void tryLoadAll(Collection<String> suffices, File structuresFile, String activeDirName, boolean create, String domain, boolean active, boolean custom)
+    public void loadFilesFromDirectory(File directory, LeveledRegistry.Level level, Collection<String> suffices)
+    {
+        tryLoadAll(directory, RCFileTypeRegistry.ACTIVE_DIR_NAME, true, "", true, level, suffices);
+        tryLoadAll(directory, RCFileTypeRegistry.INACTIVE_DIR_NAME, true, "", false, level, suffices);
+
+        // Legacy
+        tryLoadAll(directory, "genericStructures", false, "", true, level, suffices);
+        tryLoadAll(directory, "silentStructures", false, "", false, level, suffices);
+        tryLoadAll(directory, "inventoryGenerators", false, "", true, level, suffices);
+    }
+
+    protected void tryLoadAll(File structuresFile, String activeDirName, boolean create, String domain, boolean active, LeveledRegistry.Level level, Collection<String> suffices)
     {
         File validatedFolder = RCFileHelper.getValidatedFolder(structuresFile, activeDirName, create);
         if (validatedFolder != null)
-            tryLoadAll(validatedFolder.toPath(), new FileLoadContext(domain, active, custom), suffices);
+            tryLoadAll(validatedFolder.toPath(), new FileLoadContext(domain, active, level), suffices);
     }
 
-    public void loadFilesFromMod(String modid)
+    public void loadFilesFromDomain(String domain, LeveledRegistry.Level level, Collection<String> suffices)
     {
-        modid = modid.toLowerCase();
+        domain = domain.toLowerCase();
 
-        tryLoadAll(new ResourceLocation(modid, String.format("%s/%s", RESOURCES_FILE_NAME, RCFileTypeRegistry.ACTIVE_DIR_NAME)), new FileLoadContext(modid, true, false));
-        tryLoadAll(new ResourceLocation(modid, String.format("%s/%s", RESOURCES_FILE_NAME, RCFileTypeRegistry.INACTIVE_DIR_NAME)), new FileLoadContext(modid, false, false));
+        tryLoadAll(new ResourceLocation(domain, String.format("%s/%s", RESOURCES_FILE_NAME, RCFileTypeRegistry.ACTIVE_DIR_NAME)), new FileLoadContext(domain, true, level), suffices);
+        tryLoadAll(new ResourceLocation(domain, String.format("%s/%s", RESOURCES_FILE_NAME, RCFileTypeRegistry.INACTIVE_DIR_NAME)), new FileLoadContext(domain, false, level), suffices);
 
         // Legacy
-        tryLoadAll(new ResourceLocation(modid, "structures/genericStructures"), new FileLoadContext(modid, true, false));
-        tryLoadAll(new ResourceLocation(modid, "structures/silentStructures"), new FileLoadContext(modid, false, false));
-        tryLoadAll(new ResourceLocation(modid, "structures/inventoryGenerators"), new FileLoadContext(modid, true, false));
+        tryLoadAll(new ResourceLocation(domain, "structures/genericStructures"), new FileLoadContext(domain, true, level), suffices);
+        tryLoadAll(new ResourceLocation(domain, "structures/silentStructures"), new FileLoadContext(domain, false, level), suffices);
+        tryLoadAll(new ResourceLocation(domain, "structures/inventoryGenerators"), new FileLoadContext(domain, true, level), suffices);
     }
 }

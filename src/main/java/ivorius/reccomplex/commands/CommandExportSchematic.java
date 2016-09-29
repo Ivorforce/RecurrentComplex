@@ -6,8 +6,6 @@
 package ivorius.reccomplex.commands;
 
 import ivorius.ivtoolkit.blocks.BlockArea;
-import ivorius.reccomplex.files.SimpleCustomizableRegistry;
-import ivorius.reccomplex.structures.StructureInfo;
 import ivorius.reccomplex.utils.RCBlockAreas;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.math.BlockPos;

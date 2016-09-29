@@ -176,8 +176,8 @@ public class RecurrentComplex
     @EventHandler
     public void postInit(FMLPostInitializationEvent event)
     {
-        fileTypeRegistry.reloadModFiles();
-        fileTypeRegistry.reloadCustomFiles();
+        fileTypeRegistry.loadModFiles();
+        fileTypeRegistry.loadCustomFiles();
 
         SchematicLoader.initializeFolder();
     }

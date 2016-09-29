@@ -12,7 +12,6 @@ import ivorius.ivtoolkit.transform.Mover;
 import ivorius.ivtoolkit.transform.PosTransformer;
 import ivorius.reccomplex.RecurrentComplex;
 import ivorius.reccomplex.blocks.GeneratingTileEntity;
-import ivorius.reccomplex.files.SimpleCustomizableRegistry;
 import ivorius.reccomplex.json.JsonUtils;
 import ivorius.reccomplex.json.NbtToJson;
 import ivorius.reccomplex.structures.*;

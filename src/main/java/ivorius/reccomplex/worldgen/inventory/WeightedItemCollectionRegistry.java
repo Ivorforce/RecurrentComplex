@@ -5,14 +5,12 @@
 
 package ivorius.reccomplex.worldgen.inventory;
 
-import ivorius.reccomplex.files.SimpleCustomizableRegistry;
-
-import java.util.*;
+import ivorius.reccomplex.files.SimpleLeveledRegistry;
 
 /**
  * Created by lukas on 25.05.14.
  */
-public class WeightedItemCollectionRegistry extends SimpleCustomizableRegistry<WeightedItemCollection>
+public class WeightedItemCollectionRegistry extends SimpleLeveledRegistry<WeightedItemCollection>
 {
     public static WeightedItemCollectionRegistry INSTANCE = new WeightedItemCollectionRegistry();
 

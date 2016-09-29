@@ -7,7 +7,8 @@ package ivorius.reccomplex.worldgen.inventory;
 
 import com.google.common.collect.Sets;
 import ivorius.reccomplex.RCConfig;
-import ivorius.reccomplex.files.SimpleCustomizableRegistry;
+import ivorius.reccomplex.files.LeveledRegistry;
+import ivorius.reccomplex.files.SimpleLeveledRegistry;
 import ivorius.reccomplex.worldgen.inventory.GenericItemCollection.Component;
 
 import java.util.Set;
@@ -16,7 +17,7 @@ import java.util.stream.Collectors;
 /**
  * Created by lukas on 05.01.15.
  */
-public class GenericItemCollectionRegistry extends SimpleCustomizableRegistry<Component>
+public class GenericItemCollectionRegistry extends SimpleLeveledRegistry<Component>
 {
     public static final GenericItemCollectionRegistry INSTANCE = new GenericItemCollectionRegistry();
 
@@ -35,7 +36,7 @@ public class GenericItemCollectionRegistry extends SimpleCustomizableRegistry<Co
     public GenericItemCollectionRegistry() {super("generic item collection component");}
 
     @Override
-    public Component register(String id, String domain, Component component, boolean active, boolean custom)
+    public Component register(String id, String domain, Component component, boolean active, ILevel level)
     {
         if (component.inventoryGeneratorID == null || component.inventoryGeneratorID.length() == 0) // Legacy support
             component.inventoryGeneratorID = id;
@@ -45,7 +46,7 @@ public class GenericItemCollectionRegistry extends SimpleCustomizableRegistry<Co
 
         Set<String> generating = activeIDs().stream().collect(Collectors.toSet());
 
-        Component register = super.register(id, domain, component, active, custom);
+        Component register = super.register(id, domain, component, active, level);
 
         clearCaches(generating);
 
@@ -53,11 +54,11 @@ public class GenericItemCollectionRegistry extends SimpleCustomizableRegistry<Co
     }
 
     @Override
-    public Component unregister(String id, boolean custom)
+    public Component unregister(String id, ILevel level)
     {
         Set<String> generating = activeIDs().stream().collect(Collectors.toSet());
 
-        Component rt = super.unregister(id, custom);
+        Component rt = super.unregister(id, level);
 
         clearCaches(generating);
 
@@ -87,7 +88,7 @@ public class GenericItemCollectionRegistry extends SimpleCustomizableRegistry<Co
                 ((GenericItemCollection) collection).components.remove(component);
 
                 if (((GenericItemCollection) collection).components.size() == 0)
-                    WeightedItemCollectionRegistry.INSTANCE.unregister(component.inventoryGeneratorID, true);
+                    WeightedItemCollectionRegistry.INSTANCE.unregister(component.inventoryGeneratorID, LeveledRegistry.Level.CUSTOM);
             }
         }
     }
@@ -98,7 +99,7 @@ public class GenericItemCollectionRegistry extends SimpleCustomizableRegistry<Co
         if (collection == null || !(collection instanceof GenericItemCollection))
         {
             collection = new GenericItemCollection();
-            WeightedItemCollectionRegistry.INSTANCE.register(key, domain, collection, true, true);
+            WeightedItemCollectionRegistry.INSTANCE.register(key, domain, collection, true, LeveledRegistry.Level.CUSTOM);
         }
         return (GenericItemCollection) collection;
     }

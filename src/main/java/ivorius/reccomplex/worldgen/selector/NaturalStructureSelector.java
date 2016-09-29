@@ -7,7 +7,7 @@ package ivorius.reccomplex.worldgen.selector;
 
 import com.google.gson.annotations.SerializedName;
 import ivorius.reccomplex.RCConfig;
-import ivorius.reccomplex.files.SimpleCustomizableRegistry;
+import ivorius.reccomplex.files.SimpleLeveledRegistry;
 import ivorius.reccomplex.structures.generic.matchers.BiomeMatcher;
 import ivorius.reccomplex.structures.generic.matchers.DimensionMatcher;
 import net.minecraft.world.WorldProvider;
@@ -23,7 +23,7 @@ public class NaturalStructureSelector
 {
     public static final int STRUCTURE_MIN_CAP_DEFAULT = 20;
 
-    public static SimpleCustomizableRegistry<Category> CATEGORY_REGISTRY = new SimpleCustomizableRegistry<>("natural generation category");
+    public static SimpleLeveledRegistry<Category> CATEGORY_REGISTRY = new SimpleLeveledRegistry<>("natural generation category");
 
     public interface Category extends MixingStructureSelector.Category
     {

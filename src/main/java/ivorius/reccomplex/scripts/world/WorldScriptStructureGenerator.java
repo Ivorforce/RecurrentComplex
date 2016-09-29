@@ -11,7 +11,6 @@ import ivorius.ivtoolkit.math.AxisAlignedTransform2D;
 import ivorius.ivtoolkit.random.WeightedSelector;
 import ivorius.ivtoolkit.tools.IvCollections;
 import ivorius.ivtoolkit.tools.IvTranslations;
-import ivorius.reccomplex.files.SimpleCustomizableRegistry;
 import ivorius.reccomplex.gui.table.TableDataSource;
 import ivorius.reccomplex.gui.table.TableDelegate;
 import ivorius.reccomplex.gui.table.TableNavigator;

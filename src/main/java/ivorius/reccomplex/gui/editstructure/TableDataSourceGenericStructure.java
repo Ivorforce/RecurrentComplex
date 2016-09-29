@@ -6,12 +6,10 @@
 package ivorius.reccomplex.gui.editstructure;
 
 import ivorius.ivtoolkit.tools.IvTranslations;
-import ivorius.reccomplex.files.SimpleCustomizableRegistry;
 import ivorius.reccomplex.gui.GuiValidityStateIndicator;
 import ivorius.reccomplex.gui.TableDataSourceExpression;
 import ivorius.reccomplex.gui.TableElementSaveDirectory;
 import ivorius.reccomplex.gui.table.*;
-import ivorius.reccomplex.structures.StructureInfo;
 import ivorius.reccomplex.structures.StructureInfos;
 import ivorius.reccomplex.structures.StructureRegistry;
 import ivorius.reccomplex.structures.generic.GenericStructureInfo;

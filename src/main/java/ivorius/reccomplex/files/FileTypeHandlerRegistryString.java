@@ -19,18 +19,18 @@ public class FileTypeHandlerRegistryString<S> extends FileTypeHandlerRegistry<S>
 {
     public Reader<? extends S> reader;
 
-    public FileTypeHandlerRegistryString(String fileSuffix, CustomizableRegistry<? super S> registry, Reader<? extends S> reader)
+    public FileTypeHandlerRegistryString(String fileSuffix, LeveledRegistry<? super S> registry, Reader<? extends S> reader)
     {
         super(fileSuffix, registry);
         this.reader = reader;
     }
 
-    public FileTypeHandlerRegistryString(String fileSuffix, CustomizableRegistry<? super S> registry, Gson gson, Class<? extends S> type)
+    public FileTypeHandlerRegistryString(String fileSuffix, LeveledRegistry<? super S> registry, Gson gson, Class<? extends S> type)
     {
         this(fileSuffix, registry, gsonReader(gson, type));
     }
 
-    public FileTypeHandlerRegistryString(String fileSuffix, CustomizableRegistry<? super S> registry, Class<? extends S> type)
+    public FileTypeHandlerRegistryString(String fileSuffix, LeveledRegistry<? super S> registry, Class<? extends S> type)
     {
         this(fileSuffix, registry, gsonReader(type));
     }

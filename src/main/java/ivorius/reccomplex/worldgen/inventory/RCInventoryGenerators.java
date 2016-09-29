@@ -5,6 +5,7 @@
 
 package ivorius.reccomplex.worldgen.inventory;
 
+import ivorius.reccomplex.files.LeveledRegistry;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.storage.loot.LootTableList;
 
@@ -23,6 +24,6 @@ public class RCInventoryGenerators
     private static void registerVanillaInventoryGenerators(Collection<ResourceLocation> keys)
     {
         for (ResourceLocation key : keys)
-            WeightedItemCollectionRegistry.INSTANCE.register(key.toString(), "minecraft", new VanillaItemCollection(key), true, false);
+            WeightedItemCollectionRegistry.INSTANCE.register(key.toString(), "minecraft", new VanillaItemCollection(key), true, LeveledRegistry.Level.INTERNAL);
     }
 }

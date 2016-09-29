@@ -56,7 +56,7 @@ public class PacketSaveInvGenComponentHandler extends SchedulingMessageHandler<P
                     player.addChatMessage(ServerTranslations.format("inventorygen.delete.failure", otherPath + id));
             }
 
-            RecurrentComplex.fileTypeRegistry.reloadCustomFiles(Collections.singletonList(RCFileSuffix.INVENTORY_GENERATION_COMPONENT));
+            RecurrentComplex.fileTypeRegistry.loadCustomFiles(Collections.singletonList(RCFileSuffix.INVENTORY_GENERATION_COMPONENT));
 
             ItemStack heldItem = playServer.playerEntity.getHeldItem(EnumHand.MAIN_HAND);
             if (heldItem != null && heldItem.getItem() instanceof ItemInventoryGenComponentTag)

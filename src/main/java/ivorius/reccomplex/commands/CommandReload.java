@@ -37,7 +37,7 @@ public class CommandReload extends CommandBase
     @Override
     public void execute(MinecraftServer server, ICommandSender commandSender, String[] args)
     {
-        RecurrentComplex.fileTypeRegistry.reloadCustomFiles();
+        RecurrentComplex.fileTypeRegistry.loadCustomFiles();
         commandSender.addChatMessage(ServerTranslations.format("commands.strucReload.success"));
     }
 }

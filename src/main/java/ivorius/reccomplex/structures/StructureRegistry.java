@@ -8,7 +8,7 @@ package ivorius.reccomplex.structures;
 import com.google.common.collect.Collections2;
 import com.google.common.collect.Sets;
 import ivorius.reccomplex.RCConfig;
-import ivorius.reccomplex.files.SimpleCustomizableRegistry;
+import ivorius.reccomplex.files.SimpleLeveledRegistry;
 import ivorius.reccomplex.json.SerializableStringTypeRegistry;
 import ivorius.reccomplex.structures.generic.gentypes.*;
 import ivorius.reccomplex.structures.generic.transformers.Transformer;
@@ -38,7 +38,7 @@ import java.util.stream.Stream;
 /**
  * Created by lukas on 24.05.14.
  */
-public class StructureRegistry extends SimpleCustomizableRegistry<StructureInfo>
+public class StructureRegistry extends SimpleLeveledRegistry<StructureInfo>
 {
     public static final StructureRegistry INSTANCE = new StructureRegistry();
 
@@ -55,24 +55,27 @@ public class StructureRegistry extends SimpleCustomizableRegistry<StructureInfo>
             = new CachedStructureSelectors<>((biome, worldProvider) ->
             new StructureSelector<>(this.allActive(), worldProvider, biome, VanillaDecorationGenerationInfo.class));
 
-    public StructureRegistry() {super("structure");}
+    public StructureRegistry()
+    {
+        super("structure");
+    }
 
     @Override
-    public StructureInfo register(String id, String domain, StructureInfo structureInfo, boolean active, boolean custom)
+    public StructureInfo register(String id, String domain, StructureInfo structureInfo, boolean active, ILevel level)
     {
         if (active && !(RCConfig.shouldStructureGenerate(id, domain) && structureInfo.areDependenciesResolved()))
             active = false;
 
         clearCaches();
 
-        return super.register(id, domain, structureInfo, active, custom);
+        return super.register(id, domain, structureInfo, active, level);
     }
 
     @Override
-    public StructureInfo unregister(String id, boolean custom)
+    public StructureInfo unregister(String id, ILevel level)
     {
         clearCaches();
-        return super.unregister(id, custom);
+        return super.unregister(id, level);
     }
 
     protected <T extends StructureGenerationInfo> Collection<Pair<StructureInfo, T>> getCachedGeneration(Class<T> clazz)

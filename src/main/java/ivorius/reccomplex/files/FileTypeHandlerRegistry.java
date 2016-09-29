@@ -20,9 +20,9 @@ import java.nio.file.Path;
 public abstract class FileTypeHandlerRegistry<S> implements FileTypeHandler
 {
     public String fileSuffix;
-    public CustomizableRegistry<? super S> registry;
+    public LeveledRegistry<? super S> registry;
 
-    public FileTypeHandlerRegistry(String fileSuffix, CustomizableRegistry<? super S> registry)
+    public FileTypeHandlerRegistry(String fileSuffix, LeveledRegistry<? super S> registry)
     {
         this.fileSuffix = fileSuffix;
         this.registry = registry;
@@ -52,7 +52,7 @@ public abstract class FileTypeHandlerRegistry<S> implements FileTypeHandler
 
             if (event.getResult() != Event.Result.DENY && RCConfig.shouldResourceLoad(fileSuffix, id, domain))
             {
-                registry.register(id, domain, s, active, context.custom);
+                registry.register(id, domain, s, active, context.level);
 
                 RCEventBus.INSTANCE.post(new FileLoadEvent.Post<>(s, fileSuffix, id, domain, path, active));
             }
@@ -66,8 +66,8 @@ public abstract class FileTypeHandlerRegistry<S> implements FileTypeHandler
     public abstract S read(Path path, String name) throws Exception;
 
     @Override
-    public void clearCustomFiles()
+    public void clearFiles(LeveledRegistry.Level level)
     {
-        registry.clearCustom();
+        registry.clear(level);
     }
 }

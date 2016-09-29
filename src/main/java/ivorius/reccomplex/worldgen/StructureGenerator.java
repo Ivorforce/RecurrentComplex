@@ -11,7 +11,6 @@ import ivorius.reccomplex.RecurrentComplex;
 import ivorius.reccomplex.events.RCEventBus;
 import ivorius.reccomplex.events.StructureGenerationEvent;
 import ivorius.reccomplex.events.StructureGenerationEventLite;
-import ivorius.reccomplex.files.SimpleCustomizableRegistry;
 import ivorius.reccomplex.structures.*;
 import ivorius.reccomplex.structures.generic.gentypes.StructureGenerationInfo;
 import ivorius.reccomplex.structures.generic.placement.StructurePlaceContext;

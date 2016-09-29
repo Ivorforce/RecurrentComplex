@@ -7,6 +7,7 @@ package ivorius.reccomplex.gui.editstructure.preset;
 
 import ivorius.ivtoolkit.tools.IvTranslations;
 import ivorius.reccomplex.RecurrentComplex;
+import ivorius.reccomplex.files.LeveledRegistry;
 import ivorius.reccomplex.gui.GuiValidityStateIndicator;
 import ivorius.reccomplex.gui.table.*;
 import ivorius.reccomplex.structures.StructureInfos;
@@ -79,7 +80,7 @@ public class TableDataSourceSavePreset<T> extends TableDataSourceSegmented
         if (!StructureInfos.isSimpleID(id))
             return false;
 
-        object.getPresetRegistry().register(id, true, object.getContents(), new PresetRegistry.Metadata(title, description.split("<br>")));
+        object.getPresetRegistry().register(id, object.getContents(), new PresetRegistry.Metadata(title, description.split("<br>")), LeveledRegistry.Level.CUSTOM);
 
         try
         {

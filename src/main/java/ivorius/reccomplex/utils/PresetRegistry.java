@@ -10,9 +10,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
-import ivorius.reccomplex.files.FileTypeHandlerRegistryString;
-import ivorius.reccomplex.files.RCFileTypeRegistry;
-import ivorius.reccomplex.files.SimpleCustomizableRegistry;
+import ivorius.reccomplex.files.*;
 import org.apache.commons.io.FileUtils;
 
 import javax.annotation.Nonnull;
@@ -30,7 +28,7 @@ import java.util.Optional;
  */
 public abstract class PresetRegistry<T>
 {
-    protected final SimpleCustomizableRegistry<Preset<T>> registry;
+    protected final SimpleLeveledRegistry<Preset<T>> registry;
 
     protected Gson gson;
     @Nullable
@@ -45,7 +43,7 @@ public abstract class PresetRegistry<T>
         registerGson(builder);
         gson = builder.create();
 
-        registry = new SimpleCustomizableRegistry<>(description);
+        registry = new SimpleLeveledRegistry<>(description);
     }
 
     @Nonnull
@@ -59,14 +57,14 @@ public abstract class PresetRegistry<T>
         return fileSuffix;
     }
 
-    public SimpleCustomizableRegistry<Preset<T>> getRegistry()
+    public SimpleLeveledRegistry<Preset<T>> getRegistry()
     {
         return registry;
     }
 
-    public void register(@Nonnull String id, boolean custom, @Nonnull T t, @Nullable Metadata metadata)
+    public void register(@Nonnull String id, @Nonnull T t, @Nullable Metadata metadata, LeveledRegistry.Level level)
     {
-        registry.register(id, "", fullPreset(id, t, metadata), true, custom);
+        registry.register(id, "", fullPreset(id, t, metadata), true, level);
     }
 
     public void setDefault(@Nonnull String type)

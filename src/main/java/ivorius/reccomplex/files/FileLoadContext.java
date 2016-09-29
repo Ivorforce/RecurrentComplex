@@ -12,12 +12,13 @@ public class FileLoadContext
 {
     public final String domain;
     public final boolean active;
-    public final boolean custom;
+    public final LeveledRegistry.Level level;
 
-    public FileLoadContext(String domain, boolean active, boolean custom)
+    public FileLoadContext(String domain, boolean active, LeveledRegistry.Level level)
     {
         this.domain = domain;
         this.active = active;
-        this.custom = custom;
+        this.level = level;
     }
+
 }

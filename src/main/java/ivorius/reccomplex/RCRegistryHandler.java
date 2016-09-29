@@ -14,6 +14,7 @@ import ivorius.reccomplex.blocks.materials.MaterialNegativeSpace;
 import ivorius.reccomplex.blocks.materials.RCMaterials;
 import ivorius.reccomplex.entities.StructureEntityInfo;
 import ivorius.reccomplex.files.FileTypeHandlerRegistryString;
+import ivorius.reccomplex.files.LeveledRegistry;
 import ivorius.reccomplex.files.RCFileSuffix;
 import ivorius.reccomplex.items.*;
 import ivorius.reccomplex.json.SerializableStringTypeRegistry;
@@ -165,19 +166,19 @@ public class RCRegistryHandler
         register(inspector, "inspector");
 
         // Set preset defaults
-        GenericPlacerPresets.instance().register("clear", false, new GenericPlacer(), new PresetRegistry.Metadata("Clear", "Do not place anywhere"));
+        GenericPlacerPresets.instance().register("clear", new GenericPlacer(), new PresetRegistry.Metadata("Clear", "Do not place anywhere"), LeveledRegistry.Level.INTERNAL);
         GenericPlacerPresets.instance().setDefault("clear");
 
-        DimensionMatcherPresets.instance().register("clear", false, new ArrayList<>(), new PresetRegistry.Metadata("None", "No dimensions"));
+        DimensionMatcherPresets.instance().register("clear", new ArrayList<>(), new PresetRegistry.Metadata("None", "No dimensions"), LeveledRegistry.Level.INTERNAL);
         DimensionMatcherPresets.instance().setDefault("clear");
 
-        BiomeMatcherPresets.instance().register("clear", false, new ArrayList<>(), new PresetRegistry.Metadata("None", "No biomes"));
+        BiomeMatcherPresets.instance().register("clear", new ArrayList<>(), new PresetRegistry.Metadata("None", "No biomes"), LeveledRegistry.Level.INTERNAL);
         BiomeMatcherPresets.instance().setDefault("clear");
 
-        WeightedBlockStatePresets.instance().register("clear", false, new ArrayList<>(), new PresetRegistry.Metadata("None", "No blocks"));
+        WeightedBlockStatePresets.instance().register("clear", new ArrayList<>(), new PresetRegistry.Metadata("None", "No blocks"), LeveledRegistry.Level.INTERNAL);
         WeightedBlockStatePresets.instance().setDefault("clear");
 
-        TransfomerPresets.instance().register("clear", false, new TransformerMulti.Data(), new PresetRegistry.Metadata("None", "No transformers"));
+        TransfomerPresets.instance().register("clear", new TransformerMulti.Data(), new PresetRegistry.Metadata("None", "No transformers"), LeveledRegistry.Level.INTERNAL);
         TransfomerPresets.instance().setDefault("clear");
     }
 

@@ -6,7 +6,7 @@
 package ivorius.reccomplex.files;
 
 import ivorius.reccomplex.RecurrentComplex;
-import ivorius.reccomplex.utils.CustomizableBiMap;
+import ivorius.reccomplex.utils.LeveledBiMap;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -16,27 +16,27 @@ import java.util.stream.Collectors;
 /**
  * Created by lukas on 29.09.16.
  */
-public class SimpleCustomizableRegistry<S> implements CustomizableRegistry<S>
+public class SimpleLeveledRegistry<S> implements LeveledRegistry<S>
 {
-    private CustomizableBiMap<String, S> items = new CustomizableBiMap<>();
-    private CustomizableBiMap<String, Data> datas = new CustomizableBiMap<>();
+    private LeveledBiMap<String, S> items = new LeveledBiMap<>(LeveledRegistry.Level.values().length);
+    private LeveledBiMap<String, Data> datas = new LeveledBiMap<>(items.levels());
 
     private boolean activeCacheValid = false;
     private Map<String, S> activeMap = new HashMap<>();
 
     public String description;
 
-    public SimpleCustomizableRegistry(String description)
+    public SimpleLeveledRegistry(String description)
     {
         this.description = description;
     }
 
-    public CustomizableBiMap<String, S> contents()
+    public LeveledBiMap<String, S> contents()
     {
         return items;
     }
 
-    public CustomizableBiMap<String, Data> datas()
+    public LeveledBiMap<String, Data> datas()
     {
         return datas;
     }
@@ -110,32 +110,32 @@ public class SimpleCustomizableRegistry<S> implements CustomizableRegistry<S>
     }
 
     @Override
-    public S register(String id, String domain, S s, boolean active, boolean custom)
+    public S register(String id, String domain, S s, boolean active, ILevel level)
     {
         invalidateActiveCache();
 
-        datas.put(id, new Data(id, active, domain), custom);
-        S old = items.put(id, s, custom);
+        datas.put(id, new Data(id, active, domain), level.getLevel());
+        S old = items.put(id, s, level.getLevel());
 
-        RecurrentComplex.logger.trace(String.format(old != null ? "Replaced %s '%s'" : "Registered %s '%s'", description, id));
+        RecurrentComplex.logger.trace(String.format(old != null ? "Replaced %s '%s' at level %s" : "Registered %s '%s' at level %s", description, id, level));
 
         return old;
     }
 
     @Override
-    public S unregister(String id, boolean custom)
+    public S unregister(String id, ILevel level)
     {
         invalidateActiveCache();
-        datas.remove(id, custom);
-        return items.remove(id, custom);
+        datas.remove(id, level.getLevel());
+        return items.remove(id, level.getLevel());
     }
 
     @Override
-    public void clearCustom()
+    public void clear(ILevel level)
     {
-        RecurrentComplex.logger.trace(String.format("Cleared all custom: %s", description));
+        RecurrentComplex.logger.trace(String.format("Cleared all %s at level %s", description, level));
         invalidateActiveCache();
-        items.clearCustom();
+        items.clear(level.getLevel());
     }
 
     private void ensureActiveCache()

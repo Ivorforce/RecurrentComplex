@@ -37,14 +37,14 @@ public class FileTypeRegistry
 
     // --------------- Loading
 
-    public void clearCustomFiles()
+    public void clearFiles(LeveledRegistry.Level level)
     {
-        handlers.values().forEach(FileTypeHandler::clearCustomFiles);
+        handlers.values().forEach(h -> h.clearFiles(level));
     }
 
-    public void clearCustomFiles(Collection<String> suffices)
+    public void clearFiles(Collection<String> suffices, LeveledRegistry.Level level)
     {
-        handlers.entrySet().stream().filter(entry -> suffices.contains(entry.getKey())).forEach(entry -> entry.getValue().clearCustomFiles());
+        handlers.entrySet().stream().filter(entry -> suffices.contains(entry.getKey())).forEach(entry -> entry.getValue().clearFiles(level));
     }
 
     public int tryLoadAll(ResourceLocation resourceLocation, FileLoadContext context)

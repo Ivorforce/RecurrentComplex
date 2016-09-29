@@ -65,7 +65,7 @@ public class PacketSaveStructureHandler extends SchedulingMessageHandler<PacketS
                     player.addChatMessage(ServerTranslations.format("structure.delete.failure", otherPath + id));
             }
 
-            RecurrentComplex.fileTypeRegistry.reloadCustomFiles(Collections.singletonList(RCFileSuffix.STRUCTURE));
+            RecurrentComplex.fileTypeRegistry.loadCustomFiles(Collections.singletonList(RCFileSuffix.STRUCTURE));
         }
         else
         {

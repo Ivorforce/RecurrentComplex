@@ -70,7 +70,7 @@ public abstract class ItemInventoryGenerationTag extends Item implements Generat
 
     public static WeightedItemCollection inventoryGenerator(ItemStack stack)
     {
-        return WeightedItemCollectionRegistry.itemCollection(inventoryGeneratorKey(stack));
+        return WeightedItemCollectionRegistry.INSTANCE.get(inventoryGeneratorKey(stack));
     }
 
     public static void setItemStackGeneratorKey(ItemStack stack, String generatorKey)
@@ -90,7 +90,7 @@ public abstract class ItemInventoryGenerationTag extends Item implements Generat
     @ParametersAreNonnullByDefault
     public void getSubItems(Item item, CreativeTabs creativeTabs, List<ItemStack> list)
     {
-        for (String key : WeightedItemCollectionRegistry.allItemCollectionKeys())
+        for (String key : WeightedItemCollectionRegistry.INSTANCE.ids())
         {
             ItemStack stack = new ItemStack(item);
             setItemStackGeneratorKey(stack, key);

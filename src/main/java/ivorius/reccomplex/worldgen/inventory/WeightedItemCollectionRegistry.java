@@ -5,35 +5,19 @@
 
 package ivorius.reccomplex.worldgen.inventory;
 
-import ivorius.reccomplex.RecurrentComplex;
+import ivorius.reccomplex.files.SimpleCustomizableRegistry;
 
 import java.util.*;
 
 /**
  * Created by lukas on 25.05.14.
  */
-public class WeightedItemCollectionRegistry
+public class WeightedItemCollectionRegistry extends SimpleCustomizableRegistry<WeightedItemCollection>
 {
-    private static Map<String, WeightedItemCollection> weightedItemCollectionMap = new HashMap<>();
+    public static WeightedItemCollectionRegistry INSTANCE = new WeightedItemCollectionRegistry();
 
-    public static void register(WeightedItemCollection weightedItemCollection, String key)
+    public WeightedItemCollectionRegistry()
     {
-        RecurrentComplex.logger.info(weightedItemCollectionMap.containsKey(key) ? "Replaced inventory generator '" + key + "'" : "Registered inventory generator '" + key + "'");
-        weightedItemCollectionMap.put(key, weightedItemCollection);
-    }
-
-    public static WeightedItemCollection itemCollection(String key)
-    {
-        return weightedItemCollectionMap.get(key);
-    }
-
-    public static Set<String> allItemCollectionKeys()
-    {
-        return weightedItemCollectionMap.keySet();
-    }
-
-    public static void unregister(String key)
-    {
-        weightedItemCollectionMap.remove(key);
+        super("weighted item collection");
     }
 }

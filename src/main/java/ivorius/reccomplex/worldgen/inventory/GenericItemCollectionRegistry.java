@@ -72,7 +72,7 @@ public class GenericItemCollectionRegistry extends SimpleCustomizableRegistry<Co
         {
             Component component = get(key);
 
-            GenericItemCollection collection = registerGetGenericItemCollection(component.inventoryGeneratorID);
+            GenericItemCollection collection = registerGetGenericItemCollection(component.inventoryGeneratorID, getData(key).domain);
             collection.components.add(component);
         }
 
@@ -80,25 +80,25 @@ public class GenericItemCollectionRegistry extends SimpleCustomizableRegistry<Co
         {
             Component component = get(key);
 
-            WeightedItemCollection collection = WeightedItemCollectionRegistry.itemCollection(component.inventoryGeneratorID);
+            WeightedItemCollection collection = WeightedItemCollectionRegistry.INSTANCE.get(component.inventoryGeneratorID);
 
             if (collection instanceof GenericItemCollection)
             {
                 ((GenericItemCollection) collection).components.remove(component);
 
                 if (((GenericItemCollection) collection).components.size() == 0)
-                    WeightedItemCollectionRegistry.unregister(component.inventoryGeneratorID);
+                    WeightedItemCollectionRegistry.INSTANCE.unregister(component.inventoryGeneratorID, true);
             }
         }
     }
 
-    private GenericItemCollection registerGetGenericItemCollection(String key)
+    private GenericItemCollection registerGetGenericItemCollection(String key, String domain)
     {
-        WeightedItemCollection collection = WeightedItemCollectionRegistry.itemCollection(key);
+        WeightedItemCollection collection = WeightedItemCollectionRegistry.INSTANCE.get(key);
         if (collection == null || !(collection instanceof GenericItemCollection))
         {
             collection = new GenericItemCollection();
-            WeightedItemCollectionRegistry.register(collection, key);
+            WeightedItemCollectionRegistry.INSTANCE.register(key, domain, collection, true, true);
         }
         return (GenericItemCollection) collection;
     }

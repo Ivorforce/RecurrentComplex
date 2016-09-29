@@ -119,7 +119,7 @@ public class TableDataSourceItemCollectionComponent extends TableDataSourceSegme
 
     private GuiValidityStateIndicator.State currentGroupIDState()
     {
-        return WeightedItemCollectionRegistry.itemCollection(component.inventoryGeneratorID) instanceof GenericItemCollection
+        return WeightedItemCollectionRegistry.INSTANCE.get(component.inventoryGeneratorID) instanceof GenericItemCollection
                 ? GuiValidityStateIndicator.State.VALID : GuiValidityStateIndicator.State.SEMI_VALID;
     }
 }

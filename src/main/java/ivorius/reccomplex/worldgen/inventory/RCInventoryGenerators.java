@@ -23,6 +23,6 @@ public class RCInventoryGenerators
     private static void registerVanillaInventoryGenerators(Collection<ResourceLocation> keys)
     {
         for (ResourceLocation key : keys)
-            WeightedItemCollectionRegistry.register(new VanillaItemCollection(key), key.toString());
+            WeightedItemCollectionRegistry.INSTANCE.register(key.toString(), "minecraft", new VanillaItemCollection(key), true, false);
     }
 }

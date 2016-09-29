@@ -31,6 +31,16 @@ public class SimpleCustomizableRegistry<S> implements CustomizableRegistry<S>
         this.description = description;
     }
 
+    public CustomizableBiMap<String, S> contents()
+    {
+        return items;
+    }
+
+    public CustomizableBiMap<String, Data> datas()
+    {
+        return datas;
+    }
+
     public Map<String, S> map()
     {
         return Collections.unmodifiableMap(items.getMap());
@@ -63,6 +73,11 @@ public class SimpleCustomizableRegistry<S> implements CustomizableRegistry<S>
     public S get(String id)
     {
         return items.getMap().get(id);
+    }
+
+    public Data getData(String id)
+    {
+        return datas.getMap().get(id);
     }
 
     @Nonnull
@@ -139,11 +154,11 @@ public class SimpleCustomizableRegistry<S> implements CustomizableRegistry<S>
         activeCacheValid = false;
     }
 
-    private class Data
+    public static class Data
     {
-        String id;
-        boolean active;
-        String domain;
+        public final String id;
+        public final boolean active;
+        public final String domain;
 
         public Data(String id, boolean active, String domain)
         {

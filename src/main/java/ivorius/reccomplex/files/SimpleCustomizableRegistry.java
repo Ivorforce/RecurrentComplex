@@ -49,7 +49,7 @@ public class SimpleCustomizableRegistry<S> implements CustomizableRegistry<S>
     public Collection<S> allActive()
     {
         ensureActiveCache();
-        return activeMap.values();
+        return Collections.unmodifiableCollection(activeMap.values());
     }
 
     @Nullable
@@ -69,13 +69,13 @@ public class SimpleCustomizableRegistry<S> implements CustomizableRegistry<S>
     public Set<String> activeIDs()
     {
         ensureActiveCache();
-        return activeMap.keySet();
+        return Collections.unmodifiableSet(activeMap.keySet());
     }
 
     @Nonnull
     public Set<String> ids()
     {
-        return items.getMap().keySet();
+        return Collections.unmodifiableSet(items.getMap().keySet());
     }
 
     public boolean has(String id)

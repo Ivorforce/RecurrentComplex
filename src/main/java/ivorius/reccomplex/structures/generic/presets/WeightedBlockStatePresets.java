@@ -8,6 +8,7 @@ package ivorius.reccomplex.structures.generic.presets;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 import ivorius.reccomplex.RecurrentComplex;
+import ivorius.reccomplex.files.RCFileSuffix;
 import ivorius.reccomplex.structures.generic.WeightedBlockState;
 import ivorius.reccomplex.utils.PresetRegistry;
 
@@ -19,7 +20,6 @@ import java.util.ArrayList;
  */
 public class WeightedBlockStatePresets extends PresetRegistry<ArrayList<WeightedBlockState>>
 {
-    public static final String FILE_SUFFIX = "rcbm";
 
     private static WeightedBlockStatePresets instance;
 
@@ -30,7 +30,7 @@ public class WeightedBlockStatePresets extends PresetRegistry<ArrayList<Weighted
 
     public static WeightedBlockStatePresets instance()
     {
-        return instance != null ? instance : (instance = new WeightedBlockStatePresets(FILE_SUFFIX));
+        return instance != null ? instance : (instance = new WeightedBlockStatePresets(RCFileSuffix.BLOCK_PRESET));
     }
 
     @Override

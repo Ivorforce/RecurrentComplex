@@ -10,6 +10,7 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.JsonSyntaxException;
 import io.netty.buffer.ByteBuf;
 import ivorius.reccomplex.RecurrentComplex;
+import ivorius.reccomplex.files.RCFileSuffix;
 import ivorius.reccomplex.files.RCFileTypeRegistry;
 import ivorius.reccomplex.json.NbtToJson;
 import ivorius.reccomplex.structures.generic.StructureSaveHandler;
@@ -22,8 +23,6 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.io.File;
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
 import java.util.Set;
 
 /**
@@ -33,8 +32,6 @@ public class ItemCollectionSaveHandler
 {
     public static final ItemCollectionSaveHandler INSTANCE = new ItemCollectionSaveHandler();
 
-    public static final String FILE_SUFFIX = "rcig";
-
     private Gson gson = createGson();
 
     public boolean save(@Nonnull Component info, @Nonnull String name, boolean active)
@@ -42,7 +39,7 @@ public class ItemCollectionSaveHandler
         File parent = RCFileTypeRegistry.getDirectory(active);
         if (parent != null)
         {
-            File newFile = new File(parent, String.format("%s.%s", name, FILE_SUFFIX));
+            File newFile = new File(parent, String.format("%s.%s", name, RCFileSuffix.INVENTORY_GENERATION_COMPONENT));
             String json = toJSON(info);
 
             try
@@ -113,7 +110,7 @@ public class ItemCollectionSaveHandler
         try
         {
             File parent = RCFileTypeRegistry.getDirectory(activeFolder);
-            return parent != null && (new File(parent, name + "." + FILE_SUFFIX).exists());
+            return parent != null && (new File(parent, name + "." + RCFileSuffix.INVENTORY_GENERATION_COMPONENT).exists());
         }
         catch (Throwable e)
         {
@@ -128,7 +125,7 @@ public class ItemCollectionSaveHandler
         try
         {
             File parent = RCFileTypeRegistry.getDirectory(activeFolder);
-            return parent != null && (new File(parent, name + "." + FILE_SUFFIX).delete());
+            return parent != null && (new File(parent, name + "." + RCFileSuffix.INVENTORY_GENERATION_COMPONENT).delete());
         }
         catch (Throwable e)
         {
@@ -140,6 +137,6 @@ public class ItemCollectionSaveHandler
 
     public Set<String> list(boolean activeFolder)
     {
-        return StructureSaveHandler.listFiles(activeFolder, FileFilterUtils.suffixFileFilter(FILE_SUFFIX));
+        return StructureSaveHandler.listFiles(activeFolder, FileFilterUtils.suffixFileFilter(RCFileSuffix.INVENTORY_GENERATION_COMPONENT));
     }
 }

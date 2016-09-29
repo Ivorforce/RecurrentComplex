@@ -7,6 +7,7 @@ package ivorius.reccomplex.structures.generic.presets;
 
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
+import ivorius.reccomplex.files.RCFileSuffix;
 import ivorius.reccomplex.structures.generic.DimensionGenerationInfo;
 import ivorius.reccomplex.utils.PresetRegistry;
 
@@ -18,7 +19,6 @@ import java.util.ArrayList;
  */
 public class DimensionMatcherPresets extends PresetRegistry<ArrayList<DimensionGenerationInfo>>
 {
-    public static final String FILE_SUFFIX = "rcdp";
 
     private static DimensionMatcherPresets instance;
 
@@ -29,7 +29,7 @@ public class DimensionMatcherPresets extends PresetRegistry<ArrayList<DimensionG
 
     public static DimensionMatcherPresets instance()
     {
-        return instance != null ? instance : (instance = new DimensionMatcherPresets(FILE_SUFFIX));
+        return instance != null ? instance : (instance = new DimensionMatcherPresets(RCFileSuffix.DIMENSION_PRESET));
     }
 
     @Override

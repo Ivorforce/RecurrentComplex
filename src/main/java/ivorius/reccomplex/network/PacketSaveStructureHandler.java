@@ -8,6 +8,7 @@ package ivorius.reccomplex.network;
 import ivorius.ivtoolkit.network.SchedulingMessageHandler;
 import ivorius.reccomplex.RecurrentComplex;
 import ivorius.reccomplex.entities.StructureEntityInfo;
+import ivorius.reccomplex.files.RCFileSuffix;
 import ivorius.reccomplex.files.RCFileTypeRegistry;
 import ivorius.reccomplex.structures.generic.GenericStructureInfo;
 import ivorius.reccomplex.structures.generic.StructureSaveHandler;
@@ -64,7 +65,7 @@ public class PacketSaveStructureHandler extends SchedulingMessageHandler<PacketS
                     player.addChatMessage(ServerTranslations.format("structure.delete.failure", otherPath + id));
             }
 
-            RecurrentComplex.fileTypeRegistry.reloadCustomFiles(Collections.singletonList(StructureSaveHandler.FILE_SUFFIX));
+            RecurrentComplex.fileTypeRegistry.reloadCustomFiles(Collections.singletonList(RCFileSuffix.STRUCTURE));
         }
         else
         {

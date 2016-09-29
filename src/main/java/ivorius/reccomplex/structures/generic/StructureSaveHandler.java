@@ -11,6 +11,7 @@ import com.google.gson.JsonSyntaxException;
 import ivorius.ivtoolkit.tools.IvFileHelper;
 import ivorius.reccomplex.RecurrentComplex;
 import ivorius.reccomplex.files.FileTypeHandlerRegistry;
+import ivorius.reccomplex.files.RCFileSuffix;
 import ivorius.reccomplex.files.RCFileTypeRegistry;
 import ivorius.reccomplex.json.NbtToJson;
 import ivorius.reccomplex.structures.StructureInfo;
@@ -45,7 +46,6 @@ public class StructureSaveHandler
 {
     public static final StructureSaveHandler INSTANCE = new StructureSaveHandler(StructureRegistry.INSTANCE);
 
-    public static final String FILE_SUFFIX = "rcst";
     public static final String STRUCTURE_INFO_JSON_FILENAME = "structure.json";
     public static final String WORLD_DATA_NBT_FILENAME = "worldData.nbt";
 
@@ -116,7 +116,7 @@ public class StructureSaveHandler
 
             if (RecurrentComplex.USE_ZIP_FOR_STRUCTURE_FILES)
             {
-                File newFile = new File(parent, structureName + "." + FILE_SUFFIX);
+                File newFile = new File(parent, structureName + "." + RCFileSuffix.STRUCTURE);
                 boolean failed = false;
 
                 try
@@ -162,7 +162,7 @@ public class StructureSaveHandler
 
     public Set<String> list(boolean activeFolder)
     {
-        return listFiles(activeFolder, FileFilterUtils.suffixFileFilter(FILE_SUFFIX), FileFilterUtils.suffixFileFilter("zip"));
+        return listFiles(activeFolder, FileFilterUtils.suffixFileFilter(RCFileSuffix.STRUCTURE), FileFilterUtils.suffixFileFilter("zip"));
     }
 
     public boolean has(String name, boolean activeFolder)
@@ -170,7 +170,7 @@ public class StructureSaveHandler
         try
         {
             File parent = RCFileTypeRegistry.getDirectory(activeFolder);
-            return parent != null && (new File(parent, name + "." + FILE_SUFFIX).exists() || /* Legacy */ new File(parent, name + ".zip").exists());
+            return parent != null && (new File(parent, name + "." + RCFileSuffix.STRUCTURE).exists() || /* Legacy */ new File(parent, name + ".zip").exists());
         }
         catch (Throwable e)
         {
@@ -185,7 +185,7 @@ public class StructureSaveHandler
         try
         {
             File parent = RCFileTypeRegistry.getDirectory(activeFolder);
-            return parent != null && (new File(parent, name + "." + FILE_SUFFIX).delete() || /* Legacy */ new File(parent, name + ".zip").delete());
+            return parent != null && (new File(parent, name + "." + RCFileSuffix.STRUCTURE).delete() || /* Legacy */ new File(parent, name + ".zip").delete());
         }
         catch (Throwable e)
         {
@@ -259,7 +259,7 @@ public class StructureSaveHandler
     public static class Loader extends FileTypeHandlerRegistry<StructureInfo>
     {
         public Loader() {
-            super(FILE_SUFFIX, StructureRegistry.INSTANCE);}
+            super(RCFileSuffix.STRUCTURE, StructureRegistry.INSTANCE);}
 
         @Override
         public StructureInfo read(Path path, String name) throws Exception

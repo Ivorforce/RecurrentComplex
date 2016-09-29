@@ -8,8 +8,8 @@ package ivorius.reccomplex;
 import com.google.common.collect.Lists;
 import gnu.trove.map.TObjectDoubleMap;
 import gnu.trove.map.hash.TObjectDoubleHashMap;
+import ivorius.reccomplex.files.RCFileSuffix;
 import ivorius.reccomplex.structures.StructureRegistry;
-import ivorius.reccomplex.structures.generic.StructureSaveHandler;
 import ivorius.reccomplex.structures.generic.matchers.BiomeMatcher;
 import ivorius.reccomplex.structures.generic.matchers.CommandMatcher;
 import ivorius.reccomplex.structures.generic.matchers.DimensionMatcher;
@@ -18,7 +18,6 @@ import ivorius.reccomplex.structures.generic.transformers.TransformerMulti;
 import ivorius.reccomplex.utils.ExpressionCache;
 import ivorius.reccomplex.worldgen.decoration.RCBiomeDecorator;
 import ivorius.reccomplex.worldgen.inventory.GenericItemCollectionRegistry;
-import ivorius.reccomplex.worldgen.inventory.ItemCollectionSaveHandler;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.WorldProvider;
@@ -198,9 +197,9 @@ public class RCConfig
 
     public static boolean shouldResourceLoad(String fileSuffix, String id, String domain)
     {
-        if (fileSuffix.equals(StructureSaveHandler.FILE_SUFFIX))
+        if (fileSuffix.equals(RCFileSuffix.STRUCTURE))
             return structureLoadMatcher.test(new ResourceLocation(domain, id));
-        else if (fileSuffix.equals(ItemCollectionSaveHandler.FILE_SUFFIX))
+        else if (fileSuffix.equals(RCFileSuffix.INVENTORY_GENERATION_COMPONENT))
             return inventoryGeneratorLoadMatcher.test(new ResourceLocation(domain, id));
 
         return true;

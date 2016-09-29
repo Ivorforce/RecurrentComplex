@@ -7,6 +7,7 @@ package ivorius.reccomplex.network;
 
 import ivorius.ivtoolkit.network.SchedulingMessageHandler;
 import ivorius.reccomplex.RecurrentComplex;
+import ivorius.reccomplex.files.RCFileSuffix;
 import ivorius.reccomplex.files.RCFileTypeRegistry;
 import ivorius.reccomplex.items.ItemInventoryGenComponentTag;
 import ivorius.reccomplex.utils.SaveDirectoryData;
@@ -55,7 +56,7 @@ public class PacketSaveInvGenComponentHandler extends SchedulingMessageHandler<P
                     player.addChatMessage(ServerTranslations.format("inventorygen.delete.failure", otherPath + id));
             }
 
-            RecurrentComplex.fileTypeRegistry.reloadCustomFiles(Collections.singletonList(ItemCollectionSaveHandler.FILE_SUFFIX));
+            RecurrentComplex.fileTypeRegistry.reloadCustomFiles(Collections.singletonList(RCFileSuffix.INVENTORY_GENERATION_COMPONENT));
 
             ItemStack heldItem = playServer.playerEntity.getHeldItem(EnumHand.MAIN_HAND);
             if (heldItem != null && heldItem.getItem() instanceof ItemInventoryGenComponentTag)

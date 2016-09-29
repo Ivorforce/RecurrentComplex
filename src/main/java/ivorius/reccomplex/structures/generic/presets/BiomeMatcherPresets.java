@@ -7,6 +7,7 @@ package ivorius.reccomplex.structures.generic.presets;
 
 import com.google.common.reflect.TypeToken;
 import com.google.gson.GsonBuilder;
+import ivorius.reccomplex.files.RCFileSuffix;
 import ivorius.reccomplex.structures.generic.BiomeGenerationInfo;
 import ivorius.reccomplex.utils.PresetRegistry;
 
@@ -18,7 +19,6 @@ import java.util.ArrayList;
  */
 public class BiomeMatcherPresets extends PresetRegistry<ArrayList<BiomeGenerationInfo>>
 {
-    public static final String FILE_SUFFIX = "rcbp";
 
     private static BiomeMatcherPresets instance;
 
@@ -29,7 +29,7 @@ public class BiomeMatcherPresets extends PresetRegistry<ArrayList<BiomeGeneratio
 
     public static BiomeMatcherPresets instance()
     {
-        return instance != null ? instance : (instance = new BiomeMatcherPresets(FILE_SUFFIX));
+        return instance != null ? instance : (instance = new BiomeMatcherPresets(RCFileSuffix.BIOME_PRESET));
     }
 
     @Override

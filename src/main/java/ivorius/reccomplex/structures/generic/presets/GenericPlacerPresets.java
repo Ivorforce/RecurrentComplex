@@ -7,6 +7,7 @@ package ivorius.reccomplex.structures.generic.presets;
 
 import com.google.common.reflect.TypeToken;
 import com.google.gson.GsonBuilder;
+import ivorius.reccomplex.files.RCFileSuffix;
 import ivorius.reccomplex.structures.generic.placement.GenericPlacer;
 import ivorius.reccomplex.utils.PresetRegistry;
 
@@ -17,7 +18,6 @@ import java.lang.reflect.Type;
  */
 public class GenericPlacerPresets extends PresetRegistry<GenericPlacer>
 {
-    public static final String FILE_SUFFIX = "rcgp";
 
     private static GenericPlacerPresets instance;
 
@@ -28,7 +28,7 @@ public class GenericPlacerPresets extends PresetRegistry<GenericPlacer>
 
     public static GenericPlacerPresets instance()
     {
-        return instance != null ? instance : (instance = new GenericPlacerPresets(FILE_SUFFIX));
+        return instance != null ? instance : (instance = new GenericPlacerPresets(RCFileSuffix.PLACER_PRESET));
     }
 
     @Override

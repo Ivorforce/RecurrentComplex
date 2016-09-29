@@ -7,6 +7,7 @@ package ivorius.reccomplex.structures.generic.presets;
 
 import com.google.common.reflect.TypeToken;
 import com.google.gson.GsonBuilder;
+import ivorius.reccomplex.files.RCFileSuffix;
 import ivorius.reccomplex.structures.generic.transformers.TransformerMulti;
 import ivorius.reccomplex.utils.PresetRegistry;
 
@@ -17,7 +18,6 @@ import java.lang.reflect.Type;
  */
 public class TransfomerPresets extends PresetRegistry<TransformerMulti.Data>
 {
-    public static final String FILE_SUFFIX = "rcmt";
 
     private static TransfomerPresets instance;
 
@@ -28,7 +28,7 @@ public class TransfomerPresets extends PresetRegistry<TransformerMulti.Data>
 
     public static TransfomerPresets instance()
     {
-        return instance != null ? instance : (instance = new TransfomerPresets(FILE_SUFFIX));
+        return instance != null ? instance : (instance = new TransfomerPresets(RCFileSuffix.TRANSFORMER_PRESET));
     }
 
     @Override

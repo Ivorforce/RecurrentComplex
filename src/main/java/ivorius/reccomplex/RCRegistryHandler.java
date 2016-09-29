@@ -239,18 +239,18 @@ public class RCRegistryHandler
 
         RCBiomeDictionary.registerTypes();
 
-        fileTypeRegistry.put(StructureSaveHandler.FILE_SUFFIX, new StructureSaveHandler.Loader());
-        fileTypeRegistry.put(ItemCollectionSaveHandler.FILE_SUFFIX, new FileTypeHandlerRegistryString<>(ItemCollectionSaveHandler.FILE_SUFFIX,
+        fileTypeRegistry.put(RCFileSuffix.STRUCTURE, new StructureSaveHandler.Loader());
+        fileTypeRegistry.put(RCFileSuffix.INVENTORY_GENERATION_COMPONENT, new FileTypeHandlerRegistryString<>(RCFileSuffix.INVENTORY_GENERATION_COMPONENT,
                 GenericItemCollectionRegistry.INSTANCE, ItemCollectionSaveHandler.INSTANCE::fromJSON));
         fileTypeRegistry.put(RCFileSuffix.POEM_THEME, new FileTypeHandlerRegistryString<>(RCFileSuffix.POEM_THEME,
                 Poem.THEME_REGISTRY, Poem.Theme::fromFile));
         fileTypeRegistry.put(RCFileSuffix.NATURAL_CATEGORY, new FileTypeHandlerRegistryString<>(RCFileSuffix.NATURAL_CATEGORY,
                 NaturalStructureSelector.CATEGORY_REGISTRY, NaturalStructureSelector.SimpleCategory.class));
-        fileTypeRegistry.put(BiomeMatcherPresets.FILE_SUFFIX, BiomeMatcherPresets.instance().loader());
-        fileTypeRegistry.put(DimensionMatcherPresets.FILE_SUFFIX, DimensionMatcherPresets.instance().loader());
-        fileTypeRegistry.put(WeightedBlockStatePresets.FILE_SUFFIX, WeightedBlockStatePresets.instance().loader());
-        fileTypeRegistry.put(GenericPlacerPresets.FILE_SUFFIX, GenericPlacerPresets.instance().loader());
-        fileTypeRegistry.put(TransfomerPresets.FILE_SUFFIX, TransfomerPresets.instance().loader());
+        fileTypeRegistry.put(RCFileSuffix.BIOME_PRESET, BiomeMatcherPresets.instance().loader());
+        fileTypeRegistry.put(RCFileSuffix.DIMENSION_PRESET, DimensionMatcherPresets.instance().loader());
+        fileTypeRegistry.put(RCFileSuffix.BLOCK_PRESET, WeightedBlockStatePresets.instance().loader());
+        fileTypeRegistry.put(RCFileSuffix.PLACER_PRESET, GenericPlacerPresets.instance().loader());
+        fileTypeRegistry.put(RCFileSuffix.TRANSFORMER_PRESET, TransfomerPresets.instance().loader());
 
         WorldScriptRegistry.INSTANCE.register("multi", WorldScriptMulti.class);
         WorldScriptRegistry.INSTANCE.register("strucGen", WorldScriptStructureGenerator.class);

@@ -20,7 +20,7 @@ public interface FileTypeHandler
         return customID != null ? customID : FilenameUtils.getBaseName(path.getFileName().toString());
     }
 
-    boolean loadFile(Path path, @Nullable String customID, FileLoadContext context);
+    boolean loadFile(Path path, @Nullable String customID, FileLoadContext context) throws Exception;
 
     void clearCustomFiles();
 }

@@ -102,7 +102,7 @@ public class SimpleCustomizableRegistry<S> implements CustomizableRegistry<S>
         datas.put(id, new Data(id, active, domain), custom);
         S old = items.put(id, s, custom);
 
-        RecurrentComplex.logger.info(String.format(old != null ? "Replaced %s '%s'" : "Registered %s '%s'", description, id));
+        RecurrentComplex.logger.trace(String.format(old != null ? "Replaced %s '%s'" : "Registered %s '%s'", description, id));
 
         return old;
     }
@@ -116,8 +116,9 @@ public class SimpleCustomizableRegistry<S> implements CustomizableRegistry<S>
     }
 
     @Override
-    public void clearCustomFiles()
+    public void clearCustom()
     {
+        RecurrentComplex.logger.trace(String.format("Cleared all custom: %s", description));
         invalidateActiveCache();
         items.clearCustom();
     }

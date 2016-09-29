@@ -8,6 +8,7 @@ package ivorius.reccomplex.files;
 import com.google.gson.Gson;
 import ivorius.reccomplex.RecurrentComplex;
 
+import javax.annotation.Nullable;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -15,38 +16,12 @@ import java.nio.file.Path;
 /**
  * Created by lukas on 29.09.16.
  */
-public class FileTypeHandlerString<S> extends FileTypeHandlerRegistry<S>
+public abstract class FileTypeHandlerString<S> implements FileTypeHandler
 {
-    public Reader<? extends S> reader;
-
-    public FileTypeHandlerString(String fileSuffix, CustomizableRegistry<? super S> registry, Reader<? extends S> reader)
-    {
-        super(fileSuffix, registry);
-        this.reader = reader;
-    }
-
-    public FileTypeHandlerString(String fileSuffix, CustomizableRegistry<? super S> registry, Gson gson, Class<? extends S> type)
-    {
-        this(fileSuffix, registry, gsonReader(gson, type));
-    }
-
-    public FileTypeHandlerString(String fileSuffix, CustomizableRegistry<? super S> registry, Class<? extends S> type)
-    {
-        this(fileSuffix, registry, gsonReader(type));
-    }
-
-    public static <S> Reader<S> gsonReader(Gson gson, Class<? extends S> type)
-    {
-        return s -> gson.fromJson(s, type);
-    }
-
-    public static <S> Reader<S> gsonReader(Class<? extends S> type)
-    {
-        return gsonReader(new Gson(), type);
-    }
+    public abstract boolean loadFile(String file, Path path, @Nullable String customID, FileLoadContext context) throws Exception;
 
     @Override
-    public S read(Path path, String name)
+    public boolean loadFile(Path path, @Nullable String customID, FileLoadContext context)
     {
         String resource = null;
 
@@ -56,31 +31,21 @@ public class FileTypeHandlerString<S> extends FileTypeHandlerRegistry<S>
         }
         catch (IOException e)
         {
-            RecurrentComplex.logger.warn("Resource is damaged: " + name, e);
+            RecurrentComplex.logger.error("Resource is damaged: " + path, e);
         }
 
         if (resource == null)
-            return null;
+            return false;
 
         try
         {
-            return read(resource);
+            return loadFile(resource, path, customID, context);
         }
         catch (Exception e)
         {
-            RecurrentComplex.logger.warn("Error reading resource: " + name, e);
+            RecurrentComplex.logger.error("Error loading resource: " + path, e);
         }
 
-        return null;
-    }
-
-    public S read(String file) throws Exception
-    {
-        return reader.read(file);
-    }
-
-    public interface Reader<S>
-    {
-        S read(String json) throws Exception;
+        return false;
     }
 }

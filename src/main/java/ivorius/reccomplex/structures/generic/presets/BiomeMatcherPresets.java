@@ -24,7 +24,7 @@ public class BiomeMatcherPresets extends PresetRegistry<ArrayList<BiomeGeneratio
 
     public BiomeMatcherPresets(String fileSuffix)
     {
-        super(fileSuffix);
+        super(fileSuffix, "biome preset");
     }
 
     public static BiomeMatcherPresets instance()

@@ -68,6 +68,6 @@ public abstract class FileTypeHandlerRegistry<S> implements FileTypeHandler
     @Override
     public void clearCustomFiles()
     {
-        registry.clearCustomFiles();
+        registry.clearCustom();
     }
 }

@@ -10,20 +10,17 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
-import ivorius.reccomplex.RecurrentComplex;
-import ivorius.reccomplex.files.FileLoadContext;
-import ivorius.reccomplex.files.FileTypeHandler;
+import ivorius.reccomplex.files.FileTypeHandlerRegistryString;
 import ivorius.reccomplex.files.RCFileTypeRegistry;
+import ivorius.reccomplex.files.SimpleCustomizableRegistry;
 import org.apache.commons.io.FileUtils;
-import org.apache.commons.io.FilenameUtils;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.Type;
-import java.nio.file.Files;
-import java.nio.file.Path;
+import java.text.ParseException;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
@@ -31,22 +28,30 @@ import java.util.Optional;
 /**
  * Created by lukas on 26.02.15.
  */
-public abstract class PresetRegistry<T> implements FileTypeHandler
+public abstract class PresetRegistry<T>
 {
-    protected final CustomizableMap<String, T> presets = new CustomizableMap<>();
-    protected final CustomizableMap<String, Metadata> metadata = new CustomizableMap<>();
+    protected final SimpleCustomizableRegistry<Preset<T>> registry;
+
     protected Gson gson;
     @Nullable
     protected String defaultID;
     protected String fileSuffix;
 
-    public PresetRegistry(String fileSuffix)
+    public PresetRegistry(String fileSuffix, String description)
     {
         this.fileSuffix = fileSuffix;
 
         GsonBuilder builder = new GsonBuilder().setPrettyPrinting();
         registerGson(builder);
         gson = builder.create();
+
+        registry = new SimpleCustomizableRegistry<>(description);
+    }
+
+    @Nonnull
+    public static <T> Preset<T> fullPreset(@Nonnull String id, @Nonnull T t, @Nullable Metadata metadata)
+    {
+        return new Preset<T>(t, metadata != null ? metadata : new Metadata(id, new String[0]));
     }
 
     public String getFileSuffix()
@@ -54,10 +59,14 @@ public abstract class PresetRegistry<T> implements FileTypeHandler
         return fileSuffix;
     }
 
+    public SimpleCustomizableRegistry<Preset<T>> getRegistry()
+    {
+        return registry;
+    }
+
     public void register(@Nonnull String id, boolean custom, @Nonnull T t, @Nullable Metadata metadata)
     {
-        presets.put(id, t, custom);
-        this.metadata.put(id, metadata != null ? metadata : new Metadata(id, new String[0]), custom);
+        registry.register(id, "", fullPreset(id, t, metadata), true, custom);
     }
 
     public void setDefault(@Nonnull String type)
@@ -74,8 +83,13 @@ public abstract class PresetRegistry<T> implements FileTypeHandler
     @Nonnull
     public Optional<T> preset(String id)
     {
-        return Optional.ofNullable(presets.getMap().get(id))
-                .map(this::copy);
+        return Optional.ofNullable(registry.get(id))
+                .map(p -> copy(p.t));
+    }
+
+    public Metadata copy(Metadata meta)
+    {
+        return gson.fromJson(gson.toJsonTree(meta), Metadata.class);
     }
 
     public T copy(T t)
@@ -104,58 +118,30 @@ public abstract class PresetRegistry<T> implements FileTypeHandler
     @Nonnull
     public Optional<Metadata> metadata(String id)
     {
-        return Optional.ofNullable(metadata.getMap().get(id))
-                .map(meta -> gson.fromJson(gson.toJsonTree(meta), Metadata.class));
+        return Optional.ofNullable(registry.get(id))
+                .map(p -> copy(p.metadata));
     }
 
     public Collection<String> allIDs()
     {
-        return presets.getMap().keySet();
+        return registry.ids();
     }
 
     public boolean has(String id)
     {
-        return presets.getMap().containsKey(id);
+        return registry.has(id);
     }
 
     protected abstract void registerGson(GsonBuilder builder);
 
     protected abstract Type getType();
 
-    @Override
-    public boolean loadFile(Path path, String customID, FileLoadContext context)
+    public FileTypeHandlerRegistryString<Preset<T>> loader()
     {
-        Preset<T> preset = null;
-        String name = FileTypeHandler.defaultName(path, customID);
-
-        try
-        {
-            String file = new String(Files.readAllBytes(path));
-            preset = read(file).get();
-        }
-        catch (Exception e)
-        {
-            RecurrentComplex.logger.warn("Error reading preset", e);
-        }
-
-        if (preset != null)
-        {
-            register(name, context.custom, preset.t, preset.metadata);
-
-            return true;
-        }
-
-        return false;
+        return new FileTypeHandlerRegistryString<>(fileSuffix, registry, this::read);
     }
 
-    @Override
-    public void clearCustomFiles()
-    {
-        presets.clearCustom();
-        metadata.clearCustom();
-    }
-
-    public Optional<Preset<T>> read(String file)
+    public Preset<T> read(String file) throws Exception
     {
         JsonParser parser = new JsonParser();
         JsonObject jsonObject = parser.parse(file).getAsJsonObject();
@@ -163,7 +149,10 @@ public abstract class PresetRegistry<T> implements FileTypeHandler
         T t = gson.fromJson(jsonObject.get("data"), getType());
         Metadata metadata = gson.fromJson(jsonObject.get("metadata"), Metadata.class);
 
-        return t != null && metadata != null ? Optional.of(new Preset<>(t, metadata)) : Optional.empty();
+        if (t == null || metadata == null)
+            throw new ParseException("Error parsing preset", 0);
+
+        return new Preset<>(t, metadata);
     }
 
     public String write(String id)

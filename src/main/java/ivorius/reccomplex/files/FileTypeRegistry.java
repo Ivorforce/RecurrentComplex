@@ -84,7 +84,7 @@ public class FileTypeRegistry
             for (Path file : paths)
             {
                 if (tryLoad(file, null, context))
-                    added ++;
+                    added++;
             }
 
             return added;
@@ -103,7 +103,9 @@ public class FileTypeRegistry
         {
             Path path = RCFileHelper.pathFromResourceLocation(resourceLocation);
             if (path != null)
-                return tryLoad(path, customID, context);
+                return load(path, customID, context);
+            else
+                RecurrentComplex.logger.error("Can't find path for '" + resourceLocation + "'");
         }
         catch (Throwable e)
         {
@@ -117,14 +119,20 @@ public class FileTypeRegistry
     {
         try
         {
-            FileTypeHandler handler = get(FilenameUtils.getExtension(file.getFileName().toString()));
-            return handler.loadFile(file, customID, context);
+            return load(file, customID, context);
         }
         catch (Exception e)
         {
-            RecurrentComplex.logger.error("Error loading resource", e);
+            RecurrentComplex.logger.error("Error loading resource: " + file, e);
         }
 
         return false;
+    }
+
+    public boolean load(Path file, String customID, FileLoadContext context) throws Exception
+    {
+        FileTypeHandler handler = get(FilenameUtils.getExtension(file.getFileName().toString()));
+
+        return handler != null && handler.loadFile(file, customID, context);
     }
 }

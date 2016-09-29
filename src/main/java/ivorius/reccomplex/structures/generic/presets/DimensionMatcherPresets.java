@@ -24,7 +24,7 @@ public class DimensionMatcherPresets extends PresetRegistry<ArrayList<DimensionG
 
     public DimensionMatcherPresets(String fileSuffix)
     {
-        super(fileSuffix);
+        super(fileSuffix, "dimension preset");
     }
 
     public static DimensionMatcherPresets instance()

@@ -13,7 +13,7 @@ import ivorius.reccomplex.blocks.*;
 import ivorius.reccomplex.blocks.materials.MaterialNegativeSpace;
 import ivorius.reccomplex.blocks.materials.RCMaterials;
 import ivorius.reccomplex.entities.StructureEntityInfo;
-import ivorius.reccomplex.files.FileTypeHandlerString;
+import ivorius.reccomplex.files.FileTypeHandlerRegistryString;
 import ivorius.reccomplex.files.RCFileSuffix;
 import ivorius.reccomplex.items.*;
 import ivorius.reccomplex.json.SerializableStringTypeRegistry;
@@ -240,17 +240,17 @@ public class RCRegistryHandler
         RCBiomeDictionary.registerTypes();
 
         fileTypeRegistry.put(StructureSaveHandler.FILE_SUFFIX, new StructureSaveHandler.Loader());
-        fileTypeRegistry.put(ItemCollectionSaveHandler.FILE_SUFFIX, new FileTypeHandlerString<>(ItemCollectionSaveHandler.FILE_SUFFIX,
+        fileTypeRegistry.put(ItemCollectionSaveHandler.FILE_SUFFIX, new FileTypeHandlerRegistryString<>(ItemCollectionSaveHandler.FILE_SUFFIX,
                 GenericItemCollectionRegistry.INSTANCE, ItemCollectionSaveHandler.INSTANCE::fromJSON));
-        fileTypeRegistry.put(RCFileSuffix.POEM_THEME, new FileTypeHandlerString<>(RCFileSuffix.POEM_THEME,
+        fileTypeRegistry.put(RCFileSuffix.POEM_THEME, new FileTypeHandlerRegistryString<>(RCFileSuffix.POEM_THEME,
                 Poem.THEME_REGISTRY, Poem.Theme::fromFile));
-        fileTypeRegistry.put(RCFileSuffix.NATURAL_CATEGORY, new FileTypeHandlerString<>(RCFileSuffix.NATURAL_CATEGORY,
+        fileTypeRegistry.put(RCFileSuffix.NATURAL_CATEGORY, new FileTypeHandlerRegistryString<>(RCFileSuffix.NATURAL_CATEGORY,
                 NaturalStructureSelector.CATEGORY_REGISTRY, NaturalStructureSelector.SimpleCategory.class));
-        fileTypeRegistry.put(BiomeMatcherPresets.FILE_SUFFIX, BiomeMatcherPresets.instance());
-        fileTypeRegistry.put(DimensionMatcherPresets.FILE_SUFFIX, DimensionMatcherPresets.instance());
-        fileTypeRegistry.put(WeightedBlockStatePresets.FILE_SUFFIX, WeightedBlockStatePresets.instance());
-        fileTypeRegistry.put(GenericPlacerPresets.FILE_SUFFIX, GenericPlacerPresets.instance());
-        fileTypeRegistry.put(TransfomerPresets.FILE_SUFFIX, TransfomerPresets.instance());
+        fileTypeRegistry.put(BiomeMatcherPresets.FILE_SUFFIX, BiomeMatcherPresets.instance().loader());
+        fileTypeRegistry.put(DimensionMatcherPresets.FILE_SUFFIX, DimensionMatcherPresets.instance().loader());
+        fileTypeRegistry.put(WeightedBlockStatePresets.FILE_SUFFIX, WeightedBlockStatePresets.instance().loader());
+        fileTypeRegistry.put(GenericPlacerPresets.FILE_SUFFIX, GenericPlacerPresets.instance().loader());
+        fileTypeRegistry.put(TransfomerPresets.FILE_SUFFIX, TransfomerPresets.instance().loader());
 
         WorldScriptRegistry.INSTANCE.register("multi", WorldScriptMulti.class);
         WorldScriptRegistry.INSTANCE.register("strucGen", WorldScriptStructureGenerator.class);

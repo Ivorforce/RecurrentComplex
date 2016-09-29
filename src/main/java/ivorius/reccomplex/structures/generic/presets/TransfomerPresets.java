@@ -23,7 +23,7 @@ public class TransfomerPresets extends PresetRegistry<TransformerMulti.Data>
 
     public TransfomerPresets(String fileSuffix)
     {
-        super(fileSuffix);
+        super(fileSuffix, "transformer preset");
     }
 
     public static TransfomerPresets instance()

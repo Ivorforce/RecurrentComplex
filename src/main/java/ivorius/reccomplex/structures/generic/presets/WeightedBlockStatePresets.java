@@ -25,7 +25,7 @@ public class WeightedBlockStatePresets extends PresetRegistry<ArrayList<Weighted
 
     public WeightedBlockStatePresets(String fileSuffix)
     {
-        super(fileSuffix);
+        super(fileSuffix, "block preset");
     }
 
     public static WeightedBlockStatePresets instance()

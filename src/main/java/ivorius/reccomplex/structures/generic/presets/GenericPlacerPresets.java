@@ -23,7 +23,7 @@ public class GenericPlacerPresets extends PresetRegistry<GenericPlacer>
 
     public GenericPlacerPresets(String fileSuffix)
     {
-        super(fileSuffix);
+        super(fileSuffix, "placer preset");
     }
 
     public static GenericPlacerPresets instance()

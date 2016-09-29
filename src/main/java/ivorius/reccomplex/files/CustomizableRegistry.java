@@ -14,5 +14,5 @@ public interface CustomizableRegistry<S>
 
     S unregister(String id, boolean custom);
 
-    void clearCustomFiles();
+    void clearCustom();
 }

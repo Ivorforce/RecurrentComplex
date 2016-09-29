@@ -8,6 +8,7 @@ package ivorius.reccomplex.files;
 import ivorius.ivtoolkit.tools.IvFileHelper;
 import ivorius.reccomplex.RecurrentComplex;
 import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.fml.common.Loader;
 
 import java.io.File;
 import java.util.Collection;
@@ -33,6 +34,12 @@ public class RCFileTypeRegistry extends FileTypeRegistry
     public static File getDirectory(boolean activeFolder)
     {
         return RCFileHelper.getValidatedFolder(getBaseDirectory(), getDirectoryName(activeFolder), true);
+    }
+
+    public void reloadModFiles()
+    {
+        for (String modid : Loader.instance().getIndexedModList().keySet())
+            loadFilesFromMod(modid);
     }
 
     public void reloadCustomFiles()

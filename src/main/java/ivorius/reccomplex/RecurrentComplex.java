@@ -24,7 +24,6 @@ import ivorius.reccomplex.structures.schematics.SchematicLoader;
 import ivorius.reccomplex.utils.*;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraftforge.common.config.Configuration;
-import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.Mod.EventHandler;
 import net.minecraftforge.fml.common.Mod.Instance;
@@ -177,9 +176,9 @@ public class RecurrentComplex
     @EventHandler
     public void postInit(FMLPostInitializationEvent event)
     {
-        loadAllModData();
-
+        fileTypeRegistry.reloadModFiles();
         fileTypeRegistry.reloadCustomFiles();
+
         SchematicLoader.initializeFolder();
     }
 
@@ -195,9 +194,4 @@ public class RecurrentComplex
         RCCommands.onServerStart(event);
     }
 
-    public void loadAllModData()
-    {
-        for (String modid : Loader.instance().getIndexedModList().keySet())
-            fileTypeRegistry.loadFilesFromMod(modid);
-    }
 }

@@ -73,11 +73,6 @@ public class RCFileTypeRegistry extends FileTypeRegistry
 
     public void loadFilesFromMod(String modid)
     {
-        loadFilesFromMod(modid, keySet());
-    }
-
-    public void loadFilesFromMod(String modid, Collection<String> suffices)
-    {
         modid = modid.toLowerCase();
 
         tryLoadAll(new ResourceLocation(modid, "structures/" + RCFileTypeRegistry.ACTIVE_DIR_NAME), new FileLoadContext(modid, true, false));

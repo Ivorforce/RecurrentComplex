@@ -130,6 +130,7 @@ public class RCCommunicationHandler extends IvFMLIntercommHandler
 
             NBTTagCompound cmp = message.getNBTValue();
             String id = cmp.getString("id");
+            String domain = cmp.getString("domain");
 
             // If no biome selector matches, this value will be returned.
             float defaultSpawnChance = cmp.getFloat("defaultSpawnChance");
@@ -152,8 +153,8 @@ public class RCCommunicationHandler extends IvFMLIntercommHandler
                     biomeInfos[i] = new NaturalStructureSelector.GenerationInfo(Float.valueOf(biomeParts[0]), new BiomeMatcher(biomeParts[1]), new DimensionMatcher(""));
                 }
 
-                NaturalStructureSelector.registerCategory(id, new NaturalStructureSelector.SimpleCategory(defaultSpawnChance,
-                        Arrays.asList(biomeInfos), selectableInGui, structureMinCap), false);
+                NaturalStructureSelector.CATEGORY_REGISTRY.register(id, domain, new NaturalStructureSelector.SimpleCategory(defaultSpawnChance,
+                            Arrays.asList(biomeInfos), selectableInGui, structureMinCap), true, false);
             }
             else
                 getLogger().warn("Could not handle message with key '" + message.key + "' - missing 'id' key!");

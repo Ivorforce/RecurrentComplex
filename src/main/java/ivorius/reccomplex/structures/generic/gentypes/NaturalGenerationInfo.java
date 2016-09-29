@@ -127,7 +127,7 @@ public class NaturalGenerationInfo extends StructureGenerationInfo implements En
     @Override
     public NaturalStructureSelector.Category generationCategory()
     {
-        return NaturalStructureSelector.categoryForID(generationCategory);
+        return NaturalStructureSelector.CATEGORY_REGISTRY.getActive(generationCategory);
     }
 
     public double getActiveGenerationWeight()

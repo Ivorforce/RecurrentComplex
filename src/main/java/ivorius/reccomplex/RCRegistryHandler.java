@@ -13,10 +13,12 @@ import ivorius.reccomplex.blocks.*;
 import ivorius.reccomplex.blocks.materials.MaterialNegativeSpace;
 import ivorius.reccomplex.blocks.materials.RCMaterials;
 import ivorius.reccomplex.entities.StructureEntityInfo;
+import ivorius.reccomplex.files.FileTypeHandlerRegistry;
+import ivorius.reccomplex.files.RCFileSuffix;
 import ivorius.reccomplex.items.*;
 import ivorius.reccomplex.json.SerializableStringTypeRegistry;
 import ivorius.reccomplex.operation.OperationRegistry;
-import ivorius.reccomplex.random.PoemLoader;
+import ivorius.reccomplex.random.Poem;
 import ivorius.reccomplex.scripts.world.*;
 import ivorius.reccomplex.structures.OperationGenerateStructure;
 import ivorius.reccomplex.structures.OperationMoveStructure;
@@ -36,9 +38,9 @@ import ivorius.reccomplex.structures.generic.transformers.*;
 import ivorius.reccomplex.structures.schematics.OperationGenerateSchematic;
 import ivorius.reccomplex.utils.FMLUtils;
 import ivorius.reccomplex.utils.PresetRegistry;
-import ivorius.reccomplex.worldgen.CategoryLoader;
 import ivorius.reccomplex.worldgen.inventory.ItemCollectionSaveHandler;
 import ivorius.reccomplex.worldgen.inventory.RCInventoryGenerators;
+import ivorius.reccomplex.worldgen.selector.NaturalStructureSelector;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.MapColor;
 import net.minecraft.block.material.Material;
@@ -238,8 +240,9 @@ public class RCRegistryHandler
 
         fileTypeRegistry.put(StructureSaveHandler.FILE_SUFFIX, StructureSaveHandler.INSTANCE);
         fileTypeRegistry.put(ItemCollectionSaveHandler.FILE_SUFFIX, ItemCollectionSaveHandler.INSTANCE);
-        fileTypeRegistry.put(PoemLoader.FILE_SUFFIX, new PoemLoader());
-        fileTypeRegistry.put(CategoryLoader.FILE_SUFFIX, new CategoryLoader());
+        fileTypeRegistry.put(RCFileSuffix.POEM_THEME, new FileTypeHandlerRegistry<>(Poem.Theme::fromFile, Poem.THEME_REGISTRY));
+        fileTypeRegistry.put(RCFileSuffix.NATURAL_CATEGORY, new FileTypeHandlerRegistry<>(NaturalStructureSelector.SimpleCategory.class,
+                NaturalStructureSelector.CATEGORY_REGISTRY));
         fileTypeRegistry.put(BiomeMatcherPresets.FILE_SUFFIX, BiomeMatcherPresets.instance());
         fileTypeRegistry.put(DimensionMatcherPresets.FILE_SUFFIX, DimensionMatcherPresets.instance());
         fileTypeRegistry.put(WeightedBlockStatePresets.FILE_SUFFIX, WeightedBlockStatePresets.instance());

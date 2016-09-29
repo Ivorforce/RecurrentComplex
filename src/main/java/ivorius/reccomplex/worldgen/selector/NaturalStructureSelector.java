@@ -7,15 +7,14 @@ package ivorius.reccomplex.worldgen.selector;
 
 import com.google.gson.annotations.SerializedName;
 import ivorius.reccomplex.RCConfig;
+import ivorius.reccomplex.files.SimpleFileRegistry;
 import ivorius.reccomplex.structures.generic.matchers.BiomeMatcher;
 import ivorius.reccomplex.structures.generic.matchers.DimensionMatcher;
-import ivorius.reccomplex.utils.CustomizableMap;
 import net.minecraft.world.WorldProvider;
 import net.minecraft.world.biome.Biome;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 
 /**
  * Created by lukas on 23.09.16.
@@ -24,32 +23,7 @@ public class NaturalStructureSelector
 {
     public static final int STRUCTURE_MIN_CAP_DEFAULT = 20;
 
-    private static CustomizableMap<String, Category> categories = new CustomizableMap<>();
-
-    public static void registerCategory(String id, Category category, boolean custom)
-    {
-        categories.put(id, category, custom);
-    }
-
-    public static void unregisterCategory(String id, boolean custom)
-    {
-        categories.remove(id, custom);
-    }
-
-    public static void clearCustom()
-    {
-        categories.clearCustom();
-    }
-
-    public static Category categoryForID(String id)
-    {
-        return categories.getMap().get(id);
-    }
-
-    public static Set<String> allCategoryIDs()
-    {
-        return categories.getMap().keySet();
-    }
+    public static SimpleFileRegistry<Category> CATEGORY_REGISTRY = new SimpleFileRegistry<>("natural generation category");
 
     public interface Category extends MixingStructureSelector.Category
     {

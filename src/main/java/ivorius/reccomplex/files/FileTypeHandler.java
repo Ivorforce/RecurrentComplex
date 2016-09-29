@@ -5,6 +5,8 @@
 
 package ivorius.reccomplex.files;
 
+import org.apache.commons.io.FilenameUtils;
+
 import java.nio.file.Path;
 
 /**
@@ -12,6 +14,11 @@ import java.nio.file.Path;
  */
 public interface FileTypeHandler
 {
+    static String defaultName(Path path, String customID)
+    {
+        return customID != null ? customID : FilenameUtils.getBaseName(path.getFileName().toString());
+    }
+
     boolean loadFile(Path path, FileLoadContext context);
 
     void clearCustomFiles();

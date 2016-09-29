@@ -7,11 +7,15 @@ package ivorius.reccomplex.random;
 
 import com.google.common.io.LineReader;
 import ivorius.reccomplex.RecurrentComplex;
-import ivorius.reccomplex.utils.CustomizableMap;
+import ivorius.reccomplex.files.SimpleFileRegistry;
 
 import java.io.IOException;
 import java.io.StringReader;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Random;
+import java.util.stream.Collectors;
 
 /**
  * Created by lukas on 25.06.14.
@@ -97,10 +101,10 @@ public class Poem
             "Where <10> <5>"
     );
 
-    private static final CustomizableMap<String, Theme> themes = new CustomizableMap<>();
-
     private String title;
     private String text;
+
+    public static SimpleFileRegistry<Theme> THEME_REGISTRY = new SimpleFileRegistry<>("poem theme");
 
     public Poem(String title, String text)
     {
@@ -108,32 +112,17 @@ public class Poem
         this.text = text;
     }
 
-    public static void registerTheme(String name, Theme theme, boolean custom)
-    {
-        String baseString = themes.put(name, theme, custom) != null ? "Replaced poem theme '%s'" : "Registered poem theme '%s'";
-        RecurrentComplex.logger.info(String.format(baseString, name));
-    }
-
-    public static void unregisterTheme(String name, boolean custom)
-    {
-        themes.remove(name, custom);
-    }
-
-    public static void clearCustom()
-    {
-        themes.clearCustom();
-    }
-
     public static Poem randomPoem(Random random)
     {
-        return randomPoem(random, getRandomElementFrom(Arrays.asList(themes.getMap().values().toArray(new Theme[themes.getMap().size()])), random));
+        return randomPoem(random, getRandomElementFrom(THEME_REGISTRY.allActive().stream().collect(Collectors.toList()), random));
     }
 
     public static Poem randomPoem(Random random, Theme theme)
     {
         PoemContext poemContext = new PoemContext();
         //noinspection StatementWithEmptyBody
-        while (poemContext.add(random, poemContext.names, 0.3f, Person.randomHuman(random, random.nextBoolean()).getFirstName())) ;
+        while (poemContext.add(random, poemContext.names, 0.3f, Person.randomHuman(random, random.nextBoolean()).getFirstName()))
+            ;
         //noinspection StatementWithEmptyBody
         while (poemContext.add(random, poemContext.places, 0.3f, Place.randomPlace(random).getFullPlaceType())) ;
 

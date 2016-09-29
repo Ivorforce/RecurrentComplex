@@ -15,13 +15,19 @@ public class CustomizableBiMap<K, V> extends CustomizableMap<K, V>
 {
     public CustomizableBiMap()
     {
-        super(HashBiMap.create(), HashBiMap.create());
+        super(HashBiMap.create(), HashBiMap.create(), HashBiMap.create());
     }
 
     @Override
     public BiMap<K, V> getMap()
     {
         return (BiMap<K, V>) map;
+    }
+
+    @Override
+    public BiMap<K, V> getCustomMap()
+    {
+        return (BiMap<K, V>) customMap;
     }
 
     @Override

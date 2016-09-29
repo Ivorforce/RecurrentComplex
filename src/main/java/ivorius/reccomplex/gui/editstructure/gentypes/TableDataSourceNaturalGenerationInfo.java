@@ -58,12 +58,12 @@ public class TableDataSourceNaturalGenerationInfo extends TableDataSourceSegment
 
     public static List<TableCellEnum.Option<String>> allGenerationCategories()
     {
-        Set<String> categories = NaturalStructureSelector.allCategoryIDs();
+        Set<String> categories = NaturalStructureSelector.CATEGORY_REGISTRY.activeIDs();
         List<TableCellEnum.Option<String>> generationCategories = new ArrayList<>();
 
         for (String category : categories)
         {
-            NaturalStructureSelector.Category categoryObj = NaturalStructureSelector.categoryForID(category);
+            NaturalStructureSelector.Category categoryObj = NaturalStructureSelector.CATEGORY_REGISTRY.getActive(category);
 
             if (categoryObj.selectableInGUI())
                 generationCategories.add(new TableCellEnum.Option<>(category, categoryObj.title(), categoryObj.tooltip()));

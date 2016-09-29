@@ -60,9 +60,9 @@ public class NaturalGenerationInfo extends StructureGenerationInfo implements En
     {
         this(null, "decoration");
 
-        biomeWeights.setToDefault();
-        dimensionWeights.setToDefault();
-        placer.setToDefault();
+        biomeWeights.setPreset("overworld");
+        dimensionWeights.setPreset("overworld");
+        placer.setPreset("surface");
     }
 
     public NaturalGenerationInfo(@Nullable String id, String generationCategory)

@@ -186,6 +186,12 @@ public abstract class PresetRegistry<T>
             this.title = title;
             this.description = description;
         }
+
+        public Metadata(String title, String description)
+        {
+            this.title = title;
+            this.description = new String[]{description};
+        }
     }
 
     protected static class Preset<T>

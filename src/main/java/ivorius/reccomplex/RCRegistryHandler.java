@@ -165,19 +165,19 @@ public class RCRegistryHandler
         register(inspector, "inspector");
 
         // Set preset defaults
-        GenericPlacerPresets.instance().register("surface", false, new GenericPlacer(), null);
-        GenericPlacerPresets.instance().setDefault("surface");
+        GenericPlacerPresets.instance().register("clear", false, new GenericPlacer(), new PresetRegistry.Metadata("Clear", "Do not place anywhere"));
+        GenericPlacerPresets.instance().setDefault("clear");
 
-        DimensionMatcherPresets.instance().register("overworld", false, new ArrayList<>(), null);
-        DimensionMatcherPresets.instance().setDefault("overworld");
+        DimensionMatcherPresets.instance().register("clear", false, new ArrayList<>(), new PresetRegistry.Metadata("None", "No dimensions"));
+        DimensionMatcherPresets.instance().setDefault("clear");
 
-        BiomeMatcherPresets.instance().register("overworld", false, new ArrayList<>(), null);
-        BiomeMatcherPresets.instance().setDefault("overworld");
+        BiomeMatcherPresets.instance().register("clear", false, new ArrayList<>(), new PresetRegistry.Metadata("None", "No biomes"));
+        BiomeMatcherPresets.instance().setDefault("clear");
 
-        WeightedBlockStatePresets.instance().register("clear", false, new ArrayList<>(), null);
+        WeightedBlockStatePresets.instance().register("clear", false, new ArrayList<>(), new PresetRegistry.Metadata("None", "No blocks"));
         WeightedBlockStatePresets.instance().setDefault("clear");
 
-        TransfomerPresets.instance().register("clear", false, new TransformerMulti.Data(), null);
+        TransfomerPresets.instance().register("clear", false, new TransformerMulti.Data(), new PresetRegistry.Metadata("None", "No transformers"));
         TransfomerPresets.instance().setDefault("clear");
     }
 

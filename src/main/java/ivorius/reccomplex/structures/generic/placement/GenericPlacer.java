@@ -61,6 +61,9 @@ public class GenericPlacer implements Placer
     @Override
     public int place(StructurePlaceContext context, @Nullable IvBlockCollection blockCollection)
     {
+        if (factors.isEmpty())
+            return DONT_GENERATE;
+
         WorldServer world = context.environment.world;
 
         WorldCache cache = new WorldCache(world, StructureBoundingBoxes.wholeHeightBoundingBox(world, context.boundingBox));

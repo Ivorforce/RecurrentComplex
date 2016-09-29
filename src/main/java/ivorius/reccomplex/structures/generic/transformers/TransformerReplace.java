@@ -54,7 +54,7 @@ public class TransformerReplace extends TransformerSingleBlock<NBTNone>
     public TransformerReplace()
     {
         this(null, BlockMatcher.of(RecurrentComplex.specialRegistry, Blocks.WOOL));
-        destination.setToDefault();
+        destination.setPreset("air");
     }
 
     public TransformerReplace(@Nullable String id, String sourceExpression)

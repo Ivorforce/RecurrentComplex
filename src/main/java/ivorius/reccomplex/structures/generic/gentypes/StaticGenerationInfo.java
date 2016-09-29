@@ -56,7 +56,7 @@ public class StaticGenerationInfo extends StructureGenerationInfo
         this.position = position;
         this.pattern = pattern;
 
-        this.placer.setToDefault();
+        this.placer.setPreset("surface");
     }
 
     public static Gson createGson()

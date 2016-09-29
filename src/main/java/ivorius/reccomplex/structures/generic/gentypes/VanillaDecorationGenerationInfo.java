@@ -52,8 +52,8 @@ public class VanillaDecorationGenerationInfo extends StructureGenerationInfo imp
     {
         this(null, null, RCBiomeDecorator.DecorationType.TREE, BlockPos.ORIGIN);
 
-        biomeWeights.setToDefault();
-        dimensionWeights.setToDefault();
+        biomeWeights.setPreset("overworld");
+        dimensionWeights.setPreset("overworld");
     }
 
     public VanillaDecorationGenerationInfo(@Nullable String id, Double generationWeight, RCBiomeDecorator.DecorationType type, BlockPos spawnShift)

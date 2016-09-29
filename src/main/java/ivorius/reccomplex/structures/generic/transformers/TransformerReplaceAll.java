@@ -53,7 +53,7 @@ public class TransformerReplaceAll extends TransformerSingleBlock<TransformerRep
     public TransformerReplaceAll()
     {
         this(null, BlockMatcher.of(RecurrentComplex.specialRegistry, Blocks.WOOL, new IntegerRange(0, 15)));
-        destination.setToDefault();
+        destination.setPreset("air");
     }
 
     public TransformerReplaceAll(@Nullable String id, String sourceExpression)

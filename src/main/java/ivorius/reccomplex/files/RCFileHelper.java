@@ -78,6 +78,19 @@ public class RCFileHelper
         return resource != null ? resourceToPath(resource.toURI().toURL()) : null;
     }
 
+    public static Path tryPathFromResourceLocation(ResourceLocation resourceLocation)
+    {
+        try
+        {
+            return pathFromResourceLocation(resourceLocation);
+        }
+        catch (URISyntaxException | IOException ignored)
+        {
+        }
+
+        return null;
+    }
+
     public static List<Path> listFilesRecursively(Path dir, final DirectoryStream.Filter<Path> filter, final boolean recursive) throws IOException
     {
         final List<Path> files = new ArrayList<>();

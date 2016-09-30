@@ -12,6 +12,7 @@ import org.apache.commons.io.FilenameUtils;
 
 import javax.annotation.Nullable;
 import java.io.IOException;
+import java.net.URISyntaxException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.*;
@@ -115,17 +116,31 @@ public class FileTypeRegistry
 
     public boolean tryLoad(ResourceLocation resourceLocation, @Nullable String customID, FileLoadContext context)
     {
+        Path path = null;
+
         try
         {
-            Path path = RCFileHelper.pathFromResourceLocation(resourceLocation);
-            if (path != null)
-                return load(path, customID, context);
-            else
-                RecurrentComplex.logger.error("Can't find path for '" + resourceLocation + "'");
+            path = RCFileHelper.pathFromResourceLocation(resourceLocation);
         }
-        catch (Throwable e)
+        catch (URISyntaxException | IOException e)
         {
-            RecurrentComplex.logger.error("Error reading from resource location '" + resourceLocation + "'", e);
+            RecurrentComplex.logger.error("Error finding path from resource location '" + resourceLocation + "'", e);
+        }
+
+        if (path != null)
+        {
+            try
+            {
+                return load(path, customID, context);
+            }
+            catch (UnsupportedOperationException e)
+            {
+                RecurrentComplex.logger.error(String.format("Reading unsupported: ?.%s", FilenameUtils.getExtension(path.getFileName().toString())), e);
+            }
+            catch (Throwable e)
+            {
+                RecurrentComplex.logger.error("Error reading from resource location '" + resourceLocation + "'", e);
+            }
         }
 
         return false;
@@ -136,6 +151,10 @@ public class FileTypeRegistry
         try
         {
             return load(file, customID, context);
+        }
+        catch (UnsupportedOperationException e)
+        {
+            RecurrentComplex.logger.error(String.format("Reading unsupported: ?.%s", FilenameUtils.getExtension(file.getFileName().toString())), e);
         }
         catch (Exception e)
         {
@@ -161,6 +180,10 @@ public class FileTypeRegistry
         {
             write(activeFolder, suffix, name);
             return true;
+        }
+        catch (UnsupportedOperationException e)
+        {
+            RecurrentComplex.logger.error(String.format("Writing unsupported: %s.%s", name, suffix), e);
         }
         catch (Exception e)
         {

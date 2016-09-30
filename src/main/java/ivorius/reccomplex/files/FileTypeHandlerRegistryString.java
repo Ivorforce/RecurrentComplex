@@ -104,11 +104,17 @@ public class FileTypeHandlerRegistryString<S> extends FileTypeHandlerRegistry<S>
 
     public String write(S s) throws Exception
     {
+        if (writer == null)
+            throw new UnsupportedOperationException("write");
+
         return writer.write(s);
     }
 
     public S read(String file) throws Exception
     {
+        if (reader == null)
+             throw new UnsupportedOperationException("read");
+
         return reader.read(file);
     }
 

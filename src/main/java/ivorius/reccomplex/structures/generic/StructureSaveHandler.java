@@ -49,9 +49,9 @@ public class StructureSaveHandler extends FileTypeHandlerRegistry<GenericStructu
 
     public final Gson gson;
 
-    public StructureSaveHandler(String fileSuffix, StructureRegistry registry)
+    public StructureSaveHandler(String suffix, StructureRegistry registry)
     {
-        super(fileSuffix, registry);
+        super(suffix, registry);
         gson = createGson();
     }
 

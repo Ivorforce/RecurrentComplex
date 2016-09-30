@@ -55,7 +55,7 @@ public class PacketSaveStructureHandler extends SchedulingMessageHandler<PacketS
 
         StructureRegistry.INSTANCE.register(id, "", genericStructureInfo, saveDirectoryDataResult.saveAsActive, LeveledRegistry.Level.CUSTOM);
 
-        if (RecurrentComplex.fileTypeRegistry.tryWrite(saveDirectoryDataResult.saveAsActive, RCFileSuffix.STRUCTURE, id))
+        if (RecurrentComplex.fileTypeRegistry.tryWrite(saveDirectoryDataResult.saveAsActive, StructureSaveHandler.INSTANCE.getSuffix(), id))
         {
             player.addChatMessage(ServerTranslations.format("structure.save.success", path + id));
 

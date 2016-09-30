@@ -10,6 +10,7 @@ import gnu.trove.map.TObjectDoubleMap;
 import gnu.trove.map.hash.TObjectDoubleHashMap;
 import ivorius.reccomplex.files.RCFileSuffix;
 import ivorius.reccomplex.structures.StructureRegistry;
+import ivorius.reccomplex.structures.generic.StructureSaveHandler;
 import ivorius.reccomplex.structures.generic.matchers.BiomeMatcher;
 import ivorius.reccomplex.structures.generic.matchers.CommandMatcher;
 import ivorius.reccomplex.structures.generic.matchers.DimensionMatcher;
@@ -197,7 +198,7 @@ public class RCConfig
 
     public static boolean shouldResourceLoad(String fileSuffix, String id, String domain)
     {
-        if (fileSuffix.equals(RCFileSuffix.STRUCTURE))
+        if (fileSuffix.equals(StructureSaveHandler.INSTANCE.getSuffix()))
             return structureLoadMatcher.test(new ResourceLocation(domain, id));
         else if (fileSuffix.equals(RCFileSuffix.INVENTORY_GENERATION_COMPONENT))
             return inventoryGeneratorLoadMatcher.test(new ResourceLocation(domain, id));

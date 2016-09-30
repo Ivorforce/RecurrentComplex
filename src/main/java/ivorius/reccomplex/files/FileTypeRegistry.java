@@ -33,9 +33,17 @@ public class FileTypeRegistry
         return handlers.get(suffix);
     }
 
-    public FileTypeHandler put(String suffix, FileTypeHandler value)
+    public FileTypeHandler register(FileTypeHandler handler)
     {
-        return handlers.put(suffix, value);
+        if (handlers.containsKey(handler.getSuffix()))
+            throw new IllegalArgumentException();
+
+        return handlers.put(handler.getSuffix(), handler);
+    }
+
+    public void unregister(FileTypeHandler handler)
+    {
+        handlers.remove(handler.getSuffix());
     }
 
     // --------------- Loading
@@ -147,29 +155,29 @@ public class FileTypeRegistry
 
     // --------------- Saving
 
-    public boolean tryWrite(boolean activeFolder, String fileSuffix, String name)
+    public boolean tryWrite(boolean activeFolder, String suffix, String name)
     {
         try
         {
-            write(activeFolder, fileSuffix, name);
+            write(activeFolder, suffix, name);
             return true;
         }
         catch (Exception e)
         {
-            RecurrentComplex.logger.error(String.format("Error writing file: %s.%s", name, fileSuffix), e);
+            RecurrentComplex.logger.error(String.format("Error writing file: %s.%s", name, suffix), e);
         }
 
         return false;
     }
 
-    public void write(boolean activeFolder, String fileSuffix, String name) throws Exception
+    public void write(boolean activeFolder, String suffix, String name) throws Exception
     {
-        FileTypeHandler handler = get(FilenameUtils.getExtension(fileSuffix));
+        FileTypeHandler handler = get(suffix);
 
         if (handler == null)
             throw new IllegalArgumentException();
 
-        Path path = FileUtils.getFile(RCFileTypeRegistry.getDirectory(activeFolder), String.format("%s.%s", name, fileSuffix)).toPath();
+        Path path = FileUtils.getFile(RCFileTypeRegistry.getDirectory(activeFolder), String.format("%s.%s", name, suffix)).toPath();
 
         Files.deleteIfExists(path);
         handler.writeFile(path, name);

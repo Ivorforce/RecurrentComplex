@@ -11,29 +11,28 @@ import ivorius.reccomplex.events.FileLoadEvent;
 import ivorius.reccomplex.events.RCEventBus;
 import net.minecraftforge.fml.common.eventhandler.Event;
 
-import javax.annotation.Nullable;
+import javax.annotation.ParametersAreNonnullByDefault;
 import java.nio.file.Path;
 
 /**
  * Created by lukas on 29.09.16.
  */
-public abstract class FileTypeHandlerRegistry<S> implements FileTypeHandler
+public abstract class FileTypeHandlerRegistry<S> extends FileTypeHandler
 {
-    public String fileSuffix;
     public LeveledRegistry<? super S> registry;
 
-    public FileTypeHandlerRegistry(String fileSuffix, LeveledRegistry<? super S> registry)
+    public FileTypeHandlerRegistry(String suffix, LeveledRegistry<? super S> registry)
     {
-        this.fileSuffix = fileSuffix;
+        super(suffix);
         this.registry = registry;
     }
 
     @Override
-    public boolean loadFile(Path path, @Nullable String customID, FileLoadContext context)
+    @ParametersAreNonnullByDefault
+    public boolean loadFile(Path path, String id, FileLoadContext context)
     {
         String domain = context.domain;
         boolean active = context.active;
-        String id = FileTypeHandler.defaultName(path, customID);
 
         S s = null;
 
@@ -48,13 +47,13 @@ public abstract class FileTypeHandlerRegistry<S> implements FileTypeHandler
 
         if (s != null)
         {
-            FileLoadEvent.Pre<S> event = new FileLoadEvent.Pre<>(s, fileSuffix, id, domain, path, active);
+            FileLoadEvent.Pre<S> event = new FileLoadEvent.Pre<>(s, suffix, id, domain, path, active);
 
-            if (event.getResult() != Event.Result.DENY && RCConfig.shouldResourceLoad(fileSuffix, id, domain))
+            if (event.getResult() != Event.Result.DENY && RCConfig.shouldResourceLoad(suffix, id, domain))
             {
                 registry.register(id, domain, s, active, context.level);
 
-                RCEventBus.INSTANCE.post(new FileLoadEvent.Post<>(s, fileSuffix, id, domain, path, active));
+                RCEventBus.INSTANCE.post(new FileLoadEvent.Post<>(s, suffix, id, domain, path, active));
             }
 
             return true;
@@ -66,6 +65,17 @@ public abstract class FileTypeHandlerRegistry<S> implements FileTypeHandler
     public abstract S read(Path path, String name) throws Exception;
 
     @Override
+    @ParametersAreNonnullByDefault
+    public void writeFile(Path path, String id) throws Exception
+    {
+        write(path, (S) registry.get(id));
+    }
+
+    @ParametersAreNonnullByDefault
+    public abstract void write(Path path, S s) throws Exception;
+
+    @Override
+    @ParametersAreNonnullByDefault
     public void clearFiles(LeveledRegistry.Level level)
     {
         registry.clear(level);

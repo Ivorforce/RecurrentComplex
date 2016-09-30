@@ -5,22 +5,37 @@
 
 package ivorius.reccomplex.files;
 
-import org.apache.commons.io.FilenameUtils;
-
-import javax.annotation.Nullable;
+import javax.annotation.ParametersAreNonnullByDefault;
 import java.nio.file.Path;
 
 /**
  * Created by lukas on 18.09.15.
  */
-public interface FileTypeHandler
+public abstract class FileTypeHandler
 {
-    static String defaultName(Path path, String customID)
+    protected String suffix;
+
+    public FileTypeHandler(String suffix)
     {
-        return customID != null ? customID : FilenameUtils.getBaseName(path.getFileName().toString());
+        this.suffix = suffix;
     }
 
-    boolean loadFile(Path path, @Nullable String customID, FileLoadContext context) throws Exception;
+    public String getSuffix()
+    {
+        return suffix;
+    }
 
-    void clearFiles(LeveledRegistry.Level level);
+    public void setSuffix(String suffix)
+    {
+        this.suffix = suffix;
+    }
+
+    @ParametersAreNonnullByDefault
+    abstract boolean loadFile(Path path, String id, FileLoadContext context) throws Exception;
+
+    @ParametersAreNonnullByDefault
+    abstract void writeFile(Path path, String id) throws Exception;
+
+    @ParametersAreNonnullByDefault
+    abstract void clearFiles(LeveledRegistry.Level level);
 }

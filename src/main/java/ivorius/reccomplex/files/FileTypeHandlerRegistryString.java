@@ -8,6 +8,7 @@ package ivorius.reccomplex.files;
 import com.google.gson.Gson;
 import ivorius.reccomplex.RecurrentComplex;
 
+import javax.annotation.ParametersAreNonnullByDefault;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -18,21 +19,28 @@ import java.nio.file.Path;
 public class FileTypeHandlerRegistryString<S> extends FileTypeHandlerRegistry<S>
 {
     public Reader<? extends S> reader;
+    public Writer<? super S> writer;
 
-    public FileTypeHandlerRegistryString(String fileSuffix, LeveledRegistry<? super S> registry, Reader<? extends S> reader)
+    public FileTypeHandlerRegistryString(String suffix, LeveledRegistry<? super S> registry, Reader<? extends S> reader, Writer<? super S> writer)
     {
-        super(fileSuffix, registry);
+        super(suffix, registry);
         this.reader = reader;
+        this.writer = writer;
     }
 
-    public FileTypeHandlerRegistryString(String fileSuffix, LeveledRegistry<? super S> registry, Gson gson, Class<? extends S> type)
+    public <RW extends Reader<S> & Writer<S>> FileTypeHandlerRegistryString(String suffix, LeveledRegistry<? super S> registry, RW rw)
     {
-        this(fileSuffix, registry, gsonReader(gson, type));
+        this(suffix, registry, rw, rw);
     }
 
-    public FileTypeHandlerRegistryString(String fileSuffix, LeveledRegistry<? super S> registry, Class<? extends S> type)
+    public FileTypeHandlerRegistryString(String suffix, LeveledRegistry<? super S> registry, Gson gson, Class<? extends S> type)
     {
-        this(fileSuffix, registry, gsonReader(type));
+        this(suffix, registry, gsonReader(gson, type), gsonWriter(gson, type));
+    }
+
+    public FileTypeHandlerRegistryString(String suffix, LeveledRegistry<? super S> registry, Class<? extends S> type)
+    {
+        this(suffix, registry, gsonReader(type), gsonWriter(type));
     }
 
     public static <S> Reader<S> gsonReader(Gson gson, Class<? extends S> type)
@@ -43,6 +51,16 @@ public class FileTypeHandlerRegistryString<S> extends FileTypeHandlerRegistry<S>
     public static <S> Reader<S> gsonReader(Class<? extends S> type)
     {
         return gsonReader(new Gson(), type);
+    }
+
+    public static <S> Writer<S> gsonWriter(Gson gson, Class<? extends S> type)
+    {
+        return s -> gson.toJson(s, type);
+    }
+
+    public static <S> Writer<S> gsonWriter(Class<? extends S> type)
+    {
+        return gsonWriter(new Gson(), type);
     }
 
     @Override
@@ -74,6 +92,21 @@ public class FileTypeHandlerRegistryString<S> extends FileTypeHandlerRegistry<S>
         return null;
     }
 
+    @Override
+    @ParametersAreNonnullByDefault
+    public void write(Path path, S s) throws Exception
+    {
+        if (Files.exists(path))
+            Files.delete(path);
+
+        Files.write(path, write(s).getBytes());
+    }
+
+    public String write(S s) throws Exception
+    {
+        return writer.write(s);
+    }
+
     public S read(String file) throws Exception
     {
         return reader.read(file);
@@ -82,5 +115,10 @@ public class FileTypeHandlerRegistryString<S> extends FileTypeHandlerRegistry<S>
     public interface Reader<S>
     {
         S read(String json) throws Exception;
+    }
+
+    public interface Writer<S>
+    {
+        String write(S s) throws Exception;
     }
 }

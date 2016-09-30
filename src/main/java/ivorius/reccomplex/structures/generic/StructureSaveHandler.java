@@ -14,20 +14,18 @@ import ivorius.reccomplex.files.FileTypeHandlerRegistry;
 import ivorius.reccomplex.files.RCFileSuffix;
 import ivorius.reccomplex.files.RCFileTypeRegistry;
 import ivorius.reccomplex.json.NbtToJson;
-import ivorius.reccomplex.structures.StructureInfo;
 import ivorius.reccomplex.structures.StructureRegistry;
 import ivorius.reccomplex.utils.ByteArrays;
 import net.minecraft.nbt.CompressedStreamTools;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ResourceLocation;
-import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.filefilter.FileFilterUtils;
 import org.apache.commons.io.filefilter.IOFileFilter;
 
+import javax.annotation.ParametersAreNonnullByDefault;
 import java.io.ByteArrayInputStream;
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -42,19 +40,18 @@ import java.util.zip.ZipOutputStream;
 /**
  * Created by lukas on 25.05.14.
  */
-public class StructureSaveHandler
+public class StructureSaveHandler extends FileTypeHandlerRegistry<GenericStructureInfo>
 {
-    public static final StructureSaveHandler INSTANCE = new StructureSaveHandler(StructureRegistry.INSTANCE);
+    public static final StructureSaveHandler INSTANCE = new StructureSaveHandler(RCFileSuffix.STRUCTURE, StructureRegistry.INSTANCE);
 
     public static final String STRUCTURE_INFO_JSON_FILENAME = "structure.json";
     public static final String WORLD_DATA_NBT_FILENAME = "worldData.nbt";
 
-    public final StructureRegistry registry;
     public final Gson gson;
 
-    public StructureSaveHandler(StructureRegistry registry)
+    public StructureSaveHandler(String fileSuffix, StructureRegistry registry)
     {
-        this.registry = registry;
+        super(fileSuffix, registry);
         gson = createGson();
     }
 
@@ -107,62 +104,9 @@ public class StructureSaveHandler
         return gson.toJson(structureInfo, GenericStructureInfo.class);
     }
 
-    public boolean save(GenericStructureInfo info, String structureName, boolean activeFolder)
-    {
-        File parent = RCFileTypeRegistry.getDirectory(activeFolder);
-        if (parent != null)
-        {
-            String json = toJSON(info);
-
-            if (RecurrentComplex.USE_ZIP_FOR_STRUCTURE_FILES)
-            {
-                File newFile = new File(parent, structureName + "." + RCFileSuffix.STRUCTURE);
-                boolean failed = false;
-
-                try
-                {
-                    newFile.delete(); // Prevent case mismatching
-                    ZipOutputStream zipOutputStream = new ZipOutputStream(new FileOutputStream(newFile));
-
-                    addZipEntry(zipOutputStream, STRUCTURE_INFO_JSON_FILENAME, json.getBytes());
-                    addZipEntry(zipOutputStream, WORLD_DATA_NBT_FILENAME, ByteArrays.toByteArray(s -> CompressedStreamTools.writeCompressed(info.worldDataCompound, s)));
-
-                    zipOutputStream.close();
-                }
-                catch (Exception ex)
-                {
-                    RecurrentComplex.logger.error("Could not write structure to zip file", ex);
-                    failed = true;
-                }
-
-                return !failed && newFile.exists();
-            }
-            else
-            {
-                File newFile = new File(parent, structureName + ".json");
-                boolean failed = false;
-
-                try
-                {
-                    newFile.delete(); // Prevent case mismatching
-                    FileUtils.writeStringToFile(newFile, json);
-                }
-                catch (Exception e)
-                {
-                    RecurrentComplex.logger.error("Could not write structure zip to folder", e);
-                    failed = true;
-                }
-
-                return !failed && newFile.exists();
-            }
-        }
-
-        return false;
-    }
-
     public Set<String> list(boolean activeFolder)
     {
-        return listFiles(activeFolder, FileFilterUtils.suffixFileFilter(RCFileSuffix.STRUCTURE), FileFilterUtils.suffixFileFilter("zip"));
+        return listFiles(activeFolder, FileFilterUtils.suffixFileFilter(suffix), FileFilterUtils.suffixFileFilter("zip"));
     }
 
     public boolean has(String name, boolean activeFolder)
@@ -170,7 +114,7 @@ public class StructureSaveHandler
         try
         {
             File parent = RCFileTypeRegistry.getDirectory(activeFolder);
-            return parent != null && (new File(parent, name + "." + RCFileSuffix.STRUCTURE).exists() || /* Legacy */ new File(parent, name + ".zip").exists());
+            return parent != null && (new File(parent, name + "." + suffix).exists() || /* Legacy */ new File(parent, name + ".zip").exists());
         }
         catch (Throwable e)
         {
@@ -185,7 +129,7 @@ public class StructureSaveHandler
         try
         {
             File parent = RCFileTypeRegistry.getDirectory(activeFolder);
-            return parent != null && (new File(parent, name + "." + RCFileSuffix.STRUCTURE).delete() || /* Legacy */ new File(parent, name + ".zip").delete());
+            return parent != null && (new File(parent, name + "." + suffix).delete() || /* Legacy */ new File(parent, name + ".zip").delete());
         }
         catch (Throwable e)
         {
@@ -193,14 +137,6 @@ public class StructureSaveHandler
         }
 
         return false;
-    }
-
-    public GenericStructureInfo read(Path file) throws StructureLoadException, IOException
-    {
-        try (ZipInputStream zip = new ZipInputStream(Files.newInputStream(file)))
-        {
-            return structureInfoFromZip(zip);
-        }
     }
 
     public GenericStructureInfo structureInfoFromResource(ResourceLocation resourceLocation)
@@ -256,15 +192,25 @@ public class StructureSaveHandler
         }
     }
 
-    public static class Loader extends FileTypeHandlerRegistry<StructureInfo>
+    @Override
+    public GenericStructureInfo read(Path path, String name) throws Exception
     {
-        public Loader() {
-            super(RCFileSuffix.STRUCTURE, StructureRegistry.INSTANCE);}
-
-        @Override
-        public StructureInfo read(Path path, String name) throws Exception
+        try (ZipInputStream zip = new ZipInputStream(Files.newInputStream(path)))
         {
-            return INSTANCE.read(path);
+            return structureInfoFromZip(zip);
+        }
+    }
+
+    @Override
+    @ParametersAreNonnullByDefault
+    public void write(Path path, GenericStructureInfo structureInfo) throws Exception
+    {
+        try (ZipOutputStream zipOutputStream = new ZipOutputStream(Files.newOutputStream(path)))
+        {
+            addZipEntry(zipOutputStream, STRUCTURE_INFO_JSON_FILENAME, toJSON(structureInfo).getBytes());
+            addZipEntry(zipOutputStream, WORLD_DATA_NBT_FILENAME, ByteArrays.toByteArray(s -> CompressedStreamTools.writeCompressed(structureInfo.worldDataCompound, s)));
+
+            zipOutputStream.close();
         }
     }
 }

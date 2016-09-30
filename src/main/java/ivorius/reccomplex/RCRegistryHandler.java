@@ -55,11 +55,9 @@ import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 
-import java.io.IOException;
 import java.util.ArrayList;
 
-import static ivorius.reccomplex.RecurrentComplex.fileTypeRegistry;
-import static ivorius.reccomplex.RecurrentComplex.specialRegistry;
+import static ivorius.reccomplex.RecurrentComplex.*;
 import static ivorius.reccomplex.blocks.RCBlocks.*;
 import static ivorius.reccomplex.gui.RCCreativeTabs.tabInventoryGenerators;
 import static ivorius.reccomplex.gui.RCCreativeTabs.tabStructureTools;
@@ -166,19 +164,19 @@ public class RCRegistryHandler
         register(inspector, "inspector");
 
         // Set preset defaults
-        GenericPlacerPresets.instance().register("clear", new GenericPlacer(), new PresetRegistry.Metadata("Clear", "Do not place anywhere"), LeveledRegistry.Level.INTERNAL);
+        GenericPlacerPresets.instance().getRegistry().register("clear", MOD_ID, PresetRegistry.fullPreset("clear", new GenericPlacer(), new PresetRegistry.Metadata("Clear", "Do not place anywhere")), true, LeveledRegistry.Level.INTERNAL);
         GenericPlacerPresets.instance().setDefault("clear");
 
-        DimensionMatcherPresets.instance().register("clear", new ArrayList<>(), new PresetRegistry.Metadata("None", "No dimensions"), LeveledRegistry.Level.INTERNAL);
+        DimensionMatcherPresets.instance().getRegistry().register("clear", MOD_ID, PresetRegistry.fullPreset("clear", new ArrayList<>(), new PresetRegistry.Metadata("None", "No dimensions")), true, LeveledRegistry.Level.INTERNAL);
         DimensionMatcherPresets.instance().setDefault("clear");
 
-        BiomeMatcherPresets.instance().register("clear", new ArrayList<>(), new PresetRegistry.Metadata("None", "No biomes"), LeveledRegistry.Level.INTERNAL);
+        BiomeMatcherPresets.instance().getRegistry().register("clear", MOD_ID, PresetRegistry.fullPreset("clear", new ArrayList<>(), new PresetRegistry.Metadata("None", "No biomes")), true, LeveledRegistry.Level.INTERNAL);
         BiomeMatcherPresets.instance().setDefault("clear");
 
-        WeightedBlockStatePresets.instance().register("clear", new ArrayList<>(), new PresetRegistry.Metadata("None", "No blocks"), LeveledRegistry.Level.INTERNAL);
+        WeightedBlockStatePresets.instance().getRegistry().register("clear", MOD_ID, PresetRegistry.fullPreset("clear", new ArrayList<>(), new PresetRegistry.Metadata("None", "No blocks")), true, LeveledRegistry.Level.INTERNAL);
         WeightedBlockStatePresets.instance().setDefault("clear");
 
-        TransfomerPresets.instance().register("clear", new TransformerMulti.Data(), new PresetRegistry.Metadata("None", "No transformers"), LeveledRegistry.Level.INTERNAL);
+        TransfomerPresets.instance().getRegistry().register("clear", MOD_ID, PresetRegistry.fullPreset("clear", new TransformerMulti.Data(), new PresetRegistry.Metadata("None", "No transformers")), true, LeveledRegistry.Level.INTERNAL);
         TransfomerPresets.instance().setDefault("clear");
     }
 
@@ -240,11 +238,11 @@ public class RCRegistryHandler
 
         RCBiomeDictionary.registerTypes();
 
-        fileTypeRegistry.put(RCFileSuffix.STRUCTURE, new StructureSaveHandler.Loader());
+        fileTypeRegistry.put(RCFileSuffix.STRUCTURE, StructureSaveHandler.INSTANCE);
         fileTypeRegistry.put(RCFileSuffix.INVENTORY_GENERATION_COMPONENT, new FileTypeHandlerRegistryString<>(RCFileSuffix.INVENTORY_GENERATION_COMPONENT,
-                GenericItemCollectionRegistry.INSTANCE, ItemCollectionSaveHandler.INSTANCE::fromJSON));
+                GenericItemCollectionRegistry.INSTANCE, ItemCollectionSaveHandler.INSTANCE::fromJSON, ItemCollectionSaveHandler.INSTANCE::toJSON));
         fileTypeRegistry.put(RCFileSuffix.POEM_THEME, new FileTypeHandlerRegistryString<>(RCFileSuffix.POEM_THEME,
-                Poem.THEME_REGISTRY, Poem.Theme::fromFile));
+                Poem.THEME_REGISTRY, Poem.Theme::fromFile, null));
         fileTypeRegistry.put(RCFileSuffix.NATURAL_CATEGORY, new FileTypeHandlerRegistryString<>(RCFileSuffix.NATURAL_CATEGORY,
                 NaturalStructureSelector.CATEGORY_REGISTRY, NaturalStructureSelector.SimpleCategory.class));
         fileTypeRegistry.put(RCFileSuffix.BIOME_PRESET, BiomeMatcherPresets.instance().loader());
@@ -309,18 +307,6 @@ public class RCRegistryHandler
 
     protected static <T> void dumpAll(PresetRegistry<T> presets)
     {
-        presets.allIDs().forEach(s -> savePreset(presets, s));
-    }
-
-    private static <T> void savePreset(PresetRegistry<T> registry, String s)
-    {
-        try
-        {
-            registry.save(s, true);
-        }
-        catch (IOException e)
-        {
-            RecurrentComplex.logger.error("Error saving preset: " + s, e);
-        }
+        presets.allIDs().forEach(s -> fileTypeRegistry.tryWrite(true, presets.getFileSuffix(), s));
     }
 }

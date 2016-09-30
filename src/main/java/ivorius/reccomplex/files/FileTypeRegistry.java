@@ -7,9 +7,12 @@ package ivorius.reccomplex.files;
 
 import ivorius.reccomplex.RecurrentComplex;
 import net.minecraft.util.ResourceLocation;
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
 
+import javax.annotation.Nullable;
 import java.io.IOException;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.*;
 
@@ -19,6 +22,11 @@ import java.util.*;
 public class FileTypeRegistry
 {
     private final Map<String, FileTypeHandler> handlers = new HashMap<>();
+
+    protected static String defaultName(Path path, String customID)
+    {
+        return customID != null ? customID : FilenameUtils.getBaseName(path.getFileName().toString());
+    }
 
     public FileTypeHandler get(String suffix)
     {
@@ -30,12 +38,12 @@ public class FileTypeRegistry
         return handlers.put(suffix, value);
     }
 
+    // --------------- Loading
+
     public Set<String> keySet()
     {
         return handlers.keySet();
     }
-
-    // --------------- Loading
 
     public void clearFiles(LeveledRegistry.Level level)
     {
@@ -97,7 +105,7 @@ public class FileTypeRegistry
         return added;
     }
 
-    public boolean tryLoad(ResourceLocation resourceLocation, String customID, FileLoadContext context)
+    public boolean tryLoad(ResourceLocation resourceLocation, @Nullable String customID, FileLoadContext context)
     {
         try
         {
@@ -115,7 +123,7 @@ public class FileTypeRegistry
         return false;
     }
 
-    public boolean tryLoad(Path file, String customID, FileLoadContext context)
+    public boolean tryLoad(Path file, @Nullable String customID, FileLoadContext context)
     {
         try
         {
@@ -129,10 +137,41 @@ public class FileTypeRegistry
         return false;
     }
 
-    public boolean load(Path file, String customID, FileLoadContext context) throws Exception
+    public boolean load(Path file, @Nullable String customID, FileLoadContext context) throws Exception
     {
         FileTypeHandler handler = get(FilenameUtils.getExtension(file.getFileName().toString()));
+        String id = defaultName(file, customID);
 
-        return handler != null && handler.loadFile(file, customID, context);
+        return handler != null && handler.loadFile(file, id, context);
+    }
+
+    // --------------- Saving
+
+    public boolean tryWrite(boolean activeFolder, String fileSuffix, String name)
+    {
+        try
+        {
+            write(activeFolder, fileSuffix, name);
+            return true;
+        }
+        catch (Exception e)
+        {
+            RecurrentComplex.logger.error(String.format("Error writing file: %s.%s", name, fileSuffix), e);
+        }
+
+        return false;
+    }
+
+    public void write(boolean activeFolder, String fileSuffix, String name) throws Exception
+    {
+        FileTypeHandler handler = get(FilenameUtils.getExtension(fileSuffix));
+
+        if (handler == null)
+            throw new IllegalArgumentException();
+
+        Path path = FileUtils.getFile(RCFileTypeRegistry.getDirectory(activeFolder), String.format("%s.%s", name, fileSuffix)).toPath();
+
+        Files.deleteIfExists(path);
+        handler.writeFile(path, name);
     }
 }

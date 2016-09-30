@@ -69,6 +69,7 @@ public class SimpleLeveledRegistry<S> implements LeveledRegistry<S>
         return activeMap.get(id);
     }
 
+    @Override
     @Nullable
     public S get(String id)
     {

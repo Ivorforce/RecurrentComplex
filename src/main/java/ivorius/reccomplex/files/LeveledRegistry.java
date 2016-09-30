@@ -14,6 +14,8 @@ public interface LeveledRegistry<S>
 
     S unregister(String id, ILevel level);
 
+    S get(String id);
+
     void clear(ILevel level);
 
     interface ILevel

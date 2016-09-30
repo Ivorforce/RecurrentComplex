@@ -80,17 +80,9 @@ public class TableDataSourceSavePreset<T> extends TableDataSourceSegmented
         if (!StructureInfos.isSimpleID(id))
             return false;
 
-        object.getPresetRegistry().register(id, object.getContents(), new PresetRegistry.Metadata(title, description.split("<br>")), LeveledRegistry.Level.CUSTOM);
+        object.getPresetRegistry().getRegistry().register(id, "", PresetRegistry.fullPreset(id, object.getContents(), new PresetRegistry.Metadata(title, description.split("<br>"))), true, LeveledRegistry.Level.CUSTOM);
 
-        try
-        {
-            object.getPresetRegistry().save(id, true);
-        }
-        catch (IOException e)
-        {
-            RecurrentComplex.logger.error("Error saving preset: " + id, e);
-            return false;
-        }
+        RecurrentComplex.fileTypeRegistry.tryWrite(true, object.getPresetRegistry().getFileSuffix(), id);
 
         navigator.popTable();
         object.setPreset(id);

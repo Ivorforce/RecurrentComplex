@@ -8,8 +8,10 @@ package ivorius.reccomplex.network;
 import ivorius.ivtoolkit.network.SchedulingMessageHandler;
 import ivorius.reccomplex.RecurrentComplex;
 import ivorius.reccomplex.entities.StructureEntityInfo;
+import ivorius.reccomplex.files.LeveledRegistry;
 import ivorius.reccomplex.files.RCFileSuffix;
 import ivorius.reccomplex.files.RCFileTypeRegistry;
+import ivorius.reccomplex.structures.StructureRegistry;
 import ivorius.reccomplex.structures.generic.GenericStructureInfo;
 import ivorius.reccomplex.structures.generic.StructureSaveHandler;
 import ivorius.reccomplex.utils.SaveDirectoryData;
@@ -51,7 +53,9 @@ public class PacketSaveStructureHandler extends SchedulingMessageHandler<PacketS
         String path = RCFileTypeRegistry.getDirectoryName(saveDirectoryDataResult.saveAsActive) + "/";
         String id = message.getStructureID();
 
-        if (StructureSaveHandler.INSTANCE.save(genericStructureInfo, id, saveDirectoryDataResult.saveAsActive))
+        StructureRegistry.INSTANCE.register(id, "", genericStructureInfo, saveDirectoryDataResult.saveAsActive, LeveledRegistry.Level.CUSTOM);
+
+        if (RecurrentComplex.fileTypeRegistry.tryWrite(saveDirectoryDataResult.saveAsActive, RCFileSuffix.STRUCTURE, id))
         {
             player.addChatMessage(ServerTranslations.format("structure.save.success", path + id));
 
@@ -64,8 +68,6 @@ public class PacketSaveStructureHandler extends SchedulingMessageHandler<PacketS
                 else
                     player.addChatMessage(ServerTranslations.format("structure.delete.failure", otherPath + id));
             }
-
-            RecurrentComplex.fileTypeRegistry.loadCustomFiles(Collections.singletonList(RCFileSuffix.STRUCTURE));
         }
         else
         {

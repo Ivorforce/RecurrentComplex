@@ -64,23 +64,6 @@ public class StructureSaveHandler extends FileTypeHandlerRegistry<GenericStructu
         zip.closeEntry();
     }
 
-    public static Set<String> listFiles(boolean activeFolder, IOFileFilter... filter)
-    {
-        try
-        {
-            File parent = RCFileTypeRegistry.getDirectory(activeFolder);
-            return Arrays.stream(parent.list(FileFilterUtils.or(filter)))
-                    .map(FilenameUtils::removeExtension)
-                    .collect(Collectors.toSet());
-        }
-        catch (Throwable e)
-        {
-            RecurrentComplex.logger.error("Error when looking up structure", e);
-        }
-
-        return Collections.emptySet();
-    }
-
     public Gson createGson()
     {
         GsonBuilder builder = new GsonBuilder();
@@ -102,41 +85,6 @@ public class StructureSaveHandler extends FileTypeHandlerRegistry<GenericStructu
     public String toJSON(GenericStructureInfo structureInfo)
     {
         return gson.toJson(structureInfo, GenericStructureInfo.class);
-    }
-
-    public Set<String> list(boolean activeFolder)
-    {
-        return listFiles(activeFolder, FileFilterUtils.suffixFileFilter(suffix), FileFilterUtils.suffixFileFilter("zip"));
-    }
-
-    public boolean has(String name, boolean activeFolder)
-    {
-        try
-        {
-            File parent = RCFileTypeRegistry.getDirectory(activeFolder);
-            return parent != null && (new File(parent, name + "." + suffix).exists() || /* Legacy */ new File(parent, name + ".zip").exists());
-        }
-        catch (Throwable e)
-        {
-            RecurrentComplex.logger.error("Error when looking up structure", e);
-        }
-
-        return false;
-    }
-
-    public boolean delete(String name, boolean activeFolder)
-    {
-        try
-        {
-            File parent = RCFileTypeRegistry.getDirectory(activeFolder);
-            return parent != null && (new File(parent, name + "." + suffix).delete() || /* Legacy */ new File(parent, name + ".zip").delete());
-        }
-        catch (Throwable e)
-        {
-            RecurrentComplex.logger.error("Error when deleting structure", e);
-        }
-
-        return false;
     }
 
     public GenericStructureInfo structureInfoFromResource(ResourceLocation resourceLocation)

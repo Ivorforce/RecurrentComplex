@@ -8,6 +8,8 @@ package ivorius.reccomplex.gui;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 import ivorius.reccomplex.RecurrentComplex;
+import ivorius.reccomplex.files.RCFileSuffix;
+import ivorius.reccomplex.files.RCFileTypeRegistry;
 import ivorius.reccomplex.gui.container.IvGuiHandler;
 import ivorius.reccomplex.gui.container.IvGuiRegistry;
 import ivorius.reccomplex.gui.inventorygen.GuiEditInventoryGen;
@@ -36,7 +38,9 @@ public class RCGuiHandler implements IvGuiHandler
         if (component == null)
             component = Component.createDefaultComponent();
         if (saveDirectoryData == null)
-            saveDirectoryData = SaveDirectoryData.defaultData(key, ItemCollectionSaveHandler.INSTANCE.list(true), ItemCollectionSaveHandler.INSTANCE.list(false));
+            saveDirectoryData = SaveDirectoryData.defaultData(key,
+                    RecurrentComplex.fileTypeRegistry.tryFindIDs(RCFileTypeRegistry.Directory.ACTIVE, RCFileSuffix.INVENTORY_GENERATION_COMPONENT),
+                    RecurrentComplex.fileTypeRegistry.tryFindIDs(RCFileTypeRegistry.Directory.INACTIVE, RCFileSuffix.INVENTORY_GENERATION_COMPONENT));
 
         ByteBuf buf = Unpooled.buffer();
 

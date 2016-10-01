@@ -13,6 +13,7 @@ import net.minecraftforge.fml.common.eventhandler.Event;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 import java.nio.file.Path;
+import java.util.NoSuchElementException;
 
 /**
  * Created by lukas on 29.09.16.
@@ -68,7 +69,12 @@ public abstract class FileTypeHandlerRegistry<S> extends FileTypeHandler
     @ParametersAreNonnullByDefault
     public void writeFile(Path path, String id) throws Exception
     {
-        write(path, (S) registry.get(id));
+        S s = (S) registry.get(id);
+
+        if (s != null)
+            write(path, s);
+        else
+            throw new NoSuchElementException();
     }
 
     @ParametersAreNonnullByDefault

@@ -8,6 +8,7 @@ package ivorius.reccomplex.gui.editstructure.preset;
 import ivorius.ivtoolkit.tools.IvTranslations;
 import ivorius.reccomplex.RecurrentComplex;
 import ivorius.reccomplex.files.LeveledRegistry;
+import ivorius.reccomplex.files.RCFileTypeRegistry;
 import ivorius.reccomplex.gui.GuiValidityStateIndicator;
 import ivorius.reccomplex.gui.table.*;
 import ivorius.reccomplex.structures.StructureInfos;
@@ -82,7 +83,7 @@ public class TableDataSourceSavePreset<T> extends TableDataSourceSegmented
 
         object.getPresetRegistry().getRegistry().register(id, "", PresetRegistry.fullPreset(id, object.getContents(), new PresetRegistry.Metadata(title, description.split("<br>"))), true, LeveledRegistry.Level.CUSTOM);
 
-        RecurrentComplex.fileTypeRegistry.tryWrite(true, object.getPresetRegistry().getFileSuffix(), id);
+        RecurrentComplex.fileTypeRegistry.tryWrite(RCFileTypeRegistry.Directory.ACTIVE, object.getPresetRegistry().getFileSuffix(), id);
 
         navigator.popTable();
         object.setPreset(id);

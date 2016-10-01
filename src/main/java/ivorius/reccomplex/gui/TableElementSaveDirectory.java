@@ -22,25 +22,24 @@ public class TableElementSaveDirectory
     {
         final String id = idSupplier.get();
 
-        TableCellBoolean cellFolder = new TableCellBoolean("activeFolder", data.isSaveAsActive(),
-                IvTranslations.format("reccomplex.structure.savePath", String.format("%s/%s%s", TextFormatting.AQUA, RCFileTypeRegistry.getDirectoryName(true), TextFormatting.RESET)),
-                IvTranslations.format("reccomplex.structure.savePath", String.format("%s/%s%s", TextFormatting.AQUA, RCFileTypeRegistry.getDirectoryName(false), TextFormatting.RESET)));
+        TableCellEnum<RCFileTypeRegistry.Directory> cellFolder = new TableCellEnum<>("activeFolder", data.getDirectory(),
+                TableCellEnum.options(RCFileTypeRegistry.Directory.values(), d -> IvTranslations.format("reccomplex.structure.savePath", String.format("%s/%s%s", TextFormatting.AQUA, d.directoryName(), TextFormatting.RESET)), null));
         cellFolder.addPropertyConsumer(cell ->
         {
-            data.setSaveAsActive(cellFolder.getPropertyValue());
+            data.setDirectory(cellFolder.getPropertyValue());
             delegate.reloadData(); // Delete other cell might get added
         });
 
-        if (data.isSaveAsActive() ? data.getFilesInInactive().contains(id) : data.getFilesInActive().contains(id))
+        if (data.getDirectory().isActive() ? data.getFilesInInactive().contains(id) : data.getFilesInActive().contains(id))
         {
-            String path = RCFileTypeRegistry.getDirectoryName(!data.isSaveAsActive());
+            String path = data.getDirectory().opposite().directoryName();
             TableCellBoolean cellDelete = new TableCellBoolean("deleteOther", data.isDeleteOther(),
                     IvTranslations.format("reccomplex.structure.deleteOther.true", TextFormatting.RED, TextFormatting.RESET, String.format("%s/%s%s", TextFormatting.AQUA, path, TextFormatting.RESET)),
                     IvTranslations.format("reccomplex.structure.deleteOther.false", TextFormatting.YELLOW, TextFormatting.RESET, String.format("%s/%s%s", TextFormatting.AQUA, path, TextFormatting.RESET)));
             cellDelete.addPropertyConsumer(cell -> data.setDeleteOther(cellDelete.getPropertyValue()));
             cellDelete.setTooltip(IvTranslations.formatLines("reccomplex.structure.deleteOther.tooltip",
-                    TextFormatting.AQUA + RCFileTypeRegistry.getDirectoryName(false) + TextFormatting.RESET,
-                    TextFormatting.AQUA + RCFileTypeRegistry.getDirectoryName(true) + TextFormatting.RESET));
+                    TextFormatting.AQUA + RCFileTypeRegistry.Directory.INACTIVE.directoryName() + TextFormatting.RESET,
+                    TextFormatting.AQUA + RCFileTypeRegistry.Directory.ACTIVE.directoryName() + TextFormatting.RESET));
 
             return new TableElementCell(new TableCellMulti(cellFolder, cellDelete));
         }

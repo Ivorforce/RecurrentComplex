@@ -8,9 +8,10 @@ package ivorius.reccomplex.network;
 import ivorius.ivtoolkit.network.SchedulingMessageHandler;
 import ivorius.reccomplex.RecurrentComplex;
 import ivorius.reccomplex.entities.StructureEntityInfo;
+import ivorius.reccomplex.files.RCFileSuffix;
+import ivorius.reccomplex.files.RCFileTypeRegistry;
 import ivorius.reccomplex.gui.editstructure.GuiEditGenericStructure;
 import ivorius.reccomplex.structures.generic.GenericStructureInfo;
-import ivorius.reccomplex.structures.generic.StructureSaveHandler;
 import ivorius.reccomplex.utils.SaveDirectoryData;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -32,7 +33,9 @@ public class PacketEditStructureHandler extends SchedulingMessageHandler<PacketE
             structureEntityInfo.setCachedExportStructureBlockDataNBT(structureInfo.worldDataCompound);
 
         RecurrentComplex.network.sendTo(new PacketEditStructure(structureInfo, structureID,
-                SaveDirectoryData.defaultData(structureID, StructureSaveHandler.INSTANCE.list(true), StructureSaveHandler.INSTANCE.list(false))
+                SaveDirectoryData.defaultData(structureID,
+                        RecurrentComplex.fileTypeRegistry.tryFindIDs(RCFileTypeRegistry.Directory.ACTIVE, RCFileSuffix.STRUCTURE),
+                        RecurrentComplex.fileTypeRegistry.tryFindIDs(RCFileTypeRegistry.Directory.INACTIVE, RCFileSuffix.STRUCTURE))
         ), player);
     }
 

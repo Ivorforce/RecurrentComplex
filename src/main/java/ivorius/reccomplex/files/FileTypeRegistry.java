@@ -7,7 +7,6 @@ package ivorius.reccomplex.files;
 
 import ivorius.reccomplex.RecurrentComplex;
 import net.minecraft.util.ResourceLocation;
-import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
 
 import javax.annotation.Nullable;
@@ -15,7 +14,9 @@ import java.io.IOException;
 import java.net.URISyntaxException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * Created by lukas on 18.09.15.
@@ -27,6 +28,17 @@ public class FileTypeRegistry
     protected static String defaultName(Path path, String customID)
     {
         return customID != null ? customID : FilenameUtils.getBaseName(path.getFileName().toString());
+    }
+
+    @Nullable
+    protected static String extension(Path path)
+    {
+        return FilenameUtils.getExtension(path.getFileName().toString());
+    }
+
+    protected static Path filenamePath(String name, String extension)
+    {
+        return Paths.get(name + "." + extension);
     }
 
     public FileTypeHandler get(String suffix)
@@ -42,12 +54,12 @@ public class FileTypeRegistry
         return handlers.put(handler.getSuffix(), handler);
     }
 
+    // --------------- Loading
+
     public void unregister(FileTypeHandler handler)
     {
         handlers.remove(handler.getSuffix());
     }
-
-    // --------------- Loading
 
     public Set<String> keySet()
     {
@@ -135,7 +147,7 @@ public class FileTypeRegistry
             }
             catch (UnsupportedOperationException e)
             {
-                RecurrentComplex.logger.error(String.format("Reading unsupported: ?.%s", FilenameUtils.getExtension(path.getFileName().toString())), e);
+                RecurrentComplex.logger.error(String.format("Reading unsupported: ?.%s", extension(path)), e);
             }
             catch (Throwable e)
             {
@@ -154,7 +166,7 @@ public class FileTypeRegistry
         }
         catch (UnsupportedOperationException e)
         {
-            RecurrentComplex.logger.error(String.format("Reading unsupported: ?.%s", FilenameUtils.getExtension(file.getFileName().toString())), e);
+            RecurrentComplex.logger.error(String.format("Reading unsupported: ?.%s", extension(file)), e);
         }
         catch (Exception e)
         {
@@ -164,45 +176,107 @@ public class FileTypeRegistry
         return false;
     }
 
+    // --------------- Saving
+
     public boolean load(Path file, @Nullable String customID, FileLoadContext context) throws Exception
     {
-        FileTypeHandler handler = get(FilenameUtils.getExtension(file.getFileName().toString()));
+        FileTypeHandler handler = get(extension(file));
         String id = defaultName(file, customID);
 
         return handler != null && handler.loadFile(file, id, context);
     }
 
-    // --------------- Saving
-
-    public boolean tryWrite(boolean activeFolder, String suffix, String name)
+    public boolean tryWrite(Path path, String name)
     {
         try
         {
-            write(activeFolder, suffix, name);
+            write(path, name);
             return true;
         }
         catch (UnsupportedOperationException e)
         {
-            RecurrentComplex.logger.error(String.format("Writing unsupported: %s.%s", name, suffix), e);
+            RecurrentComplex.logger.error(String.format("Writing unsupported: %s", path.getFileName()), e);
+        }
+        catch (NoSuchElementException e)
+        {
+            RecurrentComplex.logger.error(String.format("No entry found: %s in %s", name, extension(path)), e);
+        }
+        catch (IllegalArgumentException e)
+        {
+            RecurrentComplex.logger.error(String.format("No handler found: %s", path.getFileName()), e);
         }
         catch (Exception e)
         {
-            RecurrentComplex.logger.error(String.format("Error writing file: %s.%s", name, suffix), e);
+            RecurrentComplex.logger.error(String.format("Error writing file: %s", path), e);
         }
 
         return false;
     }
 
-    public void write(boolean activeFolder, String suffix, String name) throws Exception
+    public void write(Path path, String name) throws Exception
     {
-        FileTypeHandler handler = get(suffix);
+        FileTypeHandler handler = get(extension(path));
 
         if (handler == null)
             throw new IllegalArgumentException();
 
-        Path path = FileUtils.getFile(RCFileTypeRegistry.getDirectory(activeFolder), String.format("%s.%s", name, suffix)).toPath();
-
         Files.deleteIfExists(path);
         handler.writeFile(path, name);
+    }
+
+    // --------------- Finding
+
+    public List<Path> tryFind(Path path, String name, String suffix)
+    {
+        Path filename = filenamePath(name, suffix);
+
+        try
+        {
+            return RCFileHelper.listFilesRecursively(path, entry -> entry.getFileName().equals(filename), true);
+        }
+        catch (IOException e)
+        {
+            RecurrentComplex.logger.error("Error finding resources: " + path, e);
+        }
+
+        return Collections.emptyList();
+    }
+
+    public Set<String> tryFindIDs(Path path, String suffix)
+    {
+        try
+        {
+            return RCFileHelper.listFilesRecursively(path, new FileSuffixFilter(suffix), true).stream()
+                    .map(Path::getFileName)
+                    .map(Path::toString)
+                    .map(FilenameUtils::removeExtension)
+                    .collect(Collectors.toSet());
+        }
+        catch (IOException e)
+        {
+            RecurrentComplex.logger.error("Error finding resources: " + path, e);
+        }
+
+        return Collections.emptySet();
+    }
+
+    // --------------- Deleting
+
+    public List<Path> tryDelete(Path path, String name, String suffix)
+    {
+        return tryFind(path, name, suffix).stream().filter(p ->
+        {
+            try
+            {
+                Files.delete(p);
+                return false;
+            }
+            catch (IOException e)
+            {
+                RecurrentComplex.logger.error("Error deleting resource: " + p, e);
+            }
+
+            return true;
+        }).collect(Collectors.toList());
     }
 }

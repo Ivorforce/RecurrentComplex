@@ -6,6 +6,7 @@
 package ivorius.reccomplex.utils;
 
 import io.netty.buffer.ByteBuf;
+import ivorius.reccomplex.files.RCFileTypeRegistry;
 import net.minecraftforge.fml.common.network.ByteBufUtils;
 
 import java.util.Collection;
@@ -20,15 +21,15 @@ import java.util.stream.IntStream;
  */
 public class SaveDirectoryData
 {
-    private boolean saveAsActive;
+    private RCFileTypeRegistry.Directory directory;
     private boolean deleteOther;
 
     private Set<String> filesInActive;
     private Set<String> filesInInactive;
 
-    public SaveDirectoryData(boolean saveAsActive, boolean deleteOther, Set<String> filesInActive, Set<String> filesInInactive)
+    public SaveDirectoryData(RCFileTypeRegistry.Directory directory, boolean deleteOther, Set<String> filesInActive, Set<String> filesInInactive)
     {
-        this.saveAsActive = saveAsActive;
+        this.directory = directory;
         this.deleteOther = deleteOther;
         this.filesInActive = filesInActive;
         this.filesInInactive = filesInInactive;
@@ -47,33 +48,33 @@ public class SaveDirectoryData
 
     public static SaveDirectoryData defaultData(String id, Set<String> filesInActive, Set<String> filesInInactive)
     {
-        return new SaveDirectoryData(filesInActive.contains(id), true, filesInActive, filesInInactive);
+        return new SaveDirectoryData(RCFileTypeRegistry.Directory.fromActive(filesInActive.contains(id)), true, filesInActive, filesInInactive);
     }
 
     public static SaveDirectoryData readFrom(ByteBuf buf)
     {
-        return new SaveDirectoryData(buf.readBoolean(), buf.readBoolean(),
+        return new SaveDirectoryData(RCFileTypeRegistry.Directory.read(buf), buf.readBoolean(),
                 readCollection(buf, ByteBufUtils::readUTF8String).stream().collect(Collectors.toSet()),
                 readCollection(buf, ByteBufUtils::readUTF8String).stream().collect(Collectors.toSet()));
     }
 
     public void writeTo(ByteBuf buf)
     {
-        buf.writeBoolean(saveAsActive);
+        directory.write(buf);
         buf.writeBoolean(deleteOther);
 
         writeCollection(buf, filesInActive, s -> ByteBufUtils.writeUTF8String(buf, s));
         writeCollection(buf, filesInInactive, s -> ByteBufUtils.writeUTF8String(buf, s));
     }
 
-    public boolean isSaveAsActive()
+    public RCFileTypeRegistry.Directory getDirectory()
     {
-        return saveAsActive;
+        return directory;
     }
 
-    public void setSaveAsActive(boolean saveAsActive)
+    public void setDirectory(RCFileTypeRegistry.Directory directory)
     {
-        this.saveAsActive = saveAsActive;
+        this.directory = directory;
     }
 
     public boolean isDeleteOther()
@@ -108,28 +109,28 @@ public class SaveDirectoryData
 
     public Result getResult()
     {
-        return new Result(isSaveAsActive(), isDeleteOther());
+        return new Result(getDirectory(), isDeleteOther());
     }
 
     public static class Result
     {
-        public final boolean saveAsActive;
+        public final RCFileTypeRegistry.Directory directory;
         public final boolean deleteOther;
 
-        public Result(boolean saveAsActive, boolean deleteOther)
+        public Result(RCFileTypeRegistry.Directory directory, boolean deleteOther)
         {
-            this.saveAsActive = saveAsActive;
+            this.directory = directory;
             this.deleteOther = deleteOther;
         }
 
         public static Result readFrom(ByteBuf buf)
         {
-            return new Result(buf.readBoolean(), buf.readBoolean());
+            return new Result(RCFileTypeRegistry.Directory.read(buf), buf.readBoolean());
         }
 
         public void writeTo(ByteBuf buf)
         {
-            buf.writeBoolean(saveAsActive);
+            directory.write(buf);
             buf.writeBoolean(deleteOther);
         }
     }

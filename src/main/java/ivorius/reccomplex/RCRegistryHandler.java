@@ -16,6 +16,7 @@ import ivorius.reccomplex.entities.StructureEntityInfo;
 import ivorius.reccomplex.files.FileTypeHandlerRegistryString;
 import ivorius.reccomplex.files.LeveledRegistry;
 import ivorius.reccomplex.files.RCFileSuffix;
+import ivorius.reccomplex.files.RCFileTypeRegistry;
 import ivorius.reccomplex.items.*;
 import ivorius.reccomplex.json.SerializableStringTypeRegistry;
 import ivorius.reccomplex.operation.OperationRegistry;
@@ -307,6 +308,6 @@ public class RCRegistryHandler
 
     protected static <T> void dumpAll(PresetRegistry<T> presets)
     {
-        presets.allIDs().forEach(s -> fileTypeRegistry.tryWrite(true, presets.getFileSuffix(), s));
+        presets.allIDs().forEach(s -> fileTypeRegistry.tryWrite(RCFileTypeRegistry.Directory.ACTIVE, presets.getFileSuffix(), s));
     }
 }

@@ -9,8 +9,6 @@ import ivorius.ivtoolkit.network.SchedulingMessageHandler;
 import ivorius.reccomplex.RecurrentComplex;
 import ivorius.reccomplex.entities.StructureEntityInfo;
 import ivorius.reccomplex.files.LeveledRegistry;
-import ivorius.reccomplex.files.RCFileSuffix;
-import ivorius.reccomplex.files.RCFileTypeRegistry;
 import ivorius.reccomplex.structures.StructureRegistry;
 import ivorius.reccomplex.structures.generic.GenericStructureInfo;
 import ivorius.reccomplex.structures.generic.StructureSaveHandler;
@@ -21,8 +19,6 @@ import net.minecraft.network.NetHandlerPlayServer;
 import net.minecraft.world.WorldServer;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
-
-import java.util.Collections;
 
 /**
  * Created by lukas on 03.08.14.
@@ -50,23 +46,21 @@ public class PacketSaveStructureHandler extends SchedulingMessageHandler<PacketS
 
         SaveDirectoryData.Result saveDirectoryDataResult = message.getSaveDirectoryDataResult();
 
-        String path = RCFileTypeRegistry.getDirectoryName(saveDirectoryDataResult.saveAsActive) + "/";
+        String path = saveDirectoryDataResult.directory.directoryName() + "/";
         String id = message.getStructureID();
 
-        StructureRegistry.INSTANCE.register(id, "", genericStructureInfo, saveDirectoryDataResult.saveAsActive, LeveledRegistry.Level.CUSTOM);
+        StructureRegistry.INSTANCE.register(id, "", genericStructureInfo, saveDirectoryDataResult.directory.isActive(), LeveledRegistry.Level.CUSTOM);
 
-        if (RecurrentComplex.fileTypeRegistry.tryWrite(saveDirectoryDataResult.saveAsActive, StructureSaveHandler.INSTANCE.getSuffix(), id))
+        if (RecurrentComplex.fileTypeRegistry.tryWrite(saveDirectoryDataResult.directory, StructureSaveHandler.INSTANCE.getSuffix(), id))
         {
             player.addChatMessage(ServerTranslations.format("structure.save.success", path + id));
 
-            if (saveDirectoryDataResult.deleteOther && StructureSaveHandler.INSTANCE.has(id, !saveDirectoryDataResult.saveAsActive))
+            if (saveDirectoryDataResult.deleteOther)
             {
-                String otherPath = RCFileTypeRegistry.getDirectoryName(!saveDirectoryDataResult.saveAsActive) + "/";
-
-                if (StructureSaveHandler.INSTANCE.delete(id, !saveDirectoryDataResult.saveAsActive))
-                    player.addChatMessage(ServerTranslations.format("structure.delete.success", otherPath + id));
+                if (RecurrentComplex.fileTypeRegistry.tryDelete(saveDirectoryDataResult.directory.opposite(), id, StructureSaveHandler.INSTANCE.getSuffix()).size() > 0)
+                    player.addChatMessage(ServerTranslations.format("structure.delete.failure", id));
                 else
-                    player.addChatMessage(ServerTranslations.format("structure.delete.failure", otherPath + id));
+                    player.addChatMessage(ServerTranslations.format("structure.delete.success", id));
             }
         }
         else

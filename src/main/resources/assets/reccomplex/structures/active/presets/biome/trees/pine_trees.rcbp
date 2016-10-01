@@ -9,6 +9,10 @@
       "weight": 0.0
     },
     {
+      "biomes": "$SPOOKY | $DEAD",
+      "weight": 0.0
+    },
+    {
       "biomes": "!$COLD",
       "weight": 0.0
     },

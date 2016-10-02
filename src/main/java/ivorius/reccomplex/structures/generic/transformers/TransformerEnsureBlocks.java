@@ -10,13 +10,11 @@ import ivorius.ivtoolkit.blocks.IvBlockCollection;
 import ivorius.ivtoolkit.tools.IvWorldData;
 import ivorius.ivtoolkit.tools.MCRegistry;
 import ivorius.reccomplex.RecurrentComplex;
-import ivorius.reccomplex.blocks.RCBlocks;
 import ivorius.reccomplex.gui.editstructure.transformers.TableDataSourceBTEnsureSpace;
 import ivorius.reccomplex.gui.table.TableDataSource;
 import ivorius.reccomplex.gui.table.TableDelegate;
 import ivorius.reccomplex.gui.table.TableNavigator;
 import ivorius.reccomplex.json.JsonUtils;
-import ivorius.reccomplex.structures.Environment;
 import ivorius.reccomplex.structures.StructureLoadContext;
 import ivorius.reccomplex.structures.StructurePrepareContext;
 import ivorius.reccomplex.structures.StructureSpawnContext;
@@ -74,7 +72,7 @@ public class TransformerEnsureBlocks extends Transformer<NBTNone>
     }
 
     @Override
-    public boolean skipGeneration(NBTNone instanceData, Environment environment, BlockPos pos, IBlockState state)
+    public boolean skipGeneration(NBTNone instanceData, StructureSpawnContext context, BlockPos pos, IBlockState state, IvWorldData worldData, BlockPos sourcePos)
     {
         return false;
     }

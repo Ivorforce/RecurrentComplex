@@ -21,7 +21,6 @@ import ivorius.reccomplex.gui.table.TableDelegate;
 import ivorius.reccomplex.gui.table.TableNavigator;
 import ivorius.reccomplex.json.JsonUtils;
 import ivorius.reccomplex.random.BlurredValueField;
-import ivorius.reccomplex.structures.Environment;
 import ivorius.reccomplex.structures.StructureLoadContext;
 import ivorius.reccomplex.structures.StructurePrepareContext;
 import ivorius.reccomplex.structures.StructureSpawnContext;
@@ -110,9 +109,20 @@ public class TransformerRuins extends Transformer<TransformerRuins.InstanceData>
     }
 
     @Override
-    public boolean skipGeneration(InstanceData instanceData, Environment environment, BlockPos pos, IBlockState state)
+    public boolean skipGeneration(InstanceData instanceData, StructureSpawnContext context, BlockPos pos, IBlockState state, IvWorldData worldData, BlockPos sourcePos)
     {
-        return false;
+        BlurredValueField field = instanceData.blurredValueField;
+        IvBlockCollection blockCollection = worldData.blockCollection;
+
+        float decay = field.getValue(Math.min(sourcePos.getX(), field.getSize()[0]), Math.min(sourcePos.getY(), field.getSize()[1]), Math.min(sourcePos.getZ(), field.getSize()[2]));
+
+        float stability = decayDirection.getFrontOffsetX() * (sourcePos.getX() / (float) blockCollection.getWidth())
+                + decayDirection.getFrontOffsetY() * (sourcePos.getY() / (float) blockCollection.getHeight())
+                + decayDirection.getFrontOffsetZ() * (sourcePos.getZ() / (float) blockCollection.getLength());
+        if (stability < 0) // Negative direction, not special case
+            stability += 1;
+
+        return stability < decay;
     }
 
     @Override
@@ -121,42 +131,8 @@ public class TransformerRuins extends Transformer<TransformerRuins.InstanceData>
         if (phase == Phase.AFTER)
         {
             IvBlockCollection blockCollection = worldData.blockCollection;
-            int[] size = context.boundingBoxSize();
-
             StructureBoundingBox dropAreaBB = context.boundingBox;
             RecurrentComplex.forgeEventHandler.disabledTileDropAreas.add(dropAreaBB);
-
-            BlurredValueField field = instanceData.blurredValueField;
-            if (field != null && field.getSize().length == 3)
-            {
-                BlockArea sourceArea = new BlockArea(BlockPos.ORIGIN, new BlockPos(blockCollection.width, blockCollection.height, blockCollection.length));
-                BlockArea decaySideArea = BlockAreas.side(sourceArea, decayDirection.getOpposite());
-                BlockPos decaySideAreaPos = decaySideArea.getLowerCorner();
-                int decaySideLength = BlockAreas.sideLength(sourceArea, decayDirection.getOpposite());
-
-                for (int pass = 1; pass >= 0; pass--)
-                {
-                    for (BlockPos surfaceSourceCoord : decaySideArea)
-                    {
-                        float decay = field.getValue(surfaceSourceCoord.getX() - decaySideAreaPos.getX(), surfaceSourceCoord.getY() - decaySideAreaPos.getY(), surfaceSourceCoord.getZ() - decaySideAreaPos.getZ());
-                        int removedBlocks = MathHelper.floor_float(decay * decaySideLength + 0.5f);
-
-                        for (int decayPos = 0; decayPos < removedBlocks && decayPos < decaySideLength; decayPos++)
-                        {
-                            BlockPos sourceCoord = surfaceSourceCoord.offset(decayDirection, decayPos);
-                            BlockPos worldCoord = context.transform.apply(sourceCoord, size).add(context.lowerCoord());
-
-                            if (context.includes(worldCoord))
-                            {
-                                IBlockState state = blockCollection.getBlockState(sourceCoord);
-
-                                if (getPass(state) == pass && !transformer.skipGeneration(transformerData, context.environment, worldCoord, state))
-                                    setBlockToAirClean(context.environment.world, worldCoord);
-                            }
-                        }
-                    }
-                }
-            }
 
             int[] areaSize = new int[]{blockCollection.width, blockCollection.height, blockCollection.length};
             if (blockErosion > 0.0f || vineGrowth > 0.0f)
@@ -169,7 +145,7 @@ public class TransformerRuins extends Transformer<TransformerRuins.InstanceData>
                     {
                         IBlockState state = context.environment.world.getBlockState(worldCoord);
 
-                        if (!transformer.skipGeneration(transformerData, context.environment, worldCoord, state))
+                        if (!transformer.skipGeneration(transformerData, context, worldCoord, state, worldData, sourceCoord))
                             decayBlock(context.environment.world, context.random, state, worldCoord);
                     }
                 }

@@ -15,7 +15,6 @@ import ivorius.reccomplex.gui.table.TableDataSource;
 import ivorius.reccomplex.gui.table.TableDelegate;
 import ivorius.reccomplex.gui.table.TableNavigator;
 import ivorius.reccomplex.json.JsonUtils;
-import ivorius.reccomplex.structures.Environment;
 import ivorius.reccomplex.structures.StructureLoadContext;
 import ivorius.reccomplex.structures.StructurePrepareContext;
 import ivorius.reccomplex.structures.StructureSpawnContext;
@@ -56,9 +55,9 @@ public class TransformerNegativeSpace extends Transformer<NBTNone>
     }
 
     @Override
-    public boolean skipGeneration(NBTNone instanceData, Environment environment, BlockPos pos, IBlockState state)
+    public boolean skipGeneration(NBTNone instanceData, StructureSpawnContext context, BlockPos pos, IBlockState state, IvWorldData worldData, BlockPos sourcePos)
     {
-        return sourceMatcher.test(state) && (destMatcher.expressionIsEmpty() || destMatcher.test(PositionedBlockMatcher.Argument.at(environment.world, pos)));
+        return sourceMatcher.test(state) && (destMatcher.expressionIsEmpty() || destMatcher.test(PositionedBlockMatcher.Argument.at(context.environment.world, pos)));
     }
 
     @Override

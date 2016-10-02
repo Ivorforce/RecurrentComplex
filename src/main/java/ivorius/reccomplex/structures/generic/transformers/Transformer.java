@@ -69,7 +69,7 @@ public abstract class Transformer<S extends NBTStorable>
 
     public abstract boolean mayGenerate(S instanceData, StructureSpawnContext context, IvWorldData worldData, TransformerMulti transformer, TransformerMulti.InstanceData transformerData);
 
-    public abstract boolean skipGeneration(S instanceData, Environment environment, BlockPos pos, IBlockState state);
+    public abstract boolean skipGeneration(S instanceData, StructureSpawnContext context, BlockPos pos, IBlockState state, IvWorldData worldData, BlockPos sourcePos);
 
     public abstract void transform(S instanceData, Phase phase, StructureSpawnContext context, IvWorldData worldData, TransformerMulti transformer, TransformerMulti.InstanceData transformerData);
 

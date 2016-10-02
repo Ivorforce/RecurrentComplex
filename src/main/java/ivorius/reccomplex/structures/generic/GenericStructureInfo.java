@@ -148,21 +148,21 @@ public class GenericStructureInfo implements StructureInfo<GenericStructureInfo.
         BlockPos.MutableBlockPos worldPos = new BlockPos.MutableBlockPos();
         for (int pass = 0; pass < 2; pass++)
         {
-            for (BlockPos sourceCoord : RCBlockAreas.mutablePositions(blockCollection.area()))
+            for (BlockPos sourcePos : RCBlockAreas.mutablePositions(blockCollection.area()))
             {
-                IBlockState state = PosTransformer.transformBlockState(blockCollection.getBlockState(sourceCoord), context.transform);
-                worldPos = RCMutableBlockPos.add(RCAxisAlignedTransform.apply(sourceCoord, worldPos, areaSize, context.transform), origin);
+                IBlockState state = PosTransformer.transformBlockState(blockCollection.getBlockState(sourcePos), context.transform);
+                worldPos = RCMutableBlockPos.add(RCAxisAlignedTransform.apply(sourcePos, worldPos, areaSize, context.transform), origin);
 
                 if (context.includes(worldPos) && RecurrentComplex.specialRegistry.isSafe(state.getBlock())
-                        && pass == getPass(state) && (context.generateAsSource || !transformer.skipGeneration(transformerData, context.environment, worldPos, state)))
+                        && pass == getPass(state) && (context.generateAsSource || !transformer.skipGeneration(transformerData, context, worldPos, state, worldData, sourcePos)))
                 {
-                    TileEntity origTileEntity = origTileEntities.get(sourceCoord);
+                    TileEntity origTileEntity = origTileEntities.get(sourcePos);
 
-                    if (context.generateAsSource || !(origTileEntity instanceof GeneratingTileEntity) || ((GeneratingTileEntity) origTileEntity).shouldPlaceInWorld(context, instanceData.tileEntities.get(sourceCoord)))
+                    if (context.generateAsSource || !(origTileEntity instanceof GeneratingTileEntity) || ((GeneratingTileEntity) origTileEntity).shouldPlaceInWorld(context, instanceData.tileEntities.get(sourcePos)))
                     {
                         if (context.setBlock(worldPos, state, 2) && world.getBlockState(worldPos).getBlock() == state.getBlock())
                         {
-                            NBTTagCompound tileEntityCompound = tileEntityCompounds.get(sourceCoord);
+                            NBTTagCompound tileEntityCompound = tileEntityCompounds.get(sourcePos);
 
                             if (tileEntityCompound != null)
                             {

@@ -64,7 +64,7 @@ public abstract class TransformerAbstractCloud<S extends TransformerAbstractClou
     public abstract double naturalExpansionRandomization();
 
     @Override
-    public boolean skipGeneration(S instanceData, Environment environment, BlockPos pos, IBlockState state)
+    public boolean skipGeneration(S instanceData, StructureSpawnContext context, BlockPos pos, IBlockState state, IvWorldData worldData, BlockPos sourcePos)
     {
         return matches(instanceData, state);
     }

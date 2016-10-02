@@ -169,10 +169,10 @@ public class TransformerMulti extends Transformer<TransformerMulti.InstanceData>
     }
 
     @Override
-    public boolean skipGeneration(InstanceData instanceData, Environment environment, BlockPos pos, IBlockState state)
+    public boolean skipGeneration(InstanceData instanceData, StructureSpawnContext context, BlockPos pos, IBlockState state, IvWorldData worldData, BlockPos sourcePos)
     {
         return !instanceData.deactivated && instanceData.pairedTransformers.stream()
-                .anyMatch(input -> input.getLeft().skipGeneration(input.getRight(), environment, pos, state));
+                .anyMatch(input -> input.getLeft().skipGeneration(input.getRight(), context, pos, state, worldData, sourcePos));
     }
 
     @Override

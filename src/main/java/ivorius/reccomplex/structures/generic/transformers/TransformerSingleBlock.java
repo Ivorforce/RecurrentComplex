@@ -35,9 +35,9 @@ public abstract class TransformerSingleBlock<S extends NBTStorable> extends Tran
     }
 
     @Override
-    public boolean skipGeneration(S instanceData, Environment environment, BlockPos pos, IBlockState state)
+    public boolean skipGeneration(S instanceData, StructureSpawnContext context, BlockPos pos, IBlockState state, IvWorldData worldData, BlockPos sourcePos)
     {
-        return matches(environment, instanceData, state);
+        return matches(context.environment, instanceData, state);
     }
 
     @Override

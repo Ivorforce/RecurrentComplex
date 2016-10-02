@@ -34,6 +34,7 @@ public class ItemCollectionSaveHandler
     {
         GsonBuilder builder = new GsonBuilder();
 
+        builder.setPrettyPrinting();
         builder.registerTypeAdapter(Component.class, new Component.Serializer());
         NbtToJson.registerSafeNBTSerializer(builder);
 

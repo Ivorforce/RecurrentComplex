@@ -1,0 +1,27 @@
+{
+  "version": 2,
+  "inventoryGeneratorID": "AbandonedBurnable",
+  "items": [
+    {
+      "weight": 0.27027028799057007,
+      "min": 1,
+      "max": 16,
+      "item": {
+        "id": "minecraft:coal",
+        "damage": 0,
+        "count": 1
+      }
+    },
+    {
+      "weight": 1.0,
+      "min": 1,
+      "max": 16,
+      "item": {
+        "id": "minecraft:coal",
+        "damage": 1,
+        "count": 1
+      }
+    }
+  ],
+  "dependencyExpression": ""
+}

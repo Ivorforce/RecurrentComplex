@@ -1,1 +1,117 @@
-{"version":1,"minItems":4,"maxItems":8,"contents":[{"weight":348,"genMin":1,"genMax":1,"item":{"id":"minecraft:web","damage":0,"count":1}},{"weight":4,"genMin":1,"genMax":1,"item":{"id":"reccomplex:artifactGenerationTag","damage":0,"count":1}},{"weight":71,"genMin":1,"genMax":1,"item":{"id":"reccomplex:bookGenerationTag","damage":0,"count":1}},{"weight":41,"genMin":1,"genMax":5,"item":{"id":"minecraft:porkchop","damage":0,"count":1}},{"weight":100,"genMin":1,"genMax":10,"item":{"id":"minecraft:leather","damage":0,"count":1}},{"weight":100,"genMin":1,"genMax":10,"item":{"id":"minecraft:iron_ingot","damage":0,"count":1}},{"weight":68,"genMin":1,"genMax":5,"item":{"id":"minecraft:gold_ingot","damage":0,"count":1}},{"weight":100,"genMin":1,"genMax":1,"item":{"id":"minecraft:leather_helmet","damage":0,"count":1}},{"weight":100,"genMin":1,"genMax":1,"item":{"id":"minecraft:leather_boots","damage":0,"count":1}},{"weight":100,"genMin":1,"genMax":1,"item":{"id":"minecraft:leather_leggings","damage":0,"count":1}},{"weight":100,"genMin":1,"genMax":1,"item":{"id":"minecraft:leather_chestplate","damage":0,"count":1}}]}
+{
+  "version": 1,
+  "minItems": 4,
+  "maxItems": 8,
+  "contents": [
+    {
+      "weight": 348,
+      "genMin": 1,
+      "genMax": 1,
+      "item": {
+        "id": "minecraft:web",
+        "damage": 0,
+        "count": 1
+      }
+    },
+    {
+      "weight": 4,
+      "genMin": 1,
+      "genMax": 1,
+      "item": {
+        "id": "reccomplex:artifactGenerationTag",
+        "damage": 0,
+        "count": 1
+      }
+    },
+    {
+      "weight": 71,
+      "genMin": 1,
+      "genMax": 1,
+      "item": {
+        "id": "reccomplex:bookGenerationTag",
+        "damage": 0,
+        "count": 1
+      }
+    },
+    {
+      "weight": 41,
+      "genMin": 1,
+      "genMax": 5,
+      "item": {
+        "id": "minecraft:porkchop",
+        "damage": 0,
+        "count": 1
+      }
+    },
+    {
+      "weight": 100,
+      "genMin": 1,
+      "genMax": 10,
+      "item": {
+        "id": "minecraft:leather",
+        "damage": 0,
+        "count": 1
+      }
+    },
+    {
+      "weight": 100,
+      "genMin": 1,
+      "genMax": 10,
+      "item": {
+        "id": "minecraft:iron_ingot",
+        "damage": 0,
+        "count": 1
+      }
+    },
+    {
+      "weight": 68,
+      "genMin": 1,
+      "genMax": 5,
+      "item": {
+        "id": "minecraft:gold_ingot",
+        "damage": 0,
+        "count": 1
+      }
+    },
+    {
+      "weight": 100,
+      "genMin": 1,
+      "genMax": 1,
+      "item": {
+        "id": "minecraft:leather_helmet",
+        "damage": 0,
+        "count": 1
+      }
+    },
+    {
+      "weight": 100,
+      "genMin": 1,
+      "genMax": 1,
+      "item": {
+        "id": "minecraft:leather_boots",
+        "damage": 0,
+        "count": 1
+      }
+    },
+    {
+      "weight": 100,
+      "genMin": 1,
+      "genMax": 1,
+      "item": {
+        "id": "minecraft:leather_leggings",
+        "damage": 0,
+        "count": 1
+      }
+    },
+    {
+      "weight": 100,
+      "genMin": 1,
+      "genMax": 1,
+      "item": {
+        "id": "minecraft:leather_chestplate",
+        "damage": 0,
+        "count": 1
+      }
+    }
+  ]
+}

@@ -1,1 +1,56 @@
-{"version":1,"inventoryGeneratorID":"WheatFieldMill","contents":[{"weight":38,"genMin":1,"genMax":1,"item":{"id":"minecraft:iron_hoe","damage":0,"count":1}},{"weight":27,"genMin":1,"genMax":1,"item":{"id":"minecraft:web","damage":0,"count":1}},{"weight":100,"genMin":1,"genMax":16,"item":{"id":"minecraft:wheat_seeds","damage":0,"count":1}},{"weight":250,"genMin":1,"genMax":16,"item":{"id":"minecraft:wheat","damage":0,"count":1}},{"weight":34,"genMin":1,"genMax":1,"item":{"id":"minecraft:hay_block","damage":0,"count":1}}]}
+{
+  "version": 1,
+  "inventoryGeneratorID": "WheatFieldMill",
+  "contents": [
+    {
+      "weight": 38,
+      "genMin": 1,
+      "genMax": 1,
+      "item": {
+        "id": "minecraft:iron_hoe",
+        "damage": 0,
+        "count": 1
+      }
+    },
+    {
+      "weight": 27,
+      "genMin": 1,
+      "genMax": 1,
+      "item": {
+        "id": "minecraft:web",
+        "damage": 0,
+        "count": 1
+      }
+    },
+    {
+      "weight": 100,
+      "genMin": 1,
+      "genMax": 16,
+      "item": {
+        "id": "minecraft:wheat_seeds",
+        "damage": 0,
+        "count": 1
+      }
+    },
+    {
+      "weight": 250,
+      "genMin": 1,
+      "genMax": 16,
+      "item": {
+        "id": "minecraft:wheat",
+        "damage": 0,
+        "count": 1
+      }
+    },
+    {
+      "weight": 34,
+      "genMin": 1,
+      "genMax": 1,
+      "item": {
+        "id": "minecraft:hay_block",
+        "damage": 0,
+        "count": 1
+      }
+    }
+  ]
+}

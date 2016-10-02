@@ -1,1 +1,197 @@
-{"version":1,"minItems":5,"maxItems":15,"contents":[{"weight":100,"genMin":1,"genMax":44,"item":{"id":"minecraft:red_flower","damage":0,"count":1}},{"weight":100,"genMin":1,"genMax":44,"item":{"id":"minecraft:red_flower","damage":2,"count":1}},{"weight":100,"genMin":1,"genMax":44,"item":{"id":"minecraft:red_flower","damage":1,"count":1}},{"weight":100,"genMin":1,"genMax":44,"item":{"id":"minecraft:yellow_flower","damage":0,"count":1}},{"weight":100,"genMin":1,"genMax":45,"item":{"id":"minecraft:red_flower","damage":8,"count":1}},{"weight":100,"genMin":1,"genMax":43,"item":{"id":"minecraft:red_flower","damage":7,"count":1}},{"weight":100,"genMin":1,"genMax":43,"item":{"id":"minecraft:red_flower","damage":6,"count":1}},{"weight":100,"genMin":1,"genMax":43,"item":{"id":"minecraft:double_plant","damage":5,"count":1}},{"weight":100,"genMin":1,"genMax":43,"item":{"id":"minecraft:red_flower","damage":4,"count":1}},{"weight":100,"genMin":1,"genMax":43,"item":{"id":"minecraft:red_flower","damage":5,"count":1}},{"weight":100,"genMin":1,"genMax":42,"item":{"id":"minecraft:red_flower","damage":3,"count":1}},{"weight":100,"genMin":1,"genMax":42,"item":{"id":"minecraft:double_plant","damage":1,"count":1}},{"weight":100,"genMin":1,"genMax":46,"item":{"id":"minecraft:double_plant","damage":0,"count":1}},{"weight":100,"genMin":1,"genMax":46,"item":{"id":"minecraft:double_plant","damage":4,"count":1}},{"weight":100,"genMin":1,"genMax":33,"item":{"id":"minecraft:melon_block","damage":0,"count":1}},{"weight":100,"genMin":1,"genMax":33,"item":{"id":"minecraft:pumpkin","damage":0,"count":1}},{"weight":100,"genMin":1,"genMax":1,"item":{"id":"reccomplex:bookGenerationTag","damage":0,"count":1}},{"weight":51,"genMin":1,"genMax":5,"item":{"id":"minecraft:golden_carrot","damage":0,"count":1}},{"weight":51,"genMin":1,"genMax":5,"item":{"id":"minecraft:golden_apple","damage":0,"count":1}}]}
+{
+  "version": 1,
+  "minItems": 5,
+  "maxItems": 15,
+  "contents": [
+    {
+      "weight": 100,
+      "genMin": 1,
+      "genMax": 44,
+      "item": {
+        "id": "minecraft:red_flower",
+        "damage": 0,
+        "count": 1
+      }
+    },
+    {
+      "weight": 100,
+      "genMin": 1,
+      "genMax": 44,
+      "item": {
+        "id": "minecraft:red_flower",
+        "damage": 2,
+        "count": 1
+      }
+    },
+    {
+      "weight": 100,
+      "genMin": 1,
+      "genMax": 44,
+      "item": {
+        "id": "minecraft:red_flower",
+        "damage": 1,
+        "count": 1
+      }
+    },
+    {
+      "weight": 100,
+      "genMin": 1,
+      "genMax": 44,
+      "item": {
+        "id": "minecraft:yellow_flower",
+        "damage": 0,
+        "count": 1
+      }
+    },
+    {
+      "weight": 100,
+      "genMin": 1,
+      "genMax": 45,
+      "item": {
+        "id": "minecraft:red_flower",
+        "damage": 8,
+        "count": 1
+      }
+    },
+    {
+      "weight": 100,
+      "genMin": 1,
+      "genMax": 43,
+      "item": {
+        "id": "minecraft:red_flower",
+        "damage": 7,
+        "count": 1
+      }
+    },
+    {
+      "weight": 100,
+      "genMin": 1,
+      "genMax": 43,
+      "item": {
+        "id": "minecraft:red_flower",
+        "damage": 6,
+        "count": 1
+      }
+    },
+    {
+      "weight": 100,
+      "genMin": 1,
+      "genMax": 43,
+      "item": {
+        "id": "minecraft:double_plant",
+        "damage": 5,
+        "count": 1
+      }
+    },
+    {
+      "weight": 100,
+      "genMin": 1,
+      "genMax": 43,
+      "item": {
+        "id": "minecraft:red_flower",
+        "damage": 4,
+        "count": 1
+      }
+    },
+    {
+      "weight": 100,
+      "genMin": 1,
+      "genMax": 43,
+      "item": {
+        "id": "minecraft:red_flower",
+        "damage": 5,
+        "count": 1
+      }
+    },
+    {
+      "weight": 100,
+      "genMin": 1,
+      "genMax": 42,
+      "item": {
+        "id": "minecraft:red_flower",
+        "damage": 3,
+        "count": 1
+      }
+    },
+    {
+      "weight": 100,
+      "genMin": 1,
+      "genMax": 42,
+      "item": {
+        "id": "minecraft:double_plant",
+        "damage": 1,
+        "count": 1
+      }
+    },
+    {
+      "weight": 100,
+      "genMin": 1,
+      "genMax": 46,
+      "item": {
+        "id": "minecraft:double_plant",
+        "damage": 0,
+        "count": 1
+      }
+    },
+    {
+      "weight": 100,
+      "genMin": 1,
+      "genMax": 46,
+      "item": {
+        "id": "minecraft:double_plant",
+        "damage": 4,
+        "count": 1
+      }
+    },
+    {
+      "weight": 100,
+      "genMin": 1,
+      "genMax": 33,
+      "item": {
+        "id": "minecraft:melon_block",
+        "damage": 0,
+        "count": 1
+      }
+    },
+    {
+      "weight": 100,
+      "genMin": 1,
+      "genMax": 33,
+      "item": {
+        "id": "minecraft:pumpkin",
+        "damage": 0,
+        "count": 1
+      }
+    },
+    {
+      "weight": 100,
+      "genMin": 1,
+      "genMax": 1,
+      "item": {
+        "id": "reccomplex:bookGenerationTag",
+        "damage": 0,
+        "count": 1
+      }
+    },
+    {
+      "weight": 51,
+      "genMin": 1,
+      "genMax": 5,
+      "item": {
+        "id": "minecraft:golden_carrot",
+        "damage": 0,
+        "count": 1
+      }
+    },
+    {
+      "weight": 51,
+      "genMin": 1,
+      "genMax": 5,
+      "item": {
+        "id": "minecraft:golden_apple",
+        "damage": 0,
+        "count": 1
+      }
+    }
+  ]
+}

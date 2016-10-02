@@ -304,6 +304,9 @@ public class RCRegistryHandler
         RCInventoryGenerators.registerVanillaInventoryGenerators();
 //        MapGenStructureIO.func_143031_a(GenericVillagePiece.class, "RcGSP");
 //        VillagerRegistry.instance().registerVillageCreationHandler(new GenericVillageCreationHandler("DesertHut"));
+
+        // So it's placeable in furnaces
+        GameRegistry.registerFuelHandler(fuel -> fuel.getItem() instanceof GeneratingItem ? 1 : 0);
     }
 
     protected static <T> void dumpAll(PresetRegistry<T> presets)

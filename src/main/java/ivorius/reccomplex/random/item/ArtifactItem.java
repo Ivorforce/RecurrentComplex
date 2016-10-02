@@ -26,7 +26,6 @@ public class ArtifactItem
     {
         Map<ItemStack, List<String>> artifacts = new HashMap<>();
 
-        artifacts = new HashMap<>();
         addItems(artifacts, Arrays.asList("Sword", "Sabre", "Khopesh", "Xiphos", "Asi", "Makhaira", "Falcata", "Acinaces", "Harpe", "Gladius", "Spatha", "Longsword", "Curtana", "Sabina", "Flamberge", "Two-Hander", "Broadsword", "Schiavona", "Claymore", "Katzbalger", "Rapier", "Smallsword", "Shortsword", "Dirk", "Shotel", "Takoba", "Billao", "Kaskara", "Ida", "Scimitar", "Jian", "Dao", "Nihonto", "Katana", "Saingeom", "Yedo"), Items.DIAMOND_SWORD, Items.GOLDEN_SWORD, Items.IRON_SWORD);
         addItems(artifacts, Arrays.asList("Axe", "Battle Axe", "Broad Axe", "Hatchet", "Ono", "Sagaris", "Parashu"), Items.DIAMOND_AXE, Items.GOLDEN_AXE, Items.IRON_AXE);
         addItems(artifacts, Arrays.asList("Bow"), Items.BOW);
@@ -61,7 +60,7 @@ public class ArtifactItem
     @Nonnull
     public static ItemStack any(Random random)
     {
-        Set<ItemStack> stacks = getArtifacts().keySet();
+        Set<ItemStack> stacks = artifacts.keySet();
         ItemStack[] stackArray = stacks.toArray(new ItemStack[stacks.size()]);
         ItemStack origStack = stackArray[random.nextInt(stackArray.length)];
         ItemStack artifactStack = origStack.copy();
@@ -84,7 +83,7 @@ public class ArtifactItem
             }
         }
 
-        List<String> possibleNames = getArtifacts().get(origStack);
+        List<String> possibleNames = artifacts.get(origStack);
 
         Artifact artifact = Artifact.randomArtifact(random, possibleNames.get(random.nextInt(possibleNames.size())));
         artifactStack.setStackDisplayName(artifact.getFullName());

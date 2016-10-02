@@ -5,6 +5,8 @@
 
 package ivorius.reccomplex.random.item;
 
+import com.google.gson.Gson;
+import com.google.gson.JsonPrimitive;
 import ivorius.ivtoolkit.tools.NBTTagLists;
 import ivorius.reccomplex.random.Person;
 import ivorius.reccomplex.random.Poem;
@@ -12,10 +14,7 @@ import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagString;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Random;
-import java.util.Scanner;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -41,15 +40,20 @@ public class Book
     public static ItemStack poem(Random random)
     {
         ItemStack stack = new ItemStack(Items.WRITTEN_BOOK);
-        Poem poem = Poem.randomPoem(random);
+        Poem poem = Poem.randomPoem(random, OptionalInt.of(32));
         Person author = Person.randomHuman(random, random.nextFloat() < 0.9f);
 
         stack.setTagInfo("pages", NBTTagLists.write(bookPages(poem.getText()).stream()
-                .map(NBTTagString::new).collect(Collectors.toList())));
+                .map(Book::toJSON).map(NBTTagString::new).collect(Collectors.toList())));
         stack.setTagInfo("author", new NBTTagString(author.getFullName()));
         stack.setTagInfo("title", new NBTTagString(poem.getTitle()));
 
         return stack;
+    }
+
+    public static String toJSON(String text)
+    {
+        return new Gson().toJson(new JsonPrimitive(text));
     }
 
     public static List<String> bookPages(String text)

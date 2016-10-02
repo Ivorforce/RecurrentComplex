@@ -8,13 +8,13 @@ package ivorius.reccomplex.random;
 import com.google.common.io.LineReader;
 import ivorius.reccomplex.RecurrentComplex;
 import ivorius.reccomplex.files.SimpleLeveledRegistry;
+import org.apache.commons.lang3.StringUtils;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.io.IOException;
 import java.io.StringReader;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Random;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -100,6 +100,19 @@ public class Poem
             "<8> <10> of <2> and <10> of <2>",
             "Where <10> <5>"
     );
+    public static final List<String> titlePatterns = Arrays.asList(
+            "<name>",
+            "So <6>",
+            "<6> <2>",
+            "<lownum> <10>",
+            "<highnum> <10>",
+            "Oh so <6>",
+            "<9>!",
+            "We <4> to <3>.",
+            "When <1> <4>,"
+    );
+
+    private static final int TITLE_TRIES = 50;
 
     private String title;
     private String text;
@@ -112,12 +125,12 @@ public class Poem
         this.text = text;
     }
 
-    public static Poem randomPoem(Random random)
+    public static Poem randomPoem(Random random, OptionalInt maxTitleLength)
     {
-        return randomPoem(random, getRandomElementFrom(THEME_REGISTRY.allActive().stream().collect(Collectors.toList()), random));
+        return randomPoem(random, maxTitleLength, getRandomElementFrom(THEME_REGISTRY.allActive().stream().collect(Collectors.toList()), random));
     }
 
-    public static Poem randomPoem(Random random, Theme theme)
+    public static Poem randomPoem(Random random, OptionalInt maxTitleLength, Theme theme)
     {
         PoemContext poemContext = new PoemContext();
         //noinspection StatementWithEmptyBody
@@ -126,7 +139,7 @@ public class Poem
         //noinspection StatementWithEmptyBody
         while (poemContext.add(random, poemContext.places, 0.3f, Place.randomPlace(random).getFullPlaceType())) ;
 
-        String title = getRandomPhrase(random, theme, sentencePatterns, poemContext).trim();
+        String title = randomTitle(random, theme, poemContext, maxTitleLength);
         char titleLastChar = title.charAt(title.length() - 1);
         if (titleLastChar == '.' || titleLastChar == ',' || titleLastChar == ';')
             title = title.substring(0, title.length() - 1);
@@ -155,6 +168,19 @@ public class Poem
         }
 
         return new Poem(title, poem.toString());
+    }
+
+    @Nonnull
+    protected static String randomTitle(Random random, Theme theme, PoemContext poemContext, OptionalInt maxLength)
+    {
+        for (int i = 0; i < TITLE_TRIES; i++)
+        {
+            String title = getRandomPhrase(random, theme, titlePatterns, poemContext).trim();
+            if (!maxLength.isPresent() || title.length() < maxLength.getAsInt())
+                return title;
+        }
+
+        return StringUtils.abbreviate(getRandomPhrase(random, theme, titlePatterns, poemContext).trim(), maxLength.getAsInt());
     }
 
     private static String getRandomPhrase(Random random, Theme theme, List<String> sentencePatterns, PoemContext poemContext)
@@ -278,41 +304,7 @@ public class Poem
                     if (line.startsWith("***"))
                     {
                         String tag = line.substring(4).trim();
-                        switch (tag)
-                        {
-                            case "Concrete Nouns":
-                                currentList = theme.concreteNouns;
-                                break;
-                            case "Concrete Nouns Plural":
-                                currentList = theme.concreteNounsPlural;
-                                break;
-                            case "Abstract Nouns":
-                                currentList = theme.abstractNouns;
-                                break;
-                            case "Present Transitive Verbs":
-                                currentList = theme.transitivePresentVerbs;
-                                break;
-                            case "Past Transitive Verbs":
-                                currentList = theme.transitivePastVerbs;
-                                break;
-                            case "Present Intransitive Verbs":
-                                currentList = theme.intransitivePresentVerbs;
-                                break;
-                            case "Adjectives":
-                                currentList = theme.adjectives;
-                                break;
-                            case "Adverbs":
-                                currentList = theme.adverbs;
-                                break;
-                            case "Prepositions":
-                                currentList = theme.prepositions;
-                                break;
-                            case "Interjections":
-                                currentList = theme.interjections;
-                                break;
-                            default:
-                                currentList = null;
-                        }
+                        currentList = listForTitle(theme, tag);
                     }
                     else
                     {
@@ -340,6 +332,36 @@ public class Poem
             assertContents(theme.interjections);
 
             return theme;
+        }
+
+        @Nullable
+        protected static List<String> listForTitle(Theme theme, String tag)
+        {
+            switch (tag)
+            {
+                case "Concrete Nouns":
+                    return theme.concreteNouns;
+                case "Concrete Nouns Plural":
+                    return theme.concreteNounsPlural;
+                case "Abstract Nouns":
+                    return theme.abstractNouns;
+                case "Present Transitive Verbs":
+                    return theme.transitivePresentVerbs;
+                case "Past Transitive Verbs":
+                    return theme.transitivePastVerbs;
+                case "Present Intransitive Verbs":
+                    return theme.intransitivePresentVerbs;
+                case "Adjectives":
+                    return theme.adjectives;
+                case "Adverbs":
+                    return theme.adverbs;
+                case "Prepositions":
+                    return theme.prepositions;
+                case "Interjections":
+                    return theme.interjections;
+                default:
+                    return null;
+            }
         }
 
         private static void assertContents(List<String> list)

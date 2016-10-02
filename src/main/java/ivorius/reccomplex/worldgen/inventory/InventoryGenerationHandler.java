@@ -5,7 +5,9 @@
 
 package ivorius.reccomplex.worldgen.inventory;
 
+import ivorius.reccomplex.RecurrentComplex;
 import ivorius.reccomplex.items.GeneratingItem;
+import ivorius.reccomplex.structures.StructureSpawnContext;
 import ivorius.reccomplex.structures.registry.MCRegistrySpecial;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.Item;
@@ -13,6 +15,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.world.WorldServer;
 import org.apache.commons.lang3.tuple.Triple;
 
+import javax.annotation.Nonnull;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -62,5 +65,10 @@ public class InventoryGenerationHandler
             cycles++;
         }
         while ((foundGenerators.size() > 0 || didChange) && cycles < 1000);
+    }
+
+    public static void generateAllTags(@Nonnull StructureSpawnContext context, IInventory inventory)
+    {
+        generateAllTags(context.environment.world, inventory, RecurrentComplex.specialRegistry.itemHidingMode(), context.random);
     }
 }

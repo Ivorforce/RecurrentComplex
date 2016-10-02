@@ -173,11 +173,7 @@ public class GenericStructureInfo implements StructureInfo<GenericStructureInfo.
                                     tileEntity.readFromNBT(tileEntityCompound);
                                     Mover.setTileEntityPos(tileEntity, worldPos);
 
-                                    if (!context.generateAsSource && tileEntity instanceof IInventory)
-                                    {
-                                        IInventory inventory = (IInventory) tileEntity;
-                                        InventoryGenerationHandler.generateAllTags(world, inventory, RecurrentComplex.specialRegistry.itemHidingMode(), random);
-                                    }
+                                    generateTileEntityContents(context, tileEntity);
                                 }
                             }
 
@@ -207,6 +203,7 @@ public class GenericStructureInfo implements StructureInfo<GenericStructureInfo.
                     Mover.moveEntity(entity, origin);
 
                     RCAccessorEntity.setEntityUniqueID(entity, UUID.randomUUID());
+                    generateEntityContents(context, entity);
                     world.spawnEntityInWorld(entity);
                 }
                 else
@@ -226,6 +223,18 @@ public class GenericStructureInfo implements StructureInfo<GenericStructureInfo.
         }
 
         return true;
+    }
+
+    public void generateEntityContents(@Nonnull StructureSpawnContext context, Entity entity)
+    {
+        if (!context.generateAsSource && entity instanceof IInventory)
+            InventoryGenerationHandler.generateAllTags(context, (IInventory) entity);
+    }
+
+    public void generateTileEntityContents(@Nonnull StructureSpawnContext context, TileEntity tileEntity)
+    {
+        if (!context.generateAsSource && tileEntity instanceof IInventory)
+            InventoryGenerationHandler.generateAllTags(context, (IInventory) tileEntity);
     }
 
     @Nonnull

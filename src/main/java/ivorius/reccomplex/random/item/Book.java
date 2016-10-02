@@ -5,17 +5,18 @@
 
 package ivorius.reccomplex.random.item;
 
+import ivorius.ivtoolkit.tools.NBTTagLists;
 import ivorius.reccomplex.random.Person;
 import ivorius.reccomplex.random.Poem;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagList;
 import net.minecraft.nbt.NBTTagString;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 import java.util.Scanner;
+import java.util.stream.Collectors;
 
 /**
  * Created by lukas on 02.10.16.
@@ -43,21 +44,12 @@ public class Book
         Poem poem = Poem.randomPoem(random);
         Person author = Person.randomHuman(random, random.nextFloat() < 0.9f);
 
-        stack.setTagInfo("pages", stringList(bookPages(poem.getText())));
+        stack.setTagInfo("pages", NBTTagLists.write(bookPages(poem.getText()).stream()
+                .map(NBTTagString::new).collect(Collectors.toList())));
         stack.setTagInfo("author", new NBTTagString(author.getFullName()));
         stack.setTagInfo("title", new NBTTagString(poem.getTitle()));
 
         return stack;
-    }
-
-    public static NBTTagList stringList(List<String> strings)
-    {
-        NBTTagList list = new NBTTagList();
-
-        for (String s : strings)
-            list.appendTag(new NBTTagString(s));
-
-        return list;
     }
 
     public static List<String> bookPages(String text)

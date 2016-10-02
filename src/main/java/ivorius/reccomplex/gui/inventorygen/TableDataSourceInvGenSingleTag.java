@@ -1,6 +1,6 @@
 /*
  *  Copyright (c) 2014, Lukas Tenbrink.
- *  * http://lukas.axxim.net
+ *  * http://ivorius.net
  */
 
 package ivorius.reccomplex.gui.inventorygen;
@@ -8,12 +8,14 @@ package ivorius.reccomplex.gui.inventorygen;
 import ivorius.ivtoolkit.tools.IvTranslations;
 import ivorius.reccomplex.gui.table.*;
 import ivorius.reccomplex.items.ItemInventoryGenMultiTag;
+import ivorius.reccomplex.items.ItemInventoryGenSingleTag;
+import ivorius.reccomplex.utils.scale.Scales;
 import net.minecraft.item.ItemStack;
 
 /**
  * Created by lukas on 17.01.15.
  */
-public class TableDataSourceInvGenMultiTag extends TableDataSourceItem<ItemInventoryGenMultiTag>
+public class TableDataSourceInvGenSingleTag extends TableDataSourceItem<ItemInventoryGenSingleTag>
 {
     @Override
     public int numberOfSegments()
@@ -34,9 +36,10 @@ public class TableDataSourceInvGenMultiTag extends TableDataSourceItem<ItemInven
         {
             if (index == 0)
             {
-                TableCellIntegerRange cell = new TableCellIntegerRange("itemCount", item.getGenerationCount(stack), 0, 64);
-                cell.addPropertyConsumer(range -> item.setGenerationCount(stack, range));
-                return new TableElementCell(IvTranslations.get("reccomplex.gui.inventorygen.multi.count"), cell);
+                TableCellFloat cell = new TableCellFloat("itemCount", item.getItemChance(stack), 0, 1);
+                cell.setScale(Scales.pow(5));
+                cell.addPropertyConsumer(range -> item.setItemChance(stack, range));
+                return new TableElementCell(IvTranslations.get("reccomplex.gui.inventorygen.single.chance"), cell);
             }
         }
 

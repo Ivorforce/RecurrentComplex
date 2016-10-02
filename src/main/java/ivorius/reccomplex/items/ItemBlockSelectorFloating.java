@@ -5,28 +5,29 @@
 
 package ivorius.reccomplex.items;
 
-import net.minecraft.util.ActionResult;
-import net.minecraft.util.EnumActionResult;
-import net.minecraft.util.EnumHand;
-import net.minecraft.util.math.Vec3d;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
-import net.minecraft.util.math.BlockPos;
 import ivorius.reccomplex.RecurrentComplex;
 import ivorius.reccomplex.network.PacketSyncItem;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagFloat;
+import net.minecraft.util.ActionResult;
+import net.minecraft.util.EnumActionResult;
+import net.minecraft.util.EnumHand;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
+import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.Constants;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
+import org.apache.commons.lang3.tuple.Pair;
 
 import javax.annotation.Nonnull;
+import java.util.Collections;
 import java.util.List;
 
-public class ItemBlockSelectorFloating extends ItemBlockSelector implements ItemSyncable, ItemInputHandler
+public class ItemBlockSelectorFloating extends ItemBlockSelector implements ItemSyncableTags, ItemInputHandler
 {
     public static final float SCROLL_DISTANCE_SPEED = 0.004f;
 
@@ -81,15 +82,9 @@ public class ItemBlockSelectorFloating extends ItemBlockSelector implements Item
     }
 
     @Override
-    public void writeSyncedNBT(NBTTagCompound compound, ItemStack stack)
+    public List<Pair<String, Integer>> getSyncedNBTTags()
     {
-        compound.setFloat("selectionRange", getSelectionRange(stack));
-    }
-
-    @Override
-    public void readSyncedNBT(NBTTagCompound compound, ItemStack stack)
-    {
-        setSelectionRange(stack, compound.getFloat("selectionRange"));
+        return Collections.singletonList(Pair.of("selectionRange", Constants.NBT.TAG_FLOAT));
     }
 
     @SideOnly(Side.CLIENT)

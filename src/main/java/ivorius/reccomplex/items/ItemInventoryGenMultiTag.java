@@ -5,29 +5,32 @@
 
 package ivorius.reccomplex.items;
 
-import net.minecraft.util.ActionResult;
-import net.minecraft.util.EnumHand;
-import net.minecraft.world.WorldServer;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
 import gnu.trove.list.TIntList;
 import gnu.trove.list.array.TIntArrayList;
 import ivorius.ivtoolkit.gui.IntegerRange;
-import ivorius.reccomplex.gui.inventorygen.GuiEditInvGenMultiTag;
+import ivorius.reccomplex.gui.inventorygen.GuiEditItemStack;
+import ivorius.reccomplex.gui.inventorygen.TableDataSourceInvGenMultiTag;
 import ivorius.reccomplex.utils.IvItemStacks;
 import ivorius.reccomplex.worldgen.inventory.WeightedItemCollection;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagInt;
+import net.minecraft.util.ActionResult;
+import net.minecraft.util.EnumHand;
 import net.minecraft.world.World;
+import net.minecraft.world.WorldServer;
+import net.minecraftforge.common.util.Constants;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
+import org.apache.commons.lang3.tuple.Pair;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
 
-public class ItemInventoryGenMultiTag extends ItemInventoryGenerationTag implements ItemSyncable
+public class ItemInventoryGenMultiTag extends ItemInventoryGenerationTag implements ItemSyncableTags
 {
     public static TIntList emptySlots(IInventory inv)
     {
@@ -52,7 +55,7 @@ public class ItemInventoryGenMultiTag extends ItemInventoryGenerationTag impleme
     @SideOnly(Side.CLIENT)
     private void openGui(EntityPlayer player, int slot)
     {
-        Minecraft.getMinecraft().displayGuiScreen(new GuiEditInvGenMultiTag(player, slot));
+        Minecraft.getMinecraft().displayGuiScreen(new GuiEditItemStack<>(player, slot, new TableDataSourceInvGenMultiTag()));
     }
 
     @Override
@@ -100,16 +103,8 @@ public class ItemInventoryGenMultiTag extends ItemInventoryGenerationTag impleme
     }
 
     @Override
-    public void writeSyncedNBT(NBTTagCompound compound, ItemStack stack)
+    public List<Pair<String, Integer>> getSyncedNBTTags()
     {
-        IntegerRange range = getGenerationCount(stack);
-        compound.setInteger("itemCountMin", range.getMin());
-        compound.setInteger("itemCountMax", range.getMax());
-    }
-
-    @Override
-    public void readSyncedNBT(NBTTagCompound compound, ItemStack stack)
-    {
-        setGenerationCount(stack, new IntegerRange(compound.getInteger("itemCountMin"), compound.getInteger("itemCountMax")));
+        return Arrays.asList(Pair.of("itemCountMin", Constants.NBT.TAG_INT), Pair.of("itemCountMax", Constants.NBT.TAG_INT));
     }
 }

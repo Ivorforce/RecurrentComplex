@@ -7,12 +7,14 @@ package ivorius.reccomplex.gui.inventorygen;
 
 import ivorius.ivtoolkit.tools.IvTranslations;
 import ivorius.reccomplex.RecurrentComplex;
-import ivorius.reccomplex.gui.table.*;
-import ivorius.reccomplex.items.RCItems;
+import ivorius.reccomplex.gui.table.Bounds;
+import ivorius.reccomplex.gui.table.GuiScreenModalTable;
+import ivorius.reccomplex.gui.table.GuiTable;
 import ivorius.reccomplex.network.PacketSyncItem;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
 import org.lwjgl.input.Keyboard;
 
 import java.io.IOException;
@@ -20,21 +22,20 @@ import java.io.IOException;
 /**
  * Created by lukas on 17.01.15.
  */
-public class GuiEditInvGenMultiTag extends GuiScreenModalTable
+public class GuiEditItemStack<T extends TableDataSourceItem> extends GuiScreenModalTable
 {
-    int playerSlot;
-    EntityPlayer player;
+    protected int playerSlot;
+    protected EntityPlayer player;
 
-    TableDataSourceInvGenMultiTag tableDataSource;
+    protected T tableDataSource;
 
-    public GuiEditInvGenMultiTag(EntityPlayer player, int playerSlot)
+    public GuiEditItemStack(EntityPlayer player, int playerSlot, T dataSource)
     {
         this.playerSlot = playerSlot;
         this.player = player;
 
-        ItemStack stack = player.inventory.getStackInSlot(playerSlot);
-
-        GuiTable structureGenProperties = new GuiTable(this, tableDataSource = new TableDataSourceInvGenMultiTag(RCItems.inventoryGenerationTag.getGenerationCount(stack)));
+        dataSource.setStack(player.inventory.getStackInSlot(playerSlot));
+        GuiTable structureGenProperties = new GuiTable(this, tableDataSource = dataSource);
 
         structureGenProperties.setHideScrollbarIfUnnecessary(true);
         setTable(structureGenProperties);
@@ -92,8 +93,16 @@ public class GuiEditInvGenMultiTag extends GuiScreenModalTable
     private void saveAndSend()
     {
         ItemStack stack = player.inventory.getStackInSlot(playerSlot);
-        RCItems.inventoryGenerationTag.setGenerationCount(stack, tableDataSource.itemCount);
+
+        if (stack == null)
+        {
+            stack = tableDataSource.stack;
+            player.inventory.setInventorySlotContents(playerSlot, stack);
+        }
+        else
+            stack.readFromNBT(tableDataSource.stack.writeToNBT(new NBTTagCompound()));
 
         RecurrentComplex.network.sendToServer(new PacketSyncItem(playerSlot, stack));
     }
+
 }

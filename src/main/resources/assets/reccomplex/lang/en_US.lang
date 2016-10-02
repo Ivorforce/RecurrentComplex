@@ -520,6 +520,7 @@ reccomplex.gui.inventorygen.items.summary=%s Items
 reccomplex.gui.inventorygen.componentid=Component ID
 reccomplex.gui.inventorygen.groupid=Group ID
 reccomplex.gui.inventorygen.multi.count=Item Count
+reccomplex.gui.inventorygen.single.chance=Item Chance
 
 reccomplex.inspector.position.x=Position (x)
 reccomplex.inspector.position.y=Position (y)

@@ -3,8 +3,10 @@
  *  * http://ivorius.net
  */
 
-package ivorius.reccomplex.random;
+package ivorius.reccomplex.random.item;
 
+import ivorius.reccomplex.random.Person;
+import ivorius.reccomplex.random.Poem;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagList;

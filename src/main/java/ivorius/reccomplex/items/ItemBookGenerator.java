@@ -6,7 +6,7 @@
 package ivorius.reccomplex.items;
 
 import ivorius.reccomplex.events.ItemGenerationEvent;
-import ivorius.reccomplex.random.Book;
+import ivorius.reccomplex.random.item.Book;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.Item;

@@ -7,7 +7,7 @@ package ivorius.reccomplex.commands;
 
 import ivorius.reccomplex.RCConfig;
 import ivorius.reccomplex.RecurrentComplex;
-import ivorius.reccomplex.files.RCFileTypeRegistry;
+import ivorius.reccomplex.files.loading.ResourceDirectory;
 import ivorius.reccomplex.utils.ServerTranslations;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.ICommandSender;
@@ -46,7 +46,7 @@ public class CommandBrowseFiles extends CommandBase
     @Override
     public void execute(MinecraftServer server, ICommandSender commandSender, String[] args)
     {
-        openFile(RCFileTypeRegistry.getBaseDirectory(), RecurrentComplex.logger);
+        openFile(ResourceDirectory.getBaseDirectory(), RecurrentComplex.logger);
     }
 
     /**

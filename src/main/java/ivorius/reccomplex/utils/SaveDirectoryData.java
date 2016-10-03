@@ -6,7 +6,7 @@
 package ivorius.reccomplex.utils;
 
 import io.netty.buffer.ByteBuf;
-import ivorius.reccomplex.files.RCFileTypeRegistry;
+import ivorius.reccomplex.files.loading.ResourceDirectory;
 import net.minecraftforge.fml.common.network.ByteBufUtils;
 
 import java.util.Collection;
@@ -21,13 +21,13 @@ import java.util.stream.IntStream;
  */
 public class SaveDirectoryData
 {
-    private RCFileTypeRegistry.Directory directory;
+    private ResourceDirectory directory;
     private boolean deleteOther;
 
     private Set<String> filesInActive;
     private Set<String> filesInInactive;
 
-    public SaveDirectoryData(RCFileTypeRegistry.Directory directory, boolean deleteOther, Set<String> filesInActive, Set<String> filesInInactive)
+    public SaveDirectoryData(ResourceDirectory directory, boolean deleteOther, Set<String> filesInActive, Set<String> filesInInactive)
     {
         this.directory = directory;
         this.deleteOther = deleteOther;
@@ -48,12 +48,12 @@ public class SaveDirectoryData
 
     public static SaveDirectoryData defaultData(String id, Set<String> filesInActive, Set<String> filesInInactive)
     {
-        return new SaveDirectoryData(RCFileTypeRegistry.Directory.fromActive(filesInActive.contains(id)), true, filesInActive, filesInInactive);
+        return new SaveDirectoryData(ResourceDirectory.fromActive(filesInActive.contains(id)), true, filesInActive, filesInInactive);
     }
 
     public static SaveDirectoryData readFrom(ByteBuf buf)
     {
-        return new SaveDirectoryData(RCFileTypeRegistry.Directory.read(buf), buf.readBoolean(),
+        return new SaveDirectoryData(ResourceDirectory.read(buf), buf.readBoolean(),
                 readCollection(buf, ByteBufUtils::readUTF8String).stream().collect(Collectors.toSet()),
                 readCollection(buf, ByteBufUtils::readUTF8String).stream().collect(Collectors.toSet()));
     }
@@ -67,12 +67,12 @@ public class SaveDirectoryData
         writeCollection(buf, filesInInactive, s -> ByteBufUtils.writeUTF8String(buf, s));
     }
 
-    public RCFileTypeRegistry.Directory getDirectory()
+    public ResourceDirectory getDirectory()
     {
         return directory;
     }
 
-    public void setDirectory(RCFileTypeRegistry.Directory directory)
+    public void setDirectory(ResourceDirectory directory)
     {
         this.directory = directory;
     }
@@ -114,10 +114,10 @@ public class SaveDirectoryData
 
     public static class Result
     {
-        public final RCFileTypeRegistry.Directory directory;
+        public final ResourceDirectory directory;
         public final boolean deleteOther;
 
-        public Result(RCFileTypeRegistry.Directory directory, boolean deleteOther)
+        public Result(ResourceDirectory directory, boolean deleteOther)
         {
             this.directory = directory;
             this.deleteOther = deleteOther;
@@ -125,7 +125,7 @@ public class SaveDirectoryData
 
         public static Result readFrom(ByteBuf buf)
         {
-            return new Result(RCFileTypeRegistry.Directory.read(buf), buf.readBoolean());
+            return new Result(ResourceDirectory.read(buf), buf.readBoolean());
         }
 
         public void writeTo(ByteBuf buf)

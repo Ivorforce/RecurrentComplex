@@ -1,9 +1,9 @@
 /*
  *  Copyright (c) 2014, Lukas Tenbrink.
- *  * http://lukas.axxim.net
+ *  * http://ivorius.net
  */
 
-package ivorius.reccomplex.files;
+package ivorius.reccomplex.files.loading;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 import java.nio.file.Path;
@@ -11,11 +11,11 @@ import java.nio.file.Path;
 /**
  * Created by lukas on 18.09.15.
  */
-public abstract class FileTypeHandler
+public abstract class FileLoaderAdapter
 {
     protected String suffix;
 
-    public FileTypeHandler(String suffix)
+    public FileLoaderAdapter(String suffix)
     {
         this.suffix = suffix;
     }
@@ -31,10 +31,7 @@ public abstract class FileTypeHandler
     }
 
     @ParametersAreNonnullByDefault
-    abstract boolean loadFile(Path path, String id, FileLoadContext context) throws Exception;
-
-    @ParametersAreNonnullByDefault
-    abstract void writeFile(Path path, String id) throws Exception;
+    protected abstract boolean loadFile(Path path, String id, FileLoadContext context) throws Exception;
 
     @ParametersAreNonnullByDefault
     abstract void clearFiles(LeveledRegistry.Level level);

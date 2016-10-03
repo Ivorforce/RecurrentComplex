@@ -1,12 +1,14 @@
 /*
  *  Copyright (c) 2014, Lukas Tenbrink.
- *  * http://lukas.axxim.net
+ *  * http://ivorius.net
  */
 
 package ivorius.reccomplex.files;
 
 import net.minecraft.util.ResourceLocation;
+import org.apache.commons.io.FilenameUtils;
 
+import javax.annotation.Nullable;
 import java.io.File;
 import java.io.IOException;
 import java.net.URI;
@@ -22,7 +24,7 @@ import java.util.Objects;
 /**
  * Created by lukas on 05.10.14.
  */
-public class RCFileHelper
+public class RCFiles
 {
     public static String encodePath(String path)
     {
@@ -74,7 +76,7 @@ public class RCFileHelper
 
     public static Path pathFromResourceLocation(ResourceLocation resourceLocation) throws URISyntaxException, IOException
     {
-        URL resource = RCFileHelper.class.getResource(String.format("/assets/%s/%s", resourceLocation.getResourceDomain(), resourceLocation.getResourcePath()));
+        URL resource = RCFiles.class.getResource(String.format("/assets/%s/%s", resourceLocation.getResourceDomain(), resourceLocation.getResourcePath()));
         return resource != null ? resourceToPath(resource.toURI().toURL()) : null;
     }
 
@@ -122,5 +124,16 @@ public class RCFileHelper
     public static File getValidatedFolder(File parent, String child, boolean create)
     {
         return getValidatedFolder(new File(parent, child), create);
+    }
+
+    @Nullable
+    public static String extension(Path path)
+    {
+        return FilenameUtils.getExtension(path.getFileName().toString());
+    }
+
+    public static Path filenamePath(String name, String extension)
+    {
+        return Paths.get(name + "." + extension);
     }
 }

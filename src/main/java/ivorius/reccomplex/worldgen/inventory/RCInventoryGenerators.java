@@ -5,7 +5,7 @@
 
 package ivorius.reccomplex.worldgen.inventory;
 
-import ivorius.reccomplex.files.LeveledRegistry;
+import ivorius.reccomplex.files.loading.LeveledRegistry;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.storage.loot.LootTableList;
 

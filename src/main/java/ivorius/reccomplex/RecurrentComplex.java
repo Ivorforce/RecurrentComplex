@@ -15,7 +15,9 @@ import ivorius.reccomplex.commands.RCCommands;
 import ivorius.reccomplex.events.handlers.RCForgeEventHandler;
 import ivorius.reccomplex.events.handlers.RCRecurrentComplexEventHandler;
 import ivorius.reccomplex.events.handlers.RCTerrainGenEventHandler;
-import ivorius.reccomplex.files.RCFileTypeRegistry;
+import ivorius.reccomplex.files.loading.FileLoader;
+import ivorius.reccomplex.files.loading.ResourceDirectory;
+import ivorius.reccomplex.files.saving.FileSaver;
 import ivorius.reccomplex.gui.RCGuiHandler;
 import ivorius.reccomplex.gui.container.IvGuiRegistry;
 import ivorius.reccomplex.network.*;
@@ -61,7 +63,8 @@ public class RecurrentComplex
     public static Logger logger;
     public static Configuration config;
 
-    public static RCFileTypeRegistry fileTypeRegistry;
+    public static FileLoader loader;
+    public static FileSaver saver;
     public static MCRegistry mcRegistry;
 
     public static FMLRemapper remapper;
@@ -113,7 +116,8 @@ public class RecurrentComplex
         RCConfig.loadConfig(null);
         config.save();
 
-        fileTypeRegistry = new RCFileTypeRegistry();
+        loader = new FileLoader();
+        saver = new FileSaver();
 
         remapper = new FMLRemapper();
         specialRegistry = new MCRegistrySpecial(mcRegistry = new MCRegistryRemapping(new MCRegistryDefault(), remapper), remapper);
@@ -176,8 +180,8 @@ public class RecurrentComplex
     @EventHandler
     public void postInit(FMLPostInitializationEvent event)
     {
-        fileTypeRegistry.loadModFiles();
-        fileTypeRegistry.loadCustomFiles();
+        ResourceDirectory.loadModFiles(loader);
+        ResourceDirectory.loadCustomFiles(loader);
 
         SchematicLoader.initializeFolder();
     }

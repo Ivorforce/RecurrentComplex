@@ -5,13 +5,13 @@
 
 package ivorius.reccomplex;
 
-import ivorius.reccomplex.files.LeveledRegistry;
+import ivorius.reccomplex.files.loading.LeveledRegistry;
 import ivorius.reccomplex.worldgen.selector.NaturalStructureSelector;
 import net.minecraftforge.fml.common.event.FMLInterModComms;
 import ivorius.ivtoolkit.tools.IvFMLIntercommHandler;
 import ivorius.ivtoolkit.tools.IvNBTHelper;
 import ivorius.reccomplex.dimensions.DimensionDictionary;
-import ivorius.reccomplex.files.FileLoadContext;
+import ivorius.reccomplex.files.loading.FileLoadContext;
 import ivorius.reccomplex.structures.generic.matchers.DimensionMatcher;
 import ivorius.reccomplex.structures.generic.matchers.BiomeMatcher;
 import net.minecraft.block.Block;
@@ -49,7 +49,7 @@ public class RCCommunicationHandler extends IvFMLIntercommHandler
             boolean generates = cmp.getBoolean("generates");
 
             ResourceLocation resourceLocation = new ResourceLocation(genPath);
-            RecurrentComplex.fileTypeRegistry.tryLoad(resourceLocation, genID, new FileLoadContext(resourceLocation.getResourceDomain(), generates, LeveledRegistry.Level.INTERNAL));
+            RecurrentComplex.loader.tryLoad(resourceLocation, genID, new FileLoadContext(resourceLocation.getResourceDomain(), generates, LeveledRegistry.Level.INTERNAL));
 
             return true;
         }
@@ -64,7 +64,7 @@ public class RCCommunicationHandler extends IvFMLIntercommHandler
             boolean generates = cmp.getBoolean("generates");
 
             ResourceLocation resourceLocation = new ResourceLocation(structurePath);
-            RecurrentComplex.fileTypeRegistry.tryLoad(resourceLocation, structureID, new FileLoadContext(resourceLocation.getResourceDomain(), generates, LeveledRegistry.Level.INTERNAL));
+            RecurrentComplex.loader.tryLoad(resourceLocation, structureID, new FileLoadContext(resourceLocation.getResourceDomain(), generates, LeveledRegistry.Level.INTERNAL));
 
             return true;
         }

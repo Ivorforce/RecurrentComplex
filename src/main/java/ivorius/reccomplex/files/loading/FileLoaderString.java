@@ -3,11 +3,10 @@
  *  * http://ivorius.net
  */
 
-package ivorius.reccomplex.files;
+package ivorius.reccomplex.files.loading;
 
 import ivorius.reccomplex.RecurrentComplex;
 
-import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -16,9 +15,9 @@ import java.nio.file.Path;
 /**
  * Created by lukas on 29.09.16.
  */
-public abstract class FileTypeHandlerString<S> extends FileTypeHandler
+public abstract class FileLoaderString<S> extends FileLoaderAdapter
 {
-    public FileTypeHandlerString(String suffix)
+    public FileLoaderString(String suffix)
     {
         super(suffix);
     }

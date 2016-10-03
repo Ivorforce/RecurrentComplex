@@ -3,7 +3,9 @@
  *  * http://ivorius.net
  */
 
-package ivorius.reccomplex.files;
+package ivorius.reccomplex.files.loading;
+
+import java.util.Set;
 
 /**
  * Created by lukas on 29.09.16.
@@ -16,11 +18,28 @@ public interface LeveledRegistry<S>
 
     S get(String id);
 
+    Status status(String id);
+
+    Set<String> ids();
+
     void clear(ILevel level);
 
     interface ILevel
     {
         int getLevel();
+    }
+
+    interface Status
+    {
+        String getId();
+
+        boolean isActive();
+
+        void setActive(boolean active);
+
+        String getDomain();
+
+        ILevel getLevel();
     }
 
     enum Level implements ILevel

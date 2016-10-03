@@ -7,7 +7,7 @@ package ivorius.reccomplex.structures.schematics;
 
 import ivorius.ivtoolkit.tools.IvFileHelper;
 import ivorius.reccomplex.RecurrentComplex;
-import ivorius.reccomplex.files.RCFileTypeRegistry;
+import ivorius.reccomplex.files.loading.ResourceDirectory;
 import ivorius.reccomplex.utils.RCAccessorNBT;
 import net.minecraft.nbt.CompressedStreamTools;
 import net.minecraft.nbt.NBTTagCompound;
@@ -102,7 +102,7 @@ public class SchematicLoader
 
     public static File getValidatedSchematicsFile()
     {
-        File structuresFile = IvFileHelper.getValidatedFolder(RecurrentComplex.proxy.getBaseFolderFile(RCFileTypeRegistry.RESOURCES_FILE_NAME));
+        File structuresFile = IvFileHelper.getValidatedFolder(RecurrentComplex.proxy.getBaseFolderFile(ResourceDirectory.RESOURCES_FILE_NAME));
         return structuresFile != null ? IvFileHelper.getValidatedFolder(structuresFile, "schematics") : null;
     }
 }

@@ -10,9 +10,9 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
-import ivorius.reccomplex.files.FileTypeHandlerRegistryString;
-import ivorius.reccomplex.files.LeveledRegistry;
 import ivorius.reccomplex.files.SimpleLeveledRegistry;
+import ivorius.reccomplex.files.loading.FileLoaderRegistryString;
+import ivorius.reccomplex.files.saving.FileSaverString;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -128,9 +128,14 @@ public abstract class PresetRegistry<T>
 
     protected abstract Type getType();
 
-    public FileTypeHandlerRegistryString loader()
+    public FileLoaderRegistryString loader()
     {
-        return new FileTypeHandlerRegistryString<>(fileSuffix, registry, this::read, this::write);
+        return new FileLoaderRegistryString<>(fileSuffix, registry, this::read);
+    }
+
+    public FileSaverString<Preset<T>> saver(String id)
+    {
+        return new FileSaverString<>(id, fileSuffix, registry, this::write);
     }
 
     public Preset<T> read(String file) throws Exception

@@ -10,29 +10,21 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.JsonSyntaxException;
 import ivorius.ivtoolkit.tools.IvFileHelper;
 import ivorius.reccomplex.RecurrentComplex;
-import ivorius.reccomplex.files.FileTypeHandlerRegistry;
-import ivorius.reccomplex.files.RCFileSuffix;
-import ivorius.reccomplex.files.RCFileTypeRegistry;
+import ivorius.reccomplex.files.loading.FileLoaderRegistry;
+import ivorius.reccomplex.files.loading.RCFileSuffix;
+import ivorius.reccomplex.files.saving.FileSaverAdapter;
 import ivorius.reccomplex.json.NbtToJson;
+import ivorius.reccomplex.structures.StructureInfo;
 import ivorius.reccomplex.structures.StructureRegistry;
 import ivorius.reccomplex.utils.ByteArrays;
 import net.minecraft.nbt.CompressedStreamTools;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ResourceLocation;
-import org.apache.commons.io.FilenameUtils;
-import org.apache.commons.io.filefilter.FileFilterUtils;
-import org.apache.commons.io.filefilter.IOFileFilter;
 
-import javax.annotation.ParametersAreNonnullByDefault;
 import java.io.ByteArrayInputStream;
-import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.Set;
-import java.util.stream.Collectors;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 import java.util.zip.ZipOutputStream;
@@ -40,7 +32,7 @@ import java.util.zip.ZipOutputStream;
 /**
  * Created by lukas on 25.05.14.
  */
-public class StructureSaveHandler extends FileTypeHandlerRegistry<GenericStructureInfo>
+public class StructureSaveHandler
 {
     public static final StructureSaveHandler INSTANCE = new StructureSaveHandler(RCFileSuffix.STRUCTURE, StructureRegistry.INSTANCE);
 
@@ -49,10 +41,14 @@ public class StructureSaveHandler extends FileTypeHandlerRegistry<GenericStructu
 
     public final Gson gson;
 
+    public String suffix;
+    public StructureRegistry registry;
+
     public StructureSaveHandler(String suffix, StructureRegistry registry)
     {
-        super(suffix, registry);
         gson = createGson();
+        this.suffix = suffix;
+        this.registry = registry;
     }
 
     protected static void addZipEntry(ZipOutputStream zip, String path, byte[] bytes) throws IOException
@@ -140,25 +136,45 @@ public class StructureSaveHandler extends FileTypeHandlerRegistry<GenericStructu
         }
     }
 
-    @Override
-    public GenericStructureInfo read(Path path, String name) throws Exception
+    public class Loader extends FileLoaderRegistry<GenericStructureInfo>
     {
-        try (ZipInputStream zip = new ZipInputStream(Files.newInputStream(path)))
+        public Loader()
         {
-            return structureInfoFromZip(zip);
+            super(StructureSaveHandler.this.suffix, StructureSaveHandler.this.registry);
+        }
+
+        @Override
+        public GenericStructureInfo read(Path path, String name) throws Exception
+        {
+            try (ZipInputStream zip = new ZipInputStream(Files.newInputStream(path)))
+            {
+                return structureInfoFromZip(zip);
+            }
         }
     }
 
-    @Override
-    @ParametersAreNonnullByDefault
-    public void write(Path path, GenericStructureInfo structureInfo) throws Exception
+    public class Saver extends FileSaverAdapter<StructureInfo>
     {
-        try (ZipOutputStream zipOutputStream = new ZipOutputStream(Files.newOutputStream(path)))
+        public Saver(String id)
         {
-            addZipEntry(zipOutputStream, STRUCTURE_INFO_JSON_FILENAME, toJSON(structureInfo).getBytes());
-            addZipEntry(zipOutputStream, WORLD_DATA_NBT_FILENAME, ByteArrays.toByteArray(s -> CompressedStreamTools.writeCompressed(structureInfo.worldDataCompound, s)));
+            super(id, StructureSaveHandler.this.suffix, StructureSaveHandler.this.registry);
+        }
 
-            zipOutputStream.close();
+        @Override
+        public void saveFile(Path path, StructureInfo structureInfo) throws Exception
+        {
+            GenericStructureInfo structure = structureInfo.copyAsGenericStructureInfo();
+
+            if (structure == null)
+                throw new IllegalArgumentException();
+
+            try (ZipOutputStream zipOutputStream = new ZipOutputStream(Files.newOutputStream(path)))
+            {
+                addZipEntry(zipOutputStream, STRUCTURE_INFO_JSON_FILENAME, toJSON(structure).getBytes());
+                addZipEntry(zipOutputStream, WORLD_DATA_NBT_FILENAME, ByteArrays.toByteArray(s -> CompressedStreamTools.writeCompressed(structure.worldDataCompound, s)));
+
+                zipOutputStream.close();
+            }
         }
     }
 }

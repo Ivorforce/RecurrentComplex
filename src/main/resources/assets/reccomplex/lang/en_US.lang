@@ -167,6 +167,12 @@ commands.rcdecorate.usage=/#decorate <x min> <z min> <x max> <z max>
 commands.rcdecorateone.usage=/#decorateone [x] [z]
 commands.rcdecorateone.none=No suitable structures found!
 
+commands.rcenable.usage=/#enable <registry id> <element id>
+commands.rcdisable.usage=/#enable <registry id> <element id>
+commands.rcsave.usage=/#write <registry id> <element id> <directory>
+commands.rcsave.noregistry=No such registry id!
+commands.rcsave.noelement=No such element!
+
 inventoryGen.vanilla=Vanilla Generator
 inventoryGen.custom=Custom Generator
 inventoryGen.create=Create New Generator
@@ -177,15 +183,10 @@ inventoryGen.inactive=%sInactive%s
 
 reccomplex.save.permission=You do not have permission to save!
 
-inventorygen.save.failure=Failed to export inventory generator to '%s'
-inventorygen.save.success=Exported inventory generator to '%s'
-inventorygen.delete.failure=Failed to delete inventory generator in file '%s'
-inventorygen.delete.success=Deleted inventory generator in file '%s'
-
-structure.save.failure=Failed to save structure to file '%s'
-structure.save.success=Saved structure to file '%s'
-structure.delete.failure=Failed to delete structure in file '%s'
-structure.delete.success=Deleted structure in file '%s'
+reccomplex.save.failure=Failed to save %s to '%s'
+reccomplex.save.success=Saved %s to '%s'
+reccomplex.delete.failure=Failed to delete %s from '%s'
+reccomplex.delete.success=Deleted %s from '%s'
 
 reccomplex.configgui.title=Structure Gen Config
 reccomplex.configgui.ctgy.general=General

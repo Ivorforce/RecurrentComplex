@@ -3,7 +3,7 @@
  *  * http://ivorius.net
  */
 
-package ivorius.reccomplex.files;
+package ivorius.reccomplex.files.loading;
 
 /**
  * Created by lukas on 29.09.16.

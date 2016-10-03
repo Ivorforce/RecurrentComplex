@@ -13,10 +13,11 @@ import ivorius.reccomplex.blocks.*;
 import ivorius.reccomplex.blocks.materials.MaterialNegativeSpace;
 import ivorius.reccomplex.blocks.materials.RCMaterials;
 import ivorius.reccomplex.entities.StructureEntityInfo;
-import ivorius.reccomplex.files.FileTypeHandlerRegistryString;
-import ivorius.reccomplex.files.LeveledRegistry;
-import ivorius.reccomplex.files.RCFileSuffix;
-import ivorius.reccomplex.files.RCFileTypeRegistry;
+import ivorius.reccomplex.files.loading.FileLoaderRegistryString;
+import ivorius.reccomplex.files.loading.LeveledRegistry;
+import ivorius.reccomplex.files.loading.RCFileSuffix;
+import ivorius.reccomplex.files.loading.ResourceDirectory;
+import ivorius.reccomplex.files.saving.FileSaverString;
 import ivorius.reccomplex.items.*;
 import ivorius.reccomplex.json.SerializableStringTypeRegistry;
 import ivorius.reccomplex.operation.OperationRegistry;
@@ -239,18 +240,29 @@ public class RCRegistryHandler
 
         RCBiomeDictionary.registerTypes();
 
-        fileTypeRegistry.register(StructureSaveHandler.INSTANCE);
-        fileTypeRegistry.register(new FileTypeHandlerRegistryString<>(RCFileSuffix.INVENTORY_GENERATION_COMPONENT,
-                GenericItemCollectionRegistry.INSTANCE, ItemCollectionSaveHandler.INSTANCE::fromJSON, ItemCollectionSaveHandler.INSTANCE::toJSON));
-        fileTypeRegistry.register(new FileTypeHandlerRegistryString<>(RCFileSuffix.POEM_THEME,
-                Poem.THEME_REGISTRY, Poem.Theme::fromFile, null));
-        fileTypeRegistry.register(new FileTypeHandlerRegistryString<>(RCFileSuffix.NATURAL_CATEGORY,
+        loader.register(StructureSaveHandler.INSTANCE.new Loader());
+        loader.register(new FileLoaderRegistryString<>(RCFileSuffix.INVENTORY_GENERATION_COMPONENT,
+                GenericItemCollectionRegistry.INSTANCE, ItemCollectionSaveHandler.INSTANCE::fromJSON));
+        loader.register(new FileLoaderRegistryString<>(RCFileSuffix.POEM_THEME,
+                Poem.THEME_REGISTRY, Poem.Theme::fromFile));
+        loader.register(new FileLoaderRegistryString<>(RCFileSuffix.NATURAL_CATEGORY,
                 NaturalStructureSelector.CATEGORY_REGISTRY, NaturalStructureSelector.SimpleCategory.class));
-        fileTypeRegistry.register(BiomeMatcherPresets.instance().loader());
-        fileTypeRegistry.register(DimensionMatcherPresets.instance().loader());
-        fileTypeRegistry.register(WeightedBlockStatePresets.instance().loader());
-        fileTypeRegistry.register(GenericPlacerPresets.instance().loader());
-        fileTypeRegistry.register(TransfomerPresets.instance().loader());
+        loader.register(BiomeMatcherPresets.instance().loader());
+        loader.register(DimensionMatcherPresets.instance().loader());
+        loader.register(WeightedBlockStatePresets.instance().loader());
+        loader.register(GenericPlacerPresets.instance().loader());
+        loader.register(TransfomerPresets.instance().loader());
+
+        saver.register(StructureSaveHandler.INSTANCE.new Saver("structure"));
+        saver.register(new FileSaverString<>("inventory_generation_component", RCFileSuffix.INVENTORY_GENERATION_COMPONENT,
+                GenericItemCollectionRegistry.INSTANCE, ItemCollectionSaveHandler.INSTANCE::toJSON));
+        saver.register(new FileSaverString<>("natural_generation_category", RCFileSuffix.NATURAL_CATEGORY,
+                NaturalStructureSelector.CATEGORY_REGISTRY, NaturalStructureSelector.SimpleCategory.class));
+        saver.register(BiomeMatcherPresets.instance().saver("biome_preset"));
+        saver.register(DimensionMatcherPresets.instance().saver("dimension_preset"));
+        saver.register(WeightedBlockStatePresets.instance().saver("bloc_preset"));
+        saver.register(GenericPlacerPresets.instance().saver("placer_preset"));
+        saver.register(TransfomerPresets.instance().saver("transformer_preset"));
 
         WorldScriptRegistry worldScriptRegistry = WorldScriptRegistry.INSTANCE;
         worldScriptRegistry.register("multi", WorldScriptMulti.class);
@@ -311,6 +323,6 @@ public class RCRegistryHandler
 
     protected static <T> void dumpAll(PresetRegistry<T> presets)
     {
-        presets.allIDs().forEach(s -> fileTypeRegistry.tryWrite(RCFileTypeRegistry.Directory.ACTIVE, presets.getFileSuffix(), s));
+        presets.allIDs().forEach(s -> saver.trySave(ResourceDirectory.ACTIVE.toPath(), presets.getFileSuffix(), s));
     }
 }

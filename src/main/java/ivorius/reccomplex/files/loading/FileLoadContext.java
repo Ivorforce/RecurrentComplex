@@ -1,9 +1,9 @@
 /*
  *  Copyright (c) 2014, Lukas Tenbrink.
- *  * http://lukas.axxim.net
+ *  * http://ivorius.net
  */
 
-package ivorius.reccomplex.files;
+package ivorius.reccomplex.files.loading;
 
 /**
  * Created by lukas on 18.09.15.

@@ -6,6 +6,7 @@
 package ivorius.reccomplex.files;
 
 import ivorius.reccomplex.RecurrentComplex;
+import ivorius.reccomplex.files.loading.LeveledRegistry;
 import ivorius.reccomplex.utils.LeveledBiMap;
 
 import javax.annotation.Nonnull;
@@ -19,7 +20,7 @@ import java.util.stream.Collectors;
 public class SimpleLeveledRegistry<S> implements LeveledRegistry<S>
 {
     private LeveledBiMap<String, S> items = new LeveledBiMap<>(LeveledRegistry.Level.values().length);
-    private LeveledBiMap<String, Data> datas = new LeveledBiMap<>(items.levels());
+    private LeveledBiMap<String, Status> stati = new LeveledBiMap<>(items.levels());
 
     private boolean activeCacheValid = false;
     private Map<String, S> activeMap = new HashMap<>();
@@ -36,9 +37,9 @@ public class SimpleLeveledRegistry<S> implements LeveledRegistry<S>
         return items;
     }
 
-    public LeveledBiMap<String, Data> datas()
+    public LeveledBiMap<String, Status> stati()
     {
-        return datas;
+        return stati;
     }
 
     public Map<String, S> map()
@@ -76,9 +77,10 @@ public class SimpleLeveledRegistry<S> implements LeveledRegistry<S>
         return items.getMap().get(id);
     }
 
-    public Data getData(String id)
+    @Override
+    public Status status(String id)
     {
-        return datas.getMap().get(id);
+        return stati.getMap().get(id);
     }
 
     @Nonnull
@@ -89,6 +91,7 @@ public class SimpleLeveledRegistry<S> implements LeveledRegistry<S>
     }
 
     @Nonnull
+    @Override
     public Set<String> ids()
     {
         return Collections.unmodifiableSet(items.getMap().keySet());
@@ -115,7 +118,7 @@ public class SimpleLeveledRegistry<S> implements LeveledRegistry<S>
     {
         invalidateActiveCache();
 
-        datas.put(id, new Data(id, active, domain), level.getLevel());
+        stati.put(id, new Status(id, active, domain, level), level.getLevel());
         S old = items.put(id, s, level.getLevel());
 
         RecurrentComplex.logger.trace(String.format(old != null ? "Replaced %s '%s' at level %s" : "Registered %s '%s' at level %s", description, id, level));
@@ -127,7 +130,7 @@ public class SimpleLeveledRegistry<S> implements LeveledRegistry<S>
     public S unregister(String id, ILevel level)
     {
         invalidateActiveCache();
-        datas.remove(id, level.getLevel());
+        stati.remove(id, level.getLevel());
         return items.remove(id, level.getLevel());
     }
 
@@ -137,16 +140,16 @@ public class SimpleLeveledRegistry<S> implements LeveledRegistry<S>
         RecurrentComplex.logger.trace(String.format("Cleared all %s at level %s", description, level));
         invalidateActiveCache();
         items.clear(level.getLevel());
-        datas.clear(level.getLevel());
+        stati.clear(level.getLevel());
     }
 
     private void ensureActiveCache()
     {
         if (!activeCacheValid)
         {
-            activeMap = datas.getMap().values().stream()
-                    .filter(d -> d.active)
-                    .map(d -> d.id).collect(Collectors.toMap(s -> s, s -> items.getMap().get(s)));
+            activeMap = stati.getMap().values().stream()
+                    .filter(LeveledRegistry.Status::isActive)
+                    .map(LeveledRegistry.Status::getId).collect(Collectors.toMap(s -> s, s -> items.getMap().get(s)));
             activeCacheValid = true;
         }
     }
@@ -156,17 +159,50 @@ public class SimpleLeveledRegistry<S> implements LeveledRegistry<S>
         activeCacheValid = false;
     }
 
-    public static class Data
+    public class Status implements LeveledRegistry.Status
     {
-        public final String id;
-        public final boolean active;
-        public final String domain;
+        protected String id;
+        protected boolean active;
+        protected String domain;
+        protected ILevel level;
 
-        public Data(String id, boolean active, String domain)
+        public Status(String id, boolean active, String domain, ILevel level)
         {
             this.id = id;
             this.active = active;
             this.domain = domain;
+            this.level = level;
+        }
+
+        @Override
+        public String getId()
+        {
+            return id;
+        }
+
+        @Override
+        public boolean isActive()
+        {
+            return active;
+        }
+
+        @Override
+        public String getDomain()
+        {
+            return domain;
+        }
+
+        @Override
+        public ILevel getLevel()
+        {
+            return level;
+        }
+
+        @Override
+        public void setActive(boolean active)
+        {
+            this.active = active;
+            invalidateActiveCache();
         }
     }
 }

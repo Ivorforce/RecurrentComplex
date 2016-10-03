@@ -7,11 +7,11 @@ package ivorius.reccomplex.network;
 
 import ivorius.ivtoolkit.network.SchedulingMessageHandler;
 import ivorius.reccomplex.RecurrentComplex;
-import ivorius.reccomplex.files.LeveledRegistry;
-import ivorius.reccomplex.files.RCFileSuffix;
+import ivorius.reccomplex.commands.RCCommands;
+import ivorius.reccomplex.files.loading.LeveledRegistry;
+import ivorius.reccomplex.files.loading.RCFileSuffix;
 import ivorius.reccomplex.items.ItemInventoryGenComponentTag;
 import ivorius.reccomplex.utils.SaveDirectoryData;
-import ivorius.reccomplex.utils.ServerTranslations;
 import ivorius.reccomplex.worldgen.inventory.GenericItemCollectionRegistry;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemStack;
@@ -41,27 +41,16 @@ public class PacketSaveInvGenComponentHandler extends SchedulingMessageHandler<P
 
         GenericItemCollectionRegistry.INSTANCE.register(id, "", message.getInventoryGenerator(), saveDirectoryDataResult.directory.isActive(), LeveledRegistry.Level.CUSTOM);
 
-        if ((message.getInventoryGenerator() != null && id != null) &&
-                RecurrentComplex.fileTypeRegistry.tryWrite(saveDirectoryDataResult.directory, RCFileSuffix.INVENTORY_GENERATION_COMPONENT, id))
+        if (RCCommands.informSaveResult((message.getInventoryGenerator() != null && id != null) &&
+                RecurrentComplex.saver.trySave(saveDirectoryDataResult.directory.toPath(), RCFileSuffix.INVENTORY_GENERATION_COMPONENT, id), player, path, "inventory_generator", id))
         {
-            player.addChatMessage(ServerTranslations.format("inventorygen.save.success", path + id));
-
             if (saveDirectoryDataResult.deleteOther)
-            {
-                if (RecurrentComplex.fileTypeRegistry.tryDelete(saveDirectoryDataResult.directory.opposite(), id, RCFileSuffix.INVENTORY_GENERATION_COMPONENT).size() > 0)
-                    player.addChatMessage(ServerTranslations.format("inventorygen.delete.failure", id));
-                else
-                    player.addChatMessage(ServerTranslations.format("inventorygen.delete.success", id));
-            }
+                RCCommands.informDeleteResult(RecurrentComplex.saver.tryDelete(saveDirectoryDataResult.directory.opposite().toPath(), id, RCFileSuffix.INVENTORY_GENERATION_COMPONENT), player, "inventory_generator", id, saveDirectoryDataResult.directory.opposite().directoryName());
 
             ItemStack heldItem = playServer.playerEntity.getHeldItem(EnumHand.MAIN_HAND);
             if (heldItem != null && heldItem.getItem() instanceof ItemInventoryGenComponentTag)
                 ItemInventoryGenComponentTag.setComponentKey(heldItem, id);
             player.openContainer.detectAndSendChanges();
-        }
-        else
-        {
-            player.addChatMessage(ServerTranslations.format("inventorygen.save.failure", path + id));
         }
     }
 }

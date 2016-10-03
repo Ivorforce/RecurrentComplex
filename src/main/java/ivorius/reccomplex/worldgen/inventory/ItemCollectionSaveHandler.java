@@ -9,17 +9,11 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonSyntaxException;
 import io.netty.buffer.ByteBuf;
-import ivorius.reccomplex.files.RCFileSuffix;
-import ivorius.reccomplex.files.RCFileTypeRegistry;
 import ivorius.reccomplex.json.NbtToJson;
 import ivorius.reccomplex.worldgen.inventory.GenericItemCollection.Component;
 import net.minecraftforge.fml.common.network.ByteBufUtils;
-import org.apache.commons.io.FileUtils;
 
-import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import java.io.File;
-import java.io.IOException;
 
 /**
  * Created by lukas on 25.05.14.

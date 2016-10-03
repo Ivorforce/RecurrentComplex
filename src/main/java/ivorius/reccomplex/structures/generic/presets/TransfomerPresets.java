@@ -7,7 +7,7 @@ package ivorius.reccomplex.structures.generic.presets;
 
 import com.google.common.reflect.TypeToken;
 import com.google.gson.GsonBuilder;
-import ivorius.reccomplex.files.RCFileSuffix;
+import ivorius.reccomplex.files.loading.RCFileSuffix;
 import ivorius.reccomplex.structures.generic.transformers.TransformerMulti;
 import ivorius.reccomplex.utils.PresetRegistry;
 

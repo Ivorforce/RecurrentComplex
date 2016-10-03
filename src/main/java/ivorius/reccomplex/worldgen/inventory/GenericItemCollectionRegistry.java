@@ -7,7 +7,7 @@ package ivorius.reccomplex.worldgen.inventory;
 
 import com.google.common.collect.Sets;
 import ivorius.reccomplex.RCConfig;
-import ivorius.reccomplex.files.LeveledRegistry;
+import ivorius.reccomplex.files.loading.LeveledRegistry;
 import ivorius.reccomplex.files.SimpleLeveledRegistry;
 import ivorius.reccomplex.worldgen.inventory.GenericItemCollection.Component;
 
@@ -73,7 +73,7 @@ public class GenericItemCollectionRegistry extends SimpleLeveledRegistry<Compone
         {
             Component component = get(key);
 
-            GenericItemCollection collection = registerGetGenericItemCollection(component.inventoryGeneratorID, getData(key).domain);
+            GenericItemCollection collection = registerGetGenericItemCollection(component.inventoryGeneratorID, status(key).getDomain());
             collection.components.add(component);
         }
 

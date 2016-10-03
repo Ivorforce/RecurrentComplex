@@ -3,12 +3,13 @@
  *  * http://ivorius.net
  */
 
-package ivorius.reccomplex.files;
+package ivorius.reccomplex.files.loading;
 
 import ivorius.reccomplex.RCConfig;
 import ivorius.reccomplex.RecurrentComplex;
 import ivorius.reccomplex.events.FileLoadEvent;
 import ivorius.reccomplex.events.RCEventBus;
+import ivorius.reccomplex.files.saving.FileSaverAdapter;
 import net.minecraftforge.fml.common.eventhandler.Event;
 
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -18,11 +19,11 @@ import java.util.NoSuchElementException;
 /**
  * Created by lukas on 29.09.16.
  */
-public abstract class FileTypeHandlerRegistry<S> extends FileTypeHandler
+public abstract class FileLoaderRegistry<S> extends FileLoaderAdapter
 {
     public LeveledRegistry<? super S> registry;
 
-    public FileTypeHandlerRegistry(String suffix, LeveledRegistry<? super S> registry)
+    public FileLoaderRegistry(String suffix, LeveledRegistry<? super S> registry)
     {
         super(suffix);
         this.registry = registry;
@@ -64,21 +65,6 @@ public abstract class FileTypeHandlerRegistry<S> extends FileTypeHandler
     }
 
     public abstract S read(Path path, String name) throws Exception;
-
-    @Override
-    @ParametersAreNonnullByDefault
-    public void writeFile(Path path, String id) throws Exception
-    {
-        S s = (S) registry.get(id);
-
-        if (s != null)
-            write(path, s);
-        else
-            throw new NoSuchElementException();
-    }
-
-    @ParametersAreNonnullByDefault
-    public abstract void write(Path path, S s) throws Exception;
 
     @Override
     @ParametersAreNonnullByDefault

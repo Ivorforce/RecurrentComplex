@@ -8,7 +8,7 @@ package ivorius.reccomplex;
 import com.google.common.collect.Lists;
 import gnu.trove.map.TObjectDoubleMap;
 import gnu.trove.map.hash.TObjectDoubleHashMap;
-import ivorius.reccomplex.files.RCFileSuffix;
+import ivorius.reccomplex.files.loading.RCFileSuffix;
 import ivorius.reccomplex.structures.StructureRegistry;
 import ivorius.reccomplex.structures.generic.StructureSaveHandler;
 import ivorius.reccomplex.structures.generic.matchers.BiomeMatcher;
@@ -198,7 +198,7 @@ public class RCConfig
 
     public static boolean shouldResourceLoad(String fileSuffix, String id, String domain)
     {
-        if (fileSuffix.equals(StructureSaveHandler.INSTANCE.getSuffix()))
+        if (fileSuffix.equals(StructureSaveHandler.INSTANCE.suffix))
             return structureLoadMatcher.test(new ResourceLocation(domain, id));
         else if (fileSuffix.equals(RCFileSuffix.INVENTORY_GENERATION_COMPONENT))
             return inventoryGeneratorLoadMatcher.test(new ResourceLocation(domain, id));

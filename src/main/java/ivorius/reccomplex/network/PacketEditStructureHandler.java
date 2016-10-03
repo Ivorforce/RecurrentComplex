@@ -8,8 +8,8 @@ package ivorius.reccomplex.network;
 import ivorius.ivtoolkit.network.SchedulingMessageHandler;
 import ivorius.reccomplex.RecurrentComplex;
 import ivorius.reccomplex.entities.StructureEntityInfo;
-import ivorius.reccomplex.files.RCFileSuffix;
-import ivorius.reccomplex.files.RCFileTypeRegistry;
+import ivorius.reccomplex.files.loading.RCFileSuffix;
+import ivorius.reccomplex.files.loading.ResourceDirectory;
 import ivorius.reccomplex.gui.editstructure.GuiEditGenericStructure;
 import ivorius.reccomplex.structures.generic.GenericStructureInfo;
 import ivorius.reccomplex.utils.SaveDirectoryData;
@@ -34,8 +34,8 @@ public class PacketEditStructureHandler extends SchedulingMessageHandler<PacketE
 
         RecurrentComplex.network.sendTo(new PacketEditStructure(structureInfo, structureID,
                 SaveDirectoryData.defaultData(structureID,
-                        RecurrentComplex.fileTypeRegistry.tryFindIDs(RCFileTypeRegistry.Directory.ACTIVE, RCFileSuffix.STRUCTURE),
-                        RecurrentComplex.fileTypeRegistry.tryFindIDs(RCFileTypeRegistry.Directory.INACTIVE, RCFileSuffix.STRUCTURE))
+                        RecurrentComplex.loader.tryFindIDs(ResourceDirectory.ACTIVE.toPath(), RCFileSuffix.STRUCTURE),
+                        RecurrentComplex.loader.tryFindIDs(ResourceDirectory.INACTIVE.toPath(), RCFileSuffix.STRUCTURE))
         ), player);
     }
 

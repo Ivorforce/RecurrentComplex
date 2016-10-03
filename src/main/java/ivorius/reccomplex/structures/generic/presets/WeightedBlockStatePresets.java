@@ -8,7 +8,7 @@ package ivorius.reccomplex.structures.generic.presets;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 import ivorius.reccomplex.RecurrentComplex;
-import ivorius.reccomplex.files.RCFileSuffix;
+import ivorius.reccomplex.files.loading.RCFileSuffix;
 import ivorius.reccomplex.structures.generic.WeightedBlockState;
 import ivorius.reccomplex.utils.PresetRegistry;
 

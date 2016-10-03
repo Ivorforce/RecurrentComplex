@@ -14,10 +14,13 @@ import net.minecraft.command.*;
 import net.minecraft.entity.Entity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.fml.common.event.FMLServerStartingEvent;
+import org.apache.commons.lang3.tuple.Pair;
 
 import javax.annotation.Nonnull;
+import java.nio.file.Path;
 import java.util.Collections;
 import java.util.List;
+import java.util.Set;
 
 /**
  * Created by lukas on 18.01.15.
@@ -32,6 +35,8 @@ public class RCCommands
 
     public static void onServerStart(FMLServerStartingEvent event)
     {
+        event.registerServerCommand(new CommandSave());
+
         if (!RecurrentComplex.isLite())
         {
             event.registerServerCommand(new CommandExportStructure());
@@ -166,5 +171,23 @@ public class RCCommands
     public static boolean tryParseMirror(String[] args, int mirrorIndex) throws CommandException
     {
         return args.length > mirrorIndex && CommandBase.parseBoolean(args[mirrorIndex]);
+    }
+
+    public static void informDeleteResult(Pair<Set<Path>, Set<Path>> result, ICommandSender sender, String filetype, String id, String path)
+    {
+        if (result.getRight().size() > 0)
+            sender.addChatMessage(ServerTranslations.format("reccomplex.delete.failure", filetype, String.format("%s/%s", path, id)));
+        else if (result.getLeft().size() > 0)
+            sender.addChatMessage(ServerTranslations.format("reccomplex.delete.success", filetype, String.format("%s/%s", path, id)));
+    }
+
+    public static boolean informSaveResult(boolean result, ICommandSender sender, String path, String filetype, String id)
+    {
+        if (result)
+            sender.addChatMessage(ServerTranslations.format("reccomplex.save.success", filetype, String.format("%s/%s", path, id)));
+        else
+            sender.addChatMessage(ServerTranslations.format("reccomplex.save.failure", filetype, String.format("%s/%s", path, id)));
+
+        return result;
     }
 }

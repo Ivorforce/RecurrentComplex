@@ -7,7 +7,8 @@ package ivorius.reccomplex.commands;
 
 import ivorius.reccomplex.RCConfig;
 import ivorius.reccomplex.RecurrentComplex;
-import ivorius.reccomplex.files.LeveledRegistry;
+import ivorius.reccomplex.files.loading.LeveledRegistry;
+import ivorius.reccomplex.files.loading.ResourceDirectory;
 import ivorius.reccomplex.utils.ServerTranslations;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.CommandException;
@@ -50,10 +51,10 @@ public class CommandReload extends CommandBase
         switch (level)
         {
             case CUSTOM:
-                RecurrentComplex.fileTypeRegistry.loadCustomFiles();
+                ResourceDirectory.loadCustomFiles(RecurrentComplex.loader);
                 break;
             case MODDED:
-                RecurrentComplex.fileTypeRegistry.loadModFiles();
+                ResourceDirectory.loadModFiles(RecurrentComplex.loader);
                 break;
             default:
                 throw ServerTranslations.wrongUsageException("commands.strucReload.usage");

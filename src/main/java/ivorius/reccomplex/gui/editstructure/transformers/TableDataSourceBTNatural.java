@@ -8,7 +8,7 @@ package ivorius.reccomplex.gui.editstructure.transformers;
 import ivorius.reccomplex.gui.GuiValidityStateIndicator;
 import ivorius.reccomplex.gui.TableDataSourceExpression;
 import ivorius.reccomplex.gui.table.*;
-import ivorius.reccomplex.structures.generic.transformers.TransformerNatural;
+import ivorius.reccomplex.world.gen.feature.structure.generic.transformers.TransformerNatural;
 import ivorius.ivtoolkit.tools.IvTranslations;
 import ivorius.reccomplex.utils.scale.Scales;
 import net.minecraft.block.Block;

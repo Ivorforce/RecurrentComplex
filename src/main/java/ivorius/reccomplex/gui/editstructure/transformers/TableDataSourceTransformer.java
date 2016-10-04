@@ -8,8 +8,8 @@ package ivorius.reccomplex.gui.editstructure.transformers;
 import ivorius.ivtoolkit.tools.IvTranslations;
 import ivorius.reccomplex.gui.GuiValidityStateIndicator;
 import ivorius.reccomplex.gui.table.*;
-import ivorius.reccomplex.structures.StructureInfos;
-import ivorius.reccomplex.structures.generic.transformers.Transformer;
+import ivorius.reccomplex.world.gen.feature.structure.StructureInfos;
+import ivorius.reccomplex.world.gen.feature.structure.generic.transformers.Transformer;
 
 /**
  * Created by lukas on 29.08.16.

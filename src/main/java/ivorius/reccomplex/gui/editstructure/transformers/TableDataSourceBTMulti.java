@@ -12,7 +12,7 @@ import ivorius.reccomplex.gui.editstructure.preset.TableDataSourcePresettedObjec
 import ivorius.reccomplex.gui.table.TableDataSourceSegmented;
 import ivorius.reccomplex.gui.table.TableDelegate;
 import ivorius.reccomplex.gui.table.TableNavigator;
-import ivorius.reccomplex.structures.generic.transformers.TransformerMulti;
+import ivorius.reccomplex.world.gen.feature.structure.generic.transformers.TransformerMulti;
 
 /**
  * Created by lukas on 05.06.14.

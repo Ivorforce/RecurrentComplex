@@ -8,7 +8,7 @@ package ivorius.reccomplex.gui.editstructure.pattern;
 import ivorius.ivtoolkit.tools.IvTranslations;
 import ivorius.reccomplex.gui.TableDataSourceExpression;
 import ivorius.reccomplex.gui.table.*;
-import ivorius.reccomplex.structures.generic.BlockPattern;
+import ivorius.reccomplex.world.gen.feature.structure.generic.BlockPattern;
 
 /**
  * Created by lukas on 05.06.14.

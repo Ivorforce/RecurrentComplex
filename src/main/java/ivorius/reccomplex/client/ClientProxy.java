@@ -18,8 +18,8 @@ import org.lwjgl.input.Keyboard;
 
 import java.io.File;
 
-import static ivorius.reccomplex.blocks.RCBlocks.*;
-import static ivorius.reccomplex.items.RCItems.*;
+import static ivorius.reccomplex.block.RCBlocks.*;
+import static ivorius.reccomplex.item.RCItems.*;
 
 /**
  * Created by lukas on 24.05.14.

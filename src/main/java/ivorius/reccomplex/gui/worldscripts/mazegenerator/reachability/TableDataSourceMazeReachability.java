@@ -7,8 +7,8 @@ package ivorius.reccomplex.gui.worldscripts.mazegenerator.reachability;
 
 import ivorius.ivtoolkit.gui.IntegerRange;
 import ivorius.reccomplex.gui.table.*;
-import ivorius.reccomplex.structures.generic.maze.SavedMazePath;
-import ivorius.reccomplex.structures.generic.maze.SavedMazeReachability;
+import ivorius.reccomplex.world.gen.feature.structure.generic.maze.SavedMazePath;
+import ivorius.reccomplex.world.gen.feature.structure.generic.maze.SavedMazeReachability;
 import ivorius.ivtoolkit.tools.IvTranslations;
 
 import java.util.List;

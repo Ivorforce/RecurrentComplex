@@ -13,7 +13,7 @@ import net.minecraft.command.NumberInvalidException;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.math.BlockPos;
 import ivorius.reccomplex.RCConfig;
-import ivorius.reccomplex.blocks.RCBlocks;
+import ivorius.reccomplex.block.RCBlocks;
 import ivorius.reccomplex.entities.StructureEntityInfo;
 import ivorius.reccomplex.utils.ServerTranslations;
 import net.minecraft.block.Block;

@@ -8,7 +8,7 @@ package ivorius.reccomplex.network;
 import ivorius.ivtoolkit.network.SchedulingMessageHandler;
 import ivorius.ivtoolkit.tools.IvSideClient;
 import ivorius.reccomplex.RecurrentComplex;
-import ivorius.reccomplex.blocks.TileEntityWithGUI;
+import ivorius.reccomplex.block.TileEntityWithGUI;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.tileentity.TileEntity;

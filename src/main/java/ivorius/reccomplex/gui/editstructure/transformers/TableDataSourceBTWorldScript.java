@@ -9,7 +9,7 @@ import ivorius.ivtoolkit.tools.IvTranslations;
 import ivorius.reccomplex.gui.TableDataSourceExpression;
 import ivorius.reccomplex.gui.table.*;
 import ivorius.reccomplex.gui.worldscripts.multi.TableDataSourceWorldScriptMulti;
-import ivorius.reccomplex.structures.generic.transformers.TransformerWorldScript;
+import ivorius.reccomplex.world.gen.feature.structure.generic.transformers.TransformerWorldScript;
 
 /**
  * Created by lukas on 05.06.14.

@@ -7,8 +7,8 @@ package ivorius.reccomplex.gui.editstructure.placer;
 
 import ivorius.reccomplex.gui.editstructure.preset.TableDataSourcePresettedList;
 import ivorius.reccomplex.gui.table.*;
-import ivorius.reccomplex.structures.generic.placement.FactorRegistry;
-import ivorius.reccomplex.structures.generic.placement.GenericPlacer;
+import ivorius.reccomplex.world.gen.feature.structure.generic.placement.FactorRegistry;
+import ivorius.reccomplex.world.gen.feature.structure.generic.placement.GenericPlacer;
 
 import java.util.List;
 

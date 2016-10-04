@@ -7,7 +7,7 @@ package ivorius.reccomplex.json;
 
 import com.google.gson.*;
 import ivorius.reccomplex.RecurrentComplex;
-import ivorius.reccomplex.structures.registry.MCRegistrySpecial;
+import ivorius.reccomplex.world.gen.feature.structure.registry.MCRegistrySpecial;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ResourceLocation;

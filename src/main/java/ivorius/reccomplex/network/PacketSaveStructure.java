@@ -6,8 +6,8 @@
 package ivorius.reccomplex.network;
 
 import io.netty.buffer.ByteBuf;
-import ivorius.reccomplex.structures.generic.GenericStructureInfo;
-import ivorius.reccomplex.structures.generic.StructureSaveHandler;
+import ivorius.reccomplex.world.gen.feature.structure.generic.GenericStructureInfo;
+import ivorius.reccomplex.world.gen.feature.structure.generic.StructureSaveHandler;
 import ivorius.reccomplex.utils.SaveDirectoryData;
 import net.minecraftforge.fml.common.network.ByteBufUtils;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessage;

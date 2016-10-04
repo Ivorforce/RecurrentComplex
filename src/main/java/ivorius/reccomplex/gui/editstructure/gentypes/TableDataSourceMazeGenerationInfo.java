@@ -9,7 +9,7 @@ import ivorius.ivtoolkit.tools.IvTranslations;
 import ivorius.reccomplex.gui.RCGuiTables;
 import ivorius.reccomplex.gui.table.*;
 import ivorius.reccomplex.gui.worldscripts.mazegenerator.TableDataSourceMazeComponent;
-import ivorius.reccomplex.structures.generic.gentypes.MazeGenerationInfo;
+import ivorius.reccomplex.world.gen.feature.structure.generic.gentypes.MazeGenerationInfo;
 
 /**
  * Created by lukas on 07.10.14.

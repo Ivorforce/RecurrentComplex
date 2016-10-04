@@ -6,11 +6,10 @@
 package ivorius.reccomplex.gui.worldscripts.mazegenerator;
 
 import ivorius.reccomplex.gui.table.*;
-import ivorius.reccomplex.structures.generic.Selection;
+import ivorius.reccomplex.world.gen.feature.structure.generic.Selection;
 import net.minecraft.util.text.TextFormatting;
 
 import java.util.Arrays;
-import java.util.function.Function;
 
 /**
  * Created by lukas on 04.06.14.

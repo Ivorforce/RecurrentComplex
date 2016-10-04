@@ -8,7 +8,7 @@ package ivorius.reccomplex.gui.editstructure.placer;
 import ivorius.ivtoolkit.tools.IvTranslations;
 import ivorius.reccomplex.gui.TableDataSourceExpression;
 import ivorius.reccomplex.gui.table.*;
-import ivorius.reccomplex.structures.generic.placement.FactorMatch;
+import ivorius.reccomplex.world.gen.feature.structure.generic.placement.FactorMatch;
 
 /**
  * Created by lukas on 04.04.15.

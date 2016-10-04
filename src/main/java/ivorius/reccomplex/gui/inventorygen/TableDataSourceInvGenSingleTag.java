@@ -7,10 +7,8 @@ package ivorius.reccomplex.gui.inventorygen;
 
 import ivorius.ivtoolkit.tools.IvTranslations;
 import ivorius.reccomplex.gui.table.*;
-import ivorius.reccomplex.items.ItemInventoryGenMultiTag;
-import ivorius.reccomplex.items.ItemInventoryGenSingleTag;
+import ivorius.reccomplex.item.ItemInventoryGenSingleTag;
 import ivorius.reccomplex.utils.scale.Scales;
-import net.minecraft.item.ItemStack;
 
 /**
  * Created by lukas on 17.01.15.

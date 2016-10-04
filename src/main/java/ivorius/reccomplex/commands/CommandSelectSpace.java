@@ -7,8 +7,8 @@ package ivorius.reccomplex.commands;
 
 import ivorius.ivtoolkit.blocks.BlockArea;
 import ivorius.reccomplex.RCConfig;
-import ivorius.reccomplex.blocks.BlockGenericSpace;
-import ivorius.reccomplex.blocks.RCBlocks;
+import ivorius.reccomplex.block.BlockGenericSpace;
+import ivorius.reccomplex.block.RCBlocks;
 import ivorius.reccomplex.entities.StructureEntityInfo;
 import ivorius.reccomplex.utils.BlockSurfaceArea;
 import ivorius.reccomplex.utils.BlockSurfacePos;

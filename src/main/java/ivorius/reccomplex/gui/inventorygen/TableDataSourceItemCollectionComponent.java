@@ -12,9 +12,9 @@ import ivorius.reccomplex.gui.TableDataSourceExpression;
 import ivorius.reccomplex.gui.TableElementSaveDirectory;
 import ivorius.reccomplex.gui.table.*;
 import ivorius.reccomplex.utils.SaveDirectoryData;
-import ivorius.reccomplex.worldgen.inventory.GenericItemCollection;
-import ivorius.reccomplex.worldgen.inventory.GenericItemCollectionRegistry;
-import ivorius.reccomplex.worldgen.inventory.WeightedItemCollectionRegistry;
+import ivorius.reccomplex.world.storage.loot.GenericItemCollection;
+import ivorius.reccomplex.world.storage.loot.GenericItemCollectionRegistry;
+import ivorius.reccomplex.world.storage.loot.WeightedItemCollectionRegistry;
 import net.minecraft.entity.player.EntityPlayer;
 
 /**

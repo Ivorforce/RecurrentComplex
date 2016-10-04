@@ -10,7 +10,7 @@ import com.google.common.collect.Sets;
 import net.minecraft.util.text.TextFormatting;
 import ivorius.ivtoolkit.tools.IvTranslations;
 import ivorius.reccomplex.gui.table.*;
-import ivorius.reccomplex.structures.generic.maze.SavedMazePath;
+import ivorius.reccomplex.world.gen.feature.structure.generic.maze.SavedMazePath;
 
 import java.util.Collections;
 import java.util.List;

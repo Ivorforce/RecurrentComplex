@@ -10,13 +10,12 @@ import ivorius.reccomplex.gui.table.Bounds;
 import ivorius.reccomplex.gui.table.GuiScreenModalTable;
 import ivorius.reccomplex.gui.table.GuiTable;
 import ivorius.reccomplex.network.PacketSaveStructureHandler;
-import ivorius.reccomplex.structures.generic.GenericStructureInfo;
+import ivorius.reccomplex.world.gen.feature.structure.generic.GenericStructureInfo;
 import ivorius.reccomplex.utils.SaveDirectoryData;
 import net.minecraft.client.gui.GuiButton;
 import org.lwjgl.input.Keyboard;
 
 import java.io.IOException;
-import java.util.Set;
 
 /**
  * Created by lukas on 26.05.14.

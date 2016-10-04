@@ -5,7 +5,7 @@
 
 package ivorius.reccomplex.network;
 
-import ivorius.reccomplex.items.ItemEventHandler;
+import ivorius.reccomplex.item.ItemEventHandler;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemStack;
 

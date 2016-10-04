@@ -12,7 +12,7 @@ import ivorius.reccomplex.gui.TableDataSourceBlockPos;
 import ivorius.reccomplex.gui.TableDataSourceExpression;
 import ivorius.reccomplex.gui.TableDirections;
 import ivorius.reccomplex.gui.table.*;
-import ivorius.reccomplex.structures.generic.gentypes.VanillaStructureGenerationInfo;
+import ivorius.reccomplex.world.gen.feature.structure.generic.gentypes.VanillaStructureGenerationInfo;
 import ivorius.ivtoolkit.blocks.Directions;
 import ivorius.ivtoolkit.tools.IvTranslations;
 import ivorius.reccomplex.utils.scale.Scales;

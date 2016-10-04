@@ -9,8 +9,8 @@ import ivorius.ivtoolkit.gui.IntegerRange;
 import ivorius.ivtoolkit.tools.IvTranslations;
 import ivorius.reccomplex.gui.table.*;
 import ivorius.reccomplex.gui.worldscripts.mazegenerator.TableDataSourceMazePathList;
-import ivorius.reccomplex.structures.generic.maze.*;
-import ivorius.reccomplex.structures.generic.maze.rules.saved.MazeRuleConnectAll;
+import ivorius.reccomplex.world.gen.feature.structure.generic.maze.*;
+import ivorius.reccomplex.world.gen.feature.structure.generic.maze.rules.saved.MazeRuleConnectAll;
 import net.minecraft.util.text.TextFormatting;
 
 import java.util.Collections;

@@ -9,7 +9,7 @@ import ivorius.ivtoolkit.tools.IvTranslations;
 import ivorius.reccomplex.gui.TableDataSourceExpression;
 import ivorius.reccomplex.gui.editstructure.TableDataSourceWeightedBlockStateList;
 import ivorius.reccomplex.gui.table.*;
-import ivorius.reccomplex.structures.generic.transformers.TransformerReplace;
+import ivorius.reccomplex.world.gen.feature.structure.generic.transformers.TransformerReplace;
 
 /**
  * Created by lukas on 05.06.14.

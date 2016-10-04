@@ -10,9 +10,9 @@ import ivorius.ivtoolkit.maze.components.MazeRoom;
 import ivorius.ivtoolkit.tools.IvTranslations;
 import ivorius.reccomplex.gui.TableDirections;
 import ivorius.reccomplex.gui.table.*;
-import ivorius.reccomplex.structures.generic.maze.ConnectorStrategy;
-import ivorius.reccomplex.structures.generic.maze.SavedMazePath;
-import ivorius.reccomplex.structures.generic.maze.SavedMazePathConnection;
+import ivorius.reccomplex.world.gen.feature.structure.generic.maze.ConnectorStrategy;
+import ivorius.reccomplex.world.gen.feature.structure.generic.maze.SavedMazePath;
+import ivorius.reccomplex.world.gen.feature.structure.generic.maze.SavedMazePathConnection;
 import net.minecraft.util.EnumFacing;
 
 import java.util.Arrays;

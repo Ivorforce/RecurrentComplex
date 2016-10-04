@@ -13,9 +13,9 @@ import ivorius.reccomplex.gui.RCGuiTables;
 import ivorius.reccomplex.gui.TableDataSourceBlockPos;
 import ivorius.reccomplex.gui.TableDirections;
 import ivorius.reccomplex.gui.table.*;
-import ivorius.reccomplex.structures.StructureInfos;
-import ivorius.reccomplex.structures.StructureRegistry;
-import ivorius.reccomplex.structures.generic.gentypes.StructureListGenerationInfo;
+import ivorius.reccomplex.world.gen.feature.structure.StructureInfos;
+import ivorius.reccomplex.world.gen.feature.structure.StructureRegistry;
+import ivorius.reccomplex.world.gen.feature.structure.generic.gentypes.StructureListGenerationInfo;
 import net.minecraft.util.EnumFacing;
 
 import javax.annotation.Nonnull;

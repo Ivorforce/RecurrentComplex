@@ -7,7 +7,7 @@ package ivorius.reccomplex.gui.editstructure.placer;
 
 import ivorius.ivtoolkit.tools.IvTranslations;
 import ivorius.reccomplex.gui.table.*;
-import ivorius.reccomplex.structures.generic.placement.GenericPlacer;
+import ivorius.reccomplex.world.gen.feature.structure.generic.placement.GenericPlacer;
 
 /**
  * Created by lukas on 04.04.15.

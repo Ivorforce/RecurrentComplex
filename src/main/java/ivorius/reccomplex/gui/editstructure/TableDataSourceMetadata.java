@@ -6,7 +6,7 @@
 package ivorius.reccomplex.gui.editstructure;
 
 import ivorius.reccomplex.gui.table.*;
-import ivorius.reccomplex.structures.generic.Metadata;
+import ivorius.reccomplex.world.gen.feature.structure.generic.Metadata;
 
 /**
  * Created by lukas on 22.02.15.

@@ -11,7 +11,7 @@ import ivorius.reccomplex.entities.StructureEntityInfo;
 import ivorius.reccomplex.files.loading.RCFileSuffix;
 import ivorius.reccomplex.files.loading.ResourceDirectory;
 import ivorius.reccomplex.gui.editstructure.GuiEditGenericStructure;
-import ivorius.reccomplex.structures.generic.GenericStructureInfo;
+import ivorius.reccomplex.world.gen.feature.structure.generic.GenericStructureInfo;
 import ivorius.reccomplex.utils.SaveDirectoryData;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.EntityPlayerMP;

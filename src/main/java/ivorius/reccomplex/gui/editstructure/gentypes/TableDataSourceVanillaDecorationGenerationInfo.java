@@ -12,8 +12,8 @@ import ivorius.reccomplex.gui.TableDataSourceBlockPos;
 import ivorius.reccomplex.gui.editstructure.TableDataSourceBiomeGenList;
 import ivorius.reccomplex.gui.editstructure.TableDataSourceDimensionGenList;
 import ivorius.reccomplex.gui.table.*;
-import ivorius.reccomplex.structures.generic.gentypes.VanillaDecorationGenerationInfo;
-import ivorius.reccomplex.worldgen.decoration.RCBiomeDecorator;
+import ivorius.reccomplex.world.gen.feature.structure.generic.gentypes.VanillaDecorationGenerationInfo;
+import ivorius.reccomplex.world.gen.feature.decoration.RCBiomeDecorator;
 
 /**
  * Created by lukas on 07.10.14.

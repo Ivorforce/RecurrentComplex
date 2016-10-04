@@ -8,7 +8,7 @@ package ivorius.reccomplex.gui.worldscripts.command;
 import ivorius.ivtoolkit.tools.IvTranslations;
 import ivorius.reccomplex.gui.RCGuiTables;
 import ivorius.reccomplex.gui.table.*;
-import ivorius.reccomplex.scripts.world.WorldScriptCommand;
+import ivorius.reccomplex.world.gen.script.WorldScriptCommand;
 import net.minecraft.init.Blocks;
 
 /**

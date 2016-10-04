@@ -7,7 +7,7 @@ package ivorius.reccomplex.commands;
 
 import ivorius.ivtoolkit.blocks.BlockArea;
 import ivorius.reccomplex.RecurrentComplex;
-import ivorius.reccomplex.structures.generic.matchers.PositionedBlockMatcher;
+import ivorius.reccomplex.world.gen.feature.structure.generic.matchers.PositionedBlockMatcher;
 import net.minecraft.util.math.BlockPos;
 import ivorius.reccomplex.RCConfig;
 import ivorius.reccomplex.entities.StructureEntityInfo;
@@ -17,8 +17,6 @@ import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.world.World;
 import net.minecraft.util.EnumFacing;
-
-import java.util.function.Predicate;
 
 /**
  * Created by lukas on 09.06.14.

@@ -10,7 +10,7 @@ import ivorius.ivtoolkit.tools.IvTranslations;
 import ivorius.reccomplex.gui.TableDataSourceBlockPos;
 import ivorius.reccomplex.gui.table.*;
 import ivorius.reccomplex.gui.worldscripts.mazegenerator.rules.TableDataSourceMazeRuleList;
-import ivorius.reccomplex.scripts.world.WorldScriptMazeGenerator;
+import ivorius.reccomplex.world.gen.script.WorldScriptMazeGenerator;
 
 import java.util.function.Consumer;
 

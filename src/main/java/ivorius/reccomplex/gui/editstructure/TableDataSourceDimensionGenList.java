@@ -11,7 +11,7 @@ import ivorius.reccomplex.gui.table.TableDataSource;
 import ivorius.reccomplex.gui.table.TableDataSourceSegmented;
 import ivorius.reccomplex.gui.table.TableDelegate;
 import ivorius.reccomplex.gui.table.TableNavigator;
-import ivorius.reccomplex.structures.generic.DimensionGenerationInfo;
+import ivorius.reccomplex.world.gen.feature.structure.generic.DimensionGenerationInfo;
 import ivorius.reccomplex.utils.presets.PresettedList;
 import net.minecraft.util.text.TextFormatting;
 import org.apache.commons.lang3.StringUtils;

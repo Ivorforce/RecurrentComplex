@@ -8,8 +8,8 @@ package ivorius.reccomplex.gui.editstructure;
 import ivorius.ivtoolkit.tools.IvTranslations;
 import ivorius.reccomplex.gui.editstructure.preset.TableDataSourcePresettedList;
 import ivorius.reccomplex.gui.table.*;
-import ivorius.reccomplex.structures.StructureRegistry;
-import ivorius.reccomplex.structures.generic.gentypes.StructureGenerationInfo;
+import ivorius.reccomplex.world.gen.feature.structure.StructureRegistry;
+import ivorius.reccomplex.world.gen.feature.structure.generic.gentypes.StructureGenerationInfo;
 
 import java.util.List;
 

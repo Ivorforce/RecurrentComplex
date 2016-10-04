@@ -7,7 +7,7 @@ package ivorius.reccomplex.gui.worldscripts.command;
 
 import ivorius.ivtoolkit.tools.IvTranslations;
 import ivorius.reccomplex.gui.table.*;
-import ivorius.reccomplex.scripts.world.WorldScriptCommand;
+import ivorius.reccomplex.world.gen.script.WorldScriptCommand;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.List;

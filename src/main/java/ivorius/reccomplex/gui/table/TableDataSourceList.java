@@ -6,7 +6,6 @@
 package ivorius.reccomplex.gui.table;
 
 import ivorius.reccomplex.RecurrentComplex;
-import ivorius.reccomplex.structures.generic.transformers.Transformer;
 import ivorius.reccomplex.utils.IvClasses;
 import net.minecraft.util.text.TextFormatting;
 import ivorius.ivtoolkit.tools.IvTranslations;

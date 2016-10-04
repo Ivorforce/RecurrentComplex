@@ -10,7 +10,7 @@ import ivorius.reccomplex.gui.TableDataSourceExpression;
 import ivorius.reccomplex.gui.table.TableDataSourceSegmented;
 import ivorius.reccomplex.gui.table.TableDelegate;
 import ivorius.reccomplex.gui.table.TableNavigator;
-import ivorius.reccomplex.scripts.world.WorldScriptMulti;
+import ivorius.reccomplex.world.gen.script.WorldScriptMulti;
 
 /**
  * Created by lukas on 06.09.16.

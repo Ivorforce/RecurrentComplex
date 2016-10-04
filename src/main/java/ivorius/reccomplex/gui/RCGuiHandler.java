@@ -14,13 +14,13 @@ import ivorius.reccomplex.gui.container.IvGuiHandler;
 import ivorius.reccomplex.gui.container.IvGuiRegistry;
 import ivorius.reccomplex.gui.inventorygen.GuiEditInventoryGen;
 import ivorius.reccomplex.utils.SaveDirectoryData;
-import ivorius.reccomplex.worldgen.inventory.ItemCollectionSaveHandler;
+import ivorius.reccomplex.world.storage.loot.ItemCollectionSaveHandler;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.inventory.Container;
 import net.minecraftforge.fml.common.network.ByteBufUtils;
 import ivorius.reccomplex.gui.inventorygen.ContainerEditInventoryGenItems;
 import ivorius.reccomplex.gui.inventorygen.GuiEditInventoryGenItems;
-import ivorius.reccomplex.worldgen.inventory.GenericItemCollection.Component;
+import ivorius.reccomplex.world.storage.loot.GenericItemCollection.Component;
 import net.minecraft.entity.player.EntityPlayer;
 
 /**

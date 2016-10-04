@@ -7,7 +7,7 @@ package ivorius.reccomplex.gui.editstructure.transformers;
 
 import ivorius.reccomplex.gui.TableDataSourceExpression;
 import ivorius.reccomplex.gui.table.*;
-import ivorius.reccomplex.structures.generic.transformers.TransformerNaturalAir;
+import ivorius.reccomplex.world.gen.feature.structure.generic.transformers.TransformerNaturalAir;
 import ivorius.ivtoolkit.tools.IvTranslations;
 import ivorius.reccomplex.utils.scale.Scales;
 

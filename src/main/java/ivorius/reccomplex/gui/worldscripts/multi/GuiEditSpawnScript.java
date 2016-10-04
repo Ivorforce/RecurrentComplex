@@ -7,7 +7,7 @@ package ivorius.reccomplex.gui.worldscripts.multi;
 
 import ivorius.ivtoolkit.tools.IvTranslations;
 import ivorius.reccomplex.RecurrentComplex;
-import ivorius.reccomplex.blocks.TileEntitySpawnScript;
+import ivorius.reccomplex.block.TileEntitySpawnScript;
 import ivorius.reccomplex.gui.table.Bounds;
 import ivorius.reccomplex.gui.table.GuiScreenModalTable;
 import ivorius.reccomplex.gui.table.GuiTable;

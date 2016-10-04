@@ -6,14 +6,14 @@
 package ivorius.reccomplex;
 
 import ivorius.reccomplex.files.loading.LeveledRegistry;
-import ivorius.reccomplex.worldgen.selector.NaturalStructureSelector;
+import ivorius.reccomplex.world.gen.feature.selector.NaturalStructureSelector;
 import net.minecraftforge.fml.common.event.FMLInterModComms;
 import ivorius.ivtoolkit.tools.IvFMLIntercommHandler;
 import ivorius.ivtoolkit.tools.IvNBTHelper;
 import ivorius.reccomplex.dimensions.DimensionDictionary;
 import ivorius.reccomplex.files.loading.FileLoadContext;
-import ivorius.reccomplex.structures.generic.matchers.DimensionMatcher;
-import ivorius.reccomplex.structures.generic.matchers.BiomeMatcher;
+import ivorius.reccomplex.world.gen.feature.structure.generic.matchers.DimensionMatcher;
+import ivorius.reccomplex.world.gen.feature.structure.generic.matchers.BiomeMatcher;
 import net.minecraft.block.Block;
 import net.minecraft.item.Item;
 import net.minecraft.nbt.NBTTagCompound;

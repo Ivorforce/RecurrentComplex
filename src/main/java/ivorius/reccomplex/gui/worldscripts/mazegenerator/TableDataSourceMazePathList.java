@@ -13,7 +13,7 @@ import ivorius.reccomplex.gui.table.TableDataSource;
 import ivorius.reccomplex.gui.table.TableDataSourceList;
 import ivorius.reccomplex.gui.table.TableDelegate;
 import ivorius.reccomplex.gui.table.TableNavigator;
-import ivorius.reccomplex.structures.generic.maze.SavedMazePath;
+import ivorius.reccomplex.world.gen.feature.structure.generic.maze.SavedMazePath;
 
 import java.util.Arrays;
 import java.util.List;

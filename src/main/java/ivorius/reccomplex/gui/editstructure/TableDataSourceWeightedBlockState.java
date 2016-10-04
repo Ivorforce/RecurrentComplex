@@ -10,7 +10,7 @@ import ivorius.reccomplex.gui.GuiValidityStateIndicator;
 import ivorius.reccomplex.gui.RCGuiTables;
 import ivorius.reccomplex.gui.TableDataSourceBlockState;
 import ivorius.reccomplex.gui.table.*;
-import ivorius.reccomplex.structures.generic.WeightedBlockState;
+import ivorius.reccomplex.world.gen.feature.structure.generic.WeightedBlockState;
 import net.minecraft.nbt.JsonToNBT;
 import net.minecraft.nbt.NBTException;
 import net.minecraft.nbt.NBTTagCompound;

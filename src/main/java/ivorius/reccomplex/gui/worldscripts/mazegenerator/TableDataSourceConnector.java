@@ -6,7 +6,7 @@
 package ivorius.reccomplex.gui.worldscripts.mazegenerator;
 
 import ivorius.reccomplex.gui.table.*;
-import ivorius.reccomplex.structures.generic.maze.SavedConnector;
+import ivorius.reccomplex.world.gen.feature.structure.generic.maze.SavedConnector;
 import ivorius.ivtoolkit.tools.IvTranslations;
 
 /**

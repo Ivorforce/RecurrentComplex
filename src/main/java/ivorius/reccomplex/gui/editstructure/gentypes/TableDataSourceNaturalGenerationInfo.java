@@ -12,8 +12,8 @@ import ivorius.reccomplex.gui.editstructure.TableDataSourceDimensionGenList;
 import ivorius.reccomplex.gui.editstructure.TableDataSourceNaturalGenLimitation;
 import ivorius.reccomplex.gui.editstructure.placer.TableDataSourcePlacer;
 import ivorius.reccomplex.gui.table.*;
-import ivorius.reccomplex.structures.generic.gentypes.NaturalGenerationInfo;
-import ivorius.reccomplex.worldgen.selector.NaturalStructureSelector;
+import ivorius.reccomplex.world.gen.feature.structure.generic.gentypes.NaturalGenerationInfo;
+import ivorius.reccomplex.world.gen.feature.selector.NaturalStructureSelector;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -7,8 +7,8 @@ package ivorius.reccomplex.network;
 
 import io.netty.buffer.ByteBuf;
 import ivorius.reccomplex.utils.SaveDirectoryData;
-import ivorius.reccomplex.worldgen.inventory.GenericItemCollection.Component;
-import ivorius.reccomplex.worldgen.inventory.ItemCollectionSaveHandler;
+import ivorius.reccomplex.world.storage.loot.GenericItemCollection.Component;
+import ivorius.reccomplex.world.storage.loot.ItemCollectionSaveHandler;
 import net.minecraftforge.fml.common.network.ByteBufUtils;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 

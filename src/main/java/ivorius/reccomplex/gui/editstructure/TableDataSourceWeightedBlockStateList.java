@@ -11,7 +11,7 @@ import ivorius.reccomplex.gui.table.TableDataSource;
 import ivorius.reccomplex.gui.table.TableDataSourceSegmented;
 import ivorius.reccomplex.gui.table.TableDelegate;
 import ivorius.reccomplex.gui.table.TableNavigator;
-import ivorius.reccomplex.structures.generic.WeightedBlockState;
+import ivorius.reccomplex.world.gen.feature.structure.generic.WeightedBlockState;
 import ivorius.reccomplex.utils.BlockStates;
 import ivorius.reccomplex.utils.presets.PresettedList;
 import net.minecraft.block.Block;

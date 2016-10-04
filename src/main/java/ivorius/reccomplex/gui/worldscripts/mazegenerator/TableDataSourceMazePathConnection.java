@@ -7,7 +7,7 @@ package ivorius.reccomplex.gui.worldscripts.mazegenerator;
 
 import ivorius.ivtoolkit.gui.IntegerRange;
 import ivorius.reccomplex.gui.table.*;
-import ivorius.reccomplex.structures.generic.maze.SavedMazePathConnection;
+import ivorius.reccomplex.world.gen.feature.structure.generic.maze.SavedMazePathConnection;
 import ivorius.ivtoolkit.tools.IvTranslations;
 
 import java.util.List;

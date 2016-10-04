@@ -10,7 +10,7 @@ import ivorius.ivtoolkit.blocks.BlockAreas;
 import ivorius.reccomplex.RCConfig;
 import ivorius.reccomplex.RecurrentComplex;
 import ivorius.reccomplex.entities.StructureEntityInfo;
-import ivorius.reccomplex.structures.generic.matchers.PositionedBlockMatcher;
+import ivorius.reccomplex.world.gen.feature.structure.generic.matchers.PositionedBlockMatcher;
 import ivorius.reccomplex.utils.RCBlockAreas;
 import ivorius.reccomplex.utils.ServerTranslations;
 import net.minecraft.command.ICommandSender;
@@ -20,7 +20,6 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
 import javax.annotation.Nonnull;
-import java.util.function.Predicate;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 

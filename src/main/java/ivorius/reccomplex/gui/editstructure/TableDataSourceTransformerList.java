@@ -7,8 +7,8 @@ package ivorius.reccomplex.gui.editstructure;
 
 import ivorius.reccomplex.gui.editstructure.preset.TableDataSourcePresettedList;
 import ivorius.reccomplex.gui.table.*;
-import ivorius.reccomplex.structures.StructureRegistry;
-import ivorius.reccomplex.structures.generic.transformers.Transformer;
+import ivorius.reccomplex.world.gen.feature.structure.StructureRegistry;
+import ivorius.reccomplex.world.gen.feature.structure.generic.transformers.Transformer;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.List;

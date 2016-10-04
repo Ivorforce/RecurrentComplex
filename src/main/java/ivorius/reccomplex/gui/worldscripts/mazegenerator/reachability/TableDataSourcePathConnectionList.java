@@ -10,7 +10,7 @@ import ivorius.ivtoolkit.maze.components.MazeRoom;
 import ivorius.ivtoolkit.tools.IvTranslations;
 import ivorius.reccomplex.gui.table.*;
 import ivorius.reccomplex.gui.worldscripts.mazegenerator.TableDataSourceMazePath;
-import ivorius.reccomplex.structures.generic.maze.SavedMazePath;
+import ivorius.reccomplex.world.gen.feature.structure.generic.maze.SavedMazePath;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 
 import java.util.List;

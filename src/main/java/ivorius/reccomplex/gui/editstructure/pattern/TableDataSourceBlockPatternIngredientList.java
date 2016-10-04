@@ -9,7 +9,7 @@ import ivorius.reccomplex.gui.table.TableDataSource;
 import ivorius.reccomplex.gui.table.TableDataSourceList;
 import ivorius.reccomplex.gui.table.TableDelegate;
 import ivorius.reccomplex.gui.table.TableNavigator;
-import ivorius.reccomplex.structures.generic.BlockPattern;
+import ivorius.reccomplex.world.gen.feature.structure.generic.BlockPattern;
 
 import java.util.List;
 

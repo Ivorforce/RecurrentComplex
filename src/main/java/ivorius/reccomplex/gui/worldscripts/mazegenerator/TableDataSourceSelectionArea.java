@@ -8,7 +8,7 @@ package ivorius.reccomplex.gui.worldscripts.mazegenerator;
 import ivorius.ivtoolkit.gui.IntegerRange;
 import ivorius.ivtoolkit.tools.IvTranslations;
 import ivorius.reccomplex.gui.table.*;
-import ivorius.reccomplex.structures.generic.Selection;
+import ivorius.reccomplex.world.gen.feature.structure.generic.Selection;
 import net.minecraft.util.text.TextFormatting;
 
 /**

@@ -10,9 +10,9 @@ import ivorius.reccomplex.gui.GuiValidityStateIndicator;
 import ivorius.reccomplex.gui.TableDataSourceExpression;
 import ivorius.reccomplex.gui.TableElementSaveDirectory;
 import ivorius.reccomplex.gui.table.*;
-import ivorius.reccomplex.structures.StructureInfos;
-import ivorius.reccomplex.structures.StructureRegistry;
-import ivorius.reccomplex.structures.generic.GenericStructureInfo;
+import ivorius.reccomplex.world.gen.feature.structure.StructureInfos;
+import ivorius.reccomplex.world.gen.feature.structure.StructureRegistry;
+import ivorius.reccomplex.world.gen.feature.structure.generic.GenericStructureInfo;
 import ivorius.reccomplex.utils.SaveDirectoryData;
 
 /**

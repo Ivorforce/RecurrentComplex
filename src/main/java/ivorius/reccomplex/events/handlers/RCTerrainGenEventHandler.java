@@ -5,8 +5,8 @@
 
 package ivorius.reccomplex.events.handlers;
 
-import ivorius.reccomplex.worldgen.decoration.RCBiomeDecorator;
-import ivorius.reccomplex.worldgen.sapling.RCSaplingGenerator;
+import ivorius.reccomplex.world.gen.feature.decoration.RCBiomeDecorator;
+import ivorius.reccomplex.world.gen.feature.sapling.RCSaplingGenerator;
 import net.minecraft.world.WorldServer;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.terraingen.DecorateBiomeEvent;

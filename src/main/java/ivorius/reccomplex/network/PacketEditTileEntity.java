@@ -5,7 +5,7 @@
 
 package ivorius.reccomplex.network;
 
-import ivorius.reccomplex.blocks.TileEntityWithGUI;
+import ivorius.reccomplex.block.TileEntityWithGUI;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 

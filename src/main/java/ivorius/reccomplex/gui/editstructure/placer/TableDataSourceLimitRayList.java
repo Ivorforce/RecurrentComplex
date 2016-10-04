@@ -7,7 +7,7 @@ package ivorius.reccomplex.gui.editstructure.placer;
 
 import ivorius.reccomplex.gui.editstructure.preset.TableDataSourcePresettedList;
 import ivorius.reccomplex.gui.table.*;
-import ivorius.reccomplex.structures.generic.placement.FactorLimit;
+import ivorius.reccomplex.world.gen.feature.structure.generic.placement.FactorLimit;
 
 import java.util.List;
 

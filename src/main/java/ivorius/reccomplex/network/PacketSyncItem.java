@@ -7,7 +7,7 @@ package ivorius.reccomplex.network;
 
 import net.minecraftforge.fml.common.network.ByteBufUtils;
 import io.netty.buffer.ByteBuf;
-import ivorius.reccomplex.items.ItemSyncable;
+import ivorius.reccomplex.item.ItemSyncable;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 

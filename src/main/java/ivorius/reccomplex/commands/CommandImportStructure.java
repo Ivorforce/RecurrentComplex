@@ -5,15 +5,15 @@
 
 package ivorius.reccomplex.commands;
 
-import ivorius.reccomplex.structures.*;
-import ivorius.reccomplex.worldgen.StructureGenerator;
+import ivorius.reccomplex.world.gen.feature.structure.*;
+import ivorius.reccomplex.world.gen.feature.StructureGenerator;
 import net.minecraft.command.CommandException;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.math.BlockPos;
 import ivorius.ivtoolkit.math.AxisAlignedTransform2D;
 import ivorius.reccomplex.RCConfig;
 import ivorius.reccomplex.operation.OperationRegistry;
-import ivorius.reccomplex.structures.generic.GenericStructureInfo;
+import ivorius.reccomplex.world.gen.feature.structure.generic.GenericStructureInfo;
 import ivorius.reccomplex.utils.ServerTranslations;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.ICommandSender;

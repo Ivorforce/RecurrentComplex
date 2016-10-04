@@ -9,7 +9,7 @@ import ivorius.ivtoolkit.tools.IvTranslations;
 import ivorius.reccomplex.gui.GuiValidityStateIndicator;
 import ivorius.reccomplex.gui.TableDataSourceExpression;
 import ivorius.reccomplex.gui.table.*;
-import ivorius.reccomplex.structures.generic.transformers.TransformerProperty;
+import ivorius.reccomplex.world.gen.feature.structure.generic.transformers.TransformerProperty;
 
 import javax.annotation.Nonnull;
 

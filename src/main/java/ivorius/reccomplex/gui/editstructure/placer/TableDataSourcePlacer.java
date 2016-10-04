@@ -9,7 +9,7 @@ import ivorius.reccomplex.gui.editstructure.preset.TableDataSourcePresettedObjec
 import ivorius.reccomplex.gui.table.TableDataSourceSegmented;
 import ivorius.reccomplex.gui.table.TableDelegate;
 import ivorius.reccomplex.gui.table.TableNavigator;
-import ivorius.reccomplex.structures.generic.placement.GenericPlacer;
+import ivorius.reccomplex.world.gen.feature.structure.generic.placement.GenericPlacer;
 import ivorius.reccomplex.utils.presets.PresettedObject;
 
 /**

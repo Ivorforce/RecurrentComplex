@@ -8,8 +8,8 @@ package ivorius.reccomplex.gui.worldscripts.mazegenerator;
 import ivorius.ivtoolkit.tools.IvTranslations;
 import ivorius.reccomplex.gui.table.*;
 import ivorius.reccomplex.gui.worldscripts.mazegenerator.reachability.TableDataSourceMazeReachability;
-import ivorius.reccomplex.structures.generic.maze.SavedMazeComponent;
-import ivorius.reccomplex.structures.generic.maze.SavedMazeReachability;
+import ivorius.reccomplex.world.gen.feature.structure.generic.maze.SavedMazeComponent;
+import ivorius.reccomplex.world.gen.feature.structure.generic.maze.SavedMazeReachability;
 
 /**
  * Created by lukas on 26.04.15.

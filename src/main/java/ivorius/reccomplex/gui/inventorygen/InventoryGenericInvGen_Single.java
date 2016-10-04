@@ -6,7 +6,7 @@
 package ivorius.reccomplex.gui.inventorygen;
 
 import ivorius.reccomplex.gui.InventoryWatcher;
-import ivorius.reccomplex.worldgen.inventory.GenericItemCollection;
+import ivorius.reccomplex.world.storage.loot.GenericItemCollection;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;

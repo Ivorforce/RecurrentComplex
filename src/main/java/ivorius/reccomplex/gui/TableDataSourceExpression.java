@@ -6,7 +6,7 @@
 package ivorius.reccomplex.gui;
 
 import ivorius.reccomplex.gui.table.*;
-import ivorius.reccomplex.structures.generic.matchers.*;
+import ivorius.reccomplex.world.gen.feature.structure.generic.matchers.*;
 import ivorius.ivtoolkit.tools.IvTranslations;
 import ivorius.reccomplex.utils.FunctionExpressionCache;
 import net.minecraft.util.text.TextFormatting;
@@ -15,9 +15,7 @@ import org.apache.commons.lang3.StringUtils;
 import javax.annotation.Nullable;
 import java.text.ParseException;
 import java.util.List;
-import java.util.Optional;
 import java.util.function.BooleanSupplier;
-import java.util.regex.Pattern;
 
 /**
  * Created by lukas on 26.03.15.

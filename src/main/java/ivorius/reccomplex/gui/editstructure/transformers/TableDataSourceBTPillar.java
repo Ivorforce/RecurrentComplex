@@ -11,7 +11,7 @@ import ivorius.reccomplex.gui.TableDataSourceExpression;
 import ivorius.reccomplex.gui.table.TableDataSourceSegmented;
 import ivorius.reccomplex.gui.table.TableDelegate;
 import ivorius.reccomplex.gui.table.TableNavigator;
-import ivorius.reccomplex.structures.generic.transformers.TransformerPillar;
+import ivorius.reccomplex.world.gen.feature.structure.generic.transformers.TransformerPillar;
 
 /**
  * Created by lukas on 05.06.14.

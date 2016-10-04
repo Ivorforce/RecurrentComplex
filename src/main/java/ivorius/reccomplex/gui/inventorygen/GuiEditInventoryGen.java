@@ -12,7 +12,7 @@ import ivorius.reccomplex.gui.table.GuiScreenModalTable;
 import ivorius.reccomplex.gui.table.GuiTable;
 import ivorius.reccomplex.network.PacketSaveInvGenComponent;
 import ivorius.reccomplex.utils.SaveDirectoryData;
-import ivorius.reccomplex.worldgen.inventory.GenericItemCollection;
+import ivorius.reccomplex.world.storage.loot.GenericItemCollection;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.entity.player.EntityPlayer;
 import org.lwjgl.input.Keyboard;

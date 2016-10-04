@@ -8,9 +8,9 @@ package ivorius.reccomplex.gui.worldscripts.mazegenerator.rules;
 import ivorius.ivtoolkit.gui.IntegerRange;
 import ivorius.reccomplex.gui.editstructure.preset.TableDataSourcePresettedList;
 import ivorius.reccomplex.gui.table.*;
-import ivorius.reccomplex.structures.generic.maze.SavedMazePathConnection;
-import ivorius.reccomplex.structures.generic.maze.rules.MazeRule;
-import ivorius.reccomplex.structures.generic.maze.rules.MazeRuleRegistry;
+import ivorius.reccomplex.world.gen.feature.structure.generic.maze.SavedMazePathConnection;
+import ivorius.reccomplex.world.gen.feature.structure.generic.maze.rules.MazeRule;
+import ivorius.reccomplex.world.gen.feature.structure.generic.maze.rules.MazeRuleRegistry;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.List;

@@ -6,9 +6,7 @@
 package ivorius.reccomplex.gui.editstructure;
 
 import ivorius.reccomplex.gui.table.*;
-import ivorius.reccomplex.structures.generic.gentypes.NaturalGenerationInfo;
-
-import java.util.Arrays;
+import ivorius.reccomplex.world.gen.feature.structure.generic.gentypes.NaturalGenerationInfo;
 
 /**
  * Created by lukas on 05.06.14.

@@ -11,7 +11,7 @@ import net.minecraft.util.math.BlockPos;
 import ivorius.ivtoolkit.rendering.grid.AreaRenderer;
 import ivorius.reccomplex.RecurrentComplex;
 import ivorius.reccomplex.entities.StructureEntityInfo;
-import ivorius.reccomplex.items.ItemBlockSelectorFloating;
+import ivorius.reccomplex.item.ItemBlockSelectorFloating;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.entity.EntityLivingBase;

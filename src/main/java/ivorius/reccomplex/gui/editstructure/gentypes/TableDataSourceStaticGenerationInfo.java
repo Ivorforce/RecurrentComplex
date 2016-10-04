@@ -11,7 +11,7 @@ import ivorius.reccomplex.gui.TableDataSourceExpression;
 import ivorius.reccomplex.gui.editstructure.placer.TableDataSourcePlacer;
 import ivorius.reccomplex.gui.editstructure.gentypes.staticgen.TableDataSourceStaticPattern;
 import ivorius.reccomplex.gui.table.*;
-import ivorius.reccomplex.structures.generic.gentypes.StaticGenerationInfo;
+import ivorius.reccomplex.world.gen.feature.structure.generic.gentypes.StaticGenerationInfo;
 
 /**
  * Created by lukas on 07.10.14.

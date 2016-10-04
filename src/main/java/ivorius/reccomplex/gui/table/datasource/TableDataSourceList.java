@@ -181,7 +181,7 @@ public abstract class TableDataSourceList<T, L extends List<T>> extends TableDat
                     T entry = list.get(index);
                     performEntryAction(cell.actionID, index, entry);
                 });
-                cell.id = "entry" + index;
+                cell.setId("entry" + index);
             }
             return new TableElementCell(getDisplayString(t), new TableCellMulti(cells));
         }
@@ -202,7 +202,7 @@ public abstract class TableDataSourceList<T, L extends List<T>> extends TableDat
                 for (TableCellButton cell : cells)
                 {
                     cell.addAction(createAddAction(addIndex, cell.actionID));
-                    cell.id = "add" + addIndex;
+                    cell.setId("add" + addIndex);
                 }
                 return new TableElementCell(new TableCellMulti(cells));
             }

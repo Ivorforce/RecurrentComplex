@@ -26,6 +26,7 @@ import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.ChunkPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraft.util.text.TextFormatting;
@@ -58,12 +59,6 @@ import java.util.Set;
 public class RCForgeEventHandler
 {
     public final Set<StructureBoundingBox> disabledTileDropAreas = new HashSet<>();
-    private WorldGenStructures worldGenStructures;
-
-    public RCForgeEventHandler()
-    {
-        this.worldGenStructures = new WorldGenStructures();
-    }
 
     public void register()
     {
@@ -73,7 +68,7 @@ public class RCForgeEventHandler
     @SubscribeEvent
     public void onPreChunkDecoration(PopulateChunkEvent.Pre event)
     {
-        worldGenStructures.generate(event.getRand(), event.getChunkX(), event.getChunkZ(), (WorldServer) event.getWorld());
+        WorldGenStructures.decorate((WorldServer) event.getWorld(), event.getRand(), new ChunkPos(event.getChunkX(), event.getChunkZ()), false);
     }
 
     @SubscribeEvent

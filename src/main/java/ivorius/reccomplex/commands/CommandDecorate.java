@@ -29,6 +29,12 @@ import java.util.List;
  */
 public class CommandDecorate extends CommandBase
 {
+    @Nonnull
+    protected static BlockSurfacePos getChunkPos(BlockSurfacePos point)
+    {
+        return new BlockSurfacePos(point.getX() >> 4, point.getZ() >> 4);
+    }
+
     @Override
     public String getCommandName()
     {
@@ -53,15 +59,10 @@ public class CommandDecorate extends CommandBase
             throw new WrongUsageException("commands.decorate.usage");
 
         BlockSurfaceArea area = new BlockSurfaceArea(RCCommands.parseSurfaceBlockPos(commandSender, args, 0, false), RCCommands.parseSurfaceBlockPos(commandSender, args, 2, false));
-        BlockSurfaceArea chunkArea =  new BlockSurfaceArea(getChunkPos(area.getPoint1()), getChunkPos(area.getPoint2()));
+        BlockSurfaceArea chunkArea = new BlockSurfaceArea(getChunkPos(area.getPoint1()), getChunkPos(area.getPoint2()));
 
-        chunkArea.forEach(coord -> WorldGenStructures.generateRandomStructuresInChunk(commandSender.getEntityWorld().rand, new ChunkPos(coord.x, coord.z), (WorldServer) commandSender.getEntityWorld(), commandSender.getEntityWorld().getBiome(coord.blockPos(0))));
-    }
-
-    @Nonnull
-    protected static BlockSurfacePos getChunkPos(BlockSurfacePos point)
-    {
-        return new BlockSurfacePos(point.getX() >> 4, point.getZ() >> 4);
+        WorldServer world = (WorldServer) commandSender.getEntityWorld();
+        chunkArea.forEach(coord -> WorldGenStructures.decorate(world, world.rand, new ChunkPos(coord.x, coord.z), true));
     }
 
     @Override

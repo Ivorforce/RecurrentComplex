@@ -121,9 +121,8 @@ public class WorldGenStructures
         }
     }
 
-    public void generate(Random random, int chunkX, int chunkZ, WorldServer world)
+    public static void decorate(WorldServer world, Random random, ChunkPos chunkPos, boolean ignoreCheck)
     {
-        ChunkPos chunkPos = new ChunkPos(chunkX, chunkZ);
         boolean worldWantsStructures = world.getWorldInfo().isMapFeaturesEnabled();
         StructureGenerationData data = StructureGenerationData.get(world);
 
@@ -134,10 +133,10 @@ public class WorldGenStructures
             Biome biomeGen = world.getBiome(chunkPos.getBlock(8, 0, 8));
             BlockPos spawnPos = world.getSpawnPoint();
 
-            generateStaticStructuresInChunk(random, chunkPos, world, spawnPos);
-
-            if (data.checkChunk(chunkPos))
+            if (ignoreCheck || data.checkChunk(chunkPos))
             {
+                generateStaticStructuresInChunk(random, chunkPos, world, spawnPos);
+
                 boolean mayGenerate = RCConfig.isGenerationEnabled(biomeGen) && RCConfig.isGenerationEnabled(world.provider);
 
                 if (world.provider.getDimension() == 0)

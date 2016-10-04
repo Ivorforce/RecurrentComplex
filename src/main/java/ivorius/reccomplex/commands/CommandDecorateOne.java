@@ -49,9 +49,7 @@ public class CommandDecorateOne extends CommandBase
 
         WorldServer entityWorld = (WorldServer) commandSender.getEntityWorld();
         if (!WorldGenStructures.generateRandomStructureInChunk(entityWorld.rand, coord.chunkCoord(), entityWorld, entityWorld.getBiome(coord.blockPos(0))))
-        {
             throw ServerTranslations.commandException("commands.rcdecorateone.none");
-        }
     }
 
     @Override

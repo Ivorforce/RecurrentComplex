@@ -44,6 +44,11 @@ public class NaturalStructureSelector
         @SerializedName("structureMinCap")
         public Integer structureMinCap;
 
+        @SerializedName("distanceMultiplier")
+        public float distanceMultiplier;
+        @SerializedName("distanceMultiplierMax")
+        public float distanceMultiplierMax;
+
         @SerializedName("selectableInGUI")
         public boolean selectableInGUI;
         @SerializedName("title")
@@ -65,10 +70,11 @@ public class NaturalStructureSelector
         }
 
         @Override
-        public float structureSpawnChance(Biome biome, WorldProvider worldProvider, int registeredStructures)
+        public float structureSpawnChance(Biome biome, WorldProvider worldProvider, int registeredStructures, Float distanceToSpawn)
         {
             return spawnChance(biome, worldProvider)
                     * amountMultiplier(registeredStructures)
+                    * distanceMultiplier(distanceToSpawn)
                     * RCConfig.structureSpawnChanceModifier;
         }
 
@@ -87,6 +93,11 @@ public class NaturalStructureSelector
                     am = info.spawnChance;
             }
             return am;
+        }
+
+        public float distanceMultiplier(Float distance)
+        {
+            return distance != null ? Math.min(1 + distance * distanceMultiplier, distanceMultiplierMax) : 1;
         }
 
         public Integer getActiveStructureMinCap()

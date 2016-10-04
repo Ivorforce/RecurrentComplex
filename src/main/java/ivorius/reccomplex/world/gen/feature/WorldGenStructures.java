@@ -19,6 +19,7 @@ import ivorius.reccomplex.world.gen.feature.selector.MixingStructureSelector;
 import ivorius.reccomplex.world.gen.feature.selector.NaturalStructureSelector;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.ChunkPos;
+import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.WorldServer;
 import net.minecraft.world.biome.Biome;
 import org.apache.commons.lang3.tuple.Pair;
@@ -47,11 +48,19 @@ public class WorldGenStructures
         });
     }
 
+    protected static float distance(ChunkPos left, ChunkPos right)
+    {
+        return MathHelper.sqrt_float(
+                (left.chunkXPos - right.chunkXPos) * (left.chunkXPos - right.chunkXPos) +
+                (left.chunkZPos - right.chunkZPos) * (left.chunkZPos - right.chunkZPos));
+    }
+
     public static void generateRandomStructuresInChunk(Random random, ChunkPos chunkPos, WorldServer world, Biome biomeGen)
     {
         MixingStructureSelector<NaturalGenerationInfo, NaturalStructureSelector.Category> structureSelector = StructureRegistry.INSTANCE.naturalStructureSelectors().get(biomeGen, world.provider);
 
-        List<Pair<StructureInfo, NaturalGenerationInfo>> generated = structureSelector.generatedStructures(random, world.getBiome(chunkPos.getBlock(0, 0, 0)), world.provider);
+        float distanceToSpawn = distance(new ChunkPos(world.getSpawnPoint()), chunkPos);
+        List<Pair<StructureInfo, NaturalGenerationInfo>> generated = structureSelector.generatedStructures(random, world.getBiome(chunkPos.getBlock(0, 0, 0)), world.provider, distanceToSpawn);
 
         for (Pair<StructureInfo, NaturalGenerationInfo> pair : generated)
             generateStructureInChunk(random, chunkPos, world, pair);
@@ -61,7 +70,8 @@ public class WorldGenStructures
     {
         MixingStructureSelector<NaturalGenerationInfo, NaturalStructureSelector.Category> structureSelector = StructureRegistry.INSTANCE.naturalStructureSelectors().get(biomeGen, world.provider);
 
-        Pair<StructureInfo, NaturalGenerationInfo> pair = structureSelector.selectOne(random, world.provider, world.getBiome(chunkPos.getBlock(0, 0, 0)), null);
+        float distanceToSpawn = distance(new ChunkPos(world.getSpawnPoint()), chunkPos);
+        Pair<StructureInfo, NaturalGenerationInfo> pair = structureSelector.selectOne(random, world.provider, world.getBiome(chunkPos.getBlock(0, 0, 0)), null, distanceToSpawn);
 
         if (pair != null)
         {

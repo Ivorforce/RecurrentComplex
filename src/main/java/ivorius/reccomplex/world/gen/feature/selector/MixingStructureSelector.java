@@ -28,30 +28,30 @@ public class MixingStructureSelector<T extends StructureGenerationInfo & Environ
         super(structures, provider, biome, typeClass);
     }
 
-    public float generationChance(C category, WorldProvider worldProvider, Biome biome)
+    public float generationChance(C category, WorldProvider worldProvider, Biome biome, Float distanceToSpawn)
     {
         if (category != null)
-            return category.structureSpawnChance(biome, worldProvider, weightedStructureInfos.get(category).size());
+            return category.structureSpawnChance(biome, worldProvider, weightedStructureInfos.get(category).size(), distanceToSpawn);
 
         return 0.0f;
     }
 
-    public List<Pair<StructureInfo, T>> generatedStructures(Random random, Biome biome, WorldProvider provider)
+    public List<Pair<StructureInfo, T>> generatedStructures(Random random, Biome biome, WorldProvider provider, Float distanceToSpawn)
     {
         return weightedStructureInfos.keySet().stream()
-                .filter(category -> random.nextFloat() < generationChance(category, provider, biome))
+                .filter(category -> random.nextFloat() < generationChance(category, provider, biome, distanceToSpawn))
                 .map(category -> WeightedSelector.select(random, weightedStructureInfos.get(category)))
                 .collect(Collectors.toList());
     }
 
     @Nullable
-    public Pair<StructureInfo, T> selectOne(Random random, WorldProvider provider, Biome biome, @Nullable C c)
+    public Pair<StructureInfo, T> selectOne(Random random, WorldProvider provider, Biome biome, @Nullable C c, Float distanceToSpawn)
     {
         if (c != null)
             return super.selectOne(random, c);
 
         List<WeightedSelector.SimpleItem<C>> list = weightedStructureInfos.keySet().stream()
-                .map(category -> new WeightedSelector.SimpleItem<>(generationChance(category, provider, biome), category))
+                .map(category -> new WeightedSelector.SimpleItem<>(generationChance(category, provider, biome, distanceToSpawn), category))
                 .collect(Collectors.toList());
 
         return selectOne(random, WeightedSelector.select(random, list));
@@ -59,6 +59,6 @@ public class MixingStructureSelector<T extends StructureGenerationInfo & Environ
 
     interface Category
     {
-        float structureSpawnChance(Biome biome, WorldProvider worldProvider, int registeredStructures);
+        float structureSpawnChance(Biome biome, WorldProvider worldProvider, int registeredStructures, Float distanceToSpawn);
     }
 }

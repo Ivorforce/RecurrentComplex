@@ -3,9 +3,12 @@
  *  * http://ivorius.net
  */
 
-package ivorius.reccomplex.gui.table;
+package ivorius.reccomplex.gui.table.screen;
 
 import ivorius.ivtoolkit.tools.IvTranslations;
+import ivorius.reccomplex.gui.table.Bounds;
+import ivorius.reccomplex.gui.table.GuiTable;
+import ivorius.reccomplex.gui.table.datasource.TableDataSource;
 import net.minecraft.client.gui.GuiButton;
 import org.lwjgl.input.Keyboard;
 

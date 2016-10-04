@@ -1,26 +1,27 @@
 /*
  *  Copyright (c) 2014, Lukas Tenbrink.
- *  * http://lukas.axxim.net
+ *  * http://ivorius.net
  */
 
-package ivorius.reccomplex.gui.table;
+package ivorius.reccomplex.gui.table.cell;
 
-import ivorius.ivtoolkit.gui.GuiControlListener;
-import ivorius.ivtoolkit.gui.GuiSlider;
-import net.minecraft.util.math.MathHelper;
+import ivorius.ivtoolkit.gui.*;
+import ivorius.reccomplex.gui.table.Bounds;
+import ivorius.reccomplex.gui.table.GuiTable;
+import ivorius.reccomplex.utils.RangeHelper;
 
 /**
  * Created by lukas on 02.06.14.
  */
-public class TableCellInteger extends TableCellPropertyDefault<Integer> implements GuiControlListener<GuiSlider>
+public class TableCellIntegerRange extends TableCellPropertyDefault<IntegerRange> implements GuiControlListener<GuiSliderMultivalue>
 {
-    private GuiSlider slider;
+    private GuiSliderRange slider;
 
     private boolean enabled = true;
     private int min;
     private int max;
 
-    public TableCellInteger(String id, int value, int min, int max)
+    public TableCellIntegerRange(String id, IntegerRange value, int min, int max)
     {
         super(id, value);
 
@@ -51,16 +52,17 @@ public class TableCellInteger extends TableCellPropertyDefault<Integer> implemen
         Bounds bounds = bounds();
         if (slider == null)
         {
-            slider = new GuiSlider(-1, 0, 0, 0, 0, String.valueOf(property));
+            slider = new GuiSliderRange(-1, 0, 0, 0, 0, "");
             slider.addListener(this);
         }
         updateSliderBounds(bounds);
+        updateSliderString();
 
         slider.setMinValue(min);
         slider.setMaxValue(max);
         slider.enabled = enabled;
 
-        slider.setValue(property);
+        slider.setRange(new FloatRange(property));
         slider.visible = !isHidden();
 
         screen.addButton(this, 0, slider);
@@ -78,14 +80,31 @@ public class TableCellInteger extends TableCellPropertyDefault<Integer> implemen
     }
 
     @Override
-    public void valueChanged(GuiSlider gui)
+    public void valueChanged(GuiSliderMultivalue gui)
     {
-        property = MathHelper.floor_float(gui.getValue() + 0.5f);
+        property = RangeHelper.roundedIntRange(slider.getRange());
 
-        gui.setValue(property);
-        gui.displayString = String.valueOf(property);
+        slider.setRange(new FloatRange(property));
+        updateSliderString();
 
         alertListenersOfChange();
+    }
+
+    @Override
+    public void setPropertyValue(IntegerRange value)
+    {
+        super.setPropertyValue(value);
+
+        if (slider != null)
+        {
+            slider.setRange(new FloatRange(value));
+            updateSliderString();
+        }
+    }
+
+    protected void updateSliderString()
+    {
+        slider.displayString = property.getMin() + " - " + property.getMax();
     }
 
     protected void updateSliderBounds(Bounds bounds)
@@ -100,17 +119,5 @@ public class TableCellInteger extends TableCellPropertyDefault<Integer> implemen
 
         if (slider != null)
             updateSliderBounds(bounds);
-    }
-
-    @Override
-    public void setPropertyValue(Integer value)
-    {
-        super.setPropertyValue(value);
-
-        if (slider != null)
-        {
-            slider.setValue(value);
-            slider.displayString = String.valueOf(property);
-        }
     }
 }

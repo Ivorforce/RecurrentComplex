@@ -8,6 +8,10 @@ package ivorius.reccomplex.gui.editstructure.placer;
 import ivorius.ivtoolkit.tools.IvTranslations;
 import ivorius.reccomplex.gui.TableDataSourceExpression;
 import ivorius.reccomplex.gui.table.*;
+import ivorius.reccomplex.gui.table.cell.TableCellFloat;
+import ivorius.reccomplex.gui.table.cell.TableElementCell;
+import ivorius.reccomplex.gui.table.datasource.TableDataSourceSegmented;
+import ivorius.reccomplex.gui.table.datasource.TableDataSourceSupplied;
 import ivorius.reccomplex.world.gen.feature.structure.generic.placement.FactorMatch;
 
 /**

@@ -3,9 +3,12 @@
  *  * http://ivorius.net
  */
 
-package ivorius.reccomplex.gui.table;
+package ivorius.reccomplex.gui.table.cell;
 
 import ivorius.ivtoolkit.tools.IvTranslations;
+import ivorius.reccomplex.gui.table.*;
+import ivorius.reccomplex.gui.table.datasource.TableDataSource;
+import ivorius.reccomplex.gui.table.datasource.TableDataSourceSupplied;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;

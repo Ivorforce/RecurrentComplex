@@ -8,7 +8,7 @@ package ivorius.reccomplex.gui.inspector;
 import ivorius.ivtoolkit.tools.IvTranslations;
 import ivorius.reccomplex.gui.TableDataSourceBlockPos;
 import ivorius.reccomplex.gui.TableDataSourceBlockState;
-import ivorius.reccomplex.gui.table.TableDataSourceSegmented;
+import ivorius.reccomplex.gui.table.datasource.TableDataSourceSegmented;
 import ivorius.reccomplex.gui.table.TableDelegate;
 import ivorius.reccomplex.gui.table.TableNavigator;
 import net.minecraft.block.state.IBlockState;

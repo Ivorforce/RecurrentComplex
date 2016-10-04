@@ -6,6 +6,9 @@
 package ivorius.reccomplex.gui.worldscripts.mazegenerator;
 
 import ivorius.reccomplex.gui.table.*;
+import ivorius.reccomplex.gui.table.cell.TableCellString;
+import ivorius.reccomplex.gui.table.cell.TableElementCell;
+import ivorius.reccomplex.gui.table.datasource.TableDataSource;
 import ivorius.reccomplex.world.gen.feature.structure.generic.maze.SavedConnector;
 import ivorius.ivtoolkit.tools.IvTranslations;
 

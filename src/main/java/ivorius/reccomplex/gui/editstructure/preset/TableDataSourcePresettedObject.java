@@ -7,6 +7,11 @@ package ivorius.reccomplex.gui.editstructure.preset;
 
 import ivorius.ivtoolkit.tools.IvTranslations;
 import ivorius.reccomplex.gui.table.*;
+import ivorius.reccomplex.gui.table.cell.TableCellButton;
+import ivorius.reccomplex.gui.table.cell.TableCellMultiBuilder;
+import ivorius.reccomplex.gui.table.cell.TableCellPresetAction;
+import ivorius.reccomplex.gui.table.cell.TableElementCell;
+import ivorius.reccomplex.gui.table.datasource.TableDataSourceSegmented;
 import ivorius.reccomplex.utils.PresetRegistry;
 import ivorius.reccomplex.utils.presets.PresettedObject;
 

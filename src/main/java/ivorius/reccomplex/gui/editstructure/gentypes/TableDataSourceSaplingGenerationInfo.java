@@ -12,6 +12,7 @@ import ivorius.reccomplex.gui.TableDataSourceBlockPos;
 import ivorius.reccomplex.gui.TableDataSourceExpression;
 import ivorius.reccomplex.gui.editstructure.pattern.TableDataSourceBlockPattern;
 import ivorius.reccomplex.gui.table.*;
+import ivorius.reccomplex.gui.table.datasource.TableDataSourceSegmented;
 import ivorius.reccomplex.world.gen.feature.structure.generic.gentypes.SaplingGenerationInfo;
 
 /**

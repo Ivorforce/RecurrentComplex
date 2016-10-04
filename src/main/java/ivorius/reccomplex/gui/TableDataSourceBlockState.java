@@ -6,6 +6,8 @@
 package ivorius.reccomplex.gui;
 
 import com.google.common.collect.Lists;
+import ivorius.reccomplex.gui.table.cell.*;
+import ivorius.reccomplex.gui.table.datasource.TableDataSourceSegmented;
 import net.minecraft.util.text.TextFormatting;
 import ivorius.ivtoolkit.tools.IvTranslations;
 import ivorius.reccomplex.RecurrentComplex;

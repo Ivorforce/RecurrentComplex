@@ -6,6 +6,10 @@
 package ivorius.reccomplex.gui.editstructure;
 
 import ivorius.reccomplex.gui.table.*;
+import ivorius.reccomplex.gui.table.cell.TableCellEnum;
+import ivorius.reccomplex.gui.table.cell.TableCellInteger;
+import ivorius.reccomplex.gui.table.cell.TableElementCell;
+import ivorius.reccomplex.gui.table.datasource.TableDataSourceSegmented;
 import ivorius.reccomplex.world.gen.feature.structure.generic.gentypes.NaturalGenerationInfo;
 
 /**

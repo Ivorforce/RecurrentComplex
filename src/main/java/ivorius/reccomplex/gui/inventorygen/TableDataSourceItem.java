@@ -5,7 +5,7 @@
 
 package ivorius.reccomplex.gui.inventorygen;
 
-import ivorius.reccomplex.gui.table.TableDataSourceSegmented;
+import ivorius.reccomplex.gui.table.datasource.TableDataSourceSegmented;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 

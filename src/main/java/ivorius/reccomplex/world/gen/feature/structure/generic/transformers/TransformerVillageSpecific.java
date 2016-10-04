@@ -12,7 +12,7 @@ import ivorius.ivtoolkit.tools.MCRegistry;
 import ivorius.ivtoolkit.transform.PosTransformer;
 import ivorius.reccomplex.RecurrentComplex;
 import ivorius.reccomplex.gui.editstructure.transformers.TableDataSourceBTBiomeSpecific;
-import ivorius.reccomplex.gui.table.TableDataSource;
+import ivorius.reccomplex.gui.table.datasource.TableDataSource;
 import ivorius.reccomplex.gui.table.TableDelegate;
 import ivorius.reccomplex.gui.table.TableNavigator;
 import ivorius.reccomplex.json.JsonUtils;

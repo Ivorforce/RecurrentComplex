@@ -1,16 +1,16 @@
 /*
  *  Copyright (c) 2014, Lukas Tenbrink.
- *  * http://lukas.axxim.net
+ *  * http://ivorius.net
  */
 
-package ivorius.reccomplex.gui.table;
+package ivorius.reccomplex.gui.table.cell;
 
 import ivorius.reccomplex.gui.GuiValidityStateIndicator;
+import ivorius.reccomplex.gui.table.Bounds;
+import ivorius.reccomplex.gui.table.GuiTable;
 import net.minecraft.client.gui.GuiTextField;
 
 import javax.annotation.Nullable;
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Created by lukas on 02.06.14.

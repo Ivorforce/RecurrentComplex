@@ -1,11 +1,13 @@
 /*
  *  Copyright (c) 2014, Lukas Tenbrink.
- *  * http://lukas.axxim.net
+ *  * http://ivorius.net
  */
 
-package ivorius.reccomplex.gui.table;
+package ivorius.reccomplex.gui.table.cell;
 
 import ivorius.ivtoolkit.tools.IvTranslations;
+import ivorius.reccomplex.gui.table.Bounds;
+import ivorius.reccomplex.gui.table.GuiTable;
 import net.minecraft.client.gui.GuiButton;
 
 /**

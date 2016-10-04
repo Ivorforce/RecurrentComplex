@@ -7,7 +7,7 @@ package ivorius.reccomplex.gui.worldscripts.multi;
 
 import ivorius.reccomplex.RecurrentComplex;
 import ivorius.reccomplex.block.TileEntitySpawnScript;
-import ivorius.reccomplex.gui.table.GuiScreenEditTable;
+import ivorius.reccomplex.gui.table.screen.GuiScreenEditTable;
 import ivorius.reccomplex.network.PacketEditTileEntity;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;

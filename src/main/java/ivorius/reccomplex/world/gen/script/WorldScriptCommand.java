@@ -11,7 +11,7 @@ import ivorius.ivtoolkit.tools.IvCollections;
 import ivorius.ivtoolkit.tools.IvTranslations;
 import ivorius.reccomplex.RecurrentComplex;
 import ivorius.reccomplex.block.SpawnCommandLogic;
-import ivorius.reccomplex.gui.table.TableDataSource;
+import ivorius.reccomplex.gui.table.datasource.TableDataSource;
 import ivorius.reccomplex.gui.table.TableDelegate;
 import ivorius.reccomplex.gui.table.TableNavigator;
 import ivorius.reccomplex.gui.worldscripts.command.TableDataSourceWorldScriptCommand;

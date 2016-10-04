@@ -7,7 +7,7 @@ package ivorius.reccomplex.world.gen.script;
 
 import ivorius.ivtoolkit.tools.IvTranslations;
 import ivorius.ivtoolkit.tools.NBTTagLists;
-import ivorius.reccomplex.gui.table.TableDataSource;
+import ivorius.reccomplex.gui.table.datasource.TableDataSource;
 import ivorius.reccomplex.gui.table.TableDelegate;
 import ivorius.reccomplex.gui.table.TableNavigator;
 import ivorius.reccomplex.gui.worldscripts.multi.TableDataSourceWorldScriptMulti;

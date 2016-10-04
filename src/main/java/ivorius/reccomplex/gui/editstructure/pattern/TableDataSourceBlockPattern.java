@@ -7,6 +7,8 @@ package ivorius.reccomplex.gui.editstructure.pattern;
 
 import ivorius.ivtoolkit.tools.IvTranslations;
 import ivorius.reccomplex.gui.table.*;
+import ivorius.reccomplex.gui.table.cell.TableCellMultiBuilder;
+import ivorius.reccomplex.gui.table.datasource.TableDataSourceSegmented;
 import ivorius.reccomplex.gui.worldscripts.mazegenerator.TableDataSourceSelection;
 import ivorius.reccomplex.world.gen.feature.structure.generic.BlockPattern;
 

@@ -6,8 +6,8 @@
 package ivorius.reccomplex.gui.editstructure.preset;
 
 import ivorius.ivtoolkit.tools.IvTranslations;
-import ivorius.reccomplex.gui.table.TableCellButton;
-import ivorius.reccomplex.gui.table.TableDataSourceList;
+import ivorius.reccomplex.gui.table.cell.TableCellButton;
+import ivorius.reccomplex.gui.table.datasource.TableDataSourceList;
 import ivorius.reccomplex.gui.table.TableDelegate;
 import ivorius.reccomplex.gui.table.TableNavigator;
 import ivorius.reccomplex.utils.presets.PresettedList;

@@ -5,7 +5,7 @@
 
 package ivorius.reccomplex.gui.editstructure.placer;
 
-import ivorius.reccomplex.gui.table.TableDataSourceSegmented;
+import ivorius.reccomplex.gui.table.datasource.TableDataSourceSegmented;
 import ivorius.reccomplex.gui.table.TableDelegate;
 import ivorius.reccomplex.gui.table.TableNavigator;
 import ivorius.reccomplex.world.gen.feature.structure.generic.placement.FactorLimit;

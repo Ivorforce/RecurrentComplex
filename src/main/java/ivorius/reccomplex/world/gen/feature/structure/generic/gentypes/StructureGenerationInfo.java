@@ -5,7 +5,7 @@
 
 package ivorius.reccomplex.world.gen.feature.structure.generic.gentypes;
 
-import ivorius.reccomplex.gui.table.TableDataSource;
+import ivorius.reccomplex.gui.table.datasource.TableDataSource;
 import ivorius.reccomplex.gui.table.TableDelegate;
 import ivorius.reccomplex.gui.table.TableNavigator;
 import ivorius.reccomplex.world.gen.feature.structure.StructureRegistry;

@@ -6,7 +6,7 @@
 package ivorius.reccomplex.gui.inventorygen;
 
 import ivorius.reccomplex.RecurrentComplex;
-import ivorius.reccomplex.gui.table.GuiScreenEditTable;
+import ivorius.reccomplex.gui.table.screen.GuiScreenEditTable;
 import ivorius.reccomplex.network.PacketSaveInvGenComponent;
 import ivorius.reccomplex.utils.SaveDirectoryData;
 import ivorius.reccomplex.world.storage.loot.GenericItemCollection;

@@ -6,7 +6,7 @@
 package ivorius.reccomplex.world.gen.feature.structure.generic.transformers;
 
 import ivorius.ivtoolkit.tools.IvWorldData;
-import ivorius.reccomplex.gui.table.TableDataSource;
+import ivorius.reccomplex.gui.table.datasource.TableDataSource;
 import ivorius.reccomplex.gui.table.TableDelegate;
 import ivorius.reccomplex.gui.table.TableNavigator;
 import ivorius.reccomplex.world.gen.feature.structure.*;

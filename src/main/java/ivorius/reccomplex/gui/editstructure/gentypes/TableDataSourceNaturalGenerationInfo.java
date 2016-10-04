@@ -12,6 +12,10 @@ import ivorius.reccomplex.gui.editstructure.TableDataSourceDimensionGenList;
 import ivorius.reccomplex.gui.editstructure.TableDataSourceNaturalGenLimitation;
 import ivorius.reccomplex.gui.editstructure.placer.TableDataSourcePlacer;
 import ivorius.reccomplex.gui.table.*;
+import ivorius.reccomplex.gui.table.cell.TableCellEnum;
+import ivorius.reccomplex.gui.table.cell.TableCellMultiBuilder;
+import ivorius.reccomplex.gui.table.cell.TableElementCell;
+import ivorius.reccomplex.gui.table.datasource.TableDataSourceSegmented;
 import ivorius.reccomplex.world.gen.feature.structure.generic.gentypes.NaturalGenerationInfo;
 import ivorius.reccomplex.world.gen.feature.selector.NaturalStructureSelector;
 

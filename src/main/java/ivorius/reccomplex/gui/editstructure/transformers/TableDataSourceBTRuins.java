@@ -8,6 +8,8 @@ package ivorius.reccomplex.gui.editstructure.transformers;
 import ivorius.ivtoolkit.gui.FloatRange;
 import ivorius.reccomplex.gui.TableDirections;
 import ivorius.reccomplex.gui.table.*;
+import ivorius.reccomplex.gui.table.cell.*;
+import ivorius.reccomplex.gui.table.datasource.TableDataSourceSegmented;
 import ivorius.reccomplex.world.gen.feature.structure.generic.transformers.TransformerRuins;
 import ivorius.ivtoolkit.tools.IvTranslations;
 import ivorius.reccomplex.utils.scale.Scales;

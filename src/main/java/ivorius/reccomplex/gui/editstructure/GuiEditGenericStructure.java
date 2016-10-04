@@ -5,17 +5,10 @@
 
 package ivorius.reccomplex.gui.editstructure;
 
-import ivorius.ivtoolkit.tools.IvTranslations;
-import ivorius.reccomplex.gui.table.GuiScreenEditTable;
-import ivorius.reccomplex.gui.table.Bounds;
-import ivorius.reccomplex.gui.table.GuiTable;
+import ivorius.reccomplex.gui.table.screen.GuiScreenEditTable;
 import ivorius.reccomplex.network.PacketSaveStructureHandler;
 import ivorius.reccomplex.world.gen.feature.structure.generic.GenericStructureInfo;
 import ivorius.reccomplex.utils.SaveDirectoryData;
-import net.minecraft.client.gui.GuiButton;
-import org.lwjgl.input.Keyboard;
-
-import java.io.IOException;
 
 /**
  * Created by lukas on 26.05.14.

@@ -1,12 +1,14 @@
 /*
  *  Copyright (c) 2014, Lukas Tenbrink.
- *  * http://lukas.axxim.net
+ *  * http://ivorius.net
  */
 
-package ivorius.reccomplex.gui.table;
+package ivorius.reccomplex.gui.table.cell;
 
 import ivorius.ivtoolkit.gui.GuiControlListener;
 import ivorius.ivtoolkit.gui.GuiSlider;
+import ivorius.reccomplex.gui.table.Bounds;
+import ivorius.reccomplex.gui.table.GuiTable;
 import ivorius.reccomplex.utils.scale.Scale;
 import ivorius.reccomplex.utils.scale.Scales;
 import net.minecraft.client.gui.GuiButton;

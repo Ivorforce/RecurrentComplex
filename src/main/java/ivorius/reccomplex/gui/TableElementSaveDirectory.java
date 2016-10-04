@@ -8,6 +8,7 @@ package ivorius.reccomplex.gui;
 import ivorius.ivtoolkit.tools.IvTranslations;
 import ivorius.reccomplex.files.loading.ResourceDirectory;
 import ivorius.reccomplex.gui.table.*;
+import ivorius.reccomplex.gui.table.cell.*;
 import ivorius.reccomplex.utils.SaveDirectoryData;
 import net.minecraft.util.text.TextFormatting;
 

@@ -7,6 +7,10 @@ package ivorius.reccomplex.gui.worldscripts.mazegenerator.reachability;
 
 import ivorius.ivtoolkit.gui.IntegerRange;
 import ivorius.reccomplex.gui.table.*;
+import ivorius.reccomplex.gui.table.cell.TableCellTitle;
+import ivorius.reccomplex.gui.table.cell.TableElementCell;
+import ivorius.reccomplex.gui.table.datasource.TableDataSourcePreloaded;
+import ivorius.reccomplex.gui.table.datasource.TableDataSourceSegmented;
 import ivorius.reccomplex.world.gen.feature.structure.generic.maze.SavedMazePath;
 import ivorius.reccomplex.world.gen.feature.structure.generic.maze.SavedMazeReachability;
 import ivorius.ivtoolkit.tools.IvTranslations;

@@ -7,6 +7,9 @@ package ivorius.reccomplex.gui.editstructure.placer;
 
 import ivorius.reccomplex.gui.editstructure.preset.TableDataSourcePresettedList;
 import ivorius.reccomplex.gui.table.*;
+import ivorius.reccomplex.gui.table.cell.TableCellButton;
+import ivorius.reccomplex.gui.table.datasource.TableDataSource;
+import ivorius.reccomplex.gui.table.datasource.TableDataSourceList;
 import ivorius.reccomplex.world.gen.feature.structure.generic.placement.FactorRegistry;
 import ivorius.reccomplex.world.gen.feature.structure.generic.placement.GenericPlacer;
 

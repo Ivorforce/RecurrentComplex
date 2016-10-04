@@ -5,6 +5,10 @@
 
 package ivorius.reccomplex.gui;
 
+import ivorius.reccomplex.gui.table.cell.TableCellInteger;
+import ivorius.reccomplex.gui.table.cell.TableCellStringInt;
+import ivorius.reccomplex.gui.table.cell.TableElementCell;
+import ivorius.reccomplex.gui.table.datasource.TableDataSourceSegmented;
 import net.minecraft.util.math.BlockPos;
 import ivorius.ivtoolkit.gui.IntegerRange;
 import ivorius.reccomplex.gui.table.*;

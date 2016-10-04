@@ -7,6 +7,11 @@ package ivorius.reccomplex.gui.worldscripts.mazegenerator.reachability;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
+import ivorius.reccomplex.gui.table.cell.TableCellButton;
+import ivorius.reccomplex.gui.table.cell.TableCellMulti;
+import ivorius.reccomplex.gui.table.cell.TableCellTitle;
+import ivorius.reccomplex.gui.table.cell.TableElementCell;
+import ivorius.reccomplex.gui.table.datasource.TableDataSourceSegmented;
 import net.minecraft.util.text.TextFormatting;
 import ivorius.ivtoolkit.tools.IvTranslations;
 import ivorius.reccomplex.gui.table.*;

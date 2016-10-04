@@ -1,11 +1,19 @@
 /*
  *  Copyright (c) 2014, Lukas Tenbrink.
- *  * http://lukas.axxim.net
+ *  * http://ivorius.net
  */
 
-package ivorius.reccomplex.gui.table;
+package ivorius.reccomplex.gui.table.datasource;
 
 import ivorius.reccomplex.RecurrentComplex;
+import ivorius.reccomplex.gui.table.GuiTable;
+import ivorius.reccomplex.gui.table.TableDelegate;
+import ivorius.reccomplex.gui.table.TableElement;
+import ivorius.reccomplex.gui.table.TableNavigator;
+import ivorius.reccomplex.gui.table.cell.TableCellButton;
+import ivorius.reccomplex.gui.table.cell.TableCellMulti;
+import ivorius.reccomplex.gui.table.cell.TableCellPresetAction;
+import ivorius.reccomplex.gui.table.cell.TableElementCell;
 import ivorius.reccomplex.utils.IvClasses;
 import net.minecraft.util.text.TextFormatting;
 import ivorius.ivtoolkit.tools.IvTranslations;

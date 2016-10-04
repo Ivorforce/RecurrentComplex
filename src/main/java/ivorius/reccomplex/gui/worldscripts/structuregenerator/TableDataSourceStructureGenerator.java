@@ -12,6 +12,11 @@ import ivorius.reccomplex.gui.GuiValidityStateIndicator;
 import ivorius.reccomplex.gui.TableDataSourceBlockPos;
 import ivorius.reccomplex.gui.TableDirections;
 import ivorius.reccomplex.gui.table.*;
+import ivorius.reccomplex.gui.table.cell.TableCellBoolean;
+import ivorius.reccomplex.gui.table.cell.TableCellEnum;
+import ivorius.reccomplex.gui.table.cell.TableCellString;
+import ivorius.reccomplex.gui.table.cell.TableElementCell;
+import ivorius.reccomplex.gui.table.datasource.TableDataSourceSegmented;
 import ivorius.reccomplex.world.gen.script.WorldScriptStructureGenerator;
 import ivorius.reccomplex.world.gen.feature.structure.StructureRegistry;
 import joptsimple.internal.Strings;
@@ -20,7 +25,7 @@ import org.apache.commons.lang3.ArrayUtils;
 
 import java.util.Arrays;
 
-import static ivorius.reccomplex.gui.table.TableCellEnum.Option;
+import static ivorius.reccomplex.gui.table.cell.TableCellEnum.Option;
 
 /**
  * Created by lukas on 05.06.14.

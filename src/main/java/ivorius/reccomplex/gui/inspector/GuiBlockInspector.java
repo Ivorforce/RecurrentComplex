@@ -5,7 +5,7 @@
 
 package ivorius.reccomplex.gui.inspector;
 
-import ivorius.reccomplex.gui.table.GuiScreenEditTable;
+import ivorius.reccomplex.gui.table.screen.GuiScreenEditTable;
 import ivorius.reccomplex.utils.BlockStates;
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;

@@ -5,20 +5,13 @@
 
 package ivorius.reccomplex.gui.inventorygen;
 
-import ivorius.ivtoolkit.tools.IvTranslations;
 import ivorius.reccomplex.RecurrentComplex;
-import ivorius.reccomplex.gui.table.Bounds;
-import ivorius.reccomplex.gui.table.GuiScreenEditTable;
-import ivorius.reccomplex.gui.table.GuiScreenModalTable;
+import ivorius.reccomplex.gui.table.screen.GuiScreenEditTable;
 import ivorius.reccomplex.gui.table.GuiTable;
 import ivorius.reccomplex.network.PacketSyncItem;
-import net.minecraft.client.gui.GuiButton;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import org.lwjgl.input.Keyboard;
-
-import java.io.IOException;
 
 /**
  * Created by lukas on 17.01.15.

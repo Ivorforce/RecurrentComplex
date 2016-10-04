@@ -1,23 +1,23 @@
 /*
  *  Copyright (c) 2014, Lukas Tenbrink.
- *  * http://lukas.axxim.net
+ *  * http://ivorius.net
  */
 
-package ivorius.reccomplex.gui.table;
+package ivorius.reccomplex.gui.table.cell;
 
-import ivorius.ivtoolkit.gui.FloatRange;
 import ivorius.ivtoolkit.gui.GuiControlListener;
-import ivorius.ivtoolkit.gui.GuiSliderMultivalue;
-import ivorius.ivtoolkit.gui.GuiSliderRange;
+import ivorius.ivtoolkit.gui.GuiSlider;
+import ivorius.reccomplex.gui.table.Bounds;
+import ivorius.reccomplex.gui.table.GuiTable;
 import ivorius.reccomplex.utils.scale.Scale;
 import ivorius.reccomplex.utils.scale.Scales;
 
 /**
  * Created by lukas on 02.06.14.
  */
-public class TableCellFloatRange extends TableCellPropertyDefault<FloatRange> implements GuiControlListener<GuiSliderMultivalue>
+public class TableCellFloat extends TableCellPropertyDefault<Float> implements GuiControlListener<GuiSlider>
 {
-    protected GuiSliderRange slider;
+    protected GuiSlider slider;
 
     protected boolean enabled = true;
     protected float min;
@@ -26,28 +26,12 @@ public class TableCellFloatRange extends TableCellPropertyDefault<FloatRange> im
 
     protected String titleFormat = "%.4f";
 
-    public TableCellFloatRange(String id, FloatRange value, float min, float max, String titleFormat)
+    public TableCellFloat(String id, float value, float min, float max)
     {
         super(id, value);
 
         this.min = min;
         this.max = max;
-        this.titleFormat = titleFormat;
-    }
-
-    public boolean isEnabled()
-    {
-        return enabled;
-    }
-
-    public void setEnabled(boolean enabled)
-    {
-        this.enabled = enabled;
-
-        if (slider != null)
-        {
-            slider.enabled = enabled;
-        }
     }
 
     public float getMin()
@@ -90,6 +74,19 @@ public class TableCellFloatRange extends TableCellPropertyDefault<FloatRange> im
         this.titleFormat = titleFormat;
     }
 
+    public boolean isEnabled()
+    {
+        return enabled;
+    }
+
+    public void setEnabled(boolean enabled)
+    {
+        this.enabled = enabled;
+
+        if (slider != null)
+            slider.enabled = enabled;
+    }
+
     @Override
     public void initGui(GuiTable screen)
     {
@@ -98,7 +95,7 @@ public class TableCellFloatRange extends TableCellPropertyDefault<FloatRange> im
         Bounds bounds = bounds();
         if (slider == null)
         {
-            slider = new GuiSliderRange(-1, 0, 0, 0, 0, getRangeString());
+            slider = new GuiSlider(-1, 0, 0, 0, 0, String.format(titleFormat, property));
             slider.addListener(this);
         }
         updateSliderBounds(bounds);
@@ -107,7 +104,7 @@ public class TableCellFloatRange extends TableCellPropertyDefault<FloatRange> im
         slider.setMaxValue(scale.out(max));
         slider.enabled = enabled;
 
-        slider.setRange(Scales.out(scale, property));
+        slider.setValue(scale.out(property));
         slider.visible = !isHidden();
 
         screen.addButton(this, 0, slider);
@@ -123,23 +120,23 @@ public class TableCellFloatRange extends TableCellPropertyDefault<FloatRange> im
     }
 
     @Override
-    public void valueChanged(GuiSliderMultivalue gui)
+    public void valueChanged(GuiSlider gui)
     {
-        property = Scales.in(scale, ((GuiSliderRange) gui).getRange());
-        slider.displayString = getRangeString();
+        property = scale.in(gui.getValue());
+        gui.displayString = String.format(titleFormat, property);
 
         alertListenersOfChange();
     }
 
     @Override
-    public void setPropertyValue(FloatRange value)
+    public void setPropertyValue(Float value)
     {
         super.setPropertyValue(value);
 
         if (slider != null)
         {
-            slider.setRange(Scales.out(scale, property));
-            slider.displayString = getRangeString();
+            slider.setValue(scale.out(property));
+            slider.displayString = String.format(titleFormat, property);
         }
     }
 
@@ -155,10 +152,5 @@ public class TableCellFloatRange extends TableCellPropertyDefault<FloatRange> im
 
         if (slider != null)
             updateSliderBounds(bounds);
-    }
-
-    private String getRangeString()
-    {
-        return String.format(titleFormat, property.getMin()) + " - " + String.format(titleFormat, property.getMax());
     }
 }

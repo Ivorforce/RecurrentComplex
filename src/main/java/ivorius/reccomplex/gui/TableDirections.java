@@ -5,7 +5,7 @@
 
 package ivorius.reccomplex.gui;
 
-import ivorius.reccomplex.gui.table.TableCellEnum;
+import ivorius.reccomplex.gui.table.cell.TableCellEnum;
 import ivorius.reccomplex.utils.DirectionNames;
 import net.minecraft.util.EnumFacing;
 

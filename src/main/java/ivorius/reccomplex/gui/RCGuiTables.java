@@ -7,6 +7,8 @@ package ivorius.reccomplex.gui;
 
 import ivorius.reccomplex.gui.table.*;
 import ivorius.ivtoolkit.tools.IvTranslations;
+import ivorius.reccomplex.gui.table.cell.TableCellFloatNullable;
+import ivorius.reccomplex.gui.table.cell.TableElementCell;
 import ivorius.reccomplex.utils.scale.Scales;
 
 import javax.annotation.Nullable;

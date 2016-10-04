@@ -3,37 +3,38 @@
  *  * http://ivorius.net
  */
 
-package ivorius.reccomplex.gui.table;
+package ivorius.reccomplex.gui.table.datasource;
+
+import ivorius.reccomplex.gui.table.GuiTable;
+import ivorius.reccomplex.gui.table.TableElement;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.function.Supplier;
 
 /**
  * Created by lukas on 04.06.14.
  */
-public class TableDataSourceSupplied implements TableDataSource
+public class TableDataSourcePreloaded implements TableDataSource
 {
-    public final List<Supplier<TableElement>> elements = new ArrayList<>();
+    public final List<TableElement> elements = new ArrayList<>();
 
-    @SafeVarargs
-    public TableDataSourceSupplied(Supplier<TableElement>... elements)
+    public TableDataSourcePreloaded(TableElement... elements)
     {
         Collections.addAll(this.elements, elements);
     }
 
-    public TableDataSourceSupplied(List<Supplier<TableElement>> elements)
+    public TableDataSourcePreloaded(List<TableElement> elements)
     {
         this.elements.addAll(elements);
     }
 
-    public List<Supplier<TableElement>> getElements()
+    public List<TableElement> getElements()
     {
         return elements;
     }
 
-    public void setElements(List<Supplier<TableElement>> elements)
+    public void setElements(List<TableElement> elements)
     {
         this.elements.clear();
         this.elements.addAll(elements);
@@ -48,6 +49,6 @@ public class TableDataSourceSupplied implements TableDataSource
     @Override
     public TableElement elementForIndex(GuiTable table, int index)
     {
-        return elements.get(index).get();
+        return elements.get(index);
     }
 }

@@ -8,7 +8,8 @@ package ivorius.reccomplex.gui.table;
 import gnu.trove.map.hash.TIntObjectHashMap;
 import ivorius.ivtoolkit.math.IvMathHelper;
 import ivorius.ivtoolkit.tools.IvTranslations;
-import net.minecraft.client.Minecraft;
+import ivorius.reccomplex.gui.table.cell.TableCell;
+import ivorius.reccomplex.gui.table.datasource.TableDataSource;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.client.gui.GuiButton;
@@ -178,7 +179,7 @@ public class GuiTable extends Gui
         currentElements.forEach(tableElement -> tableElement.update(this));
     }
 
-    protected void actionPerformed(GuiButton button)
+    public void actionPerformed(GuiButton button)
     {
         if (button == scrollDownButton)
         {
@@ -204,7 +205,7 @@ public class GuiTable extends Gui
             tryScrollUp(i * SCROLL_SPEED);
     }
 
-    protected boolean keyTyped(char keyChar, int keyCode)
+    public boolean keyTyped(char keyChar, int keyCode)
     {
         for (TableElement element : currentElements)
         {
@@ -217,7 +218,7 @@ public class GuiTable extends Gui
         return false;
     }
 
-    protected void mouseClicked(int x, int y, int button)
+    public void mouseClicked(int x, int y, int button)
     {
         for (TableElement element : currentElements)
         {

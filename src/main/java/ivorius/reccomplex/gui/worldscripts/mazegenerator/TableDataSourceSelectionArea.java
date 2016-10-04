@@ -8,6 +8,11 @@ package ivorius.reccomplex.gui.worldscripts.mazegenerator;
 import ivorius.ivtoolkit.gui.IntegerRange;
 import ivorius.ivtoolkit.tools.IvTranslations;
 import ivorius.reccomplex.gui.table.*;
+import ivorius.reccomplex.gui.table.cell.TableCellBoolean;
+import ivorius.reccomplex.gui.table.cell.TableCellIntegerRange;
+import ivorius.reccomplex.gui.table.cell.TableCellString;
+import ivorius.reccomplex.gui.table.cell.TableElementCell;
+import ivorius.reccomplex.gui.table.datasource.TableDataSourceSegmented;
 import ivorius.reccomplex.world.gen.feature.structure.generic.Selection;
 import net.minecraft.util.text.TextFormatting;
 

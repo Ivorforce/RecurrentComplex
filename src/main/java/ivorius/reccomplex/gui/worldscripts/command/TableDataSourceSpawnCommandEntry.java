@@ -8,6 +8,11 @@ package ivorius.reccomplex.gui.worldscripts.command;
 import ivorius.ivtoolkit.tools.IvTranslations;
 import ivorius.reccomplex.gui.RCGuiTables;
 import ivorius.reccomplex.gui.table.*;
+import ivorius.reccomplex.gui.table.cell.TableCellButton;
+import ivorius.reccomplex.gui.table.cell.TableCellPresetAction;
+import ivorius.reccomplex.gui.table.cell.TableCellString;
+import ivorius.reccomplex.gui.table.cell.TableElementCell;
+import ivorius.reccomplex.gui.table.datasource.TableDataSourceSegmented;
 import ivorius.reccomplex.world.gen.script.WorldScriptCommand;
 import net.minecraft.init.Blocks;
 

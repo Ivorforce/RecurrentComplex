@@ -8,6 +8,7 @@ package ivorius.reccomplex.gui.editstructure.transformers;
 import ivorius.ivtoolkit.tools.IvTranslations;
 import ivorius.reccomplex.gui.TableDataSourceExpression;
 import ivorius.reccomplex.gui.table.*;
+import ivorius.reccomplex.gui.table.datasource.TableDataSourceSegmented;
 import ivorius.reccomplex.world.gen.feature.structure.generic.transformers.TransformerEnsureBlocks;
 
 /**

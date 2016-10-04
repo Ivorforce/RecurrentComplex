@@ -3,10 +3,12 @@
  *  * http://ivorius.net
  */
 
-package ivorius.reccomplex.gui.table;
+package ivorius.reccomplex.gui.table.cell;
 
 import com.google.common.primitives.Ints;
 import ivorius.reccomplex.gui.GuiValidityStateIndicator;
+import ivorius.reccomplex.gui.table.Bounds;
+import ivorius.reccomplex.gui.table.GuiTable;
 import net.minecraft.client.gui.GuiTextField;
 
 /**

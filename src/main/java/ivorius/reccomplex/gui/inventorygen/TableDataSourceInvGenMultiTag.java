@@ -7,6 +7,8 @@ package ivorius.reccomplex.gui.inventorygen;
 
 import ivorius.ivtoolkit.tools.IvTranslations;
 import ivorius.reccomplex.gui.table.*;
+import ivorius.reccomplex.gui.table.cell.TableCellIntegerRange;
+import ivorius.reccomplex.gui.table.cell.TableElementCell;
 import ivorius.reccomplex.item.ItemInventoryGenMultiTag;
 
 /**

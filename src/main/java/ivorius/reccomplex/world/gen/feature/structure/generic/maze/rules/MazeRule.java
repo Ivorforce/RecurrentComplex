@@ -9,7 +9,7 @@ import ivorius.ivtoolkit.gui.IntegerRange;
 import ivorius.ivtoolkit.maze.components.MazeComponent;
 import ivorius.ivtoolkit.maze.components.MazePredicate;
 import ivorius.ivtoolkit.tools.NBTCompoundObject;
-import ivorius.reccomplex.gui.table.TableDataSource;
+import ivorius.reccomplex.gui.table.datasource.TableDataSource;
 import ivorius.reccomplex.gui.table.TableDelegate;
 import ivorius.reccomplex.gui.table.TableNavigator;
 import ivorius.reccomplex.world.gen.script.WorldScriptMazeGenerator;

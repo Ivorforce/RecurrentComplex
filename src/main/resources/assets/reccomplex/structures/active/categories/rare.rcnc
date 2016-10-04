@@ -1,7 +1,12 @@
 {
-  "defaultSpawnChance": 0.0006,
   "generationInfos": [],
+  "defaultSpawnChance": 6.0E-4,
+  "spawnDistanceMultiplier": 0.0,
+  "spawnDistanceMultiplierCap": 1.0,
   "selectableInGUI": true,
   "title": "Rare",
-  "tooltip": ["Special sights to behold", "Random structure each 1666 chunks"]
+  "tooltip": [
+    "Special sights to behold",
+    "Random structure each 1666 chunks"
+  ]
 }

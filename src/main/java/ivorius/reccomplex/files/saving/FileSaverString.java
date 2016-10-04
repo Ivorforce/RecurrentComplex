@@ -6,6 +6,7 @@
 package ivorius.reccomplex.files.saving;
 
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import ivorius.reccomplex.files.loading.LeveledRegistry;
 
 import java.nio.file.Files;
@@ -41,7 +42,7 @@ public class FileSaverString<S> extends FileSaverAdapter<S>
 
     public static <S> Writer<S> gsonSaver(Class<? extends S> type)
     {
-        return gsonSaver(new Gson(), type);
+        return gsonSaver(new GsonBuilder().setPrettyPrinting().create(), type);
     }
 
     @Override

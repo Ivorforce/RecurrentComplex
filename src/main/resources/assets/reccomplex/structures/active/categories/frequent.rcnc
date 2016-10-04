@@ -1,8 +1,13 @@
 {
+  "generationInfos": [],
   "defaultSpawnChance": 0.0666,
   "structureMinCap": 5,
-  "generationInfos": [],
+  "spawnDistanceMultiplier": 0.0,
+  "spawnDistanceMultiplierCap": 1.0,
   "selectableInGUI": true,
   "title": "Frequent",
-  "tooltip": ["Small structures or scenery", "Random structure each 15 chunks"]
+  "tooltip": [
+    "Small structures or scenery",
+    "Random structure each 15 chunks"
+  ]
 }

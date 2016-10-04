@@ -125,43 +125,6 @@ public class RCCommunicationHandler extends IvFMLIntercommHandler
 
             return true;
         }
-        else if (isMessage("registerSimpleSpawnCategory", message, NBTTagCompound.class))
-        {
-            // Legacy. Use natural spawn category files (rcnc) instead.
-
-            NBTTagCompound cmp = message.getNBTValue();
-            String id = cmp.getString("id");
-            String domain = cmp.getString("domain");
-
-            // If no biome selector matches, this value will be returned.
-            float defaultSpawnChance = cmp.getFloat("defaultSpawnChance");
-            boolean selectableInGui = cmp.getBoolean("selectableInGui");
-
-            // If less structures than this cap are registered, the overall spawn chance will decrease so not to spam the same structures over and over.
-            int structureMinCap = cmp.getInteger("structureMinCap");
-
-            // List of {chance}:{ID}. These selectors work the same as structure biome selectors.
-            // e.g. 0.232:Type:PLAINS,COLD
-            // e.g. 1:Ocean
-            String[] biomeTypes = IvNBTHelper.readNBTStrings("biomeTypes", cmp); // NBTTagList of NBTTagString
-
-            if (!Strings.isEmpty(id))
-            {
-                NaturalStructureSelector.GenerationInfo[] biomeInfos = new NaturalStructureSelector.GenerationInfo[biomeTypes.length];
-                for (int i = 0; i < biomeTypes.length; i++)
-                {
-                    String[] biomeParts = biomeTypes[i].split(":", 2);
-                    biomeInfos[i] = new NaturalStructureSelector.GenerationInfo(Float.valueOf(biomeParts[0]), new BiomeMatcher(biomeParts[1]), new DimensionMatcher(""));
-                }
-
-                NaturalStructureSelector.CATEGORY_REGISTRY.register(id, domain, new NaturalStructureSelector.SimpleCategory(defaultSpawnChance,
-                            Arrays.asList(biomeInfos), selectableInGui, structureMinCap), true, LeveledRegistry.Level.MODDED);
-            }
-            else
-                getLogger().warn("Could not handle message with key '" + message.key + "' - missing 'id' key!");
-
-            return true;
-        }
         else if (isMessage("registerLegacyBlockIds", message, NBTTagCompound.class))
         {
             NBTTagCompound cmp = message.getNBTValue();

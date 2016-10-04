@@ -40,34 +40,21 @@ public class NaturalStructureSelector
         public final List<GenerationInfo> generationInfos = new ArrayList<>();
 
         @SerializedName("defaultSpawnChance")
-        public float defaultSpawnChance;
+        public float defaultSpawnChance = 1;
         @SerializedName("structureMinCap")
-        public Integer structureMinCap;
+        public Integer structureMinCap = null;
 
         @SerializedName("spawnDistanceMultiplier")
-        public float spawnDistanceMultiplier;
-        @SerializedName("spawnDistanceMultiplierMax")
-        public float spawnDistanceMultiplierMax;
+        public float spawnDistanceMultiplier = 0;
+        @SerializedName("spawnDistanceMultiplierCap")
+        public float spawnDistanceMultiplierCap = 1;
 
         @SerializedName("selectableInGUI")
-        public boolean selectableInGUI;
+        public boolean selectableInGUI = true;
         @SerializedName("title")
-        public String title;
+        public String title = "";
         @SerializedName("tooltip")
         public final List<String> tooltip = new ArrayList<>();
-
-        public SimpleCategory(float defaultSpawnChance, List<GenerationInfo> generationInfos, boolean selectableInGUI, Integer structureMinCap)
-        {
-            this.defaultSpawnChance = defaultSpawnChance;
-            this.generationInfos.addAll(generationInfos);
-            this.selectableInGUI = selectableInGUI;
-            this.structureMinCap = structureMinCap;
-        }
-
-        public SimpleCategory(float defaultSpawnChance, List<GenerationInfo> generationInfos, boolean selectableInGUI)
-        {
-            this(defaultSpawnChance, generationInfos, selectableInGUI, null);
-        }
 
         @Override
         public float structureSpawnChance(Biome biome, WorldProvider worldProvider, int registeredStructures, Float distanceToSpawn)
@@ -97,7 +84,9 @@ public class NaturalStructureSelector
 
         public float distanceMultiplier(Float distance)
         {
-            return distance != null ? Math.min(1 + distance * spawnDistanceMultiplier, spawnDistanceMultiplierMax) : 1;
+            return distance == null ? 1 :
+                    spawnDistanceMultiplier > 1 ? Math.min(1 + distance * spawnDistanceMultiplier, Math.max(spawnDistanceMultiplierCap, 1))
+                    : Math.max(1 + distance * spawnDistanceMultiplier, Math.min(spawnDistanceMultiplierCap, 1));
         }
 
         public Integer getActiveStructureMinCap()

@@ -1,7 +1,12 @@
 {
-  "defaultSpawnChance": 0.00015,
   "generationInfos": [],
+  "defaultSpawnChance": 1.5E-4,
+  "spawnDistanceMultiplier": 0.0,
+  "spawnDistanceMultiplierCap": 1.0,
   "selectableInGUI": true,
   "title": "Ultra Rare",
-  "tooltip": ["Once-In-A-Lifetime sights", "Random structure each 6666 chunks"]
+  "tooltip": [
+    "Once-In-A-Lifetime sights",
+    "Random structure each 6666 chunks"
+  ]
 }

@@ -38,16 +38,18 @@ public class NaturalStructureSelector
     {
         @SerializedName("generationInfos")
         public final List<GenerationInfo> generationInfos = new ArrayList<>();
-        @SerializedName("tooltip")
-        public final List<String> tooltip = new ArrayList<>();
+
         @SerializedName("defaultSpawnChance")
         public float defaultSpawnChance;
-        @SerializedName("selectableInGUI")
-        public boolean selectableInGUI;
         @SerializedName("structureMinCap")
         public Integer structureMinCap;
+
+        @SerializedName("selectableInGUI")
+        public boolean selectableInGUI;
         @SerializedName("title")
         public String title;
+        @SerializedName("tooltip")
+        public final List<String> tooltip = new ArrayList<>();
 
         public SimpleCategory(float defaultSpawnChance, List<GenerationInfo> generationInfos, boolean selectableInGUI, Integer structureMinCap)
         {
@@ -65,15 +67,26 @@ public class NaturalStructureSelector
         @Override
         public float structureSpawnChance(Biome biome, WorldProvider worldProvider, int registeredStructures)
         {
-            float amountMultiplier = Math.min((float) registeredStructures / (float) getActiveStructureMinCap(), 1.0f);
+            return spawnChance(biome, worldProvider)
+                    * amountMultiplier(registeredStructures)
+                    * RCConfig.structureSpawnChanceModifier;
+        }
+
+        public float amountMultiplier(int registeredStructures)
+        {
+            return Math.min((float) registeredStructures / (float) getActiveStructureMinCap(), 1.0f);
+        }
+
+        public float spawnChance(Biome biome, WorldProvider worldProvider)
+        {
+            float am = defaultSpawnChance;
 
             for (GenerationInfo info : generationInfos)
             {
                 if (info.biomeMatcher.test(biome) && info.dimensionMatcher.test(worldProvider))
-                    return info.spawnChance * amountMultiplier;
+                    am = info.spawnChance;
             }
-
-            return defaultSpawnChance * amountMultiplier * RCConfig.structureSpawnChanceModifier;
+            return am;
         }
 
         public Integer getActiveStructureMinCap()
@@ -104,6 +117,7 @@ public class NaturalStructureSelector
     {
         @SerializedName("spawnChance")
         public float spawnChance;
+
         @SerializedName("biomeMatcher")
         public BiomeMatcher biomeMatcher;
         @SerializedName("dimensionMatcher")

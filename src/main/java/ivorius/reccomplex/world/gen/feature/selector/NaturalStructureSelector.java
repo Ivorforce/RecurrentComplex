@@ -44,10 +44,10 @@ public class NaturalStructureSelector
         @SerializedName("structureMinCap")
         public Integer structureMinCap;
 
-        @SerializedName("distanceMultiplier")
-        public float distanceMultiplier;
-        @SerializedName("distanceMultiplierMax")
-        public float distanceMultiplierMax;
+        @SerializedName("spawnDistanceMultiplier")
+        public float spawnDistanceMultiplier;
+        @SerializedName("spawnDistanceMultiplierMax")
+        public float spawnDistanceMultiplierMax;
 
         @SerializedName("selectableInGUI")
         public boolean selectableInGUI;
@@ -97,7 +97,7 @@ public class NaturalStructureSelector
 
         public float distanceMultiplier(Float distance)
         {
-            return distance != null ? Math.min(1 + distance * distanceMultiplier, distanceMultiplierMax) : 1;
+            return distance != null ? Math.min(1 + distance * spawnDistanceMultiplier, spawnDistanceMultiplierMax) : 1;
         }
 
         public Integer getActiveStructureMinCap()

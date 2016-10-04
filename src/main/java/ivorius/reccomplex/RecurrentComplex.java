@@ -180,8 +180,8 @@ public class RecurrentComplex
     @EventHandler
     public void postInit(FMLPostInitializationEvent event)
     {
-        ResourceDirectory.loadModFiles(loader);
-        ResourceDirectory.loadCustomFiles(loader);
+        ResourceDirectory.reloadModFiles(loader);
+        ResourceDirectory.reloadCustomFiles(loader);
 
         SchematicLoader.initializeFolder();
     }
@@ -198,4 +198,9 @@ public class RecurrentComplex
         RCCommands.onServerStart(event);
     }
 
+    @EventHandler
+    public void onServerStarted(FMLServerStartedEvent event)
+    {
+        ResourceDirectory.reloadServerFiles(loader);
+    }
 }

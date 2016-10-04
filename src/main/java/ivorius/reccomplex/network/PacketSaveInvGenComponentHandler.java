@@ -36,7 +36,7 @@ public class PacketSaveInvGenComponentHandler extends SchedulingMessageHandler<P
 
         SaveDirectoryData.Result saveDirectoryDataResult = message.getSaveDirectoryDataResult();
 
-        String path = saveDirectoryDataResult.directory.directoryName() + "/";
+        String path = saveDirectoryDataResult.directory.subDirectoryName() + "/";
         String id = message.getKey();
 
         GenericItemCollectionRegistry.INSTANCE.register(id, "", message.getInventoryGenerator(), saveDirectoryDataResult.directory.isActive(), LeveledRegistry.Level.CUSTOM);
@@ -45,7 +45,7 @@ public class PacketSaveInvGenComponentHandler extends SchedulingMessageHandler<P
                 RecurrentComplex.saver.trySave(saveDirectoryDataResult.directory.toPath(), RCFileSuffix.INVENTORY_GENERATION_COMPONENT, id), player, path, "inventory_generator", id))
         {
             if (saveDirectoryDataResult.deleteOther)
-                RCCommands.informDeleteResult(RecurrentComplex.saver.tryDelete(saveDirectoryDataResult.directory.opposite().toPath(), id, RCFileSuffix.INVENTORY_GENERATION_COMPONENT), player, "inventory_generator", id, saveDirectoryDataResult.directory.opposite().directoryName());
+                RCCommands.informDeleteResult(RecurrentComplex.saver.tryDelete(saveDirectoryDataResult.directory.opposite().toPath(), id, RCFileSuffix.INVENTORY_GENERATION_COMPONENT), player, "inventory_generator", id, saveDirectoryDataResult.directory.opposite().subDirectoryName());
 
             ItemStack heldItem = playServer.playerEntity.getHeldItem(EnumHand.MAIN_HAND);
             if (heldItem != null && heldItem.getItem() instanceof ItemInventoryGenComponentTag)

@@ -35,7 +35,7 @@ public class RCCommands
 
     public static void onServerStart(FMLServerStartingEvent event)
     {
-        event.registerServerCommand(new CommandSave());
+        event.registerServerCommand(new CommandWrite());
 
         if (!RecurrentComplex.isLite())
         {

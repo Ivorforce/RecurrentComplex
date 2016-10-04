@@ -54,9 +54,9 @@ public class PacketSaveStructureHandler extends SchedulingMessageHandler<PacketS
 
         StructureRegistry.INSTANCE.register(id, "", genericStructureInfo, saveDir.isActive(), LeveledRegistry.Level.CUSTOM);
 
-        if (RCCommands.informSaveResult(RecurrentComplex.saver.trySave(saveDir.toPath(), StructureSaveHandler.INSTANCE.suffix, id), player, saveDir.directoryName(), "structure", id))
+        if (RCCommands.informSaveResult(RecurrentComplex.saver.trySave(saveDir.toPath(), StructureSaveHandler.INSTANCE.suffix, id), player, saveDir.subDirectoryName(), "structure", id))
             if (saveDirectoryDataResult.deleteOther)
-                RCCommands.informDeleteResult(RecurrentComplex.loader.tryDelete(delDir.toPath(), id, StructureSaveHandler.INSTANCE.suffix), player, "structure", id, delDir.directoryName());
+                RCCommands.informDeleteResult(RecurrentComplex.loader.tryDelete(delDir.toPath(), id, StructureSaveHandler.INSTANCE.suffix), player, "structure", id, delDir.subDirectoryName());
     }
 
 }

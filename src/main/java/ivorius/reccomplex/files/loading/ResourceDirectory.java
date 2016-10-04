@@ -6,11 +6,13 @@
 package ivorius.reccomplex.files.loading;
 
 import io.netty.buffer.ByteBuf;
-import ivorius.ivtoolkit.tools.IvFileHelper;
 import ivorius.reccomplex.RecurrentComplex;
 import ivorius.reccomplex.files.RCFiles;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.Loader;
+import net.minecraftforge.fml.common.network.ByteBufUtils;
 
 import javax.annotation.Nonnull;
 import java.io.File;
@@ -22,28 +24,49 @@ import java.util.Collection;
  */
 public enum ResourceDirectory
 {
-    ACTIVE, INACTIVE;
+    ACTIVE(true, LeveledRegistry.Level.CUSTOM), INACTIVE(false, LeveledRegistry.Level.CUSTOM),
+    SERVER_ACTIVE(true, LeveledRegistry.Level.SERVER), SERVER_INACTIVE(false, LeveledRegistry.Level.SERVER);
 
     public static final String ACTIVE_DIR_NAME = "active";
     public static final String INACTIVE_DIR_NAME = "inactive";
     public static final String RESOURCES_FILE_NAME = "structures";
 
-    public static ResourceDirectory fromActive(boolean active)
+    private boolean active;
+    private LeveledRegistry.Level level;
+
+    ResourceDirectory(boolean active, LeveledRegistry.Level level)
+    {
+        this.active = active;
+        this.level = level;
+    }
+
+    public static ResourceDirectory custom(boolean active)
     {
         return active ? ACTIVE : INACTIVE;
     }
 
-    public static ResourceDirectory read(ByteBuf buf)
+    public static ResourceDirectory server(boolean active)
     {
-        return fromActive(buf.readBoolean());
+        return active ? SERVER_ACTIVE : SERVER_INACTIVE;
     }
 
-    public static File getBaseDirectory()
+    public static ResourceDirectory read(ByteBuf buf)
+    {
+        return valueOf(ByteBufUtils.readUTF8String(buf));
+    }
+
+    public static File getCustomDirectory()
     {
         return RecurrentComplex.proxy.getBaseFolderFile(RESOURCES_FILE_NAME);
     }
 
-    public static void loadModFiles(FileLoader loader)
+    @Nonnull
+    public static File getSaveDirectory()
+    {
+        return RCFiles.getValidatedFolder(getServer().getEntityWorld().getSaveHandler().getWorldDirectory(), RESOURCES_FILE_NAME, true);
+    }
+
+    public static void reloadModFiles(FileLoader loader)
     {
         LeveledRegistry.Level level = LeveledRegistry.Level.MODDED;
 
@@ -52,26 +75,26 @@ public enum ResourceDirectory
             loadFilesFromDomain(loader, modid, level, loader.keySet());
     }
 
-    public static void loadCustomFiles(FileLoader loader)
+    public static void reloadCustomFiles(FileLoader loader)
     {
-        loadCustomFiles(loader, loader.keySet());
+        reloadFilesFromDirectory(loader, LeveledRegistry.Level.CUSTOM, getCustomDirectory());
     }
 
-    public static void loadCustomFiles(FileLoader loader, Collection<String> suffices)
+    public static void reloadServerFiles(FileLoader loader)
     {
-        LeveledRegistry.Level level = LeveledRegistry.Level.CUSTOM;
+        reloadFilesFromDirectory(loader, LeveledRegistry.Level.SERVER, getSaveDirectory());
+    }
 
+    public static void reloadFilesFromDirectory(FileLoader loader, LeveledRegistry.Level level, File directory)
+    {
         loader.clearFiles(level);
-
-        File directory = IvFileHelper.getValidatedFolder(getBaseDirectory());
-        if (directory != null)
-            loadFilesFromDirectory(loader, directory, level, suffices);
+        loadFilesFromDirectory(loader, directory, level, loader.keySet());
     }
 
     public static void loadFilesFromDirectory(FileLoader loader, File directory, LeveledRegistry.Level level, Collection<String> suffices)
     {
-        tryLoadAll(loader, directory, ACTIVE.directoryName(), true, "", true, level, suffices);
-        tryLoadAll(loader, directory, INACTIVE.directoryName(), true, "", false, level, suffices);
+        tryLoadAll(loader, directory, ACTIVE.subDirectoryName(), true, "", true, level, suffices);
+        tryLoadAll(loader, directory, INACTIVE.subDirectoryName(), true, "", false, level, suffices);
 
         // Legacy
         tryLoadAll(loader, directory, "genericStructures", false, "", true, level, suffices);
@@ -90,13 +113,46 @@ public enum ResourceDirectory
     {
         domain = domain.toLowerCase();
 
-        loader.tryLoadAll(ACTIVE.toResourceLocation(domain), new FileLoadContext(domain, true, level), suffices);
-        loader.tryLoadAll(INACTIVE.toResourceLocation(domain), new FileLoadContext(domain, false, level), suffices);
+        loader.tryLoadAll(resourceLocation(domain, ACTIVE_DIR_NAME), new FileLoadContext(domain, true, level), suffices);
+        loader.tryLoadAll(resourceLocation(domain, INACTIVE_DIR_NAME), new FileLoadContext(domain, false, level), suffices);
 
         // Legacy
         loader.tryLoadAll(new ResourceLocation(domain, "structures/genericStructures"), new FileLoadContext(domain, true, level), suffices);
         loader.tryLoadAll(new ResourceLocation(domain, "structures/silentStructures"), new FileLoadContext(domain, false, level), suffices);
         loader.tryLoadAll(new ResourceLocation(domain, "structures/inventoryGenerators"), new FileLoadContext(domain, true, level), suffices);
+    }
+
+    @Nonnull
+    protected static ResourceLocation resourceLocation(String domain, String directoryName)
+    {
+        return new ResourceLocation(domain, String.format("%s/%s", RESOURCES_FILE_NAME, directoryName));
+    }
+
+    protected static MinecraftServer getServer()
+    {
+        if (FMLCommonHandler.instance().getEffectiveSide().isClient())
+            throw new IllegalStateException();
+
+        MinecraftServer instance = FMLCommonHandler.instance().getMinecraftServerInstance();
+        if (instance == null)
+            throw new IllegalStateException();
+
+        return instance;
+    }
+
+    public boolean isServer()
+    {
+        return this == SERVER_ACTIVE || this == SERVER_INACTIVE;
+    }
+
+    public boolean isCustom()
+    {
+        return this == ACTIVE || this == INACTIVE;
+    }
+
+    public LeveledRegistry.Level getLevel()
+    {
+        return level;
     }
 
     @Nonnull
@@ -107,31 +163,38 @@ public enum ResourceDirectory
 
     public File toFile()
     {
-        return RCFiles.getValidatedFolder(getBaseDirectory(), directoryName(), true);
+        return RCFiles.getValidatedFolder(isServer() ? getSaveDirectory() : getCustomDirectory(), subDirectoryName(), true);
     }
 
-    public ResourceLocation toResourceLocation(String domain)
+    public String subDirectoryName()
     {
-        return new ResourceLocation(domain, String.format("%s/%s", RESOURCES_FILE_NAME, directoryName()));
-    }
-
-    public String directoryName()
-    {
-        return this == ACTIVE ? ACTIVE_DIR_NAME : INACTIVE_DIR_NAME;
+        return isActive() ? ACTIVE_DIR_NAME : INACTIVE_DIR_NAME;
     }
 
     public boolean isActive()
     {
-        return this == ACTIVE;
+        return active;
     }
 
     public ResourceDirectory opposite()
     {
-        return this == ACTIVE ? INACTIVE : ACTIVE;
+        switch (this)
+        {
+            case ACTIVE:
+                return INACTIVE;
+            case INACTIVE:
+                return ACTIVE;
+            case SERVER_ACTIVE:
+                return SERVER_INACTIVE;
+            case SERVER_INACTIVE:
+                return SERVER_ACTIVE;
+            default:
+                throw new IllegalStateException();
+        }
     }
 
     public void write(ByteBuf buf)
     {
-        buf.writeBoolean(isActive());
+        ByteBufUtils.writeUTF8String(buf, name());
     }
 }

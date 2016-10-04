@@ -8,7 +8,6 @@ package ivorius.reccomplex.commands;
 import ivorius.reccomplex.RCConfig;
 import ivorius.reccomplex.RecurrentComplex;
 import ivorius.reccomplex.files.loading.ResourceDirectory;
-import ivorius.reccomplex.files.saving.FileSaverAdapter;
 import ivorius.reccomplex.utils.ServerTranslations;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.CommandException;
@@ -22,7 +21,7 @@ import java.util.*;
 /**
  * Created by lukas on 03.08.14.
  */
-public class CommandSave extends CommandBase
+public class CommandWrite extends CommandBase
 {
     @Override
     public String getCommandName()
@@ -57,10 +56,14 @@ public class CommandSave extends CommandBase
 
         ResourceDirectory directory = ResourceDirectory.valueOf(args[2]);
 
-        RCCommands.informSaveResult(RecurrentComplex.saver.trySave(directory.toPath(), adapterID, id), commandSender, directory.directoryName(), adapterID, id);
-        RecurrentComplex.saver.registry(adapterID).status(id).setActive(directory.isActive());
+        if (RCCommands.informSaveResult(RecurrentComplex.saver.trySave(directory.toPath(), adapterID, id), commandSender, directory.subDirectoryName(), adapterID, id))
+        {
+            RCCommands.informDeleteResult(RecurrentComplex.saver.tryDeleteWithID(directory.opposite().toPath(), adapterID, id), commandSender, adapterID, id, directory.subDirectoryName());
 
-        RCCommands.informDeleteResult(RecurrentComplex.saver.tryDeleteWithID(directory.opposite().toPath(), adapterID, id), commandSender, adapterID, id, directory.directoryName());
+            // Could also predict changes and just reload those for the file but eh.
+            ResourceDirectory.reloadCustomFiles(RecurrentComplex.loader);
+            ResourceDirectory.reloadServerFiles(RecurrentComplex.loader);
+        }
     }
 
     @Override

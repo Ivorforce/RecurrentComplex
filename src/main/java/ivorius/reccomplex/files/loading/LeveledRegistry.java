@@ -44,7 +44,7 @@ public interface LeveledRegistry<S>
 
     enum Level implements ILevel
     {
-        INTERNAL, MODDED, CUSTOM;
+        INTERNAL, MODDED, CUSTOM, SERVER;
 
         @Override
         public int getLevel()
@@ -55,6 +55,11 @@ public interface LeveledRegistry<S>
         public boolean isCustom()
         {
             return this == CUSTOM;
+        }
+
+        public boolean isServer()
+        {
+            return this == SERVER;
         }
     }
 }

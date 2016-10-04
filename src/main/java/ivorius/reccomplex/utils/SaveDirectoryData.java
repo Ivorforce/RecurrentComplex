@@ -48,7 +48,7 @@ public class SaveDirectoryData
 
     public static SaveDirectoryData defaultData(String id, Set<String> filesInActive, Set<String> filesInInactive)
     {
-        return new SaveDirectoryData(ResourceDirectory.fromActive(filesInActive.contains(id)), true, filesInActive, filesInInactive);
+        return new SaveDirectoryData(ResourceDirectory.custom(filesInActive.contains(id)), true, filesInActive, filesInInactive);
     }
 
     public static SaveDirectoryData readFrom(ByteBuf buf)

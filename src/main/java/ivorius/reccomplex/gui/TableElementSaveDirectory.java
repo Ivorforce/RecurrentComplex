@@ -23,7 +23,7 @@ public class TableElementSaveDirectory
         final String id = idSupplier.get();
 
         TableCellEnum<ResourceDirectory> cellFolder = new TableCellEnum<>("activeFolder", data.getDirectory(),
-                TableCellEnum.options(ResourceDirectory.values(), d -> IvTranslations.format("reccomplex.structure.savePath", String.format("%s/%s%s", TextFormatting.AQUA, d.directoryName(), TextFormatting.RESET)), null));
+                TableCellEnum.options(ResourceDirectory.values(), d -> IvTranslations.format("reccomplex.structure.savePath", String.format("%s/%s%s", TextFormatting.AQUA, d.subDirectoryName(), TextFormatting.RESET)), null));
         cellFolder.addPropertyConsumer(cell ->
         {
             data.setDirectory(cellFolder.getPropertyValue());
@@ -32,14 +32,14 @@ public class TableElementSaveDirectory
 
         if (data.getDirectory().isActive() ? data.getFilesInInactive().contains(id) : data.getFilesInActive().contains(id))
         {
-            String path = data.getDirectory().opposite().directoryName();
+            String path = data.getDirectory().opposite().subDirectoryName();
             TableCellBoolean cellDelete = new TableCellBoolean("deleteOther", data.isDeleteOther(),
                     IvTranslations.format("reccomplex.structure.deleteOther.true", TextFormatting.RED, TextFormatting.RESET, String.format("%s/%s%s", TextFormatting.AQUA, path, TextFormatting.RESET)),
                     IvTranslations.format("reccomplex.structure.deleteOther.false", TextFormatting.YELLOW, TextFormatting.RESET, String.format("%s/%s%s", TextFormatting.AQUA, path, TextFormatting.RESET)));
             cellDelete.addPropertyConsumer(cell -> data.setDeleteOther(cellDelete.getPropertyValue()));
             cellDelete.setTooltip(IvTranslations.formatLines("reccomplex.structure.deleteOther.tooltip",
-                    TextFormatting.AQUA + ResourceDirectory.INACTIVE.directoryName() + TextFormatting.RESET,
-                    TextFormatting.AQUA + ResourceDirectory.ACTIVE.directoryName() + TextFormatting.RESET));
+                    TextFormatting.AQUA + ResourceDirectory.INACTIVE.subDirectoryName() + TextFormatting.RESET,
+                    TextFormatting.AQUA + ResourceDirectory.ACTIVE.subDirectoryName() + TextFormatting.RESET));
 
             return new TableElementCell(new TableCellMulti(cellFolder, cellDelete));
         }

@@ -51,10 +51,13 @@ public class CommandReload extends CommandBase
         switch (level)
         {
             case CUSTOM:
-                ResourceDirectory.loadCustomFiles(RecurrentComplex.loader);
+                ResourceDirectory.reloadCustomFiles(RecurrentComplex.loader);
                 break;
             case MODDED:
-                ResourceDirectory.loadModFiles(RecurrentComplex.loader);
+                ResourceDirectory.reloadModFiles(RecurrentComplex.loader);
+                break;
+            case SERVER:
+                ResourceDirectory.reloadServerFiles(RecurrentComplex.loader);
                 break;
             default:
                 throw ServerTranslations.wrongUsageException("commands.strucReload.usage");
@@ -67,7 +70,7 @@ public class CommandReload extends CommandBase
     public List<String> getTabCompletionOptions(MinecraftServer server, ICommandSender sender, String[] args, @Nullable BlockPos pos)
     {
         if (args.length == 1)
-            return getListOfStringsMatchingLastWord(args, Arrays.asList(LeveledRegistry.Level.CUSTOM, LeveledRegistry.Level.MODDED));
+            return getListOfStringsMatchingLastWord(args, Arrays.asList(LeveledRegistry.Level.CUSTOM, LeveledRegistry.Level.MODDED, LeveledRegistry.Level.SERVER));
 
         return Collections.emptyList();
     }

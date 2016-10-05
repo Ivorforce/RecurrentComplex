@@ -13,14 +13,18 @@ import ivorius.reccomplex.utils.ServerTranslations;
 import net.minecraft.command.*;
 import net.minecraft.entity.Entity;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.WorldServer;
+import net.minecraftforge.common.DimensionManager;
 import net.minecraftforge.fml.common.event.FMLServerStartingEvent;
 import org.apache.commons.lang3.tuple.Pair;
 
 import javax.annotation.Nonnull;
 import java.nio.file.Path;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 /**
  * Created by lukas on 18.01.15.
@@ -96,6 +100,7 @@ public class RCCommands
 
         event.registerServerCommand(new CommandBrowseFiles());
 
+        event.registerServerCommand(new CommandRetrogen());
         event.registerServerCommand(new CommandDecorate());
         event.registerServerCommand(new CommandDecorateOne());
     }
@@ -171,6 +176,20 @@ public class RCCommands
     public static boolean tryParseMirror(String[] args, int mirrorIndex) throws CommandException
     {
         return args.length > mirrorIndex && CommandBase.parseBoolean(args[mirrorIndex]);
+    }
+
+    @Nonnull
+    public static List<String> completeDimension(String[] args)
+    {
+        return CommandBase.getListOfStringsMatchingLastWord(args, Arrays.stream(DimensionManager.getIDs()).map(String::valueOf).collect(Collectors.toList()));
+    }
+
+    public static WorldServer tryParseDimension(ICommandSender commandSender, String[] args, int dimIndex) throws CommandException
+    {
+        WorldServer world = args.length > dimIndex ? DimensionManager.getWorld(CommandBase.parseInt(args[dimIndex])) : (WorldServer) commandSender.getEntityWorld();
+        if (world == null)
+            throw ServerTranslations.commandException("commands.rc.nodimension");
+        return world;
     }
 
     public static void informDeleteResult(Pair<Set<Path>, Set<Path>> result, ICommandSender sender, String filetype, String id, String path)

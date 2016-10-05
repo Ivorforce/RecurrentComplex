@@ -24,6 +24,8 @@ import net.minecraftforge.common.util.Constants;
 
 import javax.annotation.Nonnull;
 import java.util.*;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * Created by lukas on 01.03.15.
@@ -121,6 +123,11 @@ public class StructureGenerationData extends WorldSavedData
     public Set<Entry> getEntriesByID(String id)
     {
         return instanceMap.get(id);
+    }
+
+    public Stream<ChunkPos> checkAllChunks(Stream<ChunkPos> chunks)
+    {
+        return chunks.filter(this::checkChunk);
     }
 
     public boolean checkChunk(ChunkPos coords)

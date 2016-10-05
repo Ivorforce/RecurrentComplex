@@ -20,7 +20,6 @@ import ivorius.reccomplex.world.gen.feature.structure.generic.GenericStructureIn
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.world.WorldServer;
-import net.minecraftforge.common.DimensionManager;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -67,7 +66,7 @@ public class CommandGenerateStructure extends CommandBase
     {
         String structureName = args[idIndex];
         StructureInfo<?> structureInfo = StructureRegistry.INSTANCE.get(structureName);
-        WorldServer world = args.length > dimIndex ? DimensionManager.getWorld(parseInt(args[dimIndex])) : (WorldServer) commandSender.getEntityWorld();
+        WorldServer world = RCCommands.tryParseDimension(commandSender, args, dimIndex);
 
         if (structureInfo == null)
             throw ServerTranslations.commandException("commands.strucGen.noStructure", structureName);
@@ -121,11 +120,9 @@ public class CommandGenerateStructure extends CommandBase
     public static List<String> tabCompletionOptions(String[] args, int idIndex, int dimIndex, int genInfoIndex)
     {
         if (args.length == idIndex + 1)
-        {
             return getListOfStringsMatchingLastWord(args, StructureRegistry.INSTANCE.ids());
-        }
         else if (args.length == dimIndex + 1)
-            return getListOfStringsMatchingLastWord(args, Arrays.stream(DimensionManager.getIDs()).map(String::valueOf).collect(Collectors.toList()));
+            return RCCommands.completeDimension(args);
         else if (args.length == genInfoIndex + 1)
         {
             String structureName = args[idIndex];

@@ -98,6 +98,7 @@ public class SimpleLeveledRegistry<S> implements LeveledRegistry<S>
         return Collections.unmodifiableSet(items.getMap().keySet());
     }
 
+    @Override
     public boolean has(String id)
     {
         return items.getMap().containsKey(id);

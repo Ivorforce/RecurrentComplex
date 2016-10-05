@@ -7,7 +7,7 @@ package ivorius.reccomplex.world.gen.feature.structure.generic;
 
 import com.google.gson.*;
 import ivorius.reccomplex.json.JsonUtils;
-import ivorius.reccomplex.world.gen.feature.structure.generic.matchers.DimensionMatcher;
+import ivorius.reccomplex.utils.expression.DimensionMatcher;
 import net.minecraft.world.WorldProvider;
 
 import java.lang.reflect.Type;

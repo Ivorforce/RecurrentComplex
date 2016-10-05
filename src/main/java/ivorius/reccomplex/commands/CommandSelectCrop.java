@@ -7,7 +7,7 @@ package ivorius.reccomplex.commands;
 
 import ivorius.ivtoolkit.blocks.BlockArea;
 import ivorius.reccomplex.RecurrentComplex;
-import ivorius.reccomplex.world.gen.feature.structure.generic.matchers.PositionedBlockMatcher;
+import ivorius.reccomplex.utils.expression.PositionedBlockMatcher;
 import net.minecraft.util.math.BlockPos;
 import ivorius.reccomplex.RCConfig;
 import ivorius.reccomplex.entities.StructureEntityInfo;

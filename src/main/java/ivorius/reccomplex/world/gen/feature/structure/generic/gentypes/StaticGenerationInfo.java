@@ -16,7 +16,7 @@ import ivorius.reccomplex.gui.table.TableNavigator;
 import ivorius.reccomplex.json.JsonUtils;
 import ivorius.reccomplex.world.gen.feature.structure.Placer;
 import ivorius.reccomplex.world.gen.feature.structure.generic.placement.GenericPlacer;
-import ivorius.reccomplex.world.gen.feature.structure.generic.matchers.DimensionMatcher;
+import ivorius.reccomplex.utils.expression.DimensionMatcher;
 import ivorius.reccomplex.world.gen.feature.structure.generic.presets.GenericPlacerPresets;
 import ivorius.reccomplex.utils.BlockSurfacePos;
 import ivorius.reccomplex.utils.presets.PresettedObject;

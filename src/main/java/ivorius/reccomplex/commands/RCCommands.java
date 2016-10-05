@@ -12,7 +12,7 @@ import ivorius.reccomplex.utils.BlockSurfacePos;
 import ivorius.reccomplex.utils.ServerTranslations;
 import ivorius.reccomplex.world.gen.feature.structure.StructureInfo;
 import ivorius.reccomplex.world.gen.feature.structure.StructureRegistry;
-import ivorius.reccomplex.world.gen.feature.structure.generic.matchers.ResourceMatcher;
+import ivorius.reccomplex.utils.expression.ResourceMatcher;
 import net.minecraft.command.*;
 import net.minecraft.entity.Entity;
 import net.minecraft.util.math.BlockPos;

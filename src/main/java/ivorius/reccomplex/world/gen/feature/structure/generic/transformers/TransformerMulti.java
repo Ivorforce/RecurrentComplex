@@ -15,7 +15,7 @@ import ivorius.reccomplex.gui.table.TableDelegate;
 import ivorius.reccomplex.gui.table.TableNavigator;
 import ivorius.reccomplex.json.JsonUtils;
 import ivorius.reccomplex.world.gen.feature.structure.*;
-import ivorius.reccomplex.world.gen.feature.structure.generic.matchers.EnvironmentMatcher;
+import ivorius.reccomplex.utils.expression.EnvironmentMatcher;
 import ivorius.reccomplex.world.gen.feature.structure.generic.presets.TransfomerPresets;
 import ivorius.reccomplex.utils.NBTStorable;
 import ivorius.reccomplex.utils.presets.PresettedObject;

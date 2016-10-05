@@ -14,7 +14,7 @@ import ivorius.reccomplex.gui.worldscripts.multi.TableDataSourceWorldScriptMulti
 import ivorius.reccomplex.world.gen.feature.structure.StructureLoadContext;
 import ivorius.reccomplex.world.gen.feature.structure.StructurePrepareContext;
 import ivorius.reccomplex.world.gen.feature.structure.StructureSpawnContext;
-import ivorius.reccomplex.world.gen.feature.structure.generic.matchers.EnvironmentMatcher;
+import ivorius.reccomplex.utils.expression.EnvironmentMatcher;
 import ivorius.reccomplex.utils.NBTStorable;
 import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTTagCompound;

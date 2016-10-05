@@ -16,7 +16,7 @@ import ivorius.reccomplex.json.JsonUtils;
 import ivorius.reccomplex.world.gen.feature.structure.Environment;
 import ivorius.reccomplex.world.gen.feature.structure.Placer;
 import ivorius.reccomplex.world.gen.feature.structure.generic.BlockPattern;
-import ivorius.reccomplex.world.gen.feature.structure.generic.matchers.EnvironmentMatcher;
+import ivorius.reccomplex.utils.expression.EnvironmentMatcher;
 import ivorius.reccomplex.world.gen.feature.structure.generic.placement.GenericPlacer;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;

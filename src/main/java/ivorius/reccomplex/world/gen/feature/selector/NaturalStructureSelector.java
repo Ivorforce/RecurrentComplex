@@ -8,8 +8,8 @@ package ivorius.reccomplex.world.gen.feature.selector;
 import com.google.gson.annotations.SerializedName;
 import ivorius.reccomplex.RCConfig;
 import ivorius.reccomplex.files.SimpleLeveledRegistry;
-import ivorius.reccomplex.world.gen.feature.structure.generic.matchers.BiomeMatcher;
-import ivorius.reccomplex.world.gen.feature.structure.generic.matchers.DimensionMatcher;
+import ivorius.reccomplex.utils.expression.BiomeMatcher;
+import ivorius.reccomplex.utils.expression.DimensionMatcher;
 import net.minecraft.world.WorldProvider;
 import net.minecraft.world.biome.Biome;
 

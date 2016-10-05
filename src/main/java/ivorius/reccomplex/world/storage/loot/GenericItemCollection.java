@@ -14,7 +14,7 @@ import ivorius.reccomplex.RecurrentComplex;
 import ivorius.reccomplex.json.ItemStackSerializer;
 import ivorius.reccomplex.json.JsonUtils;
 import ivorius.reccomplex.json.NbtToJson;
-import ivorius.reccomplex.world.gen.feature.structure.generic.matchers.DependencyMatcher;
+import ivorius.reccomplex.utils.expression.DependencyMatcher;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.WeightedRandom;
 import net.minecraft.world.WorldServer;

@@ -10,9 +10,9 @@ import ivorius.reccomplex.gui.table.cell.TableCellString;
 import ivorius.reccomplex.gui.table.cell.TableCellTitle;
 import ivorius.reccomplex.gui.table.cell.TableElementCell;
 import ivorius.reccomplex.gui.table.datasource.TableDataSource;
-import ivorius.reccomplex.world.gen.feature.structure.generic.matchers.*;
+import ivorius.reccomplex.utils.expression.*;
 import ivorius.ivtoolkit.tools.IvTranslations;
-import ivorius.reccomplex.utils.FunctionExpressionCache;
+import ivorius.reccomplex.utils.algebra.FunctionExpressionCache;
 import net.minecraft.util.text.TextFormatting;
 import org.apache.commons.lang3.StringUtils;
 

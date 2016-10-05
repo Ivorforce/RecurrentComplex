@@ -20,6 +20,8 @@ public interface LeveledRegistry<S>
 
     Status status(String id);
 
+    boolean has(String id);
+
     Set<String> ids();
 
     void clear(ILevel level);

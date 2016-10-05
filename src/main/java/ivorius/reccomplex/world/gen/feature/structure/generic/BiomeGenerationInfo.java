@@ -7,7 +7,7 @@ package ivorius.reccomplex.world.gen.feature.structure.generic;
 
 import com.google.gson.*;
 import ivorius.reccomplex.json.JsonUtils;
-import ivorius.reccomplex.world.gen.feature.structure.generic.matchers.BiomeMatcher;
+import ivorius.reccomplex.utils.expression.BiomeMatcher;
 import net.minecraft.world.biome.Biome;
 
 import java.lang.reflect.Type;

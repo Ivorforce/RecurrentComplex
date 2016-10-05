@@ -186,7 +186,7 @@ public class RCCommands
 
     public static WorldServer tryParseDimension(ICommandSender commandSender, String[] args, int dimIndex) throws CommandException
     {
-        WorldServer world = args.length > dimIndex ? DimensionManager.getWorld(CommandBase.parseInt(args[dimIndex])) : (WorldServer) commandSender.getEntityWorld();
+        WorldServer world = args.length <= dimIndex || args[dimIndex].equals("~") ? (WorldServer) commandSender.getEntityWorld() : DimensionManager.getWorld(CommandBase.parseInt(args[dimIndex]));
         if (world == null)
             throw ServerTranslations.commandException("commands.rc.nodimension");
         return world;

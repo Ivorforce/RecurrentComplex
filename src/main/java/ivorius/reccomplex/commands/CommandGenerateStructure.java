@@ -111,7 +111,7 @@ public class CommandGenerateStructure extends CommandBase
     public List<String> getTabCompletionOptions(MinecraftServer server, ICommandSender sender, String[] args, @Nullable BlockPos pos)
     {
         if (args.length == 2 || args.length == 3)
-            return getTabCompletionCoordinateXZ(args, args.length - 1, pos);
+            return getTabCompletionCoordinateXZ(args, 0, pos);
 
         return tabCompletionOptions(args, 0, 3, 4);
     }

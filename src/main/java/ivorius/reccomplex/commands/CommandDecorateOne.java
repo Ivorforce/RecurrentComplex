@@ -56,7 +56,7 @@ public class CommandDecorateOne extends CommandBase
     public List<String> getTabCompletionOptions(MinecraftServer server, ICommandSender sender, String[] args, @Nullable BlockPos pos)
     {
         if (args.length == 1 || args.length == 2)
-            return getTabCompletionCoordinateXZ(args, args.length, pos);
+            return getTabCompletionCoordinateXZ(args, 0, pos);
 
         return Collections.emptyList();
     }

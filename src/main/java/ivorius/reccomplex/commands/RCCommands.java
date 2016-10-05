@@ -10,6 +10,9 @@ import ivorius.reccomplex.RecurrentComplex;
 import ivorius.reccomplex.entities.StructureEntityInfo;
 import ivorius.reccomplex.utils.BlockSurfacePos;
 import ivorius.reccomplex.utils.ServerTranslations;
+import ivorius.reccomplex.world.gen.feature.structure.StructureInfo;
+import ivorius.reccomplex.world.gen.feature.structure.StructureRegistry;
+import ivorius.reccomplex.world.gen.feature.structure.generic.matchers.ResourceMatcher;
 import net.minecraft.command.*;
 import net.minecraft.entity.Entity;
 import net.minecraft.util.math.BlockPos;
@@ -24,6 +27,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Set;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 /**
@@ -190,6 +194,26 @@ public class RCCommands
         if (world == null)
             throw ServerTranslations.commandException("commands.rc.nodimension");
         return world;
+    }
+
+    @Nonnull
+    protected static ResourceMatcher tryParseResourceMatcher(String[] args, int startPos)
+    {
+        return new ResourceMatcher(args.length >= startPos ? CommandBase.buildString(args, startPos) : "", (s1) -> !s1.isEmpty());
+    }
+
+    @Nonnull
+    protected static Predicate<StructureInfo> tryParseStructurePredicate(String[] args, int startPos)
+    {
+        return args.length >= startPos
+                ? s -> tryParseResourceMatcher(args, startPos).test(StructureRegistry.INSTANCE.resourceLocation(s))
+                : structureInfo -> true;
+    }
+
+    @Nonnull
+    protected static List<String> completeResourceMatcher(String[] args)
+    {
+        return CommandBase.getListOfStringsMatchingLastWord(args, StructureRegistry.INSTANCE.ids());
     }
 
     public static void informDeleteResult(Pair<Set<Path>, Set<Path>> result, ICommandSender sender, String filetype, String id, String path)

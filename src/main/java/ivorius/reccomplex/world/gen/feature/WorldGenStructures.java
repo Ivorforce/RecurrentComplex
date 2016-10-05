@@ -8,15 +8,15 @@ package ivorius.reccomplex.world.gen.feature;
 import ivorius.ivtoolkit.math.IvVecMathHelper;
 import ivorius.reccomplex.RCConfig;
 import ivorius.reccomplex.RecurrentComplex;
+import ivorius.reccomplex.utils.BlockSurfacePos;
+import ivorius.reccomplex.world.gen.feature.selector.MixingStructureSelector;
+import ivorius.reccomplex.world.gen.feature.selector.NaturalStructureSelector;
 import ivorius.reccomplex.world.gen.feature.structure.StructureInfo;
 import ivorius.reccomplex.world.gen.feature.structure.StructureInfos;
 import ivorius.reccomplex.world.gen.feature.structure.StructureRegistry;
 import ivorius.reccomplex.world.gen.feature.structure.StructureSpawnContext;
 import ivorius.reccomplex.world.gen.feature.structure.generic.gentypes.NaturalGenerationInfo;
 import ivorius.reccomplex.world.gen.feature.structure.generic.gentypes.StaticGenerationInfo;
-import ivorius.reccomplex.utils.BlockSurfacePos;
-import ivorius.reccomplex.world.gen.feature.selector.MixingStructureSelector;
-import ivorius.reccomplex.world.gen.feature.selector.NaturalStructureSelector;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.ChunkPos;
 import net.minecraft.util.math.MathHelper;
@@ -24,22 +24,26 @@ import net.minecraft.world.WorldServer;
 import net.minecraft.world.biome.Biome;
 import org.apache.commons.lang3.tuple.Pair;
 
+import javax.annotation.Nullable;
 import java.util.List;
 import java.util.Random;
+import java.util.function.Predicate;
 
 /**
  * Created by lukas on 24.05.14.
  */
 public class WorldGenStructures
 {
-
-    public static void generateStaticStructuresInChunk(Random random, ChunkPos chunkPos, WorldServer world, BlockPos spawnPos)
+    public static void generateStaticStructuresInChunk(Random random, ChunkPos chunkPos, WorldServer world, BlockPos spawnPos, @Nullable Predicate<StructureInfo> structurePredicate)
     {
         StructureRegistry.INSTANCE.getStaticStructuresAt(chunkPos, world, spawnPos).forEach(triple ->
         {
             StaticGenerationInfo staticGenInfo = triple.getMiddle();
             StructureInfo structureInfo = triple.getLeft();
             BlockSurfacePos pos = triple.getRight();
+
+            if (structurePredicate != null && !structurePredicate.test(structureInfo))
+                return;
 
             RecurrentComplex.logger.trace(String.format("Spawning static structure at %s", pos));
 
@@ -52,10 +56,10 @@ public class WorldGenStructures
     {
         return MathHelper.sqrt_float(
                 (left.chunkXPos - right.chunkXPos) * (left.chunkXPos - right.chunkXPos) +
-                (left.chunkZPos - right.chunkZPos) * (left.chunkZPos - right.chunkZPos));
+                        (left.chunkZPos - right.chunkZPos) * (left.chunkZPos - right.chunkZPos));
     }
 
-    public static void generateRandomStructuresInChunk(Random random, ChunkPos chunkPos, WorldServer world, Biome biomeGen)
+    public static void generateRandomStructuresInChunk(Random random, ChunkPos chunkPos, WorldServer world, Biome biomeGen, @Nullable Predicate<StructureInfo> structurePredicate)
     {
         MixingStructureSelector<NaturalGenerationInfo, NaturalStructureSelector.Category> structureSelector = StructureRegistry.INSTANCE.naturalStructureSelectors().get(biomeGen, world.provider);
 
@@ -63,7 +67,10 @@ public class WorldGenStructures
         List<Pair<StructureInfo, NaturalGenerationInfo>> generated = structureSelector.generatedStructures(random, world.getBiome(chunkPos.getBlock(0, 0, 0)), world.provider, distanceToSpawn);
 
         for (Pair<StructureInfo, NaturalGenerationInfo> pair : generated)
-            generateStructureInChunk(random, chunkPos, world, pair);
+        {
+            if (structurePredicate == null || structurePredicate.test(pair.getLeft()))
+                generateStructureInChunk(random, chunkPos, world, pair);
+        }
     }
 
     public static boolean generateRandomStructureInChunk(Random random, ChunkPos chunkPos, WorldServer world, Biome biomeGen)
@@ -121,21 +128,22 @@ public class WorldGenStructures
         }
     }
 
-    public static void decorate(WorldServer world, Random random, ChunkPos chunkPos, boolean ignoreCheck)
+    public static void decorate(WorldServer world, Random random, ChunkPos chunkPos, @Nullable Predicate<StructureInfo> structurePredicate)
     {
         boolean worldWantsStructures = world.getWorldInfo().isMapFeaturesEnabled();
         StructureGenerationData data = StructureGenerationData.get(world);
 
-        generatePartialStructuresInChunk(random, chunkPos, world);
+        if (structurePredicate == null)
+            generatePartialStructuresInChunk(random, chunkPos, world);
 
         if (!RCConfig.honorStructureGenerationOption || worldWantsStructures)
         {
             Biome biomeGen = world.getBiome(chunkPos.getBlock(8, 0, 8));
             BlockPos spawnPos = world.getSpawnPoint();
 
-            if (ignoreCheck || data.checkChunk(chunkPos))
+            if (structurePredicate == null || data.checkChunk(chunkPos))
             {
-                generateStaticStructuresInChunk(random, chunkPos, world, spawnPos);
+                generateStaticStructuresInChunk(random, chunkPos, world, spawnPos, structurePredicate);
 
                 boolean mayGenerate = RCConfig.isGenerationEnabled(biomeGen) && RCConfig.isGenerationEnabled(world.provider);
 
@@ -146,7 +154,7 @@ public class WorldGenStructures
                 }
 
                 if (mayGenerate)
-                    generateRandomStructuresInChunk(random, chunkPos, world, biomeGen);
+                    generateRandomStructuresInChunk(random, chunkPos, world, biomeGen, structurePredicate);
             }
         }
     }

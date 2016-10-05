@@ -12,6 +12,8 @@ import ivorius.reccomplex.files.loading.FileSuffixFilter;
 import ivorius.reccomplex.utils.ServerTranslations;
 import ivorius.reccomplex.world.gen.feature.StructureGenerationData;
 import ivorius.reccomplex.world.gen.feature.WorldGenStructures;
+import ivorius.reccomplex.world.gen.feature.structure.StructureInfo;
+import ivorius.reccomplex.world.gen.feature.structure.StructureRegistry;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
@@ -27,7 +29,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.io.File;
 import java.util.*;
-import java.util.stream.Collectors;
+import java.util.function.Predicate;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
@@ -73,10 +75,11 @@ public class CommandRetrogen extends CommandBase
         return world.setRandomSeed(pos.chunkXPos, pos.chunkZPos, 0xDEADBEEF);
     }
 
-    public static void retrogen(WorldServer world)
+    public static void retrogen(WorldServer world, Predicate<StructureInfo> structurePredicate)
     {
         StructureGenerationData data = StructureGenerationData.get(world);
-        data.checkAllChunks(existingChunks(world)).forEach(pos -> WorldGenStructures.decorate(world, getRandom(world, pos), pos, false));
+        data.checkAllChunks(existingChunks(world))
+                .forEach(pos -> WorldGenStructures.decorate(world, getRandom(world, pos), pos, structurePredicate));
     }
 
     @Override
@@ -99,7 +102,7 @@ public class CommandRetrogen extends CommandBase
     @Override
     public void execute(MinecraftServer server, ICommandSender commandSender, String[] args) throws CommandException
     {
-        retrogen(RCCommands.tryParseDimension(commandSender, args, 0));
+        retrogen(RCCommands.tryParseDimension(commandSender, args, 0), RCCommands.tryParseStructurePredicate(args, 4));
     }
 
     @Override
@@ -107,6 +110,8 @@ public class CommandRetrogen extends CommandBase
     {
         if (args.length == 1)
             return RCCommands.completeDimension(args);
+        else if (args.length >= 2)
+            return RCCommands.completeResourceMatcher(args);
 
         return Collections.emptyList();
     }

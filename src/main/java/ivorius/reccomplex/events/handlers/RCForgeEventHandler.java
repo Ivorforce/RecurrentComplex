@@ -68,7 +68,7 @@ public class RCForgeEventHandler
     @SubscribeEvent
     public void onPreChunkDecoration(PopulateChunkEvent.Pre event)
     {
-        WorldGenStructures.decorate((WorldServer) event.getWorld(), event.getRand(), new ChunkPos(event.getChunkX(), event.getChunkZ()), false);
+        WorldGenStructures.decorate((WorldServer) event.getWorld(), event.getRand(), new ChunkPos(event.getChunkX(), event.getChunkZ()), null);
     }
 
     @SubscribeEvent

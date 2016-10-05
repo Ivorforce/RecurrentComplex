@@ -8,6 +8,7 @@ package ivorius.reccomplex.files;
 import ivorius.reccomplex.RecurrentComplex;
 import ivorius.reccomplex.files.loading.LeveledRegistry;
 import ivorius.reccomplex.utils.LeveledBiMap;
+import net.minecraft.util.ResourceLocation;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -111,6 +112,12 @@ public class SimpleLeveledRegistry<S> implements LeveledRegistry<S>
     public String id(S s)
     {
         return items.getMap().inverse().get(s);
+    }
+
+    public ResourceLocation resourceLocation(S s)
+    {
+        String id = id(s);
+        return new ResourceLocation(status(id).domain, id);
     }
 
     @Override

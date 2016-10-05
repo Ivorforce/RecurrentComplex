@@ -164,9 +164,10 @@ commands.rcsearch.lookup=Look Up
 
 commands.rcfiles.usage=/#files
 
-commands.rcdecorate.usage=/#decorate <x min> <z min> <x max> <z max>
+commands.rcdecorate.usage=/#decorate <x min> <z min> <x max> <z max> [resource matcher: only generate these structures]
 commands.rcdecorateone.usage=/#decorateone [x] [z]
 commands.rcdecorateone.none=No suitable structures found!
+commands.rcretro.usage=/#retro [dimension] [resource matcher: only generate these structures]
 
 commands.rcenable.usage=/#enable <registry id> <element id>
 commands.rcdisable.usage=/#enable <registry id> <element id>

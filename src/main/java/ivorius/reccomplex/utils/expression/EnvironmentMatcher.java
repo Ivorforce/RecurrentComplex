@@ -5,6 +5,8 @@
 
 package ivorius.reccomplex.utils.expression;
 
+import ivorius.reccomplex.RecurrentComplex;
+import ivorius.reccomplex.files.saving.FileSaver;
 import ivorius.reccomplex.utils.algebra.BoolFunctionExpressionCache;
 import ivorius.reccomplex.utils.algebra.RCBoolAlgebra;
 import ivorius.reccomplex.world.gen.feature.structure.Environment;
@@ -77,11 +79,23 @@ public class EnvironmentMatcher extends BoolFunctionExpressionCache<Environment,
         }
     }
 
-    public static class DependencyVariableType extends DelegatingVariableType<Boolean, Environment, Object, Object, Object, DependencyMatcher>
+    public static class DependencyVariableType extends DelegatingVariableType<Boolean, Environment, Object, FileSaver, FileSaver, DependencyMatcher>
     {
         public DependencyVariableType(String prefix, String suffix)
         {
             super(prefix, suffix);
+        }
+
+        @Override
+        public FileSaver convertEvaluateArgument(Environment environment)
+        {
+            return RecurrentComplex.saver;
+        }
+
+        @Override
+        public FileSaver convertIsKnownArgument(Object o)
+        {
+            return RecurrentComplex.saver;
         }
 
         @Override

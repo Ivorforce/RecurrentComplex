@@ -13,6 +13,7 @@ import ivorius.reccomplex.block.*;
 import ivorius.reccomplex.block.materials.MaterialNegativeSpace;
 import ivorius.reccomplex.block.materials.RCMaterials;
 import ivorius.reccomplex.entities.StructureEntityInfo;
+import ivorius.reccomplex.files.RCFileSaver;
 import ivorius.reccomplex.files.loading.FileLoaderRegistryString;
 import ivorius.reccomplex.files.loading.LeveledRegistry;
 import ivorius.reccomplex.files.loading.RCFileSuffix;
@@ -70,6 +71,7 @@ import static ivorius.reccomplex.item.RCItems.*;
  */
 public class RCRegistryHandler
 {
+
     public static void preInit(FMLPreInitializationEvent event, RecurrentComplex mod)
     {
         if (!RecurrentComplex.isLite())
@@ -253,16 +255,16 @@ public class RCRegistryHandler
         loader.register(GenericPlacerPresets.instance().loader());
         loader.register(TransfomerPresets.instance().loader());
 
-        saver.register(StructureSaveHandler.INSTANCE.new Saver("structure"));
-        saver.register(new FileSaverString<>("inventory_generation_component", RCFileSuffix.INVENTORY_GENERATION_COMPONENT,
+        saver.register(StructureSaveHandler.INSTANCE.new Saver(RCFileSaver.STRUCTURE));
+        saver.register(new FileSaverString<>(RCFileSaver.INVENTORY_GENERATION_COMPONENT, RCFileSuffix.INVENTORY_GENERATION_COMPONENT,
                 GenericItemCollectionRegistry.INSTANCE, ItemCollectionSaveHandler.INSTANCE::toJSON));
-        saver.register(new FileSaverString<>("natural_generation_category", RCFileSuffix.NATURAL_CATEGORY,
+        saver.register(new FileSaverString<>(RCFileSaver.NATURAL_GENERATION_CATEGORY, RCFileSuffix.NATURAL_CATEGORY,
                 NaturalStructureSelector.CATEGORY_REGISTRY, NaturalStructureSelector.SimpleCategory.class));
-        saver.register(BiomeMatcherPresets.instance().saver("biome_preset"));
-        saver.register(DimensionMatcherPresets.instance().saver("dimension_preset"));
-        saver.register(WeightedBlockStatePresets.instance().saver("bloc_preset"));
-        saver.register(GenericPlacerPresets.instance().saver("placer_preset"));
-        saver.register(TransfomerPresets.instance().saver("transformer_preset"));
+        saver.register(BiomeMatcherPresets.instance().saver(RCFileSaver.BIOME_PRESET));
+        saver.register(DimensionMatcherPresets.instance().saver(RCFileSaver.DIMENSION_PRESET));
+        saver.register(WeightedBlockStatePresets.instance().saver(RCFileSaver.BLOCK_PRESET));
+        saver.register(GenericPlacerPresets.instance().saver(RCFileSaver.PLACER_PRESET));
+        saver.register(TransfomerPresets.instance().saver(RCFileSaver.TRANSFORMER_PRESET));
 
         WorldScriptRegistry worldScriptRegistry = WorldScriptRegistry.INSTANCE;
         worldScriptRegistry.register("multi", WorldScriptMulti.class);

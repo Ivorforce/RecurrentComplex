@@ -5,6 +5,7 @@
 
 package ivorius.reccomplex.gui.editstructure;
 
+import ivorius.reccomplex.files.RCFileSaver;
 import ivorius.reccomplex.gui.editstructure.preset.TableDataSourcePresettedList;
 import ivorius.reccomplex.gui.editstructure.preset.TableDataSourcePresettedObject;
 import ivorius.reccomplex.gui.table.datasource.TableDataSource;
@@ -25,7 +26,7 @@ public class TableDataSourceWeightedBlockStateList extends TableDataSourceSegmen
 {
     public TableDataSourceWeightedBlockStateList(PresettedList<WeightedBlockState> list, TableDelegate delegate, TableNavigator navigator)
     {
-        addManagedSegment(0, new TableDataSourcePresettedObject<>(list, delegate, navigator)
+        addManagedSegment(0, new TableDataSourcePresettedObject<>(list, RCFileSaver.BLOCK_PRESET, delegate, navigator)
                 .withApplyPresetAction(() -> addPresetSegments(list, delegate, navigator)));
 
         addPresetSegments(list, delegate, navigator);

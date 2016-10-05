@@ -8,6 +8,7 @@ package ivorius.reccomplex.network;
 import ivorius.ivtoolkit.network.SchedulingMessageHandler;
 import ivorius.reccomplex.RecurrentComplex;
 import ivorius.reccomplex.commands.RCCommands;
+import ivorius.reccomplex.files.RCFileSaver;
 import ivorius.reccomplex.files.loading.LeveledRegistry;
 import ivorius.reccomplex.files.loading.RCFileSuffix;
 import ivorius.reccomplex.item.ItemInventoryGenComponentTag;
@@ -42,10 +43,10 @@ public class PacketSaveInvGenComponentHandler extends SchedulingMessageHandler<P
         GenericItemCollectionRegistry.INSTANCE.register(id, "", message.getInventoryGenerator(), saveDirectoryDataResult.directory.isActive(), LeveledRegistry.Level.CUSTOM);
 
         if (RCCommands.informSaveResult((message.getInventoryGenerator() != null && id != null) &&
-                RecurrentComplex.saver.trySave(saveDirectoryDataResult.directory.toPath(), RCFileSuffix.INVENTORY_GENERATION_COMPONENT, id), player, path, "inventory_generator", id))
+                RecurrentComplex.saver.trySave(saveDirectoryDataResult.directory.toPath(), RCFileSuffix.INVENTORY_GENERATION_COMPONENT, id), player, path, RCFileSaver.INVENTORY_GENERATION_COMPONENT, id))
         {
             if (saveDirectoryDataResult.deleteOther)
-                RCCommands.informDeleteResult(RecurrentComplex.saver.tryDelete(saveDirectoryDataResult.directory.opposite().toPath(), id, RCFileSuffix.INVENTORY_GENERATION_COMPONENT), player, "inventory_generator", id, saveDirectoryDataResult.directory.opposite().subDirectoryName());
+                RCCommands.informDeleteResult(RecurrentComplex.saver.tryDelete(saveDirectoryDataResult.directory.opposite().toPath(), id, RCFileSuffix.INVENTORY_GENERATION_COMPONENT), player, RCFileSaver.INVENTORY_GENERATION_COMPONENT, id, saveDirectoryDataResult.directory.opposite().subDirectoryName());
 
             ItemStack heldItem = playServer.playerEntity.getHeldItem(EnumHand.MAIN_HAND);
             if (heldItem != null && heldItem.getItem() instanceof ItemInventoryGenComponentTag)

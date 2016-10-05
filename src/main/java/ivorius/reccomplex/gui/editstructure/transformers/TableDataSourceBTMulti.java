@@ -6,6 +6,7 @@
 package ivorius.reccomplex.gui.editstructure.transformers;
 
 import ivorius.ivtoolkit.tools.IvTranslations;
+import ivorius.reccomplex.files.RCFileSaver;
 import ivorius.reccomplex.gui.TableDataSourceExpression;
 import ivorius.reccomplex.gui.editstructure.TableDataSourceTransformerList;
 import ivorius.reccomplex.gui.editstructure.preset.TableDataSourcePresettedObject;
@@ -34,7 +35,7 @@ public class TableDataSourceBTMulti extends TableDataSourceSegmented
 
         addPresetSections(transformer, navigator, delegate);
 
-        addManagedSegment(3, new TableDataSourcePresettedObject<>(transformer.getData(), delegate, navigator)
+        addManagedSegment(3, new TableDataSourcePresettedObject<>(transformer.getData(), RCFileSaver.TRANSFORMER_PRESET, delegate, navigator)
                 .withApplyPresetAction(() -> addPresetSections(transformer, navigator, delegate)));
     }
 

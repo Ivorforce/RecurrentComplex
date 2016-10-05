@@ -24,19 +24,23 @@ public class TableDataSourcePresettedObject<T> extends TableDataSourceSegmented
 {
     public TableDelegate delegate;
     public TableNavigator navigator;
+
     public PresettedObject<T> object;
+    public String saverID;
+
     public Runnable applyPresetAction;
 
-    public TableDataSourcePresettedObject(PresettedObject<T> object, TableDelegate delegate, TableNavigator navigator)
+    public TableDataSourcePresettedObject(PresettedObject<T> object, String saverID, TableDelegate delegate, TableNavigator navigator)
     {
         this.object = object;
+        this.saverID = saverID;
 
         this.delegate = delegate;
         this.navigator = navigator;
     }
 
     @Nonnull
-    public static <T> TableElement getCustomizeElement(PresettedObject<T> object, TableDelegate delegate, TableNavigator navigator, Runnable applyPresetAction)
+    public static <T> TableElement getCustomizeElement(PresettedObject<T> object, String saverID, TableDelegate delegate, TableNavigator navigator, Runnable applyPresetAction)
     {
         if (!object.isCustom())
         {
@@ -56,8 +60,8 @@ public class TableDataSourcePresettedObject<T> extends TableDataSourceSegmented
         {
             return TableCellMultiBuilder.create(navigator, delegate)
                     .addNavigation(() -> IvTranslations.get("reccomplex.preset.save"), null,
-                            () -> new TableDataSourceSavePreset<>(object, delegate, navigator)
-                    ).buildElement();
+                            () -> new TableDataSourceSavePreset<>(object, saverID, delegate, navigator)
+                    ).enabled(() -> saverID != null).buildElement();
         }
     }
 
@@ -115,7 +119,7 @@ public class TableDataSourcePresettedObject<T> extends TableDataSourceSegmented
             if (index == 0)
                 return getSetElement(object, delegate, getPresetActions(), applyPresetAction);
             else if (index == 1)
-                return getCustomizeElement(object, delegate, navigator, applyPresetAction);
+                return getCustomizeElement(object, saverID, delegate, navigator, applyPresetAction);
         }
 
         return super.elementForIndexInSegment(table, index, segment);

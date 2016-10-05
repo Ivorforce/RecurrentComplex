@@ -36,13 +36,13 @@ public class FunctionExpressionCache<T, A, U> extends ExpressionCache<T>
         types.add(type);
     }
 
-    public void addTypes(Collection<VariableType<T, A, U>> types)
+    public void addTypes(Collection<VariableType<T, ? super A, ? super U>> types)
     {
         this.types.addAll(types);
     }
 
     @SafeVarargs
-    public final void addTypes(VariableType<T, A, U> type, Function<VariableType<T, A, U>, VariableType<T, A, U>>... functions)
+    public final void addTypes(VariableType<T, ? super A, ? super U> type, Function<VariableType<T, ? super A, ? super U>, VariableType<T, ? super A, ? super U>>... functions)
     {
         addType(type);
         addTypes(IvLists.enumerate(type, functions));

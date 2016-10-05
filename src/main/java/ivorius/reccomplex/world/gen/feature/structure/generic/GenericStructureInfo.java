@@ -322,7 +322,7 @@ public class GenericStructureInfo implements StructureInfo<GenericStructureInfo.
     @Override
     public boolean areDependenciesResolved()
     {
-        return dependencies.getAsBoolean();
+        return dependencies.test(RecurrentComplex.saver);
     }
 
     @Nullable

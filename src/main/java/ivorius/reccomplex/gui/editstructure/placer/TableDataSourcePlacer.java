@@ -5,6 +5,7 @@
 
 package ivorius.reccomplex.gui.editstructure.placer;
 
+import ivorius.reccomplex.files.RCFileSaver;
 import ivorius.reccomplex.gui.editstructure.preset.TableDataSourcePresettedObject;
 import ivorius.reccomplex.gui.table.datasource.TableDataSourceSegmented;
 import ivorius.reccomplex.gui.table.TableDelegate;
@@ -19,7 +20,7 @@ public class TableDataSourcePlacer extends TableDataSourceSegmented
 {
     public TableDataSourcePlacer(PresettedObject<GenericPlacer> object, TableDelegate delegate, TableNavigator navigator)
     {
-        addManagedSegment(0, new TableDataSourcePresettedObject<>(object, delegate, navigator)
+        addManagedSegment(0, new TableDataSourcePresettedObject<>(object, RCFileSaver.PLACER_PRESET, delegate, navigator)
                 .withApplyPresetAction(() -> addPresetSegments(object, delegate, navigator)));
 
         addPresetSegments(object, delegate, navigator);

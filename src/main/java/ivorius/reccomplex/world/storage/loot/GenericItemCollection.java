@@ -108,7 +108,7 @@ public class GenericItemCollection implements WeightedItemCollection
 
         public boolean areDependenciesResolved()
         {
-            return dependencies.getAsBoolean();
+            return dependencies.test(RecurrentComplex.saver);
         }
 
         public void updateWeightCache()

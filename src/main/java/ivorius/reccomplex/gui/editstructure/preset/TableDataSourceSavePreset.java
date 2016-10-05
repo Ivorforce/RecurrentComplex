@@ -10,15 +10,17 @@ import ivorius.reccomplex.RecurrentComplex;
 import ivorius.reccomplex.files.loading.LeveledRegistry;
 import ivorius.reccomplex.files.loading.ResourceDirectory;
 import ivorius.reccomplex.gui.GuiValidityStateIndicator;
-import ivorius.reccomplex.gui.table.*;
+import ivorius.reccomplex.gui.table.TableDelegate;
+import ivorius.reccomplex.gui.table.TableElements;
+import ivorius.reccomplex.gui.table.TableNavigator;
 import ivorius.reccomplex.gui.table.cell.TableCellMultiBuilder;
 import ivorius.reccomplex.gui.table.cell.TableCellString;
 import ivorius.reccomplex.gui.table.cell.TableElementCell;
 import ivorius.reccomplex.gui.table.datasource.TableDataSourceSegmented;
 import ivorius.reccomplex.gui.table.datasource.TableDataSourceSupplied;
-import ivorius.reccomplex.world.gen.feature.structure.StructureInfos;
 import ivorius.reccomplex.utils.PresetRegistry;
 import ivorius.reccomplex.utils.presets.PresettedObject;
+import ivorius.reccomplex.world.gen.feature.structure.StructureInfos;
 
 import java.util.stream.Collectors;
 
@@ -28,6 +30,7 @@ import java.util.stream.Collectors;
 public class TableDataSourceSavePreset<T> extends TableDataSourceSegmented
 {
     public PresettedObject<T> object;
+    public String saverID;
 
     public String id = "";
     public String title = "";
@@ -36,9 +39,10 @@ public class TableDataSourceSavePreset<T> extends TableDataSourceSegmented
     public TableDelegate delegate;
     public TableNavigator navigator;
 
-    public TableDataSourceSavePreset(PresettedObject<T> object, TableDelegate delegate, TableNavigator navigator)
+    public TableDataSourceSavePreset(PresettedObject<T> object, String saverID, TableDelegate delegate, TableNavigator navigator)
     {
         this.object = object;
+        this.saverID = saverID;
         this.delegate = delegate;
         this.navigator = navigator;
 
@@ -87,7 +91,7 @@ public class TableDataSourceSavePreset<T> extends TableDataSourceSegmented
 
         object.getPresetRegistry().getRegistry().register(id, "", PresetRegistry.fullPreset(id, object.getContents(), new PresetRegistry.Metadata(title, description.split("<br>"))), true, LeveledRegistry.Level.CUSTOM);
 
-        RecurrentComplex.saver.trySave(ResourceDirectory.ACTIVE.toPath(), object.getPresetRegistry().getFileSuffix(), id);
+        RecurrentComplex.saver.trySave(ResourceDirectory.ACTIVE.toPath(), saverID, id);
 
         navigator.popTable();
         object.setPreset(id);

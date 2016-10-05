@@ -5,6 +5,7 @@
 
 package ivorius.reccomplex.gui.editstructure;
 
+import ivorius.reccomplex.files.RCFileSaver;
 import ivorius.reccomplex.gui.editstructure.preset.TableDataSourcePresettedList;
 import ivorius.reccomplex.gui.editstructure.preset.TableDataSourcePresettedObject;
 import ivorius.reccomplex.gui.table.datasource.TableDataSource;
@@ -23,7 +24,7 @@ public class TableDataSourceBiomeGenList extends TableDataSourceSegmented
 {
     public TableDataSourceBiomeGenList(PresettedList<BiomeGenerationInfo> list, TableDelegate tableDelegate, TableNavigator navigator)
     {
-        addManagedSegment(0, new TableDataSourcePresettedObject<>(list, tableDelegate, navigator)
+        addManagedSegment(0, new TableDataSourcePresettedObject<>(list, RCFileSaver.BIOME_PRESET, tableDelegate, navigator)
                 .withApplyPresetAction(() -> addPresetSegments(list, tableDelegate, navigator)));
 
         addPresetSegments(list, tableDelegate, navigator);

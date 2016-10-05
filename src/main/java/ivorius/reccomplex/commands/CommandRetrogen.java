@@ -77,9 +77,7 @@ public class CommandRetrogen extends CommandBase
 
     public static void retrogen(WorldServer world, Predicate<StructureInfo> structurePredicate)
     {
-        StructureGenerationData data = StructureGenerationData.get(world);
-        data.checkAllChunks(existingChunks(world))
-                .forEach(pos -> WorldGenStructures.decorate(world, getRandom(world, pos), pos, structurePredicate));
+        existingChunks(world).forEach(pos -> WorldGenStructures.decorate(world, getRandom(world, pos), pos, structurePredicate));
     }
 
     @Override
@@ -102,7 +100,7 @@ public class CommandRetrogen extends CommandBase
     @Override
     public void execute(MinecraftServer server, ICommandSender commandSender, String[] args) throws CommandException
     {
-        retrogen(RCCommands.tryParseDimension(commandSender, args, 0), RCCommands.tryParseStructurePredicate(args, 4));
+        retrogen(RCCommands.tryParseDimension(commandSender, args, 0), RCCommands.tryParseStructurePredicate(args, 4, () -> null));
     }
 
     @Override

@@ -28,6 +28,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 import java.util.function.Predicate;
+import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
 /**
@@ -203,11 +204,11 @@ public class RCCommands
     }
 
     @Nonnull
-    protected static Predicate<StructureInfo> tryParseStructurePredicate(String[] args, int startPos)
+    protected static Predicate<StructureInfo> tryParseStructurePredicate(String[] args, int startPos, Supplier<Predicate<StructureInfo>> fallback)
     {
         return args.length >= startPos
                 ? s -> tryParseResourceMatcher(args, startPos).test(StructureRegistry.INSTANCE.resourceLocation(s))
-                : structureInfo -> true;
+                : fallback.get();
     }
 
     @Nonnull

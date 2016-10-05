@@ -12,16 +12,16 @@ import ivorius.reccomplex.gui.table.cell.TableCellButton;
 import ivorius.reccomplex.gui.table.datasource.TableDataSource;
 import ivorius.reccomplex.gui.table.datasource.TableDataSourceList;
 import ivorius.reccomplex.world.gen.feature.structure.StructureRegistry;
-import ivorius.reccomplex.world.gen.feature.structure.generic.gentypes.StructureGenerationInfo;
+import ivorius.reccomplex.world.gen.feature.structure.generic.gentypes.GenerationInfo;
 
 import java.util.List;
 
 /**
  * Created by lukas on 04.06.14.
  */
-public class TableDataSourceStructureGenerationInfoList extends TableDataSourceList<StructureGenerationInfo, List<StructureGenerationInfo>>
+public class TableDataSourceStructureGenerationInfoList extends TableDataSourceList<GenerationInfo, List<GenerationInfo>>
 {
-    public TableDataSourceStructureGenerationInfoList(List<StructureGenerationInfo> list, TableDelegate tableDelegate, TableNavigator navigator)
+    public TableDataSourceStructureGenerationInfoList(List<GenerationInfo> list, TableDelegate tableDelegate, TableNavigator navigator)
     {
         super(list, tableDelegate, navigator);
         setUsesPresetActionForAdding(true);
@@ -36,19 +36,19 @@ public class TableDataSourceStructureGenerationInfoList extends TableDataSourceL
     }
 
     @Override
-    public String getDisplayString(StructureGenerationInfo structureGenerationInfo)
+    public String getDisplayString(GenerationInfo generationInfo)
     {
-        return structureGenerationInfo.displayString();
+        return generationInfo.displayString();
     }
 
     @Override
-    public StructureGenerationInfo newEntry(String actionID)
+    public GenerationInfo newEntry(String actionID)
     {
         return tryInstantiate(actionID, StructureRegistry.GENERATION_INFOS.typeForID(actionID), "Failed instantiating generation info: %s");
     }
 
     @Override
-    public TableDataSource editEntryDataSource(StructureGenerationInfo entry)
+    public TableDataSource editEntryDataSource(GenerationInfo entry)
     {
         return entry.tableDataSource(navigator, tableDelegate);
     }

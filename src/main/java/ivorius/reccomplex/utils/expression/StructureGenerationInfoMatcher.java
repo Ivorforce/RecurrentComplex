@@ -8,13 +8,13 @@ package ivorius.reccomplex.utils.expression;
 import ivorius.reccomplex.utils.algebra.BoolFunctionExpressionCache;
 import ivorius.reccomplex.utils.algebra.RCBoolAlgebra;
 import ivorius.reccomplex.world.gen.feature.structure.StructureRegistry;
-import ivorius.reccomplex.world.gen.feature.structure.generic.gentypes.StructureGenerationInfo;
+import ivorius.reccomplex.world.gen.feature.structure.generic.gentypes.GenerationInfo;
 import net.minecraft.util.text.TextFormatting;
 
 /**
  * Created by lukas on 01.05.15.
  */
-public class StructureGenerationInfoMatcher extends BoolFunctionExpressionCache<StructureGenerationInfo, Object>
+public class StructureGenerationInfoMatcher extends BoolFunctionExpressionCache<GenerationInfo, Object>
 {
     public static final String ID_PREFIX = "id=";
     public static final String TYPE_PREFIX = "type=";
@@ -29,7 +29,7 @@ public class StructureGenerationInfoMatcher extends BoolFunctionExpressionCache<
         testVariables();
     }
 
-    protected static class IdentifierType extends VariableType<Boolean, StructureGenerationInfo, Object>
+    protected static class IdentifierType extends VariableType<Boolean, GenerationInfo, Object>
     {
         public IdentifierType(String prefix, String suffix)
         {
@@ -37,7 +37,7 @@ public class StructureGenerationInfoMatcher extends BoolFunctionExpressionCache<
         }
 
         @Override
-        public Boolean evaluate(String var, StructureGenerationInfo info)
+        public Boolean evaluate(String var, GenerationInfo info)
         {
             return info != null && var.equals(info.id());
         }
@@ -49,7 +49,7 @@ public class StructureGenerationInfoMatcher extends BoolFunctionExpressionCache<
         }
     }
 
-    protected static class TypeType extends VariableType<Boolean, StructureGenerationInfo, Object>
+    protected static class TypeType extends VariableType<Boolean, GenerationInfo, Object>
     {
         public TypeType(String prefix, String suffix)
         {
@@ -57,7 +57,7 @@ public class StructureGenerationInfoMatcher extends BoolFunctionExpressionCache<
         }
 
         @Override
-        public Boolean evaluate(String var, StructureGenerationInfo info)
+        public Boolean evaluate(String var, GenerationInfo info)
         {
             return info != null && var.equals(StructureRegistry.GENERATION_INFOS.iDForType(info.getClass()));
         }

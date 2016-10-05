@@ -7,23 +7,23 @@ package ivorius.reccomplex.world.gen.feature.selector;
 
 import ivorius.ivtoolkit.random.WeightedSelector;
 import ivorius.reccomplex.world.gen.feature.structure.StructureInfo;
-import ivorius.reccomplex.world.gen.feature.structure.generic.gentypes.StructureGenerationInfo;
+import ivorius.reccomplex.world.gen.feature.structure.generic.gentypes.GenerationInfo;
 import net.minecraft.world.WorldProvider;
 import net.minecraft.world.biome.Biome;
 import org.apache.commons.lang3.tuple.Pair;
 
 import javax.annotation.Nullable;
-import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 import java.util.Random;
 import java.util.stream.Collectors;
 
 /**
  * Created by lukas on 24.09.16.
  */
-public class MixingStructureSelector<T extends StructureGenerationInfo & EnvironmentalSelection<C>, C extends MixingStructureSelector.Category> extends StructureSelector<T, C>
+public class MixingStructureSelector<T extends GenerationInfo & EnvironmentalSelection<C>, C extends MixingStructureSelector.Category> extends StructureSelector<T, C>
 {
-    public MixingStructureSelector(Collection<StructureInfo> structures, WorldProvider provider, Biome biome, Class<T> typeClass)
+    public MixingStructureSelector(Map<String, StructureInfo> structures, WorldProvider provider, Biome biome, Class<T> typeClass)
     {
         super(structures, provider, biome, typeClass);
     }

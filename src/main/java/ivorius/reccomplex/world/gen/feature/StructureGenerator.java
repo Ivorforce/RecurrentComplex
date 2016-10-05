@@ -12,7 +12,7 @@ import ivorius.reccomplex.events.RCEventBus;
 import ivorius.reccomplex.events.StructureGenerationEvent;
 import ivorius.reccomplex.events.StructureGenerationEventLite;
 import ivorius.reccomplex.world.gen.feature.structure.*;
-import ivorius.reccomplex.world.gen.feature.structure.generic.gentypes.StructureGenerationInfo;
+import ivorius.reccomplex.world.gen.feature.structure.generic.gentypes.GenerationInfo;
 import ivorius.reccomplex.world.gen.feature.structure.generic.placement.StructurePlaceContext;
 import ivorius.reccomplex.utils.BlockSurfacePos;
 import ivorius.reccomplex.utils.NBTStorable;
@@ -63,7 +63,7 @@ public class StructureGenerator<S extends NBTStorable>
     private StructureBoundingBox generationBB;
 
     private String generationInfoID;
-    private StructureGenerationInfo generationInfo;
+    private GenerationInfo generationInfo;
     private int generationLayer = 0;
 
     private boolean generateAsSource = false;
@@ -353,7 +353,7 @@ public class StructureGenerator<S extends NBTStorable>
         return this;
     }
 
-    public StructureGenerator<S> generationInfo(@Nullable StructureGenerationInfo generationInfo)
+    public StructureGenerator<S> generationInfo(@Nullable GenerationInfo generationInfo)
     {
         this.generationInfo = generationInfo;
         return this;

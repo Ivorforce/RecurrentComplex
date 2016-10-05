@@ -41,7 +41,7 @@ import java.util.Arrays;
 /**
  * Created by lukas on 07.10.14.
  */
-public class NaturalGenerationInfo extends StructureGenerationInfo implements EnvironmentalSelection<NaturalStructureSelector.Category>
+public class NaturalGenerationInfo extends GenerationInfo implements EnvironmentalSelection<NaturalStructureSelector.Category>
 {
     private static Gson gson = createGson();
 

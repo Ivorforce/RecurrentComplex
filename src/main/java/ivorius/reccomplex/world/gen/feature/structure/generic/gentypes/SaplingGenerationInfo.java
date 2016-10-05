@@ -28,7 +28,7 @@ import java.lang.reflect.Type;
 /**
  * Created by lukas on 19.01.15.
  */
-public class SaplingGenerationInfo extends StructureGenerationInfo
+public class SaplingGenerationInfo extends GenerationInfo
 {
     public Double generationWeight;
 
@@ -104,11 +104,6 @@ public class SaplingGenerationInfo extends StructureGenerationInfo
     public double getActiveWeight()
     {
         return generationWeight != null ? generationWeight : 1.0;
-    }
-
-    public int getVanillaWeight()
-    {
-        return MathHelper.floor_double(getActiveWeight() * RCConfig.baseVillageSpawnWeight + 0.5);
     }
 
     public static class Serializer implements JsonSerializer<SaplingGenerationInfo>, JsonDeserializer<SaplingGenerationInfo>

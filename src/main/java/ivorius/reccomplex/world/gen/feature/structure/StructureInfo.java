@@ -7,7 +7,7 @@ package ivorius.reccomplex.world.gen.feature.structure;
 
 import ivorius.ivtoolkit.blocks.IvBlockCollection;
 import ivorius.reccomplex.world.gen.feature.structure.generic.GenericStructureInfo;
-import ivorius.reccomplex.world.gen.feature.structure.generic.gentypes.StructureGenerationInfo;
+import ivorius.reccomplex.world.gen.feature.structure.generic.gentypes.GenerationInfo;
 import ivorius.reccomplex.world.gen.feature.structure.generic.transformers.TransformerMulti;
 import ivorius.reccomplex.utils.NBTStorable;
 import net.minecraft.nbt.NBTBase;
@@ -30,9 +30,9 @@ public interface StructureInfo<S extends NBTStorable>
     S loadInstanceData(@Nonnull StructureLoadContext context, @Nonnull NBTBase nbt, @Nonnull TransformerMulti transformer);
 
     @Nonnull
-    <I extends StructureGenerationInfo> List<I> generationInfos(@Nonnull Class<? extends I> clazz);
+    <I extends GenerationInfo> List<I> generationInfos(@Nonnull Class<? extends I> clazz);
 
-    StructureGenerationInfo generationInfo(@Nonnull String id);
+    GenerationInfo generationInfo(@Nonnull String id);
 
     @Nonnull
     int[] structureBoundingBox();

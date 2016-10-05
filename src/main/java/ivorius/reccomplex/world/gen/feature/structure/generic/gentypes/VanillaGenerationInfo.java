@@ -29,7 +29,7 @@ import java.lang.reflect.Type;
 /**
  * Created by lukas on 19.01.15.
  */
-public class VanillaStructureGenerationInfo extends StructureGenerationInfo
+public class VanillaGenerationInfo extends GenerationInfo
 {
     public Double generationWeight;
     public double minBaseLimit;
@@ -43,14 +43,14 @@ public class VanillaStructureGenerationInfo extends StructureGenerationInfo
 
     public BiomeMatcher biomeMatcher;
 
-    public VanillaStructureGenerationInfo()
+    public VanillaGenerationInfo()
     {
         this(null, null, 2, 5, 3, 3, EnumFacing.NORTH, BlockPos.ORIGIN, "");
     }
 
-    public VanillaStructureGenerationInfo(@Nullable String id, Double generationWeight, double minBaseLimit, double maxBaseLimit, double minScaledLimit, double maxScaledLimit, EnumFacing front, BlockPos spawnShift, String biomeExpression)
+    public VanillaGenerationInfo(@Nullable String id, Double generationWeight, double minBaseLimit, double maxBaseLimit, double minScaledLimit, double maxScaledLimit, EnumFacing front, BlockPos spawnShift, String biomeExpression)
     {
-        super(id != null ? id : randomID(VanillaStructureGenerationInfo.class));
+        super(id != null ? id : randomID(VanillaGenerationInfo.class));
         this.generationWeight = generationWeight;
         this.minBaseLimit = minBaseLimit;
         this.maxBaseLimit = maxBaseLimit;
@@ -108,15 +108,15 @@ public class VanillaStructureGenerationInfo extends StructureGenerationInfo
         return generationWeight != null ? generationWeight : 1.0;
     }
 
-    public int getVanillaWeight()
+    public int getVanillaWeight(double tweak)
     {
-        return MathHelper.floor_double(getActiveWeight() * RCConfig.baseVillageSpawnWeight + 0.5);
+        return MathHelper.floor_double(getActiveWeight() * tweak * RCConfig.baseVillageSpawnWeight + 0.5);
     }
 
-    public static class Serializer implements JsonSerializer<VanillaStructureGenerationInfo>, JsonDeserializer<VanillaStructureGenerationInfo>
+    public static class Serializer implements JsonSerializer<VanillaGenerationInfo>, JsonDeserializer<VanillaGenerationInfo>
     {
         @Override
-        public VanillaStructureGenerationInfo deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException
+        public VanillaGenerationInfo deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException
         {
             JsonObject jsonObject = JsonUtils.asJsonObject(json, "vanillaStructureSpawnInfo");
 
@@ -137,11 +137,11 @@ public class VanillaStructureGenerationInfo extends StructureGenerationInfo
 
             String biomeExpression = JsonUtils.getString(jsonObject, "biomeExpression", "");
 
-            return new VanillaStructureGenerationInfo(id, spawnWeight, minBaseLimit, maxBaseLimit, minScaledLimit, maxScaledLimit, front, new BlockPos(spawnX, spawnY, spawnZ), biomeExpression);
+            return new VanillaGenerationInfo(id, spawnWeight, minBaseLimit, maxBaseLimit, minScaledLimit, maxScaledLimit, front, new BlockPos(spawnX, spawnY, spawnZ), biomeExpression);
         }
 
         @Override
-        public JsonElement serialize(VanillaStructureGenerationInfo src, Type typeOfSrc, JsonSerializationContext context)
+        public JsonElement serialize(VanillaGenerationInfo src, Type typeOfSrc, JsonSerializationContext context)
         {
             JsonObject jsonObject = new JsonObject();
 

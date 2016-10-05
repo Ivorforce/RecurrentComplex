@@ -25,7 +25,7 @@ import java.lang.reflect.Type;
 /**
  * Created by lukas on 07.10.14.
  */
-public class MazeGenerationInfo extends StructureGenerationInfo implements WeightedSelector.Item
+public class MazeGenerationInfo extends GenerationInfo implements WeightedSelector.Item
 {
     private static Gson gson = createGson();
 

@@ -286,12 +286,12 @@ public class RCRegistryHandler
         transformerRegistry.registerType("ensureBlocks", TransformerEnsureBlocks.class, new TransformerEnsureBlocks.Serializer(mcRegistry));
         transformerRegistry.registerType("propertyReplace", TransformerProperty.class, new TransformerProperty.Serializer(mcRegistry));
 
-        SerializableStringTypeRegistry<StructureGenerationInfo> genInfoRegistry = StructureRegistry.GENERATION_INFOS;
+        SerializableStringTypeRegistry<GenerationInfo> genInfoRegistry = StructureRegistry.GENERATION_INFOS;
         genInfoRegistry.registerType("natural", NaturalGenerationInfo.class, new NaturalGenerationInfo.Serializer());
-        genInfoRegistry.registerType("structureList", StructureListGenerationInfo.class, new StructureListGenerationInfo.Serializer());
+        genInfoRegistry.registerType("structureList", ListGenerationInfo.class, new ListGenerationInfo.Serializer());
         genInfoRegistry.registerType("mazeComponent", MazeGenerationInfo.class, new MazeGenerationInfo.Serializer());
         genInfoRegistry.registerType("static", StaticGenerationInfo.class, new StaticGenerationInfo.Serializer());
-        genInfoRegistry.registerType("vanilla", VanillaStructureGenerationInfo.class, new VanillaStructureGenerationInfo.Serializer());
+        genInfoRegistry.registerType("vanilla", VanillaGenerationInfo.class, new VanillaGenerationInfo.Serializer());
         genInfoRegistry.registerType("sapling", SaplingGenerationInfo.class, new SaplingGenerationInfo.Serializer());
         genInfoRegistry.registerType("decoration", VanillaDecorationGenerationInfo.class, new VanillaDecorationGenerationInfo.Serializer());
 

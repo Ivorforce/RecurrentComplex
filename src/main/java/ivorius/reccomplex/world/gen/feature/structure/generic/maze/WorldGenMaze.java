@@ -6,6 +6,7 @@
 package ivorius.reccomplex.world.gen.feature.structure.generic.maze;
 
 import com.google.common.collect.*;
+import ivorius.reccomplex.RCConfig;
 import ivorius.reccomplex.world.gen.feature.StructureGenerator;
 import net.minecraft.util.math.BlockPos;
 import ivorius.ivtoolkit.math.AxisAlignedTransform2D;
@@ -103,9 +104,11 @@ public class WorldGenMaze
             int[] compSize = comp.boundsSize();
             int roomVariations = (info.isRotatable() ? 4 : 1) * (info.isMirrorable() ? 2 : 1);
 
+            double compWeight = mazeInfo.getWeight() * RCConfig.tweakedSpawnRate(StructureRegistry.INSTANCE.id(info));
+
             double splitCompWeight = 0;
-            if (mazeInfo.getWeight() > 0)
-                splitCompWeight = mazeInfo.getWeight() / roomVariations;
+            if (compWeight > 0)
+                splitCompWeight = compWeight / roomVariations;
 
             for (int rotations = 0; rotations < 4; rotations++)
             {

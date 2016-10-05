@@ -50,6 +50,7 @@ public class SimpleLeveledRegistry<S> implements LeveledRegistry<S>
 
     public Map<String, S> activeMap()
     {
+        ensureActiveCache();
         return Collections.unmodifiableMap(activeMap);
     }
 

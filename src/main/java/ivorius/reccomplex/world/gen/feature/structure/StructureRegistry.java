@@ -43,17 +43,17 @@ public class StructureRegistry extends SimpleLeveledRegistry<StructureInfo>
     public static final StructureRegistry INSTANCE = new StructureRegistry();
 
     public static SerializableStringTypeRegistry<Transformer> TRANSFORMERS = new SerializableStringTypeRegistry<>("transformer", "type", Transformer.class);
-    public static SerializableStringTypeRegistry<StructureGenerationInfo> GENERATION_INFOS = new SerializableStringTypeRegistry<>("generationInfo", "type", StructureGenerationInfo.class);
+    public static SerializableStringTypeRegistry<GenerationInfo> GENERATION_INFOS = new SerializableStringTypeRegistry<>("generationInfo", "type", GenerationInfo.class);
 
-    private Map<Class<? extends StructureGenerationInfo>, Collection<Pair<StructureInfo, ? extends StructureGenerationInfo>>> cachedGeneration = new HashMap<>();
+    private Map<Class<? extends GenerationInfo>, Collection<Pair<StructureInfo, ? extends GenerationInfo>>> cachedGeneration = new HashMap<>();
 
     private CachedStructureSelectors<MixingStructureSelector<NaturalGenerationInfo, NaturalStructureSelector.Category>> naturalSelectors
             = new CachedStructureSelectors<>((biome, worldProvider) ->
-            new MixingStructureSelector<>(this.allActive(), worldProvider, biome, NaturalGenerationInfo.class));
+            new MixingStructureSelector<>(this.activeMap(), worldProvider, biome, NaturalGenerationInfo.class));
 
     private CachedStructureSelectors<StructureSelector<VanillaDecorationGenerationInfo, RCBiomeDecorator.DecorationType>> decorationSelectors
             = new CachedStructureSelectors<>((biome, worldProvider) ->
-            new StructureSelector<>(this.allActive(), worldProvider, biome, VanillaDecorationGenerationInfo.class));
+            new StructureSelector<>(this.activeMap(), worldProvider, biome, VanillaDecorationGenerationInfo.class));
 
     public StructureRegistry()
     {
@@ -78,12 +78,12 @@ public class StructureRegistry extends SimpleLeveledRegistry<StructureInfo>
         return super.unregister(id, level);
     }
 
-    protected <T extends StructureGenerationInfo> Collection<Pair<StructureInfo, T>> getCachedGeneration(Class<T> clazz)
+    protected <T extends GenerationInfo> Collection<Pair<StructureInfo, T>> getCachedGeneration(Class<T> clazz)
     {
         return (Collection<Pair<StructureInfo, T>>) ((Map) cachedGeneration).get(clazz);
     }
 
-    public <T extends StructureGenerationInfo> Collection<Pair<StructureInfo, T>> getStructureGenerations(Class<T> clazz)
+    public <T extends GenerationInfo> Collection<Pair<StructureInfo, T>> getStructureGenerations(Class<T> clazz)
     {
         Collection<Pair<StructureInfo, T>> pairs = getCachedGeneration(clazz);
         if (pairs != null)
@@ -103,14 +103,14 @@ public class StructureRegistry extends SimpleLeveledRegistry<StructureInfo>
         return pairs;
     }
 
-    public <T extends StructureGenerationInfo> Collection<Pair<StructureInfo, T>> getStructureGenerations(Class<T> clazz, final Predicate<Pair<StructureInfo, T>> predicate)
+    public <T extends GenerationInfo> Collection<Pair<StructureInfo, T>> getStructureGenerations(Class<T> clazz, final Predicate<Pair<StructureInfo, T>> predicate)
     {
         return Collections2.filter(getStructureGenerations(clazz), predicate::test);
     }
 
-    public Collection<Pair<StructureInfo, StructureListGenerationInfo>> getStructuresInList(final String listID, @Nullable final EnumFacing front)
+    public Collection<Pair<StructureInfo, ListGenerationInfo>> getStructuresInList(final String listID, @Nullable final EnumFacing front)
     {
-        return getStructureGenerations(StructureListGenerationInfo.class, input -> listID.equals(input.getRight().listID)
+        return getStructureGenerations(ListGenerationInfo.class, input -> listID.equals(input.getRight().listID)
                 && (front == null || input.getLeft().isRotatable() || input.getRight().front == front));
     }
 
@@ -159,7 +159,7 @@ public class StructureRegistry extends SimpleLeveledRegistry<StructureInfo>
         cachedGeneration.clear();
 
         updateVanillaGenerations();
-        for (Pair<StructureInfo, VanillaStructureGenerationInfo> pair : getStructureGenerations(VanillaStructureGenerationInfo.class))
+        for (Pair<StructureInfo, VanillaGenerationInfo> pair : getStructureGenerations(VanillaGenerationInfo.class))
         {
             String structureID = this.id(pair.getLeft());
             String generationID = pair.getRight().id();
@@ -172,7 +172,7 @@ public class StructureRegistry extends SimpleLeveledRegistry<StructureInfo>
     private void updateVanillaGenerations()
     {
         TemporaryVillagerRegistry.instance().setHandlers(
-                Sets.newHashSet(Collections2.transform(getStructureGenerations(VanillaStructureGenerationInfo.class),
+                Sets.newHashSet(Collections2.transform(getStructureGenerations(VanillaGenerationInfo.class),
                         input ->
                         {
                             return GenericVillageCreationHandler.forGeneration(this.id(input.getLeft()), input.getRight().id());

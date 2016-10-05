@@ -25,7 +25,7 @@ import java.lang.reflect.Type;
 /**
  * Created by lukas on 21.02.15.
  */
-public class StructureListGenerationInfo extends StructureGenerationInfo implements WeightedSelector.Item
+public class ListGenerationInfo extends GenerationInfo implements WeightedSelector.Item
 {
     public String listID;
 
@@ -35,14 +35,14 @@ public class StructureListGenerationInfo extends StructureGenerationInfo impleme
 
     public EnumFacing front;
 
-    public StructureListGenerationInfo()
+    public ListGenerationInfo()
     {
         this(null, "", null, BlockPos.ORIGIN, EnumFacing.NORTH);
     }
 
-    public StructureListGenerationInfo(@Nullable String id, String listID, Double weight, BlockPos shift, EnumFacing front)
+    public ListGenerationInfo(@Nullable String id, String listID, Double weight, BlockPos shift, EnumFacing front)
     {
-        super(id != null ? id : randomID(StructureListGenerationInfo.class));
+        super(id != null ? id : randomID(ListGenerationInfo.class));
         this.listID = listID;
         this.weight = weight;
         this.shift = shift;
@@ -97,10 +97,10 @@ public class StructureListGenerationInfo extends StructureGenerationInfo impleme
         return weight != null ? weight : 1.0;
     }
 
-    public static class Serializer implements JsonSerializer<StructureListGenerationInfo>, JsonDeserializer<StructureListGenerationInfo>
+    public static class Serializer implements JsonSerializer<ListGenerationInfo>, JsonDeserializer<ListGenerationInfo>
     {
         @Override
-        public StructureListGenerationInfo deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException
+        public ListGenerationInfo deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException
         {
             JsonObject jsonObject = JsonUtils.asJsonObject(json, "vanillaStructureSpawnInfo");
 
@@ -116,11 +116,11 @@ public class StructureListGenerationInfo extends StructureGenerationInfo impleme
 
             EnumFacing front = Directions.deserialize(JsonUtils.getString(jsonObject, "front", "NORTH"));
 
-            return new StructureListGenerationInfo(id, listID, weight, new BlockPos(positionX, positionY, positionZ), front);
+            return new ListGenerationInfo(id, listID, weight, new BlockPos(positionX, positionY, positionZ), front);
         }
 
         @Override
-        public JsonElement serialize(StructureListGenerationInfo src, Type typeOfSrc, JsonSerializationContext context)
+        public JsonElement serialize(ListGenerationInfo src, Type typeOfSrc, JsonSerializationContext context)
         {
             JsonObject jsonObject = new JsonObject();
 

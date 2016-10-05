@@ -30,7 +30,7 @@ import java.lang.reflect.Type;
 /**
  * Created by lukas on 21.02.15.
  */
-public class StaticGenerationInfo extends StructureGenerationInfo
+public class StaticGenerationInfo extends GenerationInfo
 {
     private static Gson gson = createGson();
 

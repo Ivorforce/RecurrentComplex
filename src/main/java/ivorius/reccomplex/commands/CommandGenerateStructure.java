@@ -6,7 +6,7 @@
 package ivorius.reccomplex.commands;
 
 import ivorius.reccomplex.world.gen.feature.structure.*;
-import ivorius.reccomplex.world.gen.feature.structure.generic.gentypes.StructureGenerationInfo;
+import ivorius.reccomplex.world.gen.feature.structure.generic.gentypes.GenerationInfo;
 import ivorius.reccomplex.utils.BlockSurfacePos;
 import ivorius.reccomplex.world.gen.feature.StructureGenerator;
 import net.minecraft.command.CommandException;
@@ -75,13 +75,13 @@ public class CommandGenerateStructure extends CommandBase
 
         pos = RCCommands.tryParseSurfaceBlockPos(posRef, args, posIndex, false);
 
-        StructureGenerationInfo generationInfo;
+        GenerationInfo generationInfo;
 
         if (args.length > genInfoIndex)
             generationInfo = structureInfo.generationInfo(args[genInfoIndex]);
         else
-            generationInfo = structureInfo.<StructureGenerationInfo>generationInfos(NaturalGenerationInfo.class).stream()
-                    .findFirst().orElse(structureInfo.generationInfos(StructureGenerationInfo.class).stream().findFirst().orElse(null));
+            generationInfo = structureInfo.<GenerationInfo>generationInfos(NaturalGenerationInfo.class).stream()
+                    .findFirst().orElse(structureInfo.generationInfos(GenerationInfo.class).stream().findFirst().orElse(null));
 
         Placer placer = generationInfo.placer();
 
@@ -128,7 +128,7 @@ public class CommandGenerateStructure extends CommandBase
             String structureName = args[idIndex];
             StructureInfo<?> structureInfo = StructureRegistry.INSTANCE.get(structureName);
             if (structureInfo instanceof GenericStructureInfo)
-                return getListOfStringsMatchingLastWord(args, structureInfo.generationInfos(StructureGenerationInfo.class).stream().map(StructureGenerationInfo::id).collect(Collectors.toList()));
+                return getListOfStringsMatchingLastWord(args, structureInfo.generationInfos(GenerationInfo.class).stream().map(GenerationInfo::id).collect(Collectors.toList()));
         }
 
         return Collections.emptyList();

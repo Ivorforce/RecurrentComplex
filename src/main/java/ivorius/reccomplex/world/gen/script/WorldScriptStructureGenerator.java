@@ -11,12 +11,13 @@ import ivorius.ivtoolkit.math.AxisAlignedTransform2D;
 import ivorius.ivtoolkit.random.WeightedSelector;
 import ivorius.ivtoolkit.tools.IvCollections;
 import ivorius.ivtoolkit.tools.IvTranslations;
+import ivorius.reccomplex.RCConfig;
 import ivorius.reccomplex.gui.table.datasource.TableDataSource;
 import ivorius.reccomplex.gui.table.TableDelegate;
 import ivorius.reccomplex.gui.table.TableNavigator;
 import ivorius.reccomplex.gui.worldscripts.structuregenerator.TableDataSourceStructureGenerator;
 import ivorius.reccomplex.world.gen.feature.structure.*;
-import ivorius.reccomplex.world.gen.feature.structure.generic.gentypes.StructureListGenerationInfo;
+import ivorius.reccomplex.world.gen.feature.structure.generic.gentypes.ListGenerationInfo;
 import ivorius.reccomplex.utils.NBTStorable;
 import ivorius.reccomplex.world.gen.feature.StructureGenerator;
 import net.minecraft.nbt.NBTBase;
@@ -201,14 +202,15 @@ public class WorldScriptStructureGenerator implements WorldScript<WorldScriptStr
         }
         else
         {
-            Collection<Pair<StructureInfo, StructureListGenerationInfo>> generationInfos = StructureRegistry.INSTANCE.getStructuresInList(structureListID, front);
+            Collection<Pair<StructureInfo, ListGenerationInfo>> generationInfos = StructureRegistry.INSTANCE.getStructuresInList(structureListID, front);
 
             if (generationInfos.size() > 0)
             {
-                Pair<StructureInfo, StructureListGenerationInfo> pair = WeightedSelector.select(random, generationInfos, item -> item.getRight().getWeight());
+                Pair<StructureInfo, ListGenerationInfo> pair = WeightedSelector.select(random, generationInfos, item ->
+                        RCConfig.tweakedSpawnRate(StructureRegistry.INSTANCE.id(item.getLeft())) * item.getRight().getWeight());
                 StructureInfo structureInfo = pair.getLeft();
                 String structureID = StructureRegistry.INSTANCE.id(structureInfo);
-                StructureListGenerationInfo generationInfo = pair.getRight();
+                ListGenerationInfo generationInfo = pair.getRight();
 
                 boolean mirrorX;
                 int rotations;

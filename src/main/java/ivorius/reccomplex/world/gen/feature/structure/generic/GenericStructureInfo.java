@@ -17,7 +17,7 @@ import ivorius.reccomplex.json.NbtToJson;
 import ivorius.reccomplex.world.gen.feature.structure.*;
 import ivorius.reccomplex.world.gen.feature.structure.generic.gentypes.MazeGenerationInfo;
 import ivorius.reccomplex.world.gen.feature.structure.generic.gentypes.NaturalGenerationInfo;
-import ivorius.reccomplex.world.gen.feature.structure.generic.gentypes.StructureGenerationInfo;
+import ivorius.reccomplex.world.gen.feature.structure.generic.gentypes.GenerationInfo;
 import ivorius.reccomplex.utils.expression.DependencyMatcher;
 import ivorius.reccomplex.world.gen.feature.structure.generic.transformers.Transformer;
 import ivorius.reccomplex.world.gen.feature.structure.generic.transformers.TransformerMulti;
@@ -51,7 +51,7 @@ public class GenericStructureInfo implements StructureInfo<GenericStructureInfo.
     public static final int LATEST_VERSION = 3;
     public static final int MAX_GENERATING_LAYERS = 30;
 
-    public final List<StructureGenerationInfo> generationInfos = new ArrayList<>();
+    public final List<GenerationInfo> generationInfos = new ArrayList<>();
     public TransformerMulti transformer = new TransformerMulti();
     public final DependencyMatcher dependencies = new DependencyMatcher("");
 
@@ -290,15 +290,15 @@ public class GenericStructureInfo implements StructureInfo<GenericStructureInfo.
 
     @Nonnull
     @Override
-    public <I extends StructureGenerationInfo> List<I> generationInfos(@Nonnull Class<? extends I> clazz)
+    public <I extends GenerationInfo> List<I> generationInfos(@Nonnull Class<? extends I> clazz)
     {
         return generationInfos.stream().filter(info -> clazz.isAssignableFrom(info.getClass())).map(info -> (I) info).collect(Collectors.toList());
     }
 
     @Override
-    public StructureGenerationInfo generationInfo(@Nonnull String id)
+    public GenerationInfo generationInfo(@Nonnull String id)
     {
-        for (StructureGenerationInfo info : generationInfos)
+        for (GenerationInfo info : generationInfos)
         {
             if (Objects.equals(info.id(), id))
                 return info;
@@ -365,7 +365,7 @@ public class GenericStructureInfo implements StructureInfo<GenericStructureInfo.
             }
 
             if (jsonObject.has("generationInfos"))
-                Collections.addAll(structureInfo.generationInfos, context.<StructureGenerationInfo[]>deserialize(jsonObject.get("generationInfos"), StructureGenerationInfo[].class));
+                Collections.addAll(structureInfo.generationInfos, context.<GenerationInfo[]>deserialize(jsonObject.get("generationInfos"), GenerationInfo[].class));
 
             if (version == 1)
                 structureInfo.generationInfos.add(NaturalGenerationInfo.deserializeFromVersion1(jsonObject, context));

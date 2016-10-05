@@ -8,11 +8,12 @@ package ivorius.reccomplex.world.gen.feature.selector;
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.Multimap;
 import ivorius.ivtoolkit.random.WeightedSelector;
+import ivorius.reccomplex.RCConfig;
 import ivorius.reccomplex.dimensions.DimensionDictionary;
 import ivorius.reccomplex.world.gen.feature.structure.StructureInfo;
 import ivorius.reccomplex.world.gen.feature.structure.generic.BiomeGenerationInfo;
 import ivorius.reccomplex.world.gen.feature.structure.generic.DimensionGenerationInfo;
-import ivorius.reccomplex.world.gen.feature.structure.generic.gentypes.StructureGenerationInfo;
+import ivorius.reccomplex.world.gen.feature.structure.generic.gentypes.GenerationInfo;
 import ivorius.reccomplex.utils.presets.PresettedList;
 import net.minecraft.world.WorldProvider;
 import net.minecraft.world.biome.Biome;
@@ -25,25 +26,25 @@ import java.util.*;
 /**
  * Created by lukas on 24.05.14.
  */
-public class StructureSelector<T extends StructureGenerationInfo & EnvironmentalSelection<C>, C>
+public class StructureSelector<T extends GenerationInfo & EnvironmentalSelection<C>, C>
 {
     protected final Set<String> cachedDimensionTypes = new HashSet<>(); // Because dimensions could often change on the fly
 
     protected Multimap<C, WeightedSelector.SimpleItem<Pair<StructureInfo, T>>> weightedStructureInfos = ArrayListMultimap.create();
 
-    public StructureSelector(Collection<StructureInfo> structures, WorldProvider provider, Biome biome, Class<T> typeClass)
+    public StructureSelector(Map<String, StructureInfo> structures, WorldProvider provider, Biome biome, Class<T> typeClass)
     {
         cachedDimensionTypes.addAll(DimensionDictionary.getDimensionTypes(provider));
 
-        for (StructureInfo<?> structureInfo : structures)
+        for (Map.Entry<String, StructureInfo> entry : structures.entrySet())
         {
-            List<T> generationInfos = structureInfo.generationInfos(typeClass);
-            for (T selection : generationInfos)
+            float tweaked = RCConfig.tweakedSpawnRate(entry.getKey());
+            for (T selection : (List<T>) entry.getValue().generationInfos(typeClass))
             {
-                double generationWeight = selection.getGenerationWeight(provider, biome);
+                double generationWeight = selection.getGenerationWeight(provider, biome) * tweaked;
 
                 if (generationWeight > 0)
-                    weightedStructureInfos.put(selection.generationCategory(), new WeightedSelector.SimpleItem<>(generationWeight, Pair.of(structureInfo, selection)));
+                    weightedStructureInfos.put(selection.generationCategory(), new WeightedSelector.SimpleItem<>(generationWeight, Pair.of(entry.getValue(), selection)));
             }
         }
     }

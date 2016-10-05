@@ -5,7 +5,7 @@
 
 package ivorius.reccomplex.world.gen.feature.structure;
 
-import ivorius.reccomplex.world.gen.feature.structure.generic.gentypes.StructureGenerationInfo;
+import ivorius.reccomplex.world.gen.feature.structure.generic.gentypes.GenerationInfo;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldServer;
@@ -27,9 +27,9 @@ public class Environment
     @Nullable
     public final Integer villageType;
     @Nullable
-    public final StructureGenerationInfo generationInfo;
+    public final GenerationInfo generationInfo;
 
-    public Environment(@Nonnull WorldServer world, @Nonnull Biome biome, @Nullable Integer villageType, @Nullable StructureGenerationInfo generationInfo)
+    public Environment(@Nonnull WorldServer world, @Nonnull Biome biome, @Nullable Integer villageType, @Nullable GenerationInfo generationInfo)
     {
         this.world = world;
         this.biome = biome;
@@ -38,7 +38,7 @@ public class Environment
     }
 
     @Nonnull
-    public static Environment inNature(@Nonnull WorldServer world, @Nonnull StructureBoundingBox boundingBox, StructureGenerationInfo generationInfo)
+    public static Environment inNature(@Nonnull WorldServer world, @Nonnull StructureBoundingBox boundingBox, GenerationInfo generationInfo)
     {
         return new Environment(world, getBiome(world, boundingBox), null, generationInfo);
     }
@@ -54,7 +54,7 @@ public class Environment
         return world.getBiome(new BlockPos(boundingBox.getCenter()));
     }
 
-    public Environment withGeneration(StructureGenerationInfo generation)
+    public Environment withGeneration(GenerationInfo generation)
     {
         return new Environment(world, biome, villageType, generationInfo);
     }

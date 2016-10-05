@@ -79,7 +79,7 @@ public class RCSaplingGenerator
                     .filter(p -> p.getRight().pattern.canPlace(world, pos, p.getLeft().structureBoundingBox(), p.getLeft().isRotatable(), p.getLeft().isMirrorable()))
                     .collect(Collectors.toSet());
 
-            double totalWeight = placeable.stream().mapToDouble(p -> p.getRight().getActiveWeight()).sum();
+            double totalWeight = placeable.stream().mapToDouble(RCSaplingGenerator::getSpawnWeight).sum();
 
             if (complexity == vanillaComplexity && considerVanilla)
             {
@@ -90,10 +90,15 @@ public class RCSaplingGenerator
             }
 
             if (totalWeight > 0)
-                pair = WeightedSelector.select(random, placeable, p -> p.getRight().getActiveWeight());
+                pair = WeightedSelector.select(random, placeable, RCSaplingGenerator::getSpawnWeight);
         }
 
         return pair;
+    }
+
+    protected static double getSpawnWeight(Pair<StructureInfo, SaplingGenerationInfo> p)
+    {
+        return RCConfig.tweakedSpawnRate(StructureRegistry.INSTANCE.id(p.getLeft())) * p.getRight().getActiveWeight();
     }
 
     public static void growSapling(WorldServer world, BlockPos pos, Random random, StructureInfo structure, SaplingGenerationInfo saplingGenInfo)

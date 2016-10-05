@@ -5,6 +5,7 @@
 
 package ivorius.reccomplex.world.gen.feature.villages;
 
+import ivorius.reccomplex.RCConfig;
 import net.minecraft.util.EnumFacing;
 import net.minecraftforge.fml.common.registry.VillagerRegistry;
 import net.minecraft.util.math.BlockPos;
@@ -12,8 +13,8 @@ import ivorius.ivtoolkit.math.AxisAlignedTransform2D;
 import ivorius.reccomplex.world.gen.feature.structure.StructureInfo;
 import ivorius.reccomplex.world.gen.feature.structure.StructureInfos;
 import ivorius.reccomplex.world.gen.feature.structure.StructureRegistry;
-import ivorius.reccomplex.world.gen.feature.structure.generic.gentypes.StructureGenerationInfo;
-import ivorius.reccomplex.world.gen.feature.structure.generic.gentypes.VanillaStructureGenerationInfo;
+import ivorius.reccomplex.world.gen.feature.structure.generic.gentypes.GenerationInfo;
+import ivorius.reccomplex.world.gen.feature.structure.generic.gentypes.VanillaGenerationInfo;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.gen.structure.StructureBoundingBox;
 import net.minecraft.world.gen.structure.StructureComponent;
@@ -54,15 +55,16 @@ public class GenericVillageCreationHandler implements VillagerRegistry.IVillageC
         StructureInfo structureInfo = StructureRegistry.INSTANCE.hasActive(structureID) ? StructureRegistry.INSTANCE.get(structureID) : null;
         if (structureInfo != null)
         {
-            StructureGenerationInfo generationInfo = structureInfo.generationInfo(generationID);
-            if (generationInfo instanceof VanillaStructureGenerationInfo)
+            float tweakedWeight = RCConfig.tweakedSpawnRate(structureID);
+            GenerationInfo generationInfo = structureInfo.generationInfo(generationID);
+            if (generationInfo instanceof VanillaGenerationInfo)
             {
-                VanillaStructureGenerationInfo vanillaGenInfo = (VanillaStructureGenerationInfo) generationInfo;
+                VanillaGenerationInfo vanillaGenInfo = (VanillaGenerationInfo) generationInfo;
 
                 int spawnLimit = MathHelper.floor_double(MathHelper.getRandomDoubleInRange(random,
                         vanillaGenInfo.minBaseLimit + villageSize * vanillaGenInfo.minScaledLimit,
                         vanillaGenInfo.maxBaseLimit + villageSize * vanillaGenInfo.maxScaledLimit) + 0.5);
-                return new StructureVillagePieces.PieceWeight(getComponentClass(), vanillaGenInfo.getVanillaWeight(), spawnLimit);
+                return new StructureVillagePieces.PieceWeight(getComponentClass(), vanillaGenInfo.getVanillaWeight(tweakedWeight), spawnLimit);
             }
         }
 
@@ -82,10 +84,10 @@ public class GenericVillageCreationHandler implements VillagerRegistry.IVillageC
 
         if (structureInfo != null)
         {
-            StructureGenerationInfo generationInfo = structureInfo.generationInfo(generationID);
-            if (generationInfo instanceof VanillaStructureGenerationInfo)
+            GenerationInfo generationInfo = structureInfo.generationInfo(generationID);
+            if (generationInfo instanceof VanillaGenerationInfo)
             {
-                VanillaStructureGenerationInfo vanillaGenInfo = (VanillaStructureGenerationInfo) generationInfo;
+                VanillaGenerationInfo vanillaGenInfo = (VanillaGenerationInfo) generationInfo;
 
                 boolean mirrorX = structureInfo.isMirrorable() && random.nextBoolean();
                 AxisAlignedTransform2D transform = GenericVillagePiece.getTransform(vanillaGenInfo.front, mirrorX, front.getOpposite());

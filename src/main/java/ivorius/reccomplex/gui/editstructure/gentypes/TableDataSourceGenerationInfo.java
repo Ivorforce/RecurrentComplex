@@ -14,18 +14,18 @@ import ivorius.reccomplex.gui.table.cell.TableCellString;
 import ivorius.reccomplex.gui.table.cell.TableElementCell;
 import ivorius.reccomplex.gui.table.datasource.TableDataSourceSegmented;
 import ivorius.reccomplex.world.gen.feature.structure.StructureInfos;
-import ivorius.reccomplex.world.gen.feature.structure.generic.gentypes.StructureGenerationInfo;
+import ivorius.reccomplex.world.gen.feature.structure.generic.gentypes.GenerationInfo;
 
 /**
  * Created by lukas on 26.03.15.
  */
 public class TableDataSourceGenerationInfo extends TableDataSourceSegmented
 {
-    public StructureGenerationInfo genInfo;
+    public GenerationInfo genInfo;
 
     public TableDelegate delegate;
 
-    public TableDataSourceGenerationInfo(StructureGenerationInfo genInfo, TableNavigator navigator, TableDelegate delegate)
+    public TableDataSourceGenerationInfo(GenerationInfo genInfo, TableNavigator navigator, TableDelegate delegate)
     {
         this.genInfo = genInfo;
         this.delegate = delegate;
@@ -59,7 +59,7 @@ public class TableDataSourceGenerationInfo extends TableDataSourceSegmented
 
             TableCellButton randomizeCell = new TableCellButton(null, null, IvTranslations.get("reccomplex.gui.randomize.short"), IvTranslations.getLines("reccomplex.gui.randomize"));
             randomizeCell.addAction(() -> {
-                genInfo.setID(StructureGenerationInfo.randomID(genInfo.getClass()));
+                genInfo.setID(GenerationInfo.randomID(genInfo.getClass()));
                 delegate.reloadData();
             });
 

@@ -10,7 +10,7 @@ import ivorius.reccomplex.files.saving.FileSaver;
 import ivorius.reccomplex.utils.algebra.BoolFunctionExpressionCache;
 import ivorius.reccomplex.utils.algebra.RCBoolAlgebra;
 import ivorius.reccomplex.world.gen.feature.structure.Environment;
-import ivorius.reccomplex.world.gen.feature.structure.generic.gentypes.StructureGenerationInfo;
+import ivorius.reccomplex.world.gen.feature.structure.generic.gentypes.GenerationInfo;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.WorldProvider;
 import net.minecraft.world.biome.Biome;
@@ -99,7 +99,7 @@ public class EnvironmentMatcher extends BoolFunctionExpressionCache<Environment,
         }
     }
 
-    protected static class VillageTypeType extends DelegatingVariableType<Boolean, Environment, Object, StructureGenerationInfo, Object, StructureGenerationInfoMatcher>
+    protected static class VillageTypeType extends DelegatingVariableType<Boolean, Environment, Object, GenerationInfo, Object, StructureGenerationInfoMatcher>
     {
         public VillageTypeType(String prefix, String suffix)
         {
@@ -107,7 +107,7 @@ public class EnvironmentMatcher extends BoolFunctionExpressionCache<Environment,
         }
 
         @Override
-        public StructureGenerationInfo convertEvaluateArgument(String var, Environment environment)
+        public GenerationInfo convertEvaluateArgument(String var, Environment environment)
         {
             return environment.generationInfo;
         }

@@ -36,7 +36,7 @@ import java.util.ArrayList;
 /**
  * Created by lukas on 19.01.15.
  */
-public class VanillaDecorationGenerationInfo extends StructureGenerationInfo implements EnvironmentalSelection<RCBiomeDecorator.DecorationType>
+public class VanillaDecorationGenerationInfo extends GenerationInfo implements EnvironmentalSelection<RCBiomeDecorator.DecorationType>
 {
     private static Gson gson = createGson();
 

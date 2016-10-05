@@ -6,18 +6,22 @@
 package ivorius.reccomplex;
 
 import com.google.common.collect.Lists;
+import com.google.common.primitives.Floats;
 import gnu.trove.map.TObjectDoubleMap;
+import gnu.trove.map.TObjectFloatMap;
 import gnu.trove.map.hash.TObjectDoubleHashMap;
+import gnu.trove.map.hash.TObjectFloatHashMap;
+import it.unimi.dsi.fastutil.Hash;
 import ivorius.reccomplex.files.loading.RCFileSuffix;
-import ivorius.reccomplex.world.gen.feature.structure.StructureRegistry;
-import ivorius.reccomplex.world.gen.feature.structure.generic.StructureSaveHandler;
+import ivorius.reccomplex.utils.algebra.ExpressionCache;
 import ivorius.reccomplex.utils.expression.BiomeMatcher;
 import ivorius.reccomplex.utils.expression.CommandMatcher;
 import ivorius.reccomplex.utils.expression.DimensionMatcher;
 import ivorius.reccomplex.utils.expression.ResourceMatcher;
-import ivorius.reccomplex.world.gen.feature.structure.generic.transformers.TransformerMulti;
-import ivorius.reccomplex.utils.algebra.ExpressionCache;
 import ivorius.reccomplex.world.gen.feature.decoration.RCBiomeDecorator;
+import ivorius.reccomplex.world.gen.feature.structure.StructureRegistry;
+import ivorius.reccomplex.world.gen.feature.structure.generic.StructureSaveHandler;
+import ivorius.reccomplex.world.gen.feature.structure.generic.transformers.TransformerMulti;
 import ivorius.reccomplex.world.storage.loot.GenericItemCollectionRegistry;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.util.ResourceLocation;
@@ -48,6 +52,7 @@ public class RCConfig
     public static boolean hideRedundantNegativeSpace;
 
     public static float minDistToSpawnForGeneration;
+    private static final TObjectFloatMap<String> spawnTweaks = new TObjectFloatHashMap<>(Hash.DEFAULT_INITIAL_SIZE, Hash.DEFAULT_LOAD_FACTOR, 1);
     public static float structureSpawnChanceModifier = 1.0f;
     public static boolean avoidOverlappingGeneration;
     public static boolean honorStructureGenerationOption;
@@ -131,6 +136,17 @@ public class RCConfig
 
             minDistToSpawnForGeneration = config.getFloat("minDistToSpawnForGeneration", CATEGORY_BALANCING, 30.0f, 0.0f, 500.0f, "Within this block radius, default structures won't spawn (in the main dimension).");
             structureSpawnChanceModifier = config.getFloat("structureSpawnChance", CATEGORY_BALANCING, 1.0f, 0.0f, 10.0f, "How often do structures spawn?");
+            spawnTweaks.clear();
+            Lists.newArrayList(config.getStringList("spawnTweaks", CATEGORY_GENERAL, new String[0], "List of spawn chance tweaks to structures: IceThorn:0.5")).forEach(string ->
+                    parseMap(string, parts ->
+                    {
+                        Float value = Floats.tryParse(parts[1]);
+                        if (value != null)
+                            spawnTweaks.put(parts[0], value);
+                        else
+                            RecurrentComplex.logger.error("Failed parsing float ''" + parts[1] + "'");
+                    })
+            );
 
             structureLoadMatcher.setExpression(config.getString("structureLoadMatcher", CATEGORY_BALANCING, "", "Resource Expression that will be applied to each loading structure, determining if it should be loaded."));
             logExpressionException(structureLoadMatcher, "structureLoadMatcher", RecurrentComplex.logger);
@@ -214,6 +230,11 @@ public class RCConfig
     public static boolean shouldInventoryGeneratorGenerate(String id, String domain)
     {
         return inventoryGeneratorGenerationMatcher.test(new ResourceLocation(domain, id));
+    }
+
+    public static float tweakedSpawnRate(String structure)
+    {
+        return structure != null ? spawnTweaks.get(structure) : 1;
     }
 
     public static boolean isGenerationEnabled(Biome biome)

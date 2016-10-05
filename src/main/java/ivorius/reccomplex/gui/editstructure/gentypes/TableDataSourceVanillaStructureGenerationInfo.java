@@ -16,7 +16,7 @@ import ivorius.reccomplex.gui.table.cell.TableCellEnum;
 import ivorius.reccomplex.gui.table.cell.TableCellFloatRange;
 import ivorius.reccomplex.gui.table.cell.TableElementCell;
 import ivorius.reccomplex.gui.table.datasource.TableDataSourceSegmented;
-import ivorius.reccomplex.world.gen.feature.structure.generic.gentypes.VanillaStructureGenerationInfo;
+import ivorius.reccomplex.world.gen.feature.structure.generic.gentypes.VanillaGenerationInfo;
 import ivorius.ivtoolkit.blocks.Directions;
 import ivorius.ivtoolkit.tools.IvTranslations;
 import ivorius.reccomplex.utils.scale.Scales;
@@ -30,9 +30,9 @@ public class TableDataSourceVanillaStructureGenerationInfo extends TableDataSour
     private TableNavigator navigator;
     private TableDelegate tableDelegate;
 
-    private VanillaStructureGenerationInfo generationInfo;
+    private VanillaGenerationInfo generationInfo;
 
-    public TableDataSourceVanillaStructureGenerationInfo(TableNavigator navigator, TableDelegate tableDelegate, VanillaStructureGenerationInfo generationInfo)
+    public TableDataSourceVanillaStructureGenerationInfo(TableNavigator navigator, TableDelegate tableDelegate, VanillaGenerationInfo generationInfo)
     {
         this.navigator = navigator;
         this.tableDelegate = tableDelegate;

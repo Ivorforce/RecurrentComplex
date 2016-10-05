@@ -75,9 +75,12 @@ public class CommandRetrogen extends CommandBase
         return world.setRandomSeed(pos.chunkXPos, pos.chunkZPos, 0xDEADBEEF);
     }
 
-    public static void retrogen(WorldServer world, Predicate<StructureInfo> structurePredicate)
+    public static long retrogen(WorldServer world, Predicate<StructureInfo> structurePredicate)
     {
-        existingChunks(world).forEach(pos -> WorldGenStructures.decorate(world, getRandom(world, pos), pos, structurePredicate));
+        return existingChunks(world)
+                .filter(pos -> world.getChunkFromChunkCoords(pos.chunkXPos, pos.chunkZPos).isTerrainPopulated())
+                .filter(pos -> WorldGenStructures.decorate(world, getRandom(world, pos), pos, structurePredicate))
+                .count();
     }
 
     @Override
@@ -100,7 +103,9 @@ public class CommandRetrogen extends CommandBase
     @Override
     public void execute(MinecraftServer server, ICommandSender commandSender, String[] args) throws CommandException
     {
-        retrogen(RCCommands.tryParseDimension(commandSender, args, 0), RCCommands.tryParseStructurePredicate(args, 4, () -> null));
+        long count = retrogen(RCCommands.tryParseDimension(commandSender, args, 0), RCCommands.tryParseStructurePredicate(args, 4, () -> null));
+
+        commandSender.addChatMessage(ServerTranslations.format("commands.rcretro.count", String.valueOf(count)));
     }
 
     @Override

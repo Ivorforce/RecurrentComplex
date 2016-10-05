@@ -168,6 +168,7 @@ commands.rcdecorate.usage=/#decorate <x min> <z min> <x max> <z max> [resource m
 commands.rcdecorateone.usage=/#decorateone [x] [z]
 commands.rcdecorateone.none=No suitable structures found!
 commands.rcretro.usage=/#retro [dimension] [resource matcher: only generate these structures]
+commands.rcretro.count=Retro-Generated %s chunks!
 
 commands.rcenable.usage=/#enable <registry id> <element id>
 commands.rcdisable.usage=/#enable <registry id> <element id>

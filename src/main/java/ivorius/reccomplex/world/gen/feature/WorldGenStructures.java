@@ -128,7 +128,7 @@ public class WorldGenStructures
         }
     }
 
-    public static void decorate(WorldServer world, Random random, ChunkPos chunkPos, @Nullable Predicate<StructureInfo> structurePredicate)
+    public static boolean decorate(WorldServer world, Random random, ChunkPos chunkPos, @Nullable Predicate<StructureInfo> structurePredicate)
     {
         boolean worldWantsStructures = world.getWorldInfo().isMapFeaturesEnabled();
         StructureGenerationData data = StructureGenerationData.get(world);
@@ -136,26 +136,28 @@ public class WorldGenStructures
         if (structurePredicate == null)
             generatePartialStructuresInChunk(random, chunkPos, world);
 
-        if (!RCConfig.honorStructureGenerationOption || worldWantsStructures)
+        if ((!RCConfig.honorStructureGenerationOption || worldWantsStructures)
+                && (structurePredicate != null || data.checkChunk(chunkPos)))
         {
             Biome biomeGen = world.getBiome(chunkPos.getBlock(8, 0, 8));
             BlockPos spawnPos = world.getSpawnPoint();
 
-            if (structurePredicate == null || data.checkChunk(chunkPos))
+            generateStaticStructuresInChunk(random, chunkPos, world, spawnPos, structurePredicate);
+
+            boolean mayGenerate = RCConfig.isGenerationEnabled(biomeGen) && RCConfig.isGenerationEnabled(world.provider);
+
+            if (world.provider.getDimension() == 0)
             {
-                generateStaticStructuresInChunk(random, chunkPos, world, spawnPos, structurePredicate);
-
-                boolean mayGenerate = RCConfig.isGenerationEnabled(biomeGen) && RCConfig.isGenerationEnabled(world.provider);
-
-                if (world.provider.getDimension() == 0)
-                {
-                    double distToSpawn = IvVecMathHelper.distanceSQ(new double[]{chunkPos.chunkXPos * 16 + 8, chunkPos.chunkZPos * 16 + 8}, new double[]{spawnPos.getX(), spawnPos.getZ()});
-                    mayGenerate &= distToSpawn >= RCConfig.minDistToSpawnForGeneration * RCConfig.minDistToSpawnForGeneration;
-                }
-
-                if (mayGenerate)
-                    generateRandomStructuresInChunk(random, chunkPos, world, biomeGen, structurePredicate);
+                double distToSpawn = IvVecMathHelper.distanceSQ(new double[]{chunkPos.chunkXPos * 16 + 8, chunkPos.chunkZPos * 16 + 8}, new double[]{spawnPos.getX(), spawnPos.getZ()});
+                mayGenerate &= distToSpawn >= RCConfig.minDistToSpawnForGeneration * RCConfig.minDistToSpawnForGeneration;
             }
+
+            if (mayGenerate)
+                generateRandomStructuresInChunk(random, chunkPos, world, biomeGen, structurePredicate);
+
+            return true;
         }
+
+        return false;
     }
 }

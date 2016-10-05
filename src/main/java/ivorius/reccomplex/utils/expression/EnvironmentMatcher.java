@@ -47,13 +47,13 @@ public class EnvironmentMatcher extends BoolFunctionExpressionCache<Environment,
         }
 
         @Override
-        public Biome convertEvaluateArgument(Environment argument)
+        public Biome convertEvaluateArgument(String var, Environment argument)
         {
             return argument.biome;
         }
 
         @Override
-        public BiomeMatcher createCache(String var)
+        public BiomeMatcher createCache(String var, Environment a)
         {
             return new BiomeMatcher(var);
         }
@@ -67,13 +67,13 @@ public class EnvironmentMatcher extends BoolFunctionExpressionCache<Environment,
         }
 
         @Override
-        public WorldProvider convertEvaluateArgument(Environment argument)
+        public WorldProvider convertEvaluateArgument(String var, Environment argument)
         {
             return argument.world.provider;
         }
 
         @Override
-        public DimensionMatcher createCache(String var)
+        public DimensionMatcher createCache(String var, Environment a)
         {
             return new DimensionMatcher(var);
         }
@@ -87,19 +87,13 @@ public class EnvironmentMatcher extends BoolFunctionExpressionCache<Environment,
         }
 
         @Override
-        public FileSaver convertEvaluateArgument(Environment environment)
+        public FileSaver convertArgument(String var, Environment environment)
         {
             return RecurrentComplex.saver;
         }
 
         @Override
-        public FileSaver convertIsKnownArgument(Object o)
-        {
-            return RecurrentComplex.saver;
-        }
-
-        @Override
-        public DependencyMatcher createCache(String var)
+        public DependencyMatcher createCache(String var, Environment a)
         {
             return new DependencyMatcher(var);
         }
@@ -113,13 +107,13 @@ public class EnvironmentMatcher extends BoolFunctionExpressionCache<Environment,
         }
 
         @Override
-        public StructureGenerationInfo convertEvaluateArgument(Environment environment)
+        public StructureGenerationInfo convertEvaluateArgument(String var, Environment environment)
         {
             return environment.generationInfo;
         }
 
         @Override
-        protected StructureGenerationInfoMatcher createCache(String var)
+        protected StructureGenerationInfoMatcher createCache(String var, Environment a)
         {
             return new StructureGenerationInfoMatcher(var);
         }

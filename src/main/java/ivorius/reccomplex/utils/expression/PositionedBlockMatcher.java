@@ -81,13 +81,13 @@ public class PositionedBlockMatcher extends BoolFunctionExpressionCache<Position
         }
 
         @Override
-        public IBlockState convertEvaluateArgument(Argument argument)
+        public IBlockState convertEvaluateArgument(String var, Argument argument)
         {
             return argument.state;
         }
 
         @Override
-        public BlockMatcher createCache(String var)
+        public BlockMatcher createCache(String var, Argument a)
         {
             return new BlockMatcher(registry, var);
         }

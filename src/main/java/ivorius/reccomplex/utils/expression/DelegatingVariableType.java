@@ -19,12 +19,17 @@ public abstract class DelegatingVariableType<T, A, U, CA, CU, C extends Function
         super(prefix, suffix);
     }
 
-    public CA convertEvaluateArgument(A a)
+    public CA convertEvaluateArgument(String var, A a)
     {
-        return null;
+        return convertArgument(var, a);
     }
 
-    public CU convertIsKnownArgument(U u)
+    public CU convertIsKnownArgument(String var, U u)
+    {
+        return (CU) convertArgument(var, (A) u);
+    }
+
+    public CA convertArgument(String var, A a)
     {
         return null;
     }
@@ -32,13 +37,19 @@ public abstract class DelegatingVariableType<T, A, U, CA, CU, C extends Function
     @Override
     public T evaluate(String var, A a)
     {
-        return createEvaluateCache(var, a).evaluate(convertEvaluateArgument(a));
+        return createEvaluateCache(var, a).evaluate(convertEvaluateArgument(var, a));
     }
 
     @Override
     public FunctionExpressionCache.Validity validity(String var, U u)
     {
-        return createUnknownCache(var, u).validity(convertIsKnownArgument(u));
+        return createUnknownCache(var, u).validity(convertIsKnownArgument(var, u));
+    }
+
+    @Override
+    protected String getVarRepresentation(String var, U u)
+    {
+        return createUnknownCache(var, u).getDisplayString(convertIsKnownArgument(var, u));
     }
 
     @Override
@@ -47,21 +58,21 @@ public abstract class DelegatingVariableType<T, A, U, CA, CU, C extends Function
         int prefixSymbolStart = prefix.length() > 0 ? prefix.length() - 1 : 0;
         return TextFormatting.BLUE + prefix.substring(0, prefixSymbolStart)
                 + TextFormatting.YELLOW + prefix.substring(prefixSymbolStart)
-                + TextFormatting.RESET + createUnknownCache(var, u).getDisplayString(convertIsKnownArgument(u)) + TextFormatting.RESET
+                + TextFormatting.RESET + getVarRepresentation(var, u) + TextFormatting.RESET
                 + TextFormatting.BLUE + suffix;
     }
 
     public C createEvaluateCache(String var, A a)
     {
-        return createCache(var);
+        return createCache(var, a);
     }
 
     public C createUnknownCache(String var, U u)
     {
-        return createCache(var);
+        return createCache(var, (A) u);
     }
 
-    protected C createCache(String var)
+    protected C createCache(String var, A a)
     {
         throw new NotImplementedException("createCache not implemented!");
     }

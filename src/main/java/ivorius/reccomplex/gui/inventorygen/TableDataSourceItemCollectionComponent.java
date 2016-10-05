@@ -6,6 +6,7 @@
 package ivorius.reccomplex.gui.inventorygen;
 
 import ivorius.ivtoolkit.tools.IvTranslations;
+import ivorius.reccomplex.RecurrentComplex;
 import ivorius.reccomplex.gui.GuiValidityStateIndicator;
 import ivorius.reccomplex.gui.RCGuiHandler;
 import ivorius.reccomplex.gui.TableDataSourceExpression;
@@ -47,7 +48,7 @@ public class TableDataSourceItemCollectionComponent extends TableDataSourceSegme
         this.delegate = delegate;
 
         addManagedSegment(1, new TableDataSourceSupplied(() -> TableElementSaveDirectory.create(saveDirectoryData, () -> key, delegate)));
-        addManagedSegment(3, TableDataSourceExpression.constructDefault(IvTranslations.get("reccomplex.inventorygen.dependencies"), this.component.dependencies, null));
+        addManagedSegment(3, TableDataSourceExpression.constructDefault(IvTranslations.get("reccomplex.inventorygen.dependencies"), this.component.dependencies, RecurrentComplex.saver));
         addManagedSegment(4, TableCellMultiBuilder.create(navigator, delegate)
                 .addAction(() -> IvTranslations.get("reccomplex.gui.edit"), null,
                         () -> RCGuiHandler.editInventoryGenComponentItems(this.player, this.key, this.component, this.saveDirectoryData))

@@ -6,6 +6,7 @@
 package ivorius.reccomplex.commands;
 
 import ivorius.ivtoolkit.math.AxisAlignedTransform2D;
+import ivorius.reccomplex.RCConfig;
 import ivorius.reccomplex.RecurrentComplex;
 import ivorius.reccomplex.entities.StructureEntityInfo;
 import ivorius.reccomplex.utils.BlockSurfacePos;
@@ -45,6 +46,9 @@ public class RCCommands
     public static void onServerStart(FMLServerStartingEvent event)
     {
         event.registerServerCommand(new CommandWrite());
+
+        if (RCConfig.asCommandPermissionLevel >= 0)
+            event.registerServerCommand(new CommandAs());
 
         if (!RecurrentComplex.isLite())
         {

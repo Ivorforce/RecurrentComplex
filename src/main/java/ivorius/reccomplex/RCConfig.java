@@ -66,6 +66,7 @@ public class RCConfig
 
     public static String commandPrefix;
     private static final Map<String, CommandMatcher> commandMatchers = new HashMap<>();
+    public static int asCommandPermissionLevel;
 
     public static boolean savePlayerCache;
     public static boolean notifyAdminOnBlockCommands;
@@ -116,6 +117,7 @@ public class RCConfig
                             RecurrentComplex.logger.error("Failed parsing command matcher ''" + parts[1] + "'");
                     })
             );
+            asCommandPermissionLevel = config.getInt("asCommandPermissionLevel", CATEGORY_DECORATION, 4, -1, 10, "The required permission level for /#as to function. Set to 2 for command blocks and OPs, 4 for only server, or -1 to disable. Note that this could be a security problem on low levels.");
 
             savePlayerCache = config.getBoolean("savePlayerCache", CATEGORY_GENERAL, true, "Whether player caches like the clipboard and previewed operations will be saved and loaded.");
 

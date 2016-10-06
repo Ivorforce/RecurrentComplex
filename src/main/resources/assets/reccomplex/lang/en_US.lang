@@ -176,6 +176,8 @@ commands.rcsave.usage=/#write <registry id> <element id> <directory>
 commands.rcsave.noregistry=No such registry id!
 commands.rcsave.noelement=No such element!
 
+commands.rcas.usage=/#as <entity> <command>
+
 inventoryGen.vanilla=Vanilla Generator
 inventoryGen.custom=Custom Generator
 inventoryGen.create=Create New Generator

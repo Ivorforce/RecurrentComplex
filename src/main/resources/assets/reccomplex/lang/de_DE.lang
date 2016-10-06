@@ -141,8 +141,8 @@ commands.whatisthis.one=Das ist: %s
 commands.whatisthis.many=Das ist irgenwas von, oder alles von: %s
 
 commands.rclookup.usage=/#lookup <Struktur>
-commands.rclookup.reply.silent=%s: §bInaktiv§r, von: '%s', %s
-commands.rclookup.reply.generates=%s: §bGeneriert§r, von: '%s', %s
+commands.rclookup.reply.silent=%s: §bInaktiv§r, von: '%s', ist %s, %s
+commands.rclookup.reply.generates=%s: §bGeneriert§r, von: '%s', ist %s, %s
 commands.rclookup.reply.noauthor=§oUnbekannt§r
 commands.rclookup.reply.nolink=§oKein Link verfügbar§r
 commands.rclookup.reply.comment=Kommentar: %s

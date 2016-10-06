@@ -138,8 +138,8 @@ commands.whatisthis.one=Ceci est : %s
 commands.whatisthis.many=Ceci est quelque ou tout de : %s
 
 commands.rclookup.usage=/#lookup <structure>
-commands.rclookup.reply.silent=%s: §bInactif§r, Par : '%s', %s
-commands.rclookup.reply.generates=%s: §bGénératé§r, Par: '%s', %s
+commands.rclookup.reply.silent=%s: §bInactif§r, Par : '%s', is %s, %s
+commands.rclookup.reply.generates=%s: §bGénératé§r, Par: '%s', is %s, %s
 commands.rclookup.reply.noauthor=§oInconnu§r
 commands.rclookup.reply.nolink=§oAucun lien n'est fourni§r
 commands.rclookup.reply.comment=Commentaire: %s

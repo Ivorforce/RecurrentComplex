@@ -14,6 +14,7 @@ import ivorius.reccomplex.world.gen.feature.structure.StructureRegistry;
 import ivorius.reccomplex.world.gen.feature.structure.generic.GenericStructureInfo;
 import ivorius.reccomplex.world.gen.feature.structure.generic.Metadata;
 import ivorius.reccomplex.utils.ServerTranslations;
+import ivorius.reccomplex.world.gen.feature.structure.generic.gentypes.GenerationInfo;
 import joptsimple.internal.Strings;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.CommandException;
@@ -53,21 +54,33 @@ public class CommandSearchStructure extends CommandBase
     }
 
     @Nonnull
-    public static Collection<String> keywords(String id, StructureInfo structure)
+    public static Collection<String> keywords(String id, StructureInfo<?> structure)
     {
-        return structure instanceof GenericStructureInfo
-                ? keywords(id, ((GenericStructureInfo) structure).metadata)
-                : Collections.singleton(id);
+        List<String> keywords = new ArrayList<>();
+
+        keywords.add(id);
+
+        structure.generationInfos(GenerationInfo.class).forEach(info -> keywords(keywords, info));
+
+        if (structure instanceof GenericStructureInfo)
+            keywords(keywords, ((GenericStructureInfo) structure).metadata);
+
+        return keywords;
+    }
+
+    protected static void keywords(Collection<String> keywords, GenerationInfo info)
+    {
+        keywords.add(info.id());
+        keywords.add(info.displayString());
+        keywords.add(StructureRegistry.GENERATION_INFOS.iDForType(info.getClass()));
     }
 
     @Nonnull
-    public static Collection<String> keywords(String id, Metadata metadata)
+    public static void keywords(Collection<String> collection, Metadata metadata)
     {
-        List<String> keywords = Lists.newArrayList(id);
-        keywords.add(metadata.authors);
-        keywords.add(metadata.comment);
-        keywords.add(metadata.weblink);
-        return keywords;
+        collection.add(metadata.authors);
+        collection.add(metadata.comment);
+        collection.add(metadata.weblink);
     }
 
     public static float searchRank(List<String> query, Collection<String> keywords)
@@ -98,10 +111,7 @@ public class CommandSearchStructure extends CommandBase
         if (args.length >= 1)
         {
             outputSearch(commandSender, StructureRegistry.INSTANCE.ids(),
-                    name ->
-                    {
-                        return searchRank(Arrays.asList(args), keywords(name, StructureRegistry.INSTANCE.get(name)));
-                    },
+                    name -> searchRank(Arrays.asList(args), keywords(name, StructureRegistry.INSTANCE.get(name))),
                     CommandSearchStructure::createStructureTextComponent
             );
         }

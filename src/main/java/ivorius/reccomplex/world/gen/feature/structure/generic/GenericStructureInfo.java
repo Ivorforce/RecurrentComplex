@@ -115,7 +115,7 @@ public class GenericStructureInfo implements StructureInfo<GenericStructureInfo.
         TransformerMulti transformer;
         TransformerMulti.InstanceData transformerData;
 
-        if (!foreignTransformer.isEmpty())
+        if (!foreignTransformer.isEmpty(instanceData.foreignTransformerData))
         {
             transformer = TransformerMulti.fuse(Arrays.asList(this.transformer, foreignTransformer));
             transformerData = transformer.fuseDatas(Arrays.asList(instanceData.transformerData, instanceData.foreignTransformerData));

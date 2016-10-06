@@ -85,9 +85,9 @@ public class TransformerMulti extends Transformer<TransformerMulti.InstanceData>
         return transformer;
     }
 
-    public boolean isEmpty()
+    public boolean isEmpty(InstanceData instanceData)
     {
-        return getData().getContents().transformers.isEmpty();
+        return instanceData.pairedTransformers.isEmpty();
     }
 
     public InstanceData fuseDatas(List<InstanceData> instanceDatas)

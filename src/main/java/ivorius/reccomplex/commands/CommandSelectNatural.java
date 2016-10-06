@@ -6,11 +6,13 @@
 package ivorius.reccomplex.commands;
 
 import ivorius.ivtoolkit.blocks.BlockArea;
+import ivorius.reccomplex.capability.SelectionOwner;
+import net.minecraft.command.CommandException;
 import net.minecraft.command.NumberInvalidException;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.math.BlockPos;
 import ivorius.reccomplex.RCConfig;
-import ivorius.reccomplex.entities.StructureEntityInfo;
+import ivorius.reccomplex.capability.StructureEntityInfo;
 import ivorius.reccomplex.utils.ServerTranslations;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -37,11 +39,11 @@ public class CommandSelectNatural extends CommandSelectModify
     }
 
     @Override
-    public void executeSelection(EntityPlayerMP player, StructureEntityInfo structureEntityInfo, BlockPos point1, BlockPos point2, String[] args) throws NumberInvalidException
+    public void executeSelection(ICommandSender sender, SelectionOwner selectionOwner, String[] args) throws CommandException
     {
-        World world = player.getEntityWorld();
+        World world = sender.getEntityWorld();
 
-        BlockArea area = new BlockArea(point1, point2);
+        BlockArea area = selectionOwner.getSelection();
         double expandFloor = args.length >= 1 ? parseDouble(args[0]) : 1;
 
         CommandSelectFloor.placeNaturalFloor(world, area, expandFloor);

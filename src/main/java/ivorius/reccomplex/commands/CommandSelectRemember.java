@@ -7,7 +7,8 @@ package ivorius.reccomplex.commands;
 
 import ivorius.ivtoolkit.blocks.BlockArea;
 import ivorius.reccomplex.RCConfig;
-import ivorius.reccomplex.entities.StructureEntityInfo;
+import ivorius.reccomplex.capability.SelectionOwner;
+import ivorius.reccomplex.capability.StructureEntityInfo;
 import ivorius.reccomplex.utils.ServerTranslations;
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
@@ -41,19 +42,19 @@ public class CommandSelectRemember extends CommandSelectModify
     }
 
     @Override
-    public void executeSelection(EntityPlayerMP player, StructureEntityInfo structureEntityInfo, BlockPos point1, BlockPos point2, String[] args) throws CommandException
+    public void executeSelection(ICommandSender sender, SelectionOwner selectionOwner, String[] args) throws CommandException
     {
         if (args.length >= 1)
         {
-            World world = player.getEntityWorld();
+            World world = sender.getEntityWorld();
 
-            Block dstBlock = getBlockByText(player, args[0]);
+            Block dstBlock = getBlockByText(sender, args[0]);
             int[] dstMeta = args.length >= 2 ? getMetadatas(args[1]) : new int[]{0};
             List<IBlockState> dst = IntStream.of(dstMeta).mapToObj(dstBlock::getStateFromMeta).collect(Collectors.toList());
 
-            for (BlockPos coord : new BlockArea(point1, point2))
+            for (BlockPos coord : selectionOwner.getSelection())
             {
-                IBlockState state = dst.get(player.getRNG().nextInt(dst.size()));
+                IBlockState state = dst.get(world.rand.nextInt(dst.size()));
                 world.setBlockState(coord, state, 3);
             }
         }

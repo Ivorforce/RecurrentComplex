@@ -7,15 +7,15 @@ package ivorius.reccomplex.network;
 
 import ivorius.ivtoolkit.network.SchedulingMessageHandler;
 import ivorius.reccomplex.RecurrentComplex;
+import ivorius.reccomplex.capability.StructureEntityInfo;
 import ivorius.reccomplex.commands.RCCommands;
-import ivorius.reccomplex.entities.StructureEntityInfo;
 import ivorius.reccomplex.files.RCFileSaver;
 import ivorius.reccomplex.files.loading.LeveledRegistry;
 import ivorius.reccomplex.files.loading.ResourceDirectory;
+import ivorius.reccomplex.utils.SaveDirectoryData;
 import ivorius.reccomplex.world.gen.feature.structure.StructureRegistry;
 import ivorius.reccomplex.world.gen.feature.structure.generic.GenericStructureInfo;
 import ivorius.reccomplex.world.gen.feature.structure.generic.StructureSaveHandler;
-import ivorius.reccomplex.utils.SaveDirectoryData;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.network.NetHandlerPlayServer;
 import net.minecraft.world.WorldServer;
@@ -40,7 +40,7 @@ public class PacketSaveStructureHandler extends SchedulingMessageHandler<PacketS
 
         if (RecurrentComplex.checkPerms(player)) return;
 
-        StructureEntityInfo structureEntityInfo = StructureEntityInfo.getStructureEntityInfo(player);
+        StructureEntityInfo structureEntityInfo = StructureEntityInfo.getStructureEntityInfo(player, null);
         GenericStructureInfo genericStructureInfo = message.getStructureInfo();
 
         if (structureEntityInfo != null)

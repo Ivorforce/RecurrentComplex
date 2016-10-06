@@ -6,20 +6,18 @@
 package ivorius.reccomplex.commands;
 
 import ivorius.ivtoolkit.blocks.BlockArea;
-import ivorius.reccomplex.utils.RCBlockAreas;
-import net.minecraft.server.MinecraftServer;
-import net.minecraft.util.math.BlockPos;
 import ivorius.ivtoolkit.tools.IvWorldData;
 import ivorius.reccomplex.RCConfig;
-import ivorius.reccomplex.entities.StructureEntityInfo;
+import ivorius.reccomplex.capability.SelectionOwner;
+import ivorius.reccomplex.utils.RCBlockAreas;
+import ivorius.reccomplex.utils.ServerTranslations;
+import ivorius.reccomplex.world.gen.feature.structure.StructureRegistry;
 import ivorius.reccomplex.world.gen.feature.structure.schematics.SchematicFile;
 import ivorius.reccomplex.world.gen.feature.structure.schematics.SchematicLoader;
-import ivorius.reccomplex.world.gen.feature.structure.StructureRegistry;
-import ivorius.reccomplex.utils.ServerTranslations;
-import net.minecraft.command.CommandBase;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
-import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.server.MinecraftServer;
+import net.minecraft.util.math.BlockPos;
 
 import javax.annotation.Nullable;
 import java.util.List;
@@ -27,8 +25,26 @@ import java.util.List;
 /**
  * Created by lukas on 25.05.14.
  */
-public class CommandExportSchematic extends CommandBase
+public class CommandExportSchematic extends CommandSelectModify
 {
+    public static SchematicFile convert(IvWorldData worldData)
+    {
+        SchematicFile schematicFile = new SchematicFile((short) worldData.blockCollection.width, (short) worldData.blockCollection.height, (short) worldData.blockCollection.length);
+
+        for (BlockPos coord : RCBlockAreas.mutablePositions(worldData.blockCollection.area()))
+        {
+            int index = schematicFile.getBlockIndex(coord);
+            schematicFile.blockStates[index] = worldData.blockCollection.getBlockState(coord);
+        }
+
+        schematicFile.entityCompounds.clear();
+        schematicFile.entityCompounds.addAll(worldData.entities);
+        schematicFile.tileEntityCompounds.addAll(worldData.entities);
+        schematicFile.tileEntityCompounds.addAll(worldData.tileEntities);
+
+        return schematicFile;
+    }
+
     @Override
     public String getCommandName()
     {
@@ -47,72 +63,25 @@ public class CommandExportSchematic extends CommandBase
     }
 
     @Override
-    public void execute(MinecraftServer server, ICommandSender commandSender, String[] args) throws CommandException
+    public void executeSelection(ICommandSender sender, SelectionOwner selectionOwner, String[] args) throws CommandException
     {
-        EntityPlayerMP player = getCommandSenderAsPlayer(commandSender);
-
-        BlockArea area;
-
-//        if (args.length >= 6)
-//        {
-//            x = commandSender.getPlayerCoordinates().posX;
-//            y = commandSender.getPlayerCoordinates().posY;
-//            z = commandSender.getPlayerCoordinates().posZ;
-//            x = MathHelper.floor_double(func_110666_a(commandSender, (double) x, args[0]));
-//            y = MathHelper.floor_double(func_110666_a(commandSender, (double) y, args[1]));
-//            z = MathHelper.floor_double(func_110666_a(commandSender, (double) z, args[2]));
-//
-//            width = Integer.valueOf(args[3]);
-//            height = Integer.valueOf(args[4]);
-//            length = Integer.valueOf(args[5]);
-//        }
-//        else
-        {
-            StructureEntityInfo structureEntityInfo = RCCommands.getStructureEntityInfo(player);
-
-            if (structureEntityInfo.hasValidSelection())
-            {
-                area = new BlockArea(structureEntityInfo.selectedPoint1, structureEntityInfo.selectedPoint2);
-            }
-            else
-            {
-                throw ServerTranslations.commandException("commands.selectModify.noSelection");
-            }
-        }
+        BlockArea area = selectionOwner.getSelection();
 
         String structureName;
 
         if (args.length >= 1)
             structureName = args[0];
         else
-            structureName = "NewStructure_" + commandSender.getEntityWorld().rand.nextInt(1000);
+            structureName = "NewStructure_" + sender.getEntityWorld().rand.nextInt(1000);
 
         BlockPos lowerCoord = area.getLowerCorner();
         BlockPos higherCoord = area.getHigherCorner();
 
-        IvWorldData data = IvWorldData.capture(player.getEntityWorld(), new BlockArea(lowerCoord, higherCoord), true);
+        IvWorldData data = IvWorldData.capture(sender.getEntityWorld(), new BlockArea(lowerCoord, higherCoord), true);
         SchematicFile schematicFile = convert(data);
         SchematicLoader.writeSchematicByName(schematicFile, structureName);
 
-        commandSender.addChatMessage(ServerTranslations.format("commands.strucExportSchematic.success", structureName));
-    }
-
-    public static SchematicFile convert(IvWorldData worldData)
-    {
-        SchematicFile schematicFile = new SchematicFile((short) worldData.blockCollection.width, (short) worldData.blockCollection.height, (short) worldData.blockCollection.length);
-
-        for (BlockPos coord : RCBlockAreas.mutablePositions(worldData.blockCollection.area()))
-        {
-            int index = schematicFile.getBlockIndex(coord);
-            schematicFile.blockStates[index] = worldData.blockCollection.getBlockState(coord);
-        }
-
-        schematicFile.entityCompounds.clear();
-        schematicFile.entityCompounds.addAll(worldData.entities);
-        schematicFile.tileEntityCompounds.addAll(worldData.entities);
-        schematicFile.tileEntityCompounds.addAll(worldData.tileEntities);
-
-        return schematicFile;
+        sender.addChatMessage(ServerTranslations.format("commands.strucExportSchematic.success", structureName));
     }
 
     @Override

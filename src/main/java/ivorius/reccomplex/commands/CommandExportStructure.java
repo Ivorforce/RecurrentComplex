@@ -6,29 +6,44 @@
 package ivorius.reccomplex.commands;
 
 import ivorius.ivtoolkit.blocks.BlockArea;
-import net.minecraft.command.CommandException;
-import net.minecraft.server.MinecraftServer;
-import net.minecraft.util.math.BlockPos;
 import ivorius.ivtoolkit.tools.IvWorldData;
 import ivorius.reccomplex.RCConfig;
-import ivorius.reccomplex.entities.StructureEntityInfo;
+import ivorius.reccomplex.capability.SelectionOwner;
 import ivorius.reccomplex.network.PacketEditStructureHandler;
-import ivorius.reccomplex.world.gen.feature.structure.StructureRegistry;
-import ivorius.reccomplex.world.gen.feature.structure.StructureInfo;
-import ivorius.reccomplex.world.gen.feature.structure.generic.GenericStructureInfo;
 import ivorius.reccomplex.utils.ServerTranslations;
-import net.minecraft.command.CommandBase;
+import ivorius.reccomplex.world.gen.feature.structure.StructureInfo;
+import ivorius.reccomplex.world.gen.feature.structure.StructureRegistry;
+import ivorius.reccomplex.world.gen.feature.structure.generic.GenericStructureInfo;
+import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.server.MinecraftServer;
+import net.minecraft.util.math.BlockPos;
 
 import javax.annotation.Nullable;
+import java.util.Collections;
 import java.util.List;
 
 /**
  * Created by lukas on 25.05.14.
  */
-public class CommandExportStructure extends CommandBase
+public class CommandExportStructure extends CommandSelectModify
 {
+    public static GenericStructureInfo getGenericStructureInfo(String name) throws CommandException
+    {
+        StructureInfo structureInfo = StructureRegistry.INSTANCE.get(name);
+
+        if (structureInfo == null)
+            throw ServerTranslations.commandException("commands.structure.notRegistered", name);
+
+        GenericStructureInfo genericStructureInfo = structureInfo.copyAsGenericStructureInfo();
+
+        if (genericStructureInfo == null)
+            throw ServerTranslations.commandException("commands.structure.notGeneric", name);
+
+        return genericStructureInfo;
+    }
+
     @Override
     public String getCommandName()
     {
@@ -47,38 +62,9 @@ public class CommandExportStructure extends CommandBase
     }
 
     @Override
-    public void execute(MinecraftServer server, ICommandSender commandSender, String[] args) throws CommandException
+    public void executeSelection(ICommandSender sender, SelectionOwner selectionOwner, String[] args) throws CommandException
     {
-        EntityPlayerMP player = getCommandSenderAsPlayer(commandSender);
-
-        BlockArea area;
-
-//        if (args.length >= 6)
-//        {
-//            x = commandSender.getPlayerCoordinates().posX;
-//            y = commandSender.getPlayerCoordinates().posY;
-//            z = commandSender.getPlayerCoordinates().posZ;
-//            x = MathHelper.floor_double(func_110666_a(commandSender, (double) x, args[0]));
-//            y = MathHelper.floor_double(func_110666_a(commandSender, (double) y, args[1]));
-//            z = MathHelper.floor_double(func_110666_a(commandSender, (double) z, args[2]));
-//
-//            width = Integer.valueOf(args[3]);
-//            height = Integer.valueOf(args[4]);
-//            length = Integer.valueOf(args[5]);
-//        }
-//        else
-        {
-            StructureEntityInfo structureEntityInfo = RCCommands.getStructureEntityInfo(player);
-
-            if (structureEntityInfo.hasValidSelection())
-            {
-                area = new BlockArea(structureEntityInfo.selectedPoint1, structureEntityInfo.selectedPoint2);
-            }
-            else
-            {
-                throw ServerTranslations.wrongUsageException("commands.selectModify.noSelection");
-            }
-        }
+        EntityPlayerMP player = getCommandSenderAsPlayer(sender);
 
         GenericStructureInfo genericStructureInfo;
         String structureID;
@@ -92,13 +78,14 @@ public class CommandExportStructure extends CommandBase
         {
             genericStructureInfo = GenericStructureInfo.createDefaultStructure();
             structureID = "NewStructure";
-            genericStructureInfo.metadata.authors = commandSender.getName();
+            genericStructureInfo.metadata.authors = sender.getName();
         }
 
+        BlockArea area = selectionOwner.getSelection();
         BlockPos lowerCoord = area.getLowerCorner();
         BlockPos higherCoord = area.getHigherCorner();
 
-        IvWorldData data = IvWorldData.capture(player.getEntityWorld(), new BlockArea(lowerCoord, higherCoord), true);
+        IvWorldData data = IvWorldData.capture(sender.getEntityWorld(), new BlockArea(lowerCoord, higherCoord), true);
         genericStructureInfo.worldDataCompound = data.createTagCompound(lowerCoord);
         PacketEditStructureHandler.openEditStructure(genericStructureInfo, structureID, player);
     }
@@ -107,25 +94,8 @@ public class CommandExportStructure extends CommandBase
     public List<String> getTabCompletionOptions(MinecraftServer server, ICommandSender sender, String[] args, @Nullable BlockPos pos)
     {
         if (args.length == 1)
-        {
             return getListOfStringsMatchingLastWord(args, StructureRegistry.INSTANCE.ids());
-        }
 
-        return null;
-    }
-
-    public static GenericStructureInfo getGenericStructureInfo(String name) throws CommandException
-    {
-        StructureInfo structureInfo = StructureRegistry.INSTANCE.get(name);
-
-        if (structureInfo == null)
-            throw ServerTranslations.commandException("commands.structure.notRegistered", name);
-
-        GenericStructureInfo genericStructureInfo = structureInfo.copyAsGenericStructureInfo();
-
-        if (genericStructureInfo == null)
-            throw ServerTranslations.commandException("commands.structure.notGeneric", name);
-
-        return genericStructureInfo;
+        return Collections.emptyList();
     }
 }

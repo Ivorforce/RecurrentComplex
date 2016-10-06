@@ -1,29 +1,28 @@
 /*
  *  Copyright (c) 2014, Lukas Tenbrink.
- *  * http://lukas.axxim.net
+ *  * http://ivorius.net
  */
 
-package ivorius.reccomplex.entities;
+package ivorius.reccomplex.capability;
 
-import ivorius.ivtoolkit.blocks.BlockPositions;
-import ivorius.ivtoolkit.tools.NBTCompoundObject;
-import net.minecraft.world.WorldServer;
-import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.common.capabilities.CapabilityInject;
-import net.minecraftforge.fml.common.network.ByteBufUtils;
 import io.netty.buffer.ByteBuf;
-import ivorius.ivtoolkit.blocks.BlockArea;
-import net.minecraft.util.math.BlockPos;
 import ivorius.ivtoolkit.network.IvNetworkHelperServer;
 import ivorius.ivtoolkit.network.PartialUpdateHandler;
+import ivorius.ivtoolkit.tools.NBTCompoundObject;
 import ivorius.reccomplex.RCConfig;
 import ivorius.reccomplex.RecurrentComplex;
 import ivorius.reccomplex.operation.Operation;
 import ivorius.reccomplex.operation.OperationRegistry;
 import net.minecraft.entity.Entity;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.EnumFacing;
 import net.minecraft.world.World;
+import net.minecraft.world.WorldServer;
+import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.common.capabilities.CapabilityInject;
+import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.common.util.Constants;
+import net.minecraftforge.fml.common.network.ByteBufUtils;
 
 import javax.annotation.Nullable;
 
@@ -37,8 +36,6 @@ public class StructureEntityInfo implements NBTCompoundObject, PartialUpdateHand
     @CapabilityInject(StructureEntityInfo.class)
     public static Capability<StructureEntityInfo> CAPABILITY;
 
-    public BlockPos selectedPoint1;
-    public BlockPos selectedPoint2;
     private Operation.PreviewType previewType = Operation.PreviewType.SHAPE;
     public Operation danglingOperation;
     public boolean showGrid = false;
@@ -47,28 +44,15 @@ public class StructureEntityInfo implements NBTCompoundObject, PartialUpdateHand
     private NBTTagCompound worldDataClipboard;
 
     @Nullable
-    public static StructureEntityInfo getStructureEntityInfo(Entity entity)
+    public static StructureEntityInfo getStructureEntityInfo(Object object, @Nullable EnumFacing facing)
     {
-        return entity.getCapability(CAPABILITY, null);
-    }
+        if (object instanceof StructureEntityInfo)
+            return (StructureEntityInfo) object;
 
-    public boolean hasValidSelection()
-    {
-        return selectedPoint1 != null && selectedPoint2 != null;
-    }
+        if (object instanceof ICapabilityProvider)
+            return ((ICapabilityProvider) object).getCapability(CAPABILITY, facing);
 
-    public void setSelection(BlockArea area)
-    {
-        if (area != null)
-        {
-            selectedPoint1 = area.getPoint1();
-            selectedPoint2 = area.getPoint2();
-        }
-        else
-        {
-            selectedPoint1 = null;
-            selectedPoint2 = null;
-        }
+        return null;
     }
 
     public Operation.PreviewType getPreviewType()
@@ -79,12 +63,6 @@ public class StructureEntityInfo implements NBTCompoundObject, PartialUpdateHand
     public void setPreviewType(Operation.PreviewType previewType)
     {
         this.previewType = previewType;
-    }
-
-    public void sendSelectionToClients(Entity entity)
-    {
-        if (!entity.worldObj.isRemote && !RecurrentComplex.isLite())
-            IvNetworkHelperServer.sendEEPUpdatePacket(entity, CAPABILITY_KEY, null, "selection", RecurrentComplex.network);
     }
 
     public void sendPreviewTypeToClients(Entity entity)
@@ -159,9 +137,6 @@ public class StructureEntityInfo implements NBTCompoundObject, PartialUpdateHand
     @Override
     public void writeToNBT(NBTTagCompound compound)
     {
-        BlockPositions.writeToNBT("selectedPoint1", selectedPoint1, compound);
-        BlockPositions.writeToNBT("selectedPoint2", selectedPoint2, compound);
-
         compound.setString("previewType", previewType.key);
 
         if (RCConfig.savePlayerCache)
@@ -178,9 +153,6 @@ public class StructureEntityInfo implements NBTCompoundObject, PartialUpdateHand
     @Override
     public void readFromNBT(NBTTagCompound compound)
     {
-        selectedPoint1 = BlockPositions.readFromNBT("selectedPoint1", compound);
-        selectedPoint2 = BlockPositions.readFromNBT("selectedPoint2", compound);
-
         previewType = Operation.PreviewType.findOrDefault(compound.getString("previewType"), Operation.PreviewType.SHAPE);
 
         if (RCConfig.savePlayerCache)
@@ -201,7 +173,6 @@ public class StructureEntityInfo implements NBTCompoundObject, PartialUpdateHand
         if (hasChanges)
         {
             hasChanges = false;
-            sendSelectionToClients(entity);
             sendPreviewTypeToClients(entity);
             sendOperationToClients(entity);
             sendOptionsToClients(entity);
@@ -211,12 +182,7 @@ public class StructureEntityInfo implements NBTCompoundObject, PartialUpdateHand
     @Override
     public void writeUpdateData(ByteBuf buffer, String context, Object... params)
     {
-        if ("selection".equals(context))
-        {
-            BlockPositions.maybeWriteToBuffer(selectedPoint1, buffer);
-            BlockPositions.maybeWriteToBuffer(selectedPoint2, buffer);
-        }
-        else if ("previewType".equals(context))
+        if ("previewType".equals(context))
         {
             ByteBufUtils.writeUTF8String(buffer, previewType.key);
         }
@@ -233,12 +199,7 @@ public class StructureEntityInfo implements NBTCompoundObject, PartialUpdateHand
     @Override
     public void readUpdateData(ByteBuf buffer, String context)
     {
-        if ("selection".equals(context))
-        {
-            selectedPoint1 = BlockPositions.maybeReadFromBuffer(buffer);
-            selectedPoint2 = BlockPositions.maybeReadFromBuffer(buffer);
-        }
-        else if ("previewType".equals(context))
+        if ("previewType".equals(context))
         {
             previewType = Operation.PreviewType.findOrDefault(ByteBufUtils.readUTF8String(buffer), Operation.PreviewType.SHAPE);
         }

@@ -6,19 +6,19 @@
 package ivorius.reccomplex.client.rendering;
 
 import ivorius.ivtoolkit.blocks.BlockArea;
-import net.minecraft.util.EnumHand;
-import net.minecraft.util.math.BlockPos;
 import ivorius.ivtoolkit.rendering.grid.AreaRenderer;
 import ivorius.reccomplex.RecurrentComplex;
-import ivorius.reccomplex.entities.StructureEntityInfo;
+import ivorius.reccomplex.capability.SelectionOwner;
 import ivorius.reccomplex.item.ItemBlockSelectorFloating;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.math.MathHelper;
+import net.minecraft.util.EnumHand;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.MathHelper;
 import org.lwjgl.opengl.GL11;
 
 /**
@@ -46,11 +46,11 @@ public class SelectionRenderer
         BlockPos selPoint1 = null;
         BlockPos selPoint2 = null;
 
-        StructureEntityInfo structureEntityInfo = StructureEntityInfo.getStructureEntityInfo(entity);
-        if (structureEntityInfo != null)
+        SelectionOwner owner = SelectionOwner.getOwner(entity, null);
+        if (owner != null)
         {
-            selPoint1 = structureEntityInfo.selectedPoint1;
-            selPoint2 = structureEntityInfo.selectedPoint2;
+            selPoint1 = owner.getSelectedPoint1();
+            selPoint2 = owner.getSelectedPoint2();
         }
 
         GL11.glLineWidth(3.0f);

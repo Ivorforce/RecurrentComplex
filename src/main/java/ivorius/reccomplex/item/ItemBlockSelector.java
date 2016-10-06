@@ -6,6 +6,7 @@
 package ivorius.reccomplex.item;
 
 import ivorius.ivtoolkit.blocks.BlockPositions;
+import ivorius.reccomplex.capability.SelectionOwner;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import io.netty.buffer.ByteBuf;
@@ -13,7 +14,7 @@ import io.netty.buffer.Unpooled;
 import net.minecraft.util.math.BlockPos;
 import ivorius.reccomplex.RCConfig;
 import ivorius.reccomplex.RecurrentComplex;
-import ivorius.reccomplex.entities.StructureEntityInfo;
+import ivorius.reccomplex.capability.StructureEntityInfo;
 import ivorius.reccomplex.network.PacketItemEvent;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
@@ -53,15 +54,13 @@ public class ItemBlockSelector extends Item implements ItemEventHandler
             BlockPos coord = BlockPositions.maybeReadFromBuffer(payload);
             boolean secondary = payload.readBoolean();
 
-            StructureEntityInfo structureEntityInfo = StructureEntityInfo.getStructureEntityInfo(sender);
-            if (structureEntityInfo != null)
+            SelectionOwner selectionOwner = SelectionOwner.getOwner(sender, null);
+            if (selectionOwner != null)
             {
                 if (secondary)
-                    structureEntityInfo.selectedPoint2 = coord;
+                    selectionOwner.setSelectedPoint2(coord);
                 else
-                    structureEntityInfo.selectedPoint1 = coord;
-
-                structureEntityInfo.sendSelectionToClients(sender);
+                    selectionOwner.setSelectedPoint1(coord);
             }
         }
     }

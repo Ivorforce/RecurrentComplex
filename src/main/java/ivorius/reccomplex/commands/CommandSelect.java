@@ -5,17 +5,14 @@
 
 package ivorius.reccomplex.commands;
 
-import ivorius.ivtoolkit.blocks.BlockArea;
-import net.minecraft.command.CommandException;
-import net.minecraft.server.MinecraftServer;
-import net.minecraft.util.math.BlockPos;
 import ivorius.reccomplex.RCConfig;
-import ivorius.reccomplex.entities.StructureEntityInfo;
+import ivorius.reccomplex.capability.SelectionOwner;
 import ivorius.reccomplex.utils.ServerTranslations;
 import net.minecraft.command.CommandBase;
+import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
-import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.util.math.MathHelper;
+import net.minecraft.server.MinecraftServer;
+import net.minecraft.util.math.BlockPos;
 
 import javax.annotation.Nullable;
 import java.util.List;
@@ -45,22 +42,19 @@ public class CommandSelect extends CommandBase
     @Override
     public void execute(MinecraftServer server, ICommandSender commandSender, String[] args) throws CommandException
     {
-        EntityPlayerMP entityPlayerMP = getCommandSenderAsPlayer(commandSender);
-        StructureEntityInfo seInfo = RCCommands.getStructureEntityInfo(entityPlayerMP);
+        SelectionOwner owner = RCCommands.getSelectionOwner(commandSender, null);
 
         if (args.length >= 1)
         {
             switch (args[0])
             {
                 case "clear":
-                    seInfo.selectedPoint1 = null;
-                    seInfo.selectedPoint2 = null;
-                    seInfo.sendSelectionToClients(entityPlayerMP);
+                    owner.setSelection(null);
                     break;
                 case "get":
-                    commandSender.addChatMessage(ServerTranslations.format("commands.selectSet.get", translatePoint(seInfo.selectedPoint1), translatePoint(seInfo.selectedPoint2), translatePoint(seInfo.selectedPoint2)));
-                    if (seInfo.hasValidSelection())
-                        commandSender.addChatMessage(ServerTranslations.format("commands.selectSet.size", translateSize(new BlockArea(seInfo.selectedPoint1, seInfo.selectedPoint2).areaSize())));
+                    commandSender.addChatMessage(ServerTranslations.format("commands.selectSet.get", translatePoint(owner.getSelectedPoint1()), translatePoint(owner.getSelectedPoint2())));
+                    if (owner.hasValidSelection())
+                        commandSender.addChatMessage(ServerTranslations.format("commands.selectSet.size", translateSize(owner.getSelection().areaSize())));
                     break;
                 case "both":
                 case "point1":
@@ -69,20 +63,18 @@ public class CommandSelect extends CommandBase
                     {
                         if (!args[0].equals("point2"))
                         {
-                            if (seInfo.selectedPoint1 == null)
-                                seInfo.selectedPoint1 = new BlockPos(MathHelper.floor_double(entityPlayerMP.posX), MathHelper.floor_double(entityPlayerMP.posY), MathHelper.floor_double(entityPlayerMP.posZ));
+                            if (owner.getSelectedPoint1() == null)
+                                owner.setSelectedPoint1(commandSender.getPosition());
 
-                            seInfo.selectedPoint1 = RCCommands.parseBlockPos(seInfo.selectedPoint1, args, 1, false);
+                            owner.setSelectedPoint1(RCCommands.parseBlockPos(owner.getSelectedPoint1(), args, 1, false));
                         }
                         if (!args[0].equals("point1"))
                         {
-                            if (seInfo.selectedPoint2 == null)
-                                seInfo.selectedPoint2 = new BlockPos(MathHelper.floor_double(entityPlayerMP.posX), MathHelper.floor_double(entityPlayerMP.posY), MathHelper.floor_double(entityPlayerMP.posZ));
+                            if (owner.getSelectedPoint2() == null)
+                                owner.setSelectedPoint2(commandSender.getPosition());
 
-                            seInfo.selectedPoint2 = RCCommands.parseBlockPos(seInfo.selectedPoint2, args, 1, false);
+                            owner.setSelectedPoint2(RCCommands.parseBlockPos(owner.getSelectedPoint2(), args, 1, false));
                         }
-
-                        seInfo.sendSelectionToClients(entityPlayerMP);
                     }
                     else
                     {

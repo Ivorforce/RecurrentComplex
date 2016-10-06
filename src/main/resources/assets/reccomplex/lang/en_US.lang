@@ -51,6 +51,7 @@ itemGroup.inventoryGenerators=Inventory Generators
 
 commands.rc.noEntityInfo=The entity does not contain structure info! This is a bug!
 commands.rc.nodimension=No such dimension
+commands.rc.noSelection=The object doesn't handle selections!
 
 commands.structure.notGeneric=Structure '%s' is not generic!
 commands.structure.notRegistered=No structure found by name '%s'!

@@ -6,7 +6,7 @@
 package ivorius.reccomplex.commands;
 
 import ivorius.reccomplex.RCConfig;
-import ivorius.reccomplex.entities.StructureEntityInfo;
+import ivorius.reccomplex.capability.StructureEntityInfo;
 import ivorius.reccomplex.utils.ServerTranslations;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.CommandException;
@@ -49,7 +49,7 @@ public class CommandVisual extends CommandBase
         boolean enabled = parseBoolean(args[1]);
 
         EntityPlayer player = getCommandSenderAsPlayer(commandSender);
-        StructureEntityInfo structureEntityInfo = RCCommands.getStructureEntityInfo(player);
+        StructureEntityInfo structureEntityInfo = RCCommands.getStructureEntityInfo(player, null);
 
         switch (args[0])
         {

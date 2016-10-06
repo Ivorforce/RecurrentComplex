@@ -6,20 +6,19 @@
 package ivorius.reccomplex.commands;
 
 import ivorius.ivtoolkit.blocks.BlockArea;
-import net.minecraft.command.CommandException;
-import net.minecraft.server.MinecraftServer;
-import net.minecraft.util.math.BlockPos;
 import ivorius.ivtoolkit.math.AxisAlignedTransform2D;
 import ivorius.ivtoolkit.tools.IvWorldData;
 import ivorius.reccomplex.RCConfig;
-import ivorius.reccomplex.entities.StructureEntityInfo;
+import ivorius.reccomplex.capability.SelectionOwner;
 import ivorius.reccomplex.operation.OperationRegistry;
+import ivorius.reccomplex.utils.ServerTranslations;
 import ivorius.reccomplex.world.gen.feature.structure.OperationMoveStructure;
 import ivorius.reccomplex.world.gen.feature.structure.generic.GenericStructureInfo;
-import ivorius.reccomplex.utils.ServerTranslations;
+import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
-import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.server.MinecraftServer;
+import net.minecraft.util.math.BlockPos;
 
 import javax.annotation.Nullable;
 import java.util.List;
@@ -42,7 +41,7 @@ public class CommandSelectMove extends CommandSelectModify
     }
 
     @Override
-    public void executeSelection(EntityPlayerMP player, StructureEntityInfo structureEntityInfo, BlockPos point1, BlockPos point2, String[] args) throws CommandException
+    public void executeSelection(ICommandSender sender, SelectionOwner selectionOwner, String[] args) throws CommandException
     {
         if (args.length < 3)
         {
@@ -51,17 +50,17 @@ public class CommandSelectMove extends CommandSelectModify
 
         AxisAlignedTransform2D transform = RCCommands.tryParseTransform(args, 3);
 
-        BlockArea area = new BlockArea(point1, point2);
+        BlockArea area = selectionOwner.getSelection();
 
         BlockPos coord = RCCommands.parseBlockPos(area.getLowerCorner(), args, 0, false);
 
-        IvWorldData worldData = IvWorldData.capture(player.worldObj, area, true);
+        IvWorldData worldData = IvWorldData.capture(sender.getEntityWorld(), area, true);
         NBTTagCompound worldDataCompound = worldData.createTagCompound(area.getLowerCorner());
 
         GenericStructureInfo structureInfo = GenericStructureInfo.createDefaultStructure();
         structureInfo.worldDataCompound = worldDataCompound;
 
-        OperationRegistry.queueOperation(new OperationMoveStructure(structureInfo, transform, coord, true, area), player);
+        OperationRegistry.queueOperation(new OperationMoveStructure(structureInfo, transform, coord, true, area), sender);
     }
 
     @Override

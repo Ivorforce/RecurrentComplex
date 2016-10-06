@@ -6,10 +6,12 @@
 package ivorius.reccomplex.commands;
 
 import ivorius.ivtoolkit.blocks.BlockArea;
+import ivorius.reccomplex.capability.SelectionOwner;
+import net.minecraft.command.CommandException;
 import net.minecraft.util.math.BlockPos;
 import ivorius.ivtoolkit.tools.IvWorldData;
 import ivorius.reccomplex.RCConfig;
-import ivorius.reccomplex.entities.StructureEntityInfo;
+import ivorius.reccomplex.capability.StructureEntityInfo;
 import ivorius.reccomplex.utils.ServerTranslations;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -32,15 +34,17 @@ public class CommandSelectCopy extends CommandSelectModify
     }
 
     @Override
-    public void executeSelection(EntityPlayerMP player, StructureEntityInfo structureEntityInfo, BlockPos point1, BlockPos point2, String[] args)
+    public void executeSelection(ICommandSender sender, SelectionOwner selectionOwner, String[] args) throws CommandException
     {
-        BlockArea area = new BlockArea(point1, point2);
-        IvWorldData worldData = IvWorldData.capture(player.worldObj, area, true);
+        StructureEntityInfo structureEntityInfo = RCCommands.getStructureEntityInfo(sender, null);
+
+        BlockArea area = selectionOwner.getSelection();
+        IvWorldData worldData = IvWorldData.capture(sender.getEntityWorld(), area, true);
 
         BlockPos lowerCorner = area.getLowerCorner();
         BlockPos higherCorner = area.getHigherCorner();
 
-        structureEntityInfo.setWorldDataClipboard(worldData.createTagCompound(lowerCorner));
-        player.addChatMessage(ServerTranslations.format("commands.selectCopy.success", String.valueOf(lowerCorner.getX()), String.valueOf(lowerCorner.getY()), String.valueOf(lowerCorner.getZ()), String.valueOf(higherCorner.getX()), String.valueOf(higherCorner.getY()), String.valueOf(higherCorner.getZ())));
+        structureEntityInfo.setWorldDataClipboard(worldData.createTagCompound(null));
+        sender.addChatMessage(ServerTranslations.format("commands.selectCopy.success", String.valueOf(lowerCorner.getX()), String.valueOf(lowerCorner.getY()), String.valueOf(lowerCorner.getZ()), String.valueOf(higherCorner.getX()), String.valueOf(higherCorner.getY()), String.valueOf(higherCorner.getZ())));
     }
 }

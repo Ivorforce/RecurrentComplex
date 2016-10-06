@@ -9,7 +9,7 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.math.BlockPos;
 import ivorius.ivtoolkit.math.AxisAlignedTransform2D;
 import ivorius.reccomplex.RCConfig;
-import ivorius.reccomplex.entities.StructureEntityInfo;
+import ivorius.reccomplex.capability.StructureEntityInfo;
 import ivorius.reccomplex.operation.OperationRegistry;
 import ivorius.reccomplex.world.gen.feature.structure.OperationGenerateStructure;
 import ivorius.reccomplex.world.gen.feature.structure.generic.GenericStructureInfo;
@@ -51,7 +51,7 @@ public class CommandPaste extends CommandBase
     public void execute(MinecraftServer server, ICommandSender commandSender, String[] args) throws CommandException
     {
         EntityPlayerMP entityPlayerMP = getCommandSenderAsPlayer(commandSender);
-        StructureEntityInfo structureEntityInfo = RCCommands.getStructureEntityInfo(entityPlayerMP);
+        StructureEntityInfo structureEntityInfo = RCCommands.getStructureEntityInfo(entityPlayerMP, null);
 
         NBTTagCompound worldData = structureEntityInfo.getWorldDataClipboard();
 

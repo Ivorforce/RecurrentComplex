@@ -6,14 +6,13 @@
 package ivorius.reccomplex.commands;
 
 import ivorius.ivtoolkit.blocks.BlockArea;
-import net.minecraft.command.CommandException;
-import net.minecraft.util.math.BlockPos;
-import ivorius.reccomplex.RCConfig;
-import ivorius.reccomplex.entities.StructureEntityInfo;
 import ivorius.ivtoolkit.blocks.BlockAreas;
+import ivorius.reccomplex.RCConfig;
+import ivorius.reccomplex.capability.SelectionOwner;
 import ivorius.reccomplex.utils.ServerTranslations;
+import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
-import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.util.math.BlockPos;
 
 /**
  * Created by lukas on 09.06.14.
@@ -33,16 +32,15 @@ public class CommandSelectExpand extends CommandSelectModify
     }
 
     @Override
-    public void executeSelection(EntityPlayerMP player, StructureEntityInfo structureEntityInfo, BlockPos point1, BlockPos point2, String[] args) throws CommandException
+    public void executeSelection(ICommandSender sender, SelectionOwner selectionOwner, String[] args) throws CommandException
     {
         if (args.length < 3)
             throw ServerTranslations.wrongUsageException("commands.selectExpand.usage");
 
         int x = parseInt(args[0]), y = parseInt(args[1]), z = parseInt(args[2]);
 
-        BlockArea area = BlockAreas.expand(new BlockArea(point1, point2), new BlockPos(x, y, z), new BlockPos(x, y, z));
+        BlockArea area = BlockAreas.expand(selectionOwner.getSelection(), new BlockPos(x, y, z), new BlockPos(x, y, z));
 
-        structureEntityInfo.setSelection(area);
-        structureEntityInfo.sendSelectionToClients(player);
+        selectionOwner.setSelection(area);
     }
 }

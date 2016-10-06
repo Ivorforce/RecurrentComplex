@@ -8,7 +8,8 @@ package ivorius.reccomplex.commands;
 import ivorius.ivtoolkit.blocks.BlockArea;
 import ivorius.reccomplex.RCConfig;
 import ivorius.reccomplex.RecurrentComplex;
-import ivorius.reccomplex.entities.StructureEntityInfo;
+import ivorius.reccomplex.capability.SelectionOwner;
+import ivorius.reccomplex.capability.StructureEntityInfo;
 import ivorius.reccomplex.utils.expression.PositionedBlockMatcher;
 import ivorius.reccomplex.utils.ServerTranslations;
 import net.minecraft.block.Block;
@@ -44,25 +45,25 @@ public class CommandSelectReplace extends CommandSelectModify
     }
 
     @Override
-    public void executeSelection(EntityPlayerMP player, StructureEntityInfo structureEntityInfo, BlockPos point1, BlockPos point2, String[] args) throws CommandException
+    public void executeSelection(ICommandSender sender, SelectionOwner selectionOwner, String[] args) throws CommandException
     {
         if (args.length >= 3)
         {
-            World world = player.getEntityWorld();
+            World world = sender.getEntityWorld();
 
             String src = buildString(args, 2);
 
-            Block dstBlock = getBlockByText(player, args[0]);
+            Block dstBlock = getBlockByText(sender, args[0]);
             int[] dstMeta = getMetadatas(args[1]);
             List<IBlockState> dst = IntStream.of(dstMeta).mapToObj(dstBlock::getStateFromMeta).collect(Collectors.toList());
 
             PositionedBlockMatcher matcher = new PositionedBlockMatcher(RecurrentComplex.specialRegistry, src);
 
-            for (BlockPos coord : new BlockArea(point1, point2))
+            for (BlockPos coord : selectionOwner.getSelection())
             {
                 if (matcher.test(PositionedBlockMatcher.Argument.at(world, coord)))
                 {
-                    IBlockState state = dst.get(player.getRNG().nextInt(dst.size()));
+                    IBlockState state = dst.get(world.rand.nextInt(dst.size()));
                     world.setBlockState(coord, state, 3);
                 }
             }

@@ -6,17 +6,16 @@
 package ivorius.reccomplex.commands;
 
 import ivorius.ivtoolkit.blocks.BlockArea;
-import ivorius.reccomplex.RecurrentComplex;
-import ivorius.reccomplex.utils.expression.PositionedBlockMatcher;
-import net.minecraft.util.math.BlockPos;
-import ivorius.reccomplex.RCConfig;
-import ivorius.reccomplex.entities.StructureEntityInfo;
 import ivorius.ivtoolkit.blocks.BlockAreas;
+import ivorius.reccomplex.RCConfig;
+import ivorius.reccomplex.RecurrentComplex;
+import ivorius.reccomplex.capability.SelectionOwner;
 import ivorius.reccomplex.utils.ServerTranslations;
+import ivorius.reccomplex.utils.expression.PositionedBlockMatcher;
+import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
-import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.world.World;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.world.World;
 
 /**
  * Created by lukas on 09.06.14.
@@ -36,10 +35,10 @@ public class CommandSelectCrop extends CommandSelectModify
     }
 
     @Override
-    public void executeSelection(EntityPlayerMP player, StructureEntityInfo structureEntityInfo, BlockPos point1, BlockPos point2, String[] args)
+    public void executeSelection(ICommandSender sender, SelectionOwner selectionOwner, String[] args) throws CommandException
     {
-        World world = player.getEntityWorld();
-        BlockArea area = new BlockArea(point1, point2);
+        World world = sender.getEntityWorld();
+        BlockArea area = selectionOwner.getSelection();
 
         String exp = args.length > 0 ? buildString(args, 0) : "is:air";
         PositionedBlockMatcher matcher = new PositionedBlockMatcher(RecurrentComplex.specialRegistry, exp);
@@ -48,8 +47,6 @@ public class CommandSelectCrop extends CommandSelectModify
             while (area != null && CommandSelectWand.sideStream(area, direction).allMatch(p -> matcher.test(PositionedBlockMatcher.Argument.at(world, p))))
                 area = BlockAreas.shrink(area, direction, 1);
 
-        structureEntityInfo.setSelection(area);
-        structureEntityInfo.sendSelectionToClients(player);
+        selectionOwner.setSelection(area);
     }
-
 }

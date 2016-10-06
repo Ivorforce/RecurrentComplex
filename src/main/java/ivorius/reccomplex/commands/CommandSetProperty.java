@@ -5,18 +5,16 @@
 
 package ivorius.reccomplex.commands;
 
-import ivorius.ivtoolkit.blocks.BlockArea;
 import ivorius.reccomplex.RCConfig;
 import ivorius.reccomplex.RecurrentComplex;
-import ivorius.reccomplex.entities.StructureEntityInfo;
-import ivorius.reccomplex.utils.expression.PositionedBlockMatcher;
-import ivorius.reccomplex.world.gen.feature.structure.generic.transformers.TransformerProperty;
+import ivorius.reccomplex.capability.SelectionOwner;
 import ivorius.reccomplex.utils.RCBlockAreas;
 import ivorius.reccomplex.utils.ServerTranslations;
+import ivorius.reccomplex.utils.expression.PositionedBlockMatcher;
+import ivorius.reccomplex.world.gen.feature.structure.generic.transformers.TransformerProperty;
 import net.minecraft.block.Block;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
-import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
@@ -45,18 +43,18 @@ public class CommandSetProperty extends CommandSelectModify
     }
 
     @Override
-    public void executeSelection(EntityPlayerMP player, StructureEntityInfo structureEntityInfo, BlockPos point1, BlockPos point2, String[] args) throws CommandException
+    public void executeSelection(ICommandSender sender, SelectionOwner selectionOwner, String[] args) throws CommandException
     {
         if (args.length >= 2)
         {
-            World world = player.getEntityWorld();
+            World world = sender.getEntityWorld();
 
             PositionedBlockMatcher matcher = new PositionedBlockMatcher(RecurrentComplex.specialRegistry, args.length > 2 ? buildString(args, 2) : "");
 
             String propertyName = args[0];
             String propertyValue = args[1];
 
-            for (BlockPos pos : RCBlockAreas.mutablePositions(new BlockArea(point1, point2)))
+            for (BlockPos pos : RCBlockAreas.mutablePositions(selectionOwner.getSelection()))
             {
                 PositionedBlockMatcher.Argument at = PositionedBlockMatcher.Argument.at(world, pos);
                 if (matcher.test(at))

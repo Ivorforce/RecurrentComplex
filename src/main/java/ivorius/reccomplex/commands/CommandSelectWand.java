@@ -9,12 +9,12 @@ import ivorius.ivtoolkit.blocks.BlockArea;
 import ivorius.ivtoolkit.blocks.BlockAreas;
 import ivorius.reccomplex.RCConfig;
 import ivorius.reccomplex.RecurrentComplex;
-import ivorius.reccomplex.entities.StructureEntityInfo;
-import ivorius.reccomplex.utils.expression.PositionedBlockMatcher;
+import ivorius.reccomplex.capability.SelectionOwner;
 import ivorius.reccomplex.utils.RCBlockAreas;
 import ivorius.reccomplex.utils.ServerTranslations;
+import ivorius.reccomplex.utils.expression.PositionedBlockMatcher;
+import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
-import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
@@ -28,6 +28,12 @@ import java.util.stream.StreamSupport;
  */
 public class CommandSelectWand extends CommandSelectModify
 {
+    @Nonnull
+    protected static Stream<BlockPos> sideStream(BlockArea area, EnumFacing direction)
+    {
+        return StreamSupport.stream(BlockAreas.side(area, direction).spliterator(), false);
+    }
+
     @Override
     public String getCommandName()
     {
@@ -41,15 +47,15 @@ public class CommandSelectWand extends CommandSelectModify
     }
 
     @Override
-    public void executeSelection(EntityPlayerMP player, StructureEntityInfo structureEntityInfo, BlockPos point1, BlockPos point2, String[] args)
+    public void executeSelection(ICommandSender sender, SelectionOwner selectionOwner, String[] args) throws CommandException
     {
-        World world = player.getEntityWorld();
-        BlockArea area = new BlockArea(point1, point2);
+        World world = sender.getEntityWorld();
+        BlockArea area = selectionOwner.getSelection();
 
         boolean changed = true;
         int total = 0;
 
-        while(changed)
+        while (changed)
         {
             changed = false;
 
@@ -60,7 +66,7 @@ public class CommandSelectWand extends CommandSelectModify
             {
                 BlockArea expand;
 
-                while (sideStream((expand = RCBlockAreas.expand(area, direction, 1)), direction).anyMatch(p -> matcher.test(PositionedBlockMatcher.Argument.at(world, p))) && (total ++) < 300)
+                while (sideStream((expand = RCBlockAreas.expand(area, direction, 1)), direction).anyMatch(p -> matcher.test(PositionedBlockMatcher.Argument.at(world, p))) && (total++) < 300)
                 {
                     area = expand;
                     changed = true;
@@ -68,13 +74,6 @@ public class CommandSelectWand extends CommandSelectModify
             }
         }
 
-        structureEntityInfo.setSelection(area);
-        structureEntityInfo.sendSelectionToClients(player);
-    }
-
-    @Nonnull
-    protected static Stream<BlockPos> sideStream(BlockArea area, EnumFacing direction)
-    {
-        return StreamSupport.stream(BlockAreas.side(area, direction).spliterator(), false);
+        selectionOwner.setSelection(area);
     }
 }

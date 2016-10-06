@@ -5,10 +5,11 @@
 
 package ivorius.reccomplex.commands;
 
+import ivorius.reccomplex.capability.SelectionOwner;
 import net.minecraft.command.*;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.math.BlockPos;
-import ivorius.reccomplex.entities.StructureEntityInfo;
+import ivorius.reccomplex.capability.StructureEntityInfo;
 import ivorius.reccomplex.utils.ServerTranslations;
 import net.minecraft.entity.player.EntityPlayerMP;
 
@@ -25,20 +26,12 @@ public abstract class CommandSelectModify extends CommandBase
     @Override
     public void execute(MinecraftServer server, ICommandSender commandSender, String[] args) throws CommandException
     {
-        EntityPlayerMP entityPlayerMP = getCommandSenderAsPlayer(commandSender);
-        StructureEntityInfo structureEntityInfo = RCCommands.getStructureEntityInfo(entityPlayerMP);
+        SelectionOwner owner = RCCommands.getSelectionOwner(commandSender, null);
 
-        if (structureEntityInfo != null)
-        {
-            if (structureEntityInfo.hasValidSelection())
-            {
-                executeSelection(entityPlayerMP, structureEntityInfo, structureEntityInfo.selectedPoint1, structureEntityInfo.selectedPoint2, args);
-            }
-            else
-            {
-                throw ServerTranslations.commandException("commands.selectModify.noSelection");
-            }
-        }
+        if (owner.hasValidSelection())
+            executeSelection(commandSender, owner, args);
+        else
+            throw ServerTranslations.commandException("commands.selectModify.noSelection");
     }
 
     public static int[] getMetadatas(String arg) throws CommandException
@@ -61,5 +54,5 @@ public abstract class CommandSelectModify extends CommandBase
         }
     }
 
-    public abstract void executeSelection(EntityPlayerMP player, StructureEntityInfo structureEntityInfo, BlockPos point1, BlockPos point2, String[] args) throws CommandException;
+    public abstract void executeSelection(ICommandSender sender, SelectionOwner selectionOwner, String[] args) throws CommandException;
 }

@@ -8,14 +8,15 @@ package ivorius.reccomplex.commands;
 import ivorius.ivtoolkit.math.AxisAlignedTransform2D;
 import ivorius.reccomplex.RCConfig;
 import ivorius.reccomplex.RecurrentComplex;
-import ivorius.reccomplex.entities.StructureEntityInfo;
+import ivorius.reccomplex.capability.SelectionOwner;
+import ivorius.reccomplex.capability.StructureEntityInfo;
 import ivorius.reccomplex.utils.BlockSurfacePos;
 import ivorius.reccomplex.utils.ServerTranslations;
+import ivorius.reccomplex.utils.expression.ResourceMatcher;
 import ivorius.reccomplex.world.gen.feature.structure.StructureInfo;
 import ivorius.reccomplex.world.gen.feature.structure.StructureRegistry;
-import ivorius.reccomplex.utils.expression.ResourceMatcher;
 import net.minecraft.command.*;
-import net.minecraft.entity.Entity;
+import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.WorldServer;
 import net.minecraftforge.common.DimensionManager;
@@ -23,6 +24,7 @@ import net.minecraftforge.fml.common.event.FMLServerStartingEvent;
 import org.apache.commons.lang3.tuple.Pair;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.nio.file.Path;
 import java.util.Arrays;
 import java.util.Collections;
@@ -115,14 +117,25 @@ public class RCCommands
     }
 
     @Nonnull
-    public static StructureEntityInfo getStructureEntityInfo(Entity entity) throws CommandException
+    public static StructureEntityInfo getStructureEntityInfo(Object object, @Nullable EnumFacing facing) throws CommandException
     {
-        StructureEntityInfo info = StructureEntityInfo.getStructureEntityInfo(entity);
+        StructureEntityInfo info = StructureEntityInfo.getStructureEntityInfo(object, facing);
 
         if (info == null)
             throw ServerTranslations.commandException("commands.rc.noEntityInfo");
 
         return info;
+    }
+
+    @Nonnull
+    public static SelectionOwner getSelectionOwner(Object object, @Nullable EnumFacing facing) throws CommandException
+    {
+        SelectionOwner owner = SelectionOwner.getOwner(object, facing);
+
+        if (owner == null)
+            throw ServerTranslations.commandException("commands.rc.noSelection");
+
+        return owner;
     }
 
     public static BlockPos parseBlockPos(BlockPos blockpos, String[] args, int startIndex, boolean centerBlock) throws NumberInvalidException

@@ -5,20 +5,19 @@
 
 package ivorius.reccomplex.commands;
 
-import ivorius.ivtoolkit.blocks.BlockArea;
-import net.minecraft.command.CommandException;
-import net.minecraft.server.MinecraftServer;
-import net.minecraft.util.math.BlockPos;
 import ivorius.reccomplex.RCConfig;
-import ivorius.reccomplex.entities.StructureEntityInfo;
-import net.minecraft.block.state.IBlockState;
+import ivorius.reccomplex.capability.SelectionOwner;
 import ivorius.reccomplex.utils.ServerTranslations;
 import net.minecraft.block.Block;
+import net.minecraft.block.state.IBlockState;
+import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
-import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.server.MinecraftServer;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
 import javax.annotation.Nullable;
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
@@ -41,19 +40,19 @@ public class CommandSelectFill extends CommandSelectModify
     }
 
     @Override
-    public void executeSelection(EntityPlayerMP player, StructureEntityInfo structureEntityInfo, BlockPos point1, BlockPos point2, String[] args) throws CommandException
+    public void executeSelection(ICommandSender sender, SelectionOwner selectionOwner, String[] args) throws CommandException
     {
         if (args.length >= 1)
         {
-            World world = player.getEntityWorld();
+            World world = sender.getEntityWorld();
 
-            Block dstBlock = getBlockByText(player, args[0]);
+            Block dstBlock = getBlockByText(sender, args[0]);
             int[] dstMeta = args.length >= 2 ? getMetadatas(args[1]) : new int[]{0};
             List<IBlockState> dst = IntStream.of(dstMeta).mapToObj(dstBlock::getStateFromMeta).collect(Collectors.toList());
 
-            for (BlockPos coord : new BlockArea(point1, point2))
+            for (BlockPos coord : selectionOwner.getSelection())
             {
-                IBlockState state = dst.get(player.getRNG().nextInt(dst.size()));
+                IBlockState state = dst.get(world.rand.nextInt(dst.size()));
                 world.setBlockState(coord, state, 3);
             }
         }
@@ -69,10 +68,8 @@ public class CommandSelectFill extends CommandSelectModify
         if (args.length == 1)
             return getListOfStringsMatchingLastWord(args, Block.REGISTRY.getKeys());
         else if (args.length == 2)
-        {
             return getListOfStringsMatchingLastWord(args, "0");
-        }
 
-        return null;
+        return Collections.emptyList();
     }
 }

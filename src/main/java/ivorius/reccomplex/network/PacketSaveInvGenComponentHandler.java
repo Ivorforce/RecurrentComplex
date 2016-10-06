@@ -11,6 +11,7 @@ import ivorius.reccomplex.commands.RCCommands;
 import ivorius.reccomplex.files.RCFileSaver;
 import ivorius.reccomplex.files.loading.LeveledRegistry;
 import ivorius.reccomplex.files.loading.RCFileSuffix;
+import ivorius.reccomplex.files.loading.ResourceDirectory;
 import ivorius.reccomplex.item.ItemInventoryGenComponentTag;
 import ivorius.reccomplex.utils.SaveDirectoryData;
 import ivorius.reccomplex.world.storage.loot.GenericItemCollectionRegistry;
@@ -37,16 +38,18 @@ public class PacketSaveInvGenComponentHandler extends SchedulingMessageHandler<P
 
         SaveDirectoryData.Result saveDirectoryDataResult = message.getSaveDirectoryDataResult();
 
-        String path = saveDirectoryDataResult.directory.subDirectoryName() + "/";
         String id = message.getKey();
 
-        GenericItemCollectionRegistry.INSTANCE.register(id, "", message.getInventoryGenerator(), saveDirectoryDataResult.directory.isActive(), LeveledRegistry.Level.CUSTOM);
+        ResourceDirectory saveDir = saveDirectoryDataResult.directory;
+        ResourceDirectory delDir = saveDir.opposite();
+
+        GenericItemCollectionRegistry.INSTANCE.register(id, "", message.getInventoryGenerator(), saveDir.isActive(), saveDir.getLevel());
 
         if (RCCommands.informSaveResult((message.getInventoryGenerator() != null && id != null) &&
-                RecurrentComplex.saver.trySave(saveDirectoryDataResult.directory.toPath(), RCFileSuffix.INVENTORY_GENERATION_COMPONENT, id), player, path, RCFileSaver.INVENTORY_GENERATION_COMPONENT, id))
+                RecurrentComplex.saver.trySave(saveDir.toPath(), RCFileSuffix.INVENTORY_GENERATION_COMPONENT, id), player, saveDir.subDirectoryName(), RCFileSaver.INVENTORY_GENERATION_COMPONENT, id))
         {
             if (saveDirectoryDataResult.deleteOther)
-                RCCommands.informDeleteResult(RecurrentComplex.saver.tryDeleteWithID(saveDirectoryDataResult.directory.opposite().toPath(), id, RCFileSuffix.INVENTORY_GENERATION_COMPONENT), player, RCFileSaver.INVENTORY_GENERATION_COMPONENT, id, saveDirectoryDataResult.directory.opposite().subDirectoryName());
+                RCCommands.informDeleteResult(RecurrentComplex.saver.tryDeleteWithID(delDir.toPath(), id, RCFileSuffix.INVENTORY_GENERATION_COMPONENT), player, RCFileSaver.INVENTORY_GENERATION_COMPONENT, id, delDir.subDirectoryName());
 
             ItemStack heldItem = playServer.playerEntity.getHeldItem(EnumHand.MAIN_HAND);
             if (heldItem != null && heldItem.getItem() instanceof ItemInventoryGenComponentTag)

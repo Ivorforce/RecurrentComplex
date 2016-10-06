@@ -53,7 +53,7 @@ public class PacketSaveStructureHandler extends SchedulingMessageHandler<PacketS
         ResourceDirectory saveDir = saveDirectoryDataResult.directory;
         ResourceDirectory delDir = saveDir.opposite();
 
-        StructureRegistry.INSTANCE.register(id, "", genericStructureInfo, saveDir.isActive(), LeveledRegistry.Level.CUSTOM);
+        StructureRegistry.INSTANCE.register(id, "", genericStructureInfo, saveDir.isActive(), saveDir.getLevel());
 
         if (RCCommands.informSaveResult(RecurrentComplex.saver.trySave(saveDir.toPath(), RCFileSaver.STRUCTURE, id), player, saveDir.subDirectoryName(), RCFileSaver.STRUCTURE, id))
             if (saveDirectoryDataResult.deleteOther)

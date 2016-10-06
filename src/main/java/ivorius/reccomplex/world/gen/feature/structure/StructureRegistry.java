@@ -66,9 +66,11 @@ public class StructureRegistry extends SimpleLeveledRegistry<StructureInfo>
         if (active && !(RCConfig.shouldStructureGenerate(id, domain) && structureInfo.areDependenciesResolved()))
             active = false;
 
+        StructureInfo prev = super.register(id, domain, structureInfo, active, level);
+
         clearCaches();
 
-        return super.register(id, domain, structureInfo, active, level);
+        return prev;
     }
 
     @Override

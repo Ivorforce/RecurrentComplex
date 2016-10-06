@@ -45,11 +45,11 @@ public class GenericItemCollectionRegistry extends SimpleLeveledRegistry<Generic
 
         Set<String> generating = activeIDs().stream().collect(Collectors.toSet());
 
-        GenericItemCollection.Component register = super.register(id, domain, component, active, level);
+        GenericItemCollection.Component prev = super.register(id, domain, component, active, level);
 
         clearCaches(generating);
 
-        return register;
+        return prev;
     }
 
     @Override

@@ -112,8 +112,19 @@ public class GenericStructureInfo implements StructureInfo<GenericStructureInfo.
         Random random = context.random;
         IvWorldData worldData = constructWorldData();
 
-        TransformerMulti transformer = TransformerMulti.fuse(Arrays.asList(this.transformer, foreignTransformer));
-        TransformerMulti.InstanceData transformerData = transformer.fuseDatas(Arrays.asList(instanceData.transformerData, instanceData.foreignTransformerData));
+        TransformerMulti transformer;
+        TransformerMulti.InstanceData transformerData;
+
+        if (!foreignTransformer.isEmpty())
+        {
+            transformer = TransformerMulti.fuse(Arrays.asList(this.transformer, foreignTransformer));
+            transformerData = transformer.fuseDatas(Arrays.asList(instanceData.transformerData, instanceData.foreignTransformerData));
+        }
+        else
+        {
+            transformer = this.transformer;
+            transformerData = instanceData.transformerData;
+        }
 
         if (context.generateMaturity == StructureSpawnContext.GenerateMaturity.SUGGEST)
         {

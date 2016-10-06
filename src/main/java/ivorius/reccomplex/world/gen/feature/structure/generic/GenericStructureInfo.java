@@ -109,21 +109,16 @@ public class GenericStructureInfo implements StructureInfo<GenericStructureInfo.
     public boolean generate(@Nonnull final StructureSpawnContext context, @Nonnull InstanceData instanceData, @Nonnull TransformerMulti foreignTransformer)
     {
         WorldServer world = context.environment.world;
-        Random random = context.random;
         IvWorldData worldData = constructWorldData();
+        boolean asSource = context.generateAsSource;
 
-        TransformerMulti transformer;
-        TransformerMulti.InstanceData transformerData;
+        TransformerMulti transformer = this.transformer;
+        TransformerMulti.InstanceData transformerData = instanceData.transformerData;
 
-        if (!foreignTransformer.isEmpty(instanceData.foreignTransformerData))
+        if (!asSource && !foreignTransformer.isEmpty(instanceData.foreignTransformerData))
         {
             transformer = TransformerMulti.fuse(Arrays.asList(this.transformer, foreignTransformer));
             transformerData = transformer.fuseDatas(Arrays.asList(instanceData.transformerData, instanceData.foreignTransformerData));
-        }
-        else
-        {
-            transformer = this.transformer;
-            transformerData = instanceData.transformerData;
         }
 
         if (context.generateMaturity == StructureSpawnContext.GenerateMaturity.SUGGEST)
@@ -153,7 +148,7 @@ public class GenericStructureInfo implements StructureInfo<GenericStructureInfo.
             tileEntityCompounds.put(key, tileEntityCompound);
         }
 
-        if (!context.generateAsSource)
+        if (!asSource)
             transformer.transform(transformerData, Transformer.Phase.BEFORE, context, worldData);
 
         BlockPos.MutableBlockPos worldPos = new BlockPos.MutableBlockPos();
@@ -165,11 +160,11 @@ public class GenericStructureInfo implements StructureInfo<GenericStructureInfo.
                 worldPos = RCMutableBlockPos.add(RCAxisAlignedTransform.apply(sourcePos, worldPos, areaSize, context.transform), origin);
 
                 if (context.includes(worldPos) && RecurrentComplex.specialRegistry.isSafe(state.getBlock())
-                        && pass == getPass(state) && (context.generateAsSource || !transformer.skipGeneration(transformerData, context, worldPos, state, worldData, sourcePos)))
+                        && pass == getPass(state) && (asSource || !transformer.skipGeneration(transformerData, context, worldPos, state, worldData, sourcePos)))
                 {
                     TileEntity origTileEntity = origTileEntities.get(sourcePos);
 
-                    if (context.generateAsSource || !(origTileEntity instanceof GeneratingTileEntity) || ((GeneratingTileEntity) origTileEntity).shouldPlaceInWorld(context, instanceData.tileEntities.get(sourcePos)))
+                    if (asSource || !(origTileEntity instanceof GeneratingTileEntity) || ((GeneratingTileEntity) origTileEntity).shouldPlaceInWorld(context, instanceData.tileEntities.get(sourcePos)))
                     {
                         if (context.setBlock(worldPos, state, 2) && world.getBlockState(worldPos).getBlock() == state.getBlock())
                         {
@@ -197,7 +192,7 @@ public class GenericStructureInfo implements StructureInfo<GenericStructureInfo.
             }
         }
 
-        if (!context.generateAsSource)
+        if (!asSource)
             transformer.transform(transformerData, Transformer.Phase.AFTER, context, worldData);
 
         for (NBTTagCompound entityCompound : worldData.entities)
@@ -224,7 +219,7 @@ public class GenericStructureInfo implements StructureInfo<GenericStructureInfo.
             }
         }
 
-        if (!context.generateAsSource && context.generationLayer < MAX_GENERATING_LAYERS)
+        if (!asSource && context.generationLayer < MAX_GENERATING_LAYERS)
         {
             origTileEntities.entrySet().stream().filter(entry -> entry.getValue() instanceof GeneratingTileEntity).forEach(entry -> ((GeneratingTileEntity) entry.getValue()).generate(context, instanceData.tileEntities.get(entry.getKey())));
         }

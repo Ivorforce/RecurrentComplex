@@ -52,6 +52,7 @@ public class RCCommands
         if (RCConfig.asCommandPermissionLevel >= 0)
             event.registerServerCommand(new CommandAs());
         event.registerServerCommand(new CommandAt());
+        event.registerServerCommand(new CommandSelecting());
 
         if (!RecurrentComplex.isLite())
         {

@@ -68,39 +68,14 @@ public class CommandAt extends CommandBase
         return args.length == 1 ? getListOfStringsMatchingLastWord(args, server.getAllUsernames()) : Collections.emptyList();
     }
 
-    public static class RepositionedSender implements ICommandSender
+    public static class RepositionedSender extends DelegatingSender
     {
-        private final ICommandSender sender;
         private final ICommandSender positionRef;
 
         public RepositionedSender(ICommandSender sender, ICommandSender positionRef)
         {
-            this.sender = sender;
+            super(sender);
             this.positionRef = positionRef;
-        }
-
-        @Override
-        public String getName()
-        {
-            return sender.getName();
-        }
-
-        @Override
-        public ITextComponent getDisplayName()
-        {
-            return sender.getDisplayName();
-        }
-
-        @Override
-        public void addChatMessage(ITextComponent component)
-        {
-            sender.addChatMessage(component);
-        }
-
-        @Override
-        public boolean canCommandSenderUseCommand(int permLevel, String commandName)
-        {
-            return sender.canCommandSenderUseCommand(permLevel, commandName);
         }
 
         @Override
@@ -119,32 +94,6 @@ public class CommandAt extends CommandBase
         public World getEntityWorld()
         {
             return positionRef.getEntityWorld();
-        }
-
-        @Nullable
-        @Override
-        public Entity getCommandSenderEntity()
-        {
-            return sender.getCommandSenderEntity();
-        }
-
-        @Override
-        public boolean sendCommandFeedback()
-        {
-            return sender.sendCommandFeedback();
-        }
-
-        @Override
-        public void setCommandStat(CommandResultStats.Type type, int amount)
-        {
-            sender.setCommandStat(type, amount);
-        }
-
-        @Nullable
-        @Override
-        public MinecraftServer getServer()
-        {
-            return sender.getServer();
         }
     }
 }

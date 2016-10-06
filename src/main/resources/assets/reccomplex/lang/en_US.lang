@@ -178,6 +178,8 @@ commands.rcsave.noregistry=No such registry id!
 commands.rcsave.noelement=No such element!
 
 commands.rcas.usage=/#as <entity> <command>
+commands.rcat.usage=/#at <entity> <command>
+commands.rcselecting.usage=/#selecting <x1> <y1> <z1> <x2> <y2> <z2> <command>
 
 inventoryGen.vanilla=Vanilla Generator
 inventoryGen.custom=Custom Generator

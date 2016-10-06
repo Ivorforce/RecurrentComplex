@@ -256,12 +256,6 @@ public class TransformerRuins extends Transformer<TransformerRuins.InstanceData>
         return new InstanceData(nbt instanceof NBTTagCompound ? (NBTTagCompound) nbt : new NBTTagCompound());
     }
 
-    @Override
-    public boolean mayGenerate(InstanceData instanceData, StructureSpawnContext context, IvWorldData worldData, TransformerMulti transformer, TransformerMulti.InstanceData transformerData)
-    {
-        return true;
-    }
-
     public static class InstanceData implements NBTStorable
     {
         public BlurredValueField blurredValueField;

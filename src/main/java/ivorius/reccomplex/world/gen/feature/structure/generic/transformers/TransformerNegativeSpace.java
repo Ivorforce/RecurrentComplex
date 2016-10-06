@@ -49,21 +49,9 @@ public class TransformerNegativeSpace extends Transformer<NBTNone>
     }
 
     @Override
-    public boolean mayGenerate(NBTNone instanceData, StructureSpawnContext context, IvWorldData worldData, TransformerMulti transformer, TransformerMulti.InstanceData transformerData)
-    {
-        return true;
-    }
-
-    @Override
     public boolean skipGeneration(NBTNone instanceData, StructureSpawnContext context, BlockPos pos, IBlockState state, IvWorldData worldData, BlockPos sourcePos)
     {
         return sourceMatcher.test(state) && (destMatcher.expressionIsEmpty() || destMatcher.test(PositionedBlockMatcher.Argument.at(context.environment.world, pos)));
-    }
-
-    @Override
-    public void transform(NBTNone instanceData, Phase phase, StructureSpawnContext context, IvWorldData worldData, TransformerMulti transformer, TransformerMulti.InstanceData transformerData)
-    {
-
     }
 
     @Override

@@ -176,6 +176,7 @@ commands.rcdisable.usage=/#enable <registry id> <element id>
 commands.rcsave.usage=/#write <registry id> <element id> <directory>
 commands.rcsave.noregistry=No such registry id!
 commands.rcsave.noelement=No such element!
+commands.rcdelete.usage=/#delete <registry id> <element id> <directory>
 
 commands.rcas.usage=/#as <entity> <command>
 commands.rcat.usage=/#at <entity> <command>

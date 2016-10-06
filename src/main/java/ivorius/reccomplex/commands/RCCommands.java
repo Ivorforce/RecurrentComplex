@@ -48,6 +48,7 @@ public class RCCommands
     public static void onServerStart(FMLServerStartingEvent event)
     {
         event.registerServerCommand(new CommandWrite());
+        event.registerServerCommand(new CommandDelete());
 
         if (RCConfig.asCommandPermissionLevel >= 0)
             event.registerServerCommand(new CommandAs());

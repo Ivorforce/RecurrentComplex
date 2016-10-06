@@ -49,6 +49,7 @@ public class RCCommands
 
         if (RCConfig.asCommandPermissionLevel >= 0)
             event.registerServerCommand(new CommandAs());
+        event.registerServerCommand(new CommandAt());
 
         if (!RecurrentComplex.isLite())
         {
@@ -56,7 +57,6 @@ public class RCCommands
             event.registerServerCommand(new CommandEditStructure());
         }
         event.registerServerCommand(new CommandGenerateStructure());
-        event.registerServerCommand(new CommandGenerateStructureAt());
         event.registerServerCommand(new CommandImportStructure());
 
         event.registerServerCommand(new CommandReload());

@@ -119,7 +119,7 @@ public class RCCommands
     @Nonnull
     public static StructureEntityInfo getStructureEntityInfo(Object object, @Nullable EnumFacing facing) throws CommandException
     {
-        StructureEntityInfo info = StructureEntityInfo.getStructureEntityInfo(object, facing);
+        StructureEntityInfo info = StructureEntityInfo.get(object, facing);
 
         if (info == null)
             throw ServerTranslations.commandException("commands.rc.noEntityInfo");

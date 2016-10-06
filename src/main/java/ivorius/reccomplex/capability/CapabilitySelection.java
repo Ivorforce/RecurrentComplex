@@ -14,9 +14,11 @@ import ivorius.ivtoolkit.tools.NBTCompoundObject;
 import ivorius.reccomplex.RecurrentComplex;
 import net.minecraft.entity.Entity;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.CapabilityInject;
+import net.minecraftforge.common.capabilities.ICapabilityProvider;
 
 import javax.annotation.Nullable;
 
@@ -36,9 +38,9 @@ public class CapabilitySelection implements NBTCompoundObject, PartialUpdateHand
     public BlockPos selectedPoint2;
 
     @Nullable
-    public static CapabilitySelection getStructureEntityInfo(Entity entity)
+    public static CapabilitySelection get(ICapabilityProvider provider, @Nullable EnumFacing facing)
     {
-        return entity.getCapability(CAPABILITY, null);
+        return provider.getCapability(CAPABILITY, null);
     }
 
     @Nullable
@@ -94,10 +96,13 @@ public class CapabilitySelection implements NBTCompoundObject, PartialUpdateHand
     public void update(Entity entity)
     {
         if (hasChanges)
-        {
-            hasChanges = false;
-            sendSelectionToClients(entity);
-        }
+            sendChanges(entity);
+    }
+
+    public void sendChanges(Entity entity)
+    {
+        hasChanges = false;
+        sendSelectionToClients(entity);
     }
 
     @Override

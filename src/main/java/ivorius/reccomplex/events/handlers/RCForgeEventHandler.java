@@ -90,7 +90,7 @@ public class RCForgeEventHandler
         int ticks = mc.thePlayer.ticksExisted;
 
         Entity renderEntity = mc.getRenderViewEntity();
-        StructureEntityInfo info = StructureEntityInfo.getStructureEntityInfo(mc.thePlayer, null);
+        StructureEntityInfo info = StructureEntityInfo.get(mc.thePlayer, null);
         double entityX = renderEntity.lastTickPosX + (renderEntity.posX - renderEntity.lastTickPosX) * (double) event.getPartialTicks();
         double entityY = renderEntity.lastTickPosY + (renderEntity.posY - renderEntity.lastTickPosY) * (double) event.getPartialTicks();
         double entityZ = renderEntity.lastTickPosZ + (renderEntity.posZ - renderEntity.lastTickPosZ) * (double) event.getPartialTicks();
@@ -153,11 +153,13 @@ public class RCForgeEventHandler
     @SubscribeEvent
     public void onPlayerTick(TickEvent.PlayerTickEvent event)
     {
-        StructureEntityInfo structureEntityInfo = StructureEntityInfo.getStructureEntityInfo(event.player, null);
-        if (structureEntityInfo != null)
-        {
-            structureEntityInfo.update(event.player);
-        }
+        StructureEntityInfo sei = StructureEntityInfo.get(event.player, null);
+        if (sei != null)
+            sei.update(event.player);
+
+        CapabilitySelection sel = CapabilitySelection.get(event.player, null);
+        if (sel != null)
+            sel.update(event.player);
     }
 
     @SubscribeEvent

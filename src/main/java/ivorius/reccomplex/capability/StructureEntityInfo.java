@@ -49,7 +49,7 @@ public class StructureEntityInfo implements NBTCompoundObject, PartialUpdateHand
     private NBTTagCompound worldDataClipboard;
 
     @Nullable
-    public static StructureEntityInfo getStructureEntityInfo(Object object, @Nullable EnumFacing facing)
+    public static StructureEntityInfo get(Object object, @Nullable EnumFacing facing)
     {
         if (object instanceof StructureEntityInfo)
             return (StructureEntityInfo) object;

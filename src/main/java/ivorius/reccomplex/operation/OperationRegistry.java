@@ -79,7 +79,7 @@ public class OperationRegistry
         if (commandSender instanceof EntityPlayer)
         {
             EntityPlayer player = CommandBase.getCommandSenderAsPlayer(commandSender);
-            StructureEntityInfo info = StructureEntityInfo.getStructureEntityInfo(player, null);
+            StructureEntityInfo info = StructureEntityInfo.get(player, null);
             if (info != null)
             {
                 if (info.getPreviewType() != Operation.PreviewType.NONE)

@@ -27,7 +27,7 @@ public class PacketEditStructureHandler extends SchedulingMessageHandler<PacketE
 {
     public static void openEditStructure(GenericStructureInfo structureInfo, String structureID, EntityPlayerMP player)
     {
-        StructureEntityInfo structureEntityInfo = StructureEntityInfo.getStructureEntityInfo(player, null);
+        StructureEntityInfo structureEntityInfo = StructureEntityInfo.get(player, null);
 
         if (structureEntityInfo != null)
             structureEntityInfo.setCachedExportStructureBlockDataNBT(structureInfo.worldDataCompound);

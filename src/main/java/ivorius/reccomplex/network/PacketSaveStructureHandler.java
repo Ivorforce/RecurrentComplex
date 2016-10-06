@@ -40,7 +40,7 @@ public class PacketSaveStructureHandler extends SchedulingMessageHandler<PacketS
 
         if (RecurrentComplex.checkPerms(player)) return;
 
-        StructureEntityInfo structureEntityInfo = StructureEntityInfo.getStructureEntityInfo(player, null);
+        StructureEntityInfo structureEntityInfo = StructureEntityInfo.get(player, null);
         GenericStructureInfo genericStructureInfo = message.getStructureInfo();
 
         if (structureEntityInfo != null)

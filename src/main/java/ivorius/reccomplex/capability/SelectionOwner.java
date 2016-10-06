@@ -24,7 +24,7 @@ public interface SelectionOwner
             return (SelectionOwner) object;
 
         if (object instanceof ICapabilityProvider)
-            return ((ICapabilityProvider) object).getCapability(CapabilitySelection.CAPABILITY, facing);
+            return CapabilitySelection.get((ICapabilityProvider) object, facing);
 
         return null;
     }

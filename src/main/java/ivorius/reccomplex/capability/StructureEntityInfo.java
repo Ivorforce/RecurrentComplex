@@ -36,11 +36,16 @@ public class StructureEntityInfo implements NBTCompoundObject, PartialUpdateHand
     @CapabilityInject(StructureEntityInfo.class)
     public static Capability<StructureEntityInfo> CAPABILITY;
 
-    private Operation.PreviewType previewType = Operation.PreviewType.SHAPE;
-    public Operation danglingOperation;
-    public boolean showGrid = false;
     private boolean hasChanges;
+
+    private Operation.PreviewType previewType = Operation.PreviewType.SHAPE;
+
+    public Operation danglingOperation;
+
+    public boolean showGrid = false;
+
     private NBTTagCompound cachedExportStructureBlockDataNBT;
+
     private NBTTagCompound worldDataClipboard;
 
     @Nullable
@@ -171,12 +176,15 @@ public class StructureEntityInfo implements NBTCompoundObject, PartialUpdateHand
     public void update(Entity entity)
     {
         if (hasChanges)
-        {
-            hasChanges = false;
-            sendPreviewTypeToClients(entity);
-            sendOperationToClients(entity);
-            sendOptionsToClients(entity);
-        }
+            sendChanges(entity);
+    }
+
+    public void sendChanges(Entity entity)
+    {
+        hasChanges = false;
+        sendPreviewTypeToClients(entity);
+        sendOperationToClients(entity);
+        sendOptionsToClients(entity);
     }
 
     @Override

@@ -68,7 +68,7 @@ public class CommandImportStructure extends CommandBase
         AxisAlignedTransform2D transform = RCCommands.tryParseTransform(args, 4);
 
         if (structureInfo instanceof GenericStructureInfo)
-            OperationRegistry.queueOperation(new OperationGenerateStructure((GenericStructureInfo) structureInfo, structureID, transform, coord, true, structureID), commandSender);
+            OperationRegistry.queueOperation(new OperationGenerateStructure((GenericStructureInfo) structureInfo, structureID, transform, coord, true).withStructureID(structureID), commandSender);
         else
         {
             new StructureGenerator<>(structureInfo).world((WorldServer) world)

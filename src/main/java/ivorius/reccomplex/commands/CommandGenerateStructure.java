@@ -94,7 +94,7 @@ public class CommandGenerateStructure extends CommandBase
 
             Optional<BlockPos> lowerCoord = generator.lowerCoord();
             if (lowerCoord.isPresent())
-                OperationRegistry.queueOperation(new OperationGenerateStructure(genericStructureInfo, generationInfo.id(), generator.transform(), lowerCoord.get(), false, structureName), commandSender);
+                OperationRegistry.queueOperation(new OperationGenerateStructure(genericStructureInfo, generationInfo.id(), generator.transform(), lowerCoord.get(), false).withStructureID(structureName), commandSender);
             else
                 throw ServerTranslations.commandException("commands.strucGen.noPlace");
         }

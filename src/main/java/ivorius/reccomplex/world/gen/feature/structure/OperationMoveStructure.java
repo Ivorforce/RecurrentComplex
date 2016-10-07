@@ -5,12 +5,8 @@
 
 package ivorius.reccomplex.world.gen.feature.structure;
 
-import ivorius.ivtoolkit.blocks.BlockPositions;
-import net.minecraft.world.WorldServer;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
 import ivorius.ivtoolkit.blocks.BlockArea;
-import net.minecraft.util.math.BlockPos;
+import ivorius.ivtoolkit.blocks.BlockPositions;
 import ivorius.ivtoolkit.math.AxisAlignedTransform2D;
 import ivorius.ivtoolkit.rendering.grid.AreaRenderer;
 import ivorius.ivtoolkit.rendering.grid.BlockQuadCache;
@@ -18,14 +14,18 @@ import ivorius.reccomplex.client.rendering.OperationRenderer;
 import ivorius.reccomplex.client.rendering.SelectionRenderer;
 import ivorius.reccomplex.world.gen.feature.structure.generic.GenericStructureInfo;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.World;
-import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.world.WorldServer;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 import org.lwjgl.opengl.GL11;
 
 /**
@@ -41,8 +41,21 @@ public class OperationMoveStructure extends OperationGenerateStructure
 
     public OperationMoveStructure(GenericStructureInfo structure, AxisAlignedTransform2D transform, BlockPos lowerCoord, boolean generateAsSource, BlockArea sourceArea)
     {
-        super(structure, null, transform, lowerCoord, generateAsSource, null);
+        super(structure, null, transform, lowerCoord, generateAsSource);
         this.sourceArea = sourceArea;
+    }
+
+    public static void setBlockToAirClean(World world, BlockPos pos)
+    {
+        TileEntity tileEntity = world.getTileEntity(pos);
+        if (tileEntity instanceof IInventory)
+        {
+            IInventory inventory = (IInventory) tileEntity;
+            for (int i = 0; i < inventory.getSizeInventory(); i++)
+                inventory.setInventorySlotContents(i, null);
+        }
+
+        world.setBlockToAir(pos);
     }
 
     @Override
@@ -69,19 +82,6 @@ public class OperationMoveStructure extends OperationGenerateStructure
             setBlockToAirClean(world, coord);
 
         super.perform(world);
-    }
-
-    public static void setBlockToAirClean(World world, BlockPos pos)
-    {
-        TileEntity tileEntity = world.getTileEntity(pos);
-        if (tileEntity instanceof IInventory)
-        {
-            IInventory inventory = (IInventory) tileEntity;
-            for (int i = 0; i < inventory.getSizeInventory(); i++)
-                inventory.setInventorySlotContents(i, null);
-        }
-
-        world.setBlockToAir(pos);
     }
 
     @SideOnly(Side.CLIENT)

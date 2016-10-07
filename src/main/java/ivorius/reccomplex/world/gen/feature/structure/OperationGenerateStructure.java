@@ -11,9 +11,9 @@ import ivorius.ivtoolkit.rendering.grid.BlockQuadCache;
 import ivorius.ivtoolkit.rendering.grid.GridQuadCache;
 import ivorius.reccomplex.client.rendering.OperationRenderer;
 import ivorius.reccomplex.operation.Operation;
+import ivorius.reccomplex.world.gen.feature.StructureGenerator;
 import ivorius.reccomplex.world.gen.feature.structure.generic.GenericStructureInfo;
 import ivorius.reccomplex.world.gen.feature.structure.generic.StructureSaveHandler;
-import ivorius.reccomplex.world.gen.feature.StructureGenerator;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.math.BlockPos;
@@ -33,7 +33,7 @@ public class OperationGenerateStructure implements Operation
 
     public boolean generateAsSource;
 
-    public String structureIDForSaving;
+    public String structureID;
     public String generationInfoID;
 
     protected GridQuadCache cachedShapeGrid;
@@ -51,40 +51,28 @@ public class OperationGenerateStructure implements Operation
         this.generateAsSource = generateAsSource;
     }
 
-    public OperationGenerateStructure(GenericStructureInfo structure, String generationInfoID, AxisAlignedTransform2D transform, BlockPos lowerCoord, boolean generateAsSource, String structureIDForSaving)
+    public String getStructureID()
     {
-        this.structure = structure;
-        this.generationInfoID = generationInfoID;
-        this.transform = transform;
-        this.lowerCoord = lowerCoord;
-        this.generateAsSource = generateAsSource;
-        this.structureIDForSaving = structureIDForSaving;
+        return structureID;
     }
 
-    public String getStructureIDForSaving()
+    public void setStructureID(String structureID)
     {
-        return structureIDForSaving;
+        this.structureID = structureID;
     }
 
-    public void setStructureIDForSaving(String structureIDForSaving)
+    public OperationGenerateStructure withStructureID(String structureIDForSaving)
     {
-        this.structureIDForSaving = structureIDForSaving;
+        this.structureID = structureIDForSaving;
+        return this;
     }
 
     @Override
     public void perform(WorldServer world)
     {
-        if (generateAsSource)
-        {
-            new StructureGenerator<>(structure).world(world).generationInfo(generationInfoID)
-                    .transform(transform).lowerCoord(lowerCoord).asSource(true).generate(
-            );
-        }
-        else
-        {
-            new StructureGenerator<>(structure).world(world).generationInfo(generationInfoID)
-                    .structureID(structureIDForSaving).transform(transform).lowerCoord(lowerCoord).maturity(StructureSpawnContext.GenerateMaturity.FIRST).generate();
-        }
+        new StructureGenerator<>(structure).world(world).generationInfo(generationInfoID)
+                .structureID(structureID).transform(transform).lowerCoord(lowerCoord)
+                .maturity(StructureSpawnContext.GenerateMaturity.FIRST).asSource(generateAsSource).generate();
     }
 
     @Override
@@ -100,8 +88,8 @@ public class OperationGenerateStructure implements Operation
 
         compound.setBoolean("generateAsSource", generateAsSource);
 
-        if (structureIDForSaving != null)
-            compound.setString("structureIDForSaving", structureIDForSaving);
+        if (structureID != null)
+            compound.setString("structureIDForSaving", structureID);
     }
 
     @Override
@@ -116,7 +104,7 @@ public class OperationGenerateStructure implements Operation
 
         generateAsSource = compound.getBoolean("generateAsSource");
 
-        structureIDForSaving = compound.hasKey("structureIDForSaving", Constants.NBT.TAG_STRING)
+        structureID = compound.hasKey("structureIDForSaving", Constants.NBT.TAG_STRING)
                 ? compound.getString("structureIDForSaving")
                 : null;
     }

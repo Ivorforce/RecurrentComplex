@@ -112,11 +112,12 @@ public class RCSaplingGenerator
         BlockPos startPos = Lists.newArrayList(transformedPositions).get(random.nextInt(transformedPositions.size()));
 
         Map<BlockPos, IBlockState> before = new HashMap<>();
+        IBlockState air = Blocks.AIR.getDefaultState();
         Consumer<Map.Entry<BlockPos, String>> consumer = entry ->
         {
             BlockPos ePos = entry.getKey().add(startPos);
             before.put(ePos, world.getBlockState(ePos));
-            world.setBlockToAir(ePos);
+            world.setBlockState(ePos, air, 4);
         };
         saplingGenInfo.pattern.copy(transform, strucSize).forEach(consumer);
 
@@ -125,10 +126,10 @@ public class RCSaplingGenerator
         boolean success = new StructureGenerator<>(structure).world(world).generationInfo(saplingGenInfo)
                 .transform(transform).random(random).maturity(StructureSpawnContext.GenerateMaturity.SUGGEST)
                 .memorize(RCConfig.memorizeSaplings).allowOverlaps(true)
-                .randomPosition(BlockSurfacePos.from(spawnPos), (context, blockCollection) -> spawnPos.getY()).generate() != null;
+                .randomPosition(BlockSurfacePos.from(spawnPos), (context, blockCollection) -> spawnPos.getY()).generate().isPresent();
 
         if (!success)
-            before.forEach(world::setBlockState);
+            before.forEach((pos1, state) -> world.setBlockState(pos1, state, 4));
     }
 
     // From BlockSapling

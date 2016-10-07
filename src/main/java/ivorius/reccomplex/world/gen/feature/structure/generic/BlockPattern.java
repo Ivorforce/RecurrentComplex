@@ -30,6 +30,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.function.Consumer;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -138,10 +139,10 @@ public class BlockPattern implements NBTCompoundObject
         NBTCompoundObjects.writeListTo(compound, "ingredients", ingredients);
     }
 
-    public void forEach(Consumer<Map.Entry<BlockPos, String>> consumer)
+    public void forEach(Predicate<Ingredient> filter, Consumer<Map.Entry<BlockPos, String>> consumer)
     {
         pattern.compile(true).entrySet().stream()
-                .filter(entry -> findIngredient(entry.getValue()).filter(i -> i.delete).isPresent())
+                .filter(entry -> findIngredient(entry.getValue()).filter(filter).isPresent())
                 .map(entry -> Pair.of(toBlockPos(entry.getKey()), entry.getValue()))
                 .forEach(consumer);
     }

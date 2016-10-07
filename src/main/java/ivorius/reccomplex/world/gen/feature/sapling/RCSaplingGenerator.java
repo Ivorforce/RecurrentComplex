@@ -113,13 +113,12 @@ public class RCSaplingGenerator
 
         Map<BlockPos, IBlockState> before = new HashMap<>();
         IBlockState air = Blocks.AIR.getDefaultState();
-        Consumer<Map.Entry<BlockPos, String>> consumer = entry ->
+        saplingGenInfo.pattern.copy(transform, strucSize).forEach(i -> i.delete, entry ->
         {
             BlockPos ePos = entry.getKey().add(startPos);
             before.put(ePos, world.getBlockState(ePos));
             world.setBlockState(ePos, air, 4);
-        };
-        saplingGenInfo.pattern.copy(transform, strucSize).forEach(consumer);
+        });
 
         BlockPos spawnPos = transform.apply(saplingGenInfo.spawnShift, new int[]{1, 1, 1}).add(startPos);
 

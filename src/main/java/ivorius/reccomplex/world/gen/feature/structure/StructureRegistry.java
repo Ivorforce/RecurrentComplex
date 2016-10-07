@@ -175,10 +175,8 @@ public class StructureRegistry extends SimpleLeveledRegistry<StructureInfo>
     {
         TemporaryVillagerRegistry.instance().setHandlers(
                 Sets.newHashSet(Collections2.transform(getStructureGenerations(VanillaGenerationInfo.class),
-                        input ->
-                        {
-                            return GenericVillageCreationHandler.forGeneration(this.id(input.getLeft()), input.getRight().id());
-                        }).stream().filter(Objects::nonNull).collect(Collectors.toList()))
+                        input -> GenericVillageCreationHandler.forGeneration(this.id(input.getLeft()), input.getRight().id())).stream()
+                        .filter(Objects::nonNull).collect(Collectors.toList()))
         );
     }
 

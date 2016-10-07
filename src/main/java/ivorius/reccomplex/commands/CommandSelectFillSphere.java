@@ -12,12 +12,10 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.math.BlockPos;
 import ivorius.ivtoolkit.math.IvShapeHelper;
 import ivorius.reccomplex.RCConfig;
-import ivorius.reccomplex.capability.StructureEntityInfo;
 import net.minecraft.block.state.IBlockState;
 import ivorius.reccomplex.utils.ServerTranslations;
 import net.minecraft.block.Block;
 import net.minecraft.command.ICommandSender;
-import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.world.World;
 
 import javax.annotation.Nullable;

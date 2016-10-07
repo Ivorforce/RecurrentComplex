@@ -14,10 +14,8 @@ import org.apache.commons.io.FilenameUtils;
 import javax.annotation.Nullable;
 import java.io.IOException;
 import java.net.URISyntaxException;
-import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.*;
-import java.util.stream.Collectors;
 
 /**
  * Created by lukas on 18.09.15.

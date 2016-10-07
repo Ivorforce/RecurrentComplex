@@ -10,7 +10,6 @@ import com.google.gson.JsonObject;
 import ivorius.reccomplex.json.JsonUtils;
 
 import java.lang.reflect.Type;
-import java.util.Collections;
 
 /**
  * Created by lukas on 08.06.16.

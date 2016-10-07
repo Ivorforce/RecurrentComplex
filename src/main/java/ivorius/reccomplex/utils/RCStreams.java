@@ -12,6 +12,7 @@ import java.util.stream.Stream;
 /**
  * Created by lukas on 18.09.16.
  */
+@SuppressWarnings("OptionalUsedAsFieldOrParameterType")
 public class RCStreams
 {
     public static <T> boolean visit(Stream<T> source, Predicate<T> action)

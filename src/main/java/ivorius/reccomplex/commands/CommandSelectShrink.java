@@ -10,11 +10,9 @@ import ivorius.reccomplex.capability.SelectionOwner;
 import net.minecraft.command.CommandException;
 import net.minecraft.util.math.BlockPos;
 import ivorius.reccomplex.RCConfig;
-import ivorius.reccomplex.capability.StructureEntityInfo;
 import ivorius.ivtoolkit.blocks.BlockAreas;
 import ivorius.reccomplex.utils.ServerTranslations;
 import net.minecraft.command.ICommandSender;
-import net.minecraft.entity.player.EntityPlayerMP;
 
 /**
  * Created by lukas on 09.06.14.

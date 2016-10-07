@@ -125,12 +125,12 @@ public class Poem
         this.text = text;
     }
 
-    public static Poem randomPoem(Random random, OptionalInt maxTitleLength)
+    public static Poem randomPoem(Random random, Integer maxTitleLength)
     {
         return randomPoem(random, maxTitleLength, getRandomElementFrom(THEME_REGISTRY.allActive().stream().collect(Collectors.toList()), random));
     }
 
-    public static Poem randomPoem(Random random, OptionalInt maxTitleLength, Theme theme)
+    public static Poem randomPoem(Random random, Integer maxTitleLength, Theme theme)
     {
         PoemContext poemContext = new PoemContext();
         //noinspection StatementWithEmptyBody
@@ -171,16 +171,16 @@ public class Poem
     }
 
     @Nonnull
-    protected static String randomTitle(Random random, Theme theme, PoemContext poemContext, OptionalInt maxLength)
+    protected static String randomTitle(Random random, Theme theme, PoemContext poemContext, Integer maxLength)
     {
         for (int i = 0; i < TITLE_TRIES; i++)
         {
             String title = getRandomPhrase(random, theme, titlePatterns, poemContext).trim();
-            if (!maxLength.isPresent() || title.length() < maxLength.getAsInt())
+            if (maxLength == null || title.length() < maxLength)
                 return title;
         }
 
-        return StringUtils.abbreviate(getRandomPhrase(random, theme, titlePatterns, poemContext).trim(), maxLength.getAsInt());
+        return StringUtils.abbreviate(getRandomPhrase(random, theme, titlePatterns, poemContext).trim(), maxLength);
     }
 
     private static String getRandomPhrase(Random random, Theme theme, List<String> sentencePatterns, PoemContext poemContext)

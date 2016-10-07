@@ -162,7 +162,7 @@ public class GenericVillagePiece extends StructureVillagePieces.Village
         BlockPos lowerCoord = new BlockPos(this.boundingBox.minX, this.boundingBox.minY, this.boundingBox.minZ);
 
         boolean firstTime = !startedGeneration;
-        new StructureGenerator<T>(structureInfo).environment(environment(world, generationInfo))
+        new StructureGenerator<>(structureInfo).environment(environment(world, generationInfo))
                 .random(random).lowerCoord(lowerCoord).transform(transform).generationBB(StructureBoundingBoxes.wholeHeightBoundingBox(world, generationBB))
                 .generationLayer(componentType).structureID(structureID).maturity(firstTime ? StructureSpawnContext.GenerateMaturity.FIRST : StructureSpawnContext.GenerateMaturity.COMPLEMENT)
                 .instanceData(this.instanceData).generate();

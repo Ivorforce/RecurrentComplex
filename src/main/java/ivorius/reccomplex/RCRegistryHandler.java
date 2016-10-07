@@ -147,17 +147,17 @@ public class RCRegistryHandler
 
         structureGenerator = new BlockStructureGenerator().setUnlocalizedName("structureGenerator");
         register(structureGenerator, "structure_generator");
-        register(TileEntityStructureGenerator.class, "RCStructureGenerator", "SGStructureGenerator");
+        register(BlockStructureGenerator.TileEntityStructureGenerator.class, "RCStructureGenerator", "SGStructureGenerator");
         RecurrentComplex.cremapper.registerLegacyIDs(structureGenerator, true, "structureGenerator");
 
         mazeGenerator = new BlockMazeGenerator().setUnlocalizedName("mazeGenerator");
         register(mazeGenerator, "maze_generator");
-        register(TileEntityMazeGenerator.class, "RCMazeGenerator", "SGMazeGenerator");
+        register(BlockMazeGenerator.TileEntityMazeGenerator.class, "RCMazeGenerator", "SGMazeGenerator");
         RecurrentComplex.cremapper.registerLegacyIDs(mazeGenerator, true, "mazeGenerator");
 
         spawnCommands = new BlockSpawnCommand().setUnlocalizedName("spawn_command");
         register(spawnCommands, "weighted_command_block");
-        register(TileEntitySpawnCommand.class, "RCSpawnCommand");
+        register(BlockSpawnCommand.TileEntitySpawnCommand.class, "RCSpawnCommand");
         RecurrentComplex.cremapper.registerLegacyIDs(spawnCommands, true, "spawnCommand");
 
         spawnScript = new BlockSpawnScript().setUnlocalizedName("spawn_script");

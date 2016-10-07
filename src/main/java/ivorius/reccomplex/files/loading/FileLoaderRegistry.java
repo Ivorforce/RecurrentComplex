@@ -9,12 +9,10 @@ import ivorius.reccomplex.RCConfig;
 import ivorius.reccomplex.RecurrentComplex;
 import ivorius.reccomplex.events.FileLoadEvent;
 import ivorius.reccomplex.events.RCEventBus;
-import ivorius.reccomplex.files.saving.FileSaverAdapter;
 import net.minecraftforge.fml.common.eventhandler.Event;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 import java.nio.file.Path;
-import java.util.NoSuchElementException;
 
 /**
  * Created by lukas on 29.09.16.

@@ -14,7 +14,6 @@ import ivorius.reccomplex.RCConfig;
 import ivorius.reccomplex.capability.StructureEntityInfo;
 import ivorius.reccomplex.utils.ServerTranslations;
 import net.minecraft.command.ICommandSender;
-import net.minecraft.entity.player.EntityPlayerMP;
 
 /**
  * Created by lukas on 09.06.14.

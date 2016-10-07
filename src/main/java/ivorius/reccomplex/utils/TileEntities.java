@@ -6,7 +6,6 @@
 package ivorius.reccomplex.utils;
 
 import ivorius.ivtoolkit.tools.IvSideClient;
-import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 

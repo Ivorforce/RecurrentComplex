@@ -78,17 +78,11 @@ public class RCConfig
 
     private static boolean lightweightMode;
 
-    private static ResourceMatcher structureLoadMatcher = new ResourceMatcher("", (key) ->
-    {
-        return StructureRegistry.INSTANCE.has(key);
-    });
-    private static ResourceMatcher structureGenerationMatcher = new ResourceMatcher("", (key) ->
-    {
-        return StructureRegistry.INSTANCE.has(key);
-    });
+    private static ResourceMatcher structureLoadMatcher = new ResourceMatcher("", StructureRegistry.INSTANCE::has);
+    private static ResourceMatcher structureGenerationMatcher = new ResourceMatcher("", StructureRegistry.INSTANCE::has);
 
-    private static ResourceMatcher inventoryGeneratorLoadMatcher = new ResourceMatcher("", (key) -> GenericItemCollectionRegistry.INSTANCE.has(key));
-    private static ResourceMatcher inventoryGeneratorGenerationMatcher = new ResourceMatcher("", (key) -> GenericItemCollectionRegistry.INSTANCE.has(key));
+    private static ResourceMatcher inventoryGeneratorLoadMatcher = new ResourceMatcher("", GenericItemCollectionRegistry.INSTANCE::has);
+    private static ResourceMatcher inventoryGeneratorGenerationMatcher = new ResourceMatcher("", GenericItemCollectionRegistry.INSTANCE::has);
 
     private static BiomeMatcher universalBiomeMatcher = new BiomeMatcher("");
     private static DimensionMatcher universalDimensionMatcher = new DimensionMatcher("");

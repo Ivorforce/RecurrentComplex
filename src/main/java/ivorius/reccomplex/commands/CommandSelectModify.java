@@ -8,10 +8,7 @@ package ivorius.reccomplex.commands;
 import ivorius.reccomplex.capability.SelectionOwner;
 import net.minecraft.command.*;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.util.math.BlockPos;
-import ivorius.reccomplex.capability.StructureEntityInfo;
 import ivorius.reccomplex.utils.ServerTranslations;
-import net.minecraft.entity.player.EntityPlayerMP;
 
 /**
  * Created by lukas on 25.05.14.

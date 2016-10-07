@@ -5,7 +5,6 @@
 
 package ivorius.reccomplex.utils;
 
-import java.util.Collection;
 import java.util.stream.Stream;
 
 /**

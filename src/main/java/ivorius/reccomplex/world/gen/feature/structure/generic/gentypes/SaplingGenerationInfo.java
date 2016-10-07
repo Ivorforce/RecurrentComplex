@@ -7,7 +7,6 @@ package ivorius.reccomplex.world.gen.feature.structure.generic.gentypes;
 
 import com.google.gson.*;
 import ivorius.ivtoolkit.tools.IvTranslations;
-import ivorius.reccomplex.RCConfig;
 import ivorius.reccomplex.gui.editstructure.gentypes.TableDataSourceSaplingGenerationInfo;
 import ivorius.reccomplex.gui.table.datasource.TableDataSource;
 import ivorius.reccomplex.gui.table.TableDelegate;
@@ -19,7 +18,6 @@ import ivorius.reccomplex.world.gen.feature.structure.generic.BlockPattern;
 import ivorius.reccomplex.utils.expression.EnvironmentMatcher;
 import ivorius.reccomplex.world.gen.feature.structure.generic.placement.GenericPlacer;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.MathHelper;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;

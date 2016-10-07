@@ -18,7 +18,7 @@ import java.util.stream.IntStream;
 public class LeveledMap<K, V>
 {
     protected final Map<K, V> map;
-    protected final TObjectIntMap<K> levelMap = new TObjectIntHashMap<K>();
+    protected final TObjectIntMap<K> levelMap = new TObjectIntHashMap<>();
     protected final List<Map<K, V>> levels = new ArrayList<>();
 
     public LeveledMap(Map<K, V> map, Collection<? extends Map<K, V>> levels)

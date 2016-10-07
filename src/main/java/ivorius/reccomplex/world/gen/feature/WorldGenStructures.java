@@ -66,11 +66,9 @@ public class WorldGenStructures
         float distanceToSpawn = distance(new ChunkPos(world.getSpawnPoint()), chunkPos);
         List<Pair<StructureInfo, NaturalGenerationInfo>> generated = structureSelector.generatedStructures(random, world.getBiome(chunkPos.getBlock(0, 0, 0)), world.provider, distanceToSpawn);
 
-        for (Pair<StructureInfo, NaturalGenerationInfo> pair : generated)
-        {
-            if (structurePredicate == null || structurePredicate.test(pair.getLeft()))
-                generateStructureInChunk(random, chunkPos, world, pair);
-        }
+        generated.stream()
+                .filter(pair -> structurePredicate == null || structurePredicate.test(pair.getLeft()))
+                .forEach(pair -> generateStructureInChunk(random, chunkPos, world, pair));
     }
 
     public static boolean generateRandomStructureInChunk(Random random, ChunkPos chunkPos, WorldServer world, Biome biomeGen)

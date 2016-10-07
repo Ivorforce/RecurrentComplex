@@ -6,7 +6,6 @@
 package ivorius.reccomplex.capability;
 
 import io.netty.buffer.ByteBuf;
-import ivorius.ivtoolkit.blocks.BlockArea;
 import ivorius.ivtoolkit.blocks.BlockPositions;
 import ivorius.ivtoolkit.network.IvNetworkHelperServer;
 import ivorius.ivtoolkit.network.PartialUpdateHandler;

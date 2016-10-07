@@ -52,7 +52,7 @@ public class NaturalGenerationInfo extends GenerationInfo implements Environment
 
     public String generationCategory;
 
-    public PresettedObject<GenericPlacer> placer = new PresettedObject<GenericPlacer>(GenericPlacerPresets.instance(), null);
+    public PresettedObject<GenericPlacer> placer = new PresettedObject<>(GenericPlacerPresets.instance(), null);
 
     public SpawnLimitation spawnLimitation;
 

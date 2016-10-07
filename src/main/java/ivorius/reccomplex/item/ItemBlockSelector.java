@@ -14,7 +14,6 @@ import io.netty.buffer.Unpooled;
 import net.minecraft.util.math.BlockPos;
 import ivorius.reccomplex.RCConfig;
 import ivorius.reccomplex.RecurrentComplex;
-import ivorius.reccomplex.capability.StructureEntityInfo;
 import ivorius.reccomplex.network.PacketItemEvent;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;

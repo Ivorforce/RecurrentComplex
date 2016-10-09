@@ -217,7 +217,7 @@ public class StructureGenerator<S extends NBTStorable>
         if (lowerCoord != null)
             return Optional.of(lowerCoord);
         else
-            return boundingBox().map(bb -> new BlockPos(bb.minX, bb.minY, bb.minZ));
+            return boundingBox().map(StructureBoundingBoxes::min);
     }
 
     public StructureGenerator<S> randomPosition(@Nonnull BlockSurfacePos surfacePos, @Nullable Placer placer)

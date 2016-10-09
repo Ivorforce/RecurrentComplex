@@ -7,6 +7,7 @@ package ivorius.reccomplex.world.gen.feature.structure.generic.maze;
 
 import com.google.common.collect.*;
 import ivorius.reccomplex.RCConfig;
+import ivorius.reccomplex.utils.StructureBoundingBoxes;
 import ivorius.reccomplex.utils.Transforms;
 import ivorius.reccomplex.world.gen.feature.StructureGenerator;
 import net.minecraft.util.math.BlockPos;
@@ -32,21 +33,15 @@ public class WorldGenMaze
 {
     public static boolean generate(StructureSpawnContext context, PlacedStructure placedComponent)
     {
-        String structureID = placedComponent.structureID;
-        StructureInfo structureInfo = StructureRegistry.INSTANCE.get(structureID);
-
-        if (structureInfo != null && placedComponent.instanceData != null)
+        if (!StructureRegistry.INSTANCE.has(placedComponent.structureID))
         {
-            return new StructureGenerator<>(structureInfo).asChild(context).generationInfo(placedComponent.generationInfoID)
-                    .lowerCoord(placedComponent.lowerCoord).transform(placedComponent.transform)
-                    .structureID(structureID).instanceData(placedComponent.instanceData).generate().isPresent();
-        }
-        else
-        {
-            RecurrentComplex.logger.error(String.format("Could not find structure '%s' for maze", structureID));
+            RecurrentComplex.logger.error(String.format("Could not find structure '%s' for maze", placedComponent.structureID));
+            return false;
         }
 
-        return false;
+        return new StructureGenerator<>().structureID(placedComponent.structureID).asChild(context).generationInfo(placedComponent.generationInfoID)
+                .lowerCoord(placedComponent.lowerCoord).transform(placedComponent.transform)
+                .instanceData(placedComponent.instanceData).generate().isPresent();
     }
 
     @Nullable
@@ -55,20 +50,17 @@ public class WorldGenMaze
         MazeComponentStructure<Connector> componentInfo = placedComponent.getComponent();
         StructureInfo<?> structureInfo = StructureRegistry.INSTANCE.get(componentInfo.structureID);
 
-        if (structureInfo != null)
-        {
-            AxisAlignedTransform2D componentTransform = componentInfo.transform.rotateClockwise(mazeTransform.getRotation());
-            StructureBoundingBox compBoundingBox = getBoundingBox(coord, shift, roomSize, placedComponent, structureInfo, componentTransform, mazeTransform);
-            NBTStorable instanceData = new StructureGenerator<>(structureInfo).random(random).environment(environment).transform(componentTransform).boundingBox(compBoundingBox).instanceData().orElse(null);
-
-            return new PlacedStructure(componentInfo.structureID, componentInfo.structureID, componentTransform, new BlockPos(compBoundingBox.minX, compBoundingBox.minY, compBoundingBox.minZ), instanceData);
-        }
-        else
+        if (structureInfo == null)
         {
             RecurrentComplex.logger.error(String.format("Could not find structure '%s' for maze", componentInfo.structureID));
+            return null;
         }
 
-        return null;
+        AxisAlignedTransform2D componentTransform = componentInfo.transform.rotateClockwise(mazeTransform.getRotation());
+        StructureBoundingBox compBoundingBox = getBoundingBox(coord, shift, roomSize, placedComponent, structureInfo, componentTransform, mazeTransform);
+        NBTStorable instanceData = new StructureGenerator<>(structureInfo).random(random).environment(environment).transform(componentTransform).boundingBox(compBoundingBox).instanceData().orElse(null);
+
+        return new PlacedStructure(componentInfo.structureID, componentInfo.structureID, componentTransform, StructureBoundingBoxes.min(compBoundingBox), instanceData);
     }
 
     protected static StructureBoundingBox getBoundingBox(BlockPos coord, BlockPos shift, int[] roomSize, ShiftedMazeComponent<MazeComponentStructure<Connector>, Connector> placedComponent, StructureInfo structureInfo, AxisAlignedTransform2D componentTransform, AxisAlignedTransform2D mazeTransform)

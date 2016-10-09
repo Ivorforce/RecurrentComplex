@@ -228,8 +228,7 @@ public class TransformerRuins extends Transformer<TransformerRuins.InstanceData>
 
         if (minDecay > 0.0f || maxDecay > 0.0f)
         {
-            int[] size = context.boundingBoxSize();
-            BlockArea sourceArea = new BlockArea(BlockPos.ORIGIN, new BlockPos(size[0], size[1], size[2]));
+            BlockArea sourceArea = BlockArea.areaFromSize(BlockPos.ORIGIN, StructureBoundingBoxes.size(context.boundingBox));
 
             float decayChaos = context.random.nextFloat() * this.decayChaos;
             if (this.maxDecay - this.minDecay > decayChaos)

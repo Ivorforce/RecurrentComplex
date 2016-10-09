@@ -70,7 +70,7 @@ public abstract class TransformerAbstractCloud<S extends TransformerAbstractClou
     {
         Random random = context.random;
         Environment environment = context.environment;
-        BlockPos lowerCoord = context.lowerCoord();
+        BlockPos lowerCoord = StructureBoundingBoxes.min(context.boundingBox);
         int[] strucSize = new int[]{worldData.blockCollection.width, worldData.blockCollection.height, worldData.blockCollection.length};
 
         TObjectDoubleMap<BlockPos> cloud = new TObjectDoubleHashMap<>();

@@ -5,6 +5,7 @@
 
 package ivorius.reccomplex.world.gen.feature.structure;
 
+import ivorius.reccomplex.utils.StructureBoundingBoxes;
 import net.minecraft.util.math.BlockPos;
 import ivorius.ivtoolkit.math.AxisAlignedTransform2D;
 import net.minecraft.world.gen.structure.StructureBoundingBox;
@@ -28,22 +29,12 @@ public class StructurePrepareContext
 
     public final boolean generateAsSource;
 
-    public StructurePrepareContext(@Nonnull Random random, Environment environment, @Nonnull AxisAlignedTransform2D transform, @Nonnull StructureBoundingBox boundingBox, boolean generateAsSource)
+    public StructurePrepareContext(@Nonnull Random random, @Nonnull Environment environment, @Nonnull AxisAlignedTransform2D transform, @Nonnull StructureBoundingBox boundingBox, boolean generateAsSource)
     {
         this.random = random;
         this.environment = environment;
         this.transform = transform;
         this.boundingBox = boundingBox;
         this.generateAsSource = generateAsSource;
-    }
-
-    public int[] boundingBoxSize()
-    {
-        return new int[]{boundingBox.getXSize(), boundingBox.getYSize(), boundingBox.getZSize()};
-    }
-
-    public BlockPos lowerCoord()
-    {
-        return new BlockPos(boundingBox.minX, boundingBox.minY, boundingBox.minZ);
     }
 }

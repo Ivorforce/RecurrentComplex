@@ -15,6 +15,7 @@ import ivorius.reccomplex.gui.table.cell.TableElementCell;
 import ivorius.reccomplex.gui.table.datasource.TableDataSource;
 import ivorius.reccomplex.gui.table.datasource.TableDataSourceSegmented;
 import ivorius.reccomplex.gui.table.datasource.TableDataSourceSupplied;
+import ivorius.reccomplex.utils.StructureBoundingBoxes;
 import ivorius.reccomplex.world.gen.feature.structure.generic.WorldCache;
 import ivorius.reccomplex.world.gen.feature.structure.generic.placement.FactorLimit;
 import ivorius.reccomplex.world.gen.feature.structure.generic.placement.StructurePlaceContext;
@@ -48,7 +49,7 @@ public class RayDynamicMove extends FactorLimit.Ray
         switch (type)
         {
             case STRUCTURE_HEIGHT:
-                return OptionalInt.of(y + context.boundingBoxSize()[1] * mod);
+                return OptionalInt.of(y + StructureBoundingBoxes.size(context.boundingBox)[1] * mod);
             default:
                 throw new IllegalStateException();
         }

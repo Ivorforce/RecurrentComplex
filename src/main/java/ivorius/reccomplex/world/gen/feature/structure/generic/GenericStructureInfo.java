@@ -265,7 +265,7 @@ public class GenericStructureInfo implements StructureInfo<GenericStructureInfo.
             IvBlockCollection blockCollection = worldData.blockCollection;
 
             int[] areaSize = new int[]{blockCollection.width, blockCollection.height, blockCollection.length};
-            BlockPos origin = context.lowerCoord();
+            BlockPos origin = StructureBoundingBoxes.min(context.boundingBox);
 
             instanceData.transformerData = this.transformer.prepareInstanceData(context, worldData);
             instanceData.foreignTransformerData = foreignTransformer.prepareInstanceData(context, worldData);
@@ -482,7 +482,7 @@ public class GenericStructureInfo implements StructureInfo<GenericStructureInfo.
             foreignTransformerData = foreignTransformer.loadInstanceData(context, compound.getTag(KEY_FOREIGN_TRANSFORMER));
 
             int[] areaSize = new int[]{blockCollection.width, blockCollection.height, blockCollection.length};
-            BlockPos origin = context.lowerCoord();
+            BlockPos origin = StructureBoundingBoxes.min(context.boundingBox);
 
             NBTTagCompound tileEntityCompound = compound.getCompoundTag(InstanceData.KEY_TILE_ENTITIES);
             worldData.tileEntities.stream().filter(tileEntity -> tileEntity instanceof GeneratingTileEntity).forEach(teCompound ->

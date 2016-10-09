@@ -6,6 +6,7 @@
 package ivorius.reccomplex.world.gen.feature.structure.generic.placement;
 
 import ivorius.ivtoolkit.math.AxisAlignedTransform2D;
+import ivorius.reccomplex.utils.StructureBoundingBoxes;
 import ivorius.reccomplex.world.gen.feature.structure.Environment;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.gen.structure.StructureBoundingBox;
@@ -33,15 +34,5 @@ public class StructurePlaceContext
         this.environment = environment;
         this.transform = transform;
         this.boundingBox = boundingBox;
-    }
-
-    public int[] boundingBoxSize()
-    {
-        return new int[]{boundingBox.getXSize(), boundingBox.getYSize(), boundingBox.getZSize()};
-    }
-
-    public BlockPos lowerCoord()
-    {
-        return new BlockPos(boundingBox.minX, boundingBox.minY, boundingBox.minZ);
     }
 }

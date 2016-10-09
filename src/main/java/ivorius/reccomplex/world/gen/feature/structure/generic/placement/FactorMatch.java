@@ -85,8 +85,8 @@ public class FactorMatch extends GenericPlacer.Factor
 
         List<Pair<LineSelection, Float>> consideration = new ArrayList<>();
 
-        int[] size = context.boundingBoxSize();
-        BlockPos lowerCoord = context.lowerCoord();
+        int[] size = StructureBoundingBoxes.size(context.boundingBox);
+        BlockPos lowerCoord = StructureBoundingBoxes.min(context.boundingBox);
         Set<BlockPos.MutableBlockPos> sources = RCBlockAreas.streamMutablePositions(blockCollection.area())
                 .filter(p -> sourceMatcher.test(blockCollection.getBlockState(p)))
                 .map(p -> new BlockPos.MutableBlockPos(context.transform.apply(p, size).add(lowerCoord.getX(), 0, lowerCoord.getZ())))

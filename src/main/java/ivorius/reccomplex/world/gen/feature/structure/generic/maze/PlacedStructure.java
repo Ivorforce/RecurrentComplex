@@ -10,8 +10,7 @@ import ivorius.ivtoolkit.math.AxisAlignedTransform2D;
 import ivorius.ivtoolkit.tools.NBTCompoundObject;
 import ivorius.reccomplex.world.gen.feature.structure.StructureInfo;
 import ivorius.reccomplex.world.gen.feature.structure.StructureRegistry;
-import ivorius.reccomplex.utils.NBTStorable;
-import ivorius.reccomplex.world.gen.feature.StructureGenerator;
+import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.common.util.Constants;
@@ -26,9 +25,9 @@ public class PlacedStructure implements NBTCompoundObject
     public AxisAlignedTransform2D transform;
     public BlockPos lowerCoord;
 
-    public NBTStorable instanceData;
+    public NBTBase instanceData;
 
-    public PlacedStructure(String structureID, String generationInfoID, AxisAlignedTransform2D transform, BlockPos lowerCoord, NBTStorable instanceData)
+    public PlacedStructure(String structureID, String generationInfoID, AxisAlignedTransform2D transform, BlockPos lowerCoord, NBTBase instanceData)
     {
         this.structureID = structureID;
         this.generationInfoID = generationInfoID;
@@ -44,13 +43,7 @@ public class PlacedStructure implements NBTCompoundObject
         generationInfoID = compound.hasKey(generationInfoID, Constants.NBT.TAG_STRING) ? compound.getString("generationInfoID") : null;
         transform = AxisAlignedTransform2D.from(compound.getInteger("rotation"), compound.getBoolean("mirrorX"));
         lowerCoord = BlockPositions.readFromNBT("lowerCoord", compound);
-
-        StructureInfo<?> structureInfo = StructureRegistry.INSTANCE.get(structureID);
-
-        instanceData = compound.hasKey("instanceData", Constants.NBT.TAG_COMPOUND) && structureInfo != null
-                ? new StructureGenerator<>().structure((StructureInfo<NBTStorable>) structureInfo).instanceData(compound.getTag("instanceData"))
-                .transform(transform).lowerCoord(lowerCoord).instanceData().orElse(null)
-                : null;
+        instanceData = compound.hasKey("instanceData", Constants.NBT.TAG_COMPOUND) ? compound.getTag("instanceData") : null;
     }
 
     @Override
@@ -62,6 +55,6 @@ public class PlacedStructure implements NBTCompoundObject
         compound.setBoolean("mirrorX", transform.isMirrorX());
         BlockPositions.writeToNBT("lowerCoord", lowerCoord, compound);
         if (instanceData != null)
-            compound.setTag("instanceData", instanceData.writeToNBT());
+            compound.setTag("instanceData", instanceData);
     }
 }

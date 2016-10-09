@@ -33,14 +33,16 @@ public class WorldGenMaze
 {
     public static boolean generate(StructureSpawnContext context, PlacedStructure placedComponent)
     {
-        if (!StructureRegistry.INSTANCE.has(placedComponent.structureID))
+        StructureInfo<?> structure = StructureRegistry.INSTANCE.get(placedComponent.structureID);
+
+        if (structure == null)
         {
             RecurrentComplex.logger.error(String.format("Could not find structure '%s' for maze", placedComponent.structureID));
             return false;
         }
 
-        return new StructureGenerator<>().structureID(placedComponent.structureID).asChild(context).generationInfo(placedComponent.generationInfoID)
-                .lowerCoord(placedComponent.lowerCoord).transform(placedComponent.transform)
+        return new StructureGenerator<>(structure).asChild(context).generationInfo(placedComponent.generationInfoID)
+                .lowerCoord(placedComponent.lowerCoord).transform(placedComponent.transform).structureID(placedComponent.structureID)
                 .instanceData(placedComponent.instanceData).generate().isPresent();
     }
 
@@ -60,7 +62,7 @@ public class WorldGenMaze
         StructureBoundingBox compBoundingBox = getBoundingBox(coord, shift, roomSize, placedComponent, structureInfo, componentTransform, mazeTransform);
         NBTStorable instanceData = new StructureGenerator<>(structureInfo).random(random).environment(environment).transform(componentTransform).boundingBox(compBoundingBox).instanceData().orElse(null);
 
-        return new PlacedStructure(componentInfo.structureID, componentInfo.structureID, componentTransform, StructureBoundingBoxes.min(compBoundingBox), instanceData);
+        return new PlacedStructure(componentInfo.structureID, componentInfo.structureID, componentTransform, StructureBoundingBoxes.min(compBoundingBox), instanceData.writeToNBT());
     }
 
     protected static StructureBoundingBox getBoundingBox(BlockPos coord, BlockPos shift, int[] roomSize, ShiftedMazeComponent<MazeComponentStructure<Connector>, Connector> placedComponent, StructureInfo structureInfo, AxisAlignedTransform2D componentTransform, AxisAlignedTransform2D mazeTransform)

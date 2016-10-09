@@ -25,6 +25,7 @@ import net.minecraft.block.properties.IProperty;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.nbt.NBTBase;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.text.TextFormatting;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -111,7 +112,7 @@ public class TransformerProperty extends TransformerSingleBlock<NBTNone>
     @Override
     public String getDisplayString()
     {
-        return propertyName + " -> " + propertyValue;
+        return TextFormatting.GREEN + propertyName + TextFormatting.RESET + " -> " + TextFormatting.GREEN + propertyValue + TextFormatting.RESET;
     }
 
     @Override

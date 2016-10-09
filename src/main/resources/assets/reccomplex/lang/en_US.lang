@@ -293,7 +293,8 @@ reccomplex.generationInfo.vanilla.shift.y=Shift (y)
 reccomplex.generationInfo.vanilla.shift.z=Shift (z)
 reccomplex.generationInfo.vanilla.amount.pervillage=Amount (per v.)
 reccomplex.generationInfo.vanilla.amount.pervillage.tooltip=Amount of this structure in<br>every village.
-reccomplex.generationInfo.vanilla.amount.scaled=Amount of this structure in<br>every village, scaled by the village size.
+reccomplex.generationInfo.vanilla.amount.scaled=Amount (scaled)
+reccomplex.generationInfo.vanilla.amount.scaled.tooltip=Amount of this structure in<br>every village, scaled by the village size.
 
 reccomplex.generationInfo.sapling=Sapling
 reccomplex.generationInfo.sapling.tooltip=As a tree from a sapling.

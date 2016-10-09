@@ -26,7 +26,7 @@ public class StructureInfos
 
     public static int[] structureSize(@Nonnull StructureInfo info, @Nonnull AxisAlignedTransform2D transform)
     {
-        return structureSize(info.structureBoundingBox(), transform);
+        return structureSize(info.size(), transform);
     }
 
     public static int[] structureSize(int[] size, AxisAlignedTransform2D transform)
@@ -38,16 +38,6 @@ public class StructureInfos
             size[2] = cache;
         }
         return size;
-    }
-
-    public static BlockPos transformedLowerCoord(BlockPos coord, int[] size, AxisAlignedTransform2D transform)
-    {
-        // TODO Fix for mirror
-        if (transform.getRotation() == 1 || transform.getRotation() == 2)
-            coord = coord.subtract(new Vec3i(size[0] - 1, 0, 0));
-        if (transform.getRotation() == 3 || transform.getRotation() == 2)
-            coord = coord.subtract(new Vec3i(0, 0, size[2] - 1));
-        return coord;
     }
 
     public static StructureBoundingBox chunkBoundingBox(ChunkPos chunkPos)

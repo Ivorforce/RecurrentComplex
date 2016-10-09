@@ -101,10 +101,10 @@ public class WorldScriptMazeGenerator implements WorldScript<WorldScriptMazeGene
     }
 
     @Override
-    public void generate(StructureSpawnContext context, InstanceData instanceData, BlockPos coord)
+    public void generate(StructureSpawnContext context, InstanceData instanceData, BlockPos pos)
     {
         for (PlacedStructure placedComponent : instanceData.placedStructures)
-            WorldGenMaze.generate(context, placedComponent);
+            WorldGenMaze.generate(context, placedComponent, pos);
     }
 
     @Override
@@ -215,7 +215,7 @@ public class WorldScriptMazeGenerator implements WorldScript<WorldScriptMazeGene
 
         List<ShiftedMazeComponent<MazeComponentStructure<Connector>, Connector>> placedRooms = getPlacedRooms(context.random, context.transform);
         instanceData.placedStructures.addAll(placedRooms.stream()
-                .map(placedComponent -> WorldGenMaze.place(context.random, context.environment, pos, structureShift, roomSize, context.transform, placedComponent))
+                .map(placedComponent -> WorldGenMaze.place(context.random, context.environment, structureShift, roomSize, placedComponent))
                 .filter(Objects::nonNull).collect(Collectors.toList()));
 
         return instanceData;

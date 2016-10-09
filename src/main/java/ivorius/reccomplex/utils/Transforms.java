@@ -9,7 +9,6 @@ import ivorius.ivtoolkit.math.AxisAlignedTransform2D;
 import ivorius.ivtoolkit.tools.IvStreams;
 
 import javax.annotation.Nonnull;
-import java.util.function.BooleanSupplier;
 import java.util.function.IntPredicate;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
@@ -71,5 +70,12 @@ public class Transforms
     public static boolean[] mirrors()
     {
         return new boolean[]{true, false};
+    }
+
+    public static AxisAlignedTransform2D apply(AxisAlignedTransform2D first, AxisAlignedTransform2D second)
+    {
+        // If the first mirrored, we have to invert its rotations' direction
+        return AxisAlignedTransform2D.from(first.getRotation() * (second.isMirrorX() ? -1 : 1) + second.getRotation()
+                , first.isMirrorX() != second.isMirrorX());
     }
 }

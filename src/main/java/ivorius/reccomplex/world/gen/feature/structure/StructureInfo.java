@@ -35,7 +35,7 @@ public interface StructureInfo<S extends NBTStorable>
     GenerationInfo generationInfo(@Nonnull String id);
 
     @Nonnull
-    int[] structureBoundingBox();
+    int[] size();
 
     boolean isRotatable();
 

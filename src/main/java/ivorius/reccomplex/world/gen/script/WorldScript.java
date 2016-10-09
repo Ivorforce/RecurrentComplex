@@ -25,7 +25,7 @@ public interface WorldScript<S extends NBTStorable> extends NBTCompoundObject
 
     S loadInstanceData(StructureLoadContext context, NBTBase nbt);
 
-    void generate(StructureSpawnContext context, S instanceData, BlockPos coord);
+    void generate(StructureSpawnContext context, S instanceData, BlockPos pos);
 
     String getDisplayString();
 

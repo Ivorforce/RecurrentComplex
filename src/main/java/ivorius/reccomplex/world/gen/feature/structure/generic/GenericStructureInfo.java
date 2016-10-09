@@ -86,7 +86,7 @@ public class GenericStructureInfo implements StructureInfo<GenericStructureInfo.
 
     @Nonnull
     @Override
-    public int[] structureBoundingBox()
+    public int[] size()
     {
         if (worldDataCompound == null)
             return new int[]{0, 0, 0};

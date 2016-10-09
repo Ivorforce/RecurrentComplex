@@ -84,10 +84,10 @@ public class WorldScriptCommand implements WorldScript<NBTNone>
     }
 
     @Override
-    public void generate(StructureSpawnContext context, NBTNone instanceData, BlockPos coord)
+    public void generate(StructureSpawnContext context, NBTNone instanceData, BlockPos pos)
     {
         // TODO Fix for partial generation (if areas are affected?)
-        if (context.includes(coord))
+        if (context.includes(pos))
         {
             if (entries.size() > 0)
             {
@@ -97,13 +97,13 @@ public class WorldScriptCommand implements WorldScript<NBTNone>
                     @Override
                     public BlockPos getPosition()
                     {
-                        return coord;
+                        return pos;
                     }
 
                     @Override
                     public Vec3d getPositionVector()
                     {
-                        return new Vec3d((double) coord.getX() + 0.5D, (double) coord.getY() + 0.5D, (double) coord.getZ() + 0.5D);
+                        return new Vec3d((double) pos.getX() + 0.5D, (double) pos.getY() + 0.5D, (double) pos.getZ() + 0.5D);
                     }
 
                     @Override
@@ -115,8 +115,8 @@ public class WorldScriptCommand implements WorldScript<NBTNone>
                     @Override
                     public void updateCommand()
                     {
-                        IBlockState iblockstate = context.environment.world.getBlockState(coord);
-                        context.environment.world.notifyBlockUpdate(coord, iblockstate, iblockstate, 3);
+                        IBlockState iblockstate = context.environment.world.getBlockState(pos);
+                        context.environment.world.notifyBlockUpdate(pos, iblockstate, iblockstate, 3);
                     }
 
                     @Override
@@ -130,9 +130,9 @@ public class WorldScriptCommand implements WorldScript<NBTNone>
                     @SideOnly(Side.CLIENT)
                     public void fillInInfo(ByteBuf buf)
                     {
-                        buf.writeInt(coord.getX());
-                        buf.writeInt(coord.getY());
-                        buf.writeInt(coord.getZ());
+                        buf.writeInt(pos.getX());
+                        buf.writeInt(pos.getY());
+                        buf.writeInt(pos.getZ());
                     }
 
                     @Override

@@ -79,7 +79,7 @@ public class RCSaplingGenerator
         {
             Integer complexity = complexities.remove(complexities.size() - 1);
             Set<Pair<StructureInfo, SaplingGenerationInfo>> placeable = groups.get(complexity).stream()
-                    .filter(p -> p.getRight().pattern.canPlace(world, pos, p.getLeft().structureBoundingBox(), p.getLeft().isRotatable(), p.getLeft().isMirrorable()))
+                    .filter(p -> p.getRight().pattern.canPlace(world, pos, p.getLeft().size(), p.getLeft().isRotatable(), p.getLeft().isMirrorable()))
                     .collect(Collectors.toSet());
 
             double totalWeight = placeable.stream().mapToDouble(RCSaplingGenerator::getSpawnWeight).sum();
@@ -113,7 +113,7 @@ public class RCSaplingGenerator
 
     public static void growSapling(WorldServer world, BlockPos pos, Random random, StructureInfo structure, SaplingGenerationInfo saplingGenInfo)
     {
-        int[] strucSize = structure.structureBoundingBox();
+        int[] strucSize = structure.size();
 
         Multimap<AxisAlignedTransform2D, BlockPos> placeables = saplingGenInfo.pattern.testAll(world, pos, strucSize, structure.isRotatable(), structure.isMirrorable());
 

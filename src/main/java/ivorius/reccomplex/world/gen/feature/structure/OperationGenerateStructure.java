@@ -117,7 +117,7 @@ public class OperationGenerateStructure implements Operation
     @Override
     public void renderPreview(PreviewType previewType, World world, int ticks, float partialTicks)
     {
-        int[] size = structure.structureBoundingBox();
+        int[] size = structure.size();
         if (previewType == PreviewType.SHAPE)
         {
             GlStateManager.color(0.8f, 0.75f, 1.0f);

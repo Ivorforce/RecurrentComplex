@@ -54,7 +54,7 @@ public class WorldScriptMulti implements WorldScript<WorldScriptMulti.InstanceDa
     }
 
     @Override
-    public void generate(StructureSpawnContext context, InstanceData instanceData, BlockPos coord)
+    public void generate(StructureSpawnContext context, InstanceData instanceData, BlockPos pos)
     {
         if (!instanceData.deactivated)
         {
@@ -62,7 +62,7 @@ public class WorldScriptMulti implements WorldScript<WorldScriptMulti.InstanceDa
             {
                 NBTStorable scriptData = instanceData.instanceDates.get(i);
                 if (scriptData != null)
-                    scripts.get(i).generate(context, scriptData, coord);
+                    scripts.get(i).generate(context, scriptData, pos);
             }
         }
     }

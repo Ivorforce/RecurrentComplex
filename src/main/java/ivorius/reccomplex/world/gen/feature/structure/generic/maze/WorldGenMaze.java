@@ -5,20 +5,21 @@
 
 package ivorius.reccomplex.world.gen.feature.structure.generic.maze;
 
-import com.google.common.collect.*;
-import ivorius.reccomplex.RCConfig;
-import ivorius.reccomplex.utils.StructureBoundingBoxes;
-import ivorius.reccomplex.utils.Transforms;
-import ivorius.reccomplex.world.gen.feature.StructureGenerator;
-import net.minecraft.util.math.BlockPos;
+import com.google.common.collect.HashMultimap;
+import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.ImmutableMultimap;
+import com.google.common.collect.ImmutableSet;
 import ivorius.ivtoolkit.math.AxisAlignedTransform2D;
 import ivorius.ivtoolkit.math.IvVecMathHelper;
 import ivorius.ivtoolkit.maze.components.*;
+import ivorius.reccomplex.RCConfig;
 import ivorius.reccomplex.RecurrentComplex;
+import ivorius.reccomplex.utils.NBTStorable;
+import ivorius.reccomplex.utils.Transforms;
+import ivorius.reccomplex.world.gen.feature.StructureGenerator;
 import ivorius.reccomplex.world.gen.feature.structure.*;
 import ivorius.reccomplex.world.gen.feature.structure.generic.gentypes.MazeGenerationInfo;
-import ivorius.reccomplex.utils.NBTStorable;
-import net.minecraft.world.gen.structure.StructureBoundingBox;
+import net.minecraft.util.math.BlockPos;
 import org.apache.commons.lang3.tuple.Pair;
 
 import javax.annotation.Nullable;
@@ -31,7 +32,7 @@ import java.util.stream.Stream;
  */
 public class WorldGenMaze
 {
-    public static boolean generate(StructureSpawnContext context, PlacedStructure placedComponent)
+    public static boolean generate(StructureSpawnContext context, PlacedStructure placedComponent, BlockPos pos)
     {
         StructureInfo<?> structure = StructureRegistry.INSTANCE.get(placedComponent.structureID);
 
@@ -41,13 +42,15 @@ public class WorldGenMaze
             return false;
         }
 
+        int[] placedSize = StructureInfos.structureSize(structure, placedComponent.transform);
         return new StructureGenerator<>(structure).asChild(context).generationInfo(placedComponent.generationInfoID)
-                .lowerCoord(placedComponent.lowerCoord).transform(placedComponent.transform).structureID(placedComponent.structureID)
+                .lowerCoord(context.transform.apply(placedComponent.lowerCoord, IvVecMathHelper.sub(new int[]{2, 2, 2}, placedSize)).add(pos))
+                .transform(Transforms.apply(placedComponent.transform, context.transform)).structureID(placedComponent.structureID)
                 .instanceData(placedComponent.instanceData).generate().isPresent();
     }
 
     @Nullable
-    public static PlacedStructure place(Random random, Environment environment, BlockPos coord, BlockPos shift, int[] roomSize, AxisAlignedTransform2D mazeTransform, ShiftedMazeComponent<MazeComponentStructure<Connector>, Connector> placedComponent)
+    public static PlacedStructure place(Random random, Environment environment, BlockPos shift, int[] roomSize, ShiftedMazeComponent<MazeComponentStructure<Connector>, Connector> placedComponent)
     {
         MazeComponentStructure<Connector> componentInfo = placedComponent.getComponent();
         StructureInfo<?> structureInfo = StructureRegistry.INSTANCE.get(componentInfo.structureID);
@@ -58,30 +61,25 @@ public class WorldGenMaze
             return null;
         }
 
-        AxisAlignedTransform2D componentTransform = componentInfo.transform.rotateClockwise(mazeTransform.getRotation());
-        StructureBoundingBox compBoundingBox = getBoundingBox(coord, shift, roomSize, placedComponent, structureInfo, componentTransform, mazeTransform);
-        NBTStorable instanceData = new StructureGenerator<>(structureInfo).random(random).environment(environment).transform(componentTransform).boundingBox(compBoundingBox).instanceData().orElse(null);
+        BlockPos compLowerPos = getBoundingBox(roomSize, placedComponent, structureInfo, componentInfo.transform).add(shift);
+        NBTStorable instanceData = new StructureGenerator<>(structureInfo).random(random).environment(environment).transform(componentInfo.transform).lowerCoord(compLowerPos).instanceData().orElse(null);
 
-        return new PlacedStructure(componentInfo.structureID, componentInfo.structureID, componentTransform, StructureBoundingBoxes.min(compBoundingBox), instanceData.writeToNBT());
+        return new PlacedStructure(componentInfo.structureID, componentInfo.structureID, componentInfo.transform, compLowerPos, instanceData.writeToNBT());
     }
 
-    protected static StructureBoundingBox getBoundingBox(BlockPos coord, BlockPos shift, int[] roomSize, ShiftedMazeComponent<MazeComponentStructure<Connector>, Connector> placedComponent, StructureInfo structureInfo, AxisAlignedTransform2D componentTransform, AxisAlignedTransform2D mazeTransform)
+    protected static BlockPos getBoundingBox(int[] roomSize, ShiftedMazeComponent<MazeComponentStructure<Connector>, Connector> placedComponent, StructureInfo structureInfo, AxisAlignedTransform2D transform)
     {
-        MazeRoom mazePosition = placedComponent.getShift();
-        int[] scaledMazePosition = IvVecMathHelper.mul(mazePosition.getCoordinates(), roomSize);
+        int[] scaledMazePosition = IvVecMathHelper.mul(placedComponent.getShift().getCoordinates(), roomSize);
 
-        int[] structureBB = StructureInfos.structureSize(structureInfo, componentTransform);
-        int[] compRoomSize = StructureInfos.structureSize(IvVecMathHelper.mul(placedComponent.getComponent().getSize(), roomSize), mazeTransform);
-        int[] sizeDependentShift = new int[compRoomSize.length];
-        for (int i = 0; i < structureBB.length; i++)
-            sizeDependentShift[i] = (compRoomSize[i] - structureBB[i]) / 2;
+        int[] size = StructureInfos.structureSize(structureInfo, transform);
+        int[] expectedSize = IvVecMathHelper.mul(placedComponent.getComponent().getSize(), roomSize); // Already rotated component, so don't rotate again
+        int[] sizeDependentShift = new int[expectedSize.length];
+        for (int i = 0; i < size.length; i++)
+            sizeDependentShift[i] = (expectedSize[i] - size[i]) / 2;
 
-        BlockPos lowerCoord = StructureInfos.transformedLowerCoord(
-                coord.add(mazeTransform.apply(shift.add(scaledMazePosition[0], scaledMazePosition[1], scaledMazePosition[2]), new int[]{1, 1, 1}))
-                        .add(sizeDependentShift[0], sizeDependentShift[1], sizeDependentShift[2]),
-                structureBB, mazeTransform);
+        return new BlockPos(scaledMazePosition[0], scaledMazePosition[1], scaledMazePosition[2])
+                .add(sizeDependentShift[0], sizeDependentShift[1], sizeDependentShift[2]);
 
-        return StructureInfos.structureBoundingBox(lowerCoord, structureBB);
     }
 
     public static Stream<MazeComponentStructure<Connector>> transforms(StructureInfo info, MazeGenerationInfo mazeInfo, ConnectorFactory factory, AxisAlignedTransform2D transform, Collection<Connector> blockedConnections)

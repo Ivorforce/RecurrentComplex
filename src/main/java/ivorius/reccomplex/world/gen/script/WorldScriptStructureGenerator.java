@@ -190,7 +190,7 @@ public class WorldScriptStructureGenerator implements WorldScript<WorldScriptStr
                     boolean mirrorX = structureInfo.isMirrorable() && (structureMirror != null ? transform.isMirrorX() != structureMirror : random.nextBoolean());
                     AxisAlignedTransform2D strucTransform = AxisAlignedTransform2D.from(rotations, mirrorX);
 
-                    int[] strucSize = structureInfo.structureBoundingBox();
+                    int[] strucSize = structureInfo.size();
                     BlockPos strucCoord = transform.apply(structureShift, new int[]{1, 1, 1})
                             .subtract(transform.apply(BlockPos.ORIGIN, strucSize)).add(pos);
 
@@ -229,7 +229,7 @@ public class WorldScriptStructureGenerator implements WorldScript<WorldScriptStr
 
                 AxisAlignedTransform2D strucTransform = AxisAlignedTransform2D.from(rotations, mirrorX);
 
-                int[] strucSize = structureInfo.structureBoundingBox();
+                int[] strucSize = structureInfo.size();
                 BlockPos strucCoord = transform.apply(structureShift.add(generationInfo.shift), new int[]{1, 1, 1})
                         .subtract(transform.apply(BlockPos.ORIGIN, strucSize)).add(pos);
 
@@ -243,7 +243,7 @@ public class WorldScriptStructureGenerator implements WorldScript<WorldScriptStr
     }
 
     @Override
-    public void generate(StructureSpawnContext context, InstanceData instanceData, BlockPos coord)
+    public void generate(StructureSpawnContext context, InstanceData instanceData, BlockPos pos)
     {
         StructureInfo structureInfo = StructureRegistry.INSTANCE.get(instanceData.structureID);
         NBTStorable structureData = instanceData.structureData;

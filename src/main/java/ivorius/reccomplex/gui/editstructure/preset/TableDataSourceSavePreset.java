@@ -48,7 +48,7 @@ public class TableDataSourceSavePreset<T> extends TableDataSourceSegmented
 
         addManagedSegment(0, new TableDataSourceSupplied(() ->
         {
-            TableCellString cell = new TableCellString("id", id);
+            TableCellString cell = new TableCellString(null, id);
             cell.setShowsValidityState(true);
             cell.setValidityState(currentIDState());
             cell.addPropertyConsumer(s ->
@@ -61,10 +61,10 @@ public class TableDataSourceSavePreset<T> extends TableDataSourceSegmented
                     description = object.getPresetRegistry().description(s)
                             .flatMap(d -> d.stream().reduce((s1, s2) -> s1 + "<br>" + s2))
                             .orElse("");
-                    TableElements.reloadExcept(delegate, "id");
+                    TableElements.reloadExcept(delegate, "presetID");
                 }
             });
-            return new TableElementCell(IvTranslations.get("reccomplex.preset.id"), cell)
+            return new TableElementCell("presetID", IvTranslations.get("reccomplex.preset.id"), cell)
                     .withTitleTooltip(IvTranslations.getLines("reccomplex.preset.id.tooltip"));
         }, () ->
         {

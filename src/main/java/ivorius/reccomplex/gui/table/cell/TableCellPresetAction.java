@@ -10,6 +10,7 @@ import ivorius.reccomplex.gui.table.GuiTable;
 import net.minecraft.client.gui.GuiButton;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.function.Consumer;
@@ -33,7 +34,8 @@ public class TableCellPresetAction extends TableCellDefault
     {
         super(id);
         this.actions = actions;
-        currentActionID = actions[0].actionID;
+        if (actions.length > 0)
+            currentActionID = actions[0].actionID;
     }
 
     public void addListener(TableCellActionListener listener)
@@ -82,13 +84,10 @@ public class TableCellPresetAction extends TableCellDefault
         leftButton.visible = !isHidden();
         screen.addButton(this, 1, rightButton);
 
-        int curIndex = currentActionIndex();
-        String curTitle = curIndex >= 0 ? actions[curIndex].title : currentActionID;
-        runActionButton = new GuiButton(-1, bounds.getMinX() + directionButtonWidth + 1, buttonY, presetButtonWidth - 2, 20, curTitle);
+        runActionButton = new GuiButton(-1, bounds.getMinX() + directionButtonWidth + 1, buttonY, presetButtonWidth - 2, 20, "");
+        setCurrentAction(currentActionID);
         runActionButton.visible = !isHidden();
         screen.addButton(this, 2, runActionButton);
-
-        setActionButtonActive();
     }
 
     @Override
@@ -118,13 +117,19 @@ public class TableCellPresetAction extends TableCellDefault
         }
     }
 
-    public void move(int plus)
+    public void setCurrentAction(String action)
     {
-        TableCellButton newAction = actions[(((currentActionIndex() + plus) % actions.length) + actions.length) % actions.length];
-        currentActionID = newAction.actionID;
-        runActionButton.displayString = newAction.title;
+        currentActionID = action;
+        TableCellButton actionButton = findAction(action);
+        runActionButton.displayString = actionButton != null ? actionButton.title : "";
+        runActionButton.enabled = actionButton != null && actionButton.enabled;
 
         setActionButtonActive();
+    }
+
+    public void move(int plus)
+    {
+        setCurrentAction(actions[(((findIndex(currentActionID) + plus) % actions.length) + actions.length) % actions.length].actionID);
     }
 
     @Override
@@ -132,18 +137,18 @@ public class TableCellPresetAction extends TableCellDefault
     {
         super.drawFloating(screen, mouseX, mouseY, partialTicks);
 
-        TableCellButton action = currentAction();
+        TableCellButton action = findAction(currentActionID);
         if (action != null && action.tooltip != null)
             screen.drawTooltipRect(action.tooltip, Bounds.fromButton(runActionButton), mouseX, mouseY, getFontRenderer());
     }
 
-    private TableCellButton currentAction()
+    protected TableCellButton findAction(String actionID)
     {
-        int index = currentActionIndex();
+        int index = findIndex(actionID);
         return index >= 0 ? actions[index] : null;
     }
 
-    private int currentActionIndex()
+    protected int findIndex(String actionID)
     {
         int currentIndex = -1;
 
@@ -151,18 +156,18 @@ public class TableCellPresetAction extends TableCellDefault
         {
             TableCellButton action = actions[i];
 
-            if (action.actionID.equals(currentActionID))
+            if (action.actionID.equals(actionID))
                 currentIndex = i;
         }
 
         return currentIndex;
     }
 
-    private void setActionButtonActive()
+    protected void setActionButtonActive()
     {
         if (runActionButton != null)
         {
-            int currentActionIndex = currentActionIndex();
+            int currentActionIndex = findIndex(currentActionID);
             runActionButton.enabled = currentActionIndex >= 0 && actions[currentActionIndex].enabled;
         }
     }

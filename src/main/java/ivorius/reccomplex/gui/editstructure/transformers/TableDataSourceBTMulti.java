@@ -35,16 +35,16 @@ public class TableDataSourceBTMulti extends TableDataSourceSegmented
 
         addPresetSections(transformer, navigator, delegate);
 
-        addManagedSegment(3, new TableDataSourcePresettedObject<>(transformer.getData(), RCFileSaver.TRANSFORMER_PRESET, delegate, navigator)
-                .withApplyPresetAction(() -> addPresetSections(transformer, navigator, delegate)));
+        addManagedSegment(2, new TableDataSourcePresettedObject<>(transformer.getData(), RCFileSaver.TRANSFORMER_PRESET, delegate, navigator)
+                .withApplyPresetAction(() -> addPresetSections(transformer, navigator, delegate)).withCurrentOnTop(true));
     }
 
     public void addPresetSections(final TransformerMulti transformer, final TableNavigator navigator, final TableDelegate delegate)
     {
-        addManagedSegment(1, TableDataSourceExpression.constructDefault(IvTranslations.get("reccomplex.transformer.multi.condition"), transformer.getEnvironmentMatcher(), null)
+        addManagedSegment(3, TableDataSourceExpression.constructDefault(IvTranslations.get("reccomplex.transformer.multi.condition"), transformer.getEnvironmentMatcher(), null)
                 .enabled(() -> transformer.getData().isCustom()));
 
-        addManagedSegment(2, new TableDataSourceTransformerList(transformer.getTransformers(), delegate, navigator)
+        addManagedSegment(1, new TableDataSourceTransformerList(transformer.getTransformers(), delegate, navigator)
         {
             @Override
             public boolean canEditList()

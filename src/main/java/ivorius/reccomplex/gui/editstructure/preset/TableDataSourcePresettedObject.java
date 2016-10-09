@@ -30,6 +30,8 @@ public class TableDataSourcePresettedObject<T> extends TableDataSourceSegmented
 
     public Runnable applyPresetAction;
 
+    public boolean currentOnTop = false;
+
     public TableDataSourcePresettedObject(PresettedObject<T> object, String saverID, TableDelegate delegate, TableNavigator navigator)
     {
         this.object = object;
@@ -98,6 +100,12 @@ public class TableDataSourcePresettedObject<T> extends TableDataSourceSegmented
         return this;
     }
 
+    public TableDataSourcePresettedObject<T> withCurrentOnTop(boolean currentOnTop)
+    {
+        this.currentOnTop = currentOnTop;
+        return this;
+    }
+
     @Override
     public int numberOfSegments()
     {
@@ -115,9 +123,9 @@ public class TableDataSourcePresettedObject<T> extends TableDataSourceSegmented
     {
         if (segment == 0)
         {
-            if (index == 0)
+            if (index == (currentOnTop ? 1 : 0))
                 return getSetElement(object, delegate, getPresetActions(), applyPresetAction);
-            else if (index == 1)
+            else
                 return getCustomizeElement(object, saverID, delegate, navigator, applyPresetAction);
         }
 

@@ -211,9 +211,8 @@ reccomplex.structure.randomrange=Randomisé entre les deux valeurs.
 
 reccomplex.structure.id=ID de structure
 reccomplex.structure.id.tooltip=Identifiant unique pour la structure
-reccomplex.structure.savePath=Enregistre dans %s
-reccomplex.structure.deleteOther.true=%sEfface%s de %s
-reccomplex.structure.deleteOther.false=%sConserve%s dans %s
+reccomplex.structure.deleteOther.true=%sEfface%s opposite
+reccomplex.structure.deleteOther.false=%sConserve%s opposite
 reccomplex.structure.deleteOther.tooltip=Note: Les structures dans le %s<br>dossier prennent la préséance<br>de chargement sur ceux du<br>dossier %s.
 
 reccomplex.structure.generation.id=ID de génération

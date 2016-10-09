@@ -223,9 +223,8 @@ reccomplex.structure.randomrange=Zufällig zwischen den zwei Werten.
 
 reccomplex.structure.id=Struktur ID
 reccomplex.structure.id.tooltip=Einzigartiger Identifier für die Struktur
-reccomplex.structure.savePath=Speichern in %s
-reccomplex.structure.deleteOther.true=%Enferne%s aus %s
-reccomplex.structure.deleteOther.false=%sBehalte%s in %s
+reccomplex.structure.deleteOther.true=%Enferne%s Gegenteil
+reccomplex.structure.deleteOther.false=%sBehalte%s Gegenteil
 reccomplex.structure.deleteOther.tooltip=Hinweis: Strukturen in dem %s<br>Ordner haben gegenüber denen im %s Ordner beim Laden Vorrang<br>.
 
 reccomplex.structure.generation.id=Generierungs ID

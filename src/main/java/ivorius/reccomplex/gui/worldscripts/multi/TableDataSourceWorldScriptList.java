@@ -46,7 +46,7 @@ public class TableDataSourceWorldScriptList extends TableDataSourceList<WorldScr
     }
 
     @Override
-    public TableCellButton[] getAddActions()
+    public List<TableCellButton> getAddActions()
     {
         return TableDataSourcePresettedList.addActions(WorldScriptRegistry.INSTANCE.allIDs(), "reccomplex.worldscript.", canEditList());
     }

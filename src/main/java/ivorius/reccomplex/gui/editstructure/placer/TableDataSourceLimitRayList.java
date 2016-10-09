@@ -44,7 +44,7 @@ public class TableDataSourceLimitRayList extends TableDataSourceList<FactorLimit
     }
 
     @Override
-    public TableCellButton[] getAddActions()
+    public List<TableCellButton> getAddActions()
     {
         return TableDataSourcePresettedList.addActions(FactorLimit.getRayRegistry().allIDs(), "reccomplex.placer.factors.limit.rays.", canEditList());
     }

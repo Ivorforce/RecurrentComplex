@@ -10,10 +10,10 @@ import ivorius.reccomplex.gui.table.GuiTable;
 import net.minecraft.client.gui.GuiButton;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.function.Consumer;
+import java.util.stream.Stream;
 
 /**
  * Created by lukas on 02.06.14.
@@ -26,16 +26,21 @@ public class TableCellPresetAction extends TableCellDefault
 
     protected String currentActionID;
 
-    protected TableCellButton[] actions;
+    protected List<TableCellButton> actions = new ArrayList<>();
 
     protected List<TableCellActionListener> listeners = new ArrayList<>();
 
-    public TableCellPresetAction(String id, TableCellButton... actions)
+    public TableCellPresetAction(String id, List<TableCellButton> actions)
     {
         super(id);
-        this.actions = actions;
-        if (actions.length > 0)
-            currentActionID = actions[0].actionID;
+        this.actions.addAll(actions);
+        if (actions.size() > 0)
+            currentActionID = actions.get(0).actionID;
+    }
+
+    public static Stream<TableCellButton> sorted(Stream<TableCellButton> actions)
+    {
+        return actions.sorted((o1, o2) -> o1.title.compareTo(o2.title));
     }
 
     public void addListener(TableCellActionListener listener)
@@ -60,7 +65,7 @@ public class TableCellPresetAction extends TableCellDefault
         return Collections.unmodifiableList(listeners);
     }
 
-    public TableCellButton[] getActions()
+    public List<TableCellButton> getActions()
     {
         return actions;
     }
@@ -129,7 +134,7 @@ public class TableCellPresetAction extends TableCellDefault
 
     public void move(int plus)
     {
-        setCurrentAction(actions[(((findIndex(currentActionID) + plus) % actions.length) + actions.length) % actions.length].actionID);
+        setCurrentAction(actions.get((((findIndex(currentActionID) + plus) % actions.size()) + actions.size()) % actions.size()).actionID);
     }
 
     @Override
@@ -145,16 +150,16 @@ public class TableCellPresetAction extends TableCellDefault
     protected TableCellButton findAction(String actionID)
     {
         int index = findIndex(actionID);
-        return index >= 0 ? actions[index] : null;
+        return index >= 0 ? actions.get(index) : null;
     }
 
     protected int findIndex(String actionID)
     {
         int currentIndex = -1;
 
-        for (int i = 0; i < actions.length; i++)
+        for (int i = 0; i < actions.size(); i++)
         {
-            TableCellButton action = actions[i];
+            TableCellButton action = actions.get(i);
 
             if (action.actionID.equals(actionID))
                 currentIndex = i;
@@ -168,7 +173,7 @@ public class TableCellPresetAction extends TableCellDefault
         if (runActionButton != null)
         {
             int currentActionIndex = findIndex(currentActionID);
-            runActionButton.enabled = currentActionIndex >= 0 && actions[currentActionIndex].enabled;
+            runActionButton.enabled = currentActionIndex >= 0 && actions.get(currentActionIndex).enabled;
         }
     }
 }

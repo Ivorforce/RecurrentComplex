@@ -45,7 +45,7 @@ public class TableDataSourcePlacerFactorList extends TableDataSourceList<Generic
     }
 
     @Override
-    public TableCellButton[] getAddActions()
+    public List<TableCellButton> getAddActions()
     {
         return TableDataSourcePresettedList.addActions(FactorRegistry.INSTANCE.getTypeRegistry().allIDs(), "reccomplex.placer.factors.", canEditList());
     }

@@ -16,6 +16,8 @@ import ivorius.reccomplex.utils.PresetRegistry;
 import ivorius.reccomplex.utils.presets.PresettedObject;
 
 import javax.annotation.Nonnull;
+import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * Created by lukas on 19.09.16.
@@ -67,9 +69,9 @@ public class TableDataSourcePresettedObject<T> extends TableDataSourceSegmented
     }
 
     @Nonnull
-    public static <T> TableElement getSetElement(PresettedObject<T> object, TableDelegate delegate, TableCellButton[] actions, Runnable applyPresetAction)
+    public static <T> TableElement getSetElement(PresettedObject<T> object, TableDelegate delegate, List<TableCellButton> actions, Runnable applyPresetAction)
     {
-        if (actions.length == 0)
+        if (actions.isEmpty())
             return new TableElementCell(new TableCellButton(null, null, IvTranslations.get("reccomplex.presets"), false));
 
         TableCellPresetAction cell = new TableCellPresetAction("preset", actions);
@@ -84,14 +86,14 @@ public class TableDataSourcePresettedObject<T> extends TableDataSourceSegmented
     }
 
     @Nonnull
-    public static <T> TableCellButton[] getPresetActions(PresettedObject<T> object)
+    public static <T> List<TableCellButton> getActions(PresettedObject<T> object)
     {
         PresetRegistry<T> registry = object.getPresetRegistry();
         //noinspection OptionalGetWithoutIsPresent
-        return registry.allIDs().stream().map(type -> new TableCellButton(type, type,
+        return TableCellPresetAction.sorted(registry.allIDs().stream().map(type -> new TableCellButton(type, type,
                 IvTranslations.format("reccomplex.preset.use", registry.title(type).orElse(type)),
                 registry.description(type).orElse(null)
-        )).toArray(TableCellButton[]::new);
+        ))).collect(Collectors.toList());
     }
 
     public TableDataSourcePresettedObject<T> withApplyPresetAction(Runnable applyPresetAction)
@@ -124,7 +126,7 @@ public class TableDataSourcePresettedObject<T> extends TableDataSourceSegmented
         if (segment == 0)
         {
             if (index == (currentOnTop ? 1 : 0))
-                return getSetElement(object, delegate, getPresetActions(), applyPresetAction);
+                return getSetElement(object, delegate, getActions(), applyPresetAction);
             else
                 return getCustomizeElement(object, saverID, delegate, navigator, applyPresetAction);
         }
@@ -132,8 +134,8 @@ public class TableDataSourcePresettedObject<T> extends TableDataSourceSegmented
         return super.elementForIndexInSegment(table, index, segment);
     }
 
-    public TableCellButton[] getPresetActions()
+    public List<TableCellButton> getActions()
     {
-        return getPresetActions(object);
+        return getActions(object);
     }
 }

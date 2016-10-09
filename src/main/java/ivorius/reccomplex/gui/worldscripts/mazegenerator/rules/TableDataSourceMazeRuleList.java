@@ -53,7 +53,7 @@ public class TableDataSourceMazeRuleList extends TableDataSourceList<MazeRule, L
     }
 
     @Override
-    public TableCellButton[] getAddActions()
+    public List<TableCellButton> getAddActions()
     {
         return TableDataSourcePresettedList.addActions(MazeRuleRegistry.INSTANCE.allIDs(), "reccomplex.mazerule.", canEditList());
     }

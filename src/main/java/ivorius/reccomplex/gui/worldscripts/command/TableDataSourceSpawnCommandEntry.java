@@ -16,6 +16,8 @@ import ivorius.reccomplex.gui.table.datasource.TableDataSourceSegmented;
 import ivorius.reccomplex.world.gen.script.WorldScriptCommand;
 import net.minecraft.init.Blocks;
 
+import java.util.Arrays;
+
 /**
  * Created by lukas on 05.06.14.
  */
@@ -48,10 +50,10 @@ public class TableDataSourceSpawnCommandEntry extends TableDataSourceSegmented
     {
         if (index == 0)
         {
-            TableCellPresetAction cell = new TableCellPresetAction("default",
+            TableCellPresetAction cell = new TableCellPresetAction("default", Arrays.asList(
                     new TableCellButton("", "spawner", Blocks.MOB_SPAWNER.getLocalizedName()),
                     new TableCellButton("", "entity", IvTranslations.get("reccomplex.spawncommand.preset.entity"))
-            );
+            ));
             cell.addAction(action -> {
                 if ("spawner".equals(action))
                     entry.command = "/setblock ~ ~ ~ mob_spawner 0 replace {SpawnData:{id:Zombie}}";

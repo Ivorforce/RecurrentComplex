@@ -20,6 +20,7 @@ import ivorius.ivtoolkit.tools.IvTranslations;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -197,7 +198,7 @@ public abstract class TableDataSourceList<T, L extends List<T>> extends TableDat
             }
             else
             {
-                TableCellButton[] cells = getAddActions();
+                List<TableCellButton> cells = getAddActions();
                 for (TableCellButton cell : cells)
                 {
                     cell.addAction(createAddAction(addIndex, cell.actionID));
@@ -237,10 +238,10 @@ public abstract class TableDataSourceList<T, L extends List<T>> extends TableDat
                 : -1;
     }
 
-    public TableCellButton[] getAddActions()
+    public List<TableCellButton> getAddActions()
     {
         boolean enabled = canEditList();
-        return new TableCellButton[]{new TableCellButton("", "add", getAddTitle(), enabled)};
+        return Collections.singletonList(new TableCellButton("", "add", getAddTitle(), enabled));
     }
 
     public TableCellButton[] getEntryActions(int index)

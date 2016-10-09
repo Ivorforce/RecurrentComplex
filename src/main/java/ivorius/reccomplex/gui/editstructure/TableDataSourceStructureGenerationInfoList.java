@@ -30,7 +30,7 @@ public class TableDataSourceStructureGenerationInfoList extends TableDataSourceL
     }
 
     @Override
-    public TableCellButton[] getAddActions()
+    public List<TableCellButton> getAddActions()
     {
         return TableDataSourcePresettedList.addActions(StructureRegistry.GENERATION_INFOS.allIDs(), "reccomplex.generationInfo.", canEditList());
     }

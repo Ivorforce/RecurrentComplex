@@ -47,7 +47,7 @@ public class TableDataSourceTransformerList extends TableDataSourceList<Transfor
     }
 
     @Override
-    public TableCellButton[] getAddActions()
+    public List<TableCellButton> getAddActions()
     {
         return TableDataSourcePresettedList.addActions(StructureRegistry.TRANSFORMERS.allIDs(), "reccomplex.transformer.", canEditList());
     }

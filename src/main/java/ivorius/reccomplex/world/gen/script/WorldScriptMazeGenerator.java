@@ -19,10 +19,7 @@ import ivorius.reccomplex.gui.table.datasource.TableDataSource;
 import ivorius.reccomplex.gui.table.TableDelegate;
 import ivorius.reccomplex.gui.table.TableNavigator;
 import ivorius.reccomplex.gui.worldscripts.mazegenerator.TableDataSourceWorldScriptMazeGenerator;
-import ivorius.reccomplex.world.gen.feature.structure.StructureLoadContext;
-import ivorius.reccomplex.world.gen.feature.structure.StructurePrepareContext;
-import ivorius.reccomplex.world.gen.feature.structure.StructureRegistry;
-import ivorius.reccomplex.world.gen.feature.structure.StructureSpawnContext;
+import ivorius.reccomplex.world.gen.feature.structure.*;
 import ivorius.reccomplex.world.gen.feature.structure.generic.Selection;
 import ivorius.reccomplex.world.gen.feature.structure.generic.maze.*;
 import ivorius.reccomplex.world.gen.feature.structure.generic.maze.rules.BlockedConnectorStrategy;
@@ -106,7 +103,8 @@ public class WorldScriptMazeGenerator implements WorldScript<WorldScriptMazeGene
     @Override
     public void generate(StructureSpawnContext context, InstanceData instanceData, BlockPos coord)
     {
-        WorldGenMaze.generatePlacedStructures(instanceData.placedStructures, context);
+        for (PlacedStructure placedComponent : instanceData.placedStructures)
+            WorldGenMaze.generate(context, placedComponent);
     }
 
     @Override
@@ -216,7 +214,9 @@ public class WorldScriptMazeGenerator implements WorldScript<WorldScriptMazeGene
         InstanceData instanceData = new InstanceData();
 
         List<ShiftedMazeComponent<MazeComponentStructure<Connector>, Connector>> placedRooms = getPlacedRooms(context.random, context.transform);
-        instanceData.placedStructures.addAll(WorldGenMaze.convertToPlacedStructures(context.random, context.environment, pos, structureShift, placedRooms, roomSize, context.transform));
+        instanceData.placedStructures.addAll(placedRooms.stream()
+                .map(placedComponent -> WorldGenMaze.place(context.random, context.environment, pos, structureShift, roomSize, context.transform, placedComponent))
+                .filter(Objects::nonNull).collect(Collectors.toList()));
 
         return instanceData;
     }
@@ -248,7 +248,8 @@ public class WorldScriptMazeGenerator implements WorldScript<WorldScriptMazeGene
         final int[] outsideBoundsHigher = IvVecMathHelper.add(boundsHigher, oneArray);
         final int[] outsideBoundsLower = IvVecMathHelper.sub(boundsLower, oneArray);
 
-        List<MazeComponentStructure<Connector>> transformedComponents = WorldGenMaze.transformedComponents(StructureRegistry.INSTANCE.getStructuresInMaze(mazeID), factory, transform, blockedConnections);
+        List<MazeComponentStructure<Connector>> transformedComponents = StructureRegistry.INSTANCE.getStructuresInMaze(mazeID).stream()
+                .flatMap(pair -> WorldGenMaze.transforms(pair.getLeft(), pair.getRight(), factory, transform, blockedConnections)).collect(Collectors.toList());
 
         MorphingMazeComponent<Connector> maze = new SetMazeComponent<>();
 

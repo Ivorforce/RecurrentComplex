@@ -7,6 +7,7 @@ package ivorius.reccomplex.world.gen.feature.structure.generic.maze;
 
 import com.google.common.collect.*;
 import ivorius.reccomplex.RCConfig;
+import ivorius.reccomplex.utils.Transforms;
 import ivorius.reccomplex.world.gen.feature.StructureGenerator;
 import net.minecraft.util.math.BlockPos;
 import ivorius.ivtoolkit.math.AxisAlignedTransform2D;
@@ -19,6 +20,7 @@ import ivorius.reccomplex.utils.NBTStorable;
 import net.minecraft.world.gen.structure.StructureBoundingBox;
 import org.apache.commons.lang3.tuple.Pair;
 
+import javax.annotation.Nullable;
 import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -28,49 +30,45 @@ import java.util.stream.Stream;
  */
 public class WorldGenMaze
 {
-    public static boolean generatePlacedStructures(List<PlacedStructure> placedStructures, StructureSpawnContext context)
+    public static boolean generate(StructureSpawnContext context, PlacedStructure placedComponent)
     {
-        for (PlacedStructure placedComponent : placedStructures)
-        {
-            String structureID = placedComponent.structureID;
-            StructureInfo structureInfo = StructureRegistry.INSTANCE.get(structureID);
+        String structureID = placedComponent.structureID;
+        StructureInfo structureInfo = StructureRegistry.INSTANCE.get(structureID);
 
-            if (structureInfo != null && placedComponent.instanceData != null)
-            {
-                new StructureGenerator<>(structureInfo).asChild(context).generationInfo(placedComponent.generationInfoID)
-                        .lowerCoord(placedComponent.lowerCoord).transform(placedComponent.transform)
-                        .structureID(structureID).instanceData(placedComponent.instanceData).generate();
-            }
-            else
-            {
-                RecurrentComplex.logger.error(String.format("Could not find structure '%s' for maze", structureID));
-            }
+        if (structureInfo != null && placedComponent.instanceData != null)
+        {
+            return new StructureGenerator<>(structureInfo).asChild(context).generationInfo(placedComponent.generationInfoID)
+                    .lowerCoord(placedComponent.lowerCoord).transform(placedComponent.transform)
+                    .structureID(structureID).instanceData(placedComponent.instanceData).generate().isPresent();
+        }
+        else
+        {
+            RecurrentComplex.logger.error(String.format("Could not find structure '%s' for maze", structureID));
         }
 
-        return true;
+        return false;
     }
 
-    public static List<PlacedStructure> convertToPlacedStructures(final Random random, Environment environment, final BlockPos coord, final BlockPos shift, List<ShiftedMazeComponent<MazeComponentStructure<Connector>, Connector>> placedComponents, final int[] roomSize, final AxisAlignedTransform2D mazeTransform)
+    @Nullable
+    public static PlacedStructure place(Random random, Environment environment, BlockPos coord, BlockPos shift, int[] roomSize, AxisAlignedTransform2D mazeTransform, ShiftedMazeComponent<MazeComponentStructure<Connector>, Connector> placedComponent)
     {
-        return Lists.newArrayList(placedComponents.stream().map(placedComponent -> {
-            MazeComponentStructure<Connector> componentInfo = placedComponent.getComponent();
-            StructureInfo<?> structureInfo = StructureRegistry.INSTANCE.get(componentInfo.structureID);
+        MazeComponentStructure<Connector> componentInfo = placedComponent.getComponent();
+        StructureInfo<?> structureInfo = StructureRegistry.INSTANCE.get(componentInfo.structureID);
 
-            if (structureInfo != null)
-            {
-                AxisAlignedTransform2D componentTransform = componentInfo.transform.rotateClockwise(mazeTransform.getRotation());
-                StructureBoundingBox compBoundingBox = getBoundingBox(coord, shift, roomSize, placedComponent, structureInfo, componentTransform, mazeTransform);
-                NBTStorable instanceData = new StructureGenerator<>(structureInfo).random(random).environment(environment).transform(componentTransform).boundingBox(compBoundingBox).instanceData().orElse(null);
+        if (structureInfo != null)
+        {
+            AxisAlignedTransform2D componentTransform = componentInfo.transform.rotateClockwise(mazeTransform.getRotation());
+            StructureBoundingBox compBoundingBox = getBoundingBox(coord, shift, roomSize, placedComponent, structureInfo, componentTransform, mazeTransform);
+            NBTStorable instanceData = new StructureGenerator<>(structureInfo).random(random).environment(environment).transform(componentTransform).boundingBox(compBoundingBox).instanceData().orElse(null);
 
-                return new PlacedStructure(componentInfo.structureID, componentInfo.structureID, componentTransform, new BlockPos(compBoundingBox.minX, compBoundingBox.minY, compBoundingBox.minZ), instanceData);
-            }
-            else
-            {
-                RecurrentComplex.logger.error(String.format("Could not find structure '%s' for maze", componentInfo.structureID));
-            }
+            return new PlacedStructure(componentInfo.structureID, componentInfo.structureID, componentTransform, new BlockPos(compBoundingBox.minX, compBoundingBox.minY, compBoundingBox.minZ), instanceData);
+        }
+        else
+        {
+            RecurrentComplex.logger.error(String.format("Could not find structure '%s' for maze", componentInfo.structureID));
+        }
 
-            return null;
-        }).filter(Objects::nonNull).collect(Collectors.toList()));
+        return null;
     }
 
     protected static StructureBoundingBox getBoundingBox(BlockPos coord, BlockPos shift, int[] roomSize, ShiftedMazeComponent<MazeComponentStructure<Connector>, Connector> placedComponent, StructureInfo structureInfo, AxisAlignedTransform2D componentTransform, AxisAlignedTransform2D mazeTransform)
@@ -92,40 +90,19 @@ public class WorldGenMaze
         return StructureInfos.structureBoundingBox(lowerCoord, structureBB);
     }
 
-    public static List<MazeComponentStructure<Connector>> transformedComponents(Collection<Pair<StructureInfo, MazeGenerationInfo>> componentStructures, ConnectorFactory factory, AxisAlignedTransform2D transform, Collection<Connector> blockedConnections)
+    public static Stream<MazeComponentStructure<Connector>> transforms(StructureInfo info, MazeGenerationInfo mazeInfo, ConnectorFactory factory, AxisAlignedTransform2D transform, Collection<Connector> blockedConnections)
     {
-        List<MazeComponentStructure<Connector>> transformedComponents = new ArrayList<>();
-        for (Pair<StructureInfo, MazeGenerationInfo> pair : componentStructures)
-        {
-            StructureInfo info = pair.getLeft();
-            MazeGenerationInfo mazeInfo = pair.getRight();
-            SavedMazeComponent comp = mazeInfo.mazeComponent;
+        int[] compSize = mazeInfo.mazeComponent.boundsSize();
 
-            int[] compSize = comp.boundsSize();
-            int roomVariations = (info.isRotatable() ? 4 : 1) * (info.isMirrorable() ? 2 : 1);
+        List<AxisAlignedTransform2D> transforms = Transforms.transformStream(r -> info.isRotatable() || transform.apply(r) == 0, m -> info.isMirrorable() || m == 0).collect(Collectors.toList());
 
-            double compWeight = mazeInfo.getWeight() * RCConfig.tweakedSpawnRate(StructureRegistry.INSTANCE.id(info));
+        double compWeight = mazeInfo.getWeight() * RCConfig.tweakedSpawnRate(StructureRegistry.INSTANCE.id(info));
+        double splitCompWeight = compWeight / transforms.size();
 
-            double splitCompWeight = 0;
-            if (compWeight > 0)
-                splitCompWeight = compWeight / roomVariations;
-
-            for (int rotations = 0; rotations < 4; rotations++)
-            {
-                if (info.isRotatable() || transform.apply(rotations) == 0)
-                {
-                    transformedComponents.add(transformedComponent(info, comp, AxisAlignedTransform2D.from(rotations, false), compSize, splitCompWeight, factory, blockedConnections));
-
-                    if (info.isMirrorable())
-                        transformedComponents.add(transformedComponent(info, comp, AxisAlignedTransform2D.from(rotations, true), compSize, splitCompWeight, factory, blockedConnections));
-                }
-            }
-        }
-
-        return transformedComponents;
+        return transforms.stream().map(t -> transform(info, mazeInfo.mazeComponent, t, compSize, splitCompWeight, factory, blockedConnections));
     }
 
-    public static MazeComponentStructure<Connector> transformedComponent(StructureInfo info, SavedMazeComponent comp, final AxisAlignedTransform2D transform, final int[] size, double weight, ConnectorFactory factory, Collection<Connector> blockedConnections)
+    public static MazeComponentStructure<Connector> transform(StructureInfo info, SavedMazeComponent comp, final AxisAlignedTransform2D transform, final int[] size, double weight, ConnectorFactory factory, Collection<Connector> blockedConnections)
     {
         Set<MazeRoom> transformedRooms = comp.getRooms().stream().map(input -> MazeRooms.rotated(input, transform, size)).collect(Collectors.toSet());
 

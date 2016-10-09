@@ -143,6 +143,10 @@ public class RCSaplingGenerator
 
     interface Predictor
     {
+        /**
+         * The complexity of this tree type. The highest complexity tree will always generate.
+         * @return The complexity. -1 for 'I wouldn't even consider generating'.
+         */
         int complexity(World worldIn, BlockPos pos, IBlockState state, Random rand);
     }
 }

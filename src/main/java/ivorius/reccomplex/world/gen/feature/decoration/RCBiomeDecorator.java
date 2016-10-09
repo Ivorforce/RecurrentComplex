@@ -155,12 +155,25 @@ public class RCBiomeDecorator
 
     interface Adapter
     {
-        int amount(WorldServer worldIn, Random random, Biome biome, BiomeDecorator decorator, BlockPos chunkPos, DecorationType type);
-
-        boolean forceUse(WorldServer worldIn, Random random, Biome biome, BiomeDecorator decorator, BlockPos chunkPos, DecorationType type);
-
+        /**
+         * If this adapter matches the environment and should be used.
+         */
         boolean matches(WorldServer worldIn, Biome biome, BiomeDecorator decorator, BlockPos chunkPos, DecorationType type);
 
+        /**
+         * The amount of things generated
+         * @return The amount. < 0 if ReC should not override decoration here.
+         */
+        int amount(WorldServer worldIn, Random random, Biome biome, BiomeDecorator decorator, BlockPos chunkPos, DecorationType type);
+
+        /**
+         * If even if no ReC structures are generated, we shouldn't give back to vanilla, to avoid doubling spawn rates.
+         */
+        boolean forceUse(WorldServer worldIn, Random random, Biome biome, BiomeDecorator decorator, BlockPos chunkPos, DecorationType type);
+
+        /**
+         * Generate one thing in the biome
+         */
         void generate(WorldServer worldIn, Random random, Biome biome, BiomeDecorator decorator, BlockPos chunkPos, DecorationType type);
     }
 }

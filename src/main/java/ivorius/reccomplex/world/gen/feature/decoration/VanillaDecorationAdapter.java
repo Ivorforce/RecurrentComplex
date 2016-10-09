@@ -24,10 +24,6 @@ public class VanillaDecorationAdapter implements RCBiomeDecorator.Adapter
     @Override
     public int amount(WorldServer worldIn, Random random, Biome biomeIn, BiomeDecorator decorator, BlockPos chunkPos, RCBiomeDecorator.DecorationType type)
     {
-        if ((biomeIn == Biomes.ROOFED_FOREST || biomeIn == Biomes.MUTATED_ROOFED_FOREST)
-                && (type == RCBiomeDecorator.DecorationType.TREE || type == RCBiomeDecorator.DecorationType.BIG_SHROOM))
-            return -1; // This is the roofed forest override, don't touch because the event impl is shit
-
         switch (type)
         {
             case TREE:

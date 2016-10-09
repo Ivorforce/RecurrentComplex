@@ -9,22 +9,23 @@ import com.google.gson.annotations.SerializedName;
 import ivorius.ivtoolkit.tools.IvGsonHelper;
 import ivorius.reccomplex.RCConfig;
 import ivorius.reccomplex.RecurrentComplex;
-import ivorius.reccomplex.world.gen.feature.structure.*;
-import ivorius.reccomplex.world.gen.feature.structure.generic.gentypes.VanillaDecorationGenerationInfo;
 import ivorius.reccomplex.utils.BlockSurfacePos;
 import ivorius.reccomplex.world.gen.feature.StructureGenerator;
 import ivorius.reccomplex.world.gen.feature.selector.StructureSelector;
-import net.minecraft.init.Biomes;
+import ivorius.reccomplex.world.gen.feature.structure.Placer;
+import ivorius.reccomplex.world.gen.feature.structure.StructureInfo;
+import ivorius.reccomplex.world.gen.feature.structure.StructureRegistry;
+import ivorius.reccomplex.world.gen.feature.structure.StructureSpawnContext;
+import ivorius.reccomplex.world.gen.feature.structure.generic.gentypes.VanillaDecorationGenerationInfo;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.WorldServer;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.biome.BiomeDecorator;
-import net.minecraft.world.gen.feature.WorldGenAbstractTree;
-import net.minecraft.world.gen.feature.WorldGenDesertWells;
-import net.minecraft.world.gen.feature.WorldGenFossils;
 import org.apache.commons.lang3.tuple.Pair;
 
 import javax.annotation.ParametersAreNonnullByDefault;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
 
 /**
@@ -32,6 +33,9 @@ import java.util.Random;
  */
 public class RCBiomeDecorator
 {
+    public static Adapter vanillaAdapter = null;
+    public static final List<Adapter> adapters = new ArrayList<>();
+
     @ParametersAreNonnullByDefault
     public static boolean decorate(WorldServer worldIn, Random random, BlockPos chunkPos, DecorationType type)
     {
@@ -56,6 +60,7 @@ public class RCBiomeDecorator
 
         Biome biomeIn = worldIn.getBiome(chunkPos.add(16, 0, 16));
         BiomeDecorator decorator = biomeIn.theBiomeDecorator;
+        Adapter adapter = adapter(worldIn, chunkPos, type, biomeIn, decorator);
 
         StructureSelector<VanillaDecorationGenerationInfo, DecorationType> selector = StructureRegistry.INSTANCE.decorationSelectors()
                 .get(biomeIn, worldIn.provider);
@@ -65,111 +70,22 @@ public class RCBiomeDecorator
         if (totalWeight <= 0)
             return false;
 
-        if ((biomeIn == Biomes.ROOFED_FOREST || biomeIn == Biomes.MUTATED_ROOFED_FOREST)
-                && (type == DecorationType.TREE || type == DecorationType.BIG_SHROOM))
-            return false; // This is the roofed forest override, don't touch because the event impl is shit
+        int vanillaAmount = adapter.amount(worldIn, random, biomeIn, decorator, chunkPos, type);
+        if (vanillaAmount < 0) return false; // don't interfere
+        vanillaAmount = trySurface(worldIn, random, chunkPos, selector, type, totalWeight, vanillaAmount,
+                adapter.forceUse(worldIn, random, biomeIn, decorator, chunkPos, type));
+        for (int i = 0; i < vanillaAmount; ++i)
+            adapter.generate(worldIn, random, biomeIn, decorator, chunkPos, type);
 
-        switch (type)
-        {
-            case TREE:
-            {
-                int vanillaAmount = decorator.treesPerChunk;
-
-                if (random.nextFloat() < decorator.field_189870_A)
-                    ++vanillaAmount;
-
-                if ((vanillaAmount = trySurface(worldIn, random, chunkPos, selector, type, totalWeight, vanillaAmount, decorator.treesPerChunk <= 0)) < 0)
-                    return false;
-
-                for (int j2 = 0; j2 < vanillaAmount; ++j2)
-                {
-                    int k6 = random.nextInt(16) + 8;
-                    int l = random.nextInt(16) + 8;
-                    WorldGenAbstractTree worldgenabstracttree = biomeIn.genBigTreeChance(random);
-                    worldgenabstracttree.setDecorationDefaults();
-                    BlockPos blockpos = worldIn.getHeight(chunkPos.add(k6, 0, l));
-
-                    if (worldgenabstracttree.generate(worldIn, random, blockpos))
-                    {
-                        worldgenabstracttree.generateSaplings(worldIn, random, blockpos);
-                    }
-                }
-
-                return true;
-            }
-            case BIG_SHROOM:
-            {
-                int vanillaAmount = decorator.bigMushroomsPerChunk;
-
-                if ((vanillaAmount = trySurface(worldIn, random, chunkPos, selector, type, totalWeight, vanillaAmount, false)) < 0)
-                    return false;
-
-                for (int k2 = 0; k2 < vanillaAmount; ++k2)
-                {
-                    int l6 = random.nextInt(16) + 8;
-                    int k10 = random.nextInt(16) + 8;
-                    decorator.bigMushroomGen.generate(worldIn, random, worldIn.getHeight(chunkPos.add(l6, 0, k10)));
-                }
-
-                return true;
-            }
-            case CACTUS:
-            {
-                int vanillaAmount = decorator.cactiPerChunk;
-
-                if ((vanillaAmount = trySurface(worldIn, random, chunkPos, selector, type, totalWeight, vanillaAmount, false)) < 0)
-                    return false;
-
-                for (int j5 = 0; j5 < vanillaAmount; ++j5)
-                {
-                    int l9 = random.nextInt(16) + 8;
-                    int k13 = random.nextInt(16) + 8;
-                    int l16 = worldIn.getHeight(chunkPos.add(l9, 0, k13)).getY() * 2;
-
-                    if (l16 > 0)
-                    {
-                        int j19 = random.nextInt(l16);
-                        decorator.cactusGen.generate(worldIn, random, chunkPos.add(l9, j19, k13));
-                    }
-                }
-
-                return true;
-            }
-            case DESERT_WELL:
-            {
-                int vanillaAmount = random.nextInt(100) == 0 ? 1 : 0;
-
-                if ((vanillaAmount = trySurface(worldIn, random, chunkPos, selector, type, totalWeight, vanillaAmount, true)) < 0)
-                    return false;
-
-                for (int j5 = 0; j5 < vanillaAmount; ++j5)
-                {
-                    int i = random.nextInt(16) + 8;
-                    int j = random.nextInt(16) + 8;
-                    BlockPos blockpos = worldIn.getHeight(chunkPos.add(i, 0, j)).up();
-                    (new WorldGenDesertWells()).generate(worldIn, random, blockpos);
-                }
-
-                return true;
-            }
-            case FOSSIL:
-            {
-                int vanillaAmount = random.nextInt(64) == 0 ? 1 : 0;
-
-                if ((vanillaAmount = trySurface(worldIn, random, chunkPos, selector, type, totalWeight, vanillaAmount, true)) < 0)
-                    return false;
-
-                for (int j5 = 0; j5 < vanillaAmount; ++j5)
-                {
-                    (new WorldGenFossils()).generate(worldIn, random, chunkPos);
-                }
-            }
-            default:
-                return false;
-        }
+        return vanillaAmount >= 0; // if -1 we let vanilla do its thing
     }
 
-    protected static int trySurface(WorldServer worldIn, Random random, BlockPos chunkPos, StructureSelector<VanillaDecorationGenerationInfo, DecorationType> selector, DecorationType type, double totalWeight, int vanillaAmount, boolean lowChance)
+    public static Adapter adapter(WorldServer worldIn, BlockPos chunkPos, DecorationType type, Biome biomeIn, BiomeDecorator decorator)
+    {
+        return adapters.stream().filter(a -> a.matches(worldIn, biomeIn, decorator, chunkPos, type)).findFirst().orElse(vanillaAdapter);
+    }
+
+    public static int trySurface(WorldServer worldIn, Random random, BlockPos chunkPos, StructureSelector<VanillaDecorationGenerationInfo, DecorationType> selector, DecorationType type, double totalWeight, int vanillaAmount, boolean lowChance)
     {
         int rcAmount = amount(random, totalWeight, vanillaAmount);
 
@@ -182,7 +98,7 @@ public class RCBiomeDecorator
         return vanillaAmount - rcAmount;
     }
 
-    protected static void generateSurface(Pair<StructureInfo, VanillaDecorationGenerationInfo> generation, WorldServer worldIn, BlockPos chunkPos, Random random)
+    public static void generateSurface(Pair<StructureInfo, VanillaDecorationGenerationInfo> generation, WorldServer worldIn, BlockPos chunkPos, Random random)
     {
         new StructureGenerator<>(generation.getLeft()).generationInfo(generation.getRight()).world(worldIn)
                 .random(random).maturity(StructureSpawnContext.GenerateMaturity.SUGGEST)
@@ -235,5 +151,16 @@ public class RCBiomeDecorator
         {
             return IvGsonHelper.serializedName(this);
         }
+    }
+
+    interface Adapter
+    {
+        int amount(WorldServer worldIn, Random random, Biome biome, BiomeDecorator decorator, BlockPos chunkPos, DecorationType type);
+
+        boolean forceUse(WorldServer worldIn, Random random, Biome biome, BiomeDecorator decorator, BlockPos chunkPos, DecorationType type);
+
+        boolean matches(WorldServer worldIn, Biome biome, BiomeDecorator decorator, BlockPos chunkPos, DecorationType type);
+
+        void generate(WorldServer worldIn, Random random, Biome biome, BiomeDecorator decorator, BlockPos chunkPos, DecorationType type);
     }
 }

@@ -67,9 +67,7 @@ public class RCSaplingGenerator
         ));
 
         // Hackily consider big vanilla trees too
-        int vanillaComplexity = predictors.stream()
-                .mapToInt(a -> a.complexity(world, pos, world.getBlockState(pos), random))
-                .filter(i -> i >= 0).findFirst().orElse(-1);
+        int vanillaComplexity = complexity(world, pos, random, predictors);
 
         ImmutableMultimap<Integer, Pair<StructureInfo, SaplingGenerationInfo>> groups = RCFunctions.groupMap(applicable, pair -> pair.getRight().pattern.pattern.compile(true).size());
         List<Integer> complexities = Lists.newArrayList(groups.keys());
@@ -101,7 +99,14 @@ public class RCSaplingGenerator
         return pair;
     }
 
-    protected static double getSpawnWeight(Pair<StructureInfo, SaplingGenerationInfo> p)
+    public static int complexity(WorldServer world, BlockPos pos, Random random, List<Predictor> predictors)
+    {
+        return predictors.stream()
+                .mapToInt(a -> a.complexity(world, pos, world.getBlockState(pos), random))
+                .filter(i -> i >= 0).max().orElse(-1);
+    }
+
+    public static double getSpawnWeight(Pair<StructureInfo, SaplingGenerationInfo> p)
     {
         return RCConfig.tweakedSpawnRate(StructureRegistry.INSTANCE.id(p.getLeft())) * p.getRight().getActiveWeight();
     }

@@ -41,7 +41,7 @@ public class TableDataSourceStructureListGenerationInfo extends TableDataSourceS
         this.generationInfo = generationInfo;
 
         addManagedSegment(0, new TableDataSourceGenerationInfo(generationInfo, navigator, tableDelegate));
-        addManagedSegment(3, new TableDataSourceBlockPos(generationInfo.shift, generationInfo::setShift, new IntegerRange(-50, 50), new IntegerRange(-50, 50), new IntegerRange(-50, 50),
+        addManagedSegment(3, new TableDataSourceBlockPos(generationInfo.shift, generationInfo::setShift, null, null, null,
                 IvTranslations.get("reccomplex.generationInfo.structureList.shift.x"), IvTranslations.get("reccomplex.generationInfo.structureList.shift.y"), IvTranslations.get("reccomplex.generationInfo.structureList.shift.z")));
     }
 

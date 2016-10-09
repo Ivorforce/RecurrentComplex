@@ -34,6 +34,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Vec3i;
 import net.minecraft.world.WorldServer;
 import net.minecraftforge.common.util.Constants;
 
@@ -134,7 +135,7 @@ public class GenericStructureInfo implements StructureInfo<GenericStructureInfo.
 
         IvBlockCollection blockCollection = worldData.blockCollection;
         int[] areaSize = new int[]{blockCollection.width, blockCollection.height, blockCollection.length};
-        BlockPos origin = context.lowerCoord();
+        BlockPos origin = StructureBoundingBoxes.min(context.boundingBox);
 
         Map<BlockPos, TileEntity> origTileEntities = new HashMap<>();
         Map<BlockPos, NBTTagCompound> tileEntityCompounds = new HashMap<>();
@@ -184,7 +185,7 @@ public class GenericStructureInfo implements StructureInfo<GenericStructureInfo.
         {
             double[] entityPos = getEntityPos(entityCompound);
             double[] transformedEntityPos = context.transform.apply(entityPos, areaSize);
-            if (context.includes(transformedEntityPos[0] + origin.getX(), transformedEntityPos[1] + origin.getY(), transformedEntityPos[2] + origin.getZ()))
+            if (context.includes(new Vec3i(transformedEntityPos[0] + origin.getX(), transformedEntityPos[1] + origin.getY(), transformedEntityPos[2] + origin.getZ())))
             {
                 Entity entity = EntityList.createEntityFromNBT(entityCompound, world);
 

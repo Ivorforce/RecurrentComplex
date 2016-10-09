@@ -8,8 +8,8 @@ package ivorius.reccomplex.world.gen.feature.structure.generic;
 import com.google.common.collect.Multimap;
 import com.google.gson.*;
 import com.google.gson.reflect.TypeToken;
+import ivorius.ivtoolkit.blocks.BlockPositions;
 import ivorius.ivtoolkit.math.AxisAlignedTransform2D;
-import ivorius.ivtoolkit.maze.components.MazeRoom;
 import ivorius.ivtoolkit.tools.GuavaCollectors;
 import ivorius.ivtoolkit.tools.MCRegistry;
 import ivorius.ivtoolkit.tools.NBTCompoundObject;
@@ -65,13 +65,6 @@ public class BlockPattern implements NBTCompoundObject
         return builder.create();
     }
 
-    @Nonnull
-    public static BlockPos toBlockPos(MazeRoom room)
-    {
-        if (room.getDimensions() != 3) throw new IllegalArgumentException();
-        return new BlockPos(room.getCoordinate(0), room.getCoordinate(1), room.getCoordinate(2));
-    }
-
     public BlockPattern copy()
     {
         return new BlockPattern(pattern.copy(), ingredients.stream().map(Ingredient::copy).collect(Collectors.toList()));
@@ -98,7 +91,7 @@ public class BlockPattern implements NBTCompoundObject
     public boolean test(World world, BlockPos pos)
     {
         return pattern.compile(true).entrySet().stream().allMatch(
-                entry -> findIngredient(entry.getValue()).filter(i -> i.matcher.test(PositionedBlockMatcher.Argument.at(world, pos.add(toBlockPos(entry.getKey()))))).isPresent()
+                entry -> findIngredient(entry.getValue()).filter(i -> i.matcher.test(PositionedBlockMatcher.Argument.at(world, pos.add(BlockPositions.fromIntArray(entry.getKey().getCoordinates()))))).isPresent()
         );
     }
 
@@ -118,7 +111,7 @@ public class BlockPattern implements NBTCompoundObject
     public Stream<BlockPos> testAll(World world, BlockPos pos)
     {
         return pattern.compile(true).keySet().stream()
-                .map(room -> pos.subtract(toBlockPos(room)))
+                .map(room -> pos.subtract(BlockPositions.fromIntArray(room.getCoordinates())))
                 .filter(p -> test(world, p));
     }
 
@@ -143,7 +136,7 @@ public class BlockPattern implements NBTCompoundObject
     {
         pattern.compile(true).entrySet().stream()
                 .filter(entry -> findIngredient(entry.getValue()).filter(filter).isPresent())
-                .map(entry -> Pair.of(toBlockPos(entry.getKey()), entry.getValue()))
+                .map(entry -> Pair.of(BlockPositions.fromIntArray(entry.getKey().getCoordinates()), entry.getValue()))
                 .forEach(consumer);
     }
 

@@ -11,6 +11,7 @@ import ivorius.reccomplex.RecurrentComplex;
 import ivorius.reccomplex.events.RCEventBus;
 import ivorius.reccomplex.events.StructureGenerationEvent;
 import ivorius.reccomplex.events.StructureGenerationEventLite;
+import ivorius.reccomplex.utils.StructureBoundingBoxes;
 import ivorius.reccomplex.world.gen.feature.structure.*;
 import ivorius.reccomplex.world.gen.feature.structure.generic.gentypes.GenerationInfo;
 import ivorius.reccomplex.world.gen.feature.structure.generic.placement.StructurePlaceContext;
@@ -98,16 +99,6 @@ public class StructureGenerator<S extends NBTStorable>
         return structureName != null ? structureName : "Unknown";
     }
 
-    public static int[] coordInts(StructureBoundingBox bb)
-    {
-        return new int[]{bb.minX, bb.minY, bb.minZ};
-    }
-
-    public static int[] sizeInts(StructureBoundingBox bb)
-    {
-        return new int[]{bb.getXSize(), bb.getYSize(), bb.getZSize()};
-    }
-
     @Nonnull
     public Optional<StructureSpawnContext> generate()
     {
@@ -123,24 +114,21 @@ public class StructureGenerator<S extends NBTStorable>
 
         StructureInfo<S> structureInfo = structure();
         String structureID = structureID();
-        boolean firstTime = spawn.isFirstTime();
+        boolean firstTime = spawn.generateMaturity.isFirstTime();
 
         WorldServer world = spawn.environment.world;
-
-        int[] sizeInts = sizeInts(spawn.boundingBox);
-        int[] coordInts = coordInts(spawn.boundingBox);
 
         if (maturity() != StructureSpawnContext.GenerateMaturity.SUGGEST || (
                 spawn.boundingBox.minY >= MIN_DIST_TO_LIMIT && spawn.boundingBox.maxY <= world.getHeight() - 1 - MIN_DIST_TO_LIMIT
                         && (!RCConfig.avoidOverlappingGeneration || allowOverlaps || StructureGenerationData.get(world).getEntriesAt(spawn.boundingBox).size() == 0)
                         && !RCEventBus.INSTANCE.post(new StructureGenerationEvent.Suggest(structureInfo, spawn))
-                        && !MinecraftForge.EVENT_BUS.post(new StructureGenerationEventLite.Suggest(world, structureID, coordInts, sizeInts, spawn.generationLayer))
+                        && !MinecraftForge.EVENT_BUS.post(new StructureGenerationEventLite.Suggest(world, structureID, spawn.boundingBox, spawn.generationLayer, firstTime))
         ))
         {
             if (firstTime)
             {
                 RCEventBus.INSTANCE.post(new StructureGenerationEvent.Pre(structureInfo, spawn));
-                MinecraftForge.EVENT_BUS.post(new StructureGenerationEventLite.Pre(world, structureID, coordInts, sizeInts, spawn.generationLayer));
+                MinecraftForge.EVENT_BUS.post(new StructureGenerationEventLite.Pre(world, structureID, spawn.boundingBox, spawn.generationLayer, firstTime));
             }
 
             boolean success = structureInfo.generate(spawn, instanceData, RCConfig.getUniversalTransformer());
@@ -150,10 +138,10 @@ public class StructureGenerator<S extends NBTStorable>
                 RecurrentComplex.logger.trace(String.format("Generated structure '%s' in %s", name(structureID), spawn.boundingBox));
 
                 RCEventBus.INSTANCE.post(new StructureGenerationEvent.Post(structureInfo, spawn));
-                MinecraftForge.EVENT_BUS.post(new StructureGenerationEventLite.Post(world, structureID, coordInts, sizeInts, spawn.generationLayer));
+                MinecraftForge.EVENT_BUS.post(new StructureGenerationEventLite.Post(world, structureID, spawn.boundingBox, spawn.generationLayer, firstTime));
 
                 if (structureID != null && memorize)
-                    StructureGenerationData.get(world).addCompleteEntry(structureID, generationInfo != null ? generationInfo.id() : null, spawn.lowerCoord(), spawn.transform);
+                    StructureGenerationData.get(world).addCompleteEntry(structureID, generationInfo != null ? generationInfo.id() : null, StructureBoundingBoxes.min(spawn.boundingBox), spawn.transform);
             }
 
             return success ? spawnO : Optional.empty();
@@ -168,7 +156,7 @@ public class StructureGenerator<S extends NBTStorable>
     {
         return environment(context.environment).random(context.random).transform(context.transform)
                 .generationBB(context.generationBB).generationLayer(context.generationLayer + 1)
-                .asSource(context.generateAsSource).maturity(context.isFirstTime() ? StructureSpawnContext.GenerateMaturity.FIRST : StructureSpawnContext.GenerateMaturity.COMPLEMENT);
+                .asSource(context.generateAsSource).maturity(context.generateMaturity.isFirstTime() ? StructureSpawnContext.GenerateMaturity.FIRST : StructureSpawnContext.GenerateMaturity.COMPLEMENT);
     }
 
     public StructureGenerator<S> world(@Nonnull WorldServer world)

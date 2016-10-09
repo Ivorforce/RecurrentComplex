@@ -5,9 +5,11 @@
 
 package ivorius.reccomplex.world.gen.feature.structure;
 
+import ivorius.reccomplex.utils.StructureBoundingBoxes;
 import net.minecraft.util.math.BlockPos;
 import ivorius.ivtoolkit.math.AxisAlignedTransform2D;
 import net.minecraft.block.state.IBlockState;
+import net.minecraft.util.math.Vec3i;
 import net.minecraft.world.gen.structure.StructureBoundingBox;
 
 import javax.annotation.Nonnull;
@@ -48,24 +50,9 @@ public class StructureSpawnContext
         this.generateMaturity = generateMaturity;
     }
 
-    public boolean includes(BlockPos coord)
+    public boolean includes(Vec3i coord)
     {
         return generationBB == null || generationBB.isVecInside(coord);
-    }
-
-    public boolean includes(double x, double y, double z)
-    {
-        return generationBB == null || (x >= generationBB.minX && x <= generationBB.maxX && z >= generationBB.minZ && z <= generationBB.maxZ && y >= generationBB.minY && y <= generationBB.maxY);
-    }
-
-    public int[] boundingBoxSize()
-    {
-        return new int[]{boundingBox.getXSize(), boundingBox.getYSize(), boundingBox.getZSize()};
-    }
-
-    public BlockPos lowerCoord()
-    {
-        return new BlockPos(boundingBox.minX, boundingBox.minY, boundingBox.minZ);
     }
 
     public boolean setBlock(BlockPos coord, IBlockState state, int flag)
@@ -79,13 +66,13 @@ public class StructureSpawnContext
         return false; // world.setBlock returns false on 'no change'
     }
 
-    public boolean isFirstTime()
-    {
-        return generateMaturity != GenerateMaturity.COMPLEMENT;
-    }
-
     public enum GenerateMaturity
     {
-        SUGGEST, FIRST, COMPLEMENT
+        SUGGEST, FIRST, COMPLEMENT;
+
+        public boolean isFirstTime()
+        {
+            return this != GenerateMaturity.COMPLEMENT;
+        }
     }
 }

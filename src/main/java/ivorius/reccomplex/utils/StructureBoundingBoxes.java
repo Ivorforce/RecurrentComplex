@@ -5,6 +5,7 @@
 
 package ivorius.reccomplex.utils;
 
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.ChunkPos;
 import net.minecraft.world.WorldServer;
 import net.minecraft.world.gen.structure.StructureBoundingBox;
@@ -52,5 +53,22 @@ public class StructureBoundingBoxes
         toFloorBB.minY = 1;
         toFloorBB.maxY = world.getHeight();
         return toFloorBB;
+    }
+
+    @Nonnull
+    public static BlockPos min(StructureBoundingBox boundingBox)
+    {
+        return new BlockPos(boundingBox.minX, boundingBox.minY, boundingBox.minZ);
+    }
+
+    @Nonnull
+    public static BlockPos max(StructureBoundingBox boundingBox)
+    {
+        return new BlockPos(boundingBox.maxX, boundingBox.maxY, boundingBox.maxZ);
+    }
+
+    public static int[] size(StructureBoundingBox boundingBox)
+    {
+        return new int[]{boundingBox.getXSize(), boundingBox.getYSize(), boundingBox.getZSize()};
     }
 }

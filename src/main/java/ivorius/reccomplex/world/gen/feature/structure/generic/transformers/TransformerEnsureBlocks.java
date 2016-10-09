@@ -15,15 +15,12 @@ import ivorius.reccomplex.gui.table.datasource.TableDataSource;
 import ivorius.reccomplex.gui.table.TableDelegate;
 import ivorius.reccomplex.gui.table.TableNavigator;
 import ivorius.reccomplex.json.JsonUtils;
+import ivorius.reccomplex.utils.*;
 import ivorius.reccomplex.world.gen.feature.structure.StructureLoadContext;
 import ivorius.reccomplex.world.gen.feature.structure.StructurePrepareContext;
 import ivorius.reccomplex.world.gen.feature.structure.StructureSpawnContext;
 import ivorius.reccomplex.utils.expression.BlockMatcher;
 import ivorius.reccomplex.utils.expression.PositionedBlockMatcher;
-import ivorius.reccomplex.utils.NBTNone;
-import ivorius.reccomplex.utils.RCAxisAlignedTransform;
-import ivorius.reccomplex.utils.RCBlockAreas;
-import ivorius.reccomplex.utils.RCMutableBlockPos;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.nbt.NBTBase;
 import net.minecraft.util.math.BlockPos;
@@ -56,7 +53,7 @@ public class TransformerEnsureBlocks extends Transformer<NBTNone>
     {
         IvBlockCollection blockCollection = worldData.blockCollection;
         int[] areaSize = new int[]{blockCollection.width, blockCollection.height, blockCollection.length};
-        BlockPos lowerCoord = context.lowerCoord();
+        BlockPos lowerCoord = StructureBoundingBoxes.min(context.boundingBox);
 
         BlockPos.MutableBlockPos worldCoord = new BlockPos.MutableBlockPos();
         for (BlockPos sourcePos : RCBlockAreas.mutablePositions(blockCollection.area()))

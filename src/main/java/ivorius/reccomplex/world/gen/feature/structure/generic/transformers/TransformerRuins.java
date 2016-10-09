@@ -21,6 +21,7 @@ import ivorius.reccomplex.gui.table.TableDelegate;
 import ivorius.reccomplex.gui.table.TableNavigator;
 import ivorius.reccomplex.json.JsonUtils;
 import ivorius.reccomplex.random.BlurredValueField;
+import ivorius.reccomplex.utils.StructureBoundingBoxes;
 import ivorius.reccomplex.world.gen.feature.structure.StructureLoadContext;
 import ivorius.reccomplex.world.gen.feature.structure.StructurePrepareContext;
 import ivorius.reccomplex.world.gen.feature.structure.StructureSpawnContext;
@@ -139,7 +140,7 @@ public class TransformerRuins extends Transformer<TransformerRuins.InstanceData>
             {
                 for (BlockPos sourceCoord : RCBlockAreas.mutablePositions(blockCollection.area()))
                 {
-                    BlockPos worldCoord = context.transform.apply(sourceCoord, areaSize).add(context.lowerCoord());
+                    BlockPos worldCoord = context.transform.apply(sourceCoord, areaSize).add(StructureBoundingBoxes.min(context.boundingBox));
 
                     if (context.includes(worldCoord))
                     {

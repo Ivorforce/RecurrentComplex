@@ -5,16 +5,13 @@
 
 package ivorius.reccomplex.world.gen.feature.structure.generic.transformers;
 
+import ivorius.reccomplex.utils.*;
 import ivorius.reccomplex.world.gen.feature.structure.Environment;
-import ivorius.reccomplex.utils.RCAxisAlignedTransform;
-import ivorius.reccomplex.utils.RCBlockAreas;
-import ivorius.reccomplex.utils.RCMutableBlockPos;
 import net.minecraft.util.math.BlockPos;
 import ivorius.ivtoolkit.blocks.IvBlockCollection;
 import ivorius.ivtoolkit.tools.IvWorldData;
 import ivorius.reccomplex.world.gen.feature.structure.StructureSpawnContext;
 import net.minecraft.block.state.IBlockState;
-import ivorius.reccomplex.utils.NBTStorable;
 
 import javax.annotation.Nonnull;
 
@@ -41,7 +38,7 @@ public abstract class TransformerSingleBlock<S extends NBTStorable> extends Tran
         {
             IvBlockCollection blockCollection = worldData.blockCollection;
             int[] areaSize = new int[]{blockCollection.width, blockCollection.height, blockCollection.length};
-            BlockPos lowerCoord = context.lowerCoord();
+            BlockPos lowerCoord = StructureBoundingBoxes.min(context.boundingBox);
 
             BlockPos.MutableBlockPos worldCoord = new BlockPos.MutableBlockPos();
             for (BlockPos sourceCoord : RCBlockAreas.mutablePositions(blockCollection.area()))

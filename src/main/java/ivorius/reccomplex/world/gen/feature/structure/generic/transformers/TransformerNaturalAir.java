@@ -17,6 +17,7 @@ import ivorius.reccomplex.gui.table.datasource.TableDataSource;
 import ivorius.reccomplex.gui.table.TableDelegate;
 import ivorius.reccomplex.gui.table.TableNavigator;
 import ivorius.reccomplex.json.JsonUtils;
+import ivorius.reccomplex.utils.StructureBoundingBoxes;
 import ivorius.reccomplex.world.gen.feature.structure.StructureLoadContext;
 import ivorius.reccomplex.world.gen.feature.structure.StructurePrepareContext;
 import ivorius.reccomplex.world.gen.feature.structure.StructureSpawnContext;
@@ -91,7 +92,7 @@ public class TransformerNaturalAir extends TransformerAbstractCloud<TransformerN
             WorldServer world = context.environment.world;
             IvBlockCollection blockCollection = worldData.blockCollection;
             int[] areaSize = new int[]{blockCollection.width, blockCollection.height, blockCollection.length};
-            BlockPos lowerCoord = context.lowerCoord();
+            BlockPos lowerCoord = StructureBoundingBoxes.min(context.boundingBox);
 
             // Remove dying foliage
             HashSet<BlockPos> check = instanceData.cloud.keySet().stream()

@@ -13,13 +13,10 @@ import ivorius.ivtoolkit.blocks.IvBlockCollection;
 import ivorius.ivtoolkit.tools.IvWorldData;
 import ivorius.ivtoolkit.tools.NBTTagLists;
 import ivorius.reccomplex.random.BlurredValueField;
+import ivorius.reccomplex.utils.*;
 import ivorius.reccomplex.world.gen.feature.structure.Environment;
 import ivorius.reccomplex.world.gen.feature.structure.StructurePrepareContext;
 import ivorius.reccomplex.world.gen.feature.structure.StructureSpawnContext;
-import ivorius.reccomplex.utils.NBTStorable;
-import ivorius.reccomplex.utils.RCAxisAlignedTransform;
-import ivorius.reccomplex.utils.RCBlockAreas;
-import ivorius.reccomplex.utils.RCMutableBlockPos;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTTagCompound;
@@ -154,7 +151,7 @@ public abstract class TransformerAbstractCloud<S extends TransformerAbstractClou
         {
             IvBlockCollection blockCollection = worldData.blockCollection;
             int[] areaSize = new int[]{blockCollection.width, blockCollection.height, blockCollection.length};
-            BlockPos lowerCoord = context.lowerCoord();
+            BlockPos lowerCoord = StructureBoundingBoxes.min(context.boundingBox);
 
             BlockPos.MutableBlockPos worldCoord = new BlockPos.MutableBlockPos();
             instanceData.cloud.forEachEntry((sourcePos, density) ->

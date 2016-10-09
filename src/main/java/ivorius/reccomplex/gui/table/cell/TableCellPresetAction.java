@@ -125,11 +125,15 @@ public class TableCellPresetAction extends TableCellDefault
     public void setCurrentAction(String action)
     {
         currentActionID = action;
-        TableCellButton actionButton = findAction(action);
-        runActionButton.displayString = actionButton != null ? actionButton.title : "";
-        runActionButton.enabled = actionButton != null && actionButton.enabled;
 
-        setActionButtonActive();
+        if (runActionButton != null)
+        {
+            TableCellButton actionButton = findAction(action);
+            runActionButton.displayString = actionButton != null ? actionButton.title : "";
+            runActionButton.enabled = actionButton != null && actionButton.enabled;
+        }
+
+        updateActionButtonActive();
     }
 
     public void move(int plus)
@@ -168,7 +172,7 @@ public class TableCellPresetAction extends TableCellDefault
         return currentIndex;
     }
 
-    protected void setActionButtonActive()
+    protected void updateActionButtonActive()
     {
         if (runActionButton != null)
         {

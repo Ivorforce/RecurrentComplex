@@ -601,5 +601,7 @@ reccomplex.spawncommand.preset.entity=Spawn Entity
 reccomplex.blockpattern=Block Pattern
 reccomplex.blockpattern.pattern=Pattern
 reccomplex.blockpattern.pattern.tooltip=The pattern / shape of blocks<br>required to spawn.
+reccomplex.blockpattern.ingredients=Ingredients
+reccomplex.blockpattern.ingredients.tooltip=Information about the blocks used<br>in the pattern.
 reccomplex.blockpattern.ingredient.identifier=Identifier
 reccomplex.blockpattern.ingredient.delete=Delete Blocks

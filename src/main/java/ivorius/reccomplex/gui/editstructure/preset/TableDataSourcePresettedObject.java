@@ -82,7 +82,8 @@ public class TableDataSourcePresettedObject<T> extends TableDataSourceSegmented
                 applyPresetAction.run();
             delegate.reloadData();
         });
-        cell.setCurrentAction(object.getPreset());
+        if (object.getPreset() != null)
+            cell.setCurrentAction(object.getPreset());
         return new TableElementCell(IvTranslations.get("reccomplex.presets"), cell);
     }
 

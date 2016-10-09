@@ -95,6 +95,7 @@ public class GuiTable extends Gui
 
         ////////
 
+        updateScrollUp(0); // If we're too far down we scroll up now
         int roundedScrollIndex = MathHelper.floor_float(currentScroll + 0.5f);
 
         scrollUpButton = new GuiButton(-1, propertiesBounds.getMinX(), propertiesBounds.getMinY(), propertiesBounds.getWidth() / 2 - 1, 20, IvTranslations.get("gui.up"));
@@ -270,8 +271,13 @@ public class GuiTable extends Gui
 
     public void tryScrollUp(float dist)
     {
-        currentScroll = IvMathHelper.clamp(getMinScroll(), currentScroll - dist, getMaxScroll());
+        updateScrollUp(dist);
         delegate.redrawTable();
+    }
+
+    protected void updateScrollUp(float dist)
+    {
+        currentScroll = IvMathHelper.clamp(getMinScroll(), currentScroll - dist, getMaxScroll());
     }
 
     public boolean canScrollUp()

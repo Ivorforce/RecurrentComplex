@@ -19,7 +19,6 @@ import ivorius.reccomplex.world.gen.feature.structure.generic.gentypes.SaplingGe
 import ivorius.reccomplex.utils.BlockSurfacePos;
 import ivorius.reccomplex.utils.RCFunctions;
 import ivorius.reccomplex.world.gen.feature.StructureGenerator;
-import net.minecraft.block.*;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.init.Blocks;
 import net.minecraft.util.math.BlockPos;
@@ -30,7 +29,6 @@ import org.apache.commons.lang3.tuple.Pair;
 
 import javax.annotation.Nullable;
 import java.util.*;
-import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
 /**
@@ -38,6 +36,12 @@ import java.util.stream.Collectors;
  */
 public class RCSaplingGenerator
 {
+    public static final List<Predictor> predictors = new ArrayList<>();
+
+    static {
+        predictors.add(new VanillaSaplingPredictor());
+    }
+
     public static boolean maybeGrowSapling(WorldServer world, BlockPos pos, Random random)
     {
         if (RCConfig.saplingTriggerChance <= 0 || (RCConfig.saplingTriggerChance < 1 && random.nextFloat() < RCConfig.saplingTriggerChance))
@@ -63,8 +67,9 @@ public class RCSaplingGenerator
         ));
 
         // Hackily consider big vanilla trees too
-        VanillaType vanillaType = vanillaType(world, pos, world.getBlockState(pos), random);
-        int vanillaComplexity = vanillaType == VanillaType.NORMAL ? 1 : vanillaType == VanillaType.BIG ? 4 : -1;
+        int vanillaComplexity = predictors.stream()
+                .mapToInt(a -> a.complexity(world, pos, world.getBlockState(pos), random))
+                .filter(i -> i >= 0).findFirst().orElse(-1);
 
         ImmutableMultimap<Integer, Pair<StructureInfo, SaplingGenerationInfo>> groups = RCFunctions.groupMap(applicable, pair -> pair.getRight().pattern.pattern.compile(true).size());
         List<Integer> complexities = Lists.newArrayList(groups.keys());
@@ -131,100 +136,8 @@ public class RCSaplingGenerator
             before.forEach((pos1, state) -> world.setBlockState(pos1, state, 4));
     }
 
-    // From BlockSapling
-    public static VanillaType vanillaType(World worldIn, BlockPos pos, IBlockState state, Random rand)
+    interface Predictor
     {
-        if (!(state.getBlock() == Blocks.SAPLING))
-            return VanillaType.NORMAL;
-
-        int i = 0;
-        int j = 0;
-        boolean flag = false;
-
-        switch (state.getValue(BlockSapling.TYPE))
-        {
-            case SPRUCE:
-                label114:
-
-                for (i = 0; i >= -1; --i)
-                {
-                    for (j = 0; j >= -1; --j)
-                    {
-                        if (isTwoByTwoOfType(worldIn, pos, i, j, BlockPlanks.EnumType.SPRUCE))
-                        {
-                            flag = true;
-                            break label114;
-                        }
-                    }
-                }
-
-                if (!flag)
-                {
-                    i = 0;
-                    j = 0;
-                }
-
-                break;
-            case BIRCH:
-                break;
-            case JUNGLE:
-                label269:
-
-                for (i = 0; i >= -1; --i)
-                {
-                    for (j = 0; j >= -1; --j)
-                    {
-                        if (isTwoByTwoOfType(worldIn, pos, i, j, BlockPlanks.EnumType.JUNGLE))
-                        {
-                            flag = true;
-                            break label269;
-                        }
-                    }
-                }
-
-                if (!flag)
-                {
-                    i = 0;
-                    j = 0;
-                }
-
-                break;
-            case ACACIA:
-                break;
-            case DARK_OAK:
-                label390:
-
-                for (i = 0; i >= -1; --i)
-                {
-                    for (j = 0; j >= -1; --j)
-                    {
-                        if (isTwoByTwoOfType(worldIn, pos, i, j, BlockPlanks.EnumType.DARK_OAK))
-                        {
-                            flag = true;
-                            break label390;
-                        }
-                    }
-                }
-
-                if (!flag)
-                {
-                    return VanillaType.NONE;
-                }
-
-            case OAK:
-        }
-
-        return flag ? VanillaType.BIG : VanillaType.NORMAL;
-    }
-
-    private static boolean isTwoByTwoOfType(World worldIn, BlockPos pos, int p_181624_3_, int p_181624_4_, BlockPlanks.EnumType type)
-    {
-        BlockSapling sapling = (BlockSapling) Blocks.SAPLING;
-        return sapling.isTypeAt(worldIn, pos.add(p_181624_3_, 0, p_181624_4_), type) && sapling.isTypeAt(worldIn, pos.add(p_181624_3_ + 1, 0, p_181624_4_), type) && sapling.isTypeAt(worldIn, pos.add(p_181624_3_, 0, p_181624_4_ + 1), type) && sapling.isTypeAt(worldIn, pos.add(p_181624_3_ + 1, 0, p_181624_4_ + 1), type);
-    }
-
-    enum VanillaType
-    {
-        NORMAL, BIG, NONE
+        int complexity(World worldIn, BlockPos pos, IBlockState state, Random rand);
     }
 }

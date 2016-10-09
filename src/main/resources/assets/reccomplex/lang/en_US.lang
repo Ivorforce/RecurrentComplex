@@ -514,6 +514,8 @@ reccomplex.preset.title=Title
 reccomplex.preset.title.tooltip=Title=Visible title of the preset
 reccomplex.preset.description=Description
 reccomplex.preset.description.tooltip=Visible description for the preset.<br>Use <BR> to start a new line.
+reccomplex.preset.use=Use: §a%s
+reccomplex.preset.customize=Customize: §a%s
 reccomplex.presets=Presets
 
 reccomplex.gui.inventorygen.minMax=Min: %s, Max: %s

@@ -48,7 +48,7 @@ public class TableDataSourceSpawnCommandEntry extends TableDataSourceSegmented
     {
         if (index == 0)
         {
-            TableCellPresetAction cell = new TableCellPresetAction("default", IvTranslations.get("reccomplex.gui.apply"),
+            TableCellPresetAction cell = new TableCellPresetAction("default",
                     new TableCellButton("", "spawner", Blocks.MOB_SPAWNER.getLocalizedName()),
                     new TableCellButton("", "entity", IvTranslations.get("reccomplex.spawncommand.preset.entity"))
             );

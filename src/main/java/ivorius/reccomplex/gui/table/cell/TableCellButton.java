@@ -130,6 +130,6 @@ public class TableCellButton extends TableCellDefault
         super.drawFloating(screen, mouseX, mouseY, partialTicks);
 
         if (tooltip != null && button != null)
-            screen.drawTooltipRect(tooltip, TableCellPresetAction.getBounds(button), mouseX, mouseY, getFontRenderer());
+            screen.drawTooltipRect(tooltip, Bounds.fromButton(button), mouseX, mouseY, getFontRenderer());
     }
 }

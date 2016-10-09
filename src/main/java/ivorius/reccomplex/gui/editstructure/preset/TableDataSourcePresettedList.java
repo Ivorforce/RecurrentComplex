@@ -12,6 +12,7 @@ import ivorius.reccomplex.gui.table.TableDelegate;
 import ivorius.reccomplex.gui.table.TableNavigator;
 import ivorius.reccomplex.utils.presets.PresettedList;
 import ivorius.reccomplex.utils.presets.PresettedObject;
+import net.minecraft.util.text.TextFormatting;
 
 import javax.annotation.Nonnull;
 import java.util.ArrayList;
@@ -45,7 +46,7 @@ public abstract class TableDataSourcePresettedList<T> extends TableDataSourceLis
         {
             String key = baseKey + type;
             actions.add(new TableCellButton(type, type,
-                    IvTranslations.get(key),
+                    String.format("%s+%s   %s   %s+%s", TextFormatting.GREEN, TextFormatting.RESET, IvTranslations.get(key), TextFormatting.GREEN, TextFormatting.RESET),
                     IvTranslations.formatLines(key + ".tooltip"),
                     enabled
             ));

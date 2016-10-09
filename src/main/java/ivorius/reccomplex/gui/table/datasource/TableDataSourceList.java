@@ -191,8 +191,7 @@ public abstract class TableDataSourceList<T, L extends List<T>> extends TableDat
         {
             if (isUsesPresetActionForAdding())
             {
-                TableCellPresetAction cell = new TableCellPresetAction("add" + addIndex, getAddTitle(), getAddActions());
-                cell.setActionButtonWidth(0.2f);
+                TableCellPresetAction cell = new TableCellPresetAction("add" + addIndex, getAddActions());
                 cell.addAction(actionID -> createAddAction(addIndex, actionID).run());
                 return new TableElementCell(cell);
             }

@@ -8,7 +8,6 @@ package ivorius.reccomplex.gui.table.cell;
 import ivorius.reccomplex.gui.table.Bounds;
 import ivorius.reccomplex.gui.table.GuiTable;
 import net.minecraft.client.gui.GuiButton;
-import net.minecraft.util.math.MathHelper;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -20,29 +19,21 @@ import java.util.function.Consumer;
  */
 public class TableCellPresetAction extends TableCellDefault
 {
-    protected GuiButton changePresetButton;
+    protected GuiButton leftButton;
+    protected GuiButton rightButton;
     protected GuiButton runActionButton;
 
     protected String currentActionID;
 
-    protected String actionTitle;
     protected TableCellButton[] actions;
 
     protected List<TableCellActionListener> listeners = new ArrayList<>();
 
-    protected float actionButtonWidth = 0.4f;
-
-    public TableCellPresetAction(String id, String actionTitle, TableCellButton... actions)
+    public TableCellPresetAction(String id, TableCellButton... actions)
     {
         super(id);
-        this.actionTitle = actionTitle;
         this.actions = actions;
         currentActionID = actions[0].actionID;
-    }
-
-    public static Bounds getBounds(GuiButton button)
-    {
-        return Bounds.fromAxes(button.xPosition, button.width, button.yPosition, button.height);
     }
 
     public void addListener(TableCellActionListener listener)
@@ -72,16 +63,6 @@ public class TableCellPresetAction extends TableCellDefault
         return actions;
     }
 
-    public float getActionButtonWidth()
-    {
-        return actionButtonWidth;
-    }
-
-    public void setActionButtonWidth(float actionButtonWidth)
-    {
-        this.actionButtonWidth = actionButtonWidth;
-    }
-
     @Override
     public void initGui(GuiTable screen)
     {
@@ -89,17 +70,23 @@ public class TableCellPresetAction extends TableCellDefault
 
         Bounds bounds = bounds();
 
+        int buttonY = bounds.getMinY() + (bounds.getHeight() - 20) / 2;
+        int directionButtonWidth = 20;
+        int presetButtonWidth = bounds.getWidth() - directionButtonWidth * 2;
+
+        leftButton = new GuiButton(-1, bounds.getMinX(), buttonY, directionButtonWidth - 1, 20, "<");
+        leftButton.visible = !isHidden();
+        screen.addButton(this, 0, leftButton);
+
+        rightButton = new GuiButton(-1, bounds.getMinX() + directionButtonWidth + presetButtonWidth + 1, buttonY, directionButtonWidth - 1, 20, ">");
+        leftButton.visible = !isHidden();
+        screen.addButton(this, 1, rightButton);
+
         int curIndex = currentActionIndex();
-        String title = curIndex >= 0 ? actions[curIndex].title : currentActionID;
-
-        int presetButtonWidth = MathHelper.floor_float(bounds.getWidth() * (1f - actionButtonWidth)) - 1;
-        changePresetButton = new GuiButton(-1, bounds.getMinX(), bounds.getMinY() + (bounds.getHeight() - 20) / 2, presetButtonWidth, 20, title);
-        changePresetButton.visible = !isHidden();
-        screen.addButton(this, 0, changePresetButton);
-
-        runActionButton = new GuiButton(-1, bounds.getMinX() + presetButtonWidth + 2, bounds.getMinY() + (bounds.getHeight() - 20) / 2, MathHelper.floor_float(bounds.getWidth() * actionButtonWidth) - 1, 20, actionTitle);
+        String curTitle = curIndex >= 0 ? actions[curIndex].title : currentActionID;
+        runActionButton = new GuiButton(-1, bounds.getMinX() + directionButtonWidth + 1, buttonY, presetButtonWidth - 2, 20, curTitle);
         runActionButton.visible = !isHidden();
-        screen.addButton(this, 1, runActionButton);
+        screen.addButton(this, 2, runActionButton);
 
         setActionButtonActive();
     }
@@ -109,8 +96,10 @@ public class TableCellPresetAction extends TableCellDefault
     {
         super.setHidden(hidden);
 
-        if (changePresetButton != null)
-            changePresetButton.visible = !hidden;
+        if (leftButton != null)
+            leftButton.visible = !hidden;
+        if (rightButton != null)
+            rightButton.visible = !hidden;
         if (runActionButton != null)
             runActionButton.visible = !hidden;
     }
@@ -120,19 +109,22 @@ public class TableCellPresetAction extends TableCellDefault
     {
         super.buttonClicked(buttonID);
 
-        if (buttonID == 0)
-        {
-            TableCellButton newAction = actions[(currentActionIndex() + 1) % actions.length];
-            currentActionID = newAction.actionID;
-            changePresetButton.displayString = newAction.title;
-
-            setActionButtonActive();
-        }
-        else if (buttonID == 1)
+        if (buttonID == 0 || buttonID == 1)
+            move(buttonID == 0 ? -1 : 1);
+        else if (buttonID == 2)
         {
             for (TableCellActionListener listener : listeners)
                 listener.actionPerformed(this, currentActionID);
         }
+    }
+
+    public void move(int plus)
+    {
+        TableCellButton newAction = actions[(((currentActionIndex() + plus) % actions.length) + actions.length) % actions.length];
+        currentActionID = newAction.actionID;
+        runActionButton.displayString = newAction.title;
+
+        setActionButtonActive();
     }
 
     @Override
@@ -142,7 +134,7 @@ public class TableCellPresetAction extends TableCellDefault
 
         TableCellButton action = currentAction();
         if (action != null && action.tooltip != null)
-            screen.drawTooltipRect(action.tooltip, getBounds(changePresetButton), mouseX, mouseY, getFontRenderer());
+            screen.drawTooltipRect(action.tooltip, Bounds.fromButton(runActionButton), mouseX, mouseY, getFontRenderer());
     }
 
     private TableCellButton currentAction()

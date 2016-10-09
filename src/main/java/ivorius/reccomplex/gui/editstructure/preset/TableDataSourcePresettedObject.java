@@ -45,8 +45,7 @@ public class TableDataSourcePresettedObject<T> extends TableDataSourceSegmented
         if (!object.isCustom())
         {
             @SuppressWarnings("OptionalGetWithoutIsPresent")
-            String title = !object.isCustom() ? object.presetTitle().get() : IvTranslations.get("reccomplex.gui.custom");
-            TableCellButton cell = new TableCellButton("customize", "customize", IvTranslations.get("reccomplex.gui.customize"), true);
+            TableCellButton cell = new TableCellButton("customize", "customize", IvTranslations.format("reccomplex.preset.customize", object.presetTitle().get()), true);
             cell.addAction(() ->
             {
                 object.setToCustom();
@@ -54,7 +53,7 @@ public class TableDataSourcePresettedObject<T> extends TableDataSourceSegmented
                     applyPresetAction.run();
                 delegate.reloadData();
             });
-            return new TableElementCell(title, cell);
+            return new TableElementCell(cell);
         }
         else
         {
@@ -71,7 +70,7 @@ public class TableDataSourcePresettedObject<T> extends TableDataSourceSegmented
         if (actions.length == 0)
             return new TableElementCell(new TableCellButton(null, null, IvTranslations.get("reccomplex.presets"), false));
 
-        TableCellPresetAction cell = new TableCellPresetAction("preset", IvTranslations.get("reccomplex.gui.apply"), actions);
+        TableCellPresetAction cell = new TableCellPresetAction("preset", actions);
         cell.addAction((actionID) ->
         {
             object.setPreset(actionID);
@@ -88,7 +87,7 @@ public class TableDataSourcePresettedObject<T> extends TableDataSourceSegmented
         PresetRegistry<T> registry = object.getPresetRegistry();
         //noinspection OptionalGetWithoutIsPresent
         return registry.allIDs().stream().map(type -> new TableCellButton(type, type,
-                registry.title(type).orElse(type),
+                IvTranslations.format("reccomplex.preset.use", registry.title(type).orElse(type)),
                 registry.description(type).orElse(null)
         )).toArray(TableCellButton[]::new);
     }

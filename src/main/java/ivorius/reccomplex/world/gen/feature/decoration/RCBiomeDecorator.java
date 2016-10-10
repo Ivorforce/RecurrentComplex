@@ -33,7 +33,7 @@ import java.util.Random;
  */
 public class RCBiomeDecorator
 {
-    public static Adapter vanillaAdapter = null;
+    public static Adapter vanillaAdapter = new VanillaDecorationAdapter();
     public static final List<Adapter> adapters = new ArrayList<>();
 
     @ParametersAreNonnullByDefault

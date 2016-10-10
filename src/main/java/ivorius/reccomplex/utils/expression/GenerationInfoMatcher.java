@@ -14,12 +14,12 @@ import net.minecraft.util.text.TextFormatting;
 /**
  * Created by lukas on 01.05.15.
  */
-public class StructureGenerationInfoMatcher extends BoolFunctionExpressionCache<GenerationInfo, Object>
+public class GenerationInfoMatcher extends BoolFunctionExpressionCache<GenerationInfo, Object>
 {
     public static final String ID_PREFIX = "id=";
     public static final String TYPE_PREFIX = "type=";
 
-    public StructureGenerationInfoMatcher(String expression)
+    public GenerationInfoMatcher(String expression)
     {
         super(RCBoolAlgebra.algebra(), true, TextFormatting.GREEN + "Any Generation", expression);
 

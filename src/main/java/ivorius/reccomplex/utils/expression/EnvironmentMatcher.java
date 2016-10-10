@@ -128,7 +128,7 @@ public class EnvironmentMatcher extends BoolFunctionExpressionCache<Environment,
         }
     }
 
-    protected static class GenerationType extends DelegatingVariableType<Boolean, Environment, Object, GenerationInfo, Object, StructureGenerationInfoMatcher>
+    protected static class GenerationType extends DelegatingVariableType<Boolean, Environment, Object, GenerationInfo, Object, GenerationInfoMatcher>
     {
         public GenerationType(String prefix, String suffix)
         {
@@ -142,9 +142,9 @@ public class EnvironmentMatcher extends BoolFunctionExpressionCache<Environment,
         }
 
         @Override
-        protected StructureGenerationInfoMatcher createCache(String var, Environment a)
+        protected GenerationInfoMatcher createCache(String var, Environment a)
         {
-            return new StructureGenerationInfoMatcher(var);
+            return new GenerationInfoMatcher(var);
         }
     }
 }

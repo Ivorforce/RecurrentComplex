@@ -5,6 +5,8 @@
 
 package ivorius.reccomplex.utils.algebra;
 
+import ivorius.reccomplex.RCConfig;
+
 import java.util.function.Predicate;
 
 /**
@@ -12,6 +14,8 @@ import java.util.function.Predicate;
  */
 public class BoolFunctionExpressionCache<A, U> extends FunctionExpressionCache<Boolean, A, U> implements Predicate<A>
 {
+    public static final String GLOBAL_PREFIX = "global:";
+
     public BoolFunctionExpressionCache(Algebra<Boolean> algebra, String expression)
     {
         super(algebra, expression);
@@ -30,6 +34,7 @@ public class BoolFunctionExpressionCache<A, U> extends FunctionExpressionCache<B
     {
         addType(FunctionExpressionCaches.constant("true", true));
         addType(FunctionExpressionCaches.constant("false", false));
+        addType(new VariableTypeGlobal(GLOBAL_PREFIX, ""));
     }
 
     @Override
@@ -38,8 +43,23 @@ public class BoolFunctionExpressionCache<A, U> extends FunctionExpressionCache<B
         return evaluate(a);
     }
 
-    public static class VariableTypeConstant
+    public static class VariableTypeGlobal extends VariableType<Boolean, Object, Object>
     {
+        public VariableTypeGlobal(String prefix, String suffix)
+        {
+            super(prefix, suffix);
+        }
 
+        @Override
+        public Boolean evaluate(String var, Object o)
+        {
+            return RCConfig.globalToggles.containsKey(var) && RCConfig.globalToggles.get(var);
+        }
+
+        @Override
+        public Validity validity(String var, Object o)
+        {
+            return RCConfig.globalToggles.containsKey(var) ? Validity.KNOWN : Validity.UNKNOWN;
+        }
     }
 }

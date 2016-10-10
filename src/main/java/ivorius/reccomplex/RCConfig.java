@@ -7,8 +7,10 @@ package ivorius.reccomplex;
 
 import com.google.common.collect.Lists;
 import com.google.common.primitives.Floats;
+import gnu.trove.map.TObjectByteMap;
 import gnu.trove.map.TObjectDoubleMap;
 import gnu.trove.map.TObjectFloatMap;
+import gnu.trove.map.hash.TObjectByteHashMap;
 import gnu.trove.map.hash.TObjectDoubleHashMap;
 import gnu.trove.map.hash.TObjectFloatHashMap;
 import it.unimi.dsi.fastutil.Hash;
@@ -32,7 +34,7 @@ import org.apache.commons.lang3.tuple.Pair;
 import org.apache.logging.log4j.Logger;
 
 import java.util.*;
-import java.util.function.Consumer;
+import java.util.function.BiConsumer;
 
 import static net.minecraftforge.common.config.Configuration.CATEGORY_GENERAL;
 
@@ -92,6 +94,8 @@ public class RCConfig
 
     public static float mazePlacementReversesPerRoom;
 
+    public static final Map<String, Boolean> globalToggles = new HashMap<>();
+
     public static void loadConfig(String configID)
     {
         Configuration config = RecurrentComplex.config;
@@ -101,16 +105,15 @@ public class RCConfig
             commandPrefix = config.getString("commandPrefix", CATEGORY_GENERAL, "#", "The String that will be prefixed to every command, e.g. '#' -> '/#gen', '#paste' etc.");
 
             commandMatchers.clear();
-            Lists.newArrayList(config.getStringList("commandMatchers", CATEGORY_GENERAL, new String[0], "List of Command Expressions determining if a command can be executed. Example: #export:#3 | $Ivorforce")).forEach(string ->
-                    parseMap(string, parts ->
-                    {
-                        CommandMatcher value = new CommandMatcher(parts[1]);
-                        if (value.getParseException() == null)
-                            commandMatchers.put(parts[0], value);
-                        else
-                            RecurrentComplex.logger.error("Failed parsing command matcher ''" + parts[1] + "'");
-                    })
-            );
+            parseMap(config.getStringList("commandMatchers", CATEGORY_GENERAL, new String[0], "List of Command Expressions determining if a command can be executed. Example: #export:#3 | $Ivorforce"), (key, value) ->
+            {
+                CommandMatcher matcher = new CommandMatcher(value);
+                if (matcher.getParseException() == null)
+                    commandMatchers.put(key, matcher);
+                else
+                    RecurrentComplex.logger.error("Failed parsing command matcher ''" + value + "'");
+            });
+
             asCommandPermissionLevel = config.getInt("asCommandPermissionLevel", CATEGORY_DECORATION, 4, -1, 10, "The required permission level for /#as to function. Set to 2 for command blocks and OPs, 4 for only server, or -1 to disable. Note that this could be a security problem on low levels.");
 
             savePlayerCache = config.getBoolean("savePlayerCache", CATEGORY_GENERAL, true, "Whether player caches like the clipboard and previewed operations will be saved and loaded.");
@@ -133,16 +136,13 @@ public class RCConfig
             minDistToSpawnForGeneration = config.getFloat("minDistToSpawnForGeneration", CATEGORY_BALANCING, 30.0f, 0.0f, 500.0f, "Within this block radius, default structures won't spawn (in the main dimension).");
             structureSpawnChanceModifier = config.getFloat("structureSpawnChance", CATEGORY_BALANCING, 1.0f, 0.0f, 10.0f, "How often do structures spawn?");
             spawnTweaks.clear();
-            Lists.newArrayList(config.getStringList("spawnTweaks", CATEGORY_GENERAL, new String[0], "List of spawn chance tweaks to structures: IceThorn:0.5")).forEach(string ->
-                    parseMap(string, parts ->
-                    {
-                        Float value = Floats.tryParse(parts[1]);
-                        if (value != null)
-                            spawnTweaks.put(parts[0], value);
-                        else
-                            RecurrentComplex.logger.error("Failed parsing float ''" + parts[1] + "'");
-                    })
-            );
+            parseMap(config.getStringList("spawnTweaks", CATEGORY_GENERAL, new String[0], "List of spawn chance tweaks to structures: IceThorn:0.5"), (key, value) -> {
+                Float tweak = Floats.tryParse(value.trim());
+                if (tweak != null)
+                    spawnTweaks.put(key, tweak);
+                else
+                    RecurrentComplex.logger.error("Failed parsing float ''" + value + "'");
+            });
 
             structureLoadMatcher.setExpression(config.getString("structureLoadMatcher", CATEGORY_BALANCING, "", "Resource Expression that will be applied to each loading structure, determining if it should be loaded."));
             logExpressionException(structureLoadMatcher, "structureLoadMatcher", RecurrentComplex.logger);
@@ -173,6 +173,15 @@ public class RCConfig
 
             universalTransformer = null;
             Collections.addAll(universalTransformerPresets, config.getStringList("universalTransformerPresets", CATEGORY_BALANCING, new String[0], "Transformer preset names that are gonna be applied to every single generating structure. Use this if you need to enforce specific rules (e.g. \"don't ever spawn wood blocks\" (with a replace transformer)."));
+
+            globalToggles.clear();
+            parseMap(config.getStringList("globalToggles", CATEGORY_BALANCING, new String[]{"treeLeavesDecay: true"}, "Global toggles that can be used in any expressions. Any toggle not in here will be counted as false. Ex: 'treeLeavesDecay: true'"), (key, value) -> {
+                Boolean bool = Boolean.valueOf(value.trim());
+                if (bool != null)
+                    globalToggles.put(key, bool);
+                else
+                    RecurrentComplex.logger.error("Failed parsing boolean ''" + value + "'");
+            });
         }
         if (configID == null || configID.equals(CATEGORY_DECORATION))
         {
@@ -188,11 +197,17 @@ public class RCConfig
         RecurrentComplex.proxy.loadConfig(configID);
     }
 
-    private static void parseMap(String string, Consumer<String[]> consumer)
+    private static void parseMap(String[] strings, BiConsumer<String, String> consumer)
+    {
+        for (String string : strings)
+            parseMap(string, consumer);
+    }
+
+    private static void parseMap(String string, BiConsumer<String, String> consumer)
     {
         String[] parts = string.split(":", 2);
-        if (parts.length > 1)
-            consumer.accept(parts);
+        if (parts.length == 2)
+            consumer.accept(parts[0], parts[1]);
         else
             RecurrentComplex.logger.error("Failed finding key in command matcher ''" + string + "'");
     }

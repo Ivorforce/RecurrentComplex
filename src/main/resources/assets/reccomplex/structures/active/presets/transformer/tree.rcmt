@@ -81,12 +81,23 @@
         }
       },
       {
-        "type": "propertyReplace",
+        "type": "multi",
         "transformer": {
-          "id": "propertyReplace_58f129a",
-          "sourceExpression": "",
-          "propertyName": "decayable",
-          "propertyValue": "true"
+          "id": "multi_4d36d9d1",
+          "data": {
+            "environmentMatcher": "global:treeLeavesDecay",
+            "transformers": [
+              {
+                "type": "propertyReplace",
+                "transformer": {
+                  "id": "propertyReplace_fae0e7ba",
+                  "sourceExpression": "",
+                  "propertyName": "decayable",
+                  "propertyValue": "true"
+                }
+              }
+            ]
+          }
         }
       }
     ]

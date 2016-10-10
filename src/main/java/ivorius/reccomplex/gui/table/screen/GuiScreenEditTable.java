@@ -22,7 +22,7 @@ import java.util.function.Consumer;
 public class GuiScreenEditTable<T extends TableDataSource> extends GuiScreenModalTable
 {
     public static final int HEIGHT_INSET = 20;
-    public static final int SIDE_INSET = 50;
+    public static final int MAX_WIDTH = 360;
 
     private T t;
     private Consumer<T> saver;
@@ -35,14 +35,19 @@ public class GuiScreenEditTable<T extends TableDataSource> extends GuiScreenModa
         return table;
     }
 
-    public int uWidth()
-    {
-        return width - SIDE_INSET * 2;
-    }
-
     public int uHeight()
     {
         return height - HEIGHT_INSET * 2;
+    }
+
+    public int uWidth()
+    {
+        return Math.min(width - 10, MAX_WIDTH);
+    }
+
+    public int leftEdge()
+    {
+        return (width - uWidth()) / 2;
     }
 
     @Override
@@ -50,20 +55,24 @@ public class GuiScreenEditTable<T extends TableDataSource> extends GuiScreenModa
     {
         if (currentTable() != null)
         {
-            currentTable().setPropertiesBounds(Bounds.fromAxes(SIDE_INSET, uWidth(), HEIGHT_INSET, uHeight() - 22));
+            currentTable().setPropertiesBounds(Bounds.fromAxes(leftEdge(), uWidth(), HEIGHT_INSET, uHeight() - 22));
         }
         super.initGui();
 
         if (tableStack().size() == 1)
         {
-            buttonList.add(new GuiButton(1, SIDE_INSET, HEIGHT_INSET + uHeight() - 20, uWidth() / 3 - 1, 20, IvTranslations.get("gui.cancel")));
-            buttonList.add(new GuiButton(0, SIDE_INSET + uWidth() / 3 + 1, HEIGHT_INSET + uHeight() - 20, uWidth() / 3 - 2, 20, IvTranslations.get("reccomplex.gui.save")));
-            buttonList.add(new GuiButton(3, SIDE_INSET + uWidth() / 3 * 2 + 1, HEIGHT_INSET + uHeight() - 20, uWidth() / 3 - 1, 20, IvTranslations.get("reccomplex.gui.hidegui")));
+            buttonList.add(new GuiButton(1, leftEdge(), HEIGHT_INSET + uHeight() - 20, uWidth() / 3 - 1, 20, IvTranslations.get("gui.cancel")));
+            buttonList.add(new GuiButton(0, leftEdge() + uWidth() / 3 + 1, HEIGHT_INSET + uHeight() - 20, uWidth() / 3 - 2, 20, IvTranslations.get("reccomplex.gui.save")));
+            GuiButton hideButton = new GuiButton(3, leftEdge() + uWidth() / 3 * 2 + 1, HEIGHT_INSET + uHeight() - 20, uWidth() / 3 - 1, 20, IvTranslations.get("reccomplex.gui.hidegui"));
+            hideButton.enabled = GuiHider.canHide();
+            buttonList.add(hideButton);
         }
         else
         {
-            buttonList.add(new GuiButton(2, SIDE_INSET, HEIGHT_INSET + uHeight() - 20, uWidth() / 2 - 1, 20, IvTranslations.get("gui.back")));
-            buttonList.add(new GuiButton(3, SIDE_INSET + uWidth() / 2 + 1, HEIGHT_INSET + uHeight() - 20, uWidth() / 2 - 1, 20, IvTranslations.get("reccomplex.gui.hidegui")));
+            buttonList.add(new GuiButton(2, leftEdge(), HEIGHT_INSET + uHeight() - 20, uWidth() / 2 - 1, 20, IvTranslations.get("gui.back")));
+            GuiButton hideButton = new GuiButton(3, leftEdge() + uWidth() / 2 + 1, HEIGHT_INSET + uHeight() - 20, uWidth() / 2 - 1, 20, IvTranslations.get("reccomplex.gui.hidegui"));
+            hideButton.enabled = GuiHider.canHide();
+            buttonList.add(hideButton);
         }
     }
 

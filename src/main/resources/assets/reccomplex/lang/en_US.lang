@@ -119,6 +119,12 @@ commands.rcconfirm.run=Run the operation
 commands.rccancel.usage=/#cancel
 commands.rccancel.run=Cancel the operation
 
+commands.rcreopen.usage=/#reopen
+commands.rcreopen.run=Re-Open GUI
+commands.rcreopen.nogui=No GUI to reopen!
+commands.rcreopen.fail=Failed to reopen GUI!
+commands.rc.didhide=Hidden GUI - %s?
+
 commands.strucImportSchematic.usage=/#importschematic "<Schematic Name>" [x] [y] [z] [rotations (clockwise)] [mirror x:true|false]
 commands.strucImportSchematic.missing=The file '%s' was not found in %s
 commands.strucImportSchematic.format=The file '%s' has an unsupported format (%s)
@@ -489,6 +495,7 @@ reccomplex.gui.edit=Edit
 reccomplex.gui.apply=Apply
 reccomplex.gui.later=Later
 reccomplex.gui.earlier=Earlier
+reccomplex.gui.hidegui=Hide GUI
 reccomplex.gui.randomize=Randomize
 reccomplex.gui.randomize.short=??
 reccomplex.gui.biomes=Biomes

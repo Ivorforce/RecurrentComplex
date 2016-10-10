@@ -47,6 +47,8 @@ public class RCCommands
     public static ICommand lookup;
     public static ICommand list;
 
+    public static ICommand reopen;
+
     public static void onServerStart(FMLServerStartingEvent event)
     {
         event.registerServerCommand(new CommandWrite());
@@ -79,6 +81,9 @@ public class RCCommands
             event.registerServerCommand(confirm = new CommandConfirm());
             event.registerServerCommand(cancel = new CommandCancel());
         }
+
+        if (!RecurrentComplex.isLite())
+            event.registerServerCommand(reopen = new CommandReopen());
 
         if (!RecurrentComplex.isLite())
             event.registerServerCommand(new CommandVisual());

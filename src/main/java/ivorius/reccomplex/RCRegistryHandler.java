@@ -5,7 +5,7 @@
 
 package ivorius.reccomplex;
 
-import ivorius.ivtoolkit.network.CapabilityUpdateRegistry;
+import ivorius.ivtoolkit.network.*;
 import ivorius.ivtoolkit.tools.MCRegistry;
 import ivorius.ivtoolkit.tools.NBTCompoundObjectCapabilityStorage;
 import ivorius.reccomplex.biome.RCBiomeDictionary;
@@ -22,6 +22,7 @@ import ivorius.reccomplex.files.loading.ResourceDirectory;
 import ivorius.reccomplex.files.saving.FileSaverString;
 import ivorius.reccomplex.item.*;
 import ivorius.reccomplex.json.SerializableStringTypeRegistry;
+import ivorius.reccomplex.network.*;
 import ivorius.reccomplex.operation.OperationRegistry;
 import ivorius.reccomplex.random.Poem;
 import ivorius.reccomplex.utils.FMLUtils;
@@ -58,6 +59,7 @@ import net.minecraftforge.common.capabilities.CapabilityManager;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.registry.GameRegistry;
+import net.minecraftforge.fml.relauncher.Side;
 
 import java.util.ArrayList;
 
@@ -240,6 +242,8 @@ public class RCRegistryHandler
     {
         MCRegistry mcRegistry = RecurrentComplex.specialRegistry;
 
+        registerPackets(event);
+
         CapabilityUpdateRegistry.INSTANCE.register(StructureEntityInfo.CAPABILITY_KEY, StructureEntityInfo.CAPABILITY);
         CapabilityUpdateRegistry.INSTANCE.register(CapabilitySelection.CAPABILITY_KEY, CapabilitySelection.CAPABILITY);
 
@@ -329,5 +333,38 @@ public class RCRegistryHandler
     protected static <T> void dumpAll(PresetRegistry<T> presets)
     {
         presets.allIDs().forEach(s -> saver.trySave(ResourceDirectory.ACTIVE.toPath(), presets.getFileSuffix(), s));
+    }
+
+    public static void registerPackets(FMLInitializationEvent event)
+    {
+        if (event.getSide().isClient())
+            registerClientPackets();
+        registerServerPackets();
+    }
+
+    protected static void registerServerPackets()
+    {
+        network.registerMessage(PacketGuiActionHandler.class, PacketGuiAction.class, 1, Side.SERVER);
+        network.registerMessage(PacketSaveInvGenComponentHandler.class, PacketSaveInvGenComponent.class, 2, Side.SERVER);
+        network.registerMessage(PacketEditTileEntityHandler.class, PacketEditTileEntity.class, 5, Side.SERVER);
+        network.registerMessage(PacketSaveStructureHandler.class, PacketSaveStructure.class, 7, Side.SERVER);
+        network.registerMessage(PacketSyncItemHandler.class, PacketSyncItem.class, 9, Side.SERVER);
+        network.registerMessage(PacketItemEventHandler.class, PacketItemEvent.class, 11, Side.SERVER);
+        network.registerMessage(PacketInspectBlockHandler.class, PacketInspectBlock.class, 12, Side.SERVER);
+        network.registerMessage(PacketOpenGuiHandler.class, PacketOpenGui.class, 15, Side.SERVER);
+    }
+
+    protected static void registerClientPackets()
+    {
+        network.registerMessage(PacketEntityCapabilityDataHandler.class, PacketEntityCapabilityData.class, 0, Side.CLIENT);
+        network.registerMessage(PacketEditInvGenComponentHandler.class, PacketEditInvGenComponent.class, 3, Side.CLIENT);
+        network.registerMessage(PacketEditTileEntityHandler.class, PacketEditTileEntity.class, 4, Side.CLIENT);
+        network.registerMessage(PacketEditStructureHandler.class, PacketEditStructure.class, 6, Side.CLIENT);
+        network.registerMessage(PacketSyncItemHandler.class, PacketSyncItem.class, 8, Side.CLIENT);
+        network.registerMessage(PacketItemEventHandler.class, PacketItemEvent.class, 10, Side.CLIENT);
+        network.registerMessage(PacketItemEventHandler.class, PacketItemEvent.class, 10, Side.CLIENT);
+        network.registerMessage(PacketInspectBlockHandler.class, PacketInspectBlock.class, 13, Side.CLIENT);
+        network.registerMessage(PacketOpenGuiHandler.class, PacketOpenGui.class, 14, Side.CLIENT);
+        network.registerMessage(PacketReopenGuiHandler.class, PacketReopenGui.class, 16, Side.CLIENT);
     }
 }

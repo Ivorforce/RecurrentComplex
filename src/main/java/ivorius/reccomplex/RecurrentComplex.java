@@ -5,10 +5,6 @@
 
 package ivorius.reccomplex;
 
-import ivorius.ivtoolkit.network.PacketEntityCapabilityData;
-import ivorius.ivtoolkit.network.PacketEntityCapabilityDataHandler;
-import ivorius.ivtoolkit.network.PacketGuiAction;
-import ivorius.ivtoolkit.network.PacketGuiActionHandler;
 import ivorius.ivtoolkit.tools.MCRegistry;
 import ivorius.ivtoolkit.tools.MCRegistryDefault;
 import ivorius.reccomplex.commands.RCCommands;
@@ -20,7 +16,6 @@ import ivorius.reccomplex.files.loading.ResourceDirectory;
 import ivorius.reccomplex.files.saving.FileSaver;
 import ivorius.reccomplex.gui.RCGuiHandler;
 import ivorius.reccomplex.gui.container.IvGuiRegistry;
-import ivorius.reccomplex.network.*;
 import ivorius.reccomplex.world.gen.feature.structure.registry.MCRegistrySpecial;
 import ivorius.reccomplex.world.gen.feature.structure.schematics.SchematicLoader;
 import ivorius.reccomplex.utils.*;
@@ -144,37 +139,8 @@ public class RecurrentComplex
     {
         network = NetworkRegistry.INSTANCE.newSimpleChannel(MOD_ID);
 
-        if (event.getSide().isClient())
-            registerClientPackets();
-        registerServerPackets();
-
         RCRegistryHandler.load(event, this);
         proxy.registerRenderers();
-    }
-
-    protected void registerServerPackets()
-    {
-        network.registerMessage(PacketGuiActionHandler.class, PacketGuiAction.class, 1, Side.SERVER);
-        network.registerMessage(PacketSaveInvGenComponentHandler.class, PacketSaveInvGenComponent.class, 2, Side.SERVER);
-        network.registerMessage(PacketEditTileEntityHandler.class, PacketEditTileEntity.class, 5, Side.SERVER);
-        network.registerMessage(PacketSaveStructureHandler.class, PacketSaveStructure.class, 7, Side.SERVER);
-        network.registerMessage(PacketSyncItemHandler.class, PacketSyncItem.class, 9, Side.SERVER);
-        network.registerMessage(PacketItemEventHandler.class, PacketItemEvent.class, 11, Side.SERVER);
-        network.registerMessage(PacketInspectBlockHandler.class, PacketInspectBlock.class, 12, Side.SERVER);
-        network.registerMessage(PacketOpenGuiHandler.class, PacketOpenGui.class, 15, Side.SERVER);
-    }
-
-    protected void registerClientPackets()
-    {
-        network.registerMessage(PacketEntityCapabilityDataHandler.class, PacketEntityCapabilityData.class, 0, Side.CLIENT);
-        network.registerMessage(PacketEditInvGenComponentHandler.class, PacketEditInvGenComponent.class, 3, Side.CLIENT);
-        network.registerMessage(PacketEditTileEntityHandler.class, PacketEditTileEntity.class, 4, Side.CLIENT);
-        network.registerMessage(PacketEditStructureHandler.class, PacketEditStructure.class, 6, Side.CLIENT);
-        network.registerMessage(PacketSyncItemHandler.class, PacketSyncItem.class, 8, Side.CLIENT);
-        network.registerMessage(PacketItemEventHandler.class, PacketItemEvent.class, 10, Side.CLIENT);
-        network.registerMessage(PacketItemEventHandler.class, PacketItemEvent.class, 10, Side.CLIENT);
-        network.registerMessage(PacketInspectBlockHandler.class, PacketInspectBlock.class, 13, Side.CLIENT);
-        network.registerMessage(PacketOpenGuiHandler.class, PacketOpenGui.class, 14, Side.CLIENT);
     }
 
     @EventHandler

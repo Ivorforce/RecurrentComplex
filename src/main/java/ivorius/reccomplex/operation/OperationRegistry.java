@@ -97,8 +97,7 @@ public class OperationRegistry
                     cancelComponent.getStyle().setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/" + RCCommands.cancel.getCommandName()));
                     cancelComponent.getStyle().setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, ServerTranslations.get("commands.rccancel.run")));
 
-                    ITextComponent component = ServerTranslations.format("commands.rc.queuedOp", confirmComponent, cancelComponent);
-                    commandSender.addChatMessage(component);
+                    commandSender.addChatMessage(ServerTranslations.format("commands.rc.queuedOp", confirmComponent, cancelComponent));
                 }
             }
         }

@@ -6,6 +6,7 @@
 package ivorius.reccomplex.gui.table.screen;
 
 import ivorius.ivtoolkit.tools.IvTranslations;
+import ivorius.reccomplex.gui.GuiHider;
 import ivorius.reccomplex.gui.table.Bounds;
 import ivorius.reccomplex.gui.table.GuiTable;
 import ivorius.reccomplex.gui.table.datasource.TableDataSource;
@@ -20,6 +21,9 @@ import java.util.function.Consumer;
  */
 public class GuiScreenEditTable<T extends TableDataSource> extends GuiScreenModalTable
 {
+    public static final int HEIGHT_INSET = 20;
+    public static final int SIDE_INSET = 50;
+
     private T t;
     private Consumer<T> saver;
 
@@ -31,30 +35,48 @@ public class GuiScreenEditTable<T extends TableDataSource> extends GuiScreenModa
         return table;
     }
 
+    public int uWidth()
+    {
+        return width - SIDE_INSET * 2;
+    }
+
+    public int uHeight()
+    {
+        return height - HEIGHT_INSET * 2;
+    }
+
     @Override
     public void initGui()
     {
         if (currentTable() != null)
         {
-            currentTable().setPropertiesBounds(Bounds.fromAxes(width / 2 - 155, 310, height / 2 - 110, 205));
+            currentTable().setPropertiesBounds(Bounds.fromAxes(SIDE_INSET, uWidth(), HEIGHT_INSET, uHeight() - 22));
         }
         super.initGui();
 
         if (tableStack().size() == 1)
         {
-            buttonList.add(new GuiButton(1, width / 2 - 155, height / 2 + 95, 154, 20, IvTranslations.get("gui.cancel")));
-            buttonList.add(new GuiButton(0, width / 2 + 1, height / 2 + 95, 154, 20, IvTranslations.get("reccomplex.gui.save")));
+            buttonList.add(new GuiButton(1, SIDE_INSET, HEIGHT_INSET + uHeight() - 20, uWidth() / 3 - 1, 20, IvTranslations.get("gui.cancel")));
+            buttonList.add(new GuiButton(0, SIDE_INSET + uWidth() / 3 + 1, HEIGHT_INSET + uHeight() - 20, uWidth() / 3 - 2, 20, IvTranslations.get("reccomplex.gui.save")));
+            buttonList.add(new GuiButton(3, SIDE_INSET + uWidth() / 3 * 2 + 1, HEIGHT_INSET + uHeight() - 20, uWidth() / 3 - 1, 20, IvTranslations.get("reccomplex.gui.hidegui")));
         }
         else
         {
-            buttonList.add(new GuiButton(2, width / 2 - 155, height / 2 + 95, 310, 20, IvTranslations.get("gui.back")));
+            buttonList.add(new GuiButton(2, SIDE_INSET, HEIGHT_INSET + uHeight() - 20, uWidth() / 2 - 1, 20, IvTranslations.get("gui.back")));
+            buttonList.add(new GuiButton(3, SIDE_INSET + uWidth() / 2 + 1, HEIGHT_INSET + uHeight() - 20, uWidth() / 2 - 1, 20, IvTranslations.get("reccomplex.gui.hidegui")));
         }
     }
 
     @Override
     protected void keyTyped(char keyChar, int keyCode) throws IOException
     {
-        if (keyCode != Keyboard.KEY_ESCAPE) // Prevent quitting without saving
+        if (keyCode == Keyboard.KEY_ESCAPE)
+        {
+            // Prevent quitting without saving
+            if (tableStack().size() > 1)
+                popTable();
+        }
+        else
             super.keyTyped(keyChar, keyCode);
     }
 
@@ -65,7 +87,7 @@ public class GuiScreenEditTable<T extends TableDataSource> extends GuiScreenModa
 
         if (button.id == 0)
         {
-            saver.accept((T) this.t);
+            saver.accept(this.t);
 
             this.mc.thePlayer.closeScreen();
         }
@@ -76,6 +98,10 @@ public class GuiScreenEditTable<T extends TableDataSource> extends GuiScreenModa
         else if (button.id == 2)
         {
             popTable();
+        }
+        else if (button.id == 3)
+        {
+            GuiHider.hideGUI();
         }
     }
 

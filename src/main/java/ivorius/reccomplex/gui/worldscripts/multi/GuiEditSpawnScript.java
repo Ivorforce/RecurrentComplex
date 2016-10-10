@@ -22,7 +22,7 @@ public class GuiEditSpawnScript extends GuiScreenEditTable<TableDataSourceWorldS
         // Don't directly edit so the sides are in sync
         TileEntitySpawnScript copy = (TileEntitySpawnScript) TileEntity.create(tileEntity.getWorld(), tileEntity.writeToNBT(new NBTTagCompound()));
 
-        setDataSource(new TableDataSourceWorldScriptMulti(tileEntity.script, this, this), ds ->
+        setDataSource(new TableDataSourceWorldScriptMulti(copy.script, this, this), ds ->
         {
             tileEntity.readFromNBT(copy.writeToNBT(new NBTTagCompound()));
             RecurrentComplex.network.sendToServer(new PacketEditTileEntity(copy));

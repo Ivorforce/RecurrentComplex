@@ -17,8 +17,11 @@ import ivorius.reccomplex.world.gen.script.WorldScriptMulti;
  */
 public class TableDataSourceWorldScriptMulti extends TableDataSourceSegmented
 {
+    public WorldScriptMulti script;
+
     public TableDataSourceWorldScriptMulti(WorldScriptMulti script, TableDelegate delegate, TableNavigator navigator)
     {
+        this.script = script;
         addManagedSegment(0, TableDataSourceExpression.constructDefault(IvTranslations.get("reccomplex.worldscript.multi.condition"), script.environmentMatcher, null));
         addManagedSegment(1, new TableDataSourceWorldScriptList(script.scripts, delegate, navigator));
     }

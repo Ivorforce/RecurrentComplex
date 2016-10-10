@@ -55,6 +55,7 @@ public class CommandSelectSetBiome extends CommandSelectModify
         BlockSurfaceArea.from(selectionOwner.getSelection()).forEach(p -> {
             Chunk chunk = world.getChunkFromChunkCoords(p.getX() >> 4, p.getZ() >> 4);
             chunk.getBiomeArray()[biomeArrayIndex(p)] = biomeID;
+            chunk.setModified(true);
         });
     }
 

@@ -69,7 +69,10 @@ public class GuiHider
         if (mc.currentScreen == null)
             return false;
 
-        hiddenGUI = null;
+        GuiScreen hiddenGUI = GuiHider.hiddenGUI;
+        GuiHider.hiddenGUI = null;
+
+        hiddenGUI.initGui(); // Re-Init, but after we're free again
 
         return true;
     }

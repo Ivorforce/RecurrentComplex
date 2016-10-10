@@ -37,7 +37,7 @@ public class TableDataSourceBiomeGenList extends TableDataSourceSegmented
             @Override
             public String getDisplayString(BiomeGenerationInfo biomeGenerationInfo)
             {
-                return String.format("%s%s: %.2f", StringUtils.abbreviate(biomeGenerationInfo.getDisplayString(), 16), TextFormatting.RESET, biomeGenerationInfo.getActiveGenerationWeight());
+                return String.format("%s%s: %.2f", StringUtils.abbreviate(biomeGenerationInfo.getDisplayString(), 20), TextFormatting.RESET, biomeGenerationInfo.getActiveGenerationWeight());
             }
 
             @Override

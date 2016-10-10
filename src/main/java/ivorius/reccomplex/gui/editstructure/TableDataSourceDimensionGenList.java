@@ -37,7 +37,7 @@ public class TableDataSourceDimensionGenList extends TableDataSourceSegmented
             @Override
             public String getDisplayString(DimensionGenerationInfo generationInfo)
             {
-                return String.format("%s%s: %.1f", StringUtils.abbreviate(generationInfo.getDisplayString(), 16), TextFormatting.RESET, generationInfo.getActiveGenerationWeight());
+                return String.format("%s%s: %.1f", StringUtils.abbreviate(generationInfo.getDisplayString(), 20), TextFormatting.RESET, generationInfo.getActiveGenerationWeight());
             }
 
             @Override

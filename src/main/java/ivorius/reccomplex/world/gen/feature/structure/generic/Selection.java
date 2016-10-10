@@ -63,9 +63,12 @@ public class Selection extends ArrayList<Selection.Area> implements NBTCompoundO
         return selection;
     }
 
+    @Nullable
     public static List<IntegerRange> toRanges(int[] lower, int[] higher)
     {
-        return IntStream.range(0, lower.length).mapToObj(i -> new IntegerRange(lower[i], higher[i])).collect(Collectors.toList());
+        return lower != null
+                ? IntStream.range(0, lower.length).mapToObj(i -> new IntegerRange(lower[i], higher[i])).collect(Collectors.toList())
+                : null;
     }
 
     public Map<MazeRoom, String> compile(boolean additive)
@@ -104,11 +107,13 @@ public class Selection extends ArrayList<Selection.Area> implements NBTCompoundO
         NBTTagLists.writeTo(compound, "areas", stream().map(Area::writeToNBT).collect(Collectors.toList()));
     }
 
+    @Nullable
     public List<IntegerRange> bounds()
     {
         return toRanges(boundsLower(), boundsHigher());
     }
 
+    @Nullable
     public int[] boundsLower()
     {
         int[] min = null;
@@ -127,6 +132,7 @@ public class Selection extends ArrayList<Selection.Area> implements NBTCompoundO
         return min;
     }
 
+    @Nullable
     public int[] boundsHigher()
     {
         int[] max = null;

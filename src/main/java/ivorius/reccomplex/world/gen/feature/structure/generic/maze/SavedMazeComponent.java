@@ -33,6 +33,7 @@ public class SavedMazeComponent implements NBTCompoundObject
 
     public SavedMazeComponent()
     {
+        rooms.add(new Selection.Area(true, new int[3], new int[3]));
     }
 
     public SavedMazeComponent(String defaultConnector)

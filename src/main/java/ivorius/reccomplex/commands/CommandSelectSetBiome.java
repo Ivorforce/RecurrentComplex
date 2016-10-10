@@ -7,36 +7,37 @@ package ivorius.reccomplex.commands;
 
 import ivorius.reccomplex.RCConfig;
 import ivorius.reccomplex.capability.SelectionOwner;
+import ivorius.reccomplex.utils.BlockSurfaceArea;
+import ivorius.reccomplex.utils.BlockSurfacePos;
 import ivorius.reccomplex.utils.ServerTranslations;
 import net.minecraft.block.Block;
-import net.minecraft.block.state.IBlockState;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
+import net.minecraft.world.biome.Biome;
+import net.minecraft.world.chunk.Chunk;
 
 import javax.annotation.Nullable;
 import java.util.Collections;
 import java.util.List;
-import java.util.stream.Collectors;
-import java.util.stream.IntStream;
 
 /**
  * Created by lukas on 09.06.14.
  */
-public class CommandSelectRemember extends CommandSelectModify
+public class CommandSelectSetBiome extends CommandSelectModify
 {
     @Override
     public String getCommandName()
     {
-        return RCConfig.commandPrefix + "remember";
+        return RCConfig.commandPrefix + "setbiome";
     }
 
     @Override
     public String getCommandUsage(ICommandSender var1)
     {
-        return ServerTranslations.usage("commands.rcremember.usage");
+        return ServerTranslations.usage("commands.rcsetbiome.usage");
     }
 
     @Override
@@ -45,24 +46,31 @@ public class CommandSelectRemember extends CommandSelectModify
         if (args.length < 1)
             throw ServerTranslations.wrongUsageException("commands.rcremember.usage");
 
+        Biome biome = RCCommands.parseBiome(args[0]);
+        byte biomeID = (byte)(Biome.REGISTRY.getIDForObject(biome) & 255);
+
         World world = sender.getEntityWorld();
 
-        Block dstBlock = getBlockByText(sender, args[0]);
-        int[] dstMeta = args.length >= 2 ? getMetadatas(args[1]) : new int[]{0};
-        List<IBlockState> dst = IntStream.of(dstMeta).mapToObj(dstBlock::getStateFromMeta).collect(Collectors.toList());
+        // TODO Send to clients somehow
+        BlockSurfaceArea.from(selectionOwner.getSelection()).forEach(p -> {
+            Chunk chunk = world.getChunkFromChunkCoords(p.getX() >> 4, p.getZ() >> 4);
+            chunk.getBiomeArray()[biomeArrayIndex(p)] = biomeID;
+        });
+    }
 
-        for (BlockPos coord : selectionOwner.getSelection())
-        {
-            IBlockState state = dst.get(world.rand.nextInt(dst.size()));
-            world.setBlockState(coord, state, 3);
-        }
+    public static int biomeArrayIndex(BlockSurfacePos p)
+    {
+        // From Biome
+        int i = p.getX() & 15;
+        int j = p.getZ() & 15;
+        return j << 4 | i;
     }
 
     @Override
     public List<String> getTabCompletionOptions(MinecraftServer server, ICommandSender sender, String[] args, @Nullable BlockPos pos)
     {
         if (args.length == 1)
-            return getListOfStringsMatchingLastWord(args, Block.REGISTRY.getKeys());
+            return RCCommands.completeBiome(args);
 
         return Collections.emptyList();
     }

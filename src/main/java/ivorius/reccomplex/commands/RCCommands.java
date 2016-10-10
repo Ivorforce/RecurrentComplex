@@ -17,8 +17,10 @@ import ivorius.reccomplex.world.gen.feature.structure.StructureInfo;
 import ivorius.reccomplex.world.gen.feature.structure.StructureRegistry;
 import net.minecraft.command.*;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.WorldServer;
+import net.minecraft.world.biome.Biome;
 import net.minecraftforge.common.DimensionManager;
 import net.minecraftforge.fml.common.event.FMLServerStartingEvent;
 import org.apache.commons.lang3.tuple.Pair;
@@ -91,6 +93,7 @@ public class RCCommands
             event.registerServerCommand(new CommandSelectSpace());
             event.registerServerCommand(new CommandSelectNatural());
         }
+        event.registerServerCommand(new CommandSelectSetBiome());
 
         event.registerServerCommand(new CommandSelectCopy());
         event.registerServerCommand(new CommandPaste());
@@ -233,6 +236,20 @@ public class RCCommands
     protected static List<String> completeResourceMatcher(String[] args)
     {
         return CommandBase.getListOfStringsMatchingLastWord(args, StructureRegistry.INSTANCE.ids());
+    }
+
+    public static Biome parseBiome(String arg) throws CommandException
+    {
+        ResourceLocation biomeID = new ResourceLocation(arg);
+        if (!Biome.REGISTRY.containsKey(biomeID))
+            throw ServerTranslations.wrongUsageException("commands.rc.nobiome");
+
+        return Biome.REGISTRY.getObject(biomeID);
+    }
+
+    public static List<String> completeBiome(String[] args)
+    {
+        return CommandBase.getListOfStringsMatchingLastWord(args, Biome.REGISTRY.getKeys());
     }
 
     public static void informDeleteResult(Pair<Set<Path>, Set<Path>> result, ICommandSender sender, String filetype, String id, String path)

@@ -19,6 +19,7 @@ import net.minecraft.command.ICommandSender;
 import net.minecraft.world.World;
 
 import javax.annotation.Nullable;
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
@@ -82,10 +83,8 @@ public class CommandSelectFillSphere extends CommandSelectModify
         if (args.length == 1)
             return getListOfStringsMatchingLastWord(args, Block.REGISTRY.getKeys());
         else if (args.length == 2)
-        {
             return getListOfStringsMatchingLastWord(args, "0");
-        }
 
-        return null;
+        return Collections.emptyList();
     }
 }

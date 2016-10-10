@@ -23,6 +23,7 @@ import net.minecraft.util.text.event.HoverEvent;
 import org.apache.commons.lang3.StringUtils;
 
 import javax.annotation.Nullable;
+import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 
@@ -90,12 +91,8 @@ public class CommandLookupStructure extends CommandBase
     public List<String> getTabCompletionOptions(MinecraftServer server, ICommandSender sender, String[] args, @Nullable BlockPos pos)
     {
         if (args.length == 1)
-        {
-            Set<String> allStructureNames = StructureRegistry.INSTANCE.ids();
+            return getListOfStringsMatchingLastWord(args, StructureRegistry.INSTANCE.ids());
 
-            return getListOfStringsMatchingLastWord(args, allStructureNames);
-        }
-
-        return null;
+        return Collections.emptyList();
     }
 }

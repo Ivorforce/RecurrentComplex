@@ -16,6 +16,7 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.math.BlockPos;
 
 import javax.annotation.Nullable;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -75,6 +76,6 @@ public class CommandVisual extends CommandBase
         if (args.length == 2)
             return getListOfStringsMatchingLastWord(args, "true", "false");
 
-        return null;
+        return Collections.emptyList();
     }
 }

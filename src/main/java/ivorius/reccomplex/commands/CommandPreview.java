@@ -17,6 +17,7 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.math.BlockPos;
 
 import javax.annotation.Nullable;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -66,6 +67,6 @@ public class CommandPreview extends CommandBase
         if (args.length == 1)
             return getListOfStringsMatchingLastWord(args, Operation.PreviewType.keys());
 
-        return null;
+        return Collections.emptyList();
     }
 }

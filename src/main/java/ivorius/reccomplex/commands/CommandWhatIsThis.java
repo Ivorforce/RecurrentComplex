@@ -6,19 +6,20 @@
 package ivorius.reccomplex.commands;
 
 import com.google.common.collect.Lists;
-import net.minecraft.command.CommandException;
-import net.minecraft.server.MinecraftServer;
-import net.minecraft.util.math.BlockPos;
 import ivorius.reccomplex.RCConfig;
 import ivorius.reccomplex.utils.ServerTranslations;
 import ivorius.reccomplex.world.gen.feature.StructureGenerationData;
 import joptsimple.internal.Strings;
 import net.minecraft.command.CommandBase;
+import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
+import net.minecraft.server.MinecraftServer;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
 import javax.annotation.Nullable;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -69,6 +70,6 @@ public class CommandWhatIsThis extends CommandBase
         if (args.length == 1 || args.length == 2 || args.length == 3)
             return getTabCompletionCoordinate(args, args.length, pos);
 
-        return null;
+        return Collections.emptyList();
     }
 }

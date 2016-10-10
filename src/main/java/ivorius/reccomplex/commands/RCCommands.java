@@ -242,7 +242,7 @@ public class RCCommands
     {
         ResourceLocation biomeID = new ResourceLocation(arg);
         if (!Biome.REGISTRY.containsKey(biomeID))
-            throw ServerTranslations.wrongUsageException("commands.rc.nobiome");
+            throw ServerTranslations.commandException("commands.rc.nobiome");
 
         return Biome.REGISTRY.getObject(biomeID);
     }

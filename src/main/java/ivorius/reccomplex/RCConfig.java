@@ -175,7 +175,7 @@ public class RCConfig
             Collections.addAll(universalTransformerPresets, config.getStringList("universalTransformerPresets", CATEGORY_BALANCING, new String[0], "Transformer preset names that are gonna be applied to every single generating structure. Use this if you need to enforce specific rules (e.g. \"don't ever spawn wood blocks\" (with a replace transformer)."));
 
             globalToggles.clear();
-            parseMap(config.getStringList("globalToggles", CATEGORY_BALANCING, new String[]{"treeLeavesDecay: true"}, "Global toggles that can be used in any expressions. Any toggle not in here will be counted as false. Ex: 'treeLeavesDecay: true'"), (key, value) -> {
+            parseMap(config.getStringList("globalToggles", CATEGORY_BALANCING, new String[]{"treeLeavesDecay: true"}, "Global toggles that can be used in expressions. You can also add your own. Ex: 'treeLeavesDecay: true'."), (key, value) -> {
                 Boolean bool = Boolean.valueOf(value.trim());
                 if (bool != null)
                     globalToggles.put(key, bool);

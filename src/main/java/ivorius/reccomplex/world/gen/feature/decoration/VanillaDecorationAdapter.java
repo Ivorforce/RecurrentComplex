@@ -44,7 +44,7 @@ public class VanillaDecorationAdapter implements RCBiomeDecorator.Adapter
             case FOSSIL:
                 return random.nextInt(64) == 0 ? 1 : 0;
             default:
-                throw new IllegalArgumentException();
+                throw new IllegalArgumentException("Unrecognized type: " + type.toString());
         }
     }
 
@@ -75,15 +75,17 @@ public class VanillaDecorationAdapter implements RCBiomeDecorator.Adapter
                 BlockPos blockpos = worldIn.getHeight(chunkPos.add(k6, 0, l));
 
                 if (worldgenabstracttree.generate(worldIn, random, blockpos))
-                {
                     worldgenabstracttree.generateSaplings(worldIn, random, blockpos);
-                }
+
+                break;
             }
             case BIG_SHROOM:
             {
                 int l6 = random.nextInt(16) + 8;
                 int k10 = random.nextInt(16) + 8;
                 decorator.bigMushroomGen.generate(worldIn, random, worldIn.getHeight(chunkPos.add(l6, 0, k10)));
+
+                break;
             }
             case CACTUS:
             {
@@ -96,6 +98,8 @@ public class VanillaDecorationAdapter implements RCBiomeDecorator.Adapter
                     int j19 = random.nextInt(l16);
                     decorator.cactusGen.generate(worldIn, random, chunkPos.add(l9, j19, k13));
                 }
+
+                break;
             }
             case DESERT_WELL:
             {
@@ -103,13 +107,17 @@ public class VanillaDecorationAdapter implements RCBiomeDecorator.Adapter
                 int j = random.nextInt(16) + 8;
                 BlockPos blockpos = worldIn.getHeight(chunkPos.add(i, 0, j)).up();
                 (new WorldGenDesertWells()).generate(worldIn, random, blockpos);
+
+                break;
             }
             case FOSSIL:
             {
                 (new WorldGenFossils()).generate(worldIn, random, chunkPos);
+
+                break;
             }
             default:
-                throw new IllegalArgumentException();
+                throw new IllegalArgumentException("Unrecognized type: " + type.toString());
         }
     }
 }

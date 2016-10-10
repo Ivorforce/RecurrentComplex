@@ -16,17 +16,17 @@ import ivorius.ivtoolkit.tools.MCRegistry;
 import ivorius.ivtoolkit.tools.NBTCompoundObjects;
 import ivorius.reccomplex.RecurrentComplex;
 import ivorius.reccomplex.gui.editstructure.transformers.TableDataSourceBTRuins;
-import ivorius.reccomplex.gui.table.datasource.TableDataSource;
 import ivorius.reccomplex.gui.table.TableDelegate;
 import ivorius.reccomplex.gui.table.TableNavigator;
+import ivorius.reccomplex.gui.table.datasource.TableDataSource;
 import ivorius.reccomplex.json.JsonUtils;
 import ivorius.reccomplex.random.BlurredValueField;
+import ivorius.reccomplex.utils.NBTStorable;
+import ivorius.reccomplex.utils.RCBlockAreas;
 import ivorius.reccomplex.utils.StructureBoundingBoxes;
 import ivorius.reccomplex.world.gen.feature.structure.StructureLoadContext;
 import ivorius.reccomplex.world.gen.feature.structure.StructurePrepareContext;
 import ivorius.reccomplex.world.gen.feature.structure.StructureSpawnContext;
-import ivorius.reccomplex.utils.NBTStorable;
-import ivorius.reccomplex.utils.RCBlockAreas;
 import net.minecraft.block.BlockSandStone;
 import net.minecraft.block.BlockStoneBrick;
 import net.minecraft.block.BlockVine;
@@ -43,6 +43,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.World;
 import net.minecraft.world.gen.structure.StructureBoundingBox;
+import net.minecraftforge.common.util.Constants;
 
 import javax.annotation.Nullable;
 import java.lang.reflect.Type;
@@ -113,6 +114,10 @@ public class TransformerRuins extends Transformer<TransformerRuins.InstanceData>
     public boolean skipGeneration(InstanceData instanceData, StructureSpawnContext context, BlockPos pos, IBlockState state, IvWorldData worldData, BlockPos sourcePos)
     {
         BlurredValueField field = instanceData.blurredValueField;
+
+        if (field == null)
+            return false;
+
         IvBlockCollection blockCollection = worldData.blockCollection;
 
         float decay = field.getValue(Math.min(sourcePos.getX(), field.getSize()[0]), Math.min(sourcePos.getY(), field.getSize()[1]), Math.min(sourcePos.getZ(), field.getSize()[2]));
@@ -266,14 +271,17 @@ public class TransformerRuins extends Transformer<TransformerRuins.InstanceData>
 
         public InstanceData(NBTTagCompound compound)
         {
-            blurredValueField = NBTCompoundObjects.read(compound.getCompoundTag("field"), BlurredValueField.class);
+            blurredValueField = compound.hasKey("field", Constants.NBT.TAG_COMPOUND)
+                    ? NBTCompoundObjects.read(compound.getCompoundTag("field"), BlurredValueField.class)
+                    : null;
         }
 
         @Override
         public NBTBase writeToNBT()
         {
             NBTTagCompound compound = new NBTTagCompound();
-            compound.setTag("field", NBTCompoundObjects.write(blurredValueField));
+            if (blurredValueField != null)
+                compound.setTag("field", NBTCompoundObjects.write(blurredValueField));
             return compound;
         }
     }

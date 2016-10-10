@@ -63,16 +63,17 @@ public class GuiHider
         if (!canReopen())
             return false;
 
+        GuiScreen hiddenGUI = GuiHider.hiddenGUI;
+        GuiHider.hiddenGUI = null;
+
         Minecraft mc = Minecraft.getMinecraft();
         mc.displayGuiScreen(hiddenGUI);
 
         if (mc.currentScreen == null)
+        {
+            GuiHider.hiddenGUI = hiddenGUI;
             return false;
-
-        GuiScreen hiddenGUI = GuiHider.hiddenGUI;
-        GuiHider.hiddenGUI = null;
-
-        hiddenGUI.initGui(); // Re-Init, but after we're free again
+        }
 
         return true;
     }

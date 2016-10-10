@@ -5,6 +5,7 @@
 
 package ivorius.reccomplex.utils.expression;
 
+import com.google.common.primitives.Ints;
 import ivorius.reccomplex.RecurrentComplex;
 import ivorius.reccomplex.files.saving.FileSaver;
 import ivorius.reccomplex.utils.algebra.BoolFunctionExpressionCache;
@@ -14,6 +15,8 @@ import ivorius.reccomplex.world.gen.feature.structure.generic.gentypes.Generatio
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.WorldProvider;
 import net.minecraft.world.biome.Biome;
+
+import java.util.Objects;
 
 /**
  * Created by lukas on 07.09.16.
@@ -34,7 +37,7 @@ public class EnvironmentMatcher extends BoolFunctionExpressionCache<Environment,
         addTypes(new DimensionVariableType(DIMENSION_PREFIX, ""), t -> t.alias("dim.", ""));
         addTypes(new DependencyVariableType(DEPENDENCY_PREFIX, ""), t -> t.alias("dep.", ""));
         addTypes(new VillageTypeType(VILLAGE_TYPE_PREFIX, ""), t -> t.alias("vtype.", ""));
-        addTypes(new VillageTypeType(GENERATION_INFO_PREFIX, ""), t -> t.alias("gen.", ""));
+        addTypes(new GenerationType(GENERATION_INFO_PREFIX, ""), t -> t.alias("gen.", ""));
 
         testVariables();
     }
@@ -99,9 +102,35 @@ public class EnvironmentMatcher extends BoolFunctionExpressionCache<Environment,
         }
     }
 
-    protected static class VillageTypeType extends DelegatingVariableType<Boolean, Environment, Object, GenerationInfo, Object, StructureGenerationInfoMatcher>
+    protected static class VillageTypeType extends VariableType<Boolean, Environment, Object>
     {
         public VillageTypeType(String prefix, String suffix)
+        {
+            super(prefix, suffix);
+        }
+
+        @Override
+        public Boolean evaluate(String var, Environment environment)
+        {
+            return Objects.equals(parseVillageType(var), environment.villageType);
+        }
+
+        public Integer parseVillageType(String var)
+        {
+            Integer integer = Ints.tryParse(var);
+            return integer != null && integer >= 0 && integer < 4 ? integer : null;
+        }
+
+        @Override
+        public Validity validity(final String var, final Object args)
+        {
+            return parseVillageType(var) != null ? Validity.KNOWN : Validity.ERROR;
+        }
+    }
+
+    protected static class GenerationType extends DelegatingVariableType<Boolean, Environment, Object, GenerationInfo, Object, StructureGenerationInfoMatcher>
+    {
+        public GenerationType(String prefix, String suffix)
         {
             super(prefix, suffix);
         }

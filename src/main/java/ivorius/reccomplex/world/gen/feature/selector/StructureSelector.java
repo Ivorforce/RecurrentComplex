@@ -7,6 +7,8 @@ package ivorius.reccomplex.world.gen.feature.selector;
 
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.Multimap;
+import gnu.trove.map.TObjectDoubleMap;
+import gnu.trove.map.hash.TObjectDoubleHashMap;
 import ivorius.ivtoolkit.random.WeightedSelector;
 import ivorius.reccomplex.RCConfig;
 import ivorius.reccomplex.dimensions.DimensionDictionary;
@@ -31,6 +33,7 @@ public class StructureSelector<T extends GenerationInfo & EnvironmentalSelection
     protected final Set<String> cachedDimensionTypes = new HashSet<>(); // Because dimensions could often change on the fly
 
     protected Multimap<C, WeightedSelector.SimpleItem<Pair<StructureInfo, T>>> weightedStructureInfos = ArrayListMultimap.create();
+    protected TObjectDoubleMap<C> totalWeights = new TObjectDoubleHashMap<C>();
 
     public StructureSelector(Map<String, StructureInfo> structures, WorldProvider provider, Biome biome, Class<T> typeClass)
     {
@@ -44,7 +47,10 @@ public class StructureSelector<T extends GenerationInfo & EnvironmentalSelection
                 double generationWeight = selection.getGenerationWeight(provider, biome) * tweaked;
 
                 if (generationWeight > 0)
+                {
                     weightedStructureInfos.put(selection.generationCategory(), new WeightedSelector.SimpleItem<>(generationWeight, Pair.of(entry.getValue(), selection)));
+                    totalWeights.adjustValue(selection.generationCategory(), generationWeight);
+                }
             }
         }
     }
@@ -79,9 +85,7 @@ public class StructureSelector<T extends GenerationInfo & EnvironmentalSelection
 
     public double totalWeight(@Nonnull C c)
     {
-        return weightedStructureInfos.get(c).stream()
-                .mapToDouble(WeightedSelector.SimpleItem::getWeight)
-                .sum();
+        return totalWeights.get(c);
     }
 
     @Nullable

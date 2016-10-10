@@ -21,7 +21,7 @@ import java.util.List;
  */
 public class NaturalStructureSelector
 {
-    public static final int STRUCTURE_MIN_CAP_DEFAULT = 20;
+    public static final double STRUCTURE_MIN_CAP_DEFAULT = 20;
 
     public static SimpleLeveledRegistry<Category> CATEGORY_REGISTRY = new SimpleLeveledRegistry<>("natural generation category");
 
@@ -42,7 +42,7 @@ public class NaturalStructureSelector
         @SerializedName("defaultSpawnChance")
         public float defaultSpawnChance = 1;
         @SerializedName("structureMinCap")
-        public Integer structureMinCap = null;
+        public Double structureMinCap = null;
 
         @SerializedName("spawnDistanceMultiplier")
         public float spawnDistanceMultiplier = 0;
@@ -57,17 +57,17 @@ public class NaturalStructureSelector
         public final List<String> tooltip = new ArrayList<>();
 
         @Override
-        public float structureSpawnChance(Biome biome, WorldProvider worldProvider, int registeredStructures, Float distanceToSpawn)
+        public double structureSpawnChance(Biome biome, WorldProvider worldProvider, double totalWeight, Float distanceToSpawn)
         {
             return spawnChance(biome, worldProvider)
-                    * amountMultiplier(registeredStructures)
+                    * amountMultiplier(totalWeight)
                     * distanceMultiplier(distanceToSpawn)
                     * RCConfig.structureSpawnChanceModifier;
         }
 
-        public float amountMultiplier(int registeredStructures)
+        public double amountMultiplier(double totalWeight)
         {
-            return Math.min((float) registeredStructures / (float) getActiveStructureMinCap(), 1.0f);
+            return Math.min(totalWeight / getActiveStructureMinCap(), 1.0f);
         }
 
         public float spawnChance(Biome biome, WorldProvider worldProvider)
@@ -89,7 +89,7 @@ public class NaturalStructureSelector
                     : Math.max(1 + distance * spawnDistanceMultiplier, Math.min(spawnDistanceMultiplierCap, 1));
         }
 
-        public Integer getActiveStructureMinCap()
+        public Double getActiveStructureMinCap()
         {
             return structureMinCap != null ? structureMinCap : STRUCTURE_MIN_CAP_DEFAULT;
         }

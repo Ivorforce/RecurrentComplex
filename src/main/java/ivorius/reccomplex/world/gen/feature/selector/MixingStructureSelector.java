@@ -28,10 +28,10 @@ public class MixingStructureSelector<T extends GenerationInfo & EnvironmentalSel
         super(structures, provider, biome, typeClass);
     }
 
-    public float generationChance(C category, WorldProvider worldProvider, Biome biome, Float distanceToSpawn)
+    public double generationChance(C category, WorldProvider worldProvider, Biome biome, Float distanceToSpawn)
     {
         if (category != null)
-            return category.structureSpawnChance(biome, worldProvider, weightedStructureInfos.get(category).size(), distanceToSpawn);
+            return category.structureSpawnChance(biome, worldProvider, totalWeight(category), distanceToSpawn);
 
         return 0.0f;
     }
@@ -39,7 +39,7 @@ public class MixingStructureSelector<T extends GenerationInfo & EnvironmentalSel
     public List<Pair<StructureInfo, T>> generatedStructures(Random random, Biome biome, WorldProvider provider, Float distanceToSpawn)
     {
         return weightedStructureInfos.keySet().stream()
-                .filter(category -> random.nextFloat() < generationChance(category, provider, biome, distanceToSpawn))
+                .filter(category -> random.nextDouble() < generationChance(category, provider, biome, distanceToSpawn))
                 .map(category -> WeightedSelector.select(random, weightedStructureInfos.get(category)))
                 .collect(Collectors.toList());
     }
@@ -59,6 +59,6 @@ public class MixingStructureSelector<T extends GenerationInfo & EnvironmentalSel
 
     interface Category
     {
-        float structureSpawnChance(Biome biome, WorldProvider worldProvider, int registeredStructures, Float distanceToSpawn);
+        double structureSpawnChance(Biome biome, WorldProvider worldProvider, double totalWeight, Float distanceToSpawn);
     }
 }

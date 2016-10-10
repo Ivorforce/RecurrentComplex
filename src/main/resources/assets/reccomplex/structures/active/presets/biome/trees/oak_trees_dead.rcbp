@@ -1,0 +1,37 @@
+{
+  "data": [
+    {
+      "biomes": "$THEMED_TREES",
+      "weight": 0.0
+    },
+    {
+      "biomes": "$WATER",
+      "weight": 0.0
+    },
+    {
+      "biomes": "$LUSH",
+      "weight": 0.0
+    },
+    {
+      "biomes": "$HOT | $COLD",
+      "weight": 0.0
+    },
+    {
+      "biomes": "$WET | $DRY",
+      "weight": 0.0
+    },
+    {
+      "biomes": "$MOUNTAIN",
+      "weight": 0.0
+    },
+    {
+      "biomes": ""
+    }
+  ],
+  "metadata": {
+    "title": "Oak Trees (Dead)",
+    "description": [
+      "Biomes suitable for dead oak trees."
+    ]
+  }
+}

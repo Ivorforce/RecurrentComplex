@@ -49,7 +49,7 @@ public class StructureSelector<T extends GenerationInfo & EnvironmentalSelection
                 if (generationWeight > 0)
                 {
                     weightedStructureInfos.put(selection.generationCategory(), new WeightedSelector.SimpleItem<>(generationWeight, Pair.of(entry.getValue(), selection)));
-                    totalWeights.adjustValue(selection.generationCategory(), generationWeight);
+                    totalWeights.adjustOrPutValue(selection.generationCategory(), generationWeight, generationWeight);
                 }
             }
         }

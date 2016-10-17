@@ -49,6 +49,8 @@ public class RCCommands
 
     public static ICommand reopen;
 
+    public static ICommand forget;
+
     public static void onServerStart(FMLServerStartingEvent event)
     {
         event.registerServerCommand(new CommandWrite());
@@ -114,6 +116,8 @@ public class RCCommands
         event.registerServerCommand(new CommandExportSchematic());
 
         event.registerServerCommand(new CommandWhatIsThis());
+        event.registerServerCommand(forget = new CommandForget());
+        
         event.registerServerCommand(lookup = new CommandLookupStructure());
         event.registerServerCommand(list = new CommandListStructures());
         event.registerServerCommand(new CommandSearchStructure());

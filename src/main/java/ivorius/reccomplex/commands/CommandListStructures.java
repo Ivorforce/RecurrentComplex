@@ -59,7 +59,7 @@ public class CommandListStructures extends CommandBase
         TextComponentString[] components = new TextComponentString[endIndex - startIndex + 2];
 
         for (int i = 0; i < endIndex - startIndex; i++)
-            components[i + 1] = CommandSearchStructure.createStructureTextComponent(structureNames.get(startIndex + i));
+            components[i + 1] = CommandSearchStructure.structureTextComponent(structureNames.get(startIndex + i));
 
         components[0] = new TextComponentString("[<--]");
         if (page > 0)

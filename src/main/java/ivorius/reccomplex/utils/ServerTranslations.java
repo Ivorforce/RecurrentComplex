@@ -85,9 +85,15 @@ public class ServerTranslations
     }
 
     @Nonnull
-    public static TextComponentTranslation join(Object[] components)
+    public static TextComponentTranslation join(Object... components)
     {
-        return new TextComponentTranslation(StringUtils.repeat("%s", ", ", components.length), components);
+        return join(", ", components);
+    }
+
+    @Nonnull
+    public static TextComponentTranslation join(String join, Object... components)
+    {
+        return new TextComponentTranslation(StringUtils.repeat("%s", join, components.length), components);
     }
 
     @Nonnull

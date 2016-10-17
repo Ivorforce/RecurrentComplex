@@ -117,6 +117,17 @@ public class StructureGenerationData extends WorldSavedData
         return entryMap.get(id);
     }
 
+    public Entry removeEntry(UUID id)
+    {
+        Entry entry = entryMap.remove(id);
+        chunkMap.values().removeIf(e -> e.uuid.equals(id));
+        instanceMap.values().removeIf(e -> e.uuid.equals(id));
+
+        if (entry != null)
+            markDirty();
+        return entry;
+    }
+
     public Set<Entry> getEntriesByID(String id)
     {
         return instanceMap.get(id);

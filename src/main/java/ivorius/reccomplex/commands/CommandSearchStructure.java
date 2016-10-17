@@ -22,11 +22,9 @@ import net.minecraft.command.ICommandSender;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.text.TextComponentBase;
 import net.minecraft.util.text.TextComponentString;
-import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.util.text.event.ClickEvent;
 import net.minecraft.util.text.event.HoverEvent;
-import org.apache.commons.lang3.StringUtils;
 
 import javax.annotation.Nonnull;
 import java.util.*;
@@ -42,14 +40,14 @@ public class CommandSearchStructure extends CommandBase
 {
     public static final int MAX_RESULTS = 20;
 
-    public static TextComponentString createStructureTextComponent(String strucID)
+    public static TextComponentString structureTextComponent(String strucID)
     {
         TextComponentString comp = new TextComponentString(strucID);
         comp.getStyle().setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND,
                 String.format("/%s %s", RCCommands.lookup.getCommandName(), strucID)));
         comp.getStyle().setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT,
                 ServerTranslations.get("commands.rcsearch.lookup")));
-        comp.getStyle().setColor(TextFormatting.BLUE);
+        comp.getStyle().setColor(TextFormatting.AQUA);
         return comp;
     }
 
@@ -112,7 +110,7 @@ public class CommandSearchStructure extends CommandBase
         {
             outputSearch(commandSender, StructureRegistry.INSTANCE.ids(),
                     name -> searchRank(Arrays.asList(args), keywords(name, StructureRegistry.INSTANCE.get(name))),
-                    CommandSearchStructure::createStructureTextComponent
+                    CommandSearchStructure::structureTextComponent
             );
         }
         else

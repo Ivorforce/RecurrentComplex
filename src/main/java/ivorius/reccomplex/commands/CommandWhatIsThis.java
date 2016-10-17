@@ -15,7 +15,9 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextComponentString;
+import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraft.util.text.TextFormatting;
+import net.minecraft.util.text.event.ClickEvent;
 import net.minecraft.util.text.event.HoverEvent;
 import net.minecraft.world.World;
 
@@ -32,13 +34,17 @@ import java.util.stream.Collectors;
 public class CommandWhatIsThis extends CommandBase
 {
     @Nonnull
-    public static TextComponentString entryTextComponent(StructureGenerationData.Entry entry)
+    public static ITextComponent entryTextComponent(StructureGenerationData.Entry entry)
     {
-        TextComponentString textComponent = new TextComponentString(entry.getStructureID());
-        textComponent.getStyle().setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT,
-                new TextComponentString(entry.getUuid().toString())));
-        textComponent.getStyle().setColor(TextFormatting.AQUA);
-        return textComponent;
+        TextComponentString forget = new TextComponentString("X");
+        String uuidString = entry.getUuid().toString();
+        forget.getStyle().setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND,
+                String.format("/%s %s", RCCommands.forget.getCommandName(), uuidString)));
+        forget.getStyle().setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT,
+                ServerTranslations.format("commands.rcforget.forget", uuidString)));
+        forget.getStyle().setColor(TextFormatting.RED);
+
+        return new TextComponentTranslation("%s (%s)", CommandSearchStructure.structureTextComponent(entry.getStructureID()), forget);
     }
 
     @Override

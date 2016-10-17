@@ -155,6 +155,11 @@ commands.whatisthis.none=There is nothing here!
 commands.whatisthis.one=This is: %s
 commands.whatisthis.many=This is any, or all of: %s
 
+commands.rcforget.forget=Forget %s
+commands.rcforget.usage=/#forget <UUID>
+commands.rcforget.unknown=Unknown entry UUID!
+commands.rcforget.success=Forgot %s!
+
 commands.rclookup.usage=/#lookup <structure>
 commands.rclookup.reply.silent=%s: §bInactive§r, by: '%s', is %s, %s
 commands.rclookup.reply.generates=%s: §bGenerates§r, by: '%s', is %s, %s

@@ -12,6 +12,7 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.Loader;
+import net.minecraftforge.fml.common.ModContainer;
 import net.minecraftforge.fml.common.network.ByteBufUtils;
 
 import javax.annotation.Nonnull;
@@ -71,8 +72,8 @@ public enum ResourceDirectory
         LeveledRegistry.Level level = LeveledRegistry.Level.MODDED;
 
         loader.clearFiles(level);
-        for (String modid : Loader.instance().getIndexedModList().keySet())
-            loadFilesFromDomain(loader, modid, level, loader.keySet());
+        for (ModContainer mod : Loader.instance().getModList())
+            loadFilesFromDomain(loader, mod.getModId(), level, loader.keySet());
     }
 
     public static void reloadCustomFiles(FileLoader loader)

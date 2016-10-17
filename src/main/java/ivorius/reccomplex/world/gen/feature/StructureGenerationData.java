@@ -5,17 +5,19 @@
 
 package ivorius.reccomplex.world.gen.feature;
 
-import com.google.common.collect.*;
+import com.google.common.collect.HashMultimap;
+import com.google.common.collect.SetMultimap;
+import com.google.common.collect.Sets;
 import ivorius.ivtoolkit.blocks.BlockPositions;
-import net.minecraft.util.math.BlockPos;
 import ivorius.ivtoolkit.math.AxisAlignedTransform2D;
 import ivorius.reccomplex.RecurrentComplex;
+import ivorius.reccomplex.utils.StructureBoundingBoxes;
 import ivorius.reccomplex.world.gen.feature.structure.StructureInfo;
 import ivorius.reccomplex.world.gen.feature.structure.StructureInfos;
 import ivorius.reccomplex.world.gen.feature.structure.StructureRegistry;
-import ivorius.reccomplex.utils.StructureBoundingBoxes;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.ChunkPos;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldSavedData;
@@ -61,32 +63,28 @@ public class StructureGenerationData extends WorldSavedData
         return data;
     }
 
-    public Set<Entry> getEntriesAt(ChunkPos coords, boolean onlyPartial)
+    public Stream<Entry> entriesAt(ChunkPos coords, boolean onlyPartial)
     {
-        if (onlyPartial)
-            return Sets.filter(chunkMap.get(coords), input -> !input.hasBeenGenerated);
-        return chunkMap.get(coords);
+        return onlyPartial ? chunkMap.get(coords).stream().filter(input -> !input.hasBeenGenerated) : chunkMap.get(coords).stream();
     }
 
-    public Set<Entry> getEntriesAt(final BlockPos coords)
+    public Stream<Entry> entriesAt(final BlockPos coords)
     {
-        Set<Entry> entries = getEntriesAt(new ChunkPos(coords.getX() >> 4, coords.getZ() >> 4), false);
-
-        return Sets.filter(entries, input -> {
-            StructureBoundingBox bb = input.boundingBox();
-            return bb != null && bb.isVecInside(coords);
-        });
-    }
-
-    public Set<Entry> getEntriesAt(final StructureBoundingBox boundingBox)
-    {
-        ImmutableSet.Builder<Entry> entries = ImmutableSet.builder();
-        for (ChunkPos chunkCoords : StructureBoundingBoxes.rasterize(boundingBox))
-                entries.addAll(Sets.filter(getEntriesAt(chunkCoords, false), input -> {
+        return entriesAt(new ChunkPos(coords.getX() >> 4, coords.getZ() >> 4), false)
+                .filter(input ->
+                {
                     StructureBoundingBox bb = input.boundingBox();
-                    return bb != null && bb.intersectsWith(boundingBox);
-                }));
-        return entries.build();
+                    return bb != null && bb.isVecInside(coords);
+                });
+    }
+
+    public Stream<Entry> entriesAt(final StructureBoundingBox boundingBox)
+    {
+        return StructureBoundingBoxes.rasterize(boundingBox).stream().flatMap(chunkPos -> entriesAt(chunkPos, false).filter(input ->
+        {
+            StructureBoundingBox bb = input.boundingBox();
+            return bb != null && bb.intersectsWith(boundingBox);
+        }));
     }
 
     public Set<ChunkPos> addCompleteEntry(String structureID, String generationInfoID, BlockPos lowerCoord, AxisAlignedTransform2D transform)
@@ -205,7 +203,7 @@ public class StructureGenerationData extends WorldSavedData
             this.lowerCoord = lowerCoord;
             this.transform = transform;
             this.hasBeenGenerated = hasBeenGenerated;
-         }
+        }
 
         @Nonnull
         public UUID getUuid()

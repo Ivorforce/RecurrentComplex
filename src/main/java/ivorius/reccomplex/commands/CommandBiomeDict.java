@@ -15,10 +15,7 @@ import net.minecraft.command.ICommandSender;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.TextComponentString;
-import net.minecraft.util.text.TextComponentTranslation;
-import net.minecraft.util.text.TextFormatting;
+import net.minecraft.util.text.*;
 import net.minecraft.util.text.event.ClickEvent;
 import net.minecraft.util.text.event.HoverEvent;
 import net.minecraft.world.biome.Biome;
@@ -98,17 +95,10 @@ public class CommandBiomeDict extends CommandBase
                     ITextComponent[] components = new ITextComponent[types.length];
 
                     for (int i = 0; i < types.length; i++)
-                    {
-                        BiomeDictionary.Type type = types[i];
-                        components[i] = new TextComponentString(IvGsonHelper.serializedName(type));
-                        components[i].getStyle().setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND,
-                                String.format("/%s list %s", getCommandName(), type)));
-                        components[i].getStyle().setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT,
-                                ServerTranslations.format("commands.biomedict.get.number", BiomeDictionary.getBiomesForType(type).length)));
-                    }
+                        components[i] = typeTextComponent(types[i]);
 
                     commandSender.addChatMessage(ServerTranslations.format("commands.biomedict.get", biomeID,
-                            new TextComponentTranslation(StringUtils.repeat("%s", ", ", components.length), components)));
+                            ServerTranslations.join(components)));
                 }
                 else
                     commandSender.addChatMessage(ServerTranslations.format("commands.biomedict.nobiome", biomeID));
@@ -127,15 +117,12 @@ public class CommandBiomeDict extends CommandBase
                     {
                         Biome biome = biomes[i];
                         String biomeID = Biome.REGISTRY.getNameForObject(biome).toString();
-                        components[i] = new TextComponentString(biomeID);
-                        components[i].getStyle().setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND,
-                                String.format("/%s types %s", getCommandName(), biomeID)));
-                        components[i].getStyle().setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT,
-                                ServerTranslations.format("commands.biomedict.list.number", BiomeDictionary.getTypesForBiome(biome).length)));
+                        ITextComponent component = biomeTextComponent(biome, biomeID);
+                        components[i] = component;
                     }
 
                     commandSender.addChatMessage(ServerTranslations.format("commands.biomedict.list", args[1],
-                            new TextComponentTranslation(StringUtils.repeat("%s", ", ", components.length), components)));
+                            ServerTranslations.join(components)));
                 }
                 else
                     commandSender.addChatMessage(ServerTranslations.format("commands.biomedict.notype", args[1]));
@@ -144,6 +131,32 @@ public class CommandBiomeDict extends CommandBase
             default:
                 throw ServerTranslations.wrongUsageException("commands.biomedict.usage");
         }
+    }
+
+    @Nonnull
+    public ITextComponent typeTextComponent(BiomeDictionary.Type type)
+    {
+        ITextComponent component = new TextComponentString(IvGsonHelper.serializedName(type));
+        Style style = component.getStyle();
+        style.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND,
+                String.format("/%s list %s", getCommandName(), type)));
+        style.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT,
+                ServerTranslations.format("commands.biomedict.get.number", BiomeDictionary.getBiomesForType(type).length)));
+        style.setColor(TextFormatting.AQUA);
+        return component;
+    }
+
+    @Nonnull
+    public ITextComponent biomeTextComponent(Biome biome, String biomeID)
+    {
+        ITextComponent component = new TextComponentString(biomeID);
+        Style style = component.getStyle();
+        style.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND,
+                String.format("/%s types %s", getCommandName(), biomeID)));
+        style.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT,
+                ServerTranslations.format("commands.biomedict.list.number", BiomeDictionary.getTypesForBiome(biome).length)));
+        style.setColor(TextFormatting.AQUA);
+        return component;
     }
 
     @Override

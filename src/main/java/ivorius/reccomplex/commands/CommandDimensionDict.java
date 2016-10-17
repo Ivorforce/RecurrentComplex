@@ -18,12 +18,11 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextComponentString;
-import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraft.util.text.event.ClickEvent;
 import net.minecraft.util.text.event.HoverEvent;
 import net.minecraftforge.common.DimensionManager;
-import org.apache.commons.lang3.StringUtils;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.Collections;
 import java.util.List;
@@ -66,17 +65,10 @@ public class CommandDimensionDict extends CommandBase
                 ITextComponent[] components = new ITextComponent[types.size()];
 
                 for (int i = 0; i < components.length; i++)
-                {
-                    String type = types.get(i);
-                    components[i] = new TextComponentString(type);
-                    components[i].getStyle().setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND,
-                            String.format("/%s list %s", getCommandName(), type)));
-                    components[i].getStyle().setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT,
-                            ServerTranslations.format("commands.dimensiondict.get.number", allDimensionsOfType(type).size())));
-                }
+                    components[i] = typeTextComponent(types.get(i));
 
                 commandSender.addChatMessage(ServerTranslations.format("commands.dimensiondict.get", dimensionID,
-                        new TextComponentTranslation(StringUtils.repeat("%s", ", ", components.length), components)));
+                        ServerTranslations.join(components)));
                 break;
             }
             case "list":
@@ -87,22 +79,37 @@ public class CommandDimensionDict extends CommandBase
                 ITextComponent[] components = new ITextComponent[typeDimensions.size()];
 
                 for (int i = 0; i < components.length; i++)
-                {
-                    int dimensionID = typeDimensions.get(i);
-                    components[i] = new TextComponentString(String.valueOf(dimensionID));
-                    components[i].getStyle().setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND,
-                            String.format("/%s types %s", getCommandName(), dimensionID)));
-                    components[i].getStyle().setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT,
-                            ServerTranslations.format("commands.dimensiondict.list.number", DimensionDictionary.getDimensionTypes(DimensionManager.getProvider(dimensionID)).size())));
-                }
+                    components[i] = dimensionTextComponent(typeDimensions.get(i));
 
                 commandSender.addChatMessage(ServerTranslations.format("commands.dimensiondict.list", type,
-                        new TextComponentTranslation(StringUtils.repeat("%s", ", ", components.length), components)));
+                        ServerTranslations.join(components)));
                 break;
             }
             default:
                 throw ServerTranslations.wrongUsageException("commands.dimensiondict.usage");
         }
+    }
+
+    @Nonnull
+    public ITextComponent typeTextComponent(String type)
+    {
+        ITextComponent component = new TextComponentString(type);
+        component.getStyle().setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND,
+                String.format("/%s list %s", getCommandName(), type)));
+        component.getStyle().setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT,
+                ServerTranslations.format("commands.dimensiondict.get.number", allDimensionsOfType(type).size())));
+        return component;
+    }
+
+    @Nonnull
+    public ITextComponent dimensionTextComponent(int dimensionID)
+    {
+        ITextComponent component = new TextComponentString(String.valueOf(dimensionID));
+        component.getStyle().setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND,
+                String.format("/%s types %s", getCommandName(), dimensionID)));
+        component.getStyle().setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT,
+                ServerTranslations.format("commands.dimensiondict.list.number", DimensionDictionary.getDimensionTypes(DimensionManager.getProvider(dimensionID)).size())));
+        return component;
     }
 
     private TIntList allDimensionsOfType(String type)

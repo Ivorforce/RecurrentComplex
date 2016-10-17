@@ -15,7 +15,6 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.text.*;
 import net.minecraft.util.text.event.ClickEvent;
 import net.minecraft.util.text.event.HoverEvent;
-import org.apache.commons.lang3.StringUtils;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -70,7 +69,7 @@ public class CommandListStructures extends CommandBase
         if (page < (structureNames.size() - 1) / MAX_RESULTS)
             linkToPage(components[components.length - 1], page + 1, ServerTranslations.format("commands.rclist.next"));
 
-        commandSender.addChatMessage(new TextComponentTranslation(StringUtils.repeat("%s", ", ", components.length), (Object[]) components));
+        commandSender.addChatMessage(ServerTranslations.join(components));
     }
 
     public static void linkToPage(TextComponentString component, int page, ITextComponent hoverTitle)

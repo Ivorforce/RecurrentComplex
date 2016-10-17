@@ -107,8 +107,7 @@ public class WorldGenStructures
     {
         StructureGenerationData data = StructureGenerationData.get(world);
 
-        for (StructureGenerationData.Entry entry : data.getEntriesAt(chunkPos, true))
-        {
+        data.entriesAt(chunkPos, true).forEach(entry -> {
             StructureInfo structureInfo = StructureRegistry.INSTANCE.get(entry.getStructureID());
 
             if (structureInfo != null)
@@ -123,7 +122,7 @@ public class WorldGenStructures
                     data.markDirty();
                 }
             }
-        }
+        });
     }
 
     public static boolean decorate(WorldServer world, Random random, ChunkPos chunkPos, @Nullable Predicate<StructureInfo> structurePredicate)

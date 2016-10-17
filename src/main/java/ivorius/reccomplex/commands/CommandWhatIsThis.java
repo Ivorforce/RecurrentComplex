@@ -5,28 +5,42 @@
 
 package ivorius.reccomplex.commands;
 
-import com.google.common.collect.Lists;
 import ivorius.reccomplex.RCConfig;
 import ivorius.reccomplex.utils.ServerTranslations;
 import ivorius.reccomplex.world.gen.feature.StructureGenerationData;
-import joptsimple.internal.Strings;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.TextComponentString;
+import net.minecraft.util.text.TextFormatting;
+import net.minecraft.util.text.event.HoverEvent;
 import net.minecraft.world.World;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import java.util.Collection;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * Created by lukas on 25.05.14.
  */
 public class CommandWhatIsThis extends CommandBase
 {
+    @Nonnull
+    public static TextComponentString entryTextComponent(StructureGenerationData.Entry entry)
+    {
+        TextComponentString textComponent = new TextComponentString(entry.getStructureID());
+        textComponent.getStyle().setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT,
+                new TextComponentString(entry.getUuid().toString())));
+        textComponent.getStyle().setColor(TextFormatting.AQUA);
+        return textComponent;
+    }
+
     @Override
     public String getCommandName()
     {
@@ -51,15 +65,10 @@ public class CommandWhatIsThis extends CommandBase
 
         BlockPos pos = RCCommands.tryParseBlockPos(commandSender, args, 0, false);
 
-        Collection<StructureGenerationData.Entry> entries = StructureGenerationData.get(world).getEntriesAt(pos);
+        List<StructureGenerationData.Entry> entries = StructureGenerationData.get(world).entriesAt(pos).collect(Collectors.toCollection(ArrayList::new));
         if (entries.size() > 0)
-        {
-            List<StructureGenerationData.Entry> ordered = Lists.newArrayList(entries);
-            if (ordered.size() > 1)
-                commandSender.addChatMessage(ServerTranslations.format("commands.whatisthis.many", Strings.join(Lists.transform(ordered, StructureGenerationData.Entry::getStructureID), ", ")));
-            else
-                commandSender.addChatMessage(ServerTranslations.format("commands.whatisthis.one", ordered.get(0).getStructureID()));
-        }
+            commandSender.addChatMessage(ServerTranslations.format(new ArrayList<ITextComponent>().size() > 1 ? "commands.whatisthis.many" : "commands.whatisthis.one",
+                    ServerTranslations.join(entries.stream().map(CommandWhatIsThis::entryTextComponent).collect(Collectors.toList()))));
         else
             commandSender.addChatMessage(ServerTranslations.format("commands.whatisthis.none"));
     }

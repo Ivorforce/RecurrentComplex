@@ -12,6 +12,10 @@ import net.minecraft.command.WrongUsageException;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraft.util.text.TextComponentTranslation;
+import org.apache.commons.lang3.StringUtils;
+
+import javax.annotation.Nonnull;
+import java.util.List;
 
 /**
  * Created by lukas on 01.04.15.
@@ -78,5 +82,17 @@ public class ServerTranslations
             return new CommandException(IvTranslations.format(key, convertParams(params)));
         else
             return new CommandException(key, params);
+    }
+
+    @Nonnull
+    public static TextComponentTranslation join(Object[] components)
+    {
+        return new TextComponentTranslation(StringUtils.repeat("%s", ", ", components.length), components);
+    }
+
+    @Nonnull
+    public static TextComponentTranslation join(List<?> components)
+    {
+        return join(components.toArray());
     }
 }

@@ -100,6 +100,8 @@ public class RCConfig
 
         if (configID == null || configID.equals(CATEGORY_GENERAL))
         {
+            lightweightMode = config.getBoolean("lightweightMode", CATEGORY_GENERAL, false, "Enabling this will make the mod register as little as possible, which enables it to be used server-side only.");
+
             commandPrefix = config.getString("commandPrefix", CATEGORY_GENERAL, "#", "The String that will be prefixed to every command, e.g. '#' -> '/#gen', '#paste' etc.");
 
             commandMatchers.clear();
@@ -118,8 +120,6 @@ public class RCConfig
 
         if (configID == null || configID.equals(CATEGORY_BALANCING))
         {
-            lightweightMode = config.getBoolean("lightweightMode", CATEGORY_BALANCING, false, "Enabling this will make the mod register as little as possible, which enables it to be used server-side only.");
-
             avoidOverlappingGeneration = config.getBoolean("avoidOverlappingGeneration", CATEGORY_BALANCING, true, "Enabling this will cancel any structure generation if another structure is present at the cooridnate already.");
             honorStructureGenerationOption = config.getBoolean("honorStructureGenerationOption", CATEGORY_BALANCING, true, "If disabled, Recurrent Complex will generate structures in worlds without the structure generation option.");
 

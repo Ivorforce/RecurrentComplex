@@ -55,7 +55,7 @@ public class CommandForgetAll extends CommandBase
         entries.forEach(e -> generationData.removeEntry(e.getUuid()));
 
         if (entries.size() == 1)
-            commandSender.addChatMessage(ServerTranslations.format("commands.rcforget.success", entries.get(0).getUuid()));
+            commandSender.addChatMessage(ServerTranslations.format("commands.rcforget.success", entries.get(0).description()));
         else
             commandSender.addChatMessage(ServerTranslations.format("commands.rcforgetall.success", entries.size()));
     }

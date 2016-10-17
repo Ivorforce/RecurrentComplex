@@ -6,21 +6,14 @@
 package ivorius.reccomplex.commands;
 
 import ivorius.reccomplex.RCConfig;
+import ivorius.reccomplex.capability.SelectionOwner;
+import ivorius.reccomplex.utils.RCBlockAreas;
 import ivorius.reccomplex.utils.ServerTranslations;
-import net.minecraft.block.Block;
-import net.minecraft.block.state.IBlockState;
+import ivorius.reccomplex.world.gen.feature.StructureGenerationData;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
-
-import javax.annotation.Nullable;
-import java.util.Collections;
-import java.util.List;
-import java.util.stream.Collectors;
-import java.util.stream.IntStream;
 
 /**
  * Created by lukas on 09.06.14.
@@ -39,15 +32,6 @@ public class CommandSelectRemember extends CommandBase
         return ServerTranslations.usage("commands.rcremember.usage");
     }
 
-    @Override
-    public List<String> getTabCompletionOptions(MinecraftServer server, ICommandSender sender, String[] args, @Nullable BlockPos pos)
-    {
-        if (args.length == 1)
-            return getListOfStringsMatchingLastWord(args, Block.REGISTRY.getKeys());
-
-        return Collections.emptyList();
-    }
-
     public int getRequiredPermissionLevel()
     {
         return 2;
@@ -59,16 +43,12 @@ public class CommandSelectRemember extends CommandBase
         if (args.length < 1)
             throw ServerTranslations.wrongUsageException("commands.rcremember.usage");
 
-        World world = commandSender.getEntityWorld();
+        StructureGenerationData generationData = StructureGenerationData.get(commandSender.getEntityWorld());
+        SelectionOwner owner = RCCommands.getSelectionOwner(commandSender, null, true);
 
-        Block dstBlock = getBlockByText(commandSender, args[0]);
-        int[] dstMeta = args.length >= 2 ? RCCommands.parseMetadatas(args[1]) : new int[]{0};
-        List<IBlockState> dst = IntStream.of(dstMeta).mapToObj(dstBlock::getStateFromMeta).collect(Collectors.toList());
+        String name = buildString(args, 0);
 
-        for (BlockPos coord : RCCommands.getSelectionOwner(commandSender, null, true).getSelection())
-        {
-            IBlockState state = dst.get(world.rand.nextInt(dst.size()));
-            world.setBlockState(coord, state, 3);
-        }
+        generationData.addCustomEntry(name, RCBlockAreas.toBoundingBox(owner.getSelection()));
+        commandSender.addChatMessage(ServerTranslations.format("commands.rcremember.success", name));
     }
 }

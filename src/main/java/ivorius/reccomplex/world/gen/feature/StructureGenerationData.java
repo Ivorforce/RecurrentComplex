@@ -10,13 +10,14 @@ import com.google.common.collect.SetMultimap;
 import com.google.common.collect.Sets;
 import ivorius.ivtoolkit.blocks.BlockPositions;
 import ivorius.ivtoolkit.math.AxisAlignedTransform2D;
+import ivorius.ivtoolkit.tools.NBTCompoundObject;
+import ivorius.ivtoolkit.tools.NBTCompoundObjects;
 import ivorius.reccomplex.RecurrentComplex;
 import ivorius.reccomplex.utils.StructureBoundingBoxes;
 import ivorius.reccomplex.world.gen.feature.structure.StructureInfo;
 import ivorius.reccomplex.world.gen.feature.structure.StructureInfos;
 import ivorius.reccomplex.world.gen.feature.structure.StructureRegistry;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.nbt.NBTTagList;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.ChunkPos;
 import net.minecraft.world.World;
@@ -26,6 +27,7 @@ import net.minecraftforge.common.util.Constants;
 
 import javax.annotation.Nonnull;
 import java.util.*;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 /**
@@ -40,7 +42,8 @@ public class StructureGenerationData extends WorldSavedData
 
     protected final Map<UUID, Entry> entryMap = new HashMap<>();
     protected final SetMultimap<ChunkPos, Entry> chunkMap = HashMultimap.create();
-    protected final SetMultimap<String, Entry> instanceMap = HashMultimap.create();
+
+    protected final SetMultimap<String, StructureEntry> instanceMap = HashMultimap.create();
 
     public StructureGenerationData(String id)
     {
@@ -63,38 +66,49 @@ public class StructureGenerationData extends WorldSavedData
         return data;
     }
 
-    public Stream<Entry> entriesAt(ChunkPos coords, boolean onlyPartial)
+    public Stream<StructureEntry> structureEntriesAt(ChunkPos coords)
     {
-        return onlyPartial ? chunkMap.get(coords).stream().filter(input -> !input.hasBeenGenerated) : chunkMap.get(coords).stream();
+        return entriesAt(coords)
+                .filter(StructureEntry.class::isInstance).map(StructureEntry.class::cast);
+    }
+
+    public Stream<Entry> entriesAt(ChunkPos coords)
+    {
+        return chunkMap.get(coords).stream();
     }
 
     public Stream<Entry> entriesAt(final BlockPos coords)
     {
-        return entriesAt(new ChunkPos(coords.getX() >> 4, coords.getZ() >> 4), false)
+        return entriesAt(new ChunkPos(coords.getX() >> 4, coords.getZ() >> 4))
                 .filter(input ->
                 {
-                    StructureBoundingBox bb = input.boundingBox();
+                    StructureBoundingBox bb = input.getBoundingBox();
                     return bb != null && bb.isVecInside(coords);
                 });
     }
 
     public Stream<Entry> entriesAt(final StructureBoundingBox boundingBox)
     {
-        return StructureBoundingBoxes.rasterize(boundingBox).stream().flatMap(chunkPos -> entriesAt(chunkPos, false).filter(input ->
+        return StructureBoundingBoxes.rasterize(boundingBox).stream().flatMap(chunkPos -> entriesAt(chunkPos).filter(input ->
         {
-            StructureBoundingBox bb = input.boundingBox();
+            StructureBoundingBox bb = input.getBoundingBox();
             return bb != null && bb.intersectsWith(boundingBox);
         }));
     }
 
-    public Set<ChunkPos> addCompleteEntry(String structureID, String generationInfoID, BlockPos lowerCoord, AxisAlignedTransform2D transform)
+    public Set<ChunkPos> addCustomEntry(String name, StructureBoundingBox boundingBox)
     {
-        return addEntry(new Entry(UUID.randomUUID(), structureID, generationInfoID, lowerCoord, transform, true));
+        return addEntry(new CustomEntry(UUID.randomUUID(), boundingBox, name));
     }
 
-    public Set<ChunkPos> addGeneratingEntry(String structureID, String generationInfoID, BlockPos lowerCoord, AxisAlignedTransform2D transform)
+    public Set<ChunkPos> addCompleteEntry(String structureID, String generationInfoID, StructureBoundingBox boundingBox, AxisAlignedTransform2D transform)
     {
-        return addEntry(new Entry(UUID.randomUUID(), structureID, generationInfoID, lowerCoord, transform, false));
+        return addEntry(new StructureEntry(UUID.randomUUID(), boundingBox, structureID, generationInfoID, transform, true));
+    }
+
+    public Set<ChunkPos> addGeneratingEntry(String structureID, String generationInfoID, StructureBoundingBox boundingBox, AxisAlignedTransform2D transform)
+    {
+        return addEntry(new StructureEntry(UUID.randomUUID(), boundingBox, structureID, generationInfoID, transform, false));
     }
 
     public Set<ChunkPos> addEntry(Entry entry)
@@ -105,7 +119,8 @@ public class StructureGenerationData extends WorldSavedData
         for (ChunkPos coords : rasterized)
             chunkMap.put(coords, entry);
 
-        instanceMap.put(entry.getStructureID(), entry);
+        if (entry instanceof StructureEntry)
+            instanceMap.put(((StructureEntry) entry).getStructureID(), (StructureEntry) entry);
 
         markDirty();
 
@@ -128,7 +143,7 @@ public class StructureGenerationData extends WorldSavedData
         return entry;
     }
 
-    public Set<Entry> getEntriesByID(String id)
+    public Set<StructureEntry> getEntriesByID(String id)
     {
         return instanceMap.get(id);
     }
@@ -163,57 +178,33 @@ public class StructureGenerationData extends WorldSavedData
     {
         entryMap.clear();
 
-        NBTTagList entries = compound.getTagList("entries", Constants.NBT.TAG_COMPOUND);
-        for (int i = 0; i < entries.tagCount(); i++)
-        {
-            Entry entry = new Entry();
-            entry.readFromNBT(entries.getCompoundTagAt(i));
-            addEntry(entry);
-        }
+        NBTCompoundObjects.readListFrom(compound, "entries", StructureEntry.class).forEach(this::addEntry);
+        NBTCompoundObjects.readListFrom(compound, "customEntries", CustomEntry.class).forEach(this::addEntry);
     }
 
     @Override
     public NBTTagCompound writeToNBT(NBTTagCompound compound)
     {
-        NBTTagList entries = new NBTTagList();
-        for (Entry entry : entryMap.values())
-        {
-            NBTTagCompound entryCompound = new NBTTagCompound();
-            entry.writeToNBT(entryCompound);
-            entries.appendTag(entryCompound);
-        }
-        compound.setTag("entries", entries);
+        NBTCompoundObjects.writeListTo(compound, "entries", entryMap.values().stream().filter(e -> e instanceof StructureEntry).collect(Collectors.toList()));
+        NBTCompoundObjects.writeListTo(compound, "customEntries", entryMap.values().stream().filter(e -> e instanceof CustomEntry).collect(Collectors.toList()));
 
         return compound;
     }
 
-    public static class Entry
+    public static abstract class Entry implements NBTCompoundObject
     {
         @Nonnull
         protected UUID uuid = UUID.randomUUID();
-
-        protected String structureID;
-        protected String generationInfoID;
-        protected BlockPos lowerCoord;
-        protected AxisAlignedTransform2D transform;
-
-        protected NBTTagCompound instanceData;
-        protected boolean firstTime = true;
-
-        protected boolean hasBeenGenerated;
+        protected StructureBoundingBox boundingBox = new StructureBoundingBox();
 
         public Entry()
         {
         }
 
-        public Entry(@Nonnull UUID uuid, String structureID, String generationInfoID, BlockPos lowerCoord, AxisAlignedTransform2D transform, boolean hasBeenGenerated)
+        public Entry(@Nonnull UUID uuid, StructureBoundingBox boundingBox)
         {
             this.uuid = uuid;
-            this.structureID = structureID;
-            this.generationInfoID = generationInfoID;
-            this.lowerCoord = lowerCoord;
-            this.transform = transform;
-            this.hasBeenGenerated = hasBeenGenerated;
+            this.boundingBox = boundingBox;
         }
 
         @Nonnull
@@ -227,14 +218,88 @@ public class StructureGenerationData extends WorldSavedData
             this.uuid = uuid;
         }
 
+        public StructureBoundingBox getBoundingBox()
+        {
+            return boundingBox;
+        }
+
+        public void setBoundingBox(StructureBoundingBox boundingBox)
+        {
+            this.boundingBox = boundingBox;
+        }
+
+        public Set<ChunkPos> rasterize()
+        {
+            return StructureBoundingBoxes.rasterize(getBoundingBox());
+        }
+
+        public abstract String description();
+
+        @Override
+        public boolean equals(Object o)
+        {
+            if (this == o) return true;
+            if (o == null || getClass() != o.getClass()) return false;
+
+            StructureEntry entry = (StructureEntry) o;
+
+            if (!uuid.equals(entry.uuid)) return false;
+
+            return true;
+        }
+
+        @Override
+        public int hashCode()
+        {
+            return uuid.hashCode();
+        }
+
+        @Override
+        public void readFromNBT(NBTTagCompound compound)
+        {
+            uuid = new UUID(compound.getLong("UUIDMS"), compound.getLong("UUIDLS"));
+
+            boundingBox = new StructureBoundingBox(compound.getIntArray("boundingBox"));
+        }
+
+        @Override
+        public void writeToNBT(NBTTagCompound compound)
+        {
+            compound.setLong("UUIDMS", uuid.getMostSignificantBits());
+            compound.setLong("UUIDLS", uuid.getLeastSignificantBits());
+
+            compound.setTag("boundingBox", boundingBox.toNBTTagIntArray());
+        }
+    }
+
+    public static class StructureEntry extends Entry
+    {
+        protected String structureID;
+        protected String generationInfoID;
+
+        protected AxisAlignedTransform2D transform;
+
+        protected NBTTagCompound instanceData;
+        protected boolean firstTime = true;
+
+        protected boolean hasBeenGenerated;
+
+        public StructureEntry()
+        {
+        }
+
+        public StructureEntry(@Nonnull UUID uuid, StructureBoundingBox boundingBox, String structureID, String generationInfoID, AxisAlignedTransform2D transform, boolean hasBeenGenerated)
+        {
+            super(uuid, boundingBox);
+            this.structureID = structureID;
+            this.generationInfoID = generationInfoID;
+            this.transform = transform;
+            this.hasBeenGenerated = hasBeenGenerated;
+        }
+
         public String getStructureID()
         {
             return structureID;
-        }
-
-        public BlockPos getLowerCoord()
-        {
-            return lowerCoord;
         }
 
         public AxisAlignedTransform2D getTransform()
@@ -247,16 +312,25 @@ public class StructureGenerationData extends WorldSavedData
             return hasBeenGenerated;
         }
 
+        @Override
         public void readFromNBT(NBTTagCompound compound)
         {
-            uuid = new UUID(compound.getLong("UUIDMS"), compound.getLong("UUIDLS"));
+            super.readFromNBT(compound);
 
             structureID = compound.getString("structureID");
             generationInfoID = compound.hasKey(generationInfoID, Constants.NBT.TAG_STRING) ? compound.getString("generationInfoID") : null;
 
             transform = AxisAlignedTransform2D.from(compound.getInteger("rotation"), compound.getBoolean("mirrorX"));
 
-            lowerCoord = BlockPositions.readFromNBT("lowerCoord", compound);
+            if (compound.hasKey("lowerCoord")) // legacy
+            {
+                BlockPos lowerCoord = BlockPositions.readFromNBT("lowerCoord", compound);
+                StructureInfo structureInfo = StructureRegistry.INSTANCE.get(structureID);
+
+                boundingBox = structureInfo != null
+                        ? StructureInfos.structureBoundingBox(lowerCoord, StructureInfos.structureSize(structureInfo, transform))
+                        : new StructureBoundingBox();
+            }
 
             if (compound.hasKey("instanceData", Constants.NBT.TAG_COMPOUND))
                 instanceData = compound.getCompoundTag("instanceData");
@@ -264,10 +338,10 @@ public class StructureGenerationData extends WorldSavedData
             hasBeenGenerated = compound.getBoolean("hasBeenGenerated");
         }
 
+        @Override
         public void writeToNBT(NBTTagCompound compound)
         {
-            compound.setLong("UUIDMS", uuid.getMostSignificantBits());
-            compound.setLong("UUIDLS", uuid.getLeastSignificantBits());
+            super.writeToNBT(compound);
 
             compound.setString("structureID", structureID);
             if (generationInfoID != null) compound.setString("generationInfoID", generationInfoID);
@@ -275,45 +349,53 @@ public class StructureGenerationData extends WorldSavedData
             compound.setInteger("rotation", transform.getRotation());
             compound.setBoolean("mirrorX", transform.isMirrorX());
 
-            BlockPositions.writeToNBT("lowerCoord", lowerCoord, compound);
-
             if (instanceData != null)
                 compound.setTag("instanceData", instanceData);
             compound.setBoolean("firstTime", firstTime);
             compound.setBoolean("hasBeenGenerated", hasBeenGenerated);
         }
 
-        public Set<ChunkPos> rasterize()
+        @Override
+        public String description()
         {
-            return StructureBoundingBoxes.rasterize(boundingBox());
+            return structureID;
+        }
+    }
+
+    public static class CustomEntry extends Entry
+    {
+        public String name;
+
+        public CustomEntry()
+        {
         }
 
-        public StructureBoundingBox boundingBox()
+        public CustomEntry(@Nonnull UUID uuid, StructureBoundingBox boundingBox, String name)
         {
-            StructureInfo structureInfo = StructureRegistry.INSTANCE.get(structureID);
-
-            return structureInfo != null
-                    ? StructureInfos.structureBoundingBox(lowerCoord, StructureInfos.structureSize(structureInfo, transform))
-                    : null;
+            super(uuid, boundingBox);
+            this.name = name;
         }
 
         @Override
-        public boolean equals(Object o)
+        public String description()
         {
-            if (this == o) return true;
-            if (o == null || getClass() != o.getClass()) return false;
-
-            Entry entry = (Entry) o;
-
-            if (!uuid.equals(entry.uuid)) return false;
-
-            return true;
+            return name;
         }
 
         @Override
-        public int hashCode()
+        public void writeToNBT(NBTTagCompound compound)
         {
-            return uuid.hashCode();
+            super.writeToNBT(compound);
+
+            compound.setString("name", name);
+        }
+
+        @Override
+        public void readFromNBT(NBTTagCompound compound)
+        {
+            super.readFromNBT(compound);
+
+            name = compound.getString("name");
         }
     }
 }

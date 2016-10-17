@@ -160,6 +160,9 @@ commands.rcforget.usage=/#forget <UUID>
 commands.rcforget.unknown=Unknown entry UUID!
 commands.rcforget.success=Forgot %s!
 
+commands.rcremember.usage=/#remember <name>
+commands.rcremember.success=Remembered %s!
+
 commands.rcforgetall.usage=/#forgetall [x] [y] [z]
 commands.rcforgetall.success=Forgot %s structures!
 

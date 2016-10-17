@@ -107,13 +107,13 @@ public class WorldGenStructures
     {
         StructureGenerationData data = StructureGenerationData.get(world);
 
-        data.entriesAt(chunkPos, true).forEach(entry -> {
+        data.structureEntriesAt(chunkPos).filter(e -> !e.hasBeenGenerated).forEach(entry -> {
             StructureInfo structureInfo = StructureRegistry.INSTANCE.get(entry.getStructureID());
 
             if (structureInfo != null)
             {
                 new StructureGenerator<>(structureInfo).world(world).generationInfo(entry.generationInfoID)
-                        .random(random).lowerCoord(entry.lowerCoord).transform(entry.transform).generationBB(StructureInfos.chunkBoundingBox(chunkPos))
+                        .random(random).boundingBox(entry.boundingBox).transform(entry.transform).generationBB(StructureInfos.chunkBoundingBox(chunkPos))
                         .structureID(entry.getStructureID()).instanceData(entry.instanceData).maturity(entry.firstTime ? StructureSpawnContext.GenerateMaturity.FIRST : StructureSpawnContext.GenerateMaturity.COMPLEMENT).generate();
 
                 if (entry.firstTime)

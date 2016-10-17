@@ -141,7 +141,7 @@ public class StructureGenerator<S extends NBTStorable>
                 MinecraftForge.EVENT_BUS.post(new StructureGenerationEventLite.Post(world, structureID, spawn.boundingBox, spawn.generationLayer, firstTime));
 
                 if (structureID != null && memorize)
-                    StructureGenerationData.get(world).addCompleteEntry(structureID, generationInfo != null ? generationInfo.id() : null, StructureBoundingBoxes.min(spawn.boundingBox), spawn.transform);
+                    StructureGenerationData.get(world).addCompleteEntry(structureID, generationInfo != null ? generationInfo.id() : null, spawn.boundingBox, spawn.transform);
             }
 
             return success ? spawnO : Optional.empty();

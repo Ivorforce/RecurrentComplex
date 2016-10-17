@@ -9,6 +9,7 @@ import ivorius.ivtoolkit.blocks.BlockArea;
 import ivorius.ivtoolkit.blocks.BlockAreas;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.gen.structure.StructureBoundingBox;
 
 import javax.annotation.Nonnull;
 import java.util.stream.Stream;
@@ -59,5 +60,10 @@ public class RCBlockAreas
     public static Stream<BlockPos.MutableBlockPos> streamMutablePositions(BlockArea area)
     {
         return StreamSupport.stream(BlockPos.getAllInBoxMutable(area.getPoint1(), area.getPoint2()).spliterator(), false);
+    }
+
+    public static StructureBoundingBox toBoundingBox(BlockArea area)
+    {
+        return new StructureBoundingBox(area.getLowerCorner(), area.getHigherCorner());
     }
 }

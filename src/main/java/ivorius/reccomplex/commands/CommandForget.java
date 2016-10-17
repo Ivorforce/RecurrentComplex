@@ -53,7 +53,7 @@ public class CommandForget extends CommandBase
         if (entry == null)
             throw ServerTranslations.commandException("commands.rcforget.unknown");
         else
-            commandSender.addChatMessage(ServerTranslations.format("commands.rcforget.success", args[0]));
+            commandSender.addChatMessage(ServerTranslations.format("commands.rcforget.success", entry.description()));
     }
 
     @Override

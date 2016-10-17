@@ -44,7 +44,11 @@ public class CommandWhatIsThis extends CommandBase
                 ServerTranslations.format("commands.rcforget.forget", uuidString)));
         forget.getStyle().setColor(TextFormatting.RED);
 
-        return new TextComponentTranslation("%s (%s)", CommandSearchStructure.structureTextComponent(entry.getStructureID()), forget);
+        TextComponentString structure = entry instanceof StructureGenerationData.StructureEntry
+                ? CommandSearchStructure.structureTextComponent(entry.description())
+                : new TextComponentString(entry.description());
+
+        return new TextComponentTranslation("%s (%s)", structure, forget);
     }
 
     @Override

@@ -83,7 +83,10 @@ public class GuiHider
         Minecraft mc = Minecraft.getMinecraft();
 
         if (!canReopen())
+        {
             mc.thePlayer.addChatMessage(ServerTranslations.get("commands.rcreopen.nogui"));
+            return;
+        }
 
         if (!reopenGUI())
             mc.thePlayer.addChatMessage(ServerTranslations.get("commands.rcreopen.fail"));

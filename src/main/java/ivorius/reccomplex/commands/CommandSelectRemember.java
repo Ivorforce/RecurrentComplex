@@ -6,10 +6,10 @@
 package ivorius.reccomplex.commands;
 
 import ivorius.reccomplex.RCConfig;
-import ivorius.reccomplex.capability.SelectionOwner;
 import ivorius.reccomplex.utils.ServerTranslations;
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
+import net.minecraft.command.CommandBase;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.server.MinecraftServer;
@@ -25,7 +25,7 @@ import java.util.stream.IntStream;
 /**
  * Created by lukas on 09.06.14.
  */
-public class CommandSelectRemember extends CommandSelectModify
+public class CommandSelectRemember extends CommandBase
 {
     @Override
     public String getCommandName()
@@ -40,30 +40,35 @@ public class CommandSelectRemember extends CommandSelectModify
     }
 
     @Override
-    public void executeSelection(ICommandSender sender, SelectionOwner selectionOwner, String[] args) throws CommandException
-    {
-        if (args.length < 1)
-            throw ServerTranslations.wrongUsageException("commands.rcremember.usage");
-
-        World world = sender.getEntityWorld();
-
-        Block dstBlock = getBlockByText(sender, args[0]);
-        int[] dstMeta = args.length >= 2 ? getMetadatas(args[1]) : new int[]{0};
-        List<IBlockState> dst = IntStream.of(dstMeta).mapToObj(dstBlock::getStateFromMeta).collect(Collectors.toList());
-
-        for (BlockPos coord : selectionOwner.getSelection())
-        {
-            IBlockState state = dst.get(world.rand.nextInt(dst.size()));
-            world.setBlockState(coord, state, 3);
-        }
-    }
-
-    @Override
     public List<String> getTabCompletionOptions(MinecraftServer server, ICommandSender sender, String[] args, @Nullable BlockPos pos)
     {
         if (args.length == 1)
             return getListOfStringsMatchingLastWord(args, Block.REGISTRY.getKeys());
 
         return Collections.emptyList();
+    }
+
+    public int getRequiredPermissionLevel()
+    {
+        return 2;
+    }
+
+    @Override
+    public void execute(MinecraftServer server, ICommandSender commandSender, String[] args) throws CommandException
+    {
+        if (args.length < 1)
+            throw ServerTranslations.wrongUsageException("commands.rcremember.usage");
+
+        World world = commandSender.getEntityWorld();
+
+        Block dstBlock = getBlockByText(commandSender, args[0]);
+        int[] dstMeta = args.length >= 2 ? RCCommands.parseMetadatas(args[1]) : new int[]{0};
+        List<IBlockState> dst = IntStream.of(dstMeta).mapToObj(dstBlock::getStateFromMeta).collect(Collectors.toList());
+
+        for (BlockPos coord : RCCommands.getSelectionOwner(commandSender, null, true).getSelection())
+        {
+            IBlockState state = dst.get(world.rand.nextInt(dst.size()));
+            world.setBlockState(coord, state, 3);
+        }
     }
 }

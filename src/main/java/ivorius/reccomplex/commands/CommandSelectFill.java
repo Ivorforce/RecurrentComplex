@@ -6,10 +6,10 @@
 package ivorius.reccomplex.commands;
 
 import ivorius.reccomplex.RCConfig;
-import ivorius.reccomplex.capability.SelectionOwner;
 import ivorius.reccomplex.utils.ServerTranslations;
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
+import net.minecraft.command.CommandBase;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.server.MinecraftServer;
@@ -25,7 +25,7 @@ import java.util.stream.IntStream;
 /**
  * Created by lukas on 09.06.14.
  */
-public class CommandSelectFill extends CommandSelectModify
+public class CommandSelectFill extends CommandBase
 {
     @Override
     public String getCommandName()
@@ -40,17 +40,33 @@ public class CommandSelectFill extends CommandSelectModify
     }
 
     @Override
-    public void executeSelection(ICommandSender sender, SelectionOwner selectionOwner, String[] args) throws CommandException
+    public List<String> getTabCompletionOptions(MinecraftServer server, ICommandSender sender, String[] args, @Nullable BlockPos pos)
+    {
+        if (args.length == 1)
+            return getListOfStringsMatchingLastWord(args, Block.REGISTRY.getKeys());
+        else if (args.length == 2)
+            return getListOfStringsMatchingLastWord(args, "0");
+
+        return Collections.emptyList();
+    }
+
+    public int getRequiredPermissionLevel()
+    {
+        return 2;
+    }
+
+    @Override
+    public void execute(MinecraftServer server, ICommandSender commandSender, String[] args) throws CommandException
     {
         if (args.length >= 1)
         {
-            World world = sender.getEntityWorld();
+            World world = commandSender.getEntityWorld();
 
-            Block dstBlock = getBlockByText(sender, args[0]);
-            int[] dstMeta = args.length >= 2 ? getMetadatas(args[1]) : new int[]{0};
+            Block dstBlock = getBlockByText(commandSender, args[0]);
+            int[] dstMeta = args.length >= 2 ? RCCommands.parseMetadatas(args[1]) : new int[]{0};
             List<IBlockState> dst = IntStream.of(dstMeta).mapToObj(dstBlock::getStateFromMeta).collect(Collectors.toList());
 
-            for (BlockPos coord : selectionOwner.getSelection())
+            for (BlockPos coord : RCCommands.getSelectionOwner(commandSender, null, true).getSelection())
             {
                 IBlockState state = dst.get(world.rand.nextInt(dst.size()));
                 world.setBlockState(coord, state, 3);
@@ -60,16 +76,5 @@ public class CommandSelectFill extends CommandSelectModify
         {
             throw ServerTranslations.wrongUsageException("commands.selectFill.usage");
         }
-    }
-
-    @Override
-    public List<String> getTabCompletionOptions(MinecraftServer server, ICommandSender sender, String[] args, @Nullable BlockPos pos)
-    {
-        if (args.length == 1)
-            return getListOfStringsMatchingLastWord(args, Block.REGISTRY.getKeys());
-        else if (args.length == 2)
-            return getListOfStringsMatchingLastWord(args, "0");
-
-        return Collections.emptyList();
     }
 }

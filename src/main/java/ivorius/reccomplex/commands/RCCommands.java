@@ -142,12 +142,15 @@ public class RCCommands
     }
 
     @Nonnull
-    public static SelectionOwner getSelectionOwner(Object object, @Nullable EnumFacing facing) throws CommandException
+    public static SelectionOwner getSelectionOwner(Object object, @Nullable EnumFacing facing, boolean ensureValid) throws CommandException
     {
         SelectionOwner owner = SelectionOwner.getOwner(object, facing);
 
         if (owner == null)
             throw ServerTranslations.commandException("commands.rc.noSelection");
+
+        if (!ensureValid || !owner.hasValidSelection())
+            throw ServerTranslations.commandException("commands.selectModify.noSelection");
 
         return owner;
     }
@@ -278,5 +281,25 @@ public class RCCommands
             sender.addChatMessage(ServerTranslations.format("reccomplex.save.failure", filetype, String.format("%s/%s", path, id)));
 
         return result;
+    }
+
+    public static int[] parseMetadatas(String arg) throws CommandException
+    {
+        try
+        {
+            String[] strings = arg.split(",");
+            int[] ints = new int[strings.length];
+
+            for (int i = 0; i < strings.length; i++)
+            {
+                ints[i] = Integer.valueOf(strings[i]);
+            }
+
+            return ints;
+        }
+        catch (Exception ex)
+        {
+            throw ServerTranslations.wrongUsageException("commands.selectModify.invalidMetadata", arg);
+        }
     }
 }

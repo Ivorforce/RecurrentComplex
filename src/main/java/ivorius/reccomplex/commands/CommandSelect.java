@@ -42,7 +42,7 @@ public class CommandSelect extends CommandBase
     @Override
     public void execute(MinecraftServer server, ICommandSender commandSender, String[] args) throws CommandException
     {
-        SelectionOwner owner = RCCommands.getSelectionOwner(commandSender, null);
+        SelectionOwner owner = RCCommands.getSelectionOwner(commandSender, null, false);
 
         if (args.length >= 1)
         {

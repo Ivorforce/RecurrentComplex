@@ -8,12 +8,12 @@ package ivorius.reccomplex.commands;
 import ivorius.ivtoolkit.blocks.BlockArea;
 import ivorius.ivtoolkit.tools.IvWorldData;
 import ivorius.reccomplex.RCConfig;
-import ivorius.reccomplex.capability.SelectionOwner;
 import ivorius.reccomplex.network.PacketEditStructureHandler;
 import ivorius.reccomplex.utils.ServerTranslations;
 import ivorius.reccomplex.world.gen.feature.structure.StructureInfo;
 import ivorius.reccomplex.world.gen.feature.structure.StructureRegistry;
 import ivorius.reccomplex.world.gen.feature.structure.generic.GenericStructureInfo;
+import net.minecraft.command.CommandBase;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -27,7 +27,7 @@ import java.util.List;
 /**
  * Created by lukas on 25.05.14.
  */
-public class CommandExportStructure extends CommandSelectModify
+public class CommandExportStructure extends CommandBase
 {
     public static GenericStructureInfo getGenericStructureInfo(String name) throws CommandException
     {
@@ -62,9 +62,18 @@ public class CommandExportStructure extends CommandSelectModify
     }
 
     @Override
-    public void executeSelection(ICommandSender sender, SelectionOwner selectionOwner, String[] args) throws CommandException
+    public List<String> getTabCompletionOptions(MinecraftServer server, ICommandSender sender, String[] args, @Nullable BlockPos pos)
     {
-        EntityPlayerMP player = getCommandSenderAsPlayer(sender);
+        if (args.length == 1)
+            return getListOfStringsMatchingLastWord(args, StructureRegistry.INSTANCE.ids());
+
+        return Collections.emptyList();
+    }
+
+    @Override
+    public void execute(MinecraftServer server, ICommandSender commandSender, String[] args) throws CommandException
+    {
+        EntityPlayerMP player = getCommandSenderAsPlayer(commandSender);
 
         GenericStructureInfo genericStructureInfo;
         String structureID;
@@ -78,24 +87,15 @@ public class CommandExportStructure extends CommandSelectModify
         {
             genericStructureInfo = GenericStructureInfo.createDefaultStructure();
             structureID = "NewStructure";
-            genericStructureInfo.metadata.authors = sender.getName();
+            genericStructureInfo.metadata.authors = commandSender.getName();
         }
 
-        BlockArea area = selectionOwner.getSelection();
+        BlockArea area = RCCommands.getSelectionOwner(commandSender, null, true).getSelection();
         BlockPos lowerCoord = area.getLowerCorner();
         BlockPos higherCoord = area.getHigherCorner();
 
-        IvWorldData data = IvWorldData.capture(sender.getEntityWorld(), new BlockArea(lowerCoord, higherCoord), true);
+        IvWorldData data = IvWorldData.capture(commandSender.getEntityWorld(), new BlockArea(lowerCoord, higherCoord), true);
         genericStructureInfo.worldDataCompound = data.createTagCompound(lowerCoord);
         PacketEditStructureHandler.openEditStructure(genericStructureInfo, structureID, player);
-    }
-
-    @Override
-    public List<String> getTabCompletionOptions(MinecraftServer server, ICommandSender sender, String[] args, @Nullable BlockPos pos)
-    {
-        if (args.length == 1)
-            return getListOfStringsMatchingLastWord(args, StructureRegistry.INSTANCE.ids());
-
-        return Collections.emptyList();
     }
 }

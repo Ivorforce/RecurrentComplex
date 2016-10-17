@@ -9,20 +9,21 @@ import ivorius.ivtoolkit.blocks.BlockArea;
 import ivorius.ivtoolkit.math.AxisAlignedTransform2D;
 import ivorius.ivtoolkit.tools.IvWorldData;
 import ivorius.reccomplex.RCConfig;
-import ivorius.reccomplex.capability.SelectionOwner;
 import ivorius.reccomplex.operation.OperationRegistry;
 import ivorius.reccomplex.utils.ServerTranslations;
 import ivorius.reccomplex.world.gen.feature.structure.OperationGenerateStructure;
 import ivorius.reccomplex.world.gen.feature.structure.generic.GenericStructureInfo;
+import net.minecraft.command.CommandBase;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.math.BlockPos;
 
 /**
  * Created by lukas on 09.06.14.
  */
-public class CommandSelectDuplicate extends CommandSelectModify
+public class CommandSelectDuplicate extends CommandBase
 {
     @Override
     public String getCommandName()
@@ -36,8 +37,13 @@ public class CommandSelectDuplicate extends CommandSelectModify
         return ServerTranslations.usage("commands.selectDuplicate.usage");
     }
 
+    public int getRequiredPermissionLevel()
+    {
+        return 2;
+    }
+
     @Override
-    public void executeSelection(ICommandSender sender, SelectionOwner selectionOwner, String[] args) throws CommandException
+    public void execute(MinecraftServer server, ICommandSender commandSender, String[] args) throws CommandException
     {
         if (args.length < 3)
         {
@@ -47,12 +53,12 @@ public class CommandSelectDuplicate extends CommandSelectModify
         int rotations = args.length >= 4 ? parseInt(args[3]) : 0;
         boolean mirrorX = args.length >= 5 && parseBoolean(args[4]);
 
-        BlockArea area = selectionOwner.getSelection();
+        BlockArea area = RCCommands.getSelectionOwner(commandSender, null, true).getSelection();
         BlockPos lowerCorner = area.getLowerCorner();
 
         BlockPos coord = RCCommands.parseBlockPos(lowerCorner, args, 0, false);
 
-        IvWorldData worldData = IvWorldData.capture(sender.getEntityWorld(), area, true);
+        IvWorldData worldData = IvWorldData.capture(commandSender.getEntityWorld(), area, true);
         NBTTagCompound worldDataCompound = worldData.createTagCompound(area.getLowerCorner());
 
         GenericStructureInfo structureInfo = GenericStructureInfo.createDefaultStructure();
@@ -60,6 +66,6 @@ public class CommandSelectDuplicate extends CommandSelectModify
 
         AxisAlignedTransform2D transform = AxisAlignedTransform2D.from(rotations, mirrorX);
 
-        OperationRegistry.queueOperation(new OperationGenerateStructure(structureInfo, null, transform, coord, true), sender);
+        OperationRegistry.queueOperation(new OperationGenerateStructure(structureInfo, null, transform, coord, true), commandSender);
     }
 }

@@ -9,11 +9,11 @@ import ivorius.ivtoolkit.blocks.BlockArea;
 import ivorius.ivtoolkit.math.AxisAlignedTransform2D;
 import ivorius.ivtoolkit.tools.IvWorldData;
 import ivorius.reccomplex.RCConfig;
-import ivorius.reccomplex.capability.SelectionOwner;
 import ivorius.reccomplex.operation.OperationRegistry;
 import ivorius.reccomplex.utils.ServerTranslations;
 import ivorius.reccomplex.world.gen.feature.structure.OperationMoveStructure;
 import ivorius.reccomplex.world.gen.feature.structure.generic.GenericStructureInfo;
+import net.minecraft.command.CommandBase;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.nbt.NBTTagCompound;
@@ -26,7 +26,7 @@ import java.util.List;
 /**
  * Created by lukas on 09.06.14.
  */
-public class CommandSelectMove extends CommandSelectModify
+public class CommandSelectMove extends CommandBase
 {
     @Override
     public String getCommandName()
@@ -41,29 +41,6 @@ public class CommandSelectMove extends CommandSelectModify
     }
 
     @Override
-    public void executeSelection(ICommandSender sender, SelectionOwner selectionOwner, String[] args) throws CommandException
-    {
-        if (args.length < 3)
-        {
-            throw ServerTranslations.wrongUsageException("commands.selectMove.usage");
-        }
-
-        AxisAlignedTransform2D transform = RCCommands.tryParseTransform(args, 3);
-
-        BlockArea area = selectionOwner.getSelection();
-
-        BlockPos coord = RCCommands.parseBlockPos(area.getLowerCorner(), args, 0, false);
-
-        IvWorldData worldData = IvWorldData.capture(sender.getEntityWorld(), area, true);
-        NBTTagCompound worldDataCompound = worldData.createTagCompound(area.getLowerCorner());
-
-        GenericStructureInfo structureInfo = GenericStructureInfo.createDefaultStructure();
-        structureInfo.worldDataCompound = worldDataCompound;
-
-        OperationRegistry.queueOperation(new OperationMoveStructure(structureInfo, transform, coord, true, area), sender);
-    }
-
-    @Override
     public List<String> getTabCompletionOptions(MinecraftServer server, ICommandSender sender, String[] args, @Nullable BlockPos pos)
     {
         if (args.length <= 3)
@@ -72,5 +49,33 @@ public class CommandSelectMove extends CommandSelectModify
             return RCCommands.completeTransform(args, args.length - 4);
 
         return super.getTabCompletionOptions(server, sender, args, pos);
+    }
+
+    public int getRequiredPermissionLevel()
+    {
+        return 2;
+    }
+
+    @Override
+    public void execute(MinecraftServer server, ICommandSender commandSender, String[] args) throws CommandException
+    {
+        if (args.length < 3)
+        {
+            throw ServerTranslations.wrongUsageException("commands.selectMove.usage");
+        }
+
+        AxisAlignedTransform2D transform = RCCommands.tryParseTransform(args, 3);
+
+        BlockArea area = RCCommands.getSelectionOwner(commandSender, null, true).getSelection();
+
+        BlockPos coord = RCCommands.parseBlockPos(area.getLowerCorner(), args, 0, false);
+
+        IvWorldData worldData = IvWorldData.capture(commandSender.getEntityWorld(), area, true);
+        NBTTagCompound worldDataCompound = worldData.createTagCompound(area.getLowerCorner());
+
+        GenericStructureInfo structureInfo = GenericStructureInfo.createDefaultStructure();
+        structureInfo.worldDataCompound = worldDataCompound;
+
+        OperationRegistry.queueOperation(new OperationMoveStructure(structureInfo, transform, coord, true, area), commandSender);
     }
 }

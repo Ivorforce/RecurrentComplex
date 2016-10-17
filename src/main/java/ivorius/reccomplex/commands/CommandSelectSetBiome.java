@@ -6,11 +6,10 @@
 package ivorius.reccomplex.commands;
 
 import ivorius.reccomplex.RCConfig;
-import ivorius.reccomplex.capability.SelectionOwner;
 import ivorius.reccomplex.utils.BlockSurfaceArea;
 import ivorius.reccomplex.utils.BlockSurfacePos;
 import ivorius.reccomplex.utils.ServerTranslations;
-import net.minecraft.block.Block;
+import net.minecraft.command.CommandBase;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.server.MinecraftServer;
@@ -26,7 +25,7 @@ import java.util.List;
 /**
  * Created by lukas on 09.06.14.
  */
-public class CommandSelectSetBiome extends CommandSelectModify
+public class CommandSelectSetBiome extends CommandBase
 {
     @Override
     public String getCommandName()
@@ -38,25 +37,6 @@ public class CommandSelectSetBiome extends CommandSelectModify
     public String getCommandUsage(ICommandSender var1)
     {
         return ServerTranslations.usage("commands.rcsetbiome.usage");
-    }
-
-    @Override
-    public void executeSelection(ICommandSender sender, SelectionOwner selectionOwner, String[] args) throws CommandException
-    {
-        if (args.length < 1)
-            throw ServerTranslations.wrongUsageException("commands.rcremember.usage");
-
-        Biome biome = RCCommands.parseBiome(args[0]);
-        byte biomeID = (byte)(Biome.REGISTRY.getIDForObject(biome) & 255);
-
-        World world = sender.getEntityWorld();
-
-        // TODO Send to clients somehow
-        BlockSurfaceArea.from(selectionOwner.getSelection()).forEach(p -> {
-            Chunk chunk = world.getChunkFromChunkCoords(p.getX() >> 4, p.getZ() >> 4);
-            chunk.getBiomeArray()[biomeArrayIndex(p)] = biomeID;
-            chunk.setModified(true);
-        });
     }
 
     public static int biomeArrayIndex(BlockSurfacePos p)
@@ -74,5 +54,29 @@ public class CommandSelectSetBiome extends CommandSelectModify
             return RCCommands.completeBiome(args);
 
         return Collections.emptyList();
+    }
+
+    public int getRequiredPermissionLevel()
+    {
+        return 2;
+    }
+
+    @Override
+    public void execute(MinecraftServer server, ICommandSender commandSender, String[] args) throws CommandException
+    {
+        if (args.length < 1)
+            throw ServerTranslations.wrongUsageException("commands.rcremember.usage");
+
+        Biome biome = RCCommands.parseBiome(args[0]);
+        byte biomeID = (byte)(Biome.REGISTRY.getIDForObject(biome) & 255);
+
+        World world = commandSender.getEntityWorld();
+
+        // TODO Send to clients somehow
+        BlockSurfaceArea.from(RCCommands.getSelectionOwner(commandSender, null, true).getSelection()).forEach(p -> {
+            Chunk chunk = world.getChunkFromChunkCoords(p.getX() >> 4, p.getZ() >> 4);
+            chunk.getBiomeArray()[biomeArrayIndex(p)] = biomeID;
+            chunk.setModified(true);
+        });
     }
 }

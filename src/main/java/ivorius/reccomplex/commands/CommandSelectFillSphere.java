@@ -6,7 +6,7 @@
 package ivorius.reccomplex.commands;
 
 import ivorius.ivtoolkit.blocks.BlockArea;
-import ivorius.reccomplex.capability.SelectionOwner;
+import net.minecraft.command.CommandBase;
 import net.minecraft.command.CommandException;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.math.BlockPos;
@@ -27,7 +27,7 @@ import java.util.stream.IntStream;
 /**
  * Created by lukas on 09.06.14.
  */
-public class CommandSelectFillSphere extends CommandSelectModify
+public class CommandSelectFillSphere extends CommandBase
 {
     @Override
     public String getCommandName()
@@ -42,17 +42,33 @@ public class CommandSelectFillSphere extends CommandSelectModify
     }
 
     @Override
-    public void executeSelection(ICommandSender sender, SelectionOwner selectionOwner, String[] args) throws CommandException
+    public List<String> getTabCompletionOptions(MinecraftServer server, ICommandSender sender, String[] args, @Nullable BlockPos pos)
+    {
+        if (args.length == 1)
+            return getListOfStringsMatchingLastWord(args, Block.REGISTRY.getKeys());
+        else if (args.length == 2)
+            return getListOfStringsMatchingLastWord(args, "0");
+
+        return Collections.emptyList();
+    }
+
+    public int getRequiredPermissionLevel()
+    {
+        return 2;
+    }
+
+    @Override
+    public void execute(MinecraftServer server, ICommandSender commandSender, String[] args) throws CommandException
     {
         if (args.length >= 1)
         {
-            World world = sender.getEntityWorld();
+            World world = commandSender.getEntityWorld();
 
-            Block dstBlock = getBlockByText(sender, args[0]);
-            int[] dstMeta = args.length >= 2 ? getMetadatas(args[1]) : new int[]{0};
+            Block dstBlock = getBlockByText(commandSender, args[0]);
+            int[] dstMeta = args.length >= 2 ? RCCommands.parseMetadatas(args[1]) : new int[]{0};
             List<IBlockState> dst = IntStream.of(dstMeta).mapToObj(dstBlock::getStateFromMeta).collect(Collectors.toList());
 
-            BlockArea area = selectionOwner.getSelection();
+            BlockArea area = RCCommands.getSelectionOwner(commandSender, null, true).getSelection();
 
             BlockPos p1 = area.getPoint1();
             BlockPos p2 = area.getPoint2();
@@ -75,16 +91,5 @@ public class CommandSelectFillSphere extends CommandSelectModify
         {
             throw ServerTranslations.wrongUsageException("commands.selectFillSphere.usage");
         }
-    }
-
-    @Override
-    public List<String> getTabCompletionOptions(MinecraftServer server, ICommandSender sender, String[] args, @Nullable BlockPos pos)
-    {
-        if (args.length == 1)
-            return getListOfStringsMatchingLastWord(args, Block.REGISTRY.getKeys());
-        else if (args.length == 2)
-            return getListOfStringsMatchingLastWord(args, "0");
-
-        return Collections.emptyList();
     }
 }

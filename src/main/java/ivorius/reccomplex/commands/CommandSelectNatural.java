@@ -6,7 +6,7 @@
 package ivorius.reccomplex.commands;
 
 import ivorius.ivtoolkit.blocks.BlockArea;
-import ivorius.reccomplex.capability.SelectionOwner;
+import net.minecraft.command.CommandBase;
 import net.minecraft.command.CommandException;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.math.BlockPos;
@@ -21,7 +21,7 @@ import java.util.List;
 /**
  * Created by lukas on 09.06.14.
  */
-public class CommandSelectNatural extends CommandSelectModify
+public class CommandSelectNatural extends CommandBase
 {
     @Override
     public String getCommandName()
@@ -36,23 +36,28 @@ public class CommandSelectNatural extends CommandSelectModify
     }
 
     @Override
-    public void executeSelection(ICommandSender sender, SelectionOwner selectionOwner, String[] args) throws CommandException
-    {
-        World world = sender.getEntityWorld();
-
-        BlockArea area = selectionOwner.getSelection();
-        double expandFloor = args.length >= 1 ? parseDouble(args[0]) : 1;
-
-        CommandSelectFloor.placeNaturalFloor(world, area, expandFloor);
-        CommandSelectSpace.placeNaturalAir(world, area, 3, 3);
-    }
-
-    @Override
     public List<String> getTabCompletionOptions(MinecraftServer server, ICommandSender sender, String[] args, @Nullable BlockPos pos)
     {
         if (args.length == 1)
             return getListOfStringsMatchingLastWord(args, "0", "1", "2");
 
         return super.getTabCompletionOptions(server, sender, args, pos);
+    }
+
+    public int getRequiredPermissionLevel()
+    {
+        return 2;
+    }
+
+    @Override
+    public void execute(MinecraftServer server, ICommandSender commandSender, String[] args) throws CommandException
+    {
+        World world = commandSender.getEntityWorld();
+
+        BlockArea area = RCCommands.getSelectionOwner(commandSender, null, true).getSelection();
+        double expandFloor = args.length >= 1 ? parseDouble(args[0]) : 1;
+
+        CommandSelectFloor.placeNaturalFloor(world, area, expandFloor);
+        CommandSelectSpace.placeNaturalAir(world, area, 3, 3);
     }
 }

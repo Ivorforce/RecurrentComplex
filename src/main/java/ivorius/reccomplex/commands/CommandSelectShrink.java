@@ -7,7 +7,9 @@ package ivorius.reccomplex.commands;
 
 import ivorius.ivtoolkit.blocks.BlockArea;
 import ivorius.reccomplex.capability.SelectionOwner;
+import net.minecraft.command.CommandBase;
 import net.minecraft.command.CommandException;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.math.BlockPos;
 import ivorius.reccomplex.RCConfig;
 import ivorius.ivtoolkit.blocks.BlockAreas;
@@ -17,7 +19,7 @@ import net.minecraft.command.ICommandSender;
 /**
  * Created by lukas on 09.06.14.
  */
-public class CommandSelectShrink extends CommandSelectModify
+public class CommandSelectShrink extends CommandBase
 {
     @Override
     public String getCommandName()
@@ -31,9 +33,15 @@ public class CommandSelectShrink extends CommandSelectModify
         return ServerTranslations.usage("commands.selectShrink.usage");
     }
 
-    @Override
-    public void executeSelection(ICommandSender sender, SelectionOwner selectionOwner, String[] args) throws CommandException
+    public int getRequiredPermissionLevel()
     {
+        return 2;
+    }
+
+    @Override
+    public void execute(MinecraftServer server, ICommandSender commandSender, String[] args) throws CommandException
+    {
+        SelectionOwner selectionOwner = RCCommands.getSelectionOwner(commandSender, null, true);
         if (args.length < 3)
             throw ServerTranslations.wrongUsageException("commands.selectShrink.usage");
 

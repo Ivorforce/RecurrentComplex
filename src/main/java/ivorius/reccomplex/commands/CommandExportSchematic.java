@@ -8,12 +8,12 @@ package ivorius.reccomplex.commands;
 import ivorius.ivtoolkit.blocks.BlockArea;
 import ivorius.ivtoolkit.tools.IvWorldData;
 import ivorius.reccomplex.RCConfig;
-import ivorius.reccomplex.capability.SelectionOwner;
 import ivorius.reccomplex.utils.RCBlockAreas;
 import ivorius.reccomplex.utils.ServerTranslations;
 import ivorius.reccomplex.world.gen.feature.structure.StructureRegistry;
 import ivorius.reccomplex.world.gen.feature.structure.schematics.SchematicFile;
 import ivorius.reccomplex.world.gen.feature.structure.schematics.SchematicLoader;
+import net.minecraft.command.CommandBase;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.server.MinecraftServer;
@@ -26,7 +26,7 @@ import java.util.List;
 /**
  * Created by lukas on 25.05.14.
  */
-public class CommandExportSchematic extends CommandSelectModify
+public class CommandExportSchematic extends CommandBase
 {
     public static SchematicFile convert(IvWorldData worldData)
     {
@@ -64,33 +64,33 @@ public class CommandExportSchematic extends CommandSelectModify
     }
 
     @Override
-    public void executeSelection(ICommandSender sender, SelectionOwner selectionOwner, String[] args) throws CommandException
-    {
-        BlockArea area = selectionOwner.getSelection();
-
-        String structureName;
-
-        if (args.length >= 1)
-            structureName = args[0];
-        else
-            structureName = "NewStructure_" + sender.getEntityWorld().rand.nextInt(1000);
-
-        BlockPos lowerCoord = area.getLowerCorner();
-        BlockPos higherCoord = area.getHigherCorner();
-
-        IvWorldData data = IvWorldData.capture(sender.getEntityWorld(), new BlockArea(lowerCoord, higherCoord), true);
-        SchematicFile schematicFile = convert(data);
-        SchematicLoader.writeSchematicByName(schematicFile, structureName);
-
-        sender.addChatMessage(ServerTranslations.format("commands.strucExportSchematic.success", structureName));
-    }
-
-    @Override
     public List<String> getTabCompletionOptions(MinecraftServer server, ICommandSender sender, String[] args, @Nullable BlockPos pos)
     {
         if (args.length == 1)
             return getListOfStringsMatchingLastWord(args, StructureRegistry.INSTANCE.ids());
 
         return Collections.emptyList();
+    }
+
+    @Override
+    public void execute(MinecraftServer server, ICommandSender commandSender, String[] args) throws CommandException
+    {
+        BlockArea area = RCCommands.getSelectionOwner(commandSender, null, true).getSelection();
+
+        String structureName;
+
+        if (args.length >= 1)
+            structureName = args[0];
+        else
+            structureName = "NewStructure_" + commandSender.getEntityWorld().rand.nextInt(1000);
+
+        BlockPos lowerCoord = area.getLowerCorner();
+        BlockPos higherCoord = area.getHigherCorner();
+
+        IvWorldData data = IvWorldData.capture(commandSender.getEntityWorld(), new BlockArea(lowerCoord, higherCoord), true);
+        SchematicFile schematicFile = convert(data);
+        SchematicLoader.writeSchematicByName(schematicFile, structureName);
+
+        commandSender.addChatMessage(ServerTranslations.format("commands.strucExportSchematic.success", structureName));
     }
 }

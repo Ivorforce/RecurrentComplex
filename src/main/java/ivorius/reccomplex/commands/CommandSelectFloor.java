@@ -6,10 +6,10 @@
 package ivorius.reccomplex.commands;
 
 import ivorius.ivtoolkit.blocks.BlockArea;
-import ivorius.reccomplex.capability.SelectionOwner;
 import ivorius.reccomplex.utils.BlockSurfaceArea;
 import ivorius.reccomplex.utils.BlockSurfacePos;
 import net.minecraft.block.state.IBlockState;
+import net.minecraft.command.CommandBase;
 import net.minecraft.command.CommandException;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.math.BlockPos;
@@ -30,7 +30,7 @@ import java.util.Set;
 /**
  * Created by lukas on 09.06.14.
  */
-public class CommandSelectFloor extends CommandSelectModify
+public class CommandSelectFloor extends CommandBase
 {
     public static void placeNaturalFloor(World world, BlockArea area, double lowerExpansion)
     {
@@ -110,22 +110,27 @@ public class CommandSelectFloor extends CommandSelectModify
     }
 
     @Override
-    public void executeSelection(ICommandSender sender, SelectionOwner selectionOwner, String[] args) throws CommandException
-    {
-        World world = sender.getEntityWorld();
-
-        BlockArea area = selectionOwner.getSelection();
-        double expandFloor = args.length >= 1 ? parseDouble(args[0]) : 1;
-
-        placeNaturalFloor(world, area, expandFloor);
-    }
-
-    @Override
     public List<String> getTabCompletionOptions(MinecraftServer server, ICommandSender sender, String[] args, @Nullable BlockPos pos)
     {
         if (args.length == 1)
             return getListOfStringsMatchingLastWord(args, "0", "1", "2");
 
         return super.getTabCompletionOptions(server, sender, args, pos);
+    }
+
+    public int getRequiredPermissionLevel()
+    {
+        return 2;
+    }
+
+    @Override
+    public void execute(MinecraftServer server, ICommandSender commandSender, String[] args) throws CommandException
+    {
+        World world = commandSender.getEntityWorld();
+
+        BlockArea area = RCCommands.getSelectionOwner(commandSender, null, true).getSelection();
+        double expandFloor = args.length >= 1 ? parseDouble(args[0]) : 1;
+
+        placeNaturalFloor(world, area, expandFloor);
     }
 }

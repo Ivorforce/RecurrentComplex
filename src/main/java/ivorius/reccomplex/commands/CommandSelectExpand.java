@@ -10,14 +10,16 @@ import ivorius.ivtoolkit.blocks.BlockAreas;
 import ivorius.reccomplex.RCConfig;
 import ivorius.reccomplex.capability.SelectionOwner;
 import ivorius.reccomplex.utils.ServerTranslations;
+import net.minecraft.command.CommandBase;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.math.BlockPos;
 
 /**
  * Created by lukas on 09.06.14.
  */
-public class CommandSelectExpand extends CommandSelectModify
+public class CommandSelectExpand extends CommandBase
 {
     @Override
     public String getCommandName()
@@ -31,9 +33,15 @@ public class CommandSelectExpand extends CommandSelectModify
         return ServerTranslations.usage("commands.selectExpand.usage");
     }
 
-    @Override
-    public void executeSelection(ICommandSender sender, SelectionOwner selectionOwner, String[] args) throws CommandException
+    public int getRequiredPermissionLevel()
     {
+        return 2;
+    }
+
+    @Override
+    public void execute(MinecraftServer server, ICommandSender commandSender, String[] args) throws CommandException
+    {
+        SelectionOwner selectionOwner = RCCommands.getSelectionOwner(commandSender, null, true);
         if (args.length < 3)
             throw ServerTranslations.wrongUsageException("commands.selectExpand.usage");
 

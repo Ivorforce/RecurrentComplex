@@ -9,12 +9,12 @@ import ivorius.ivtoolkit.blocks.BlockArea;
 import ivorius.reccomplex.RCConfig;
 import ivorius.reccomplex.block.BlockGenericSpace;
 import ivorius.reccomplex.block.RCBlocks;
-import ivorius.reccomplex.capability.SelectionOwner;
 import ivorius.reccomplex.utils.BlockSurfaceArea;
 import ivorius.reccomplex.utils.BlockSurfacePos;
 import ivorius.reccomplex.utils.ServerTranslations;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
+import net.minecraft.command.CommandBase;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.server.MinecraftServer;
@@ -30,7 +30,7 @@ import java.util.Set;
 /**
  * Created by lukas on 09.06.14.
  */
-public class CommandSelectSpace extends CommandSelectModify
+public class CommandSelectSpace extends CommandBase
 {
     public static int sidesClosed(World world, BlockPos coord, BlockArea area)
     {
@@ -137,19 +137,6 @@ public class CommandSelectSpace extends CommandSelectModify
     }
 
     @Override
-    public void executeSelection(ICommandSender sender, SelectionOwner selectionOwner, String[] args) throws CommandException
-    {
-        World world = sender.getEntityWorld();
-
-        BlockArea area = selectionOwner.getSelection();
-
-        int floorDistance = (args.length >= 1 ? parseInt(args[0]) : 0) + 1;
-        int maxClosedSides = args.length >= 2 ? parseInt(args[1]) : 3;
-
-        placeNaturalAir(world, area, floorDistance, maxClosedSides);
-    }
-
-    @Override
     public List<String> getTabCompletionOptions(MinecraftServer server, ICommandSender sender, String[] args, @Nullable BlockPos pos)
     {
         if (args.length == 1)
@@ -158,5 +145,23 @@ public class CommandSelectSpace extends CommandSelectModify
             return getListOfStringsMatchingLastWord(args, "3", "4", "5");
 
         return super.getTabCompletionOptions(server, sender, args, pos);
+    }
+
+    public int getRequiredPermissionLevel()
+    {
+        return 2;
+    }
+
+    @Override
+    public void execute(MinecraftServer server, ICommandSender commandSender, String[] args) throws CommandException
+    {
+        World world = commandSender.getEntityWorld();
+
+        BlockArea area = RCCommands.getSelectionOwner(commandSender, null, true).getSelection();
+
+        int floorDistance = (args.length >= 1 ? parseInt(args[0]) : 0) + 1;
+        int maxClosedSides = args.length >= 2 ? parseInt(args[1]) : 3;
+
+        placeNaturalAir(world, area, floorDistance, maxClosedSides);
     }
 }

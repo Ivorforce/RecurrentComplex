@@ -7,7 +7,9 @@ package ivorius.reccomplex.commands;
 
 import ivorius.ivtoolkit.blocks.BlockArea;
 import ivorius.reccomplex.capability.SelectionOwner;
+import net.minecraft.command.CommandBase;
 import net.minecraft.command.CommandException;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.math.BlockPos;
 import ivorius.ivtoolkit.tools.IvWorldData;
 import ivorius.reccomplex.RCConfig;
@@ -18,7 +20,7 @@ import net.minecraft.command.ICommandSender;
 /**
  * Created by lukas on 09.06.14.
  */
-public class CommandSelectCopy extends CommandSelectModify
+public class CommandSelectCopy extends CommandBase
 {
     @Override
     public String getCommandName()
@@ -32,18 +34,23 @@ public class CommandSelectCopy extends CommandSelectModify
         return ServerTranslations.usage("commands.selectCopy.usage");
     }
 
-    @Override
-    public void executeSelection(ICommandSender sender, SelectionOwner selectionOwner, String[] args) throws CommandException
+    public int getRequiredPermissionLevel()
     {
-        StructureEntityInfo structureEntityInfo = RCCommands.getStructureEntityInfo(sender, null);
+        return 2;
+    }
 
-        BlockArea area = selectionOwner.getSelection();
-        IvWorldData worldData = IvWorldData.capture(sender.getEntityWorld(), area, true);
+    @Override
+    public void execute(MinecraftServer server, ICommandSender commandSender, String[] args) throws CommandException
+    {
+        StructureEntityInfo structureEntityInfo = RCCommands.getStructureEntityInfo(commandSender, null);
+
+        BlockArea area = RCCommands.getSelectionOwner(commandSender, null, true).getSelection();
+        IvWorldData worldData = IvWorldData.capture(commandSender.getEntityWorld(), area, true);
 
         BlockPos lowerCorner = area.getLowerCorner();
         BlockPos higherCorner = area.getHigherCorner();
 
         structureEntityInfo.setWorldDataClipboard(worldData.createTagCompound(null));
-        sender.addChatMessage(ServerTranslations.format("commands.selectCopy.success", String.valueOf(lowerCorner.getX()), String.valueOf(lowerCorner.getY()), String.valueOf(lowerCorner.getZ()), String.valueOf(higherCorner.getX()), String.valueOf(higherCorner.getY()), String.valueOf(higherCorner.getZ())));
+        commandSender.addChatMessage(ServerTranslations.format("commands.selectCopy.success", String.valueOf(lowerCorner.getX()), String.valueOf(lowerCorner.getY()), String.valueOf(lowerCorner.getZ()), String.valueOf(higherCorner.getX()), String.valueOf(higherCorner.getY()), String.valueOf(higherCorner.getZ())));
     }
 }

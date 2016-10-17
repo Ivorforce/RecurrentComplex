@@ -12,15 +12,17 @@ import ivorius.reccomplex.RecurrentComplex;
 import ivorius.reccomplex.capability.SelectionOwner;
 import ivorius.reccomplex.utils.ServerTranslations;
 import ivorius.reccomplex.utils.expression.PositionedBlockMatcher;
+import net.minecraft.command.CommandBase;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.world.World;
 
 /**
  * Created by lukas on 09.06.14.
  */
-public class CommandSelectCrop extends CommandSelectModify
+public class CommandSelectCrop extends CommandBase
 {
     @Override
     public String getCommandName()
@@ -34,10 +36,16 @@ public class CommandSelectCrop extends CommandSelectModify
         return ServerTranslations.usage("commands.selectWand.usage");
     }
 
-    @Override
-    public void executeSelection(ICommandSender sender, SelectionOwner selectionOwner, String[] args) throws CommandException
+    public int getRequiredPermissionLevel()
     {
-        World world = sender.getEntityWorld();
+        return 2;
+    }
+
+    @Override
+    public void execute(MinecraftServer server, ICommandSender commandSender, String[] args) throws CommandException
+    {
+        SelectionOwner selectionOwner = RCCommands.getSelectionOwner(commandSender, null, true);
+        World world = commandSender.getEntityWorld();
         BlockArea area = selectionOwner.getSelection();
 
         String exp = args.length > 0 ? buildString(args, 0) : "is:air";

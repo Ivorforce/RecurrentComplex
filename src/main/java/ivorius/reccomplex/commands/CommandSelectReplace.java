@@ -7,11 +7,11 @@ package ivorius.reccomplex.commands;
 
 import ivorius.reccomplex.RCConfig;
 import ivorius.reccomplex.RecurrentComplex;
-import ivorius.reccomplex.capability.SelectionOwner;
 import ivorius.reccomplex.utils.expression.PositionedBlockMatcher;
 import ivorius.reccomplex.utils.ServerTranslations;
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
+import net.minecraft.command.CommandBase;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.server.MinecraftServer;
@@ -27,7 +27,7 @@ import java.util.stream.IntStream;
 /**
  * Created by lukas on 09.06.14.
  */
-public class CommandSelectReplace extends CommandSelectModify
+public class CommandSelectReplace extends CommandBase
 {
     @Override
     public String getCommandName()
@@ -41,22 +41,39 @@ public class CommandSelectReplace extends CommandSelectModify
         return ServerTranslations.usage("commands.selectReplace.usage");
     }
 
+    @Nonnull
     @Override
-    public void executeSelection(ICommandSender sender, SelectionOwner selectionOwner, String[] args) throws CommandException
+    public List<String> getTabCompletionOptions(MinecraftServer server, ICommandSender sender, String[] args, @Nullable BlockPos pos)
+    {
+        if (args.length == 1)
+            return getListOfStringsMatchingLastWord(args, Block.REGISTRY.getKeys());
+        else if (args.length == 2)
+            return getListOfStringsMatchingLastWord(args, IntStream.range(0, 16).mapToObj(String::valueOf).collect(Collectors.toList()));
+        else
+            return getListOfStringsMatchingLastWord(args, Block.REGISTRY.getKeys());
+    }
+
+    public int getRequiredPermissionLevel()
+    {
+        return 2;
+    }
+
+    @Override
+    public void execute(MinecraftServer server, ICommandSender commandSender, String[] args) throws CommandException
     {
         if (args.length >= 3)
         {
-            World world = sender.getEntityWorld();
+            World world = commandSender.getEntityWorld();
 
             String src = buildString(args, 2);
 
-            Block dstBlock = getBlockByText(sender, args[0]);
-            int[] dstMeta = getMetadatas(args[1]);
+            Block dstBlock = getBlockByText(commandSender, args[0]);
+            int[] dstMeta = RCCommands.parseMetadatas(args[1]);
             List<IBlockState> dst = IntStream.of(dstMeta).mapToObj(dstBlock::getStateFromMeta).collect(Collectors.toList());
 
             PositionedBlockMatcher matcher = new PositionedBlockMatcher(RecurrentComplex.specialRegistry, src);
 
-            for (BlockPos coord : selectionOwner.getSelection())
+            for (BlockPos coord : RCCommands.getSelectionOwner(commandSender, null, true).getSelection())
             {
                 if (matcher.test(PositionedBlockMatcher.Argument.at(world, coord)))
                 {
@@ -69,17 +86,5 @@ public class CommandSelectReplace extends CommandSelectModify
         {
             throw ServerTranslations.wrongUsageException("commands.selectReplace.usage");
         }
-    }
-
-    @Nonnull
-    @Override
-    public List<String> getTabCompletionOptions(MinecraftServer server, ICommandSender sender, String[] args, @Nullable BlockPos pos)
-    {
-        if (args.length == 1)
-            return getListOfStringsMatchingLastWord(args, Block.REGISTRY.getKeys());
-        else if (args.length == 2)
-            return getListOfStringsMatchingLastWord(args, IntStream.range(0, 16).mapToObj(String::valueOf).collect(Collectors.toList()));
-        else
-            return getListOfStringsMatchingLastWord(args, Block.REGISTRY.getKeys());
     }
 }

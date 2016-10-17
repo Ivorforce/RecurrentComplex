@@ -67,17 +67,14 @@ public class MazeGenerationInfo extends GenerationInfo implements WeightedSelect
         return gson;
     }
 
-    @Nonnull
-    @Override
-    public String id()
+    public String getMazeID()
     {
-        return id;
+        return mazeID;
     }
 
-    @Override
-    public void setID(@Nonnull String id)
+    public void setMazeID(String mazeID)
     {
-        this.id = id;
+        this.mazeID = mazeID;
     }
 
     @Override

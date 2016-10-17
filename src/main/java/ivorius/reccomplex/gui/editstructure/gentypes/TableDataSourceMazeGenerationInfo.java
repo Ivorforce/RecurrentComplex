@@ -62,7 +62,7 @@ public class TableDataSourceMazeGenerationInfo extends TableDataSourceSegmented
             case 1:
             {
                 TableCellString cell = new TableCellString("mazeID", generationInfo.mazeID);
-                cell.addPropertyConsumer(generationInfo::setID);
+                cell.addPropertyConsumer(generationInfo::setMazeID);
                 return new TableElementCell(IvTranslations.get("reccomplex.generationInfo.mazeComponent.mazeid"), cell);
             }
             case 2:

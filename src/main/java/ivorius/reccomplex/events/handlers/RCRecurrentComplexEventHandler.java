@@ -26,6 +26,6 @@ public class RCRecurrentComplexEventHandler
     {
         if (!RCConfig.generateNature && event.domain.equals(RecurrentComplex.MOD_ID) &&
                 (event.path.getParent().endsWith("nature") || event.path.getParent().getParent().endsWith("nature")))
-            event.shouldGenerate = false;
+            event.active = false;
     }
 }

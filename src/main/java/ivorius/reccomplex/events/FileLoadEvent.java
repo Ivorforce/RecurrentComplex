@@ -22,34 +22,36 @@ public class FileLoadEvent<S> extends Event
     public final String id;
     public final String domain;
 
-    public final boolean originalShouldGenerate;
-
-    public FileLoadEvent(S s, String fileSuffix, String id, String domain, Path path, boolean originalShouldGenerate)
+    public FileLoadEvent(S s, String fileSuffix, String id, String domain, Path path)
     {
         this.s = s;
         this.fileSuffix = fileSuffix;
         this.id = id;
         this.domain = domain;
         this.path = path;
-        this.originalShouldGenerate = originalShouldGenerate;
     }
 
     public static class Pre<S> extends FileLoadEvent<S>
     {
-        public boolean shouldGenerate;
+        public final boolean originalActive;
+        public boolean active;
 
-        public Pre(S s, String fileSuffix, String id, String domain, Path path, boolean shouldGenerate)
+        public Pre(S s, String fileSuffix, String id, String domain, Path path, boolean active)
         {
-            super(s, fileSuffix, id, domain, path, shouldGenerate);
-            this.shouldGenerate = shouldGenerate;
+            super(s, fileSuffix, id, domain, path);
+            this.originalActive = active;
+            this.active = active;
         }
     }
 
     public static class Post<S> extends FileLoadEvent<S>
     {
-        public Post(S s, String fileSuffix, String id, String domain, Path path, boolean originalShouldGenerate)
+        public final boolean active;
+
+        public Post(S s, String fileSuffix, String id, String domain, Path path, boolean active)
         {
-            super(s, fileSuffix, id, domain, path, originalShouldGenerate);
+            super(s, fileSuffix, id, domain, path);
+            this.active = active;
         }
     }
 }

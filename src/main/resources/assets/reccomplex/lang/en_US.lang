@@ -160,6 +160,9 @@ commands.rcforget.usage=/#forget <UUID>
 commands.rcforget.unknown=Unknown entry UUID!
 commands.rcforget.success=Forgot %s!
 
+commands.rcforgetall.usage=/#forgetall [x] [y] [z]
+commands.rcforgetall.success=Forgot %s structures!
+
 commands.rclookup.usage=/#lookup <structure>
 commands.rclookup.reply.silent=%s: §bInactive§r, by: '%s', is %s, %s
 commands.rclookup.reply.generates=%s: §bGenerates§r, by: '%s', is %s, %s

@@ -49,25 +49,6 @@ public class WorldScriptMazeGenerator implements WorldScript<WorldScriptMazeGene
     public int[] roomSize = new int[]{3, 5, 3};
     public SavedMazeComponent mazeComponent = new SavedMazeComponent();
 
-    public static <C> void addRandomPaths(Random random, int[] size, MorphingMazeComponent<C> maze, List<? extends MazeComponent<C>> components, C roomConnector, int number)
-    {
-        Map<MazePassage, C> exits = new HashMap<>();
-        for (MazeComponent<C> component : components)
-            for (Map.Entry<MazePassage, C> entry : component.exits().entrySet())
-                exits.put(entry.getKey(), entry.getValue());
-
-        for (int i = 0; i < number; i++)
-        {
-            int[] randomCoords = new int[size.length];
-            for (int c = 0; c < randomCoords.length; c++)
-                randomCoords[c] = MathHelper.getRandomIntegerInRange(random, 0, size[c]);
-            MazeRoom randomRoom = new MazeRoom(randomCoords);
-            MazePassage randomConnection = new MazePassage(randomRoom, randomRoom.addInDimension(random.nextInt(size.length), random.nextBoolean() ? 1 : -1));
-            if (Objects.equals(exits.get(randomConnection), roomConnector))
-                maze.exits().put(randomConnection, roomConnector);
-        }
-    }
-
     public static <C> void blockRooms(MorphingMazeComponent<C> component, Set<MazeRoom> rooms, C wallConnector)
     {
         component.add(WorldGenMaze.createCompleteComponent(rooms, Collections.emptyMap(), wallConnector));
@@ -233,7 +214,6 @@ public class WorldScriptMazeGenerator implements WorldScript<WorldScriptMazeGene
 
         ConnectorFactory factory = new ConnectorFactory();
 
-        Connector roomConnector = factory.get(ConnectorStrategy.DEFAULT_PATH);
         Connector wallConnector = factory.get(ConnectorStrategy.DEFAULT_WALL);
         Connector defaultConnector = mazeComponent.defaultConnector.toConnector(factory);
         Set<Connector> blockedConnections = Collections.singleton(wallConnector); // TODO Make configurable
@@ -257,7 +237,6 @@ public class WorldScriptMazeGenerator implements WorldScript<WorldScriptMazeGene
 
         WorldGenMaze.buildExitPaths(factory, mazeComponent.exitPaths, maze.rooms()).forEach(path -> maze.exits().put(path.getKey(), path.getValue()));
 
-        WorldScriptMazeGenerator.addRandomPaths(random, outsideBoundsHigher, maze, transformedComponents, roomConnector, outsideBoundsHigher[0] * outsideBoundsHigher[1] * outsideBoundsHigher[2] / (5 * 5 * 5) + 1);
         // Don't add reachability as it only slows down generation without adding real features
 //        maze.reachability().putAll(mazeComponent.reachability.build(AxisAlignedTransform2D.ORIGINAL, mazeComponent.boundsSize(), SavedMazeReachability.notBlocked(blockedConnections, maze.exits()), maze.exits().keySet()));
 

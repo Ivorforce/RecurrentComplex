@@ -38,7 +38,7 @@ public class CommandRetrogen extends CommandBase
 {
     public static Stream<Pair<Integer, Integer>> existingRegions(File worldDir)
     {
-        File regionsDirectory = RCFiles.getValidatedFolder(worldDir, "region", false);
+        File regionsDirectory = RCFiles.getValidatedFolder(new File(worldDir, "region"), false);
         if (regionsDirectory == null) return Stream.empty();
 
         String[] mcas = regionsDirectory.list(new FileSuffixFilter("mca"));

@@ -29,9 +29,9 @@ public class ClientProxy implements RCProxy
     public static final String[] VALID_MODIFIER_KEYS = new String[]{"ctrl", "lctrl", "rctrl", "shift", "lshift", "rshift"};
 
     @Override
-    public File getBaseFolderFile(String filename)
+    public File getDataDirectory()
     {
-        return new File(Minecraft.getMinecraft().mcDataDir, filename);
+        return Minecraft.getMinecraft().mcDataDir;
     }
 
     @Override

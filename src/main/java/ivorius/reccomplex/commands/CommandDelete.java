@@ -7,6 +7,7 @@ package ivorius.reccomplex.commands;
 
 import ivorius.reccomplex.RCConfig;
 import ivorius.reccomplex.RecurrentComplex;
+import ivorius.reccomplex.files.loading.LeveledRegistry;
 import ivorius.reccomplex.files.loading.ResourceDirectory;
 import ivorius.reccomplex.utils.ServerTranslations;
 import net.minecraft.command.CommandBase;
@@ -62,8 +63,8 @@ public class CommandDelete extends CommandBase
         RCCommands.informDeleteResult(RecurrentComplex.saver.tryDeleteWithID(directory.toPath(), adapterID, id), commandSender, adapterID, id, directory.subDirectoryName());
 
         // Could also predict changes and just reload those for the file but eh.
-        ResourceDirectory.reloadCustomFiles(RecurrentComplex.loader);
-        ResourceDirectory.reloadServerFiles(RecurrentComplex.loader);
+        ResourceDirectory.reload(RecurrentComplex.loader, LeveledRegistry.Level.CUSTOM);
+        ResourceDirectory.reload(RecurrentComplex.loader, LeveledRegistry.Level.SERVER);
     }
 
     @Override

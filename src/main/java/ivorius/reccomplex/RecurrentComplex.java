@@ -12,6 +12,7 @@ import ivorius.reccomplex.events.handlers.RCForgeEventHandler;
 import ivorius.reccomplex.events.handlers.RCRecurrentComplexEventHandler;
 import ivorius.reccomplex.events.handlers.RCTerrainGenEventHandler;
 import ivorius.reccomplex.files.loading.FileLoader;
+import ivorius.reccomplex.files.loading.LeveledRegistry;
 import ivorius.reccomplex.files.loading.ResourceDirectory;
 import ivorius.reccomplex.files.saving.FileSaver;
 import ivorius.reccomplex.gui.RCGuiHandler;
@@ -146,8 +147,8 @@ public class RecurrentComplex
     @EventHandler
     public void postInit(FMLPostInitializationEvent event)
     {
-        ResourceDirectory.reloadModFiles(loader);
-        ResourceDirectory.reloadCustomFiles(loader);
+        ResourceDirectory.reload(loader, LeveledRegistry.Level.MODDED);
+        ResourceDirectory.reload(loader, LeveledRegistry.Level.CUSTOM);
 
         SchematicLoader.initializeFolder();
     }
@@ -167,6 +168,6 @@ public class RecurrentComplex
     @EventHandler
     public void onServerStarted(FMLServerStartedEvent event)
     {
-        ResourceDirectory.reloadServerFiles(loader);
+        ResourceDirectory.reload(loader, LeveledRegistry.Level.SERVER);
     }
 }

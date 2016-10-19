@@ -102,7 +102,7 @@ public class SchematicLoader
 
     public static File getValidatedSchematicsFile()
     {
-        File structuresFile = IvFileHelper.getValidatedFolder(RecurrentComplex.proxy.getBaseFolderFile(ResourceDirectory.RESOURCES_FILE_NAME));
+        File structuresFile = IvFileHelper.getValidatedFolder(new File(RecurrentComplex.proxy.getDataDirectory(), ResourceDirectory.RESOURCES_FILE_NAME));
         return structuresFile != null ? IvFileHelper.getValidatedFolder(structuresFile, "schematics") : null;
     }
 }

@@ -12,8 +12,10 @@ import net.minecraft.util.ResourceLocation;
 import org.apache.commons.io.FilenameUtils;
 
 import javax.annotation.Nullable;
+import javax.annotation.ParametersAreNonnullByDefault;
 import java.io.IOException;
 import java.net.URISyntaxException;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.*;
 
@@ -71,32 +73,26 @@ public class FileLoader extends FileHandler
 
     // --------------- Loading
 
+    @ParametersAreNonnullByDefault
     public int tryLoadAll(ResourceLocation resourceLocation, FileLoadContext context)
     {
         return tryLoadAll(resourceLocation, context, keySet());
     }
 
+    @ParametersAreNonnullByDefault
     public int tryLoadAll(ResourceLocation resourceLocation, FileLoadContext context, Collection<String> suffices)
     {
-        try
-        {
-            Path path = RCFiles.pathFromResourceLocation(resourceLocation);
-            if (path != null)
-                return tryLoadAll(path, context, suffices);
-        }
-        catch (Throwable e)
-        {
-            RecurrentComplex.logger.error("Error reading from resource location '" + resourceLocation + "'", e);
-        }
-
-        return 0;
+        Path path = RCFiles.tryPathFromResourceLocation(resourceLocation);
+        return path != null ? tryLoadAll(path, context, suffices) : 0;
     }
 
+    @ParametersAreNonnullByDefault
     public int tryLoadAll(Path path, FileLoadContext context)
     {
         return tryLoadAll(path, context, keySet());
     }
 
+    @ParametersAreNonnullByDefault
     public int tryLoadAll(Path path, FileLoadContext context, Collection<String> suffices)
     {
         int added = 0;
@@ -121,6 +117,7 @@ public class FileLoader extends FileHandler
         return added;
     }
 
+    @ParametersAreNonnullByDefault
     public boolean tryLoad(ResourceLocation resourceLocation, @Nullable String customID, FileLoadContext context)
     {
         Path path = null;
@@ -153,29 +150,31 @@ public class FileLoader extends FileHandler
         return false;
     }
 
-    public boolean tryLoad(Path file, @Nullable String customID, FileLoadContext context)
+    @ParametersAreNonnullByDefault
+    public boolean tryLoad(Path path, @Nullable String customID, FileLoadContext context)
     {
         try
         {
-            return load(file, customID, context);
+            return load(path, customID, context);
         }
         catch (UnsupportedOperationException e)
         {
-            RecurrentComplex.logger.error(String.format("Reading unsupported: ?.%s", RCFiles.extension(file)), e);
+            RecurrentComplex.logger.error(String.format("Reading unsupported: ?.%s", RCFiles.extension(path)), e);
         }
         catch (Exception e)
         {
-            RecurrentComplex.logger.error("Error loading resource: " + file, e);
+            RecurrentComplex.logger.error("Error loading resource: " + path, e);
         }
 
         return false;
     }
 
-    public boolean load(Path file, @Nullable String customID, FileLoadContext context) throws Exception
+    @ParametersAreNonnullByDefault
+    public boolean load(Path path, @Nullable String customID, FileLoadContext context) throws Exception
     {
-        FileLoaderAdapter handler = get(RCFiles.extension(file));
-        String id = defaultName(file, customID);
+        FileLoaderAdapter handler = get(RCFiles.extension(path));
+        String id = defaultName(path, customID);
 
-        return handler != null && handler.loadFile(file, id, context);
+        return handler != null && handler.loadFile(path, id, context);
     }
 }

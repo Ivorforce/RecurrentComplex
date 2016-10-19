@@ -13,6 +13,8 @@ import net.minecraft.command.CommandBase;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.server.MinecraftServer;
 
+import java.io.File;
+
 /**
  * Created by lukas on 03.08.14.
  */
@@ -38,6 +40,6 @@ public class CommandBrowseFiles extends CommandBase
     @Override
     public void execute(MinecraftServer server, ICommandSender commandSender, String[] args)
     {
-        OpenGlHelper.openFile(ResourceDirectory.getCustomDirectory());
+        OpenGlHelper.openFile(new File(ResourceDirectory.getCustomDirectory(), ResourceDirectory.RESOURCES_FILE_NAME));
     }
 }

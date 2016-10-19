@@ -46,24 +46,17 @@ public class CommandReload extends CommandBase
     @Override
     public void execute(MinecraftServer server, ICommandSender commandSender, String[] args) throws CommandException
     {
-        LeveledRegistry.Level level = args.length >= 1 ? LeveledRegistry.Level.valueOf(args[0]) : LeveledRegistry.Level.CUSTOM;
-
-        switch (level)
+        try
         {
-            case CUSTOM:
-                ResourceDirectory.reloadCustomFiles(RecurrentComplex.loader);
-                break;
-            case MODDED:
-                ResourceDirectory.reloadModFiles(RecurrentComplex.loader);
-                break;
-            case SERVER:
-                ResourceDirectory.reloadServerFiles(RecurrentComplex.loader);
-                break;
-            default:
-                throw ServerTranslations.wrongUsageException("commands.strucReload.usage");
-        }
+            LeveledRegistry.Level level = args.length >= 1 ? LeveledRegistry.Level.valueOf(args[0]) : LeveledRegistry.Level.CUSTOM;
+            ResourceDirectory.reload(RecurrentComplex.loader, level);
 
-        commandSender.addChatMessage(ServerTranslations.format("commands.strucReload.success", level));
+            commandSender.addChatMessage(ServerTranslations.format("commands.strucReload.success", level));
+        }
+        catch (IllegalArgumentException e)
+        {
+            throw ServerTranslations.wrongUsageException("commands.strucReload.usage");
+        }
     }
 
     @Override

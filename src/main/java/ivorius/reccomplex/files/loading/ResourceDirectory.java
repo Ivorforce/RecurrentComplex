@@ -17,6 +17,7 @@ import net.minecraftforge.fml.common.network.ByteBufUtils;
 
 import javax.annotation.Nonnull;
 import java.io.File;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Collection;
 
@@ -58,69 +59,78 @@ public enum ResourceDirectory
 
     public static File getCustomDirectory()
     {
-        return RecurrentComplex.proxy.getBaseFolderFile(RESOURCES_FILE_NAME);
+        return RecurrentComplex.proxy.getDataDirectory();
     }
 
     @Nonnull
-    public static File getSaveDirectory()
+    public static File getServerDirectory()
     {
-        return RCFiles.getValidatedFolder(getServer().getEntityWorld().getSaveHandler().getWorldDirectory(), RESOURCES_FILE_NAME, true);
+        return getServer().getEntityWorld().getSaveHandler().getWorldDirectory();
     }
 
-    public static void reloadModFiles(FileLoader loader)
+    public static void reload(FileLoader loader, LeveledRegistry.Level level) throws IllegalArgumentException, IllegalStateException
     {
-        LeveledRegistry.Level level = LeveledRegistry.Level.MODDED;
+        switch (level)
+        {
+            case CUSTOM:
+                loader.clearFiles(level);
+                tryLoadResources(loader, level, getCustomDirectory().toPath(), "", true);
+                break;
+            case MODDED:
+            {
+                loader.clearFiles(level);
+                for (ModContainer mod : Loader.instance().getModList())
+                {
+                    String domain = mod.getModId();
 
-        loader.clearFiles(level);
-        for (ModContainer mod : Loader.instance().getModList())
-            loadFilesFromDomain(loader, mod.getModId(), level, loader.keySet());
+                    Path path = RCFiles.tryPathFromResourceLocation(new ResourceLocation(domain.toLowerCase(), ""));
+                    if (path != null)
+                        tryLoadResources(loader, level, path, domain, false);
+                }
+
+                break;
+            }
+            case SERVER:
+                loader.clearFiles(level);
+                tryLoadResources(loader, level, getServerDirectory().toPath(), "", true);
+                break;
+            default:
+                throw new IllegalArgumentException();
+        }
     }
 
-    public static void reloadCustomFiles(FileLoader loader)
+    public static void tryLoadResources(FileLoader loader, LeveledRegistry.Level level, Path path, String domain, boolean create)
     {
-        reloadFilesFromDirectory(loader, LeveledRegistry.Level.CUSTOM, getCustomDirectory());
+        tryLoadResources(loader, path.resolve(RESOURCES_FILE_NAME), level, loader.keySet(), domain, create);
     }
 
-    public static void reloadServerFiles(FileLoader loader)
+    public static void tryLoadResources(FileLoader loader, Path path, LeveledRegistry.Level level, Collection<String> suffices, String domain, boolean create)
     {
-        reloadFilesFromDirectory(loader, LeveledRegistry.Level.SERVER, getSaveDirectory());
-    }
-
-    public static void reloadFilesFromDirectory(FileLoader loader, LeveledRegistry.Level level, File directory)
-    {
-        loader.clearFiles(level);
-        loadFilesFromDirectory(loader, directory, level, loader.keySet());
-    }
-
-    public static void loadFilesFromDirectory(FileLoader loader, File directory, LeveledRegistry.Level level, Collection<String> suffices)
-    {
-        tryLoadAll(loader, directory, ACTIVE.subDirectoryName(), true, "", true, level, suffices);
-        tryLoadAll(loader, directory, INACTIVE.subDirectoryName(), true, "", false, level, suffices);
+        tryLoadAll(loader, path.resolve(ACTIVE_DIR_NAME), new FileLoadContext(domain, true, level), create, suffices);
+        tryLoadAll(loader, path.resolve(INACTIVE_DIR_NAME), new FileLoadContext(domain, false, level), create, suffices);
 
         // Legacy
-        tryLoadAll(loader, directory, "genericStructures", false, "", true, level, suffices);
-        tryLoadAll(loader, directory, "silentStructures", false, "", false, level, suffices);
-        tryLoadAll(loader, directory, "inventoryGenerators", false, "", true, level, suffices);
+        tryLoadAll(loader, path.resolve("genericStructures"), new FileLoadContext(domain, true, level), false, suffices);
+        tryLoadAll(loader, path.resolve("silentStructures"), new FileLoadContext(domain, false, level), false, suffices);
+        tryLoadAll(loader, path.resolve("inventoryGenerators"), new FileLoadContext(domain, true, level), false, suffices);
     }
 
-    protected static void tryLoadAll(FileLoader loader, File structuresFile, String directoryName, boolean create, String domain, boolean active, LeveledRegistry.Level level, Collection<String> suffices)
+    protected static void tryLoadAll(FileLoader loader, Path path, FileLoadContext context, boolean create, Collection<String> suffices)
     {
-        File validatedFolder = RCFiles.getValidatedFolder(structuresFile, directoryName, create);
-        if (validatedFolder != null)
-            loader.tryLoadAll(validatedFolder.toPath(), new FileLoadContext(domain, active, level), suffices);
-    }
+        if (create)
+        {
+            try
+            {
+                Files.createDirectories(path);
+            }
+            catch (Exception e)
+            {
+                RecurrentComplex.logger.error("Error creating directory", e);
+                return;
+            }
+        }
 
-    public static void loadFilesFromDomain(FileLoader loader, String domain, LeveledRegistry.Level level, Collection<String> suffices)
-    {
-        domain = domain.toLowerCase();
-
-        loader.tryLoadAll(resourceLocation(domain, ACTIVE_DIR_NAME), new FileLoadContext(domain, true, level), suffices);
-        loader.tryLoadAll(resourceLocation(domain, INACTIVE_DIR_NAME), new FileLoadContext(domain, false, level), suffices);
-
-        // Legacy
-        loader.tryLoadAll(new ResourceLocation(domain, "structures/genericStructures"), new FileLoadContext(domain, true, level), suffices);
-        loader.tryLoadAll(new ResourceLocation(domain, "structures/silentStructures"), new FileLoadContext(domain, false, level), suffices);
-        loader.tryLoadAll(new ResourceLocation(domain, "structures/inventoryGenerators"), new FileLoadContext(domain, true, level), suffices);
+        loader.tryLoadAll(path, context, suffices);
     }
 
     @Nonnull
@@ -129,7 +139,7 @@ public enum ResourceDirectory
         return new ResourceLocation(domain, String.format("%s/%s", RESOURCES_FILE_NAME, directoryName));
     }
 
-    protected static MinecraftServer getServer()
+    protected static MinecraftServer getServer() throws IllegalStateException
     {
         if (FMLCommonHandler.instance().getEffectiveSide().isClient())
             throw new IllegalStateException();
@@ -164,7 +174,12 @@ public enum ResourceDirectory
 
     public File toFile()
     {
-        return RCFiles.getValidatedFolder(isServer() ? getSaveDirectory() : getCustomDirectory(), subDirectoryName(), true);
+        return RCFiles.getValidatedFolder(new File(getParent(), subDirectoryName()), true);
+    }
+
+    public File getParent()
+    {
+        return isServer() ? new File(getServerDirectory(), RESOURCES_FILE_NAME) : new File(getCustomDirectory(), RESOURCES_FILE_NAME);
     }
 
     public String subDirectoryName()

@@ -16,9 +16,9 @@ import java.io.File;
 public class ServerProxy implements RCProxy
 {
     @Override
-    public File getBaseFolderFile(String filename)
+    public File getDataDirectory()
     {
-        return FMLCommonHandler.instance().getSidedDelegate().getServer().getFile(filename);
+        return FMLCommonHandler.instance().getSidedDelegate().getServer().getDataDirectory();
     }
 
     @Override

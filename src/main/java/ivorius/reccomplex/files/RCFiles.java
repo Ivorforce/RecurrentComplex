@@ -5,6 +5,7 @@
 
 package ivorius.reccomplex.files;
 
+import ivorius.reccomplex.RecurrentComplex;
 import net.minecraft.util.ResourceLocation;
 import org.apache.commons.io.FilenameUtils;
 
@@ -76,7 +77,8 @@ public class RCFiles
 
     public static Path pathFromResourceLocation(ResourceLocation resourceLocation) throws URISyntaxException, IOException
     {
-        URL resource = RCFiles.class.getResource(String.format("/assets/%s/%s", resourceLocation.getResourceDomain(), resourceLocation.getResourcePath()));
+        URL resource = RCFiles.class.getResource(String.format("/assets/%s%s", resourceLocation.getResourceDomain(),
+                resourceLocation.getResourcePath().isEmpty() ? "" : ("/" + resourceLocation.getResourcePath())));
         return resource != null ? resourceToPath(resource.toURI().toURL()) : null;
     }
 
@@ -86,8 +88,9 @@ public class RCFiles
         {
             return pathFromResourceLocation(resourceLocation);
         }
-        catch (URISyntaxException | IOException ignored)
+        catch (Throwable e)
         {
+            RecurrentComplex.logger.error("Error reading from resource location '" + resourceLocation + "'", e);
         }
 
         return null;
@@ -110,20 +113,20 @@ public class RCFiles
         return files;
     }
 
-    public static File getValidatedFolder(File file, boolean create)
+    public static boolean ensure(File file)
     {
-        if (create && !file.exists())
+        if (!file.exists() && !file.mkdir())
         {
-            if (!file.mkdir())
-                System.out.println("Could not create " + file.getName() + " folder");
+            System.out.println("Could not create " + file.getName() + " folder");
+            return false;
         }
 
-        return file.exists() ? file : null;
+        return true;
     }
 
-    public static File getValidatedFolder(File parent, String child, boolean create)
+    public static File getValidatedFolder(File file, boolean create)
     {
-        return getValidatedFolder(new File(parent, child), create);
+        return (create ? ensure(file) : file.exists()) ? file : null;
     }
 
     @Nullable

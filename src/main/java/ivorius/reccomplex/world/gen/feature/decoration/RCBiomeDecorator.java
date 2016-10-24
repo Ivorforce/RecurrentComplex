@@ -67,12 +67,12 @@ public class RCBiomeDecorator
 
         double totalWeight = selector.totalWeight(type);
 
-        if (totalWeight <= 0)
+        if (totalWeight <= 0 || baseWeight <= 0)
             return false;
 
         int vanillaAmount = adapter.amount(worldIn, random, biomeIn, decorator, chunkPos, type);
         if (vanillaAmount < 0) return false; // don't interfere
-        vanillaAmount = trySurface(worldIn, random, chunkPos, selector, type, totalWeight, vanillaAmount,
+        vanillaAmount = trySurface(worldIn, random, chunkPos, selector, type, totalWeight, baseWeight, vanillaAmount,
                 adapter.forceUse(worldIn, random, biomeIn, decorator, chunkPos, type));
         for (int i = 0; i < vanillaAmount; ++i)
             adapter.generate(worldIn, random, biomeIn, decorator, chunkPos, type);
@@ -85,9 +85,9 @@ public class RCBiomeDecorator
         return adapters.stream().filter(a -> a.matches(worldIn, biomeIn, decorator, chunkPos, type)).findFirst().orElse(vanillaAdapter);
     }
 
-    public static int trySurface(WorldServer worldIn, Random random, BlockPos chunkPos, StructureSelector<VanillaDecorationGenerationInfo, DecorationType> selector, DecorationType type, double totalWeight, int vanillaAmount, boolean lowChance)
+    public static int trySurface(WorldServer worldIn, Random random, BlockPos chunkPos, StructureSelector<VanillaDecorationGenerationInfo, DecorationType> selector, DecorationType type, double totalWeight, double baseWeight, int vanillaAmount, boolean lowChance)
     {
-        int rcAmount = amount(random, totalWeight, vanillaAmount);
+        int rcAmount = amount(random, totalWeight * baseWeight, vanillaAmount);
 
         // When the chance is low, we don't give back to vanilla to try once again, to avoid double the spawn rate
         if (rcAmount <= 0 && !lowChance) return -1;

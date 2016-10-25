@@ -41,7 +41,9 @@ import java.util.stream.Collectors;
  */
 public class RCCommands
 {
+    @Nullable
     public static ICommand confirm;
+    @Nullable
     public static ICommand cancel;
 
     public static ICommand lookup;
@@ -84,8 +86,7 @@ public class RCCommands
             event.registerServerCommand(cancel = new CommandCancel());
         }
 
-        if (!RecurrentComplex.isLite())
-            event.registerServerCommand(reopen = new CommandReopen());
+        event.registerServerCommand(reopen = new CommandReopen());
 
         if (!RecurrentComplex.isLite())
             event.registerServerCommand(new CommandVisual());

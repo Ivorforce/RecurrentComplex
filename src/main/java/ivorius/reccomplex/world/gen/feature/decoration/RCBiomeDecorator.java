@@ -53,31 +53,57 @@ public class RCBiomeDecorator
 
     protected static boolean doDecorate(WorldServer worldIn, Random random, BlockPos chunkPos, DecorationType type)
     {
-        double baseWeight = RCConfig.baseDecorationWeights.get(type);
-
-        if (baseWeight <= 0)
-            return false;
-
         Biome biomeIn = worldIn.getBiome(chunkPos.add(16, 0, 16));
         BiomeDecorator decorator = biomeIn.theBiomeDecorator;
         Adapter adapter = adapter(worldIn, chunkPos, type, biomeIn, decorator);
+
+        int origAmount = adapter.amount(worldIn, random, biomeIn, decorator, chunkPos, type);
+
+        if (origAmount < 0) return false; // Don't interfere
+
+        int vanillaAmount = doDecorate(worldIn, random, chunkPos, type, origAmount, adapter.forceUse(worldIn, random, biomeIn, decorator, chunkPos, type));
+
+        if (vanillaAmount == origAmount) return true; // Replaced none
+
+        for (int i = 0; i < vanillaAmount; ++i)
+            adapter.generate(worldIn, random, biomeIn, decorator, chunkPos, type);
+
+        return vanillaAmount < 0;  // if -1 we let vanilla do its thing
+    }
+
+    @ParametersAreNonnullByDefault
+    public static int decorate(WorldServer worldIn, Random random, BlockPos chunkPos, DecorationType type, int amount)
+    {
+        try
+        {
+            return doDecorate(worldIn, random, chunkPos, type, amount, false);
+        }
+        catch (Exception e)
+        {
+            RecurrentComplex.logger.error("Exception when decorating", e);
+        }
+
+        return amount;
+    }
+
+    protected static int doDecorate(WorldServer worldIn, Random random, BlockPos chunkPos, DecorationType type, int amount, boolean lowChance)
+    {
+        double baseWeight = RCConfig.baseDecorationWeights.get(type);
+
+        if (baseWeight <= 0)
+            return amount;
+
+        Biome biomeIn = worldIn.getBiome(chunkPos.add(16, 0, 16));
 
         StructureSelector<VanillaDecorationGenerationInfo, DecorationType> selector = StructureRegistry.INSTANCE.decorationSelectors()
                 .get(biomeIn, worldIn.provider);
 
         double totalWeight = selector.totalWeight(type);
 
-        if (totalWeight <= 0 || baseWeight <= 0)
-            return false;
+        if (totalWeight <= 0)
+            return amount;
 
-        int vanillaAmount = adapter.amount(worldIn, random, biomeIn, decorator, chunkPos, type);
-        if (vanillaAmount < 0) return false; // don't interfere
-        vanillaAmount = trySurface(worldIn, random, chunkPos, selector, type, totalWeight, baseWeight, vanillaAmount,
-                adapter.forceUse(worldIn, random, biomeIn, decorator, chunkPos, type));
-        for (int i = 0; i < vanillaAmount; ++i)
-            adapter.generate(worldIn, random, biomeIn, decorator, chunkPos, type);
-
-        return vanillaAmount >= 0; // if -1 we let vanilla do its thing
+        return trySurface(worldIn, random, chunkPos, selector, type, totalWeight, baseWeight, amount, lowChance);
     }
 
     public static Adapter adapter(WorldServer worldIn, BlockPos chunkPos, DecorationType type, Biome biomeIn, BiomeDecorator decorator)

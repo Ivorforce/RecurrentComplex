@@ -19,6 +19,44 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
  */
 public class RCTerrainGenEventHandler
 {
+    private static boolean hasAmountData(DecorateBiomeEvent.Decorate event)
+    {
+        try
+        {
+            // Ensure
+            event.getClass().getDeclaredMethod("getModifiedAmount");
+            event.getClass().getDeclaredMethod("setModifiedAmount", int.class);
+            return (boolean) event.getClass().getDeclaredMethod("hasAmountData").invoke(event);
+        }
+        catch (Throwable e)
+        {
+            return false;
+        }
+    }
+
+    private static int getModifiedAmount(DecorateBiomeEvent.Decorate event)
+    {
+        try
+        {
+            return (int) event.getClass().getDeclaredMethod("getModifiedAmount").invoke(event);
+        }
+        catch (Throwable ignored)
+        {
+            return -1;
+        }
+    }
+
+    private static void setModifiedAmount(DecorateBiomeEvent.Decorate event, int amount)
+    {
+        try
+        {
+            event.getClass().getDeclaredMethod("setModifiedAmount", int.class).invoke(event, amount);
+        }
+        catch (Throwable ignored)
+        {
+        }
+    }
+
     public void register()
     {
         MinecraftForge.TERRAIN_GEN_BUS.register(this);
@@ -65,7 +103,9 @@ public class RCTerrainGenEventHandler
 
             if (type != null)
             {
-                if (RCBiomeDecorator.decorate((WorldServer) event.getWorld(), event.getRand(), event.getPos(), type))
+                if (hasAmountData(event))
+                    setModifiedAmount(event, RCBiomeDecorator.decorate((WorldServer) event.getWorld(), event.getRand(), event.getPos(), type, getModifiedAmount(event)));
+                else if (RCBiomeDecorator.decorate((WorldServer) event.getWorld(), event.getRand(), event.getPos(), type))
                     event.setResult(Event.Result.DENY);
             }
         }

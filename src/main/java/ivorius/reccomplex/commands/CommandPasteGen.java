@@ -19,6 +19,7 @@ import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.world.WorldServer;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -63,7 +64,7 @@ public class CommandPasteGen extends CommandBase
             GenericStructureInfo structureInfo = GenericStructureInfo.createDefaultStructure();
             structureInfo.worldDataCompound = worldData;
 
-            OperationRegistry.queueOperation(new OperationGenerateStructure(structureInfo, null, transform, coord, false), commandSender);
+            OperationRegistry.queueOperation(new OperationGenerateStructure(structureInfo, null, transform, coord, false).prepare((WorldServer) commandSender.getEntityWorld()), commandSender);
         }
         else
         {

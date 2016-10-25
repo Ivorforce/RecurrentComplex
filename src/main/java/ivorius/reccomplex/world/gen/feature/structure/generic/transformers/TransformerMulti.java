@@ -99,21 +99,6 @@ public class TransformerMulti extends Transformer<TransformerMulti.InstanceData>
         return instanceData;
     }
 
-    public void configureInstanceData(InstanceData instanceData, StructurePrepareContext context, IvWorldData worldData)
-    {
-        configureInstanceData(instanceData, context, worldData, this, instanceData);
-    }
-
-    public boolean mayGenerate(InstanceData instanceData, StructureSpawnContext context, IvWorldData worldData)
-    {
-        return mayGenerate(instanceData, context, worldData, this, instanceData);
-    }
-
-    public void transform(InstanceData instanceData, Phase phase, StructureSpawnContext context, IvWorldData worldData)
-    {
-        transform(instanceData, phase, context, worldData, this, instanceData);
-    }
-
     public List<Transformer> getTransformers()
     {
         return data.getContents().transformers;
@@ -153,9 +138,9 @@ public class TransformerMulti extends Transformer<TransformerMulti.InstanceData>
     }
 
     @Override
-    public void configureInstanceData(InstanceData instanceData, StructurePrepareContext context, IvWorldData worldData, TransformerMulti transformer, InstanceData transformerID)
+    public void configureInstanceData(InstanceData instanceData, StructurePrepareContext context, IvWorldData worldData, RunTransformer transformer)
     {
-        instanceData.pairedTransformers.forEach(pair -> pair.getLeft().configureInstanceData(pair.getRight(), context, worldData, transformer, transformerID));
+        instanceData.pairedTransformers.forEach(pair -> pair.getLeft().configureInstanceData(pair.getRight(), context, worldData, transformer));
     }
 
     @Override
@@ -167,10 +152,10 @@ public class TransformerMulti extends Transformer<TransformerMulti.InstanceData>
     }
 
     @Override
-    public boolean mayGenerate(InstanceData instanceData, StructureSpawnContext context, IvWorldData worldData, TransformerMulti transformer, InstanceData transformerID)
+    public boolean mayGenerate(InstanceData instanceData, StructureSpawnContext context, IvWorldData worldData, RunTransformer transformer)
     {
         return instanceData.deactivated || instanceData.pairedTransformers.stream()
-                .allMatch(input -> input.getLeft().mayGenerate(input.getRight(), context, worldData, transformer, transformerID));
+                .allMatch(input -> input.getLeft().mayGenerate(input.getRight(), context, worldData, transformer));
     }
 
     @Override
@@ -181,10 +166,10 @@ public class TransformerMulti extends Transformer<TransformerMulti.InstanceData>
     }
 
     @Override
-    public void transform(InstanceData instanceData, Phase phase, StructureSpawnContext context, IvWorldData worldData, TransformerMulti transformer, InstanceData transformerID)
+    public void transform(InstanceData instanceData, Phase phase, StructureSpawnContext context, IvWorldData worldData, RunTransformer transformer)
     {
         if (!instanceData.deactivated)
-            instanceData.pairedTransformers.forEach(pair -> pair.getLeft().transform(pair.getRight(), phase, context, worldData, transformer, transformerID));
+            instanceData.pairedTransformers.forEach(pair -> pair.getLeft().transform(pair.getRight(), phase, context, worldData, transformer));
     }
 
     public static class InstanceData implements NBTStorable

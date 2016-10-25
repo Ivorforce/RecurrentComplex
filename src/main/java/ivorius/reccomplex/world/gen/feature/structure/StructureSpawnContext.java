@@ -5,7 +5,6 @@
 
 package ivorius.reccomplex.world.gen.feature.structure;
 
-import ivorius.reccomplex.utils.StructureBoundingBoxes;
 import net.minecraft.util.math.BlockPos;
 import ivorius.ivtoolkit.math.AxisAlignedTransform2D;
 import net.minecraft.block.state.IBlockState;
@@ -15,6 +14,7 @@ import net.minecraft.world.gen.structure.StructureBoundingBox;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.Random;
+import java.util.function.Predicate;
 
 /**
  * Created by lukas on 19.01.15.
@@ -32,19 +32,22 @@ public class StructureSpawnContext
     public final StructureBoundingBox boundingBox;
     @Nullable
     public final StructureBoundingBox generationBB;
+    @Nullable
+    public final Predicate<Vec3i> generationPredicate;
 
     public final int generationLayer;
 
     public final boolean generateAsSource;
     public final GenerateMaturity generateMaturity;
 
-    public StructureSpawnContext(@Nonnull Environment environment, @Nonnull Random random, @Nonnull AxisAlignedTransform2D transform, @Nonnull StructureBoundingBox boundingBox, @Nullable StructureBoundingBox generationBB, int generationLayer, boolean generateAsSource, GenerateMaturity generateMaturity)
+    public StructureSpawnContext(@Nonnull Environment environment, @Nonnull Random random, @Nonnull AxisAlignedTransform2D transform, @Nonnull StructureBoundingBox boundingBox, @Nullable StructureBoundingBox generationBB, Predicate<Vec3i> generationPredicate, int generationLayer, boolean generateAsSource, GenerateMaturity generateMaturity)
     {
         this.environment = environment;
         this.random = random;
         this.transform = transform;
         this.boundingBox = boundingBox;
         this.generationBB = generationBB;
+        this.generationPredicate = generationPredicate;
         this.generationLayer = generationLayer;
         this.generateAsSource = generateAsSource;
         this.generateMaturity = generateMaturity;
@@ -52,7 +55,8 @@ public class StructureSpawnContext
 
     public boolean includes(Vec3i coord)
     {
-        return generationBB == null || generationBB.isVecInside(coord);
+        return (generationBB == null || generationBB.isVecInside(coord))
+                && (generationPredicate == null || generationPredicate.test(coord));
     }
 
     public boolean setBlock(BlockPos coord, IBlockState state, int flag)

@@ -118,7 +118,7 @@ public class WorldScriptMulti implements WorldScript<WorldScriptMulti.InstanceDa
 
                 WorldScript script = expectedScripts.get(i);
                 if (WorldScriptRegistry.INSTANCE.type(script.getClass()).equals(scriptTag.getString("id")))
-                    instanceDates.add(script.loadInstanceData(context, compound.getTag("data")));
+                    instanceDates.add(script.loadInstanceData(context, scriptTag.getTag("data")));
                 else
                     instanceDates.add(null);
             }

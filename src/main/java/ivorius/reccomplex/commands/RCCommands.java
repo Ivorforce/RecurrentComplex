@@ -150,7 +150,7 @@ public class RCCommands
         if (owner == null)
             throw ServerTranslations.commandException("commands.rc.noSelection");
 
-        if (!ensureValid || !owner.hasValidSelection())
+        if (ensureValid && !owner.hasValidSelection())
             throw ServerTranslations.commandException("commands.selectModify.noSelection");
 
         return owner;

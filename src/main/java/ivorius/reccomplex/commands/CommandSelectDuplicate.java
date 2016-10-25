@@ -19,6 +19,7 @@ import net.minecraft.command.ICommandSender;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.WorldServer;
 
 /**
  * Created by lukas on 09.06.14.
@@ -66,6 +67,6 @@ public class CommandSelectDuplicate extends CommandBase
 
         AxisAlignedTransform2D transform = AxisAlignedTransform2D.from(rotations, mirrorX);
 
-        OperationRegistry.queueOperation(new OperationGenerateStructure(structureInfo, null, transform, coord, true), commandSender);
+        OperationRegistry.queueOperation(new OperationGenerateStructure(structureInfo, null, transform, coord, true).prepare((WorldServer) commandSender.getEntityWorld()), commandSender);
     }
 }

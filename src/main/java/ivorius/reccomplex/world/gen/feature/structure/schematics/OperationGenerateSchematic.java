@@ -17,6 +17,8 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.world.World;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.world.WorldServer;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 /**
  * Created by lukas on 10.02.15.
@@ -83,6 +85,7 @@ public class OperationGenerateSchematic implements Operation
         cachedShapeGrid = null;
     }
 
+    @SideOnly(Side.CLIENT)
     @Override
     public void renderPreview(PreviewType previewType, World world, int ticks, float partialTicks)
     {

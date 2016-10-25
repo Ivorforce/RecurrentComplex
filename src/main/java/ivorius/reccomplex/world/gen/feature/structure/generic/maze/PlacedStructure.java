@@ -27,6 +27,10 @@ public class PlacedStructure implements NBTCompoundObject
 
     public NBTBase instanceData;
 
+    public PlacedStructure()
+    {
+    }
+
     public PlacedStructure(String structureID, String generationInfoID, AxisAlignedTransform2D transform, BlockPos lowerCoord, NBTBase instanceData)
     {
         this.structureID = structureID;

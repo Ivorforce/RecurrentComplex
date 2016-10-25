@@ -5,21 +5,23 @@
 
 package ivorius.reccomplex.operation;
 
+import ivorius.ivtoolkit.tools.NBTCompoundObject;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldServer;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 /**
  * Created by lukas on 10.02.15.
  */
-public interface Operation
+public interface Operation extends NBTCompoundObject
 {
     void perform(WorldServer world);
 
-    void writeToNBT(NBTTagCompound compound);
+    default void update(World world, int ticks) {}
 
-    void readFromNBT(NBTTagCompound compound);
-
+    @SideOnly(Side.CLIENT)
     void renderPreview(PreviewType previewType, World world, int ticks, float partialTicks);
 
     enum PreviewType

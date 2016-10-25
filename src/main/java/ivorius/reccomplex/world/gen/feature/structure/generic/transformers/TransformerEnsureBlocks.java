@@ -49,7 +49,7 @@ public class TransformerEnsureBlocks extends Transformer<NBTNone>
     }
 
     @Override
-    public boolean mayGenerate(NBTNone instanceData, StructureSpawnContext context, IvWorldData worldData, TransformerMulti transformer, TransformerMulti.InstanceData transformerData)
+    public boolean mayGenerate(NBTNone instanceData, StructureSpawnContext context, IvWorldData worldData, RunTransformer transformer)
     {
         IvBlockCollection blockCollection = worldData.blockCollection;
         int[] areaSize = new int[]{blockCollection.width, blockCollection.height, blockCollection.length};
@@ -75,7 +75,7 @@ public class TransformerEnsureBlocks extends Transformer<NBTNone>
     }
 
     @Override
-    public void transform(NBTNone instanceData, Phase phase, StructureSpawnContext context, IvWorldData worldData, TransformerMulti transformer, TransformerMulti.InstanceData transformerData)
+    public void transform(NBTNone instanceData, Phase phase, StructureSpawnContext context, IvWorldData worldData, RunTransformer transformer)
     {
 
     }

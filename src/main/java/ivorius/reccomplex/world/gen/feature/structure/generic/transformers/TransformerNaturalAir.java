@@ -83,9 +83,9 @@ public class TransformerNaturalAir extends TransformerAbstractCloud<TransformerN
     }
 
     @Override
-    public void transform(InstanceData instanceData, Phase phase, StructureSpawnContext context, IvWorldData worldData, TransformerMulti transformer, TransformerMulti.InstanceData transformerData)
+    public void transform(InstanceData instanceData, Phase phase, StructureSpawnContext context, IvWorldData worldData, RunTransformer transformer)
     {
-        super.transform(instanceData, phase, context, worldData, transformer, transformerData);
+        super.transform(instanceData, phase, context, worldData, transformer);
 
         if (phase == Phase.AFTER)
         {

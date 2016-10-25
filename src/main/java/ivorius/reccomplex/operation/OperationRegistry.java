@@ -7,9 +7,10 @@ package ivorius.reccomplex.operation;
 
 import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
+import ivorius.ivtoolkit.tools.NBTCompoundObjects;
 import ivorius.reccomplex.RecurrentComplex;
-import ivorius.reccomplex.commands.RCCommands;
 import ivorius.reccomplex.capability.StructureEntityInfo;
+import ivorius.reccomplex.commands.RCCommands;
 import ivorius.reccomplex.utils.ServerTranslations;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.ICommandSender;
@@ -50,24 +51,12 @@ public class OperationRegistry
             return null;
         }
 
-        try
-        {
-            Operation operation = clazz.newInstance();
-            operation.readFromNBT(compound);
-            return operation;
-        }
-        catch (InstantiationException | IllegalAccessException e)
-        {
-            RecurrentComplex.logger.error(String.format("Could not read Operation with ID '%s'", opID), e);
-        }
-
-        return null;
+        return NBTCompoundObjects.read(compound, clazz);
     }
 
     public static NBTTagCompound writeOperation(@Nonnull Operation operation)
     {
-        NBTTagCompound compound = new NBTTagCompound();
-        operation.writeToNBT(compound);
+        NBTTagCompound compound = NBTCompoundObjects.write(operation);
         compound.setString("opID", operations.inverse().get(operation.getClass()));
         return compound;
     }

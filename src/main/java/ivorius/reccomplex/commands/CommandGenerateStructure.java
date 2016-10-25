@@ -59,26 +59,21 @@ public class CommandGenerateStructure extends CommandBase
         if (args.length <= 0)
             throw ServerTranslations.wrongUsageException("commands.strucGen.usage");
 
-        generateStructure(commandSender, args, 0, 1, commandSender, 3, 4);
-    }
-
-    public static void generateStructure(ICommandSender commandSender, String[] args, int idIndex, int posIndex, ICommandSender posRef, int dimIndex, int genInfoIndex) throws CommandException
-    {
-        String structureName = args[idIndex];
+        String structureName = args[0];
         StructureInfo<?> structureInfo = StructureRegistry.INSTANCE.get(structureName);
-        WorldServer world = RCCommands.tryParseDimension(commandSender, args, dimIndex);
+        WorldServer world = RCCommands.tryParseDimension(commandSender, args, 3);
 
         if (structureInfo == null)
             throw ServerTranslations.commandException("commands.strucGen.noStructure", structureName);
 
         BlockSurfacePos pos;
 
-        pos = RCCommands.tryParseSurfaceBlockPos(posRef, args, posIndex, false);
+        pos = RCCommands.tryParseSurfaceBlockPos(commandSender, args, 1, false);
 
         GenerationInfo generationInfo;
 
-        if (args.length > genInfoIndex)
-            generationInfo = structureInfo.generationInfo(args[genInfoIndex]);
+        if (args.length > 4)
+            generationInfo = structureInfo.generationInfo(args[4]);
         else
             generationInfo = structureInfo.<GenerationInfo>generationInfos(NaturalGenerationInfo.class).stream()
                     .findFirst().orElse(structureInfo.generationInfos(GenerationInfo.class).stream().findFirst().orElse(null));
@@ -94,7 +89,7 @@ public class CommandGenerateStructure extends CommandBase
 
             Optional<BlockPos> lowerCoord = generator.lowerCoord();
             if (lowerCoord.isPresent())
-                OperationRegistry.queueOperation(new OperationGenerateStructure(genericStructureInfo, generationInfo.id(), generator.transform(), lowerCoord.get(), false).withStructureID(structureName), commandSender);
+                OperationRegistry.queueOperation(new OperationGenerateStructure(genericStructureInfo, generationInfo.id(), generator.transform(), lowerCoord.get(), false).withStructureID(structureName).prepare(world), commandSender);
             else
                 throw ServerTranslations.commandException("commands.strucGen.noPlace");
         }
@@ -113,24 +108,23 @@ public class CommandGenerateStructure extends CommandBase
         if (args.length == 2 || args.length == 3)
             return getTabCompletionCoordinateXZ(args, 0, pos);
 
-        return tabCompletionOptions(args, 0, 3, 4);
-    }
-
-    @Nonnull
-    public static List<String> tabCompletionOptions(String[] args, int idIndex, int dimIndex, int genInfoIndex)
-    {
-        if (args.length == idIndex + 1)
+        if (args.length == 1)
             return getListOfStringsMatchingLastWord(args, StructureRegistry.INSTANCE.ids());
-        else if (args.length == dimIndex + 1)
+        else if (args.length == 4)
             return RCCommands.completeDimension(args);
-        else if (args.length == genInfoIndex + 1)
+        else if (args.length == 5)
         {
-            String structureName = args[idIndex];
+            String structureName = args[0];
             StructureInfo<?> structureInfo = StructureRegistry.INSTANCE.get(structureName);
             if (structureInfo instanceof GenericStructureInfo)
                 return getListOfStringsMatchingLastWord(args, structureInfo.generationInfos(GenerationInfo.class).stream().map(GenerationInfo::id).collect(Collectors.toList()));
         }
+//        else if (args.length == 6)
+//            return getListOfStringsMatchingLastWord(args, "0", "2", "5");
+//        else if (args.length == 7)
+//            return getListOfStringsMatchingLastWord(args, "fade", "up", "down", "fog");
 
         return Collections.emptyList();
     }
+
 }

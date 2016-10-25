@@ -61,10 +61,9 @@ commands.strucExport.usage=/#export [blueprintName]
 
 commands.strucEdit.usage=/#edit <structureName>
 
-commands.strucGen.usage=/#gen <structureName> [x] [z] [dimension]
+commands.strucGen.usage=/#gen <structureName> [x] [z] [dimension] [generation id] [spawn time] [up|down|fog|fade]
 commands.strucGen.noPlace=The structure can't find anywhere suitable to spawn!
 commands.strucGen.noStructure=No structure registered by the name of '%s'
-commands.strucGenAt.usage=/#genat <structureName> <entity> [dimension]
 
 commands.strucImport.usage=/#import <structureName> [x] [y] [z] [rotation] [mirror:true|false]
 commands.strucImport.noStructure=No structure registered by the name of '%s'

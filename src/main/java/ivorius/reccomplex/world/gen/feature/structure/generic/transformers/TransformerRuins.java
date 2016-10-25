@@ -132,7 +132,7 @@ public class TransformerRuins extends Transformer<TransformerRuins.InstanceData>
     }
 
     @Override
-    public void transform(InstanceData instanceData, Phase phase, StructureSpawnContext context, IvWorldData worldData, TransformerMulti transformer, TransformerMulti.InstanceData transformerData)
+    public void transform(InstanceData instanceData, Phase phase, StructureSpawnContext context, IvWorldData worldData, RunTransformer transformer)
     {
         if (phase == Phase.AFTER)
         {
@@ -151,7 +151,7 @@ public class TransformerRuins extends Transformer<TransformerRuins.InstanceData>
                     {
                         IBlockState state = context.environment.world.getBlockState(worldCoord);
 
-                        if (!transformer.skipGeneration(transformerData, context, worldCoord, state, worldData, sourceCoord))
+                        if (!transformer.transformer.skipGeneration(transformer.instanceData, context, worldCoord, state, worldData, sourceCoord))
                             decayBlock(context.environment.world, context.random, state, worldCoord);
                     }
                 }

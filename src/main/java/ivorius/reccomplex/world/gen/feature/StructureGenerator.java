@@ -28,6 +28,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.Optional;
 import java.util.Random;
+import java.util.function.Predicate;
 
 /**
  * Created by lukas on 19.01.15.
@@ -62,6 +63,8 @@ public class StructureGenerator<S extends NBTStorable>
     private StructureBoundingBox boundingBox;
     @Nullable
     private StructureBoundingBox generationBB;
+    @Nullable
+    private Predicate<Vec3i> generationPredicate;
 
     private String generationInfoID;
     private GenerationInfo generationInfo;
@@ -155,7 +158,7 @@ public class StructureGenerator<S extends NBTStorable>
     public StructureGenerator<S> asChild(StructureSpawnContext context)
     {
         return environment(context.environment).random(context.random).transform(context.transform)
-                .generationBB(context.generationBB).generationLayer(context.generationLayer + 1)
+                .generationBB(context.generationBB).generationPredicate(context.generationPredicate).generationLayer(context.generationLayer + 1)
                 .asSource(context.generateAsSource).maturity(context.generateMaturity.isFirstTime() ? StructureSpawnContext.GenerateMaturity.FIRST : StructureSpawnContext.GenerateMaturity.COMPLEMENT);
     }
 
@@ -341,6 +344,18 @@ public class StructureGenerator<S extends NBTStorable>
         return this;
     }
 
+    @Nullable
+    public Predicate<Vec3i> generationPredicate()
+    {
+        return generationPredicate;
+    }
+
+    public StructureGenerator<S> generationPredicate(@Nullable Predicate<Vec3i> generationPredicate)
+    {
+        this.generationPredicate = generationPredicate;
+        return this;
+    }
+
     public StructureGenerator<S> generationInfo(@Nullable GenerationInfo generationInfo)
     {
         this.generationInfo = generationInfo;
@@ -429,7 +444,7 @@ public class StructureGenerator<S extends NBTStorable>
     @Nonnull
     public Optional<StructureSpawnContext> spawn()
     {
-        return boundingBox().map(bb -> new StructureSpawnContext(environment(), random(), transform(), bb, generationBB, generationLayer, generateAsSource, generateMaturity));
+        return boundingBox().map(bb -> new StructureSpawnContext(environment(), random(), transform(), bb, generationBB, generationPredicate, generationLayer, generateAsSource, generateMaturity));
     }
 
 }

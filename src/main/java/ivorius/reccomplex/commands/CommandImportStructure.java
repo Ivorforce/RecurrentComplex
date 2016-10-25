@@ -56,7 +56,7 @@ public class CommandImportStructure extends CommandBase
 
         String structureID = args[0];
         StructureInfo<?> structureInfo = StructureRegistry.INSTANCE.get(structureID);
-        World world = commandSender.getEntityWorld();
+        WorldServer world = (WorldServer) commandSender.getEntityWorld();
 
         if (structureInfo == null)
         {
@@ -68,10 +68,10 @@ public class CommandImportStructure extends CommandBase
         AxisAlignedTransform2D transform = RCCommands.tryParseTransform(args, 4);
 
         if (structureInfo instanceof GenericStructureInfo)
-            OperationRegistry.queueOperation(new OperationGenerateStructure((GenericStructureInfo) structureInfo, structureID, transform, coord, true).withStructureID(structureID), commandSender);
+            OperationRegistry.queueOperation(new OperationGenerateStructure((GenericStructureInfo) structureInfo, structureID, transform, coord, true).withStructureID(structureID).prepare(world), commandSender);
         else
         {
-            new StructureGenerator<>(structureInfo).world((WorldServer) world)
+            new StructureGenerator<>(structureInfo).world(world)
                     .transform(transform).lowerCoord(coord).asSource(true).generate();
         }
     }

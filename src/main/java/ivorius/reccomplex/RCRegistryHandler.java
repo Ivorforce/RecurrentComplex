@@ -29,7 +29,8 @@ import ivorius.reccomplex.utils.FMLUtils;
 import ivorius.reccomplex.utils.PresetRegistry;
 import ivorius.reccomplex.world.gen.feature.selector.NaturalStructureSelector;
 import ivorius.reccomplex.world.gen.feature.structure.OperationGenerateStructure;
-import ivorius.reccomplex.world.gen.feature.structure.OperationMoveStructure;
+import ivorius.reccomplex.world.gen.feature.structure.OperationClearArea;
+import ivorius.reccomplex.world.gen.feature.structure.OperationMulti;
 import ivorius.reccomplex.world.gen.feature.structure.StructureRegistry;
 import ivorius.reccomplex.world.gen.feature.structure.generic.StructureSaveHandler;
 import ivorius.reccomplex.world.gen.feature.structure.generic.gentypes.*;
@@ -317,9 +318,10 @@ public class RCRegistryHandler
         mazeRuleRegistry.register("connect", MazeRuleConnect.class);
         mazeRuleRegistry.register("connectall", MazeRuleConnectAll.class);
 
+        OperationRegistry.register("multi", OperationMulti.class);
         OperationRegistry.register("strucGen", OperationGenerateStructure.class);
         OperationRegistry.register("schemGen", OperationGenerateSchematic.class);
-        OperationRegistry.register("strucMove", OperationMoveStructure.class);
+        OperationRegistry.register("clearArea", OperationClearArea.class);
 
 //        GameRegistry.registerWorldGenerator(new WorldGenStructures(), 50);
         RCInventoryGenerators.registerVanillaInventoryGenerators();

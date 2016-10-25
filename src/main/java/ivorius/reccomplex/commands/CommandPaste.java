@@ -19,6 +19,7 @@ import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.world.WorldServer;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -64,7 +65,7 @@ public class CommandPaste extends CommandBase
 
             AxisAlignedTransform2D transform = RCCommands.tryParseTransform(args, 3);
 
-            OperationRegistry.queueOperation(new OperationGenerateStructure(structureInfo, null, transform, coord, true), commandSender);
+            OperationRegistry.queueOperation(new OperationGenerateStructure(structureInfo, null, transform, coord, true).prepare((WorldServer) commandSender.getEntityWorld()), commandSender);
         }
         else
         {

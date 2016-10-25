@@ -139,13 +139,13 @@ public abstract class TransformerAbstractCloud<S extends TransformerAbstractClou
     }
 
     @Override
-    public void configureInstanceData(S s, StructurePrepareContext context, IvWorldData worldData, TransformerMulti transformer, TransformerMulti.InstanceData transformerData)
+    public void configureInstanceData(S s, StructurePrepareContext context, IvWorldData worldData, RunTransformer transformer)
     {
-        s.cloud = buildCloud(s, worldData, context, transformer, transformerData);
+        s.cloud = buildCloud(s, worldData, context, transformer.transformer, transformer.instanceData);
     }
 
     @Override
-    public void transform(S instanceData, Transformer.Phase phase, StructureSpawnContext context, IvWorldData worldData, TransformerMulti transformer, TransformerMulti.InstanceData transformerData)
+    public void transform(S instanceData, Phase phase, StructureSpawnContext context, IvWorldData worldData, RunTransformer transformer)
     {
         if (generatesInPhase(instanceData, phase))
         {

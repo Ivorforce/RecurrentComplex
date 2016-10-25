@@ -11,15 +11,22 @@ import ivorius.ivtoolkit.rendering.grid.BlockQuadCache;
 import ivorius.ivtoolkit.rendering.grid.GridQuadCache;
 import ivorius.reccomplex.client.rendering.OperationRenderer;
 import ivorius.reccomplex.operation.Operation;
+import ivorius.reccomplex.random.BlurredValueField;
 import ivorius.reccomplex.world.gen.feature.StructureGenerator;
 import ivorius.reccomplex.world.gen.feature.structure.generic.GenericStructureInfo;
 import ivorius.reccomplex.world.gen.feature.structure.generic.StructureSaveHandler;
 import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldServer;
 import net.minecraftforge.common.util.Constants;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
+
+import java.util.Optional;
+import java.util.Random;
 
 /**
  * Created by lukas on 10.02.15.
@@ -37,6 +44,8 @@ public class OperationGenerateStructure implements Operation
     public String generationInfoID;
 
     protected GridQuadCache cachedShapeGrid;
+
+    protected NBTBase instanceData;
 
     public OperationGenerateStructure()
     {
@@ -67,12 +76,27 @@ public class OperationGenerateStructure implements Operation
         return this;
     }
 
+    public OperationGenerateStructure prepare(WorldServer world)
+    {
+        instanceData = generator(world).instanceData().get().writeToNBT();
+        return this;
+    }
+
     @Override
     public void perform(WorldServer world)
     {
-        new StructureGenerator<>(structure).world(world).generationInfo(generationInfoID)
+        if (instanceData == null)
+            throw new IllegalStateException();
+
+        generator(world).generate();
+    }
+
+    public StructureGenerator<GenericStructureInfo.InstanceData> generator(WorldServer world)
+    {
+        return new StructureGenerator<>(structure).world(world).generationInfo(generationInfoID)
                 .structureID(structureID).transform(transform).lowerCoord(lowerCoord)
-                .maturity(StructureSpawnContext.GenerateMaturity.FIRST).asSource(generateAsSource).generate();
+                .maturity(StructureSpawnContext.GenerateMaturity.FIRST).asSource(generateAsSource)
+                .instanceData(instanceData);
     }
 
     @Override
@@ -90,6 +114,8 @@ public class OperationGenerateStructure implements Operation
 
         if (structureID != null)
             compound.setString("structureIDForSaving", structureID);
+
+        compound.setTag("instanceData", instanceData.copy());
     }
 
     @Override
@@ -107,6 +133,8 @@ public class OperationGenerateStructure implements Operation
         structureID = compound.hasKey("structureIDForSaving", Constants.NBT.TAG_STRING)
                 ? compound.getString("structureIDForSaving")
                 : null;
+
+        instanceData = compound.getTag("instanceData").copy();
     }
 
     public void invalidateCache()
@@ -114,6 +142,33 @@ public class OperationGenerateStructure implements Operation
         cachedShapeGrid = null;
     }
 
+//    float partial = 0;
+//    @Override
+//    public void update(World world, int ticks)
+//    {
+//        if (!world.isRemote)
+//        {
+//            float before = partial;
+//            partial = Math.min(partial + 1f / 100f, 1);
+//
+//            if (partial > before)
+//            {
+//                StructureGenerator<GenericStructureInfo.InstanceData> generator = generator((WorldServer) world);
+//
+//                BlurredValueField field = new BlurredValueField(generator.structureSize());
+//                Random random = new Random(123810283);
+//                for (int i = 0; i < 10; i++)
+//                    field.addValue(random.nextFloat(), random);
+//                generator.generationPredicate(v ->
+//                {
+//                    float val = field.getValue(v.getX() - lowerCoord.getX(), v.getY() - lowerCoord.getY(), v.getZ() - lowerCoord.getZ());
+//                    return val < partial && val >= before;
+//                }).generate();
+//            }
+//        }
+//    }
+
+    @SideOnly(Side.CLIENT)
     @Override
     public void renderPreview(PreviewType previewType, World world, int ticks, float partialTicks)
     {

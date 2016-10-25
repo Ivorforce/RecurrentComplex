@@ -7,12 +7,9 @@ package ivorius.reccomplex.world.gen.feature.structure;
 
 import ivorius.ivtoolkit.blocks.BlockArea;
 import ivorius.ivtoolkit.blocks.BlockPositions;
-import ivorius.ivtoolkit.math.AxisAlignedTransform2D;
 import ivorius.ivtoolkit.rendering.grid.AreaRenderer;
-import ivorius.ivtoolkit.rendering.grid.BlockQuadCache;
-import ivorius.reccomplex.client.rendering.OperationRenderer;
 import ivorius.reccomplex.client.rendering.SelectionRenderer;
-import ivorius.reccomplex.world.gen.feature.structure.generic.GenericStructureInfo;
+import ivorius.reccomplex.operation.Operation;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.OpenGlHelper;
@@ -31,17 +28,16 @@ import org.lwjgl.opengl.GL11;
 /**
  * Created by lukas on 11.02.15.
  */
-public class OperationMoveStructure extends OperationGenerateStructure
+public class OperationClearArea implements Operation
 {
     public BlockArea sourceArea;
 
-    public OperationMoveStructure()
+    public OperationClearArea()
     {
     }
 
-    public OperationMoveStructure(GenericStructureInfo structure, AxisAlignedTransform2D transform, BlockPos lowerCoord, boolean generateAsSource, BlockArea sourceArea)
+    public OperationClearArea(BlockArea sourceArea)
     {
-        super(structure, null, transform, lowerCoord, generateAsSource);
         this.sourceArea = sourceArea;
     }
 
@@ -61,8 +57,6 @@ public class OperationMoveStructure extends OperationGenerateStructure
     @Override
     public void writeToNBT(NBTTagCompound compound)
     {
-        super.writeToNBT(compound);
-
         BlockPositions.writeToNBT("sourcePoint1", sourceArea.getPoint1(), compound);
         BlockPositions.writeToNBT("sourcePoint2", sourceArea.getPoint2(), compound);
     }
@@ -70,8 +64,6 @@ public class OperationMoveStructure extends OperationGenerateStructure
     @Override
     public void readFromNBT(NBTTagCompound compound)
     {
-        super.readFromNBT(compound);
-
         sourceArea = new BlockArea(BlockPositions.readFromNBT("sourcePoint1", compound), BlockPositions.readFromNBT("sourcePoint2", compound));
     }
 
@@ -80,27 +72,14 @@ public class OperationMoveStructure extends OperationGenerateStructure
     {
         for (BlockPos coord : sourceArea)
             setBlockToAirClean(world, coord);
-
-        super.perform(world);
     }
 
     @SideOnly(Side.CLIENT)
     @Override
     public void renderPreview(PreviewType previewType, World world, int ticks, float partialTicks)
     {
-        int[] size = structure.size();
-        if (previewType == PreviewType.SHAPE)
-        {
-            GlStateManager.color(0.8f, 0.75f, 1.0f);
-            OperationRenderer.renderGridQuadCache(
-                    cachedShapeGrid != null ? cachedShapeGrid : (cachedShapeGrid = BlockQuadCache.createQuadCache(structure.constructWorldData().blockCollection, new float[]{1, 1, 1})),
-                    transform, lowerCoord, ticks, partialTicks);
-        }
-
         if (previewType == PreviewType.BOUNDING_BOX || previewType == PreviewType.SHAPE)
         {
-            OperationRenderer.maybeRenderBoundingBox(lowerCoord, StructureInfos.structureSize(size, transform), ticks, partialTicks);
-
             GL11.glLineWidth(3.0f);
             GlStateManager.color(0.5f, 0.5f, 1.0f);
             AreaRenderer.renderAreaLined(sourceArea, 0.0212f);

@@ -60,14 +60,14 @@ public abstract class Transformer<S extends NBTStorable>
 
     public abstract S prepareInstanceData(StructurePrepareContext context, IvWorldData worldData);
 
-    public void configureInstanceData(S s, StructurePrepareContext context, IvWorldData worldData, TransformerMulti transformer, TransformerMulti.InstanceData transformerData)
+    public void configureInstanceData(S s, StructurePrepareContext context, IvWorldData worldData, RunTransformer transformer)
     {
 
     }
 
     public abstract S loadInstanceData(StructureLoadContext context, NBTBase nbt);
 
-    public boolean mayGenerate(S instanceData, StructureSpawnContext context, IvWorldData worldData, TransformerMulti transformer, TransformerMulti.InstanceData transformerData)
+    public boolean mayGenerate(S instanceData, StructureSpawnContext context, IvWorldData worldData, RunTransformer transformer)
     {
         return true;
     }
@@ -77,7 +77,7 @@ public abstract class Transformer<S extends NBTStorable>
         return false;
     }
 
-    public void transform(S instanceData, Phase phase, StructureSpawnContext context, IvWorldData worldData, TransformerMulti transformer, TransformerMulti.InstanceData transformerData)
+    public void transform(S instanceData, Phase phase, StructureSpawnContext context, IvWorldData worldData, RunTransformer transformer)
     {
 
     }

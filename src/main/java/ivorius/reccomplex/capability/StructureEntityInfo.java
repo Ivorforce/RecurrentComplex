@@ -175,6 +175,9 @@ public class StructureEntityInfo implements NBTCompoundObject, PartialUpdateHand
 
     public void update(Entity entity)
     {
+        if (danglingOperation != null)
+            danglingOperation.update(entity.worldObj, entity.ticksExisted);
+
         if (hasChanges)
             sendChanges(entity);
     }

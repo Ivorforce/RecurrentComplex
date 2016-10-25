@@ -10,6 +10,9 @@ import net.minecraftforge.fml.common.eventhandler.Cancelable;
 import net.minecraft.world.World;
 import net.minecraftforge.event.world.WorldEvent;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+
 /**
  * Created by lukas on 18.09.14.
  */
@@ -18,11 +21,13 @@ public class StructureGenerationEventLite extends WorldEvent
     /**
      * The name of the structure info to be spawned.
      */
+    @Nonnull
     protected final String structureName;
 
     /**
      * The bounding box of the structure.
      */
+    @Nonnull
     protected final StructureBoundingBox boundingBox;
 
     /**
@@ -32,7 +37,7 @@ public class StructureGenerationEventLite extends WorldEvent
 
     protected final boolean firstTime;
 
-    public StructureGenerationEventLite(World world, String structureName, StructureBoundingBox boundingBox, int generationLayer, boolean firstTime)
+    public StructureGenerationEventLite(World world, @Nonnull String structureName, @Nonnull StructureBoundingBox boundingBox, int generationLayer, boolean firstTime)
     {
         super(world);
         this.structureName = structureName;
@@ -41,11 +46,13 @@ public class StructureGenerationEventLite extends WorldEvent
         this.firstTime = firstTime;
     }
 
+    @Nonnull
     public String getStructureName()
     {
         return structureName;
     }
 
+    @Nonnull
     public StructureBoundingBox getBoundingBox()
     {
         return boundingBox;
@@ -64,7 +71,7 @@ public class StructureGenerationEventLite extends WorldEvent
     @Cancelable
     public static class Suggest extends StructureGenerationEventLite
     {
-        public Suggest(World world, String structureName, StructureBoundingBox boundingBox, int generationLayer, boolean firstTime)
+        public Suggest(World world, @Nonnull String structureName, @Nonnull StructureBoundingBox boundingBox, int generationLayer, boolean firstTime)
         {
             super(world, structureName, boundingBox, generationLayer, firstTime);
         }
@@ -72,7 +79,7 @@ public class StructureGenerationEventLite extends WorldEvent
 
     public static class Pre extends StructureGenerationEventLite
     {
-        public Pre(World world, String structureName, StructureBoundingBox boundingBox, int generationLayer, boolean firstTime)
+        public Pre(World world, @Nonnull String structureName, @Nonnull StructureBoundingBox boundingBox, int generationLayer, boolean firstTime)
         {
             super(world, structureName, boundingBox, generationLayer, firstTime);
         }
@@ -80,7 +87,7 @@ public class StructureGenerationEventLite extends WorldEvent
 
     public static class Post extends StructureGenerationEventLite
     {
-        public Post(World world, String structureName, StructureBoundingBox boundingBox, int generationLayer, boolean firstTime)
+        public Post(World world, @Nonnull String structureName, @Nonnull StructureBoundingBox boundingBox, int generationLayer, boolean firstTime)
         {
             super(world, structureName, boundingBox, generationLayer, firstTime);
         }

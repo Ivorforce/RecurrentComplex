@@ -125,13 +125,14 @@ public class StructureGenerator<S extends NBTStorable>
                 spawn.boundingBox.minY >= MIN_DIST_TO_LIMIT && spawn.boundingBox.maxY <= world.getHeight() - 1 - MIN_DIST_TO_LIMIT
                         && (!RCConfig.avoidOverlappingGeneration || allowOverlaps || !StructureGenerationData.get(world).entriesAt(spawn.boundingBox).findAny().isPresent())
                         && !RCEventBus.INSTANCE.post(new StructureGenerationEvent.Suggest(structureInfo, spawn))
-                        && !MinecraftForge.EVENT_BUS.post(new StructureGenerationEventLite.Suggest(world, structureID, spawn.boundingBox, spawn.generationLayer, firstTime))
+                        && (structureID == null || !MinecraftForge.EVENT_BUS.post(new StructureGenerationEventLite.Suggest(world, structureID, spawn.boundingBox, spawn.generationLayer, firstTime)))
         ))
         {
             if (firstTime)
             {
                 RCEventBus.INSTANCE.post(new StructureGenerationEvent.Pre(structureInfo, spawn));
-                MinecraftForge.EVENT_BUS.post(new StructureGenerationEventLite.Pre(world, structureID, spawn.boundingBox, spawn.generationLayer, firstTime));
+                if (structureID != null)
+                    MinecraftForge.EVENT_BUS.post(new StructureGenerationEventLite.Pre(world, structureID, spawn.boundingBox, spawn.generationLayer, firstTime));
             }
 
             boolean success = structureInfo.generate(spawn, instanceData, RCConfig.getUniversalTransformer());
@@ -141,7 +142,8 @@ public class StructureGenerator<S extends NBTStorable>
                 RecurrentComplex.logger.trace(String.format("Generated structure '%s' in %s", name(structureID), spawn.boundingBox));
 
                 RCEventBus.INSTANCE.post(new StructureGenerationEvent.Post(structureInfo, spawn));
-                MinecraftForge.EVENT_BUS.post(new StructureGenerationEventLite.Post(world, structureID, spawn.boundingBox, spawn.generationLayer, firstTime));
+                if (structureID != null)
+                    MinecraftForge.EVENT_BUS.post(new StructureGenerationEventLite.Post(world, structureID, spawn.boundingBox, spawn.generationLayer, firstTime));
 
                 if (structureID != null && memorize)
                     StructureGenerationData.get(world).addCompleteEntry(structureID, generationInfo != null ? generationInfo.id() : null, spawn.boundingBox, spawn.transform);

@@ -29,6 +29,7 @@ import java.util.Map;
 public class MCRegistrySpecial implements MCRegistry
 {
     public static final String HIDDEN_ITEM_TAG = "RC_HIDDEN_ITEM";
+    private static final Item DUMMY_ITEM = Items.coal;
 
     protected final BiMap<String, Item> itemMap = HashBiMap.create();
     protected final BiMap<String, Block> blockMap = HashBiMap.create();
@@ -36,7 +37,7 @@ public class MCRegistrySpecial implements MCRegistry
 
     protected MCRegistry parent;
     protected FMLRemapper remapper;
-    protected ItemHidingRegistry itemHidingRegistry = new ItemHidingRegistry(this);
+    protected ItemHidingRegistry itemHidingRegistry = new ItemHidingRegistry();
 
     public MCRegistrySpecial(MCRegistry parent, FMLRemapper remapper)
     {
@@ -148,31 +149,24 @@ public class MCRegistrySpecial implements MCRegistry
         return tileEntityMap.isEmpty() || !tileEntityMap.containsValue(tileEntity.getClass());
     }
 
-    public static class ItemHidingRegistry implements MCRegistry
+    public class ItemHidingRegistry implements MCRegistry
     {
-        private static final Item DUMMY_ITEM = Items.coal;
-        protected MCRegistrySpecial parent;
-
-        public ItemHidingRegistry(MCRegistrySpecial parent)
-        {
-            this.parent = parent;
-        }
-
         @Override
         public Item itemFromID(String itemID)
         {
-            return !parent.isItemSafe(itemID) ? DUMMY_ITEM : parent.parent.itemFromID(itemID);
+            itemID = remapper.mapItem(itemID);
+            return !MCRegistrySpecial.this.isItemSafe(itemID) ? DUMMY_ITEM : parent.itemFromID(itemID);
         }
 
         @Override
         public String idFromItem(Item item)
         {
-            return parent.idFromItem(item);
+            return MCRegistrySpecial.this.idFromItem(item);
         }
 
         public String containedItemID(ItemStack stack)
         {
-            return parent.idFromItem(containedItem(stack));
+            return MCRegistrySpecial.this.idFromItem(containedItem(stack));
         }
 
         public Item containedItem(ItemStack stack)
@@ -185,18 +179,18 @@ public class MCRegistrySpecial implements MCRegistry
         public Item hiddenItem(ItemStack stack)
         {
             return stack.hasTagCompound() && stack.getTagCompound().hasKey(HIDDEN_ITEM_TAG, Constants.NBT.TAG_STRING)
-                    ? parent.itemFromID(stack.getTagCompound().getString(HIDDEN_ITEM_TAG))
+                    ? MCRegistrySpecial.this.itemFromID(stack.getTagCompound().getString(HIDDEN_ITEM_TAG))
                     : null;
         }
 
         public ItemStack constructItemStack(String itemID, int stackSize, int metadata)
         {
-            return constructItemStack(parent.itemFromID(itemID), stackSize, metadata);
+            return constructItemStack(MCRegistrySpecial.this.itemFromID(itemID), stackSize, metadata);
         }
 
         public ItemStack constructItemStack(Item item, int stackSize, int metadata)
         {
-            String hiddenID = parent.itemMap.inverse().get(item);
+            String hiddenID = MCRegistrySpecial.this.itemMap.inverse().get(item);
             if (hiddenID != null)
             {
                 ItemStack stack = new ItemStack(DUMMY_ITEM, stackSize, metadata);
@@ -210,7 +204,7 @@ public class MCRegistrySpecial implements MCRegistry
         @Override
         public void modifyItemStackCompound(NBTTagCompound compound, String itemID)
         {
-            Item item = parent.itemMap.get(parent.remapper.mapItem(itemID));
+            Item item = MCRegistrySpecial.this.itemMap.get(MCRegistrySpecial.this.remapper.mapItem(itemID));
             if (item != null)
             {
                 NBTTagCompound stackNBT;
@@ -226,19 +220,19 @@ public class MCRegistrySpecial implements MCRegistry
         @Override
         public Block blockFromID(String blockID)
         {
-            return parent.blockFromID(blockID);
+            return MCRegistrySpecial.this.blockFromID(blockID);
         }
 
         @Override
         public String idFromBlock(Block block)
         {
-            return parent.idFromBlock(block);
+            return MCRegistrySpecial.this.idFromBlock(block);
         }
 
         @Override
         public TileEntity loadTileEntity(NBTTagCompound compound)
         {
-            return parent.loadTileEntity(compound);
+            return MCRegistrySpecial.this.loadTileEntity(compound);
         }
     }
 }

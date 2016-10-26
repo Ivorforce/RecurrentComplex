@@ -115,7 +115,8 @@ public class OperationGenerateStructure implements Operation
         if (structureID != null)
             compound.setString("structureIDForSaving", structureID);
 
-        compound.setTag("instanceData", instanceData.copy());
+        if (instanceData != null)
+            compound.setTag("instanceData", instanceData.copy());
     }
 
     @Override

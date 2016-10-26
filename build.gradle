@@ -31,34 +31,8 @@ minecraft {
     runDir = "eclipse"
 }
 
-// Provided - Start
-// FML doesnt load coremods and ATs from the classpath
-
-apply plugin: 'idea'
-
-configurations {
-    provided
-//    provided.extendsFrom(compile)
-}
-
-sourceSets {
-    main {
-        compileClasspath += [configurations.provided]
-    }
-}
-
-idea.module.inheritOutputDirs = true
-
-idea {
-    module {
-        scopes.PROVIDED.plus += [configurations.provided]
-    }
-}
-
-// Provided - Stop
-
 dependencies {
-    provided 'ivorius.ivtoolkit:IvToolkit:1.2.1:dev'
+    compile 'ivorius.ivtoolkit:IvToolkit:1.2.1:dev'
 }
 
 processResources
@@ -80,18 +54,6 @@ processResources
         exclude 'mcmod.info'
     }
 }
-
-// FML doesnt laod coremods and ATs from the classpath
-task copyMods(type: Copy, dependsOn: "extractUserDev") {
-    from { configurations.provided }
-    include "**/*.jar"
-    into file(minecraft.runDir + "/mods")
-    mustRunAfter "deobfBinJar"
-    mustRunAfter "repackMinecraft"
-}
-tasks.setupDevWorkspace.dependsOn copyMods
-tasks.setupDecompWorkspace.dependsOn copyMods
-
 
 sourceCompatibility = 1.8
 targetCompatibility = 1.8

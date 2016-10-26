@@ -1,0 +1,37 @@
+{
+  "data": [
+    {
+      "biomes": "$NETHER",
+      "weight": 0.0
+    },
+    {
+      "biomes": "$END",
+      "weight": 0.0
+    },
+    {
+      "biomes": "$WATER",
+      "weight": 0.0
+    },
+    {
+      "biomes": "!$COLD | !$SNOWY",
+      "weight": 0.0
+    },
+    {
+      "biomes": "$SANDY | $WASTELAND",
+      "weight": 0.0
+    },
+    {
+      "biomes": "$SPOOKY | $DEAD",
+      "weight": 0.0
+    },
+    {
+      "biomes": ""
+    }
+  ],
+  "metadata": {
+    "title": "Snowy Overworld",
+    "description": [
+      "Biomes that are roughly snowy and normal."
+    ]
+  }
+}

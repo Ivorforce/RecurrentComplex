@@ -134,7 +134,7 @@ public class OperationGenerateStructure implements Operation
                 ? compound.getString("structureIDForSaving")
                 : null;
 
-        instanceData = compound.getTag("instanceData").copy();
+        instanceData = Optional.ofNullable(compound.getTag("instanceData")).map(NBTBase::copy).orElse(null);
     }
 
     public void invalidateCache()

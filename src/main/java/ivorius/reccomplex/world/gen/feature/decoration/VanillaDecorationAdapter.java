@@ -49,10 +49,10 @@ public class VanillaDecorationAdapter implements RCBiomeDecorator.Adapter
     }
 
     @Override
-    public boolean forceUse(WorldServer worldIn, Random random, Biome biome, BiomeDecorator decorator, BlockPos chunkPos, RCBiomeDecorator.DecorationType type)
+    public boolean mayGiveUp(WorldServer worldIn, Random random, Biome biome, BiomeDecorator decorator, BlockPos chunkPos, RCBiomeDecorator.DecorationType type)
     {
-        return type == RCBiomeDecorator.DecorationType.DESERT_WELL || type == RCBiomeDecorator.DecorationType.FOSSIL
-                || type == RCBiomeDecorator.DecorationType.TREE && decorator.treesPerChunk == 0; // Low tree density type
+        return !(type == RCBiomeDecorator.DecorationType.DESERT_WELL || type == RCBiomeDecorator.DecorationType.FOSSIL
+                || type == RCBiomeDecorator.DecorationType.TREE && decorator.treesPerChunk == 0); // Low tree density type
     }
 
     @Override

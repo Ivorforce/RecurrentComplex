@@ -61,7 +61,7 @@ public class RCBiomeDecorator
 
         if (origAmount < 0) return false; // Don't interfere
 
-        int vanillaAmount = doDecorate(worldIn, random, chunkPos, type, origAmount, adapter.forceUse(worldIn, random, biomeIn, decorator, chunkPos, type));
+        int vanillaAmount = doDecorate(worldIn, random, chunkPos, type, origAmount, adapter.mayGiveUp(worldIn, random, biomeIn, decorator, chunkPos, type));
 
         if (vanillaAmount == origAmount) return true; // Replaced none
 
@@ -111,12 +111,12 @@ public class RCBiomeDecorator
         return adapters.stream().filter(a -> a.matches(worldIn, biomeIn, decorator, chunkPos, type)).findFirst().orElse(vanillaAdapter);
     }
 
-    public static int trySurface(WorldServer worldIn, Random random, BlockPos chunkPos, StructureSelector<VanillaDecorationGenerationInfo, DecorationType> selector, DecorationType type, double totalWeight, double baseWeight, int vanillaAmount, boolean lowChance)
+    public static int trySurface(WorldServer worldIn, Random random, BlockPos chunkPos, StructureSelector<VanillaDecorationGenerationInfo, DecorationType> selector, DecorationType type, double totalWeight, double baseWeight, int vanillaAmount, boolean mayGiveUp)
     {
         int rcAmount = amount(random, totalWeight * baseWeight, vanillaAmount);
 
         // When the chance is low, we don't give back to vanilla to try once again, to avoid double the spawn rate
-        if (rcAmount <= 0 && !lowChance) return -1;
+        if (rcAmount <= 0 && mayGiveUp) return -1;
 
         for (int i = 0; i < rcAmount; i++)
             generateSurface(selector.selectOne(random, type, totalWeight), worldIn, chunkPos, random);
@@ -195,7 +195,7 @@ public class RCBiomeDecorator
         /**
          * If even if no ReC structures are generated, we shouldn't give back to vanilla, to avoid doubling spawn rates.
          */
-        boolean forceUse(WorldServer worldIn, Random random, Biome biome, BiomeDecorator decorator, BlockPos chunkPos, DecorationType type);
+        boolean mayGiveUp(WorldServer worldIn, Random random, Biome biome, BiomeDecorator decorator, BlockPos chunkPos, DecorationType type);
 
         /**
          * Generate one thing in the biome

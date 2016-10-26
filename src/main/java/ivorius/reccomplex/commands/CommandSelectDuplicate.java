@@ -21,6 +21,9 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.WorldServer;
 
+import javax.annotation.Nullable;
+import java.util.List;
+
 /**
  * Created by lukas on 09.06.14.
  */
@@ -68,5 +71,16 @@ public class CommandSelectDuplicate extends CommandBase
         AxisAlignedTransform2D transform = AxisAlignedTransform2D.from(rotations, mirrorX);
 
         OperationRegistry.queueOperation(new OperationGenerateStructure(structureInfo, null, transform, coord, true).prepare((WorldServer) commandSender.getEntityWorld()), commandSender);
+    }
+
+    @Override
+    public List<String> getTabCompletionOptions(MinecraftServer server, ICommandSender sender, String[] args, @Nullable BlockPos pos)
+    {
+        if (args.length <= 3)
+            return getTabCompletionCoordinate(args, args.length - 1, pos);
+        else if (args.length == 4 || args.length == 5)
+            return RCCommands.completeTransform(args, args.length - 4);
+
+        return super.getTabCompletionOptions(server, sender, args, pos);
     }
 }

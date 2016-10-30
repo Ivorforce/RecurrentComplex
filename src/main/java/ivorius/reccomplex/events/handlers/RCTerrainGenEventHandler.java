@@ -106,8 +106,12 @@ public class RCTerrainGenEventHandler
                 int amount;
                 if (hasAmountData(event) && (amount = getModifiedAmount(event)) >= 0)
                     setModifiedAmount(event, RCBiomeDecorator.decorate((WorldServer) event.getWorld(), event.getRand(), event.getPos(), type, amount));
-                else if (RCBiomeDecorator.decorate((WorldServer) event.getWorld(), event.getRand(), event.getPos(), type))
-                    event.setResult(Event.Result.DENY);
+                else
+                {
+                    Event.Result result = RCBiomeDecorator.decorate((WorldServer) event.getWorld(), event.getRand(), event.getPos(), type);
+                    if (result != null)
+                        event.setResult(result);
+                }
             }
         }
     }

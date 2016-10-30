@@ -21,6 +21,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.WorldServer;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.biome.BiomeDecorator;
+import net.minecraftforge.fml.common.eventhandler.Event;
 import org.apache.commons.lang3.tuple.Pair;
 
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -37,7 +38,7 @@ public class RCBiomeDecorator
     public static final List<Adapter> adapters = new ArrayList<>();
 
     @ParametersAreNonnullByDefault
-    public static boolean decorate(WorldServer worldIn, Random random, BlockPos chunkPos, DecorationType type)
+    public static Event.Result decorate(WorldServer worldIn, Random random, BlockPos chunkPos, DecorationType type)
     {
         try
         {
@@ -48,10 +49,10 @@ public class RCBiomeDecorator
             RecurrentComplex.logger.error("Exception when decorating", e);
         }
 
-        return false;
+        return null;
     }
 
-    protected static boolean doDecorate(WorldServer worldIn, Random random, BlockPos chunkPos, DecorationType type)
+    protected static Event.Result doDecorate(WorldServer worldIn, Random random, BlockPos chunkPos, DecorationType type)
     {
         Biome biomeIn = worldIn.getBiome(chunkPos.add(16, 0, 16));
         BiomeDecorator decorator = biomeIn.theBiomeDecorator;
@@ -59,16 +60,16 @@ public class RCBiomeDecorator
 
         int origAmount = adapter.amount(worldIn, random, biomeIn, decorator, chunkPos, type);
 
-        if (origAmount < 0) return false; // Don't interfere
+        if (origAmount < 0) return null; // Don't interfere
 
         int vanillaAmount = doDecorate(worldIn, random, chunkPos, type, origAmount, adapter.mayGiveUp(worldIn, random, biomeIn, decorator, chunkPos, type));
 
-        if (vanillaAmount == origAmount) return true; // Replaced none
+        if (vanillaAmount == origAmount) return null; // Replaced none, might as well give back
 
         for (int i = 0; i < vanillaAmount; ++i)
             adapter.generate(worldIn, random, biomeIn, decorator, chunkPos, type);
 
-        return vanillaAmount < 0;  // if -1 we let vanilla do its thing
+        return vanillaAmount >= 0 ? Event.Result.DENY : null;  // if < 0 we let vanilla do its thing
     }
 
     @ParametersAreNonnullByDefault

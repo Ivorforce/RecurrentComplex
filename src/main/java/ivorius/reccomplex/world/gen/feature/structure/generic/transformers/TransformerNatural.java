@@ -134,7 +134,9 @@ public class TransformerNatural extends TransformerAbstractCloud<TransformerNatu
     @Override
     public InstanceData loadInstanceData(StructureLoadContext context, NBTBase nbt)
     {
-        return new InstanceData();
+        InstanceData instanceData = new InstanceData();
+        instanceData.readFromNBT(nbt);
+        return instanceData;
     }
 
     @Override

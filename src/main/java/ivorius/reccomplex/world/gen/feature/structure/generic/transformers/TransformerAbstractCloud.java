@@ -195,6 +195,7 @@ public abstract class TransformerAbstractCloud<S extends TransformerAbstractClou
                 NBTTagCompound cloudCompound = new NBTTagCompound();
                 BlockPositions.writeToNBT("particle", pos, cloudCompound);
                 cloudCompound.setDouble("density", density);
+                cloudCompounds.add(cloudCompound);
                 return true;
             });
             NBTTagLists.writeTo(compound, "cloud", cloudCompounds);

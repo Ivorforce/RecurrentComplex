@@ -200,6 +200,11 @@ commands.rcselecting.usage=/#selecting <x1> <y1> <z1> <x2> <y2> <z2> <command>
 
 commands.rcsetbiome.usage=/#setbiome <biome ID>
 
+commands.rceval.usage=/#eval <dependency expression>
+commands.rceval.error=§cError: %s
+commands.rceval.result.true=True
+commands.rceval.result.false=False
+
 inventoryGen.vanilla=Vanilla Generator
 inventoryGen.custom=Custom Generator
 inventoryGen.create=Create New Generator

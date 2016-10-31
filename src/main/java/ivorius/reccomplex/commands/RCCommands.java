@@ -130,6 +130,8 @@ public class RCCommands
         event.registerServerCommand(new CommandRetrogen());
         event.registerServerCommand(new CommandDecorate());
         event.registerServerCommand(new CommandDecorateOne());
+
+        event.registerServerCommand(new CommandEval());
     }
 
     @Nonnull

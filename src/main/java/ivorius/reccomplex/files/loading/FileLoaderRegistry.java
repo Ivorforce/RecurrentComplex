@@ -48,10 +48,10 @@ public abstract class FileLoaderRegistry<S> extends FileLoaderAdapter
         if (s != null)
         {
             FileLoadEvent.Pre<S> event = new FileLoadEvent.Pre<>(s, suffix, id, domain, path, active);
-            active = event.active;
 
-            if (event.getResult() != Event.Result.DENY && RCConfig.shouldResourceLoad(suffix, id, domain))
+            if (!RCEventBus.INSTANCE.post(event) && RCConfig.shouldResourceLoad(suffix, id, domain))
             {
+                active = event.active;
                 registry.register(id, domain, s, active, context.level);
 
                 RCEventBus.INSTANCE.post(new FileLoadEvent.Post<>(s, suffix, id, domain, path, active));

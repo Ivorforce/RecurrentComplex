@@ -5,6 +5,7 @@
 
 package ivorius.reccomplex.events;
 
+import net.minecraftforge.fml.common.eventhandler.Cancelable;
 import net.minecraftforge.fml.common.eventhandler.Event;
 
 import java.nio.file.Path;
@@ -12,7 +13,6 @@ import java.nio.file.Path;
 /**
  * Created by lukas on 21.01.15.
  */
-@Event.HasResult
 public class FileLoadEvent<S> extends Event
 {
     public final S s;
@@ -31,6 +31,7 @@ public class FileLoadEvent<S> extends Event
         this.path = path;
     }
 
+    @Cancelable
     public static class Pre<S> extends FileLoadEvent<S>
     {
         public final boolean originalActive;

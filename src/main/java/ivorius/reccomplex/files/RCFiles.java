@@ -98,6 +98,9 @@ public class RCFiles
 
     public static List<Path> listFilesRecursively(Path dir, final DirectoryStream.Filter<Path> filter, final boolean recursive) throws IOException
     {
+        if (!Files.exists(dir))
+            return Collections.emptyList();
+
         final List<Path> files = new ArrayList<>();
         Files.walkFileTree(dir, new SimpleFileVisitor<Path>()
         {

@@ -13,6 +13,8 @@ import ivorius.reccomplex.gui.table.cell.TableCell;
 import ivorius.reccomplex.gui.table.datasource.TableDataSourceSegmented;
 import ivorius.reccomplex.world.gen.feature.structure.generic.BiomeGenerationInfo;
 
+import javax.annotation.Nonnull;
+
 /**
  * Created by lukas on 05.06.14.
  */
@@ -28,6 +30,13 @@ public class TableDataSourceBiomeGen extends TableDataSourceSegmented
         this.tableDelegate = tableDelegate;
 
         addManagedSegment(0, TableDataSourceExpression.constructDefault(IvTranslations.get("reccomplex.gui.biomes"), generationInfo.getBiomeMatcher(), null));
+    }
+
+    @Nonnull
+    @Override
+    public String title()
+    {
+        return "Biome";
     }
 
     @Override

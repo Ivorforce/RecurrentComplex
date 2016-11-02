@@ -13,6 +13,8 @@ import ivorius.reccomplex.gui.table.cell.TableCell;
 import ivorius.reccomplex.gui.table.datasource.TableDataSourceSegmented;
 import ivorius.reccomplex.world.gen.feature.structure.generic.DimensionGenerationInfo;
 
+import javax.annotation.Nonnull;
+
 /**
  * Created by lukas on 05.06.14.
  */
@@ -28,6 +30,13 @@ public class TableDataSourceDimensionGen extends TableDataSourceSegmented
         this.tableDelegate = tableDelegate;
         
         addManagedSegment(0, TableDataSourceExpression.constructDefault(IvTranslations.get("reccomplex.gui.dimensions"), generationInfo.getDimensionMatcher(), null));
+    }
+
+    @Nonnull
+    @Override
+    public String title()
+    {
+        return "Dimension";
     }
 
     @Override

@@ -24,8 +24,10 @@ public class GuiScreenEditTable<T extends TableDataSource> extends GuiScreenModa
     public static final int HEIGHT_INSET = 20;
     public static final int MAX_WIDTH = 360;
 
-    private T t;
-    private Consumer<T> saver;
+    protected T t;
+    protected Consumer<T> saver;
+
+    protected GuiButton escButton;
 
     public GuiTable setDataSource(T dataSource, Consumer<T> saver)
     {
@@ -59,31 +61,22 @@ public class GuiScreenEditTable<T extends TableDataSource> extends GuiScreenModa
         }
         super.initGui();
 
-        if (tableStack().size() == 1)
-        {
-            buttonList.add(new GuiButton(1, leftEdge(), HEIGHT_INSET + uHeight() - 20, uWidth() / 3 - 1, 20, IvTranslations.get("gui.cancel")));
-            buttonList.add(new GuiButton(0, leftEdge() + uWidth() / 3 + 1, HEIGHT_INSET + uHeight() - 20, uWidth() / 3 - 2, 20, IvTranslations.get("reccomplex.gui.save")));
-            GuiButton hideButton = new GuiButton(3, leftEdge() + uWidth() / 3 * 2 + 1, HEIGHT_INSET + uHeight() - 20, uWidth() / 3 - 1, 20, IvTranslations.get("reccomplex.gui.hidegui"));
-            hideButton.enabled = GuiHider.canHide();
-            buttonList.add(hideButton);
-        }
-        else
-        {
-            buttonList.add(new GuiButton(2, leftEdge(), HEIGHT_INSET + uHeight() - 20, uWidth() / 2 - 1, 20, IvTranslations.get("gui.back")));
-            GuiButton hideButton = new GuiButton(3, leftEdge() + uWidth() / 2 + 1, HEIGHT_INSET + uHeight() - 20, uWidth() / 2 - 1, 20, IvTranslations.get("reccomplex.gui.hidegui"));
-            hideButton.enabled = GuiHider.canHide();
-            buttonList.add(hideButton);
-        }
+        buttonList.add(escButton = tableStack().size() == 1
+                ? new GuiButton(1, leftEdge(), HEIGHT_INSET + uHeight() - 20, uWidth() / 3 - 1, 20, IvTranslations.get("gui.cancel"))
+                : new GuiButton(2, leftEdge(), HEIGHT_INSET + uHeight() - 20, uWidth() / 3 - 1, 20, IvTranslations.format("gui.back.page", tableStack().size() - 1)));
+        buttonList.add(new GuiButton(0, leftEdge() + uWidth() / 3 + 1, HEIGHT_INSET + uHeight() - 20, uWidth() / 3 - 2, 20, IvTranslations.get("reccomplex.gui.save")));
+        GuiButton hideButton = new GuiButton(3, leftEdge() + uWidth() / 3 * 2 + 1, HEIGHT_INSET + uHeight() - 20, uWidth() / 3 - 1, 20, IvTranslations.get("reccomplex.gui.hidegui"));
+        hideButton.enabled = GuiHider.canHide();
+        buttonList.add(hideButton);
     }
 
     @Override
     protected void keyTyped(char keyChar, int keyCode) throws IOException
     {
-        if (keyCode == Keyboard.KEY_ESCAPE)
+        if (keyCode == Keyboard.KEY_ESCAPE) // Would otherwise close GUI
         {
-            // Prevent quitting without saving
-            if (tableStack().size() > 1)
-                popTable();
+            if (escButton != null)
+                actionPerformed(escButton);
         }
         else
             super.keyTyped(keyChar, keyCode);

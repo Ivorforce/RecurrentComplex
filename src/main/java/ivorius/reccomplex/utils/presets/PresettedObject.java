@@ -62,6 +62,8 @@ public class PresettedObject<T>
 
     public boolean setPreset(@Nullable String preset)
     {
+        // Do not check if preset exists yet - it may just not have been loaded yet!
+        // Check when the data is actually needed.
         this.preset = preset;
         t = null;
 

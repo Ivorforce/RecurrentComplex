@@ -524,7 +524,7 @@ reccomplex.gui.command=Command
 reccomplex.gui.custom=Custom
 reccomplex.gui.customize=Customize
 reccomplex.gui.reset=Reset
-gui.back.page=Back (%s)
+gui.back.page=Back §7(%s)
 
 reccomplex.rotation=Rotation
 reccomplex.mirror=Rotation

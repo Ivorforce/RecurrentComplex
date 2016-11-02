@@ -39,9 +39,10 @@ public class GuiTable extends Gui
     private TableDataSource dataSource;
 
     private Bounds propertiesBounds;
+
+    private boolean firstTime = true;
     private boolean showsScrollBar;
     private float currentScroll;
-    private int cachedMaxIndex;
 
     private boolean hideScrollbarIfUnnecessary;
 
@@ -100,7 +101,18 @@ public class GuiTable extends Gui
 
         ////////
 
-        updateScrollUp(0); // If we're too far down we scroll up now
+        int numberOfElements = dataSource.numberOfElements();
+        int supportedSlotNumber = propertiesBounds.getHeight() / HEIGHT_PER_SLOT;
+
+        if (firstTime)
+        {
+            if (supportedSlotNumber > numberOfElements)
+                currentScroll = (getMinScroll() + getMaxScroll()) / 2; // Scroll to the middle
+            firstTime = false;
+        }
+        else
+            updateScrollUp(0); // If we're too far down we scroll up now
+
         int roundedScrollIndex = MathHelper.floor_float(currentScroll + 0.5f);
 
         scrollUpButton = new GuiButton(-1, propertiesBounds.getMaxX() - SCROLL_BAR_WIDTH + 5, propertiesBounds.getMinY(), SCROLL_BAR_WIDTH - 5, 20, TextFormatting.BOLD + "↑");
@@ -108,11 +120,7 @@ public class GuiTable extends Gui
         scrollDownButton = new GuiButton(-1, propertiesBounds.getMaxX() - SCROLL_BAR_WIDTH + 5, propertiesBounds.getMaxY() - 20, SCROLL_BAR_WIDTH - 5, 20, TextFormatting.BOLD + "↓");
         delegate.addButtonToTable(scrollDownButton);
 
-        int supportedSlotNumber = propertiesBounds.getHeight() / HEIGHT_PER_SLOT;
-        int numberOfElements = dataSource.numberOfElements();
-        cachedMaxIndex = roundedScrollIndex + supportedSlotNumber - 1;
-
-        boolean needsUpScroll = canScrollUp();
+        boolean needsUpScroll = canScrollUp(numberOfElements);
         boolean needsDownScroll = canScrollDown(numberOfElements);
 
         scrollUpButton.enabled = needsUpScroll;
@@ -122,25 +130,29 @@ public class GuiTable extends Gui
         scrollUpButton.visible = showsScrollBar;
         scrollDownButton.visible = showsScrollBar;
 
+        int baseY = propertiesBounds.getMinY() + (showsScrollBar ? 0 : (propertiesBounds.getHeight() - numberOfElements * HEIGHT_PER_SLOT) / 2);
         for (int index = 0; index < supportedSlotNumber && roundedScrollIndex + index < numberOfElements; index++)
         {
-            TableElement element = cachedElements.get(roundedScrollIndex + index);
+            int elementIndex = roundedScrollIndex + index;
+            if (elementIndex < 0) continue;
+
+            TableElement element = cachedElements.get(elementIndex);
             boolean initElement = element == null;
 
             if (initElement)
-                element = dataSource.elementForIndex(this, roundedScrollIndex + index);
+                element = dataSource.elementForIndex(this, elementIndex);
 
             if (element == null)
-                throw new NullPointerException("Element not initialized: at " + (roundedScrollIndex + index));
+                throw new NullPointerException("Element not initialized: at " + elementIndex);
 
             int elementY = index * HEIGHT_PER_SLOT;
 
-            element.setBounds(Bounds.fromAxes(propertiesBounds.getMinX() + 100, propertiesBounds.getWidth() - 100 - SCROLL_BAR_WIDTH, propertiesBounds.getMinY() + elementY, 20));
+            element.setBounds(Bounds.fromAxes(propertiesBounds.getMinX() + 100, propertiesBounds.getWidth() - 100 - SCROLL_BAR_WIDTH, baseY + elementY, 20));
             element.setHidden(false);
             element.initGui(this);
 
             if (initElement)
-                cachedElements.put(roundedScrollIndex + index, element);
+                cachedElements.put(elementIndex, element);
 
             currentElements.add(element);
         }
@@ -179,12 +191,12 @@ public class GuiTable extends Gui
             }
         });
 
-        if (showsScrollBar && getMaxScroll() > 0)
+        if (showsScrollBar && getMaxScroll() != getMinScroll())
         {
             screen.mc.getTextureManager().bindTexture(CREATIVE_INVENTORY_TABS);
             GlStateManager.color(1, 1, 1);
 
-            this.drawTexturedModalRect(propertiesBounds.getMaxX() - SCROLL_BAR_WIDTH + 5 + 4, propertiesBounds.getMinY() + 20 + this.currentScroll / getMaxScroll() * (propertiesBounds.getHeight() - 40 - 15), 232, 0, 12, 15);
+            this.drawTexturedModalRect(propertiesBounds.getMaxX() - SCROLL_BAR_WIDTH + 5 + 4, propertiesBounds.getMinY() + 20 + (this.currentScroll - getMinScroll()) / (getMaxScroll() - getMinScroll()) * (propertiesBounds.getHeight() - 40 - 15), 232, 0, 12, 15);
         }
     }
 
@@ -269,7 +281,16 @@ public class GuiTable extends Gui
 
     public float getMinScroll()
     {
-        return 0;
+        return getMinScroll(dataSource.numberOfElements());
+    }
+
+    public float getMinScroll(int numberOfElements)
+    {
+        if (hideScrollbarIfUnnecessary)
+            return 0;
+
+        int supportedSlots = propertiesBounds.getHeight() / HEIGHT_PER_SLOT;
+        return Math.min(0, numberOfElements - supportedSlots);
     }
 
     public float getMaxScroll()
@@ -279,7 +300,8 @@ public class GuiTable extends Gui
 
     protected float getMaxScroll(int numberOfElements)
     {
-        return Math.max(0, numberOfElements - 1 - (cachedMaxIndex - MathHelper.floor_float(currentScroll + 0.5f)));
+        int supportedSlots = propertiesBounds.getHeight() / HEIGHT_PER_SLOT;
+        return Math.max(0, numberOfElements - supportedSlots);
     }
 
     public void tryScrollUp(float dist)
@@ -293,9 +315,9 @@ public class GuiTable extends Gui
         currentScroll = IvMathHelper.clamp(getMinScroll(), currentScroll - dist, getMaxScroll());
     }
 
-    public boolean canScrollUp()
+    public boolean canScrollUp(int numberOfElements)
     {
-        return currentScroll > getMinScroll();
+        return currentScroll > getMinScroll(numberOfElements);
     }
 
     public boolean canScrollDown()

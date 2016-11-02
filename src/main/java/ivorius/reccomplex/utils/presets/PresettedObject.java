@@ -62,14 +62,6 @@ public class PresettedObject<T>
 
     public boolean setPreset(@Nullable String preset)
     {
-        if (preset == null || !presetRegistry.has(preset))
-        {
-            setToDefault();
-            if (preset != null)
-                RecurrentComplex.logger.warn(String.format("Failed to find %s preset: %s", presetRegistry.getRegistry().description, preset));
-            return preset == null;
-        }
-
         this.preset = preset;
         t = null;
 
@@ -89,12 +81,7 @@ public class PresettedObject<T>
 
     public void setToDefault()
     {
-        String defaultPreset = presetRegistry.defaultID();
-
-        if (!presetRegistry.has(defaultPreset))
-            throw new IllegalStateException(String.format("Default preset named '%s' not found!", defaultPreset));
-
-        setPreset(defaultPreset);
+        setPreset(defaultPreset());
     }
 
     public T getContents()
@@ -112,13 +99,24 @@ public class PresettedObject<T>
 
     protected boolean loadFromPreset()
     {
-        if (this.preset != null && (t = presetContents()) != null)
+        if (preset == null)
             return true;
 
-        setToDefault();
-        t = presetContents();
+        if ((t = presetContents()) != null)
+            return true;
+
+        RecurrentComplex.logger.warn(String.format("Failed to find preset (%s): %s", presetRegistry.getRegistry().description, preset));
+        t = presetRegistry.preset(defaultPreset()).orElse(null);
 
         return false;
+    }
+
+    protected String defaultPreset()
+    {
+        String defaultPreset = presetRegistry.defaultID();
+        if (!presetRegistry.has(defaultPreset))
+            throw new IllegalStateException(String.format("Default preset named '%s' not found!", defaultPreset));
+        return defaultPreset;
     }
 
     private T presetContents()

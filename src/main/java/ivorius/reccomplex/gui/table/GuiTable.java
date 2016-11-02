@@ -30,7 +30,7 @@ public class GuiTable extends Gui
 {
     private static final ResourceLocation CREATIVE_INVENTORY_TABS = new ResourceLocation("textures/gui/container/creative_inventory/tabs.png");
 
-    public static final int HEIGHT_PER_SLOT = 25;
+    public static final int HEIGHT_PER_SLOT = 22;
     public static final int SCROLL_BAR_WIDTH = 19;
     public static final int SCROLL_BAR_MARGIN = 4;
     public static final float SCROLL_SPEED = 0.005f;
@@ -130,7 +130,8 @@ public class GuiTable extends Gui
         scrollUpButton.visible = showsScrollBar;
         scrollDownButton.visible = showsScrollBar;
 
-        int baseY = propertiesBounds.getMinY() + (showsScrollBar ? 0 : (propertiesBounds.getHeight() - numberOfCells * HEIGHT_PER_SLOT) / 2);
+        int baseY = propertiesBounds.getMinY() + (showsScrollBar ? 0 : (propertiesBounds.getHeight() - numberOfCells * HEIGHT_PER_SLOT) / 2)
+                + (propertiesBounds.getHeight() - supportedSlotNumber * HEIGHT_PER_SLOT) / 2;
         for (int index = 0; index < supportedSlotNumber && roundedScrollIndex + index < numberOfCells; index++)
         {
             int cellIndex = roundedScrollIndex + index;
@@ -145,9 +146,9 @@ public class GuiTable extends Gui
             if (cell == null)
                 throw new NullPointerException("Cell not initialized: at " + cellIndex);
 
-            int cellY = index * HEIGHT_PER_SLOT;
+            int cellY = index * HEIGHT_PER_SLOT + 1;
 
-            cell.setBounds(Bounds.fromAxes(propertiesBounds.getMinX(), propertiesBounds.getWidth() - SCROLL_BAR_WIDTH, baseY + cellY, 20));
+            cell.setBounds(Bounds.fromAxes(propertiesBounds.getMinX(), propertiesBounds.getWidth() - SCROLL_BAR_WIDTH, baseY + cellY, HEIGHT_PER_SLOT - 2));
             cell.setHidden(false);
             cell.initGui(this);
 

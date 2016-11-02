@@ -181,7 +181,7 @@ public class TableCellString extends TableCellPropertyDefault<String>
 
     protected void updateTextFieldBounds(Bounds bounds)
     {
-        Bounds.set(textField, Bounds.fromSize(bounds.getMinX(), bounds.getMinY() + (bounds.getHeight() - 20) / 2, bounds.getWidth() - (showsValidityState ? 18 : 0), 20));
+        Bounds.set(textField, Bounds.fromSize(bounds.getMinX() + 1, bounds.getMinY() + (bounds.getHeight() - 20) / 2 + 1, bounds.getWidth() - (showsValidityState ? 18 : 0) - 2, 18));
     }
 
     @Override

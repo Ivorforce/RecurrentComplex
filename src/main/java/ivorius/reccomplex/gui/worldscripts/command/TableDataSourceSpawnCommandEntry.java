@@ -8,10 +8,7 @@ package ivorius.reccomplex.gui.worldscripts.command;
 import ivorius.ivtoolkit.tools.IvTranslations;
 import ivorius.reccomplex.gui.RCGuiTables;
 import ivorius.reccomplex.gui.table.*;
-import ivorius.reccomplex.gui.table.cell.TableCellButton;
-import ivorius.reccomplex.gui.table.cell.TableCellPresetAction;
-import ivorius.reccomplex.gui.table.cell.TableCellString;
-import ivorius.reccomplex.gui.table.cell.TableElementCell;
+import ivorius.reccomplex.gui.table.cell.*;
 import ivorius.reccomplex.gui.table.datasource.TableDataSourceSegmented;
 import ivorius.reccomplex.world.gen.script.WorldScriptCommand;
 import net.minecraft.init.Blocks;
@@ -46,7 +43,7 @@ public class TableDataSourceSpawnCommandEntry extends TableDataSourceSegmented
     }
 
     @Override
-    public TableElement elementForIndexInSegment(GuiTable table, int index, int segment)
+    public TableCell cellForIndexInSegment(GuiTable table, int index, int segment)
     {
         if (index == 0)
         {
@@ -62,18 +59,18 @@ public class TableDataSourceSpawnCommandEntry extends TableDataSourceSegmented
 
                 tableDelegate.reloadData();
             });
-            return new TableElementCell(IvTranslations.get("reccomplex.preset"), cell);
+            return new TitledCell(IvTranslations.get("reccomplex.preset"), cell);
         }
         else if (index == 1)
         {
             TableCellString cell = new TableCellString("command", entry.command);
             cell.setMaxStringLength(32767); // Same as GuiCommandBlock.
             cell.addPropertyConsumer(val -> entry.command = val);
-            return new TableElementCell(IvTranslations.get("reccomplex.gui.command"), cell);
+            return new TitledCell(IvTranslations.get("reccomplex.gui.command"), cell);
         }
         else if (index == 2)
         {
-            return RCGuiTables.defaultWeightElement(val -> entry.weight = TableElements.toDouble(val), entry.weight);
+            return RCGuiTables.defaultWeightElement(val -> entry.weight = TableCells.toDouble(val), entry.weight);
         }
 
         return null;

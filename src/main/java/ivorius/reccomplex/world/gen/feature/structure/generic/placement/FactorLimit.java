@@ -12,7 +12,7 @@ import ivorius.ivtoolkit.tools.IvTranslations;
 import ivorius.reccomplex.gui.editstructure.placer.TableDataSourceFactorLimit;
 import ivorius.reccomplex.gui.table.*;
 import ivorius.reccomplex.gui.table.cell.TableCellFloatNullable;
-import ivorius.reccomplex.gui.table.cell.TableElementCell;
+import ivorius.reccomplex.gui.table.cell.TitledCell;
 import ivorius.reccomplex.gui.table.datasource.TableDataSource;
 import ivorius.reccomplex.gui.table.datasource.TableDataSourceSupplied;
 import ivorius.reccomplex.json.JsonUtils;
@@ -138,7 +138,7 @@ public class FactorLimit extends GenericPlacer.Factor
                 TableCellFloatNullable cell = new TableCellFloatNullable("value", weight, 0, 0, 1000, "I", "A");
                 cell.setScale(Scales.pow(5));
                 cell.addPropertyConsumer(v -> weight = v);
-                return new TableElementCell(IvTranslations.get("reccomplex.placer.factors.limit.ray.weight"), cell)
+                return new TitledCell(IvTranslations.get("reccomplex.placer.factors.limit.ray.weight"), cell)
                         .withTitleTooltip(IvTranslations.formatLines("reccomplex.placer.factors.limit.ray.weight.tooltip"));
             });
         }

@@ -5,7 +5,6 @@
 
 package ivorius.reccomplex.gui.editstructure.gentypes;
 
-import ivorius.ivtoolkit.gui.IntegerRange;
 import ivorius.ivtoolkit.tools.IvTranslations;
 import ivorius.reccomplex.gui.RCGuiTables;
 import ivorius.reccomplex.gui.TableDataSourceBlockPos;
@@ -33,7 +32,7 @@ public class TableDataSourceSaplingGenerationInfo extends TableDataSourceSegment
         this.generationInfo = generationInfo;
 
         addManagedSegment(0, new TableDataSourceGenerationInfo(generationInfo, navigator, tableDelegate));
-        addManagedSegment(1, new TableDataSourceSupplied(() -> RCGuiTables.defaultWeightElement(val -> generationInfo.generationWeight = TableElements.toDouble(val), generationInfo.generationWeight)));
+        addManagedSegment(1, new TableDataSourceSupplied(() -> RCGuiTables.defaultWeightElement(val -> generationInfo.generationWeight = TableCells.toDouble(val), generationInfo.generationWeight)));
         addManagedSegment(2, new TableDataSourceBlockPattern(generationInfo.pattern, tableDelegate, navigator));
         addManagedSegment(3, TableDataSourceExpression.constructDefault(IvTranslations.get("reccomplex.gui.environment"), generationInfo.environmentMatcher, null));
         addManagedSegment(4, new TableDataSourceBlockPos(generationInfo.spawnShift, generationInfo::setSpawnShift, null, null, null,

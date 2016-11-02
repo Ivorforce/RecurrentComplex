@@ -6,9 +6,10 @@
 package ivorius.reccomplex.gui;
 
 import ivorius.reccomplex.gui.table.*;
+import ivorius.reccomplex.gui.table.cell.TableCell;
 import ivorius.reccomplex.gui.table.cell.TableCellString;
 import ivorius.reccomplex.gui.table.cell.TableCellTitle;
-import ivorius.reccomplex.gui.table.cell.TableElementCell;
+import ivorius.reccomplex.gui.table.cell.TitledCell;
 import ivorius.reccomplex.gui.table.datasource.TableDataSource;
 import ivorius.reccomplex.utils.expression.*;
 import ivorius.ivtoolkit.tools.IvTranslations;
@@ -96,13 +97,13 @@ public class TableDataSourceExpression<T, U, E extends FunctionExpressionCache<T
     }
 
     @Override
-    public int numberOfElements()
+    public int numberOfCells()
     {
         return 2;
     }
 
     @Override
-    public TableElement elementForIndex(GuiTable table, int index)
+    public TableCell cellForIndex(GuiTable table, int index)
     {
         if (index == 0)
         {
@@ -118,13 +119,13 @@ public class TableDataSourceExpression<T, U, E extends FunctionExpressionCache<T
                 if (parsed != null)
                     parsed.setDisplayString(parsedString());
             });
-            return new TableElementCell(title, expressionCell).withTitleTooltip(tooltip);
+            return new TitledCell(title, expressionCell).withTitleTooltip(tooltip);
         }
         else if (index == 1)
         {
             parsed = new TableCellTitle("parsedExpression", parsedString());
             parsed.setPositioning(TableCellTitle.Positioning.TOP);
-            return new TableElementCell(parsed);
+            return new TitledCell(parsed);
         }
 
         return null;

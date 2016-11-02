@@ -7,8 +7,9 @@ package ivorius.reccomplex.gui.editstructure.transformers;
 
 import ivorius.reccomplex.gui.TableDataSourceExpression;
 import ivorius.reccomplex.gui.table.*;
+import ivorius.reccomplex.gui.table.cell.TableCell;
 import ivorius.reccomplex.gui.table.cell.TableCellFloat;
-import ivorius.reccomplex.gui.table.cell.TableElementCell;
+import ivorius.reccomplex.gui.table.cell.TitledCell;
 import ivorius.reccomplex.gui.table.datasource.TableDataSourceSegmented;
 import ivorius.reccomplex.world.gen.feature.structure.generic.transformers.TransformerNaturalAir;
 import ivorius.ivtoolkit.tools.IvTranslations;
@@ -52,7 +53,7 @@ public class TableDataSourceBTNaturalAir extends TableDataSourceSegmented
     }
 
     @Override
-    public TableElement elementForIndexInSegment(GuiTable table, int index, int segment)
+    public TableCell cellForIndexInSegment(GuiTable table, int index, int segment)
     {
         if (segment == 2)
         {
@@ -60,23 +61,23 @@ public class TableDataSourceBTNaturalAir extends TableDataSourceSegmented
             {
                 case 0:
                 {
-                    TableCellFloat cell = new TableCellFloat("naturalExpansionDistance", TableElements.toFloat(transformer.naturalExpansionDistance), 0, 40);
+                    TableCellFloat cell = new TableCellFloat("naturalExpansionDistance", TableCells.toFloat(transformer.naturalExpansionDistance), 0, 40);
                     cell.setScale(Scales.pow(5));
-                    cell.addPropertyConsumer(val -> transformer.naturalExpansionDistance = TableElements.toDouble(val));
-                    return new TableElementCell(IvTranslations.get("reccomplex.transformer.naturalAir.naturalExpansionDistance"), cell)
+                    cell.addPropertyConsumer(val -> transformer.naturalExpansionDistance = TableCells.toDouble(val));
+                    return new TitledCell(IvTranslations.get("reccomplex.transformer.naturalAir.naturalExpansionDistance"), cell)
                             .withTitleTooltip(IvTranslations.formatLines("reccomplex.transformer.naturalAir.naturalExpansionDistance.tooltip"));
                 }
                 case 1:
                 {
-                    TableCellFloat cell = new TableCellFloat("naturalExpansionRandomization", TableElements.toFloat(transformer.naturalExpansionRandomization), 0, 40);
+                    TableCellFloat cell = new TableCellFloat("naturalExpansionRandomization", TableCells.toFloat(transformer.naturalExpansionRandomization), 0, 40);
                     cell.setScale(Scales.pow(5));
-                    cell.addPropertyConsumer(val -> transformer.naturalExpansionRandomization = TableElements.toDouble(val));
-                    return new TableElementCell(IvTranslations.get("reccomplex.transformer.naturalAir.naturalExpansionRandomization"), cell)
+                    cell.addPropertyConsumer(val -> transformer.naturalExpansionRandomization = TableCells.toDouble(val));
+                    return new TitledCell(IvTranslations.get("reccomplex.transformer.naturalAir.naturalExpansionRandomization"), cell)
                             .withTitleTooltip(IvTranslations.formatLines("reccomplex.transformer.naturalAir.naturalExpansionRandomization.tooltip"));
                 }
             }
         }
 
-        return super.elementForIndexInSegment(table, index, segment);
+        return super.cellForIndexInSegment(table, index, segment);
     }
 }

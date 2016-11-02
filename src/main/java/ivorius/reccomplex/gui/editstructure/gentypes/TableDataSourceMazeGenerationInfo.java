@@ -8,8 +8,9 @@ package ivorius.reccomplex.gui.editstructure.gentypes;
 import ivorius.ivtoolkit.tools.IvTranslations;
 import ivorius.reccomplex.gui.RCGuiTables;
 import ivorius.reccomplex.gui.table.*;
+import ivorius.reccomplex.gui.table.cell.TableCell;
 import ivorius.reccomplex.gui.table.cell.TableCellString;
-import ivorius.reccomplex.gui.table.cell.TableElementCell;
+import ivorius.reccomplex.gui.table.cell.TitledCell;
 import ivorius.reccomplex.gui.table.datasource.TableDataSourceSegmented;
 import ivorius.reccomplex.gui.worldscripts.mazegenerator.TableDataSourceMazeComponent;
 import ivorius.reccomplex.world.gen.feature.structure.generic.gentypes.MazeGenerationInfo;
@@ -55,7 +56,7 @@ public class TableDataSourceMazeGenerationInfo extends TableDataSourceSegmented
     }
 
     @Override
-    public TableElement elementForIndexInSegment(GuiTable table, int index, int segment)
+    public TableCell cellForIndexInSegment(GuiTable table, int index, int segment)
     {
         switch (segment)
         {
@@ -63,14 +64,14 @@ public class TableDataSourceMazeGenerationInfo extends TableDataSourceSegmented
             {
                 TableCellString cell = new TableCellString("mazeID", generationInfo.mazeID);
                 cell.addPropertyConsumer(generationInfo::setMazeID);
-                return new TableElementCell(IvTranslations.get("reccomplex.generationInfo.mazeComponent.mazeid"), cell);
+                return new TitledCell(IvTranslations.get("reccomplex.generationInfo.mazeComponent.mazeid"), cell);
             }
             case 2:
             {
-                return RCGuiTables.defaultWeightElement(val -> generationInfo.weight = TableElements.toDouble(val), generationInfo.weight);
+                return RCGuiTables.defaultWeightElement(val -> generationInfo.weight = TableCells.toDouble(val), generationInfo.weight);
             }
         }
 
-        return super.elementForIndexInSegment(table, index, segment);
+        return super.cellForIndexInSegment(table, index, segment);
     }
 }

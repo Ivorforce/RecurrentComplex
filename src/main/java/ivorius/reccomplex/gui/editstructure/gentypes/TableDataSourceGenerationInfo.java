@@ -8,10 +8,7 @@ package ivorius.reccomplex.gui.editstructure.gentypes;
 import ivorius.ivtoolkit.tools.IvTranslations;
 import ivorius.reccomplex.gui.GuiValidityStateIndicator;
 import ivorius.reccomplex.gui.table.*;
-import ivorius.reccomplex.gui.table.cell.TableCellButton;
-import ivorius.reccomplex.gui.table.cell.TableCellMulti;
-import ivorius.reccomplex.gui.table.cell.TableCellString;
-import ivorius.reccomplex.gui.table.cell.TableElementCell;
+import ivorius.reccomplex.gui.table.cell.*;
 import ivorius.reccomplex.gui.table.datasource.TableDataSourceSegmented;
 import ivorius.reccomplex.world.gen.feature.structure.StructureInfos;
 import ivorius.reccomplex.world.gen.feature.structure.generic.gentypes.GenerationInfo;
@@ -44,7 +41,7 @@ public class TableDataSourceGenerationInfo extends TableDataSourceSegmented
     }
 
     @Override
-    public TableElement elementForIndexInSegment(GuiTable table, int index, int segment)
+    public TableCell cellForIndexInSegment(GuiTable table, int index, int segment)
     {
         if (segment == 0)
         {
@@ -65,11 +62,11 @@ public class TableDataSourceGenerationInfo extends TableDataSourceSegmented
 
             TableCellMulti cell = new TableCellMulti(idCell, randomizeCell);
             cell.setSize(1, 0.1f);
-            return new TableElementCell(IvTranslations.get("reccomplex.structure.generation.id"), cell)
+            return new TitledCell(IvTranslations.get("reccomplex.structure.generation.id"), cell)
                     .withTitleTooltip(IvTranslations.formatLines("reccomplex.structure.generation.id.tooltip"));
         }
 
-        return super.elementForIndexInSegment(table, index, segment);
+        return super.cellForIndexInSegment(table, index, segment);
     }
 
     protected GuiValidityStateIndicator.State currentIDState()

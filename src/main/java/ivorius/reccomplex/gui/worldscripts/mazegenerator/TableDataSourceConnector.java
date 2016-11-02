@@ -6,8 +6,9 @@
 package ivorius.reccomplex.gui.worldscripts.mazegenerator;
 
 import ivorius.reccomplex.gui.table.*;
+import ivorius.reccomplex.gui.table.cell.TableCell;
 import ivorius.reccomplex.gui.table.cell.TableCellString;
-import ivorius.reccomplex.gui.table.cell.TableElementCell;
+import ivorius.reccomplex.gui.table.cell.TitledCell;
 import ivorius.reccomplex.gui.table.datasource.TableDataSource;
 import ivorius.reccomplex.world.gen.feature.structure.generic.maze.SavedConnector;
 import ivorius.ivtoolkit.tools.IvTranslations;
@@ -27,16 +28,16 @@ public class TableDataSourceConnector implements TableDataSource
     }
 
     @Override
-    public int numberOfElements()
+    public int numberOfCells()
     {
         return 1;
     }
 
     @Override
-    public TableElement elementForIndex(GuiTable table, int index)
+    public TableCell cellForIndex(GuiTable table, int index)
     {
         TableCellString cell = new TableCellString("connectorID", connector.id);
         cell.addPropertyConsumer(val -> connector.id = val);
-        return new TableElementCell(title, cell).withTitleTooltip(IvTranslations.formatLines("reccomplex.maze.connector.tooltip"));
+        return new TitledCell(title, cell).withTitleTooltip(IvTranslations.formatLines("reccomplex.maze.connector.tooltip"));
     }
 }

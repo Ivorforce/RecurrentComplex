@@ -7,8 +7,9 @@ package ivorius.reccomplex.gui.inventorygen;
 
 import ivorius.ivtoolkit.tools.IvTranslations;
 import ivorius.reccomplex.gui.table.*;
+import ivorius.reccomplex.gui.table.cell.TableCell;
 import ivorius.reccomplex.gui.table.cell.TableCellIntegerRange;
-import ivorius.reccomplex.gui.table.cell.TableElementCell;
+import ivorius.reccomplex.gui.table.cell.TitledCell;
 import ivorius.reccomplex.item.ItemInventoryGenMultiTag;
 
 /**
@@ -29,7 +30,7 @@ public class TableDataSourceInvGenMultiTag extends TableDataSourceItem<ItemInven
     }
 
     @Override
-    public TableElement elementForIndexInSegment(GuiTable table, int index, int segment)
+    public TableCell cellForIndexInSegment(GuiTable table, int index, int segment)
     {
         if (segment == 0)
         {
@@ -37,7 +38,7 @@ public class TableDataSourceInvGenMultiTag extends TableDataSourceItem<ItemInven
             {
                 TableCellIntegerRange cell = new TableCellIntegerRange("itemCount", item.getGenerationCount(stack), 0, 64);
                 cell.addPropertyConsumer(range -> item.setGenerationCount(stack, range));
-                return new TableElementCell(IvTranslations.get("reccomplex.gui.inventorygen.multi.count"), cell);
+                return new TitledCell(IvTranslations.get("reccomplex.gui.inventorygen.multi.count"), cell);
             }
         }
 

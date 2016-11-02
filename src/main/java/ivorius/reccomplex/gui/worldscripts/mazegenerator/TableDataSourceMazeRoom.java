@@ -9,9 +9,10 @@ import com.google.common.collect.ImmutableList;
 import ivorius.ivtoolkit.gui.IntegerRange;
 import ivorius.ivtoolkit.maze.components.MazeRoom;
 import ivorius.reccomplex.gui.table.*;
+import ivorius.reccomplex.gui.table.cell.TableCell;
 import ivorius.reccomplex.gui.table.cell.TableCellInteger;
 import ivorius.reccomplex.gui.table.cell.TableCellStringInt;
-import ivorius.reccomplex.gui.table.cell.TableElementCell;
+import ivorius.reccomplex.gui.table.cell.TitledCell;
 import ivorius.reccomplex.gui.table.datasource.TableDataSourceSegmented;
 
 import javax.annotation.Nonnull;
@@ -53,7 +54,7 @@ public class TableDataSourceMazeRoom extends TableDataSourceSegmented
     }
 
     @Override
-    public TableElement elementForIndexInSegment(GuiTable table, int index, int segment)
+    public TableCell cellForIndexInSegment(GuiTable table, int index, int segment)
     {
         IntegerRange range = ranges.get(index);
         int val = room.getCoordinate(index);
@@ -63,13 +64,13 @@ public class TableDataSourceMazeRoom extends TableDataSourceSegmented
         {
             TableCellInteger cell = new TableCellInteger(null, val, range.min, range.max);
             cell.addPropertyConsumer(createConsumer(index));
-            return new TableElementCell(title, cell);
+            return new TitledCell(title, cell);
         }
         else
         {
             TableCellStringInt cell = new TableCellStringInt(null, val);
             cell.addPropertyConsumer(createConsumer(index));
-            return new TableElementCell(title, cell);
+            return new TitledCell(title, cell);
         }
     }
 

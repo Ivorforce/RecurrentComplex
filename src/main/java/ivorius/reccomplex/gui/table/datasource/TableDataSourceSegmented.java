@@ -10,7 +10,7 @@ import gnu.trove.map.TIntObjectMap;
 import gnu.trove.map.hash.TIntObjectHashMap;
 import gnu.trove.set.TIntSet;
 import ivorius.reccomplex.gui.table.GuiTable;
-import ivorius.reccomplex.gui.table.TableElement;
+import ivorius.reccomplex.gui.table.cell.TableCell;
 
 import java.util.Arrays;
 import java.util.List;
@@ -53,24 +53,24 @@ public class TableDataSourceSegmented implements TableDataSource
     }
 
     @Override
-    public int numberOfElements()
+    public int numberOfCells()
     {
-        int elements = 0;
+        int cells = 0;
 
         int segments = numberOfSegments();
         for (int i = 0; i < segments; i++)
-            elements += sizeOfSegment(i);
+            cells += sizeOfSegment(i);
 
-        return elements;
+        return cells;
     }
 
     @Override
-    public TableElement elementForIndex(GuiTable table, int index)
+    public TableCell cellForIndex(GuiTable table, int index)
     {
         for (int seg = 0; seg < numberOfSegments(); seg++)
         {
             if (index - sizeOfSegment(seg) < 0)
-                return elementForIndexInSegment(table, index, seg);
+                return cellForIndexInSegment(table, index, seg);
 
             index -= sizeOfSegment(seg);
         }
@@ -86,12 +86,12 @@ public class TableDataSourceSegmented implements TableDataSource
     public int sizeOfSegment(int segment)
     {
         TableDataSource managed = managedSections.get(segment);
-        return managed != null ? managed.numberOfElements() : 0;
+        return managed != null ? managed.numberOfCells() : 0;
     }
 
-    public TableElement elementForIndexInSegment(GuiTable table, int index, int segment)
+    public TableCell cellForIndexInSegment(GuiTable table, int index, int segment)
     {
         TableDataSource managed = managedSections.get(segment);
-        return managed != null ? managed.elementForIndex(table, index) : null;
+        return managed != null ? managed.cellForIndex(table, index) : null;
     }
 }

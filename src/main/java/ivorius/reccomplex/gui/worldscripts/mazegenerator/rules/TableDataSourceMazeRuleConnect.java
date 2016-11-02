@@ -7,9 +7,10 @@ package ivorius.reccomplex.gui.worldscripts.mazegenerator.rules;
 
 import ivorius.ivtoolkit.gui.IntegerRange;
 import ivorius.reccomplex.gui.table.*;
+import ivorius.reccomplex.gui.table.cell.TableCell;
 import ivorius.reccomplex.gui.table.cell.TableCellBoolean;
 import ivorius.reccomplex.gui.table.cell.TableCellTitle;
-import ivorius.reccomplex.gui.table.cell.TableElementCell;
+import ivorius.reccomplex.gui.table.cell.TitledCell;
 import ivorius.reccomplex.gui.table.datasource.TableDataSourcePreloaded;
 import ivorius.reccomplex.gui.table.datasource.TableDataSourceSegmented;
 import ivorius.reccomplex.gui.worldscripts.mazegenerator.TableDataSourceMazePathList;
@@ -32,11 +33,11 @@ public class TableDataSourceMazeRuleConnect extends TableDataSourceSegmented
         this.rule = rule;
 
         TableCellTitle startTitle = new TableCellTitle("", IvTranslations.get("reccomplex.mazerule.connect.start"));
-        addManagedSegment(1, new TableDataSourcePreloaded(new TableElementCell(startTitle).withTitleTooltip(IvTranslations.formatLines("reccomplex.mazerule.connect.start.tooltip"))));
+        addManagedSegment(1, new TableDataSourcePreloaded(new TitledCell(startTitle).withTitleTooltip(IvTranslations.formatLines("reccomplex.mazerule.connect.start.tooltip"))));
         addManagedSegment(2, new TableDataSourceMazePathList(rule.start, tableDelegate, navigator, bounds));
 
         TableCellTitle endTitle = new TableCellTitle("", IvTranslations.get("reccomplex.mazerule.connect.end"));
-        addManagedSegment(3, new TableDataSourcePreloaded(new TableElementCell(endTitle).withTitleTooltip(IvTranslations.formatLines("reccomplex.mazerule.connect.end.tooltip"))));
+        addManagedSegment(3, new TableDataSourcePreloaded(new TitledCell(endTitle).withTitleTooltip(IvTranslations.formatLines("reccomplex.mazerule.connect.end.tooltip"))));
         addManagedSegment(4, new TableDataSourceMazePathList(rule.end, tableDelegate, navigator, bounds));
     }
 
@@ -47,7 +48,7 @@ public class TableDataSourceMazeRuleConnect extends TableDataSourceSegmented
     }
 
     @Override
-    public TableElement elementForIndexInSegment(GuiTable table, int index, int segment)
+    public TableCell cellForIndexInSegment(GuiTable table, int index, int segment)
     {
         if (segment == 0)
         {
@@ -55,9 +56,9 @@ public class TableDataSourceMazeRuleConnect extends TableDataSourceSegmented
                     TextFormatting.GOLD + IvTranslations.get("reccomplex.mazerule.connect.prevent"),
                     TextFormatting.GREEN + IvTranslations.get("reccomplex.mazerule.connect.prevent"));
             preventCell.addPropertyConsumer(val -> rule.preventConnection = val);
-            return new TableElementCell(preventCell);
+            return new TitledCell(preventCell);
         }
 
-        return super.elementForIndexInSegment(table, index, segment);
+        return super.cellForIndexInSegment(table, index, segment);
     }
 }

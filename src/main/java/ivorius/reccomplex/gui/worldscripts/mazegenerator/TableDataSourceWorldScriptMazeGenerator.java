@@ -5,14 +5,10 @@
 
 package ivorius.reccomplex.gui.worldscripts.mazegenerator;
 
-import ivorius.ivtoolkit.gui.IntegerRange;
 import ivorius.ivtoolkit.tools.IvTranslations;
 import ivorius.reccomplex.gui.TableDataSourceBlockPos;
 import ivorius.reccomplex.gui.table.*;
-import ivorius.reccomplex.gui.table.cell.TableCellInteger;
-import ivorius.reccomplex.gui.table.cell.TableCellMultiBuilder;
-import ivorius.reccomplex.gui.table.cell.TableCellString;
-import ivorius.reccomplex.gui.table.cell.TableElementCell;
+import ivorius.reccomplex.gui.table.cell.*;
 import ivorius.reccomplex.gui.table.datasource.TableDataSourceSegmented;
 import ivorius.reccomplex.gui.worldscripts.mazegenerator.rules.TableDataSourceMazeRuleList;
 import ivorius.reccomplex.world.gen.script.WorldScriptMazeGenerator;
@@ -96,7 +92,7 @@ public class TableDataSourceWorldScriptMazeGenerator extends TableDataSourceSegm
     }
 
     @Override
-    public TableElement elementForIndexInSegment(GuiTable table, int index, int segment)
+    public TableCell cellForIndexInSegment(GuiTable table, int index, int segment)
     {
         switch (segment)
         {
@@ -104,7 +100,7 @@ public class TableDataSourceWorldScriptMazeGenerator extends TableDataSourceSegm
             {
                 TableCellString cell = new TableCellString("mazeID", script.getMazeID());
                 cell.addPropertyConsumer(script::setMazeID);
-                return new TableElementCell(IvTranslations.get("reccomplex.maze.id"), cell);
+                return new TitledCell(IvTranslations.get("reccomplex.maze.id"), cell);
             }
             case 4:
                 switch (index)
@@ -113,25 +109,25 @@ public class TableDataSourceWorldScriptMazeGenerator extends TableDataSourceSegm
                     {
                         TableCellInteger cell = new TableCellInteger("roomSizeX", script.getRoomSize()[0], 1, 64);
                         cell.addPropertyConsumer(roomSizeConsumer(0));
-                        return new TableElementCell(IvTranslations.get("reccomplex.maze.rooms.size.x"), cell);
+                        return new TitledCell(IvTranslations.get("reccomplex.maze.rooms.size.x"), cell);
                     }
                     case 1:
                     {
                         TableCellInteger cell = new TableCellInteger("roomSizeY", script.getRoomSize()[1], 1, 64);
                         cell.addPropertyConsumer(roomSizeConsumer(1));
-                        return new TableElementCell(IvTranslations.get("reccomplex.maze.rooms.size.y"), cell);
+                        return new TitledCell(IvTranslations.get("reccomplex.maze.rooms.size.y"), cell);
                     }
                     case 2:
                     {
                         TableCellInteger cell = new TableCellInteger("roomSizeZ", script.getRoomSize()[2], 1, 64);
                         cell.addPropertyConsumer(roomSizeConsumer(2));
-                        return new TableElementCell(IvTranslations.get("reccomplex.maze.rooms.size.z"), cell);
+                        return new TitledCell(IvTranslations.get("reccomplex.maze.rooms.size.z"), cell);
                     }
                 }
                 break;
         }
 
-        return super.elementForIndexInSegment(table, index, segment);
+        return super.cellForIndexInSegment(table, index, segment);
     }
 
     private Consumer<Integer> roomSizeConsumer(int index)

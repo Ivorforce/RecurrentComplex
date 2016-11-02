@@ -7,20 +7,19 @@ package ivorius.reccomplex.gui.table;
 
 import gnu.trove.map.hash.TIntObjectHashMap;
 import ivorius.ivtoolkit.math.IvMathHelper;
-import ivorius.ivtoolkit.tools.IvTranslations;
 import ivorius.reccomplex.gui.table.cell.TableCell;
 import ivorius.reccomplex.gui.table.datasource.TableDataSource;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiScreen;
+import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.text.TextFormatting;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
 import org.lwjgl.input.Mouse;
-import net.minecraft.client.renderer.GlStateManager;
 
 import java.util.*;
 
@@ -32,7 +31,8 @@ public class GuiTable extends Gui
     private static final ResourceLocation CREATIVE_INVENTORY_TABS = new ResourceLocation("textures/gui/container/creative_inventory/tabs.png");
 
     public static final int HEIGHT_PER_SLOT = 25;
-    public static final int SCROLL_BAR_WIDTH = 25;
+    public static final int SCROLL_BAR_WIDTH = 19;
+    public static final int SCROLL_BAR_MARGIN = 4;
     public static final float SCROLL_SPEED = 0.005f;
 
     private TableDelegate delegate;
@@ -46,9 +46,9 @@ public class GuiTable extends Gui
 
     private boolean hideScrollbarIfUnnecessary;
 
-    private final TIntObjectHashMap<TableElement> cachedElements = new TIntObjectHashMap<>();
-    private final List<TableElement> currentElements = new ArrayList<>();
-    private final Set<String> lockedElements = new HashSet<>();
+    private final TIntObjectHashMap<TableCell> cachedCells = new TIntObjectHashMap<>();
+    private final List<TableCell> currentCells = new ArrayList<>();
+    private final Set<String> lockedCells = new HashSet<>();
 
     private Map<GuiButton, Pair<TableCell, Integer>> buttonMap = new HashMap<>();
 
@@ -95,18 +95,18 @@ public class GuiTable extends Gui
     {
         buttonMap.clear();
 
-        for (TableElement element : currentElements)
-            element.setHidden(true);
-        currentElements.clear();
+        for (TableCell cell : currentCells)
+            cell.setHidden(true);
+        currentCells.clear();
 
         ////////
 
-        int numberOfElements = dataSource.numberOfElements();
+        int numberOfCells = dataSource.numberOfCells();
         int supportedSlotNumber = propertiesBounds.getHeight() / HEIGHT_PER_SLOT;
 
         if (firstTime)
         {
-            if (supportedSlotNumber > numberOfElements)
+            if (supportedSlotNumber > numberOfCells)
                 currentScroll = (getMinScroll() + getMaxScroll()) / 2; // Scroll to the middle
             firstTime = false;
         }
@@ -115,13 +115,13 @@ public class GuiTable extends Gui
 
         int roundedScrollIndex = MathHelper.floor_float(currentScroll + 0.5f);
 
-        scrollUpButton = new GuiButton(-1, propertiesBounds.getMaxX() - SCROLL_BAR_WIDTH + 5, propertiesBounds.getMinY(), SCROLL_BAR_WIDTH - 5, 20, TextFormatting.BOLD + "↑");
+        scrollUpButton = new GuiButton(-1, propertiesBounds.getMaxX() - SCROLL_BAR_WIDTH + SCROLL_BAR_MARGIN, propertiesBounds.getMinY(), SCROLL_BAR_WIDTH - SCROLL_BAR_MARGIN, 20, TextFormatting.BOLD + "↑");
         delegate.addButtonToTable(scrollUpButton);
-        scrollDownButton = new GuiButton(-1, propertiesBounds.getMaxX() - SCROLL_BAR_WIDTH + 5, propertiesBounds.getMaxY() - 20, SCROLL_BAR_WIDTH - 5, 20, TextFormatting.BOLD + "↓");
+        scrollDownButton = new GuiButton(-1, propertiesBounds.getMaxX() - SCROLL_BAR_WIDTH + SCROLL_BAR_MARGIN, propertiesBounds.getMaxY() - 20, SCROLL_BAR_WIDTH - SCROLL_BAR_MARGIN, 20, TextFormatting.BOLD + "↓");
         delegate.addButtonToTable(scrollDownButton);
 
-        boolean needsUpScroll = canScrollUp(numberOfElements);
-        boolean needsDownScroll = canScrollDown(numberOfElements);
+        boolean needsUpScroll = canScrollUp(numberOfCells);
+        boolean needsDownScroll = canScrollDown(numberOfCells);
 
         scrollUpButton.enabled = needsUpScroll;
         scrollDownButton.enabled = needsDownScroll;
@@ -130,79 +130,51 @@ public class GuiTable extends Gui
         scrollUpButton.visible = showsScrollBar;
         scrollDownButton.visible = showsScrollBar;
 
-        int baseY = propertiesBounds.getMinY() + (showsScrollBar ? 0 : (propertiesBounds.getHeight() - numberOfElements * HEIGHT_PER_SLOT) / 2);
-        for (int index = 0; index < supportedSlotNumber && roundedScrollIndex + index < numberOfElements; index++)
+        int baseY = propertiesBounds.getMinY() + (showsScrollBar ? 0 : (propertiesBounds.getHeight() - numberOfCells * HEIGHT_PER_SLOT) / 2);
+        for (int index = 0; index < supportedSlotNumber && roundedScrollIndex + index < numberOfCells; index++)
         {
-            int elementIndex = roundedScrollIndex + index;
-            if (elementIndex < 0) continue;
+            int cellIndex = roundedScrollIndex + index;
+            if (cellIndex < 0) continue;
 
-            TableElement element = cachedElements.get(elementIndex);
-            boolean initElement = element == null;
+            TableCell cell = cachedCells.get(cellIndex);
+            boolean initCell = cell == null;
 
-            if (initElement)
-                element = dataSource.elementForIndex(this, elementIndex);
+            if (initCell)
+                cell = dataSource.cellForIndex(this, cellIndex);
 
-            if (element == null)
-                throw new NullPointerException("Element not initialized: at " + elementIndex);
+            if (cell == null)
+                throw new NullPointerException("Cell not initialized: at " + cellIndex);
 
-            int elementY = index * HEIGHT_PER_SLOT;
+            int cellY = index * HEIGHT_PER_SLOT;
 
-            element.setBounds(Bounds.fromAxes(propertiesBounds.getMinX() + 100, propertiesBounds.getWidth() - 100 - SCROLL_BAR_WIDTH, baseY + elementY, 20));
-            element.setHidden(false);
-            element.initGui(this);
+            cell.setBounds(Bounds.fromAxes(propertiesBounds.getMinX(), propertiesBounds.getWidth() - SCROLL_BAR_WIDTH, baseY + cellY, 20));
+            cell.setHidden(false);
+            cell.initGui(this);
 
-            if (initElement)
-                cachedElements.put(elementIndex, element);
+            if (initCell)
+                cachedCells.put(cellIndex, cell);
 
-            currentElements.add(element);
+            currentCells.add(cell);
         }
     }
 
     public void drawScreen(GuiScreen screen, int mouseX, int mouseY, float partialTicks)
     {
-        FontRenderer fontRenderer = screen.mc.fontRendererObj;
-
-        currentElements.stream().filter(element -> !element.isHidden()).forEach(element -> {
-            Bounds bounds = element.bounds();
-
-            String title = element.getTitle();
-            if (title != null)
-            {
-                int stringWidth = fontRenderer.getStringWidth(title);
-                screen.drawString(fontRenderer, title, bounds.getMinX() - stringWidth - 10, bounds.getCenterY() - 4, 0xffffffff);
-            }
-        });
-
-        currentElements.stream().filter(element -> !element.isHidden()).forEach(element -> element.draw(this, mouseX, mouseY, partialTicks));
-
-        currentElements.stream().filter(element -> !element.isHidden()).forEach(element -> element.drawFloating(this, mouseX, mouseY, partialTicks));
-
-        currentElements.stream().filter(element -> !element.isHidden()).forEach(element -> {
-            Bounds bounds = element.bounds();
-
-            String title = element.getTitle();
-            if (title != null)
-            {
-                int stringWidth = Math.max(fontRenderer.getStringWidth(title), 100);
-
-                List<String> tooltip = element.getTitleTooltip();
-                if (tooltip != null)
-                    drawTooltipRect(tooltip, Bounds.fromSize(bounds.getMinX() - stringWidth - 10, bounds.getCenterY() - 6, stringWidth, 12), mouseX, mouseY, fontRenderer);
-            }
-        });
+        currentCells.stream().filter(cell -> !cell.isHidden()).forEach(cell -> cell.draw(this, mouseX, mouseY, partialTicks));
+        currentCells.stream().filter(cell -> !cell.isHidden()).forEach(cell -> cell.drawFloating(this, mouseX, mouseY, partialTicks));
 
         if (showsScrollBar && getMaxScroll() != getMinScroll())
         {
             screen.mc.getTextureManager().bindTexture(CREATIVE_INVENTORY_TABS);
             GlStateManager.color(1, 1, 1);
 
-            this.drawTexturedModalRect(propertiesBounds.getMaxX() - SCROLL_BAR_WIDTH + 5 + 4, propertiesBounds.getMinY() + 20 + (this.currentScroll - getMinScroll()) / (getMaxScroll() - getMinScroll()) * (propertiesBounds.getHeight() - 40 - 15), 232, 0, 12, 15);
+            this.drawTexturedModalRect(propertiesBounds.getMaxX() - SCROLL_BAR_WIDTH + SCROLL_BAR_MARGIN + 1, propertiesBounds.getMinY() + 20 + (this.currentScroll - getMinScroll()) / (getMaxScroll() - getMinScroll()) * (propertiesBounds.getHeight() - 40 - 15), 232, 0, 12, 15);
         }
     }
 
     public void updateScreen()
     {
-        currentElements.forEach(tableElement -> tableElement.update(this));
+        currentCells.forEach(cell -> cell.update(this));
     }
 
     public void actionPerformed(GuiButton button)
@@ -233,9 +205,9 @@ public class GuiTable extends Gui
 
     public boolean keyTyped(char keyChar, int keyCode)
     {
-        for (TableElement element : currentElements)
+        for (TableCell cell : currentCells)
         {
-            if (element.keyTyped(keyChar, keyCode))
+            if (cell.keyTyped(keyChar, keyCode))
             {
                 return true;
             }
@@ -246,10 +218,8 @@ public class GuiTable extends Gui
 
     public void mouseClicked(int x, int y, int button)
     {
-        for (TableElement element : currentElements)
-        {
-            element.mouseClicked(button, x, y);
-        }
+        for (TableCell cell : currentCells)
+            cell.mouseClicked(button, x, y);
     }
 
     public void addButton(TableCell property, int id, GuiButton button)
@@ -281,27 +251,27 @@ public class GuiTable extends Gui
 
     public float getMinScroll()
     {
-        return getMinScroll(dataSource.numberOfElements());
+        return getMinScroll(dataSource.numberOfCells());
     }
 
-    public float getMinScroll(int numberOfElements)
+    public float getMinScroll(int numberOfCells)
     {
         if (hideScrollbarIfUnnecessary)
             return 0;
 
         int supportedSlots = propertiesBounds.getHeight() / HEIGHT_PER_SLOT;
-        return Math.min(0, numberOfElements - supportedSlots);
+        return Math.min(0, numberOfCells - supportedSlots);
     }
 
     public float getMaxScroll()
     {
-        return getMaxScroll(dataSource.numberOfElements());
+        return getMaxScroll(dataSource.numberOfCells());
     }
 
-    protected float getMaxScroll(int numberOfElements)
+    protected float getMaxScroll(int numberOfCells)
     {
         int supportedSlots = propertiesBounds.getHeight() / HEIGHT_PER_SLOT;
-        return Math.max(0, numberOfElements - supportedSlots);
+        return Math.max(0, numberOfCells - supportedSlots);
     }
 
     public void tryScrollUp(float dist)
@@ -315,32 +285,32 @@ public class GuiTable extends Gui
         currentScroll = IvMathHelper.clamp(getMinScroll(), currentScroll - dist, getMaxScroll());
     }
 
-    public boolean canScrollUp(int numberOfElements)
+    public boolean canScrollUp(int numberOfCells)
     {
-        return currentScroll > getMinScroll(numberOfElements);
+        return currentScroll > getMinScroll(numberOfCells);
     }
 
     public boolean canScrollDown()
     {
-        return canScrollDown(dataSource.numberOfElements());
+        return canScrollDown(dataSource.numberOfCells());
     }
 
-    protected boolean canScrollDown(int numberOfElements)
+    protected boolean canScrollDown(int numberOfCells)
     {
-        return currentScroll < getMaxScroll(numberOfElements);
+        return currentScroll < getMaxScroll(numberOfCells);
     }
 
-    public void clearElementCache()
+    public void clearCellCache()
     {
-        cachedElements.retainEntries((key, element) -> lockedElements.contains(element.getID()));
+        cachedCells.retainEntries((key, cell) -> lockedCells.contains(cell.getID()));
     }
 
-    public void setLocked(String element, boolean lock)
+    public void setLocked(String cell, boolean lock)
     {
         if (lock)
-            lockedElements.add(element);
+            lockedCells.add(cell);
         else
-            lockedElements.remove(element);
+            lockedCells.remove(cell);
     }
 
     // Accessors

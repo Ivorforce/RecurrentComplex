@@ -6,14 +6,14 @@
 package ivorius.reccomplex.gui.table.datasource;
 
 import ivorius.reccomplex.gui.table.GuiTable;
-import ivorius.reccomplex.gui.table.TableElement;
+import ivorius.reccomplex.gui.table.cell.TableCell;
 
 /**
  * Created by lukas on 04.06.14.
  */
 public interface TableDataSource
 {
-    int numberOfElements();
+    int numberOfCells();
 
-    TableElement elementForIndex(GuiTable table, int index);
+    TableCell cellForIndex(GuiTable table, int index);
 }

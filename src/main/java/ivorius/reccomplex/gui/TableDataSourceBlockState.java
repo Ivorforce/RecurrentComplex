@@ -100,22 +100,22 @@ public class TableDataSourceBlockState extends TableDataSourceSegmented implemen
     }
 
     @Override
-    public TableElement elementForIndexInSegment(GuiTable table, int index, int segment)
+    public TableCell cellForIndexInSegment(GuiTable table, int index, int segment)
     {
         switch (segment)
         {
             case 0:
                 if (index == 0)
                 {
-                    TableCellString cell = idCell = TableDataSourceBTNatural.elementForBlock("block", block);
+                    TableCellString cell = idCell = TableDataSourceBTNatural.cellForBlock("block", block);
                     cell.addPropertyListener(this);
-                    return new TableElementCell("blockID", blockTitle, cell);
+                    return new TitledCell("blockID", blockTitle, cell);
                 }
                 else if (index == 1)
                 {
                     TableCellInteger cell = metaCell = new TableCellInteger("metadata", meta, 0, 15);
                     cell.addPropertyListener(this);
-                    return new TableElementCell("blockMeta", metadataTitle, cell);
+                    return new TitledCell("blockMeta", metadataTitle, cell);
                 }
                 break;
             case 1:
@@ -124,11 +124,11 @@ public class TableDataSourceBlockState extends TableDataSourceSegmented implemen
                 return getPropertyElement(index, true);
         }
 
-        return super.elementForIndexInSegment(table, index, segment);
+        return super.cellForIndexInSegment(table, index, segment);
     }
 
     @Nonnull
-    protected TableElement getPropertyElement(int index, boolean extended)
+    protected TitledCell getPropertyElement(int index, boolean extended)
     {
         IBlockState state = computeBlockState();
 
@@ -151,7 +151,7 @@ public class TableDataSourceBlockState extends TableDataSourceSegmented implemen
                     button.setEnabled(false);
                 return button;
             }).collect(Collectors.toList());
-            return new TableElementCell(name.getName(), new TableCellMulti(buttons));
+            return new TitledCell(name.getName(), new TableCellMulti(buttons));
         }
 
         TableCellButton button = new TableCellButton(null, null, TextFormatting.GREEN + ((IProperty) name).getName(currentProperty));
@@ -161,7 +161,7 @@ public class TableDataSourceBlockState extends TableDataSourceSegmented implemen
             setBlockStateAndNotify(state.cycleProperty((IProperty) name));
             delegate.reloadData();
         });
-        return new TableElementCell(name.getName(), button);
+        return new TitledCell(name.getName(), button);
     }
 
     protected <T extends Comparable<T>> List<T> getSortedProperties(IProperty<T> name)
@@ -195,7 +195,7 @@ public class TableDataSourceBlockState extends TableDataSourceSegmented implemen
 
         setBlockStateAndNotify(state = computeBlockState());
         if (state != before)
-            TableElements.reloadExcept(delegate, "blockID", "blockMeta");
+            TableCells.reloadExcept(delegate, "blockID", "blockMeta");
     }
 
     protected void setBlockStateAndNotify(IBlockState c)

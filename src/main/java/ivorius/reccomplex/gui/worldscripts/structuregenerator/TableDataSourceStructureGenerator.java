@@ -6,16 +6,12 @@
 package ivorius.reccomplex.gui.worldscripts.structuregenerator;
 
 import ivorius.ivtoolkit.blocks.Directions;
-import ivorius.ivtoolkit.gui.IntegerRange;
 import ivorius.ivtoolkit.tools.IvTranslations;
 import ivorius.reccomplex.gui.GuiValidityStateIndicator;
 import ivorius.reccomplex.gui.TableDataSourceBlockPos;
 import ivorius.reccomplex.gui.TableDirections;
 import ivorius.reccomplex.gui.table.*;
-import ivorius.reccomplex.gui.table.cell.TableCellBoolean;
-import ivorius.reccomplex.gui.table.cell.TableCellEnum;
-import ivorius.reccomplex.gui.table.cell.TableCellString;
-import ivorius.reccomplex.gui.table.cell.TableElementCell;
+import ivorius.reccomplex.gui.table.cell.*;
 import ivorius.reccomplex.gui.table.datasource.TableDataSourceSegmented;
 import ivorius.reccomplex.world.gen.script.WorldScriptStructureGenerator;
 import ivorius.reccomplex.world.gen.feature.structure.StructureRegistry;
@@ -78,7 +74,7 @@ public class TableDataSourceStructureGenerator extends TableDataSourceSegmented
     }
 
     @Override
-    public TableElement elementForIndexInSegment(GuiTable table, int index, int segment)
+    public TableCell cellForIndexInSegment(GuiTable table, int index, int segment)
     {
         if (segment == 0)
         {
@@ -87,7 +83,7 @@ public class TableDataSourceStructureGenerator extends TableDataSourceSegmented
                 script.setSimpleMode(val);
                 tableDelegate.reloadData();
             });
-            return new TableElementCell(IvTranslations.get("reccomplex.worldscript.strucGen.mode.simple"), cell);
+            return new TitledCell(IvTranslations.get("reccomplex.worldscript.strucGen.mode.simple"), cell);
         }
         else if (segment == 1)
         {
@@ -100,14 +96,14 @@ public class TableDataSourceStructureGenerator extends TableDataSourceSegmented
                     script.setStructureNames(Arrays.asList(val.split(",")));
                     cell.setValidityState(doAllStructuresExist(script.getStructureNames()) ? GuiValidityStateIndicator.State.VALID : GuiValidityStateIndicator.State.SEMI_VALID);
                 });
-                return new TableElementCell(IvTranslations.get("reccomplex.worldscript.strucGen.simple.generators"), cell)
+                return new TitledCell(IvTranslations.get("reccomplex.worldscript.strucGen.simple.generators"), cell)
                         .withTitleTooltip(IvTranslations.getLines("reccomplex.worldscript.strucGen.simple.generators.tooltip"));
             }
             else
             {
                 TableCellString cell = new TableCellString("listID", script.getStructureListID());
                 cell.addPropertyConsumer(script::setStructureListID);
-                return new TableElementCell(IvTranslations.get("reccomplex.worldscript.strucGen.mode.list.id"), cell);
+                return new TitledCell(IvTranslations.get("reccomplex.worldscript.strucGen.mode.list.id"), cell);
             }
         }
         else if (segment == 3)
@@ -123,7 +119,7 @@ public class TableDataSourceStructureGenerator extends TableDataSourceSegmented
                             new Option<>(3, IvTranslations.get("reccomplex.rotation.clockwise.3")),
                             new Option<>(null, IvTranslations.get("reccomplex.worldscript.strucGen.rotation.random")));
                     cell.addPropertyConsumer(script::setStructureRotation);
-                    return new TableElementCell(IvTranslations.get("reccomplex.rotation"), cell);
+                    return new TitledCell(IvTranslations.get("reccomplex.rotation"), cell);
                 }
                 else if (index == 1)
                 {
@@ -132,17 +128,17 @@ public class TableDataSourceStructureGenerator extends TableDataSourceSegmented
                             new Option<>(true, IvTranslations.get("gui.true")),
                             new Option<>(null, IvTranslations.get("reccomplex.worldscript.strucGen.mirror.random")));
                     cell.addPropertyConsumer(script::setStructureMirror);
-                    return new TableElementCell(IvTranslations.get("reccomplex.mirror"), cell);
+                    return new TitledCell(IvTranslations.get("reccomplex.mirror"), cell);
                 }
             }
             else
             {
                 TableCellEnum<EnumFacing> cell = new TableCellEnum<>("front", script.getFront(), TableDirections.getDirectionOptions(ArrayUtils.add(Directions.HORIZONTAL, null), "random"));
                 cell.addPropertyConsumer(script::setFront);
-                return new TableElementCell(IvTranslations.get("reccomplex.worldscript.strucGen.mode.list.front"), cell);
+                return new TitledCell(IvTranslations.get("reccomplex.worldscript.strucGen.mode.list.front"), cell);
             }
         }
 
-        return super.elementForIndexInSegment(table, index, segment);
+        return super.cellForIndexInSegment(table, index, segment);
     }
 }

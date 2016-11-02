@@ -115,9 +115,7 @@ public class TableCellButton extends TableCellDefault
 
         Bounds bounds = bounds();
 
-        int buttonWidth = bounds.getWidth();
-
-        button = new GuiTexturedButton(-1, bounds.getMinX(), bounds.getMinY() + (bounds.getHeight() - 20) / 2, buttonWidth, 20, title);
+        button = new GuiTexturedButton(-1, bounds.getMinX(), bounds.getMinY() + (bounds.getHeight() - 20) / 2, bounds.getWidth(), 20, title);
         button.setTexture(texture);
         button.visible = !isHidden();
         button.enabled = enabled;

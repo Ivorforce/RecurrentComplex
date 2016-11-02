@@ -11,9 +11,10 @@ import ivorius.reccomplex.gui.TableDataSourceExpression;
 import ivorius.reccomplex.gui.editstructure.placer.TableDataSourcePlacer;
 import ivorius.reccomplex.gui.editstructure.gentypes.staticgen.TableDataSourceStaticPattern;
 import ivorius.reccomplex.gui.table.*;
+import ivorius.reccomplex.gui.table.cell.TableCell;
 import ivorius.reccomplex.gui.table.cell.TableCellBoolean;
 import ivorius.reccomplex.gui.table.cell.TableCellMultiBuilder;
-import ivorius.reccomplex.gui.table.cell.TableElementCell;
+import ivorius.reccomplex.gui.table.cell.TitledCell;
 import ivorius.reccomplex.gui.table.datasource.TableDataSourceSegmented;
 import ivorius.reccomplex.world.gen.feature.structure.generic.gentypes.StaticGenerationInfo;
 
@@ -65,7 +66,7 @@ public class TableDataSourceStaticGenerationInfo extends TableDataSourceSegmente
     }
 
     @Override
-    public TableElement elementForIndexInSegment(GuiTable table, int index, int segment)
+    public TableCell cellForIndexInSegment(GuiTable table, int index, int segment)
     {
         switch (segment)
         {
@@ -73,10 +74,10 @@ public class TableDataSourceStaticGenerationInfo extends TableDataSourceSegmente
             {
                 TableCellBoolean cell = new TableCellBoolean("relativeToSpawn", generationInfo.relativeToSpawn);
                 cell.addPropertyConsumer(val -> generationInfo.relativeToSpawn = val);
-                return new TableElementCell(IvTranslations.get("reccomplex.generationInfo.static.spawn"), cell);
+                return new TitledCell(IvTranslations.get("reccomplex.generationInfo.static.spawn"), cell);
             }
         }
 
-        return super.elementForIndexInSegment(table, index, segment);
+        return super.cellForIndexInSegment(table, index, segment);
     }
 }

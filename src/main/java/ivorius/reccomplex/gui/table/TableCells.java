@@ -8,7 +8,7 @@ package ivorius.reccomplex.gui.table;
 /**
  * Created by lukas on 28.02.15.
  */
-public class TableElements
+public class TableCells
 {
     public static Float toFloat(Double value)
     {
@@ -20,14 +20,14 @@ public class TableElements
         return value != null ? (double) value : null;
     }
 
-    public static void reloadExcept(TableDelegate delegate, String... elementIDs)
+    public static void reloadExcept(TableDelegate delegate, String... cellIDs)
     {
-        for (String element : elementIDs)
-            delegate.setLocked(element, true);
+        for (String cell : cellIDs)
+            delegate.setLocked(cell, true);
 
         delegate.reloadData();
 
-        for (String element : elementIDs)
-            delegate.setLocked(element, false);
+        for (String cell : cellIDs)
+            delegate.setLocked(cell, false);
     }
 }

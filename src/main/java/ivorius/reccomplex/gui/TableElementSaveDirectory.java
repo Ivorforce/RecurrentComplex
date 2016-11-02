@@ -19,7 +19,7 @@ import java.util.function.Supplier;
  */
 public class TableElementSaveDirectory
 {
-    public static TableElement create(SaveDirectoryData data, Supplier<String> idSupplier, TableDelegate delegate)
+    public static TitledCell create(SaveDirectoryData data, Supplier<String> idSupplier, TableDelegate delegate)
     {
         final String id = idSupplier.get();
 
@@ -42,9 +42,9 @@ public class TableElementSaveDirectory
                     TextFormatting.AQUA + ResourceDirectory.INACTIVE.subDirectoryName() + TextFormatting.RESET,
                     TextFormatting.AQUA + ResourceDirectory.ACTIVE.subDirectoryName() + TextFormatting.RESET));
 
-            return new TableElementCell(new TableCellMulti(cellFolder, cellDelete));
+            return new TitledCell(new TableCellMulti(cellFolder, cellDelete));
         }
 
-        return new TableElementCell(new TableCellMulti(cellFolder, new TableCellButton("", "", "-", false)));
+        return new TitledCell(new TableCellMulti(cellFolder, new TableCellButton("", "", "-", false)));
     }
 }

@@ -5,9 +5,10 @@
 
 package ivorius.reccomplex.gui;
 
+import ivorius.reccomplex.gui.table.cell.TableCell;
 import ivorius.reccomplex.gui.table.cell.TableCellInteger;
 import ivorius.reccomplex.gui.table.cell.TableCellStringInt;
-import ivorius.reccomplex.gui.table.cell.TableElementCell;
+import ivorius.reccomplex.gui.table.cell.TitledCell;
 import ivorius.reccomplex.gui.table.datasource.TableDataSourceSegmented;
 import net.minecraft.util.math.BlockPos;
 import ivorius.ivtoolkit.gui.IntegerRange;
@@ -56,7 +57,7 @@ public class TableDataSourceBlockPos extends TableDataSourceSegmented
     }
 
     @Override
-    public TableElement elementForIndexInSegment(GuiTable table, int index, int segment)
+    public TableCell cellForIndexInSegment(GuiTable table, int index, int segment)
     {
         IntegerRange range;
         int val;
@@ -85,13 +86,13 @@ public class TableDataSourceBlockPos extends TableDataSourceSegmented
         {
             TableCellInteger cell = new TableCellInteger(null, val, range.min, range.max);
             cell.addPropertyConsumer(createConsumer(index));
-            return new TableElementCell(title, cell);
+            return new TitledCell(title, cell);
         }
         else
         {
             TableCellStringInt cell = new TableCellStringInt(null, val);
             cell.addPropertyConsumer(createConsumer(index));
-            return new TableElementCell(title, cell);
+            return new TitledCell(title, cell);
         }
     }
 

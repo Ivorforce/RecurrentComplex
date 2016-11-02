@@ -10,7 +10,7 @@ import ivorius.ivtoolkit.maze.components.MazeRoom;
 import ivorius.ivtoolkit.tools.IvTranslations;
 import ivorius.reccomplex.gui.table.*;
 import ivorius.reccomplex.gui.table.cell.TableCellTitle;
-import ivorius.reccomplex.gui.table.cell.TableElementCell;
+import ivorius.reccomplex.gui.table.cell.TitledCell;
 import ivorius.reccomplex.gui.table.datasource.TableDataSource;
 import ivorius.reccomplex.gui.table.datasource.TableDataSourceList;
 import ivorius.reccomplex.gui.table.datasource.TableDataSourceMulti;
@@ -60,9 +60,9 @@ public class TableDataSourcePathConnectionList extends TableDataSourceList<Immut
     public TableDataSource editEntryDataSource(ImmutablePair<SavedMazePath, SavedMazePath> pair)
     {
         return new TableDataSourceMulti(
-                new TableDataSourcePreloaded(new TableElementCell(new TableCellTitle("", IvTranslations.get("reccomplex.gui.source")))),
+                new TableDataSourcePreloaded(new TitledCell(new TableCellTitle("", IvTranslations.get("reccomplex.gui.source")))),
                 new TableDataSourceMazePath(pair.getLeft(), bounds, tableDelegate),
-                new TableDataSourcePreloaded(new TableElementCell(new TableCellTitle("", IvTranslations.get("reccomplex.gui.destination")))),
+                new TableDataSourcePreloaded(new TitledCell(new TableCellTitle("", IvTranslations.get("reccomplex.gui.destination")))),
                 new TableDataSourceMazePath(pair.getRight(), bounds, tableDelegate)
         );
     }

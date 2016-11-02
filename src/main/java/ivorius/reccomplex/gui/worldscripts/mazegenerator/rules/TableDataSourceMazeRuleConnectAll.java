@@ -8,9 +8,10 @@ package ivorius.reccomplex.gui.worldscripts.mazegenerator.rules;
 import ivorius.ivtoolkit.gui.IntegerRange;
 import ivorius.ivtoolkit.tools.IvTranslations;
 import ivorius.reccomplex.gui.table.*;
+import ivorius.reccomplex.gui.table.cell.TableCell;
 import ivorius.reccomplex.gui.table.cell.TableCellBoolean;
 import ivorius.reccomplex.gui.table.cell.TableCellTitle;
-import ivorius.reccomplex.gui.table.cell.TableElementCell;
+import ivorius.reccomplex.gui.table.cell.TitledCell;
 import ivorius.reccomplex.gui.table.datasource.TableDataSourcePreloaded;
 import ivorius.reccomplex.gui.table.datasource.TableDataSourceSegmented;
 import ivorius.reccomplex.gui.worldscripts.mazegenerator.TableDataSourceMazePathList;
@@ -39,7 +40,7 @@ public class TableDataSourceMazeRuleConnectAll extends TableDataSourceSegmented
         this.expected = expected;
         this.tableDelegate = tableDelegate;
 
-        addManagedSegment(1, new TableDataSourcePreloaded(new TableElementCell(new TableCellTitle("", "Paths"))));
+        addManagedSegment(1, new TableDataSourcePreloaded(new TitledCell(new TableCellTitle("", "Paths"))));
         addManagedSegment(3, new TableDataSourceMazePathList(rule.exits, tableDelegate, navigator, bounds));
     }
 
@@ -67,7 +68,7 @@ public class TableDataSourceMazeRuleConnectAll extends TableDataSourceSegmented
     }
 
     @Override
-    public TableElement elementForIndexInSegment(GuiTable table, int index, int segment)
+    public TableCell cellForIndexInSegment(GuiTable table, int index, int segment)
     {
         if (segment == 0)
         {
@@ -75,7 +76,7 @@ public class TableDataSourceMazeRuleConnectAll extends TableDataSourceSegmented
                     TextFormatting.GOLD + IvTranslations.get("reccomplex.mazerule.connect.prevent"),
                     TextFormatting.GREEN + IvTranslations.get("reccomplex.mazerule.connect.prevent"));
             preventCell.addPropertyConsumer(val -> rule.preventConnection = val);
-            return new TableElementCell(preventCell);
+            return new TitledCell(preventCell);
         }
         else if (segment == 2)
         {
@@ -86,11 +87,11 @@ public class TableDataSourceMazeRuleConnectAll extends TableDataSourceSegmented
                 rule.additive = val;
                 tableDelegate.reloadData();
             });
-            return new TableElementCell(cell);
+            return new TitledCell(cell);
         }
         else if (segment == 4)
         {
-            return new TableElementCell(new TableCellTitle("", IvTranslations.get("reccomplex.mazerule.connectall.preview")));
+            return new TitledCell(new TableCellTitle("", IvTranslations.get("reccomplex.mazerule.connectall.preview")));
         }
         else if (segment == 5)
         {
@@ -98,9 +99,9 @@ public class TableDataSourceMazeRuleConnectAll extends TableDataSourceSegmented
             Set<Connector> blockedConnections = Collections.singleton(factory.get(ConnectorStrategy.DEFAULT_WALL));
             List<SavedMazePath> exitPaths = MazeRuleConnectAll.getPaths(rule.exits, expected, blockedConnections, factory).collect(Collectors.toList());
 
-            return new TableElementCell(new TableCellTitle("", exitPaths.get(index).toString()));
+            return new TitledCell(new TableCellTitle("", exitPaths.get(index).toString()));
         }
 
-        return super.elementForIndexInSegment(table, index, segment);
+        return super.cellForIndexInSegment(table, index, segment);
     }
 }

@@ -220,14 +220,14 @@ public class GuiScreenModalTable extends GuiScreen implements TableDelegate, Tab
     public void reloadData()
     {
         if (tableStack.size() > 0)
-            tableStack.peek().clearElementCache();
+            tableStack.peek().clearCellCache();
 
         redrawTable();
     }
 
     @Override
-    public void setLocked(String element, boolean lock)
+    public void setLocked(String cell, boolean lock)
     {
-        tableStack.peek().setLocked(element, lock);
+        tableStack.peek().setLocked(cell, lock);
     }
 }

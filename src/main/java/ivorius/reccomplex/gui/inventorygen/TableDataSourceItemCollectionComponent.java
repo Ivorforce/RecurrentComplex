@@ -12,9 +12,10 @@ import ivorius.reccomplex.gui.RCGuiHandler;
 import ivorius.reccomplex.gui.TableDataSourceExpression;
 import ivorius.reccomplex.gui.TableElementSaveDirectory;
 import ivorius.reccomplex.gui.table.*;
+import ivorius.reccomplex.gui.table.cell.TableCell;
 import ivorius.reccomplex.gui.table.cell.TableCellMultiBuilder;
 import ivorius.reccomplex.gui.table.cell.TableCellString;
-import ivorius.reccomplex.gui.table.cell.TableElementCell;
+import ivorius.reccomplex.gui.table.cell.TitledCell;
 import ivorius.reccomplex.gui.table.datasource.TableDataSourceSegmented;
 import ivorius.reccomplex.gui.table.datasource.TableDataSourceSupplied;
 import ivorius.reccomplex.utils.SaveDirectoryData;
@@ -85,7 +86,7 @@ public class TableDataSourceItemCollectionComponent extends TableDataSourceSegme
     }
 
     @Override
-    public TableElement elementForIndexInSegment(GuiTable table, int index, int segment)
+    public TableCell cellForIndexInSegment(GuiTable table, int index, int segment)
     {
         if (segment == 0)
         {
@@ -97,7 +98,7 @@ public class TableDataSourceItemCollectionComponent extends TableDataSourceSegme
                 key = val;
                 cell.setValidityState(currentKeyState());
             });
-            return new TableElementCell(IvTranslations.get("reccomplex.gui.inventorygen.componentid"), cell)
+            return new TitledCell(IvTranslations.get("reccomplex.gui.inventorygen.componentid"), cell)
                     .withTitleTooltip(IvTranslations.formatLines("reccomplex.gui.inventorygen.componentid.tooltip"));
         }
         else if (segment == 2)
@@ -110,11 +111,11 @@ public class TableDataSourceItemCollectionComponent extends TableDataSourceSegme
                 component.inventoryGeneratorID = val;
                 cell.setValidityState(currentGroupIDState());
             });
-            return new TableElementCell(IvTranslations.get("reccomplex.gui.inventorygen.groupid"), cell)
+            return new TitledCell(IvTranslations.get("reccomplex.gui.inventorygen.groupid"), cell)
                     .withTitleTooltip(IvTranslations.formatLines("reccomplex.gui.inventorygen.groupid.tooltip"));
         }
 
-        return super.elementForIndexInSegment(table, index, segment);
+        return super.cellForIndexInSegment(table, index, segment);
     }
 
     private GuiValidityStateIndicator.State currentKeyState()

@@ -10,7 +10,7 @@ import ivorius.ivtoolkit.tools.IvGsonHelper;
 import ivorius.ivtoolkit.tools.IvTranslations;
 import ivorius.reccomplex.gui.table.*;
 import ivorius.reccomplex.gui.table.cell.TableCellEnum;
-import ivorius.reccomplex.gui.table.cell.TableElementCell;
+import ivorius.reccomplex.gui.table.cell.TitledCell;
 import ivorius.reccomplex.gui.table.datasource.TableDataSource;
 import ivorius.reccomplex.gui.table.datasource.TableDataSourceSegmented;
 import ivorius.reccomplex.gui.table.datasource.TableDataSourceSupplied;
@@ -67,7 +67,7 @@ public class RayDynamicPosition extends FactorLimit.Ray
         {
             TableCellEnum<Type> cell = new TableCellEnum<>(null, type, TableCellEnum.options(Type.values(), "reccomplex.placer.factors.limit.rays.dynpos.type.", true));
             cell.addPropertyConsumer(v -> type = v);
-            return new TableElementCell(IvTranslations.get("reccomplex.placer.factors.limit.rays.dynpos.type"), cell);
+            return new TitledCell(IvTranslations.get("reccomplex.placer.factors.limit.rays.dynpos.type"), cell);
         }));
     }
 

@@ -6,9 +6,10 @@
 package ivorius.reccomplex.gui.editstructure.gentypes.staticgen;
 
 import ivorius.reccomplex.gui.table.*;
+import ivorius.reccomplex.gui.table.cell.TableCell;
 import ivorius.reccomplex.gui.table.cell.TableCellInteger;
 import ivorius.reccomplex.gui.table.cell.TableCellStringInt;
-import ivorius.reccomplex.gui.table.cell.TableElementCell;
+import ivorius.reccomplex.gui.table.cell.TitledCell;
 import ivorius.reccomplex.gui.table.datasource.TableDataSourceSegmented;
 import ivorius.reccomplex.world.gen.feature.structure.generic.gentypes.StaticGenerationInfo;
 import ivorius.ivtoolkit.tools.IvTranslations;
@@ -48,7 +49,7 @@ public class TableDataSourceStaticPattern extends TableDataSourceSegmented
     }
 
     @Override
-    public TableElement elementForIndexInSegment(GuiTable table, int index, int segment)
+    public TableCell cellForIndexInSegment(GuiTable table, int index, int segment)
     {
         switch (segment)
         {
@@ -58,14 +59,14 @@ public class TableDataSourceStaticPattern extends TableDataSourceSegmented
                 {
                     TableCellStringInt cell = new TableCellStringInt("repeatX", pattern.repeatX);
                     cell.addPropertyConsumer(val -> pattern.repeatX = val);
-                    return new TableElementCell(IvTranslations.get("reccomplex.generationInfo.static.pattern.repeat.x"), cell)
+                    return new TitledCell(IvTranslations.get("reccomplex.generationInfo.static.pattern.repeat.x"), cell)
                             .withTitleTooltip(IvTranslations.getLines("reccomplex.generationInfo.static.pattern.repeat.tooltip"));
                 }
                 else if (index == 1)
                 {
                     TableCellStringInt cell = new TableCellStringInt("repeatZ", pattern.repeatZ);
                     cell.addPropertyConsumer(val -> pattern.repeatZ = val);
-                    return new TableElementCell(IvTranslations.get("reccomplex.generationInfo.static.pattern.repeat.z"), cell)
+                    return new TitledCell(IvTranslations.get("reccomplex.generationInfo.static.pattern.repeat.z"), cell)
                             .withTitleTooltip(IvTranslations.getLines("reccomplex.generationInfo.static.pattern.repeat.tooltip"));
                 }
             }
@@ -75,19 +76,19 @@ public class TableDataSourceStaticPattern extends TableDataSourceSegmented
                 {
                     TableCellInteger cell = new TableCellInteger("shiftX", pattern.randomShiftX, 0, 10);
                     cell.addPropertyConsumer(val -> pattern.randomShiftX = val);
-                    return new TableElementCell(IvTranslations.get("reccomplex.generationInfo.static.pattern.rshift.x"), cell)
+                    return new TitledCell(IvTranslations.get("reccomplex.generationInfo.static.pattern.rshift.x"), cell)
                             .withTitleTooltip(IvTranslations.getLines("reccomplex.generationInfo.static.pattern.rshift.tooltip"));
                 }
                 else if (index == 1)
                 {
                     TableCellInteger cell = new TableCellInteger("shiftZ", pattern.randomShiftZ, 0, 10);
                     cell.addPropertyConsumer(val -> pattern.randomShiftZ = val);
-                    return new TableElementCell(IvTranslations.get("reccomplex.generationInfo.static.pattern.rshift.z"), cell)
+                    return new TitledCell(IvTranslations.get("reccomplex.generationInfo.static.pattern.rshift.z"), cell)
                             .withTitleTooltip(IvTranslations.getLines("reccomplex.generationInfo.static.pattern.rshift.tooltip"));
                 }
             }
         }
 
-        return super.elementForIndexInSegment(table, index, segment);
+        return super.cellForIndexInSegment(table, index, segment);
     }
 }

@@ -8,7 +8,7 @@ package ivorius.reccomplex.world.gen.feature.structure.generic.placement.rays;
 import ivorius.ivtoolkit.tools.IvTranslations;
 import ivorius.reccomplex.gui.table.*;
 import ivorius.reccomplex.gui.table.cell.TableCellStringInt;
-import ivorius.reccomplex.gui.table.cell.TableElementCell;
+import ivorius.reccomplex.gui.table.cell.TitledCell;
 import ivorius.reccomplex.gui.table.datasource.TableDataSource;
 import ivorius.reccomplex.gui.table.datasource.TableDataSourceSegmented;
 import ivorius.reccomplex.gui.table.datasource.TableDataSourceSupplied;
@@ -58,7 +58,7 @@ public class RayMove extends FactorLimit.Ray
         {
             TableCellStringInt cell = new TableCellStringInt(null, distance);
             cell.addPropertyConsumer(v -> distance = v);
-            return new TableElementCell(IvTranslations.get("reccomplex.placer.factors.limit.rays.move.distance"), cell);
+            return new TitledCell(IvTranslations.get("reccomplex.placer.factors.limit.rays.move.distance"), cell);
         }));
     }
 }

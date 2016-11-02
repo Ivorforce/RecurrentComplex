@@ -6,9 +6,10 @@
 package ivorius.reccomplex.gui.editstructure;
 
 import ivorius.reccomplex.gui.table.*;
+import ivorius.reccomplex.gui.table.cell.TableCell;
 import ivorius.reccomplex.gui.table.cell.TableCellEnum;
 import ivorius.reccomplex.gui.table.cell.TableCellInteger;
-import ivorius.reccomplex.gui.table.cell.TableElementCell;
+import ivorius.reccomplex.gui.table.cell.TitledCell;
 import ivorius.reccomplex.gui.table.datasource.TableDataSourceSegmented;
 import ivorius.reccomplex.world.gen.feature.structure.generic.gentypes.NaturalGenerationInfo;
 
@@ -49,7 +50,7 @@ public class TableDataSourceNaturalGenLimitation extends TableDataSourceSegmente
     }
 
     @Override
-    public TableElement elementForIndexInSegment(GuiTable table, int index, int segment)
+    public TableCell cellForIndexInSegment(GuiTable table, int index, int segment)
     {
         if (segment == 0)
         {
@@ -63,13 +64,13 @@ public class TableDataSourceNaturalGenLimitation extends TableDataSourceSegmente
                         limitation.context = val;
                         tableDelegate.reloadData();
                     });
-                    return new TableElementCell("Context", cell);
+                    return new TitledCell("Context", cell);
                 }
                 case 1:
                 {
                     TableCellInteger cell = new TableCellInteger("max", limitation.maxCount, 1, 50);
                     cell.addPropertyConsumer(val -> limitation.maxCount = val);
-                    return new TableElementCell("Max Occurrences", cell);
+                    return new TitledCell("Max Occurrences", cell);
                 }
             }
         }
@@ -80,6 +81,6 @@ public class TableDataSourceNaturalGenLimitation extends TableDataSourceSegmente
 //            return new TableElementCell("Chunk Range", cell);
 //        }
 
-        return super.elementForIndexInSegment(table, index, segment);
+        return super.cellForIndexInSegment(table, index, segment);
     }
 }

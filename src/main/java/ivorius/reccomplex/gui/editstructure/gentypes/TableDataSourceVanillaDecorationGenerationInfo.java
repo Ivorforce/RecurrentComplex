@@ -5,16 +5,16 @@
 
 package ivorius.reccomplex.gui.editstructure.gentypes;
 
-import ivorius.ivtoolkit.gui.IntegerRange;
 import ivorius.ivtoolkit.tools.IvTranslations;
 import ivorius.reccomplex.gui.RCGuiTables;
 import ivorius.reccomplex.gui.TableDataSourceBlockPos;
 import ivorius.reccomplex.gui.editstructure.TableDataSourceBiomeGenList;
 import ivorius.reccomplex.gui.editstructure.TableDataSourceDimensionGenList;
 import ivorius.reccomplex.gui.table.*;
+import ivorius.reccomplex.gui.table.cell.TableCell;
 import ivorius.reccomplex.gui.table.cell.TableCellEnum;
 import ivorius.reccomplex.gui.table.cell.TableCellMultiBuilder;
-import ivorius.reccomplex.gui.table.cell.TableElementCell;
+import ivorius.reccomplex.gui.table.cell.TitledCell;
 import ivorius.reccomplex.gui.table.datasource.TableDataSourceSegmented;
 import ivorius.reccomplex.world.gen.feature.structure.generic.gentypes.VanillaDecorationGenerationInfo;
 import ivorius.reccomplex.world.gen.feature.decoration.RCBiomeDecorator;
@@ -69,7 +69,7 @@ public class TableDataSourceVanillaDecorationGenerationInfo extends TableDataSou
     }
 
     @Override
-    public TableElement elementForIndexInSegment(GuiTable table, int index, int segment)
+    public TableCell cellForIndexInSegment(GuiTable table, int index, int segment)
     {
         switch (segment)
         {
@@ -77,14 +77,14 @@ public class TableDataSourceVanillaDecorationGenerationInfo extends TableDataSou
             {
                 TableCellEnum<RCBiomeDecorator.DecorationType> cell = new TableCellEnum<>("type", generationInfo.type, TableCellEnum.options(RCBiomeDecorator.DecorationType.values(), "reccomplex.generationInfo.decoration.types.", true));
                 cell.addPropertyConsumer(v -> generationInfo.type = v);
-                return new TableElementCell(IvTranslations.get("reccomplex.generationInfo.vanilla.type"), cell);
+                return new TitledCell(IvTranslations.get("reccomplex.generationInfo.vanilla.type"), cell);
             }
             case 2:
             {
-                return RCGuiTables.defaultWeightElement(val -> generationInfo.generationWeight = TableElements.toDouble(val), generationInfo.generationWeight);
+                return RCGuiTables.defaultWeightElement(val -> generationInfo.generationWeight = TableCells.toDouble(val), generationInfo.generationWeight);
             }
         }
 
-        return super.elementForIndexInSegment(table, index, segment);
+        return super.cellForIndexInSegment(table, index, segment);
     }
 }

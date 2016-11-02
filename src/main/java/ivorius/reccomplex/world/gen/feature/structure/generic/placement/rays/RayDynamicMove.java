@@ -11,7 +11,7 @@ import ivorius.ivtoolkit.tools.IvTranslations;
 import ivorius.reccomplex.gui.table.*;
 import ivorius.reccomplex.gui.table.cell.TableCellBoolean;
 import ivorius.reccomplex.gui.table.cell.TableCellEnum;
-import ivorius.reccomplex.gui.table.cell.TableElementCell;
+import ivorius.reccomplex.gui.table.cell.TitledCell;
 import ivorius.reccomplex.gui.table.datasource.TableDataSource;
 import ivorius.reccomplex.gui.table.datasource.TableDataSourceSegmented;
 import ivorius.reccomplex.gui.table.datasource.TableDataSourceSupplied;
@@ -68,12 +68,12 @@ public class RayDynamicMove extends FactorLimit.Ray
         {
             TableCellEnum<Type> cell = new TableCellEnum<>(null, type, TableCellEnum.options(Type.values(), "reccomplex.placer.factors.limit.rays.dynmove.type.", true));
             cell.addPropertyConsumer(v -> type = v);
-            return new TableElementCell(IvTranslations.get("reccomplex.placer.factors.limit.rays.dynmove.type"), cell);
+            return new TitledCell(IvTranslations.get("reccomplex.placer.factors.limit.rays.dynmove.type"), cell);
         }, () ->
         {
             TableCellBoolean cell = new TableCellBoolean(null, up, IvTranslations.get("reccomplex.direction.up"), IvTranslations.get("reccomplex.direction.down"));
             cell.addPropertyConsumer(v -> up = v);
-            return new TableElementCell(IvTranslations.get("reccomplex.placer.factors.limit.rays.matcher.direction"), cell);
+            return new TitledCell(IvTranslations.get("reccomplex.placer.factors.limit.rays.matcher.direction"), cell);
         }));
     }
 

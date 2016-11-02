@@ -8,10 +8,7 @@ package ivorius.reccomplex.gui.worldscripts.mazegenerator;
 import ivorius.ivtoolkit.gui.IntegerRange;
 import ivorius.ivtoolkit.tools.IvTranslations;
 import ivorius.reccomplex.gui.table.*;
-import ivorius.reccomplex.gui.table.cell.TableCellBoolean;
-import ivorius.reccomplex.gui.table.cell.TableCellIntegerRange;
-import ivorius.reccomplex.gui.table.cell.TableCellString;
-import ivorius.reccomplex.gui.table.cell.TableElementCell;
+import ivorius.reccomplex.gui.table.cell.*;
 import ivorius.reccomplex.gui.table.datasource.TableDataSourceSegmented;
 import ivorius.reccomplex.world.gen.feature.structure.generic.Selection;
 import net.minecraft.util.text.TextFormatting;
@@ -56,7 +53,7 @@ public class TableDataSourceSelectionArea extends TableDataSourceSegmented
     }
 
     @Override
-    public TableElement elementForIndexInSegment(GuiTable table, int index, int segment)
+    public TableCell cellForIndexInSegment(GuiTable table, int index, int segment)
     {
         if (segment == 0)
         {
@@ -64,7 +61,7 @@ public class TableDataSourceSelectionArea extends TableDataSourceSegmented
                     TextFormatting.GREEN + IvTranslations.get("reccomplex.selection.area.additive"),
                     TextFormatting.GOLD + IvTranslations.get("reccomplex.selection.area.subtractive"));
             cell.addPropertyConsumer(area::setAdditive);
-            return new TableElementCell(cell);
+            return new TitledCell(cell);
         }
         else if (segment == 1)
         {
@@ -72,15 +69,15 @@ public class TableDataSourceSelectionArea extends TableDataSourceSegmented
             IntegerRange intRange = new IntegerRange(area.getMinCoord()[index], area.getMaxCoord()[index]);
             TableCellIntegerRange cell = new TableCellIntegerRange("area" + index, intRange, 0, dimensions[index] - 1);
             cell.addPropertyConsumer(val -> area.setCoord(index, val.getMin(), val.getMax()));
-            return new TableElementCell(title, cell);
+            return new TitledCell(title, cell);
         }
         else if (segment == 2)
         {
             TableCellString cell = new TableCellString("", area.getIdentifier() != null ? area.getIdentifier() : "");
             cell.addPropertyConsumer(area::setIdentifier);
-            return new TableElementCell(IvTranslations.get("reccomplex.selection.area.identifier"), cell);
+            return new TitledCell(IvTranslations.get("reccomplex.selection.area.identifier"), cell);
         }
 
-        return super.elementForIndexInSegment(table, index, segment);
+        return super.cellForIndexInSegment(table, index, segment);
     }
 }

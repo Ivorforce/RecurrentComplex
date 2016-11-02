@@ -79,31 +79,31 @@ public class TableCellMultiBuilder
     @Nonnull
     public TableDataSource buildDataSource(@Nullable String title)
     {
-        return new TableDataSourceSupplied((Supplier<TableElement>) () -> buildElement(title));
+        return new TableDataSourceSupplied((Supplier<TableCell>) () -> buildTitled(title));
     }
 
     @Nonnull
     public TableDataSource buildDataSource(@Nullable String title, List<String> tooltip)
     {
-        return new TableDataSourceSupplied((Supplier<TableElement>) () -> buildElement(title).withTitleTooltip(tooltip));
+        return new TableDataSourceSupplied((Supplier<TableCell>) () -> buildTitled(title).withTitleTooltip(tooltip));
     }
 
     @Nonnull
     public TableDataSource buildDataSource()
     {
-        return new TableDataSourceSupplied(this::buildElement);
+        return new TableDataSourceSupplied(this::buildTitled);
     }
 
     @Nonnull
-    public TableElementCell buildElement(@Nullable String title)
+    public TitledCell buildTitled(@Nullable String title)
     {
-        return new TableElementCell(title, build());
+        return new TitledCell(title, build());
     }
 
     @Nonnull
-    public TableElementCell buildElement()
+    public TitledCell buildTitled()
     {
-        return new TableElementCell(build());
+        return new TitledCell(build());
     }
 
     @Nonnull

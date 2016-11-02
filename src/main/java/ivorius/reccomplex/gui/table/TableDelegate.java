@@ -21,5 +21,5 @@ public interface TableDelegate
 
     void reloadData();
 
-    void setLocked(String element, boolean lock);
+    void setLocked(String cell, boolean lock);
 }

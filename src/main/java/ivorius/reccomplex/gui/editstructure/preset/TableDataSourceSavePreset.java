@@ -11,11 +11,11 @@ import ivorius.reccomplex.files.loading.LeveledRegistry;
 import ivorius.reccomplex.files.loading.ResourceDirectory;
 import ivorius.reccomplex.gui.GuiValidityStateIndicator;
 import ivorius.reccomplex.gui.table.TableDelegate;
-import ivorius.reccomplex.gui.table.TableElements;
+import ivorius.reccomplex.gui.table.TableCells;
 import ivorius.reccomplex.gui.table.TableNavigator;
 import ivorius.reccomplex.gui.table.cell.TableCellMultiBuilder;
 import ivorius.reccomplex.gui.table.cell.TableCellString;
-import ivorius.reccomplex.gui.table.cell.TableElementCell;
+import ivorius.reccomplex.gui.table.cell.TitledCell;
 import ivorius.reccomplex.gui.table.datasource.TableDataSourceSegmented;
 import ivorius.reccomplex.gui.table.datasource.TableDataSourceSupplied;
 import ivorius.reccomplex.utils.PresetRegistry;
@@ -61,22 +61,22 @@ public class TableDataSourceSavePreset<T> extends TableDataSourceSegmented
                     description = object.getPresetRegistry().description(s)
                             .flatMap(d -> d.stream().reduce((s1, s2) -> s1 + "<br>" + s2))
                             .orElse("");
-                    TableElements.reloadExcept(delegate, "presetID");
+                    TableCells.reloadExcept(delegate, "presetID");
                 }
             });
-            return new TableElementCell("presetID", IvTranslations.get("reccomplex.preset.id"), cell)
+            return new TitledCell("presetID", IvTranslations.get("reccomplex.preset.id"), cell)
                     .withTitleTooltip(IvTranslations.getLines("reccomplex.preset.id.tooltip"));
         }, () ->
         {
             TableCellString cell = new TableCellString(null, title);
             cell.addPropertyConsumer(s -> title = s);
-            return new TableElementCell(IvTranslations.get("reccomplex.preset.title"), cell)
+            return new TitledCell(IvTranslations.get("reccomplex.preset.title"), cell)
                     .withTitleTooltip(IvTranslations.getLines("reccomplex.preset.title.tooltip"));
         }, () ->
         {
             TableCellString cell = new TableCellString(null, description);
             cell.addPropertyConsumer(s -> description = s);
-            return new TableElementCell(IvTranslations.get("reccomplex.preset.description"), cell)
+            return new TitledCell(IvTranslations.get("reccomplex.preset.description"), cell)
                     .withTitleTooltip(IvTranslations.getLines("reccomplex.preset.description.tooltip").stream()
                             .map(s -> s.replaceAll("<BR>", "<br>")).collect(Collectors.toList()));
         }));

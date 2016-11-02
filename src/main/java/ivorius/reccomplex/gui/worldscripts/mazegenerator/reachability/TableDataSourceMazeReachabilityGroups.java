@@ -7,10 +7,7 @@ package ivorius.reccomplex.gui.worldscripts.mazegenerator.reachability;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
-import ivorius.reccomplex.gui.table.cell.TableCellButton;
-import ivorius.reccomplex.gui.table.cell.TableCellMulti;
-import ivorius.reccomplex.gui.table.cell.TableCellTitle;
-import ivorius.reccomplex.gui.table.cell.TableElementCell;
+import ivorius.reccomplex.gui.table.cell.*;
 import ivorius.reccomplex.gui.table.datasource.TableDataSourceSegmented;
 import net.minecraft.util.text.TextFormatting;
 import ivorius.ivtoolkit.tools.IvTranslations;
@@ -83,12 +80,12 @@ public class TableDataSourceMazeReachabilityGroups extends TableDataSourceSegmen
     }
 
     @Override
-    public TableElement elementForIndexInSegment(GuiTable table, int index, int segment)
+    public TableCell cellForIndexInSegment(GuiTable table, int index, int segment)
     {
         int group = segment / 2 - 1;
 
         if (segment % 2 == 0)
-            return new TableElementCell(new TableCellTitle("groupTitle" + group, group < 0
+            return new TitledCell(new TableCellTitle("groupTitle" + group, group < 0
                     ? IvTranslations.get("reccomplex.reachability.groups.default")
                     : IvTranslations.format("reccomplex.reachability.groups.group", "" + (group + 1))));
         else
@@ -123,7 +120,7 @@ public class TableDataSourceMazeReachabilityGroups extends TableDataSourceSegmen
                 });
                 entryAction.setId(String.format("entry%d,%d", group, index));
             }
-            return new TableElementCell(getDisplayString(t), new TableCellMulti(entryActions));
+            return new TitledCell(getDisplayString(t), new TableCellMulti(entryActions));
         }
     }
 

@@ -8,12 +8,8 @@ package ivorius.reccomplex.gui.table.datasource;
 import ivorius.reccomplex.RecurrentComplex;
 import ivorius.reccomplex.gui.table.GuiTable;
 import ivorius.reccomplex.gui.table.TableDelegate;
-import ivorius.reccomplex.gui.table.TableElement;
 import ivorius.reccomplex.gui.table.TableNavigator;
-import ivorius.reccomplex.gui.table.cell.TableCellButton;
-import ivorius.reccomplex.gui.table.cell.TableCellMulti;
-import ivorius.reccomplex.gui.table.cell.TableCellPresetAction;
-import ivorius.reccomplex.gui.table.cell.TableElementCell;
+import ivorius.reccomplex.gui.table.cell.*;
 import ivorius.reccomplex.utils.IvClasses;
 import net.minecraft.util.text.TextFormatting;
 import ivorius.ivtoolkit.tools.IvTranslations;
@@ -169,7 +165,7 @@ public abstract class TableDataSourceList<T, L extends List<T>> extends TableDat
     }
 
     @Override
-    public TableElement elementForIndexInSegment(GuiTable table, int index, int segment)
+    public TableCell cellForIndexInSegment(GuiTable table, int index, int segment)
     {
         if (isListSegment(segment))
         {
@@ -186,7 +182,7 @@ public abstract class TableDataSourceList<T, L extends List<T>> extends TableDat
             }
             TableCellMulti multi = new TableCellMulti(cells);
             multi.setSize(0, 8);
-            return new TableElementCell(getDisplayString(t), multi);
+            return new TitledCell(getDisplayString(t), multi);
         }
 
         int addIndex = getAddIndex(segment);
@@ -196,7 +192,7 @@ public abstract class TableDataSourceList<T, L extends List<T>> extends TableDat
             {
                 TableCellPresetAction cell = new TableCellPresetAction("add" + addIndex, getAddActions());
                 cell.addAction(actionID -> createAddAction(addIndex, actionID).run());
-                return new TableElementCell(cell);
+                return new TitledCell(cell);
             }
             else
             {
@@ -206,7 +202,7 @@ public abstract class TableDataSourceList<T, L extends List<T>> extends TableDat
                     cell.addAction(createAddAction(addIndex, cell.actionID));
                     cell.setId("add" + addIndex);
                 }
-                return new TableElementCell(new TableCellMulti(cells));
+                return new TitledCell(new TableCellMulti(cells));
             }
         }
 

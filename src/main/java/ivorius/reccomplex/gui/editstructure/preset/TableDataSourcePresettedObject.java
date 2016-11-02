@@ -6,13 +6,11 @@
 package ivorius.reccomplex.gui.editstructure.preset;
 
 import ivorius.ivtoolkit.tools.IvTranslations;
-import ivorius.reccomplex.RecurrentComplex;
 import ivorius.reccomplex.gui.table.*;
 import ivorius.reccomplex.gui.table.cell.*;
 import ivorius.reccomplex.gui.table.datasource.TableDataSourceSegmented;
 import ivorius.reccomplex.utils.PresetRegistry;
 import ivorius.reccomplex.utils.presets.PresettedObject;
-import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.TextFormatting;
 
 import javax.annotation.Nonnull;
@@ -42,7 +40,7 @@ public class TableDataSourcePresettedObject<T> extends TableDataSourceSegmented
     }
 
     @Nonnull
-    public static <T> TableElement getCustomizeElement(PresettedObject<T> object, String saverID, TableDelegate delegate, TableNavigator navigator, Runnable applyPresetAction)
+    public static <T> TableCell getCustomizeElement(PresettedObject<T> object, String saverID, TableDelegate delegate, TableNavigator navigator, Runnable applyPresetAction)
     {
         if (!object.isCustom())
         {
@@ -56,22 +54,22 @@ public class TableDataSourcePresettedObject<T> extends TableDataSourceSegmented
                     applyPresetAction.run();
                 delegate.reloadData();
             });
-            return new TableElementCell(cell);
+            return cell;
         }
         else
         {
             return TableCellMultiBuilder.create(navigator, delegate)
                     .addNavigation(() -> String.format("%s+", TextFormatting.GREEN), () -> IvTranslations.getLines("reccomplex.preset.save"),
                             () -> new TableDataSourceSavePreset<>(object, saverID, delegate, navigator)
-                    ).enabled(() -> saverID != null).buildElement();
+                    ).enabled(() -> saverID != null).build();
         }
     }
 
     @Nonnull
-    public static <T> TableElement getSetElement(PresettedObject<T> object, TableDelegate delegate, List<TableCellButton> actions, Runnable applyPresetAction)
+    public static <T> TableCell getSetElement(PresettedObject<T> object, TableDelegate delegate, List<TableCellButton> actions, Runnable applyPresetAction)
     {
         if (actions.isEmpty())
-            return new TableElementCell(new TableCellButton(null, null, IvTranslations.get("reccomplex.presets"), false));
+            return new TableCellButton(null, null, "-", false);
 
         TableCellPresetAction cell = new TableCellPresetAction("preset", actions);
         cell.addAction((actionID) ->
@@ -83,7 +81,7 @@ public class TableDataSourcePresettedObject<T> extends TableDataSourceSegmented
         });
         if (object.getPreset() != null)
             cell.setCurrentAction(object.getPreset());
-        return new TableElementCell(IvTranslations.get("reccomplex.presets"), cell);
+        return cell;
     }
 
     @Nonnull
@@ -121,17 +119,17 @@ public class TableDataSourcePresettedObject<T> extends TableDataSourceSegmented
     }
 
     @Override
-    public TableElement elementForIndexInSegment(GuiTable table, int index, int segment)
+    public TableCell cellForIndexInSegment(GuiTable table, int index, int segment)
     {
         if (segment == 0)
         {
             TableCellMulti multi = new TableCellMulti(getSetElement(object, delegate, getActions(), applyPresetAction),
                     getCustomizeElement(object, saverID, delegate, navigator, applyPresetAction));
             multi.setSize(0, 7);
-            return new TableElementCell(multi);
+            return new TitledCell(IvTranslations.get("reccomplex.presets"), multi);
         }
 
-        return super.elementForIndexInSegment(table, index, segment);
+        return super.cellForIndexInSegment(table, index, segment);
     }
 
     public List<TableCellButton> getActions()

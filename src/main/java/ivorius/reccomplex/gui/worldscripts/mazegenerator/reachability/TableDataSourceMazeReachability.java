@@ -8,7 +8,7 @@ package ivorius.reccomplex.gui.worldscripts.mazegenerator.reachability;
 import ivorius.ivtoolkit.gui.IntegerRange;
 import ivorius.reccomplex.gui.table.*;
 import ivorius.reccomplex.gui.table.cell.TableCellTitle;
-import ivorius.reccomplex.gui.table.cell.TableElementCell;
+import ivorius.reccomplex.gui.table.cell.TitledCell;
 import ivorius.reccomplex.gui.table.datasource.TableDataSourcePreloaded;
 import ivorius.reccomplex.gui.table.datasource.TableDataSourceSegmented;
 import ivorius.reccomplex.world.gen.feature.structure.generic.maze.SavedMazePath;
@@ -34,12 +34,12 @@ public class TableDataSourceMazeReachability extends TableDataSourceSegmented
         this.tableDelegate = tableDelegate;
         this.tableNavigator = tableNavigator;
 
-        addManagedSegment(0, new TableDataSourcePreloaded(new TableElementCell(
+        addManagedSegment(0, new TableDataSourcePreloaded(new TitledCell(
                 new TableCellTitle("", IvTranslations.get("reccomplex.reachability.groups")))
                 .withTitleTooltip(IvTranslations.formatLines("reccomplex.reachability.groups.tooltip"))));
         addManagedSegment(1, new TableDataSourceMazeReachabilityGroups(reachability.groups, expected, tableDelegate, tableNavigator));
 
-        addManagedSegment(2, new TableDataSourcePreloaded(new TableElementCell(
+        addManagedSegment(2, new TableDataSourcePreloaded(new TitledCell(
                 new TableCellTitle("", IvTranslations.get("reccomplex.reachability.crossconnections")))
                 .withTitleTooltip(IvTranslations.formatLines("reccomplex.reachability.crossconnections.tooltip"))));
         addManagedSegment(3, new TableDataSourcePathConnectionList(reachability.crossConnections, tableDelegate, tableNavigator, bounds));

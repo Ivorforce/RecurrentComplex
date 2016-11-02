@@ -101,7 +101,7 @@ public class TableCellString extends TableCellPropertyDefault<String>
 
         if (showsValidityState)
         {
-            stateIndicator = new GuiValidityStateIndicator(bounds.getMinX() + bounds.getWidth() - 10, bounds.getMinY() + (bounds.getHeight() - 10) / 2, validityState);
+            stateIndicator = new GuiValidityStateIndicator(bounds.getMaxX() - 12, bounds.getCenterY() - 5, validityState);
             stateIndicator.setVisible(!isHidden());
         }
         else
@@ -181,7 +181,7 @@ public class TableCellString extends TableCellPropertyDefault<String>
 
     protected void updateTextFieldBounds(Bounds bounds)
     {
-        Bounds.set(textField, Bounds.fromSize(bounds.getMinX(), bounds.getMinY() + (bounds.getHeight() - 20) / 2, bounds.getWidth() - (showsValidityState ? 15 : 0), 20));
+        Bounds.set(textField, Bounds.fromSize(bounds.getMinX(), bounds.getMinY() + (bounds.getHeight() - 20) / 2, bounds.getWidth() - (showsValidityState ? 18 : 0), 20));
     }
 
     @Override

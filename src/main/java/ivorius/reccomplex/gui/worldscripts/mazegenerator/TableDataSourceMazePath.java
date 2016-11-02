@@ -10,9 +10,10 @@ import ivorius.ivtoolkit.maze.components.MazeRoom;
 import ivorius.ivtoolkit.tools.IvTranslations;
 import ivorius.reccomplex.gui.TableDirections;
 import ivorius.reccomplex.gui.table.*;
+import ivorius.reccomplex.gui.table.cell.TableCell;
 import ivorius.reccomplex.gui.table.cell.TableCellButton;
 import ivorius.reccomplex.gui.table.cell.TableCellEnum;
-import ivorius.reccomplex.gui.table.cell.TableElementCell;
+import ivorius.reccomplex.gui.table.cell.TitledCell;
 import ivorius.reccomplex.gui.table.datasource.TableDataSourceSegmented;
 import ivorius.reccomplex.world.gen.feature.structure.generic.maze.ConnectorStrategy;
 import ivorius.reccomplex.world.gen.feature.structure.generic.maze.SavedMazePath;
@@ -100,7 +101,7 @@ public class TableDataSourceMazePath extends TableDataSourceSegmented
     }
 
     @Override
-    public TableElement elementForIndexInSegment(GuiTable table, int index, int segment)
+    public TableCell cellForIndexInSegment(GuiTable table, int index, int segment)
     {
         if (segment == 2)
         {
@@ -113,7 +114,7 @@ public class TableDataSourceMazePath extends TableDataSourceSegmented
                 mazePath.pathGoesUp = path.path.pathGoesUp;
                 tableDelegate.reloadData();
             });
-            return new TableElementCell(IvTranslations.get("reccomplex.generationInfo.mazeComponent.path.side"), cell);
+            return new TitledCell(IvTranslations.get("reccomplex.generationInfo.mazeComponent.path.side"), cell);
         }
         else if (segment == 3)
         {
@@ -122,10 +123,10 @@ public class TableDataSourceMazePath extends TableDataSourceSegmented
                 mazePath.set(mazePath.inverse());
                 tableDelegate.reloadData();
             });
-            return new TableElementCell(invertableButton);
+            return new TitledCell(invertableButton);
         }
 
-        return super.elementForIndexInSegment(table, index, segment);
+        return super.cellForIndexInSegment(table, index, segment);
     }
 
     protected boolean isInvertable()

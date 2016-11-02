@@ -12,9 +12,10 @@ import ivorius.reccomplex.gui.editstructure.TableDataSourceDimensionGenList;
 import ivorius.reccomplex.gui.editstructure.TableDataSourceNaturalGenLimitation;
 import ivorius.reccomplex.gui.editstructure.placer.TableDataSourcePlacer;
 import ivorius.reccomplex.gui.table.*;
+import ivorius.reccomplex.gui.table.cell.TableCell;
 import ivorius.reccomplex.gui.table.cell.TableCellEnum;
 import ivorius.reccomplex.gui.table.cell.TableCellMultiBuilder;
-import ivorius.reccomplex.gui.table.cell.TableElementCell;
+import ivorius.reccomplex.gui.table.cell.TitledCell;
 import ivorius.reccomplex.gui.table.datasource.TableDataSourceSegmented;
 import ivorius.reccomplex.world.gen.feature.structure.generic.gentypes.NaturalGenerationInfo;
 import ivorius.reccomplex.world.gen.feature.selector.NaturalStructureSelector;
@@ -96,7 +97,7 @@ public class TableDataSourceNaturalGenerationInfo extends TableDataSourceSegment
     }
 
     @Override
-    public TableElement elementForIndexInSegment(GuiTable table, int index, int segment)
+    public TableCell cellForIndexInSegment(GuiTable table, int index, int segment)
     {
         switch (segment)
         {
@@ -104,12 +105,12 @@ public class TableDataSourceNaturalGenerationInfo extends TableDataSourceSegment
             {
                 TableCellEnum<String> cell = new TableCellEnum<>("category", generationInfo.generationCategory, allGenerationCategories());
                 cell.addPropertyConsumer(val -> generationInfo.generationCategory = val);
-                return new TableElementCell(IvTranslations.get("reccomplex.generationInfo.natural.category"), cell);
+                return new TitledCell(IvTranslations.get("reccomplex.generationInfo.natural.category"), cell);
             }
             case 2:
-                return RCGuiTables.defaultWeightElement(val -> generationInfo.setGenerationWeight(TableElements.toDouble(val)), generationInfo.getGenerationWeight());
+                return RCGuiTables.defaultWeightElement(val -> generationInfo.setGenerationWeight(TableCells.toDouble(val)), generationInfo.getGenerationWeight());
         }
 
-        return super.elementForIndexInSegment(table, index, segment);
+        return super.cellForIndexInSegment(table, index, segment);
     }
 }

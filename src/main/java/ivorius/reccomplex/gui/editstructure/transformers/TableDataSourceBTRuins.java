@@ -60,7 +60,7 @@ public class TableDataSourceBTRuins extends TableDataSourceSegmented
     }
 
     @Override
-    public TableElement elementForIndexInSegment(GuiTable table, int index, int segment)
+    public TableCell cellForIndexInSegment(GuiTable table, int index, int segment)
     {
         switch (segment)
         {
@@ -68,7 +68,7 @@ public class TableDataSourceBTRuins extends TableDataSourceSegmented
                 switch (index)
                 {
                     case 0:
-                        return new TableElementCell(new TableCellTitle("decayTitle", IvTranslations.get("reccomplex.transformer.ruins.decay.title")));
+                        return new TitledCell(new TableCellTitle("decayTitle", IvTranslations.get("reccomplex.transformer.ruins.decay.title")));
                     case 1:
                     {
                         TableCellFloatRange cell = new TableCellFloatRange("decay", new FloatRange(transformer.minDecay, transformer.maxDecay), 0.0f, 1.0f, "%.4f");
@@ -77,7 +77,7 @@ public class TableDataSourceBTRuins extends TableDataSourceSegmented
                             transformer.minDecay = val.getMin();
                             transformer.maxDecay = val.getMax();
                         });
-                        return new TableElementCell(IvTranslations.get("reccomplex.transformer.ruins.decay.base"), cell)
+                        return new TitledCell(IvTranslations.get("reccomplex.transformer.ruins.decay.base"), cell)
                                 .withTitleTooltip(IvTranslations.formatLines("reccomplex.transformer.ruins.decay.base.tooltip"));
                     }
                     case 2:
@@ -85,7 +85,7 @@ public class TableDataSourceBTRuins extends TableDataSourceSegmented
                         TableCellFloat cell = new TableCellFloat("decayChaos", transformer.decayChaos, 0.0f, 1.0f);
                         cell.setScale(Scales.pow(3));
                         cell.addPropertyConsumer(val -> transformer.decayChaos = val);
-                        return new TableElementCell(IvTranslations.get("reccomplex.transformer.ruins.decay.chaos"), cell)
+                        return new TitledCell(IvTranslations.get("reccomplex.transformer.ruins.decay.chaos"), cell)
                                 .withTitleTooltip(IvTranslations.formatLines("reccomplex.transformer.ruins.decay.chaos.tooltip"));
                     }
                     case 3:
@@ -93,14 +93,14 @@ public class TableDataSourceBTRuins extends TableDataSourceSegmented
                         TableCellFloat cell = new TableCellFloat("decayValueDensity", transformer.decayValueDensity, 0.0f, 1.0f);
                         cell.setScale(Scales.pow(3));
                         cell.addPropertyConsumer(val -> transformer.decayValueDensity = val);
-                        return new TableElementCell(IvTranslations.get("reccomplex.transformer.ruins.decay.density"), cell)
+                        return new TitledCell(IvTranslations.get("reccomplex.transformer.ruins.decay.density"), cell)
                                 .withTitleTooltip(IvTranslations.formatLines("reccomplex.transformer.ruins.decay.density.tooltip"));
                     }
                     case 4:
                     {
                         TableCellEnum<EnumFacing> cell = new TableCellEnum<>("decaySide", transformer.decayDirection, TableDirections.getDirectionOptions(EnumFacing.VALUES));
                         cell.addPropertyConsumer(val -> transformer.decayDirection = val);
-                        return new TableElementCell(IvTranslations.get("reccomplex.transformer.ruins.decay.direction"), cell)
+                        return new TitledCell(IvTranslations.get("reccomplex.transformer.ruins.decay.direction"), cell)
                                 .withTitleTooltip(IvTranslations.formatLines("reccomplex.transformer.ruins.decay.direction.tooltip"));
                     }
                 }
@@ -109,13 +109,13 @@ public class TableDataSourceBTRuins extends TableDataSourceSegmented
                 switch (index)
                 {
                     case 0:
-                        return new TableElementCell(new TableCellTitle("otherTitle", IvTranslations.get("reccomplex.transformer.ruins.other.title")));
+                        return new TitledCell(new TableCellTitle("otherTitle", IvTranslations.get("reccomplex.transformer.ruins.other.title")));
                     case 1:
                     {
                         TableCellFloat cell = new TableCellFloat("erosion", transformer.blockErosion, 0.0f, 1.0f);
                         cell.setScale(Scales.pow(3));
                         cell.addPropertyConsumer(val -> transformer.blockErosion = val);
-                        return new TableElementCell(IvTranslations.get("reccomplex.transformer.ruins.erosion"), cell)
+                        return new TitledCell(IvTranslations.get("reccomplex.transformer.ruins.erosion"), cell)
                                 .withTitleTooltip(IvTranslations.formatLines("reccomplex.transformer.ruins.erosion.tooltip"));
                     }
                     case 2:
@@ -123,13 +123,13 @@ public class TableDataSourceBTRuins extends TableDataSourceSegmented
                         TableCellFloat cell = new TableCellFloat("vines", transformer.vineGrowth, 0.0f, 1.0f);
                         cell.setScale(Scales.pow(3));
                         cell.addPropertyConsumer(val -> transformer.vineGrowth = val);
-                        return new TableElementCell(IvTranslations.get("reccomplex.transformer.ruins.vines"), cell)
+                        return new TitledCell(IvTranslations.get("reccomplex.transformer.ruins.vines"), cell)
                                 .withTitleTooltip(IvTranslations.formatLines("reccomplex.transformer.ruins.vines.tooltip"));
                     }
                 }
                 break;
         }
 
-        return super.elementForIndexInSegment(table, index, segment);
+        return super.cellForIndexInSegment(table, index, segment);
     }
 }

@@ -128,7 +128,7 @@ public class TableDataSourceGenericStructure extends TableDataSourceSegmented
     }
 
     @Override
-    public TableElement elementForIndexInSegment(GuiTable table, int index, int segment)
+    public TableCell cellForIndexInSegment(GuiTable table, int index, int segment)
     {
         switch (segment)
         {
@@ -140,11 +140,11 @@ public class TableDataSourceGenericStructure extends TableDataSourceSegmented
                     {
                         structureKey = cell.getPropertyValue();
                         cell.setValidityState(currentNameState());
-                        TableElements.reloadExcept(tableDelegate, "structureID");
+                        TableCells.reloadExcept(tableDelegate, "structureID");
                     });
                     cell.setShowsValidityState(true);
                     cell.setValidityState(currentNameState());
-                    return new TableElementCell("structureID", IvTranslations.get("reccomplex.structure.id"), cell).withTitleTooltip(IvTranslations.formatLines("reccomplex.structure.id.tooltip"));
+                    return new TitledCell("structureID", IvTranslations.get("reccomplex.structure.id"), cell).withTitleTooltip(IvTranslations.formatLines("reccomplex.structure.id.tooltip"));
                 }
             case 3:
             {
@@ -160,11 +160,11 @@ public class TableDataSourceGenericStructure extends TableDataSourceSegmented
                 cellMirrorable.setTooltip(IvTranslations.formatLines("reccomplex.structure.mirrorable.tooltip"));
                 cellMirrorable.addPropertyConsumer(cell -> structureInfo.mirrorable = cellMirrorable.getPropertyValue());
 
-                return new TableElementCell(new TableCellMulti(cellRotatable, cellMirrorable));
+                return new TitledCell(new TableCellMulti(cellRotatable, cellMirrorable));
             }
         }
 
-        return super.elementForIndexInSegment(table, index, segment);
+        return super.cellForIndexInSegment(table, index, segment);
     }
 
     private GuiValidityStateIndicator.State currentNameState()

@@ -6,7 +6,8 @@
 package ivorius.reccomplex.gui.table.datasource;
 
 import ivorius.reccomplex.gui.table.GuiTable;
-import ivorius.reccomplex.gui.table.TableElement;
+import ivorius.reccomplex.gui.table.cell.TableCell;
+import ivorius.reccomplex.gui.table.cell.TitledCell;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -17,38 +18,38 @@ import java.util.List;
  */
 public class TableDataSourcePreloaded implements TableDataSource
 {
-    public final List<TableElement> elements = new ArrayList<>();
+    public final List<TableCell> cells = new ArrayList<>();
 
-    public TableDataSourcePreloaded(TableElement... elements)
+    public TableDataSourcePreloaded(TableCell... cells)
     {
-        Collections.addAll(this.elements, elements);
+        Collections.addAll(this.cells, cells);
     }
 
-    public TableDataSourcePreloaded(List<TableElement> elements)
+    public TableDataSourcePreloaded(List<TableCell> cells)
     {
-        this.elements.addAll(elements);
+        this.cells.addAll(cells);
     }
 
-    public List<TableElement> getElements()
+    public List<TableCell> getCells()
     {
-        return elements;
+        return cells;
     }
 
-    public void setElements(List<TableElement> elements)
+    public void setCells(List<TableCell> cells)
     {
-        this.elements.clear();
-        this.elements.addAll(elements);
-    }
-
-    @Override
-    public int numberOfElements()
-    {
-        return elements.size();
+        this.cells.clear();
+        this.cells.addAll(cells);
     }
 
     @Override
-    public TableElement elementForIndex(GuiTable table, int index)
+    public int numberOfCells()
     {
-        return elements.get(index);
+        return cells.size();
+    }
+
+    @Override
+    public TableCell cellForIndex(GuiTable table, int index)
+    {
+        return cells.get(index);
     }
 }

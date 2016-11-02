@@ -10,8 +10,9 @@ import ivorius.reccomplex.gui.GuiValidityStateIndicator;
 import ivorius.reccomplex.gui.RCGuiTables;
 import ivorius.reccomplex.gui.TableDataSourceBlockState;
 import ivorius.reccomplex.gui.table.*;
+import ivorius.reccomplex.gui.table.cell.TableCell;
 import ivorius.reccomplex.gui.table.cell.TableCellString;
-import ivorius.reccomplex.gui.table.cell.TableElementCell;
+import ivorius.reccomplex.gui.table.cell.TitledCell;
 import ivorius.reccomplex.gui.table.datasource.TableDataSourceSegmented;
 import ivorius.reccomplex.world.gen.feature.structure.generic.WeightedBlockState;
 import net.minecraft.nbt.JsonToNBT;
@@ -73,11 +74,11 @@ public class TableDataSourceWeightedBlockState extends TableDataSourceSegmented
     }
 
     @Override
-    public TableElement elementForIndexInSegment(GuiTable table, int index, int segment)
+    public TableCell cellForIndexInSegment(GuiTable table, int index, int segment)
     {
         if (segment == 0)
         {
-            return RCGuiTables.defaultWeightElement(val -> weightedBlockState.weight = TableElements.toDouble(val), weightedBlockState.weight);
+            return RCGuiTables.defaultWeightElement(val -> weightedBlockState.weight = TableCells.toDouble(val), weightedBlockState.weight);
         }
         else if (segment == 2)
         {
@@ -88,9 +89,9 @@ public class TableDataSourceWeightedBlockState extends TableDataSourceSegmented
             });
             cell.setShowsValidityState(true);
             cell.setValidityState(stateForNBTCompoundJson(weightedBlockState.tileEntityInfo));
-            return new TableElementCell(IvTranslations.get("reccomplex.tileentity.nbt"), cell);
+            return new TitledCell(IvTranslations.get("reccomplex.tileentity.nbt"), cell);
         }
 
-        return super.elementForIndexInSegment(table, index, segment);
+        return super.cellForIndexInSegment(table, index, segment);
     }
 }

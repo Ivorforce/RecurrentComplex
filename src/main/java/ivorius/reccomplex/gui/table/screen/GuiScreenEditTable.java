@@ -22,7 +22,7 @@ import java.util.function.Consumer;
  */
 public class GuiScreenEditTable<T extends TableDataSource> extends GuiScreenModalTable
 {
-    public static final int HEIGHT_INSET = 20;
+    public static final int HEIGHT_INSET = 10;
     public static final int MAX_WIDTH = 360;
 
     protected T t;

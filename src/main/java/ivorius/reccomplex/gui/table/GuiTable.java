@@ -14,7 +14,9 @@ import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiScreen;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.MathHelper;
+import net.minecraft.util.text.TextFormatting;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
 import org.lwjgl.input.Mouse;
@@ -27,14 +29,17 @@ import java.util.*;
  */
 public class GuiTable extends Gui
 {
+    private static final ResourceLocation CREATIVE_INVENTORY_TABS = new ResourceLocation("textures/gui/container/creative_inventory/tabs.png");
+
     public static final int HEIGHT_PER_SLOT = 25;
-    public static final int SCROLL_BAR_HEIGHT = 27;
+    public static final int SCROLL_BAR_WIDTH = 25;
     public static final float SCROLL_SPEED = 0.005f;
 
     private TableDelegate delegate;
     private TableDataSource dataSource;
 
     private Bounds propertiesBounds;
+    private boolean showsScrollBar;
     private float currentScroll;
     private int cachedMaxIndex;
 
@@ -98,25 +103,25 @@ public class GuiTable extends Gui
         updateScrollUp(0); // If we're too far down we scroll up now
         int roundedScrollIndex = MathHelper.floor_float(currentScroll + 0.5f);
 
-        scrollUpButton = new GuiButton(-1, propertiesBounds.getMinX(), propertiesBounds.getMinY(), propertiesBounds.getWidth() / 2 - 1, 20, IvTranslations.get("gui.up"));
+        scrollUpButton = new GuiButton(-1, propertiesBounds.getMaxX() - SCROLL_BAR_WIDTH + 5, propertiesBounds.getMinY(), SCROLL_BAR_WIDTH - 5, 20, TextFormatting.BOLD + "↑");
         delegate.addButtonToTable(scrollUpButton);
-        scrollDownButton = new GuiButton(-1, propertiesBounds.getCenterX() + 1, propertiesBounds.getMinY(), propertiesBounds.getWidth() / 2 - 1, 20, IvTranslations.get("gui.down"));
+        scrollDownButton = new GuiButton(-1, propertiesBounds.getMaxX() - SCROLL_BAR_WIDTH + 5, propertiesBounds.getMaxY() - 20, SCROLL_BAR_WIDTH - 5, 20, TextFormatting.BOLD + "↓");
         delegate.addButtonToTable(scrollDownButton);
 
-        int supportedSlotNumber = (propertiesBounds.getHeight() - SCROLL_BAR_HEIGHT) / HEIGHT_PER_SLOT;
+        int supportedSlotNumber = propertiesBounds.getHeight() / HEIGHT_PER_SLOT;
         int numberOfElements = dataSource.numberOfElements();
         cachedMaxIndex = roundedScrollIndex + supportedSlotNumber - 1;
 
         boolean needsUpScroll = canScrollUp();
         boolean needsDownScroll = canScrollDown(numberOfElements);
-        boolean needsScroll = needsUpScroll || needsDownScroll;
 
         scrollUpButton.enabled = needsUpScroll;
         scrollDownButton.enabled = needsDownScroll;
-        scrollUpButton.visible = needsScroll || !hideScrollbarIfUnnecessary;
-        scrollDownButton.visible = needsScroll || !hideScrollbarIfUnnecessary;
+        showsScrollBar = needsUpScroll || needsDownScroll || !hideScrollbarIfUnnecessary;
 
-        int baseY = propertiesBounds.getMinY() + SCROLL_BAR_HEIGHT;
+        scrollUpButton.visible = showsScrollBar;
+        scrollDownButton.visible = showsScrollBar;
+
         for (int index = 0; index < supportedSlotNumber && roundedScrollIndex + index < numberOfElements; index++)
         {
             TableElement element = cachedElements.get(roundedScrollIndex + index);
@@ -130,7 +135,7 @@ public class GuiTable extends Gui
 
             int elementY = index * HEIGHT_PER_SLOT;
 
-            element.setBounds(Bounds.fromAxes(propertiesBounds.getMinX() + 100, propertiesBounds.getWidth() - 100, baseY + elementY, 20));
+            element.setBounds(Bounds.fromAxes(propertiesBounds.getMinX() + 100, propertiesBounds.getWidth() - 100 - SCROLL_BAR_WIDTH, propertiesBounds.getMinY() + elementY, 20));
             element.setHidden(false);
             element.initGui(this);
 
@@ -173,6 +178,14 @@ public class GuiTable extends Gui
                     drawTooltipRect(tooltip, Bounds.fromSize(bounds.getMinX() - stringWidth - 10, bounds.getCenterY() - 6, stringWidth, 12), mouseX, mouseY, fontRenderer);
             }
         });
+
+        if (showsScrollBar && getMaxScroll() > 0)
+        {
+            screen.mc.getTextureManager().bindTexture(CREATIVE_INVENTORY_TABS);
+            GlStateManager.color(1, 1, 1);
+
+            this.drawTexturedModalRect(propertiesBounds.getMaxX() - SCROLL_BAR_WIDTH + 5 + 4, propertiesBounds.getMinY() + 20 + this.currentScroll / getMaxScroll() * (propertiesBounds.getHeight() - 40 - 15), 232, 0, 12, 15);
+        }
     }
 
     public void updateScreen()

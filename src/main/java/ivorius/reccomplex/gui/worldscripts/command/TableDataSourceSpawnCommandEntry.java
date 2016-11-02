@@ -13,6 +13,7 @@ import ivorius.reccomplex.gui.table.datasource.TableDataSourceSegmented;
 import ivorius.reccomplex.world.gen.script.WorldScriptCommand;
 import net.minecraft.init.Blocks;
 
+import javax.annotation.Nonnull;
 import java.util.Arrays;
 
 /**
@@ -28,6 +29,13 @@ public class TableDataSourceSpawnCommandEntry extends TableDataSourceSegmented
     {
         this.entry = entry;
         this.tableDelegate = tableDelegate;
+    }
+
+    @Nonnull
+    @Override
+    public String title()
+    {
+        return "Command";
     }
 
     @Override

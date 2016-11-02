@@ -58,7 +58,7 @@ public class GuiScreenEditTable<T extends TableDataSource> extends GuiScreenModa
     {
         if (currentTable() != null)
         {
-            currentTable().setPropertiesBounds(Bounds.fromAxes(leftEdge(), uWidth(), HEIGHT_INSET, uHeight() - 22));
+            currentTable().setBounds(Bounds.fromAxes(leftEdge(), uWidth(), HEIGHT_INSET, uHeight() - 22));
         }
         super.initGui();
 

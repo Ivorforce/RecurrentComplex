@@ -14,6 +14,7 @@ import ivorius.reccomplex.gui.table.datasource.TableDataSourceList;
 import ivorius.reccomplex.world.gen.feature.structure.StructureRegistry;
 import ivorius.reccomplex.world.gen.feature.structure.generic.gentypes.GenerationInfo;
 
+import javax.annotation.Nonnull;
 import java.util.List;
 
 /**
@@ -49,5 +50,12 @@ public class TableDataSourceStructureGenerationInfoList extends TableDataSourceL
     public TableDataSource editEntryDataSource(GenerationInfo entry)
     {
         return entry.tableDataSource(navigator, tableDelegate);
+    }
+
+    @Nonnull
+    @Override
+    public String title()
+    {
+        return "Generation Infos";
     }
 }

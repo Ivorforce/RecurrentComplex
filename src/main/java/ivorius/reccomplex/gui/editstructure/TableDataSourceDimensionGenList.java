@@ -17,6 +17,8 @@ import ivorius.reccomplex.utils.presets.PresettedList;
 import net.minecraft.util.text.TextFormatting;
 import org.apache.commons.lang3.StringUtils;
 
+import javax.annotation.Nonnull;
+
 /**
  * Created by lukas on 04.06.14.
  */
@@ -52,5 +54,12 @@ public class TableDataSourceDimensionGenList extends TableDataSourceSegmented
                 return new TableDataSourceDimensionGen(entry, tableDelegate);
             }
         });
+    }
+
+    @Nonnull
+    @Override
+    public String title()
+    {
+        return "Dimensions";
     }
 }

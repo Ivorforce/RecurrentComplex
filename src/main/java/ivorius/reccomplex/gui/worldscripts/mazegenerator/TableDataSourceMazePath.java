@@ -20,6 +20,7 @@ import ivorius.reccomplex.world.gen.feature.structure.generic.maze.SavedMazePath
 import ivorius.reccomplex.world.gen.feature.structure.generic.maze.SavedMazePathConnection;
 import net.minecraft.util.EnumFacing;
 
+import javax.annotation.Nonnull;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -78,6 +79,13 @@ public class TableDataSourceMazePath extends TableDataSourceSegmented
         int offset = side.getFrontOffsetX() + side.getFrontOffsetY() + side.getFrontOffsetZ();
 
         return new SavedMazePathConnection(pathDim, new MazeRoom(room[0], room[1], room[2]), offset > 0, ConnectorStrategy.DEFAULT_PATH);
+    }
+
+    @Nonnull
+    @Override
+    public String title()
+    {
+        return "Path";
     }
 
     @Override

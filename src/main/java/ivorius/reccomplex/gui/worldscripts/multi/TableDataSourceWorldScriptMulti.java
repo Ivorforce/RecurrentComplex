@@ -10,7 +10,10 @@ import ivorius.reccomplex.gui.TableDataSourceExpression;
 import ivorius.reccomplex.gui.table.datasource.TableDataSourceSegmented;
 import ivorius.reccomplex.gui.table.TableDelegate;
 import ivorius.reccomplex.gui.table.TableNavigator;
+import ivorius.reccomplex.gui.worldscripts.TableDataSourceWorldScript;
 import ivorius.reccomplex.world.gen.script.WorldScriptMulti;
+
+import javax.annotation.Nonnull;
 
 /**
  * Created by lukas on 06.09.16.
@@ -22,7 +25,8 @@ public class TableDataSourceWorldScriptMulti extends TableDataSourceSegmented
     public TableDataSourceWorldScriptMulti(WorldScriptMulti script, TableDelegate delegate, TableNavigator navigator)
     {
         this.script = script;
-        addManagedSegment(0, TableDataSourceExpression.constructDefault(IvTranslations.get("reccomplex.worldscript.multi.condition"), script.environmentMatcher, null));
-        addManagedSegment(1, new TableDataSourceWorldScriptList(script.scripts, delegate, navigator));
+        addManagedSegment(0, new TableDataSourceWorldScript(script));
+        addManagedSegment(1, TableDataSourceExpression.constructDefault(IvTranslations.get("reccomplex.worldscript.multi.condition"), script.environmentMatcher, null));
+        addManagedSegment(2, new TableDataSourceWorldScriptList(script.scripts, delegate, navigator));
     }
 }

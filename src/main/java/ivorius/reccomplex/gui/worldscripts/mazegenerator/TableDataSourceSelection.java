@@ -11,6 +11,7 @@ import ivorius.reccomplex.gui.table.datasource.TableDataSourceList;
 import ivorius.reccomplex.world.gen.feature.structure.generic.Selection;
 import net.minecraft.util.text.TextFormatting;
 
+import javax.annotation.Nonnull;
 import java.util.Arrays;
 
 /**
@@ -48,4 +49,10 @@ public class TableDataSourceSelection extends TableDataSourceList<Selection.Area
         return new TableDataSourceSelectionArea(entry, dimensions, showIdentifier);
     }
 
+    @Nonnull
+    @Override
+    public String title()
+    {
+        return "Area List";
+    }
 }

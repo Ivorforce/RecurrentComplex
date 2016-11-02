@@ -19,6 +19,8 @@ import net.minecraft.nbt.JsonToNBT;
 import net.minecraft.nbt.NBTException;
 import net.minecraft.nbt.NBTTagCompound;
 
+import javax.annotation.Nonnull;
+
 /**
  * Created by lukas on 05.06.14.
  */
@@ -52,6 +54,13 @@ public class TableDataSourceWeightedBlockState extends TableDataSourceSegmented
         }
 
         return GuiValidityStateIndicator.State.INVALID;
+    }
+
+    @Nonnull
+    @Override
+    public String title()
+    {
+        return weightedBlockState.state.getBlock().getLocalizedName();
     }
 
     @Override

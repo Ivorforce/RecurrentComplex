@@ -15,6 +15,7 @@ import ivorius.reccomplex.world.gen.feature.structure.generic.maze.SavedMazePath
 import ivorius.reccomplex.world.gen.feature.structure.generic.maze.SavedMazeReachability;
 import ivorius.ivtoolkit.tools.IvTranslations;
 
+import javax.annotation.Nonnull;
 import java.util.List;
 import java.util.Set;
 
@@ -73,5 +74,12 @@ public class TableDataSourceMazeReachability extends TableDataSourceSegmented
     public void setTableNavigator(TableNavigator tableNavigator)
     {
         this.tableNavigator = tableNavigator;
+    }
+
+    @Nonnull
+    @Override
+    public String title()
+    {
+        return "Reachability";
     }
 }

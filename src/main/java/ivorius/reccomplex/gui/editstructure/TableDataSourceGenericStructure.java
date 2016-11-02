@@ -19,6 +19,8 @@ import ivorius.reccomplex.world.gen.feature.structure.StructureRegistry;
 import ivorius.reccomplex.world.gen.feature.structure.generic.GenericStructureInfo;
 import ivorius.reccomplex.utils.SaveDirectoryData;
 
+import javax.annotation.Nonnull;
+
 /**
  * Created by lukas on 05.06.14.
  */
@@ -105,6 +107,13 @@ public class TableDataSourceGenericStructure extends TableDataSourceSegmented
     public void setNavigator(TableNavigator navigator)
     {
         this.navigator = navigator;
+    }
+
+    @Override
+    @Nonnull
+    public String title()
+    {
+        return "Generic Structure";
     }
 
     @Override

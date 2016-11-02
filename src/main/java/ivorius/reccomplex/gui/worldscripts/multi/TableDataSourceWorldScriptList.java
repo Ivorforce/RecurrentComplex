@@ -14,6 +14,7 @@ import ivorius.reccomplex.world.gen.script.WorldScript;
 import ivorius.reccomplex.world.gen.script.WorldScriptRegistry;
 import org.apache.commons.lang3.StringUtils;
 
+import javax.annotation.Nonnull;
 import java.util.List;
 
 /**
@@ -49,5 +50,12 @@ public class TableDataSourceWorldScriptList extends TableDataSourceList<WorldScr
     public List<TableCellButton> getAddActions()
     {
         return TableDataSourcePresettedList.addActions(WorldScriptRegistry.INSTANCE.allIDs(), "reccomplex.worldscript.", canEditList());
+    }
+
+    @Nonnull
+    @Override
+    public String title()
+    {
+        return "Scripts";
     }
 }

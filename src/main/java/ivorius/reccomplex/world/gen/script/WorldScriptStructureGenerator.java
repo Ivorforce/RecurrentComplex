@@ -15,7 +15,7 @@ import ivorius.reccomplex.RCConfig;
 import ivorius.reccomplex.gui.table.datasource.TableDataSource;
 import ivorius.reccomplex.gui.table.TableDelegate;
 import ivorius.reccomplex.gui.table.TableNavigator;
-import ivorius.reccomplex.gui.worldscripts.structuregenerator.TableDataSourceStructureGenerator;
+import ivorius.reccomplex.gui.worldscripts.structuregenerator.TableDataSourceWorldScriptStructureGenerator;
 import ivorius.reccomplex.world.gen.feature.structure.*;
 import ivorius.reccomplex.world.gen.feature.structure.generic.gentypes.ListGenerationInfo;
 import ivorius.reccomplex.utils.NBTStorable;
@@ -269,7 +269,7 @@ public class WorldScriptStructureGenerator implements WorldScript<WorldScriptStr
     @Override
     public TableDataSource tableDataSource(TableNavigator navigator, TableDelegate tableDelegate)
     {
-        return new TableDataSourceStructureGenerator(this, navigator, tableDelegate);
+        return new TableDataSourceWorldScriptStructureGenerator(this, navigator, tableDelegate);
     }
 
     public static class InstanceData implements NBTStorable

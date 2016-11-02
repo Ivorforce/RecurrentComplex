@@ -18,6 +18,7 @@ import ivorius.reccomplex.world.gen.feature.structure.generic.maze.rules.saved.M
 import ivorius.ivtoolkit.tools.IvTranslations;
 import net.minecraft.util.text.TextFormatting;
 
+import javax.annotation.Nonnull;
 import java.util.List;
 
 /**
@@ -25,7 +26,6 @@ import java.util.List;
  */
 public class TableDataSourceMazeRuleConnect extends TableDataSourceSegmented
 {
-
     private final MazeRuleConnect rule;
 
     public TableDataSourceMazeRuleConnect(MazeRuleConnect rule, TableDelegate tableDelegate, TableNavigator navigator, List<IntegerRange> bounds)
@@ -39,6 +39,13 @@ public class TableDataSourceMazeRuleConnect extends TableDataSourceSegmented
         TableCellTitle endTitle = new TableCellTitle("", IvTranslations.get("reccomplex.mazerule.connect.end"));
         addManagedSegment(3, new TableDataSourcePreloaded(new TitledCell(endTitle).withTitleTooltip(IvTranslations.formatLines("reccomplex.mazerule.connect.end.tooltip"))));
         addManagedSegment(4, new TableDataSourceMazePathList(rule.end, tableDelegate, navigator, bounds));
+    }
+
+    @Nonnull
+    @Override
+    public String title()
+    {
+        return "Connect";
     }
 
     @Override

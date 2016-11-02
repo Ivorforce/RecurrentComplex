@@ -41,6 +41,13 @@ public class TableDataSourceMazeRoom extends TableDataSourceSegmented
         this.titles = ImmutableList.copyOf(titles);
     }
 
+    @Nonnull
+    @Override
+    public String title()
+    {
+        return "Room";
+    }
+
     @Override
     public int numberOfSegments()
     {

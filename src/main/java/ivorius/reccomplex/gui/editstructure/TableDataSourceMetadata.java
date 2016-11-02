@@ -12,6 +12,8 @@ import ivorius.reccomplex.gui.table.cell.TitledCell;
 import ivorius.reccomplex.gui.table.datasource.TableDataSourceSegmented;
 import ivorius.reccomplex.world.gen.feature.structure.generic.Metadata;
 
+import javax.annotation.Nonnull;
+
 /**
  * Created by lukas on 22.02.15.
  */
@@ -32,6 +34,13 @@ public class TableDataSourceMetadata extends TableDataSourceSegmented
     public void setMetadata(Metadata metadata)
     {
         this.metadata = metadata;
+    }
+
+    @Nonnull
+    @Override
+    public String title()
+    {
+        return "Metadata";
     }
 
     @Override

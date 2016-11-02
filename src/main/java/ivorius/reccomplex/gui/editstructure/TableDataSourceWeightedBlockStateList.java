@@ -19,6 +19,8 @@ import net.minecraft.block.Block;
 import net.minecraft.init.Blocks;
 import org.apache.commons.lang3.StringUtils;
 
+import javax.annotation.Nonnull;
+
 /**
  * Created by lukas on 04.06.14.
  */
@@ -56,4 +58,10 @@ public class TableDataSourceWeightedBlockStateList extends TableDataSourceSegmen
         });
     }
 
+    @Nonnull
+    @Override
+    public String title()
+    {
+        return "Blocks";
+    }
 }

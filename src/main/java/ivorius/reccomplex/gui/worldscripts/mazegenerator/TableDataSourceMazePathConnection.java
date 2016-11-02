@@ -11,6 +11,7 @@ import ivorius.reccomplex.gui.table.datasource.TableDataSourceSegmented;
 import ivorius.reccomplex.world.gen.feature.structure.generic.maze.SavedMazePathConnection;
 import ivorius.ivtoolkit.tools.IvTranslations;
 
+import javax.annotation.Nonnull;
 import java.util.List;
 
 /**
@@ -22,5 +23,12 @@ public class TableDataSourceMazePathConnection extends TableDataSourceSegmented
     {
         addManagedSegment(0, new TableDataSourceConnector(mazePath.connector, IvTranslations.get("reccomplex.maze.connector")));
         addManagedSegment(1, new TableDataSourceMazePath(mazePath.path, bounds, tableDelegate));
+    }
+
+    @Nonnull
+    @Override
+    public String title()
+    {
+        return "Paths";
     }
 }

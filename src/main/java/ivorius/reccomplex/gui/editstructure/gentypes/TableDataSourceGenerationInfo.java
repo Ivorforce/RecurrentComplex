@@ -13,6 +13,8 @@ import ivorius.reccomplex.gui.table.datasource.TableDataSourceSegmented;
 import ivorius.reccomplex.world.gen.feature.structure.StructureInfos;
 import ivorius.reccomplex.world.gen.feature.structure.generic.gentypes.GenerationInfo;
 
+import javax.annotation.Nonnull;
+
 /**
  * Created by lukas on 26.03.15.
  */
@@ -26,6 +28,13 @@ public class TableDataSourceGenerationInfo extends TableDataSourceSegmented
     {
         this.genInfo = genInfo;
         this.delegate = delegate;
+    }
+
+    @Nonnull
+    @Override
+    public String title()
+    {
+        return genInfo.displayString();
     }
 
     @Override

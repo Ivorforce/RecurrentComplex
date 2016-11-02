@@ -19,6 +19,7 @@ import ivorius.reccomplex.gui.worldscripts.mazegenerator.TableDataSourceMazePath
 import ivorius.reccomplex.world.gen.feature.structure.generic.maze.SavedMazePath;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 
+import javax.annotation.Nonnull;
 import java.util.List;
 
 /**
@@ -65,5 +66,12 @@ public class TableDataSourcePathConnectionList extends TableDataSourceList<Immut
                 new TableDataSourcePreloaded(new TitledCell(new TableCellTitle("", IvTranslations.get("reccomplex.gui.destination")))),
                 new TableDataSourceMazePath(pair.getRight(), bounds, tableDelegate)
         );
+    }
+
+    @Nonnull
+    @Override
+    public String title()
+    {
+        return "Connections";
     }
 }

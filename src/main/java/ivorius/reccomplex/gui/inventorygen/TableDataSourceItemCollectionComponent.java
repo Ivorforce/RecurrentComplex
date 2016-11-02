@@ -24,6 +24,8 @@ import ivorius.reccomplex.world.storage.loot.GenericItemCollectionRegistry;
 import ivorius.reccomplex.world.storage.loot.WeightedItemCollectionRegistry;
 import net.minecraft.entity.player.EntityPlayer;
 
+import javax.annotation.Nonnull;
+
 /**
  * Created by lukas on 27.08.16.
  */
@@ -64,6 +66,13 @@ public class TableDataSourceItemCollectionComponent extends TableDataSourceSegme
     public void setSaveDirectoryData(SaveDirectoryData saveDirectoryData)
     {
         this.saveDirectoryData = saveDirectoryData;
+    }
+
+    @Nonnull
+    @Override
+    public String title()
+    {
+        return "Item Generation Component";
     }
 
     @Override

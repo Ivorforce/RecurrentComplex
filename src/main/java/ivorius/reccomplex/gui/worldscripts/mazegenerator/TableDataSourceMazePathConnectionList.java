@@ -16,6 +16,7 @@ import ivorius.reccomplex.gui.table.TableNavigator;
 import ivorius.reccomplex.world.gen.feature.structure.generic.maze.ConnectorStrategy;
 import ivorius.reccomplex.world.gen.feature.structure.generic.maze.SavedMazePathConnection;
 
+import javax.annotation.Nonnull;
 import java.util.Arrays;
 import java.util.List;
 
@@ -49,5 +50,12 @@ public class TableDataSourceMazePathConnectionList extends TableDataSourceList<S
     public TableDataSource editEntryDataSource(SavedMazePathConnection entry)
     {
         return new TableDataSourceMazePathConnection(entry, bounds, tableDelegate);
+    }
+
+    @Nonnull
+    @Override
+    public String title()
+    {
+        return "Paths";
     }
 }

@@ -15,6 +15,8 @@ import ivorius.reccomplex.gui.worldscripts.multi.TableDataSourceWorldScriptList;
 import ivorius.reccomplex.gui.worldscripts.multi.TableDataSourceWorldScriptMulti;
 import ivorius.reccomplex.world.gen.script.WorldScriptMulti;
 
+import javax.annotation.Nonnull;
+
 /**
  * Created by lukas on 06.09.16.
  */
@@ -26,5 +28,12 @@ public class TableDataSourceScriptBlock extends TableDataSourceSegmented
     {
         this.script = script;
         addManagedSegment(0, new TableDataSourceWorldScriptMulti(script.script, delegate, navigator));
+    }
+
+    @Nonnull
+    @Override
+    public String title()
+    {
+        return "Script Block";
     }
 }

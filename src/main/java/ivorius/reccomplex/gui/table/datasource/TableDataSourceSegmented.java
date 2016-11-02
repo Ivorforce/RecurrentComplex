@@ -12,6 +12,7 @@ import gnu.trove.set.TIntSet;
 import ivorius.reccomplex.gui.table.GuiTable;
 import ivorius.reccomplex.gui.table.cell.TableCell;
 
+import javax.annotation.Nonnull;
 import java.util.Arrays;
 import java.util.List;
 
@@ -50,6 +51,20 @@ public class TableDataSourceSegmented implements TableDataSource
     public TIntSet managedSections()
     {
         return managedSections.keySet();
+    }
+
+    @Nonnull
+    @Override
+    public String title()
+    {
+        for (int i : managedSections.keys())
+        {
+            String title = managedSections.get(i).title();
+            if (!title.trim().isEmpty())
+                return title;
+        }
+
+        return "";
     }
 
     @Override

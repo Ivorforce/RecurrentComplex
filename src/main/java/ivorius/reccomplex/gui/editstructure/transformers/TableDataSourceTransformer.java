@@ -13,6 +13,8 @@ import ivorius.reccomplex.gui.table.datasource.TableDataSourceSegmented;
 import ivorius.reccomplex.world.gen.feature.structure.StructureInfos;
 import ivorius.reccomplex.world.gen.feature.structure.generic.transformers.Transformer;
 
+import javax.annotation.Nonnull;
+
 /**
  * Created by lukas on 29.08.16.
  */
@@ -73,5 +75,12 @@ public class TableDataSourceTransformer extends TableDataSourceSegmented
     protected GuiValidityStateIndicator.State currentIDState()
     {
         return StructureInfos.isSimpleIDState(transformer.id());
+    }
+
+    @Nonnull
+    @Override
+    public String title()
+    {
+        return transformer.getDisplayString();
     }
 }

@@ -19,6 +19,7 @@ import ivorius.reccomplex.world.gen.feature.structure.generic.maze.*;
 import ivorius.reccomplex.world.gen.feature.structure.generic.maze.rules.saved.MazeRuleConnectAll;
 import net.minecraft.util.text.TextFormatting;
 
+import javax.annotation.Nonnull;
 import java.util.Collections;
 import java.util.List;
 import java.util.Set;
@@ -42,6 +43,13 @@ public class TableDataSourceMazeRuleConnectAll extends TableDataSourceSegmented
 
         addManagedSegment(1, new TableDataSourcePreloaded(new TitledCell(new TableCellTitle("", "Paths"))));
         addManagedSegment(3, new TableDataSourceMazePathList(rule.exits, tableDelegate, navigator, bounds));
+    }
+
+    @Nonnull
+    @Override
+    public String title()
+    {
+        return "Connect All";
     }
 
     @Override

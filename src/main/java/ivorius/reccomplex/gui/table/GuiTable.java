@@ -9,6 +9,7 @@ import gnu.trove.map.hash.TIntObjectHashMap;
 import ivorius.ivtoolkit.math.IvMathHelper;
 import ivorius.reccomplex.gui.table.cell.TableCell;
 import ivorius.reccomplex.gui.table.datasource.TableDataSource;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.client.gui.GuiButton;
@@ -30,6 +31,7 @@ public class GuiTable extends Gui
 {
     private static final ResourceLocation CREATIVE_INVENTORY_TABS = new ResourceLocation("textures/gui/container/creative_inventory/tabs.png");
 
+    public static final int TITLE_HEIGHT = 25;
     public static final int HEIGHT_PER_SLOT = 22;
     public static final int SCROLL_BAR_WIDTH = 19;
     public static final int SCROLL_BAR_MARGIN = 4;
@@ -38,7 +40,8 @@ public class GuiTable extends Gui
     private TableDelegate delegate;
     private TableDataSource dataSource;
 
-    private Bounds propertiesBounds;
+    private Bounds bounds;
+    private Bounds tableBounds;
 
     private boolean firstTime = true;
     private boolean showsScrollBar;
@@ -102,7 +105,7 @@ public class GuiTable extends Gui
         ////////
 
         int numberOfCells = dataSource.numberOfCells();
-        int supportedSlotNumber = propertiesBounds.getHeight() / HEIGHT_PER_SLOT;
+        int supportedSlotNumber = tableBounds.getHeight() / HEIGHT_PER_SLOT;
 
         if (firstTime)
         {
@@ -115,9 +118,9 @@ public class GuiTable extends Gui
 
         int roundedScrollIndex = MathHelper.floor_float(currentScroll + 0.5f);
 
-        scrollUpButton = new GuiButton(-1, propertiesBounds.getMaxX() - SCROLL_BAR_WIDTH + SCROLL_BAR_MARGIN, propertiesBounds.getMinY(), SCROLL_BAR_WIDTH - SCROLL_BAR_MARGIN, 20, TextFormatting.BOLD + "↑");
+        scrollUpButton = new GuiButton(-1, tableBounds.getMaxX() + SCROLL_BAR_MARGIN, tableBounds.getMinY(), SCROLL_BAR_WIDTH - SCROLL_BAR_MARGIN, 20, TextFormatting.BOLD + "↑");
         delegate.addButtonToTable(scrollUpButton);
-        scrollDownButton = new GuiButton(-1, propertiesBounds.getMaxX() - SCROLL_BAR_WIDTH + SCROLL_BAR_MARGIN, propertiesBounds.getMaxY() - 20, SCROLL_BAR_WIDTH - SCROLL_BAR_MARGIN, 20, TextFormatting.BOLD + "↓");
+        scrollDownButton = new GuiButton(-1, tableBounds.getMaxX() + SCROLL_BAR_MARGIN, tableBounds.getMaxY() - 20, SCROLL_BAR_WIDTH - SCROLL_BAR_MARGIN, 20, TextFormatting.BOLD + "↓");
         delegate.addButtonToTable(scrollDownButton);
 
         boolean needsUpScroll = canScrollUp(numberOfCells);
@@ -130,8 +133,8 @@ public class GuiTable extends Gui
         scrollUpButton.visible = showsScrollBar;
         scrollDownButton.visible = showsScrollBar;
 
-        int baseY = propertiesBounds.getMinY() + (showsScrollBar ? 0 : (propertiesBounds.getHeight() - numberOfCells * HEIGHT_PER_SLOT) / 2)
-                + (propertiesBounds.getHeight() - supportedSlotNumber * HEIGHT_PER_SLOT) / 2;
+        int baseY = tableBounds.getMinY() + (showsScrollBar ? 0 : (tableBounds.getHeight() - numberOfCells * HEIGHT_PER_SLOT) / 2)
+                + (tableBounds.getHeight() - supportedSlotNumber * HEIGHT_PER_SLOT) / 2;
         for (int index = 0; index < supportedSlotNumber && roundedScrollIndex + index < numberOfCells; index++)
         {
             int cellIndex = roundedScrollIndex + index;
@@ -148,7 +151,7 @@ public class GuiTable extends Gui
 
             int cellY = index * HEIGHT_PER_SLOT + 1;
 
-            cell.setBounds(Bounds.fromAxes(propertiesBounds.getMinX(), propertiesBounds.getWidth() - SCROLL_BAR_WIDTH, baseY + cellY, HEIGHT_PER_SLOT - 2));
+            cell.setBounds(Bounds.fromAxes(tableBounds.getMinX(), tableBounds.getWidth(), baseY + cellY, HEIGHT_PER_SLOT - 2));
             cell.setHidden(false);
             cell.initGui(this);
 
@@ -161,6 +164,11 @@ public class GuiTable extends Gui
 
     public void drawScreen(GuiScreen screen, int mouseX, int mouseY, float partialTicks)
     {
+        GlStateManager.color(1, 1, 1);
+        GlStateManager.scale(2, 2, 2);
+        drawString(Minecraft.getMinecraft().fontRendererObj, dataSource.title(), bounds.getMinX() / 2, bounds.getMinY() / 2 + 2, 0xffffffff);
+        GlStateManager.scale(0.5f, 0.5f, 0.5f);
+
         currentCells.stream().filter(cell -> !cell.isHidden()).forEach(cell -> cell.draw(this, mouseX, mouseY, partialTicks));
         currentCells.stream().filter(cell -> !cell.isHidden()).forEach(cell -> cell.drawFloating(this, mouseX, mouseY, partialTicks));
 
@@ -169,7 +177,7 @@ public class GuiTable extends Gui
             screen.mc.getTextureManager().bindTexture(CREATIVE_INVENTORY_TABS);
             GlStateManager.color(1, 1, 1);
 
-            this.drawTexturedModalRect(propertiesBounds.getMaxX() - SCROLL_BAR_WIDTH + SCROLL_BAR_MARGIN + 1, propertiesBounds.getMinY() + 20 + (this.currentScroll - getMinScroll()) / (getMaxScroll() - getMinScroll()) * (propertiesBounds.getHeight() - 40 - 15), 232, 0, 12, 15);
+            this.drawTexturedModalRect(tableBounds.getMaxX() + SCROLL_BAR_MARGIN + 1, tableBounds.getMinY() + 20 + (this.currentScroll - getMinScroll()) / (getMaxScroll() - getMinScroll()) * (tableBounds.getHeight() - 40 - 15), 232, 0, 12, 15);
         }
     }
 
@@ -230,14 +238,20 @@ public class GuiTable extends Gui
         buttonMap.put(button, new ImmutablePair<>(property, id));
     }
 
-    public Bounds getPropertiesBounds()
+    public Bounds getTableBounds()
     {
-        return propertiesBounds;
+        return tableBounds;
     }
 
-    public void setPropertiesBounds(Bounds propertiesBounds)
+    public Bounds getBounds()
     {
-        this.propertiesBounds = propertiesBounds;
+        return bounds;
+    }
+
+    public void setBounds(Bounds bounds)
+    {
+        this.bounds = bounds;
+        this.tableBounds = Bounds.fromSize(bounds.getMinX(), bounds.getMinY() + TITLE_HEIGHT, bounds.getWidth() - SCROLL_BAR_WIDTH, bounds.getHeight() - TITLE_HEIGHT);
     }
 
     public void tryScrollUp()
@@ -260,7 +274,7 @@ public class GuiTable extends Gui
         if (hideScrollbarIfUnnecessary)
             return 0;
 
-        int supportedSlots = propertiesBounds.getHeight() / HEIGHT_PER_SLOT;
+        int supportedSlots = tableBounds.getHeight() / HEIGHT_PER_SLOT;
         return Math.min(0, numberOfCells - supportedSlots);
     }
 
@@ -271,7 +285,7 @@ public class GuiTable extends Gui
 
     protected float getMaxScroll(int numberOfCells)
     {
-        int supportedSlots = propertiesBounds.getHeight() / HEIGHT_PER_SLOT;
+        int supportedSlots = tableBounds.getHeight() / HEIGHT_PER_SLOT;
         return Math.max(0, numberOfCells - supportedSlots);
     }
 
@@ -348,14 +362,14 @@ public class GuiTable extends Gui
                 i1 += 2 + (lines.size() - 1) * 10;
             }
 
-            if (j2 + k > this.propertiesBounds.getWidth())
+            if (j2 + k > this.bounds.getWidth())
             {
                 j2 -= 28 + k;
             }
 
-            if (k2 + i1 + 6 > this.propertiesBounds.getHeight())
+            if (k2 + i1 + 6 > this.bounds.getHeight())
             {
-                k2 = this.propertiesBounds.getHeight() - i1 - 6;
+                k2 = this.bounds.getHeight() - i1 - 6;
             }
 
             this.zLevel = 300.0F;

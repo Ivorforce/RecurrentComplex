@@ -13,6 +13,7 @@ import ivorius.reccomplex.gui.TableDirections;
 import ivorius.reccomplex.gui.table.*;
 import ivorius.reccomplex.gui.table.cell.*;
 import ivorius.reccomplex.gui.table.datasource.TableDataSourceSegmented;
+import ivorius.reccomplex.gui.worldscripts.TableDataSourceWorldScript;
 import ivorius.reccomplex.world.gen.script.WorldScriptStructureGenerator;
 import ivorius.reccomplex.world.gen.feature.structure.StructureRegistry;
 import joptsimple.internal.Strings;
@@ -26,20 +27,21 @@ import static ivorius.reccomplex.gui.table.cell.TableCellEnum.Option;
 /**
  * Created by lukas on 05.06.14.
  */
-public class TableDataSourceStructureGenerator extends TableDataSourceSegmented
+public class TableDataSourceWorldScriptStructureGenerator extends TableDataSourceSegmented
 {
     protected WorldScriptStructureGenerator script;
 
     protected TableNavigator tableNavigator;
     protected TableDelegate tableDelegate;
 
-    public TableDataSourceStructureGenerator(WorldScriptStructureGenerator script, TableNavigator tableNavigator, TableDelegate tableDelegate)
+    public TableDataSourceWorldScriptStructureGenerator(WorldScriptStructureGenerator script, TableNavigator tableNavigator, TableDelegate tableDelegate)
     {
         this.script = script;
         this.tableNavigator = tableNavigator;
         this.tableDelegate = tableDelegate;
 
-        addManagedSegment(2, new TableDataSourceBlockPos(script.getStructureShift(), script::setStructureShift, null, null, null,
+        addManagedSegment(0, new TableDataSourceWorldScript(script));
+        addManagedSegment(3, new TableDataSourceBlockPos(script.getStructureShift(), script::setStructureShift, null, null, null,
                 IvTranslations.get("reccomplex.worldscript.strucGen.shift.x"), IvTranslations.get("reccomplex.worldscript.strucGen.shift.y"), IvTranslations.get("reccomplex.worldscript.strucGen.shift.z")));
     }
 
@@ -57,17 +59,17 @@ public class TableDataSourceStructureGenerator extends TableDataSourceSegmented
     @Override
     public int numberOfSegments()
     {
-        return script.isSimpleMode() ? 4 : 4;
+        return script.isSimpleMode() ? 5 : 5;
     }
 
     @Override
     public int sizeOfSegment(int segment)
     {
-        if (segment == 0)
+        if (segment == 1)
             return 1;
-        else if (segment == 1)
+        else if (segment == 2)
             return 1;
-        else if (segment == 3)
+        else if (segment == 4)
             return script.isSimpleMode() ? 2 : 1;
 
         return super.sizeOfSegment(segment);
@@ -76,7 +78,7 @@ public class TableDataSourceStructureGenerator extends TableDataSourceSegmented
     @Override
     public TableCell cellForIndexInSegment(GuiTable table, int index, int segment)
     {
-        if (segment == 0)
+        if (segment == 1)
         {
             TableCellBoolean cell = new TableCellBoolean("simpleMode", script.isSimpleMode());
             cell.addPropertyConsumer(val -> {
@@ -85,7 +87,7 @@ public class TableDataSourceStructureGenerator extends TableDataSourceSegmented
             });
             return new TitledCell(IvTranslations.get("reccomplex.worldscript.strucGen.mode.simple"), cell);
         }
-        else if (segment == 1)
+        else if (segment == 2)
         {
             if (script.isSimpleMode())
             {
@@ -106,7 +108,7 @@ public class TableDataSourceStructureGenerator extends TableDataSourceSegmented
                 return new TitledCell(IvTranslations.get("reccomplex.worldscript.strucGen.mode.list.id"), cell);
             }
         }
-        else if (segment == 3)
+        else if (segment == 4)
         {
             if (script.isSimpleMode())
             {

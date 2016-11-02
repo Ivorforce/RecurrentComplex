@@ -14,6 +14,7 @@ import ivorius.reccomplex.world.gen.feature.structure.StructureRegistry;
 import ivorius.reccomplex.world.gen.feature.structure.generic.transformers.Transformer;
 import org.apache.commons.lang3.StringUtils;
 
+import javax.annotation.Nonnull;
 import java.util.List;
 
 /**
@@ -50,5 +51,12 @@ public class TableDataSourceTransformerList extends TableDataSourceList<Transfor
     public List<TableCellButton> getAddActions()
     {
         return TableDataSourcePresettedList.addActions(StructureRegistry.TRANSFORMERS.allIDs(), "reccomplex.transformer.", canEditList());
+    }
+
+    @Nonnull
+    @Override
+    public String title()
+    {
+        return "Transformers";
     }
 }

@@ -13,6 +13,8 @@ import ivorius.reccomplex.gui.worldscripts.mazegenerator.reachability.TableDataS
 import ivorius.reccomplex.world.gen.feature.structure.generic.maze.SavedMazeComponent;
 import ivorius.reccomplex.world.gen.feature.structure.generic.maze.SavedMazeReachability;
 
+import javax.annotation.Nonnull;
+
 /**
  * Created by lukas on 26.04.15.
  */
@@ -49,6 +51,13 @@ public class TableDataSourceMazeComponent extends TableDataSourceSegmented
                 .enabled(() -> component.rooms.size() > 0)
                 .buildDataSource(IvTranslations.get("reccomplex.generationInfo.mazeComponent.reachability"), IvTranslations.formatLines("reccomplex.reachability.tooltip")));
 
+    }
+
+    @Nonnull
+    @Override
+    public String title()
+    {
+        return "Maze Component";
     }
 
     @Override

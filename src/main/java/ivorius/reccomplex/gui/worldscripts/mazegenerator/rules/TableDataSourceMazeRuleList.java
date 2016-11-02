@@ -16,6 +16,7 @@ import ivorius.reccomplex.world.gen.feature.structure.generic.maze.rules.MazeRul
 import ivorius.reccomplex.world.gen.feature.structure.generic.maze.rules.MazeRuleRegistry;
 import org.apache.commons.lang3.StringUtils;
 
+import javax.annotation.Nonnull;
 import java.util.List;
 
 /**
@@ -56,5 +57,12 @@ public class TableDataSourceMazeRuleList extends TableDataSourceList<MazeRule, L
     public List<TableCellButton> getAddActions()
     {
         return TableDataSourcePresettedList.addActions(MazeRuleRegistry.INSTANCE.allIDs(), "reccomplex.mazerule.", canEditList());
+    }
+
+    @Nonnull
+    @Override
+    public String title()
+    {
+        return "Rules";
     }
 }

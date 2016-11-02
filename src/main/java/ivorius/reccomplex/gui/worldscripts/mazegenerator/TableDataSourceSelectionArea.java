@@ -13,6 +13,8 @@ import ivorius.reccomplex.gui.table.datasource.TableDataSourceSegmented;
 import ivorius.reccomplex.world.gen.feature.structure.generic.Selection;
 import net.minecraft.util.text.TextFormatting;
 
+import javax.annotation.Nonnull;
+
 /**
 * Created by lukas on 08.10.14.
 */
@@ -28,6 +30,13 @@ public class TableDataSourceSelectionArea extends TableDataSourceSegmented
         this.area = area;
         this.dimensions = dimensions;
         this.showIdentifier = showIdentifier;
+    }
+
+    @Nonnull
+    @Override
+    public String title()
+    {
+        return "Area";
     }
 
     @Override

@@ -254,6 +254,12 @@ public class GuiEditInventoryGenItems extends GuiContainer implements InventoryW
     }
 
     @Override
+    public boolean doesGuiPauseGame()
+    {
+        return true;
+    }
+
+    @Override
     protected void drawGuiContainerBackgroundLayer(float var1, int mouseX, int mouseY)
     {
         mc.getTextureManager().bindTexture(textureBackground);

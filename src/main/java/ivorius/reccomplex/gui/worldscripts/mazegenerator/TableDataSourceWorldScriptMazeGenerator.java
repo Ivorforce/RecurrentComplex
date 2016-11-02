@@ -10,6 +10,7 @@ import ivorius.reccomplex.gui.TableDataSourceBlockPos;
 import ivorius.reccomplex.gui.table.*;
 import ivorius.reccomplex.gui.table.cell.*;
 import ivorius.reccomplex.gui.table.datasource.TableDataSourceSegmented;
+import ivorius.reccomplex.gui.worldscripts.TableDataSourceWorldScript;
 import ivorius.reccomplex.gui.worldscripts.mazegenerator.rules.TableDataSourceMazeRuleList;
 import ivorius.reccomplex.world.gen.script.WorldScriptMazeGenerator;
 
@@ -31,13 +32,14 @@ public class TableDataSourceWorldScriptMazeGenerator extends TableDataSourceSegm
         this.delegate = delegate;
         this.navigator = navigator;
 
-        addManagedSegment(1, TableCellMultiBuilder.create(navigator, delegate)
+        addManagedSegment(0, new TableDataSourceWorldScript(script));
+        addManagedSegment(2, TableCellMultiBuilder.create(navigator, delegate)
                 .addNavigation(() -> new TableDataSourceMazeComponent(script.mazeComponent, false, navigator, delegate)
                 ).buildDataSource(IvTranslations.get("reccomplex.maze")));
-        addManagedSegment(2, TableCellMultiBuilder.create(navigator, delegate)
+        addManagedSegment(3, TableCellMultiBuilder.create(navigator, delegate)
                 .addNavigation(() -> new TableDataSourceMazeRuleList(script.rules, delegate, navigator, script.mazeComponent.exitPaths, script.mazeComponent.rooms.bounds())
                 ).buildDataSource(IvTranslations.get("reccomplex.worldscript.mazeGen.rules")));
-        addManagedSegment(3, new TableDataSourceBlockPos(script.getStructureShift(), script::setStructureShift, null, null, null,
+        addManagedSegment(4, new TableDataSourceBlockPos(script.getStructureShift(), script::setStructureShift, null, null, null,
                 IvTranslations.get("reccomplex.worldscript.mazeGen.shift.x"), IvTranslations.get("reccomplex.worldscript.mazeGen.shift.y"), IvTranslations.get("reccomplex.worldscript.mazeGen.shift.z")));
     }
 
@@ -74,7 +76,7 @@ public class TableDataSourceWorldScriptMazeGenerator extends TableDataSourceSegm
     @Override
     public int numberOfSegments()
     {
-        return 5;
+        return 6;
     }
 
     @Override
@@ -82,9 +84,9 @@ public class TableDataSourceWorldScriptMazeGenerator extends TableDataSourceSegm
     {
         switch (segment)
         {
-            case 0:
+            case 1:
                 return 1;
-            case 4:
+            case 5:
                 return 3;
             default:
                 return super.sizeOfSegment(segment);
@@ -96,13 +98,13 @@ public class TableDataSourceWorldScriptMazeGenerator extends TableDataSourceSegm
     {
         switch (segment)
         {
-            case 0:
+            case 1:
             {
                 TableCellString cell = new TableCellString("mazeID", script.getMazeID());
                 cell.addPropertyConsumer(script::setMazeID);
                 return new TitledCell(IvTranslations.get("reccomplex.maze.id"), cell);
             }
-            case 4:
+            case 5:
                 switch (index)
                 {
                     case 0:

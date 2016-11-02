@@ -62,20 +62,18 @@ public class PresettedObject<T>
 
     public boolean setPreset(@Nullable String preset)
     {
-        boolean has = preset != null && presetRegistry.has(preset);
-
-        if (!has)
+        if (preset == null || !presetRegistry.has(preset))
         {
             setToDefault();
-            RecurrentComplex.logger.warn(String.format("Failed to find %s preset: %s", presetRegistry.getRegistry().description, preset));
-        }
-        else
-        {
-            this.preset = preset;
-            t = null;
+            if (preset != null)
+                RecurrentComplex.logger.warn(String.format("Failed to find %s preset: %s", presetRegistry.getRegistry().description, preset));
+            return preset == null;
         }
 
-        return has;
+        this.preset = preset;
+        t = null;
+
+        return true;
     }
 
     public void setToCustom()

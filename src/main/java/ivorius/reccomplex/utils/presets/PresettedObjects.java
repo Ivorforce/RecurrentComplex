@@ -18,7 +18,7 @@ public class PresettedObjects
 {
     public static <T> boolean read(JsonObject jsonObject, Gson gson, PresettedObject<T> object, String presetKey, String objectKey, Type type)
     {
-        if (!object.setPreset(JsonUtils.getString(jsonObject, presetKey, null)))
+        if (!jsonObject.has(presetKey) || !object.setPreset(JsonUtils.getString(jsonObject, presetKey)))
         {
             if (jsonObject.has(objectKey))
                 object.setContents(gson.fromJson(jsonObject.get(objectKey), type));

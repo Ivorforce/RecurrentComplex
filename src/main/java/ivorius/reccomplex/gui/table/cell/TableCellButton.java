@@ -5,10 +5,13 @@
 
 package ivorius.reccomplex.gui.table.cell;
 
+import ivorius.reccomplex.gui.GuiTexturedButton;
 import ivorius.reccomplex.gui.table.Bounds;
 import ivorius.reccomplex.gui.table.GuiTable;
 import net.minecraft.client.gui.GuiButton;
+import net.minecraft.util.ResourceLocation;
 
+import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -18,12 +21,14 @@ import java.util.List;
  */
 public class TableCellButton extends TableCellDefault
 {
-    private GuiButton button = null;
+    private GuiTexturedButton button = null;
 
     public String actionID;
     public String title;
     public List<String> tooltip;
     public boolean enabled = true;
+
+    public ResourceLocation texture;
 
     private List<TableCellActionListener> listeners = new ArrayList<>();
 
@@ -91,6 +96,18 @@ public class TableCellButton extends TableCellDefault
         this.enabled = enabled;
     }
 
+    public ResourceLocation getTexture()
+    {
+        return texture;
+    }
+
+    public void setTexture(ResourceLocation texture)
+    {
+        this.texture = texture;
+        if (button != null)
+            button.setTexture(texture);
+    }
+
     @Override
     public void initGui(GuiTable screen)
     {
@@ -100,7 +117,8 @@ public class TableCellButton extends TableCellDefault
 
         int buttonWidth = bounds.getWidth();
 
-        button = new GuiButton(-1, bounds.getMinX(), bounds.getMinY() + (bounds.getHeight() - 20) / 2, buttonWidth, 20, title);
+        button = new GuiTexturedButton(-1, bounds.getMinX(), bounds.getMinY() + (bounds.getHeight() - 20) / 2, buttonWidth, 20, title);
+        button.setTexture(texture);
         button.visible = !isHidden();
         button.enabled = enabled;
         screen.addButton(this, 0, button);
@@ -119,7 +137,6 @@ public class TableCellButton extends TableCellDefault
     public void buttonClicked(int buttonID)
     {
         super.buttonClicked(buttonID);
-
         for (TableCellActionListener listener : listeners)
             listener.actionPerformed(this, actionID);
     }

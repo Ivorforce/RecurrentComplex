@@ -204,7 +204,7 @@ public class GenericStructureInfo implements StructureInfo<GenericStructureInfo.
             origTileEntities.entrySet().stream().filter(entry -> entry.getValue() instanceof GeneratingTileEntity)
                     .forEach(entry -> {
                         NBTStorable teData = instanceData.tileEntities.get(entry.getKey());
-                        if (teData != null) // Otherwise it was added after prepare
+                        if (teData != null) // Otherwise it was added after prepare, or doesn't want to generate
                             ((GeneratingTileEntity) entry.getValue()).generate(context, teData);
                     });
         }
@@ -299,7 +299,10 @@ public class GenericStructureInfo implements StructureInfo<GenericStructureInfo.
                 {
                     BlockPos key = tileEntity.getPos();
                     Mover.setTileEntityPos(tileEntity, context.transform.apply(key, areaSize).add(origin));
-                    instanceData.tileEntities.put(key, (NBTStorable) ((GeneratingTileEntity) tileEntity).prepareInstanceData(context));
+                    NBTStorable tileEntityInstanceData = (NBTStorable) ((GeneratingTileEntity) tileEntity).prepareInstanceData(context);
+
+                    if (tileEntityInstanceData != null) // Otherwise, don't generate
+                        instanceData.tileEntities.put(key, tileEntityInstanceData);
                 }
             });
         }

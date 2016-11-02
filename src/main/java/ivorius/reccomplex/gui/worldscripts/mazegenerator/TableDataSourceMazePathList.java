@@ -29,8 +29,6 @@ public class TableDataSourceMazePathList extends TableDataSourceList<SavedMazePa
     {
         super(list, tableDelegate, navigator);
         this.bounds = bounds;
-        setEarlierTitle(IvTranslations.get("gui.up"));
-        setLaterTitle(IvTranslations.get("gui.down"));
     }
 
     @Override

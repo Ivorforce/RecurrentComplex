@@ -6,14 +6,14 @@
 package ivorius.reccomplex.gui.editstructure.preset;
 
 import ivorius.ivtoolkit.tools.IvTranslations;
+import ivorius.reccomplex.RecurrentComplex;
 import ivorius.reccomplex.gui.table.*;
-import ivorius.reccomplex.gui.table.cell.TableCellButton;
-import ivorius.reccomplex.gui.table.cell.TableCellMultiBuilder;
-import ivorius.reccomplex.gui.table.cell.TableCellPresetAction;
-import ivorius.reccomplex.gui.table.cell.TableElementCell;
+import ivorius.reccomplex.gui.table.cell.*;
 import ivorius.reccomplex.gui.table.datasource.TableDataSourceSegmented;
 import ivorius.reccomplex.utils.PresetRegistry;
 import ivorius.reccomplex.utils.presets.PresettedObject;
+import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.text.TextFormatting;
 
 import javax.annotation.Nonnull;
 import java.util.List;
@@ -32,8 +32,6 @@ public class TableDataSourcePresettedObject<T> extends TableDataSourceSegmented
 
     public Runnable applyPresetAction;
 
-    public boolean currentOnTop = false;
-
     public TableDataSourcePresettedObject(PresettedObject<T> object, String saverID, TableDelegate delegate, TableNavigator navigator)
     {
         this.object = object;
@@ -49,7 +47,8 @@ public class TableDataSourcePresettedObject<T> extends TableDataSourceSegmented
         if (!object.isCustom())
         {
             @SuppressWarnings("OptionalGetWithoutIsPresent")
-            TableCellButton cell = new TableCellButton("customize", "customize", IvTranslations.format("reccomplex.preset.customize", object.presetTitle().get()), true);
+            TableCellButton cell = new TableCellButton("customize", "customize", TextFormatting.AQUA + "O", true);
+            cell.setTooltip(IvTranslations.formatLines("reccomplex.preset.customize", object.presetTitle().get()));
             cell.addAction(() ->
             {
                 object.setToCustom();
@@ -62,7 +61,7 @@ public class TableDataSourcePresettedObject<T> extends TableDataSourceSegmented
         else
         {
             return TableCellMultiBuilder.create(navigator, delegate)
-                    .addNavigation(() -> IvTranslations.get("reccomplex.preset.save"), null,
+                    .addNavigation(() -> String.format("%s+", TextFormatting.GREEN), () -> IvTranslations.getLines("reccomplex.preset.save"),
                             () -> new TableDataSourceSavePreset<>(object, saverID, delegate, navigator)
                     ).enabled(() -> saverID != null).buildElement();
         }
@@ -106,7 +105,6 @@ public class TableDataSourcePresettedObject<T> extends TableDataSourceSegmented
 
     public TableDataSourcePresettedObject<T> withCurrentOnTop(boolean currentOnTop)
     {
-        this.currentOnTop = currentOnTop;
         return this;
     }
 
@@ -119,7 +117,7 @@ public class TableDataSourcePresettedObject<T> extends TableDataSourceSegmented
     @Override
     public int sizeOfSegment(int segment)
     {
-        return segment == 0 ? 2 : super.sizeOfSegment(segment);
+        return segment == 0 ? 1 : super.sizeOfSegment(segment);
     }
 
     @Override
@@ -127,10 +125,10 @@ public class TableDataSourcePresettedObject<T> extends TableDataSourceSegmented
     {
         if (segment == 0)
         {
-            if (index == (currentOnTop ? 1 : 0))
-                return getSetElement(object, delegate, getActions(), applyPresetAction);
-            else
-                return getCustomizeElement(object, saverID, delegate, navigator, applyPresetAction);
+            TableCellMulti multi = new TableCellMulti(getSetElement(object, delegate, getActions(), applyPresetAction),
+                    getCustomizeElement(object, saverID, delegate, navigator, applyPresetAction));
+            multi.setSize(0, 7);
+            return new TableElementCell(multi);
         }
 
         return super.elementForIndexInSegment(table, index, segment);

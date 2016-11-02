@@ -45,7 +45,7 @@ public class BlockSpawnScript extends Block
         {
             TileEntity tileEntity = worldIn.getTileEntity(pos);
 
-            RecurrentComplex.network.sendTo(new PacketEditTileEntity((TileEntitySpawnScript) tileEntity), (EntityPlayerMP) playerIn);
+            RecurrentComplex.network.sendTo(new PacketEditTileEntity((TileEntityScriptBlock) tileEntity), (EntityPlayerMP) playerIn);
         }
 
         return true;
@@ -58,7 +58,7 @@ public class BlockSpawnScript extends Block
     {
         TileEntity tileEntity = world.getTileEntity(pos);
         NBTTagCompound compound = new NBTTagCompound();
-        ((TileEntitySpawnScript) tileEntity).writeSyncedNBT(compound);
+        ((TileEntityScriptBlock) tileEntity).writeSyncedNBT(compound);
 
         ItemStack returnStack = new ItemStack(Item.getItemFromBlock(this));
         returnStack.setTagInfo("scriptInfo", compound);
@@ -73,7 +73,7 @@ public class BlockSpawnScript extends Block
         {
             NBTTagCompound compound = stack.getTagCompound().getCompoundTag("scriptInfo");
             TileEntity tileEntity = worldIn.getTileEntity(pos);
-            ((TileEntitySpawnScript) tileEntity).readSyncedNBT(compound);
+            ((TileEntityScriptBlock) tileEntity).readSyncedNBT(compound);
         }
     }
 
@@ -88,6 +88,6 @@ public class BlockSpawnScript extends Block
     @ParametersAreNonnullByDefault
     public TileEntity createTileEntity(World world, IBlockState state)
     {
-        return new TileEntitySpawnScript();
+        return new TileEntityScriptBlock();
     }
 }

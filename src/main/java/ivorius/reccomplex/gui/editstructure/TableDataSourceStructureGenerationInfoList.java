@@ -25,8 +25,6 @@ public class TableDataSourceStructureGenerationInfoList extends TableDataSourceL
     {
         super(list, tableDelegate, navigator);
         setUsesPresetActionForAdding(true);
-        setEarlierTitle(IvTranslations.get("gui.up"));
-        setLaterTitle(IvTranslations.get("gui.down"));
     }
 
     @Override

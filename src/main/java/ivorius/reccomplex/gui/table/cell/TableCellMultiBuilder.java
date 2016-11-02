@@ -9,6 +9,7 @@ import ivorius.ivtoolkit.tools.IvTranslations;
 import ivorius.reccomplex.gui.table.*;
 import ivorius.reccomplex.gui.table.datasource.TableDataSource;
 import ivorius.reccomplex.gui.table.datasource.TableDataSourceSupplied;
+import net.minecraft.util.ResourceLocation;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -22,7 +23,7 @@ import java.util.function.Supplier;
  */
 public class TableCellMultiBuilder
 {
-    protected final List<Supplier<String>> titles = new ArrayList<>();
+    protected final List<Supplier<Object>> titles = new ArrayList<>();
     protected final List<Supplier<List<String>>> tooltips = new ArrayList<>();
     protected final List<Runnable> actions = new ArrayList<>();
     protected final List<BooleanSupplier> enabledSuppliers = new ArrayList<>();
@@ -41,7 +42,7 @@ public class TableCellMultiBuilder
         return new TableCellMultiBuilder(navigator, delegate);
     }
 
-    public TableCellMultiBuilder addAction(Supplier<String> title, @Nullable Supplier<List<String>> tooltip, Runnable action)
+    public TableCellMultiBuilder addAction(Supplier<Object> title, @Nullable Supplier<List<String>> tooltip, Runnable action)
     {
         titles.add(title);
         tooltips.add(tooltip);
@@ -54,7 +55,7 @@ public class TableCellMultiBuilder
         return this;
     }
 
-    public TableCellMultiBuilder addNavigation(Supplier<String> title, @Nullable Supplier<List<String>> tooltip, Supplier<TableDataSource> dataSource)
+    public TableCellMultiBuilder addNavigation(Supplier<Object> title, @Nullable Supplier<List<String>> tooltip, Supplier<TableDataSource> dataSource)
     {
         titles.add(title);
         tooltips.add(tooltip);
@@ -112,7 +113,11 @@ public class TableCellMultiBuilder
 
         for (int i = 0; i < this.titles.size(); i++)
         {
-            TableCellButton cell = new TableCellButton("action." + i, "action." + i, this.titles.get(i).get());
+            Object title = this.titles.get(i).get();
+            TableCellButton cell = new TableCellButton("action." + i, "action." + i, title instanceof String ? (String) title : "");
+            if (title instanceof ResourceLocation)
+                cell.setTexture((ResourceLocation) title);
+
             int finalI = i;
             cell.addAction(() -> actions.get(finalI).run());
 

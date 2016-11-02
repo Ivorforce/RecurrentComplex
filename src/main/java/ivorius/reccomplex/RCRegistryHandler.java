@@ -166,7 +166,7 @@ public class RCRegistryHandler
         spawnScript = new BlockSpawnScript().setUnlocalizedName("spawn_script");
         spawnScript.setCreativeTab(tabStructureTools);
         register(spawnScript, "spawn_script");
-        register(TileEntitySpawnScript.class, "RCSpawnScript");
+        register(TileEntityScriptBlock.class, "RCSpawnScript");
 
         inspector = new ItemInspector().setUnlocalizedName("recinspector");
         inspector.setCreativeTab(tabStructureTools);

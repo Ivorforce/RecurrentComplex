@@ -33,10 +33,10 @@ public abstract class TableDataSourceList<T, L extends List<T>> extends TableDat
     protected TableDelegate tableDelegate;
     protected TableNavigator navigator;
 
-    protected String earlierTitle = IvTranslations.get("reccomplex.gui.earlier");
-    protected String laterTitle = IvTranslations.get("reccomplex.gui.later");
+    protected String earlierTitle = TextFormatting.BOLD + "↑";
+    protected String laterTitle = TextFormatting.BOLD + "↓";
     protected String editTitle = IvTranslations.get("reccomplex.gui.edit");
-    protected String deleteTitle = TextFormatting.RED + "-";
+    protected String deleteTitle = TextFormatting.RED + "X";
     protected String addTitle = TextFormatting.GREEN + "+";
 
     protected boolean usesPresetActionForAdding;
@@ -184,7 +184,9 @@ public abstract class TableDataSourceList<T, L extends List<T>> extends TableDat
                 });
                 cell.setId("entry" + index);
             }
-            return new TableElementCell(getDisplayString(t), new TableCellMulti(cells));
+            TableCellMulti multi = new TableCellMulti(cells);
+            multi.setSize(0, 8);
+            return new TableElementCell(getDisplayString(t), multi);
         }
 
         int addIndex = getAddIndex(segment);
@@ -248,9 +250,9 @@ public abstract class TableDataSourceList<T, L extends List<T>> extends TableDat
     {
         boolean enabled = canEditList();
         return new TableCellButton[]{
+                new TableCellButton("", "edit", getEditTitle(), enabled),
                 new TableCellButton("", "earlier", getEarlierTitle(), index > 0 && enabled),
                 new TableCellButton("", "later", getLaterTitle(), index < list.size() - 1 && enabled),
-                new TableCellButton("", "edit", getEditTitle(), enabled),
                 new TableCellButton("", "delete", getDeleteTitle(), enabled)
         };
     }

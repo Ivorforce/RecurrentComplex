@@ -52,7 +52,6 @@ public class RecurrentComplex
     @SidedProxy(clientSide = "ivorius.reccomplex.client.ClientProxy", serverSide = "ivorius.reccomplex.server.ServerProxy")
     public static RCProxy proxy;
 
-    public static String filePathTexturesFull = "reccomplex:textures/mod/";
     public static String filePathTextures = "textures/mod/";
     public static String textureBase = "reccomplex:";
 

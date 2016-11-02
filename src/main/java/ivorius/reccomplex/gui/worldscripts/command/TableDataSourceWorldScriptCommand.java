@@ -22,8 +22,6 @@ public class TableDataSourceWorldScriptCommand extends TableDataSourceList<World
     public TableDataSourceWorldScriptCommand(WorldScriptCommand script, TableDelegate tableDelegate, TableNavigator navigator)
     {
         super(script.entries, tableDelegate, navigator);
-        setEarlierTitle(IvTranslations.get("gui.up"));
-        setLaterTitle(IvTranslations.get("gui.down"));
     }
 
     @Override

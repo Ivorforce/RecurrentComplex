@@ -8,7 +8,7 @@ package ivorius.reccomplex.block;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import ivorius.ivtoolkit.tools.NBTCompoundObjects;
-import ivorius.reccomplex.gui.worldscripts.multi.GuiEditSpawnScript;
+import ivorius.reccomplex.gui.worldscripts.GuiEditScriptBlock;
 import ivorius.reccomplex.world.gen.script.WorldScriptMulti;
 import ivorius.reccomplex.world.gen.feature.structure.StructureLoadContext;
 import ivorius.reccomplex.world.gen.feature.structure.StructurePrepareContext;
@@ -21,9 +21,12 @@ import net.minecraft.tileentity.TileEntity;
 /**
  * Created by lukas on 06.06.14.
  */
-public class TileEntitySpawnScript extends TileEntity implements GeneratingTileEntity<WorldScriptMulti.InstanceData>, TileEntityWithGUI
+public class TileEntityScriptBlock extends TileEntity implements GeneratingTileEntity<WorldScriptMulti.InstanceData>, TileEntityWithGUI
 {
     public final WorldScriptMulti script = new WorldScriptMulti();
+
+    public boolean spawnTriggerable = true;
+    public boolean redstoneTriggerable = false;
 
     @Override
     public void readFromNBT(NBTTagCompound nbtTagCompound)
@@ -46,7 +49,7 @@ public class TileEntitySpawnScript extends TileEntity implements GeneratingTileE
     @Override
     public WorldScriptMulti.InstanceData prepareInstanceData(StructurePrepareContext context)
     {
-        return script.prepareInstanceData(context, getPos());
+        return spawnTriggerable ? script.prepareInstanceData(context, getPos()) : null;
     }
 
     @Override
@@ -71,18 +74,24 @@ public class TileEntitySpawnScript extends TileEntity implements GeneratingTileE
     public void writeSyncedNBT(NBTTagCompound compound)
     {
         compound.setTag("script", NBTCompoundObjects.write(script));
+
+        compound.setBoolean("spawnTriggerable", spawnTriggerable);
+        compound.setBoolean("redstoneTriggerable", redstoneTriggerable);
     }
 
     @Override
     public void readSyncedNBT(final NBTTagCompound compound)
     {
         script.readFromNBT(compound.getCompoundTag("script"));
+
+        spawnTriggerable = compound.getBoolean("spawnTriggerable");
+        redstoneTriggerable = compound.getBoolean("redstoneTriggerable");
     }
 
     @SideOnly(Side.CLIENT)
     @Override
     public void openEditGUI()
     {
-        Minecraft.getMinecraft().displayGuiScreen(new GuiEditSpawnScript(this));
+        Minecraft.getMinecraft().displayGuiScreen(new GuiEditScriptBlock(this));
     }
 }

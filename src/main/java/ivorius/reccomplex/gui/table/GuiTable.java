@@ -43,6 +43,7 @@ public class GuiTable extends Gui
     private Bounds bounds;
     private Bounds tableBounds;
 
+    private boolean allowsNegativeScroll = true;
     private boolean firstTime = true;
     private boolean showsScrollBar;
     private float currentScroll;
@@ -94,6 +95,16 @@ public class GuiTable extends Gui
         this.hideScrollbarIfUnnecessary = hideScrollbarIfUnnecessary;
     }
 
+    public boolean isAllowsNegativeScroll()
+    {
+        return allowsNegativeScroll;
+    }
+
+    public void setAllowsNegativeScroll(boolean allowsNegativeScroll)
+    {
+        this.allowsNegativeScroll = allowsNegativeScroll;
+    }
+
     public void initGui()
     {
         buttonMap.clear();
@@ -109,7 +120,7 @@ public class GuiTable extends Gui
 
         if (firstTime)
         {
-            if (supportedSlotNumber > numberOfCells)
+            if (supportedSlotNumber > numberOfCells && allowsNegativeScroll)
                 currentScroll = (getMinScroll() + getMaxScroll()) / 2; // Scroll to the middle
             firstTime = false;
         }
@@ -271,7 +282,7 @@ public class GuiTable extends Gui
 
     public float getMinScroll(int numberOfCells)
     {
-        if (hideScrollbarIfUnnecessary)
+        if (hideScrollbarIfUnnecessary || !allowsNegativeScroll)
             return 0;
 
         int supportedSlots = tableBounds.getHeight() / HEIGHT_PER_SLOT;

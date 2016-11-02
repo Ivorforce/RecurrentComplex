@@ -5,6 +5,7 @@
 
 package ivorius.reccomplex.utils.presets;
 
+import ivorius.reccomplex.RecurrentComplex;
 import ivorius.reccomplex.utils.PresetRegistry;
 
 import javax.annotation.Nonnull;
@@ -64,7 +65,10 @@ public class PresettedObject<T>
         boolean has = preset != null && presetRegistry.has(preset);
 
         if (!has)
+        {
             setToDefault();
+            RecurrentComplex.logger.warn(String.format("Failed to find %s preset: %s", presetRegistry.getRegistry().description, preset));
+        }
         else
         {
             this.preset = preset;

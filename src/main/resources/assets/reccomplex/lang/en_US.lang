@@ -575,7 +575,7 @@ reccomplex.placer.factor.priority.tooltip=Priority that this factor<br>will be c
 reccomplex.placer.factors.limit=Limit
 reccomplex.placer.factors.limit.tooltip=Limit placement to specific heights.<br>Casts rays that set the acceptance for the<br> terrain they pass by until they hit.
 reccomplex.placer.factors.limit.ray.weight=Acceptance
-reccomplex.placer.factors.limit.ray.weight.tooltip=The ratio to which this<br>area is accepted.<br>Set to ignore to just move<br>without changing acceptance.
+reccomplex.placer.factors.limit.ray.weight.tooltip=The ratio to which this area is accepted.<br>(eg. 0 = don't spawn here, 1 = do spawn here).<br>Set to ignore to just move<br>without changing acceptance.
 
 reccomplex.placer.factors.limit.rays.move=Move
 reccomplex.placer.factors.limit.rays.move.tooltip=Move a specific amount of blocks.

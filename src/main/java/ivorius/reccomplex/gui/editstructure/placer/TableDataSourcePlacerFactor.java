@@ -13,6 +13,8 @@ import ivorius.reccomplex.gui.table.datasource.TableDataSourceSegmented;
 import ivorius.reccomplex.gui.table.datasource.TableDataSourceSupplied;
 import ivorius.reccomplex.world.gen.feature.structure.generic.placement.GenericPlacer;
 
+import javax.annotation.Nonnull;
+
 /**
  * Created by lukas on 04.04.15.
  */
@@ -30,5 +32,12 @@ public class TableDataSourcePlacerFactor extends TableDataSourceSegmented
             return new TitledCell(IvTranslations.get("reccomplex.placer.factor.priority"), priority)
                     .withTitleTooltip(IvTranslations.getLines("reccomplex.placer.factor.priority.tooltip"));
         }));
+    }
+
+    @Nonnull
+    @Override
+    public String title()
+    {
+        return placer.displayString();
     }
 }

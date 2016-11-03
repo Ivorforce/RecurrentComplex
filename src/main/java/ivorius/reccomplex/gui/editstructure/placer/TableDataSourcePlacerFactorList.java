@@ -13,6 +13,7 @@ import ivorius.reccomplex.gui.table.datasource.TableDataSourceList;
 import ivorius.reccomplex.world.gen.feature.structure.generic.placement.FactorRegistry;
 import ivorius.reccomplex.world.gen.feature.structure.generic.placement.GenericPlacer;
 
+import javax.annotation.Nonnull;
 import java.util.List;
 
 /**
@@ -48,5 +49,12 @@ public class TableDataSourcePlacerFactorList extends TableDataSourceList<Generic
     public List<TableCellButton> getAddActions()
     {
         return TableDataSourcePresettedList.addActions(FactorRegistry.INSTANCE.getTypeRegistry().allIDs(), "reccomplex.placer.factors.", canEditList());
+    }
+
+    @Nonnull
+    @Override
+    public String title()
+    {
+        return "Placer Factors";
     }
 }

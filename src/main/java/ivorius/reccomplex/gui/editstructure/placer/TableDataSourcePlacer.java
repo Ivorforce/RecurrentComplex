@@ -13,6 +13,8 @@ import ivorius.reccomplex.gui.table.TableNavigator;
 import ivorius.reccomplex.world.gen.feature.structure.generic.placement.GenericPlacer;
 import ivorius.reccomplex.utils.presets.PresettedObject;
 
+import javax.annotation.Nonnull;
+
 /**
  * Created by lukas on 04.04.15.
  */
@@ -36,5 +38,12 @@ public class TableDataSourcePlacer extends TableDataSourceSegmented
                 return object.isCustom();
             }
         });
+    }
+
+    @Nonnull
+    @Override
+    public String title()
+    {
+        return "Placer";
     }
 }

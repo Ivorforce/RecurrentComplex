@@ -12,6 +12,7 @@ import ivorius.reccomplex.gui.table.datasource.TableDataSource;
 import ivorius.reccomplex.gui.table.datasource.TableDataSourceList;
 import ivorius.reccomplex.world.gen.feature.structure.generic.placement.FactorLimit;
 
+import javax.annotation.Nonnull;
 import java.util.List;
 
 /**
@@ -47,5 +48,12 @@ public class TableDataSourceLimitRayList extends TableDataSourceList<FactorLimit
     public List<TableCellButton> getAddActions()
     {
         return TableDataSourcePresettedList.addActions(FactorLimit.getRayRegistry().allIDs(), "reccomplex.placer.factors.limit.rays.", canEditList());
+    }
+
+    @Nonnull
+    @Override
+    public String title()
+    {
+        return "Rays";
     }
 }

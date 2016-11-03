@@ -10,19 +10,21 @@ import com.google.gson.*;
 import ivorius.ivtoolkit.blocks.IvBlockCollection;
 import ivorius.ivtoolkit.tools.IvTranslations;
 import ivorius.reccomplex.gui.editstructure.placer.TableDataSourceFactorLimit;
-import ivorius.reccomplex.gui.table.*;
+import ivorius.reccomplex.gui.table.TableDelegate;
+import ivorius.reccomplex.gui.table.TableNavigator;
 import ivorius.reccomplex.gui.table.cell.TableCellFloatNullable;
 import ivorius.reccomplex.gui.table.cell.TitledCell;
 import ivorius.reccomplex.gui.table.datasource.TableDataSource;
 import ivorius.reccomplex.gui.table.datasource.TableDataSourceSupplied;
 import ivorius.reccomplex.json.JsonUtils;
 import ivorius.reccomplex.json.SerializableStringTypeRegistry;
-import ivorius.reccomplex.world.gen.feature.structure.generic.WorldCache;
 import ivorius.reccomplex.utils.IntegerRanges;
 import ivorius.reccomplex.utils.LineSelection;
 import ivorius.reccomplex.utils.scale.Scales;
+import ivorius.reccomplex.world.gen.feature.structure.generic.WorldCache;
 import org.apache.commons.lang3.tuple.Pair;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.lang.reflect.Type;
 import java.util.*;
@@ -102,7 +104,7 @@ public class FactorLimit extends GenericPlacer.Factor
             JsonObject jsonObject = JsonUtils.asJsonObject(json, "factorLimit");
 
             float priority = JsonUtils.getFloat(jsonObject, "priority", 1);
-            List<Ray> rays = gson.fromJson(jsonObject.get("rays"), new TypeToken<List<Ray>>(){}.getType());
+            List<Ray> rays = gson.fromJson(jsonObject.get("rays"), new TypeToken<List<Ray>>() {}.getType());
 
             return new FactorLimit(priority, rays);
         }
@@ -140,7 +142,15 @@ public class FactorLimit extends GenericPlacer.Factor
                 cell.addPropertyConsumer(v -> weight = v);
                 return new TitledCell(IvTranslations.get("reccomplex.placer.factors.limit.ray.weight"), cell)
                         .withTitleTooltip(IvTranslations.formatLines("reccomplex.placer.factors.limit.ray.weight.tooltip"));
-            });
+            })
+            {
+                @Nonnull
+                @Override
+                public String title()
+                {
+                    return displayString();
+                }
+            };
         }
 
         public abstract TableDataSource tableDataSource(TableNavigator navigator, TableDelegate delegate);

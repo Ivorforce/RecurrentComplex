@@ -49,8 +49,8 @@ public class BlockLegacyScript extends Block
                 worldIn.setBlockState(pos, RCBlocks.spawnScript.getDefaultState());
 
                 TileEntity newTileEntity = worldIn.getTileEntity(pos);
-                if (newTileEntity instanceof TileEntityScriptBlock)
-                    ((TileEntityScriptBlock) newTileEntity).script.scripts.add(script);
+                if (newTileEntity instanceof TileEntityBlockScript)
+                    ((TileEntityBlockScript) newTileEntity).script.scripts.add(script);
             }
         }
 

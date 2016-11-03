@@ -5,8 +5,12 @@
 
 package ivorius.reccomplex.block;
 
+import ivorius.ivtoolkit.math.AxisAlignedTransform2D;
 import ivorius.reccomplex.RecurrentComplex;
 import ivorius.reccomplex.network.PacketEditTileEntity;
+import ivorius.reccomplex.utils.NBTStorable;
+import ivorius.reccomplex.world.gen.feature.StructureGenerator;
+import ivorius.reccomplex.world.gen.script.WorldScriptMulti;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
@@ -22,18 +26,21 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.world.World;
+import net.minecraft.world.WorldServer;
+import net.minecraft.world.gen.structure.StructureBoundingBox;
 import net.minecraftforge.common.util.Constants;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
+import java.util.Random;
 
 /**
  * Created by lukas on 06.06.14.
  */
-public class BlockSpawnScript extends Block
+public class BlockScript extends Block
 {
-    public BlockSpawnScript()
+    public BlockScript()
     {
         super(Material.IRON);
     }
@@ -45,11 +52,50 @@ public class BlockSpawnScript extends Block
         {
             TileEntity tileEntity = worldIn.getTileEntity(pos);
 
-            RecurrentComplex.network.sendTo(new PacketEditTileEntity((TileEntityScriptBlock) tileEntity), (EntityPlayerMP) playerIn);
+            RecurrentComplex.network.sendTo(new PacketEditTileEntity((TileEntityBlockScript) tileEntity), (EntityPlayerMP) playerIn);
         }
 
         return true;
     }
+
+    @Override
+    public int tickRate(World worldIn)
+    {
+        return 4;
+    }
+
+    public void updateTick(World worldIn, BlockPos pos, IBlockState state, Random rand)
+    {
+        if (!worldIn.isRemote)
+        {
+            TileEntityBlockScript tileEntity = (TileEntityBlockScript) worldIn.getTileEntity(pos);
+            StructureGenerator<NBTStorable> generator = new StructureGenerator<>().world((WorldServer) worldIn)
+                    .boundingBox(new StructureBoundingBox(pos, pos)).transform(AxisAlignedTransform2D.ORIGINAL);
+
+            WorldScriptMulti.InstanceData instanceData = tileEntity.doPrepareInstanceData(generator.prepare().get());
+            if (instanceData != null)
+                tileEntity.generate(generator.spawn().get(), instanceData);
+        }
+    }
+
+    @Override
+    public void neighborChanged(IBlockState state, World worldIn, BlockPos pos, Block blockIn)
+    {
+        boolean flag = worldIn.isBlockPowered(pos) || worldIn.isBlockPowered(pos.up());
+        TileEntityBlockScript tileEntity = (TileEntityBlockScript) worldIn.getTileEntity(pos);
+        boolean flag1 = tileEntity.redstoneTriggered;
+
+        if (flag && !flag1)
+        {
+            worldIn.scheduleUpdate(pos, this, this.tickRate(worldIn));
+            tileEntity.redstoneTriggered = true;
+        }
+        else if (!flag && flag1)
+        {
+            tileEntity.redstoneTriggered = false;
+        }
+    }
+
 
     @Nonnull
     @Override
@@ -58,7 +104,7 @@ public class BlockSpawnScript extends Block
     {
         TileEntity tileEntity = world.getTileEntity(pos);
         NBTTagCompound compound = new NBTTagCompound();
-        ((TileEntityScriptBlock) tileEntity).writeSyncedNBT(compound);
+        ((TileEntityBlockScript) tileEntity).writeSyncedNBT(compound);
 
         ItemStack returnStack = new ItemStack(Item.getItemFromBlock(this));
         returnStack.setTagInfo("scriptInfo", compound);
@@ -73,7 +119,7 @@ public class BlockSpawnScript extends Block
         {
             NBTTagCompound compound = stack.getTagCompound().getCompoundTag("scriptInfo");
             TileEntity tileEntity = worldIn.getTileEntity(pos);
-            ((TileEntityScriptBlock) tileEntity).readSyncedNBT(compound);
+            ((TileEntityBlockScript) tileEntity).readSyncedNBT(compound);
         }
     }
 
@@ -88,6 +134,6 @@ public class BlockSpawnScript extends Block
     @ParametersAreNonnullByDefault
     public TileEntity createTileEntity(World world, IBlockState state)
     {
-        return new TileEntityScriptBlock();
+        return new TileEntityBlockScript();
     }
 }

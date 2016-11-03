@@ -5,15 +5,16 @@
 
 package ivorius.reccomplex.gui.worldscripts;
 
-import ivorius.ivtoolkit.tools.IvTranslations;
-import ivorius.reccomplex.block.TileEntityScriptBlock;
-import ivorius.reccomplex.gui.TableDataSourceExpression;
+import ivorius.reccomplex.block.TileEntityBlockScript;
 import ivorius.reccomplex.gui.table.TableDelegate;
 import ivorius.reccomplex.gui.table.TableNavigator;
+import ivorius.reccomplex.gui.table.cell.TableCellBoolean;
+import ivorius.reccomplex.gui.table.cell.TableCellMulti;
+import ivorius.reccomplex.gui.table.cell.TitledCell;
 import ivorius.reccomplex.gui.table.datasource.TableDataSourceSegmented;
-import ivorius.reccomplex.gui.worldscripts.multi.TableDataSourceWorldScriptList;
+import ivorius.reccomplex.gui.table.datasource.TableDataSourceSupplied;
 import ivorius.reccomplex.gui.worldscripts.multi.TableDataSourceWorldScriptMulti;
-import ivorius.reccomplex.world.gen.script.WorldScriptMulti;
+import net.minecraft.util.text.TextFormatting;
 
 import javax.annotation.Nonnull;
 
@@ -22,12 +23,25 @@ import javax.annotation.Nonnull;
  */
 public class TableDataSourceScriptBlock extends TableDataSourceSegmented
 {
-    public TileEntityScriptBlock script;
+    public TileEntityBlockScript script;
 
-    public TableDataSourceScriptBlock(TileEntityScriptBlock script, TableDelegate delegate, TableNavigator navigator)
+    public TableDataSourceScriptBlock(TileEntityBlockScript script, TableDelegate delegate, TableNavigator navigator)
     {
         this.script = script;
-        addManagedSegment(0, new TableDataSourceWorldScriptMulti(script.script, delegate, navigator));
+        addManagedSegment(0, new TableDataSourceSupplied(() ->
+        {
+            TableCellBoolean spawn = new TableCellBoolean(null, script.spawnTriggerable);
+            spawn.addPropertyConsumer(b -> script.spawnTriggerable = b);
+            spawn.setTrueTitle(TextFormatting.GREEN + "Spawn");
+            spawn.setFalseTitle(TextFormatting.GRAY + "Spawn");
+
+            TableCellBoolean redstone = new TableCellBoolean(null, script.redstoneTriggerable);
+            redstone.addPropertyConsumer(b -> script.redstoneTriggerable = b);
+            redstone.setTrueTitle(TextFormatting.GREEN + "Redstone");
+            redstone.setFalseTitle(TextFormatting.GRAY + "Redstone");
+            return new TitledCell("Triggerable", new TableCellMulti(spawn, redstone));
+        }));
+        addManagedSegment(1, new TableDataSourceWorldScriptMulti(script.script, delegate, navigator));
     }
 
     @Nonnull

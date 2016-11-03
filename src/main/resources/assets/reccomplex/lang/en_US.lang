@@ -240,10 +240,10 @@ reccomplex.structure.transformers=Transformers
 reccomplex.structure.transformers.tooltip=Scripts that alter generation of<br>the structure randomly.
 reccomplex.structure.dependencies=Dependencies
 reccomplex.structure.rotatable.true=§aRotatable§r
-reccomplex.structure.rotatable.false=§eNot Rotatable§r
+reccomplex.structure.rotatable.false=§7Rotatable§r
 reccomplex.structure.rotatable.tooltip=Whether the structure can rotate.<br>This may need to be set to false<br>for some TileEntities or Entities.
 reccomplex.structure.mirrorable.true=§aMirrorable§r
-reccomplex.structure.mirrorable.false=§eNot Mirrorable§r
+reccomplex.structure.mirrorable.false=§7Mirrorable§r
 reccomplex.structure.mirrorable.tooltip=Whether the structure can be mirrored.<br>This may need to be set to false<br>for some TileEntities or Entities.
 reccomplex.structure.randomrange=Randomized between the two values.
 

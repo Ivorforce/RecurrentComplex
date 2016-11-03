@@ -214,10 +214,10 @@ reccomplex.configgui.ctgy.controls=Steuerung
 reccomplex.configgui.ctgy.controls.tooltip=Steuerungseinstellungen
 
 reccomplex.structure.rotatable.true=§aRotierbar§r
-reccomplex.structure.rotatable.false=§eNicht Rotierbar§r
+reccomplex.structure.rotatable.false=§7Rotierbar§r
 reccomplex.structure.rotatable.tooltip=Regelt ob die Struktur rotiert wird. <br>Dies könnte auf false gesezt werden müssen<br>, dammit einige entitys und TiteEntitys funktionieren
 reccomplex.structure.mirrorable.true=§aSpiegelbar§r
-reccomplex.structure.mirrorable.false=§eNicht Spiegelbar§r
+reccomplex.structure.mirrorable.false=§7Spiegelbar§r
 reccomplex.structure.mirrorable.tooltip=Regelt ob die Struktur gepiegelt wird. <br>Dies könnte auf false gesezt werden müssen<br>, dammit einige entitys und TiteEntitys funktionieren
 reccomplex.structure.randomrange=Zufällig zwischen den zwei Werten.
 

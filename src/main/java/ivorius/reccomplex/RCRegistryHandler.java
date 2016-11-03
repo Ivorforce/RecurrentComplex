@@ -163,10 +163,10 @@ public class RCRegistryHandler
         register(BlockSpawnCommand.TileEntitySpawnCommand.class, "RCSpawnCommand");
         RecurrentComplex.cremapper.registerLegacyIDs(spawnCommands, true, "spawnCommand");
 
-        spawnScript = new BlockSpawnScript().setUnlocalizedName("spawn_script");
+        spawnScript = new BlockScript().setUnlocalizedName("spawn_script");
         spawnScript.setCreativeTab(tabStructureTools);
         register(spawnScript, "spawn_script");
-        register(TileEntityScriptBlock.class, "RCSpawnScript");
+        register(TileEntityBlockScript.class, "RCSpawnScript");
 
         inspector = new ItemInspector().setUnlocalizedName("recinspector");
         inspector.setCreativeTab(tabStructureTools);

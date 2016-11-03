@@ -21,12 +21,13 @@ import net.minecraft.tileentity.TileEntity;
 /**
  * Created by lukas on 06.06.14.
  */
-public class TileEntityScriptBlock extends TileEntity implements GeneratingTileEntity<WorldScriptMulti.InstanceData>, TileEntityWithGUI
+public class TileEntityBlockScript extends TileEntity implements GeneratingTileEntity<WorldScriptMulti.InstanceData>, TileEntityWithGUI
 {
     public final WorldScriptMulti script = new WorldScriptMulti();
 
     public boolean spawnTriggerable = true;
     public boolean redstoneTriggerable = false;
+    public boolean redstoneTriggered = true;
 
     @Override
     public void readFromNBT(NBTTagCompound nbtTagCompound)
@@ -49,7 +50,12 @@ public class TileEntityScriptBlock extends TileEntity implements GeneratingTileE
     @Override
     public WorldScriptMulti.InstanceData prepareInstanceData(StructurePrepareContext context)
     {
-        return spawnTriggerable ? script.prepareInstanceData(context, getPos()) : null;
+        return spawnTriggerable ? doPrepareInstanceData(context) : null;
+    }
+
+    public WorldScriptMulti.InstanceData doPrepareInstanceData(StructurePrepareContext context)
+    {
+        return script.prepareInstanceData(context, getPos());
     }
 
     @Override
@@ -77,6 +83,7 @@ public class TileEntityScriptBlock extends TileEntity implements GeneratingTileE
 
         compound.setBoolean("spawnTriggerable", spawnTriggerable);
         compound.setBoolean("redstoneTriggerable", redstoneTriggerable);
+        compound.setBoolean("redstoneTriggered", redstoneTriggered);
     }
 
     @Override
@@ -86,6 +93,7 @@ public class TileEntityScriptBlock extends TileEntity implements GeneratingTileE
 
         spawnTriggerable = compound.getBoolean("spawnTriggerable");
         redstoneTriggerable = compound.getBoolean("redstoneTriggerable");
+        redstoneTriggered = compound.getBoolean("redstoneTriggered");
     }
 
     @SideOnly(Side.CLIENT)

@@ -6,7 +6,7 @@
 package ivorius.reccomplex.gui.worldscripts;
 
 import ivorius.reccomplex.RecurrentComplex;
-import ivorius.reccomplex.block.TileEntityScriptBlock;
+import ivorius.reccomplex.block.TileEntityBlockScript;
 import ivorius.reccomplex.gui.table.screen.GuiScreenEditTable;
 import ivorius.reccomplex.network.PacketEditTileEntity;
 import net.minecraft.nbt.NBTTagCompound;
@@ -17,10 +17,10 @@ import net.minecraft.tileentity.TileEntity;
  */
 public class GuiEditScriptBlock extends GuiScreenEditTable<TableDataSourceScriptBlock>
 {
-    public GuiEditScriptBlock(TileEntityScriptBlock tileEntity)
+    public GuiEditScriptBlock(TileEntityBlockScript tileEntity)
     {
         // Don't directly edit so the sides are in sync
-        TileEntityScriptBlock copy = (TileEntityScriptBlock) TileEntity.create(tileEntity.getWorld(), tileEntity.writeToNBT(new NBTTagCompound()));
+        TileEntityBlockScript copy = (TileEntityBlockScript) TileEntity.create(tileEntity.getWorld(), tileEntity.writeToNBT(new NBTTagCompound()));
 
         setDataSource(new TableDataSourceScriptBlock(copy, this, this), ds ->
         {

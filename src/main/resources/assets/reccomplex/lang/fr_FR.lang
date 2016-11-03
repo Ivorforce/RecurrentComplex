@@ -202,10 +202,10 @@ reccomplex.configgui.ctgy.controls=Contrôles
 reccomplex.configgui.ctgy.controls.tooltip=paramètres affectant les contrôles
 
 reccomplex.structure.rotatable.true=§aPivotable§r
-reccomplex.structure.rotatable.false=§eNon pivotable§r
+reccomplex.structure.rotatable.false=§7Pivotable§r
 reccomplex.structure.rotatable.tooltip=Si la structure peut pivoter.<br>Ceci peut devoir être mis à faux<br>pour certaines Tuiles d'entité ou entités.
 reccomplex.structure.mirrorable.true=§aReflétable§r
-reccomplex.structure.mirrorable.false=§eNon reflétable§r
+reccomplex.structure.mirrorable.false=§7Reflétable§r
 reccomplex.structure.mirrorable.tooltip=Si la structure peut être reflétée.<br>Ceci peut devoir être mis à faux<br>pour certaines Tuiles d'entité ou entités.
 reccomplex.structure.randomrange=Randomisé entre les deux valeurs.
 

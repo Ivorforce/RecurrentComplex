@@ -339,8 +339,7 @@ public class RCRegistryHandler
 
     public static void registerPackets(FMLInitializationEvent event)
     {
-        if (event.getSide().isClient())
-            registerClientPackets();
+        registerClientPackets();
         registerServerPackets();
     }
 
@@ -363,7 +362,6 @@ public class RCRegistryHandler
         network.registerMessage(PacketEditTileEntityHandler.class, PacketEditTileEntity.class, 4, Side.CLIENT);
         network.registerMessage(PacketEditStructureHandler.class, PacketEditStructure.class, 6, Side.CLIENT);
         network.registerMessage(PacketSyncItemHandler.class, PacketSyncItem.class, 8, Side.CLIENT);
-        network.registerMessage(PacketItemEventHandler.class, PacketItemEvent.class, 10, Side.CLIENT);
         network.registerMessage(PacketItemEventHandler.class, PacketItemEvent.class, 10, Side.CLIENT);
         network.registerMessage(PacketInspectBlockHandler.class, PacketInspectBlock.class, 13, Side.CLIENT);
         network.registerMessage(PacketOpenGuiHandler.class, PacketOpenGui.class, 14, Side.CLIENT);

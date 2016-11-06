@@ -542,6 +542,7 @@ reccomplex.preset.title.tooltip=Title=Visible title of the preset
 reccomplex.preset.description=Description
 reccomplex.preset.description.tooltip=Visible description for the preset.<br>Use <BR> to start a new line.
 reccomplex.preset.use=Use: §b%s
+reccomplex.preset.use.default=Use: §a%s
 reccomplex.preset.customize=Customize: §b%s
 reccomplex.presets=Presets
 

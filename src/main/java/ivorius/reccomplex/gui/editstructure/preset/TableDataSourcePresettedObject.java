@@ -90,7 +90,7 @@ public class TableDataSourcePresettedObject<T> extends TableDataSourceSegmented
         PresetRegistry<T> registry = object.getPresetRegistry();
         //noinspection OptionalGetWithoutIsPresent
         return TableCellPresetAction.sorted(registry.allIDs().stream().map(type -> new TableCellButton(type, type,
-                IvTranslations.format("reccomplex.preset.use", registry.title(type).orElse(type)),
+                IvTranslations.format(type.equals(registry.defaultID()) ? "reccomplex.preset.use.default" : "reccomplex.preset.use", registry.title(type).orElse(type)),
                 registry.description(type).orElse(null)
         ))).collect(Collectors.toList());
     }

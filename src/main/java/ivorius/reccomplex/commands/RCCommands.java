@@ -23,6 +23,7 @@ import net.minecraft.world.WorldServer;
 import net.minecraft.world.biome.Biome;
 import net.minecraftforge.common.DimensionManager;
 import net.minecraftforge.fml.common.event.FMLServerStartingEvent;
+import net.minecraftforge.fml.relauncher.Side;
 import org.apache.commons.lang3.tuple.Pair;
 
 import javax.annotation.Nonnull;
@@ -125,7 +126,8 @@ public class RCCommands
         event.registerServerCommand(list = new CommandListStructures());
         event.registerServerCommand(new CommandSearchStructure());
 
-        event.registerServerCommand(new CommandBrowseFiles());
+        if (event.getSide() == Side.CLIENT) // TODO Make client-side command (don't even send to server)
+            event.registerServerCommand(new CommandBrowseFiles());
 
         event.registerServerCommand(new CommandRetrogen());
         event.registerServerCommand(new CommandDecorate());

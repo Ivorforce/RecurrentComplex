@@ -31,7 +31,7 @@ public class TableCellPresetAction extends TableCellDefault
         super(id);
         this.actions.addAll(actions);
         if (actions.size() > 0)
-            currentActionID = actions.get(0).actionID;
+            setCurrentAction(actions.get(0).actionID);
     }
 
     public static Stream<TableCellButton> sorted(Stream<TableCellButton> actions)

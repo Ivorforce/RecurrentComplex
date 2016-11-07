@@ -213,4 +213,21 @@ public enum ResourceDirectory
     {
         ByteBufUtils.writeUTF8String(buf, name());
     }
+
+    public String readableName()
+    {
+        switch (this)
+        {
+            case ACTIVE:
+                return "active";
+            case INACTIVE:
+                return "inactive";
+            case SERVER_ACTIVE:
+                return "active (server)";
+            case SERVER_INACTIVE:
+                return "inactive (server)";
+            default:
+                throw new IllegalStateException();
+        }
+    }
 }

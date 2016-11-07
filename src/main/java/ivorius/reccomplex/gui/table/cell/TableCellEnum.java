@@ -46,7 +46,7 @@ public class TableCellEnum<T> extends TableCellPropertyDefault<T>
         return options(Arrays.asList(values), baseKey, tooltip);
     }
 
-    public static <T extends Enum> List<Option<T>> options(T[] values, final Function<T, String> titleFunc, final Function<T, List<String>> tooltipFunc)
+    public static <T> List<Option<T>> options(T[] values, final Function<T, String> titleFunc, final Function<T, List<String>> tooltipFunc)
     {
         return options(Arrays.asList(values), titleFunc, tooltipFunc);
     }
@@ -56,9 +56,12 @@ public class TableCellEnum<T> extends TableCellPropertyDefault<T>
         return options(values, input -> IvTranslations.get(baseKey + IvGsonHelper.serializedName(input)), tooltip ? (Function<T, List<String>>) input -> IvTranslations.getLines(baseKey + IvGsonHelper.serializedName(input) + ".tooltip") : null);
     }
 
-    public static <T extends Enum> List<Option<T>> options(List<T> values, final Function<T, String> titleFunc, final Function<T, List<String>> tooltipFunc)
+    public static <T> List<Option<T>> options(List<T> values, final Function<T, String> titleFunc, final Function<T, List<String>> tooltipFunc)
     {
-        return values.stream().map(input -> new Option<>(input, titleFunc != null ? titleFunc.apply(input) : null, tooltipFunc != null ? tooltipFunc.apply(input) : null)).collect(Collectors.toList());
+        return values.stream()
+                .map(input -> new Option<>(input, titleFunc != null ? titleFunc.apply(input) : null, tooltipFunc != null ? tooltipFunc.apply(input) : null))
+                .sorted((o1, o2) -> o1.title.compareTo(o2.title))
+                .collect(Collectors.toList());
     }
 
     @Override

@@ -24,7 +24,7 @@ public class TableElementSaveDirectory
         final String id = idSupplier.get();
 
         TableCellEnum<ResourceDirectory> cellFolder = new TableCellEnum<>("activeFolder", data.getDirectory(),
-                TableCellEnum.options(ResourceDirectory.values(), d -> TextFormatting.GREEN + d.toString(), null));
+                TableCellEnum.options(ResourceDirectory.values(), d -> TextFormatting.GREEN + d.readableName(), null));
         cellFolder.addPropertyConsumer(cell ->
         {
             data.setDirectory(cellFolder.getPropertyValue());

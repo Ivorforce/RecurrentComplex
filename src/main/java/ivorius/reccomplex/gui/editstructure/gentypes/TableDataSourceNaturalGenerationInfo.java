@@ -19,10 +19,12 @@ import ivorius.reccomplex.gui.table.cell.TitledCell;
 import ivorius.reccomplex.gui.table.datasource.TableDataSourceSegmented;
 import ivorius.reccomplex.world.gen.feature.structure.generic.gentypes.NaturalGenerationInfo;
 import ivorius.reccomplex.world.gen.feature.selector.NaturalStructureSelector;
+import org.apache.commons.lang3.tuple.Pair;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 /**
  * Created by lukas on 07.10.14.
@@ -64,17 +66,12 @@ public class TableDataSourceNaturalGenerationInfo extends TableDataSourceSegment
     public static List<TableCellEnum.Option<String>> allGenerationCategories()
     {
         Set<String> categories = NaturalStructureSelector.CATEGORY_REGISTRY.activeIDs();
-        List<TableCellEnum.Option<String>> generationCategories = new ArrayList<>();
-
-        for (String category : categories)
-        {
-            NaturalStructureSelector.Category categoryObj = NaturalStructureSelector.CATEGORY_REGISTRY.getActive(category);
-
-            if (categoryObj.selectableInGUI())
-                generationCategories.add(new TableCellEnum.Option<>(category, categoryObj.title(), categoryObj.tooltip()));
-        }
-
-        return generationCategories;
+        return categories.stream()
+                .map(category -> Pair.of(category, NaturalStructureSelector.CATEGORY_REGISTRY.getActive(category)))
+                .filter(p -> p.getRight().selectableInGUI())
+                .map(p -> new TableCellEnum.Option<>(p.getLeft(), p.getRight().title(), p.getRight().tooltip()))
+                .sorted((o1, o2) -> o1.title.compareTo(o2.title))
+                .collect(Collectors.toList());
     }
 
     @Override

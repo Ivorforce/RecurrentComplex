@@ -80,7 +80,7 @@ public class TableDataSourcePresettedObject<T> extends TableDataSourceSegmented
             delegate.reloadData();
         });
         if (object.getPreset() != null)
-            cell.setCurrentAction(object.getPreset());
+            cell.setPropertyValue(object.getPreset());
         return cell;
     }
 

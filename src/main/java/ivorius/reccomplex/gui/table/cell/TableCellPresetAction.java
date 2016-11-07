@@ -17,21 +17,18 @@ import java.util.stream.Stream;
 /**
  * Created by lukas on 02.06.14.
  */
-public class TableCellPresetAction extends TableCellDefault
+public class TableCellPresetAction extends TableCellPropertyDefault<String>
 {
     protected GuiButton leftButton;
     protected GuiButton rightButton;
 
-    protected String currentActionID;
-
-    protected List<TableCellButton> actions = new ArrayList<>();
+    protected final List<TableCellButton> actions = new ArrayList<>();
 
     public TableCellPresetAction(String id, List<TableCellButton> actions)
     {
-        super(id);
+        super(id, actions.size() > 0 ? actions.get(0).actionID : "");
         this.actions.addAll(actions);
-        if (actions.size() > 0)
-            setCurrentAction(actions.get(0).actionID);
+        setPropertyValue(property); // Now that actions is set
     }
 
     public static Stream<TableCellButton> sorted(Stream<TableCellButton> actions)
@@ -105,7 +102,7 @@ public class TableCellPresetAction extends TableCellDefault
             leftButton.visible = !hidden;
         if (rightButton != null)
             rightButton.visible = !hidden;
-        TableCellButton action = findAction(currentActionID);
+        TableCellButton action = findAction(getPropertyValue());
         if (action != null)
             action.setHidden(hidden);
     }
@@ -119,20 +116,24 @@ public class TableCellPresetAction extends TableCellDefault
             move(buttonID == 0 ? -1 : 1);
     }
 
-    public void setCurrentAction(String action)
+    @Override
+    public void setPropertyValue(String value)
     {
-        currentActionID = action;
+        super.setPropertyValue(value);
 
-        actions.forEach(a -> a.setHidden(true));
+        if (actions != null)
+        {
+            actions.forEach(a -> a.setHidden(true));
 
-        TableCellButton actionB = findAction(currentActionID);
-        if (actionB != null)
-            actionB.setHidden(isHidden());
+            TableCellButton actionB = findAction(value);
+            if (actionB != null)
+                actionB.setHidden(isHidden());
+        }
     }
 
     public void move(int plus)
     {
-        setCurrentAction(actions.get((((findIndex(currentActionID) + plus) % actions.size()) + actions.size()) % actions.size()).actionID);
+        setPropertyValue(actions.get((((findIndex(getPropertyValue()) + plus) % actions.size()) + actions.size()) % actions.size()).actionID);
     }
 
     @Override
@@ -140,7 +141,7 @@ public class TableCellPresetAction extends TableCellDefault
     {
         super.draw(screen, mouseX, mouseY, partialTicks);
 
-        TableCellButton action = findAction(currentActionID);
+        TableCellButton action = findAction(getPropertyValue());
         if (action != null)
             action.draw(screen, mouseX, mouseY, partialTicks);
     }
@@ -150,7 +151,7 @@ public class TableCellPresetAction extends TableCellDefault
     {
         super.drawFloating(screen, mouseX, mouseY, partialTicks);
 
-        TableCellButton action = findAction(currentActionID);
+        TableCellButton action = findAction(getPropertyValue());
         if (action != null)
             action.drawFloating(screen, mouseX, mouseY, partialTicks);
     }

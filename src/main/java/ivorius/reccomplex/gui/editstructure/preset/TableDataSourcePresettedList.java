@@ -57,8 +57,8 @@ public abstract class TableDataSourcePresettedList<T> extends TableDataSourceLis
 
                     String plus = TextFormatting.GREEN + "+";
                     int plusWidth = getFontRenderer().getStringWidth(plus);
-                    getFontRenderer().drawString(plus, bounds().getMinX() + 6, bounds().getCenterY() - 4, 0xffffffff);
-                    getFontRenderer().drawString(plus, bounds().getMaxX() - 6 - plusWidth, bounds().getCenterY() - 4, 0xffffffff);
+                    getFontRenderer().drawString(plus, bounds().getMinX() + 6, bounds().getCenterY() - 4, 0xffffffff, true);
+                    getFontRenderer().drawString(plus, bounds().getMaxX() - 6 - plusWidth, bounds().getCenterY() - 4, 0xffffffff, true);
                 }
             };
         })).collect(Collectors.toList());

@@ -33,7 +33,7 @@ public class TableDataSourceBTReplaceAll extends TableDataSourceSegmented
         addManagedSegment(1, TableDataSourceExpression.constructDefault(IvTranslations.get("reccomplex.gui.sources"), transformer.sourceMatcher, null));
         addManagedSegment(2, TableCellMultiBuilder.create(navigator, delegate)
                 .addNavigation(() -> new TableDataSourceWeightedBlockStateList(transformer.destination, delegate, navigator)
-                ).buildDataSource(IvTranslations.get("reccomplex.gui.destinations")));
+                ).buildDataSource(IvTranslations.get("reccomplex.transformer.replace.destinations")));
     }
 
     public TransformerReplaceAll getTransformer()

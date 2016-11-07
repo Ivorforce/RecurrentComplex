@@ -10,6 +10,7 @@ import ivorius.ivtoolkit.tools.IvGsonHelper;
 import ivorius.ivtoolkit.tools.IvTranslations;
 import ivorius.reccomplex.gui.table.Bounds;
 import ivorius.reccomplex.gui.table.GuiTable;
+import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.GuiButton;
 
 import java.util.Arrays;
@@ -23,7 +24,8 @@ import java.util.stream.Collectors;
  */
 public class TableCellEnum<T> extends TableCellPropertyDefault<T>
 {
-    private GuiButton button;
+    protected GuiButton leftButton;
+    protected GuiButton rightButton;
 
     private List<Option<T>> options;
 
@@ -65,12 +67,17 @@ public class TableCellEnum<T> extends TableCellPropertyDefault<T>
         super.initGui(screen);
 
         Bounds bounds = bounds();
-        button = new GuiButton(-1, bounds.getMinX(), bounds.getMinY() + (bounds.getHeight() - 20) / 2, bounds.getWidth(), 20, "");
 
-        button.visible = !isHidden();
-        updateButtonTitle();
+        int buttonY = bounds.getMinY() + (bounds.getHeight() - 20) / 2;
+        int presetButtonWidth = bounds.getWidth() - TableCellPresetAction.DIRECTION_BUTTON_WIDTH * 2;
 
-        screen.addButton(this, 0, button);
+        leftButton = new GuiButton(-1, bounds.getMinX(), buttonY, TableCellPresetAction.DIRECTION_BUTTON_WIDTH - 1, 20, "<");
+        leftButton.visible = !isHidden();
+        screen.addButton(this, 0, leftButton);
+
+        rightButton = new GuiButton(-1, bounds.getMinX() + TableCellPresetAction.DIRECTION_BUTTON_WIDTH + presetButtonWidth + 1, buttonY, TableCellPresetAction.DIRECTION_BUTTON_WIDTH - 1, 20, ">");
+        leftButton.visible = !isHidden();
+        screen.addButton(this, 1, rightButton);
     }
 
     @Override
@@ -78,16 +85,10 @@ public class TableCellEnum<T> extends TableCellPropertyDefault<T>
     {
         super.setHidden(hidden);
 
-        if (button != null)
-            button.visible = !hidden;
-    }
-
-    @Override
-    public void setPropertyValue(T value)
-    {
-        super.setPropertyValue(value);
-
-        updateButtonTitle();
+        if (leftButton != null)
+            leftButton.visible = !hidden;
+        if (rightButton != null)
+            rightButton.visible = !hidden;
     }
 
     @Override
@@ -95,12 +96,29 @@ public class TableCellEnum<T> extends TableCellPropertyDefault<T>
     {
         super.buttonClicked(buttonID);
 
-        int prevOptionIndex = currentOptionIndex();
-        int optionIndex = prevOptionIndex < 0 ? 0 : (prevOptionIndex + 1) % options.size();
+        if (buttonID == 0 || buttonID == 1)
+            move(buttonID == 0 ? -1 : 1);
+    }
 
-        setPropertyValue(options.get(optionIndex).value);
-
+    public void move(int plus)
+    {
+        setPropertyValue(options.get((((findIndex(getPropertyValue()) + plus) % options.size()) + options.size()) % options.size()).value);
         alertListenersOfChange();
+    }
+
+    @Override
+    public void draw(GuiTable screen, int mouseX, int mouseY, float partialTicks)
+    {
+        FontRenderer fontRenderer = getFontRenderer();
+        Bounds bounds = bounds();
+
+        Option<T> cOption = currentOption();
+        String option = cOption != null ? cOption.title : getPropertyValue().toString();
+
+        int width = fontRenderer.getStringWidth(option);
+        fontRenderer.drawString(option, bounds.getCenterX() - width / 2, bounds.getCenterY() - 4, 0xffffffff, true);
+
+        super.draw(screen, mouseX, mouseY, partialTicks);
     }
 
     @Override
@@ -110,32 +128,23 @@ public class TableCellEnum<T> extends TableCellPropertyDefault<T>
 
         Option<T> option = currentOption();
         if (option != null && option.tooltip != null)
-            screen.drawTooltipRect(option.tooltip, bounds(), mouseX, mouseY, getFontRenderer());
-    }
-
-    private void updateButtonTitle()
-    {
-        if (button != null)
         {
-            int index = currentOptionIndex();
-            button.displayString = index >= 0 ? options.get(index).title
-                    : getPropertyValue() != null
-                    ? getPropertyValue().toString()
-                    : "null";
+            Bounds bounds = bounds();
+            screen.drawTooltipRect(option.tooltip, Bounds.fromSize(bounds.getMinX() + TableCellPresetAction.DIRECTION_BUTTON_WIDTH, bounds.getMinY(), bounds.getWidth() - TableCellPresetAction.DIRECTION_BUTTON_WIDTH * 2, bounds.getHeight()), mouseX, mouseY, getFontRenderer());
         }
     }
 
     private Option<T> currentOption()
     {
-        int index = currentOptionIndex();
+        int index = findIndex(getPropertyValue());
         return index >= 0 ? options.get(index) : null;
     }
 
-    private int currentOptionIndex()
+    protected int findIndex(T option)
     {
         for (int i = 0; i < options.size(); i++)
         {
-            if (Objects.equals(options.get(i).value, getPropertyValue()))
+            if (Objects.equals(options.get(i).value, option))
                 return i;
         }
 

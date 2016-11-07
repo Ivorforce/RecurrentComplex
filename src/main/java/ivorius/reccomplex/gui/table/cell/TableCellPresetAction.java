@@ -19,6 +19,8 @@ import java.util.stream.Stream;
  */
 public class TableCellPresetAction extends TableCellPropertyDefault<String>
 {
+    public static final int DIRECTION_BUTTON_WIDTH = 20;
+
     protected GuiButton leftButton;
     protected GuiButton rightButton;
 
@@ -66,14 +68,13 @@ public class TableCellPresetAction extends TableCellPropertyDefault<String>
         Bounds bounds = bounds();
 
         int buttonY = bounds.getMinY() + (bounds.getHeight() - 20) / 2;
-        int directionButtonWidth = 20;
-        int presetButtonWidth = bounds.getWidth() - directionButtonWidth * 2;
+        int presetButtonWidth = bounds.getWidth() - DIRECTION_BUTTON_WIDTH * 2;
 
-        leftButton = new GuiButton(-1, bounds.getMinX(), buttonY, directionButtonWidth - 1, 20, "<");
+        leftButton = new GuiButton(-1, bounds.getMinX(), buttonY, DIRECTION_BUTTON_WIDTH - 1, 20, "<");
         leftButton.visible = !isHidden();
         screen.addButton(this, 0, leftButton);
 
-        rightButton = new GuiButton(-1, bounds.getMinX() + directionButtonWidth + presetButtonWidth + 1, buttonY, directionButtonWidth - 1, 20, ">");
+        rightButton = new GuiButton(-1, bounds.getMinX() + DIRECTION_BUTTON_WIDTH + presetButtonWidth + 1, buttonY, DIRECTION_BUTTON_WIDTH - 1, 20, ">");
         leftButton.visible = !isHidden();
         screen.addButton(this, 1, rightButton);
 

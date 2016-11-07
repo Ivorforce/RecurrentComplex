@@ -11,6 +11,7 @@ import net.minecraft.client.gui.GuiButton;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.function.Consumer;
 import java.util.stream.Stream;
 
@@ -70,12 +71,16 @@ public class TableCellPresetAction extends TableCellPropertyDefault<String>
         int buttonY = bounds.getMinY() + (bounds.getHeight() - 20) / 2;
         int presetButtonWidth = bounds.getWidth() - DIRECTION_BUTTON_WIDTH * 2;
 
+        boolean canChange = actions.size() > 1 || (actions.size() == 1 && !Objects.equals(getPropertyValue(), actions.get(0).actionID));
+
         leftButton = new GuiButton(-1, bounds.getMinX(), buttonY, DIRECTION_BUTTON_WIDTH - 1, 20, "<");
         leftButton.visible = !isHidden();
+        leftButton.enabled = canChange;
         screen.addButton(this, 0, leftButton);
 
         rightButton = new GuiButton(-1, bounds.getMinX() + DIRECTION_BUTTON_WIDTH + presetButtonWidth + 1, buttonY, DIRECTION_BUTTON_WIDTH - 1, 20, ">");
-        leftButton.visible = !isHidden();
+        rightButton.visible = !isHidden();
+        rightButton.enabled = canChange;
         screen.addButton(this, 1, rightButton);
 
         for (TableCellButton action : actions)

@@ -74,12 +74,16 @@ public class TableCellEnum<T> extends TableCellPropertyDefault<T>
         int buttonY = bounds.getMinY() + (bounds.getHeight() - 20) / 2;
         int presetButtonWidth = bounds.getWidth() - TableCellPresetAction.DIRECTION_BUTTON_WIDTH * 2;
 
+        boolean canChange = options.size() > 1 || (options.size() == 1 && !Objects.equals(getPropertyValue(), options.get(0).value));
+
         leftButton = new GuiButton(-1, bounds.getMinX(), buttonY, TableCellPresetAction.DIRECTION_BUTTON_WIDTH - 1, 20, "<");
         leftButton.visible = !isHidden();
+        leftButton.enabled = canChange;
         screen.addButton(this, 0, leftButton);
 
         rightButton = new GuiButton(-1, bounds.getMinX() + TableCellPresetAction.DIRECTION_BUTTON_WIDTH + presetButtonWidth + 1, buttonY, TableCellPresetAction.DIRECTION_BUTTON_WIDTH - 1, 20, ">");
-        leftButton.visible = !isHidden();
+        rightButton.visible = !isHidden();
+        rightButton.enabled = canChange;
         screen.addButton(this, 1, rightButton);
     }
 

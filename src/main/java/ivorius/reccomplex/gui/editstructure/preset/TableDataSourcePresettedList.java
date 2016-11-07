@@ -6,6 +6,7 @@
 package ivorius.reccomplex.gui.editstructure.preset;
 
 import ivorius.ivtoolkit.tools.IvTranslations;
+import ivorius.reccomplex.gui.table.GuiTable;
 import ivorius.reccomplex.gui.table.TableDelegate;
 import ivorius.reccomplex.gui.table.TableNavigator;
 import ivorius.reccomplex.gui.table.cell.TableCellButton;
@@ -46,9 +47,20 @@ public abstract class TableDataSourcePresettedList<T> extends TableDataSourceLis
         {
             String key = baseKey + type;
             return new TableCellButton(type, type,
-                    String.format("%s+%s   %s   %s+%s", TextFormatting.GREEN, TextFormatting.RESET, IvTranslations.get(key), TextFormatting.GREEN, TextFormatting.RESET),
+                    IvTranslations.get(key),
                     IvTranslations.formatLines(key + ".tooltip"),
-                    enabled);
+                    enabled){
+                @Override
+                public void draw(GuiTable screen, int mouseX, int mouseY, float partialTicks)
+                {
+                    super.draw(screen, mouseX, mouseY, partialTicks);
+
+                    String plus = TextFormatting.GREEN + "+";
+                    int plusWidth = getFontRenderer().getStringWidth(plus);
+                    getFontRenderer().drawString(plus, bounds().getMinX() + 6, bounds().getCenterY() - 4, 0xffffffff);
+                    getFontRenderer().drawString(plus, bounds().getMaxX() - 6 - plusWidth, bounds().getCenterY() - 4, 0xffffffff);
+                }
+            };
         })).collect(Collectors.toList());
     }
 

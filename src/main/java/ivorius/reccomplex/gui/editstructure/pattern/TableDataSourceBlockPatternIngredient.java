@@ -15,6 +15,8 @@ import ivorius.reccomplex.gui.table.cell.TitledCell;
 import ivorius.reccomplex.gui.table.datasource.TableDataSourceSegmented;
 import ivorius.reccomplex.world.gen.feature.structure.generic.BlockPattern;
 
+import javax.annotation.Nonnull;
+
 /**
  * Created by lukas on 05.06.14.
  */
@@ -30,6 +32,13 @@ public class TableDataSourceBlockPatternIngredient extends TableDataSourceSegmen
         this.tableDelegate = tableDelegate;
 
         addManagedSegment(1, TableDataSourceExpression.constructDefault(IvTranslations.get("reccomplex.gui.blocks"), ingredient.matcher, null));
+    }
+
+    @Nonnull
+    @Override
+    public String title()
+    {
+        return "Ingredient";
     }
 
     @Override

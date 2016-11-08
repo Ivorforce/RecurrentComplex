@@ -528,7 +528,7 @@ reccomplex.gui.reset=Reset
 gui.back.page=Back §7(%s)
 
 reccomplex.rotation=Rotation
-reccomplex.mirror=Rotation
+reccomplex.mirror=Mirror
 reccomplex.rotation.clockwise.0=No rotation
 reccomplex.rotation.clockwise.1=90° Clockwise
 reccomplex.rotation.clockwise.2=180° Clockwise

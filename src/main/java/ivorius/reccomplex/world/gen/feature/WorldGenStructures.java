@@ -26,6 +26,7 @@ import org.apache.commons.lang3.tuple.Pair;
 
 import javax.annotation.Nullable;
 import java.util.List;
+import java.util.Optional;
 import java.util.Random;
 import java.util.function.Predicate;
 
@@ -89,7 +90,7 @@ public class WorldGenStructures
 
     protected static void generateStructureInChunk(Random random, ChunkPos chunkPos, WorldServer world, Pair<StructureInfo, NaturalGenerationInfo> pair)
     {
-        StructureInfo structureInfo = pair.getLeft();
+        StructureInfo<?> structureInfo = pair.getLeft();
         NaturalGenerationInfo naturalGenInfo = pair.getRight();
         String structureName = StructureRegistry.INSTANCE.id(structureInfo);
 
@@ -97,9 +98,19 @@ public class WorldGenStructures
 
         if (!naturalGenInfo.hasLimitations() || naturalGenInfo.getLimitations().areResolved(world, structureName))
         {
-            new StructureGenerator<>(structureInfo).world(world).generationInfo(naturalGenInfo)
+            StructureGenerator<?> generator = new StructureGenerator<>(structureInfo).world(world).generationInfo(naturalGenInfo)
                     .random(random).maturity(StructureSpawnContext.GenerateMaturity.SUGGEST)
-                    .randomPosition(genPos, naturalGenInfo.placer.getContents()).fromCenter(true).generate();
+                    .randomPosition(genPos, naturalGenInfo.placer.getContents()).fromCenter(true);
+
+            boolean didSpawn = generator.generate().isPresent();
+
+            if (!didSpawn)
+            {
+                if (generator.boundingBox().isPresent())
+                    RecurrentComplex.logger.trace(String.format("%s failed to spawn at %s (unknown reason)", structureInfo, genPos));
+                else
+                    RecurrentComplex.logger.trace(String.format("%s couldn't find a place to spawn at %s (due to its Placer)", structureInfo, genPos));
+            }
         }
     }
 

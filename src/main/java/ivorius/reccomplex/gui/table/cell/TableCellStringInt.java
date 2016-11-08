@@ -30,7 +30,8 @@ public class TableCellStringInt extends TableCellPropertyDefault<Integer>
         super.initGui(screen);
 
         Bounds bounds = bounds();
-        textField = new GuiTextField(0, getFontRenderer(), bounds.getMinX(), bounds.getMinY() + (bounds.getHeight() - 20) / 2, bounds.getWidth() - 15, 20);
+        textField = new GuiTextField(0, getFontRenderer(), 0, 0, 0, 0);
+        updateTextFieldBounds(bounds);
         textField.setMaxStringLength(100);
 
         textField.setText(getPropertyValue().toString());
@@ -43,6 +44,14 @@ public class TableCellStringInt extends TableCellPropertyDefault<Integer>
     protected GuiValidityStateIndicator.State getValidityState()
     {
         return Ints.tryParse(textField.getText()) != null ? GuiValidityStateIndicator.State.VALID : GuiValidityStateIndicator.State.INVALID;
+    }
+
+    @Override
+    public void setBounds(Bounds bounds)
+    {
+        super.setBounds(bounds);
+
+        updateTextFieldBounds(bounds);
     }
 
     @Override
@@ -113,5 +122,11 @@ public class TableCellStringInt extends TableCellPropertyDefault<Integer>
 
         if (textField != null)
             textField.setText(value.toString());
+    }
+
+    protected void updateTextFieldBounds(Bounds bounds)
+    {
+        if (textField != null)
+            Bounds.set(textField, Bounds.fromSize(bounds.getMinX() + 2, bounds.getCenterY() - 9, bounds.getWidth() - 18 - 4, 18));
     }
 }

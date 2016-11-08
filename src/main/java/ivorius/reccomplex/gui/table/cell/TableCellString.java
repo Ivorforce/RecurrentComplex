@@ -181,7 +181,8 @@ public class TableCellString extends TableCellPropertyDefault<String>
 
     protected void updateTextFieldBounds(Bounds bounds)
     {
-        Bounds.set(textField, Bounds.fromSize(bounds.getMinX() + 1, bounds.getMinY() + (bounds.getHeight() - 20) / 2 + 1, bounds.getWidth() - (showsValidityState ? 18 : 0) - 2, 18));
+        if (textField != null)
+            Bounds.set(textField, Bounds.fromSize(bounds.getMinX() + 2, bounds.getCenterY() - 9, bounds.getWidth() - (showsValidityState ? 18 : 0) - 4, 18));
     }
 
     @Override
@@ -189,8 +190,7 @@ public class TableCellString extends TableCellPropertyDefault<String>
     {
         super.setBounds(bounds);
 
-        if (textField != null)
-            updateTextFieldBounds(bounds);
+        updateTextFieldBounds(bounds);
     }
 
     public GuiValidityStateIndicator.State getValidityState()

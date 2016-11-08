@@ -493,6 +493,7 @@ reccomplex.worldscript.strucGen.mode.list.front=Front
 reccomplex.worldscript.strucGen.rotation.random=Random (if rotatable)
 reccomplex.worldscript.strucGen.mirror.random=Random (if mirrorable)
 
+reccomplex.gui.list.noelements=No Elements
 reccomplex.gui.true=True
 reccomplex.gui.false=False
 

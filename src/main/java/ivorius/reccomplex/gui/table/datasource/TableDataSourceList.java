@@ -155,7 +155,7 @@ public abstract class TableDataSourceList<T, L extends List<T>> extends TableDat
     public int sizeOfSegment(int segment)
     {
         if (isListSegment(segment))
-            return list.size();
+            return Math.max(list.size(), 1);
 
         int addIndex = getAddIndex(segment);
         if (addIndex >= 0)
@@ -169,6 +169,9 @@ public abstract class TableDataSourceList<T, L extends List<T>> extends TableDat
     {
         if (isListSegment(segment))
         {
+            if (list.size() == 0)
+                return new TitledCell(new TableCellTitle(null, String.format("%s%s%s", TextFormatting.GRAY, TextFormatting.ITALIC, IvTranslations.get("reccomplex.gui.list.noelements"))));
+
             T t = list.get(index);
 
             TableCellButton[] cells = getEntryActions(index);
@@ -229,10 +232,8 @@ public abstract class TableDataSourceList<T, L extends List<T>> extends TableDat
 
     public int getAddIndex(int segment)
     {
-        return segment == 0
-                ? 0
-                : segment == 2
-                ? (list.size() > 0 ? list.size() : -1)
+        return segment == 0 ? 0
+                : segment == 2 ? list.size()
                 : -1;
     }
 

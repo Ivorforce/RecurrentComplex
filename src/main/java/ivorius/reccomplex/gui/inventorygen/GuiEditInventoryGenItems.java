@@ -9,6 +9,7 @@ import ivorius.ivtoolkit.gui.*;
 import ivorius.ivtoolkit.network.PacketGuiAction;
 import ivorius.ivtoolkit.tools.IvTranslations;
 import ivorius.reccomplex.RecurrentComplex;
+import ivorius.reccomplex.gui.GuiHider;
 import ivorius.reccomplex.gui.InventoryWatcher;
 import ivorius.reccomplex.gui.RCGuiHandler;
 import ivorius.reccomplex.utils.RangeHelper;
@@ -24,6 +25,7 @@ import net.minecraft.inventory.IInventory;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.StringUtils;
 import net.minecraft.util.math.MathHelper;
+import net.minecraft.util.text.TextFormatting;
 import org.lwjgl.input.Keyboard;
 
 import java.io.IOException;
@@ -74,24 +76,32 @@ public class GuiEditInventoryGenItems extends GuiContainer implements InventoryW
         weightSliders.clear();
         minMaxSliders.clear();
 
-        int shiftRight = width / 2 - xSize / 2;
-        int shiftTop = height / 2 - ySize / 2;
-        int shiftRightPage = shiftRight + ContainerEditInventoryGenItems.ITEM_COLUMNS * ContainerEditInventoryGenItems.SEGMENT_WIDTH;
+        int leftEdge = width / 2 - xSize / 2;
+        int topEdge = height / 2 - ySize / 2;
+        int shiftRightPage = leftEdge + ContainerEditInventoryGenItems.ITEM_COLUMNS * ContainerEditInventoryGenItems.SEGMENT_WIDTH;
 
-        this.buttonList.add(this.backBtn = new GuiButton(0, width / 2 - xSize / 2, this.height / 2 - 90, xSize, 20, IvTranslations.get("gui.back")));
+        this.buttonList.add(this.backBtn = new GuiButton(0, leftEdge, this.height / 2 + 90, xSize / 3 - 1, 20, IvTranslations.get("gui.back")));
 
-        this.buttonList.add(this.nextPageBtn = new GuiButton(2, shiftRightPage, this.height / 2 - 50, 20, 20, ">"));
-        this.buttonList.add(this.prevPageBtn = new GuiButton(3, shiftRightPage, this.height / 2 - 20, 20, 20, "<"));
+        GuiButton saveButton = new GuiButton(1, leftEdge + xSize / 3 + 1, this.height / 2 + 90, xSize / 3 - 2, 20, TextFormatting.GREEN + IvTranslations.get("reccomplex.gui.save"));
+        saveButton.enabled = false;
+        this.buttonList.add(saveButton);
+
+        GuiButton hideButton = new GuiButton(2, leftEdge + xSize / 3 * 2 + 1, this.height / 2 + 90, xSize / 3 - 1, 20, IvTranslations.get("reccomplex.gui.hidegui"));
+        hideButton.enabled = false; // Can't yet with container gui
+        this.buttonList.add(hideButton);
+
+        this.buttonList.add(this.nextPageBtn = new GuiButton(10, shiftRightPage, this.height / 2 - 80, 20, 20, ">"));
+        this.buttonList.add(this.prevPageBtn = new GuiButton(11, shiftRightPage, this.height / 2 - 50, 20, 20, "<"));
 
         for (int col = 0; col < ContainerEditInventoryGenItems.ITEM_COLUMNS; ++col)
         {
             for (int row = 0; row < ContainerEditInventoryGenItems.ITEM_ROWS; ++row)
             {
                 int availableSize = ContainerEditInventoryGenItems.SEGMENT_WIDTH - 22 - 4;
-                int baseX = shiftRight + 20 + col * ContainerEditInventoryGenItems.SEGMENT_WIDTH;
+                int baseX = leftEdge + 20 + col * ContainerEditInventoryGenItems.SEGMENT_WIDTH;
                 int onePart = availableSize / 5;
 
-                GuiSliderRange minMaxSlider = new GuiSliderRange(100, baseX, shiftTop + 48 + row * 18, onePart * 2 - 2, 18, "");
+                GuiSliderRange minMaxSlider = new GuiSliderRange(100, baseX, topEdge + 18 + row * 18, onePart * 2 - 2, 18, "");
                 minMaxSlider.addListener(slider -> {
                     List<GenericItemCollection.RandomizedItemStack> chestContents = component.items;
                     if (slider.id < 300)
@@ -115,7 +125,7 @@ public class GuiEditInventoryGenItems extends GuiContainer implements InventoryW
                 this.buttonList.add(minMaxSlider);
                 minMaxSliders.add(minMaxSlider);
 
-                GuiSlider weightSlider = new GuiSlider(200, baseX + onePart * 2, shiftTop + 48 + row * 18, onePart * 3, 18, IvTranslations.get("reccomplex.gui.random.weight"));
+                GuiSlider weightSlider = new GuiSlider(200, baseX + onePart * 2, topEdge + 18 + row * 18, onePart * 3, 18, IvTranslations.get("reccomplex.gui.random.weight"));
                 weightSlider.addListener(slider -> {
                     List<GenericItemCollection.RandomizedItemStack> chestContents = component.items;
                     if (slider.id < 200 && slider.id >= 100)
@@ -204,10 +214,14 @@ public class GuiEditInventoryGenItems extends GuiContainer implements InventoryW
             }
             else if (button.id == 2)
             {
+                GuiHider.hideGUI();
+            }
+            else if (button.id == 10)
+            {
                 scrollTo(currentColShift + 1);
                 RecurrentComplex.network.sendToServer(PacketGuiAction.packetGuiAction("igSelectCol", currentColShift));
             }
-            else if (button.id == 3)
+            else if (button.id == 11)
             {
                 scrollTo(currentColShift - 1);
                 RecurrentComplex.network.sendToServer(PacketGuiAction.packetGuiAction("igSelectCol", currentColShift));
@@ -264,11 +278,11 @@ public class GuiEditInventoryGenItems extends GuiContainer implements InventoryW
     {
         mc.getTextureManager().bindTexture(textureBackground);
         GlStateManager.color(1.0f, 1.0f, 1.0f);
-        drawTexturedModalRect(width / 2 - 176 / 2 - 20 / 2 - 1, MathHelper.ceiling_float_int(height * 0.5f) + 17, 0, 0, 176, 90);
+        drawTexturedModalRect(width / 2 - 176 / 2 - 20 / 2 - 1, height / 2 - 13, 0, 0, 176, 90);
 
         for (int i = 0; i < ContainerEditInventoryGenItems.ITEM_ROWS; i++)
         {
-            drawTexturedModalRect(width / 2 - ContainerEditInventoryGenItems.SEGMENT_WIDTH / 2 - 11, height / 2 - 61 + i * 18, 7, 7, 18, 18);
+            drawTexturedModalRect(width / 2 - ContainerEditInventoryGenItems.SEGMENT_WIDTH / 2 - 11, height / 2 - 91 + i * 18, 7, 7, 18, 18);
         }
 //        for (int i = 0; i < ContainerEditInventoryGen.ITEM_COLUMNS; i++)
 //        {

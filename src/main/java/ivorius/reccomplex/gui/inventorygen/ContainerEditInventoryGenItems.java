@@ -48,14 +48,14 @@ public class ContainerEditInventoryGenItems extends Container implements PacketG
             for (int row = 0; row < ITEM_ROWS; ++row)
             {
                 int index = col * ITEM_ROWS + row;
-                SlotDynamicIndex slotLeft = new SlotDynamicIndex(inventory, index, col * SEGMENT_WIDTH, 50 + row * 18);
+                SlotDynamicIndex slotLeft = new SlotDynamicIndex(inventory, index, col * SEGMENT_WIDTH, 20 + row * 18);
 
                 this.addSlotToContainer(slotLeft);
                 scrollableSlots.add(slotLeft);
             }
         }
 
-        int basePlayerY = 50 + ITEM_ROWS * 18 + 13;
+        int basePlayerY = 20 + ITEM_ROWS * 18 + 13;
         int basePlayerX = (ITEM_COLUMNS * SEGMENT_WIDTH - 9 * 18) / 2;
 
         for (int row = 0; row < 3; ++row)

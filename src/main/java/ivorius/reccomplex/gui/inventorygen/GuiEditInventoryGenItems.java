@@ -230,33 +230,29 @@ public class GuiEditInventoryGenItems extends GuiContainer implements InventoryW
     }
 
     @Override
-    protected void keyTyped(char par1, int par2) throws IOException
+    protected void keyTyped(char keyChar, int keyCode) throws IOException
     {
-        if (!(par2 == Keyboard.KEY_ESCAPE || par2 == this.mc.gameSettings.keyBindInventory.getKeyCode())) // Escape!
+        if (keyCode == this.mc.gameSettings.keyBindInventory.getKeyCode())
+            return;
+
+        if (keyCode == Keyboard.KEY_ESCAPE) // Would otherwise close GUI
         {
-            super.keyTyped(par1, par2);
+            if (backBtn != null)
+                actionPerformed(backBtn);
+
+            return;
         }
 
-        if (par2 == Keyboard.KEY_LEFT && prevPageBtn.enabled)
+        super.keyTyped(keyChar, keyCode);
+
+        if (keyCode == Keyboard.KEY_LEFT && prevPageBtn.enabled)
         {
             actionPerformed(prevPageBtn);
         }
-        else if (par2 == Keyboard.KEY_RIGHT && nextPageBtn.enabled)
+        else if (keyCode == Keyboard.KEY_RIGHT && nextPageBtn.enabled)
         {
             actionPerformed(nextPageBtn);
         }
-
-//        if (par2 != 28 && par2 != 156)
-//        {
-//            if (par2 == 1)
-//            {
-//                this.actionPerformed(this.cancelBtn);
-//            }
-//        }
-//        else
-//        {
-//            this.actionPerformed(this.backBtn);
-//        }
     }
 
     @Override

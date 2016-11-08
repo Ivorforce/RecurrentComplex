@@ -78,9 +78,11 @@ public class GuiScreenEditTable<T extends TableDataSource> extends GuiScreenModa
         {
             if (escButton != null)
                 actionPerformed(escButton);
+
+            return;
         }
-        else
-            super.keyTyped(keyChar, keyCode);
+
+        super.keyTyped(keyChar, keyCode);
     }
 
     @Override

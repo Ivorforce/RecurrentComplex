@@ -126,8 +126,8 @@ public class TableDataSourceWorldScriptStructureGenerator extends TableDataSourc
                 else if (index == 1)
                 {
                     TableCellEnum<Boolean> cell = new TableCellEnum<>("mirror", script.getStructureMirror(),
-                            new Option<>(false, IvTranslations.get("gui.false")),
-                            new Option<>(true, IvTranslations.get("gui.true")),
+                            new Option<>(false, IvTranslations.get("reccomplex.gui.false")),
+                            new Option<>(true, IvTranslations.get("reccomplex.gui.true")),
                             new Option<>(null, IvTranslations.get("reccomplex.worldscript.strucGen.mirror.random")));
                     cell.addPropertyConsumer(script::setStructureMirror);
                     return new TitledCell(IvTranslations.get("reccomplex.mirror"), cell);

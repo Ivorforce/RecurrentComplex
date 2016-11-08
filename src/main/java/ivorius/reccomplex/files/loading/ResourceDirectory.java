@@ -223,9 +223,9 @@ public enum ResourceDirectory
             case INACTIVE:
                 return "inactive";
             case SERVER_ACTIVE:
-                return "save/active";
+                return "world/active";
             case SERVER_INACTIVE:
-                return "save/inactive";
+                return "world/inactive";
             default:
                 throw new IllegalStateException();
         }

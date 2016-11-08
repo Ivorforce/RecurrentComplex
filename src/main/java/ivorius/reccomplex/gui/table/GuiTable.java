@@ -43,7 +43,8 @@ public class GuiTable extends Gui
     private Bounds bounds;
     private Bounds tableBounds;
 
-    private boolean allowsNegativeScroll = true;
+    private boolean allowsNegativeScroll = false;
+    private boolean startCentered = true;
     private boolean firstTime = true;
     private boolean showsScrollBar;
     private float currentScroll;
@@ -120,7 +121,7 @@ public class GuiTable extends Gui
 
         if (firstTime)
         {
-            if (supportedSlotNumber > numberOfCells && allowsNegativeScroll)
+            if (supportedSlotNumber > numberOfCells && allowsNegativeScroll && startCentered)
                 currentScroll = (getMinScroll() + getMaxScroll()) / 2; // Scroll to the middle
             firstTime = false;
         }
@@ -144,8 +145,8 @@ public class GuiTable extends Gui
         scrollUpButton.visible = showsScrollBar;
         scrollDownButton.visible = showsScrollBar;
 
-        int baseY = tableBounds.getMinY() + (showsScrollBar ? 0 : (tableBounds.getHeight() - numberOfCells * HEIGHT_PER_SLOT) / 2)
-                + (tableBounds.getHeight() - supportedSlotNumber * HEIGHT_PER_SLOT) / 2;
+        int baseY = tableBounds.getMinY() + (tableBounds.getHeight()
+                - (!allowsNegativeScroll && startCentered ? Math.min(numberOfCells, supportedSlotNumber) : supportedSlotNumber) * HEIGHT_PER_SLOT) / 2;
         for (int index = 0; index < supportedSlotNumber && roundedScrollIndex + index < numberOfCells; index++)
         {
             int cellIndex = roundedScrollIndex + index;

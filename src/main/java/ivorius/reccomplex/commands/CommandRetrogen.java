@@ -5,7 +5,7 @@
 
 package ivorius.reccomplex.commands;
 
-import ivorius.ivtoolkit.tools.IvStreams;
+import ivorius.ivtoolkit.util.IvStreams;
 import ivorius.reccomplex.RCConfig;
 import ivorius.reccomplex.files.RCFiles;
 import ivorius.reccomplex.files.loading.FileSuffixFilter;

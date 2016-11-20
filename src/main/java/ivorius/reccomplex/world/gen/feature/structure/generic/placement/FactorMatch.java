@@ -7,8 +7,11 @@ package ivorius.reccomplex.world.gen.feature.structure.generic.placement;
 
 import com.google.common.math.DoubleMath;
 import com.google.gson.*;
+import ivorius.ivtoolkit.blocks.BlockAreas;
 import ivorius.ivtoolkit.blocks.IvBlockCollection;
 import ivorius.ivtoolkit.gui.IntegerRange;
+import ivorius.ivtoolkit.util.LineSelection;
+import ivorius.ivtoolkit.world.chunk.gen.StructureBoundingBoxes;
 import ivorius.reccomplex.RecurrentComplex;
 import ivorius.reccomplex.gui.editstructure.placer.TableDataSourceFactorMatch;
 import ivorius.reccomplex.gui.table.datasource.TableDataSource;
@@ -87,7 +90,7 @@ public class FactorMatch extends GenericPlacer.Factor
 
         int[] size = StructureBoundingBoxes.size(context.boundingBox);
         BlockPos lowerCoord = StructureBoundingBoxes.min(context.boundingBox);
-        Set<BlockPos.MutableBlockPos> sources = RCBlockAreas.streamMutablePositions(blockCollection.area())
+        Set<BlockPos.MutableBlockPos> sources = BlockAreas.streamMutablePositions(blockCollection.area())
                 .filter(p -> sourceMatcher.test(blockCollection.getBlockState(p)))
                 .map(p -> new BlockPos.MutableBlockPos(context.transform.apply(p, size).add(lowerCoord.getX(), 0, lowerCoord.getZ())))
                 .collect(Collectors.toSet());

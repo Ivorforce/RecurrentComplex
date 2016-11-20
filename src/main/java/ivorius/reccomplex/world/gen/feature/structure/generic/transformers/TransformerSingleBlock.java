@@ -5,6 +5,9 @@
 
 package ivorius.reccomplex.world.gen.feature.structure.generic.transformers;
 
+import ivorius.ivtoolkit.blocks.BlockAreas;
+import ivorius.ivtoolkit.blocks.IvMutableBlockPos;
+import ivorius.ivtoolkit.world.chunk.gen.StructureBoundingBoxes;
 import ivorius.reccomplex.utils.*;
 import ivorius.reccomplex.world.gen.feature.structure.Environment;
 import net.minecraft.util.math.BlockPos;
@@ -41,9 +44,9 @@ public abstract class TransformerSingleBlock<S extends NBTStorable> extends Tran
             BlockPos lowerCoord = StructureBoundingBoxes.min(context.boundingBox);
 
             BlockPos.MutableBlockPos worldCoord = new BlockPos.MutableBlockPos();
-            for (BlockPos sourceCoord : RCBlockAreas.mutablePositions(blockCollection.area()))
+            for (BlockPos sourceCoord : BlockAreas.mutablePositions(blockCollection.area()))
             {
-                RCMutableBlockPos.add(RCAxisAlignedTransform.apply(sourceCoord, worldCoord, areaSize, context.transform), lowerCoord);
+                IvMutableBlockPos.add(RCAxisAlignedTransform.apply(sourceCoord, worldCoord, areaSize, context.transform), lowerCoord);
 
                 if (context.includes(worldCoord))
                 {

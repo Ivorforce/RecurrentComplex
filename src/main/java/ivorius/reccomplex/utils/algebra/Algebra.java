@@ -11,9 +11,9 @@ import com.google.common.collect.Lists;
 import ivorius.ivtoolkit.tools.Pairs;
 import ivorius.ivtoolkit.tools.Ranges;
 import ivorius.ivtoolkit.tools.Visitor;
+import ivorius.ivtoolkit.util.IvFunctions;
 import ivorius.reccomplex.utils.PrecedenceSet;
 import ivorius.reccomplex.utils.PrecedenceSets;
-import ivorius.reccomplex.utils.RCFunctions;
 import ivorius.reccomplex.utils.SymbolTokenizer;
 import org.apache.commons.lang3.tuple.Pair;
 
@@ -257,7 +257,7 @@ public class Algebra<T>
                 TreeSet<List<Pair<Operator<T>, Integer>>> sortedSymbols = new TreeSet<>((o1, o2) -> getStringSymbol(o2.get(0)).compareTo(getStringSymbol(o1.get(0))));
 
                 // Group by symbol string
-                sortedSymbols.addAll(RCFunctions.group(symbols, this::getStringSymbol).stream().map(Lists::newArrayList).collect(Collectors.toList()));
+                sortedSymbols.addAll(IvFunctions.group(symbols, this::getStringSymbol).stream().map(Lists::newArrayList).collect(Collectors.toList()));
 
                 return sortedSymbols;
             }

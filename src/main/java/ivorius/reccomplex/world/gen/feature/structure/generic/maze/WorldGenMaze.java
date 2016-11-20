@@ -15,7 +15,7 @@ import ivorius.ivtoolkit.maze.components.*;
 import ivorius.reccomplex.RCConfig;
 import ivorius.reccomplex.RecurrentComplex;
 import ivorius.reccomplex.utils.NBTStorable;
-import ivorius.reccomplex.utils.Transforms;
+import ivorius.ivtoolkit.math.Transforms;
 import ivorius.reccomplex.world.gen.feature.StructureGenerator;
 import ivorius.reccomplex.world.gen.feature.structure.*;
 import ivorius.reccomplex.world.gen.feature.structure.generic.gentypes.MazeGenerationInfo;

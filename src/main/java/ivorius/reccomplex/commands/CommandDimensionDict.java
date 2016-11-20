@@ -68,7 +68,7 @@ public class CommandDimensionDict extends CommandBase
                     components[i] = typeTextComponent(types.get(i));
 
                 commandSender.addChatMessage(ServerTranslations.format("commands.dimensiondict.get", dimensionID,
-                        ServerTranslations.join(components)));
+                        ServerTranslations.join((Object[]) components)));
                 break;
             }
             case "list":
@@ -82,7 +82,7 @@ public class CommandDimensionDict extends CommandBase
                     components[i] = dimensionTextComponent(typeDimensions.get(i));
 
                 commandSender.addChatMessage(ServerTranslations.format("commands.dimensiondict.list", type,
-                        ServerTranslations.join(components)));
+                        ServerTranslations.join((Object[]) components)));
                 break;
             }
             default:

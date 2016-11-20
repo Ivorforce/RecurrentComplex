@@ -5,12 +5,12 @@
 
 package ivorius.reccomplex.gui.table.datasource;
 
+import ivorius.ivtoolkit.lang.IvClasses;
 import ivorius.reccomplex.RecurrentComplex;
 import ivorius.reccomplex.gui.table.GuiTable;
 import ivorius.reccomplex.gui.table.TableDelegate;
 import ivorius.reccomplex.gui.table.TableNavigator;
 import ivorius.reccomplex.gui.table.cell.*;
-import ivorius.reccomplex.utils.IvClasses;
 import net.minecraft.util.text.TextFormatting;
 import ivorius.ivtoolkit.tools.IvTranslations;
 

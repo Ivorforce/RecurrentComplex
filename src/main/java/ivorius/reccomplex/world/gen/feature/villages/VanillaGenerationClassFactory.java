@@ -5,8 +5,8 @@
 
 package ivorius.reccomplex.world.gen.feature.villages;
 
+import ivorius.ivtoolkit.lang.IvClasses;
 import ivorius.reccomplex.RecurrentComplex;
-import ivorius.reccomplex.utils.IvClasses;
 import net.minecraft.world.gen.structure.StructureVillagePieces;
 import org.objectweb.asm.ClassVisitor;
 import org.objectweb.asm.ClassWriter;

@@ -7,6 +7,7 @@ package ivorius.reccomplex.utils;
 
 import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
+import ivorius.ivtoolkit.lang.*;
 import ivorius.ivtoolkit.tools.NBTCompoundObject;
 import ivorius.ivtoolkit.tools.NBTCompoundObjects;
 import net.minecraft.nbt.NBTTagCompound;
@@ -80,6 +81,6 @@ public class NBTStringTypeRegistry<B extends NBTCompoundObject>
     public B read(NBTTagCompound compound)
     {
         Class<? extends B> type = objectClass(compound.getString(getTypeKey()));
-        return type != null ? NBTCompoundObjects.read(compound.getCompoundTag(getObjectKey()), type) : null;
+        return type != null ? NBTCompoundObjects.read(compound.getCompoundTag(getObjectKey()), () -> ivorius.ivtoolkit.lang.IvClasses.instantiate(type)) : null;
     }
 }

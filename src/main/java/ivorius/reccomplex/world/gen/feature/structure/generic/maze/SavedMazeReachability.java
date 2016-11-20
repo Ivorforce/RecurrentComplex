@@ -130,10 +130,10 @@ public class SavedMazeReachability implements NBTCompoundObject
     public void readFromNBT(NBTTagCompound compound)
     {
         groups.clear();
-        groups.addAll(Lists.transform(NBTTagLists.listsFrom(compound, "groups"), input -> Sets.newHashSet(NBTCompoundObjects.readList(input, SavedMazePath.class))));
+        groups.addAll(Lists.transform(NBTTagLists.listsFrom(compound, "groups"), input -> Sets.newHashSet(NBTCompoundObjects.readList(input, SavedMazePath::new))));
 
         crossConnections.clear();
-        crossConnections.addAll(Lists.transform(NBTTagLists.compoundsFrom(compound, "crossConnections"), input -> ImmutablePair.of(NBTCompoundObjects.readFrom(input, "key", SavedMazePath.class), NBTCompoundObjects.readFrom(input, "val", SavedMazePath.class))));
+        crossConnections.addAll(Lists.transform(NBTTagLists.compoundsFrom(compound, "crossConnections"), input -> ImmutablePair.of(NBTCompoundObjects.readFrom(input, "key", SavedMazePath::new), NBTCompoundObjects.readFrom(input, "val", SavedMazePath::new))));
     }
 
     @Override

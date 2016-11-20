@@ -8,7 +8,6 @@ package ivorius.reccomplex.gui.table.cell;
 import ivorius.ivtoolkit.gui.*;
 import ivorius.reccomplex.gui.table.Bounds;
 import ivorius.reccomplex.gui.table.GuiTable;
-import ivorius.reccomplex.utils.RangeHelper;
 
 /**
  * Created by lukas on 02.06.14.
@@ -82,7 +81,7 @@ public class TableCellIntegerRange extends TableCellPropertyDefault<IntegerRange
     @Override
     public void valueChanged(GuiSliderMultivalue gui)
     {
-        property = RangeHelper.roundedIntRange(slider.getRange());
+        property = Ranges.roundedIntRange(slider.getRange());
 
         slider.setRange(new FloatRange(property));
         updateSliderString();

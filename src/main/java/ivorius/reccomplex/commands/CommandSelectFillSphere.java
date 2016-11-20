@@ -6,6 +6,7 @@
 package ivorius.reccomplex.commands;
 
 import ivorius.ivtoolkit.blocks.BlockArea;
+import ivorius.ivtoolkit.blocks.BlockStates;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.CommandException;
 import net.minecraft.server.MinecraftServer;
@@ -66,7 +67,7 @@ public class CommandSelectFillSphere extends CommandBase
 
             Block dstBlock = getBlockByText(commandSender, args[0]);
             int[] dstMeta = args.length >= 2 ? RCCommands.parseMetadatas(args[1]) : new int[]{0};
-            List<IBlockState> dst = IntStream.of(dstMeta).mapToObj(dstBlock::getStateFromMeta).collect(Collectors.toList());
+            List<IBlockState> dst = IntStream.of(dstMeta).mapToObj(m -> BlockStates.fromMetadata(dstBlock, m)).collect(Collectors.toList());
 
             BlockArea area = RCCommands.getSelectionOwner(commandSender, null, true).getSelection();
 

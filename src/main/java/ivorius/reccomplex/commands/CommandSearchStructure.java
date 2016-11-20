@@ -133,7 +133,7 @@ public class CommandSearchStructure extends CommandBase
                     components[i] = toComponent.apply(results.remove());
             }
 
-            commandSender.addChatMessage(ServerTranslations.join(components));
+            commandSender.addChatMessage(ServerTranslations.join((Object[]) components));
         }
         else
         {

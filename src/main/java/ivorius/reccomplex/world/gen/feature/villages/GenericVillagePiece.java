@@ -11,7 +11,7 @@ import ivorius.reccomplex.world.gen.feature.structure.*;
 import ivorius.reccomplex.world.gen.feature.structure.generic.gentypes.GenerationInfo;
 import ivorius.reccomplex.world.gen.feature.structure.generic.gentypes.VanillaGenerationInfo;
 import ivorius.reccomplex.utils.NBTStorable;
-import ivorius.reccomplex.utils.StructureBoundingBoxes;
+import ivorius.ivtoolkit.world.chunk.gen.StructureBoundingBoxes;
 import ivorius.reccomplex.world.gen.feature.StructureGenerator;
 import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTTagCompound;

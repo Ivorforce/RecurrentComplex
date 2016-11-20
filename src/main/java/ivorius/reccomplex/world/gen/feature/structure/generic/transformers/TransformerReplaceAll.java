@@ -7,6 +7,7 @@ package ivorius.reccomplex.world.gen.feature.structure.generic.transformers;
 
 import com.google.gson.*;
 import com.google.gson.reflect.TypeToken;
+import ivorius.ivtoolkit.blocks.BlockStates;
 import ivorius.ivtoolkit.tools.IvWorldData;
 import ivorius.reccomplex.world.gen.feature.structure.Environment;
 import ivorius.reccomplex.utils.presets.PresettedObjects;
@@ -189,7 +190,7 @@ public class TransformerReplaceAll extends TransformerSingleBlock<TransformerRep
 
                 transformer.destination.setToCustom();
                 for (byte b : destMeta)
-                    transformer.destination.getContents().add(new WeightedBlockState(null, dest.getStateFromMeta(b), ""));
+                    transformer.destination.getContents().add(new WeightedBlockState(null, BlockStates.fromMetadata(dest, b), ""));
             }
 
             return transformer;

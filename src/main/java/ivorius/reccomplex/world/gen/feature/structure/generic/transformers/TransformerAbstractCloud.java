@@ -8,10 +8,13 @@ package ivorius.reccomplex.world.gen.feature.structure.generic.transformers;
 import com.google.common.collect.Sets;
 import gnu.trove.map.TObjectDoubleMap;
 import gnu.trove.map.hash.TObjectDoubleHashMap;
+import ivorius.ivtoolkit.blocks.BlockAreas;
 import ivorius.ivtoolkit.blocks.BlockPositions;
 import ivorius.ivtoolkit.blocks.IvBlockCollection;
+import ivorius.ivtoolkit.blocks.IvMutableBlockPos;
 import ivorius.ivtoolkit.tools.IvWorldData;
 import ivorius.ivtoolkit.tools.NBTTagLists;
+import ivorius.ivtoolkit.world.chunk.gen.StructureBoundingBoxes;
 import ivorius.reccomplex.random.BlurredValueField;
 import ivorius.reccomplex.utils.*;
 import ivorius.reccomplex.world.gen.feature.structure.Environment;
@@ -83,7 +86,7 @@ public abstract class TransformerAbstractCloud<S extends TransformerAbstractClou
         for (int i = 0; i < values; i++)
             blurredValueField.addValue(1 + (random.nextFloat() - random.nextFloat()) * (float) naturalExpansionRandomization() / 100f, random);
 
-        RCBlockAreas.mutablePositions(worldData.blockCollection.area()).forEach(pos ->
+        BlockAreas.mutablePositions(worldData.blockCollection.area()).forEach(pos ->
         {
             IBlockState state = worldData.blockCollection.getBlockState(pos);
             BlockPos worldCoord = context.transform.apply(pos, strucSize).add(lowerCoord);
@@ -107,8 +110,8 @@ public abstract class TransformerAbstractCloud<S extends TransformerAbstractClou
                     double modifier = naturalExpansionDistance(side);
                     if (modifier > 0.000001)
                     {
-                        RCMutableBlockPos.offset(pos, sidePos, side);
-                        RCMutableBlockPos.add(RCAxisAlignedTransform.apply(sidePos, sideWorldCoord, strucSize, context.transform), lowerCoord);
+                        IvMutableBlockPos.offset(pos, sidePos, side);
+                        IvMutableBlockPos.add(RCAxisAlignedTransform.apply(sidePos, sideWorldCoord, strucSize, context.transform), lowerCoord);
 
                         double sideDensity = density - (falloff * (1.0 / modifier) * blurredValueField.getValue(sidePos.getX(), sidePos.getY(), sidePos.getZ()));
 
@@ -156,7 +159,7 @@ public abstract class TransformerAbstractCloud<S extends TransformerAbstractClou
             BlockPos.MutableBlockPos worldCoord = new BlockPos.MutableBlockPos();
             instanceData.cloud.forEachEntry((sourcePos, density) ->
             {
-                RCMutableBlockPos.add(RCAxisAlignedTransform.apply(sourcePos, worldCoord, areaSize, context.transform), lowerCoord);
+                IvMutableBlockPos.add(RCAxisAlignedTransform.apply(sourcePos, worldCoord, areaSize, context.transform), lowerCoord);
                 transformBlock(instanceData, phase, context, sourcePos, worldCoord, worldData.blockCollection.getBlockState(sourcePos), density);
                 return true;
             });

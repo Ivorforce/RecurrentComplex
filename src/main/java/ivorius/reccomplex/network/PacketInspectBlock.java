@@ -7,7 +7,6 @@ package ivorius.reccomplex.network;
 
 import io.netty.buffer.ByteBuf;
 import ivorius.ivtoolkit.blocks.BlockPositions;
-import ivorius.reccomplex.utils.BlockStates;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
@@ -54,13 +53,13 @@ public class PacketInspectBlock implements IMessage
     public void fromBytes(ByteBuf buf)
     {
         pos = BlockPositions.readFromBuffer(buf);
-        state = BlockStates.readBlockState(buf);
+        state = ivorius.ivtoolkit.blocks.BlockStates.readBlockState(buf);
     }
 
     @Override
     public void toBytes(ByteBuf buf)
     {
         BlockPositions.writeToBuffer(pos, buf);
-        BlockStates.writeBlockState(buf, state);
+        ivorius.ivtoolkit.blocks.BlockStates.writeBlockState(buf, state);
     }
 }

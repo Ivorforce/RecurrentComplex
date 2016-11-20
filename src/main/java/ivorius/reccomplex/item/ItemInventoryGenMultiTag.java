@@ -8,9 +8,9 @@ package ivorius.reccomplex.item;
 import gnu.trove.list.TIntList;
 import gnu.trove.list.array.TIntArrayList;
 import ivorius.ivtoolkit.gui.IntegerRange;
+import ivorius.ivtoolkit.item.IvItemStacks;
 import ivorius.reccomplex.gui.inventorygen.GuiEditItemStack;
 import ivorius.reccomplex.gui.inventorygen.TableDataSourceInvGenMultiTag;
-import ivorius.reccomplex.utils.IvItemStacks;
 import ivorius.reccomplex.world.storage.loot.WeightedItemCollection;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.EntityPlayer;
@@ -92,8 +92,8 @@ public class ItemInventoryGenMultiTag extends ItemInventoryGenerationTag impleme
 
     public IntegerRange getGenerationCount(ItemStack stack)
     {
-        return new IntegerRange(IvItemStacks.getNBTInt(stack, "itemCountMin", 4),
-                IvItemStacks.getNBTInt(stack, "itemCountMax", 8));
+        return new IntegerRange(IvItemStacks.getNBT(stack, "itemCountMin", 4),
+                IvItemStacks.getNBT(stack, "itemCountMax", 8));
     }
 
     public void setGenerationCount(ItemStack stack, IntegerRange range)

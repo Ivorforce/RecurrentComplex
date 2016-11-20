@@ -7,6 +7,7 @@ package ivorius.reccomplex.world.gen.feature.structure.generic.placement.rays;
 
 import com.google.gson.*;
 import ivorius.ivtoolkit.tools.IvTranslations;
+import ivorius.ivtoolkit.util.IvStreams;
 import ivorius.reccomplex.RecurrentComplex;
 import ivorius.reccomplex.gui.TableDataSourceExpression;
 import ivorius.reccomplex.gui.table.*;
@@ -21,8 +22,7 @@ import ivorius.reccomplex.world.gen.feature.structure.generic.WorldCache;
 import ivorius.reccomplex.utils.expression.PositionedBlockMatcher;
 import ivorius.reccomplex.world.gen.feature.structure.generic.placement.FactorLimit;
 import ivorius.reccomplex.world.gen.feature.structure.generic.placement.StructurePlaceContext;
-import ivorius.reccomplex.utils.BlockSurfaceArea;
-import ivorius.reccomplex.utils.RCStreams;
+import ivorius.ivtoolkit.blocks.BlockSurfaceArea;
 
 import java.lang.reflect.Type;
 import java.util.OptionalInt;
@@ -59,7 +59,7 @@ public class RayMatcher extends FactorLimit.Ray
         int[] need = new int[]{(int) (chances[0] * needed)};
         chances[0] -= need[0];
 
-        RCStreams.visit(surfaceArea.stream(), pos ->
+        IvStreams.visit(surfaceArea.stream(), pos ->
         {
             if (destMatcher.test(PositionedBlockMatcher.Argument.at(cache, pos.blockPos(y))))
                 return --need[0] > 0;

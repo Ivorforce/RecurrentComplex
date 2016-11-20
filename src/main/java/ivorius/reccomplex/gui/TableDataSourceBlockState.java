@@ -6,6 +6,7 @@
 package ivorius.reccomplex.gui;
 
 import com.google.common.collect.Lists;
+import ivorius.ivtoolkit.blocks.BlockStates;
 import ivorius.reccomplex.gui.table.cell.*;
 import ivorius.reccomplex.gui.table.datasource.TableDataSourceSegmented;
 import net.minecraft.util.text.TextFormatting;
@@ -13,7 +14,6 @@ import ivorius.ivtoolkit.tools.IvTranslations;
 import ivorius.reccomplex.RecurrentComplex;
 import ivorius.reccomplex.gui.editstructure.transformers.TableDataSourceBTNatural;
 import ivorius.reccomplex.gui.table.*;
-import ivorius.reccomplex.utils.BlockStates;
 import net.minecraft.block.Block;
 import net.minecraft.block.properties.IProperty;
 import net.minecraft.block.state.IBlockState;
@@ -177,7 +177,7 @@ public class TableDataSourceBlockState extends TableDataSourceSegmented implemen
         List<IProperty<?>> names = Lists.newArrayList(state.getPropertyNames());
         // Remove if it doesn't make a difference on metadata -> isn't saved
         names.removeIf(name -> (name.getAllowedValues().stream()
-                .mapToInt(obj -> BlockStates.toMetadata(state.withProperty((IProperty) name, (Comparable) obj)))
+                .mapToInt(obj -> ivorius.ivtoolkit.blocks.BlockStates.toMetadata(state.withProperty((IProperty) name, (Comparable) obj)))
                 .distinct().count() < 2) != extended);
         Collections.sort(names, (o1, o2) -> o1.getName().compareTo(o2.getName()));
         return names;
@@ -210,7 +210,7 @@ public class TableDataSourceBlockState extends TableDataSourceSegmented implemen
     public void setBlockState(IBlockState state)
     {
         this.block = Block.REGISTRY.getNameForObject(state.getBlock()).toString();
-        this.meta = BlockStates.toMetadata(state);
+        this.meta = ivorius.ivtoolkit.blocks.BlockStates.toMetadata(state);
     }
 
     public IBlockState computeBlockState()
@@ -218,7 +218,7 @@ public class TableDataSourceBlockState extends TableDataSourceSegmented implemen
         try
         {
             Block block = RecurrentComplex.mcRegistry.blockFromID(new ResourceLocation(this.block));
-            return block != null ? block.getStateFromMeta(meta) : null;
+            return block != null ? BlockStates.fromMetadata(block, meta) : null;
         }
         catch (Exception e)
         {

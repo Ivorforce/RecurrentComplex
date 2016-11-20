@@ -5,7 +5,7 @@
 
 package ivorius.reccomplex.utils.algebra;
 
-import ivorius.reccomplex.utils.IvLists;
+import ivorius.ivtoolkit.util.IvLists;
 import net.minecraft.util.text.TextFormatting;
 
 import javax.annotation.Nonnull;

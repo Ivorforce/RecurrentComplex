@@ -6,10 +6,13 @@
 package ivorius.reccomplex.world.gen.feature.structure.generic;
 
 import com.google.gson.*;
+import ivorius.ivtoolkit.blocks.BlockAreas;
 import ivorius.ivtoolkit.blocks.IvBlockCollection;
+import ivorius.ivtoolkit.blocks.IvMutableBlockPos;
 import ivorius.ivtoolkit.tools.IvWorldData;
 import ivorius.ivtoolkit.transform.Mover;
 import ivorius.ivtoolkit.transform.PosTransformer;
+import ivorius.ivtoolkit.world.chunk.gen.StructureBoundingBoxes;
 import ivorius.reccomplex.RecurrentComplex;
 import ivorius.reccomplex.block.GeneratingTileEntity;
 import ivorius.reccomplex.json.JsonUtils;
@@ -150,9 +153,9 @@ public class GenericStructureInfo implements StructureInfo<GenericStructureInfo.
         BlockPos.MutableBlockPos worldPos = new BlockPos.MutableBlockPos();
         for (int pass = 0; pass < 2; pass++)
         {
-            for (BlockPos sourcePos : RCBlockAreas.mutablePositions(blockCollection.area()))
+            for (BlockPos sourcePos : BlockAreas.mutablePositions(blockCollection.area()))
             {
-                RCMutableBlockPos.add(RCAxisAlignedTransform.apply(sourcePos, worldPos, areaSize, context.transform), origin);
+                IvMutableBlockPos.add(RCAxisAlignedTransform.apply(sourcePos, worldPos, areaSize, context.transform), origin);
 
                 if (context.includes(worldPos))
                 {

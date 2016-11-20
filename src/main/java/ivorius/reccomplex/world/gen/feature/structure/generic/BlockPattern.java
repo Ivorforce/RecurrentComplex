@@ -17,7 +17,7 @@ import ivorius.ivtoolkit.tools.NBTCompoundObjects;
 import ivorius.reccomplex.RecurrentComplex;
 import ivorius.reccomplex.json.JsonUtils;
 import ivorius.reccomplex.utils.expression.PositionedBlockMatcher;
-import ivorius.reccomplex.utils.Transforms;
+import ivorius.ivtoolkit.math.Transforms;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;

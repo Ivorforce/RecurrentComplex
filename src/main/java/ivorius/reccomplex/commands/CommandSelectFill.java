@@ -5,6 +5,7 @@
 
 package ivorius.reccomplex.commands;
 
+import ivorius.ivtoolkit.blocks.BlockStates;
 import ivorius.reccomplex.RCConfig;
 import ivorius.reccomplex.utils.ServerTranslations;
 import net.minecraft.block.Block;
@@ -64,7 +65,7 @@ public class CommandSelectFill extends CommandBase
 
             Block dstBlock = getBlockByText(commandSender, args[0]);
             int[] dstMeta = args.length >= 2 ? RCCommands.parseMetadatas(args[1]) : new int[]{0};
-            List<IBlockState> dst = IntStream.of(dstMeta).mapToObj(dstBlock::getStateFromMeta).collect(Collectors.toList());
+            List<IBlockState> dst = IntStream.of(dstMeta).mapToObj(m -> BlockStates.fromMetadata(dstBlock, m)).collect(Collectors.toList());
 
             for (BlockPos coord : RCCommands.getSelectionOwner(commandSender, null, true).getSelection())
             {

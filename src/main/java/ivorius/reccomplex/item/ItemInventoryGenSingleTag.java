@@ -5,9 +5,9 @@
 
 package ivorius.reccomplex.item;
 
+import ivorius.ivtoolkit.item.IvItemStacks;
 import ivorius.reccomplex.gui.inventorygen.GuiEditItemStack;
 import ivorius.reccomplex.gui.inventorygen.TableDataSourceInvGenSingleTag;
-import ivorius.reccomplex.utils.IvItemStacks;
 import ivorius.reccomplex.world.storage.loot.WeightedItemCollection;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.EntityPlayer;
@@ -62,7 +62,7 @@ public class ItemInventoryGenSingleTag extends ItemInventoryGenerationTag implem
 
     public float getItemChance(ItemStack stack)
     {
-        return IvItemStacks.getNBTFloat(stack, "itemChance", 1f);
+        return IvItemStacks.getNBT(stack, "itemChance", 1f);
     }
 
     public void setItemChance(ItemStack stack, float chance)

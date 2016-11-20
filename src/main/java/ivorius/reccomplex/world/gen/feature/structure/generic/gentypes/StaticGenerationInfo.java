@@ -18,7 +18,7 @@ import ivorius.reccomplex.world.gen.feature.structure.Placer;
 import ivorius.reccomplex.world.gen.feature.structure.generic.placement.GenericPlacer;
 import ivorius.reccomplex.utils.expression.DimensionMatcher;
 import ivorius.reccomplex.world.gen.feature.structure.generic.presets.GenericPlacerPresets;
-import ivorius.reccomplex.utils.BlockSurfacePos;
+import ivorius.ivtoolkit.blocks.BlockSurfacePos;
 import ivorius.reccomplex.utils.presets.PresettedObject;
 import ivorius.reccomplex.utils.presets.PresettedObjects;
 import net.minecraft.util.math.BlockPos;

@@ -6,8 +6,8 @@
 package ivorius.reccomplex.commands;
 
 import ivorius.ivtoolkit.blocks.BlockArea;
-import ivorius.reccomplex.utils.BlockSurfaceArea;
-import ivorius.reccomplex.utils.BlockSurfacePos;
+import ivorius.ivtoolkit.blocks.BlockSurfaceArea;
+import ivorius.ivtoolkit.blocks.BlockSurfacePos;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.CommandException;

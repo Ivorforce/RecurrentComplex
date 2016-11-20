@@ -10,7 +10,7 @@ import ivorius.reccomplex.RCConfig;
 import ivorius.reccomplex.RecurrentComplex;
 import ivorius.reccomplex.capability.SelectionOwner;
 import ivorius.reccomplex.capability.StructureEntityInfo;
-import ivorius.reccomplex.utils.BlockSurfacePos;
+import ivorius.ivtoolkit.blocks.BlockSurfacePos;
 import ivorius.reccomplex.utils.ServerTranslations;
 import ivorius.reccomplex.utils.expression.ResourceMatcher;
 import ivorius.reccomplex.world.gen.feature.structure.StructureInfo;

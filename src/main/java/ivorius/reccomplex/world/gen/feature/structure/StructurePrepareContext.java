@@ -5,8 +5,6 @@
 
 package ivorius.reccomplex.world.gen.feature.structure;
 
-import ivorius.reccomplex.utils.StructureBoundingBoxes;
-import net.minecraft.util.math.BlockPos;
 import ivorius.ivtoolkit.math.AxisAlignedTransform2D;
 import net.minecraft.world.gen.structure.StructureBoundingBox;
 

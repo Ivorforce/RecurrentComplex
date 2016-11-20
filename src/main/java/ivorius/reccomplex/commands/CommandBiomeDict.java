@@ -98,7 +98,7 @@ public class CommandBiomeDict extends CommandBase
                         components[i] = typeTextComponent(types[i]);
 
                     commandSender.addChatMessage(ServerTranslations.format("commands.biomedict.get", biomeID,
-                            ServerTranslations.join(components)));
+                            ServerTranslations.join((Object[]) components)));
                 }
                 else
                     commandSender.addChatMessage(ServerTranslations.format("commands.biomedict.nobiome", biomeID));
@@ -122,7 +122,7 @@ public class CommandBiomeDict extends CommandBase
                     }
 
                     commandSender.addChatMessage(ServerTranslations.format("commands.biomedict.list", args[1],
-                            ServerTranslations.join(components)));
+                            ServerTranslations.join((Object[]) components)));
                 }
                 else
                     commandSender.addChatMessage(ServerTranslations.format("commands.biomedict.notype", args[1]));

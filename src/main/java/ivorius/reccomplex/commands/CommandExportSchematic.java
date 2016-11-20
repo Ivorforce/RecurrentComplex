@@ -6,9 +6,9 @@
 package ivorius.reccomplex.commands;
 
 import ivorius.ivtoolkit.blocks.BlockArea;
+import ivorius.ivtoolkit.blocks.BlockAreas;
 import ivorius.ivtoolkit.tools.IvWorldData;
 import ivorius.reccomplex.RCConfig;
-import ivorius.reccomplex.utils.RCBlockAreas;
 import ivorius.reccomplex.utils.ServerTranslations;
 import ivorius.reccomplex.world.gen.feature.structure.StructureRegistry;
 import ivorius.reccomplex.world.gen.feature.structure.schematics.SchematicFile;
@@ -32,7 +32,7 @@ public class CommandExportSchematic extends CommandBase
     {
         SchematicFile schematicFile = new SchematicFile((short) worldData.blockCollection.width, (short) worldData.blockCollection.height, (short) worldData.blockCollection.length);
 
-        for (BlockPos coord : RCBlockAreas.mutablePositions(worldData.blockCollection.area()))
+        for (BlockPos coord : BlockAreas.mutablePositions(worldData.blockCollection.area()))
         {
             int index = schematicFile.getBlockIndex(coord);
             schematicFile.blockStates[index] = worldData.blockCollection.getBlockState(coord);

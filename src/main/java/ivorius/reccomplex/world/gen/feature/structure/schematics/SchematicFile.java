@@ -6,14 +6,14 @@
 package ivorius.reccomplex.world.gen.feature.structure.schematics;
 
 import ivorius.ivtoolkit.blocks.BlockArea;
+import ivorius.ivtoolkit.blocks.BlockStates;
+import ivorius.ivtoolkit.blocks.IvMutableBlockPos;
 import ivorius.ivtoolkit.math.AxisAlignedTransform2D;
 import ivorius.ivtoolkit.tools.IvStreams;
 import ivorius.ivtoolkit.transform.Mover;
 import ivorius.ivtoolkit.transform.PosTransformer;
-import ivorius.reccomplex.utils.BlockStates;
 import ivorius.reccomplex.utils.RCAccessorEntity;
 import ivorius.reccomplex.utils.RCAxisAlignedTransform;
-import ivorius.reccomplex.utils.RCMutableBlockPos;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
@@ -93,7 +93,7 @@ public class SchematicFile
             Block block = schematicMapping != null
                     ? schematicMapping.blockFromID(blockID)
                     : Block.getBlockById(blockID);
-            this.blockStates[i] = block.getStateFromMeta(metadatas[i]);
+            this.blockStates[i] = BlockStates.fromMetadata(block, metadatas[i]);
         }
 
         NBTTagList entities = tagCompound.getTagList("Entities", Constants.NBT.TAG_COMPOUND);
@@ -157,7 +157,7 @@ public class SchematicFile
 
                 if (blockState != null && getPass(blockState) == pass)
                 {
-                    RCMutableBlockPos.add(RCAxisAlignedTransform.apply(sourcePos, worldPos, size, transform), pos);
+                    IvMutableBlockPos.add(RCAxisAlignedTransform.apply(sourcePos, worldPos, size, transform), pos);
                     world.setBlockState(worldPos, blockState, 3);
 
                     TileEntity tileEntity = tileEntities.get(sourcePos);
@@ -209,7 +209,7 @@ public class SchematicFile
         if (weOriginZ != null)
             tagCompound.setShort("WEOriginZ", weOriginZ);
 
-        tagCompound.setByteArray("Data", IvStreams.toByteArray(Stream.of(blockStates).mapToInt(BlockStates::toMetadata)));
+        tagCompound.setByteArray("Data", IvStreams.toByteArray(Stream.of(blockStates).mapToInt((state) -> ivorius.ivtoolkit.blocks.BlockStates.toMetadata(state))));
 
         byte[] blockIDs = new byte[blockStates.length];
         byte[] addBlocks = new byte[(blockStates.length + 1) / 2];

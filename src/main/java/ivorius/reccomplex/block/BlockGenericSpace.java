@@ -46,6 +46,7 @@ public class BlockGenericSpace extends BlockTyped
         this.setDefaultState(this.blockState.getBaseState().withProperty(TYPE, 0).withProperty(VISIBLE, true));
     }
 
+    @SuppressWarnings("deprecation")
     @Nonnull
     @Override
     public AxisAlignedBB getBoundingBox(IBlockState state, IBlockAccess source, BlockPos pos)
@@ -53,12 +54,14 @@ public class BlockGenericSpace extends BlockTyped
         return SPACE_AABB;
     }
 
+    @SuppressWarnings("deprecation")
     @Override
     public boolean isOpaqueCube(IBlockState state)
     {
         return false;
     }
 
+    @SuppressWarnings("deprecation")
     @Override
     public boolean isNormalCube(IBlockState state)
     {
@@ -72,11 +75,13 @@ public class BlockGenericSpace extends BlockTyped
         return Lists.newArrayList();
     }
 
+    @SuppressWarnings("deprecation")
     public AxisAlignedBB getCollisionBoundingBox(IBlockState blockState, @Nonnull World worldIn, @Nonnull BlockPos pos)
     {
         return NULL_AABB;
     }
 
+    @SuppressWarnings("deprecation")
     @Nonnull
     @Override
     public IBlockState getActualState(@Nonnull IBlockState state, IBlockAccess worldIn, BlockPos pos)

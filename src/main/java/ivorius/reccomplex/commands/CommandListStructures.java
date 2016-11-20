@@ -69,7 +69,7 @@ public class CommandListStructures extends CommandBase
         if (page < (structureNames.size() - 1) / MAX_RESULTS)
             linkToPage(components[components.length - 1], page + 1, ServerTranslations.format("commands.rclist.next"));
 
-        commandSender.addChatMessage(ServerTranslations.join(components));
+        commandSender.addChatMessage(ServerTranslations.join((Object[]) components));
     }
 
     public static void linkToPage(TextComponentString component, int page, ITextComponent hoverTitle)

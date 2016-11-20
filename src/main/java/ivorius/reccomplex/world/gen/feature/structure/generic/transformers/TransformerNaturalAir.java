@@ -7,6 +7,7 @@ package ivorius.reccomplex.world.gen.feature.structure.generic.transformers;
 
 import com.google.gson.*;
 import ivorius.ivtoolkit.blocks.BlockArea;
+import ivorius.ivtoolkit.blocks.BlockAreas;
 import ivorius.ivtoolkit.blocks.IvBlockCollection;
 import ivorius.ivtoolkit.tools.IvWorldData;
 import ivorius.ivtoolkit.tools.MCRegistry;
@@ -17,12 +18,11 @@ import ivorius.reccomplex.gui.table.datasource.TableDataSource;
 import ivorius.reccomplex.gui.table.TableDelegate;
 import ivorius.reccomplex.gui.table.TableNavigator;
 import ivorius.reccomplex.json.JsonUtils;
-import ivorius.reccomplex.utils.StructureBoundingBoxes;
+import ivorius.ivtoolkit.world.chunk.gen.StructureBoundingBoxes;
 import ivorius.reccomplex.world.gen.feature.structure.StructureLoadContext;
 import ivorius.reccomplex.world.gen.feature.structure.StructurePrepareContext;
 import ivorius.reccomplex.world.gen.feature.structure.StructureSpawnContext;
 import ivorius.reccomplex.utils.expression.BlockMatcher;
-import ivorius.reccomplex.utils.RCBlockAreas;
 import ivorius.reccomplex.utils.RCBlockLogic;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.init.Blocks;
@@ -67,7 +67,7 @@ public class TransformerNaturalAir extends TransformerAbstractCloud<TransformerN
 
     protected static Stream<BlockPos> neighbors(BlockPos worldPos)
     {
-        return RCBlockAreas.streamPositions(new BlockArea(worldPos.add(-1, -1, -1), worldPos.add(1, 1, 1)));
+        return BlockAreas.streamPositions(new BlockArea(worldPos.add(-1, -1, -1), worldPos.add(1, 1, 1)));
     }
 
     @Override

@@ -6,7 +6,6 @@
 package ivorius.reccomplex.gui.inspector;
 
 import ivorius.reccomplex.gui.table.screen.GuiScreenEditTable;
-import ivorius.reccomplex.utils.BlockStates;
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.util.math.BlockPos;
@@ -18,9 +17,8 @@ public class GuiBlockInspector extends GuiScreenEditTable<TableDataSourceBlockIn
 {
     public GuiBlockInspector(BlockPos pos, IBlockState state)
     {
-        setDataSource(new TableDataSourceBlockInspector(pos, state, this, this), ds ->
-                this.mc.thePlayer.sendChatMessage(String.format("/setblock %d %d %d %s %d",
-                        ds.pos.getX(), ds.pos.getY(), ds.pos.getZ(),
-                        Block.REGISTRY.getNameForObject(ds.state.getBlock()).toString(), BlockStates.toMetadata(ds.state))));
+        setDataSource(new TableDataSourceBlockInspector(pos, state, this, this), ds -> this.mc.thePlayer.sendChatMessage(String.format("/setblock %d %d %d %s %d",
+                ds.pos.getX(), ds.pos.getY(), ds.pos.getZ(),
+                Block.REGISTRY.getNameForObject(ds.state.getBlock()).toString(), ivorius.ivtoolkit.blocks.BlockStates.toMetadata(ds.state))));
     }
 }

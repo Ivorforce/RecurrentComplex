@@ -134,7 +134,7 @@ public class TransformerWorldScript extends TransformerSingleBlock<TransformerWo
             String id = JsonUtils.getString(jsonObject, "id", null);
 
             String expression = JsonUtils.getString(jsonObject, "sourceExpression", "");
-            WorldScriptMulti script = NBTCompoundObjects.read(gson.fromJson(JsonUtils.getJsonObject(jsonObject, "script", new JsonObject()), NBTTagCompound.class), WorldScriptMulti.class);
+            WorldScriptMulti script = NBTCompoundObjects.read(gson.fromJson(JsonUtils.getJsonObject(jsonObject, "script", new JsonObject()), NBTTagCompound.class), WorldScriptMulti::new);
 
             return new TransformerWorldScript(id, script, expression);
         }

@@ -78,6 +78,7 @@ public class BlockScript extends Block
         }
     }
 
+    @SuppressWarnings("deprecation")
     @Override
     public void neighborChanged(IBlockState state, World worldIn, BlockPos pos, Block blockIn)
     {
@@ -95,7 +96,6 @@ public class BlockScript extends Block
             tileEntity.redstoneTriggered = false;
         }
     }
-
 
     @Nonnull
     @Override

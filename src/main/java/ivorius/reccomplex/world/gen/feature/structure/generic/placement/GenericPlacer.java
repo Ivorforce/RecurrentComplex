@@ -23,9 +23,9 @@ import ivorius.reccomplex.world.gen.feature.structure.generic.placement.rays.Ray
 import ivorius.reccomplex.world.gen.feature.structure.generic.placement.rays.RayMatcher;
 import ivorius.reccomplex.world.gen.feature.structure.generic.placement.rays.RayMove;
 import ivorius.reccomplex.world.gen.feature.structure.generic.presets.GenericPlacerPresets;
-import ivorius.reccomplex.utils.LineSelection;
-import ivorius.reccomplex.utils.LineSelections;
-import ivorius.reccomplex.utils.StructureBoundingBoxes;
+import ivorius.ivtoolkit.util.LineSelection;
+import ivorius.ivtoolkit.util.LineSelections;
+import ivorius.ivtoolkit.world.chunk.gen.StructureBoundingBoxes;
 import ivorius.reccomplex.utils.presets.PresettedObject;
 import net.minecraft.world.WorldServer;
 import org.apache.commons.lang3.tuple.Pair;

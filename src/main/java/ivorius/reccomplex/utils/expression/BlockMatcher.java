@@ -9,7 +9,6 @@ import com.google.common.base.Splitter;
 import com.google.common.primitives.Ints;
 import ivorius.ivtoolkit.gui.IntegerRange;
 import ivorius.ivtoolkit.tools.MCRegistry;
-import ivorius.reccomplex.utils.BlockStates;
 import ivorius.reccomplex.utils.IntegerRanges;
 import ivorius.reccomplex.utils.algebra.BoolFunctionExpressionCache;
 import ivorius.reccomplex.utils.algebra.RCBoolAlgebra;
@@ -124,7 +123,7 @@ public class BlockMatcher extends BoolFunctionExpressionCache<IBlockState, Objec
         public Boolean evaluate(String var, IBlockState state)
         {
             IntegerRange range = parseMetadataExp(var);
-            int metadata = BlockStates.toMetadata(state);
+            int metadata = ivorius.ivtoolkit.blocks.BlockStates.toMetadata(state);
 
             return range != null && metadata >= range.min && metadata <= range.max;
         }

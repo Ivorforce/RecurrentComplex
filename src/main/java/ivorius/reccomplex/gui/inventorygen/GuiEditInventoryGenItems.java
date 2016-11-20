@@ -12,7 +12,6 @@ import ivorius.reccomplex.RecurrentComplex;
 import ivorius.reccomplex.gui.GuiHider;
 import ivorius.reccomplex.gui.InventoryWatcher;
 import ivorius.reccomplex.gui.RCGuiHandler;
-import ivorius.reccomplex.utils.RangeHelper;
 import ivorius.reccomplex.utils.SaveDirectoryData;
 import ivorius.reccomplex.world.storage.loot.GenericItemCollection;
 import ivorius.reccomplex.world.storage.loot.GenericItemCollection.Component;
@@ -24,7 +23,6 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.StringUtils;
-import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.text.TextFormatting;
 import org.lwjgl.input.Keyboard;
 
@@ -111,7 +109,7 @@ public class GuiEditInventoryGenItems extends GuiContainer implements InventoryW
                         if (stackIndex < chestContents.size())
                         {
                             GenericItemCollection.RandomizedItemStack chestContent = chestContents.get(stackIndex);
-                            IntegerRange intRange = RangeHelper.roundedIntRange(minMaxSlider.getRange());
+                            IntegerRange intRange = Ranges.roundedIntRange(minMaxSlider.getRange());
                             chestContent.min = intRange.getMin();
                             chestContent.max = intRange.getMax();
 

@@ -6,9 +6,12 @@
 package ivorius.reccomplex.world.gen.feature.structure.generic.transformers;
 
 import com.google.gson.*;
+import ivorius.ivtoolkit.blocks.BlockAreas;
 import ivorius.ivtoolkit.blocks.IvBlockCollection;
+import ivorius.ivtoolkit.blocks.IvMutableBlockPos;
 import ivorius.ivtoolkit.tools.IvWorldData;
 import ivorius.ivtoolkit.tools.MCRegistry;
+import ivorius.ivtoolkit.world.chunk.gen.StructureBoundingBoxes;
 import ivorius.reccomplex.RecurrentComplex;
 import ivorius.reccomplex.gui.editstructure.transformers.TableDataSourceBTEnsureSpace;
 import ivorius.reccomplex.gui.table.datasource.TableDataSource;
@@ -56,9 +59,9 @@ public class TransformerEnsureBlocks extends Transformer<NBTNone>
         BlockPos lowerCoord = StructureBoundingBoxes.min(context.boundingBox);
 
         BlockPos.MutableBlockPos worldCoord = new BlockPos.MutableBlockPos();
-        for (BlockPos sourcePos : RCBlockAreas.mutablePositions(blockCollection.area()))
+        for (BlockPos sourcePos : BlockAreas.mutablePositions(blockCollection.area()))
         {
-            RCMutableBlockPos.add(RCAxisAlignedTransform.apply(sourcePos, worldCoord, areaSize, context.transform), lowerCoord);
+            IvMutableBlockPos.add(RCAxisAlignedTransform.apply(sourcePos, worldCoord, areaSize, context.transform), lowerCoord);
             IBlockState state = blockCollection.getBlockState(sourcePos);
 
             if (sourceMatcher.test(state) && !(destMatcher.expressionIsEmpty() || destMatcher.test(PositionedBlockMatcher.Argument.at(context.environment.world, worldCoord))))

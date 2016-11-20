@@ -7,7 +7,7 @@ package ivorius.reccomplex.commands;
 
 import ivorius.reccomplex.world.gen.feature.structure.*;
 import ivorius.reccomplex.world.gen.feature.structure.generic.gentypes.GenerationInfo;
-import ivorius.reccomplex.utils.BlockSurfacePos;
+import ivorius.ivtoolkit.blocks.BlockSurfacePos;
 import ivorius.reccomplex.world.gen.feature.StructureGenerator;
 import net.minecraft.command.CommandException;
 import net.minecraft.server.MinecraftServer;

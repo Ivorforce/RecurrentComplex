@@ -12,7 +12,7 @@ import ivorius.reccomplex.gui.table.cell.TableCellInteger;
 import ivorius.reccomplex.gui.table.cell.TableCellStringInt;
 import ivorius.reccomplex.gui.table.cell.TitledCell;
 import ivorius.reccomplex.gui.table.datasource.TableDataSourceSegmented;
-import ivorius.reccomplex.utils.BlockSurfacePos;
+import ivorius.ivtoolkit.blocks.BlockSurfacePos;
 
 import javax.annotation.Nonnull;
 import java.util.function.Consumer;

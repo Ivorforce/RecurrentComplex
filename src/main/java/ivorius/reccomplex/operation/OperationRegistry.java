@@ -7,6 +7,7 @@ package ivorius.reccomplex.operation;
 
 import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
+import ivorius.ivtoolkit.lang.IvClasses;
 import ivorius.ivtoolkit.tools.NBTCompoundObjects;
 import ivorius.reccomplex.RecurrentComplex;
 import ivorius.reccomplex.capability.StructureEntityInfo;
@@ -51,7 +52,7 @@ public class OperationRegistry
             return null;
         }
 
-        return NBTCompoundObjects.read(compound, clazz);
+        return NBTCompoundObjects.read(compound, () -> IvClasses.instantiate(clazz));
     }
 
     public static NBTTagCompound writeOperation(@Nonnull Operation operation)

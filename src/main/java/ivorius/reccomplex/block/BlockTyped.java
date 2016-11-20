@@ -38,6 +38,7 @@ public class BlockTyped extends Block
             list.add(new ItemStack(itemIn, 1, j));
     }
 
+    @SuppressWarnings("deprecation")
     @Nonnull
     @Override
     public IBlockState getStateFromMeta(int meta)

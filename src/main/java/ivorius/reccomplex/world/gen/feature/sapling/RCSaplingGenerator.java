@@ -16,8 +16,8 @@ import ivorius.reccomplex.world.gen.feature.structure.StructureInfo;
 import ivorius.reccomplex.world.gen.feature.structure.StructureRegistry;
 import ivorius.reccomplex.world.gen.feature.structure.StructureSpawnContext;
 import ivorius.reccomplex.world.gen.feature.structure.generic.gentypes.SaplingGenerationInfo;
-import ivorius.reccomplex.utils.BlockSurfacePos;
-import ivorius.reccomplex.utils.RCFunctions;
+import ivorius.ivtoolkit.blocks.BlockSurfacePos;
+import ivorius.ivtoolkit.util.IvFunctions;
 import ivorius.reccomplex.world.gen.feature.StructureGenerator;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.init.Blocks;
@@ -69,7 +69,7 @@ public class RCSaplingGenerator
         // Hackily consider big vanilla trees too
         int vanillaComplexity = complexity(world, pos, random, predictors);
 
-        ImmutableMultimap<Integer, Pair<StructureInfo, SaplingGenerationInfo>> groups = RCFunctions.groupMap(applicable, pair -> pair.getRight().pattern.pattern.compile(true).size());
+        ImmutableMultimap<Integer, Pair<StructureInfo, SaplingGenerationInfo>> groups = IvFunctions.groupMap(applicable, pair -> pair.getRight().pattern.pattern.compile(true).size());
         List<Integer> complexities = Lists.newArrayList(groups.keys());
         if (vanillaComplexity > 0) complexities.add(vanillaComplexity);
         Collections.sort(complexities);

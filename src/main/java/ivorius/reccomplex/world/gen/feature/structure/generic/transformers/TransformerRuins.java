@@ -22,8 +22,7 @@ import ivorius.reccomplex.gui.table.datasource.TableDataSource;
 import ivorius.reccomplex.json.JsonUtils;
 import ivorius.reccomplex.random.BlurredValueField;
 import ivorius.reccomplex.utils.NBTStorable;
-import ivorius.reccomplex.utils.RCBlockAreas;
-import ivorius.reccomplex.utils.StructureBoundingBoxes;
+import ivorius.ivtoolkit.world.chunk.gen.StructureBoundingBoxes;
 import ivorius.reccomplex.world.gen.feature.structure.StructureLoadContext;
 import ivorius.reccomplex.world.gen.feature.structure.StructurePrepareContext;
 import ivorius.reccomplex.world.gen.feature.structure.StructureSpawnContext;
@@ -120,11 +119,11 @@ public class TransformerRuins extends Transformer<TransformerRuins.InstanceData>
 
         IvBlockCollection blockCollection = worldData.blockCollection;
 
-        float decay = field.getValue(Math.min(sourcePos.getX(), field.getSize()[0]), Math.min(sourcePos.getY(), field.getSize()[1]), Math.min(sourcePos.getZ(), field.getSize()[2]));
+        double decay = field.getValue(Math.min(sourcePos.getX(), field.getSize()[0]), Math.min(sourcePos.getY(), field.getSize()[1]), Math.min(sourcePos.getZ(), field.getSize()[2]));
 
-        float stability = decayDirection.getFrontOffsetX() * (sourcePos.getX() / (float) blockCollection.getWidth())
-                + decayDirection.getFrontOffsetY() * (sourcePos.getY() / (float) blockCollection.getHeight())
-                + decayDirection.getFrontOffsetZ() * (sourcePos.getZ() / (float) blockCollection.getLength());
+        double stability = decayDirection.getFrontOffsetX() * (sourcePos.getX() / (double) blockCollection.getWidth())
+                + decayDirection.getFrontOffsetY() * (sourcePos.getY() / (double) blockCollection.getHeight())
+                + decayDirection.getFrontOffsetZ() * (sourcePos.getZ() / (double) blockCollection.getLength());
         if (stability < 0) // Negative direction, not special case
             stability += 1;
 
@@ -143,7 +142,7 @@ public class TransformerRuins extends Transformer<TransformerRuins.InstanceData>
             int[] areaSize = new int[]{blockCollection.width, blockCollection.height, blockCollection.length};
             if (blockErosion > 0.0f || vineGrowth > 0.0f)
             {
-                for (BlockPos sourceCoord : RCBlockAreas.mutablePositions(blockCollection.area()))
+                for (BlockPos sourceCoord : BlockAreas.mutablePositions(blockCollection.area()))
                 {
                     BlockPos worldCoord = context.transform.apply(sourceCoord, areaSize).add(StructureBoundingBoxes.min(context.boundingBox));
 
@@ -272,7 +271,7 @@ public class TransformerRuins extends Transformer<TransformerRuins.InstanceData>
         public InstanceData(NBTTagCompound compound)
         {
             blurredValueField = compound.hasKey("field", Constants.NBT.TAG_COMPOUND)
-                    ? NBTCompoundObjects.read(compound.getCompoundTag("field"), BlurredValueField.class)
+                    ? NBTCompoundObjects.read(compound.getCompoundTag("field"), BlurredValueField::new)
                     : null;
         }
 

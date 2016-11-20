@@ -5,6 +5,7 @@
 
 package ivorius.reccomplex.commands;
 
+import ivorius.ivtoolkit.blocks.BlockStates;
 import ivorius.reccomplex.RCConfig;
 import ivorius.reccomplex.RecurrentComplex;
 import ivorius.reccomplex.utils.expression.PositionedBlockMatcher;
@@ -69,7 +70,7 @@ public class CommandSelectReplace extends CommandBase
 
             Block dstBlock = getBlockByText(commandSender, args[0]);
             int[] dstMeta = RCCommands.parseMetadatas(args[1]);
-            List<IBlockState> dst = IntStream.of(dstMeta).mapToObj(dstBlock::getStateFromMeta).collect(Collectors.toList());
+            List<IBlockState> dst = IntStream.of(dstMeta).mapToObj(m -> BlockStates.fromMetadata(dstBlock, m)).collect(Collectors.toList());
 
             PositionedBlockMatcher matcher = new PositionedBlockMatcher(RecurrentComplex.specialRegistry, src);
 

@@ -10,7 +10,6 @@ import ivorius.ivtoolkit.blocks.BlockAreas;
 import ivorius.reccomplex.RCConfig;
 import ivorius.reccomplex.RecurrentComplex;
 import ivorius.reccomplex.capability.SelectionOwner;
-import ivorius.reccomplex.utils.RCBlockAreas;
 import ivorius.reccomplex.utils.ServerTranslations;
 import ivorius.reccomplex.utils.expression.PositionedBlockMatcher;
 import net.minecraft.command.CommandBase;
@@ -74,7 +73,7 @@ public class CommandSelectWand extends CommandBase
             {
                 BlockArea expand;
 
-                while (sideStream((expand = RCBlockAreas.expand(area, direction, 1)), direction).anyMatch(p -> matcher.test(PositionedBlockMatcher.Argument.at(world, p))) && (total++) < 300)
+                while (sideStream((expand = BlockAreas.expand(area, direction, 1)), direction).anyMatch(p -> matcher.test(PositionedBlockMatcher.Argument.at(world, p))) && (total++) < 300)
                 {
                     area = expand;
                     changed = true;

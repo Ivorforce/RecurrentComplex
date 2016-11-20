@@ -5,9 +5,9 @@
 
 package ivorius.reccomplex.commands;
 
+import ivorius.ivtoolkit.blocks.BlockAreas;
 import ivorius.reccomplex.RCConfig;
 import ivorius.reccomplex.RecurrentComplex;
-import ivorius.reccomplex.utils.RCBlockAreas;
 import ivorius.reccomplex.utils.ServerTranslations;
 import ivorius.reccomplex.utils.expression.PositionedBlockMatcher;
 import ivorius.reccomplex.world.gen.feature.structure.generic.transformers.TransformerProperty;
@@ -73,7 +73,7 @@ public class CommandSetProperty extends CommandBase
             String propertyName = args[0];
             String propertyValue = args[1];
 
-            for (BlockPos pos : RCBlockAreas.mutablePositions(RCCommands.getSelectionOwner(commandSender, null, true).getSelection()))
+            for (BlockPos pos : BlockAreas.mutablePositions(RCCommands.getSelectionOwner(commandSender, null, true).getSelection()))
             {
                 PositionedBlockMatcher.Argument at = PositionedBlockMatcher.Argument.at(world, pos);
                 if (matcher.test(at))

@@ -5,9 +5,9 @@
 
 package ivorius.reccomplex.commands;
 
+import ivorius.ivtoolkit.blocks.BlockAreas;
 import ivorius.reccomplex.RCConfig;
 import ivorius.reccomplex.capability.SelectionOwner;
-import ivorius.reccomplex.utils.RCBlockAreas;
 import ivorius.reccomplex.utils.ServerTranslations;
 import ivorius.reccomplex.world.gen.feature.StructureGenerationData;
 import net.minecraft.command.CommandBase;
@@ -48,7 +48,7 @@ public class CommandSelectRemember extends CommandBase
 
         String name = buildString(args, 0);
 
-        generationData.addCustomEntry(name, RCBlockAreas.toBoundingBox(owner.getSelection()));
+        generationData.addCustomEntry(name, BlockAreas.toBoundingBox(owner.getSelection()));
         commandSender.addChatMessage(ServerTranslations.format("commands.rcremember.success", name));
     }
 }

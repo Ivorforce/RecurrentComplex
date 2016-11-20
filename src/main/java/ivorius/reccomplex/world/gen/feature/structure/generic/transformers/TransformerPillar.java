@@ -6,6 +6,7 @@
 package ivorius.reccomplex.world.gen.feature.structure.generic.transformers;
 
 import com.google.gson.*;
+import ivorius.ivtoolkit.blocks.BlockStates;
 import ivorius.ivtoolkit.tools.IvWorldData;
 import ivorius.reccomplex.world.gen.feature.structure.Environment;
 import net.minecraft.util.math.BlockPos;
@@ -21,7 +22,6 @@ import ivorius.reccomplex.world.gen.feature.structure.StructurePrepareContext;
 import ivorius.reccomplex.world.gen.feature.structure.StructureSpawnContext;
 import ivorius.reccomplex.utils.expression.BlockMatcher;
 import net.minecraft.block.state.IBlockState;
-import ivorius.reccomplex.utils.BlockStates;
 import ivorius.reccomplex.utils.NBTNone;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
@@ -135,7 +135,7 @@ public class TransformerPillar extends TransformerSingleBlock<NBTNone>
 
             String destBlock = JsonUtils.getString(jsonObject, "dest");
             Block dest = registry.blockFromID(new ResourceLocation(destBlock));
-            IBlockState destState = dest != null ? dest.getStateFromMeta(JsonUtils.getInt(jsonObject, "destMetadata")) : null;
+            IBlockState destState = dest != null ? BlockStates.fromMetadata(dest, JsonUtils.getInt(jsonObject, "destMetadata")) : null;
 
             return new TransformerPillar(id, expression, destState);
         }
@@ -149,7 +149,7 @@ public class TransformerPillar extends TransformerSingleBlock<NBTNone>
             jsonObject.addProperty("sourceExpression", transformer.sourceMatcher.getExpression());
 
             jsonObject.addProperty("dest", registry.idFromBlock(transformer.destState.getBlock()).toString());
-            jsonObject.addProperty("destMetadata", BlockStates.toMetadata(transformer.destState));
+            jsonObject.addProperty("destMetadata", ivorius.ivtoolkit.blocks.BlockStates.toMetadata(transformer.destState));
 
             return jsonObject;
         }

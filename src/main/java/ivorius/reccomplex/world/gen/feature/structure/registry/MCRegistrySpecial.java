@@ -216,6 +216,7 @@ public class MCRegistrySpecial implements MCRegistry
                     compound.setTag("tag", stackNBT = new NBTTagCompound());
 
                 stackNBT.setString(HIDDEN_ITEM_TAG, itemID.toString());
+                compound.setString("id", idFromItem(DUMMY_ITEM).toString()); // Replace item with dummy so it gets loaded
             }
         }
 

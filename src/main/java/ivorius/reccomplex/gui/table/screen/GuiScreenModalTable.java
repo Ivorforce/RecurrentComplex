@@ -77,9 +77,25 @@ public class GuiScreenModalTable extends GuiScreen implements TableDelegate, Tab
         }
 
         if (tableStack.size() > 0)
-        {
             tableStack.peek().mouseClicked(x, y, button);
-        }
+    }
+
+    @Override
+    protected void mouseClickMove(int mouseX, int mouseY, int clickedMouseButton, long timeSinceLastClick)
+    {
+        super.mouseClickMove(mouseX, mouseY, clickedMouseButton, timeSinceLastClick);
+
+        if (tableStack.size() > 0)
+            tableStack.peek().mouseClickMove(mouseX, mouseY, clickedMouseButton, timeSinceLastClick);
+    }
+
+    @Override
+    protected void mouseReleased(int mouseX, int mouseY, int state)
+    {
+        super.mouseReleased(mouseX, mouseY, state);
+
+        if (tableStack.size() > 0)
+            tableStack.peek().mouseReleased(mouseX, mouseY, state);
     }
 
     @Override

@@ -47,6 +47,7 @@ public class GuiTable extends Gui
     private boolean startCentered = true;
     private boolean firstTime = true;
     private boolean showsScrollBar;
+    private boolean dragsScrollBar;
     private float currentScroll;
 
     private boolean hideScrollbarIfUnnecessary;
@@ -126,7 +127,7 @@ public class GuiTable extends Gui
             firstTime = false;
         }
         else
-            updateScrollUp(0); // If we're too far down we scroll up now
+            updateScrollUpwards(0); // If we're too far down we scroll up now
 
         int roundedScrollIndex = MathHelper.floor_float(currentScroll + 0.5f);
 
@@ -237,10 +238,36 @@ public class GuiTable extends Gui
         return false;
     }
 
+    public void mouseReleased(int x, int y, int button)
+    {
+        dragsScrollBar = false;
+    }
+
     public void mouseClicked(int x, int y, int button)
     {
         for (TableCell cell : currentCells)
             cell.mouseClicked(button, x, y);
+
+        if (scrollBarBounds().contains(x, y))
+        {
+            dragsScrollBar = true;
+            dragScrollBar(x, y);
+        }
+    }
+
+    public void mouseClickMove(int x, int y, int button, long timeSinceLastClick)
+    {
+        if (dragsScrollBar)
+            dragScrollBar(x, y);
+    }
+
+    public void dragScrollBar(int x, int y)
+    {
+        Bounds scrollBarBounds = scrollBarBounds();
+
+        float scrollHeight = (float) (y - scrollBarBounds.getMinY()) / (float) scrollBarBounds.getHeight();
+        setScroll(getMinScroll() + scrollHeight * (getMaxScroll() - getMinScroll()));
+        delegate.redrawTable();
     }
 
     public void addButton(TableCell property, int id, GuiButton button)
@@ -303,13 +330,18 @@ public class GuiTable extends Gui
 
     public void tryScrollUp(float dist)
     {
-        updateScrollUp(dist);
+        updateScrollUpwards(dist);
         delegate.redrawTable();
     }
 
-    protected void updateScrollUp(float dist)
+    protected void updateScrollUpwards(float dist)
     {
-        currentScroll = IvMathHelper.clamp(getMinScroll(), currentScroll - dist, getMaxScroll());
+        setScroll(currentScroll - dist);
+    }
+
+    private void setScroll(float value)
+    {
+        currentScroll = IvMathHelper.clamp(getMinScroll(), value, getMaxScroll());
     }
 
     public boolean canScrollUp(int numberOfCells)
@@ -325,6 +357,11 @@ public class GuiTable extends Gui
     protected boolean canScrollDown(int numberOfCells)
     {
         return currentScroll < getMaxScroll(numberOfCells);
+    }
+
+    public Bounds scrollBarBounds()
+    {
+        return Bounds.fromSize(tableBounds.getMaxX() + SCROLL_BAR_MARGIN, tableBounds.getMinY() + 20, SCROLL_BAR_WIDTH - SCROLL_BAR_MARGIN, tableBounds.getHeight() - 40);
     }
 
     public void clearCellCache()

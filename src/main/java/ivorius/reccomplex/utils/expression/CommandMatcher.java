@@ -77,7 +77,7 @@ public class CommandMatcher extends BoolFunctionExpressionCache<CommandMatcher.A
         @Override
         public Boolean evaluate(String var, Argument argument)
         {
-            return argument.sender.canCommandSenderUseCommand(parseNumber(var), argument.name);
+            return argument.sender.canUseCommand(parseNumber(var), argument.name);
         }
 
         @Override

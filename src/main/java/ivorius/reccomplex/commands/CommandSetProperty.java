@@ -31,20 +31,20 @@ import java.util.stream.Collectors;
 public class CommandSetProperty extends CommandBase
 {
     @Override
-    public String getCommandName()
+    public String getName()
     {
         return RCConfig.commandPrefix + "property";
     }
 
     @Override
-    public String getCommandUsage(ICommandSender var1)
+    public String getUsage(ICommandSender var1)
     {
         return ServerTranslations.usage("commands.selectProperty.usage");
     }
 
     @Nonnull
     @Override
-    public List<String> getTabCompletionOptions(MinecraftServer server, ICommandSender sender, String[] args, @Nullable BlockPos pos)
+    public List<String> getTabCompletions(MinecraftServer server, ICommandSender sender, String[] args, @Nullable BlockPos pos)
     {
         if (args.length == 1)
             return getListOfStringsMatchingLastWord(args, TransformerProperty.propertyNameStream().collect(Collectors.toSet()));

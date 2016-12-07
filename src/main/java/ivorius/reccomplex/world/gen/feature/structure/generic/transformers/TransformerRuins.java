@@ -34,6 +34,7 @@ import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.init.Blocks;
 import net.minecraft.inventory.IInventory;
+import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
@@ -91,7 +92,7 @@ public class TransformerRuins extends Transformer<TransformerRuins.InstanceData>
         {
             IInventory inventory = (IInventory) tileEntity;
             for (int i = 0; i < inventory.getSizeInventory(); i++)
-                inventory.setInventorySlotContents(i, null);
+                inventory.setInventorySlotContents(i, ItemStack.EMPTY);
         }
 
         world.setBlockToAir(pos);
@@ -194,7 +195,7 @@ public class TransformerRuins extends Transformer<TransformerRuins.InstanceData>
                     downState = downState.getBlock() == Blocks.VINE ? downState : Blocks.VINE.getDefaultState();
                     downState = downState.withProperty(BlockVine.getPropertyFor(direction), true);
 
-                    int length = 1 + random.nextInt(MathHelper.floor_float(vineGrowth * 10.0f + 3));
+                    int length = 1 + random.nextInt(MathHelper.floor(vineGrowth * 10.0f + 3));
                     for (int y = 0; y < length; y++)
                     {
                         BlockPos downPos = coord.offset(EnumFacing.DOWN, y);
@@ -245,7 +246,7 @@ public class TransformerRuins extends Transformer<TransformerRuins.InstanceData>
 
             int gridCoords = 1;
             for (int d : blurredFieldSize) gridCoords *= d;
-            int values = MathHelper.floor_float(gridCoords * decayValueDensity + 0.5f);
+            int values = MathHelper.floor(gridCoords * decayValueDensity + 0.5f);
 
             for (int i = 0; i < values; i++)
                 instanceData.blurredValueField.addValue(decayCenter + (context.random.nextFloat() - context.random.nextFloat()) * decayChaos * 2.0f, context.random);

@@ -22,6 +22,7 @@ import net.minecraft.world.WorldServer;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.gen.structure.StructureBoundingBox;
 import net.minecraft.world.gen.structure.StructureVillagePieces;
+import net.minecraft.world.gen.structure.template.TemplateManager;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -96,7 +97,7 @@ public class GenericVillagePiece extends StructureVillagePieces.Village
     @Nonnull
     protected Environment environment(WorldServer world, GenerationInfo generationInfo)
     {
-        return new Environment(world, biome(world), field_189928_h, generationInfo);
+        return new Environment(world, biome(world), structureType, generationInfo);
     }
 
     public void prepare(Random random, WorldServer world)
@@ -181,9 +182,9 @@ public class GenericVillagePiece extends StructureVillagePieces.Village
     }
 
     @Override
-    protected void readStructureFromNBT(NBTTagCompound tagCompound)
+    protected void readStructureFromNBT(NBTTagCompound tagCompound, TemplateManager manager)
     {
-        super.readStructureFromNBT(tagCompound);
+        super.readStructureFromNBT(tagCompound, manager);
         structureID = tagCompound.getString("RcSId");
         generationID = tagCompound.getString("RcGtId");
         mirrorX = tagCompound.getBoolean("RcMirror");

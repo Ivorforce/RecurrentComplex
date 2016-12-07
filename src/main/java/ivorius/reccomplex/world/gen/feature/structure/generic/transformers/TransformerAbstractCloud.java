@@ -81,7 +81,7 @@ public abstract class TransformerAbstractCloud<S extends TransformerAbstractClou
 
         int gridCoords = 1;
         for (int d : strucSize) gridCoords *= d;
-        int values = MathHelper.floor_float(gridCoords * (1f / 25f) + 0.5f);
+        int values = MathHelper.floor(gridCoords * (1f / 25f) + 0.5f);
 
         for (int i = 0; i < values; i++)
             blurredValueField.addValue(1 + (random.nextFloat() - random.nextFloat()) * (float) naturalExpansionRandomization() / 100f, random);

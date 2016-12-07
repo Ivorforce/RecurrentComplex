@@ -31,19 +31,19 @@ import java.util.stream.IntStream;
 public class CommandSelectFillSphere extends CommandBase
 {
     @Override
-    public String getCommandName()
+    public String getName()
     {
         return RCConfig.commandPrefix + "sphere";
     }
 
     @Override
-    public String getCommandUsage(ICommandSender var1)
+    public String getUsage(ICommandSender var1)
     {
         return ServerTranslations.usage("commands.selectFillSphere.usage");
     }
 
     @Override
-    public List<String> getTabCompletionOptions(MinecraftServer server, ICommandSender sender, String[] args, @Nullable BlockPos pos)
+    public List<String> getTabCompletions(MinecraftServer server, ICommandSender sender, String[] args, @Nullable BlockPos pos)
     {
         if (args.length == 1)
             return getListOfStringsMatchingLastWord(args, Block.REGISTRY.getKeys());

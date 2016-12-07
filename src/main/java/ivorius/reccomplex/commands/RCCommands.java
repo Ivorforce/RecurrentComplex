@@ -274,17 +274,17 @@ public class RCCommands
     public static void informDeleteResult(Pair<Set<Path>, Set<Path>> result, ICommandSender sender, String filetype, String id, String path)
     {
         if (result.getRight().size() > 0)
-            sender.addChatMessage(ServerTranslations.format("reccomplex.delete.failure", filetype, String.format("%s/%s", path, id)));
+            sender.sendMessage(ServerTranslations.format("reccomplex.delete.failure", filetype, String.format("%s/%s", path, id)));
         else if (result.getLeft().size() > 0)
-            sender.addChatMessage(ServerTranslations.format("reccomplex.delete.success", filetype, String.format("%s/%s", path, id)));
+            sender.sendMessage(ServerTranslations.format("reccomplex.delete.success", filetype, String.format("%s/%s", path, id)));
     }
 
     public static boolean informSaveResult(boolean result, ICommandSender sender, String path, String filetype, String id)
     {
         if (result)
-            sender.addChatMessage(ServerTranslations.format("reccomplex.save.success", filetype, String.format("%s/%s", path, id)));
+            sender.sendMessage(ServerTranslations.format("reccomplex.save.success", filetype, String.format("%s/%s", path, id)));
         else
-            sender.addChatMessage(ServerTranslations.format("reccomplex.save.failure", filetype, String.format("%s/%s", path, id)));
+            sender.sendMessage(ServerTranslations.format("reccomplex.save.failure", filetype, String.format("%s/%s", path, id)));
 
         return result;
     }

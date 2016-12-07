@@ -47,7 +47,7 @@ public class CommandExportSchematic extends CommandBase
     }
 
     @Override
-    public String getCommandName()
+    public String getName()
     {
         return RCConfig.commandPrefix + "exportschematic";
     }
@@ -58,13 +58,13 @@ public class CommandExportSchematic extends CommandBase
     }
 
     @Override
-    public String getCommandUsage(ICommandSender var1)
+    public String getUsage(ICommandSender var1)
     {
         return ServerTranslations.usage("commands.strucExportSchematic.usage");
     }
 
     @Override
-    public List<String> getTabCompletionOptions(MinecraftServer server, ICommandSender sender, String[] args, @Nullable BlockPos pos)
+    public List<String> getTabCompletions(MinecraftServer server, ICommandSender sender, String[] args, @Nullable BlockPos pos)
     {
         if (args.length == 1)
             return getListOfStringsMatchingLastWord(args, StructureRegistry.INSTANCE.ids());
@@ -91,6 +91,6 @@ public class CommandExportSchematic extends CommandBase
         SchematicFile schematicFile = convert(data);
         SchematicLoader.writeSchematicByName(schematicFile, structureName);
 
-        commandSender.addChatMessage(ServerTranslations.format("commands.strucExportSchematic.success", structureName));
+        commandSender.sendMessage(ServerTranslations.format("commands.strucExportSchematic.success", structureName));
     }
 }

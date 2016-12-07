@@ -36,13 +36,13 @@ public class CommandSelectWand extends CommandBase
     }
 
     @Override
-    public String getCommandName()
+    public String getName()
     {
         return RCConfig.commandPrefix + "wand";
     }
 
     @Override
-    public String getCommandUsage(ICommandSender var1)
+    public String getUsage(ICommandSender var1)
     {
         return ServerTranslations.usage("commands.selectWand.usage");
     }

@@ -25,7 +25,7 @@ import java.util.UUID;
 public class CommandForget extends CommandBase
 {
     @Override
-    public String getCommandName()
+    public String getName()
     {
         return RCConfig.commandPrefix + "forget";
     }
@@ -36,7 +36,7 @@ public class CommandForget extends CommandBase
     }
 
     @Override
-    public String getCommandUsage(ICommandSender var1)
+    public String getUsage(ICommandSender var1)
     {
         return ServerTranslations.usage("commands.rcforget.usage");
     }
@@ -53,11 +53,11 @@ public class CommandForget extends CommandBase
         if (entry == null)
             throw ServerTranslations.commandException("commands.rcforget.unknown");
         else
-            commandSender.addChatMessage(ServerTranslations.format("commands.rcforget.success", entry.description()));
+            commandSender.sendMessage(ServerTranslations.format("commands.rcforget.success", entry.description()));
     }
 
     @Override
-    public List<String> getTabCompletionOptions(MinecraftServer server, ICommandSender sender, String[] args, @Nullable BlockPos pos)
+    public List<String> getTabCompletions(MinecraftServer server, ICommandSender sender, String[] args, @Nullable BlockPos pos)
     {
         return Collections.emptyList();
     }

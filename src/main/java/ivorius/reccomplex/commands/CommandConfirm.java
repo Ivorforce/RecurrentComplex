@@ -21,7 +21,7 @@ import net.minecraft.world.WorldServer;
 public class CommandConfirm extends CommandBase
 {
     @Override
-    public String getCommandName()
+    public String getName()
     {
         return RCConfig.commandPrefix + "confirm";
     }
@@ -32,7 +32,7 @@ public class CommandConfirm extends CommandBase
     }
 
     @Override
-    public String getCommandUsage(ICommandSender commandSender)
+    public String getUsage(ICommandSender commandSender)
     {
         return ServerTranslations.usage("commands.rcconfirm.usage");
     }

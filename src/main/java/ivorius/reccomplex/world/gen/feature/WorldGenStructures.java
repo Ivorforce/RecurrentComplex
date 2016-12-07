@@ -55,7 +55,7 @@ public class WorldGenStructures
 
     protected static float distance(ChunkPos left, ChunkPos right)
     {
-        return MathHelper.sqrt_float(
+        return MathHelper.sqrt(
                 (left.chunkXPos - right.chunkXPos) * (left.chunkXPos - right.chunkXPos) +
                         (left.chunkZPos - right.chunkZPos) * (left.chunkZPos - right.chunkZPos));
     }

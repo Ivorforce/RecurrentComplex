@@ -73,9 +73,9 @@ public class CommandSelectFloor extends CommandBase
     {
         BlockSurfacePos surfacePos = BlockSurfacePos.from(pos);
 
-        for (int expX = MathHelper.ceiling_double_int(-expansion); expX <= expansion; expX++)
+        for (int expX = MathHelper.ceil(-expansion); expX <= expansion; expX++)
         {
-            for (int expZ = MathHelper.ceiling_double_int(-expansion); expZ <= expansion; expZ++)
+            for (int expZ = MathHelper.ceil(-expansion); expZ <= expansion; expZ++)
             {
                 if (expX * expX + expZ * expZ <= expansion * expansion)
                 {
@@ -98,24 +98,24 @@ public class CommandSelectFloor extends CommandBase
     }
 
     @Override
-    public String getCommandName()
+    public String getName()
     {
         return RCConfig.commandPrefix + "floor";
     }
 
     @Override
-    public String getCommandUsage(ICommandSender var1)
+    public String getUsage(ICommandSender var1)
     {
         return ServerTranslations.usage("commands.selectFloor.usage");
     }
 
     @Override
-    public List<String> getTabCompletionOptions(MinecraftServer server, ICommandSender sender, String[] args, @Nullable BlockPos pos)
+    public List<String> getTabCompletions(MinecraftServer server, ICommandSender sender, String[] args, @Nullable BlockPos pos)
     {
         if (args.length == 1)
             return getListOfStringsMatchingLastWord(args, "0", "1", "2");
 
-        return super.getTabCompletionOptions(server, sender, args, pos);
+        return super.getTabCompletions(server, sender, args, pos);
     }
 
     public int getRequiredPermissionLevel()

@@ -55,6 +55,20 @@ public class InventoryGenericInvGen implements IInventory
     }
 
     @Override
+    public boolean isEmpty()
+    {
+        for (ItemStack itemstack : this.cachedItemStacks)
+        {
+            if (!itemstack.isEmpty())
+            {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    @Override
     public ItemStack getStackInSlot(int var1)
     {
         return var1 < cachedItemStacks.size() ? cachedItemStacks.get(var1) : null;
@@ -113,11 +127,11 @@ public class InventoryGenericInvGen implements IInventory
 
                 if (var1 % 2 == 0)
                 {
-                    chestContent.minStackSize = var2.stackSize;
+                    chestContent.minStackSize = var2.getCount();
                 }
                 else
                 {
-                    chestContent.maxStackSize = var2.stackSize;
+                    chestContent.maxStackSize = var2.getCount();
                 }
 
                 validateMinMax(chestContent);
@@ -131,8 +145,8 @@ public class InventoryGenericInvGen implements IInventory
         {
             if (var2 != null)
             {
-                int min = var1 % 2 == 0 ? var2.stackSize : 1;
-                int max = var1 % 2 == 1 ? var2.stackSize : var2.getMaxStackSize();
+                int min = var1 % 2 == 0 ? var2.getCount() : 1;
+                int max = var1 % 2 == 1 ? var2.getCount() : var2.getMaxStackSize();
 
                 WeightedRandomChestContent weightedRandomChestContent = new WeightedRandomChestContent(var2, min, max, 100);
                 chestContents.add(weightedRandomChestContent);
@@ -193,11 +207,11 @@ public class InventoryGenericInvGen implements IInventory
 
                 if (i % 2 == 0)
                 {
-                    chestContent.minStackSize = stack.stackSize;
+                    chestContent.minStackSize = stack.getCount();
                 }
                 else
                 {
-                    chestContent.maxStackSize = stack.stackSize;
+                    chestContent.maxStackSize = stack.getCount();
                 }
             }
         }
@@ -211,9 +225,9 @@ public class InventoryGenericInvGen implements IInventory
         for (WeightedRandomChestContent chestContent : chestContents)
         {
             ItemStack stackLow = chestContent.theItemId.copy();
-            stackLow.stackSize = chestContent.minStackSize;
+            stackLow.setCount(chestContent.minStackSize);
             ItemStack stackHigh = chestContent.theItemId.copy();
-            stackHigh.stackSize = chestContent.maxStackSize;
+            stackHigh.setCount(chestContent.maxStackSize);
 
             cachedItemStacks.add(stackLow);
             cachedItemStacks.add(stackHigh);
@@ -221,7 +235,7 @@ public class InventoryGenericInvGen implements IInventory
     }
 
     @Override
-    public boolean isUseableByPlayer(EntityPlayer var1)
+    public boolean isUsableByPlayer(EntityPlayer player)
     {
         return true;
     }

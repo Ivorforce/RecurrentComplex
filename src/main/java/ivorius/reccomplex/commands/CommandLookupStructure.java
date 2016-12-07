@@ -33,7 +33,7 @@ import java.util.Set;
 public class CommandLookupStructure extends CommandBase
 {
     @Override
-    public String getCommandName()
+    public String getName()
     {
         return RCConfig.commandPrefix + "lookup";
     }
@@ -44,7 +44,7 @@ public class CommandLookupStructure extends CommandBase
     }
 
     @Override
-    public String getCommandUsage(ICommandSender var1)
+    public String getUsage(ICommandSender var1)
     {
         return ServerTranslations.usage("commands.rclookup.usage");
     }
@@ -74,12 +74,12 @@ public class CommandLookupStructure extends CommandBase
             ITextComponent level = new TextComponentString(StructureRegistry.INSTANCE.status(id).getLevel().toString());
             level.getStyle().setColor(TextFormatting.YELLOW);
 
-            commandSender.addChatMessage(ServerTranslations.format(
+            commandSender.sendMessage(ServerTranslations.format(
                     StructureRegistry.INSTANCE.hasActive(id) ? "commands.rclookup.reply.generates" : "commands.rclookup.reply.silent",
                     id, author, level, weblink));
 
             if (!metadata.comment.trim().isEmpty())
-                commandSender.addChatMessage(ServerTranslations.format("commands.rclookup.reply.comment", metadata.comment));
+                commandSender.sendMessage(ServerTranslations.format("commands.rclookup.reply.comment", metadata.comment));
         }
         else
         {
@@ -88,7 +88,7 @@ public class CommandLookupStructure extends CommandBase
     }
 
     @Override
-    public List<String> getTabCompletionOptions(MinecraftServer server, ICommandSender sender, String[] args, @Nullable BlockPos pos)
+    public List<String> getTabCompletions(MinecraftServer server, ICommandSender sender, String[] args, @Nullable BlockPos pos)
     {
         if (args.length == 1)
             return getListOfStringsMatchingLastWord(args, StructureRegistry.INSTANCE.ids());

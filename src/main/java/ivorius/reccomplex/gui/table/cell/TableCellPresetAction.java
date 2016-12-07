@@ -10,6 +10,7 @@ import ivorius.reccomplex.gui.table.GuiTable;
 import net.minecraft.client.gui.GuiButton;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
 import java.util.function.Consumer;
@@ -36,7 +37,7 @@ public class TableCellPresetAction extends TableCellPropertyDefault<String>
 
     public static Stream<TableCellButton> sorted(Stream<TableCellButton> actions)
     {
-        return actions.sorted((o1, o2) -> o1.title.compareTo(o2.title));
+        return actions.sorted(Comparator.comparing(o -> o.title));
     }
 
     public void addListener(TableCellActionListener listener)

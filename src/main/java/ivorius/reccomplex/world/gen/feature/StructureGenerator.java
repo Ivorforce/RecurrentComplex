@@ -12,6 +12,7 @@ import ivorius.reccomplex.events.RCEventBus;
 import ivorius.reccomplex.events.StructureGenerationEvent;
 import ivorius.reccomplex.events.StructureGenerationEventLite;
 import ivorius.ivtoolkit.world.chunk.gen.StructureBoundingBoxes;
+import ivorius.reccomplex.utils.RCStructureBoundingBoxes;
 import ivorius.reccomplex.world.gen.feature.structure.*;
 import ivorius.reccomplex.world.gen.feature.structure.generic.gentypes.GenerationInfo;
 import ivorius.reccomplex.world.gen.feature.structure.generic.placement.StructurePlaceContext;
@@ -94,7 +95,7 @@ public class StructureGenerator<S extends NBTStorable>
     @Nonnull
     public static Placer worldHeightPlacer()
     {
-        return (context, blockCollection) -> context.environment.world.getHeight(new BlockPos(context.boundingBox.getCenter())).getY();
+        return (context, blockCollection) -> context.environment.world.getHeight(RCStructureBoundingBoxes.getCenter(context.boundingBox)).getY();
     }
 
     public static String name(String structureName)

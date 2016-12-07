@@ -87,10 +87,10 @@ public class RCForgeEventHandler
     public void onDrawWorld(RenderWorldLastEvent event)
     {
         Minecraft mc = Minecraft.getMinecraft();
-        int ticks = mc.thePlayer.ticksExisted;
+        int ticks = mc.player.ticksExisted;
 
         Entity renderEntity = mc.getRenderViewEntity();
-        StructureEntityInfo info = StructureEntityInfo.get(mc.thePlayer, null);
+        StructureEntityInfo info = StructureEntityInfo.get(mc.player, null);
         double entityX = renderEntity.lastTickPosX + (renderEntity.posX - renderEntity.lastTickPosX) * (double) event.getPartialTicks();
         double entityY = renderEntity.lastTickPosY + (renderEntity.posY - renderEntity.lastTickPosY) * (double) event.getPartialTicks();
         double entityZ = renderEntity.lastTickPosZ + (renderEntity.posZ - renderEntity.lastTickPosZ) * (double) event.getPartialTicks();
@@ -104,16 +104,16 @@ public class RCForgeEventHandler
             GlStateManager.disableTexture2D();
             GlStateManager.color(0.5f, 0.5f, 0.5f);
             GlStateManager.pushMatrix();
-            GlStateManager.translate(MathHelper.floor_double(entityX / spacing) * spacing, MathHelper.floor_double(entityY / spacing) * spacing, MathHelper.floor_double(entityZ / spacing) * spacing);
+            GlStateManager.translate(MathHelper.floor(entityX / spacing) * spacing, MathHelper.floor(entityY / spacing) * spacing, MathHelper.floor(entityZ / spacing) * spacing);
             GridRenderer.renderGrid(8, spacing, 100, 0.05f);
             GlStateManager.popMatrix();
             GlStateManager.enableTexture2D();
         }
 
-        SelectionRenderer.renderSelection(mc.thePlayer, ticks, event.getPartialTicks());
+        SelectionRenderer.renderSelection(mc.player, ticks, event.getPartialTicks());
 
         if (info != null && info.danglingOperation != null)
-            info.danglingOperation.renderPreview(info.getPreviewType(), mc.theWorld, ticks, event.getPartialTicks());
+            info.danglingOperation.renderPreview(info.getPreviewType(), mc.world, ticks, event.getPartialTicks());
 
         GlStateManager.popMatrix();
     }
@@ -122,7 +122,7 @@ public class RCForgeEventHandler
     @SubscribeEvent
     public void onMouseInput(MouseEvent event)
     {
-        EntityPlayer player = Minecraft.getMinecraft().thePlayer;
+        EntityPlayer player = Minecraft.getMinecraft().player;
         ItemStack heldItem = player.getHeldItem(EnumHand.MAIN_HAND);
         if (heldItem != null && heldItem.getItem() instanceof ItemInputHandler)
         {
@@ -186,14 +186,14 @@ public class RCForgeEventHandler
     @SubscribeEvent
     public void onCommand(CommandEvent event)
     {
-        if (!RCConfig.canUseCommand(event.getCommand().getCommandName(), event.getSender()))
+        if (!RCConfig.canUseCommand(event.getCommand().getName(), event.getSender()))
         {
             event.setCanceled(true);
 
             // From CommandHandler.executeCommand
             TextComponentTranslation TextComponent = new TextComponentTranslation("commands.generic.permission");
             TextComponent.getStyle().setColor(TextFormatting.RED);
-            event.getSender().addChatMessage(TextComponent);
+            event.getSender().sendMessage(TextComponent);
         }
     }
 

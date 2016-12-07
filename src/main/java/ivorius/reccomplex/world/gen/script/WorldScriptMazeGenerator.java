@@ -252,7 +252,7 @@ public class WorldScriptMazeGenerator implements WorldScript<WorldScriptMazeGene
                 transformedComponents, connectorStrategy,
                 new MazePredicateMany<>(predicates),
                 random,
-                RCConfig.mazePlacementReversesPerRoom >= 0 ? MathHelper.floor_float(totalRooms * RCConfig.mazePlacementReversesPerRoom + 0.5f) : MazeComponentConnector.INFINITE_REVERSES
+                RCConfig.mazePlacementReversesPerRoom >= 0 ? MathHelper.floor(totalRooms * RCConfig.mazePlacementReversesPerRoom + 0.5f) : MazeComponentConnector.INFINITE_REVERSES
         );
     }
 

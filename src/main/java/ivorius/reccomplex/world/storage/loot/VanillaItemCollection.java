@@ -44,7 +44,7 @@ public class VanillaItemCollection implements WeightedItemCollection
             RecurrentComplex.logger.error("Error generating vanilla loot", e);
         }
 
-        return null;
+        return ItemStack.EMPTY;
     }
 
     @Override

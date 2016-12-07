@@ -43,12 +43,12 @@ public class GuiHider
 
         mc.displayGuiScreen(null);
 
-        ITextComponent reopen = new TextComponentString("/" + RCCommands.reopen.getCommandName());
+        ITextComponent reopen = new TextComponentString("/" + RCCommands.reopen.getName());
         reopen.getStyle().setColor(TextFormatting.GREEN);
-        reopen.getStyle().setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/" + RCCommands.reopen.getCommandName()));
+        reopen.getStyle().setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/" + RCCommands.reopen.getName()));
         reopen.getStyle().setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, ServerTranslations.get("commands.rcreopen.run")));
 
-        mc.thePlayer.addChatMessage(ServerTranslations.format("commands.rc.didhide", reopen));
+        mc.player.sendMessage(ServerTranslations.format("commands.rc.didhide", reopen));
 
         return true;
     }
@@ -84,11 +84,11 @@ public class GuiHider
 
         if (!canReopen())
         {
-            mc.thePlayer.addChatMessage(ServerTranslations.get("commands.rcreopen.nogui"));
+            mc.player.sendMessage(ServerTranslations.get("commands.rcreopen.nogui"));
             return;
         }
 
         if (!reopenGUI())
-            mc.thePlayer.addChatMessage(ServerTranslations.get("commands.rcreopen.fail"));
+            mc.player.sendMessage(ServerTranslations.get("commands.rcreopen.fail"));
     }
 }

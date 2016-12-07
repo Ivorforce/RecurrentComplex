@@ -16,6 +16,7 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagString;
+import net.minecraft.util.NonNullList;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.EnumHand;
@@ -59,12 +60,13 @@ public class ItemInventoryGenComponentTag extends Item implements GeneratingItem
     }
 
     @Override
-    public ActionResult<ItemStack> onItemRightClick(ItemStack itemStackIn, World worldIn, EntityPlayer playerIn, EnumHand hand)
+    public ActionResult<ItemStack> onItemRightClick(World worldIn, EntityPlayer playerIn, EnumHand handIn)
     {
+        ItemStack itemStackIn = playerIn.getHeldItem(handIn);
         if (!worldIn.isRemote)
             RCGuiHandler.editInventoryGenComponent(playerIn, componentKey(itemStackIn), component(itemStackIn), null);
 
-        return super.onItemRightClick(itemStackIn, worldIn, playerIn, hand);
+        return super.onItemRightClick(worldIn, playerIn, handIn);
     }
 
     @Override
@@ -106,7 +108,7 @@ public class ItemInventoryGenComponentTag extends Item implements GeneratingItem
 
     @Override
     @ParametersAreNonnullByDefault
-    public void getSubItems(Item item, CreativeTabs creativeTabs, List<ItemStack> list)
+    public void getSubItems(Item item, CreativeTabs creativeTabs, NonNullList<ItemStack> list)
     {
         super.getSubItems(item, creativeTabs, list);
 

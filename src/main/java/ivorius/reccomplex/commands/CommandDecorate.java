@@ -38,7 +38,7 @@ public class CommandDecorate extends CommandBase
     }
 
     @Override
-    public String getCommandName()
+    public String getName()
     {
         return RCConfig.commandPrefix + "decorate";
     }
@@ -49,7 +49,7 @@ public class CommandDecorate extends CommandBase
     }
 
     @Override
-    public String getCommandUsage(ICommandSender var1)
+    public String getUsage(ICommandSender var1)
     {
         return ServerTranslations.usage("commands.decorate.usage");
     }
@@ -69,7 +69,7 @@ public class CommandDecorate extends CommandBase
     }
 
     @Override
-    public List<String> getTabCompletionOptions(MinecraftServer server, ICommandSender sender, String[] args, @Nullable BlockPos pos)
+    public List<String> getTabCompletions(MinecraftServer server, ICommandSender sender, String[] args, @Nullable BlockPos pos)
     {
         if (args.length >= 1 && args.length <= 2)
             return getTabCompletionCoordinateXZ(args, 0, pos);

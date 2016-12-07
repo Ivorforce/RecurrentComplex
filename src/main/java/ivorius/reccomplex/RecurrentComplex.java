@@ -92,7 +92,7 @@ public class RecurrentComplex
 
     public static boolean canHandleSaving(EntityPlayer player)
     {
-        return player.canCommandSenderUseCommand(2, "setblock");
+        return player.canUseCommand(2, "setblock");
     }
 
     @NetworkCheckHandler

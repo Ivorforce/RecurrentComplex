@@ -140,7 +140,7 @@ public class TransformerVillageSpecific extends TransformerSingleBlock<NBTNone>
         public boolean trySetType(@Nullable Integer type)
         {
             if (type != null)
-                this.field_189928_h = type;
+                this.structureType = type;
             return type != null;
         }
 

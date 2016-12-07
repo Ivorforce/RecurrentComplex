@@ -52,6 +52,20 @@ public class InventoryGenericInvGen_Single implements IInventory
     }
 
     @Override
+    public boolean isEmpty()
+    {
+        for (GenericItemCollection.RandomizedItemStack randomized : this.weightedRandomChestContents)
+        {
+            if (!randomized.itemStack.isEmpty())
+            {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    @Override
     public ItemStack getStackInSlot(int var1)
     {
         return var1 < weightedRandomChestContents.size() ? weightedRandomChestContents.get(var1).itemStack : null;
@@ -67,7 +81,7 @@ public class InventoryGenericInvGen_Single implements IInventory
             {
                 ItemStack itemstack;
 
-                if (stack.stackSize <= dec)
+                if (stack.getCount() <= dec)
                 {
                     itemstack = stack;
                     weightedRandomChestContents.remove(slot);
@@ -78,7 +92,7 @@ public class InventoryGenericInvGen_Single implements IInventory
                 {
                     itemstack = stack.splitStack(dec);
 
-                    if (stack.stackSize == 0)
+                    if (stack.getCount() == 0)
                     {
                         weightedRandomChestContents.remove(slot);
                     }
@@ -115,9 +129,9 @@ public class InventoryGenericInvGen_Single implements IInventory
                 weightedRandomChestContents.add(new GenericItemCollection.RandomizedItemStack(stack, 1, stack.getMaxStackSize(), 1.0));
         }
 
-        if (stack != null && stack.stackSize > this.getInventoryStackLimit())
+        if (stack != null && stack.getCount() > this.getInventoryStackLimit())
         {
-            stack.stackSize = this.getInventoryStackLimit();
+            stack.setCount(this.getInventoryStackLimit());
         }
 
         this.markDirty();
@@ -137,7 +151,7 @@ public class InventoryGenericInvGen_Single implements IInventory
     }
 
     @Override
-    public boolean isUseableByPlayer(EntityPlayer var1)
+    public boolean isUsableByPlayer(EntityPlayer var1)
     {
         return true;
     }

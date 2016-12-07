@@ -208,7 +208,7 @@ public class GuiEditInventoryGenItems extends GuiContainer implements InventoryW
         {
             if (button.id == 0)
             {
-                RCGuiHandler.editInventoryGenComponent(mc.thePlayer, key, component, saveDirectoryData);
+                RCGuiHandler.editInventoryGenComponent(mc.player, key, component, saveDirectoryData);
             }
             else if (button.id == 2)
             {

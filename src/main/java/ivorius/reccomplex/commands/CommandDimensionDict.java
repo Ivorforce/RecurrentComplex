@@ -33,7 +33,7 @@ import java.util.List;
 public class CommandDimensionDict extends CommandBase
 {
     @Override
-    public String getCommandName()
+    public String getName()
     {
         return RCConfig.commandPrefix + "dimension";
     }
@@ -44,7 +44,7 @@ public class CommandDimensionDict extends CommandBase
     }
 
     @Override
-    public String getCommandUsage(ICommandSender commandSender)
+    public String getUsage(ICommandSender commandSender)
     {
         return ServerTranslations.usage("commands.dimensiondict.usage");
     }
@@ -67,7 +67,7 @@ public class CommandDimensionDict extends CommandBase
                 for (int i = 0; i < components.length; i++)
                     components[i] = typeTextComponent(types.get(i));
 
-                commandSender.addChatMessage(ServerTranslations.format("commands.dimensiondict.get", dimensionID,
+                commandSender.sendMessage(ServerTranslations.format("commands.dimensiondict.get", dimensionID,
                         ServerTranslations.join((Object[]) components)));
                 break;
             }
@@ -81,7 +81,7 @@ public class CommandDimensionDict extends CommandBase
                 for (int i = 0; i < components.length; i++)
                     components[i] = dimensionTextComponent(typeDimensions.get(i));
 
-                commandSender.addChatMessage(ServerTranslations.format("commands.dimensiondict.list", type,
+                commandSender.sendMessage(ServerTranslations.format("commands.dimensiondict.list", type,
                         ServerTranslations.join((Object[]) components)));
                 break;
             }
@@ -95,7 +95,7 @@ public class CommandDimensionDict extends CommandBase
     {
         ITextComponent component = new TextComponentString(type);
         component.getStyle().setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND,
-                String.format("/%s list %s", getCommandName(), type)));
+                String.format("/%s list %s", getName(), type)));
         component.getStyle().setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT,
                 ServerTranslations.format("commands.dimensiondict.get.number", allDimensionsOfType(type).size())));
         return component;
@@ -106,7 +106,7 @@ public class CommandDimensionDict extends CommandBase
     {
         ITextComponent component = new TextComponentString(String.valueOf(dimensionID));
         component.getStyle().setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND,
-                String.format("/%s types %s", getCommandName(), dimensionID)));
+                String.format("/%s types %s", getName(), dimensionID)));
         component.getStyle().setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT,
                 ServerTranslations.format("commands.dimensiondict.list.number", DimensionDictionary.getDimensionTypes(DimensionManager.getProvider(dimensionID)).size())));
         return component;
@@ -124,7 +124,7 @@ public class CommandDimensionDict extends CommandBase
     }
 
     @Override
-    public List<String> getTabCompletionOptions(MinecraftServer server, ICommandSender sender, String[] args, @Nullable BlockPos pos)
+    public List<String> getTabCompletions(MinecraftServer server, ICommandSender sender, String[] args, @Nullable BlockPos pos)
     {
         if (args.length == 1)
             return getListOfStringsMatchingLastWord(args, "types", "list");

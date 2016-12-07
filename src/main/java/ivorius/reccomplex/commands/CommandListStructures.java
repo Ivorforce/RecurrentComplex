@@ -28,7 +28,7 @@ public class CommandListStructures extends CommandBase
  public static final int MAX_RESULTS = 20;
 
     @Override
-    public String getCommandName()
+    public String getName()
     {
         return RCConfig.commandPrefix + "list";
     }
@@ -39,7 +39,7 @@ public class CommandListStructures extends CommandBase
     }
 
     @Override
-    public String getCommandUsage(ICommandSender var1)
+    public String getUsage(ICommandSender var1)
     {
         return ServerTranslations.usage("commands.rclist.usage");
     }
@@ -51,7 +51,7 @@ public class CommandListStructures extends CommandBase
 
         List<String> structureNames = new ArrayList<>();
         structureNames.addAll(StructureRegistry.INSTANCE.ids());
-        Collections.sort(structureNames, String.CASE_INSENSITIVE_ORDER);
+        structureNames.sort(String.CASE_INSENSITIVE_ORDER);
 
         int startIndex = page * MAX_RESULTS;
         int endIndex = Math.min((page + 1) * MAX_RESULTS, structureNames.size());
@@ -69,13 +69,13 @@ public class CommandListStructures extends CommandBase
         if (page < (structureNames.size() - 1) / MAX_RESULTS)
             linkToPage(components[components.length - 1], page + 1, ServerTranslations.format("commands.rclist.next"));
 
-        commandSender.addChatMessage(ServerTranslations.join((Object[]) components));
+        commandSender.sendMessage(ServerTranslations.join((Object[]) components));
     }
 
     public static void linkToPage(TextComponentString component, int page, ITextComponent hoverTitle)
     {
         component.getStyle().setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND,
-                String.format("/%s %d", RCCommands.list.getCommandName(), page)));
+                String.format("/%s %d", RCCommands.list.getName(), page)));
         component.getStyle().setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, hoverTitle));
         component.getStyle().setColor(TextFormatting.AQUA);
     }

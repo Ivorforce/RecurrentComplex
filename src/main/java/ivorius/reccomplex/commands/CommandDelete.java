@@ -28,7 +28,7 @@ import java.util.Optional;
 public class CommandDelete extends CommandBase
 {
     @Override
-    public String getCommandName()
+    public String getName()
     {
         return RCConfig.commandPrefix + "delete";
     }
@@ -39,7 +39,7 @@ public class CommandDelete extends CommandBase
     }
 
     @Override
-    public String getCommandUsage(ICommandSender commandSender)
+    public String getUsage(ICommandSender commandSender)
     {
         return ServerTranslations.usage("commands.rcdelete.usage");
     }
@@ -68,7 +68,7 @@ public class CommandDelete extends CommandBase
     }
 
     @Override
-    public List<String> getTabCompletionOptions(MinecraftServer server, ICommandSender sender, String[] args, @Nullable BlockPos pos)
+    public List<String> getTabCompletions(MinecraftServer server, ICommandSender sender, String[] args, @Nullable BlockPos pos)
     {
         if (args.length == 1)
             return getListOfStringsMatchingLastWord(args, RecurrentComplex.saver.keySet());
@@ -77,6 +77,6 @@ public class CommandDelete extends CommandBase
         else if (args.length == 3)
             return getListOfStringsMatchingLastWord(args, Arrays.asList(ResourceDirectory.values()));
 
-        return super.getTabCompletionOptions(server, sender, args, pos);
+        return super.getTabCompletions(server, sender, args, pos);
     }
 }

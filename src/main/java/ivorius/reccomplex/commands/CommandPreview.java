@@ -26,7 +26,7 @@ import java.util.List;
 public class CommandPreview extends CommandBase
 {
     @Override
-    public String getCommandName()
+    public String getName()
     {
         return RCConfig.commandPrefix + "preview";
     }
@@ -37,7 +37,7 @@ public class CommandPreview extends CommandBase
     }
 
     @Override
-    public String getCommandUsage(ICommandSender commandSender)
+    public String getUsage(ICommandSender commandSender)
     {
         return ServerTranslations.usage("commands.rcpreview.usage");
     }
@@ -58,11 +58,11 @@ public class CommandPreview extends CommandBase
         structureEntityInfo.setPreviewType(previewType);
         structureEntityInfo.sendPreviewTypeToClients(player);
 
-        commandSender.addChatMessage(ServerTranslations.format("commands.rcpreview.success", args[0]));
+        commandSender.sendMessage(ServerTranslations.format("commands.rcpreview.success", args[0]));
     }
 
     @Override
-    public List<String> getTabCompletionOptions(MinecraftServer server, ICommandSender sender, String[] args, @Nullable BlockPos pos)
+    public List<String> getTabCompletions(MinecraftServer server, ICommandSender sender, String[] args, @Nullable BlockPos pos)
     {
         if (args.length == 1)
             return getListOfStringsMatchingLastWord(args, Operation.PreviewType.keys());

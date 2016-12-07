@@ -72,7 +72,7 @@ public class CapabilitySelection implements NBTCompoundObject, PartialUpdateHand
 
     public void sendSelectionToClients(Entity entity)
     {
-        if (!entity.worldObj.isRemote && !RecurrentComplex.isLite())
+        if (!entity.world.isRemote && !RecurrentComplex.isLite())
             IvNetworkHelperServer.sendEEPUpdatePacket(entity, CAPABILITY_KEY, null, "selection", RecurrentComplex.network);
     }
 

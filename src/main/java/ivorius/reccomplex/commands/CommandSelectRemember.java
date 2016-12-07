@@ -21,13 +21,13 @@ import net.minecraft.server.MinecraftServer;
 public class CommandSelectRemember extends CommandBase
 {
     @Override
-    public String getCommandName()
+    public String getName()
     {
         return RCConfig.commandPrefix + "remember";
     }
 
     @Override
-    public String getCommandUsage(ICommandSender var1)
+    public String getUsage(ICommandSender var1)
     {
         return ServerTranslations.usage("commands.rcremember.usage");
     }
@@ -49,6 +49,6 @@ public class CommandSelectRemember extends CommandBase
         String name = buildString(args, 0);
 
         generationData.addCustomEntry(name, BlockAreas.toBoundingBox(owner.getSelection()));
-        commandSender.addChatMessage(ServerTranslations.format("commands.rcremember.success", name));
+        commandSender.sendMessage(ServerTranslations.format("commands.rcremember.success", name));
     }
 }

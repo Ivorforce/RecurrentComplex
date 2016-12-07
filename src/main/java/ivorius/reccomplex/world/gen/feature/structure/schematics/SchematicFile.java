@@ -184,7 +184,7 @@ public class SchematicFile
                 RCAccessorEntity.setEntityUniqueID(entity, UUID.randomUUID());
                 PosTransformer.transformEntityPos(entity, transform, size);
                 Mover.moveEntity(entity, pos);
-                world.spawnEntityInWorld(entity);
+                world.spawnEntity(entity);
             }
         }
     }

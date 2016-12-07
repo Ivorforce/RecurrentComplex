@@ -22,6 +22,6 @@ public class PacketEditInvGenComponentHandler extends SchedulingMessageHandler<P
     @Override
     public void processClient(PacketEditInvGenComponent message, MessageContext ctx)
     {
-        Minecraft.getMinecraft().displayGuiScreen(new GuiEditInventoryGen(Minecraft.getMinecraft().thePlayer, message.getInventoryGenerator(), message.getKey(), message.getSaveDirectoryData()));
+        Minecraft.getMinecraft().displayGuiScreen(new GuiEditInventoryGen(Minecraft.getMinecraft().player, message.getInventoryGenerator(), message.getKey(), message.getSaveDirectoryData()));
     }
 }

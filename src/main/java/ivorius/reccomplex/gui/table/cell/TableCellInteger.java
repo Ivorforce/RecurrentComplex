@@ -82,7 +82,7 @@ public class TableCellInteger extends TableCellPropertyDefault<Integer> implemen
     @Override
     public void valueChanged(GuiSlider gui)
     {
-        property = MathHelper.floor_float(gui.getValue() + 0.5f);
+        property = MathHelper.floor(gui.getValue() + 0.5f);
 
         gui.setValue(property);
         gui.displayString = String.valueOf(property);

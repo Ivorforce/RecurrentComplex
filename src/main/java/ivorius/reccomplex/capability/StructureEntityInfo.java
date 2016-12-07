@@ -72,19 +72,19 @@ public class StructureEntityInfo implements NBTCompoundObject, PartialUpdateHand
 
     public void sendPreviewTypeToClients(Entity entity)
     {
-        if (!entity.worldObj.isRemote && !RecurrentComplex.isLite())
+        if (!entity.world.isRemote && !RecurrentComplex.isLite())
             IvNetworkHelperServer.sendEEPUpdatePacket(entity, CAPABILITY_KEY, null, "previewType", RecurrentComplex.network);
     }
 
     public void sendOperationToClients(Entity entity)
     {
-        if (!entity.worldObj.isRemote && !RecurrentComplex.isLite())
+        if (!entity.world.isRemote && !RecurrentComplex.isLite())
             IvNetworkHelperServer.sendEEPUpdatePacket(entity, CAPABILITY_KEY, null, "operation", RecurrentComplex.network);
     }
 
     public void sendOptionsToClients(Entity entity)
     {
-        if (!entity.worldObj.isRemote && !RecurrentComplex.isLite())
+        if (!entity.world.isRemote && !RecurrentComplex.isLite())
             IvNetworkHelperServer.sendEEPUpdatePacket(entity, CAPABILITY_KEY, null, "options", RecurrentComplex.network);
     }
 
@@ -176,7 +176,7 @@ public class StructureEntityInfo implements NBTCompoundObject, PartialUpdateHand
     public void update(Entity entity)
     {
         if (danglingOperation != null)
-            danglingOperation.update(entity.worldObj, entity.ticksExisted);
+            danglingOperation.update(entity.world, entity.ticksExisted);
 
         if (hasChanges)
             sendChanges(entity);

@@ -57,11 +57,11 @@ public class StructureGenerationData extends WorldSavedData
 
     public static StructureGenerationData get(World world)
     {
-        StructureGenerationData data = (StructureGenerationData) world.loadItemData(StructureGenerationData.class, IDENTIFIER);
+        StructureGenerationData data = (StructureGenerationData) world.loadData(StructureGenerationData.class, IDENTIFIER);
         if (data == null)
         {
             data = new StructureGenerationData();
-            world.setItemData(data.mapName, data);
+            world.setData(data.mapName, data);
         }
         return data;
     }

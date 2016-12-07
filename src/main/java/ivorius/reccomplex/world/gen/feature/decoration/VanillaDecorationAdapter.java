@@ -30,7 +30,7 @@ public class VanillaDecorationAdapter implements RCBiomeDecorator.Adapter
             {
                 int vanillaAmount = decorator.treesPerChunk;
 
-                if (random.nextFloat() < decorator.field_189870_A)
+                if (random.nextFloat() < decorator.extraTreeChance)
                     ++vanillaAmount;
 
                 return vanillaAmount;

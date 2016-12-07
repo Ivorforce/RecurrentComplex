@@ -27,7 +27,7 @@ import java.util.List;
 public class CommandReload extends CommandBase
 {
     @Override
-    public String getCommandName()
+    public String getName()
     {
         return RCConfig.commandPrefix + "reload";
     }
@@ -38,7 +38,7 @@ public class CommandReload extends CommandBase
     }
 
     @Override
-    public String getCommandUsage(ICommandSender var1)
+    public String getUsage(ICommandSender var1)
     {
         return ServerTranslations.usage("commands.strucReload.usage");
     }
@@ -51,7 +51,7 @@ public class CommandReload extends CommandBase
             LeveledRegistry.Level level = args.length >= 1 ? LeveledRegistry.Level.valueOf(args[0]) : LeveledRegistry.Level.CUSTOM;
             ResourceDirectory.reload(RecurrentComplex.loader, level);
 
-            commandSender.addChatMessage(ServerTranslations.format("commands.strucReload.success", level));
+            commandSender.sendMessage(ServerTranslations.format("commands.strucReload.success", level));
         }
         catch (IllegalArgumentException e)
         {
@@ -60,7 +60,7 @@ public class CommandReload extends CommandBase
     }
 
     @Override
-    public List<String> getTabCompletionOptions(MinecraftServer server, ICommandSender sender, String[] args, @Nullable BlockPos pos)
+    public List<String> getTabCompletions(MinecraftServer server, ICommandSender sender, String[] args, @Nullable BlockPos pos)
     {
         if (args.length == 1)
             return getListOfStringsMatchingLastWord(args, Arrays.asList(LeveledRegistry.Level.CUSTOM, LeveledRegistry.Level.MODDED, LeveledRegistry.Level.SERVER));

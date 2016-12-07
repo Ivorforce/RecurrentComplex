@@ -77,17 +77,17 @@ public class OperationRegistry
                     info.queueOperation(operation, player);
                     instant = false;
 
-                    ITextComponent confirmComponent = new TextComponentString("/" + RCCommands.confirm.getCommandName());
+                    ITextComponent confirmComponent = new TextComponentString("/" + RCCommands.confirm.getName());
                     confirmComponent.getStyle().setColor(TextFormatting.GREEN);
-                    confirmComponent.getStyle().setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/" + RCCommands.confirm.getCommandName()));
+                    confirmComponent.getStyle().setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/" + RCCommands.confirm.getName()));
                     confirmComponent.getStyle().setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, ServerTranslations.get("commands.rcconfirm.run")));
 
-                    ITextComponent cancelComponent = new TextComponentString("/" + RCCommands.cancel.getCommandName());
+                    ITextComponent cancelComponent = new TextComponentString("/" + RCCommands.cancel.getName());
                     cancelComponent.getStyle().setColor(TextFormatting.RED);
-                    cancelComponent.getStyle().setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/" + RCCommands.cancel.getCommandName()));
+                    cancelComponent.getStyle().setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/" + RCCommands.cancel.getName()));
                     cancelComponent.getStyle().setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, ServerTranslations.get("commands.rccancel.run")));
 
-                    commandSender.addChatMessage(ServerTranslations.format("commands.rc.queuedOp", confirmComponent, cancelComponent));
+                    commandSender.sendMessage(ServerTranslations.format("commands.rc.queuedOp", confirmComponent, cancelComponent));
                 }
             }
         }

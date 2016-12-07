@@ -14,6 +14,7 @@ import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.GuiButton;
 
 import java.util.Arrays;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
 import java.util.function.Function;
@@ -60,7 +61,7 @@ public class TableCellEnum<T> extends TableCellPropertyDefault<T>
     {
         return values.stream()
                 .map(input -> new Option<>(input, titleFunc != null ? titleFunc.apply(input) : null, tooltipFunc != null ? tooltipFunc.apply(input) : null))
-                .sorted((o1, o2) -> o1.title.compareTo(o2.title))
+                .sorted(Comparator.comparing(o -> o.title))
                 .collect(Collectors.toList());
     }
 

@@ -22,13 +22,13 @@ import net.minecraft.util.math.BlockPos;
 public class CommandSelectExpand extends CommandBase
 {
     @Override
-    public String getCommandName()
+    public String getName()
     {
         return RCConfig.commandPrefix + "expand";
     }
 
     @Override
-    public String getCommandUsage(ICommandSender var1)
+    public String getUsage(ICommandSender var1)
     {
         return ServerTranslations.usage("commands.selectExpand.usage");
     }

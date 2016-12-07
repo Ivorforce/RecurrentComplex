@@ -71,7 +71,7 @@ public class RCGuiHandler implements IvGuiHandler
         }
         else if (id == editInventoryGenItems)
         {
-            if (!player.canCommandSenderUseCommand(2, "give"))
+            if (!player.canUseCommand(2, "give"))
                 return null; // Potential source of spoof otherwise
 
             String key = ByteBufUtils.readUTF8String(data);

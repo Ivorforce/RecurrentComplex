@@ -212,7 +212,7 @@ public class GenericPlacer implements Placer
             @SerializedName("top")
             TOP,
             @SerializedName("lowestedge")
-            LOWEST_EDGE;
+            LOWEST_EDGE,
         }
     }
 }

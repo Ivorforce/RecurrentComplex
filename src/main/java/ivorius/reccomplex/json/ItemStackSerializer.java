@@ -39,7 +39,7 @@ public class ItemStackSerializer implements JsonSerializer<ItemStack>, JsonDeser
 
         jsonObject.addProperty("id", registry.itemHidingMode().containedItemID(src).toString());
         jsonObject.addProperty("damage", src.getItemDamage());
-        jsonObject.addProperty("count", src.stackSize);
+        jsonObject.addProperty("count", src.getCount());
 
         if (src.hasTagCompound())
         {
@@ -76,8 +76,8 @@ public class ItemStackSerializer implements JsonSerializer<ItemStack>, JsonDeser
 
         // Convert to NBT, let vanilla fix it and then load it through ReC again
         NBTTagCompound fixed = fixItemStack(stack);
-        ItemStack loadedFixed = ItemStack.loadItemStackFromNBT(fixed);
-        stack = registry.itemHidingMode().constructItemStack(new ResourceLocation(fixed.getString("id")), loadedFixed.stackSize, loadedFixed.getMetadata());
+        ItemStack loadedFixed = new ItemStack(fixed);
+        stack = registry.itemHidingMode().constructItemStack(new ResourceLocation(fixed.getString("id")), loadedFixed.getCount(), loadedFixed.getMetadata());
         if (loadedFixed.hasTagCompound())
             stack.setTagCompound(loadedFixed.getTagCompound());
 

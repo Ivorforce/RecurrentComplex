@@ -5,8 +5,8 @@
 
 package ivorius.reccomplex.world.gen.feature.structure;
 
+import ivorius.reccomplex.utils.RCStructureBoundingBoxes;
 import ivorius.reccomplex.world.gen.feature.structure.generic.gentypes.GenerationInfo;
-import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldServer;
 import net.minecraft.world.biome.Biome;
@@ -51,7 +51,7 @@ public class Environment
 
     public static Biome getBiome(World world, StructureBoundingBox boundingBox)
     {
-        return world.getBiome(new BlockPos(boundingBox.getCenter()));
+        return world.getBiome(RCStructureBoundingBoxes.getCenter(boundingBox));
     }
 
     public Environment withGeneration(GenerationInfo generation)

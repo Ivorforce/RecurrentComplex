@@ -35,16 +35,16 @@ public class ItemInventoryGenSingleTag extends ItemInventoryGenerationTag implem
         WeightedItemCollection weightedItemCollection = inventoryGenerator(stack);
 
         if (weightedItemCollection != null)
-            inventory.setInventorySlotContents(fromSlot, random.nextFloat() < getItemChance(stack) ? weightedItemCollection.getRandomItemStack(server, random) : null);
+            inventory.setInventorySlotContents(fromSlot, random.nextFloat() < getItemChance(stack) ? weightedItemCollection.getRandomItemStack(server, random) : ItemStack.EMPTY);
     }
 
     @Override
-    public ActionResult<ItemStack> onItemRightClick(ItemStack itemStackIn, World worldIn, EntityPlayer playerIn, EnumHand hand)
+    public ActionResult<ItemStack> onItemRightClick(World worldIn, EntityPlayer playerIn, EnumHand hand)
     {
         if (worldIn.isRemote)
             openGui(playerIn, playerIn.inventory.currentItem);
 
-        return super.onItemRightClick(itemStackIn, worldIn, playerIn, hand);
+        return super.onItemRightClick(worldIn, playerIn, hand);
     }
 
     @SideOnly(Side.CLIENT)

@@ -32,7 +32,7 @@ import java.util.List;
 public class CommandPaste extends CommandBase
 {
     @Override
-    public String getCommandName()
+    public String getName()
     {
         return RCConfig.commandPrefix + "paste";
     }
@@ -43,7 +43,7 @@ public class CommandPaste extends CommandBase
     }
 
     @Override
-    public String getCommandUsage(ICommandSender var1)
+    public String getUsage(ICommandSender var1)
     {
         return ServerTranslations.usage("commands.strucPaste.usage");
     }
@@ -75,7 +75,7 @@ public class CommandPaste extends CommandBase
 
     @Nonnull
     @Override
-    public List<String> getTabCompletionOptions(MinecraftServer server, ICommandSender sender, String[] args, @Nullable BlockPos pos)
+    public List<String> getTabCompletions(MinecraftServer server, ICommandSender sender, String[] args, @Nullable BlockPos pos)
     {
         if (args.length == 1 || args.length == 2 || args.length == 3)
             return getTabCompletionCoordinate(args, args.length, pos);

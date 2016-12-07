@@ -94,11 +94,11 @@ public class GuiScreenEditTable<T extends TableDataSource> extends GuiScreenModa
         {
             saver.accept(this.t);
 
-            this.mc.thePlayer.closeScreen();
+            this.mc.player.closeScreen();
         }
         else if (button.id == 1)
         {
-            this.mc.thePlayer.closeScreen();
+            this.mc.player.closeScreen();
         }
         else if (button.id == 2)
         {

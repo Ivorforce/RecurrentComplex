@@ -21,7 +21,7 @@ import java.io.File;
 public class CommandBrowseFiles extends CommandBase
 {
     @Override
-    public String getCommandName()
+    public String getName()
     {
         return RCConfig.commandPrefix + "files";
     }
@@ -32,7 +32,7 @@ public class CommandBrowseFiles extends CommandBase
     }
 
     @Override
-    public String getCommandUsage(ICommandSender commandSender)
+    public String getUsage(ICommandSender commandSender)
     {
         return ServerTranslations.usage("commands.rcfiles.usage");
     }

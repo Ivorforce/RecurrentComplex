@@ -55,6 +55,7 @@ import net.minecraft.block.material.Material;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemBlock;
+import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.capabilities.CapabilityManager;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
@@ -83,17 +84,17 @@ public class RCRegistryHandler
             tabStructureTools = new CreativeTabs("structureTools")
             {
                 @Override
-                public Item getTabIconItem()
+                public ItemStack getTabIconItem()
                 {
-                    return RCItems.blockSelector;
+                    return new ItemStack(RCItems.blockSelector);
                 }
             };
             tabInventoryGenerators = new CreativeTabs("inventoryGenerators")
             {
                 @Override
-                public Item getTabIconItem()
+                public ItemStack getTabIconItem()
                 {
-                    return RCItems.inventoryGenerationTag;
+                    return new ItemStack(RCItems.inventoryGenerationTag);
                 }
             };
         }

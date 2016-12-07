@@ -19,13 +19,13 @@ import net.minecraft.server.MinecraftServer;
 public class CommandSelectShift extends CommandBase
 {
     @Override
-    public String getCommandName()
+    public String getName()
     {
         return RCConfig.commandPrefix + "shift";
     }
 
     @Override
-    public String getCommandUsage(ICommandSender var1)
+    public String getUsage(ICommandSender var1)
     {
         return ServerTranslations.usage("commands.selectShift.usage");
     }

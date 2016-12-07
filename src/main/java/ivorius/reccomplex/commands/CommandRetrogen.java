@@ -82,7 +82,7 @@ public class CommandRetrogen extends CommandBase
     }
 
     @Override
-    public String getCommandName()
+    public String getName()
     {
         return RCConfig.commandPrefix + "retro";
     }
@@ -93,7 +93,7 @@ public class CommandRetrogen extends CommandBase
     }
 
     @Override
-    public String getCommandUsage(ICommandSender var1)
+    public String getUsage(ICommandSender var1)
     {
         return ServerTranslations.usage("commands.rcretro.usage");
     }
@@ -103,11 +103,11 @@ public class CommandRetrogen extends CommandBase
     {
         long count = retrogen(RCCommands.tryParseDimension(commandSender, args, 0), RCCommands.tryParseStructurePredicate(args, 4, () -> null));
 
-        commandSender.addChatMessage(ServerTranslations.format("commands.rcretro.count", String.valueOf(count)));
+        commandSender.sendMessage(ServerTranslations.format("commands.rcretro.count", String.valueOf(count)));
     }
 
     @Override
-    public List<String> getTabCompletionOptions(MinecraftServer server, ICommandSender sender, String[] args, @Nullable BlockPos pos)
+    public List<String> getTabCompletions(MinecraftServer server, ICommandSender sender, String[] args, @Nullable BlockPos pos)
     {
         if (args.length == 1)
             return RCCommands.completeDimension(args);

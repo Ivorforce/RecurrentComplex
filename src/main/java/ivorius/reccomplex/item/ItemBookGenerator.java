@@ -27,12 +27,12 @@ import java.util.Random;
 public class ItemBookGenerator extends Item implements GeneratingItem
 {
     @Override
-    public EnumActionResult onItemUse(ItemStack stack, EntityPlayer playerIn, World worldIn, BlockPos pos, EnumHand hand, EnumFacing facing, float hitX, float hitY, float hitZ)
+    public EnumActionResult onItemUse(EntityPlayer playerIn, World worldIn, BlockPos pos, EnumHand hand, EnumFacing facing, float hitX, float hitY, float hitZ)
     {
         if (!worldIn.isRemote)
-            return ItemInventoryGenerationTag.applyGeneratorToInventory((WorldServer) worldIn, pos, this, stack) ? EnumActionResult.SUCCESS : EnumActionResult.PASS;
+            return ItemInventoryGenerationTag.applyGeneratorToInventory((WorldServer) worldIn, pos, this, playerIn.getHeldItem(hand)) ? EnumActionResult.SUCCESS : EnumActionResult.PASS;
 
-        return super.onItemUse(stack, playerIn, worldIn, pos, hand, facing, hitX, hitY, hitZ);
+        return super.onItemUse(playerIn, worldIn, pos, hand, facing, hitX, hitY, hitZ);
     }
 
     @Override

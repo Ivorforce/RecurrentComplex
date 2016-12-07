@@ -24,8 +24,9 @@ public class ItemBlockSelectorBlock extends ItemBlockSelector
 
     @Nonnull
     @Override
-    public EnumActionResult onItemUse(ItemStack stack, EntityPlayer playerIn, World worldIn, BlockPos pos, EnumHand hand, EnumFacing facing, float hitX, float hitY, float hitZ)
+    public EnumActionResult onItemUse(EntityPlayer playerIn, World worldIn, BlockPos pos, EnumHand hand, EnumFacing facing, float hitX, float hitY, float hitZ)
     {
+        ItemStack stack = playerIn.getHeldItem(hand);
         if (worldIn.isRemote)
             sendClickToServer(stack, worldIn, playerIn, pos);
 

@@ -20,7 +20,7 @@ import net.minecraft.server.MinecraftServer;
 public class CommandCancel extends CommandBase
 {
     @Override
-    public String getCommandName()
+    public String getName()
     {
         return RCConfig.commandPrefix + "cancel";
     }
@@ -31,7 +31,7 @@ public class CommandCancel extends CommandBase
     }
 
     @Override
-    public String getCommandUsage(ICommandSender commandSender)
+    public String getUsage(ICommandSender commandSender)
     {
         return ServerTranslations.usage("commands.rccancel.usage");
     }

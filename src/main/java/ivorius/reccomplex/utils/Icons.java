@@ -24,11 +24,11 @@ public class Icons
 
     public static <T> T frame(T[] icons, float ticks)
     {
-        return icons[(MathHelper.floor_float(ticks) % icons.length + icons.length) % icons.length];
+        return icons[(MathHelper.floor(ticks) % icons.length + icons.length) % icons.length];
     }
 
     public static <T> T frame(List<T> icons, float ticks)
     {
-        return icons.get((MathHelper.floor_float(ticks) % icons.size() + icons.size()) % icons.size());
+        return icons.get((MathHelper.floor(ticks) % icons.size() + icons.size()) % icons.size());
     }
 }

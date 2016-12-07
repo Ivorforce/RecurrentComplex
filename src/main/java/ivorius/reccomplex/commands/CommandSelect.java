@@ -23,7 +23,7 @@ import java.util.List;
 public class CommandSelect extends CommandBase
 {
     @Override
-    public String getCommandName()
+    public String getName()
     {
         return RCConfig.commandPrefix + "select";
     }
@@ -34,7 +34,7 @@ public class CommandSelect extends CommandBase
     }
 
     @Override
-    public String getCommandUsage(ICommandSender var1)
+    public String getUsage(ICommandSender var1)
     {
         return ServerTranslations.usage("commands.selectSet.usage");
     }
@@ -52,9 +52,9 @@ public class CommandSelect extends CommandBase
                     owner.setSelection(null);
                     break;
                 case "get":
-                    commandSender.addChatMessage(ServerTranslations.format("commands.selectSet.get", translatePoint(owner.getSelectedPoint1()), translatePoint(owner.getSelectedPoint2())));
+                    commandSender.sendMessage(ServerTranslations.format("commands.selectSet.get", translatePoint(owner.getSelectedPoint1()), translatePoint(owner.getSelectedPoint2())));
                     if (owner.hasValidSelection())
-                        commandSender.addChatMessage(ServerTranslations.format("commands.selectSet.size", translateSize(owner.getSelection().areaSize())));
+                        commandSender.sendMessage(ServerTranslations.format("commands.selectSet.size", translateSize(owner.getSelection().areaSize())));
                     break;
                 case "both":
                 case "point1":
@@ -106,13 +106,13 @@ public class CommandSelect extends CommandBase
     }
 
     @Override
-    public List<String> getTabCompletionOptions(MinecraftServer server, ICommandSender sender, String[] args, @Nullable BlockPos pos)
+    public List<String> getTabCompletions(MinecraftServer server, ICommandSender sender, String[] args, @Nullable BlockPos pos)
     {
         if (args.length == 1)
             return getListOfStringsMatchingLastWord(args, "both", "clear", "point1", "point2", "get");
         else if (args.length == 2 || args.length == 3 || args.length == 4)
             return getTabCompletionCoordinate(args, args.length - 1, pos);
 
-        return super.getTabCompletionOptions(server, sender, args, pos);
+        return super.getTabCompletions(server, sender, args, pos);
     }
 }

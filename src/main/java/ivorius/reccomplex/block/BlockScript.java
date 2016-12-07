@@ -46,9 +46,9 @@ public class BlockScript extends Block
     }
 
     @Override
-    public boolean onBlockActivated(World worldIn, BlockPos pos, IBlockState state, EntityPlayer playerIn, EnumHand hand, @Nullable ItemStack heldItem, EnumFacing side, float hitX, float hitY, float hitZ)
+    public boolean onBlockActivated(World worldIn, BlockPos pos, IBlockState state, EntityPlayer playerIn, EnumHand hand, EnumFacing side, float hitX, float hitY, float hitZ)
     {
-        if (!worldIn.isRemote && playerIn instanceof EntityPlayerMP && playerIn.canCommandSenderUseCommand(2, ""))
+        if (!worldIn.isRemote && playerIn instanceof EntityPlayerMP && playerIn.canUseCommand(2, ""))
         {
             TileEntity tileEntity = worldIn.getTileEntity(pos);
 
@@ -80,7 +80,7 @@ public class BlockScript extends Block
 
     @SuppressWarnings("deprecation")
     @Override
-    public void neighborChanged(IBlockState state, World worldIn, BlockPos pos, Block blockIn)
+    public void neighborChanged(IBlockState state, World worldIn, BlockPos pos, Block blockIn, BlockPos fromPos)
     {
         boolean flag = worldIn.isBlockPowered(pos) || worldIn.isBlockPowered(pos.up());
         TileEntityBlockScript tileEntity = (TileEntityBlockScript) worldIn.getTileEntity(pos);

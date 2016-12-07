@@ -26,7 +26,7 @@ import java.util.stream.Collectors;
 public class CommandForgetAll extends CommandBase
 {
     @Override
-    public String getCommandName()
+    public String getName()
     {
         return RCConfig.commandPrefix + "forgetall";
     }
@@ -37,7 +37,7 @@ public class CommandForgetAll extends CommandBase
     }
 
     @Override
-    public String getCommandUsage(ICommandSender var1)
+    public String getUsage(ICommandSender var1)
     {
         return ServerTranslations.usage("commands.rcforgetall.usage");
     }
@@ -55,13 +55,13 @@ public class CommandForgetAll extends CommandBase
         entries.forEach(e -> generationData.removeEntry(e.getUuid()));
 
         if (entries.size() == 1)
-            commandSender.addChatMessage(ServerTranslations.format("commands.rcforget.success", entries.get(0).description()));
+            commandSender.sendMessage(ServerTranslations.format("commands.rcforget.success", entries.get(0).description()));
         else
-            commandSender.addChatMessage(ServerTranslations.format("commands.rcforgetall.success", entries.size()));
+            commandSender.sendMessage(ServerTranslations.format("commands.rcforgetall.success", entries.size()));
     }
 
     @Override
-    public List<String> getTabCompletionOptions(MinecraftServer server, ICommandSender sender, String[] args, @Nullable BlockPos pos)
+    public List<String> getTabCompletions(MinecraftServer server, ICommandSender sender, String[] args, @Nullable BlockPos pos)
     {
         if (args.length == 1 || args.length == 2 || args.length == 3)
             return getTabCompletionCoordinate(args, 0, pos);

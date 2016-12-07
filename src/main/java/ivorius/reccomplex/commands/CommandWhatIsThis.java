@@ -39,7 +39,7 @@ public class CommandWhatIsThis extends CommandBase
         TextComponentString forget = new TextComponentString("X");
         String uuidString = entry.getUuid().toString();
         forget.getStyle().setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND,
-                String.format("/%s %s", RCCommands.forget.getCommandName(), uuidString)));
+                String.format("/%s %s", RCCommands.forget.getName(), uuidString)));
         forget.getStyle().setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT,
                 ServerTranslations.format("commands.rcforget.forget", uuidString)));
         forget.getStyle().setColor(TextFormatting.RED);
@@ -52,7 +52,7 @@ public class CommandWhatIsThis extends CommandBase
     }
 
     @Override
-    public String getCommandName()
+    public String getName()
     {
         return RCConfig.commandPrefix + "whatisthis";
     }
@@ -63,7 +63,7 @@ public class CommandWhatIsThis extends CommandBase
     }
 
     @Override
-    public String getCommandUsage(ICommandSender var1)
+    public String getUsage(ICommandSender var1)
     {
         return ServerTranslations.usage("commands.whatisthis.usage");
     }
@@ -77,14 +77,14 @@ public class CommandWhatIsThis extends CommandBase
 
         List<StructureGenerationData.Entry> entries = StructureGenerationData.get(world).entriesAt(pos).collect(Collectors.toCollection(ArrayList::new));
         if (entries.size() > 0)
-            commandSender.addChatMessage(ServerTranslations.format(new ArrayList<ITextComponent>().size() > 1 ? "commands.whatisthis.many" : "commands.whatisthis.one",
+            commandSender.sendMessage(ServerTranslations.format(new ArrayList<ITextComponent>().size() > 1 ? "commands.whatisthis.many" : "commands.whatisthis.one",
                     ServerTranslations.join(entries.stream().map(CommandWhatIsThis::entryTextComponent).collect(Collectors.toList()))));
         else
-            commandSender.addChatMessage(ServerTranslations.format("commands.whatisthis.none"));
+            commandSender.sendMessage(ServerTranslations.format("commands.whatisthis.none"));
     }
 
     @Override
-    public List<String> getTabCompletionOptions(MinecraftServer server, ICommandSender sender, String[] args, @Nullable BlockPos pos)
+    public List<String> getTabCompletions(MinecraftServer server, ICommandSender sender, String[] args, @Nullable BlockPos pos)
     {
         if (args.length == 1 || args.length == 2 || args.length == 3)
             return getTabCompletionCoordinate(args, 0, pos);

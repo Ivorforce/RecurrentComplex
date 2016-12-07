@@ -25,7 +25,7 @@ import java.util.List;
 public class CommandVisual extends CommandBase
 {
     @Override
-    public String getCommandName()
+    public String getName()
     {
         return RCConfig.commandPrefix + "visual";
     }
@@ -36,7 +36,7 @@ public class CommandVisual extends CommandBase
     }
 
     @Override
-    public String getCommandUsage(ICommandSender commandSender)
+    public String getUsage(ICommandSender commandSender)
     {
         return ServerTranslations.usage("commands.rcvisual.usage");
     }
@@ -63,13 +63,13 @@ public class CommandVisual extends CommandBase
         }
 
         if (enabled)
-            commandSender.addChatMessage(ServerTranslations.format("commands.rcvisual.enabled", args[0]));
+            commandSender.sendMessage(ServerTranslations.format("commands.rcvisual.enabled", args[0]));
         else
-            commandSender.addChatMessage(ServerTranslations.format("commands.rcvisual.disabled", args[0]));
+            commandSender.sendMessage(ServerTranslations.format("commands.rcvisual.disabled", args[0]));
     }
 
     @Override
-    public List<String> getTabCompletionOptions(MinecraftServer server, ICommandSender sender, String[] args, @Nullable BlockPos pos)
+    public List<String> getTabCompletions(MinecraftServer server, ICommandSender sender, String[] args, @Nullable BlockPos pos)
     {
         if (args.length == 1)
             return getListOfStringsMatchingLastWord(args, "rulers");

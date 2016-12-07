@@ -23,13 +23,13 @@ import net.minecraft.command.ICommandSender;
 public class CommandSelectCopy extends CommandBase
 {
     @Override
-    public String getCommandName()
+    public String getName()
     {
         return RCConfig.commandPrefix + "copy";
     }
 
     @Override
-    public String getCommandUsage(ICommandSender var1)
+    public String getUsage(ICommandSender var1)
     {
         return ServerTranslations.usage("commands.selectCopy.usage");
     }
@@ -51,6 +51,6 @@ public class CommandSelectCopy extends CommandBase
         BlockPos higherCorner = area.getHigherCorner();
 
         structureEntityInfo.setWorldDataClipboard(worldData.createTagCompound(null));
-        commandSender.addChatMessage(ServerTranslations.format("commands.selectCopy.success", String.valueOf(lowerCorner.getX()), String.valueOf(lowerCorner.getY()), String.valueOf(lowerCorner.getZ()), String.valueOf(higherCorner.getX()), String.valueOf(higherCorner.getY()), String.valueOf(higherCorner.getZ())));
+        commandSender.sendMessage(ServerTranslations.format("commands.selectCopy.success", String.valueOf(lowerCorner.getX()), String.valueOf(lowerCorner.getY()), String.valueOf(lowerCorner.getZ()), String.valueOf(higherCorner.getX()), String.valueOf(higherCorner.getY()), String.valueOf(higherCorner.getZ())));
     }
 }

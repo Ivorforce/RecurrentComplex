@@ -74,14 +74,14 @@ public class TransformerProperty extends TransformerSingleBlock<NBTNone>
     public static Stream<String> propertyValueStream(String propertyName)
     {
         return Block.REGISTRY.getKeys().stream().map(Block.REGISTRY::getObject)
-                .map(b -> b.getDefaultState().getPropertyNames().stream().filter(p -> p.getName().equals(propertyName)).findFirst().orElse(null))
+                .map(b -> b.getDefaultState().getPropertyKeys().stream().filter(p -> p.getName().equals(propertyName)).findFirst().orElse(null))
                 .filter(Objects::nonNull).flatMap(p -> p.getAllowedValues().stream().map(p::getName));
     }
 
     public static Stream<String> propertyNameStream()
     {
         return Block.REGISTRY.getKeys().stream().map(Block.REGISTRY::getObject)
-                .flatMap(b -> b.getDefaultState().getPropertyNames().stream().map(IProperty::getName));
+                .flatMap(b -> b.getDefaultState().getPropertyKeys().stream().map(IProperty::getName));
     }
 
     @Override

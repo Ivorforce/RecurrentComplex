@@ -128,7 +128,7 @@ public class TableCellFloatNullable extends TableCellPropertyDefault<Float> impl
 
         screen.addButton(this, 0, slider);
 
-        int nullButtonWidth = MathHelper.floor_float(bounds.getWidth() * this.nullButtonWidth) - 2;
+        int nullButtonWidth = MathHelper.floor(bounds.getWidth() * this.nullButtonWidth) - 2;
         nullButton = new GuiButton(-1, bounds.getMinX() + slider.width + 2, bounds.getMinY() + (bounds.getHeight() - 20) / 2, nullButtonWidth, 20, property != null ? buttonTitleCustom : buttonTitleNull);
 
         nullButton.enabled = enabled;
@@ -196,7 +196,7 @@ public class TableCellFloatNullable extends TableCellPropertyDefault<Float> impl
 
     protected void updateSliderBounds(Bounds bounds)
     {
-        int sliderWidth = MathHelper.floor_float(bounds.getWidth() * (1.0f - nullButtonWidth)) - 2;
+        int sliderWidth = MathHelper.floor(bounds.getWidth() * (1.0f - nullButtonWidth)) - 2;
         Bounds.set(slider, Bounds.fromSize(bounds.getMinX(), bounds.getMinY() + (bounds.getHeight() - 20) / 2, sliderWidth, 20));
     }
 

@@ -22,13 +22,13 @@ import net.minecraft.command.ICommandSender;
 public class CommandSelectShrink extends CommandBase
 {
     @Override
-    public String getCommandName()
+    public String getName()
     {
         return RCConfig.commandPrefix + "shrink";
     }
 
     @Override
-    public String getCommandUsage(ICommandSender var1)
+    public String getUsage(ICommandSender var1)
     {
         return ServerTranslations.usage("commands.selectShrink.usage");
     }

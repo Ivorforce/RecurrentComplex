@@ -17,7 +17,7 @@ public class GuiBlockInspector extends GuiScreenEditTable<TableDataSourceBlockIn
 {
     public GuiBlockInspector(BlockPos pos, IBlockState state)
     {
-        setDataSource(new TableDataSourceBlockInspector(pos, state, this, this), ds -> this.mc.thePlayer.sendChatMessage(String.format("/setblock %d %d %d %s %d",
+        setDataSource(new TableDataSourceBlockInspector(pos, state, this, this), ds -> this.mc.player.sendChatMessage(String.format("/setblock %d %d %d %s %d",
                 ds.pos.getX(), ds.pos.getY(), ds.pos.getZ(),
                 Block.REGISTRY.getNameForObject(ds.state.getBlock()).toString(), ivorius.ivtoolkit.blocks.BlockStates.toMetadata(ds.state))));
     }

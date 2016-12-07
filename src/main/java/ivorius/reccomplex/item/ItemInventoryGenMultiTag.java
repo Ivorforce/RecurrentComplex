@@ -44,12 +44,12 @@ public class ItemInventoryGenMultiTag extends ItemInventoryGenerationTag impleme
     }
 
     @Override
-    public ActionResult<ItemStack> onItemRightClick(ItemStack itemStackIn, World worldIn, EntityPlayer playerIn, EnumHand hand)
+    public ActionResult<ItemStack> onItemRightClick(World worldIn, EntityPlayer playerIn, EnumHand handIn)
     {
         if (worldIn.isRemote)
             openGui(playerIn, playerIn.inventory.currentItem);
 
-        return super.onItemRightClick(itemStackIn, worldIn, playerIn, hand);
+        return super.onItemRightClick(worldIn, playerIn, handIn);
     }
 
     @SideOnly(Side.CLIENT)
@@ -63,7 +63,7 @@ public class ItemInventoryGenMultiTag extends ItemInventoryGenerationTag impleme
     {
         WeightedItemCollection weightedItemCollection = inventoryGenerator(stack);
 
-        inventory.setInventorySlotContents(fromSlot, null);
+        inventory.setInventorySlotContents(fromSlot, ItemStack.EMPTY);
 
         if (weightedItemCollection != null)
         {

@@ -44,7 +44,7 @@ public class CommandSearchStructure extends CommandBase
     {
         TextComponentString comp = new TextComponentString(strucID);
         comp.getStyle().setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND,
-                String.format("/%s %s", RCCommands.lookup.getCommandName(), strucID)));
+                String.format("/%s %s", RCCommands.lookup.getName(), strucID)));
         comp.getStyle().setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT,
                 ServerTranslations.get("commands.rcsearch.lookup")));
         comp.getStyle().setColor(TextFormatting.AQUA);
@@ -87,7 +87,7 @@ public class CommandSearchStructure extends CommandBase
     }
 
     @Override
-    public String getCommandName()
+    public String getName()
     {
         return RCConfig.commandPrefix + "search";
     }
@@ -98,7 +98,7 @@ public class CommandSearchStructure extends CommandBase
     }
 
     @Override
-    public String getCommandUsage(ICommandSender var1)
+    public String getUsage(ICommandSender var1)
     {
         return ServerTranslations.usage("commands.rcsearch.usage");
     }
@@ -133,11 +133,11 @@ public class CommandSearchStructure extends CommandBase
                     components[i] = toComponent.apply(results.remove());
             }
 
-            commandSender.addChatMessage(ServerTranslations.join((Object[]) components));
+            commandSender.sendMessage(ServerTranslations.join((Object[]) components));
         }
         else
         {
-            commandSender.addChatMessage(ServerTranslations.get("commands.rcsearch.empty"));
+            commandSender.sendMessage(ServerTranslations.get("commands.rcsearch.empty"));
         }
     }
 

@@ -39,13 +39,13 @@ public class InventoryGenerationHandler
                 {
                     ItemStack stack = inventory.getStackInSlot(i);
 
-                    if (stack != null)
+                    if (!stack.isEmpty())
                     {
                         Item item = registry.containedItem(stack);
                         if (item instanceof GeneratingItem)
                         {
                             foundGenerators.add(Triple.of(stack, (GeneratingItem) item, i));
-                            inventory.setInventorySlotContents(i, null);
+                            inventory.setInventorySlotContents(i, ItemStack.EMPTY);
                         }
                     }
                 }

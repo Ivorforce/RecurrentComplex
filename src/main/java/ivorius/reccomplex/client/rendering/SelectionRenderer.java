@@ -90,7 +90,7 @@ public class SelectionRenderer
             OpenGlHelper.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA, GL11.GL_ONE, GL11.GL_ZERO);
             GlStateManager.alphaFunc(GL11.GL_GREATER, 0.0001f);
 
-            ResourceLocation curTex = TEXTURE[MathHelper.floor_float((ticks + partialTicks) * 0.75f) % TEXTURE.length];
+            ResourceLocation curTex = TEXTURE[MathHelper.floor((ticks + partialTicks) * 0.75f) % TEXTURE.length];
             mc.renderEngine.bindTexture(curTex);
 
             GlStateManager.color(0.2f, 0.5f, 0.6f, 0.5f);

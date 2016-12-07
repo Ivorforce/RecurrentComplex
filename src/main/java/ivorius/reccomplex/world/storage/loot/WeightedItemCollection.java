@@ -16,7 +16,6 @@ import java.util.Random;
  */
 public interface WeightedItemCollection
 {
-    @Nullable
     ItemStack getRandomItemStack(WorldServer server, Random random);
 
     String getDescriptor();

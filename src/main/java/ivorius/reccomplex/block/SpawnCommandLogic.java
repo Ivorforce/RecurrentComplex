@@ -57,7 +57,7 @@ public abstract class SpawnCommandLogic implements ICommandSender
     }
 
     @Override
-    public boolean canCommandSenderUseCommand(int permLevel, String commandName)
+    public boolean canUseCommand(int permLevel, String commandName)
     {
         return permLevel <= 2;
     }
@@ -126,7 +126,7 @@ public abstract class SpawnCommandLogic implements ICommandSender
     }
 
     @Override
-    public void addChatMessage(ITextComponent component)
+    public void sendMessage(ITextComponent component)
     {
     }
 
@@ -134,7 +134,7 @@ public abstract class SpawnCommandLogic implements ICommandSender
     public boolean sendCommandFeedback()
     {
         MinecraftServer minecraftserver = this.getServer();
-        return minecraftserver == null || !minecraftserver.isAnvilFileSet() || minecraftserver.worldServers[0].getGameRules().getBoolean("commandBlockOutput");
+        return minecraftserver == null || !minecraftserver.isAnvilFileSet() || minecraftserver.worldServerForDimension(0).getGameRules().getBoolean("commandBlockOutput");
     }
 
     @Override

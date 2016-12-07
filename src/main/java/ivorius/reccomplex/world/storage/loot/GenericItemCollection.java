@@ -61,7 +61,7 @@ public class GenericItemCollection implements WeightedItemCollection
         if (max > 0)
             return WeightedRandom.getRandomItem(random, components, max).getRandomItemStack(random);
 
-        return null;
+        return ItemStack.EMPTY;
     }
 
     @Override
@@ -218,7 +218,7 @@ public class GenericItemCollection implements WeightedItemCollection
             int max = Math.max(this.max, this.min);
 
             ItemStack stack = itemStack.copy();
-            stack.stackSize = random.nextInt(max - min + 1) + min;
+            stack.setCount(random.nextInt(max - min + 1) + min);
             return stack;
         }
 

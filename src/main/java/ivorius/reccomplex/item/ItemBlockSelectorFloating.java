@@ -39,17 +39,19 @@ public class ItemBlockSelectorFloating extends ItemBlockSelector implements Item
     public static BlockPos getHoveredBlock(EntityLivingBase entity, float selectionRange)
     {
         Vec3d look = entity.getLookVec();
-        int blockX = MathHelper.floor_double(look.xCoord * selectionRange + entity.posX);
-        int blockY = MathHelper.floor_double(look.yCoord * selectionRange + entity.posY + entity.getEyeHeight());
-        int blockZ = MathHelper.floor_double(look.zCoord * selectionRange + entity.posZ);
+        int blockX = MathHelper.floor(look.xCoord * selectionRange + entity.posX);
+        int blockY = MathHelper.floor(look.yCoord * selectionRange + entity.posY + entity.getEyeHeight());
+        int blockZ = MathHelper.floor(look.zCoord * selectionRange + entity.posZ);
 
         return new BlockPos(blockX, blockY, blockZ);
     }
 
     @Nonnull
     @Override
-    public ActionResult<ItemStack> onItemRightClick(@Nonnull ItemStack itemStackIn, World worldIn, EntityPlayer playerIn, EnumHand hand)
+    public ActionResult<ItemStack> onItemRightClick(World worldIn, EntityPlayer playerIn, EnumHand hand)
     {
+        ItemStack itemStackIn = playerIn.getHeldItem(hand);
+
         if (worldIn.isRemote)
         {
             BlockPos position = getHoveredBlock(playerIn, getSelectionRange(itemStackIn));
@@ -93,7 +95,7 @@ public class ItemBlockSelectorFloating extends ItemBlockSelector implements Item
     {
         if (modifierKeyDown() && dWheel != 0)
         {
-            setSelectionRange(stack, MathHelper.clamp_float(getSelectionRange(stack) + dWheel * SCROLL_DISTANCE_SPEED, 0, 40));
+            setSelectionRange(stack, MathHelper.clamp(getSelectionRange(stack) + dWheel * SCROLL_DISTANCE_SPEED, 0, 40));
             RecurrentComplex.network.sendToServer(new PacketSyncItem(player.inventory.currentItem, stack));
 
             return true;

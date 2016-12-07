@@ -21,7 +21,7 @@ import net.minecraft.server.MinecraftServer;
 public class CommandReopen extends CommandBase
 {
     @Override
-    public String getCommandName()
+    public String getName()
     {
         return RCConfig.commandPrefix + "reopen";
     }
@@ -32,7 +32,7 @@ public class CommandReopen extends CommandBase
     }
 
     @Override
-    public String getCommandUsage(ICommandSender commandSender)
+    public String getUsage(ICommandSender commandSender)
     {
         return ServerTranslations.usage("commands.rcreopen.usage");
     }

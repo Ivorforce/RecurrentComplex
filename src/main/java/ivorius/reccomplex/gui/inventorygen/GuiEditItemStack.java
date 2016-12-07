@@ -6,8 +6,8 @@
 package ivorius.reccomplex.gui.inventorygen;
 
 import ivorius.reccomplex.RecurrentComplex;
-import ivorius.reccomplex.gui.table.screen.GuiScreenEditTable;
 import ivorius.reccomplex.gui.table.GuiTable;
+import ivorius.reccomplex.gui.table.screen.GuiScreenEditTable;
 import ivorius.reccomplex.network.PacketSyncItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
@@ -33,15 +33,9 @@ public class GuiEditItemStack<T extends TableDataSourceItem> extends GuiScreenEd
 
     public void saveAndSend(T t)
     {
-        ItemStack stack = player.inventory.getStackInSlot(playerSlot);
+        ItemStack stack = t.stack.copy();
 
-        if (stack == null)
-        {
-            stack = t.stack;
-            player.inventory.setInventorySlotContents(playerSlot, stack);
-        }
-        else
-            stack.readFromNBT(t.stack.writeToNBT(new NBTTagCompound()));
+        player.inventory.setInventorySlotContents(playerSlot, stack);
 
         RecurrentComplex.network.sendToServer(new PacketSyncItem(playerSlot, stack));
     }

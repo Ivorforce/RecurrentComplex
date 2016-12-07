@@ -14,6 +14,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.inventory.IInventory;
+import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ResourceLocation;
@@ -48,7 +49,7 @@ public class OperationClearArea implements Operation
         {
             IInventory inventory = (IInventory) tileEntity;
             for (int i = 0; i < inventory.getSizeInventory(); i++)
-                inventory.setInventorySlotContents(i, null);
+                inventory.setInventorySlotContents(i, ItemStack.EMPTY);
         }
 
         world.setBlockToAir(pos);
@@ -88,7 +89,7 @@ public class OperationClearArea implements Operation
             OpenGlHelper.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA, GL11.GL_ONE, GL11.GL_ZERO);
             GlStateManager.alphaFunc(GL11.GL_GREATER, 0.0001f);
 
-            ResourceLocation curTex = SelectionRenderer.TEXTURE[MathHelper.floor_float((ticks + partialTicks) * 0.75f) % SelectionRenderer.TEXTURE.length];
+            ResourceLocation curTex = SelectionRenderer.TEXTURE[MathHelper.floor((ticks + partialTicks) * 0.75f) % SelectionRenderer.TEXTURE.length];
             Minecraft.getMinecraft().renderEngine.bindTexture(curTex);
 
             GlStateManager.color(0.3f, 0.3f, 0.4f, 0.2f);

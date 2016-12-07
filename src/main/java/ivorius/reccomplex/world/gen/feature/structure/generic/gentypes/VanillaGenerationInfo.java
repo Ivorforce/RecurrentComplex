@@ -110,7 +110,7 @@ public class VanillaGenerationInfo extends GenerationInfo
 
     public int getVanillaWeight(double tweak)
     {
-        return MathHelper.floor_double(getActiveWeight() * tweak * RCConfig.baseVillageSpawnWeight + 0.5);
+        return MathHelper.floor(getActiveWeight() * tweak * RCConfig.baseVillageSpawnWeight + 0.5);
     }
 
     public static class Serializer implements JsonSerializer<VanillaGenerationInfo>, JsonDeserializer<VanillaGenerationInfo>

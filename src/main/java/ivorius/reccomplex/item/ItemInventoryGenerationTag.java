@@ -21,6 +21,7 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumActionResult;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
+import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldServer;
@@ -79,16 +80,15 @@ public abstract class ItemInventoryGenerationTag extends Item implements Generat
     }
 
     @Override
-    public EnumActionResult onItemUse(ItemStack stack, EntityPlayer playerIn, World worldIn, BlockPos pos, EnumHand hand, EnumFacing facing, float hitX, float hitY, float hitZ)
+    public EnumActionResult onItemUse(EntityPlayer player, World worldIn, BlockPos pos, EnumHand hand, EnumFacing facing, float hitX, float hitY, float hitZ)
     {
         if (!worldIn.isRemote)
-            return applyGeneratorToInventory((WorldServer) worldIn, pos, this, stack) ? EnumActionResult.SUCCESS : EnumActionResult.PASS;
+            return applyGeneratorToInventory((WorldServer) worldIn, pos, this, player.getHeldItem(hand)) ? EnumActionResult.SUCCESS : EnumActionResult.PASS;
         return EnumActionResult.SUCCESS;
     }
 
     @Override
-    @ParametersAreNonnullByDefault
-    public void getSubItems(Item item, CreativeTabs creativeTabs, List<ItemStack> list)
+    public void getSubItems(Item item, CreativeTabs tab, NonNullList<ItemStack> list)
     {
         for (String key : WeightedItemCollectionRegistry.INSTANCE.ids())
         {

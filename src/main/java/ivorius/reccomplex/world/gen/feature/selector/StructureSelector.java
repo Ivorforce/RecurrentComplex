@@ -33,7 +33,7 @@ public class StructureSelector<T extends GenerationInfo & EnvironmentalSelection
     protected final Set<String> cachedDimensionTypes = new HashSet<>(); // Because dimensions could often change on the fly
 
     protected Multimap<C, WeightedSelector.SimpleItem<Pair<StructureInfo, T>>> weightedStructureInfos = ArrayListMultimap.create();
-    protected TObjectDoubleMap<C> totalWeights = new TObjectDoubleHashMap<C>();
+    protected TObjectDoubleMap<C> totalWeights = new TObjectDoubleHashMap<>();
 
     public StructureSelector(Map<String, StructureInfo> structures, WorldProvider provider, Biome biome, Class<T> typeClass)
     {

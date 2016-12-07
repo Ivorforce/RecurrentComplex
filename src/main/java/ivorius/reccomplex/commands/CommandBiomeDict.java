@@ -41,7 +41,7 @@ public class CommandBiomeDict extends CommandBase
     }
 
     @Override
-    public String getCommandName()
+    public String getName()
     {
         return RCConfig.commandPrefix + "biome";
     }
@@ -52,7 +52,7 @@ public class CommandBiomeDict extends CommandBase
     }
 
     @Override
-    public String getCommandUsage(ICommandSender commandSender)
+    public String getUsage(ICommandSender commandSender)
     {
         return ServerTranslations.usage("commands.biomedict.usage");
     }
@@ -61,7 +61,7 @@ public class CommandBiomeDict extends CommandBase
     {
         TextComponentString comp = new TextComponentString(id.toString());
         comp.getStyle().setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND,
-                String.format("/%s types %s", getCommandName(), id.toString())));
+                String.format("/%s types %s", getName(), id.toString())));
         comp.getStyle().setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT,
                 ServerTranslations.get("commands.rcsearch.lookup")));
         comp.getStyle().setColor(TextFormatting.BLUE);
@@ -97,11 +97,11 @@ public class CommandBiomeDict extends CommandBase
                     for (int i = 0; i < types.length; i++)
                         components[i] = typeTextComponent(types[i]);
 
-                    commandSender.addChatMessage(ServerTranslations.format("commands.biomedict.get", biomeID,
+                    commandSender.sendMessage(ServerTranslations.format("commands.biomedict.get", biomeID,
                             ServerTranslations.join((Object[]) components)));
                 }
                 else
-                    commandSender.addChatMessage(ServerTranslations.format("commands.biomedict.nobiome", biomeID));
+                    commandSender.sendMessage(ServerTranslations.format("commands.biomedict.nobiome", biomeID));
                 break;
             }
             case "list":
@@ -121,11 +121,11 @@ public class CommandBiomeDict extends CommandBase
                         components[i] = component;
                     }
 
-                    commandSender.addChatMessage(ServerTranslations.format("commands.biomedict.list", args[1],
+                    commandSender.sendMessage(ServerTranslations.format("commands.biomedict.list", args[1],
                             ServerTranslations.join((Object[]) components)));
                 }
                 else
-                    commandSender.addChatMessage(ServerTranslations.format("commands.biomedict.notype", args[1]));
+                    commandSender.sendMessage(ServerTranslations.format("commands.biomedict.notype", args[1]));
                 break;
             }
             default:
@@ -139,7 +139,7 @@ public class CommandBiomeDict extends CommandBase
         ITextComponent component = new TextComponentString(IvGsonHelper.serializedName(type));
         Style style = component.getStyle();
         style.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND,
-                String.format("/%s list %s", getCommandName(), type)));
+                String.format("/%s list %s", getName(), type)));
         style.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT,
                 ServerTranslations.format("commands.biomedict.get.number", BiomeDictionary.getBiomesForType(type).length)));
         style.setColor(TextFormatting.AQUA);
@@ -152,7 +152,7 @@ public class CommandBiomeDict extends CommandBase
         ITextComponent component = new TextComponentString(biomeID);
         Style style = component.getStyle();
         style.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND,
-                String.format("/%s types %s", getCommandName(), biomeID)));
+                String.format("/%s types %s", getName(), biomeID)));
         style.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT,
                 ServerTranslations.format("commands.biomedict.list.number", BiomeDictionary.getTypesForBiome(biome).length)));
         style.setColor(TextFormatting.AQUA);
@@ -160,7 +160,7 @@ public class CommandBiomeDict extends CommandBase
     }
 
     @Override
-    public List<String> getTabCompletionOptions(MinecraftServer server, ICommandSender sender, String[] args, @Nullable BlockPos pos)
+    public List<String> getTabCompletions(MinecraftServer server, ICommandSender sender, String[] args, @Nullable BlockPos pos)
     {
         if (args.length == 1)
             return getListOfStringsMatchingLastWord(args, "types", "list", "search");

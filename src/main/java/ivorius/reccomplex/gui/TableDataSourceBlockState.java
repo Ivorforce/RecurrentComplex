@@ -21,6 +21,7 @@ import net.minecraft.util.ResourceLocation;
 
 import javax.annotation.Nonnull;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
@@ -174,12 +175,12 @@ public class TableDataSourceBlockState extends TableDataSourceSegmented implemen
     @Nonnull
     protected List<IProperty<?>> getSortedPropertyNames(IBlockState state, boolean extended)
     {
-        List<IProperty<?>> names = Lists.newArrayList(state.getPropertyNames());
+        List<IProperty<?>> names = Lists.newArrayList(state.getPropertyKeys());
         // Remove if it doesn't make a difference on metadata -> isn't saved
         names.removeIf(name -> (name.getAllowedValues().stream()
                 .mapToInt(obj -> ivorius.ivtoolkit.blocks.BlockStates.toMetadata(state.withProperty((IProperty) name, (Comparable) obj)))
                 .distinct().count() < 2) != extended);
-        Collections.sort(names, (o1, o2) -> o1.getName().compareTo(o2.getName()));
+        names.sort(Comparator.comparing(IProperty::getName));
         return names;
     }
 

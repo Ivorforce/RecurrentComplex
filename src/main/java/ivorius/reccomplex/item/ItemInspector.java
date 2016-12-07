@@ -23,9 +23,9 @@ import net.minecraft.world.World;
 public class ItemInspector extends Item
 {
     @Override
-    public EnumActionResult onItemUse(ItemStack stack, EntityPlayer playerIn, World worldIn, BlockPos pos, EnumHand hand, EnumFacing facing, float hitX, float hitY, float hitZ)
+    public EnumActionResult onItemUse(EntityPlayer playerIn, World worldIn, BlockPos pos, EnumHand hand, EnumFacing facing, float hitX, float hitY, float hitZ)
     {
-        boolean canUse = playerIn.canCommandSenderUseCommand(2, "setblock");
+        boolean canUse = playerIn.canUseCommand(2, "setblock");
 
         if (!worldIn.isRemote)
             RecurrentComplex.network.sendTo(new PacketInspectBlock(pos, worldIn.getBlockState(pos)), (EntityPlayerMP) playerIn);

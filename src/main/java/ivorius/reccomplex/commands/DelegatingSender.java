@@ -41,15 +41,15 @@ public class DelegatingSender implements ICommandSender
     }
 
     @Override
-    public void addChatMessage(ITextComponent component)
+    public void sendMessage(ITextComponent component)
     {
-        sender.addChatMessage(component);
+        sender.sendMessage(component);
     }
 
     @Override
-    public boolean canCommandSenderUseCommand(int permLevel, String commandName)
+    public boolean canUseCommand(int permLevel, String commandName)
     {
-        return sender.canCommandSenderUseCommand(permLevel, commandName);
+        return sender.canUseCommand(permLevel, commandName);
     }
 
     @Override

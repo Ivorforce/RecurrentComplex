@@ -24,7 +24,7 @@ import java.util.List;
 public class CommandSelecting extends CommandBase
 {
     @Override
-    public String getCommandName()
+    public String getName()
     {
         return RCConfig.commandPrefix + "selecting";
     }
@@ -35,7 +35,7 @@ public class CommandSelecting extends CommandBase
     }
 
     @Override
-    public String getCommandUsage(ICommandSender commandSender)
+    public String getUsage(ICommandSender commandSender)
     {
         return ServerTranslations.usage("commands.rcselecting.usage");
     }
@@ -54,7 +54,7 @@ public class CommandSelecting extends CommandBase
     }
 
     @Override
-    public List<String> getTabCompletionOptions(MinecraftServer server, ICommandSender sender, String[] args, @Nullable BlockPos pos)
+    public List<String> getTabCompletions(MinecraftServer server, ICommandSender sender, String[] args, @Nullable BlockPos pos)
     {
         if (args.length >= 1 && args.length <= 3)
             return getTabCompletionCoordinate(args, 0, pos);

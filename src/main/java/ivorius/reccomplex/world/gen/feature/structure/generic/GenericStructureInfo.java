@@ -193,7 +193,7 @@ public class GenericStructureInfo implements StructureInfo<GenericStructureInfo.
 
                     RCAccessorEntity.setEntityUniqueID(entity, UUID.randomUUID());
                     generateEntityContents(context, entity);
-                    world.spawnEntityInWorld(entity);
+                    world.spawnEntity(entity);
                 }
                 else
                 {

@@ -26,7 +26,7 @@ public class BiomeDictionaryAccessor
 
     public static Map<String, BiomeDictionary.Type> getMap()
     {
-        return SafeReflector.get(BiomeDictionary.class, "byName", null);
+        return SafeReflector.get(BiomeDictionary.Type.class, "byName", null);
     }
 
     public static void addSubtypes(BiomeDictionary.Type type, BiomeDictionary.Type... subtypes)

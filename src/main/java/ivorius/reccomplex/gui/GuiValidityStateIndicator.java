@@ -16,7 +16,7 @@ import net.minecraft.client.renderer.GlStateManager;
  */
 public class GuiValidityStateIndicator extends Gui
 {
-    protected static final ResourceLocation textureSprite = new ResourceLocation(RecurrentComplex.MOD_ID, RecurrentComplex.filePathTextures + "guiStates.png");
+    protected static final ResourceLocation textureSprite = new ResourceLocation(RecurrentComplex.MOD_ID, RecurrentComplex.filePathTextures + "gui_states.png");
     /**
      * Button width in pixels
      */

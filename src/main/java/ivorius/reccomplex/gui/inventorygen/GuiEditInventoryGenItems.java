@@ -35,7 +35,7 @@ import java.util.List;
  */
 public class GuiEditInventoryGenItems extends GuiContainer implements InventoryWatcher
 {
-    public static ResourceLocation textureBackground = new ResourceLocation(RecurrentComplex.MOD_ID, RecurrentComplex.filePathTextures + "guiEditInventoryGen.png");
+    public static ResourceLocation textureBackground = new ResourceLocation(RecurrentComplex.MOD_ID, RecurrentComplex.filePathTextures + "gui_edit_inventory_gen.png");
 
     public String key;
     public Component component;

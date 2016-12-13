@@ -32,16 +32,16 @@ public class RCBiomeDictionary
                 MEGA_TAIGA_TREES, MEGA_TAIGA_SPRUCE_TREES
         );
 
-        BiomeDictionary.registerBiomeType(Biomes.BIRCH_FOREST, BIRCH_TREES);
-        BiomeDictionary.registerBiomeType(Biomes.BIRCH_FOREST_HILLS, BIRCH_TREES);
-        BiomeDictionary.registerBiomeType(Biomes.MUTATED_BIRCH_FOREST, SUPER_BIRCH_TREES);
-        BiomeDictionary.registerBiomeType(Biomes.MUTATED_BIRCH_FOREST_HILLS, SUPER_BIRCH_TREES);
+        BiomeDictionary.addTypes(Biomes.BIRCH_FOREST, BIRCH_TREES);
+        BiomeDictionary.addTypes(Biomes.BIRCH_FOREST_HILLS, BIRCH_TREES);
+        BiomeDictionary.addTypes(Biomes.MUTATED_BIRCH_FOREST, SUPER_BIRCH_TREES);
+        BiomeDictionary.addTypes(Biomes.MUTATED_BIRCH_FOREST_HILLS, SUPER_BIRCH_TREES);
 
-        BiomeDictionary.registerBiomeType(Biomes.ROOFED_FOREST, BIRCH_TREES);
+        BiomeDictionary.addTypes(Biomes.ROOFED_FOREST, BIRCH_TREES);
 
-        BiomeDictionary.registerBiomeType(Biomes.REDWOOD_TAIGA, MEGA_TAIGA_TREES);
-        BiomeDictionary.registerBiomeType(Biomes.REDWOOD_TAIGA_HILLS, MEGA_TAIGA_TREES);
-        BiomeDictionary.registerBiomeType(Biomes.MUTATED_REDWOOD_TAIGA, MEGA_TAIGA_SPRUCE_TREES);
-        BiomeDictionary.registerBiomeType(Biomes.MUTATED_REDWOOD_TAIGA_HILLS, MEGA_TAIGA_SPRUCE_TREES);
+        BiomeDictionary.addTypes(Biomes.REDWOOD_TAIGA, MEGA_TAIGA_TREES);
+        BiomeDictionary.addTypes(Biomes.REDWOOD_TAIGA_HILLS, MEGA_TAIGA_TREES);
+        BiomeDictionary.addTypes(Biomes.MUTATED_REDWOOD_TAIGA, MEGA_TAIGA_SPRUCE_TREES);
+        BiomeDictionary.addTypes(Biomes.MUTATED_REDWOOD_TAIGA_HILLS, MEGA_TAIGA_SPRUCE_TREES);
     }
 }

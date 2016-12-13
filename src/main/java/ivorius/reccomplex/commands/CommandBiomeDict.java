@@ -5,9 +5,9 @@
 
 package ivorius.reccomplex.commands;
 
-import ivorius.ivtoolkit.tools.IvGsonHelper;
+import com.google.common.collect.Lists;
 import ivorius.reccomplex.RCConfig;
-import ivorius.reccomplex.json.RCGsonHelper;
+import ivorius.reccomplex.utils.BiomeDictionaryAccessor;
 import ivorius.reccomplex.utils.ServerTranslations;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.CommandException;
@@ -15,12 +15,14 @@ import net.minecraft.command.ICommandSender;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.text.*;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.Style;
+import net.minecraft.util.text.TextComponentString;
+import net.minecraft.util.text.TextFormatting;
 import net.minecraft.util.text.event.ClickEvent;
 import net.minecraft.util.text.event.HoverEvent;
 import net.minecraft.world.biome.Biome;
 import net.minecraftforge.common.BiomeDictionary;
-import org.apache.commons.lang3.StringUtils;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -91,11 +93,11 @@ public class CommandBiomeDict extends CommandBase
 
                 if (biome != null)
                 {
-                    BiomeDictionary.Type[] types = BiomeDictionary.getTypesForBiome(biome);
-                    ITextComponent[] components = new ITextComponent[types.length];
+                    List<BiomeDictionary.Type> types = Lists.newArrayList(BiomeDictionary.getTypes(biome));
+                    ITextComponent[] components = new ITextComponent[types.size()];
 
-                    for (int i = 0; i < types.length; i++)
-                        components[i] = typeTextComponent(types[i]);
+                    for (int i = 0; i < types.size(); i++)
+                        components[i] = typeTextComponent(types.get(i));
 
                     commandSender.sendMessage(ServerTranslations.format("commands.biomedict.get", biomeID,
                             ServerTranslations.join((Object[]) components)));
@@ -106,16 +108,16 @@ public class CommandBiomeDict extends CommandBase
             }
             case "list":
             {
-                BiomeDictionary.Type type = RCGsonHelper.enumForNameIgnoreCase(args[1], BiomeDictionary.Type.values());
+                BiomeDictionary.Type type = BiomeDictionaryAccessor.getTypeWeak(args[1]);
 
                 if (type != null)
                 {
-                    Biome[] biomes = BiomeDictionary.getBiomesForType(type);
-                    ITextComponent[] components = new ITextComponent[biomes.length];
+                    List<Biome> biomes = Lists.newArrayList(BiomeDictionary.getBiomes(type));
+                    ITextComponent[] components = new ITextComponent[biomes.size()];
 
-                    for (int i = 0; i < biomes.length; i++)
+                    for (int i = 0; i < biomes.size(); i++)
                     {
-                        Biome biome = biomes[i];
+                        Biome biome = biomes.get(i);
                         String biomeID = Biome.REGISTRY.getNameForObject(biome).toString();
                         ITextComponent component = biomeTextComponent(biome, biomeID);
                         components[i] = component;
@@ -136,12 +138,12 @@ public class CommandBiomeDict extends CommandBase
     @Nonnull
     public ITextComponent typeTextComponent(BiomeDictionary.Type type)
     {
-        ITextComponent component = new TextComponentString(IvGsonHelper.serializedName(type));
+        ITextComponent component = new TextComponentString(type.getName());
         Style style = component.getStyle();
         style.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND,
                 String.format("/%s list %s", getName(), type)));
         style.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT,
-                ServerTranslations.format("commands.biomedict.get.number", BiomeDictionary.getBiomesForType(type).length)));
+                ServerTranslations.format("commands.biomedict.get.number", BiomeDictionary.getBiomes(type).size())));
         style.setColor(TextFormatting.AQUA);
         return component;
     }
@@ -154,7 +156,7 @@ public class CommandBiomeDict extends CommandBase
         style.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND,
                 String.format("/%s types %s", getName(), biomeID)));
         style.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT,
-                ServerTranslations.format("commands.biomedict.list.number", BiomeDictionary.getTypesForBiome(biome).length)));
+                ServerTranslations.format("commands.biomedict.list.number", BiomeDictionary.getTypes(biome).size())));
         style.setColor(TextFormatting.AQUA);
         return component;
     }
@@ -171,13 +173,7 @@ public class CommandBiomeDict extends CommandBase
         }
         else if (args[0].equals("list"))
         {
-            BiomeDictionary.Type[] types = BiomeDictionary.Type.values();
-            String[] typeNames = new String[types.length];
-
-            for (int i = 0; i < types.length; i++)
-                typeNames[i] = IvGsonHelper.serializedName(types[i]);
-
-            return getListOfStringsMatchingLastWord(args, typeNames);
+            return getListOfStringsMatchingLastWord(args, BiomeDictionaryAccessor.getMap().keySet());
         }
 
         return Collections.emptyList();

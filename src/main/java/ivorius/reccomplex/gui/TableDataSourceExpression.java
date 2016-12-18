@@ -29,6 +29,7 @@ public class TableDataSourceExpression<T, U, E extends FunctionExpressionCache<T
 {
     public String title;
     private List<String> tooltip;
+    private List<String> expressionTooltip;
 
     public E e;
     public U u;
@@ -39,28 +40,34 @@ public class TableDataSourceExpression<T, U, E extends FunctionExpressionCache<T
     @Nullable
     protected BooleanSupplier enabledSupplier;
 
-    public TableDataSourceExpression(String title, List<String> tooltip, E e, U u)
+    public TableDataSourceExpression(String title, List<String> tooltip, List<String> expressionTooltip, E e, U u)
     {
         this.title = title;
         this.tooltip = tooltip;
+        this.expressionTooltip = expressionTooltip;
         this.e = e;
         this.u = u;
     }
-    
+
     public static <T, U, E extends FunctionExpressionCache<T, ?, U>> TableDataSourceExpression<T, U, E> constructDefault(String title, E e, U u)
     {
+        return constructDefault(title, null, e, u);
+    }
+
+    public static <T, U, E extends FunctionExpressionCache<T, ?, U>> TableDataSourceExpression<T, U, E> constructDefault(String title, List<String> tooltip, E e, U u)
+    {
         if (e instanceof BiomeMatcher)
-            return new TableDataSourceExpression<>(title, IvTranslations.formatLines("reccomplex.expression.biome.tooltip"), e, u);
+            return new TableDataSourceExpression<>(title, tooltip, IvTranslations.formatLines("reccomplex.expression.biome.tooltip"), e, u);
         else if (e instanceof BlockMatcher)
-            return new TableDataSourceExpression<>(title, IvTranslations.formatLines("reccomplex.expression.block.tooltip"), e, u);
+            return new TableDataSourceExpression<>(title, tooltip, IvTranslations.formatLines("reccomplex.expression.block.tooltip"), e, u);
         else if (e instanceof PositionedBlockMatcher)
-            return new TableDataSourceExpression<>(title, IvTranslations.formatLines("reccomplex.expression.positioned_block.tooltip"), e, u);
+            return new TableDataSourceExpression<>(title, tooltip, IvTranslations.formatLines("reccomplex.expression.positioned_block.tooltip"), e, u);
         else if (e instanceof DependencyMatcher)
-            return new TableDataSourceExpression<>(title, IvTranslations.formatLines("reccomplex.expression.dependency.tooltip"), e, u);
+            return new TableDataSourceExpression<>(title, tooltip, IvTranslations.formatLines("reccomplex.expression.dependency.tooltip"), e, u);
         else if (e instanceof DimensionMatcher)
-            return new TableDataSourceExpression<>(title, IvTranslations.formatLines("reccomplex.expression.dimension.tooltip"), e, u);
+            return new TableDataSourceExpression<>(title, tooltip, IvTranslations.formatLines("reccomplex.expression.dimension.tooltip"), e, u);
         else if (e instanceof EnvironmentMatcher)
-            return new TableDataSourceExpression<>(title, IvTranslations.formatLines("reccomplex.expression.environment.tooltip"), e, u);
+            return new TableDataSourceExpression<>(title, tooltip, IvTranslations.formatLines("reccomplex.expression.environment.tooltip"), e, u);
 
         throw new IllegalArgumentException();
     }
@@ -108,6 +115,7 @@ public class TableDataSourceExpression<T, U, E extends FunctionExpressionCache<T
         if (index == 0)
         {
             expressionCell = new TableCellString("expression", e.getExpression());
+            expressionCell.setTooltip(tooltip);
             expressionCell.setEnabled(canEdit());
             expressionCell.setShowsValidityState(true);
             expressionCell.setValidityState(getValidityState(e, u));
@@ -119,7 +127,7 @@ public class TableDataSourceExpression<T, U, E extends FunctionExpressionCache<T
                 if (parsed != null)
                     parsed.setDisplayString(parsedString());
             });
-            return new TitledCell(title, expressionCell).withTitleTooltip(tooltip);
+            return new TitledCell(title, expressionCell).withTitleTooltip(expressionTooltip);
         }
         else if (index == 1)
         {

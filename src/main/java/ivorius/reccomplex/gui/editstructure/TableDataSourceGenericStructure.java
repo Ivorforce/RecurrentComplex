@@ -56,7 +56,7 @@ public class TableDataSourceGenericStructure extends TableDataSourceSegmented
                 .addNavigation(() -> structureInfo.transformer.tableDataSource(navigator, delegate))
                 .buildDataSource(IvTranslations.get("reccomplex.structure.transformers"), IvTranslations.getLines("reccomplex.structure.transformers.tooltip")));
 
-        addManagedSegment(6, TableDataSourceExpression.constructDefault(IvTranslations.get("reccomplex.structure.dependencies"), structureInfo.dependencies, RecurrentComplex.saver));
+        addManagedSegment(6, TableDataSourceExpression.constructDefault(IvTranslations.get("reccomplex.structure.dependencies"), IvTranslations.getLines("reccomplex.structure.dependencies.tooltip"), structureInfo.dependencies, RecurrentComplex.saver));
     }
 
     public GenericStructureInfo getStructureInfo()

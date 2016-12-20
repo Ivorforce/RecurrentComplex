@@ -6,6 +6,9 @@
 package ivorius.reccomplex.world.gen.feature.structure;
 
 import ivorius.ivtoolkit.blocks.IvBlockCollection;
+import ivorius.reccomplex.world.gen.feature.structure.context.StructureLoadContext;
+import ivorius.reccomplex.world.gen.feature.structure.context.StructurePrepareContext;
+import ivorius.reccomplex.world.gen.feature.structure.context.StructureSpawnContext;
 import ivorius.reccomplex.world.gen.feature.structure.generic.GenericStructureInfo;
 import ivorius.reccomplex.world.gen.feature.structure.generic.gentypes.GenerationInfo;
 import ivorius.reccomplex.world.gen.feature.structure.generic.transformers.TransformerMulti;

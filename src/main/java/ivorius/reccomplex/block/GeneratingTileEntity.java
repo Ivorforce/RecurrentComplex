@@ -5,9 +5,9 @@
 
 package ivorius.reccomplex.block;
 
-import ivorius.reccomplex.world.gen.feature.structure.StructureLoadContext;
-import ivorius.reccomplex.world.gen.feature.structure.StructurePrepareContext;
-import ivorius.reccomplex.world.gen.feature.structure.StructureSpawnContext;
+import ivorius.reccomplex.world.gen.feature.structure.context.StructureLoadContext;
+import ivorius.reccomplex.world.gen.feature.structure.context.StructurePrepareContext;
+import ivorius.reccomplex.world.gen.feature.structure.context.StructureSpawnContext;
 import net.minecraft.nbt.NBTBase;
 
 /**

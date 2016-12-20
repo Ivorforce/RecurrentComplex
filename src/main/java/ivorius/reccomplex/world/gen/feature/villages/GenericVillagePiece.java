@@ -8,6 +8,7 @@ package ivorius.reccomplex.world.gen.feature.villages;
 import ivorius.ivtoolkit.blocks.Directions;
 import ivorius.ivtoolkit.math.AxisAlignedTransform2D;
 import ivorius.reccomplex.world.gen.feature.structure.*;
+import ivorius.reccomplex.world.gen.feature.structure.context.StructureSpawnContext;
 import ivorius.reccomplex.world.gen.feature.structure.generic.gentypes.GenerationInfo;
 import ivorius.reccomplex.world.gen.feature.structure.generic.gentypes.VanillaGenerationInfo;
 import ivorius.reccomplex.utils.NBTStorable;

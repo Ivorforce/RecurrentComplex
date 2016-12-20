@@ -7,7 +7,7 @@ package ivorius.reccomplex.events;
 
 import net.minecraftforge.fml.common.eventhandler.Cancelable;
 import ivorius.reccomplex.world.gen.feature.structure.StructureInfo;
-import ivorius.reccomplex.world.gen.feature.structure.StructureSpawnContext;
+import ivorius.reccomplex.world.gen.feature.structure.context.StructureSpawnContext;
 import net.minecraftforge.event.world.WorldEvent;
 
 /**

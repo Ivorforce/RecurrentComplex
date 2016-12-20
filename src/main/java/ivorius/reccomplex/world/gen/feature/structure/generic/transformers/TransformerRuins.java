@@ -6,14 +6,9 @@
 package ivorius.reccomplex.world.gen.feature.structure.generic.transformers;
 
 import com.google.gson.*;
-import ivorius.ivtoolkit.blocks.BlockArea;
-import ivorius.ivtoolkit.blocks.BlockAreas;
-import ivorius.ivtoolkit.blocks.Directions;
-import ivorius.ivtoolkit.blocks.IvBlockCollection;
-import ivorius.ivtoolkit.tools.IvTranslations;
-import ivorius.ivtoolkit.tools.IvWorldData;
-import ivorius.ivtoolkit.tools.MCRegistry;
-import ivorius.ivtoolkit.tools.NBTCompoundObjects;
+import ivorius.ivtoolkit.blocks.*;
+import ivorius.ivtoolkit.tools.*;
+import ivorius.ivtoolkit.world.chunk.gen.StructureBoundingBoxes;
 import ivorius.reccomplex.RecurrentComplex;
 import ivorius.reccomplex.gui.editstructure.transformers.TableDataSourceBTRuins;
 import ivorius.reccomplex.gui.table.TableDelegate;
@@ -22,10 +17,8 @@ import ivorius.reccomplex.gui.table.datasource.TableDataSource;
 import ivorius.reccomplex.json.JsonUtils;
 import ivorius.reccomplex.random.BlurredValueField;
 import ivorius.reccomplex.utils.NBTStorable;
-import ivorius.ivtoolkit.world.chunk.gen.StructureBoundingBoxes;
-import ivorius.reccomplex.world.gen.feature.structure.StructureLoadContext;
-import ivorius.reccomplex.world.gen.feature.structure.StructurePrepareContext;
-import ivorius.reccomplex.world.gen.feature.structure.StructureSpawnContext;
+import ivorius.reccomplex.utils.RCAxisAlignedTransform;
+import ivorius.reccomplex.world.gen.feature.structure.context.*;
 import net.minecraft.block.BlockSandStone;
 import net.minecraft.block.BlockStoneBrick;
 import net.minecraft.block.BlockVine;
@@ -41,12 +34,16 @@ import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.World;
+import net.minecraft.world.WorldServer;
 import net.minecraft.world.gen.structure.StructureBoundingBox;
 import net.minecraftforge.common.util.Constants;
 
 import javax.annotation.Nullable;
 import java.lang.reflect.Type;
+import java.util.HashSet;
 import java.util.Random;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 /**
  * Created by lukas on 25.05.14.
@@ -110,8 +107,11 @@ public class TransformerRuins extends Transformer<TransformerRuins.InstanceData>
     }
 
     @Override
-    public boolean skipGeneration(InstanceData instanceData, StructureSpawnContext context, BlockPos pos, IBlockState state, IvWorldData worldData, BlockPos sourcePos)
+    public boolean skipGeneration(InstanceData instanceData, StructureLiveContext context, BlockPos pos, IBlockState state, IvWorldData worldData, BlockPos sourcePos)
     {
+        if (instanceData.fallingBlocks.contains(sourcePos))
+            return true;
+
         BlurredValueField field = instanceData.blurredValueField;
 
         if (field == null)
@@ -133,13 +133,33 @@ public class TransformerRuins extends Transformer<TransformerRuins.InstanceData>
     @Override
     public void transform(InstanceData instanceData, Phase phase, StructureSpawnContext context, IvWorldData worldData, RunTransformer transformer)
     {
+        WorldServer world = context.environment.world;
+        IvBlockCollection blockCollection = worldData.blockCollection;
+        int[] areaSize = new int[]{blockCollection.width, blockCollection.height, blockCollection.length};
+
+        BlockPos lowerCoord = StructureBoundingBoxes.min(context.boundingBox);
+
+        BlockPos.MutableBlockPos dest = new BlockPos.MutableBlockPos(lowerCoord);
+        for (BlockPos sourcePos : instanceData.fallingBlocks)
+        {
+            IvMutableBlockPos.add(RCAxisAlignedTransform.apply(sourcePos, dest, areaSize, context.transform), lowerCoord);
+
+            IBlockState state;
+            while (dest.getY() > 0
+                    && (state = world.getBlockState(dest)).getBlock().isAir(state, world, dest))
+            {
+                IvMutableBlockPos.offset(dest, dest, EnumFacing.DOWN);
+            }
+
+            IvMutableBlockPos.offset(dest, dest, EnumFacing.UP);
+            world.setBlockState(dest, blockCollection.getBlockState(sourcePos), 2);
+        }
+
         if (phase == Phase.AFTER)
         {
-            IvBlockCollection blockCollection = worldData.blockCollection;
             StructureBoundingBox dropAreaBB = context.boundingBox;
             RecurrentComplex.forgeEventHandler.disabledTileDropAreas.add(dropAreaBB);
 
-            int[] areaSize = new int[]{blockCollection.width, blockCollection.height, blockCollection.length};
             if (blockErosion > 0.0f || vineGrowth > 0.0f)
             {
                 for (BlockPos sourceCoord : BlockAreas.mutablePositions(blockCollection.area()))
@@ -148,10 +168,10 @@ public class TransformerRuins extends Transformer<TransformerRuins.InstanceData>
 
                     if (context.includes(worldCoord))
                     {
-                        IBlockState state = context.environment.world.getBlockState(worldCoord);
+                        IBlockState state = world.getBlockState(worldCoord);
 
                         if (!transformer.transformer.skipGeneration(transformer.instanceData, context, worldCoord, state, worldData, sourceCoord))
-                            decayBlock(context.environment.world, context.random, state, worldCoord);
+                            decayBlock(world, context.random, state, worldCoord);
                     }
                 }
             }
@@ -254,6 +274,27 @@ public class TransformerRuins extends Transformer<TransformerRuins.InstanceData>
         return instanceData;
     }
 
+//    @Override
+//    public void configureInstanceData(InstanceData instanceData, StructurePrepareContext context, IvWorldData worldData, RunTransformer transformer)
+//    {
+//        WorldServer world = context.environment.world;
+//        IvBlockCollection blockCollection = worldData.blockCollection;
+//        int[] areaSize = new int[]{blockCollection.width, blockCollection.height, blockCollection.length};
+//
+//        BlockPos lowerCoord = StructureBoundingBoxes.min(context.boundingBox);
+//
+//        BlockPos.MutableBlockPos dest = new BlockPos.MutableBlockPos(lowerCoord);
+//        for (BlockPos sourcePos : BlockAreas.mutablePositions(blockCollection.area()))
+//        {
+//            IvMutableBlockPos.add(RCAxisAlignedTransform.apply(sourcePos, dest, areaSize, context.transform), lowerCoord);
+//
+//            IBlockState state = blockCollection.getBlockState(sourcePos);
+//
+//            if (!transformer.transformer.skipGeneration(transformer.instanceData, context, dest, state, worldData, sourcePos))
+//                instanceData.fallingBlocks.add(sourcePos.toImmutable());
+//        }
+//    }
+
     @Override
     public InstanceData loadInstanceData(StructureLoadContext context, NBTBase nbt)
     {
@@ -263,6 +304,7 @@ public class TransformerRuins extends Transformer<TransformerRuins.InstanceData>
     public static class InstanceData implements NBTStorable
     {
         public BlurredValueField blurredValueField;
+        public final Set<BlockPos> fallingBlocks = new HashSet<>();
 
         public InstanceData()
         {
@@ -273,6 +315,7 @@ public class TransformerRuins extends Transformer<TransformerRuins.InstanceData>
             blurredValueField = compound.hasKey("field", Constants.NBT.TAG_COMPOUND)
                     ? NBTCompoundObjects.read(compound.getCompoundTag("field"), BlurredValueField::new)
                     : null;
+            fallingBlocks.addAll(NBTTagLists.intArraysFrom(compound, "fallingBlocks").stream().map(BlockPositions::fromIntArray).collect(Collectors.toList()));
         }
 
         @Override
@@ -281,6 +324,7 @@ public class TransformerRuins extends Transformer<TransformerRuins.InstanceData>
             NBTTagCompound compound = new NBTTagCompound();
             if (blurredValueField != null)
                 compound.setTag("field", NBTCompoundObjects.write(blurredValueField));
+            NBTTagLists.writeIntArraysTo(compound, "fallingBlocks", fallingBlocks.stream().map(BlockPositions::toIntArray).collect(Collectors.toList()));
             return compound;
         }
     }

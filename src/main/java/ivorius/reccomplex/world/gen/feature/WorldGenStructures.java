@@ -14,7 +14,7 @@ import ivorius.reccomplex.world.gen.feature.selector.NaturalStructureSelector;
 import ivorius.reccomplex.world.gen.feature.structure.StructureInfo;
 import ivorius.reccomplex.world.gen.feature.structure.StructureInfos;
 import ivorius.reccomplex.world.gen.feature.structure.StructureRegistry;
-import ivorius.reccomplex.world.gen.feature.structure.StructureSpawnContext;
+import ivorius.reccomplex.world.gen.feature.structure.context.StructureSpawnContext;
 import ivorius.reccomplex.world.gen.feature.structure.generic.gentypes.NaturalGenerationInfo;
 import ivorius.reccomplex.world.gen.feature.structure.generic.gentypes.StaticGenerationInfo;
 import net.minecraft.util.math.BlockPos;
@@ -26,7 +26,6 @@ import org.apache.commons.lang3.tuple.Pair;
 
 import javax.annotation.Nullable;
 import java.util.List;
-import java.util.Optional;
 import java.util.Random;
 import java.util.function.Predicate;
 

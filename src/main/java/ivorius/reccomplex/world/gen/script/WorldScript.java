@@ -10,9 +10,9 @@ import ivorius.ivtoolkit.tools.NBTCompoundObject;
 import ivorius.reccomplex.gui.table.datasource.TableDataSource;
 import ivorius.reccomplex.gui.table.TableDelegate;
 import ivorius.reccomplex.gui.table.TableNavigator;
-import ivorius.reccomplex.world.gen.feature.structure.StructureLoadContext;
-import ivorius.reccomplex.world.gen.feature.structure.StructurePrepareContext;
-import ivorius.reccomplex.world.gen.feature.structure.StructureSpawnContext;
+import ivorius.reccomplex.world.gen.feature.structure.context.StructureLoadContext;
+import ivorius.reccomplex.world.gen.feature.structure.context.StructurePrepareContext;
+import ivorius.reccomplex.world.gen.feature.structure.context.StructureSpawnContext;
 import ivorius.reccomplex.utils.NBTStorable;
 import net.minecraft.nbt.NBTBase;
 

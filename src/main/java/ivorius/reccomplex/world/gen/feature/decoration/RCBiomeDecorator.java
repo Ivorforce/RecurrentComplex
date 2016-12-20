@@ -15,7 +15,7 @@ import ivorius.reccomplex.world.gen.feature.selector.StructureSelector;
 import ivorius.reccomplex.world.gen.feature.structure.Placer;
 import ivorius.reccomplex.world.gen.feature.structure.StructureInfo;
 import ivorius.reccomplex.world.gen.feature.structure.StructureRegistry;
-import ivorius.reccomplex.world.gen.feature.structure.StructureSpawnContext;
+import ivorius.reccomplex.world.gen.feature.structure.context.StructureSpawnContext;
 import ivorius.reccomplex.world.gen.feature.structure.generic.gentypes.VanillaDecorationGenerationInfo;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.WorldServer;

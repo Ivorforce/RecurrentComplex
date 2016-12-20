@@ -7,7 +7,7 @@ package ivorius.reccomplex.world.storage.loot;
 
 import ivorius.reccomplex.RecurrentComplex;
 import ivorius.reccomplex.item.GeneratingItem;
-import ivorius.reccomplex.world.gen.feature.structure.StructureSpawnContext;
+import ivorius.reccomplex.world.gen.feature.structure.context.StructureSpawnContext;
 import ivorius.reccomplex.world.gen.feature.structure.registry.MCRegistrySpecial;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.Item;

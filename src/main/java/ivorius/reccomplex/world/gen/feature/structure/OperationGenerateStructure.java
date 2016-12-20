@@ -11,8 +11,8 @@ import ivorius.ivtoolkit.rendering.grid.BlockQuadCache;
 import ivorius.ivtoolkit.rendering.grid.GridQuadCache;
 import ivorius.reccomplex.client.rendering.OperationRenderer;
 import ivorius.reccomplex.operation.Operation;
-import ivorius.reccomplex.random.BlurredValueField;
 import ivorius.reccomplex.world.gen.feature.StructureGenerator;
+import ivorius.reccomplex.world.gen.feature.structure.context.StructureSpawnContext;
 import ivorius.reccomplex.world.gen.feature.structure.generic.GenericStructureInfo;
 import ivorius.reccomplex.world.gen.feature.structure.generic.StructureSaveHandler;
 import net.minecraft.client.renderer.GlStateManager;
@@ -26,7 +26,6 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
 import java.util.Optional;
-import java.util.Random;
 
 /**
  * Created by lukas on 10.02.15.

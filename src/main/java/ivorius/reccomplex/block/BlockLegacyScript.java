@@ -6,16 +6,15 @@
 package ivorius.reccomplex.block;
 
 import ivorius.reccomplex.utils.NBTStorable;
-import ivorius.reccomplex.world.gen.feature.structure.StructureLoadContext;
-import ivorius.reccomplex.world.gen.feature.structure.StructurePrepareContext;
-import ivorius.reccomplex.world.gen.feature.structure.StructureSpawnContext;
+import ivorius.reccomplex.world.gen.feature.structure.context.StructureLoadContext;
+import ivorius.reccomplex.world.gen.feature.structure.context.StructurePrepareContext;
+import ivorius.reccomplex.world.gen.feature.structure.context.StructureSpawnContext;
 import ivorius.reccomplex.world.gen.script.WorldScript;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
@@ -23,8 +22,6 @@ import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
-
-import javax.annotation.Nullable;
 
 /**
  * Created by lukas on 07.10.16.

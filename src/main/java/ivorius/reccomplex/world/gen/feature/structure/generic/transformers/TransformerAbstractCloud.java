@@ -18,8 +18,9 @@ import ivorius.ivtoolkit.world.chunk.gen.StructureBoundingBoxes;
 import ivorius.reccomplex.random.BlurredValueField;
 import ivorius.reccomplex.utils.*;
 import ivorius.reccomplex.world.gen.feature.structure.Environment;
-import ivorius.reccomplex.world.gen.feature.structure.StructurePrepareContext;
-import ivorius.reccomplex.world.gen.feature.structure.StructureSpawnContext;
+import ivorius.reccomplex.world.gen.feature.structure.context.StructureLiveContext;
+import ivorius.reccomplex.world.gen.feature.structure.context.StructurePrepareContext;
+import ivorius.reccomplex.world.gen.feature.structure.context.StructureSpawnContext;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTTagCompound;
@@ -64,7 +65,7 @@ public abstract class TransformerAbstractCloud<S extends TransformerAbstractClou
     public abstract double naturalExpansionRandomization();
 
     @Override
-    public boolean skipGeneration(S instanceData, StructureSpawnContext context, BlockPos pos, IBlockState state, IvWorldData worldData, BlockPos sourcePos)
+    public boolean skipGeneration(S instanceData, StructureLiveContext context, BlockPos pos, IBlockState state, IvWorldData worldData, BlockPos sourcePos)
     {
         return matches(instanceData, state);
     }

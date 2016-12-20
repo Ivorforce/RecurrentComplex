@@ -19,9 +19,7 @@ import ivorius.reccomplex.gui.table.TableDelegate;
 import ivorius.reccomplex.gui.table.TableNavigator;
 import ivorius.reccomplex.json.JsonUtils;
 import ivorius.reccomplex.utils.*;
-import ivorius.reccomplex.world.gen.feature.structure.StructureLoadContext;
-import ivorius.reccomplex.world.gen.feature.structure.StructurePrepareContext;
-import ivorius.reccomplex.world.gen.feature.structure.StructureSpawnContext;
+import ivorius.reccomplex.world.gen.feature.structure.context.*;
 import ivorius.reccomplex.utils.expression.BlockMatcher;
 import ivorius.reccomplex.utils.expression.PositionedBlockMatcher;
 import net.minecraft.block.state.IBlockState;
@@ -72,7 +70,7 @@ public class TransformerEnsureBlocks extends Transformer<NBTNone>
     }
 
     @Override
-    public boolean skipGeneration(NBTNone instanceData, StructureSpawnContext context, BlockPos pos, IBlockState state, IvWorldData worldData, BlockPos sourcePos)
+    public boolean skipGeneration(NBTNone instanceData, StructureLiveContext context, BlockPos pos, IBlockState state, IvWorldData worldData, BlockPos sourcePos)
     {
         return false;
     }

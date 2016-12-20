@@ -1,10 +1,11 @@
 /*
  *  Copyright (c) 2014, Lukas Tenbrink.
- *  * http://lukas.axxim.net
+ *  * http://ivorius.net
  */
 
-package ivorius.reccomplex.world.gen.feature.structure;
+package ivorius.reccomplex.world.gen.feature.structure.context;
 
+import ivorius.reccomplex.world.gen.feature.structure.Environment;
 import net.minecraft.util.math.BlockPos;
 import ivorius.ivtoolkit.math.AxisAlignedTransform2D;
 import net.minecraft.block.state.IBlockState;
@@ -19,17 +20,11 @@ import java.util.function.Predicate;
 /**
  * Created by lukas on 19.01.15.
  */
-public class StructureSpawnContext
+public class StructureSpawnContext extends StructureLiveContext
 {
-    @Nonnull
-    public Environment environment;
     @Nonnull
     public final Random random;
 
-    @Nonnull
-    public final AxisAlignedTransform2D transform;
-    @Nonnull
-    public final StructureBoundingBox boundingBox;
     @Nullable
     public final StructureBoundingBox generationBB;
     @Nullable
@@ -37,19 +32,15 @@ public class StructureSpawnContext
 
     public final int generationLayer;
 
-    public final boolean generateAsSource;
     public final GenerateMaturity generateMaturity;
 
     public StructureSpawnContext(@Nonnull Environment environment, @Nonnull Random random, @Nonnull AxisAlignedTransform2D transform, @Nonnull StructureBoundingBox boundingBox, @Nullable StructureBoundingBox generationBB, Predicate<Vec3i> generationPredicate, int generationLayer, boolean generateAsSource, GenerateMaturity generateMaturity)
     {
-        this.environment = environment;
+        super(transform, boundingBox, generateAsSource, environment);
         this.random = random;
-        this.transform = transform;
-        this.boundingBox = boundingBox;
         this.generationBB = generationBB;
         this.generationPredicate = generationPredicate;
         this.generationLayer = generationLayer;
-        this.generateAsSource = generateAsSource;
         this.generateMaturity = generateMaturity;
     }
 

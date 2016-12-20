@@ -10,10 +10,11 @@ import ivorius.ivtoolkit.blocks.IvMutableBlockPos;
 import ivorius.ivtoolkit.world.chunk.gen.StructureBoundingBoxes;
 import ivorius.reccomplex.utils.*;
 import ivorius.reccomplex.world.gen.feature.structure.Environment;
+import ivorius.reccomplex.world.gen.feature.structure.context.StructureLiveContext;
 import net.minecraft.util.math.BlockPos;
 import ivorius.ivtoolkit.blocks.IvBlockCollection;
 import ivorius.ivtoolkit.tools.IvWorldData;
-import ivorius.reccomplex.world.gen.feature.structure.StructureSpawnContext;
+import ivorius.reccomplex.world.gen.feature.structure.context.StructureSpawnContext;
 import net.minecraft.block.state.IBlockState;
 
 import javax.annotation.Nonnull;
@@ -29,7 +30,7 @@ public abstract class TransformerSingleBlock<S extends NBTStorable> extends Tran
     }
 
     @Override
-    public boolean skipGeneration(S instanceData, StructureSpawnContext context, BlockPos pos, IBlockState state, IvWorldData worldData, BlockPos sourcePos)
+    public boolean skipGeneration(S instanceData, StructureLiveContext context, BlockPos pos, IBlockState state, IvWorldData worldData, BlockPos sourcePos)
     {
         return matches(context.environment, instanceData, state);
     }

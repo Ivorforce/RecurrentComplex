@@ -11,6 +11,7 @@ import ivorius.reccomplex.gui.table.TableDelegate;
 import ivorius.reccomplex.gui.table.TableNavigator;
 import ivorius.reccomplex.world.gen.feature.structure.*;
 import ivorius.reccomplex.utils.NBTStorable;
+import ivorius.reccomplex.world.gen.feature.structure.context.*;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.nbt.NBTBase;
 import net.minecraft.util.math.BlockPos;
@@ -72,7 +73,7 @@ public abstract class Transformer<S extends NBTStorable>
         return true;
     }
 
-    public boolean skipGeneration(S instanceData, StructureSpawnContext context, BlockPos pos, IBlockState state, IvWorldData worldData, BlockPos sourcePos)
+    public boolean skipGeneration(S instanceData, StructureLiveContext context, BlockPos pos, IBlockState state, IvWorldData worldData, BlockPos sourcePos)
     {
         return false;
     }

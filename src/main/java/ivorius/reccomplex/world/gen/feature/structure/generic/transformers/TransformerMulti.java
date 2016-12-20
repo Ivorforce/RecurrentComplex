@@ -16,6 +16,7 @@ import ivorius.reccomplex.gui.table.TableNavigator;
 import ivorius.reccomplex.json.JsonUtils;
 import ivorius.reccomplex.world.gen.feature.structure.*;
 import ivorius.reccomplex.utils.expression.EnvironmentMatcher;
+import ivorius.reccomplex.world.gen.feature.structure.context.*;
 import ivorius.reccomplex.world.gen.feature.structure.generic.presets.TransfomerPresets;
 import ivorius.reccomplex.utils.NBTStorable;
 import ivorius.reccomplex.utils.presets.PresettedObject;
@@ -159,7 +160,7 @@ public class TransformerMulti extends Transformer<TransformerMulti.InstanceData>
     }
 
     @Override
-    public boolean skipGeneration(InstanceData instanceData, StructureSpawnContext context, BlockPos pos, IBlockState state, IvWorldData worldData, BlockPos sourcePos)
+    public boolean skipGeneration(InstanceData instanceData, StructureLiveContext context, BlockPos pos, IBlockState state, IvWorldData worldData, BlockPos sourcePos)
     {
         return !instanceData.deactivated && instanceData.pairedTransformers.stream()
                 .anyMatch(input -> input.getLeft().skipGeneration(input.getRight(), context, pos, state, worldData, sourcePos));

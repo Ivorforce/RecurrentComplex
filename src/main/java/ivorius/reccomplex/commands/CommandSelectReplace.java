@@ -8,6 +8,7 @@ package ivorius.reccomplex.commands;
 import ivorius.ivtoolkit.blocks.BlockStates;
 import ivorius.reccomplex.RCConfig;
 import ivorius.reccomplex.RecurrentComplex;
+import ivorius.reccomplex.capability.SelectionOwner;
 import ivorius.reccomplex.utils.expression.PositionedBlockMatcher;
 import ivorius.reccomplex.utils.ServerTranslations;
 import net.minecraft.block.Block;
@@ -74,7 +75,10 @@ public class CommandSelectReplace extends CommandBase
 
             PositionedBlockMatcher matcher = new PositionedBlockMatcher(RecurrentComplex.specialRegistry, src);
 
-            for (BlockPos coord : RCCommands.getSelectionOwner(commandSender, null, true).getSelection())
+            SelectionOwner selectionOwner = RCCommands.getSelectionOwner(commandSender, null, true);
+            RCCommands.assertSize(commandSender, selectionOwner);
+
+            for (BlockPos coord : selectionOwner.getSelection())
             {
                 if (matcher.test(PositionedBlockMatcher.Argument.at(world, coord)))
                 {

@@ -9,6 +9,7 @@ import ivorius.ivtoolkit.blocks.BlockArea;
 import ivorius.ivtoolkit.blocks.BlockAreas;
 import ivorius.ivtoolkit.tools.IvWorldData;
 import ivorius.reccomplex.RCConfig;
+import ivorius.reccomplex.capability.SelectionOwner;
 import ivorius.reccomplex.utils.ServerTranslations;
 import ivorius.reccomplex.world.gen.feature.structure.StructureRegistry;
 import ivorius.reccomplex.world.gen.feature.structure.schematics.SchematicFile;
@@ -75,7 +76,9 @@ public class CommandExportSchematic extends CommandBase
     @Override
     public void execute(MinecraftServer server, ICommandSender commandSender, String[] args) throws CommandException
     {
-        BlockArea area = RCCommands.getSelectionOwner(commandSender, null, true).getSelection();
+        SelectionOwner selectionOwner = RCCommands.getSelectionOwner(commandSender, null, true);
+        BlockArea area = selectionOwner.getSelection();
+        RCCommands.assertSize(commandSender, selectionOwner);
 
         String structureName;
 

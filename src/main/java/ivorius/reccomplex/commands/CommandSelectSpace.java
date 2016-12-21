@@ -11,6 +11,7 @@ import ivorius.reccomplex.block.BlockGenericSpace;
 import ivorius.reccomplex.block.RCBlocks;
 import ivorius.ivtoolkit.blocks.BlockSurfaceArea;
 import ivorius.ivtoolkit.blocks.BlockSurfacePos;
+import ivorius.reccomplex.capability.SelectionOwner;
 import ivorius.reccomplex.utils.ServerTranslations;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
@@ -157,7 +158,9 @@ public class CommandSelectSpace extends CommandBase
     {
         World world = commandSender.getEntityWorld();
 
-        BlockArea area = RCCommands.getSelectionOwner(commandSender, null, true).getSelection();
+        SelectionOwner selectionOwner = RCCommands.getSelectionOwner(commandSender, null, true);
+        RCCommands.assertSize(commandSender, selectionOwner);
+        BlockArea area = selectionOwner.getSelection();
 
         int floorDistance = (args.length >= 1 ? parseInt(args[0]) : 0) + 1;
         int maxClosedSides = args.length >= 2 ? parseInt(args[1]) : 3;

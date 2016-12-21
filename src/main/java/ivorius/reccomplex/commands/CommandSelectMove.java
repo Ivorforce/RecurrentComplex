@@ -9,6 +9,7 @@ import ivorius.ivtoolkit.blocks.BlockArea;
 import ivorius.ivtoolkit.math.AxisAlignedTransform2D;
 import ivorius.ivtoolkit.tools.IvWorldData;
 import ivorius.reccomplex.RCConfig;
+import ivorius.reccomplex.capability.SelectionOwner;
 import ivorius.reccomplex.operation.OperationRegistry;
 import ivorius.reccomplex.utils.ServerTranslations;
 import ivorius.reccomplex.world.gen.feature.structure.OperationClearArea;
@@ -69,7 +70,9 @@ public class CommandSelectMove extends CommandBase
 
         AxisAlignedTransform2D transform = RCCommands.tryParseTransform(args, 3);
 
-        BlockArea area = RCCommands.getSelectionOwner(commandSender, null, true).getSelection();
+        SelectionOwner selectionOwner = RCCommands.getSelectionOwner(commandSender, null, true);
+        RCCommands.assertSize(commandSender, selectionOwner);
+        BlockArea area = selectionOwner.getSelection();
 
         BlockPos coord = RCCommands.parseBlockPos(area.getLowerCorner(), args, 0, false);
 

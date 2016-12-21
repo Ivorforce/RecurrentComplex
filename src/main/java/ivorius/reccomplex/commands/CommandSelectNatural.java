@@ -6,6 +6,7 @@
 package ivorius.reccomplex.commands;
 
 import ivorius.ivtoolkit.blocks.BlockArea;
+import ivorius.reccomplex.capability.SelectionOwner;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.CommandException;
 import net.minecraft.server.MinecraftServer;
@@ -54,7 +55,10 @@ public class CommandSelectNatural extends CommandBase
     {
         World world = commandSender.getEntityWorld();
 
-        BlockArea area = RCCommands.getSelectionOwner(commandSender, null, true).getSelection();
+        SelectionOwner selectionOwner = RCCommands.getSelectionOwner(commandSender, null, true);
+        RCCommands.assertSize(commandSender, selectionOwner);
+        BlockArea area = selectionOwner.getSelection();
+
         double expandFloor = args.length >= 1 ? parseDouble(args[0]) : 1;
 
         CommandSelectFloor.placeNaturalFloor(world, area, expandFloor);

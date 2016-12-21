@@ -7,6 +7,7 @@ package ivorius.reccomplex.commands;
 
 import ivorius.ivtoolkit.blocks.BlockStates;
 import ivorius.reccomplex.RCConfig;
+import ivorius.reccomplex.capability.SelectionOwner;
 import ivorius.reccomplex.utils.ServerTranslations;
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
@@ -67,7 +68,10 @@ public class CommandSelectFill extends CommandBase
             int[] dstMeta = args.length >= 2 ? RCCommands.parseMetadatas(args[1]) : new int[]{0};
             List<IBlockState> dst = IntStream.of(dstMeta).mapToObj(m -> BlockStates.fromMetadata(dstBlock, m)).collect(Collectors.toList());
 
-            for (BlockPos coord : RCCommands.getSelectionOwner(commandSender, null, true).getSelection())
+            SelectionOwner selectionOwner = RCCommands.getSelectionOwner(commandSender, null, true);
+            RCCommands.assertSize(commandSender, selectionOwner);
+
+            for (BlockPos coord : selectionOwner.getSelection())
             {
                 IBlockState state = dst.get(world.rand.nextInt(dst.size()));
                 world.setBlockState(coord, state, 3);

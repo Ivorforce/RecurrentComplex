@@ -44,7 +44,10 @@ public class CommandSelectCopy extends CommandBase
     {
         StructureEntityInfo structureEntityInfo = RCCommands.getStructureEntityInfo(commandSender, null);
 
-        BlockArea area = RCCommands.getSelectionOwner(commandSender, null, true).getSelection();
+        SelectionOwner selectionOwner = RCCommands.getSelectionOwner(commandSender, null, true);
+        RCCommands.assertSize(commandSender, selectionOwner);
+        BlockArea area = selectionOwner.getSelection();
+
         IvWorldData worldData = IvWorldData.capture(commandSender.getEntityWorld(), area, true);
 
         BlockPos lowerCorner = area.getLowerCorner();

@@ -5,12 +5,12 @@
 
 package ivorius.reccomplex.commands;
 
+import ivorius.ivtoolkit.blocks.BlockSurfacePos;
 import ivorius.ivtoolkit.math.AxisAlignedTransform2D;
 import ivorius.reccomplex.RCConfig;
 import ivorius.reccomplex.RecurrentComplex;
 import ivorius.reccomplex.capability.SelectionOwner;
 import ivorius.reccomplex.capability.StructureEntityInfo;
-import ivorius.ivtoolkit.blocks.BlockSurfacePos;
 import ivorius.reccomplex.utils.ServerTranslations;
 import ivorius.reccomplex.utils.expression.ResourceMatcher;
 import ivorius.reccomplex.world.gen.feature.structure.StructureInfo;
@@ -159,6 +159,17 @@ public class RCCommands
             throw ServerTranslations.commandException("commands.selectModify.noSelection");
 
         return owner;
+    }
+
+    public static void assertSize(ICommandSender sender, SelectionOwner owner) throws CommandException
+    {
+        int[] sides = owner.getSelection().areaSize();
+        long size = (long) sides[0] * (long) sides[1] * (long) sides[2];
+
+        if (size >= (long) Integer.MAX_VALUE)
+            throw ServerTranslations.commandException("commands.rc.large.error");
+        else if (size >= 100 * 100 * 100)
+            sender.sendMessage(ServerTranslations.get("commands.rc.large.warn"));
     }
 
     public static BlockPos parseBlockPos(BlockPos blockpos, String[] args, int startIndex, boolean centerBlock) throws NumberInvalidException

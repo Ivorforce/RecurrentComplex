@@ -8,6 +8,7 @@ package ivorius.reccomplex.commands;
 import ivorius.ivtoolkit.blocks.BlockArea;
 import ivorius.ivtoolkit.tools.IvWorldData;
 import ivorius.reccomplex.RCConfig;
+import ivorius.reccomplex.capability.SelectionOwner;
 import ivorius.reccomplex.network.PacketEditStructureHandler;
 import ivorius.reccomplex.utils.ServerTranslations;
 import ivorius.reccomplex.world.gen.feature.structure.StructureInfo;
@@ -90,7 +91,10 @@ public class CommandExportStructure extends CommandBase
             genericStructureInfo.metadata.authors = commandSender.getName();
         }
 
-        BlockArea area = RCCommands.getSelectionOwner(commandSender, null, true).getSelection();
+        SelectionOwner selectionOwner = RCCommands.getSelectionOwner(commandSender, null, true);
+        RCCommands.assertSize(commandSender, selectionOwner);
+
+        BlockArea area = selectionOwner.getSelection();
         BlockPos lowerCoord = area.getLowerCorner();
         BlockPos higherCoord = area.getHigherCorner();
 

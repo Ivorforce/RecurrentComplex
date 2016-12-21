@@ -9,6 +9,7 @@ import ivorius.ivtoolkit.blocks.BlockArea;
 import ivorius.ivtoolkit.math.AxisAlignedTransform2D;
 import ivorius.ivtoolkit.tools.IvWorldData;
 import ivorius.reccomplex.RCConfig;
+import ivorius.reccomplex.capability.SelectionOwner;
 import ivorius.reccomplex.operation.OperationRegistry;
 import ivorius.reccomplex.utils.ServerTranslations;
 import ivorius.reccomplex.world.gen.feature.structure.OperationGenerateStructure;
@@ -57,7 +58,8 @@ public class CommandSelectDuplicate extends CommandBase
         int rotations = args.length >= 4 ? parseInt(args[3]) : 0;
         boolean mirrorX = args.length >= 5 && parseBoolean(args[4]);
 
-        BlockArea area = RCCommands.getSelectionOwner(commandSender, null, true).getSelection();
+        SelectionOwner selectionOwner = RCCommands.getSelectionOwner(commandSender, null, true);
+        BlockArea area = selectionOwner.getSelection();
         BlockPos lowerCorner = area.getLowerCorner();
 
         BlockPos coord = RCCommands.parseBlockPos(lowerCorner, args, 0, false);

@@ -72,11 +72,11 @@ public class TransformerNatural extends TransformerAbstractCloud<TransformerNatu
     }
 
     @Override
-    protected double naturalExpansionDistance(EnumFacing side)
+    protected double cloudExpansionDistance(EnumFacing side)
     {
         return side == EnumFacing.UP ? 0
                 : side.getHorizontalIndex() >= 0 ? 0.5f
-                : super.naturalExpansionDistance(side);
+                : super.cloudExpansionDistance(side);
     }
 
     @Override
@@ -108,13 +108,13 @@ public class TransformerNatural extends TransformerAbstractCloud<TransformerNatu
     }
 
     @Override
-    public double naturalExpansionDistance()
+    public double cloudExpansionDistance()
     {
         return naturalExpansionDistance;
     }
 
     @Override
-    public double naturalExpansionRandomization()
+    public double cloudExpansionRandomization()
     {
         return naturalExpansionRandomization;
     }

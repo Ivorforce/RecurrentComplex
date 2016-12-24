@@ -158,13 +158,13 @@ public class TransformerNaturalAir extends TransformerAbstractCloud<TransformerN
     }
 
     @Override
-    public double naturalExpansionDistance()
+    public double cloudExpansionDistance()
     {
         return naturalExpansionDistance;
     }
 
     @Override
-    public double naturalExpansionRandomization()
+    public double cloudExpansionRandomization()
     {
         return naturalExpansionRandomization;
     }

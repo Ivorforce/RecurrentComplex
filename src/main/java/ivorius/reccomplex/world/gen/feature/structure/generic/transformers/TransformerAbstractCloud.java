@@ -44,25 +44,26 @@ public abstract class TransformerAbstractCloud<S extends TransformerAbstractClou
 
     public static <T> boolean visitRecursively(HashSet<T> start, BiPredicate<Set<T>, T> changedConsumer)
     {
+        Set<T> changedL = start;
         Set<T> changedR = new HashSet<>();
-        while (start.size() > 0 || changedR.size() > 0)
+        while (changedL.size() > 0 || changedR.size() > 0)
         {
-            Set<T> prev = start.size() > 0 ? start : changedR;
-            final Set<T> changed = prev == start ? changedR : start;
-            for (T t : prev)
+            Set<T> current = changedL.size() > 0 ? changedL : changedR;
+            final Set<T> next = current == changedL ? changedR : changedL;
+            for (T t : current)
             {
-                if (!changedConsumer.test(changed, t))
+                if (!changedConsumer.test(next, t))
                     return false;
             }
-            prev.clear();
+            current.clear();
         }
 
         return true;
     }
 
-    public abstract double naturalExpansionDistance();
+    public abstract double cloudExpansionDistance();
 
-    public abstract double naturalExpansionRandomization();
+    public abstract double cloudExpansionRandomization();
 
     @Override
     public boolean skipGeneration(S instanceData, StructureLiveContext context, BlockPos pos, IBlockState state, IvWorldData worldData, BlockPos sourcePos)
@@ -85,7 +86,7 @@ public abstract class TransformerAbstractCloud<S extends TransformerAbstractClou
         int values = MathHelper.floor_float(gridCoords * (1f / 25f) + 0.5f);
 
         for (int i = 0; i < values; i++)
-            blurredValueField.addValue(1 + (random.nextFloat() - random.nextFloat()) * (float) naturalExpansionRandomization() / 100f, random);
+            blurredValueField.addValue(1 + (random.nextFloat() - random.nextFloat()) * (float) cloudExpansionRandomization() / 100f, random);
 
         BlockAreas.mutablePositions(worldData.blockCollection.area()).forEach(pos ->
         {
@@ -95,35 +96,45 @@ public abstract class TransformerAbstractCloud<S extends TransformerAbstractClou
                 cloud.put(pos.toImmutable(), 1);
         });
 
-        double naturalExpansionDistance = naturalExpansionDistance();
+        double expansionDistance = cloudExpansionDistance();
         BlockPos.MutableBlockPos sidePos = new BlockPos.MutableBlockPos();
         BlockPos.MutableBlockPos sideWorldCoord = new BlockPos.MutableBlockPos();
-        if (naturalExpansionDistance > 0.000001)
+
+        if (expansionDistance > 0.000001)
         {
-            final double falloff = 1.0 / naturalExpansionDistance;
+            // The code below will be called _often_, so let's cache the divisions
+            double[] sideFalloffs = new double[6];
+            List<EnumFacing> checkSides = new ArrayList<>();
+            for (EnumFacing side : EnumFacing.values())
+            {
+                double sideExpansionDistance = cloudExpansionDistance(side);
+                double sideFalloff = sideExpansionDistance > 0.000001 ? 1.0f / sideExpansionDistance / expansionDistance : 0;
+                if (sideFalloff > 0)
+                {
+                    checkSides.add(side);
+                    sideFalloffs[side.getIndex()] = sideFalloff;
+                }
+            }
 
             visitRecursively(Sets.newHashSet(cloud.keySet()), (changed, pos) ->
             {
                 double density = cloud.get(pos);
 
-                for (EnumFacing side : EnumFacing.values())
+                for (EnumFacing side : checkSides)
                 {
-                    double modifier = naturalExpansionDistance(side);
-                    if (modifier > 0.000001)
-                    {
-                        IvMutableBlockPos.offset(pos, sidePos, side);
-                        IvMutableBlockPos.add(RCAxisAlignedTransform.apply(sidePos, sideWorldCoord, strucSize, context.transform), lowerCoord);
+                    double sideFalloff = sideFalloffs[side.getIndex()];
 
-                        double sideDensity = density - (falloff * (1.0 / modifier) * blurredValueField.getValue(sidePos.getX(), sidePos.getY(), sidePos.getZ()));
+                    IvMutableBlockPos.offset(pos, sidePos, side);
+                    IvMutableBlockPos.add(RCAxisAlignedTransform.apply(sidePos, sideWorldCoord, strucSize, context.transform), lowerCoord);
 
-                        if (sideDensity > 0 && cloud.get(sidePos) < sideDensity && canPenetrate(environment, worldData, sideWorldCoord, sideDensity, transformer, transformerInstanceData))
-                        {
-                            BlockPos immutableSidePos = sidePos.toImmutable();
+                    double sideDensity = density - sideFalloff * blurredValueField.getValue(sidePos.getX(), sidePos.getY(), sidePos.getZ());
+                    if (sideDensity <= 0 || cloud.get(sidePos) >= sideDensity - 0.00001 || !canPenetrate(environment, worldData, sideWorldCoord, sideDensity, transformer, transformerInstanceData))
+                        continue;
 
-                            cloud.put(immutableSidePos, sideDensity);
-                            changed.add(immutableSidePos);
-                        }
-                    }
+                    BlockPos immutableSidePos = sidePos.toImmutable();
+
+                    cloud.put(immutableSidePos, sideDensity);
+                    changed.add(immutableSidePos);
                 }
                 return true;
             });
@@ -137,7 +148,7 @@ public abstract class TransformerAbstractCloud<S extends TransformerAbstractClou
         return true;
     }
 
-    protected double naturalExpansionDistance(EnumFacing side)
+    protected double cloudExpansionDistance(EnumFacing side)
     {
         return 1;
     }

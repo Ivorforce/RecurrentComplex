@@ -75,8 +75,14 @@ public abstract class PresetRegistry<T>
     @Nonnull
     public Optional<T> preset(String id)
     {
+        return originalPreset(id).map(this::copy);
+    }
+
+    @Nonnull
+    public Optional<T> originalPreset(String id)
+    {
         return Optional.ofNullable(registry.get(id))
-                .map(p -> copy(p.t));
+                .map(p -> p.t);
     }
 
     public Metadata copy(Metadata meta)

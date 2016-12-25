@@ -87,9 +87,9 @@ public class PositionedBlockMatcher extends BoolFunctionExpressionCache<Position
         }
 
         @Override
-        public BlockMatcher createCache(String var, Argument a)
+        public BlockMatcher createCache()
         {
-            return new BlockMatcher(registry, var);
+            return new BlockMatcher(registry, "");
         }
     }
 

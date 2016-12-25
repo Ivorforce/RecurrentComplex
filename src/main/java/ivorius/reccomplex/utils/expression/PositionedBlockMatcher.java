@@ -20,6 +20,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.World;
 
+import java.text.ParseException;
 import java.util.function.Function;
 
 /**
@@ -101,33 +102,29 @@ public class PositionedBlockMatcher extends BoolFunctionExpressionCache<Position
         }
 
         @Override
-        public Function<Argument, Boolean> parse(String var)
+        public Function<Argument, Boolean> parse(String var) throws ParseException
         {
-            return argument -> {
-                IBlockState state = argument.state;
-
-                switch (var)
-                {
-                    case "leaves":
-                        return state.getMaterial() == Material.LEAVES
-                                || state.getBlock().isLeaves(state, argument.world, argument.pos);
-                    case "air":
-                        return state.getMaterial() == Material.AIR
-                                || state.getBlock().isAir(state, argument.world, argument.pos);
-                    case "foliage":
-                        return RCBlockLogic.isFoliage(state, argument.world, argument.pos);
-                    case "replaceable":
-                        return state.getBlock().isReplaceable(argument.world, argument.pos);
-                    case "liquid":
-                        return state.getMaterial() instanceof MaterialLiquid;
-                    case "water":
-                        return state.getMaterial() == Material.WATER;
-                    case "lava":
-                        return state.getMaterial() == Material.LAVA;
-                    default:
-                        return true;
-                }
-            };
+            switch (var)
+            {
+                case "leaves":
+                    return argument -> argument.state.getMaterial() == Material.LEAVES
+                            || argument.state.getBlock().isLeaves(argument.state, argument.world, argument.pos);
+                case "air":
+                    return argument -> argument.state.getMaterial() == Material.AIR
+                            || argument.state.getBlock().isAir(argument.state, argument.world, argument.pos);
+                case "foliage":
+                    return argument -> RCBlockLogic.isFoliage(argument.state, argument.world, argument.pos);
+                case "replaceable":
+                    return argument -> argument.state.getBlock().isReplaceable(argument.world, argument.pos);
+                case "liquid":
+                    return argument -> argument.state.getMaterial() instanceof MaterialLiquid;
+                case "water":
+                    return argument -> argument.state.getMaterial() == Material.WATER;
+                case "lava":
+                    return argument -> argument.state.getMaterial() == Material.LAVA;
+                default:
+                    throw new ParseException("Unknown Type: " + var, 0); // TODO WHERE??
+            }
         }
 
         @Override
@@ -147,23 +144,19 @@ public class PositionedBlockMatcher extends BoolFunctionExpressionCache<Position
         }
 
         @Override
-        public Function<Argument, Boolean> parse(String var)
+        public Function<Argument, Boolean> parse(String var) throws ParseException
         {
-            return argument -> {
-                IBlockState state = argument.state;
-
-                switch (var)
-                {
-                    case "trees":
-                        return state.getBlock().canSustainPlant(state, argument.world, argument.pos, EnumFacing.UP, (BlockSapling) Blocks.SAPLING);
-                    case "mushrooms":
-                        return state.getBlock() == Blocks.DIRT || state.getBlock() == Blocks.GRASS || state.getBlock() == Blocks.MYCELIUM;
-                    case "cacti":
-                        return Blocks.CACTUS.canBlockStay(argument.world, argument.pos);
-                    default:
-                        return true;
-                }
-            };
+            switch (var)
+            {
+                case "trees":
+                    return argument -> argument.state.getBlock().canSustainPlant(argument.state, argument.world, argument.pos, EnumFacing.UP, (BlockSapling) Blocks.SAPLING);
+                case "mushrooms":
+                    return argument -> argument.state.getBlock() == Blocks.DIRT || argument.state.getBlock() == Blocks.GRASS || argument.state.getBlock() == Blocks.MYCELIUM;
+                case "cacti":
+                    return argument -> Blocks.CACTUS.canBlockStay(argument.world, argument.pos);
+                default:
+                    throw new ParseException("Unknown Type: " + var, 0); // TODO WHERE??
+            }
         }
 
         @Override
@@ -182,21 +175,17 @@ public class PositionedBlockMatcher extends BoolFunctionExpressionCache<Position
         }
 
         @Override
-        public Function<Argument, Boolean> parse(String var)
+        public Function<Argument, Boolean> parse(String var) throws ParseException
         {
-            return argument -> {
-                IBlockState state = argument.state;
-
-                switch (var)
-                {
-                    case "movement":
-                        return state.getMaterial().blocksMovement();
-                    case "light":
-                        return state.getMaterial().blocksLight();
-                    default:
-                        return true;
-                }
-            };
+            switch (var)
+            {
+                case "movement":
+                    return argument -> argument.state.getMaterial().blocksMovement();
+                case "light":
+                    return argument -> argument.state.getMaterial().blocksLight();
+                default:
+                    throw new ParseException("Unknown Type: " + var, 0); // TODO WHERE??
+            }
         }
 
         @Override

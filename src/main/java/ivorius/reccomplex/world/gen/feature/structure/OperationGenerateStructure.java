@@ -92,10 +92,13 @@ public class OperationGenerateStructure implements Operation
 
     public StructureGenerator<GenericStructureInfo.InstanceData> generator(WorldServer world)
     {
-        return new StructureGenerator<>(structure).world(world).generationInfo(generationInfoID)
-                .structureID(structureID).transform(transform).lowerCoord(lowerCoord)
+        StructureGenerator<GenericStructureInfo.InstanceData> generator = new StructureGenerator<>(structure).world(world).generationInfo(generationInfoID)
+                .transform(transform).lowerCoord(lowerCoord)
                 .maturity(StructureSpawnContext.GenerateMaturity.FIRST).asSource(generateAsSource)
                 .instanceData(instanceData);
+        if (structureID != null)
+            generator.structureID(structureID);
+        return generator;
     }
 
     @Override

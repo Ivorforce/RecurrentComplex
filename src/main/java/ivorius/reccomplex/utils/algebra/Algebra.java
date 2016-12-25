@@ -68,7 +68,7 @@ public class Algebra<T>
         {
             tokens.remove(0);
             ExpressionToken<T> exp = new ExpressionToken<>(startToken.startIndex, startToken.endIndex,
-                    new Constant<>(startToken.startIndex, ((ConstantToken) startToken).identifier));
+                    new UnparsedVariable<>(startToken.startIndex, ((ConstantToken) startToken).identifier));
             tokens.add(exp);
             return exp;
         }
@@ -151,7 +151,8 @@ public class Algebra<T>
         if (tokens.size() < 1)
             throw new ParseException("Internal Error (Missing Arguments)", startIndex);
 
-        Expression<T>[] expressions = new Expression[tokens.size()];
+        @SuppressWarnings("unchecked")
+        Expression<T, ?>[] expressions = new Expression[tokens.size()];
         for (int i = 0; i < tokens.size(); i++)
         {
             SymbolTokenizer.Token token = tokens.get(i);
@@ -162,7 +163,7 @@ public class Algebra<T>
         }
         tokens.clear();
 
-        tokens.add(new ExpressionToken<>(startIndex, endIndex, new Operation<>(startIndex, operator, expressions)));
+        tokens.add(new ExpressionToken<>(startIndex, endIndex, new Operation(startIndex, operator, expressions)));
     }
 
     protected static <T> int reduceBuildingExpression(BuildingExpression<T> buildingExpression, List<SymbolTokenizer.Token> tokens, NavigableSet<PrecedenceSet<Operator<T>>> followingOperators, int currentTokenIndex) throws ParseException
@@ -277,14 +278,16 @@ public class Algebra<T>
     }
 
     @Nonnull
-    public Expression<T> parse(String string) throws ParseException
+    public <V> Expression<T, V> parse(String string, VariableParser<V> variableParser) throws ParseException
     {
-        return constructExpression(new SymbolTokenizer(characterRules, getTokenFactory()).tokenize(string));
+        return constructExpression(new SymbolTokenizer(characterRules, getTokenFactory()).tokenize(string), variableParser);
     }
 
-    public Expression<T> constructExpression(List<SymbolTokenizer.Token> tokens) throws ParseException
+    public <A, V> Expression<T, V> constructExpression(List<SymbolTokenizer.Token> tokens, VariableParser<V> variableParser) throws ParseException
     {
-        return reduceExpressions(Lists.newArrayList(tokens), new TreeSet<>(PrecedenceSets.group(this.operators)), 0).expression;
+        @SuppressWarnings("unchecked")
+        Expression<T, V> expression = (Expression<T, V>) reduceExpressions(Lists.newArrayList(tokens), new TreeSet<>(PrecedenceSets.group(this.operators)), 0).expression;
+        return expression.parse(variableParser);
     }
 
     protected static class BuildingExpression<T>
@@ -341,7 +344,7 @@ public class Algebra<T>
         }
     }
 
-    public abstract static class Expression<T>
+    public abstract static class Expression<T, V>
     {
         public final int index;
 
@@ -350,33 +353,75 @@ public class Algebra<T>
             this.index = index;
         }
 
-        public abstract T evaluate(@Nullable Function<String, T> input);
+        public abstract T evaluate(@Nullable Function<V, T> input);
 
-        public abstract boolean walkVariables(Visitor<Constant<T>> visitor);
+        public abstract boolean walkVariables(Visitor<Variable<T, V>> visitor);
 
         public abstract String toString(Function<String, String> stringMapper);
+
+        public Expression<T, V> parse(VariableParser<V> parser) throws ParseException
+        {
+            return this;
+        }
     }
 
-    public static class Constant<T> extends Expression<T>
+    public static class UnparsedVariable<T, V> extends Expression<T, V>
     {
         public final String identifier;
 
-        public Constant(int index, String identifier)
+        public UnparsedVariable(int index, String identifier)
         {
             super(index);
             this.identifier = identifier;
         }
 
         @Override
-        public T evaluate(@Nullable Function<String, T> input)
+        public T evaluate(@Nullable Function<V, T> input)
         {
-            Preconditions.checkNotNull(input);
-
-            return input.apply(identifier);
+            throw new IllegalStateException();
         }
 
         @Override
-        public boolean walkVariables(Visitor<Constant<T>> visitor)
+        public boolean walkVariables(Visitor<Variable<T, V>> visitor)
+        {
+            throw new IllegalStateException();
+        }
+
+        @Override
+        public String toString(Function<String, String> stringMapper)
+        {
+            return stringMapper.apply(identifier);
+        }
+
+        @Override
+        public Expression<T, V> parse(VariableParser<V> parser) throws ParseException
+        {
+            return new Variable<T, V>(index, identifier, parser.apply(identifier));
+        }
+    }
+
+    public static class Variable<T, V> extends Expression<T, V>
+    {
+        public final String identifier;
+        public final V value;
+
+        public Variable(int index, String identifier, V value)
+        {
+            super(index);
+            this.identifier = identifier;
+            this.value = value;
+        }
+
+        @Override
+        public T evaluate(@Nullable Function<V, T> input)
+        {
+            Preconditions.checkNotNull(input);
+
+            return input.apply(value);
+        }
+
+        @Override
+        public boolean walkVariables(Visitor<Variable<T, V>> visitor)
         {
             return visitor.visit(this);
         }
@@ -388,12 +433,12 @@ public class Algebra<T>
         }
     }
 
-    public static class Value<T> extends Expression<T>
+    public static class Constant<T, V> extends Expression<T, V>
     {
-        public T value;
         public String representation;
+        public T value;
 
-        public Value(int index, T value, String representation)
+        public Constant(int index, T value, String representation)
         {
             super(index);
             this.value = value;
@@ -401,13 +446,13 @@ public class Algebra<T>
         }
 
         @Override
-        public T evaluate(@Nullable Function<String, T> input)
+        public T evaluate(@Nullable Function<V, T> input)
         {
             return value;
         }
 
         @Override
-        public boolean walkVariables(Visitor<Constant<T>> visitor)
+        public boolean walkVariables(Visitor<Variable<T, V>> visitor)
         {
             return true;
         }
@@ -419,13 +464,13 @@ public class Algebra<T>
         }
     }
 
-    public static class Operation<T> extends Expression<T>
+    public static class Operation<T, V> extends Expression<T, V>
     {
         protected Operator<T> operator;
-        protected Expression<T>[] expressions;
+        protected Expression<T, V>[] expressions;
 
         @SafeVarargs
-        public Operation(int index, Operator<T> operator, Expression<T>... expressions)
+        public Operation(int index, Operator<T> operator, Expression<T, V>... expressions)
         {
             super(index);
             this.operator = operator;
@@ -437,25 +482,33 @@ public class Algebra<T>
             return expressions[index];
         }
 
-        public void setExpression(int index, Expression<T> expression)
+        public void setExpression(int index, Expression<T, V> expression)
         {
             this.expressions[index] = expression;
         }
 
         @Override
-        public T evaluate(@Nullable Function<String, T> input)
+        public T evaluate(@Nullable Function<V, T> input)
         {
             return operator.evaluate(input, expressions);
         }
 
         @Override
-        public boolean walkVariables(Visitor<Constant<T>> visitor)
+        public boolean walkVariables(Visitor<Variable<T, V>> visitor)
         {
-            for (Expression expression : expressions)
+            for (Expression<T, V> expression : expressions)
                 if (!expression.walkVariables(visitor))
                     return false;
-
             return true;
+        }
+
+        @Override
+        public Expression<T, V> parse(VariableParser<V> parser) throws ParseException
+        {
+            for (int i = 0; i < expressions.length; i++)
+                expressions[i] = expressions[i].parse(parser);
+
+            return this;
         }
 
         @Override
@@ -553,14 +606,14 @@ public class Algebra<T>
             return symbols.length - 1 + (hasLeftArgument() ? 1 : 0) + (hasRightArgument() ? 1 : 0);
         }
 
-        public abstract T evaluate(Function<String, T> variableEvaluator, Expression<T>[] expressions);
+        public abstract <V> T evaluate(Function<V, T> variableEvaluator, Expression<T, V>[] expressions);
     }
 
     protected static class ExpressionToken<T> extends SymbolTokenizer.Token
     {
-        public Expression<T> expression;
+        public Expression<T, ?> expression;
 
-        public ExpressionToken(int startIndex, int endIndex, Expression<T> expression)
+        public ExpressionToken(int startIndex, int endIndex, Expression<T, ?> expression)
         {
             super(startIndex, endIndex);
             this.expression = expression;
@@ -605,5 +658,9 @@ public class Algebra<T>
             this.operator = operator;
             this.symbolIndex = symbolIndex;
         }
+    }
+
+    interface VariableParser<T> {
+        T apply(String var) throws ParseException;
     }
 }

@@ -73,7 +73,7 @@ public class GenericItemCollection implements WeightedItemCollection
     public static class Component extends WeightedRandom.Item
     {
         public final List<RandomizedItemStack> items = new ArrayList<>();
-        public final DependencyMatcher dependencies = new DependencyMatcher("");
+        public final DependencyMatcher dependencies = new DependencyMatcher();
         public String inventoryGeneratorID;
 
         public Component()

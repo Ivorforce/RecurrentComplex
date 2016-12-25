@@ -14,6 +14,7 @@ import ivorius.reccomplex.gui.table.datasource.TableDataSource;
 import ivorius.reccomplex.gui.table.TableDelegate;
 import ivorius.reccomplex.gui.table.TableNavigator;
 import ivorius.reccomplex.json.JsonUtils;
+import ivorius.reccomplex.utils.algebra.ExpressionCache;
 import ivorius.reccomplex.world.gen.feature.structure.Placer;
 import ivorius.reccomplex.utils.expression.BiomeMatcher;
 import ivorius.reccomplex.world.gen.feature.structure.generic.placement.GenericPlacer;
@@ -58,7 +59,7 @@ public class VanillaGenerationInfo extends GenerationInfo
         this.maxScaledLimit = maxScaledLimit;
         this.front = front;
         this.spawnShift = spawnShift;
-        biomeMatcher = new BiomeMatcher(biomeExpression);
+        biomeMatcher = ExpressionCache.of(new BiomeMatcher(), biomeExpression);
     }
 
     @Nonnull

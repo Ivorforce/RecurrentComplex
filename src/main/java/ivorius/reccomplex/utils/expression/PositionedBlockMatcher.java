@@ -20,6 +20,8 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.World;
 
+import java.util.function.Function;
+
 /**
  * Created by lukas on 16.09.16.
  */
@@ -32,9 +34,9 @@ public class PositionedBlockMatcher extends BoolFunctionExpressionCache<Position
 
     public final MCRegistry registry;
 
-    public PositionedBlockMatcher(MCRegistry registry, String expression)
+    public PositionedBlockMatcher(MCRegistry registry)
     {
-        super(RCBoolAlgebra.algebra(), true, TextFormatting.GREEN + "Any Block", expression);
+        super(RCBoolAlgebra.algebra(), true, TextFormatting.GREEN + "Any Block");
 
         this.registry = registry;
 
@@ -42,8 +44,6 @@ public class PositionedBlockMatcher extends BoolFunctionExpressionCache<Position
         addTypes(new IsVariableType(IS_PREFIX, ""));
         addType(new SustainVariableType(SUSTAIN_PREFIX, ""));
         addType(new BlocksVariableType(PositionedBlockMatcher.BLOCKS_PREFIX, ""));
-
-        testVariables();
     }
 
     public static class Argument
@@ -89,7 +89,7 @@ public class PositionedBlockMatcher extends BoolFunctionExpressionCache<Position
         @Override
         public BlockMatcher createCache()
         {
-            return new BlockMatcher(registry, "");
+            return new BlockMatcher(registry);
         }
     }
 
@@ -101,31 +101,33 @@ public class PositionedBlockMatcher extends BoolFunctionExpressionCache<Position
         }
 
         @Override
-        public Boolean evaluate(String var, Argument argument)
+        public Function<Argument, Boolean> parse(String var)
         {
-            IBlockState state = argument.state;
+            return argument -> {
+                IBlockState state = argument.state;
 
-            switch (var)
-            {
-                case "leaves":
-                    return state.getMaterial() == Material.LEAVES
-                            || state.getBlock().isLeaves(state, argument.world, argument.pos);
-                case "air":
-                    return state.getMaterial() == Material.AIR
-                            || state.getBlock().isAir(state, argument.world, argument.pos);
-                case "foliage":
-                    return RCBlockLogic.isFoliage(state, argument.world, argument.pos);
-                case "replaceable":
-                    return state.getBlock().isReplaceable(argument.world, argument.pos);
-                case "liquid":
-                    return state.getMaterial() instanceof MaterialLiquid;
-                case "water":
-                    return state.getMaterial() == Material.WATER;
-                case "lava":
-                    return state.getMaterial() == Material.LAVA;
-                default:
-                    return true;
-            }
+                switch (var)
+                {
+                    case "leaves":
+                        return state.getMaterial() == Material.LEAVES
+                                || state.getBlock().isLeaves(state, argument.world, argument.pos);
+                    case "air":
+                        return state.getMaterial() == Material.AIR
+                                || state.getBlock().isAir(state, argument.world, argument.pos);
+                    case "foliage":
+                        return RCBlockLogic.isFoliage(state, argument.world, argument.pos);
+                    case "replaceable":
+                        return state.getBlock().isReplaceable(argument.world, argument.pos);
+                    case "liquid":
+                        return state.getMaterial() instanceof MaterialLiquid;
+                    case "water":
+                        return state.getMaterial() == Material.WATER;
+                    case "lava":
+                        return state.getMaterial() == Material.LAVA;
+                    default:
+                        return true;
+                }
+            };
         }
 
         @Override
@@ -145,21 +147,23 @@ public class PositionedBlockMatcher extends BoolFunctionExpressionCache<Position
         }
 
         @Override
-        public Boolean evaluate(String var, Argument argument)
+        public Function<Argument, Boolean> parse(String var)
         {
-            IBlockState state = argument.state;
+            return argument -> {
+                IBlockState state = argument.state;
 
-            switch (var)
-            {
-                case "trees":
-                    return state.getBlock().canSustainPlant(state, argument.world, argument.pos, EnumFacing.UP, (BlockSapling) Blocks.SAPLING);
-                case "mushrooms":
-                    return state.getBlock() == Blocks.DIRT || state.getBlock() == Blocks.GRASS || state.getBlock() == Blocks.MYCELIUM;
-                case "cacti":
-                    return Blocks.CACTUS.canBlockStay(argument.world, argument.pos);
-                default:
-                    return true;
-            }
+                switch (var)
+                {
+                    case "trees":
+                        return state.getBlock().canSustainPlant(state, argument.world, argument.pos, EnumFacing.UP, (BlockSapling) Blocks.SAPLING);
+                    case "mushrooms":
+                        return state.getBlock() == Blocks.DIRT || state.getBlock() == Blocks.GRASS || state.getBlock() == Blocks.MYCELIUM;
+                    case "cacti":
+                        return Blocks.CACTUS.canBlockStay(argument.world, argument.pos);
+                    default:
+                        return true;
+                }
+            };
         }
 
         @Override
@@ -178,19 +182,21 @@ public class PositionedBlockMatcher extends BoolFunctionExpressionCache<Position
         }
 
         @Override
-        public Boolean evaluate(String var, Argument argument)
+        public Function<Argument, Boolean> parse(String var)
         {
-            IBlockState state = argument.state;
+            return argument -> {
+                IBlockState state = argument.state;
 
-            switch (var)
-            {
-                case "movement":
-                    return state.getMaterial().blocksMovement();
-                case "light":
-                    return state.getMaterial().blocksLight();
-                default:
-                    return true;
-            }
+                switch (var)
+                {
+                    case "movement":
+                        return state.getMaterial().blocksMovement();
+                    case "light":
+                        return state.getMaterial().blocksLight();
+                    default:
+                        return true;
+                }
+            };
         }
 
         @Override

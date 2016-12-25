@@ -32,7 +32,7 @@ import java.util.stream.Collectors;
 public class WorldScriptMulti implements WorldScript<WorldScriptMulti.InstanceData>
 {
     public final List<WorldScript> scripts = new ArrayList<>();
-    public final EnvironmentMatcher environmentMatcher = new EnvironmentMatcher("");
+    public final EnvironmentMatcher environmentMatcher = new EnvironmentMatcher();
 
     @Override
     public InstanceData prepareInstanceData(StructurePrepareContext context, BlockPos pos)

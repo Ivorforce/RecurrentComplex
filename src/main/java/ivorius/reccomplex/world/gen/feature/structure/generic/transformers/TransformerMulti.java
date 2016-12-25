@@ -214,7 +214,7 @@ public class TransformerMulti extends Transformer<TransformerMulti.InstanceData>
     public static class Data
     {
         public final List<Transformer> transformers = new ArrayList<>();
-        public final EnvironmentMatcher environmentMatcher = new EnvironmentMatcher("");
+        public final EnvironmentMatcher environmentMatcher = new EnvironmentMatcher();
     }
 
     public static class DataSerializer implements JsonDeserializer<Data>, JsonSerializer<Data>

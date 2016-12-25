@@ -18,7 +18,7 @@ public class ExpressionAlgebra
         return new Algebra.Operator<Object>(operator.precedence, operator.hasLeftArgument, operator.hasRightArgument, operator.symbols)
         {
             @Override
-            public Object evaluate(Function<String, Object> variableEvaluator, Algebra.Expression<Object>[] expressions)
+            public <V> Object evaluate(Function<V, Object> variableEvaluator, Algebra.Expression<Object, V>[] expressions)
             {
                 Object[] result = Stream.of(expressions).map(e -> e.evaluate(variableEvaluator)).toArray();
                 if (!Stream.of(result).allMatch(r -> clazz.isAssignableFrom(result.getClass())))

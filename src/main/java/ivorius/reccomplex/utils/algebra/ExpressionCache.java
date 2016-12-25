@@ -5,8 +5,6 @@
 
 package ivorius.reccomplex.utils.algebra;
 
-import ivorius.reccomplex.utils.algebra.Algebra;
-
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.text.ParseException;
@@ -24,39 +22,42 @@ public class ExpressionCache<T>
     @Nonnull
     protected String expression = "";
     @Nullable
-    protected Algebra.Expression<T> parsedExpression;
+    protected Algebra.Expression<T, ?> parsedExpression;
     @Nullable
     protected ParseException parseException;
 
-    public ExpressionCache(@Nonnull Algebra<T> algebra, @Nonnull String expression)
+    public ExpressionCache(@Nonnull Algebra<T> algebra)
     {
         this.algebra = algebra;
-        setExpression(expression);
+        setExpression("");
     }
 
-    public ExpressionCache(@Nonnull Algebra<T> algebra, T emptyExpressionResult, String emptyResultRepresentation, @Nonnull String expression)
+    public ExpressionCache(@Nonnull Algebra<T> algebra, T emptyExpressionResult, String emptyResultRepresentation)
     {
         this.algebra = algebra;
         this.emptyExpressionResult = emptyExpressionResult;
         this.emptyResultRepresentation = emptyResultRepresentation;
-        setExpression(expression);
+    }
+
+    public static <T, E extends ExpressionCache<T>> E of(E e, String expression)
+    {
+        e.setExpression(expression);
+        return e;
     }
 
     protected void parseExpression()
     {
         if (expressionIsEmpty() && acceptsEmptyExpression())
         {
-            parsedExpression = new Algebra.Value<>(0, emptyExpressionResult, emptyResultRepresentation);
+            parsedExpression = new Algebra.Constant<>(0, emptyExpressionResult, emptyResultRepresentation);
             parseException = null;
         }
         else
         {
             try
             {
-                parsedExpression = algebra.parse(expression);
+                parsedExpression = algebra.parse(expression, variableParser());
                 parseException = null;
-
-                testVariables();
             }
             catch (ParseException e)
             {
@@ -66,25 +67,9 @@ public class ExpressionCache<T>
         }
     }
 
-    protected void testVariables()
+    protected Algebra.VariableParser<?> variableParser()
     {
-        if (parsedExpression != null)
-        {
-            try
-            {
-                testVariables(parsedExpression);
-            }
-            catch (ParseException e)
-            {
-                parsedExpression = null;
-                parseException = e;
-            }
-        }
-    }
-
-    protected void testVariables(@Nonnull Algebra.Expression<T> expression) throws ParseException
-    {
-
+        return i -> i;
     }
 
     @Nonnull
@@ -145,7 +130,7 @@ public class ExpressionCache<T>
     }
 
     @Nullable
-    public Algebra.Expression<T> getParsedExpression()
+    public Algebra.Expression<T, ?> getParsedExpression()
     {
         return parsedExpression;
     }

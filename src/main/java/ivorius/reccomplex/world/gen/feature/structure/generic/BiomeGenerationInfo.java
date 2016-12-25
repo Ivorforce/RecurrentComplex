@@ -7,6 +7,7 @@ package ivorius.reccomplex.world.gen.feature.structure.generic;
 
 import com.google.gson.*;
 import ivorius.reccomplex.json.JsonUtils;
+import ivorius.reccomplex.utils.algebra.ExpressionCache;
 import ivorius.reccomplex.utils.expression.BiomeMatcher;
 import net.minecraft.world.biome.Biome;
 
@@ -23,7 +24,7 @@ public class BiomeGenerationInfo
 
     public BiomeGenerationInfo(String expression, Double generationWeight)
     {
-        this.biomeMatcher = new BiomeMatcher(expression);
+        this.biomeMatcher = ExpressionCache.of(new BiomeMatcher(), expression);
         this.generationWeight = generationWeight;
     }
 

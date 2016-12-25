@@ -11,6 +11,9 @@ import ivorius.reccomplex.utils.algebra.RCBoolAlgebra;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.util.text.TextFormatting;
 
+import java.text.ParseException;
+import java.util.function.Function;
+
 /**
  * Created by lukas on 01.05.15.
  */
@@ -19,14 +22,12 @@ public class CommandMatcher extends BoolFunctionExpressionCache<CommandMatcher.A
     public static final String NAME_PREFIX = "name=";
     public static final String PERM_PREFIX = "canUseLevel:";
 
-    public CommandMatcher(String expression)
+    public CommandMatcher()
     {
-        super(RCBoolAlgebra.algebra(), true, TextFormatting.GREEN + "Any Command", expression);
+        super(RCBoolAlgebra.algebra(), true, TextFormatting.GREEN + "Any Command");
 
         addTypes(new NameType(NAME_PREFIX, ""), t -> t.alias("$", ""));
         addTypes(new PermType(PERM_PREFIX, ""), t -> t.alias("#", ""));
-
-        testVariables();
     }
 
     public static class Argument
@@ -49,9 +50,9 @@ public class CommandMatcher extends BoolFunctionExpressionCache<CommandMatcher.A
         }
 
         @Override
-        public Boolean evaluate(String var, Argument argument)
+        public Function<Argument, Boolean> parse(String var)
         {
-            return argument.sender.getName().equals(var);
+            return argument -> argument.sender.getName().equals(var);
         }
 
         @Override
@@ -75,9 +76,12 @@ public class CommandMatcher extends BoolFunctionExpressionCache<CommandMatcher.A
         }
 
         @Override
-        public Boolean evaluate(String var, Argument argument)
+        public Function<Argument, Boolean> parse(String var) throws ParseException
         {
-            return argument.sender.canUseCommand(parseNumber(var), argument.name);
+            Integer level = parseNumber(var);
+            if (level == null)
+                throw new ParseException("Not a number: " + var, 0); // TODO WHERE??
+            return argument -> argument.sender.canUseCommand(level, argument.name);
         }
 
         @Override

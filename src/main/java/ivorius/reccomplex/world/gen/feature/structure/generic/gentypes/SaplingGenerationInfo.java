@@ -12,6 +12,7 @@ import ivorius.reccomplex.gui.table.datasource.TableDataSource;
 import ivorius.reccomplex.gui.table.TableDelegate;
 import ivorius.reccomplex.gui.table.TableNavigator;
 import ivorius.reccomplex.json.JsonUtils;
+import ivorius.reccomplex.utils.algebra.ExpressionCache;
 import ivorius.reccomplex.world.gen.feature.structure.Environment;
 import ivorius.reccomplex.world.gen.feature.structure.Placer;
 import ivorius.reccomplex.world.gen.feature.structure.generic.BlockPattern;
@@ -47,7 +48,7 @@ public class SaplingGenerationInfo extends GenerationInfo
         super(id != null ? id : randomID(SaplingGenerationInfo.class));
         this.generationWeight = generationWeight;
         this.spawnShift = spawnShift;
-        environmentMatcher = new EnvironmentMatcher(environmentExpression);
+        environmentMatcher = ExpressionCache.of(new EnvironmentMatcher(), environmentExpression);
         this.pattern = pattern;
     }
 

@@ -14,6 +14,7 @@ import ivorius.reccomplex.gui.table.datasource.TableDataSource;
 import ivorius.reccomplex.gui.table.TableDelegate;
 import ivorius.reccomplex.gui.table.TableNavigator;
 import ivorius.reccomplex.json.JsonUtils;
+import ivorius.reccomplex.utils.algebra.ExpressionCache;
 import ivorius.reccomplex.world.gen.feature.structure.Placer;
 import ivorius.reccomplex.world.gen.feature.structure.generic.placement.GenericPlacer;
 import ivorius.reccomplex.utils.expression.DimensionMatcher;
@@ -45,7 +46,7 @@ public class StaticGenerationInfo extends GenerationInfo
 
     public StaticGenerationInfo()
     {
-        this(null, new DimensionMatcher("0"), true, BlockSurfacePos.ORIGIN, null);
+        this(null, ExpressionCache.of(new DimensionMatcher(), "0"), true, BlockSurfacePos.ORIGIN, null);
     }
 
     public StaticGenerationInfo(@Nullable String id, DimensionMatcher dimensionMatcher, boolean relativeToSpawn, BlockSurfacePos position, Pattern pattern)
@@ -161,7 +162,7 @@ public class StaticGenerationInfo extends GenerationInfo
 
             Pattern pattern = jsonObject.has("pattern") ? gson.fromJson(jsonObject.get("pattern"), Pattern.class) : null;
 
-            StaticGenerationInfo staticGenInfo = new StaticGenerationInfo(id, new DimensionMatcher(dimension), relativeToSpawn, new BlockSurfacePos(positionX, positionZ), pattern);
+            StaticGenerationInfo staticGenInfo = new StaticGenerationInfo(id, ExpressionCache.of(new DimensionMatcher(), dimension), relativeToSpawn, new BlockSurfacePos(positionX, positionZ), pattern);
 
             if (!PresettedObjects.read(jsonObject, gson, staticGenInfo.placer, "placerPreset", "placer", new TypeToken<GenericPlacer>(){}.getType())
                     && jsonObject.has("generationY"))

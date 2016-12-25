@@ -34,7 +34,7 @@ import static ivorius.reccomplex.world.gen.feature.structure.generic.placement.F
  */
 public class RayMatcher extends FactorLimit.Ray
 {
-    public final PositionedBlockMatcher destMatcher = new PositionedBlockMatcher(RecurrentComplex.specialRegistry, "");
+    public final PositionedBlockMatcher destMatcher = new PositionedBlockMatcher(RecurrentComplex.specialRegistry);
     public boolean up;
     public float requiredRatio;
 

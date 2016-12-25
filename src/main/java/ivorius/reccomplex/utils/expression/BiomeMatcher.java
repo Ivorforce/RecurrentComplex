@@ -16,6 +16,9 @@ import net.minecraft.world.biome.Biome;
 import net.minecraftforge.common.BiomeDictionary;
 
 import java.util.Arrays;
+import java.util.List;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 /**
  * Created by lukas on 19.09.14.
@@ -26,15 +29,13 @@ public class BiomeMatcher extends BoolFunctionExpressionCache<Biome, Object>
     public static final String BIOME_ID_PREFIX = "id=";
     public static final String BIOME_TYPE_PREFIX = "type=";
 
-    public BiomeMatcher(String expression)
+    public BiomeMatcher()
     {
-        super(RCBoolAlgebra.algebra(), true, TextFormatting.GREEN + "Any Biome", expression);
+        super(RCBoolAlgebra.algebra(), true, TextFormatting.GREEN + "Any Biome");
 
         addTypes(new BiomeNameVariableType(BIOME_NAME_PREFIX, ""));
         addTypes(new BiomeIDVariableType(BIOME_ID_PREFIX, ""), t -> t.alias("", ""));
         addTypes(new BiomeDictVariableType(BIOME_TYPE_PREFIX, ""), t -> t.alias("$", ""));
-
-        testVariables();
     }
 
     public static String ofTypes(BiomeDictionary.Type... biomeTypes)
@@ -50,9 +51,13 @@ public class BiomeMatcher extends BoolFunctionExpressionCache<Biome, Object>
         }
 
         @Override
-        public Boolean evaluate(String var, Biome biome)
+        public Function<Biome, Boolean> parse(String var)
         {
-            return biome.getBiomeName().equals(var);
+            List<Biome> biomes = Biome.REGISTRY.getKeys().stream()
+                    .map(Biome.REGISTRY::getObject)
+                    .filter(b -> b.getBiomeName().equals(var))
+                    .collect(Collectors.toList());
+            return biomes::contains;
         }
 
         @Override
@@ -71,9 +76,10 @@ public class BiomeMatcher extends BoolFunctionExpressionCache<Biome, Object>
         }
 
         @Override
-        public Boolean evaluate(String var, Biome biome)
+        public Function<Biome, Boolean> parse(String var)
         {
-            return Biome.REGISTRY.getObject(new ResourceLocation(var)) == biome;
+            Biome biome = Biome.REGISTRY.getObject(new ResourceLocation(var));
+            return b -> b == biome;
         }
 
         @Override
@@ -92,10 +98,10 @@ public class BiomeMatcher extends BoolFunctionExpressionCache<Biome, Object>
         }
 
         @Override
-        public Boolean evaluate(String var, Biome biome)
+        public Function<Biome, Boolean> parse(String var)
         {
             BiomeDictionary.Type type = BiomeDictionaryAccessor.getTypeWeak(var);
-            return type != null && BiomeDictionary.hasType(biome, type);
+            return b -> type != null && BiomeDictionary.hasType(b, type);
         }
 
         @Override

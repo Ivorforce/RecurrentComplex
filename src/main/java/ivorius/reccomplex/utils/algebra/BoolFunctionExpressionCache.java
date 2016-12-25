@@ -7,6 +7,7 @@ package ivorius.reccomplex.utils.algebra;
 
 import ivorius.reccomplex.RCConfig;
 
+import java.util.function.Function;
 import java.util.function.Predicate;
 
 /**
@@ -16,16 +17,16 @@ public class BoolFunctionExpressionCache<A, U> extends FunctionExpressionCache<B
 {
     public static final String GLOBAL_PREFIX = "global:";
 
-    public BoolFunctionExpressionCache(Algebra<Boolean> algebra, String expression)
+    public BoolFunctionExpressionCache(Algebra<Boolean> algebra)
     {
-        super(algebra, expression);
+        super(algebra);
 
         addBoolConstants();
     }
 
-    public BoolFunctionExpressionCache(Algebra<Boolean> algebra, Boolean emptyResult, String emptyResultRepresentation, String expression)
+    public BoolFunctionExpressionCache(Algebra<Boolean> algebra, Boolean emptyResult, String emptyResultRepresentation)
     {
-        super(algebra, emptyResult, emptyResultRepresentation, expression);
+        super(algebra, emptyResult, emptyResultRepresentation);
 
         addBoolConstants();
     }
@@ -51,9 +52,10 @@ public class BoolFunctionExpressionCache<A, U> extends FunctionExpressionCache<B
         }
 
         @Override
-        public Boolean evaluate(String var, Object o)
+        public Function<Object, Boolean> parse(String var)
         {
-            return RCConfig.globalToggles.containsKey(var) && RCConfig.globalToggles.get(var);
+            boolean result = RCConfig.globalToggles.containsKey(var) && RCConfig.globalToggles.get(var);
+            return o -> result;
         }
 
         @Override

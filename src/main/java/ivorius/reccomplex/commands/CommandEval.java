@@ -8,6 +8,7 @@ package ivorius.reccomplex.commands;
 import ivorius.reccomplex.RCConfig;
 import ivorius.reccomplex.RecurrentComplex;
 import ivorius.reccomplex.utils.ServerTranslations;
+import ivorius.reccomplex.utils.algebra.ExpressionCache;
 import ivorius.reccomplex.utils.expression.DependencyMatcher;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.CommandException;
@@ -47,7 +48,7 @@ public class CommandEval extends CommandBase
         if (args.length < 1)
             throw ServerTranslations.wrongUsageException("commands.rceval.usage");
 
-        DependencyMatcher matcher = new DependencyMatcher(buildString(args, 0));
+        DependencyMatcher matcher = ExpressionCache.of(new DependencyMatcher(), buildString(args, 0));
         if (!matcher.isExpressionValid())
         {
             commandSender.sendMessage(ServerTranslations.format("commands.rceval.error", matcher.getParseException().getMessage()));

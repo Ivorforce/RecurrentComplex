@@ -5,6 +5,8 @@
 
 package ivorius.reccomplex.utils.algebra;
 
+import java.util.function.Function;
+
 /**
  * Created by lukas on 05.10.16.
  */
@@ -15,9 +17,9 @@ public class FunctionExpressionCaches
         return new FunctionExpressionCache.VariableType<T, Object, Object>("", "")
         {
             @Override
-            public T evaluate(String var, Object o)
+            public Function<Object, T> parse(String var)
             {
-                return val;
+                return o -> val;
             }
 
             @Override
@@ -33,9 +35,9 @@ public class FunctionExpressionCaches
         return new FunctionExpressionCache.VariableType<T, Object, Object>(id, "")
         {
             @Override
-            public T evaluate(String var, Object o)
+            public Function<Object, T> parse(String var)
             {
-                return val;
+                return o -> val;
             }
 
             @Override

@@ -10,6 +10,7 @@ import ivorius.reccomplex.RCConfig;
 import ivorius.reccomplex.RecurrentComplex;
 import ivorius.reccomplex.capability.SelectionOwner;
 import ivorius.reccomplex.utils.ServerTranslations;
+import ivorius.reccomplex.utils.algebra.ExpressionCache;
 import ivorius.reccomplex.utils.expression.PositionedBlockMatcher;
 import ivorius.reccomplex.world.gen.feature.structure.generic.transformers.TransformerProperty;
 import net.minecraft.block.Block;
@@ -69,7 +70,7 @@ public class CommandSetProperty extends CommandBase
         {
             World world = commandSender.getEntityWorld();
 
-            PositionedBlockMatcher matcher = new PositionedBlockMatcher(RecurrentComplex.specialRegistry, args.length > 2 ? buildString(args, 2) : "");
+            PositionedBlockMatcher matcher = ExpressionCache.of(new PositionedBlockMatcher(RecurrentComplex.specialRegistry), args.length > 2 ? buildString(args, 2) : "");
 
             String propertyName = args[0];
             String propertyValue = args[1];

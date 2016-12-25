@@ -125,10 +125,13 @@ public abstract class TransformerAbstractCloud<S extends TransformerAbstractClou
                     double sideFalloff = sideFalloffs[side.getIndex()];
 
                     IvMutableBlockPos.offset(pos, sidePos, side);
-                    IvMutableBlockPos.add(RCAxisAlignedTransform.apply(sidePos, sideWorldCoord, strucSize, context.transform), lowerCoord);
 
                     double sideDensity = density - sideFalloff * blurredValueField.getValue(sidePos.getX(), sidePos.getY(), sidePos.getZ());
-                    if (sideDensity <= 0 || cloud.get(sidePos) >= sideDensity - 0.00001 || !canPenetrate(environment, worldData, sideWorldCoord, sideDensity, transformer, transformerInstanceData))
+                    if (sideDensity <= 0 || cloud.get(sidePos) >= sideDensity - 0.00001)
+                        continue;
+
+                    IvMutableBlockPos.add(RCAxisAlignedTransform.apply(sidePos, sideWorldCoord, strucSize, context.transform), lowerCoord);
+                    if (!canPenetrate(environment, worldData, sideWorldCoord, sideDensity, transformer, transformerInstanceData))
                         continue;
 
                     BlockPos immutableSidePos = sidePos.toImmutable();

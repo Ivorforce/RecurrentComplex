@@ -72,7 +72,7 @@ public class PresettedObject<T>
 
     public void setToCustom()
     {
-        loadFromPreset();
+        loadFromPreset(true);
         preset = null;
     }
 
@@ -89,7 +89,7 @@ public class PresettedObject<T>
     public T getContents()
     {
         if (!isCustom())
-            loadFromPreset();
+            loadFromPreset(false);
         return t;
     }
 
@@ -99,16 +99,17 @@ public class PresettedObject<T>
         t = ts;
     }
 
-    protected boolean loadFromPreset()
+    protected boolean loadFromPreset(boolean copy)
     {
         if (preset == null)
             return true;
 
-        if ((t = presetContents()) != null)
+        if ((t = presetContents(copy)) != null)
             return true;
 
         RecurrentComplex.logger.warn(String.format("Failed to find preset (%s): %s", presetRegistry.getRegistry().description, preset));
-        t = presetRegistry.preset(defaultPreset()).orElse(null);
+        //noinspection OptionalGetWithoutIsPresent
+        t = (copy ? presetRegistry.preset(defaultPreset()) : presetRegistry.originalPreset(defaultPreset())).get();
 
         return false;
     }
@@ -121,8 +122,8 @@ public class PresettedObject<T>
         return defaultPreset;
     }
 
-    private T presetContents()
+    private T presetContents(boolean copy)
     {
-        return presetRegistry.preset(this.preset).orElse(null);
+        return (copy ? presetRegistry.preset(this.preset) : presetRegistry.originalPreset(this.preset)).orElse(null);
     }
 }

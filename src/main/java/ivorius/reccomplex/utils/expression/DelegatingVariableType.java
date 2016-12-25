@@ -7,16 +7,22 @@ package ivorius.reccomplex.utils.expression;
 
 import ivorius.reccomplex.utils.algebra.FunctionExpressionCache;
 import net.minecraft.util.text.TextFormatting;
-import org.apache.commons.lang3.NotImplementedException;
 
 /**
  * Created by lukas on 07.09.16.
  */
 public abstract class DelegatingVariableType<T, A, U, CA, CU, C extends FunctionExpressionCache<T, CA, CU>> extends FunctionExpressionCache.VariableType<T, A, U>
 {
+    protected C cache;
+
     public DelegatingVariableType(String prefix, String suffix)
     {
         super(prefix, suffix);
+    }
+
+    protected C cache()
+    {
+        return cache != null ? cache : (cache = createCache());
     }
 
     public CA convertEvaluateArgument(String var, A a)
@@ -37,19 +43,19 @@ public abstract class DelegatingVariableType<T, A, U, CA, CU, C extends Function
     @Override
     public T evaluate(String var, A a)
     {
-        return createEvaluateCache(var, a).evaluate(convertEvaluateArgument(var, a));
+        return cache().evaluateVariable(var, convertEvaluateArgument(var, a));
     }
 
     @Override
     public FunctionExpressionCache.Validity validity(String var, U u)
     {
-        return createUnknownCache(var, u).validity(convertIsKnownArgument(var, u));
+        return cache().variableValidity(var, convertIsKnownArgument(var, u));
     }
 
     @Override
     protected String getVarRepresentation(String var, U u)
     {
-        return createUnknownCache(var, u).getDisplayString(convertIsKnownArgument(var, u));
+        return cache().variableDisplayString(var, convertIsKnownArgument(var, u));
     }
 
     @Override
@@ -62,18 +68,5 @@ public abstract class DelegatingVariableType<T, A, U, CA, CU, C extends Function
                 + TextFormatting.BLUE + suffix;
     }
 
-    public C createEvaluateCache(String var, A a)
-    {
-        return createCache(var, a);
-    }
-
-    public C createUnknownCache(String var, U u)
-    {
-        return createCache(var, (A) u);
-    }
-
-    protected C createCache(String var, A a)
-    {
-        throw new NotImplementedException("createCache not implemented!");
-    }
+    public abstract C createCache();
 }

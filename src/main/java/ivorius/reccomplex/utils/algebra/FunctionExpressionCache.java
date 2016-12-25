@@ -126,12 +126,15 @@ public class FunctionExpressionCache<T, A, U> extends ExpressionCache<T>
     public String getDisplayString(final U u)
     {
         return parsedExpression != null ? parsedExpression.toString(input ->
-        {
-            VariableType<T, ? super A, ? super U> type = type(input);
-            return type != null
-                    ? type.getRepresentation(input.substring(type.prefix.length()), type.prefix, type.suffix, u)
-                    : TextFormatting.RED + input;
-        }) : TextFormatting.RED + expression;
+                variableDisplayString(input, u)) : TextFormatting.RED + expression;
+    }
+
+    public String variableDisplayString(String variable, U u)
+    {
+        VariableType<T, ? super A, ? super U> type = type(variable);
+        return type != null
+                ? type.getRepresentation(variable.substring(type.prefix.length()), type.prefix, type.suffix, u)
+                : TextFormatting.RED + variable;
     }
 
     public enum Validity

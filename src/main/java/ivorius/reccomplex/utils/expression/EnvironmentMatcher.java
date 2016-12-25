@@ -56,9 +56,9 @@ public class EnvironmentMatcher extends BoolFunctionExpressionCache<Environment,
         }
 
         @Override
-        public BiomeMatcher createCache(String var, Environment a)
+        public BiomeMatcher createCache()
         {
-            return new BiomeMatcher(var);
+            return new BiomeMatcher("");
         }
     }
 
@@ -76,9 +76,9 @@ public class EnvironmentMatcher extends BoolFunctionExpressionCache<Environment,
         }
 
         @Override
-        public DimensionMatcher createCache(String var, Environment a)
+        public DimensionMatcher createCache()
         {
-            return new DimensionMatcher(var);
+            return new DimensionMatcher("");
         }
     }
 
@@ -96,9 +96,9 @@ public class EnvironmentMatcher extends BoolFunctionExpressionCache<Environment,
         }
 
         @Override
-        public DependencyMatcher createCache(String var, Environment a)
+        public DependencyMatcher createCache()
         {
-            return new DependencyMatcher(var);
+            return new DependencyMatcher("");
         }
     }
 
@@ -142,9 +142,9 @@ public class EnvironmentMatcher extends BoolFunctionExpressionCache<Environment,
         }
 
         @Override
-        protected GenerationInfoMatcher createCache(String var, Environment a)
+        public GenerationInfoMatcher createCache()
         {
-            return new GenerationInfoMatcher(var);
+            return new GenerationInfoMatcher("");
         }
     }
 }

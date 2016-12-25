@@ -42,7 +42,7 @@ public class BlockMatcher extends BoolFunctionExpressionCache<IBlockState, Objec
 
         this.registry = registry;
 
-        addTypes(new BlockVariableType(BLOCK_ID_PREFIX, "", registry), t -> t.alias("", ""));
+        addTypes(new IDVariableType(BLOCK_ID_PREFIX, "", registry), t -> t.alias("", ""));
         addTypes(new MetadataVariableType(METADATA_PREFIX, ""), t -> t.alias("#", ""));
         addTypes(new PropertyVariableType(PROPERTY_PREFIX, ""), t -> t.alias("$[", ""));
     }
@@ -62,11 +62,11 @@ public class BlockMatcher extends BoolFunctionExpressionCache<IBlockState, Objec
         return String.format("%s & %s%d-%d", registry.idFromBlock(block), METADATA_PREFIX, range.min, range.max);
     }
 
-    public class BlockVariableType extends VariableType<Boolean, IBlockState, Object>
+    public class IDVariableType extends VariableType<Boolean, IBlockState, Object>
     {
         public MCRegistry registry;
 
-        public BlockVariableType(String prefix, String suffix, MCRegistry registry)
+        public IDVariableType(String prefix, String suffix, MCRegistry registry)
         {
             super(prefix, suffix);
             this.registry = registry;

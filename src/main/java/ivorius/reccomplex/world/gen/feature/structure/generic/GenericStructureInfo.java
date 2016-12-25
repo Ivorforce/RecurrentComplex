@@ -144,10 +144,13 @@ public class GenericStructureInfo implements StructureInfo<GenericStructureInfo.
             BlockPos key = new BlockPos(tileEntityCompound.getInteger("x"), tileEntityCompound.getInteger("y"), tileEntityCompound.getInteger("z"));
 
             TileEntity origTileEntity = RecurrentComplex.specialRegistry.loadTileEntity(world, tileEntityCompound);
-            Mover.setTileEntityPos(origTileEntity, context.transform.apply(key, areaSize).add(origin));
+            if (origTileEntity != null)
+            {
+                Mover.setTileEntityPos(origTileEntity, context.transform.apply(key, areaSize).add(origin));
 
-            origTileEntities.put(key, origTileEntity);
-            tileEntityCompounds.put(key, tileEntityCompound);
+                origTileEntities.put(key, origTileEntity);
+                tileEntityCompounds.put(key, tileEntityCompound);
+            }
         }
 
         if (transformer != null)

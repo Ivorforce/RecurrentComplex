@@ -14,6 +14,7 @@ import ivorius.reccomplex.gui.table.datasource.TableDataSource;
 import ivorius.reccomplex.gui.table.TableDelegate;
 import ivorius.reccomplex.gui.table.TableNavigator;
 import ivorius.reccomplex.json.JsonUtils;
+import ivorius.reccomplex.utils.algebra.ExpressionCache;
 import ivorius.reccomplex.world.gen.feature.structure.Environment;
 import ivorius.reccomplex.world.gen.feature.structure.context.StructureLoadContext;
 import ivorius.reccomplex.world.gen.feature.structure.context.StructurePrepareContext;
@@ -51,7 +52,7 @@ public class TransformerProperty extends TransformerSingleBlock<NBTNone>
     public TransformerProperty(@Nullable String id, String sourceExpression, String propertyName, String propertyValue)
     {
         super(id != null ? id : randomID(TransformerProperty.class));
-        this.sourceMatcher = new BlockMatcher(RecurrentComplex.specialRegistry, sourceExpression);
+        this.sourceMatcher = ExpressionCache.of(new BlockMatcher(RecurrentComplex.specialRegistry), sourceExpression);
         this.propertyName = propertyName;
         this.propertyValue = propertyValue;
     }

@@ -7,6 +7,7 @@ package ivorius.reccomplex.world.gen.feature.structure.generic;
 
 import com.google.gson.*;
 import ivorius.reccomplex.json.JsonUtils;
+import ivorius.reccomplex.utils.algebra.ExpressionCache;
 import ivorius.reccomplex.utils.expression.DimensionMatcher;
 import net.minecraft.world.WorldProvider;
 
@@ -23,7 +24,7 @@ public class DimensionGenerationInfo
 
     public DimensionGenerationInfo(String expression, Double generationWeight)
     {
-        this.dimensionMatcher = new DimensionMatcher(expression);
+        this.dimensionMatcher = ExpressionCache.of(new DimensionMatcher(), expression);
         this.generationWeight = generationWeight;
     }
 

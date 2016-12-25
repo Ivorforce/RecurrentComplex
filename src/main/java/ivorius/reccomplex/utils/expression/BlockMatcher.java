@@ -7,6 +7,7 @@ package ivorius.reccomplex.utils.expression;
 
 import com.google.common.base.Splitter;
 import com.google.common.primitives.Ints;
+import ivorius.ivtoolkit.blocks.BlockStates;
 import ivorius.ivtoolkit.gui.IntegerRange;
 import ivorius.ivtoolkit.tools.MCRegistry;
 import ivorius.reccomplex.utils.IntegerRanges;
@@ -22,6 +23,7 @@ import org.apache.commons.lang3.tuple.Pair;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.function.Function;
 
 /**
  * Created by lukas on 03.03.15.
@@ -34,17 +36,15 @@ public class BlockMatcher extends BoolFunctionExpressionCache<IBlockState, Objec
 
     public final MCRegistry registry;
 
-    public BlockMatcher(MCRegistry registry, String expression)
+    public BlockMatcher(MCRegistry registry)
     {
-        super(RCBoolAlgebra.algebra(), true, TextFormatting.GREEN + "Any Block", expression);
+        super(RCBoolAlgebra.algebra(), true, TextFormatting.GREEN + "Any Block");
 
         this.registry = registry;
 
         addTypes(new BlockVariableType(BLOCK_ID_PREFIX, "", registry), t -> t.alias("", ""));
         addTypes(new MetadataVariableType(METADATA_PREFIX, ""), t -> t.alias("#", ""));
         addTypes(new PropertyVariableType(PROPERTY_PREFIX, ""), t -> t.alias("$[", ""));
-
-        testVariables();
     }
 
     public static String of(MCRegistry registry, Block block)
@@ -73,9 +73,10 @@ public class BlockMatcher extends BoolFunctionExpressionCache<IBlockState, Objec
         }
 
         @Override
-        public Boolean evaluate(String var, IBlockState state)
+        public Function<IBlockState, Boolean> parse(String var)
         {
-            return state.getBlock() == registry.blockFromID(new ResourceLocation(var));
+            Block block = registry.blockFromID(new ResourceLocation(var));
+            return s -> s.getBlock() == block;
         }
 
         @Override
@@ -120,12 +121,14 @@ public class BlockMatcher extends BoolFunctionExpressionCache<IBlockState, Objec
         }
 
         @Override
-        public Boolean evaluate(String var, IBlockState state)
+        public Function<IBlockState, Boolean> parse(String var)
         {
             IntegerRange range = parseMetadataExp(var);
-            int metadata = ivorius.ivtoolkit.blocks.BlockStates.toMetadata(state);
 
-            return range != null && metadata >= range.min && metadata <= range.max;
+            return s -> {
+                int metadata = BlockStates.toMetadata(s);
+                return range != null && metadata >= range.min && metadata <= range.max;
+            };
         }
 
         @Override
@@ -149,12 +152,14 @@ public class BlockMatcher extends BoolFunctionExpressionCache<IBlockState, Objec
         }
 
         @Override
-        public Boolean evaluate(String var, IBlockState state)
+        public Function<IBlockState, Boolean> parse(String var)
         {
             Pair<String, String> pair = parsePropery(var);
 
-            return pair != null && getProperty(state.getBlock(), pair.getLeft())
-                    .filter(property -> property.parseValue(pair.getRight()).orNull() == state.getValue(property)).isPresent();
+            return state -> {
+                return pair != null && getProperty(state.getBlock(), pair.getLeft())
+                        .filter(property -> property.parseValue(pair.getRight()).orNull() == state.getValue(property)).isPresent();
+            };
         }
 
         @Override

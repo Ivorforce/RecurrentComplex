@@ -8,6 +8,7 @@ package ivorius.reccomplex.world.gen.feature.structure.generic.transformers;
 import com.google.gson.*;
 import ivorius.ivtoolkit.blocks.BlockStates;
 import ivorius.ivtoolkit.tools.IvWorldData;
+import ivorius.reccomplex.utils.algebra.ExpressionCache;
 import ivorius.reccomplex.world.gen.feature.structure.Environment;
 import net.minecraft.util.math.BlockPos;
 import ivorius.ivtoolkit.tools.MCRegistry;
@@ -50,7 +51,7 @@ public class TransformerPillar extends TransformerSingleBlock<NBTNone>
     public TransformerPillar(@Nullable String id, String sourceExpression, IBlockState destState)
     {
         super(id != null ? id : randomID(TransformerPillar.class));
-        this.sourceMatcher = new BlockMatcher(RecurrentComplex.specialRegistry, sourceExpression);
+        this.sourceMatcher = ExpressionCache.of(new BlockMatcher(RecurrentComplex.specialRegistry), sourceExpression);
         this.destState = destState;
     }
 

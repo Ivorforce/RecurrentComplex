@@ -12,6 +12,7 @@ import ivorius.reccomplex.RecurrentComplex;
 import ivorius.reccomplex.capability.SelectionOwner;
 import ivorius.reccomplex.capability.StructureEntityInfo;
 import ivorius.reccomplex.utils.ServerTranslations;
+import ivorius.reccomplex.utils.algebra.ExpressionCache;
 import ivorius.reccomplex.utils.expression.ResourceMatcher;
 import ivorius.reccomplex.world.gen.feature.structure.StructureInfo;
 import ivorius.reccomplex.world.gen.feature.structure.StructureRegistry;
@@ -169,7 +170,7 @@ public class RCCommands
         if (size >= (long) Integer.MAX_VALUE)
             throw ServerTranslations.commandException("commands.rc.large.error");
         else if (size >= 100 * 100 * 100)
-            sender.sendMessage(ServerTranslations.get("commands.rc.large.warn"));
+            sender.addChatMessage(ServerTranslations.get("commands.rc.large.warn"));
     }
 
     public static BlockPos parseBlockPos(BlockPos blockpos, String[] args, int startIndex, boolean centerBlock) throws NumberInvalidException
@@ -251,7 +252,7 @@ public class RCCommands
     @Nonnull
     protected static ResourceMatcher tryParseResourceMatcher(String[] args, int startPos)
     {
-        return new ResourceMatcher(args.length >= startPos ? CommandBase.buildString(args, startPos) : "", (s1) -> !s1.isEmpty());
+        return ExpressionCache.of(new ResourceMatcher((s1) -> !s1.isEmpty()), args.length >= startPos ? CommandBase.buildString(args, startPos) : "");
     }
 
     @Nonnull

@@ -19,6 +19,7 @@ import ivorius.reccomplex.gui.table.TableDelegate;
 import ivorius.reccomplex.gui.table.TableNavigator;
 import ivorius.reccomplex.json.JsonUtils;
 import ivorius.reccomplex.utils.*;
+import ivorius.reccomplex.utils.algebra.ExpressionCache;
 import ivorius.reccomplex.world.gen.feature.structure.context.*;
 import ivorius.reccomplex.utils.expression.BlockMatcher;
 import ivorius.reccomplex.utils.expression.PositionedBlockMatcher;
@@ -45,8 +46,8 @@ public class TransformerEnsureBlocks extends Transformer<NBTNone>
     public TransformerEnsureBlocks(@Nullable String id, String sourceExpression, String destExpression)
     {
         super(id != null ? id : randomID(TransformerEnsureBlocks.class));
-        this.sourceMatcher = new BlockMatcher(RecurrentComplex.specialRegistry, sourceExpression);
-        this.destMatcher = new PositionedBlockMatcher(RecurrentComplex.specialRegistry, destExpression);
+        this.sourceMatcher = ExpressionCache.of(new BlockMatcher(RecurrentComplex.specialRegistry), sourceExpression);
+        this.destMatcher = ExpressionCache.of(new PositionedBlockMatcher(RecurrentComplex.specialRegistry), destExpression);
     }
 
     @Override

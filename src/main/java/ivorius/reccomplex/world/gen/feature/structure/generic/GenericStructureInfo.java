@@ -62,7 +62,7 @@ public class GenericStructureInfo implements StructureInfo<GenericStructureInfo.
 
     public final List<GenerationInfo> generationInfos = new ArrayList<>();
     public TransformerMulti transformer = new TransformerMulti();
-    public final DependencyMatcher dependencies = new DependencyMatcher("");
+    public final DependencyMatcher dependencies = new DependencyMatcher();
 
     public NBTTagCompound worldDataCompound;
 

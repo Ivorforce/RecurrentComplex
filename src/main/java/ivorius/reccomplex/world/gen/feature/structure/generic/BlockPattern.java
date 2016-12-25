@@ -16,6 +16,7 @@ import ivorius.ivtoolkit.tools.NBTCompoundObject;
 import ivorius.ivtoolkit.tools.NBTCompoundObjects;
 import ivorius.reccomplex.RecurrentComplex;
 import ivorius.reccomplex.json.JsonUtils;
+import ivorius.reccomplex.utils.algebra.ExpressionCache;
 import ivorius.reccomplex.utils.expression.PositionedBlockMatcher;
 import ivorius.ivtoolkit.math.Transforms;
 import net.minecraft.nbt.NBTTagCompound;
@@ -31,7 +32,6 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 /**
@@ -52,7 +52,7 @@ public class BlockPattern implements NBTCompoundObject
     public BlockPattern()
     {
         pattern.add(new Selection.Area(true, new int[]{0, 0, 0}, new int[]{0, 0, 0}, "Sapling"));
-        ingredients.add(new Ingredient("Sapling", new PositionedBlockMatcher(RecurrentComplex.specialRegistry, "block.id=minecraft:sapling"), true));
+        ingredients.add(new Ingredient("Sapling", ExpressionCache.of(new PositionedBlockMatcher(RecurrentComplex.specialRegistry), "block.id=minecraft:sapling"), true));
     }
 
     private static Gson createGson()
@@ -149,7 +149,7 @@ public class BlockPattern implements NBTCompoundObject
         public Ingredient()
         {
             identifier = "";
-            matcher = new PositionedBlockMatcher(RecurrentComplex.specialRegistry, "");
+            matcher = new PositionedBlockMatcher(RecurrentComplex.specialRegistry);
             delete = true;
         }
 
@@ -164,7 +164,7 @@ public class BlockPattern implements NBTCompoundObject
         public void readFromNBT(NBTTagCompound compound)
         {
             identifier = compound.getString("identifier");
-            matcher = new PositionedBlockMatcher(RecurrentComplex.specialRegistry, compound.getString("blockExpression"));
+            matcher = ExpressionCache.of(new PositionedBlockMatcher(RecurrentComplex.specialRegistry), compound.getString("blockExpression"));
             delete = compound.getBoolean("delete");
         }
 
@@ -178,7 +178,7 @@ public class BlockPattern implements NBTCompoundObject
 
         public Ingredient copy()
         {
-            return new Ingredient(identifier, new PositionedBlockMatcher(matcher.registry, matcher.getExpression()), delete);
+            return new Ingredient(identifier, ExpressionCache.of(new PositionedBlockMatcher(matcher.registry), matcher.getExpression()), delete);
         }
     }
 
@@ -229,7 +229,7 @@ public class BlockPattern implements NBTCompoundObject
             String blockExpression = JsonUtils.getString(jsonObject, "blockExpression", "");
             boolean delete = JsonUtils.getBoolean(jsonObject, "delete", true);
 
-            return new Ingredient(id, new PositionedBlockMatcher(registry, blockExpression), delete);
+            return new Ingredient(id, ExpressionCache.of(new PositionedBlockMatcher(registry), blockExpression), delete);
         }
 
         @Override

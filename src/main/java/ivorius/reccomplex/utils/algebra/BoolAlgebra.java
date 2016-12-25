@@ -19,7 +19,7 @@ public abstract class BoolAlgebra
         return new Algebras.Unary<Boolean>(5f, Algebras.Unary.Notation.PREFIX, symbol)
         {
             @Override
-            public Boolean evaluate(Function<String, Boolean> variableEvaluator, Algebra.Expression<Boolean> expression)
+            public <V> Boolean evaluate(Function<V, Boolean> variableEvaluator, Algebra.Expression<Boolean, V> expression)
             {
                 return !expression.evaluate(variableEvaluator);
             }
@@ -31,7 +31,7 @@ public abstract class BoolAlgebra
         return new Algebras.Infix<Boolean>(4f, symbol)
         {
             @Override
-            public Boolean evaluate(Function<String, Boolean> variableEvaluator, Algebra.Expression<Boolean> left, Algebra.Expression<Boolean> right)
+            public <V> Boolean evaluate(Function<V, Boolean> variableEvaluator, Algebra.Expression<Boolean, V> left, Algebra.Expression<Boolean, V> right)
             {
                 return left.evaluate(variableEvaluator) && right.evaluate(variableEvaluator);
             }
@@ -43,7 +43,7 @@ public abstract class BoolAlgebra
         return new Algebras.Infix<Boolean>(4f, symbol)
         {
             @Override
-            public Boolean evaluate(Function<String, Boolean> variableEvaluator, Algebra.Expression<Boolean> left, Algebra.Expression<Boolean> right)
+            public <V> Boolean evaluate(Function<V, Boolean> variableEvaluator, Algebra.Expression<Boolean, V> left, Algebra.Expression<Boolean, V> right)
             {
                 return left.evaluate(variableEvaluator) || right.evaluate(variableEvaluator);
             }
@@ -55,7 +55,7 @@ public abstract class BoolAlgebra
         return new Algebras.Infix<Boolean>(3f, symbol)
         {
             @Override
-            public Boolean evaluate(Function<String, Boolean> variableEvaluator, Algebra.Expression<Boolean> left, Algebra.Expression<Boolean> right)
+            public <V> Boolean evaluate(Function<V, Boolean> variableEvaluator, Algebra.Expression<Boolean, V> left, Algebra.Expression<Boolean, V> right)
             {
                 return left.evaluate(variableEvaluator) == right.evaluate(variableEvaluator);
             }
@@ -67,7 +67,7 @@ public abstract class BoolAlgebra
         return new Algebras.Infix<Boolean>(3f, symbol)
         {
             @Override
-            public Boolean evaluate(Function<String, Boolean> variableEvaluator, Algebra.Expression<Boolean> left, Algebra.Expression<Boolean> right)
+            public <V> Boolean evaluate(Function<V, Boolean> variableEvaluator, Algebra.Expression<Boolean, V> left, Algebra.Expression<Boolean, V> right)
             {
                 return left.evaluate(variableEvaluator) == right.evaluate(variableEvaluator);
             }
@@ -79,7 +79,7 @@ public abstract class BoolAlgebra
         return new Algebra.Operator<Boolean>(2f, true, true, left, right)
         {
             @Override
-            public Boolean evaluate(Function<String, Boolean> variableEvaluator, Algebra.Expression<Boolean>[] expressions)
+            public <V> Boolean evaluate(Function<V, Boolean> variableEvaluator, Algebra.Expression<Boolean, V>[] expressions)
             {
                 return expressions[0].evaluate(variableEvaluator)
                         ? expressions[1].evaluate(variableEvaluator)

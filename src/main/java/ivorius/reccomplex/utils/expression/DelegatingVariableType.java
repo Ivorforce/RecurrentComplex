@@ -5,8 +5,12 @@
 
 package ivorius.reccomplex.utils.expression;
 
+import ivorius.reccomplex.utils.algebra.ExpressionCache;
 import ivorius.reccomplex.utils.algebra.FunctionExpressionCache;
 import net.minecraft.util.text.TextFormatting;
+
+import java.text.ParseException;
+import java.util.function.Function;
 
 /**
  * Created by lukas on 07.09.16.
@@ -41,9 +45,10 @@ public abstract class DelegatingVariableType<T, A, U, CA, CU, C extends Function
     }
 
     @Override
-    public T evaluate(String var, A a)
+    public Function<A, T> parse(String var) throws ParseException
     {
-        return cache().evaluateVariable(var, convertEvaluateArgument(var, a));
+        C c = ExpressionCache.of(createCache(), var);
+        return a -> c.evaluate(convertEvaluateArgument(var, a));
     }
 
     @Override

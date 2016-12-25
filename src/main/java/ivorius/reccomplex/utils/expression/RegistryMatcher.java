@@ -10,6 +10,9 @@ import ivorius.reccomplex.utils.algebra.BoolFunctionExpressionCache;
 import ivorius.reccomplex.utils.algebra.RCBoolAlgebra;
 import net.minecraft.util.text.TextFormatting;
 
+import java.text.ParseException;
+import java.util.function.Function;
+
 /**
  * Created by lukas on 19.09.14.
  */
@@ -17,13 +20,11 @@ public class RegistryMatcher extends BoolFunctionExpressionCache<LeveledRegistry
 {
     public static final String HAS_PREFIX = "has:";
 
-    public RegistryMatcher(String expression)
+    public RegistryMatcher()
     {
-        super(RCBoolAlgebra.algebra(), true, TextFormatting.GREEN + "Any", expression);
+        super(RCBoolAlgebra.algebra(), true, TextFormatting.GREEN + "Any");
 
         addTypes(new RegistryVariableType(HAS_PREFIX, ""), t -> t.alias("#", ""));
-
-        testVariables();
     }
 
     protected static class RegistryVariableType extends VariableType<Boolean, LeveledRegistry, LeveledRegistry>
@@ -34,9 +35,9 @@ public class RegistryMatcher extends BoolFunctionExpressionCache<LeveledRegistry
         }
 
         @Override
-        public Boolean evaluate(String var, LeveledRegistry registry)
+        public Function<LeveledRegistry, Boolean> parse(String var) throws ParseException
         {
-            return registry.has(var);
+            return registry -> registry.has(var);
         }
 
         @Override

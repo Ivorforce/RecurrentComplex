@@ -9,14 +9,17 @@ import ivorius.reccomplex.files.RCFileSaver;
 import ivorius.reccomplex.files.loading.LeveledRegistry;
 import ivorius.reccomplex.files.saving.FileSaver;
 import ivorius.reccomplex.utils.algebra.BoolFunctionExpressionCache;
+import ivorius.reccomplex.utils.algebra.ExpressionCache;
 import ivorius.reccomplex.utils.algebra.RCBoolAlgebra;
 import joptsimple.internal.Strings;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.fml.common.Loader;
 import org.apache.commons.lang3.tuple.Pair;
 
+import java.text.ParseException;
 import java.util.Arrays;
 import java.util.Optional;
+import java.util.function.Function;
 
 /**
  * Created by lukas on 19.09.14.
@@ -26,16 +29,14 @@ public class DependencyMatcher extends BoolFunctionExpressionCache<FileSaver, Fi
     public static final String MOD_PREFIX = "mod:";
     public static final String REGISTRY_PREFIX = "registry:";
 
-    public DependencyMatcher(String expression)
+    public DependencyMatcher()
     {
-        super(RCBoolAlgebra.algebra(), true, TextFormatting.GREEN + "No Dependencies", expression);
+        super(RCBoolAlgebra.algebra(), true, TextFormatting.GREEN + "No Dependencies");
 
         addTypes(new ModVariableType(MOD_PREFIX, ""), t -> t.alias("$", ""));
         addTypes(new RegistryVariableType(REGISTRY_PREFIX, ""), t -> t.alias("reg:", ""));
         // legacy
         addTypes(new RegistryHasVariableType("structure:", "", RCFileSaver.STRUCTURE), t -> t.alias("#", ""), t -> t.alias("strc:", ""));
-
-        testVariables();
     }
 
     public static String ofMods(String... ids)
@@ -53,15 +54,16 @@ public class DependencyMatcher extends BoolFunctionExpressionCache<FileSaver, Fi
         }
 
         @Override
-        public Boolean evaluate(String var, Object args)
+        public Function<Object, Boolean> parse(String var) throws ParseException
         {
-            return Loader.isModLoaded(var);
+            boolean modLoaded = Loader.isModLoaded(var);
+            return a -> modLoaded;
         }
 
         @Override
         public Validity validity(String var, Object args)
         {
-            return evaluate(var, args) ? Validity.KNOWN : Validity.UNKNOWN;
+            return Loader.isModLoaded(var) ? Validity.KNOWN : Validity.UNKNOWN;
         }
     }
 
@@ -76,9 +78,9 @@ public class DependencyMatcher extends BoolFunctionExpressionCache<FileSaver, Fi
         }
 
         @Override
-        public Boolean evaluate(String var, FileSaver saver)
+        public Function<FileSaver, Boolean> parse(String var) throws ParseException
         {
-            return saver.registry(registryID).has(var);
+            return saver -> saver.registry(registryID).has(var);
         }
 
         @Override
@@ -119,13 +121,18 @@ public class DependencyMatcher extends BoolFunctionExpressionCache<FileSaver, Fi
         @Override
         public RegistryMatcher createCache()
         {
-            return new RegistryMatcher("");
+            return new RegistryMatcher();
         }
 
         @Override
-        public Boolean evaluate(String var, FileSaver fileSaver)
+        public Function<FileSaver, Boolean> parse(String var) throws ParseException
         {
-            return splitOnce(var, ".").map(p -> cache.evaluateVariable(p.getRight(), convertEvaluateArgument(var, fileSaver))).orElseThrow(IllegalStateException::new);
+            Optional<Pair<String, String>> split = splitOnce(var, ".");
+            return split.map(p ->
+            {
+                RegistryMatcher c = ExpressionCache.of(createCache(), p.getRight());
+                return (Function<FileSaver, Boolean>) fileSaver -> c.evaluate(convertEvaluateArgument(var, fileSaver));
+            }).orElseThrow(IllegalStateException::new);
         }
 
         @Override

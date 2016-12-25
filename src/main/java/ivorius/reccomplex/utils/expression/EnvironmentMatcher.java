@@ -17,6 +17,7 @@ import net.minecraft.world.WorldProvider;
 import net.minecraft.world.biome.Biome;
 
 import java.util.Objects;
+import java.util.function.Function;
 
 /**
  * Created by lukas on 07.09.16.
@@ -29,17 +30,15 @@ public class EnvironmentMatcher extends BoolFunctionExpressionCache<Environment,
     public static final String VILLAGE_TYPE_PREFIX = "villagetype=";
     public static final String GENERATION_INFO_PREFIX = "generation.";
 
-    public EnvironmentMatcher(String expression)
+    public EnvironmentMatcher()
     {
-        super(RCBoolAlgebra.algebra(), true, TextFormatting.GREEN + "Always", expression);
+        super(RCBoolAlgebra.algebra(), true, TextFormatting.GREEN + "Always");
 
         addType(new BiomeVariableType(BIOME_PREFIX, ""));
         addTypes(new DimensionVariableType(DIMENSION_PREFIX, ""), t -> t.alias("dim.", ""));
         addTypes(new DependencyVariableType(DEPENDENCY_PREFIX, ""), t -> t.alias("dep.", ""));
         addTypes(new VillageTypeType(VILLAGE_TYPE_PREFIX, ""), t -> t.alias("vtype.", ""));
         addTypes(new GenerationType(GENERATION_INFO_PREFIX, ""), t -> t.alias("gen.", ""));
-
-        testVariables();
     }
 
     public static class BiomeVariableType extends DelegatingVariableType<Boolean, Environment, Object, Biome, Object, BiomeMatcher>
@@ -58,7 +57,7 @@ public class EnvironmentMatcher extends BoolFunctionExpressionCache<Environment,
         @Override
         public BiomeMatcher createCache()
         {
-            return new BiomeMatcher("");
+            return new BiomeMatcher();
         }
     }
 
@@ -78,7 +77,7 @@ public class EnvironmentMatcher extends BoolFunctionExpressionCache<Environment,
         @Override
         public DimensionMatcher createCache()
         {
-            return new DimensionMatcher("");
+            return new DimensionMatcher();
         }
     }
 
@@ -98,7 +97,7 @@ public class EnvironmentMatcher extends BoolFunctionExpressionCache<Environment,
         @Override
         public DependencyMatcher createCache()
         {
-            return new DependencyMatcher("");
+            return new DependencyMatcher();
         }
     }
 
@@ -110,9 +109,10 @@ public class EnvironmentMatcher extends BoolFunctionExpressionCache<Environment,
         }
 
         @Override
-        public Boolean evaluate(String var, Environment environment)
+        public Function<Environment, Boolean> parse(String var)
         {
-            return Objects.equals(parseVillageType(var), environment.villageType);
+            Integer villageType = parseVillageType(var);
+            return environment -> Objects.equals(villageType, environment.villageType);
         }
 
         public Integer parseVillageType(String var)
@@ -144,7 +144,7 @@ public class EnvironmentMatcher extends BoolFunctionExpressionCache<Environment,
         @Override
         public GenerationInfoMatcher createCache()
         {
-            return new GenerationInfoMatcher("");
+            return new GenerationInfoMatcher();
         }
     }
 }

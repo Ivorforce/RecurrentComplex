@@ -10,6 +10,7 @@ import ivorius.reccomplex.utils.algebra.RCBoolAlgebra;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.TextFormatting;
 
+import java.util.function.Function;
 import java.util.function.Predicate;
 
 /**
@@ -20,14 +21,12 @@ public class ResourceMatcher extends BoolFunctionExpressionCache<ResourceLocatio
     public static final String ID_PREFIX = "id=";
     public static final String DOMAIN_PREFIX = "domain=";
 
-    public ResourceMatcher(String expression, Predicate<String> isKnown)
+    public ResourceMatcher(Predicate<String> isKnown)
     {
-        super(RCBoolAlgebra.algebra(), true, TextFormatting.GREEN + "Any Structure", expression);
+        super(RCBoolAlgebra.algebra(), true, TextFormatting.GREEN + "Any Structure");
 
         addTypes(new ResourceIDType(ID_PREFIX, "", isKnown), t -> t.alias("", ""));
         addTypes(new DomainType(DOMAIN_PREFIX, ""), t -> t.alias("$", ""));
-
-        testVariables();
     }
 
     protected static class ResourceIDType extends VariableType<Boolean, ResourceLocation, Object>
@@ -41,9 +40,9 @@ public class ResourceMatcher extends BoolFunctionExpressionCache<ResourceLocatio
         }
 
         @Override
-        public Boolean evaluate(String var, ResourceLocation location)
+        public Function<ResourceLocation, Boolean> parse(String var)
         {
-            return location.getResourcePath().equals(var);
+            return location -> location.getResourcePath().equals(var);
         }
 
         @Override
@@ -61,9 +60,9 @@ public class ResourceMatcher extends BoolFunctionExpressionCache<ResourceLocatio
         }
 
         @Override
-        public Boolean evaluate(String var, ResourceLocation location)
+        public Function<ResourceLocation, Boolean> parse(String var)
         {
-            return location.getResourceDomain().equals(var);
+            return location -> location.getResourceDomain().equals(var);
         }
 
         @Override

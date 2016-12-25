@@ -9,6 +9,7 @@ import com.google.gson.*;
 import com.google.gson.reflect.TypeToken;
 import ivorius.ivtoolkit.blocks.BlockStates;
 import ivorius.ivtoolkit.tools.IvWorldData;
+import ivorius.reccomplex.utils.algebra.ExpressionCache;
 import ivorius.reccomplex.world.gen.feature.structure.Environment;
 import ivorius.reccomplex.utils.presets.PresettedObjects;
 import net.minecraft.util.math.BlockPos;
@@ -60,7 +61,7 @@ public class TransformerReplaceAll extends TransformerSingleBlock<TransformerRep
     public TransformerReplaceAll(@Nullable String id, String sourceExpression)
     {
         super(id != null ? id : randomID(TransformerReplaceAll.class));
-        this.sourceMatcher = new BlockMatcher(RecurrentComplex.specialRegistry, sourceExpression);
+        this.sourceMatcher = ExpressionCache.of(new BlockMatcher(RecurrentComplex.specialRegistry), sourceExpression);
     }
 
     public TransformerReplaceAll replaceWith(WeightedBlockState... states)

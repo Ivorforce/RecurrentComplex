@@ -11,6 +11,7 @@ import ivorius.reccomplex.RCConfig;
 import ivorius.reccomplex.RecurrentComplex;
 import ivorius.reccomplex.capability.SelectionOwner;
 import ivorius.reccomplex.utils.ServerTranslations;
+import ivorius.reccomplex.utils.algebra.ExpressionCache;
 import ivorius.reccomplex.utils.expression.PositionedBlockMatcher;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.CommandException;
@@ -49,7 +50,7 @@ public class CommandSelectCrop extends CommandBase
         BlockArea area = selectionOwner.getSelection();
 
         String exp = args.length > 0 ? buildString(args, 0) : "is:air";
-        PositionedBlockMatcher matcher = new PositionedBlockMatcher(RecurrentComplex.specialRegistry, exp);
+        PositionedBlockMatcher matcher = ExpressionCache.of(new PositionedBlockMatcher(RecurrentComplex.specialRegistry), exp);
 
         for (EnumFacing direction : EnumFacing.VALUES)
             while (area != null && CommandSelectWand.sideStream(area, direction).allMatch(p -> matcher.test(PositionedBlockMatcher.Argument.at(world, p))))

@@ -17,16 +17,16 @@ public class Algebras
     @Nullable
     public static <T> T tryEvaluate(String expression, Algebra<T> algebra, Function<String, T> variableEvaluator)
     {
-        Algebra.Expression<T> parsed = tryParse(expression, algebra);
-        return parsed != null ? parsed.evaluate(variableEvaluator) : null;
+        Algebra.Expression<T, T> parsed = tryParse(expression, algebra, variableEvaluator::apply);
+        return parsed != null ? parsed.evaluate(t -> t) : null;
     }
 
     @Nullable
-    public static <T> Algebra.Expression<T> tryParse(String string, Algebra<T> algebra)
+    public static <T, V> Algebra.Expression<T, V> tryParse(String string, Algebra<T> algebra, Algebra.VariableParser<V> variableParser)
     {
         try
         {
-            return algebra.parse(string);
+            return algebra.parse(string, variableParser);
         }
         catch (ParseException e)
         {
@@ -42,7 +42,7 @@ public class Algebras
         }
 
         @Override
-        public T evaluate(Function<String, T> variableEvaluator, Algebra.Expression<T>[] expressions)
+        public <V> T evaluate(Function<V, T> variableEvaluator, Algebra.Expression<T, V>[] expressions)
         {
             return expressions[0].evaluate(variableEvaluator);
         }
@@ -50,23 +50,23 @@ public class Algebras
 
     public static abstract class Unary<T> extends Algebra.Operator<T>
     {
-        public enum Notation
-        {
-            PREFIX, POSTFIX
-        }
-
         public Unary(float precedence, Notation notation, String symbol)
         {
             super(precedence, notation == Notation.POSTFIX, notation == Notation.PREFIX, symbol);
         }
 
         @Override
-        public T evaluate(Function<String, T> variableEvaluator, Algebra.Expression<T>[] expressions)
+        public <V> T evaluate(Function<V, T> variableEvaluator, Algebra.Expression<T, V>[] expressions)
         {
             return evaluate(variableEvaluator, expressions[0]);
         }
 
-        public abstract T evaluate(Function<String, T> variableEvaluator, Algebra.Expression<T> expression);
+        public abstract <V> T evaluate(Function<V, T> variableEvaluator, Algebra.Expression<T, V> expression);
+
+        public enum Notation
+        {
+            PREFIX, POSTFIX
+        }
     }
 
     public static abstract class Infix<T> extends Algebra.Operator<T>
@@ -77,11 +77,11 @@ public class Algebras
         }
 
         @Override
-        public T evaluate(Function<String, T> variableEvaluator, Algebra.Expression<T>[] expressions)
+        public <V> T evaluate(Function<V, T> variableEvaluator, Algebra.Expression<T, V>[] expressions)
         {
             return evaluate(variableEvaluator, expressions[0], expressions[1]);
         }
 
-        public abstract T evaluate(Function<String, T> variableEvaluator, Algebra.Expression<T> left, Algebra.Expression<T> right);
+        public abstract <V> T evaluate(Function<V, T> variableEvaluator, Algebra.Expression<T, V> left, Algebra.Expression<T, V> right);
     }
 }

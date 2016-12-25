@@ -21,14 +21,14 @@ public class FunctionExpressionCache<T, A, U> extends ExpressionCache<T>
 {
     protected final SortedSet<VariableType<T, ? super A, ? super U>> types = new TreeSet<>();
 
-    public FunctionExpressionCache(Algebra<T> algebra, String expression)
+    public FunctionExpressionCache(Algebra<T> algebra)
     {
-        super(algebra, expression);
+        super(algebra);
     }
 
-    public FunctionExpressionCache(Algebra<T> algebra, T emptyResult, String emptyResultRepresentation, String expression)
+    public FunctionExpressionCache(Algebra<T> algebra, T emptyResult, String emptyResultRepresentation)
     {
-        super(algebra, emptyResult, emptyResultRepresentation, expression);
+        super(algebra, emptyResult, emptyResultRepresentation);
     }
 
     public void addType(VariableType<T, ? super A, ? super U> type)
@@ -72,12 +72,6 @@ public class FunctionExpressionCache<T, A, U> extends ExpressionCache<T>
         return type == null ? Validity.ERROR : type.validity(var.substring(type.prefix.length()), u);
     }
 
-    public T evaluateVariable(String var, A a)
-    {
-        VariableType<T, ? super A, ? super U> type = type(var);
-        return type != null ? type.evaluate(var.substring(type.prefix.length()), a) : null;
-    }
-
     public Validity validity(final U u)
     {
         Validity[] worst = new Validity[]{Validity.KNOWN};
@@ -96,30 +90,22 @@ public class FunctionExpressionCache<T, A, U> extends ExpressionCache<T>
     }
 
     @Override
-    protected void testVariables(@Nonnull Algebra.Expression<T> expression) throws ParseException
+    protected Algebra.VariableParser<Function<? super A, T>> variableParser()
     {
-        super.testVariables(expression);
-
-        // Pre-setup?
-        if (types != null)
+        return var ->
         {
-            ParseException[] exception = new ParseException[1];
-            expression.walkVariables(s ->
-            {
-                VariableType<T, ? super A, ? super U> type = type(s.identifier);
-                if (type == null) // TODO Ask the type for an error too (requires an instance of U)
-                    exception[0] = new ParseException(String.format("Type of '%s' unknown", s.identifier), s.index);
-                return true;
-            });
-
-            if (exception[0] != null)
-                throw exception[0];
-        }
+            VariableType<T, ? super A, ? super U> type = type(var);
+            if (type != null)
+                return type.parse(var.substring(type.prefix.length()));
+            else
+                throw new ParseException(String.format("Type of '%s' unknown", var), 0); // TODO Where??
+        };
     }
 
     public T evaluate(final A a)
     {
-        return parsedExpression != null ? parsedExpression.evaluate(var -> evaluateVariable(var, a)) : emptyExpressionResult;
+        Algebra.Expression<T, Function<? super A, T>> expression = (Algebra.Expression<T, Function<? super A, T>>) this.parsedExpression;
+        return parsedExpression != null ? expression.evaluate(fun -> fun.apply(a)) : emptyExpressionResult;
     }
 
     @Nonnull
@@ -155,9 +141,9 @@ public class FunctionExpressionCache<T, A, U> extends ExpressionCache<T>
         }
 
         @Override
-        public T evaluate(String var, A a)
+        public Function<A, T> parse(String var) throws ParseException
         {
-            return parent.evaluate(var, a);
+            return parent.parse(var);
         }
 
         @Override
@@ -194,7 +180,7 @@ public class FunctionExpressionCache<T, A, U> extends ExpressionCache<T>
             return suffix;
         }
 
-        public abstract T evaluate(String var, A a);
+        public abstract Function<A, T> parse(String var) throws ParseException;
 
         public abstract Validity validity(String var, U u);
 

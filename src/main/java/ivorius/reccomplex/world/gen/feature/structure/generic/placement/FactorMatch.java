@@ -18,6 +18,7 @@ import ivorius.reccomplex.gui.table.datasource.TableDataSource;
 import ivorius.reccomplex.gui.table.TableDelegate;
 import ivorius.reccomplex.gui.table.TableNavigator;
 import ivorius.reccomplex.json.JsonUtils;
+import ivorius.reccomplex.utils.algebra.ExpressionCache;
 import ivorius.reccomplex.world.gen.feature.structure.generic.WorldCache;
 import ivorius.reccomplex.utils.expression.BlockMatcher;
 import ivorius.reccomplex.utils.expression.PositionedBlockMatcher;
@@ -49,8 +50,8 @@ public class FactorMatch extends GenericPlacer.Factor
     public FactorMatch(float priority, String sourceExpression, String destExpression, float requiredConformity)
     {
         super(priority);
-        this.sourceMatcher = new BlockMatcher(RecurrentComplex.specialRegistry, sourceExpression);
-        this.destMatcher = new PositionedBlockMatcher(RecurrentComplex.specialRegistry, destExpression);
+        this.sourceMatcher = ExpressionCache.of(new BlockMatcher(RecurrentComplex.specialRegistry), sourceExpression);
+        this.destMatcher = ExpressionCache.of(new PositionedBlockMatcher(RecurrentComplex.specialRegistry), destExpression);
 
         this.requiredConformity = requiredConformity;
     }

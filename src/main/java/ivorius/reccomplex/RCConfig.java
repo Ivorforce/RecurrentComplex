@@ -78,14 +78,14 @@ public class RCConfig
 
     private static boolean lightweightMode;
 
-    private static ResourceMatcher structureLoadMatcher = new ResourceMatcher("", StructureRegistry.INSTANCE::has);
-    private static ResourceMatcher structureGenerationMatcher = new ResourceMatcher("", StructureRegistry.INSTANCE::has);
+    private static ResourceMatcher structureLoadMatcher = new ResourceMatcher(StructureRegistry.INSTANCE::has);
+    private static ResourceMatcher structureGenerationMatcher = new ResourceMatcher(StructureRegistry.INSTANCE::has);
 
-    private static ResourceMatcher inventoryGeneratorLoadMatcher = new ResourceMatcher("", GenericItemCollectionRegistry.INSTANCE::has);
-    private static ResourceMatcher inventoryGeneratorGenerationMatcher = new ResourceMatcher("", GenericItemCollectionRegistry.INSTANCE::has);
+    private static ResourceMatcher inventoryGeneratorLoadMatcher = new ResourceMatcher(GenericItemCollectionRegistry.INSTANCE::has);
+    private static ResourceMatcher inventoryGeneratorGenerationMatcher = new ResourceMatcher(GenericItemCollectionRegistry.INSTANCE::has);
 
-    private static BiomeMatcher universalBiomeMatcher = new BiomeMatcher("");
-    private static DimensionMatcher universalDimensionMatcher = new DimensionMatcher("");
+    private static BiomeMatcher universalBiomeMatcher = new BiomeMatcher();
+    private static DimensionMatcher universalDimensionMatcher = new DimensionMatcher();
 
     private static final List<String> universalTransformerPresets = new ArrayList<>();
     private static TransformerMulti universalTransformer;
@@ -106,7 +106,7 @@ public class RCConfig
 
             commandMatchers.clear();
             parseMap(config.getStringList("commandMatchers", CATEGORY_GENERAL, new String[0], "List of Command Expressions determining if a command can be executed. Example: #export:#3 | $Ivorforce"),
-                    null, Function.identity(), "command matcher", CommandMatcher::new, commandMatchers::put);
+                    null, Function.identity(), "command matcher", (expression) -> ExpressionCache.of(new CommandMatcher(), expression), commandMatchers::put);
 
             asCommandPermissionLevel = config.getInt("asCommandPermissionLevel", CATEGORY_DECORATION, 4, -1, 10, "The required permission level for /#as to function. Set to 2 for command blocks and OPs, 4 for only server, or -1 to disable. Note that this could be a security problem on low levels.");
 

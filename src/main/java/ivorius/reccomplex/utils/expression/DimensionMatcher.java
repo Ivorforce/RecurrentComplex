@@ -15,6 +15,8 @@ import net.minecraft.world.WorldProvider;
 import net.minecraftforge.common.DimensionManager;
 import org.apache.commons.lang3.ArrayUtils;
 
+import java.util.function.Function;
+
 /**
  * Created by lukas on 19.09.14.
  */
@@ -23,14 +25,12 @@ public class DimensionMatcher extends BoolFunctionExpressionCache<WorldProvider,
     public static final String DIMENSION_ID_PREFIX = "id=";
     public static final String DIMENSION_TYPE_PREFIX = "type=";
 
-    public DimensionMatcher(String expression)
+    public DimensionMatcher()
     {
-        super(RCBoolAlgebra.algebra(), true, TextFormatting.GREEN + "Any Dimension", expression);
+        super(RCBoolAlgebra.algebra(), true, TextFormatting.GREEN + "Any Dimension");
 
         addTypes(new DimensionVariableType(DIMENSION_ID_PREFIX, ""), t -> t.alias("", ""));
         addTypes(new DimensionDictVariableType(DIMENSION_TYPE_PREFIX, ""), t -> t.alias("$", ""));
-
-        testVariables();
     }
 
     public static String ofTypes(String... dimensionTypes)
@@ -46,10 +46,10 @@ public class DimensionMatcher extends BoolFunctionExpressionCache<WorldProvider,
         }
 
         @Override
-        public Boolean evaluate(String var, WorldProvider provider)
+        public Function<WorldProvider, Boolean> parse(String var)
         {
             Integer dimID = Ints.tryParse(var);
-            return dimID != null && provider.getDimension() == dimID;
+            return provider -> dimID != null && provider.getDimension() == dimID;
         }
 
         @Override
@@ -69,9 +69,9 @@ public class DimensionMatcher extends BoolFunctionExpressionCache<WorldProvider,
         }
 
         @Override
-        public Boolean evaluate(String var, WorldProvider provider)
+        public Function<WorldProvider, Boolean> parse(String var)
         {
-            return DimensionDictionary.dimensionMatchesType(provider, var);
+            return provider -> DimensionDictionary.dimensionMatchesType(provider, var);
         }
 
         @Override

@@ -19,7 +19,7 @@ public class IntAlgebra
         return new Algebras.Infix<Integer>(4f, symbol)
         {
             @Override
-            public Integer evaluate(Function<String, Integer> variableEvaluator, Algebra.Expression<Integer> left, Algebra.Expression<Integer> right)
+            public <V> Integer evaluate(Function<V, Integer> variableEvaluator, Algebra.Expression<Integer, V> left, Algebra.Expression<Integer, V> right)
             {
                 return left.evaluate(variableEvaluator) + right.evaluate(variableEvaluator);
             }
@@ -31,7 +31,7 @@ public class IntAlgebra
         return new Algebras.Infix<Integer>(4f, symbol)
         {
             @Override
-            public Integer evaluate(Function<String, Integer> variableEvaluator, Algebra.Expression<Integer> left, Algebra.Expression<Integer> right)
+            public <V> Integer evaluate(Function<V, Integer> variableEvaluator, Algebra.Expression<Integer, V> left, Algebra.Expression<Integer, V> right)
             {
                 return left.evaluate(variableEvaluator) - right.evaluate(variableEvaluator);
             }

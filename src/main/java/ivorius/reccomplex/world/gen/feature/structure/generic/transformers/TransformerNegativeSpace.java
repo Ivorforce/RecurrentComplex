@@ -15,6 +15,7 @@ import ivorius.reccomplex.gui.table.datasource.TableDataSource;
 import ivorius.reccomplex.gui.table.TableDelegate;
 import ivorius.reccomplex.gui.table.TableNavigator;
 import ivorius.reccomplex.json.JsonUtils;
+import ivorius.reccomplex.utils.algebra.ExpressionCache;
 import ivorius.reccomplex.world.gen.feature.structure.context.StructureLiveContext;
 import ivorius.reccomplex.world.gen.feature.structure.context.StructureLoadContext;
 import ivorius.reccomplex.world.gen.feature.structure.context.StructurePrepareContext;
@@ -44,8 +45,8 @@ public class TransformerNegativeSpace extends Transformer<NBTNone>
     public TransformerNegativeSpace(@Nullable String id, String sourceExpression, String destExpression)
     {
         super(id != null ? id : randomID(TransformerNegativeSpace.class));
-        this.sourceMatcher = new BlockMatcher(RecurrentComplex.specialRegistry, sourceExpression);
-        this.destMatcher = new PositionedBlockMatcher(RecurrentComplex.specialRegistry, destExpression);
+        this.sourceMatcher = ExpressionCache.of(new BlockMatcher(RecurrentComplex.specialRegistry), sourceExpression);
+        this.destMatcher = ExpressionCache.of(new PositionedBlockMatcher(RecurrentComplex.specialRegistry), destExpression);
     }
 
     @Override

@@ -208,18 +208,21 @@ public class GenericStructureInfo implements StructureInfo<GenericStructureInfo.
             }
         }
 
-        if (!asSource && context.generationLayer < MAX_GENERATING_LAYERS)
+        if (!asSource)
         {
-            origTileEntities.entrySet().stream().filter(entry -> entry.getValue() instanceof GeneratingTileEntity)
-                    .forEach(entry -> {
-                        NBTStorable teData = instanceData.tileEntities.get(entry.getKey());
-                        if (teData != null) // Otherwise it was added after prepare, or doesn't want to generate
-                            ((GeneratingTileEntity) entry.getValue()).generate(context, teData);
-                    });
-        }
-        else
-        {
-            RecurrentComplex.logger.warn("Structure generated with over " + MAX_GENERATING_LAYERS + " layers; most likely infinite loop!");
+            if (context.generationLayer < MAX_GENERATING_LAYERS)
+            {
+                origTileEntities.entrySet().stream().filter(entry -> entry.getValue() instanceof GeneratingTileEntity)
+                        .forEach(entry -> {
+                            NBTStorable teData = instanceData.tileEntities.get(entry.getKey());
+                            if (teData != null) // Otherwise it was added after prepare, or doesn't want to generate
+                                ((GeneratingTileEntity) entry.getValue()).generate(context, teData);
+                        });
+            }
+            else
+            {
+                RecurrentComplex.logger.warn("Structure generated with over " + MAX_GENERATING_LAYERS + " layers; most likely infinite loop!");
+            }
         }
 
         return true;

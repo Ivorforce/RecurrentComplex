@@ -41,7 +41,7 @@ public class CommandExportSchematic extends CommandBase
 
         schematicFile.entityCompounds.clear();
         schematicFile.entityCompounds.addAll(worldData.entities);
-        schematicFile.tileEntityCompounds.addAll(worldData.entities);
+        schematicFile.tileEntityCompounds.clear();
         schematicFile.tileEntityCompounds.addAll(worldData.tileEntities);
 
         return schematicFile;

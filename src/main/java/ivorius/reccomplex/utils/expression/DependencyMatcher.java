@@ -117,9 +117,15 @@ public class DependencyMatcher extends BoolFunctionExpressionCache<FileSaver, Fi
         }
 
         @Override
-        protected RegistryMatcher createCache(String var, FileSaver a)
+        public RegistryMatcher createCache()
         {
-            return splitOnce(var, ".").map(p -> new RegistryMatcher(p.getRight())).orElseThrow(IllegalStateException::new);
+            return new RegistryMatcher("");
+        }
+
+        @Override
+        public Boolean evaluate(String var, FileSaver fileSaver)
+        {
+            return splitOnce(var, ".").map(p -> cache.evaluateVariable(p.getRight(), convertEvaluateArgument(var, fileSaver))).orElseThrow(IllegalStateException::new);
         }
 
         @Override

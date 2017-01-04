@@ -45,10 +45,10 @@ public class PacketSaveInvGenComponentHandler extends SchedulingMessageHandler<P
         GenericItemCollectionRegistry.INSTANCE.register(id, "", message.getInventoryGenerator(), saveDir.isActive(), saveDir.getLevel());
 
         if (RCCommands.informSaveResult((message.getInventoryGenerator() != null && id != null) &&
-                RecurrentComplex.saver.trySave(saveDir.toPath(), RCFileSuffix.INVENTORY_GENERATION_COMPONENT, id), player, saveDir.subDirectoryName(), RCFileSaver.INVENTORY_GENERATION_COMPONENT, id))
+                RecurrentComplex.saver.trySave(saveDir.toPath(), RCFileSaver.INVENTORY_GENERATION_COMPONENT, id), player, saveDir.subDirectoryName(), RCFileSaver.INVENTORY_GENERATION_COMPONENT, id))
         {
             if (saveDirectoryDataResult.deleteOther)
-                RCCommands.informDeleteResult(RecurrentComplex.saver.tryDeleteWithID(delDir.toPath(), RCFileSuffix.INVENTORY_GENERATION_COMPONENT, id), player, RCFileSaver.INVENTORY_GENERATION_COMPONENT, id, delDir.subDirectoryName());
+                RCCommands.informDeleteResult(RecurrentComplex.saver.tryDeleteWithID(delDir.toPath(), RCFileSaver.INVENTORY_GENERATION_COMPONENT, id), player, RCFileSaver.INVENTORY_GENERATION_COMPONENT, id, delDir.subDirectoryName());
 
             ItemStack heldItem = playServer.playerEntity.getHeldItem(EnumHand.MAIN_HAND);
             if (heldItem != null && heldItem.getItem() instanceof ItemInventoryGenComponentTag)

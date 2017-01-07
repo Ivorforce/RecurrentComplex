@@ -209,7 +209,7 @@ public class SchematicFile
         if (weOriginZ != null)
             tagCompound.setShort("WEOriginZ", weOriginZ);
 
-        tagCompound.setByteArray("Data", IvStreams.toByteArray(Stream.of(blockStates).mapToInt(BlockStates::toMetadata)));
+        tagCompound.setByteArray("Data", ivorius.ivtoolkit.tools.IvStreams.toByteArray(Stream.of(blockStates).mapToInt(BlockStates::toMetadata)));
 
         byte[] blockIDs = new byte[blockStates.length];
         byte[] addBlocks = new byte[(blockStates.length + 1) / 2];

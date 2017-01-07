@@ -57,7 +57,7 @@ public class CommandRetrogen extends CommandBase
         return existingRegions(worldDirectory)
                 .map(rfc -> new ChunkPos(rfc.getLeft() << 5, rfc.getRight() << 5))
                 .map(rflc -> Pair.of(RegionFileCache.createOrLoadRegionFile(worldDirectory, rflc.chunkXPos, rflc.chunkZPos), rflc))
-                .flatMap(r -> IvStreams.flatMapToObj(IntStream.range(0, 32), x -> IntStream.range(0, 32).mapToObj(z -> Pair.of(r.getLeft(), add(r.getRight(), x, z)))))
+                .flatMap(r -> ivorius.ivtoolkit.tools.IvStreams.flatMapToObj(IntStream.range(0, 32), x -> IntStream.range(0, 32).mapToObj(z -> Pair.of(r.getLeft(), add(r.getRight(), x, z)))))
                 .filter(p -> p.getLeft().chunkExists(p.getRight().chunkXPos & 31, p.getRight().chunkZPos & 31)) // Region has chunk
                 .map(Pair::getRight);
     }

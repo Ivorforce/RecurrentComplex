@@ -335,6 +335,7 @@ public class RCRegistryHandler
 
     protected static <T> void dumpAll(PresetRegistry<T> presets)
     {
+        // TODO Broken
         presets.allIDs().forEach(s -> saver.trySave(ResourceDirectory.ACTIVE.toPath(), presets.getFileSuffix(), s));
     }
 

@@ -61,7 +61,9 @@ public class GenerationInfoMatcher extends BoolFunctionExpressionCache<Generatio
         public Function<GenerationInfo, Boolean> parse(String var) throws ParseException
         {
             Class<? extends GenerationInfo> theClass = StructureRegistry.GENERATION_INFOS.typeForID(var);
-            return info -> theClass != null && theClass.isAssignableFrom(info.getClass());
+            return theClass != null
+                    ? info -> info != null && theClass.isAssignableFrom(info.getClass())
+                    : info -> false;
         }
 
         @Override

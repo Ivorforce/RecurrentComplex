@@ -65,6 +65,7 @@ public class CommandPaste extends CommandBase
 
             AxisAlignedTransform2D transform = RCCommands.tryParseTransform(args, 3);
 
+            // TODO Generate with generation info?
             OperationRegistry.queueOperation(new OperationGenerateStructure(structureInfo, null, transform, coord, true).prepare((WorldServer) commandSender.getEntityWorld()), commandSender);
         }
         else

@@ -12,6 +12,7 @@ import ivorius.ivtoolkit.math.AxisAlignedTransform2D;
 import ivorius.ivtoolkit.transform.Mover;
 import ivorius.ivtoolkit.transform.PosTransformer;
 import ivorius.ivtoolkit.util.IvStreams;
+import ivorius.reccomplex.RecurrentComplex;
 import ivorius.reccomplex.utils.RCAccessorEntity;
 import ivorius.reccomplex.utils.RCAxisAlignedTransform;
 import net.minecraft.block.Block;
@@ -90,10 +91,20 @@ public class SchematicFile
                 blockID |= lowerNybble ? ((addBlocks[i >> 1] & 0x0F) << 8) : ((addBlocks[i >> 1] & 0xF0) << 4);
             }
 
-            Block block = schematicMapping != null
-                    ? schematicMapping.blockFromID(blockID)
-                    : Block.getBlockById(blockID);
-            this.blockStates[i] = BlockStates.fromMetadata(block, metadatas[i]);
+            int metadata = metadatas[i];
+
+            try
+            {
+                Block block = schematicMapping != null
+                        ? schematicMapping.blockFromID(blockID)
+                        : Block.getBlockById(blockID);
+                this.blockStates[i] = BlockStates.fromMetadata(block, metadata);
+            }
+            catch (Exception ex)
+            {
+                RecurrentComplex.logger.error("Invalid metadata in schematic file: " + blockID + ":" + metadata, ex);
+                this.blockStates[i] = Blocks.AIR.getDefaultState();
+            }
         }
 
         NBTTagList entities = tagCompound.getTagList("Entities", Constants.NBT.TAG_COMPOUND);

@@ -25,6 +25,7 @@ public class ContainerEditInventoryGenItems extends Container implements PacketG
 {
     public static final int ITEM_ROWS = 4;
     public static final int ITEM_COLUMNS = 1;
+    public static final int ITEMS_PER_PAGE = ITEM_ROWS * ITEM_COLUMNS;
     public static final int SEGMENT_WIDTH = 288;
 
     private final String key;

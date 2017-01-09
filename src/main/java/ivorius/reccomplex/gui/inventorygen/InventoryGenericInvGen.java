@@ -71,7 +71,7 @@ public class InventoryGenericInvGen implements IInventory
     @Override
     public ItemStack getStackInSlot(int var1)
     {
-        return var1 < cachedItemStacks.size() ? cachedItemStacks.get(var1) : null;
+        return var1 < cachedItemStacks.size() ? cachedItemStacks.get(var1) : ItemStack.EMPTY;
     }
 
     @Override

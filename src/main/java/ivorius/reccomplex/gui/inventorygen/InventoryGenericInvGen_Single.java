@@ -68,7 +68,7 @@ public class InventoryGenericInvGen_Single implements IInventory
     @Override
     public ItemStack getStackInSlot(int var1)
     {
-        return var1 < weightedRandomChestContents.size() ? weightedRandomChestContents.get(var1).itemStack : null;
+        return var1 < weightedRandomChestContents.size() ? weightedRandomChestContents.get(var1).itemStack : ItemStack.EMPTY;
     }
 
     @Override

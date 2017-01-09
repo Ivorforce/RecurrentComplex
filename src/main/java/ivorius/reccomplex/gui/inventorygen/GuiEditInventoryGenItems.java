@@ -49,7 +49,7 @@ public class GuiEditInventoryGenItems extends GuiContainer implements InventoryW
     private List<GuiSlider> weightSliders = new ArrayList<>();
     private List<GuiSliderRange> minMaxSliders = new ArrayList<>();
 
-    private int currentColShift;
+    private int currentPage;
 
     public GuiEditInventoryGenItems(EntityPlayer player, GenericItemCollection.Component component, String key, SaveDirectoryData saveDirectoryData)
     {
@@ -143,12 +143,12 @@ public class GuiEditInventoryGenItems extends GuiContainer implements InventoryW
             }
         }
 
-        this.scrollTo(currentColShift);
+        this.setPage(currentPage);
     }
 
-    public void scrollTo(int colShift)
+    public void setPage(int colShift)
     {
-        currentColShift = colShift;
+        currentPage = colShift;
         ((ContainerEditInventoryGenItems) inventorySlots).scrollTo(colShift);
 
         updateAllItemSliders();
@@ -164,7 +164,7 @@ public class GuiEditInventoryGenItems extends GuiContainer implements InventoryW
             GuiSlider weightSlider = weightSliders.get(i);
             GuiSliderRange minMaxSlider = minMaxSliders.get(i);
 
-            int index = i + currentColShift * ContainerEditInventoryGenItems.ITEM_ROWS;
+            int index = i + currentPage * ContainerEditInventoryGenItems.ITEMS_PER_PAGE;
             weightSlider.id = index + 100;
             minMaxSlider.id = index + 200;
             if (index < chestContents.size())
@@ -196,9 +196,9 @@ public class GuiEditInventoryGenItems extends GuiContainer implements InventoryW
     private void updatePageButtons()
     {
         List<GenericItemCollection.RandomizedItemStack> chestContents = component.items;
-        int neededCols = chestContents.size() / ContainerEditInventoryGenItems.ITEM_ROWS + 1;
-        nextPageBtn.enabled = (currentColShift + ContainerEditInventoryGenItems.ITEM_COLUMNS) < neededCols;
-        prevPageBtn.enabled = currentColShift > 0;
+        int neededSlots = chestContents.size() + 1;
+        nextPageBtn.enabled = ((currentPage + 1) * ContainerEditInventoryGenItems.ITEMS_PER_PAGE) <= neededSlots;
+        prevPageBtn.enabled = currentPage > 0;
     }
 
     @Override
@@ -216,13 +216,13 @@ public class GuiEditInventoryGenItems extends GuiContainer implements InventoryW
             }
             else if (button.id == 10)
             {
-                scrollTo(currentColShift + 1);
-                RecurrentComplex.network.sendToServer(PacketGuiAction.packetGuiAction("igSelectCol", currentColShift));
+                setPage(currentPage + 1);
+                RecurrentComplex.network.sendToServer(PacketGuiAction.packetGuiAction("igSelectCol", currentPage));
             }
             else if (button.id == 11)
             {
-                scrollTo(currentColShift - 1);
-                RecurrentComplex.network.sendToServer(PacketGuiAction.packetGuiAction("igSelectCol", currentColShift));
+                setPage(currentPage - 1);
+                RecurrentComplex.network.sendToServer(PacketGuiAction.packetGuiAction("igSelectCol", currentPage));
             }
         }
     }

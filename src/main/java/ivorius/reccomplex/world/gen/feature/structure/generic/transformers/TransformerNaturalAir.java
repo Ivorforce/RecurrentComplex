@@ -51,6 +51,7 @@ public class TransformerNaturalAir extends TransformerAbstractCloud<TransformerN
     public static final int MAX_TREE_SIZE = 300;
 
     public BlockMatcher sourceMatcher;
+    public PositionedBlockMatcher destMatcher;
 
     public double naturalExpansionDistance;
     public double naturalExpansionRandomization;
@@ -64,6 +65,7 @@ public class TransformerNaturalAir extends TransformerAbstractCloud<TransformerN
     {
         super(id != null ? id : randomID(TransformerNaturalAir.class));
         this.sourceMatcher = ExpressionCache.of(new BlockMatcher(RecurrentComplex.specialRegistry), sourceMatcherExpression);
+        this.destMatcher = ExpressionCache.of(new PositionedBlockMatcher(RecurrentComplex.specialRegistry), "");
         this.naturalExpansionDistance = naturalExpansionDistance;
         this.naturalExpansionRandomization = naturalExpansionRandomization;
     }
@@ -71,6 +73,12 @@ public class TransformerNaturalAir extends TransformerAbstractCloud<TransformerN
     protected static Stream<BlockPos> neighbors(BlockPos worldPos)
     {
         return BlockAreas.streamPositions(new BlockArea(worldPos.add(-1, -1, -1), worldPos.add(1, 1, 1)));
+    }
+
+    @Override
+    public boolean canPenetrate(Environment environment, IvWorldData worldData, BlockPos pos, double density, TransformerMulti transformer, TransformerMulti.InstanceData transformerID)
+    {
+        return destMatcher.evaluate(() -> PositionedBlockMatcher.Argument.at(environment.world, pos));
     }
 
     @Override
@@ -206,7 +214,11 @@ public class TransformerNaturalAir extends TransformerAbstractCloud<TransformerN
             double naturalExpansionDistance = JsonUtils.getDouble(jsonObject, "naturalExpansionDistance", DEFAULT_NATURAL_EXPANSION_DISTANCE);
             double naturalExpansionRandomization = JsonUtils.getDouble(jsonObject, "naturalExpansionRandomization", DEFAULT_NATURAL_EXPANSION_RANDOMIZATION);
 
-            return new TransformerNaturalAir(id, expression, naturalExpansionDistance, naturalExpansionRandomization);
+            TransformerNaturalAir transformer = new TransformerNaturalAir(id, expression, naturalExpansionDistance, naturalExpansionRandomization);
+
+            transformer.destMatcher.setExpression(JsonUtils.getString(jsonObject, "destExpression", ""));
+
+            return transformer;
         }
 
         @Override
@@ -216,6 +228,7 @@ public class TransformerNaturalAir extends TransformerAbstractCloud<TransformerN
 
             jsonObject.addProperty("id", transformer.id());
             jsonObject.addProperty("sourceExpression", transformer.sourceMatcher.getExpression());
+            jsonObject.addProperty("destExpression", transformer.destMatcher.getExpression());
 
             jsonObject.addProperty("naturalExpansionDistance", transformer.naturalExpansionDistance);
             jsonObject.addProperty("naturalExpansionRandomization", transformer.naturalExpansionRandomization);

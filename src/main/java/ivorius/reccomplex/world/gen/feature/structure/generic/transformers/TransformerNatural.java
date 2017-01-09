@@ -16,6 +16,7 @@ import ivorius.reccomplex.gui.table.TableDelegate;
 import ivorius.reccomplex.gui.table.TableNavigator;
 import ivorius.reccomplex.json.JsonUtils;
 import ivorius.reccomplex.utils.algebra.ExpressionCache;
+import ivorius.reccomplex.utils.expression.PositionedBlockMatcher;
 import ivorius.reccomplex.world.gen.feature.structure.Environment;
 import ivorius.reccomplex.world.gen.feature.structure.context.StructureLoadContext;
 import ivorius.reccomplex.world.gen.feature.structure.context.StructurePrepareContext;
@@ -43,6 +44,7 @@ public class TransformerNatural extends TransformerAbstractCloud<TransformerNatu
     public static final double DEFAULT_NATURAL_EXPANSION_RANDOMIZATION = 6.0;
 
     public BlockMatcher sourceMatcher;
+    public PositionedBlockMatcher destMatcher;
 
     public double naturalExpansionDistance;
     public double naturalExpansionRandomization;
@@ -50,12 +52,14 @@ public class TransformerNatural extends TransformerAbstractCloud<TransformerNatu
     public TransformerNatural()
     {
         this(null, BlockMatcher.of(RecurrentComplex.specialRegistry, RCBlocks.genericSolid, 0), DEFAULT_NATURAL_EXPANSION_DISTANCE, DEFAULT_NATURAL_EXPANSION_RANDOMIZATION);
+        destMatcher.setExpression("is:replaceable | is:foliage");
     }
 
     public TransformerNatural(@Nullable String id, String sourceMatcherExpression, double naturalExpansionDistance, double naturalExpansionRandomization)
     {
         super(id != null ? id : randomID(TransformerNatural.class));
         this.sourceMatcher = ExpressionCache.of(new BlockMatcher(RecurrentComplex.specialRegistry), sourceMatcherExpression);
+        this.destMatcher = ExpressionCache.of(new PositionedBlockMatcher(RecurrentComplex.specialRegistry), "");
         this.naturalExpansionDistance = naturalExpansionDistance;
         this.naturalExpansionRandomization = naturalExpansionRandomization;
     }
@@ -84,8 +88,7 @@ public class TransformerNatural extends TransformerAbstractCloud<TransformerNatu
     public boolean canPenetrate(Environment environment, IvWorldData worldData, BlockPos pos, double density, TransformerMulti transformer, TransformerMulti.InstanceData transformerID)
     {
         IBlockState state = environment.world.getBlockState(pos);
-        return density >= 1 || state.getBlock().isReplaceable(environment.world, pos)
-                || RCBlockLogic.isFoliage(state, environment.world, pos);
+        return density >= 1 || destMatcher.evaluate(() -> PositionedBlockMatcher.Argument.at(environment.world, pos));
     }
 
     @Override
@@ -180,7 +183,11 @@ public class TransformerNatural extends TransformerAbstractCloud<TransformerNatu
             double naturalExpansionDistance = JsonUtils.getDouble(jsonObject, "naturalExpansionDistance", DEFAULT_NATURAL_EXPANSION_DISTANCE);
             double naturalExpansionRandomization = JsonUtils.getDouble(jsonObject, "naturalExpansionRandomization", DEFAULT_NATURAL_EXPANSION_RANDOMIZATION);
 
-            return new TransformerNatural(id, expression, naturalExpansionDistance, naturalExpansionRandomization);
+            TransformerNatural transformer = new TransformerNatural(id, expression, naturalExpansionDistance, naturalExpansionRandomization);
+
+            transformer.destMatcher.setExpression(JsonUtils.getString(jsonObject, "destExpression", "is:replaceable | is:foliage"));
+
+            return transformer;
         }
 
         @Override
@@ -190,6 +197,7 @@ public class TransformerNatural extends TransformerAbstractCloud<TransformerNatu
 
             jsonObject.addProperty("id", transformer.id());
             jsonObject.addProperty("sourceExpression", transformer.sourceMatcher.getExpression());
+            jsonObject.addProperty("destExpression", transformer.destMatcher.getExpression());
 
             jsonObject.addProperty("naturalExpansionDistance", transformer.naturalExpansionDistance);
             jsonObject.addProperty("naturalExpansionRandomization", transformer.naturalExpansionRandomization);

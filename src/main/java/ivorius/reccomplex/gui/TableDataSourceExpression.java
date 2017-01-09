@@ -115,7 +115,7 @@ public class TableDataSourceExpression<T, U, E extends FunctionExpressionCache<T
         if (index == 0)
         {
             expressionCell = new TableCellString("expression", e.getExpression());
-            expressionCell.setTooltip(tooltip);
+            expressionCell.setTooltip(expressionTooltip);
             expressionCell.setEnabled(canEdit());
             expressionCell.setShowsValidityState(true);
             expressionCell.setValidityState(getValidityState(e, u));
@@ -127,7 +127,7 @@ public class TableDataSourceExpression<T, U, E extends FunctionExpressionCache<T
                 if (parsed != null)
                     parsed.setDisplayString(parsedString());
             });
-            return new TitledCell(title, expressionCell).withTitleTooltip(expressionTooltip);
+            return new TitledCell(title, expressionCell).withTitleTooltip(tooltip);
         }
         else if (index == 1)
         {

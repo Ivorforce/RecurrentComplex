@@ -8,6 +8,7 @@ package ivorius.reccomplex.utils.expression;
 import com.google.common.primitives.Ints;
 import ivorius.reccomplex.utils.algebra.BoolFunctionExpressionCache;
 import ivorius.reccomplex.utils.algebra.RCBoolAlgebra;
+import ivorius.reccomplex.utils.algebra.SupplierCache;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.util.text.TextFormatting;
 
@@ -50,9 +51,9 @@ public class CommandMatcher extends BoolFunctionExpressionCache<CommandMatcher.A
         }
 
         @Override
-        public Function<Argument, Boolean> parse(String var)
+        public Function<SupplierCache<Argument>, Boolean> parse(String var)
         {
-            return argument -> argument.sender.getName().equals(var);
+            return argument -> argument.get().sender.getName().equals(var);
         }
 
         @Override
@@ -76,12 +77,12 @@ public class CommandMatcher extends BoolFunctionExpressionCache<CommandMatcher.A
         }
 
         @Override
-        public Function<Argument, Boolean> parse(String var) throws ParseException
+        public Function<SupplierCache<Argument>, Boolean> parse(String var) throws ParseException
         {
             Integer level = parseNumber(var);
             if (level == null)
                 throw new ParseException("Not a number: " + var, 0); // TODO WHERE??
-            return argument -> argument.sender.canCommandSenderUseCommand(level, argument.name);
+            return argument -> argument.get().sender.canCommandSenderUseCommand(level, argument.get().name);
         }
 
         @Override

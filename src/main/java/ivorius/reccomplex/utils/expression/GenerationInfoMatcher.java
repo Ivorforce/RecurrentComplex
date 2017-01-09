@@ -7,6 +7,7 @@ package ivorius.reccomplex.utils.expression;
 
 import ivorius.reccomplex.utils.algebra.BoolFunctionExpressionCache;
 import ivorius.reccomplex.utils.algebra.RCBoolAlgebra;
+import ivorius.reccomplex.utils.algebra.SupplierCache;
 import ivorius.reccomplex.world.gen.feature.structure.StructureRegistry;
 import ivorius.reccomplex.world.gen.feature.structure.generic.gentypes.GenerationInfo;
 import net.minecraft.util.text.TextFormatting;
@@ -38,9 +39,9 @@ public class GenerationInfoMatcher extends BoolFunctionExpressionCache<Generatio
         }
 
         @Override
-        public Function<GenerationInfo, Boolean> parse(String var) throws ParseException
+        public Function<SupplierCache<GenerationInfo>, Boolean> parse(String var) throws ParseException
         {
-            return info -> info != null && var.equals(info.id());
+            return info -> info != null && var.equals(info.get().id());
         }
 
         @Override
@@ -58,7 +59,7 @@ public class GenerationInfoMatcher extends BoolFunctionExpressionCache<Generatio
         }
 
         @Override
-        public Function<GenerationInfo, Boolean> parse(String var) throws ParseException
+        public Function<SupplierCache<GenerationInfo>, Boolean> parse(String var) throws ParseException
         {
             Class<? extends GenerationInfo> theClass = StructureRegistry.GENERATION_INFOS.typeForID(var);
             return theClass != null

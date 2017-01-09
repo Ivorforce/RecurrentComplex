@@ -8,6 +8,7 @@ package ivorius.reccomplex.utils.expression;
 import ivorius.reccomplex.files.loading.LeveledRegistry;
 import ivorius.reccomplex.utils.algebra.BoolFunctionExpressionCache;
 import ivorius.reccomplex.utils.algebra.RCBoolAlgebra;
+import ivorius.reccomplex.utils.algebra.SupplierCache;
 import net.minecraft.util.text.TextFormatting;
 
 import java.text.ParseException;
@@ -35,9 +36,9 @@ public class RegistryMatcher extends BoolFunctionExpressionCache<LeveledRegistry
         }
 
         @Override
-        public Function<LeveledRegistry, Boolean> parse(String var) throws ParseException
+        public Function<SupplierCache<LeveledRegistry>, Boolean> parse(String var) throws ParseException
         {
-            return registry -> registry.has(var);
+            return registry -> registry.get().has(var);
         }
 
         @Override

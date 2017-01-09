@@ -7,6 +7,7 @@ package ivorius.reccomplex.utils.expression;
 
 import ivorius.reccomplex.utils.algebra.ExpressionCache;
 import ivorius.reccomplex.utils.algebra.FunctionExpressionCache;
+import ivorius.reccomplex.utils.algebra.SupplierCache;
 import net.minecraft.util.text.TextFormatting;
 
 import java.text.ParseException;
@@ -45,10 +46,10 @@ public abstract class DelegatingVariableType<T, A, U, CA, CU, C extends Function
     }
 
     @Override
-    public Function<A, T> parse(String var) throws ParseException
+    public Function<SupplierCache<A>, T> parse(String var) throws ParseException
     {
         C c = ExpressionCache.of(createCache(), var);
-        return a -> c.evaluate(convertEvaluateArgument(var, a));
+        return a -> c.evaluate(() -> convertEvaluateArgument(var, a.get()));
     }
 
     @Override

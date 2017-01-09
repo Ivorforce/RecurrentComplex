@@ -9,6 +9,7 @@ import com.google.common.primitives.Ints;
 import ivorius.reccomplex.dimensions.DimensionDictionary;
 import ivorius.reccomplex.utils.algebra.BoolFunctionExpressionCache;
 import ivorius.reccomplex.utils.algebra.RCBoolAlgebra;
+import ivorius.reccomplex.utils.algebra.SupplierCache;
 import joptsimple.internal.Strings;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.WorldProvider;
@@ -46,10 +47,10 @@ public class DimensionMatcher extends BoolFunctionExpressionCache<WorldProvider,
         }
 
         @Override
-        public Function<WorldProvider, Boolean> parse(String var)
+        public Function<SupplierCache<WorldProvider>, Boolean> parse(String var)
         {
             Integer dimID = Ints.tryParse(var);
-            return provider -> dimID != null && provider.getDimension() == dimID;
+            return provider -> dimID != null && provider.get().getDimension() == dimID;
         }
 
         @Override
@@ -69,9 +70,9 @@ public class DimensionMatcher extends BoolFunctionExpressionCache<WorldProvider,
         }
 
         @Override
-        public Function<WorldProvider, Boolean> parse(String var)
+        public Function<SupplierCache<WorldProvider>, Boolean> parse(String var)
         {
-            return provider -> DimensionDictionary.dimensionMatchesType(provider, var);
+            return provider -> DimensionDictionary.dimensionMatchesType(provider.get(), var);
         }
 
         @Override

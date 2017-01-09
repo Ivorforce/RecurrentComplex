@@ -81,7 +81,7 @@ public class CommandSelectReplace extends CommandBase
 
             for (BlockPos coord : selectionOwner.getSelection())
             {
-                if (matcher.test(PositionedBlockMatcher.Argument.at(world, coord)))
+                if (matcher.evaluate(() -> PositionedBlockMatcher.Argument.at(world, coord)))
                 {
                     IBlockState state = dst.get(world.rand.nextInt(dst.size()));
                     world.setBlockState(coord, state, 3);

@@ -52,7 +52,7 @@ public class TransformerNegativeSpace extends Transformer<NBTNone>
     @Override
     public boolean skipGeneration(NBTNone instanceData, StructureLiveContext context, BlockPos pos, IBlockState state, IvWorldData worldData, BlockPos sourcePos)
     {
-        return sourceMatcher.test(state) && (destMatcher.expressionIsEmpty() || destMatcher.test(PositionedBlockMatcher.Argument.at(context.environment.world, pos)));
+        return sourceMatcher.test(state) && (destMatcher.evaluate(() -> PositionedBlockMatcher.Argument.at(context.environment.world, pos)));
     }
 
     @Override

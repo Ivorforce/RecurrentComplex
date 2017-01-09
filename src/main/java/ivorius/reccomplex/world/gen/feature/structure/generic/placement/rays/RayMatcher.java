@@ -61,7 +61,7 @@ public class RayMatcher extends FactorLimit.Ray
 
         IvStreams.visit(surfaceArea.stream(), pos ->
         {
-            if (destMatcher.test(PositionedBlockMatcher.Argument.at(cache, pos.blockPos(y))))
+            if (destMatcher.evaluate(() -> PositionedBlockMatcher.Argument.at(cache, pos.blockPos(y))))
                 return --need[0] > 0;
             else
                 return --chances[0] > 0; // Already lost

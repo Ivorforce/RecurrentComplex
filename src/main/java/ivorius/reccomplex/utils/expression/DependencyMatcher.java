@@ -11,6 +11,7 @@ import ivorius.reccomplex.files.saving.FileSaver;
 import ivorius.reccomplex.utils.algebra.BoolFunctionExpressionCache;
 import ivorius.reccomplex.utils.algebra.ExpressionCache;
 import ivorius.reccomplex.utils.algebra.RCBoolAlgebra;
+import ivorius.reccomplex.utils.algebra.SupplierCache;
 import joptsimple.internal.Strings;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.fml.common.Loader;
@@ -54,7 +55,7 @@ public class DependencyMatcher extends BoolFunctionExpressionCache<FileSaver, Fi
         }
 
         @Override
-        public Function<Object, Boolean> parse(String var) throws ParseException
+        public Function<SupplierCache<Object>, Boolean> parse(String var) throws ParseException
         {
             boolean modLoaded = Loader.isModLoaded(var);
             return a -> modLoaded;
@@ -78,9 +79,9 @@ public class DependencyMatcher extends BoolFunctionExpressionCache<FileSaver, Fi
         }
 
         @Override
-        public Function<FileSaver, Boolean> parse(String var) throws ParseException
+        public Function<SupplierCache<FileSaver>, Boolean> parse(String var) throws ParseException
         {
-            return saver -> saver.registry(registryID).has(var);
+            return saver -> saver.get().registry(registryID).has(var);
         }
 
         @Override
@@ -125,13 +126,13 @@ public class DependencyMatcher extends BoolFunctionExpressionCache<FileSaver, Fi
         }
 
         @Override
-        public Function<FileSaver, Boolean> parse(String var) throws ParseException
+        public Function<SupplierCache<FileSaver>, Boolean> parse(String var) throws ParseException
         {
             Optional<Pair<String, String>> split = splitOnce(var, ".");
             return split.map(p ->
             {
                 RegistryMatcher c = ExpressionCache.of(createCache(), p.getRight());
-                return (Function<FileSaver, Boolean>) fileSaver -> c.evaluate(convertEvaluateArgument(var, fileSaver));
+                return (Function<SupplierCache<FileSaver>, Boolean>) fileSaver -> c.evaluate(convertEvaluateArgument(var, fileSaver.get()));
             }).orElseThrow(IllegalStateException::new);
         }
 

@@ -91,7 +91,7 @@ public class BlockPattern implements NBTCompoundObject
     public boolean test(World world, BlockPos pos)
     {
         return pattern.compile(true).entrySet().stream().allMatch(
-                entry -> findIngredient(entry.getValue()).filter(i -> i.matcher.test(PositionedBlockMatcher.Argument.at(world, pos.add(BlockPositions.fromIntArray(entry.getKey().getCoordinates()))))).isPresent()
+                entry -> findIngredient(entry.getValue()).filter(i -> i.matcher.evaluate(() -> PositionedBlockMatcher.Argument.at(world, pos.add(BlockPositions.fromIntArray(entry.getKey().getCoordinates()))))).isPresent()
         );
     }
 

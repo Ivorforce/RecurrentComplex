@@ -17,7 +17,7 @@ public class FunctionExpressionCaches
         return new FunctionExpressionCache.VariableType<T, Object, Object>("", "")
         {
             @Override
-            public Function<Object, T> parse(String var)
+            public Function<SupplierCache<Object>, T> parse(String var)
             {
                 return o -> val;
             }
@@ -35,7 +35,7 @@ public class FunctionExpressionCaches
         return new FunctionExpressionCache.VariableType<T, Object, Object>(id, "")
         {
             @Override
-            public Function<Object, T> parse(String var)
+            public Function<SupplierCache<Object>, T> parse(String var)
             {
                 return o -> val;
             }

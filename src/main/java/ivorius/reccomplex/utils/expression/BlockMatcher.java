@@ -13,6 +13,7 @@ import ivorius.ivtoolkit.tools.MCRegistry;
 import ivorius.reccomplex.utils.IntegerRanges;
 import ivorius.reccomplex.utils.algebra.BoolFunctionExpressionCache;
 import ivorius.reccomplex.utils.algebra.RCBoolAlgebra;
+import ivorius.reccomplex.utils.algebra.SupplierCache;
 import net.minecraft.block.Block;
 import net.minecraft.block.properties.IProperty;
 import net.minecraft.block.state.IBlockState;
@@ -73,10 +74,10 @@ public class BlockMatcher extends BoolFunctionExpressionCache<IBlockState, Objec
         }
 
         @Override
-        public Function<IBlockState, Boolean> parse(String var)
+        public Function<SupplierCache<IBlockState>, Boolean> parse(String var)
         {
             Block block = registry.blockFromID(new ResourceLocation(var));
-            return s -> s.getBlock() == block;
+            return s -> s.get().getBlock() == block;
         }
 
         @Override
@@ -121,12 +122,12 @@ public class BlockMatcher extends BoolFunctionExpressionCache<IBlockState, Objec
         }
 
         @Override
-        public Function<IBlockState, Boolean> parse(String var)
+        public Function<SupplierCache<IBlockState>, Boolean> parse(String var)
         {
             IntegerRange range = parseMetadataExp(var);
 
             return s -> {
-                int metadata = BlockStates.toMetadata(s);
+                int metadata = BlockStates.toMetadata(s.get());
                 return range != null && metadata >= range.min && metadata <= range.max;
             };
         }
@@ -152,13 +153,13 @@ public class BlockMatcher extends BoolFunctionExpressionCache<IBlockState, Objec
         }
 
         @Override
-        public Function<IBlockState, Boolean> parse(String var)
+        public Function<SupplierCache<IBlockState>, Boolean> parse(String var)
         {
             Pair<String, String> pair = parsePropery(var);
 
             return state -> {
-                return pair != null && getProperty(state.getBlock(), pair.getLeft())
-                        .filter(property -> property.parseValue(pair.getRight()).orNull() == state.getValue(property)).isPresent();
+                return pair != null && getProperty(state.get().getBlock(), pair.getLeft())
+                        .filter(property -> property.parseValue(pair.getRight()).orNull() == state.get().getValue(property)).isPresent();
             };
         }
 

@@ -7,6 +7,7 @@ package ivorius.reccomplex.utils.expression;
 
 import ivorius.reccomplex.utils.algebra.BoolFunctionExpressionCache;
 import ivorius.reccomplex.utils.algebra.RCBoolAlgebra;
+import ivorius.reccomplex.utils.algebra.SupplierCache;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.TextFormatting;
 
@@ -40,9 +41,9 @@ public class ResourceMatcher extends BoolFunctionExpressionCache<ResourceLocatio
         }
 
         @Override
-        public Function<ResourceLocation, Boolean> parse(String var)
+        public Function<SupplierCache<ResourceLocation>, Boolean> parse(String var)
         {
-            return location -> location.getResourcePath().equals(var);
+            return location -> location.get().getResourcePath().equals(var);
         }
 
         @Override
@@ -60,9 +61,9 @@ public class ResourceMatcher extends BoolFunctionExpressionCache<ResourceLocatio
         }
 
         @Override
-        public Function<ResourceLocation, Boolean> parse(String var)
+        public Function<SupplierCache<ResourceLocation>, Boolean> parse(String var)
         {
-            return location -> location.getResourceDomain().equals(var);
+            return location -> location.get().getResourceDomain().equals(var);
         }
 
         @Override

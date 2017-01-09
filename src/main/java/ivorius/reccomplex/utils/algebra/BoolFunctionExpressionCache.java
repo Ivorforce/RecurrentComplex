@@ -52,7 +52,7 @@ public class BoolFunctionExpressionCache<A, U> extends FunctionExpressionCache<B
         }
 
         @Override
-        public Function<Object, Boolean> parse(String var)
+        public Function<SupplierCache<Object>, Boolean> parse(String var)
         {
             boolean result = RCConfig.globalToggles.containsKey(var) && RCConfig.globalToggles.get(var);
             return o -> result;

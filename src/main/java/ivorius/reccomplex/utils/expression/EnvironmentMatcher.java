@@ -10,6 +10,7 @@ import ivorius.reccomplex.RecurrentComplex;
 import ivorius.reccomplex.files.saving.FileSaver;
 import ivorius.reccomplex.utils.algebra.BoolFunctionExpressionCache;
 import ivorius.reccomplex.utils.algebra.RCBoolAlgebra;
+import ivorius.reccomplex.utils.algebra.SupplierCache;
 import ivorius.reccomplex.world.gen.feature.structure.Environment;
 import ivorius.reccomplex.world.gen.feature.structure.generic.gentypes.GenerationInfo;
 import net.minecraft.util.text.TextFormatting;
@@ -109,10 +110,10 @@ public class EnvironmentMatcher extends BoolFunctionExpressionCache<Environment,
         }
 
         @Override
-        public Function<Environment, Boolean> parse(String var)
+        public Function<SupplierCache<Environment>, Boolean> parse(String var)
         {
             Integer villageType = parseVillageType(var);
-            return environment -> Objects.equals(villageType, environment.villageType);
+            return environment -> Objects.equals(villageType, environment.get().villageType);
         }
 
         public Integer parseVillageType(String var)

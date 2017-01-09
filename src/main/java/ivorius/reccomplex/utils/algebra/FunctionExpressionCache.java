@@ -13,6 +13,7 @@ import javax.annotation.Nullable;
 import java.text.ParseException;
 import java.util.*;
 import java.util.function.Function;
+import java.util.function.Supplier;
 
 /**
  * Created by lukas on 23.03.15.
@@ -90,7 +91,7 @@ public class FunctionExpressionCache<T, A, U> extends ExpressionCache<T>
     }
 
     @Override
-    protected Algebra.VariableParser<Function<? super A, T>> variableParser()
+    protected Algebra.VariableParser<Function<? extends SupplierCache<? super A>, T>> variableParser()
     {
         return var ->
         {
@@ -102,10 +103,20 @@ public class FunctionExpressionCache<T, A, U> extends ExpressionCache<T>
         };
     }
 
+    public T evaluate(final SupplierCache<A> a)
+    {
+        Algebra.Expression<T, Function<SupplierCache<? super A>, T>> expression = (Algebra.Expression<T, Function<SupplierCache<? super A>, T>>) this.parsedExpression;
+        return parsedExpression != null ? expression.evaluate(fun -> fun.apply(a)) : emptyExpressionResult;
+    }
+
+    public T evaluate(final Supplier<A> a)
+    {
+        return evaluate(SupplierCache.of(a));
+    }
+
     public T evaluate(final A a)
     {
-        Algebra.Expression<T, Function<? super A, T>> expression = (Algebra.Expression<T, Function<? super A, T>>) this.parsedExpression;
-        return parsedExpression != null ? expression.evaluate(fun -> fun.apply(a)) : emptyExpressionResult;
+        return evaluate(SupplierCache.direct(a));
     }
 
     @Nonnull
@@ -141,7 +152,7 @@ public class FunctionExpressionCache<T, A, U> extends ExpressionCache<T>
         }
 
         @Override
-        public Function<A, T> parse(String var) throws ParseException
+        public Function<SupplierCache<A>, T> parse(String var) throws ParseException
         {
             return parent.parse(var);
         }
@@ -180,7 +191,7 @@ public class FunctionExpressionCache<T, A, U> extends ExpressionCache<T>
             return suffix;
         }
 
-        public abstract Function<A, T> parse(String var) throws ParseException;
+        public abstract Function<SupplierCache<A>, T> parse(String var) throws ParseException;
 
         public abstract Validity validity(String var, U u);
 

@@ -63,7 +63,7 @@ public class FactorMatch extends GenericPlacer.Factor
 
         for (BlockPos pos : sources)
         {
-            if (destMatcher.test(PositionedBlockMatcher.Argument.at(cache, pos)))
+            if (destMatcher.evaluate(() -> PositionedBlockMatcher.Argument.at(cache, pos)))
                 matched[0]++;
             else
             {
@@ -92,7 +92,7 @@ public class FactorMatch extends GenericPlacer.Factor
         int[] size = StructureBoundingBoxes.size(context.boundingBox);
         BlockPos lowerCoord = StructureBoundingBoxes.min(context.boundingBox);
         Set<BlockPos.MutableBlockPos> sources = BlockAreas.streamMutablePositions(blockCollection.area())
-                .filter(p -> sourceMatcher.test(blockCollection.getBlockState(p)))
+                .filter(p -> sourceMatcher.evaluate(() -> blockCollection.getBlockState(p)))
                 .map(p -> new BlockPos.MutableBlockPos(context.transform.apply(p, size).add(lowerCoord.getX(), 0, lowerCoord.getZ())))
                 .collect(Collectors.toSet());
 

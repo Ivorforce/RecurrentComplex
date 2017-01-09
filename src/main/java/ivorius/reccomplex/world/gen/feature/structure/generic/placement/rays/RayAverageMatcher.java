@@ -127,7 +127,7 @@ public class RayAverageMatcher extends FactorLimit.Ray
     public OptionalInt cast(WorldCache cache, StructurePlaceContext context, int y)
     {
         int averageGroundLevel = getAverageGroundLevel(up, y, context.boundingBox,
-                blockPos -> destMatcher.test(PositionedBlockMatcher.Argument.at(cache, blockPos)), cache.world.getHeight());
+                blockPos -> destMatcher.evaluate(() -> PositionedBlockMatcher.Argument.at(cache, blockPos)), cache.world.getHeight());
         return averageGroundLevel >= 0 ? OptionalInt.of(averageGroundLevel) : OptionalInt.empty();
     }
 

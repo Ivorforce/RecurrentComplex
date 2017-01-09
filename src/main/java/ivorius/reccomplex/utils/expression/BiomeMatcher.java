@@ -9,6 +9,7 @@ import com.google.common.collect.Lists;
 import ivorius.reccomplex.utils.BiomeDictionaryAccessor;
 import ivorius.reccomplex.utils.algebra.BoolFunctionExpressionCache;
 import ivorius.reccomplex.utils.algebra.RCBoolAlgebra;
+import ivorius.reccomplex.utils.algebra.SupplierCache;
 import joptsimple.internal.Strings;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.TextFormatting;
@@ -51,13 +52,13 @@ public class BiomeMatcher extends BoolFunctionExpressionCache<Biome, Object>
         }
 
         @Override
-        public Function<Biome, Boolean> parse(String var)
+        public Function<SupplierCache<Biome>, Boolean> parse(String var)
         {
             List<Biome> biomes = Biome.REGISTRY.getKeys().stream()
                     .map(Biome.REGISTRY::getObject)
                     .filter(b -> b.getBiomeName().equals(var))
                     .collect(Collectors.toList());
-            return biomes::contains;
+            return o -> biomes.contains(o.get());
         }
 
         @Override
@@ -76,10 +77,10 @@ public class BiomeMatcher extends BoolFunctionExpressionCache<Biome, Object>
         }
 
         @Override
-        public Function<Biome, Boolean> parse(String var)
+        public Function<SupplierCache<Biome>, Boolean> parse(String var)
         {
             Biome biome = Biome.REGISTRY.getObject(new ResourceLocation(var));
-            return b -> b == biome;
+            return b -> b.get() == biome;
         }
 
         @Override
@@ -98,10 +99,10 @@ public class BiomeMatcher extends BoolFunctionExpressionCache<Biome, Object>
         }
 
         @Override
-        public Function<Biome, Boolean> parse(String var)
+        public Function<SupplierCache<Biome>, Boolean> parse(String var)
         {
             BiomeDictionary.Type type = BiomeDictionaryAccessor.getTypeWeak(var);
-            return b -> type != null && BiomeDictionary.hasType(b, type);
+            return b -> type != null && BiomeDictionary.hasType(b.get(), type);
         }
 
         @Override

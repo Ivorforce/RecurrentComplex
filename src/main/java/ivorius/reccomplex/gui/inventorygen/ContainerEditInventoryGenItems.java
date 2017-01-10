@@ -99,7 +99,7 @@ public class ContainerEditInventoryGenItems extends Container implements PacketG
 //                }
 //                else
 //                {
-////                    inventory.setInventorySlotContents(col + row * 9, null);
+////                    inventory.setInventorySlotContents(col + row * 9, ItemStack.EMPTY);
 //                }
             }
         }
@@ -117,7 +117,7 @@ public class ContainerEditInventoryGenItems extends Container implements PacketG
     @Override
     public ItemStack transferStackInSlot(EntityPlayer player, int slotIndex)
     {
-        ItemStack itemstack = null;
+        ItemStack itemstack = ItemStack.EMPTY;
         Slot slot = this.inventorySlots.get(slotIndex);
 
         if (slot != null && slot.getHasStack())
@@ -130,17 +130,17 @@ public class ContainerEditInventoryGenItems extends Container implements PacketG
             {
                 if (!this.mergeItemStack(itemstack1, generatorIndexMax, generatorIndexMax + 36, true))
                 {
-                    return null;
+                    return ItemStack.EMPTY;
                 }
             }
             else if (!this.mergeItemStack(itemstack1, 0, generatorIndexMax, false))
             {
-                return null;
+                return ItemStack.EMPTY;
             }
 
             if (itemstack1.getCount() == 0)
             {
-                slot.putStack(null);
+                slot.putStack(ItemStack.EMPTY);
             }
             else
             {
@@ -149,7 +149,7 @@ public class ContainerEditInventoryGenItems extends Container implements PacketG
 
             if (itemstack1.getCount() == itemstack.getCount())
             {
-                return null;
+                return ItemStack.EMPTY;
             }
 
             slot.onTake(player, itemstack1);

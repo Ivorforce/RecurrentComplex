@@ -77,7 +77,7 @@ public class InventoryGenericInvGen_Single implements IInventory
         if (slot < weightedRandomChestContents.size())
         {
             ItemStack stack = weightedRandomChestContents.get(slot).itemStack;
-            if (stack != null)
+            if (!stack.isEmpty())
             {
                 ItemStack itemstack;
 
@@ -103,14 +103,14 @@ public class InventoryGenericInvGen_Single implements IInventory
             }
         }
 
-        return null;
+        return ItemStack.EMPTY;
     }
 
 
     @Override
     public ItemStack removeStackFromSlot(int var1)
     {
-        return null;
+        return ItemStack.EMPTY;
     }
 
     @Override
@@ -118,18 +118,18 @@ public class InventoryGenericInvGen_Single implements IInventory
     {
         if (slot < weightedRandomChestContents.size())
         {
-            if (stack != null)
+            if (!stack.isEmpty())
                 weightedRandomChestContents.get(slot).itemStack = stack;
             else
                 weightedRandomChestContents.remove(slot);
         }
         else
         {
-            if (stack != null)
+            if (!stack.isEmpty())
                 weightedRandomChestContents.add(new GenericItemCollection.RandomizedItemStack(stack, 1, stack.getMaxStackSize(), 1.0));
         }
 
-        if (stack != null && stack.getCount() > this.getInventoryStackLimit())
+        if (!stack.isEmpty() && stack.getCount() > this.getInventoryStackLimit())
         {
             stack.setCount(this.getInventoryStackLimit());
         }

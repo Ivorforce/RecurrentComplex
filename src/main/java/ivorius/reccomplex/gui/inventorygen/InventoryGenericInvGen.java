@@ -110,7 +110,7 @@ public class InventoryGenericInvGen implements IInventory
     @Override
     public ItemStack removeStackFromSlot(int var1)
     {
-        return null;
+        return ItemStack.EMPTY;
     }
 
     @Override
@@ -120,7 +120,7 @@ public class InventoryGenericInvGen implements IInventory
 
         if (stackIndex < chestContents.size())
         {
-            if (var2 != null)
+            if (!var2.isEmpty())
             {
                 WeightedRandomChestContent chestContent = chestContents.get(stackIndex);
                 chestContent.theItemId = var2;
@@ -143,7 +143,7 @@ public class InventoryGenericInvGen implements IInventory
         }
         else
         {
-            if (var2 != null)
+            if (!var2.isEmpty())
             {
                 int min = var1 % 2 == 0 ? var2.getCount() : 1;
                 int max = var1 % 2 == 1 ? var2.getCount() : var2.getMaxStackSize();

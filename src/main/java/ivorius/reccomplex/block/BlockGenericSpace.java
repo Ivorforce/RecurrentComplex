@@ -76,14 +76,6 @@ public class BlockGenericSpace extends BlockTyped
         return Lists.newArrayList();
     }
 
-    @Nullable
-    @SuppressWarnings("deprecation")
-    @Override
-    public AxisAlignedBB getCollisionBoundingBox(IBlockState blockState, IBlockAccess worldIn, BlockPos pos)
-    {
-        return NULL_AABB;
-    }
-
     @SuppressWarnings("deprecation")
     @Nonnull
     @Override

@@ -149,7 +149,7 @@ public class BlockPattern implements NBTCompoundObject
         public Ingredient()
         {
             identifier = "";
-            matcher = new PositionedBlockMatcher(RecurrentComplex.specialRegistry);
+            matcher = ExpressionCache.of(new PositionedBlockMatcher(RecurrentComplex.specialRegistry), "");
             delete = true;
         }
 

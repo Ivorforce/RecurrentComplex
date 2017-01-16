@@ -20,11 +20,11 @@ import java.util.stream.Collectors;
  */
 public class SimpleLeveledRegistry<S> implements LeveledRegistry<S>
 {
-    private LeveledBiMap<String, S> items = new LeveledBiMap<>(LeveledRegistry.Level.values().length);
-    private LeveledBiMap<String, Status> stati = new LeveledBiMap<>(items.levels());
+    protected LeveledBiMap<String, S> items = new LeveledBiMap<>(LeveledRegistry.Level.values().length);
+    protected LeveledBiMap<String, Status> stati = new LeveledBiMap<>(items.levels());
 
-    private boolean activeCacheValid = false;
-    private Map<String, S> activeMap = new HashMap<>();
+    protected boolean activeCacheValid = false;
+    protected Map<String, S> activeMap = new HashMap<>();
 
     public String description;
 
@@ -46,6 +46,11 @@ public class SimpleLeveledRegistry<S> implements LeveledRegistry<S>
     public Map<String, S> map()
     {
         return Collections.unmodifiableMap(items.getMap());
+    }
+
+    public Map<String, S> map(ILevel level)
+    {
+        return Collections.unmodifiableMap(items.getMap(level.getLevel()));
     }
 
     public Map<String, S> activeMap()

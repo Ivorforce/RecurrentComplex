@@ -14,6 +14,8 @@ import ivorius.reccomplex.gui.table.TableNavigator;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.util.math.BlockPos;
 
+import javax.annotation.Nonnull;
+
 /**
  * Created by lukas on 27.08.16.
  */
@@ -35,5 +37,12 @@ public class TableDataSourceBlockInspector extends TableDataSourceSegmented
         addManagedSegment(0, new TableDataSourceBlockState(state, instate -> this.state = instate, navigator, delegate).setShowExtendedProperties(true));
         addManagedSegment(1, new TableDataSourceBlockPos(pos, blockPos -> this.pos = blockPos, null, null, null,
                 IvTranslations.get("reccomplex.inspector.position.x"), IvTranslations.get("reccomplex.inspector.position.y"), IvTranslations.get("reccomplex.inspector.position.z")));
+    }
+
+    @Nonnull
+    @Override
+    public String title()
+    {
+        return "Inspect Block";
     }
 }

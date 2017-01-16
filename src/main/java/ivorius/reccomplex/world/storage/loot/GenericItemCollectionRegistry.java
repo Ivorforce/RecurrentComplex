@@ -5,11 +5,13 @@
 
 package ivorius.reccomplex.world.storage.loot;
 
+import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 import ivorius.reccomplex.RCConfig;
 import ivorius.reccomplex.files.loading.LeveledRegistry;
 import ivorius.reccomplex.files.SimpleLeveledRegistry;
 
+import java.util.Collection;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -43,11 +45,9 @@ public class GenericItemCollectionRegistry extends SimpleLeveledRegistry<Generic
         if (active && !RCConfig.shouldInventoryGeneratorGenerate(id, domain))
             active = false;
 
-        Set<String> generating = activeIDs().stream().collect(Collectors.toSet());
-
         GenericItemCollection.Component prev = super.register(id, domain, component, active, level);
 
-        clearCaches(generating);
+        invalidateCache(component.inventoryGeneratorID);
 
         return prev;
     }
@@ -55,39 +55,36 @@ public class GenericItemCollectionRegistry extends SimpleLeveledRegistry<Generic
     @Override
     public GenericItemCollection.Component unregister(String id, ILevel level)
     {
-        Set<String> generating = activeIDs().stream().collect(Collectors.toSet());
-
         GenericItemCollection.Component rt = super.unregister(id, level);
 
-        clearCaches(generating);
+        invalidateCache(rt.inventoryGeneratorID);
 
         return rt;
     }
 
-    private void clearCaches(Set<String> generatingComponents)
+    @Override
+    public void clear(ILevel level)
     {
-        Set<String> newGeneratingComponents = activeIDs();
+        Collection<GenericItemCollection.Component> removed = Lists.newArrayList(map(level).values());
 
-        for (String key : Sets.difference(newGeneratingComponents, generatingComponents))
+        super.clear(level);
+
+        for (GenericItemCollection.Component component : removed)
+            invalidateCache(component.inventoryGeneratorID);
+    }
+
+    private void invalidateCache(String generatorID)
+    {
+        WeightedItemCollectionRegistry.INSTANCE.unregister(generatorID, LeveledRegistry.Level.CUSTOM);
+
+        for (String key : activeIDs())
         {
             GenericItemCollection.Component component = get(key);
 
-            GenericItemCollection collection = registerGetGenericItemCollection(component.inventoryGeneratorID, status(key).getDomain());
-            collection.components.add(component);
-        }
-
-        for (String key : Sets.difference(generatingComponents, newGeneratingComponents))
-        {
-            GenericItemCollection.Component component = get(key);
-
-            WeightedItemCollection collection = WeightedItemCollectionRegistry.INSTANCE.get(component.inventoryGeneratorID);
-
-            if (collection instanceof GenericItemCollection)
+            if (component.inventoryGeneratorID.equals(generatorID))
             {
-                ((GenericItemCollection) collection).components.remove(component);
-
-                if (((GenericItemCollection) collection).components.size() == 0)
-                    WeightedItemCollectionRegistry.INSTANCE.unregister(component.inventoryGeneratorID, LeveledRegistry.Level.CUSTOM);
+                GenericItemCollection collection = registerGetGenericItemCollection(component.inventoryGeneratorID, status(key).getDomain());
+                collection.components.add(component);
             }
         }
     }

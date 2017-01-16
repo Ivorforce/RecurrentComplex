@@ -5,6 +5,7 @@
 
 package ivorius.reccomplex.block;
 
+import net.minecraftforge.common.util.Constants;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import ivorius.ivtoolkit.tools.NBTCompoundObjects;
@@ -91,7 +92,8 @@ public class TileEntityBlockScript extends TileEntity implements GeneratingTileE
     {
         script.readFromNBT(compound.getCompoundTag("script"));
 
-        spawnTriggerable = compound.getBoolean("spawnTriggerable");
+        spawnTriggerable = !compound.hasKey("spawnTriggerable", Constants.NBT.TAG_BYTE) // Legacy
+                || compound.getBoolean("spawnTriggerable");
         redstoneTriggerable = compound.getBoolean("redstoneTriggerable");
         redstoneTriggered = compound.getBoolean("redstoneTriggered");
     }

@@ -37,6 +37,7 @@ public class ExpressionCache<T>
         this.algebra = algebra;
         this.emptyExpressionResult = emptyExpressionResult;
         this.emptyResultRepresentation = emptyResultRepresentation;
+        setExpression("");
     }
 
     public static <T, E extends ExpressionCache<T>> E of(E e, String expression)

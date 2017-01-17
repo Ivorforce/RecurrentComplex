@@ -18,10 +18,10 @@ public class NBTBaseSerializerSmart implements JsonSerializer<NBTBase>, JsonDese
     @Override
     public NBTBase deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException
     {
-        Class<? extends NBTBase> aClass = NbtToJson.getNBTTypeSmart(json);
+        Class<? extends NBTBase> aClass = NBTToJson.getNBTTypeSmart(json);
 
         if (aClass != null)
-            return NbtToJson.nbtJson.fromJson(json, aClass);
+            return NBTToJson.nbtJson.fromJson(json, aClass);
         else
             throw new JsonParseException("Unknown NBT type");
     }
@@ -29,6 +29,6 @@ public class NBTBaseSerializerSmart implements JsonSerializer<NBTBase>, JsonDese
     @Override
     public JsonElement serialize(NBTBase src, Type typeOfSrc, JsonSerializationContext context)
     {
-        return NbtToJson.nbtJson.toJsonTree(src);
+        return NBTToJson.nbtJson.toJsonTree(src);
     }
 }

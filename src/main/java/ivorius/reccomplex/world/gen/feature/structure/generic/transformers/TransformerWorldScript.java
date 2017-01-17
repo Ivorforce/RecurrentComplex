@@ -15,7 +15,7 @@ import ivorius.reccomplex.gui.table.datasource.TableDataSource;
 import ivorius.reccomplex.gui.table.TableDelegate;
 import ivorius.reccomplex.gui.table.TableNavigator;
 import ivorius.reccomplex.json.JsonUtils;
-import ivorius.reccomplex.json.NbtToJson;
+import ivorius.reccomplex.json.NBTToJson;
 import ivorius.reccomplex.utils.algebra.ExpressionCache;
 import ivorius.reccomplex.world.gen.script.WorldScriptMulti;
 import ivorius.reccomplex.world.gen.feature.structure.Environment;
@@ -123,7 +123,7 @@ public class TransformerWorldScript extends TransformerSingleBlock<TransformerWo
             this.registry = registry;
             GsonBuilder builder = new GsonBuilder();
             builder.registerTypeAdapter(WeightedBlockState.class, new WeightedBlockState.Serializer(registry));
-            NbtToJson.registerSafeNBTSerializer(builder);
+            NBTToJson.registerSafeNBTSerializer(builder);
             gson = builder.create();
         }
 

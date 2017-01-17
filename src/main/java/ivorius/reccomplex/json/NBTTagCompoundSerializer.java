@@ -41,7 +41,7 @@ public class NBTTagCompoundSerializer implements JsonSerializer<NBTTagCompound>,
 
             for (Map.Entry<String, JsonElement> entry : jsonObject.entrySet())
             {
-                compound.setTag(entry.getKey(), context.deserialize(entry.getValue(), NbtToJson.getNBTTypeSmart(entry.getValue())));
+                compound.setTag(entry.getKey(), context.deserialize(entry.getValue(), NBTToJson.getNBTTypeSmart(entry.getValue())));
             }
 
             return compound;

@@ -82,19 +82,6 @@ public class TransformerRuins extends Transformer<TransformerRuins.InstanceData>
         return (state.isNormalCube() || state.getMaterial() == Material.AIR) ? 0 : 1;
     }
 
-    public static void setBlockToAirClean(World world, BlockPos pos)
-    {
-        TileEntity tileEntity = world.getTileEntity(pos);
-        if (tileEntity instanceof IInventory)
-        {
-            IInventory inventory = (IInventory) tileEntity;
-            for (int i = 0; i < inventory.getSizeInventory(); i++)
-                inventory.setInventorySlotContents(i, ItemStack.EMPTY);
-        }
-
-        world.setBlockToAir(pos);
-    }
-
     public static void shuffleArray(Object[] ar, Random rand)
     {
         for (int i = ar.length - 1; i > 0; i--)

@@ -13,7 +13,7 @@ import ivorius.ivtoolkit.tools.IvTranslations;
 import ivorius.reccomplex.RecurrentComplex;
 import ivorius.reccomplex.json.ItemStackSerializer;
 import ivorius.reccomplex.json.JsonUtils;
-import ivorius.reccomplex.json.NbtToJson;
+import ivorius.reccomplex.json.NBTToJson;
 import ivorius.reccomplex.utils.expression.DependencyMatcher;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.WeightedRandom;
@@ -43,7 +43,7 @@ public class GenericItemCollection implements WeightedItemCollection
         builder.registerTypeAdapter(RandomizedItemStack.class, new RandomizedItemStack.Serializer());
         builder.registerTypeAdapter(ItemStack.class, new ItemStackSerializer(RecurrentComplex.specialRegistry));
         builder.registerTypeAdapter(WeightedRandomChestContent.class, new WeightedRandomChestContentSerializer());
-        NbtToJson.registerSafeNBTSerializer(builder);
+        NBTToJson.registerSafeNBTSerializer(builder);
 
         return builder.create();
     }

@@ -9,7 +9,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonSyntaxException;
 import io.netty.buffer.ByteBuf;
-import ivorius.reccomplex.json.NbtToJson;
+import ivorius.reccomplex.json.NBTToJson;
 import net.minecraftforge.fml.common.network.ByteBufUtils;
 
 import javax.annotation.Nullable;
@@ -29,7 +29,7 @@ public class ItemCollectionSaveHandler
 
         builder.setPrettyPrinting();
         builder.registerTypeAdapter(GenericItemCollection.Component.class, new GenericItemCollection.Component.Serializer());
-        NbtToJson.registerSafeNBTSerializer(builder);
+        NBTToJson.registerSafeNBTSerializer(builder);
 
         return builder.create();
     }

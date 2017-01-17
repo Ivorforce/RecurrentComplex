@@ -7,7 +7,12 @@ package ivorius.reccomplex.network;
 
 import ivorius.ivtoolkit.network.SchedulingMessageHandler;
 import ivorius.reccomplex.gui.inspector.GuiBlockInspector;
+import ivorius.reccomplex.world.gen.feature.structure.OperationClearArea;
 import net.minecraft.client.Minecraft;
+import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.WorldServer;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
 import net.minecraftforge.fml.relauncher.Side;
@@ -22,7 +27,26 @@ public class PacketInspectBlockHandler extends SchedulingMessageHandler<PacketIn
     @SideOnly(Side.CLIENT)
     public void processClient(PacketInspectBlock message, MessageContext ctx)
     {
-        Minecraft.getMinecraft().displayGuiScreen(new GuiBlockInspector(message.getPos(), message.getState()));
+        Minecraft.getMinecraft().displayGuiScreen(new GuiBlockInspector(message.getPos(), message.getState(), message.getTileEntityData()));
+    }
+
+    @Override
+    public void processServer(PacketInspectBlock message, MessageContext ctx, WorldServer world)
+    {
+        BlockPos pos = message.getPos();
+
+        OperationClearArea.setBlockToAirClean(world, pos);
+        world.setBlockState(pos, message.getState(), 2);
+
+        TileEntity tileEntity = world.getTileEntity(pos);
+        NBTTagCompound tileData = message.getTileEntityData();
+        if (tileEntity != null && tileData != null)
+        {
+            tileData.setInteger("x", pos.getX());
+            tileData.setInteger("y", pos.getY());
+            tileData.setInteger("z", pos.getZ());
+            tileEntity.readFromNBT(tileData);
+        }
     }
 }
 

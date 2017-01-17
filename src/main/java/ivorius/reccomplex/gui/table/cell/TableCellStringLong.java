@@ -44,7 +44,7 @@ public class TableCellStringLong extends TableCellPropertyDefault<Long>
 
     protected GuiValidityStateIndicator.State getValidityState()
     {
-        return Ints.tryParse(textField.getText()) != null ? GuiValidityStateIndicator.State.VALID : GuiValidityStateIndicator.State.INVALID;
+        return Longs.tryParse(textField.getText()) != null ? GuiValidityStateIndicator.State.VALID : GuiValidityStateIndicator.State.INVALID;
     }
 
     @Override

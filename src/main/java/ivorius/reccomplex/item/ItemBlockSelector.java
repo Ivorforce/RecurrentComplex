@@ -37,7 +37,7 @@ public class ItemBlockSelector extends Item implements ItemEventHandler
     }
 
     @SideOnly(Side.CLIENT)
-    public boolean modifierKeyDown()
+    public static boolean modifierKeyDown()
     {
         boolean modifier = false;
         for (int k : RCConfig.blockSelectorModifierKeys)

@@ -7,7 +7,7 @@ package ivorius.reccomplex.network;
 
 import ivorius.ivtoolkit.network.SchedulingMessageHandler;
 import ivorius.reccomplex.RecurrentComplex;
-import ivorius.reccomplex.gui.inspector.GuiBlockInspector;
+import ivorius.reccomplex.gui.inspector.GuiInspectBlock;
 import ivorius.reccomplex.world.gen.feature.structure.OperationClearArea;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -30,7 +30,7 @@ public class PacketInspectBlockHandler extends SchedulingMessageHandler<PacketIn
     @SideOnly(Side.CLIENT)
     public void processClient(PacketInspectBlock message, MessageContext ctx)
     {
-        Minecraft.getMinecraft().displayGuiScreen(new GuiBlockInspector(message.getPos(), message.getState(), message.getTileEntityData()));
+        Minecraft.getMinecraft().displayGuiScreen(new GuiInspectBlock(message.getPos(), message.getState(), message.getTileEntityData()));
     }
 
     @Override

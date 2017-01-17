@@ -22,7 +22,7 @@ import javax.annotation.Nonnull;
 /**
  * Created by lukas on 27.08.16.
  */
-public class TableDataSourceBlockInspector extends TableDataSourceSegmented
+public class TableDataSourceInspectBlock extends TableDataSourceSegmented
 {
     public BlockPos pos;
     public IBlockState state;
@@ -31,7 +31,7 @@ public class TableDataSourceBlockInspector extends TableDataSourceSegmented
     public TableNavigator navigator;
     public TableDelegate delegate;
 
-    public TableDataSourceBlockInspector(BlockPos pos, IBlockState state, TableNavigator navigator, TableDelegate delegate, NBTTagCompound tileEntityData)
+    public TableDataSourceInspectBlock(BlockPos pos, IBlockState state, TableNavigator navigator, TableDelegate delegate, NBTTagCompound tileEntityData)
     {
         this.pos = pos;
         this.state = state;

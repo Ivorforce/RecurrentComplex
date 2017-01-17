@@ -39,6 +39,16 @@ public class TableDataSourceNBTTagCompound extends TableDataSourceSegmented
         sortedKeys.addAll(nbt.getKeySet());
     }
 
+    public NBTTagCompound getNbt()
+    {
+        return nbt;
+    }
+
+    public void setNbt(NBTTagCompound nbt)
+    {
+        this.nbt = nbt;
+    }
+
     @Nonnull
     @Override
     public String title()

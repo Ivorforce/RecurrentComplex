@@ -355,6 +355,7 @@ public class RCRegistryHandler
         network.registerMessage(PacketItemEventHandler.class, PacketItemEvent.class, 11, Side.SERVER);
         network.registerMessage(PacketInspectBlockHandler.class, PacketInspectBlock.class, 12, Side.SERVER);
         network.registerMessage(PacketOpenGuiHandler.class, PacketOpenGui.class, 15, Side.SERVER);
+        network.registerMessage(PacketInspectEntityHandler.class, PacketInspectEntity.class, 17, Side.SERVER);
     }
 
     protected static void registerClientPackets()
@@ -368,5 +369,6 @@ public class RCRegistryHandler
         network.registerMessage(PacketInspectBlockHandler.class, PacketInspectBlock.class, 13, Side.CLIENT);
         network.registerMessage(PacketOpenGuiHandler.class, PacketOpenGui.class, 14, Side.CLIENT);
         network.registerMessage(PacketReopenGuiHandler.class, PacketReopenGui.class, 16, Side.CLIENT);
+        network.registerMessage(PacketInspectEntityHandler.class, PacketInspectEntity.class, 18, Side.CLIENT);
     }
 }

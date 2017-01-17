@@ -15,11 +15,11 @@ import net.minecraft.util.math.BlockPos;
 /**
  * Created by lukas on 27.08.16.
  */
-public class GuiBlockInspector extends GuiScreenEditTable<TableDataSourceBlockInspector>
+public class GuiInspectBlock extends GuiScreenEditTable<TableDataSourceInspectBlock>
 {
-    public GuiBlockInspector(BlockPos pos, IBlockState state, NBTTagCompound tileEntityData)
+    public GuiInspectBlock(BlockPos pos, IBlockState state, NBTTagCompound tileEntityData)
     {
-        setDataSource(new TableDataSourceBlockInspector(pos, state, this, this, tileEntityData), ds ->
+        setDataSource(new TableDataSourceInspectBlock(pos, state, this, this, tileEntityData), ds ->
                 RecurrentComplex.network.sendToServer(new PacketInspectBlock(ds.tileEntityData, ds.pos, ds.state)));
     }
 }

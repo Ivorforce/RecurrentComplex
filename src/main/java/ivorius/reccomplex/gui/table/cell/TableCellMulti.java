@@ -21,15 +21,9 @@ import java.util.stream.IntStream;
 /**
  * Created by lukas on 02.06.14.
  */
-public class TableCellMulti implements TableCell
+public class TableCellMulti extends TableCellDefault
 {
     public static final int CELL_MIN_WIDTH = 17;
-
-    @Nullable
-    protected String id;
-
-    private Bounds bounds = new Bounds(0, 0, 0, 0);
-    protected boolean hidden;
 
     @Nonnull
     protected final List<TableCell> cells = new ArrayList<>();
@@ -37,7 +31,7 @@ public class TableCellMulti implements TableCell
 
     public TableCellMulti(String id, @Nonnull List<? extends TableCell> cells)
     {
-        this.id = id;
+        super(id);
         this.cells.addAll(cells);
     }
 
@@ -54,18 +48,6 @@ public class TableCellMulti implements TableCell
     public TableCellMulti(@Nonnull TableCell... cells)
     {
         this(null, cells);
-    }
-
-    @Nullable
-    @Override
-    public String getID()
-    {
-        return id;
-    }
-
-    public void setId(@Nonnull String id)
-    {
-        this.id = id;
     }
 
     public void setSize(int cell, float size)
@@ -121,25 +103,7 @@ public class TableCellMulti implements TableCell
             curPos += buttonWidth;
         }
 
-        this.bounds = bounds;
-    }
-
-    @Override
-    public Bounds bounds()
-    {
-        return bounds;
-    }
-
-    @Override
-    public boolean isHidden()
-    {
-        return hidden;
-    }
-
-    @Override
-    public void setHidden(boolean hidden)
-    {
-        this.hidden = hidden;
+        super.setBounds(bounds);
     }
 
     @Override
@@ -148,6 +112,7 @@ public class TableCellMulti implements TableCell
         for (TableCell cell : cells)
             if (!cell.isHidden())
                 cell.draw(screen, mouseX, mouseY, partialTicks);
+        super.draw(screen, mouseX, mouseY, partialTicks);
     }
 
     @Override
@@ -156,6 +121,7 @@ public class TableCellMulti implements TableCell
         for (TableCell cell : cells)
             if (!cell.isHidden())
                 cell.drawFloating(screen, mouseX, mouseY, partialTicks);
+        super.drawFloating(screen, mouseX, mouseY, partialTicks);
     }
 
     @Override

@@ -8,7 +8,7 @@ package ivorius.reccomplex.gui.editstructure;
 import ivorius.reccomplex.files.RCFileSaver;
 import ivorius.reccomplex.gui.editstructure.preset.TableDataSourcePresettedList;
 import ivorius.reccomplex.gui.editstructure.preset.TableDataSourcePresettedObject;
-import ivorius.reccomplex.gui.table.datasource.TableDataSource;
+import ivorius.reccomplex.gui.table.cell.TableCell;
 import ivorius.reccomplex.gui.table.datasource.TableDataSourceSegmented;
 import ivorius.reccomplex.gui.table.TableDelegate;
 import ivorius.reccomplex.gui.table.TableNavigator;
@@ -48,10 +48,11 @@ public class TableDataSourceDimensionGenList extends TableDataSourceSegmented
                 return new DimensionGenerationInfo("", null);
             }
 
+            @Nonnull
             @Override
-            public TableDataSource editEntryDataSource(DimensionGenerationInfo entry)
+            public TableCell entryCell(boolean enabled, DimensionGenerationInfo dimensionGenerationInfo)
             {
-                return new TableDataSourceDimensionGen(entry, tableDelegate);
+                return editCell(enabled, navigator, delegate, () -> new TableDataSourceDimensionGen(dimensionGenerationInfo, tableDelegate));
             }
         });
     }

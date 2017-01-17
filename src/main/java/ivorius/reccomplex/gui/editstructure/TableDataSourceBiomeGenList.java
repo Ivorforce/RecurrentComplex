@@ -8,7 +8,7 @@ package ivorius.reccomplex.gui.editstructure;
 import ivorius.reccomplex.files.RCFileSaver;
 import ivorius.reccomplex.gui.editstructure.preset.TableDataSourcePresettedList;
 import ivorius.reccomplex.gui.editstructure.preset.TableDataSourcePresettedObject;
-import ivorius.reccomplex.gui.table.datasource.TableDataSource;
+import ivorius.reccomplex.gui.table.cell.TableCell;
 import ivorius.reccomplex.gui.table.datasource.TableDataSourceSegmented;
 import ivorius.reccomplex.gui.table.TableDelegate;
 import ivorius.reccomplex.gui.table.TableNavigator;
@@ -48,10 +48,11 @@ public class TableDataSourceBiomeGenList extends TableDataSourceSegmented
                 return new BiomeGenerationInfo("", null);
             }
 
+            @Nonnull
             @Override
-            public TableDataSource editEntryDataSource(BiomeGenerationInfo entry)
+            public TableCell entryCell(boolean enabled, BiomeGenerationInfo biomeGenerationInfo)
             {
-                return new TableDataSourceBiomeGen(entry, tableDelegate);
+                return editCell(enabled, navigator, tableDelegate, () -> new TableDataSourceBiomeGen(biomeGenerationInfo, tableDelegate));
             }
         });
     }

@@ -5,12 +5,13 @@
 
 package ivorius.reccomplex.gui.editstructure.pattern;
 
-import ivorius.reccomplex.gui.table.datasource.TableDataSource;
+import ivorius.reccomplex.gui.table.cell.TableCell;
 import ivorius.reccomplex.gui.table.datasource.TableDataSourceList;
 import ivorius.reccomplex.gui.table.TableDelegate;
 import ivorius.reccomplex.gui.table.TableNavigator;
 import ivorius.reccomplex.world.gen.feature.structure.generic.BlockPattern;
 
+import javax.annotation.Nonnull;
 import java.util.List;
 
 /**
@@ -35,9 +36,10 @@ public class TableDataSourceBlockPatternIngredientList extends TableDataSourceLi
         return new BlockPattern.Ingredient();
     }
 
+    @Nonnull
     @Override
-    public TableDataSource editEntryDataSource(BlockPattern.Ingredient entry)
+    public TableCell entryCell(boolean enabled, BlockPattern.Ingredient ingredient)
     {
-        return new TableDataSourceBlockPatternIngredient(entry, tableDelegate);
+        return editCell(enabled, navigator, tableDelegate, () -> new TableDataSourceBlockPatternIngredient(ingredient, tableDelegate));
     }
 }

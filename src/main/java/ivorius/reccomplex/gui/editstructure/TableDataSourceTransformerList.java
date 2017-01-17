@@ -7,8 +7,8 @@ package ivorius.reccomplex.gui.editstructure;
 
 import ivorius.reccomplex.gui.editstructure.preset.TableDataSourcePresettedList;
 import ivorius.reccomplex.gui.table.*;
+import ivorius.reccomplex.gui.table.cell.TableCell;
 import ivorius.reccomplex.gui.table.cell.TableCellButton;
-import ivorius.reccomplex.gui.table.datasource.TableDataSource;
 import ivorius.reccomplex.gui.table.datasource.TableDataSourceList;
 import ivorius.reccomplex.world.gen.feature.structure.StructureRegistry;
 import ivorius.reccomplex.world.gen.feature.structure.generic.transformers.Transformer;
@@ -41,10 +41,11 @@ public class TableDataSourceTransformerList extends TableDataSourceList<Transfor
         return tryInstantiate(actionID, clazz, "Failed instantiating transformer: %s");
     }
 
+    @Nonnull
     @Override
-    public TableDataSource editEntryDataSource(Transformer entry)
+    public TableCell entryCell(boolean enabled, Transformer transformer)
     {
-        return entry.tableDataSource(navigator, tableDelegate);
+        return editCell(enabled, navigator, tableDelegate, () -> transformer.tableDataSource(navigator, tableDelegate));
     }
 
     @Override

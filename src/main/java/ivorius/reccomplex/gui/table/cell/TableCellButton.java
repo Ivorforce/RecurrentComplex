@@ -94,6 +94,9 @@ public class TableCellButton extends TableCellDefault
     public void setEnabled(boolean enabled)
     {
         this.enabled = enabled;
+
+        if (button != null)
+            button.enabled = enabled;
     }
 
     public ResourceLocation getTexture()

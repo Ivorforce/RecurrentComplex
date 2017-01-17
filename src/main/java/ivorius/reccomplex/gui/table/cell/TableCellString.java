@@ -23,7 +23,7 @@ public class TableCellString extends TableCellPropertyDefault<String>
     protected GuiValidityStateIndicator stateIndicator;
 
     protected boolean showsValidityState;
-    protected GuiValidityStateIndicator.State validityState;
+    protected GuiValidityStateIndicator.State validityState = GuiValidityStateIndicator.State.VALID;
 
     protected int maxStringLength = 300;
 

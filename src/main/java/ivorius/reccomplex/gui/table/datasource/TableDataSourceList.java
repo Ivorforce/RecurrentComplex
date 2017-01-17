@@ -6,18 +6,20 @@
 package ivorius.reccomplex.gui.table.datasource;
 
 import ivorius.ivtoolkit.lang.IvClasses;
+import ivorius.ivtoolkit.tools.IvTranslations;
 import ivorius.reccomplex.RecurrentComplex;
 import ivorius.reccomplex.gui.table.GuiTable;
 import ivorius.reccomplex.gui.table.TableDelegate;
 import ivorius.reccomplex.gui.table.TableNavigator;
 import ivorius.reccomplex.gui.table.cell.*;
 import net.minecraft.util.text.TextFormatting;
-import ivorius.ivtoolkit.tools.IvTranslations;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.function.Supplier;
 
 /**
  * Created by lukas on 20.02.15.
@@ -31,7 +33,6 @@ public abstract class TableDataSourceList<T, L extends List<T>> extends TableDat
 
     protected String earlierTitle = TextFormatting.BOLD + "↑";
     protected String laterTitle = TextFormatting.BOLD + "↓";
-    protected String editTitle = IvTranslations.get("reccomplex.gui.edit");
     protected String deleteTitle = TextFormatting.RED + "X";
     protected String addTitle = TextFormatting.GREEN + "+";
 
@@ -42,6 +43,14 @@ public abstract class TableDataSourceList<T, L extends List<T>> extends TableDat
         this.list = list;
         this.tableDelegate = tableDelegate;
         this.navigator = navigator;
+    }
+
+    @Nonnull
+    public static TableCellButton editCell(boolean enabled, TableNavigator navigator, TableDelegate tableDelegate, Supplier<TableDataSource> table)
+    {
+        TableCellButton edit = new TableCellButton("", "edit", IvTranslations.get("reccomplex.gui.edit"), enabled);
+        edit.addAction(() -> navigator.pushTable(new GuiTable(tableDelegate, table.get())));
+        return edit;
     }
 
     @Nullable
@@ -105,16 +114,6 @@ public abstract class TableDataSourceList<T, L extends List<T>> extends TableDat
         this.laterTitle = laterTitle;
     }
 
-    public String getEditTitle()
-    {
-        return editTitle;
-    }
-
-    public void setEditTitle(String editTitle)
-    {
-        this.editTitle = editTitle;
-    }
-
     public String getDeleteTitle()
     {
         return deleteTitle;
@@ -174,16 +173,7 @@ public abstract class TableDataSourceList<T, L extends List<T>> extends TableDat
 
             T t = list.get(index);
 
-            TableCellButton[] cells = getEntryActions(index);
-            for (TableCellButton cell : cells)
-            {
-                cell.addAction(() -> {
-                    T entry = list.get(index);
-                    performEntryAction(cell.actionID, index, entry);
-                });
-                cell.setId("entry" + index);
-            }
-            TableCellMulti multi = new TableCellMulti(cells);
+            TableCellMulti multi = new TableCellMulti(entryCells(index));
             multi.setSize(0, 8);
             return new TitledCell(getDisplayString(t), multi);
         }
@@ -215,13 +205,11 @@ public abstract class TableDataSourceList<T, L extends List<T>> extends TableDat
     @Nonnull
     protected Runnable createAddAction(int addIndex, String actionID)
     {
-        return () -> {
+        return () ->
+        {
             T entry = newEntry(actionID);
             if (entry != null)
-            {
                 list.add(addIndex, entry);
-                navigator.pushTable(new GuiTable(tableDelegate, editEntryDataSource(entry)));
-            }
         };
     }
 
@@ -243,49 +231,48 @@ public abstract class TableDataSourceList<T, L extends List<T>> extends TableDat
         return Collections.singletonList(new TableCellButton("", "add", getAddTitle(), enabled));
     }
 
-    public TableCellButton[] getEntryActions(int index)
+    public List<TableCell> entryCells(int index)
     {
         boolean enabled = canEditList();
-        return new TableCellButton[]{
-                new TableCellButton("", "edit", getEditTitle(), enabled),
-                new TableCellButton("", "earlier", getEarlierTitle(), index > 0 && enabled),
-                new TableCellButton("", "later", getLaterTitle(), index < list.size() - 1 && enabled),
-                new TableCellButton("", "delete", getDeleteTitle(), enabled)
-        };
+        T t = list.get(index);
+
+        TableCell entryCell = entryCell(enabled, t);
+
+        TableCellButton earlier = new TableCellButton("", "earlier", getEarlierTitle(), index > 0 && enabled);
+        earlier.addAction(() ->
+        {
+            list.set(index, list.get(index - 1));
+            list.set(index - 1, t);
+            tableDelegate.reloadData();
+        });
+
+        TableCellButton later = new TableCellButton("", "later", getLaterTitle(), index < list.size() - 1 && enabled);
+        later.addAction(() ->
+        {
+            list.set(index, list.get(index + 1));
+            list.set(index + 1, t);
+            tableDelegate.reloadData();
+        });
+
+        TableCellButton delete = new TableCellButton("", "delete", getDeleteTitle(), enabled);
+        delete.addAction(() ->
+        {
+            list.remove(index);
+            tableDelegate.reloadData();
+        });
+
+        return Arrays.asList(entryCell, earlier, later, delete);
     }
+
+    @Nonnull
+    public abstract TableCell entryCell(boolean enabled, T t);
 
     public boolean canEditList()
     {
         return true;
     }
 
-    public void performEntryAction(String actionID, int index, T t)
-    {
-        switch (actionID)
-        {
-            case "edit":
-                navigator.pushTable(new GuiTable(tableDelegate, editEntryDataSource(t)));
-                break;
-            case "delete":
-                list.remove(index);
-                tableDelegate.reloadData();
-                break;
-            case "earlier":
-                list.remove(index);
-                list.add(index - 1, t);
-                tableDelegate.reloadData();
-                break;
-            case "later":
-                list.remove(index);
-                list.add(index + 1, t);
-                tableDelegate.reloadData();
-                break;
-        }
-    }
-
     public abstract String getDisplayString(T t);
 
     public abstract T newEntry(String actionID);
-
-    public abstract TableDataSource editEntryDataSource(T t);
 }

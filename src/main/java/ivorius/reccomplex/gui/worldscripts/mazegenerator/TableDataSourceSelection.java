@@ -6,7 +6,7 @@
 package ivorius.reccomplex.gui.worldscripts.mazegenerator;
 
 import ivorius.reccomplex.gui.table.*;
-import ivorius.reccomplex.gui.table.datasource.TableDataSource;
+import ivorius.reccomplex.gui.table.cell.TableCell;
 import ivorius.reccomplex.gui.table.datasource.TableDataSourceList;
 import ivorius.reccomplex.world.gen.feature.structure.generic.Selection;
 import net.minecraft.util.text.TextFormatting;
@@ -43,10 +43,11 @@ public class TableDataSourceSelection extends TableDataSourceList<Selection.Area
                 : new Selection.Area(true, new int[dimensions.length], new int[dimensions.length], showIdentifier ? "" : null);
     }
 
+    @Nonnull
     @Override
-    public TableDataSource editEntryDataSource(Selection.Area entry)
+    public TableCell entryCell(boolean enabled, Selection.Area area)
     {
-        return new TableDataSourceSelectionArea(entry, dimensions, showIdentifier);
+        return editCell(enabled, navigator, tableDelegate, () -> new TableDataSourceSelectionArea(area, dimensions, showIdentifier));
     }
 
     @Nonnull

@@ -5,11 +5,10 @@
 
 package ivorius.reccomplex.gui.worldscripts.mazegenerator;
 
+import ivorius.reccomplex.gui.table.cell.TableCell;
 import net.minecraft.util.text.TextFormatting;
 import ivorius.ivtoolkit.gui.IntegerRange;
 import ivorius.ivtoolkit.maze.components.MazeRoom;
-import ivorius.ivtoolkit.tools.IvTranslations;
-import ivorius.reccomplex.gui.table.datasource.TableDataSource;
 import ivorius.reccomplex.gui.table.datasource.TableDataSourceList;
 import ivorius.reccomplex.gui.table.TableDelegate;
 import ivorius.reccomplex.gui.table.TableNavigator;
@@ -45,10 +44,11 @@ public class TableDataSourceMazePathList extends TableDataSourceList<SavedMazePa
         return new SavedMazePath(2, new MazeRoom(new int[bounds.size()]), false);
     }
 
+    @Nonnull
     @Override
-    public TableDataSource editEntryDataSource(SavedMazePath entry)
+    public TableCell entryCell(boolean enabled, SavedMazePath savedMazePath)
     {
-        return new TableDataSourceMazePath(entry, bounds, tableDelegate);
+        return editCell(enabled, navigator, tableDelegate, () -> new TableDataSourceMazePath(savedMazePath, bounds, tableDelegate));
     }
 
     @Nonnull

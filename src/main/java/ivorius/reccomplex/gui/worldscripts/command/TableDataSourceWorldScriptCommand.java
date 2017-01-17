@@ -5,15 +5,15 @@
 
 package ivorius.reccomplex.gui.worldscripts.command;
 
-import ivorius.ivtoolkit.tools.IvTranslations;
 import ivorius.reccomplex.gui.table.*;
-import ivorius.reccomplex.gui.table.datasource.TableDataSource;
+import ivorius.reccomplex.gui.table.cell.TableCell;
 import ivorius.reccomplex.gui.table.datasource.TableDataSourceList;
 import ivorius.reccomplex.gui.table.datasource.TableDataSourceSegmented;
 import ivorius.reccomplex.gui.worldscripts.TableDataSourceWorldScript;
 import ivorius.reccomplex.world.gen.script.WorldScriptCommand;
 import org.apache.commons.lang3.StringUtils;
 
+import javax.annotation.Nonnull;
 import java.util.List;
 
 /**
@@ -38,10 +38,11 @@ public class TableDataSourceWorldScriptCommand extends TableDataSourceSegmented
                 return new WorldScriptCommand.Entry(1.0, "");
             }
 
+            @Nonnull
             @Override
-            public TableDataSource editEntryDataSource(WorldScriptCommand.Entry entry)
+            public TableCell entryCell(boolean enabled, WorldScriptCommand.Entry entry)
             {
-                return new TableDataSourceSpawnCommandEntry(entry, tableDelegate);
+                return editCell(enabled, navigator, tableDelegate, () -> new TableDataSourceSpawnCommandEntry(entry, tableDelegate));
             }
         });
     }

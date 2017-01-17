@@ -8,7 +8,7 @@ package ivorius.reccomplex.gui.editstructure;
 import ivorius.reccomplex.files.RCFileSaver;
 import ivorius.reccomplex.gui.editstructure.preset.TableDataSourcePresettedList;
 import ivorius.reccomplex.gui.editstructure.preset.TableDataSourcePresettedObject;
-import ivorius.reccomplex.gui.table.datasource.TableDataSource;
+import ivorius.reccomplex.gui.table.cell.TableCell;
 import ivorius.reccomplex.gui.table.datasource.TableDataSourceSegmented;
 import ivorius.reccomplex.gui.table.TableDelegate;
 import ivorius.reccomplex.gui.table.TableNavigator;
@@ -49,10 +49,11 @@ public class TableDataSourceWeightedBlockStateList extends TableDataSourceSegmen
                 return new WeightedBlockState(null, Blocks.STONE.getDefaultState(), "");
             }
 
+            @Nonnull
             @Override
-            public TableDataSource editEntryDataSource(WeightedBlockState entry)
+            public TableCell entryCell(boolean enabled, WeightedBlockState weightedBlockState)
             {
-                return new TableDataSourceWeightedBlockState(entry, navigator, tableDelegate);
+                return editCell(enabled, navigator, delegate, () -> new TableDataSourceWeightedBlockState(weightedBlockState, navigator, tableDelegate));
             }
         });
     }

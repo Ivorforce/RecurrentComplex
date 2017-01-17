@@ -8,8 +8,8 @@ package ivorius.reccomplex.gui.worldscripts.mazegenerator.rules;
 import ivorius.ivtoolkit.gui.IntegerRange;
 import ivorius.reccomplex.gui.editstructure.preset.TableDataSourcePresettedList;
 import ivorius.reccomplex.gui.table.*;
+import ivorius.reccomplex.gui.table.cell.TableCell;
 import ivorius.reccomplex.gui.table.cell.TableCellButton;
-import ivorius.reccomplex.gui.table.datasource.TableDataSource;
 import ivorius.reccomplex.gui.table.datasource.TableDataSourceList;
 import ivorius.reccomplex.world.gen.feature.structure.generic.maze.SavedMazePathConnection;
 import ivorius.reccomplex.world.gen.feature.structure.generic.maze.rules.MazeRule;
@@ -47,10 +47,11 @@ public class TableDataSourceMazeRuleList extends TableDataSourceList<MazeRule, L
         return tryInstantiate(actionID, MazeRuleRegistry.INSTANCE.objectClass(actionID), "Failed instantiating maze rule: %s");
     }
 
+    @Nonnull
     @Override
-    public TableDataSource editEntryDataSource(MazeRule mazeRule)
+    public TableCell entryCell(boolean enabled, MazeRule mazeRule)
     {
-        return mazeRule.tableDataSource(navigator, tableDelegate, expected, bounds);
+        return editCell(enabled, navigator, tableDelegate, () -> mazeRule.tableDataSource(navigator, tableDelegate, expected, bounds));
     }
 
     @Override

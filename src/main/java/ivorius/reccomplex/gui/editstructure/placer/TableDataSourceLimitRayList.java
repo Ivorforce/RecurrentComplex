@@ -7,8 +7,8 @@ package ivorius.reccomplex.gui.editstructure.placer;
 
 import ivorius.reccomplex.gui.editstructure.preset.TableDataSourcePresettedList;
 import ivorius.reccomplex.gui.table.*;
+import ivorius.reccomplex.gui.table.cell.TableCell;
 import ivorius.reccomplex.gui.table.cell.TableCellButton;
-import ivorius.reccomplex.gui.table.datasource.TableDataSource;
 import ivorius.reccomplex.gui.table.datasource.TableDataSourceList;
 import ivorius.reccomplex.world.gen.feature.structure.generic.placement.FactorLimit;
 
@@ -38,10 +38,11 @@ public class TableDataSourceLimitRayList extends TableDataSourceList<FactorLimit
         return tryInstantiate(actionID, FactorLimit.getRayRegistry().typeForID(actionID), "Failed instantiating limit factor ray: %s");
     }
 
+    @Nonnull
     @Override
-    public TableDataSource editEntryDataSource(FactorLimit.Ray entry)
+    public TableCell entryCell(boolean enabled, FactorLimit.Ray ray)
     {
-        return entry.tableDataSource(navigator, tableDelegate);
+        return editCell(enabled, navigator, tableDelegate, () -> ray.tableDataSource(navigator, tableDelegate));
     }
 
     @Override

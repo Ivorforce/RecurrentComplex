@@ -37,6 +37,7 @@ public class TableDataSourceNBTTagCompound extends TableDataSourceSegmented
         this.nbt = nbt;
 
         sortedKeys.addAll(nbt.getKeySet());
+        sortedKeys.sort(String::compareTo);
     }
 
     public NBTTagCompound getNbt()

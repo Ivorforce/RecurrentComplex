@@ -6,10 +6,13 @@
 package ivorius.reccomplex.network;
 
 import ivorius.ivtoolkit.network.SchedulingMessageHandler;
+import ivorius.reccomplex.RecurrentComplex;
 import ivorius.reccomplex.gui.inspector.GuiBlockInspector;
 import ivorius.reccomplex.world.gen.feature.structure.OperationClearArea;
 import net.minecraft.client.Minecraft;
+import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.network.NetHandlerPlayServer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.WorldServer;
@@ -33,6 +36,11 @@ public class PacketInspectBlockHandler extends SchedulingMessageHandler<PacketIn
     @Override
     public void processServer(PacketInspectBlock message, MessageContext ctx, WorldServer world)
     {
+        NetHandlerPlayServer playServer = ctx.getServerHandler();
+        EntityPlayerMP player = playServer.playerEntity;
+
+        if (RecurrentComplex.checkPerms(player)) return;
+
         BlockPos pos = message.getPos();
 
         OperationClearArea.setBlockToAirClean(world, pos);

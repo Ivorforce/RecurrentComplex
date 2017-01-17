@@ -255,7 +255,7 @@ public class TableDataSourceNBT
             case Constants.NBT.TAG_BYTE:
                 return () -> new NBTTagByte((byte) 0);
             case Constants.NBT.TAG_SHORT:
-                return () -> new NBTTagInt(id);
+                return () -> new NBTTagShort((short) 0);
             case Constants.NBT.TAG_INT:
                 return () -> new NBTTagInt(0);
             case Constants.NBT.TAG_LONG:

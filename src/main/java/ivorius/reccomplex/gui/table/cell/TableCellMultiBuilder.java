@@ -107,7 +107,7 @@ public class TableCellMultiBuilder
     }
 
     @Nonnull
-    public TableCell build()
+    public TableCellDefault build()
     {
         List<TableCell> cells = new ArrayList<>();
 

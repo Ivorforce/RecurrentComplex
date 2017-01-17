@@ -8,6 +8,7 @@ package ivorius.reccomplex.json;
 import com.google.gson.*;
 import net.minecraft.nbt.NBTTagEnd;
 
+import javax.annotation.Nonnull;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Type;
@@ -45,6 +46,12 @@ public class NBTTagEndSerializer implements JsonSerializer<NBTTagEnd>, JsonDeser
 
     @Override
     public NBTTagEnd deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException
+    {
+        return createNBTTagEnd();
+    }
+
+    @Nonnull
+    public static NBTTagEnd createNBTTagEnd()
     {
         try
         {

@@ -5,6 +5,7 @@
 
 package ivorius.reccomplex.gui.table.cell;
 
+import com.google.common.primitives.Doubles;
 import com.google.common.primitives.Ints;
 import ivorius.reccomplex.gui.GuiValidityStateIndicator;
 import ivorius.reccomplex.gui.table.Bounds;
@@ -14,12 +15,12 @@ import net.minecraft.client.gui.GuiTextField;
 /**
  * Created by lukas on 02.06.14.
  */
-public class TableCellStringInt extends TableCellPropertyDefault<Integer>
+public class TableCellStringDouble extends TableCellPropertyDefault<Double>
 {
     protected GuiTextField textField;
     protected GuiValidityStateIndicator stateIndicator;
 
-    public TableCellStringInt(String id, Integer value)
+    public TableCellStringDouble(String id, Double value)
     {
         super(id, value);
     }
@@ -37,13 +38,13 @@ public class TableCellStringInt extends TableCellPropertyDefault<Integer>
         textField.setText(getPropertyValue().toString());
         textField.setVisible(!isHidden());
 
-        stateIndicator = new GuiValidityStateIndicator(bounds.getMinX() + bounds.getWidth() - 10, bounds.getMinY() + (bounds.getHeight() - 10) / 2, currentValidityState());
+        stateIndicator = new GuiValidityStateIndicator(bounds.getMinX() + bounds.getWidth() - 10, bounds.getMinY() + (bounds.getHeight() - 10) / 2, getValidityState());
         stateIndicator.setVisible(!isHidden());
     }
 
-    protected GuiValidityStateIndicator.State currentValidityState()
+    protected GuiValidityStateIndicator.State getValidityState()
     {
-        return Ints.tryParse(textField.getText()) != null ? GuiValidityStateIndicator.State.VALID : GuiValidityStateIndicator.State.INVALID;
+        return Doubles.tryParse(textField.getText()) != null ? GuiValidityStateIndicator.State.VALID : GuiValidityStateIndicator.State.INVALID;
     }
 
     @Override
@@ -79,13 +80,13 @@ public class TableCellStringInt extends TableCellPropertyDefault<Integer>
         super.keyTyped(keyChar, keyCode);
 
         boolean used = textField.textboxKeyTyped(keyChar, keyCode);
-        Integer parsed = Ints.tryParse(textField.getText());
+        Double parsed = Doubles.tryParse(textField.getText());
 
-        stateIndicator.setState(currentValidityState());
+        stateIndicator.setState(getValidityState());
 
         if (parsed != null)
         {
-            Integer prev = property;
+            Double prev = property;
             property = parsed;
 
             if (!property.equals(prev))
@@ -116,7 +117,7 @@ public class TableCellStringInt extends TableCellPropertyDefault<Integer>
     }
 
     @Override
-    public void setPropertyValue(Integer value)
+    public void setPropertyValue(Double value)
     {
         super.setPropertyValue(value);
 

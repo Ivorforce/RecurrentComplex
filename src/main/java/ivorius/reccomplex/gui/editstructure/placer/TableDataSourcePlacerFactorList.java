@@ -7,8 +7,8 @@ package ivorius.reccomplex.gui.editstructure.placer;
 
 import ivorius.reccomplex.gui.editstructure.preset.TableDataSourcePresettedList;
 import ivorius.reccomplex.gui.table.*;
+import ivorius.reccomplex.gui.table.cell.TableCell;
 import ivorius.reccomplex.gui.table.cell.TableCellButton;
-import ivorius.reccomplex.gui.table.datasource.TableDataSource;
 import ivorius.reccomplex.gui.table.datasource.TableDataSourceList;
 import ivorius.reccomplex.world.gen.feature.structure.generic.placement.FactorRegistry;
 import ivorius.reccomplex.world.gen.feature.structure.generic.placement.GenericPlacer;
@@ -39,10 +39,11 @@ public class TableDataSourcePlacerFactorList extends TableDataSourceList<Generic
         return tryInstantiate(actionID, FactorRegistry.INSTANCE.getTypeRegistry().typeForID(actionID), "Failed instantiating placer factor: %s");
     }
 
+    @Nonnull
     @Override
-    public TableDataSource editEntryDataSource(GenericPlacer.Factor entry)
+    public TableCell entryCell(boolean enabled, GenericPlacer.Factor factor)
     {
-        return entry.tableDataSource(navigator, tableDelegate);
+        return editCell(enabled, navigator, tableDelegate, () -> factor.tableDataSource(navigator, tableDelegate));
     }
 
     @Override

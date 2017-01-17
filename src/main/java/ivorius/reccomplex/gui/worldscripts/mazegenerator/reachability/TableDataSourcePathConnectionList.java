@@ -8,10 +8,11 @@ package ivorius.reccomplex.gui.worldscripts.mazegenerator.reachability;
 import ivorius.ivtoolkit.gui.IntegerRange;
 import ivorius.ivtoolkit.maze.components.MazeRoom;
 import ivorius.ivtoolkit.tools.IvTranslations;
-import ivorius.reccomplex.gui.table.*;
+import ivorius.reccomplex.gui.table.TableDelegate;
+import ivorius.reccomplex.gui.table.TableNavigator;
+import ivorius.reccomplex.gui.table.cell.TableCell;
 import ivorius.reccomplex.gui.table.cell.TableCellTitle;
 import ivorius.reccomplex.gui.table.cell.TitledCell;
-import ivorius.reccomplex.gui.table.datasource.TableDataSource;
 import ivorius.reccomplex.gui.table.datasource.TableDataSourceList;
 import ivorius.reccomplex.gui.table.datasource.TableDataSourceMulti;
 import ivorius.reccomplex.gui.table.datasource.TableDataSourcePreloaded;
@@ -57,15 +58,16 @@ public class TableDataSourcePathConnectionList extends TableDataSourceList<Immut
         return ImmutablePair.of(new SavedMazePath(0, new MazeRoom(0, 0, 0), true), new SavedMazePath(0, new MazeRoom(0, 0, 0), false));
     }
 
+    @Nonnull
     @Override
-    public TableDataSource editEntryDataSource(ImmutablePair<SavedMazePath, SavedMazePath> pair)
+    public TableCell entryCell(boolean enabled, ImmutablePair<SavedMazePath, SavedMazePath> pair)
     {
-        return new TableDataSourceMulti(
+        return editCell(enabled, navigator, tableDelegate, () -> new TableDataSourceMulti(
                 new TableDataSourcePreloaded(new TitledCell(new TableCellTitle("", IvTranslations.get("reccomplex.gui.source")))),
                 new TableDataSourceMazePath(pair.getLeft(), bounds, tableDelegate),
                 new TableDataSourcePreloaded(new TitledCell(new TableCellTitle("", IvTranslations.get("reccomplex.gui.destination")))),
                 new TableDataSourceMazePath(pair.getRight(), bounds, tableDelegate)
-        );
+        ));
     }
 
     @Nonnull

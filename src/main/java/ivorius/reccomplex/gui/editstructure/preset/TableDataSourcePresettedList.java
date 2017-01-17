@@ -46,22 +46,28 @@ public abstract class TableDataSourcePresettedList<T> extends TableDataSourceLis
         return TableCellPresetAction.sorted(ids.stream().map(type ->
         {
             String key = baseKey + type;
-            return new TableCellButton(type, type,
-                    IvTranslations.get(key),
-                    IvTranslations.formatLines(key + ".tooltip"),
-                    enabled){
-                @Override
-                public void draw(GuiTable screen, int mouseX, int mouseY, float partialTicks)
-                {
-                    super.draw(screen, mouseX, mouseY, partialTicks);
-
-                    String plus = TextFormatting.GREEN + "+";
-                    int plusWidth = getFontRenderer().getStringWidth(plus);
-                    getFontRenderer().drawString(plus, bounds().getMinX() + 6, bounds().getCenterY() - 4, 0xffffffff, true);
-                    getFontRenderer().drawString(plus, bounds().getMaxX() - 6 - plusWidth, bounds().getCenterY() - 4, 0xffffffff, true);
-                }
-            };
+            return addAction(enabled, type, IvTranslations.get(key), IvTranslations.formatLines(key + ".tooltip"));
         })).collect(Collectors.toList());
+    }
+
+    @Nonnull
+    public static TableCellButton addAction(final boolean enabled, final String id, final String title, final List<String> tooltip)
+    {
+        return new TableCellButton(id, id,
+                title,
+                tooltip,
+                enabled){
+            @Override
+            public void draw(GuiTable screen, int mouseX, int mouseY, float partialTicks)
+            {
+                super.draw(screen, mouseX, mouseY, partialTicks);
+
+                String plus = TextFormatting.GREEN + "+";
+                int plusWidth = getFontRenderer().getStringWidth(plus);
+                getFontRenderer().drawString(plus, bounds().getMinX() + 6, bounds().getCenterY() - 4, 0xffffffff, true);
+                getFontRenderer().drawString(plus, bounds().getMaxX() - 6 - plusWidth, bounds().getCenterY() - 4, 0xffffffff, true);
+            }
+        };
     }
 
     @Override

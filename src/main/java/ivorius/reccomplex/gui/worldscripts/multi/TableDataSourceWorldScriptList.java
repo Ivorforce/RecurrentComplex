@@ -7,8 +7,8 @@ package ivorius.reccomplex.gui.worldscripts.multi;
 
 import ivorius.reccomplex.gui.editstructure.preset.TableDataSourcePresettedList;
 import ivorius.reccomplex.gui.table.*;
+import ivorius.reccomplex.gui.table.cell.TableCell;
 import ivorius.reccomplex.gui.table.cell.TableCellButton;
-import ivorius.reccomplex.gui.table.datasource.TableDataSource;
 import ivorius.reccomplex.gui.table.datasource.TableDataSourceList;
 import ivorius.reccomplex.world.gen.script.WorldScript;
 import ivorius.reccomplex.world.gen.script.WorldScriptRegistry;
@@ -40,10 +40,11 @@ public class TableDataSourceWorldScriptList extends TableDataSourceList<WorldScr
         return tryInstantiate(actionID, WorldScriptRegistry.INSTANCE.objectClass(actionID), "Failed instantiating world script: %s");
     }
 
+    @Nonnull
     @Override
-    public TableDataSource editEntryDataSource(WorldScript entry)
+    public TableCell entryCell(boolean enabled, WorldScript worldScript)
     {
-        return entry.tableDataSource(navigator, tableDelegate);
+        return editCell(enabled, navigator, tableDelegate, () -> worldScript.tableDataSource(navigator, tableDelegate));
     }
 
     @Override

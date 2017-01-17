@@ -209,7 +209,10 @@ public abstract class TableDataSourceList<T, L extends List<T>> extends TableDat
         {
             T entry = newEntry(actionID);
             if (entry != null)
+            {
                 list.add(addIndex, entry);
+                getTableDelegate().reloadData();
+            }
         };
     }
 

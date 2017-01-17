@@ -46,7 +46,7 @@ public class ItemStackSerializer implements JsonSerializer<ItemStack>, JsonDeser
             if (RecurrentComplex.USE_JSON_FOR_NBT)
                 jsonObject.add("tag", context.serialize(src.getTagCompound()));
             else
-                jsonObject.addProperty("tagBase64", NbtToJson.getBase64FromNBT(src.getTagCompound()));
+                jsonObject.addProperty("tagBase64", NBTToJson.getBase64FromNBT(src.getTagCompound()));
         }
 
         return jsonObject;
@@ -70,7 +70,7 @@ public class ItemStackSerializer implements JsonSerializer<ItemStack>, JsonDeser
         }
         else if (jsonObject.has("tagBase64"))
         {
-            NBTTagCompound compound = NbtToJson.getNBTFromBase64(JsonUtils.getString(jsonObject, "tagBase64"));
+            NBTTagCompound compound = NBTToJson.getNBTFromBase64(JsonUtils.getString(jsonObject, "tagBase64"));
             stack.setTagCompound(compound);
         }
 

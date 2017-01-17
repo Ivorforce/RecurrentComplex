@@ -11,6 +11,8 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumActionResult;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
@@ -28,7 +30,15 @@ public class ItemInspector extends Item
         boolean canUse = playerIn.canCommandSenderUseCommand(2, "setblock");
 
         if (!worldIn.isRemote)
-            RecurrentComplex.network.sendTo(new PacketInspectBlock(pos, worldIn.getBlockState(pos)), (EntityPlayerMP) playerIn);
+        {
+            PacketInspectBlock message = new PacketInspectBlock(pos, worldIn.getBlockState(pos));
+
+            TileEntity tileEntity = worldIn.getTileEntity(pos);
+            if (tileEntity != null)
+                message.setTileEntityData(tileEntity.writeToNBT(new NBTTagCompound()));
+
+            RecurrentComplex.network.sendTo(message, (EntityPlayerMP) playerIn);
+        }
 
         return canUse ? EnumActionResult.SUCCESS : EnumActionResult.FAIL;
     }

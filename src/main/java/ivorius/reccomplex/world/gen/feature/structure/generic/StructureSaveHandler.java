@@ -13,7 +13,7 @@ import ivorius.reccomplex.RecurrentComplex;
 import ivorius.reccomplex.files.loading.FileLoaderRegistry;
 import ivorius.reccomplex.files.loading.RCFileSuffix;
 import ivorius.reccomplex.files.saving.FileSaverAdapter;
-import ivorius.reccomplex.json.NbtToJson;
+import ivorius.reccomplex.json.NBTToJson;
 import ivorius.reccomplex.world.gen.feature.structure.StructureInfo;
 import ivorius.reccomplex.world.gen.feature.structure.StructureRegistry;
 import ivorius.reccomplex.utils.ByteArrays;
@@ -68,7 +68,7 @@ public class StructureSaveHandler
         StructureRegistry.TRANSFORMERS.constructGson(builder);
         StructureRegistry.GENERATION_INFOS.constructGson(builder);
 
-        NbtToJson.registerSafeNBTSerializer(builder);
+        NBTToJson.registerSafeNBTSerializer(builder);
 
         return builder.create();
     }

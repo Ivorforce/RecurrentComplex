@@ -16,7 +16,7 @@ import ivorius.ivtoolkit.world.chunk.gen.StructureBoundingBoxes;
 import ivorius.reccomplex.RecurrentComplex;
 import ivorius.reccomplex.block.GeneratingTileEntity;
 import ivorius.reccomplex.json.JsonUtils;
-import ivorius.reccomplex.json.NbtToJson;
+import ivorius.reccomplex.json.NBTToJson;
 import ivorius.reccomplex.world.gen.feature.structure.*;
 import ivorius.reccomplex.world.gen.feature.structure.context.StructureLoadContext;
 import ivorius.reccomplex.world.gen.feature.structure.context.StructurePrepareContext;
@@ -445,7 +445,7 @@ public class GenericStructureInfo implements StructureInfo<GenericStructureInfo.
             if (jsonObject.has("worldData"))
                 structureInfo.worldDataCompound = context.deserialize(jsonObject.get("worldData"), NBTTagCompound.class);
             else if (jsonObject.has("worldDataBase64"))
-                structureInfo.worldDataCompound = NbtToJson.getNBTFromBase64(JsonUtils.getString(jsonObject, "worldDataBase64"));
+                structureInfo.worldDataCompound = NBTToJson.getNBTFromBase64(JsonUtils.getString(jsonObject, "worldDataBase64"));
             // And else it is taken out for packet size, or stored in the zip
 
             if (jsonObject.has("metadata")) // Else, use default
@@ -475,7 +475,7 @@ public class GenericStructureInfo implements StructureInfo<GenericStructureInfo.
                 if (RecurrentComplex.USE_JSON_FOR_NBT)
                     jsonObject.add("worldData", context.serialize(structureInfo.worldDataCompound));
                 else
-                    jsonObject.addProperty("worldDataBase64", NbtToJson.getBase64FromNBT(structureInfo.worldDataCompound));
+                    jsonObject.addProperty("worldDataBase64", NBTToJson.getBase64FromNBT(structureInfo.worldDataCompound));
             }
 
             jsonObject.add("metadata", context.serialize(structureInfo.metadata));

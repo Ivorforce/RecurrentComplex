@@ -126,6 +126,7 @@ public class RCCommands
         event.registerServerCommand(lookup = new CommandLookupStructure());
         event.registerServerCommand(list = new CommandListStructures());
         event.registerServerCommand(new CommandSearchStructure());
+        event.registerServerCommand(new CommandContaining());
 
         if (event.getSide() == Side.CLIENT) // TODO Make client-side command (don't even send to server)
             event.registerServerCommand(new CommandBrowseFiles());

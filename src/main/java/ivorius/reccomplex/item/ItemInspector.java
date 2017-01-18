@@ -40,7 +40,7 @@ public class ItemInspector extends Item
 
     public static void inspectEntity(EntityPlayerMP playerIn, EntityLivingBase target)
     {
-        PacketInspectEntity message = new PacketInspectEntity(target.writeToNBT(new NBTTagCompound()), target.getUniqueID());
+        PacketInspectEntity message = new PacketInspectEntity(target.writeToNBT(new NBTTagCompound()), target.getUniqueID(), target.getName());
 
         RecurrentComplex.network.sendTo(message, playerIn);
     }

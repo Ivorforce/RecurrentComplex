@@ -19,6 +19,8 @@ import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
+import javax.annotation.Nonnull;
+
 /**
  * Created by lukas on 03.08.14.
  */
@@ -29,8 +31,15 @@ public class PacketInspectEntityHandler extends SchedulingMessageHandler<PacketI
     public void processClient(PacketInspectEntity message, MessageContext ctx)
     {
         GuiScreenEditTable<TableDataSourceNBTTagCompound> screen = new GuiScreenEditTable<>();
-        screen.setDataSource(new TableDataSourceNBTTagCompound(screen, screen, message.getData()), ds ->
-                RecurrentComplex.network.sendToServer(new PacketInspectEntity(ds.getNbt(), message.getUuid())));
+        screen.setDataSource(new TableDataSourceNBTTagCompound(screen, screen, message.getData()){
+            @Nonnull
+            @Override
+            public String title()
+            {
+                return message.getName();
+            }
+        }, ds ->
+                RecurrentComplex.network.sendToServer(new PacketInspectEntity(ds.getNbt(), message.getUuid(), message.getName())));
         Minecraft.getMinecraft().displayGuiScreen(screen);
     }
 

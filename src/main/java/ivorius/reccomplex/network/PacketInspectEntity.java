@@ -23,15 +23,17 @@ public class PacketInspectEntity implements IMessage
 {
     private NBTTagCompound data;
     private UUID uuid;
+    private String name;
 
     public PacketInspectEntity()
     {
     }
 
-    public PacketInspectEntity(NBTTagCompound data, UUID uuid)
+    public PacketInspectEntity(NBTTagCompound data, UUID uuid, String name)
     {
         this.data = data;
         this.uuid = uuid;
+        this.name = name;
     }
 
     public NBTTagCompound getData()
@@ -54,11 +56,22 @@ public class PacketInspectEntity implements IMessage
         this.uuid = uuid;
     }
 
+    public String getName()
+    {
+        return name;
+    }
+
+    public void setName(String name)
+    {
+        this.name = name;
+    }
+
     @Override
     public void fromBytes(ByteBuf buf)
     {
         data = IvPacketHelper.maybeRead(buf, null, () -> ByteBufUtils.readTag(buf));
         uuid = UUID.fromString(ByteBufUtils.readUTF8String(buf));
+        name = ByteBufUtils.readUTF8String(buf);
     }
 
     @Override
@@ -66,5 +79,6 @@ public class PacketInspectEntity implements IMessage
     {
         IvPacketHelper.maybeWrite(buf, data, () -> ByteBufUtils.writeTag(buf, data));
         ByteBufUtils.writeUTF8String(buf, uuid.toString());
+        ByteBufUtils.writeUTF8String(buf, name);
     }
 }

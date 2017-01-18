@@ -40,7 +40,14 @@ public class TableDataSourceInspectBlock extends TableDataSourceSegmented
         this.tileEntityData = tileEntityData;
 
         addManagedSegment(0, TableCellMultiBuilder.create(navigator, delegate)
-                .addNavigation(() -> new TableDataSourceNBTTagCompound(delegate, navigator, this.tileEntityData))
+                .addNavigation(() -> new TableDataSourceNBTTagCompound(delegate, navigator, this.tileEntityData){
+                    @Nonnull
+                    @Override
+                    public String title()
+                    {
+                        return "Tile Entity";
+                    }
+                })
                 .enabled(() -> this.tileEntityData != null)
                 .addAction(() -> this.tileEntityData != null ? "Remove" : "Add", null, () ->
                 {

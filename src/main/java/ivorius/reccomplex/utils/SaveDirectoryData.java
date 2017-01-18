@@ -6,6 +6,7 @@
 package ivorius.reccomplex.utils;
 
 import io.netty.buffer.ByteBuf;
+import ivorius.reccomplex.files.loading.LeveledRegistry;
 import ivorius.reccomplex.files.loading.ResourceDirectory;
 import net.minecraftforge.fml.common.network.ByteBufUtils;
 
@@ -46,9 +47,12 @@ public class SaveDirectoryData
         return IntStream.range(0, buf.readInt()).mapToObj(i -> supplier.apply(buf)).collect(Collectors.toList());
     }
 
-    public static SaveDirectoryData defaultData(String id, Set<String> filesInActive, Set<String> filesInInactive)
+    public static SaveDirectoryData defaultData(String id, boolean active, Set<String> filesInActive, Set<String> filesInInactive)
     {
-        return new SaveDirectoryData(ResourceDirectory.custom(filesInActive.contains(id)), true, filesInActive, filesInInactive);
+        ResourceDirectory directory = filesInInactive.contains(id) ? ResourceDirectory.INACTIVE
+                : filesInActive.contains(id) ? ResourceDirectory.ACTIVE
+                : ResourceDirectory.custom(active);
+        return new SaveDirectoryData(directory, true, filesInActive, filesInInactive);
     }
 
     public static SaveDirectoryData readFrom(ByteBuf buf)

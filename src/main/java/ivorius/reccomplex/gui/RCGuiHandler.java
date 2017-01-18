@@ -8,12 +8,14 @@ package ivorius.reccomplex.gui;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 import ivorius.reccomplex.RecurrentComplex;
+import ivorius.reccomplex.files.SimpleLeveledRegistry;
 import ivorius.reccomplex.files.loading.RCFileSuffix;
 import ivorius.reccomplex.files.loading.ResourceDirectory;
 import ivorius.reccomplex.gui.container.IvGuiHandler;
 import ivorius.reccomplex.gui.container.IvGuiRegistry;
 import ivorius.reccomplex.gui.inventorygen.GuiEditInventoryGen;
 import ivorius.reccomplex.utils.SaveDirectoryData;
+import ivorius.reccomplex.world.storage.loot.GenericItemCollectionRegistry;
 import ivorius.reccomplex.world.storage.loot.ItemCollectionSaveHandler;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -39,9 +41,13 @@ public class RCGuiHandler implements IvGuiHandler
         if (component == null)
             component = Component.createDefaultComponent();
         if (saveDirectoryData == null)
-            saveDirectoryData = SaveDirectoryData.defaultData(key,
+        {
+            SimpleLeveledRegistry<Component>.Status status = GenericItemCollectionRegistry.INSTANCE.status(key);
+
+            saveDirectoryData = SaveDirectoryData.defaultData(key, status != null && status.isActive(),
                     RecurrentComplex.loader.tryFindIDs(ResourceDirectory.ACTIVE.toPath(), RCFileSuffix.INVENTORY_GENERATION_COMPONENT),
                     RecurrentComplex.loader.tryFindIDs(ResourceDirectory.INACTIVE.toPath(), RCFileSuffix.INVENTORY_GENERATION_COMPONENT));
+        }
 
         ByteBuf buf = Unpooled.buffer();
 

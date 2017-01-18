@@ -41,7 +41,7 @@ public class GenerationInfoMatcher extends BoolFunctionExpressionCache<Generatio
         @Override
         public Function<SupplierCache<GenerationInfo>, Boolean> parse(String var) throws ParseException
         {
-            return info -> info != null && var.equals(info.get().id());
+            return info -> info.get() != null && var.equals(info.get().id());
         }
 
         @Override
@@ -63,7 +63,7 @@ public class GenerationInfoMatcher extends BoolFunctionExpressionCache<Generatio
         {
             Class<? extends GenerationInfo> theClass = StructureRegistry.GENERATION_INFOS.typeForID(var);
             return theClass != null
-                    ? info -> info != null && theClass.isAssignableFrom(info.getClass())
+                    ? info -> info.get() != null && theClass.isAssignableFrom(info.get().getClass())
                     : info -> false;
         }
 

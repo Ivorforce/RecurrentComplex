@@ -38,7 +38,7 @@ public class TableCellStringDouble extends TableCellPropertyDefault<Double>
         textField.setText(getPropertyValue().toString());
         textField.setVisible(!isHidden());
 
-        stateIndicator = new GuiValidityStateIndicator(bounds.getMinX() + bounds.getWidth() - 10, bounds.getMinY() + (bounds.getHeight() - 10) / 2, getValidityState());
+        stateIndicator = new GuiValidityStateIndicator(bounds.getMinX() + bounds.getWidth() - 12, bounds.getMinY() + (bounds.getHeight() - 10) / 2, getValidityState());
         stateIndicator.setVisible(!isHidden());
     }
 
@@ -128,6 +128,6 @@ public class TableCellStringDouble extends TableCellPropertyDefault<Double>
     protected void updateTextFieldBounds(Bounds bounds)
     {
         if (textField != null)
-            Bounds.set(textField, Bounds.fromSize(bounds.getMinX() + 2, bounds.getCenterY() - 9, bounds.getWidth() - 18 - 4, 18));
+            Bounds.set(textField, Bounds.fromSize(bounds.getMinX() + 2, bounds.getCenterY() - 9, bounds.getWidth() - 18, 18));
     }
 }

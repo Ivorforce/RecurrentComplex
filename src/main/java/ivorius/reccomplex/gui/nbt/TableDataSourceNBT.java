@@ -64,9 +64,13 @@ public class TableDataSourceNBT
             TableCellStringInt cell = new TableCellStringInt(null, cNBT.getInt());
             cell.addPropertyConsumer(value ->
             {
-                // TODO Use the state indicator instead
-                ReflectionHelper.setPrivateValue(NBTTagByte.class, cNBT, (byte) (int) value, "field_74756_a", "data");
-                cell.setPropertyValue((int) (byte) (int) value);
+                if (value >= Byte.MIN_VALUE && value <= Byte.MAX_VALUE)
+                {
+                    ReflectionHelper.setPrivateValue(NBTTagByte.class, cNBT, (byte) (int) value, "field_74756_a", "data");
+                    cell.setValidityState(GuiValidityStateIndicator.State.VALID);
+                }
+                else
+                    cell.setValidityState(GuiValidityStateIndicator.State.INVALID);
             });
             return cell;
         }
@@ -76,9 +80,13 @@ public class TableDataSourceNBT
             TableCellStringInt cell = new TableCellStringInt(null, cNBT.getInt());
             cell.addPropertyConsumer(value ->
             {
-                // TODO Use the state indicator instead
-                ReflectionHelper.setPrivateValue(NBTTagShort.class, cNBT, (short) (int) value, "field_74752_a", "data");
-                cell.setPropertyValue((int) (short) (int) value);
+                if (value >= Short.MIN_VALUE && value <= Short.MAX_VALUE)
+                {
+                    ReflectionHelper.setPrivateValue(NBTTagShort.class, cNBT, (short) (int) value, "field_74752_a", "data");
+                    cell.setValidityState(GuiValidityStateIndicator.State.VALID);
+                }
+                else
+                    cell.setValidityState(GuiValidityStateIndicator.State.INVALID);
             });
             return cell;
         }
@@ -104,11 +112,7 @@ public class TableDataSourceNBT
             NBTTagFloat cNBT = (NBTTagFloat) nbt;
             TableCellStringDouble cell = new TableCellStringDouble(null, cNBT.getDouble());
             cell.addPropertyConsumer(value ->
-            {
-                // TODO Use the state indicator instead
-                ReflectionHelper.setPrivateValue(NBTTagFloat.class, cNBT, (float) (double) value, "field_74750_a", "data");
-                cell.setPropertyValue((double) (float) (double) value);
-            });
+                    ReflectionHelper.setPrivateValue(NBTTagFloat.class, cNBT, (float) (double) value, "field_74750_a", "data"));
             return cell;
         }
         else if (nbt instanceof NBTTagDouble)

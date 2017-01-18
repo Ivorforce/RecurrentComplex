@@ -48,6 +48,14 @@ public class BlockGenericSpace extends BlockTyped
     }
 
     @SuppressWarnings("deprecation")
+    @Nullable
+    @Override
+    public AxisAlignedBB getCollisionBoundingBox(IBlockState blockState, World worldIn, BlockPos pos)
+    {
+        return NULL_AABB;
+    }
+
+    @SuppressWarnings("deprecation")
     @Nonnull
     @Override
     public AxisAlignedBB getBoundingBox(IBlockState state, IBlockAccess source, BlockPos pos)

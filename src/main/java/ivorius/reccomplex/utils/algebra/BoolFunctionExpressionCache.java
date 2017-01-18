@@ -54,8 +54,8 @@ public class BoolFunctionExpressionCache<A, U> extends FunctionExpressionCache<B
         @Override
         public Function<SupplierCache<Object>, Boolean> parse(String var)
         {
-            boolean result = RCConfig.globalToggles.containsKey(var) && RCConfig.globalToggles.get(var);
-            return o -> result;
+            // Can change at any moment so don't cache! / Use boolean[] as pointer magic? hah
+            return o -> RCConfig.globalToggles.containsKey(var) && RCConfig.globalToggles.get(var);
         }
 
         @Override

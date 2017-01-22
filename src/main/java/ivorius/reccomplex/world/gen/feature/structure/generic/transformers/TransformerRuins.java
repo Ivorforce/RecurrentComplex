@@ -151,31 +151,31 @@ public class TransformerRuins extends Transformer<TransformerRuins.InstanceData>
     @Override
     public void transform(InstanceData instanceData, Phase phase, StructureSpawnContext context, IvWorldData worldData, RunTransformer transformer)
     {
-        WorldServer world = context.environment.world;
-        IvBlockCollection blockCollection = worldData.blockCollection;
-        int[] areaSize = new int[]{blockCollection.width, blockCollection.height, blockCollection.length};
-
-        BlockPos lowerCoord = StructureBoundingBoxes.min(context.boundingBox);
-
-        BlockPos.MutableBlockPos dest = new BlockPos.MutableBlockPos(lowerCoord);
-        for (BlockPos sourcePos : instanceData.fallingBlocks)
-        {
-            // TODO Bounce left/right
-            IvMutableBlockPos.add(RCAxisAlignedTransform.apply(sourcePos, dest, areaSize, context.transform), lowerCoord);
-
-            IBlockState state;
-            while (dest.getY() > 0
-                    && (state = world.getBlockState(dest)).getBlock().isAir(state, world, dest))
-            {
-                IvMutableBlockPos.offset(dest, dest, EnumFacing.DOWN);
-            }
-
-            IvMutableBlockPos.offset(dest, dest, EnumFacing.UP);
-            world.setBlockState(dest, blockCollection.getBlockState(sourcePos), 2);
-        }
-
         if (phase == Phase.AFTER)
         {
+            WorldServer world = context.environment.world;
+            IvBlockCollection blockCollection = worldData.blockCollection;
+            int[] areaSize = new int[]{blockCollection.width, blockCollection.height, blockCollection.length};
+
+            BlockPos lowerCoord = StructureBoundingBoxes.min(context.boundingBox);
+
+            BlockPos.MutableBlockPos dest = new BlockPos.MutableBlockPos(lowerCoord);
+            for (BlockPos sourcePos : instanceData.fallingBlocks)
+            {
+                // TODO Bounce left/right
+                IvMutableBlockPos.add(RCAxisAlignedTransform.apply(sourcePos, dest, areaSize, context.transform), lowerCoord);
+
+                IBlockState state;
+                while (dest.getY() > 0
+                        && (state = world.getBlockState(dest)).getBlock().isAir(state, world, dest))
+                {
+                    IvMutableBlockPos.offset(dest, dest, EnumFacing.DOWN);
+                }
+
+                IvMutableBlockPos.offset(dest, dest, EnumFacing.UP);
+                world.setBlockState(dest, blockCollection.getBlockState(sourcePos), 2);
+            }
+
             StructureBoundingBox dropAreaBB = context.boundingBox;
             RecurrentComplex.forgeEventHandler.disabledTileDropAreas.add(dropAreaBB);
 
@@ -231,13 +231,13 @@ public class TransformerRuins extends Transformer<TransformerRuins.InstanceData>
                 {
                     IBlockState downState = world.getBlockState(coord.offset(EnumFacing.DOWN));
                     downState = downState.getBlock() == Blocks.VINE ? downState : Blocks.VINE.getDefaultState();
-                    downState = downState.withProperty(BlockVine.getPropertyFor(direction), true);
+                    downState = downState.withProperty(BlockVine.getPropertyFor(direction.getOpposite()), true);
 
                     int length = 1 + random.nextInt(MathHelper.floor_float(vineGrowth * 10.0f + 3));
                     for (int y = 0; y < length; y++)
                     {
                         BlockPos downPos = coord.offset(EnumFacing.DOWN, y);
-                        if (world.getBlockState(downPos) == Blocks.AIR)
+                        if (world.getBlockState(downPos).getMaterial() == Material.AIR)
                             world.setBlockState(downPos, downState, 3);
                         else
                             break;

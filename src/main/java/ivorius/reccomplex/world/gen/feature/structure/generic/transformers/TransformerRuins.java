@@ -138,11 +138,13 @@ public class TransformerRuins extends Transformer<TransformerRuins.InstanceData>
     public double getDecay(InstanceData instanceData, BlockPos sourcePos, IBlockState state)
     {
         Material material = state.getMaterial();
-        double modifier = material == Material.GLASS ? 6
+        double modifier = material == Material.GLASS ? 3
                 : material == Material.LEAVES ? 0.5
-                : material == Material.CIRCUITS ? 5
+                : material == Material.CIRCUITS ? 3
                 : material == Material.IRON ? 0.5
-                : material == Material.WOOD ? 3
+                : material == Material.WOOD ? 2
+                : material == Material.CARPET ? 2
+                : material == Material.CLOTH ? 2
                 : 1;
         return ((instanceData.baseDecay != null ? instanceData.baseDecay : 0)
                     + (instanceData.surfaceField != null ? instanceData.surfaceField.getValue(Math.min(sourcePos.getX(), instanceData.surfaceField.getSize()[0]), Math.min(sourcePos.getY(), instanceData.surfaceField.getSize()[1]), Math.min(sourcePos.getZ(), instanceData.surfaceField.getSize()[2])) : 0)
@@ -284,11 +286,9 @@ public class TransformerRuins extends Transformer<TransformerRuins.InstanceData>
         {
             BlockArea sourceArea = BlockArea.areaFromSize(BlockPos.ORIGIN, StructureBoundingBoxes.size(context.boundingBox));
 
-            float decayChaos = context.random.nextFloat() * this.decayChaos;
-            if (this.maxDecay - this.minDecay > decayChaos)
-                decayChaos = this.maxDecay - this.minDecay;
+            double decayChaos = context.random.nextDouble() * this.decayChaos;
 
-            instanceData.baseDecay = context.random.nextDouble() * (this.maxDecay - this.minDecay) + this.minDecay;
+            instanceData.baseDecay = context.random.nextDouble() * (maxDecay - minDecay) + minDecay;
 
             int[] surfaceSize = BlockAreas.side(sourceArea, decayDirection).areaSize();
             instanceData.surfaceField = new BlurredValueField(surfaceSize);

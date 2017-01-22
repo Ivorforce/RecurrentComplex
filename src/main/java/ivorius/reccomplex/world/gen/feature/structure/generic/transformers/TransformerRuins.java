@@ -320,7 +320,8 @@ public class TransformerRuins extends Transformer<TransformerRuins.InstanceData>
 
                 double stability = getStability(worldData, sourcePos);
                 double decay = getDecay(instanceData, sourcePos);
-                if (!(stability < decay) && stability * stability < decay) // Almost decay
+                double stabilitySQ = stability * stability;
+                if (!(stability < decay) && stabilitySQ * stabilitySQ < decay) // Almost decay
                     instanceData.fallingBlocks.add(sourcePos.toImmutable());
             }
 

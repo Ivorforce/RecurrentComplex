@@ -116,20 +116,28 @@ public class TransformerRuins extends Transformer<TransformerRuins.InstanceData>
         }
     }
 
+    public static int product(int[] surfaceSize)
+    {
+        return Arrays.stream(surfaceSize).reduce(1, (left, right) -> left * right);
+    }
+
     @Override
     public boolean skipGeneration(InstanceData instanceData, StructureLiveContext context, BlockPos pos, IBlockState state, IvWorldData worldData, BlockPos sourcePos)
     {
         if (instanceData.fallingBlocks.contains(sourcePos))
             return true;
 
-        BlurredValueField field = instanceData.blurredValueField;
-
-        if (field == null)
-            return false;
+        BlurredValueField surfaceField = instanceData.surfaceField;
+        BlurredValueField volumeField = instanceData.volumeField;
 
         IvBlockCollection blockCollection = worldData.blockCollection;
 
-        double decay = field.getValue(Math.min(sourcePos.getX(), field.getSize()[0]), Math.min(sourcePos.getY(), field.getSize()[1]), Math.min(sourcePos.getZ(), field.getSize()[2]));
+        double decay = (instanceData.baseDecay != null ? instanceData.baseDecay : 0)
+                + (surfaceField != null ? surfaceField.getValue(Math.min(sourcePos.getX(), surfaceField.getSize()[0]), Math.min(sourcePos.getY(), surfaceField.getSize()[1]), Math.min(sourcePos.getZ(), surfaceField.getSize()[2])) : 0)
+                + (volumeField != null ? volumeField.getValue(sourcePos.getX(), sourcePos.getY(), sourcePos.getZ()) : 0);
+
+        if (decay < 0.000001)
+            return false;
 
         double stability = decayDirection.getFrontOffsetX() * (sourcePos.getX() / (double) blockCollection.getWidth())
                 + decayDirection.getFrontOffsetY() * (sourcePos.getY() / (double) blockCollection.getHeight())
@@ -269,17 +277,19 @@ public class TransformerRuins extends Transformer<TransformerRuins.InstanceData>
             if (this.maxDecay - this.minDecay > decayChaos)
                 decayChaos = this.maxDecay - this.minDecay;
 
-            float decayCenter = context.random.nextFloat() * (this.maxDecay - this.minDecay) + this.minDecay;
+            instanceData.baseDecay = context.random.nextDouble() * (this.maxDecay - this.minDecay) + this.minDecay;
 
-            int[] blurredFieldSize = BlockAreas.side(sourceArea, decayDirection).areaSize();
-            instanceData.blurredValueField = new BlurredValueField(blurredFieldSize);
+            int[] surfaceSize = BlockAreas.side(sourceArea, decayDirection).areaSize();
+            instanceData.surfaceField = new BlurredValueField(surfaceSize);
+            int surfaceValues = MathHelper.floor(product(surfaceSize) * decayValueDensity + 0.5);
+            for (int i = 0; i < surfaceValues; i++)
+                instanceData.surfaceField.addValue((context.random.nextDouble() - context.random.nextDouble()) * decayChaos * 1.25, context.random);
 
-            int gridCoords = 1;
-            for (int d : blurredFieldSize) gridCoords *= d;
-            int values = MathHelper.floor(gridCoords * decayValueDensity + 0.5f);
-
-            for (int i = 0; i < values; i++)
-                instanceData.blurredValueField.addValue(decayCenter + (context.random.nextFloat() - context.random.nextFloat()) * decayChaos * 2.0f, context.random);
+            int[] volumeSize = sourceArea.areaSize();
+            instanceData.volumeField = new BlurredValueField(volumeSize);
+            int volumeValues = MathHelper.floor(product(volumeSize) * decayValueDensity * 0.25 + 0.5);
+            for (int i = 0; i < volumeValues; i++)
+                instanceData.volumeField.addValue((context.random.nextDouble() - context.random.nextDouble()) * decayChaos * 0.75, context.random);
         }
 
         return instanceData;
@@ -295,7 +305,7 @@ public class TransformerRuins extends Transformer<TransformerRuins.InstanceData>
 
             BlockPos lowerCoord = StructureBoundingBoxes.min(context.boundingBox);
 
-            Set<BlockPos> complete = new HashSet<>(Arrays.stream(areaSize).reduce(1, (left, right) -> left * right));
+            Set<BlockPos> complete = new HashSet<>(product(areaSize));
 
             BlockPos.MutableBlockPos dest = new BlockPos.MutableBlockPos(lowerCoord);
             HashSet<BlockPos> connected = new HashSet<>();
@@ -347,7 +357,9 @@ public class TransformerRuins extends Transformer<TransformerRuins.InstanceData>
 
     public static class InstanceData implements NBTStorable
     {
-        public BlurredValueField blurredValueField;
+        public Double baseDecay;
+        public BlurredValueField surfaceField;
+        public BlurredValueField volumeField;
         public final Set<BlockPos> fallingBlocks = new HashSet<>();
 
         public InstanceData()
@@ -356,8 +368,12 @@ public class TransformerRuins extends Transformer<TransformerRuins.InstanceData>
 
         public InstanceData(NBTTagCompound compound)
         {
-            blurredValueField = compound.hasKey("field", Constants.NBT.TAG_COMPOUND)
+            baseDecay = compound.hasKey("baseDecay") ? compound.getDouble("baseDecay") : null;
+            surfaceField = compound.hasKey("field", Constants.NBT.TAG_COMPOUND)
                     ? NBTCompoundObjects.read(compound.getCompoundTag("field"), BlurredValueField::new)
+                    : null;
+            volumeField = compound.hasKey("volumeField", Constants.NBT.TAG_COMPOUND)
+                    ? NBTCompoundObjects.read(compound.getCompoundTag("volumeField"), BlurredValueField::new)
                     : null;
             fallingBlocks.addAll(NBTTagLists.intArraysFrom(compound, "fallingBlocks").stream().map(BlockPositions::fromIntArray).collect(Collectors.toList()));
         }
@@ -366,8 +382,12 @@ public class TransformerRuins extends Transformer<TransformerRuins.InstanceData>
         public NBTBase writeToNBT()
         {
             NBTTagCompound compound = new NBTTagCompound();
-            if (blurredValueField != null)
-                compound.setTag("field", NBTCompoundObjects.write(blurredValueField));
+            if (baseDecay != null)
+                compound.setDouble("baseDecay", baseDecay);
+            if (surfaceField != null)
+                compound.setTag("field", NBTCompoundObjects.write(surfaceField));
+            if (volumeField != null)
+                compound.setTag("volumeField", NBTCompoundObjects.write(volumeField));
             NBTTagLists.writeIntArraysTo(compound, "fallingBlocks", fallingBlocks.stream().map(BlockPositions::toIntArray).collect(Collectors.toList()));
             return compound;
         }

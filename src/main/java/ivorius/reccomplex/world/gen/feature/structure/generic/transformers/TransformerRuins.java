@@ -127,25 +127,29 @@ public class TransformerRuins extends Transformer<TransformerRuins.InstanceData>
         if (instanceData.fallingBlocks.contains(sourcePos))
             return true;
 
-        BlurredValueField surfaceField = instanceData.surfaceField;
-        BlurredValueField volumeField = instanceData.volumeField;
-
-        IvBlockCollection blockCollection = worldData.blockCollection;
-
-        double decay = (instanceData.baseDecay != null ? instanceData.baseDecay : 0)
-                + (surfaceField != null ? surfaceField.getValue(Math.min(sourcePos.getX(), surfaceField.getSize()[0]), Math.min(sourcePos.getY(), surfaceField.getSize()[1]), Math.min(sourcePos.getZ(), surfaceField.getSize()[2])) : 0)
-                + (volumeField != null ? volumeField.getValue(sourcePos.getX(), sourcePos.getY(), sourcePos.getZ()) : 0);
+        double decay = getDecay(instanceData, sourcePos);
 
         if (decay < 0.000001)
             return false;
 
-        double stability = decayDirection.getFrontOffsetX() * (sourcePos.getX() / (double) blockCollection.getWidth())
-                + decayDirection.getFrontOffsetY() * (sourcePos.getY() / (double) blockCollection.getHeight())
-                + decayDirection.getFrontOffsetZ() * (sourcePos.getZ() / (double) blockCollection.getLength());
+        return getStability(worldData, sourcePos) < decay;
+    }
+
+    public double getDecay(InstanceData instanceData, BlockPos sourcePos)
+    {
+        return (instanceData.baseDecay != null ? instanceData.baseDecay : 0)
+                    + (instanceData.surfaceField != null ? instanceData.surfaceField.getValue(Math.min(sourcePos.getX(), instanceData.surfaceField.getSize()[0]), Math.min(sourcePos.getY(), instanceData.surfaceField.getSize()[1]), Math.min(sourcePos.getZ(), instanceData.surfaceField.getSize()[2])) : 0)
+                    + (instanceData.volumeField != null ? instanceData.volumeField.getValue(sourcePos.getX(), sourcePos.getY(), sourcePos.getZ()) : 0);
+    }
+
+    public double getStability(IvWorldData worldData, BlockPos sourcePos)
+    {
+        double stability = decayDirection.getFrontOffsetX() * (sourcePos.getX() / (double) worldData.blockCollection.getWidth())
+                + decayDirection.getFrontOffsetY() * (sourcePos.getY() / (double) worldData.blockCollection.getHeight())
+                + decayDirection.getFrontOffsetZ() * (sourcePos.getZ() / (double) worldData.blockCollection.getLength());
         if (stability < 0) // Negative direction, not special case
             stability += 1;
-
-        return stability < decay;
+        return stability;
     }
 
     @Override
@@ -302,12 +306,26 @@ public class TransformerRuins extends Transformer<TransformerRuins.InstanceData>
         {
             IvBlockCollection blockCollection = worldData.blockCollection;
             int[] areaSize = new int[]{blockCollection.width, blockCollection.height, blockCollection.length};
-
             BlockPos lowerCoord = StructureBoundingBoxes.min(context.boundingBox);
+
+            BlockPos.MutableBlockPos dest = new BlockPos.MutableBlockPos(lowerCoord);
+
+            for (BlockPos sourcePos : BlockAreas.mutablePositions(blockCollection.area()))
+            {
+                IBlockState state = blockCollection.getBlockState(sourcePos);
+                IvMutableBlockPos.add(RCAxisAlignedTransform.apply(sourcePos, dest, areaSize, context.transform), lowerCoord);
+
+                if (!canFall(context, worldData, transformer, dest, sourcePos, state))
+                    continue;
+
+                double stability = getStability(worldData, sourcePos);
+                double decay = getDecay(instanceData, sourcePos);
+                if (!(stability < decay) && stability * stability < decay) // Almost decay
+                    instanceData.fallingBlocks.add(sourcePos.toImmutable());
+            }
 
             Set<BlockPos> complete = new HashSet<>(product(areaSize));
 
-            BlockPos.MutableBlockPos dest = new BlockPos.MutableBlockPos(lowerCoord);
             HashSet<BlockPos> connected = new HashSet<>();
             boolean[] hasFloor = new boolean[1];
 
@@ -322,15 +340,14 @@ public class TransformerRuins extends Transformer<TransformerRuins.InstanceData>
                 // Try to fall
                 TransformerAbstractCloud.visitRecursively(Sets.newHashSet(startPos), (changed, sourcePos) ->
                 {
-                    if (!complete.add(sourcePos))
+                    if (!complete.add(sourcePos) || instanceData.fallingBlocks.contains(sourcePos))
                         return true;
 
                     IvMutableBlockPos.add(RCAxisAlignedTransform.apply(sourcePos, dest, areaSize, context.transform), lowerCoord);
 
                     IBlockState state = blockCollection.getBlockState(sourcePos);
 
-                    if (!transformer.transformer.skipGeneration(transformer.instanceData, context, dest, state, worldData, sourcePos)
-                            && state.getMaterial() != Material.AIR)
+                    if (canFall(context, worldData, transformer, dest, sourcePos, state))
                     {
                         if (state.getBlock() == RCBlocks.genericSolid
                                 && (int) state.getValue(BlockGenericSolid.TYPE) == 0)
@@ -347,6 +364,12 @@ public class TransformerRuins extends Transformer<TransformerRuins.InstanceData>
                     instanceData.fallingBlocks.addAll(connected);
             }
         }
+    }
+
+    public boolean canFall(StructurePrepareContext context, IvWorldData worldData, RunTransformer transformer, BlockPos.MutableBlockPos dest, BlockPos worldPos, IBlockState state)
+    {
+        return !transformer.transformer.skipGeneration(transformer.instanceData, context, dest, state, worldData, worldPos)
+                && state.getMaterial() != Material.AIR;
     }
 
     @Override

@@ -127,7 +127,7 @@ public class TransformerRuins extends Transformer<TransformerRuins.InstanceData>
         if (instanceData.fallingBlocks.contains(sourcePos))
             return true;
 
-        double decay = getDecay(instanceData, sourcePos);
+        double decay = getDecay(instanceData, sourcePos, state);
 
         if (decay < 0.000001)
             return false;
@@ -135,11 +135,18 @@ public class TransformerRuins extends Transformer<TransformerRuins.InstanceData>
         return getStability(worldData, sourcePos) < decay;
     }
 
-    public double getDecay(InstanceData instanceData, BlockPos sourcePos)
+    public double getDecay(InstanceData instanceData, BlockPos sourcePos, IBlockState state)
     {
-        return (instanceData.baseDecay != null ? instanceData.baseDecay : 0)
+        Material material = state.getMaterial();
+        double modifier = material == Material.GLASS ? 6
+                : material == Material.LEAVES ? 0.5
+                : material == Material.CIRCUITS ? 5
+                : material == Material.IRON ? 0.5
+                : material == Material.WOOD ? 3
+                : 1;
+        return ((instanceData.baseDecay != null ? instanceData.baseDecay : 0)
                     + (instanceData.surfaceField != null ? instanceData.surfaceField.getValue(Math.min(sourcePos.getX(), instanceData.surfaceField.getSize()[0]), Math.min(sourcePos.getY(), instanceData.surfaceField.getSize()[1]), Math.min(sourcePos.getZ(), instanceData.surfaceField.getSize()[2])) : 0)
-                    + (instanceData.volumeField != null ? instanceData.volumeField.getValue(sourcePos.getX(), sourcePos.getY(), sourcePos.getZ()) : 0);
+                    + (instanceData.volumeField != null ? instanceData.volumeField.getValue(sourcePos.getX(), sourcePos.getY(), sourcePos.getZ()) : 0)) * modifier;
     }
 
     public double getStability(IvWorldData worldData, BlockPos sourcePos)
@@ -319,7 +326,7 @@ public class TransformerRuins extends Transformer<TransformerRuins.InstanceData>
                     continue;
 
                 double stability = getStability(worldData, sourcePos);
-                double decay = getDecay(instanceData, sourcePos);
+                double decay = getDecay(instanceData, sourcePos, state);
                 double stabilitySQ = stability * stability;
                 if (!(stability < decay) && stabilitySQ * stabilitySQ < decay) // Almost decay
                     instanceData.fallingBlocks.add(sourcePos.toImmutable());

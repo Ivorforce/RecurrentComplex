@@ -6,13 +6,15 @@
 package ivorius.reccomplex.gui.editstructure.transformers;
 
 import ivorius.ivtoolkit.gui.FloatRange;
+import ivorius.ivtoolkit.tools.IvTranslations;
 import ivorius.reccomplex.gui.TableDirections;
-import ivorius.reccomplex.gui.table.*;
+import ivorius.reccomplex.gui.table.GuiTable;
+import ivorius.reccomplex.gui.table.TableDelegate;
+import ivorius.reccomplex.gui.table.TableNavigator;
 import ivorius.reccomplex.gui.table.cell.*;
 import ivorius.reccomplex.gui.table.datasource.TableDataSourceSegmented;
-import ivorius.reccomplex.world.gen.feature.structure.generic.transformers.TransformerRuins;
-import ivorius.ivtoolkit.tools.IvTranslations;
 import ivorius.reccomplex.utils.scale.Scales;
+import ivorius.reccomplex.world.gen.feature.structure.generic.transformers.TransformerRuins;
 import net.minecraft.util.EnumFacing;
 
 /**
@@ -53,7 +55,7 @@ public class TableDataSourceBTRuins extends TableDataSourceSegmented
             case 1:
                 return 5;
             case 2:
-                return 3;
+                return 4;
             default:
                 return super.sizeOfSegment(segment);
         }
@@ -73,7 +75,8 @@ public class TableDataSourceBTRuins extends TableDataSourceSegmented
                     {
                         TableCellFloatRange cell = new TableCellFloatRange("decay", new FloatRange(transformer.minDecay, transformer.maxDecay), 0.0f, 1.0f, "%.4f");
                         cell.setScale(Scales.pow(5));
-                        cell.addPropertyConsumer(val -> {
+                        cell.addPropertyConsumer(val ->
+                        {
                             transformer.minDecay = val.getMin();
                             transformer.maxDecay = val.getMax();
                         });
@@ -125,6 +128,13 @@ public class TableDataSourceBTRuins extends TableDataSourceSegmented
                         cell.addPropertyConsumer(val -> transformer.vineGrowth = val);
                         return new TitledCell(IvTranslations.get("reccomplex.transformer.ruins.vines"), cell)
                                 .withTitleTooltip(IvTranslations.formatLines("reccomplex.transformer.ruins.vines.tooltip"));
+                    }
+                    case 3:
+                    {
+                        TableCellBoolean cell = new TableCellBoolean("gravity", transformer.gravity);
+                        cell.addPropertyConsumer(val -> transformer.gravity = val);
+                        return new TitledCell(IvTranslations.get("reccomplex.transformer.ruins.gravity"), cell)
+                                .withTitleTooltip(IvTranslations.formatLines("reccomplex.transformer.ruins.gravity.tooltip"));
                     }
                 }
                 break;

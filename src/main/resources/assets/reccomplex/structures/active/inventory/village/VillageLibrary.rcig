@@ -1,0 +1,77 @@
+{
+  "version": 2,
+  "inventoryGeneratorID": "VillageLibrary",
+  "items": [
+    {
+      "weight": 10.0,
+      "min": 1,
+      "max": 1,
+      "item": {
+        "id": "reccomplex:book_generation_tag",
+        "damage": 0,
+        "count": 1
+      }
+    },
+    {
+      "weight": 5.135135173797607,
+      "min": 1,
+      "max": 16,
+      "item": {
+        "id": "minecraft:book",
+        "damage": 0,
+        "count": 1
+      }
+    },
+    {
+      "weight": 1.0,
+      "min": 1,
+      "max": 1,
+      "item": {
+        "id": "minecraft:writable_book",
+        "damage": 0,
+        "count": 1
+      }
+    },
+    {
+      "weight": 1.0,
+      "min": 1,
+      "max": 16,
+      "item": {
+        "id": "minecraft:feather",
+        "damage": 0,
+        "count": 1
+      }
+    },
+    {
+      "weight": 1.0,
+      "min": 1,
+      "max": 1,
+      "item": {
+        "id": "minecraft:name_tag",
+        "damage": 0,
+        "count": 1
+      }
+    },
+    {
+      "weight": 1.0,
+      "min": 1,
+      "max": 16,
+      "item": {
+        "id": "minecraft:dye",
+        "damage": 0,
+        "count": 1
+      }
+    },
+    {
+      "weight": 5.20270299911499,
+      "min": 1,
+      "max": 64,
+      "item": {
+        "id": "minecraft:paper",
+        "damage": 0,
+        "count": 1
+      }
+    }
+  ],
+  "dependencyExpression": ""
+}

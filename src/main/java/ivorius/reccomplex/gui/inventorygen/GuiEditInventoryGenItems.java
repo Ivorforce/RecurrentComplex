@@ -13,6 +13,8 @@ import ivorius.reccomplex.gui.GuiHider;
 import ivorius.reccomplex.gui.InventoryWatcher;
 import ivorius.reccomplex.gui.RCGuiHandler;
 import ivorius.reccomplex.utils.SaveDirectoryData;
+import ivorius.reccomplex.utils.scale.Scale;
+import ivorius.reccomplex.utils.scale.Scales;
 import ivorius.reccomplex.world.storage.loot.GenericItemCollection;
 import ivorius.reccomplex.world.storage.loot.GenericItemCollection.Component;
 import net.minecraft.client.gui.GuiButton;
@@ -36,6 +38,7 @@ import java.util.List;
 public class GuiEditInventoryGenItems extends GuiContainer implements InventoryWatcher
 {
     public static ResourceLocation textureBackground = new ResourceLocation(RecurrentComplex.MOD_ID, RecurrentComplex.filePathTextures + "gui_edit_inventory_gen.png");
+    public static Scale WEIGHT_SCALE = Scales.pow(5);
 
     public String key;
     public Component component;
@@ -131,13 +134,13 @@ public class GuiEditInventoryGenItems extends GuiContainer implements InventoryW
                         int stackIndex = slider.id - 100;
                         if (stackIndex < chestContents.size())
                         {
-                            chestContents.get(stackIndex).weight = slider.getValue();
+                            chestContents.get(stackIndex).weight = WEIGHT_SCALE.in(slider.getValue());
                             updateAllItemSliders();
                         }
                     }
                 });
-                weightSlider.setMinValue(0);
-                weightSlider.setMaxValue(10);
+                weightSlider.setMinValue(WEIGHT_SCALE.out(0));
+                weightSlider.setMaxValue(WEIGHT_SCALE.out(100));
                 this.buttonList.add(weightSlider);
                 weightSliders.add(weightSlider);
             }
@@ -175,9 +178,9 @@ public class GuiEditInventoryGenItems extends GuiContainer implements InventoryW
                 minMaxSlider.enabled = true;
                 minMaxSlider.displayString = IvTranslations.format("reccomplex.gui.inventorygen.minMax", chestContent.min, chestContent.max);
 
-                weightSlider.setValue((float) chestContent.weight);
+                weightSlider.setValue(WEIGHT_SCALE.out((float) chestContent.weight));
                 weightSlider.enabled = true;
-                weightSlider.displayString = IvTranslations.format("reccomplex.gui.inventorygen.weightNumber", String.format("%.2f", weightSlider.getValue()));
+                weightSlider.displayString = IvTranslations.format("reccomplex.gui.inventorygen.weightNumber", String.format("%.4f", WEIGHT_SCALE.in(weightSlider.getValue())));
             }
             else
             {

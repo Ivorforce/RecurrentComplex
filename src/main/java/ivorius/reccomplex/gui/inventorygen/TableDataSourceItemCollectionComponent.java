@@ -11,7 +11,9 @@ import ivorius.reccomplex.gui.GuiValidityStateIndicator;
 import ivorius.reccomplex.gui.RCGuiHandler;
 import ivorius.reccomplex.gui.TableDataSourceExpression;
 import ivorius.reccomplex.gui.TableElementSaveDirectory;
-import ivorius.reccomplex.gui.table.*;
+import ivorius.reccomplex.gui.table.GuiTable;
+import ivorius.reccomplex.gui.table.TableDelegate;
+import ivorius.reccomplex.gui.table.TableNavigator;
 import ivorius.reccomplex.gui.table.cell.TableCell;
 import ivorius.reccomplex.gui.table.cell.TableCellMultiBuilder;
 import ivorius.reccomplex.gui.table.cell.TableCellString;
@@ -129,13 +131,15 @@ public class TableDataSourceItemCollectionComponent extends TableDataSourceSegme
 
     private GuiValidityStateIndicator.State currentKeyState()
     {
-        return GenericItemCollectionRegistry.INSTANCE.ids().contains(key)
+        return key.trim().isEmpty() ? GuiValidityStateIndicator.State.INVALID
+                : GenericItemCollectionRegistry.INSTANCE.ids().contains(key)
                 ? GuiValidityStateIndicator.State.SEMI_VALID : GuiValidityStateIndicator.State.VALID;
     }
 
     private GuiValidityStateIndicator.State currentGroupIDState()
     {
-        return WeightedItemCollectionRegistry.INSTANCE.get(component.inventoryGeneratorID) instanceof GenericItemCollection
+        return component.inventoryGeneratorID.trim().isEmpty() ? GuiValidityStateIndicator.State.INVALID
+                : WeightedItemCollectionRegistry.INSTANCE.get(component.inventoryGeneratorID) instanceof GenericItemCollection
                 ? GuiValidityStateIndicator.State.VALID : GuiValidityStateIndicator.State.SEMI_VALID;
     }
 }

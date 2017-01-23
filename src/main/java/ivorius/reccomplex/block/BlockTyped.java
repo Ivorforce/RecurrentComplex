@@ -33,6 +33,7 @@ public class BlockTyped extends Block
     }
 
     @Override
+    @SideOnly(Side.CLIENT)
     public void getSubBlocks(Item itemIn, CreativeTabs tab, NonNullList<ItemStack> list)
     {
         for (int j = 0; j < 16; ++j)

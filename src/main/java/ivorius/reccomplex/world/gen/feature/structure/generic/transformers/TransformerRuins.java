@@ -146,9 +146,9 @@ public class TransformerRuins extends Transformer<TransformerRuins.InstanceData>
                 : material == Material.CARPET ? 2
                 : material == Material.CLOTH ? 2
                 : 1;
-        return ((instanceData.baseDecay != null ? instanceData.baseDecay : 0)
+        return Math.pow((instanceData.baseDecay != null ? instanceData.baseDecay : 0)
                     + (instanceData.surfaceField != null ? instanceData.surfaceField.getValue(Math.min(sourcePos.getX(), instanceData.surfaceField.getSize()[0]), Math.min(sourcePos.getY(), instanceData.surfaceField.getSize()[1]), Math.min(sourcePos.getZ(), instanceData.surfaceField.getSize()[2])) : 0)
-                    + (instanceData.volumeField != null ? instanceData.volumeField.getValue(sourcePos.getX(), sourcePos.getY(), sourcePos.getZ()) : 0)) * modifier;
+                    + (instanceData.volumeField != null ? instanceData.volumeField.getValue(sourcePos.getX(), sourcePos.getY(), sourcePos.getZ()) : 0), 1 /  modifier);
     }
 
     public double getStability(IvWorldData worldData, BlockPos sourcePos)

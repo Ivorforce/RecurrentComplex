@@ -16,6 +16,7 @@ import ivorius.reccomplex.gui.table.datasource.TableDataSource;
 import ivorius.reccomplex.gui.table.TableDelegate;
 import ivorius.reccomplex.gui.table.TableNavigator;
 import ivorius.reccomplex.gui.worldscripts.structuregenerator.TableDataSourceWorldScriptStructureGenerator;
+import ivorius.reccomplex.utils.RCDirections;
 import ivorius.reccomplex.world.gen.feature.structure.*;
 import ivorius.reccomplex.world.gen.feature.structure.context.StructureLoadContext;
 import ivorius.reccomplex.world.gen.feature.structure.context.StructurePrepareContext;
@@ -221,7 +222,7 @@ public class WorldScriptStructureGenerator implements WorldScript<WorldScriptStr
                 {
                     EnumFacing curFront = Directions.rotate(front, transform);
                     mirrorX = structureInfo.isMirrorable() && structureInfo.isRotatable() && random.nextBoolean();
-                    Integer neededRotations = Directions.getHorizontalClockwiseRotations(curFront, generationInfo.front, mirrorX);
+                    Integer neededRotations = RCDirections.getHorizontalClockwiseRotations(curFront, generationInfo.front, mirrorX);
                     rotations = neededRotations != null ? neededRotations : 0;
                 }
                 else

@@ -37,7 +37,7 @@ public class PacketInspectBlockHandler extends SchedulingMessageHandler<PacketIn
     public void processServer(PacketInspectBlock message, MessageContext ctx, WorldServer world)
     {
         NetHandlerPlayServer playServer = ctx.getServerHandler();
-        EntityPlayerMP player = playServer.playerEntity;
+        EntityPlayerMP player = playServer.player;
 
         if (RecurrentComplex.checkPerms(player)) return;
 

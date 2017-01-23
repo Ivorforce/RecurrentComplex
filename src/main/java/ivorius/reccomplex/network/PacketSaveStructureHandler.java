@@ -34,7 +34,7 @@ public class PacketSaveStructureHandler extends SchedulingMessageHandler<PacketS
     public void processServer(PacketSaveStructure message, MessageContext ctx, WorldServer server)
     {
         NetHandlerPlayServer netHandlerPlayServer = ctx.getServerHandler();
-        EntityPlayerMP player = netHandlerPlayServer.playerEntity;
+        EntityPlayerMP player = netHandlerPlayServer.player;
 
         if (RecurrentComplex.checkPerms(player)) return;
 

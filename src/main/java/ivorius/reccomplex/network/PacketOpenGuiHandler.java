@@ -30,7 +30,7 @@ public class PacketOpenGuiHandler extends SchedulingMessageHandler<PacketOpenGui
     @Override
     public void processServer(PacketOpenGui message, MessageContext ctx, WorldServer world)
     {
-        EntityPlayerMP playerEntity = ctx.getServerHandler().playerEntity;
+        EntityPlayerMP playerEntity = ctx.getServerHandler().player;
         IvGuiRegistry.INSTANCE.openGui(playerEntity, message.modId, message.modGuiId, message.data);
     }
 }

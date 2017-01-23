@@ -27,7 +27,7 @@ public class PacketEditTileEntityHandler extends SchedulingMessageHandler<Packet
     @Override
     public void processServer(PacketEditTileEntity message, MessageContext ctx, WorldServer server)
     {
-        EntityPlayer player = ctx.getServerHandler().playerEntity;
+        EntityPlayer player = ctx.getServerHandler().player;
         World world = player.world;
 
         TileEntity tileEntity = world.getTileEntity(message.getPos());

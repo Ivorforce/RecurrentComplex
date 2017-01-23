@@ -22,7 +22,7 @@ public abstract class PacketEditInventoryItemHandler<P extends PacketEditInvento
     public void processServer(P message, MessageContext ctx, WorldServer server)
     {
         NetHandlerPlayServer playServer = ctx.getServerHandler();
-        EntityPlayerMP player = playServer.playerEntity;
+        EntityPlayerMP player = playServer.player;
         affectItem(player, player.inventory.getStackInSlot(message.getInventorySlot()), message);
         player.openContainer.detectAndSendChanges();
     }

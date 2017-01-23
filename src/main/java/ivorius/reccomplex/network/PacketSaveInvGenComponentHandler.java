@@ -31,7 +31,7 @@ public class PacketSaveInvGenComponentHandler extends SchedulingMessageHandler<P
     public void processServer(PacketSaveInvGenComponent message, MessageContext ctx, WorldServer server)
     {
         NetHandlerPlayServer playServer = ctx.getServerHandler();
-        EntityPlayerMP player = playServer.playerEntity;
+        EntityPlayerMP player = playServer.player;
 
         if (RecurrentComplex.checkPerms(player)) return;
 
@@ -50,7 +50,7 @@ public class PacketSaveInvGenComponentHandler extends SchedulingMessageHandler<P
             if (saveDirectoryDataResult.deleteOther)
                 RCCommands.informDeleteResult(RecurrentComplex.saver.tryDeleteWithID(delDir.toPath(), RCFileSaver.INVENTORY_GENERATION_COMPONENT, id), player, RCFileSaver.INVENTORY_GENERATION_COMPONENT, id, delDir.subDirectoryName());
 
-            ItemStack heldItem = playServer.playerEntity.getHeldItem(EnumHand.MAIN_HAND);
+            ItemStack heldItem = playServer.player.getHeldItem(EnumHand.MAIN_HAND);
             if (heldItem != null && heldItem.getItem() instanceof ItemInventoryGenComponentTag)
                 ItemInventoryGenComponentTag.setComponentKey(heldItem, id);
             player.openContainer.detectAndSendChanges();

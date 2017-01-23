@@ -110,7 +110,7 @@ public class TitledCell extends TableCellDefault
     {
         super.draw(screen, mouseX, mouseY, partialTicks);
         Bounds bounds = bounds();
-        FontRenderer fontRenderer = Minecraft.getMinecraft().fontRendererObj;
+        FontRenderer fontRenderer = Minecraft.getMinecraft().fontRenderer;
 
         String title = getTitle();
         if (title != null)
@@ -129,7 +129,7 @@ public class TitledCell extends TableCellDefault
         cell.drawFloating(screen, mouseX, mouseY, partialTicks);
 
         Bounds bounds = bounds();
-        FontRenderer fontRenderer = Minecraft.getMinecraft().fontRendererObj;
+        FontRenderer fontRenderer = Minecraft.getMinecraft().fontRenderer;
 
         String title = getTitle();
         if (title != null)

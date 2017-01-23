@@ -179,7 +179,7 @@ public class GuiTable extends Gui
     {
         GlStateManager.color(1, 1, 1);
         GlStateManager.scale(2, 2, 2);
-        drawString(Minecraft.getMinecraft().fontRendererObj, dataSource.title(), bounds.getMinX() / 2, bounds.getMinY() / 2 + 2, 0xffffffff);
+        drawString(Minecraft.getMinecraft().fontRenderer, dataSource.title(), bounds.getMinX() / 2, bounds.getMinY() / 2 + 2, 0xffffffff);
         GlStateManager.scale(0.5f, 0.5f, 0.5f);
 
         currentCells.stream().filter(cell -> !cell.isHidden()).forEach(cell -> cell.draw(this, mouseX, mouseY, partialTicks));

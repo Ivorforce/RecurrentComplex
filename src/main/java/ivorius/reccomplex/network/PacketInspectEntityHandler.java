@@ -47,7 +47,7 @@ public class PacketInspectEntityHandler extends SchedulingMessageHandler<PacketI
     public void processServer(PacketInspectEntity message, MessageContext ctx, WorldServer world)
     {
         NetHandlerPlayServer playServer = ctx.getServerHandler();
-        EntityPlayerMP player = playServer.playerEntity;
+        EntityPlayerMP player = playServer.player;
 
         if (RecurrentComplex.checkPerms(player)) return;
 

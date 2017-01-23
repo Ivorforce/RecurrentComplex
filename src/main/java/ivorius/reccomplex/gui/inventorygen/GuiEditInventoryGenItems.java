@@ -290,7 +290,7 @@ public class GuiEditInventoryGenItems extends GuiContainer implements InventoryW
     private void drawPlaceholderString(GuiTextField textField, String string)
     {
         if (StringUtils.isNullOrEmpty(textField.getText()))
-            drawString(fontRendererObj, string, textField.xPosition + 5, textField.yPosition + 7, 0xff888888);
+            drawString(fontRenderer, string, textField.xPosition + 5, textField.yPosition + 7, 0xff888888);
     }
 
     @Override

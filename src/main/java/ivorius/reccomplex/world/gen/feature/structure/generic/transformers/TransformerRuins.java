@@ -10,6 +10,8 @@ import com.google.common.collect.Sets;
 import com.google.gson.*;
 import ivorius.ivtoolkit.blocks.*;
 import ivorius.ivtoolkit.tools.*;
+import ivorius.ivtoolkit.transform.Mover;
+import ivorius.ivtoolkit.transform.PosTransformer;
 import ivorius.ivtoolkit.world.chunk.gen.StructureBoundingBoxes;
 import ivorius.reccomplex.RecurrentComplex;
 import ivorius.reccomplex.block.BlockGenericSolid;
@@ -26,6 +28,7 @@ import ivorius.reccomplex.world.gen.feature.structure.context.StructureLiveConte
 import ivorius.reccomplex.world.gen.feature.structure.context.StructureLoadContext;
 import ivorius.reccomplex.world.gen.feature.structure.context.StructurePrepareContext;
 import ivorius.reccomplex.world.gen.feature.structure.context.StructureSpawnContext;
+import ivorius.reccomplex.world.gen.feature.structure.generic.GenericStructureInfo;
 import net.minecraft.block.BlockSandStone;
 import net.minecraft.block.BlockStoneBrick;
 import net.minecraft.block.BlockVine;
@@ -35,6 +38,7 @@ import net.minecraft.block.state.IBlockState;
 import net.minecraft.init.Blocks;
 import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
@@ -172,21 +176,30 @@ public class TransformerRuins extends Transformer<TransformerRuins.InstanceData>
 
             BlockPos lowerCoord = StructureBoundingBoxes.min(context.boundingBox);
 
+            Map<BlockPos, NBTTagCompound> tileEntityCompounds = new HashMap<>();
+            for (NBTTagCompound tileEntityCompound : worldData.tileEntities)
+            {
+                BlockPos key = new BlockPos(tileEntityCompound.getInteger("x"), tileEntityCompound.getInteger("y"), tileEntityCompound.getInteger("z"));
+
+                tileEntityCompounds.put(key, tileEntityCompound);
+            }
+
             BlockPos.MutableBlockPos dest = new BlockPos.MutableBlockPos(lowerCoord);
             for (BlockPos sourcePos : instanceData.fallingBlocks)
             {
-                // TODO Bounce left/right
                 IvMutableBlockPos.add(RCAxisAlignedTransform.apply(sourcePos, dest, areaSize, context.transform), lowerCoord);
 
-                IBlockState state;
+                // TODO Bounce left/right
+                IBlockState destState;
                 while (dest.getY() > 0
-                        && (state = world.getBlockState(dest)).getBlock().isAir(state, world, dest))
+                        && (destState = world.getBlockState(dest)).getBlock().isAir(destState, world, dest))
                 {
                     IvMutableBlockPos.offset(dest, dest, EnumFacing.DOWN);
                 }
 
                 IvMutableBlockPos.offset(dest, dest, EnumFacing.UP);
-                world.setBlockState(dest, blockCollection.getBlockState(sourcePos), 2);
+                IBlockState state = PosTransformer.transformBlockState(blockCollection.getBlockState(sourcePos), context.transform);
+                GenericStructureInfo.setBlock(context, dest, state, () -> tileEntityCompounds.get(sourcePos));
             }
 
             StructureBoundingBox dropAreaBB = context.boundingBox;

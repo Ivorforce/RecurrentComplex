@@ -246,7 +246,7 @@ public class GenericStructureInfo implements StructureInfo<GenericStructureInfo.
         return new RunTransformer(this.transformer, instanceData.transformerData);
     }
 
-    protected void setBlock(@Nonnull StructureSpawnContext context, BlockPos worldPos, IBlockState state, Supplier<NBTTagCompound> tileEntity)
+    public static void setBlock(@Nonnull StructureSpawnContext context, BlockPos worldPos, IBlockState state, Supplier<NBTTagCompound> tileEntity)
     {
         WorldServer world = context.environment.world;
         if (context.setBlock(worldPos, state, 2) && world.getBlockState(worldPos).getBlock() == state.getBlock())
@@ -270,13 +270,13 @@ public class GenericStructureInfo implements StructureInfo<GenericStructureInfo.
         }
     }
 
-    public void generateEntityContents(@Nonnull StructureSpawnContext context, Entity entity)
+    public static void generateEntityContents(@Nonnull StructureSpawnContext context, Entity entity)
     {
         if (!context.generateAsSource && entity instanceof IInventory)
             InventoryGenerationHandler.generateAllTags(context, (IInventory) entity);
     }
 
-    public void generateTileEntityContents(@Nonnull StructureSpawnContext context, TileEntity tileEntity)
+    public static void generateTileEntityContents(@Nonnull StructureSpawnContext context, TileEntity tileEntity)
     {
         if (!context.generateAsSource && tileEntity instanceof IInventory)
             InventoryGenerationHandler.generateAllTags(context, (IInventory) tileEntity);

@@ -7,14 +7,12 @@ package ivorius.reccomplex.world.gen.feature.structure.schematics;
 
 import ivorius.ivtoolkit.blocks.BlockArea;
 import ivorius.ivtoolkit.blocks.BlockStates;
-import ivorius.ivtoolkit.blocks.IvMutableBlockPos;
 import ivorius.ivtoolkit.math.AxisAlignedTransform2D;
 import ivorius.ivtoolkit.transform.Mover;
 import ivorius.ivtoolkit.transform.PosTransformer;
 import ivorius.ivtoolkit.util.IvStreams;
 import ivorius.reccomplex.RecurrentComplex;
 import ivorius.reccomplex.utils.RCAccessorEntity;
-import ivorius.reccomplex.utils.RCAxisAlignedTransform;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
@@ -158,7 +156,6 @@ public class SchematicFile
         int[] size = {width, height, length};
         BlockArea blockArea = BlockArea.areaFromSize(BlockPos.ORIGIN, size);
 
-        BlockPos.MutableBlockPos worldPos = new BlockPos.MutableBlockPos();
         for (int pass = 0; pass < 2; pass++)
         {
             for (BlockPos sourcePos : blockArea)
@@ -168,13 +165,13 @@ public class SchematicFile
 
                 if (blockState != null && getPass(blockState) == pass)
                 {
-                    IvMutableBlockPos.add(RCAxisAlignedTransform.apply(sourcePos, worldPos, size, transform), pos);
-                    world.setBlockState(worldPos, blockState, 3);
+                    BlockPos worldPos = pos.add(transform.apply(sourcePos, size));
+                    world.setBlockState(worldPos, blockState, 2);
 
                     TileEntity tileEntity = tileEntities.get(sourcePos);
                     if (tileEntity != null)
                     {
-                        world.setBlockState(worldPos, blockState, 3); // Second time to ensure state, see BlockFurnace
+                        world.setBlockState(worldPos, blockState, 2); // Second time to ensure state, see BlockFurnace
 
                         PosTransformer.transformTileEntityPos(tileEntity, transform, size);
                         Mover.setTileEntityPos(tileEntity, worldPos);

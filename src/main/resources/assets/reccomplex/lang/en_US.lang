@@ -177,6 +177,7 @@ commands.rclookup.reply.comment=Comment: %s
 commands.rclist.usage=/#list [page]
 commands.rclist.previous=Previous Page
 commands.rclist.next=Next Page
+commands.rclist.none=No Structures
 
 commands.rcsearch.usage=/#search
 commands.rcsearch.empty=No results!

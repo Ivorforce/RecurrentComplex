@@ -67,7 +67,7 @@ public class BlockPattern implements NBTCompoundObject
 
     public BlockPattern copy()
     {
-        return new BlockPattern(pattern, ingredients);
+        return new BlockPattern(pattern.copy(), ingredients);
     }
 
     public void transform(AxisAlignedTransform2D transform, int[] size)

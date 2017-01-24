@@ -6,13 +6,15 @@
 package ivorius.reccomplex.commands;
 
 import ivorius.reccomplex.RCConfig;
-import ivorius.reccomplex.world.gen.feature.structure.StructureRegistry;
 import ivorius.reccomplex.utils.ServerTranslations;
+import ivorius.reccomplex.world.gen.feature.structure.StructureRegistry;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.util.text.*;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.TextComponentString;
+import net.minecraft.util.text.TextFormatting;
 import net.minecraft.util.text.event.ClickEvent;
 import net.minecraft.util.text.event.HoverEvent;
 
@@ -25,7 +27,41 @@ import java.util.List;
  */
 public class CommandListStructures extends CommandBase
 {
- public static final int MAX_RESULTS = 20;
+    public static final int RESULTS_PER_PAGE = 20;
+
+    public static void showList(ICommandSender commandSender, int page, List<String> structureNames)
+    {
+        int startIndex = page * RESULTS_PER_PAGE;
+        int endIndex = Math.min((page + 1) * RESULTS_PER_PAGE, structureNames.size());
+
+        if (endIndex - startIndex > 0)
+        {
+            List<TextComponentString> components = new ArrayList<>(endIndex - startIndex + 2);
+
+            components.add(new TextComponentString("[<--]"));
+            if (page > 0)
+                linkToPage(components.get(0), page - 1, ServerTranslations.format("commands.rclist.previous"));
+
+            for (int i = 0; i < endIndex - startIndex; i++)
+                components.add(CommandSearchStructure.structureTextComponent(structureNames.get(startIndex + i)));
+
+            components.add(new TextComponentString("[-->]"));
+            if (page < (structureNames.size() - 1) / RESULTS_PER_PAGE)
+                linkToPage(components.get(components.size() - 1), page + 1, ServerTranslations.format("commands.rclist.next"));
+
+            commandSender.addChatMessage(ServerTranslations.join(components));
+        }
+        else
+            commandSender.addChatMessage(ServerTranslations.get("commands.rclist.none"));
+    }
+
+    public static void linkToPage(TextComponentString component, int page, ITextComponent hoverTitle)
+    {
+        component.getStyle().setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND,
+                String.format("/%s %d", RCCommands.list.getCommandName(), page)));
+        component.getStyle().setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, hoverTitle));
+        component.getStyle().setColor(TextFormatting.AQUA);
+    }
 
     @Override
     public String getCommandName()
@@ -53,30 +89,6 @@ public class CommandListStructures extends CommandBase
         structureNames.addAll(StructureRegistry.INSTANCE.ids());
         Collections.sort(structureNames, String.CASE_INSENSITIVE_ORDER);
 
-        int startIndex = page * MAX_RESULTS;
-        int endIndex = Math.min((page + 1) * MAX_RESULTS, structureNames.size());
-
-        TextComponentString[] components = new TextComponentString[endIndex - startIndex + 2];
-
-        for (int i = 0; i < endIndex - startIndex; i++)
-            components[i + 1] = CommandSearchStructure.structureTextComponent(structureNames.get(startIndex + i));
-
-        components[0] = new TextComponentString("[<--]");
-        if (page > 0)
-            linkToPage(components[0], page - 1, ServerTranslations.format("commands.rclist.previous"));
-
-        components[components.length - 1] = new TextComponentString("[-->]");
-        if (page < (structureNames.size() - 1) / MAX_RESULTS)
-            linkToPage(components[components.length - 1], page + 1, ServerTranslations.format("commands.rclist.next"));
-
-        commandSender.addChatMessage(ServerTranslations.join((Object[]) components));
-    }
-
-    public static void linkToPage(TextComponentString component, int page, ITextComponent hoverTitle)
-    {
-        component.getStyle().setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND,
-                String.format("/%s %d", RCCommands.list.getCommandName(), page)));
-        component.getStyle().setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, hoverTitle));
-        component.getStyle().setColor(TextFormatting.AQUA);
+        showList(commandSender, page, structureNames);
     }
 }

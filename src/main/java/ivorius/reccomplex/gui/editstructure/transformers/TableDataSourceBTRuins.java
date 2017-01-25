@@ -55,7 +55,7 @@ public class TableDataSourceBTRuins extends TableDataSourceSegmented
             case 1:
                 return 5;
             case 2:
-                return 4;
+                return 5;
             default:
                 return super.sizeOfSegment(segment);
         }
@@ -130,6 +130,14 @@ public class TableDataSourceBTRuins extends TableDataSourceSegmented
                                 .withTitleTooltip(IvTranslations.formatLines("reccomplex.transformer.ruins.vines.tooltip"));
                     }
                     case 3:
+                    {
+                        TableCellFloat cell = new TableCellFloat("cobwebs", transformer.cobwebGrowth, 0.0f, 1.0f);
+                        cell.setScale(Scales.pow(3));
+                        cell.addPropertyConsumer(val -> transformer.cobwebGrowth = val);
+                        return new TitledCell(IvTranslations.get("reccomplex.transformer.ruins.cobwebs"), cell)
+                                .withTitleTooltip(IvTranslations.formatLines("reccomplex.transformer.ruins.cobwebs.tooltip"));
+                    }
+                    case 4:
                     {
                         TableCellBoolean cell = new TableCellBoolean("gravity", transformer.gravity);
                         cell.addPropertyConsumer(val -> transformer.gravity = val);

@@ -10,7 +10,6 @@ import com.google.common.collect.Sets;
 import com.google.gson.*;
 import ivorius.ivtoolkit.blocks.*;
 import ivorius.ivtoolkit.tools.*;
-import ivorius.ivtoolkit.transform.Mover;
 import ivorius.ivtoolkit.transform.PosTransformer;
 import ivorius.ivtoolkit.world.chunk.gen.StructureBoundingBoxes;
 import ivorius.reccomplex.RecurrentComplex;
@@ -29,6 +28,7 @@ import ivorius.reccomplex.world.gen.feature.structure.context.StructureLoadConte
 import ivorius.reccomplex.world.gen.feature.structure.context.StructurePrepareContext;
 import ivorius.reccomplex.world.gen.feature.structure.context.StructureSpawnContext;
 import ivorius.reccomplex.world.gen.feature.structure.generic.GenericStructureInfo;
+import ivorius.reccomplex.world.gen.feature.structure.generic.WorldCache;
 import net.minecraft.block.BlockSandStone;
 import net.minecraft.block.BlockStoneBrick;
 import net.minecraft.block.BlockVine;
@@ -38,12 +38,9 @@ import net.minecraft.block.state.IBlockState;
 import net.minecraft.init.Blocks;
 import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
-import net.minecraft.world.World;
-import net.minecraft.world.WorldServer;
 import net.minecraft.world.gen.structure.StructureBoundingBox;
 import net.minecraftforge.common.util.Constants;
 
@@ -83,14 +80,15 @@ public class TransformerRuins extends Transformer<TransformerRuins.InstanceData>
 
     public float blockErosion;
     public float vineGrowth;
+    public float cobwebGrowth;
 
     public TransformerRuins()
     {
         this(null, EnumFacing.DOWN, 0.0f, 1f, 1f, 1f / 25.0f,
-                true, 0.3f, 0.1f);
+                true, 0.3f, 0.1f, 0.1f);
     }
 
-    public TransformerRuins(@Nullable String id, EnumFacing decayDirection, float minDecay, float maxDecay, float decayChaos, float decayValueDensity, boolean gravity, float blockErosion, float vineGrowth)
+    public TransformerRuins(@Nullable String id, EnumFacing decayDirection, float minDecay, float maxDecay, float decayChaos, float decayValueDensity, boolean gravity, float blockErosion, float vineGrowth, float cobwebGrowth)
     {
         super(id != null ? id : randomID(TransformerRuins.class));
         this.decayDirection = decayDirection;
@@ -101,6 +99,7 @@ public class TransformerRuins extends Transformer<TransformerRuins.InstanceData>
         this.gravity = gravity;
         this.blockErosion = blockErosion;
         this.vineGrowth = vineGrowth;
+        this.cobwebGrowth = cobwebGrowth;
     }
 
     private static int getPass(IBlockState state)
@@ -170,7 +169,7 @@ public class TransformerRuins extends Transformer<TransformerRuins.InstanceData>
     {
         if (phase == Phase.AFTER)
         {
-            WorldServer world = context.environment.world;
+            WorldCache cache = new WorldCache(context.environment.world, context.boundingBox);
             IvBlockCollection blockCollection = worldData.blockCollection;
             int[] areaSize = new int[]{blockCollection.width, blockCollection.height, blockCollection.length};
 
@@ -192,7 +191,7 @@ public class TransformerRuins extends Transformer<TransformerRuins.InstanceData>
                 // TODO Bounce left/right
                 IBlockState destState;
                 while (dest.getY() > 0
-                        && (destState = world.getBlockState(dest)).getBlock().isAir(destState, world, dest))
+                        && (destState = cache.getBlockState(dest)).getBlock().isAir(destState, cache.world, dest))
                 {
                     IvMutableBlockPos.offset(dest, dest, EnumFacing.DOWN);
                 }
@@ -213,10 +212,10 @@ public class TransformerRuins extends Transformer<TransformerRuins.InstanceData>
 
                     if (context.includes(worldCoord))
                     {
-                        IBlockState state = world.getBlockState(worldCoord);
+                        IBlockState state = cache.getBlockState(worldCoord);
 
                         if (!transformer.transformer.skipGeneration(transformer.instanceData, context, worldCoord, state, worldData, sourceCoord))
-                            decayBlock(world, context.random, state, worldCoord);
+                            decayBlock(cache, context.random, state, worldCoord);
                     }
                 }
             }
@@ -225,7 +224,7 @@ public class TransformerRuins extends Transformer<TransformerRuins.InstanceData>
         }
     }
 
-    public void decayBlock(World world, Random random, IBlockState state, BlockPos coord)
+    public void decayBlock(WorldCache cache, Random random, IBlockState state, BlockPos pos)
     {
         IBlockState newState = state;
 
@@ -253,29 +252,55 @@ public class TransformerRuins extends Transformer<TransformerRuins.InstanceData>
             newState = null;
             for (EnumFacing direction : EnumFacing.HORIZONTALS)
             {
-                if (random.nextFloat() < vineGrowth && Blocks.VINE.canPlaceBlockOnSide(world, coord, direction))
+                if (random.nextFloat() < vineGrowth && Blocks.VINE.canPlaceBlockOnSide(cache.world, pos, direction))
                 {
-                    IBlockState downState = world.getBlockState(coord.offset(EnumFacing.DOWN));
+                    IBlockState downState = cache.getBlockState(pos.offset(EnumFacing.DOWN));
                     downState = downState.getBlock() == Blocks.VINE ? downState : Blocks.VINE.getDefaultState();
                     downState = downState.withProperty(BlockVine.getPropertyFor(direction.getOpposite()), true);
 
                     int length = 1 + random.nextInt(MathHelper.floor(vineGrowth * 10.0f + 3));
                     for (int y = 0; y < length; y++)
                     {
-                        BlockPos downPos = coord.offset(EnumFacing.DOWN, y);
-                        if (world.getBlockState(downPos).getMaterial() == Material.AIR)
-                            world.setBlockState(downPos, downState, 3);
+                        BlockPos downPos = pos.offset(EnumFacing.DOWN, y);
+                        if (cache.getBlockState(downPos).getMaterial() == Material.AIR)
+                            cache.setBlockState(downPos, downState, 3);
                         else
                             break;
                     }
 
                     break;
                 }
+                else if (random.nextFloat() < cobwebGrowth && hasAirNeighbors(cache, pos, 3))
+                {
+                    newState = null;
+                    cache.setBlockState(pos, Blocks.WEB.getDefaultState(), 3);
+                }
             }
         }
 
         if (newState != null && state != newState)
-            world.setBlockState(coord, newState, 3);
+            cache.setBlockState(pos, newState, 3);
+    }
+
+    public boolean hasAirNeighbors(WorldCache cache, BlockPos pos, int sides)
+    {
+        int num = 0;
+        int neg = 0;
+
+        for (EnumFacing facing : EnumFacing.VALUES)
+        {
+            if (cache.getBlockState(pos.offset(facing)).isNormalCube())
+                num++;
+            else
+                neg++;
+
+            if (num >= sides)
+                return true;
+            else if (neg > (6 - sides))
+                return false;
+        }
+
+        throw new InternalError();
     }
 
     @Override
@@ -371,7 +396,7 @@ public class TransformerRuins extends Transformer<TransformerRuins.InstanceData>
                     if (canFall(context, worldData, transformer, dest, sourcePos, state))
                     {
                         if (state.getBlock() == RCBlocks.genericSolid
-                                && (int) state.getValue(BlockGenericSolid.TYPE) == 0)
+                                && state.getValue(BlockGenericSolid.TYPE) == 0)
                             hasFloor[0] = true; // TODO Make configurable?
 
                         connected.add(sourcePos);
@@ -463,8 +488,9 @@ public class TransformerRuins extends Transformer<TransformerRuins.InstanceData>
 
             float blockErosion = JsonUtils.getFloat(jsonObject, "blockErosion", 0.0f);
             float vineGrowth = JsonUtils.getFloat(jsonObject, "vineGrowth", 0.0f);
+            float cobwebGrowth = JsonUtils.getFloat(jsonObject, "cobwebGrowth", 0.0f);
 
-            return new TransformerRuins(id, decayDirection, minDecay, maxDecay, decayChaos, decayValueDensity, gravity, blockErosion, vineGrowth);
+            return new TransformerRuins(id, decayDirection, minDecay, maxDecay, decayChaos, decayValueDensity, gravity, blockErosion, vineGrowth, cobwebGrowth);
         }
 
         @Override
@@ -483,6 +509,7 @@ public class TransformerRuins extends Transformer<TransformerRuins.InstanceData>
 
             jsonObject.addProperty("blockErosion", transformer.blockErosion);
             jsonObject.addProperty("vineGrowth", transformer.vineGrowth);
+            jsonObject.addProperty("cobwebGrowth", transformer.cobwebGrowth);
 
             return jsonObject;
         }

@@ -27,17 +27,39 @@ public class WorldCache
         states = new IBlockState[boundingBox.getXSize() * boundingBox.getYSize() * boundingBox.getZSize()];
     }
 
-    public IBlockState getBlockState(BlockPos pos)
+    protected Integer getIndex(BlockPos pos)
     {
         if (!boundingBox.isVecInside(pos))
-            return world.getBlockState(pos);
+            return null;
 
-        int index = ((pos.getX() - boundingBox.minX) * boundingBox.getYSize()
+        return ((pos.getX() - boundingBox.minX) * boundingBox.getYSize()
                 + (pos.getY() - boundingBox.minY)) * boundingBox.getZSize()
                 + (pos.getZ() - boundingBox.minZ);
+    }
+
+    public IBlockState getBlockState(BlockPos pos)
+    {
+        Integer index = getIndex(pos);
+
+        if (index == null)
+            return world.getBlockState(pos);
 
         IBlockState state = states[index];
 
         return state != null ? state : (states[index] = world.getBlockState(pos));
+    }
+
+    public boolean setBlockState(BlockPos pos, IBlockState state, int flags)
+    {
+        boolean b = world.setBlockState(pos, state, flags);
+
+        if (b)
+        {
+            Integer index = getIndex(pos);
+            if (index != null)
+                states[index] = state;
+        }
+
+        return b;
     }
 }

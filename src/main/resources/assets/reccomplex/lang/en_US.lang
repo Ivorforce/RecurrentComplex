@@ -399,6 +399,8 @@ reccomplex.transformer.ruins.erosion=Erosion
 reccomplex.transformer.ruins.erosion.tooltip=The chance for each block<br>to be replaced by a<br>'broken' version of it.
 reccomplex.transformer.ruins.vines=Vine Growth
 reccomplex.transformer.ruins.vines.tooltip=The chance for vines and moss<br>to spawn on each block.
+reccomplex.transformer.ruins.cobwebs=Cobweb Growth
+reccomplex.transformer.ruins.cobwebs.tooltip=The chance for cobwebs to form in corners.
 reccomplex.transformer.ruins.gravity=Gravity
 reccomplex.transformer.ruins.gravity.tooltip=Blocks that are floating<br>fall down at generation.
 

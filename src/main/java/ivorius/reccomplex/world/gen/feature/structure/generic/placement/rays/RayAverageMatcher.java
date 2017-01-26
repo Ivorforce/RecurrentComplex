@@ -27,6 +27,7 @@ import net.minecraft.world.gen.structure.StructureBoundingBox;
 
 import java.lang.reflect.Type;
 import java.util.OptionalInt;
+import java.util.Random;
 import java.util.function.Predicate;
 
 import static ivorius.reccomplex.world.gen.feature.structure.generic.placement.FactorLimit.getRayRegistry;
@@ -69,7 +70,7 @@ public class RayAverageMatcher extends FactorLimit.Ray
     }
 
     // From StructureVillagePieces
-    public static int getAverageGroundLevel(boolean up, int y, StructureBoundingBox boundingBox, Predicate<BlockPos> predicate, int wHeight)
+    public static int getAverageGroundLevel(boolean up, int y, StructureBoundingBox boundingBox, Predicate<BlockPos> predicate, int wHeight, double samples, Random random)
     {
         TIntList list = new TIntArrayList(boundingBox.getXSize() * boundingBox.getZSize());
         BlockPos.MutableBlockPos pos = new BlockPos.MutableBlockPos();
@@ -78,11 +79,15 @@ public class RayAverageMatcher extends FactorLimit.Ray
         {
             for (int l = boundingBox.minX; l <= boundingBox.maxX; ++l)
             {
-                pos.setPos(l, 64, k);
+//                Added
+                if (samples >= 1 || random.nextDouble() < samples)
+                {
+                    pos.setPos(l, 64, k);
 
 //                if (structurebb.isVecInside(pos))
-                {
-                    list.add(findFirstBlock(pos, predicate, up, y, wHeight).getY());
+                    {
+                        list.add(findFirstBlock(pos, predicate, up, y, wHeight).getY());
+                    }
                 }
             }
         }
@@ -126,8 +131,14 @@ public class RayAverageMatcher extends FactorLimit.Ray
     @Override
     public OptionalInt cast(WorldCache cache, StructurePlaceContext context, int y)
     {
+        int floorBlocks = context.boundingBox.getXSize() * context.boundingBox.getZSize();
+        // Under a chunk size we can use every block no problem.
+        // Afterwards we slowly increase total sample size, i.e. decrease chance.
+        double samples = floorBlocks < 16 * 16 ? 1 : Math.pow((16f * 16f) / floorBlocks, 0.7f);
+
         int averageGroundLevel = getAverageGroundLevel(up, y, context.boundingBox,
-                blockPos -> destMatcher.evaluate(() -> PositionedBlockMatcher.Argument.at(cache, blockPos)), cache.world.getHeight());
+                blockPos -> destMatcher.evaluate(() -> PositionedBlockMatcher.Argument.at(cache, blockPos)), cache.world.getHeight(),
+                samples, context.random);
         return averageGroundLevel >= 0 ? OptionalInt.of(averageGroundLevel) : OptionalInt.empty();
     }
 

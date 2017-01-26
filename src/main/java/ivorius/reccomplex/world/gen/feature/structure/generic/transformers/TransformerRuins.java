@@ -8,6 +8,8 @@ package ivorius.reccomplex.world.gen.feature.structure.generic.transformers;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Sets;
 import com.google.gson.*;
+import gnu.trove.map.TObjectDoubleMap;
+import gnu.trove.map.hash.TObjectDoubleHashMap;
 import ivorius.ivtoolkit.blocks.*;
 import ivorius.ivtoolkit.tools.*;
 import ivorius.ivtoolkit.transform.PosTransformer;
@@ -55,6 +57,7 @@ import java.util.stream.Collectors;
 public class TransformerRuins extends Transformer<TransformerRuins.InstanceData>
 {
     private static final List<BlockPos> neighbors;
+    public static final TObjectDoubleMap<Material> stability = new TObjectDoubleHashMap<>(gnu.trove.impl.Constants.DEFAULT_CAPACITY, gnu.trove.impl.Constants.DEFAULT_LOAD_FACTOR, 1);
 
     static
     {
@@ -69,6 +72,14 @@ public class TransformerRuins extends Transformer<TransformerRuins.InstanceData>
                 }
 
         neighbors = builder.build();
+
+        stability.put(Material.GLASS, 0.3333);
+        stability.put(Material.LAVA, 2);
+        stability.put(Material.CIRCUITS, 0.3333);
+        stability.put(Material.IRON, 2);
+        stability.put(Material.WOOD, 0.5);
+        stability.put(Material.CACTUS, 0.5);
+        stability.put(Material.CLOTH, 0.5);
     }
 
     public EnumFacing decayDirection;
@@ -140,18 +151,7 @@ public class TransformerRuins extends Transformer<TransformerRuins.InstanceData>
 
     public double getDecay(InstanceData instanceData, BlockPos sourcePos, IBlockState state)
     {
-        Material material = state.getMaterial();
-        double modifier = material == Material.GLASS ? 3
-                : material == Material.LEAVES ? 0.5
-                : material == Material.CIRCUITS ? 3
-                : material == Material.IRON ? 0.5
-                : material == Material.WOOD ? 2
-                : material == Material.CARPET ? 2
-                : material == Material.CLOTH ? 2
-                : 1;
-        return Math.pow((instanceData.baseDecay != null ? instanceData.baseDecay : 0)
-                    + (instanceData.surfaceField != null ? instanceData.surfaceField.getValue(Math.min(sourcePos.getX(), instanceData.surfaceField.getSize()[0]), Math.min(sourcePos.getY(), instanceData.surfaceField.getSize()[1]), Math.min(sourcePos.getZ(), instanceData.surfaceField.getSize()[2])) : 0)
-                    + (instanceData.volumeField != null ? instanceData.volumeField.getValue(sourcePos.getX(), sourcePos.getY(), sourcePos.getZ()) : 0), 1 /  modifier);
+        return Math.pow(instanceData.getDecay(sourcePos), stability.get(state.getMaterial()));
     }
 
     public double getStability(IvWorldData worldData, BlockPos sourcePos)
@@ -339,6 +339,8 @@ public class TransformerRuins extends Transformer<TransformerRuins.InstanceData>
             int volumeValues = MathHelper.floor(product(volumeSize) * decayValueDensity * 0.25 + 0.5);
             for (int i = 0; i < volumeValues; i++)
                 instanceData.volumeField.addValue((context.random.nextDouble() - context.random.nextDouble()) * decayChaos * 0.75, context.random);
+
+            instanceData.clearDecayCache();
         }
 
         return instanceData;
@@ -431,6 +433,9 @@ public class TransformerRuins extends Transformer<TransformerRuins.InstanceData>
         public BlurredValueField volumeField;
         public final Set<BlockPos> fallingBlocks = new HashSet<>();
 
+        public double[] decayCache;
+        public int[] decayCacheSize;
+
         public InstanceData()
         {
         }
@@ -445,6 +450,7 @@ public class TransformerRuins extends Transformer<TransformerRuins.InstanceData>
                     ? NBTCompoundObjects.read(compound.getCompoundTag("volumeField"), BlurredValueField::new)
                     : null;
             fallingBlocks.addAll(NBTTagLists.intArraysFrom(compound, "fallingBlocks").stream().map(BlockPositions::fromIntArray).collect(Collectors.toList()));
+            clearDecayCache();
         }
 
         @Override
@@ -459,6 +465,42 @@ public class TransformerRuins extends Transformer<TransformerRuins.InstanceData>
                 compound.setTag("volumeField", NBTCompoundObjects.write(volumeField));
             NBTTagLists.writeIntArraysTo(compound, "fallingBlocks", fallingBlocks.stream().map(BlockPositions::toIntArray).collect(Collectors.toList()));
             return compound;
+        }
+
+        private Integer getIndex(BlockPos pos)
+        {
+            if (pos.getX() < 0 || pos.getY() < 0 || pos.getZ() < 0
+                    || pos.getX() > decayCacheSize[0] || pos.getY() > decayCacheSize[1] || pos.getZ() > decayCacheSize[2])
+                return null;
+
+            return ((pos.getX() * decayCacheSize[1])
+                    + pos.getY()) * decayCacheSize[2]
+                    + pos.getZ();
+        }
+
+        public double getDecay(BlockPos pos)
+        {
+            Integer index = getIndex(pos);
+            return index != null ? decayCache[index] : calculateDecay(pos);
+        }
+
+        public void clearDecayCache()
+        {
+            decayCacheSize = surfaceField.getSize();
+            decayCache = new double[product(decayCacheSize)];
+
+            for (BlockPos pos : new BlockArea(BlockPos.ORIGIN, new BlockPos(decayCacheSize[0] - 1, decayCacheSize[1] - 1, decayCacheSize[2] - 1)))
+            {
+                double decay = calculateDecay(pos);
+                decayCache[getIndex(pos)] = decay;
+            }
+        }
+
+        protected double calculateDecay(BlockPos pos)
+        {
+            return (this.baseDecay != null ? this.baseDecay : 0)
+                    + (this.surfaceField != null ? this.surfaceField.getValue(Math.min(pos.getX(), this.surfaceField.getSize()[0]), Math.min(pos.getY(), this.surfaceField.getSize()[1]), Math.min(pos.getZ(), this.surfaceField.getSize()[2])) : 0)
+                    + (this.volumeField != null ? this.volumeField.getValue(pos.getX(), pos.getY(), pos.getZ()) : 0);
         }
     }
 

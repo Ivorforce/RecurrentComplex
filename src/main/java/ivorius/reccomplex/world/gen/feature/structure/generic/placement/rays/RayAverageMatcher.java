@@ -8,6 +8,7 @@ package ivorius.reccomplex.world.gen.feature.structure.generic.placement.rays;
 import com.google.gson.*;
 import gnu.trove.list.TIntList;
 import gnu.trove.list.array.TIntArrayList;
+import ivorius.ivtoolkit.blocks.IvMutableBlockPos;
 import ivorius.ivtoolkit.tools.IvTranslations;
 import ivorius.reccomplex.RecurrentComplex;
 import ivorius.reccomplex.gui.TableDataSourceExpression;
@@ -22,6 +23,7 @@ import ivorius.reccomplex.world.gen.feature.structure.generic.WorldCache;
 import ivorius.reccomplex.utils.expression.PositionedBlockMatcher;
 import ivorius.reccomplex.world.gen.feature.structure.generic.placement.FactorLimit;
 import ivorius.reccomplex.world.gen.feature.structure.generic.placement.StructurePlaceContext;
+import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.gen.structure.StructureBoundingBox;
 
@@ -52,21 +54,16 @@ public class RayAverageMatcher extends FactorLimit.Ray
         this.destMatcher.setExpression(destExpression);
     }
 
-    // From World.getTopSolidOrLiquidBlock
-    public static BlockPos findFirstBlock(BlockPos pos, Predicate<BlockPos> predicate, boolean up, int y, int wHeight)
+    public static BlockPos findFirstBlock(BlockPos.MutableBlockPos pos, Predicate<BlockPos> predicate, boolean up, int wHeight)
     {
-        BlockPos blockpos;
-        BlockPos blockpos1;
-
-        for (blockpos = new BlockPos(pos.getX(), y, pos.getZ()); blockpos.getY() >= 0 && blockpos.getY() < wHeight; blockpos = blockpos1)
+        for (; pos.getY() >= 0 && pos.getY() < wHeight; IvMutableBlockPos.offset(pos, pos, up ? EnumFacing.UP : EnumFacing.DOWN))
         {
-            blockpos1 = up ? blockpos.up() : blockpos.down();
-
-            if (predicate.test(blockpos1))
+            if (predicate.test(pos))
                 break;
         }
 
-        return blockpos;
+        // Return one earlier, since it is expected (legacy? mostly because world height did this)
+        return IvMutableBlockPos.offset(pos, pos, !up ? EnumFacing.UP : EnumFacing.DOWN);
     }
 
     // From StructureVillagePieces
@@ -82,11 +79,11 @@ public class RayAverageMatcher extends FactorLimit.Ray
 //                Added
                 if (samples >= 1 || random.nextDouble() < samples)
                 {
-                    pos.setPos(l, 64, k);
+                    pos.setPos(l, y, k);
 
 //                if (structurebb.isVecInside(pos))
                     {
-                        list.add(findFirstBlock(pos, predicate, up, y, wHeight).getY());
+                        list.add(findFirstBlock(pos, predicate, up, wHeight).getY());
                     }
                 }
             }

@@ -486,7 +486,7 @@ public class TransformerRuins extends Transformer<TransformerRuins.InstanceData>
 
         public void clearDecayCache()
         {
-            decayCacheSize = surfaceField.getSize();
+            decayCacheSize = volumeField.getSize();
             decayCache = new double[product(decayCacheSize)];
 
             for (BlockPos pos : new BlockArea(BlockPos.ORIGIN, new BlockPos(decayCacheSize[0] - 1, decayCacheSize[1] - 1, decayCacheSize[2] - 1)))

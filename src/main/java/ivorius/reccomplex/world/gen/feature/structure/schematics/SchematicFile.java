@@ -27,6 +27,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.Constants;
 
+import javax.annotation.Nonnull;
 import java.util.*;
 import java.util.stream.Stream;
 
@@ -127,6 +128,16 @@ public class SchematicFile
         return blockStates[getBlockIndex(coord)];
     }
 
+    public boolean setBlockState(BlockPos coord, IBlockState state)
+    {
+        if (coord.getX() < 0 || coord.getY() < 0 || coord.getZ() < 0 || coord.getX() >= width || coord.getY() >= height || coord.getZ() >= length)
+            return false;
+
+        blockStates[getBlockIndex(coord)] = state;
+
+        return true;
+    }
+
     public boolean shouldRenderSide(BlockPos coord, EnumFacing side)
     {
         BlockPos sideCoord = coord.add(side.getFrontOffsetX(), side.getFrontOffsetY(), side.getFrontOffsetZ());
@@ -154,11 +165,10 @@ public class SchematicFile
         }
 
         int[] size = {width, height, length};
-        BlockArea blockArea = BlockArea.areaFromSize(BlockPos.ORIGIN, size);
 
         for (int pass = 0; pass < 2; pass++)
         {
-            for (BlockPos sourcePos : blockArea)
+            for (BlockPos sourcePos : area())
             {
                 int index = getBlockIndex(sourcePos);
                 IBlockState blockState = PosTransformer.transformBlockState(blockStates[index], transform);
@@ -195,6 +205,12 @@ public class SchematicFile
                 world.spawnEntityInWorld(entity);
             }
         }
+    }
+
+    @Nonnull
+    public BlockArea area()
+    {
+        return BlockArea.areaFromSize(BlockPos.ORIGIN, new int[]{width, height, length});
     }
 
     private int getPass(IBlockState blockState)

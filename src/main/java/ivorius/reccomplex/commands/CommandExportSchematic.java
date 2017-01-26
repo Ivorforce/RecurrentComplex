@@ -7,6 +7,7 @@ package ivorius.reccomplex.commands;
 
 import ivorius.ivtoolkit.blocks.BlockArea;
 import ivorius.ivtoolkit.blocks.BlockAreas;
+import ivorius.ivtoolkit.blocks.IvBlockCollection;
 import ivorius.ivtoolkit.tools.IvWorldData;
 import ivorius.reccomplex.RCConfig;
 import ivorius.reccomplex.capability.SelectionOwner;
@@ -29,22 +30,28 @@ import java.util.List;
  */
 public class CommandExportSchematic extends CommandBase
 {
-    public static SchematicFile convert(IvWorldData worldData)
+    public static SchematicFile toSchematic(IvWorldData worldData)
     {
         SchematicFile schematicFile = new SchematicFile((short) worldData.blockCollection.width, (short) worldData.blockCollection.height, (short) worldData.blockCollection.length);
 
-        for (BlockPos coord : BlockAreas.mutablePositions(worldData.blockCollection.area()))
-        {
-            int index = schematicFile.getBlockIndex(coord);
-            schematicFile.blockStates[index] = worldData.blockCollection.getBlockState(coord);
-        }
+        for (BlockPos pos : BlockAreas.mutablePositions(worldData.blockCollection.area()))
+            schematicFile.setBlockState(pos, worldData.blockCollection.getBlockState(pos));
 
-        schematicFile.entityCompounds.clear();
         schematicFile.entityCompounds.addAll(worldData.entities);
-        schematicFile.tileEntityCompounds.clear();
         schematicFile.tileEntityCompounds.addAll(worldData.tileEntities);
 
         return schematicFile;
+    }
+
+    public static IvWorldData toWorldData(SchematicFile schematicFile)
+    {
+        IvWorldData worldData = new IvWorldData(new IvBlockCollection(schematicFile.width, schematicFile.height, schematicFile.length),
+                schematicFile.tileEntityCompounds, schematicFile.entityCompounds);
+
+        for (BlockPos pos : schematicFile.area())
+            worldData.blockCollection.setBlockState(pos, schematicFile.getBlockState(pos));
+
+        return worldData;
     }
 
     @Override
@@ -91,7 +98,7 @@ public class CommandExportSchematic extends CommandBase
         BlockPos higherCoord = area.getHigherCorner();
 
         IvWorldData data = IvWorldData.capture(commandSender.getEntityWorld(), new BlockArea(lowerCoord, higherCoord), true);
-        SchematicFile schematicFile = convert(data);
+        SchematicFile schematicFile = toSchematic(data);
         SchematicLoader.writeSchematicByName(schematicFile, structureName);
 
         commandSender.addChatMessage(ServerTranslations.format("commands.strucExportSchematic.success", structureName));

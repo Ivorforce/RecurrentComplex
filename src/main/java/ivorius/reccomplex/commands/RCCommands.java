@@ -5,6 +5,7 @@
 
 package ivorius.reccomplex.commands;
 
+import com.google.common.collect.Lists;
 import ivorius.ivtoolkit.blocks.BlockSurfacePos;
 import ivorius.ivtoolkit.math.AxisAlignedTransform2D;
 import ivorius.reccomplex.RCConfig;
@@ -16,6 +17,7 @@ import ivorius.reccomplex.utils.algebra.ExpressionCache;
 import ivorius.reccomplex.utils.expression.ResourceMatcher;
 import ivorius.reccomplex.world.gen.feature.structure.StructureInfo;
 import ivorius.reccomplex.world.gen.feature.structure.StructureRegistry;
+import joptsimple.internal.Strings;
 import net.minecraft.command.*;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ResourceLocation;
@@ -117,6 +119,7 @@ public class RCCommands
 
         event.registerServerCommand(new CommandImportSchematic());
         event.registerServerCommand(new CommandExportSchematic());
+        event.registerServerCommand(new CommandConvertSchematic());
 
         event.registerServerCommand(new CommandWhatIsThis());
         event.registerServerCommand(forget = new CommandForget());
@@ -320,5 +323,30 @@ public class RCCommands
         {
             throw ServerTranslations.wrongUsageException("commands.selectModify.invalidMetadata", arg);
         }
+    }
+
+    public static String[] parseQuotedWords(String[] args)
+    {
+        List<String> list = Lists.newArrayList();
+
+        int lastQuote = -1;
+        for (int i = 0; i < args.length; i++)
+        {
+            if (lastQuote == -1 && args[i].indexOf("\"") == 0)
+                lastQuote = i;
+
+            if (lastQuote == -1)
+                list.add(args[i]);
+            else if (lastQuote >= 0 && args[i].lastIndexOf("\"") == args[i].length() - 1)
+            {
+                list.add(Strings.join(Arrays.asList(args).subList(lastQuote, i + 1), " "));
+                lastQuote = -1;
+            }
+        }
+
+        if (lastQuote >= 0)
+            list.add(Strings.join(Arrays.asList(args).subList(lastQuote, args.length), " "));
+
+        return list.toArray(new String[list.size()]);
     }
 }

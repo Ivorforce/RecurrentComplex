@@ -270,6 +270,12 @@ public class SchematicFile
     {
         public final String format;
 
+        public UnsupportedSchematicFormatException(Throwable cause, String format)
+        {
+            super(cause);
+            this.format = format;
+        }
+
         public UnsupportedSchematicFormatException(String format)
         {
             this.format = format;

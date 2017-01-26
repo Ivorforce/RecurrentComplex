@@ -19,6 +19,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
+import java.util.zip.GZIPInputStream;
 import java.util.zip.GZIPOutputStream;
 
 /**
@@ -48,6 +49,7 @@ public class SchematicLoader
     public static SchematicFile loadSchematicFromFile(File file) throws SchematicFile.UnsupportedSchematicFormatException
     {
         NBTTagCompound compound = null;
+        Exception exception = null;
 
         try (FileInputStream fileInputStream = new FileInputStream(file))
         {
@@ -55,7 +57,21 @@ public class SchematicLoader
         }
         catch (Exception e)
         {
-            throw new SchematicFile.UnsupportedSchematicFormatException("Not a compress NBT file!");
+            exception = e;
+        }
+
+        if (compound == null)
+        {
+            // Try uncompressed read as well
+            try (FileInputStream fileInputStream = new FileInputStream(file))
+            {
+                DataInputStream datainputstream = new DataInputStream(new BufferedInputStream(fileInputStream));
+                compound = CompressedStreamTools.read(datainputstream);
+            }
+            catch (Exception e)
+            {
+                throw new SchematicFile.UnsupportedSchematicFormatException(exception, "Not a compressed NBT file");
+            }
         }
 
         if (compound != null)

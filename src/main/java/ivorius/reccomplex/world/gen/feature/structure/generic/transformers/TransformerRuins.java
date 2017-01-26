@@ -95,7 +95,7 @@ public class TransformerRuins extends Transformer<TransformerRuins.InstanceData>
 
     public TransformerRuins()
     {
-        this(null, EnumFacing.DOWN, 0.0f, 1f, 1f, 1f / 25.0f,
+        this(null, EnumFacing.DOWN, 0.0f, 1f, 1f, 0.02f,
                 true, 0.3f, 0.1f, 0.1f);
     }
 

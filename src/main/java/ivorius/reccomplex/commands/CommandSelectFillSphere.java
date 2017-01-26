@@ -87,7 +87,7 @@ public class CommandSelectFillSphere extends CommandBase
                 if (IvShapeHelper.isPointInSpheroid(coordPoint, spheroidOrigin, spheroidSize))
                 {
                     IBlockState state = dst.get(world.rand.nextInt(dst.size()));
-                    world.setBlockState(coord, state, 3);
+                    world.setBlockState(coord, state, 2);
                 }
             }
         }

@@ -25,7 +25,6 @@ import org.apache.commons.lang3.StringUtils;
 import javax.annotation.Nullable;
 import java.util.Collections;
 import java.util.List;
-import java.util.Set;
 
 /**
  * Created by lukas on 25.05.14.
@@ -55,7 +54,7 @@ public class CommandLookupStructure extends CommandBase
         if (args.length >= 1)
         {
             String id = args[0];
-            GenericStructureInfo structureInfo = CommandExportStructure.getGenericStructureInfo(id);
+            GenericStructureInfo structureInfo = CommandExportStructure.getGenericStructure(id);
             Metadata metadata = structureInfo.metadata;
 
             boolean hasAuthor = !metadata.authors.trim().isEmpty();

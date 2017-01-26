@@ -30,6 +30,9 @@ public class PacketEditStructureHandler extends SchedulingMessageHandler<PacketE
 {
     public static void openEditStructure(GenericStructureInfo structureInfo, String structureID, EntityPlayerMP player)
     {
+        if (structureID == null)
+            structureID = "NewStructure";
+
         StructureEntityInfo structureEntityInfo = StructureEntityInfo.get(player, null);
 
         if (structureEntityInfo != null)

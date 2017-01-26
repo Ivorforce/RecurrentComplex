@@ -130,6 +130,8 @@ commands.strucImportSchematic.usage=/#importschematic "<Schematic Name>" [x] [y]
 commands.strucImportSchematic.missing=The file '%s' was not found in %s
 commands.strucImportSchematic.format=The file '%s' has an unsupported format (%s)
 
+commands.rcconvertschematic.usage=/#convertschematic "<Schematic Name>" <structure ID>
+
 commands.strucExportSchematic.usage=/#exportschematic <schematic name>
 commands.strucExportSchematic.success=Exported schematic to '%s'
 

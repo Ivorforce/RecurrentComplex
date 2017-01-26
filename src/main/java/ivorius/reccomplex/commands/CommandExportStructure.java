@@ -30,7 +30,7 @@ import java.util.List;
  */
 public class CommandExportStructure extends CommandBase
 {
-    public static GenericStructureInfo getGenericStructureInfo(String name) throws CommandException
+    public static GenericStructureInfo getGenericStructure(String name) throws CommandException
     {
         StructureInfo structureInfo = StructureRegistry.INSTANCE.get(name);
 
@@ -42,6 +42,22 @@ public class CommandExportStructure extends CommandBase
         if (genericStructureInfo == null)
             throw ServerTranslations.commandException("commands.structure.notGeneric", name);
 
+        return genericStructureInfo;
+    }
+
+    protected static GenericStructureInfo getGenericStructure(ICommandSender commandSender, String structureID) throws CommandException
+    {
+        GenericStructureInfo genericStructureInfo;
+
+        if (structureID != null)
+        {
+            genericStructureInfo = getGenericStructure(structureID);
+        }
+        else
+        {
+            genericStructureInfo = GenericStructureInfo.createDefaultStructure();
+            genericStructureInfo.metadata.authors = commandSender.getName();
+        }
         return genericStructureInfo;
     }
 
@@ -76,30 +92,15 @@ public class CommandExportStructure extends CommandBase
     {
         EntityPlayerMP player = getCommandSenderAsPlayer(commandSender);
 
-        GenericStructureInfo genericStructureInfo;
-        String structureID;
-
-        if (args.length >= 1)
-        {
-            genericStructureInfo = getGenericStructureInfo(args[0]);
-            structureID = args[0];
-        }
-        else
-        {
-            genericStructureInfo = GenericStructureInfo.createDefaultStructure();
-            structureID = "NewStructure";
-            genericStructureInfo.metadata.authors = commandSender.getName();
-        }
+        String structureID = args.length >= 1 ? args[0] : null;
+        GenericStructureInfo genericStructureInfo = getGenericStructure(commandSender, structureID);
 
         SelectionOwner selectionOwner = RCCommands.getSelectionOwner(commandSender, null, true);
         RCCommands.assertSize(commandSender, selectionOwner);
 
-        BlockArea area = selectionOwner.getSelection();
-        BlockPos lowerCoord = area.getLowerCorner();
-        BlockPos higherCoord = area.getHigherCorner();
+        genericStructureInfo.worldDataCompound = IvWorldData.capture(commandSender.getEntityWorld(), selectionOwner.getSelection(), true)
+                .createTagCompound(null);
 
-        IvWorldData data = IvWorldData.capture(commandSender.getEntityWorld(), new BlockArea(lowerCoord, higherCoord), true);
-        genericStructureInfo.worldDataCompound = data.createTagCompound(lowerCoord);
         PacketEditStructureHandler.openEditStructure(genericStructureInfo, structureID, player);
     }
 }

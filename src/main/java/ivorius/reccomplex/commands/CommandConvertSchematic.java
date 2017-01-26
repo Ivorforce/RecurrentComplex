@@ -61,7 +61,7 @@ public class CommandConvertSchematic extends CommandBase
 
         GenericStructureInfo structure = CommandExportStructure.getGenericStructure(commandSender, args.length >= 2 ? args[1] : null);
 
-        structure.worldDataCompound = CommandExportSchematic.toWorldData(schematicFile).createTagCompound(null);
+        structure.worldDataCompound = CommandExportSchematic.toWorldData(schematicFile).createTagCompound();
 
         PacketEditStructureHandler.openEditStructure(structure, schematicName, player);
     }

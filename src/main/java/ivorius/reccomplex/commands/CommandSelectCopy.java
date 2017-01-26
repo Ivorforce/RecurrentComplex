@@ -53,7 +53,7 @@ public class CommandSelectCopy extends CommandBase
         BlockPos lowerCorner = area.getLowerCorner();
         BlockPos higherCorner = area.getHigherCorner();
 
-        structureEntityInfo.setWorldDataClipboard(worldData.createTagCompound(null));
+        structureEntityInfo.setWorldDataClipboard(worldData.createTagCompound());
         commandSender.addChatMessage(ServerTranslations.format("commands.selectCopy.success", String.valueOf(lowerCorner.getX()), String.valueOf(lowerCorner.getY()), String.valueOf(lowerCorner.getZ()), String.valueOf(higherCorner.getX()), String.valueOf(higherCorner.getY()), String.valueOf(higherCorner.getZ())));
     }
 }

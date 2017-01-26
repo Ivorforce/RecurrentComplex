@@ -74,7 +74,7 @@ public class CommandSelectFill extends CommandBase
             for (BlockPos coord : selectionOwner.getSelection())
             {
                 IBlockState state = dst.get(world.rand.nextInt(dst.size()));
-                world.setBlockState(coord, state, 3);
+                world.setBlockState(coord, state, 2);
             }
         }
         else

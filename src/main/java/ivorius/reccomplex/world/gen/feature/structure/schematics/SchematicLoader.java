@@ -53,9 +53,9 @@ public class SchematicLoader
         {
             compound = CompressedStreamTools.readCompressed(fileInputStream);
         }
-        catch (IOException e)
+        catch (Exception e)
         {
-            e.printStackTrace();
+            throw new SchematicFile.UnsupportedSchematicFormatException("Not a compress NBT file!");
         }
 
         if (compound != null)

@@ -470,7 +470,7 @@ public class TransformerRuins extends Transformer<TransformerRuins.InstanceData>
         private Integer getIndex(BlockPos pos)
         {
             if (pos.getX() < 0 || pos.getY() < 0 || pos.getZ() < 0
-                    || pos.getX() > decayCacheSize[0] || pos.getY() > decayCacheSize[1] || pos.getZ() > decayCacheSize[2])
+                    || pos.getX() >= decayCacheSize[0] || pos.getY() >= decayCacheSize[1] || pos.getZ() >= decayCacheSize[2])
                 return null;
 
             return ((pos.getX() * decayCacheSize[1])

@@ -77,7 +77,7 @@ public class CommandSelectMove extends CommandBase
         BlockPos coord = RCCommands.parseBlockPos(area.getLowerCorner(), args, 0, false);
 
         IvWorldData worldData = IvWorldData.capture(commandSender.getEntityWorld(), area, true);
-        NBTTagCompound worldDataCompound = worldData.createTagCompound(area.getLowerCorner());
+        NBTTagCompound worldDataCompound = worldData.createTagCompound();
 
         GenericStructureInfo structureInfo = GenericStructureInfo.createDefaultStructure();
         structureInfo.worldDataCompound = worldDataCompound;

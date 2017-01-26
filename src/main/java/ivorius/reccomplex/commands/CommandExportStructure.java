@@ -99,7 +99,7 @@ public class CommandExportStructure extends CommandBase
         RCCommands.assertSize(commandSender, selectionOwner);
 
         genericStructureInfo.worldDataCompound = IvWorldData.capture(commandSender.getEntityWorld(), selectionOwner.getSelection(), true)
-                .createTagCompound(null);
+                .createTagCompound();
 
         PacketEditStructureHandler.openEditStructure(genericStructureInfo, structureID, player);
     }

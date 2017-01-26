@@ -24,7 +24,6 @@ import ivorius.reccomplex.gui.table.datasource.TableDataSource;
 import ivorius.reccomplex.json.JsonUtils;
 import ivorius.reccomplex.random.BlurredValueField;
 import ivorius.reccomplex.utils.NBTStorable;
-import ivorius.reccomplex.utils.RCAxisAlignedTransform;
 import ivorius.reccomplex.world.gen.feature.structure.context.StructureLiveContext;
 import ivorius.reccomplex.world.gen.feature.structure.context.StructureLoadContext;
 import ivorius.reccomplex.world.gen.feature.structure.context.StructurePrepareContext;
@@ -186,7 +185,7 @@ public class TransformerRuins extends Transformer<TransformerRuins.InstanceData>
             BlockPos.MutableBlockPos dest = new BlockPos.MutableBlockPos(lowerCoord);
             for (BlockPos sourcePos : instanceData.fallingBlocks)
             {
-                IvMutableBlockPos.add(RCAxisAlignedTransform.apply(sourcePos, dest, areaSize, context.transform), lowerCoord);
+                IvMutableBlockPos.add(context.transform.applyOn(sourcePos, dest, areaSize), lowerCoord);
 
                 // TODO Bounce left/right
                 IBlockState destState;
@@ -360,7 +359,7 @@ public class TransformerRuins extends Transformer<TransformerRuins.InstanceData>
             for (BlockPos sourcePos : BlockAreas.mutablePositions(blockCollection.area()))
             {
                 IBlockState state = blockCollection.getBlockState(sourcePos);
-                IvMutableBlockPos.add(RCAxisAlignedTransform.apply(sourcePos, dest, areaSize, context.transform), lowerCoord);
+                IvMutableBlockPos.add(context.transform.applyOn(sourcePos, dest, areaSize), lowerCoord);
 
                 if (!canFall(context, worldData, transformer, dest, sourcePos, state))
                     continue;
@@ -391,7 +390,7 @@ public class TransformerRuins extends Transformer<TransformerRuins.InstanceData>
                     if (!complete.add(sourcePos) || instanceData.fallingBlocks.contains(sourcePos))
                         return true;
 
-                    IvMutableBlockPos.add(RCAxisAlignedTransform.apply(sourcePos, dest, areaSize, context.transform), lowerCoord);
+                    IvMutableBlockPos.add(context.transform.applyOn(sourcePos, dest, areaSize), lowerCoord);
 
                     IBlockState state = blockCollection.getBlockState(sourcePos);
 

@@ -60,7 +60,7 @@ public class TransformerEnsureBlocks extends Transformer<NBTNone>
         BlockPos.MutableBlockPos worldCoord = new BlockPos.MutableBlockPos();
         for (BlockPos sourcePos : BlockAreas.mutablePositions(blockCollection.area()))
         {
-            IvMutableBlockPos.add(RCAxisAlignedTransform.apply(sourcePos, worldCoord, areaSize, context.transform), lowerCoord);
+            IvMutableBlockPos.add(context.transform.applyOn(sourcePos, worldCoord, areaSize), lowerCoord);
             IBlockState state = blockCollection.getBlockState(sourcePos);
 
             if (sourceMatcher.test(state) &&

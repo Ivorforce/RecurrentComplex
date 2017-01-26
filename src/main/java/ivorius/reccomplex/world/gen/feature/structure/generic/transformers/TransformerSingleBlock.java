@@ -47,7 +47,7 @@ public abstract class TransformerSingleBlock<S extends NBTStorable> extends Tran
             BlockPos.MutableBlockPos worldCoord = new BlockPos.MutableBlockPos();
             for (BlockPos sourceCoord : BlockAreas.mutablePositions(blockCollection.area()))
             {
-                IvMutableBlockPos.add(RCAxisAlignedTransform.apply(sourceCoord, worldCoord, areaSize, context.transform), lowerCoord);
+                IvMutableBlockPos.add(context.transform.applyOn(sourceCoord, worldCoord, areaSize), lowerCoord);
 
                 if (context.includes(worldCoord))
                 {

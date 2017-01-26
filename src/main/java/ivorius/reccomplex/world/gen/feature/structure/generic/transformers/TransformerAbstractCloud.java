@@ -130,7 +130,7 @@ public abstract class TransformerAbstractCloud<S extends TransformerAbstractClou
                     if (sideDensity <= 0 || cloud.get(sidePos) >= sideDensity - 0.00001)
                         continue;
 
-                    IvMutableBlockPos.add(RCAxisAlignedTransform.apply(sidePos, sideWorldCoord, strucSize, context.transform), lowerCoord);
+                    IvMutableBlockPos.add(context.transform.applyOn(sidePos, sideWorldCoord, strucSize), lowerCoord);
                     if (!canPenetrate(environment, worldData, sideWorldCoord, sideDensity, transformer, transformerInstanceData))
                         continue;
 
@@ -174,7 +174,7 @@ public abstract class TransformerAbstractCloud<S extends TransformerAbstractClou
             BlockPos.MutableBlockPos worldCoord = new BlockPos.MutableBlockPos();
             instanceData.cloud.forEachEntry((sourcePos, density) ->
             {
-                IvMutableBlockPos.add(RCAxisAlignedTransform.apply(sourcePos, worldCoord, areaSize, context.transform), lowerCoord);
+                IvMutableBlockPos.add(context.transform.applyOn(sourcePos, worldCoord, areaSize), lowerCoord);
                 transformBlock(instanceData, phase, context, sourcePos, worldCoord, worldData.blockCollection.getBlockState(sourcePos), density);
                 return true;
             });

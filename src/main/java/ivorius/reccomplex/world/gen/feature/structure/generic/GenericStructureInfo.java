@@ -161,7 +161,7 @@ public class GenericStructureInfo implements StructureInfo<GenericStructureInfo.
         {
             for (BlockPos sourcePos : BlockAreas.mutablePositions(blockCollection.area()))
             {
-                IvMutableBlockPos.add(RCAxisAlignedTransform.apply(sourcePos, worldPos, areaSize, context.transform), origin);
+                IvMutableBlockPos.add(context.transform.applyOn(sourcePos, worldPos, areaSize), origin);
 
                 if (context.includes(worldPos))
                 {

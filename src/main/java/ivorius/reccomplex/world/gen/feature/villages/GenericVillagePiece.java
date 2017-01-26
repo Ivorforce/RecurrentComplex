@@ -7,7 +7,6 @@ package ivorius.reccomplex.world.gen.feature.villages;
 
 import ivorius.ivtoolkit.blocks.Directions;
 import ivorius.ivtoolkit.math.AxisAlignedTransform2D;
-import ivorius.reccomplex.utils.RCDirections;
 import ivorius.reccomplex.world.gen.feature.structure.*;
 import ivorius.reccomplex.world.gen.feature.structure.context.StructureSpawnContext;
 import ivorius.reccomplex.world.gen.feature.structure.generic.gentypes.GenerationInfo;
@@ -59,7 +58,7 @@ public class GenericVillagePiece extends StructureVillagePieces.Village
 
     public static int getRotations(EnumFacing front, boolean mirrorX, EnumFacing toFront)
     {
-        Integer rotations = RCDirections.getHorizontalClockwiseRotations(front, toFront, mirrorX);
+        Integer rotations = Directions.getHorizontalClockwiseRotations(front, toFront, mirrorX);
         return rotations == null ? 0 : rotations;
     }
 

@@ -23,6 +23,9 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.datafix.DataFixer;
+import net.minecraft.util.datafix.DataFixesManager;
+import net.minecraft.util.datafix.FixTypes;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.Constants;
@@ -56,6 +59,8 @@ public class SchematicFile
 
     public SchematicFile(NBTTagCompound tagCompound) throws UnsupportedSchematicFormatException
     {
+        final DataFixer fixer = DataFixesManager.createFixer();
+
         String materials = tagCompound.getString("Materials");
         if (!(materials.equals("Alpha")))
             throw new UnsupportedSchematicFormatException(materials);
@@ -108,11 +113,11 @@ public class SchematicFile
 
         NBTTagList entities = tagCompound.getTagList("Entities", Constants.NBT.TAG_COMPOUND);
         for (int i = 0; i < entities.tagCount(); i++)
-            entityCompounds.add(entities.getCompoundTagAt(i));
+            entityCompounds.add(fixer.process(FixTypes.ENTITY, entities.getCompoundTagAt(i)));
 
         NBTTagList tileEntities = tagCompound.getTagList("TileEntities", Constants.NBT.TAG_COMPOUND);
         for (int i = 0; i < tileEntities.tagCount(); i++)
-            tileEntityCompounds.add(tileEntities.getCompoundTagAt(i));
+            tileEntityCompounds.add(fixer.process(FixTypes.BLOCK_ENTITY, tileEntities.getCompoundTagAt(i)));
     }
 
     public int getBlockIndex(BlockPos pos)

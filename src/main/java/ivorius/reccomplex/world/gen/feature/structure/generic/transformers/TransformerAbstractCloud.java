@@ -79,7 +79,7 @@ public abstract class TransformerAbstractCloud<S extends TransformerAbstractClou
         int[] strucSize = new int[]{worldData.blockCollection.width, worldData.blockCollection.height, worldData.blockCollection.length};
 
         TObjectDoubleMap<BlockPos> cloud = new TObjectDoubleHashMap<>();
-        ivorius.ivtoolkit.random.BlurredValueField blurredValueField = new BlurredValueField(strucSize);
+        BlurredValueField blurredValueField = new BlurredValueField(strucSize);
 
         int gridCoords = 1;
         for (int d : strucSize) gridCoords *= d;

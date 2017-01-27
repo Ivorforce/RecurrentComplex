@@ -11,6 +11,7 @@ import ivorius.ivtoolkit.rendering.grid.BlockQuadCache;
 import ivorius.ivtoolkit.rendering.grid.GridQuadCache;
 import ivorius.reccomplex.client.rendering.OperationRenderer;
 import ivorius.reccomplex.operation.Operation;
+import ivorius.reccomplex.utils.NBTStorable;
 import ivorius.reccomplex.world.gen.feature.StructureGenerator;
 import ivorius.reccomplex.world.gen.feature.structure.context.StructureSpawnContext;
 import ivorius.reccomplex.world.gen.feature.structure.generic.GenericStructureInfo;
@@ -24,8 +25,6 @@ import net.minecraft.world.WorldServer;
 import net.minecraftforge.common.util.Constants;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
-
-import java.util.Optional;
 
 /**
  * Created by lukas on 10.02.15.
@@ -44,7 +43,7 @@ public class OperationGenerateStructure implements Operation
 
     protected GridQuadCache cachedShapeGrid;
 
-    protected NBTBase instanceData;
+    protected final ReadableInstanceData instanceData = new ReadableInstanceData();
 
     public OperationGenerateStructure()
     {
@@ -77,27 +76,32 @@ public class OperationGenerateStructure implements Operation
 
     public OperationGenerateStructure prepare(WorldServer world)
     {
-        instanceData = generator(world).instanceData().get().writeToNBT();
+        instanceData.setInstanceData(generator(world).instanceData().get());
         return this;
     }
 
     @Override
     public void perform(WorldServer world)
     {
-        if (instanceData == null)
+        if (!instanceData.exists())
             throw new IllegalStateException();
 
-        generator(world).generate();
+        StructureGenerator<GenericStructureInfo.InstanceData> generator = generator(world);
+        instanceData.load(generator);
+        generator.generate();
     }
 
     public StructureGenerator<GenericStructureInfo.InstanceData> generator(WorldServer world)
     {
         StructureGenerator<GenericStructureInfo.InstanceData> generator = new StructureGenerator<>(structure).world(world).generationInfo(generationInfoID)
                 .transform(transform).lowerCoord(lowerCoord)
-                .maturity(StructureSpawnContext.GenerateMaturity.FIRST).asSource(generateAsSource)
-                .instanceData(instanceData);
+                .maturity(StructureSpawnContext.GenerateMaturity.FIRST).asSource(generateAsSource);
+
+        instanceData.register(generator);
+
         if (structureID != null)
             generator.structureID(structureID);
+
         return generator;
     }
 
@@ -117,8 +121,7 @@ public class OperationGenerateStructure implements Operation
         if (structureID != null)
             compound.setString("structureIDForSaving", structureID);
 
-        if (instanceData != null)
-            compound.setTag("instanceData", instanceData.copy());
+        instanceData.writeToNBT("instanceData", compound);
     }
 
     @Override
@@ -137,7 +140,7 @@ public class OperationGenerateStructure implements Operation
                 ? compound.getString("structureIDForSaving")
                 : null;
 
-        instanceData = Optional.ofNullable(compound.getTag("instanceData")).map(NBTBase::copy).orElse(null);
+        instanceData.readFromNBT("instanceData", compound);
     }
 
     public void invalidateCache()
@@ -186,5 +189,56 @@ public class OperationGenerateStructure implements Operation
 
         if (previewType == PreviewType.BOUNDING_BOX || previewType == PreviewType.SHAPE)
             OperationRenderer.maybeRenderBoundingBox(lowerCoord, StructureInfos.structureSize(size, transform), ticks, partialTicks);
+    }
+
+    public static class ReadableInstanceData<T extends NBTStorable>
+    {
+        private NBTBase instanceDataNBT;
+        private T instanceData;
+
+        public boolean exists()
+        {
+            return instanceData != null || instanceDataNBT != null;
+        }
+
+        public void setInstanceData(T instanceData)
+        {
+            this.instanceData = instanceData;
+        }
+
+        public void writeToNBT(String key, NBTTagCompound compound)
+        {
+            NBTBase instanceDataNBT = instanceData != null ? instanceData.writeToNBT()
+                    : this.instanceDataNBT != null ? this.instanceDataNBT.copy() : null;
+            if (instanceDataNBT != null)
+                compound.setTag(key, instanceDataNBT);
+        }
+
+        public void readFromNBT(String key, NBTTagCompound compound)
+        {
+            instanceDataNBT = compound.hasKey(key) ? compound.getTag(key).copy() : null;
+        }
+
+        public boolean load(StructureGenerator<T> generator)
+        {
+            if (instanceDataNBT != null)
+            {
+                generator.instanceData(instanceDataNBT);
+                instanceData = generator.instanceData().get();
+                instanceDataNBT = null;
+            }
+
+            return instanceData != null;
+        }
+
+        public StructureGenerator<T> register(StructureGenerator<T> generator)
+        {
+            if (instanceData != null)
+                return generator.instanceData(instanceData);
+            else if (instanceDataNBT != null)
+                return generator.instanceData(instanceDataNBT);
+            else
+                return generator;
+        }
     }
 }

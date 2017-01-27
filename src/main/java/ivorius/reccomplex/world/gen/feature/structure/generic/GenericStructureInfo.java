@@ -186,8 +186,7 @@ public class GenericStructureInfo implements StructureInfo<GenericStructureInfo.
 
         for (NBTTagCompound entityCompound : worldData.entities)
         {
-            double[] entityPos = getEntityPos(entityCompound);
-            double[] transformedEntityPos = context.transform.apply(entityPos, areaSize);
+            double[] transformedEntityPos = context.transform.applyOn(getEntityPos(entityCompound), areaSize);
             if (context.includes(new Vec3i(transformedEntityPos[0] + origin.getX(), transformedEntityPos[1] + origin.getY(), transformedEntityPos[2] + origin.getZ())))
             {
                 Entity entity = EntityList.createEntityFromNBT(entityCompound, world);

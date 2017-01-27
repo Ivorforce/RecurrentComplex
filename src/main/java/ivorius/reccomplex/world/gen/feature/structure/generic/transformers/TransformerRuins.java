@@ -324,7 +324,7 @@ public class TransformerRuins extends Transformer<TransformerRuins.InstanceData>
         {
             BlockArea sourceArea = BlockArea.areaFromSize(BlockPos.ORIGIN, StructureBoundingBoxes.size(context.boundingBox));
 
-            double decayChaos = context.random.nextDouble() * this.decayChaos;
+            double decayChaos = (context.random.nextDouble() * 0.5 + 0.5) * this.decayChaos;
 
             instanceData.baseDecay = context.random.nextDouble() * (maxDecay - minDecay) + minDecay;
 

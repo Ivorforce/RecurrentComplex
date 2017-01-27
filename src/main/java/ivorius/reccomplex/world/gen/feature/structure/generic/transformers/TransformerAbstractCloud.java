@@ -12,10 +12,10 @@ import ivorius.ivtoolkit.blocks.BlockAreas;
 import ivorius.ivtoolkit.blocks.BlockPositions;
 import ivorius.ivtoolkit.blocks.IvBlockCollection;
 import ivorius.ivtoolkit.blocks.IvMutableBlockPos;
+import ivorius.ivtoolkit.random.BlurredValueField;
 import ivorius.ivtoolkit.tools.IvWorldData;
 import ivorius.ivtoolkit.tools.NBTTagLists;
 import ivorius.ivtoolkit.world.chunk.gen.StructureBoundingBoxes;
-import ivorius.reccomplex.random.BlurredValueField;
 import ivorius.reccomplex.utils.*;
 import ivorius.reccomplex.world.gen.feature.structure.Environment;
 import ivorius.reccomplex.world.gen.feature.structure.context.StructureLiveContext;
@@ -79,7 +79,7 @@ public abstract class TransformerAbstractCloud<S extends TransformerAbstractClou
         int[] strucSize = new int[]{worldData.blockCollection.width, worldData.blockCollection.height, worldData.blockCollection.length};
 
         TObjectDoubleMap<BlockPos> cloud = new TObjectDoubleHashMap<>();
-        BlurredValueField blurredValueField = new BlurredValueField(strucSize);
+        ivorius.ivtoolkit.random.BlurredValueField blurredValueField = new BlurredValueField(strucSize);
 
         int gridCoords = 1;
         for (int d : strucSize) gridCoords *= d;

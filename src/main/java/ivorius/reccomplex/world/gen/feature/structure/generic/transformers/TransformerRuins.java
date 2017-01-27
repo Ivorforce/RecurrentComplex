@@ -11,6 +11,7 @@ import com.google.gson.*;
 import gnu.trove.map.TObjectDoubleMap;
 import gnu.trove.map.hash.TObjectDoubleHashMap;
 import ivorius.ivtoolkit.blocks.*;
+import ivorius.ivtoolkit.random.BlurredValueField;
 import ivorius.ivtoolkit.tools.*;
 import ivorius.ivtoolkit.transform.PosTransformer;
 import ivorius.ivtoolkit.world.chunk.gen.StructureBoundingBoxes;
@@ -22,7 +23,6 @@ import ivorius.reccomplex.gui.table.TableDelegate;
 import ivorius.reccomplex.gui.table.TableNavigator;
 import ivorius.reccomplex.gui.table.datasource.TableDataSource;
 import ivorius.reccomplex.json.JsonUtils;
-import ivorius.reccomplex.random.BlurredValueField;
 import ivorius.reccomplex.utils.NBTStorable;
 import ivorius.reccomplex.world.gen.feature.structure.context.StructureLiveContext;
 import ivorius.reccomplex.world.gen.feature.structure.context.StructureLoadContext;
@@ -328,13 +328,13 @@ public class TransformerRuins extends Transformer<TransformerRuins.InstanceData>
             instanceData.baseDecay = context.random.nextDouble() * (maxDecay - minDecay) + minDecay;
 
             int[] surfaceSize = BlockAreas.side(sourceArea, decayDirection).areaSize();
-            instanceData.surfaceField = new BlurredValueField(surfaceSize);
+            instanceData.surfaceField = new ivorius.ivtoolkit.random.BlurredValueField(surfaceSize);
             int surfaceValues = MathHelper.floor(product(surfaceSize) * decayValueDensity + 0.5);
             for (int i = 0; i < surfaceValues; i++)
                 instanceData.surfaceField.addValue((context.random.nextDouble() - context.random.nextDouble()) * decayChaos * 1.25, context.random);
 
             int[] volumeSize = sourceArea.areaSize();
-            instanceData.volumeField = new BlurredValueField(volumeSize);
+            instanceData.volumeField = new ivorius.ivtoolkit.random.BlurredValueField(volumeSize);
             int volumeValues = MathHelper.floor(product(volumeSize) * decayValueDensity * 0.25 + 0.5);
             for (int i = 0; i < volumeValues; i++)
                 instanceData.volumeField.addValue((context.random.nextDouble() - context.random.nextDouble()) * decayChaos * 0.75, context.random);
@@ -428,8 +428,8 @@ public class TransformerRuins extends Transformer<TransformerRuins.InstanceData>
     public static class InstanceData implements NBTStorable
     {
         public Double baseDecay;
-        public BlurredValueField surfaceField;
-        public BlurredValueField volumeField;
+        public ivorius.ivtoolkit.random.BlurredValueField surfaceField;
+        public ivorius.ivtoolkit.random.BlurredValueField volumeField;
         public final Set<BlockPos> fallingBlocks = new HashSet<>();
 
         public double[] decayCache;

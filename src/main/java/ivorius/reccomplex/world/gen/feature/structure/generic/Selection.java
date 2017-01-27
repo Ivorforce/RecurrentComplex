@@ -166,9 +166,9 @@ public class Selection extends ArrayList<Selection.Area> implements NBTCompoundO
         return selection;
     }
 
-    public void transform(AxisAlignedTransform2D transform, int[] size)
+    public void transform(AxisAlignedTransform2D transform, int[] size, int centerCorrection)
     {
-        forEach((area) -> area.transform(transform, size));
+        forEach((area) -> area.transform(transform, size, centerCorrection));
     }
 
     public static class Area
@@ -277,10 +277,10 @@ public class Selection extends ArrayList<Selection.Area> implements NBTCompoundO
             return new Area(additive, minCoord.clone(), maxCoord.clone(), identifier);
         }
 
-        public void transform(AxisAlignedTransform2D transform, int[] size)
+        public void transform(AxisAlignedTransform2D transform, int[] size, int centerCorrection)
         {
-            transform.applyOn(minCoord, size, 1);
-            transform.applyOn(maxCoord, size, 1);
+            transform.applyOn(minCoord, size, centerCorrection);
+            transform.applyOn(maxCoord, size, centerCorrection);
 
             for (int i = 0; i < minCoord.length; i++)
             {

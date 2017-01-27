@@ -34,6 +34,7 @@ import net.minecraft.block.BlockSandStone;
 import net.minecraft.block.BlockStoneBrick;
 import net.minecraft.block.BlockVine;
 import net.minecraft.block.BlockWall;
+import net.minecraft.block.material.EnumPushReaction;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.init.Blocks;
@@ -185,6 +186,11 @@ public class TransformerRuins extends Transformer<TransformerRuins.InstanceData>
             BlockPos.MutableBlockPos dest = new BlockPos.MutableBlockPos(lowerCoord);
             for (BlockPos sourcePos : instanceData.fallingBlocks)
             {
+                IBlockState source = blockCollection.getBlockState(sourcePos);
+
+                if (source.getMaterial().getMobilityFlag() != EnumPushReaction.NORMAL)
+                    continue;
+
                 IvMutableBlockPos.add(context.transform.applyOn(sourcePos, dest, areaSize), lowerCoord);
 
                 // TODO Bounce left/right
@@ -196,7 +202,7 @@ public class TransformerRuins extends Transformer<TransformerRuins.InstanceData>
                 }
 
                 IvMutableBlockPos.offset(dest, dest, EnumFacing.UP);
-                IBlockState state = PosTransformer.transformBlockState(blockCollection.getBlockState(sourcePos), context.transform);
+                IBlockState state = PosTransformer.transformBlockState(source, context.transform);
                 GenericStructureInfo.setBlock(context, dest, state, () -> tileEntityCompounds.get(sourcePos));
             }
 

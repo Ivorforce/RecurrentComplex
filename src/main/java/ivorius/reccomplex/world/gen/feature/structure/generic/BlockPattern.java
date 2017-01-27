@@ -72,7 +72,7 @@ public class BlockPattern implements NBTCompoundObject
 
     public void transform(AxisAlignedTransform2D transform, int[] size)
     {
-        pattern.transform(transform, size);
+        pattern.transform(transform, size, 1);
     }
 
     @Nonnull

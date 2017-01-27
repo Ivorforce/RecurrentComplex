@@ -279,13 +279,16 @@ public class Selection extends ArrayList<Selection.Area> implements NBTCompoundO
 
         public void transform(AxisAlignedTransform2D transform, int[] size)
         {
-            int[] minCoord = transform.apply(this.minCoord, size);
-            int[] maxCoord = transform.apply(this.maxCoord, size);
+            transform.applyOn(minCoord, size, 1);
+            transform.applyOn(maxCoord, size, 1);
 
             for (int i = 0; i < minCoord.length; i++)
             {
-                this.minCoord[i] = Math.min(minCoord[i], maxCoord[i]);
-                this.maxCoord[i] = Math.max(minCoord[i], maxCoord[i]);
+                int min = Math.min(minCoord[i], maxCoord[i]);
+                int max = Math.max(minCoord[i], maxCoord[i]);
+
+                this.minCoord[i] = min;
+                this.maxCoord[i] = max;
             }
         }
 

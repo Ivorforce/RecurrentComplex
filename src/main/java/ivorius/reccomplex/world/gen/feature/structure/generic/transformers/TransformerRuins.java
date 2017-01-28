@@ -367,6 +367,9 @@ public class TransformerRuins extends Transformer<TransformerRuins.InstanceData>
                 IBlockState state = blockCollection.getBlockState(sourcePos);
                 IvMutableBlockPos.add(context.transform.applyOn(sourcePos, dest, areaSize), lowerCoord);
 
+                if (transformer.transformer.skipGeneration(transformer.instanceData, context, dest, state, worldData, sourcePos))
+                    continue;
+
                 if (!canFall(context, worldData, transformer, dest, sourcePos, state))
                     continue;
 
@@ -438,7 +441,7 @@ public class TransformerRuins extends Transformer<TransformerRuins.InstanceData>
         public BlurredValueField volumeField;
         public final Set<BlockPos> fallingBlocks = new HashSet<>();
 
-        public double[] decayCache;
+        public Double[] decayCache;
         public int[] decayCacheSize;
 
         public InstanceData()
@@ -486,16 +489,22 @@ public class TransformerRuins extends Transformer<TransformerRuins.InstanceData>
         public double getDecay(BlockPos pos)
         {
             Integer index = getIndex(pos);
-            return index != null ? decayCache[index] : calculateDecay(pos);
+            if (index != null)
+            {
+                Double decay = decayCache[index];
+                return decay != null ? decay : (decayCache[index] = calculateDecay(pos));
+            }
+            else
+                return calculateDecay(pos);
         }
 
         public void clearDecayCache()
         {
             decayCacheSize = volumeField.getSize();
-            decayCache = new double[product(decayCacheSize)];
+            decayCache = new Double[product(decayCacheSize)];
 
-            for (BlockPos pos : new BlockArea(BlockPos.ORIGIN, new BlockPos(decayCacheSize[0] - 1, decayCacheSize[1] - 1, decayCacheSize[2] - 1)))
-                decayCache[getIndex(pos)] = calculateDecay(pos);
+//            for (BlockPos pos : new BlockArea(BlockPos.ORIGIN, new BlockPos(decayCacheSize[0] - 1, decayCacheSize[1] - 1, decayCacheSize[2] - 1)))
+//                decayCache[getIndex(pos)] = calculateDecay(pos);
         }
 
         protected double calculateDecay(BlockPos pos)

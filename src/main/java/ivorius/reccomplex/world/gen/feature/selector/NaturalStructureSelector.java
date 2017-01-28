@@ -14,7 +14,9 @@ import net.minecraft.world.WorldProvider;
 import net.minecraft.world.biome.Biome;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.Random;
 
 /**
  * Created by lukas on 23.09.16.
@@ -40,7 +42,9 @@ public class NaturalStructureSelector
         public final List<GenerationInfo> generationInfos = new ArrayList<>();
 
         @SerializedName("defaultSpawnChance")
-        public float defaultSpawnChance = 1;
+        public double defaultSpawnChance;
+        @SerializedName("defaultSpawnChances")
+        public double[] defaultSpawnChances;
         @SerializedName("structureMinCap")
         public Double structureMinCap = null;
 
@@ -57,12 +61,13 @@ public class NaturalStructureSelector
         public final List<String> tooltip = new ArrayList<>();
 
         @Override
-        public double structureSpawnChance(Biome biome, WorldProvider worldProvider, double totalWeight, Float distanceToSpawn)
+        public int structuresInBiome(Biome biome, WorldProvider worldProvider, double totalWeight, Float distanceToSpawn, Random random)
         {
-            return spawnChance(biome, worldProvider)
-                    * amountMultiplier(totalWeight)
-                    * distanceMultiplier(distanceToSpawn)
-                    * RCConfig.structureSpawnChanceModifier;
+            return (int) Arrays.stream(spawnChance(biome, worldProvider)).filter(chance -> random.nextDouble() <
+                    chance * amountMultiplier(totalWeight)
+                            * distanceMultiplier(distanceToSpawn)
+                            * RCConfig.structureSpawnChanceModifier)
+                    .count();
         }
 
         public double amountMultiplier(double totalWeight)
@@ -70,23 +75,23 @@ public class NaturalStructureSelector
             return Math.min(totalWeight / getActiveStructureMinCap(), 1.0f);
         }
 
-        public float spawnChance(Biome biome, WorldProvider worldProvider)
+        public double[] spawnChance(Biome biome, WorldProvider worldProvider)
         {
-            float am = defaultSpawnChance;
+            double[] am = defaultSpawnChances != null ? defaultSpawnChances : new double[]{defaultSpawnChance};
 
             for (GenerationInfo info : generationInfos)
             {
                 if (info.biomeMatcher.test(biome) && info.dimensionMatcher.test(worldProvider))
-                    am = info.spawnChance;
+                    am = info.spawnChances != null ? info.spawnChances : new double[]{info.spawnChance};
             }
             return am;
         }
 
-        public float distanceMultiplier(Float distance)
+        public double distanceMultiplier(Float distance)
         {
             return distance == null ? 1 :
                     spawnDistanceMultiplier > 1 ? Math.min(1 + distance * spawnDistanceMultiplier, Math.max(spawnDistanceMultiplierCap, 1))
-                    : Math.max(1 + distance * spawnDistanceMultiplier, Math.min(spawnDistanceMultiplierCap, 1));
+                            : Math.max(1 + distance * spawnDistanceMultiplier, Math.min(spawnDistanceMultiplierCap, 1));
         }
 
         public Double getActiveStructureMinCap()
@@ -116,16 +121,17 @@ public class NaturalStructureSelector
     public static class GenerationInfo
     {
         @SerializedName("spawnChance")
-        public float spawnChance;
+        public double spawnChance;
+        public double[] spawnChances;
 
         @SerializedName("biomeMatcher")
         public BiomeMatcher biomeMatcher;
         @SerializedName("dimensionMatcher")
         public DimensionMatcher dimensionMatcher;
 
-        public GenerationInfo(float spawnChance, BiomeMatcher biomeMatcher, DimensionMatcher dimensionMatcher)
+        public GenerationInfo(double[] spawnChance, BiomeMatcher biomeMatcher, DimensionMatcher dimensionMatcher)
         {
-            this.spawnChance = spawnChance;
+            this.spawnChances = spawnChance;
             this.biomeMatcher = biomeMatcher;
             this.dimensionMatcher = dimensionMatcher;
         }

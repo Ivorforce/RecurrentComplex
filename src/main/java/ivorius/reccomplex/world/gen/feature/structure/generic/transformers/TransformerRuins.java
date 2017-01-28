@@ -478,6 +478,9 @@ public class TransformerRuins extends Transformer<TransformerRuins.InstanceData>
 
         private Integer getIndex(BlockPos pos)
         {
+            if (decayCacheSize == null)
+                return null;
+
             if (pos.getX() < 0 || pos.getY() < 0 || pos.getZ() < 0
                     || pos.getX() >= decayCacheSize[0] || pos.getY() >= decayCacheSize[1] || pos.getZ() >= decayCacheSize[2])
                 return null;
@@ -489,6 +492,9 @@ public class TransformerRuins extends Transformer<TransformerRuins.InstanceData>
 
         public double getDecay(BlockPos pos)
         {
+            if (!hasDecay())
+                return 0;
+
             Integer index = getIndex(pos);
             if (index != null)
             {
@@ -501,11 +507,24 @@ public class TransformerRuins extends Transformer<TransformerRuins.InstanceData>
 
         public void clearDecayCache()
         {
-            decayCacheSize = volumeField.getSize();
-            decayCache = new Double[product(decayCacheSize)];
+            if (volumeField != null)
+            {
+                decayCacheSize = volumeField.getSize();
+                decayCache = new Double[product(decayCacheSize)];
+            }
+            else
+            {
+                decayCacheSize = null;
+                decayCache = null;
+            }
 
 //            for (BlockPos pos : new BlockArea(BlockPos.ORIGIN, new BlockPos(decayCacheSize[0] - 1, decayCacheSize[1] - 1, decayCacheSize[2] - 1)))
 //                decayCache[getIndex(pos)] = calculateDecay(pos);
+        }
+
+        protected boolean hasDecay()
+        {
+            return baseDecay != null || surfaceField != null || volumeField != null;
         }
 
         protected double calculateDecay(BlockPos pos)

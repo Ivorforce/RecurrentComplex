@@ -5,6 +5,7 @@
 
 package ivorius.reccomplex.world.gen.feature.decoration;
 
+import ivorius.reccomplex.RecurrentComplex;
 import net.minecraft.init.Biomes;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.WorldServer;
@@ -64,60 +65,67 @@ public class VanillaDecorationAdapter implements RCBiomeDecorator.Adapter
     @Override
     public void generate(WorldServer worldIn, Random random, Biome biomeIn, BiomeDecorator decorator, BlockPos chunkPos, RCBiomeDecorator.DecorationType type)
     {
-        switch (type)
+        try
         {
-            case TREE:
+            switch (type)
             {
-                int k6 = random.nextInt(16) + 8;
-                int l = random.nextInt(16) + 8;
-                WorldGenAbstractTree worldgenabstracttree = biomeIn.genBigTreeChance(random);
-                worldgenabstracttree.setDecorationDefaults();
-                BlockPos blockpos = worldIn.getHeight(chunkPos.add(k6, 0, l));
-
-                if (worldgenabstracttree.generate(worldIn, random, blockpos))
-                    worldgenabstracttree.generateSaplings(worldIn, random, blockpos);
-
-                break;
-            }
-            case BIG_SHROOM:
-            {
-                int l6 = random.nextInt(16) + 8;
-                int k10 = random.nextInt(16) + 8;
-                decorator.bigMushroomGen.generate(worldIn, random, worldIn.getHeight(chunkPos.add(l6, 0, k10)));
-
-                break;
-            }
-            case CACTUS:
-            {
-                int l9 = random.nextInt(16) + 8;
-                int k13 = random.nextInt(16) + 8;
-                int l16 = worldIn.getHeight(chunkPos.add(l9, 0, k13)).getY() * 2;
-
-                if (l16 > 0)
+                case TREE:
                 {
-                    int j19 = random.nextInt(l16);
-                    decorator.cactusGen.generate(worldIn, random, chunkPos.add(l9, j19, k13));
+                    int k6 = random.nextInt(16) + 8;
+                    int l = random.nextInt(16) + 8;
+                    WorldGenAbstractTree worldgenabstracttree = biomeIn.genBigTreeChance(random);
+                    worldgenabstracttree.setDecorationDefaults();
+                    BlockPos blockpos = worldIn.getHeight(chunkPos.add(k6, 0, l));
+
+                    if (worldgenabstracttree.generate(worldIn, random, blockpos))
+                        worldgenabstracttree.generateSaplings(worldIn, random, blockpos);
+
+                    break;
                 }
+                case BIG_SHROOM:
+                {
+                    int l6 = random.nextInt(16) + 8;
+                    int k10 = random.nextInt(16) + 8;
+                    decorator.bigMushroomGen.generate(worldIn, random, worldIn.getHeight(chunkPos.add(l6, 0, k10)));
 
-                break;
-            }
-            case DESERT_WELL:
-            {
-                int i = random.nextInt(16) + 8;
-                int j = random.nextInt(16) + 8;
-                BlockPos blockpos = worldIn.getHeight(chunkPos.add(i, 0, j)).up();
-                (new WorldGenDesertWells()).generate(worldIn, random, blockpos);
+                    break;
+                }
+                case CACTUS:
+                {
+                    int l9 = random.nextInt(16) + 8;
+                    int k13 = random.nextInt(16) + 8;
+                    int l16 = worldIn.getHeight(chunkPos.add(l9, 0, k13)).getY() * 2;
 
-                break;
-            }
-            case FOSSIL:
-            {
-                (new WorldGenFossils()).generate(worldIn, random, chunkPos);
+                    if (l16 > 0)
+                    {
+                        int j19 = random.nextInt(l16);
+                        decorator.cactusGen.generate(worldIn, random, chunkPos.add(l9, j19, k13));
+                    }
 
-                break;
+                    break;
+                }
+                case DESERT_WELL:
+                {
+                    int i = random.nextInt(16) + 8;
+                    int j = random.nextInt(16) + 8;
+                    BlockPos blockpos = worldIn.getHeight(chunkPos.add(i, 0, j)).up();
+                    (new WorldGenDesertWells()).generate(worldIn, random, blockpos);
+
+                    break;
+                }
+                case FOSSIL:
+                {
+                    (new WorldGenFossils()).generate(worldIn, random, chunkPos);
+
+                    break;
+                }
+                default:
+                    throw new IllegalArgumentException("Unrecognized type: " + type.toString());
             }
-            default:
-                throw new IllegalArgumentException("Unrecognized type: " + type.toString());
+        }
+        catch (Exception e)
+        {
+            RecurrentComplex.logger.error("Error trying to emulate vanilla decoration", e);
         }
     }
 }

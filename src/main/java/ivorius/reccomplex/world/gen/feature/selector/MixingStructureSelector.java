@@ -17,6 +17,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Random;
 import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 /**
  * Created by lukas on 24.09.16.
@@ -28,18 +29,15 @@ public class MixingStructureSelector<T extends GenerationInfo & EnvironmentalSel
         super(structures, provider, biome, typeClass);
     }
 
-    public double generationChance(C category, WorldProvider worldProvider, Biome biome, Float distanceToSpawn)
+    public int structuresInBiome(C category, WorldProvider worldProvider, Biome biome, Float distanceToSpawn, Random random)
     {
-        if (category != null)
-            return category.structureSpawnChance(biome, worldProvider, totalWeight(category), distanceToSpawn);
-
-        return 0.0f;
+        return category != null ? category.structuresInBiome(biome, worldProvider, totalWeight(category), distanceToSpawn, random) : 0;
     }
 
     public List<Pair<StructureInfo, T>> generatedStructures(Random random, Biome biome, WorldProvider provider, Float distanceToSpawn)
     {
         return weightedStructureInfos.keySet().stream()
-                .filter(category -> random.nextDouble() < generationChance(category, provider, biome, distanceToSpawn))
+                .flatMap(category -> IntStream.range(0, structuresInBiome(category, provider, biome, distanceToSpawn, random)).mapToObj(i -> category))
                 .map(category -> WeightedSelector.select(random, weightedStructureInfos.get(category)))
                 .collect(Collectors.toList());
     }
@@ -51,7 +49,7 @@ public class MixingStructureSelector<T extends GenerationInfo & EnvironmentalSel
             return super.selectOne(random, c);
 
         List<WeightedSelector.SimpleItem<C>> list = weightedStructureInfos.keySet().stream()
-                .map(category -> new WeightedSelector.SimpleItem<>(generationChance(category, provider, biome, distanceToSpawn), category))
+                .map(category -> new WeightedSelector.SimpleItem<>(structuresInBiome(category, provider, biome, distanceToSpawn, random), category))
                 .collect(Collectors.toList());
 
         return selectOne(random, WeightedSelector.select(random, list));
@@ -59,6 +57,6 @@ public class MixingStructureSelector<T extends GenerationInfo & EnvironmentalSel
 
     interface Category
     {
-        double structureSpawnChance(Biome biome, WorldProvider worldProvider, double totalWeight, Float distanceToSpawn);
+        int structuresInBiome(Biome biome, WorldProvider worldProvider, double totalWeight, Float distanceToSpawn, Random random);
     }
 }

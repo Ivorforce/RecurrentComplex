@@ -264,8 +264,6 @@ public class GenericStructureInfo implements StructureInfo<GenericStructureInfo.
                     generateTileEntityContents(context, worldTileEntity);
                 }
             }
-
-            PosTransformer.transformBlock(world, worldPos, context.transform);
         }
     }
 

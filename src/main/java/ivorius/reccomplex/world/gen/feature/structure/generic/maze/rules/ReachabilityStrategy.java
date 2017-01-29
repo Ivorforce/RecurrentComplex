@@ -158,7 +158,7 @@ public class ReachabilityStrategy<M extends MazeComponent<C>, C> implements Maze
         Predicate<MazeRoom> predicate = confiner != null ? confiner.and((o) -> !rooms.contains(o)) : rooms::contains;
         Predicate<MazePassage> passagePredicate = p -> predicate.test(p.getDest()) && !traversed.contains(p);
 
-        Multimap<MazeRoom, MazePassage> entryReachability = compileEntryReachability(mazes, passagePredicate, traverser);
+        Multimap<MazeRoom, MazePassage> mazeEntries = compileEntries(mazes, passagePredicate, traverser);
 
         Set<MazeRoom> visited = Sets.newHashSet(left);
         TreeSet<MazeRoom> dirty = Sets.newTreeSet((o1, o2) ->
@@ -171,9 +171,12 @@ public class ReachabilityStrategy<M extends MazeComponent<C>, C> implements Maze
 
         Deque<MazeRoom> tryAdd = Lists.newLinkedList();
 
-        while (!dirty.isEmpty())
+        MazeRoom curPre;
+        while ((curPre = dirty.pollFirst()) != null)
         {
-            MazeRoom cur = dirty.pollFirst();
+            MazeRoom cur = curPre;
+
+            // Try each ability
             for (MazeRoom next : (Iterable<MazeRoom>) abilities.stream()
                     .filter(e -> e.getValue().stream().map(p -> p.add(cur)).allMatch(predicate))
                     .map(p -> p.getKey().add(cur))::iterator)
@@ -185,12 +188,10 @@ public class ReachabilityStrategy<M extends MazeComponent<C>, C> implements Maze
 
                     if (predicate.test(next) && visited.add(next))
                     {
-                        for (MazePassage passage : entryReachability.removeAll(next))
-                        {
-                            Set<MazeRoom> roomExits = traverse(mazes, traversed, Collections.singleton(passage), traverser, null).stream().map(MazePassage::getDest).collect(Collectors.toSet());
-                            tryAdd.addAll(roomExits);
-                            roomExits.forEach(entryReachability::removeAll);
-                        }
+                        // Are there any entries into already generated components / rooms?
+                        // TODO Can move from here to the next entry?
+                        for (MazePassage passage : mazeEntries.get(next))
+                            tryAdd.addAll(traverse(mazes, traversed, Collections.singleton(passage), traverser, null).stream().map(MazePassage::getDest).collect(Collectors.toSet()));
 
                         dirty.add(next);
                     }
@@ -202,15 +203,15 @@ public class ReachabilityStrategy<M extends MazeComponent<C>, C> implements Maze
         return false;
     }
 
-    private static <C> Multimap<MazeRoom, MazePassage> compileEntryReachability(Collection<MazeComponent<C>> mazes, Predicate<MazePassage> passagePredicate, Predicate<C> traverser)
+    private static <C> Multimap<MazeRoom, MazePassage> compileEntries(Collection<MazeComponent<C>> mazes, Predicate<MazePassage> passagePredicate, Predicate<C> traverser)
     {
-        Multimap<MazeRoom, MazePassage> iReachability = HashMultimap.create();
+        Multimap<MazeRoom, MazePassage> reachability = HashMultimap.create();
         for (MazeComponent<C> maze : mazes)
-            iReachability.putAll(maze.reachability().keySet().stream()
+            reachability.putAll(maze.reachability().keySet().stream()
                     .filter(passagePredicate.and(p -> traverser.test(maze.exits().get(p))))
                     .collect(GuavaCollectors.toMultimap(MazePassage::getDest, maze.reachability()::get))
             );
-        return iReachability;
+        return reachability;
     }
 
     private static int compare(int[] left, int[] right)

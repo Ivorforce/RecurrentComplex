@@ -13,9 +13,9 @@ import gnu.trove.map.TObjectIntMap;
 import gnu.trove.map.hash.TObjectIntHashMap;
 import ivorius.ivtoolkit.maze.components.*;
 import ivorius.ivtoolkit.tools.GuavaCollectors;
-import ivorius.ivtoolkit.tools.Visitor;
 import org.apache.commons.lang3.tuple.Pair;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.*;
 import java.util.function.Consumer;
@@ -67,7 +67,8 @@ public class ReachabilityStrategy<M extends MazeComponent<C>, C> implements Maze
         for (MazeComponent<C> component : components)
         {
             // Exits leading outside
-            component.exits().forEach((passage, c) -> {
+            component.exits().forEach((passage, c) ->
+            {
                 if (traverser.test(c))
                     abilities.add(Pair.of(passage.normalize().getDest(), Collections.emptySet()));
             });
@@ -105,11 +106,9 @@ public class ReachabilityStrategy<M extends MazeComponent<C>, C> implements Maze
         return input -> !blockingConnections.contains(input);
     }
 
-    protected static <C> Set<MazePassage> traverse(Collection<MazeComponent<C>> mazes, @Nullable Collection<MazePassage> traversed, boolean addToTraversed, Set<MazePassage> connections, Predicate<C> traverser, @Nullable Visitor<MazePassage> visitor)
+    protected static <C> Set<MazePassage> traverse(Collection<MazeComponent<C>> mazes, @Nonnull Collection<MazePassage> traversed, Set<MazePassage> connections, Predicate<C> traverser, @Nullable Consumer<MazePassage> visitor)
     {
-        if (addToTraversed) Objects.requireNonNull(traversed);
-
-        Deque<MazePassage> dirty = Lists.newLinkedList(connections);
+        Deque<MazePassage> dirty = new ArrayDeque<>(connections);
         Set<MazePassage> added = new HashSet<>();
 
         MazePassage traversing;
@@ -117,25 +116,26 @@ public class ReachabilityStrategy<M extends MazeComponent<C>, C> implements Maze
         {
             for (MazeComponent<C> maze : mazes)
             {
-                maze.reachability().get(traversing).forEach(dest -> {
-                    if ((traversed == null || !traversed.contains(dest))
-                            && (addToTraversed || !added.contains(dest))
-                            && (visitor == null || visitor.visit(dest)))
+                maze.reachability().get(traversing).forEach(dest ->
+                {
+                    // Have we been here already?
+                    if (!traversed.contains(dest))
                     {
-                        if (traverser.test(maze.exits().get(dest)))
-                        {
-                            MazePassage rDest = dest.inverse(); // We are now on the other side of the connection/'wall'
-
-                            if (added.add(rDest))
-                            {
-                                if (addToTraversed) traversed.add(rDest);
-                                dirty.addLast(rDest);
-                            }
-                        }
-
-                        if (addToTraversed) traversed.add(dest);
-                        dirty.addLast(dest);
+                        if (visitor != null) visitor.accept(dest);
+                        traversed.add(dest);
                         added.add(dest);
+                        dirty.addLast(dest);
+
+                        // Try to go through path
+                        MazePassage rDest = dest.inverse();
+                        if (!traversed.contains(rDest) && traverser.test(maze.exits().get(dest)))
+                        {
+                            // We are now on the other side of the connection/'wall'
+                            if (visitor != null) visitor.accept(rDest);
+                            traversed.add(rDest);
+                            added.add(rDest);
+                            dirty.addLast(rDest);
+                        }
                     }
                 });
             }
@@ -161,7 +161,8 @@ public class ReachabilityStrategy<M extends MazeComponent<C>, C> implements Maze
         Multimap<MazeRoom, MazePassage> entryReachability = compileEntryReachability(mazes, passagePredicate, traverser);
 
         Set<MazeRoom> visited = Sets.newHashSet(left);
-        TreeSet<MazeRoom> dirty = Sets.newTreeSet((o1, o2) -> {
+        TreeSet<MazeRoom> dirty = Sets.newTreeSet((o1, o2) ->
+        {
             int compare = Double.compare(minDistanceSQ(o1, right), minDistanceSQ(o2, right));
             return compare != 0 ? compare : compare(o1.getCoordinates(), o2.getCoordinates());
         });
@@ -186,7 +187,7 @@ public class ReachabilityStrategy<M extends MazeComponent<C>, C> implements Maze
                     {
                         for (MazePassage passage : entryReachability.removeAll(next))
                         {
-                            Set<MazeRoom> roomExits = traverse(mazes, traversed, true, Collections.singleton(passage), traverser, null).stream().map(MazePassage::getDest).collect(Collectors.toSet());
+                            Set<MazeRoom> roomExits = traverse(mazes, traversed, Collections.singleton(passage), traverser, null).stream().map(MazePassage::getDest).collect(Collectors.toSet());
                             tryAdd.addAll(roomExits);
                             roomExits.forEach(entryReachability::removeAll);
                         }
@@ -306,11 +307,10 @@ public class ReachabilityStrategy<M extends MazeComponent<C>, C> implements Maze
 
     protected Set<MazePassage> traverse(MazeComponent<C> maze, MazeComponent<C> component, Set<MazePassage> traversed, final Collection<MazePassage> goal, Consumer<MazePassage> goalConsumer)
     {
-        return traverse(Arrays.asList(maze, component), traversed, true, Sets.intersection(component.exits().keySet(), traversed), traverser, connection -> {
+        return traverse(Arrays.asList(maze, component), traversed, Sets.intersection(component.exits().keySet(), traversed), traverser, connection ->
+        {
             if (goal.contains(connection))
                 goalConsumer.accept(connection);
-
-            return true;
         });
     }
 

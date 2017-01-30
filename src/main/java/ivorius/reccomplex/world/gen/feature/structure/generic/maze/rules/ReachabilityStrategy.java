@@ -65,27 +65,23 @@ public class ReachabilityStrategy<M extends MazeComponent<C>, C> implements Maze
 
         for (MazeComponent<C> component : components)
         {
-            // Exits leading outside
-            component.exits().forEach((passage, c) ->
+            // Walking within the component, and at last outside
+            for (MazePassage source : component.reachability().keySet())
             {
-                MazeRoom nullRoom = new MazeRoom(new int[passage.getLeft().getDimensions()]);
-                if (traverser.test(c))
-                    abilities.add(Pair.of(passage.normalize().getDest(), Collections.singleton(nullRoom)));
-            });
-
-            // Walking within the component
-            for (Map.Entry<MazePassage, MazePassage> entry : component.reachability().entries())
-            {
-                // We test this because otherwise there's no exit here anyway
-                // TODO Look for transitive connections so we can enable the bottom again (use traverse)
-//                if (!traverser.test(component.exits().get(entry.getValue())))
-//                    continue;
-
-                MazePassage passage = new MazePassage(entry.getKey().getSource(), entry.getValue().getSource());
-                abilities.add(Pair.of(passage.normalize().getDest(), component.rooms().stream().map(r -> r.sub(passage.getSource())).collect(Collectors.toSet())));
+                // TODO Don't use a traversed Set since we don't need it
+                for (MazePassage exit : traverse(Collections.singleton(component), new HashSet<>(), Collections.singleton(source), traverser, null))
+                {
+                    // Only if we can exit the component here it's a true ability
+                    if (!component.rooms().contains(exit.getSource()))
+                    {
+                        MazePassage passage = new MazePassage(source.getSource(), exit.getSource());
+                        abilities.add(Pair.of(passage.normalize().getDest(), component.rooms().stream().map(r -> r.sub(passage.getSource())).collect(Collectors.toSet())));
+                    }
+                }
             }
         }
 
+//         An ability starts where you can place a room, and stops where you can place the next room
         // Remove inferrable abilities
         for (Iterator<Pair<MazeRoom, Set<MazeRoom>>> iterator = abilities.iterator(); iterator.hasNext(); )
         {

@@ -95,9 +95,8 @@ public class GenericVillageCreationHandler implements VillagerRegistry.IVillageC
                 if (vanillaGenInfo.generatesIn(startPiece.biome) && (structureInfo.isRotatable() || transform.getRotation() == 0))
                 {
                     int[] structureSize = StructureInfos.structureSize(structureInfo, transform);
-                    BlockPos rotatedSpawnShift = transform.apply(vanillaGenInfo.spawnShift, new int[]{1, 1, 1});
 
-                    StructureBoundingBox strucBB = StructureInfos.structureBoundingBox(new BlockPos(x, y, z).add(rotatedSpawnShift), structureSize);
+                    StructureBoundingBox strucBB = StructureInfos.structureBoundingBox(new BlockPos(x, y, z), structureSize);
 
                     if (GenericVillagePiece.canVillageGoDeeperC(strucBB) && StructureComponent.findIntersecting(pieces, strucBB) == null)
                     {

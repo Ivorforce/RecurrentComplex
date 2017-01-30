@@ -18,6 +18,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.*;
 import java.util.function.Consumer;
+import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
@@ -249,7 +250,7 @@ public class ReachabilityStrategy<M extends MazeComponent<C>, C> implements Maze
         if (stepsReached.size() == connectionPoints.size())
             return true; // Done
 
-        Predicate<MazeRoom> isDirtyPre = input -> confiner.test(input) && !maze.rooms().contains(input);
+        Predicate<MazeRoom> isDirtyPre = dirtyRooms(maze.rooms());
 
         boolean[] unconnectable = new boolean[connectionPoints.size()];
         for (int i = 0; i < connectionPoints.size(); i++)
@@ -262,7 +263,7 @@ public class ReachabilityStrategy<M extends MazeComponent<C>, C> implements Maze
         place(maze, component, true);
 
         final Set<MazeRoom> roomsFromBoth = Sets.union(maze.rooms(), component.rooms());
-        Predicate<MazeRoom> isDirty = input -> confiner.test(input) && !roomsFromBoth.contains(input);
+        Predicate<MazeRoom> isDirty = dirtyRooms(roomsFromBoth);
 
         boolean canPlace;
         if (preventConnection)
@@ -288,6 +289,12 @@ public class ReachabilityStrategy<M extends MazeComponent<C>, C> implements Maze
         unplace(maze, component, true);
 
         return canPlace;
+    }
+
+    @Nonnull
+    protected Predicate<MazeRoom> dirtyRooms(Set<MazeRoom> r)
+    {
+        return input -> confiner.test(input) && !r.contains(input);
     }
 
     @Override
@@ -361,6 +368,36 @@ public class ReachabilityStrategy<M extends MazeComponent<C>, C> implements Maze
     public boolean isDirtyConnection(MazeRoom dest, MazeRoom source, C c)
     {
         return true;
+    }
+
+    protected Function<MazeRoom, String> dirtyMarker(MazeComponent component, MazeComponent place)
+    {
+        return r ->
+        {
+            if (isDirty(r, mainConnectionPoint, component))
+                return "0";
+            else
+            {
+                int p = connectionPoints.stream().filter(point -> isDirty(r, point, component))
+                        .mapToInt(connectionPoints::indexOf).findFirst().orElse(-1);
+
+                if (p >= 0)
+                    return "" + (p + 1);
+            }
+
+            if (place.rooms().contains(r))
+                return "O";
+
+            return null;
+        };
+    }
+
+    private boolean isDirty(MazeRoom r, ConnectionPoint point, MazeComponent<?> component)
+    {
+        return !stepsReached.containsKey(point) && point.traversed.stream()
+                .map(MazePassage::getSource)
+                .filter(dirtyRooms(component.rooms()))
+                .anyMatch(r::equals);
     }
 
     private static class ConnectionPoint

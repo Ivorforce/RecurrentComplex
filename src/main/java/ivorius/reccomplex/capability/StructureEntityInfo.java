@@ -223,7 +223,7 @@ public class StructureEntityInfo implements NBTCompoundObject, PartialUpdateHand
             }
             catch (Exception e)
             {
-                RecurrentComplex.logger.warn("Error reading operation tag", buffer);
+                RecurrentComplex.logger.warn("Error reading operation tag", e);
             }
         }
         else if ("options".equals(context))

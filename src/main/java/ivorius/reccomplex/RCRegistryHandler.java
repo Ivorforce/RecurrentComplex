@@ -318,10 +318,10 @@ public class RCRegistryHandler
         mazeRuleRegistry.register("connect", MazeRuleConnect.class);
         mazeRuleRegistry.register("connectall", MazeRuleConnectAll.class);
 
-        OperationRegistry.register("multi", OperationMulti::new);
-        OperationRegistry.register("strucGen", OperationGenerateStructure::new);
-        OperationRegistry.register("schemGen", OperationGenerateSchematic::new);
-        OperationRegistry.register("clearArea", OperationClearArea::new);
+        OperationRegistry.register("multi", OperationMulti.class);
+        OperationRegistry.register("strucGen", OperationGenerateStructure.class);
+        OperationRegistry.register("schemGen", OperationGenerateSchematic.class);
+        OperationRegistry.register("clearArea", OperationClearArea.class);
 
 //        GameRegistry.registerWorldGenerator(new WorldGenStructures(), 50);
         RCInventoryGenerators.registerVanillaInventoryGenerators();

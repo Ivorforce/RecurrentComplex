@@ -27,16 +27,15 @@ import net.minecraft.world.WorldServer;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import java.util.function.Supplier;
 
 /**
  * Created by lukas on 10.02.15.
  */
 public class OperationRegistry
 {
-    private static BiMap<String, Supplier<? extends Operation>> operations = HashBiMap.create();
+    private static BiMap<String, Class<? extends Operation>> operations = HashBiMap.create();
 
-    public static void register(String id, Supplier<? extends Operation> operation)
+    public static void register(String id, Class<? extends Operation> operation)
     {
         operations.put(id, operation);
     }
@@ -45,15 +44,15 @@ public class OperationRegistry
     public static Operation readOperation(@Nonnull NBTTagCompound compound)
     {
         String opID = compound.getString("opID");
-        Supplier<? extends Operation> supplier = operations.get(opID);
+        Class<? extends Operation> clazz = operations.get(opID);
 
-        if (supplier == null)
+        if (clazz == null)
         {
             RecurrentComplex.logger.error(String.format("Unrecognized Operation ID '%s'", opID));
             return null;
         }
 
-        return NBTCompoundObjects.read(compound, supplier);
+        return NBTCompoundObjects.read(compound, () -> IvClasses.instantiate(clazz));
     }
 
     public static NBTTagCompound writeOperation(@Nonnull Operation operation)

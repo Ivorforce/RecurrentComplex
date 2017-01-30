@@ -13,6 +13,7 @@ import ivorius.reccomplex.RCConfig;
 import ivorius.reccomplex.RecurrentComplex;
 import ivorius.reccomplex.operation.Operation;
 import ivorius.reccomplex.operation.OperationRegistry;
+import ivorius.reccomplex.utils.RCPacketBuffer;
 import net.minecraft.entity.Entity;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumFacing;
@@ -199,7 +200,7 @@ public class StructureEntityInfo implements NBTCompoundObject, PartialUpdateHand
         }
         else if ("operation".equals(context))
         {
-            ByteBufUtils.writeTag(buffer, danglingOperation != null ? OperationRegistry.writeOperation(danglingOperation) : null);
+            new RCPacketBuffer(buffer).writeCompoundTag(danglingOperation != null ? OperationRegistry.writeOperation(danglingOperation) : null);
         }
         else if ("options".equals(context))
         {
@@ -218,7 +219,7 @@ public class StructureEntityInfo implements NBTCompoundObject, PartialUpdateHand
         {
             try
             {
-                NBTTagCompound tag = ByteBufUtils.readTag(buffer);
+                NBTTagCompound tag = new RCPacketBuffer(buffer).readBigTag();
                 danglingOperation = tag != null ? OperationRegistry.readOperation(tag) : null;
             }
             catch (Exception e)

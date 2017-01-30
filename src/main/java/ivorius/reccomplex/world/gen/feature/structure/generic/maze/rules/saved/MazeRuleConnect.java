@@ -6,6 +6,7 @@
 package ivorius.reccomplex.world.gen.feature.structure.generic.maze.rules.saved;
 
 import ivorius.ivtoolkit.gui.IntegerRange;
+import ivorius.ivtoolkit.maze.components.ConnectionStrategy;
 import ivorius.ivtoolkit.maze.components.MazeComponent;
 import ivorius.ivtoolkit.maze.components.MazePassage;
 import ivorius.ivtoolkit.tools.NBTCompoundObjects;
@@ -58,7 +59,7 @@ public class MazeRuleConnect extends MazeRule
     }
 
     @Override
-    public ReachabilityStrategy<MazeComponentStructure<Connector>, Connector> build(WorldScriptMazeGenerator script, Set<Connector> blockedConnections, ConnectorFactory connectorFactory, Collection<? extends MazeComponent<Connector>> components)
+    public ReachabilityStrategy<MazeComponentStructure<Connector>, Connector> build(WorldScriptMazeGenerator script, Set<Connector> blockedConnections, ConnectorFactory connectorFactory, Collection<? extends MazeComponent<Connector>> components, ConnectionStrategy<Connector> connectionStrategy)
     {
         if (start.size() > 0 && end.size() > 0)
         {
@@ -66,8 +67,8 @@ public class MazeRuleConnect extends MazeRule
             Predicate<Connector> traverser = ReachabilityStrategy.connectorTraverser(blockedConnections);
             LimitAABBStrategy<MazeComponent<Object>, Object> confiner = new LimitAABBStrategy<>(script.mazeComponent.boundsSize());
 
-            return preventConnection ? ReachabilityStrategy.preventConnection(points, traverser, confiner)
-                    :  ReachabilityStrategy.connect(points, traverser, confiner, ReachabilityStrategy.compileAbilities(components, traverser));
+            return preventConnection ? ReachabilityStrategy.preventConnection(points, traverser, confiner, connectionStrategy)
+                    :  ReachabilityStrategy.connect(points, traverser, confiner, ReachabilityStrategy.compileAbilities(components, traverser), connectionStrategy);
         }
         else
             return null;

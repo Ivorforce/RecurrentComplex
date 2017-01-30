@@ -243,11 +243,11 @@ public class WorldScriptMazeGenerator implements WorldScript<WorldScriptMazeGene
         // Don't add reachability as it only slows down generation without adding real features
 //        maze.reachability().putAll(mazeComponent.reachability.build(AxisAlignedTransform2D.ORIGINAL, mazeComponent.boundsSize(), SavedMazeReachability.notBlocked(blockedConnections, maze.exits()), maze.exits().keySet()));
 
-        List<MazePredicate<MazeComponentStructure<Connector>, Connector>> predicates = rules.stream().map(r -> r.build(this, blockedConnections, factory, transformedComponents)).filter(Objects::nonNull).collect(Collectors.toCollection(ArrayList::new));
+        ConnectorStrategy connectorStrategy = new ConnectorStrategy();
+
+        List<MazePredicate<MazeComponentStructure<Connector>, Connector>> predicates = rules.stream().map(r -> r.build(this, blockedConnections, factory, transformedComponents, connectorStrategy)).filter(Objects::nonNull).collect(Collectors.toCollection(ArrayList::new));
         predicates.add(new LimitAABBStrategy<>(outsideBoundsHigher));
         predicates.add(new BlockedConnectorStrategy<>(blockedConnections));
-
-        ConnectorStrategy connectorStrategy = new ConnectorStrategy();
 
         int totalRooms = mazeComponent.rooms.compile(true).size();
 

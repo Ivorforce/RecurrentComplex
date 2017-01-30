@@ -46,7 +46,7 @@ public class VanillaGenerationInfo extends GenerationInfo
 
     public VanillaGenerationInfo()
     {
-        this(null, null, 2, 5, 3, 3, EnumFacing.NORTH, BlockPos.ORIGIN, "");
+        this(null, null, 0, 2, 1, 1, EnumFacing.NORTH, BlockPos.ORIGIN, "");
     }
 
     public VanillaGenerationInfo(@Nullable String id, Double generationWeight, double minBaseLimit, double maxBaseLimit, double minScaledLimit, double maxScaledLimit, EnumFacing front, BlockPos spawnShift, String biomeExpression)

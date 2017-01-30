@@ -97,10 +97,11 @@ public class WorldGenMaze
 
     public static MazeComponentStructure<Connector> transform(StructureInfo info, SavedMazeComponent comp, final AxisAlignedTransform2D transform, final int[] size, double weight, ConnectorFactory factory, Collection<Connector> blockedConnections)
     {
-        Set<MazeRoom> transformedRooms = comp.getRooms().stream().map(input -> MazeRooms.rotated(input, transform, size)).collect(Collectors.toSet());
+        Collection<MazeRoom> rooms = comp.getRooms();
+        Set<MazeRoom> transformedRooms = rooms.stream().map(input -> MazeRooms.rotated(input, transform, size)).collect(Collectors.toSet());
 
         Map<MazePassage, Connector> transformedExits = new HashMap<>();
-        buildExitPaths(factory, comp.getExitPaths(), transformedRooms).forEach(path -> transformedExits.put(MazePassages.rotated(path.getKey(), transform, size), path.getValue()));
+        buildExitPaths(factory, comp.getExitPaths(), rooms).forEach(path -> transformedExits.put(MazePassages.rotated(path.getKey(), transform, size), path.getValue()));
         addMissingExits(transformedRooms, transformedExits, comp.defaultConnector.toConnector(factory));
 
         ImmutableMultimap<MazePassage, MazePassage> reachability = comp.reachability.build(transform, size, SavedMazeReachability.notBlocked(blockedConnections, transformedExits), transformedExits.keySet());
@@ -121,7 +122,7 @@ public class WorldGenMaze
             MazeRooms.neighborPassages(room).filter(passage -> !exits.containsKey(passage) && !(rooms.contains(passage.getLeft()) && rooms.contains(passage.getRight()))).forEach(passage -> exits.put(passage, connector));
     }
 
-    public static Stream<Map.Entry<MazePassage, Connector>> buildExitPaths(ConnectorFactory factory, List<SavedMazePathConnection> mazeExits, Set<MazeRoom> rooms)
+    public static Stream<Map.Entry<MazePassage, Connector>> buildExitPaths(ConnectorFactory factory, List<SavedMazePathConnection> mazeExits, Collection<MazeRoom> rooms)
     {
         return mazeExits.stream().map(SavedMazePaths.buildFunction(factory)) // Build
                 .map(e -> rooms.contains(e.getKey().getSource()) ? e : Pair.of(e.getKey().inverse(), e.getValue())); // Inverse wrongly directed paths

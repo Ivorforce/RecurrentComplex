@@ -249,21 +249,41 @@ public class ReachabilityStrategy<M extends MazeComponent<C>, C> implements Maze
         if (stepsReached.size() == connectionPoints.size())
             return true; // Done
 
+        Predicate<MazeRoom> isDirtyPre = input -> confiner.test(input) && !maze.rooms().contains(input);
+
+        boolean[] unconnectable = new boolean[connectionPoints.size()];
+        for (int i = 0; i < connectionPoints.size(); i++)
+        {
+            ConnectionPoint point = connectionPoints.get(i);
+            if (point.traversed.stream().map(MazePassage::getSource).noneMatch(isDirtyPre))
+                unconnectable[i] = true; // Has no more openings! It's either reached or given up.
+        }
+
         place(maze, component, true);
 
         final Set<MazeRoom> roomsFromBoth = Sets.union(maze.rooms(), component.rooms());
         Predicate<MazeRoom> isDirty = input -> confiner.test(input) && !roomsFromBoth.contains(input);
-        boolean canPlace = preventConnection
-                ? stepsReached.isEmpty()
-                : connectionPoints.stream().allMatch(point -> stepsReached.containsKey(point) || approximateCanReach(roomsFromBoth,
-                traversalAbilities,
-                Arrays.asList(maze, component),
-                // Use getSource here since we need to have been on the other side if we want to connect
-                point.traversed.stream().map(MazePassage::getSource).filter(isDirty).collect(Collectors.toSet()),
-                mainConnectionPoint.traversed.stream().map(MazePassage::getSource).filter(isDirty).collect(Collectors.toSet()),
-                point.traversed,
-                confiner,
-                traverser));
+
+        boolean canPlace;
+        if (preventConnection)
+            canPlace = stepsReached.isEmpty();
+        else
+        {
+            canPlace = true;
+            for (int i = 0; i < connectionPoints.size(); i++)
+            {
+                ConnectionPoint point = connectionPoints.get(i);
+                canPlace &= stepsReached.containsKey(point) || unconnectable[i] || approximateCanReach(roomsFromBoth,
+                        traversalAbilities,
+                        Arrays.asList(maze, component),
+                        // Use getSource here since we need to have been on the other side if we want to connect
+                        point.traversed.stream().map(MazePassage::getSource).filter(isDirty).collect(Collectors.toSet()),
+                        mainConnectionPoint.traversed.stream().map(MazePassage::getSource).filter(isDirty).collect(Collectors.toSet()),
+                        point.traversed,
+                        confiner,
+                        traverser);
+            }
+        }
 
         unplace(maze, component, true);
 

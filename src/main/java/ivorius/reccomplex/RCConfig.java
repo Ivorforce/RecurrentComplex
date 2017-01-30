@@ -157,7 +157,7 @@ public class RCConfig
                     config.getFloat("customBookChance", CATEGORY_BALANCING, 0.0f, 0, 1, "Chance to use the customArtifactTag when a book generation tag fires.")
             );
 
-            mazePlacementReversesPerRoom = config.getFloat("mazePlacementReversesPerRoom", CATEGORY_BALANCING, 10, -1, 100, "Maximum number of reverses per room the maze generator can do. A higher number results in a better generation success rate, but may freeze the server temporarily.");
+            mazePlacementReversesPerRoom = config.getFloat("mazePlacementReversesPerRoom", CATEGORY_BALANCING, 3, -1, 100, "Maximum number of reverses per room the maze generator can do. A higher number results in a better generation success rate, but may freeze the server temporarily.");
 
             universalTransformer = null;
             Collections.addAll(universalTransformerPresets, config.getStringList("universalTransformerPresets", CATEGORY_BALANCING, new String[0], "Transformer preset names that are gonna be applied to every single generating structure. Use this if you need to enforce specific rules (e.g. \"don't ever spawn wood blocks\" (with a replace transformer)."));

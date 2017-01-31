@@ -31,7 +31,7 @@ import java.util.stream.Collectors;
 public class CommandConvertSchematic extends CommandBase
 {
     @Override
-    public String getName()
+    public String getCommandName()
     {
         return RCConfig.commandPrefix + "convertschematic";
     }
@@ -42,7 +42,7 @@ public class CommandConvertSchematic extends CommandBase
     }
 
     @Override
-    public String getUsage(ICommandSender var1)
+    public String getCommandUsage(ICommandSender var1)
     {
         return ServerTranslations.usage("commands.rcconvertschematic.usage");
     }
@@ -67,7 +67,7 @@ public class CommandConvertSchematic extends CommandBase
     }
 
     @Override
-    public List<String> getTabCompletions(MinecraftServer server, ICommandSender sender, String[] args, @Nullable BlockPos pos)
+    public List<String> getTabCompletionOptions(MinecraftServer server, ICommandSender sender, String[] args, @Nullable BlockPos pos)
     {
         args = RCCommands.parseQuotedWords(args);
 

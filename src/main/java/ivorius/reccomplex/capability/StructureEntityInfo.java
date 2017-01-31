@@ -200,7 +200,7 @@ public class StructureEntityInfo implements NBTCompoundObject, PartialUpdateHand
         }
         else if ("operation".equals(context))
         {
-            new RCPacketBuffer(buffer).writeCompoundTag(danglingOperation != null ? OperationRegistry.writeOperation(danglingOperation) : null);
+            new RCPacketBuffer(buffer).writeNBTTagCompoundToBuffer(danglingOperation != null ? OperationRegistry.writeOperation(danglingOperation) : null);
         }
         else if ("options".equals(context))
         {

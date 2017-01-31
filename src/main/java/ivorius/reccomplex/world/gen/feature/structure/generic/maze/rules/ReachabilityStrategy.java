@@ -71,13 +71,17 @@ public class ReachabilityStrategy<M extends MazeComponent<C>, C> implements Maze
             // Walking within the component, and at last outside
             for (MazePassage source : component.reachability().keySet())
             {
-                // TODO Don't use a traversed Set since we don't need it
-                for (MazePassage exit : traverse(Collections.singleton(component), new HashSet<>(), Collections.singleton(source), traverser, null))
+                // Only walk if this is actually an entrance, otherwise it's just within the component again
+                if (traverser.test(component.exits().get(source)))
                 {
-                    // Only if we can exit the component here it's a true ability
-                    if (!component.rooms().contains(exit.getSource()))
+                    // TODO Don't use a traversed Set since we don't need it
+                    for (MazePassage exit : traverse(Collections.singleton(component), new HashSet<>(), Collections.singleton(source), traverser, null))
                     {
-                        abilities.add(Ability.from(exit.getSource(), source.getSource(), component));
+                        // Only if we can exit the component here it's a true ability
+                        if (!component.rooms().contains(exit.getSource()))
+                        {
+                            abilities.add(Ability.from(exit.getSource(), source.getSource(), component));
+                        }
                     }
                 }
             }

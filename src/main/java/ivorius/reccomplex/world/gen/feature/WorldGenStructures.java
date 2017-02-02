@@ -115,7 +115,7 @@ public class WorldGenStructures
 
     public static void generatePartialStructuresInChunk(Random random, final ChunkPos chunkPos, final WorldServer world)
     {
-        StructureGenerationData data = StructureGenerationData.get(world);
+        WorldStructureGenerationData data = WorldStructureGenerationData.get(world);
 
         data.structureEntriesAt(chunkPos).filter(e -> !e.hasBeenGenerated).forEach(entry -> {
             StructureInfo structureInfo = StructureRegistry.INSTANCE.get(entry.getStructureID());
@@ -138,7 +138,7 @@ public class WorldGenStructures
     public static boolean decorate(WorldServer world, Random random, ChunkPos chunkPos, @Nullable Predicate<StructureInfo> structurePredicate)
     {
         boolean worldWantsStructures = world.getWorldInfo().isMapFeaturesEnabled();
-        StructureGenerationData data = StructureGenerationData.get(world);
+        WorldStructureGenerationData data = WorldStructureGenerationData.get(world);
 
         if (structurePredicate == null)
             generatePartialStructuresInChunk(random, chunkPos, world);

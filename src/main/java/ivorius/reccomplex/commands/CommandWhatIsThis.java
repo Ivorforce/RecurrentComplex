@@ -7,7 +7,7 @@ package ivorius.reccomplex.commands;
 
 import ivorius.reccomplex.RCConfig;
 import ivorius.reccomplex.utils.ServerTranslations;
-import ivorius.reccomplex.world.gen.feature.StructureGenerationData;
+import ivorius.reccomplex.world.gen.feature.WorldStructureGenerationData;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
@@ -34,7 +34,7 @@ import java.util.stream.Collectors;
 public class CommandWhatIsThis extends CommandBase
 {
     @Nonnull
-    public static ITextComponent entryTextComponent(StructureGenerationData.Entry entry)
+    public static ITextComponent entryTextComponent(WorldStructureGenerationData.Entry entry)
     {
         TextComponentString forget = new TextComponentString("X");
         String uuidString = entry.getUuid().toString();
@@ -44,7 +44,7 @@ public class CommandWhatIsThis extends CommandBase
                 ServerTranslations.format("commands.rcforget.forget", uuidString)));
         forget.getStyle().setColor(TextFormatting.RED);
 
-        TextComponentString structure = entry instanceof StructureGenerationData.StructureEntry
+        TextComponentString structure = entry instanceof WorldStructureGenerationData.StructureEntry
                 ? CommandSearchStructure.structureTextComponent(entry.description())
                 : new TextComponentString(entry.description());
 
@@ -75,7 +75,7 @@ public class CommandWhatIsThis extends CommandBase
 
         BlockPos pos = RCCommands.tryParseBlockPos(commandSender, args, 0, false);
 
-        List<StructureGenerationData.Entry> entries = StructureGenerationData.get(world).entriesAt(pos).collect(Collectors.toCollection(ArrayList::new));
+        List<WorldStructureGenerationData.Entry> entries = WorldStructureGenerationData.get(world).entriesAt(pos).collect(Collectors.toCollection(ArrayList::new));
         if (entries.size() > 0)
             commandSender.sendMessage(ServerTranslations.format(new ArrayList<ITextComponent>().size() > 1 ? "commands.whatisthis.many" : "commands.whatisthis.one",
                     ServerTranslations.join(entries.stream().map(CommandWhatIsThis::entryTextComponent).collect(Collectors.toList()))));

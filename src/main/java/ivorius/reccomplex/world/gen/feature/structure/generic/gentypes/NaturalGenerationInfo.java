@@ -24,7 +24,7 @@ import ivorius.reccomplex.world.gen.feature.structure.generic.presets.GenericPla
 import ivorius.reccomplex.utils.presets.PresettedList;
 import ivorius.reccomplex.utils.presets.PresettedObjects;
 import ivorius.reccomplex.utils.presets.PresettedObject;
-import ivorius.reccomplex.world.gen.feature.StructureGenerationData;
+import ivorius.reccomplex.world.gen.feature.WorldStructureGenerationData;
 import ivorius.reccomplex.world.gen.feature.selector.EnvironmentalSelection;
 import ivorius.reccomplex.world.gen.feature.selector.NaturalStructureSelector;
 import ivorius.reccomplex.world.gen.feature.selector.StructureSelector;
@@ -189,7 +189,7 @@ public class NaturalGenerationInfo extends GenerationInfo implements Environment
 
         public boolean areResolved(World world, String structureID)
         {
-            return StructureGenerationData.get(world).getEntriesByID(structureID).size() < maxCount;
+            return WorldStructureGenerationData.get(world).getEntriesByID(structureID).size() < maxCount;
         }
 
         public enum Context

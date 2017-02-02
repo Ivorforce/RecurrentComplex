@@ -33,7 +33,7 @@ import java.util.stream.Stream;
 /**
  * Created by lukas on 01.03.15.
  */
-public class StructureGenerationData extends WorldSavedData
+public class WorldStructureGenerationData extends WorldSavedData
 {
     private static final String IDENTIFIER = RecurrentComplex.MOD_ID + ":structuredata";
 
@@ -45,22 +45,22 @@ public class StructureGenerationData extends WorldSavedData
 
     protected final SetMultimap<String, StructureEntry> instanceMap = HashMultimap.create();
 
-    public StructureGenerationData(String id)
+    public WorldStructureGenerationData(String id)
     {
         super(id);
     }
 
-    public StructureGenerationData()
+    public WorldStructureGenerationData()
     {
         this(IDENTIFIER);
     }
 
-    public static StructureGenerationData get(World world)
+    public static WorldStructureGenerationData get(World world)
     {
-        StructureGenerationData data = (StructureGenerationData) world.loadData(StructureGenerationData.class, IDENTIFIER);
+        WorldStructureGenerationData data = (WorldStructureGenerationData) world.loadData(WorldStructureGenerationData.class, IDENTIFIER);
         if (data == null)
         {
-            data = new StructureGenerationData();
+            data = new WorldStructureGenerationData();
             world.setData(data.mapName, data);
         }
         return data;
@@ -178,8 +178,8 @@ public class StructureGenerationData extends WorldSavedData
     {
         entryMap.clear();
 
-        NBTCompoundObjects.readListFrom(compound, "entries", StructureEntry.class).forEach(this::addEntry);
-        NBTCompoundObjects.readListFrom(compound, "customEntries", CustomEntry.class).forEach(this::addEntry);
+        NBTCompoundObjects.readListFrom(compound, "entries", StructureEntry::new).forEach(this::addEntry);
+        NBTCompoundObjects.readListFrom(compound, "customEntries", CustomEntry::new).forEach(this::addEntry);
     }
 
     @Override
@@ -243,9 +243,7 @@ public class StructureGenerationData extends WorldSavedData
 
             StructureEntry entry = (StructureEntry) o;
 
-            if (!uuid.equals(entry.uuid)) return false;
-
-            return true;
+            return uuid.equals(entry.uuid);
         }
 
         @Override

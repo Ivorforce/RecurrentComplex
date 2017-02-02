@@ -127,7 +127,7 @@ public class StructureGenerator<S extends NBTStorable>
 
         if (maturity() != StructureSpawnContext.GenerateMaturity.SUGGEST || (
                 spawn.boundingBox.minY >= MIN_DIST_TO_LIMIT && spawn.boundingBox.maxY <= world.getHeight() - 1 - MIN_DIST_TO_LIMIT
-                        && (!RCConfig.avoidOverlappingGeneration || allowOverlaps || !StructureGenerationData.get(world).entriesAt(spawn.boundingBox).findAny().isPresent())
+                        && (!RCConfig.avoidOverlappingGeneration || allowOverlaps || !WorldStructureGenerationData.get(world).entriesAt(spawn.boundingBox).findAny().isPresent())
                         && !RCEventBus.INSTANCE.post(new StructureGenerationEvent.Suggest(structureInfo, spawn))
                         && (structureID == null || !MinecraftForge.EVENT_BUS.post(new StructureGenerationEventLite.Suggest(world, structureID, spawn.boundingBox, spawn.generationLayer, firstTime)))
         ))
@@ -150,7 +150,7 @@ public class StructureGenerator<S extends NBTStorable>
                     MinecraftForge.EVENT_BUS.post(new StructureGenerationEventLite.Post(world, structureID, spawn.boundingBox, spawn.generationLayer, firstTime));
 
                 if (structureID != null && memorize)
-                    StructureGenerationData.get(world).addCompleteEntry(structureID, generationInfo != null ? generationInfo.id() : null, spawn.boundingBox, spawn.transform);
+                    WorldStructureGenerationData.get(world).addCompleteEntry(structureID, generationInfo != null ? generationInfo.id() : null, spawn.boundingBox, spawn.transform);
             }
 
             return success ? spawnO : Optional.empty();
@@ -211,7 +211,7 @@ public class StructureGenerator<S extends NBTStorable>
     @Nullable
     public String structureID()
     {
-        return this.structureID != null ? this.structureID : this.structureInfo != null ? StructureRegistry.INSTANCE.id((StructureInfo) structureInfo) : null;
+        return this.structureID != null ? this.structureID : this.structureInfo != null ? StructureRegistry.INSTANCE.id(structureInfo) : null;
     }
 
     public StructureGenerator<S> lowerCoord(@Nonnull BlockPos lowerCoord)

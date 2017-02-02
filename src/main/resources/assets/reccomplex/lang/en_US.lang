@@ -253,6 +253,9 @@ reccomplex.structure.rotatable.tooltip=Whether the structure can rotate.<br>This
 reccomplex.structure.mirrorable.true=§aMirrorable§r
 reccomplex.structure.mirrorable.false=§7Mirrorable§r
 reccomplex.structure.mirrorable.tooltip=Whether the structure can be mirrored.<br>This may need to be set to false<br>for some TileEntities or Entities.
+reccomplex.structure.blocking.true=§aBlocking§r
+reccomplex.structure.blocking.false=§7Non-Blocking§r
+reccomplex.structure.blocking.tooltip=Whether the structure stops other structures<br>from spawning in the same place.
 reccomplex.structure.randomrange=Randomized between the two values.
 
 reccomplex.structure.id=Structure ID

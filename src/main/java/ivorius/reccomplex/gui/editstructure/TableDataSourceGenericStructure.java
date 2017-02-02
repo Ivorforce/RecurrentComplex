@@ -130,7 +130,7 @@ public class TableDataSourceGenericStructure extends TableDataSourceSegmented
             case 0:
                 return 1;
             case 3:
-                return 1;
+                return 2;
         }
 
         return super.sizeOfSegment(segment);
@@ -157,19 +157,32 @@ public class TableDataSourceGenericStructure extends TableDataSourceSegmented
                 }
             case 3:
             {
-                TableCellBoolean cellRotatable = new TableCellBoolean("rotatable", structureInfo.rotatable,
-                        IvTranslations.get("reccomplex.structure.rotatable.true"),
-                        IvTranslations.get("reccomplex.structure.rotatable.false"));
-                cellRotatable.setTooltip(IvTranslations.formatLines("reccomplex.structure.rotatable.tooltip"));
-                cellRotatable.addPropertyConsumer(cell -> structureInfo.rotatable = cellRotatable.getPropertyValue());
+                if (index == 0)
+                {
+                    TableCellBoolean cellRotatable = new TableCellBoolean("rotatable", structureInfo.rotatable,
+                            IvTranslations.get("reccomplex.structure.rotatable.true"),
+                            IvTranslations.get("reccomplex.structure.rotatable.false"));
+                    cellRotatable.setTooltip(IvTranslations.formatLines("reccomplex.structure.rotatable.tooltip"));
+                    cellRotatable.addPropertyConsumer(cell -> structureInfo.rotatable = cellRotatable.getPropertyValue());
 
-                TableCellBoolean cellMirrorable = new TableCellBoolean("mirrorable", structureInfo.mirrorable,
-                        IvTranslations.format("reccomplex.structure.mirrorable.true"),
-                        IvTranslations.format("reccomplex.structure.mirrorable.false"));
-                cellMirrorable.setTooltip(IvTranslations.formatLines("reccomplex.structure.mirrorable.tooltip"));
-                cellMirrorable.addPropertyConsumer(cell -> structureInfo.mirrorable = cellMirrorable.getPropertyValue());
+                    TableCellBoolean cellMirrorable = new TableCellBoolean("mirrorable", structureInfo.mirrorable,
+                            IvTranslations.format("reccomplex.structure.mirrorable.true"),
+                            IvTranslations.format("reccomplex.structure.mirrorable.false"));
+                    cellMirrorable.setTooltip(IvTranslations.formatLines("reccomplex.structure.mirrorable.tooltip"));
+                    cellMirrorable.addPropertyConsumer(cell -> structureInfo.mirrorable = cellMirrorable.getPropertyValue());
 
-                return new TitledCell(new TableCellMulti(cellRotatable, cellMirrorable));
+                    return new TitledCell(new TableCellMulti(cellRotatable, cellMirrorable));
+                }
+                else if (index == 1)
+                {
+                    TableCellBoolean cellBlocking = new TableCellBoolean("blocking", structureInfo.blocking,
+                            IvTranslations.format("reccomplex.structure.blocking.true"),
+                            IvTranslations.format("reccomplex.structure.blocking.false"));
+                    cellBlocking.setTooltip(IvTranslations.formatLines("reccomplex.structure.blocking.tooltip"));
+                    cellBlocking.addPropertyConsumer(cell -> structureInfo.blocking = cellBlocking.getPropertyValue());
+
+                    return new TitledCell(cellBlocking);
+                }
             }
         }
 

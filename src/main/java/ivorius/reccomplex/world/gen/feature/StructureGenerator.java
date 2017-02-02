@@ -151,8 +151,11 @@ public class StructureGenerator<S extends NBTStorable>
 
                 if (structureID != null && memorize)
                 {
-                    String generationInfoID1 = generationInfo != null ? generationInfo.id() : null;
-                    WorldStructureGenerationData.get(world).addEntry(WorldStructureGenerationData.StructureEntry.complete(structureID, generationInfoID1, spawn.boundingBox, spawn.transform));
+                    String generationInfoID = generationInfo != null ? generationInfo.id() : null;
+
+                    WorldStructureGenerationData.StructureEntry structureEntry = WorldStructureGenerationData.StructureEntry.complete(structureID, generationInfoID, spawn.boundingBox, spawn.transform);
+                    structureEntry.blocking = structureInfo.isBlocking();
+                    WorldStructureGenerationData.get(world).addEntry(structureEntry);
                 }
             }
 

@@ -48,7 +48,7 @@ public class CommandSelectRemember extends CommandBase
 
         String name = buildString(args, 0);
 
-        generationData.addCustomEntry(name, BlockAreas.toBoundingBox(owner.getSelection()));
+        generationData.addEntry(WorldStructureGenerationData.CustomEntry.from(name, BlockAreas.toBoundingBox(owner.getSelection())));
         commandSender.addChatMessage(ServerTranslations.format("commands.rcremember.success", name));
     }
 }

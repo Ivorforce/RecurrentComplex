@@ -36,6 +36,7 @@
                 "transformer": {
                   "id": "naturalAir_c02fe1f1",
                   "sourceExpression": "reccomplex:generic_space \u0026 metadata\u003d1",
+                  "destExpression": "",
                   "naturalExpansionDistance": 4.0,
                   "naturalExpansionRandomization": 10.0
                 }
@@ -45,6 +46,7 @@
                 "transformer": {
                   "id": "natural_b3ff52bb",
                   "sourceExpression": "reccomplex:generic_solid \u0026 metadata\u003d0",
+                  "destExpression": "is:replaceable | is:foliage",
                   "naturalExpansionDistance": 4.0,
                   "naturalExpansionRandomization": 6.0
                 }
@@ -58,7 +60,7 @@
         "transformer": {
           "id": "multi_7de49dd2",
           "data": {
-            "environmentMatcher": "gen.type\u003dsapling",
+            "environmentMatcher": "",
             "transformers": [
               {
                 "type": "ensureBlocks",

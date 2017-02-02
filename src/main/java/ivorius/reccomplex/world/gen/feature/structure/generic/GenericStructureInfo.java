@@ -68,6 +68,7 @@ public class GenericStructureInfo implements StructureInfo<GenericStructureInfo.
 
     public boolean rotatable;
     public boolean mirrorable;
+    public boolean blocking;
 
     public Metadata metadata = new Metadata();
 
@@ -78,6 +79,7 @@ public class GenericStructureInfo implements StructureInfo<GenericStructureInfo.
         GenericStructureInfo genericStructureInfo = new GenericStructureInfo();
         genericStructureInfo.rotatable = true;
         genericStructureInfo.mirrorable = true;
+        genericStructureInfo.blocking = true;
 
         genericStructureInfo.transformer.getData().setPreset("structure");
         genericStructureInfo.generationInfos.add(new NaturalGenerationInfo());
@@ -112,6 +114,12 @@ public class GenericStructureInfo implements StructureInfo<GenericStructureInfo.
     public boolean isMirrorable()
     {
         return mirrorable;
+    }
+
+    @Override
+    public boolean isBlocking()
+    {
+        return blocking;
     }
 
     @Override
@@ -433,6 +441,7 @@ public class GenericStructureInfo implements StructureInfo<GenericStructureInfo.
 
             structureInfo.rotatable = JsonUtils.getBoolean(jsonObject, "rotatable", false);
             structureInfo.mirrorable = JsonUtils.getBoolean(jsonObject, "mirrorable", false);
+            structureInfo.blocking = JsonUtils.getBoolean(jsonObject, "blocking", true);
 
             if (jsonObject.has("dependencyExpression"))
                 structureInfo.dependencies.setExpression(JsonUtils.getString(jsonObject, "dependencyExpression"));
@@ -464,6 +473,7 @@ public class GenericStructureInfo implements StructureInfo<GenericStructureInfo.
 
             jsonObject.addProperty("rotatable", structureInfo.rotatable);
             jsonObject.addProperty("mirrorable", structureInfo.mirrorable);
+            jsonObject.addProperty("blocking", structureInfo.blocking);
 
             jsonObject.add("dependencyExpression", context.serialize(structureInfo.dependencies.getExpression()));
 

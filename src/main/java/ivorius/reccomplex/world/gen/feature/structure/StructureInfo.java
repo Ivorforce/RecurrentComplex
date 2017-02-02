@@ -44,6 +44,8 @@ public interface StructureInfo<S extends NBTStorable>
 
     boolean isMirrorable();
 
+    boolean isBlocking();
+
     @Nullable
     GenericStructureInfo copyAsGenericStructureInfo();
 

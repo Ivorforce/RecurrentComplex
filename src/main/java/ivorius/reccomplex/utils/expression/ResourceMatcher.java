@@ -43,7 +43,9 @@ public class ResourceMatcher extends BoolFunctionExpressionCache<ResourceLocatio
         @Override
         public Function<SupplierCache<ResourceLocation>, Boolean> parse(String var)
         {
-            return location -> location.get().getResourcePath().equals(var);
+//             TODO ResourceLocation forces lowercase, and generally Mojang expects lowercase IDs now
+//            Change for the future?
+            return location -> location.get().getResourcePath().equalsIgnoreCase(var);
         }
 
         @Override

@@ -96,21 +96,6 @@ public class WorldStructureGenerationData extends WorldSavedData
         }));
     }
 
-    public Set<ChunkPos> addCustomEntry(String name, StructureBoundingBox boundingBox)
-    {
-        return addEntry(new CustomEntry(UUID.randomUUID(), boundingBox, name));
-    }
-
-    public Set<ChunkPos> addCompleteEntry(String structureID, String generationInfoID, StructureBoundingBox boundingBox, AxisAlignedTransform2D transform)
-    {
-        return addEntry(new StructureEntry(UUID.randomUUID(), boundingBox, structureID, generationInfoID, transform, true));
-    }
-
-    public Set<ChunkPos> addGeneratingEntry(String structureID, String generationInfoID, StructureBoundingBox boundingBox, AxisAlignedTransform2D transform)
-    {
-        return addEntry(new StructureEntry(UUID.randomUUID(), boundingBox, structureID, generationInfoID, transform, false));
-    }
-
     public Set<ChunkPos> addEntry(Entry entry)
     {
         entryMap.put(entry.getUuid(), entry);
@@ -196,6 +181,7 @@ public class WorldStructureGenerationData extends WorldSavedData
         @Nonnull
         protected UUID uuid = UUID.randomUUID();
         protected StructureBoundingBox boundingBox = new StructureBoundingBox();
+        protected boolean blocking = true;
 
         public Entry()
         {
@@ -228,6 +214,16 @@ public class WorldStructureGenerationData extends WorldSavedData
             this.boundingBox = boundingBox;
         }
 
+        public boolean blocking()
+        {
+            return blocking;
+        }
+
+        public void setBlocking(boolean blocking)
+        {
+            this.blocking = blocking;
+        }
+
         public Set<ChunkPos> rasterize()
         {
             return StructureBoundingBoxes.rasterize(getBoundingBox());
@@ -258,6 +254,8 @@ public class WorldStructureGenerationData extends WorldSavedData
             uuid = new UUID(compound.getLong("UUIDMS"), compound.getLong("UUIDLS"));
 
             boundingBox = new StructureBoundingBox(compound.getIntArray("boundingBox"));
+
+            blocking = compound.getBoolean("blocking");
         }
 
         @Override
@@ -267,6 +265,7 @@ public class WorldStructureGenerationData extends WorldSavedData
             compound.setLong("UUIDLS", uuid.getLeastSignificantBits());
 
             compound.setTag("boundingBox", boundingBox.toNBTTagIntArray());
+            compound.setBoolean("blocking", blocking);
         }
     }
 
@@ -293,6 +292,18 @@ public class WorldStructureGenerationData extends WorldSavedData
             this.generationInfoID = generationInfoID;
             this.transform = transform;
             this.hasBeenGenerated = hasBeenGenerated;
+        }
+
+        @Nonnull
+        public static StructureEntry complete(String structureID, String generationInfoID, StructureBoundingBox boundingBox, AxisAlignedTransform2D transform)
+        {
+            return new StructureEntry(UUID.randomUUID(), boundingBox, structureID, generationInfoID, transform, true);
+        }
+
+        @Nonnull
+        public static StructureEntry generating(String structureID, String generationInfoID, StructureBoundingBox boundingBox, AxisAlignedTransform2D transform)
+        {
+            return new StructureEntry(UUID.randomUUID(), boundingBox, structureID, generationInfoID, transform, false);
         }
 
         public String getStructureID()
@@ -372,6 +383,12 @@ public class WorldStructureGenerationData extends WorldSavedData
         {
             super(uuid, boundingBox);
             this.name = name;
+        }
+
+        @Nonnull
+        public static CustomEntry from(String name, StructureBoundingBox boundingBox)
+        {
+            return new CustomEntry(UUID.randomUUID(), boundingBox, name);
         }
 
         @Override

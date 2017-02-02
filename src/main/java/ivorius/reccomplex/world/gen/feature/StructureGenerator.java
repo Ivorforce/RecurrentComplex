@@ -150,7 +150,10 @@ public class StructureGenerator<S extends NBTStorable>
                     MinecraftForge.EVENT_BUS.post(new StructureGenerationEventLite.Post(world, structureID, spawn.boundingBox, spawn.generationLayer, firstTime));
 
                 if (structureID != null && memorize)
-                    WorldStructureGenerationData.get(world).addCompleteEntry(structureID, generationInfo != null ? generationInfo.id() : null, spawn.boundingBox, spawn.transform);
+                {
+                    String generationInfoID1 = generationInfo != null ? generationInfo.id() : null;
+                    WorldStructureGenerationData.get(world).addEntry(WorldStructureGenerationData.StructureEntry.complete(structureID, generationInfoID1, spawn.boundingBox, spawn.transform));
+                }
             }
 
             return success ? spawnO : Optional.empty();

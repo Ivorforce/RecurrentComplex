@@ -127,7 +127,7 @@ public class StructureGenerator<S extends NBTStorable>
 
         if (maturity() != StructureSpawnContext.GenerateMaturity.SUGGEST || (
                 spawn.boundingBox.minY >= MIN_DIST_TO_LIMIT && spawn.boundingBox.maxY <= world.getHeight() - 1 - MIN_DIST_TO_LIMIT
-                        && (!RCConfig.avoidOverlappingGeneration || allowOverlaps || !WorldStructureGenerationData.get(world).entriesAt(spawn.boundingBox).findAny().isPresent())
+                        && (!RCConfig.avoidOverlappingGeneration || allowOverlaps || WorldStructureGenerationData.get(world).entriesAt(spawn.boundingBox).noneMatch(WorldStructureGenerationData.Entry::blocking))
                         && !RCEventBus.INSTANCE.post(new StructureGenerationEvent.Suggest(structureInfo, spawn))
                         && (structureID == null || !MinecraftForge.EVENT_BUS.post(new StructureGenerationEventLite.Suggest(world, structureID, spawn.boundingBox, spawn.generationLayer, firstTime)))
         ))

@@ -12,8 +12,8 @@ import ivorius.ivtoolkit.blocks.BlockPositions;
 import ivorius.ivtoolkit.math.AxisAlignedTransform2D;
 import ivorius.ivtoolkit.tools.NBTCompoundObject;
 import ivorius.ivtoolkit.tools.NBTCompoundObjects;
-import ivorius.reccomplex.RecurrentComplex;
 import ivorius.ivtoolkit.world.chunk.gen.StructureBoundingBoxes;
+import ivorius.reccomplex.RecurrentComplex;
 import ivorius.reccomplex.world.gen.feature.structure.StructureInfo;
 import ivorius.reccomplex.world.gen.feature.structure.StructureInfos;
 import ivorius.reccomplex.world.gen.feature.structure.StructureRegistry;
@@ -255,7 +255,7 @@ public class WorldStructureGenerationData extends WorldSavedData
 
             boundingBox = new StructureBoundingBox(compound.getIntArray("boundingBox"));
 
-            blocking = compound.getBoolean("blocking");
+            blocking = !compound.hasKey("blocking", Constants.NBT.TAG_BYTE) || compound.getBoolean("blocking");
         }
 
         @Override
@@ -265,6 +265,7 @@ public class WorldStructureGenerationData extends WorldSavedData
             compound.setLong("UUIDLS", uuid.getLeastSignificantBits());
 
             compound.setTag("boundingBox", boundingBox.toNBTTagIntArray());
+
             compound.setBoolean("blocking", blocking);
         }
     }

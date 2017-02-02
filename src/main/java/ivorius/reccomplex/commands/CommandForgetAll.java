@@ -7,7 +7,7 @@ package ivorius.reccomplex.commands;
 
 import ivorius.reccomplex.RCConfig;
 import ivorius.reccomplex.utils.ServerTranslations;
-import ivorius.reccomplex.world.gen.feature.StructureGenerationData;
+import ivorius.reccomplex.world.gen.feature.WorldStructureGenerationData;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
@@ -49,8 +49,8 @@ public class CommandForgetAll extends CommandBase
 
         BlockPos pos = RCCommands.tryParseBlockPos(commandSender, args, 0, false);
 
-        StructureGenerationData generationData = StructureGenerationData.get(world);
-        List<StructureGenerationData.Entry> entries = generationData.entriesAt(pos).collect(Collectors.toList());
+        WorldStructureGenerationData generationData = WorldStructureGenerationData.get(world);
+        List<WorldStructureGenerationData.Entry> entries = generationData.entriesAt(pos).collect(Collectors.toList());
 
         entries.forEach(e -> generationData.removeEntry(e.getUuid()));
 

@@ -9,7 +9,7 @@ import ivorius.ivtoolkit.blocks.BlockAreas;
 import ivorius.reccomplex.RCConfig;
 import ivorius.reccomplex.capability.SelectionOwner;
 import ivorius.reccomplex.utils.ServerTranslations;
-import ivorius.reccomplex.world.gen.feature.StructureGenerationData;
+import ivorius.reccomplex.world.gen.feature.WorldStructureGenerationData;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
@@ -43,7 +43,7 @@ public class CommandSelectRemember extends CommandBase
         if (args.length < 1)
             throw ServerTranslations.wrongUsageException("commands.rcremember.usage");
 
-        StructureGenerationData generationData = StructureGenerationData.get(commandSender.getEntityWorld());
+        WorldStructureGenerationData generationData = WorldStructureGenerationData.get(commandSender.getEntityWorld());
         SelectionOwner owner = RCCommands.getSelectionOwner(commandSender, null, true);
 
         String name = buildString(args, 0);

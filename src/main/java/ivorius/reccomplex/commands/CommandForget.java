@@ -7,7 +7,7 @@ package ivorius.reccomplex.commands;
 
 import ivorius.reccomplex.RCConfig;
 import ivorius.reccomplex.utils.ServerTranslations;
-import ivorius.reccomplex.world.gen.feature.StructureGenerationData;
+import ivorius.reccomplex.world.gen.feature.WorldStructureGenerationData;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
@@ -47,8 +47,8 @@ public class CommandForget extends CommandBase
         if (args.length < 1)
             throw ServerTranslations.wrongUsageException("commands.rcforget.usage");
 
-        StructureGenerationData generationData = StructureGenerationData.get(commandSender.getEntityWorld());
-        StructureGenerationData.Entry entry = generationData.removeEntry(UUID.fromString(args[0]));
+        WorldStructureGenerationData generationData = WorldStructureGenerationData.get(commandSender.getEntityWorld());
+        WorldStructureGenerationData.Entry entry = generationData.removeEntry(UUID.fromString(args[0]));
 
         if (entry == null)
             throw ServerTranslations.commandException("commands.rcforget.unknown");

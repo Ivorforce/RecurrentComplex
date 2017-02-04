@@ -103,7 +103,11 @@ public class BiomeMatcher extends BoolFunctionExpressionCache<Biome, Object>
         public Function<SupplierCache<Biome>, Boolean> parse(String var)
         {
             BiomeDictionary.Type type = RCGsonHelper.enumForNameIgnoreCase(var, BiomeDictionary.Type.values());
-            return b -> type != null && BiomeDictionary.isBiomeOfType(b.get(), type);
+            return b -> type != null && BiomeDictionary.isBiomeOfType(b.get(), type)
+                    || (type == BiomeDictionary.Type.WATER // Special test
+                    && (BiomeDictionary.isBiomeOfType(b.get(), BiomeDictionary.Type.OCEAN)
+                    || BiomeDictionary.isBiomeOfType(b.get(), BiomeDictionary.Type.RIVER))
+            );
         }
 
         @Override

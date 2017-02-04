@@ -84,7 +84,7 @@ public class TableDataSourceNBTTagCompound extends TableDataSourceSegmented
     {
         if (segment == 0)
         {
-            TableCellButton load = new TableCellButton(null, "toString", "->", Collections.singletonList("Convert to String"), true);
+            TableCellButton load = new TableCellButton(null, "toString", "->", Collections.singletonList("Convert to String (slightly lossy)"), true);
 
             TableCellButton perform = new TableCellButton(null, "fromString", "O", Collections.singletonList("Load from String"), false);
 

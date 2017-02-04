@@ -9,6 +9,7 @@ import ivorius.ivtoolkit.network.SchedulingMessageHandler;
 import ivorius.reccomplex.RecurrentComplex;
 import ivorius.reccomplex.gui.inspector.GuiInspectBlock;
 import ivorius.reccomplex.world.gen.feature.structure.OperationClearArea;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.nbt.NBTTagCompound;
@@ -41,19 +42,21 @@ public class PacketInspectBlockHandler extends SchedulingMessageHandler<PacketIn
 
         if (RecurrentComplex.checkPerms(player)) return;
 
-        BlockPos pos = message.getPos();
+        setBlock(world, message.getPos(), message.getState(), message.getTileEntityData());
+    }
 
-        OperationClearArea.setBlockToAirClean(world, pos);
-        world.setBlockState(pos, message.getState(), 2);
+    public static void setBlock(WorldServer world, BlockPos pos, IBlockState state, NBTTagCompound tileEntityData)
+    {
+        OperationClearArea.emptyOut(world, pos);
+        world.setBlockState(pos, state, 2);
 
         TileEntity tileEntity = world.getTileEntity(pos);
-        NBTTagCompound tileData = message.getTileEntityData();
-        if (tileEntity != null && tileData != null)
+        if (tileEntity != null && tileEntityData != null)
         {
-            tileData.setInteger("x", pos.getX());
-            tileData.setInteger("y", pos.getY());
-            tileData.setInteger("z", pos.getZ());
-            tileEntity.readFromNBT(tileData);
+            tileEntityData.setInteger("x", pos.getX());
+            tileEntityData.setInteger("y", pos.getY());
+            tileEntityData.setInteger("z", pos.getZ());
+            tileEntity.readFromNBT(tileEntityData);
         }
     }
 }

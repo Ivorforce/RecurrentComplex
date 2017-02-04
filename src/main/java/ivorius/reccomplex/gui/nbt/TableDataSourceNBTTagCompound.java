@@ -10,7 +10,9 @@ import ivorius.reccomplex.gui.table.TableDelegate;
 import ivorius.reccomplex.gui.table.TableNavigator;
 import ivorius.reccomplex.gui.table.cell.*;
 import ivorius.reccomplex.gui.table.datasource.TableDataSourceSegmented;
-import net.minecraft.nbt.*;
+import ivorius.reccomplex.world.gen.feature.structure.generic.WeightedBlockState;
+import net.minecraft.nbt.NBTBase;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.text.TextFormatting;
 
 import javax.annotation.Nonnull;
@@ -36,7 +38,13 @@ public class TableDataSourceNBTTagCompound extends TableDataSourceSegmented
         this.navigator = navigator;
         this.nbt = nbt;
 
-        sortedKeys.addAll(nbt.getKeySet());
+        resetSortedKeys();
+    }
+
+    protected void resetSortedKeys()
+    {
+        sortedKeys.clear();
+        sortedKeys.addAll(this.nbt.getKeySet());
         sortedKeys.sort(String::compareToIgnoreCase);
     }
 
@@ -60,13 +68,13 @@ public class TableDataSourceNBTTagCompound extends TableDataSourceSegmented
     @Override
     public int numberOfSegments()
     {
-        return 3;
+        return 4;
     }
 
     @Override
     public int sizeOfSegment(int segment)
     {
-        return segment == 1
+        return segment == 2
                 ? nbt.getKeySet().size()
                 : 1;
     }
@@ -74,7 +82,35 @@ public class TableDataSourceNBTTagCompound extends TableDataSourceSegmented
     @Override
     public TableCell cellForIndexInSegment(GuiTable table, int index, int segment)
     {
-        if (segment == 0 || segment == 2)
+        if (segment == 0)
+        {
+            TableCellButton perform = new TableCellButton(null, "fromString", "O", Collections.singletonList("Load from String"), false);
+
+            TableCellString cell = new TableCellString("tileEntityInfo", ""); // TODO A way to convert nbt -> String
+            cell.addPropertyConsumer(val ->
+            {
+                perform.setEnabled(WeightedBlockState.tryParse(val) != null);
+            });
+
+            perform.addAction(() ->
+            {
+                NBTTagCompound other = WeightedBlockState.tryParse(cell.getPropertyValue());
+                if (other != null)
+                {
+                    nbt.getKeySet().clear();
+                    other.getKeySet().forEach(s -> nbt.setTag(s, other.getTag(s)));
+
+                    resetSortedKeys();
+
+                    delegate.reloadData();
+                }
+            });
+
+            TableCellMulti multi = new TableCellMulti(cell, perform);
+            multi.setSize(1, 0.1f);
+            return new TitledCell("From String", multi);
+        }
+        else if (segment == 1 || segment == 3)
         {
 
             return new TableCellPresetAction(null,
@@ -83,7 +119,7 @@ public class TableDataSourceNBTTagCompound extends TableDataSourceSegmented
                             {
                                 nbt.setTag("", n);
                                 sortedKeys.removeIf(s -> s.equals(""));
-                                sortedKeys.add(segment == 0 ? 0 : sortedKeys.size(), "");
+                                sortedKeys.add(segment == 1 ? 0 : sortedKeys.size(), "");
                                 delegate.reloadData();
                             }))
                             .collect(Collectors.toList())
@@ -100,7 +136,8 @@ public class TableDataSourceNBTTagCompound extends TableDataSourceSegmented
             TableCellString keyCell = new TableCellString(null, key);
 
             TableCellButton setKeyCell = new TableCellButton(null, "setKey", "O", Collections.singletonList("Set Key"), false);
-            setKeyCell.addAction(() -> {
+            setKeyCell.addAction(() ->
+            {
                 sortedKeys.set(index, nextKey[0]);
                 sortedKeys.subList(index + 1, sortedKeys.size()).remove(nextKey[0]); // If there was a previous entry
                 sortedKeys.subList(0, index).remove(nextKey[0]);

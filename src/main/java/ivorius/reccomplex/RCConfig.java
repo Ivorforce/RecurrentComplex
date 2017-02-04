@@ -12,6 +12,7 @@ import gnu.trove.map.hash.TObjectDoubleHashMap;
 import gnu.trove.map.hash.TObjectFloatHashMap;
 import it.unimi.dsi.fastutil.Hash;
 import ivorius.reccomplex.files.loading.RCFileSuffix;
+import ivorius.reccomplex.utils.RawResourceLocation;
 import ivorius.reccomplex.utils.algebra.ExpressionCache;
 import ivorius.reccomplex.utils.expression.BiomeMatcher;
 import ivorius.reccomplex.utils.expression.CommandMatcher;
@@ -232,21 +233,21 @@ public class RCConfig
     public static boolean shouldResourceLoad(String fileSuffix, String id, String domain)
     {
         if (fileSuffix.equals(StructureSaveHandler.INSTANCE.suffix))
-            return structureLoadMatcher.test(new ResourceLocation(domain, id));
+            return structureLoadMatcher.test(new RawResourceLocation(domain, id));
         else if (fileSuffix.equals(RCFileSuffix.INVENTORY_GENERATION_COMPONENT))
-            return inventoryGeneratorLoadMatcher.test(new ResourceLocation(domain, id));
+            return inventoryGeneratorLoadMatcher.test(new RawResourceLocation(domain, id));
 
         return true;
     }
 
     public static boolean shouldStructureGenerate(String id, String domain)
     {
-        return structureGenerationMatcher.test(new ResourceLocation(domain, id));
+        return structureGenerationMatcher.test(new RawResourceLocation(domain, id));
     }
 
     public static boolean shouldInventoryGeneratorGenerate(String id, String domain)
     {
-        return inventoryGeneratorGenerationMatcher.test(new ResourceLocation(domain, id));
+        return inventoryGeneratorGenerationMatcher.test(new RawResourceLocation(domain, id));
     }
 
     public static float tweakedSpawnRate(String structure)

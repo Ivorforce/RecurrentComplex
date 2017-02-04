@@ -5,10 +5,10 @@
 
 package ivorius.reccomplex.utils.expression;
 
+import ivorius.reccomplex.utils.RawResourceLocation;
 import ivorius.reccomplex.utils.algebra.BoolFunctionExpressionCache;
 import ivorius.reccomplex.utils.algebra.RCBoolAlgebra;
 import ivorius.reccomplex.utils.algebra.SupplierCache;
-import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.TextFormatting;
 
 import java.util.function.Function;
@@ -17,7 +17,7 @@ import java.util.function.Predicate;
 /**
  * Created by lukas on 01.05.15.
  */
-public class ResourceMatcher extends BoolFunctionExpressionCache<ResourceLocation, Object>
+public class ResourceMatcher extends BoolFunctionExpressionCache<RawResourceLocation, Object>
 {
     public static final String ID_PREFIX = "id=";
     public static final String DOMAIN_PREFIX = "domain=";
@@ -30,7 +30,7 @@ public class ResourceMatcher extends BoolFunctionExpressionCache<ResourceLocatio
         addTypes(new DomainType(DOMAIN_PREFIX, ""), t -> t.alias("$", ""));
     }
 
-    protected static class ResourceIDType extends VariableType<Boolean, ResourceLocation, Object>
+    protected static class ResourceIDType extends VariableType<Boolean, RawResourceLocation, Object>
     {
         private Predicate<String> isKnown;
 
@@ -41,11 +41,9 @@ public class ResourceMatcher extends BoolFunctionExpressionCache<ResourceLocatio
         }
 
         @Override
-        public Function<SupplierCache<ResourceLocation>, Boolean> parse(String var)
+        public Function<SupplierCache<RawResourceLocation>, Boolean> parse(String var)
         {
-//             TODO ResourceLocation forces lowercase, and generally Mojang expects lowercase IDs now
-//            Change for the future?
-            return location -> location.get().getResourcePath().equalsIgnoreCase(var);
+            return location -> location.get().getResourcePath().equals(var);
         }
 
         @Override
@@ -55,7 +53,7 @@ public class ResourceMatcher extends BoolFunctionExpressionCache<ResourceLocatio
         }
     }
 
-    protected static class DomainType extends VariableType<Boolean, ResourceLocation, Object>
+    protected static class DomainType extends VariableType<Boolean, RawResourceLocation, Object>
     {
         public DomainType(String prefix, String suffix)
         {
@@ -63,7 +61,7 @@ public class ResourceMatcher extends BoolFunctionExpressionCache<ResourceLocatio
         }
 
         @Override
-        public Function<SupplierCache<ResourceLocation>, Boolean> parse(String var)
+        public Function<SupplierCache<RawResourceLocation>, Boolean> parse(String var)
         {
             return location -> location.get().getResourceDomain().equals(var);
         }

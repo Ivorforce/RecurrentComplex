@@ -102,12 +102,9 @@ public class TransformerReplaceAll extends TransformerSingleBlock<TransformerRep
         if (destination.getContents().size() > 0)
             blockState = WeightedSelector.selectItem(context.random, destination.getContents());
         else
-            blockState = new WeightedBlockState(null, Blocks.AIR.getDefaultState(), "");
+            blockState = new WeightedBlockState(null, Blocks.AIR.getDefaultState(), null);
 
-        NBTTagCompound tileEntityInfo = blockState.tileEntityInfo.trim().length() > 0 && blockState.state.getBlock().hasTileEntity(blockState.state)
-                ? TransformerReplace.tryParse(blockState.tileEntityInfo) : null;
-
-        return new InstanceData(blockState, tileEntityInfo);
+        return new InstanceData(blockState, blockState.tileEntityInfo != null ? blockState.tileEntityInfo.copy() : null);
     }
 
     @Override
@@ -191,7 +188,7 @@ public class TransformerReplaceAll extends TransformerSingleBlock<TransformerRep
 
                 transformer.destination.setToCustom();
                 for (byte b : destMeta)
-                    transformer.destination.getContents().add(new WeightedBlockState(null, BlockStates.fromMetadata(dest, b), ""));
+                    transformer.destination.getContents().add(new WeightedBlockState(null, BlockStates.fromMetadata(dest, b), null));
             }
 
             return transformer;

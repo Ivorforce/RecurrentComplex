@@ -65,22 +65,6 @@ public class TransformerReplace extends TransformerSingleBlock<NBTNone>
         this.sourceMatcher = ExpressionCache.of(new BlockMatcher(RecurrentComplex.specialRegistry), sourceExpression);
     }
 
-    public static NBTTagCompound tryParse(String json)
-    {
-        NBTTagCompound nbt = null;
-
-        try
-        {
-            nbt = JsonToNBT.getTagFromJson(json);
-        }
-        catch (NBTException ignored)
-        {
-
-        }
-
-        return nbt;
-    }
-
     public static void setBlock(StructureSpawnContext context, BlockPos pos, WeightedBlockState entry, Supplier<NBTTagCompound> tileEntity)
     {
         if (entry.state != null && RecurrentComplex.specialRegistry.isSafe(entry.state.getBlock()))
@@ -108,11 +92,9 @@ public class TransformerReplace extends TransformerSingleBlock<NBTNone>
         if (destination.getContents().size() > 0)
             blockState = WeightedSelector.selectItem(context.random, destination.getContents());
         else
-            blockState = new WeightedBlockState(null, null, "");
+            blockState = new WeightedBlockState(null, null, null);
 
-        setBlock(context, coord, blockState, () -> blockState.tileEntityInfo.trim().length() > 0
-                ? tryParse(blockState.tileEntityInfo)
-                : null);
+        setBlock(context, coord, blockState, () -> blockState.tileEntityInfo);
     }
 
     @Override
@@ -191,7 +173,7 @@ public class TransformerReplace extends TransformerSingleBlock<NBTNone>
 
                 transformer.destination.setToCustom();
                 for (byte b : destMeta)
-                    transformer.destination.getContents().add(new WeightedBlockState(null, BlockStates.fromMetadata(dest, b), ""));
+                    transformer.destination.getContents().add(new WeightedBlockState(null, BlockStates.fromMetadata(dest, b), null));
             }
 
             return transformer;

@@ -101,6 +101,12 @@ public class WorldGenStructures
                     .random(random).maturity(StructureSpawnContext.GenerateMaturity.SUGGEST)
                     .randomPosition(genPos, naturalGenInfo.placer.getContents()).fromCenter(true);
 
+            if (naturalGenInfo.getGenerationWeight(world.provider, generator.environment().biome) <= 0)
+            {
+                RecurrentComplex.logger.trace(String.format("%s failed to spawn at %s (incompatible biome edge)", structureInfo, genPos));
+                return;
+            }
+
             boolean didSpawn = generator.generate().isPresent();
 
             if (!didSpawn)

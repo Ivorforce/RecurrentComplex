@@ -84,12 +84,20 @@ public class TableDataSourceNBTTagCompound extends TableDataSourceSegmented
     {
         if (segment == 0)
         {
+            TableCellButton load = new TableCellButton(null, "toString", "->", Collections.singletonList("Convert to String"), true);
+
             TableCellButton perform = new TableCellButton(null, "fromString", "O", Collections.singletonList("Load from String"), false);
 
-            TableCellString cell = new TableCellString("tileEntityInfo", ""); // TODO A way to convert nbt -> String
+            TableCellString cell = new TableCellString("tileEntityInfo", "");
             cell.addPropertyConsumer(val ->
             {
                 perform.setEnabled(WeightedBlockState.tryParse(val) != null);
+            });
+            cell.setMaxStringLength(32500); // FromGuiCommandBlock
+
+            load.addAction(() -> {
+                cell.setPropertyValue(nbt.toString());
+                perform.setEnabled(true);
             });
 
             perform.addAction(() ->
@@ -106,9 +114,10 @@ public class TableDataSourceNBTTagCompound extends TableDataSourceSegmented
                 }
             });
 
-            TableCellMulti multi = new TableCellMulti(cell, perform);
-            multi.setSize(1, 0.1f);
-            return new TitledCell("From String", multi);
+            TableCellMulti multi = new TableCellMulti(load, cell, perform);
+            multi.setSize(0, 0.1f);
+            multi.setSize(2, 0.1f);
+            return new TitledCell("As String", multi);
         }
         else if (segment == 1 || segment == 3)
         {

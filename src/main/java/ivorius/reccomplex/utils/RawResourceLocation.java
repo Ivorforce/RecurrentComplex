@@ -22,6 +22,7 @@ public class RawResourceLocation
     {
         this.resourceDomain = org.apache.commons.lang3.StringUtils.isEmpty(resourceName[0]) ? "minecraft" : resourceName[0];
 //        this.resourceDomain = org.apache.commons.lang3.StringUtils.isEmpty(resourceName[0]) ? "minecraft" : resourceName[0].toLowerCase(Locale.ROOT);
+        this.resourcePath = resourceName[1];
 //        this.resourcePath = resourceName[1].toLowerCase(Locale.ROOT);
         Validate.notNull(this.resourcePath);
     }

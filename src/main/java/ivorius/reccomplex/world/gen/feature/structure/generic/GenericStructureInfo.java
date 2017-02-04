@@ -253,14 +253,14 @@ public class GenericStructureInfo implements StructureInfo<GenericStructureInfo.
         return new RunTransformer(this.transformer, instanceData.transformerData);
     }
 
-    public static void setBlock(@Nonnull StructureSpawnContext context, BlockPos worldPos, IBlockState state, Supplier<NBTTagCompound> tileEntity)
+    public static void setBlock(@Nonnull StructureSpawnContext context, @Nonnull BlockPos worldPos, @Nonnull IBlockState state, @Nonnull Supplier<NBTTagCompound> tileEntity)
     {
         WorldServer world = context.environment.world;
-        if (context.setBlock(worldPos, state, 2) && world.getBlockState(worldPos).getBlock() == state.getBlock())
+        if (context.setBlock(worldPos, state, 2))
         {
             NBTTagCompound tileEntityCompound = tileEntity.get();
 
-            if (tileEntityCompound != null)
+            if (tileEntityCompound != null && world.getBlockState(worldPos).getBlock() == state.getBlock())
             {
                 TileEntity worldTileEntity = world.getTileEntity(worldPos);
 

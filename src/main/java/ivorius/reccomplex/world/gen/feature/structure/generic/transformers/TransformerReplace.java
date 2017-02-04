@@ -8,42 +8,42 @@ package ivorius.reccomplex.world.gen.feature.structure.generic.transformers;
 import com.google.gson.*;
 import com.google.gson.reflect.TypeToken;
 import ivorius.ivtoolkit.blocks.BlockStates;
-import ivorius.ivtoolkit.tools.IvWorldData;
-import ivorius.reccomplex.utils.algebra.ExpressionCache;
-import ivorius.reccomplex.world.gen.feature.structure.Environment;
-import ivorius.reccomplex.utils.presets.PresettedObjects;
-import net.minecraft.util.math.BlockPos;
 import ivorius.ivtoolkit.random.WeightedSelector;
+import ivorius.ivtoolkit.tools.IvWorldData;
 import ivorius.ivtoolkit.tools.MCRegistry;
 import ivorius.reccomplex.RecurrentComplex;
 import ivorius.reccomplex.gui.editstructure.transformers.TableDataSourceBTReplace;
-import ivorius.reccomplex.gui.table.datasource.TableDataSource;
 import ivorius.reccomplex.gui.table.TableDelegate;
 import ivorius.reccomplex.gui.table.TableNavigator;
+import ivorius.reccomplex.gui.table.datasource.TableDataSource;
 import ivorius.reccomplex.json.JsonUtils;
+import ivorius.reccomplex.utils.NBTNone;
+import ivorius.reccomplex.utils.algebra.ExpressionCache;
+import ivorius.reccomplex.utils.expression.BlockMatcher;
+import ivorius.reccomplex.utils.presets.PresettedList;
+import ivorius.reccomplex.utils.presets.PresettedObjects;
+import ivorius.reccomplex.world.gen.feature.structure.Environment;
 import ivorius.reccomplex.world.gen.feature.structure.context.StructureLoadContext;
 import ivorius.reccomplex.world.gen.feature.structure.context.StructurePrepareContext;
 import ivorius.reccomplex.world.gen.feature.structure.context.StructureSpawnContext;
+import ivorius.reccomplex.world.gen.feature.structure.generic.GenericStructureInfo;
 import ivorius.reccomplex.world.gen.feature.structure.generic.WeightedBlockState;
-import ivorius.reccomplex.utils.expression.BlockMatcher;
 import ivorius.reccomplex.world.gen.feature.structure.generic.presets.WeightedBlockStatePresets;
-import net.minecraft.block.state.IBlockState;
-import ivorius.reccomplex.utils.NBTNone;
-import ivorius.reccomplex.utils.presets.PresettedList;
 import net.minecraft.block.Block;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.init.Blocks;
 import net.minecraft.nbt.JsonToNBT;
 import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTException;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.world.World;
+import net.minecraft.util.math.BlockPos;
 
 import javax.annotation.Nullable;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.function.Supplier;
 
 /**
  * Created by lukas on 25.05.14.
@@ -81,15 +81,12 @@ public class TransformerReplace extends TransformerSingleBlock<NBTNone>
         return nbt;
     }
 
-    public static NBTTagCompound positionedCopy(NBTTagCompound compound, BlockPos teCoord)
+    public static void setBlock(StructureSpawnContext context, BlockPos pos, WeightedBlockState entry, Supplier<NBTTagCompound> tileEntity)
     {
-        NBTTagCompound positioned = (NBTTagCompound) compound.copy();
-
-        positioned.setInteger("x", teCoord.getX());
-        positioned.setInteger("y", teCoord.getY());
-        positioned.setInteger("z", teCoord.getZ());
-
-        return positioned;
+        if (entry.state != null && RecurrentComplex.specialRegistry.isSafe(entry.state.getBlock()))
+        {
+            GenericStructureInfo.setBlock(context, pos, entry.state, tileEntity);
+        }
     }
 
     public TransformerReplace replaceWith(WeightedBlockState... states)
@@ -113,31 +110,9 @@ public class TransformerReplace extends TransformerSingleBlock<NBTNone>
         else
             blockState = new WeightedBlockState(null, null, "");
 
-        NBTTagCompound parsedTileEntityInfo = blockState.tileEntityInfo.trim().length() > 0
+        setBlock(context, coord, blockState, () -> blockState.tileEntityInfo.trim().length() > 0
                 ? tryParse(blockState.tileEntityInfo)
-                : null;
-
-        setBlockWith(context, coord, context.environment.world, blockState, parsedTileEntityInfo);
-    }
-
-    public static void setBlockWith(StructureSpawnContext context, BlockPos coord, World world, WeightedBlockState entry, NBTTagCompound parsedTileEntityInfo)
-    {
-        if (entry.state != null && RecurrentComplex.specialRegistry.isSafe(entry.state.getBlock()))
-        {
-            context.setBlock(coord, entry.state, 2);
-
-            // Behavior as in CommandSetBlock
-            if (parsedTileEntityInfo != null && entry.state.getBlock().hasTileEntity(entry.state))
-            {
-                NBTTagCompound nbtTagCompound = positionedCopy(parsedTileEntityInfo, coord);
-                if (nbtTagCompound != null)
-                {
-                    TileEntity tileentity = world.getTileEntity(coord);
-                    if (tileentity != null)
-                        tileentity.readFromNBT(nbtTagCompound);
-                }
-            }
-        }
+                : null);
     }
 
     @Override
@@ -206,7 +181,7 @@ public class TransformerReplace extends TransformerSingleBlock<NBTNone>
 
             TransformerReplace transformer = new TransformerReplace(id, expression);
 
-            PresettedObjects.read(jsonObject, gson, transformer.destination, "destinationPreset", "destination", new TypeToken<ArrayList<WeightedBlockState>>(){}.getType());
+            PresettedObjects.read(jsonObject, gson, transformer.destination, "destinationPreset", "destination", new TypeToken<ArrayList<WeightedBlockState>>() {}.getType());
 
             if (jsonObject.has("dest"))
             {

@@ -44,6 +44,12 @@ public class OperationClearArea implements Operation
 
     public static void setBlockToAirClean(World world, BlockPos pos)
     {
+        emptyOut(world, pos);
+        world.setBlockToAir(pos);
+    }
+
+    public static void emptyOut(World world, BlockPos pos)
+    {
         TileEntity tileEntity = world.getTileEntity(pos);
         if (tileEntity instanceof IInventory)
         {
@@ -51,8 +57,6 @@ public class OperationClearArea implements Operation
             for (int i = 0; i < inventory.getSizeInventory(); i++)
                 inventory.setInventorySlotContents(i, ItemStack.EMPTY);
         }
-
-        world.setBlockToAir(pos);
     }
 
     @Override

@@ -7,15 +7,19 @@ package ivorius.reccomplex.world.gen.feature.structure.generic;
 
 import com.google.gson.*;
 import ivorius.ivtoolkit.blocks.BlockStates;
+import ivorius.ivtoolkit.random.WeightedSelector;
 import ivorius.ivtoolkit.tools.MCRegistry;
 import ivorius.reccomplex.RecurrentComplex;
 import ivorius.reccomplex.json.JsonUtils;
-import ivorius.ivtoolkit.random.WeightedSelector;
-import net.minecraft.block.state.IBlockState;
+import ivorius.reccomplex.json.NBTToJson;
 import net.minecraft.block.Block;
+import net.minecraft.block.state.IBlockState;
+import net.minecraft.nbt.JsonToNBT;
+import net.minecraft.nbt.NBTException;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ResourceLocation;
 
+import javax.annotation.Nullable;
 import java.lang.reflect.Type;
 
 /**
@@ -25,13 +29,16 @@ public class WeightedBlockState implements WeightedSelector.Item
 {
     private static Gson gson = createGson();
 
+    @Nullable
     public Double weight;
 
+    @Nullable
     public IBlockState state;
 
-    public String tileEntityInfo;
+    @Nullable
+    public NBTTagCompound tileEntityInfo;
 
-    public WeightedBlockState(Double weight, IBlockState state, String tileEntityInfo)
+    public WeightedBlockState(@Nullable Double weight, @Nullable IBlockState state, @Nullable NBTTagCompound tileEntityInfo)
     {
         this.weight = weight;
         this.state = state;
@@ -43,7 +50,8 @@ public class WeightedBlockState implements WeightedSelector.Item
         weight = compound.hasKey("weight") ? compound.getDouble("weight") : null;
         Block block = compound.hasKey("block") ? registry.blockFromID(new ResourceLocation(compound.getString("block"))) : null;
         state = block != null ? BlockStates.fromMetadata(block, compound.getInteger("meta")) : null;
-        tileEntityInfo = compound.getString("tileEntityInfo");
+        tileEntityInfo = compound.hasKey("tileEntityInfo") ? tryParse(compound.getString("tileEntityInfo")) // Legacy
+                : compound.hasKey("tileEntity") ? (NBTTagCompound) compound.getTag("tileEntity") : null;
     }
 
     public static Gson createGson()
@@ -51,6 +59,8 @@ public class WeightedBlockState implements WeightedSelector.Item
         GsonBuilder builder = new GsonBuilder();
 
         builder.registerTypeAdapter(WeightedBlockState.class, new WeightedBlockState.Serializer(RecurrentComplex.specialRegistry));
+        builder.registerTypeAdapter(WeightedBlockState.class, new WeightedBlockState.Serializer(RecurrentComplex.specialRegistry));
+        NBTToJson.registerSafeNBTSerializer(builder);
 
         return builder.create();
     }
@@ -58,6 +68,22 @@ public class WeightedBlockState implements WeightedSelector.Item
     public static Gson getGson()
     {
         return gson;
+    }
+
+    public static NBTTagCompound tryParse(String json)
+    {
+        NBTTagCompound nbt = null;
+
+        try
+        {
+            nbt = JsonToNBT.getTagFromJson(json);
+        }
+        catch (NBTException ignored)
+        {
+
+        }
+
+        return nbt;
     }
 
     @Override
@@ -71,9 +97,12 @@ public class WeightedBlockState implements WeightedSelector.Item
         NBTTagCompound compound = new NBTTagCompound();
 
         if (weight != null) compound.setDouble("weight", weight);
-        if (state != null) compound.setString("block", registry.idFromBlock(state.getBlock()).toString());
-        compound.setInteger("meta", ivorius.ivtoolkit.blocks.BlockStates.toMetadata(state));
-        compound.setString("tileEntityInfo", tileEntityInfo);
+        if (state != null)
+        {
+            compound.setString("block", registry.idFromBlock(state.getBlock()).toString());
+            compound.setInteger("meta", BlockStates.toMetadata(state));
+        }
+        if (tileEntityInfo != null) compound.setTag("tileEntity", tileEntityInfo);
 
         return compound;
     }
@@ -97,7 +126,9 @@ public class WeightedBlockState implements WeightedSelector.Item
             IBlockState state = BlockStates.fromMetadata(registry.blockFromID(new ResourceLocation(JsonUtils.getString(jsonObject, "block", "air")))
                     , JsonUtils.getInt(jsonObject, "metadata", 0));
 
-            String tileEntityInfo = JsonUtils.getString(jsonObject, "tileEntityInfo", "");
+            NBTTagCompound tileEntityInfo = JsonUtils.hasString(jsonObject, "tileEntityInfo")
+                    ? tryParse(JsonUtils.getString(jsonObject, "tileEntityInfo")) // Legacy
+                    : jsonObject.has("tileEntity") ? getGson().fromJson(jsonObject.get("tileEntity"), NBTTagCompound.class) : null;
 
             return new WeightedBlockState(weight, state, tileEntityInfo);
         }
@@ -113,7 +144,7 @@ public class WeightedBlockState implements WeightedSelector.Item
             jsonObject.addProperty("block", registry.idFromBlock(source.state.getBlock()).toString());
             jsonObject.addProperty("metadata", ivorius.ivtoolkit.blocks.BlockStates.toMetadata(source.state));
 
-            jsonObject.addProperty("tileEntityInfo", source.tileEntityInfo);
+            jsonObject.addProperty("tileEntity", gson.toJson(source.tileEntityInfo));
 
             return jsonObject;
         }

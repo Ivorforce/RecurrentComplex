@@ -72,6 +72,9 @@ public class WeightedBlockState implements WeightedSelector.Item
 
     public static NBTTagCompound tryParse(String json)
     {
+        if (json.trim().length() == 0)
+            return null;
+
         NBTTagCompound nbt = null;
 
         try

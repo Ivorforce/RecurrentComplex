@@ -5,6 +5,7 @@
 
 package ivorius.reccomplex.gui.nbt;
 
+import ivorius.reccomplex.RecurrentComplex;
 import ivorius.reccomplex.gui.GuiValidityStateIndicator;
 import ivorius.reccomplex.gui.editstructure.preset.TableDataSourcePresettedList;
 import ivorius.reccomplex.gui.table.TableDelegate;
@@ -18,6 +19,7 @@ import net.minecraftforge.fml.relauncher.ReflectionHelper;
 import org.apache.commons.lang3.ArrayUtils;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.function.Consumer;
@@ -44,17 +46,21 @@ public class TableDataSourceNBT
             "Ints", Constants.NBT.TAG_INT_ARRAY
     };
 
-    public static TableCell cell(NBTBase nbt, TableDelegate delegate, TableNavigator navigator)
+    public static TableCell cell(@Nullable NBTBase nbt, @Nonnull TableDelegate delegate, @Nonnull TableNavigator navigator)
     {
         TableCellDefault cell = rawCell(nbt, delegate, navigator);
-        cell.setTooltip(Collections.singletonList((String) TYPE_LOOKUP[ArrayUtils.indexOf(TYPE_LOOKUP, (int) nbt.getId()) - 1]));
+        cell.setTooltip(Collections.singletonList(nbt != null ? (String) TYPE_LOOKUP[ArrayUtils.indexOf(TYPE_LOOKUP, (int) nbt.getId()) - 1] : "null"));
         return cell;
     }
 
     @Nonnull
-    public static TableCellDefault rawCell(NBTBase nbt, TableDelegate delegate, TableNavigator navigator)
+    public static TableCellDefault rawCell(@Nullable NBTBase nbt, @Nonnull TableDelegate delegate, @Nonnull TableNavigator navigator)
     {
-        if (nbt instanceof NBTTagEnd)
+        if (nbt == null)
+        {
+            return new TableCellTitle(null, "null");
+        }
+        else if (nbt instanceof NBTTagEnd)
         {
             return new TableCellTitle(null, "-");
         }
@@ -190,6 +196,7 @@ public class TableDataSourceNBT
         }
         else
         {
+            RecurrentComplex.logger.error("Unexpected nbt type: " + nbt.getClass());
             throw new InternalError();
         }
     }

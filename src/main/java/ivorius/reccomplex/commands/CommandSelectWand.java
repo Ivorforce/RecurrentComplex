@@ -69,6 +69,7 @@ public class CommandSelectWand extends CommandBase
 
             String exp = args.length > 0 ? buildString(args, 0) : "!is:air";
             PositionedBlockMatcher matcher = ExpressionCache.of(new PositionedBlockMatcher(RecurrentComplex.specialRegistry), exp);
+            RCCommands.ensureValid(matcher, 0);
 
             for (EnumFacing direction : EnumFacing.VALUES)
             {

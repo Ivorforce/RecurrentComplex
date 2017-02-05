@@ -11,6 +11,7 @@ import ivorius.reccomplex.gui.table.cell.TableCellString;
 import ivorius.reccomplex.gui.table.cell.TableCellTitle;
 import ivorius.reccomplex.gui.table.cell.TitledCell;
 import ivorius.reccomplex.gui.table.datasource.TableDataSource;
+import ivorius.reccomplex.utils.algebra.FunctionExpressionCaches;
 import ivorius.reccomplex.utils.expression.*;
 import ivorius.ivtoolkit.tools.IvTranslations;
 import ivorius.reccomplex.utils.algebra.FunctionExpressionCache;
@@ -18,7 +19,6 @@ import net.minecraft.util.text.TextFormatting;
 import org.apache.commons.lang3.StringUtils;
 
 import javax.annotation.Nullable;
-import java.text.ParseException;
 import java.util.List;
 import java.util.function.BooleanSupplier;
 
@@ -77,11 +77,7 @@ public class TableDataSourceExpression<T, U, E extends FunctionExpressionCache<T
         if (expressionCache.isExpressionValid())
             return expressionCache.getDisplayString(u);
         else
-        {
-            ParseException parseException = expressionCache.getParseException();
-            return String.format("%s%s%s: at %d", TextFormatting.RED, parseException.getMessage(), TextFormatting.RESET,
-                    parseException.getErrorOffset());
-        }
+            return FunctionExpressionCaches.readableException(expressionCache);
     }
 
     public static <U> GuiValidityStateIndicator.State getValidityState(FunctionExpressionCache<?, ?, U> expressionCache, U u)

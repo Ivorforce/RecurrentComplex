@@ -14,6 +14,7 @@ import ivorius.reccomplex.capability.SelectionOwner;
 import ivorius.reccomplex.capability.StructureEntityInfo;
 import ivorius.reccomplex.utils.ServerTranslations;
 import ivorius.reccomplex.utils.algebra.ExpressionCache;
+import ivorius.reccomplex.utils.algebra.FunctionExpressionCaches;
 import ivorius.reccomplex.utils.expression.ResourceMatcher;
 import ivorius.reccomplex.world.gen.feature.structure.StructureInfo;
 import ivorius.reccomplex.world.gen.feature.structure.StructureRegistry;
@@ -348,5 +349,11 @@ public class RCCommands
             list.add(Strings.join(Arrays.asList(args).subList(lastQuote, args.length), " "));
 
         return list.toArray(new String[list.size()]);
+    }
+
+    public static void ensureValid(ExpressionCache<?> matcher, int argument) throws CommandException
+    {
+        if (!matcher.isExpressionValid())
+            throw new CommandException("Argument " + (argument + 1) + ": " + FunctionExpressionCaches.readableException(matcher));
     }
 }

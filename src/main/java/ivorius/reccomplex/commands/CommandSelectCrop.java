@@ -51,6 +51,7 @@ public class CommandSelectCrop extends CommandBase
 
         String exp = args.length > 0 ? buildString(args, 0) : "is:air";
         PositionedBlockMatcher matcher = ExpressionCache.of(new PositionedBlockMatcher(RecurrentComplex.specialRegistry), exp);
+        RCCommands.ensureValid(matcher, 0);
 
         for (EnumFacing direction : EnumFacing.VALUES)
             while (area != null && CommandSelectWand.sideStream(area, direction).allMatch(p -> matcher.test(PositionedBlockMatcher.Argument.at(world, p))))

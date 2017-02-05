@@ -71,6 +71,7 @@ public class CommandSetProperty extends CommandBase
             World world = commandSender.getEntityWorld();
 
             PositionedBlockMatcher matcher = ExpressionCache.of(new PositionedBlockMatcher(RecurrentComplex.specialRegistry), args.length > 2 ? buildString(args, 2) : "");
+            RCCommands.ensureValid(matcher, 2);
 
             String propertyName = args[0];
             String propertyValue = args[1];

@@ -68,13 +68,12 @@ public class CommandSelectReplace extends CommandBase
         {
             World world = commandSender.getEntityWorld();
 
-            String src = buildString(args, 2);
-
             Block dstBlock = getBlockByText(commandSender, args[0]);
             int[] dstMeta = RCCommands.parseMetadatas(args[1]);
             List<IBlockState> dst = IntStream.of(dstMeta).mapToObj(m -> BlockStates.fromMetadata(dstBlock, m)).collect(Collectors.toList());
 
-            PositionedBlockMatcher matcher = ExpressionCache.of(new PositionedBlockMatcher(RecurrentComplex.specialRegistry), src);
+            PositionedBlockMatcher matcher = ExpressionCache.of(new PositionedBlockMatcher(RecurrentComplex.specialRegistry), buildString(args, 2));
+            RCCommands.ensureValid(matcher, 2);
 
             SelectionOwner selectionOwner = RCCommands.getSelectionOwner(commandSender, null, true);
             RCCommands.assertSize(commandSender, selectionOwner);
@@ -93,4 +92,5 @@ public class CommandSelectReplace extends CommandBase
             throw ServerTranslations.wrongUsageException("commands.selectReplace.usage");
         }
     }
+
 }

@@ -5,6 +5,9 @@
 
 package ivorius.reccomplex.utils.algebra;
 
+import net.minecraft.util.text.TextFormatting;
+
+import java.text.ParseException;
 import java.util.function.Function;
 
 /**
@@ -46,5 +49,12 @@ public class FunctionExpressionCaches
                 return var.equals(prefix) ? FunctionExpressionCache.Validity.KNOWN : FunctionExpressionCache.Validity.ERROR;
             }
         };
+    }
+
+    public static String readableException(ExpressionCache<?> expressionCache)
+    {
+        ParseException parseException = expressionCache.getParseException();
+        return String.format("%s%s%s: at %d", TextFormatting.RED, parseException.getMessage(), TextFormatting.RESET,
+                parseException.getErrorOffset());
     }
 }

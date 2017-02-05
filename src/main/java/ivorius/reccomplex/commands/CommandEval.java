@@ -49,11 +49,7 @@ public class CommandEval extends CommandBase
             throw ServerTranslations.wrongUsageException("commands.rceval.usage");
 
         DependencyMatcher matcher = ExpressionCache.of(new DependencyMatcher(), buildString(args, 0));
-        if (!matcher.isExpressionValid())
-        {
-            commandSender.sendMessage(ServerTranslations.format("commands.rceval.error", matcher.getParseException().getMessage()));
-            return;
-        }
+        RCCommands.ensureValid(matcher, 0);
 
         boolean result = matcher.test(RecurrentComplex.saver);
         commandSender.sendMessage(ServerTranslations.get(result ? "commands.rceval.result.true" : "commands.rceval.result.false"));

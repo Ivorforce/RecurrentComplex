@@ -175,6 +175,7 @@ public class GuiScreenModalTable extends GuiScreen implements TableDelegate, Tab
     @Override
     public Stack<GuiTable> tableStack()
     {
+        //noinspection unchecked
         return (Stack<GuiTable>) tableStack.clone();
     }
 

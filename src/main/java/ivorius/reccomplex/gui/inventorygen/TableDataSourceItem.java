@@ -20,6 +20,7 @@ public class TableDataSourceItem<T extends Item> extends TableDataSourceSegmente
     public void setStack(ItemStack stack)
     {
         this.stack = stack;
+        //noinspection unchecked
         this.item = (T) stack.getItem();
     }
 }

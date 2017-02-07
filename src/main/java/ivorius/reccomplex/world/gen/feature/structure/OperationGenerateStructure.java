@@ -43,7 +43,7 @@ public class OperationGenerateStructure implements Operation
 
     protected GridQuadCache cachedShapeGrid;
 
-    protected final ReadableInstanceData instanceData = new ReadableInstanceData();
+    protected final ReadableInstanceData<GenericStructureInfo.InstanceData> instanceData = new ReadableInstanceData<>();
 
     public OperationGenerateStructure()
     {

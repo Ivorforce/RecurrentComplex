@@ -105,7 +105,7 @@ public class FunctionExpressionCache<T, A, U> extends ExpressionCache<T>
 
     public T evaluate(final SupplierCache<A> a)
     {
-        Algebra.Expression<T, Function<SupplierCache<? super A>, T>> expression = (Algebra.Expression<T, Function<SupplierCache<? super A>, T>>) this.parsedExpression;
+        @SuppressWarnings("unchecked") Algebra.Expression<T, Function<SupplierCache<? super A>, T>> expression = (Algebra.Expression<T, Function<SupplierCache<? super A>, T>>) this.parsedExpression;
         return parsedExpression != null ? expression.evaluate(fun -> fun.apply(a)) : emptyExpressionResult;
     }
 

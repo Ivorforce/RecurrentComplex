@@ -6,11 +6,8 @@
 package ivorius.reccomplex.network;
 
 import io.netty.buffer.ByteBuf;
-import ivorius.ivtoolkit.blocks.BlockPositions;
 import ivorius.ivtoolkit.network.IvPacketHelper;
-import net.minecraft.block.state.IBlockState;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.fml.common.network.ByteBufUtils;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 

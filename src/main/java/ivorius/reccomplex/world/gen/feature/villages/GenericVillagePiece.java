@@ -123,7 +123,7 @@ public class GenericVillagePiece extends StructureVillagePieces.Village
     @ParametersAreNonnullByDefault
     public boolean addComponentParts(World world, Random random, StructureBoundingBox boundingBox)
     {
-        StructureInfo structureInfo = StructureRegistry.INSTANCE.get(structureID);
+        StructureInfo<?> structureInfo = StructureRegistry.INSTANCE.get(structureID);
         if (structureInfo != null)
         {
             GenerationInfo generationInfo = structureInfo.generationInfo(generationID);
@@ -131,7 +131,7 @@ public class GenericVillagePiece extends StructureVillagePieces.Village
             if (generationInfo instanceof VanillaGenerationInfo)
             {
                 VanillaGenerationInfo vanillaGenInfo = (VanillaGenerationInfo) generationInfo;
-                AxisAlignedTransform2D transform = getTransform(vanillaGenInfo.front, mirrorX, getCoordBaseMode().getOpposite());
+                AxisAlignedTransform2D transform = getCoordBaseMode() != null ? getTransform(vanillaGenInfo.front, mirrorX, getCoordBaseMode().getOpposite()) : AxisAlignedTransform2D.ORIGINAL;
 
                 BlockPos structureShift = transform.apply(vanillaGenInfo.spawnShift, new int[]{1, 1, 1});
 

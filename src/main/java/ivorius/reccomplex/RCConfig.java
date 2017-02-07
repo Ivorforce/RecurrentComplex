@@ -24,7 +24,6 @@ import ivorius.reccomplex.world.gen.feature.structure.generic.StructureSaveHandl
 import ivorius.reccomplex.world.gen.feature.structure.generic.transformers.TransformerMulti;
 import ivorius.reccomplex.world.storage.loot.GenericItemCollectionRegistry;
 import net.minecraft.command.ICommandSender;
-import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.WorldProvider;
 import net.minecraft.world.biome.Biome;
 import net.minecraftforge.common.config.Configuration;

@@ -87,7 +87,7 @@ public class TableDataSourceStructureListGenerationInfo extends TableDataSourceS
                 return RCGuiTables.defaultWeightElement(val -> generationInfo.weight = TableCells.toDouble(val), generationInfo.weight);
             case 4:
             {
-                TableCellEnum cell = new TableCellEnum<>("front", generationInfo.front, TableDirections.getDirectionOptions(Directions.HORIZONTAL));
+                TableCellEnum<EnumFacing> cell = new TableCellEnum<>("front", generationInfo.front, TableDirections.getDirectionOptions(Directions.HORIZONTAL));
                 cell.addPropertyConsumer(cell1 -> generationInfo.front = (EnumFacing) cell.getPropertyValue());
                 return new TitledCell(IvTranslations.get("reccomplex.generationInfo.structureList.front"), cell);
             }

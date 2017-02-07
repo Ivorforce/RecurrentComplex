@@ -140,12 +140,12 @@ public class RCRegistryHandler
 
         genericSpace = (BlockGenericSpace) new BlockGenericSpace().setUnlocalizedName("negativeSpace");
         genericSpace.setCreativeTab(tabStructureTools);
-        register(genericSpace, "generic_space", ItemBlockGenericSpace.class);
+        register(genericSpace, "generic_space", new ItemBlockGenericSpace(genericSpace));
         RecurrentComplex.cremapper.registerLegacyIDs(genericSpace, true, "negativeSpace");
 
         genericSolid = new BlockGenericSolid().setUnlocalizedName("naturalFloor");
         genericSolid.setCreativeTab(tabStructureTools);
-        register(genericSolid, "generic_solid", ItemBlockGenericSolid.class);
+        register(genericSolid, "generic_solid", new ItemBlockGenericSolid(genericSolid));
         RecurrentComplex.cremapper.registerLegacyIDs(genericSolid, true, "naturalFloor");
 
         structureGenerator = new BlockStructureGenerator().setUnlocalizedName("structureGenerator");

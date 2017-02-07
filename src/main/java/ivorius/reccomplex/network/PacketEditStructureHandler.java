@@ -38,7 +38,7 @@ public class PacketEditStructureHandler extends SchedulingMessageHandler<PacketE
         if (structureEntityInfo != null)
             structureEntityInfo.setCachedExportStructureBlockDataNBT(structureInfo.worldDataCompound);
 
-        SimpleLeveledRegistry<StructureInfo>.Status status = StructureRegistry.INSTANCE.status(structureID);
+        SimpleLeveledRegistry<StructureInfo<?>>.Status status = StructureRegistry.INSTANCE.status(structureID);
 
         RecurrentComplex.network.sendTo(new PacketEditStructure(structureInfo, structureID,
                 SaveDirectoryData.defaultData(structureID, status != null && status.isActive(),

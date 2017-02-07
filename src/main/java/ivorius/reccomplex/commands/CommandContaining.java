@@ -5,9 +5,6 @@
 
 package ivorius.reccomplex.commands;
 
-import com.google.common.base.Predicates;
-import com.google.common.collect.Lists;
-import com.google.common.primitives.Doubles;
 import ivorius.ivtoolkit.blocks.IvBlockCollection;
 import ivorius.reccomplex.RCConfig;
 import ivorius.reccomplex.RecurrentComplex;
@@ -16,26 +13,10 @@ import ivorius.reccomplex.utils.algebra.ExpressionCache;
 import ivorius.reccomplex.utils.expression.BlockMatcher;
 import ivorius.reccomplex.world.gen.feature.structure.StructureInfo;
 import ivorius.reccomplex.world.gen.feature.structure.StructureRegistry;
-import ivorius.reccomplex.world.gen.feature.structure.generic.GenericStructureInfo;
-import ivorius.reccomplex.world.gen.feature.structure.generic.Metadata;
-import ivorius.reccomplex.world.gen.feature.structure.generic.gentypes.GenerationInfo;
-import joptsimple.internal.Strings;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.util.text.TextComponentBase;
-import net.minecraft.util.text.TextComponentString;
-import net.minecraft.util.text.TextFormatting;
-import net.minecraft.util.text.event.ClickEvent;
-import net.minecraft.util.text.event.HoverEvent;
-
-import javax.annotation.Nonnull;
-import java.util.*;
-import java.util.function.Function;
-import java.util.function.ToDoubleFunction;
-import java.util.regex.Pattern;
-import java.util.stream.Collectors;
 
 /**
  * Created by lukas on 25.05.14.

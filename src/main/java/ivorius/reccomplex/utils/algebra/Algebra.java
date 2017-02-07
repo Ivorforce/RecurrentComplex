@@ -86,7 +86,7 @@ public class Algebra<T>
                     throw new IllegalArgumentException("Ambiguous operators are not supported at this point"); // TODO
                 else if (token instanceof OperatorToken)
                 {
-                    OperatorToken<T> operatorToken = (OperatorToken<T>) token;
+                    @SuppressWarnings("unchecked") OperatorToken<T> operatorToken = (OperatorToken<T>) token;
                     Operator<T> operator = operatorToken.operator;
 
                     if (operator.precedence < curOperators.getPrecedence())
@@ -143,6 +143,7 @@ public class Algebra<T>
         if (tokens.size() > 1 || !(tokens.get(0) instanceof ExpressionToken))
             throw new ParseException("Expected Operator", tokens.get(1).startIndex);
 
+        //noinspection unchecked
         return (ExpressionToken) tokens.get(0);
     }
 
@@ -157,12 +158,14 @@ public class Algebra<T>
         {
             SymbolTokenizer.Token token = tokens.get(i);
             if (token instanceof ExpressionToken)
+                //noinspection unchecked
                 expressions[i] = ((ExpressionToken<T>) token).expression;
             else
                 throw new ParseException("Internal Error (Unevaluated Token)", startIndex);
         }
         tokens.clear();
 
+        //noinspection unchecked
         tokens.add(new ExpressionToken<>(startIndex, endIndex, new Operation(startIndex, operator, expressions)));
     }
 
@@ -396,7 +399,7 @@ public class Algebra<T>
         @Override
         public Expression<T, V> parse(VariableParser<V> parser) throws ParseException
         {
-            return new Variable<T, V>(index, identifier, parser.apply(identifier));
+            return new Variable<>(index, identifier, parser.apply(identifier));
         }
     }
 

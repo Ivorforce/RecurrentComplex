@@ -6,7 +6,6 @@
 package ivorius.reccomplex.world.gen.feature.decoration;
 
 import ivorius.reccomplex.RecurrentComplex;
-import net.minecraft.init.Biomes;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.WorldServer;
 import net.minecraft.world.biome.Biome;

@@ -13,8 +13,6 @@ import ivorius.reccomplex.gui.table.TableNavigator;
 import ivorius.reccomplex.gui.worldscripts.TableDataSourceWorldScript;
 import ivorius.reccomplex.world.gen.script.WorldScriptMulti;
 
-import javax.annotation.Nonnull;
-
 /**
  * Created by lukas on 06.09.16.
  */

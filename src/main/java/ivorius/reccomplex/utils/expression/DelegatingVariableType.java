@@ -37,6 +37,7 @@ public abstract class DelegatingVariableType<T, A, U, CA, CU, C extends Function
 
     public CU convertIsKnownArgument(String var, U u)
     {
+        //noinspection unchecked
         return (CU) convertArgument(var, (A) u);
     }
 

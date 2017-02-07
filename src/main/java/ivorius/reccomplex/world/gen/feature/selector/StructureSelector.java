@@ -32,17 +32,17 @@ public class StructureSelector<T extends GenerationInfo & EnvironmentalSelection
 {
     protected final Set<String> cachedDimensionTypes = new HashSet<>(); // Because dimensions could often change on the fly
 
-    protected Multimap<C, WeightedSelector.SimpleItem<Pair<StructureInfo, T>>> weightedStructureInfos = ArrayListMultimap.create();
-    protected TObjectDoubleMap<C> totalWeights = new TObjectDoubleHashMap<C>();
+    protected Multimap<C, WeightedSelector.SimpleItem<Pair<StructureInfo<?>, T>>> weightedStructureInfos = ArrayListMultimap.create();
+    protected TObjectDoubleMap<C> totalWeights = new TObjectDoubleHashMap<>();
 
-    public StructureSelector(Map<String, StructureInfo> structures, WorldProvider provider, Biome biome, Class<T> typeClass)
+    public StructureSelector(Map<String, StructureInfo<?>> structures, WorldProvider provider, Biome biome, Class<T> typeClass)
     {
         cachedDimensionTypes.addAll(DimensionDictionary.getDimensionTypes(provider));
 
-        for (Map.Entry<String, StructureInfo> entry : structures.entrySet())
+        for (Map.Entry<String, StructureInfo<?>> entry : structures.entrySet())
         {
             float tweaked = RCConfig.tweakedSpawnRate(entry.getKey());
-            for (T selection : (List<T>) entry.getValue().generationInfos(typeClass))
+            for (T selection : entry.getValue().generationInfos(typeClass))
             {
                 double generationWeight = selection.getGenerationWeight(provider, biome) * tweaked;
 
@@ -89,13 +89,13 @@ public class StructureSelector<T extends GenerationInfo & EnvironmentalSelection
     }
 
     @Nullable
-    public Pair<StructureInfo, T> selectOne(Random random, @Nonnull C c)
+    public Pair<StructureInfo<?>, T> selectOne(Random random, @Nonnull C c)
     {
         return selectOne(random, c, totalWeight(c));
     }
 
     @Nullable
-    public Pair<StructureInfo, T> selectOne(Random random, @Nonnull C c, double totalWeight)
+    public Pair<StructureInfo<?>, T> selectOne(Random random, @Nonnull C c, double totalWeight)
     {
         return totalWeight > 0 ? WeightedSelector.select(random, weightedStructureInfos.get(c)) : null;
     }

@@ -157,10 +157,8 @@ public class BlockMatcher extends BoolFunctionExpressionCache<IBlockState, Objec
         {
             Pair<String, String> pair = parsePropery(var);
 
-            return state -> {
-                return pair != null && getProperty(state.get().getBlock(), pair.getLeft())
-                        .filter(property -> property.parseValue(pair.getRight()).orNull() == state.get().getValue(property)).isPresent();
-            };
+            return state -> pair != null && getProperty(state.get().getBlock(), pair.getLeft())
+                    .filter(property -> property.parseValue(pair.getRight()).orNull() == state.get().getValue(property)).isPresent();
         }
 
         @Override

@@ -9,7 +9,6 @@ import ivorius.reccomplex.RecurrentComplex;
 import ivorius.reccomplex.files.loading.LeveledRegistry;
 import ivorius.reccomplex.utils.LeveledBiMap;
 import ivorius.reccomplex.utils.RawResourceLocation;
-import net.minecraft.util.ResourceLocation;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;

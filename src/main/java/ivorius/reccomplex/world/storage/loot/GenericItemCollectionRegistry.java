@@ -6,14 +6,11 @@
 package ivorius.reccomplex.world.storage.loot;
 
 import com.google.common.collect.Lists;
-import com.google.common.collect.Sets;
 import ivorius.reccomplex.RCConfig;
 import ivorius.reccomplex.files.loading.LeveledRegistry;
 import ivorius.reccomplex.files.SimpleLeveledRegistry;
 
 import java.util.Collection;
-import java.util.Set;
-import java.util.stream.Collectors;
 
 /**
  * Created by lukas on 05.01.15.

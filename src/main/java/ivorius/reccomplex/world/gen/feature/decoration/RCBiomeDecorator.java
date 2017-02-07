@@ -125,7 +125,7 @@ public class RCBiomeDecorator
         return vanillaAmount - rcAmount;
     }
 
-    public static void generateSurface(Pair<StructureInfo, VanillaDecorationGenerationInfo> generation, WorldServer worldIn, BlockPos chunkPos, Random random)
+    public static void generateSurface(Pair<StructureInfo<?>, VanillaDecorationGenerationInfo> generation, WorldServer worldIn, BlockPos chunkPos, Random random)
     {
         new StructureGenerator<>(generation.getLeft()).generationInfo(generation.getRight()).world(worldIn)
                 .random(random).maturity(StructureSpawnContext.GenerateMaturity.SUGGEST)

@@ -5,7 +5,6 @@
 
 package ivorius.reccomplex.gui.editstructure;
 
-import ivorius.reccomplex.gui.table.GuiTable;
 import ivorius.reccomplex.gui.table.screen.GuiScreenEditTable;
 import ivorius.reccomplex.network.PacketSaveStructureHandler;
 import ivorius.reccomplex.world.gen.feature.structure.generic.GenericStructureInfo;

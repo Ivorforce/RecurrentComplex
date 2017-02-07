@@ -206,13 +206,13 @@ public class WorldScriptStructureGenerator implements WorldScript<WorldScriptStr
         }
         else
         {
-            Collection<Pair<StructureInfo, ListGenerationInfo>> generationInfos = StructureRegistry.INSTANCE.getStructuresInList(structureListID, front);
+            Collection<Pair<StructureInfo<?>, ListGenerationInfo>> generationInfos = StructureRegistry.INSTANCE.getStructuresInList(structureListID, front);
 
             if (generationInfos.size() > 0)
             {
-                Pair<StructureInfo, ListGenerationInfo> pair = WeightedSelector.select(random, generationInfos, item ->
+                Pair<StructureInfo<?>, ListGenerationInfo> pair = WeightedSelector.select(random, generationInfos, item ->
                         RCConfig.tweakedSpawnRate(StructureRegistry.INSTANCE.id(item.getLeft())) * item.getRight().getWeight());
-                StructureInfo structureInfo = pair.getLeft();
+                StructureInfo<?> structureInfo = pair.getLeft();
                 String structureID = StructureRegistry.INSTANCE.id(structureInfo);
                 ListGenerationInfo generationInfo = pair.getRight();
 
@@ -238,7 +238,7 @@ public class WorldScriptStructureGenerator implements WorldScript<WorldScriptStr
                         .subtract(transform.apply(BlockPos.ORIGIN, strucSize)).add(pos);
 
                 instanceData = new WorldScriptStructureGenerator.InstanceData(structureID, generationInfo.id(), strucCoord, strucTransform,
-                        (NBTStorable) new StructureGenerator<>(structureInfo).random(random).environment(context.environment).transform(strucTransform).asSource(context.generateAsSource)
+                        new StructureGenerator<>(structureInfo).random(random).environment(context.environment).transform(strucTransform).asSource(context.generateAsSource)
                                 .lowerCoord(strucCoord).instanceData().orElse(null));
             }
         }
@@ -249,8 +249,13 @@ public class WorldScriptStructureGenerator implements WorldScript<WorldScriptStr
     @Override
     public void generate(StructureSpawnContext context, InstanceData instanceData, BlockPos pos)
     {
-        StructureInfo structureInfo = StructureRegistry.INSTANCE.get(instanceData.structureID);
-        NBTStorable structureData = instanceData.structureData;
+        generate_(context, instanceData);
+    }
+
+    protected <T extends NBTStorable> void generate_(StructureSpawnContext context, InstanceData instanceData)
+    {
+        @SuppressWarnings("unchecked") StructureInfo<T> structureInfo = (StructureInfo<T>) StructureRegistry.INSTANCE.get(instanceData.structureID);
+        @SuppressWarnings("unchecked") T structureData = (T) instanceData.structureData;
 
         if (structureInfo != null && structureData != null)
             generate(context, instanceData, structureInfo, structureData, instanceData.generationInfoID);
@@ -306,9 +311,9 @@ public class WorldScriptStructureGenerator implements WorldScript<WorldScriptStr
             lowerCoord = BlockPositions.readFromNBT("lowerCoord", compound);
             structureTransform = AxisAlignedTransform2D.from(compound.getInteger("rotation"), compound.getBoolean("mirrorX"));
 
-            StructureInfo structureInfo = StructureRegistry.INSTANCE.get(structureID);
+            StructureInfo<?> structureInfo = StructureRegistry.INSTANCE.get(structureID);
             if (structureInfo != null)
-                new StructureGenerator<>(structureInfo).instanceData(compound.getTag("structureData"))
+                structureData = new StructureGenerator<>(structureInfo).instanceData(compound.getTag("structureData"))
                         .transform(structureTransform).lowerCoord(lowerCoord).instanceData().orElse(null);
         }
 

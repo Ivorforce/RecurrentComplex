@@ -17,7 +17,6 @@ import ivorius.reccomplex.world.gen.feature.structure.generic.GenericStructureIn
 import ivorius.reccomplex.utils.ServerTranslations;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.ICommandSender;
-import net.minecraft.world.World;
 import net.minecraft.world.WorldServer;
 
 import javax.annotation.Nullable;

@@ -12,7 +12,6 @@ import ivorius.reccomplex.gui.table.Bounds;
 import ivorius.reccomplex.gui.table.GuiTable;
 
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;

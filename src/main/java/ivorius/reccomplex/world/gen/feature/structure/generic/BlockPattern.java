@@ -121,7 +121,7 @@ public class BlockPattern implements NBTCompoundObject
         pattern.readFromNBT(compound.getCompoundTag("pattern"));
 
         ingredients.clear();
-        ingredients.addAll(NBTCompoundObjects.readListFrom(compound, "ingredients", Ingredient.class));
+        ingredients.addAll(NBTCompoundObjects.readListFrom(compound, "ingredients", Ingredient::new));
     }
 
     @Override

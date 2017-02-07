@@ -164,7 +164,7 @@ public class WorldScriptMazeGenerator implements WorldScript<WorldScriptMazeGene
             }
 
             mazeComponent.exitPaths.clear();
-            mazeComponent.exitPaths.addAll(NBTCompoundObjects.readListFrom(compound, "mazeExits", SavedMazePathConnection.class));
+            mazeComponent.exitPaths.addAll(NBTCompoundObjects.readListFrom(compound, "mazeExits", SavedMazePathConnection::new));
 
             mazeComponent.defaultConnector.id = ConnectorStrategy.DEFAULT_WALL;
             mazeComponent.reachability.set(Collections.emptyList(), Collections.emptyList());
@@ -270,7 +270,7 @@ public class WorldScriptMazeGenerator implements WorldScript<WorldScriptMazeGene
 
         public InstanceData(NBTTagCompound compound)
         {
-            placedStructures.addAll(NBTCompoundObjects.readListFrom(compound, "placedStructures", PlacedStructure.class));
+            placedStructures.addAll(NBTCompoundObjects.readListFrom(compound, "placedStructures", PlacedStructure::new));
         }
 
         @Override

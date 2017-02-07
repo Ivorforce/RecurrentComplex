@@ -6,7 +6,6 @@
 package ivorius.reccomplex.operation;
 
 import ivorius.ivtoolkit.tools.NBTCompoundObject;
-import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldServer;
 import net.minecraftforge.fml.relauncher.Side;

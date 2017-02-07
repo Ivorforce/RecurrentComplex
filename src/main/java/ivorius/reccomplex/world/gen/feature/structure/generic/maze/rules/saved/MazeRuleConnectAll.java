@@ -76,7 +76,7 @@ public class MazeRuleConnectAll extends MazeRule
     {
         additive = compound.getBoolean("additive");
         exits.clear();
-        exits.addAll(NBTCompoundObjects.readListFrom(compound, "exits", SavedMazePath.class));
+        exits.addAll(NBTCompoundObjects.readListFrom(compound, "exits", SavedMazePath::new));
 
         preventConnection = compound.getBoolean("preventConnection");
     }

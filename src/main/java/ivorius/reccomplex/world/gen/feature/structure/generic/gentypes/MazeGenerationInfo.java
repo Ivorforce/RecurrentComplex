@@ -18,7 +18,6 @@ import ivorius.reccomplex.world.gen.feature.structure.Placer;
 import ivorius.reccomplex.world.gen.feature.structure.generic.Selection;
 import ivorius.reccomplex.world.gen.feature.structure.generic.maze.*;
 
-import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.lang.reflect.Type;
 

@@ -20,6 +20,8 @@ import javax.annotation.Nonnull;
 */
 public class TableDataSourceSelectionArea extends TableDataSourceSegmented
 {
+    public static final String[] COORD_NAMES = {"x", "y", "z"};
+
     private Selection.Area area;
 
     private int[] dimensions;
@@ -53,7 +55,7 @@ public class TableDataSourceSelectionArea extends TableDataSourceSegmented
             case 0:
                 return 1;
             case 1:
-                return 3;
+                return COORD_NAMES.length;
             case 2:
                 return 1;
             default:
@@ -74,11 +76,11 @@ public class TableDataSourceSelectionArea extends TableDataSourceSegmented
         }
         else if (segment == 1)
         {
-            String title = IvTranslations.get("reccomplex.selection.area.range." + new String[]{"x", "y", "z"}[index]);
+            String title = IvTranslations.get("reccomplex.selection.area.range." + COORD_NAMES[index]);
             IntegerRange intRange = new IntegerRange(area.getMinCoord()[index], area.getMaxCoord()[index]);
             TableCellIntegerRange cell = new TableCellIntegerRange("area" + index, intRange, 0, dimensions[index] - 1);
             cell.addPropertyConsumer(val -> area.setCoord(index, val.getMin(), val.getMax()));
-            return new TitledCell(title, cell);
+            return new TitledCell(title, cell).withTitleTooltip(IvTranslations.getLines("reccomplex.selection.area.range." + COORD_NAMES[index] + ".tooltip"));
         }
         else if (segment == 2)
         {

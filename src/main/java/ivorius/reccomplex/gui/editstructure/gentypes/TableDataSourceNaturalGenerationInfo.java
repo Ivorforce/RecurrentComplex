@@ -21,7 +21,6 @@ import ivorius.reccomplex.world.gen.feature.structure.generic.gentypes.NaturalGe
 import ivorius.reccomplex.world.gen.feature.selector.NaturalStructureSelector;
 import org.apache.commons.lang3.tuple.Pair;
 
-import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Set;
@@ -71,7 +70,7 @@ public class TableDataSourceNaturalGenerationInfo extends TableDataSourceSegment
                 .map(category -> Pair.of(category, NaturalStructureSelector.CATEGORY_REGISTRY.getActive(category)))
                 .filter(p -> p.getRight().selectableInGUI())
                 .map(p -> new TableCellEnum.Option<>(p.getLeft(), p.getRight().title(), p.getRight().tooltip()))
-                .sorted((o1, o2) -> o1.title.compareTo(o2.title))
+                .sorted(Comparator.comparing(o -> o.title))
                 .collect(Collectors.toList());
     }
 

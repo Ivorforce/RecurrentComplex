@@ -8,6 +8,7 @@ package ivorius.reccomplex.world.storage.loot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.WorldServer;
 
+import javax.annotation.Nullable;
 import java.util.Random;
 
 /**

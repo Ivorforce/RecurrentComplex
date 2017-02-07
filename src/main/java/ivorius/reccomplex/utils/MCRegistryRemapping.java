@@ -5,6 +5,7 @@
 
 package ivorius.reccomplex.utils;
 
+import ivorius.reccomplex.world.gen.feature.structure.registry.MCRegistrySpecial;
 import net.minecraft.util.ResourceLocation;
 import ivorius.ivtoolkit.tools.MCRegistry;
 import net.minecraft.block.Block;
@@ -42,6 +43,13 @@ public class MCRegistryRemapping implements MCRegistry
     @Override
     public void modifyItemStackCompound(NBTTagCompound compound, ResourceLocation itemID)
     {
+        ResourceLocation mapped = remapper.remapItem(itemID);
+        if (mapped != null)
+        {
+            itemID = mapped;
+            compound.setString("id", mapped.toString());
+        }
+
         parent.modifyItemStackCompound(compound, itemID);
     }
 

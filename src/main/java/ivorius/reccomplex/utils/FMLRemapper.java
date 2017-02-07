@@ -8,6 +8,7 @@ package ivorius.reccomplex.utils;
 import com.google.common.collect.Maps;
 import net.minecraft.util.ResourceLocation;
 
+import javax.annotation.Nullable;
 import java.util.Map;
 
 /**
@@ -47,6 +48,7 @@ public class FMLRemapper
         return remap != null ? remap : id;
     }
 
+    @Nullable
     public ResourceLocation remapBlock(ResourceLocation id)
     {
         return blockRemaps.get(id);
@@ -58,6 +60,7 @@ public class FMLRemapper
         return remap != null ? remap : id;
     }
 
+    @Nullable
     public ResourceLocation remapItem(ResourceLocation id)
     {
         return itemRemaps.get(id);
@@ -69,6 +72,7 @@ public class FMLRemapper
         return remap != null ? remap : id;
     }
 
+    @Nullable
     public String remapTileEntity(String id)
     {
         return tileEntityRemaps.get(id);

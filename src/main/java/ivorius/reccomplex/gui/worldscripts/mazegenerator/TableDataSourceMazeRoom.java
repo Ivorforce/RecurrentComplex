@@ -29,8 +29,9 @@ public class TableDataSourceMazeRoom extends TableDataSourceSegmented
 
     private final List<IntegerRange> ranges;
     private final List<String> titles;
+    private final List<List<String>> tooltips;
 
-    public TableDataSourceMazeRoom(MazeRoom room, Consumer<MazeRoom> consumer, List<IntegerRange> ranges, List<String> titles)
+    public TableDataSourceMazeRoom(MazeRoom room, Consumer<MazeRoom> consumer, List<IntegerRange> ranges, List<String> titles, List<List<String>> tooltips)
     {
         if (ranges.size() != titles.size() || ranges.size() != room.getDimensions())
             throw new IllegalArgumentException();
@@ -39,6 +40,7 @@ public class TableDataSourceMazeRoom extends TableDataSourceSegmented
         this.consumer = consumer;
         this.ranges = ImmutableList.copyOf(ranges);
         this.titles = ImmutableList.copyOf(titles);
+        this.tooltips = ImmutableList.copyOf(tooltips);
     }
 
     @Nonnull
@@ -66,18 +68,19 @@ public class TableDataSourceMazeRoom extends TableDataSourceSegmented
         IntegerRange range = ranges.get(index);
         int val = room.getCoordinate(index);
         String title = titles.get(index);
+        List<String> tooltip = tooltips.get(index);
 
         if (range != null)
         {
             TableCellInteger cell = new TableCellInteger(null, val, range.min, range.max);
             cell.addPropertyConsumer(createConsumer(index));
-            return new TitledCell(title, cell);
+            return new TitledCell(title, cell).withTitleTooltip(tooltip);
         }
         else
         {
             TableCellStringInt cell = new TableCellStringInt(null, val);
             cell.addPropertyConsumer(createConsumer(index));
-            return new TitledCell(title, cell);
+            return new TitledCell(title, cell).withTitleTooltip(tooltip);
         }
     }
 

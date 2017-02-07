@@ -30,6 +30,8 @@ import java.util.stream.Collectors;
  */
 public class TableDataSourceMazePath extends TableDataSourceSegmented
 {
+    public static final String[] COORD_NAMES = {"x", "y", "z"};
+
     private SavedMazePath mazePath;
     private List<IntegerRange> bounds;
     private TableDelegate tableDelegate;
@@ -42,8 +44,9 @@ public class TableDataSourceMazePath extends TableDataSourceSegmented
         this.bounds = bounds;
         this.tableDelegate = tableDelegate;
 
-        addManagedSegment(1, new TableDataSourceMazeRoom(mazePath.sourceRoom, mazeRoom -> mazePath.sourceRoom = mazeRoom,
-                bounds, Arrays.stream(new String[]{"x", "y", "z"}).map(s -> IvTranslations.get("reccomplex.generationInfo.mazeComponent.position." + s)).collect(Collectors.toList()))
+        addManagedSegment(1, new TableDataSourceMazeRoom(mazePath.sourceRoom, mazeRoom -> mazePath.sourceRoom = mazeRoom,bounds,
+                Arrays.stream(COORD_NAMES).map(s -> IvTranslations.get("reccomplex.generationInfo.mazeComponent.position." + s)).collect(Collectors.toList()),
+                Arrays.stream(COORD_NAMES).map(s -> IvTranslations.getLines("reccomplex.generationInfo.mazeComponent.position." + s + ".tooltip")).collect(Collectors.toList()))
         );
     }
 

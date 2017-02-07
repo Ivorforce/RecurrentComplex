@@ -108,37 +108,35 @@ public class StructureRegistry extends SimpleLeveledRegistry<StructureInfo<?>>
         return pairs;
     }
 
-    public <T extends GenerationInfo> Collection<Pair<StructureInfo<?>, T>> getStructureGenerations(Class<T> clazz, final Predicate<Pair<StructureInfo<?>, T>> predicate)
+    public Stream<Pair<StructureInfo<?>, ListGenerationInfo>> getStructuresInList(final String listID, @Nullable final EnumFacing front)
     {
-        return Collections2.filter(getStructureGenerations(clazz), predicate::test);
+        final Predicate<Pair<StructureInfo<?>, ListGenerationInfo>> predicate = input -> listID.equals(input.getRight().listID)
+                && (front == null || input.getLeft().isRotatable() || input.getRight().front == front);
+        return getStructureGenerations(ListGenerationInfo.class).stream().filter(predicate);
     }
 
-    public Collection<Pair<StructureInfo<?>, ListGenerationInfo>> getStructuresInList(final String listID, @Nullable final EnumFacing front)
+    public Stream<Pair<StructureInfo<?>, MazeGenerationInfo>> getStructuresInMaze(final String mazeID)
     {
-        return getStructureGenerations(ListGenerationInfo.class, input -> listID.equals(input.getRight().listID)
-                && (front == null || input.getLeft().isRotatable() || input.getRight().front == front));
-    }
-
-    public Collection<Pair<StructureInfo<?>, MazeGenerationInfo>> getStructuresInMaze(final String mazeID)
-    {
-        return getStructureGenerations(MazeGenerationInfo.class, input ->
+        final Predicate<Pair<StructureInfo<?>, MazeGenerationInfo>> predicate = input ->
         {
             MazeGenerationInfo info = input.getRight();
             return mazeID.equals(info.mazeID) && info.mazeComponent.isValid();
-        });
+        };
+        return getStructureGenerations(MazeGenerationInfo.class).stream().filter(predicate);
     }
 
     public Stream<Triple<StructureInfo<?>, StaticGenerationInfo, BlockSurfacePos>> getStaticStructuresAt(ChunkPos chunkPos, final World world, final BlockPos spawnPos)
     {
-        Collection<Pair<StructureInfo<?>, StaticGenerationInfo>> statics = getStructureGenerations(StaticGenerationInfo.class, input ->
+        final Predicate<Pair<StructureInfo<?>, StaticGenerationInfo>> predicate = input ->
         {
             StaticGenerationInfo info = input.getRight();
 
             return info.dimensionMatcher.test(world.provider)
                     && (info.pattern != null || Chunks.contains(chunkPos, info.getPos(spawnPos)));
-        });
+        };
+        Stream<Pair<StructureInfo<?>, StaticGenerationInfo>> statics = getStructureGenerations(StaticGenerationInfo.class).stream().filter(predicate);
 
-        return statics.stream().flatMap(pair ->
+        return statics.flatMap(pair ->
         {
             StaticGenerationInfo info = pair.getRight();
             //noinspection ConstantConditions

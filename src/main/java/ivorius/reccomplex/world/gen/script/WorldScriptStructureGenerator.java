@@ -34,6 +34,7 @@ import org.apache.commons.lang3.tuple.Pair;
 
 import javax.annotation.Nonnull;
 import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * Created by lukas on 13.09.15.
@@ -205,7 +206,7 @@ public class WorldScriptStructureGenerator implements WorldScript<WorldScriptStr
         }
         else
         {
-            Collection<Pair<StructureInfo<?>, ListGenerationInfo>> generationInfos = StructureRegistry.INSTANCE.getStructuresInList(structureListID, front);
+            Collection<Pair<StructureInfo<?>, ListGenerationInfo>> generationInfos = StructureRegistry.INSTANCE.getStructuresInList(structureListID, front).collect(Collectors.toList());
 
             if (generationInfos.size() > 0)
             {

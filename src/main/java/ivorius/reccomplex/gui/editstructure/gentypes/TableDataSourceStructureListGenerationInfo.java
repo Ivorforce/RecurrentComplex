@@ -100,7 +100,7 @@ public class TableDataSourceStructureListGenerationInfo extends TableDataSourceS
     protected GuiValidityStateIndicator.State currentStructureListIDState()
     {
         return StructureInfos.isSimpleID(generationInfo.listID)
-                ? StructureRegistry.INSTANCE.getStructuresInList(generationInfo.listID, null).size() > 0
+                ? StructureRegistry.INSTANCE.getStructuresInList(generationInfo.listID, null).count() > 0
                 ? GuiValidityStateIndicator.State.VALID
                 : GuiValidityStateIndicator.State.SEMI_VALID
                 : GuiValidityStateIndicator.State.INVALID;

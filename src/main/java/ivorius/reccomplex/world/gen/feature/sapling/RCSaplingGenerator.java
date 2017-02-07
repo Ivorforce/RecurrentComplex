@@ -29,7 +29,9 @@ import org.apache.commons.lang3.tuple.Pair;
 
 import javax.annotation.Nullable;
 import java.util.*;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * Created by lukas on 14.09.16.
@@ -62,9 +64,9 @@ public class RCSaplingGenerator
     {
         Environment baseEnv = Environment.inNature(world, new StructureBoundingBox(pos, pos));
 
-        List<Pair<StructureInfo<?>, SaplingGenerationInfo>> applicable = Lists.newArrayList(StructureRegistry.INSTANCE.getStructureGenerations(
-                SaplingGenerationInfo.class, pair -> pair.getRight().generatesIn(baseEnv.withGeneration(pair.getRight()))
-        ));
+        List<Pair<StructureInfo<?>, SaplingGenerationInfo>> applicable = StructureRegistry.INSTANCE.getStructureGenerations(SaplingGenerationInfo.class).stream()
+                .filter(pair1 -> pair1.getRight().generatesIn(baseEnv.withGeneration(pair1.getRight())))
+                .collect(Collectors.toCollection(ArrayList::new));
 
         // Hackily consider big vanilla trees too
         int vanillaComplexity = complexity(world, pos, random, predictors);

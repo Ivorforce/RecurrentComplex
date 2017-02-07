@@ -9,7 +9,6 @@ import ivorius.ivtoolkit.network.SchedulingMessageHandler;
 import ivorius.reccomplex.RecurrentComplex;
 import ivorius.reccomplex.commands.RCCommands;
 import ivorius.reccomplex.files.RCFileSaver;
-import ivorius.reccomplex.files.loading.RCFileSuffix;
 import ivorius.reccomplex.files.loading.ResourceDirectory;
 import ivorius.reccomplex.item.ItemInventoryGenComponentTag;
 import ivorius.reccomplex.utils.SaveDirectoryData;

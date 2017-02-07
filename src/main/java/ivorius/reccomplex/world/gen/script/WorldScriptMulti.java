@@ -62,6 +62,7 @@ public class WorldScriptMulti implements WorldScript<WorldScriptMulti.InstanceDa
             {
                 NBTStorable scriptData = instanceData.instanceDates.get(i);
                 if (scriptData != null)
+                    //noinspection unchecked
                     scripts.get(i).generate(context, scriptData, pos);
             }
         }

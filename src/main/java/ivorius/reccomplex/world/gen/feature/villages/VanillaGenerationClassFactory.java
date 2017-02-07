@@ -78,6 +78,7 @@ public class VanillaGenerationClassFactory extends ClassLoader
     {
         try
         {
+            //noinspection unchecked
             return (Class<? extends GenericVillagePiece>) findClass(classNameForStructure(structureID, generationID));
         }
         catch (ClassNotFoundException ignored)
@@ -119,6 +120,7 @@ public class VanillaGenerationClassFactory extends ClassLoader
         try
         {
             String className = classNameForStructure(structureID, generationID);
+            //noinspection unchecked
             return (Class<? extends GenericVillagePiece>) define(className, createClassBinary(className.replaceAll("\\.", "/")));
         }
         catch (Throwable t)

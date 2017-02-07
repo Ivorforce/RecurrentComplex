@@ -129,23 +129,23 @@ public class TableDataSourceBlockState extends TableDataSourceSegmented implemen
     }
 
     @Nonnull
-    protected TitledCell getPropertyElement(int index, boolean extended)
+    protected <T extends Comparable<T>> TitledCell getPropertyElement(int index, boolean extended)
     {
         IBlockState state = computeBlockState();
 
-        IProperty<?> name = getSortedPropertyNames(state, extended).get(index);
-        List<Comparable<?>> properties = getSortedProperties((IProperty) name);
-        Comparable<?> currentProperty = state.getValue((IProperty) name);
+        @SuppressWarnings("unchecked") IProperty<T> name = (IProperty<T>) getSortedPropertyNames(state, extended).get(index);
+        List<T> properties = getSortedProperties(name);
+        T currentProperty = state.getValue(name);
 
         if (properties.size() <= 4)
         {
             List<TableCellButton> buttons = properties.stream().map(property ->
             {
-                TableCellButton button = new TableCellButton(null, null, (property == currentProperty ? TextFormatting.GREEN : "") + ((IProperty) name).getName(property));
+                TableCellButton button = new TableCellButton(null, null, (property == currentProperty ? TextFormatting.GREEN : "") + name.getName(property));
                 button.setEnabled(!extended);
                 button.addAction(() ->
                 {
-                    setBlockStateAndNotify(state.withProperty((IProperty) name, (Comparable) property));
+                    setBlockStateAndNotify(state.withProperty(name, property));
                     delegate.reloadData();
                 });
                 if (property == currentProperty)
@@ -155,11 +155,11 @@ public class TableDataSourceBlockState extends TableDataSourceSegmented implemen
             return new TitledCell(name.getName(), new TableCellMulti(buttons));
         }
 
-        TableCellButton button = new TableCellButton(null, null, TextFormatting.GREEN + ((IProperty) name).getName(currentProperty));
+        TableCellButton button = new TableCellButton(null, null, TextFormatting.GREEN + name.getName(currentProperty));
         button.setEnabled(!extended);
         button.addAction(() ->
         {
-            setBlockStateAndNotify(state.cycleProperty((IProperty) name));
+            setBlockStateAndNotify(state.cycleProperty(name));
             delegate.reloadData();
         });
         return new TitledCell(name.getName(), button);
@@ -177,8 +177,9 @@ public class TableDataSourceBlockState extends TableDataSourceSegmented implemen
     {
         List<IProperty<?>> names = Lists.newArrayList(state.getPropertyKeys());
         // Remove if it doesn't make a difference on metadata -> isn't saved
+        //noinspection unchecked
         names.removeIf(name -> (name.getAllowedValues().stream()
-                .mapToInt(obj -> ivorius.ivtoolkit.blocks.BlockStates.toMetadata(state.withProperty((IProperty) name, (Comparable) obj)))
+                .mapToInt(obj -> BlockStates.toMetadata(state.withProperty((IProperty) name, (Comparable) obj)))
                 .distinct().count() < 2) != extended);
         names.sort(Comparator.comparing(IProperty::getName));
         return names;
@@ -211,7 +212,7 @@ public class TableDataSourceBlockState extends TableDataSourceSegmented implemen
     public void setBlockState(IBlockState state)
     {
         this.block = Block.REGISTRY.getNameForObject(state.getBlock()).toString();
-        this.meta = ivorius.ivtoolkit.blocks.BlockStates.toMetadata(state);
+        this.meta = BlockStates.toMetadata(state);
     }
 
     public IBlockState computeBlockState()

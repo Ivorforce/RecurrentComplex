@@ -58,15 +58,15 @@ public class TransformerProperty extends TransformerSingleBlock<NBTNone>
     }
 
     @Nonnull
-    public static Optional<IBlockState> withProperty(IBlockState state, String propertyName, String propertyValue)
+    public static <T extends Comparable<T>> Optional<IBlockState> withProperty(IBlockState state, String propertyName, String propertyValue)
     {
-        Optional<IProperty<?>> mProperty = state.getProperties().keySet().stream().filter(p -> p.getName().equals(propertyName)).findFirst();
+        @SuppressWarnings("unchecked") Optional<IProperty<T>> mProperty = (Optional) state.getProperties().keySet().stream().filter(p -> p.getName().equals(propertyName)).findFirst();
 
         if (mProperty.isPresent())
         {
-            IProperty property = mProperty.get();
-            return ((Optional<Comparable>) property.getAllowedValues().stream()
-                    .filter(v1 -> property.getName((Comparable) v1).equals(propertyValue)).findAny())
+            IProperty<T> property = mProperty.get();
+            return property.getAllowedValues().stream()
+                    .filter(v1 -> property.getName((T) v1).equals(propertyValue)).findAny()
                     .map(v -> state.withProperty(property, v));
         }
         return Optional.empty();

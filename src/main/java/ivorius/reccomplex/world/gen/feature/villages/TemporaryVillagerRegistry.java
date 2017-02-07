@@ -36,6 +36,7 @@ public class TemporaryVillagerRegistry
 
         try
         {
+            //noinspection unchecked
             return (Map<Class<?>, VillagerRegistry.IVillageCreationHandler>) handlerField.get(VillagerRegistry.instance());
         }
         catch (IllegalAccessException e)

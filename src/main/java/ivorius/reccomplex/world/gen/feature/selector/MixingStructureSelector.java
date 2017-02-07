@@ -24,7 +24,7 @@ import java.util.stream.IntStream;
  */
 public class MixingStructureSelector<T extends GenerationInfo & EnvironmentalSelection<C>, C extends MixingStructureSelector.Category> extends StructureSelector<T, C>
 {
-    public MixingStructureSelector(Map<String, StructureInfo> structures, WorldProvider provider, Biome biome, Class<T> typeClass)
+    public MixingStructureSelector(Map<String, StructureInfo<?>> structures, WorldProvider provider, Biome biome, Class<T> typeClass)
     {
         super(structures, provider, biome, typeClass);
     }
@@ -34,7 +34,7 @@ public class MixingStructureSelector<T extends GenerationInfo & EnvironmentalSel
         return category != null ? category.structuresInBiome(biome, worldProvider, totalWeight(category), distanceToSpawn, random) : 0;
     }
 
-    public List<Pair<StructureInfo, T>> generatedStructures(Random random, Biome biome, WorldProvider provider, Float distanceToSpawn)
+    public List<Pair<StructureInfo<?>, T>> generatedStructures(Random random, Biome biome, WorldProvider provider, Float distanceToSpawn)
     {
         return weightedStructureInfos.keySet().stream()
                 .flatMap(category -> IntStream.range(0, structuresInBiome(category, provider, biome, distanceToSpawn, random)).mapToObj(i -> category))
@@ -43,7 +43,7 @@ public class MixingStructureSelector<T extends GenerationInfo & EnvironmentalSel
     }
 
     @Nullable
-    public Pair<StructureInfo, T> selectOne(Random random, WorldProvider provider, Biome biome, @Nullable C c, Float distanceToSpawn)
+    public Pair<StructureInfo<?>, T> selectOne(Random random, WorldProvider provider, Biome biome, @Nullable C c, Float distanceToSpawn)
     {
         if (c != null)
             return super.selectOne(random, c);

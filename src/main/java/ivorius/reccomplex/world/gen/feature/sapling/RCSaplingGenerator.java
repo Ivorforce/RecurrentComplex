@@ -47,7 +47,7 @@ public class RCSaplingGenerator
         if (RCConfig.saplingTriggerChance <= 0 || (RCConfig.saplingTriggerChance < 1 && random.nextFloat() < RCConfig.saplingTriggerChance))
             return false; // Don't trigger at all
 
-        Pair<StructureInfo, SaplingGenerationInfo> pair = findRandomSapling(world, pos, random, true);
+        Pair<StructureInfo<?>, SaplingGenerationInfo> pair = findRandomSapling(world, pos, random, true);
 
         if (pair == null) // Generate default
             return false;
@@ -58,27 +58,27 @@ public class RCSaplingGenerator
     }
 
     @Nullable
-    public static Pair<StructureInfo, SaplingGenerationInfo> findRandomSapling(WorldServer world, BlockPos pos, Random random, boolean considerVanilla)
+    public static Pair<StructureInfo<?>, SaplingGenerationInfo> findRandomSapling(WorldServer world, BlockPos pos, Random random, boolean considerVanilla)
     {
         Environment baseEnv = Environment.inNature(world, new StructureBoundingBox(pos, pos));
 
-        List<Pair<StructureInfo, SaplingGenerationInfo>> applicable = Lists.newArrayList(StructureRegistry.INSTANCE.getStructureGenerations(
+        List<Pair<StructureInfo<?>, SaplingGenerationInfo>> applicable = Lists.newArrayList(StructureRegistry.INSTANCE.getStructureGenerations(
                 SaplingGenerationInfo.class, pair -> pair.getRight().generatesIn(baseEnv.withGeneration(pair.getRight()))
         ));
 
         // Hackily consider big vanilla trees too
         int vanillaComplexity = complexity(world, pos, random, predictors);
 
-        ImmutableMultimap<Integer, Pair<StructureInfo, SaplingGenerationInfo>> groups = IvFunctions.groupMap(applicable, pair -> pair.getRight().pattern.pattern.compile(true).size());
+        ImmutableMultimap<Integer, Pair<StructureInfo<?>, SaplingGenerationInfo>> groups = IvFunctions.groupMap(applicable, pair -> pair.getRight().pattern.pattern.compile(true).size());
         List<Integer> complexities = Lists.newArrayList(groups.keys());
         if (vanillaComplexity > 0) complexities.add(vanillaComplexity);
         Collections.sort(complexities);
 
-        Pair<StructureInfo, SaplingGenerationInfo> pair = null;
+        Pair<StructureInfo<?>, SaplingGenerationInfo> pair = null;
         while (complexities.size() > 0 && pair == null)
         {
             Integer complexity = complexities.remove(complexities.size() - 1);
-            Set<Pair<StructureInfo, SaplingGenerationInfo>> placeable = groups.get(complexity).stream()
+            Set<Pair<StructureInfo<?>, SaplingGenerationInfo>> placeable = groups.get(complexity).stream()
                     .filter(p -> p.getRight().pattern.canPlace(world, pos, p.getLeft().size(), p.getLeft().isRotatable(), p.getLeft().isMirrorable()))
                     .collect(Collectors.toSet());
 
@@ -106,12 +106,12 @@ public class RCSaplingGenerator
                 .filter(i -> i >= 0).max().orElse(-1);
     }
 
-    public static double getSpawnWeight(Pair<StructureInfo, SaplingGenerationInfo> p)
+    public static double getSpawnWeight(Pair<StructureInfo<?>, SaplingGenerationInfo> p)
     {
         return RCConfig.tweakedSpawnRate(StructureRegistry.INSTANCE.id(p.getLeft())) * p.getRight().getActiveWeight();
     }
 
-    public static void growSapling(WorldServer world, BlockPos pos, Random random, StructureInfo structure, SaplingGenerationInfo saplingGenInfo)
+    public static void growSapling(WorldServer world, BlockPos pos, Random random, StructureInfo<?> structure, SaplingGenerationInfo saplingGenInfo)
     {
         int[] strucSize = structure.size();
 

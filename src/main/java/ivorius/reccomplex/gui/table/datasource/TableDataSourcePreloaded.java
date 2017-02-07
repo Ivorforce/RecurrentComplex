@@ -7,7 +7,6 @@ package ivorius.reccomplex.gui.table.datasource;
 
 import ivorius.reccomplex.gui.table.GuiTable;
 import ivorius.reccomplex.gui.table.cell.TableCell;
-import ivorius.reccomplex.gui.table.cell.TitledCell;
 
 import java.util.ArrayList;
 import java.util.Collections;

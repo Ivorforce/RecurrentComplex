@@ -153,7 +153,7 @@ public class StructureSaveHandler
         }
     }
 
-    public class Saver extends FileSaverAdapter<StructureInfo>
+    public class Saver extends FileSaverAdapter<StructureInfo<?>>
     {
         public Saver(String id)
         {
@@ -161,7 +161,7 @@ public class StructureSaveHandler
         }
 
         @Override
-        public void saveFile(Path path, StructureInfo structureInfo) throws Exception
+        public void saveFile(Path path, StructureInfo<?> structureInfo) throws Exception
         {
             GenericStructureInfo structure = structureInfo.copyAsGenericStructureInfo();
 

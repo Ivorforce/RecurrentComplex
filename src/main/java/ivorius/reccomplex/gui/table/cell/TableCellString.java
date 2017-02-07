@@ -5,11 +5,6 @@
 
 package ivorius.reccomplex.gui.table.cell;
 
-import ivorius.reccomplex.gui.GuiValidityStateIndicator;
-import ivorius.reccomplex.gui.table.Bounds;
-import ivorius.reccomplex.gui.table.GuiTable;
-import net.minecraft.client.gui.GuiTextField;
-
 import javax.annotation.Nullable;
 
 /**

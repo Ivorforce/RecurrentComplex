@@ -141,6 +141,7 @@ public class TransformerMulti extends Transformer<TransformerMulti.InstanceData>
     @Override
     public void configureInstanceData(InstanceData instanceData, StructurePrepareContext context, IvWorldData worldData, RunTransformer transformer)
     {
+        //noinspection unchecked
         instanceData.pairedTransformers.forEach(pair -> pair.getLeft().configureInstanceData(pair.getRight(), context, worldData, transformer));
     }
 
@@ -155,6 +156,7 @@ public class TransformerMulti extends Transformer<TransformerMulti.InstanceData>
     @Override
     public boolean mayGenerate(InstanceData instanceData, StructureSpawnContext context, IvWorldData worldData, RunTransformer transformer)
     {
+        //noinspection unchecked
         return instanceData.deactivated || instanceData.pairedTransformers.stream()
                 .allMatch(input -> input.getLeft().mayGenerate(input.getRight(), context, worldData, transformer));
     }
@@ -162,6 +164,7 @@ public class TransformerMulti extends Transformer<TransformerMulti.InstanceData>
     @Override
     public boolean skipGeneration(InstanceData instanceData, StructureLiveContext context, BlockPos pos, IBlockState state, IvWorldData worldData, BlockPos sourcePos)
     {
+        //noinspection unchecked
         return !instanceData.deactivated && instanceData.pairedTransformers.stream()
                 .anyMatch(input -> input.getLeft().skipGeneration(input.getRight(), context, pos, state, worldData, sourcePos));
     }
@@ -170,6 +173,7 @@ public class TransformerMulti extends Transformer<TransformerMulti.InstanceData>
     public void transform(InstanceData instanceData, Phase phase, StructureSpawnContext context, IvWorldData worldData, RunTransformer transformer)
     {
         if (!instanceData.deactivated)
+            //noinspection unchecked
             instanceData.pairedTransformers.forEach(pair -> pair.getLeft().transform(pair.getRight(), phase, context, worldData, transformer));
     }
 

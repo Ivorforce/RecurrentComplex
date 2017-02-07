@@ -5,7 +5,6 @@
 
 package ivorius.reccomplex.utils;
 
-import ivorius.reccomplex.world.gen.feature.structure.registry.MCRegistrySpecial;
 import net.minecraft.util.ResourceLocation;
 import ivorius.ivtoolkit.tools.MCRegistry;
 import net.minecraft.block.Block;

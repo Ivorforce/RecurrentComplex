@@ -5,21 +5,15 @@
 
 package ivorius.reccomplex.gui.editstructure;
 
-import ivorius.ivtoolkit.tools.IvTranslations;
-import ivorius.reccomplex.gui.GuiValidityStateIndicator;
 import ivorius.reccomplex.gui.RCGuiTables;
 import ivorius.reccomplex.gui.TableDataSourceBlockState;
 import ivorius.reccomplex.gui.nbt.TableDataSourceNBTTagCompound;
 import ivorius.reccomplex.gui.table.*;
 import ivorius.reccomplex.gui.table.cell.TableCell;
 import ivorius.reccomplex.gui.table.cell.TableCellMultiBuilder;
-import ivorius.reccomplex.gui.table.cell.TableCellString;
-import ivorius.reccomplex.gui.table.cell.TitledCell;
 import ivorius.reccomplex.gui.table.datasource.TableDataSource;
 import ivorius.reccomplex.gui.table.datasource.TableDataSourceSegmented;
 import ivorius.reccomplex.world.gen.feature.structure.generic.WeightedBlockState;
-import net.minecraft.nbt.JsonToNBT;
-import net.minecraft.nbt.NBTException;
 import net.minecraft.nbt.NBTTagCompound;
 
 import javax.annotation.Nonnull;

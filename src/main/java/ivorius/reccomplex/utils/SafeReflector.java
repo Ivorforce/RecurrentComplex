@@ -19,6 +19,7 @@ public class SafeReflector
     {
         try
         {
+            //noinspection unchecked
             return (T) ReflectionHelper.findField(clazz, name).get(object);
         }
         catch (Exception e)
@@ -33,6 +34,7 @@ public class SafeReflector
     {
         try
         {
+            //noinspection unchecked
             return (T) ReflectionHelper.findField(clazz, name).get(object);
         }
         catch (Exception e)

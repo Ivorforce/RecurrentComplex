@@ -8,10 +8,8 @@ package ivorius.reccomplex.gui.table.cell;
 import ivorius.reccomplex.gui.GuiTexturedButton;
 import ivorius.reccomplex.gui.table.Bounds;
 import ivorius.reccomplex.gui.table.GuiTable;
-import net.minecraft.client.gui.GuiButton;
 import net.minecraft.util.ResourceLocation;
 
-import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;

@@ -32,9 +32,7 @@ import ivorius.reccomplex.world.gen.feature.structure.generic.presets.WeightedBl
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.init.Blocks;
-import net.minecraft.nbt.JsonToNBT;
 import net.minecraft.nbt.NBTBase;
-import net.minecraft.nbt.NBTException;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;

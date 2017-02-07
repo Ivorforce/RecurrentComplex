@@ -108,9 +108,7 @@ public class TableDataSourceNBT
             NBTTagLong cNBT = (NBTTagLong) nbt;
             TableCellStringLong cell = new TableCellStringLong(null, cNBT.getLong());
             cell.addPropertyConsumer(value ->
-            {
-                ReflectionHelper.setPrivateValue(NBTTagLong.class, cNBT, value, "field_74753_a", "data");
-            });
+                    ReflectionHelper.setPrivateValue(NBTTagLong.class, cNBT, value, "field_74753_a", "data"));
             return cell;
         }
         else if (nbt instanceof NBTTagFloat)
@@ -126,9 +124,7 @@ public class TableDataSourceNBT
             NBTTagDouble cNBT = (NBTTagDouble) nbt;
             TableCellStringDouble cell = new TableCellStringDouble(null, cNBT.getDouble());
             cell.addPropertyConsumer(value ->
-            {
-                ReflectionHelper.setPrivateValue(NBTTagDouble.class, cNBT, value, "field_74755_a", "data");
-            });
+                    ReflectionHelper.setPrivateValue(NBTTagDouble.class, cNBT, value, "field_74755_a", "data"));
             return cell;
         }
         else if (nbt instanceof NBTTagByteArray)
@@ -157,9 +153,7 @@ public class TableDataSourceNBT
             NBTTagString cNBT = (NBTTagString) nbt;
             TableCellString cell = new TableCellString(null, cNBT.getString());
             cell.addPropertyConsumer(value ->
-            {
-                ReflectionHelper.setPrivateValue(NBTTagString.class, cNBT, value, "field_74751_a", "data");
-            });
+                    ReflectionHelper.setPrivateValue(NBTTagString.class, cNBT, value, "field_74751_a", "data"));
             return cell;
         }
         else if (nbt instanceof NBTTagList)

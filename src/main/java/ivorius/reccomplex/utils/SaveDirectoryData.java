@@ -6,7 +6,6 @@
 package ivorius.reccomplex.utils;
 
 import io.netty.buffer.ByteBuf;
-import ivorius.reccomplex.files.loading.LeveledRegistry;
 import ivorius.reccomplex.files.loading.ResourceDirectory;
 import net.minecraftforge.fml.common.network.ByteBufUtils;
 

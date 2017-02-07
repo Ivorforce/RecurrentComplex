@@ -9,7 +9,6 @@ import ivorius.reccomplex.RCConfig;
 import ivorius.reccomplex.RecurrentComplex;
 import ivorius.reccomplex.events.FileLoadEvent;
 import ivorius.reccomplex.events.RCEventBus;
-import net.minecraftforge.fml.common.eventhandler.Event;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 import java.nio.file.Path;

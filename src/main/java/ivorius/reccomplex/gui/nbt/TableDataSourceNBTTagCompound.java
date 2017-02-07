@@ -89,10 +89,7 @@ public class TableDataSourceNBTTagCompound extends TableDataSourceSegmented
             TableCellButton perform = new TableCellButton(null, "fromString", "O", Collections.singletonList("Load from String"), false);
 
             TableCellString cell = new TableCellString("tileEntityInfo", "");
-            cell.addPropertyConsumer(val ->
-            {
-                perform.setEnabled(WeightedBlockState.tryParse(val) != null);
-            });
+            cell.addPropertyConsumer(val -> perform.setEnabled(WeightedBlockState.tryParse(val) != null));
             cell.setMaxStringLength(32500); // FromGuiCommandBlock
 
             load.addAction(() -> {

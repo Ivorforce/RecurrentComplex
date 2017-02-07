@@ -85,7 +85,7 @@ public class SavedMazeComponent implements NBTCompoundObject
         }
 
         exitPaths.clear();
-        exitPaths.addAll(NBTCompoundObjects.readListFrom(compound, "exits", SavedMazePathConnection.class));
+        exitPaths.addAll(NBTCompoundObjects.readListFrom(compound, "exits", SavedMazePathConnection::new));
 
         defaultConnector.id = compound.hasKey("defaultConnector", Constants.NBT.TAG_STRING)
                 ? compound.getString("defaultConnector")

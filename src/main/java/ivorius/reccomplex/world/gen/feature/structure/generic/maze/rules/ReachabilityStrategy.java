@@ -438,7 +438,7 @@ public class ReachabilityStrategy<M extends MazeComponent<C>, C> implements Maze
 
         public static <C> Ability<C> from(@Nonnull MazeRoom destination, MazeRoom ref, MazeComponent<C> component)
         {
-            return new Ability<C>(destination.sub(ref),
+            return new Ability<>(destination.sub(ref),
                     component.rooms().stream().map(r -> r.sub(ref)).collect(Collectors.toSet()),
                     component.exits().keySet().stream().collect(Collectors.toMap(r -> r.sub(ref), component.exits()::get))
             );

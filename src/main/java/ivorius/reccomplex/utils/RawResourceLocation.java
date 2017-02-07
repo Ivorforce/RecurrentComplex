@@ -5,10 +5,7 @@
 
 package ivorius.reccomplex.utils;
 
-import net.minecraft.util.ResourceLocation;
 import org.apache.commons.lang3.Validate;
-
-import java.util.Locale;
 
 /**
  * Created by lukas on 04.02.17.

@@ -193,8 +193,6 @@ public class SchematicFile
                         world.setTileEntity(worldPos, tileEntity);
                         tileEntity.updateContainingBlockInfo();
                     }
-
-                    PosTransformer.transformBlock(world, worldPos, transform);
                 }
             }
         }

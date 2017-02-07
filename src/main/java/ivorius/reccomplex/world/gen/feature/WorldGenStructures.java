@@ -39,7 +39,7 @@ public class WorldGenStructures
         StructureRegistry.INSTANCE.getStaticStructuresAt(chunkPos, world, spawnPos).forEach(triple ->
         {
             StaticGenerationInfo staticGenInfo = triple.getMiddle();
-            StructureInfo structureInfo = triple.getLeft();
+            StructureInfo<?> structureInfo = triple.getLeft();
             BlockSurfacePos pos = triple.getRight();
 
             if (structurePredicate != null && !structurePredicate.test(structureInfo))
@@ -64,11 +64,11 @@ public class WorldGenStructures
         MixingStructureSelector<NaturalGenerationInfo, NaturalStructureSelector.Category> structureSelector = StructureRegistry.INSTANCE.naturalStructureSelectors().get(biomeGen, world.provider);
 
         float distanceToSpawn = distance(new ChunkPos(world.getSpawnPoint()), chunkPos);
-        List<Pair<StructureInfo, NaturalGenerationInfo>> generated = structureSelector.generatedStructures(random, world.getBiome(chunkPos.getBlock(0, 0, 0)), world.provider, distanceToSpawn);
+        List<Pair<StructureInfo<?>, NaturalGenerationInfo>> generated = structureSelector.generatedStructures(random, world.getBiome(chunkPos.getBlock(0, 0, 0)), world.provider, distanceToSpawn);
 
         generated.stream()
                 .filter(pair -> structurePredicate == null || structurePredicate.test(pair.getLeft()))
-                .forEach(pair -> generateStructureInChunk(random, chunkPos, world, pair));
+                .forEach(pair -> generateStructureInChunk(random, chunkPos, world, pair.getLeft(), pair.getRight()));
     }
 
     public static boolean generateRandomStructureInChunk(Random random, ChunkPos chunkPos, WorldServer world, Biome biomeGen)
@@ -76,21 +76,19 @@ public class WorldGenStructures
         MixingStructureSelector<NaturalGenerationInfo, NaturalStructureSelector.Category> structureSelector = StructureRegistry.INSTANCE.naturalStructureSelectors().get(biomeGen, world.provider);
 
         float distanceToSpawn = distance(new ChunkPos(world.getSpawnPoint()), chunkPos);
-        Pair<StructureInfo, NaturalGenerationInfo> pair = structureSelector.selectOne(random, world.provider, world.getBiome(chunkPos.getBlock(0, 0, 0)), null, distanceToSpawn);
+        Pair<StructureInfo<?>, NaturalGenerationInfo> pair = structureSelector.selectOne(random, world.provider, world.getBiome(chunkPos.getBlock(0, 0, 0)), null, distanceToSpawn);
 
         if (pair != null)
         {
-            generateStructureInChunk(random, chunkPos, world, pair);
+            generateStructureInChunk(random, chunkPos, world, pair.getLeft(), pair.getRight());
             return true;
         }
 
         return false;
     }
 
-    protected static void generateStructureInChunk(Random random, ChunkPos chunkPos, WorldServer world, Pair<StructureInfo, NaturalGenerationInfo> pair)
+    protected static void generateStructureInChunk(Random random, ChunkPos chunkPos, WorldServer world, StructureInfo<?> structureInfo, NaturalGenerationInfo naturalGenInfo)
     {
-        StructureInfo<?> structureInfo = pair.getLeft();
-        NaturalGenerationInfo naturalGenInfo = pair.getRight();
         String structureName = StructureRegistry.INSTANCE.id(structureInfo);
 
         BlockSurfacePos genPos = new BlockSurfacePos((chunkPos.chunkXPos << 4) + 8 + random.nextInt(16), (chunkPos.chunkZPos << 4) + 8 + random.nextInt(16));
@@ -124,7 +122,7 @@ public class WorldGenStructures
         WorldStructureGenerationData data = WorldStructureGenerationData.get(world);
 
         data.structureEntriesAt(chunkPos).filter(e -> !e.hasBeenGenerated).forEach(entry -> {
-            StructureInfo structureInfo = StructureRegistry.INSTANCE.get(entry.getStructureID());
+            StructureInfo<?> structureInfo = StructureRegistry.INSTANCE.get(entry.getStructureID());
 
             if (structureInfo != null)
             {

@@ -17,7 +17,6 @@ import ivorius.reccomplex.gui.inventorygen.GuiEditInventoryGen;
 import ivorius.reccomplex.utils.SaveDirectoryData;
 import ivorius.reccomplex.world.storage.loot.GenericItemCollectionRegistry;
 import ivorius.reccomplex.world.storage.loot.ItemCollectionSaveHandler;
-import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.inventory.Container;
 import net.minecraftforge.fml.common.network.ByteBufUtils;

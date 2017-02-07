@@ -180,6 +180,7 @@ public class GenericStructureInfo implements StructureInfo<GenericStructureInfo.
                     {
                         TileEntity origTileEntity = origTileEntities.get(sourcePos);
 
+                        //noinspection unchecked
                         if (asSource || !(origTileEntity instanceof GeneratingTileEntity) || ((GeneratingTileEntity) origTileEntity).shouldPlaceInWorld(context, instanceData.tileEntities.get(sourcePos)))
                             setBlock(context, worldPos, state, () -> tileEntityCompounds.get(sourcePos));
                         else
@@ -223,6 +224,7 @@ public class GenericStructureInfo implements StructureInfo<GenericStructureInfo.
                         .forEach(entry -> {
                             NBTStorable teData = instanceData.tileEntities.get(entry.getKey());
                             if (teData != null) // Otherwise it was added after prepare, or doesn't want to generate
+                                //noinspection unchecked
                                 ((GeneratingTileEntity) entry.getValue()).generate(context, teData);
                         });
             }
@@ -345,6 +347,7 @@ public class GenericStructureInfo implements StructureInfo<GenericStructureInfo.
     @Override
     public <I extends GenerationInfo> List<I> generationInfos(@Nonnull Class<? extends I> clazz)
     {
+        //noinspection unchecked
         return generationInfos.stream().filter(info -> clazz.isAssignableFrom(info.getClass())).map(info -> (I) info).collect(Collectors.toList());
     }
 

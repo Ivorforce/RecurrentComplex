@@ -22,7 +22,6 @@ import ivorius.reccomplex.world.gen.feature.structure.context.StructureLoadConte
 import ivorius.reccomplex.world.gen.feature.structure.context.StructurePrepareContext;
 import ivorius.reccomplex.world.gen.feature.structure.context.StructureSpawnContext;
 import ivorius.reccomplex.utils.expression.BlockMatcher;
-import ivorius.reccomplex.utils.RCBlockLogic;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.init.Blocks;
 import net.minecraft.nbt.NBTBase;

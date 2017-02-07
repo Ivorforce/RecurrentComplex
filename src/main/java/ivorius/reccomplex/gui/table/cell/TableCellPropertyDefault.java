@@ -51,6 +51,7 @@ public abstract class TableCellPropertyDefault<P> extends TableCellDefault imple
     {
         for (TableCellPropertyListener listener : listeners)
         {
+            //noinspection unchecked
             listener.valueChanged(this);
         }
     }

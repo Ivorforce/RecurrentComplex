@@ -209,7 +209,8 @@ public class StructureGenerator<S extends NBTStorable>
     @Nonnull
     public StructureInfo<S> structure()
     {
-        StructureInfo<S> structureInfo = this.structureInfo != null ? this.structureInfo : structureID != null ? StructureRegistry.INSTANCE.get(structureID) : null;
+        //noinspection unchecked
+        StructureInfo<S> structureInfo = this.structureInfo != null ? this.structureInfo : structureID != null ? (StructureInfo<S>) StructureRegistry.INSTANCE.get(structureID) : null;
         if (structureInfo == null) throw new IllegalStateException();
         return structureInfo;
     }

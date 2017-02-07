@@ -11,7 +11,6 @@ import ivorius.reccomplex.gui.table.screen.GuiScreenEditTable;
 import ivorius.reccomplex.network.PacketSyncItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
 
 /**
  * Created by lukas on 17.01.15.

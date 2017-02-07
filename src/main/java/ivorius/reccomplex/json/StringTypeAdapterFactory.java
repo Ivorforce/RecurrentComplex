@@ -75,6 +75,7 @@ public class StringTypeAdapterFactory<B> implements JsonSerializer<B>, JsonDeser
     @Nullable
     public <T extends B> JsonSerializer<T> serializer(Class<? extends T> aClass)
     {
+        //noinspection unchecked
         return (JsonSerializer<T>) serializerMap.get(aClass);
     }
 
@@ -123,7 +124,7 @@ public class StringTypeAdapterFactory<B> implements JsonSerializer<B>, JsonDeser
     @Override
     public JsonElement serialize(B src, Type typeOfSrc, JsonSerializationContext context)
     {
-        Class<? extends B> objectClass = (Class<? extends B>) src.getClass();
+        @SuppressWarnings("unchecked") Class<? extends B> objectClass = (Class<? extends B>) src.getClass();
 
         String id = type(objectClass);
         JsonSerializer serializer = serializer(objectClass);
@@ -132,6 +133,7 @@ public class StringTypeAdapterFactory<B> implements JsonSerializer<B>, JsonDeser
         {
             JsonObject jsonObject = new JsonObject();
             jsonObject.addProperty(typeKey, id);
+            //noinspection unchecked
             jsonObject.add(objectKey, serializer != null
                     ? serializer.serialize(src, typeOfSrc, context)
                     : gson.toJsonTree(src, typeOfSrc)

@@ -22,12 +22,12 @@ public class SupplierCache<T>
 
     public static <T> SupplierCache<T> of(Supplier<? extends T> supplier)
     {
-        return new SupplierCache<T>(supplier);
+        return new SupplierCache<>(supplier);
     }
 
     public static <T> SupplierCache<T> direct(T t)
     {
-        return new SupplierCache<T>(() -> t);
+        return new SupplierCache<>(() -> t);
     }
 
     public T get()

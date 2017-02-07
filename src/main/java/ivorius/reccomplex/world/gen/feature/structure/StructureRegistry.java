@@ -20,6 +20,7 @@ import ivorius.reccomplex.world.gen.feature.selector.MixingStructureSelector;
 import ivorius.reccomplex.world.gen.feature.selector.NaturalStructureSelector;
 import ivorius.reccomplex.world.gen.feature.selector.StructureSelector;
 import ivorius.reccomplex.world.gen.feature.villages.GenericVillageCreationHandler;
+import ivorius.reccomplex.world.gen.feature.villages.GenericVillagePiece;
 import ivorius.reccomplex.world.gen.feature.villages.TemporaryVillagerRegistry;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
@@ -38,14 +39,14 @@ import java.util.stream.Stream;
 /**
  * Created by lukas on 24.05.14.
  */
-public class StructureRegistry extends SimpleLeveledRegistry<StructureInfo>
+public class StructureRegistry extends SimpleLeveledRegistry<StructureInfo<?>>
 {
     public static final StructureRegistry INSTANCE = new StructureRegistry();
 
     public static SerializableStringTypeRegistry<Transformer> TRANSFORMERS = new SerializableStringTypeRegistry<>("transformer", "type", Transformer.class);
     public static SerializableStringTypeRegistry<GenerationInfo> GENERATION_INFOS = new SerializableStringTypeRegistry<>("generationInfo", "type", GenerationInfo.class);
 
-    private Map<Class<? extends GenerationInfo>, Collection<Pair<StructureInfo, ? extends GenerationInfo>>> cachedGeneration = new HashMap<>();
+    private Map<Class<? extends GenerationInfo>, Collection<Pair<StructureInfo<?>, ? extends GenerationInfo>>> cachedGeneration = new HashMap<>();
 
     private CachedStructureSelectors<MixingStructureSelector<NaturalGenerationInfo, NaturalStructureSelector.Category>> naturalSelectors
             = new CachedStructureSelectors<>((biome, worldProvider) ->
@@ -80,19 +81,20 @@ public class StructureRegistry extends SimpleLeveledRegistry<StructureInfo>
         return super.unregister(id, level);
     }
 
-    protected <T extends GenerationInfo> Collection<Pair<StructureInfo, T>> getCachedGeneration(Class<T> clazz)
+    protected <T extends GenerationInfo> Collection<Pair<StructureInfo<?>, T>> getCachedGeneration(Class<T> clazz)
     {
-        return (Collection<Pair<StructureInfo, T>>) ((Map) cachedGeneration).get(clazz);
+        //noinspection unchecked
+        return (Collection<Pair<StructureInfo<?>, T>>) ((Map) cachedGeneration).get(clazz);
     }
 
-    public <T extends GenerationInfo> Collection<Pair<StructureInfo, T>> getStructureGenerations(Class<T> clazz)
+    public <T extends GenerationInfo> Collection<Pair<StructureInfo<?>, T>> getStructureGenerations(Class<T> clazz)
     {
-        Collection<Pair<StructureInfo, T>> pairs = getCachedGeneration(clazz);
+        Collection<Pair<StructureInfo<?>, T>> pairs = getCachedGeneration(clazz);
         if (pairs != null)
             return pairs;
 
         pairs = new ArrayList<>();
-        for (StructureInfo info : this.allActive())
+        for (StructureInfo<?> info : this.allActive())
         {
             List<T> generationInfos = info.generationInfos(clazz);
             for (T t : generationInfos)
@@ -100,23 +102,24 @@ public class StructureRegistry extends SimpleLeveledRegistry<StructureInfo>
         }
 
         ((ArrayList) pairs).trimToSize();
+        //noinspection unchecked
         cachedGeneration.put(clazz, (Collection) pairs);
 
         return pairs;
     }
 
-    public <T extends GenerationInfo> Collection<Pair<StructureInfo, T>> getStructureGenerations(Class<T> clazz, final Predicate<Pair<StructureInfo, T>> predicate)
+    public <T extends GenerationInfo> Collection<Pair<StructureInfo<?>, T>> getStructureGenerations(Class<T> clazz, final Predicate<Pair<StructureInfo<?>, T>> predicate)
     {
         return Collections2.filter(getStructureGenerations(clazz), predicate::test);
     }
 
-    public Collection<Pair<StructureInfo, ListGenerationInfo>> getStructuresInList(final String listID, @Nullable final EnumFacing front)
+    public Collection<Pair<StructureInfo<?>, ListGenerationInfo>> getStructuresInList(final String listID, @Nullable final EnumFacing front)
     {
         return getStructureGenerations(ListGenerationInfo.class, input -> listID.equals(input.getRight().listID)
                 && (front == null || input.getLeft().isRotatable() || input.getRight().front == front));
     }
 
-    public Collection<Pair<StructureInfo, MazeGenerationInfo>> getStructuresInMaze(final String mazeID)
+    public Collection<Pair<StructureInfo<?>, MazeGenerationInfo>> getStructuresInMaze(final String mazeID)
     {
         return getStructureGenerations(MazeGenerationInfo.class, input ->
         {
@@ -125,9 +128,9 @@ public class StructureRegistry extends SimpleLeveledRegistry<StructureInfo>
         });
     }
 
-    public Stream<Triple<StructureInfo, StaticGenerationInfo, BlockSurfacePos>> getStaticStructuresAt(ChunkPos chunkPos, final World world, final BlockPos spawnPos)
+    public Stream<Triple<StructureInfo<?>, StaticGenerationInfo, BlockSurfacePos>> getStaticStructuresAt(ChunkPos chunkPos, final World world, final BlockPos spawnPos)
     {
-        Collection<Pair<StructureInfo, StaticGenerationInfo>> statics = getStructureGenerations(StaticGenerationInfo.class, input ->
+        Collection<Pair<StructureInfo<?>, StaticGenerationInfo>> statics = getStructureGenerations(StaticGenerationInfo.class, input ->
         {
             StaticGenerationInfo info = input.getRight();
 
@@ -138,6 +141,7 @@ public class StructureRegistry extends SimpleLeveledRegistry<StructureInfo>
         return statics.stream().flatMap(pair ->
         {
             StaticGenerationInfo info = pair.getRight();
+            //noinspection ConstantConditions
             return info.hasPattern()
                     ? Chunks.repeatIntersections(chunkPos, info.getPos(spawnPos), info.pattern.repeatX, info.pattern.repeatZ).map(pos -> Triple.of(pair.getLeft(), info, pos))
                     : Stream.of(Triple.of(pair.getLeft(), info, info.getPos(spawnPos)));
@@ -161,11 +165,11 @@ public class StructureRegistry extends SimpleLeveledRegistry<StructureInfo>
         cachedGeneration.clear();
 
         updateVanillaGenerations();
-        for (Pair<StructureInfo, VanillaGenerationInfo> pair : getStructureGenerations(VanillaGenerationInfo.class))
+        for (Pair<StructureInfo<?>, VanillaGenerationInfo> pair : getStructureGenerations(VanillaGenerationInfo.class))
         {
             String structureID = this.id(pair.getLeft());
             String generationID = pair.getRight().id();
-            Class clazz = GenericVillageCreationHandler.getPieceClass(structureID, generationID);
+            Class<? extends GenericVillagePiece> clazz = GenericVillageCreationHandler.getPieceClass(structureID, generationID);
             if (clazz != null)
                 MapGenStructureIO.registerStructureComponent(clazz, "Rc:" + structureID + "_" + generationID);
         }

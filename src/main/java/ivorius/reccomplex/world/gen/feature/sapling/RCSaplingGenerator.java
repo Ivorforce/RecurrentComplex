@@ -72,7 +72,7 @@ public class RCSaplingGenerator
         int vanillaComplexity = complexity(world, pos, random, predictors);
 
         ImmutableMultimap<Integer, Pair<StructureInfo<?>, SaplingGenerationInfo>> groups = IvFunctions.groupMap(applicable, pair -> pair.getRight().pattern.pattern.compile(true).size());
-        List<Integer> complexities = Lists.newArrayList(groups.keys());
+        List<Integer> complexities = Lists.newArrayList(groups.keySet());
         if (vanillaComplexity > 0) complexities.add(vanillaComplexity);
         Collections.sort(complexities);
 
@@ -119,7 +119,8 @@ public class RCSaplingGenerator
 
         Multimap<AxisAlignedTransform2D, BlockPos> placeables = saplingGenInfo.pattern.testAll(world, pos, strucSize, structure.isRotatable(), structure.isMirrorable());
 
-        AxisAlignedTransform2D transform = Lists.newArrayList(placeables.keySet()).get(random.nextInt(placeables.keySet().size()));
+        // Use keys() here to get the correct distribution
+        AxisAlignedTransform2D transform = Lists.newArrayList(placeables.keys()).get(random.nextInt(placeables.keys().size()));
         Collection<BlockPos> transformedPositions = placeables.get(transform);
         BlockPos startPos = Lists.newArrayList(transformedPositions).get(random.nextInt(transformedPositions.size()));
 

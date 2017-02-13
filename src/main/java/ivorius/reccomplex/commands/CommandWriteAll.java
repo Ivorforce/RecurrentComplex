@@ -10,6 +10,7 @@ import ivorius.reccomplex.RecurrentComplex;
 import ivorius.reccomplex.files.loading.LeveledRegistry;
 import ivorius.reccomplex.files.loading.ResourceDirectory;
 import ivorius.reccomplex.files.saving.FileSaverAdapter;
+import ivorius.reccomplex.utils.RawResourceLocation;
 import ivorius.reccomplex.utils.ServerTranslations;
 import ivorius.reccomplex.utils.algebra.ExpressionCache;
 import ivorius.reccomplex.utils.expression.ResourceMatcher;
@@ -59,9 +60,15 @@ public class CommandWriteAll extends CommandBase
         Optional<FileSaverAdapter<?>> adapterOptional = Optional.ofNullable(RecurrentComplex.saver.get(adapterID));
         Set<String> ids = adapterOptional.map(a -> a.getRegistry().ids()).orElse(Collections.emptySet());
 
+        ResourceMatcher resourceMatcher = ExpressionCache.of(new ResourceMatcher(id -> adapterOptional.map(a -> a.getRegistry().has(id)).orElse(false)),
+                args.length > 2 ? buildString(args, 2) : "");
+
         int saved = 0, failed = 0;
         for (String id : ids)
         {
+            if (!resourceMatcher.test(new RawResourceLocation(id, adapterOptional.map(a -> a.getRegistry().status(id).getDomain()).orElseThrow(IllegalStateException::new))))
+                continue;
+
             boolean success = RecurrentComplex.saver.trySave(directory.toPath(), adapterID, id);
 
             if (success)

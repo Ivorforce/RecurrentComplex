@@ -55,7 +55,7 @@ public class CommandWrite extends CommandBase
         if (!RecurrentComplex.saver.registry(adapterID).ids().contains(id))
             throw ServerTranslations.commandException("commands.rcsave.noelement");
 
-        ResourceDirectory directory = ResourceDirectory.valueOf(args[2]);
+        ResourceDirectory directory = RCCommands.parseResourceDirectory(args[2]);
 
         if (RCCommands.informSaveResult(RecurrentComplex.saver.trySave(directory.toPath(), adapterID, id), commandSender, directory.subDirectoryName(), adapterID, id))
         {

@@ -11,6 +11,8 @@ import ivorius.reccomplex.files.loading.LeveledRegistry;
 import ivorius.reccomplex.files.loading.ResourceDirectory;
 import ivorius.reccomplex.files.saving.FileSaverAdapter;
 import ivorius.reccomplex.utils.ServerTranslations;
+import ivorius.reccomplex.utils.algebra.ExpressionCache;
+import ivorius.reccomplex.utils.expression.ResourceMatcher;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
@@ -53,8 +55,9 @@ public class CommandWriteAll extends CommandBase
         if (!RecurrentComplex.saver.has(adapterID))
             throw ServerTranslations.commandException("commands.rcsaveall.noregistry");
 
-        ResourceDirectory directory = ResourceDirectory.valueOf(args[1]);
-        Set<String> ids = Optional.<FileSaverAdapter<?>>ofNullable(RecurrentComplex.saver.get(adapterID)).map(a -> a.getRegistry().ids()).orElse(Collections.emptySet());
+        ResourceDirectory directory = RCCommands.parseResourceDirectory(args[1]);
+        Optional<FileSaverAdapter<?>> adapterOptional = Optional.ofNullable(RecurrentComplex.saver.get(adapterID));
+        Set<String> ids = adapterOptional.map(a -> a.getRegistry().ids()).orElse(Collections.emptySet());
 
         int saved = 0, failed = 0;
         for (String id : ids)

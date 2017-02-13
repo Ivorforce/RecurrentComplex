@@ -8,6 +8,7 @@ package ivorius.reccomplex.commands;
 import ivorius.ivtoolkit.blocks.BlockArea;
 import ivorius.ivtoolkit.blocks.BlockStates;
 import ivorius.reccomplex.capability.SelectionOwner;
+import ivorius.reccomplex.world.MockWorld;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.CommandException;
 import net.minecraft.server.MinecraftServer;
@@ -29,7 +30,7 @@ import java.util.stream.IntStream;
 /**
  * Created by lukas on 09.06.14.
  */
-public class CommandSelectFillSphere extends CommandBase
+public class CommandSelectFillSphere extends VirtualCommand
 {
     @Override
     public String getName()
@@ -60,12 +61,10 @@ public class CommandSelectFillSphere extends CommandBase
     }
 
     @Override
-    public void execute(MinecraftServer server, ICommandSender commandSender, String[] args) throws CommandException
+    public void execute(MockWorld world, ICommandSender commandSender, String[] args) throws CommandException
     {
         if (args.length >= 1)
         {
-            World world = commandSender.getEntityWorld();
-
             Block dstBlock = getBlockByText(commandSender, args[0]);
             int[] dstMeta = args.length >= 2 ? RCCommands.parseMetadatas(args[1]) : new int[]{0};
             List<IBlockState> dst = IntStream.of(dstMeta).mapToObj(m -> BlockStates.fromMetadata(dstBlock, m)).collect(Collectors.toList());
@@ -86,7 +85,7 @@ public class CommandSelectFillSphere extends CommandBase
                 double[] coordPoint = new double[]{coord.getX(), coord.getY(), coord.getZ()};
                 if (IvShapeHelper.isPointInSpheroid(coordPoint, spheroidOrigin, spheroidSize))
                 {
-                    IBlockState state = dst.get(world.rand.nextInt(dst.size()));
+                    IBlockState state = dst.get(world.rand().nextInt(dst.size()));
                     world.setBlockState(coord, state, 2);
                 }
             }

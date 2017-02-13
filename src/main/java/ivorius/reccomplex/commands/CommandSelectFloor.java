@@ -8,6 +8,7 @@ package ivorius.reccomplex.commands;
 import ivorius.ivtoolkit.blocks.BlockArea;
 import ivorius.ivtoolkit.blocks.BlockSurfaceArea;
 import ivorius.ivtoolkit.blocks.BlockSurfacePos;
+import ivorius.reccomplex.world.MockWorld;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.CommandException;
@@ -30,9 +31,9 @@ import java.util.Set;
 /**
  * Created by lukas on 09.06.14.
  */
-public class CommandSelectFloor extends CommandBase
+public class CommandSelectFloor extends VirtualCommand
 {
-    public static void placeNaturalFloor(World world, BlockArea area, double lowerExpansion)
+    public static void placeNaturalFloor(MockWorld world, BlockArea area, double lowerExpansion)
     {
         lowerExpansion += 0.01; // Rounding and stuff
 
@@ -69,7 +70,7 @@ public class CommandSelectFloor extends CommandBase
         }
     }
 
-    private static void fillSurface(World world, BlockArea area, double expansion, IBlockState floorBlock, BlockPos pos, Set<BlockSurfacePos> coords)
+    private static void fillSurface(MockWorld world, BlockArea area, double expansion, IBlockState floorBlock, BlockPos pos, Set<BlockSurfacePos> coords)
     {
         BlockSurfacePos surfacePos = BlockSurfacePos.from(pos);
 
@@ -87,7 +88,7 @@ public class CommandSelectFloor extends CommandBase
         }
     }
 
-    public static void setBlockIfAirInArea(World world, BlockPos coord, IBlockState block, BlockArea area)
+    public static void setBlockIfAirInArea(MockWorld world, BlockPos coord, IBlockState block, BlockArea area)
     {
         if (area.contains(coord))
         {
@@ -124,10 +125,8 @@ public class CommandSelectFloor extends CommandBase
     }
 
     @Override
-    public void execute(MinecraftServer server, ICommandSender commandSender, String[] args) throws CommandException
+    public void execute(MockWorld world, ICommandSender commandSender, String[] args) throws CommandException
     {
-        World world = commandSender.getEntityWorld();
-
         BlockArea area = RCCommands.getSelectionOwner(commandSender, null, true).getSelection();
         double expandFloor = args.length >= 1 ? parseDouble(args[0]) : 1;
 

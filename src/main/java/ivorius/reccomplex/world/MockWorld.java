@@ -26,6 +26,11 @@ public interface MockWorld
 
     Random rand();
 
+    default boolean setBlockState(BlockPos coord, IBlockState block)
+    {
+        return setBlockState(coord, block, 3);
+    }
+
     class Real implements MockWorld
     {
         public World world;

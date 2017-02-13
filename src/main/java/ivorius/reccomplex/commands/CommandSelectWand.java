@@ -13,6 +13,7 @@ import ivorius.reccomplex.capability.SelectionOwner;
 import ivorius.reccomplex.utils.ServerTranslations;
 import ivorius.reccomplex.utils.algebra.ExpressionCache;
 import ivorius.reccomplex.utils.expression.PositionedBlockMatcher;
+import ivorius.reccomplex.world.MockWorld;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
@@ -28,7 +29,7 @@ import java.util.stream.StreamSupport;
 /**
  * Created by lukas on 09.06.14.
  */
-public class CommandSelectWand extends CommandBase
+public class CommandSelectWand extends VirtualCommand
 {
     @Nonnull
     protected static Stream<BlockPos> sideStream(BlockArea area, EnumFacing direction)
@@ -54,10 +55,9 @@ public class CommandSelectWand extends CommandBase
     }
 
     @Override
-    public void execute(MinecraftServer server, ICommandSender commandSender, String[] args) throws CommandException
+    public void execute(MockWorld world, ICommandSender commandSender, String[] args) throws CommandException
     {
         SelectionOwner selectionOwner = RCCommands.getSelectionOwner(commandSender, null, true);
-        World world = commandSender.getEntityWorld();
         BlockArea area = selectionOwner.getSelection();
 
         boolean changed = true;

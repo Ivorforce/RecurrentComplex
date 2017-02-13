@@ -8,6 +8,7 @@ package ivorius.reccomplex.commands;
 import ivorius.reccomplex.RCConfig;
 import ivorius.reccomplex.capability.SelectionOwner;
 import ivorius.reccomplex.utils.ServerTranslations;
+import ivorius.reccomplex.world.MockWorld;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
@@ -16,7 +17,7 @@ import net.minecraft.server.MinecraftServer;
 /**
  * Created by lukas on 09.06.14.
  */
-public class CommandSelectShift extends CommandBase
+public class CommandSelectShift extends VirtualCommand
 {
     @Override
     public String getCommandName()
@@ -36,7 +37,7 @@ public class CommandSelectShift extends CommandBase
     }
 
     @Override
-    public void execute(MinecraftServer server, ICommandSender commandSender, String[] args) throws CommandException
+    public void execute(MockWorld world, ICommandSender commandSender, String[] args) throws CommandException
     {
         SelectionOwner selectionOwner = RCCommands.getSelectionOwner(commandSender, null, true);
         if (args.length < 3)

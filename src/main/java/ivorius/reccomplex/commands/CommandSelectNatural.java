@@ -7,6 +7,7 @@ package ivorius.reccomplex.commands;
 
 import ivorius.ivtoolkit.blocks.BlockArea;
 import ivorius.reccomplex.capability.SelectionOwner;
+import ivorius.reccomplex.world.MockWorld;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.CommandException;
 import net.minecraft.server.MinecraftServer;
@@ -61,7 +62,7 @@ public class CommandSelectNatural extends CommandBase
 
         double expandFloor = args.length >= 1 ? parseDouble(args[0]) : 1;
 
-        CommandSelectFloor.placeNaturalFloor(world, area, expandFloor);
+        CommandSelectFloor.placeNaturalFloor(new MockWorld.Real(world), area, expandFloor);
         CommandSelectSpace.placeNaturalAir(world, area, 3, 3);
     }
 }

@@ -9,6 +9,7 @@ import ivorius.ivtoolkit.blocks.BlockStates;
 import ivorius.reccomplex.RCConfig;
 import ivorius.reccomplex.capability.SelectionOwner;
 import ivorius.reccomplex.utils.ServerTranslations;
+import ivorius.reccomplex.world.MockWorld;
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.command.CommandBase;
@@ -27,7 +28,7 @@ import java.util.stream.IntStream;
 /**
  * Created by lukas on 09.06.14.
  */
-public class CommandSelectFill extends CommandBase
+public class CommandSelectFill extends VirtualCommand
 {
     @Override
     public String getCommandName()
@@ -58,12 +59,10 @@ public class CommandSelectFill extends CommandBase
     }
 
     @Override
-    public void execute(MinecraftServer server, ICommandSender commandSender, String[] args) throws CommandException
+    public void execute(MockWorld world, ICommandSender commandSender, String[] args) throws CommandException
     {
         if (args.length >= 1)
         {
-            World world = commandSender.getEntityWorld();
-
             Block dstBlock = getBlockByText(commandSender, args[0]);
             int[] dstMeta = args.length >= 2 ? RCCommands.parseMetadatas(args[1]) : new int[]{0};
             List<IBlockState> dst = IntStream.of(dstMeta).mapToObj(m -> BlockStates.fromMetadata(dstBlock, m)).collect(Collectors.toList());
@@ -73,7 +72,7 @@ public class CommandSelectFill extends CommandBase
 
             for (BlockPos coord : selectionOwner.getSelection())
             {
-                IBlockState state = dst.get(world.rand.nextInt(dst.size()));
+                IBlockState state = dst.get(world.rand().nextInt(dst.size()));
                 world.setBlockState(coord, state, 2);
             }
         }

@@ -12,6 +12,7 @@ import ivorius.reccomplex.capability.SelectionOwner;
 import ivorius.reccomplex.utils.ServerTranslations;
 import ivorius.reccomplex.utils.algebra.ExpressionCache;
 import ivorius.reccomplex.utils.expression.PositionedBlockMatcher;
+import ivorius.reccomplex.world.MockWorld;
 import ivorius.reccomplex.world.gen.feature.structure.generic.transformers.TransformerProperty;
 import net.minecraft.block.Block;
 import net.minecraft.command.CommandBase;
@@ -30,7 +31,7 @@ import java.util.stream.Collectors;
 /**
  * Created by lukas on 09.06.14.
  */
-public class CommandSetProperty extends CommandBase
+public class CommandSetProperty extends VirtualCommand
 {
     @Override
     public String getCommandName()
@@ -64,12 +65,10 @@ public class CommandSetProperty extends CommandBase
     }
 
     @Override
-    public void execute(MinecraftServer server, ICommandSender commandSender, String[] args) throws CommandException
+    public void execute(MockWorld world, ICommandSender commandSender, String[] args) throws CommandException
     {
         if (args.length >= 2)
         {
-            World world = commandSender.getEntityWorld();
-
             PositionedBlockMatcher matcher = ExpressionCache.of(new PositionedBlockMatcher(RecurrentComplex.specialRegistry), args.length > 2 ? buildString(args, 2) : "");
             RCCommands.ensureValid(matcher, 2);
 

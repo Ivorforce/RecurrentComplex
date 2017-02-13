@@ -204,6 +204,9 @@ commands.rcsave.noelement=No such element!
 commands.rcsaveall.usage=/#writeall <registry id> <directory> [resource expression]
 commands.rcsaveall.result=Saved %s elements to '%s'. %s failed.
 commands.rcdelete.usage=/#delete <registry id> <element id> <directory>
+commands.rcmap.usage=/#map <structure id> <directory> <command>
+commands.rcmap.nonvirtual=Cannot map with this command!
+commands.rcmap.nonvirtual.arguments=Cannot map with these command arguments!
 
 commands.rcas.usage=/#as <entity> <command>
 commands.rcselecting.usage=/#selecting <x1> <y1> <z1> <x2> <y2> <z2> <command>

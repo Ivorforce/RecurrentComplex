@@ -48,19 +48,13 @@ public class CommandImportStructure extends CommandBase
     @Override
     public void execute(MinecraftServer server, ICommandSender commandSender, String[] args) throws CommandException
     {
-        if (args.length <= 0)
-        {
-            throw ServerTranslations.wrongUsageException("commands.strucImport.usage");
-        }
-
-        String structureID = args[0];
-        StructureInfo<?> structureInfo = StructureRegistry.INSTANCE.get(structureID);
         WorldServer world = (WorldServer) commandSender.getEntityWorld();
 
-        if (structureInfo == null)
-        {
-            throw ServerTranslations.commandException("commands.strucImport.noStructure", structureID);
-        }
+        if (args.length <= 0)
+            throw ServerTranslations.wrongUsageException("commands.strucImport.usage");
+
+        String structureID = args[0];
+        StructureInfo<?> structureInfo = RCCommands.getGenericStructure(structureID);
 
         BlockPos coord = RCCommands.tryParseBlockPos(commandSender, args, 1, false);
 

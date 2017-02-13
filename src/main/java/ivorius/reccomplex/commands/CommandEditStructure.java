@@ -52,7 +52,7 @@ public class CommandEditStructure extends CommandBase
         {
             String structureID = args[0];
 
-            GenericStructureInfo structureInfo = CommandExportStructure.getGenericStructure(structureID);
+            GenericStructureInfo structureInfo = RCCommands.getGenericStructure(structureID);
             PacketEditStructureHandler.openEditStructure(structureInfo, structureID, entityPlayerMP);
         }
         else

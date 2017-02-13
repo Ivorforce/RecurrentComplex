@@ -12,6 +12,7 @@ import ivorius.reccomplex.capability.SelectionOwner;
 import ivorius.reccomplex.utils.algebra.ExpressionCache;
 import ivorius.reccomplex.utils.expression.PositionedBlockMatcher;
 import ivorius.reccomplex.utils.ServerTranslations;
+import ivorius.reccomplex.world.MockWorld;
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.command.CommandBase;
@@ -30,7 +31,7 @@ import java.util.stream.IntStream;
 /**
  * Created by lukas on 09.06.14.
  */
-public class CommandSelectReplace extends CommandBase
+public class CommandSelectReplace extends VirtualCommand
 {
     @Override
     public String getName()
@@ -62,12 +63,10 @@ public class CommandSelectReplace extends CommandBase
     }
 
     @Override
-    public void execute(MinecraftServer server, ICommandSender commandSender, String[] args) throws CommandException
+    public void execute(MockWorld world, ICommandSender commandSender, String[] args) throws CommandException
     {
         if (args.length >= 3)
         {
-            World world = commandSender.getEntityWorld();
-
             Block dstBlock = getBlockByText(commandSender, args[0]);
             int[] dstMeta = RCCommands.parseMetadatas(args[1]);
             List<IBlockState> dst = IntStream.of(dstMeta).mapToObj(m -> BlockStates.fromMetadata(dstBlock, m)).collect(Collectors.toList());
@@ -82,7 +81,7 @@ public class CommandSelectReplace extends CommandBase
             {
                 if (matcher.evaluate(() -> PositionedBlockMatcher.Argument.at(world, coord)))
                 {
-                    IBlockState state = dst.get(world.rand.nextInt(dst.size()));
+                    IBlockState state = dst.get(world.rand().nextInt(dst.size()));
                     world.setBlockState(coord, state, 3);
                 }
             }

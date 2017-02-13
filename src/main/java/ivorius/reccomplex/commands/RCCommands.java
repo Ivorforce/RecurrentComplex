@@ -19,6 +19,7 @@ import ivorius.reccomplex.utils.algebra.FunctionExpressionCaches;
 import ivorius.reccomplex.utils.expression.ResourceMatcher;
 import ivorius.reccomplex.world.gen.feature.structure.StructureInfo;
 import ivorius.reccomplex.world.gen.feature.structure.StructureRegistry;
+import ivorius.reccomplex.world.gen.feature.structure.generic.GenericStructureInfo;
 import joptsimple.internal.Strings;
 import net.minecraft.command.*;
 import net.minecraft.util.EnumFacing;
@@ -76,6 +77,8 @@ public class RCCommands
         }
         event.registerServerCommand(new CommandGenerateStructure());
         event.registerServerCommand(new CommandImportStructure());
+
+        event.registerServerCommand(new CommandMapStructure());
 
         event.registerServerCommand(new CommandReload());
 
@@ -370,5 +373,20 @@ public class RCCommands
         {
             throw ServerTranslations.commandException("commands.rcsave.nodirectory");
         }
+    }
+
+    public static GenericStructureInfo getGenericStructure(String name) throws CommandException
+    {
+        StructureInfo structureInfo = StructureRegistry.INSTANCE.get(name);
+
+        if (structureInfo == null)
+            throw ServerTranslations.commandException("commands.structure.notRegistered", name);
+
+        GenericStructureInfo genericStructureInfo = structureInfo.copyAsGenericStructureInfo();
+
+        if (genericStructureInfo == null)
+            throw ServerTranslations.commandException("commands.structure.notGeneric", name);
+
+        return genericStructureInfo;
     }
 }

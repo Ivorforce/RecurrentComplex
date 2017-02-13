@@ -54,7 +54,7 @@ public class CommandLookupStructure extends CommandBase
         if (args.length >= 1)
         {
             String id = args[0];
-            GenericStructureInfo structureInfo = CommandExportStructure.getGenericStructure(id);
+            GenericStructureInfo structureInfo = RCCommands.getGenericStructure(id);
             Metadata metadata = structureInfo.metadata;
 
             boolean hasAuthor = !metadata.authors.trim().isEmpty();

@@ -79,6 +79,7 @@ public class RCCommands
         event.registerServerCommand(new CommandImportStructure());
 
         event.registerServerCommand(new CommandMapStructure());
+        event.registerServerCommand(new CommandMapAllStructure());
 
         event.registerServerCommand(new CommandReload());
 

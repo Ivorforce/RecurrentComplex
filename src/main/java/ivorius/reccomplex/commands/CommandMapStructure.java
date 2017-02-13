@@ -55,7 +55,8 @@ public class CommandMapStructure extends CommandBase
         if (args.length < 3)
             throw ServerTranslations.wrongUsageException("commands.rcmap.usage");
 
-        GenericStructureInfo structure = RCCommands.getGenericStructure(args[0]);
+        String id = args[0];
+        GenericStructureInfo structure = RCCommands.getGenericStructure(id);
         ResourceDirectory directory = RCCommands.parseResourceDirectory(args[1]);
 
         ICommand other = server.getCommandManager().getCommands().get(args[2]);
@@ -78,7 +79,7 @@ public class CommandMapStructure extends CommandBase
         }
 
         structure.worldDataCompound = worldData.createTagCompound();
-        PacketSaveStructureHandler.write(commandSender, structure, args[0], directory, true);
+        PacketSaveStructureHandler.write(commandSender, structure, id, directory, true, true);
     }
 
     @Override

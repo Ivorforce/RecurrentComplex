@@ -66,7 +66,7 @@ public class CommandWriteAll extends CommandBase
         int saved = 0, failed = 0;
         for (String id : ids)
         {
-            if (!resourceMatcher.test(new RawResourceLocation(id, adapterOptional.map(a -> a.getRegistry().status(id).getDomain()).orElseThrow(IllegalStateException::new))))
+            if (!resourceMatcher.test(new RawResourceLocation(adapterOptional.map(a -> a.getRegistry().status(id).getDomain()).orElseThrow(IllegalStateException::new), id)))
                 continue;
 
             boolean success = RecurrentComplex.saver.trySave(directory.toPath(), adapterID, id);

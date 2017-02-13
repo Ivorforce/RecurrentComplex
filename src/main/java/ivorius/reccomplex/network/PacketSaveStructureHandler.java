@@ -20,6 +20,10 @@ import net.minecraft.network.NetHandlerPlayServer;
 import net.minecraft.world.WorldServer;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
+import org.apache.commons.lang3.tuple.Pair;
+
+import java.nio.file.Path;
+import java.util.Set;
 
 /**
  * Created by lukas on 03.08.14.
@@ -51,17 +55,28 @@ public class PacketSaveStructureHandler extends SchedulingMessageHandler<PacketS
 
         ResourceDirectory saveDir = saveDirectoryDataResult.directory;
 
-        write(player, genericStructureInfo, id, saveDir, saveDirectoryDataResult.deleteOther);
+        write(player, genericStructureInfo, id, saveDir, saveDirectoryDataResult.deleteOther, true);
     }
 
-    public static void write(ICommandSender sender, GenericStructureInfo structure, String id, ResourceDirectory saveDir, boolean deleteOther)
+    public static boolean write(ICommandSender sender, GenericStructureInfo structure, String id, ResourceDirectory saveDir, boolean deleteOther, boolean inform)
     {
         StructureRegistry.INSTANCE.register(id, "", structure, saveDir.isActive(), saveDir.getLevel());
 
         ResourceDirectory delDir = saveDir.opposite();
-        if (RCCommands.informSaveResult(RecurrentComplex.saver.trySave(saveDir.toPath(), RCFileSaver.STRUCTURE, id), sender, saveDir.subDirectoryName(), RCFileSaver.STRUCTURE, id))
+        boolean saveResult = RecurrentComplex.saver.trySave(saveDir.toPath(), RCFileSaver.STRUCTURE, id);
+
+        if (!inform || RCCommands.informSaveResult(saveResult, sender, saveDir.subDirectoryName(), RCFileSaver.STRUCTURE, id))
+        {
             if (deleteOther)
-                RCCommands.informDeleteResult(RecurrentComplex.saver.tryDeleteWithID(delDir.toPath(), RCFileSaver.STRUCTURE, id), sender, RCFileSaver.STRUCTURE, id, delDir.subDirectoryName());
+            {
+                Pair<Set<Path>, Set<Path>> deleteResult = RecurrentComplex.saver.tryDeleteWithID(delDir.toPath(), RCFileSaver.STRUCTURE, id);
+
+                if (inform)
+                    RCCommands.informDeleteResult(deleteResult, sender, RCFileSaver.STRUCTURE, id, delDir.subDirectoryName());
+            }
+        }
+
+        return saveResult;
     }
 
 }

@@ -12,6 +12,7 @@ import ivorius.reccomplex.RCConfig;
 import ivorius.reccomplex.RecurrentComplex;
 import ivorius.reccomplex.capability.SelectionOwner;
 import ivorius.reccomplex.capability.StructureEntityInfo;
+import ivorius.reccomplex.files.loading.ResourceDirectory;
 import ivorius.reccomplex.utils.ServerTranslations;
 import ivorius.reccomplex.utils.algebra.ExpressionCache;
 import ivorius.reccomplex.utils.algebra.FunctionExpressionCaches;
@@ -356,5 +357,18 @@ public class RCCommands
     {
         if (!matcher.isExpressionValid())
             throw new CommandException("Argument " + (argument + 1) + ": " + FunctionExpressionCaches.readableException(matcher));
+    }
+
+    @Nonnull
+    protected static ResourceDirectory parseResourceDirectory(String arg) throws CommandException
+    {
+        try
+        {
+            return ResourceDirectory.valueOf(arg);
+        }
+        catch (IllegalArgumentException e)
+        {
+            throw ServerTranslations.commandException("commands.rcsave.nodirectory");
+        }
     }
 }

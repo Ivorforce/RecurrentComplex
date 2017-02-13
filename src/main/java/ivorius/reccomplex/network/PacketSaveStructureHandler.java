@@ -14,6 +14,7 @@ import ivorius.reccomplex.files.loading.ResourceDirectory;
 import ivorius.reccomplex.utils.SaveDirectoryData;
 import ivorius.reccomplex.world.gen.feature.structure.StructureRegistry;
 import ivorius.reccomplex.world.gen.feature.structure.generic.GenericStructureInfo;
+import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.network.NetHandlerPlayServer;
 import net.minecraft.world.WorldServer;
@@ -49,13 +50,18 @@ public class PacketSaveStructureHandler extends SchedulingMessageHandler<PacketS
         String id = message.getStructureID();
 
         ResourceDirectory saveDir = saveDirectoryDataResult.directory;
+
+        write(player, genericStructureInfo, id, saveDir, saveDirectoryDataResult.deleteOther);
+    }
+
+    public static void write(ICommandSender sender, GenericStructureInfo structure, String id, ResourceDirectory saveDir, boolean deleteOther)
+    {
+        StructureRegistry.INSTANCE.register(id, "", structure, saveDir.isActive(), saveDir.getLevel());
+
         ResourceDirectory delDir = saveDir.opposite();
-
-        StructureRegistry.INSTANCE.register(id, "", genericStructureInfo, saveDir.isActive(), saveDir.getLevel());
-
-        if (RCCommands.informSaveResult(RecurrentComplex.saver.trySave(saveDir.toPath(), RCFileSaver.STRUCTURE, id), player, saveDir.subDirectoryName(), RCFileSaver.STRUCTURE, id))
-            if (saveDirectoryDataResult.deleteOther)
-                RCCommands.informDeleteResult(RecurrentComplex.saver.tryDeleteWithID(delDir.toPath(), RCFileSaver.STRUCTURE, id), player, RCFileSaver.STRUCTURE, id, delDir.subDirectoryName());
+        if (RCCommands.informSaveResult(RecurrentComplex.saver.trySave(saveDir.toPath(), RCFileSaver.STRUCTURE, id), sender, saveDir.subDirectoryName(), RCFileSaver.STRUCTURE, id))
+            if (deleteOther)
+                RCCommands.informDeleteResult(RecurrentComplex.saver.tryDeleteWithID(delDir.toPath(), RCFileSaver.STRUCTURE, id), sender, RCFileSaver.STRUCTURE, id, delDir.subDirectoryName());
     }
 
 }

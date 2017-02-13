@@ -5,11 +5,13 @@
 
 package ivorius.reccomplex.utils.expression;
 
+import ivorius.ivtoolkit.blocks.IvBlockCollection;
 import ivorius.ivtoolkit.tools.MCRegistry;
 import ivorius.reccomplex.utils.RCBlockLogic;
 import ivorius.reccomplex.utils.algebra.BoolFunctionExpressionCache;
 import ivorius.reccomplex.utils.algebra.RCBoolAlgebra;
 import ivorius.reccomplex.utils.algebra.SupplierCache;
+import ivorius.reccomplex.world.MockWorld;
 import ivorius.reccomplex.world.gen.feature.structure.generic.WorldCache;
 import net.minecraft.block.BlockSapling;
 import net.minecraft.block.material.Material;
@@ -50,25 +52,35 @@ public class PositionedBlockMatcher extends BoolFunctionExpressionCache<Position
 
     public static class Argument
     {
-        public World world;
+        public MockWorld world;
         public BlockPos pos;
         public IBlockState state;
 
-        public Argument(World world, BlockPos pos, IBlockState state)
+        public Argument(MockWorld world, BlockPos pos, IBlockState state)
         {
             this.world = world;
             this.pos = pos;
             this.state = state;
         }
 
-        public static Argument at(World world, BlockPos pos)
+        public static Argument at(MockWorld world, BlockPos pos)
         {
             return new Argument(world, pos, world.getBlockState(pos));
         }
 
+        public static Argument at(IvBlockCollection collection, BlockPos pos)
+        {
+            return at(new MockWorld.BlockCollection(collection), pos);
+        }
+
+        public static Argument at(World world, BlockPos pos)
+        {
+            return at(new MockWorld.Real(world), pos);
+        }
+
         public static Argument at(WorldCache cache, BlockPos pos)
         {
-            return new Argument(cache.world, pos, cache.getBlockState(pos));
+            return at(new MockWorld.Cache(cache), pos);
         }
     }
 
@@ -109,14 +121,14 @@ public class PositionedBlockMatcher extends BoolFunctionExpressionCache<Position
             {
                 case "leaves":
                     return argument -> argument.get().state.getMaterial() == Material.LEAVES
-                            || argument.get().state.getBlock().isLeaves(argument.get().state, argument.get().world, argument.get().pos);
+                            || argument.get().state.getBlock().isLeaves(argument.get().state, argument.get().world.asWorld(), argument.get().pos);
                 case "air":
                     return argument -> argument.get().state.getMaterial() == Material.AIR
-                            || argument.get().state.getBlock().isAir(argument.get().state, argument.get().world, argument.get().pos);
+                            || argument.get().state.getBlock().isAir(argument.get().state, argument.get().world.asWorld(), argument.get().pos);
                 case "foliage":
-                    return argument -> RCBlockLogic.isFoliage(argument.get().state, argument.get().world, argument.get().pos);
+                    return argument -> RCBlockLogic.isFoliage(argument.get().state, argument.get().world.asWorld(), argument.get().pos);
                 case "replaceable":
-                    return argument -> argument.get().state.getBlock().isReplaceable(argument.get().world, argument.get().pos);
+                    return argument -> argument.get().state.getBlock().isReplaceable(argument.get().world.asWorld(), argument.get().pos);
                 case "liquid":
                     return argument -> argument.get().state.getMaterial() instanceof MaterialLiquid;
                 case "water":
@@ -150,11 +162,11 @@ public class PositionedBlockMatcher extends BoolFunctionExpressionCache<Position
             switch (var)
             {
                 case "trees":
-                    return argument -> argument.get().state.getBlock().canSustainPlant(argument.get().state, argument.get().world, argument.get().pos, EnumFacing.UP, (BlockSapling) Blocks.SAPLING);
+                    return argument -> argument.get().state.getBlock().canSustainPlant(argument.get().state, argument.get().world.asWorld(), argument.get().pos, EnumFacing.UP, (BlockSapling) Blocks.SAPLING);
                 case "mushrooms":
                     return argument -> argument.get().state.getBlock() == Blocks.DIRT || argument.get().state.getBlock() == Blocks.GRASS || argument.get().state.getBlock() == Blocks.MYCELIUM;
                 case "cacti":
-                    return argument -> Blocks.CACTUS.canBlockStay(argument.get().world, argument.get().pos);
+                    return argument -> Blocks.CACTUS.canBlockStay(argument.get().world.asWorld(), argument.get().pos);
                 default:
                     throw new ParseException("Unknown Type: " + var, 0); // TODO WHERE??
             }

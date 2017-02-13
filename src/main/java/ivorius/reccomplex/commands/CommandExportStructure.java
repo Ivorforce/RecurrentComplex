@@ -10,7 +10,6 @@ import ivorius.reccomplex.RCConfig;
 import ivorius.reccomplex.capability.SelectionOwner;
 import ivorius.reccomplex.network.PacketEditStructureHandler;
 import ivorius.reccomplex.utils.ServerTranslations;
-import ivorius.reccomplex.world.gen.feature.structure.StructureInfo;
 import ivorius.reccomplex.world.gen.feature.structure.StructureRegistry;
 import ivorius.reccomplex.world.gen.feature.structure.generic.GenericStructureInfo;
 import net.minecraft.command.CommandBase;
@@ -29,34 +28,20 @@ import java.util.List;
  */
 public class CommandExportStructure extends CommandBase
 {
-    public static GenericStructureInfo getGenericStructure(String name) throws CommandException
-    {
-        StructureInfo structureInfo = StructureRegistry.INSTANCE.get(name);
-
-        if (structureInfo == null)
-            throw ServerTranslations.commandException("commands.structure.notRegistered", name);
-
-        GenericStructureInfo genericStructureInfo = structureInfo.copyAsGenericStructureInfo();
-
-        if (genericStructureInfo == null)
-            throw ServerTranslations.commandException("commands.structure.notGeneric", name);
-
-        return genericStructureInfo;
-    }
-
-    protected static GenericStructureInfo getGenericStructure(ICommandSender commandSender, String structureID) throws CommandException
+    protected static GenericStructureInfo getNewGenericStructure(ICommandSender commandSender, String structureID) throws CommandException
     {
         GenericStructureInfo genericStructureInfo;
 
         if (structureID != null)
         {
-            genericStructureInfo = getGenericStructure(structureID);
+            genericStructureInfo = RCCommands.getGenericStructure(structureID);
         }
         else
         {
             genericStructureInfo = GenericStructureInfo.createDefaultStructure();
             genericStructureInfo.metadata.authors = commandSender.getName();
         }
+
         return genericStructureInfo;
     }
 
@@ -92,7 +77,7 @@ public class CommandExportStructure extends CommandBase
         EntityPlayerMP player = getCommandSenderAsPlayer(commandSender);
 
         String structureID = args.length >= 1 ? args[0] : null;
-        GenericStructureInfo genericStructureInfo = getGenericStructure(commandSender, structureID);
+        GenericStructureInfo genericStructureInfo = getNewGenericStructure(commandSender, structureID);
 
         SelectionOwner selectionOwner = RCCommands.getSelectionOwner(commandSender, null, true);
         RCCommands.assertSize(commandSender, selectionOwner);

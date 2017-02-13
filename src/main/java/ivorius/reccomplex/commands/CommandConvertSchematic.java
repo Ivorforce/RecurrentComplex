@@ -58,7 +58,7 @@ public class CommandConvertSchematic extends CommandBase
         String schematicName = CommandImportSchematic.trimQuotes(args[0]);
         SchematicFile schematicFile = CommandImportSchematic.parseSchematic(schematicName);
 
-        GenericStructureInfo structure = CommandExportStructure.getGenericStructure(commandSender, args.length >= 2 ? args[1] : null);
+        GenericStructureInfo structure = CommandExportStructure.getNewGenericStructure(commandSender, args.length >= 2 ? args[1] : null);
 
         structure.worldDataCompound = CommandExportSchematic.toWorldData(schematicFile).createTagCompound();
 

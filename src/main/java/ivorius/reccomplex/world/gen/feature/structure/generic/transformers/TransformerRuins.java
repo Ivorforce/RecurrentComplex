@@ -204,7 +204,7 @@ public class TransformerRuins extends Transformer<TransformerRuins.InstanceData>
 
                 IvMutableBlockPos.offset(dest, dest, EnumFacing.UP);
                 IBlockState state = PosTransformer.transformBlockState(source, context.transform);
-                GenericStructureInfo.setBlock(context, dest, state, () -> tileEntityCompounds.get(sourcePos));
+                GenericStructureInfo.setBlock(context, areaSize, dest, state, () -> tileEntityCompounds.get(sourcePos));
             }
 
             StructureBoundingBox dropAreaBB = context.boundingBox;

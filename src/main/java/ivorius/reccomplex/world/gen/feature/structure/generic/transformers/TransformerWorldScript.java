@@ -61,7 +61,7 @@ public class TransformerWorldScript extends TransformerSingleBlock<TransformerWo
     }
 
     @Override
-    public void transformBlock(InstanceData instanceData, Phase phase, StructureSpawnContext context, BlockPos coord, IBlockState sourceState)
+    public void transformBlock(InstanceData instanceData, Phase phase, StructureSpawnContext context, int[] areaSize, BlockPos coord, IBlockState sourceState)
     {
         WorldScriptMulti.InstanceData scriptInstanceData = script.prepareInstanceData(new StructurePrepareContext(context.random, context.environment, context.transform, context.boundingBox, context.generateAsSource), coord);
         script.generate(context, scriptInstanceData, coord);

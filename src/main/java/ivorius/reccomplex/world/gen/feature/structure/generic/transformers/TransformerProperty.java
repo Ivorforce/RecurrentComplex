@@ -92,7 +92,7 @@ public class TransformerProperty extends TransformerSingleBlock<NBTNone>
     }
 
     @Override
-    public void transformBlock(NBTNone instanceData, Phase phase, StructureSpawnContext context, BlockPos coord, IBlockState sourceState)
+    public void transformBlock(NBTNone instanceData, Phase phase, StructureSpawnContext context, int[] areaSize, BlockPos coord, IBlockState sourceState)
     {
         withProperty(sourceState, propertyName, propertyValue)
                 .ifPresent(state -> context.setBlock(coord, state, 2));

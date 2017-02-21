@@ -182,7 +182,7 @@ public class GenericStructureInfo implements StructureInfo<GenericStructureInfo.
 
                         //noinspection unchecked
                         if (asSource || !(origTileEntity instanceof GeneratingTileEntity) || ((GeneratingTileEntity) origTileEntity).shouldPlaceInWorld(context, instanceData.tileEntities.get(sourcePos)))
-                            setBlock(context, worldPos, state, () -> tileEntityCompounds.get(sourcePos));
+                            setBlock(context, areaSize, worldPos, state, () -> tileEntityCompounds.get(sourcePos));
                         else
                             context.setBlock(worldPos, Blocks.AIR.getDefaultState(), 2); // Replace with air
                     }
@@ -255,7 +255,7 @@ public class GenericStructureInfo implements StructureInfo<GenericStructureInfo.
         return new RunTransformer(this.transformer, instanceData.transformerData);
     }
 
-    public static void setBlock(@Nonnull StructureSpawnContext context, @Nonnull BlockPos worldPos, @Nonnull IBlockState state, @Nonnull Supplier<NBTTagCompound> tileEntity)
+    public static void setBlock(@Nonnull StructureSpawnContext context, int[] areaSize, @Nonnull BlockPos worldPos, @Nonnull IBlockState state, @Nonnull Supplier<NBTTagCompound> tileEntity)
     {
         WorldServer world = context.environment.world;
         if (context.setBlock(worldPos, state, 2))
@@ -269,6 +269,8 @@ public class GenericStructureInfo implements StructureInfo<GenericStructureInfo.
                 if (worldTileEntity != null)
                 {
                     worldTileEntity.readFromNBT(tileEntityCompound);
+
+                    PosTransformer.transformTileEntityPos(worldTileEntity, context.transform, areaSize);
                     Mover.setTileEntityPos(worldTileEntity, worldPos);
 
                     generateTileEntityContents(context, worldTileEntity);

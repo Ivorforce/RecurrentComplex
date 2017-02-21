@@ -63,11 +63,11 @@ public class TransformerReplace extends TransformerSingleBlock<NBTNone>
         this.sourceMatcher = ExpressionCache.of(new BlockMatcher(RecurrentComplex.specialRegistry), sourceExpression);
     }
 
-    public static void setBlock(StructureSpawnContext context, BlockPos pos, WeightedBlockState entry, Supplier<NBTTagCompound> tileEntity)
+    public static void setBlock(StructureSpawnContext context, int[] areaSize, BlockPos pos, WeightedBlockState entry, Supplier<NBTTagCompound> tileEntity)
     {
         if (entry.state != null && RecurrentComplex.specialRegistry.isSafe(entry.state.getBlock()))
         {
-            GenericStructureInfo.setBlock(context, pos, entry.state, tileEntity);
+            GenericStructureInfo.setBlock(context, areaSize, pos, entry.state, tileEntity);
         }
     }
 
@@ -84,7 +84,7 @@ public class TransformerReplace extends TransformerSingleBlock<NBTNone>
     }
 
     @Override
-    public void transformBlock(NBTNone instanceData, Phase phase, StructureSpawnContext context, BlockPos coord, IBlockState sourceState)
+    public void transformBlock(NBTNone instanceData, Phase phase, StructureSpawnContext context, int[] areaSize, BlockPos coord, IBlockState sourceState)
     {
         WeightedBlockState blockState;
         if (destination.getContents().size() > 0)
@@ -92,7 +92,7 @@ public class TransformerReplace extends TransformerSingleBlock<NBTNone>
         else
             blockState = new WeightedBlockState(null, null, null);
 
-        setBlock(context, coord, blockState, () -> blockState.tileEntityInfo);
+        setBlock(context, areaSize, coord, blockState, () -> blockState.tileEntityInfo);
     }
 
     @Override

@@ -54,7 +54,7 @@ public abstract class TransformerSingleBlock<S extends NBTStorable> extends Tran
                     IBlockState state = blockCollection.getBlockState(sourceCoord);
 
                     if (matches(context.environment, instanceData, state))
-                        transformBlock(instanceData, Phase.BEFORE, context, worldCoord, state);
+                        transformBlock(instanceData, Phase.BEFORE, context, areaSize, worldCoord, state);
                 }
             }
         }
@@ -64,5 +64,5 @@ public abstract class TransformerSingleBlock<S extends NBTStorable> extends Tran
 
     public abstract boolean matches(Environment environment, S instanceData, IBlockState state);
 
-    public abstract void transformBlock(S instanceData, Phase phase, StructureSpawnContext context, BlockPos coord, IBlockState sourceState);
+    public abstract void transformBlock(S instanceData, Phase phase, StructureSpawnContext context, int[] areaSize, BlockPos coord, IBlockState sourceState);
 }

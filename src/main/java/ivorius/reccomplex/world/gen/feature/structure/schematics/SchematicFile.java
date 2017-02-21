@@ -12,6 +12,8 @@ import ivorius.ivtoolkit.transform.Mover;
 import ivorius.ivtoolkit.transform.PosTransformer;
 import ivorius.ivtoolkit.util.IvStreams;
 import ivorius.reccomplex.RecurrentComplex;
+import ivorius.reccomplex.temp.RCMover;
+import ivorius.reccomplex.temp.RCPosTransformer;
 import ivorius.reccomplex.utils.RCAccessorEntity;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
@@ -159,17 +161,22 @@ public class SchematicFile
     /**
      * Mirror is applied first
      */
-    public void generate(World world, BlockPos pos, AxisAlignedTransform2D transform)
+    public void generate(World world, BlockPos origin, AxisAlignedTransform2D transform)
     {
+        int[] areaSize = {width, height, length};
+
         Map<BlockPos, TileEntity> tileEntities = new HashMap<>();
         for (NBTTagCompound tileTagCompound : tileEntityCompounds)
         {
+            BlockPos src = RCMover.getTileEntityPos(tileTagCompound);
+            BlockPos dest = transform.apply(src, areaSize).add(origin);
+
+            tileTagCompound = RCMover.setTileEntityPos(tileTagCompound, dest);
+
             TileEntity tileEntity = TileEntity.create(world, tileTagCompound);
             if (tileEntity != null)
-                tileEntities.put(tileEntity.getPos(), tileEntity);
+                tileEntities.put(src, tileEntity);
         }
-
-        int[] size = {width, height, length};
 
         for (int pass = 0; pass < 2; pass++)
         {
@@ -180,7 +187,7 @@ public class SchematicFile
 
                 if (blockState != null && getPass(blockState) == pass)
                 {
-                    BlockPos worldPos = pos.add(transform.apply(sourcePos, size));
+                    BlockPos worldPos = origin.add(transform.apply(sourcePos, areaSize));
                     world.setBlockState(worldPos, blockState, 2);
 
                     TileEntity tileEntity = tileEntities.get(sourcePos);
@@ -188,8 +195,9 @@ public class SchematicFile
                     {
                         world.setBlockState(worldPos, blockState, 2); // Second time to ensure state, see BlockFurnace
 
-                        PosTransformer.transformTileEntityPos(tileEntity, transform, size);
-                        Mover.setTileEntityPos(tileEntity, worldPos);
+                        RCPosTransformer.transformAdditionalData(tileEntity, transform, areaSize);
+                        RCMover.moveAdditionalData(tileEntity, origin);
+
                         world.setTileEntity(worldPos, tileEntity);
                         tileEntity.updateContainingBlockInfo();
                     }
@@ -203,8 +211,8 @@ public class SchematicFile
             if (entity != null)
             {
                 RCAccessorEntity.setEntityUniqueID(entity, UUID.randomUUID());
-                PosTransformer.transformEntityPos(entity, transform, size);
-                Mover.moveEntity(entity, pos);
+                PosTransformer.transformEntityPos(entity, transform, areaSize);
+                Mover.moveEntity(entity, origin);
                 world.spawnEntityInWorld(entity);
             }
         }

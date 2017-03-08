@@ -16,6 +16,7 @@ import ivorius.reccomplex.gui.table.datasource.TableDataSource;
 import ivorius.reccomplex.gui.table.TableDelegate;
 import ivorius.reccomplex.gui.table.TableNavigator;
 import ivorius.reccomplex.gui.worldscripts.structuregenerator.TableDataSourceWorldScriptStructureGenerator;
+import ivorius.reccomplex.utils.ReadableInstanceData;
 import ivorius.reccomplex.world.gen.feature.structure.*;
 import ivorius.reccomplex.world.gen.feature.structure.context.StructureLoadContext;
 import ivorius.reccomplex.world.gen.feature.structure.context.StructurePrepareContext;
@@ -255,18 +256,21 @@ public class WorldScriptStructureGenerator implements WorldScript<WorldScriptStr
     protected <T extends NBTStorable> void generate_(StructureSpawnContext context, InstanceData instanceData)
     {
         @SuppressWarnings("unchecked") StructureInfo<T> structureInfo = (StructureInfo<T>) StructureRegistry.INSTANCE.get(instanceData.structureID);
-        @SuppressWarnings("unchecked") T structureData = (T) instanceData.structureData;
+        @SuppressWarnings("unchecked") ReadableInstanceData<T> structureData = (ReadableInstanceData<T>) instanceData.structureData;
 
-        if (structureInfo != null && structureData != null)
-            generate(context, instanceData, structureInfo, structureData, instanceData.generationInfoID);
+        if (structureInfo == null || !structureData.exists())
+            return;
+
+        generate(context, instanceData, structureInfo, structureData, instanceData.generationInfoID);
     }
 
     @Nonnull
-    protected <I extends NBTStorable> Optional<StructureSpawnContext> generate(StructureSpawnContext context, InstanceData instanceData, StructureInfo<I> structureInfo, I structureData, String generationInfo)
+    protected <T extends NBTStorable> Optional<StructureSpawnContext> generate(StructureSpawnContext context, InstanceData instanceData, StructureInfo<T> structureInfo, ReadableInstanceData<T> structureData, String generationInfo)
     {
-        return new StructureGenerator<>(structureInfo).structureID(instanceData.structureID).asChild(context).generationInfo(generationInfo)
-                .lowerCoord(instanceData.lowerCoord).transform(instanceData.structureTransform).instanceData(structureData).generate(
-                );
+        StructureGenerator<T> generator = new StructureGenerator<>(structureInfo).structureID(instanceData.structureID).asChild(context).generationInfo(generationInfo)
+                .lowerCoord(instanceData.lowerCoord).transform(instanceData.structureTransform);
+        structureData.load(generator);
+        return generator.generate();
     }
 
     @Override
@@ -288,7 +292,7 @@ public class WorldScriptStructureGenerator implements WorldScript<WorldScriptStr
         public BlockPos lowerCoord;
         public AxisAlignedTransform2D structureTransform;
 
-        public NBTStorable structureData;
+        public final ReadableInstanceData<?> structureData = new ReadableInstanceData<>();
 
         public InstanceData()
         {
@@ -301,7 +305,8 @@ public class WorldScriptStructureGenerator implements WorldScript<WorldScriptStr
             this.generationInfoID = generationInfoID;
             this.lowerCoord = lowerCoord;
             this.structureTransform = structureTransform;
-            this.structureData = structureData;
+            //noinspection unchecked
+            ((ReadableInstanceData) this.structureData).setInstanceData(structureData);
         }
 
         public InstanceData(NBTTagCompound compound)
@@ -310,11 +315,7 @@ public class WorldScriptStructureGenerator implements WorldScript<WorldScriptStr
             generationInfoID = compound.hasKey(generationInfoID, Constants.NBT.TAG_STRING) ? compound.getString("generationInfoID") : null;
             lowerCoord = BlockPositions.readFromNBT("lowerCoord", compound);
             structureTransform = AxisAlignedTransform2D.from(compound.getInteger("rotation"), compound.getBoolean("mirrorX"));
-
-            StructureInfo<?> structureInfo = StructureRegistry.INSTANCE.get(structureID);
-            if (structureInfo != null)
-                structureData = new StructureGenerator<>(structureInfo).instanceData(compound.getTag("structureData"))
-                        .transform(structureTransform).lowerCoord(lowerCoord).instanceData().orElse(null);
+            structureData.readFromNBT("structureData", compound);
         }
 
         @Override
@@ -327,7 +328,7 @@ public class WorldScriptStructureGenerator implements WorldScript<WorldScriptStr
             BlockPositions.writeToNBT("lowerCoord", lowerCoord, compound);
             compound.setInteger("rotation", structureTransform.getRotation());
             compound.setBoolean("mirrorX", structureTransform.isMirrorX());
-            compound.setTag("structureData", structureData.writeToNBT());
+            structureData.writeToNBT("structureData", compound);
 
             return compound;
         }

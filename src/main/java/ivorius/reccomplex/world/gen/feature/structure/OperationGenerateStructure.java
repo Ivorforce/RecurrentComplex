@@ -11,13 +11,12 @@ import ivorius.ivtoolkit.rendering.grid.BlockQuadCache;
 import ivorius.ivtoolkit.rendering.grid.GridQuadCache;
 import ivorius.reccomplex.client.rendering.OperationRenderer;
 import ivorius.reccomplex.operation.Operation;
-import ivorius.reccomplex.utils.NBTStorable;
+import ivorius.reccomplex.utils.ReadableInstanceData;
 import ivorius.reccomplex.world.gen.feature.StructureGenerator;
 import ivorius.reccomplex.world.gen.feature.structure.context.StructureSpawnContext;
 import ivorius.reccomplex.world.gen.feature.structure.generic.GenericStructureInfo;
 import ivorius.reccomplex.world.gen.feature.structure.generic.StructureSaveHandler;
 import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
@@ -189,56 +188,5 @@ public class OperationGenerateStructure implements Operation
 
         if (previewType == PreviewType.BOUNDING_BOX || previewType == PreviewType.SHAPE)
             OperationRenderer.maybeRenderBoundingBox(lowerCoord, StructureInfos.structureSize(size, transform), ticks, partialTicks);
-    }
-
-    public static class ReadableInstanceData<T extends NBTStorable>
-    {
-        private NBTBase instanceDataNBT;
-        private T instanceData;
-
-        public boolean exists()
-        {
-            return instanceData != null || instanceDataNBT != null;
-        }
-
-        public void setInstanceData(T instanceData)
-        {
-            this.instanceData = instanceData;
-        }
-
-        public void writeToNBT(String key, NBTTagCompound compound)
-        {
-            NBTBase instanceDataNBT = instanceData != null ? instanceData.writeToNBT()
-                    : this.instanceDataNBT != null ? this.instanceDataNBT.copy() : null;
-            if (instanceDataNBT != null)
-                compound.setTag(key, instanceDataNBT);
-        }
-
-        public void readFromNBT(String key, NBTTagCompound compound)
-        {
-            instanceDataNBT = compound.hasKey(key) ? compound.getTag(key).copy() : null;
-        }
-
-        public boolean load(StructureGenerator<T> generator)
-        {
-            if (instanceDataNBT != null)
-            {
-                generator.instanceData(instanceDataNBT);
-                instanceData = generator.instanceData().get();
-                instanceDataNBT = null;
-            }
-
-            return instanceData != null;
-        }
-
-        public StructureGenerator<T> register(StructureGenerator<T> generator)
-        {
-            if (instanceData != null)
-                return generator.instanceData(instanceData);
-            else if (instanceDataNBT != null)
-                return generator.instanceData(instanceDataNBT);
-            else
-                return generator;
-        }
     }
 }

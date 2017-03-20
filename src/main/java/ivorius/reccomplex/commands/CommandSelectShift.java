@@ -9,15 +9,13 @@ import ivorius.reccomplex.RCConfig;
 import ivorius.reccomplex.capability.SelectionOwner;
 import ivorius.reccomplex.utils.ServerTranslations;
 import ivorius.reccomplex.world.MockWorld;
-import net.minecraft.command.CommandBase;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
-import net.minecraft.server.MinecraftServer;
 
 /**
  * Created by lukas on 09.06.14.
  */
-public class CommandSelectShift extends VirtualCommand
+public class CommandSelectShift extends CommandVirtual
 {
     @Override
     public String getCommandName()

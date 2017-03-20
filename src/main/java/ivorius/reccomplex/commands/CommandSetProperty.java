@@ -15,12 +15,10 @@ import ivorius.reccomplex.utils.expression.PositionedBlockMatcher;
 import ivorius.reccomplex.world.MockWorld;
 import ivorius.reccomplex.world.gen.feature.structure.generic.transformers.TransformerProperty;
 import net.minecraft.block.Block;
-import net.minecraft.command.CommandBase;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -31,7 +29,7 @@ import java.util.stream.Collectors;
 /**
  * Created by lukas on 09.06.14.
  */
-public class CommandSetProperty extends VirtualCommand
+public class CommandSetProperty extends CommandVirtual
 {
     @Override
     public String getCommandName()

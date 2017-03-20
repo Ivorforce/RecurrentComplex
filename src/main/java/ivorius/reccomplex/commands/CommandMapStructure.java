@@ -7,7 +7,6 @@ package ivorius.reccomplex.commands;
 
 import ivorius.ivtoolkit.tools.IvWorldData;
 import ivorius.reccomplex.RCConfig;
-import ivorius.reccomplex.RecurrentComplex;
 import ivorius.reccomplex.files.loading.ResourceDirectory;
 import ivorius.reccomplex.network.PacketSaveStructureHandler;
 import ivorius.reccomplex.utils.ServerTranslations;
@@ -23,9 +22,7 @@ import net.minecraft.util.math.BlockPos;
 
 import javax.annotation.Nullable;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
-import java.util.Optional;
 
 /**
  * Created by lukas on 03.08.14.
@@ -61,10 +58,10 @@ public class CommandMapStructure extends CommandBase
 
         ICommand other = server.getCommandManager().getCommands().get(args[2]);
 
-        if (!(other instanceof VirtualCommand))
+        if (!(other instanceof CommandVirtual))
             throw ServerTranslations.commandException("commands.rcmap.nonvirtual");
 
-        VirtualCommand virtual = (VirtualCommand) other;
+        CommandVirtual virtual = (CommandVirtual) other;
         IvWorldData worldData = structure.constructWorldData();
         MockWorld world = new MockWorld.BlockCollection(worldData.blockCollection);
 

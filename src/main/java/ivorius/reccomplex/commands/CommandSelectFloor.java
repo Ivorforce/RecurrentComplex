@@ -10,7 +10,6 @@ import ivorius.ivtoolkit.blocks.BlockSurfaceArea;
 import ivorius.ivtoolkit.blocks.BlockSurfacePos;
 import ivorius.reccomplex.world.MockWorld;
 import net.minecraft.block.state.IBlockState;
-import net.minecraft.command.CommandBase;
 import net.minecraft.command.CommandException;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.math.BlockPos;
@@ -21,7 +20,6 @@ import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.util.math.MathHelper;
-import net.minecraft.world.World;
 
 import javax.annotation.Nullable;
 import java.util.HashSet;
@@ -31,7 +29,7 @@ import java.util.Set;
 /**
  * Created by lukas on 09.06.14.
  */
-public class CommandSelectFloor extends VirtualCommand
+public class CommandSelectFloor extends CommandVirtual
 {
     public static void placeNaturalFloor(MockWorld world, BlockArea area, double lowerExpansion)
     {

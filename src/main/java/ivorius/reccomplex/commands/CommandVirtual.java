@@ -14,7 +14,7 @@ import net.minecraft.server.MinecraftServer;
 /**
  * Created by lukas on 13.02.17.
  */
-public abstract class VirtualCommand extends CommandBase
+public abstract class CommandVirtual extends CommandBase
 {
     @Override
     public void execute(MinecraftServer server, ICommandSender sender, String[] args) throws CommandException

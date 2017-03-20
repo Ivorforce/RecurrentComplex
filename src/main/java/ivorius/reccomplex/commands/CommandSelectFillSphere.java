@@ -9,7 +9,6 @@ import ivorius.ivtoolkit.blocks.BlockArea;
 import ivorius.ivtoolkit.blocks.BlockStates;
 import ivorius.reccomplex.capability.SelectionOwner;
 import ivorius.reccomplex.world.MockWorld;
-import net.minecraft.command.CommandBase;
 import net.minecraft.command.CommandException;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.math.BlockPos;
@@ -19,7 +18,6 @@ import net.minecraft.block.state.IBlockState;
 import ivorius.reccomplex.utils.ServerTranslations;
 import net.minecraft.block.Block;
 import net.minecraft.command.ICommandSender;
-import net.minecraft.world.World;
 
 import javax.annotation.Nullable;
 import java.util.Collections;
@@ -30,7 +28,7 @@ import java.util.stream.IntStream;
 /**
  * Created by lukas on 09.06.14.
  */
-public class CommandSelectFillSphere extends VirtualCommand
+public class CommandSelectFillSphere extends CommandVirtual
 {
     @Override
     public String getCommandName()

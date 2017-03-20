@@ -135,6 +135,7 @@ public class RecurrentComplex
         communicationHandler = new RCCommunicationHandler(logger, MOD_ID, instance);
 
         RCRegistryHandler.preInit(event, this);
+        proxy.preInit(event);
     }
 
     @EventHandler

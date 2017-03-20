@@ -7,6 +7,7 @@ package ivorius.reccomplex.server;
 
 import ivorius.reccomplex.RCProxy;
 import net.minecraftforge.fml.common.FMLCommonHandler;
+import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 
 import java.io.File;
 
@@ -29,6 +30,12 @@ public class ServerProxy implements RCProxy
 
     @Override
     public void registerRenderers()
+    {
+
+    }
+
+    @Override
+    public void preInit(FMLPreInitializationEvent event)
     {
 
     }

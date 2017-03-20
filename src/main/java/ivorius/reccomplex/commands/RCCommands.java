@@ -27,9 +27,11 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.WorldServer;
 import net.minecraft.world.biome.Biome;
+import net.minecraftforge.client.ClientCommandHandler;
 import net.minecraftforge.common.DimensionManager;
 import net.minecraftforge.fml.common.event.FMLServerStartingEvent;
 import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 import org.apache.commons.lang3.tuple.Pair;
 
 import javax.annotation.Nonnull;
@@ -141,14 +143,17 @@ public class RCCommands
         event.registerServerCommand(new CommandSearchStructure());
         event.registerServerCommand(new CommandContaining());
 
-        if (event.getSide() == Side.CLIENT) // TODO Make client-side command (don't even send to server)
-            event.registerServerCommand(new CommandBrowseFiles());
-
         event.registerServerCommand(new CommandRetrogen());
         event.registerServerCommand(new CommandDecorate());
         event.registerServerCommand(new CommandDecorateOne());
 
         event.registerServerCommand(new CommandEval());
+    }
+
+    @SideOnly(Side.CLIENT)
+    public static void registerClientCommands(ClientCommandHandler handler)
+    {
+        handler.registerCommand(new CommandVisitFiles());
     }
 
     @Nonnull

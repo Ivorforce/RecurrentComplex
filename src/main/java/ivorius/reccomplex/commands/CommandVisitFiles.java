@@ -18,7 +18,7 @@ import java.io.File;
 /**
  * Created by lukas on 03.08.14.
  */
-public class CommandBrowseFiles extends CommandBase
+public class CommandVisitFiles extends CommandBase
 {
     @Override
     public String getCommandName()
@@ -28,7 +28,7 @@ public class CommandBrowseFiles extends CommandBase
 
     public int getRequiredPermissionLevel()
     {
-        return 4;
+        return 0;
     }
 
     @Override
@@ -40,7 +40,6 @@ public class CommandBrowseFiles extends CommandBase
     @Override
     public void execute(MinecraftServer server, ICommandSender commandSender, String[] args)
     {
-        // TODO Client-Side open
         OpenGlHelper.openFile(new File(ResourceDirectory.getCustomDirectory(), ResourceDirectory.RESOURCES_FILE_NAME));
     }
 }

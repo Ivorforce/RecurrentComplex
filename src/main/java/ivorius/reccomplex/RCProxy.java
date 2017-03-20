@@ -5,6 +5,8 @@
 
 package ivorius.reccomplex;
 
+import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
+
 import java.io.File;
 
 /**
@@ -17,4 +19,6 @@ public interface RCProxy
     void loadConfig(String configID);
 
     void registerRenderers();
+
+    void preInit(FMLPreInitializationEvent event);
 }

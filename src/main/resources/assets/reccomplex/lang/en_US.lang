@@ -137,7 +137,7 @@ commands.strucExportSchematic.success=Exported schematic to '%s'
 
 commands.biomedict.usage=/#biome <types|list|search> <id (get: Biome ID, list: Biome Type ID)>
 commands.biomedict.get=Biome Types for %s: %s
-commands.biomedict.get.number=%s biomes
+commands.biomedict.get.number=Lookup (%s biomes)
 commands.biomedict.list=Biomes of Type %s: %s
 commands.biomedict.list.number=Lookup (%s types)
 commands.biomedict.nobiome=No Biome with the ID '%s'
@@ -147,7 +147,7 @@ commands.dimensiondict.usage=/#dimension <types|list> <id (get: Dimension ID, li
 commands.dimensiondict.get=Dimension Types for %d: %s
 commands.dimensiondict.get.number=Lookup (%s dimensions)
 commands.dimensiondict.list=Dimensions of Type %s: %s
-commands.dimensiondict.list.number=%s types
+commands.dimensiondict.list.number=Lookup (%s types)
 
 commands.rcvisual.usage=/#visual rulers <true|false>
 commands.rcvisual.enabled='%s' successfully enabled

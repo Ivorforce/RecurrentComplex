@@ -230,7 +230,10 @@ inventoryGen.inactive=%sInactive%s
 reccomplex.save.permission=You do not have permission to save!
 
 reccomplex.save.failure=Failed to save %s to '%s'
-reccomplex.save.success=Saved %s to '%s'
+reccomplex.save.full=%s: %s
+reccomplex.save.success=Saved %s to %s
+reccomplex.save.upload=Submit
+reccomplex.save.upload.hover=Open URL
 reccomplex.delete.failure=Failed to delete %s from '%s'
 reccomplex.delete.success=Deleted %s from '%s'
 

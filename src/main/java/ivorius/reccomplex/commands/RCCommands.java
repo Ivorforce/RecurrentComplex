@@ -305,7 +305,12 @@ public class RCCommands
     public static boolean informSaveResult(boolean result, ICommandSender sender, String path, String filetype, String id)
     {
         if (result)
-            sender.sendMessage(ServerTranslations.format("reccomplex.save.success", filetype, String.format("%s/%s", path, id)));
+        {
+            sender.sendMessage(ServerTranslations.format("reccomplex.save.full",
+                    ServerTranslations.format("reccomplex.save.success", filetype, RCTextStyle.path(path, id)),
+                    RCTextStyle.submit(id))
+            );
+        }
         else
             sender.sendMessage(ServerTranslations.format("reccomplex.save.failure", filetype, String.format("%s/%s", path, id)));
 

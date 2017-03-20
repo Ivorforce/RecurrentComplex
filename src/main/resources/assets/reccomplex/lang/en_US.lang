@@ -229,8 +229,9 @@ inventoryGen.mod=Mod Generator
 inventoryGen.active=%sActive%s
 inventoryGen.inactive=%sInactive%s
 
-reccomplex.save.permission=You do not have permission to save!
+reccomplex.server.status=<Recurrent Complex> Loaded %s active structures: %s %s %s %s
 
+reccomplex.save.permission=You do not have permission to save!
 reccomplex.save.failure=Failed to save %s to '%s'
 reccomplex.save.full=%s: %s
 reccomplex.save.success=Saved %s to %s

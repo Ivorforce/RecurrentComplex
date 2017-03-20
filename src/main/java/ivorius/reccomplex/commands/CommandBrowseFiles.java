@@ -40,6 +40,7 @@ public class CommandBrowseFiles extends CommandBase
     @Override
     public void execute(MinecraftServer server, ICommandSender commandSender, String[] args)
     {
+        // TODO Client-Side open
         OpenGlHelper.openFile(new File(ResourceDirectory.getCustomDirectory(), ResourceDirectory.RESOURCES_FILE_NAME));
     }
 }

@@ -36,14 +36,14 @@ public class CommandListStructures extends CommandBase
 
         if (endIndex - startIndex > 0)
         {
-            List<TextComponentString> components = new ArrayList<>(endIndex - startIndex + 2);
+            List<ITextComponent> components = new ArrayList<>(endIndex - startIndex + 2);
 
             components.add(new TextComponentString("[<--]"));
             if (page > 0)
                 linkToPage(components.get(0), page - 1, ServerTranslations.format("commands.rclist.previous"));
 
             for (int i = 0; i < endIndex - startIndex; i++)
-                components.add(CommandSearchStructure.structureTextComponent(structureNames.get(startIndex + i)));
+                components.add(RCTextStyle.structure(structureNames.get(startIndex + i)));
 
             components.add(new TextComponentString("[-->]"));
             if (page < (structureNames.size() - 1) / RESULTS_PER_PAGE)
@@ -55,7 +55,7 @@ public class CommandListStructures extends CommandBase
             commandSender.addChatMessage(ServerTranslations.get("commands.rclist.none"));
     }
 
-    public static void linkToPage(TextComponentString component, int page, ITextComponent hoverTitle)
+    public static void linkToPage(ITextComponent component, int page, ITextComponent hoverTitle)
     {
         component.getStyle().setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND,
                 String.format("/%s %d", RCCommands.list.getCommandName(), page)));

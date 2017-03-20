@@ -63,7 +63,7 @@ public class CommandContaining extends CommandBase
             RCCommands.ensureValid(matcher, 0);
             CommandSearchStructure.outputSearch(commandSender, StructureRegistry.INSTANCE.ids(),
                     name -> containedBlocks(StructureRegistry.INSTANCE.get(name), matcher),
-                    CommandSearchStructure::structureTextComponent
+                    RCTextStyle::structure
             );
         }
         else

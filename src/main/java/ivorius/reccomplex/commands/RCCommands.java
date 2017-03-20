@@ -60,6 +60,9 @@ public class RCCommands
 
     public static ICommand forget;
 
+    public static ICommand biomeDict;
+    public static ICommand dimensionDict;
+
     public static void onServerStart(FMLServerStartingEvent event)
     {
         event.registerServerCommand(new CommandWrite());
@@ -121,8 +124,8 @@ public class RCCommands
         event.registerServerCommand(new CommandSelectMove());
         event.registerServerCommand(new CommandSelectDuplicate());
 
-        event.registerServerCommand(new CommandBiomeDict());
-        event.registerServerCommand(new CommandDimensionDict());
+        event.registerServerCommand(biomeDict = new CommandBiomeDict());
+        event.registerServerCommand(dimensionDict = new CommandDimensionDict());
 
         event.registerServerCommand(new CommandImportSchematic());
         event.registerServerCommand(new CommandExportSchematic());

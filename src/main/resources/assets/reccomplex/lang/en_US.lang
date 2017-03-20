@@ -139,13 +139,13 @@ commands.biomedict.usage=/#biome <types|list|search> <id (get: Biome ID, list: B
 commands.biomedict.get=Biome Types for %s: %s
 commands.biomedict.get.number=%s biomes
 commands.biomedict.list=Biomes of Type %s: %s
-commands.biomedict.list.number=%s biome types
+commands.biomedict.list.number=Lookup (%s types)
 commands.biomedict.nobiome=No Biome with the ID '%s'
 commands.biomedict.notype=No Biome Type with the ID '%s'
 
 commands.dimensiondict.usage=/#dimension <types|list> <id (get: Dimension ID, list: Dimension Type ID)>
 commands.dimensiondict.get=Dimension Types for %d: %s
-commands.dimensiondict.get.number=%s dimensions
+commands.dimensiondict.get.number=Lookup (%s dimensions)
 commands.dimensiondict.list=Dimensions of Type %s: %s
 commands.dimensiondict.list.number=%s types
 

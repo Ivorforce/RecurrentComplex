@@ -15,12 +15,6 @@ import net.minecraft.command.ICommandSender;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.Style;
-import net.minecraft.util.text.TextComponentString;
-import net.minecraft.util.text.TextFormatting;
-import net.minecraft.util.text.event.ClickEvent;
-import net.minecraft.util.text.event.HoverEvent;
 import net.minecraft.world.biome.Biome;
 import net.minecraftforge.common.BiomeDictionary;
 
@@ -30,6 +24,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * Created by lukas on 03.08.14.
@@ -59,17 +54,6 @@ public class CommandBiomeDict extends CommandBase
         return ServerTranslations.usage("commands.biomedict.usage");
     }
 
-    public TextComponentString createBiomeTextComponent(ResourceLocation id)
-    {
-        TextComponentString comp = new TextComponentString(id.toString());
-        comp.getStyle().setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND,
-                String.format("/%s types %s", getName(), id.toString())));
-        comp.getStyle().setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT,
-                ServerTranslations.get("commands.rcsearch.lookup")));
-        comp.getStyle().setColor(TextFormatting.BLUE);
-        return comp;
-    }
-
     @Override
     public void execute(MinecraftServer server, ICommandSender commandSender, String[] args) throws CommandException
     {
@@ -82,7 +66,7 @@ public class CommandBiomeDict extends CommandBase
             {
                 CommandSearchStructure.outputSearch(commandSender, Biome.REGISTRY.getKeys(),
                         loc -> CommandSearchStructure.searchRank(Arrays.asList(args), keywords(loc, Biome.REGISTRY.getObject(loc))),
-                        this::createBiomeTextComponent
+                        RCTextStyle::biome
                 );
                 break;
             }
@@ -93,14 +77,10 @@ public class CommandBiomeDict extends CommandBase
 
                 if (biome != null)
                 {
-                    List<BiomeDictionary.Type> types = Lists.newArrayList(BiomeDictionary.getTypes(biome));
-                    ITextComponent[] components = new ITextComponent[types.size()];
-
-                    for (int i = 0; i < types.size(); i++)
-                        components[i] = typeTextComponent(types.get(i));
-
                     commandSender.sendMessage(ServerTranslations.format("commands.biomedict.get", biomeID,
-                            ServerTranslations.join((Object[]) components)));
+                            ServerTranslations.join(Lists.newArrayList(BiomeDictionary.getTypes(biome)).stream()
+                                    .map(RCTextStyle::biomeType).toArray())
+                    ));
                 }
                 else
                     commandSender.sendMessage(ServerTranslations.format("commands.biomedict.nobiome", biomeID));
@@ -112,19 +92,10 @@ public class CommandBiomeDict extends CommandBase
 
                 if (type != null)
                 {
-                    List<Biome> biomes = Lists.newArrayList(BiomeDictionary.getBiomes(type));
-                    ITextComponent[] components = new ITextComponent[biomes.size()];
-
-                    for (int i = 0; i < biomes.size(); i++)
-                    {
-                        Biome biome = biomes.get(i);
-                        String biomeID = Biome.REGISTRY.getNameForObject(biome).toString();
-                        ITextComponent component = biomeTextComponent(biome, biomeID);
-                        components[i] = component;
-                    }
-
                     commandSender.sendMessage(ServerTranslations.format("commands.biomedict.list", args[1],
-                            ServerTranslations.join((Object[]) components)));
+                            ServerTranslations.join(Lists.newArrayList(BiomeDictionary.getBiomes(type))
+                                    .stream().map(RCTextStyle::biome).toArray())
+                    ));
                 }
                 else
                     commandSender.sendMessage(ServerTranslations.format("commands.biomedict.notype", args[1]));
@@ -133,32 +104,6 @@ public class CommandBiomeDict extends CommandBase
             default:
                 throw ServerTranslations.wrongUsageException("commands.biomedict.usage");
         }
-    }
-
-    @Nonnull
-    public ITextComponent typeTextComponent(BiomeDictionary.Type type)
-    {
-        ITextComponent component = new TextComponentString(type.getName());
-        Style style = component.getStyle();
-        style.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND,
-                String.format("/%s list %s", getName(), type)));
-        style.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT,
-                ServerTranslations.format("commands.biomedict.get.number", BiomeDictionary.getBiomes(type).size())));
-        style.setColor(TextFormatting.AQUA);
-        return component;
-    }
-
-    @Nonnull
-    public ITextComponent biomeTextComponent(Biome biome, String biomeID)
-    {
-        ITextComponent component = new TextComponentString(biomeID);
-        Style style = component.getStyle();
-        style.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND,
-                String.format("/%s types %s", getName(), biomeID)));
-        style.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT,
-                ServerTranslations.format("commands.biomedict.list.number", BiomeDictionary.getTypes(biome).size())));
-        style.setColor(TextFormatting.AQUA);
-        return component;
     }
 
     @Override

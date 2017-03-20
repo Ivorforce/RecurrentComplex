@@ -6,12 +6,18 @@
 package ivorius.reccomplex.commands;
 
 import ivorius.reccomplex.Repository;
+import ivorius.reccomplex.dimensions.DimensionDictionary;
 import ivorius.reccomplex.utils.ServerTranslations;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.Style;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.util.text.event.ClickEvent;
 import net.minecraft.util.text.event.HoverEvent;
+import net.minecraft.world.biome.Biome;
+import net.minecraftforge.common.BiomeDictionary;
+import net.minecraftforge.common.DimensionManager;
 
 import javax.annotation.Nonnull;
 
@@ -48,5 +54,58 @@ public class RCTextStyle
                 ServerTranslations.get("commands.rcsearch.lookup")));
         comp.getStyle().setColor(TextFormatting.AQUA);
         return comp;
+    }
+
+    public static TextComponentString biome(ResourceLocation id)
+    {
+        return (TextComponentString) biome(Biome.REGISTRY.getObject(id));
+    }
+
+    @Nonnull
+    public static ITextComponent biome(Biome biome)
+    {
+        ITextComponent component = new TextComponentString(biome.getBiomeName());
+        Style style = component.getStyle();
+        style.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND,
+                String.format("/%s types %s", RCCommands.biomeDict.getName(), biome.getRegistryName())));
+        style.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT,
+                ServerTranslations.format("commands.biomedict.list.number", BiomeDictionary.getTypes(biome).size())));
+        style.setColor(TextFormatting.AQUA);
+        return component;
+    }
+
+    @Nonnull
+    public static ITextComponent biomeType(BiomeDictionary.Type type)
+    {
+        ITextComponent component = new TextComponentString(type.getName());
+        Style style = component.getStyle();
+        style.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND,
+                String.format("/%s list %s", RCCommands.biomeDict.getName(), type)));
+        style.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT,
+                ServerTranslations.format("commands.biomedict.get.number", BiomeDictionary.getBiomes(type).size())));
+        style.setColor(TextFormatting.AQUA);
+        return component;
+    }
+
+    @Nonnull
+    public static ITextComponent dimension(int dimensionID)
+    {
+        ITextComponent component = new TextComponentString(String.valueOf(dimensionID));
+        component.getStyle().setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND,
+                String.format("/%s types %s", RCCommands.dimensionDict.getName(), dimensionID)));
+        component.getStyle().setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT,
+                ServerTranslations.format("commands.dimensiondict.list.number", DimensionDictionary.getDimensionTypes(DimensionManager.getProvider(dimensionID)).size())));
+        return component;
+    }
+
+    @Nonnull
+    public static ITextComponent dimensionType(String type)
+    {
+        ITextComponent component = new TextComponentString(type);
+        component.getStyle().setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND,
+                String.format("/%s list %s", RCCommands.dimensionDict.getName(), type)));
+        component.getStyle().setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT,
+                ServerTranslations.format("commands.dimensiondict.get.number", CommandDimensionDict.allDimensionsOfType(type).size())));
+        return component;
     }
 }

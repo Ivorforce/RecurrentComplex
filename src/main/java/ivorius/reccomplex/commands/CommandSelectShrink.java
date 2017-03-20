@@ -8,9 +8,7 @@ package ivorius.reccomplex.commands;
 import ivorius.ivtoolkit.blocks.BlockArea;
 import ivorius.reccomplex.capability.SelectionOwner;
 import ivorius.reccomplex.world.MockWorld;
-import net.minecraft.command.CommandBase;
 import net.minecraft.command.CommandException;
-import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.math.BlockPos;
 import ivorius.reccomplex.RCConfig;
 import ivorius.ivtoolkit.blocks.BlockAreas;
@@ -20,7 +18,7 @@ import net.minecraft.command.ICommandSender;
 /**
  * Created by lukas on 09.06.14.
  */
-public class CommandSelectShrink extends VirtualCommand
+public class CommandSelectShrink extends CommandVirtual
 {
     @Override
     public String getName()

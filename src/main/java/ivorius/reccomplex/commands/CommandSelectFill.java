@@ -12,12 +12,10 @@ import ivorius.reccomplex.utils.ServerTranslations;
 import ivorius.reccomplex.world.MockWorld;
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
-import net.minecraft.command.CommandBase;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
 
 import javax.annotation.Nullable;
 import java.util.Collections;
@@ -28,7 +26,7 @@ import java.util.stream.IntStream;
 /**
  * Created by lukas on 09.06.14.
  */
-public class CommandSelectFill extends VirtualCommand
+public class CommandSelectFill extends CommandVirtual
 {
     @Override
     public String getName()

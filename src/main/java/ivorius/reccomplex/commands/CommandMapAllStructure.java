@@ -63,10 +63,10 @@ public class CommandMapAllStructure extends CommandBase
 
         ICommand other = server.getCommandManager().getCommands().get(args[2]);
 
-        if (!(other instanceof VirtualCommand))
+        if (!(other instanceof CommandVirtual))
             throw ServerTranslations.commandException("commands.rcmap.nonvirtual");
 
-        VirtualCommand virtual = (VirtualCommand) other;
+        CommandVirtual virtual = (CommandVirtual) other;
 
         int saved = 0, failed = 0, skipped = 0;
         for (String id : StructureRegistry.INSTANCE.ids())

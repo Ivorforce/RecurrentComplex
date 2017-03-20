@@ -14,13 +14,10 @@ import ivorius.reccomplex.utils.ServerTranslations;
 import ivorius.reccomplex.utils.algebra.ExpressionCache;
 import ivorius.reccomplex.utils.expression.PositionedBlockMatcher;
 import ivorius.reccomplex.world.MockWorld;
-import net.minecraft.command.CommandBase;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
-import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
 
 import javax.annotation.Nonnull;
 import java.util.stream.Stream;
@@ -29,7 +26,7 @@ import java.util.stream.StreamSupport;
 /**
  * Created by lukas on 09.06.14.
  */
-public class CommandSelectWand extends VirtualCommand
+public class CommandSelectWand extends CommandVirtual
 {
     @Nonnull
     protected static Stream<BlockPos> sideStream(BlockArea area, EnumFacing direction)

@@ -71,6 +71,8 @@ public class RCConfig
     public static boolean savePlayerCache;
     public static boolean notifyAdminOnBlockCommands;
 
+    public static boolean postWorldStatus;
+
     public static boolean memorizeDecoration;
     public static boolean memorizeSaplings;
 
@@ -111,8 +113,9 @@ public class RCConfig
             asCommandPermissionLevel = config.getInt("asCommandPermissionLevel", CATEGORY_DECORATION, 4, -1, 10, "The required permission level for /#as to function. Set to 2 for command blocks and OPs, 4 for only server, or -1 to disable. Note that this could be a security problem on low levels.");
 
             savePlayerCache = config.getBoolean("savePlayerCache", CATEGORY_GENERAL, true, "Whether player caches like the clipboard and previewed operations will be saved and loaded.");
-
             notifyAdminOnBlockCommands = config.getBoolean("notifyAdminOnBlockCommands", CATEGORY_GENERAL, false, "Disabling this will prevent spawn command blocks from notifying the server admins, as normal commands would.");
+
+            postWorldStatus = config.getBoolean("postWorldStatus", CATEGORY_GENERAL, true, "Once per world, post the status of ReC to the admins.");
 
             memorizeDecoration = config.getBoolean("memorizeDecoration", CATEGORY_GENERAL, false, "Memorize decoration spawns like trees or mushrooms (for /#whatisthis). Since decoration is so common, it is recommended to use this only for debugging / balancing purposes.");
             memorizeSaplings = config.getBoolean("memorizeSaplings", CATEGORY_GENERAL, false, "Memorize sapling spawns (for /#whatisthis). Since saplings are so common, it is recommended to use this only for debugging / balancing purposes.");

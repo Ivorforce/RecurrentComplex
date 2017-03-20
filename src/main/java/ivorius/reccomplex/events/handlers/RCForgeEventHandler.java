@@ -8,12 +8,18 @@ package ivorius.reccomplex.events.handlers;
 import ivorius.ivtoolkit.rendering.grid.GridRenderer;
 import ivorius.reccomplex.RCConfig;
 import ivorius.reccomplex.RecurrentComplex;
+import ivorius.reccomplex.Repository;
+import ivorius.reccomplex.Wiki;
 import ivorius.reccomplex.capability.CapabilitySelection;
 import ivorius.reccomplex.capability.StructureEntityInfo;
 import ivorius.reccomplex.client.rendering.SelectionRenderer;
+import ivorius.reccomplex.commands.RCCommands;
 import ivorius.reccomplex.events.ItemGenerationEvent;
 import ivorius.reccomplex.item.ItemInputHandler;
+import ivorius.reccomplex.utils.ServerTranslations;
 import ivorius.reccomplex.world.gen.feature.WorldGenStructures;
+import ivorius.reccomplex.world.gen.feature.WorldRandomData;
+import ivorius.reccomplex.world.gen.feature.structure.StructureRegistry;
 import ivorius.reccomplex.world.storage.loot.WeightedItemCollection;
 import ivorius.reccomplex.world.storage.loot.WeightedItemCollectionRegistry;
 import net.minecraft.client.Minecraft;
@@ -23,14 +29,19 @@ import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTBase;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.ChunkPos;
 import net.minecraft.util.math.MathHelper;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.TextComponentString;
 import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraft.util.text.TextFormatting;
+import net.minecraft.util.text.event.ClickEvent;
+import net.minecraft.util.text.event.HoverEvent;
 import net.minecraft.world.WorldServer;
 import net.minecraft.world.gen.structure.StructureBoundingBox;
 import net.minecraftforge.client.event.MouseEvent;
@@ -44,7 +55,9 @@ import net.minecraftforge.event.CommandEvent;
 import net.minecraftforge.event.entity.EntityJoinWorldEvent;
 import net.minecraftforge.event.terraingen.PopulateChunkEvent;
 import net.minecraftforge.fml.client.event.ConfigChangedEvent;
+import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.fml.common.gameevent.PlayerEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -204,6 +217,44 @@ public class RCForgeEventHandler
         {
             event.addCapability(new ResourceLocation(RecurrentComplex.MOD_ID, StructureEntityInfo.CAPABILITY_KEY), new SimpleCapabilityProvider<>(StructureEntityInfo.CAPABILITY));
             event.addCapability(new ResourceLocation(RecurrentComplex.MOD_ID, CapabilitySelection.CAPABILITY_KEY), new SimpleCapabilityProvider<>(CapabilitySelection.CAPABILITY));
+        }
+    }
+
+    @SubscribeEvent
+    public void onPlayerJoin(PlayerEvent.PlayerLoggedInEvent event)
+    {
+        if (RCConfig.postWorldStatus && event.player.canUseCommand(3, "op"))
+        {
+            WorldRandomData randomData = WorldRandomData.get(FMLCommonHandler.instance().getMinecraftServerInstance().getEntityWorld());
+            if (randomData.postWorldStatus(event.player.getName()))
+            {
+                ITextComponent count = new TextComponentString("" + StructureRegistry.INSTANCE.activeIDs().size());
+                count.getStyle().setColor(TextFormatting.AQUA);
+
+                ITextComponent list = new TextComponentString("[List]");
+                list.getStyle().setColor(TextFormatting.AQUA);
+                list.getStyle().setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new TextComponentString("Show List")));
+                list.getStyle().setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, String.format("/%s", RCCommands.list.getName())));
+
+                ITextComponent add = new TextComponentString("[Add]");
+                add.getStyle().setColor(TextFormatting.GREEN);
+                add.getStyle().setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new TextComponentString("Browse Repository")));
+                add.getStyle().setClickEvent(new ClickEvent(ClickEvent.Action.OPEN_URL, Repository.browseURL()));
+
+                ITextComponent remove = new TextComponentString("[Remove]");
+                remove.getStyle().setColor(TextFormatting.RED);
+                remove.getStyle().setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new TextComponentString("Disabling Structures")));
+                remove.getStyle().setClickEvent(new ClickEvent(ClickEvent.Action.OPEN_URL, Wiki.DISABLING_STRUCTURES));
+
+                ITextComponent help = new TextComponentString("[Help]");
+                help.getStyle().setColor(TextFormatting.AQUA);
+                help.getStyle().setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new TextComponentString("Open Wiki")));
+                help.getStyle().setClickEvent(new ClickEvent(ClickEvent.Action.OPEN_URL, Wiki.HOME));
+
+                ITextComponent statusMessage = ServerTranslations.format("reccomplex.server.status", count, list, add, remove, help);
+
+                event.player.sendMessage(statusMessage);
+            }
         }
     }
 

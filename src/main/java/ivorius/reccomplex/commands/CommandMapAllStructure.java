@@ -36,7 +36,7 @@ import java.util.List;
 public class CommandMapAllStructure extends CommandBase
 {
     @Override
-    public String getName()
+    public String getCommandName()
     {
         return RCConfig.commandPrefix + "mapall";
     }
@@ -47,7 +47,7 @@ public class CommandMapAllStructure extends CommandBase
     }
 
     @Override
-    public String getUsage(ICommandSender commandSender)
+    public String getCommandUsage(ICommandSender commandSender)
     {
         return ServerTranslations.usage("commands.rcmapall.usage");
     }
@@ -105,20 +105,20 @@ public class CommandMapAllStructure extends CommandBase
                 failed ++;
         }
 
-        commandSender.sendMessage(ServerTranslations.format("commands.rcmapall.result", saved, directory, failed, skipped));
+        commandSender.addChatMessage(ServerTranslations.format("commands.rcmapall.result", saved, directory, failed, skipped));
 
         ResourceDirectory.reload(RecurrentComplex.loader, LeveledRegistry.Level.CUSTOM);
         ResourceDirectory.reload(RecurrentComplex.loader, LeveledRegistry.Level.SERVER);
     }
 
     @Override
-    public List<String> getTabCompletions(MinecraftServer server, ICommandSender sender, String[] args, @Nullable BlockPos pos)
+    public List<String> getTabCompletionOptions(MinecraftServer server, ICommandSender sender, String[] args, @Nullable BlockPos pos)
     {
         if (args.length == 1)
             return getListOfStringsMatchingLastWord(args, StructureRegistry.INSTANCE.ids());
         else if (args.length == 2)
             return getListOfStringsMatchingLastWord(args, Arrays.asList(ResourceDirectory.values()));
 
-        return super.getTabCompletions(server, sender, args, pos);
+        return super.getTabCompletionOptions(server, sender, args, pos);
     }
 }

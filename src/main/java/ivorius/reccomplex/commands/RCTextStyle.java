@@ -65,7 +65,7 @@ public class RCTextStyle
     {
         TextComponentString comp = new TextComponentString(id);
         comp.getStyle().setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND,
-                String.format("/%s %s", RCCommands.lookup.getName(), id)));
+                String.format("/%s %s", RCCommands.lookup.getCommandName(), id)));
         comp.getStyle().setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT,
                 ServerTranslations.get("commands.rcsearch.lookup")));
         comp.getStyle().setColor(TextFormatting.AQUA);
@@ -83,9 +83,9 @@ public class RCTextStyle
         ITextComponent component = new TextComponentString(biome.getBiomeName());
         Style style = component.getStyle();
         style.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND,
-                String.format("/%s types %s", RCCommands.biomeDict.getName(), biome.getRegistryName())));
+                String.format("/%s types %s", RCCommands.biomeDict.getCommandName(), biome.getRegistryName())));
         style.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT,
-                ServerTranslations.format("commands.biomedict.list.number", BiomeDictionary.getTypes(biome).size())));
+                ServerTranslations.format("commands.biomedict.list.number", BiomeDictionary.getTypesForBiome(biome).length)));
         style.setColor(TextFormatting.AQUA);
         return component;
     }
@@ -93,12 +93,12 @@ public class RCTextStyle
     @Nonnull
     public static ITextComponent biomeType(BiomeDictionary.Type type)
     {
-        ITextComponent component = new TextComponentString(type.getName());
+        ITextComponent component = new TextComponentString(type.name());
         Style style = component.getStyle();
         style.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND,
-                String.format("/%s list %s", RCCommands.biomeDict.getName(), type)));
+                String.format("/%s list %s", RCCommands.biomeDict.getCommandName(), type)));
         style.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT,
-                ServerTranslations.format("commands.biomedict.get.number", BiomeDictionary.getBiomes(type).size())));
+                ServerTranslations.format("commands.biomedict.get.number", BiomeDictionary.getBiomesForType(type).length)));
         style.setColor(TextFormatting.AQUA);
         return component;
     }
@@ -108,7 +108,7 @@ public class RCTextStyle
     {
         ITextComponent component = new TextComponentString(String.valueOf(dimensionID));
         component.getStyle().setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND,
-                String.format("/%s types %s", RCCommands.dimensionDict.getName(), dimensionID)));
+                String.format("/%s types %s", RCCommands.dimensionDict.getCommandName(), dimensionID)));
         component.getStyle().setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT,
                 ServerTranslations.format("commands.dimensiondict.list.number", DimensionDictionary.getDimensionTypes(DimensionManager.getProvider(dimensionID)).size())));
         return component;
@@ -119,7 +119,7 @@ public class RCTextStyle
     {
         ITextComponent component = new TextComponentString(type);
         component.getStyle().setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND,
-                String.format("/%s list %s", RCCommands.dimensionDict.getName(), type)));
+                String.format("/%s list %s", RCCommands.dimensionDict.getCommandName(), type)));
         component.getStyle().setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT,
                 ServerTranslations.format("commands.dimensiondict.get.number", CommandDimensionDict.allDimensionsOfType(type).size())));
         return component;

@@ -39,11 +39,11 @@ public class WorldRandomData extends WorldSavedData
 
     public static WorldRandomData get(World world)
     {
-        WorldRandomData data = (WorldRandomData) world.loadData(WorldRandomData.class, IDENTIFIER);
+        WorldRandomData data = (WorldRandomData) world.loadItemData(WorldRandomData.class, IDENTIFIER);
         if (data == null)
         {
             data = new WorldRandomData();
-            world.setData(data.mapName, data);
+            world.setItemData(data.mapName, data);
         }
         return data;
     }

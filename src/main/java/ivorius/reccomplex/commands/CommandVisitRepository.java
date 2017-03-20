@@ -22,7 +22,7 @@ import java.io.File;
 public class CommandVisitRepository extends CommandBase
 {
     @Override
-    public String getName()
+    public String getCommandName()
     {
         return RCConfig.commandPrefix + "repository";
     }
@@ -33,7 +33,7 @@ public class CommandVisitRepository extends CommandBase
     }
 
     @Override
-    public String getUsage(ICommandSender commandSender)
+    public String getCommandUsage(ICommandSender commandSender)
     {
         return ServerTranslations.usage("commands.rcrepository.usage");
     }

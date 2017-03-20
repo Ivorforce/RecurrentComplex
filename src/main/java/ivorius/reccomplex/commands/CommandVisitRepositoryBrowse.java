@@ -18,7 +18,7 @@ import net.minecraft.server.MinecraftServer;
 public class CommandVisitRepositoryBrowse extends CommandBase
 {
     @Override
-    public String getName()
+    public String getCommandName()
     {
         return RCConfig.commandPrefix + "browse";
     }
@@ -29,7 +29,7 @@ public class CommandVisitRepositoryBrowse extends CommandBase
     }
 
     @Override
-    public String getUsage(ICommandSender commandSender)
+    public String getCommandUsage(ICommandSender commandSender)
     {
         return ServerTranslations.usage("commands.rcbrowse.usage");
     }

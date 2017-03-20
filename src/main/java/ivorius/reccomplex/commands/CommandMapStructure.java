@@ -30,7 +30,7 @@ import java.util.List;
 public class CommandMapStructure extends CommandBase
 {
     @Override
-    public String getName()
+    public String getCommandName()
     {
         return RCConfig.commandPrefix + "map";
     }
@@ -41,7 +41,7 @@ public class CommandMapStructure extends CommandBase
     }
 
     @Override
-    public String getUsage(ICommandSender commandSender)
+    public String getCommandUsage(ICommandSender commandSender)
     {
         return ServerTranslations.usage("commands.rcmap.usage");
     }
@@ -80,13 +80,13 @@ public class CommandMapStructure extends CommandBase
     }
 
     @Override
-    public List<String> getTabCompletions(MinecraftServer server, ICommandSender sender, String[] args, @Nullable BlockPos pos)
+    public List<String> getTabCompletionOptions(MinecraftServer server, ICommandSender sender, String[] args, @Nullable BlockPos pos)
     {
         if (args.length == 1)
             return getListOfStringsMatchingLastWord(args, StructureRegistry.INSTANCE.ids());
         else if (args.length == 2)
             return getListOfStringsMatchingLastWord(args, Arrays.asList(ResourceDirectory.values()));
 
-        return super.getTabCompletions(server, sender, args, pos);
+        return super.getTabCompletionOptions(server, sender, args, pos);
     }
 }

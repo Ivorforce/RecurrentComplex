@@ -223,7 +223,7 @@ public class RCForgeEventHandler
     @SubscribeEvent
     public void onPlayerJoin(PlayerEvent.PlayerLoggedInEvent event)
     {
-        if (RCConfig.postWorldStatus && event.player.canUseCommand(3, "op"))
+        if (RCConfig.postWorldStatus && event.player.canCommandSenderUseCommand(3, "op"))
         {
             WorldRandomData randomData = WorldRandomData.get(FMLCommonHandler.instance().getMinecraftServerInstance().getEntityWorld());
             if (randomData.postWorldStatus(event.player.getName()))
@@ -234,7 +234,7 @@ public class RCForgeEventHandler
                 ITextComponent list = new TextComponentString("[List]");
                 list.getStyle().setColor(TextFormatting.AQUA);
                 list.getStyle().setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new TextComponentString("Show List")));
-                list.getStyle().setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, String.format("/%s", RCCommands.list.getName())));
+                list.getStyle().setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, String.format("/%s", RCCommands.list.getCommandName())));
 
                 ITextComponent add = new TextComponentString("[Add]");
                 add.getStyle().setColor(TextFormatting.GREEN);
@@ -253,7 +253,7 @@ public class RCForgeEventHandler
 
                 ITextComponent statusMessage = ServerTranslations.format("reccomplex.server.status", count, list, add, remove, help);
 
-                event.player.sendMessage(statusMessage);
+                event.player.addChatMessage(statusMessage);
             }
         }
     }

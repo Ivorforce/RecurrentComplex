@@ -41,7 +41,6 @@ public class RCTextStyle
     {
         ITextComponent submit = ServerTranslations.get("reccomplex.save.submit");
         submit.getStyle().setColor(TextFormatting.AQUA);
-        submit.getStyle().setBold(true);
         submit.getStyle().setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, ServerTranslations.get("reccomplex.save.submit.hover")));
         submit.getStyle().setClickEvent(new ClickEvent(ClickEvent.Action.OPEN_URL, Repository.submitURL(id)));
         return submit;

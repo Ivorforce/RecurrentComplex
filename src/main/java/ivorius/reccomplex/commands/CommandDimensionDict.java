@@ -16,22 +16,30 @@ import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.TextComponentString;
-import net.minecraft.util.text.event.ClickEvent;
-import net.minecraft.util.text.event.HoverEvent;
 import net.minecraftforge.common.DimensionManager;
 
-import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * Created by lukas on 03.08.14.
  */
 public class CommandDimensionDict extends CommandBase
 {
+    public static TIntList allDimensionsOfType(String type)
+    {
+        TIntList intList = new TIntArrayList();
+        for (int d : DimensionManager.getIDs())
+        {
+            if (DimensionDictionary.dimensionMatchesType(DimensionManager.getProvider(d), type))
+                intList.add(d);
+        }
+        return intList;
+    }
+
     @Override
     public String getCommandName()
     {
@@ -61,66 +69,25 @@ public class CommandDimensionDict extends CommandBase
             {
                 int dimensionID = parseInt(args[1]);
 
-                List<String> types = Lists.newArrayList(DimensionDictionary.getDimensionTypes(DimensionManager.getProvider(dimensionID)));
-                ITextComponent[] components = new ITextComponent[types.size()];
-
-                for (int i = 0; i < components.length; i++)
-                    components[i] = typeTextComponent(types.get(i));
-
                 commandSender.addChatMessage(ServerTranslations.format("commands.dimensiondict.get", dimensionID,
-                        ServerTranslations.join((Object[]) components)));
+                        ServerTranslations.join(Lists.newArrayList(DimensionDictionary.getDimensionTypes(DimensionManager.getProvider(dimensionID))).stream()
+                                .map(RCTextStyle::dimensionType).toArray())
+                ));
                 break;
             }
             case "list":
             {
                 String type = args[1];
 
-                TIntList typeDimensions = allDimensionsOfType(type);
-                ITextComponent[] components = new ITextComponent[typeDimensions.size()];
-
-                for (int i = 0; i < components.length; i++)
-                    components[i] = dimensionTextComponent(typeDimensions.get(i));
-
                 commandSender.addChatMessage(ServerTranslations.format("commands.dimensiondict.list", type,
-                        ServerTranslations.join((Object[]) components)));
+                        ServerTranslations.join(Arrays.stream(allDimensionsOfType(type).toArray())
+                                .mapToObj(RCTextStyle::dimension).toArray())
+                ));
                 break;
             }
             default:
                 throw ServerTranslations.wrongUsageException("commands.dimensiondict.usage");
         }
-    }
-
-    @Nonnull
-    public ITextComponent typeTextComponent(String type)
-    {
-        ITextComponent component = new TextComponentString(type);
-        component.getStyle().setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND,
-                String.format("/%s list %s", getCommandName(), type)));
-        component.getStyle().setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT,
-                ServerTranslations.format("commands.dimensiondict.get.number", allDimensionsOfType(type).size())));
-        return component;
-    }
-
-    @Nonnull
-    public ITextComponent dimensionTextComponent(int dimensionID)
-    {
-        ITextComponent component = new TextComponentString(String.valueOf(dimensionID));
-        component.getStyle().setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND,
-                String.format("/%s types %s", getCommandName(), dimensionID)));
-        component.getStyle().setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT,
-                ServerTranslations.format("commands.dimensiondict.list.number", DimensionDictionary.getDimensionTypes(DimensionManager.getProvider(dimensionID)).size())));
-        return component;
-    }
-
-    private TIntList allDimensionsOfType(String type)
-    {
-        TIntList intList = new TIntArrayList();
-        for (int d : DimensionManager.getIDs())
-        {
-            if (DimensionDictionary.dimensionMatchesType(DimensionManager.getProvider(d), type))
-                intList.add(d);
-        }
-        return intList;
     }
 
     @Override

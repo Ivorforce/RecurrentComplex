@@ -188,6 +188,8 @@ commands.rcsearch.lookup=Look Up
 commands.rccontaining.usage=/#containing <block expression>
 
 commands.rcfiles.usage=/#files
+commands.rcrepository.usage=/#repository
+commands.rcbrowse.usage=/#browse
 
 commands.rcdecorate.usage=/#decorate <x min> <z min> <x max> <z max> [resource matcher: only generate these structures]
 commands.rcdecorateone.usage=/#decorateone [x] [z]

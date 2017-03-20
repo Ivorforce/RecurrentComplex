@@ -154,6 +154,9 @@ public class RCCommands
     public static void registerClientCommands(ClientCommandHandler handler)
     {
         handler.registerCommand(new CommandVisitFiles());
+
+        handler.registerCommand(new CommandVisitRepository());
+        handler.registerCommand(new CommandVisitRepositoryBrowse());
     }
 
     @Nonnull

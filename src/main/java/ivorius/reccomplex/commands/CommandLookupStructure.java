@@ -57,11 +57,6 @@ public class CommandLookupStructure extends CommandBase
             GenericStructureInfo structureInfo = RCCommands.getGenericStructure(id);
             Metadata metadata = structureInfo.metadata;
 
-            boolean hasAuthor = !metadata.authors.trim().isEmpty();
-            ITextComponent author = hasAuthor ? new TextComponentString(StringUtils.abbreviate(metadata.authors, 30)) : ServerTranslations.format("commands.rclookup.reply.noauthor");
-            if (hasAuthor)
-                author.getStyle().setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new TextComponentString(metadata.authors)));
-
             boolean hasWeblink = !metadata.weblink.trim().isEmpty();
             ITextComponent weblink = hasWeblink ? new TextComponentString(StringUtils.abbreviate(metadata.weblink, 30)) : ServerTranslations.format("commands.rclookup.reply.nolink");
             if (hasWeblink)
@@ -75,7 +70,7 @@ public class CommandLookupStructure extends CommandBase
 
             commandSender.addChatMessage(ServerTranslations.format(
                     StructureRegistry.INSTANCE.hasActive(id) ? "commands.rclookup.reply.generates" : "commands.rclookup.reply.silent",
-                    id, author, level, weblink));
+                    id, RCTextStyle.users(metadata.authors), level, weblink));
 
             if (!metadata.comment.trim().isEmpty())
                 commandSender.addChatMessage(ServerTranslations.format("commands.rclookup.reply.comment", metadata.comment));

@@ -18,8 +18,10 @@ import net.minecraft.util.text.event.HoverEvent;
 import net.minecraft.world.biome.Biome;
 import net.minecraftforge.common.BiomeDictionary;
 import net.minecraftforge.common.DimensionManager;
+import org.apache.commons.lang3.StringUtils;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 /**
  * Created by lukas on 20.03.17.
@@ -43,6 +45,21 @@ public class RCTextStyle
         submit.getStyle().setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, ServerTranslations.get("reccomplex.save.submit.hover")));
         submit.getStyle().setClickEvent(new ClickEvent(ClickEvent.Action.OPEN_URL, Repository.submitURL(id)));
         return submit;
+    }
+
+    public static ITextComponent users(@Nullable String names)
+    {
+        boolean has = names != null && !names.trim().isEmpty();
+
+        if (!has)
+            return ServerTranslations.format("commands.rclookup.reply.noauthor");
+
+        TextComponentString component = new TextComponentString(StringUtils.abbreviate(names, 30));
+
+        component.getStyle().setColor(TextFormatting.GOLD);
+        component.getStyle().setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new TextComponentString(names)));
+
+        return component;
     }
 
     public static ITextComponent structure(String id)

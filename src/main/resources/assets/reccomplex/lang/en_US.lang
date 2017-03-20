@@ -170,8 +170,8 @@ commands.rcforgetall.usage=/#forgetall [x] [y] [z]
 commands.rcforgetall.success=Forgot %s structures!
 
 commands.rclookup.usage=/#lookup <structure>
-commands.rclookup.reply.silent=%s: §bInactive§r, by: '%s', is %s, %s
-commands.rclookup.reply.generates=%s: §bGenerates§r, by: '%s', is %s, %s
+commands.rclookup.reply.silent=%s: §bInactive§r, by: %s, is %s, %s
+commands.rclookup.reply.generates=%s: §bGenerates§r, by: %s, is %s, %s
 commands.rclookup.reply.noauthor=§oUnknown§r
 commands.rclookup.reply.nolink=§oNo link provided§r
 commands.rclookup.reply.comment=Comment: %s

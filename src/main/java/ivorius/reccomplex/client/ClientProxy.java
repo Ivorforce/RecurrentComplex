@@ -8,12 +8,15 @@ package ivorius.reccomplex.client;
 import ivorius.reccomplex.RCConfig;
 import ivorius.reccomplex.RCProxy;
 import ivorius.reccomplex.RecurrentComplex;
+import ivorius.reccomplex.commands.RCCommands;
 import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.block.model.ModelBakery;
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
 import net.minecraft.item.Item;
 import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.client.ClientCommandHandler;
+import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import org.lwjgl.input.Keyboard;
 
 import java.io.File;
@@ -81,6 +84,12 @@ public class ClientProxy implements RCProxy
             registerTypeItemsForDefaultRender(genericSpace, genericSolid);
             registerItemsForDefaultRender(structureGenerator, mazeGenerator, spawnCommands, spawnScript);
         }
+    }
+
+    @Override
+    public void preInit(FMLPreInitializationEvent event)
+    {
+        RCCommands.registerClientCommands(ClientCommandHandler.instance);
     }
 
     protected void registerTypeItemsForDefaultRender(Block... blocks)

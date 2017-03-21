@@ -57,9 +57,9 @@ public class CommandWrite extends CommandBase
 
         ResourceDirectory directory = RCCommands.parseResourceDirectory(args[2]);
 
-        if (RCCommands.informSaveResult(RecurrentComplex.saver.trySave(directory.toPath(), adapterID, id), commandSender, directory.subDirectoryName(), adapterID, id))
+        if (RCCommands.informSaveResult(RecurrentComplex.saver.trySave(directory.toPath(), adapterID, id), commandSender, directory, adapterID, id))
         {
-            RCCommands.informDeleteResult(RecurrentComplex.saver.tryDeleteWithID(directory.opposite().toPath(), adapterID, id), commandSender, adapterID, id, directory.subDirectoryName());
+            RCCommands.informDeleteResult(RecurrentComplex.saver.tryDeleteWithID(directory.opposite().toPath(), adapterID, id), commandSender, adapterID, id, directory);
 
             // Could also predict changes and just reload those for the file but eh.
             ResourceDirectory.reload(RecurrentComplex.loader, LeveledRegistry.Level.CUSTOM);

@@ -25,6 +25,7 @@ import net.minecraft.command.*;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.text.ITextComponent;
 import net.minecraft.world.WorldServer;
 import net.minecraft.world.biome.Biome;
 import net.minecraftforge.client.ClientCommandHandler;
@@ -305,25 +306,29 @@ public class RCCommands
         return CommandBase.getListOfStringsMatchingLastWord(args, Biome.REGISTRY.getKeys());
     }
 
-    public static void informDeleteResult(Pair<Set<Path>, Set<Path>> result, ICommandSender sender, String filetype, String id, String path)
+    public static void informDeleteResult(Pair<Set<Path>, Set<Path>> result, ICommandSender sender, String filetype, String id, ResourceDirectory directory)
     {
+        ITextComponent pathComponent = RCTextStyle.path(directory, id);
+
         if (result.getRight().size() > 0)
-            sender.sendMessage(ServerTranslations.format("reccomplex.delete.failure", filetype, String.format("%s/%s", path, id)));
+            sender.sendMessage(ServerTranslations.format("reccomplex.delete.failure", filetype, pathComponent));
         else if (result.getLeft().size() > 0)
-            sender.sendMessage(ServerTranslations.format("reccomplex.delete.success", filetype, String.format("%s/%s", path, id)));
+            sender.sendMessage(ServerTranslations.format("reccomplex.delete.success", filetype, pathComponent));
     }
 
-    public static boolean informSaveResult(boolean result, ICommandSender sender, String path, String filetype, String id)
+    public static boolean informSaveResult(boolean result, ICommandSender sender, ResourceDirectory directory, String filetype, String id)
     {
+        ITextComponent pathComponent = RCTextStyle.path(directory, id);
+
         if (result)
         {
             sender.sendMessage(ServerTranslations.format("reccomplex.save.full",
-                    ServerTranslations.format("reccomplex.save.success", filetype, RCTextStyle.path(path, id)),
+                    ServerTranslations.format("reccomplex.save.success", filetype, pathComponent),
                     RCTextStyle.submit(id))
             );
         }
         else
-            sender.sendMessage(ServerTranslations.format("reccomplex.save.failure", filetype, String.format("%s/%s", path, id)));
+            sender.sendMessage(ServerTranslations.format("reccomplex.save.failure", filetype, pathComponent));
 
         return result;
     }

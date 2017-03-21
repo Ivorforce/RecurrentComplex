@@ -60,7 +60,7 @@ public class CommandDelete extends CommandBase
 
         ResourceDirectory directory = ResourceDirectory.valueOf(args[2]);
 
-        RCCommands.informDeleteResult(RecurrentComplex.saver.tryDeleteWithID(directory.toPath(), adapterID, id), commandSender, adapterID, id, directory.subDirectoryName());
+        RCCommands.informDeleteResult(RecurrentComplex.saver.tryDeleteWithID(directory.toPath(), adapterID, id), commandSender, adapterID, id, directory);
 
         // Could also predict changes and just reload those for the file but eh.
         ResourceDirectory.reload(RecurrentComplex.loader, LeveledRegistry.Level.CUSTOM);

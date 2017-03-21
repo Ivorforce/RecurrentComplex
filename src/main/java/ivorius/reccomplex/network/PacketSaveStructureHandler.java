@@ -65,14 +65,14 @@ public class PacketSaveStructureHandler extends SchedulingMessageHandler<PacketS
         ResourceDirectory delDir = saveDir.opposite();
         boolean saveResult = RecurrentComplex.saver.trySave(saveDir.toPath(), RCFileSaver.STRUCTURE, id);
 
-        if (!inform || RCCommands.informSaveResult(saveResult, sender, saveDir.subDirectoryName(), RCFileSaver.STRUCTURE, id))
+        if (!inform || RCCommands.informSaveResult(saveResult, sender, saveDir, RCFileSaver.STRUCTURE, id))
         {
             if (deleteOther)
             {
                 Pair<Set<Path>, Set<Path>> deleteResult = RecurrentComplex.saver.tryDeleteWithID(delDir.toPath(), RCFileSaver.STRUCTURE, id);
 
                 if (inform)
-                    RCCommands.informDeleteResult(deleteResult, sender, RCFileSaver.STRUCTURE, id, delDir.subDirectoryName());
+                    RCCommands.informDeleteResult(deleteResult, sender, RCFileSaver.STRUCTURE, id, delDir);
             }
         }
 

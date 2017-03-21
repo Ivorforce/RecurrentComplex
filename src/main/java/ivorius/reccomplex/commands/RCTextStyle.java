@@ -7,6 +7,7 @@ package ivorius.reccomplex.commands;
 
 import ivorius.reccomplex.Repository;
 import ivorius.reccomplex.dimensions.DimensionDictionary;
+import ivorius.reccomplex.files.loading.ResourceDirectory;
 import ivorius.reccomplex.utils.ServerTranslations;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
@@ -29,15 +30,27 @@ import javax.annotation.Nullable;
 public class RCTextStyle
 {
     @Nonnull
-    protected static ITextComponent path(String path, String id)
+    protected static ITextComponent path(ResourceDirectory directory, String id)
     {
-        ITextComponent pathComponent = new TextComponentString(String.format("%s/%s", path, id));
+        ITextComponent pathComponent = new TextComponentString(String.format("%s/%s", directory, id));
         pathComponent.getStyle().setColor(TextFormatting.GOLD);
+        pathComponent.getStyle().setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new TextComponentString("Visit File")));
+        pathComponent.getStyle().setClickEvent(new ClickEvent(ClickEvent.Action.OPEN_FILE, directory.toFile().getAbsolutePath()));
         return pathComponent;
     }
 
     @Nonnull
     protected static ITextComponent submit(String id)
+    {
+        ITextComponent submit = ServerTranslations.get("reccomplex.save.submit");
+        submit.getStyle().setColor(TextFormatting.AQUA);
+        submit.getStyle().setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, ServerTranslations.get("reccomplex.save.submit.hover")));
+        submit.getStyle().setClickEvent(new ClickEvent(ClickEvent.Action.OPEN_URL, Repository.submitURL(id)));
+        return submit;
+    }
+
+    @Nonnull
+    protected static ITextComponent visitFile(String id)
     {
         ITextComponent submit = ServerTranslations.get("reccomplex.save.submit");
         submit.getStyle().setColor(TextFormatting.AQUA);

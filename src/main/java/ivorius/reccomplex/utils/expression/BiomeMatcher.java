@@ -102,11 +102,11 @@ public class BiomeMatcher extends BoolFunctionExpressionCache<Biome, Object>
         public Function<SupplierCache<Biome>, Boolean> parse(String var)
         {
             BiomeDictionary.Type type = BiomeDictionaryAccessor.getTypeWeak(var);
-            return b -> type != null && BiomeDictionary.hasType(b.get(), type)
+            return type != null ? b -> BiomeDictionary.hasType(b.get(), type)
                     || (type == BiomeDictionary.Type.WATER // Special test
                     && (BiomeDictionary.hasType(b.get(), BiomeDictionary.Type.OCEAN)
                     || BiomeDictionary.hasType(b.get(), BiomeDictionary.Type.RIVER))
-            );
+            ) : b -> false;
         }
 
         @Override

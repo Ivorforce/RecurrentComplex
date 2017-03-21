@@ -235,7 +235,7 @@ public class GenericStructureInfo implements StructureInfo<GenericStructureInfo.
                         GeneratingTileEntity<?> generatingTE = generatingTEs.get(sourcePos);
 
                         //noinspection unchecked
-                        if (asSource || !(generatingTE == null || ((GeneratingTileEntity) generatingTE).shouldPlaceInWorld(context, instanceData.tileEntities.get(sourcePos))))
+                        if (asSource || generatingTE == null || ((GeneratingTileEntity) generatingTE).shouldPlaceInWorld(context, instanceData.tileEntities.get(sourcePos)))
                             setBlock(context, areaSize, worldPos, state, () -> tileEntityCompounds.get(sourcePos));
                         else
                             context.setBlock(worldPos, Blocks.AIR.getDefaultState(), 2); // Replace with air

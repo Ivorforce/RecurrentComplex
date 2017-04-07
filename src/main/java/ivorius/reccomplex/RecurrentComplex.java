@@ -111,8 +111,7 @@ public class RecurrentComplex
         RCConfig.loadConfig(null);
         config.save();
 
-        if (isLite())
-            logger.trace("Entering lightweight mode!");
+        logger.trace(isLite() ? "Entering lightweight mode!" : "Entering default mode!");
 
         loader = new FileLoader();
         saver = new FileSaver();

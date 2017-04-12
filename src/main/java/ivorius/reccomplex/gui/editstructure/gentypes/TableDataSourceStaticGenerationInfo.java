@@ -48,8 +48,7 @@ public class TableDataSourceStaticGenerationInfo extends TableDataSourceSegmente
         addManagedSegment(5, TableCellMultiBuilder.create(navigator, delegate)
                 .addNavigation(() -> new TableDataSourceStaticPattern(generationInfo.pattern, delegate), () -> IvTranslations.get("reccomplex.generationInfo.static.pattern"))
                 .enabled(generationInfo::hasPattern)
-                .addAction(() -> generationInfo.hasPattern() ? IvTranslations.get("reccomplex.gui.remove") : IvTranslations.get("reccomplex.gui.add"), null,
-                        () -> generationInfo.pattern = generationInfo.hasPattern() ? null : new StaticGenerationInfo.Pattern()
+                .addAction(() -> generationInfo.pattern = generationInfo.hasPattern() ? null : new StaticGenerationInfo.Pattern(), () -> generationInfo.hasPattern() ? IvTranslations.get("reccomplex.gui.remove") : IvTranslations.get("reccomplex.gui.add"), null
                 ).buildDataSource());
     }
 

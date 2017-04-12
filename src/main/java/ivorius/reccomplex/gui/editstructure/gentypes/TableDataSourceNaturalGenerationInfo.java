@@ -58,8 +58,7 @@ public class TableDataSourceNaturalGenerationInfo extends TableDataSourceSegment
         addManagedSegment(6, TableCellMultiBuilder.create(navigator, delegate)
                 .addNavigation(() -> new TableDataSourceNaturalGenLimitation(generationInfo.spawnLimitation, delegate), () -> IvTranslations.get("reccomplex.generationInfo.natural.limitations"))
                 .enabled(generationInfo::hasLimitations)
-                .addAction(() -> generationInfo.hasLimitations() ? IvTranslations.get("reccomplex.gui.remove") : IvTranslations.get("reccomplex.gui.add"), null,
-                        () -> generationInfo.spawnLimitation = generationInfo.hasLimitations() ? null : new NaturalGenerationInfo.SpawnLimitation()
+                .addAction(() -> generationInfo.spawnLimitation = generationInfo.hasLimitations() ? null : new NaturalGenerationInfo.SpawnLimitation(), () -> generationInfo.hasLimitations() ? IvTranslations.get("reccomplex.gui.remove") : IvTranslations.get("reccomplex.gui.add"), null
                 ).buildDataSource());
     }
 

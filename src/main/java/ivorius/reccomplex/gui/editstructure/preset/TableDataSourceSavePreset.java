@@ -81,7 +81,7 @@ public class TableDataSourceSavePreset<T> extends TableDataSourceSegmented
                             .map(s -> s.replaceAll("<BR>", "<br>")).collect(Collectors.toList()));
         }));
         addManagedSegment(1, TableCellMultiBuilder.create(navigator, delegate)
-                .addAction(() -> IvTranslations.get("reccomplex.gui.save"), null, this::save).buildDataSource());
+                .addAction(this::save, () -> IvTranslations.get("reccomplex.gui.save"), null).buildDataSource());
     }
 
     public boolean save()

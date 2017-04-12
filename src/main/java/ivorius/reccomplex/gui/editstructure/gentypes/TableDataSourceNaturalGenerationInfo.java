@@ -44,8 +44,8 @@ public class TableDataSourceNaturalGenerationInfo extends TableDataSourceSegment
         addManagedSegment(0, new TableDataSourceGenerationInfo(generationInfo, navigator, delegate));
 
         addManagedSegment(3, TableCellMultiBuilder.create(navigator, delegate)
-                .addNavigation(() -> new TableDataSourcePlacer(generationInfo.placer, delegate, navigator), () -> IvTranslations.get("reccomplex.placer"))
-                .buildDataSource(null, IvTranslations.getLines("reccomplex.placer.tooltip")));
+                .addNavigation(() -> new TableDataSourcePlacer(generationInfo.placer, delegate, navigator))
+                .buildDataSource(IvTranslations.get("reccomplex.placer"), IvTranslations.getLines("reccomplex.placer.tooltip")));
 
         addManagedSegment(4, TableCellMultiBuilder.create(navigator, delegate)
                 .addNavigation(() -> new TableDataSourceBiomeGenList(generationInfo.biomeWeights, delegate, navigator), () -> IvTranslations.get("reccomplex.gui.biomes"))

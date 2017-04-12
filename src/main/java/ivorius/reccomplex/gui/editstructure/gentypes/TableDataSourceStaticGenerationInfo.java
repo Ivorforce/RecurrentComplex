@@ -40,8 +40,8 @@ public class TableDataSourceStaticGenerationInfo extends TableDataSourceSegmente
                 IvTranslations.get("reccomplex.generationInfo.static.position.x"), IvTranslations.get("reccomplex.generationInfo.static.position.z")));
 
         addManagedSegment(3, TableCellMultiBuilder.create(navigator, delegate)
-                .addNavigation(() -> new TableDataSourcePlacer(generationInfo.placer, delegate, navigator), () -> IvTranslations.get("reccomplex.placer"))
-                .buildDataSource(null, IvTranslations.getLines("reccomplex.placer.tooltip")));
+                .addNavigation(() -> new TableDataSourcePlacer(generationInfo.placer, delegate, navigator))
+                .buildDataSource(IvTranslations.get("reccomplex.placer"), IvTranslations.getLines("reccomplex.placer.tooltip")));
 
         addManagedSegment(4, TableDataSourceExpression.constructDefault(IvTranslations.get("reccomplex.gui.biomes"), generationInfo.dimensionMatcher, null));
 

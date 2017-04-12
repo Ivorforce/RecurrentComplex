@@ -5,6 +5,7 @@
 
 package ivorius.reccomplex.gui.worldscripts.mazegenerator;
 
+import ivorius.reccomplex.gui.table.TableCells;
 import ivorius.reccomplex.gui.table.cell.TableCell;
 import net.minecraft.util.text.TextFormatting;
 import ivorius.ivtoolkit.gui.IntegerRange;
@@ -49,7 +50,7 @@ public class TableDataSourceMazePathConnectionList extends TableDataSourceList<S
     @Override
     public TableCell entryCell(boolean enabled, SavedMazePathConnection savedMazePathConnection)
     {
-        return editCell(enabled, navigator, tableDelegate, () -> new TableDataSourceMazePathConnection(savedMazePathConnection, bounds, tableDelegate));
+        return TableCells.edit(enabled, navigator, tableDelegate, () -> new TableDataSourceMazePathConnection(savedMazePathConnection, bounds, tableDelegate));
     }
 
     @Nonnull

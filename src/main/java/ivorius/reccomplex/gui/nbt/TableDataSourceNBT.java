@@ -7,7 +7,7 @@ package ivorius.reccomplex.gui.nbt;
 
 import ivorius.reccomplex.RecurrentComplex;
 import ivorius.reccomplex.gui.GuiValidityStateIndicator;
-import ivorius.reccomplex.gui.editstructure.preset.TableDataSourcePresettedList;
+import ivorius.reccomplex.gui.table.TableCells;
 import ivorius.reccomplex.gui.table.TableDelegate;
 import ivorius.reccomplex.gui.table.TableNavigator;
 import ivorius.reccomplex.gui.table.cell.*;
@@ -244,7 +244,7 @@ public class TableDataSourceNBT
     @Nonnull
     public static TableCellButton addButton(int id, Consumer<NBTBase> consumer)
     {
-        TableCellButton button = TableDataSourcePresettedList.addAction(true, (String) TYPE_LOOKUP[id * 2], (String) TYPE_LOOKUP[id * 2], null);
+        TableCellButton button = TableCells.add(true, (String) TYPE_LOOKUP[id * 2], (String) TYPE_LOOKUP[id * 2], null);
         button.addAction(() -> consumer.accept(typeSupplier(id).get()));
         return button;
     }
@@ -287,7 +287,7 @@ public class TableDataSourceNBT
     @Nonnull
     public static TableCellButton typeButton(int id, Runnable runnable)
     {
-        TableCellButton button = TableDataSourcePresettedList.addAction(true, (String) TYPE_LOOKUP[id * 2], "Set to " + (String) TYPE_LOOKUP[id * 2], null);
+        TableCellButton button = TableCells.add(true, (String) TYPE_LOOKUP[id * 2], "Set to " + (String) TYPE_LOOKUP[id * 2], null);
         button.addAction(runnable);
         return button;
     }

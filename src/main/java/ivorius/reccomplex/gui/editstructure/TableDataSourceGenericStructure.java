@@ -10,14 +10,17 @@ import ivorius.reccomplex.RecurrentComplex;
 import ivorius.reccomplex.gui.GuiValidityStateIndicator;
 import ivorius.reccomplex.gui.TableDataSourceExpression;
 import ivorius.reccomplex.gui.TableElementSaveDirectory;
-import ivorius.reccomplex.gui.table.*;
+import ivorius.reccomplex.gui.table.GuiTable;
+import ivorius.reccomplex.gui.table.TableCells;
+import ivorius.reccomplex.gui.table.TableDelegate;
+import ivorius.reccomplex.gui.table.TableNavigator;
 import ivorius.reccomplex.gui.table.cell.*;
 import ivorius.reccomplex.gui.table.datasource.TableDataSourceSegmented;
 import ivorius.reccomplex.gui.table.datasource.TableDataSourceSupplied;
+import ivorius.reccomplex.utils.SaveDirectoryData;
 import ivorius.reccomplex.world.gen.feature.structure.StructureInfos;
 import ivorius.reccomplex.world.gen.feature.structure.StructureRegistry;
 import ivorius.reccomplex.world.gen.feature.structure.generic.GenericStructureInfo;
-import ivorius.reccomplex.utils.SaveDirectoryData;
 
 import javax.annotation.Nonnull;
 
@@ -45,16 +48,16 @@ public class TableDataSourceGenericStructure extends TableDataSourceSegmented
         addManagedSegment(1, new TableDataSourceSupplied(() -> TableElementSaveDirectory.create(saveDirectoryData, () -> structureKey, delegate)));
 
         addManagedSegment(2, TableCellMultiBuilder.create(navigator, delegate)
-                .addNavigation(() -> new TableDataSourceMetadata(structureInfo.metadata)
-                ).buildDataSource(IvTranslations.get("reccomplex.structure.metadata"), IvTranslations.getLines("reccomplex.structure.metadata.tooltip")));
+                .addNavigation(() -> new TableDataSourceMetadata(structureInfo.metadata), () -> IvTranslations.get("reccomplex.structure.metadata"))
+                .buildDataSource(null, IvTranslations.getLines("reccomplex.structure.metadata.tooltip")));
 
         addManagedSegment(4, TableCellMultiBuilder.create(navigator, delegate)
-                .addNavigation(() -> new TableDataSourceStructureGenerationInfoList(structureInfo.generationInfos, delegate, navigator)
-                ).buildDataSource(IvTranslations.get("reccomplex.structure.generation"), IvTranslations.getLines("reccomplex.structure.generation.tooltip")));
+                .addNavigation(() -> new TableDataSourceStructureGenerationInfoList(structureInfo.generationInfos, delegate, navigator), () -> IvTranslations.get("reccomplex.structure.generation"))
+                .buildDataSource(null, IvTranslations.getLines("reccomplex.structure.generation.tooltip")));
 
         addManagedSegment(5, TableCellMultiBuilder.create(navigator, delegate)
-                .addNavigation(() -> structureInfo.transformer.tableDataSource(navigator, delegate))
-                .buildDataSource(IvTranslations.get("reccomplex.structure.transformers"), IvTranslations.getLines("reccomplex.structure.transformers.tooltip")));
+                .addNavigation(() -> structureInfo.transformer.tableDataSource(navigator, delegate), () -> IvTranslations.get("reccomplex.structure.transformers"))
+                .buildDataSource(null, IvTranslations.getLines("reccomplex.structure.transformers.tooltip")));
 
         addManagedSegment(6, TableDataSourceExpression.constructDefault(IvTranslations.get("reccomplex.structure.dependencies"), IvTranslations.getLines("reccomplex.structure.dependencies.tooltip"), structureInfo.dependencies, RecurrentComplex.saver));
     }

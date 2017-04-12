@@ -47,7 +47,7 @@ public class TableDataSourceSelection extends TableDataSourceList<Selection.Area
     @Override
     public TableCell entryCell(boolean enabled, Selection.Area area)
     {
-        return editCell(enabled, navigator, tableDelegate, () -> new TableDataSourceSelectionArea(area, dimensions, showIdentifier));
+        return TableCells.edit(enabled, navigator, tableDelegate, () -> new TableDataSourceSelectionArea(area, dimensions, showIdentifier));
     }
 
     @Nonnull

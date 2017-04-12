@@ -5,6 +5,18 @@
 
 package ivorius.reccomplex.gui.table;
 
+import ivorius.ivtoolkit.tools.IvTranslations;
+import ivorius.reccomplex.gui.table.cell.TableCellButton;
+import ivorius.reccomplex.gui.table.cell.TableCellPresetAction;
+import ivorius.reccomplex.gui.table.datasource.TableDataSource;
+import net.minecraft.util.text.TextFormatting;
+
+import javax.annotation.Nonnull;
+import java.util.Collection;
+import java.util.List;
+import java.util.function.Supplier;
+import java.util.stream.Collectors;
+
 /**
  * Created by lukas on 28.02.15.
  */
@@ -29,5 +41,53 @@ public class TableCells
 
         for (String cell : cellIDs)
             delegate.setLocked(cell, false);
+    }
+
+    @Nonnull
+    public static TableCellButton edit(boolean enabled, TableNavigator navigator, TableDelegate tableDelegate, Supplier<TableDataSource> table)
+    {
+        TableCellButton edit = new TableCellButton("", "edit", IvTranslations.get("reccomplex.gui.edit"), enabled){
+            @Override
+            public void draw(GuiTable screen, int mouseX, int mouseY, float partialTicks)
+            {
+                super.draw(screen, mouseX, mouseY, partialTicks);
+
+                String right = "...";
+                int rightWidth = getFontRenderer().getStringWidth(right);
+                getFontRenderer().drawString(right, bounds().getMaxX() - 8 - rightWidth, bounds().getCenterY() - 4, 0xffffffff, true);
+            }
+        };
+        edit.addAction(() -> navigator.pushTable(new GuiTable(tableDelegate, table.get())));
+        return edit;
+    }
+
+    @Nonnull
+    public static List<TableCellButton> addManyWithBase(Collection<String> ids, String baseKey, boolean enabled)
+    {
+        return TableCellPresetAction.sorted(ids.stream().map(type ->
+        {
+            String key = baseKey + type;
+            return add(enabled, type, IvTranslations.get(key), IvTranslations.formatLines(key + ".tooltip"));
+        })).collect(Collectors.toList());
+    }
+
+    @Nonnull
+    public static TableCellButton add(final boolean enabled, final String id, final String title, final List<String> tooltip)
+    {
+        return new TableCellButton(id, id,
+                title,
+                tooltip,
+                enabled){
+            @Override
+            public void draw(GuiTable screen, int mouseX, int mouseY, float partialTicks)
+            {
+                super.draw(screen, mouseX, mouseY, partialTicks);
+
+                String plus = TextFormatting.GREEN + "+";
+                int plusWidth = getFontRenderer().getStringWidth(plus);
+                getFontRenderer().drawString(plus, bounds().getMinX() + 6, bounds().getCenterY() - 4, 0xffffffff, true);
+                getFontRenderer().drawString(plus, bounds().getMaxX() - 6 - plusWidth, bounds().getCenterY() - 4, 0xffffffff, true);
+            }
+        };
     }
 }

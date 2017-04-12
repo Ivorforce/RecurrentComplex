@@ -38,12 +38,12 @@ public class TableDataSourceVanillaDecorationGenerationInfo extends TableDataSou
         addManagedSegment(0, new TableDataSourceGenerationInfo(generationInfo, navigator, delegate));
 
         addManagedSegment(3, TableCellMultiBuilder.create(navigator, delegate)
-                .addNavigation(() -> new TableDataSourceBiomeGenList(generationInfo.biomeWeights, delegate, navigator)
-                ).buildDataSource(IvTranslations.get("reccomplex.gui.biomes")));
+                .addNavigation(() -> new TableDataSourceBiomeGenList(generationInfo.biomeWeights, delegate, navigator), () -> IvTranslations.get("reccomplex.gui.biomes"))
+                .buildDataSource());
 
         addManagedSegment(4, TableCellMultiBuilder.create(navigator, delegate)
-                .addNavigation(() -> new TableDataSourceDimensionGenList(generationInfo.dimensionWeights, delegate, navigator)
-                ).buildDataSource(IvTranslations.get("reccomplex.gui.dimensions")));
+                .addNavigation(() -> new TableDataSourceDimensionGenList(generationInfo.dimensionWeights, delegate, navigator), () -> IvTranslations.get("reccomplex.gui.dimensions"))
+                .buildDataSource());
 
         addManagedSegment(5, new TableDataSourceBlockPos(generationInfo.spawnShift, generationInfo::setSpawnShift, null, null, null,
                 IvTranslations.get("reccomplex.generationInfo.vanilla.shift.x"), IvTranslations.get("reccomplex.generationInfo.vanilla.shift.y"), IvTranslations.get("reccomplex.generationInfo.vanilla.shift.z")));

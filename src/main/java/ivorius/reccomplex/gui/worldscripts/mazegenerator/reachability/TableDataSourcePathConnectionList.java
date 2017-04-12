@@ -8,6 +8,7 @@ package ivorius.reccomplex.gui.worldscripts.mazegenerator.reachability;
 import ivorius.ivtoolkit.gui.IntegerRange;
 import ivorius.ivtoolkit.maze.components.MazeRoom;
 import ivorius.ivtoolkit.tools.IvTranslations;
+import ivorius.reccomplex.gui.table.TableCells;
 import ivorius.reccomplex.gui.table.TableDelegate;
 import ivorius.reccomplex.gui.table.TableNavigator;
 import ivorius.reccomplex.gui.table.cell.TableCell;
@@ -62,7 +63,7 @@ public class TableDataSourcePathConnectionList extends TableDataSourceList<Immut
     @Override
     public TableCell entryCell(boolean enabled, ImmutablePair<SavedMazePath, SavedMazePath> pair)
     {
-        return editCell(enabled, navigator, tableDelegate, () -> new TableDataSourceMulti(
+        return TableCells.edit(enabled, navigator, tableDelegate, () -> new TableDataSourceMulti(
                 new TableDataSourcePreloaded(new TitledCell(new TableCellTitle("", IvTranslations.get("reccomplex.gui.source")))),
                 new TableDataSourceMazePath(pair.getLeft(), bounds, tableDelegate),
                 new TableDataSourcePreloaded(new TitledCell(new TableCellTitle("", IvTranslations.get("reccomplex.gui.destination")))),

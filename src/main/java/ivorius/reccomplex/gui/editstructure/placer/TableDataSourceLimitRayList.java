@@ -5,7 +5,6 @@
 
 package ivorius.reccomplex.gui.editstructure.placer;
 
-import ivorius.reccomplex.gui.editstructure.preset.TableDataSourcePresettedList;
 import ivorius.reccomplex.gui.table.*;
 import ivorius.reccomplex.gui.table.cell.TableCell;
 import ivorius.reccomplex.gui.table.cell.TableCellButton;
@@ -42,13 +41,13 @@ public class TableDataSourceLimitRayList extends TableDataSourceList<FactorLimit
     @Override
     public TableCell entryCell(boolean enabled, FactorLimit.Ray ray)
     {
-        return editCell(enabled, navigator, tableDelegate, () -> ray.tableDataSource(navigator, tableDelegate));
+        return TableCells.edit(enabled, navigator, tableDelegate, () -> ray.tableDataSource(navigator, tableDelegate));
     }
 
     @Override
     public List<TableCellButton> getAddActions()
     {
-        return TableDataSourcePresettedList.addActions(FactorLimit.getRayRegistry().allIDs(), "reccomplex.placer.factors.limit.rays.", canEditList());
+        return TableCells.addManyWithBase(FactorLimit.getRayRegistry().allIDs(), "reccomplex.placer.factors.limit.rays.", canEditList());
     }
 
     @Nonnull

@@ -19,7 +19,7 @@ import java.util.List;
  */
 public class TableCellButton extends TableCellDefault
 {
-    private GuiTexturedButton button = null;
+    protected GuiTexturedButton button = null;
 
     public String actionID;
     public String title;

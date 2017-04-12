@@ -45,14 +45,6 @@ public abstract class TableDataSourceList<T, L extends List<T>> extends TableDat
         this.navigator = navigator;
     }
 
-    @Nonnull
-    public static TableCellButton editCell(boolean enabled, TableNavigator navigator, TableDelegate tableDelegate, Supplier<TableDataSource> table)
-    {
-        TableCellButton edit = new TableCellButton("", "edit", IvTranslations.get("reccomplex.gui.edit"), enabled);
-        edit.addAction(() -> navigator.pushTable(new GuiTable(tableDelegate, table.get())));
-        return edit;
-    }
-
     @Nullable
     protected T tryInstantiate(String actionID, Class<? extends T> clazz, String format)
     {

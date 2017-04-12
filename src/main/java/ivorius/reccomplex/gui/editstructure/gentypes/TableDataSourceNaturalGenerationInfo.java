@@ -44,23 +44,23 @@ public class TableDataSourceNaturalGenerationInfo extends TableDataSourceSegment
         addManagedSegment(0, new TableDataSourceGenerationInfo(generationInfo, navigator, delegate));
 
         addManagedSegment(3, TableCellMultiBuilder.create(navigator, delegate)
-                .addNavigation(() -> new TableDataSourcePlacer(generationInfo.placer, delegate, navigator))
-                .buildDataSource(IvTranslations.get("reccomplex.placer"), IvTranslations.getLines("reccomplex.placer.tooltip")));
+                .addNavigation(() -> new TableDataSourcePlacer(generationInfo.placer, delegate, navigator), () -> IvTranslations.get("reccomplex.placer"))
+                .buildDataSource(null, IvTranslations.getLines("reccomplex.placer.tooltip")));
 
         addManagedSegment(4, TableCellMultiBuilder.create(navigator, delegate)
-                .addNavigation(() -> new TableDataSourceBiomeGenList(generationInfo.biomeWeights, delegate, navigator)
-                ).buildDataSource(IvTranslations.get("reccomplex.gui.biomes")));
+                .addNavigation(() -> new TableDataSourceBiomeGenList(generationInfo.biomeWeights, delegate, navigator), () -> IvTranslations.get("reccomplex.gui.biomes"))
+                .buildDataSource());
 
         addManagedSegment(5, TableCellMultiBuilder.create(navigator, delegate)
-                .addNavigation(() -> new TableDataSourceDimensionGenList(generationInfo.dimensionWeights, delegate, navigator)
-                ).buildDataSource(IvTranslations.get("reccomplex.gui.dimensions")));
+                .addNavigation(() -> new TableDataSourceDimensionGenList(generationInfo.dimensionWeights, delegate, navigator), () -> IvTranslations.get("reccomplex.gui.dimensions"))
+                .buildDataSource());
 
         addManagedSegment(6, TableCellMultiBuilder.create(navigator, delegate)
-                .addNavigation(() -> new TableDataSourceNaturalGenLimitation(generationInfo.spawnLimitation, delegate)
-                ).enabled(generationInfo::hasLimitations)
+                .addNavigation(() -> new TableDataSourceNaturalGenLimitation(generationInfo.spawnLimitation, delegate), () -> IvTranslations.get("reccomplex.generationInfo.natural.limitations"))
+                .enabled(generationInfo::hasLimitations)
                 .addAction(() -> generationInfo.hasLimitations() ? IvTranslations.get("reccomplex.gui.remove") : IvTranslations.get("reccomplex.gui.add"), null,
                         () -> generationInfo.spawnLimitation = generationInfo.hasLimitations() ? null : new NaturalGenerationInfo.SpawnLimitation()
-                ).buildDataSource(IvTranslations.get("reccomplex.generationInfo.natural.limitations")));
+                ).buildDataSource());
     }
 
     public static List<TableCellEnum.Option<String>> allGenerationCategories()

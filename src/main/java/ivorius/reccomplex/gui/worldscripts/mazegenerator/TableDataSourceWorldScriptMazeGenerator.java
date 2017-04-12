@@ -34,11 +34,11 @@ public class TableDataSourceWorldScriptMazeGenerator extends TableDataSourceSegm
 
         addManagedSegment(0, new TableDataSourceWorldScript(script));
         addManagedSegment(2, TableCellMultiBuilder.create(navigator, delegate)
-                .addNavigation(() -> new TableDataSourceMazeComponent(script.mazeComponent, false, navigator, delegate)
-                ).buildDataSource(IvTranslations.get("reccomplex.maze")));
+                .addNavigation(() -> new TableDataSourceMazeComponent(script.mazeComponent, false, navigator, delegate), () -> IvTranslations.get("reccomplex.maze"))
+                .buildDataSource());
         addManagedSegment(3, TableCellMultiBuilder.create(navigator, delegate)
-                .addNavigation(() -> new TableDataSourceMazeRuleList(script.rules, delegate, navigator, script.mazeComponent.exitPaths, script.mazeComponent.rooms.bounds())
-                ).buildDataSource(IvTranslations.get("reccomplex.worldscript.mazeGen.rules")));
+                .addNavigation(() -> new TableDataSourceMazeRuleList(script.rules, delegate, navigator, script.mazeComponent.exitPaths, script.mazeComponent.rooms.bounds()), () -> IvTranslations.get("reccomplex.worldscript.mazeGen.rules"))
+                .buildDataSource());
         addManagedSegment(4, new TableDataSourceBlockPos(script.getStructureShift(), script::setStructureShift, null, null, null,
                 IvTranslations.get("reccomplex.worldscript.mazeGen.shift.x"), IvTranslations.get("reccomplex.worldscript.mazeGen.shift.y"), IvTranslations.get("reccomplex.worldscript.mazeGen.shift.z")));
     }

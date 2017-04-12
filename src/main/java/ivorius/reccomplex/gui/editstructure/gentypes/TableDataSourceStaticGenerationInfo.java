@@ -40,17 +40,17 @@ public class TableDataSourceStaticGenerationInfo extends TableDataSourceSegmente
                 IvTranslations.get("reccomplex.generationInfo.static.position.x"), IvTranslations.get("reccomplex.generationInfo.static.position.z")));
 
         addManagedSegment(3, TableCellMultiBuilder.create(navigator, delegate)
-                .addNavigation(() -> new TableDataSourcePlacer(generationInfo.placer, delegate, navigator))
-                .buildDataSource(IvTranslations.get("reccomplex.placer"), IvTranslations.getLines("reccomplex.placer.tooltip")));
+                .addNavigation(() -> new TableDataSourcePlacer(generationInfo.placer, delegate, navigator), () -> IvTranslations.get("reccomplex.placer"))
+                .buildDataSource(null, IvTranslations.getLines("reccomplex.placer.tooltip")));
 
         addManagedSegment(4, TableDataSourceExpression.constructDefault(IvTranslations.get("reccomplex.gui.biomes"), generationInfo.dimensionMatcher, null));
 
         addManagedSegment(5, TableCellMultiBuilder.create(navigator, delegate)
-                .addNavigation(() -> new TableDataSourceStaticPattern(generationInfo.pattern, delegate)
-                ).enabled(generationInfo::hasPattern)
+                .addNavigation(() -> new TableDataSourceStaticPattern(generationInfo.pattern, delegate), () -> IvTranslations.get("reccomplex.generationInfo.static.pattern"))
+                .enabled(generationInfo::hasPattern)
                 .addAction(() -> generationInfo.hasPattern() ? IvTranslations.get("reccomplex.gui.remove") : IvTranslations.get("reccomplex.gui.add"), null,
                         () -> generationInfo.pattern = generationInfo.hasPattern() ? null : new StaticGenerationInfo.Pattern()
-                ).buildDataSource(IvTranslations.get("reccomplex.generationInfo.static.pattern")));
+                ).buildDataSource());
     }
 
     @Override

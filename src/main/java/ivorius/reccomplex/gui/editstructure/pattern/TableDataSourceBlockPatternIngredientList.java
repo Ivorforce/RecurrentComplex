@@ -5,6 +5,7 @@
 
 package ivorius.reccomplex.gui.editstructure.pattern;
 
+import ivorius.reccomplex.gui.table.TableCells;
 import ivorius.reccomplex.gui.table.cell.TableCell;
 import ivorius.reccomplex.gui.table.datasource.TableDataSourceList;
 import ivorius.reccomplex.gui.table.TableDelegate;
@@ -40,6 +41,6 @@ public class TableDataSourceBlockPatternIngredientList extends TableDataSourceLi
     @Override
     public TableCell entryCell(boolean enabled, BlockPattern.Ingredient ingredient)
     {
-        return editCell(enabled, navigator, tableDelegate, () -> new TableDataSourceBlockPatternIngredient(ingredient, tableDelegate));
+        return TableCells.edit(enabled, navigator, tableDelegate, () -> new TableDataSourceBlockPatternIngredient(ingredient, tableDelegate));
     }
 }

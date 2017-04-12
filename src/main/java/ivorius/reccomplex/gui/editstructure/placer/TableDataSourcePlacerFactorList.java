@@ -5,7 +5,6 @@
 
 package ivorius.reccomplex.gui.editstructure.placer;
 
-import ivorius.reccomplex.gui.editstructure.preset.TableDataSourcePresettedList;
 import ivorius.reccomplex.gui.table.*;
 import ivorius.reccomplex.gui.table.cell.TableCell;
 import ivorius.reccomplex.gui.table.cell.TableCellButton;
@@ -43,13 +42,13 @@ public class TableDataSourcePlacerFactorList extends TableDataSourceList<Generic
     @Override
     public TableCell entryCell(boolean enabled, GenericPlacer.Factor factor)
     {
-        return editCell(enabled, navigator, tableDelegate, () -> factor.tableDataSource(navigator, tableDelegate));
+        return TableCells.edit(enabled, navigator, tableDelegate, () -> factor.tableDataSource(navigator, tableDelegate));
     }
 
     @Override
     public List<TableCellButton> getAddActions()
     {
-        return TableDataSourcePresettedList.addActions(FactorRegistry.INSTANCE.getTypeRegistry().allIDs(), "reccomplex.placer.factors.", canEditList());
+        return TableCells.addManyWithBase(FactorRegistry.INSTANCE.getTypeRegistry().allIDs(), "reccomplex.placer.factors.", canEditList());
     }
 
     @Nonnull

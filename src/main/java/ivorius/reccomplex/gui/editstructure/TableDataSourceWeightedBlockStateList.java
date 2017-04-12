@@ -8,6 +8,7 @@ package ivorius.reccomplex.gui.editstructure;
 import ivorius.reccomplex.files.RCFileSaver;
 import ivorius.reccomplex.gui.editstructure.preset.TableDataSourcePresettedList;
 import ivorius.reccomplex.gui.editstructure.preset.TableDataSourcePresettedObject;
+import ivorius.reccomplex.gui.table.TableCells;
 import ivorius.reccomplex.gui.table.cell.TableCell;
 import ivorius.reccomplex.gui.table.datasource.TableDataSourceSegmented;
 import ivorius.reccomplex.gui.table.TableDelegate;
@@ -53,7 +54,7 @@ public class TableDataSourceWeightedBlockStateList extends TableDataSourceSegmen
             @Override
             public TableCell entryCell(boolean enabled, WeightedBlockState weightedBlockState)
             {
-                return editCell(enabled, navigator, delegate, () -> new TableDataSourceWeightedBlockState(weightedBlockState, navigator, tableDelegate));
+                return TableCells.edit(enabled, navigator, delegate, () -> new TableDataSourceWeightedBlockState(weightedBlockState, navigator, tableDelegate));
             }
         });
     }

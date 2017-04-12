@@ -6,7 +6,9 @@
 package ivorius.reccomplex.gui.table.cell;
 
 import ivorius.ivtoolkit.tools.IvTranslations;
-import ivorius.reccomplex.gui.table.*;
+import ivorius.reccomplex.gui.table.TableCells;
+import ivorius.reccomplex.gui.table.TableDelegate;
+import ivorius.reccomplex.gui.table.TableNavigator;
 import ivorius.reccomplex.gui.table.datasource.TableDataSource;
 import ivorius.reccomplex.gui.table.datasource.TableDataSourceSupplied;
 import net.minecraft.util.ResourceLocation;
@@ -23,9 +25,7 @@ import java.util.function.Supplier;
  */
 public class TableCellMultiBuilder
 {
-    protected final List<Supplier<Object>> titles = new ArrayList<>();
-    protected final List<Supplier<List<String>>> tooltips = new ArrayList<>();
-    protected final List<Runnable> actions = new ArrayList<>();
+    protected final List<Supplier<TableCellButton>> cells = new ArrayList<>();
     protected final List<BooleanSupplier> enabledSuppliers = new ArrayList<>();
 
     public TableNavigator navigator;
@@ -42,31 +42,61 @@ public class TableCellMultiBuilder
         return new TableCellMultiBuilder(navigator, delegate);
     }
 
+    @Nonnull
+    private static TableCellButton defaultCell(Object title, Supplier<List<String>> tooltip, Runnable action)
+    {
+        TableCellButton cell = new TableCellButton(null, null, "");
+
+        setVisuals(title, tooltip, cell);
+        cell.addAction(action);
+
+        return cell;
+    }
+
+    private static void setVisuals(Object title, Supplier<List<String>> tooltip, TableCellButton cell)
+    {
+        cell.title = "";
+        cell.setTexture(null);
+
+        if (title instanceof ResourceLocation)
+            cell.setTexture((ResourceLocation) title);
+        else if (title instanceof String)
+            cell.title = (String) title;
+
+        cell.setTooltip(tooltip != null ? tooltip.get() : null);
+    }
+
     public TableCellMultiBuilder addAction(Supplier<Object> title, @Nullable Supplier<List<String>> tooltip, Runnable action)
     {
-        titles.add(title);
-        tooltips.add(tooltip);
-        actions.add(() ->
+        cells.add(() -> defaultCell(title.get(), tooltip, () ->
         {
             action.run();
             delegate.reloadData();
+        }));
+        enabledSuppliers.add(null);
+        return this;
+    }
+
+    public TableCellMultiBuilder addNavigation(Supplier<TableDataSource> dataSource, Supplier<Object> title, @Nullable Supplier<List<String>> tooltip)
+    {
+        cells.add(() ->
+        {
+            TableCellButton edit = TableCells.edit(true, navigator, delegate, dataSource);
+            setVisuals(title.get(), tooltip, edit);
+            return edit;
         });
         enabledSuppliers.add(null);
         return this;
     }
 
-    public TableCellMultiBuilder addNavigation(Supplier<Object> title, @Nullable Supplier<List<String>> tooltip, Supplier<TableDataSource> dataSource)
+    public TableCellMultiBuilder addNavigation(Supplier<TableDataSource> dataSource, Supplier<Object> title)
     {
-        titles.add(title);
-        tooltips.add(tooltip);
-        actions.add(() -> navigator.pushTable(new GuiTable(delegate, dataSource.get())));
-        enabledSuppliers.add(null);
-        return this;
+        return addNavigation(dataSource, title, null);
     }
 
     public TableCellMultiBuilder addNavigation(Supplier<TableDataSource> dataSource)
     {
-        return addNavigation(() -> IvTranslations.get("reccomplex.gui.edit"), null, dataSource);
+        return addNavigation(dataSource, () -> IvTranslations.get("reccomplex.gui.edit"));
     }
 
     public TableCellMultiBuilder enabled(BooleanSupplier enabled)
@@ -109,24 +139,18 @@ public class TableCellMultiBuilder
     @Nonnull
     public TableCellDefault build()
     {
-        List<TableCell> cells = new ArrayList<>();
+        List<TableCellButton> cells = new ArrayList<>();
 
-        for (int i = 0; i < this.titles.size(); i++)
+        for (int i = 0; i < this.cells.size(); i++)
         {
-            Object title = this.titles.get(i).get();
-            TableCellButton cell = new TableCellButton("action." + i, "action." + i, title instanceof String ? (String) title : "");
-            if (title instanceof ResourceLocation)
-                cell.setTexture((ResourceLocation) title);
+            TableCellButton cell = this.cells.get(i).get();
 
-            int finalI = i;
-            cell.addAction(() -> actions.get(finalI).run());
+            cell.setId("action." + i);
+            cell.actionID = "action." + i;
 
-            Supplier<List<String>> tooltip = tooltips.get(i);
-            if (tooltip != null)
-                cell.setTooltip(tooltip.get());
-            BooleanSupplier enabledSupplier = enabledSuppliers.get(i);
-            if (enabledSupplier != null)
-                cell.setEnabled(enabledSupplier.getAsBoolean());
+            BooleanSupplier enabled = enabledSuppliers.get(i);
+            if (enabled != null)
+                cell.setEnabled(enabled.getAsBoolean());
 
             cells.add(cell);
         }

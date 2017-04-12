@@ -5,7 +5,6 @@
 
 package ivorius.reccomplex.gui.editstructure;
 
-import ivorius.reccomplex.gui.editstructure.preset.TableDataSourcePresettedList;
 import ivorius.reccomplex.gui.table.*;
 import ivorius.reccomplex.gui.table.cell.TableCell;
 import ivorius.reccomplex.gui.table.cell.TableCellButton;
@@ -45,13 +44,13 @@ public class TableDataSourceTransformerList extends TableDataSourceList<Transfor
     @Override
     public TableCell entryCell(boolean enabled, Transformer transformer)
     {
-        return editCell(enabled, navigator, tableDelegate, () -> transformer.tableDataSource(navigator, tableDelegate));
+        return TableCells.edit(enabled, navigator, tableDelegate, () -> transformer.tableDataSource(navigator, tableDelegate));
     }
 
     @Override
     public List<TableCellButton> getAddActions()
     {
-        return TableDataSourcePresettedList.addActions(StructureRegistry.TRANSFORMERS.allIDs(), "reccomplex.transformer.", canEditList());
+        return TableCells.addManyWithBase(StructureRegistry.TRANSFORMERS.allIDs(), "reccomplex.transformer.", canEditList());
     }
 
     @Nonnull

@@ -6,7 +6,6 @@
 package ivorius.reccomplex.gui.worldscripts.mazegenerator.rules;
 
 import ivorius.ivtoolkit.gui.IntegerRange;
-import ivorius.reccomplex.gui.editstructure.preset.TableDataSourcePresettedList;
 import ivorius.reccomplex.gui.table.*;
 import ivorius.reccomplex.gui.table.cell.TableCell;
 import ivorius.reccomplex.gui.table.cell.TableCellButton;
@@ -51,13 +50,13 @@ public class TableDataSourceMazeRuleList extends TableDataSourceList<MazeRule, L
     @Override
     public TableCell entryCell(boolean enabled, MazeRule mazeRule)
     {
-        return editCell(enabled, navigator, tableDelegate, () -> mazeRule.tableDataSource(navigator, tableDelegate, expected, bounds));
+        return TableCells.edit(enabled, navigator, tableDelegate, () -> mazeRule.tableDataSource(navigator, tableDelegate, expected, bounds));
     }
 
     @Override
     public List<TableCellButton> getAddActions()
     {
-        return TableDataSourcePresettedList.addActions(MazeRuleRegistry.INSTANCE.allIDs(), "reccomplex.mazerule.", canEditList());
+        return TableCells.addManyWithBase(MazeRuleRegistry.INSTANCE.allIDs(), "reccomplex.mazerule.", canEditList());
     }
 
     @Nonnull

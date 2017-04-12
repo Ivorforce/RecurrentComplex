@@ -5,7 +5,6 @@
 
 package ivorius.reccomplex.gui.worldscripts.multi;
 
-import ivorius.reccomplex.gui.editstructure.preset.TableDataSourcePresettedList;
 import ivorius.reccomplex.gui.table.*;
 import ivorius.reccomplex.gui.table.cell.TableCell;
 import ivorius.reccomplex.gui.table.cell.TableCellButton;
@@ -44,13 +43,13 @@ public class TableDataSourceWorldScriptList extends TableDataSourceList<WorldScr
     @Override
     public TableCell entryCell(boolean enabled, WorldScript worldScript)
     {
-        return editCell(enabled, navigator, tableDelegate, () -> worldScript.tableDataSource(navigator, tableDelegate));
+        return TableCells.edit(enabled, navigator, tableDelegate, () -> worldScript.tableDataSource(navigator, tableDelegate));
     }
 
     @Override
     public List<TableCellButton> getAddActions()
     {
-        return TableDataSourcePresettedList.addActions(WorldScriptRegistry.INSTANCE.allIDs(), "reccomplex.worldscript.", canEditList());
+        return TableCells.addManyWithBase(WorldScriptRegistry.INSTANCE.allIDs(), "reccomplex.worldscript.", canEditList());
     }
 
     @Nonnull

@@ -5,7 +5,6 @@
 
 package ivorius.reccomplex.gui.editstructure;
 
-import ivorius.reccomplex.gui.editstructure.preset.TableDataSourcePresettedList;
 import ivorius.reccomplex.gui.table.*;
 import ivorius.reccomplex.gui.table.cell.TableCell;
 import ivorius.reccomplex.gui.table.cell.TableCellButton;
@@ -30,7 +29,7 @@ public class TableDataSourceStructureGenerationInfoList extends TableDataSourceL
     @Override
     public List<TableCellButton> getAddActions()
     {
-        return TableDataSourcePresettedList.addActions(StructureRegistry.GENERATION_INFOS.allIDs(), "reccomplex.generationInfo.", canEditList());
+        return TableCells.addManyWithBase(StructureRegistry.GENERATION_INFOS.allIDs(), "reccomplex.generationInfo.", canEditList());
     }
 
     @Override
@@ -49,7 +48,7 @@ public class TableDataSourceStructureGenerationInfoList extends TableDataSourceL
     @Override
     public TableCell entryCell(boolean enabled, GenerationInfo generationInfo)
     {
-        return editCell(enabled, navigator, tableDelegate, () -> generationInfo.tableDataSource(navigator, tableDelegate));
+        return TableCells.edit(enabled, navigator, tableDelegate, () -> generationInfo.tableDataSource(navigator, tableDelegate));
     }
 
     @Nonnull

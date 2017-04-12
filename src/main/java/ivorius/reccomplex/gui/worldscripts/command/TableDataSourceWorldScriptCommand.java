@@ -42,7 +42,7 @@ public class TableDataSourceWorldScriptCommand extends TableDataSourceSegmented
             @Override
             public TableCell entryCell(boolean enabled, WorldScriptCommand.Entry entry)
             {
-                return editCell(enabled, navigator, tableDelegate, () -> new TableDataSourceSpawnCommandEntry(entry, tableDelegate));
+                return TableCells.edit(enabled, navigator, tableDelegate, () -> new TableDataSourceSpawnCommandEntry(entry, tableDelegate));
             }
         });
     }

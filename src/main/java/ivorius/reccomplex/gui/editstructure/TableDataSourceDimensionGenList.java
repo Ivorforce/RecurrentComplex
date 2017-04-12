@@ -13,6 +13,7 @@ import ivorius.reccomplex.gui.table.cell.TableCell;
 import ivorius.reccomplex.gui.table.datasource.TableDataSourceSegmented;
 import ivorius.reccomplex.gui.table.TableDelegate;
 import ivorius.reccomplex.gui.table.TableNavigator;
+import ivorius.reccomplex.utils.RCStrings;
 import ivorius.reccomplex.world.gen.feature.structure.generic.DimensionGenerationInfo;
 import ivorius.reccomplex.utils.presets.PresettedList;
 import net.minecraft.util.text.TextFormatting;
@@ -40,7 +41,7 @@ public class TableDataSourceDimensionGenList extends TableDataSourceSegmented
             @Override
             public String getDisplayString(DimensionGenerationInfo generationInfo)
             {
-                return String.format("%s%s: %.1f", StringUtils.abbreviate(generationInfo.getDisplayString(), 20), TextFormatting.RESET, generationInfo.getActiveGenerationWeight());
+                return String.format("%s%s: %.1f", RCStrings.abbreviateFormatted(generationInfo.getDisplayString(), 20), TextFormatting.RESET, generationInfo.getActiveGenerationWeight());
             }
 
             @Override

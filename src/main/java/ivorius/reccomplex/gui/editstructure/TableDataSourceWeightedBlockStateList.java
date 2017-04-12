@@ -13,6 +13,7 @@ import ivorius.reccomplex.gui.table.cell.TableCell;
 import ivorius.reccomplex.gui.table.datasource.TableDataSourceSegmented;
 import ivorius.reccomplex.gui.table.TableDelegate;
 import ivorius.reccomplex.gui.table.TableNavigator;
+import ivorius.reccomplex.utils.RCStrings;
 import ivorius.reccomplex.world.gen.feature.structure.generic.WeightedBlockState;
 import ivorius.reccomplex.utils.presets.PresettedList;
 import net.minecraft.block.Block;
@@ -41,7 +42,7 @@ public class TableDataSourceWeightedBlockStateList extends TableDataSourceSegmen
             @Override
             public String getDisplayString(WeightedBlockState entry)
             {
-                return String.format("%s$%d (%.2f)", StringUtils.abbreviate(Block.REGISTRY.getNameForObject(entry.state.getBlock()).toString(), 16), ivorius.ivtoolkit.blocks.BlockStates.toMetadata(entry.state), entry.getWeight());
+                return String.format("%s$%d (%.2f)", RCStrings.abbreviateFormatted(Block.REGISTRY.getNameForObject(entry.state.getBlock()).toString(), 16), ivorius.ivtoolkit.blocks.BlockStates.toMetadata(entry.state), entry.getWeight());
             }
 
             @Override

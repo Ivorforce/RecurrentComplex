@@ -13,6 +13,7 @@ import ivorius.reccomplex.gui.table.cell.TableCell;
 import ivorius.reccomplex.gui.table.datasource.TableDataSourceSegmented;
 import ivorius.reccomplex.gui.table.TableDelegate;
 import ivorius.reccomplex.gui.table.TableNavigator;
+import ivorius.reccomplex.utils.RCStrings;
 import ivorius.reccomplex.world.gen.feature.structure.generic.BiomeGenerationInfo;
 import ivorius.reccomplex.utils.presets.PresettedList;
 import net.minecraft.util.text.TextFormatting;
@@ -40,7 +41,7 @@ public class TableDataSourceBiomeGenList extends TableDataSourceSegmented
             @Override
             public String getDisplayString(BiomeGenerationInfo biomeGenerationInfo)
             {
-                return String.format("%s%s: %.2f", StringUtils.abbreviate(biomeGenerationInfo.getDisplayString(), 20), TextFormatting.RESET, biomeGenerationInfo.getActiveGenerationWeight());
+                return String.format("%s%s: %.2f", RCStrings.abbreviateFormatted(biomeGenerationInfo.getDisplayString(), 20), TextFormatting.RESET, biomeGenerationInfo.getActiveGenerationWeight());
             }
 
             @Override

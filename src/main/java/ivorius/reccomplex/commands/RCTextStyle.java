@@ -8,6 +8,7 @@ package ivorius.reccomplex.commands;
 import ivorius.reccomplex.Repository;
 import ivorius.reccomplex.dimensions.DimensionDictionary;
 import ivorius.reccomplex.files.loading.ResourceDirectory;
+import ivorius.reccomplex.utils.RCStrings;
 import ivorius.reccomplex.utils.ServerTranslations;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
@@ -66,7 +67,7 @@ public class RCTextStyle
         if (!has)
             return ServerTranslations.format("commands.rclookup.reply.noauthor");
 
-        TextComponentString component = new TextComponentString(StringUtils.abbreviate(names, 30));
+        TextComponentString component = new TextComponentString(RCStrings.abbreviateFormatted(names, 30));
 
         component.getStyle().setColor(TextFormatting.GOLD);
         component.getStyle().setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new TextComponentString(names)));

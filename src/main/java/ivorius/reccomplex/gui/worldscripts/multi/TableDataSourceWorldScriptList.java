@@ -9,6 +9,7 @@ import ivorius.reccomplex.gui.table.*;
 import ivorius.reccomplex.gui.table.cell.TableCell;
 import ivorius.reccomplex.gui.table.cell.TableCellButton;
 import ivorius.reccomplex.gui.table.datasource.TableDataSourceList;
+import ivorius.reccomplex.utils.RCStrings;
 import ivorius.reccomplex.world.gen.script.WorldScript;
 import ivorius.reccomplex.world.gen.script.WorldScriptRegistry;
 import org.apache.commons.lang3.StringUtils;
@@ -30,7 +31,7 @@ public class TableDataSourceWorldScriptList extends TableDataSourceList<WorldScr
     @Override
     public String getDisplayString(WorldScript script)
     {
-        return StringUtils.abbreviate(script.getDisplayString(), 24);
+        return RCStrings.abbreviateFormatted(script.getDisplayString(), 24);
     }
 
     @Override

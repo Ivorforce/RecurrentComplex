@@ -67,35 +67,36 @@ public class TableCellMultiBuilder
         cell.setTooltip(tooltip != null ? tooltip.get() : null);
     }
 
+    @Nonnull
+    public TableCellMultiBuilder addCell(Supplier<TableCellButton> cell)
+    {
+        cells.add(cell);
+        enabledSuppliers.add(null);
+        return this;
+    }
+
     public TableCellMultiBuilder addAction(Runnable action, Supplier<Object> title, @Nullable Supplier<List<String>> tooltip)
     {
-        cells.add(() -> defaultCell(title.get(), tooltip, () ->
+        return addCell(() -> defaultCell(title.get(), tooltip, () ->
         {
             action.run();
             delegate.reloadData();
         }));
-        enabledSuppliers.add(null);
-        return this;
     }
 
     public TableCellMultiBuilder addSimpleNavigation(Supplier<TableDataSource> dataSource, Supplier<Object> title, @Nullable Supplier<List<String>> tooltip)
     {
-        cells.add(() -> defaultCell(title.get(), tooltip, () -> navigator.pushTable(new GuiTable(delegate, dataSource.get()))));
-
-        enabledSuppliers.add(null);
-        return this;
+        return addCell(() -> defaultCell(title.get(), tooltip, () -> navigator.pushTable(new GuiTable(delegate, dataSource.get()))));
     }
 
     public TableCellMultiBuilder addNavigation(Supplier<TableDataSource> dataSource, Supplier<Object> title, @Nullable Supplier<List<String>> tooltip)
     {
-        cells.add(() ->
-        {
-            TableCellButton edit = TableCells.edit(true, navigator, delegate, dataSource);
-            setVisuals(title.get(), tooltip, edit);
-            return edit;
+        return addCell(() ->
+                {
+                    TableCellButton edit = TableCells.edit(true, navigator, delegate, dataSource);
+                    setVisuals(title.get(), tooltip, edit);
+                    return edit;
         });
-        enabledSuppliers.add(null);
-        return this;
     }
 
     public TableCellMultiBuilder addNavigation(Supplier<TableDataSource> dataSource, Supplier<Object> title)

@@ -6,6 +6,7 @@
 package ivorius.reccomplex.commands;
 
 import ivorius.reccomplex.RCConfig;
+import ivorius.reccomplex.utils.RCStrings;
 import ivorius.reccomplex.world.gen.feature.structure.StructureRegistry;
 import ivorius.reccomplex.world.gen.feature.structure.generic.GenericStructureInfo;
 import ivorius.reccomplex.world.gen.feature.structure.generic.Metadata;
@@ -58,7 +59,7 @@ public class CommandLookupStructure extends CommandBase
             Metadata metadata = structureInfo.metadata;
 
             boolean hasWeblink = !metadata.weblink.trim().isEmpty();
-            ITextComponent weblink = hasWeblink ? new TextComponentString(StringUtils.abbreviate(metadata.weblink, 30)) : ServerTranslations.format("commands.rclookup.reply.nolink");
+            ITextComponent weblink = hasWeblink ? new TextComponentString(RCStrings.abbreviateFormatted(metadata.weblink, 30)) : ServerTranslations.format("commands.rclookup.reply.nolink");
             if (hasWeblink)
             {
                 weblink.getStyle().setClickEvent(new ClickEvent(ClickEvent.Action.OPEN_URL, metadata.weblink));

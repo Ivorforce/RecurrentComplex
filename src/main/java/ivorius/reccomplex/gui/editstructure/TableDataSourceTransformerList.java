@@ -9,6 +9,7 @@ import ivorius.reccomplex.gui.table.*;
 import ivorius.reccomplex.gui.table.cell.TableCell;
 import ivorius.reccomplex.gui.table.cell.TableCellButton;
 import ivorius.reccomplex.gui.table.datasource.TableDataSourceList;
+import ivorius.reccomplex.utils.RCStrings;
 import ivorius.reccomplex.world.gen.feature.structure.StructureRegistry;
 import ivorius.reccomplex.world.gen.feature.structure.generic.transformers.Transformer;
 import org.apache.commons.lang3.StringUtils;
@@ -30,7 +31,7 @@ public class TableDataSourceTransformerList extends TableDataSourceList<Transfor
     @Override
     public String getDisplayString(Transformer transformer)
     {
-        return StringUtils.abbreviate(transformer.getDisplayString(), 24);
+        return RCStrings.abbreviateFormatted(transformer.getDisplayString(), 24);
     }
 
     @Override

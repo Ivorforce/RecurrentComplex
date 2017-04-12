@@ -10,6 +10,7 @@ import ivorius.reccomplex.gui.table.cell.TableCell;
 import ivorius.reccomplex.gui.table.datasource.TableDataSourceList;
 import ivorius.reccomplex.gui.table.datasource.TableDataSourceSegmented;
 import ivorius.reccomplex.gui.worldscripts.TableDataSourceWorldScript;
+import ivorius.reccomplex.utils.RCStrings;
 import ivorius.reccomplex.world.gen.script.WorldScriptCommand;
 import org.apache.commons.lang3.StringUtils;
 
@@ -29,7 +30,7 @@ public class TableDataSourceWorldScriptCommand extends TableDataSourceSegmented
             @Override
             public String getDisplayString(WorldScriptCommand.Entry entry)
             {
-                return StringUtils.abbreviate(entry.command, 20);
+                return RCStrings.abbreviateFormatted(entry.command, 20);
             }
 
             @Override

@@ -10,6 +10,7 @@ import ivorius.reccomplex.gui.table.*;
 import ivorius.reccomplex.gui.table.cell.TableCell;
 import ivorius.reccomplex.gui.table.cell.TableCellButton;
 import ivorius.reccomplex.gui.table.datasource.TableDataSourceList;
+import ivorius.reccomplex.utils.RCStrings;
 import ivorius.reccomplex.world.gen.feature.structure.generic.maze.SavedMazePathConnection;
 import ivorius.reccomplex.world.gen.feature.structure.generic.maze.rules.MazeRule;
 import ivorius.reccomplex.world.gen.feature.structure.generic.maze.rules.MazeRuleRegistry;
@@ -37,7 +38,7 @@ public class TableDataSourceMazeRuleList extends TableDataSourceList<MazeRule, L
     @Override
     public String getDisplayString(MazeRule mazeRule)
     {
-        return StringUtils.abbreviate(mazeRule.displayString(), 24);
+        return RCStrings.abbreviateFormatted(mazeRule.displayString(), 24);
     }
 
     @Override

@@ -9,6 +9,7 @@ import gnu.trove.map.hash.TIntObjectHashMap;
 import ivorius.ivtoolkit.math.IvMathHelper;
 import ivorius.reccomplex.gui.table.cell.TableCell;
 import ivorius.reccomplex.gui.table.datasource.TableDataSource;
+import ivorius.reccomplex.utils.RCStrings;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.Gui;
@@ -179,7 +180,7 @@ public class GuiTable extends Gui
     {
         GlStateManager.color(1, 1, 1);
         GlStateManager.scale(2, 2, 2);
-        drawString(Minecraft.getMinecraft().fontRendererObj, dataSource.title(), bounds.getMinX() / 2, bounds.getMinY() / 2 + 2, 0xffffffff);
+        drawString(Minecraft.getMinecraft().fontRendererObj, RCStrings.abbreviateFormatted(dataSource.title(), 35), bounds.getMinX() / 2, bounds.getMinY() / 2 + 2, 0xffffffff);
         GlStateManager.scale(0.5f, 0.5f, 0.5f);
 
         currentCells.stream().filter(cell -> !cell.isHidden()).forEach(cell -> cell.draw(this, mouseX, mouseY, partialTicks));

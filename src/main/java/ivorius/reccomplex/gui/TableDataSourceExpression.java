@@ -11,12 +11,11 @@ import ivorius.reccomplex.gui.table.cell.TableCellString;
 import ivorius.reccomplex.gui.table.cell.TableCellTitle;
 import ivorius.reccomplex.gui.table.cell.TitledCell;
 import ivorius.reccomplex.gui.table.datasource.TableDataSource;
+import ivorius.reccomplex.utils.RCStrings;
 import ivorius.reccomplex.utils.algebra.FunctionExpressionCaches;
 import ivorius.reccomplex.utils.expression.*;
 import ivorius.ivtoolkit.tools.IvTranslations;
 import ivorius.reccomplex.utils.algebra.FunctionExpressionCache;
-import net.minecraft.util.text.TextFormatting;
-import org.apache.commons.lang3.StringUtils;
 
 import javax.annotation.Nullable;
 import java.util.List;
@@ -138,20 +137,7 @@ public class TableDataSourceExpression<T, U, E extends FunctionExpressionCache<T
     @Nullable
     protected String parsedString()
     {
-        String abbreviate = StringUtils.abbreviate(parsedString(e, u), getCursorOffset(), 71);
-        if (abbreviate.startsWith("...") && abbreviate.length() > 3 )
-        {
-            char first = abbreviate.charAt(3);
-            abbreviate = first == '§' ? abbreviate : ("..." + abbreviate.substring(4)); // Cut off one char to avoid destroying §
-        }
-
-        if (abbreviate.endsWith("..."))
-        {
-            char last = abbreviate.charAt(abbreviate.length() - 4);
-            abbreviate = abbreviate.substring(0, abbreviate.length() - (last == '§' ? 4 : 3)) + TextFormatting.RESET + "...";
-        }
-
-        return abbreviate;
+        return RCStrings.abbreviateFormatted(parsedString(e, u), getCursorOffset(), 71);
     }
 
     protected int getCursorOffset()

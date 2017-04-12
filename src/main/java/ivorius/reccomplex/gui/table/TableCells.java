@@ -9,7 +9,6 @@ import ivorius.ivtoolkit.tools.IvTranslations;
 import ivorius.reccomplex.gui.table.cell.TableCellButton;
 import ivorius.reccomplex.gui.table.cell.TableCellPresetAction;
 import ivorius.reccomplex.gui.table.datasource.TableDataSource;
-import net.minecraft.util.text.TextFormatting;
 
 import javax.annotation.Nonnull;
 import java.util.Collection;
@@ -46,15 +45,23 @@ public class TableCells
     @Nonnull
     public static TableCellButton edit(boolean enabled, TableNavigator navigator, TableDelegate tableDelegate, Supplier<TableDataSource> table)
     {
-        TableCellButton edit = new TableCellButton("", "edit", IvTranslations.get("reccomplex.gui.edit"), enabled){
+        TableCellButton edit = new TableCellButton("", "edit", IvTranslations.get("reccomplex.gui.edit"), enabled)
+        {
             @Override
             public void draw(GuiTable screen, int mouseX, int mouseY, float partialTicks)
             {
                 super.draw(screen, mouseX, mouseY, partialTicks);
 
+                int color = 0xe0e0e0;
+
+                if (!this.enabled)
+                    color = 0xa0a0a0;
+                else if (this.button != null && this.button.isMouseOver())
+                    color = 0xffffa0;
+
                 String right = "...";
                 int rightWidth = getFontRenderer().getStringWidth(right);
-                getFontRenderer().drawString(right, bounds().getMaxX() - 8 - rightWidth, bounds().getCenterY() - 4, 0xffffffff, true);
+                getFontRenderer().drawString(right, bounds().getMaxX() - 8 - rightWidth, bounds().getCenterY() - 4, color, true);
             }
         };
         edit.addAction(() -> navigator.pushTable(new GuiTable(tableDelegate, table.get())));
@@ -77,16 +84,23 @@ public class TableCells
         return new TableCellButton(id, id,
                 title,
                 tooltip,
-                enabled){
+                enabled)
+        {
             @Override
             public void draw(GuiTable screen, int mouseX, int mouseY, float partialTicks)
             {
                 super.draw(screen, mouseX, mouseY, partialTicks);
 
-                String plus = TextFormatting.GREEN + "+";
+                int color = 0x34D546;
+                if (!this.enabled)
+                    color = 0x889A8E;
+                else if (this.button != null && this.button.isMouseOver())
+                    color = 0x3BF350;
+
+                String plus = "+";
                 int plusWidth = getFontRenderer().getStringWidth(plus);
-                getFontRenderer().drawString(plus, bounds().getMinX() + 6, bounds().getCenterY() - 4, 0xffffffff, true);
-                getFontRenderer().drawString(plus, bounds().getMaxX() - 6 - plusWidth, bounds().getCenterY() - 4, 0xffffffff, true);
+                getFontRenderer().drawString(plus, bounds().getMinX() + 6, bounds().getCenterY() - 4, color, true);
+                getFontRenderer().drawString(plus, bounds().getMaxX() - 6 - plusWidth, bounds().getCenterY() - 4, color, true);
             }
         };
     }

@@ -6,6 +6,7 @@
 package ivorius.reccomplex.gui.table.cell;
 
 import ivorius.ivtoolkit.tools.IvTranslations;
+import ivorius.reccomplex.gui.table.GuiTable;
 import ivorius.reccomplex.gui.table.TableCells;
 import ivorius.reccomplex.gui.table.TableDelegate;
 import ivorius.reccomplex.gui.table.TableNavigator;
@@ -66,13 +67,21 @@ public class TableCellMultiBuilder
         cell.setTooltip(tooltip != null ? tooltip.get() : null);
     }
 
-    public TableCellMultiBuilder addAction(Supplier<Object> title, @Nullable Supplier<List<String>> tooltip, Runnable action)
+    public TableCellMultiBuilder addAction(Runnable action, Supplier<Object> title, @Nullable Supplier<List<String>> tooltip)
     {
         cells.add(() -> defaultCell(title.get(), tooltip, () ->
         {
             action.run();
             delegate.reloadData();
         }));
+        enabledSuppliers.add(null);
+        return this;
+    }
+
+    public TableCellMultiBuilder addSimpleNavigation(Supplier<TableDataSource> dataSource, Supplier<Object> title, @Nullable Supplier<List<String>> tooltip)
+    {
+        cells.add(() -> defaultCell(title.get(), tooltip, () -> navigator.pushTable(new GuiTable(delegate, dataSource.get()))));
+
         enabledSuppliers.add(null);
         return this;
     }

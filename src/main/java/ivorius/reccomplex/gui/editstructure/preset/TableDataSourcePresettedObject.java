@@ -59,8 +59,9 @@ public class TableDataSourcePresettedObject<T> extends TableDataSourceSegmented
         else
         {
             return TableCellMultiBuilder.create(navigator, delegate)
-                    .addNavigation(() -> new TableDataSourceSavePreset<>(object, saverID, delegate, navigator), () -> String.format("%s+", TextFormatting.GREEN), () -> IvTranslations.getLines("reccomplex.preset.save")
-                    ).enabled(() -> saverID != null).build();
+                    .addSimpleNavigation(() -> new TableDataSourceSavePreset<>(object, saverID, delegate, navigator), () -> String.format("%s+", TextFormatting.GREEN), () -> IvTranslations.getLines("reccomplex.preset.save"))
+                    .enabled(() -> saverID != null)
+                    .build();
         }
     }
 

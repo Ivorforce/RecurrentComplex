@@ -48,16 +48,16 @@ public class TableDataSourceGenericStructure extends TableDataSourceSegmented
         addManagedSegment(1, new TableDataSourceSupplied(() -> TableElementSaveDirectory.create(saveDirectoryData, () -> structureKey, delegate)));
 
         addManagedSegment(2, TableCellMultiBuilder.create(navigator, delegate)
-                .addNavigation(() -> new TableDataSourceMetadata(structureInfo.metadata), () -> IvTranslations.get("reccomplex.structure.metadata"))
-                .buildDataSource(null, IvTranslations.getLines("reccomplex.structure.metadata.tooltip")));
+                .addNavigation(() -> new TableDataSourceMetadata(structureInfo.metadata))
+                .buildDataSource(IvTranslations.get("reccomplex.structure.metadata"), IvTranslations.getLines("reccomplex.structure.metadata.tooltip")));
 
         addManagedSegment(4, TableCellMultiBuilder.create(navigator, delegate)
-                .addNavigation(() -> new TableDataSourceStructureGenerationInfoList(structureInfo.generationInfos, delegate, navigator), () -> IvTranslations.get("reccomplex.structure.generation"))
-                .buildDataSource(null, IvTranslations.getLines("reccomplex.structure.generation.tooltip")));
+                .addNavigation(() -> new TableDataSourceStructureGenerationInfoList(structureInfo.generationInfos, delegate, navigator))
+                .buildDataSource(IvTranslations.get("reccomplex.structure.generation"), IvTranslations.getLines("reccomplex.structure.generation.tooltip")));
 
         addManagedSegment(5, TableCellMultiBuilder.create(navigator, delegate)
-                .addNavigation(() -> structureInfo.transformer.tableDataSource(navigator, delegate), () -> IvTranslations.get("reccomplex.structure.transformers"))
-                .buildDataSource(null, IvTranslations.getLines("reccomplex.structure.transformers.tooltip")));
+                .addNavigation(() -> structureInfo.transformer.tableDataSource(navigator, delegate))
+                .buildDataSource(IvTranslations.get("reccomplex.structure.transformers"), IvTranslations.getLines("reccomplex.structure.transformers.tooltip")));
 
         addManagedSegment(6, TableDataSourceExpression.constructDefault(IvTranslations.get("reccomplex.structure.dependencies"), IvTranslations.getLines("reccomplex.structure.dependencies.tooltip"), structureInfo.dependencies, RecurrentComplex.saver));
     }

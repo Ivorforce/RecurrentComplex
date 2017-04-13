@@ -34,7 +34,7 @@ public class TableDataSourceNBTList extends TableDataSourceSegmented
 
     protected String earlierTitle = TextFormatting.BOLD + "↑";
     protected String laterTitle = TextFormatting.BOLD + "↓";
-    protected String deleteTitle = TextFormatting.RED + "X";
+    protected String deleteTitle = TextFormatting.RED + "-";
     protected String addTitle = TextFormatting.GREEN + "+";
 
     public TableDataSourceNBTList(TableDelegate delegate, TableNavigator navigator, NBTTagList nbt)

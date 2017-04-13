@@ -10,9 +10,9 @@ import com.google.common.collect.Lists;
 import com.google.common.primitives.Doubles;
 import ivorius.reccomplex.RCConfig;
 import ivorius.reccomplex.utils.ServerTranslations;
-import ivorius.reccomplex.world.gen.feature.structure.StructureInfo;
+import ivorius.reccomplex.world.gen.feature.structure.Structure;
 import ivorius.reccomplex.world.gen.feature.structure.StructureRegistry;
-import ivorius.reccomplex.world.gen.feature.structure.generic.GenericStructureInfo;
+import ivorius.reccomplex.world.gen.feature.structure.generic.GenericStructure;
 import ivorius.reccomplex.world.gen.feature.structure.generic.Metadata;
 import ivorius.reccomplex.world.gen.feature.structure.generic.gentypes.GenerationInfo;
 import joptsimple.internal.Strings;
@@ -39,7 +39,7 @@ public class CommandSearchStructure extends CommandBase
     public static final int MAX_RESULTS = 20;
 
     @Nonnull
-    public static Collection<String> keywords(String id, StructureInfo<?> structure)
+    public static Collection<String> keywords(String id, Structure<?> structure)
     {
         List<String> keywords = new ArrayList<>();
 
@@ -47,8 +47,8 @@ public class CommandSearchStructure extends CommandBase
 
         structure.generationInfos(GenerationInfo.class).forEach(info -> keywords(keywords, info));
 
-        if (structure instanceof GenericStructureInfo)
-            keywords(keywords, ((GenericStructureInfo) structure).metadata);
+        if (structure instanceof GenericStructure)
+            keywords(keywords, ((GenericStructure) structure).metadata);
 
         return keywords;
     }

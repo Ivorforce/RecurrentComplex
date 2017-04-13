@@ -17,14 +17,14 @@ import javax.annotation.Nonnull;
 /**
  * Created by lukas on 22.02.15.
  */
-public class StructureInfos
+public class Structures
 {
     public static StructureBoundingBox structureBoundingBox(@Nonnull BlockPos coord, @Nonnull int[] size)
     {
         return new StructureBoundingBox(coord, coord.add(new Vec3i(size[0], size[1], size[2])));
     }
 
-    public static int[] structureSize(@Nonnull StructureInfo info, @Nonnull AxisAlignedTransform2D transform)
+    public static int[] structureSize(@Nonnull Structure info, @Nonnull AxisAlignedTransform2D transform)
     {
         return structureSize(info.size(), transform);
     }

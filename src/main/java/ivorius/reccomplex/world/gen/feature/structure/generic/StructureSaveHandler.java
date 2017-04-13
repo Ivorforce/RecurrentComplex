@@ -14,7 +14,7 @@ import ivorius.reccomplex.files.loading.FileLoaderRegistry;
 import ivorius.reccomplex.files.loading.RCFileSuffix;
 import ivorius.reccomplex.files.saving.FileSaverAdapter;
 import ivorius.reccomplex.json.NBTToJson;
-import ivorius.reccomplex.world.gen.feature.structure.StructureInfo;
+import ivorius.reccomplex.world.gen.feature.structure.Structure;
 import ivorius.reccomplex.world.gen.feature.structure.StructureRegistry;
 import ivorius.reccomplex.utils.ByteArrays;
 import net.minecraft.nbt.CompressedStreamTools;
@@ -64,7 +64,7 @@ public class StructureSaveHandler
     {
         GsonBuilder builder = new GsonBuilder();
 
-        builder.registerTypeAdapter(GenericStructureInfo.class, new GenericStructureInfo.Serializer());
+        builder.registerTypeAdapter(GenericStructure.class, new GenericStructure.Serializer());
         StructureRegistry.TRANSFORMERS.constructGson(builder);
         StructureRegistry.GENERATION_INFOS.constructGson(builder);
 
@@ -73,17 +73,17 @@ public class StructureSaveHandler
         return builder.create();
     }
 
-    public GenericStructureInfo fromJSON(String jsonData) throws JsonSyntaxException
+    public GenericStructure fromJSON(String jsonData) throws JsonSyntaxException
     {
-        return gson.fromJson(jsonData, GenericStructureInfo.class);
+        return gson.fromJson(jsonData, GenericStructure.class);
     }
 
-    public String toJSON(GenericStructureInfo structureInfo)
+    public String toJSON(GenericStructure structureInfo)
     {
-        return gson.toJson(structureInfo, GenericStructureInfo.class);
+        return gson.toJson(structureInfo, GenericStructure.class);
     }
 
-    public GenericStructureInfo structureInfoFromResource(ResourceLocation resourceLocation)
+    public GenericStructure structureInfoFromResource(ResourceLocation resourceLocation)
     {
         try
         {
@@ -97,7 +97,7 @@ public class StructureSaveHandler
         return null;
     }
 
-    public GenericStructureInfo structureInfoFromZip(ZipInputStream zipInputStream) throws StructureLoadException
+    public GenericStructure structureInfoFromZip(ZipInputStream zipInputStream) throws StructureLoadException
     {
         try
         {
@@ -125,7 +125,7 @@ public class StructureSaveHandler
             if (json == null || worldData == null)
                 throw new StructureInvalidZipException(json != null, worldData != null);
 
-            GenericStructureInfo genericStructureInfo = fromJSON(json);
+            GenericStructure genericStructureInfo = fromJSON(json);
             genericStructureInfo.worldDataCompound = worldData;
 
             return genericStructureInfo;
@@ -136,7 +136,7 @@ public class StructureSaveHandler
         }
     }
 
-    public class Loader extends FileLoaderRegistry<GenericStructureInfo>
+    public class Loader extends FileLoaderRegistry<GenericStructure>
     {
         public Loader()
         {
@@ -144,7 +144,7 @@ public class StructureSaveHandler
         }
 
         @Override
-        public GenericStructureInfo read(Path path, String name) throws Exception
+        public GenericStructure read(Path path, String name) throws Exception
         {
             try (ZipInputStream zip = new ZipInputStream(Files.newInputStream(path)))
             {
@@ -153,7 +153,7 @@ public class StructureSaveHandler
         }
     }
 
-    public class Saver extends FileSaverAdapter<StructureInfo<?>>
+    public class Saver extends FileSaverAdapter<Structure<?>>
     {
         public Saver(String id)
         {
@@ -161,9 +161,9 @@ public class StructureSaveHandler
         }
 
         @Override
-        public void saveFile(Path path, StructureInfo<?> structureInfo) throws Exception
+        public void saveFile(Path path, Structure<?> structureInfo) throws Exception
         {
-            GenericStructureInfo structure = structureInfo.copyAsGenericStructureInfo();
+            GenericStructure structure = structureInfo.copyAsGenericStructureInfo();
 
             if (structure == null)
                 throw new IllegalArgumentException();

@@ -13,7 +13,7 @@ import net.minecraft.util.math.BlockPos;
 import ivorius.ivtoolkit.math.AxisAlignedTransform2D;
 import ivorius.reccomplex.RCConfig;
 import ivorius.reccomplex.operation.OperationRegistry;
-import ivorius.reccomplex.world.gen.feature.structure.generic.GenericStructureInfo;
+import ivorius.reccomplex.world.gen.feature.structure.generic.GenericStructure;
 import ivorius.reccomplex.utils.ServerTranslations;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.ICommandSender;
@@ -54,17 +54,17 @@ public class CommandImportStructure extends CommandBase
             throw ServerTranslations.wrongUsageException("commands.strucImport.usage");
 
         String structureID = args[0];
-        StructureInfo<?> structureInfo = RCCommands.getGenericStructure(structureID);
+        Structure<?> structure = RCCommands.getGenericStructure(structureID);
 
         BlockPos coord = RCCommands.tryParseBlockPos(commandSender, args, 1, false);
 
         AxisAlignedTransform2D transform = RCCommands.tryParseTransform(args, 4);
 
-        if (structureInfo instanceof GenericStructureInfo)
-            OperationRegistry.queueOperation(new OperationGenerateStructure((GenericStructureInfo) structureInfo, structureID, transform, coord, true).withStructureID(structureID).prepare(world), commandSender);
+        if (structure instanceof GenericStructure)
+            OperationRegistry.queueOperation(new OperationGenerateStructure((GenericStructure) structure, structureID, transform, coord, true).withStructureID(structureID).prepare(world), commandSender);
         else
         {
-            new StructureGenerator<>(structureInfo).world(world)
+            new StructureGenerator<>(structure).world(world)
                     .transform(transform).lowerCoord(coord).asSource(true).generate();
         }
     }

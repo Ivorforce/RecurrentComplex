@@ -14,7 +14,7 @@ import ivorius.reccomplex.operation.Operation;
 import ivorius.reccomplex.utils.ReadableInstanceData;
 import ivorius.reccomplex.world.gen.feature.StructureGenerator;
 import ivorius.reccomplex.world.gen.feature.structure.context.StructureSpawnContext;
-import ivorius.reccomplex.world.gen.feature.structure.generic.GenericStructureInfo;
+import ivorius.reccomplex.world.gen.feature.structure.generic.GenericStructure;
 import ivorius.reccomplex.world.gen.feature.structure.generic.StructureSaveHandler;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.nbt.NBTTagCompound;
@@ -30,7 +30,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
  */
 public class OperationGenerateStructure implements Operation
 {
-    public GenericStructureInfo structure;
+    public GenericStructure structure;
 
     public AxisAlignedTransform2D transform;
     public BlockPos lowerCoord;
@@ -42,13 +42,13 @@ public class OperationGenerateStructure implements Operation
 
     protected GridQuadCache cachedShapeGrid;
 
-    protected final ReadableInstanceData<GenericStructureInfo.InstanceData> instanceData = new ReadableInstanceData<>();
+    protected final ReadableInstanceData<GenericStructure.InstanceData> instanceData = new ReadableInstanceData<>();
 
     public OperationGenerateStructure()
     {
     }
 
-    public OperationGenerateStructure(GenericStructureInfo structure, String generationInfoID, AxisAlignedTransform2D transform, BlockPos lowerCoord, boolean generateAsSource)
+    public OperationGenerateStructure(GenericStructure structure, String generationInfoID, AxisAlignedTransform2D transform, BlockPos lowerCoord, boolean generateAsSource)
     {
         this.structure = structure;
         this.generationInfoID = generationInfoID;
@@ -85,14 +85,14 @@ public class OperationGenerateStructure implements Operation
         if (!instanceData.exists())
             throw new IllegalStateException();
 
-        StructureGenerator<GenericStructureInfo.InstanceData> generator = generator(world);
+        StructureGenerator<GenericStructure.InstanceData> generator = generator(world);
         instanceData.load(generator);
         generator.generate();
     }
 
-    public StructureGenerator<GenericStructureInfo.InstanceData> generator(WorldServer world)
+    public StructureGenerator<GenericStructure.InstanceData> generator(WorldServer world)
     {
-        StructureGenerator<GenericStructureInfo.InstanceData> generator = new StructureGenerator<>(structure).world(world).generationInfo(generationInfoID)
+        StructureGenerator<GenericStructure.InstanceData> generator = new StructureGenerator<>(structure).world(world).generationInfo(generationInfoID)
                 .transform(transform).lowerCoord(lowerCoord)
                 .maturity(StructureSpawnContext.GenerateMaturity.FIRST).asSource(generateAsSource);
 
@@ -187,6 +187,6 @@ public class OperationGenerateStructure implements Operation
         }
 
         if (previewType == PreviewType.BOUNDING_BOX || previewType == PreviewType.SHAPE)
-            OperationRenderer.maybeRenderBoundingBox(lowerCoord, StructureInfos.structureSize(size, transform), ticks, partialTicks);
+            OperationRenderer.maybeRenderBoundingBox(lowerCoord, Structures.structureSize(size, transform), ticks, partialTicks);
     }
 }

@@ -9,7 +9,7 @@ import ivorius.reccomplex.RCConfig;
 import ivorius.reccomplex.network.PacketEditStructureHandler;
 import ivorius.reccomplex.utils.ServerTranslations;
 import ivorius.reccomplex.world.gen.feature.structure.StructureRegistry;
-import ivorius.reccomplex.world.gen.feature.structure.generic.GenericStructureInfo;
+import ivorius.reccomplex.world.gen.feature.structure.generic.GenericStructure;
 import ivorius.reccomplex.world.gen.feature.structure.schematics.SchematicFile;
 import ivorius.reccomplex.world.gen.feature.structure.schematics.SchematicLoader;
 import net.minecraft.command.CommandBase;
@@ -58,7 +58,7 @@ public class CommandConvertSchematic extends CommandBase
         String schematicName = CommandImportSchematic.trimQuotes(args[0]);
         SchematicFile schematicFile = CommandImportSchematic.parseSchematic(schematicName);
 
-        GenericStructureInfo structure = CommandExportStructure.getNewGenericStructure(commandSender, args.length >= 2 ? args[1] : null);
+        GenericStructure structure = CommandExportStructure.getNewGenericStructure(commandSender, args.length >= 2 ? args[1] : null);
 
         structure.worldDataCompound = CommandExportSchematic.toWorldData(schematicFile).createTagCompound();
 

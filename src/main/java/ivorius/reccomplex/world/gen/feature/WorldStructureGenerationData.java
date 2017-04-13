@@ -14,8 +14,8 @@ import ivorius.ivtoolkit.tools.NBTCompoundObject;
 import ivorius.ivtoolkit.tools.NBTCompoundObjects;
 import ivorius.ivtoolkit.world.chunk.gen.StructureBoundingBoxes;
 import ivorius.reccomplex.RecurrentComplex;
-import ivorius.reccomplex.world.gen.feature.structure.StructureInfo;
-import ivorius.reccomplex.world.gen.feature.structure.StructureInfos;
+import ivorius.reccomplex.world.gen.feature.structure.Structure;
+import ivorius.reccomplex.world.gen.feature.structure.Structures;
 import ivorius.reccomplex.world.gen.feature.structure.StructureRegistry;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.math.BlockPos;
@@ -335,10 +335,10 @@ public class WorldStructureGenerationData extends WorldSavedData
             if (compound.hasKey("lowerCoord")) // legacy
             {
                 BlockPos lowerCoord = BlockPositions.readFromNBT("lowerCoord", compound);
-                StructureInfo structureInfo = StructureRegistry.INSTANCE.get(structureID);
+                Structure structure = StructureRegistry.INSTANCE.get(structureID);
 
-                boundingBox = structureInfo != null
-                        ? StructureInfos.structureBoundingBox(lowerCoord, StructureInfos.structureSize(structureInfo, transform))
+                boundingBox = structure != null
+                        ? Structures.structureBoundingBox(lowerCoord, Structures.structureSize(structure, transform))
                         : new StructureBoundingBox();
             }
 

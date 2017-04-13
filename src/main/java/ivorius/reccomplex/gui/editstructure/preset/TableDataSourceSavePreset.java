@@ -20,7 +20,7 @@ import ivorius.reccomplex.gui.table.datasource.TableDataSourceSegmented;
 import ivorius.reccomplex.gui.table.datasource.TableDataSourceSupplied;
 import ivorius.reccomplex.utils.PresetRegistry;
 import ivorius.reccomplex.utils.presets.PresettedObject;
-import ivorius.reccomplex.world.gen.feature.structure.StructureInfos;
+import ivorius.reccomplex.world.gen.feature.structure.Structures;
 
 import javax.annotation.Nonnull;
 import java.util.stream.Collectors;
@@ -94,7 +94,7 @@ public class TableDataSourceSavePreset<T> extends TableDataSourceSegmented
 
     public boolean save()
     {
-        if (!StructureInfos.isSimpleID(id))
+        if (!Structures.isSimpleID(id))
             return false;
 
         object.getPresetRegistry().getRegistry().register(id, "", PresetRegistry.fullPreset(id, object.getContents(), new PresetRegistry.Metadata(title, description.split("<br>"))), true, LeveledRegistry.Level.CUSTOM);
@@ -109,7 +109,7 @@ public class TableDataSourceSavePreset<T> extends TableDataSourceSegmented
 
     private GuiValidityStateIndicator.State currentIDState()
     {
-        return StructureInfos.isSimpleID(id)
+        return Structures.isSimpleID(id)
                 ? object.getPresetRegistry().has(id)
                 ? GuiValidityStateIndicator.State.SEMI_VALID
                 : GuiValidityStateIndicator.State.VALID

@@ -7,7 +7,7 @@ package ivorius.reccomplex.gui.editstructure;
 
 import ivorius.reccomplex.gui.table.screen.GuiScreenEditTable;
 import ivorius.reccomplex.network.PacketSaveStructureHandler;
-import ivorius.reccomplex.world.gen.feature.structure.generic.GenericStructureInfo;
+import ivorius.reccomplex.world.gen.feature.structure.generic.GenericStructure;
 import ivorius.reccomplex.utils.SaveDirectoryData;
 
 /**
@@ -15,7 +15,7 @@ import ivorius.reccomplex.utils.SaveDirectoryData;
  */
 public class GuiEditGenericStructure extends GuiScreenEditTable<TableDataSourceGenericStructure>
 {
-    public GuiEditGenericStructure(String key, GenericStructureInfo structureInfo, SaveDirectoryData data)
+    public GuiEditGenericStructure(String key, GenericStructure structureInfo, SaveDirectoryData data)
     {
         setDataSource(new TableDataSourceGenericStructure(structureInfo, key, data, this, this), ds ->
                 PacketSaveStructureHandler.saveStructure(ds.getStructureInfo(), ds.getStructureKey(), ds.getSaveDirectoryData().getResult()));

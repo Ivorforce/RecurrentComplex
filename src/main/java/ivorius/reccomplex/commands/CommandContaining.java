@@ -11,7 +11,7 @@ import ivorius.reccomplex.RecurrentComplex;
 import ivorius.reccomplex.utils.ServerTranslations;
 import ivorius.reccomplex.utils.algebra.ExpressionCache;
 import ivorius.reccomplex.utils.expression.BlockMatcher;
-import ivorius.reccomplex.world.gen.feature.structure.StructureInfo;
+import ivorius.reccomplex.world.gen.feature.structure.Structure;
 import ivorius.reccomplex.world.gen.feature.structure.StructureRegistry;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.CommandException;
@@ -40,7 +40,7 @@ public class CommandContaining extends CommandBase
         return ServerTranslations.usage("commands.rccontaining.usage");
     }
 
-    public static long containedBlocks(StructureInfo structure, BlockMatcher matcher)
+    public static long containedBlocks(Structure structure, BlockMatcher matcher)
     {
         if (structure == null)
             return 0;

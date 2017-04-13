@@ -9,7 +9,7 @@ import ivorius.ivtoolkit.blocks.IvBlockCollection;
 import ivorius.reccomplex.world.gen.feature.structure.context.StructureLoadContext;
 import ivorius.reccomplex.world.gen.feature.structure.context.StructurePrepareContext;
 import ivorius.reccomplex.world.gen.feature.structure.context.StructureSpawnContext;
-import ivorius.reccomplex.world.gen.feature.structure.generic.GenericStructureInfo;
+import ivorius.reccomplex.world.gen.feature.structure.generic.GenericStructure;
 import ivorius.reccomplex.world.gen.feature.structure.generic.gentypes.GenerationInfo;
 import ivorius.reccomplex.world.gen.feature.structure.generic.transformers.TransformerMulti;
 import ivorius.reccomplex.utils.NBTStorable;
@@ -22,7 +22,7 @@ import java.util.List;
 /**
  * Created by lukas on 24.05.14.
  */
-public interface StructureInfo<S extends NBTStorable>
+public interface Structure<S extends NBTStorable>
 {
     boolean generate(@Nonnull StructureSpawnContext context, @Nonnull S instanceData, @Nonnull TransformerMulti transformer);
 
@@ -47,7 +47,7 @@ public interface StructureInfo<S extends NBTStorable>
     boolean isBlocking();
 
     @Nullable
-    GenericStructureInfo copyAsGenericStructureInfo();
+    GenericStructure copyAsGenericStructureInfo();
 
     boolean areDependenciesResolved();
 

@@ -16,9 +16,9 @@ import ivorius.reccomplex.utils.ServerTranslations;
 import ivorius.reccomplex.utils.algebra.ExpressionCache;
 import ivorius.reccomplex.utils.expression.ResourceMatcher;
 import ivorius.reccomplex.world.MockWorld;
-import ivorius.reccomplex.world.gen.feature.structure.StructureInfo;
+import ivorius.reccomplex.world.gen.feature.structure.Structure;
 import ivorius.reccomplex.world.gen.feature.structure.StructureRegistry;
-import ivorius.reccomplex.world.gen.feature.structure.generic.GenericStructureInfo;
+import ivorius.reccomplex.world.gen.feature.structure.generic.GenericStructure;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommand;
@@ -74,15 +74,15 @@ public class CommandMapAllStructure extends CommandBase
             if (!matcher.test(new RawResourceLocation(StructureRegistry.INSTANCE.status(id).getDomain(), id)))
                 continue;
 
-            StructureInfo<?> info = StructureRegistry.INSTANCE.get(id);
+            Structure<?> info = StructureRegistry.INSTANCE.get(id);
 
-            if (!(info instanceof GenericStructureInfo))
+            if (!(info instanceof GenericStructure))
             {
                 skipped ++;
                 continue;
             }
 
-            GenericStructureInfo structure = (GenericStructureInfo) info;
+            GenericStructure structure = (GenericStructure) info;
 
             IvWorldData worldData = structure.constructWorldData();
             MockWorld world = new MockWorld.BlockCollection(worldData.blockCollection);

@@ -16,7 +16,7 @@ import ivorius.reccomplex.RCConfig;
 import ivorius.reccomplex.operation.OperationRegistry;
 import ivorius.reccomplex.world.gen.feature.structure.generic.gentypes.NaturalGenerationInfo;
 import ivorius.reccomplex.utils.ServerTranslations;
-import ivorius.reccomplex.world.gen.feature.structure.generic.GenericStructureInfo;
+import ivorius.reccomplex.world.gen.feature.structure.generic.GenericStructure;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.world.WorldServer;
@@ -60,10 +60,10 @@ public class CommandGenerateStructure extends CommandBase
             throw ServerTranslations.wrongUsageException("commands.strucGen.usage");
 
         String structureName = args[0];
-        StructureInfo<?> structureInfo = StructureRegistry.INSTANCE.get(structureName);
+        Structure<?> structure = StructureRegistry.INSTANCE.get(structureName);
         WorldServer world = RCCommands.tryParseDimension(commandSender, args, 3);
 
-        if (structureInfo == null)
+        if (structure == null)
             throw ServerTranslations.commandException("commands.strucGen.noStructure", structureName);
 
         BlockSurfacePos pos;
@@ -73,18 +73,18 @@ public class CommandGenerateStructure extends CommandBase
         GenerationInfo generationInfo;
 
         if (args.length > 4)
-            generationInfo = structureInfo.generationInfo(args[4]);
+            generationInfo = structure.generationInfo(args[4]);
         else
-            generationInfo = structureInfo.<GenerationInfo>generationInfos(NaturalGenerationInfo.class).stream()
-                    .findFirst().orElse(structureInfo.generationInfos(GenerationInfo.class).stream().findFirst().orElse(null));
+            generationInfo = structure.<GenerationInfo>generationInfos(NaturalGenerationInfo.class).stream()
+                    .findFirst().orElse(structure.generationInfos(GenerationInfo.class).stream().findFirst().orElse(null));
 
         Placer placer = generationInfo.placer();
 
-        if (structureInfo instanceof GenericStructureInfo)
+        if (structure instanceof GenericStructure)
         {
-            GenericStructureInfo genericStructureInfo = (GenericStructureInfo) structureInfo;
+            GenericStructure genericStructureInfo = (GenericStructure) structure;
 
-            StructureGenerator<GenericStructureInfo.InstanceData> generator = new StructureGenerator<>(genericStructureInfo).world(world)
+            StructureGenerator<GenericStructure.InstanceData> generator = new StructureGenerator<>(genericStructureInfo).world(world)
                     .randomPosition(pos, placer).fromCenter(true);
 
             Optional<BlockPos> lowerCoord = generator.lowerCoord();
@@ -95,7 +95,7 @@ public class CommandGenerateStructure extends CommandBase
         }
         else
         {
-            if (!new StructureGenerator<>(structureInfo).world(world).generationInfo(generationInfo)
+            if (!new StructureGenerator<>(structure).world(world).generationInfo(generationInfo)
                     .structureID(structureName).randomPosition(pos, placer).fromCenter(true).generate().isPresent())
                 throw ServerTranslations.commandException("commands.strucGen.noPlace");
         }
@@ -115,9 +115,9 @@ public class CommandGenerateStructure extends CommandBase
         else if (args.length == 5)
         {
             String structureName = args[0];
-            StructureInfo<?> structureInfo = StructureRegistry.INSTANCE.get(structureName);
-            if (structureInfo instanceof GenericStructureInfo)
-                return getListOfStringsMatchingLastWord(args, structureInfo.generationInfos(GenerationInfo.class).stream().map(GenerationInfo::id).collect(Collectors.toList()));
+            Structure<?> structure = StructureRegistry.INSTANCE.get(structureName);
+            if (structure instanceof GenericStructure)
+                return getListOfStringsMatchingLastWord(args, structure.generationInfos(GenerationInfo.class).stream().map(GenerationInfo::id).collect(Collectors.toList()));
         }
 //        else if (args.length == 6)
 //            return getListOfStringsMatchingLastWord(args, "0", "2", "5");

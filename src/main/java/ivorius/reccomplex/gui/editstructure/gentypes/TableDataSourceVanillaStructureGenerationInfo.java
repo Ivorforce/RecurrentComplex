@@ -72,7 +72,7 @@ public class TableDataSourceVanillaStructureGenerationInfo extends TableDataSour
         {
             case 1:
             {
-                TableCellEnum<String> cell = new TableCellEnum<>("type", "village", new TableCellEnum.Option<>("village", IvTranslations.get("reccomplex.generationInfo.vanilla.type.village")));
+                TableCellEnum<String> cell = new TableCellEnum<>("type", "village", new TableCellEnum.Option<String>("village", IvTranslations.get("reccomplex.generationInfo.vanilla.type.village")));
                 return new TitledCell(IvTranslations.get("reccomplex.generationInfo.vanilla.type"), cell);
             }
             case 2:

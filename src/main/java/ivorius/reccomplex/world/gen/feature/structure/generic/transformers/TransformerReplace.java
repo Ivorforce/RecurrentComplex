@@ -26,7 +26,7 @@ import ivorius.reccomplex.world.gen.feature.structure.Environment;
 import ivorius.reccomplex.world.gen.feature.structure.context.StructureLoadContext;
 import ivorius.reccomplex.world.gen.feature.structure.context.StructurePrepareContext;
 import ivorius.reccomplex.world.gen.feature.structure.context.StructureSpawnContext;
-import ivorius.reccomplex.world.gen.feature.structure.generic.GenericStructureInfo;
+import ivorius.reccomplex.world.gen.feature.structure.generic.GenericStructure;
 import ivorius.reccomplex.world.gen.feature.structure.generic.WeightedBlockState;
 import ivorius.reccomplex.world.gen.feature.structure.generic.presets.WeightedBlockStatePresets;
 import net.minecraft.block.Block;
@@ -67,7 +67,7 @@ public class TransformerReplace extends TransformerSingleBlock<NBTNone>
     {
         if (entry.state != null && RecurrentComplex.specialRegistry.isSafe(entry.state.getBlock()))
         {
-            GenericStructureInfo.setBlock(context, areaSize, pos, entry.state, tileEntity);
+            GenericStructure.setBlock(context, areaSize, pos, entry.state, tileEntity);
         }
     }
 

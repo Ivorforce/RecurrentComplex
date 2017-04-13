@@ -18,9 +18,9 @@ import ivorius.reccomplex.gui.table.cell.*;
 import ivorius.reccomplex.gui.table.datasource.TableDataSourceSegmented;
 import ivorius.reccomplex.gui.table.datasource.TableDataSourceSupplied;
 import ivorius.reccomplex.utils.SaveDirectoryData;
-import ivorius.reccomplex.world.gen.feature.structure.StructureInfos;
+import ivorius.reccomplex.world.gen.feature.structure.Structures;
 import ivorius.reccomplex.world.gen.feature.structure.StructureRegistry;
-import ivorius.reccomplex.world.gen.feature.structure.generic.GenericStructureInfo;
+import ivorius.reccomplex.world.gen.feature.structure.generic.GenericStructure;
 
 import javax.annotation.Nonnull;
 
@@ -29,7 +29,7 @@ import javax.annotation.Nonnull;
  */
 public class TableDataSourceGenericStructure extends TableDataSourceSegmented
 {
-    private GenericStructureInfo structureInfo;
+    private GenericStructure structureInfo;
     private String structureKey;
 
     private SaveDirectoryData saveDirectoryData;
@@ -37,7 +37,7 @@ public class TableDataSourceGenericStructure extends TableDataSourceSegmented
     private TableDelegate tableDelegate;
     private TableNavigator navigator;
 
-    public TableDataSourceGenericStructure(GenericStructureInfo structureInfo, String structureKey, SaveDirectoryData saveDirectoryData, TableDelegate delegate, TableNavigator navigator)
+    public TableDataSourceGenericStructure(GenericStructure structureInfo, String structureKey, SaveDirectoryData saveDirectoryData, TableDelegate delegate, TableNavigator navigator)
     {
         this.structureInfo = structureInfo;
         this.structureKey = structureKey;
@@ -62,12 +62,12 @@ public class TableDataSourceGenericStructure extends TableDataSourceSegmented
         addManagedSegment(6, TableDataSourceExpression.constructDefault(IvTranslations.get("reccomplex.structure.dependencies"), IvTranslations.getLines("reccomplex.structure.dependencies.tooltip"), structureInfo.dependencies, RecurrentComplex.saver));
     }
 
-    public GenericStructureInfo getStructureInfo()
+    public GenericStructure getStructureInfo()
     {
         return structureInfo;
     }
 
-    public void setStructureInfo(GenericStructureInfo structureInfo)
+    public void setStructureInfo(GenericStructure structureInfo)
     {
         this.structureInfo = structureInfo;
     }
@@ -194,7 +194,7 @@ public class TableDataSourceGenericStructure extends TableDataSourceSegmented
 
     private GuiValidityStateIndicator.State currentNameState()
     {
-        return StructureInfos.isSimpleID(structureKey)
+        return Structures.isSimpleID(structureKey)
                 ? StructureRegistry.INSTANCE.ids().contains(structureKey)
                 ? GuiValidityStateIndicator.State.SEMI_VALID
                 : GuiValidityStateIndicator.State.VALID

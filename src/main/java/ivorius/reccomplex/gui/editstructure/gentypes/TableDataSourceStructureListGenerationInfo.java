@@ -17,7 +17,7 @@ import ivorius.reccomplex.gui.table.cell.TableCellEnum;
 import ivorius.reccomplex.gui.table.cell.TableCellString;
 import ivorius.reccomplex.gui.table.cell.TitledCell;
 import ivorius.reccomplex.gui.table.datasource.TableDataSourceSegmented;
-import ivorius.reccomplex.world.gen.feature.structure.StructureInfos;
+import ivorius.reccomplex.world.gen.feature.structure.Structures;
 import ivorius.reccomplex.world.gen.feature.structure.StructureRegistry;
 import ivorius.reccomplex.world.gen.feature.structure.generic.gentypes.ListGenerationInfo;
 import net.minecraft.util.EnumFacing;
@@ -99,7 +99,7 @@ public class TableDataSourceStructureListGenerationInfo extends TableDataSourceS
     @Nonnull
     protected GuiValidityStateIndicator.State currentStructureListIDState()
     {
-        return StructureInfos.isSimpleID(generationInfo.listID)
+        return Structures.isSimpleID(generationInfo.listID)
                 ? StructureRegistry.INSTANCE.getStructuresInList(generationInfo.listID, null).count() > 0
                 ? GuiValidityStateIndicator.State.VALID
                 : GuiValidityStateIndicator.State.SEMI_VALID

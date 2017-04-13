@@ -10,8 +10,8 @@ import net.minecraft.util.EnumFacing;
 import net.minecraftforge.fml.common.registry.VillagerRegistry;
 import net.minecraft.util.math.BlockPos;
 import ivorius.ivtoolkit.math.AxisAlignedTransform2D;
-import ivorius.reccomplex.world.gen.feature.structure.StructureInfo;
-import ivorius.reccomplex.world.gen.feature.structure.StructureInfos;
+import ivorius.reccomplex.world.gen.feature.structure.Structure;
+import ivorius.reccomplex.world.gen.feature.structure.Structures;
 import ivorius.reccomplex.world.gen.feature.structure.StructureRegistry;
 import ivorius.reccomplex.world.gen.feature.structure.generic.gentypes.GenerationInfo;
 import ivorius.reccomplex.world.gen.feature.structure.generic.gentypes.VanillaGenerationInfo;
@@ -52,11 +52,11 @@ public class GenericVillageCreationHandler implements VillagerRegistry.IVillageC
     @Override
     public StructureVillagePieces.PieceWeight getVillagePieceWeight(Random random, int villageSize)
     {
-        StructureInfo structureInfo = StructureRegistry.INSTANCE.hasActive(structureID) ? StructureRegistry.INSTANCE.get(structureID) : null;
-        if (structureInfo != null)
+        Structure structure = StructureRegistry.INSTANCE.hasActive(structureID) ? StructureRegistry.INSTANCE.get(structureID) : null;
+        if (structure != null)
         {
             float tweakedWeight = RCConfig.tweakedSpawnRate(structureID);
-            GenerationInfo generationInfo = structureInfo.generationInfo(generationID);
+            GenerationInfo generationInfo = structure.generationInfo(generationID);
             if (generationInfo instanceof VanillaGenerationInfo)
             {
                 VanillaGenerationInfo vanillaGenInfo = (VanillaGenerationInfo) generationInfo;
@@ -80,23 +80,23 @@ public class GenericVillageCreationHandler implements VillagerRegistry.IVillageC
     @Override
     public StructureVillagePieces.Village buildComponent(StructureVillagePieces.PieceWeight villagePiece, StructureVillagePieces.Start startPiece, List<StructureComponent> pieces, Random random, int x, int y, int z, EnumFacing front, int generationDepth)
     {
-        StructureInfo structureInfo = StructureRegistry.INSTANCE.get(structureID);
+        Structure structure = StructureRegistry.INSTANCE.get(structureID);
 
-        if (structureInfo != null)
+        if (structure != null)
         {
-            GenerationInfo generationInfo = structureInfo.generationInfo(generationID);
+            GenerationInfo generationInfo = structure.generationInfo(generationID);
             if (generationInfo instanceof VanillaGenerationInfo)
             {
                 VanillaGenerationInfo vanillaGenInfo = (VanillaGenerationInfo) generationInfo;
 
-                boolean mirrorX = structureInfo.isMirrorable() && random.nextBoolean();
+                boolean mirrorX = structure.isMirrorable() && random.nextBoolean();
                 AxisAlignedTransform2D transform = GenericVillagePiece.getTransform(vanillaGenInfo.front, mirrorX, front.getOpposite());
 
-                if (vanillaGenInfo.generatesIn(startPiece.biome) && (structureInfo.isRotatable() || transform.getRotation() == 0))
+                if (vanillaGenInfo.generatesIn(startPiece.biome) && (structure.isRotatable() || transform.getRotation() == 0))
                 {
-                    int[] structureSize = StructureInfos.structureSize(structureInfo, transform);
+                    int[] structureSize = Structures.structureSize(structure, transform);
 
-                    StructureBoundingBox strucBB = StructureInfos.structureBoundingBox(new BlockPos(x, y, z), structureSize);
+                    StructureBoundingBox strucBB = Structures.structureBoundingBox(new BlockPos(x, y, z), structureSize);
 
                     if (GenericVillagePiece.canVillageGoDeeperC(strucBB) && StructureComponent.findIntersecting(pieces, strucBB) == null)
                     {

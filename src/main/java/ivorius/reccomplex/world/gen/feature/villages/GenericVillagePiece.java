@@ -103,17 +103,17 @@ public class GenericVillagePiece extends StructureVillagePieces.Village
 
     public void prepare(Random random, WorldServer world)
     {
-        StructureInfo<?> structureInfo = StructureRegistry.INSTANCE.get(structureID);
-        if (structureInfo != null)
+        Structure<?> structure = StructureRegistry.INSTANCE.get(structureID);
+        if (structure != null)
         {
-            GenerationInfo generationInfo = structureInfo.generationInfo(generationID);
+            GenerationInfo generationInfo = structure.generationInfo(generationID);
 
             if (generationInfo instanceof VanillaGenerationInfo)
             {
                 VanillaGenerationInfo vanillaGenInfo = (VanillaGenerationInfo) generationInfo;
                 AxisAlignedTransform2D transform = getTransform(vanillaGenInfo.front, mirrorX, getCoordBaseMode().getOpposite());
 
-                instanceData = new StructureGenerator<>(structureInfo).random(random).environment(environment(world, generationInfo)).transform(transform).boundingBox(boundingBox)
+                instanceData = new StructureGenerator<>(structure).random(random).environment(environment(world, generationInfo)).transform(transform).boundingBox(boundingBox)
                         .instanceData().map(NBTStorable::writeToNBT).orElse(null);
             }
         }
@@ -123,10 +123,10 @@ public class GenericVillagePiece extends StructureVillagePieces.Village
     @ParametersAreNonnullByDefault
     public boolean addComponentParts(World world, Random random, StructureBoundingBox boundingBox)
     {
-        StructureInfo<?> structureInfo = StructureRegistry.INSTANCE.get(structureID);
-        if (structureInfo != null)
+        Structure<?> structure = StructureRegistry.INSTANCE.get(structureID);
+        if (structure != null)
         {
-            GenerationInfo generationInfo = structureInfo.generationInfo(generationID);
+            GenerationInfo generationInfo = structure.generationInfo(generationID);
 
             if (generationInfo instanceof VanillaGenerationInfo)
             {
@@ -147,7 +147,7 @@ public class GenericVillagePiece extends StructureVillagePieces.Village
                 }
 
                 if (world instanceof WorldServer)
-                    generate((WorldServer) world, random, boundingBox, structureInfo, generationInfo, transform);
+                    generate((WorldServer) world, random, boundingBox, structure, generationInfo, transform);
 
                 return true;
             }
@@ -156,13 +156,13 @@ public class GenericVillagePiece extends StructureVillagePieces.Village
         return false;
     }
 
-    protected <T extends NBTStorable> void generate(WorldServer world, Random random, StructureBoundingBox generationBB, StructureInfo<T> structureInfo, GenerationInfo generationInfo, AxisAlignedTransform2D transform)
+    protected <T extends NBTStorable> void generate(WorldServer world, Random random, StructureBoundingBox generationBB, Structure<T> structure, GenerationInfo generationInfo, AxisAlignedTransform2D transform)
     {
         if (!startedGeneration)
             prepare(random, world);
 
         boolean firstTime = !startedGeneration;
-        new StructureGenerator<>(structureInfo).environment(environment(world, generationInfo))
+        new StructureGenerator<>(structure).environment(environment(world, generationInfo))
                 .random(random).lowerCoord(StructureBoundingBoxes.min(boundingBox)).transform(transform).generationBB(StructureBoundingBoxes.wholeHeightBoundingBox(world, generationBB))
                 .generationLayer(componentType).structureID(structureID).maturity(firstTime ? StructureSpawnContext.GenerateMaturity.FIRST : StructureSpawnContext.GenerateMaturity.COMPLEMENT)
                 .instanceData(this.instanceData).generate();

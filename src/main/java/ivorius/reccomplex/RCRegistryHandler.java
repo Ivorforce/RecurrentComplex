@@ -13,7 +13,7 @@ import ivorius.reccomplex.block.*;
 import ivorius.reccomplex.block.materials.MaterialNegativeSpace;
 import ivorius.reccomplex.block.materials.RCMaterials;
 import ivorius.reccomplex.capability.CapabilitySelection;
-import ivorius.reccomplex.capability.StructureEntityInfo;
+import ivorius.reccomplex.capability.RCEntityInfo;
 import ivorius.reccomplex.files.RCFileSaver;
 import ivorius.reccomplex.files.loading.FileLoaderRegistryString;
 import ivorius.reccomplex.files.loading.LeveledRegistry;
@@ -102,7 +102,7 @@ public class RCRegistryHandler
         RCMaterials.materialNegativeSpace = new MaterialNegativeSpace();
         RCMaterials.materialGenericSolid = (new Material(MapColor.STONE));
 
-        CapabilityManager.INSTANCE.register(StructureEntityInfo.class, new NBTCompoundObjectCapabilityStorage<>(StructureEntityInfo.class), StructureEntityInfo::new);
+        CapabilityManager.INSTANCE.register(RCEntityInfo.class, new NBTCompoundObjectCapabilityStorage<>(RCEntityInfo.class), RCEntityInfo::new);
         CapabilityManager.INSTANCE.register(CapabilitySelection.class, new NBTCompoundObjectCapabilityStorage<>(CapabilitySelection.class), CapabilitySelection::new);
 
         blockSelector = new ItemBlockSelectorBlock().setUnlocalizedName("blockSelector");
@@ -246,7 +246,7 @@ public class RCRegistryHandler
 
         registerPackets(event);
 
-        CapabilityUpdateRegistry.INSTANCE.register(StructureEntityInfo.CAPABILITY_KEY, StructureEntityInfo.CAPABILITY);
+        CapabilityUpdateRegistry.INSTANCE.register(RCEntityInfo.CAPABILITY_KEY, RCEntityInfo.CAPABILITY);
         CapabilityUpdateRegistry.INSTANCE.register(CapabilitySelection.CAPABILITY_KEY, CapabilitySelection.CAPABILITY);
 
         RCBiomeDictionary.registerTypes();

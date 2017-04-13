@@ -8,7 +8,7 @@ package ivorius.reccomplex.commands;
 import ivorius.reccomplex.RCConfig;
 import ivorius.reccomplex.utils.RCStrings;
 import ivorius.reccomplex.world.gen.feature.structure.StructureRegistry;
-import ivorius.reccomplex.world.gen.feature.structure.generic.GenericStructureInfo;
+import ivorius.reccomplex.world.gen.feature.structure.generic.GenericStructure;
 import ivorius.reccomplex.world.gen.feature.structure.generic.Metadata;
 import ivorius.reccomplex.utils.ServerTranslations;
 import net.minecraft.command.CommandBase;
@@ -21,7 +21,6 @@ import net.minecraft.util.text.TextComponentString;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.util.text.event.ClickEvent;
 import net.minecraft.util.text.event.HoverEvent;
-import org.apache.commons.lang3.StringUtils;
 
 import javax.annotation.Nullable;
 import java.util.Collections;
@@ -55,7 +54,7 @@ public class CommandLookupStructure extends CommandBase
         if (args.length >= 1)
         {
             String id = args[0];
-            GenericStructureInfo structureInfo = RCCommands.getGenericStructure(id);
+            GenericStructure structureInfo = RCCommands.getGenericStructure(id);
             Metadata metadata = structureInfo.metadata;
 
             boolean hasWeblink = !metadata.weblink.trim().isEmpty();

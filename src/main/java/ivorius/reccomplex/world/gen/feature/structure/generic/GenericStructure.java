@@ -24,7 +24,7 @@ import ivorius.reccomplex.utils.RCAccessorEntity;
 import ivorius.reccomplex.utils.RCAccessorWorldServer;
 import ivorius.reccomplex.utils.TileEntities;
 import ivorius.reccomplex.utils.expression.DependencyMatcher;
-import ivorius.reccomplex.world.gen.feature.structure.StructureInfo;
+import ivorius.reccomplex.world.gen.feature.structure.Structure;
 import ivorius.reccomplex.world.gen.feature.structure.StructureRegistry;
 import ivorius.reccomplex.world.gen.feature.structure.context.StructureContext;
 import ivorius.reccomplex.world.gen.feature.structure.context.StructureLoadContext;
@@ -64,7 +64,7 @@ import java.util.stream.Collectors;
 /**
  * Created by lukas on 24.05.14.
  */
-public class GenericStructureInfo implements StructureInfo<GenericStructureInfo.InstanceData>, Cloneable
+public class GenericStructure implements Structure<GenericStructure.InstanceData>, Cloneable
 {
     public static final int LATEST_VERSION = 3;
     public static final int MAX_GENERATING_LAYERS = 30;
@@ -83,9 +83,9 @@ public class GenericStructureInfo implements StructureInfo<GenericStructureInfo.
 
     public JsonObject customData;
 
-    public static GenericStructureInfo createDefaultStructure()
+    public static GenericStructure createDefaultStructure()
     {
-        GenericStructureInfo genericStructureInfo = new GenericStructureInfo();
+        GenericStructure genericStructureInfo = new GenericStructure();
         genericStructureInfo.rotatable = true;
         genericStructureInfo.mirrorable = true;
         genericStructureInfo.blocking = true;
@@ -390,7 +390,7 @@ public class GenericStructureInfo implements StructureInfo<GenericStructureInfo.
 
     @Override
     @Nonnull
-    public GenericStructureInfo copyAsGenericStructureInfo()
+    public GenericStructure copyAsGenericStructureInfo()
     {
         return copy();
     }
@@ -415,19 +415,19 @@ public class GenericStructureInfo implements StructureInfo<GenericStructureInfo.
         return s != null ? s : "Generic Structure";
     }
 
-    public GenericStructureInfo copy()
+    public GenericStructure copy()
     {
-        GenericStructureInfo genericStructureInfo = StructureSaveHandler.INSTANCE.fromJSON(StructureSaveHandler.INSTANCE.toJSON(this));
+        GenericStructure genericStructureInfo = StructureSaveHandler.INSTANCE.fromJSON(StructureSaveHandler.INSTANCE.toJSON(this));
         genericStructureInfo.worldDataCompound = worldDataCompound.copy();
         return genericStructureInfo;
     }
 
-    public static class Serializer implements JsonDeserializer<GenericStructureInfo>, JsonSerializer<GenericStructureInfo>
+    public static class Serializer implements JsonDeserializer<GenericStructure>, JsonSerializer<GenericStructure>
     {
-        public GenericStructureInfo deserialize(JsonElement jsonElement, Type par2Type, JsonDeserializationContext context)
+        public GenericStructure deserialize(JsonElement jsonElement, Type par2Type, JsonDeserializationContext context)
         {
             JsonObject jsonObject = JsonUtils.asJsonObject(jsonElement, "status");
-            GenericStructureInfo structureInfo = new GenericStructureInfo();
+            GenericStructure structureInfo = new GenericStructure();
 
             Integer version;
             if (jsonObject.has("version"))
@@ -485,7 +485,7 @@ public class GenericStructureInfo implements StructureInfo<GenericStructureInfo.
             return structureInfo;
         }
 
-        public JsonElement serialize(GenericStructureInfo structureInfo, Type par2Type, JsonSerializationContext context)
+        public JsonElement serialize(GenericStructure structureInfo, Type par2Type, JsonSerializationContext context)
         {
             JsonObject jsonObject = new JsonObject();
 

@@ -13,7 +13,7 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.math.BlockPos;
 import ivorius.ivtoolkit.tools.IvWorldData;
 import ivorius.reccomplex.RCConfig;
-import ivorius.reccomplex.capability.StructureEntityInfo;
+import ivorius.reccomplex.capability.RCEntityInfo;
 import ivorius.reccomplex.utils.ServerTranslations;
 import net.minecraft.command.ICommandSender;
 
@@ -42,7 +42,7 @@ public class CommandSelectCopy extends CommandBase
     @Override
     public void execute(MinecraftServer server, ICommandSender commandSender, String[] args) throws CommandException
     {
-        StructureEntityInfo structureEntityInfo = RCCommands.getStructureEntityInfo(commandSender, null);
+        RCEntityInfo RCEntityInfo = RCCommands.getStructureEntityInfo(commandSender, null);
 
         SelectionOwner selectionOwner = RCCommands.getSelectionOwner(commandSender, null, true);
         RCCommands.assertSize(commandSender, selectionOwner);
@@ -53,7 +53,7 @@ public class CommandSelectCopy extends CommandBase
         BlockPos lowerCorner = area.getLowerCorner();
         BlockPos higherCorner = area.getHigherCorner();
 
-        structureEntityInfo.setWorldDataClipboard(worldData.createTagCompound());
+        RCEntityInfo.setWorldDataClipboard(worldData.createTagCompound());
         commandSender.sendMessage(ServerTranslations.format("commands.selectCopy.success", String.valueOf(lowerCorner.getX()), String.valueOf(lowerCorner.getY()), String.valueOf(lowerCorner.getZ()), String.valueOf(higherCorner.getX()), String.valueOf(higherCorner.getY()), String.valueOf(higherCorner.getZ())));
     }
 }

@@ -43,7 +43,7 @@ public class StructureGenerator<S extends NBTStorable>
     @Nullable
     private WorldServer world;
     @Nullable
-    private StructureInfo<S> structureInfo;
+    private Structure<S> structure;
     @Nullable
     private String structureID;
 
@@ -84,9 +84,9 @@ public class StructureGenerator<S extends NBTStorable>
     private boolean allowOverlaps = false;
     private boolean memorize = true;
 
-    public StructureGenerator(StructureInfo<S> structureInfo)
+    public StructureGenerator(Structure<S> structure)
     {
-        structure(structureInfo);
+        structure(structure);
     }
 
     public StructureGenerator()
@@ -118,7 +118,7 @@ public class StructureGenerator<S extends NBTStorable>
         @SuppressWarnings("OptionalGetWithoutIsPresent")
         S instanceData = instanceDataO.get();
 
-        StructureInfo<S> structureInfo = structure();
+        Structure<S> structure = structure();
         String structureID = structureID();
         boolean firstTime = spawn.generateMaturity.isFirstTime();
 
@@ -127,24 +127,24 @@ public class StructureGenerator<S extends NBTStorable>
         if (maturity() != StructureSpawnContext.GenerateMaturity.SUGGEST || (
                 spawn.boundingBox.minY >= MIN_DIST_TO_LIMIT && spawn.boundingBox.maxY <= world.getHeight() - 1 - MIN_DIST_TO_LIMIT
                         && (!RCConfig.avoidOverlappingGeneration || allowOverlaps || WorldStructureGenerationData.get(world).entriesAt(spawn.boundingBox).noneMatch(WorldStructureGenerationData.Entry::blocking))
-                        && !RCEventBus.INSTANCE.post(new StructureGenerationEvent.Suggest(structureInfo, spawn))
+                        && !RCEventBus.INSTANCE.post(new StructureGenerationEvent.Suggest(structure, spawn))
                         && (structureID == null || !MinecraftForge.EVENT_BUS.post(new StructureGenerationEventLite.Suggest(world, structureID, spawn.boundingBox, spawn.generationLayer, firstTime)))
         ))
         {
             if (firstTime)
             {
-                RCEventBus.INSTANCE.post(new StructureGenerationEvent.Pre(structureInfo, spawn));
+                RCEventBus.INSTANCE.post(new StructureGenerationEvent.Pre(structure, spawn));
                 if (structureID != null)
                     MinecraftForge.EVENT_BUS.post(new StructureGenerationEventLite.Pre(world, structureID, spawn.boundingBox, spawn.generationLayer, firstTime));
             }
 
-            boolean success = structureInfo.generate(spawn, instanceData, RCConfig.getUniversalTransformer());
+            boolean success = structure.generate(spawn, instanceData, RCConfig.getUniversalTransformer());
 
             if (firstTime && success)
             {
                 RecurrentComplex.logger.trace(String.format("Generated structure '%s' in %s", name(structureID), spawn.boundingBox));
 
-                RCEventBus.INSTANCE.post(new StructureGenerationEvent.Post(structureInfo, spawn));
+                RCEventBus.INSTANCE.post(new StructureGenerationEvent.Post(structure, spawn));
                 if (structureID != null)
                     MinecraftForge.EVENT_BUS.post(new StructureGenerationEventLite.Post(world, structureID, spawn.boundingBox, spawn.generationLayer, firstTime));
 
@@ -153,7 +153,7 @@ public class StructureGenerator<S extends NBTStorable>
                     String generationInfoID = generationInfo != null ? generationInfo.id() : null;
 
                     WorldStructureGenerationData.StructureEntry structureEntry = WorldStructureGenerationData.StructureEntry.complete(structureID, generationInfoID, spawn.boundingBox, spawn.transform);
-                    structureEntry.blocking = structureInfo.isBlocking();
+                    structureEntry.blocking = structure.isBlocking();
                     WorldStructureGenerationData.get(world).addEntry(structureEntry);
                 }
             }
@@ -193,9 +193,9 @@ public class StructureGenerator<S extends NBTStorable>
         return this.random != null ? this.random : world().rand;
     }
 
-    public StructureGenerator<S> structure(@Nonnull StructureInfo<S> structureInfo)
+    public StructureGenerator<S> structure(@Nonnull Structure<S> structure)
     {
-        this.structureInfo = structureInfo;
+        this.structure = structure;
         return this;
     }
 
@@ -206,18 +206,18 @@ public class StructureGenerator<S extends NBTStorable>
     }
 
     @Nonnull
-    public StructureInfo<S> structure()
+    public Structure<S> structure()
     {
         //noinspection unchecked
-        StructureInfo<S> structureInfo = this.structureInfo != null ? this.structureInfo : structureID != null ? (StructureInfo<S>) StructureRegistry.INSTANCE.get(structureID) : null;
-        if (structureInfo == null) throw new IllegalStateException();
-        return structureInfo;
+        Structure<S> structure = this.structure != null ? this.structure : structureID != null ? (Structure<S>) StructureRegistry.INSTANCE.get(structureID) : null;
+        if (structure == null) throw new IllegalStateException();
+        return structure;
     }
 
     @Nullable
     public String structureID()
     {
-        return this.structureID != null ? this.structureID : this.structureInfo != null ? StructureRegistry.INSTANCE.id(structureInfo) : null;
+        return this.structureID != null ? this.structureID : this.structure != null ? StructureRegistry.INSTANCE.id(structure) : null;
     }
 
     public StructureGenerator<S> lowerCoord(@Nonnull BlockPos lowerCoord)
@@ -280,10 +280,10 @@ public class StructureGenerator<S extends NBTStorable>
             return this.transform;
         else
         {
-            StructureInfo<S> structureInfo = structure();
+            Structure<S> structure = structure();
             Random random = random();
 
-            AxisAlignedTransform2D transform = AxisAlignedTransform2D.from(structureInfo.isRotatable() ? random.nextInt(4) : 0, structureInfo.isMirrorable() && random.nextBoolean());
+            AxisAlignedTransform2D transform = AxisAlignedTransform2D.from(structure.isRotatable() ? random.nextInt(4) : 0, structure.isMirrorable() && random.nextBoolean());
             return this.transform = transform;
         }
     }
@@ -316,10 +316,10 @@ public class StructureGenerator<S extends NBTStorable>
             int[] size = structureSize();
 
             if (this.lowerCoord != null)
-                boundingBox = StructureInfos.structureBoundingBox(fromCenter ? lowerCoord.subtract(new Vec3i(size[0] / 2, 0, size[2] / 2)) : lowerCoord, size);
+                boundingBox = Structures.structureBoundingBox(fromCenter ? lowerCoord.subtract(new Vec3i(size[0] / 2, 0, size[2] / 2)) : lowerCoord, size);
             else if (surfacePos != null && placer != null)
             {
-                boundingBox = StructureInfos.structureBoundingBox((fromCenter ? surfacePos.subtract(size[0] / 2, size[2] / 2) : surfacePos).blockPos(0), size);
+                boundingBox = Structures.structureBoundingBox((fromCenter ? surfacePos.subtract(size[0] / 2, size[2] / 2) : surfacePos).blockPos(0), size);
 
                 if (placed)
                 {
@@ -341,7 +341,7 @@ public class StructureGenerator<S extends NBTStorable>
 
     public int[] structureSize()
     {
-        return StructureInfos.structureSize(structure(), transform());
+        return Structures.structureSize(structure(), transform());
     }
 
     @Nullable

@@ -9,7 +9,7 @@ import ivorius.reccomplex.RCConfig;
 import ivorius.reccomplex.network.PacketEditStructureHandler;
 import ivorius.reccomplex.utils.ServerTranslations;
 import ivorius.reccomplex.world.gen.feature.structure.StructureRegistry;
-import ivorius.reccomplex.world.gen.feature.structure.generic.GenericStructureInfo;
+import ivorius.reccomplex.world.gen.feature.structure.generic.GenericStructure;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
@@ -52,7 +52,7 @@ public class CommandEditStructure extends CommandBase
         {
             String structureID = args[0];
 
-            GenericStructureInfo structureInfo = RCCommands.getGenericStructure(structureID);
+            GenericStructure structureInfo = RCCommands.getGenericStructure(structureID);
             PacketEditStructureHandler.openEditStructure(structureInfo, structureID, entityPlayerMP);
         }
         else

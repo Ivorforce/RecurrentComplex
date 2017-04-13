@@ -35,7 +35,7 @@ public class WorldGenMaze
 {
     public static boolean generate(StructureSpawnContext context, PlacedStructure placedComponent, BlockPos pos)
     {
-        StructureInfo<?> structure = StructureRegistry.INSTANCE.get(placedComponent.structureID);
+        Structure<?> structure = StructureRegistry.INSTANCE.get(placedComponent.structureID);
 
         if (structure == null)
         {
@@ -43,7 +43,7 @@ public class WorldGenMaze
             return false;
         }
 
-        int[] placedSize = StructureInfos.structureSize(structure, placedComponent.transform);
+        int[] placedSize = Structures.structureSize(structure, placedComponent.transform);
         return new StructureGenerator<>(structure).asChild(context).generationInfo(placedComponent.generationInfoID)
                 .lowerCoord(context.transform.apply(placedComponent.lowerCoord, IvVecMathHelper.sub(new int[]{2, 2, 2}, placedSize)).add(pos))
                 .transform(Transforms.apply(placedComponent.transform, context.transform)).structureID(placedComponent.structureID)
@@ -54,25 +54,25 @@ public class WorldGenMaze
     public static PlacedStructure place(Random random, Environment environment, BlockPos shift, int[] roomSize, ShiftedMazeComponent<MazeComponentStructure<Connector>, Connector> placedComponent)
     {
         MazeComponentStructure<Connector> componentInfo = placedComponent.getComponent();
-        StructureInfo<?> structureInfo = StructureRegistry.INSTANCE.get(componentInfo.structureID);
+        Structure<?> structure = StructureRegistry.INSTANCE.get(componentInfo.structureID);
 
-        if (structureInfo == null)
+        if (structure == null)
         {
             RecurrentComplex.logger.error(String.format("Could not find structure '%s' for maze", componentInfo.structureID));
             return null;
         }
 
-        BlockPos compLowerPos = getBoundingBox(roomSize, placedComponent, structureInfo, componentInfo.transform).add(shift);
-        NBTStorable instanceData = new StructureGenerator<>(structureInfo).random(random).environment(environment).transform(componentInfo.transform).lowerCoord(compLowerPos).instanceData().orElse(null);
+        BlockPos compLowerPos = getBoundingBox(roomSize, placedComponent, structure, componentInfo.transform).add(shift);
+        NBTStorable instanceData = new StructureGenerator<>(structure).random(random).environment(environment).transform(componentInfo.transform).lowerCoord(compLowerPos).instanceData().orElse(null);
 
         return new PlacedStructure(componentInfo.structureID, componentInfo.structureID, componentInfo.transform, compLowerPos, instanceData.writeToNBT());
     }
 
-    protected static BlockPos getBoundingBox(int[] roomSize, ShiftedMazeComponent<MazeComponentStructure<Connector>, Connector> placedComponent, StructureInfo structureInfo, AxisAlignedTransform2D transform)
+    protected static BlockPos getBoundingBox(int[] roomSize, ShiftedMazeComponent<MazeComponentStructure<Connector>, Connector> placedComponent, Structure structure, AxisAlignedTransform2D transform)
     {
         int[] scaledMazePosition = IvVecMathHelper.mul(placedComponent.getShift().getCoordinates(), roomSize);
 
-        int[] size = StructureInfos.structureSize(structureInfo, transform);
+        int[] size = Structures.structureSize(structure, transform);
         int[] expectedSize = IvVecMathHelper.mul(placedComponent.getComponent().getSize(), roomSize); // Already rotated component, so don't rotate again
         int[] sizeDependentShift = new int[expectedSize.length];
         for (int i = 0; i < size.length; i++)
@@ -83,7 +83,7 @@ public class WorldGenMaze
 
     }
 
-    public static Stream<MazeComponentStructure<Connector>> transforms(StructureInfo info, MazeGenerationInfo mazeInfo, ConnectorFactory factory, AxisAlignedTransform2D transform, Collection<Connector> blockedConnections)
+    public static Stream<MazeComponentStructure<Connector>> transforms(Structure info, MazeGenerationInfo mazeInfo, ConnectorFactory factory, AxisAlignedTransform2D transform, Collection<Connector> blockedConnections)
     {
         int[] compSize = mazeInfo.mazeComponent.boundsSize();
 
@@ -95,7 +95,7 @@ public class WorldGenMaze
         return transforms.stream().map(t -> transform(info, mazeInfo.mazeComponent, t, compSize, splitCompWeight, factory, blockedConnections));
     }
 
-    public static MazeComponentStructure<Connector> transform(StructureInfo info, SavedMazeComponent comp, final AxisAlignedTransform2D transform, final int[] size, double weight, ConnectorFactory factory, Collection<Connector> blockedConnections)
+    public static MazeComponentStructure<Connector> transform(Structure info, SavedMazeComponent comp, final AxisAlignedTransform2D transform, final int[] size, double weight, ConnectorFactory factory, Collection<Connector> blockedConnections)
     {
         Collection<MazeRoom> rooms = comp.getRooms();
         Set<MazeRoom> transformedRooms = rooms.stream().map(input -> MazeRooms.rotated(input, transform, size)).collect(Collectors.toSet());

@@ -11,15 +11,15 @@ import ivorius.ivtoolkit.math.AxisAlignedTransform2D;
 import ivorius.reccomplex.RCConfig;
 import ivorius.reccomplex.RecurrentComplex;
 import ivorius.reccomplex.capability.SelectionOwner;
-import ivorius.reccomplex.capability.StructureEntityInfo;
+import ivorius.reccomplex.capability.RCEntityInfo;
 import ivorius.reccomplex.files.loading.ResourceDirectory;
 import ivorius.reccomplex.utils.ServerTranslations;
 import ivorius.reccomplex.utils.algebra.ExpressionCache;
 import ivorius.reccomplex.utils.algebra.FunctionExpressionCaches;
 import ivorius.reccomplex.utils.expression.ResourceMatcher;
-import ivorius.reccomplex.world.gen.feature.structure.StructureInfo;
+import ivorius.reccomplex.world.gen.feature.structure.Structure;
 import ivorius.reccomplex.world.gen.feature.structure.StructureRegistry;
-import ivorius.reccomplex.world.gen.feature.structure.generic.GenericStructureInfo;
+import ivorius.reccomplex.world.gen.feature.structure.generic.GenericStructure;
 import joptsimple.internal.Strings;
 import net.minecraft.command.*;
 import net.minecraft.util.EnumFacing;
@@ -161,9 +161,9 @@ public class RCCommands
     }
 
     @Nonnull
-    public static StructureEntityInfo getStructureEntityInfo(Object object, @Nullable EnumFacing facing) throws CommandException
+    public static RCEntityInfo getStructureEntityInfo(Object object, @Nullable EnumFacing facing) throws CommandException
     {
-        StructureEntityInfo info = StructureEntityInfo.get(object, facing);
+        RCEntityInfo info = RCEntityInfo.get(object, facing);
 
         if (info == null)
             throw ServerTranslations.commandException("commands.rc.noEntityInfo");
@@ -279,7 +279,7 @@ public class RCCommands
     }
 
     @Nonnull
-    protected static Predicate<StructureInfo> tryParseStructurePredicate(String[] args, int startPos, Supplier<Predicate<StructureInfo>> fallback)
+    protected static Predicate<Structure> tryParseStructurePredicate(String[] args, int startPos, Supplier<Predicate<Structure>> fallback)
     {
         return args.length >= startPos
                 ? s -> tryParseResourceMatcher(args, startPos).test(StructureRegistry.INSTANCE.resourceLocation(s))
@@ -397,14 +397,14 @@ public class RCCommands
         }
     }
 
-    public static GenericStructureInfo getGenericStructure(String name) throws CommandException
+    public static GenericStructure getGenericStructure(String name) throws CommandException
     {
-        StructureInfo structureInfo = StructureRegistry.INSTANCE.get(name);
+        Structure structure = StructureRegistry.INSTANCE.get(name);
 
-        if (structureInfo == null)
+        if (structure == null)
             throw ServerTranslations.commandException("commands.structure.notRegistered", name);
 
-        GenericStructureInfo genericStructureInfo = structureInfo.copyAsGenericStructureInfo();
+        GenericStructure genericStructureInfo = structure.copyAsGenericStructureInfo();
 
         if (genericStructureInfo == null)
             throw ServerTranslations.commandException("commands.structure.notGeneric", name);

@@ -29,7 +29,7 @@ import ivorius.reccomplex.world.gen.feature.structure.context.StructureLiveConte
 import ivorius.reccomplex.world.gen.feature.structure.context.StructureLoadContext;
 import ivorius.reccomplex.world.gen.feature.structure.context.StructurePrepareContext;
 import ivorius.reccomplex.world.gen.feature.structure.context.StructureSpawnContext;
-import ivorius.reccomplex.world.gen.feature.structure.generic.GenericStructureInfo;
+import ivorius.reccomplex.world.gen.feature.structure.generic.GenericStructure;
 import ivorius.reccomplex.world.gen.feature.structure.generic.WorldCache;
 import net.minecraft.block.BlockSandStone;
 import net.minecraft.block.BlockStoneBrick;
@@ -204,7 +204,7 @@ public class TransformerRuins extends Transformer<TransformerRuins.InstanceData>
 
                 IvMutableBlockPos.offset(dest, dest, EnumFacing.UP);
                 IBlockState state = PosTransformer.transformBlockState(source, context.transform);
-                GenericStructureInfo.setBlock(context, areaSize, dest, state, () -> tileEntityCompounds.get(sourcePos));
+                GenericStructure.setBlock(context, areaSize, dest, state, () -> tileEntityCompounds.get(sourcePos));
             }
 
             StructureBoundingBox dropAreaBB = context.boundingBox;

@@ -12,7 +12,7 @@ import ivorius.reccomplex.network.PacketSaveStructureHandler;
 import ivorius.reccomplex.utils.ServerTranslations;
 import ivorius.reccomplex.world.MockWorld;
 import ivorius.reccomplex.world.gen.feature.structure.StructureRegistry;
-import ivorius.reccomplex.world.gen.feature.structure.generic.GenericStructureInfo;
+import ivorius.reccomplex.world.gen.feature.structure.generic.GenericStructure;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommand;
@@ -53,7 +53,7 @@ public class CommandMapStructure extends CommandBase
             throw ServerTranslations.wrongUsageException("commands.rcmap.usage");
 
         String id = args[0];
-        GenericStructureInfo structure = RCCommands.getGenericStructure(id);
+        GenericStructure structure = RCCommands.getGenericStructure(id);
         ResourceDirectory directory = RCCommands.parseResourceDirectory(args[1]);
 
         ICommand other = server.getCommandManager().getCommands().get(args[2]);

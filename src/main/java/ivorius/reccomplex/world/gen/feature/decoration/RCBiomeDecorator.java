@@ -13,7 +13,7 @@ import ivorius.ivtoolkit.blocks.BlockSurfacePos;
 import ivorius.reccomplex.world.gen.feature.StructureGenerator;
 import ivorius.reccomplex.world.gen.feature.selector.StructureSelector;
 import ivorius.reccomplex.world.gen.feature.structure.Placer;
-import ivorius.reccomplex.world.gen.feature.structure.StructureInfo;
+import ivorius.reccomplex.world.gen.feature.structure.Structure;
 import ivorius.reccomplex.world.gen.feature.structure.StructureRegistry;
 import ivorius.reccomplex.world.gen.feature.structure.context.StructureSpawnContext;
 import ivorius.reccomplex.world.gen.feature.structure.generic.gentypes.VanillaDecorationGenerationInfo;
@@ -125,7 +125,7 @@ public class RCBiomeDecorator
         return vanillaAmount - rcAmount;
     }
 
-    public static void generateSurface(Pair<StructureInfo<?>, VanillaDecorationGenerationInfo> generation, WorldServer worldIn, BlockPos chunkPos, Random random)
+    public static void generateSurface(Pair<Structure<?>, VanillaDecorationGenerationInfo> generation, WorldServer worldIn, BlockPos chunkPos, Random random)
     {
         new StructureGenerator<>(generation.getLeft()).generationInfo(generation.getRight()).world(worldIn)
                 .random(random).maturity(StructureSpawnContext.GenerateMaturity.SUGGEST)

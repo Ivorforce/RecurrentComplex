@@ -11,7 +11,7 @@ import ivorius.reccomplex.capability.SelectionOwner;
 import ivorius.reccomplex.network.PacketEditStructureHandler;
 import ivorius.reccomplex.utils.ServerTranslations;
 import ivorius.reccomplex.world.gen.feature.structure.StructureRegistry;
-import ivorius.reccomplex.world.gen.feature.structure.generic.GenericStructureInfo;
+import ivorius.reccomplex.world.gen.feature.structure.generic.GenericStructure;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
@@ -28,9 +28,9 @@ import java.util.List;
  */
 public class CommandExportStructure extends CommandBase
 {
-    protected static GenericStructureInfo getNewGenericStructure(ICommandSender commandSender, String structureID) throws CommandException
+    protected static GenericStructure getNewGenericStructure(ICommandSender commandSender, String structureID) throws CommandException
     {
-        GenericStructureInfo genericStructureInfo;
+        GenericStructure genericStructureInfo;
 
         if (structureID != null)
         {
@@ -38,7 +38,7 @@ public class CommandExportStructure extends CommandBase
         }
         else
         {
-            genericStructureInfo = GenericStructureInfo.createDefaultStructure();
+            genericStructureInfo = GenericStructure.createDefaultStructure();
             genericStructureInfo.metadata.authors = commandSender.getName();
         }
 
@@ -77,7 +77,7 @@ public class CommandExportStructure extends CommandBase
         EntityPlayerMP player = getCommandSenderAsPlayer(commandSender);
 
         String structureID = args.length >= 1 ? args[0] : null;
-        GenericStructureInfo genericStructureInfo = getNewGenericStructure(commandSender, structureID);
+        GenericStructure genericStructureInfo = getNewGenericStructure(commandSender, structureID);
 
         SelectionOwner selectionOwner = RCCommands.getSelectionOwner(commandSender, null, true);
         RCCommands.assertSize(commandSender, selectionOwner);

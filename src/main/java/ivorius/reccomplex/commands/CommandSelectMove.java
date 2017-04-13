@@ -15,7 +15,7 @@ import ivorius.reccomplex.utils.ServerTranslations;
 import ivorius.reccomplex.world.gen.feature.structure.OperationClearArea;
 import ivorius.reccomplex.world.gen.feature.structure.OperationGenerateStructure;
 import ivorius.reccomplex.world.gen.feature.structure.OperationMulti;
-import ivorius.reccomplex.world.gen.feature.structure.generic.GenericStructureInfo;
+import ivorius.reccomplex.world.gen.feature.structure.generic.GenericStructure;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
@@ -79,7 +79,7 @@ public class CommandSelectMove extends CommandBase
         IvWorldData worldData = IvWorldData.capture(commandSender.getEntityWorld(), area, true);
         NBTTagCompound worldDataCompound = worldData.createTagCompound();
 
-        GenericStructureInfo structureInfo = GenericStructureInfo.createDefaultStructure();
+        GenericStructure structureInfo = GenericStructure.createDefaultStructure();
         structureInfo.worldDataCompound = worldDataCompound;
 
         OperationRegistry.queueOperation(new OperationMulti(new OperationClearArea(area), new OperationGenerateStructure(structureInfo, null, transform, coord, true).prepare((WorldServer) commandSender.getEntityWorld())), commandSender);

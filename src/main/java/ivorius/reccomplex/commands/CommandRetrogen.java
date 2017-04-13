@@ -11,7 +11,7 @@ import ivorius.reccomplex.files.RCFiles;
 import ivorius.reccomplex.files.loading.FileSuffixFilter;
 import ivorius.reccomplex.utils.ServerTranslations;
 import ivorius.reccomplex.world.gen.feature.WorldGenStructures;
-import ivorius.reccomplex.world.gen.feature.structure.StructureInfo;
+import ivorius.reccomplex.world.gen.feature.structure.Structure;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
@@ -73,7 +73,7 @@ public class CommandRetrogen extends CommandBase
         return world.setRandomSeed(pos.chunkXPos, pos.chunkZPos, 0xDEADBEEF);
     }
 
-    public static long retrogen(WorldServer world, Predicate<StructureInfo> structurePredicate)
+    public static long retrogen(WorldServer world, Predicate<Structure> structurePredicate)
     {
         return existingChunks(world)
                 .filter(pos -> world.getChunkFromChunkCoords(pos.chunkXPos, pos.chunkZPos).isTerrainPopulated())

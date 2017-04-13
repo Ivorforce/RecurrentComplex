@@ -30,12 +30,12 @@ import javax.annotation.Nullable;
 /**
  * Created by lukas on 24.05.14.
  */
-public class StructureEntityInfo implements NBTCompoundObject, PartialUpdateHandler
+public class RCEntityInfo implements NBTCompoundObject, PartialUpdateHandler
 {
     public static final String CAPABILITY_KEY = "structureEntityInfo";
 
-    @CapabilityInject(StructureEntityInfo.class)
-    public static Capability<StructureEntityInfo> CAPABILITY;
+    @CapabilityInject(RCEntityInfo.class)
+    public static Capability<RCEntityInfo> CAPABILITY;
 
     private boolean hasChanges;
 
@@ -50,10 +50,10 @@ public class StructureEntityInfo implements NBTCompoundObject, PartialUpdateHand
     private NBTTagCompound worldDataClipboard;
 
     @Nullable
-    public static StructureEntityInfo get(Object object, @Nullable EnumFacing facing)
+    public static RCEntityInfo get(Object object, @Nullable EnumFacing facing)
     {
-        if (object instanceof StructureEntityInfo)
-            return (StructureEntityInfo) object;
+        if (object instanceof RCEntityInfo)
+            return (RCEntityInfo) object;
 
         if (object instanceof ICapabilityProvider)
             return ((ICapabilityProvider) object).getCapability(CAPABILITY, facing);

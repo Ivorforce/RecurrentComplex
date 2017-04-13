@@ -6,7 +6,7 @@
 package ivorius.reccomplex.network;
 
 import io.netty.buffer.ByteBuf;
-import ivorius.reccomplex.world.gen.feature.structure.generic.GenericStructureInfo;
+import ivorius.reccomplex.world.gen.feature.structure.generic.GenericStructure;
 import ivorius.reccomplex.world.gen.feature.structure.generic.StructureSaveHandler;
 import ivorius.reccomplex.utils.SaveDirectoryData;
 import net.minecraftforge.fml.common.network.ByteBufUtils;
@@ -17,7 +17,7 @@ import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
  */
 public class PacketSaveStructure implements IMessage
 {
-    private GenericStructureInfo structureInfo;
+    private GenericStructure structureInfo;
     private String structureID;
 
     private SaveDirectoryData.Result saveDirectoryDataResult;
@@ -26,7 +26,7 @@ public class PacketSaveStructure implements IMessage
     {
     }
 
-    public PacketSaveStructure(GenericStructureInfo structureInfo, String structureID, SaveDirectoryData.Result saveDirectoryDataResult)
+    public PacketSaveStructure(GenericStructure structureInfo, String structureID, SaveDirectoryData.Result saveDirectoryDataResult)
     {
         this.structureInfo = structureInfo;
         this.structureID = structureID;
@@ -43,12 +43,12 @@ public class PacketSaveStructure implements IMessage
         this.structureID = structureID;
     }
 
-    public GenericStructureInfo getStructureInfo()
+    public GenericStructure getStructureInfo()
     {
         return structureInfo;
     }
 
-    public void setStructureInfo(GenericStructureInfo structureInfo)
+    public void setStructureInfo(GenericStructure structureInfo)
     {
         this.structureInfo = structureInfo;
     }

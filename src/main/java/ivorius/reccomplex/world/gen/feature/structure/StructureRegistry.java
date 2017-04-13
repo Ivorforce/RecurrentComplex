@@ -39,14 +39,14 @@ import java.util.stream.Stream;
 /**
  * Created by lukas on 24.05.14.
  */
-public class StructureRegistry extends SimpleLeveledRegistry<StructureInfo<?>>
+public class StructureRegistry extends SimpleLeveledRegistry<Structure<?>>
 {
     public static final StructureRegistry INSTANCE = new StructureRegistry();
 
     public static SerializableStringTypeRegistry<Transformer> TRANSFORMERS = new SerializableStringTypeRegistry<>("transformer", "type", Transformer.class);
     public static SerializableStringTypeRegistry<GenerationInfo> GENERATION_INFOS = new SerializableStringTypeRegistry<>("generationInfo", "type", GenerationInfo.class);
 
-    private Map<Class<? extends GenerationInfo>, Collection<Pair<StructureInfo<?>, ? extends GenerationInfo>>> cachedGeneration = new HashMap<>();
+    private Map<Class<? extends GenerationInfo>, Collection<Pair<Structure<?>, ? extends GenerationInfo>>> cachedGeneration = new HashMap<>();
 
     private CachedStructureSelectors<MixingStructureSelector<NaturalGenerationInfo, NaturalStructureSelector.Category>> naturalSelectors
             = new CachedStructureSelectors<>((biome, worldProvider) ->
@@ -62,12 +62,12 @@ public class StructureRegistry extends SimpleLeveledRegistry<StructureInfo<?>>
     }
 
     @Override
-    public StructureInfo register(String id, String domain, StructureInfo structureInfo, boolean active, ILevel level)
+    public Structure register(String id, String domain, Structure structure, boolean active, ILevel level)
     {
-        if (active && !(RCConfig.shouldStructureGenerate(id, domain) && structureInfo.areDependenciesResolved()))
+        if (active && !(RCConfig.shouldStructureGenerate(id, domain) && structure.areDependenciesResolved()))
             active = false;
 
-        StructureInfo prev = super.register(id, domain, structureInfo, active, level);
+        Structure prev = super.register(id, domain, structure, active, level);
 
         clearCaches();
 
@@ -75,26 +75,26 @@ public class StructureRegistry extends SimpleLeveledRegistry<StructureInfo<?>>
     }
 
     @Override
-    public StructureInfo unregister(String id, ILevel level)
+    public Structure unregister(String id, ILevel level)
     {
         clearCaches();
         return super.unregister(id, level);
     }
 
-    protected <T extends GenerationInfo> Collection<Pair<StructureInfo<?>, T>> getCachedGeneration(Class<T> clazz)
+    protected <T extends GenerationInfo> Collection<Pair<Structure<?>, T>> getCachedGeneration(Class<T> clazz)
     {
         //noinspection unchecked
-        return (Collection<Pair<StructureInfo<?>, T>>) ((Map) cachedGeneration).get(clazz);
+        return (Collection<Pair<Structure<?>, T>>) ((Map) cachedGeneration).get(clazz);
     }
 
-    public <T extends GenerationInfo> Collection<Pair<StructureInfo<?>, T>> getStructureGenerations(Class<T> clazz)
+    public <T extends GenerationInfo> Collection<Pair<Structure<?>, T>> getStructureGenerations(Class<T> clazz)
     {
-        Collection<Pair<StructureInfo<?>, T>> pairs = getCachedGeneration(clazz);
+        Collection<Pair<Structure<?>, T>> pairs = getCachedGeneration(clazz);
         if (pairs != null)
             return pairs;
 
         pairs = new ArrayList<>();
-        for (StructureInfo<?> info : this.allActive())
+        for (Structure<?> info : this.allActive())
         {
             List<T> generationInfos = info.generationInfos(clazz);
             for (T t : generationInfos)
@@ -108,16 +108,16 @@ public class StructureRegistry extends SimpleLeveledRegistry<StructureInfo<?>>
         return pairs;
     }
 
-    public Stream<Pair<StructureInfo<?>, ListGenerationInfo>> getStructuresInList(final String listID, @Nullable final EnumFacing front)
+    public Stream<Pair<Structure<?>, ListGenerationInfo>> getStructuresInList(final String listID, @Nullable final EnumFacing front)
     {
-        final Predicate<Pair<StructureInfo<?>, ListGenerationInfo>> predicate = input -> listID.equals(input.getRight().listID)
+        final Predicate<Pair<Structure<?>, ListGenerationInfo>> predicate = input -> listID.equals(input.getRight().listID)
                 && (front == null || input.getLeft().isRotatable() || input.getRight().front == front);
         return getStructureGenerations(ListGenerationInfo.class).stream().filter(predicate);
     }
 
-    public Stream<Pair<StructureInfo<?>, MazeGenerationInfo>> getStructuresInMaze(final String mazeID)
+    public Stream<Pair<Structure<?>, MazeGenerationInfo>> getStructuresInMaze(final String mazeID)
     {
-        final Predicate<Pair<StructureInfo<?>, MazeGenerationInfo>> predicate = input ->
+        final Predicate<Pair<Structure<?>, MazeGenerationInfo>> predicate = input ->
         {
             MazeGenerationInfo info = input.getRight();
             return mazeID.equals(info.mazeID) && info.mazeComponent.isValid();
@@ -125,16 +125,16 @@ public class StructureRegistry extends SimpleLeveledRegistry<StructureInfo<?>>
         return getStructureGenerations(MazeGenerationInfo.class).stream().filter(predicate);
     }
 
-    public Stream<Triple<StructureInfo<?>, StaticGenerationInfo, BlockSurfacePos>> getStaticStructuresAt(ChunkPos chunkPos, final World world, final BlockPos spawnPos)
+    public Stream<Triple<Structure<?>, StaticGenerationInfo, BlockSurfacePos>> getStaticStructuresAt(ChunkPos chunkPos, final World world, final BlockPos spawnPos)
     {
-        final Predicate<Pair<StructureInfo<?>, StaticGenerationInfo>> predicate = input ->
+        final Predicate<Pair<Structure<?>, StaticGenerationInfo>> predicate = input ->
         {
             StaticGenerationInfo info = input.getRight();
 
             return info.dimensionMatcher.test(world.provider)
                     && (info.pattern != null || Chunks.contains(chunkPos, info.getPos(spawnPos)));
         };
-        Stream<Pair<StructureInfo<?>, StaticGenerationInfo>> statics = getStructureGenerations(StaticGenerationInfo.class).stream().filter(predicate);
+        Stream<Pair<Structure<?>, StaticGenerationInfo>> statics = getStructureGenerations(StaticGenerationInfo.class).stream().filter(predicate);
 
         return statics.flatMap(pair ->
         {
@@ -163,7 +163,7 @@ public class StructureRegistry extends SimpleLeveledRegistry<StructureInfo<?>>
         cachedGeneration.clear();
 
         updateVanillaGenerations();
-        for (Pair<StructureInfo<?>, VanillaGenerationInfo> pair : getStructureGenerations(VanillaGenerationInfo.class))
+        for (Pair<Structure<?>, VanillaGenerationInfo> pair : getStructureGenerations(VanillaGenerationInfo.class))
         {
             String structureID = this.id(pair.getLeft());
             String generationID = pair.getRight().id();

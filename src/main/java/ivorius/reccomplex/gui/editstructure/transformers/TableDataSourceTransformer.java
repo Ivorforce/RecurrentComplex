@@ -10,7 +10,7 @@ import ivorius.reccomplex.gui.GuiValidityStateIndicator;
 import ivorius.reccomplex.gui.table.*;
 import ivorius.reccomplex.gui.table.cell.*;
 import ivorius.reccomplex.gui.table.datasource.TableDataSourceSegmented;
-import ivorius.reccomplex.world.gen.feature.structure.StructureInfos;
+import ivorius.reccomplex.world.gen.feature.structure.Structures;
 import ivorius.reccomplex.world.gen.feature.structure.generic.transformers.Transformer;
 
 import javax.annotation.Nonnull;
@@ -74,7 +74,7 @@ public class TableDataSourceTransformer extends TableDataSourceSegmented
 
     protected GuiValidityStateIndicator.State currentIDState()
     {
-        return StructureInfos.isSimpleIDState(transformer.id());
+        return Structures.isSimpleIDState(transformer.id());
     }
 
     @Nonnull

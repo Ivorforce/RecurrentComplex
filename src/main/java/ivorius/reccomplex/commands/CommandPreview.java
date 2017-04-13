@@ -6,7 +6,7 @@
 package ivorius.reccomplex.commands;
 
 import ivorius.reccomplex.RCConfig;
-import ivorius.reccomplex.capability.StructureEntityInfo;
+import ivorius.reccomplex.capability.RCEntityInfo;
 import ivorius.reccomplex.operation.Operation;
 import ivorius.reccomplex.utils.ServerTranslations;
 import net.minecraft.command.CommandBase;
@@ -49,14 +49,14 @@ public class CommandPreview extends CommandBase
             throw ServerTranslations.wrongUsageException("commands.rcpreview.usage");
 
         EntityPlayer player = getCommandSenderAsPlayer(commandSender);
-        StructureEntityInfo structureEntityInfo = RCCommands.getStructureEntityInfo(player, null);
+        RCEntityInfo RCEntityInfo = RCCommands.getStructureEntityInfo(player, null);
 
         Operation.PreviewType previewType = Operation.PreviewType.find(args[0]);
         if (previewType == null)
             throw ServerTranslations.commandException("commands.rcpreview.invalid");
 
-        structureEntityInfo.setPreviewType(previewType);
-        structureEntityInfo.sendPreviewTypeToClients(player);
+        RCEntityInfo.setPreviewType(previewType);
+        RCEntityInfo.sendPreviewTypeToClients(player);
 
         commandSender.addChatMessage(ServerTranslations.format("commands.rcpreview.success", args[0]));
     }

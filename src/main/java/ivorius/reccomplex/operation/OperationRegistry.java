@@ -10,7 +10,7 @@ import com.google.common.collect.HashBiMap;
 import ivorius.ivtoolkit.lang.IvClasses;
 import ivorius.ivtoolkit.tools.NBTCompoundObjects;
 import ivorius.reccomplex.RecurrentComplex;
-import ivorius.reccomplex.capability.StructureEntityInfo;
+import ivorius.reccomplex.capability.RCEntityInfo;
 import ivorius.reccomplex.commands.RCCommands;
 import ivorius.reccomplex.utils.ServerTranslations;
 import net.minecraft.command.CommandBase;
@@ -69,7 +69,7 @@ public class OperationRegistry
         if (commandSender instanceof EntityPlayer)
         {
             EntityPlayer player = CommandBase.getCommandSenderAsPlayer(commandSender);
-            StructureEntityInfo info = StructureEntityInfo.get(player, null);
+            RCEntityInfo info = RCEntityInfo.get(player, null);
             if (info != null)
             {
                 if (info.getPreviewType() != Operation.PreviewType.NONE)

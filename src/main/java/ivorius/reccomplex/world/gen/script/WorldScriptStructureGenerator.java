@@ -188,34 +188,34 @@ public class WorldScriptStructureGenerator implements WorldScript<WorldScriptStr
             if (structureNames.size() > 0)
             {
                 String structureID = structureNames.get(random.nextInt(structureNames.size()));
-                StructureInfo<?> structureInfo = StructureRegistry.INSTANCE.get(structureID);
+                Structure<?> structure = StructureRegistry.INSTANCE.get(structureID);
 
-                if (structureInfo != null)
+                if (structure != null)
                 {
-                    int rotations = structureInfo.isRotatable() ? (structureRotation != null ? transform.getRotation() + structureRotation : random.nextInt(4)) : 0;
-                    boolean mirrorX = structureInfo.isMirrorable() && (structureMirror != null ? transform.isMirrorX() != structureMirror : random.nextBoolean());
+                    int rotations = structure.isRotatable() ? (structureRotation != null ? transform.getRotation() + structureRotation : random.nextInt(4)) : 0;
+                    boolean mirrorX = structure.isMirrorable() && (structureMirror != null ? transform.isMirrorX() != structureMirror : random.nextBoolean());
                     AxisAlignedTransform2D strucTransform = AxisAlignedTransform2D.from(rotations, mirrorX);
 
-                    int[] strucSize = structureInfo.size();
+                    int[] strucSize = structure.size();
                     BlockPos strucCoord = transform.apply(structureShift, new int[]{1, 1, 1})
                             .subtract(transform.apply(BlockPos.ORIGIN, strucSize)).add(pos);
 
                     instanceData = new WorldScriptStructureGenerator.InstanceData(structureID, null, strucCoord, strucTransform,
-                            new StructureGenerator<>(structureInfo).random(random).environment(context.environment).transform(strucTransform).lowerCoord(strucCoord).asSource(context.generateAsSource)
+                            new StructureGenerator<>(structure).random(random).environment(context.environment).transform(strucTransform).lowerCoord(strucCoord).asSource(context.generateAsSource)
                                     .instanceData().orElse(null));
                 }
             }
         }
         else
         {
-            Collection<Pair<StructureInfo<?>, ListGenerationInfo>> generationInfos = StructureRegistry.INSTANCE.getStructuresInList(structureListID, front).collect(Collectors.toList());
+            Collection<Pair<Structure<?>, ListGenerationInfo>> generationInfos = StructureRegistry.INSTANCE.getStructuresInList(structureListID, front).collect(Collectors.toList());
 
             if (generationInfos.size() > 0)
             {
-                Pair<StructureInfo<?>, ListGenerationInfo> pair = WeightedSelector.select(random, generationInfos, item ->
+                Pair<Structure<?>, ListGenerationInfo> pair = WeightedSelector.select(random, generationInfos, item ->
                         RCConfig.tweakedSpawnRate(StructureRegistry.INSTANCE.id(item.getLeft())) * item.getRight().getWeight());
-                StructureInfo<?> structureInfo = pair.getLeft();
-                String structureID = StructureRegistry.INSTANCE.id(structureInfo);
+                Structure<?> structure = pair.getLeft();
+                String structureID = StructureRegistry.INSTANCE.id(structure);
                 ListGenerationInfo generationInfo = pair.getRight();
 
                 boolean mirrorX;
@@ -223,24 +223,24 @@ public class WorldScriptStructureGenerator implements WorldScript<WorldScriptStr
                 if (front != null)
                 {
                     EnumFacing curFront = Directions.rotate(front, transform);
-                    mirrorX = structureInfo.isMirrorable() && structureInfo.isRotatable() && random.nextBoolean();
-                    Integer neededRotations = RCDirections.getHorizontalClockwiseRotations(curFront, generationInfo.front, mirrorX);
+                    mirrorX = structure.isMirrorable() && structure.isRotatable() && random.nextBoolean();
+                    Integer neededRotations = Directions.getHorizontalClockwiseRotations(curFront, generationInfo.front, mirrorX);
                     rotations = neededRotations != null ? neededRotations : 0;
                 }
                 else
                 {
-                    mirrorX = structureInfo.isMirrorable() && random.nextBoolean();
-                    rotations = structureInfo.isRotatable() ? random.nextInt(4) : 0;
+                    mirrorX = structure.isMirrorable() && random.nextBoolean();
+                    rotations = structure.isRotatable() ? random.nextInt(4) : 0;
                 }
 
                 AxisAlignedTransform2D strucTransform = AxisAlignedTransform2D.from(rotations, mirrorX);
 
-                int[] strucSize = structureInfo.size();
+                int[] strucSize = structure.size();
                 BlockPos strucCoord = transform.apply(structureShift.add(generationInfo.shift), new int[]{1, 1, 1})
                         .subtract(transform.apply(BlockPos.ORIGIN, strucSize)).add(pos);
 
                 instanceData = new WorldScriptStructureGenerator.InstanceData(structureID, generationInfo.id(), strucCoord, strucTransform,
-                        new StructureGenerator<>(structureInfo).random(random).environment(context.environment).transform(strucTransform).asSource(context.generateAsSource)
+                        new StructureGenerator<>(structure).random(random).environment(context.environment).transform(strucTransform).asSource(context.generateAsSource)
                                 .lowerCoord(strucCoord).instanceData().orElse(null));
             }
         }
@@ -256,19 +256,19 @@ public class WorldScriptStructureGenerator implements WorldScript<WorldScriptStr
 
     protected <T extends NBTStorable> void generate_(StructureSpawnContext context, InstanceData instanceData)
     {
-        @SuppressWarnings("unchecked") StructureInfo<T> structureInfo = (StructureInfo<T>) StructureRegistry.INSTANCE.get(instanceData.structureID);
+        @SuppressWarnings("unchecked") Structure<T> structure = (Structure<T>) StructureRegistry.INSTANCE.get(instanceData.structureID);
         @SuppressWarnings("unchecked") ReadableInstanceData<T> structureData = (ReadableInstanceData<T>) instanceData.structureData;
 
-        if (structureInfo == null || !structureData.exists())
+        if (structure == null || !structureData.exists())
             return;
 
-        generate(context, instanceData, structureInfo, structureData, instanceData.generationInfoID);
+        generate(context, instanceData, structure, structureData, instanceData.generationInfoID);
     }
 
     @Nonnull
-    protected <T extends NBTStorable> Optional<StructureSpawnContext> generate(StructureSpawnContext context, InstanceData instanceData, StructureInfo<T> structureInfo, ReadableInstanceData<T> structureData, String generationInfo)
+    protected <T extends NBTStorable> Optional<StructureSpawnContext> generate(StructureSpawnContext context, InstanceData instanceData, Structure<T> structure, ReadableInstanceData<T> structureData, String generationInfo)
     {
-        StructureGenerator<T> generator = new StructureGenerator<>(structureInfo).structureID(instanceData.structureID).asChild(context).generationInfo(generationInfo)
+        StructureGenerator<T> generator = new StructureGenerator<>(structure).structureID(instanceData.structureID).asChild(context).generationInfo(generationInfo)
                 .lowerCoord(instanceData.lowerCoord).transform(instanceData.structureTransform);
         structureData.load(generator);
         return generator.generate();

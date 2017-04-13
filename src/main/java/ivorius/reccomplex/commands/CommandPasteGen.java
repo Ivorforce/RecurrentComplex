@@ -9,10 +9,10 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.math.BlockPos;
 import ivorius.ivtoolkit.math.AxisAlignedTransform2D;
 import ivorius.reccomplex.RCConfig;
-import ivorius.reccomplex.capability.StructureEntityInfo;
+import ivorius.reccomplex.capability.RCEntityInfo;
 import ivorius.reccomplex.operation.OperationRegistry;
 import ivorius.reccomplex.world.gen.feature.structure.OperationGenerateStructure;
-import ivorius.reccomplex.world.gen.feature.structure.generic.GenericStructureInfo;
+import ivorius.reccomplex.world.gen.feature.structure.generic.GenericStructure;
 import ivorius.reccomplex.utils.ServerTranslations;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.CommandException;
@@ -52,16 +52,16 @@ public class CommandPasteGen extends CommandBase
     public void execute(MinecraftServer server, ICommandSender commandSender, String[] args) throws CommandException
     {
         EntityPlayerMP entityPlayerMP = getCommandSenderAsPlayer(commandSender);
-        StructureEntityInfo structureEntityInfo = RCCommands.getStructureEntityInfo(entityPlayerMP, null);
+        RCEntityInfo RCEntityInfo = RCCommands.getStructureEntityInfo(entityPlayerMP, null);
 
-        NBTTagCompound worldData = structureEntityInfo.getWorldDataClipboard();
+        NBTTagCompound worldData = RCEntityInfo.getWorldDataClipboard();
 
         if (worldData != null)
         {
             BlockPos coord = RCCommands.tryParseBlockPos(commandSender, args, 0, false);
             AxisAlignedTransform2D transform = RCCommands.tryParseTransform(args, 3);
 
-            GenericStructureInfo structureInfo = GenericStructureInfo.createDefaultStructure();
+            GenericStructure structureInfo = GenericStructure.createDefaultStructure();
             structureInfo.worldDataCompound = worldData;
 
             OperationRegistry.queueOperation(new OperationGenerateStructure(structureInfo, null, transform, coord, false).prepare((WorldServer) commandSender.getEntityWorld()), commandSender);

@@ -11,7 +11,7 @@ import ivorius.reccomplex.RecurrentComplex;
 import ivorius.reccomplex.Repository;
 import ivorius.reccomplex.Wiki;
 import ivorius.reccomplex.capability.CapabilitySelection;
-import ivorius.reccomplex.capability.StructureEntityInfo;
+import ivorius.reccomplex.capability.RCEntityInfo;
 import ivorius.reccomplex.client.rendering.SelectionRenderer;
 import ivorius.reccomplex.commands.RCCommands;
 import ivorius.reccomplex.events.ItemGenerationEvent;
@@ -29,7 +29,6 @@ import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTBase;
-import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.ResourceLocation;
@@ -103,7 +102,7 @@ public class RCForgeEventHandler
         int ticks = mc.thePlayer.ticksExisted;
 
         Entity renderEntity = mc.getRenderViewEntity();
-        StructureEntityInfo info = StructureEntityInfo.get(mc.thePlayer, null);
+        RCEntityInfo info = RCEntityInfo.get(mc.thePlayer, null);
         double entityX = renderEntity.lastTickPosX + (renderEntity.posX - renderEntity.lastTickPosX) * (double) event.getPartialTicks();
         double entityY = renderEntity.lastTickPosY + (renderEntity.posY - renderEntity.lastTickPosY) * (double) event.getPartialTicks();
         double entityZ = renderEntity.lastTickPosZ + (renderEntity.posZ - renderEntity.lastTickPosZ) * (double) event.getPartialTicks();
@@ -166,7 +165,7 @@ public class RCForgeEventHandler
     @SubscribeEvent
     public void onPlayerTick(TickEvent.PlayerTickEvent event)
     {
-        StructureEntityInfo sei = StructureEntityInfo.get(event.player, null);
+        RCEntityInfo sei = RCEntityInfo.get(event.player, null);
         if (sei != null)
             sei.update(event.player);
 
@@ -215,7 +214,7 @@ public class RCForgeEventHandler
     {
         if (event.getEntity() instanceof EntityPlayer)
         {
-            event.addCapability(new ResourceLocation(RecurrentComplex.MOD_ID, StructureEntityInfo.CAPABILITY_KEY), new SimpleCapabilityProvider<>(StructureEntityInfo.CAPABILITY));
+            event.addCapability(new ResourceLocation(RecurrentComplex.MOD_ID, RCEntityInfo.CAPABILITY_KEY), new SimpleCapabilityProvider<>(RCEntityInfo.CAPABILITY));
             event.addCapability(new ResourceLocation(RecurrentComplex.MOD_ID, CapabilitySelection.CAPABILITY_KEY), new SimpleCapabilityProvider<>(CapabilitySelection.CAPABILITY));
         }
     }

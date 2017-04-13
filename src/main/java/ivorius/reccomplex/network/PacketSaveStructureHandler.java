@@ -7,13 +7,13 @@ package ivorius.reccomplex.network;
 
 import ivorius.ivtoolkit.network.SchedulingMessageHandler;
 import ivorius.reccomplex.RecurrentComplex;
-import ivorius.reccomplex.capability.StructureEntityInfo;
+import ivorius.reccomplex.capability.RCEntityInfo;
 import ivorius.reccomplex.commands.RCCommands;
 import ivorius.reccomplex.files.RCFileSaver;
 import ivorius.reccomplex.files.loading.ResourceDirectory;
 import ivorius.reccomplex.utils.SaveDirectoryData;
 import ivorius.reccomplex.world.gen.feature.structure.StructureRegistry;
-import ivorius.reccomplex.world.gen.feature.structure.generic.GenericStructureInfo;
+import ivorius.reccomplex.world.gen.feature.structure.generic.GenericStructure;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.network.NetHandlerPlayServer;
@@ -30,7 +30,7 @@ import java.util.Set;
  */
 public class PacketSaveStructureHandler extends SchedulingMessageHandler<PacketSaveStructure, IMessage>
 {
-    public static void saveStructure(GenericStructureInfo structureInfo, String structureID, SaveDirectoryData.Result saveDirectoryDataResult)
+    public static void saveStructure(GenericStructure structureInfo, String structureID, SaveDirectoryData.Result saveDirectoryDataResult)
     {
         RecurrentComplex.network.sendToServer(new PacketSaveStructure(structureInfo, structureID, saveDirectoryDataResult));
     }
@@ -43,11 +43,11 @@ public class PacketSaveStructureHandler extends SchedulingMessageHandler<PacketS
 
         if (RecurrentComplex.checkPerms(player)) return;
 
-        StructureEntityInfo structureEntityInfo = StructureEntityInfo.get(player, null);
-        GenericStructureInfo genericStructureInfo = message.getStructureInfo();
+        RCEntityInfo entityInfo = RCEntityInfo.get(player, null);
+        GenericStructure genericStructureInfo = message.getStructureInfo();
 
-        if (structureEntityInfo != null)
-            genericStructureInfo.worldDataCompound = structureEntityInfo.getCachedExportStructureBlockDataNBT();
+        if (entityInfo != null)
+            genericStructureInfo.worldDataCompound = entityInfo.getCachedExportStructureBlockDataNBT();
 
         SaveDirectoryData.Result saveDirectoryDataResult = message.getSaveDirectoryDataResult();
 
@@ -58,7 +58,7 @@ public class PacketSaveStructureHandler extends SchedulingMessageHandler<PacketS
         write(player, genericStructureInfo, id, saveDir, saveDirectoryDataResult.deleteOther, true);
     }
 
-    public static boolean write(ICommandSender sender, GenericStructureInfo structure, String id, ResourceDirectory saveDir, boolean deleteOther, boolean inform)
+    public static boolean write(ICommandSender sender, GenericStructure structure, String id, ResourceDirectory saveDir, boolean deleteOther, boolean inform)
     {
         StructureRegistry.INSTANCE.register(id, "", structure, saveDir.isActive(), saveDir.getLevel());
 

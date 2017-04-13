@@ -14,6 +14,8 @@ import ivorius.reccomplex.gui.table.datasource.TableDataSourceSegmented;
 import ivorius.reccomplex.world.gen.feature.structure.generic.generation.StaticGeneration;
 import ivorius.ivtoolkit.tools.IvTranslations;
 
+import javax.annotation.Nonnull;
+
 /**
  * Created by lukas on 05.06.14.
  */
@@ -27,6 +29,13 @@ public class TableDataSourceStaticPattern extends TableDataSourceSegmented
     {
         this.pattern = pattern;
         this.tableDelegate = tableDelegate;
+    }
+
+    @Nonnull
+    @Override
+    public String title()
+    {
+        return "Static Pattern";
     }
 
     @Override

@@ -162,7 +162,7 @@ public class TableCellPresetAction extends TableCellPropertyDefault<String>
             action.drawFloating(screen, mouseX, mouseY, partialTicks);
     }
 
-    protected TableCellButton findAction(String actionID)
+    public TableCellButton findAction(String actionID)
     {
         int index = findIndex(actionID);
         return index >= 0 ? actions.get(index) : null;

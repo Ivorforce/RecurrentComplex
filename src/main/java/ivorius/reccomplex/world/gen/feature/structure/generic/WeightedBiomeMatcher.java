@@ -17,12 +17,12 @@ import java.util.regex.Matcher;
 /**
  * Created by lukas on 24.05.14.
  */
-public class BiomeGenerationInfo
+public class WeightedBiomeMatcher
 {
     private BiomeMatcher biomeMatcher;
     private Double generationWeight;
 
-    public BiomeGenerationInfo(String expression, Double generationWeight)
+    public WeightedBiomeMatcher(String expression, Double generationWeight)
     {
         this.biomeMatcher = ExpressionCache.of(new BiomeMatcher(), expression);
         this.generationWeight = generationWeight;
@@ -63,10 +63,10 @@ public class BiomeGenerationInfo
         return biomeMatcher.getDisplayString(null);
     }
 
-    public static class Serializer implements JsonDeserializer<BiomeGenerationInfo>, JsonSerializer<BiomeGenerationInfo>
+    public static class Serializer implements JsonDeserializer<WeightedBiomeMatcher>, JsonSerializer<WeightedBiomeMatcher>
     {
         @Override
-        public BiomeGenerationInfo deserialize(JsonElement jsonElement, Type par2Type, JsonDeserializationContext context)
+        public WeightedBiomeMatcher deserialize(JsonElement jsonElement, Type par2Type, JsonDeserializationContext context)
         {
             JsonObject jsonobject = JsonUtils.asJsonObject(jsonElement, "generationInfo");
 
@@ -83,11 +83,11 @@ public class BiomeGenerationInfo
 
             Double weight = jsonobject.has("weight") ? JsonUtils.getDouble(jsonobject, "weight") : null;
 
-            return new BiomeGenerationInfo(expression, weight);
+            return new WeightedBiomeMatcher(expression, weight);
         }
 
         @Override
-        public JsonElement serialize(BiomeGenerationInfo generationInfo, Type par2Type, JsonSerializationContext context)
+        public JsonElement serialize(WeightedBiomeMatcher generationInfo, Type par2Type, JsonSerializationContext context)
         {
             JsonObject jsonobject = new JsonObject();
 

@@ -14,10 +14,9 @@ import ivorius.reccomplex.gui.table.datasource.TableDataSourceSegmented;
 import ivorius.reccomplex.gui.table.TableDelegate;
 import ivorius.reccomplex.gui.table.TableNavigator;
 import ivorius.reccomplex.utils.RCStrings;
-import ivorius.reccomplex.world.gen.feature.structure.generic.DimensionGenerationInfo;
+import ivorius.reccomplex.world.gen.feature.structure.generic.WeightedDimensionMatcher;
 import ivorius.reccomplex.utils.presets.PresettedList;
 import net.minecraft.util.text.TextFormatting;
-import org.apache.commons.lang3.StringUtils;
 
 import javax.annotation.Nonnull;
 
@@ -26,7 +25,7 @@ import javax.annotation.Nonnull;
  */
 public class TableDataSourceDimensionGenList extends TableDataSourceSegmented
 {
-    public TableDataSourceDimensionGenList(PresettedList<DimensionGenerationInfo> list, TableDelegate delegate, TableNavigator navigator)
+    public TableDataSourceDimensionGenList(PresettedList<WeightedDimensionMatcher> list, TableDelegate delegate, TableNavigator navigator)
     {
         addManagedSegment(0, new TableDataSourcePresettedObject<>(list, RCFileSaver.DIMENSION_PRESET, delegate, navigator)
             .withApplyPresetAction(() -> addPresetSegments(list, delegate, navigator)));
@@ -34,27 +33,27 @@ public class TableDataSourceDimensionGenList extends TableDataSourceSegmented
         addPresetSegments(list, delegate, navigator);
     }
 
-    public void addPresetSegments(final PresettedList<DimensionGenerationInfo> list, final TableDelegate delegate, final TableNavigator navigator)
+    public void addPresetSegments(final PresettedList<WeightedDimensionMatcher> list, final TableDelegate delegate, final TableNavigator navigator)
     {
-        addManagedSegment(1, new TableDataSourcePresettedList<DimensionGenerationInfo>(list, delegate, navigator)
+        addManagedSegment(1, new TableDataSourcePresettedList<WeightedDimensionMatcher>(list, delegate, navigator)
         {
             @Override
-            public String getDisplayString(DimensionGenerationInfo generationInfo)
+            public String getDisplayString(WeightedDimensionMatcher generationInfo)
             {
                 return String.format("%s%s: %.1f", RCStrings.abbreviateFormatted(generationInfo.getDisplayString(), 20), TextFormatting.RESET, generationInfo.getActiveGenerationWeight());
             }
 
             @Override
-            public DimensionGenerationInfo newEntry(String actionID)
+            public WeightedDimensionMatcher newEntry(String actionID)
             {
-                return new DimensionGenerationInfo("", null);
+                return new WeightedDimensionMatcher("", null);
             }
 
             @Nonnull
             @Override
-            public TableCell entryCell(boolean enabled, DimensionGenerationInfo dimensionGenerationInfo)
+            public TableCell entryCell(boolean enabled, WeightedDimensionMatcher weightedDimensionMatcher)
             {
-                return TableCells.edit(enabled, navigator, delegate, () -> new TableDataSourceDimensionGen(dimensionGenerationInfo, tableDelegate));
+                return TableCells.edit(enabled, navigator, delegate, () -> new TableDataSourceDimensionGen(weightedDimensionMatcher, tableDelegate));
             }
         });
     }

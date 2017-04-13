@@ -22,20 +22,20 @@ import ivorius.reccomplex.world.gen.feature.decoration.RCBiomeDecorator;
 /**
  * Created by lukas on 07.10.14.
  */
-public class TableDataSourceVanillaDecorationGenerationInfo extends TableDataSourceSegmented
+public class TableDataSourceVanillaDecorationGeneration extends TableDataSourceSegmented
 {
     private TableNavigator navigator;
     private TableDelegate tableDelegate;
 
     private VanillaDecorationGeneration generationInfo;
 
-    public TableDataSourceVanillaDecorationGenerationInfo(TableNavigator navigator, TableDelegate delegate, VanillaDecorationGeneration generationInfo)
+    public TableDataSourceVanillaDecorationGeneration(TableNavigator navigator, TableDelegate delegate, VanillaDecorationGeneration generationInfo)
     {
         this.navigator = navigator;
         this.tableDelegate = delegate;
         this.generationInfo = generationInfo;
 
-        addManagedSegment(0, new TableDataSourceGenerationInfo(generationInfo, navigator, delegate));
+        addManagedSegment(0, new TableDataSourceGenerationType(generationInfo, navigator, delegate));
 
         addManagedSegment(3, TableCellMultiBuilder.create(navigator, delegate)
                 .addNavigation(() -> new TableDataSourceBiomeGenList(generationInfo.biomeWeights, delegate, navigator), () -> IvTranslations.get("reccomplex.gui.biomes"))

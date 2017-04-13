@@ -11,7 +11,7 @@ import ivorius.reccomplex.gui.TableDataSourceExpression;
 import ivorius.reccomplex.gui.table.*;
 import ivorius.reccomplex.gui.table.cell.TableCell;
 import ivorius.reccomplex.gui.table.datasource.TableDataSourceSegmented;
-import ivorius.reccomplex.world.gen.feature.structure.generic.BiomeGenerationInfo;
+import ivorius.reccomplex.world.gen.feature.structure.generic.WeightedBiomeMatcher;
 
 import javax.annotation.Nonnull;
 
@@ -20,11 +20,11 @@ import javax.annotation.Nonnull;
  */
 public class TableDataSourceBiomeGen extends TableDataSourceSegmented
 {
-    private BiomeGenerationInfo generationInfo;
+    private WeightedBiomeMatcher generationInfo;
 
     private TableDelegate tableDelegate;
 
-    public TableDataSourceBiomeGen(BiomeGenerationInfo generationInfo, TableDelegate tableDelegate)
+    public TableDataSourceBiomeGen(WeightedBiomeMatcher generationInfo, TableDelegate tableDelegate)
     {
         this.generationInfo = generationInfo;
         this.tableDelegate = tableDelegate;

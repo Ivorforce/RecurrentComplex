@@ -18,9 +18,9 @@ import java.util.List;
 /**
  * Created by lukas on 04.06.14.
  */
-public class TableDataSourceStructureGenerationInfoList extends TableDataSourceList<GenerationType, List<GenerationType>>
+public class TableDataSourceStructureGenerationInfo extends TableDataSourceList<GenerationType, List<GenerationType>>
 {
-    public TableDataSourceStructureGenerationInfoList(List<GenerationType> list, TableDelegate tableDelegate, TableNavigator navigator)
+    public TableDataSourceStructureGenerationInfo(List<GenerationType> list, TableDelegate tableDelegate, TableNavigator navigator)
     {
         super(list, tableDelegate, navigator);
         setUsesPresetActionForAdding(true);

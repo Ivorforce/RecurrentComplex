@@ -128,7 +128,7 @@ public class EnvironmentMatcher extends BoolFunctionExpressionCache<Environment,
         }
     }
 
-    protected static class GenerationType extends DelegatingVariableType<Boolean, Environment, Object, ivorius.reccomplex.world.gen.feature.structure.generic.generation.GenerationType, Object, GenerationInfoMatcher>
+    protected static class GenerationType extends DelegatingVariableType<Boolean, Environment, Object, ivorius.reccomplex.world.gen.feature.structure.generic.generation.GenerationType, Object, GenerationTypeMatcher>
     {
         public GenerationType(String prefix, String suffix)
         {
@@ -142,9 +142,9 @@ public class EnvironmentMatcher extends BoolFunctionExpressionCache<Environment,
         }
 
         @Override
-        public GenerationInfoMatcher createCache()
+        public GenerationTypeMatcher createCache()
         {
-            return new GenerationInfoMatcher();
+            return new GenerationTypeMatcher();
         }
     }
 }

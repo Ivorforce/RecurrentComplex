@@ -18,13 +18,13 @@ import javax.annotation.Nonnull;
 /**
  * Created by lukas on 26.03.15.
  */
-public class TableDataSourceGenerationInfo extends TableDataSourceSegmented
+public class TableDataSourceGenerationType extends TableDataSourceSegmented
 {
     public GenerationType genInfo;
 
     public TableDelegate delegate;
 
-    public TableDataSourceGenerationInfo(GenerationType genInfo, TableNavigator navigator, TableDelegate delegate)
+    public TableDataSourceGenerationType(GenerationType genInfo, TableNavigator navigator, TableDelegate delegate)
     {
         this.genInfo = genInfo;
         this.delegate = delegate;

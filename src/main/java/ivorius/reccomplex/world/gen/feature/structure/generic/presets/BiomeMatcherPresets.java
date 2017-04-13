@@ -8,7 +8,7 @@ package ivorius.reccomplex.world.gen.feature.structure.generic.presets;
 import com.google.common.reflect.TypeToken;
 import com.google.gson.GsonBuilder;
 import ivorius.reccomplex.files.loading.RCFileSuffix;
-import ivorius.reccomplex.world.gen.feature.structure.generic.BiomeGenerationInfo;
+import ivorius.reccomplex.world.gen.feature.structure.generic.WeightedBiomeMatcher;
 import ivorius.reccomplex.utils.PresetRegistry;
 
 import java.lang.reflect.Type;
@@ -17,7 +17,7 @@ import java.util.ArrayList;
 /**
  * Created by lukas on 26.02.15.
  */
-public class BiomeMatcherPresets extends PresetRegistry<ArrayList<BiomeGenerationInfo>>
+public class BiomeMatcherPresets extends PresetRegistry<ArrayList<WeightedBiomeMatcher>>
 {
 
     private static BiomeMatcherPresets instance;
@@ -35,12 +35,12 @@ public class BiomeMatcherPresets extends PresetRegistry<ArrayList<BiomeGeneratio
     @Override
     protected void registerGson(GsonBuilder builder)
     {
-        builder.registerTypeAdapter(BiomeGenerationInfo.class, new BiomeGenerationInfo.Serializer());
+        builder.registerTypeAdapter(WeightedBiomeMatcher.class, new WeightedBiomeMatcher.Serializer());
     }
 
     @Override
     protected Type getType()
     {
-        return new TypeToken<ArrayList<BiomeGenerationInfo>>(){}.getType();
+        return new TypeToken<ArrayList<WeightedBiomeMatcher>>(){}.getType();
     }
 }

@@ -9,7 +9,7 @@ import com.google.gson.*;
 import ivorius.ivtoolkit.blocks.Directions;
 import ivorius.ivtoolkit.random.WeightedSelector;
 import ivorius.ivtoolkit.tools.IvTranslations;
-import ivorius.reccomplex.gui.editstructure.gentypes.TableDataSourceStructureListGenerationInfo;
+import ivorius.reccomplex.gui.editstructure.gentypes.TableDataSourceStructureListGeneration;
 import ivorius.reccomplex.gui.table.datasource.TableDataSource;
 import ivorius.reccomplex.gui.table.TableDelegate;
 import ivorius.reccomplex.gui.table.TableNavigator;
@@ -88,7 +88,7 @@ public class ListGeneration extends GenerationType implements WeightedSelector.I
     @Override
     public TableDataSource tableDataSource(TableNavigator navigator, TableDelegate delegate)
     {
-        return new TableDataSourceStructureListGenerationInfo(navigator, delegate, this);
+        return new TableDataSourceStructureListGeneration(navigator, delegate, this);
     }
 
     @Override

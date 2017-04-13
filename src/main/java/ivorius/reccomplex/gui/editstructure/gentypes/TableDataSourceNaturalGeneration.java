@@ -29,19 +29,19 @@ import java.util.stream.Collectors;
 /**
  * Created by lukas on 07.10.14.
  */
-public class TableDataSourceNaturalGenerationInfo extends TableDataSourceSegmented
+public class TableDataSourceNaturalGeneration extends TableDataSourceSegmented
 {
     private TableNavigator navigator;
     private TableDelegate tableDelegate;
     private NaturalGeneration generationInfo;
 
-    public TableDataSourceNaturalGenerationInfo(TableNavigator navigator, TableDelegate delegate, NaturalGeneration generationInfo)
+    public TableDataSourceNaturalGeneration(TableNavigator navigator, TableDelegate delegate, NaturalGeneration generationInfo)
     {
         this.navigator = navigator;
         this.tableDelegate = delegate;
         this.generationInfo = generationInfo;
 
-        addManagedSegment(0, new TableDataSourceGenerationInfo(generationInfo, navigator, delegate));
+        addManagedSegment(0, new TableDataSourceGenerationType(generationInfo, navigator, delegate));
 
         addManagedSegment(3, TableCellMultiBuilder.create(navigator, delegate)
                 .addNavigation(() -> new TableDataSourcePlacer(generationInfo.placer, delegate, navigator))

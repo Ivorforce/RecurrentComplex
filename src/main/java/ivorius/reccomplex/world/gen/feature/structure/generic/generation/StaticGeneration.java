@@ -9,7 +9,7 @@ import com.google.gson.*;
 import com.google.gson.annotations.SerializedName;
 import com.google.gson.reflect.TypeToken;
 import ivorius.ivtoolkit.tools.IvTranslations;
-import ivorius.reccomplex.gui.editstructure.gentypes.TableDataSourceStaticGenerationInfo;
+import ivorius.reccomplex.gui.editstructure.gentypes.TableDataSourceStaticGeneration;
 import ivorius.reccomplex.gui.table.datasource.TableDataSource;
 import ivorius.reccomplex.gui.table.TableDelegate;
 import ivorius.reccomplex.gui.table.TableNavigator;
@@ -119,7 +119,7 @@ public class StaticGeneration extends GenerationType
     @Override
     public TableDataSource tableDataSource(TableNavigator navigator, TableDelegate delegate)
     {
-        return new TableDataSourceStaticGenerationInfo(navigator, delegate, this);
+        return new TableDataSourceStaticGeneration(navigator, delegate, this);
     }
 
     public BlockSurfacePos getPos(BlockPos spawnPos)

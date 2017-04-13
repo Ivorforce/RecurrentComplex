@@ -25,20 +25,20 @@ import net.minecraft.util.EnumFacing;
 /**
  * Created by lukas on 07.10.14.
  */
-public class TableDataSourceVanillaStructureGenerationInfo extends TableDataSourceSegmented
+public class TableDataSourceVanillaStructureGeneration extends TableDataSourceSegmented
 {
     private TableNavigator navigator;
     private TableDelegate tableDelegate;
 
     private VanillaGeneration generationInfo;
 
-    public TableDataSourceVanillaStructureGenerationInfo(TableNavigator navigator, TableDelegate tableDelegate, VanillaGeneration generationInfo)
+    public TableDataSourceVanillaStructureGeneration(TableNavigator navigator, TableDelegate tableDelegate, VanillaGeneration generationInfo)
     {
         this.navigator = navigator;
         this.tableDelegate = tableDelegate;
         this.generationInfo = generationInfo;
 
-        addManagedSegment(0, new TableDataSourceGenerationInfo(generationInfo, navigator, tableDelegate));
+        addManagedSegment(0, new TableDataSourceGenerationType(generationInfo, navigator, tableDelegate));
         addManagedSegment(4, TableDataSourceExpression.constructDefault(IvTranslations.get("reccomplex.gui.biomes"), generationInfo.biomeMatcher, null));
         addManagedSegment(5, new TableDataSourceBlockPos(generationInfo.spawnShift, generationInfo::setSpawnShift, null, null, null,
                 IvTranslations.get("reccomplex.generationInfo.vanilla.shift.x"), IvTranslations.get("reccomplex.generationInfo.vanilla.shift.y"), IvTranslations.get("reccomplex.generationInfo.vanilla.shift.z")));

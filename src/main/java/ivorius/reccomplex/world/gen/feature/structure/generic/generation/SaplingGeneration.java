@@ -7,7 +7,7 @@ package ivorius.reccomplex.world.gen.feature.structure.generic.generation;
 
 import com.google.gson.*;
 import ivorius.ivtoolkit.tools.IvTranslations;
-import ivorius.reccomplex.gui.editstructure.gentypes.TableDataSourceSaplingGenerationInfo;
+import ivorius.reccomplex.gui.editstructure.gentypes.TableDataSourceSaplingGeneration;
 import ivorius.reccomplex.gui.table.datasource.TableDataSource;
 import ivorius.reccomplex.gui.table.TableDelegate;
 import ivorius.reccomplex.gui.table.TableNavigator;
@@ -86,7 +86,7 @@ public class SaplingGeneration extends GenerationType
     @Override
     public TableDataSource tableDataSource(TableNavigator navigator, TableDelegate delegate)
     {
-        return new TableDataSourceSaplingGenerationInfo(navigator, delegate, this);
+        return new TableDataSourceSaplingGeneration(navigator, delegate, this);
     }
 
     public boolean generatesIn(Environment environment)

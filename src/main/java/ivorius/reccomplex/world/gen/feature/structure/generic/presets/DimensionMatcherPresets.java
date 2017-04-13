@@ -8,7 +8,7 @@ package ivorius.reccomplex.world.gen.feature.structure.generic.presets;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 import ivorius.reccomplex.files.loading.RCFileSuffix;
-import ivorius.reccomplex.world.gen.feature.structure.generic.DimensionGenerationInfo;
+import ivorius.reccomplex.world.gen.feature.structure.generic.WeightedDimensionMatcher;
 import ivorius.reccomplex.utils.PresetRegistry;
 
 import java.lang.reflect.Type;
@@ -17,7 +17,7 @@ import java.util.ArrayList;
 /**
  * Created by lukas on 26.02.15.
  */
-public class DimensionMatcherPresets extends PresetRegistry<ArrayList<DimensionGenerationInfo>>
+public class DimensionMatcherPresets extends PresetRegistry<ArrayList<WeightedDimensionMatcher>>
 {
 
     private static DimensionMatcherPresets instance;
@@ -35,12 +35,12 @@ public class DimensionMatcherPresets extends PresetRegistry<ArrayList<DimensionG
     @Override
     protected void registerGson(GsonBuilder builder)
     {
-        builder.registerTypeAdapter(DimensionGenerationInfo.class, new DimensionGenerationInfo.Serializer());
+        builder.registerTypeAdapter(WeightedDimensionMatcher.class, new WeightedDimensionMatcher.Serializer());
     }
 
     @Override
     protected Type getType()
     {
-        return new TypeToken<ArrayList<DimensionGenerationInfo>>(){}.getType();
+        return new TypeToken<ArrayList<WeightedDimensionMatcher>>(){}.getType();
     }
 }

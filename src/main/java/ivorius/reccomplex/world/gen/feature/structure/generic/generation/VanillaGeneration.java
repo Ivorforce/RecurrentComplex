@@ -9,7 +9,7 @@ import com.google.gson.*;
 import ivorius.ivtoolkit.blocks.Directions;
 import ivorius.ivtoolkit.tools.IvTranslations;
 import ivorius.reccomplex.RCConfig;
-import ivorius.reccomplex.gui.editstructure.gentypes.TableDataSourceVanillaStructureGenerationInfo;
+import ivorius.reccomplex.gui.editstructure.gentypes.TableDataSourceVanillaStructureGeneration;
 import ivorius.reccomplex.gui.table.datasource.TableDataSource;
 import ivorius.reccomplex.gui.table.TableDelegate;
 import ivorius.reccomplex.gui.table.TableNavigator;
@@ -96,7 +96,7 @@ public class VanillaGeneration extends GenerationType
     @Override
     public TableDataSource tableDataSource(TableNavigator navigator, TableDelegate delegate)
     {
-        return new TableDataSourceVanillaStructureGenerationInfo(navigator, delegate, this);
+        return new TableDataSourceVanillaStructureGeneration(navigator, delegate, this);
     }
 
     public boolean generatesIn(Biome biome)

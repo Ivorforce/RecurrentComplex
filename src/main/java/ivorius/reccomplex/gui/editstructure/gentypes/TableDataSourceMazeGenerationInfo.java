@@ -13,7 +13,7 @@ import ivorius.reccomplex.gui.table.cell.TableCellString;
 import ivorius.reccomplex.gui.table.cell.TitledCell;
 import ivorius.reccomplex.gui.table.datasource.TableDataSourceSegmented;
 import ivorius.reccomplex.gui.worldscripts.mazegenerator.TableDataSourceMazeComponent;
-import ivorius.reccomplex.world.gen.feature.structure.generic.gentypes.MazeGeneration;
+import ivorius.reccomplex.world.gen.feature.structure.generic.generation.MazeGeneration;
 
 /**
  * Created by lukas on 07.10.14.

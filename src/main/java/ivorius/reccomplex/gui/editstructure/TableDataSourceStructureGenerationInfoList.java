@@ -10,7 +10,7 @@ import ivorius.reccomplex.gui.table.cell.TableCell;
 import ivorius.reccomplex.gui.table.cell.TableCellButton;
 import ivorius.reccomplex.gui.table.datasource.TableDataSourceList;
 import ivorius.reccomplex.world.gen.feature.structure.StructureRegistry;
-import ivorius.reccomplex.world.gen.feature.structure.generic.gentypes.GenerationType;
+import ivorius.reccomplex.world.gen.feature.structure.generic.generation.GenerationType;
 
 import javax.annotation.Nonnull;
 import java.util.List;

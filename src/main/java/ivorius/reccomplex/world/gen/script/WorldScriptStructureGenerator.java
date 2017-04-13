@@ -22,7 +22,7 @@ import ivorius.reccomplex.world.gen.feature.structure.*;
 import ivorius.reccomplex.world.gen.feature.structure.context.StructureLoadContext;
 import ivorius.reccomplex.world.gen.feature.structure.context.StructurePrepareContext;
 import ivorius.reccomplex.world.gen.feature.structure.context.StructureSpawnContext;
-import ivorius.reccomplex.world.gen.feature.structure.generic.gentypes.ListGeneration;
+import ivorius.reccomplex.world.gen.feature.structure.generic.generation.ListGeneration;
 import ivorius.reccomplex.utils.NBTStorable;
 import ivorius.reccomplex.world.gen.feature.StructureGenerator;
 import net.minecraft.nbt.NBTBase;

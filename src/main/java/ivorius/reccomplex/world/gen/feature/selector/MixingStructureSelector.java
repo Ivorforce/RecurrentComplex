@@ -7,7 +7,7 @@ package ivorius.reccomplex.world.gen.feature.selector;
 
 import ivorius.ivtoolkit.random.WeightedSelector;
 import ivorius.reccomplex.world.gen.feature.structure.Structure;
-import ivorius.reccomplex.world.gen.feature.structure.generic.gentypes.GenerationType;
+import ivorius.reccomplex.world.gen.feature.structure.generic.generation.GenerationType;
 import net.minecraft.world.WorldProvider;
 import net.minecraft.world.biome.Biome;
 import org.apache.commons.lang3.tuple.Pair;

@@ -10,7 +10,7 @@ import com.google.common.collect.Sets;
 import ivorius.reccomplex.RCConfig;
 import ivorius.reccomplex.files.SimpleLeveledRegistry;
 import ivorius.reccomplex.json.SerializableStringTypeRegistry;
-import ivorius.reccomplex.world.gen.feature.structure.generic.gentypes.*;
+import ivorius.reccomplex.world.gen.feature.structure.generic.generation.*;
 import ivorius.reccomplex.world.gen.feature.structure.generic.transformers.Transformer;
 import ivorius.ivtoolkit.blocks.BlockSurfacePos;
 import ivorius.ivtoolkit.world.chunk.Chunks;

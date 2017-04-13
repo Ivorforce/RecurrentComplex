@@ -19,7 +19,7 @@ import ivorius.reccomplex.gui.table.cell.TitledCell;
 import ivorius.reccomplex.gui.table.datasource.TableDataSourceSegmented;
 import ivorius.reccomplex.world.gen.feature.structure.Structures;
 import ivorius.reccomplex.world.gen.feature.structure.StructureRegistry;
-import ivorius.reccomplex.world.gen.feature.structure.generic.gentypes.ListGeneration;
+import ivorius.reccomplex.world.gen.feature.structure.generic.generation.ListGeneration;
 import net.minecraft.util.EnumFacing;
 
 import javax.annotation.Nonnull;

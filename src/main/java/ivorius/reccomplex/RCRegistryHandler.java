@@ -33,7 +33,7 @@ import ivorius.reccomplex.world.gen.feature.structure.OperationClearArea;
 import ivorius.reccomplex.world.gen.feature.structure.OperationMulti;
 import ivorius.reccomplex.world.gen.feature.structure.StructureRegistry;
 import ivorius.reccomplex.world.gen.feature.structure.generic.StructureSaveHandler;
-import ivorius.reccomplex.world.gen.feature.structure.generic.gentypes.*;
+import ivorius.reccomplex.world.gen.feature.structure.generic.generation.*;
 import ivorius.reccomplex.world.gen.feature.structure.generic.maze.rules.MazeRuleRegistry;
 import ivorius.reccomplex.world.gen.feature.structure.generic.maze.rules.saved.MazeRuleConnect;
 import ivorius.reccomplex.world.gen.feature.structure.generic.maze.rules.saved.MazeRuleConnectAll;

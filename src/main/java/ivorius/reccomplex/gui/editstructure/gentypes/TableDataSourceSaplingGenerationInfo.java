@@ -13,7 +13,7 @@ import ivorius.reccomplex.gui.editstructure.pattern.TableDataSourceBlockPattern;
 import ivorius.reccomplex.gui.table.*;
 import ivorius.reccomplex.gui.table.datasource.TableDataSourceSegmented;
 import ivorius.reccomplex.gui.table.datasource.TableDataSourceSupplied;
-import ivorius.reccomplex.world.gen.feature.structure.generic.gentypes.SaplingGeneration;
+import ivorius.reccomplex.world.gen.feature.structure.generic.generation.SaplingGeneration;
 
 /**
  * Created by lukas on 07.10.14.

@@ -15,7 +15,7 @@ import ivorius.reccomplex.world.gen.feature.structure.Environment;
 import ivorius.reccomplex.world.gen.feature.structure.Structure;
 import ivorius.reccomplex.world.gen.feature.structure.StructureRegistry;
 import ivorius.reccomplex.world.gen.feature.structure.context.StructureSpawnContext;
-import ivorius.reccomplex.world.gen.feature.structure.generic.gentypes.SaplingGeneration;
+import ivorius.reccomplex.world.gen.feature.structure.generic.generation.SaplingGeneration;
 import ivorius.ivtoolkit.blocks.BlockSurfacePos;
 import ivorius.ivtoolkit.util.IvFunctions;
 import ivorius.reccomplex.world.gen.feature.StructureGenerator;

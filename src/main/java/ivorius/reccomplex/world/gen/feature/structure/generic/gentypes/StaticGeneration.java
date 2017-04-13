@@ -31,7 +31,7 @@ import java.lang.reflect.Type;
 /**
  * Created by lukas on 21.02.15.
  */
-public class StaticGenerationInfo extends GenerationInfo
+public class StaticGeneration extends GenerationType
 {
     private static Gson gson = createGson();
 
@@ -44,14 +44,14 @@ public class StaticGenerationInfo extends GenerationInfo
     @Nullable
     public Pattern pattern;
 
-    public StaticGenerationInfo()
+    public StaticGeneration()
     {
         this(null, ExpressionCache.of(new DimensionMatcher(), "0"), true, BlockSurfacePos.ORIGIN, null);
     }
 
-    public StaticGenerationInfo(@Nullable String id, DimensionMatcher dimensionMatcher, boolean relativeToSpawn, BlockSurfacePos position, Pattern pattern)
+    public StaticGeneration(@Nullable String id, DimensionMatcher dimensionMatcher, boolean relativeToSpawn, BlockSurfacePos position, Pattern pattern)
     {
-        super(id != null ? id : randomID(StaticGenerationInfo.class));
+        super(id != null ? id : randomID(StaticGeneration.class));
         this.dimensionMatcher = dimensionMatcher;
         this.relativeToSpawn = relativeToSpawn;
         this.position = position;
@@ -64,7 +64,7 @@ public class StaticGenerationInfo extends GenerationInfo
     {
         GsonBuilder builder = new GsonBuilder();
 
-        builder.registerTypeAdapter(StaticGenerationInfo.class, new StaticGenerationInfo.Serializer());
+        builder.registerTypeAdapter(StaticGeneration.class, new StaticGeneration.Serializer());
         builder.registerTypeAdapter(GenericPlacer.class, new GenericPlacer.Serializer());
 
         return builder.create();
@@ -145,10 +145,10 @@ public class StaticGenerationInfo extends GenerationInfo
         public int randomShiftZ = 0;
     }
 
-    public static class Serializer implements JsonSerializer<StaticGenerationInfo>, JsonDeserializer<StaticGenerationInfo>
+    public static class Serializer implements JsonSerializer<StaticGeneration>, JsonDeserializer<StaticGeneration>
     {
         @Override
-        public StaticGenerationInfo deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException
+        public StaticGeneration deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException
         {
             JsonObject jsonObject = JsonUtils.asJsonObject(json, "vanillaStructureSpawnInfo");
 
@@ -162,7 +162,7 @@ public class StaticGenerationInfo extends GenerationInfo
 
             Pattern pattern = jsonObject.has("pattern") ? gson.fromJson(jsonObject.get("pattern"), Pattern.class) : null;
 
-            StaticGenerationInfo staticGenInfo = new StaticGenerationInfo(id, ExpressionCache.of(new DimensionMatcher(), dimension), relativeToSpawn, new BlockSurfacePos(positionX, positionZ), pattern);
+            StaticGeneration staticGenInfo = new StaticGeneration(id, ExpressionCache.of(new DimensionMatcher(), dimension), relativeToSpawn, new BlockSurfacePos(positionX, positionZ), pattern);
 
             if (!PresettedObjects.read(jsonObject, gson, staticGenInfo.placer, "placerPreset", "placer", new TypeToken<GenericPlacer>(){}.getType())
                     && jsonObject.has("generationY"))
@@ -175,7 +175,7 @@ public class StaticGenerationInfo extends GenerationInfo
         }
 
         @Override
-        public JsonElement serialize(StaticGenerationInfo src, Type typeOfSrc, JsonSerializationContext context)
+        public JsonElement serialize(StaticGeneration src, Type typeOfSrc, JsonSerializationContext context)
         {
             JsonObject jsonObject = new JsonObject();
 

@@ -36,7 +36,7 @@ import java.util.ArrayList;
 /**
  * Created by lukas on 19.01.15.
  */
-public class VanillaDecorationGenerationInfo extends GenerationInfo implements EnvironmentalSelection<RCBiomeDecorator.DecorationType>
+public class VanillaDecorationGeneration extends GenerationType implements EnvironmentalSelection<RCBiomeDecorator.DecorationType>
 {
     private static Gson gson = createGson();
 
@@ -48,7 +48,7 @@ public class VanillaDecorationGenerationInfo extends GenerationInfo implements E
 
     public BlockPos spawnShift;
 
-    public VanillaDecorationGenerationInfo()
+    public VanillaDecorationGeneration()
     {
         this(null, null, RCBiomeDecorator.DecorationType.TREE, BlockPos.ORIGIN);
 
@@ -56,9 +56,9 @@ public class VanillaDecorationGenerationInfo extends GenerationInfo implements E
         dimensionWeights.setPreset("overworld");
     }
 
-    public VanillaDecorationGenerationInfo(@Nullable String id, Double generationWeight, RCBiomeDecorator.DecorationType type, BlockPos spawnShift)
+    public VanillaDecorationGeneration(@Nullable String id, Double generationWeight, RCBiomeDecorator.DecorationType type, BlockPos spawnShift)
     {
-        super(id != null ? id : randomID(VanillaDecorationGenerationInfo.class));
+        super(id != null ? id : randomID(VanillaDecorationGeneration.class));
         this.type = type;
         this.generationWeight = generationWeight;
         this.spawnShift = spawnShift;
@@ -68,7 +68,7 @@ public class VanillaDecorationGenerationInfo extends GenerationInfo implements E
     {
         GsonBuilder builder = new GsonBuilder();
 
-        builder.registerTypeAdapter(VanillaDecorationGenerationInfo.class, new VanillaDecorationGenerationInfo.Serializer());
+        builder.registerTypeAdapter(VanillaDecorationGeneration.class, new VanillaDecorationGeneration.Serializer());
         builder.registerTypeAdapter(BiomeGenerationInfo.class, new BiomeGenerationInfo.Serializer());
         builder.registerTypeAdapter(DimensionGenerationInfo.class, new DimensionGenerationInfo.Serializer());
 
@@ -134,10 +134,10 @@ public class VanillaDecorationGenerationInfo extends GenerationInfo implements E
         return type;
     }
 
-    public static class Serializer implements JsonSerializer<VanillaDecorationGenerationInfo>, JsonDeserializer<VanillaDecorationGenerationInfo>
+    public static class Serializer implements JsonSerializer<VanillaDecorationGeneration>, JsonDeserializer<VanillaDecorationGeneration>
     {
         @Override
-        public VanillaDecorationGenerationInfo deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException
+        public VanillaDecorationGeneration deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException
         {
             JsonObject jsonObject = JsonUtils.asJsonObject(json, "vanillaStructureSpawnInfo");
 
@@ -150,7 +150,7 @@ public class VanillaDecorationGenerationInfo extends GenerationInfo implements E
             int spawnY = JsonUtils.getInt(jsonObject, "spawnShiftY", 0);
             int spawnZ = JsonUtils.getInt(jsonObject, "spawnShiftZ", 0);
 
-            VanillaDecorationGenerationInfo genInfo = new VanillaDecorationGenerationInfo(id, spawnWeight, type, new BlockPos(spawnX, spawnY, spawnZ));
+            VanillaDecorationGeneration genInfo = new VanillaDecorationGeneration(id, spawnWeight, type, new BlockPos(spawnX, spawnY, spawnZ));
 
             PresettedObjects.read(jsonObject, gson, genInfo.biomeWeights, "biomeWeightsPreset", "generationBiomes", new TypeToken<ArrayList<BiomeGenerationInfo>>() {}.getType());
             PresettedObjects.read(jsonObject, gson, genInfo.dimensionWeights, "dimensionWeightsPreset", "generationDimensions", new TypeToken<ArrayList<DimensionGenerationInfo>>() {}.getType());
@@ -159,7 +159,7 @@ public class VanillaDecorationGenerationInfo extends GenerationInfo implements E
         }
 
         @Override
-        public JsonElement serialize(VanillaDecorationGenerationInfo src, Type typeOfSrc, JsonSerializationContext context)
+        public JsonElement serialize(VanillaDecorationGeneration src, Type typeOfSrc, JsonSerializationContext context)
         {
             JsonObject jsonObject = new JsonObject();
 

@@ -6,7 +6,7 @@
 package ivorius.reccomplex.commands;
 
 import ivorius.reccomplex.world.gen.feature.structure.*;
-import ivorius.reccomplex.world.gen.feature.structure.generic.gentypes.GenerationInfo;
+import ivorius.reccomplex.world.gen.feature.structure.generic.gentypes.GenerationType;
 import ivorius.ivtoolkit.blocks.BlockSurfacePos;
 import ivorius.reccomplex.world.gen.feature.StructureGenerator;
 import net.minecraft.command.CommandException;
@@ -14,7 +14,7 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.math.BlockPos;
 import ivorius.reccomplex.RCConfig;
 import ivorius.reccomplex.operation.OperationRegistry;
-import ivorius.reccomplex.world.gen.feature.structure.generic.gentypes.NaturalGenerationInfo;
+import ivorius.reccomplex.world.gen.feature.structure.generic.gentypes.NaturalGeneration;
 import ivorius.reccomplex.utils.ServerTranslations;
 import ivorius.reccomplex.world.gen.feature.structure.generic.GenericStructure;
 import net.minecraft.command.CommandBase;
@@ -70,15 +70,15 @@ public class CommandGenerateStructure extends CommandBase
 
         pos = RCCommands.tryParseSurfaceBlockPos(commandSender, args, 1, false);
 
-        GenerationInfo generationInfo;
+        GenerationType generationType;
 
         if (args.length > 4)
-            generationInfo = structure.generationInfo(args[4]);
+            generationType = structure.generationInfo(args[4]);
         else
-            generationInfo = structure.<GenerationInfo>generationInfos(NaturalGenerationInfo.class).stream()
-                    .findFirst().orElse(structure.generationInfos(GenerationInfo.class).stream().findFirst().orElse(null));
+            generationType = structure.<GenerationType>generationInfos(NaturalGeneration.class).stream()
+                    .findFirst().orElse(structure.generationInfos(GenerationType.class).stream().findFirst().orElse(null));
 
-        Placer placer = generationInfo.placer();
+        Placer placer = generationType.placer();
 
         if (structure instanceof GenericStructure)
         {
@@ -89,13 +89,13 @@ public class CommandGenerateStructure extends CommandBase
 
             Optional<BlockPos> lowerCoord = generator.lowerCoord();
             if (lowerCoord.isPresent())
-                OperationRegistry.queueOperation(new OperationGenerateStructure(genericStructureInfo, generationInfo.id(), generator.transform(), lowerCoord.get(), false).withStructureID(structureName).prepare(world), commandSender);
+                OperationRegistry.queueOperation(new OperationGenerateStructure(genericStructureInfo, generationType.id(), generator.transform(), lowerCoord.get(), false).withStructureID(structureName).prepare(world), commandSender);
             else
                 throw ServerTranslations.commandException("commands.strucGen.noPlace");
         }
         else
         {
-            if (!new StructureGenerator<>(structure).world(world).generationInfo(generationInfo)
+            if (!new StructureGenerator<>(structure).world(world).generationInfo(generationType)
                     .structureID(structureName).randomPosition(pos, placer).fromCenter(true).generate().isPresent())
                 throw ServerTranslations.commandException("commands.strucGen.noPlace");
         }
@@ -117,7 +117,7 @@ public class CommandGenerateStructure extends CommandBase
             String structureName = args[0];
             Structure<?> structure = StructureRegistry.INSTANCE.get(structureName);
             if (structure instanceof GenericStructure)
-                return getListOfStringsMatchingLastWord(args, structure.generationInfos(GenerationInfo.class).stream().map(GenerationInfo::id).collect(Collectors.toList()));
+                return getListOfStringsMatchingLastWord(args, structure.generationInfos(GenerationType.class).stream().map(GenerationType::id).collect(Collectors.toList()));
         }
 //        else if (args.length == 6)
 //            return getListOfStringsMatchingLastWord(args, "0", "2", "5");

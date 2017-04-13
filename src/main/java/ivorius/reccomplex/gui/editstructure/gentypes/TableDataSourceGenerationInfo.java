@@ -11,7 +11,7 @@ import ivorius.reccomplex.gui.table.*;
 import ivorius.reccomplex.gui.table.cell.*;
 import ivorius.reccomplex.gui.table.datasource.TableDataSourceSegmented;
 import ivorius.reccomplex.world.gen.feature.structure.Structures;
-import ivorius.reccomplex.world.gen.feature.structure.generic.gentypes.GenerationInfo;
+import ivorius.reccomplex.world.gen.feature.structure.generic.gentypes.GenerationType;
 
 import javax.annotation.Nonnull;
 
@@ -20,11 +20,11 @@ import javax.annotation.Nonnull;
  */
 public class TableDataSourceGenerationInfo extends TableDataSourceSegmented
 {
-    public GenerationInfo genInfo;
+    public GenerationType genInfo;
 
     public TableDelegate delegate;
 
-    public TableDataSourceGenerationInfo(GenerationInfo genInfo, TableNavigator navigator, TableDelegate delegate)
+    public TableDataSourceGenerationInfo(GenerationType genInfo, TableNavigator navigator, TableDelegate delegate)
     {
         this.genInfo = genInfo;
         this.delegate = delegate;
@@ -65,7 +65,7 @@ public class TableDataSourceGenerationInfo extends TableDataSourceSegmented
 
             TableCellButton randomizeCell = new TableCellButton(null, null, IvTranslations.get("reccomplex.gui.randomize.short"), IvTranslations.getLines("reccomplex.gui.randomize"));
             randomizeCell.addAction(() -> {
-                genInfo.setID(GenerationInfo.randomID(genInfo.getClass()));
+                genInfo.setID(GenerationType.randomID(genInfo.getClass()));
                 delegate.reloadData();
             });
 

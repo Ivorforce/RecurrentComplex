@@ -11,18 +11,18 @@ import ivorius.reccomplex.gui.table.cell.TableCellEnum;
 import ivorius.reccomplex.gui.table.cell.TableCellInteger;
 import ivorius.reccomplex.gui.table.cell.TitledCell;
 import ivorius.reccomplex.gui.table.datasource.TableDataSourceSegmented;
-import ivorius.reccomplex.world.gen.feature.structure.generic.gentypes.NaturalGenerationInfo;
+import ivorius.reccomplex.world.gen.feature.structure.generic.gentypes.NaturalGeneration;
 
 /**
  * Created by lukas on 05.06.14.
  */
 public class TableDataSourceNaturalGenLimitation extends TableDataSourceSegmented
 {
-    private NaturalGenerationInfo.SpawnLimitation limitation;
+    private NaturalGeneration.SpawnLimitation limitation;
 
     private TableDelegate tableDelegate;
 
-    public TableDataSourceNaturalGenLimitation(NaturalGenerationInfo.SpawnLimitation limitation, TableDelegate tableDelegate)
+    public TableDataSourceNaturalGenLimitation(NaturalGeneration.SpawnLimitation limitation, TableDelegate tableDelegate)
     {
         this.limitation = limitation;
         this.tableDelegate = tableDelegate;
@@ -59,7 +59,7 @@ public class TableDataSourceNaturalGenLimitation extends TableDataSourceSegmente
                 case 0:
                 {
 
-                    TableCellEnum<NaturalGenerationInfo.SpawnLimitation.Context> cell = new TableCellEnum<>("context", limitation.context, TableCellEnum.options(NaturalGenerationInfo.SpawnLimitation.Context.values(), "reccomplex.generationInfo.natural.limitation.context.", false));
+                    TableCellEnum<NaturalGeneration.SpawnLimitation.Context> cell = new TableCellEnum<>("context", limitation.context, TableCellEnum.options(NaturalGeneration.SpawnLimitation.Context.values(), "reccomplex.generationInfo.natural.limitation.context.", false));
                     cell.addPropertyConsumer(val -> {
                         limitation.context = val;
                         tableDelegate.reloadData();

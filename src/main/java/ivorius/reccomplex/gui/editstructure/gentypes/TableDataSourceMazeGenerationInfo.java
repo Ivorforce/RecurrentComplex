@@ -13,7 +13,7 @@ import ivorius.reccomplex.gui.table.cell.TableCellString;
 import ivorius.reccomplex.gui.table.cell.TitledCell;
 import ivorius.reccomplex.gui.table.datasource.TableDataSourceSegmented;
 import ivorius.reccomplex.gui.worldscripts.mazegenerator.TableDataSourceMazeComponent;
-import ivorius.reccomplex.world.gen.feature.structure.generic.gentypes.MazeGenerationInfo;
+import ivorius.reccomplex.world.gen.feature.structure.generic.gentypes.MazeGeneration;
 
 /**
  * Created by lukas on 07.10.14.
@@ -23,9 +23,9 @@ public class TableDataSourceMazeGenerationInfo extends TableDataSourceSegmented
     private TableNavigator navigator;
     private TableDelegate tableDelegate;
 
-    private MazeGenerationInfo generationInfo;
+    private MazeGeneration generationInfo;
 
-    public TableDataSourceMazeGenerationInfo(TableNavigator navigator, TableDelegate tableDelegate, MazeGenerationInfo generationInfo)
+    public TableDataSourceMazeGenerationInfo(TableNavigator navigator, TableDelegate tableDelegate, MazeGeneration generationInfo)
     {
         this.navigator = navigator;
         this.tableDelegate = tableDelegate;

@@ -10,8 +10,8 @@ import ivorius.ivtoolkit.math.AxisAlignedTransform2D;
 import ivorius.reccomplex.utils.RCDirections;
 import ivorius.reccomplex.world.gen.feature.structure.*;
 import ivorius.reccomplex.world.gen.feature.structure.context.StructureSpawnContext;
-import ivorius.reccomplex.world.gen.feature.structure.generic.gentypes.GenerationInfo;
-import ivorius.reccomplex.world.gen.feature.structure.generic.gentypes.VanillaGenerationInfo;
+import ivorius.reccomplex.world.gen.feature.structure.generic.gentypes.GenerationType;
+import ivorius.reccomplex.world.gen.feature.structure.generic.gentypes.VanillaGeneration;
 import ivorius.reccomplex.utils.NBTStorable;
 import ivorius.ivtoolkit.world.chunk.gen.StructureBoundingBoxes;
 import ivorius.reccomplex.world.gen.feature.StructureGenerator;
@@ -96,9 +96,9 @@ public class GenericVillagePiece extends StructureVillagePieces.Village
     private Biome biome(WorldServer world) {return startPiece != null ? startPiece.biome : Environment.getBiome(world, boundingBox);}
 
     @Nonnull
-    protected Environment environment(WorldServer world, GenerationInfo generationInfo)
+    protected Environment environment(WorldServer world, GenerationType generationType)
     {
-        return new Environment(world, biome(world), field_189928_h, generationInfo);
+        return new Environment(world, biome(world), field_189928_h, generationType);
     }
 
     public void prepare(Random random, WorldServer world)
@@ -106,14 +106,14 @@ public class GenericVillagePiece extends StructureVillagePieces.Village
         Structure<?> structure = StructureRegistry.INSTANCE.get(structureID);
         if (structure != null)
         {
-            GenerationInfo generationInfo = structure.generationInfo(generationID);
+            GenerationType generationType = structure.generationInfo(generationID);
 
-            if (generationInfo instanceof VanillaGenerationInfo)
+            if (generationType instanceof VanillaGeneration)
             {
-                VanillaGenerationInfo vanillaGenInfo = (VanillaGenerationInfo) generationInfo;
+                VanillaGeneration vanillaGenInfo = (VanillaGeneration) generationType;
                 AxisAlignedTransform2D transform = getTransform(vanillaGenInfo.front, mirrorX, getCoordBaseMode().getOpposite());
 
-                instanceData = new StructureGenerator<>(structure).random(random).environment(environment(world, generationInfo)).transform(transform).boundingBox(boundingBox)
+                instanceData = new StructureGenerator<>(structure).random(random).environment(environment(world, generationType)).transform(transform).boundingBox(boundingBox)
                         .instanceData().map(NBTStorable::writeToNBT).orElse(null);
             }
         }
@@ -126,11 +126,11 @@ public class GenericVillagePiece extends StructureVillagePieces.Village
         Structure<?> structure = StructureRegistry.INSTANCE.get(structureID);
         if (structure != null)
         {
-            GenerationInfo generationInfo = structure.generationInfo(generationID);
+            GenerationType generationType = structure.generationInfo(generationID);
 
-            if (generationInfo instanceof VanillaGenerationInfo)
+            if (generationType instanceof VanillaGeneration)
             {
-                VanillaGenerationInfo vanillaGenInfo = (VanillaGenerationInfo) generationInfo;
+                VanillaGeneration vanillaGenInfo = (VanillaGeneration) generationType;
                 AxisAlignedTransform2D transform = getCoordBaseMode() != null ? getTransform(vanillaGenInfo.front, mirrorX, getCoordBaseMode().getOpposite()) : AxisAlignedTransform2D.ORIGINAL;
 
                 BlockPos structureShift = transform.apply(vanillaGenInfo.spawnShift, new int[]{1, 1, 1});
@@ -147,7 +147,7 @@ public class GenericVillagePiece extends StructureVillagePieces.Village
                 }
 
                 if (world instanceof WorldServer)
-                    generate((WorldServer) world, random, boundingBox, structure, generationInfo, transform);
+                    generate((WorldServer) world, random, boundingBox, structure, generationType, transform);
 
                 return true;
             }
@@ -156,13 +156,13 @@ public class GenericVillagePiece extends StructureVillagePieces.Village
         return false;
     }
 
-    protected <T extends NBTStorable> void generate(WorldServer world, Random random, StructureBoundingBox generationBB, Structure<T> structure, GenerationInfo generationInfo, AxisAlignedTransform2D transform)
+    protected <T extends NBTStorable> void generate(WorldServer world, Random random, StructureBoundingBox generationBB, Structure<T> structure, GenerationType generationType, AxisAlignedTransform2D transform)
     {
         if (!startedGeneration)
             prepare(random, world);
 
         boolean firstTime = !startedGeneration;
-        new StructureGenerator<>(structure).environment(environment(world, generationInfo))
+        new StructureGenerator<>(structure).environment(environment(world, generationType))
                 .random(random).lowerCoord(StructureBoundingBoxes.min(boundingBox)).transform(transform).generationBB(StructureBoundingBoxes.wholeHeightBoundingBox(world, generationBB))
                 .generationLayer(componentType).structureID(structureID).maturity(firstTime ? StructureSpawnContext.GenerateMaturity.FIRST : StructureSpawnContext.GenerateMaturity.COMPLEMENT)
                 .instanceData(this.instanceData).generate();

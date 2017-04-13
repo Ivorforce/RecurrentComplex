@@ -7,7 +7,7 @@ package ivorius.reccomplex.world.gen.feature.selector;
 
 import ivorius.ivtoolkit.random.WeightedSelector;
 import ivorius.reccomplex.world.gen.feature.structure.Structure;
-import ivorius.reccomplex.world.gen.feature.structure.generic.gentypes.GenerationInfo;
+import ivorius.reccomplex.world.gen.feature.structure.generic.gentypes.GenerationType;
 import net.minecraft.world.WorldProvider;
 import net.minecraft.world.biome.Biome;
 import org.apache.commons.lang3.tuple.Pair;
@@ -22,7 +22,7 @@ import java.util.stream.IntStream;
 /**
  * Created by lukas on 24.09.16.
  */
-public class MixingStructureSelector<T extends GenerationInfo & EnvironmentalSelection<C>, C extends MixingStructureSelector.Category> extends StructureSelector<T, C>
+public class MixingStructureSelector<T extends GenerationType & EnvironmentalSelection<C>, C extends MixingStructureSelector.Category> extends StructureSelector<T, C>
 {
     public MixingStructureSelector(Map<String, Structure<?>> structures, WorldProvider provider, Biome biome, Class<T> typeClass)
     {

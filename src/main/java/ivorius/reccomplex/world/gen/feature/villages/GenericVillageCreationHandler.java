@@ -13,8 +13,8 @@ import ivorius.ivtoolkit.math.AxisAlignedTransform2D;
 import ivorius.reccomplex.world.gen.feature.structure.Structure;
 import ivorius.reccomplex.world.gen.feature.structure.Structures;
 import ivorius.reccomplex.world.gen.feature.structure.StructureRegistry;
-import ivorius.reccomplex.world.gen.feature.structure.generic.gentypes.GenerationInfo;
-import ivorius.reccomplex.world.gen.feature.structure.generic.gentypes.VanillaGenerationInfo;
+import ivorius.reccomplex.world.gen.feature.structure.generic.gentypes.GenerationType;
+import ivorius.reccomplex.world.gen.feature.structure.generic.gentypes.VanillaGeneration;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.gen.structure.StructureBoundingBox;
 import net.minecraft.world.gen.structure.StructureComponent;
@@ -56,10 +56,10 @@ public class GenericVillageCreationHandler implements VillagerRegistry.IVillageC
         if (structure != null)
         {
             float tweakedWeight = RCConfig.tweakedSpawnRate(structureID);
-            GenerationInfo generationInfo = structure.generationInfo(generationID);
-            if (generationInfo instanceof VanillaGenerationInfo)
+            GenerationType generationType = structure.generationInfo(generationID);
+            if (generationType instanceof VanillaGeneration)
             {
-                VanillaGenerationInfo vanillaGenInfo = (VanillaGenerationInfo) generationInfo;
+                VanillaGeneration vanillaGenInfo = (VanillaGeneration) generationType;
 
                 int spawnLimit = MathHelper.floor_double(MathHelper.getRandomDoubleInRange(random,
                         vanillaGenInfo.minBaseLimit + villageSize * vanillaGenInfo.minScaledLimit,
@@ -84,10 +84,10 @@ public class GenericVillageCreationHandler implements VillagerRegistry.IVillageC
 
         if (structure != null)
         {
-            GenerationInfo generationInfo = structure.generationInfo(generationID);
-            if (generationInfo instanceof VanillaGenerationInfo)
+            GenerationType generationType = structure.generationInfo(generationID);
+            if (generationType instanceof VanillaGeneration)
             {
-                VanillaGenerationInfo vanillaGenInfo = (VanillaGenerationInfo) generationInfo;
+                VanillaGeneration vanillaGenInfo = (VanillaGeneration) generationType;
 
                 boolean mirrorX = structure.isMirrorable() && random.nextBoolean();
                 AxisAlignedTransform2D transform = GenericVillagePiece.getTransform(vanillaGenInfo.front, mirrorX, front.getOpposite());

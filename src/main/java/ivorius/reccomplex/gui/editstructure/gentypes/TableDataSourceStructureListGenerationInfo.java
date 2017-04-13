@@ -19,7 +19,7 @@ import ivorius.reccomplex.gui.table.cell.TitledCell;
 import ivorius.reccomplex.gui.table.datasource.TableDataSourceSegmented;
 import ivorius.reccomplex.world.gen.feature.structure.Structures;
 import ivorius.reccomplex.world.gen.feature.structure.StructureRegistry;
-import ivorius.reccomplex.world.gen.feature.structure.generic.gentypes.ListGenerationInfo;
+import ivorius.reccomplex.world.gen.feature.structure.generic.gentypes.ListGeneration;
 import net.minecraft.util.EnumFacing;
 
 import javax.annotation.Nonnull;
@@ -32,9 +32,9 @@ public class TableDataSourceStructureListGenerationInfo extends TableDataSourceS
     private TableNavigator navigator;
     private TableDelegate tableDelegate;
 
-    private ListGenerationInfo generationInfo;
+    private ListGeneration generationInfo;
 
-    public TableDataSourceStructureListGenerationInfo(TableNavigator navigator, TableDelegate tableDelegate, ListGenerationInfo generationInfo)
+    public TableDataSourceStructureListGenerationInfo(TableNavigator navigator, TableDelegate tableDelegate, ListGeneration generationInfo)
     {
         this.navigator = navigator;
         this.tableDelegate = tableDelegate;

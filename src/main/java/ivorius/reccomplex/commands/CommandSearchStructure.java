@@ -14,7 +14,7 @@ import ivorius.reccomplex.world.gen.feature.structure.Structure;
 import ivorius.reccomplex.world.gen.feature.structure.StructureRegistry;
 import ivorius.reccomplex.world.gen.feature.structure.generic.GenericStructure;
 import ivorius.reccomplex.world.gen.feature.structure.generic.Metadata;
-import ivorius.reccomplex.world.gen.feature.structure.generic.gentypes.GenerationInfo;
+import ivorius.reccomplex.world.gen.feature.structure.generic.gentypes.GenerationType;
 import joptsimple.internal.Strings;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.CommandException;
@@ -45,7 +45,7 @@ public class CommandSearchStructure extends CommandBase
 
         keywords.add(id);
 
-        structure.generationInfos(GenerationInfo.class).forEach(info -> keywords(keywords, info));
+        structure.generationInfos(GenerationType.class).forEach(info -> keywords(keywords, info));
 
         if (structure instanceof GenericStructure)
             keywords(keywords, ((GenericStructure) structure).metadata);
@@ -53,7 +53,7 @@ public class CommandSearchStructure extends CommandBase
         return keywords;
     }
 
-    protected static void keywords(Collection<String> keywords, GenerationInfo info)
+    protected static void keywords(Collection<String> keywords, GenerationType info)
     {
         keywords.add(info.id());
         keywords.add(info.displayString());

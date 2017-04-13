@@ -15,7 +15,7 @@ import ivorius.reccomplex.dimensions.DimensionDictionary;
 import ivorius.reccomplex.world.gen.feature.structure.Structure;
 import ivorius.reccomplex.world.gen.feature.structure.generic.BiomeGenerationInfo;
 import ivorius.reccomplex.world.gen.feature.structure.generic.DimensionGenerationInfo;
-import ivorius.reccomplex.world.gen.feature.structure.generic.gentypes.GenerationInfo;
+import ivorius.reccomplex.world.gen.feature.structure.generic.gentypes.GenerationType;
 import ivorius.reccomplex.utils.presets.PresettedList;
 import net.minecraft.world.WorldProvider;
 import net.minecraft.world.biome.Biome;
@@ -28,7 +28,7 @@ import java.util.*;
 /**
  * Created by lukas on 24.05.14.
  */
-public class StructureSelector<T extends GenerationInfo & EnvironmentalSelection<C>, C>
+public class StructureSelector<T extends GenerationType & EnvironmentalSelection<C>, C>
 {
     protected final Set<String> cachedDimensionTypes = new HashSet<>(); // Because dimensions could often change on the fly
 

@@ -27,9 +27,9 @@ import ivorius.reccomplex.world.gen.feature.structure.context.StructureContext;
 import ivorius.reccomplex.world.gen.feature.structure.context.StructureLoadContext;
 import ivorius.reccomplex.world.gen.feature.structure.context.StructurePrepareContext;
 import ivorius.reccomplex.world.gen.feature.structure.context.StructureSpawnContext;
-import ivorius.reccomplex.world.gen.feature.structure.generic.gentypes.GenerationInfo;
-import ivorius.reccomplex.world.gen.feature.structure.generic.gentypes.MazeGenerationInfo;
-import ivorius.reccomplex.world.gen.feature.structure.generic.gentypes.NaturalGenerationInfo;
+import ivorius.reccomplex.world.gen.feature.structure.generic.gentypes.GenerationType;
+import ivorius.reccomplex.world.gen.feature.structure.generic.gentypes.MazeGeneration;
+import ivorius.reccomplex.world.gen.feature.structure.generic.gentypes.NaturalGeneration;
 import ivorius.reccomplex.world.gen.feature.structure.generic.transformers.RunTransformer;
 import ivorius.reccomplex.world.gen.feature.structure.generic.transformers.Transformer;
 import ivorius.reccomplex.world.gen.feature.structure.generic.transformers.TransformerMulti;
@@ -66,7 +66,7 @@ public class GenericStructure implements Structure<GenericStructure.InstanceData
     public static final int LATEST_VERSION = 3;
     public static final int MAX_GENERATING_LAYERS = 30;
 
-    public final List<GenerationInfo> generationInfos = new ArrayList<>();
+    public final List<GenerationType> generationTypes = new ArrayList<>();
     public TransformerMulti transformer = new TransformerMulti();
     public final DependencyMatcher dependencies = new DependencyMatcher();
 
@@ -88,7 +88,7 @@ public class GenericStructure implements Structure<GenericStructure.InstanceData
         genericStructureInfo.blocking = true;
 
         genericStructureInfo.transformer.getData().setPreset("structure");
-        genericStructureInfo.generationInfos.add(new NaturalGenerationInfo());
+        genericStructureInfo.generationTypes.add(new NaturalGeneration());
 
         return genericStructureInfo;
     }
@@ -362,16 +362,16 @@ public class GenericStructure implements Structure<GenericStructure.InstanceData
 
     @Nonnull
     @Override
-    public <I extends GenerationInfo> List<I> generationInfos(@Nonnull Class<? extends I> clazz)
+    public <I extends GenerationType> List<I> generationInfos(@Nonnull Class<? extends I> clazz)
     {
         //noinspection unchecked
-        return generationInfos.stream().filter(info -> clazz.isAssignableFrom(info.getClass())).map(info -> (I) info).collect(Collectors.toList());
+        return generationTypes.stream().filter(info -> clazz.isAssignableFrom(info.getClass())).map(info -> (I) info).collect(Collectors.toList());
     }
 
     @Override
-    public GenerationInfo generationInfo(@Nonnull String id)
+    public GenerationType generationInfo(@Nonnull String id)
     {
-        for (GenerationInfo info : generationInfos)
+        for (GenerationType info : generationTypes)
         {
             if (Objects.equals(info.id(), id))
                 return info;
@@ -438,18 +438,18 @@ public class GenericStructure implements Structure<GenericStructure.InstanceData
             }
 
             if (jsonObject.has("generationInfos"))
-                Collections.addAll(structureInfo.generationInfos, context.<GenerationInfo[]>deserialize(jsonObject.get("generationInfos"), GenerationInfo[].class));
+                Collections.addAll(structureInfo.generationTypes, context.<GenerationType[]>deserialize(jsonObject.get("generationInfos"), GenerationType[].class));
 
             if (version == 1)
-                structureInfo.generationInfos.add(NaturalGenerationInfo.deserializeFromVersion1(jsonObject, context));
+                structureInfo.generationTypes.add(NaturalGeneration.deserializeFromVersion1(jsonObject, context));
 
             {
                 // Legacy version 2
                 if (jsonObject.has("naturalGenerationInfo"))
-                    structureInfo.generationInfos.add(NaturalGenerationInfo.getGson().fromJson(jsonObject.get("naturalGenerationInfo"), NaturalGenerationInfo.class));
+                    structureInfo.generationTypes.add(NaturalGeneration.getGson().fromJson(jsonObject.get("naturalGenerationInfo"), NaturalGeneration.class));
 
                 if (jsonObject.has("mazeGenerationInfo"))
-                    structureInfo.generationInfos.add(MazeGenerationInfo.getGson().fromJson(jsonObject.get("mazeGenerationInfo"), MazeGenerationInfo.class));
+                    structureInfo.generationTypes.add(MazeGeneration.getGson().fromJson(jsonObject.get("mazeGenerationInfo"), MazeGeneration.class));
             }
 
             if (jsonObject.has("transformer"))
@@ -488,7 +488,7 @@ public class GenericStructure implements Structure<GenericStructure.InstanceData
 
             jsonObject.addProperty("version", LATEST_VERSION);
 
-            jsonObject.add("generationInfos", context.serialize(structureInfo.generationInfos));
+            jsonObject.add("generationInfos", context.serialize(structureInfo.generationTypes));
             jsonObject.add("transformer", context.serialize(structureInfo.transformer));
 
             jsonObject.addProperty("rotatable", structureInfo.rotatable);

@@ -294,14 +294,14 @@ public class RCRegistryHandler
         transformerRegistry.registerType("ensureBlocks", TransformerEnsureBlocks.class, new TransformerEnsureBlocks.Serializer(mcRegistry));
         transformerRegistry.registerType("propertyReplace", TransformerProperty.class, new TransformerProperty.Serializer(mcRegistry));
 
-        SerializableStringTypeRegistry<GenerationInfo> genInfoRegistry = StructureRegistry.GENERATION_INFOS;
-        genInfoRegistry.registerType("natural", NaturalGenerationInfo.class, new NaturalGenerationInfo.Serializer());
-        genInfoRegistry.registerType("structureList", ListGenerationInfo.class, new ListGenerationInfo.Serializer());
-        genInfoRegistry.registerType("mazeComponent", MazeGenerationInfo.class, new MazeGenerationInfo.Serializer());
-        genInfoRegistry.registerType("static", StaticGenerationInfo.class, new StaticGenerationInfo.Serializer());
-        genInfoRegistry.registerType("vanilla", VanillaGenerationInfo.class, new VanillaGenerationInfo.Serializer());
-        genInfoRegistry.registerType("sapling", SaplingGenerationInfo.class, new SaplingGenerationInfo.Serializer());
-        genInfoRegistry.registerType("decoration", VanillaDecorationGenerationInfo.class, new VanillaDecorationGenerationInfo.Serializer());
+        SerializableStringTypeRegistry<GenerationType> genInfoRegistry = StructureRegistry.GENERATION_INFOS;
+        genInfoRegistry.registerType("natural", NaturalGeneration.class, new NaturalGeneration.Serializer());
+        genInfoRegistry.registerType("structureList", ListGeneration.class, new ListGeneration.Serializer());
+        genInfoRegistry.registerType("mazeComponent", MazeGeneration.class, new MazeGeneration.Serializer());
+        genInfoRegistry.registerType("static", StaticGeneration.class, new StaticGeneration.Serializer());
+        genInfoRegistry.registerType("vanilla", VanillaGeneration.class, new VanillaGeneration.Serializer());
+        genInfoRegistry.registerType("sapling", SaplingGeneration.class, new SaplingGeneration.Serializer());
+        genInfoRegistry.registerType("decoration", VanillaDecorationGeneration.class, new VanillaDecorationGeneration.Serializer());
 
         SerializableStringTypeRegistry<GenericPlacer.Factor> placerFactorRegistry = FactorRegistry.INSTANCE.getTypeRegistry();
         placerFactorRegistry.registerType("limit", FactorLimit.class, new FactorLimit.Serializer());

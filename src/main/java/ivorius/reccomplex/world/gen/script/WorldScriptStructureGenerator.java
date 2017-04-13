@@ -22,7 +22,7 @@ import ivorius.reccomplex.world.gen.feature.structure.*;
 import ivorius.reccomplex.world.gen.feature.structure.context.StructureLoadContext;
 import ivorius.reccomplex.world.gen.feature.structure.context.StructurePrepareContext;
 import ivorius.reccomplex.world.gen.feature.structure.context.StructureSpawnContext;
-import ivorius.reccomplex.world.gen.feature.structure.generic.gentypes.ListGenerationInfo;
+import ivorius.reccomplex.world.gen.feature.structure.generic.gentypes.ListGeneration;
 import ivorius.reccomplex.utils.NBTStorable;
 import ivorius.reccomplex.world.gen.feature.StructureGenerator;
 import net.minecraft.nbt.NBTBase;
@@ -208,15 +208,15 @@ public class WorldScriptStructureGenerator implements WorldScript<WorldScriptStr
         }
         else
         {
-            Collection<Pair<Structure<?>, ListGenerationInfo>> generationInfos = StructureRegistry.INSTANCE.getStructuresInList(structureListID, front).collect(Collectors.toList());
+            Collection<Pair<Structure<?>, ListGeneration>> generationInfos = StructureRegistry.INSTANCE.getStructuresInList(structureListID, front).collect(Collectors.toList());
 
             if (generationInfos.size() > 0)
             {
-                Pair<Structure<?>, ListGenerationInfo> pair = WeightedSelector.select(random, generationInfos, item ->
+                Pair<Structure<?>, ListGeneration> pair = WeightedSelector.select(random, generationInfos, item ->
                         RCConfig.tweakedSpawnRate(StructureRegistry.INSTANCE.id(item.getLeft())) * item.getRight().getWeight());
                 Structure<?> structure = pair.getLeft();
                 String structureID = StructureRegistry.INSTANCE.id(structure);
-                ListGenerationInfo generationInfo = pair.getRight();
+                ListGeneration generationInfo = pair.getRight();
 
                 boolean mirrorX;
                 int rotations;

@@ -15,8 +15,8 @@ import ivorius.reccomplex.world.gen.feature.structure.Structure;
 import ivorius.reccomplex.world.gen.feature.structure.Structures;
 import ivorius.reccomplex.world.gen.feature.structure.StructureRegistry;
 import ivorius.reccomplex.world.gen.feature.structure.context.StructureSpawnContext;
-import ivorius.reccomplex.world.gen.feature.structure.generic.gentypes.NaturalGenerationInfo;
-import ivorius.reccomplex.world.gen.feature.structure.generic.gentypes.StaticGenerationInfo;
+import ivorius.reccomplex.world.gen.feature.structure.generic.gentypes.NaturalGeneration;
+import ivorius.reccomplex.world.gen.feature.structure.generic.gentypes.StaticGeneration;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.ChunkPos;
 import net.minecraft.util.math.MathHelper;
@@ -38,7 +38,7 @@ public class WorldGenStructures
     {
         StructureRegistry.INSTANCE.getStaticStructuresAt(chunkPos, world, spawnPos).forEach(triple ->
         {
-            StaticGenerationInfo staticGenInfo = triple.getMiddle();
+            StaticGeneration staticGenInfo = triple.getMiddle();
             Structure<?> structure = triple.getLeft();
             BlockSurfacePos pos = triple.getRight();
 
@@ -61,10 +61,10 @@ public class WorldGenStructures
 
     public static void generateRandomStructuresInChunk(Random random, ChunkPos chunkPos, WorldServer world, Biome biomeGen, @Nullable Predicate<Structure> structurePredicate)
     {
-        MixingStructureSelector<NaturalGenerationInfo, NaturalStructureSelector.Category> structureSelector = StructureRegistry.INSTANCE.naturalStructureSelectors().get(biomeGen, world.provider);
+        MixingStructureSelector<NaturalGeneration, NaturalStructureSelector.Category> structureSelector = StructureRegistry.INSTANCE.naturalStructureSelectors().get(biomeGen, world.provider);
 
         float distanceToSpawn = distance(new ChunkPos(world.getSpawnPoint()), chunkPos);
-        List<Pair<Structure<?>, NaturalGenerationInfo>> generated = structureSelector.generatedStructures(random, world.getBiome(chunkPos.getBlock(0, 0, 0)), world.provider, distanceToSpawn);
+        List<Pair<Structure<?>, NaturalGeneration>> generated = structureSelector.generatedStructures(random, world.getBiome(chunkPos.getBlock(0, 0, 0)), world.provider, distanceToSpawn);
 
         generated.stream()
                 .filter(pair -> structurePredicate == null || structurePredicate.test(pair.getLeft()))
@@ -73,10 +73,10 @@ public class WorldGenStructures
 
     public static boolean generateRandomStructureInChunk(Random random, ChunkPos chunkPos, WorldServer world, Biome biomeGen)
     {
-        MixingStructureSelector<NaturalGenerationInfo, NaturalStructureSelector.Category> structureSelector = StructureRegistry.INSTANCE.naturalStructureSelectors().get(biomeGen, world.provider);
+        MixingStructureSelector<NaturalGeneration, NaturalStructureSelector.Category> structureSelector = StructureRegistry.INSTANCE.naturalStructureSelectors().get(biomeGen, world.provider);
 
         float distanceToSpawn = distance(new ChunkPos(world.getSpawnPoint()), chunkPos);
-        Pair<Structure<?>, NaturalGenerationInfo> pair = structureSelector.selectOne(random, world.provider, world.getBiome(chunkPos.getBlock(0, 0, 0)), null, distanceToSpawn);
+        Pair<Structure<?>, NaturalGeneration> pair = structureSelector.selectOne(random, world.provider, world.getBiome(chunkPos.getBlock(0, 0, 0)), null, distanceToSpawn);
 
         if (pair != null)
         {
@@ -87,7 +87,7 @@ public class WorldGenStructures
         return false;
     }
 
-    protected static void generateStructureInChunk(Random random, ChunkPos chunkPos, WorldServer world, Structure<?> structure, NaturalGenerationInfo naturalGenInfo)
+    protected static void generateStructureInChunk(Random random, ChunkPos chunkPos, WorldServer world, Structure<?> structure, NaturalGeneration naturalGenInfo)
     {
         String structureName = StructureRegistry.INSTANCE.id(structure);
 

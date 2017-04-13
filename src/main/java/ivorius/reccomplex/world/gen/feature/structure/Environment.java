@@ -6,7 +6,7 @@
 package ivorius.reccomplex.world.gen.feature.structure;
 
 import ivorius.reccomplex.utils.RCStructureBoundingBoxes;
-import ivorius.reccomplex.world.gen.feature.structure.generic.gentypes.GenerationInfo;
+import ivorius.reccomplex.world.gen.feature.structure.generic.gentypes.GenerationType;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldServer;
 import net.minecraft.world.biome.Biome;
@@ -27,20 +27,20 @@ public class Environment
     @Nullable
     public final Integer villageType;
     @Nullable
-    public final GenerationInfo generationInfo;
+    public final GenerationType generationType;
 
-    public Environment(@Nonnull WorldServer world, @Nonnull Biome biome, @Nullable Integer villageType, @Nullable GenerationInfo generationInfo)
+    public Environment(@Nonnull WorldServer world, @Nonnull Biome biome, @Nullable Integer villageType, @Nullable GenerationType generationType)
     {
         this.world = world;
         this.biome = biome;
         this.villageType = villageType;
-        this.generationInfo = generationInfo;
+        this.generationType = generationType;
     }
 
     @Nonnull
-    public static Environment inNature(@Nonnull WorldServer world, @Nonnull StructureBoundingBox boundingBox, GenerationInfo generationInfo)
+    public static Environment inNature(@Nonnull WorldServer world, @Nonnull StructureBoundingBox boundingBox, GenerationType generationType)
     {
-        return new Environment(world, getBiome(world, boundingBox), null, generationInfo);
+        return new Environment(world, getBiome(world, boundingBox), null, generationType);
     }
 
     @Nonnull
@@ -54,8 +54,8 @@ public class Environment
         return world.getBiome(RCStructureBoundingBoxes.getCenter(boundingBox));
     }
 
-    public Environment withGeneration(GenerationInfo generation)
+    public Environment withGeneration(GenerationType generation)
     {
-        return new Environment(world, biome, villageType, generationInfo);
+        return new Environment(world, biome, villageType, generationType);
     }
 }

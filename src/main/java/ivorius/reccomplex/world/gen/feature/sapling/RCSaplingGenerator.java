@@ -15,7 +15,7 @@ import ivorius.reccomplex.world.gen.feature.structure.Environment;
 import ivorius.reccomplex.world.gen.feature.structure.Structure;
 import ivorius.reccomplex.world.gen.feature.structure.StructureRegistry;
 import ivorius.reccomplex.world.gen.feature.structure.context.StructureSpawnContext;
-import ivorius.reccomplex.world.gen.feature.structure.generic.gentypes.SaplingGenerationInfo;
+import ivorius.reccomplex.world.gen.feature.structure.generic.gentypes.SaplingGeneration;
 import ivorius.ivtoolkit.blocks.BlockSurfacePos;
 import ivorius.ivtoolkit.util.IvFunctions;
 import ivorius.reccomplex.world.gen.feature.StructureGenerator;
@@ -47,7 +47,7 @@ public class RCSaplingGenerator
         if (RCConfig.saplingTriggerChance <= 0 || (RCConfig.saplingTriggerChance < 1 && random.nextFloat() < RCConfig.saplingTriggerChance))
             return false; // Don't trigger at all
 
-        Pair<Structure<?>, SaplingGenerationInfo> pair = findRandomSapling(world, pos, random, true);
+        Pair<Structure<?>, SaplingGeneration> pair = findRandomSapling(world, pos, random, true);
 
         if (pair == null) // Generate default
             return false;
@@ -58,27 +58,27 @@ public class RCSaplingGenerator
     }
 
     @Nullable
-    public static Pair<Structure<?>, SaplingGenerationInfo> findRandomSapling(WorldServer world, BlockPos pos, Random random, boolean considerVanilla)
+    public static Pair<Structure<?>, SaplingGeneration> findRandomSapling(WorldServer world, BlockPos pos, Random random, boolean considerVanilla)
     {
         Environment baseEnv = Environment.inNature(world, new StructureBoundingBox(pos, pos));
 
-        List<Pair<Structure<?>, SaplingGenerationInfo>> applicable = StructureRegistry.INSTANCE.getStructureGenerations(SaplingGenerationInfo.class).stream()
+        List<Pair<Structure<?>, SaplingGeneration>> applicable = StructureRegistry.INSTANCE.getStructureGenerations(SaplingGeneration.class).stream()
                 .filter(pair1 -> pair1.getRight().generatesIn(baseEnv.withGeneration(pair1.getRight())))
                 .collect(Collectors.toCollection(ArrayList::new));
 
         // Hackily consider big vanilla trees too
         int vanillaComplexity = complexity(world, pos, random, predictors);
 
-        ImmutableMultimap<Integer, Pair<Structure<?>, SaplingGenerationInfo>> groups = IvFunctions.groupMap(applicable, pair -> pair.getRight().pattern.pattern.compile(true).size());
+        ImmutableMultimap<Integer, Pair<Structure<?>, SaplingGeneration>> groups = IvFunctions.groupMap(applicable, pair -> pair.getRight().pattern.pattern.compile(true).size());
         List<Integer> complexities = Lists.newArrayList(groups.keySet());
         if (vanillaComplexity > 0) complexities.add(vanillaComplexity);
         Collections.sort(complexities);
 
-        Pair<Structure<?>, SaplingGenerationInfo> pair = null;
+        Pair<Structure<?>, SaplingGeneration> pair = null;
         while (complexities.size() > 0 && pair == null)
         {
             Integer complexity = complexities.remove(complexities.size() - 1);
-            Set<Pair<Structure<?>, SaplingGenerationInfo>> placeable = groups.get(complexity).stream()
+            Set<Pair<Structure<?>, SaplingGeneration>> placeable = groups.get(complexity).stream()
                     .filter(p -> p.getRight().pattern.canPlace(world, pos, p.getLeft().size(), p.getLeft().isRotatable(), p.getLeft().isMirrorable()))
                     .collect(Collectors.toSet());
 
@@ -106,12 +106,12 @@ public class RCSaplingGenerator
                 .filter(i -> i >= 0).max().orElse(-1);
     }
 
-    public static double getSpawnWeight(Pair<Structure<?>, SaplingGenerationInfo> p)
+    public static double getSpawnWeight(Pair<Structure<?>, SaplingGeneration> p)
     {
         return RCConfig.tweakedSpawnRate(StructureRegistry.INSTANCE.id(p.getLeft())) * p.getRight().getActiveWeight();
     }
 
-    public static void growSapling(WorldServer world, BlockPos pos, Random random, Structure<?> structure, SaplingGenerationInfo saplingGenInfo)
+    public static void growSapling(WorldServer world, BlockPos pos, Random random, Structure<?> structure, SaplingGeneration saplingGenInfo)
     {
         int[] strucSize = structure.size();
 

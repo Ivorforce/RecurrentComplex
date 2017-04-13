@@ -18,17 +18,17 @@ import java.util.Random;
 /**
  * Created by lukas on 19.02.15.
  */
-public abstract class GenerationInfo
+public abstract class GenerationType
 {
     @Nonnull
     protected String id;
 
-    public GenerationInfo(@Nonnull String id)
+    public GenerationType(@Nonnull String id)
     {
         this.id = id;
     }
 
-    public static String randomID(Class<? extends GenerationInfo> type)
+    public static String randomID(Class<? extends GenerationType> type)
     {
         Random random = new Random();
         return String.format("%s_%s", StructureRegistry.GENERATION_INFOS.iDForType(type), Integer.toHexString(random.nextInt()));

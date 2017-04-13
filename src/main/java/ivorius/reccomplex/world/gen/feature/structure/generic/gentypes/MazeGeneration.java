@@ -24,7 +24,7 @@ import java.lang.reflect.Type;
 /**
  * Created by lukas on 07.10.14.
  */
-public class MazeGenerationInfo extends GenerationInfo implements WeightedSelector.Item
+public class MazeGeneration extends GenerationType implements WeightedSelector.Item
 {
     private static Gson gson = createGson();
 
@@ -33,15 +33,15 @@ public class MazeGenerationInfo extends GenerationInfo implements WeightedSelect
 
     public SavedMazeComponent mazeComponent;
 
-    public MazeGenerationInfo()
+    public MazeGeneration()
     {
         this(null, null, "", new SavedMazeComponent(ConnectorStrategy.DEFAULT_WALL));
         mazeComponent.rooms.addAll(Selection.zeroSelection(3));
     }
 
-    public MazeGenerationInfo(@Nullable String id, Double weight, String mazeID, SavedMazeComponent mazeComponent)
+    public MazeGeneration(@Nullable String id, Double weight, String mazeID, SavedMazeComponent mazeComponent)
     {
-        super(id != null ? id : randomID(MazeGenerationInfo.class));
+        super(id != null ? id : randomID(MazeGeneration.class));
         this.weight = weight;
         this.mazeID = mazeID;
         this.mazeComponent = mazeComponent;
@@ -51,7 +51,7 @@ public class MazeGenerationInfo extends GenerationInfo implements WeightedSelect
     {
         GsonBuilder builder = new GsonBuilder();
 
-        builder.registerTypeAdapter(MazeGenerationInfo.class, new Serializer());
+        builder.registerTypeAdapter(MazeGeneration.class, new Serializer());
         builder.registerTypeAdapter(SavedMazeComponent.class, new SavedMazeComponent.Serializer());
         builder.registerTypeAdapter(MazeRoom.class, new SavedMazeComponent.RoomSerializer());
         builder.registerTypeAdapter(SavedMazeReachability.class, new SavedMazeReachability.Serializer());
@@ -106,10 +106,10 @@ public class MazeGenerationInfo extends GenerationInfo implements WeightedSelect
         return new TableDataSourceMazeGenerationInfo(navigator, delegate, this);
     }
 
-    public static class Serializer implements JsonSerializer<MazeGenerationInfo>, JsonDeserializer<MazeGenerationInfo>
+    public static class Serializer implements JsonSerializer<MazeGeneration>, JsonDeserializer<MazeGeneration>
     {
         @Override
-        public MazeGenerationInfo deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException
+        public MazeGeneration deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException
         {
             JsonObject jsonObject = JsonUtils.asJsonObject(json, "MazeGenerationInfo");
 
@@ -130,11 +130,11 @@ public class MazeGenerationInfo extends GenerationInfo implements WeightedSelect
 
             SavedMazeComponent mazeComponent = gson.fromJson(componentJson, SavedMazeComponent.class);
 
-            return new MazeGenerationInfo(id, weight, mazeID, mazeComponent);
+            return new MazeGeneration(id, weight, mazeID, mazeComponent);
         }
 
         @Override
-        public JsonElement serialize(MazeGenerationInfo src, Type typeOfSrc, JsonSerializationContext context)
+        public JsonElement serialize(MazeGeneration src, Type typeOfSrc, JsonSerializationContext context)
         {
             JsonObject jsonObject = new JsonObject();
 

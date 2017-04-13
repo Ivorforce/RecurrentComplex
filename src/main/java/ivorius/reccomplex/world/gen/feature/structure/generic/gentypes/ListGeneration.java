@@ -25,7 +25,7 @@ import java.lang.reflect.Type;
 /**
  * Created by lukas on 21.02.15.
  */
-public class ListGenerationInfo extends GenerationInfo implements WeightedSelector.Item
+public class ListGeneration extends GenerationType implements WeightedSelector.Item
 {
     public String listID;
 
@@ -35,14 +35,14 @@ public class ListGenerationInfo extends GenerationInfo implements WeightedSelect
 
     public EnumFacing front;
 
-    public ListGenerationInfo()
+    public ListGeneration()
     {
         this(null, "", null, BlockPos.ORIGIN, EnumFacing.NORTH);
     }
 
-    public ListGenerationInfo(@Nullable String id, String listID, Double weight, BlockPos shift, EnumFacing front)
+    public ListGeneration(@Nullable String id, String listID, Double weight, BlockPos shift, EnumFacing front)
     {
-        super(id != null ? id : randomID(ListGenerationInfo.class));
+        super(id != null ? id : randomID(ListGeneration.class));
         this.listID = listID;
         this.weight = weight;
         this.shift = shift;
@@ -97,10 +97,10 @@ public class ListGenerationInfo extends GenerationInfo implements WeightedSelect
         return weight != null ? weight : 1.0;
     }
 
-    public static class Serializer implements JsonSerializer<ListGenerationInfo>, JsonDeserializer<ListGenerationInfo>
+    public static class Serializer implements JsonSerializer<ListGeneration>, JsonDeserializer<ListGeneration>
     {
         @Override
-        public ListGenerationInfo deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException
+        public ListGeneration deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException
         {
             JsonObject jsonObject = JsonUtils.asJsonObject(json, "vanillaStructureSpawnInfo");
 
@@ -116,11 +116,11 @@ public class ListGenerationInfo extends GenerationInfo implements WeightedSelect
 
             EnumFacing front = Directions.deserialize(JsonUtils.getString(jsonObject, "front", "NORTH"));
 
-            return new ListGenerationInfo(id, listID, weight, new BlockPos(positionX, positionY, positionZ), front);
+            return new ListGeneration(id, listID, weight, new BlockPos(positionX, positionY, positionZ), front);
         }
 
         @Override
-        public JsonElement serialize(ListGenerationInfo src, Type typeOfSrc, JsonSerializationContext context)
+        public JsonElement serialize(ListGeneration src, Type typeOfSrc, JsonSerializationContext context)
         {
             JsonObject jsonObject = new JsonObject();
 

@@ -12,7 +12,6 @@ import ivorius.reccomplex.utils.algebra.BoolFunctionExpressionCache;
 import ivorius.reccomplex.utils.algebra.RCBoolAlgebra;
 import ivorius.reccomplex.utils.algebra.SupplierCache;
 import ivorius.reccomplex.world.gen.feature.structure.Environment;
-import ivorius.reccomplex.world.gen.feature.structure.generic.gentypes.GenerationInfo;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.WorldProvider;
 import net.minecraft.world.biome.Biome;
@@ -129,7 +128,7 @@ public class EnvironmentMatcher extends BoolFunctionExpressionCache<Environment,
         }
     }
 
-    protected static class GenerationType extends DelegatingVariableType<Boolean, Environment, Object, GenerationInfo, Object, GenerationInfoMatcher>
+    protected static class GenerationType extends DelegatingVariableType<Boolean, Environment, Object, ivorius.reccomplex.world.gen.feature.structure.generic.gentypes.GenerationType, Object, GenerationInfoMatcher>
     {
         public GenerationType(String prefix, String suffix)
         {
@@ -137,9 +136,9 @@ public class EnvironmentMatcher extends BoolFunctionExpressionCache<Environment,
         }
 
         @Override
-        public GenerationInfo convertEvaluateArgument(String var, Environment environment)
+        public ivorius.reccomplex.world.gen.feature.structure.generic.gentypes.GenerationType convertEvaluateArgument(String var, Environment environment)
         {
-            return environment.generationInfo;
+            return environment.generationType;
         }
 
         @Override

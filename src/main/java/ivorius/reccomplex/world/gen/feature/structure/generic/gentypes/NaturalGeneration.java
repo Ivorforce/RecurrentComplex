@@ -41,7 +41,7 @@ import java.util.Arrays;
 /**
  * Created by lukas on 07.10.14.
  */
-public class NaturalGenerationInfo extends GenerationInfo implements EnvironmentalSelection<NaturalStructureSelector.Category>
+public class NaturalGeneration extends GenerationType implements EnvironmentalSelection<NaturalStructureSelector.Category>
 {
     private static Gson gson = createGson();
 
@@ -56,7 +56,7 @@ public class NaturalGenerationInfo extends GenerationInfo implements Environment
 
     public SpawnLimitation spawnLimitation;
 
-    public NaturalGenerationInfo()
+    public NaturalGeneration()
     {
         this(null, "decoration");
 
@@ -65,9 +65,9 @@ public class NaturalGenerationInfo extends GenerationInfo implements Environment
         placer.setPreset("surface");
     }
 
-    public NaturalGenerationInfo(@Nullable String id, String generationCategory)
+    public NaturalGeneration(@Nullable String id, String generationCategory)
     {
-        super(id != null ? id : randomID(NaturalGenerationInfo.class));
+        super(id != null ? id : randomID(NaturalGeneration.class));
         this.generationCategory = generationCategory;
     }
 
@@ -75,7 +75,7 @@ public class NaturalGenerationInfo extends GenerationInfo implements Environment
     {
         GsonBuilder builder = new GsonBuilder();
 
-        builder.registerTypeAdapter(NaturalGenerationInfo.class, new NaturalGenerationInfo.Serializer());
+        builder.registerTypeAdapter(NaturalGeneration.class, new NaturalGeneration.Serializer());
         builder.registerTypeAdapter(BiomeGenerationInfo.class, new BiomeGenerationInfo.Serializer());
         builder.registerTypeAdapter(DimensionGenerationInfo.class, new DimensionGenerationInfo.Serializer());
         builder.registerTypeAdapter(GenericPlacer.class, new GenericPlacer.Serializer());
@@ -88,24 +88,24 @@ public class NaturalGenerationInfo extends GenerationInfo implements Environment
         return gson;
     }
 
-    public static NaturalGenerationInfo deserializeFromVersion1(JsonObject jsonObject, JsonDeserializationContext context)
+    public static NaturalGeneration deserializeFromVersion1(JsonObject jsonObject, JsonDeserializationContext context)
     {
         String generationCategory = JsonUtils.getString(jsonObject, "generationCategory");
 
-        NaturalGenerationInfo naturalGenerationInfo = new NaturalGenerationInfo("", generationCategory);
+        NaturalGeneration naturalGeneration = new NaturalGeneration("", generationCategory);
         if (jsonObject.has("generationBiomes"))
         {
             BiomeGenerationInfo[] infos = gson.fromJson(jsonObject.get("generationBiomes"), BiomeGenerationInfo[].class);
-            naturalGenerationInfo.biomeWeights.setContents(Arrays.asList(infos));
+            naturalGeneration.biomeWeights.setContents(Arrays.asList(infos));
         }
         else
-            naturalGenerationInfo.biomeWeights.setToDefault();
+            naturalGeneration.biomeWeights.setToDefault();
 
-        naturalGenerationInfo.dimensionWeights.setToDefault();
+        naturalGeneration.dimensionWeights.setToDefault();
 
-        GenericPlacer.Serializer.readLegacyPlacer(naturalGenerationInfo.placer, context, JsonUtils.getJsonObject(jsonObject, "generationY", new JsonObject()));
+        GenericPlacer.Serializer.readLegacyPlacer(naturalGeneration.placer, context, JsonUtils.getJsonObject(jsonObject, "generationY", new JsonObject()));
 
-        return naturalGenerationInfo;
+        return naturalGeneration;
     }
 
     public Double getGenerationWeight()
@@ -199,10 +199,10 @@ public class NaturalGenerationInfo extends GenerationInfo implements Environment
         }
     }
 
-    public static class Serializer implements JsonSerializer<NaturalGenerationInfo>, JsonDeserializer<NaturalGenerationInfo>
+    public static class Serializer implements JsonSerializer<NaturalGeneration>, JsonDeserializer<NaturalGeneration>
     {
         @Override
-        public NaturalGenerationInfo deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException
+        public NaturalGeneration deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException
         {
             JsonObject jsonObject = JsonUtils.asJsonObject(json, "naturalGenerationInfo");
 
@@ -210,29 +210,29 @@ public class NaturalGenerationInfo extends GenerationInfo implements Environment
 
             String generationCategory = JsonUtils.getString(jsonObject, "generationCategory");
 
-            NaturalGenerationInfo naturalGenerationInfo = new NaturalGenerationInfo(id, generationCategory);
+            NaturalGeneration naturalGeneration = new NaturalGeneration(id, generationCategory);
 
-            if (!PresettedObjects.read(jsonObject, gson, naturalGenerationInfo.placer, "placerPreset", "placer", new TypeToken<GenericPlacer>(){}.getType())
+            if (!PresettedObjects.read(jsonObject, gson, naturalGeneration.placer, "placerPreset", "placer", new TypeToken<GenericPlacer>(){}.getType())
                     && jsonObject.has("generationY"))
             {
                 // Legacy
-                GenericPlacer.Serializer.readLegacyPlacer(naturalGenerationInfo.placer, context, JsonUtils.getJsonObject(jsonObject, "generationY", new JsonObject()));
+                GenericPlacer.Serializer.readLegacyPlacer(naturalGeneration.placer, context, JsonUtils.getJsonObject(jsonObject, "generationY", new JsonObject()));
             }
 
             if (jsonObject.has("generationWeight"))
-                naturalGenerationInfo.generationWeight = JsonUtils.getDouble(jsonObject, "generationWeight");
+                naturalGeneration.generationWeight = JsonUtils.getDouble(jsonObject, "generationWeight");
 
-            PresettedObjects.read(jsonObject, gson, naturalGenerationInfo.biomeWeights, "biomeWeightsPreset", "generationBiomes", new TypeToken<ArrayList<BiomeGenerationInfo>>(){}.getType());
-            PresettedObjects.read(jsonObject, gson, naturalGenerationInfo.dimensionWeights, "dimensionWeightsPreset", "generationDimensions", new TypeToken<ArrayList<DimensionGenerationInfo>>(){}.getType());
+            PresettedObjects.read(jsonObject, gson, naturalGeneration.biomeWeights, "biomeWeightsPreset", "generationBiomes", new TypeToken<ArrayList<BiomeGenerationInfo>>(){}.getType());
+            PresettedObjects.read(jsonObject, gson, naturalGeneration.dimensionWeights, "dimensionWeightsPreset", "generationDimensions", new TypeToken<ArrayList<DimensionGenerationInfo>>(){}.getType());
 
             if (jsonObject.has("spawnLimitation"))
-                naturalGenerationInfo.spawnLimitation = context.deserialize(jsonObject.get("spawnLimitation"), SpawnLimitation.class);
+                naturalGeneration.spawnLimitation = context.deserialize(jsonObject.get("spawnLimitation"), SpawnLimitation.class);
 
-            return naturalGenerationInfo;
+            return naturalGeneration;
         }
 
         @Override
-        public JsonElement serialize(NaturalGenerationInfo src, Type typeOfSrc, JsonSerializationContext context)
+        public JsonElement serialize(NaturalGeneration src, Type typeOfSrc, JsonSerializationContext context)
         {
             JsonObject jsonObject = new JsonObject();
 

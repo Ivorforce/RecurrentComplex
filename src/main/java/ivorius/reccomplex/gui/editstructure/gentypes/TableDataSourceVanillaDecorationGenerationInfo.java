@@ -16,7 +16,7 @@ import ivorius.reccomplex.gui.table.cell.TableCellEnum;
 import ivorius.reccomplex.gui.table.cell.TableCellMultiBuilder;
 import ivorius.reccomplex.gui.table.cell.TitledCell;
 import ivorius.reccomplex.gui.table.datasource.TableDataSourceSegmented;
-import ivorius.reccomplex.world.gen.feature.structure.generic.gentypes.VanillaDecorationGenerationInfo;
+import ivorius.reccomplex.world.gen.feature.structure.generic.gentypes.VanillaDecorationGeneration;
 import ivorius.reccomplex.world.gen.feature.decoration.RCBiomeDecorator;
 
 /**
@@ -27,9 +27,9 @@ public class TableDataSourceVanillaDecorationGenerationInfo extends TableDataSou
     private TableNavigator navigator;
     private TableDelegate tableDelegate;
 
-    private VanillaDecorationGenerationInfo generationInfo;
+    private VanillaDecorationGeneration generationInfo;
 
-    public TableDataSourceVanillaDecorationGenerationInfo(TableNavigator navigator, TableDelegate delegate, VanillaDecorationGenerationInfo generationInfo)
+    public TableDataSourceVanillaDecorationGenerationInfo(TableNavigator navigator, TableDelegate delegate, VanillaDecorationGeneration generationInfo)
     {
         this.navigator = navigator;
         this.tableDelegate = delegate;

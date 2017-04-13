@@ -13,7 +13,7 @@ import ivorius.reccomplex.gui.editstructure.pattern.TableDataSourceBlockPattern;
 import ivorius.reccomplex.gui.table.*;
 import ivorius.reccomplex.gui.table.datasource.TableDataSourceSegmented;
 import ivorius.reccomplex.gui.table.datasource.TableDataSourceSupplied;
-import ivorius.reccomplex.world.gen.feature.structure.generic.gentypes.SaplingGenerationInfo;
+import ivorius.reccomplex.world.gen.feature.structure.generic.gentypes.SaplingGeneration;
 
 /**
  * Created by lukas on 07.10.14.
@@ -23,9 +23,9 @@ public class TableDataSourceSaplingGenerationInfo extends TableDataSourceSegment
     private TableNavigator navigator;
     private TableDelegate tableDelegate;
 
-    private SaplingGenerationInfo generationInfo;
+    private SaplingGeneration generationInfo;
 
-    public TableDataSourceSaplingGenerationInfo(TableNavigator navigator, TableDelegate tableDelegate, SaplingGenerationInfo generationInfo)
+    public TableDataSourceSaplingGenerationInfo(TableNavigator navigator, TableDelegate tableDelegate, SaplingGeneration generationInfo)
     {
         this.navigator = navigator;
         this.tableDelegate = tableDelegate;

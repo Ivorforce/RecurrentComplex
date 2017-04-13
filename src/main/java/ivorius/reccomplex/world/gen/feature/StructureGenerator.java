@@ -17,7 +17,7 @@ import ivorius.reccomplex.world.gen.feature.structure.*;
 import ivorius.reccomplex.world.gen.feature.structure.context.StructureLoadContext;
 import ivorius.reccomplex.world.gen.feature.structure.context.StructurePrepareContext;
 import ivorius.reccomplex.world.gen.feature.structure.context.StructureSpawnContext;
-import ivorius.reccomplex.world.gen.feature.structure.generic.gentypes.GenerationInfo;
+import ivorius.reccomplex.world.gen.feature.structure.generic.gentypes.GenerationType;
 import ivorius.reccomplex.world.gen.feature.structure.generic.placement.StructurePlaceContext;
 import ivorius.ivtoolkit.blocks.BlockSurfacePos;
 import ivorius.reccomplex.utils.NBTStorable;
@@ -71,7 +71,7 @@ public class StructureGenerator<S extends NBTStorable>
     private Predicate<Vec3i> generationPredicate;
 
     private String generationInfoID;
-    private GenerationInfo generationInfo;
+    private GenerationType generationType;
     private int generationLayer = 0;
 
     private boolean generateAsSource = false;
@@ -151,7 +151,7 @@ public class StructureGenerator<S extends NBTStorable>
 
                 if (structureID != null && memorize)
                 {
-                    String generationInfoID = generationInfo != null ? generationInfo.id() : null;
+                    String generationInfoID = generationType != null ? generationType.id() : null;
 
                     WorldStructureGenerationData.StructureEntry structureEntry = WorldStructureGenerationData.StructureEntry.complete(structureID, generationInfoID, spawn.boundingBox, spawn.transform);
                     structureEntry.blocking = structure.isBlocking();
@@ -259,7 +259,7 @@ public class StructureGenerator<S extends NBTStorable>
     protected Environment environment()
     {
         return environment != null ? environment : Environment.inNature(world(), surfaceBoundingBox(),
-                generationInfo != null ? generationInfo : generationInfoID != null ? structure().generationInfo(generationInfoID) : null);
+                generationType != null ? generationType : generationInfoID != null ? structure().generationInfo(generationInfoID) : null);
     }
 
     public StructureGenerator<S> random(@Nonnull Random random)
@@ -369,9 +369,9 @@ public class StructureGenerator<S extends NBTStorable>
         return this;
     }
 
-    public StructureGenerator<S> generationInfo(@Nullable GenerationInfo generationInfo)
+    public StructureGenerator<S> generationInfo(@Nullable GenerationType generationType)
     {
-        this.generationInfo = generationInfo;
+        this.generationType = generationType;
         return this;
     }
 

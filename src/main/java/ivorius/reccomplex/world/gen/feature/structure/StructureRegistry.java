@@ -44,17 +44,17 @@ public class StructureRegistry extends SimpleLeveledRegistry<Structure<?>>
     public static final StructureRegistry INSTANCE = new StructureRegistry();
 
     public static SerializableStringTypeRegistry<Transformer> TRANSFORMERS = new SerializableStringTypeRegistry<>("transformer", "type", Transformer.class);
-    public static SerializableStringTypeRegistry<GenerationInfo> GENERATION_INFOS = new SerializableStringTypeRegistry<>("generationInfo", "type", GenerationInfo.class);
+    public static SerializableStringTypeRegistry<GenerationType> GENERATION_INFOS = new SerializableStringTypeRegistry<>("generationInfo", "type", GenerationType.class);
 
-    private Map<Class<? extends GenerationInfo>, Collection<Pair<Structure<?>, ? extends GenerationInfo>>> cachedGeneration = new HashMap<>();
+    private Map<Class<? extends GenerationType>, Collection<Pair<Structure<?>, ? extends GenerationType>>> cachedGeneration = new HashMap<>();
 
-    private CachedStructureSelectors<MixingStructureSelector<NaturalGenerationInfo, NaturalStructureSelector.Category>> naturalSelectors
+    private CachedStructureSelectors<MixingStructureSelector<NaturalGeneration, NaturalStructureSelector.Category>> naturalSelectors
             = new CachedStructureSelectors<>((biome, worldProvider) ->
-            new MixingStructureSelector<>(this.activeMap(), worldProvider, biome, NaturalGenerationInfo.class));
+            new MixingStructureSelector<>(this.activeMap(), worldProvider, biome, NaturalGeneration.class));
 
-    private CachedStructureSelectors<StructureSelector<VanillaDecorationGenerationInfo, RCBiomeDecorator.DecorationType>> decorationSelectors
+    private CachedStructureSelectors<StructureSelector<VanillaDecorationGeneration, RCBiomeDecorator.DecorationType>> decorationSelectors
             = new CachedStructureSelectors<>((biome, worldProvider) ->
-            new StructureSelector<>(this.activeMap(), worldProvider, biome, VanillaDecorationGenerationInfo.class));
+            new StructureSelector<>(this.activeMap(), worldProvider, biome, VanillaDecorationGeneration.class));
 
     public StructureRegistry()
     {
@@ -81,13 +81,13 @@ public class StructureRegistry extends SimpleLeveledRegistry<Structure<?>>
         return super.unregister(id, level);
     }
 
-    protected <T extends GenerationInfo> Collection<Pair<Structure<?>, T>> getCachedGeneration(Class<T> clazz)
+    protected <T extends GenerationType> Collection<Pair<Structure<?>, T>> getCachedGeneration(Class<T> clazz)
     {
         //noinspection unchecked
         return (Collection<Pair<Structure<?>, T>>) ((Map) cachedGeneration).get(clazz);
     }
 
-    public <T extends GenerationInfo> Collection<Pair<Structure<?>, T>> getStructureGenerations(Class<T> clazz)
+    public <T extends GenerationType> Collection<Pair<Structure<?>, T>> getStructureGenerations(Class<T> clazz)
     {
         Collection<Pair<Structure<?>, T>> pairs = getCachedGeneration(clazz);
         if (pairs != null)
@@ -108,37 +108,37 @@ public class StructureRegistry extends SimpleLeveledRegistry<Structure<?>>
         return pairs;
     }
 
-    public Stream<Pair<Structure<?>, ListGenerationInfo>> getStructuresInList(final String listID, @Nullable final EnumFacing front)
+    public Stream<Pair<Structure<?>, ListGeneration>> getStructuresInList(final String listID, @Nullable final EnumFacing front)
     {
-        final Predicate<Pair<Structure<?>, ListGenerationInfo>> predicate = input -> listID.equals(input.getRight().listID)
+        final Predicate<Pair<Structure<?>, ListGeneration>> predicate = input -> listID.equals(input.getRight().listID)
                 && (front == null || input.getLeft().isRotatable() || input.getRight().front == front);
-        return getStructureGenerations(ListGenerationInfo.class).stream().filter(predicate);
+        return getStructureGenerations(ListGeneration.class).stream().filter(predicate);
     }
 
-    public Stream<Pair<Structure<?>, MazeGenerationInfo>> getStructuresInMaze(final String mazeID)
+    public Stream<Pair<Structure<?>, MazeGeneration>> getStructuresInMaze(final String mazeID)
     {
-        final Predicate<Pair<Structure<?>, MazeGenerationInfo>> predicate = input ->
+        final Predicate<Pair<Structure<?>, MazeGeneration>> predicate = input ->
         {
-            MazeGenerationInfo info = input.getRight();
+            MazeGeneration info = input.getRight();
             return mazeID.equals(info.mazeID) && info.mazeComponent.isValid();
         };
-        return getStructureGenerations(MazeGenerationInfo.class).stream().filter(predicate);
+        return getStructureGenerations(MazeGeneration.class).stream().filter(predicate);
     }
 
-    public Stream<Triple<Structure<?>, StaticGenerationInfo, BlockSurfacePos>> getStaticStructuresAt(ChunkPos chunkPos, final World world, final BlockPos spawnPos)
+    public Stream<Triple<Structure<?>, StaticGeneration, BlockSurfacePos>> getStaticStructuresAt(ChunkPos chunkPos, final World world, final BlockPos spawnPos)
     {
-        final Predicate<Pair<Structure<?>, StaticGenerationInfo>> predicate = input ->
+        final Predicate<Pair<Structure<?>, StaticGeneration>> predicate = input ->
         {
-            StaticGenerationInfo info = input.getRight();
+            StaticGeneration info = input.getRight();
 
             return info.dimensionMatcher.test(world.provider)
                     && (info.pattern != null || Chunks.contains(chunkPos, info.getPos(spawnPos)));
         };
-        Stream<Pair<Structure<?>, StaticGenerationInfo>> statics = getStructureGenerations(StaticGenerationInfo.class).stream().filter(predicate);
+        Stream<Pair<Structure<?>, StaticGeneration>> statics = getStructureGenerations(StaticGeneration.class).stream().filter(predicate);
 
         return statics.flatMap(pair ->
         {
-            StaticGenerationInfo info = pair.getRight();
+            StaticGeneration info = pair.getRight();
             //noinspection ConstantConditions
             return info.hasPattern()
                     ? Chunks.repeatIntersections(chunkPos, info.getPos(spawnPos), info.pattern.repeatX, info.pattern.repeatZ).map(pos -> Triple.of(pair.getLeft(), info, pos))
@@ -146,12 +146,12 @@ public class StructureRegistry extends SimpleLeveledRegistry<Structure<?>>
         });
     }
 
-    public CachedStructureSelectors<MixingStructureSelector<NaturalGenerationInfo, NaturalStructureSelector.Category>> naturalStructureSelectors()
+    public CachedStructureSelectors<MixingStructureSelector<NaturalGeneration, NaturalStructureSelector.Category>> naturalStructureSelectors()
     {
         return naturalSelectors;
     }
 
-    public CachedStructureSelectors<StructureSelector<VanillaDecorationGenerationInfo, RCBiomeDecorator.DecorationType>> decorationSelectors()
+    public CachedStructureSelectors<StructureSelector<VanillaDecorationGeneration, RCBiomeDecorator.DecorationType>> decorationSelectors()
     {
         return decorationSelectors;
     }
@@ -163,7 +163,7 @@ public class StructureRegistry extends SimpleLeveledRegistry<Structure<?>>
         cachedGeneration.clear();
 
         updateVanillaGenerations();
-        for (Pair<Structure<?>, VanillaGenerationInfo> pair : getStructureGenerations(VanillaGenerationInfo.class))
+        for (Pair<Structure<?>, VanillaGeneration> pair : getStructureGenerations(VanillaGeneration.class))
         {
             String structureID = this.id(pair.getLeft());
             String generationID = pair.getRight().id();
@@ -176,7 +176,7 @@ public class StructureRegistry extends SimpleLeveledRegistry<Structure<?>>
     private void updateVanillaGenerations()
     {
         TemporaryVillagerRegistry.instance().setHandlers(
-                Sets.newHashSet(Collections2.transform(getStructureGenerations(VanillaGenerationInfo.class),
+                Sets.newHashSet(Collections2.transform(getStructureGenerations(VanillaGeneration.class),
                         input -> GenericVillageCreationHandler.forGeneration(this.id(input.getLeft()), input.getRight().id())).stream()
                         .filter(Objects::nonNull).collect(Collectors.toList()))
         );

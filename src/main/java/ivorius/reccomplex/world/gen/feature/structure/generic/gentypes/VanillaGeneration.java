@@ -30,7 +30,7 @@ import java.lang.reflect.Type;
 /**
  * Created by lukas on 19.01.15.
  */
-public class VanillaGenerationInfo extends GenerationInfo
+public class VanillaGeneration extends GenerationType
 {
     public Double generationWeight;
     public double minBaseLimit;
@@ -44,14 +44,14 @@ public class VanillaGenerationInfo extends GenerationInfo
 
     public BiomeMatcher biomeMatcher;
 
-    public VanillaGenerationInfo()
+    public VanillaGeneration()
     {
         this(null, null, 0, 2, 1, 1, EnumFacing.NORTH, BlockPos.ORIGIN, "");
     }
 
-    public VanillaGenerationInfo(@Nullable String id, Double generationWeight, double minBaseLimit, double maxBaseLimit, double minScaledLimit, double maxScaledLimit, EnumFacing front, BlockPos spawnShift, String biomeExpression)
+    public VanillaGeneration(@Nullable String id, Double generationWeight, double minBaseLimit, double maxBaseLimit, double minScaledLimit, double maxScaledLimit, EnumFacing front, BlockPos spawnShift, String biomeExpression)
     {
-        super(id != null ? id : randomID(VanillaGenerationInfo.class));
+        super(id != null ? id : randomID(VanillaGeneration.class));
         this.generationWeight = generationWeight;
         this.minBaseLimit = minBaseLimit;
         this.maxBaseLimit = maxBaseLimit;
@@ -114,10 +114,10 @@ public class VanillaGenerationInfo extends GenerationInfo
         return MathHelper.floor(getActiveWeight() * tweak * RCConfig.baseVillageSpawnWeight + 0.5);
     }
 
-    public static class Serializer implements JsonSerializer<VanillaGenerationInfo>, JsonDeserializer<VanillaGenerationInfo>
+    public static class Serializer implements JsonSerializer<VanillaGeneration>, JsonDeserializer<VanillaGeneration>
     {
         @Override
-        public VanillaGenerationInfo deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException
+        public VanillaGeneration deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException
         {
             JsonObject jsonObject = JsonUtils.asJsonObject(json, "vanillaStructureSpawnInfo");
 
@@ -138,11 +138,11 @@ public class VanillaGenerationInfo extends GenerationInfo
 
             String biomeExpression = JsonUtils.getString(jsonObject, "biomeExpression", "");
 
-            return new VanillaGenerationInfo(id, spawnWeight, minBaseLimit, maxBaseLimit, minScaledLimit, maxScaledLimit, front, new BlockPos(spawnX, spawnY, spawnZ), biomeExpression);
+            return new VanillaGeneration(id, spawnWeight, minBaseLimit, maxBaseLimit, minScaledLimit, maxScaledLimit, front, new BlockPos(spawnX, spawnY, spawnZ), biomeExpression);
         }
 
         @Override
-        public JsonElement serialize(VanillaGenerationInfo src, Type typeOfSrc, JsonSerializationContext context)
+        public JsonElement serialize(VanillaGeneration src, Type typeOfSrc, JsonSerializationContext context)
         {
             JsonObject jsonObject = new JsonObject();
 

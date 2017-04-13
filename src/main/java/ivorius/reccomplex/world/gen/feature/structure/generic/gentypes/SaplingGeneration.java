@@ -27,7 +27,7 @@ import java.lang.reflect.Type;
 /**
  * Created by lukas on 19.01.15.
  */
-public class SaplingGenerationInfo extends GenerationInfo
+public class SaplingGeneration extends GenerationType
 {
     public Double generationWeight;
 
@@ -38,14 +38,14 @@ public class SaplingGenerationInfo extends GenerationInfo
     @Nonnull
     public BlockPattern pattern;
 
-    public SaplingGenerationInfo()
+    public SaplingGeneration()
     {
         this(null, null, BlockPos.ORIGIN, "", new BlockPattern());
     }
 
-    public SaplingGenerationInfo(@Nullable String id, Double generationWeight, BlockPos spawnShift, String environmentExpression, BlockPattern pattern)
+    public SaplingGeneration(@Nullable String id, Double generationWeight, BlockPos spawnShift, String environmentExpression, BlockPattern pattern)
     {
-        super(id != null ? id : randomID(SaplingGenerationInfo.class));
+        super(id != null ? id : randomID(SaplingGeneration.class));
         this.generationWeight = generationWeight;
         this.spawnShift = spawnShift;
         environmentMatcher = ExpressionCache.of(new EnvironmentMatcher(), environmentExpression);
@@ -105,10 +105,10 @@ public class SaplingGenerationInfo extends GenerationInfo
         return generationWeight != null ? generationWeight : 1.0;
     }
 
-    public static class Serializer implements JsonSerializer<SaplingGenerationInfo>, JsonDeserializer<SaplingGenerationInfo>
+    public static class Serializer implements JsonSerializer<SaplingGeneration>, JsonDeserializer<SaplingGeneration>
     {
         @Override
-        public SaplingGenerationInfo deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException
+        public SaplingGeneration deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException
         {
             JsonObject jsonObject = JsonUtils.asJsonObject(json, "vanillaStructureSpawnInfo");
 
@@ -123,11 +123,11 @@ public class SaplingGenerationInfo extends GenerationInfo
             String environmentExpression = JsonUtils.getString(jsonObject, "environmentExpression", "");
             BlockPattern pattern = BlockPattern.gson.fromJson(JsonUtils.getJsonObject(jsonObject, "pattern", new JsonObject()), BlockPattern.class);
 
-            return new SaplingGenerationInfo(id, spawnWeight, new BlockPos(spawnX, spawnY, spawnZ), environmentExpression, pattern);
+            return new SaplingGeneration(id, spawnWeight, new BlockPos(spawnX, spawnY, spawnZ), environmentExpression, pattern);
         }
 
         @Override
-        public JsonElement serialize(SaplingGenerationInfo src, Type typeOfSrc, JsonSerializationContext context)
+        public JsonElement serialize(SaplingGeneration src, Type typeOfSrc, JsonSerializationContext context)
         {
             JsonObject jsonObject = new JsonObject();
 

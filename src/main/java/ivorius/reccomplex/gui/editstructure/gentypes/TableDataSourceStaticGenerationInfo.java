@@ -16,7 +16,7 @@ import ivorius.reccomplex.gui.table.cell.TableCellBoolean;
 import ivorius.reccomplex.gui.table.cell.TableCellMultiBuilder;
 import ivorius.reccomplex.gui.table.cell.TitledCell;
 import ivorius.reccomplex.gui.table.datasource.TableDataSourceSegmented;
-import ivorius.reccomplex.world.gen.feature.structure.generic.gentypes.StaticGenerationInfo;
+import ivorius.reccomplex.world.gen.feature.structure.generic.gentypes.StaticGeneration;
 
 /**
  * Created by lukas on 07.10.14.
@@ -26,9 +26,9 @@ public class TableDataSourceStaticGenerationInfo extends TableDataSourceSegmente
     private TableNavigator navigator;
     private TableDelegate tableDelegate;
 
-    private StaticGenerationInfo generationInfo;
+    private StaticGeneration generationInfo;
 
-    public TableDataSourceStaticGenerationInfo(TableNavigator navigator, TableDelegate delegate, StaticGenerationInfo generationInfo)
+    public TableDataSourceStaticGenerationInfo(TableNavigator navigator, TableDelegate delegate, StaticGeneration generationInfo)
     {
         this.navigator = navigator;
         this.tableDelegate = delegate;
@@ -48,7 +48,7 @@ public class TableDataSourceStaticGenerationInfo extends TableDataSourceSegmente
         addManagedSegment(5, TableCellMultiBuilder.create(navigator, delegate)
                 .addNavigation(() -> new TableDataSourceStaticPattern(generationInfo.pattern, delegate), () -> IvTranslations.get("reccomplex.generationInfo.static.pattern"))
                 .enabled(generationInfo::hasPattern)
-                .addAction(() -> generationInfo.pattern = generationInfo.hasPattern() ? null : new StaticGenerationInfo.Pattern(), () -> generationInfo.hasPattern() ? IvTranslations.get("reccomplex.gui.remove") : IvTranslations.get("reccomplex.gui.add"), null
+                .addAction(() -> generationInfo.pattern = generationInfo.hasPattern() ? null : new StaticGeneration.Pattern(), () -> generationInfo.hasPattern() ? IvTranslations.get("reccomplex.gui.remove") : IvTranslations.get("reccomplex.gui.add"), null
                 ).buildDataSource());
     }
 

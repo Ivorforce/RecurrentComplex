@@ -17,7 +17,7 @@ import ivorius.reccomplex.gui.table.cell.TableCellEnum;
 import ivorius.reccomplex.gui.table.cell.TableCellMultiBuilder;
 import ivorius.reccomplex.gui.table.cell.TitledCell;
 import ivorius.reccomplex.gui.table.datasource.TableDataSourceSegmented;
-import ivorius.reccomplex.world.gen.feature.structure.generic.gentypes.NaturalGenerationInfo;
+import ivorius.reccomplex.world.gen.feature.structure.generic.gentypes.NaturalGeneration;
 import ivorius.reccomplex.world.gen.feature.selector.NaturalStructureSelector;
 import org.apache.commons.lang3.tuple.Pair;
 
@@ -33,9 +33,9 @@ public class TableDataSourceNaturalGenerationInfo extends TableDataSourceSegment
 {
     private TableNavigator navigator;
     private TableDelegate tableDelegate;
-    private NaturalGenerationInfo generationInfo;
+    private NaturalGeneration generationInfo;
 
-    public TableDataSourceNaturalGenerationInfo(TableNavigator navigator, TableDelegate delegate, NaturalGenerationInfo generationInfo)
+    public TableDataSourceNaturalGenerationInfo(TableNavigator navigator, TableDelegate delegate, NaturalGeneration generationInfo)
     {
         this.navigator = navigator;
         this.tableDelegate = delegate;
@@ -58,7 +58,7 @@ public class TableDataSourceNaturalGenerationInfo extends TableDataSourceSegment
         addManagedSegment(6, TableCellMultiBuilder.create(navigator, delegate)
                 .addNavigation(() -> new TableDataSourceNaturalGenLimitation(generationInfo.spawnLimitation, delegate), () -> IvTranslations.get("reccomplex.generationInfo.natural.limitations"))
                 .enabled(generationInfo::hasLimitations)
-                .addAction(() -> generationInfo.spawnLimitation = generationInfo.hasLimitations() ? null : new NaturalGenerationInfo.SpawnLimitation(), () -> generationInfo.hasLimitations() ? IvTranslations.get("reccomplex.gui.remove") : IvTranslations.get("reccomplex.gui.add"), null
+                .addAction(() -> generationInfo.spawnLimitation = generationInfo.hasLimitations() ? null : new NaturalGeneration.SpawnLimitation(), () -> generationInfo.hasLimitations() ? IvTranslations.get("reccomplex.gui.remove") : IvTranslations.get("reccomplex.gui.add"), null
                 ).buildDataSource());
     }
 

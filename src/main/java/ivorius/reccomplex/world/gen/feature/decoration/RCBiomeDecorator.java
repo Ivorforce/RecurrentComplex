@@ -16,7 +16,7 @@ import ivorius.reccomplex.world.gen.feature.structure.Placer;
 import ivorius.reccomplex.world.gen.feature.structure.Structure;
 import ivorius.reccomplex.world.gen.feature.structure.StructureRegistry;
 import ivorius.reccomplex.world.gen.feature.structure.context.StructureSpawnContext;
-import ivorius.reccomplex.world.gen.feature.structure.generic.gentypes.VanillaDecorationGenerationInfo;
+import ivorius.reccomplex.world.gen.feature.structure.generic.gentypes.VanillaDecorationGeneration;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.WorldServer;
 import net.minecraft.world.biome.Biome;
@@ -96,7 +96,7 @@ public class RCBiomeDecorator
 
         Biome biomeIn = worldIn.getBiome(chunkPos.add(16, 0, 16));
 
-        StructureSelector<VanillaDecorationGenerationInfo, DecorationType> selector = StructureRegistry.INSTANCE.decorationSelectors()
+        StructureSelector<VanillaDecorationGeneration, DecorationType> selector = StructureRegistry.INSTANCE.decorationSelectors()
                 .get(biomeIn, worldIn.provider);
 
         double totalWeight = selector.totalWeight(type);
@@ -112,7 +112,7 @@ public class RCBiomeDecorator
         return adapters.stream().filter(a -> a.matches(worldIn, biomeIn, decorator, chunkPos, type)).findFirst().orElse(vanillaAdapter);
     }
 
-    public static int trySurface(WorldServer worldIn, Random random, BlockPos chunkPos, StructureSelector<VanillaDecorationGenerationInfo, DecorationType> selector, DecorationType type, double totalWeight, double baseWeight, int vanillaAmount, boolean mayGiveUp)
+    public static int trySurface(WorldServer worldIn, Random random, BlockPos chunkPos, StructureSelector<VanillaDecorationGeneration, DecorationType> selector, DecorationType type, double totalWeight, double baseWeight, int vanillaAmount, boolean mayGiveUp)
     {
         int rcAmount = amount(random, totalWeight * baseWeight, vanillaAmount);
 
@@ -125,7 +125,7 @@ public class RCBiomeDecorator
         return vanillaAmount - rcAmount;
     }
 
-    public static void generateSurface(Pair<Structure<?>, VanillaDecorationGenerationInfo> generation, WorldServer worldIn, BlockPos chunkPos, Random random)
+    public static void generateSurface(Pair<Structure<?>, VanillaDecorationGeneration> generation, WorldServer worldIn, BlockPos chunkPos, Random random)
     {
         new StructureGenerator<>(generation.getLeft()).generationInfo(generation.getRight()).world(worldIn)
                 .random(random).maturity(StructureSpawnContext.GenerateMaturity.SUGGEST)

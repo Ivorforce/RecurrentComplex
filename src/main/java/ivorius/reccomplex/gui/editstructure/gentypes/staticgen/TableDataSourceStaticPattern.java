@@ -11,7 +11,7 @@ import ivorius.reccomplex.gui.table.cell.TableCellInteger;
 import ivorius.reccomplex.gui.table.cell.TableCellStringInt;
 import ivorius.reccomplex.gui.table.cell.TitledCell;
 import ivorius.reccomplex.gui.table.datasource.TableDataSourceSegmented;
-import ivorius.reccomplex.world.gen.feature.structure.generic.gentypes.StaticGenerationInfo;
+import ivorius.reccomplex.world.gen.feature.structure.generic.gentypes.StaticGeneration;
 import ivorius.ivtoolkit.tools.IvTranslations;
 
 /**
@@ -19,11 +19,11 @@ import ivorius.ivtoolkit.tools.IvTranslations;
  */
 public class TableDataSourceStaticPattern extends TableDataSourceSegmented
 {
-    private StaticGenerationInfo.Pattern pattern;
+    private StaticGeneration.Pattern pattern;
 
     private TableDelegate tableDelegate;
 
-    public TableDataSourceStaticPattern(StaticGenerationInfo.Pattern pattern, TableDelegate tableDelegate)
+    public TableDataSourceStaticPattern(StaticGeneration.Pattern pattern, TableDelegate tableDelegate)
     {
         this.pattern = pattern;
         this.tableDelegate = tableDelegate;

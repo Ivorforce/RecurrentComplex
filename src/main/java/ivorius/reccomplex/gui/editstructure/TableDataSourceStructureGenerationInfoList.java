@@ -10,7 +10,7 @@ import ivorius.reccomplex.gui.table.cell.TableCell;
 import ivorius.reccomplex.gui.table.cell.TableCellButton;
 import ivorius.reccomplex.gui.table.datasource.TableDataSourceList;
 import ivorius.reccomplex.world.gen.feature.structure.StructureRegistry;
-import ivorius.reccomplex.world.gen.feature.structure.generic.gentypes.GenerationInfo;
+import ivorius.reccomplex.world.gen.feature.structure.generic.gentypes.GenerationType;
 
 import javax.annotation.Nonnull;
 import java.util.List;
@@ -18,9 +18,9 @@ import java.util.List;
 /**
  * Created by lukas on 04.06.14.
  */
-public class TableDataSourceStructureGenerationInfoList extends TableDataSourceList<GenerationInfo, List<GenerationInfo>>
+public class TableDataSourceStructureGenerationInfoList extends TableDataSourceList<GenerationType, List<GenerationType>>
 {
-    public TableDataSourceStructureGenerationInfoList(List<GenerationInfo> list, TableDelegate tableDelegate, TableNavigator navigator)
+    public TableDataSourceStructureGenerationInfoList(List<GenerationType> list, TableDelegate tableDelegate, TableNavigator navigator)
     {
         super(list, tableDelegate, navigator);
         setUsesPresetActionForAdding(true);
@@ -33,22 +33,22 @@ public class TableDataSourceStructureGenerationInfoList extends TableDataSourceL
     }
 
     @Override
-    public String getDisplayString(GenerationInfo generationInfo)
+    public String getDisplayString(GenerationType generationType)
     {
-        return generationInfo.displayString();
+        return generationType.displayString();
     }
 
     @Override
-    public GenerationInfo newEntry(String actionID)
+    public GenerationType newEntry(String actionID)
     {
         return tryInstantiate(actionID, StructureRegistry.GENERATION_INFOS.typeForID(actionID), "Failed instantiating generation info: %s");
     }
 
     @Nonnull
     @Override
-    public TableCell entryCell(boolean enabled, GenerationInfo generationInfo)
+    public TableCell entryCell(boolean enabled, GenerationType generationType)
     {
-        return TableCells.edit(enabled, navigator, tableDelegate, () -> generationInfo.tableDataSource(navigator, tableDelegate));
+        return TableCells.edit(enabled, navigator, tableDelegate, () -> generationType.tableDataSource(navigator, tableDelegate));
     }
 
     @Nonnull

@@ -57,7 +57,7 @@ public class CommandSearchStructure extends CommandBase
     {
         keywords.add(info.id());
         keywords.add(info.displayString());
-        keywords.add(StructureRegistry.GENERATION_INFOS.iDForType(info.getClass()));
+        keywords.add(StructureRegistry.GENERATION_TYPES.iDForType(info.getClass()));
     }
 
     @Nonnull

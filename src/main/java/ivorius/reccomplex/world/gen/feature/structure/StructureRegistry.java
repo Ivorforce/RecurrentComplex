@@ -44,7 +44,7 @@ public class StructureRegistry extends SimpleLeveledRegistry<Structure<?>>
     public static final StructureRegistry INSTANCE = new StructureRegistry();
 
     public static SerializableStringTypeRegistry<Transformer> TRANSFORMERS = new SerializableStringTypeRegistry<>("transformer", "type", Transformer.class);
-    public static SerializableStringTypeRegistry<GenerationType> GENERATION_INFOS = new SerializableStringTypeRegistry<>("generationInfo", "type", GenerationType.class);
+    public static SerializableStringTypeRegistry<GenerationType> GENERATION_TYPES = new SerializableStringTypeRegistry<>("generationInfo", "type", GenerationType.class);
 
     private Map<Class<? extends GenerationType>, Collection<Pair<Structure<?>, ? extends GenerationType>>> cachedGeneration = new HashMap<>();
 

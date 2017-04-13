@@ -29,7 +29,7 @@ public class TableDataSourceStructureGenerationInfo extends TableDataSourceList<
     @Override
     public List<TableCellButton> getAddActions()
     {
-        return TableCells.addManyWithBase(StructureRegistry.GENERATION_INFOS.allIDs(), "reccomplex.generationInfo.", canEditList());
+        return TableCells.addManyWithBase(StructureRegistry.GENERATION_TYPES.allIDs(), "reccomplex.generationInfo.", canEditList());
     }
 
     @Override
@@ -41,7 +41,7 @@ public class TableDataSourceStructureGenerationInfo extends TableDataSourceList<
     @Override
     public GenerationType newEntry(String actionID)
     {
-        return tryInstantiate(actionID, StructureRegistry.GENERATION_INFOS.typeForID(actionID), "Failed instantiating generation info: %s");
+        return tryInstantiate(actionID, StructureRegistry.GENERATION_TYPES.typeForID(actionID), "Failed instantiating generation type: %s");
     }
 
     @Nonnull
@@ -55,6 +55,6 @@ public class TableDataSourceStructureGenerationInfo extends TableDataSourceList<
     @Override
     public String title()
     {
-        return "Generation Infos";
+        return "Generation Types";
     }
 }

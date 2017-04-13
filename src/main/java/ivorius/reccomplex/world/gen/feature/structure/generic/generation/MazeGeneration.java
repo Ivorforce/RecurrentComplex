@@ -9,7 +9,7 @@ import com.google.gson.*;
 import ivorius.ivtoolkit.maze.components.MazeRoom;
 import ivorius.ivtoolkit.random.WeightedSelector;
 import ivorius.ivtoolkit.tools.IvTranslations;
-import ivorius.reccomplex.gui.editstructure.gentypes.TableDataSourceMazeGenerationInfo;
+import ivorius.reccomplex.gui.editstructure.gentypes.TableDataSourceMazeGeneration;
 import ivorius.reccomplex.gui.table.datasource.TableDataSource;
 import ivorius.reccomplex.gui.table.TableDelegate;
 import ivorius.reccomplex.gui.table.TableNavigator;
@@ -103,7 +103,7 @@ public class MazeGeneration extends GenerationType implements WeightedSelector.I
     @Override
     public TableDataSource tableDataSource(TableNavigator navigator, TableDelegate delegate)
     {
-        return new TableDataSourceMazeGenerationInfo(navigator, delegate, this);
+        return new TableDataSourceMazeGeneration(navigator, delegate, this);
     }
 
     public static class Serializer implements JsonSerializer<MazeGeneration>, JsonDeserializer<MazeGeneration>

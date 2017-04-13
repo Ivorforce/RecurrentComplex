@@ -8,14 +8,14 @@ package ivorius.reccomplex.world.gen.feature.structure.generic.generation;
 import com.google.gson.*;
 import com.google.gson.reflect.TypeToken;
 import ivorius.ivtoolkit.tools.IvTranslations;
-import ivorius.reccomplex.gui.editstructure.gentypes.TableDataSourceVanillaDecorationGenerationInfo;
+import ivorius.reccomplex.gui.editstructure.gentypes.TableDataSourceVanillaDecorationGeneration;
 import ivorius.reccomplex.gui.table.datasource.TableDataSource;
 import ivorius.reccomplex.gui.table.TableDelegate;
 import ivorius.reccomplex.gui.table.TableNavigator;
 import ivorius.reccomplex.json.JsonUtils;
 import ivorius.reccomplex.world.gen.feature.structure.Placer;
-import ivorius.reccomplex.world.gen.feature.structure.generic.BiomeGenerationInfo;
-import ivorius.reccomplex.world.gen.feature.structure.generic.DimensionGenerationInfo;
+import ivorius.reccomplex.world.gen.feature.structure.generic.WeightedBiomeMatcher;
+import ivorius.reccomplex.world.gen.feature.structure.generic.WeightedDimensionMatcher;
 import ivorius.reccomplex.world.gen.feature.structure.generic.placement.GenericPlacer;
 import ivorius.reccomplex.world.gen.feature.structure.generic.presets.BiomeMatcherPresets;
 import ivorius.reccomplex.world.gen.feature.structure.generic.presets.DimensionMatcherPresets;
@@ -41,8 +41,8 @@ public class VanillaDecorationGeneration extends GenerationType implements Envir
     private static Gson gson = createGson();
 
     public Double generationWeight;
-    public final PresettedList<BiomeGenerationInfo> biomeWeights = new PresettedList<>(BiomeMatcherPresets.instance(), null);
-    public final PresettedList<DimensionGenerationInfo> dimensionWeights = new PresettedList<>(DimensionMatcherPresets.instance(), null);
+    public final PresettedList<WeightedBiomeMatcher> biomeWeights = new PresettedList<>(BiomeMatcherPresets.instance(), null);
+    public final PresettedList<WeightedDimensionMatcher> dimensionWeights = new PresettedList<>(DimensionMatcherPresets.instance(), null);
 
     public RCBiomeDecorator.DecorationType type;
 
@@ -69,8 +69,8 @@ public class VanillaDecorationGeneration extends GenerationType implements Envir
         GsonBuilder builder = new GsonBuilder();
 
         builder.registerTypeAdapter(VanillaDecorationGeneration.class, new VanillaDecorationGeneration.Serializer());
-        builder.registerTypeAdapter(BiomeGenerationInfo.class, new BiomeGenerationInfo.Serializer());
-        builder.registerTypeAdapter(DimensionGenerationInfo.class, new DimensionGenerationInfo.Serializer());
+        builder.registerTypeAdapter(WeightedBiomeMatcher.class, new WeightedBiomeMatcher.Serializer());
+        builder.registerTypeAdapter(WeightedDimensionMatcher.class, new WeightedDimensionMatcher.Serializer());
 
         return builder.create();
     }
@@ -114,7 +114,7 @@ public class VanillaDecorationGeneration extends GenerationType implements Envir
     @Override
     public TableDataSource tableDataSource(TableNavigator navigator, TableDelegate delegate)
     {
-        return new TableDataSourceVanillaDecorationGenerationInfo(navigator, delegate, this);
+        return new TableDataSourceVanillaDecorationGeneration(navigator, delegate, this);
     }
 
     public double getActiveGenerationWeight()
@@ -152,8 +152,8 @@ public class VanillaDecorationGeneration extends GenerationType implements Envir
 
             VanillaDecorationGeneration genInfo = new VanillaDecorationGeneration(id, spawnWeight, type, new BlockPos(spawnX, spawnY, spawnZ));
 
-            PresettedObjects.read(jsonObject, gson, genInfo.biomeWeights, "biomeWeightsPreset", "generationBiomes", new TypeToken<ArrayList<BiomeGenerationInfo>>() {}.getType());
-            PresettedObjects.read(jsonObject, gson, genInfo.dimensionWeights, "dimensionWeightsPreset", "generationDimensions", new TypeToken<ArrayList<DimensionGenerationInfo>>() {}.getType());
+            PresettedObjects.read(jsonObject, gson, genInfo.biomeWeights, "biomeWeightsPreset", "generationBiomes", new TypeToken<ArrayList<WeightedBiomeMatcher>>() {}.getType());
+            PresettedObjects.read(jsonObject, gson, genInfo.dimensionWeights, "dimensionWeightsPreset", "generationDimensions", new TypeToken<ArrayList<WeightedDimensionMatcher>>() {}.getType());
 
             return genInfo;
         }

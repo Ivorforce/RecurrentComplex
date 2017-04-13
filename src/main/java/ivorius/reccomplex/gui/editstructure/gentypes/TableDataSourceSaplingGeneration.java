@@ -18,20 +18,20 @@ import ivorius.reccomplex.world.gen.feature.structure.generic.generation.Sapling
 /**
  * Created by lukas on 07.10.14.
  */
-public class TableDataSourceSaplingGenerationInfo extends TableDataSourceSegmented
+public class TableDataSourceSaplingGeneration extends TableDataSourceSegmented
 {
     private TableNavigator navigator;
     private TableDelegate tableDelegate;
 
     private SaplingGeneration generationInfo;
 
-    public TableDataSourceSaplingGenerationInfo(TableNavigator navigator, TableDelegate tableDelegate, SaplingGeneration generationInfo)
+    public TableDataSourceSaplingGeneration(TableNavigator navigator, TableDelegate tableDelegate, SaplingGeneration generationInfo)
     {
         this.navigator = navigator;
         this.tableDelegate = tableDelegate;
         this.generationInfo = generationInfo;
 
-        addManagedSegment(0, new TableDataSourceGenerationInfo(generationInfo, navigator, tableDelegate));
+        addManagedSegment(0, new TableDataSourceGenerationType(generationInfo, navigator, tableDelegate));
         addManagedSegment(1, new TableDataSourceSupplied(() -> RCGuiTables.defaultWeightElement(val -> generationInfo.generationWeight = TableCells.toDouble(val), generationInfo.generationWeight)));
         addManagedSegment(2, new TableDataSourceBlockPattern(generationInfo.pattern, tableDelegate, navigator));
         addManagedSegment(3, TableDataSourceExpression.constructDefault(IvTranslations.get("reccomplex.gui.environment"), generationInfo.environmentMatcher, null));

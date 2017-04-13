@@ -17,12 +17,12 @@ import java.util.regex.Matcher;
 /**
  * Created by lukas on 24.05.14.
  */
-public class DimensionGenerationInfo
+public class WeightedDimensionMatcher
 {
     private DimensionMatcher dimensionMatcher;
     private Double generationWeight;
 
-    public DimensionGenerationInfo(String expression, Double generationWeight)
+    public WeightedDimensionMatcher(String expression, Double generationWeight)
     {
         this.dimensionMatcher = ExpressionCache.of(new DimensionMatcher(), expression);
         this.generationWeight = generationWeight;
@@ -63,10 +63,10 @@ public class DimensionGenerationInfo
         return dimensionMatcher.getDisplayString(null);
     }
 
-    public static class Serializer implements JsonDeserializer<DimensionGenerationInfo>, JsonSerializer<DimensionGenerationInfo>
+    public static class Serializer implements JsonDeserializer<WeightedDimensionMatcher>, JsonSerializer<WeightedDimensionMatcher>
     {
         @Override
-        public DimensionGenerationInfo deserialize(JsonElement jsonElement, Type par2Type, JsonDeserializationContext context)
+        public WeightedDimensionMatcher deserialize(JsonElement jsonElement, Type par2Type, JsonDeserializationContext context)
         {
             JsonObject jsonobject = JsonUtils.asJsonObject(jsonElement, "generationInfo");
 
@@ -83,11 +83,11 @@ public class DimensionGenerationInfo
 
             Double weight = jsonobject.has("weight") ? JsonUtils.getDouble(jsonobject, "weight") : null;
 
-            return new DimensionGenerationInfo(expression, weight);
+            return new WeightedDimensionMatcher(expression, weight);
         }
 
         @Override
-        public JsonElement serialize(DimensionGenerationInfo generationInfo, Type par2Type, JsonSerializationContext context)
+        public JsonElement serialize(WeightedDimensionMatcher generationInfo, Type par2Type, JsonSerializationContext context)
         {
             JsonObject jsonobject = new JsonObject();
 

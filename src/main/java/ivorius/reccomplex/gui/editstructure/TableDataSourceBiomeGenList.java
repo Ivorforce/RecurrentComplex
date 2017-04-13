@@ -14,10 +14,9 @@ import ivorius.reccomplex.gui.table.datasource.TableDataSourceSegmented;
 import ivorius.reccomplex.gui.table.TableDelegate;
 import ivorius.reccomplex.gui.table.TableNavigator;
 import ivorius.reccomplex.utils.RCStrings;
-import ivorius.reccomplex.world.gen.feature.structure.generic.BiomeGenerationInfo;
+import ivorius.reccomplex.world.gen.feature.structure.generic.WeightedBiomeMatcher;
 import ivorius.reccomplex.utils.presets.PresettedList;
 import net.minecraft.util.text.TextFormatting;
-import org.apache.commons.lang3.StringUtils;
 
 import javax.annotation.Nonnull;
 
@@ -26,7 +25,7 @@ import javax.annotation.Nonnull;
  */
 public class TableDataSourceBiomeGenList extends TableDataSourceSegmented
 {
-    public TableDataSourceBiomeGenList(PresettedList<BiomeGenerationInfo> list, TableDelegate tableDelegate, TableNavigator navigator)
+    public TableDataSourceBiomeGenList(PresettedList<WeightedBiomeMatcher> list, TableDelegate tableDelegate, TableNavigator navigator)
     {
         addManagedSegment(0, new TableDataSourcePresettedObject<>(list, RCFileSaver.BIOME_PRESET, tableDelegate, navigator)
                 .withApplyPresetAction(() -> addPresetSegments(list, tableDelegate, navigator)));
@@ -34,27 +33,27 @@ public class TableDataSourceBiomeGenList extends TableDataSourceSegmented
         addPresetSegments(list, tableDelegate, navigator);
     }
 
-    public void addPresetSegments(final PresettedList<BiomeGenerationInfo> list, final TableDelegate tableDelegate, final TableNavigator navigator)
+    public void addPresetSegments(final PresettedList<WeightedBiomeMatcher> list, final TableDelegate tableDelegate, final TableNavigator navigator)
     {
-        addManagedSegment(1, new TableDataSourcePresettedList<BiomeGenerationInfo>(list, tableDelegate, navigator)
+        addManagedSegment(1, new TableDataSourcePresettedList<WeightedBiomeMatcher>(list, tableDelegate, navigator)
         {
             @Override
-            public String getDisplayString(BiomeGenerationInfo biomeGenerationInfo)
+            public String getDisplayString(WeightedBiomeMatcher weightedBiomeMatcher)
             {
-                return String.format("%s%s: %.2f", RCStrings.abbreviateFormatted(biomeGenerationInfo.getDisplayString(), 20), TextFormatting.RESET, biomeGenerationInfo.getActiveGenerationWeight());
+                return String.format("%s%s: %.2f", RCStrings.abbreviateFormatted(weightedBiomeMatcher.getDisplayString(), 20), TextFormatting.RESET, weightedBiomeMatcher.getActiveGenerationWeight());
             }
 
             @Override
-            public BiomeGenerationInfo newEntry(String actionID)
+            public WeightedBiomeMatcher newEntry(String actionID)
             {
-                return new BiomeGenerationInfo("", null);
+                return new WeightedBiomeMatcher("", null);
             }
 
             @Nonnull
             @Override
-            public TableCell entryCell(boolean enabled, BiomeGenerationInfo biomeGenerationInfo)
+            public TableCell entryCell(boolean enabled, WeightedBiomeMatcher weightedBiomeMatcher)
             {
-                return TableCells.edit(enabled, navigator, tableDelegate, () -> new TableDataSourceBiomeGen(biomeGenerationInfo, tableDelegate));
+                return TableCells.edit(enabled, navigator, tableDelegate, () -> new TableDataSourceBiomeGen(weightedBiomeMatcher, tableDelegate));
             }
         });
     }

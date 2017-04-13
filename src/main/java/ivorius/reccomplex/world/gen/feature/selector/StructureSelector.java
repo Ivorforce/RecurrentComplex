@@ -13,8 +13,8 @@ import ivorius.ivtoolkit.random.WeightedSelector;
 import ivorius.reccomplex.RCConfig;
 import ivorius.reccomplex.dimensions.DimensionDictionary;
 import ivorius.reccomplex.world.gen.feature.structure.Structure;
-import ivorius.reccomplex.world.gen.feature.structure.generic.BiomeGenerationInfo;
-import ivorius.reccomplex.world.gen.feature.structure.generic.DimensionGenerationInfo;
+import ivorius.reccomplex.world.gen.feature.structure.generic.WeightedBiomeMatcher;
+import ivorius.reccomplex.world.gen.feature.structure.generic.WeightedDimensionMatcher;
 import ivorius.reccomplex.world.gen.feature.structure.generic.generation.GenerationType;
 import ivorius.reccomplex.utils.presets.PresettedList;
 import net.minecraft.world.WorldProvider;
@@ -55,15 +55,15 @@ public class StructureSelector<T extends GenerationType & EnvironmentalSelection
         }
     }
 
-    public static double generationWeight(WorldProvider provider, Biome biome, PresettedList<BiomeGenerationInfo> biomeWeights, PresettedList<DimensionGenerationInfo> dimensionWeights)
+    public static double generationWeight(WorldProvider provider, Biome biome, PresettedList<WeightedBiomeMatcher> biomeWeights, PresettedList<WeightedDimensionMatcher> dimensionWeights)
     {
         return generationWeightInBiome(biomeWeights, biome)
                 * generationWeightInDimension(dimensionWeights, provider);
     }
 
-    public static double generationWeightInDimension(PresettedList<DimensionGenerationInfo> dimensionWeights, WorldProvider provider)
+    public static double generationWeightInDimension(PresettedList<WeightedDimensionMatcher> dimensionWeights, WorldProvider provider)
     {
-        for (DimensionGenerationInfo generationInfo : dimensionWeights.getContents())
+        for (WeightedDimensionMatcher generationInfo : dimensionWeights.getContents())
         {
             if (generationInfo.matches(provider))
                 return generationInfo.getActiveGenerationWeight();
@@ -72,9 +72,9 @@ public class StructureSelector<T extends GenerationType & EnvironmentalSelection
         return 0;
     }
 
-    public static double generationWeightInBiome(PresettedList<BiomeGenerationInfo> biomeWeights, Biome biome)
+    public static double generationWeightInBiome(PresettedList<WeightedBiomeMatcher> biomeWeights, Biome biome)
     {
-        for (BiomeGenerationInfo generationInfo : biomeWeights.getContents())
+        for (WeightedBiomeMatcher generationInfo : biomeWeights.getContents())
         {
             if (generationInfo.matches(biome))
                 return generationInfo.getActiveGenerationWeight();

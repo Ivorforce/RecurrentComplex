@@ -11,7 +11,7 @@ import ivorius.reccomplex.gui.TableDataSourceExpression;
 import ivorius.reccomplex.gui.table.*;
 import ivorius.reccomplex.gui.table.cell.TableCell;
 import ivorius.reccomplex.gui.table.datasource.TableDataSourceSegmented;
-import ivorius.reccomplex.world.gen.feature.structure.generic.DimensionGenerationInfo;
+import ivorius.reccomplex.world.gen.feature.structure.generic.WeightedDimensionMatcher;
 
 import javax.annotation.Nonnull;
 
@@ -20,11 +20,11 @@ import javax.annotation.Nonnull;
  */
 public class TableDataSourceDimensionGen extends TableDataSourceSegmented
 {
-    private DimensionGenerationInfo generationInfo;
+    private WeightedDimensionMatcher generationInfo;
 
     private TableDelegate tableDelegate;
 
-    public TableDataSourceDimensionGen(DimensionGenerationInfo generationInfo, TableDelegate tableDelegate)
+    public TableDataSourceDimensionGen(WeightedDimensionMatcher generationInfo, TableDelegate tableDelegate)
     {
         this.generationInfo = generationInfo;
         this.tableDelegate = tableDelegate;

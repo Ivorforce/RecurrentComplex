@@ -27,20 +27,20 @@ import javax.annotation.Nonnull;
 /**
  * Created by lukas on 07.10.14.
  */
-public class TableDataSourceStructureListGenerationInfo extends TableDataSourceSegmented
+public class TableDataSourceStructureListGeneration extends TableDataSourceSegmented
 {
     private TableNavigator navigator;
     private TableDelegate tableDelegate;
 
     private ListGeneration generationInfo;
 
-    public TableDataSourceStructureListGenerationInfo(TableNavigator navigator, TableDelegate tableDelegate, ListGeneration generationInfo)
+    public TableDataSourceStructureListGeneration(TableNavigator navigator, TableDelegate tableDelegate, ListGeneration generationInfo)
     {
         this.navigator = navigator;
         this.tableDelegate = tableDelegate;
         this.generationInfo = generationInfo;
 
-        addManagedSegment(0, new TableDataSourceGenerationInfo(generationInfo, navigator, tableDelegate));
+        addManagedSegment(0, new TableDataSourceGenerationType(generationInfo, navigator, tableDelegate));
         addManagedSegment(3, new TableDataSourceBlockPos(generationInfo.shift, generationInfo::setShift, null, null, null,
                 IvTranslations.get("reccomplex.generationInfo.structureList.shift.x"), IvTranslations.get("reccomplex.generationInfo.structureList.shift.y"), IvTranslations.get("reccomplex.generationInfo.structureList.shift.z")));
     }

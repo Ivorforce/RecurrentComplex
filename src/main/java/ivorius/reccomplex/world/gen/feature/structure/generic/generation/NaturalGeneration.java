@@ -9,14 +9,14 @@ import com.google.gson.*;
 import com.google.gson.annotations.SerializedName;
 import com.google.gson.reflect.TypeToken;
 import ivorius.ivtoolkit.tools.IvTranslations;
-import ivorius.reccomplex.gui.editstructure.gentypes.TableDataSourceNaturalGenerationInfo;
+import ivorius.reccomplex.gui.editstructure.gentypes.TableDataSourceNaturalGeneration;
 import ivorius.reccomplex.gui.table.datasource.TableDataSource;
 import ivorius.reccomplex.gui.table.TableDelegate;
 import ivorius.reccomplex.gui.table.TableNavigator;
 import ivorius.reccomplex.json.JsonUtils;
 import ivorius.reccomplex.world.gen.feature.structure.Placer;
-import ivorius.reccomplex.world.gen.feature.structure.generic.BiomeGenerationInfo;
-import ivorius.reccomplex.world.gen.feature.structure.generic.DimensionGenerationInfo;
+import ivorius.reccomplex.world.gen.feature.structure.generic.WeightedBiomeMatcher;
+import ivorius.reccomplex.world.gen.feature.structure.generic.WeightedDimensionMatcher;
 import ivorius.reccomplex.world.gen.feature.structure.generic.placement.GenericPlacer;
 import ivorius.reccomplex.world.gen.feature.structure.generic.presets.BiomeMatcherPresets;
 import ivorius.reccomplex.world.gen.feature.structure.generic.presets.DimensionMatcherPresets;
@@ -45,8 +45,8 @@ public class NaturalGeneration extends GenerationType implements EnvironmentalSe
 {
     private static Gson gson = createGson();
 
-    public final PresettedList<BiomeGenerationInfo> biomeWeights = new PresettedList<>(BiomeMatcherPresets.instance(), null);
-    public final PresettedList<DimensionGenerationInfo> dimensionWeights = new PresettedList<>(DimensionMatcherPresets.instance(), null);
+    public final PresettedList<WeightedBiomeMatcher> biomeWeights = new PresettedList<>(BiomeMatcherPresets.instance(), null);
+    public final PresettedList<WeightedDimensionMatcher> dimensionWeights = new PresettedList<>(DimensionMatcherPresets.instance(), null);
 
     private Double generationWeight;
 
@@ -76,8 +76,8 @@ public class NaturalGeneration extends GenerationType implements EnvironmentalSe
         GsonBuilder builder = new GsonBuilder();
 
         builder.registerTypeAdapter(NaturalGeneration.class, new NaturalGeneration.Serializer());
-        builder.registerTypeAdapter(BiomeGenerationInfo.class, new BiomeGenerationInfo.Serializer());
-        builder.registerTypeAdapter(DimensionGenerationInfo.class, new DimensionGenerationInfo.Serializer());
+        builder.registerTypeAdapter(WeightedBiomeMatcher.class, new WeightedBiomeMatcher.Serializer());
+        builder.registerTypeAdapter(WeightedDimensionMatcher.class, new WeightedDimensionMatcher.Serializer());
         builder.registerTypeAdapter(GenericPlacer.class, new GenericPlacer.Serializer());
 
         return builder.create();
@@ -95,7 +95,7 @@ public class NaturalGeneration extends GenerationType implements EnvironmentalSe
         NaturalGeneration naturalGeneration = new NaturalGeneration("", generationCategory);
         if (jsonObject.has("generationBiomes"))
         {
-            BiomeGenerationInfo[] infos = gson.fromJson(jsonObject.get("generationBiomes"), BiomeGenerationInfo[].class);
+            WeightedBiomeMatcher[] infos = gson.fromJson(jsonObject.get("generationBiomes"), WeightedBiomeMatcher[].class);
             naturalGeneration.biomeWeights.setContents(Arrays.asList(infos));
         }
         else
@@ -179,7 +179,7 @@ public class NaturalGeneration extends GenerationType implements EnvironmentalSe
     @Override
     public TableDataSource tableDataSource(TableNavigator navigator, TableDelegate delegate)
     {
-        return new TableDataSourceNaturalGenerationInfo(navigator, delegate, this);
+        return new TableDataSourceNaturalGeneration(navigator, delegate, this);
     }
 
     public static class SpawnLimitation
@@ -222,8 +222,8 @@ public class NaturalGeneration extends GenerationType implements EnvironmentalSe
             if (jsonObject.has("generationWeight"))
                 naturalGeneration.generationWeight = JsonUtils.getDouble(jsonObject, "generationWeight");
 
-            PresettedObjects.read(jsonObject, gson, naturalGeneration.biomeWeights, "biomeWeightsPreset", "generationBiomes", new TypeToken<ArrayList<BiomeGenerationInfo>>(){}.getType());
-            PresettedObjects.read(jsonObject, gson, naturalGeneration.dimensionWeights, "dimensionWeightsPreset", "generationDimensions", new TypeToken<ArrayList<DimensionGenerationInfo>>(){}.getType());
+            PresettedObjects.read(jsonObject, gson, naturalGeneration.biomeWeights, "biomeWeightsPreset", "generationBiomes", new TypeToken<ArrayList<WeightedBiomeMatcher>>(){}.getType());
+            PresettedObjects.read(jsonObject, gson, naturalGeneration.dimensionWeights, "dimensionWeightsPreset", "generationDimensions", new TypeToken<ArrayList<WeightedDimensionMatcher>>(){}.getType());
 
             if (jsonObject.has("spawnLimitation"))
                 naturalGeneration.spawnLimitation = context.deserialize(jsonObject.get("spawnLimitation"), SpawnLimitation.class);

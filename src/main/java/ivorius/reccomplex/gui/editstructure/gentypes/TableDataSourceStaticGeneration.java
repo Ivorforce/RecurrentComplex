@@ -21,20 +21,20 @@ import ivorius.reccomplex.world.gen.feature.structure.generic.generation.StaticG
 /**
  * Created by lukas on 07.10.14.
  */
-public class TableDataSourceStaticGenerationInfo extends TableDataSourceSegmented
+public class TableDataSourceStaticGeneration extends TableDataSourceSegmented
 {
     private TableNavigator navigator;
     private TableDelegate tableDelegate;
 
     private StaticGeneration generationInfo;
 
-    public TableDataSourceStaticGenerationInfo(TableNavigator navigator, TableDelegate delegate, StaticGeneration generationInfo)
+    public TableDataSourceStaticGeneration(TableNavigator navigator, TableDelegate delegate, StaticGeneration generationInfo)
     {
         this.navigator = navigator;
         this.tableDelegate = delegate;
         this.generationInfo = generationInfo;
 
-        addManagedSegment(0, new TableDataSourceGenerationInfo(generationInfo, navigator, delegate));
+        addManagedSegment(0, new TableDataSourceGenerationType(generationInfo, navigator, delegate));
 
         addManagedSegment(2, new TableDataSourceBlockSurfacePos(generationInfo.position, generationInfo::setPosition, null, null,
                 IvTranslations.get("reccomplex.generationInfo.static.position.x"), IvTranslations.get("reccomplex.generationInfo.static.position.z")));

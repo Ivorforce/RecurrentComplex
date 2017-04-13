@@ -18,20 +18,20 @@ import ivorius.reccomplex.world.gen.feature.structure.generic.generation.MazeGen
 /**
  * Created by lukas on 07.10.14.
  */
-public class TableDataSourceMazeGenerationInfo extends TableDataSourceSegmented
+public class TableDataSourceMazeGeneration extends TableDataSourceSegmented
 {
     private TableNavigator navigator;
     private TableDelegate tableDelegate;
 
     private MazeGeneration generationInfo;
 
-    public TableDataSourceMazeGenerationInfo(TableNavigator navigator, TableDelegate tableDelegate, MazeGeneration generationInfo)
+    public TableDataSourceMazeGeneration(TableNavigator navigator, TableDelegate tableDelegate, MazeGeneration generationInfo)
     {
         this.navigator = navigator;
         this.tableDelegate = tableDelegate;
         this.generationInfo = generationInfo;
 
-        addManagedSegment(0, new TableDataSourceGenerationInfo(generationInfo, navigator, tableDelegate));
+        addManagedSegment(0, new TableDataSourceGenerationType(generationInfo, navigator, tableDelegate));
         addManagedSegment(3, new TableDataSourceMazeComponent(generationInfo.mazeComponent, true, navigator, tableDelegate));
     }
 

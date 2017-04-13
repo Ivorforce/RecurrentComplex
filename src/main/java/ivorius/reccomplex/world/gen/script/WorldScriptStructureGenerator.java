@@ -287,16 +287,16 @@ public class WorldScriptStructureGenerator implements WorldScript<WorldScriptStr
 
     public static class InstanceData implements NBTStorable
     {
-        public String structureID;
+        public String structureID = "";
         public String generationInfoID;
         public BlockPos lowerCoord;
-        public AxisAlignedTransform2D structureTransform;
+        public AxisAlignedTransform2D structureTransform = AxisAlignedTransform2D.ORIGINAL;
 
         public final ReadableInstanceData<?> structureData = new ReadableInstanceData<>();
 
         public InstanceData()
         {
-            structureID = "";
+
         }
 
         public InstanceData(String structureID, String generationInfoID, BlockPos lowerCoord, AxisAlignedTransform2D structureTransform, NBTStorable structureData)

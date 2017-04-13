@@ -295,7 +295,7 @@ public class RCRegistryHandler
         transformerRegistry.registerType("ensureBlocks", TransformerEnsureBlocks.class, new TransformerEnsureBlocks.Serializer(mcRegistry));
         transformerRegistry.registerType("propertyReplace", TransformerProperty.class, new TransformerProperty.Serializer(mcRegistry));
 
-        SerializableStringTypeRegistry<GenerationType> genInfoRegistry = StructureRegistry.GENERATION_INFOS;
+        SerializableStringTypeRegistry<GenerationType> genInfoRegistry = StructureRegistry.GENERATION_TYPES;
         genInfoRegistry.registerType("natural", NaturalGeneration.class, new NaturalGeneration.Serializer());
         genInfoRegistry.registerType("structureList", ListGeneration.class, new ListGeneration.Serializer());
         genInfoRegistry.registerType("mazeComponent", MazeGeneration.class, new MazeGeneration.Serializer());

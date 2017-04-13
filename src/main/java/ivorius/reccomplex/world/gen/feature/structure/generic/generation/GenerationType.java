@@ -31,7 +31,7 @@ public abstract class GenerationType
     public static String randomID(Class<? extends GenerationType> type)
     {
         Random random = new Random();
-        return String.format("%s_%s", StructureRegistry.GENERATION_INFOS.iDForType(type), Integer.toHexString(random.nextInt()));
+        return String.format("%s_%s", StructureRegistry.GENERATION_TYPES.iDForType(type), Integer.toHexString(random.nextInt()));
     }
 
     public static String randomID(String type)

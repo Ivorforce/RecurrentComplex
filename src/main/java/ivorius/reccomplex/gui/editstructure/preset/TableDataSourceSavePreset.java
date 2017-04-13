@@ -22,6 +22,7 @@ import ivorius.reccomplex.utils.PresetRegistry;
 import ivorius.reccomplex.utils.presets.PresettedObject;
 import ivorius.reccomplex.world.gen.feature.structure.StructureInfos;
 
+import javax.annotation.Nonnull;
 import java.util.stream.Collectors;
 
 /**
@@ -82,6 +83,13 @@ public class TableDataSourceSavePreset<T> extends TableDataSourceSegmented
         }));
         addManagedSegment(1, TableCellMultiBuilder.create(navigator, delegate)
                 .addAction(this::save, () -> IvTranslations.get("reccomplex.gui.save"), null).buildDataSource());
+    }
+
+    @Nonnull
+    @Override
+    public String title()
+    {
+        return String.format("Save: %s", saverID);
     }
 
     public boolean save()

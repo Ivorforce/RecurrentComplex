@@ -15,7 +15,7 @@ import ivorius.reccomplex.dimensions.DimensionDictionary;
 import ivorius.reccomplex.world.gen.feature.structure.Structure;
 import ivorius.reccomplex.world.gen.feature.structure.generic.BiomeGenerationInfo;
 import ivorius.reccomplex.world.gen.feature.structure.generic.DimensionGenerationInfo;
-import ivorius.reccomplex.world.gen.feature.structure.generic.gentypes.GenerationType;
+import ivorius.reccomplex.world.gen.feature.structure.generic.generation.GenerationType;
 import ivorius.reccomplex.utils.presets.PresettedList;
 import net.minecraft.world.WorldProvider;
 import net.minecraft.world.biome.Biome;

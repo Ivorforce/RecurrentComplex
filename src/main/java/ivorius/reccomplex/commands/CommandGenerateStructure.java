@@ -6,7 +6,7 @@
 package ivorius.reccomplex.commands;
 
 import ivorius.reccomplex.world.gen.feature.structure.*;
-import ivorius.reccomplex.world.gen.feature.structure.generic.gentypes.GenerationType;
+import ivorius.reccomplex.world.gen.feature.structure.generic.generation.GenerationType;
 import ivorius.ivtoolkit.blocks.BlockSurfacePos;
 import ivorius.reccomplex.world.gen.feature.StructureGenerator;
 import net.minecraft.command.CommandException;
@@ -14,7 +14,7 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.math.BlockPos;
 import ivorius.reccomplex.RCConfig;
 import ivorius.reccomplex.operation.OperationRegistry;
-import ivorius.reccomplex.world.gen.feature.structure.generic.gentypes.NaturalGeneration;
+import ivorius.reccomplex.world.gen.feature.structure.generic.generation.NaturalGeneration;
 import ivorius.reccomplex.utils.ServerTranslations;
 import ivorius.reccomplex.world.gen.feature.structure.generic.GenericStructure;
 import net.minecraft.command.CommandBase;

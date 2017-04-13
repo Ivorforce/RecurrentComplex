@@ -6,7 +6,7 @@
 package ivorius.reccomplex.world.gen.feature.structure;
 
 import ivorius.reccomplex.utils.RCStructureBoundingBoxes;
-import ivorius.reccomplex.world.gen.feature.structure.generic.gentypes.GenerationType;
+import ivorius.reccomplex.world.gen.feature.structure.generic.generation.GenerationType;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldServer;
 import net.minecraft.world.biome.Biome;

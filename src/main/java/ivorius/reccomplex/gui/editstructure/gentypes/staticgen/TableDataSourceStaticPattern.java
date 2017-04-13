@@ -11,7 +11,7 @@ import ivorius.reccomplex.gui.table.cell.TableCellInteger;
 import ivorius.reccomplex.gui.table.cell.TableCellStringInt;
 import ivorius.reccomplex.gui.table.cell.TitledCell;
 import ivorius.reccomplex.gui.table.datasource.TableDataSourceSegmented;
-import ivorius.reccomplex.world.gen.feature.structure.generic.gentypes.StaticGeneration;
+import ivorius.reccomplex.world.gen.feature.structure.generic.generation.StaticGeneration;
 import ivorius.ivtoolkit.tools.IvTranslations;
 
 /**

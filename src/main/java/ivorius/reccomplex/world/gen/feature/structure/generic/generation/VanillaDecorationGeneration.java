@@ -3,7 +3,7 @@
  *  * http://ivorius.net
  */
 
-package ivorius.reccomplex.world.gen.feature.structure.generic.gentypes;
+package ivorius.reccomplex.world.gen.feature.structure.generic.generation;
 
 import com.google.gson.*;
 import com.google.gson.reflect.TypeToken;

@@ -17,7 +17,7 @@ import ivorius.reccomplex.gui.table.cell.TableCellEnum;
 import ivorius.reccomplex.gui.table.cell.TableCellMultiBuilder;
 import ivorius.reccomplex.gui.table.cell.TitledCell;
 import ivorius.reccomplex.gui.table.datasource.TableDataSourceSegmented;
-import ivorius.reccomplex.world.gen.feature.structure.generic.gentypes.NaturalGeneration;
+import ivorius.reccomplex.world.gen.feature.structure.generic.generation.NaturalGeneration;
 import ivorius.reccomplex.world.gen.feature.selector.NaturalStructureSelector;
 import org.apache.commons.lang3.tuple.Pair;
 

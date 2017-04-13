@@ -16,7 +16,7 @@ import ivorius.reccomplex.gui.table.cell.TableCellEnum;
 import ivorius.reccomplex.gui.table.cell.TableCellMultiBuilder;
 import ivorius.reccomplex.gui.table.cell.TitledCell;
 import ivorius.reccomplex.gui.table.datasource.TableDataSourceSegmented;
-import ivorius.reccomplex.world.gen.feature.structure.generic.gentypes.VanillaDecorationGeneration;
+import ivorius.reccomplex.world.gen.feature.structure.generic.generation.VanillaDecorationGeneration;
 import ivorius.reccomplex.world.gen.feature.decoration.RCBiomeDecorator;
 
 /**

@@ -3,7 +3,7 @@
  *  * http://lukas.axxim.net
  */
 
-package ivorius.reccomplex.world.gen.feature.structure.generic.gentypes;
+package ivorius.reccomplex.world.gen.feature.structure.generic.generation;
 
 import ivorius.reccomplex.gui.table.datasource.TableDataSource;
 import ivorius.reccomplex.gui.table.TableDelegate;

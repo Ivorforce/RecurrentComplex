@@ -11,8 +11,8 @@ import ivorius.reccomplex.utils.RCBlockLogic;
 import ivorius.reccomplex.utils.algebra.BoolFunctionExpressionCache;
 import ivorius.reccomplex.utils.algebra.RCBoolAlgebra;
 import ivorius.reccomplex.utils.algebra.SupplierCache;
-import ivorius.reccomplex.world.MockWorld;
-import ivorius.reccomplex.world.gen.feature.structure.generic.WorldCache;
+import ivorius.ivtoolkit.world.MockWorld;
+import ivorius.ivtoolkit.world.WorldCache;
 import net.minecraft.block.BlockSapling;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.material.MaterialLiquid;
@@ -66,11 +66,6 @@ public class PositionedBlockMatcher extends BoolFunctionExpressionCache<Position
         public static Argument at(MockWorld world, BlockPos pos)
         {
             return new Argument(world, pos, world.getBlockState(pos));
-        }
-
-        public static Argument at(IvBlockCollection collection, BlockPos pos)
-        {
-            return at(new MockWorld.BlockCollection(collection), pos);
         }
 
         public static Argument at(World world, BlockPos pos)

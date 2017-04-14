@@ -7,7 +7,7 @@ package ivorius.reccomplex.commands;
 
 import ivorius.ivtoolkit.blocks.BlockArea;
 import ivorius.reccomplex.capability.SelectionOwner;
-import ivorius.reccomplex.world.MockWorld;
+import ivorius.ivtoolkit.world.MockWorld;
 import net.minecraft.command.CommandException;
 import net.minecraft.util.math.BlockPos;
 import ivorius.reccomplex.RCConfig;

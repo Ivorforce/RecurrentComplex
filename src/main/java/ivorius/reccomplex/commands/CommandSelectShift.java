@@ -8,7 +8,7 @@ package ivorius.reccomplex.commands;
 import ivorius.reccomplex.RCConfig;
 import ivorius.reccomplex.capability.SelectionOwner;
 import ivorius.reccomplex.utils.ServerTranslations;
-import ivorius.reccomplex.world.MockWorld;
+import ivorius.ivtoolkit.world.MockWorld;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 

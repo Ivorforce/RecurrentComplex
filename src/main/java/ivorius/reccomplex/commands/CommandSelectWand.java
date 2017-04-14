@@ -13,7 +13,7 @@ import ivorius.reccomplex.capability.SelectionOwner;
 import ivorius.reccomplex.utils.ServerTranslations;
 import ivorius.reccomplex.utils.algebra.ExpressionCache;
 import ivorius.reccomplex.utils.expression.PositionedBlockMatcher;
-import ivorius.reccomplex.world.MockWorld;
+import ivorius.ivtoolkit.world.MockWorld;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.util.EnumFacing;

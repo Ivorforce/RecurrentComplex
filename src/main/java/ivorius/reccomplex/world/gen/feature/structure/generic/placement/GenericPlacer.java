@@ -17,7 +17,7 @@ import ivorius.reccomplex.gui.table.TableDelegate;
 import ivorius.reccomplex.gui.table.TableNavigator;
 import ivorius.reccomplex.json.JsonUtils;
 import ivorius.reccomplex.world.gen.feature.structure.Placer;
-import ivorius.reccomplex.world.gen.feature.structure.generic.WorldCache;
+import ivorius.ivtoolkit.world.WorldCache;
 import ivorius.reccomplex.world.gen.feature.structure.generic.placement.rays.RayAverageMatcher;
 import ivorius.reccomplex.world.gen.feature.structure.generic.placement.rays.RayDynamicPosition;
 import ivorius.reccomplex.world.gen.feature.structure.generic.placement.rays.RayMatcher;

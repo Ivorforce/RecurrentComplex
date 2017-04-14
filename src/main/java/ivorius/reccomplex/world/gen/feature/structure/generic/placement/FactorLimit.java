@@ -21,7 +21,7 @@ import ivorius.reccomplex.json.SerializableStringTypeRegistry;
 import ivorius.reccomplex.utils.IntegerRanges;
 import ivorius.ivtoolkit.util.LineSelection;
 import ivorius.reccomplex.utils.scale.Scales;
-import ivorius.reccomplex.world.gen.feature.structure.generic.WorldCache;
+import ivorius.ivtoolkit.world.WorldCache;
 import org.apache.commons.lang3.tuple.Pair;
 
 import javax.annotation.Nonnull;

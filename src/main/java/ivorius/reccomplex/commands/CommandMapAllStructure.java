@@ -15,7 +15,7 @@ import ivorius.reccomplex.utils.RawResourceLocation;
 import ivorius.reccomplex.utils.ServerTranslations;
 import ivorius.reccomplex.utils.algebra.ExpressionCache;
 import ivorius.reccomplex.utils.expression.ResourceMatcher;
-import ivorius.reccomplex.world.MockWorld;
+import ivorius.ivtoolkit.world.MockWorld;
 import ivorius.reccomplex.world.gen.feature.structure.Structure;
 import ivorius.reccomplex.world.gen.feature.structure.StructureRegistry;
 import ivorius.reccomplex.world.gen.feature.structure.generic.GenericStructure;
@@ -85,7 +85,7 @@ public class CommandMapAllStructure extends CommandBase
             GenericStructure structure = (GenericStructure) info;
 
             IvWorldData worldData = structure.constructWorldData();
-            MockWorld world = new MockWorld.BlockCollection(worldData.blockCollection);
+            MockWorld world = new MockWorld.WorldData(worldData);
 
             try
             {

@@ -19,7 +19,7 @@ import ivorius.reccomplex.gui.table.TableDelegate;
 import ivorius.reccomplex.gui.table.TableNavigator;
 import ivorius.reccomplex.json.JsonUtils;
 import ivorius.reccomplex.utils.algebra.ExpressionCache;
-import ivorius.reccomplex.world.gen.feature.structure.generic.WorldCache;
+import ivorius.ivtoolkit.world.WorldCache;
 import ivorius.reccomplex.utils.expression.BlockMatcher;
 import ivorius.reccomplex.utils.expression.PositionedBlockMatcher;
 import ivorius.reccomplex.utils.*;

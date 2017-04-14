@@ -9,6 +9,7 @@ import com.google.gson.*;
 import ivorius.ivtoolkit.blocks.BlockAreas;
 import ivorius.ivtoolkit.blocks.IvBlockCollection;
 import ivorius.ivtoolkit.blocks.IvMutableBlockPos;
+import ivorius.ivtoolkit.blocks.IvTileEntityHelper;
 import ivorius.ivtoolkit.tools.IvWorldData;
 import ivorius.ivtoolkit.transform.Mover;
 import ivorius.ivtoolkit.transform.PosTransformer;
@@ -19,7 +20,10 @@ import ivorius.reccomplex.json.JsonUtils;
 import ivorius.reccomplex.json.NBTToJson;
 import ivorius.reccomplex.temp.RCMover;
 import ivorius.reccomplex.temp.RCPosTransformer;
-import ivorius.reccomplex.utils.*;
+import ivorius.reccomplex.utils.NBTStorable;
+import ivorius.reccomplex.utils.RCAccessorEntity;
+import ivorius.reccomplex.utils.RCAccessorWorldServer;
+import ivorius.reccomplex.utils.RCAxisAlignedTransform;
 import ivorius.reccomplex.utils.expression.DependencyMatcher;
 import ivorius.reccomplex.world.gen.feature.structure.Structure;
 import ivorius.reccomplex.world.gen.feature.structure.StructureRegistry;
@@ -334,7 +338,7 @@ public class GenericStructure implements Structure<GenericStructure.InstanceData
 
             worldData.tileEntities.forEach(tileEntityCompound ->
             {
-                asGeneratingTileEntity(context, TileEntities.getAnyWorld(), areaSize, origin, tileEntityCompound, (src, tileEntity) ->
+                asGeneratingTileEntity(context, IvTileEntityHelper.getAnyWorld(), areaSize, origin, tileEntityCompound, (src, tileEntity) ->
                 {
                     NBTStorable tileEntityInstanceData = (NBTStorable) ((GeneratingTileEntity) tileEntity).prepareInstanceData(context);
                     if (tileEntityInstanceData != null) // Otherwise, don't generate
@@ -548,7 +552,7 @@ public class GenericStructure implements Structure<GenericStructure.InstanceData
             NBTTagCompound tileEntitiesCompound = compound.getCompoundTag(InstanceData.KEY_TILE_ENTITIES);
             worldData.tileEntities.forEach(tileEntityCompound ->
             {
-                asGeneratingTileEntity(context, TileEntities.getAnyWorld(), areaSize, origin, tileEntityCompound, (src, tileEntity) ->
+                asGeneratingTileEntity(context, IvTileEntityHelper.getAnyWorld(), areaSize, origin, tileEntityCompound, (src, tileEntity) ->
                 {
                     tileEntities.put(src, (NBTStorable) (tileEntity.loadInstanceData(context, getTileEntityTag(tileEntitiesCompound, src))));
                 });

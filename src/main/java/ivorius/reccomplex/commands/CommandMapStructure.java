@@ -10,7 +10,7 @@ import ivorius.reccomplex.RCConfig;
 import ivorius.reccomplex.files.loading.ResourceDirectory;
 import ivorius.reccomplex.network.PacketSaveStructureHandler;
 import ivorius.reccomplex.utils.ServerTranslations;
-import ivorius.reccomplex.world.MockWorld;
+import ivorius.ivtoolkit.world.MockWorld;
 import ivorius.reccomplex.world.gen.feature.structure.StructureRegistry;
 import ivorius.reccomplex.world.gen.feature.structure.generic.GenericStructure;
 import net.minecraft.command.CommandBase;
@@ -63,7 +63,7 @@ public class CommandMapStructure extends CommandBase
 
         CommandVirtual virtual = (CommandVirtual) other;
         IvWorldData worldData = structure.constructWorldData();
-        MockWorld world = new MockWorld.BlockCollection(worldData.blockCollection);
+        MockWorld world = new MockWorld.WorldData(worldData);
 
         try
         {

@@ -22,7 +22,7 @@ import java.util.stream.Collectors;
 /**
  * Created by lukas on 05.10.15.
  */
-public class ReachabilityStrategy<M extends MazeComponent<C>, C> implements MazePredicate<M, C>
+public class ReachabilityStrategy<C> implements MazePredicate<C>
 {
     private final Collection<Ability<C>> traversalAbilities = new ArrayList<>();
 
@@ -44,17 +44,17 @@ public class ReachabilityStrategy<M extends MazeComponent<C>, C> implements Maze
         this.preventConnection = preventConnection;
     }
 
-    public static <M extends MazeComponent<C>, C> ReachabilityStrategy<M, C> connect(Collection<Collection<MazePassage>> points, Predicate<C> traverser, Predicate<MazeRoom> confiner, Collection<Ability<C>> traversalAbilities, ConnectionStrategy<C> connectionStrategy)
+    public static <C> ReachabilityStrategy<C> connect(Collection<Collection<MazePassage>> points, Predicate<C> traverser, Predicate<MazeRoom> confiner, Collection<Ability<C>> traversalAbilities, ConnectionStrategy<C> connectionStrategy)
     {
-        ReachabilityStrategy<M, C> strategy = new ReachabilityStrategy<>(confiner, traverser, connectionStrategy, false);
+        ReachabilityStrategy<C> strategy = new ReachabilityStrategy<>(confiner, traverser, connectionStrategy, false);
         strategy.setConnection(points);
         strategy.traversalAbilities.addAll(traversalAbilities);
         return strategy;
     }
 
-    public static <M extends MazeComponent<C>, C> ReachabilityStrategy<M, C> preventConnection(Collection<Collection<MazePassage>> points, Predicate<C> traverser, Predicate<MazeRoom> confiner, ConnectionStrategy<C> connectionStrategy)
+    public static <C> ReachabilityStrategy<C> preventConnection(Collection<Collection<MazePassage>> points, Predicate<C> traverser, Predicate<MazeRoom> confiner, ConnectionStrategy<C> connectionStrategy)
     {
-        ReachabilityStrategy<M, C> strategy = new ReachabilityStrategy<>(confiner, traverser, connectionStrategy, true);
+        ReachabilityStrategy<C> strategy = new ReachabilityStrategy<>(confiner, traverser, connectionStrategy, true);
         strategy.setConnection(points);
         return strategy;
     }
@@ -250,7 +250,7 @@ public class ReachabilityStrategy<M extends MazeComponent<C>, C> implements Maze
     }
 
     @Override
-    public boolean canPlace(final MorphingMazeComponent<C> maze, final ShiftedMazeComponent<M, C> component)
+    public boolean canPlace(final MorphingMazeComponent<C> maze, final ShiftedMazeComponent<?, C> component)
     {
         if (preventConnection && !stepsReached.isEmpty())
             return true; // Already Connected: Give Up
@@ -313,23 +313,23 @@ public class ReachabilityStrategy<M extends MazeComponent<C>, C> implements Maze
     }
 
     @Override
-    public void willPlace(MorphingMazeComponent<C> maze, ShiftedMazeComponent<M, C> component)
+    public void willPlace(MorphingMazeComponent<C> maze, ShiftedMazeComponent<?, C> component)
     {
         place(maze, component, false);
     }
 
     @Override
-    public void didPlace(MorphingMazeComponent<C> maze, ShiftedMazeComponent<M, C> component)
+    public void didPlace(MorphingMazeComponent<C> maze, ShiftedMazeComponent<?, C> component)
     {
     }
 
     @Override
-    public void willUnplace(MorphingMazeComponent<C> maze, ShiftedMazeComponent<M, C> component)
+    public void willUnplace(MorphingMazeComponent<C> maze, ShiftedMazeComponent<?, C> component)
     {
 
     }
 
-    protected void place(MorphingMazeComponent<C> maze, ShiftedMazeComponent<M, C> component, boolean simulate)
+    protected void place(MorphingMazeComponent<C> maze, ShiftedMazeComponent<?, C> component, boolean simulate)
     {
         if (stepsReached.size() == connectionPoints.size())
             stepsReached.transformValues(i -> i + 1);
@@ -361,12 +361,12 @@ public class ReachabilityStrategy<M extends MazeComponent<C>, C> implements Maze
     }
 
     @Override
-    public void didUnplace(MorphingMazeComponent<C> maze, ShiftedMazeComponent<M, C> component)
+    public void didUnplace(MorphingMazeComponent<C> maze, ShiftedMazeComponent<?, C> component)
     {
         unplace(maze, component, false);
     }
 
-    protected void unplace(MorphingMazeComponent<C> maze, ShiftedMazeComponent<M, C> component, boolean simulate)
+    protected void unplace(MorphingMazeComponent<C> maze, ShiftedMazeComponent<?, C> component, boolean simulate)
     {
         stepsReached.transformValues(i -> i - 1);
         stepsReached.retainEntries((a, i) -> i >= 0);

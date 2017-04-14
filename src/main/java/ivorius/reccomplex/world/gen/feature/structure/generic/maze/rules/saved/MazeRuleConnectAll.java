@@ -53,7 +53,7 @@ public class MazeRuleConnectAll extends MazeRule
     }
 
     @Override
-    public MazePredicate<MazeComponentStructure<Connector>, Connector> build(WorldScriptMazeGenerator script, Set<Connector> blockedConnections, ConnectorFactory connectorFactory, Collection<? extends MazeComponent<Connector>> components, ConnectionStrategy<Connector> connectionStrategy)
+    public MazePredicate<Connector> build(WorldScriptMazeGenerator script, Set<Connector> blockedConnections, ConnectorFactory connectorFactory, Collection<? extends MazeComponent<Connector>> components, ConnectionStrategy<Connector> connectionStrategy)
     {
         List<SavedMazePath> paths = additive ? exits : getPaths(exits, script.mazeComponent.exitPaths, blockedConnections, connectorFactory).collect(Collectors.toList());
 

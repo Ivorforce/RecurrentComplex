@@ -20,12 +20,12 @@ public class MazeInterpreter
 {
 //    MazeInterpreter.print2D(maze, predicate, 0, Arrays.asList(triple.getLeft()))
 
-    public static <C> void print2D(MazeComponent<C> component, MazePredicate<? extends MazeComponent<C>, C> predicate, MazeRoom... mark)
+    public static <C> void print2D(MazeComponent<C> component, MazePredicate<C> predicate, MazeRoom... mark)
     {
         print2D(component, predicate, r -> Arrays.asList(mark).contains(r) ? "O" : null);
     }
 
-    public static <C> void print2D(MazeComponent<C> component, MazePredicate<? extends MazeComponent<C>, C> predicate, Function<MazeRoom, String> marker)
+    public static <C> void print2D(MazeComponent<C> component, MazePredicate<C> predicate, Function<MazeRoom, String> marker)
     {
         int minY = component.rooms().stream().mapToInt(r -> r.getCoordinate(1)).min().orElseThrow(IllegalArgumentException::new);
         int maxY = component.rooms().stream().mapToInt(r -> r.getCoordinate(1)).max().orElseThrow(IllegalArgumentException::new);
@@ -34,7 +34,7 @@ public class MazeInterpreter
             System.out.print(MazeInterpreter.toString(component, predicate, 0, 2, new MazeRoom(0, y, 0), marker));
     }
 
-    public static <C> String toString(MazeComponent<C> component, @Nullable MazePredicate<? extends MazeComponent<C>, C> predicate, int xDim, int zDim, MazeRoom pos, @Nullable Function<MazeRoom, String> marker)
+    public static <C> String toString(MazeComponent<C> component, @Nullable MazePredicate<C> predicate, int xDim, int zDim, MazeRoom pos, @Nullable Function<MazeRoom, String> marker)
     {
         int minX = component.rooms().stream().mapToInt(r -> r.getCoordinate(xDim)).min().orElseThrow(IllegalArgumentException::new) - 1;
         int minZ = component.rooms().stream().mapToInt(r -> r.getCoordinate(zDim)).min().orElseThrow(IllegalArgumentException::new) - 1;
@@ -73,7 +73,7 @@ public class MazeInterpreter
         return builder.toString();
     }
 
-    protected static <C> boolean isExit(MazeComponent<C> component, @Nullable MazePredicate<? extends MazeComponent<C>, C> predicate, MazeRoom mazeRoom)
+    protected static <C> boolean isExit(MazeComponent<C> component, @Nullable MazePredicate<C> predicate, MazeRoom mazeRoom)
     {
         return component.exits().keySet().stream()
                 .filter(p -> p.getDest().equals(mazeRoom) || p.getSource().equals(mazeRoom))

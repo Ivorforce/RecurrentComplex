@@ -51,9 +51,9 @@ public class WorldGenMaze
     }
 
     @Nullable
-    public static PlacedStructure place(Random random, Environment environment, BlockPos shift, int[] roomSize, ShiftedMazeComponent<MazeComponentStructure<Connector>, Connector> placedComponent)
+    public static PlacedStructure place(Random random, Environment environment, BlockPos shift, int[] roomSize, PlacedMazeComponent<MazeComponentStructure<Connector>, Connector> placedComponent)
     {
-        MazeComponentStructure<Connector> componentInfo = placedComponent.getComponent();
+        MazeComponentStructure<Connector> componentInfo = placedComponent.component();
         Structure<?> structure = StructureRegistry.INSTANCE.get(componentInfo.structureID);
 
         if (structure == null)
@@ -68,12 +68,12 @@ public class WorldGenMaze
         return new PlacedStructure(componentInfo.structureID, componentInfo.structureID, componentInfo.transform, compLowerPos, instanceData.writeToNBT());
     }
 
-    protected static BlockPos getBoundingBox(int[] roomSize, ShiftedMazeComponent<MazeComponentStructure<Connector>, Connector> placedComponent, Structure structure, AxisAlignedTransform2D transform)
+    protected static BlockPos getBoundingBox(int[] roomSize, PlacedMazeComponent<MazeComponentStructure<Connector>, Connector> placedComponent, Structure structure, AxisAlignedTransform2D transform)
     {
-        int[] scaledMazePosition = IvVecMathHelper.mul(placedComponent.getShift().getCoordinates(), roomSize);
+        int[] scaledMazePosition = IvVecMathHelper.mul(placedComponent.shift().getCoordinates(), roomSize);
 
         int[] size = Structures.structureSize(structure, transform);
-        int[] expectedSize = IvVecMathHelper.mul(placedComponent.getComponent().getSize(), roomSize); // Already rotated component, so don't rotate again
+        int[] expectedSize = IvVecMathHelper.mul(placedComponent.component().getSize(), roomSize); // Already rotated component, so don't rotate again
         int[] sizeDependentShift = new int[expectedSize.length];
         for (int i = 0; i < size.length; i++)
             sizeDependentShift[i] = (expectedSize[i] - size[i]) / 2;

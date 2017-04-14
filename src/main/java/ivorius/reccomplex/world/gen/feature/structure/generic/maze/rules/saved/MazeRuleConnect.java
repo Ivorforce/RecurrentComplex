@@ -59,13 +59,13 @@ public class MazeRuleConnect extends MazeRule
     }
 
     @Override
-    public ReachabilityStrategy<MazeComponentStructure<Connector>, Connector> build(WorldScriptMazeGenerator script, Set<Connector> blockedConnections, ConnectorFactory connectorFactory, Collection<? extends MazeComponent<Connector>> components, ConnectionStrategy<Connector> connectionStrategy)
+    public ReachabilityStrategy<Connector> build(WorldScriptMazeGenerator script, Set<Connector> blockedConnections, ConnectorFactory connectorFactory, Collection<? extends MazeComponent<Connector>> components, ConnectionStrategy<Connector> connectionStrategy)
     {
         if (start.size() > 0 && end.size() > 0)
         {
             List<Collection<MazePassage>> points = Arrays.asList(buildPaths(start), buildPaths(end));
             Predicate<Connector> traverser = ReachabilityStrategy.connectorTraverser(blockedConnections);
-            LimitAABBStrategy<MazeComponent<Object>, Object> confiner = new LimitAABBStrategy<>(script.mazeComponent.boundsSize());
+            LimitAABBStrategy<Object> confiner = new LimitAABBStrategy<>(script.mazeComponent.boundsSize());
 
             return preventConnection ? ReachabilityStrategy.preventConnection(points, traverser, confiner, connectionStrategy)
                     :  ReachabilityStrategy.connect(points, traverser, confiner, ReachabilityStrategy.compileAbilities(components, traverser), connectionStrategy);

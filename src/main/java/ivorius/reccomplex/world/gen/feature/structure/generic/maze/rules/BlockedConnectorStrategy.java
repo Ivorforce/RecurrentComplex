@@ -13,7 +13,7 @@ import java.util.Collection;
 /**
  * Created by lukas on 16.04.15.
  */
-public class BlockedConnectorStrategy<M extends MazeComponent<C>, C> implements MazePredicate<M, C>
+public class BlockedConnectorStrategy<C> implements MazePredicate<C>
 {
     @Nonnull
     private Collection<C> ignoredConnections;
@@ -24,31 +24,31 @@ public class BlockedConnectorStrategy<M extends MazeComponent<C>, C> implements 
     }
 
     @Override
-    public boolean canPlace(MorphingMazeComponent<C> maze, ShiftedMazeComponent<M, C> component)
+    public boolean canPlace(MorphingMazeComponent<C> maze, ShiftedMazeComponent<?, C> component)
     {
         return true;
     }
 
     @Override
-    public void willPlace(MorphingMazeComponent<C> maze, ShiftedMazeComponent<M, C> component)
+    public void willPlace(MorphingMazeComponent<C> maze, ShiftedMazeComponent<?, C> component)
     {
 
     }
 
     @Override
-    public void didPlace(MorphingMazeComponent<C> maze, ShiftedMazeComponent<M, C> component)
+    public void didPlace(MorphingMazeComponent<C> maze, ShiftedMazeComponent<?, C> component)
     {
 
     }
 
     @Override
-    public void willUnplace(MorphingMazeComponent<C> maze, ShiftedMazeComponent<M, C> component)
+    public void willUnplace(MorphingMazeComponent<C> maze, ShiftedMazeComponent<?, C> component)
     {
 
     }
 
     @Override
-    public void didUnplace(MorphingMazeComponent<C> maze, ShiftedMazeComponent<M, C> component)
+    public void didUnplace(MorphingMazeComponent<C> maze, ShiftedMazeComponent<?, C> component)
     {
 
     }

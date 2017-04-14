@@ -23,7 +23,7 @@ import java.util.List;
 /**
  * Created by lukas on 09.06.14.
  */
-public class CommandSelectNatural extends CommandBase
+public class CommandSelectNatural extends CommandVirtual
 {
     @Override
     public String getName()
@@ -52,17 +52,15 @@ public class CommandSelectNatural extends CommandBase
     }
 
     @Override
-    public void execute(MinecraftServer server, ICommandSender commandSender, String[] args) throws CommandException
+    void execute(MockWorld world, ICommandSender commandSender, String[] args) throws CommandException
     {
-        World world = commandSender.getEntityWorld();
-
         SelectionOwner selectionOwner = RCCommands.getSelectionOwner(commandSender, null, true);
         RCCommands.assertSize(commandSender, selectionOwner);
         BlockArea area = selectionOwner.getSelection();
 
         double expandFloor = args.length >= 1 ? parseDouble(args[0]) : 1;
 
-        CommandSelectFloor.placeNaturalFloor(new MockWorld.Real(world), area, expandFloor);
+        CommandSelectFloor.placeNaturalFloor(world, area, expandFloor);
         CommandSelectSpace.placeNaturalAir(world, area, 3, 3);
     }
 }

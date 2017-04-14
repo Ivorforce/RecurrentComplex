@@ -210,7 +210,7 @@ public class WorldScriptMazeGenerator implements WorldScript<WorldScriptMazeGene
         return new InstanceData(nbt instanceof NBTTagCompound ? (NBTTagCompound) nbt : new NBTTagCompound());
     }
 
-    public List<ShiftedMazeComponent<MazeComponentStructure<Connector>, Connector>> getPlacedRooms(Random random, AxisAlignedTransform2D transform)
+    public List<PlacedMazeComponent<MazeComponentStructure<Connector>, Connector>> getPlacedRooms(Random random, AxisAlignedTransform2D transform)
     {
         if (mazeComponent.rooms.isEmpty())
             return null;
@@ -245,13 +245,13 @@ public class WorldScriptMazeGenerator implements WorldScript<WorldScriptMazeGene
 
         ConnectorStrategy connectorStrategy = new ConnectorStrategy();
 
-        List<MazePredicate<MazeComponentStructure<Connector>, Connector>> predicates = rules.stream().map(r -> r.build(this, blockedConnections, factory, transformedComponents, connectorStrategy)).filter(Objects::nonNull).collect(Collectors.toCollection(ArrayList::new));
+        List<MazePredicate<Connector>> predicates = rules.stream().map(r -> r.build(this, blockedConnections, factory, transformedComponents, connectorStrategy)).filter(Objects::nonNull).collect(Collectors.toCollection(ArrayList::new));
         predicates.add(new LimitAABBStrategy<>(outsideBoundsHigher));
         predicates.add(new BlockedConnectorStrategy<>(blockedConnections));
 
         int totalRooms = mazeComponent.rooms.compile(true).size();
 
-        return MazeComponentConnector.randomlyConnect(maze,
+        return MazeComponentConnector.connect(maze,
                 transformedComponents, connectorStrategy,
                 new MazePredicateMany<>(predicates),
                 random,

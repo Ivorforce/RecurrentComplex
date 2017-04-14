@@ -13,7 +13,7 @@ import java.util.function.Predicate;
 /**
  * Created by lukas on 16.04.15.
  */
-public class LimitAABBStrategy<M extends MazeComponent<C>, C> implements MazePredicate<M, C>, Predicate<MazeRoom>
+public class LimitAABBStrategy<C> implements MazePredicate<C>, Predicate<MazeRoom>
 {
     @Nonnull
     private int[] roomNumbers;
@@ -24,31 +24,31 @@ public class LimitAABBStrategy<M extends MazeComponent<C>, C> implements MazePre
     }
 
     @Override
-    public boolean canPlace(MorphingMazeComponent<C> maze, ShiftedMazeComponent<M, C> component)
+    public boolean canPlace(MorphingMazeComponent<C> maze, ShiftedMazeComponent<?, C> component)
     {
         return component.rooms().stream().allMatch(this);
     }
 
     @Override
-    public void willPlace(MorphingMazeComponent<C> maze, ShiftedMazeComponent<M, C> component)
+    public void willPlace(MorphingMazeComponent<C> maze, ShiftedMazeComponent<?, C> component)
     {
 
     }
 
     @Override
-    public void didPlace(MorphingMazeComponent<C> maze, ShiftedMazeComponent<M, C> component)
+    public void didPlace(MorphingMazeComponent<C> maze, ShiftedMazeComponent<?, C> component)
     {
 
     }
 
     @Override
-    public void willUnplace(MorphingMazeComponent<C> maze, ShiftedMazeComponent<M, C> component)
+    public void willUnplace(MorphingMazeComponent<C> maze, ShiftedMazeComponent<?, C> component)
     {
 
     }
 
     @Override
-    public void didUnplace(MorphingMazeComponent<C> maze, ShiftedMazeComponent<M, C> component)
+    public void didUnplace(MorphingMazeComponent<C> maze, ShiftedMazeComponent<?, C> component)
     {
 
     }

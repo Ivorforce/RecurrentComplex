@@ -7,6 +7,7 @@ package ivorius.reccomplex.commands;
 
 import ivorius.ivtoolkit.blocks.BlockArea;
 import ivorius.ivtoolkit.blocks.BlockAreas;
+import ivorius.ivtoolkit.world.MockWorld;
 import ivorius.reccomplex.RCConfig;
 import ivorius.reccomplex.RecurrentComplex;
 import ivorius.reccomplex.capability.SelectionOwner;
@@ -23,7 +24,7 @@ import net.minecraft.world.World;
 /**
  * Created by lukas on 09.06.14.
  */
-public class CommandSelectCrop extends CommandBase
+public class CommandSelectCrop extends CommandVirtual
 {
     @Override
     public String getName()
@@ -43,10 +44,9 @@ public class CommandSelectCrop extends CommandBase
     }
 
     @Override
-    public void execute(MinecraftServer server, ICommandSender commandSender, String[] args) throws CommandException
+    void execute(MockWorld world, ICommandSender commandSender, String[] args) throws CommandException
     {
         SelectionOwner selectionOwner = RCCommands.getSelectionOwner(commandSender, null, true);
-        World world = commandSender.getEntityWorld();
         BlockArea area = selectionOwner.getSelection();
 
         String exp = args.length > 0 ? buildString(args, 0) : "is:air";

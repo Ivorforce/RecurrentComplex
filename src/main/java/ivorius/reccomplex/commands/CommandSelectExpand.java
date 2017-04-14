@@ -7,6 +7,7 @@ package ivorius.reccomplex.commands;
 
 import ivorius.ivtoolkit.blocks.BlockArea;
 import ivorius.ivtoolkit.blocks.BlockAreas;
+import ivorius.ivtoolkit.world.MockWorld;
 import ivorius.reccomplex.RCConfig;
 import ivorius.reccomplex.capability.SelectionOwner;
 import ivorius.reccomplex.utils.ServerTranslations;
@@ -19,7 +20,7 @@ import net.minecraft.util.math.BlockPos;
 /**
  * Created by lukas on 09.06.14.
  */
-public class CommandSelectExpand extends CommandBase
+public class CommandSelectExpand extends CommandVirtual
 {
     @Override
     public String getName()
@@ -39,7 +40,7 @@ public class CommandSelectExpand extends CommandBase
     }
 
     @Override
-    public void execute(MinecraftServer server, ICommandSender commandSender, String[] args) throws CommandException
+    void execute(MockWorld world, ICommandSender commandSender, String[] args) throws CommandException
     {
         SelectionOwner selectionOwner = RCCommands.getSelectionOwner(commandSender, null, true);
         if (args.length < 3)

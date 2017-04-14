@@ -6,6 +6,7 @@
 package ivorius.reccomplex.commands;
 
 import ivorius.ivtoolkit.blocks.BlockArea;
+import ivorius.ivtoolkit.world.MockWorld;
 import ivorius.reccomplex.RCConfig;
 import ivorius.reccomplex.block.BlockGenericSpace;
 import ivorius.reccomplex.block.RCBlocks;
@@ -31,9 +32,9 @@ import java.util.Set;
 /**
  * Created by lukas on 09.06.14.
  */
-public class CommandSelectSpace extends CommandBase
+public class CommandSelectSpace extends CommandVirtual
 {
-    public static int sidesClosed(World world, BlockPos coord, BlockArea area)
+    public static int sidesClosed(MockWorld world, BlockPos coord, BlockArea area)
     {
         int sides = 0;
 
@@ -52,7 +53,7 @@ public class CommandSelectSpace extends CommandBase
         return sides;
     }
 
-    public static boolean sideClosed(World world, BlockPos coord, int iterations, int xP, int yP, int zP)
+    public static boolean sideClosed(MockWorld world, BlockPos coord, int iterations, int xP, int yP, int zP)
     {
         for (int i = 0; i < iterations; i++)
         {
@@ -66,7 +67,7 @@ public class CommandSelectSpace extends CommandBase
         return false;
     }
 
-    public static void placeNaturalAir(World world, BlockArea area, int floorDistance, int maxClosedSides)
+    public static void placeNaturalAir(MockWorld world, BlockArea area, int floorDistance, int maxClosedSides)
     {
         BlockGenericSpace spaceBlock = RCBlocks.genericSpace;
 
@@ -154,10 +155,8 @@ public class CommandSelectSpace extends CommandBase
     }
 
     @Override
-    public void execute(MinecraftServer server, ICommandSender commandSender, String[] args) throws CommandException
+    void execute(MockWorld world, ICommandSender commandSender, String[] args) throws CommandException
     {
-        World world = commandSender.getEntityWorld();
-
         SelectionOwner selectionOwner = RCCommands.getSelectionOwner(commandSender, null, true);
         RCCommands.assertSize(commandSender, selectionOwner);
         BlockArea area = selectionOwner.getSelection();

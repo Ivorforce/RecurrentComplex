@@ -6,6 +6,7 @@
 package ivorius.reccomplex.commands;
 
 import ivorius.ivtoolkit.blocks.BlockArea;
+import ivorius.ivtoolkit.world.MockWorld;
 import ivorius.reccomplex.capability.SelectionOwner;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.CommandException;
@@ -20,7 +21,7 @@ import net.minecraft.command.ICommandSender;
 /**
  * Created by lukas on 09.06.14.
  */
-public class CommandSelectCopy extends CommandBase
+public class CommandSelectCopy extends CommandVirtual
 {
     @Override
     public String getCommandName()
@@ -40,7 +41,7 @@ public class CommandSelectCopy extends CommandBase
     }
 
     @Override
-    public void execute(MinecraftServer server, ICommandSender commandSender, String[] args) throws CommandException
+    void execute(MockWorld world, ICommandSender commandSender, String[] args) throws CommandException
     {
         RCEntityInfo RCEntityInfo = RCCommands.getStructureEntityInfo(commandSender, null);
 
@@ -48,7 +49,7 @@ public class CommandSelectCopy extends CommandBase
         RCCommands.assertSize(commandSender, selectionOwner);
         BlockArea area = selectionOwner.getSelection();
 
-        IvWorldData worldData = IvWorldData.capture(commandSender.getEntityWorld(), area, true);
+        IvWorldData worldData = IvWorldData.capture(world, area, true);
 
         BlockPos lowerCorner = area.getLowerCorner();
         BlockPos higherCorner = area.getHigherCorner();

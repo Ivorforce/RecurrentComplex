@@ -45,10 +45,12 @@ public class WorldGenMaze
         }
 
         int[] placedSize = Structures.structureSize(structure, placedComponent.transform);
-        return new StructureGenerator<>(structure).asChild(context).generationInfo(placedComponent.generationInfoID)
+        StructureGenerator<?> generator = new StructureGenerator<>(structure).asChild(context).generationInfo(placedComponent.generationInfoID)
                 .lowerCoord(context.transform.apply(placedComponent.lowerCoord, IvVecMathHelper.sub(new int[]{2, 2, 2}, placedSize)).add(pos))
                 .transform(Transforms.apply(placedComponent.transform, context.transform)).structureID(placedComponent.structureID)
-                .instanceData(placedComponent.instanceData).generate().isPresent();
+                .instanceData(placedComponent.instanceData);
+        placedComponent.variableDomain.fill(generator.environment().variables);
+        return generator.generate().isPresent();
     }
 
     @Nullable
@@ -66,7 +68,7 @@ public class WorldGenMaze
         BlockPos compLowerPos = getBoundingBox(roomSize, placedComponent, structure, componentInfo.transform).add(shift);
         NBTStorable instanceData = new StructureGenerator<>(structure).random(random).environment(environment).transform(componentInfo.transform).lowerCoord(compLowerPos).instanceData().orElse(null);
 
-        return new PlacedStructure(componentInfo.structureID, componentInfo.structureID, componentInfo.transform, compLowerPos, instanceData.writeToNBT());
+        return new PlacedStructure(componentInfo.structureID, componentInfo.structureID, componentInfo.transform, componentInfo.variableDomain, compLowerPos, instanceData.writeToNBT());
     }
 
     protected static BlockPos getBoundingBox(int[] roomSize, PlacedMazeComponent<MazeComponentStructure<Connector>, Connector> placedComponent, Structure structure, AxisAlignedTransform2D transform)

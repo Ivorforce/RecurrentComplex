@@ -24,7 +24,7 @@ import java.util.function.Consumer;
  */
 public class TableDataSourceMazeRoom extends TableDataSourceSegmented
 {
-    private MazeRoom room;
+    public MazeRoom room;
     private Consumer<MazeRoom> consumer;
 
     private final List<IntegerRange> ranges;

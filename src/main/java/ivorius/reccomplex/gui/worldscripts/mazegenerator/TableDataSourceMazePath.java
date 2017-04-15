@@ -9,8 +9,13 @@ import ivorius.ivtoolkit.gui.IntegerRange;
 import ivorius.ivtoolkit.maze.components.MazeRoom;
 import ivorius.ivtoolkit.tools.IvTranslations;
 import ivorius.reccomplex.gui.TableDirections;
-import ivorius.reccomplex.gui.table.*;
-import ivorius.reccomplex.gui.table.cell.*;
+import ivorius.reccomplex.gui.table.GuiTable;
+import ivorius.reccomplex.gui.table.TableDelegate;
+import ivorius.reccomplex.gui.table.TableNavigator;
+import ivorius.reccomplex.gui.table.cell.TableCell;
+import ivorius.reccomplex.gui.table.cell.TableCellButton;
+import ivorius.reccomplex.gui.table.cell.TableCellEnum;
+import ivorius.reccomplex.gui.table.cell.TitledCell;
 import ivorius.reccomplex.gui.table.datasource.TableDataSourceSegmented;
 import ivorius.reccomplex.world.gen.feature.structure.generic.maze.ConnectorStrategy;
 import ivorius.reccomplex.world.gen.feature.structure.generic.maze.SavedMazePath;
@@ -35,6 +40,7 @@ public class TableDataSourceMazePath extends TableDataSourceSegmented
     private TableDelegate tableDelegate;
 
     private TableCellButton invertableButton;
+    private final TableDataSourceMazeRoom source;
 
     public TableDataSourceMazePath(SavedMazePath mazePath, List<IntegerRange> bounds, TableDelegate tableDelegate, TableNavigator navigator)
     {
@@ -42,9 +48,11 @@ public class TableDataSourceMazePath extends TableDataSourceSegmented
         this.bounds = bounds;
         this.tableDelegate = tableDelegate;
 
-        addManagedSegment(0, new TableDataSourceMazeRoom(mazePath.sourceRoom, mazeRoom -> mazePath.sourceRoom = mazeRoom,bounds,
-                Arrays.stream(COORD_NAMES).map(s -> IvTranslations.get("reccomplex.generationInfo.mazeComponent.position." + s)).collect(Collectors.toList()),
-                Arrays.stream(COORD_NAMES).map(s -> IvTranslations.getLines("reccomplex.generationInfo.mazeComponent.position." + s + ".tooltip")).collect(Collectors.toList()))
+
+        addManagedSegment(0, source =
+                new TableDataSourceMazeRoom(mazePath.sourceRoom, mazeRoom -> this.mazePath.sourceRoom = mazeRoom, bounds,
+                        Arrays.stream(COORD_NAMES).map(s -> IvTranslations.get("reccomplex.generationInfo.mazeComponent.position." + s)).collect(Collectors.toList()),
+                        Arrays.stream(COORD_NAMES).map(s -> IvTranslations.getLines("reccomplex.generationInfo.mazeComponent.position." + s + ".tooltip")).collect(Collectors.toList()))
         );
     }
 
@@ -117,7 +125,8 @@ public class TableDataSourceMazePath extends TableDataSourceSegmented
             TableCellEnum.Option<EnumFacing>[] optionList = TableDirections.getDirectionOptions(EnumFacing.VALUES);
 
             TableCellEnum<EnumFacing> cell = new TableCellEnum<>("side", directionFromPath(mazePath), optionList);
-            cell.addPropertyConsumer(val -> {
+            cell.addPropertyConsumer(val ->
+            {
                 SavedMazePathConnection path = pathFromDirection(val, mazePath.sourceRoom.getCoordinates());
                 mazePath.pathDimension = path.path.pathDimension;
                 mazePath.pathGoesUp = path.path.pathGoesUp;
@@ -128,8 +137,10 @@ public class TableDataSourceMazePath extends TableDataSourceSegmented
         else if (segment == 2)
         {
             invertableButton = new TableCellButton("actions", "inverse", IvTranslations.get("reccomplex.generationInfo.mazeComponent.path.invert"), isInvertable());
-            invertableButton.addAction(() -> {
+            invertableButton.addAction(() ->
+            {
                 mazePath.set(mazePath.inverse());
+                source.room = mazePath.sourceRoom;
                 tableDelegate.reloadData();
             });
             return new TitledCell(invertableButton);

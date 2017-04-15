@@ -19,7 +19,6 @@ import ivorius.ivtoolkit.math.Transforms;
 import ivorius.reccomplex.world.gen.feature.StructureGenerator;
 import ivorius.reccomplex.world.gen.feature.structure.*;
 import ivorius.reccomplex.world.gen.feature.structure.context.StructureSpawnContext;
-import ivorius.reccomplex.world.gen.feature.structure.generic.GenericVariableDomain;
 import ivorius.reccomplex.world.gen.feature.structure.generic.generation.MazeGeneration;
 import net.minecraft.util.math.BlockPos;
 import org.apache.commons.lang3.tuple.Pair;
@@ -44,16 +43,21 @@ public class WorldGenMaze
             return false;
         }
 
-        int[] placedSize = Structures.structureSize(structure, placedComponent.transform);
         return new StructureGenerator<>(structure).asChild(context, placedComponent.variableDomain).generationInfo(placedComponent.generationInfoID)
-                .lowerCoord(context.transform.apply(placedComponent.lowerCoord, IvVecMathHelper.sub(new int[]{2, 2, 2}, placedSize)).add(pos))
+                .lowerCoord(lowerCoord(structure, placedComponent.lowerCoord, placedComponent.transform, pos, context.transform))
                 .transform(Transforms.apply(placedComponent.transform, context.transform)).structureID(placedComponent.structureID)
                 .instanceData(placedComponent.instanceData)
                 .generate().isPresent();
     }
 
+    protected static BlockPos lowerCoord(Structure structure, BlockPos lowerCoord, AxisAlignedTransform2D placedTransform, BlockPos pos, AxisAlignedTransform2D transform)
+    {
+        int[] placedSize = Structures.structureSize(structure, placedTransform);
+        return transform.apply(lowerCoord, IvVecMathHelper.sub(new int[]{2, 2, 2}, placedSize)).add(pos);
+    }
+
     @Nullable
-    public static PlacedStructure place(Random random, Environment environment, BlockPos shift, int[] roomSize, PlacedMazeComponent<MazeComponentStructure<Connector>, Connector> placedComponent, BlockPos pos)
+    public static PlacedStructure place(Random random, Environment environment, BlockPos shift, int[] roomSize, PlacedMazeComponent<MazeComponentStructure<Connector>, Connector> placedComponent, BlockPos pos, AxisAlignedTransform2D transform)
     {
         MazeComponentStructure<Connector> componentInfo = placedComponent.component();
         Structure<?> structure = StructureRegistry.INSTANCE.get(componentInfo.structureID);
@@ -67,7 +71,7 @@ public class WorldGenMaze
         BlockPos compLowerPos = getBoundingBox(roomSize, placedComponent, structure, componentInfo.transform).add(shift);
 
         NBTStorable instanceData = new StructureGenerator<>(structure).random(random).environment(environment.copy(componentInfo.variableDomain)).transform(componentInfo.transform)
-                .lowerCoord(compLowerPos.add(pos))
+                .lowerCoord(lowerCoord(structure, compLowerPos, componentInfo.transform, pos, transform))
                 .instanceData().orElse(null);
         return new PlacedStructure(componentInfo.structureID, componentInfo.structureID, componentInfo.transform, componentInfo.variableDomain, compLowerPos, instanceData.writeToNBT());
     }

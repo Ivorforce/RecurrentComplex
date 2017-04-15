@@ -29,6 +29,8 @@ public class Environment
     @Nullable
     public final GenerationType generationType;
 
+    public final VariableDomain variables = new VariableDomain();
+
     public Environment(@Nonnull WorldServer world, @Nonnull Biome biome, @Nullable Integer villageType, @Nullable GenerationType generationType)
     {
         this.world = world;

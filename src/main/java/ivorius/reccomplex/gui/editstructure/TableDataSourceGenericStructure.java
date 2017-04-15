@@ -59,7 +59,11 @@ public class TableDataSourceGenericStructure extends TableDataSourceSegmented
                 .addNavigation(() -> structureInfo.transformer.tableDataSource(navigator, delegate))
                 .buildDataSource(IvTranslations.get("reccomplex.structure.transformers"), IvTranslations.getLines("reccomplex.structure.transformers.tooltip")));
 
-        addManagedSegment(6, TableDataSourceExpression.constructDefault(IvTranslations.get("reccomplex.structure.dependencies"), IvTranslations.getLines("reccomplex.structure.dependencies.tooltip"), structureInfo.dependencies, RecurrentComplex.saver));
+        addManagedSegment(6, TableCellMultiBuilder.create(navigator, delegate)
+                .addNavigation(() -> new TableDataSourceGenericVariableDomain(delegate, navigator, structureInfo.variableDomain))
+                .buildDataSource(IvTranslations.get("reccomplex.structure.variables"), IvTranslations.getLines("reccomplex.structure.variables.tooltip")));
+
+        addManagedSegment(7, TableDataSourceExpression.constructDefault(IvTranslations.get("reccomplex.structure.dependencies"), IvTranslations.getLines("reccomplex.structure.dependencies.tooltip"), structureInfo.dependencies, RecurrentComplex.saver));
     }
 
     public GenericStructure getStructureInfo()
@@ -122,7 +126,7 @@ public class TableDataSourceGenericStructure extends TableDataSourceSegmented
     @Override
     public int numberOfSegments()
     {
-        return 7;
+        return 8;
     }
 
     @Override

@@ -29,6 +29,7 @@ public class EnvironmentMatcher extends BoolFunctionExpressionCache<Environment,
     public static final String DEPENDENCY_PREFIX = "dependency.";
     public static final String VILLAGE_TYPE_PREFIX = "villagetype=";
     public static final String GENERATION_INFO_PREFIX = "generation.";
+    public static final String VARIABLE_PREFIX = "variable.";
 
     public EnvironmentMatcher()
     {
@@ -39,6 +40,7 @@ public class EnvironmentMatcher extends BoolFunctionExpressionCache<Environment,
         addTypes(new DependencyVariableType(DEPENDENCY_PREFIX, ""), t -> t.alias("dep.", ""));
         addTypes(new VillageTypeType(VILLAGE_TYPE_PREFIX, ""), t -> t.alias("vtype.", ""));
         addTypes(new GenerationType(GENERATION_INFO_PREFIX, ""), t -> t.alias("gen.", ""));
+        addTypes(new VariableDomainType(VARIABLE_PREFIX, ""), t -> t.alias("var.", ""));
     }
 
     public static class BiomeVariableType extends DelegatingVariableType<Boolean, Environment, Object, Biome, Object, BiomeMatcher>
@@ -145,6 +147,26 @@ public class EnvironmentMatcher extends BoolFunctionExpressionCache<Environment,
         public GenerationTypeMatcher createCache()
         {
             return new GenerationTypeMatcher();
+        }
+    }
+
+    protected static class VariableDomainType extends VariableType<Boolean, Environment, Object>
+    {
+        public VariableDomainType(String prefix, String suffix)
+        {
+            super(prefix, suffix);
+        }
+
+        @Override
+        public Function<SupplierCache<Environment>, Boolean> parse(String var)
+        {
+            return environment -> environment.get().variables.get(var);
+        }
+
+        @Override
+        public Validity validity(final String var, final Object args)
+        {
+            return Validity.KNOWN;
         }
     }
 }

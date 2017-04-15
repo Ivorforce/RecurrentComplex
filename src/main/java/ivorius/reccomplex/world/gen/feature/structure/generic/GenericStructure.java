@@ -11,6 +11,8 @@ import ivorius.ivtoolkit.blocks.IvBlockCollection;
 import ivorius.ivtoolkit.blocks.IvMutableBlockPos;
 import ivorius.ivtoolkit.blocks.IvTileEntityHelper;
 import ivorius.ivtoolkit.tools.IvWorldData;
+import ivorius.ivtoolkit.tools.NBTCompoundObject;
+import ivorius.ivtoolkit.tools.NBTCompoundObjects;
 import ivorius.ivtoolkit.transform.Mover;
 import ivorius.ivtoolkit.transform.PosTransformer;
 import ivorius.ivtoolkit.world.chunk.gen.StructureBoundingBoxes;
@@ -26,6 +28,7 @@ import ivorius.reccomplex.utils.RCAccessorWorldServer;
 import ivorius.reccomplex.utils.expression.DependencyMatcher;
 import ivorius.reccomplex.world.gen.feature.structure.Structure;
 import ivorius.reccomplex.world.gen.feature.structure.StructureRegistry;
+import ivorius.reccomplex.world.gen.feature.structure.VariableDomain;
 import ivorius.reccomplex.world.gen.feature.structure.context.StructureContext;
 import ivorius.reccomplex.world.gen.feature.structure.context.StructureLoadContext;
 import ivorius.reccomplex.world.gen.feature.structure.context.StructurePrepareContext;
@@ -78,6 +81,8 @@ public class GenericStructure implements Structure<GenericStructure.InstanceData
     public boolean rotatable;
     public boolean mirrorable;
     public boolean blocking;
+
+    public GenericVariableDomain variableDomain = new GenericVariableDomain();
 
     public Metadata metadata = new Metadata();
 
@@ -193,6 +198,8 @@ public class GenericStructure implements Structure<GenericStructure.InstanceData
         boolean asSource = context.generateAsSource;
 
         RunTransformer transformer = getRunTransformer(instanceData, foreignTransformer, asSource);
+
+        instanceData.variableDomain.fill(context.environment.variables);
 
         if (transformer != null && context.generateMaturity == StructureSpawnContext.GenerateMaturity.SUGGEST)
         {
@@ -326,6 +333,9 @@ public class GenericStructure implements Structure<GenericStructure.InstanceData
 
             int[] areaSize = new int[]{blockCollection.width, blockCollection.height, blockCollection.length};
             BlockPos origin = StructureBoundingBoxes.min(context.boundingBox);
+
+            variableDomain.fill(instanceData.variableDomain, context.random);
+            instanceData.variableDomain.fill(context.environment.variables);
 
             instanceData.transformerData = this.transformer.prepareInstanceData(context, worldData);
             instanceData.foreignTransformerData = foreignTransformer.prepareInstanceData(context, worldData);
@@ -466,6 +476,8 @@ public class GenericStructure implements Structure<GenericStructure.InstanceData
             structureInfo.mirrorable = JsonUtils.getBoolean(jsonObject, "mirrorable", false);
             structureInfo.blocking = JsonUtils.getBoolean(jsonObject, "blocking", true);
 
+            structureInfo.variableDomain = context.deserialize(JsonUtils.getJsonObject(jsonObject, "variableDomain", new JsonObject()), GenericVariableDomain.class);
+
             if (jsonObject.has("dependencyExpression"))
                 structureInfo.dependencies.setExpression(JsonUtils.getString(jsonObject, "dependencyExpression"));
             else if (jsonObject.has("dependencies")) // Legacy
@@ -498,6 +510,8 @@ public class GenericStructure implements Structure<GenericStructure.InstanceData
             jsonObject.addProperty("mirrorable", structureInfo.mirrorable);
             jsonObject.addProperty("blocking", structureInfo.blocking);
 
+            jsonObject.add("variableDomain", context.serialize(structureInfo.variableDomain));
+
             jsonObject.add("dependencyExpression", context.serialize(structureInfo.dependencies.getExpression()));
 
             if (!RecurrentComplex.USE_ZIP_FOR_STRUCTURE_FILES && structureInfo.worldDataCompound != null)
@@ -521,6 +535,8 @@ public class GenericStructure implements Structure<GenericStructure.InstanceData
         public static final String KEY_FOREIGN_TRANSFORMER = "foreignTransformer";
         public static final String KEY_TILE_ENTITIES = "tileEntities";
 
+        public final VariableDomain variableDomain = new VariableDomain();
+
         public TransformerMulti.InstanceData transformerData;
         public TransformerMulti.InstanceData foreignTransformerData;
         public final Map<BlockPos, NBTStorable> tileEntities = new HashMap<>();
@@ -539,6 +555,8 @@ public class GenericStructure implements Structure<GenericStructure.InstanceData
         {
             IvBlockCollection blockCollection = worldData.blockCollection;
             NBTTagCompound compound = nbt instanceof NBTTagCompound ? (NBTTagCompound) nbt : new NBTTagCompound();
+
+            variableDomain.readFromNBT(compound.getCompoundTag("variables"));
 
             if (compound.hasKey(KEY_TRANSFORMER))
                 transformerData = transformer.loadInstanceData(context, compound.getTag(KEY_TRANSFORMER));
@@ -562,6 +580,8 @@ public class GenericStructure implements Structure<GenericStructure.InstanceData
         public NBTBase writeToNBT()
         {
             NBTTagCompound compound = new NBTTagCompound();
+
+            NBTCompoundObjects.writeTo(compound, "variables", variableDomain);
 
             if (transformerData != null)
                 compound.setTag(KEY_TRANSFORMER, transformerData.writeToNBT());

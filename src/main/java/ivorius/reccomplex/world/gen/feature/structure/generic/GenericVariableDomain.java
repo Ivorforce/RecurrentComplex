@@ -68,7 +68,7 @@ public class GenericVariableDomain
                 variable.chance = JsonUtils.getFloat(jsonObject, "chance");
                 variable.affectsLogic = JsonUtils.getBoolean(jsonObject, "affectsLogic");
 
-                return null;
+                return variable;
             }
 
             @Override

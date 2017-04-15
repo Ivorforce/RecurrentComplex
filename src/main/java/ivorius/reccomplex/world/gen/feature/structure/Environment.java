@@ -58,7 +58,7 @@ public class Environment
 
     public Environment withGeneration(GenerationType generation)
     {
-        return new Environment(world, biome, villageType, generationType);
+        return new Environment(world, biome, villageType, generation);
     }
 
     public Environment copy()

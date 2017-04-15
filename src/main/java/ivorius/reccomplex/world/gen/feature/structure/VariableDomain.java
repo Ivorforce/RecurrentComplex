@@ -18,7 +18,7 @@ import java.util.stream.Stream;
  */
 public class VariableDomain implements NBTCompoundObject
 {
-    private final TObjectByteMap<String> variables = new TObjectByteHashMap<>();
+    protected final TObjectByteMap<String> variables = new TObjectByteHashMap<>();
 
     public VariableDomain()
     {
@@ -48,9 +48,10 @@ public class VariableDomain implements NBTCompoundObject
         return variables.containsKey(variable);
     }
 
-    public void set(String variable, boolean value)
+    public VariableDomain set(String variable, boolean value)
     {
         variables.put(variable, (byte) (value ? 1 : 0));
+        return this;
     }
 
     public Stream<VariableDomain> split(String variable)
@@ -72,18 +73,18 @@ public class VariableDomain implements NBTCompoundObject
     @Override
     public void readFromNBT(NBTTagCompound compound)
     {
-        variables.forEachEntry((a, b) ->
-        {
-            compound.setBoolean(a, b != 0);
-            return true;
-        });
+        variables.clear();
+        for (String s : compound.getKeySet())
+            set(s, compound.getBoolean(s));
     }
 
     @Override
     public void writeToNBT(NBTTagCompound compound)
     {
-        variables.clear();
-        for (String s : compound.getKeySet())
-            set(s, compound.getBoolean(s));
+        variables.forEachEntry((a, b) ->
+        {
+            compound.setBoolean(a, b != 0);
+            return true;
+        });
     }
 }

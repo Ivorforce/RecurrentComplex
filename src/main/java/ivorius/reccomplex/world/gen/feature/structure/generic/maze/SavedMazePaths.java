@@ -7,6 +7,7 @@ package ivorius.reccomplex.world.gen.feature.structure.generic.maze;
 
 import ivorius.ivtoolkit.maze.components.MazePassage;
 import ivorius.ivtoolkit.maze.components.MazeRoom;
+import ivorius.reccomplex.world.gen.feature.structure.Environment;
 
 import java.util.Map;
 import java.util.function.Function;
@@ -18,9 +19,9 @@ import java.util.stream.Stream;
  */
 public class SavedMazePaths
 {
-    public static Function<SavedMazePathConnection, Map.Entry<MazePassage, Connector>> buildFunction(final ConnectorFactory factory)
+    public static Function<SavedMazePathConnection, Map.Entry<MazePassage, Connector>> buildFunction(Environment environment, final ConnectorFactory factory)
     {
-        return input -> input != null ? input.build(factory) : null;
+        return input -> input != null ? input.build(environment, factory) : null;
     }
 
     public static <K, V> void put(Map<K, V> map, Map.Entry<K, V> entry)

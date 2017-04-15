@@ -13,6 +13,7 @@ import ivorius.ivtoolkit.tools.NBTCompoundObject;
 import ivorius.reccomplex.json.JsonUtils;
 import ivorius.reccomplex.utils.algebra.ExpressionCache;
 import ivorius.reccomplex.utils.expression.EnvironmentMatcher;
+import ivorius.reccomplex.world.gen.feature.structure.Environment;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.common.util.Constants;
 import org.apache.commons.lang3.tuple.Pair;
@@ -59,8 +60,17 @@ public class SavedMazePathConnection implements NBTCompoundObject
         return connector;
     }
 
-    public Map.Entry<MazePassage, Connector> build(ConnectorFactory factory)
+    public Map.Entry<MazePassage, Connector> build(Environment environment, ConnectorFactory factory)
     {
+        SavedConnector connector = this.connector;
+        for (ConditionalConnector conditionalConnector : conditionalConnectors)
+        {
+            if (conditionalConnector.expression.test(environment))
+            {
+                connector = conditionalConnector.connector;
+                break;
+            }
+        }
         return Pair.of(path.build(), connector.toConnector(factory));
     }
 

@@ -57,6 +57,7 @@ public class MazeGeneration extends GenerationType implements WeightedSelector.I
         builder.registerTypeAdapter(SavedMazeReachability.class, new SavedMazeReachability.Serializer());
         builder.registerTypeAdapter(SavedMazePath.class, new SavedMazePath.Serializer());
         builder.registerTypeAdapter(SavedMazePathConnection.class, new SavedMazePathConnection.Serializer());
+        builder.registerTypeAdapter(SavedMazePathConnection.ConditionalConnector.class, new SavedMazePathConnection.ConditionalConnector.Serializer());
 
         return builder.create();
     }

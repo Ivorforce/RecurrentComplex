@@ -18,6 +18,7 @@ import ivorius.reccomplex.world.gen.feature.structure.generic.maze.SavedMazePath
 
 import javax.annotation.Nonnull;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -43,14 +44,14 @@ public class TableDataSourceMazePathConnectionList extends TableDataSourceList<S
     @Override
     public SavedMazePathConnection newEntry(String actionID)
     {
-        return new SavedMazePathConnection(2, new MazeRoom(new int[bounds.size()]), false, ConnectorStrategy.DEFAULT_PATH);
+        return new SavedMazePathConnection(2, new MazeRoom(new int[bounds.size()]), false, ConnectorStrategy.DEFAULT_PATH, Collections.emptyList());
     }
 
     @Nonnull
     @Override
     public TableCell entryCell(boolean enabled, SavedMazePathConnection savedMazePathConnection)
     {
-        return TableCells.edit(enabled, navigator, tableDelegate, () -> new TableDataSourceMazePathConnection(savedMazePathConnection, bounds, tableDelegate));
+        return TableCells.edit(enabled, navigator, tableDelegate, () -> new TableDataSourceMazePathConnection(savedMazePathConnection, bounds, tableDelegate, navigator));
     }
 
     @Nonnull

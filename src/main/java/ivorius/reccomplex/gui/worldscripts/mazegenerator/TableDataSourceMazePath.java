@@ -10,10 +10,7 @@ import ivorius.ivtoolkit.maze.components.MazeRoom;
 import ivorius.ivtoolkit.tools.IvTranslations;
 import ivorius.reccomplex.gui.TableDirections;
 import ivorius.reccomplex.gui.table.*;
-import ivorius.reccomplex.gui.table.cell.TableCell;
-import ivorius.reccomplex.gui.table.cell.TableCellButton;
-import ivorius.reccomplex.gui.table.cell.TableCellEnum;
-import ivorius.reccomplex.gui.table.cell.TitledCell;
+import ivorius.reccomplex.gui.table.cell.*;
 import ivorius.reccomplex.gui.table.datasource.TableDataSourceSegmented;
 import ivorius.reccomplex.world.gen.feature.structure.generic.maze.ConnectorStrategy;
 import ivorius.reccomplex.world.gen.feature.structure.generic.maze.SavedMazePath;
@@ -22,6 +19,7 @@ import net.minecraft.util.EnumFacing;
 
 import javax.annotation.Nonnull;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -38,13 +36,13 @@ public class TableDataSourceMazePath extends TableDataSourceSegmented
 
     private TableCellButton invertableButton;
 
-    public TableDataSourceMazePath(SavedMazePath mazePath, List<IntegerRange> bounds, TableDelegate tableDelegate)
+    public TableDataSourceMazePath(SavedMazePath mazePath, List<IntegerRange> bounds, TableDelegate tableDelegate, TableNavigator navigator)
     {
         this.mazePath = mazePath;
         this.bounds = bounds;
         this.tableDelegate = tableDelegate;
 
-        addManagedSegment(1, new TableDataSourceMazeRoom(mazePath.sourceRoom, mazeRoom -> mazePath.sourceRoom = mazeRoom,bounds,
+        addManagedSegment(2, new TableDataSourceMazeRoom(mazePath.sourceRoom, mazeRoom -> mazePath.sourceRoom = mazeRoom,bounds,
                 Arrays.stream(COORD_NAMES).map(s -> IvTranslations.get("reccomplex.generationInfo.mazeComponent.position." + s)).collect(Collectors.toList()),
                 Arrays.stream(COORD_NAMES).map(s -> IvTranslations.getLines("reccomplex.generationInfo.mazeComponent.position." + s + ".tooltip")).collect(Collectors.toList()))
         );
@@ -81,7 +79,7 @@ public class TableDataSourceMazePath extends TableDataSourceSegmented
         int pathDim = side.getFrontOffsetX() != 0 ? 0 : side.getFrontOffsetY() != 0 ? 1 : side.getFrontOffsetZ() != 0 ? 2 : -1;
         int offset = side.getFrontOffsetX() + side.getFrontOffsetY() + side.getFrontOffsetZ();
 
-        return new SavedMazePathConnection(pathDim, new MazeRoom(room[0], room[1], room[2]), offset > 0, ConnectorStrategy.DEFAULT_PATH);
+        return new SavedMazePathConnection(pathDim, new MazeRoom(room[0], room[1], room[2]), offset > 0, ConnectorStrategy.DEFAULT_PATH, Collections.emptyList());
     }
 
     @Nonnull

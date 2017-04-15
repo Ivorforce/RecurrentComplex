@@ -169,7 +169,7 @@ public class StructureGenerator<S extends NBTStorable>
 
     public StructureGenerator<S> asChild(StructureSpawnContext context)
     {
-        return environment(context.environment).random(context.random).transform(context.transform)
+        return environment(context.environment.copy()).random(context.random).transform(context.transform)
                 .generationBB(context.generationBB).generationPredicate(context.generationPredicate).generationLayer(context.generationLayer + 1)
                 .asSource(context.generateAsSource).maturity(context.generateMaturity.isFirstTime() ? StructureSpawnContext.GenerateMaturity.FIRST : StructureSpawnContext.GenerateMaturity.COMPLEMENT);
     }
@@ -256,7 +256,7 @@ public class StructureGenerator<S extends NBTStorable>
     }
 
     @Nonnull
-    protected Environment environment()
+    public Environment environment()
     {
         return environment != null ? environment : Environment.inNature(world(), surfaceBoundingBox(),
                 generationType != null ? generationType : generationInfoID != null ? structure().generationInfo(generationInfoID) : null);

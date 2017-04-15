@@ -60,4 +60,9 @@ public class Environment
     {
         return new Environment(world, biome, villageType, generationType);
     }
+
+    public Environment copy()
+    {
+        return new Environment(world, biome, villageType, generationType);
+    }
 }

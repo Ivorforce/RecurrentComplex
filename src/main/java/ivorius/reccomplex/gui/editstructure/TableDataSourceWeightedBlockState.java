@@ -76,6 +76,7 @@ public class TableDataSourceWeightedBlockState extends TableDataSourceSegmented
         switch (segment)
         {
             case 0:
+                return 1;
             default:
                 return super.sizeOfSegment(segment);
         }

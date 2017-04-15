@@ -56,7 +56,7 @@ public class GenericVariableDomain
                 Variable variable = new Variable();
 
                 variable.id = JsonUtils.getString(jsonObject, "id");
-                variable.condition.setExpression(JsonUtils.getString(jsonObject, "expression"));
+                variable.condition.setExpression(JsonUtils.getString(jsonObject, "condition", ""));
                 variable.chance = JsonUtils.getFloat(jsonObject, "chance");
                 variable.affectsLogic = JsonUtils.getBoolean(jsonObject, "affectsLogic");
 

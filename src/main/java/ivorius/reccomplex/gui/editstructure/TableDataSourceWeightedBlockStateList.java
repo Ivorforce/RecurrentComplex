@@ -5,6 +5,7 @@
 
 package ivorius.reccomplex.gui.editstructure;
 
+import ivorius.ivtoolkit.blocks.BlockStates;
 import ivorius.reccomplex.files.RCFileSaver;
 import ivorius.reccomplex.gui.editstructure.preset.TableDataSourcePresettedList;
 import ivorius.reccomplex.gui.editstructure.preset.TableDataSourcePresettedObject;
@@ -42,7 +43,9 @@ public class TableDataSourceWeightedBlockStateList extends TableDataSourceSegmen
             @Override
             public String getDisplayString(WeightedBlockState entry)
             {
-                return String.format("%s$%d (%.2f)", RCStrings.abbreviateFormatted(Block.REGISTRY.getNameForObject(entry.state.getBlock()).toString(), 16), ivorius.ivtoolkit.blocks.BlockStates.toMetadata(entry.state), entry.getWeight());
+                if (entry.state == null)
+                    return String.format("None (%.2f)", entry.getWeight());
+                return String.format("%s$%d (%.2f)", RCStrings.abbreviateFormatted(entry.state.getBlock().getLocalizedName(), 16), BlockStates.toMetadata(entry.state), entry.getWeight());
             }
 
             @Override

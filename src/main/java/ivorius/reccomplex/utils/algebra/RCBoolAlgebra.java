@@ -16,7 +16,7 @@ public class RCBoolAlgebra
     {
         return algebra != null ? algebra : (algebra = new Algebra<>(
                 BoolAlgebra.parentheses("(", ")"),
-                BoolAlgebra.conditional("?", ":"),
+                BoolAlgebra.conditional("??", "::"),
                 BoolAlgebra.or("|"), BoolAlgebra.and("&"),
                 BoolAlgebra.not("!")
         ));

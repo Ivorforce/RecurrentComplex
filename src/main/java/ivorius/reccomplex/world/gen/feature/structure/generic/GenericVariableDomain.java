@@ -5,9 +5,15 @@
 
 package ivorius.reccomplex.world.gen.feature.structure.generic;
 
+import com.google.gson.*;
 import com.google.gson.annotations.SerializedName;
+import ivorius.reccomplex.json.JsonUtils;
+import ivorius.reccomplex.utils.algebra.ExpressionCache;
+import ivorius.reccomplex.utils.expression.EnvironmentMatcher;
+import ivorius.reccomplex.world.gen.feature.structure.Environment;
 import ivorius.reccomplex.world.gen.feature.structure.VariableDomain;
 
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -20,24 +26,55 @@ public class GenericVariableDomain
     @SerializedName("variables")
     public final List<Variable> variables = new ArrayList<>();
 
-    public void fill(VariableDomain domain, Random random)
+    public void fill(VariableDomain domain, Environment environment, Random random)
     {
         for (Variable variable : variables)
         {
             if (!domain.isSet(variable.id))
-                domain.set(variable.id, random.nextFloat() < variable.chance);
+                domain.set(variable.id, random.nextFloat() < variable.chance
+                        && variable.condition.test(environment));
         }
     }
 
     public static class Variable
     {
-        @SerializedName("name")
         public String id = "";
 
-        @SerializedName("chance")
+        public EnvironmentMatcher condition = ExpressionCache.of(new EnvironmentMatcher(), "");
+
         public float chance = 0.5f;
 
-        @SerializedName("affectsLogic")
         public boolean affectsLogic = false;
+
+        public static class Serializer implements JsonSerializer<Variable>, JsonDeserializer<Variable>
+        {
+            @Override
+            public Variable deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException
+            {
+                JsonObject jsonObject = JsonUtils.asJsonObject(json, "Generic Variable");
+
+                Variable variable = new Variable();
+
+                variable.id = JsonUtils.getString(jsonObject, "id");
+                variable.condition.setExpression(JsonUtils.getString(jsonObject, "expression"));
+                variable.chance = JsonUtils.getFloat(jsonObject, "chance");
+                variable.affectsLogic = JsonUtils.getBoolean(jsonObject, "affectsLogic");
+
+                return null;
+            }
+
+            @Override
+            public JsonElement serialize(Variable src, Type typeOfSrc, JsonSerializationContext context)
+            {
+                JsonObject jsonObject = new JsonObject();
+
+                jsonObject.addProperty("id", src.id);
+                jsonObject.addProperty("condition", src.condition.getExpression());
+                jsonObject.addProperty("chance", src.chance);
+                jsonObject.addProperty("affectsLogic", src.affectsLogic);
+
+                return jsonObject;
+            }
+        }
     }
 }

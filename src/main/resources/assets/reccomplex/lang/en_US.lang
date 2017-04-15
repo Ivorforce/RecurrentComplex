@@ -279,6 +279,7 @@ reccomplex.structure.variables.chance=Chance
 reccomplex.structure.variables.chance.tooltip=Chance for the variable to trigger
 reccomplex.structure.variables.logical=Logical
 reccomplex.structure.variables.logical.tooltip=True if the variable affects placement logic<br>(e.g. maze exits).<br>False if it's purely visual.
+reccomplex.structure.variables.condition=Condition
 
 reccomplex.structure.id=Structure ID
 reccomplex.structure.id.tooltip=Unique Identifier for the structure.

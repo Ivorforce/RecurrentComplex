@@ -7,6 +7,7 @@ package ivorius.reccomplex.gui.editstructure;
 
 import ivorius.ivtoolkit.tools.IvTranslations;
 import ivorius.reccomplex.gui.GuiValidityStateIndicator;
+import ivorius.reccomplex.gui.TableDataSourceExpression;
 import ivorius.reccomplex.gui.table.GuiTable;
 import ivorius.reccomplex.gui.table.TableDelegate;
 import ivorius.reccomplex.gui.table.cell.*;
@@ -29,6 +30,7 @@ public class TableDataSourceGenericVariable extends TableDataSourceSegmented
     public TableDataSourceGenericVariable(GenericVariableDomain.Variable variable)
     {
         this.variable = variable;
+        addManagedSegment(1, TableDataSourceExpression.constructDefault(IvTranslations.get("reccomplex.structure.variables.condition"), variable.condition, null));
     }
 
     @Nonnull
@@ -41,7 +43,7 @@ public class TableDataSourceGenericVariable extends TableDataSourceSegmented
     @Override
     public int numberOfSegments()
     {
-        return 1;
+        return 2;
     }
 
     @Override
@@ -59,7 +61,8 @@ public class TableDataSourceGenericVariable extends TableDataSourceSegmented
             {
                 TableCellString cell = new TableCellString(null, variable.id);
                 cell.setShowsValidityState(true);
-                cell.addPropertyConsumer(s -> {
+                cell.addPropertyConsumer(s ->
+                {
                     if (Structures.isSimpleID(s))
                     {
                         cell.setValidityState(GuiValidityStateIndicator.State.VALID);
@@ -79,7 +82,7 @@ public class TableDataSourceGenericVariable extends TableDataSourceSegmented
                 return new TitledCell(IvTranslations.get("reccomplex.structure.variables.chance"), cell)
                         .withTitleTooltip(IvTranslations.getLines("reccomplex.structure.variables.chance.tooltip"));
             }
-            else
+            else if (index == 2)
             {
                 TableCellBoolean cell = new TableCellBoolean(null, variable.affectsLogic);
                 cell.addPropertyConsumer(b -> variable.affectsLogic = b);

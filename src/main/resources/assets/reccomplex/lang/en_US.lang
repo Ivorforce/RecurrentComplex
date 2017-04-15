@@ -476,6 +476,9 @@ reccomplex.maze.rooms.size.z=Room size (z)
 reccomplex.maze.connector=Connector
 reccomplex.maze.connector.tooltip=The ID of the connector.<br>These work like electronical connectors.<br><br>§bHermaphrodite§r (default): Connects to itself.<br><br>If the ID starts with...<br>§bMale:§r Connects to female counterpart.<br>§bFemale:§r Connects to male counterpart.
 reccomplex.maze.connector.default=Default Connector
+reccomplex.maze.conditional_connectors=Variants
+reccomplex.maze.conditional_connectors.tooltip=Connectors that will be used<br>if certain conditions are met.
+reccomplex.maze.conditional_connector.condition=Condition
 
 reccomplex.selection.area.additive=Additive
 reccomplex.selection.area.subtractive=Subtractive

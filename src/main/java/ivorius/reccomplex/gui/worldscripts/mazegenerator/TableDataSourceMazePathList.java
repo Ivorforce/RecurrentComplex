@@ -49,7 +49,7 @@ public class TableDataSourceMazePathList extends TableDataSourceList<SavedMazePa
     @Override
     public TableCell entryCell(boolean enabled, SavedMazePath savedMazePath)
     {
-        return TableCells.edit(enabled, navigator, tableDelegate, () -> new TableDataSourceMazePath(savedMazePath, bounds, tableDelegate));
+        return TableCells.edit(enabled, navigator, tableDelegate, () -> new TableDataSourceMazePath(savedMazePath, bounds, tableDelegate, navigator));
     }
 
     @Nonnull

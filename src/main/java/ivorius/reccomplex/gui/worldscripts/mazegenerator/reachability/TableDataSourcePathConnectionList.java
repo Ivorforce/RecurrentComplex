@@ -65,9 +65,9 @@ public class TableDataSourcePathConnectionList extends TableDataSourceList<Immut
     {
         return TableCells.edit(enabled, navigator, tableDelegate, () -> new TableDataSourceMulti(
                 new TableDataSourcePreloaded(new TitledCell(new TableCellTitle("", IvTranslations.get("reccomplex.gui.source")))),
-                new TableDataSourceMazePath(pair.getLeft(), bounds, tableDelegate),
+                new TableDataSourceMazePath(pair.getLeft(), bounds, tableDelegate, navigator),
                 new TableDataSourcePreloaded(new TitledCell(new TableCellTitle("", IvTranslations.get("reccomplex.gui.destination")))),
-                new TableDataSourceMazePath(pair.getRight(), bounds, tableDelegate)
+                new TableDataSourceMazePath(pair.getRight(), bounds, tableDelegate, navigator)
         ));
     }
 

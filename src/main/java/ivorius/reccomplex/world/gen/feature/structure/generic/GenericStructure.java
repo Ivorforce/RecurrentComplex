@@ -418,6 +418,13 @@ public class GenericStructure implements Structure<GenericStructure.InstanceData
         return constructWorldData().blockCollection;
     }
 
+    @Nonnull
+    @Override
+    public GenericVariableDomain declaredVariables()
+    {
+        return variableDomain;
+    }
+
     @Override
     public String toString()
     {

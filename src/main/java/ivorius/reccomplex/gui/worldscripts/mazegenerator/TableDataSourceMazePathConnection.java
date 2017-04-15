@@ -35,6 +35,6 @@ public class TableDataSourceMazePathConnection extends TableDataSourceSegmented
     @Override
     public String title()
     {
-        return "Paths";
+        return "Path";
     }
 }

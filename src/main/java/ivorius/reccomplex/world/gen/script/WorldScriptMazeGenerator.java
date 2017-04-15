@@ -15,11 +15,13 @@ import ivorius.ivtoolkit.tools.IvTranslations;
 import ivorius.ivtoolkit.tools.NBTCompoundObjects;
 import ivorius.ivtoolkit.tools.NBTTagLists;
 import ivorius.reccomplex.RCConfig;
-import ivorius.reccomplex.gui.table.datasource.TableDataSource;
 import ivorius.reccomplex.gui.table.TableDelegate;
 import ivorius.reccomplex.gui.table.TableNavigator;
+import ivorius.reccomplex.gui.table.datasource.TableDataSource;
 import ivorius.reccomplex.gui.worldscripts.mazegenerator.TableDataSourceWorldScriptMazeGenerator;
-import ivorius.reccomplex.world.gen.feature.structure.*;
+import ivorius.reccomplex.utils.IntAreas;
+import ivorius.reccomplex.utils.NBTStorable;
+import ivorius.reccomplex.world.gen.feature.structure.StructureRegistry;
 import ivorius.reccomplex.world.gen.feature.structure.context.StructureLoadContext;
 import ivorius.reccomplex.world.gen.feature.structure.context.StructurePrepareContext;
 import ivorius.reccomplex.world.gen.feature.structure.context.StructureSpawnContext;
@@ -29,8 +31,6 @@ import ivorius.reccomplex.world.gen.feature.structure.generic.maze.rules.Blocked
 import ivorius.reccomplex.world.gen.feature.structure.generic.maze.rules.LimitAABBStrategy;
 import ivorius.reccomplex.world.gen.feature.structure.generic.maze.rules.MazeRule;
 import ivorius.reccomplex.world.gen.feature.structure.generic.maze.rules.MazeRuleRegistry;
-import ivorius.reccomplex.utils.IntAreas;
-import ivorius.reccomplex.utils.NBTStorable;
 import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
@@ -231,7 +231,10 @@ public class WorldScriptMazeGenerator implements WorldScript<WorldScriptMazeGene
         final int[] outsideBoundsLower = IvVecMathHelper.sub(boundsLower, oneArray);
 
         List<MazeComponentStructure<Connector>> transformedComponents = StructureRegistry.INSTANCE.getStructuresInMaze(mazeID)
-                .flatMap(pair -> WorldGenMaze.transforms(pair.getLeft(), pair.getRight(), factory, transform, blockedConnections)).collect(Collectors.toList());
+                .flatMap(pair -> WorldGenMaze.variableVariants(pair.getLeft(), pair.getRight(), factory, transform, blockedConnections)
+                        .flatMap(domain -> WorldGenMaze.transforms(pair.getLeft(), domain, pair.getRight(), factory, transform, blockedConnections))
+                )
+                .collect(Collectors.toList());
 
         MorphingMazeComponent<Connector> maze = new SetMazeComponent<>();
 

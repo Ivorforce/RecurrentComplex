@@ -19,6 +19,7 @@ import ivorius.ivtoolkit.math.Transforms;
 import ivorius.reccomplex.world.gen.feature.StructureGenerator;
 import ivorius.reccomplex.world.gen.feature.structure.*;
 import ivorius.reccomplex.world.gen.feature.structure.context.StructureSpawnContext;
+import ivorius.reccomplex.world.gen.feature.structure.generic.GenericVariableDomain;
 import ivorius.reccomplex.world.gen.feature.structure.generic.generation.MazeGeneration;
 import net.minecraft.util.math.BlockPos;
 import org.apache.commons.lang3.tuple.Pair;
@@ -83,19 +84,31 @@ public class WorldGenMaze
 
     }
 
-    public static Stream<MazeComponentStructure<Connector>> transforms(Structure info, MazeGeneration mazeInfo, ConnectorFactory factory, AxisAlignedTransform2D transform, Collection<Connector> blockedConnections)
+    public static Stream<VariableDomain> variableVariants(Structure info, MazeGeneration mazeInfo, ConnectorFactory factory, AxisAlignedTransform2D transform, Collection<Connector> blockedConnections)
+    {
+        Stream<VariableDomain> stream = Stream.of(new VariableDomain());
+        for (GenericVariableDomain.Variable variable : info.declaredVariables().variables)
+        {
+            if (variable.affectsLogic)
+                stream = stream.flatMap(d -> d.split(variable.id));
+        }
+        return stream;
+    }
+
+    public static Stream<MazeComponentStructure<Connector>> transforms(Structure info, VariableDomain variableDomain, MazeGeneration mazeInfo, ConnectorFactory factory, AxisAlignedTransform2D transform, Collection<Connector> blockedConnections)
     {
         int[] compSize = mazeInfo.mazeComponent.boundsSize();
 
         List<AxisAlignedTransform2D> transforms = Transforms.transformStream(r -> info.isRotatable() || transform.apply(r) == 0, m -> info.isMirrorable() || m == 0).collect(Collectors.toList());
 
-        double compWeight = mazeInfo.getWeight() * RCConfig.tweakedSpawnRate(StructureRegistry.INSTANCE.id(info));
+        double compWeight = mazeInfo.getWeight() * info.declaredVariables().chance(variableDomain)
+                * RCConfig.tweakedSpawnRate(StructureRegistry.INSTANCE.id(info));
         double splitCompWeight = compWeight / transforms.size();
 
-        return transforms.stream().map(t -> transform(info, mazeInfo.mazeComponent, t, compSize, splitCompWeight, factory, blockedConnections));
+        return transforms.stream().map(t -> transform(info, variableDomain, mazeInfo.mazeComponent, t, compSize, splitCompWeight, factory, blockedConnections));
     }
 
-    public static MazeComponentStructure<Connector> transform(Structure info, SavedMazeComponent comp, final AxisAlignedTransform2D transform, final int[] size, double weight, ConnectorFactory factory, Collection<Connector> blockedConnections)
+    public static MazeComponentStructure<Connector> transform(Structure info, VariableDomain variableDomain, SavedMazeComponent comp, final AxisAlignedTransform2D transform, final int[] size, double weight, ConnectorFactory factory, Collection<Connector> blockedConnections)
     {
         Collection<MazeRoom> rooms = comp.getRooms();
         Set<MazeRoom> transformedRooms = rooms.stream().map(input -> MazeRooms.rotated(input, transform, size)).collect(Collectors.toSet());
@@ -106,7 +119,7 @@ public class WorldGenMaze
 
         ImmutableMultimap<MazePassage, MazePassage> reachability = comp.reachability.build(transform, size, SavedMazeReachability.notBlocked(blockedConnections, transformedExits), transformedExits.keySet());
 
-        return new MazeComponentStructure<>(weight, StructureRegistry.INSTANCE.id(info), transform, ImmutableSet.copyOf(transformedRooms), ImmutableMap.copyOf(transformedExits), reachability);
+        return new MazeComponentStructure<>(weight, StructureRegistry.INSTANCE.id(info), variableDomain, transform, ImmutableSet.copyOf(transformedRooms), ImmutableMap.copyOf(transformedExits), reachability);
     }
 
     public static <C> SetMazeComponent<C> createCompleteComponent(Set<MazeRoom> rooms, Map<MazePassage, C> exits, C wallConnector)

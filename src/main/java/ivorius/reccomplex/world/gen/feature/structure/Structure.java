@@ -10,6 +10,7 @@ import ivorius.reccomplex.world.gen.feature.structure.context.StructureLoadConte
 import ivorius.reccomplex.world.gen.feature.structure.context.StructurePrepareContext;
 import ivorius.reccomplex.world.gen.feature.structure.context.StructureSpawnContext;
 import ivorius.reccomplex.world.gen.feature.structure.generic.GenericStructure;
+import ivorius.reccomplex.world.gen.feature.structure.generic.GenericVariableDomain;
 import ivorius.reccomplex.world.gen.feature.structure.generic.generation.GenerationType;
 import ivorius.reccomplex.world.gen.feature.structure.generic.transformers.TransformerMulti;
 import ivorius.reccomplex.utils.NBTStorable;
@@ -53,4 +54,7 @@ public interface Structure<S extends NBTStorable>
 
     @Nullable
     IvBlockCollection blockCollection();
+
+    @Nonnull
+    GenericVariableDomain declaredVariables();
 }

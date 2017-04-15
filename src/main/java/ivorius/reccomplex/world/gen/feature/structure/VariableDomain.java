@@ -10,12 +10,24 @@ import gnu.trove.map.hash.TObjectByteHashMap;
 import ivorius.ivtoolkit.tools.NBTCompoundObject;
 import net.minecraft.nbt.NBTTagCompound;
 
+import java.util.stream.IntStream;
+import java.util.stream.Stream;
+
 /**
  * Created by lukas on 15.04.17.
  */
 public class VariableDomain implements NBTCompoundObject
 {
     private final TObjectByteMap<String> variables = new TObjectByteHashMap<>();
+
+    public VariableDomain()
+    {
+    }
+
+    public VariableDomain(TObjectByteMap<String> variables)
+    {
+        this.variables.putAll(variables);
+    }
 
     public void fill(VariableDomain domain)
     {
@@ -39,6 +51,22 @@ public class VariableDomain implements NBTCompoundObject
     public void set(String variable, boolean value)
     {
         variables.put(variable, (byte) (value ? 1 : 0));
+    }
+
+    public Stream<VariableDomain> split(String variable)
+    {
+        return IntStream.of(0, 1)
+                .mapToObj(i ->
+                {
+                    VariableDomain copy = copy();
+                    copy.set(variable, i != 0);
+                    return copy;
+                });
+    }
+
+    public VariableDomain copy()
+    {
+        return new VariableDomain(variables);
     }
 
     @Override

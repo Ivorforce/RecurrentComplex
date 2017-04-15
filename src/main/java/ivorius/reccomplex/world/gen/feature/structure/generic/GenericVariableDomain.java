@@ -36,6 +36,14 @@ public class GenericVariableDomain
         }
     }
 
+    public float chance(VariableDomain domain)
+    {
+        float chance = 1f;
+        for (Variable variable : variables)
+            chance *= (domain.get(variable.id) ? variable.chance : 1f - variable.chance);
+        return chance;
+    }
+
     public static class Variable
     {
         public String id = "";

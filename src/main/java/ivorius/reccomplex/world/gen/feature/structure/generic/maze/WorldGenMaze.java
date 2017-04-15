@@ -44,8 +44,9 @@ public class WorldGenMaze
         }
 
         return new StructureGenerator<>(structure).asChild(context, placedComponent.variableDomain).generationInfo(placedComponent.generationInfoID)
+                .transform(Transforms.apply(placedComponent.transform, context.transform))
                 .lowerCoord(lowerCoord(structure, placedComponent.lowerCoord, placedComponent.transform, pos, context.transform))
-                .transform(Transforms.apply(placedComponent.transform, context.transform)).structureID(placedComponent.structureID)
+                .structureID(placedComponent.structureID)
                 .instanceData(placedComponent.instanceData)
                 .generate().isPresent();
     }
@@ -70,8 +71,10 @@ public class WorldGenMaze
 
         BlockPos compLowerPos = getBoundingBox(roomSize, placedComponent, structure, componentInfo.transform).add(shift);
 
-        NBTStorable instanceData = new StructureGenerator<>(structure).random(random).environment(environment.copy(componentInfo.variableDomain)).transform(componentInfo.transform)
+        NBTStorable instanceData = new StructureGenerator<>(structure).random(random).environment(environment.copy(componentInfo.variableDomain))
+                .transform(Transforms.apply(componentInfo.transform, transform))
                 .lowerCoord(lowerCoord(structure, compLowerPos, componentInfo.transform, pos, transform))
+                .structureID(componentInfo.structureID)
                 .instanceData().orElse(null);
         return new PlacedStructure(componentInfo.structureID, componentInfo.structureID, componentInfo.transform, componentInfo.variableDomain, compLowerPos, instanceData.writeToNBT());
     }

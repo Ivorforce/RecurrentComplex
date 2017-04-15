@@ -199,7 +199,7 @@ public class WorldScriptMazeGenerator implements WorldScript<WorldScriptMazeGene
         InstanceData instanceData = new InstanceData();
 
         instanceData.placedStructures.addAll(getPlacedRooms(context.random, context.transform, context.environment).stream()
-                .map(placedComponent -> WorldGenMaze.place(context.random, context.environment, structureShift, roomSize, placedComponent))
+                .map(placedComponent -> WorldGenMaze.place(context.random, context.environment, structureShift, roomSize, placedComponent, pos))
                 .filter(Objects::nonNull).collect(Collectors.toList()));
 
         return instanceData;

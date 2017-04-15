@@ -349,7 +349,7 @@ public class GenericStructure implements Structure<GenericStructure.InstanceData
             {
                 asGeneratingTileEntity(context, IvTileEntityHelper.getAnyWorld(), areaSize, origin, tileEntityCompound, (src, tileEntity) ->
                 {
-                    NBTStorable tileEntityInstanceData = (NBTStorable) ((GeneratingTileEntity) tileEntity).prepareInstanceData(context);
+                    NBTStorable tileEntityInstanceData = (NBTStorable) tileEntity.prepareInstanceData(context);
                     if (tileEntityInstanceData != null) // Otherwise, don't generate
                         instanceData.tileEntities.put(src, tileEntityInstanceData);
                 });

@@ -53,7 +53,7 @@ public class WorldGenMaze
     }
 
     @Nullable
-    public static PlacedStructure place(Random random, Environment environment, BlockPos shift, int[] roomSize, PlacedMazeComponent<MazeComponentStructure<Connector>, Connector> placedComponent)
+    public static PlacedStructure place(Random random, Environment environment, BlockPos shift, int[] roomSize, PlacedMazeComponent<MazeComponentStructure<Connector>, Connector> placedComponent, BlockPos pos)
     {
         MazeComponentStructure<Connector> componentInfo = placedComponent.component();
         Structure<?> structure = StructureRegistry.INSTANCE.get(componentInfo.structureID);
@@ -67,7 +67,7 @@ public class WorldGenMaze
         BlockPos compLowerPos = getBoundingBox(roomSize, placedComponent, structure, componentInfo.transform).add(shift);
 
         NBTStorable instanceData = new StructureGenerator<>(structure).random(random).environment(environment.copy(componentInfo.variableDomain)).transform(componentInfo.transform)
-                .lowerCoord(compLowerPos)
+                .lowerCoord(compLowerPos.add(pos))
                 .instanceData().orElse(null);
         return new PlacedStructure(componentInfo.structureID, componentInfo.structureID, componentInfo.transform, componentInfo.variableDomain, compLowerPos, instanceData.writeToNBT());
     }

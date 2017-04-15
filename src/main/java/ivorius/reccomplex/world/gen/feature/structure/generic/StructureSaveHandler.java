@@ -67,6 +67,7 @@ public class StructureSaveHandler
         builder.registerTypeAdapter(GenericStructure.class, new GenericStructure.Serializer());
         StructureRegistry.TRANSFORMERS.constructGson(builder);
         StructureRegistry.GENERATION_TYPES.constructGson(builder);
+        builder.registerTypeAdapter(GenericVariableDomain.Variable.class, new GenericVariableDomain.Variable.Serializer());
 
         NBTToJson.registerSafeNBTSerializer(builder);
 

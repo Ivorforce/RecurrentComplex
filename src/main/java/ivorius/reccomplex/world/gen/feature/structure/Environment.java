@@ -29,7 +29,7 @@ public class Environment
     @Nullable
     public final GenerationType generationType;
 
-    public final VariableDomain variables = new VariableDomain();
+    public VariableDomain variables = new VariableDomain();
 
     public Environment(@Nonnull WorldServer world, @Nonnull Biome biome, @Nullable Integer villageType, @Nullable GenerationType generationType)
     {
@@ -64,5 +64,13 @@ public class Environment
     public Environment copy()
     {
         return new Environment(world, biome, villageType, generationType);
+    }
+
+    public Environment copy(VariableDomain domain)
+    {
+        Environment copy = copy();
+        if (domain != null)
+            domain.fill(copy.variables);
+        return copy;
     }
 }

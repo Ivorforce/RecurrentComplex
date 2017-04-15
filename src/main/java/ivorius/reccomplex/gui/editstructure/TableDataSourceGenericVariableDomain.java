@@ -25,7 +25,7 @@ public class TableDataSourceGenericVariableDomain extends TableDataSourceList<Ge
 
     public TableDataSourceGenericVariableDomain(TableDelegate tableDelegate, TableNavigator navigator, GenericVariableDomain domain)
     {
-        super(domain.variables, tableDelegate, navigator);
+        super(domain.variables(), tableDelegate, navigator);
         this.domain = domain;
     }
 

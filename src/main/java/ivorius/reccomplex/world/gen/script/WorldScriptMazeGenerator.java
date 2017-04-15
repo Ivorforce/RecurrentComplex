@@ -21,6 +21,7 @@ import ivorius.reccomplex.gui.table.datasource.TableDataSource;
 import ivorius.reccomplex.gui.worldscripts.mazegenerator.TableDataSourceWorldScriptMazeGenerator;
 import ivorius.reccomplex.utils.IntAreas;
 import ivorius.reccomplex.utils.NBTStorable;
+import ivorius.reccomplex.world.gen.feature.structure.Environment;
 import ivorius.reccomplex.world.gen.feature.structure.StructureRegistry;
 import ivorius.reccomplex.world.gen.feature.structure.context.StructureLoadContext;
 import ivorius.reccomplex.world.gen.feature.structure.context.StructurePrepareContext;
@@ -197,7 +198,7 @@ public class WorldScriptMazeGenerator implements WorldScript<WorldScriptMazeGene
     {
         InstanceData instanceData = new InstanceData();
 
-        instanceData.placedStructures.addAll(getPlacedRooms(context.random, context.transform).stream()
+        instanceData.placedStructures.addAll(getPlacedRooms(context.random, context.transform, context.environment).stream()
                 .map(placedComponent -> WorldGenMaze.place(context.random, context.environment, structureShift, roomSize, placedComponent))
                 .filter(Objects::nonNull).collect(Collectors.toList()));
 
@@ -210,7 +211,7 @@ public class WorldScriptMazeGenerator implements WorldScript<WorldScriptMazeGene
         return new InstanceData(nbt instanceof NBTTagCompound ? (NBTTagCompound) nbt : new NBTTagCompound());
     }
 
-    public List<PlacedMazeComponent<MazeComponentStructure<Connector>, Connector>> getPlacedRooms(Random random, AxisAlignedTransform2D transform)
+    public List<PlacedMazeComponent<MazeComponentStructure<Connector>, Connector>> getPlacedRooms(Random random, AxisAlignedTransform2D transform, Environment environment)
     {
         if (mazeComponent.rooms.isEmpty())
             return null;
@@ -231,8 +232,8 @@ public class WorldScriptMazeGenerator implements WorldScript<WorldScriptMazeGene
         final int[] outsideBoundsLower = IvVecMathHelper.sub(boundsLower, oneArray);
 
         List<MazeComponentStructure<Connector>> transformedComponents = StructureRegistry.INSTANCE.getStructuresInMaze(mazeID)
-                .flatMap(pair -> WorldGenMaze.variableVariants(pair.getLeft(), pair.getRight(), factory, transform, blockedConnections)
-                        .flatMap(domain -> WorldGenMaze.transforms(pair.getLeft(), domain, pair.getRight(), factory, transform, blockedConnections))
+                .flatMap(pair -> pair.getLeft().declaredVariables().omega(environment, true)
+                        .flatMap(domain -> WorldGenMaze.transforms(pair.getLeft(), pair.getRight(), transform, factory, environment.copy(domain), blockedConnections))
                 )
                 .collect(Collectors.toList());
 
@@ -241,7 +242,7 @@ public class WorldScriptMazeGenerator implements WorldScript<WorldScriptMazeGene
         WorldScriptMazeGenerator.enclose(maze, new MazeRoom(outsideBoundsLower), new MazeRoom(outsideBoundsHigher), defaultConnector);
         WorldScriptMazeGenerator.blockRooms(maze, mazeComponent.rooms.compile(false).keySet(), defaultConnector);
 
-        WorldGenMaze.buildExitPaths(factory, mazeComponent.exitPaths, maze.rooms()).forEach(path -> maze.exits().put(path.getKey(), path.getValue()));
+        WorldGenMaze.buildExitPaths(environment, factory, mazeComponent.exitPaths, maze.rooms()).forEach(path -> maze.exits().put(path.getKey(), path.getValue()));
 
         // Don't add reachability as it only slows down generation without adding real features
 //        maze.reachability().putAll(mazeComponent.reachability.build(AxisAlignedTransform2D.ORIGINAL, mazeComponent.boundsSize(), SavedMazeReachability.notBlocked(blockedConnections, maze.exits()), maze.exits().keySet()));

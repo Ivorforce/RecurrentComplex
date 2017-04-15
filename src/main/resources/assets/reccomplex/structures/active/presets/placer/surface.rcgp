@@ -23,8 +23,7 @@
             {
               "type": "move",
               "ray": {
-                "distance": -1,
-                "weight": 1.0
+                "distance": -1
               }
             },
             {
@@ -41,6 +40,8 @@
   },
   "metadata": {
     "title": "Surface",
-    "description": ["Spawn at the topmost surface."]
+    "description": [
+      "Spawn at the topmost surface."
+    ]
   }
 }

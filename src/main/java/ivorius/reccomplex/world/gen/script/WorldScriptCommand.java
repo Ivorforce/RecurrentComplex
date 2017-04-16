@@ -92,6 +92,9 @@ public class WorldScriptCommand implements WorldScript<NBTNone>
             if (entries.size() > 0)
             {
                 WorldScriptCommand.Entry entry = WeightedSelector.selectItem(context.random, entries);
+                if (entry.command.trim().isEmpty())
+                    return;
+
                 SpawnCommandLogic logic = new SpawnCommandLogic()
                 {
                     @Override

@@ -6,6 +6,7 @@
 package ivorius.reccomplex.world.gen.feature.structure.schematics;
 
 import ivorius.ivtoolkit.blocks.BlockPositions;
+import ivorius.reccomplex.RecurrentComplex;
 import ivorius.reccomplex.world.gen.feature.structure.Structures;
 import net.minecraft.util.math.BlockPos;
 import ivorius.ivtoolkit.math.AxisAlignedTransform2D;
@@ -46,7 +47,8 @@ public class OperationGenerateSchematic implements Operation
     @Override
     public void perform(WorldServer world)
     {
-        file.generate(world, lowerCoord, transform);
+        if (lowerCoord != null)
+            file.generate(world, lowerCoord, transform);
     }
 
     @Override
@@ -71,7 +73,7 @@ public class OperationGenerateSchematic implements Operation
         }
         catch (SchematicFile.UnsupportedSchematicFormatException e)
         {
-            e.printStackTrace();
+            RecurrentComplex.logger.error(e);
             file = new SchematicFile((short) 0, (short) 0, (short) 0);
         }
 
@@ -89,16 +91,19 @@ public class OperationGenerateSchematic implements Operation
     @Override
     public void renderPreview(PreviewType previewType, World world, int ticks, float partialTicks)
     {
-        int[] size = {file.width, file.height, file.length};
-        if (previewType == PreviewType.SHAPE)
+        if (lowerCoord != null)
         {
-            GlStateManager.color(0.8f, 0.75f, 1.0f);
-            OperationRenderer.renderGridQuadCache(
-                    cachedShapeGrid != null ? cachedShapeGrid : (cachedShapeGrid = SchematicQuadCache.createQuadCache(file, new float[]{1, 1, 1})),
-                    transform, lowerCoord, ticks, partialTicks);
-        }
+            int[] size = {file.width, file.height, file.length};
+            if (previewType == PreviewType.SHAPE)
+            {
+                GlStateManager.color(0.8f, 0.75f, 1.0f);
+                OperationRenderer.renderGridQuadCache(
+                        cachedShapeGrid != null ? cachedShapeGrid : (cachedShapeGrid = SchematicQuadCache.createQuadCache(file, new float[]{1, 1, 1})),
+                        transform, lowerCoord, ticks, partialTicks);
+            }
 
-        if (previewType == PreviewType.BOUNDING_BOX || previewType == PreviewType.SHAPE)
-            OperationRenderer.maybeRenderBoundingBox(lowerCoord, Structures.structureSize(size, transform), ticks, partialTicks);
+            if (previewType == PreviewType.BOUNDING_BOX || previewType == PreviewType.SHAPE)
+                OperationRenderer.maybeRenderBoundingBox(lowerCoord, Structures.structureSize(size, transform), ticks, partialTicks);
+        }
     }
 }

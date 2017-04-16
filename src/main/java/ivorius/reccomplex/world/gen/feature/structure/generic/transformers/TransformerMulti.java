@@ -25,6 +25,7 @@ import net.minecraft.block.state.IBlockState;
 import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.text.TextFormatting;
 import org.apache.commons.lang3.tuple.Pair;
 
 import javax.annotation.Nullable;
@@ -118,6 +119,10 @@ public class TransformerMulti extends Transformer<TransformerMulti.InstanceData>
     @Override
     public String getDisplayString()
     {
+        if (data.getPreset() != null)
+            return data.getPresetRegistry().metadata(data.getPreset())
+                .map(m -> TextFormatting.GREEN + m.title).orElse(TextFormatting.GOLD + data.getPreset());
+
         int amount = getTransformers().size();
         return amount == 0 ? IvTranslations.get("reccomplex.transformer.multi.none")
                 : IvTranslations.format("reccomplex.transformer.multi.multiple", amount);

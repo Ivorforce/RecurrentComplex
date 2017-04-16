@@ -196,7 +196,7 @@ public class TransformerRuins extends Transformer<TransformerRuins.InstanceData>
                 // TODO Bounce left/right
                 IBlockState destState;
                 while (dest.getY() > 0
-                        && (destState = cache.getBlockState(dest)).getBlock().isAir(destState, cache.world, dest))
+                        && (destState = cache.getBlockState(dest)).getBlock().isReplaceable(cache.world, dest))
                 {
                     IvMutableBlockPos.offset(dest, dest, EnumFacing.DOWN);
                 }

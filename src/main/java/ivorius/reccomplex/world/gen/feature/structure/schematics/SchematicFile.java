@@ -283,7 +283,7 @@ public class SchematicFile
 
         public UnsupportedSchematicFormatException(Throwable cause, String format)
         {
-            super(cause);
+            super("Unsupported Schematic Format: " + format, cause);
             this.format = format;
         }
 

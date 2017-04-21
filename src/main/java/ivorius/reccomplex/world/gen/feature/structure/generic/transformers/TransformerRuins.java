@@ -96,8 +96,8 @@ public class TransformerRuins extends Transformer<TransformerRuins.InstanceData>
 
     public TransformerRuins()
     {
-        this(null, EnumFacing.DOWN, 0.0f, 1f, 1f, 0.02f,
-                true, 0.3f, 0.1f, 0.1f);
+        this(null, EnumFacing.DOWN, 0.1f, 8f, 0.5f, 0.01f,
+                true, 0.3f, 0.05f, 0.02f);
     }
 
     public TransformerRuins(@Nullable String id, EnumFacing decayDirection, float minDecay, float maxDecay, float decayChaos, float decayValueDensity, boolean gravity, float blockErosion, float vineGrowth, float cobwebGrowth)

@@ -91,6 +91,8 @@ commands.selectProperty.usage=/#property <key> <value> [positioned block matcher
 
 commands.selectFillSphere.usage=/#sphere <block> [metadata1,metadata2,metadata3...]
 
+commands.selectFlood.usage=/#flood <block> [metadata1,metadata2,metadata3...] <facing expression>
+
 commands.selectFloor.usage=/#floor [expansion]
 commands.selectSpace.usage=/#space[ [distance-to-floor] [max-closed-sides]
 commands.selectNatural.usage=/#natural [/#floor-expansion]

@@ -13,6 +13,7 @@ import net.minecraft.init.Blocks;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3i;
+import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 
 /**
@@ -20,22 +21,28 @@ import net.minecraft.world.World;
  */
 public class RCBlockLogic
 {
+    public static boolean isAir(IBlockAccess world, BlockPos pos)
+    {
+        IBlockState state = world.getBlockState(pos);
+        return state.getBlock().isAir(state, world, pos);
+    }
+
     public static boolean canStay(IBlockState state, World world, BlockPos pos)
     {
         return (state.getBlock() != Blocks.SNOW_LAYER && !(state.getBlock() instanceof BlockBush)) || state.getBlock().canPlaceBlockAt(world, pos);
     }
 
-    public static boolean isOnFloor(World world, BlockPos pos)
+    public static boolean isOnFloor(IBlockAccess world, BlockPos pos)
     {
         return world.getBlockState(pos.down()).isSideSolid(world, pos.down(), EnumFacing.UP);
     }
 
-    public static boolean hasLogBelow(World world, BlockPos pos)
+    public static boolean hasLogBelow(IBlockAccess world, BlockPos pos)
     {
         return new BlockArea(pos.subtract(new Vec3i(1, 1, 1)), pos.add(new Vec3i(1, -1, 1))).stream().anyMatch(p -> world.getBlockState(p).getBlock().isWood(world, p));
     }
 
-    public static boolean isFoliage(IBlockState state, World world, BlockPos pos)
+    public static boolean isFoliage(IBlockState state, IBlockAccess world, BlockPos pos)
     {
         Material material = state.getMaterial();
         return state.getBlock().isFoliage(world, pos) || state.getBlock().isWood(world, pos) || state.getBlock().isLeaves(state, world, pos)

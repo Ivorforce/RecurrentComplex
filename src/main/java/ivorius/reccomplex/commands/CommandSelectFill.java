@@ -68,10 +68,10 @@ public class CommandSelectFill extends CommandVirtual
             SelectionOwner selectionOwner = RCCommands.getSelectionOwner(commandSender, null, true);
             RCCommands.assertSize(commandSender, selectionOwner);
 
-            for (BlockPos coord : selectionOwner.getSelection())
+            for (BlockPos pos : selectionOwner.getSelection())
             {
                 IBlockState state = dst.get(world.rand().nextInt(dst.size()));
-                world.setBlockState(coord, state, 2);
+                world.setBlockState(pos, state, 2);
             }
         }
         else

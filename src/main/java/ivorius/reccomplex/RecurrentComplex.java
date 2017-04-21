@@ -22,6 +22,7 @@ import ivorius.reccomplex.world.gen.feature.structure.schematics.SchematicLoader
 import ivorius.reccomplex.utils.*;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraftforge.common.config.Configuration;
+import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.Mod.EventHandler;
 import net.minecraftforge.fml.common.Mod.Instance;
@@ -110,6 +111,8 @@ public class RecurrentComplex
         config.load();
         RCConfig.loadConfig(null);
         config.save();
+        // After loading config, re-test vanilla acceptance, because of lightweight mode
+        NetworkRegistry.INSTANCE.registry().get(Loader.instance().getIndexedModList().get(MOD_ID)).testVanillaAcceptance();
 
         logger.trace(isLite() ? "Entering lightweight mode!" : "Entering default mode!");
 

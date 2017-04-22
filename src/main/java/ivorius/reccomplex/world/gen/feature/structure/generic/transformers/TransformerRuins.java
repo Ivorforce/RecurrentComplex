@@ -188,7 +188,7 @@ public class TransformerRuins extends Transformer<TransformerRuins.InstanceData>
             {
                 IBlockState source = blockCollection.getBlockState(sourcePos);
 
-                if (source.getMaterial().getMobilityFlag() != EnumPushReaction.NORMAL)
+                if (!canLand(source))
                     continue;
 
                 IvMutableBlockPos.add(context.transform.applyOn(sourcePos, dest, areaSize), lowerCoord);
@@ -420,6 +420,13 @@ public class TransformerRuins extends Transformer<TransformerRuins.InstanceData>
                     instanceData.fallingBlocks.addAll(connected);
             }
         }
+    }
+
+    public boolean canLand(IBlockState state)
+    {
+        return state.getMaterial().getMobilityFlag() == EnumPushReaction.NORMAL
+                // If not normal cube it will probably look weird later
+                && state.isNormalCube();
     }
 
     public boolean canFall(StructurePrepareContext context, IvWorldData worldData, RunTransformer transformer, BlockPos.MutableBlockPos dest, BlockPos worldPos, IBlockState state)

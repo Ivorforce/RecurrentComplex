@@ -74,13 +74,12 @@ public class TransformerRuins extends Transformer<TransformerRuins.InstanceData>
 
         neighbors = builder.build();
 
-        stability.put(Material.GLASS, 0.3333);
+        stability.put(Material.GLASS, 0.05);
         stability.put(Material.LAVA, 2);
         stability.put(Material.CIRCUITS, 0.3333);
         stability.put(Material.IRON, 2);
-        stability.put(Material.WOOD, 0.5);
-        stability.put(Material.CACTUS, 0.5);
-        stability.put(Material.CLOTH, 0.5);
+        stability.put(Material.WOOD, 0.1);
+        stability.put(Material.CLOTH, 0.1);
     }
 
     public EnumFacing decayDirection;

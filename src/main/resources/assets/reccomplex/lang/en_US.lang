@@ -72,7 +72,7 @@ commands.strucImport.noStructure=No structure registered by the name of '%s'
 
 commands.selectSet.usage=/#select <both|clear|point1|point2> [x] [y] [z]
 commands.selectSet.get=Selection: %s to %s
-commands.selectSet.size=Size: %s
+commands.selectSet.size=Size: %s (%s blocks)
 commands.selectSet.point.none=§onowhere§r
 
 commands.selectShift.usage=/#shift <x> <y> <z>

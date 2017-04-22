@@ -5,6 +5,7 @@
 
 package ivorius.reccomplex.commands;
 
+import ivorius.ivtoolkit.math.IvVecMathHelper;
 import ivorius.reccomplex.RCConfig;
 import ivorius.reccomplex.capability.SelectionOwner;
 import ivorius.reccomplex.utils.ServerTranslations;
@@ -54,7 +55,7 @@ public class CommandSelect extends CommandBase
                 case "get":
                     commandSender.addChatMessage(ServerTranslations.format("commands.selectSet.get", translatePoint(owner.getSelectedPoint1()), translatePoint(owner.getSelectedPoint2())));
                     if (owner.hasValidSelection())
-                        commandSender.addChatMessage(ServerTranslations.format("commands.selectSet.size", translateSize(owner.getSelection().areaSize())));
+                        commandSender.addChatMessage(ServerTranslations.format("commands.selectSet.size", translateSize(owner.getSelection().areaSize()), IvVecMathHelper.product(owner.getSelection().areaSize())));
                     break;
                 case "both":
                 case "point1":

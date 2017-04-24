@@ -74,12 +74,12 @@ public class TransformerRuins extends Transformer<TransformerRuins.InstanceData>
 
         neighbors = builder.build();
 
-        stability.put(Material.GLASS, 0.05);
+        stability.put(Material.GLASS, 0.1);
         stability.put(Material.LAVA, 2);
-        stability.put(Material.CIRCUITS, 0.3333);
+        stability.put(Material.CIRCUITS, 0.2);
         stability.put(Material.IRON, 2);
-        stability.put(Material.WOOD, 0.1);
-        stability.put(Material.CLOTH, 0.1);
+        stability.put(Material.WOOD, 0.3);
+        stability.put(Material.CLOTH, 0.3);
     }
 
     public EnumFacing decayDirection;
@@ -95,7 +95,7 @@ public class TransformerRuins extends Transformer<TransformerRuins.InstanceData>
 
     public TransformerRuins()
     {
-        this(null, EnumFacing.DOWN, 0.1f, 0.8f, 0.5f, 0.01f,
+        this(null, EnumFacing.DOWN, 0.1f, 0.8f, 0.4f, 0.01f,
                 true, 0.3f, 0.05f, 0.02f);
     }
 
@@ -145,6 +145,8 @@ public class TransformerRuins extends Transformer<TransformerRuins.InstanceData>
 
         if (decay < 0.000001)
             return false;
+        else if (decay > 1)
+            return true;
 
         return getStability(worldData, sourcePos) < decay;
     }
@@ -156,9 +158,10 @@ public class TransformerRuins extends Transformer<TransformerRuins.InstanceData>
 
     public double getStability(IvWorldData worldData, BlockPos sourcePos)
     {
-        double stability = decayDirection.getFrontOffsetX() * (sourcePos.getX() / (double) worldData.blockCollection.getWidth())
-                + decayDirection.getFrontOffsetY() * (sourcePos.getY() / (double) worldData.blockCollection.getHeight())
-                + decayDirection.getFrontOffsetZ() * (sourcePos.getZ() / (double) worldData.blockCollection.getLength());
+        // +1 so the lowest block has a stability < 1
+        double stability = decayDirection.getFrontOffsetX() * ((sourcePos.getX() + 1) / (double) (worldData.blockCollection.getWidth() + 1))
+                + decayDirection.getFrontOffsetY() * ((sourcePos.getY() + 1) / (double) (worldData.blockCollection.getHeight() + 1))
+                + decayDirection.getFrontOffsetZ() * ((sourcePos.getZ() + 1) / (double) (worldData.blockCollection.getLength() + 1));
         if (stability < 0) // Negative direction, not special case
             stability += 1;
         return stability;

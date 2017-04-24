@@ -53,11 +53,7 @@ public class OperationClearArea implements Operation
     {
         TileEntity tileEntity = world.getTileEntity(pos);
         if (tileEntity instanceof IInventory)
-        {
-            IInventory inventory = (IInventory) tileEntity;
-            for (int i = 0; i < inventory.getSizeInventory(); i++)
-                inventory.setInventorySlotContents(i, ItemStack.EMPTY);
-        }
+            ((IInventory) tileEntity).clear();
     }
 
     @Override

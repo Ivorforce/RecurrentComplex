@@ -13,6 +13,7 @@ import ivorius.reccomplex.operation.Operation;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.OpenGlHelper;
+import net.minecraft.init.Blocks;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
@@ -44,7 +45,7 @@ public class OperationClearArea implements Operation
     public static void setBlockToAirClean(World world, BlockPos pos)
     {
         emptyOut(world, pos);
-        world.setBlockToAir(pos);
+        world.setBlockState(pos, Blocks.AIR.getDefaultState(), 2);
     }
 
     public static void emptyOut(World world, BlockPos pos)

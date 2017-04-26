@@ -14,6 +14,7 @@ import ivorius.ivtoolkit.blocks.*;
 import ivorius.ivtoolkit.random.BlurredValueField;
 import ivorius.ivtoolkit.tools.*;
 import ivorius.ivtoolkit.transform.PosTransformer;
+import ivorius.ivtoolkit.world.WorldCache;
 import ivorius.ivtoolkit.world.chunk.gen.StructureBoundingBoxes;
 import ivorius.reccomplex.RecurrentComplex;
 import ivorius.reccomplex.block.BlockGenericSolid;
@@ -30,13 +31,10 @@ import ivorius.reccomplex.world.gen.feature.structure.context.StructureLoadConte
 import ivorius.reccomplex.world.gen.feature.structure.context.StructurePrepareContext;
 import ivorius.reccomplex.world.gen.feature.structure.context.StructureSpawnContext;
 import ivorius.reccomplex.world.gen.feature.structure.generic.GenericStructure;
-import ivorius.ivtoolkit.world.WorldCache;
-import net.minecraft.block.BlockSandStone;
-import net.minecraft.block.BlockStoneBrick;
-import net.minecraft.block.BlockVine;
-import net.minecraft.block.BlockWall;
+import net.minecraft.block.*;
 import net.minecraft.block.material.EnumPushReaction;
 import net.minecraft.block.material.Material;
+import net.minecraft.block.properties.PropertyEnum;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.init.Blocks;
 import net.minecraft.nbt.NBTBase;
@@ -47,6 +45,7 @@ import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.gen.structure.StructureBoundingBox;
 import net.minecraftforge.common.util.Constants;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.lang.reflect.Type;
 import java.util.*;
@@ -133,6 +132,14 @@ public class TransformerRuins extends Transformer<TransformerRuins.InstanceData>
     public static int product(int[] surfaceSize)
     {
         return Arrays.stream(surfaceSize).reduce(1, (left, right) -> left * right);
+    }
+
+    @Nonnull
+    protected static IBlockState randomPlacement(Random random, IBlockState stairs)
+    {
+        return stairs
+                .withProperty(BlockStairs.FACING, EnumFacing.getHorizontal(random.nextInt(4)))
+                .withProperty(BlockStairs.HALF, random.nextBoolean() ? BlockStairs.EnumHalf.BOTTOM : BlockStairs.EnumHalf.TOP);
     }
 
     @Override
@@ -245,6 +252,19 @@ public class TransformerRuins extends Transformer<TransformerRuins.InstanceData>
                 newState = Blocks.SANDSTONE.getDefaultState().withProperty(BlockSandStone.TYPE, BlockSandStone.EnumType.DEFAULT);
         }
 
+        newState = maybeErodeShape(random, newState, Blocks.STONEBRICK, BlockStoneBrick.VARIANT, BlockStoneBrick.EnumType.DEFAULT, Blocks.STONE_BRICK_STAIRS);
+        newState = maybeErodeShape(random, newState, Blocks.PLANKS, BlockPlanks.VARIANT, BlockPlanks.EnumType.OAK, Blocks.OAK_STAIRS);
+        newState = maybeErodeShape(random, newState, Blocks.PLANKS, BlockPlanks.VARIANT, BlockPlanks.EnumType.SPRUCE, Blocks.SPRUCE_STAIRS);
+        newState = maybeErodeShape(random, newState, Blocks.PLANKS, BlockPlanks.VARIANT, BlockPlanks.EnumType.BIRCH, Blocks.BIRCH_STAIRS);
+        newState = maybeErodeShape(random, newState, Blocks.PLANKS, BlockPlanks.VARIANT, BlockPlanks.EnumType.JUNGLE, Blocks.JUNGLE_STAIRS);
+        newState = maybeErodeShape(random, newState, Blocks.PLANKS, BlockPlanks.VARIANT, BlockPlanks.EnumType.ACACIA, Blocks.ACACIA_STAIRS);
+        newState = maybeErodeShape(random, newState, Blocks.PLANKS, BlockPlanks.VARIANT, BlockPlanks.EnumType.DARK_OAK, Blocks.DARK_OAK_STAIRS);
+        newState = maybeErodeShape(random, newState, Blocks.SANDSTONE, null, null, Blocks.SANDSTONE_STAIRS);
+        newState = maybeErodeShape(random, newState, Blocks.COBBLESTONE, null, null, Blocks.STONE_STAIRS);
+        newState = maybeErodeShape(random, newState, Blocks.QUARTZ_BLOCK, null, null, Blocks.QUARTZ_STAIRS);
+        newState = maybeErodeShape(random, newState, Blocks.RED_SANDSTONE, null, null, Blocks.RED_SANDSTONE_STAIRS);
+        newState = maybeErodeShape(random, newState, Blocks.NETHER_BRICK, null, null, Blocks.NETHER_BRICK_STAIRS);
+
         if (random.nextFloat() < vineGrowth)
         {
             if (newState.getBlock() == Blocks.STONEBRICK)
@@ -288,6 +308,22 @@ public class TransformerRuins extends Transformer<TransformerRuins.InstanceData>
 
         if (newState != null && state != newState)
             cache.setBlockState(pos, newState, 3);
+    }
+
+    @Nonnull
+    protected IBlockState maybeErodeShape(Random random, IBlockState newState, Block block, PropertyEnum<?> variant, Object value, Block oakStairs)
+    {
+        if (newState.getBlock() == block && (variant == null || newState.getProperties().get(variant) == value))
+            newState = erodeShape(random, newState, oakStairs);
+        return newState;
+    }
+
+    @Nonnull
+    protected IBlockState erodeShape(Random random, IBlockState newState, Block stairs)
+    {
+        if (random.nextFloat() < blockErosion * 0.125f)
+            newState = randomPlacement(random, stairs.getDefaultState());
+        return newState;
     }
 
     public boolean hasAirNeighbors(WorldCache cache, BlockPos pos, int sides)

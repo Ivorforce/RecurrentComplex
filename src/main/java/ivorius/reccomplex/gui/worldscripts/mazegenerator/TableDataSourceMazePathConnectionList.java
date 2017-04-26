@@ -7,6 +7,7 @@ package ivorius.reccomplex.gui.worldscripts.mazegenerator;
 
 import ivorius.reccomplex.gui.table.TableCells;
 import ivorius.reccomplex.gui.table.cell.TableCell;
+import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.text.TextFormatting;
 import ivorius.ivtoolkit.gui.IntegerRange;
 import ivorius.ivtoolkit.maze.components.MazeRoom;
@@ -44,7 +45,8 @@ public class TableDataSourceMazePathConnectionList extends TableDataSourceList<S
     @Override
     public SavedMazePathConnection newEntry(int addIndex, String actionID)
     {
-        return new SavedMazePathConnection(2, new MazeRoom(new int[bounds.size()]), false, ConnectorStrategy.DEFAULT_PATH, Collections.emptyList());
+        return list.size() > 0 ? list.get(MathHelper.clamp(addIndex, 0, list.size() - 1)).copy()
+            : new SavedMazePathConnection(2, new MazeRoom(new int[bounds.size()]), false, ConnectorStrategy.DEFAULT_PATH, Collections.emptyList());
     }
 
     @Nonnull

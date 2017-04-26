@@ -54,7 +54,7 @@ public class TableDataSourcePathConnectionList extends TableDataSourceList<Immut
     }
 
     @Override
-    public ImmutablePair<SavedMazePath, SavedMazePath> newEntry(String actionID)
+    public ImmutablePair<SavedMazePath, SavedMazePath> newEntry(int addIndex, String actionID)
     {
         return ImmutablePair.of(new SavedMazePath(0, new MazeRoom(0, 0, 0), true), new SavedMazePath(0, new MazeRoom(0, 0, 0), false));
     }

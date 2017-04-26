@@ -42,7 +42,7 @@ public class TableDataSourceMazePathConnectionList extends TableDataSourceList<S
     }
 
     @Override
-    public SavedMazePathConnection newEntry(String actionID)
+    public SavedMazePathConnection newEntry(int addIndex, String actionID)
     {
         return new SavedMazePathConnection(2, new MazeRoom(new int[bounds.size()]), false, ConnectorStrategy.DEFAULT_PATH, Collections.emptyList());
     }

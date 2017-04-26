@@ -39,7 +39,7 @@ public class TableDataSourceStructureGenerationInfo extends TableDataSourceList<
     }
 
     @Override
-    public GenerationType newEntry(String actionID)
+    public GenerationType newEntry(int addIndex, String actionID)
     {
         return tryInstantiate(actionID, StructureRegistry.GENERATION_TYPES.typeForID(actionID), "Failed instantiating generation type: %s");
     }

@@ -12,7 +12,6 @@ import ivorius.reccomplex.gui.table.datasource.TableDataSourceSegmented;
 import ivorius.reccomplex.gui.worldscripts.TableDataSourceWorldScript;
 import ivorius.reccomplex.utils.RCStrings;
 import ivorius.reccomplex.world.gen.script.WorldScriptCommand;
-import org.apache.commons.lang3.StringUtils;
 
 import javax.annotation.Nonnull;
 import java.util.List;
@@ -34,7 +33,7 @@ public class TableDataSourceWorldScriptCommand extends TableDataSourceSegmented
             }
 
             @Override
-            public WorldScriptCommand.Entry newEntry(String actionID)
+            public WorldScriptCommand.Entry newEntry(int addIndex, String actionID)
             {
                 return new WorldScriptCommand.Entry(1.0, "");
             }

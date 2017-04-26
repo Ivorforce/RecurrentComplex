@@ -44,7 +44,7 @@ public class TableDataSourceBiomeGenList extends TableDataSourceSegmented
             }
 
             @Override
-            public WeightedBiomeMatcher newEntry(String actionID)
+            public WeightedBiomeMatcher newEntry(int addIndex, String actionID)
             {
                 return new WeightedBiomeMatcher("", null);
             }

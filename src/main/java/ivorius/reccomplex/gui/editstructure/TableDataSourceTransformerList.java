@@ -12,7 +12,6 @@ import ivorius.reccomplex.gui.table.datasource.TableDataSourceList;
 import ivorius.reccomplex.utils.RCStrings;
 import ivorius.reccomplex.world.gen.feature.structure.StructureRegistry;
 import ivorius.reccomplex.world.gen.feature.structure.generic.transformers.Transformer;
-import org.apache.commons.lang3.StringUtils;
 
 import javax.annotation.Nonnull;
 import java.util.List;
@@ -35,7 +34,7 @@ public class TableDataSourceTransformerList extends TableDataSourceList<Transfor
     }
 
     @Override
-    public Transformer newEntry(String actionID)
+    public Transformer newEntry(int addIndex, String actionID)
     {
         Class<? extends Transformer> clazz = StructureRegistry.TRANSFORMERS.typeForID(actionID);
         return tryInstantiate(actionID, clazz, "Failed instantiating transformer: %s");

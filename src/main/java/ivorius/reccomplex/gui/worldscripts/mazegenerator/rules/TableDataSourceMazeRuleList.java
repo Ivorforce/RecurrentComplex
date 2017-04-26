@@ -14,7 +14,6 @@ import ivorius.reccomplex.utils.RCStrings;
 import ivorius.reccomplex.world.gen.feature.structure.generic.maze.SavedMazePathConnection;
 import ivorius.reccomplex.world.gen.feature.structure.generic.maze.rules.MazeRule;
 import ivorius.reccomplex.world.gen.feature.structure.generic.maze.rules.MazeRuleRegistry;
-import org.apache.commons.lang3.StringUtils;
 
 import javax.annotation.Nonnull;
 import java.util.List;
@@ -42,7 +41,7 @@ public class TableDataSourceMazeRuleList extends TableDataSourceList<MazeRule, L
     }
 
     @Override
-    public MazeRule newEntry(String actionID)
+    public MazeRule newEntry(int addIndex, String actionID)
     {
         return tryInstantiate(actionID, MazeRuleRegistry.INSTANCE.objectClass(actionID), "Failed instantiating maze rule: %s");
     }

@@ -12,7 +12,6 @@ import ivorius.reccomplex.gui.table.datasource.TableDataSourceList;
 import ivorius.reccomplex.utils.RCStrings;
 import ivorius.reccomplex.world.gen.script.WorldScript;
 import ivorius.reccomplex.world.gen.script.WorldScriptRegistry;
-import org.apache.commons.lang3.StringUtils;
 
 import javax.annotation.Nonnull;
 import java.util.List;
@@ -35,7 +34,7 @@ public class TableDataSourceWorldScriptList extends TableDataSourceList<WorldScr
     }
 
     @Override
-    public WorldScript newEntry(String actionID)
+    public WorldScript newEntry(int addIndex, String actionID)
     {
         return tryInstantiate(actionID, WorldScriptRegistry.INSTANCE.objectClass(actionID), "Failed instantiating world script: %s");
     }

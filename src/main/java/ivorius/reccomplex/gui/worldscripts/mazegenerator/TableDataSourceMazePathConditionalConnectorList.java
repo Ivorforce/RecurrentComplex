@@ -33,7 +33,7 @@ public class TableDataSourceMazePathConditionalConnectorList extends TableDataSo
     }
 
     @Override
-    public SavedMazePathConnection.ConditionalConnector newEntry(String actionID)
+    public SavedMazePathConnection.ConditionalConnector newEntry(int addIndex, String actionID)
     {
         return new SavedMazePathConnection.ConditionalConnector("", ConnectorStrategy.DEFAULT_PATH);
     }

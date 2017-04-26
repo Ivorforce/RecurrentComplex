@@ -9,6 +9,7 @@ import ivorius.reccomplex.gui.table.*;
 import ivorius.reccomplex.gui.table.cell.TableCell;
 import ivorius.reccomplex.gui.table.datasource.TableDataSourceList;
 import ivorius.reccomplex.world.gen.feature.structure.generic.Selection;
+import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.text.TextFormatting;
 
 import javax.annotation.Nonnull;
@@ -37,9 +38,9 @@ public class TableDataSourceSelection extends TableDataSourceList<Selection.Area
     }
 
     @Override
-    public Selection.Area newEntry(String actionID)
+    public Selection.Area newEntry(int addIndex, String actionID)
     {
-        return list.size() > 0 ? list.get(list.size() - 1).copy()
+        return list.size() > 0 ? list.get(MathHelper.clamp(addIndex, 0, list.size() - 1)).copy()
                 : new Selection.Area(true, new int[dimensions.length], new int[dimensions.length], showIdentifier ? "" : null);
     }
 

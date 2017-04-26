@@ -17,9 +17,7 @@ import ivorius.reccomplex.gui.table.TableNavigator;
 import ivorius.reccomplex.utils.RCStrings;
 import ivorius.reccomplex.world.gen.feature.structure.generic.WeightedBlockState;
 import ivorius.reccomplex.utils.presets.PresettedList;
-import net.minecraft.block.Block;
 import net.minecraft.init.Blocks;
-import org.apache.commons.lang3.StringUtils;
 
 import javax.annotation.Nonnull;
 
@@ -49,7 +47,7 @@ public class TableDataSourceWeightedBlockStateList extends TableDataSourceSegmen
             }
 
             @Override
-            public WeightedBlockState newEntry(String actionID)
+            public WeightedBlockState newEntry(int addIndex, String actionID)
             {
                 return new WeightedBlockState(null, Blocks.STONE.getDefaultState(), null);
             }

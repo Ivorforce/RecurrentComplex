@@ -19,7 +19,6 @@ import javax.annotation.Nullable;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
-import java.util.function.Supplier;
 
 /**
  * Created by lukas on 20.02.15.
@@ -199,7 +198,7 @@ public abstract class TableDataSourceList<T, L extends List<T>> extends TableDat
     {
         return () ->
         {
-            T entry = newEntry(actionID);
+            T entry = newEntry(addIndex, actionID);
             if (entry != null)
             {
                 list.add(addIndex, entry);
@@ -269,5 +268,5 @@ public abstract class TableDataSourceList<T, L extends List<T>> extends TableDat
 
     public abstract String getDisplayString(T t);
 
-    public abstract T newEntry(String actionID);
+    public abstract T newEntry(int addIndex, String actionID);
 }

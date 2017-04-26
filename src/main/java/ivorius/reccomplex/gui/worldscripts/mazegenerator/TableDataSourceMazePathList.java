@@ -40,7 +40,7 @@ public class TableDataSourceMazePathList extends TableDataSourceList<SavedMazePa
     }
 
     @Override
-    public SavedMazePath newEntry(String actionID)
+    public SavedMazePath newEntry(int addIndex, String actionID)
     {
         return new SavedMazePath(2, new MazeRoom(new int[bounds.size()]), false);
     }

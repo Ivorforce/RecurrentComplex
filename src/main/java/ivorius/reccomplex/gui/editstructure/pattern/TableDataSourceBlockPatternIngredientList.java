@@ -32,7 +32,7 @@ public class TableDataSourceBlockPatternIngredientList extends TableDataSourceLi
     }
 
     @Override
-    public BlockPattern.Ingredient newEntry(String actionID)
+    public BlockPattern.Ingredient newEntry(int addIndex, String actionID)
     {
         return new BlockPattern.Ingredient();
     }

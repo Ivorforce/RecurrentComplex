@@ -32,7 +32,7 @@ public class TableDataSourceLimitRayList extends TableDataSourceList<FactorLimit
     }
 
     @Override
-    public FactorLimit.Ray newEntry(String actionID)
+    public FactorLimit.Ray newEntry(int addIndex, String actionID)
     {
         return tryInstantiate(actionID, FactorLimit.getRayRegistry().typeForID(actionID), "Failed instantiating limit factor ray: %s");
     }

@@ -22,6 +22,7 @@ import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 /**
  * Created by lukas on 14.04.15.
@@ -112,6 +113,12 @@ public class SavedMazePathConnection implements NBTCompoundObject
         return result;
     }
 
+    public SavedMazePathConnection copy()
+    {
+        return new SavedMazePathConnection(path.copy(), connector.copy(),
+                conditionalConnectors.stream().map(ConditionalConnector::copy).collect(Collectors.toList()));
+    }
+
     public static class Serializer implements JsonSerializer<SavedMazePathConnection>, JsonDeserializer<SavedMazePathConnection>
     {
         @Override
@@ -167,6 +174,11 @@ public class SavedMazePathConnection implements NBTCompoundObject
             int result = expression != null ? expression.hashCode() : 0;
             result = 31 * result + (connector != null ? connector.hashCode() : 0);
             return result;
+        }
+
+        public ConditionalConnector copy()
+        {
+            return new ConditionalConnector(expression.getExpression(), connector.id);
         }
 
         public static class Serializer implements JsonSerializer<ConditionalConnector>, JsonDeserializer<ConditionalConnector>

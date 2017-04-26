@@ -6,12 +6,14 @@
 package ivorius.reccomplex.gui.worldscripts.mazegenerator;
 
 import ivorius.ivtoolkit.tools.IvTranslations;
+import ivorius.reccomplex.gui.GuiValidityStateIndicator;
 import ivorius.reccomplex.gui.TableDataSourceBlockPos;
 import ivorius.reccomplex.gui.table.*;
 import ivorius.reccomplex.gui.table.cell.*;
 import ivorius.reccomplex.gui.table.datasource.TableDataSourceSegmented;
 import ivorius.reccomplex.gui.worldscripts.TableDataSourceWorldScript;
 import ivorius.reccomplex.gui.worldscripts.mazegenerator.rules.TableDataSourceMazeRuleList;
+import ivorius.reccomplex.world.gen.feature.structure.generic.generation.MazeGeneration;
 import ivorius.reccomplex.world.gen.script.WorldScriptMazeGenerator;
 
 import java.util.function.Consumer;
@@ -101,7 +103,12 @@ public class TableDataSourceWorldScriptMazeGenerator extends TableDataSourceSegm
             case 1:
             {
                 TableCellString cell = new TableCellString("mazeID", script.getMazeID());
-                cell.addPropertyConsumer(script::setMazeID);
+                cell.setShowsValidityState(true);
+                cell.setValidityState(MazeGeneration.idValidity(cell.getPropertyValue()));
+                cell.addPropertyConsumer((mazeID) -> {
+                    script.setMazeID(mazeID);
+                    cell.setValidityState(MazeGeneration.idValidity(mazeID));
+                });
                 return new TitledCell(IvTranslations.get("reccomplex.maze.id"), cell);
             }
             case 5:

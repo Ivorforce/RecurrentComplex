@@ -5,7 +5,6 @@
 
 package ivorius.reccomplex.gui.worldscripts.mazegenerator.reachability;
 
-import ivorius.ivtoolkit.gui.IntegerRange;
 import ivorius.ivtoolkit.maze.components.MazeRoom;
 import ivorius.ivtoolkit.tools.IvTranslations;
 import ivorius.reccomplex.gui.table.TableCells;
@@ -18,6 +17,7 @@ import ivorius.reccomplex.gui.table.datasource.TableDataSourceList;
 import ivorius.reccomplex.gui.table.datasource.TableDataSourceMulti;
 import ivorius.reccomplex.gui.table.datasource.TableDataSourcePreloaded;
 import ivorius.reccomplex.gui.worldscripts.mazegenerator.TableDataSourceMazePath;
+import ivorius.reccomplex.world.gen.feature.structure.generic.Selection;
 import ivorius.reccomplex.world.gen.feature.structure.generic.maze.SavedMazePath;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 
@@ -29,9 +29,9 @@ import java.util.List;
  */
 public class TableDataSourcePathConnectionList extends TableDataSourceList<ImmutablePair<SavedMazePath, SavedMazePath>, List<ImmutablePair<SavedMazePath, SavedMazePath>>>
 {
-    private List<IntegerRange> bounds;
+    private Selection bounds;
 
-    public TableDataSourcePathConnectionList(List<ImmutablePair<SavedMazePath, SavedMazePath>> list, TableDelegate tableDelegate, TableNavigator navigator, List<IntegerRange> bounds)
+    public TableDataSourcePathConnectionList(List<ImmutablePair<SavedMazePath, SavedMazePath>> list, TableDelegate tableDelegate, TableNavigator navigator, Selection bounds)
     {
         super(list, tableDelegate, navigator);
         this.bounds = bounds;

@@ -5,9 +5,10 @@
 
 package ivorius.reccomplex.gui.worldscripts.mazegenerator.rules;
 
-import ivorius.ivtoolkit.gui.IntegerRange;
 import ivorius.ivtoolkit.tools.IvTranslations;
-import ivorius.reccomplex.gui.table.*;
+import ivorius.reccomplex.gui.table.GuiTable;
+import ivorius.reccomplex.gui.table.TableDelegate;
+import ivorius.reccomplex.gui.table.TableNavigator;
 import ivorius.reccomplex.gui.table.cell.TableCell;
 import ivorius.reccomplex.gui.table.cell.TableCellBoolean;
 import ivorius.reccomplex.gui.table.cell.TableCellTitle;
@@ -15,6 +16,7 @@ import ivorius.reccomplex.gui.table.cell.TitledCell;
 import ivorius.reccomplex.gui.table.datasource.TableDataSourcePreloaded;
 import ivorius.reccomplex.gui.table.datasource.TableDataSourceSegmented;
 import ivorius.reccomplex.gui.worldscripts.mazegenerator.TableDataSourceMazePathList;
+import ivorius.reccomplex.world.gen.feature.structure.generic.Selection;
 import ivorius.reccomplex.world.gen.feature.structure.generic.maze.*;
 import ivorius.reccomplex.world.gen.feature.structure.generic.maze.rules.saved.MazeRuleConnectAll;
 import net.minecraft.util.text.TextFormatting;
@@ -35,7 +37,7 @@ public class TableDataSourceMazeRuleConnectAll extends TableDataSourceSegmented
 
     private TableDelegate tableDelegate;
 
-    public TableDataSourceMazeRuleConnectAll(MazeRuleConnectAll rule, TableDelegate tableDelegate, TableNavigator navigator, List<SavedMazePathConnection> expected, List<IntegerRange> bounds)
+    public TableDataSourceMazeRuleConnectAll(MazeRuleConnectAll rule, TableDelegate tableDelegate, TableNavigator navigator, List<SavedMazePathConnection> expected, Selection bounds)
     {
         this.rule = rule;
         this.expected = expected;
@@ -91,7 +93,8 @@ public class TableDataSourceMazeRuleConnectAll extends TableDataSourceSegmented
             TableCellBoolean cell = new TableCellBoolean("additive", rule.additive,
                     TextFormatting.GREEN + IvTranslations.get("reccomplex.mazerule.connectall.additive"),
                     TextFormatting.GOLD + IvTranslations.get("reccomplex.mazerule.connectall.subtractive"));
-            cell.addPropertyConsumer(val -> {
+            cell.addPropertyConsumer(val ->
+            {
                 rule.additive = val;
                 tableDelegate.reloadData();
             });

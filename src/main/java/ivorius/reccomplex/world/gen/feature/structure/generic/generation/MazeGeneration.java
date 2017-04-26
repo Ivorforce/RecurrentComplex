@@ -9,14 +9,19 @@ import com.google.gson.*;
 import ivorius.ivtoolkit.maze.components.MazeRoom;
 import ivorius.ivtoolkit.random.WeightedSelector;
 import ivorius.ivtoolkit.tools.IvTranslations;
+import ivorius.reccomplex.gui.GuiValidityStateIndicator;
 import ivorius.reccomplex.gui.editstructure.gentypes.TableDataSourceMazeGeneration;
 import ivorius.reccomplex.gui.table.datasource.TableDataSource;
 import ivorius.reccomplex.gui.table.TableDelegate;
 import ivorius.reccomplex.gui.table.TableNavigator;
 import ivorius.reccomplex.json.JsonUtils;
 import ivorius.reccomplex.world.gen.feature.structure.Placer;
+import ivorius.reccomplex.world.gen.feature.structure.StructureRegistry;
+import ivorius.reccomplex.world.gen.feature.structure.Structures;
 import ivorius.reccomplex.world.gen.feature.structure.generic.Selection;
 import ivorius.reccomplex.world.gen.feature.structure.generic.maze.*;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 import javax.annotation.Nullable;
 import java.lang.reflect.Type;
@@ -65,6 +70,18 @@ public class MazeGeneration extends GenerationType implements WeightedSelector.I
     public static Gson getGson()
     {
         return gson;
+    }
+
+    public static boolean exists(String mazeID)
+    {
+        return StructureRegistry.INSTANCE.getStructuresInMaze(mazeID).findAny().isPresent();
+    }
+
+    @SideOnly(Side.CLIENT)
+    public static GuiValidityStateIndicator.State idValidity(String mazeID)
+    {
+        return !Structures.isSimpleID(mazeID) ? GuiValidityStateIndicator.State.INVALID :
+                exists(mazeID) ? GuiValidityStateIndicator.State.VALID : GuiValidityStateIndicator.State.SEMI_VALID;
     }
 
     public String getMazeID()

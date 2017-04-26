@@ -34,6 +34,9 @@ import java.util.function.Predicate;
  */
 public class WorldGenStructures
 {
+
+    public static final int STRUCTURE_TRIES = 10;
+
     public static void generateStaticStructuresInChunk(Random random, ChunkPos chunkPos, WorldServer world, BlockPos spawnPos, @Nullable Predicate<Structure> structurePredicate)
     {
         StructureRegistry.INSTANCE.getStaticStructuresAt(chunkPos, world, spawnPos).forEach(triple ->
@@ -76,18 +79,22 @@ public class WorldGenStructures
         MixingStructureSelector<NaturalGeneration, NaturalStructureSelector.Category> structureSelector = StructureRegistry.INSTANCE.naturalStructureSelectors().get(biomeGen, world.provider);
 
         float distanceToSpawn = distance(new ChunkPos(world.getSpawnPoint()), chunkPos);
-        Pair<Structure<?>, NaturalGeneration> pair = structureSelector.selectOne(random, world.provider, world.getBiome(chunkPos.getBlock(0, 0, 0)), null, distanceToSpawn);
 
-        if (pair != null)
+        for (int i = 0; i < STRUCTURE_TRIES; i++)
         {
-            generateStructureInChunk(random, chunkPos, world, pair.getLeft(), pair.getRight());
-            return true;
+            Pair<Structure<?>, NaturalGeneration> pair = structureSelector.selectOne(random, world.provider, world.getBiome(chunkPos.getBlock(0, 0, 0)), null, distanceToSpawn);
+
+            if (pair != null)
+            {
+                if (generateStructureInChunk(random, chunkPos, world, pair.getLeft(), pair.getRight()))
+                    return true;
+            }
         }
 
         return false;
     }
 
-    protected static void generateStructureInChunk(Random random, ChunkPos chunkPos, WorldServer world, Structure<?> structure, NaturalGeneration naturalGenInfo)
+    protected static boolean generateStructureInChunk(Random random, ChunkPos chunkPos, WorldServer world, Structure<?> structure, NaturalGeneration naturalGenInfo)
     {
         String structureName = StructureRegistry.INSTANCE.id(structure);
 
@@ -102,7 +109,7 @@ public class WorldGenStructures
             if (naturalGenInfo.getGenerationWeight(world.provider, generator.environment().biome) <= 0)
             {
                 RecurrentComplex.logger.trace(String.format("%s failed to spawn at %s (incompatible biome edge)", structure, genPos));
-                return;
+                return false;
             }
 
             boolean didSpawn = generator.generate().isPresent();
@@ -114,7 +121,11 @@ public class WorldGenStructures
                 else
                     RecurrentComplex.logger.trace(String.format("%s couldn't find a place to spawn at %s (due to its Placer)", structure, genPos));
             }
+
+            return didSpawn;
         }
+
+        return false;
     }
 
     public static void generatePartialStructuresInChunk(Random random, final ChunkPos chunkPos, final WorldServer world)

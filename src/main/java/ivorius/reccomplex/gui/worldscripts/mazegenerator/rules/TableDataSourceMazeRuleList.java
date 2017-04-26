@@ -5,12 +5,14 @@
 
 package ivorius.reccomplex.gui.worldscripts.mazegenerator.rules;
 
-import ivorius.ivtoolkit.gui.IntegerRange;
-import ivorius.reccomplex.gui.table.*;
+import ivorius.reccomplex.gui.table.TableCells;
+import ivorius.reccomplex.gui.table.TableDelegate;
+import ivorius.reccomplex.gui.table.TableNavigator;
 import ivorius.reccomplex.gui.table.cell.TableCell;
 import ivorius.reccomplex.gui.table.cell.TableCellButton;
 import ivorius.reccomplex.gui.table.datasource.TableDataSourceList;
 import ivorius.reccomplex.utils.RCStrings;
+import ivorius.reccomplex.world.gen.feature.structure.generic.Selection;
 import ivorius.reccomplex.world.gen.feature.structure.generic.maze.SavedMazePathConnection;
 import ivorius.reccomplex.world.gen.feature.structure.generic.maze.rules.MazeRule;
 import ivorius.reccomplex.world.gen.feature.structure.generic.maze.rules.MazeRuleRegistry;
@@ -24,9 +26,9 @@ import java.util.List;
 public class TableDataSourceMazeRuleList extends TableDataSourceList<MazeRule, List<MazeRule>>
 {
     private List<SavedMazePathConnection> expected;
-    private List<IntegerRange> bounds;
+    private Selection bounds;
 
-    public TableDataSourceMazeRuleList(List<MazeRule> list, TableDelegate tableDelegate, TableNavigator navigator, List<SavedMazePathConnection> expected, List<IntegerRange> bounds)
+    public TableDataSourceMazeRuleList(List<MazeRule> list, TableDelegate tableDelegate, TableNavigator navigator, List<SavedMazePathConnection> expected, Selection bounds)
     {
         super(list, tableDelegate, navigator);
         this.expected = expected;

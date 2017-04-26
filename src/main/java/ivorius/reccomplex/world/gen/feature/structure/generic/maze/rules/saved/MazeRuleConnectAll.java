@@ -5,13 +5,13 @@
 
 package ivorius.reccomplex.world.gen.feature.structure.generic.maze.rules.saved;
 
-import ivorius.ivtoolkit.gui.IntegerRange;
 import ivorius.ivtoolkit.maze.components.*;
 import ivorius.ivtoolkit.tools.NBTCompoundObjects;
 import ivorius.reccomplex.gui.table.datasource.TableDataSource;
 import ivorius.reccomplex.gui.table.TableDelegate;
 import ivorius.reccomplex.gui.table.TableNavigator;
 import ivorius.reccomplex.gui.worldscripts.mazegenerator.rules.TableDataSourceMazeRuleConnectAll;
+import ivorius.reccomplex.world.gen.feature.structure.generic.Selection;
 import ivorius.reccomplex.world.gen.script.WorldScriptMazeGenerator;
 import ivorius.reccomplex.world.gen.feature.structure.generic.maze.*;
 import ivorius.reccomplex.world.gen.feature.structure.generic.maze.rules.LimitAABBStrategy;
@@ -47,7 +47,7 @@ public class MazeRuleConnectAll extends MazeRule
     }
 
     @Override
-    public TableDataSource tableDataSource(TableNavigator navigator, TableDelegate delegate, List<SavedMazePathConnection> expected, List<IntegerRange> bounds)
+    public TableDataSource tableDataSource(TableNavigator navigator, TableDelegate delegate, List<SavedMazePathConnection> expected, Selection bounds)
     {
         return new TableDataSourceMazeRuleConnectAll(this, delegate, navigator, expected, bounds);
     }

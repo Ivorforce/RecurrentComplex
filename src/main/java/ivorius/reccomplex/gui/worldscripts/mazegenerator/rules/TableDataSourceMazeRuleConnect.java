@@ -5,8 +5,10 @@
 
 package ivorius.reccomplex.gui.worldscripts.mazegenerator.rules;
 
-import ivorius.ivtoolkit.gui.IntegerRange;
-import ivorius.reccomplex.gui.table.*;
+import ivorius.ivtoolkit.tools.IvTranslations;
+import ivorius.reccomplex.gui.table.GuiTable;
+import ivorius.reccomplex.gui.table.TableDelegate;
+import ivorius.reccomplex.gui.table.TableNavigator;
 import ivorius.reccomplex.gui.table.cell.TableCell;
 import ivorius.reccomplex.gui.table.cell.TableCellBoolean;
 import ivorius.reccomplex.gui.table.cell.TableCellTitle;
@@ -14,12 +16,11 @@ import ivorius.reccomplex.gui.table.cell.TitledCell;
 import ivorius.reccomplex.gui.table.datasource.TableDataSourcePreloaded;
 import ivorius.reccomplex.gui.table.datasource.TableDataSourceSegmented;
 import ivorius.reccomplex.gui.worldscripts.mazegenerator.TableDataSourceMazePathList;
+import ivorius.reccomplex.world.gen.feature.structure.generic.Selection;
 import ivorius.reccomplex.world.gen.feature.structure.generic.maze.rules.saved.MazeRuleConnect;
-import ivorius.ivtoolkit.tools.IvTranslations;
 import net.minecraft.util.text.TextFormatting;
 
 import javax.annotation.Nonnull;
-import java.util.List;
 
 /**
  * Created by lukas on 21.03.16.
@@ -28,7 +29,7 @@ public class TableDataSourceMazeRuleConnect extends TableDataSourceSegmented
 {
     private final MazeRuleConnect rule;
 
-    public TableDataSourceMazeRuleConnect(MazeRuleConnect rule, TableDelegate tableDelegate, TableNavigator navigator, List<IntegerRange> bounds)
+    public TableDataSourceMazeRuleConnect(MazeRuleConnect rule, TableDelegate tableDelegate, TableNavigator navigator, Selection bounds)
     {
         this.rule = rule;
 

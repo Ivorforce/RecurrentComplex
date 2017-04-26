@@ -17,6 +17,7 @@ import ivorius.reccomplex.gui.table.cell.TableCellButton;
 import ivorius.reccomplex.gui.table.cell.TableCellEnum;
 import ivorius.reccomplex.gui.table.cell.TitledCell;
 import ivorius.reccomplex.gui.table.datasource.TableDataSourceSegmented;
+import ivorius.reccomplex.world.gen.feature.structure.generic.Selection;
 import ivorius.reccomplex.world.gen.feature.structure.generic.maze.ConnectorStrategy;
 import ivorius.reccomplex.world.gen.feature.structure.generic.maze.SavedMazePath;
 import ivorius.reccomplex.world.gen.feature.structure.generic.maze.SavedMazePathConnection;
@@ -36,13 +37,13 @@ public class TableDataSourceMazePath extends TableDataSourceSegmented
     public static final String[] COORD_NAMES = {"x", "y", "z"};
 
     private SavedMazePath mazePath;
-    private List<IntegerRange> bounds;
+    private Selection bounds;
     private TableDelegate tableDelegate;
 
     private TableCellButton invertableButton;
     private final TableDataSourceMazeRoom source;
 
-    public TableDataSourceMazePath(SavedMazePath mazePath, List<IntegerRange> bounds, TableDelegate tableDelegate, TableNavigator navigator)
+    public TableDataSourceMazePath(SavedMazePath mazePath, Selection bounds, TableDelegate tableDelegate, TableNavigator navigator)
     {
         this.mazePath = mazePath;
         this.bounds = bounds;
@@ -50,21 +51,18 @@ public class TableDataSourceMazePath extends TableDataSourceSegmented
 
 
         addManagedSegment(0, source =
-                new TableDataSourceMazeRoom(mazePath.sourceRoom, mazeRoom -> this.mazePath.sourceRoom = mazeRoom, bounds,
+                new TableDataSourceMazeRoom(mazePath.sourceRoom, mazeRoom -> {
+                    this.mazePath.sourceRoom = mazeRoom;
+                    if (invertableButton != null) invertableButton.setEnabled(isInvertable());
+                }, bounds.bounds(),
                         Arrays.stream(COORD_NAMES).map(s -> IvTranslations.get("reccomplex.generationInfo.mazeComponent.position." + s)).collect(Collectors.toList()),
                         Arrays.stream(COORD_NAMES).map(s -> IvTranslations.getLines("reccomplex.generationInfo.mazeComponent.position." + s + ".tooltip")).collect(Collectors.toList()))
         );
     }
 
-    public static boolean contains(int[] array, List<IntegerRange> bounds)
+    public static boolean contains(int[] array, Selection bounds)
     {
-        for (int i = 0; i < array.length; i++)
-        {
-            if (array[i] < bounds.get(i).getMin() || array[i] > bounds.get(i).getMax())
-                return false;
-        }
-
-        return true;
+        return bounds.compile(true).containsKey(new MazeRoom(array));
     }
 
     public static EnumFacing directionFromPath(SavedMazePath path)

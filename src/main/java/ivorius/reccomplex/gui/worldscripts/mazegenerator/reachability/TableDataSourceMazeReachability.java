@@ -5,18 +5,18 @@
 
 package ivorius.reccomplex.gui.worldscripts.mazegenerator.reachability;
 
-import ivorius.ivtoolkit.gui.IntegerRange;
-import ivorius.reccomplex.gui.table.*;
+import ivorius.ivtoolkit.tools.IvTranslations;
+import ivorius.reccomplex.gui.table.TableDelegate;
+import ivorius.reccomplex.gui.table.TableNavigator;
 import ivorius.reccomplex.gui.table.cell.TableCellTitle;
 import ivorius.reccomplex.gui.table.cell.TitledCell;
 import ivorius.reccomplex.gui.table.datasource.TableDataSourcePreloaded;
 import ivorius.reccomplex.gui.table.datasource.TableDataSourceSegmented;
+import ivorius.reccomplex.world.gen.feature.structure.generic.Selection;
 import ivorius.reccomplex.world.gen.feature.structure.generic.maze.SavedMazePath;
 import ivorius.reccomplex.world.gen.feature.structure.generic.maze.SavedMazeReachability;
-import ivorius.ivtoolkit.tools.IvTranslations;
 
 import javax.annotation.Nonnull;
-import java.util.List;
 import java.util.Set;
 
 /**
@@ -29,7 +29,7 @@ public class TableDataSourceMazeReachability extends TableDataSourceSegmented
     private TableDelegate tableDelegate;
     private TableNavigator tableNavigator;
 
-    public TableDataSourceMazeReachability(SavedMazeReachability reachability, TableDelegate tableDelegate, TableNavigator tableNavigator, Set<SavedMazePath> expected, List<IntegerRange> bounds)
+    public TableDataSourceMazeReachability(SavedMazeReachability reachability, TableDelegate tableDelegate, TableNavigator tableNavigator, Set<SavedMazePath> expected, Selection bounds)
     {
         this.reachability = reachability;
         this.tableDelegate = tableDelegate;

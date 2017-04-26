@@ -5,22 +5,22 @@
 
 package ivorius.reccomplex.gui.worldscripts.mazegenerator;
 
-import ivorius.ivtoolkit.gui.IntegerRange;
-import ivorius.reccomplex.gui.table.*;
+import ivorius.ivtoolkit.tools.IvTranslations;
+import ivorius.reccomplex.gui.table.TableDelegate;
+import ivorius.reccomplex.gui.table.TableNavigator;
 import ivorius.reccomplex.gui.table.cell.TableCellMultiBuilder;
 import ivorius.reccomplex.gui.table.datasource.TableDataSourceSegmented;
+import ivorius.reccomplex.world.gen.feature.structure.generic.Selection;
 import ivorius.reccomplex.world.gen.feature.structure.generic.maze.SavedMazePathConnection;
-import ivorius.ivtoolkit.tools.IvTranslations;
 
 import javax.annotation.Nonnull;
-import java.util.List;
 
 /**
  * Created by lukas on 22.06.14.
  */
 public class TableDataSourceMazePathConnection extends TableDataSourceSegmented
 {
-    public TableDataSourceMazePathConnection(SavedMazePathConnection mazePath, List<IntegerRange> bounds, TableDelegate tableDelegate, TableNavigator navigator)
+    public TableDataSourceMazePathConnection(SavedMazePathConnection mazePath, Selection bounds, TableDelegate tableDelegate, TableNavigator navigator)
     {
         addManagedSegment(0, new TableDataSourceConnector(mazePath.connector, IvTranslations.get("reccomplex.maze.connector")));
 

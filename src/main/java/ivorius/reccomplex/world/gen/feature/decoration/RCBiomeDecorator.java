@@ -37,6 +37,8 @@ public class RCBiomeDecorator
     public static Adapter vanillaAdapter = new VanillaDecorationAdapter();
     public static final List<Adapter> adapters = new ArrayList<>();
 
+    public static final int STRUCTURE_TRIES = 5;
+
     @ParametersAreNonnullByDefault
     public static Event.Result decorate(WorldServer worldIn, Random random, BlockPos chunkPos, DecorationType type)
     {
@@ -120,19 +122,23 @@ public class RCBiomeDecorator
         if (rcAmount <= 0 && mayGiveUp) return -1;
 
         for (int i = 0; i < rcAmount; i++)
-            generateSurface(selector.selectOne(random, type, totalWeight), worldIn, chunkPos, random);
+        {
+            for (int t = 0; t < STRUCTURE_TRIES; t++)
+               if (generateSurface(selector.selectOne(random, type, totalWeight), worldIn, chunkPos, random))
+                break;
+        }
 
         return vanillaAmount - rcAmount;
     }
 
-    public static void generateSurface(Pair<Structure<?>, VanillaDecorationGeneration> generation, WorldServer worldIn, BlockPos chunkPos, Random random)
+    public static boolean generateSurface(Pair<Structure<?>, VanillaDecorationGeneration> generation, WorldServer worldIn, BlockPos chunkPos, Random random)
     {
-        new StructureGenerator<>(generation.getLeft()).generationInfo(generation.getRight()).world(worldIn)
+        return new StructureGenerator<>(generation.getLeft()).generationInfo(generation.getRight()).world(worldIn)
                 .random(random).maturity(StructureSpawnContext.GenerateMaturity.SUGGEST)
                 .memorize(RCConfig.memorizeDecoration).allowOverlaps(true)
                 .randomPosition(randomSurfacePos(random, chunkPos.add(generation.getRight().spawnShift)), // Shift +1 because surface placer goes -1
                         shift(generation.getRight().placer(), generation.getRight().spawnShift.getY() + 1)).fromCenter(true)
-                .generate();
+                .generate().isPresent();
     }
 
     protected static Placer shift(Placer placer, int y)

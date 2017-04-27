@@ -23,6 +23,7 @@ import ivorius.ivtoolkit.blocks.BlockSurfacePos;
 import ivorius.reccomplex.utils.NBTStorable;
 import net.minecraft.nbt.NBTBase;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.ChunkPos;
 import net.minecraft.util.math.Vec3i;
 import net.minecraft.world.WorldServer;
 import net.minecraft.world.gen.structure.StructureBoundingBox;
@@ -32,6 +33,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.Optional;
 import java.util.Random;
+import java.util.Set;
 import java.util.function.Predicate;
 
 /**
@@ -84,6 +86,8 @@ public class StructureGenerator<S extends NBTStorable>
 
     private boolean allowOverlaps = false;
     private boolean memorize = true;
+
+    private boolean partially;
 
     public StructureGenerator(Structure<S> structure)
     {
@@ -153,9 +157,25 @@ public class StructureGenerator<S extends NBTStorable>
                 {
                     String generationInfoID = generationType != null ? generationType.id() : null;
 
-                    WorldStructureGenerationData.StructureEntry structureEntry = WorldStructureGenerationData.StructureEntry.complete(structureID, generationInfoID, spawn.boundingBox, spawn.transform);
+                    WorldStructureGenerationData.StructureEntry structureEntry = WorldStructureGenerationData.StructureEntry.complete(structureID, generationInfoID, spawn.boundingBox, spawn.transform, !partially);
                     structureEntry.blocking = structure.isBlocking();
-                    WorldStructureGenerationData.get(world).addEntry(structureEntry);
+                    structureEntry.firstTime = false; // Been there done that
+                    Set<ChunkPos> existingChunks = WorldStructureGenerationData.get(world).addEntry(structureEntry);
+
+                    // Complement in all chunks that already exist
+                    if (partially)
+                    {
+                        maturity(StructureSpawnContext.GenerateMaturity.COMPLEMENT);
+
+                        StructureBoundingBox oldBB = this.generationBB;
+                        for (ChunkPos existingChunk : existingChunks)
+                        {
+                            generationBB(Structures.chunkBoundingBox(existingChunk));
+
+                            structure.generate(spawn, instanceData, RCConfig.getUniversalTransformer());
+                        }
+                        generationBB(oldBB);
+                    }
                 }
             }
 
@@ -432,6 +452,12 @@ public class StructureGenerator<S extends NBTStorable>
     public StructureGenerator<S> memorize(boolean memorize)
     {
         this.memorize = memorize;
+        return this;
+    }
+
+    public StructureGenerator<S> partially(boolean partially)
+    {
+        this.partially = partially;
         return this;
     }
 

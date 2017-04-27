@@ -47,6 +47,8 @@ public class RecurrentComplex
     public static final boolean USE_JSON_FOR_NBT = true;
     public static final boolean USE_ZIP_FOR_STRUCTURE_FILES = true;
 
+    public static final boolean PARTIALLY_SPAWN_NATURAL_STRUCTURES = true;
+
     @Instance(value = MOD_ID)
     public static RecurrentComplex instance;
 

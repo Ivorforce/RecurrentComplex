@@ -66,7 +66,7 @@ public class WorldStructureGenerationData extends WorldSavedData
         return data;
     }
 
-    public Stream<StructureEntry> structureEntriesAt(ChunkPos coords)
+    public Stream<StructureEntry> structureEntriesIn(ChunkPos coords)
     {
         return entriesAt(coords)
                 .filter(StructureEntry.class::isInstance).map(StructureEntry.class::cast);
@@ -109,7 +109,7 @@ public class WorldStructureGenerationData extends WorldSavedData
 
         markDirty();
 
-        return Sets.intersection(checkedChunksFinal, rasterized);
+        return Sets.intersection(checkedChunks, rasterized);
     }
 
     public Entry getEntry(UUID id)
@@ -148,6 +148,7 @@ public class WorldStructureGenerationData extends WorldSavedData
         return true;
     }
 
+    //
     public boolean checkChunkFinal(ChunkPos coords)
     {
         if (checkedChunksFinal.contains(coords))
@@ -296,15 +297,9 @@ public class WorldStructureGenerationData extends WorldSavedData
         }
 
         @Nonnull
-        public static StructureEntry complete(String structureID, String generationInfoID, StructureBoundingBox boundingBox, AxisAlignedTransform2D transform)
+        public static StructureEntry complete(String structureID, String generationInfoID, StructureBoundingBox boundingBox, AxisAlignedTransform2D transform, boolean hasBeenGenerated)
         {
-            return new StructureEntry(UUID.randomUUID(), boundingBox, structureID, generationInfoID, transform, true);
-        }
-
-        @Nonnull
-        public static StructureEntry generating(String structureID, String generationInfoID, StructureBoundingBox boundingBox, AxisAlignedTransform2D transform)
-        {
-            return new StructureEntry(UUID.randomUUID(), boundingBox, structureID, generationInfoID, transform, false);
+            return new StructureEntry(UUID.randomUUID(), boundingBox, structureID, generationInfoID, transform, hasBeenGenerated);
         }
 
         public String getStructureID()

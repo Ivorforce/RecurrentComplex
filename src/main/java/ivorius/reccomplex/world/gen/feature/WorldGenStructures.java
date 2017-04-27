@@ -104,7 +104,8 @@ public class WorldGenStructures
         {
             StructureGenerator<?> generator = new StructureGenerator<>(structure).world(world).generationInfo(naturalGenInfo)
                     .random(random).maturity(StructureSpawnContext.GenerateMaturity.SUGGEST)
-                    .randomPosition(genPos, naturalGenInfo.placer.getContents()).fromCenter(true);
+                    .randomPosition(genPos, naturalGenInfo.placer.getContents()).fromCenter(true)
+                    .partially(RecurrentComplex.PARTIALLY_SPAWN_NATURAL_STRUCTURES);
 
             if (naturalGenInfo.getGenerationWeight(world.provider, generator.environment().biome) <= 0)
             {
@@ -128,18 +129,22 @@ public class WorldGenStructures
         return false;
     }
 
-    public static void generatePartialStructuresInChunk(Random random, final ChunkPos chunkPos, final WorldServer world)
+    public static void complementStructuresInChunk(Random random, final ChunkPos chunkPos, final WorldServer world)
     {
         WorldStructureGenerationData data = WorldStructureGenerationData.get(world);
 
-        data.structureEntriesAt(chunkPos).filter(e -> !e.hasBeenGenerated).forEach(entry -> {
+        // Don't filter hasBeenGenerated since if the chunk re-generates now, we want to complement our structure back anyway
+        data.structureEntriesIn(chunkPos).forEach(entry -> {
             Structure<?> structure = StructureRegistry.INSTANCE.get(entry.getStructureID());
 
             if (structure != null)
             {
                 new StructureGenerator<>(structure).world(world).generationInfo(entry.generationInfoID)
                         .random(random).boundingBox(entry.boundingBox).transform(entry.transform).generationBB(Structures.chunkBoundingBox(chunkPos))
-                        .structureID(entry.getStructureID()).instanceData(entry.instanceData).maturity(entry.firstTime ? StructureSpawnContext.GenerateMaturity.FIRST : StructureSpawnContext.GenerateMaturity.COMPLEMENT).generate();
+                        .structureID(entry.getStructureID()).instanceData(entry.instanceData)
+                        // Could use entry.firstTime but then StructureGenerator would add a new entry
+                        .maturity(StructureSpawnContext.GenerateMaturity.COMPLEMENT)
+                        .generate();
 
                 if (entry.firstTime)
                 {
@@ -156,11 +161,15 @@ public class WorldGenStructures
         WorldStructureGenerationData data = WorldStructureGenerationData.get(world);
 
         if (structurePredicate == null)
-            generatePartialStructuresInChunk(random, chunkPos, world);
+            complementStructuresInChunk(random, chunkPos, world);
 
         if ((!RCConfig.honorStructureGenerationOption || worldWantsStructures)
-                && (structurePredicate != null || data.checkChunk(chunkPos)))
+                // If partially spawn, check chunks as having tried to add partial structures as into the thingy
+                && (structurePredicate == null || !RecurrentComplex.PARTIALLY_SPAWN_NATURAL_STRUCTURES || data.checkChunkFinal(chunkPos)))
         {
+            if (structurePredicate == null)
+                data.checkChunk(chunkPos);
+
             Biome biomeGen = world.getBiome(chunkPos.getBlock(8, 0, 8));
             BlockPos spawnPos = world.getSpawnPoint();
 

@@ -225,6 +225,7 @@ public class RCEntityInfo implements NBTCompoundObject, PartialUpdateHandler
             catch (Exception e)
             {
                 RecurrentComplex.logger.warn("Error reading operation tag", e);
+                danglingOperation = null;
             }
         }
         else if ("options".equals(context))

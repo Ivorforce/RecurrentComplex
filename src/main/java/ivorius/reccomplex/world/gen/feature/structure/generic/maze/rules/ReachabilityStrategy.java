@@ -168,13 +168,21 @@ public class ReachabilityStrategy<C> implements MazePredicate<C>
         final Collection<MazePassage> traversed = Sets.newHashSet(pTraversed); // Editable
 
         Predicate<MazeRoom> roomPlaceable = confiner != null ? ((o) -> confiner.test(o) && !rooms.contains(o)) : rooms::contains;
-        Predicate<MazePassage> passagePlaceable = o-> roomPlaceable.test(o.getSource());
+        Predicate<MazePassage> passagePlaceable = o -> roomPlaceable.test(o.getSource());
 
         Set<MazePassage> visited = Sets.newHashSet(left);
         TreeSet<MazePassage> dirty = Sets.newTreeSet((o1, o2) ->
         {
-            int compare = Double.compare(minDistanceSQ(o1, right), minDistanceSQ(o2, right));
-            return compare != 0 ? compare : compare(o1.getSource().getCoordinates(), o2.getSource().getCoordinates());
+            int compare;
+            // Sort by closest
+            if ((compare = Double.compare(minDistanceSQ(o1, right), minDistanceSQ(o2, right))) != 0) return compare;
+
+            // Arbitrarily sort - different passages can NEVER return 0, otherwise one gets trashed
+            if ((compare = compare(o1.getSource().getCoordinates(), o2.getSource().getCoordinates())) != 0)
+                return compare;
+            if ((compare = compare(o1.getDest().getCoordinates(), o2.getDest().getCoordinates())) != 0) return compare;
+
+            return 0;
         });
         dirty.addAll(left);
         visited.addAll(left);
@@ -188,12 +196,9 @@ public class ReachabilityStrategy<C> implements MazePredicate<C>
             for (Ability ability : (Iterable<Ability<C>>) abilities.stream()
                     .filter(ability -> ability.start.distance(cur) != null) // Shiftable
                     .filter(ability -> ability.rooms.stream().map(r -> r.add(cur.getSource())).allMatch(roomPlaceable)) // Have room
-                    .filter(ability -> ability.exits.keySet().stream() // Placeable and Connectable
-                            .allMatch(p ->
-                            {
-                                MazePassage shifted = p.add(cur.getSource());
-                                return connector.test(ability.exits.get(p), shifted) && passagePlaceable.test(shifted);
-                            }))
+                    .filter(ability -> ability.exits.keySet().stream() // Connectable
+                            .allMatch(p -> connector.test(ability.exits.get(p), p.add(cur.getSource())))
+                    )
                     ::iterator)
             {
                 MazePassage dest = ability.destination().add(cur.getSource());

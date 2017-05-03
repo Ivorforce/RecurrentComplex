@@ -11,13 +11,16 @@ import com.google.common.collect.ImmutableMultimap;
 import com.google.common.collect.ImmutableSet;
 import ivorius.ivtoolkit.math.AxisAlignedTransform2D;
 import ivorius.ivtoolkit.math.IvVecMathHelper;
+import ivorius.ivtoolkit.math.Transforms;
 import ivorius.ivtoolkit.maze.components.*;
 import ivorius.reccomplex.RCConfig;
 import ivorius.reccomplex.RecurrentComplex;
 import ivorius.reccomplex.utils.NBTStorable;
-import ivorius.ivtoolkit.math.Transforms;
 import ivorius.reccomplex.world.gen.feature.StructureGenerator;
-import ivorius.reccomplex.world.gen.feature.structure.*;
+import ivorius.reccomplex.world.gen.feature.structure.Environment;
+import ivorius.reccomplex.world.gen.feature.structure.Structure;
+import ivorius.reccomplex.world.gen.feature.structure.StructureRegistry;
+import ivorius.reccomplex.world.gen.feature.structure.Structures;
 import ivorius.reccomplex.world.gen.feature.structure.context.StructureSpawnContext;
 import ivorius.reccomplex.world.gen.feature.structure.generic.generation.MazeGeneration;
 import net.minecraft.util.math.BlockPos;
@@ -116,9 +119,19 @@ public class WorldGenMaze
         buildExitPaths(environment, factory, comp.getExitPaths(), rooms).forEach(path -> transformedExits.put(MazePassages.rotated(path.getKey(), transform, size), path.getValue()));
         addMissingExits(transformedRooms, transformedExits, comp.defaultConnector.toConnector(factory));
 
-        ImmutableMultimap<MazePassage, MazePassage> reachability = comp.reachability.build(transform, size, SavedMazeReachability.notBlocked(blockedConnections, transformedExits), transformedExits.keySet());
+        ImmutableMultimap.Builder<MazePassage, MazePassage> reachability = ImmutableMultimap.builder();
+        comp.reachability.build(reachability, transform, size, SavedMazeReachability.notBlocked(blockedConnections, transformedExits), transformedExits.keySet());
+        addExternalReachability(reachability, transformedExits, blockedConnections);
 
-        return new MazeComponentStructure<>(weight, StructureRegistry.INSTANCE.id(info), environment.variables, transform, ImmutableSet.copyOf(transformedRooms), ImmutableMap.copyOf(transformedExits), reachability);
+        return new MazeComponentStructure<>(weight, StructureRegistry.INSTANCE.id(info), environment.variables, transform, ImmutableSet.copyOf(transformedRooms), ImmutableMap.copyOf(transformedExits), reachability.build());
+    }
+
+    public static ImmutableMultimap.Builder<MazePassage, MazePassage> addExternalReachability(ImmutableMultimap.Builder<MazePassage, MazePassage> reachability, Map<MazePassage, Connector> transformedExits, Collection<Connector> blockedConnections)
+    {
+        transformedExits.keySet().stream()
+                .filter(passage -> !blockedConnections.contains(transformedExits.get(passage)))
+                .forEach(passage -> reachability.put(passage, passage.inverse()));
+        return reachability;
     }
 
     public static <C> SetMazeComponent<C> createCompleteComponent(Set<MazeRoom> rooms, Map<MazePassage, C> exits, C wallConnector)

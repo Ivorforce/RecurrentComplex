@@ -5,9 +5,7 @@
 
 package ivorius.reccomplex.maze;
 
-import ivorius.ivtoolkit.maze.components.MazeComponent;
-import ivorius.ivtoolkit.maze.components.MazePredicate;
-import ivorius.ivtoolkit.maze.components.MazeRoom;
+import ivorius.ivtoolkit.maze.components.*;
 
 import javax.annotation.Nullable;
 import java.util.Arrays;
@@ -61,12 +59,33 @@ public class MazeInterpreter
                 if (marked != null)
                     rep = marked;
                 else if (component.rooms().contains(mazeRoom))
-                    rep = isExit(component, predicate, mazeRoom) ? "x" : "X";
+                    rep = "X";
                 else
-                    rep = isExit(component, predicate, mazeRoom) ? "-" : " ";
+                    rep = " ";
 
-                builder.append(rep).append(" ");
+                MazeRoom next = mazeRoom.addInDimension(xDim, 1);
+                if (x < maxX && isConnection(component, new MazeRoomConnection(mazeRoom, next)))
+                    builder.append(rep).append("-");
+                else
+                    builder.append(rep).append(" ");
             }
+
+            if (z < maxZ)
+            {
+                builder.append("\n ");
+                for (int x = minX; x <= maxX; x++)
+                {
+                    MazeRoom mazeRoom = setInDimension(setInDimension(pos, zDim, z), xDim, x);
+                    MazeRoom next = mazeRoom.addInDimension(zDim, 1);
+
+                    String rep = " ";
+                    if (isConnection(component, new MazeRoomConnection(mazeRoom, next)))
+                        rep = "|";
+
+                    builder.append(rep).append(" ");
+                }
+            }
+
             builder.append("\n");
         }
 
@@ -78,6 +97,16 @@ public class MazeInterpreter
         return component.exits().keySet().stream()
                 .filter(p -> p.getDest().equals(mazeRoom) || p.getSource().equals(mazeRoom))
                 .anyMatch(p -> predicate != null && predicate.isDirtyConnection(p.getSource(), p.getDest(), component.exits().get(p)));
+    }
+
+    protected static <C> boolean isConnection(MazeComponent<C> component, MazeRoomConnection connection)
+    {
+        MazePassage fst = new MazePassage(connection.getLeft(), connection.getRight());
+        MazePassage sec = new MazePassage(connection.getRight(), connection.getLeft());
+
+        // OR because technically we just need one direction, otherwise it just points outside
+        return component.reachability().get(fst).contains(sec)
+                || component.reachability().get(sec).contains(fst);
     }
 
     protected static MazeRoom setInDimension(MazeRoom pos, int dim, int val)

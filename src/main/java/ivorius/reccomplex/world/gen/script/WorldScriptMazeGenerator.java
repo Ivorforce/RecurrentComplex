@@ -5,6 +5,7 @@
 
 package ivorius.reccomplex.world.gen.script;
 
+import com.google.common.collect.ImmutableListMultimap;
 import gnu.trove.list.array.TIntArrayList;
 import ivorius.ivtoolkit.blocks.BlockPositions;
 import ivorius.ivtoolkit.math.AxisAlignedTransform2D;
@@ -243,6 +244,8 @@ public class WorldScriptMazeGenerator implements WorldScript<WorldScriptMazeGene
         WorldScriptMazeGenerator.blockRooms(maze, mazeComponent.rooms.compile(false).keySet(), defaultConnector);
 
         WorldGenMaze.buildExitPaths(environment, factory, mazeComponent.exitPaths, maze.rooms()).forEach(path -> maze.exits().put(path.getKey(), path.getValue()));
+        // Add reachability outside the maze
+        maze.reachability().putAll(WorldGenMaze.addExternalReachability(ImmutableListMultimap.builder(), maze.exits(), blockedConnections).build());
 
         // Don't add reachability as it only slows down generation without adding real features
 //        maze.reachability().putAll(mazeComponent.reachability.build(AxisAlignedTransform2D.ORIGINAL, mazeComponent.boundsSize(), SavedMazeReachability.notBlocked(blockedConnections, maze.exits()), maze.exits().keySet()));

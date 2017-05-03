@@ -390,7 +390,7 @@ public class ReachabilityStrategy<C> implements MazePredicate<C>
         return true;
     }
 
-    protected Function<MazeRoom, String> dirtyMarker(MazeComponent component, MazeComponent place)
+    protected Function<MazeRoom, String> dirtyMarker(MazeComponent component, @Nullable MazeComponent place)
     {
         return r ->
         {
@@ -405,7 +405,7 @@ public class ReachabilityStrategy<C> implements MazePredicate<C>
                     return "" + (p + 1);
             }
 
-            if (place.rooms().contains(r))
+            if (place != null && place.rooms().contains(r))
                 return "O";
 
             return null;

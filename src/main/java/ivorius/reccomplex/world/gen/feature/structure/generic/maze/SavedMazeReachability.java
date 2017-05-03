@@ -86,11 +86,10 @@ public class SavedMazeReachability implements NBTCompoundObject
             this.crossConnections.add(ImmutablePair.of(entry.getKey().copy(), entry.getValue().copy()));
     }
 
-    public ImmutableMultimap<MazePassage, MazePassage> build(final AxisAlignedTransform2D transform, final int[] size, Predicate<MazePassage> filter, Set<MazePassage> connections)
+    public void build(ImmutableMultimap.Builder<MazePassage, MazePassage> builder, final AxisAlignedTransform2D transform, final int[] size, Predicate<MazePassage> filter, Set<MazePassage> connections)
     {
-        filter = ((Predicate<MazePassage>) Predicates.in(connections)::apply).and(filter);
+        filter = ((Predicate<MazePassage>) connections::contains).and(filter);
 
-        ImmutableMultimap.Builder<MazePassage, MazePassage> builder = ImmutableSetMultimap.builder();
         Set<MazePassage> defaultGroup = Sets.newHashSet(connections);
 
         for (Set<SavedMazePath> group : groups)
@@ -100,7 +99,7 @@ public class SavedMazeReachability implements NBTCompoundObject
             addInterconnections(builder, mazePassages.stream());
         }
 
-        addInterconnections(builder, defaultGroup.stream());
+        addInterconnections(builder, defaultGroup.stream().filter(filter));
 
         for (Map.Entry<SavedMazePath, SavedMazePath> entry : crossConnections)
         {
@@ -110,8 +109,6 @@ public class SavedMazeReachability implements NBTCompoundObject
             if (filter.test(key) && filter.test(val))
                 builder.put(key, val);
         }
-
-        return builder.build();
     }
 
     protected void addInterconnections(ImmutableMultimap.Builder<MazePassage, MazePassage> builder, Stream<MazePassage> existing)

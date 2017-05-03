@@ -64,11 +64,10 @@ public class MazeRuleConnect extends MazeRule
         if (start.size() > 0 && end.size() > 0)
         {
             List<Collection<MazePassage>> points = Arrays.asList(buildPaths(start), buildPaths(end));
-            Predicate<Connector> traverser = ReachabilityStrategy.connectorTraverser(blockedConnections);
             LimitAABBStrategy<Object> confiner = new LimitAABBStrategy<>(script.mazeComponent.boundsSize());
 
-            return preventConnection ? ReachabilityStrategy.preventConnection(points, traverser, confiner, connectionStrategy)
-                    :  ReachabilityStrategy.connect(points, traverser, confiner, ReachabilityStrategy.compileAbilities(components, traverser), connectionStrategy);
+            return preventConnection ? ReachabilityStrategy.preventConnection(points, confiner, connectionStrategy)
+                    :  ReachabilityStrategy.connect(points, confiner, ReachabilityStrategy.compileAbilities(components), connectionStrategy);
         }
         else
             return null;

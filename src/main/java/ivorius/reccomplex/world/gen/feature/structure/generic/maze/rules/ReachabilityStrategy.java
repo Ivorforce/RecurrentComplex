@@ -31,35 +31,33 @@ public class ReachabilityStrategy<C> implements MazePredicate<C>
     private final TObjectIntMap<ConnectionPoint> stepsReached = new TObjectIntHashMap<>();
 
     private final Predicate<MazeRoom> confiner;
-    private final Predicate<C> traverser;
     private final ConnectionStrategy<C> connectionStrategy;
 
     private boolean preventConnection;
 
-    public ReachabilityStrategy(Predicate<MazeRoom> confiner, Predicate<C> traverser, ConnectionStrategy<C> connectionStrategy, boolean preventConnection)
+    public ReachabilityStrategy(Predicate<MazeRoom> confiner, ConnectionStrategy<C> connectionStrategy, boolean preventConnection)
     {
         this.confiner = confiner;
-        this.traverser = traverser;
         this.connectionStrategy = connectionStrategy;
         this.preventConnection = preventConnection;
     }
 
-    public static <C> ReachabilityStrategy<C> connect(Collection<Collection<MazePassage>> points, Predicate<C> traverser, Predicate<MazeRoom> confiner, Collection<Ability<C>> traversalAbilities, ConnectionStrategy<C> connectionStrategy)
+    public static <C> ReachabilityStrategy<C> connect(Collection<Collection<MazePassage>> points, Predicate<MazeRoom> confiner, Collection<Ability<C>> traversalAbilities, ConnectionStrategy<C> connectionStrategy)
     {
-        ReachabilityStrategy<C> strategy = new ReachabilityStrategy<>(confiner, traverser, connectionStrategy, false);
+        ReachabilityStrategy<C> strategy = new ReachabilityStrategy<>(confiner, connectionStrategy, false);
         strategy.setConnection(points);
         strategy.traversalAbilities.addAll(traversalAbilities);
         return strategy;
     }
 
-    public static <C> ReachabilityStrategy<C> preventConnection(Collection<Collection<MazePassage>> points, Predicate<C> traverser, Predicate<MazeRoom> confiner, ConnectionStrategy<C> connectionStrategy)
+    public static <C> ReachabilityStrategy<C> preventConnection(Collection<Collection<MazePassage>> points, Predicate<MazeRoom> confiner, ConnectionStrategy<C> connectionStrategy)
     {
-        ReachabilityStrategy<C> strategy = new ReachabilityStrategy<>(confiner, traverser, connectionStrategy, true);
+        ReachabilityStrategy<C> strategy = new ReachabilityStrategy<>(confiner, connectionStrategy, true);
         strategy.setConnection(points);
         return strategy;
     }
 
-    public static <C> Collection<Ability<C>> compileAbilities(Collection<? extends MazeComponent<C>> components, Predicate<C> traverser)
+    public static <C> Collection<Ability<C>> compileAbilities(Collection<? extends MazeComponent<C>> components)
     {
         Collection<Ability<C>> abilities = new HashSet<>();
 
@@ -68,11 +66,11 @@ public class ReachabilityStrategy<C> implements MazePredicate<C>
             // Walking within the component, and at last outside
             for (MazePassage source : component.reachability().keySet())
             {
-                // Only walk if this is actually an entrance, otherwise it's just within the component again
-                if (traverser.test(component.exits().get(source)))
+                // Can only start walking if it starts within the component
+                if (component.rooms().contains(source.getSource()))
                 {
                     // TODO Don't use a traversed Set since we don't need it
-                    for (MazePassage exit : traverse(Collections.singleton(component), new HashSet<>(), Collections.singleton(source), traverser, null))
+                    for (MazePassage exit : traverse(Collections.singleton(component), new HashSet<>(), Collections.singleton(source), null))
                     {
                         // Only if we can exit the component here it's a true ability
                         if (!component.rooms().contains(exit.getSource())
@@ -113,7 +111,7 @@ public class ReachabilityStrategy<C> implements MazePredicate<C>
         return input -> !blockingConnections.contains(input);
     }
 
-    protected static <C> Set<MazePassage> traverse(Collection<MazeComponent<C>> mazes, @Nonnull Collection<MazePassage> traversed, Collection<MazePassage> connections, Predicate<C> traverser, @Nullable Consumer<MazePassage> visitor)
+    protected static <C> Set<MazePassage> traverse(Collection<MazeComponent<C>> mazes, @Nonnull Collection<MazePassage> traversed, Collection<MazePassage> connections, @Nullable Consumer<MazePassage> visitor)
     {
         if (connections.size() <= 0)
             return Collections.emptySet();
@@ -135,15 +133,16 @@ public class ReachabilityStrategy<C> implements MazePredicate<C>
                         added.add(dest);
                         dirty.addLast(dest);
 
-                        // Try to go through path
-                        MazePassage rDest = dest.inverse();
-                        if (traverser.test(maze.exits().get(dest)) && traversed.add(rDest))
-                        {
-                            // We are now on the other side of the connection/'wall'
-                            if (visitor != null) visitor.accept(rDest);
-                            added.add(rDest);
-                            dirty.addLast(rDest);
-                        }
+                        // Don't need to do this - the reachability already contains a 'going outside' path
+//                        // Try to go through path
+//                        MazePassage rDest = dest.inverse();
+//                        if (traverser.test(maze.exits().get(dest)) && traversed.add(rDest))
+//                        {
+//                            // We are now on the other side of the connection/'wall'
+//                            if (visitor != null) visitor.accept(rDest);
+//                            added.add(rDest);
+//                            dirty.addLast(rDest);
+//                        }
                     }
                 });
             }
@@ -153,10 +152,10 @@ public class ReachabilityStrategy<C> implements MazePredicate<C>
 
     private static <C> boolean approximateCanReach(Set<MazeRoom> rooms, BiPredicate<C, MazePassage> connector, Collection<Ability<C>> abilities, Set<MazePassage> left, Set<MazePassage> right, Predicate<MazeRoom> confiner)
     {
-        return approximateCanReach(rooms, abilities, Collections.emptyList(), left, right, Collections.emptyList(), confiner, null, connector);
+        return approximateCanReach(rooms, abilities, Collections.emptyList(), left, right, Collections.emptyList(), confiner, connector);
     }
 
-    private static <C> boolean approximateCanReach(Set<MazeRoom> rooms, Collection<Ability<C>> abilities, Collection<MazeComponent<C>> mazes, Set<MazePassage> left, Set<MazePassage> right, Collection<MazePassage> pTraversed, Predicate<MazeRoom> confiner, Predicate<C> traverser, BiPredicate<C, MazePassage> connector)
+    private static <C> boolean approximateCanReach(Set<MazeRoom> rooms, Collection<Ability<C>> abilities, Collection<MazeComponent<C>> mazes, Set<MazePassage> left, Set<MazePassage> right, Collection<MazePassage> pTraversed, Predicate<MazeRoom> confiner, BiPredicate<C, MazePassage> connector)
     {
         if (left.size() <= 0 || right.size() <= 0)
             return false;
@@ -209,7 +208,7 @@ public class ReachabilityStrategy<C> implements MazePredicate<C>
 
                 // Try entries (i.e. walk through placed components)
                 for (MazePassage p : (Iterable<MazePassage>)
-                        traverse(mazes, traversed, Collections.singleton(dest), traverser, null).stream()
+                        traverse(mazes, traversed, Collections.singleton(dest), null).stream()
                                 .distinct()::iterator)
                 {
                     if (right.contains(p))
@@ -298,7 +297,6 @@ public class ReachabilityStrategy<C> implements MazePredicate<C>
                         mainConnectionPoint.traversed.stream().filter(isDirty).map(MazePassage::inverse).collect(Collectors.toSet()),
                         point.traversed,
                         confiner,
-                        traverser,
                         (c, p) -> connectionStrategy.connect(p, exitFromEither(maze, component, p.inverse()), c) > 0);
                 if (!canPlace) // Can skip checking the rest
                     break;
@@ -358,7 +356,7 @@ public class ReachabilityStrategy<C> implements MazePredicate<C>
 
     protected Set<MazePassage> traverse(MazeComponent<C> maze, MazeComponent<C> component, Set<MazePassage> traversed, final Collection<MazePassage> goal, Consumer<MazePassage> goalConsumer)
     {
-        return traverse(Arrays.asList(maze, component), traversed, Sets.intersection(component.exits().keySet(), traversed), traverser, connection ->
+        return traverse(Arrays.asList(maze, component), traversed, Sets.intersection(component.exits().keySet(), traversed), connection ->
         {
             if (goal.contains(connection))
                 goalConsumer.accept(connection);

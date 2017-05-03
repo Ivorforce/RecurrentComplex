@@ -60,11 +60,10 @@ public class MazeRuleConnectAll extends MazeRule
         if (paths.size() > 1)
         {
             List<Collection<MazePassage>> points = paths.stream().map(SavedMazePath::build).map(Collections::singleton).collect(Collectors.toList());
-            Predicate<Connector> traverser = ReachabilityStrategy.connectorTraverser(blockedConnections);
             Predicate<MazeRoom> confiner = new LimitAABBStrategy<>(script.mazeComponent.boundsSize());
 
-            return preventConnection ? ReachabilityStrategy.preventConnection(points, traverser, confiner, connectionStrategy)
-                    : ReachabilityStrategy.connect(points, traverser, confiner, ReachabilityStrategy.compileAbilities(components, traverser), connectionStrategy
+            return preventConnection ? ReachabilityStrategy.preventConnection(points, confiner, connectionStrategy)
+                    : ReachabilityStrategy.connect(points, confiner, ReachabilityStrategy.compileAbilities(components), connectionStrategy
             );
         }
         else

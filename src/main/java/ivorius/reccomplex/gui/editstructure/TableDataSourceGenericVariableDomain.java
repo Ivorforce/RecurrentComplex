@@ -50,7 +50,7 @@ public class TableDataSourceGenericVariableDomain extends TableDataSourceList<Ge
     }
 
     @Override
-    public GenericVariableDomain.Variable newEntry(int addIndex, String actionID)
+    public GenericVariableDomain.Variable newEntry(String actionID)
     {
         GenericVariableDomain.Variable variable = new GenericVariableDomain.Variable();
         variable.id = String.format("var_%d", new Random().nextInt(100));

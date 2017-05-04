@@ -12,6 +12,7 @@ import ivorius.reccomplex.gui.table.datasource.TableDataSourceList;
 import ivorius.reccomplex.utils.RCStrings;
 import ivorius.reccomplex.world.gen.script.WorldScript;
 import ivorius.reccomplex.world.gen.script.WorldScriptRegistry;
+import net.minecraft.util.text.TextFormatting;
 
 import javax.annotation.Nonnull;
 import java.util.List;
@@ -25,6 +26,7 @@ public class TableDataSourceWorldScriptList extends TableDataSourceList<WorldScr
     {
         super(list, tableDelegate, navigator);
         setUsesPresetActionForAdding(true);
+        duplicateTitle = TextFormatting.GREEN + "D";
     }
 
     @Override
@@ -34,7 +36,7 @@ public class TableDataSourceWorldScriptList extends TableDataSourceList<WorldScr
     }
 
     @Override
-    public WorldScript newEntry(int addIndex, String actionID)
+    public WorldScript newEntry(String actionID)
     {
         return tryInstantiate(actionID, WorldScriptRegistry.INSTANCE.objectClass(actionID), "Failed instantiating world script: %s");
     }
@@ -44,6 +46,12 @@ public class TableDataSourceWorldScriptList extends TableDataSourceList<WorldScr
     public TableCell entryCell(boolean enabled, WorldScript worldScript)
     {
         return TableCells.edit(enabled, navigator, tableDelegate, () -> worldScript.tableDataSource(navigator, tableDelegate));
+    }
+
+    @Override
+    public WorldScript copyEntry(WorldScript worldScript)
+    {
+        return WorldScriptRegistry.INSTANCE.copy(worldScript);
     }
 
     @Override

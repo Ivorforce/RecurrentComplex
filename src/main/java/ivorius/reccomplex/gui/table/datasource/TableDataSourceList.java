@@ -16,6 +16,7 @@ import net.minecraft.util.text.TextFormatting;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -30,10 +31,16 @@ public abstract class TableDataSourceList<T, L extends List<T>> extends TableDat
     protected TableDelegate tableDelegate;
     protected TableNavigator navigator;
 
+    @Nullable
     protected String earlierTitle = TextFormatting.BOLD + "↑";
+    @Nullable
     protected String laterTitle = TextFormatting.BOLD + "↓";
+    @Nullable
     protected String deleteTitle = TextFormatting.RED + "-";
+    @Nullable
     protected String addTitle = TextFormatting.GREEN + "+";
+    @Nullable
+    protected String duplicateTitle = null;
 
     protected boolean usesPresetActionForAdding;
 
@@ -125,6 +132,17 @@ public abstract class TableDataSourceList<T, L extends List<T>> extends TableDat
         this.addTitle = addTitle;
     }
 
+    @Nullable
+    public String getDuplicateTitle()
+    {
+        return duplicateTitle;
+    }
+
+    public void setDuplicateTitle(@Nullable String duplicateTitle)
+    {
+        this.duplicateTitle = duplicateTitle;
+    }
+
     public boolean isUsesPresetActionForAdding()
     {
         return usesPresetActionForAdding;
@@ -198,7 +216,7 @@ public abstract class TableDataSourceList<T, L extends List<T>> extends TableDat
     {
         return () ->
         {
-            T entry = newEntry(addIndex, actionID);
+            T entry = newEntry(actionID);
             if (entry != null)
             {
                 list.add(addIndex, entry);
@@ -230,32 +248,57 @@ public abstract class TableDataSourceList<T, L extends List<T>> extends TableDat
         boolean enabled = canEditList();
         T t = list.get(index);
 
-        TableCell entryCell = entryCell(enabled, t);
+        List<TableCell> cells = new ArrayList<>();
 
-        TableCellButton earlier = new TableCellButton("", "earlier", getEarlierTitle(), index > 0 && enabled);
-        earlier.addAction(() ->
+        cells.add(entryCell(enabled, t));
+
+        if (getEarlierTitle() != null)
         {
-            list.set(index, list.get(index - 1));
-            list.set(index - 1, t);
-            tableDelegate.reloadData();
-        });
+            TableCellButton earlier = new TableCellButton("", "earlier", getEarlierTitle(), index > 0 && enabled);
+            earlier.addAction(() ->
+            {
+                list.set(index, list.get(index - 1));
+                list.set(index - 1, t);
+                tableDelegate.reloadData();
+            });
+            cells.add(earlier);
+        }
 
-        TableCellButton later = new TableCellButton("", "later", getLaterTitle(), index < list.size() - 1 && enabled);
-        later.addAction(() ->
+        if (getLaterTitle() != null)
         {
-            list.set(index, list.get(index + 1));
-            list.set(index + 1, t);
-            tableDelegate.reloadData();
-        });
+            TableCellButton later = new TableCellButton("", "later", getLaterTitle(), index < list.size() - 1 && enabled);
+            later.addAction(() ->
+            {
+                list.set(index, list.get(index + 1));
+                list.set(index + 1, t);
+                tableDelegate.reloadData();
+            });
+            cells.add(later);
+        }
 
-        TableCellButton delete = new TableCellButton("", "delete", getDeleteTitle(), enabled);
-        delete.addAction(() ->
+        if (getDuplicateTitle() != null)
         {
-            list.remove(index);
-            tableDelegate.reloadData();
-        });
+            TableCellButton duplicate = new TableCellButton("", "duplicate", getDuplicateTitle(), enabled);
+            duplicate.addAction(() ->
+            {
+                list.add(index, copyEntry(t));
+                tableDelegate.reloadData();
+            });
+            cells.add(duplicate);
+        }
 
-        return Arrays.asList(entryCell, earlier, later, delete);
+        if (getDeleteTitle() != null)
+        {
+            TableCellButton delete = new TableCellButton("", "delete", getDeleteTitle(), enabled);
+            delete.addAction(() ->
+            {
+                list.remove(index);
+                tableDelegate.reloadData();
+            });
+            cells.add(delete);
+        }
+
+        return cells;
     }
 
     @Nonnull
@@ -268,5 +311,10 @@ public abstract class TableDataSourceList<T, L extends List<T>> extends TableDat
 
     public abstract String getDisplayString(T t);
 
-    public abstract T newEntry(int addIndex, String actionID);
+    public abstract T newEntry(String actionID);
+
+    public T copyEntry(T t)
+    {
+        throw new UnsupportedOperationException();
+    }
 }

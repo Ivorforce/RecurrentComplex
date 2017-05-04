@@ -28,6 +28,7 @@ public class TableDataSourceSelection extends TableDataSourceList<Selection.Area
         super(list, tableDelegate, navigator);
         this.dimensions = dimensions;
         this.showIdentifier = showIdentifier;
+        duplicateTitle = TextFormatting.GREEN + "D";
     }
 
     @Override
@@ -38,10 +39,15 @@ public class TableDataSourceSelection extends TableDataSourceList<Selection.Area
     }
 
     @Override
-    public Selection.Area newEntry(int addIndex, String actionID)
+    public Selection.Area newEntry(String actionID)
     {
-        return list.size() > 0 ? list.get(MathHelper.clamp(addIndex, 0, list.size() - 1)).copy()
-                : new Selection.Area(true, new int[dimensions.length], new int[dimensions.length], showIdentifier ? "" : null);
+        return new Selection.Area(true, new int[dimensions.length], new int[dimensions.length], showIdentifier ? "" : null);
+    }
+
+    @Override
+    public Selection.Area copyEntry(Selection.Area area)
+    {
+        return area.copy();
     }
 
     @Nonnull

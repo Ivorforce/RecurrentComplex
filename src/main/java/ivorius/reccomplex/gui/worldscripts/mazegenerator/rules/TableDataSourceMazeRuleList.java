@@ -43,7 +43,7 @@ public class TableDataSourceMazeRuleList extends TableDataSourceList<MazeRule, L
     }
 
     @Override
-    public MazeRule newEntry(int addIndex, String actionID)
+    public MazeRule newEntry(String actionID)
     {
         return tryInstantiate(actionID, MazeRuleRegistry.INSTANCE.objectClass(actionID), "Failed instantiating maze rule: %s");
     }

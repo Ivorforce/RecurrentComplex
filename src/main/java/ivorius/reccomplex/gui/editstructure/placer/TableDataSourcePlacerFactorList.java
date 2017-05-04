@@ -33,7 +33,7 @@ public class TableDataSourcePlacerFactorList extends TableDataSourceList<Generic
     }
 
     @Override
-    public GenericPlacer.Factor newEntry(int addIndex, String actionID)
+    public GenericPlacer.Factor newEntry(String actionID)
     {
         return tryInstantiate(actionID, FactorRegistry.INSTANCE.getTypeRegistry().typeForID(actionID), "Failed instantiating placer factor: %s");
     }

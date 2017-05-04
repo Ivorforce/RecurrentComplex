@@ -47,7 +47,7 @@ public class TableDataSourceWeightedBlockStateList extends TableDataSourceSegmen
             }
 
             @Override
-            public WeightedBlockState newEntry(int addIndex, String actionID)
+            public WeightedBlockState newEntry(String actionID)
             {
                 return new WeightedBlockState(null, Blocks.STONE.getDefaultState(), null);
             }

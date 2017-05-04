@@ -33,7 +33,7 @@ public class TableDataSourceWorldScriptCommand extends TableDataSourceSegmented
             }
 
             @Override
-            public WorldScriptCommand.Entry newEntry(int addIndex, String actionID)
+            public WorldScriptCommand.Entry newEntry(String actionID)
             {
                 return new WorldScriptCommand.Entry(1.0, "");
             }

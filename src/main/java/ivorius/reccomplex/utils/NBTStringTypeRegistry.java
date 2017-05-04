@@ -68,6 +68,11 @@ public class NBTStringTypeRegistry<B extends NBTCompoundObject>
         return classMap.inverse().keySet();
     }
 
+    public B copy(B b)
+    {
+        return read(write(b));
+    }
+
     public NBTTagCompound write(B t)
     {
         NBTTagCompound compound = new NBTTagCompound();

@@ -33,6 +33,7 @@ public class TableDataSourceMazePathConnectionList extends TableDataSourceList<S
     {
         super(list, tableDelegate, navigator);
         this.bounds = bounds;
+        duplicateTitle = TextFormatting.GREEN + "D";
     }
 
     @Override
@@ -43,10 +44,15 @@ public class TableDataSourceMazePathConnectionList extends TableDataSourceList<S
     }
 
     @Override
-    public SavedMazePathConnection newEntry(int addIndex, String actionID)
+    public SavedMazePathConnection newEntry(String actionID)
     {
-        return list.size() > 0 ? list.get(MathHelper.clamp(addIndex, 0, list.size() - 1)).copy()
-                : new SavedMazePathConnection(2, new MazeRoom(new int[bounds.size()]), false, ConnectorStrategy.DEFAULT_PATH, Collections.emptyList());
+        return new SavedMazePathConnection(2, new MazeRoom(new int[bounds.size()]), false, ConnectorStrategy.DEFAULT_PATH, Collections.emptyList());
+    }
+
+    @Override
+    public SavedMazePathConnection copyEntry(SavedMazePathConnection mazePath)
+    {
+        return mazePath.copy();
     }
 
     @Nonnull

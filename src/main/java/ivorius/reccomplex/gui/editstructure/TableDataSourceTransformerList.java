@@ -34,7 +34,7 @@ public class TableDataSourceTransformerList extends TableDataSourceList<Transfor
     }
 
     @Override
-    public Transformer newEntry(int addIndex, String actionID)
+    public Transformer newEntry(String actionID)
     {
         Class<? extends Transformer> clazz = StructureRegistry.TRANSFORMERS.typeForID(actionID);
         return tryInstantiate(actionID, clazz, "Failed instantiating transformer: %s");

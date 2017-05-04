@@ -44,7 +44,7 @@ public class TableDataSourceDimensionGenList extends TableDataSourceSegmented
             }
 
             @Override
-            public WeightedDimensionMatcher newEntry(int addIndex, String actionID)
+            public WeightedDimensionMatcher newEntry(String actionID)
             {
                 return new WeightedDimensionMatcher("", null);
             }

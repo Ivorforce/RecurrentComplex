@@ -21,6 +21,7 @@ import net.minecraft.util.EnumFacing;
 import net.minecraft.client.renderer.GlStateManager;
 import org.lwjgl.opengl.GL11;
 
+import javax.annotation.Nullable;
 import java.nio.FloatBuffer;
 
 /**
@@ -87,14 +88,17 @@ public class OperationRenderer
         GlStateManager.disableBlend();
     }
 
-    public static void maybeRenderBoundingBox(BlockPos lowerCoord, int[] size, int ticks, float partialTicks)
+    @Nullable
+    public static BlockArea blockAreaFromSize(BlockPos lowerCoord, int[] size)
     {
-        if (size[0] > 0 && size[1] > 0 && size[2] > 0)
-            renderBoundingBox(BlockArea.areaFromSize(lowerCoord, size), ticks, partialTicks);
+        return size[0] > 0 && size[1] > 0 && size[2] > 0 ? BlockArea.areaFromSize(lowerCoord, size) : null;
     }
 
-    public static void renderBoundingBox(BlockArea area, int ticks, float partialTicks)
+    public static void renderBoundingBox(@Nullable BlockArea area, int ticks, float partialTicks)
     {
+        if (area == null)
+            return;
+
         GL11.glLineWidth(3.0f);
         GlStateManager.color(0.8f, 0.8f, 1.0f);
         AreaRenderer.renderAreaLined(area, 0.0232f);

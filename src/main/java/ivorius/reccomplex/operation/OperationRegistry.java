@@ -13,6 +13,8 @@ import ivorius.reccomplex.RecurrentComplex;
 import ivorius.reccomplex.capability.RCEntityInfo;
 import ivorius.reccomplex.commands.RCCommands;
 import ivorius.reccomplex.utils.ServerTranslations;
+import ivorius.reccomplex.world.gen.feature.structure.OperationClearArea;
+import ivorius.reccomplex.world.gen.feature.structure.OperationGenerateStructure;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.command.PlayerNotFoundException;
@@ -94,5 +96,14 @@ public class OperationRegistry
 
         if (instant)
             operation.perform((WorldServer) commandSender.getEntityWorld());
+    }
+
+    @Nullable
+    public static NBTTagCompound dummyOperation(Operation danglingOperation)
+    {
+        if (danglingOperation instanceof OperationGenerateStructure)
+            return writeOperation(new OperationClearArea(((OperationGenerateStructure) danglingOperation).generationArea()));
+        else
+            return null;
     }
 }

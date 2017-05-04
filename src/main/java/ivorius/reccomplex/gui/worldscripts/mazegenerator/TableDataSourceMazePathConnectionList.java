@@ -46,7 +46,7 @@ public class TableDataSourceMazePathConnectionList extends TableDataSourceList<S
     @Override
     public SavedMazePathConnection newEntry(String actionID)
     {
-        return new SavedMazePathConnection(2, new MazeRoom(new int[bounds.size()]), false, ConnectorStrategy.DEFAULT_PATH, Collections.emptyList());
+        return new SavedMazePathConnection(2, new MazeRoom(new int[bounds.dimensions]), false, ConnectorStrategy.DEFAULT_PATH, Collections.emptyList());
     }
 
     @Override

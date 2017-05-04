@@ -110,6 +110,11 @@ public class WeightedBlockState implements WeightedSelector.Item
         return compound;
     }
 
+    public WeightedBlockState copy()
+    {
+        return new WeightedBlockState(weight, state, tileEntityInfo != null ? tileEntityInfo.copy() : null);
+    }
+
     public static class Serializer implements JsonDeserializer<WeightedBlockState>, JsonSerializer<WeightedBlockState>
     {
         private MCRegistry registry;

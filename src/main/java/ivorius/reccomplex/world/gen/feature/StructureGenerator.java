@@ -146,7 +146,7 @@ public class StructureGenerator<S extends NBTStorable>
 
             if (firstTime && success)
             {
-                RecurrentComplex.logger.trace(String.format("Generated structure '%s' in %s", name(structureID), spawn.boundingBox));
+                RecurrentComplex.logger.trace(String.format("Generated structure '%s' in %s (%d)", name(structureID), spawn.boundingBox, world.provider.getDimension()));
 
                 RCEventBus.INSTANCE.post(new StructureGenerationEvent.Post(structure, spawn));
                 if (structureID != null)

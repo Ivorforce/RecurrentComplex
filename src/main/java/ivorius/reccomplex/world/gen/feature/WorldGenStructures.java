@@ -48,7 +48,7 @@ public class WorldGenStructures
             if (structurePredicate != null && !structurePredicate.test(structure))
                 return;
 
-            RecurrentComplex.logger.trace(String.format("Spawning static structure at %s", pos));
+            RecurrentComplex.logger.trace(String.format("Spawning static structure %s at %s (%d)", structure, pos, world.provider.getDimension()));
 
             new StructureGenerator<>(structure).world(world).generationInfo(staticGenInfo)
                     .random(random).randomPosition(pos, staticGenInfo.placer.getContents()).fromCenter(true).generate();

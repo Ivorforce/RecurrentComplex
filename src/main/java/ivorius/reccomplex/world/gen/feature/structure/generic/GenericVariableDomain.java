@@ -97,6 +97,18 @@ public class GenericVariableDomain
 
         public boolean affectsLogic = false;
 
+        public Variable copy()
+        {
+            Variable var = new Variable();
+
+            var.id = id;
+            var.condition.setExpression(condition.getExpression());
+            var.chance = chance;
+            var.affectsLogic = affectsLogic;
+
+            return var;
+        }
+
         public static class Serializer implements JsonSerializer<Variable>, JsonDeserializer<Variable>
         {
             @Override

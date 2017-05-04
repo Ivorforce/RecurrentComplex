@@ -99,9 +99,9 @@ public class NaturalGeneration extends GenerationType implements EnvironmentalSe
             naturalGeneration.biomeWeights.setContents(Arrays.asList(infos));
         }
         else
-            naturalGeneration.biomeWeights.setToDefault();
+            naturalGeneration.biomeWeights.setPreset("overworld");
 
-        naturalGeneration.dimensionWeights.setToDefault();
+        naturalGeneration.dimensionWeights.setPreset("overworld");
 
         GenericPlacer.Serializer.readLegacyPlacer(naturalGeneration.placer, context, JsonUtils.getJsonObject(jsonObject, "generationY", new JsonObject()));
 

@@ -18,6 +18,7 @@ import ivorius.reccomplex.utils.RCStrings;
 import ivorius.reccomplex.world.gen.feature.structure.generic.WeightedBlockState;
 import ivorius.reccomplex.utils.presets.PresettedList;
 import net.minecraft.init.Blocks;
+import net.minecraft.util.text.TextFormatting;
 
 import javax.annotation.Nonnull;
 
@@ -36,7 +37,7 @@ public class TableDataSourceWeightedBlockStateList extends TableDataSourceSegmen
 
     public void addPresetSegments(final PresettedList<WeightedBlockState> list, final TableDelegate delegate, final TableNavigator navigator)
     {
-        addManagedSegment(1, new TableDataSourcePresettedList<WeightedBlockState>(list, delegate, navigator)
+        TableDataSourcePresettedList<WeightedBlockState> listSource = new TableDataSourcePresettedList<WeightedBlockState>(list, delegate, navigator)
         {
             @Override
             public String getDisplayString(WeightedBlockState entry)
@@ -58,7 +59,15 @@ public class TableDataSourceWeightedBlockStateList extends TableDataSourceSegmen
             {
                 return TableCells.edit(enabled, navigator, delegate, () -> new TableDataSourceWeightedBlockState(weightedBlockState, navigator, tableDelegate));
             }
-        });
+
+            @Override
+            public WeightedBlockState copyEntry(WeightedBlockState weightedBlockState)
+            {
+                return weightedBlockState.copy();
+            }
+        };
+        listSource.setDuplicateTitle(TextFormatting.GREEN + "D");
+        addManagedSegment(1, listSource);
     }
 
     @Nonnull

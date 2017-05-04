@@ -34,7 +34,7 @@ public class TableDataSourceMazeRoom extends TableDataSourceSegmented
     public TableDataSourceMazeRoom(MazeRoom room, Consumer<MazeRoom> consumer, List<IntegerRange> ranges, List<String> titles, List<List<String>> tooltips)
     {
         if (ranges.size() != titles.size() || ranges.size() != room.getDimensions())
-            throw new IllegalArgumentException();
+            throw new IllegalArgumentException(String.format("ranges: %d, titles: %d, dimensions: %d", ranges.size(), titles.size(), room.getDimensions()));
 
         this.room = room;
         this.consumer = consumer;

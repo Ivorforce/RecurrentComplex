@@ -103,7 +103,7 @@ public class OperationGenerateSchematic implements Operation
             }
 
             if (previewType == PreviewType.BOUNDING_BOX || previewType == PreviewType.SHAPE)
-                OperationRenderer.maybeRenderBoundingBox(lowerCoord, Structures.structureSize(size, transform), ticks, partialTicks);
+                OperationRenderer.renderBoundingBox(OperationRenderer.blockAreaFromSize(lowerCoord, Structures.structureSize(size, transform)), ticks, partialTicks);
         }
     }
 }

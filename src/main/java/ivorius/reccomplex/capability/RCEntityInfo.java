@@ -6,6 +6,7 @@
 package ivorius.reccomplex.capability;
 
 import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
 import ivorius.ivtoolkit.network.IvNetworkHelperServer;
 import ivorius.ivtoolkit.network.PartialUpdateHandler;
 import ivorius.ivtoolkit.tools.NBTCompoundObject;
@@ -200,6 +201,17 @@ public class RCEntityInfo implements NBTCompoundObject, PartialUpdateHandler
         }
         else if ("operation".equals(context))
         {
+            ByteBuf temp = Unpooled.buffer();
+            new RCPacketBuffer(temp).writeNBTTagCompoundToBuffer(danglingOperation != null ? OperationRegistry.writeOperation(danglingOperation) : null);
+
+            if (temp.writerIndex() > (1048576 * 4 / 5)) // From SPacketCustomPayload
+            {
+                RecurrentComplex.logger.error("Dangling Operation too large to send for preview! Sending dummy data!");
+                new RCPacketBuffer(buffer).writeNBTTagCompoundToBuffer(OperationRegistry.dummyOperation(danglingOperation));
+
+                return;
+            }
+
             new RCPacketBuffer(buffer).writeNBTTagCompoundToBuffer(danglingOperation != null ? OperationRegistry.writeOperation(danglingOperation) : null);
         }
         else if ("options".equals(context))

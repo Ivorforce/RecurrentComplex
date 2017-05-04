@@ -5,6 +5,7 @@
 
 package ivorius.reccomplex.world.gen.feature.structure;
 
+import ivorius.ivtoolkit.blocks.BlockArea;
 import ivorius.ivtoolkit.blocks.BlockPositions;
 import ivorius.ivtoolkit.math.AxisAlignedTransform2D;
 import ivorius.ivtoolkit.rendering.grid.BlockQuadCache;
@@ -24,6 +25,8 @@ import net.minecraft.world.WorldServer;
 import net.minecraftforge.common.util.Constants;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+
+import javax.annotation.Nullable;
 
 /**
  * Created by lukas on 10.02.15.
@@ -177,7 +180,6 @@ public class OperationGenerateStructure implements Operation
     @Override
     public void renderPreview(PreviewType previewType, World world, int ticks, float partialTicks)
     {
-        int[] size = structure.size();
         if (previewType == PreviewType.SHAPE)
         {
             GlStateManager.color(0.8f, 0.75f, 1.0f);
@@ -187,6 +189,16 @@ public class OperationGenerateStructure implements Operation
         }
 
         if (previewType == PreviewType.BOUNDING_BOX || previewType == PreviewType.SHAPE)
-            OperationRenderer.maybeRenderBoundingBox(lowerCoord, Structures.structureSize(size, transform), ticks, partialTicks);
+            OperationRenderer.renderBoundingBox(generationArea(), ticks, partialTicks);
+    }
+
+    @Nullable
+    public BlockArea generationArea()
+    {
+        if (structure == null)
+            return null;
+
+        int[] size = structure.size();
+        return OperationRenderer.blockAreaFromSize(lowerCoord, Structures.structureSize(size, transform));
     }
 }

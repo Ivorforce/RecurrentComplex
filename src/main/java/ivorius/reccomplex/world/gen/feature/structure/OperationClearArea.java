@@ -58,28 +58,37 @@ public class OperationClearArea implements Operation
     @Override
     public void writeToNBT(NBTTagCompound compound)
     {
-        BlockPositions.writeToNBT("sourcePoint1", sourceArea.getPoint1(), compound);
-        BlockPositions.writeToNBT("sourcePoint2", sourceArea.getPoint2(), compound);
+        if (sourceArea != null)
+        {
+            BlockPositions.writeToNBT("sourcePoint1", sourceArea.getPoint1(), compound);
+            BlockPositions.writeToNBT("sourcePoint2", sourceArea.getPoint2(), compound);
+        }
     }
 
     @Override
     public void readFromNBT(NBTTagCompound compound)
     {
-        sourceArea = new BlockArea(BlockPositions.readFromNBT("sourcePoint1", compound), BlockPositions.readFromNBT("sourcePoint2", compound));
+        sourceArea = blockAreaFrom(BlockPositions.readFromNBT("sourcePoint1", compound), BlockPositions.readFromNBT("sourcePoint2", compound));
+    }
+
+    public static BlockArea blockAreaFrom(BlockPos left, BlockPos right)
+    {
+        return left != null && right != null ? new BlockArea(left, right) : null;
     }
 
     @Override
     public void perform(WorldServer world)
     {
-        for (BlockPos coord : sourceArea)
-            setBlockToAirClean(world, coord);
+        if (sourceArea != null)
+            for (BlockPos coord : sourceArea)
+                setBlockToAirClean(world, coord);
     }
 
     @SideOnly(Side.CLIENT)
     @Override
     public void renderPreview(PreviewType previewType, World world, int ticks, float partialTicks)
     {
-        if (previewType == PreviewType.BOUNDING_BOX || previewType == PreviewType.SHAPE)
+        if (sourceArea != null && (previewType == PreviewType.BOUNDING_BOX || previewType == PreviewType.SHAPE))
         {
             GL11.glLineWidth(3.0f);
             GlStateManager.color(0.5f, 0.5f, 1.0f);

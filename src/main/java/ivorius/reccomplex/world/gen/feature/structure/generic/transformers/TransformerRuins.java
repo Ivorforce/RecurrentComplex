@@ -41,6 +41,8 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
+import net.minecraft.world.World;
+import net.minecraft.world.WorldServer;
 import net.minecraft.world.gen.structure.StructureBoundingBox;
 import net.minecraftforge.common.util.Constants;
 
@@ -176,9 +178,10 @@ public class TransformerRuins extends Transformer<TransformerRuins.InstanceData>
     @Override
     public void transform(InstanceData instanceData, Phase phase, StructureSpawnContext context, IvWorldData worldData, RunTransformer transformer)
     {
+        // Can't use a cache since we modify blocks
         if (phase == Phase.AFTER)
         {
-            WorldCache cache = new WorldCache(context.environment.world, context.boundingBox);
+            WorldServer world = context.environment.world;
             IvBlockCollection blockCollection = worldData.blockCollection;
             int[] areaSize = new int[]{blockCollection.width, blockCollection.height, blockCollection.length};
 
@@ -205,7 +208,7 @@ public class TransformerRuins extends Transformer<TransformerRuins.InstanceData>
                 // TODO Bounce left/right
                 IBlockState destState;
                 while (dest.getY() > 0
-                        && (destState = cache.getBlockState(dest)).getBlock().isReplaceable(cache.world, dest))
+                        && (destState = world.getBlockState(dest)).getBlock().isReplaceable(world, dest))
                 {
                     IvMutableBlockPos.offset(dest, dest, EnumFacing.DOWN);
                 }
@@ -226,10 +229,10 @@ public class TransformerRuins extends Transformer<TransformerRuins.InstanceData>
 
                     if (context.includes(worldCoord))
                     {
-                        IBlockState state = cache.getBlockState(worldCoord);
+                        IBlockState state = world.getBlockState(worldCoord);
 
                         if (!transformer.transformer.skipGeneration(transformer.instanceData, context, worldCoord, state, worldData, sourceCoord))
-                            decayBlock(cache, context.random, state, worldCoord);
+                            decayBlock(world, context.random, state, worldCoord);
                     }
                 }
             }
@@ -238,7 +241,7 @@ public class TransformerRuins extends Transformer<TransformerRuins.InstanceData>
         }
     }
 
-    public void decayBlock(WorldCache cache, Random random, IBlockState state, BlockPos pos)
+    public void decayBlock(World world, Random random, IBlockState state, BlockPos pos)
     {
         IBlockState newState = state;
 
@@ -279,9 +282,9 @@ public class TransformerRuins extends Transformer<TransformerRuins.InstanceData>
             newState = null;
             for (EnumFacing direction : EnumFacing.HORIZONTALS)
             {
-                if (random.nextFloat() < vineGrowth && Blocks.VINE.canPlaceBlockOnSide(cache.world, pos, direction))
+                if (random.nextFloat() < vineGrowth && Blocks.VINE.canPlaceBlockOnSide(world, pos, direction))
                 {
-                    IBlockState downState = cache.getBlockState(pos.offset(EnumFacing.DOWN));
+                    IBlockState downState = world.getBlockState(pos.offset(EnumFacing.DOWN));
                     downState = downState.getBlock() == Blocks.VINE ? downState : Blocks.VINE.getDefaultState();
                     downState = downState.withProperty(BlockVine.getPropertyFor(direction.getOpposite()), true);
 
@@ -289,24 +292,24 @@ public class TransformerRuins extends Transformer<TransformerRuins.InstanceData>
                     for (int y = 0; y < length; y++)
                     {
                         BlockPos downPos = pos.offset(EnumFacing.DOWN, y);
-                        if (cache.getBlockState(downPos).getMaterial() == Material.AIR)
-                            cache.setBlockState(downPos, downState, 3);
+                        if (world.getBlockState(downPos).getMaterial() == Material.AIR)
+                            world.setBlockState(downPos, downState, 3);
                         else
                             break;
                     }
 
                     break;
                 }
-                else if (random.nextFloat() < cobwebGrowth && hasAirNeighbors(cache, pos, 3))
+                else if (random.nextFloat() < cobwebGrowth && hasAirNeighbors(world, pos, 3))
                 {
                     newState = null;
-                    cache.setBlockState(pos, Blocks.WEB.getDefaultState(), 3);
+                    world.setBlockState(pos, Blocks.WEB.getDefaultState(), 3);
                 }
             }
         }
 
         if (newState != null && state != newState)
-            cache.setBlockState(pos, newState, 3);
+            world.setBlockState(pos, newState, 3);
     }
 
     @Nonnull
@@ -325,14 +328,14 @@ public class TransformerRuins extends Transformer<TransformerRuins.InstanceData>
         return newState;
     }
 
-    public boolean hasAirNeighbors(WorldCache cache, BlockPos pos, int sides)
+    public boolean hasAirNeighbors(World world, BlockPos pos, int sides)
     {
         int num = 0;
         int neg = 0;
 
         for (EnumFacing facing : EnumFacing.VALUES)
         {
-            if (cache.getBlockState(pos.offset(facing)).isNormalCube())
+            if (world.getBlockState(pos.offset(facing)).isNormalCube())
                 num++;
             else
                 neg++;

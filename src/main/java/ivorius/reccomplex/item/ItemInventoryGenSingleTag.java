@@ -35,7 +35,12 @@ public class ItemInventoryGenSingleTag extends ItemInventoryGenerationTag implem
         WeightedItemCollection weightedItemCollection = inventoryGenerator(stack);
 
         if (weightedItemCollection != null)
-            inventory.setInventorySlotContents(fromSlot, random.nextFloat() < getItemChance(stack) ? weightedItemCollection.getRandomItemStack(server, random) : null);
+        {
+            ItemStack generated = random.nextFloat() < getItemChance(stack) ? weightedItemCollection.getRandomItemStack(server, random) : null;
+
+            if (generated != null)
+                inventory.setInventorySlotContents(fromSlot, generated);
+        }
     }
 
     @Override

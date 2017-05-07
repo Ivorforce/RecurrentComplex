@@ -77,7 +77,11 @@ public class ItemInventoryGenMultiTag extends ItemInventoryGenerationTag impleme
                 int slot = emptySlots.isEmpty()
                         ? random.nextInt(inventory.getSizeInventory())
                         : emptySlots.removeAt(random.nextInt(emptySlots.size()));
-                inventory.setInventorySlotContents(slot, weightedItemCollection.getRandomItemStack(server, random));
+
+                ItemStack generated = weightedItemCollection.getRandomItemStack(server, random);
+
+                if (generated != null)
+                    inventory.setInventorySlotContents(slot, generated);
             }
         }
     }

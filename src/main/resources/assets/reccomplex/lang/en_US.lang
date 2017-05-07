@@ -667,7 +667,7 @@ reccomplex.placer.factors.limit.rays.matcher.direction=Ray Direction
 reccomplex.placer.factors.limit.rays.matcher.ratio=Required Ratio
 reccomplex.placer.factors.limit.rays.matcher.ratio.tooltip=The ratio of matched blocks<br>required until the ray stops.
 
-reccomplex.placer.factors.limit.rays.average=Finder
+reccomplex.placer.factors.limit.rays.average=Surface Finder
 reccomplex.placer.factors.limit.rays.average.tooltip=Find the average surface height<br>fulfilling the criteria.
 reccomplex.placer.factors.limit.rays.average.title.up=Average Ceiling
 reccomplex.placer.factors.limit.rays.average.title.down=Average Surface

@@ -5,6 +5,7 @@
 
 package ivorius.reccomplex;
 
+import com.google.common.collect.Lists;
 import ivorius.ivtoolkit.network.*;
 import ivorius.ivtoolkit.tools.MCRegistry;
 import ivorius.ivtoolkit.tools.NBTCompoundObjectCapabilityStorage;
@@ -28,8 +29,8 @@ import ivorius.reccomplex.random.Poem;
 import ivorius.reccomplex.utils.FMLUtils;
 import ivorius.reccomplex.utils.PresetRegistry;
 import ivorius.reccomplex.world.gen.feature.selector.NaturalStructureSelector;
-import ivorius.reccomplex.world.gen.feature.structure.OperationGenerateStructure;
 import ivorius.reccomplex.world.gen.feature.structure.OperationClearArea;
+import ivorius.reccomplex.world.gen.feature.structure.OperationGenerateStructure;
 import ivorius.reccomplex.world.gen.feature.structure.OperationMulti;
 import ivorius.reccomplex.world.gen.feature.structure.StructureRegistry;
 import ivorius.reccomplex.world.gen.feature.structure.generic.StructureSaveHandler;
@@ -57,12 +58,14 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.capabilities.CapabilityManager;
+import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.fml.relauncher.Side;
 
 import java.util.ArrayList;
+import java.util.Map;
 
 import static ivorius.reccomplex.RecurrentComplex.*;
 import static ivorius.reccomplex.block.RCBlocks.*;
@@ -166,7 +169,7 @@ public class RCRegistryHandler
         spawnScript = new BlockScript().setUnlocalizedName("spawn_script");
         spawnScript.setCreativeTab(tabStructureTools);
         register(spawnScript, "spawn_script");
-        register(TileEntityBlockScript.class, "RCSpawnScript");
+        register(TileEntityBlockScript.class, "RCSpawnScript"); // Forward compat
 
         inspector = new ItemInspector().setUnlocalizedName("recinspector");
         inspector.setCreativeTab(tabStructureTools);
@@ -187,6 +190,14 @@ public class RCRegistryHandler
 
         TransfomerPresets.instance().getRegistry().register("clear", MOD_ID, PresetRegistry.fullPreset("clear", new TransformerMulti.Data(), new PresetRegistry.Metadata("None", "No transformers")), true, LeveledRegistry.Level.INTERNAL);
         TransfomerPresets.instance().setDefault("clear");
+
+        // Forwards TE compat (since it switches to resource locations), from GameRegistry
+        Map<String, Class<?>> teMappings = ObfuscationReflectionHelper.getPrivateValue(TileEntity.class, null, "field_" + "145855_i", "nameToClassMap");
+        for (String id : Lists.newArrayList(teMappings.keySet()))
+        {
+            if (!id.contains(":"))
+                teMappings.put("minecraft:" + id.toLowerCase(), teMappings.get(id));
+        }
     }
 
     public static void register(Item item, String id)

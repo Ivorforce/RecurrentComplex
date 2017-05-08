@@ -202,7 +202,7 @@ public class GenericStructure implements Structure<GenericStructure.InstanceData
 
         instanceData.variableDomain.fill(context.environment.variables);
 
-        if (transformer != null && context.generateMaturity == StructureSpawnContext.GenerateMaturity.SUGGEST)
+        if (transformer != null && context.generateMaturity.isSuggest())
         {
             if (!transformer.transformer.mayGenerate(transformer.instanceData, context, worldData, transformer))
                 return false;

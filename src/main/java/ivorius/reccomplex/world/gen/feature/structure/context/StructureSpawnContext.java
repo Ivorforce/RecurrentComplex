@@ -63,11 +63,21 @@ public class StructureSpawnContext extends StructureLiveContext
 
     public enum GenerateMaturity
     {
-        SUGGEST, FIRST, COMPLEMENT;
+        PLAN, SUGGEST, FIRST, COMPLEMENT;
+
+        public boolean isSuggest()
+        {
+            return this == PLAN || this == SUGGEST;
+        }
 
         public boolean isFirstTime()
         {
             return this != GenerateMaturity.COMPLEMENT;
+        }
+
+        public boolean generates()
+        {
+            return this != PLAN;
         }
     }
 }

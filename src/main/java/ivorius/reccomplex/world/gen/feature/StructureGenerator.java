@@ -129,7 +129,7 @@ public class StructureGenerator<S extends NBTStorable>
 
         WorldServer world = spawn.environment.world;
 
-        if (maturity() != StructureSpawnContext.GenerateMaturity.SUGGEST || (
+        if (maturity().isSuggest() || (
                 spawn.boundingBox.minY >= MIN_DIST_TO_LIMIT && spawn.boundingBox.maxY <= world.getHeight() - 1 - MIN_DIST_TO_LIMIT
                         && (!RCConfig.avoidOverlappingGeneration || allowOverlaps || WorldStructureGenerationData.get(world).entriesAt(spawn.boundingBox).noneMatch(WorldStructureGenerationData.Entry::blocking))
                         && !RCEventBus.INSTANCE.post(new StructureGenerationEvent.Suggest(structure, spawn))
@@ -143,6 +143,7 @@ public class StructureGenerator<S extends NBTStorable>
                     MinecraftForge.EVENT_BUS.post(new StructureGenerationEventLite.Pre(world, structureID, spawn.boundingBox, spawn.generationLayer, firstTime));
             }
 
+            // TODO Wat do with SUGGEST transformers on PLAN
             boolean success = structure.generate(spawn, instanceData, RCConfig.getUniversalTransformer());
 
             if (firstTime && success)
@@ -455,9 +456,10 @@ public class StructureGenerator<S extends NBTStorable>
         return this;
     }
 
-    public StructureGenerator<S> partially(boolean partially)
+    public StructureGenerator<S> partially(boolean partially, ChunkPos pos)
     {
         this.partially = partially;
+        generationBB(partially ? Structures.chunkBoundingBox(pos) : null);
         return this;
     }
 

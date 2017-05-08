@@ -62,16 +62,17 @@ public class WorldGenStructures
                         (left.chunkZPos - right.chunkZPos) * (left.chunkZPos - right.chunkZPos));
     }
 
-    public static void generateRandomStructuresInChunk(Random random, ChunkPos chunkPos, WorldServer world, Biome biomeGen, @Nullable Predicate<Structure> structurePredicate)
+    public static void planStructuresInChunk(Random random, ChunkPos chunkPos, WorldServer world, Biome biomeGen, @Nullable Predicate<Structure> structurePredicate)
     {
         MixingStructureSelector<NaturalGeneration, NaturalStructureSelector.Category> structureSelector = StructureRegistry.INSTANCE.naturalStructureSelectors().get(biomeGen, world.provider);
 
         float distanceToSpawn = distance(new ChunkPos(world.getSpawnPoint()), chunkPos);
+        // TODO Use STRUCTURE_TRIES
         List<Pair<Structure<?>, NaturalGeneration>> generated = structureSelector.generatedStructures(random, world.getBiome(chunkPos.getBlock(0, 0, 0)), world.provider, distanceToSpawn);
 
         generated.stream()
                 .filter(pair -> structurePredicate == null || structurePredicate.test(pair.getLeft()))
-                .forEach(pair -> generateStructureInChunk(random, chunkPos, world, pair.getLeft(), pair.getRight()));
+                .forEach(pair -> planStructureInChunk(random, chunkPos, world, pair.getLeft(), pair.getRight(), false));
     }
 
     public static boolean generateRandomStructureInChunk(Random random, ChunkPos chunkPos, WorldServer world, Biome biomeGen)
@@ -86,7 +87,7 @@ public class WorldGenStructures
 
             if (pair != null)
             {
-                if (generateStructureInChunk(random, chunkPos, world, pair.getLeft(), pair.getRight()))
+                if (planStructureInChunk(random, chunkPos, world, pair.getLeft(), pair.getRight(), true))
                     return true;
             }
         }
@@ -94,7 +95,8 @@ public class WorldGenStructures
         return false;
     }
 
-    protected static boolean generateStructureInChunk(Random random, ChunkPos chunkPos, WorldServer world, Structure<?> structure, NaturalGeneration naturalGenInfo)
+    // TODO Use !instantly to only plan structure but later generate
+    protected static boolean planStructureInChunk(Random random, ChunkPos chunkPos, WorldServer world, Structure<?> structure, NaturalGeneration naturalGenInfo, boolean instantly)
     {
         String structureName = StructureRegistry.INSTANCE.id(structure);
 
@@ -105,7 +107,7 @@ public class WorldGenStructures
             StructureGenerator<?> generator = new StructureGenerator<>(structure).world(world).generationInfo(naturalGenInfo)
                     .random(random).maturity(StructureSpawnContext.GenerateMaturity.SUGGEST)
                     .randomPosition(genPos, naturalGenInfo.placer.getContents()).fromCenter(true)
-                    .partially(RecurrentComplex.PARTIALLY_SPAWN_NATURAL_STRUCTURES);
+                    .partially(RecurrentComplex.PARTIALLY_SPAWN_NATURAL_STRUCTURES, chunkPos);
 
             if (naturalGenInfo.getGenerationWeight(world.provider, generator.environment().biome) <= 0)
             {
@@ -160,35 +162,44 @@ public class WorldGenStructures
         boolean worldWantsStructures = world.getWorldInfo().isMapFeaturesEnabled();
         WorldStructureGenerationData data = WorldStructureGenerationData.get(world);
 
-        if (structurePredicate == null)
-            complementStructuresInChunk(random, chunkPos, world);
-
-        if ((!RCConfig.honorStructureGenerationOption || worldWantsStructures)
-                // If partially spawn, check chunks as having tried to add partial structures as into the thingy
-                && (structurePredicate == null || !RecurrentComplex.PARTIALLY_SPAWN_NATURAL_STRUCTURES || data.checkChunkFinal(chunkPos)))
+        // We need to synchronize (multithreaded gen) since we need to plan structures before complementing,
+        // otherwise structures get lost in some chunks
+        synchronized (data)
         {
-            if (structurePredicate == null)
-                data.checkChunk(chunkPos);
+            // If not partially, complement before generating so we don't generate structures twice
+            if (!RecurrentComplex.PARTIALLY_SPAWN_NATURAL_STRUCTURES && structurePredicate == null)
+                complementStructuresInChunk(random, chunkPos, world);
 
-            Biome biomeGen = world.getBiome(chunkPos.getBlock(8, 0, 8));
-            BlockPos spawnPos = world.getSpawnPoint();
-
-            generateStaticStructuresInChunk(random, chunkPos, world, spawnPos, structurePredicate);
-
-            boolean mayGenerate = RCConfig.isGenerationEnabled(biomeGen) && RCConfig.isGenerationEnabled(world.provider);
-
-            if (world.provider.getDimension() == 0)
+            if ((!RCConfig.honorStructureGenerationOption || worldWantsStructures)
+                    // If partially spawn, check chunks as having tried to add partial structures as into the thingy
+                    && (structurePredicate == null || !RecurrentComplex.PARTIALLY_SPAWN_NATURAL_STRUCTURES || data.checkChunkFinal(chunkPos)))
             {
-                double distToSpawn = IvVecMathHelper.distanceSQ(new double[]{chunkPos.chunkXPos * 16 + 8, chunkPos.chunkZPos * 16 + 8}, new double[]{spawnPos.getX(), spawnPos.getZ()});
-                mayGenerate &= distToSpawn >= RCConfig.minDistToSpawnForGeneration * RCConfig.minDistToSpawnForGeneration;
+                if (structurePredicate == null)
+                    data.checkChunk(chunkPos);
+
+                Biome biomeGen = world.getBiome(chunkPos.getBlock(8, 0, 8));
+                BlockPos spawnPos = world.getSpawnPoint();
+
+                generateStaticStructuresInChunk(random, chunkPos, world, spawnPos, structurePredicate);
+
+                boolean mayGenerate = RCConfig.isGenerationEnabled(biomeGen) && RCConfig.isGenerationEnabled(world.provider);
+
+                if (world.provider.getDimension() == 0)
+                {
+                    double distToSpawn = IvVecMathHelper.distanceSQ(new double[]{chunkPos.chunkXPos * 16 + 8, chunkPos.chunkZPos * 16 + 8}, new double[]{spawnPos.getX(), spawnPos.getZ()});
+                    mayGenerate &= distToSpawn >= RCConfig.minDistToSpawnForGeneration * RCConfig.minDistToSpawnForGeneration;
+                }
+
+                if (mayGenerate)
+                    planStructuresInChunk(random, chunkPos, world, biomeGen, structurePredicate);
+
+                return true;
             }
 
-            if (mayGenerate)
-                generateRandomStructuresInChunk(random, chunkPos, world, biomeGen, structurePredicate);
+            if (RecurrentComplex.PARTIALLY_SPAWN_NATURAL_STRUCTURES && structurePredicate == null)
+                complementStructuresInChunk(random, chunkPos, world);
 
-            return true;
+            return false;
         }
-
-        return false;
     }
 }

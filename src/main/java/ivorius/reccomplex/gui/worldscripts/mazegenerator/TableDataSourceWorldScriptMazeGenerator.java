@@ -6,7 +6,6 @@
 package ivorius.reccomplex.gui.worldscripts.mazegenerator;
 
 import ivorius.ivtoolkit.tools.IvTranslations;
-import ivorius.reccomplex.gui.GuiValidityStateIndicator;
 import ivorius.reccomplex.gui.TableDataSourceBlockPos;
 import ivorius.reccomplex.gui.table.*;
 import ivorius.reccomplex.gui.table.cell.*;
@@ -36,7 +35,7 @@ public class TableDataSourceWorldScriptMazeGenerator extends TableDataSourceSegm
 
         addManagedSegment(0, new TableDataSourceWorldScript(script));
         addManagedSegment(2, TableCellMultiBuilder.create(navigator, delegate)
-                .addNavigation(() -> new TableDataSourceMazeComponent(script.mazeComponent, false, navigator, delegate), () -> IvTranslations.get("reccomplex.maze"))
+                .addNavigation(() -> new TableDataSourceMazeComponent(script.mazeComponent, navigator, delegate), () -> IvTranslations.get("reccomplex.maze"))
                 .buildDataSource());
         addManagedSegment(3, TableCellMultiBuilder.create(navigator, delegate)
                 .addNavigation(() -> new TableDataSourceMazeRuleList(script.rules, delegate, navigator, script.mazeComponent.exitPaths, script.mazeComponent.rooms), () -> IvTranslations.get("reccomplex.worldscript.mazeGen.rules"))

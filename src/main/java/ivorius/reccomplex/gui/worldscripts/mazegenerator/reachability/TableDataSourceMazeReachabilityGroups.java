@@ -9,6 +9,7 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 import ivorius.reccomplex.gui.table.cell.*;
 import ivorius.reccomplex.gui.table.datasource.TableDataSourceSegmented;
+import ivorius.reccomplex.world.gen.feature.structure.generic.maze.SavedMazeReachability;
 import net.minecraft.util.text.TextFormatting;
 import ivorius.ivtoolkit.tools.IvTranslations;
 import ivorius.reccomplex.gui.table.*;
@@ -23,28 +24,28 @@ import java.util.Set;
  */
 public class TableDataSourceMazeReachabilityGroups extends TableDataSourceSegmented
 {
-    private List<Set<SavedMazePath>> groups;
+    private SavedMazeReachability reachability;
     private Set<SavedMazePath> expected;
 
     private TableDelegate tableDelegate;
     private TableNavigator tableNavigator;
 
-    public TableDataSourceMazeReachabilityGroups(List<Set<SavedMazePath>> groups, Set<SavedMazePath> expected, TableDelegate tableDelegate, TableNavigator tableNavigator)
+    public TableDataSourceMazeReachabilityGroups(SavedMazeReachability reachability, Set<SavedMazePath> expected, TableDelegate tableDelegate, TableNavigator tableNavigator)
     {
-        this.groups = groups;
+        this.reachability = reachability;
         this.expected = expected;
         this.tableDelegate = tableDelegate;
         this.tableNavigator = tableNavigator;
     }
 
-    public List<Set<SavedMazePath>> getGroups()
+    public SavedMazeReachability getReachability()
     {
-        return groups;
+        return reachability;
     }
 
-    public void setGroups(List<Set<SavedMazePath>> groups)
+    public void setReachability(SavedMazeReachability reachability)
     {
-        this.groups = groups;
+        this.reachability = reachability;
     }
 
     public TableDelegate getTableDelegate()
@@ -67,10 +68,15 @@ public class TableDataSourceMazeReachabilityGroups extends TableDataSourceSegmen
         this.tableNavigator = tableNavigator;
     }
 
+    public List<Set<SavedMazePath>> groups()
+    {
+        return reachability.groups;
+    }
+
     @Override
     public int numberOfSegments()
     {
-        return 2 + groups.size() * 2;
+        return 2 + groups().size() * 2;
     }
 
     @Override
@@ -98,23 +104,23 @@ public class TableDataSourceMazeReachabilityGroups extends TableDataSourceSegmen
                 entryAction.addAction(() -> {
                     SavedMazePath element = getVirtualGroup(group).get(index);
                     if (group >= 0)
-                        groups.get(group).remove(element);
+                        groups().get(group).remove(element);
 
                     switch (entryAction.actionID)
                     {
                         case "earlier":
-                            groups.get(group - 1).add(element);
+                            groups().get(group - 1).add(element);
                             break;
                         case "later":
-                            groups.get(group + 1).add(element);
+                            groups().get(group + 1).add(element);
                             break;
                         case "new":
-                            groups.add(Sets.newHashSet(element));
+                            groups().add(Sets.newHashSet(element));
                             break;
                     }
 
-                    if (group >= 0 && groups.get(group).isEmpty())
-                        groups.remove(group);
+                    if (group >= 0 && groups().get(group).isEmpty())
+                        groups().remove(group);
 
                     tableDelegate.reloadData();
                 });
@@ -128,7 +134,7 @@ public class TableDataSourceMazeReachabilityGroups extends TableDataSourceSegmen
     {
         boolean first = group < 0;
         boolean second = group == 0;
-        boolean last = group == groups.size() - 1;
+        boolean last = group == groups().size() - 1;
         List<SavedMazePath> groupL = getVirtualGroup(group);
 
         boolean enabled = true;
@@ -143,7 +149,7 @@ public class TableDataSourceMazeReachabilityGroups extends TableDataSourceSegmen
 
     private List<SavedMazePath> getVirtualGroup(int group)
     {
-        Set<SavedMazePath> paths = group < 0 ? defaultGroup() : groups.get(group);
+        Set<SavedMazePath> paths = group < 0 ? defaultGroup() : groups().get(group);
         List<SavedMazePath> sorted = Lists.newArrayList(paths);
         Collections.sort(sorted); // Meh
 
@@ -153,7 +159,7 @@ public class TableDataSourceMazeReachabilityGroups extends TableDataSourceSegmen
     private Set<SavedMazePath> defaultGroup()
     {
         Set<SavedMazePath> view = expected;
-        for (Set<SavedMazePath> group : groups)
+        for (Set<SavedMazePath> group : groups())
             view = Sets.difference(view, group);
         return view;
     }

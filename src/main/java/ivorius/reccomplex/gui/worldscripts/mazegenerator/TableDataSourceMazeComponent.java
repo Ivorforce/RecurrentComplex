@@ -27,12 +27,9 @@ public class TableDataSourceMazeComponent extends TableDataSourceSegmented
     private TableNavigator navigator;
     private TableDelegate tableDelegate;
 
-    private boolean showReachability;
-
-    public TableDataSourceMazeComponent(SavedMazeComponent component, boolean showReachability, TableNavigator navigator, TableDelegate tableDelegate)
+    public TableDataSourceMazeComponent(SavedMazeComponent component, TableNavigator navigator, TableDelegate tableDelegate)
     {
         this.component = component;
-        this.showReachability = showReachability;
         this.navigator = navigator;
         this.tableDelegate = tableDelegate;
         addManagedSegment(0, new TableDataSourceConnector(component.defaultConnector, IvTranslations.get("reccomplex.maze.connector.default")));
@@ -63,6 +60,6 @@ public class TableDataSourceMazeComponent extends TableDataSourceSegmented
     @Override
     public int numberOfSegments()
     {
-        return showReachability ? 4 : 3;
+        return 4;
     }
 }

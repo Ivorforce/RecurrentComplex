@@ -38,9 +38,11 @@ public class SavedMazeReachability implements NBTCompoundObject
     public final List<Set<SavedMazePath>> groups = new ArrayList<>();
     public final List<ImmutablePair<SavedMazePath, SavedMazePath>> crossConnections = new ArrayList<>();
 
-    public <T extends Map.Entry<SavedMazePath, SavedMazePath>> SavedMazeReachability(List<Set<SavedMazePath>> groups, List<T> crossConnections)
+    public boolean groupByDefault = true;
+
+    public <T extends Map.Entry<SavedMazePath, SavedMazePath>> SavedMazeReachability(List<Set<SavedMazePath>> groups, List<T> crossConnections, boolean groupByDefault)
     {
-        set(groups, crossConnections);
+        set(groups, crossConnections, groupByDefault);
     }
 
     public SavedMazeReachability()
@@ -72,10 +74,10 @@ public class SavedMazeReachability implements NBTCompoundObject
 
     public void set(SavedMazeReachability reachability)
     {
-        set(reachability.groups, reachability.crossConnections);
+        set(reachability.groups, reachability.crossConnections, reachability.groupByDefault);
     }
 
-    public <T extends Map.Entry<SavedMazePath, SavedMazePath>> void set(List<Set<SavedMazePath>> groups, List<T> crossConnections)
+    public <T extends Map.Entry<SavedMazePath, SavedMazePath>> void set(List<Set<SavedMazePath>> groups, List<T> crossConnections, boolean groupByDefault)
     {
         this.groups.clear();
         for (Set<SavedMazePath> group : groups)
@@ -84,9 +86,11 @@ public class SavedMazeReachability implements NBTCompoundObject
         this.crossConnections.clear();
         for (Map.Entry<SavedMazePath, SavedMazePath> entry : crossConnections)
             this.crossConnections.add(ImmutablePair.of(entry.getKey().copy(), entry.getValue().copy()));
+
+        this.groupByDefault = groupByDefault;
     }
 
-    public void build(ImmutableMultimap.Builder<MazePassage, MazePassage> builder, final AxisAlignedTransform2D transform, final int[] size, Predicate<MazePassage> filter, Set<MazePassage> connections)
+    public ImmutableMultimap.Builder<MazePassage, MazePassage> build(ImmutableMultimap.Builder<MazePassage, MazePassage> builder, final AxisAlignedTransform2D transform, final int[] size, Predicate<MazePassage> filter, Set<MazePassage> connections)
     {
         filter = ((Predicate<MazePassage>) connections::contains).and(filter);
 
@@ -99,7 +103,8 @@ public class SavedMazeReachability implements NBTCompoundObject
             addInterconnections(builder, mazePassages.stream());
         }
 
-        addInterconnections(builder, defaultGroup.stream().filter(filter));
+        if (groupByDefault)
+            addInterconnections(builder, defaultGroup.stream().filter(filter));
 
         for (Map.Entry<SavedMazePath, SavedMazePath> entry : crossConnections)
         {
@@ -109,6 +114,8 @@ public class SavedMazeReachability implements NBTCompoundObject
             if (filter.test(key) && filter.test(val))
                 builder.put(key, val);
         }
+
+        return builder;
     }
 
     protected void addInterconnections(ImmutableMultimap.Builder<MazePassage, MazePassage> builder, Stream<MazePassage> existing)
@@ -131,6 +138,8 @@ public class SavedMazeReachability implements NBTCompoundObject
 
         crossConnections.clear();
         crossConnections.addAll(Lists.transform(NBTTagLists.compoundsFrom(compound, "crossConnections"), input -> ImmutablePair.of(NBTCompoundObjects.readFrom(input, "key", SavedMazePath::new), NBTCompoundObjects.readFrom(input, "val", SavedMazePath::new))));
+
+        groupByDefault = compound.getBoolean("groupByDefault");
     }
 
     @Override
@@ -144,6 +153,8 @@ public class SavedMazeReachability implements NBTCompoundObject
             NBTCompoundObjects.writeTo(compound1, "val", input.getValue());
             return compound1;
         }));
+
+        compound.setBoolean("groupByDefault", groupByDefault);
     }
 
     public static class Serializer implements JsonSerializer<SavedMazeReachability>, JsonDeserializer<SavedMazeReachability>
@@ -161,7 +172,9 @@ public class SavedMazeReachability implements NBTCompoundObject
             if (crossConnections == null)
                 crossConnections = Collections.emptyList();
 
-            return new SavedMazeReachability(groups, crossConnections);
+            boolean groupByDefault = JsonUtils.getBoolean(jsonObject, "groupByDefault", true);
+
+            return new SavedMazeReachability(groups, crossConnections, groupByDefault);
         }
 
         @Override
@@ -171,6 +184,7 @@ public class SavedMazeReachability implements NBTCompoundObject
 
             jsonObject.add("groups", context.serialize(src.groups));
             jsonObject.add("crossConnections", gson.toJsonTree(src.crossConnections));
+            jsonObject.addProperty("groupByDefault", src.groupByDefault);
 
             return jsonObject;
         }

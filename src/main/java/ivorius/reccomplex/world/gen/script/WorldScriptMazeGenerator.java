@@ -52,7 +52,13 @@ public class WorldScriptMazeGenerator implements WorldScript<WorldScriptMazeGene
     public String mazeID = "";
     public BlockPos structureShift = BlockPos.ORIGIN;
     public int[] roomSize = new int[]{3, 5, 3};
-    public SavedMazeComponent mazeComponent = new SavedMazeComponent();
+    public SavedMazeComponent mazeComponent;
+
+    public WorldScriptMazeGenerator()
+    {
+        mazeComponent = new SavedMazeComponent();
+        mazeComponent.reachability.groupByDefault = false; // Otherwise everything is already connected!
+    }
 
     public static <C> void blockRooms(MorphingMazeComponent<C> component, Set<MazeRoom> rooms, C wallConnector)
     {
@@ -169,7 +175,7 @@ public class WorldScriptMazeGenerator implements WorldScript<WorldScriptMazeGene
             mazeComponent.exitPaths.addAll(NBTCompoundObjects.readListFrom(compound, "mazeExits", SavedMazePathConnection::new));
 
             mazeComponent.defaultConnector.id = ConnectorStrategy.DEFAULT_WALL;
-            mazeComponent.reachability.set(Collections.emptyList(), Collections.emptyList());
+            mazeComponent.reachability.set(Collections.emptyList(), Collections.emptyList(), false);
         }
 
         structureShift = BlockPositions.readFromNBT("structureShift", compound);
@@ -247,8 +253,8 @@ public class WorldScriptMazeGenerator implements WorldScript<WorldScriptMazeGene
         // Add reachability outside the maze
         maze.reachability().putAll(WorldGenMaze.addExternalReachability(ImmutableListMultimap.builder(), maze.exits(), blockedConnections).build());
 
-        // Don't add reachability as it only slows down generation without adding real features
-//        maze.reachability().putAll(mazeComponent.reachability.build(AxisAlignedTransform2D.ORIGINAL, mazeComponent.boundsSize(), SavedMazeReachability.notBlocked(blockedConnections, maze.exits()), maze.exits().keySet()));
+        // Add reachability between exits
+        maze.reachability().putAll(mazeComponent.reachability.build(ImmutableListMultimap.builder(), AxisAlignedTransform2D.ORIGINAL, mazeComponent.boundsSize(), SavedMazeReachability.notBlocked(blockedConnections, maze.exits()), maze.exits().keySet()).build());
 
         ConnectorStrategy connectorStrategy = new ConnectorStrategy();
 

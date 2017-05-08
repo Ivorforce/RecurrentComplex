@@ -90,6 +90,11 @@ public class SavedMazeComponent implements NBTCompoundObject
         defaultConnector.id = compound.hasKey("defaultConnector", Constants.NBT.TAG_STRING)
                 ? compound.getString("defaultConnector")
                 : ConnectorStrategy.DEFAULT_PATH;
+
+        if (!compound.hasKey("reachability"))
+            reachability.groupByDefault = false; // Only used by WorldScriptMazeGenerator back then, and they don't want to group by default
+        else
+            reachability.readFromNBT(compound.getCompoundTag("reachability"));
     }
 
     @Override
@@ -100,6 +105,8 @@ public class SavedMazeComponent implements NBTCompoundObject
         NBTCompoundObjects.writeListTo(compound, "exits", exitPaths);
 
         compound.setString("defaultConnector", defaultConnector.id);
+
+        NBTCompoundObjects.writeTo(compound, "reachability", reachability);
     }
 
     public static class Serializer implements JsonSerializer<SavedMazeComponent>, JsonDeserializer<SavedMazeComponent>

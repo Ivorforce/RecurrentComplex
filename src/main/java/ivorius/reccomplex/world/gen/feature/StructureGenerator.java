@@ -187,7 +187,7 @@ public class StructureGenerator<S extends NBTStorable>
             if (!boundingBox().isPresent())
                 reason = "failed placement";
 
-            RecurrentComplex.logger.trace(String.format("%s canceled generation at %s %s", structure, lowerCoord(), reason));
+            RecurrentComplex.logger.trace(String.format("%s canceled generation at %s (%d) (%s)", structure, lowerCoord(), world.provider.getDimension(), reason));
         }
 
         return Optional.empty();

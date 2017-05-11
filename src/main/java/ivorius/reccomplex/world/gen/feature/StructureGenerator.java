@@ -143,10 +143,9 @@ public class StructureGenerator<S extends NBTStorable>
                     MinecraftForge.EVENT_BUS.post(new StructureGenerationEventLite.Pre(world, structureID, spawn.boundingBox, spawn.generationLayer, firstTime));
             }
 
-            // TODO Wat do with SUGGEST transformers on PLAN
-            boolean success = structure.generate(spawn, instanceData, RCConfig.getUniversalTransformer());
+            structure.generate(spawn, instanceData, RCConfig.getUniversalTransformer());
 
-            if (firstTime && success)
+            if (firstTime)
             {
                 RecurrentComplex.logger.trace(String.format("Generated structure '%s' in %s (%d)", name(structureID), spawn.boundingBox, world.provider.getDimension()));
 
@@ -180,10 +179,17 @@ public class StructureGenerator<S extends NBTStorable>
                 }
             }
 
-            return success ? spawnO : Optional.empty();
+            return spawnO;
         }
         else
-            RecurrentComplex.logger.trace(String.format("Canceled structure '%s' generation in %s", structureID, spawn.boundingBox));
+        {
+            String reason = "unknown reason";
+
+            if (!boundingBox().isPresent())
+                reason = "failed placement";
+
+            RecurrentComplex.logger.trace(String.format("%s canceled generation at %s %s", structure, lowerCoord(), reason));
+        }
 
         return Optional.empty();
     }

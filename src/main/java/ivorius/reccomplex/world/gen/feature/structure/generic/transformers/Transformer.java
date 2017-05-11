@@ -68,7 +68,7 @@ public abstract class Transformer<S extends NBTStorable>
 
     public abstract S loadInstanceData(StructureLoadContext context, NBTBase nbt);
 
-    public boolean mayGenerate(S instanceData, StructureSpawnContext context, IvWorldData worldData, RunTransformer transformer)
+    public boolean mayGenerate(S instanceData, StructurePrepareContext context, IvWorldData worldData, RunTransformer transformer)
     {
         return true;
     }

@@ -191,7 +191,7 @@ public class GenericStructure implements Structure<GenericStructure.InstanceData
     }
 
     @Override
-    public boolean generate(@Nonnull final StructureSpawnContext context, @Nonnull InstanceData instanceData, @Nonnull TransformerMulti foreignTransformer)
+    public void generate(@Nonnull final StructureSpawnContext context, @Nonnull InstanceData instanceData, @Nonnull TransformerMulti foreignTransformer)
     {
         WorldServer world = context.environment.world;
         IvWorldData worldData = constructWorldData();
@@ -200,12 +200,6 @@ public class GenericStructure implements Structure<GenericStructure.InstanceData
         RunTransformer transformer = getRunTransformer(instanceData, foreignTransformer, asSource);
 
         instanceData.variableDomain.fill(context.environment.variables);
-
-        if (transformer != null && context.generateMaturity.isSuggest())
-        {
-            if (!transformer.transformer.mayGenerate(transformer.instanceData, context, worldData, transformer))
-                return false;
-        }
 
         // The world initializes the block event array after it generates the world - in the constructor
         // This hackily sets the field to a temporary value. Yay.
@@ -298,8 +292,6 @@ public class GenericStructure implements Structure<GenericStructure.InstanceData
                 RecurrentComplex.logger.warn("Structure generated with over " + MAX_GENERATING_LAYERS + " layers; most likely infinite loop!");
             }
         }
-
-        return true;
     }
 
     @Nullable
@@ -343,7 +335,8 @@ public class GenericStructure implements Structure<GenericStructure.InstanceData
             TransformerMulti transformer = TransformerMulti.fuse(Arrays.asList(this.transformer, foreignTransformer));
             TransformerMulti.InstanceData cInstanceData = transformer.fuseDatas(Arrays.asList(instanceData.transformerData, instanceData.foreignTransformerData));
 
-            transformer.configureInstanceData(cInstanceData, context, worldData, new RunTransformer(transformer, cInstanceData));
+            RunTransformer runTransformer = new RunTransformer(transformer, cInstanceData);
+            transformer.configureInstanceData(cInstanceData, context, worldData, runTransformer);
 
             worldData.tileEntities.forEach(tileEntityCompound ->
             {
@@ -354,6 +347,9 @@ public class GenericStructure implements Structure<GenericStructure.InstanceData
                         instanceData.tileEntities.put(src, tileEntityInstanceData);
                 });
             });
+
+            if (!transformer.mayGenerate(cInstanceData, context, worldData, runTransformer))
+                return null;
         }
 
         return instanceData;

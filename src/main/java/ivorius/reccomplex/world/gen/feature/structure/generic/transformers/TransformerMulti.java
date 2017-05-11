@@ -159,7 +159,7 @@ public class TransformerMulti extends Transformer<TransformerMulti.InstanceData>
     }
 
     @Override
-    public boolean mayGenerate(InstanceData instanceData, StructureSpawnContext context, IvWorldData worldData, RunTransformer transformer)
+    public boolean mayGenerate(InstanceData instanceData, StructurePrepareContext context, IvWorldData worldData, RunTransformer transformer)
     {
         //noinspection unchecked
         return instanceData.deactivated || instanceData.pairedTransformers.stream()

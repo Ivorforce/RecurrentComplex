@@ -37,7 +37,7 @@ public class WorldGenStructures
 
     public static final int STRUCTURE_TRIES = 10;
 
-    public static void generateStaticStructuresInChunk(Random random, ChunkPos chunkPos, WorldServer world, BlockPos spawnPos, @Nullable Predicate<Structure> structurePredicate)
+    public static void planStaticStructuresInChunk(Random random, ChunkPos chunkPos, WorldServer world, BlockPos spawnPos, @Nullable Predicate<Structure> structurePredicate)
     {
         StructureRegistry.INSTANCE.getStaticStructuresAt(chunkPos, world, spawnPos).forEach(triple ->
         {
@@ -51,7 +51,9 @@ public class WorldGenStructures
             RecurrentComplex.logger.trace(String.format("Spawning static structure %s at %s (%d)", structure, pos, world.provider.getDimension()));
 
             new StructureGenerator<>(structure).world(world).generationInfo(staticGenInfo)
-                    .random(random).randomPosition(pos, staticGenInfo.placer.getContents()).fromCenter(true).generate();
+                    .random(random).randomPosition(pos, staticGenInfo.placer.getContents()).fromCenter(true)
+                    .partially(RecurrentComplex.PARTIALLY_SPAWN_NATURAL_STRUCTURES, chunkPos)
+                    .generate();
         });
     }
 
@@ -115,17 +117,7 @@ public class WorldGenStructures
                 return false;
             }
 
-            boolean didSpawn = generator.generate().isPresent();
-
-            if (!didSpawn)
-            {
-                if (generator.boundingBox().isPresent())
-                    RecurrentComplex.logger.trace(String.format("%s failed to spawn at %s (unknown reason)", structure, genPos));
-                else
-                    RecurrentComplex.logger.trace(String.format("%s couldn't find a place to spawn at %s (due to its Placer)", structure, genPos));
-            }
-
-            return didSpawn;
+            return generator.generate().isPresent();
         }
 
         return false;
@@ -180,7 +172,7 @@ public class WorldGenStructures
                 Biome biomeGen = world.getBiome(chunkPos.getBlock(8, 0, 8));
                 BlockPos spawnPos = world.getSpawnPoint();
 
-                generateStaticStructuresInChunk(random, chunkPos, world, spawnPos, structurePredicate);
+                planStaticStructuresInChunk(random, chunkPos, world, spawnPos, structurePredicate);
 
                 boolean mayGenerate = RCConfig.isGenerationEnabled(biomeGen) && RCConfig.isGenerationEnabled(world.provider);
 
@@ -195,11 +187,11 @@ public class WorldGenStructures
 
                 return true;
             }
-
-            if (RecurrentComplex.PARTIALLY_SPAWN_NATURAL_STRUCTURES && structurePredicate == null)
-                complementStructuresInChunk(random, chunkPos, world);
-
-            return false;
         }
+
+        if (RecurrentComplex.PARTIALLY_SPAWN_NATURAL_STRUCTURES && structurePredicate == null)
+            complementStructuresInChunk(random, chunkPos, world);
+
+        return false;
     }
 }

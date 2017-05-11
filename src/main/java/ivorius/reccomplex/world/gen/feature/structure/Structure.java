@@ -25,7 +25,7 @@ import java.util.List;
  */
 public interface Structure<S extends NBTStorable>
 {
-    boolean generate(@Nonnull StructureSpawnContext context, @Nonnull S instanceData, @Nonnull TransformerMulti transformer);
+    void generate(@Nonnull StructureSpawnContext context, @Nonnull S instanceData, @Nonnull TransformerMulti transformer);
 
     @Nonnull
     S prepareInstanceData(@Nonnull StructurePrepareContext context, @Nonnull TransformerMulti transformer);

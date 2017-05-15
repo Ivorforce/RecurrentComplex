@@ -313,7 +313,7 @@ public class GenericStructure implements Structure<GenericStructure.InstanceData
         return new RunTransformer(this.transformer, instanceData.transformerData);
     }
 
-    @Nonnull
+    @Nullable
     @Override
     public InstanceData prepareInstanceData(@Nonnull StructurePrepareContext context, @Nonnull TransformerMulti foreignTransformer)
     {

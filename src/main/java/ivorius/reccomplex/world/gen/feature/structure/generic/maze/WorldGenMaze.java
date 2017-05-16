@@ -52,7 +52,8 @@ public class WorldGenMaze
                 .structureID(placedComponent.structureID)
                 .instanceData(placedComponent.instanceData);
 
-        if (context.generationBB != null && !context.generationBB.intersectsWith(generator.boundingBox().get()))
+        // Never abort on first time to get the entry added
+        if (!context.generateMaturity.isFirstTime() && context.generationBB != null && !context.generationBB.intersectsWith(generator.boundingBox().get()))
             return null;
 
         return generator.generate().isPresent();

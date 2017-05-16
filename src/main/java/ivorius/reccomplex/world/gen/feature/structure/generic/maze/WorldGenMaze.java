@@ -36,7 +36,7 @@ import java.util.stream.Stream;
  */
 public class WorldGenMaze
 {
-    public static boolean generate(StructureSpawnContext context, PlacedStructure placedComponent, BlockPos pos)
+    public static Boolean generate(StructureSpawnContext context, PlacedStructure placedComponent, BlockPos pos)
     {
         Structure<?> structure = StructureRegistry.INSTANCE.get(placedComponent.structureID);
 
@@ -46,12 +46,16 @@ public class WorldGenMaze
             return false;
         }
 
-        return new StructureGenerator<>(structure).asChild(context, placedComponent.variableDomain).generationInfo(placedComponent.generationInfoID)
+        StructureGenerator<?> generator = new StructureGenerator<>(structure).asChild(context, placedComponent.variableDomain).generationInfo(placedComponent.generationInfoID)
                 .transform(Transforms.apply(placedComponent.transform, context.transform))
                 .lowerCoord(lowerCoord(structure, placedComponent.lowerCoord, placedComponent.transform, pos, context.transform))
                 .structureID(placedComponent.structureID)
-                .instanceData(placedComponent.instanceData)
-                .generate().isPresent();
+                .instanceData(placedComponent.instanceData);
+
+        if (context.generationBB != null && !context.generationBB.intersectsWith(generator.boundingBox().get()))
+            return null;
+
+        return generator.generate().isPresent();
     }
 
     protected static BlockPos lowerCoord(Structure structure, BlockPos lowerCoord, AxisAlignedTransform2D placedTransform, BlockPos pos, AxisAlignedTransform2D transform)

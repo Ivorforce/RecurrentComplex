@@ -140,23 +140,19 @@ public class WorldStructureGenerationData extends WorldSavedData
 
     public boolean checkChunk(ChunkPos coords)
     {
-        if (checkedChunks.contains(coords))
-            return false;
-
-        checkedChunks.add(coords);
-        markDirty();
-        return true;
+        boolean added = checkedChunks.add(coords);
+        if (added)
+            markDirty();
+        return added;
     }
 
     //
     public boolean checkChunkFinal(ChunkPos coords)
     {
-        if (checkedChunksFinal.contains(coords))
-            return false;
-
-        checkedChunksFinal.add(coords);
-        markDirty();
-        return true;
+        boolean added = checkedChunksFinal.add(coords);
+        if (added)
+            markDirty();
+        return added;
     }
 
     @Override

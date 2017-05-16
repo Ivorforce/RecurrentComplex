@@ -20,10 +20,13 @@ public class StructurePrepareContext extends StructureLiveContext
     @Nonnull
     public final Random random;
 
-    public StructurePrepareContext(@Nonnull Random random, @Nonnull Environment environment, @Nonnull AxisAlignedTransform2D transform, @Nonnull StructureBoundingBox boundingBox, boolean generateAsSource)
+    @Nonnull
+    public final StructureSpawnContext.GenerateMaturity generateMaturity;
+
+    public StructurePrepareContext(@Nonnull AxisAlignedTransform2D transform, @Nonnull StructureBoundingBox boundingBox, boolean generateAsSource, @Nonnull Environment environment, @Nonnull Random random, @Nonnull StructureSpawnContext.GenerateMaturity generateMaturity)
     {
         super(transform, boundingBox, generateAsSource, environment);
         this.random = random;
-        this.environment = environment;
+        this.generateMaturity = generateMaturity;
     }
 }

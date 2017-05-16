@@ -17,6 +17,7 @@ import ivorius.reccomplex.gui.table.TableNavigator;
 import ivorius.reccomplex.json.JsonUtils;
 import ivorius.reccomplex.json.NBTToJson;
 import ivorius.reccomplex.utils.algebra.ExpressionCache;
+import ivorius.reccomplex.world.gen.feature.StructureGenerator;
 import ivorius.reccomplex.world.gen.script.WorldScriptMulti;
 import ivorius.reccomplex.world.gen.feature.structure.Environment;
 import ivorius.reccomplex.world.gen.feature.structure.context.StructureLoadContext;
@@ -63,8 +64,11 @@ public class TransformerWorldScript extends TransformerSingleBlock<TransformerWo
     @Override
     public void transformBlock(InstanceData instanceData, Phase phase, StructureSpawnContext context, int[] areaSize, BlockPos coord, IBlockState sourceState)
     {
-        WorldScriptMulti.InstanceData scriptInstanceData = script.prepareInstanceData(new StructurePrepareContext(context.random, context.environment, context.transform, context.boundingBox, context.generateAsSource), coord);
-        script.generate(context, scriptInstanceData, coord);
+        StructureGenerator<NBTStorable> generator = new StructureGenerator<>().asChild(context)
+                .maturity(StructureSpawnContext.GenerateMaturity.FIRST);
+
+        WorldScriptMulti.InstanceData scriptInstanceData = script.prepareInstanceData(generator.prepare().get(), coord);
+        script.generate(generator.spawn().get(), scriptInstanceData, coord);
     }
 
     @Override

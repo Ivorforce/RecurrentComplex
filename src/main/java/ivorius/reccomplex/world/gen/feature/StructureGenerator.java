@@ -484,7 +484,7 @@ public class StructureGenerator<S extends NBTStorable>
     @Nonnull
     public Optional<StructurePrepareContext> prepare()
     {
-        return boundingBox().map(bb -> new StructurePrepareContext(random(), environment(), transform(), bb, generateAsSource));
+        return boundingBox().map(bb -> new StructurePrepareContext(transform(), bb, generateAsSource, environment(), random(), generateMaturity));
     }
 
     @Nonnull

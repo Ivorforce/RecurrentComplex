@@ -339,6 +339,9 @@ public class GenericStructure implements Structure<GenericStructure.InstanceData
             RunTransformer runTransformer = new RunTransformer(transformer, cInstanceData);
             transformer.configureInstanceData(cInstanceData, context, worldData, runTransformer);
 
+            if (context.generateMaturity.isSuggest() && !transformer.mayGenerate(cInstanceData, context, worldData, runTransformer))
+                return null;
+
             worldData.tileEntities.forEach(tileEntityCompound ->
             {
                 asGeneratingTileEntity(context, IvTileEntityHelper.getAnyWorld(), areaSize, origin, tileEntityCompound, (src, tileEntity) ->
@@ -348,9 +351,6 @@ public class GenericStructure implements Structure<GenericStructure.InstanceData
                         instanceData.tileEntities.put(src, tileEntityInstanceData);
                 });
             });
-
-            if (!transformer.mayGenerate(cInstanceData, context, worldData, runTransformer))
-                return null;
         }
 
         return instanceData;

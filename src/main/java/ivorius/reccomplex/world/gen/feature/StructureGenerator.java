@@ -128,36 +128,37 @@ public class StructureGenerator<S extends NBTStorable>
         boolean firstTime = spawn.generateMaturity.isFirstTime();
 
         WorldServer world = spawn.environment.world;
+        StructureBoundingBox boundingBox = spawn.boundingBox;
 
         if (!maturity().isSuggest() || (
-                spawn.boundingBox.minY >= MIN_DIST_TO_LIMIT && spawn.boundingBox.maxY <= world.getHeight() - 1 - MIN_DIST_TO_LIMIT
-                        && (!RCConfig.avoidOverlappingGeneration || allowOverlaps || WorldStructureGenerationData.get(world).entriesAt(spawn.boundingBox).noneMatch(WorldStructureGenerationData.Entry::blocking))
+                boundingBox.minY >= MIN_DIST_TO_LIMIT && boundingBox.maxY <= world.getHeight() - 1 - MIN_DIST_TO_LIMIT
+                        && (!RCConfig.avoidOverlappingGeneration || allowOverlaps || WorldStructureGenerationData.get(world).entriesAt(boundingBox).noneMatch(WorldStructureGenerationData.Entry::blocking))
                         && !RCEventBus.INSTANCE.post(new StructureGenerationEvent.Suggest(structure, spawn))
-                        && (structureID == null || !MinecraftForge.EVENT_BUS.post(new StructureGenerationEventLite.Suggest(world, structureID, spawn.boundingBox, spawn.generationLayer, firstTime)))
+                        && (structureID == null || !MinecraftForge.EVENT_BUS.post(new StructureGenerationEventLite.Suggest(world, structureID, boundingBox, spawn.generationLayer, firstTime)))
         ))
         {
             if (firstTime)
             {
                 RCEventBus.INSTANCE.post(new StructureGenerationEvent.Pre(structure, spawn));
                 if (structureID != null)
-                    MinecraftForge.EVENT_BUS.post(new StructureGenerationEventLite.Pre(world, structureID, spawn.boundingBox, spawn.generationLayer, firstTime));
+                    MinecraftForge.EVENT_BUS.post(new StructureGenerationEventLite.Pre(world, structureID, boundingBox, spawn.generationLayer, firstTime));
             }
 
             structure.generate(spawn, instanceData, RCConfig.getUniversalTransformer());
 
             if (firstTime)
             {
-                RecurrentComplex.logger.trace(String.format("Generated structure '%s' in %s (%d)", name(structureID), spawn.boundingBox, world.provider.getDimension()));
+                RecurrentComplex.logger.trace(String.format("Generated structure '%s' in %s (%d)", name(structureID), boundingBox, world.provider.getDimension()));
 
                 RCEventBus.INSTANCE.post(new StructureGenerationEvent.Post(structure, spawn));
                 if (structureID != null)
-                    MinecraftForge.EVENT_BUS.post(new StructureGenerationEventLite.Post(world, structureID, spawn.boundingBox, spawn.generationLayer, firstTime));
+                    MinecraftForge.EVENT_BUS.post(new StructureGenerationEventLite.Post(world, structureID, boundingBox, spawn.generationLayer, firstTime));
 
                 if (structureID != null && memorize)
                 {
                     String generationInfoID = generationType != null ? generationType.id() : null;
 
-                    WorldStructureGenerationData.StructureEntry structureEntry = WorldStructureGenerationData.StructureEntry.complete(structureID, generationInfoID, spawn.boundingBox, spawn.transform, !partially);
+                    WorldStructureGenerationData.StructureEntry structureEntry = WorldStructureGenerationData.StructureEntry.complete(structureID, generationInfoID, boundingBox, spawn.transform, !partially);
                     structureEntry.blocking = structure.isBlocking();
                     structureEntry.firstTime = false; // Been there done that
                     Set<ChunkPos> existingChunks = WorldStructureGenerationData.get(world).addEntry(structureEntry);
@@ -172,7 +173,7 @@ public class StructureGenerator<S extends NBTStorable>
                         {
                             generationBB(Structures.chunkBoundingBox(existingChunk));
 
-                            structure.generate(spawn, instanceData, RCConfig.getUniversalTransformer());
+                            structure.generate(spawn().get(), instanceData, RCConfig.getUniversalTransformer());
                         }
                         generationBB(oldBB);
                     }

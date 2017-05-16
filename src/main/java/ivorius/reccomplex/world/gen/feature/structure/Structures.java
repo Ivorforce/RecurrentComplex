@@ -42,7 +42,7 @@ public class Structures
 
     public static StructureBoundingBox chunkBoundingBox(ChunkPos chunkPos)
     {
-        return new StructureBoundingBox(chunkPos.chunkXPos << 4, chunkPos.chunkZPos << 4, chunkPos.chunkXPos << 4 + 15, chunkPos.chunkZPos << 4 + 15);
+        return new StructureBoundingBox(chunkPos.chunkXPos << 4, chunkPos.chunkZPos << 4, (chunkPos.chunkXPos << 4) + 15, (chunkPos.chunkZPos << 4) + 15);
     }
 
     public static StructureBoundingBox intersection(StructureBoundingBox bb1, StructureBoundingBox bb2)

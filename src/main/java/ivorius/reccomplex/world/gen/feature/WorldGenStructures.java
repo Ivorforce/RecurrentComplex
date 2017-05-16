@@ -149,17 +149,19 @@ public class WorldGenStructures
 
     public static boolean decorate(WorldServer world, Random random, ChunkPos chunkPos, @Nullable Predicate<Structure> structurePredicate)
     {
+        boolean generated = false;
+
         boolean worldWantsStructures = world.getWorldInfo().isMapFeaturesEnabled();
         WorldStructureGenerationData data = WorldStructureGenerationData.get(world);
+
+        // If not partially, complement before generating so we don't generate structures twice
+        if (!RecurrentComplex.PARTIALLY_SPAWN_NATURAL_STRUCTURES && structurePredicate == null)
+            complementStructuresInChunk(random, chunkPos, world);
 
         // We need to synchronize (multithreaded gen) since we need to plan structures before complementing,
         // otherwise structures get lost in some chunks
         synchronized (data)
         {
-            // If not partially, complement before generating so we don't generate structures twice
-            if (!RecurrentComplex.PARTIALLY_SPAWN_NATURAL_STRUCTURES && structurePredicate == null)
-                complementStructuresInChunk(random, chunkPos, world);
-
             if ((!RCConfig.honorStructureGenerationOption || worldWantsStructures)
                     // If partially spawn, check chunks as having tried to add partial structures as into the thingy
                     && (structurePredicate == null || !RecurrentComplex.PARTIALLY_SPAWN_NATURAL_STRUCTURES || data.checkChunkFinal(chunkPos)))
@@ -183,13 +185,13 @@ public class WorldGenStructures
                 if (mayGenerate)
                     planStructuresInChunk(random, chunkPos, world, biomeGen, structurePredicate);
 
-                return true;
+                generated = true;
             }
         }
 
         if (RecurrentComplex.PARTIALLY_SPAWN_NATURAL_STRUCTURES && structurePredicate == null)
             complementStructuresInChunk(random, chunkPos, world);
 
-        return false;
+        return generated;
     }
 }

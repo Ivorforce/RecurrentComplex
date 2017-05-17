@@ -6,12 +6,8 @@
 package ivorius.reccomplex.world.gen.feature.structure.generic;
 
 import com.google.gson.*;
-import ivorius.ivtoolkit.blocks.BlockAreas;
-import ivorius.ivtoolkit.blocks.IvBlockCollection;
-import ivorius.ivtoolkit.blocks.IvMutableBlockPos;
-import ivorius.ivtoolkit.blocks.IvTileEntityHelper;
+import ivorius.ivtoolkit.blocks.*;
 import ivorius.ivtoolkit.tools.IvWorldData;
-import ivorius.ivtoolkit.tools.NBTCompoundObject;
 import ivorius.ivtoolkit.tools.NBTCompoundObjects;
 import ivorius.ivtoolkit.transform.Mover;
 import ivorius.ivtoolkit.transform.PosTransformer;
@@ -22,10 +18,7 @@ import ivorius.reccomplex.json.JsonUtils;
 import ivorius.reccomplex.json.NBTToJson;
 import ivorius.reccomplex.temp.RCMover;
 import ivorius.reccomplex.temp.RCPosTransformer;
-import ivorius.reccomplex.utils.NBTStorable;
-import ivorius.reccomplex.utils.RCAccessorEntity;
-import ivorius.reccomplex.utils.RCAccessorWorldServer;
-import ivorius.reccomplex.utils.RCAxisAlignedTransform;
+import ivorius.reccomplex.utils.*;
 import ivorius.reccomplex.utils.expression.DependencyMatcher;
 import ivorius.reccomplex.world.gen.feature.structure.Structure;
 import ivorius.reccomplex.world.gen.feature.structure.StructureRegistry;
@@ -223,14 +216,20 @@ public class GenericStructure implements Structure<GenericStructure.InstanceData
         if (transformer != null)
             transformer.transformer.transform(transformer.instanceData, Transformer.Phase.BEFORE, context, worldData, transformer);
 
+        BlockArea relevantSourceArea = blockCollection.area();
+        if (context.generationBB != null)
+            relevantSourceArea = RCBlockAreas.intersect(relevantSourceArea,
+                RCAxisAlignedTransform.apply(RCBlockAreas.sub(RCBlockAreas.from(context.generationBB), origin), areaSize, RCAxisAlignedTransform.invert(context.transform)));
+
         BlockPos.MutableBlockPos worldPos = new BlockPos.MutableBlockPos();
         for (int pass = 0; pass < 2; pass++)
         {
-            for (BlockPos sourcePos : BlockAreas.mutablePositions(blockCollection.area()))
+            for (BlockPos sourcePos : BlockAreas.mutablePositions(relevantSourceArea))
             {
                 IvMutableBlockPos.add(RCAxisAlignedTransform.apply(sourcePos, worldPos, areaSize, context.transform), origin);
 
-                if (context.includes(worldPos))
+                // Don't need full context.includes since we already intersect
+                if (context.generationPredicate == null || context.generationPredicate.test(worldPos))
                 {
                     IBlockState state = PosTransformer.transformBlockState(blockCollection.getBlockState(sourcePos), context.transform);
 

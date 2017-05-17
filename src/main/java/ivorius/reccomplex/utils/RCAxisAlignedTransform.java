@@ -5,8 +5,11 @@
 
 package ivorius.reccomplex.utils;
 
+import ivorius.ivtoolkit.blocks.BlockArea;
+import ivorius.ivtoolkit.blocks.BlockPositions;
 import ivorius.ivtoolkit.math.AxisAlignedTransform2D;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.gen.structure.StructureBoundingBox;
 
 /**
  * Created by lukas on 22.09.16.
@@ -39,4 +42,24 @@ public class RCAxisAlignedTransform
                 throw new InternalError();
         }
     }
+
+    public static BlockArea apply(BlockArea area, int[] size, AxisAlignedTransform2D transform)
+    {
+        return apply(area, new BlockArea(BlockPos.ORIGIN, BlockPos.ORIGIN), size, transform);
+    }
+
+    public static BlockArea apply(BlockArea area, BlockArea on, int[] size, AxisAlignedTransform2D transform)
+    {
+        on.setPoint1(transform.apply(area.getPoint1(), size));
+        on.setPoint2(transform.apply(area.getPoint2(), size));
+        return on;
+    }
+
+    public static AxisAlignedTransform2D invert(AxisAlignedTransform2D transform2D)
+    {
+        // Black Magic
+        return AxisAlignedTransform2D.from(transform2D.isMirrorX() ? transform2D.getRotation() : -transform2D.getRotation(),
+                transform2D.isMirrorX());
+    }
+
 }

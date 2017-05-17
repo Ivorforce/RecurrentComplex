@@ -283,7 +283,7 @@ public class TransformerRuins extends Transformer<TransformerRuins.InstanceData>
             {
                 if (random.nextFloat() < vineGrowth && Blocks.VINE.canPlaceBlockOnSide(world, pos, direction)
                         // Don't place vines pointing outside the structure (mostly to prevent vines in passages in mazes
-                        && boundingBox.isVecInside(pos.offset(direction)))
+                        && boundingBox.isVecInside(pos.offset(direction.getOpposite())))
                 {
                     IBlockState downState = world.getBlockState(pos.offset(EnumFacing.DOWN));
                     downState = downState.getBlock() == Blocks.VINE ? downState : Blocks.VINE.getDefaultState();

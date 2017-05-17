@@ -219,7 +219,8 @@ public class GenericStructure implements Structure<GenericStructure.InstanceData
         BlockArea relevantSourceArea = blockCollection.area();
         if (context.generationBB != null)
             relevantSourceArea = RCBlockAreas.intersect(relevantSourceArea,
-                RCAxisAlignedTransform.apply(RCBlockAreas.sub(RCBlockAreas.from(context.generationBB), origin), areaSize, RCAxisAlignedTransform.invert(context.transform)));
+                RCAxisAlignedTransform.apply(RCBlockAreas.sub(RCBlockAreas.from(context.generationBB), origin),
+                        RCAxisAlignedTransform.applySize(context.transform, areaSize), RCAxisAlignedTransform.invert(context.transform)));
 
         BlockPos.MutableBlockPos worldPos = new BlockPos.MutableBlockPos();
         for (int pass = 0; pass < 2; pass++)

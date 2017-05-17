@@ -12,6 +12,7 @@ import ivorius.ivtoolkit.rendering.grid.BlockQuadCache;
 import ivorius.ivtoolkit.rendering.grid.GridQuadCache;
 import ivorius.reccomplex.client.rendering.OperationRenderer;
 import ivorius.reccomplex.operation.Operation;
+import ivorius.reccomplex.utils.RCAxisAlignedTransform;
 import ivorius.reccomplex.utils.ReadableInstanceData;
 import ivorius.reccomplex.world.gen.feature.StructureGenerator;
 import ivorius.reccomplex.world.gen.feature.structure.context.StructureSpawnContext;
@@ -199,6 +200,6 @@ public class OperationGenerateStructure implements Operation
             return null;
 
         int[] size = structure.size();
-        return OperationRenderer.blockAreaFromSize(lowerCoord, Structures.structureSize(size, transform));
+        return OperationRenderer.blockAreaFromSize(lowerCoord, RCAxisAlignedTransform.applySize(transform, size));
     }
 }

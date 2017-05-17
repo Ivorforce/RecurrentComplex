@@ -7,7 +7,7 @@ package ivorius.reccomplex.world.gen.feature.structure.schematics;
 
 import ivorius.ivtoolkit.blocks.BlockPositions;
 import ivorius.reccomplex.RecurrentComplex;
-import ivorius.reccomplex.world.gen.feature.structure.Structures;
+import ivorius.reccomplex.utils.RCAxisAlignedTransform;
 import net.minecraft.util.math.BlockPos;
 import ivorius.ivtoolkit.math.AxisAlignedTransform2D;
 import ivorius.ivtoolkit.rendering.grid.GridQuadCache;
@@ -103,7 +103,7 @@ public class OperationGenerateSchematic implements Operation
             }
 
             if (previewType == PreviewType.BOUNDING_BOX || previewType == PreviewType.SHAPE)
-                OperationRenderer.renderBoundingBox(OperationRenderer.blockAreaFromSize(lowerCoord, Structures.structureSize(size, transform)), ticks, partialTicks);
+                OperationRenderer.renderBoundingBox(OperationRenderer.blockAreaFromSize(lowerCoord, RCAxisAlignedTransform.applySize(transform, size)), ticks, partialTicks);
         }
     }
 }

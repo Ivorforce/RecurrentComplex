@@ -5,13 +5,15 @@
 
 package ivorius.reccomplex.world.gen.feature;
 
+import ivorius.ivtoolkit.blocks.BlockSurfacePos;
 import ivorius.ivtoolkit.math.AxisAlignedTransform2D;
+import ivorius.ivtoolkit.world.chunk.gen.StructureBoundingBoxes;
 import ivorius.reccomplex.RCConfig;
 import ivorius.reccomplex.RecurrentComplex;
 import ivorius.reccomplex.events.RCEventBus;
 import ivorius.reccomplex.events.StructureGenerationEvent;
 import ivorius.reccomplex.events.StructureGenerationEventLite;
-import ivorius.ivtoolkit.world.chunk.gen.StructureBoundingBoxes;
+import ivorius.reccomplex.utils.NBTStorable;
 import ivorius.reccomplex.utils.RCStructureBoundingBoxes;
 import ivorius.reccomplex.world.gen.feature.structure.*;
 import ivorius.reccomplex.world.gen.feature.structure.context.StructureLoadContext;
@@ -19,8 +21,6 @@ import ivorius.reccomplex.world.gen.feature.structure.context.StructurePrepareCo
 import ivorius.reccomplex.world.gen.feature.structure.context.StructureSpawnContext;
 import ivorius.reccomplex.world.gen.feature.structure.generic.generation.GenerationType;
 import ivorius.reccomplex.world.gen.feature.structure.generic.placement.StructurePlaceContext;
-import ivorius.ivtoolkit.blocks.BlockSurfacePos;
-import ivorius.reccomplex.utils.NBTStorable;
 import net.minecraft.nbt.NBTBase;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.ChunkPos;
@@ -31,10 +31,11 @@ import net.minecraftforge.common.MinecraftForge;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import java.util.Collection;
 import java.util.Optional;
 import java.util.Random;
-import java.util.Set;
 import java.util.function.Predicate;
+import java.util.stream.Collectors;
 
 /**
  * Created by lukas on 19.01.15.
@@ -161,7 +162,7 @@ public class StructureGenerator<S extends NBTStorable>
                     WorldStructureGenerationData.StructureEntry structureEntry = WorldStructureGenerationData.StructureEntry.complete(structureID, generationInfoID, boundingBox, spawn.transform, !partially);
                     structureEntry.blocking = structure.isBlocking();
                     structureEntry.firstTime = false; // Been there done that
-                    Set<ChunkPos> existingChunks = WorldStructureGenerationData.get(world).addEntry(structureEntry);
+                    Collection<ChunkPos> existingChunks = WorldStructureGenerationData.get(world).addEntry(structureEntry).stream().collect(Collectors.toList());
 
                     // Complement in all chunks that already exist
                     if (partially)

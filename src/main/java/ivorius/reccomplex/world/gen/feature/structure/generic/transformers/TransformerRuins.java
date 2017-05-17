@@ -14,7 +14,6 @@ import ivorius.ivtoolkit.blocks.*;
 import ivorius.ivtoolkit.random.BlurredValueField;
 import ivorius.ivtoolkit.tools.*;
 import ivorius.ivtoolkit.transform.PosTransformer;
-import ivorius.ivtoolkit.world.WorldCache;
 import ivorius.ivtoolkit.world.chunk.gen.StructureBoundingBoxes;
 import ivorius.reccomplex.RecurrentComplex;
 import ivorius.reccomplex.block.BlockGenericSolid;
@@ -232,7 +231,7 @@ public class TransformerRuins extends Transformer<TransformerRuins.InstanceData>
                         IBlockState state = world.getBlockState(worldCoord);
 
                         if (!transformer.transformer.skipGeneration(transformer.instanceData, context, worldCoord, state, worldData, sourceCoord))
-                            decayBlock(world, context.random, state, worldCoord);
+                            decayBlock(world, context.random, state, worldCoord, context.boundingBox);
                     }
                 }
             }
@@ -241,7 +240,7 @@ public class TransformerRuins extends Transformer<TransformerRuins.InstanceData>
         }
     }
 
-    public void decayBlock(World world, Random random, IBlockState state, BlockPos pos)
+    public void decayBlock(World world, Random random, IBlockState state, BlockPos pos, StructureBoundingBox boundingBox)
     {
         IBlockState newState = state;
 
@@ -282,7 +281,9 @@ public class TransformerRuins extends Transformer<TransformerRuins.InstanceData>
             newState = null;
             for (EnumFacing direction : EnumFacing.HORIZONTALS)
             {
-                if (random.nextFloat() < vineGrowth && Blocks.VINE.canPlaceBlockOnSide(world, pos, direction))
+                if (random.nextFloat() < vineGrowth && Blocks.VINE.canPlaceBlockOnSide(world, pos, direction)
+                        // Don't place vines pointing outside the structure (mostly to prevent vines in passages in mazes
+                        && boundingBox.isVecInside(pos.offset(direction)))
                 {
                     IBlockState downState = world.getBlockState(pos.offset(EnumFacing.DOWN));
                     downState = downState.getBlock() == Blocks.VINE ? downState : Blocks.VINE.getDefaultState();

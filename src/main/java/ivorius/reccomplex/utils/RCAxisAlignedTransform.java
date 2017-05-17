@@ -6,10 +6,8 @@
 package ivorius.reccomplex.utils;
 
 import ivorius.ivtoolkit.blocks.BlockArea;
-import ivorius.ivtoolkit.blocks.BlockPositions;
 import ivorius.ivtoolkit.math.AxisAlignedTransform2D;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.gen.structure.StructureBoundingBox;
 
 /**
  * Created by lukas on 22.09.16.
@@ -62,4 +60,17 @@ public class RCAxisAlignedTransform
                 transform2D.isMirrorX());
     }
 
+    public static int[] applySize(AxisAlignedTransform2D transform, int[] size)
+    {
+        if (transform.getRotation() % 2 == 1)
+        {
+            size = size.clone();
+
+            int cache = size[0];
+            size[0] = size[2];
+            size[2] = cache;
+            return size;
+        }
+        return size;
+    }
 }

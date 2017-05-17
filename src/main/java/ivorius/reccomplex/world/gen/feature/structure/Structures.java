@@ -5,6 +5,7 @@
 
 package ivorius.reccomplex.world.gen.feature.structure;
 
+import ivorius.reccomplex.utils.RCAxisAlignedTransform;
 import net.minecraft.util.math.BlockPos;
 import ivorius.ivtoolkit.math.AxisAlignedTransform2D;
 import ivorius.reccomplex.gui.GuiValidityStateIndicator;
@@ -26,18 +27,7 @@ public class Structures
 
     public static int[] structureSize(@Nonnull Structure info, @Nonnull AxisAlignedTransform2D transform)
     {
-        return structureSize(info.size(), transform);
-    }
-
-    public static int[] structureSize(int[] size, AxisAlignedTransform2D transform)
-    {
-        if (transform.getRotation() % 2 == 1)
-        {
-            int cache = size[0];
-            size[0] = size[2];
-            size[2] = cache;
-        }
-        return size;
+        return RCAxisAlignedTransform.applySize(transform, info.size());
     }
 
     public static StructureBoundingBox chunkBoundingBox(ChunkPos chunkPos)

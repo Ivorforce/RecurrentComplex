@@ -17,7 +17,7 @@
       "weight": 0.0
     },
     {
-      "biomes": "$WET | $DRY",
+      "biomes": "$WET | $DRY | $SANDY",
       "weight": 0.0
     },
     {

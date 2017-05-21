@@ -17,6 +17,10 @@
       "weight": 0.0
     },
     {
+      "biomes": "$SANDY",
+      "weight": 0.0
+    },
+    {
       "biomes": "$JUNGLE",
       "weight": 0.5
     }

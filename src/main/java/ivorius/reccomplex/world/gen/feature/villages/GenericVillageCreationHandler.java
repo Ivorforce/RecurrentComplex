@@ -82,39 +82,37 @@ public class GenericVillageCreationHandler implements VillagerRegistry.IVillageC
     {
         Structure structure = StructureRegistry.INSTANCE.get(structureID);
 
-        if (structure != null)
-        {
-            GenerationType generationType = structure.generationInfo(generationID);
-            if (generationType instanceof VanillaGeneration)
-            {
-                VanillaGeneration vanillaGenInfo = (VanillaGeneration) generationType;
+        if (structure == null)
+            return null;
 
-                boolean mirrorX = structure.isMirrorable() && random.nextBoolean();
-                AxisAlignedTransform2D transform = GenericVillagePiece.getTransform(vanillaGenInfo.front, mirrorX, front.getOpposite());
+        GenerationType generationType = structure.generationInfo(generationID);
+        if (!(generationType instanceof VanillaGeneration))
+            return null;
 
-                if (vanillaGenInfo.generatesIn(startPiece.biome) && (structure.isRotatable() || transform.getRotation() == 0))
-                {
-                    int[] structureSize = Structures.structureSize(structure, transform);
+        VanillaGeneration vanillaGenInfo = (VanillaGeneration) generationType;
 
-                    StructureBoundingBox strucBB = Structures.structureBoundingBox(new BlockPos(x, y, z), structureSize);
+        boolean mirrorX = structure.isMirrorable() && random.nextBoolean();
+        AxisAlignedTransform2D transform = GenericVillagePiece.getTransform(vanillaGenInfo.front, mirrorX, front.getOpposite());
 
-                    if (GenericVillagePiece.canVillageGoDeeperC(strucBB) && StructureComponent.findIntersecting(pieces, strucBB) == null)
-                    {
-                        GenericVillagePiece genericVillagePiece = GenericVillagePiece.create(structureID, generationID, startPiece, generationDepth);
+        if (!vanillaGenInfo.generatesIn(startPiece.biome) || (!structure.isRotatable() && transform.getRotation() != 0))
+            return null;
 
-                        if (genericVillagePiece != null)
-                        {
-                            genericVillagePiece.setIds(structureID, generationID);
-                            genericVillagePiece.setOrientation(front, mirrorX, strucBB);
+        int[] structureSize = Structures.structureSize(structure, transform);
 
-                            return genericVillagePiece;
-                        }
-                    }
-                }
-            }
-        }
+        StructureBoundingBox strucBB = Structures.structureBoundingBox(new BlockPos(x, y, z), structureSize);
 
-        return null;
+        if (!GenericVillagePiece.canVillageGoDeeperC(strucBB) || StructureComponent.findIntersecting(pieces, strucBB) != null)
+            return null;
+
+        GenericVillagePiece genericVillagePiece = GenericVillagePiece.create(structureID, generationID, startPiece, generationDepth);
+
+        if (genericVillagePiece == null)
+            return null;
+
+        genericVillagePiece.setIds(structureID, generationID);
+        genericVillagePiece.setOrientation(front, mirrorX, strucBB);
+
+        return genericVillagePiece;
     }
 
     @Override

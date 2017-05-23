@@ -104,19 +104,20 @@ public class GenericVillagePiece extends StructureVillagePieces.Village
     public void prepare(Random random, WorldServer world)
     {
         Structure<?> structure = StructureRegistry.INSTANCE.get(structureID);
-        if (structure != null)
-        {
-            GenerationType generationType = structure.generationInfo(generationID);
 
-            if (generationType instanceof VanillaGeneration)
-            {
-                VanillaGeneration vanillaGenInfo = (VanillaGeneration) generationType;
-                AxisAlignedTransform2D transform = getTransform(vanillaGenInfo.front, mirrorX, getCoordBaseMode().getOpposite());
+        if (structure == null)
+            return;
 
-                instanceData = new StructureGenerator<>(structure).random(random).environment(environment(world, generationType)).transform(transform).boundingBox(boundingBox)
-                        .instanceData().map(NBTStorable::writeToNBT).orElse(null);
-            }
-        }
+        GenerationType generationType = structure.generationInfo(generationID);
+
+        if (!(generationType instanceof VanillaGeneration))
+            return;
+        
+        VanillaGeneration vanillaGenInfo = (VanillaGeneration) generationType;
+        AxisAlignedTransform2D transform = getTransform(vanillaGenInfo.front, mirrorX, getCoordBaseMode().getOpposite());
+
+        instanceData = new StructureGenerator<>(structure).random(random).environment(environment(world, generationType)).transform(transform).boundingBox(boundingBox)
+                .instanceData().map(NBTStorable::writeToNBT).orElse(null);
     }
 
     @Override
@@ -124,36 +125,34 @@ public class GenericVillagePiece extends StructureVillagePieces.Village
     public boolean addComponentParts(World world, Random random, StructureBoundingBox boundingBox)
     {
         Structure<?> structure = StructureRegistry.INSTANCE.get(structureID);
-        if (structure != null)
+        if (structure == null)
+            return false;
+
+        GenerationType generationType = structure.generationInfo(generationID);
+
+        if (!(generationType instanceof VanillaGeneration))
+            return false;
+
+        VanillaGeneration vanillaGenInfo = (VanillaGeneration) generationType;
+        AxisAlignedTransform2D transform = getCoordBaseMode() != null ? getTransform(vanillaGenInfo.front, mirrorX, getCoordBaseMode().getOpposite()) : AxisAlignedTransform2D.ORIGINAL;
+
+        BlockPos structureShift = transform.apply(vanillaGenInfo.spawnShift, new int[]{1, 1, 1});
+
+        if (this.averageGroundLvl < 0)
         {
-            GenerationType generationType = structure.generationInfo(generationID);
+            this.averageGroundLvl = this.getAverageGroundLevel(world, boundingBox);
 
-            if (generationType instanceof VanillaGeneration)
-            {
-                VanillaGeneration vanillaGenInfo = (VanillaGeneration) generationType;
-                AxisAlignedTransform2D transform = getCoordBaseMode() != null ? getTransform(vanillaGenInfo.front, mirrorX, getCoordBaseMode().getOpposite()) : AxisAlignedTransform2D.ORIGINAL;
-
-                BlockPos structureShift = transform.apply(vanillaGenInfo.spawnShift, new int[]{1, 1, 1});
-
-                if (this.averageGroundLvl < 0)
-                {
-                    this.averageGroundLvl = this.getAverageGroundLevel(world, boundingBox);
-
-                    if (this.averageGroundLvl < 0)
-                        return true;
-
-                    // Structure shift y was included in bounding box, but must be re-added because it is overwritten
-                    this.boundingBox.offset(0, this.averageGroundLvl - this.boundingBox.minY + structureShift.getY(), 0);
-                }
-
-                if (world instanceof WorldServer)
-                    generate((WorldServer) world, random, boundingBox, structure, generationType, transform);
-
+            if (this.averageGroundLvl < 0)
                 return true;
-            }
+
+            // Structure shift y was included in bounding box, but must be re-added because it is overwritten
+            this.boundingBox.offset(0, this.averageGroundLvl - this.boundingBox.minY + structureShift.getY(), 0);
         }
 
-        return false;
+        if (world instanceof WorldServer)
+            generate((WorldServer) world, random, boundingBox, structure, generationType, transform);
+
+        return true;
     }
 
     protected <T extends NBTStorable> void generate(WorldServer world, Random random, StructureBoundingBox generationBB, Structure<T> structure, GenerationType generationType, AxisAlignedTransform2D transform)

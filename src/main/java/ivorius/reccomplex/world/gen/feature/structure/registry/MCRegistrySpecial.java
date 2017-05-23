@@ -35,7 +35,7 @@ public class MCRegistrySpecial implements MCRegistry
 
     protected final BiMap<ResourceLocation, Item> itemMap = HashBiMap.create();
     protected final BiMap<ResourceLocation, Block> blockMap = HashBiMap.create();
-    protected final Map<String, Class<? extends TileEntity>> tileEntityMap = new HashMap<>();
+    protected final Map<ResourceLocation, Class<? extends TileEntity>> tileEntityMap = new HashMap<>();
 
     protected MCRegistry parent;
     protected FMLRemapper remapper;
@@ -57,7 +57,7 @@ public class MCRegistrySpecial implements MCRegistry
         blockMap.put(id, block);
     }
 
-    public void register(String id, Class<? extends TileEntity> tileEntity)
+    public void register(ResourceLocation id, Class<? extends TileEntity> tileEntity)
     {
         tileEntityMap.put(id, tileEntity);
     }
@@ -129,7 +129,7 @@ public class MCRegistrySpecial implements MCRegistry
         // From TileEntity
         try
         {
-            Class oclass = tileEntityMap.get(remapper.mapTileEntity(compound.getString("id")));
+            Class oclass = tileEntityMap.get(remapper.mapTileEntity(new ResourceLocation(compound.getString("id"))));
 
             if (oclass != null)
             {

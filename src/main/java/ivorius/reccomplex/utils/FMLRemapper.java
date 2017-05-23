@@ -18,7 +18,7 @@ public class FMLRemapper
 {
     protected final Map<ResourceLocation, ResourceLocation> blockRemaps = Maps.newHashMap();
     protected final Map<ResourceLocation, ResourceLocation> itemRemaps = Maps.newHashMap();
-    protected final Map<String, String> tileEntityRemaps = Maps.newHashMap();
+    protected final Map<ResourceLocation, ResourceLocation> tileEntityRemaps = Maps.newHashMap();
 
     public void registerLegacyBlockIDs(ResourceLocation blockID, boolean inferItem, ResourceLocation... oldIDs)
     {
@@ -36,9 +36,9 @@ public class FMLRemapper
             itemRemaps.put(oldID, itemID);
     }
 
-    public void registerLegacyTileEntityIDs(String tileEntityID, String... oldIDs)
+    public void registerLegacyTileEntityIDs(ResourceLocation tileEntityID, ResourceLocation... oldIDs)
     {
-        for (String oldID : oldIDs)
+        for (ResourceLocation oldID : oldIDs)
             tileEntityRemaps.put(oldID, tileEntityID);
     }
 
@@ -66,14 +66,14 @@ public class FMLRemapper
         return itemRemaps.get(id);
     }
 
-    public String mapTileEntity(String id)
+    public ResourceLocation mapTileEntity(ResourceLocation id)
     {
-        String remap = tileEntityRemaps.get(id);
+        ResourceLocation remap = tileEntityRemaps.get(id);
         return remap != null ? remap : id;
     }
 
     @Nullable
-    public String remapTileEntity(String id)
+    public ResourceLocation remapTileEntity(ResourceLocation id)
     {
         return tileEntityRemaps.get(id);
     }

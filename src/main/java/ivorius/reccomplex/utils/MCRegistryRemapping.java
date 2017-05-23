@@ -67,12 +67,12 @@ public class MCRegistryRemapping implements MCRegistry
     @Override
     public TileEntity loadTileEntity(World world, NBTTagCompound compound)
     {
-        String remap = remapper.remapTileEntity(compound.getString("id"));
+        ResourceLocation remap = remapper.remapTileEntity(new ResourceLocation(compound.getString("id")));
 
         if (remap != null)
         {
             NBTTagCompound copy = compound.copy();
-            copy.setString("id", remap);
+            copy.setString("id", remap.toString());
             return parent.loadTileEntity(world, copy);
         }
         else

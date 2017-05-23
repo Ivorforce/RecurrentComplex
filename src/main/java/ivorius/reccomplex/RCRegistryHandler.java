@@ -57,6 +57,7 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.capabilities.CapabilityManager;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
@@ -235,8 +236,8 @@ public class RCRegistryHandler
             GameRegistry.registerTileEntityWithAlternatives(tileEntity, id, alternatives);
         else
         {
-            specialRegistry.register(id, tileEntity);
-            for (String aid : alternatives) specialRegistry.register(aid, tileEntity);
+            specialRegistry.register(new ResourceLocation(id), tileEntity);
+            for (String aid : alternatives) specialRegistry.register(new ResourceLocation(aid), tileEntity);
         }
     }
 

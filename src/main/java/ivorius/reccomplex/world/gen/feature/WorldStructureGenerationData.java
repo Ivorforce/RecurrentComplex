@@ -35,7 +35,7 @@ import java.util.stream.Stream;
  */
 public class WorldStructureGenerationData extends WorldSavedData
 {
-    private static final String IDENTIFIER = RecurrentComplex.MOD_ID + ":structuredata";
+    private static final String IDENTIFIER = RecurrentComplex.MOD_ID + "-structuredata";
 
     protected final Set<ChunkPos> checkedChunks = new HashSet<>();
     protected final Set<ChunkPos> checkedChunksFinal = new HashSet<>();

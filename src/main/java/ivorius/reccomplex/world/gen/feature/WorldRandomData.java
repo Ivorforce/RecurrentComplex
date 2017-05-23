@@ -23,7 +23,7 @@ import java.util.stream.Collectors;
  */
 public class WorldRandomData extends WorldSavedData
 {
-    private static final String IDENTIFIER = RecurrentComplex.MOD_ID + ":random";
+    private static final String IDENTIFIER = RecurrentComplex.MOD_ID + "-random";
 
     private final Set<String> showedWorldStatus = new HashSet<>();
 

@@ -83,11 +83,11 @@ public class GenericVillageCreationHandler implements VillagerRegistry.IVillageC
         Structure structure = StructureRegistry.INSTANCE.get(structureID);
 
         if (structure == null)
-            return null;
+            return kill(villagePiece);
 
         GenerationType generationType = structure.generationInfo(generationID);
         if (!(generationType instanceof VanillaGeneration))
-            return null;
+            return kill(villagePiece);
 
         VanillaGeneration vanillaGenInfo = (VanillaGeneration) generationType;
 

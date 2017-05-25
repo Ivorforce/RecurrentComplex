@@ -107,7 +107,7 @@ public class GenericVillageCreationHandler implements VillagerRegistry.IVillageC
         GenericVillagePiece genericVillagePiece = GenericVillagePiece.create(structureID, generationID, startPiece, generationDepth);
 
         if (genericVillagePiece == null)
-            return null;
+            return kill(villagePiece);
 
         genericVillagePiece.setIds(structureID, generationID);
         genericVillagePiece.setOrientation(front, mirrorX, strucBB);

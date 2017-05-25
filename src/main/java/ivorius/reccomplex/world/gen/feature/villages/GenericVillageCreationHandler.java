@@ -95,7 +95,7 @@ public class GenericVillageCreationHandler implements VillagerRegistry.IVillageC
         AxisAlignedTransform2D transform = GenericVillagePiece.getTransform(vanillaGenInfo.front, mirrorX, front.getOpposite());
 
         if (!vanillaGenInfo.generatesIn(startPiece.biome) || (!structure.isRotatable() && transform.getRotation() != 0))
-            return null;
+            return kill(villagePiece);
 
         int[] structureSize = Structures.structureSize(structure, transform);
 
@@ -113,6 +113,15 @@ public class GenericVillageCreationHandler implements VillagerRegistry.IVillageC
         genericVillagePiece.setOrientation(front, mirrorX, strucBB);
 
         return genericVillagePiece;
+    }
+
+    public StructureVillagePieces.Village kill(StructureVillagePieces.PieceWeight piece)
+    {
+        // TODO Hax
+        // Kill all pieces that can never spawn anyway, so they can never be selected again
+        // Can be resolved once getVillagePieceWeight adds more parameters to determine this beforehand
+        piece.villagePiecesSpawned = piece.villagePiecesLimit;
+        return null;
     }
 
     @Override

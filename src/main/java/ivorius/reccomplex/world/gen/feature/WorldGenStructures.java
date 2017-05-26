@@ -135,7 +135,7 @@ public class WorldGenStructures
                 return;
             }
 
-            if (entry.instanceData == null)
+            if (entry.instanceData == null && !entry.firstTime)
             {
                 RecurrentComplex.logger.warn(String.format("Can't find instance data of %s (%s) to complement in %s (%d)", entry.getStructureID(), entry.getUuid(), chunkPos, world.provider.getDimension()));
                 return;

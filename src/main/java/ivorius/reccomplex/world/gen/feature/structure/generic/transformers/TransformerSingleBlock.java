@@ -16,6 +16,7 @@ import ivorius.ivtoolkit.blocks.IvBlockCollection;
 import ivorius.ivtoolkit.tools.IvWorldData;
 import ivorius.reccomplex.world.gen.feature.structure.context.StructureSpawnContext;
 import net.minecraft.block.state.IBlockState;
+import net.minecraft.world.gen.structure.StructureBoundingBox;
 
 import javax.annotation.Nonnull;
 
@@ -38,24 +39,29 @@ public abstract class TransformerSingleBlock<S extends NBTStorable> extends Tran
     @Override
     public void transform(S instanceData, Phase phase, StructureSpawnContext context, IvWorldData worldData, RunTransformer transformer)
     {
-        if (generatesInPhase(instanceData, phase))
+        if (!generatesInPhase(instanceData, phase))
+            return;
+
+        IvBlockCollection blockCollection = worldData.blockCollection;
+
+        StructureBoundingBox relevantSourceArea = context.intersection(BlockAreas.toBoundingBox(blockCollection.area()));
+        if (relevantSourceArea == null)
+            return;
+
+        BlockPos lowerCoord = StructureBoundingBoxes.min(context.boundingBox);
+        int[] areaSize = new int[]{blockCollection.width, blockCollection.height, blockCollection.length};
+
+        BlockPos.MutableBlockPos worldCoord = new BlockPos.MutableBlockPos();
+        for (BlockPos sourceCoord : RCStructureBoundingBoxes.mutablePositions(relevantSourceArea))
         {
-            IvBlockCollection blockCollection = worldData.blockCollection;
-            int[] areaSize = new int[]{blockCollection.width, blockCollection.height, blockCollection.length};
-            BlockPos lowerCoord = StructureBoundingBoxes.min(context.boundingBox);
+            IvMutableBlockPos.add(context.transform.applyOn(sourceCoord, worldCoord, areaSize), lowerCoord);
 
-            BlockPos.MutableBlockPos worldCoord = new BlockPos.MutableBlockPos();
-            for (BlockPos sourceCoord : BlockAreas.mutablePositions(blockCollection.area()))
+            if (context.includesComplex(worldCoord))
             {
-                IvMutableBlockPos.add(RCAxisAlignedTransform.apply(sourceCoord, worldCoord, areaSize, context.transform), lowerCoord);
+                IBlockState state = blockCollection.getBlockState(sourceCoord);
 
-                if (context.includes(worldCoord))
-                {
-                    IBlockState state = blockCollection.getBlockState(sourceCoord);
-
-                    if (matches(context.environment, instanceData, state))
-                        transformBlock(instanceData, Phase.BEFORE, context, areaSize, worldCoord, state);
-                }
+                if (matches(context.environment, instanceData, state))
+                    transformBlock(instanceData, Phase.BEFORE, context, areaSize, worldCoord, state);
             }
         }
     }

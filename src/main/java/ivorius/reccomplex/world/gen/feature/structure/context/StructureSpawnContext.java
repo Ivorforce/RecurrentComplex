@@ -5,10 +5,15 @@
 
 package ivorius.reccomplex.world.gen.feature.structure.context;
 
-import ivorius.reccomplex.world.gen.feature.structure.Environment;
-import net.minecraft.util.math.BlockPos;
+import ivorius.ivtoolkit.blocks.BlockAreas;
 import ivorius.ivtoolkit.math.AxisAlignedTransform2D;
+import ivorius.ivtoolkit.world.chunk.gen.StructureBoundingBoxes;
+import ivorius.reccomplex.utils.RCAxisAlignedTransform;
+import ivorius.reccomplex.utils.RCBlockAreas;
+import ivorius.reccomplex.utils.RCStructureBoundingBoxes;
+import ivorius.reccomplex.world.gen.feature.structure.Environment;
 import net.minecraft.block.state.IBlockState;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3i;
 import net.minecraft.world.gen.structure.StructureBoundingBox;
 
@@ -44,10 +49,28 @@ public class StructureSpawnContext extends StructureLiveContext
         this.generateMaturity = generateMaturity;
     }
 
+    @Nullable
+    public StructureBoundingBox intersection(StructureBoundingBox area)
+    {
+        return this.generationBB != null
+                ? RCStructureBoundingBoxes.intersection(area, BlockAreas.toBoundingBox(
+                RCAxisAlignedTransform.apply(RCBlockAreas.sub(RCBlockAreas.from(this.generationBB), StructureBoundingBoxes.min(this.boundingBox)),
+                        StructureBoundingBoxes.size(boundingBox), RCAxisAlignedTransform.invert(this.transform))))
+                : area;
+    }
+
     public boolean includes(Vec3i coord)
     {
         return (generationBB == null || generationBB.isVecInside(coord))
                 && (generationPredicate == null || generationPredicate.test(coord));
+    }
+
+    /**
+     * If the inclusion by generationBB is already given
+     */
+    public boolean includesComplex(Vec3i coord)
+    {
+        return generationPredicate == null || generationPredicate.test(coord);
     }
 
     public boolean setBlock(BlockPos coord, IBlockState state, int flag)

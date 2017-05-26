@@ -16,11 +16,11 @@ import ivorius.ivtoolkit.maze.components.*;
 import ivorius.reccomplex.RCConfig;
 import ivorius.reccomplex.RecurrentComplex;
 import ivorius.reccomplex.utils.NBTStorable;
+import ivorius.reccomplex.utils.RCAxisAlignedTransform;
 import ivorius.reccomplex.world.gen.feature.StructureGenerator;
 import ivorius.reccomplex.world.gen.feature.structure.Environment;
 import ivorius.reccomplex.world.gen.feature.structure.Structure;
 import ivorius.reccomplex.world.gen.feature.structure.StructureRegistry;
-import ivorius.reccomplex.world.gen.feature.structure.Structures;
 import ivorius.reccomplex.world.gen.feature.structure.context.StructureSpawnContext;
 import ivorius.reccomplex.world.gen.feature.structure.generic.generation.MazeGeneration;
 import net.minecraft.util.math.BlockPos;
@@ -61,7 +61,7 @@ public class WorldGenMaze
 
     protected static BlockPos lowerCoord(Structure structure, BlockPos lowerCoord, AxisAlignedTransform2D placedTransform, BlockPos pos, AxisAlignedTransform2D transform)
     {
-        int[] placedSize = Structures.structureSize(structure, placedTransform);
+        int[] placedSize = RCAxisAlignedTransform.applySize(placedTransform, structure.size());
         return transform.apply(lowerCoord, IvVecMathHelper.sub(new int[]{2, 2, 2}, placedSize)).add(pos);
     }
 
@@ -91,7 +91,7 @@ public class WorldGenMaze
     {
         int[] scaledMazePosition = IvVecMathHelper.mul(placedComponent.shift().getCoordinates(), roomSize);
 
-        int[] size = Structures.structureSize(structure, transform);
+        int[] size = RCAxisAlignedTransform.applySize(transform, structure.size());
         int[] expectedSize = IvVecMathHelper.mul(placedComponent.component().getSize(), roomSize); // Already rotated component, so don't rotate again
         int[] sizeDependentShift = new int[expectedSize.length];
         for (int i = 0; i < size.length; i++)

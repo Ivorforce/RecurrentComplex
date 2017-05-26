@@ -14,6 +14,7 @@ import ivorius.ivtoolkit.tools.NBTCompoundObject;
 import ivorius.ivtoolkit.tools.NBTCompoundObjects;
 import ivorius.ivtoolkit.world.chunk.gen.StructureBoundingBoxes;
 import ivorius.reccomplex.RecurrentComplex;
+import ivorius.reccomplex.utils.RCAxisAlignedTransform;
 import ivorius.reccomplex.world.gen.feature.structure.Structure;
 import ivorius.reccomplex.world.gen.feature.structure.Structures;
 import ivorius.reccomplex.world.gen.feature.structure.StructureRegistry;
@@ -330,7 +331,7 @@ public class WorldStructureGenerationData extends WorldSavedData
                 Structure structure = StructureRegistry.INSTANCE.get(structureID);
 
                 boundingBox = structure != null
-                        ? Structures.structureBoundingBox(lowerCoord, Structures.structureSize(structure, transform))
+                        ? Structures.structureBoundingBox(lowerCoord, RCAxisAlignedTransform.applySize(transform, structure.size()))
                         : new StructureBoundingBox();
             }
 

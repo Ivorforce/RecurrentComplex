@@ -41,15 +41,15 @@ public class RCAxisAlignedTransform
         }
     }
 
-    public static BlockArea apply(BlockArea area, int[] size, AxisAlignedTransform2D transform)
+    public static BlockArea apply(AxisAlignedTransform2D transform, BlockArea area, int[] size, int centerCorrection)
     {
-        return apply(area, new BlockArea(BlockPos.ORIGIN, BlockPos.ORIGIN), size, transform);
+        return apply(transform, area, new BlockArea(BlockPos.ORIGIN, BlockPos.ORIGIN), size, centerCorrection);
     }
 
-    public static BlockArea apply(BlockArea area, BlockArea on, int[] size, AxisAlignedTransform2D transform)
+    public static BlockArea apply(AxisAlignedTransform2D transform, BlockArea area, BlockArea on, int[] size, int centerCorrection)
     {
-        on.setPoint1(transform.apply(area.getPoint1(), size));
-        on.setPoint2(transform.apply(area.getPoint2(), size));
+        on.setPoint1(transform.apply(area.getPoint1(), size, centerCorrection));
+        on.setPoint2(transform.apply(area.getPoint2(), size, centerCorrection));
         return on;
     }
 

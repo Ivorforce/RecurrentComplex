@@ -25,6 +25,7 @@ import ivorius.reccomplex.gui.table.datasource.TableDataSource;
 import ivorius.reccomplex.json.JsonUtils;
 import ivorius.reccomplex.utils.NBTStorable;
 import ivorius.reccomplex.utils.RCAxisAlignedTransform;
+import ivorius.reccomplex.world.gen.feature.structure.Structures;
 import ivorius.reccomplex.world.gen.feature.structure.context.StructureLiveContext;
 import ivorius.reccomplex.world.gen.feature.structure.context.StructureLoadContext;
 import ivorius.reccomplex.world.gen.feature.structure.context.StructurePrepareContext;
@@ -223,6 +224,9 @@ public class TransformerRuins extends Transformer<TransformerRuins.InstanceData>
 
             if (blockErosion > 0.0f || vineGrowth > 0.0f)
             {
+                // Only place things on sides we KNOW we have generated already.
+                StructureBoundingBox relevantBB = context.generationBB != null ? Structures.intersection(context.boundingBox, context.generationBB) : context.boundingBox;
+
                 for (BlockPos sourceCoord : BlockAreas.mutablePositions(blockCollection.area()))
                 {
                     BlockPos worldCoord = context.transform.apply(sourceCoord, areaSize).add(StructureBoundingBoxes.min(context.boundingBox));
@@ -232,7 +236,7 @@ public class TransformerRuins extends Transformer<TransformerRuins.InstanceData>
                         IBlockState state = world.getBlockState(worldCoord);
 
                         if (!transformer.transformer.skipGeneration(transformer.instanceData, context, worldCoord, state, worldData, sourceCoord))
-                            decayBlock(world, context.random, state, worldCoord, context.boundingBox);
+                            decayBlock(world, context.random, state, worldCoord, relevantBB);
                     }
                 }
             }
@@ -282,9 +286,10 @@ public class TransformerRuins extends Transformer<TransformerRuins.InstanceData>
             newState = null;
             for (EnumFacing direction : EnumFacing.HORIZONTALS)
             {
-                if (random.nextFloat() < vineGrowth && Blocks.VINE.canPlaceBlockOnSide(world, pos, direction)
+                if (random.nextFloat() < vineGrowth
                         // Don't place vines pointing outside the structure (mostly to prevent vines in passages in mazes
-                        && boundingBox.isVecInside(pos.offset(direction.getOpposite())))
+                        && boundingBox.isVecInside(pos.offset(direction.getOpposite()))
+                        && Blocks.VINE.canPlaceBlockOnSide(world, pos, direction))
                 {
                     IBlockState downState = world.getBlockState(pos.offset(EnumFacing.DOWN));
                     downState = downState.getBlock() == Blocks.VINE ? downState : Blocks.VINE.getDefaultState();

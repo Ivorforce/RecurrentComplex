@@ -79,7 +79,7 @@ public class ArtifactItem
             for (Object enchantment : enchantments)
             {
                 EnchantmentData enchantmentdata = (EnchantmentData) enchantment;
-                artifactStack.addEnchantment(enchantmentdata.enchantmentobj, enchantmentdata.enchantmentLevel);
+                artifactStack.addEnchantment(enchantmentdata.enchantment, enchantmentdata.enchantmentLevel);
             }
         }
 

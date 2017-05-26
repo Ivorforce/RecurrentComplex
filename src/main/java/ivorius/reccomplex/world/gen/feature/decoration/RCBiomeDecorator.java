@@ -57,7 +57,7 @@ public class RCBiomeDecorator
     protected static Event.Result doDecorate(WorldServer worldIn, Random random, BlockPos chunkPos, DecorationType type)
     {
         Biome biomeIn = worldIn.getBiome(chunkPos.add(16, 0, 16));
-        BiomeDecorator decorator = biomeIn.theBiomeDecorator;
+        BiomeDecorator decorator = biomeIn.decorator;
         Adapter adapter = adapter(worldIn, chunkPos, type, biomeIn, decorator);
 
         int origAmount = adapter.amount(worldIn, random, biomeIn, decorator, chunkPos, type);

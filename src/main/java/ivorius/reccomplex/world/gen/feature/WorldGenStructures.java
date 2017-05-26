@@ -59,8 +59,8 @@ public class WorldGenStructures
     protected static float distance(ChunkPos left, ChunkPos right)
     {
         return MathHelper.sqrt(
-                (left.chunkXPos - right.chunkXPos) * (left.chunkXPos - right.chunkXPos) +
-                        (left.chunkZPos - right.chunkZPos) * (left.chunkZPos - right.chunkZPos));
+                (left.x - right.x) * (left.x - right.x) +
+                        (left.z - right.z) * (left.z - right.z));
     }
 
     public static void planStructuresInChunk(Random random, ChunkPos chunkPos, WorldServer world, Biome biomeGen, @Nullable Predicate<Structure> structurePredicate)
@@ -101,7 +101,7 @@ public class WorldGenStructures
     {
         String structureName = StructureRegistry.INSTANCE.id(structure);
 
-        BlockSurfacePos genPos = new BlockSurfacePos((chunkPos.chunkXPos << 4) + 8 + random.nextInt(16), (chunkPos.chunkZPos << 4) + 8 + random.nextInt(16));
+        BlockSurfacePos genPos = new BlockSurfacePos((chunkPos.x << 4) + 8 + random.nextInt(16), (chunkPos.z << 4) + 8 + random.nextInt(16));
 
         if (!naturalGenInfo.hasLimitations() || naturalGenInfo.getLimitations().areResolved(world, structureName))
         {
@@ -191,7 +191,7 @@ public class WorldGenStructures
 
                 if (world.provider.getDimension() == 0)
                 {
-                    double distToSpawn = IvVecMathHelper.distanceSQ(new double[]{chunkPos.chunkXPos * 16 + 8, chunkPos.chunkZPos * 16 + 8}, new double[]{spawnPos.getX(), spawnPos.getZ()});
+                    double distToSpawn = IvVecMathHelper.distanceSQ(new double[]{chunkPos.x * 16 + 8, chunkPos.z * 16 + 8}, new double[]{spawnPos.getX(), spawnPos.getZ()});
                     mayGenerate &= distToSpawn >= RCConfig.minDistToSpawnForGeneration * RCConfig.minDistToSpawnForGeneration;
                 }
 

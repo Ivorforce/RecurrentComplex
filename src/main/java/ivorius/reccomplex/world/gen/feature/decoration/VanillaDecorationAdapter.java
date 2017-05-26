@@ -72,7 +72,7 @@ public class VanillaDecorationAdapter implements RCBiomeDecorator.Adapter
                 {
                     int k6 = random.nextInt(16) + 8;
                     int l = random.nextInt(16) + 8;
-                    WorldGenAbstractTree worldgenabstracttree = biomeIn.genBigTreeChance(random);
+                    WorldGenAbstractTree worldgenabstracttree = biomeIn.getRandomTreeFeature(random);
                     worldgenabstracttree.setDecorationDefaults();
                     BlockPos blockpos = worldIn.getHeight(chunkPos.add(k6, 0, l));
 

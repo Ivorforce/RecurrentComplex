@@ -220,11 +220,7 @@ public class GenericStructure implements Structure<GenericStructure.InstanceData
         if (transformer != null)
             transformer.transformer.transform(transformer.instanceData, Transformer.Phase.BEFORE, context, worldData, transformer);
 
-        StructureBoundingBox relevantSourceArea = BlockAreas.toBoundingBox(blockCollection.area());
-        if (context.generationBB != null)
-            relevantSourceArea = RCStructureBoundingBoxes.intersection(relevantSourceArea, BlockAreas.toBoundingBox(
-                    RCAxisAlignedTransform.apply(RCBlockAreas.sub(RCBlockAreas.from(context.generationBB), origin),
-                            RCAxisAlignedTransform.applySize(context.transform, areaSize), RCAxisAlignedTransform.invert(context.transform))));
+        StructureBoundingBox relevantSourceArea = context.intersection(BlockAreas.toBoundingBox(blockCollection.area()));
 
         if (relevantSourceArea != null) // Why did we get asked to generate again?
         {
@@ -235,8 +231,7 @@ public class GenericStructure implements Structure<GenericStructure.InstanceData
                 {
                     IvMutableBlockPos.add(context.transform.applyOn(sourcePos, worldPos, areaSize), origin);
 
-                    // Don't need full context.includes since we already intersect
-                    if (context.generationPredicate == null || context.generationPredicate.test(worldPos))
+                    if (context.includesComplex(worldPos))
                     {
                         IBlockState state = PosTransformer.transformBlockState(blockCollection.getBlockState(sourcePos), context.transform);
 

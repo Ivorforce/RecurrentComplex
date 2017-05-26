@@ -20,6 +20,7 @@ import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.util.math.BlockPos;
+import org.apache.commons.lang3.tuple.Pair;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -40,7 +41,7 @@ public class WorldScriptMulti implements WorldScript<WorldScriptMulti.InstanceDa
         InstanceData instanceData = new InstanceData();
 
         for (WorldScript script : scripts)
-            instanceData.addInstanceData(script.prepareInstanceData(context, pos), WorldScriptRegistry.INSTANCE.type(script.getClass()));
+            instanceData.addInstanceData(script, script.prepareInstanceData(context, pos));
 
         instanceData.deactivated = !environmentMatcher.test(context.environment);
 
@@ -58,13 +59,9 @@ public class WorldScriptMulti implements WorldScript<WorldScriptMulti.InstanceDa
     {
         if (!instanceData.deactivated)
         {
-            for (int i = 0; i < scripts.size(); i++)
-            {
-                NBTStorable scriptData = instanceData.instanceDates.get(i);
-                if (scriptData != null)
-                    //noinspection unchecked
-                    scripts.get(i).generate(context, scriptData, pos);
-            }
+            for (Pair<WorldScript, NBTStorable> paired : instanceData.pairedScripts)
+                //noinspection unchecked
+                paired.getLeft().generate(context, paired.getRight(), pos);
         }
     }
 
@@ -101,8 +98,7 @@ public class WorldScriptMulti implements WorldScript<WorldScriptMulti.InstanceDa
 
     public static class InstanceData implements NBTStorable
     {
-        public final List<NBTStorable> instanceDates = new ArrayList<>();
-        public final List<String> ids = new ArrayList<>();
+        public final List<Pair<WorldScript, NBTStorable>> pairedScripts = new ArrayList<>();
 
         public boolean deactivated;
 
@@ -119,20 +115,15 @@ public class WorldScriptMulti implements WorldScript<WorldScriptMulti.InstanceDa
 
                 WorldScript script = expectedScripts.get(i);
                 if (WorldScriptRegistry.INSTANCE.type(script.getClass()).equals(scriptTag.getString("id")))
-                    instanceDates.add(script.loadInstanceData(context, scriptTag.getTag("data")));
-                else
-                    instanceDates.add(null);
+                    addInstanceData(script, script.loadInstanceData(context, scriptTag.getTag("data")));
             }
-            for (int i = compoundsFrom.size(); i < expectedScripts.size(); i++)
-                instanceDates.add(null);
 
             deactivated = compound.getBoolean("deactivated");
         }
 
-        public void addInstanceData(NBTStorable instanceData, String id)
+        public void addInstanceData(WorldScript script, NBTStorable instanceData)
         {
-            instanceDates.add(instanceData);
-            ids.add(id);
+            pairedScripts.add(Pair.of(script, instanceData));
         }
 
         @Override
@@ -141,11 +132,11 @@ public class WorldScriptMulti implements WorldScript<WorldScriptMulti.InstanceDa
             NBTTagCompound nbt = new NBTTagCompound();
 
             NBTTagList dataList = new NBTTagList();
-            for (int i = 0; i < instanceDates.size(); i++)
+            for (int i = 0; i < pairedScripts.size(); i++)
             {
                 NBTTagCompound scriptTag = new NBTTagCompound();
-                scriptTag.setTag("data", instanceDates.get(i).writeToNBT());
-                scriptTag.setString("id", ids.get(i));
+                scriptTag.setTag("data", pairedScripts.get(i).getRight().writeToNBT());
+                scriptTag.setString("id", WorldScriptRegistry.INSTANCE.type(pairedScripts.get(i).getLeft().getClass()));
                 dataList.appendTag(scriptTag);
             }
             nbt.setTag("instanceDates", dataList);

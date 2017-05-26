@@ -6,7 +6,10 @@
 package ivorius.reccomplex.world.gen.feature.structure.generic;
 
 import com.google.gson.*;
-import ivorius.ivtoolkit.blocks.*;
+import ivorius.ivtoolkit.blocks.BlockAreas;
+import ivorius.ivtoolkit.blocks.IvBlockCollection;
+import ivorius.ivtoolkit.blocks.IvMutableBlockPos;
+import ivorius.ivtoolkit.blocks.IvTileEntityHelper;
 import ivorius.ivtoolkit.tools.IvWorldData;
 import ivorius.ivtoolkit.tools.NBTCompoundObjects;
 import ivorius.ivtoolkit.transform.Mover;
@@ -48,6 +51,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3i;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldServer;
+import net.minecraft.world.gen.structure.StructureBoundingBox;
 import net.minecraftforge.common.util.Constants;
 
 import javax.annotation.Nonnull;
@@ -216,34 +220,37 @@ public class GenericStructure implements Structure<GenericStructure.InstanceData
         if (transformer != null)
             transformer.transformer.transform(transformer.instanceData, Transformer.Phase.BEFORE, context, worldData, transformer);
 
-        BlockArea relevantSourceArea = blockCollection.area();
+        StructureBoundingBox relevantSourceArea = BlockAreas.toBoundingBox(blockCollection.area());
         if (context.generationBB != null)
-            relevantSourceArea = RCBlockAreas.intersect(relevantSourceArea,
-                RCAxisAlignedTransform.apply(RCBlockAreas.sub(RCBlockAreas.from(context.generationBB), origin),
-                        RCAxisAlignedTransform.applySize(context.transform, areaSize), RCAxisAlignedTransform.invert(context.transform)));
+            relevantSourceArea = RCStructureBoundingBoxes.intersection(relevantSourceArea, BlockAreas.toBoundingBox(
+                    RCAxisAlignedTransform.apply(RCBlockAreas.sub(RCBlockAreas.from(context.generationBB), origin),
+                            RCAxisAlignedTransform.applySize(context.transform, areaSize), RCAxisAlignedTransform.invert(context.transform))));
 
-        BlockPos.MutableBlockPos worldPos = new BlockPos.MutableBlockPos();
-        for (int pass = 0; pass < 2; pass++)
+        if (relevantSourceArea != null) // Why did we get asked to generate again?
         {
-            for (BlockPos sourcePos : BlockAreas.mutablePositions(relevantSourceArea))
+            BlockPos.MutableBlockPos worldPos = new BlockPos.MutableBlockPos();
+            for (int pass = 0; pass < 2; pass++)
             {
-                IvMutableBlockPos.add(context.transform.applyOn(sourcePos, worldPos, areaSize), origin);
-
-                // Don't need full context.includes since we already intersect
-                if (context.generationPredicate == null || context.generationPredicate.test(worldPos))
+                for (BlockPos sourcePos : RCStructureBoundingBoxes.mutablePositions(relevantSourceArea))
                 {
-                    IBlockState state = PosTransformer.transformBlockState(blockCollection.getBlockState(sourcePos), context.transform);
+                    IvMutableBlockPos.add(context.transform.applyOn(sourcePos, worldPos, areaSize), origin);
 
-                    if (RecurrentComplex.specialRegistry.isSafe(state.getBlock())
-                            && pass == getPass(state) && (transformer == null || !transformer.transformer.skipGeneration(transformer.instanceData, context, worldPos, state, worldData, sourcePos)))
+                    // Don't need full context.includes since we already intersect
+                    if (context.generationPredicate == null || context.generationPredicate.test(worldPos))
                     {
-                        GeneratingTileEntity<?> generatingTE = generatingTEs.get(sourcePos);
+                        IBlockState state = PosTransformer.transformBlockState(blockCollection.getBlockState(sourcePos), context.transform);
 
-                        //noinspection unchecked
-                        if (asSource || generatingTE == null || ((GeneratingTileEntity) generatingTE).shouldPlaceInWorld(context, instanceData.tileEntities.get(sourcePos)))
-                            setBlock(context, areaSize, worldPos, state, () -> tileEntityCompounds.get(sourcePos));
-                        else
-                            context.setBlock(worldPos, Blocks.AIR.getDefaultState(), 2); // Replace with air
+                        if (RecurrentComplex.specialRegistry.isSafe(state.getBlock())
+                                && pass == getPass(state) && (transformer == null || !transformer.transformer.skipGeneration(transformer.instanceData, context, worldPos, state, worldData, sourcePos)))
+                        {
+                            GeneratingTileEntity<?> generatingTE = generatingTEs.get(sourcePos);
+
+                            //noinspection unchecked
+                            if (asSource || generatingTE == null || ((GeneratingTileEntity) generatingTE).shouldPlaceInWorld(context, instanceData.tileEntities.get(sourcePos)))
+                                setBlock(context, areaSize, worldPos, state, () -> tileEntityCompounds.get(sourcePos));
+                            else
+                                context.setBlock(worldPos, Blocks.AIR.getDefaultState(), 2); // Replace with air
+                        }
                     }
                 }
             }

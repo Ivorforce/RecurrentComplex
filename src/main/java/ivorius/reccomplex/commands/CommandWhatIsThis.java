@@ -48,7 +48,7 @@ public class CommandWhatIsThis extends CommandBase
                 ? RCTextStyle.structure(entry.description())
                 : new TextComponentString(entry.description());
 
-        return new TextComponentTranslation("%s (%s)", structure, forget);
+        return new TextComponentTranslation("%s %s (%s)", structure, ((WorldStructureGenerationData.StructureEntry) entry).getTransform(), forget);
     }
 
     @Override

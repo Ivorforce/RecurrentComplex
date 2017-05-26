@@ -161,7 +161,16 @@ public class StructureGenerator<S extends NBTStorable>
                     WorldStructureGenerationData.StructureEntry structureEntry = WorldStructureGenerationData.StructureEntry.complete(structureID, generationInfoID, boundingBox, spawn.transform, !partially);
                     structureEntry.blocking = structure.isBlocking();
                     structureEntry.firstTime = false; // Been there done that
-                    structureEntry.instanceData = instanceData.writeToNBT();
+
+                    try
+                    {
+                        structureEntry.instanceData = instanceData.writeToNBT();
+                    }
+                    catch (Exception e)
+                    {
+                        RecurrentComplex.logger.error(String.format("Error saving instance data for structure %s in %s", structure, boundingBox), e);
+                    }
+
                     Collection<ChunkPos> existingChunks = WorldStructureGenerationData.get(world).addEntry(structureEntry).stream().collect(Collectors.toList());
 
                     // Complement in all chunks that already exist

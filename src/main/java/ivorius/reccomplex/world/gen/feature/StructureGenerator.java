@@ -14,6 +14,7 @@ import ivorius.reccomplex.events.RCEventBus;
 import ivorius.reccomplex.events.StructureGenerationEvent;
 import ivorius.reccomplex.events.StructureGenerationEventLite;
 import ivorius.reccomplex.utils.NBTStorable;
+import ivorius.reccomplex.utils.RCAxisAlignedTransform;
 import ivorius.reccomplex.utils.RCStructureBoundingBoxes;
 import ivorius.reccomplex.world.gen.feature.structure.*;
 import ivorius.reccomplex.world.gen.feature.structure.context.StructureLoadContext;
@@ -386,7 +387,7 @@ public class StructureGenerator<S extends NBTStorable>
 
     public int[] structureSize()
     {
-        return Structures.structureSize(structure(), transform());
+        return RCAxisAlignedTransform.applySize(transform(), structure().size());
     }
 
     @Nullable

@@ -5,12 +5,9 @@
 
 package ivorius.reccomplex.world.gen.feature.structure;
 
-import ivorius.reccomplex.utils.RCAxisAlignedTransform;
-import net.minecraft.util.math.BlockPos;
-import ivorius.ivtoolkit.math.AxisAlignedTransform2D;
 import ivorius.reccomplex.gui.GuiValidityStateIndicator;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.ChunkPos;
-import net.minecraft.util.math.Vec3i;
 import net.minecraft.world.gen.structure.StructureBoundingBox;
 
 import javax.annotation.Nonnull;
@@ -22,12 +19,7 @@ public class Structures
 {
     public static StructureBoundingBox structureBoundingBox(@Nonnull BlockPos coord, @Nonnull int[] size)
     {
-        return new StructureBoundingBox(coord, coord.add(new Vec3i(size[0], size[1], size[2])));
-    }
-
-    public static int[] structureSize(@Nonnull Structure info, @Nonnull AxisAlignedTransform2D transform)
-    {
-        return RCAxisAlignedTransform.applySize(transform, info.size());
+        return new StructureBoundingBox(coord, coord.add(size[0], size[1], size[2]));
     }
 
     public static StructureBoundingBox chunkBoundingBox(ChunkPos chunkPos)

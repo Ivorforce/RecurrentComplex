@@ -6,6 +6,7 @@
 package ivorius.reccomplex.world.gen.feature.villages;
 
 import ivorius.reccomplex.RCConfig;
+import ivorius.reccomplex.utils.RCAxisAlignedTransform;
 import net.minecraft.util.EnumFacing;
 import net.minecraftforge.fml.common.registry.VillagerRegistry;
 import net.minecraft.util.math.BlockPos;
@@ -97,7 +98,7 @@ public class GenericVillageCreationHandler implements VillagerRegistry.IVillageC
         if (!vanillaGenInfo.generatesIn(startPiece.biome) || (!structure.isRotatable() && transform.getRotation() != 0))
             return kill(villagePiece);
 
-        int[] structureSize = Structures.structureSize(structure, transform);
+        int[] structureSize = RCAxisAlignedTransform.applySize(transform, structure.size());
 
         StructureBoundingBox strucBB = Structures.structureBoundingBox(new BlockPos(x, y, z), structureSize);
 

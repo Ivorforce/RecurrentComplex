@@ -129,20 +129,29 @@ public class WorldGenStructures
         data.structureEntriesIn(chunkPos).forEach(entry -> {
             Structure<?> structure = StructureRegistry.INSTANCE.get(entry.getStructureID());
 
-            if (structure != null)
+            if (structure == null)
             {
-                new StructureGenerator<>(structure).world(world).generationInfo(entry.generationInfoID)
-                        .random(random).boundingBox(entry.boundingBox).transform(entry.transform).generationBB(Structures.chunkBoundingBox(chunkPos))
-                        .structureID(entry.getStructureID()).instanceData(entry.instanceData)
-                        // Could use entry.firstTime but then StructureGenerator would add a new entry
-                        .maturity(StructureSpawnContext.GenerateMaturity.COMPLEMENT)
-                        .generate();
+                RecurrentComplex.logger.warn(String.format("Can't find structure %s (%s) to complement in %s (%d)", entry.getStructureID(), entry.getUuid(), chunkPos, world.provider.getDimension()));
+                return;
+            }
 
-                if (entry.firstTime)
-                {
-                    entry.firstTime = false;
-                    data.markDirty();
-                }
+            if (entry.instanceData == null)
+            {
+                RecurrentComplex.logger.warn(String.format("Can't find instance data of %s (%s) to complement in %s (%d)", entry.getStructureID(), entry.getUuid(), chunkPos, world.provider.getDimension()));
+                return;
+            }
+
+            new StructureGenerator<>(structure).world(world).generationInfo(entry.generationInfoID)
+                    .random(random).boundingBox(entry.boundingBox).transform(entry.transform).generationBB(Structures.chunkBoundingBox(chunkPos))
+                    .structureID(entry.getStructureID()).instanceData(entry.instanceData)
+                    // Could use entry.firstTime but then StructureGenerator would add a new entry
+                    .maturity(StructureSpawnContext.GenerateMaturity.COMPLEMENT)
+                    .generate();
+
+            if (entry.firstTime)
+            {
+                entry.firstTime = false;
+                data.markDirty();
             }
         });
     }

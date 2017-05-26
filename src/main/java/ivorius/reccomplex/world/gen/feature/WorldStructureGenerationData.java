@@ -17,6 +17,7 @@ import ivorius.reccomplex.RecurrentComplex;
 import ivorius.reccomplex.world.gen.feature.structure.Structure;
 import ivorius.reccomplex.world.gen.feature.structure.Structures;
 import ivorius.reccomplex.world.gen.feature.structure.StructureRegistry;
+import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.ChunkPos;
@@ -274,7 +275,7 @@ public class WorldStructureGenerationData extends WorldSavedData
 
         protected AxisAlignedTransform2D transform;
 
-        protected NBTTagCompound instanceData;
+        protected NBTBase instanceData;
         protected boolean firstTime = true;
 
         protected boolean hasBeenGenerated;

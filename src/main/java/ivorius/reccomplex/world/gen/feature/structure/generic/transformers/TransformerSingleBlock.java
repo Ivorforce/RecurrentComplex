@@ -56,13 +56,13 @@ public abstract class TransformerSingleBlock<S extends NBTStorable> extends Tran
         {
             IvMutableBlockPos.add(context.transform.applyOn(sourceCoord, worldCoord, areaSize), lowerCoord);
 
-            if (context.includesComplex(worldCoord))
-            {
-                IBlockState state = blockCollection.getBlockState(sourceCoord);
+            if (!context.includesComplex(worldCoord))
+                continue;
 
-                if (matches(context.environment, instanceData, state))
-                    transformBlock(instanceData, Phase.BEFORE, context, areaSize, worldCoord, state);
-            }
+            IBlockState state = blockCollection.getBlockState(sourceCoord);
+
+            if (matches(context.environment, instanceData, state))
+                transformBlock(instanceData, Phase.BEFORE, context, areaSize, worldCoord, state);
         }
     }
 

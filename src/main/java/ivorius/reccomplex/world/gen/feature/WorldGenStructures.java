@@ -28,6 +28,7 @@ import javax.annotation.Nullable;
 import java.util.List;
 import java.util.Random;
 import java.util.function.Predicate;
+import java.util.stream.Collectors;
 
 /**
  * Created by lukas on 24.05.14.
@@ -121,12 +122,12 @@ public class WorldGenStructures
         return false;
     }
 
-    public static void complementStructuresInChunk(Random random, final ChunkPos chunkPos, final WorldServer world)
+    public static void complementStructuresInChunk(Random random, final ChunkPos chunkPos, final WorldServer world, List<WorldStructureGenerationData.StructureEntry> complement)
     {
         WorldStructureGenerationData data = WorldStructureGenerationData.get(world);
 
         // Don't filter hasBeenGenerated since if the chunk re-generates now, we want to complement our structure back anyway
-        data.structureEntriesIn(chunkPos).forEach(entry -> {
+        complement.forEach(entry -> {
             Structure<?> structure = StructureRegistry.INSTANCE.get(entry.getStructureID());
 
             if (structure == null)
@@ -169,16 +170,18 @@ public class WorldGenStructures
         {
             // TODO Synchronize on chunk pos instead (need to make sure these are only added on same sync though)
             // If not partially, complement before generating so we don't generate structures twice
+
+            List<WorldStructureGenerationData.StructureEntry> complement = data.structureEntriesIn(chunkPos).collect(Collectors.toList());
+            if (structurePredicate == null)
+                data.checkChunk(chunkPos);
+
             if (!RecurrentComplex.PARTIALLY_SPAWN_NATURAL_STRUCTURES && structurePredicate == null)
-                complementStructuresInChunk(random, chunkPos, world);
+                complementStructuresInChunk(random, chunkPos, world, complement);
 
             if ((!RCConfig.honorStructureGenerationOption || worldWantsStructures)
                     // If partially spawn, check chunks as having tried to add partial structures as into the thingy
                     && (structurePredicate == null || !RecurrentComplex.PARTIALLY_SPAWN_NATURAL_STRUCTURES || data.checkChunkFinal(chunkPos)))
             {
-                if (structurePredicate == null)
-                    data.checkChunk(chunkPos);
-
                 Biome biomeGen = world.getBiome(chunkPos.getBlock(8, 0, 8));
                 BlockPos spawnPos = world.getSpawnPoint();
 
@@ -199,7 +202,7 @@ public class WorldGenStructures
             }
 
             if (RecurrentComplex.PARTIALLY_SPAWN_NATURAL_STRUCTURES && structurePredicate == null)
-                complementStructuresInChunk(random, chunkPos, world);
+                complementStructuresInChunk(random, chunkPos, world, complement);
         }
 
         return generated;

@@ -9,6 +9,7 @@ import com.google.common.collect.Maps;
 import net.minecraft.util.ResourceLocation;
 
 import javax.annotation.Nullable;
+import java.util.Collections;
 import java.util.Map;
 
 /**
@@ -19,6 +20,21 @@ public class FMLRemapper
     protected final Map<ResourceLocation, ResourceLocation> blockRemaps = Maps.newHashMap();
     protected final Map<ResourceLocation, ResourceLocation> itemRemaps = Maps.newHashMap();
     protected final Map<ResourceLocation, ResourceLocation> tileEntityRemaps = Maps.newHashMap();
+
+    public Map<ResourceLocation, ResourceLocation> getBlockRemaps()
+    {
+        return Collections.unmodifiableMap(blockRemaps);
+    }
+
+    public Map<ResourceLocation, ResourceLocation> getItemRemaps()
+    {
+        return Collections.unmodifiableMap(itemRemaps);
+    }
+
+    public Map<ResourceLocation, ResourceLocation> getTileEntityRemaps()
+    {
+        return Collections.unmodifiableMap(tileEntityRemaps);
+    }
 
     public void registerLegacyBlockIDs(ResourceLocation blockID, boolean inferItem, ResourceLocation... oldIDs)
     {

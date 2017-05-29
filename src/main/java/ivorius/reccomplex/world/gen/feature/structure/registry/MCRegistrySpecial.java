@@ -7,6 +7,7 @@ package ivorius.reccomplex.world.gen.feature.structure.registry;
 
 import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
+import com.google.common.collect.Maps;
 import ivorius.ivtoolkit.tools.MCRegistry;
 import ivorius.reccomplex.RecurrentComplex;
 import ivorius.reccomplex.utils.FMLRemapper;
@@ -22,6 +23,7 @@ import net.minecraft.world.World;
 import net.minecraftforge.common.util.Constants;
 
 import javax.annotation.Nullable;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -45,6 +47,21 @@ public class MCRegistrySpecial implements MCRegistry
     {
         this.parent = parent;
         this.remapper = remapper;
+    }
+
+    public BiMap<ResourceLocation, Item> getItemMap()
+    {
+        return Maps.unmodifiableBiMap(itemMap);
+    }
+
+    public BiMap<ResourceLocation, Block> getBlockMap()
+    {
+        return Maps.unmodifiableBiMap(blockMap);
+    }
+
+    public Map<ResourceLocation, Class<? extends TileEntity>> getTileEntityMap()
+    {
+        return Collections.unmodifiableMap(tileEntityMap);
     }
 
     public void register(ResourceLocation id, Item item)

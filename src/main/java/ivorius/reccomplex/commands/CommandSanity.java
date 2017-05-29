@@ -88,6 +88,10 @@ public class CommandSanity extends CommandBase
         addGenerationLog(commandSender, VanillaDecorationGeneration.class, (structure, gen) ->
                         Biome.REGISTRY.getKeys().stream().anyMatch(b -> StructureSelector.generationWeightInBiome(gen.biomeWeights, Biome.REGISTRY.getObject(b)) > 0)
                 , "Vanilla structure generation type won't accept any biome");
+
+        addGenerationLog(commandSender, VanillaDecorationGeneration.class, (structure, gen) ->
+                        Stream.of(DimensionManager.getIDs()).anyMatch(d -> StructureSelector.generationWeightInDimension(gen.dimensionWeights, server.worldServerForDimension(d).provider) > 0)
+                , "Natural generation type won't accept any dimensions");
     }
 
     protected <T extends GenerationType> void addGenerationLog(ICommandSender commandSender, Class<T> tClass, BiPredicate<Structure<?>, T> predicate, String msg)

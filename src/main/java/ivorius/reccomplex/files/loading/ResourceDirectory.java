@@ -17,6 +17,8 @@ import net.minecraftforge.fml.common.network.ByteBufUtils;
 
 import javax.annotation.Nonnull;
 import java.io.File;
+import java.io.IOException;
+import java.net.URISyntaxException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Collection;
@@ -68,7 +70,19 @@ public enum ResourceDirectory
         return getServer().getEntityWorld().getSaveHandler().getWorldDirectory();
     }
 
-    public static void reload(FileLoader loader, LeveledRegistry.Level level) throws IllegalArgumentException, IllegalStateException
+    public static void tryReload(@Nonnull FileLoader loader, @Nonnull LeveledRegistry.Level level) throws IllegalArgumentException, NoServerException
+    {
+        try
+        {
+            reload(loader, level);
+        }
+        catch (RCFiles.ResourceLocationLoadException e)
+        {
+            RecurrentComplex.logger.error("Error reloading from resource location '" + e.getLocation() + "'", e);
+        }
+    }
+
+    public static void reload(@Nonnull FileLoader loader, @Nonnull LeveledRegistry.Level level) throws IllegalArgumentException, NoServerException, RCFiles.ResourceLocationLoadException
     {
         switch (level)
         {
@@ -83,7 +97,7 @@ public enum ResourceDirectory
                 {
                     String domain = mod.getModId();
 
-                    Path path = RCFiles.tryPathFromResourceLocation(new ResourceLocation(domain.toLowerCase(), ""));
+                    Path path = RCFiles.pathFromResourceLocation(new ResourceLocation(domain.toLowerCase(), ""));
                     if (path != null)
                         tryLoadResources(loader, level, path, domain, false);
                 }
@@ -139,14 +153,14 @@ public enum ResourceDirectory
         return new ResourceLocation(domain, String.format("%s/%s", RESOURCES_FILE_NAME, directoryName));
     }
 
-    protected static MinecraftServer getServer() throws IllegalStateException
+    protected static MinecraftServer getServer() throws NoServerException
     {
         if (FMLCommonHandler.instance().getEffectiveSide().isClient())
-            throw new IllegalStateException();
+            throw new NoServerException();
 
         MinecraftServer instance = FMLCommonHandler.instance().getMinecraftServerInstance();
         if (instance == null)
-            throw new IllegalStateException();
+            throw new NoServerException();
 
         return instance;
     }
@@ -228,6 +242,33 @@ public enum ResourceDirectory
                 return "world/inactive";
             default:
                 throw new IllegalStateException();
+        }
+    }
+
+    public static class NoServerException extends RuntimeException
+    {
+        public NoServerException()
+        {
+        }
+
+        public NoServerException(String message)
+        {
+            super(message);
+        }
+
+        public NoServerException(String message, Throwable cause)
+        {
+            super(message, cause);
+        }
+
+        public NoServerException(Throwable cause)
+        {
+            super(cause);
+        }
+
+        public NoServerException(String message, Throwable cause, boolean enableSuppression, boolean writableStackTrace)
+        {
+            super(message, cause, enableSuppression, writableStackTrace);
         }
     }
 }

@@ -12,6 +12,9 @@ import ivorius.reccomplex.RCConfig;
 import ivorius.reccomplex.RecurrentComplex;
 import ivorius.reccomplex.capability.SelectionOwner;
 import ivorius.reccomplex.capability.RCEntityInfo;
+import ivorius.reccomplex.files.RCFiles;
+import ivorius.reccomplex.files.loading.FileLoader;
+import ivorius.reccomplex.files.loading.LeveledRegistry;
 import ivorius.reccomplex.files.loading.ResourceDirectory;
 import ivorius.reccomplex.utils.ServerTranslations;
 import ivorius.reccomplex.utils.algebra.ExpressionCache;
@@ -37,6 +40,7 @@ import org.apache.commons.lang3.tuple.Pair;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import java.nio.file.AccessDeniedException;
 import java.nio.file.Path;
 import java.util.Arrays;
 import java.util.Collections;
@@ -411,5 +415,26 @@ public class RCCommands
             throw ServerTranslations.commandException("commands.structure.notGeneric", name);
 
         return genericStructureInfo;
+    }
+
+    public static void tryReload(@Nonnull FileLoader loader, @Nonnull LeveledRegistry.Level level) throws CommandException
+    {
+        try
+        {
+            ResourceDirectory.reload(loader, level);
+        }
+        catch (IllegalArgumentException e)
+        {
+            throw new CommandException("Invalid reload type!");
+        }
+        catch (RCFiles.ResourceLocationLoadException e)
+        {
+            RecurrentComplex.logger.error("Can't load from resource '" + e.getLocation() + "'", e);
+
+            if (e.getCause() instanceof AccessDeniedException)
+                throw new CommandException("Access Denied! (check your server's read privileges on the Minecraft directory)");
+            else
+                throw new CommandException("Unknown Cause! (see logs)");
+        }
     }
 }

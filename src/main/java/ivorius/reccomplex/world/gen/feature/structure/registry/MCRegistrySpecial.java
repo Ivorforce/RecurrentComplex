@@ -138,7 +138,7 @@ public class MCRegistrySpecial implements MCRegistry
                 return tileEntity;
             }
         }
-        catch (Throwable e)
+        catch (Exception e)
         {
             RecurrentComplex.logger.error("Error loading special TileEntity", e);
         }

@@ -123,7 +123,7 @@ public class FileLoader extends FileHandler
             {
                 RecurrentComplex.logger.error(String.format("Reading unsupported: ?.%s", RCFiles.extension(path)), e);
             }
-            catch (Throwable e)
+            catch (Exception e)
             {
                 RecurrentComplex.logger.error("Error reading from resource location '" + resourceLocation + "'", e);
             }

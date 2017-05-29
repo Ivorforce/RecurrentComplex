@@ -28,7 +28,7 @@ public class RCTerrainGenEventHandler
             event.getClass().getDeclaredMethod("setModifiedAmount", int.class);
             return (boolean) event.getClass().getDeclaredMethod("hasAmountData").invoke(event);
         }
-        catch (Throwable e)
+        catch (Exception e)
         {
             return false;
         }
@@ -40,7 +40,7 @@ public class RCTerrainGenEventHandler
         {
             return (int) event.getClass().getDeclaredMethod("getModifiedAmount").invoke(event);
         }
-        catch (Throwable ignored)
+        catch (Exception ignored)
         {
             return -1;
         }
@@ -52,7 +52,7 @@ public class RCTerrainGenEventHandler
         {
             event.getClass().getDeclaredMethod("setModifiedAmount", int.class).invoke(event, amount);
         }
-        catch (Throwable ignored)
+        catch (Exception ignored)
         {
         }
     }

@@ -49,7 +49,7 @@ public class CommandReload extends CommandBase
         try
         {
             LeveledRegistry.Level level = args.length >= 1 ? LeveledRegistry.Level.valueOf(args[0]) : LeveledRegistry.Level.CUSTOM;
-            ResourceDirectory.reload(RecurrentComplex.loader, level);
+            RCCommands.tryReload(RecurrentComplex.loader, level);
 
             commandSender.sendMessage(ServerTranslations.format("commands.strucReload.success", level));
         }

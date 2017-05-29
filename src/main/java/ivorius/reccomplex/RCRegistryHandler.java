@@ -28,6 +28,7 @@ import ivorius.reccomplex.operation.OperationRegistry;
 import ivorius.reccomplex.random.Poem;
 import ivorius.reccomplex.utils.FMLUtils;
 import ivorius.reccomplex.utils.PresetRegistry;
+import ivorius.reccomplex.world.gen.feature.GenerationSanityChecker;
 import ivorius.reccomplex.world.gen.feature.selector.NaturalStructureSelector;
 import ivorius.reccomplex.world.gen.feature.structure.OperationClearArea;
 import ivorius.reccomplex.world.gen.feature.structure.OperationGenerateStructure;
@@ -204,6 +205,8 @@ public class RCRegistryHandler
         // And remaps
         for (ResourceLocation id : remapper.getTileEntityRemaps().keySet())
             remapper.registerLegacyTileEntityIDs(id, new ResourceLocation(id.toString().toLowerCase()));
+
+        GenerationSanityChecker.init();
     }
 
     public static void register(Item item, String id)

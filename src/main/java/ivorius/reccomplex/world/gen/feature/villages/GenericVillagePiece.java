@@ -5,9 +5,9 @@
 
 package ivorius.reccomplex.world.gen.feature.villages;
 
-import ivorius.ivtoolkit.blocks.Directions;
 import ivorius.ivtoolkit.math.AxisAlignedTransform2D;
 import ivorius.reccomplex.utils.RCDirections;
+import ivorius.reccomplex.world.gen.feature.WorldStructureGenerationData;
 import ivorius.reccomplex.world.gen.feature.structure.*;
 import ivorius.reccomplex.world.gen.feature.structure.context.StructureSpawnContext;
 import ivorius.reccomplex.world.gen.feature.structure.generic.generation.GenerationType;
@@ -28,6 +28,7 @@ import net.minecraft.world.gen.structure.StructureVillagePieces;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
+import java.util.Optional;
 import java.util.Random;
 
 /**
@@ -161,10 +162,11 @@ public class GenericVillagePiece extends StructureVillagePieces.Village
             prepare(random, world);
 
         boolean firstTime = !startedGeneration;
-        new StructureGenerator<>(structure).environment(environment(world, generationType))
+        Optional<WorldStructureGenerationData.StructureEntry> entry = new StructureGenerator<>(structure).environment(environment(world, generationType))
                 .random(random).lowerCoord(StructureBoundingBoxes.min(boundingBox)).transform(transform).generationBB(StructureBoundingBoxes.wholeHeightBoundingBox(world, generationBB))
                 .generationLayer(componentType).structureID(structureID).maturity(firstTime ? StructureSpawnContext.GenerateMaturity.FIRST : StructureSpawnContext.GenerateMaturity.COMPLEMENT)
                 .instanceData(this.instanceData).generate();
+        entry.ifPresent(structureEntry -> structureEntry.setPreventComplementation(true));
 
         startedGeneration = true;
     }

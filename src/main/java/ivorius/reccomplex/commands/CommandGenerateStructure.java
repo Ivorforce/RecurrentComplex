@@ -96,7 +96,7 @@ public class CommandGenerateStructure extends CommandBase
         else
         {
             if (new StructureGenerator<>(structure).world(world).generationInfo(generationType)
-                    .structureID(structureName).randomPosition(pos, placer).fromCenter(true).generate() != null)
+                    .structureID(structureName).randomPosition(pos, placer).fromCenter(true).generate() == null)
                 throw ServerTranslations.commandException("commands.strucGen.noPlace");
         }
     }

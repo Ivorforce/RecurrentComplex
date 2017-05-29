@@ -16,8 +16,8 @@ import ivorius.ivtoolkit.world.chunk.gen.StructureBoundingBoxes;
 import ivorius.reccomplex.RecurrentComplex;
 import ivorius.reccomplex.utils.RCAxisAlignedTransform;
 import ivorius.reccomplex.world.gen.feature.structure.Structure;
-import ivorius.reccomplex.world.gen.feature.structure.Structures;
 import ivorius.reccomplex.world.gen.feature.structure.StructureRegistry;
+import ivorius.reccomplex.world.gen.feature.structure.Structures;
 import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.math.BlockPos;
@@ -279,19 +279,19 @@ public class WorldStructureGenerationData extends WorldSavedData
         protected NBTBase instanceData;
         protected boolean firstTime = true;
 
-        protected boolean hasBeenGenerated;
+        protected boolean preventComplementation = false;
 
         public StructureEntry()
         {
         }
 
-        public StructureEntry(@Nonnull UUID uuid, StructureBoundingBox boundingBox, String structureID, String generationInfoID, AxisAlignedTransform2D transform, boolean hasBeenGenerated)
+        public StructureEntry(@Nonnull UUID uuid, StructureBoundingBox boundingBox, String structureID, String generationInfoID, AxisAlignedTransform2D transform, boolean preventComplementation)
         {
             super(uuid, boundingBox);
             this.structureID = structureID;
             this.generationInfoID = generationInfoID;
             this.transform = transform;
-            this.hasBeenGenerated = hasBeenGenerated;
+            this.preventComplementation = preventComplementation;
         }
 
         @Nonnull
@@ -310,9 +310,14 @@ public class WorldStructureGenerationData extends WorldSavedData
             return transform;
         }
 
-        public boolean isHasBeenGenerated()
+        public boolean preventComplementation()
         {
-            return hasBeenGenerated;
+            return preventComplementation;
+        }
+
+        public void setPreventComplementation(boolean preventComplementation)
+        {
+            this.preventComplementation = preventComplementation;
         }
 
         @Override
@@ -338,7 +343,8 @@ public class WorldStructureGenerationData extends WorldSavedData
             if (compound.hasKey("instanceData", Constants.NBT.TAG_COMPOUND))
                 instanceData = compound.getCompoundTag("instanceData");
             firstTime = compound.getBoolean("firstTime");
-            hasBeenGenerated = compound.getBoolean("hasBeenGenerated");
+            preventComplementation = compound.getBoolean("preventComplementation")
+                    || compound.getBoolean("hasBeenGenerated"); // Legacy
         }
 
         @Override
@@ -355,7 +361,7 @@ public class WorldStructureGenerationData extends WorldSavedData
             if (instanceData != null)
                 compound.setTag("instanceData", instanceData);
             compound.setBoolean("firstTime", firstTime);
-            compound.setBoolean("hasBeenGenerated", hasBeenGenerated);
+            compound.setBoolean("preventComplementation", preventComplementation);
         }
 
         @Override

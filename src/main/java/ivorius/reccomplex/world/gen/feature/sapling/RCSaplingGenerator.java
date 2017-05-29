@@ -136,7 +136,7 @@ public class RCSaplingGenerator
         boolean success = new StructureGenerator<>(structure).world(world).generationInfo(saplingGenInfo)
                 .transform(transform).random(random).maturity(StructureSpawnContext.GenerateMaturity.SUGGEST)
                 .memorize(RCConfig.memorizeSaplings).allowOverlaps(true)
-                .randomPosition(BlockSurfacePos.from(spawnPos), (context, blockCollection) -> spawnPos.getY()).generate().isPresent();
+                .randomPosition(BlockSurfacePos.from(spawnPos), (context, blockCollection) -> spawnPos.getY()).generate() != null;
 
         if (!success)
             before.forEach((pos1, state) -> world.setBlockState(pos1, state, 4));

@@ -116,7 +116,7 @@ public class WorldGenStructures
                 return false;
             }
 
-            return generator.generate().isPresent();
+            return generator.generate() !=  null;
         }
 
         return false;

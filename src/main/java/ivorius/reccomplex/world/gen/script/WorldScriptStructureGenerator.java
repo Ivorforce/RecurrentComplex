@@ -18,6 +18,7 @@ import ivorius.reccomplex.gui.table.TableNavigator;
 import ivorius.reccomplex.gui.worldscripts.structuregenerator.TableDataSourceWorldScriptStructureGenerator;
 import ivorius.reccomplex.utils.RCDirections;
 import ivorius.reccomplex.utils.ReadableInstanceData;
+import ivorius.reccomplex.world.gen.feature.WorldStructureGenerationData;
 import ivorius.reccomplex.world.gen.feature.structure.*;
 import ivorius.reccomplex.world.gen.feature.structure.context.StructureLoadContext;
 import ivorius.reccomplex.world.gen.feature.structure.context.StructurePrepareContext;
@@ -266,7 +267,7 @@ public class WorldScriptStructureGenerator implements WorldScript<WorldScriptStr
     }
 
     @Nonnull
-    protected <T extends NBTStorable> Optional<StructureSpawnContext> generate(StructureSpawnContext context, InstanceData instanceData, Structure<T> structure, ReadableInstanceData<T> structureData, String generationInfo)
+    protected <T extends NBTStorable> Optional<WorldStructureGenerationData.StructureEntry> generate(StructureSpawnContext context, InstanceData instanceData, Structure<T> structure, ReadableInstanceData<T> structureData, String generationInfo)
     {
         StructureGenerator<T> generator = new StructureGenerator<>(structure).structureID(instanceData.structureID).asChild(context).generationInfo(generationInfo)
                 .lowerCoord(instanceData.lowerCoord).transform(instanceData.structureTransform);

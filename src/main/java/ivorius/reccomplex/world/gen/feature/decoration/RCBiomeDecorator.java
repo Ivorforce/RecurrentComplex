@@ -138,7 +138,7 @@ public class RCBiomeDecorator
                 .memorize(RCConfig.memorizeDecoration).allowOverlaps(true)
                 .randomPosition(randomSurfacePos(random, chunkPos.add(generation.getRight().spawnShift)), // Shift +1 because surface placer goes -1
                         shift(generation.getRight().placer(), generation.getRight().spawnShift.getY() + 1)).fromCenter(true)
-                .generate().isPresent();
+                .generate() != null;
     }
 
     protected static Placer shift(Placer placer, int y)

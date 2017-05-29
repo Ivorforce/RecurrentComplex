@@ -195,11 +195,8 @@ public class RCRegistryHandler
         // Forwards TE compat (since it switches to resource locations), from GameRegistry
         // Note: Later versions enforce lowercase, but not yet
         Map<String, Class<?>> teMappings = ObfuscationReflectionHelper.getPrivateValue(TileEntity.class, null, "field_" + "145855_i", "nameToClassMap");
-        for (String id : Lists.newArrayList(teMappings.keySet()))
-        {
-            if (!id.contains(":"))
-                teMappings.put("minecraft:" + id.toLowerCase(), teMappings.get(id));
-        }
+        Lists.newArrayList(teMappings.keySet()).stream().filter(id -> !id.contains(":"))
+                .forEach(id -> teMappings.put(new ResourceLocation(id.toLowerCase()).toString(), teMappings.get(id)));
         // Same for lightweight mode
         Map<ResourceLocation, Class<? extends TileEntity>> specialTeMappings = specialRegistry.getTileEntityMap();
         for (ResourceLocation id : Lists.newArrayList(specialTeMappings.keySet()))

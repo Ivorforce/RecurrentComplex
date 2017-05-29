@@ -27,6 +27,7 @@ import ivorius.reccomplex.operation.OperationRegistry;
 import ivorius.reccomplex.random.Poem;
 import ivorius.reccomplex.utils.FMLUtils;
 import ivorius.reccomplex.utils.PresetRegistry;
+import ivorius.reccomplex.world.gen.feature.GenerationSanityChecker;
 import ivorius.reccomplex.world.gen.feature.selector.NaturalStructureSelector;
 import ivorius.reccomplex.world.gen.feature.structure.OperationGenerateStructure;
 import ivorius.reccomplex.world.gen.feature.structure.OperationClearArea;
@@ -189,6 +190,8 @@ public class RCRegistryHandler
 
         TransfomerPresets.instance().getRegistry().register("clear", MOD_ID, PresetRegistry.fullPreset("clear", new TransformerMulti.Data(), new PresetRegistry.Metadata("None", "No transformers")), true, LeveledRegistry.Level.INTERNAL);
         TransfomerPresets.instance().setDefault("clear");
+
+        GenerationSanityChecker.init();
     }
 
     public static void register(Item item, String id)

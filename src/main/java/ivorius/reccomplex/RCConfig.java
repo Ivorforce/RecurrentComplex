@@ -102,7 +102,7 @@ public class RCConfig
 
         if (configID == null || configID.equals(CATEGORY_GENERAL))
         {
-            lightweightMode = config.getBoolean("lightweightMode", CATEGORY_GENERAL, false, "Enabling this will make the mod register as little as possible, which enables it to be used server-side only.");
+            lightweightMode = config.getBoolean("lightweightMode", CATEGORY_GENERAL, false, "Enabling this will make the mod register as little as possible, which enables it to be used server-side only. Note that this prevents you from editing or importing structures.");
 
             commandPrefix = config.getString("commandPrefix", CATEGORY_GENERAL, "#", "The String that will be prefixed to every command, e.g. '#' -> '/#gen', '#paste' etc.");
 

@@ -60,54 +60,63 @@ public class CommandSanity extends CommandBase
             return;
         }
 
-        addStructureLog(commandSender, (s, structure) ->
+        boolean sane = true;
+
+        sane &= addStructureLog(commandSender, (s, structure) ->
                 !structure.generationTypes(GenerationType.class).isEmpty(), "Missing generation type");
 
-        addGenerationLog(commandSender, NaturalGeneration.class, (structure, gen) ->
+        sane &= addGenerationLog(commandSender, NaturalGeneration.class, (structure, gen) ->
                         Biome.REGISTRY.getKeys().stream().anyMatch(b -> StructureSelector.generationWeightInBiome(gen.biomeWeights, Biome.REGISTRY.getObject(b)) > 0)
                 , "Natural generation type won't accept any biome");
 
-        addGenerationLog(commandSender, NaturalGeneration.class, (structure, gen) ->
+        sane &= addGenerationLog(commandSender, NaturalGeneration.class, (structure, gen) ->
                         Stream.of(DimensionManager.getIDs()).anyMatch(d -> StructureSelector.generationWeightInDimension(gen.dimensionWeights, server.worldServerForDimension(d).provider) > 0)
                 , "Natural generation type won't accept any dimensions");
 
-        addGenerationLog(commandSender, NaturalGeneration.class, (structure, gen) ->
+        sane &= addGenerationLog(commandSender, NaturalGeneration.class, (structure, gen) ->
                         gen.getActiveGenerationWeight() > 0
                 , "Natural generation type has no weight");
 
 
-        addGenerationLog(commandSender, VanillaGeneration.class, (structure, gen) ->
+        sane &= addGenerationLog(commandSender, VanillaGeneration.class, (structure, gen) ->
                         Biome.REGISTRY.getKeys().stream().anyMatch(b -> gen.biomeMatcher.test(Biome.REGISTRY.getObject(b)))
                 , "Vanilla structure generation type won't accept any biome");
 
-        addGenerationLog(commandSender, VanillaGeneration.class, (structure, gen) ->
+        sane &= addGenerationLog(commandSender, VanillaGeneration.class, (structure, gen) ->
                 gen.getActiveWeight() > 0
                 , "Vanilla structure generation type has no weight");
 
 
-        addGenerationLog(commandSender, VanillaDecorationGeneration.class, (structure, gen) ->
+        sane &= addGenerationLog(commandSender, VanillaDecorationGeneration.class, (structure, gen) ->
                         Biome.REGISTRY.getKeys().stream().anyMatch(b -> StructureSelector.generationWeightInBiome(gen.biomeWeights, Biome.REGISTRY.getObject(b)) > 0)
                 , "Vanilla structure generation type won't accept any biome");
 
-        addGenerationLog(commandSender, VanillaDecorationGeneration.class, (structure, gen) ->
+        sane &= addGenerationLog(commandSender, VanillaDecorationGeneration.class, (structure, gen) ->
                         Stream.of(DimensionManager.getIDs()).anyMatch(d -> StructureSelector.generationWeightInDimension(gen.dimensionWeights, server.worldServerForDimension(d).provider) > 0)
                 , "Natural generation type won't accept any dimensions");
+
+        if (sane)
+            commandSender.addChatMessage(new TextComponentString("No specific problems found!"));
     }
 
-    protected <T extends GenerationType> void addGenerationLog(ICommandSender commandSender, Class<T> tClass, BiPredicate<Structure<?>, T> predicate, String msg)
+    protected <T extends GenerationType> boolean addGenerationLog(ICommandSender commandSender, Class<T> tClass, BiPredicate<Structure<?>, T> predicate, String msg)
     {
-        addStructureLog(commandSender, (s, structure) -> structure.generationTypes(tClass).stream().allMatch(gen -> predicate.test(structure, gen)), msg);
+        return addStructureLog(commandSender, (s, structure) -> structure.generationTypes(tClass).stream().allMatch(gen -> predicate.test(structure, gen)), msg);
     }
 
-    protected void addStructureLog(ICommandSender commandSender, BiPredicate<String, Structure<?>> predicate, String msg)
+    protected boolean addStructureLog(ICommandSender commandSender, BiPredicate<String, Structure<?>> predicate, String msg)
     {
         PriorityQueue<String> structures = CommandSearchStructure.search(StructureRegistry.INSTANCE.activeIDs(), (String name) ->
                 predicate.test(name, StructureRegistry.INSTANCE.get(name)) ? 0 : 1);
+
         if (structures.size() > 0)
         {
             commandSender.addChatMessage(new TextComponentString(msg + ":"));
             CommandSearchStructure.postResultMessage(commandSender, RCTextStyle::structure, structures);
+            return false;
         }
+
+        return true;
     }
 
 }

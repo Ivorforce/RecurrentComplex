@@ -21,6 +21,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
+import java.util.function.Consumer;
 
 /**
  * Created by lukas on 05.10.14.
@@ -96,24 +97,37 @@ public class RCFiles
         return null;
     }
 
-    public static List<Path> listFilesRecursively(Path dir, final DirectoryStream.Filter<Path> filter, final boolean recursive) throws IOException
+    public static void walkFilesRecursively(Path dir, final DirectoryStream.Filter<Path> filter, final boolean recursive, Consumer<Path> consumer)
     {
         if (!Files.exists(dir))
-            return Collections.emptyList();
+            return;
 
-        final List<Path> files = new ArrayList<>();
-        Files.walkFileTree(dir, new SimpleFileVisitor<Path>()
+        try
         {
-            @Override
-            public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException
+            Files.walkFileTree(dir, new SimpleFileVisitor<Path>()
             {
-                if (filter.accept(file))
-                    files.add(file);
+                @Override
+                public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException
+                {
+                    if (filter.accept(file))
+                        consumer.accept(file);
 
-                return recursive ? FileVisitResult.CONTINUE : FileVisitResult.SKIP_SUBTREE;
-            }
-        });
-        return files;
+                    return recursive ? FileVisitResult.CONTINUE : FileVisitResult.SKIP_SUBTREE;
+                }
+            });
+        }
+        catch (IOException e)
+        {
+            // Should not happen since our visitor doesn't throw IO Exceptions
+            RecurrentComplex.logger.error(e);
+        }
+    }
+
+    public static List<Path> listFilesRecursively(Path dir, final DirectoryStream.Filter<Path> filter, final boolean recursive)
+    {
+        List<Path> list = new ArrayList<>();
+        walkFilesRecursively(dir, filter, recursive, list::add);
+        return list;
     }
 
     public static boolean ensure(File file)

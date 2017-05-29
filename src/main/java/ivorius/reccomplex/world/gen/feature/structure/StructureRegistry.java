@@ -96,7 +96,7 @@ public class StructureRegistry extends SimpleLeveledRegistry<Structure<?>>
         pairs = new ArrayList<>();
         for (Structure<?> info : this.allActive())
         {
-            List<T> generationInfos = info.generationInfos(clazz);
+            List<T> generationInfos = info.generationTypes(clazz);
             for (T t : generationInfos)
                 pairs.add(Pair.of(info, t));
         }

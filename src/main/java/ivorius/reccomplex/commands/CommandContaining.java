@@ -61,9 +61,8 @@ public class CommandContaining extends CommandBase
         {
             BlockMatcher matcher = ExpressionCache.of(new BlockMatcher(RecurrentComplex.specialRegistry), buildString(args, 0));
             RCCommands.ensureValid(matcher, 0);
-            CommandSearchStructure.outputSearch(commandSender, StructureRegistry.INSTANCE.ids(),
-                    name -> containedBlocks(StructureRegistry.INSTANCE.get(name), matcher),
-                    RCTextStyle::structure
+            CommandSearchStructure.postResultMessage(commandSender,
+                    RCTextStyle::structure, CommandSearchStructure.search(StructureRegistry.INSTANCE.ids(), name -> containedBlocks(StructureRegistry.INSTANCE.get(name), matcher))
             );
         }
         else

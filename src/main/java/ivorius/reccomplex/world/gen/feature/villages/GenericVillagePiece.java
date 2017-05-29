@@ -109,7 +109,7 @@ public class GenericVillagePiece extends StructureVillagePieces.Village
         if (structure == null)
             return;
 
-        GenerationType generationType = structure.generationInfo(generationID);
+        GenerationType generationType = structure.generationType(generationID);
 
         if (!(generationType instanceof VanillaGeneration))
             return;
@@ -129,7 +129,7 @@ public class GenericVillagePiece extends StructureVillagePieces.Village
         if (structure == null)
             return false;
 
-        GenerationType generationType = structure.generationInfo(generationID);
+        GenerationType generationType = structure.generationType(generationID);
 
         if (!(generationType instanceof VanillaGeneration))
             return false;

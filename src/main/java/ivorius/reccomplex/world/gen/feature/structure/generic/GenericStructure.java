@@ -374,14 +374,14 @@ public class GenericStructure implements Structure<GenericStructure.InstanceData
 
     @Nonnull
     @Override
-    public <I extends GenerationType> List<I> generationInfos(@Nonnull Class<? extends I> clazz)
+    public <I extends GenerationType> List<I> generationTypes(@Nonnull Class<? extends I> clazz)
     {
         //noinspection unchecked
         return generationTypes.stream().filter(info -> clazz.isAssignableFrom(info.getClass())).map(info -> (I) info).collect(Collectors.toList());
     }
 
     @Override
-    public GenerationType generationInfo(@Nonnull String id)
+    public GenerationType generationType(@Nonnull String id)
     {
         for (GenerationType info : generationTypes)
         {

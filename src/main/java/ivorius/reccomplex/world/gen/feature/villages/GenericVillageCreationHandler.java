@@ -57,7 +57,7 @@ public class GenericVillageCreationHandler implements VillagerRegistry.IVillageC
         if (structure != null)
         {
             float tweakedWeight = RCConfig.tweakedSpawnRate(structureID);
-            GenerationType generationType = structure.generationInfo(generationID);
+            GenerationType generationType = structure.generationType(generationID);
             if (generationType instanceof VanillaGeneration)
             {
                 VanillaGeneration vanillaGenInfo = (VanillaGeneration) generationType;
@@ -86,7 +86,7 @@ public class GenericVillageCreationHandler implements VillagerRegistry.IVillageC
         if (structure == null)
             return kill(villagePiece);
 
-        GenerationType generationType = structure.generationInfo(generationID);
+        GenerationType generationType = structure.generationType(generationID);
         if (!(generationType instanceof VanillaGeneration))
             return kill(villagePiece);
 

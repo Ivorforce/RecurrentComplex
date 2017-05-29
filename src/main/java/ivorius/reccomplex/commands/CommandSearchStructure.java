@@ -45,7 +45,7 @@ public class CommandSearchStructure extends CommandBase
 
         keywords.add(id);
 
-        structure.generationInfos(GenerationType.class).forEach(info -> keywords(keywords, info));
+        structure.generationTypes(GenerationType.class).forEach(info -> keywords(keywords, info));
 
         if (structure instanceof GenericStructure)
             keywords(keywords, ((GenericStructure) structure).metadata);
@@ -73,20 +73,18 @@ public class CommandSearchStructure extends CommandBase
         return keywords.stream().filter(Predicates.contains(Pattern.compile(Strings.join(Lists.transform(query, Pattern::quote), "|"), Pattern.CASE_INSENSITIVE))::apply).count();
     }
 
-    public static <T> void outputSearch(ICommandSender commandSender, Set<T> omega, ToDoubleFunction<T> rank, Function<T, ? extends ITextComponent> toComponent)
+    public static <T> void postResultMessage(ICommandSender commandSender, Function<T, ? extends ITextComponent> toComponent, Queue<T> list)
     {
-        PriorityQueue<T> results = search(omega, rank);
-
-        if (results.size() > 0)
+        if (list.size() > 0)
         {
-            boolean cut = results.size() > MAX_RESULTS;
-            ITextComponent[] components = new TextComponentBase[cut ? MAX_RESULTS : results.size()];
+            boolean cut = list.size() > MAX_RESULTS;
+            ITextComponent[] components = new TextComponentBase[cut ? MAX_RESULTS : list.size()];
             for (int i = 0; i < components.length; i++)
             {
                 if (cut && i == components.length - 1)
-                    components[i] = new TextComponentString("... (" + results.size() + ")");
+                    components[i] = new TextComponentString("... (" + list.size() + ")");
                 else
-                    components[i] = toComponent.apply(results.remove());
+                    components[i] = toComponent.apply(list.remove());
             }
 
             commandSender.addChatMessage(ServerTranslations.join((Object[]) components));
@@ -127,9 +125,8 @@ public class CommandSearchStructure extends CommandBase
     {
         if (args.length >= 1)
         {
-            outputSearch(commandSender, StructureRegistry.INSTANCE.ids(),
-                    name -> searchRank(Arrays.asList(args), keywords(name, StructureRegistry.INSTANCE.get(name))),
-                    RCTextStyle::structure
+            postResultMessage(commandSender,
+                    RCTextStyle::structure, search(StructureRegistry.INSTANCE.ids(), name -> searchRank(Arrays.asList(args), keywords(name, StructureRegistry.INSTANCE.get(name))))
             );
         }
         else

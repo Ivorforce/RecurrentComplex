@@ -126,8 +126,7 @@ public class WorldGenStructures
     {
         WorldStructureGenerationData data = WorldStructureGenerationData.get(world);
 
-        // Don't filter hasBeenGenerated since if the chunk re-generates now, we want to complement our structure back anyway
-        complement.forEach(entry -> {
+        complement.stream().filter(e -> !e.preventComplementation()).forEach(entry -> {
             Structure<?> structure = StructureRegistry.INSTANCE.get(entry.getStructureID());
 
             if (structure == null)

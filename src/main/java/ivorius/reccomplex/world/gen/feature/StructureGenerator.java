@@ -118,16 +118,13 @@ public class StructureGenerator<S extends NBTStorable>
      */
     public Optional<WorldStructureGenerationData.StructureEntry> generate()
     {
-        Optional<StructureSpawnContext> spawnO = spawn();
-        Optional<S> instanceDataO = instanceData();
+        Optional<S> optionalInstanceData = instanceData();
 
-        if (!spawnO.isPresent() || !instanceDataO.isPresent())
-            return Optional.empty();
+        if (!optionalInstanceData.isPresent())
+            return failGenerate("failed to place");
 
-        StructureSpawnContext spawn = spawnO.get();
-        @SuppressWarnings("OptionalGetWithoutIsPresent")
-        S instanceData = instanceDataO.get();
-
+        S instanceData = optionalInstanceData.get();
+        StructureSpawnContext spawn = spawn().get();
         Structure<S> structure = structure();
         String structureID = structureID();
         boolean firstTime = spawn.generateMaturity.isFirstTime();
@@ -141,16 +138,7 @@ public class StructureGenerator<S extends NBTStorable>
                         || RCEventBus.INSTANCE.post(new StructureGenerationEvent.Suggest(structure, spawn))
                         || (structureID != null && MinecraftForge.EVENT_BUS.post(new StructureGenerationEventLite.Suggest(world, structureID, boundingBox, spawn.generationLayer, firstTime)))
         ))
-        {
-            String reason = "unknown reason";
-
-            if (!boundingBox().isPresent())
-                reason = "failed placement";
-
-            RecurrentComplex.logger.trace(String.format("%s canceled generation at %s (%d) (%s)", structure, lowerCoord(), world.provider.getDimension(), reason));
-
-            return null;
-        }
+            return failGenerate("unknown reason");
 
         if (firstTime)
         {
@@ -206,6 +194,13 @@ public class StructureGenerator<S extends NBTStorable>
         }
 
         return Optional.of(structureEntry);
+    }
+
+    @Nullable
+    protected Optional<WorldStructureGenerationData.StructureEntry> failGenerate(String reason)
+    {
+        RecurrentComplex.logger.trace(String.format("%s canceled generation at %s (%d) (%s)", structure, lowerCoord(), world.provider.getDimension(), reason));
+        return null; // Failed to place
     }
 
     public StructureGenerator<S> asChild(StructureSpawnContext context, VariableDomain variableDomain)

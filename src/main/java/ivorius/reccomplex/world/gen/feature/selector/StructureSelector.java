@@ -42,7 +42,7 @@ public class StructureSelector<T extends GenerationType & EnvironmentalSelection
         for (Map.Entry<String, Structure<?>> entry : structures.entrySet())
         {
             float tweaked = RCConfig.tweakedSpawnRate(entry.getKey());
-            for (T selection : entry.getValue().generationInfos(typeClass))
+            for (T selection : entry.getValue().generationTypes(typeClass))
             {
                 double generationWeight = selection.getGenerationWeight(provider, biome) * tweaked;
 

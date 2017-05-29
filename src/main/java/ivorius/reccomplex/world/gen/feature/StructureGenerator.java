@@ -300,7 +300,7 @@ public class StructureGenerator<S extends NBTStorable>
     public Environment environment()
     {
         return environment != null ? environment : Environment.inNature(world(), surfaceBoundingBox(),
-                generationType != null ? generationType : generationInfoID != null ? structure().generationInfo(generationInfoID) : null);
+                generationType != null ? generationType : generationInfoID != null ? structure().generationType(generationInfoID) : null);
     }
 
     public StructureGenerator<S> random(@Nonnull Random random)

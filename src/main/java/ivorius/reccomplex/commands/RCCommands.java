@@ -72,6 +72,8 @@ public class RCCommands
 
     public static void onServerStart(FMLServerStartingEvent event)
     {
+        event.registerServerCommand(new CommandSanity());
+
         event.registerServerCommand(new CommandWrite());
         event.registerServerCommand(new CommandWriteAll());
         event.registerServerCommand(new CommandDelete());

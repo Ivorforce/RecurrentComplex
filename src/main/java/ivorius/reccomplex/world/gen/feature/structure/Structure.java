@@ -34,9 +34,9 @@ public interface Structure<S extends NBTStorable>
     S loadInstanceData(@Nonnull StructureLoadContext context, @Nonnull NBTBase nbt, @Nonnull TransformerMulti transformer);
 
     @Nonnull
-    <I extends GenerationType> List<I> generationInfos(@Nonnull Class<? extends I> clazz);
+    <I extends GenerationType> List<I> generationTypes(@Nonnull Class<? extends I> clazz);
 
-    GenerationType generationInfo(@Nonnull String id);
+    GenerationType generationType(@Nonnull String id);
 
     @Nonnull
     int[] size();

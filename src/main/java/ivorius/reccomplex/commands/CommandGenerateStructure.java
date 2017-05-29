@@ -73,10 +73,10 @@ public class CommandGenerateStructure extends CommandBase
         GenerationType generationType;
 
         if (args.length > 4)
-            generationType = structure.generationInfo(args[4]);
+            generationType = structure.generationType(args[4]);
         else
-            generationType = structure.<GenerationType>generationInfos(NaturalGeneration.class).stream()
-                    .findFirst().orElse(structure.generationInfos(GenerationType.class).stream().findFirst().orElse(null));
+            generationType = structure.<GenerationType>generationTypes(NaturalGeneration.class).stream()
+                    .findFirst().orElse(structure.generationTypes(GenerationType.class).stream().findFirst().orElse(null));
 
         Placer placer = generationType.placer();
 
@@ -117,7 +117,7 @@ public class CommandGenerateStructure extends CommandBase
             String structureName = args[0];
             Structure<?> structure = StructureRegistry.INSTANCE.get(structureName);
             if (structure instanceof GenericStructure)
-                return getListOfStringsMatchingLastWord(args, structure.generationInfos(GenerationType.class).stream().map(GenerationType::id).collect(Collectors.toList()));
+                return getListOfStringsMatchingLastWord(args, structure.generationTypes(GenerationType.class).stream().map(GenerationType::id).collect(Collectors.toList()));
         }
 //        else if (args.length == 6)
 //            return getListOfStringsMatchingLastWord(args, "0", "2", "5");

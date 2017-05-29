@@ -14,9 +14,11 @@ import org.apache.commons.io.FilenameUtils;
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 import java.io.IOException;
-import java.net.URISyntaxException;
 import java.nio.file.Path;
-import java.util.*;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * Created by lukas on 18.09.15.
@@ -94,41 +96,22 @@ public class FileLoader extends FileHandler
     @ParametersAreNonnullByDefault
     public int tryLoadAll(Path path, FileLoadContext context, Collection<String> suffices)
     {
-        int added = 0;
+        int[] added = new int[1];
 
-        try
-        {
-            List<Path> paths = RCFiles.listFilesRecursively(path, new FileSuffixFilter(suffices), true);
+        RCFiles.walkFilesRecursively(path, new FileSuffixFilter(suffices), true,
+                file ->
+                {
+                    tryLoad(file, null, context);
+                    added[0]++;
+                });
 
-            for (Path file : paths)
-            {
-                if (tryLoad(file, null, context))
-                    added++;
-            }
-
-            return added;
-        }
-        catch (IOException e)
-        {
-            RecurrentComplex.logger.error("Error loading resources from directory", e);
-        }
-
-        return added;
+        return added[0];
     }
 
     @ParametersAreNonnullByDefault
     public boolean tryLoad(ResourceLocation resourceLocation, @Nullable String customID, FileLoadContext context)
     {
-        Path path = null;
-
-        try
-        {
-            path = RCFiles.pathFromResourceLocation(resourceLocation);
-        }
-        catch (URISyntaxException | IOException e)
-        {
-            RecurrentComplex.logger.error("Error finding path from resource location '" + resourceLocation + "'", e);
-        }
+        Path path = RCFiles.tryPathFromResourceLocation(resourceLocation);
 
         if (path != null)
         {

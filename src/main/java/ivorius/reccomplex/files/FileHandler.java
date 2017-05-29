@@ -29,35 +29,16 @@ public class FileHandler
     public List<Path> tryFind(Path path, String name, String suffix)
     {
         Path filename = RCFiles.filenamePath(name, suffix);
-
-        try
-        {
-            return RCFiles.listFilesRecursively(path, entry -> entry.getFileName().equals(filename), true);
-        }
-        catch (IOException e)
-        {
-            RecurrentComplex.logger.error("Error finding resources: " + path, e);
-        }
-
-        return Collections.emptyList();
+        return RCFiles.listFilesRecursively(path, entry -> entry.getFileName().equals(filename), true);
     }
 
     public Set<String> tryFindIDs(Path path, String suffix)
     {
-        try
-        {
-            return RCFiles.listFilesRecursively(path, new FileSuffixFilter(suffix), true).stream()
-                    .map(Path::getFileName)
-                    .map(Path::toString)
-                    .map(FilenameUtils::removeExtension)
-                    .collect(Collectors.toSet());
-        }
-        catch (IOException e)
-        {
-            RecurrentComplex.logger.error("Error finding resources: " + path, e);
-        }
-
-        return Collections.emptySet();
+        return RCFiles.listFilesRecursively(path, new FileSuffixFilter(suffix), true).stream()
+                .map(Path::getFileName)
+                .map(Path::toString)
+                .map(FilenameUtils::removeExtension)
+                .collect(Collectors.toSet());
     }
 
     // --------------- Deleting

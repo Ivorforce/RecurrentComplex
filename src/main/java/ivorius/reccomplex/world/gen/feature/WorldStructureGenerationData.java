@@ -59,11 +59,11 @@ public class WorldStructureGenerationData extends WorldSavedData
 
     public static WorldStructureGenerationData get(World world)
     {
-        WorldStructureGenerationData data = (WorldStructureGenerationData) world.loadItemData(WorldStructureGenerationData.class, IDENTIFIER);
+        WorldStructureGenerationData data = (WorldStructureGenerationData) world.getPerWorldStorage().getOrLoadData(WorldStructureGenerationData.class, IDENTIFIER);
         if (data == null)
         {
             data = new WorldStructureGenerationData();
-            world.setItemData(data.mapName, data);
+            world.getPerWorldStorage().setData(data.mapName, data);
         }
         return data;
     }

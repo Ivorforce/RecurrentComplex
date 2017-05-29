@@ -76,11 +76,18 @@ public class RCFiles
         return fs.getPath(entryName);
     }
 
-    public static Path pathFromResourceLocation(ResourceLocation resourceLocation) throws URISyntaxException, IOException
+    public static Path pathFromResourceLocation(ResourceLocation resourceLocation) throws ResourceLocationLoadException
     {
-        URL resource = RCFiles.class.getResource(String.format("/assets/%s%s", resourceLocation.getResourceDomain(),
-                resourceLocation.getResourcePath().isEmpty() ? "" : ("/" + resourceLocation.getResourcePath())));
-        return resource != null ? resourceToPath(resource.toURI().toURL()) : null;
+        try
+        {
+            URL resource = RCFiles.class.getResource(String.format("/assets/%s%s", resourceLocation.getResourceDomain(),
+                    resourceLocation.getResourcePath().isEmpty() ? "" : ("/" + resourceLocation.getResourcePath())));
+            return resource != null ? resourceToPath(resource.toURI().toURL()) : null;
+        }
+        catch (Exception e)
+        {
+            throw new ResourceLocationLoadException(e, resourceLocation);
+        }
     }
 
     public static Path tryPathFromResourceLocation(ResourceLocation resourceLocation)
@@ -155,5 +162,44 @@ public class RCFiles
     public static Path filenamePath(String name, String extension)
     {
         return Paths.get(name + "." + extension);
+    }
+
+    public static class ResourceLocationLoadException extends Exception
+    {
+        public final ResourceLocation location;
+
+        public ResourceLocationLoadException(ResourceLocation location)
+        {
+            this.location = location;
+        }
+
+        public ResourceLocationLoadException(String message, ResourceLocation location)
+        {
+            super(message);
+            this.location = location;
+        }
+
+        public ResourceLocationLoadException(String message, Throwable cause, ResourceLocation location)
+        {
+            super(message, cause);
+            this.location = location;
+        }
+
+        public ResourceLocationLoadException(Throwable cause, ResourceLocation location)
+        {
+            super(cause);
+            this.location = location;
+        }
+
+        public ResourceLocationLoadException(String message, Throwable cause, boolean enableSuppression, boolean writableStackTrace, ResourceLocation location)
+        {
+            super(message, cause, enableSuppression, writableStackTrace);
+            this.location = location;
+        }
+
+        public ResourceLocation getLocation()
+        {
+            return location;
+        }
     }
 }

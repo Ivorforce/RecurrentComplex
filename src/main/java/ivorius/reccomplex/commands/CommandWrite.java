@@ -62,8 +62,8 @@ public class CommandWrite extends CommandBase
             RCCommands.informDeleteResult(RecurrentComplex.saver.tryDeleteWithID(directory.opposite().toPath(), adapterID, id), commandSender, adapterID, id, directory);
 
             // Could also predict changes and just reload those for the file but eh.
-            ResourceDirectory.reload(RecurrentComplex.loader, LeveledRegistry.Level.CUSTOM);
-            ResourceDirectory.reload(RecurrentComplex.loader, LeveledRegistry.Level.SERVER);
+            RCCommands.tryReload(RecurrentComplex.loader, LeveledRegistry.Level.CUSTOM);
+            RCCommands.tryReload(RecurrentComplex.loader, LeveledRegistry.Level.SERVER);
         }
     }
 

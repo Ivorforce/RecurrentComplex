@@ -156,7 +156,7 @@ public class WorldScriptCommand implements WorldScript<NBTNone>
                 {
                     logic.trigger(context.environment.world);
                 }
-                catch (Throwable t)
+                catch (Exception t)
                 {
                     RecurrentComplex.logger.error("Error executing command '%s'", entry.command);
                     RecurrentComplex.logger.error("Command execution failed", t);

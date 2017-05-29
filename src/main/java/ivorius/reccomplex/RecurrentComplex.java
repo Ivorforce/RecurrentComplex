@@ -154,8 +154,8 @@ public class RecurrentComplex
     @EventHandler
     public void postInit(FMLPostInitializationEvent event)
     {
-        ResourceDirectory.reload(loader, LeveledRegistry.Level.MODDED);
-        ResourceDirectory.reload(loader, LeveledRegistry.Level.CUSTOM);
+        ResourceDirectory.tryReload(loader, LeveledRegistry.Level.MODDED);
+        ResourceDirectory.tryReload(loader, LeveledRegistry.Level.CUSTOM);
 
         SchematicLoader.initializeFolder();
     }
@@ -175,6 +175,6 @@ public class RecurrentComplex
     @EventHandler
     public void onServerStarted(FMLServerStartedEvent event)
     {
-        ResourceDirectory.reload(loader, LeveledRegistry.Level.SERVER);
+        ResourceDirectory.tryReload(loader, LeveledRegistry.Level.SERVER);
     }
 }

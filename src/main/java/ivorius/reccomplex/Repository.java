@@ -36,9 +36,9 @@ public class Repository
             Object object = oclass.getMethod("getDesktop", new Class[0]).invoke(null);
             oclass.getMethod("browse", new Class[] {URI.class}).invoke(object, uri);
         }
-        catch (Throwable throwable1)
+        catch (Exception ex)
         {
-            Throwable throwable = throwable1.getCause();
+            Throwable throwable = ex.getCause();
             RecurrentComplex.logger.error("Couldn\'t open link: {}", throwable == null ? "<UNKNOWN>" : throwable.getMessage());
         }
     }

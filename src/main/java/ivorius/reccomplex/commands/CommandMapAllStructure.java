@@ -107,8 +107,8 @@ public class CommandMapAllStructure extends CommandBase
 
         commandSender.addChatMessage(ServerTranslations.format("commands.rcmapall.result", saved, directory, failed, skipped));
 
-        ResourceDirectory.reload(RecurrentComplex.loader, LeveledRegistry.Level.CUSTOM);
-        ResourceDirectory.reload(RecurrentComplex.loader, LeveledRegistry.Level.SERVER);
+        RCCommands.tryReload(RecurrentComplex.loader, LeveledRegistry.Level.CUSTOM);
+        RCCommands.tryReload(RecurrentComplex.loader, LeveledRegistry.Level.SERVER);
     }
 
     @Override

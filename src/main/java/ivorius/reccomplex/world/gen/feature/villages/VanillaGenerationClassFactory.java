@@ -123,7 +123,7 @@ public class VanillaGenerationClassFactory extends ClassLoader
             //noinspection unchecked
             return (Class<? extends GenericVillagePiece>) define(className, createClassBinary(className.replaceAll("\\.", "/")));
         }
-        catch (Throwable t)
+        catch (Exception t)
         {
             RecurrentComplex.logger.error("Can't load dynamic piece class", t);
             return null;

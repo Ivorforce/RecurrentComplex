@@ -51,7 +51,7 @@ public class FMLUtils
 
             return itemCtor.newInstance(ObjectArrays.concat(block, itemArgs));
         }
-        catch (Throwable e)
+        catch (Exception e)
         {
             RecurrentComplex.logger.warn("Error constructing secret item", e);
         }

@@ -93,9 +93,9 @@ public abstract class SpawnCommandLogic implements ICommandSender
                 {
                     icommandmanager.executeCommand(this, this.commandStored);
                 }
-                catch (Throwable throwable)
+                catch (Exception ex)
                 {
-                    CrashReport crashreport = CrashReport.makeCrashReport(throwable, "Executing command block");
+                    CrashReport crashreport = CrashReport.makeCrashReport(ex, "Executing command block");
                     CrashReportCategory crashreportcategory = crashreport.makeCategory("Command to be executed");
                     crashreportcategory.setDetail("Command", this::getCommand);
                     crashreportcategory.setDetail("Name", this::getName);

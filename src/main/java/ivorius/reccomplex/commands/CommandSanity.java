@@ -35,7 +35,7 @@ import java.util.stream.Stream;
 public class CommandSanity extends CommandBase
 {
     @Override
-    public String getCommandName()
+    public String getName()
     {
         return RCConfig.commandPrefix + "sanity";
     }
@@ -46,7 +46,7 @@ public class CommandSanity extends CommandBase
     }
 
     @Override
-    public String getCommandUsage(ICommandSender var1)
+    public String getUsage(ICommandSender var1)
     {
         return ServerTranslations.usage("commands.rcsanity.usage");
     }
@@ -56,7 +56,7 @@ public class CommandSanity extends CommandBase
     {
         if (StructureRegistry.INSTANCE.ids().isEmpty())
         {
-            commandSender.addChatMessage(new TextComponentString("No registered structures!"));
+            commandSender.sendMessage(new TextComponentString("No registered structures!"));
             return;
         }
 
@@ -96,7 +96,7 @@ public class CommandSanity extends CommandBase
                 , "Natural generation type won't accept any dimensions");
 
         if (sane)
-            commandSender.addChatMessage(new TextComponentString("No specific problems found!"));
+            commandSender.sendMessage(new TextComponentString("No specific problems found!"));
     }
 
     protected <T extends GenerationType> boolean addGenerationLog(ICommandSender commandSender, Class<T> tClass, BiPredicate<Structure<?>, T> predicate, String msg)
@@ -111,7 +111,7 @@ public class CommandSanity extends CommandBase
 
         if (structures.size() > 0)
         {
-            commandSender.addChatMessage(new TextComponentString(msg + ":"));
+            commandSender.sendMessage(new TextComponentString(msg + ":"));
             CommandSearchStructure.postResultMessage(commandSender, RCTextStyle::structure, structures);
             return false;
         }

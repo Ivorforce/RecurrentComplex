@@ -112,8 +112,11 @@ public class StructureGenerator<S extends NBTStorable>
         return structureName != null ? structureName : "Unknown";
     }
 
-    @Nonnull
-    public Optional<StructureSpawnContext> generate()
+    /**
+     *
+     * @return null when creation failed, empty when no entry was created and an entry when there was
+     */
+    public Optional<WorldStructureGenerationData.StructureEntry> generate()
     {
         Optional<StructureSpawnContext> spawnO = spawn();
         Optional<S> instanceDataO = instanceData();
@@ -132,69 +135,12 @@ public class StructureGenerator<S extends NBTStorable>
         WorldServer world = spawn.environment.world;
         StructureBoundingBox boundingBox = spawn.boundingBox;
 
-        if (!maturity().isSuggest() || (
-                boundingBox.minY >= MIN_DIST_TO_LIMIT && boundingBox.maxY <= world.getHeight() - 1 - MIN_DIST_TO_LIMIT
-                        && (!RCConfig.avoidOverlappingGeneration || allowOverlaps || WorldStructureGenerationData.get(world).entriesAt(boundingBox).noneMatch(WorldStructureGenerationData.Entry::blocking))
-                        && !RCEventBus.INSTANCE.post(new StructureGenerationEvent.Suggest(structure, spawn))
-                        && (structureID == null || !MinecraftForge.EVENT_BUS.post(new StructureGenerationEventLite.Suggest(world, structureID, boundingBox, spawn.generationLayer, firstTime)))
+        if (maturity().isSuggest() && (
+                boundingBox.minY < MIN_DIST_TO_LIMIT || boundingBox.maxY > world.getHeight() - 1 - MIN_DIST_TO_LIMIT
+                        || (RCConfig.avoidOverlappingGeneration && !allowOverlaps && !WorldStructureGenerationData.get(world).entriesAt(boundingBox).noneMatch(WorldStructureGenerationData.Entry::blocking))
+                        || RCEventBus.INSTANCE.post(new StructureGenerationEvent.Suggest(structure, spawn))
+                        || (structureID != null && MinecraftForge.EVENT_BUS.post(new StructureGenerationEventLite.Suggest(world, structureID, boundingBox, spawn.generationLayer, firstTime)))
         ))
-        {
-            if (firstTime)
-            {
-                RCEventBus.INSTANCE.post(new StructureGenerationEvent.Pre(structure, spawn));
-                if (structureID != null)
-                    MinecraftForge.EVENT_BUS.post(new StructureGenerationEventLite.Pre(world, structureID, boundingBox, spawn.generationLayer, firstTime));
-            }
-
-            structure.generate(spawn, instanceData, RCConfig.getUniversalTransformer());
-
-            if (firstTime)
-            {
-                RecurrentComplex.logger.trace(String.format("Generated structure '%s' in %s (%d)", name(structureID), boundingBox, world.provider.getDimension()));
-
-                RCEventBus.INSTANCE.post(new StructureGenerationEvent.Post(structure, spawn));
-                if (structureID != null)
-                    MinecraftForge.EVENT_BUS.post(new StructureGenerationEventLite.Post(world, structureID, boundingBox, spawn.generationLayer, firstTime));
-
-                if (structureID != null && memorize)
-                {
-                    String generationInfoID = generationType != null ? generationType.id() : null;
-
-                    WorldStructureGenerationData.StructureEntry structureEntry = WorldStructureGenerationData.StructureEntry.complete(structureID, generationInfoID, boundingBox, spawn.transform, !partially);
-                    structureEntry.blocking = structure.isBlocking();
-                    structureEntry.firstTime = false; // Been there done that
-
-                    try
-                    {
-                        structureEntry.instanceData = instanceData.writeToNBT();
-                    }
-                    catch (Exception e)
-                    {
-                        RecurrentComplex.logger.error(String.format("Error saving instance data for structure %s in %s", structure, boundingBox), e);
-                    }
-
-                    Collection<ChunkPos> existingChunks = WorldStructureGenerationData.get(world).addEntry(structureEntry).stream().collect(Collectors.toList());
-
-                    // Complement in all chunks that already exist
-                    if (partially)
-                    {
-                        maturity(StructureSpawnContext.GenerateMaturity.COMPLEMENT);
-
-                        StructureBoundingBox oldBB = this.generationBB;
-                        for (ChunkPos existingChunk : existingChunks)
-                        {
-                            generationBB(Structures.chunkBoundingBox(existingChunk));
-
-                            structure.generate(spawn().get(), instanceData, RCConfig.getUniversalTransformer());
-                        }
-                        generationBB(oldBB);
-                    }
-                }
-            }
-
-            return spawnO;
-        }
-        else
         {
             String reason = "unknown reason";
 
@@ -202,9 +148,64 @@ public class StructureGenerator<S extends NBTStorable>
                 reason = "failed placement";
 
             RecurrentComplex.logger.trace(String.format("%s canceled generation at %s (%d) (%s)", structure, lowerCoord(), world.provider.getDimension(), reason));
+
+            return null;
         }
 
-        return Optional.empty();
+        if (firstTime)
+        {
+            RCEventBus.INSTANCE.post(new StructureGenerationEvent.Pre(structure, spawn));
+            if (structureID != null)
+                MinecraftForge.EVENT_BUS.post(new StructureGenerationEventLite.Pre(world, structureID, boundingBox, spawn.generationLayer, firstTime));
+        }
+
+        structure.generate(spawn, instanceData, RCConfig.getUniversalTransformer());
+
+        if (!firstTime)
+            return Optional.empty();
+
+        RecurrentComplex.logger.trace(String.format("Generated structure '%s' in %s (%d)", name(structureID), boundingBox, world.provider.getDimension()));
+
+        RCEventBus.INSTANCE.post(new StructureGenerationEvent.Post(structure, spawn));
+        if (structureID != null)
+            MinecraftForge.EVENT_BUS.post(new StructureGenerationEventLite.Post(world, structureID, boundingBox, spawn.generationLayer, firstTime));
+
+        if (structureID == null || !memorize)
+            return Optional.empty();
+
+        String generationInfoID = generationType != null ? generationType.id() : null;
+
+        WorldStructureGenerationData.StructureEntry structureEntry = WorldStructureGenerationData.StructureEntry.complete(structureID, generationInfoID, boundingBox, spawn.transform, !partially);
+        structureEntry.blocking = structure.isBlocking();
+        structureEntry.firstTime = false; // Been there done that
+
+        try
+        {
+            structureEntry.instanceData = instanceData.writeToNBT();
+        }
+        catch (Exception e)
+        {
+            RecurrentComplex.logger.error(String.format("Error saving instance data for structure %s in %s", structure, boundingBox), e);
+        }
+
+        Collection<ChunkPos> existingChunks = WorldStructureGenerationData.get(world).addEntry(structureEntry).stream().collect(Collectors.toList());
+
+        // Complement in all chunks that already exist
+        if (partially)
+        {
+            maturity(StructureSpawnContext.GenerateMaturity.COMPLEMENT);
+
+            StructureBoundingBox oldBB = this.generationBB;
+            for (ChunkPos existingChunk : existingChunks)
+            {
+                generationBB(Structures.chunkBoundingBox(existingChunk));
+
+                structure.generate(spawn().get(), instanceData, RCConfig.getUniversalTransformer());
+            }
+            generationBB(oldBB);
+        }
+
+        return Optional.of(structureEntry);
     }
 
     public StructureGenerator<S> asChild(StructureSpawnContext context, VariableDomain variableDomain)

@@ -10,10 +10,8 @@ import ivorius.reccomplex.utils.ServerTranslations;
 import ivorius.reccomplex.world.gen.feature.selector.StructureSelector;
 import ivorius.reccomplex.world.gen.feature.structure.Structure;
 import ivorius.reccomplex.world.gen.feature.structure.StructureRegistry;
-import ivorius.reccomplex.world.gen.feature.structure.generic.generation.GenerationType;
-import ivorius.reccomplex.world.gen.feature.structure.generic.generation.NaturalGeneration;
-import ivorius.reccomplex.world.gen.feature.structure.generic.generation.VanillaDecorationGeneration;
-import ivorius.reccomplex.world.gen.feature.structure.generic.generation.VanillaGeneration;
+import ivorius.reccomplex.world.gen.feature.structure.generic.generation.*;
+import ivorius.reccomplex.world.gen.feature.structure.generic.maze.ConnectorStrategy;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
@@ -66,11 +64,11 @@ public class CommandSanity extends CommandBase
 
         sane &= addGenerationLog(commandSender, NaturalGeneration.class, (structure, gen) ->
                         values(Biome.REGISTRY).anyMatch(b -> StructureSelector.generationWeightInBiome(gen.biomeWeights, b) > 0)
-                , "Natural generation type won't accept any biome");
+                , "Natural generation type won't accept any known biomes");
 
         sane &= addGenerationLog(commandSender, NaturalGeneration.class, (structure, gen) ->
                         dimensions(server).anyMatch(d -> StructureSelector.generationWeightInDimension(gen.dimensionWeights, d.provider) > 0)
-                , "Natural generation type won't accept any dimensions");
+                , "Natural generation type won't accept any known dimensions");
 
         sane &= addGenerationLog(commandSender, NaturalGeneration.class, (structure, gen) ->
                         gen.getActiveGenerationWeight() > 0
@@ -79,20 +77,60 @@ public class CommandSanity extends CommandBase
 
         sane &= addGenerationLog(commandSender, VanillaGeneration.class, (structure, gen) ->
                         values(Biome.REGISTRY).anyMatch(b -> gen.biomeMatcher.test(b))
-                , "Vanilla structure generation type won't accept any biome");
+                , "Vanilla structure generation type won't accept any known biomes");
 
         sane &= addGenerationLog(commandSender, VanillaGeneration.class, (structure, gen) ->
-                gen.getActiveWeight() > 0
+                        gen.getActiveWeight() > 0
                 , "Vanilla structure generation type has no weight");
+
+        sane &= addGenerationLog(commandSender, VanillaGeneration.class, (structure, gen) ->
+                        gen.minBaseLimit > 0 || gen.maxBaseLimit > 0 || gen.maxScaledLimit > 0 || gen.minScaledLimit > 0
+                , "Vanilla structure is always limited to zero instances");
 
 
         sane &= addGenerationLog(commandSender, VanillaDecorationGeneration.class, (structure, gen) ->
                         values(Biome.REGISTRY).anyMatch(b -> StructureSelector.generationWeightInBiome(gen.biomeWeights, b) > 0)
-                , "Vanilla structure generation type won't accept any biome");
+                , "Vanilla structure generation type won't accept any known biomes");
 
         sane &= addGenerationLog(commandSender, VanillaDecorationGeneration.class, (structure, gen) ->
                         dimensions(server).anyMatch(d -> StructureSelector.generationWeightInDimension(gen.dimensionWeights, d.provider) > 0)
                 , "Natural generation type won't accept any dimensions");
+
+
+        sane &= addGenerationLog(commandSender, MazeGeneration.class, (structure, gen) ->
+                        gen.getWeight() > 0
+                , "Maze generation type has no weight");
+
+        sane &= addGenerationLog(commandSender, MazeGeneration.class, (structure, gen) ->
+                        !gen.getMazeID().trim().isEmpty()
+                , "Maze generation type has maze id");
+
+        sane &= addGenerationLog(commandSender, MazeGeneration.class, (structure, gen) ->
+                        !gen.mazeComponent.rooms.isEmpty()
+                , "Maze generation type has no rooms");
+
+        sane &= addGenerationLog(commandSender, MazeGeneration.class, (structure, gen) ->
+                        !gen.mazeComponent.exitPaths.isEmpty() || !gen.mazeComponent.defaultConnector.id.equals(ConnectorStrategy.DEFAULT_WALL)
+                , "Maze generation type has no walkable exits");
+
+
+        sane &= addGenerationLog(commandSender, ListGeneration.class, (structure, gen) ->
+                        !gen.listID.trim().isEmpty()
+                , "List generation has no list id");
+
+        sane &= addGenerationLog(commandSender, ListGeneration.class, (structure, gen) ->
+                        gen.getWeight() > 0
+                , "List generation has no weight");
+
+
+        sane &= addGenerationLog(commandSender, SaplingGeneration.class, (structure, gen) ->
+                        gen.getActiveWeight() > 0
+                , "Sapling generation has no weight");
+
+
+        sane &= addGenerationLog(commandSender, StaticGeneration.class, (structure, gen) ->
+                        dimensions(server).anyMatch(d -> gen.dimensionMatcher.test(d.provider))
+                , "Static generation won't accept any known dimensions");
 
         if (sane)
             commandSender.addChatMessage(new TextComponentString("No specific problems found!"));

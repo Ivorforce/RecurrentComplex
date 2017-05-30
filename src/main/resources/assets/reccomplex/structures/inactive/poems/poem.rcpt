@@ -1,3 +1,20 @@
+*** text
+<verse>
+<verse><br><br><verse>
+<verse><br><br><verse><br><br><verse>
+<verse><br><br><verse><br><br><verse><br><br><verse>
+<verse><br><br><verse><br><br><verse><br><br><verse><br><br><verse>
+
+*** verse
+<line>
+<line><br><line>
+<line><br><line><br><line>
+<line><br><line><br><line><br><line>
+<line><br><line><br><line><br><line><br><line>
+<line><br><line><br><line><br><line><br><line><br><line>
+<line><br><line><br><line><br><line><br><line><br><line><br><line>
+<line><br><line><br><line><br><line><br><line><br><line><br><line><br><line>
+
 *** line
 As the <cnoun-pl> are, the <cnoun-pl> <verb-trans-past> <adverb>.All the <cnoun-pl> <verb-trans-pres> <adj>, so <verb-intra-pres> the <cnoun-pl>.
 <interj>! We <verb-trans-past> the <cnoun> and the <anoun>, why not <verb-intra-pres>?
@@ -10,7 +27,7 @@ Is <anoun> really <adj> like <anoun>?
 Could you <verb-trans-pres> it so <adverb>?
 The <anoun> of <lownum> <cnoun-pl>
 We <verb-trans-past> to <verb-trans-pres>.
-When <cnoun> <verb-trans-past>,
+When <cnoun> <verb-trans-past>, <br><line>
 Sometimes <adj> and always <adj>.
 <interj>! <anoun>, the <adj> <anoun>.
 The <adj> <cnoun> <adverb> <verb-trans-pres>s a <cnoun>.
@@ -23,9 +40,9 @@ Only the <cnoun> <verb-intra-pres>s as a <adj> <cnoun>.
 <anoun> is a <adj> <cnoun> <prepo> <anoun> and <anoun>.
 <interj> <cnoun-pl>...
 <interj>!
-We <verb-intra-pres>, but only for a while,
+We <verb-intra-pres>, but only for a while, <br><line>
 <adverb>, <adverb>, <adverb>.
-And <verb-intra-pres> <adverb>,
+And <verb-intra-pres> <adverb>, <br><line>
 I will <verb-trans-pres> <prepo> the <cnoun-pl>
 But when the <cnoun-pl> <verb-intra-pres>
 When do <cnoun-pl> become <cnoun-pl>?

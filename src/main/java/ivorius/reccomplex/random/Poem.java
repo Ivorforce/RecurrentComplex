@@ -47,34 +47,9 @@ public class Poem
         Map<String, List<List<TokenReplacer.Token>>> built = theme.build();
 
         String title = randomTitle(random, poemContext, maxTitleLength, built);
-        char titleLastChar = title.charAt(title.length() - 1);
-        if (titleLastChar == '.' || titleLastChar == ',' || titleLastChar == ';')
-            title = title.substring(0, title.length() - 1);
+        String phrase = compute(random, built.get("text"), poemContext, built);
 
-        StringBuilder poem = new StringBuilder();
-
-        int verses = random.nextInt(5) + 1;
-        for (int verse = 0; verse < verses; verse++)
-        {
-            int lines = random.nextInt(10) + 1;
-            for (int line = 0; line < lines; line++)
-            {
-                String phrase = getRandomPhrase(random, built.get("line"), poemContext, built);
-
-                if (line == lines - 1)
-                {
-                    char phraseLastChar = phrase.charAt(phrase.length() - 1);
-                    if (phraseLastChar == ',' || phraseLastChar == ';')
-                        phrase = phrase.substring(0, phrase.length() - 1) + ".";
-                }
-
-                poem.append(phrase).append("\n");
-            }
-
-            poem.append("\n");
-        }
-
-        return new Poem(title, poem.toString());
+        return new Poem(title, phrase);
     }
 
     @Nonnull
@@ -82,22 +57,17 @@ public class Poem
     {
         for (int i = 0; i < TITLE_TRIES; i++)
         {
-            String title = getRandomPhrase(random, built.get("title"), poemContext, built).trim();
+            String title = compute(random, built.get("title"), poemContext, built).trim();
             if (maxLength == null || title.length() < maxLength)
                 return title;
         }
 
-        return StringUtils.abbreviate(getRandomPhrase(random, built.get("title"), poemContext, built).trim(), maxLength);
+        return StringUtils.abbreviate(compute(random, built.get("title"), poemContext, built).trim(), maxLength);
     }
 
-    private static String getRandomPhrase(Random random, List<List<TokenReplacer.Token>> sentencePatterns, PoemContext poemContext, Map<String, List<List<TokenReplacer.Token>>> theme)
+    private static String compute(Random random, List<List<TokenReplacer.Token>> patterns, PoemContext context, Map<String, List<List<TokenReplacer.Token>>> theme)
     {
-        return firstCharUppercase(TokenReplacer.compute(random, getRandomElementFrom(sentencePatterns, random), poemContext, theme));
-    }
-
-    private static String firstCharUppercase(String name)
-    {
-        return Character.toUpperCase(name.charAt(0)) + name.substring(1);
+        return TokenReplacer.compute(random, getRandomElementFrom(patterns, random), context, theme);
     }
 
     private static <O> O getRandomElementFrom(List<O> list, Random random)
@@ -148,6 +118,8 @@ public class Poem
                 {
                     switch (tag)
                     {
+                        case "br":
+                            return TokenReplacer.Computer.simple((token, theme, context, random) -> "\n");
                         case "place":
                             return TokenReplacer.Computer.simple((token, theme, context, random) ->
                                     Poem.getRandomElementFrom(context.places, random));

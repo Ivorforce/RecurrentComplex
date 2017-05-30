@@ -34,6 +34,7 @@ public class TokenReplacer
         Map<String, List<Token>> repeats = new HashMap<>();
 
         Token token;
+        boolean nextUpper = true;
         while ((token = queue.poll()) != null)
         {
             if (token instanceof ComputeToken)
@@ -53,10 +54,19 @@ public class TokenReplacer
                     queue.addFirst(tokens.get(i));
             }
             else if (token instanceof StringToken)
-                builder.append(((StringToken) token).string);
+            {
+                String string = ((StringToken) token).string;
+                builder.append(nextUpper ? firstCharUppercase(string) : string);
+                nextUpper = string.matches(".*[.?!]$");
+            }
         }
 
         return builder.toString().trim();
+    }
+
+    public static String firstCharUppercase(String name)
+    {
+        return Character.toUpperCase(name.charAt(0)) + name.substring(1);
     }
 
     public interface Computer<T>

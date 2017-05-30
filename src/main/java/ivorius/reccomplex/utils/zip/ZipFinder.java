@@ -100,7 +100,6 @@ public class ZipFinder
 
         public Optional<T> peek()
         {
-            if (present) Objects.requireNonNull(t);
             return present ? Optional.of(t) : Optional.empty();
         }
     }

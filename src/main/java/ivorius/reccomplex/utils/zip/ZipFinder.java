@@ -11,7 +11,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Objects;
 import java.util.Optional;
 import java.util.function.Supplier;
 import java.util.zip.ZipInputStream;
@@ -25,7 +24,7 @@ public class ZipFinder
 
     public void read(ZipInputStream stream) throws IOException
     {
-        ZipWalker.walkStreams(stream, (name, inputStream) ->
+        IvZips.walkStreams(stream, (name, inputStream) ->
         {
             EntryConsumer<InputStream> consumer = map.get(name);
             if (consumer != null)

@@ -7,7 +7,6 @@ package ivorius.reccomplex.commands;
 
 import ivorius.reccomplex.RCConfig;
 import ivorius.reccomplex.utils.ServerTranslations;
-import ivorius.reccomplex.utils.expression.DimensionMatcher;
 import ivorius.reccomplex.world.gen.feature.selector.StructureSelector;
 import ivorius.reccomplex.world.gen.feature.structure.Structure;
 import ivorius.reccomplex.world.gen.feature.structure.StructureRegistry;
@@ -19,14 +18,14 @@ import net.minecraft.command.CommandBase;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.util.registry.IRegistry;
 import net.minecraft.util.text.TextComponentString;
+import net.minecraft.world.World;
 import net.minecraft.world.biome.Biome;
 import net.minecraftforge.common.DimensionManager;
 
-import java.util.List;
 import java.util.PriorityQueue;
 import java.util.function.BiPredicate;
-import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
 /**
@@ -66,11 +65,11 @@ public class CommandSanity extends CommandBase
                 !structure.generationTypes(GenerationType.class).isEmpty(), "Missing generation type");
 
         sane &= addGenerationLog(commandSender, NaturalGeneration.class, (structure, gen) ->
-                        Biome.REGISTRY.getKeys().stream().anyMatch(b -> StructureSelector.generationWeightInBiome(gen.biomeWeights, Biome.REGISTRY.getObject(b)) > 0)
+                        values(Biome.REGISTRY).anyMatch(b -> StructureSelector.generationWeightInBiome(gen.biomeWeights, b) > 0)
                 , "Natural generation type won't accept any biome");
 
         sane &= addGenerationLog(commandSender, NaturalGeneration.class, (structure, gen) ->
-                        Stream.of(DimensionManager.getIDs()).anyMatch(d -> StructureSelector.generationWeightInDimension(gen.dimensionWeights, server.worldServerForDimension(d).provider) > 0)
+                        dimensions(server).anyMatch(d -> StructureSelector.generationWeightInDimension(gen.dimensionWeights, d.provider) > 0)
                 , "Natural generation type won't accept any dimensions");
 
         sane &= addGenerationLog(commandSender, NaturalGeneration.class, (structure, gen) ->
@@ -79,7 +78,7 @@ public class CommandSanity extends CommandBase
 
 
         sane &= addGenerationLog(commandSender, VanillaGeneration.class, (structure, gen) ->
-                        Biome.REGISTRY.getKeys().stream().anyMatch(b -> gen.biomeMatcher.test(Biome.REGISTRY.getObject(b)))
+                        values(Biome.REGISTRY).anyMatch(b -> gen.biomeMatcher.test(b))
                 , "Vanilla structure generation type won't accept any biome");
 
         sane &= addGenerationLog(commandSender, VanillaGeneration.class, (structure, gen) ->
@@ -88,15 +87,25 @@ public class CommandSanity extends CommandBase
 
 
         sane &= addGenerationLog(commandSender, VanillaDecorationGeneration.class, (structure, gen) ->
-                        Biome.REGISTRY.getKeys().stream().anyMatch(b -> StructureSelector.generationWeightInBiome(gen.biomeWeights, Biome.REGISTRY.getObject(b)) > 0)
+                        values(Biome.REGISTRY).anyMatch(b -> StructureSelector.generationWeightInBiome(gen.biomeWeights, b) > 0)
                 , "Vanilla structure generation type won't accept any biome");
 
         sane &= addGenerationLog(commandSender, VanillaDecorationGeneration.class, (structure, gen) ->
-                        Stream.of(DimensionManager.getIDs()).anyMatch(d -> StructureSelector.generationWeightInDimension(gen.dimensionWeights, server.worldServerForDimension(d).provider) > 0)
+                        dimensions(server).anyMatch(d -> StructureSelector.generationWeightInDimension(gen.dimensionWeights, d.provider) > 0)
                 , "Natural generation type won't accept any dimensions");
 
         if (sane)
             commandSender.sendMessage(new TextComponentString("No specific problems found!"));
+    }
+
+    public static <K, T> Stream<T> values(IRegistry<K, T> registry)
+    {
+        return registry.getKeys().stream().map(registry::getObject);
+    }
+
+    public static Stream<World> dimensions(MinecraftServer server)
+    {
+        return Stream.of(DimensionManager.getIDs()).map(server::worldServerForDimension);
     }
 
     protected <T extends GenerationType> boolean addGenerationLog(ICommandSender commandSender, Class<T> tClass, BiPredicate<Structure<?>, T> predicate, String msg)

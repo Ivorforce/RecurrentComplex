@@ -32,20 +32,19 @@ public class ZipFinder
         });
     }
 
-    public <T> Result<T> stream(String name, @Nullable Supplier<T> defaultVal, Function<InputStream, T> function)
+    public <T> Result<T> stream(String name, Function<InputStream, T> function)
     {
         if (map.containsKey(name))
             throw new IllegalArgumentException();
 
         Result<T> result = new Result<>(name);
-        if (defaultVal != null) result.set(defaultVal.get());
         map.put(name, inputStream -> result.set(function.apply(inputStream)));
         return result;
     }
 
-    public <T> Result<T> bytes(String name, @Nullable Supplier<T> defaultVal, Function<byte[], T> function)
+    public <T> Result<T> bytes(String name, Function<byte[], T> function)
     {
-        return stream(name, defaultVal, inputStream ->
+        return stream(name, inputStream ->
         {
             byte[] bytes = ByteArrays.completeByteArray(inputStream);
             return bytes != null ? function.apply(bytes) : null;
@@ -91,6 +90,11 @@ public class ZipFinder
             if (!isPresent())
                 throw new MissingEntryException(name);
             return t;
+        }
+
+        public T orElse(Supplier<T> defaultVal)
+        {
+            return isPresent() ? t : defaultVal.get();
         }
     }
 

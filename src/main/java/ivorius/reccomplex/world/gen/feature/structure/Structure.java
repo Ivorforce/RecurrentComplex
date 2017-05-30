@@ -48,7 +48,7 @@ public interface Structure<S extends NBTStorable>
     boolean isBlocking();
 
     @Nullable
-    GenericStructure copyAsGenericStructureInfo();
+    GenericStructure copyAsGenericStructure();
 
     boolean areDependenciesResolved();
 

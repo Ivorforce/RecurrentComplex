@@ -399,7 +399,7 @@ public class GenericStructure implements Structure<GenericStructure.InstanceData
 
     @Override
     @Nonnull
-    public GenericStructure copyAsGenericStructureInfo()
+    public GenericStructure copyAsGenericStructure()
     {
         return copy();
     }
@@ -433,9 +433,8 @@ public class GenericStructure implements Structure<GenericStructure.InstanceData
 
     public GenericStructure copy()
     {
-        GenericStructure genericStructureInfo = StructureSaveHandler.INSTANCE.fromJSON(StructureSaveHandler.INSTANCE.toJSON(this));
-        genericStructureInfo.worldDataCompound = worldDataCompound.copy();
-        return genericStructureInfo;
+        return StructureSaveHandler.INSTANCE.fromJSON(StructureSaveHandler.INSTANCE.toJSON(this),
+                worldDataCompound.copy());
     }
 
     public static class Serializer implements JsonDeserializer<GenericStructure>, JsonSerializer<GenericStructure>

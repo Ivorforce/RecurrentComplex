@@ -411,7 +411,7 @@ public class RCCommands
         if (structure == null)
             throw ServerTranslations.commandException("commands.structure.notRegistered", name);
 
-        GenericStructure genericStructureInfo = structure.copyAsGenericStructureInfo();
+        GenericStructure genericStructureInfo = structure.copyAsGenericStructure();
 
         if (genericStructureInfo == null)
             throw ServerTranslations.commandException("commands.structure.notGeneric", name);

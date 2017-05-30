@@ -97,7 +97,7 @@ public class Poem
 
     private static String firstCharUppercase(String name)
     {
-        return Character.toString(name.charAt(0)).toUpperCase() + name.substring(1);
+        return Character.toUpperCase(name.charAt(0)) + name.substring(1);
     }
 
     private static <O> O getRandomElementFrom(List<O> list, Random random)

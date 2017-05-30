@@ -90,9 +90,9 @@ public class StructureSaveHandler
 
     public GenericStructure fromResource(ResourceLocation resourceLocation)
     {
-        try
+        try (ZipInputStream zipInputStream = new ZipInputStream(IvFileHelper.inputStreamFromResourceLocation(resourceLocation)))
         {
-            return fromZip(new ZipInputStream(IvFileHelper.inputStreamFromResourceLocation(resourceLocation)));
+            return fromZip(zipInputStream);
         }
         catch (Exception ex)
         {

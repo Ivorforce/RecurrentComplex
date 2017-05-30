@@ -6,6 +6,10 @@
 package ivorius.reccomplex.commands;
 
 import ivorius.reccomplex.RCConfig;
+import ivorius.reccomplex.RecurrentComplex;
+import ivorius.reccomplex.files.RCFiles;
+import ivorius.reccomplex.files.loading.LeveledRegistry;
+import ivorius.reccomplex.files.loading.ResourceDirectory;
 import ivorius.reccomplex.utils.ServerTranslations;
 import ivorius.reccomplex.world.gen.feature.selector.StructureSelector;
 import ivorius.reccomplex.world.gen.feature.structure.Structure;
@@ -16,12 +20,18 @@ import net.minecraft.command.CommandBase;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.registry.IRegistry;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraft.world.World;
 import net.minecraft.world.biome.Biome;
 import net.minecraftforge.common.DimensionManager;
+import net.minecraftforge.fml.common.Loader;
+import net.minecraftforge.fml.common.ModContainer;
 
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.util.Arrays;
 import java.util.PriorityQueue;
 import java.util.function.BiPredicate;
 import java.util.stream.Stream;
@@ -58,6 +68,40 @@ public class CommandSanity extends CommandBase
         }
 
         boolean sane = true;
+
+        if (!Files.isReadable(ResourceDirectory.getCustomDirectory().toPath()))
+        {
+            commandSender.sendMessage(new TextComponentString("Can't read files from custom directory"));
+            sane = false;
+        }
+        for (ModContainer mod : Loader.instance().getModList())
+        {
+            String domain = mod.getModId();
+
+            Path path = null;
+
+            try
+            {
+                path = RCFiles.pathFromResourceLocation(new ResourceLocation(domain.toLowerCase(), ""));
+            }
+            catch (RCFiles.ResourceLocationLoadException e)
+            {
+                RecurrentComplex.logger.error(e);
+                commandSender.sendMessage(new TextComponentString("Error reading files from mod " + mod.getModId() + ": "));
+                commandSender.sendMessage(new TextComponentString(RCCommands.reason(e)));
+                sane = false;
+            }
+            if (path != null && !Files.isReadable(path))
+            {
+                commandSender.sendMessage(new TextComponentString("Can't read files from mod: " + mod.getModId()));
+                sane = false;
+            }
+        }
+        if (!Files.isReadable(ResourceDirectory.getServerDirectory().toPath()))
+        {
+            commandSender.sendMessage(new TextComponentString("Can't read files from server directory"));
+            sane = false;
+        }
 
         sane &= addStructureLog(commandSender, (s, structure) ->
                 !structure.generationTypes(GenerationType.class).isEmpty(), "Missing generation type");

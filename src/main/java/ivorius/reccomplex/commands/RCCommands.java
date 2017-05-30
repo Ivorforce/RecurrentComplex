@@ -433,10 +433,13 @@ public class RCCommands
         {
             RecurrentComplex.logger.error("Can't load from resource '" + e.getLocation() + "'", e);
 
-            if (e.getCause() instanceof AccessDeniedException)
-                throw new CommandException("Access Denied! (check your server's read privileges on the Minecraft directory)");
-            else
-                throw new CommandException("Unknown Cause! (see logs)");
+            throw new CommandException(reason(e));
         }
+    }
+
+    @Nonnull
+    protected static String reason(RCFiles.ResourceLocationLoadException e)
+    {
+        return e.getCause() instanceof AccessDeniedException ? "Access Denied! (check your server's read privileges on the Minecraft directory)" : "Unknown Cause! (see logs)";
     }
 }

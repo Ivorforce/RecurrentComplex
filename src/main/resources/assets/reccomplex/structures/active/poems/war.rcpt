@@ -1,7 +1,7 @@
 *** include
 base
 
-*** concretenoun
+*** cnoun
 blood
 sword
 day
@@ -29,7 +29,7 @@ bone
 wound
 swashbuckler
 
-*** concnounplu
+*** cnoun-pl
 people
 swords
 days
@@ -56,7 +56,7 @@ bones
 wounds
 swashbucklers
 
-*** abstractnoun
+*** anoun
 agony
 pain
 death
@@ -93,7 +93,7 @@ challenge
 deceit
 lies
 
-*** prestransverb
+*** verb-trans-pres
 kill
 hurt
 ravage
@@ -114,7 +114,7 @@ lose
 capture
 rive
 
-*** pasttransverb
+*** verb-trans-past
 killed
 hurt
 ravaged
@@ -135,7 +135,7 @@ lost
 captured
 rived
 
-*** presintverb
+*** verb-intra-pres
 run
 bleed
 suffer

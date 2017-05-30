@@ -18,12 +18,12 @@ import java.util.List;
 /**
  * Created by lukas on 11.03.15.
  */
-public class SymbolTokenizer
+public class SymbolTokenizer<T extends SymbolTokenizer.Token>
 {
     @Nonnull
     protected CharacterRules characterRules;
     @Nonnull
-    protected TokenFactory tokenFactory;
+    protected TokenFactory<T> tokenFactory;
 
     public SymbolTokenizer(@Nonnull CharacterRules characterRules, @Nonnull TokenFactory tokenFactory)
     {
@@ -53,7 +53,7 @@ public class SymbolTokenizer
         this.tokenFactory = tokenFactory;
     }
 
-    public List<Token> tokenize(String string) throws ParseException
+    public List<T> tokenize(String string) throws ParseException
     {
         Character escapeChar = characterRules.escapeChar();
         Character literalChar = characterRules.literalChar();
@@ -63,7 +63,7 @@ public class SymbolTokenizer
         int literalStart = -1;
         boolean escape = false;
         TIntStack escapes = new TIntArrayStack();
-        ArrayList<Token> tokens = new ArrayList<>();
+        ArrayList<T> tokens = new ArrayList<>();
 
         while (index < string.length())
         {
@@ -104,7 +104,7 @@ public class SymbolTokenizer
             }
             else
             {
-                Token token;
+                T token;
 
                 if (!escape && (token = tokenFactory.tryConstructSymbolTokenAt(index, string)) != null)
                 {
@@ -165,7 +165,7 @@ public class SymbolTokenizer
         return string;
     }
 
-    protected Token constructStringToken(String string, int start, int varStart, int end, TIntStack escapes)
+    protected T constructStringToken(String string, int start, int varStart, int end, TIntStack escapes)
     {
         StringBuilder constant = new StringBuilder(string.substring(start, end));
 
@@ -193,19 +193,21 @@ public class SymbolTokenizer
         }
     }
 
-    public interface TokenFactory
+    public interface TokenFactory<T extends Token>
     {
         @Nullable
-        Token tryConstructSymbolTokenAt(int index, @Nonnull String string);
+        T tryConstructSymbolTokenAt(int index, @Nonnull String string);
 
         @Nonnull
-        Token constructStringToken(int index, @Nonnull String string);
+        T constructStringToken(int index, @Nonnull String string);
     }
 
     public interface CharacterRules
     {
+        @Nullable
         Character escapeChar();
 
+        @Nullable
         Character literalChar();
 
         boolean isWhitespace(char character);

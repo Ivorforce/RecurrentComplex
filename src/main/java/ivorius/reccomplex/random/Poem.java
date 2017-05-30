@@ -144,7 +144,7 @@ public class Poem
             return new TokenReplacer.ReplaceFactory<PoemContext>()
             {
                 @Nonnull
-                protected TokenReplacer.Computer<PoemContext> computer(String tag, Set<String> flags)
+                protected TokenReplacer.Computer<PoemContext> computer(String tag, List<String> flags)
                 {
                     switch (tag)
                     {
@@ -154,12 +154,12 @@ public class Poem
                         case "name":
                             return TokenReplacer.Computer.simple((token, theme, context, random) ->
                                     Poem.getRandomElementFrom(context.names, random));
-                        case "lownum":
-                            return TokenReplacer.Computer.simple(numComputer(2, 10, 1));
-                        case "highnum":
-                            return TokenReplacer.Computer.simple(numComputer(2, 10, 10));
-                        case "hugenum":
-                            return TokenReplacer.Computer.simple(numComputer(1, 10, 1000));
+                        case "number":
+                            return TokenReplacer.Computer.simple(numComputer(
+                                    Integer.valueOf(flag(flags, 0, "2")),
+                                    Integer.valueOf(flag(flags, 1, "10")),
+                                    Integer.valueOf(flag(flags, 2, "1"))
+                            ));
                         default:
                             return (token, theme, context, random) ->
                             {

@@ -15,7 +15,7 @@ import ivorius.reccomplex.files.loading.RCFileSuffix;
 import ivorius.reccomplex.files.saving.FileSaverAdapter;
 import ivorius.reccomplex.json.NBTToJson;
 import ivorius.reccomplex.utils.ByteArrays;
-import ivorius.reccomplex.utils.IvZips;
+import ivorius.reccomplex.utils.zip.ZipFinder;
 import ivorius.reccomplex.world.gen.feature.structure.Structure;
 import ivorius.reccomplex.world.gen.feature.structure.StructureRegistry;
 import net.minecraft.nbt.CompressedStreamTools;
@@ -104,10 +104,10 @@ public class StructureSaveHandler
 
     public GenericStructure fromZip(ZipInputStream zipInputStream) throws IOException
     {
-        IvZips.Finder finder = new IvZips.Finder();
+        ZipFinder finder = new ZipFinder();
 
-        IvZips.Finder.Result<String> json = finder.bytes(STRUCTURE_INFO_JSON_FILENAME, null, String::new);
-        IvZips.Finder.Result<NBTTagCompound> worldData = finder.bytes(WORLD_DATA_NBT_FILENAME, null,
+        ZipFinder.Result<String> json = finder.bytes(STRUCTURE_INFO_JSON_FILENAME, null, String::new);
+        ZipFinder.Result<NBTTagCompound> worldData = finder.bytes(WORLD_DATA_NBT_FILENAME, null,
                 bytes -> CompressedStreamTools.readCompressed(new ByteArrayInputStream(bytes)));
 
         try
@@ -115,7 +115,7 @@ public class StructureSaveHandler
             finder.read(zipInputStream);
             return fromJSON(json.get(), worldData.get());
         }
-        catch (IOException | IvZips.Finder.MissingEntryException e)
+        catch (IOException | ZipFinder.MissingEntryException e)
         {
             throw new IOException("Error loading structure", e);
         }

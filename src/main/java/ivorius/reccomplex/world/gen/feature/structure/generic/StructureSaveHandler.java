@@ -16,6 +16,7 @@ import ivorius.reccomplex.files.saving.FileSaverAdapter;
 import ivorius.reccomplex.json.NBTToJson;
 import ivorius.reccomplex.utils.ByteArrays;
 import ivorius.reccomplex.utils.zip.ZipFinder;
+import ivorius.reccomplex.utils.zip.IvZips;
 import ivorius.reccomplex.world.gen.feature.structure.Structure;
 import ivorius.reccomplex.world.gen.feature.structure.StructureRegistry;
 import net.minecraft.nbt.CompressedStreamTools;
@@ -27,7 +28,6 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Objects;
-import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 import java.util.zip.ZipOutputStream;
 
@@ -51,15 +51,6 @@ public class StructureSaveHandler
         gson = createGson();
         this.suffix = suffix;
         this.registry = registry;
-    }
-
-    protected static void addZipEntry(ZipOutputStream zip, String path, byte[] bytes) throws IOException
-    {
-        ZipEntry jsonEntry = new ZipEntry(path);
-        zip.putNextEntry(jsonEntry);
-        jsonEntry.setSize(bytes.length);
-        zip.write(bytes);
-        zip.closeEntry();
     }
 
     public Gson createGson()
@@ -126,8 +117,8 @@ public class StructureSaveHandler
         GenericStructure copy = structure.copyAsGenericStructure();
         Objects.requireNonNull(copy);
 
-        addZipEntry(zipOutputStream, STRUCTURE_INFO_JSON_FILENAME, toJSON(copy).getBytes());
-        addZipEntry(zipOutputStream, WORLD_DATA_NBT_FILENAME, ByteArrays.toByteArray(s -> CompressedStreamTools.writeCompressed(copy.worldDataCompound, s)));
+        IvZips.addZipEntry(zipOutputStream, STRUCTURE_INFO_JSON_FILENAME, toJSON(copy).getBytes());
+        IvZips.addZipEntry(zipOutputStream, WORLD_DATA_NBT_FILENAME, ByteArrays.toByteArray(s -> CompressedStreamTools.writeCompressed(copy.worldDataCompound, s)));
 
         zipOutputStream.close();
     }

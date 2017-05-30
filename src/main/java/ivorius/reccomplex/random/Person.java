@@ -44,6 +44,7 @@ public class Person
             "Helena", "Vir", "Ronja", "Katrin", "Liv", "Maria", "Sara", "Jenna", "Laura", "Roosa", "Veera", "Emilia",
             "Julia", "Sara", "Jenni", "Noora", "Ane", "Johanne", "Dorthe", "Margrethe", "Sofie", "Else", "Amalie", "Gudrun",
             "Helga", "Birta", "Maria");
+
     private String firstName;
     private String middleName;
     private String lastName;
@@ -142,6 +143,28 @@ public class Person
         }
 
         return builder.toString().trim();
+    }
+
+    @Override
+    public boolean equals(Object o)
+    {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Person person = (Person) o;
+
+        if (firstName != null ? !firstName.equals(person.firstName) : person.firstName != null) return false;
+        if (middleName != null ? !middleName.equals(person.middleName) : person.middleName != null) return false;
+        return lastName != null ? lastName.equals(person.lastName) : person.lastName == null;
+    }
+
+    @Override
+    public int hashCode()
+    {
+        int result = firstName != null ? firstName.hashCode() : 0;
+        result = 31 * result + (middleName != null ? middleName.hashCode() : 0);
+        result = 31 * result + (lastName != null ? lastName.hashCode() : 0);
+        return result;
     }
 
     public enum NameType

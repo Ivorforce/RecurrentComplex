@@ -1,7 +1,7 @@
 *** include
 base
 
-*** concretenoun
+*** cnoun
 heart
 face
 eye
@@ -30,7 +30,7 @@ letter
 poem
 text
 
-*** concnounplu
+*** cnoun-pl
 hearts
 faces
 eyes
@@ -57,7 +57,7 @@ poems
 texts
 lips
 
-*** abstractnoun
+*** anoun
 faith
 love
 hate
@@ -98,7 +98,7 @@ mirth
 reverie
 dawn
 
-*** prestransverb
+*** verb-trans-pres
 make
 see
 feel
@@ -117,7 +117,7 @@ hie
 hate
 gather
 
-*** pasttransverb
+*** verb-trans-past
 made
 saw
 felt
@@ -136,7 +136,7 @@ hied
 hated
 gathered
 
-*** presintverb
+*** verb-intra-pres
 run
 bleed
 glow

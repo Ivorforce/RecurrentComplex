@@ -1,7 +1,7 @@
 *** include
 base
 
-*** concretenoun
+*** cnoun
 stone
 water
 wind
@@ -22,7 +22,7 @@ blizzard
 storm
 gravel
 
-*** concnounplu
+*** cnoun-pl
 stones
 raindrops
 flames
@@ -35,7 +35,7 @@ mountains
 blizzards
 storms
 
-*** abstractnoun
+*** anoun
 bitterness
 comfort
 pain
@@ -58,7 +58,7 @@ coldness
 isolation
 stagnation
 
-*** prestransverb
+*** verb-trans-pres
 see
 feel
 hold
@@ -73,7 +73,7 @@ pick
 undulate
 hie
 
-*** pasttransverb
+*** verb-trans-past
 saw
 felt
 held
@@ -88,7 +88,7 @@ picked
 undulated
 hied
 
-*** presintverb
+*** verb-intra-pres
 sit
 hide
 pray

@@ -1,7 +1,7 @@
 *** include
 base
 
-*** concretenoun
+*** cnoun
 tree
 water
 breeze
@@ -26,7 +26,7 @@ daffodil
 poem
 fortnight
 
-*** concnounplu
+*** cnoun-pl
 trees
 breezes
 beaches
@@ -48,7 +48,7 @@ daffodils
 poems
 fortnights
 
-*** abstractnoun
+*** anoun
 love
 comfort
 sunlight
@@ -78,7 +78,7 @@ susurration
 shade
 dawn
 
-*** prestransverb
+*** verb-trans-pres
 see
 embrace
 make
@@ -100,7 +100,7 @@ kick
 discover
 remember
 
-*** pasttransverb
+*** verb-trans-past
 saw
 embraced
 made
@@ -123,7 +123,7 @@ remembered
 forgot
 imitated
 
-*** presintverb
+*** verb-intra-pres
 run
 walk
 stand

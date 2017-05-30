@@ -1,7 +1,7 @@
 *** include
 base
 
-*** concretenoun
+*** cnoun
 heart
 lover
 sky
@@ -11,7 +11,7 @@ lock
 lips
 miasma
 
-*** concnounplu
+*** cnoun-pl
 hearts
 lovers
 skies
@@ -19,7 +19,7 @@ kisses
 locks
 lips
 
-*** abstractnoun
+*** anoun
 fear
 desire
 death
@@ -43,7 +43,7 @@ dusk
 deceit
 lies
 
-*** prestransverb
+*** verb-trans-pres
 make
 see
 feel
@@ -58,7 +58,7 @@ give
 drive
 seek
 
-*** pasttransverb
+*** verb-trans-past
 made
 saw
 felt
@@ -73,7 +73,7 @@ gave
 drove
 sought
 
-*** presintverb
+*** verb-intra-pres
 run
 bleed
 glow

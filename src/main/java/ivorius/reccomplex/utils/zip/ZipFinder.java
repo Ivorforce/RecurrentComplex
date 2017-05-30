@@ -7,11 +7,12 @@ package ivorius.reccomplex.utils.zip;
 
 import ivorius.reccomplex.utils.ByteArrays;
 
-import javax.annotation.Nullable;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
+import java.util.Optional;
 import java.util.function.Supplier;
 import java.util.zip.ZipInputStream;
 
@@ -95,6 +96,12 @@ public class ZipFinder
         public T orElse(Supplier<T> defaultVal)
         {
             return isPresent() ? t : defaultVal.get();
+        }
+
+        public Optional<T> peek()
+        {
+            if (present) Objects.requireNonNull(t);
+            return present ? Optional.of(t) : Optional.empty();
         }
     }
 

@@ -15,7 +15,6 @@ import org.apache.commons.lang3.StringUtils;
 import javax.annotation.Nonnull;
 import java.util.*;
 import java.util.stream.Collectors;
-import java.util.stream.IntStream;
 
 /**
  * Created by lukas on 25.06.14.
@@ -71,9 +70,9 @@ public class Poem
 
             Multimap<String, List<TokenReplacer.Token>> builtTheme = theme.build(HashMultimap.create(), tokenizer);
 
-            builtTheme.values().forEach(Collections::shuffle);
             // remove roughly acceptance% words but never all
-            builtTheme.values().forEach(v -> IntStream.range(0, (int) (v.size() * acceptance) - 1).forEach(i -> v.remove(0)));
+            builtTheme.asMap().values()
+                    .forEach(v -> v.removeIf(p -> styleRandom.nextFloat() < acceptance && v.size() > 1));
 
             map.putAll(builtTheme);
         }

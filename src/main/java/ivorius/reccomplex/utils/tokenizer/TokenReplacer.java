@@ -87,10 +87,10 @@ public class TokenReplacer
     public static class ComputeToken<T> extends Token
     {
         public final String tag;
-        public final Set<String> flags;
+        public final List<String> flags;
         public final Computer<T> computer;
 
-        public ComputeToken(int startIndex, int endIndex, String tag, Set<String> flags, Computer<T> computer)
+        public ComputeToken(int startIndex, int endIndex, String tag, List<String> flags, Computer<T> computer)
         {
             super(startIndex, endIndex);
             this.tag = tag;
@@ -135,7 +135,7 @@ public class TokenReplacer
                 List<String> parts = Arrays.asList(contents.split(" "));
 
                 String tag = parts.get(0);
-                Set<String> flags = Sets.newHashSet(parts.subList(1, parts.size()));
+                List<String> flags = Lists.newArrayList(parts.subList(1, parts.size()));
 
                 return new ComputeToken<>(index, end + 1, tag, flags, computer(tag, flags));
             }
@@ -143,7 +143,7 @@ public class TokenReplacer
             return null;
         }
 
-        protected abstract Computer<T> computer(String tag, Set<String> flags);
+        protected abstract Computer<T> computer(String tag, List<String> flags);
 
         @Nonnull
         @Override
@@ -237,5 +237,10 @@ public class TokenReplacer
         protected abstract ReplaceFactory factory();
 
         protected abstract Theme getOther(String include);
+
+        public String flag(List<String> flags, int index, String def)
+        {
+            return flags.size() > index ? flags.get(index) : def;
+        }
     }
 }

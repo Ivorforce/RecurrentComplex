@@ -118,3 +118,10 @@ beware
 behold
 lo
 hello
+
+*** lownum
+<number 2 10 1>
+*** highnum
+<number 2 10 10>
+*** hugenum
+<number 1 10 1000>

@@ -32,7 +32,7 @@ public class ItemBookGenerator extends Item implements GeneratingItem
         if (!worldIn.isRemote)
             return ItemInventoryGenerationTag.applyGeneratorToInventory((WorldServer) worldIn, pos, this, playerIn.getHeldItem(hand)) ? EnumActionResult.SUCCESS : EnumActionResult.PASS;
 
-        return super.onItemUse(playerIn, worldIn, pos, hand, facing, hitX, hitY, hitZ);
+        return EnumActionResult.SUCCESS;
     }
 
     @Override

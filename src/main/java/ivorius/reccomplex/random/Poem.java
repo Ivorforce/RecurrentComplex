@@ -5,13 +5,17 @@
 
 package ivorius.reccomplex.random;
 
+import com.google.common.collect.HashMultimap;
+import com.google.common.collect.Multimap;
 import ivorius.reccomplex.files.SimpleLeveledRegistry;
+import ivorius.reccomplex.utils.tokenizer.SymbolTokenizer;
 import ivorius.reccomplex.utils.tokenizer.TokenReplacer;
 import org.apache.commons.lang3.StringUtils;
 
 import javax.annotation.Nonnull;
 import java.util.*;
 import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 /**
  * Created by lukas on 25.06.14.
@@ -19,7 +23,9 @@ import java.util.stream.Collectors;
 public class Poem
 {
     private static final int TITLE_TRIES = 50;
+
     public static SimpleLeveledRegistry<Theme> THEME_REGISTRY = new SimpleLeveledRegistry<>("poem theme");
+
     private String title;
     private String text;
 
@@ -29,13 +35,10 @@ public class Poem
         this.text = text;
     }
 
-    public static Poem randomPoem(Random random, Integer maxTitleLength)
+    public static Poem randomPoem(Random random, Integer maxTitleLength, Person author)
     {
-        return randomPoem(random, maxTitleLength, getRandomElementFrom(THEME_REGISTRY.allActive().stream().collect(Collectors.toList()), random));
-    }
+        Map<String, List<List<TokenReplacer.Token>>> stitchedTheme = stitchStyledTheme(author);
 
-    public static Poem randomPoem(Random random, Integer maxTitleLength, TokenReplacer.Theme theme)
-    {
         PoemContext poemContext = new PoemContext();
         //noinspection StatementWithEmptyBody
         while (poemContext.add(random, poemContext.names, 0.3f, Person.randomHuman(random, random.nextBoolean()).getFirstName()))
@@ -44,12 +47,39 @@ public class Poem
         while (poemContext.add(random, poemContext.places, 0.3f, Place.randomPlace(random).getFullPlaceType()))
             ;
 
-        Map<String, List<List<TokenReplacer.Token>>> built = theme.build();
-
-        String title = randomTitle(random, poemContext, maxTitleLength, built);
-        String phrase = compute(random, built.get("text"), poemContext, built);
+        String title = randomTitle(random, poemContext, maxTitleLength, stitchedTheme);
+        String phrase = evaluate(random, stitchedTheme.get("text"), poemContext, stitchedTheme);
 
         return new Poem(title, phrase);
+    }
+
+    public static Map<String, List<List<TokenReplacer.Token>>> stitchStyledTheme(Person author)
+    {
+        Random styleRandom = new Random(author.hashCode());
+
+        SymbolTokenizer<TokenReplacer.Token> tokenizer = new SymbolTokenizer<>(
+                new SymbolTokenizer.SimpleCharacterRules('\\', null, new char[0], null),
+                factory()
+        );
+
+        // Stitch together from random themes
+        HashMultimap<String, List<TokenReplacer.Token>> map = HashMultimap.create();
+        do
+        {
+            Theme theme = getRandomElementFrom(THEME_REGISTRY.allActive().stream().collect(Collectors.toList()), styleRandom);
+            float acceptance = styleRandom.nextFloat();
+
+            Multimap<String, List<TokenReplacer.Token>> builtTheme = theme.build(HashMultimap.create(), tokenizer);
+
+            builtTheme.values().forEach(Collections::shuffle);
+            // remove roughly acceptance% words but never all
+            builtTheme.values().forEach(v -> IntStream.range(0, (int) (v.size() * acceptance) - 1).forEach(i -> v.remove(0)));
+
+            map.putAll(builtTheme);
+        }
+        while (styleRandom.nextBoolean());
+
+        return Theme.build(map);
     }
 
     @Nonnull
@@ -57,22 +87,65 @@ public class Poem
     {
         for (int i = 0; i < TITLE_TRIES; i++)
         {
-            String title = compute(random, built.get("title"), poemContext, built).trim();
+            String title = evaluate(random, built.get("title"), poemContext, built).trim();
             if (maxLength == null || title.length() < maxLength)
                 return title;
         }
 
-        return StringUtils.abbreviate(compute(random, built.get("title"), poemContext, built).trim(), maxLength);
+        return StringUtils.abbreviate(evaluate(random, built.get("title"), poemContext, built).trim(), maxLength);
     }
 
-    private static String compute(Random random, List<List<TokenReplacer.Token>> patterns, PoemContext context, Map<String, List<List<TokenReplacer.Token>>> theme)
+    private static String evaluate(Random random, List<List<TokenReplacer.Token>> patterns, PoemContext context, Map<String, List<List<TokenReplacer.Token>>> theme)
     {
-        return TokenReplacer.compute(random, getRandomElementFrom(patterns, random), context, theme);
+        return TokenReplacer.evaluate(random, getRandomElementFrom(patterns, random), context, theme);
     }
 
     private static <O> O getRandomElementFrom(List<O> list, Random random)
     {
         return list.get(random.nextInt(list.size()));
+    }
+
+    @Nonnull
+    protected static TokenReplacer.ReplaceFactory factory()
+    {
+        return new TokenReplacer.ReplaceFactory<PoemContext>()
+        {
+            @Nonnull
+            protected TokenReplacer.Exploder<PoemContext> exploder(String tag, List<String> flags)
+            {
+                switch (tag)
+                {
+                    case "br":
+                        return TokenReplacer.Exploder.string((token, theme, context, random) -> "\n");
+                    case "place":
+                        return TokenReplacer.Exploder.string((token, theme, context, random) ->
+                                Poem.getRandomElementFrom(context.places, random));
+                    case "name":
+                        return TokenReplacer.Exploder.string((token, theme, context, random) ->
+                                Poem.getRandomElementFrom(context.names, random));
+                    case "number":
+                        return TokenReplacer.Exploder.string(numEvaluator(
+                                Integer.valueOf(TokenReplacer.Theme.flag(flags, 0, "2")),
+                                Integer.valueOf(TokenReplacer.Theme.flag(flags, 1, "10")),
+                                Integer.valueOf(TokenReplacer.Theme.flag(flags, 2, "1"))
+                        ));
+                    default:
+                        return (token, theme, context, random) ->
+                        {
+                            List<List<TokenReplacer.Token>> list = theme.get(tag);
+                            return list == null || list.isEmpty()
+                                    ? Collections.singletonList(new TokenReplacer.StringToken(0, 0, "EMPTY"))
+                                    : Poem.getRandomElementFrom(list, random);
+                        };
+                }
+            }
+
+            private TokenReplacer.Exploder.StringExploder<PoemContext> numEvaluator(int min, int max, int mul)
+            {
+                return (token, theme, context, random) ->
+                        String.valueOf((random.nextInt(max - min + 1) + min) * mul);
+            }
+        };
     }
 
     public String getTitle()
@@ -105,50 +178,6 @@ public class Poem
             Theme theme = new Theme();
             theme.read(fileContents);
             return theme;
-        }
-
-        @Nonnull
-        @Override
-        protected TokenReplacer.ReplaceFactory factory()
-        {
-            return new TokenReplacer.ReplaceFactory<PoemContext>()
-            {
-                @Nonnull
-                protected TokenReplacer.Computer<PoemContext> computer(String tag, List<String> flags)
-                {
-                    switch (tag)
-                    {
-                        case "br":
-                            return TokenReplacer.Computer.simple((token, theme, context, random) -> "\n");
-                        case "place":
-                            return TokenReplacer.Computer.simple((token, theme, context, random) ->
-                                    Poem.getRandomElementFrom(context.places, random));
-                        case "name":
-                            return TokenReplacer.Computer.simple((token, theme, context, random) ->
-                                    Poem.getRandomElementFrom(context.names, random));
-                        case "number":
-                            return TokenReplacer.Computer.simple(numComputer(
-                                    Integer.valueOf(flag(flags, 0, "2")),
-                                    Integer.valueOf(flag(flags, 1, "10")),
-                                    Integer.valueOf(flag(flags, 2, "1"))
-                            ));
-                        default:
-                            return (token, theme, context, random) ->
-                            {
-                                List<List<TokenReplacer.Token>> list = theme.get(tag);
-                                return list == null || list.isEmpty()
-                                        ? Collections.singletonList(new TokenReplacer.StringToken(0, 0, "EMPTY"))
-                                        : Poem.getRandomElementFrom(list, random);
-                            };
-                    }
-                }
-
-                private TokenReplacer.Computer.SimpleComputer<Poem.PoemContext> numComputer(int min, int max, int mul)
-                {
-                    return (token, theme, context, random) ->
-                            String.valueOf((random.nextInt(max - min + 1) + min) * mul);
-                }
-            };
         }
 
         @Override

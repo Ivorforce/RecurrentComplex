@@ -40,8 +40,8 @@ public class Book
     public static ItemStack poem(Random random)
     {
         ItemStack stack = new ItemStack(Items.WRITTEN_BOOK);
-        Poem poem = Poem.randomPoem(random, 32);
         Person author = Person.randomHuman(random, random.nextFloat() < 0.9f);
+        Poem poem = Poem.randomPoem(random, 32, author);
 
         stack.setTagInfo("pages", NBTTagLists.write(bookPages(poem.getText()).stream()
                 .map(Book::toJSON).map(NBTTagString::new).collect(Collectors.toList())));

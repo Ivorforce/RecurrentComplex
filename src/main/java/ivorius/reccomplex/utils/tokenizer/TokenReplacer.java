@@ -8,7 +8,6 @@ package ivorius.reccomplex.utils.tokenizer;
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Multimap;
-import com.google.common.collect.Sets;
 import com.google.common.io.LineReader;
 import ivorius.reccomplex.RecurrentComplex;
 
@@ -25,7 +24,7 @@ import java.util.stream.Collectors;
  */
 public class TokenReplacer
 {
-    public static <T> String compute(Random random, List<Token> text, T context, Map<String, List<List<Token>>> theme)
+    public static <T> String evaluate(Random random, List<Token> text, T context, Map<String, List<List<Token>>> theme)
     {
         StringBuilder builder = new StringBuilder();
         ArrayDeque<Token> queue = new ArrayDeque<>();
@@ -37,15 +36,15 @@ public class TokenReplacer
         boolean nextUpper = true;
         while ((token = queue.poll()) != null)
         {
-            if (token instanceof ComputeToken)
+            if (token instanceof ExplodingToken)
             {
-                ComputeToken<T> symbol = (ComputeToken) token;
+                ExplodingToken<T> symbol = (ExplodingToken) token;
                 boolean repeat = symbol.flags.contains("r");
 
                 List<Token> tokens = repeat ? repeats.get(symbol.tag) : null;
                 if (tokens == null)
                 {
-                    tokens = symbol.compute(theme, context, random);
+                    tokens = symbol.explode(theme, context, random);
                     if (repeat) repeats.put(symbol.tag, tokens);
                 }
 
@@ -61,7 +60,7 @@ public class TokenReplacer
             }
         }
 
-        return builder.toString().trim();
+        return builder.toString();
     }
 
     public static String firstCharUppercase(String name)
@@ -69,20 +68,20 @@ public class TokenReplacer
         return Character.toUpperCase(name.charAt(0)) + name.substring(1);
     }
 
-    public interface Computer<T>
+    public interface Exploder<T>
     {
-        static <T> Computer<T> simple(SimpleComputer<T> computer)
+        static <T> Exploder<T> string(StringExploder<T> exploder)
         {
             return (token, theme, context, random) ->
                     Collections.singletonList(new StringToken(0, 0,
-                            computer.compute(token, theme, context, random)));
+                            exploder.evaluate(token, theme, context, random)));
         }
 
-        List<Token> compute(ComputeToken token, Map<String, List<List<Token>>> theme, T context, Random random);
+        List<Token> explode(ExplodingToken token, Map<String, List<List<Token>>> theme, T context, Random random);
 
-        interface SimpleComputer<T>
+        interface StringExploder<T>
         {
-            String compute(ComputeToken token, Map<String, List<List<Token>>> theme, T context, Random random);
+            String evaluate(ExplodingToken token, Map<String, List<List<Token>>> theme, T context, Random random);
         }
     }
 
@@ -94,23 +93,23 @@ public class TokenReplacer
         }
     }
 
-    public static class ComputeToken<T> extends Token
+    public static class ExplodingToken<T> extends Token
     {
         public final String tag;
         public final List<String> flags;
-        public final Computer<T> computer;
+        public final Exploder<T> exploder;
 
-        public ComputeToken(int startIndex, int endIndex, String tag, List<String> flags, Computer<T> computer)
+        public ExplodingToken(int startIndex, int endIndex, String tag, List<String> flags, Exploder<T> exploder)
         {
             super(startIndex, endIndex);
             this.tag = tag;
             this.flags = flags;
-            this.computer = computer;
+            this.exploder = exploder;
         }
 
-        public List<Token> compute(Map<String, List<List<Token>>> theme, T context, Random random)
+        public List<Token> explode(Map<String, List<List<Token>>> theme, T context, Random random)
         {
-            return computer.compute(this, theme, context, random);
+            return exploder.explode(this, theme, context, random);
         }
     }
 
@@ -147,15 +146,15 @@ public class TokenReplacer
                 String tag = parts.get(0);
                 List<String> flags = Lists.newArrayList(parts.subList(1, parts.size()));
 
-                Computer<T> computer = computer(tag, flags);
-                if (computer != null)
-                    return new ComputeToken<>(index, end + 1, tag, flags, computer);
+                Exploder<T> exploder = exploder(tag, flags);
+                if (exploder != null)
+                    return new ExplodingToken<>(index, end + 1, tag, flags, exploder);
             }
 
             return null;
         }
 
-        protected abstract Computer<T> computer(String tag, List<String> flags);
+        protected abstract Exploder<T> exploder(String tag, List<String> flags);
 
         @Nonnull
         @Override
@@ -168,6 +167,17 @@ public class TokenReplacer
     public abstract static class Theme
     {
         public Multimap<String, String> contents = HashMultimap.create();
+
+        public static Map<String, List<List<Token>>> build(Multimap<String, List<Token>> build)
+        {
+            return build.asMap().entrySet().stream()
+                    .collect(Collectors.toMap(Map.Entry::getKey, k -> Lists.newArrayList(k.getValue())));
+        }
+
+        public static String flag(List<String> flags, int index, String def)
+        {
+            return flags.size() > index ? flags.get(index) : def;
+        }
 
         protected void read(String fileContents)
         {
@@ -200,19 +210,7 @@ public class TokenReplacer
             }
         }
 
-        public Map<String, List<List<Token>>> build()
-        {
-            HashMultimap<String, List<Token>> map = HashMultimap.create();
-            SymbolTokenizer<Token> tokenizer = new SymbolTokenizer<>(
-                    new SymbolTokenizer.SimpleCharacterRules('\\', null, new char[0], null),
-                    factory()
-            );
-
-            return build(map, tokenizer).asMap().entrySet().stream()
-                    .collect(Collectors.toMap(Map.Entry::getKey, k -> Lists.newArrayList(k.getValue())));
-        }
-
-        protected Multimap<String, List<Token>> build(Multimap<String, List<Token>> map, SymbolTokenizer<Token> tokenizer)
+        public Multimap<String, List<Token>> build(Multimap<String, List<Token>> map, SymbolTokenizer<Token> tokenizer)
         {
             for (String include : contents.get("include"))
             {
@@ -245,14 +243,6 @@ public class TokenReplacer
             return map;
         }
 
-        @Nonnull
-        protected abstract ReplaceFactory factory();
-
         protected abstract Theme getOther(String include);
-
-        public String flag(List<String> flags, int index, String def)
-        {
-            return flags.size() > index ? flags.get(index) : def;
-        }
     }
 }

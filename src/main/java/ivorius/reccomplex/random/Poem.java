@@ -8,15 +8,18 @@ package ivorius.reccomplex.random;
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Multimap;
+import com.google.common.collect.Sets;
 import com.google.common.io.LineReader;
 import ivorius.reccomplex.RecurrentComplex;
 import ivorius.reccomplex.files.SimpleLeveledRegistry;
+import ivorius.reccomplex.utils.SymbolTokenizer;
 import org.apache.commons.lang3.StringUtils;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.io.IOException;
 import java.io.StringReader;
+import java.text.ParseException;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -50,14 +53,14 @@ public class Poem
         //noinspection StatementWithEmptyBody
         while (poemContext.add(random, poemContext.places, 0.3f, Place.randomPlace(random).getFullPlaceType())) ;
 
-        String title = randomTitle(random, theme, poemContext, maxTitleLength);
+        Map<String, List<List<Token>>> built = theme.build();
+
+        String title = randomTitle(random, poemContext, maxTitleLength, built);
         char titleLastChar = title.charAt(title.length() - 1);
         if (titleLastChar == '.' || titleLastChar == ',' || titleLastChar == ';')
             title = title.substring(0, title.length() - 1);
 
         StringBuilder poem = new StringBuilder();
-
-        Map<String, List<String>> built = theme.build();
 
         int verses = random.nextInt(5) + 1;
         for (int verse = 0; verse < verses; verse++)
@@ -84,10 +87,8 @@ public class Poem
     }
 
     @Nonnull
-    protected static String randomTitle(Random random, Theme theme, PoemContext poemContext, Integer maxLength)
+    protected static String randomTitle(Random random, PoemContext poemContext, Integer maxLength, Map<String, List<List<Token>>> built)
     {
-        Map<String, List<String>> built = theme.build();
-
         for (int i = 0; i < TITLE_TRIES; i++)
         {
             String title = getRandomPhrase(random, built.get("t"), poemContext, built).trim();
@@ -98,71 +99,43 @@ public class Poem
         return StringUtils.abbreviate(getRandomPhrase(random, built.get("t"), poemContext, built).trim(), maxLength);
     }
 
-    private static String getRandomPhrase(Random random, List<String> sentencePatterns, PoemContext poemContext, Map<String, List<String>> theme)
+    private static String getRandomPhrase(Random random, List<List<Token>> sentencePatterns, PoemContext poemContext, Map<String, List<List<Token>>> theme)
     {
-        return firstCharUppercase(replaceAllWords(random, getRandomElementFrom(sentencePatterns, random), poemContext, theme));
+        return firstCharUppercase(compute(random, getRandomElementFrom(sentencePatterns, random), poemContext, theme));
     }
 
-    private static String replaceAllWords(Random random, String text, PoemContext poemContext, Map<String, List<String>> theme)
+    private static String compute(Random random, List<Token> text, PoemContext poemContext, Map<String, List<List<Token>>> theme)
     {
-        StringBuilder builder = new StringBuilder(text);
+        StringBuilder builder = new StringBuilder();
+        ArrayDeque<Token> queue = new ArrayDeque<>();
+        queue.addAll(text);
 
-        for (Map.Entry<String, List<String>> entry : theme.entrySet())
-            replaceAll(random, builder, entry.getValue(), entry.getKey());
+        Map<String, List<Token>> repeats = new HashMap<>();
 
-        replaceAll(random, builder, poemContext.names, "name");
-        replaceAll(random, builder, poemContext.places, "place");
-        replaceAllWithNums(random, builder, "lownum", 2, 10, 1);
-        replaceAllWithNums(random, builder, "highnum", 2, 10, 10);
-        replaceAllWithNums(random, builder, "hugenum", 1, 10, 1000);
-
-        return builder.toString();
-    }
-
-    private static void replaceAll(Random random, StringBuilder builder, List<String> words, String tag)
-    {
-        String repeatWord = null;
-        int index;
-        while ((index = builder.indexOf("<" + tag)) >= 0)
+        Token token;
+        while ((token = queue.poll()) != null)
         {
-            int endIndex = builder.indexOf(">", index);
-            if (builder.charAt(endIndex - 1) == 'r')
+            if (token instanceof ComputeToken)
             {
-                if (repeatWord == null)
+                ComputeToken symbol = (ComputeToken) token;
+                boolean repeat = symbol.flags.contains("r");
+
+                List<Token> tokens = repeat ? repeats.get(symbol.tag) : null;
+                if (tokens == null)
                 {
-                    repeatWord = getRandomElementFrom(words, random);
+                    tokens = symbol.compute(theme, poemContext, random);
+                    if (repeat) repeats.put(symbol.tag, tokens);
                 }
 
-                builder.replace(index, endIndex + 1, repeatWord);
+                // Add it backwards since it's reversed
+                for (int i = tokens.size() - 1; i >= 0; i--)
+                    queue.addFirst(tokens.get(i));
             }
-            else
-            {
-                builder.replace(index, endIndex + 1, getRandomElementFrom(words, random));
-            }
+            else if (token instanceof StringToken)
+                builder.append(((StringToken) token).string);
         }
-    }
 
-    private static void replaceAllWithNums(Random random, StringBuilder builder, String tag, int min, int max, int mul)
-    {
-        String repeatWord = null;
-        int index;
-        while ((index = builder.indexOf("<" + tag)) >= 0)
-        {
-            int endIndex = builder.indexOf(">", index);
-            if (builder.charAt(endIndex - 1) == 'r')
-            {
-                if (repeatWord == null)
-                {
-                    repeatWord = String.valueOf((random.nextInt(max - min + 1) + min) * mul);
-                }
-
-                builder.replace(index, endIndex + 1, repeatWord);
-            }
-            else
-            {
-                builder.replace(index, endIndex + 1, String.valueOf((random.nextInt(max - min + 1) + min) * mul));
-            }
-        }
+        return builder.toString().trim();
     }
 
     private static String firstCharUppercase(String name)
@@ -183,6 +156,23 @@ public class Poem
     public String getText()
     {
         return text;
+    }
+
+    protected interface Computer
+    {
+        List<Token> compute(ComputeToken token, Map<String, List<List<Token>>> theme, PoemContext context, Random random);
+
+        static Computer simple(SimpleComputer computer)
+        {
+            return (token, theme, context, random) ->
+                    Collections.singletonList(new StringToken(0, 0,
+                            computer.compute(token, theme, context, random)));
+        }
+
+        interface SimpleComputer
+        {
+            String compute(ComputeToken token, Map<String, List<List<Token>>> theme, PoemContext context, Random random);
+        }
     }
 
     public static class Theme
@@ -229,21 +219,19 @@ public class Poem
             return theme.contents.get(tag);
         }
 
-        private static void assertContents(List<String> list)
+        public Map<String, List<List<Token>>> build()
         {
-            if (list.size() == 0)
-            {
-                list.add("MISSING");
-            }
-        }
+            HashMultimap<String, List<Token>> map = HashMultimap.create();
+            SymbolTokenizer<Token> tokenizer = new SymbolTokenizer<>(
+                    new SymbolTokenizer.SimpleCharacterRules('\\', null, new char[0], null),
+                    new ReplaceFactory()
+            );
 
-        public Map<String, List<String>> build()
-        {
-            return build(HashMultimap.create()).asMap().entrySet().stream()
+            return build(map, tokenizer).asMap().entrySet().stream()
                     .collect(Collectors.toMap(Map.Entry::getKey, k -> Lists.newArrayList(k.getValue())));
         }
 
-        protected Multimap<String, String> build(Multimap<String, String> map)
+        protected Multimap<String, List<Token>> build(Multimap<String, List<Token>> map, SymbolTokenizer<Token> tokenizer)
         {
             for (String include : contents.get("Include"))
             {
@@ -255,32 +243,85 @@ public class Poem
                     continue;
                 }
 
-                theme.build(map);
+                theme.build(map, tokenizer);
             }
 
-            map(map, "l", "Lines");
-            map(map, "t", "Titles");
-            map(map, "1", "Concrete Nouns");
-            map(map, "2", "Abstract Nouns");
-            map(map, "3", "Present Transitive Verbs");
-            map(map, "4", "Past Transitive Verbs");
-            map(map, "5", "Present Intransitive Verbs");
-            map(map, "6", "Adjectives");
-            map(map, "7", "Adverbs");
-            map(map, "8", "Prepositions");
-            map(map, "9", "Interjections");
-            map(map, "10", "Concrete Nouns Plural");
+            map(map, "l", "Lines", tokenizer);
+            map(map, "t", "Titles", tokenizer);
+            map(map, "1", "Concrete Nouns", tokenizer);
+            map(map, "2", "Abstract Nouns", tokenizer);
+            map(map, "3", "Present Transitive Verbs", tokenizer);
+            map(map, "4", "Past Transitive Verbs", tokenizer);
+            map(map, "5", "Present Intransitive Verbs", tokenizer);
+            map(map, "6", "Adjectives", tokenizer);
+            map(map, "7", "Adverbs", tokenizer);
+            map(map, "8", "Prepositions", tokenizer);
+            map(map, "9", "Interjections", tokenizer);
+            map(map, "10", "Concrete Nouns Plural", tokenizer);
 
             return map;
         }
 
-        public void map(Multimap<String, String> map, String key, String title)
+        public void map(Multimap<String, List<Token>> map, String key, String title, SymbolTokenizer<Token> tokenizer)
         {
-            map.putAll(key, contents.get(title));
+            map.putAll(key, contents.get(title).stream()
+                    .<List<Token>>map(s ->
+                    {
+                        try
+                        {
+                            return tokenizer.tokenize(s);
+                        }
+                        catch (ParseException e)
+                        {
+                            RecurrentComplex.logger.error("Error tokenizing poem", e);
+                            return Collections.singletonList(new StringToken(0, s.length(), s));
+                        }
+                    })
+                    .collect(Collectors.toList()));
+        }
+
+    }
+
+    protected static abstract class Token extends SymbolTokenizer.Token
+    {
+        public Token(int startIndex, int endIndex)
+        {
+            super(startIndex, endIndex);
         }
     }
 
-    private static class PoemContext
+    protected static class ComputeToken extends Token
+    {
+        protected String tag;
+        protected Set<String> flags;
+        protected Computer computer;
+
+        public ComputeToken(int startIndex, int endIndex, String tag, Set<String> flags, Computer computer)
+        {
+            super(startIndex, endIndex);
+            this.tag = tag;
+            this.flags = flags;
+            this.computer = computer;
+        }
+
+        public List<Token> compute(Map<String, List<List<Token>>> theme, PoemContext context, Random random)
+        {
+            return computer.compute(this, theme, context, random);
+        }
+    }
+
+    protected static class StringToken extends Token
+    {
+        public String string;
+
+        public StringToken(int startIndex, int endIndex, String string)
+        {
+            super(startIndex, endIndex);
+            this.string = string;
+        }
+    }
+
+    protected static class PoemContext
     {
         public List<String> names = new ArrayList<>();
         public List<String> places = new ArrayList<>();
@@ -290,6 +331,76 @@ public class Poem
         {
             list.add(value);
             return random.nextFloat() < continueChance;
+        }
+    }
+
+    protected static class ReplaceFactory implements SymbolTokenizer.TokenFactory
+    {
+        public static String join(Collection<List<Token>> lists)
+        {
+            return lists.stream()
+                    .map(Object::toString)
+                    .reduce("", (s, r) -> s + " " + r);
+        }
+
+        @Nullable
+        @Override
+        public SymbolTokenizer.Token tryConstructSymbolTokenAt(int index, @Nonnull String string)
+        {
+            if (string.charAt(index) == '<')
+            {
+                int end = string.indexOf('>', index);
+                String contents = string.substring(index + 1, end);
+                List<String> parts = Arrays.asList(contents.split(" "));
+
+                String tag = parts.get(0);
+                Set<String> flags = Sets.newHashSet(parts.subList(1, parts.size()));
+
+                return new ComputeToken(index, end + 1, tag, flags, computer(tag, flags));
+            }
+
+            return null;
+        }
+
+        @Nonnull
+        protected Computer computer(String tag, Set<String> flags)
+        {
+            switch (tag)
+            {
+                case "place":
+                    return Computer.simple((token, theme, context, random) ->
+                            getRandomElementFrom(context.places, random));
+                case "name":
+                    return Computer.simple((token, theme, context, random) ->
+                            getRandomElementFrom(context.names, random));
+                case "lownum":
+                    return Computer.simple(numComputer(2, 10, 1));
+                case "highnum":
+                    return Computer.simple(numComputer(2, 10, 10));
+                case "hugenum":
+                    return Computer.simple(numComputer(1, 10, 1000));
+                default:
+                    return (token, theme, context, random) ->
+                    {
+                        List<List<Token>> list = theme.get(tag);
+                        return list == null || list.isEmpty()
+                                ? Collections.singletonList(new StringToken(0, 0, "EMPTY"))
+                                : getRandomElementFrom(list, random);
+                    };
+            }
+        }
+
+        private Computer.SimpleComputer numComputer(int min, int max, int mul)
+        {
+            return (token, theme, context, random) ->
+                    String.valueOf((random.nextInt(max - min + 1) + min) * mul);
+        }
+
+        @Nonnull
+        @Override
+        public SymbolTokenizer.Token constructStringToken(int index, @Nonnull String string)
+        {
+            return new StringToken(index, index + string.length(), string);
         }
     }
 }

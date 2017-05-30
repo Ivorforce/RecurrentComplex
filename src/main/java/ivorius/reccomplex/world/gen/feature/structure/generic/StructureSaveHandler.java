@@ -14,6 +14,7 @@ import ivorius.reccomplex.files.loading.FileLoaderRegistry;
 import ivorius.reccomplex.files.loading.RCFileSuffix;
 import ivorius.reccomplex.files.saving.FileSaverAdapter;
 import ivorius.reccomplex.json.NBTToJson;
+import ivorius.reccomplex.utils.IvZips;
 import ivorius.reccomplex.world.gen.feature.structure.Structure;
 import ivorius.reccomplex.world.gen.feature.structure.StructureRegistry;
 import ivorius.reccomplex.utils.ByteArrays;
@@ -25,6 +26,8 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.Objects;
+import java.util.function.Supplier;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 import java.util.zip.ZipOutputStream;
@@ -74,9 +77,11 @@ public class StructureSaveHandler
         return builder.create();
     }
 
-    public GenericStructure fromJSON(String jsonData) throws JsonSyntaxException
+    public GenericStructure fromJSON(String jsonData, NBTTagCompound worldData) throws JsonSyntaxException
     {
-        return gson.fromJson(jsonData, GenericStructure.class);
+        GenericStructure structure = gson.fromJson(jsonData, GenericStructure.class);
+        structure.worldDataCompound = worldData;
+        return structure;
     }
 
     public String toJSON(GenericStructure structureInfo)
@@ -84,11 +89,11 @@ public class StructureSaveHandler
         return gson.toJson(structureInfo, GenericStructure.class);
     }
 
-    public GenericStructure structureInfoFromResource(ResourceLocation resourceLocation)
+    public GenericStructure fromResource(ResourceLocation resourceLocation)
     {
         try
         {
-            return structureInfoFromZip(new ZipInputStream(IvFileHelper.inputStreamFromResourceLocation(resourceLocation)));
+            return fromZip(new ZipInputStream(IvFileHelper.inputStreamFromResourceLocation(resourceLocation)));
         }
         catch (Exception ex)
         {
@@ -98,43 +103,38 @@ public class StructureSaveHandler
         return null;
     }
 
-    public GenericStructure structureInfoFromZip(ZipInputStream zipInputStream) throws StructureLoadException
+    public GenericStructure fromZip(ZipInputStream zipInputStream) throws StructureLoadException
     {
+        IvZips.Finder finder = new IvZips.Finder();
+
+        Supplier<String> json = finder.bytes(STRUCTURE_INFO_JSON_FILENAME, String::new);
+        Supplier<NBTTagCompound> worldData = finder.bytes(WORLD_DATA_NBT_FILENAME,
+                bytes -> CompressedStreamTools.readCompressed(new ByteArrayInputStream(bytes)));
+
         try
         {
-            String json = null;
-            NBTTagCompound worldData = null;
-
-            ZipEntry zipEntry;
-
-            while ((zipEntry = zipInputStream.getNextEntry()) != null)
-            {
-                byte[] bytes = ByteArrays.completeByteArray(zipInputStream);
-
-                if (bytes != null)
-                {
-                    if (STRUCTURE_INFO_JSON_FILENAME.equals(zipEntry.getName()))
-                        json = new String(bytes);
-                    else if (WORLD_DATA_NBT_FILENAME.equals(zipEntry.getName()))
-                        worldData = CompressedStreamTools.readCompressed(new ByteArrayInputStream(bytes));
-                }
-
-                zipInputStream.closeEntry();
-            }
-            zipInputStream.close();
-
-            if (json == null || worldData == null)
-                throw new StructureInvalidZipException(json != null, worldData != null);
-
-            GenericStructure genericStructureInfo = fromJSON(json);
-            genericStructureInfo.worldDataCompound = worldData;
-
-            return genericStructureInfo;
+            finder.read(zipInputStream);
         }
         catch (IOException e)
         {
             throw new StructureLoadException(e);
         }
+
+        if (json.get() == null || worldData.get() == null)
+            throw new StructureInvalidZipException(json.get() != null, worldData.get() != null);
+
+        return fromJSON(json.get(), worldData.get());
+    }
+
+    public void toZip(Structure<?> structure, ZipOutputStream zipOutputStream) throws IOException
+    {
+        GenericStructure copy = structure.copyAsGenericStructure();
+        Objects.requireNonNull(copy);
+
+        addZipEntry(zipOutputStream, STRUCTURE_INFO_JSON_FILENAME, toJSON(copy).getBytes());
+        addZipEntry(zipOutputStream, WORLD_DATA_NBT_FILENAME, ByteArrays.toByteArray(s -> CompressedStreamTools.writeCompressed(copy.worldDataCompound, s)));
+
+        zipOutputStream.close();
     }
 
     public class Loader extends FileLoaderRegistry<GenericStructure>
@@ -149,7 +149,7 @@ public class StructureSaveHandler
         {
             try (ZipInputStream zip = new ZipInputStream(Files.newInputStream(path)))
             {
-                return structureInfoFromZip(zip);
+                return fromZip(zip);
             }
         }
     }
@@ -162,19 +162,11 @@ public class StructureSaveHandler
         }
 
         @Override
-        public void saveFile(Path path, Structure<?> structureInfo) throws Exception
+        public void saveFile(Path path, Structure<?> structure) throws Exception
         {
-            GenericStructure structure = structureInfo.copyAsGenericStructureInfo();
-
-            if (structure == null)
-                throw new IllegalArgumentException();
-
             try (ZipOutputStream zipOutputStream = new ZipOutputStream(Files.newOutputStream(path)))
             {
-                addZipEntry(zipOutputStream, STRUCTURE_INFO_JSON_FILENAME, toJSON(structure).getBytes());
-                addZipEntry(zipOutputStream, WORLD_DATA_NBT_FILENAME, ByteArrays.toByteArray(s -> CompressedStreamTools.writeCompressed(structure.worldDataCompound, s)));
-
-                zipOutputStream.close();
+                toZip(structure, zipOutputStream);
             }
         }
     }

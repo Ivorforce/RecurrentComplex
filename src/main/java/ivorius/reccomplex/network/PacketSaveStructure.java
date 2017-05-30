@@ -67,7 +67,7 @@ public class PacketSaveStructure implements IMessage
     public void fromBytes(ByteBuf buf)
     {
         structureID = ByteBufUtils.readUTF8String(buf);
-        structureInfo = StructureSaveHandler.INSTANCE.fromJSON(ByteBufUtils.readUTF8String(buf));
+        structureInfo = StructureSaveHandler.INSTANCE.fromJSON(ByteBufUtils.readUTF8String(buf), null);
         saveDirectoryDataResult = SaveDirectoryData.Result.readFrom(buf);
     }
 

@@ -67,7 +67,7 @@ public class PacketEditStructure implements IMessage
     public void fromBytes(ByteBuf buf)
     {
         structureID = ByteBufUtils.readUTF8String(buf);
-        structureInfo = StructureSaveHandler.INSTANCE.fromJSON(ByteBufUtils.readUTF8String(buf));
+        structureInfo = StructureSaveHandler.INSTANCE.fromJSON(ByteBufUtils.readUTF8String(buf), null);
         saveDirectoryData = SaveDirectoryData.readFrom(buf);
     }
 

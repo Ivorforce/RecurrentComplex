@@ -5,6 +5,7 @@
 
 package ivorius.reccomplex.utils;
 
+import javax.annotation.Nullable;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.HashMap;
@@ -41,27 +42,28 @@ public class IvZips
 
         public void read(ZipInputStream stream) throws IOException
         {
-            walkStreams(stream, (name, inputStream) -> {
+            walkStreams(stream, (name, inputStream) ->
+            {
                 EntryConsumer<InputStream> consumer = map.get(name);
                 if (consumer != null)
                     consumer.accept(inputStream);
             });
         }
 
-        public <T> Supplier<T> stream(String name, Function<InputStream, T> function)
+        public <T> Result<T> stream(String name, @Nullable Supplier<T> defaultVal, Function<InputStream, T> function)
         {
             if (map.containsKey(name))
                 throw new IllegalArgumentException();
 
-            Object[] result = new Object[1];
-            map.put(name, inputStream -> result[0] = function.apply(inputStream));
-            //noinspection unchecked
-            return () -> (T) result[0];
+            Result<T> result = new Result<>(name);
+            if (defaultVal != null) result.set(defaultVal.get());
+            map.put(name, inputStream -> result.set(function.apply(inputStream)));
+            return result;
         }
 
-        public <T> Supplier<T> bytes(String name, Function<byte[], T> function)
+        public <T> Result<T> bytes(String name, @Nullable Supplier<T> defaultVal, Function<byte[], T> function)
         {
-            return stream(name, inputStream ->
+            return stream(name, defaultVal, inputStream ->
             {
                 byte[] bytes = ByteArrays.completeByteArray(inputStream);
                 return bytes != null ? function.apply(bytes) : null;
@@ -78,6 +80,47 @@ public class IvZips
         private interface EntryConsumer<T>
         {
             void accept(T t) throws IOException;
+        }
+
+        public class Result<T>
+        {
+            protected String name;
+            protected T t;
+            protected boolean present;
+
+            public Result(String name)
+            {
+                this.name = name;
+            }
+
+            protected void set(T t)
+            {
+                this.t = t;
+                present = true;
+            }
+
+            public boolean isPresent()
+            {
+                return present;
+            }
+
+            public T get()
+            {
+                if (!isPresent())
+                    throw new MissingEntryException(name);
+                return t;
+            }
+        }
+
+        public class MissingEntryException extends RuntimeException
+        {
+            public final String name;
+
+            public MissingEntryException(String name)
+            {
+                super("Missing Entry: " + name);
+                this.name = name;
+            }
         }
     }
 }

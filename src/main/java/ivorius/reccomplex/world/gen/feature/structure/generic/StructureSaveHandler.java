@@ -14,10 +14,10 @@ import ivorius.reccomplex.files.loading.FileLoaderRegistry;
 import ivorius.reccomplex.files.loading.RCFileSuffix;
 import ivorius.reccomplex.files.saving.FileSaverAdapter;
 import ivorius.reccomplex.json.NBTToJson;
+import ivorius.reccomplex.utils.ByteArrays;
 import ivorius.reccomplex.utils.IvZips;
 import ivorius.reccomplex.world.gen.feature.structure.Structure;
 import ivorius.reccomplex.world.gen.feature.structure.StructureRegistry;
-import ivorius.reccomplex.utils.ByteArrays;
 import net.minecraft.nbt.CompressedStreamTools;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ResourceLocation;
@@ -27,7 +27,6 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Objects;
-import java.util.function.Supplier;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 import java.util.zip.ZipOutputStream;
@@ -103,27 +102,23 @@ public class StructureSaveHandler
         return null;
     }
 
-    public GenericStructure fromZip(ZipInputStream zipInputStream) throws StructureLoadException
+    public GenericStructure fromZip(ZipInputStream zipInputStream) throws IOException
     {
         IvZips.Finder finder = new IvZips.Finder();
 
-        Supplier<String> json = finder.bytes(STRUCTURE_INFO_JSON_FILENAME, String::new);
-        Supplier<NBTTagCompound> worldData = finder.bytes(WORLD_DATA_NBT_FILENAME,
+        IvZips.Finder.Result<String> json = finder.bytes(STRUCTURE_INFO_JSON_FILENAME, null, String::new);
+        IvZips.Finder.Result<NBTTagCompound> worldData = finder.bytes(WORLD_DATA_NBT_FILENAME, null,
                 bytes -> CompressedStreamTools.readCompressed(new ByteArrayInputStream(bytes)));
 
         try
         {
             finder.read(zipInputStream);
+            return fromJSON(json.get(), worldData.get());
         }
-        catch (IOException e)
+        catch (IOException | IvZips.Finder.MissingEntryException e)
         {
-            throw new StructureLoadException(e);
+            throw new IOException("Error loading structure", e);
         }
-
-        if (json.get() == null || worldData.get() == null)
-            throw new StructureInvalidZipException(json.get() != null, worldData.get() != null);
-
-        return fromJSON(json.get(), worldData.get());
     }
 
     public void toZip(Structure<?> structure, ZipOutputStream zipOutputStream) throws IOException

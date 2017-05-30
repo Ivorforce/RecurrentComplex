@@ -1,3 +1,14 @@
+*** title
+<name>
+So <adj>
+<adj> <anoun>
+<lownum> <cnoun-pl>
+<highnum> <cnoun-pl>
+Oh so <adj>
+<interj>!
+We <verb-trans-past> to <verb-trans-pres>.
+When <cnoun> <verb-trans-past>
+
 *** text
 <verse>
 <verse><br><br><verse>
@@ -91,17 +102,6 @@ Now the <anoun> is <adj>
 <prepo> <cnoun-pl> of <anoun>
 <prepo> <cnoun-pl> of <anoun> and <cnoun-pl> of <anoun>
 Where <cnoun-pl> <verb-intra-pres>
-
-*** title
-<name>
-So <adj>
-<adj> <anoun>
-<lownum> <cnoun-pl>
-<highnum> <cnoun-pl>
-Oh so <adj>
-<interj>!
-We <verb-trans-past> to <verb-trans-pres>.
-When <cnoun> <verb-trans-past>
 
 *** prepo
 on

@@ -32,7 +32,7 @@ public class ItemArtifactGenerator extends Item implements GeneratingItem
         if (!worldIn.isRemote)
             return ItemInventoryGenerationTag.applyGeneratorToInventory((WorldServer) worldIn, pos, this, stack) ? EnumActionResult.SUCCESS : EnumActionResult.PASS;
 
-        return super.onItemUse(stack, playerIn, worldIn, pos, hand, facing, hitX, hitY, hitZ);
+        return EnumActionResult.SUCCESS;
     }
 
     @Override

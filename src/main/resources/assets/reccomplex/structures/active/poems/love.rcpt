@@ -1,7 +1,7 @@
-*** Include
+*** include
 base
 
-*** Concrete Nouns
+*** concretenoun
 heart
 face
 eye
@@ -30,7 +30,7 @@ letter
 poem
 text
 
-*** Concrete Nouns Plural
+*** concnounplu
 hearts
 faces
 eyes
@@ -57,7 +57,7 @@ poems
 texts
 lips
 
-*** Abstract Nouns
+*** abstractnoun
 faith
 love
 hate
@@ -98,7 +98,7 @@ mirth
 reverie
 dawn
 
-*** Present Transitive Verbs
+*** prestransverb
 make
 see
 feel
@@ -117,7 +117,7 @@ hie
 hate
 gather
 
-*** Past Transitive Verbs
+*** pasttransverb
 made
 saw
 felt
@@ -136,7 +136,7 @@ hied
 hated
 gathered
 
-*** Present Intransitive Verbs
+*** presintverb
 run
 bleed
 glow
@@ -160,7 +160,7 @@ like
 hate
 suspire
 
-*** Adjectives
+*** adj
 giddy
 aching
 tender
@@ -195,7 +195,7 @@ sempiternal
 wanton
 perfervid
 
-*** Adverbs
+*** adverb
 gently
 barely
 hardly
@@ -213,7 +213,7 @@ ne'er
 never
 otherwhile
 
-*** Prepositions
+*** prepo
 on
 in
 about
@@ -227,7 +227,7 @@ before
 twixt
 amidst
 
-*** Interjections
+*** interj
 hey
 ha
 alas

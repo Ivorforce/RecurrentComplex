@@ -1,7 +1,7 @@
-*** Include
+*** include
 base
 
-*** Concrete Nouns
+*** concretenoun
 heart
 lover
 sky
@@ -11,7 +11,7 @@ lock
 lips
 miasma
 
-*** Concrete Nouns Plural
+*** concnounplu
 hearts
 lovers
 skies
@@ -19,7 +19,7 @@ kisses
 locks
 lips
 
-*** Abstract Nouns
+*** abstractnoun
 fear
 desire
 death
@@ -43,7 +43,7 @@ dusk
 deceit
 lies
 
-*** Present Transitive Verbs
+*** prestransverb
 make
 see
 feel
@@ -58,7 +58,7 @@ give
 drive
 seek
 
-*** Past Transitive Verbs
+*** pasttransverb
 made
 saw
 felt
@@ -73,7 +73,7 @@ gave
 drove
 sought
 
-*** Present Intransitive Verbs
+*** presintverb
 run
 bleed
 glow
@@ -97,7 +97,7 @@ like
 hate
 whisper
 
-*** Adjectives
+*** adj
 aching
 wild
 dark
@@ -123,7 +123,7 @@ disingenuous
 drear
 acheronian
 
-*** Adverbs
+*** adverb
 barely
 hardly
 silently
@@ -137,7 +137,7 @@ never
 dissemblingly
 wailfully
 
-*** Prepositions
+*** prepo
 on
 in
 about
@@ -151,7 +151,7 @@ before
 twixt
 
 
-*** Interjections
+*** interj
 hey
 ha
 alas

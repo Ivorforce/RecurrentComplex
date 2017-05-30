@@ -137,7 +137,9 @@ public class TokenReplacer
                 String tag = parts.get(0);
                 List<String> flags = Lists.newArrayList(parts.subList(1, parts.size()));
 
-                return new ComputeToken<>(index, end + 1, tag, flags, computer(tag, flags));
+                Computer<T> computer = computer(tag, flags);
+                if (computer != null)
+                    return new ComputeToken<>(index, end + 1, tag, flags, computer);
             }
 
             return null;
@@ -225,8 +227,8 @@ public class TokenReplacer
                             }
                             catch (ParseException e)
                             {
-                                RecurrentComplex.logger.error("Error tokenizing theme", e);
-                                return Collections.singletonList(new StringToken(0, s.length(), "ERROR"));
+                                RecurrentComplex.logger.warn("Unable to read line: " + s, e);
+                                return Collections.emptyList();
                             }
                         })::iterator);
 

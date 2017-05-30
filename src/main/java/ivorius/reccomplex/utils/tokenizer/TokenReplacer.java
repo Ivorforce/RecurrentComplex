@@ -39,14 +39,11 @@ public class TokenReplacer
             if (token instanceof ExplodingToken)
             {
                 ExplodingToken<T> symbol = (ExplodingToken) token;
-                boolean repeat = symbol.flags.contains("r");
+                boolean remember = symbol.flags.contains("rem");
+                boolean repeat = symbol.flags.contains("rep");
 
-                List<Token> tokens = repeat ? repeats.get(symbol.tag) : null;
-                if (tokens == null)
-                {
-                    tokens = symbol.explode(theme, context, random);
-                    if (repeat) repeats.put(symbol.tag, tokens);
-                }
+                List<Token> tokens = repeat ? repeats.get(symbol.tag) : symbol.explode(theme, context, random);
+                if (remember) repeats.put(symbol.tag, tokens);
 
                 // Add it backwards since it's reversed
                 for (int i = tokens.size() - 1; i >= 0; i--)

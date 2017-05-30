@@ -1,9 +1,9 @@
 /*
  *  Copyright (c) 2014, Lukas Tenbrink.
- *  * http://lukas.axxim.net
+ *  * http://ivorius.net
  */
 
-package ivorius.reccomplex.utils;
+package ivorius.reccomplex.utils.tokenizer;
 
 import gnu.trove.stack.TIntStack;
 import gnu.trove.stack.array.TIntArrayStack;

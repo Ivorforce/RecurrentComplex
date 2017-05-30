@@ -1,7 +1,7 @@
-*** Include
+*** include
 base
 
-*** Concrete Nouns
+*** concretenoun
 blood
 sword
 day
@@ -29,7 +29,7 @@ bone
 wound
 swashbuckler
 
-*** Concrete Nouns Plural
+*** concnounplu
 people
 swords
 days
@@ -56,7 +56,7 @@ bones
 wounds
 swashbucklers
 
-*** Abstract Nouns
+*** abstractnoun
 agony
 pain
 death
@@ -93,7 +93,7 @@ challenge
 deceit
 lies
 
-*** Present Transitive Verbs
+*** prestransverb
 kill
 hurt
 ravage
@@ -114,7 +114,7 @@ lose
 capture
 rive
 
-*** Past Transitive Verbs
+*** pasttransverb
 killed
 hurt
 ravaged
@@ -135,7 +135,7 @@ lost
 captured
 rived
 
-*** Present Intransitive Verbs
+*** presintverb
 run
 bleed
 suffer
@@ -159,7 +159,7 @@ swoop
 linger
 advesperate
 
-*** Adjectives
+*** adj
 quick
 painful
 wild
@@ -189,7 +189,7 @@ sanguine
 madding
 wasteful
 
-*** Adverbs
+*** adverb
 swiftly
 slowly
 suddenly
@@ -205,7 +205,7 @@ ominously
 dissemblingly
 wailfully
 
-*** Prepositions
+*** prepo
 on
 in
 about
@@ -219,7 +219,7 @@ before
 twixt
 amidst
 
-*** Interjections
+*** interj
 o
 alas
 aha

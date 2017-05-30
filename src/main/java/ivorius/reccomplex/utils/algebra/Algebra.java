@@ -14,7 +14,7 @@ import ivorius.ivtoolkit.tools.Visitor;
 import ivorius.ivtoolkit.util.IvFunctions;
 import ivorius.reccomplex.utils.PrecedenceSet;
 import ivorius.reccomplex.utils.PrecedenceSets;
-import ivorius.reccomplex.utils.SymbolTokenizer;
+import ivorius.reccomplex.utils.tokenizer.SymbolTokenizer;
 import org.apache.commons.lang3.tuple.Pair;
 
 import javax.annotation.Nonnull;

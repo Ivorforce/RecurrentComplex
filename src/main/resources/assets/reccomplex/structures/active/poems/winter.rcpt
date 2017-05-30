@@ -1,7 +1,7 @@
-*** Include
+*** include
 base
 
-*** Concrete Nouns
+*** concretenoun
 stone
 water
 wind
@@ -22,7 +22,7 @@ blizzard
 storm
 gravel
 
-*** Concrete Nouns Plural
+*** concnounplu
 stones
 raindrops
 flames
@@ -35,7 +35,7 @@ mountains
 blizzards
 storms
 
-*** Abstract Nouns
+*** abstractnoun
 bitterness
 comfort
 pain
@@ -58,7 +58,7 @@ coldness
 isolation
 stagnation
 
-*** Present Transitive Verbs
+*** prestransverb
 see
 feel
 hold
@@ -73,7 +73,7 @@ pick
 undulate
 hie
 
-*** Past Transitive Verbs
+*** pasttransverb
 saw
 felt
 held
@@ -88,7 +88,7 @@ picked
 undulated
 hied
 
-*** Present Intransitive Verbs
+*** presintverb
 sit
 hide
 pray
@@ -103,7 +103,7 @@ breathe
 endure
 purl
 
-*** Adjectives
+*** adj
 quick
 comfortable
 slow
@@ -125,7 +125,7 @@ overclouded
 daeodal
 frory
 
-*** Adverbs
+*** adverb
 swiftly
 slowly
 softly
@@ -137,7 +137,7 @@ mindlessly
 ne'er
 never
 
-*** Prepositions
+*** prepo
 on
 in
 about
@@ -151,7 +151,7 @@ before
 twixt
 amidst
 
-*** Interjections
+*** interj
 o
 alas
 aha

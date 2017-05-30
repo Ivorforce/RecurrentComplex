@@ -106,8 +106,8 @@ public class StructureSaveHandler
     {
         ZipFinder finder = new ZipFinder();
 
-        ZipFinder.Result<String> json = finder.bytes(STRUCTURE_INFO_JSON_FILENAME, null, String::new);
-        ZipFinder.Result<NBTTagCompound> worldData = finder.bytes(WORLD_DATA_NBT_FILENAME, null,
+        ZipFinder.Result<String> json = finder.bytes(STRUCTURE_INFO_JSON_FILENAME, String::new);
+        ZipFinder.Result<NBTTagCompound> worldData = finder.bytes(WORLD_DATA_NBT_FILENAME,
                 bytes -> CompressedStreamTools.readCompressed(new ByteArrayInputStream(bytes)));
 
         try

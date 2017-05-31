@@ -7,6 +7,8 @@ package ivorius.reccomplex.commands;
 
 import ivorius.ivtoolkit.util.IvStreams;
 import ivorius.reccomplex.RCConfig;
+import ivorius.reccomplex.commands.parameters.Expect;
+import ivorius.reccomplex.commands.parameters.Parameters;
 import ivorius.reccomplex.files.RCFiles;
 import ivorius.reccomplex.files.loading.FileSuffixFilter;
 import ivorius.reccomplex.utils.ServerTranslations;
@@ -26,7 +28,9 @@ import org.apache.commons.lang3.tuple.Pair;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.io.File;
-import java.util.*;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Random;
 import java.util.function.Predicate;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
@@ -101,7 +105,12 @@ public class CommandRetrogen extends CommandBase
     @Override
     public void execute(MinecraftServer server, ICommandSender commandSender, String[] args) throws CommandException
     {
-        long count = retrogen(RCCommands.tryParseDimension(commandSender, args, 0), RCCommands.tryParseStructurePredicate(args, 4, () -> null));
+        Parameters parameters = Parameters.of(this, args);
+
+        Predicate<Structure> structurePredicate = RCCommands.structurePredicate(parameters.get("p")).optional().orElse(null);
+        WorldServer world = parameters.get("d").dimension(commandSender).require();
+
+        long count = retrogen(world, structurePredicate);
 
         commandSender.addChatMessage(ServerTranslations.format("commands.rcretro.count", String.valueOf(count)));
     }
@@ -109,12 +118,12 @@ public class CommandRetrogen extends CommandBase
     @Override
     public List<String> getTabCompletionOptions(MinecraftServer server, ICommandSender sender, String[] args, @Nullable BlockPos pos)
     {
-        if (args.length == 1)
-            return RCCommands.completeDimension(args);
-        else if (args.length >= 2)
-            return RCCommands.completeResourceMatcher(args);
-
-        return Collections.emptyList();
+        return Expect.start()
+                .named("p")
+                .next(RCCommands::completeResourceMatcher)
+                .named("d")
+                .next(RCCommands::completeDimension)
+                .get(server, sender, args, pos);
     }
 
 }

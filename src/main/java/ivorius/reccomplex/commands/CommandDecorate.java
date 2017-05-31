@@ -5,16 +5,17 @@
 
 package ivorius.reccomplex.commands;
 
-import ivorius.reccomplex.RCConfig;
 import ivorius.ivtoolkit.blocks.BlockSurfaceArea;
 import ivorius.ivtoolkit.blocks.BlockSurfacePos;
+import ivorius.reccomplex.RCConfig;
+import ivorius.reccomplex.commands.parameters.Expect;
+import ivorius.reccomplex.commands.parameters.Parameters;
 import ivorius.reccomplex.utils.ServerTranslations;
 import ivorius.reccomplex.world.gen.feature.WorldGenStructures;
 import ivorius.reccomplex.world.gen.feature.structure.Structure;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
-import net.minecraft.command.WrongUsageException;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.ChunkPos;
@@ -22,7 +23,6 @@ import net.minecraft.world.WorldServer;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import java.util.Collections;
 import java.util.List;
 import java.util.function.Predicate;
 
@@ -57,12 +57,14 @@ public class CommandDecorate extends CommandBase
     @Override
     public void execute(MinecraftServer server, ICommandSender commandSender, String[] args) throws CommandException
     {
-        if (args.length < 4)
-            throw new WrongUsageException("commands.decorate.usage");
+        Parameters parameters = Parameters.of(this, args);
 
-        BlockSurfaceArea area = new BlockSurfaceArea(RCCommands.parseSurfaceBlockPos(commandSender, args, 0, false), RCCommands.parseSurfaceBlockPos(commandSender, args, 2, false));
+        BlockSurfaceArea area = new BlockSurfaceArea(
+                parameters.get().surfacePos(commandSender, false).require(),
+                parameters.get().move(2).surfacePos(commandSender, false).require()
+        );
         BlockSurfaceArea chunkArea = new BlockSurfaceArea(getChunkPos(area.getPoint1()), getChunkPos(area.getPoint2()));
-        Predicate<Structure> structurePredicate = RCCommands.tryParseStructurePredicate(args, 4, () -> structureInfo -> true);
+        Predicate<Structure> structurePredicate = RCCommands.structurePredicate(parameters.get("p")).optional().orElse(structureInfo -> true);
 
         WorldServer world = (WorldServer) commandSender.getEntityWorld();
         chunkArea.forEach(coord -> WorldGenStructures.decorate(world, world.rand, new ChunkPos(coord.x, coord.z), structurePredicate));
@@ -71,13 +73,15 @@ public class CommandDecorate extends CommandBase
     @Override
     public List<String> getTabCompletionOptions(MinecraftServer server, ICommandSender sender, String[] args, @Nullable BlockPos pos)
     {
-        if (args.length >= 1 && args.length <= 2)
-            return getTabCompletionCoordinateXZ(args, 0, pos);
-        if (args.length >= 3 && args.length <= 4)
-            return getTabCompletionCoordinateXZ(args, 2, pos);
-        else if (args.length >= 5)
-            return RCCommands.completeResourceMatcher(args);
-
-        return Collections.emptyList();
+        return Expect.start()
+                .next(args1 -> getTabCompletionCoordinate(args1, 0, pos))
+                .next(args1 -> getTabCompletionCoordinate(args1, 1, pos))
+                .next(args1 -> getTabCompletionCoordinate(args1, 2, pos))
+                .next(args1 -> getTabCompletionCoordinate(args1, 0, pos))
+                .next(args1 -> getTabCompletionCoordinate(args1, 1, pos))
+                .next(args1 -> getTabCompletionCoordinate(args1, 2, pos))
+                .named("p")
+                .next(RCCommands::completeResourceMatcher)
+                .get(server, sender, args, pos);
     }
 }

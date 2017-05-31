@@ -40,7 +40,7 @@ public class MCParameter extends Parameter
 
     public Result<BlockPos> pos(BlockPos ref, boolean centerBlock)
     {
-        return first().failable().flatMap(x -> at(1).flatMap(y -> at(2).map(z ->
+        return first().missable().flatMap(x -> at(1).flatMap(y -> at(2).map(z ->
                 parseBlockPos(ref, new String[]{x, y, z}, 0, centerBlock))))
                 .orElse(() -> ref);
     }
@@ -53,7 +53,7 @@ public class MCParameter extends Parameter
 
     public Result<WorldServer> dimension(ICommandSender commandSender)
     {
-        return first().filter(d -> !d.equals("~"), null).failable()
+        return first().filter(d -> !d.equals("~"), null).missable()
                 .map(CommandBase::parseInt).map(DimensionManager::getWorld, t -> ServerTranslations.commandException("commands.rc.nodimension"))
                 .orElse(() -> (WorldServer) commandSender.getEntityWorld());
     }

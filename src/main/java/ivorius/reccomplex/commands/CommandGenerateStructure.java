@@ -105,13 +105,9 @@ public class CommandGenerateStructure extends CommandBase
                 .named("p").surfacePos()
                 .named("d").dimension()
                 .named("gen")
-                .next((String[] args1) ->
-                {
-                    Structure<?> structure = parameters.rc().structure().optional().orElse(null);
-                    if (structure instanceof GenericStructure)
-                        return getListOfStringsMatchingLastWord(args1, structure.generationTypes(GenerationType.class).stream().map(GenerationType::id).collect(Collectors.toList()));
-                    return Collections.emptyList();
-                })
+                .next((String[] args1) -> parameters.rc().genericStructure().tryGet()
+                        .map(structure -> structure.generationTypes(GenerationType.class).stream().map(GenerationType::id).collect(Collectors.toList()))
+                        .orElse(Collections.emptyList()))
                 .named("r").rotation()
                 .named("m").mirror()
                 .get(server, sender, args, pos);

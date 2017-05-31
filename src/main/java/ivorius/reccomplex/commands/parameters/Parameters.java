@@ -91,7 +91,7 @@ public class Parameters
 
     public Parameter get()
     {
-        return new Parameter("Ordered", params.get(null));
+        return new Parameter(null, params.get(null));
     }
 
     public Parameter get(@Nonnull String name)

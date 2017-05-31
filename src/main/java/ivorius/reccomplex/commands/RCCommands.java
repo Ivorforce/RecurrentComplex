@@ -270,8 +270,8 @@ public class RCCommands
     protected static Parameter.Result<AxisAlignedTransform2D> transform(Parameter rot, Parameter mir) throws CommandException
     {
         if (rot.has(1) || mir.has(1))
-            return rot.first().failable().map(CommandBase::parseInt).orElse(() -> 0)
-                    .flatMap(r -> mir.first().failable().map(CommandBase::parseBoolean).orElse(() -> false).map(m -> AxisAlignedTransform2D.from(r, m)));
+            return rot.first().missable().map(CommandBase::parseInt).orElse(() -> 0)
+                    .flatMap(r -> mir.first().missable().map(CommandBase::parseBoolean).orElse(() -> false).map(m -> AxisAlignedTransform2D.from(r, m)));
         return Parameter.Result.empty();
     }
 }

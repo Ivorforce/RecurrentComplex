@@ -12,6 +12,7 @@ import ivorius.reccomplex.files.loading.ResourceDirectory;
 import ivorius.reccomplex.utils.ServerTranslations;
 import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.command.CommandBase;
+import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.math.BlockPos;
@@ -42,7 +43,7 @@ public class CommandVisitFiles extends CommandBase
     }
 
     @Override
-    public void execute(MinecraftServer server, ICommandSender commandSender, String[] args)
+    public void execute(MinecraftServer server, ICommandSender commandSender, String[] args) throws CommandException
     {
         RCParameters parameters = RCParameters.of(args);
 

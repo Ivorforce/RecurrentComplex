@@ -14,6 +14,7 @@ import ivorius.reccomplex.commands.parameters.RCExpect;
 import ivorius.reccomplex.commands.parameters.RCParameters;
 import ivorius.reccomplex.utils.ServerTranslations;
 import ivorius.reccomplex.utils.expression.PositionedBlockMatcher;
+import ivorius.reccomplex.utils.optional.IvOptional;
 import ivorius.reccomplex.world.gen.feature.structure.generic.transformers.TransformerProperty;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
@@ -63,8 +64,8 @@ public class CommandSetProperty extends CommandVirtual
     {
         RCParameters parameters = RCParameters.of(args);
 
-        PositionedBlockMatcher matcher = parameters.rc("exp")
-                .expression(new PositionedBlockMatcher(RecurrentComplex.specialRegistry), "").require();
+        PositionedBlockMatcher matcher = new PositionedBlockMatcher(RecurrentComplex.specialRegistry);
+        IvOptional.ifAbsent(parameters.rc("exp").expression(matcher).optional(), () -> matcher.setExpression(""));
 
         String propertyName = parameters.get().first().require();
         String propertyValue = parameters.get().at(1).require();

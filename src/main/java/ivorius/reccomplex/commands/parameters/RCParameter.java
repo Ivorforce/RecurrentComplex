@@ -16,8 +16,6 @@ import ivorius.reccomplex.world.gen.feature.structure.generic.generation.Generat
 import ivorius.reccomplex.world.gen.feature.structure.generic.generation.NaturalGeneration;
 import net.minecraft.command.CommandException;
 
-import java.util.Optional;
-
 /**
  * Created by lukas on 31.05.17.
  */
@@ -80,7 +78,7 @@ public class RCParameter extends Parameter
 
     public Result<GenerationType> generationType(Structure<?> structure)
     {
-        return first().failable().map(structure::generationType, t -> ServerTranslations.commandException("No Generation by this ID"))
+        return first().missable().map(structure::generationType, t -> ServerTranslations.commandException("No Generation by this ID"))
                 .orElse(() -> structure.<GenerationType>generationTypes(NaturalGeneration.class).stream().findFirst()
                         .orElse(structure.generationTypes(GenerationType.class).stream().findFirst().orElse(null)));
     }
@@ -105,12 +103,11 @@ public class RCParameter extends Parameter
         return first().map(RCParameter::parseMetadatas);
     }
 
-    public <T extends ExpressionCache<I>, I> Result<T> expression(T t, String defaultVal)
+    public <T extends ExpressionCache<I>, I> Result<T> expression(T t)
     {
-        return new Result<>(() ->
+        return text().map(s ->
         {
-            if (defaultVal == null) require(1);
-            T cache = ExpressionCache.of(t, text().optional().orElse(defaultVal));
+            T cache = ExpressionCache.of(t, s);
             RCCommands.ensureValid(cache, name);
             return cache;
         });

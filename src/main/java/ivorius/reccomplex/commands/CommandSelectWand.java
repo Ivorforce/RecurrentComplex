@@ -14,8 +14,8 @@ import ivorius.reccomplex.capability.SelectionOwner;
 import ivorius.reccomplex.commands.parameters.RCExpect;
 import ivorius.reccomplex.commands.parameters.RCParameters;
 import ivorius.reccomplex.utils.ServerTranslations;
-import ivorius.reccomplex.utils.algebra.ExpressionCache;
 import ivorius.reccomplex.utils.expression.PositionedBlockMatcher;
+import ivorius.reccomplex.utils.optional.IvOptional;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.server.MinecraftServer;
@@ -71,7 +71,8 @@ public class CommandSelectWand extends CommandVirtual
         {
             changed = false;
 
-            PositionedBlockMatcher matcher = parameters.rc().expression(new PositionedBlockMatcher(RecurrentComplex.specialRegistry), "!is:air").require();
+            PositionedBlockMatcher matcher = new PositionedBlockMatcher(RecurrentComplex.specialRegistry);
+            IvOptional.ifAbsent(parameters.rc().expression(matcher).optional(), () -> matcher.setExpression("!is:air"));
 
             for (EnumFacing direction : EnumFacing.VALUES)
             {

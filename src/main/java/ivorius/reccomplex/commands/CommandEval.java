@@ -49,7 +49,7 @@ public class CommandEval extends CommandBase
     {
         RCParameters parameters = RCParameters.of(args);
 
-        DependencyMatcher matcher = parameters.rc().expression(new DependencyMatcher(), null).require();
+        DependencyMatcher matcher = parameters.rc().expression(new DependencyMatcher()).require();
 
         boolean result = matcher.test(RecurrentComplex.saver);
         commandSender.addChatMessage(ServerTranslations.get(result ? "commands.rceval.result.true" : "commands.rceval.result.false"));

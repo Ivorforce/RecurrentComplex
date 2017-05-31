@@ -5,7 +5,6 @@
 
 package ivorius.reccomplex.commands;
 
-import com.google.common.collect.Lists;
 import ivorius.ivtoolkit.blocks.BlockSurfacePos;
 import ivorius.ivtoolkit.math.AxisAlignedTransform2D;
 import ivorius.reccomplex.RCConfig;
@@ -23,7 +22,6 @@ import ivorius.reccomplex.utils.expression.ResourceMatcher;
 import ivorius.reccomplex.world.gen.feature.structure.Structure;
 import ivorius.reccomplex.world.gen.feature.structure.StructureRegistry;
 import ivorius.reccomplex.world.gen.feature.structure.generic.GenericStructure;
-import joptsimple.internal.Strings;
 import net.minecraft.command.*;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ResourceLocation;
@@ -42,10 +40,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.nio.file.AccessDeniedException;
 import java.nio.file.Path;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
@@ -223,6 +218,11 @@ public class RCCommands
                 : BlockSurfacePos.from(sender.getPosition());
     }
 
+    public static BlockSurfacePos surfacePos(BlockPos blockpos, String x, String z, boolean centerBlock) throws NumberInvalidException
+    {
+        return BlockSurfacePos.from(new BlockPos(CommandBase.parseDouble((double) blockpos.getX(), x, -30000000, 30000000, centerBlock), 0, CommandBase.parseDouble((double) blockpos.getZ(), z, -30000000, 30000000, centerBlock)));
+    }
+
     public static BlockSurfacePos parseSurfaceBlockPos(ICommandSender sender, String[] args, int startIndex, boolean centerBlock) throws NumberInvalidException
     {
         return parseSurfaceBlockPos(sender.getPosition(), args, startIndex, centerBlock);
@@ -273,7 +273,9 @@ public class RCCommands
 
     public static WorldServer tryParseDimension(ICommandSender commandSender, String[] args, int dimIndex) throws CommandException
     {
-        WorldServer world = args.length <= dimIndex || args[dimIndex].equals("~") ? (WorldServer) commandSender.getEntityWorld() : DimensionManager.getWorld(CommandBase.parseInt(args[dimIndex]));
+        WorldServer world = args.length <= dimIndex || args[dimIndex].equals("~")
+                ? (WorldServer) commandSender.getEntityWorld()
+                : DimensionManager.getWorld(CommandBase.parseInt(args[dimIndex]));
         if (world == null)
             throw ServerTranslations.commandException("commands.rc.nodimension");
         return world;
@@ -358,31 +360,6 @@ public class RCCommands
         {
             throw ServerTranslations.wrongUsageException("commands.selectModify.invalidMetadata", arg);
         }
-    }
-
-    public static String[] parseQuotedWords(String[] args)
-    {
-        List<String> list = Lists.newArrayList();
-
-        int lastQuote = -1;
-        for (int i = 0; i < args.length; i++)
-        {
-            if (lastQuote == -1 && args[i].indexOf("\"") == 0)
-                lastQuote = i;
-
-            if (lastQuote == -1)
-                list.add(args[i]);
-            else if (lastQuote >= 0 && args[i].lastIndexOf("\"") == args[i].length() - 1)
-            {
-                list.add(Strings.join(Arrays.asList(args).subList(lastQuote, i + 1), " "));
-                lastQuote = -1;
-            }
-        }
-
-        if (lastQuote >= 0)
-            list.add(Strings.join(Arrays.asList(args).subList(lastQuote, args.length), " "));
-
-        return list.toArray(new String[list.size()]);
     }
 
     public static void ensureValid(ExpressionCache<?> matcher, int argument) throws CommandException

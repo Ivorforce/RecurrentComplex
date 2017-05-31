@@ -7,6 +7,7 @@ package ivorius.reccomplex.commands;
 
 import ivorius.ivtoolkit.math.AxisAlignedTransform2D;
 import ivorius.reccomplex.RCConfig;
+import ivorius.reccomplex.commands.parameters.Parameters;
 import ivorius.reccomplex.operation.OperationRegistry;
 import ivorius.reccomplex.utils.ServerTranslations;
 import ivorius.reccomplex.world.gen.feature.structure.schematics.OperationGenerateSchematic;
@@ -78,7 +79,7 @@ public class CommandImportSchematic extends CommandBase
     @Override
     public void execute(MinecraftServer server, ICommandSender commandSender, String[] args) throws CommandException
     {
-        args = RCCommands.parseQuotedWords(args);
+        args = Parameters.quoted(args);
 
         if (args.length < 1)
             throw ServerTranslations.wrongUsageException("commands.strucImportSchematic.usage");
@@ -94,7 +95,7 @@ public class CommandImportSchematic extends CommandBase
     @Override
     public List<String> getTabCompletionOptions(MinecraftServer server, ICommandSender sender, String[] args, @Nullable BlockPos pos)
     {
-        args = RCCommands.parseQuotedWords(args);
+        args = Parameters.quoted(args);
 
         if (args.length == 1)
             return getListOfStringsMatchingLastWord(args, SchematicLoader.currentSchematicFileNames()

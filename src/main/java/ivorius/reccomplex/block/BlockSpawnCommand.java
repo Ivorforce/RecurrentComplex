@@ -5,7 +5,7 @@
 
 package ivorius.reccomplex.block;
 
-import ivorius.reccomplex.utils.NBTNone;
+import ivorius.reccomplex.nbt.NBTNone;
 import ivorius.reccomplex.world.gen.script.WorldScriptCommand;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.world.World;

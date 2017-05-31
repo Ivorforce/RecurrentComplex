@@ -29,7 +29,7 @@ import ivorius.reccomplex.world.gen.feature.structure.generic.WeightedBlockState
 import ivorius.reccomplex.utils.expression.BlockExpression;
 import ivorius.reccomplex.world.gen.feature.structure.generic.presets.WeightedBlockStatePresets;
 import net.minecraft.block.state.IBlockState;
-import ivorius.reccomplex.utils.NBTStorable;
+import ivorius.reccomplex.nbt.NBTStorable;
 import ivorius.reccomplex.utils.presets.PresettedList;
 import net.minecraft.block.Block;
 import net.minecraft.init.Blocks;

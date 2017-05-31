@@ -19,6 +19,7 @@ import ivorius.reccomplex.RecurrentComplex;
 import ivorius.reccomplex.block.GeneratingTileEntity;
 import ivorius.reccomplex.json.JsonUtils;
 import ivorius.reccomplex.json.NBTToJson;
+import ivorius.reccomplex.nbt.NBTStorable;
 import ivorius.reccomplex.temp.RCMover;
 import ivorius.reccomplex.temp.RCPosTransformer;
 import ivorius.reccomplex.utils.*;

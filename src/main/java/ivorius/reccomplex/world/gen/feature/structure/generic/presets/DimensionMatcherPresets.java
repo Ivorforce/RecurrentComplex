@@ -9,7 +9,7 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 import ivorius.reccomplex.files.loading.RCFileSuffix;
 import ivorius.reccomplex.world.gen.feature.structure.generic.WeightedDimensionMatcher;
-import ivorius.reccomplex.utils.PresetRegistry;
+import ivorius.reccomplex.utils.presets.PresetRegistry;
 
 import java.lang.reflect.Type;
 import java.util.ArrayList;

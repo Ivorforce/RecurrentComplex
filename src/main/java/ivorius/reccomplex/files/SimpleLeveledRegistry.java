@@ -7,7 +7,7 @@ package ivorius.reccomplex.files;
 
 import ivorius.reccomplex.RecurrentComplex;
 import ivorius.reccomplex.files.loading.LeveledRegistry;
-import ivorius.reccomplex.utils.LeveledBiMap;
+import ivorius.reccomplex.utils.leveled.LeveledBiMap;
 import ivorius.reccomplex.utils.RawResourceLocation;
 
 import javax.annotation.Nonnull;

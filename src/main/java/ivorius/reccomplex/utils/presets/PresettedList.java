@@ -6,7 +6,6 @@
 package ivorius.reccomplex.utils.presets;
 
 import com.google.common.collect.Lists;
-import ivorius.reccomplex.utils.PresetRegistry;
 
 import javax.annotation.Nonnull;
 import java.util.ArrayList;

@@ -5,7 +5,7 @@
 
 package ivorius.reccomplex.world.gen.script;
 
-import ivorius.reccomplex.utils.NBTStringTypeRegistry;
+import ivorius.reccomplex.nbt.NBTStringTypeRegistry;
 
 /**
  * Created by lukas on 14.09.15.

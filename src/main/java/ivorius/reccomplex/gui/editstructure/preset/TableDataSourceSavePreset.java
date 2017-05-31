@@ -18,7 +18,7 @@ import ivorius.reccomplex.gui.table.cell.TableCellString;
 import ivorius.reccomplex.gui.table.cell.TitledCell;
 import ivorius.reccomplex.gui.table.datasource.TableDataSourceSegmented;
 import ivorius.reccomplex.gui.table.datasource.TableDataSourceSupplied;
-import ivorius.reccomplex.utils.PresetRegistry;
+import ivorius.reccomplex.utils.presets.PresetRegistry;
 import ivorius.reccomplex.utils.presets.PresettedObject;
 import ivorius.reccomplex.world.gen.feature.structure.Structures;
 

@@ -13,7 +13,7 @@ import ivorius.reccomplex.world.gen.feature.structure.generic.GenericStructure;
 import ivorius.reccomplex.world.gen.feature.structure.generic.GenericVariableDomain;
 import ivorius.reccomplex.world.gen.feature.structure.generic.generation.GenerationType;
 import ivorius.reccomplex.world.gen.feature.structure.generic.transformers.TransformerMulti;
-import ivorius.reccomplex.utils.NBTStorable;
+import ivorius.reccomplex.nbt.NBTStorable;
 import net.minecraft.nbt.NBTBase;
 
 import javax.annotation.Nonnull;

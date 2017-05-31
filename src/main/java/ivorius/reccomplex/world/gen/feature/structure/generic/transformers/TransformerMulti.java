@@ -18,7 +18,7 @@ import ivorius.reccomplex.world.gen.feature.structure.*;
 import ivorius.reccomplex.utils.expression.EnvironmentExpression;
 import ivorius.reccomplex.world.gen.feature.structure.context.*;
 import ivorius.reccomplex.world.gen.feature.structure.generic.presets.TransfomerPresets;
-import ivorius.reccomplex.utils.NBTStorable;
+import ivorius.reccomplex.nbt.NBTStorable;
 import ivorius.reccomplex.utils.presets.PresettedObject;
 import ivorius.reccomplex.utils.presets.PresettedObjects;
 import net.minecraft.block.state.IBlockState;

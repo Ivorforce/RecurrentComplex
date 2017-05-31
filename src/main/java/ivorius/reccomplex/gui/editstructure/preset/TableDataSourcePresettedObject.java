@@ -9,7 +9,7 @@ import ivorius.ivtoolkit.tools.IvTranslations;
 import ivorius.reccomplex.gui.table.*;
 import ivorius.reccomplex.gui.table.cell.*;
 import ivorius.reccomplex.gui.table.datasource.TableDataSourceSegmented;
-import ivorius.reccomplex.utils.PresetRegistry;
+import ivorius.reccomplex.utils.presets.PresetRegistry;
 import ivorius.reccomplex.utils.presets.PresettedObject;
 import net.minecraft.util.text.TextFormatting;
 

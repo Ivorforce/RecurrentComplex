@@ -96,7 +96,7 @@ public class CommandWriteAll extends CommandBase
         // Can't chain because of compiler bug :|
 
         expect.next(RecurrentComplex.saver.keySet());
-        expect.next(args1 -> parameters.get().first().optional().map(RecurrentComplex.saver::get).map(a -> a.getRegistry().ids()).orElse(Collections.emptySet()));
+        expect.next(args1 -> parameters.get().first().tryGet().map(RecurrentComplex.saver::get).map(a -> a.getRegistry().ids()).orElse(Collections.emptySet()));
         expect.named("dir").resourceDirectory();
 
         return expect.get(server, sender, args, pos);

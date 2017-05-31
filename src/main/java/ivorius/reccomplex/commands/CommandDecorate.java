@@ -64,7 +64,7 @@ public class CommandDecorate extends CommandBase
                 parameters.iv().move(2).surfacePos(commandSender.getPosition(), false).require()
         );
         BlockSurfaceArea chunkArea = new BlockSurfaceArea(getChunkPos(area.getPoint1()), getChunkPos(area.getPoint2()));
-        Predicate<Structure> structurePredicate = RCCommands.structurePredicate(parameters.get("exp")).optional().orElse(structureInfo -> true);
+        Predicate<Structure> structurePredicate = parameters.rc("exp").structurePredicate().optional().orElse(structureInfo -> true);
 
         WorldServer world = (WorldServer) commandSender.getEntityWorld();
         chunkArea.forEach(coord -> WorldGenStructures.decorate(world, world.rand, new ChunkPos(coord.x, coord.z), structurePredicate));

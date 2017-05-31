@@ -16,7 +16,7 @@ import ivorius.reccomplex.gui.table.datasource.TableDataSource;
 import ivorius.reccomplex.gui.table.TableDelegate;
 import ivorius.reccomplex.gui.table.TableNavigator;
 import ivorius.reccomplex.gui.worldscripts.structuregenerator.TableDataSourceWorldScriptStructureGenerator;
-import ivorius.reccomplex.utils.ReadableInstanceData;
+import ivorius.reccomplex.world.gen.feature.structure.ReadableInstanceData;
 import ivorius.reccomplex.world.gen.feature.WorldStructureGenerationData;
 import ivorius.reccomplex.world.gen.feature.structure.*;
 import ivorius.reccomplex.world.gen.feature.structure.context.StructureLoadContext;

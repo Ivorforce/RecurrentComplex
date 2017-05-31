@@ -3,7 +3,7 @@
  *  * http://ivorius.net
  */
 
-package ivorius.reccomplex.utils;
+package ivorius.reccomplex.utils.accessor;
 
 import ivorius.reccomplex.RecurrentComplex;
 import net.minecraftforge.fml.relauncher.ReflectionHelper;

@@ -50,11 +50,6 @@ public class RCExpect<T extends RCExpect<T>> extends IvExpect<T>
         return next(args -> getListOfStringsMatchingLastWord(args, "0", "1", "2", "3"));
     }
 
-    public T mirror()
-    {
-        return next(args -> getListOfStringsMatchingLastWord(args, "false", "true"));
-    }
-
     public T resourceDirectory()
     {
         return any((Object[]) ResourceDirectory.values());

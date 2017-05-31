@@ -7,6 +7,9 @@ package ivorius.reccomplex.commands;
 
 import ivorius.reccomplex.RCConfig;
 import ivorius.reccomplex.commands.parameters.Parameters;
+import ivorius.reccomplex.commands.parameters.RCExpect;
+import ivorius.reccomplex.commands.parameters.RCParameter;
+import ivorius.reccomplex.commands.parameters.RCParameters;
 import ivorius.reccomplex.network.PacketEditStructureHandler;
 import ivorius.reccomplex.utils.ServerTranslations;
 import ivorius.reccomplex.world.gen.feature.structure.StructureRegistry;
@@ -50,16 +53,17 @@ public class CommandConvertSchematic extends CommandBase
     @Override
     public void execute(MinecraftServer server, ICommandSender commandSender, String[] args) throws CommandException
     {
-        args = Parameters.quoted(args);
+        RCParameters parameters = RCParameters.of(args);
+
         EntityPlayerMP player = getCommandSenderAsPlayer(commandSender);
 
         if (args.length < 1)
             throw ServerTranslations.wrongUsageException("commands.rcconvertschematic.usage");
 
-        String schematicName = CommandImportSchematic.trimQuotes(args[0]);
+        String schematicName = parameters.get().first().require();
         SchematicFile schematicFile = CommandImportSchematic.parseSchematic(schematicName);
 
-        GenericStructure structure = CommandExportStructure.getNewGenericStructure(commandSender, args.length >= 2 ? args[1] : null);
+        GenericStructure structure = CommandExportStructure.getNewGenericStructure(commandSender, parameters.rc("from"));
 
         structure.worldDataCompound = CommandExportSchematic.toWorldData(schematicFile).createTagCompound();
 
@@ -69,14 +73,10 @@ public class CommandConvertSchematic extends CommandBase
     @Override
     public List<String> getTabCompletions(MinecraftServer server, ICommandSender sender, String[] args, @Nullable BlockPos pos)
     {
-        args = Parameters.quoted(args);
-
-        if (args.length == 1)
-            return getListOfStringsMatchingLastWord(args, SchematicLoader.currentSchematicFileNames()
-            .stream().map(name -> name.contains(" ") ? String.format("\"%s\"", name) : name).collect(Collectors.toList()));
-        else if (args.length == 2)
-            return getListOfStringsMatchingLastWord(args, StructureRegistry.INSTANCE.ids());
-
-        return Collections.emptyList();
+        return RCExpect.startRC()
+                .next(SchematicLoader.currentSchematicFileNames()
+                        .stream().map(name -> name.contains(" ") ? String.format("\"%s\"", name) : name).collect(Collectors.toList()))
+                .named("from").structure()
+                .get(server, sender, args, pos);
     }
 }

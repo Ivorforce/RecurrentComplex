@@ -6,23 +6,23 @@
 package ivorius.reccomplex.commands;
 
 import ivorius.ivtoolkit.blocks.BlockArea;
+import ivorius.ivtoolkit.blocks.BlockSurfaceArea;
+import ivorius.ivtoolkit.blocks.BlockSurfacePos;
 import ivorius.ivtoolkit.world.MockWorld;
 import ivorius.reccomplex.RCConfig;
 import ivorius.reccomplex.block.BlockGenericSpace;
 import ivorius.reccomplex.block.RCBlocks;
-import ivorius.ivtoolkit.blocks.BlockSurfaceArea;
-import ivorius.ivtoolkit.blocks.BlockSurfacePos;
 import ivorius.reccomplex.capability.SelectionOwner;
+import ivorius.reccomplex.commands.parameters.RCExpect;
+import ivorius.reccomplex.commands.parameters.RCParameters;
 import ivorius.reccomplex.utils.ServerTranslations;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
-import net.minecraft.command.CommandBase;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3i;
-import net.minecraft.world.World;
 
 import javax.annotation.Nullable;
 import java.util.HashSet;
@@ -113,15 +113,16 @@ public class CommandSelectSpace extends CommandVirtual
                 set.add(surfaceCoord.blockPos(y));
         }
 
-        set.forEach(pos -> {
+        set.forEach(pos ->
+        {
             BlockPos down = pos.down();
             BlockPos down2 = pos.down(2);
             world.setBlockState(pos,
                     pos.getY() > lowerPoint.getY() && !set.contains(down)
-                    && world.getBlockState(down).getBlock().isReplaceable(world, down) && world.getBlockState(down2).getBlock().isReplaceable(world, down2)
-                    && new BlockArea(pos.subtract(new Vec3i(2, 0, 2)), pos.add(new Vec3i(2, 0, 2))).stream().allMatch(set::contains)
-                    ? spaceBlock.getDefaultState().withProperty(BlockGenericSpace.TYPE, 1)
-                    : spaceBlock.getDefaultState()
+                            && world.getBlockState(down).getBlock().isReplaceable(world, down) && world.getBlockState(down2).getBlock().isReplaceable(world, down2)
+                            && new BlockArea(pos.subtract(new Vec3i(2, 0, 2)), pos.add(new Vec3i(2, 0, 2))).stream().allMatch(set::contains)
+                            ? spaceBlock.getDefaultState().withProperty(BlockGenericSpace.TYPE, 1)
+                            : spaceBlock.getDefaultState()
             );
         });
     }
@@ -141,12 +142,10 @@ public class CommandSelectSpace extends CommandVirtual
     @Override
     public List<String> getTabCompletions(MinecraftServer server, ICommandSender sender, String[] args, @Nullable BlockPos pos)
     {
-        if (args.length == 1)
-            return getListOfStringsMatchingLastWord(args, "3", "2", "1");
-        else if (args.length == 2)
-            return getListOfStringsMatchingLastWord(args, "3", "4", "5");
-
-        return super.getTabCompletions(server, sender, args, pos);
+        return RCExpect.startRC()
+                .any("3", "2", "1")
+                .any("3", "4", "5")
+                .get(server, sender, args, pos);
     }
 
     public int getRequiredPermissionLevel()
@@ -161,8 +160,10 @@ public class CommandSelectSpace extends CommandVirtual
         RCCommands.assertSize(commandSender, selectionOwner);
         BlockArea area = selectionOwner.getSelection();
 
-        int floorDistance = (args.length >= 1 ? parseInt(args[0]) : 0) + 1;
-        int maxClosedSides = args.length >= 2 ? parseInt(args[1]) : 3;
+        RCParameters parameters = RCParameters.of(args);
+
+        int floorDistance = parameters.get().intAt(0).optional().orElse(0) + 1;
+        int maxClosedSides = parameters.get().intAt(1).optional().orElse(3);
 
         placeNaturalAir(world, area, floorDistance, maxClosedSides);
     }

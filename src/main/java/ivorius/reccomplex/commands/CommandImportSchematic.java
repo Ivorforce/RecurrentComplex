@@ -23,7 +23,6 @@ import net.minecraft.util.math.BlockPos;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.List;
-import java.util.stream.Collectors;
 
 /**
  * Created by lukas on 25.05.14.
@@ -84,7 +83,7 @@ public class CommandImportSchematic extends CommandBase
         if (args.length < 1)
             throw ServerTranslations.wrongUsageException("commands.strucImportSchematic.usage");
 
-        SchematicFile schematicFile = parseSchematic(parameters.get().at(0).require());
+        SchematicFile schematicFile = parseSchematic(parameters.get().first().require());
         BlockPos pos = parameters.mc("p").pos(commandSender.getPosition(), false).require();
         AxisAlignedTransform2D transform = RCCommands.transform(parameters.get("r"), parameters.get("m")).optional().orElse(AxisAlignedTransform2D.ORIGINAL);
 
@@ -95,9 +94,8 @@ public class CommandImportSchematic extends CommandBase
     public List<String> getTabCompletions(MinecraftServer server, ICommandSender sender, String[] args, @Nullable BlockPos pos)
     {
         return RCExpect.startRC()
-                .next(SchematicLoader.currentSchematicFileNames()
-                        .stream().map(name -> name.contains(" ") ? String.format("\"%s\"", name) : name).collect(Collectors.toList()))
-                .named("p").pos(pos)
+                .schematic()
+                .named("p").pos()
                 .named("r").rotation()
                 .named("m").mirror()
                 .get(server, sender, args, pos);

@@ -71,9 +71,7 @@ public class CommandSelectReplace extends CommandVirtual
         int[] dstMeta = parameters.rc("m").metadatas().require();
         List<IBlockState> dst = IntStream.of(dstMeta).mapToObj(m -> BlockStates.fromMetadata(dstBlock, m)).collect(Collectors.toList());
 
-        PositionedBlockMatcher matcher = ExpressionCache.of(new PositionedBlockMatcher(RecurrentComplex.specialRegistry),
-                parameters.get().move(1).text());
-        RCCommands.ensureValid(matcher, 2);
+        PositionedBlockMatcher matcher = parameters.rc().move(1).expression(new PositionedBlockMatcher(RecurrentComplex.specialRegistry), "").require();
 
         SelectionOwner selectionOwner = RCCommands.getSelectionOwner(commandSender, null, true);
         RCCommands.assertSize(commandSender, selectionOwner);

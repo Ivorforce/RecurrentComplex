@@ -33,11 +33,12 @@ public class MCExpect<T extends MCExpect<T>> extends Expect<T>
         return (T) new MCExpect();
     }
 
-    public T pos(@Nullable BlockPos pos)
+    public T pos()
     {
-        return next(args -> CommandBase.getTabCompletionCoordinate(args, 0, pos))
-                .next(args -> CommandBase.getTabCompletionCoordinate(args, 1, pos))
-                .next(args -> CommandBase.getTabCompletionCoordinate(args, 2, pos));
+        int index = index();
+        return next((ser, sen, args, pos) -> CommandBase.getTabCompletionCoordinate(args, index, pos))
+                .next((ser, sen, args, pos) -> CommandBase.getTabCompletionCoordinate(args, index, pos))
+                .next((ser, sen, args, pos) -> CommandBase.getTabCompletionCoordinate(args, index, pos));
     }
 
     public T biome()

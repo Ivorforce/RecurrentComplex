@@ -66,7 +66,7 @@ public class CommandForgetAll extends CommandBase
     public List<String> getTabCompletions(MinecraftServer server, ICommandSender sender, String[] args, @Nullable BlockPos pos)
     {
         return RCExpect.startRC()
-                .pos(pos)
+                .pos()
                 .get(server, sender, args, pos);
     }
 }

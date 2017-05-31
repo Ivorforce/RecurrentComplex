@@ -26,9 +26,10 @@ public class IvExpect<T extends IvExpect<T>> extends MCExpect<T>
         return (T) new IvExpect();
     }
 
-    public T surfacePos(@Nullable BlockPos pos)
+    public T surfacePos()
     {
-        return next(args -> CommandBase.getTabCompletionCoordinateXZ(args, 0, pos))
-                .next(args -> CommandBase.getTabCompletionCoordinateXZ(args, 1, pos));
+        int index = index();
+        return next((ser, sen, args, pos) -> CommandBase.getTabCompletionCoordinateXZ(args, index, pos))
+                .next((ser, sen, args, pos) -> CommandBase.getTabCompletionCoordinateXZ(args, index, pos));
     }
 }

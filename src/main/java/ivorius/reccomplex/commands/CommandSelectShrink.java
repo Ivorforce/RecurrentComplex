@@ -8,12 +8,18 @@ package ivorius.reccomplex.commands;
 import ivorius.ivtoolkit.blocks.BlockArea;
 import ivorius.reccomplex.capability.SelectionOwner;
 import ivorius.ivtoolkit.world.MockWorld;
+import ivorius.reccomplex.commands.parameters.RCExpect;
+import ivorius.reccomplex.commands.parameters.RCParameters;
 import net.minecraft.command.CommandException;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.math.BlockPos;
 import ivorius.reccomplex.RCConfig;
 import ivorius.ivtoolkit.blocks.BlockAreas;
 import ivorius.reccomplex.utils.ServerTranslations;
 import net.minecraft.command.ICommandSender;
+
+import javax.annotation.Nullable;
+import java.util.List;
 
 /**
  * Created by lukas on 09.06.14.
@@ -41,13 +47,18 @@ public class CommandSelectShrink extends CommandVirtual
     public void execute(MockWorld world, ICommandSender commandSender, String[] args) throws CommandException
     {
         SelectionOwner selectionOwner = RCCommands.getSelectionOwner(commandSender, null, true);
-        if (args.length < 3)
-            throw ServerTranslations.wrongUsageException("commands.selectShrink.usage");
+        RCParameters parameters = RCParameters.of(args);
 
-        int x = parseInt(args[0]), y = parseInt(args[1]), z = parseInt(args[2]);
+        BlockPos shrink = parameters.mc().pos(BlockPos.ORIGIN, false).require();
 
-        BlockArea area = BlockAreas.shrink(selectionOwner.getSelection(), new BlockPos(x, y, z), new BlockPos(x, y, z));
+        selectionOwner.setSelection(BlockAreas.shrink(selectionOwner.getSelection(), shrink, shrink));
+    }
 
-        selectionOwner.setSelection(area);
+    @Override
+    public List<String> getTabCompletions(MinecraftServer server, ICommandSender sender, String[] args, @Nullable BlockPos targetPos)
+    {
+        return RCExpect.startRC()
+                .pos()
+                .get(server, sender, args, targetPos);
     }
 }

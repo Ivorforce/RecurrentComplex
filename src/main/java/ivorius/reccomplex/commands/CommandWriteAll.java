@@ -55,7 +55,7 @@ public class CommandWriteAll extends CommandBase
     {
         RCParameters parameters = RCParameters.of(args);
 
-        String adapterID = parameters.get().at(0).require();
+        String adapterID = parameters.get().first().require();
 
         if (!RecurrentComplex.saver.has(adapterID))
             throw ServerTranslations.commandException("commands.rcsaveall.noregistry");
@@ -96,7 +96,7 @@ public class CommandWriteAll extends CommandBase
         // Can't chain because of compiler bug :|
 
         expect.next(RecurrentComplex.saver.keySet());
-        expect.next(args1 -> parameters.get().at(0).optional().map(RecurrentComplex.saver::get).map(a -> a.getRegistry().ids()).orElse(Collections.emptySet()));
+        expect.next(args1 -> parameters.get().first().optional().map(RecurrentComplex.saver::get).map(a -> a.getRegistry().ids()).orElse(Collections.emptySet()));
         expect.named("dir").resourceDirectory();
 
         return expect.get(server, sender, args, pos);

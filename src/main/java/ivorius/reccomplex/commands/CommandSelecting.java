@@ -7,6 +7,8 @@ package ivorius.reccomplex.commands;
 
 import ivorius.reccomplex.RCConfig;
 import ivorius.reccomplex.capability.SelectionOwner;
+import ivorius.reccomplex.commands.parameters.RCExpect;
+import ivorius.reccomplex.commands.parameters.RCParameters;
 import ivorius.reccomplex.utils.ServerTranslations;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.CommandException;
@@ -15,7 +17,6 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.math.BlockPos;
 
 import javax.annotation.Nullable;
-import java.util.Collections;
 import java.util.List;
 
 /**
@@ -43,12 +44,11 @@ public class CommandSelecting extends CommandBase
     @Override
     public void execute(MinecraftServer server, ICommandSender commandSender, String[] args) throws CommandException
     {
-        if (args.length < 7)
-            throw ServerTranslations.wrongUsageException("commands.rcselecting.usage");
+        RCParameters parameters = RCParameters.of(args);
 
-        BlockPos p1 = parseBlockPos(commandSender, args, 0, false);
-        BlockPos p2 = parseBlockPos(commandSender, args, 3, false);
-        String command = buildString(args, 6);
+        BlockPos p1 = parameters.mc().pos(commandSender.getPosition(), false).require();
+        BlockPos p2 = parameters.mc().move(3).pos(commandSender.getPosition(), false).require();
+        String command = parameters.get().move(6).text().optional().orElse("");
 
         server.commandManager.executeCommand(new SelectingSender(commandSender, p1, p2), command);
     }
@@ -56,12 +56,11 @@ public class CommandSelecting extends CommandBase
     @Override
     public List<String> getTabCompletions(MinecraftServer server, ICommandSender sender, String[] args, @Nullable BlockPos pos)
     {
-        if (args.length >= 1 && args.length <= 3)
-            return getTabCompletionCoordinate(args, 0, pos);
-        if (args.length >= 4 && args.length <= 6)
-            return getTabCompletionCoordinate(args, 3, pos);
-
-        return Collections.emptyList();
+        return RCExpect.startRC()
+                .pos()
+                .pos()
+                .skip(1).repeat()
+                .get(server, sender, args, pos);
     }
 
     public static class SelectingSender extends DelegatingSender implements SelectionOwner

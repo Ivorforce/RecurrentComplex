@@ -64,7 +64,7 @@ public class CommandGenerateStructure extends CommandBase
     {
         RCParameters parameters = RCParameters.of(args);
 
-        String structureID = parameters.get().here().require();
+        String structureID = parameters.get().first().require();
         Structure<?> structure = parameters.rc().structure().require();
         WorldServer world = parameters.mc("d").dimension(commandSender).require();
         AxisAlignedTransform2D transform = RCCommands.transform(parameters.get("r"), parameters.get("m")).optional().orElse(null);
@@ -102,7 +102,7 @@ public class CommandGenerateStructure extends CommandBase
 
         return RCExpect.startRC()
                 .structure()
-                .named("p").surfacePos(pos)
+                .named("p").surfacePos()
                 .named("d").dimension()
                 .named("g")
                 .next((String[] args1) ->

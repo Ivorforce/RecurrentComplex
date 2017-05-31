@@ -73,7 +73,7 @@ public class CommandSelectDuplicate extends CommandBase
     public List<String> getTabCompletions(MinecraftServer server, ICommandSender sender, String[] args, @Nullable BlockPos pos)
     {
         return RCExpect.startRC()
-                .named("p").pos(pos)
+                .named("p").pos()
                 .named("r").rotation()
                 .named("m").mirror()
                 .get(server, sender, args, pos);

@@ -196,7 +196,7 @@ public class RCCommands
     @Nonnull
     protected static Parameter.Result<ResourceMatcher> resourceMatcher(Parameter parameter, Predicate<String> isKnown)
     {
-        return parameter.at(0).map(s -> ExpressionCache.of(new ResourceMatcher(isKnown), s))
+        return parameter.first().map(s -> ExpressionCache.of(new ResourceMatcher(isKnown), s))
                 .filter(ExpressionCache::isExpressionValid, t -> new CommandException(t.getParseException().getMessage()));
     }
 
@@ -234,23 +234,13 @@ public class RCCommands
 
     public static void ensureValid(ExpressionCache<?> matcher, int argument) throws CommandException
     {
-        if (!matcher.isExpressionValid())
-            throw new CommandException("Argument " + (argument + 1) + ": " + FunctionExpressionCaches.readableException(matcher));
+        ensureValid(matcher, "" + (argument + 1));
     }
 
-    public static GenericStructure getGenericStructure(String name) throws CommandException
+    public static void ensureValid(ExpressionCache<?> matcher, String argument) throws CommandException
     {
-        Structure structure = StructureRegistry.INSTANCE.get(name);
-
-        if (structure == null)
-            throw ServerTranslations.commandException("commands.structure.notRegistered", name);
-
-        GenericStructure genericStructureInfo = structure.copyAsGenericStructure();
-
-        if (genericStructureInfo == null)
-            throw ServerTranslations.commandException("commands.structure.notGeneric", name);
-
-        return genericStructureInfo;
+        if (!matcher.isExpressionValid())
+            throw new CommandException(String.format("Argument %s: %s", argument, FunctionExpressionCaches.readableException(matcher)));
     }
 
     public static void tryReload(@Nonnull FileLoader loader, @Nonnull LeveledRegistry.Level level) throws CommandException
@@ -280,8 +270,8 @@ public class RCCommands
     protected static Parameter.Result<AxisAlignedTransform2D> transform(Parameter rot, Parameter mir) throws CommandException
     {
         if (rot.has(1) || mir.has(1))
-            return rot.at(0).failable().map(CommandBase::parseInt).orElse(() -> 0)
-                    .flatMap(r -> mir.at(0).failable().map(CommandBase::parseBoolean).orElse(() -> false).map(m -> AxisAlignedTransform2D.from(r, m)));
+            return rot.first().failable().map(CommandBase::parseInt).orElse(() -> 0)
+                    .flatMap(r -> mir.first().failable().map(CommandBase::parseBoolean).orElse(() -> false).map(m -> AxisAlignedTransform2D.from(r, m)));
         return Parameter.Result.empty();
     }
 }

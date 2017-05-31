@@ -50,7 +50,7 @@ public class Parameter
         return new Parameter(moved + idx, name, params.subList(idx, params.size()));
     }
 
-    public Result<String> here()
+    public Result<String> first()
     {
         return at(0);
     }
@@ -75,6 +75,12 @@ public class Parameter
         return at(idx).map(CommandBase::parseLong);
     }
 
+    protected void require(int size) throws CommandException
+    {
+        if (!has(size))
+            throw new CommandException(String.format("Missing required parameter: -%s (%d)", name, size + moved));
+    }
+
     public boolean has(int size)
     {
         return size <= params.size();
@@ -84,9 +90,7 @@ public class Parameter
     {
         return new Result<>(() ->
         {
-            if (!has(index + 1))
-                throw new CommandException(String.format("Missing required parameter: -%s (%d)", name, index + moved));
-
+            require(index + 1);
             return params.get(index);
         });
     }
@@ -101,9 +105,9 @@ public class Parameter
         return params;
     }
 
-    public String text()
+    public Result<String> text()
     {
-        return Strings.join(params, " ");
+        return at(0).map(s -> Strings.join(params, " "));
     }
 
     public interface Supplier<T>

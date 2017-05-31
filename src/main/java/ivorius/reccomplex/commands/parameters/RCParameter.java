@@ -5,13 +5,18 @@
 
 package ivorius.reccomplex.commands.parameters;
 
+import ivorius.reccomplex.commands.RCCommands;
 import ivorius.reccomplex.files.loading.ResourceDirectory;
 import ivorius.reccomplex.utils.ServerTranslations;
+import ivorius.reccomplex.utils.algebra.ExpressionCache;
 import ivorius.reccomplex.world.gen.feature.structure.Structure;
 import ivorius.reccomplex.world.gen.feature.structure.StructureRegistry;
+import ivorius.reccomplex.world.gen.feature.structure.generic.GenericStructure;
 import ivorius.reccomplex.world.gen.feature.structure.generic.generation.GenerationType;
 import ivorius.reccomplex.world.gen.feature.structure.generic.generation.NaturalGeneration;
 import net.minecraft.command.CommandException;
+
+import java.util.Optional;
 
 /**
  * Created by lukas on 31.05.17.
@@ -51,20 +56,38 @@ public class RCParameter extends Parameter
 
     public Result<Structure<?>> structure()
     {
-        return at(0).map(StructureRegistry.INSTANCE::get,
-                t -> ServerTranslations.commandException("commands.strucGen.noStructure", at(0)));
+        return first().map(StructureRegistry.INSTANCE::get,
+                t -> ServerTranslations.commandException("commands.strucGen.noStructure", first()));
+    }
+
+    public Result<GenericStructure> genericStructure()
+    {
+        return first().map(id ->
+        {
+            Structure structure = StructureRegistry.INSTANCE.get(id);
+
+            if (structure == null)
+                throw ServerTranslations.commandException("commands.structure.notRegistered", id);
+
+            GenericStructure genericStructureInfo = structure.copyAsGenericStructure();
+
+            if (genericStructureInfo == null)
+                throw ServerTranslations.commandException("commands.structure.notGeneric", id);
+
+            return genericStructureInfo;
+        });
     }
 
     public Result<GenerationType> generationType(Structure<?> structure)
     {
-        return at(0).failable().map(structure::generationType, t -> ServerTranslations.commandException("No Generation by this ID"))
+        return first().failable().map(structure::generationType, t -> ServerTranslations.commandException("No Generation by this ID"))
                 .orElse(() -> structure.<GenerationType>generationTypes(NaturalGeneration.class).stream().findFirst()
                         .orElse(structure.generationTypes(GenerationType.class).stream().findFirst().orElse(null)));
     }
 
     public Result<ResourceDirectory> resourceDirectory()
     {
-        return at(0).map(t ->
+        return first().map(t ->
         {
             try
             {
@@ -79,6 +102,17 @@ public class RCParameter extends Parameter
 
     public Result<int[]> metadatas()
     {
-        return at(0).map(RCParameter::parseMetadatas);
+        return first().map(RCParameter::parseMetadatas);
+    }
+
+    public <T extends ExpressionCache<I>, I> Result<T> expression(T t, String defaultVal)
+    {
+        return new Result<>(() ->
+        {
+            if (defaultVal == null) require(1);
+            T cache = ExpressionCache.of(t, text().optional().orElse(defaultVal));
+            RCCommands.ensureValid(cache, name);
+            return cache;
+        });
     }
 }

@@ -49,7 +49,7 @@ public class CommandSelect extends CommandBase
 
         SelectionOwner owner = RCCommands.getSelectionOwner(commandSender, null, false);
 
-        String subcommand = parameters.get().at(0).require();
+        String subcommand = parameters.get().first().require();
         switch (subcommand)
         {
             case "clear":
@@ -103,7 +103,7 @@ public class CommandSelect extends CommandBase
     {
         return RCExpect.startRC()
                 .any("both", "clear", "point1", "point2", "get")
-                .pos(pos)
+                .pos()
                 .get(server, sender, args, pos);
     }
 }

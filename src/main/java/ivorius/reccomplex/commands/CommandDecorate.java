@@ -74,12 +74,8 @@ public class CommandDecorate extends CommandBase
     public List<String> getTabCompletions(MinecraftServer server, ICommandSender sender, String[] args, @Nullable BlockPos pos)
     {
         return Expect.start()
-                .next(args1 -> getTabCompletionCoordinate(args1, 0, pos))
-                .next(args1 -> getTabCompletionCoordinate(args1, 1, pos))
-                .next(args1 -> getTabCompletionCoordinate(args1, 2, pos))
-                .next(args1 -> getTabCompletionCoordinate(args1, 0, pos))
-                .next(args1 -> getTabCompletionCoordinate(args1, 1, pos))
-                .next(args1 -> getTabCompletionCoordinate(args1, 2, pos))
+                .pos(pos)
+                .pos(pos)
                 .named("p")
                 .next(RCCommands::completeResourceMatcher)
                 .get(server, sender, args, pos);

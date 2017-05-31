@@ -28,7 +28,6 @@ import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.ITextComponent;
-import net.minecraft.world.WorldServer;
 import net.minecraft.world.biome.Biome;
 import net.minecraftforge.client.ClientCommandHandler;
 import net.minecraftforge.common.DimensionManager;
@@ -42,7 +41,6 @@ import javax.annotation.Nullable;
 import java.nio.file.AccessDeniedException;
 import java.nio.file.Path;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 import java.util.function.Predicate;
@@ -126,8 +124,8 @@ public class RCCommands
         event.registerServerCommand(new CommandSelectSetBiome());
 
         event.registerServerCommand(new CommandSelectCopy());
-        event.registerServerCommand(new CommandPaste());
-        event.registerServerCommand(new CommandPasteGen());
+        event.registerServerCommand(new CommandPaste(true, "paste", "commands.strucPaste.usage"));
+        event.registerServerCommand(new CommandPaste(false, "pastegen", "commands.strucPasteGen.usage"));
 
         event.registerServerCommand(new CommandSelectMove());
         event.registerServerCommand(new CommandSelectDuplicate());
@@ -245,28 +243,6 @@ public class RCCommands
     public static List<String> completeMirror(String[] args)
     {
         return CommandBase.getListOfStringsMatchingLastWord(args, "false", "true");
-    }
-
-    public static List<String> completeTransform(String[] args, int index)
-    {
-        return index == 0 ? completeRotation(args)
-                : index == 1 ? completeMirror(args)
-                : Collections.emptyList();
-    }
-
-    public static AxisAlignedTransform2D tryParseTransform(String[] args, int index) throws CommandException
-    {
-        return AxisAlignedTransform2D.from(tryParseRotation(args, index), tryParseMirror(args, index + 1));
-    }
-
-    public static int tryParseRotation(String[] args, int index) throws NumberInvalidException
-    {
-        return args.length > index ? CommandBase.parseInt(args[index]) : 0;
-    }
-
-    public static boolean tryParseMirror(String[] args, int mirrorIndex) throws CommandException
-    {
-        return args.length > mirrorIndex && CommandBase.parseBoolean(args[mirrorIndex]);
     }
 
     @Nonnull

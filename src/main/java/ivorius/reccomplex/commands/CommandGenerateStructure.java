@@ -103,9 +103,7 @@ public class CommandGenerateStructure extends CommandBase
 
         return Expect.start()
                 .next(StructureRegistry.INSTANCE.ids())
-                .named("p")
-                .next(args1 -> getTabCompletionCoordinateXZ(args1, 0, pos))
-                .next(args1 -> getTabCompletionCoordinateXZ(args1, 1, pos))
+                .named("p").surfacePos(pos)
                 .named("d")
                 .next(RCCommands::completeDimension)
                 .named("g")

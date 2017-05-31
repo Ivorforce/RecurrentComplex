@@ -119,10 +119,8 @@ public class CommandRetrogen extends CommandBase
     public List<String> getTabCompletions(MinecraftServer server, ICommandSender sender, String[] args, @Nullable BlockPos pos)
     {
         return Expect.start()
-                .named("p")
-                .next(RCCommands::completeResourceMatcher)
-                .named("d")
-                .next(RCCommands::completeDimension)
+                .named("p").structurePredicate()
+                .named("d").dimension()
                 .get(server, sender, args, pos);
     }
 

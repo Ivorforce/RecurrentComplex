@@ -98,10 +98,8 @@ public class CommandImportSchematic extends CommandBase
                 .next(SchematicLoader.currentSchematicFileNames()
                         .stream().map(name -> name.contains(" ") ? String.format("\"%s\"", name) : name).collect(Collectors.toList()))
                 .named("p").pos(pos)
-                .named("r")
-                .next(RCCommands::completeRotation)
-                .named("m")
-                .next(RCCommands::completeMirror)
+                .named("r").rotation()
+                .named("m").mirror()
                 .get(server, sender, args, pos);
     }
 }

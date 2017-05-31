@@ -13,7 +13,6 @@ import ivorius.reccomplex.commands.parameters.Parameters;
 import ivorius.reccomplex.operation.OperationRegistry;
 import ivorius.reccomplex.utils.ServerTranslations;
 import ivorius.reccomplex.world.gen.feature.structure.OperationGenerateStructure;
-import ivorius.reccomplex.world.gen.feature.structure.StructureRegistry;
 import ivorius.reccomplex.world.gen.feature.structure.generic.GenericStructure;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.CommandException;
@@ -93,12 +92,9 @@ public class CommandPaste extends CommandBase
     public List<String> getTabCompletions(MinecraftServer server, ICommandSender sender, String[] args, @Nullable BlockPos pos)
     {
         return Expect.start()
-                .next(StructureRegistry.INSTANCE.ids())
                 .named("p").pos(pos)
-                .named("r")
-                .next(RCCommands::completeRotation)
-                .named("m")
-                .next(RCCommands::completeMirror)
+                .named("r").rotation()
+                .named("m").mirror()
                 .get(server, sender, args, pos);
     }
 }

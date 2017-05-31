@@ -73,14 +73,11 @@ public class CommandImportStructure extends CommandBase
     public List<String> getTabCompletions(MinecraftServer server, ICommandSender sender, String[] args, @Nullable BlockPos pos)
     {
         return Expect.start()
-                .next(StructureRegistry.INSTANCE.ids())
+                .structure()
                 .named("p").pos(pos)
-                .named("d")
-                .next(RCCommands::completeDimension)
-                .named("r")
-                .next(RCCommands::completeRotation)
-                .named("m")
-                .next(RCCommands::completeMirror)
+                .named("d").dimension()
+                .named("r").rotation()
+                .named("m").mirror()
                 .get(server, sender, args, pos);
     }
 }

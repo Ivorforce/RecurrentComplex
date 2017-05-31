@@ -83,6 +83,8 @@ public class CommandMapStructure extends CommandBase
     {
         return RCExpect.startRC()
                 .structure()
+                .skip(1)
+                .skip(1).repeat()
                 .any("\"\"")
                 .named("dir").resourceDirectory()
                 .get(server, sender, args, pos);

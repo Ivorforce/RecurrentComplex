@@ -5,7 +5,6 @@
 
 package ivorius.reccomplex.commands;
 
-import ivorius.ivtoolkit.blocks.BlockSurfacePos;
 import ivorius.ivtoolkit.math.AxisAlignedTransform2D;
 import ivorius.reccomplex.RCConfig;
 import ivorius.reccomplex.RecurrentComplex;
@@ -19,13 +18,8 @@ import ivorius.reccomplex.files.loading.ResourceDirectory;
 import ivorius.reccomplex.utils.ServerTranslations;
 import ivorius.reccomplex.utils.algebra.ExpressionCache;
 import ivorius.reccomplex.utils.algebra.FunctionExpressionCaches;
-import ivorius.reccomplex.utils.expression.ResourceMatcher;
-import ivorius.reccomplex.world.gen.feature.structure.Structure;
-import ivorius.reccomplex.world.gen.feature.structure.StructureRegistry;
-import ivorius.reccomplex.world.gen.feature.structure.generic.GenericStructure;
 import net.minecraft.command.*;
 import net.minecraft.util.EnumFacing;
-import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraftforge.client.ClientCommandHandler;
 import net.minecraftforge.fml.common.event.FMLServerStartingEvent;
@@ -38,7 +32,6 @@ import javax.annotation.Nullable;
 import java.nio.file.AccessDeniedException;
 import java.nio.file.Path;
 import java.util.Set;
-import java.util.function.Predicate;
 
 /**
  * Created by lukas on 18.01.15.
@@ -191,18 +184,6 @@ public class RCCommands
             throw ServerTranslations.commandException("commands.rc.large.error");
         else if (size >= 100 * 100 * 100)
             sender.sendMessage(ServerTranslations.get("commands.rc.large.warn"));
-    }
-
-    @Nonnull
-    protected static Parameter.Result<ResourceMatcher> resourceMatcher(Parameter parameter, Predicate<String> isKnown)
-    {
-        return parameter.first().map(s -> ExpressionCache.of(new ResourceMatcher(isKnown), s))
-                .filter(ExpressionCache::isExpressionValid, t -> new CommandException(t.getParseException().getMessage()));
-    }
-
-    protected static Parameter.Result<Predicate<Structure>> structurePredicate(Parameter parameter)
-    {
-        return resourceMatcher(parameter, s1 -> !s1.isEmpty()).map(m -> s -> m.test(StructureRegistry.INSTANCE.resourceLocation(s)));
     }
 
     public static void informDeleteResult(Pair<Set<Path>, Set<Path>> result, ICommandSender sender, String filetype, String id, ResourceDirectory directory)

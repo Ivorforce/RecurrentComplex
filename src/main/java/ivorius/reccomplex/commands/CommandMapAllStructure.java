@@ -57,7 +57,7 @@ public class CommandMapAllStructure extends CommandBase
     {
         RCParameters parameters = RCParameters.of(args);
 
-        ResourceMatcher matcher = RCCommands.resourceMatcher(parameters.get("exp"), StructureRegistry.INSTANCE::has).require();
+        ResourceMatcher matcher = parameters.get("exp").resourceMatcher(StructureRegistry.INSTANCE::has).require();
         ResourceDirectory directory = parameters.rc("dir").resourceDirectory().optional().orElse(ResourceDirectory.ACTIVE);
 
         ICommand other = server.getCommandManager().getCommands().get(parameters.get().at(1).require());

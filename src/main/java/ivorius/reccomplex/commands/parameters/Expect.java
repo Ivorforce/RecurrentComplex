@@ -6,15 +6,9 @@
 package ivorius.reccomplex.commands.parameters;
 
 import com.google.common.primitives.Doubles;
-import com.google.common.primitives.Ints;
-import ivorius.reccomplex.files.loading.ResourceDirectory;
-import ivorius.reccomplex.world.gen.feature.structure.StructureRegistry;
-import net.minecraft.command.CommandBase;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.biome.Biome;
-import net.minecraftforge.common.DimensionManager;
 
 import javax.annotation.Nullable;
 import java.util.*;
@@ -26,101 +20,53 @@ import static net.minecraft.command.CommandBase.getListOfStringsMatchingLastWord
 /**
  * Created by lukas on 30.05.17.
  */
-public class Expect
+public class Expect<T extends Expect<T>>
 {
     protected final Map<String, Param> params = new HashMap<>();
-
     protected String cur;
 
-    private Expect()
+    Expect()
     {
 
     }
 
-    public static Expect start()
+    public static <T extends Expect<T>> T start()
     {
-        return new Expect();
+        //noinspection unchecked
+        return (T) new Expect();
     }
 
-    public Expect structurePredicate()
-    {
-        return structure();
-    }
-
-    public Expect structure()
-    {
-        return next(StructureRegistry.INSTANCE.ids());
-    }
-
-    public Expect pos(@Nullable BlockPos pos)
-    {
-        return next(args -> CommandBase.getTabCompletionCoordinate(args, 0, pos))
-                .next(args -> CommandBase.getTabCompletionCoordinate(args, 1, pos))
-                .next(args -> CommandBase.getTabCompletionCoordinate(args, 2, pos));
-    }
-
-    public Expect surfacePos(@Nullable BlockPos pos)
-    {
-        return next(args -> CommandBase.getTabCompletionCoordinateXZ(args, 0, pos))
-                .next(args -> CommandBase.getTabCompletionCoordinateXZ(args, 1, pos));
-    }
-
-    public Expect rotation()
-    {
-        return next(args -> getListOfStringsMatchingLastWord(args, "0", "1", "2", "3"));
-    }
-
-    public Expect mirror()
-    {
-        return next(args -> getListOfStringsMatchingLastWord(args, "false", "true"));
-    }
-
-    public Expect biome()
-    {
-        return next(Biome.REGISTRY.getKeys());
-    }
-
-    public Expect dimension()
-    {
-        return next(args -> getListOfStringsMatchingLastWord(args, Arrays.stream(DimensionManager.getIDs()).map(String::valueOf).collect(Collectors.toList())));
-    }
-
-    public Expect resourceDirectory()
-    {
-        return any((Object[]) ResourceDirectory.values());
-    }
-
-    public Expect named(String name)
+    public T named(String name)
     {
         cur = name;
-        return this;
+        return (T) this;
     }
 
-    public Expect skip(int num)
+    public T skip(int num)
     {
         return next(Collections.emptyList());
     }
 
-    public Expect next(Completer completion)
+    public T next(Completer completion)
     {
         Param cur = params.get(this.cur);
         if (cur == null)
             params.put(this.cur, cur = new Param());
         cur.next(completion);
-        return this;
+        return (T) this;
     }
 
-    public Expect any(Object... completion)
+    public T any(Object... completion)
     {
         return next(Arrays.asList(completion));
     }
 
-    public Expect next(Collection<?> completion)
+    public T next(Collection<?> completion)
     {
         return next((server, sender, args, pos) -> getListOfStringsMatchingLastWord(args, completion));
     }
 
-    public Expect next(Function<String[], ? extends Collection<String>> completion)
+    public T next(Function<String[], ? extends Collection<String>> completion)
     {
         return next((server, sender, args, pos) -> completion.apply(args));
     }

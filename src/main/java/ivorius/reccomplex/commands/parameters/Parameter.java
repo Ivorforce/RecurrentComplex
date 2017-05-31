@@ -5,6 +5,7 @@
 
 package ivorius.reccomplex.commands.parameters;
 
+import joptsimple.internal.Strings;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.CommandException;
 
@@ -88,6 +89,21 @@ public class Parameter
 
             return params.get(index);
         });
+    }
+
+    public String[] varargs()
+    {
+        return params.stream().toArray(String[]::new);
+    }
+
+    public List<String> varargsList()
+    {
+        return params;
+    }
+
+    public String text()
+    {
+        return Strings.join(params, " ");
     }
 
     public interface Supplier<T>

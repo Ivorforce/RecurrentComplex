@@ -6,6 +6,7 @@
 package ivorius.reccomplex.commands.parameters;
 
 import ivorius.reccomplex.utils.ServerTranslations;
+import net.minecraft.block.Block;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.command.NumberInvalidException;
@@ -55,5 +56,10 @@ public class MCParameter extends Parameter
         return at(0).filter(d -> !d.equals("~"), null).failable()
                 .map(CommandBase::parseInt).map(DimensionManager::getWorld, t -> ServerTranslations.commandException("commands.rc.nodimension"))
                 .orElse(() -> (WorldServer) commandSender.getEntityWorld());
+    }
+
+    public Result<Block> block(ICommandSender commandSender)
+    {
+        return at(0).map(s -> CommandBase.getBlockByText(commandSender, s));
     }
 }

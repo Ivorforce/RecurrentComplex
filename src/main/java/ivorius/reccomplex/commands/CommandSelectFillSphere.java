@@ -9,6 +9,7 @@ import ivorius.ivtoolkit.blocks.BlockArea;
 import ivorius.ivtoolkit.blocks.BlockStates;
 import ivorius.reccomplex.capability.SelectionOwner;
 import ivorius.ivtoolkit.world.MockWorld;
+import ivorius.reccomplex.commands.parameters.RCParameter;
 import net.minecraft.command.CommandException;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.math.BlockPos;
@@ -64,7 +65,7 @@ public class CommandSelectFillSphere extends CommandVirtual
         if (args.length >= 1)
         {
             Block dstBlock = getBlockByText(commandSender, args[0]);
-            int[] dstMeta = args.length >= 2 ? RCCommands.parseMetadatas(args[1]) : new int[]{0};
+            int[] dstMeta = args.length >= 2 ? RCParameter.parseMetadatas(args[1]) : new int[]{0};
             List<IBlockState> dst = IntStream.of(dstMeta).mapToObj(m -> BlockStates.fromMetadata(dstBlock, m)).collect(Collectors.toList());
 
             SelectionOwner selectionOwner = RCCommands.getSelectionOwner(commandSender, null, true);

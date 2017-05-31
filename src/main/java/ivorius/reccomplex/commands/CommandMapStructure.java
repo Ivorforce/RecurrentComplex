@@ -7,7 +7,7 @@ package ivorius.reccomplex.commands;
 
 import ivorius.ivtoolkit.tools.IvWorldData;
 import ivorius.reccomplex.RCConfig;
-import ivorius.reccomplex.commands.parameters.Expect;
+import ivorius.reccomplex.commands.parameters.RCExpect;
 import ivorius.reccomplex.commands.parameters.RCParameters;
 import ivorius.reccomplex.files.loading.ResourceDirectory;
 import ivorius.reccomplex.network.PacketSaveStructureHandler;
@@ -67,7 +67,7 @@ public class CommandMapStructure extends CommandBase
         try
         {
             virtual.execute(world, new CommandSelecting.SelectingSender(commandSender, BlockPos.ORIGIN, worldData.blockCollection.area().getHigherCorner()),
-                    parameters.get().at(2).optional().map(s -> s.split(" ")).orElse(new String[0]));
+                    parameters.get().move(2).varargs());
         }
         catch (MockWorld.VirtualWorldException ex)
         {
@@ -81,7 +81,7 @@ public class CommandMapStructure extends CommandBase
     @Override
     public List<String> getTabCompletionOptions(MinecraftServer server, ICommandSender sender, String[] args, @Nullable BlockPos pos)
     {
-        return Expect.start()
+        return RCExpect.startRC()
                 .structure()
                 .any("\"\"")
                 .named("dir").resourceDirectory()

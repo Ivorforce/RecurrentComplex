@@ -34,6 +34,19 @@ public class Expect
         return new Expect();
     }
 
+    public Expect pos(@Nullable BlockPos pos)
+    {
+        return next(args1 -> CommandBase.getTabCompletionCoordinate(args1, 0, pos))
+                .next(args1 -> CommandBase.getTabCompletionCoordinate(args1, 1, pos))
+                .next(args1 -> CommandBase.getTabCompletionCoordinate(args1, 2, pos));
+    }
+
+    public Expect surfacePos(@Nullable BlockPos pos)
+    {
+        return next(args1 -> CommandBase.getTabCompletionCoordinateXZ(args1, 0, pos))
+                .next(args1 -> CommandBase.getTabCompletionCoordinateXZ(args1, 1, pos));
+    }
+
     public Expect named(String name)
     {
         cur = name;

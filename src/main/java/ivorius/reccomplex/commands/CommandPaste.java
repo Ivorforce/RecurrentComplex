@@ -5,25 +5,27 @@
 
 package ivorius.reccomplex.commands;
 
-import net.minecraft.server.MinecraftServer;
-import net.minecraft.util.math.BlockPos;
 import ivorius.ivtoolkit.math.AxisAlignedTransform2D;
 import ivorius.reccomplex.RCConfig;
 import ivorius.reccomplex.capability.RCEntityInfo;
+import ivorius.reccomplex.commands.parameters.Expect;
+import ivorius.reccomplex.commands.parameters.Parameters;
 import ivorius.reccomplex.operation.OperationRegistry;
-import ivorius.reccomplex.world.gen.feature.structure.OperationGenerateStructure;
-import ivorius.reccomplex.world.gen.feature.structure.generic.GenericStructure;
 import ivorius.reccomplex.utils.ServerTranslations;
+import ivorius.reccomplex.world.gen.feature.structure.OperationGenerateStructure;
+import ivorius.reccomplex.world.gen.feature.structure.StructureRegistry;
+import ivorius.reccomplex.world.gen.feature.structure.generic.GenericStructure;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.server.MinecraftServer;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.WorldServer;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import java.util.Collections;
 import java.util.List;
 
 /**
@@ -31,10 +33,21 @@ import java.util.List;
  */
 public class CommandPaste extends CommandBase
 {
+    private boolean asSource = false;
+    private String name;
+    private String usage;
+
+    public CommandPaste(boolean asSource, String name, String usage)
+    {
+        this.asSource = asSource;
+        this.name = name;
+        this.usage = usage;
+    }
+
     @Override
     public String getCommandName()
     {
-        return RCConfig.commandPrefix + "paste";
+        return RCConfig.commandPrefix + name;
     }
 
     public int getRequiredPermissionLevel()
@@ -45,12 +58,14 @@ public class CommandPaste extends CommandBase
     @Override
     public String getCommandUsage(ICommandSender var1)
     {
-        return ServerTranslations.usage("commands.strucPaste.usage");
+        return ServerTranslations.usage(usage);
     }
 
     @Override
     public void execute(MinecraftServer server, ICommandSender commandSender, String[] args) throws CommandException
     {
+        Parameters parameters = Parameters.of(this, args);
+
         EntityPlayerMP entityPlayerMP = getCommandSenderAsPlayer(commandSender);
         RCEntityInfo RCEntityInfo = RCCommands.getStructureEntityInfo(entityPlayerMP, null);
 
@@ -58,15 +73,14 @@ public class CommandPaste extends CommandBase
 
         if (worldData != null)
         {
-            BlockPos coord = RCCommands.tryParseBlockPos(commandSender, args, 0, false);
+            BlockPos pos = parameters.get("p").pos(commandSender, false).require();
+            AxisAlignedTransform2D transform = RCCommands.transform(parameters.get("r"), parameters.get("m")).optional().orElse(AxisAlignedTransform2D.ORIGINAL);
 
             GenericStructure structureInfo = GenericStructure.createDefaultStructure();
             structureInfo.worldDataCompound = worldData;
 
-            AxisAlignedTransform2D transform = RCCommands.tryParseTransform(args, 3);
-
             // TODO Generate with generation info?
-            OperationRegistry.queueOperation(new OperationGenerateStructure(structureInfo, null, transform, coord, true).prepare((WorldServer) commandSender.getEntityWorld()), commandSender);
+            OperationRegistry.queueOperation(new OperationGenerateStructure(structureInfo, null, transform, pos, asSource).prepare((WorldServer) commandSender.getEntityWorld()), commandSender);
         }
         else
         {
@@ -78,11 +92,13 @@ public class CommandPaste extends CommandBase
     @Override
     public List<String> getTabCompletionOptions(MinecraftServer server, ICommandSender sender, String[] args, @Nullable BlockPos pos)
     {
-        if (args.length == 1 || args.length == 2 || args.length == 3)
-            return getTabCompletionCoordinate(args, args.length, pos);
-        else if (args.length == 4 || args.length == 5)
-            return RCCommands.completeTransform(args, args.length - 4);
-
-        return Collections.emptyList();
+        return Expect.start()
+                .next(StructureRegistry.INSTANCE.ids())
+                .named("p").pos(pos)
+                .named("r")
+                .next(RCCommands::completeRotation)
+                .named("m")
+                .next(RCCommands::completeMirror)
+                .get(server, sender, args, pos);
     }
 }

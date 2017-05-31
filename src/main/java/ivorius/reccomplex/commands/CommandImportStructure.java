@@ -74,10 +74,7 @@ public class CommandImportStructure extends CommandBase
     {
         return Expect.start()
                 .next(StructureRegistry.INSTANCE.ids())
-                .named("p")
-                .next(args1 -> getTabCompletionCoordinate(args1, 0, pos))
-                .next(args1 -> getTabCompletionCoordinate(args1, 1, pos))
-                .next(args1 -> getTabCompletionCoordinate(args1, 2, pos))
+                .named("p").pos(pos)
                 .named("d")
                 .next(RCCommands::completeDimension)
                 .named("r")

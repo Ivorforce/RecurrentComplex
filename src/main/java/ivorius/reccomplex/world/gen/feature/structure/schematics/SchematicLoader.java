@@ -8,7 +8,7 @@ package ivorius.reccomplex.world.gen.feature.structure.schematics;
 import ivorius.ivtoolkit.tools.IvFileHelper;
 import ivorius.reccomplex.RecurrentComplex;
 import ivorius.reccomplex.files.loading.ResourceDirectory;
-import ivorius.reccomplex.utils.RCAccessorNBT;
+import ivorius.reccomplex.utils.accessor.RCAccessorNBT;
 import net.minecraft.nbt.CompressedStreamTools;
 import net.minecraft.nbt.NBTTagCompound;
 import org.apache.commons.io.FileUtils;

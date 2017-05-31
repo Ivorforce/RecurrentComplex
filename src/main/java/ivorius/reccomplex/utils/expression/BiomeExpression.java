@@ -6,7 +6,7 @@
 package ivorius.reccomplex.utils.expression;
 
 import com.google.common.collect.Lists;
-import ivorius.reccomplex.utils.BiomeDictionaryAccessor;
+import ivorius.reccomplex.utils.accessor.RCAccessorBiomeDictionary;
 import ivorius.reccomplex.utils.algebra.BoolFunctionExpressionCache;
 import ivorius.reccomplex.utils.algebra.RCBoolAlgebra;
 import ivorius.reccomplex.utils.algebra.SupplierCache;
@@ -101,7 +101,7 @@ public class BiomeExpression extends BoolFunctionExpressionCache<Biome, Object>
         @Override
         public Function<SupplierCache<Biome>, Boolean> parse(String var)
         {
-            BiomeDictionary.Type type = BiomeDictionaryAccessor.getTypeWeak(var);
+            BiomeDictionary.Type type = RCAccessorBiomeDictionary.getTypeWeak(var);
             return type != null ? b -> BiomeDictionary.hasType(b.get(), type)
                     || (type == BiomeDictionary.Type.WATER // Special test
                     && (BiomeDictionary.hasType(b.get(), BiomeDictionary.Type.OCEAN)
@@ -112,7 +112,7 @@ public class BiomeExpression extends BoolFunctionExpressionCache<Biome, Object>
         @Override
         public Validity validity(String var, Object biomes)
         {
-            return BiomeDictionaryAccessor.getTypeWeak(var) != null
+            return RCAccessorBiomeDictionary.getTypeWeak(var) != null
                     ? Validity.KNOWN : Validity.UNKNOWN;
         }
 

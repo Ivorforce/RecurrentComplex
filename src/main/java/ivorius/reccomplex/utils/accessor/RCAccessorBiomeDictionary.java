@@ -3,10 +3,11 @@
  *  * http://ivorius.net
  */
 
-package ivorius.reccomplex.utils;
+package ivorius.reccomplex.utils.accessor;
 
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
+import ivorius.reccomplex.utils.SafeReflector;
 import net.minecraftforge.common.BiomeDictionary;
 
 import java.util.ArrayList;
@@ -17,7 +18,7 @@ import java.util.Map;
 /**
  * Created by lukas on 12.12.16.
  */
-public class BiomeDictionaryAccessor
+public class RCAccessorBiomeDictionary
 {
     public static BiomeDictionary.Type getTypeWeak(String var)
     {

@@ -22,6 +22,8 @@ import ivorius.reccomplex.json.NBTToJson;
 import ivorius.reccomplex.temp.RCMover;
 import ivorius.reccomplex.temp.RCPosTransformer;
 import ivorius.reccomplex.utils.*;
+import ivorius.reccomplex.utils.accessor.RCAccessorEntity;
+import ivorius.reccomplex.utils.accessor.RCAccessorWorldServer;
 import ivorius.reccomplex.utils.expression.DependencyExpression;
 import ivorius.reccomplex.world.gen.feature.structure.Structure;
 import ivorius.reccomplex.world.gen.feature.structure.StructureRegistry;

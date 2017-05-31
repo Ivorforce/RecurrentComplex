@@ -14,7 +14,7 @@ import ivorius.ivtoolkit.util.IvStreams;
 import ivorius.reccomplex.RecurrentComplex;
 import ivorius.reccomplex.temp.RCMover;
 import ivorius.reccomplex.temp.RCPosTransformer;
-import ivorius.reccomplex.utils.RCAccessorEntity;
+import ivorius.reccomplex.utils.accessor.RCAccessorEntity;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;

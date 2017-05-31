@@ -55,7 +55,7 @@ public class CommandImportStructure extends CommandBase
         String structureID = parameters.get().first().require();
         Structure<?> structure = parameters.rc().structure().require();
         WorldServer world = parameters.mc("d").dimension(commandSender).require();
-        AxisAlignedTransform2D transform = RCCommands.transform(parameters.get("r"), parameters.get("m")).optional().orElse(AxisAlignedTransform2D.ORIGINAL);
+        AxisAlignedTransform2D transform = parameters.iv("r").transform(parameters.has("m")).optional().orElse(AxisAlignedTransform2D.ORIGINAL);
         BlockPos pos = parameters.mc("p").pos(commandSender.getPosition(), false).require();
 
         if (structure instanceof GenericStructure)
@@ -76,7 +76,7 @@ public class CommandImportStructure extends CommandBase
                 .named("p").pos()
                 .named("d").dimension()
                 .named("r").rotation()
-                .named("m").mirror()
+                .flag("m")
                 .get(server, sender, args, pos);
     }
 }

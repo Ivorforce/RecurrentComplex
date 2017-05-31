@@ -16,9 +16,9 @@ import java.util.Set;
  */
 public class RCParameters extends IvParameters
 {
-    public RCParameters(Set<String> flags, ListMultimap<String, String> params)
+    public RCParameters(Parameters blueprint)
     {
-        super(flags, params);
+        super(blueprint);
     }
 
     public static RCParameters of(String[] args)

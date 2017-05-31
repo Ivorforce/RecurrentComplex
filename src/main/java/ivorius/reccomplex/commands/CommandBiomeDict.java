@@ -9,8 +9,9 @@ import com.google.common.collect.Lists;
 import ivorius.ivtoolkit.tools.IvGsonHelper;
 import ivorius.reccomplex.RCConfig;
 import ivorius.reccomplex.commands.parameters.RCExpect;
-import ivorius.reccomplex.utils.accessor.RCAccessorBiomeDictionary;
+import ivorius.reccomplex.commands.parameters.RCParameters;
 import ivorius.reccomplex.utils.ServerTranslations;
+import ivorius.reccomplex.utils.accessor.RCAccessorBiomeDictionary;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
@@ -57,47 +58,40 @@ public class CommandBiomeDict extends CommandBase
     @Override
     public void execute(MinecraftServer server, ICommandSender commandSender, String[] args) throws CommandException
     {
-        if (args.length < 2)
-            throw ServerTranslations.wrongUsageException("commands.biomedict.usage");
+        RCParameters parameters = RCParameters.of(args);
 
-        switch (args[0])
+        switch (parameters.get().first().require())
         {
             case "search":
             {
+                List<String> terms = parameters.get().move(1).varargsList();
+
                 CommandSearchStructure.postResultMessage(commandSender,
-                        RCTextStyle::biome, CommandSearchStructure.search(Biome.REGISTRY.getKeys(), loc -> CommandSearchStructure.searchRank(Arrays.asList(args), keywords(loc, Biome.REGISTRY.getObject(loc))))
+                        RCTextStyle::biome,
+                        CommandSearchStructure.search(Biome.REGISTRY.getKeys(), loc -> CommandSearchStructure.searchRank(terms, keywords(loc, Biome.REGISTRY.getObject(loc))))
                 );
                 break;
             }
             case "types":
             {
-                String biomeID = args[1];
-                Biome biome = Biome.REGISTRY.getObject(new ResourceLocation(biomeID));
+                String biomeID = parameters.get().at(1).require();
+                Biome biome = parameters.mc().biome().require();
 
-                if (biome != null)
-                {
-                    commandSender.addChatMessage(ServerTranslations.format("commands.biomedict.get", biomeID,
-                            ServerTranslations.join(Lists.newArrayList(BiomeDictionary.getTypesForBiome(biome)).stream()
-                                    .map(RCTextStyle::biomeType).toArray())
-                    ));
-                }
-                else
-                    commandSender.addChatMessage(ServerTranslations.format("commands.biomedict.nobiome", biomeID));
+                commandSender.sendMessage(ServerTranslations.format("commands.biomedict.get", biomeID,
+                        ServerTranslations.join(Lists.newArrayList(BiomeDictionary.getTypes(biome)).stream()
+                                .map(RCTextStyle::biomeType).toArray())
+                ));
+
                 break;
             }
             case "list":
             {
-                BiomeDictionary.Type type = RCAccessorBiomeDictionary.getTypeWeak(args[1]);
+                BiomeDictionary.Type type = parameters.mc().move(1).biomeDictionaryType().require();
 
-                if (type != null)
-                {
-                    commandSender.addChatMessage(ServerTranslations.format("commands.biomedict.list", args[1],
-                            ServerTranslations.join(Lists.newArrayList(BiomeDictionary.getBiomesForType(type))
-                                    .stream().map(RCTextStyle::biome).toArray())
-                    ));
-                }
-                else
-                    commandSender.addChatMessage(ServerTranslations.format("commands.biomedict.notype", args[1]));
+                commandSender.sendMessage(ServerTranslations.format("commands.biomedict.list", args[1],
+                        ServerTranslations.join(Lists.newArrayList(BiomeDictionary.getBiomes(type))
+                                .stream().map(RCTextStyle::biome).toArray())
+                ));
                 break;
             }
             default:

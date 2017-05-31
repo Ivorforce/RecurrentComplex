@@ -6,6 +6,7 @@
 package ivorius.reccomplex.commands.parameters;
 
 import ivorius.reccomplex.utils.ServerTranslations;
+import ivorius.reccomplex.utils.accessor.RCAccessorBiomeDictionary;
 import net.minecraft.block.Block;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.ICommandSender;
@@ -14,6 +15,7 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.WorldServer;
 import net.minecraft.world.biome.Biome;
+import net.minecraftforge.common.BiomeDictionary;
 import net.minecraftforge.common.DimensionManager;
 
 /**
@@ -49,6 +51,11 @@ public class MCParameter extends Parameter
     {
         return first().map(ResourceLocation::new)
                 .map(Biome.REGISTRY::getObject, t -> ServerTranslations.commandException("commands.rc.nobiome"));
+    }
+
+    public Result<BiomeDictionary.Type> biomeDictionaryType()
+    {
+        return first().map(RCAccessorBiomeDictionary::getTypeWeak, s -> ServerTranslations.commandException("commands.biomedict.notype", s));
     }
 
     public Result<WorldServer> dimension(ICommandSender commandSender)

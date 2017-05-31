@@ -6,7 +6,6 @@
 package ivorius.reccomplex.utils.presets;
 
 import ivorius.reccomplex.RecurrentComplex;
-import ivorius.reccomplex.utils.PresetRegistry;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;

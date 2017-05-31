@@ -17,7 +17,7 @@ import ivorius.reccomplex.gui.table.TableDelegate;
 import ivorius.reccomplex.gui.table.TableNavigator;
 import ivorius.reccomplex.gui.table.datasource.TableDataSource;
 import ivorius.reccomplex.json.JsonUtils;
-import ivorius.reccomplex.utils.NBTNone;
+import ivorius.reccomplex.nbt.NBTNone;
 import ivorius.reccomplex.utils.algebra.ExpressionCache;
 import ivorius.reccomplex.utils.expression.BlockExpression;
 import ivorius.reccomplex.utils.presets.PresettedList;

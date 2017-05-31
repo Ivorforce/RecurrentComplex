@@ -23,7 +23,7 @@ import ivorius.reccomplex.world.gen.feature.structure.context.StructurePrepareCo
 import ivorius.reccomplex.world.gen.feature.structure.context.StructureSpawnContext;
 import ivorius.reccomplex.utils.expression.BlockExpression;
 import net.minecraft.block.state.IBlockState;
-import ivorius.reccomplex.utils.NBTNone;
+import ivorius.reccomplex.nbt.NBTNone;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.init.Blocks;

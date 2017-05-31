@@ -18,7 +18,7 @@ import ivorius.reccomplex.gui.worldscripts.command.TableDataSourceWorldScriptCom
 import ivorius.reccomplex.world.gen.feature.structure.context.StructureLoadContext;
 import ivorius.reccomplex.world.gen.feature.structure.context.StructurePrepareContext;
 import ivorius.reccomplex.world.gen.feature.structure.context.StructureSpawnContext;
-import ivorius.reccomplex.utils.NBTNone;
+import ivorius.reccomplex.nbt.NBTNone;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.nbt.NBTBase;

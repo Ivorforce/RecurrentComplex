@@ -5,7 +5,7 @@
 
 package ivorius.reccomplex.world.gen.feature.structure.generic.maze.rules;
 
-import ivorius.reccomplex.utils.NBTStringTypeRegistry;
+import ivorius.reccomplex.nbt.NBTStringTypeRegistry;
 
 /**
  * Created by lukas on 21.03.16.

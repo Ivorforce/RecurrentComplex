@@ -27,7 +27,7 @@ import ivorius.reccomplex.network.*;
 import ivorius.reccomplex.operation.OperationRegistry;
 import ivorius.reccomplex.random.Poem;
 import ivorius.reccomplex.utils.FMLUtils;
-import ivorius.reccomplex.utils.PresetRegistry;
+import ivorius.reccomplex.utils.presets.PresetRegistry;
 import ivorius.reccomplex.world.gen.feature.GenerationSanityChecker;
 import ivorius.reccomplex.world.gen.feature.selector.NaturalStructureSelector;
 import ivorius.reccomplex.world.gen.feature.structure.OperationClearArea;

@@ -22,7 +22,7 @@ import ivorius.reccomplex.world.gen.feature.structure.context.StructureLoadConte
 import ivorius.reccomplex.world.gen.feature.structure.context.StructurePrepareContext;
 import ivorius.reccomplex.world.gen.feature.structure.context.StructureSpawnContext;
 import ivorius.reccomplex.world.gen.feature.structure.generic.WeightedBlockState;
-import ivorius.reccomplex.utils.expression.BlockMatcher;
+import ivorius.reccomplex.utils.expression.BlockExpression;
 import ivorius.reccomplex.utils.NBTNone;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.nbt.NBTBase;
@@ -41,7 +41,7 @@ import java.util.Random;
 public class TransformerVillageSpecific extends TransformerSingleBlock<NBTNone>
 {
     public final MyVillage village = new MyVillage(); // Accessor for biome specific replacements
-    public BlockMatcher sourceMatcher;
+    public BlockExpression sourceMatcher;
 
     public TransformerVillageSpecific()
     {
@@ -51,7 +51,7 @@ public class TransformerVillageSpecific extends TransformerSingleBlock<NBTNone>
     public TransformerVillageSpecific(@Nullable String id, String sourceExpression)
     {
         super(id != null ? id : randomID(TransformerVillageSpecific.class));
-        this.sourceMatcher = ExpressionCache.of(new BlockMatcher(RecurrentComplex.specialRegistry), sourceExpression);
+        this.sourceMatcher = ExpressionCache.of(new BlockExpression(RecurrentComplex.specialRegistry), sourceExpression);
     }
 
     @Override

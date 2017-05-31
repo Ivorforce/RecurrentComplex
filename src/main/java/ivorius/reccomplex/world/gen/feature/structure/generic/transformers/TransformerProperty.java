@@ -19,7 +19,7 @@ import ivorius.reccomplex.world.gen.feature.structure.Environment;
 import ivorius.reccomplex.world.gen.feature.structure.context.StructureLoadContext;
 import ivorius.reccomplex.world.gen.feature.structure.context.StructurePrepareContext;
 import ivorius.reccomplex.world.gen.feature.structure.context.StructureSpawnContext;
-import ivorius.reccomplex.utils.expression.BlockMatcher;
+import ivorius.reccomplex.utils.expression.BlockExpression;
 import ivorius.reccomplex.utils.NBTNone;
 import net.minecraft.block.Block;
 import net.minecraft.block.properties.IProperty;
@@ -40,7 +40,7 @@ import java.util.stream.Stream;
  */
 public class TransformerProperty extends TransformerSingleBlock<NBTNone>
 {
-    public BlockMatcher sourceMatcher;
+    public BlockExpression sourceMatcher;
     public String propertyName = "";
     public String propertyValue = "";
 
@@ -52,7 +52,7 @@ public class TransformerProperty extends TransformerSingleBlock<NBTNone>
     public TransformerProperty(@Nullable String id, String sourceExpression, String propertyName, String propertyValue)
     {
         super(id != null ? id : randomID(TransformerProperty.class));
-        this.sourceMatcher = ExpressionCache.of(new BlockMatcher(RecurrentComplex.specialRegistry), sourceExpression);
+        this.sourceMatcher = ExpressionCache.of(new BlockExpression(RecurrentComplex.specialRegistry), sourceExpression);
         this.propertyName = propertyName;
         this.propertyValue = propertyValue;
     }

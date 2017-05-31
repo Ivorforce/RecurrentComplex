@@ -8,7 +8,7 @@ package ivorius.reccomplex.world.gen.feature.structure.generic;
 import com.google.gson.*;
 import ivorius.reccomplex.json.JsonUtils;
 import ivorius.reccomplex.utils.algebra.ExpressionCache;
-import ivorius.reccomplex.utils.expression.DimensionMatcher;
+import ivorius.reccomplex.utils.expression.DimensionExpression;
 import net.minecraft.world.WorldProvider;
 
 import java.lang.reflect.Type;
@@ -19,12 +19,12 @@ import java.util.regex.Matcher;
  */
 public class WeightedDimensionMatcher
 {
-    private DimensionMatcher dimensionMatcher;
+    private DimensionExpression dimensionExpression;
     private Double generationWeight;
 
     public WeightedDimensionMatcher(String expression, Double generationWeight)
     {
-        this.dimensionMatcher = ExpressionCache.of(new DimensionMatcher(), expression);
+        this.dimensionExpression = ExpressionCache.of(new DimensionExpression(), expression);
         this.generationWeight = generationWeight;
     }
 
@@ -50,17 +50,17 @@ public class WeightedDimensionMatcher
 
     public boolean matches(WorldProvider provider)
     {
-        return dimensionMatcher.test(provider);
+        return dimensionExpression.test(provider);
     }
 
-    public DimensionMatcher getDimensionMatcher()
+    public DimensionExpression getDimensionExpression()
     {
-        return dimensionMatcher;
+        return dimensionExpression;
     }
 
     public String getDisplayString()
     {
-        return dimensionMatcher.getDisplayString(null);
+        return dimensionExpression.getDisplayString(null);
     }
 
     public static class Serializer implements JsonDeserializer<WeightedDimensionMatcher>, JsonSerializer<WeightedDimensionMatcher>
@@ -91,7 +91,7 @@ public class WeightedDimensionMatcher
         {
             JsonObject jsonobject = new JsonObject();
 
-            jsonobject.addProperty("dimensions", generationInfo.getDimensionMatcher().getExpression());
+            jsonobject.addProperty("dimensions", generationInfo.getDimensionExpression().getExpression());
             if (generationInfo.generationWeight != null)
                 jsonobject.addProperty("weight", generationInfo.generationWeight);
 

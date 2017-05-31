@@ -12,7 +12,7 @@ import ivorius.ivtoolkit.maze.components.MazeRoom;
 import ivorius.ivtoolkit.tools.NBTCompoundObject;
 import ivorius.reccomplex.json.JsonUtils;
 import ivorius.reccomplex.utils.algebra.ExpressionCache;
-import ivorius.reccomplex.utils.expression.EnvironmentMatcher;
+import ivorius.reccomplex.utils.expression.EnvironmentExpression;
 import ivorius.reccomplex.world.gen.feature.structure.Environment;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.common.util.Constants;
@@ -147,12 +147,12 @@ public class SavedMazePathConnection implements NBTCompoundObject
 
     public static class ConditionalConnector
     {
-        public EnvironmentMatcher expression;
+        public EnvironmentExpression expression;
         public final SavedConnector connector = new SavedConnector(ConnectorStrategy.DEFAULT_PATH);
 
         public ConditionalConnector(String expression, String connector)
         {
-            this.expression = ExpressionCache.of(new EnvironmentMatcher(), expression);
+            this.expression = ExpressionCache.of(new EnvironmentExpression(), expression);
             this.connector.id = connector;
         }
 

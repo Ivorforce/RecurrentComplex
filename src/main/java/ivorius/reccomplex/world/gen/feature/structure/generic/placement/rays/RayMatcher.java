@@ -19,7 +19,7 @@ import ivorius.reccomplex.gui.table.datasource.TableDataSourceSegmented;
 import ivorius.reccomplex.gui.table.datasource.TableDataSourceSupplied;
 import ivorius.reccomplex.json.JsonUtils;
 import ivorius.ivtoolkit.world.WorldCache;
-import ivorius.reccomplex.utils.expression.PositionedBlockMatcher;
+import ivorius.reccomplex.utils.expression.PositionedBlockExpression;
 import ivorius.reccomplex.world.gen.feature.structure.generic.placement.FactorLimit;
 import ivorius.reccomplex.world.gen.feature.structure.generic.placement.StructurePlaceContext;
 import ivorius.ivtoolkit.blocks.BlockSurfaceArea;
@@ -34,7 +34,7 @@ import static ivorius.reccomplex.world.gen.feature.structure.generic.placement.F
  */
 public class RayMatcher extends FactorLimit.Ray
 {
-    public final PositionedBlockMatcher destMatcher = new PositionedBlockMatcher(RecurrentComplex.specialRegistry);
+    public final PositionedBlockExpression destMatcher = new PositionedBlockExpression(RecurrentComplex.specialRegistry);
     public boolean up;
     public float requiredRatio;
 
@@ -61,7 +61,7 @@ public class RayMatcher extends FactorLimit.Ray
 
         IvStreams.visit(surfaceArea.stream(), pos ->
         {
-            if (destMatcher.evaluate(() -> PositionedBlockMatcher.Argument.at(cache, pos.blockPos(y))))
+            if (destMatcher.evaluate(() -> PositionedBlockExpression.Argument.at(cache, pos.blockPos(y))))
                 return --need[0] > 0;
             else
                 return --chances[0] > 0; // Already lost

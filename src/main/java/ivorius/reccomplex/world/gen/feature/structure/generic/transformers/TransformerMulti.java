@@ -15,7 +15,7 @@ import ivorius.reccomplex.gui.table.TableDelegate;
 import ivorius.reccomplex.gui.table.TableNavigator;
 import ivorius.reccomplex.json.JsonUtils;
 import ivorius.reccomplex.world.gen.feature.structure.*;
-import ivorius.reccomplex.utils.expression.EnvironmentMatcher;
+import ivorius.reccomplex.utils.expression.EnvironmentExpression;
 import ivorius.reccomplex.world.gen.feature.structure.context.*;
 import ivorius.reccomplex.world.gen.feature.structure.generic.presets.TransfomerPresets;
 import ivorius.reccomplex.utils.NBTStorable;
@@ -60,7 +60,7 @@ public class TransformerMulti extends Transformer<TransformerMulti.InstanceData>
         super(id != null ? id : randomID(TransformerMulti.class));
 
         data.setContents(new Data());
-        data.getContents().environmentMatcher.setExpression(expression);
+        data.getContents().environmentExpression.setExpression(expression);
         data.getContents().transformers.addAll(transformers);
     }
 
@@ -106,9 +106,9 @@ public class TransformerMulti extends Transformer<TransformerMulti.InstanceData>
         return data.getContents().transformers;
     }
 
-    public EnvironmentMatcher getEnvironmentMatcher()
+    public EnvironmentExpression getEnvironmentMatcher()
     {
-        return data.getContents().environmentMatcher;
+        return data.getContents().environmentExpression;
     }
 
     public PresettedObject<Data> getData()
@@ -223,7 +223,7 @@ public class TransformerMulti extends Transformer<TransformerMulti.InstanceData>
     public static class Data
     {
         public final List<Transformer> transformers = new ArrayList<>();
-        public final EnvironmentMatcher environmentMatcher = new EnvironmentMatcher();
+        public final EnvironmentExpression environmentExpression = new EnvironmentExpression();
     }
 
     public static class DataSerializer implements JsonDeserializer<Data>, JsonSerializer<Data>
@@ -235,7 +235,7 @@ public class TransformerMulti extends Transformer<TransformerMulti.InstanceData>
 
             Data data = new Data();
 
-            data.environmentMatcher.setExpression(JsonUtils.getString(jsonObject, "environmentMatcher", ""));
+            data.environmentExpression.setExpression(JsonUtils.getString(jsonObject, "environmentMatcher", ""));
             Transformer[] transformers = gson.fromJson(jsonObject.get("transformers"), Transformer[].class);
             if (transformers != null)
                 Collections.addAll(data.transformers, transformers);
@@ -248,7 +248,7 @@ public class TransformerMulti extends Transformer<TransformerMulti.InstanceData>
         {
             JsonObject jsonObject = new JsonObject();
 
-            jsonObject.addProperty("environmentMatcher", src.environmentMatcher.getExpression());
+            jsonObject.addProperty("environmentMatcher", src.environmentExpression.getExpression());
             jsonObject.add("transformers", gson.toJsonTree(src.transformers));
 
             return jsonObject;

@@ -29,7 +29,7 @@ import java.util.function.Function;
 /**
  * Created by lukas on 03.03.15.
  */
-public class BlockMatcher extends BoolFunctionExpressionCache<IBlockState, Object>
+public class BlockExpression extends BoolFunctionExpressionCache<IBlockState, Object>
 {
     public static final String BLOCK_ID_PREFIX = "id=";
     public static final String METADATA_PREFIX = "metadata=";
@@ -37,7 +37,7 @@ public class BlockMatcher extends BoolFunctionExpressionCache<IBlockState, Objec
 
     public final MCRegistry registry;
 
-    public BlockMatcher(MCRegistry registry)
+    public BlockExpression(MCRegistry registry)
     {
         super(RCBoolAlgebra.algebra(), true, TextFormatting.GREEN + "Any Block");
 

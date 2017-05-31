@@ -26,7 +26,7 @@ import ivorius.reccomplex.world.gen.feature.structure.context.StructureLoadConte
 import ivorius.reccomplex.world.gen.feature.structure.context.StructurePrepareContext;
 import ivorius.reccomplex.world.gen.feature.structure.context.StructureSpawnContext;
 import ivorius.reccomplex.world.gen.feature.structure.generic.WeightedBlockState;
-import ivorius.reccomplex.utils.expression.BlockMatcher;
+import ivorius.reccomplex.utils.expression.BlockExpression;
 import ivorius.reccomplex.world.gen.feature.structure.generic.presets.WeightedBlockStatePresets;
 import net.minecraft.block.state.IBlockState;
 import ivorius.reccomplex.utils.NBTStorable;
@@ -50,18 +50,18 @@ public class TransformerReplaceAll extends TransformerSingleBlock<TransformerRep
 {
     public final PresettedList<WeightedBlockState> destination = new PresettedList<>(WeightedBlockStatePresets.instance(), null);
 
-    public BlockMatcher sourceMatcher;
+    public BlockExpression sourceMatcher;
 
     public TransformerReplaceAll()
     {
-        this(null, BlockMatcher.of(RecurrentComplex.specialRegistry, Blocks.WOOL, new IntegerRange(0, 15)));
+        this(null, BlockExpression.of(RecurrentComplex.specialRegistry, Blocks.WOOL, new IntegerRange(0, 15)));
         destination.setPreset("air");
     }
 
     public TransformerReplaceAll(@Nullable String id, String sourceExpression)
     {
         super(id != null ? id : randomID(TransformerReplaceAll.class));
-        this.sourceMatcher = ExpressionCache.of(new BlockMatcher(RecurrentComplex.specialRegistry), sourceExpression);
+        this.sourceMatcher = ExpressionCache.of(new BlockExpression(RecurrentComplex.specialRegistry), sourceExpression);
     }
 
     public TransformerReplaceAll replaceWith(WeightedBlockState... states)

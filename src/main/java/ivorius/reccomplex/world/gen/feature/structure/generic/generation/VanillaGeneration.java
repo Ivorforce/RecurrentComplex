@@ -16,7 +16,7 @@ import ivorius.reccomplex.gui.table.TableNavigator;
 import ivorius.reccomplex.json.JsonUtils;
 import ivorius.reccomplex.utils.algebra.ExpressionCache;
 import ivorius.reccomplex.world.gen.feature.structure.Placer;
-import ivorius.reccomplex.utils.expression.BiomeMatcher;
+import ivorius.reccomplex.utils.expression.BiomeExpression;
 import ivorius.reccomplex.world.gen.feature.structure.generic.placement.GenericPlacer;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
@@ -42,7 +42,7 @@ public class VanillaGeneration extends GenerationType
 
     public BlockPos spawnShift;
 
-    public BiomeMatcher biomeMatcher;
+    public BiomeExpression biomeExpression;
 
     public VanillaGeneration()
     {
@@ -59,7 +59,7 @@ public class VanillaGeneration extends GenerationType
         this.maxScaledLimit = maxScaledLimit;
         this.front = front;
         this.spawnShift = spawnShift;
-        biomeMatcher = ExpressionCache.of(new BiomeMatcher(), biomeExpression);
+        this.biomeExpression = ExpressionCache.of(new BiomeExpression(), biomeExpression);
     }
 
     @Nonnull
@@ -101,7 +101,7 @@ public class VanillaGeneration extends GenerationType
 
     public boolean generatesIn(Biome biome)
     {
-        return biomeMatcher.test(biome);
+        return biomeExpression.test(biome);
     }
 
     public double getActiveWeight()
@@ -162,7 +162,7 @@ public class VanillaGeneration extends GenerationType
 
             jsonObject.addProperty("front", Directions.serialize(src.front));
 
-            jsonObject.addProperty("biomeExpression", src.biomeMatcher.getExpression());
+            jsonObject.addProperty("biomeExpression", src.biomeExpression.getExpression());
 
             return jsonObject;
         }

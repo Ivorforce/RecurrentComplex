@@ -21,12 +21,12 @@ import java.util.function.Function;
 /**
  * Created by lukas on 19.09.14.
  */
-public class DimensionMatcher extends BoolFunctionExpressionCache<WorldProvider, Object>
+public class DimensionExpression extends BoolFunctionExpressionCache<WorldProvider, Object>
 {
     public static final String DIMENSION_ID_PREFIX = "id=";
     public static final String DIMENSION_TYPE_PREFIX = "type=";
 
-    public DimensionMatcher()
+    public DimensionExpression()
     {
         super(RCBoolAlgebra.algebra(), true, TextFormatting.GREEN + "Any Dimension");
 

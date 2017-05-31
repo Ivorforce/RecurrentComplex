@@ -16,7 +16,7 @@ import ivorius.reccomplex.files.loading.ResourceDirectory;
 import ivorius.reccomplex.network.PacketSaveStructureHandler;
 import ivorius.reccomplex.utils.RawResourceLocation;
 import ivorius.reccomplex.utils.ServerTranslations;
-import ivorius.reccomplex.utils.expression.ResourceMatcher;
+import ivorius.reccomplex.utils.expression.ResourceExpression;
 import ivorius.reccomplex.world.gen.feature.structure.Structure;
 import ivorius.reccomplex.world.gen.feature.structure.StructureRegistry;
 import ivorius.reccomplex.world.gen.feature.structure.generic.GenericStructure;
@@ -57,7 +57,7 @@ public class CommandMapAllStructure extends CommandBase
     {
         RCParameters parameters = RCParameters.of(args);
 
-        ResourceMatcher matcher = parameters.get("exp").resourceMatcher(StructureRegistry.INSTANCE::has).require();
+        ResourceExpression matcher = parameters.get("exp").resourceMatcher(StructureRegistry.INSTANCE::has).require();
         ResourceDirectory directory = parameters.rc("dir").resourceDirectory().optional().orElse(ResourceDirectory.ACTIVE);
 
         ICommand other = server.getCommandManager().getCommands().get(parameters.get().at(1).require());

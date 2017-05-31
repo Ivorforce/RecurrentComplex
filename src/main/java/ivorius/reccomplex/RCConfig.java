@@ -14,10 +14,10 @@ import it.unimi.dsi.fastutil.Hash;
 import ivorius.reccomplex.files.loading.RCFileSuffix;
 import ivorius.reccomplex.utils.RawResourceLocation;
 import ivorius.reccomplex.utils.algebra.ExpressionCache;
-import ivorius.reccomplex.utils.expression.BiomeMatcher;
-import ivorius.reccomplex.utils.expression.CommandMatcher;
-import ivorius.reccomplex.utils.expression.DimensionMatcher;
-import ivorius.reccomplex.utils.expression.ResourceMatcher;
+import ivorius.reccomplex.utils.expression.BiomeExpression;
+import ivorius.reccomplex.utils.expression.CommandExpression;
+import ivorius.reccomplex.utils.expression.DimensionExpression;
+import ivorius.reccomplex.utils.expression.ResourceExpression;
 import ivorius.reccomplex.world.gen.feature.decoration.RCBiomeDecorator;
 import ivorius.reccomplex.world.gen.feature.structure.StructureRegistry;
 import ivorius.reccomplex.world.gen.feature.structure.generic.StructureSaveHandler;
@@ -65,7 +65,7 @@ public class RCConfig
     public static double baseSaplingSpawnWeight;
 
     public static String commandPrefix;
-    private static final Map<String, CommandMatcher> commandMatchers = new HashMap<>();
+    private static final Map<String, CommandExpression> commandMatchers = new HashMap<>();
     public static int asCommandPermissionLevel;
 
     public static boolean savePlayerCache;
@@ -80,14 +80,14 @@ public class RCConfig
 
     private static boolean lightweightMode;
 
-    private static ResourceMatcher structureLoadMatcher = new ResourceMatcher(StructureRegistry.INSTANCE::has);
-    private static ResourceMatcher structureGenerationMatcher = new ResourceMatcher(StructureRegistry.INSTANCE::has);
+    private static ResourceExpression structureLoadMatcher = new ResourceExpression(StructureRegistry.INSTANCE::has);
+    private static ResourceExpression structureGenerationMatcher = new ResourceExpression(StructureRegistry.INSTANCE::has);
 
-    private static ResourceMatcher inventoryGeneratorLoadMatcher = new ResourceMatcher(GenericItemCollectionRegistry.INSTANCE::has);
-    private static ResourceMatcher inventoryGeneratorGenerationMatcher = new ResourceMatcher(GenericItemCollectionRegistry.INSTANCE::has);
+    private static ResourceExpression inventoryGeneratorLoadMatcher = new ResourceExpression(GenericItemCollectionRegistry.INSTANCE::has);
+    private static ResourceExpression inventoryGeneratorGenerationMatcher = new ResourceExpression(GenericItemCollectionRegistry.INSTANCE::has);
 
-    private static BiomeMatcher universalBiomeMatcher = new BiomeMatcher();
-    private static DimensionMatcher universalDimensionMatcher = new DimensionMatcher();
+    private static BiomeExpression universalBiomeExpression = new BiomeExpression();
+    private static DimensionExpression universalDimensionExpression = new DimensionExpression();
 
     private static final List<String> universalTransformerPresets = new ArrayList<>();
     private static TransformerMulti universalTransformer;
@@ -108,7 +108,7 @@ public class RCConfig
 
             commandMatchers.clear();
             parseMap(config.getStringList("commandMatchers", CATEGORY_GENERAL, new String[0], "List of Command Expressions determining if a command can be executed. Example: #export:#3 | $Ivorforce"),
-                    null, Function.identity(), "command matcher", (expression) -> ExpressionCache.of(new CommandMatcher(), expression), commandMatchers::put);
+                    null, Function.identity(), "command matcher", (expression) -> ExpressionCache.of(new CommandExpression(), expression), commandMatchers::put);
 
             asCommandPermissionLevel = config.getInt("asCommandPermissionLevel", CATEGORY_DECORATION, 4, -1, 10, "The required permission level for /#as to function. Set to 2 for command blocks and OPs, 4 for only server, or -1 to disable. Note that this could be a security problem on low levels.");
 
@@ -145,11 +145,11 @@ public class RCConfig
             inventoryGeneratorGenerationMatcher.setExpression(config.getString("inventoryGeneratorGenerationMatcher", CATEGORY_BALANCING, "", "Resource Expression that will be applied to each loading inventory generator, determining if it should be set to 'active'."));
             logExpressionException(inventoryGeneratorGenerationMatcher, "inventoryGeneratorGenerationMatcher", RecurrentComplex.logger);
 
-            universalBiomeMatcher.setExpression(config.getString("universalBiomeMatcher", CATEGORY_BALANCING, "", "Biome Expression that will be checked for every single structure. Use this if you want to blacklist / whitelist specific biomes that shouldn't have structures."));
-            logExpressionException(universalBiomeMatcher, "universalBiomeMatcher", RecurrentComplex.logger);
+            universalBiomeExpression.setExpression(config.getString("universalBiomeMatcher", CATEGORY_BALANCING, "", "Biome Expression that will be checked for every single structure. Use this if you want to blacklist / whitelist specific biomes that shouldn't have structures."));
+            logExpressionException(universalBiomeExpression, "universalBiomeMatcher", RecurrentComplex.logger);
 
-            universalDimensionMatcher.setExpression(config.getString("universalDimensionMatcher", CATEGORY_BALANCING, "", "Dimension Expression that will be checked for every single structure. Use this if you want to blacklist / whitelist specific dimensions that shouldn't have structures."));
-            logExpressionException(universalDimensionMatcher, "universalDimensionMatcher", RecurrentComplex.logger);
+            universalDimensionExpression.setExpression(config.getString("universalDimensionMatcher", CATEGORY_BALANCING, "", "Dimension Expression that will be checked for every single structure. Use this if you want to blacklist / whitelist specific dimensions that shouldn't have structures."));
+            logExpressionException(universalDimensionExpression, "universalDimensionMatcher", RecurrentComplex.logger);
 
             customArtifactTag = Pair.of(
                     config.getString("customArtifactTag", CATEGORY_BALANCING, "", "Custom Inventory Generator to override when an artifact generation tag fires."),
@@ -259,18 +259,18 @@ public class RCConfig
 
     public static boolean isGenerationEnabled(Biome biome)
     {
-        return !universalBiomeMatcher.isExpressionValid() || universalBiomeMatcher.test(biome);
+        return !universalBiomeExpression.isExpressionValid() || universalBiomeExpression.test(biome);
     }
 
     public static boolean isGenerationEnabled(WorldProvider provider)
     {
-        return !universalDimensionMatcher.isExpressionValid() || universalDimensionMatcher.test(provider);
+        return !universalDimensionExpression.isExpressionValid() || universalDimensionExpression.test(provider);
     }
 
     public static boolean canUseCommand(String command, ICommandSender sender)
     {
-        CommandMatcher matcher = commandMatchers.get(command);
-        return matcher == null || matcher.test(new CommandMatcher.Argument(command, sender));
+        CommandExpression matcher = commandMatchers.get(command);
+        return matcher == null || matcher.test(new CommandExpression.Argument(command, sender));
     }
 
     public static TransformerMulti getUniversalTransformer()

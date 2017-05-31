@@ -13,8 +13,7 @@ import ivorius.reccomplex.capability.SelectionOwner;
 import ivorius.reccomplex.commands.parameters.RCExpect;
 import ivorius.reccomplex.commands.parameters.RCParameters;
 import ivorius.reccomplex.utils.ServerTranslations;
-import ivorius.reccomplex.utils.expression.PositionedBlockMatcher;
-import ivorius.reccomplex.utils.optional.IvOptional;
+import ivorius.reccomplex.utils.expression.PositionedBlockExpression;
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.command.CommandException;
@@ -71,14 +70,14 @@ public class CommandSelectReplace extends CommandVirtual
         int[] dstMeta = parameters.rc("metadata").metadatas().optional().orElse(new int[1]);
         List<IBlockState> dst = IntStream.of(dstMeta).mapToObj(m -> BlockStates.fromMetadata(dstBlock, m)).collect(Collectors.toList());
 
-        PositionedBlockMatcher matcher = parameters.rc().move(1).expression(new PositionedBlockMatcher(RecurrentComplex.specialRegistry)).require();
+        PositionedBlockExpression matcher = parameters.rc().move(1).expression(new PositionedBlockExpression(RecurrentComplex.specialRegistry)).require();
 
         SelectionOwner selectionOwner = RCCommands.getSelectionOwner(commandSender, null, true);
         RCCommands.assertSize(commandSender, selectionOwner);
 
         for (BlockPos coord : selectionOwner.getSelection())
         {
-            if (matcher.evaluate(() -> PositionedBlockMatcher.Argument.at(world, coord)))
+            if (matcher.evaluate(() -> PositionedBlockExpression.Argument.at(world, coord)))
             {
                 IBlockState state = dst.get(world.rand().nextInt(dst.size()));
                 world.setBlockState(coord, state, 3);

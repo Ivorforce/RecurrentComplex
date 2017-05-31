@@ -14,7 +14,7 @@ import ivorius.reccomplex.RecurrentComplex;
 import ivorius.reccomplex.json.ItemStackSerializer;
 import ivorius.reccomplex.json.JsonUtils;
 import ivorius.reccomplex.json.NBTToJson;
-import ivorius.reccomplex.utils.expression.DependencyMatcher;
+import ivorius.reccomplex.utils.expression.DependencyExpression;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.WeightedRandom;
 import net.minecraft.world.WorldServer;
@@ -73,7 +73,7 @@ public class GenericItemCollection implements WeightedItemCollection
     public static class Component extends WeightedRandom.Item
     {
         public final List<RandomizedItemStack> items = new ArrayList<>();
-        public final DependencyMatcher dependencies = new DependencyMatcher();
+        public final DependencyExpression dependencies = new DependencyExpression();
         public String inventoryGeneratorID;
 
         public Component()
@@ -164,7 +164,7 @@ public class GenericItemCollection implements WeightedItemCollection
                 if (version == 1 && jsonObject.has("dependencies")) // Legacy
                 {
                     String[] dependencies = context.deserialize(jsonObject.get("dependencies"), String[].class);
-                    dependencyExpression = DependencyMatcher.ofMods(dependencies);
+                    dependencyExpression = DependencyExpression.ofMods(dependencies);
                 }
 
                 return new Component(generatorID, stacks, dependencyExpression);

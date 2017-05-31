@@ -22,7 +22,7 @@ import java.util.function.Function;
 /**
  * Created by lukas on 07.09.16.
  */
-public class EnvironmentMatcher extends BoolFunctionExpressionCache<Environment, Object>
+public class EnvironmentExpression extends BoolFunctionExpressionCache<Environment, Object>
 {
     public static final String BIOME_PREFIX = "biome.";
     public static final String DIMENSION_PREFIX = "dimension.";
@@ -31,7 +31,7 @@ public class EnvironmentMatcher extends BoolFunctionExpressionCache<Environment,
     public static final String GENERATION_INFO_PREFIX = "generation.";
     public static final String VARIABLE_PREFIX = "variable.";
 
-    public EnvironmentMatcher()
+    public EnvironmentExpression()
     {
         super(RCBoolAlgebra.algebra(), true, TextFormatting.GREEN + "Always");
 
@@ -43,7 +43,7 @@ public class EnvironmentMatcher extends BoolFunctionExpressionCache<Environment,
         addTypes(new VariableDomainType(VARIABLE_PREFIX, ""), t -> t.alias("var.", ""));
     }
 
-    public static class BiomeVariableType extends DelegatingVariableType<Boolean, Environment, Object, Biome, Object, BiomeMatcher>
+    public static class BiomeVariableType extends DelegatingVariableType<Boolean, Environment, Object, Biome, Object, BiomeExpression>
     {
         public BiomeVariableType(String prefix, String suffix)
         {
@@ -57,13 +57,13 @@ public class EnvironmentMatcher extends BoolFunctionExpressionCache<Environment,
         }
 
         @Override
-        public BiomeMatcher createCache()
+        public BiomeExpression createCache()
         {
-            return new BiomeMatcher();
+            return new BiomeExpression();
         }
     }
 
-    public static class DimensionVariableType extends DelegatingVariableType<Boolean, Environment, Object, WorldProvider, Object, DimensionMatcher>
+    public static class DimensionVariableType extends DelegatingVariableType<Boolean, Environment, Object, WorldProvider, Object, DimensionExpression>
     {
         public DimensionVariableType(String prefix, String suffix)
         {
@@ -77,13 +77,13 @@ public class EnvironmentMatcher extends BoolFunctionExpressionCache<Environment,
         }
 
         @Override
-        public DimensionMatcher createCache()
+        public DimensionExpression createCache()
         {
-            return new DimensionMatcher();
+            return new DimensionExpression();
         }
     }
 
-    public static class DependencyVariableType extends DelegatingVariableType<Boolean, Environment, Object, FileSaver, FileSaver, DependencyMatcher>
+    public static class DependencyVariableType extends DelegatingVariableType<Boolean, Environment, Object, FileSaver, FileSaver, DependencyExpression>
     {
         public DependencyVariableType(String prefix, String suffix)
         {
@@ -97,9 +97,9 @@ public class EnvironmentMatcher extends BoolFunctionExpressionCache<Environment,
         }
 
         @Override
-        public DependencyMatcher createCache()
+        public DependencyExpression createCache()
         {
-            return new DependencyMatcher();
+            return new DependencyExpression();
         }
     }
 
@@ -130,7 +130,7 @@ public class EnvironmentMatcher extends BoolFunctionExpressionCache<Environment,
         }
     }
 
-    protected static class GenerationType extends DelegatingVariableType<Boolean, Environment, Object, ivorius.reccomplex.world.gen.feature.structure.generic.generation.GenerationType, Object, GenerationTypeMatcher>
+    protected static class GenerationType extends DelegatingVariableType<Boolean, Environment, Object, ivorius.reccomplex.world.gen.feature.structure.generic.generation.GenerationType, Object, GenerationTypeExpression>
     {
         public GenerationType(String prefix, String suffix)
         {
@@ -144,9 +144,9 @@ public class EnvironmentMatcher extends BoolFunctionExpressionCache<Environment,
         }
 
         @Override
-        public GenerationTypeMatcher createCache()
+        public GenerationTypeExpression createCache()
         {
-            return new GenerationTypeMatcher();
+            return new GenerationTypeExpression();
         }
     }
 

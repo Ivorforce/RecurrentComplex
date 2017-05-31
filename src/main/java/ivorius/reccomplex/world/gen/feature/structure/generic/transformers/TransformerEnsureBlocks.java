@@ -21,8 +21,8 @@ import ivorius.reccomplex.json.JsonUtils;
 import ivorius.reccomplex.utils.*;
 import ivorius.reccomplex.utils.algebra.ExpressionCache;
 import ivorius.reccomplex.world.gen.feature.structure.context.*;
-import ivorius.reccomplex.utils.expression.BlockMatcher;
-import ivorius.reccomplex.utils.expression.PositionedBlockMatcher;
+import ivorius.reccomplex.utils.expression.BlockExpression;
+import ivorius.reccomplex.utils.expression.PositionedBlockExpression;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.nbt.NBTBase;
 import net.minecraft.util.math.BlockPos;
@@ -35,8 +35,8 @@ import java.lang.reflect.Type;
  */
 public class TransformerEnsureBlocks extends Transformer<NBTNone>
 {
-    public BlockMatcher sourceMatcher;
-    public PositionedBlockMatcher destMatcher;
+    public BlockExpression sourceMatcher;
+    public PositionedBlockExpression destMatcher;
 
     public TransformerEnsureBlocks()
     {
@@ -46,8 +46,8 @@ public class TransformerEnsureBlocks extends Transformer<NBTNone>
     public TransformerEnsureBlocks(@Nullable String id, String sourceExpression, String destExpression)
     {
         super(id != null ? id : randomID(TransformerEnsureBlocks.class));
-        this.sourceMatcher = ExpressionCache.of(new BlockMatcher(RecurrentComplex.specialRegistry), sourceExpression);
-        this.destMatcher = ExpressionCache.of(new PositionedBlockMatcher(RecurrentComplex.specialRegistry), destExpression);
+        this.sourceMatcher = ExpressionCache.of(new BlockExpression(RecurrentComplex.specialRegistry), sourceExpression);
+        this.destMatcher = ExpressionCache.of(new PositionedBlockExpression(RecurrentComplex.specialRegistry), destExpression);
     }
 
     @Override
@@ -64,7 +64,7 @@ public class TransformerEnsureBlocks extends Transformer<NBTNone>
             IBlockState state = blockCollection.getBlockState(sourcePos);
 
             if (sourceMatcher.test(state) &&
-                    !(destMatcher.expressionIsEmpty() || destMatcher.evaluate(() -> PositionedBlockMatcher.Argument.at(context.environment.world, worldCoord))))
+                    !(destMatcher.expressionIsEmpty() || destMatcher.evaluate(() -> PositionedBlockExpression.Argument.at(context.environment.world, worldCoord))))
                 return false;
         }
 

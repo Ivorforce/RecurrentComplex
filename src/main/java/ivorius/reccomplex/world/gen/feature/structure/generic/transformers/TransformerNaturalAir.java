@@ -20,12 +20,12 @@ import ivorius.reccomplex.gui.table.TableNavigator;
 import ivorius.reccomplex.json.JsonUtils;
 import ivorius.ivtoolkit.world.chunk.gen.StructureBoundingBoxes;
 import ivorius.reccomplex.utils.algebra.ExpressionCache;
-import ivorius.reccomplex.utils.expression.PositionedBlockMatcher;
+import ivorius.reccomplex.utils.expression.PositionedBlockExpression;
 import ivorius.reccomplex.world.gen.feature.structure.Environment;
 import ivorius.reccomplex.world.gen.feature.structure.context.StructureLoadContext;
 import ivorius.reccomplex.world.gen.feature.structure.context.StructurePrepareContext;
 import ivorius.reccomplex.world.gen.feature.structure.context.StructureSpawnContext;
-import ivorius.reccomplex.utils.expression.BlockMatcher;
+import ivorius.reccomplex.utils.expression.BlockExpression;
 import ivorius.reccomplex.utils.RCBlockLogic;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.init.Blocks;
@@ -50,22 +50,22 @@ public class TransformerNaturalAir extends TransformerAbstractCloud<TransformerN
     public static final double DEFAULT_NATURAL_EXPANSION_RANDOMIZATION = 10.0;
     public static final int MAX_TREE_SIZE = 300;
 
-    public BlockMatcher sourceMatcher;
-    public PositionedBlockMatcher destMatcher;
+    public BlockExpression sourceMatcher;
+    public PositionedBlockExpression destMatcher;
 
     public double naturalExpansionDistance;
     public double naturalExpansionRandomization;
 
     public TransformerNaturalAir()
     {
-        this(null, BlockMatcher.of(RecurrentComplex.specialRegistry, RCBlocks.genericSpace, 1), DEFAULT_NATURAL_EXPANSION_DISTANCE, DEFAULT_NATURAL_EXPANSION_RANDOMIZATION);
+        this(null, BlockExpression.of(RecurrentComplex.specialRegistry, RCBlocks.genericSpace, 1), DEFAULT_NATURAL_EXPANSION_DISTANCE, DEFAULT_NATURAL_EXPANSION_RANDOMIZATION);
     }
 
     public TransformerNaturalAir(@Nullable String id, String sourceMatcherExpression, double naturalExpansionDistance, double naturalExpansionRandomization)
     {
         super(id != null ? id : randomID(TransformerNaturalAir.class));
-        this.sourceMatcher = ExpressionCache.of(new BlockMatcher(RecurrentComplex.specialRegistry), sourceMatcherExpression);
-        this.destMatcher = ExpressionCache.of(new PositionedBlockMatcher(RecurrentComplex.specialRegistry), "");
+        this.sourceMatcher = ExpressionCache.of(new BlockExpression(RecurrentComplex.specialRegistry), sourceMatcherExpression);
+        this.destMatcher = ExpressionCache.of(new PositionedBlockExpression(RecurrentComplex.specialRegistry), "");
         this.naturalExpansionDistance = naturalExpansionDistance;
         this.naturalExpansionRandomization = naturalExpansionRandomization;
     }
@@ -78,7 +78,7 @@ public class TransformerNaturalAir extends TransformerAbstractCloud<TransformerN
     @Override
     public boolean canPenetrate(Environment environment, IvWorldData worldData, BlockPos pos, double density, TransformerMulti transformer, TransformerMulti.InstanceData transformerID)
     {
-        return destMatcher.evaluate(() -> PositionedBlockMatcher.Argument.at(environment.world, pos));
+        return destMatcher.evaluate(() -> PositionedBlockExpression.Argument.at(environment.world, pos));
     }
 
     @Override

@@ -8,8 +8,8 @@ package ivorius.reccomplex.world.gen.feature.selector;
 import com.google.gson.annotations.SerializedName;
 import ivorius.reccomplex.RCConfig;
 import ivorius.reccomplex.files.SimpleLeveledRegistry;
-import ivorius.reccomplex.utils.expression.BiomeMatcher;
-import ivorius.reccomplex.utils.expression.DimensionMatcher;
+import ivorius.reccomplex.utils.expression.BiomeExpression;
+import ivorius.reccomplex.utils.expression.DimensionExpression;
 import net.minecraft.world.WorldProvider;
 import net.minecraft.world.biome.Biome;
 
@@ -81,7 +81,7 @@ public class NaturalStructureSelector
 
             for (GenerationInfo info : generationInfos)
             {
-                if (info.biomeMatcher.test(biome) && info.dimensionMatcher.test(worldProvider))
+                if (info.biomeExpression.test(biome) && info.dimensionExpression.test(worldProvider))
                     am = info.spawnChances != null ? info.spawnChances : new double[]{info.spawnChance};
             }
             return am;
@@ -125,15 +125,15 @@ public class NaturalStructureSelector
         public double[] spawnChances;
 
         @SerializedName("biomeMatcher")
-        public BiomeMatcher biomeMatcher;
+        public BiomeExpression biomeExpression;
         @SerializedName("dimensionMatcher")
-        public DimensionMatcher dimensionMatcher;
+        public DimensionExpression dimensionExpression;
 
-        public GenerationInfo(double[] spawnChance, BiomeMatcher biomeMatcher, DimensionMatcher dimensionMatcher)
+        public GenerationInfo(double[] spawnChance, BiomeExpression biomeExpression, DimensionExpression dimensionExpression)
         {
             this.spawnChances = spawnChance;
-            this.biomeMatcher = biomeMatcher;
-            this.dimensionMatcher = dimensionMatcher;
+            this.biomeExpression = biomeExpression;
+            this.dimensionExpression = dimensionExpression;
         }
     }
 }

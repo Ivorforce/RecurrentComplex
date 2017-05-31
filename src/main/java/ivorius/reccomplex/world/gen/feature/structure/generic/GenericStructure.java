@@ -22,7 +22,7 @@ import ivorius.reccomplex.json.NBTToJson;
 import ivorius.reccomplex.temp.RCMover;
 import ivorius.reccomplex.temp.RCPosTransformer;
 import ivorius.reccomplex.utils.*;
-import ivorius.reccomplex.utils.expression.DependencyMatcher;
+import ivorius.reccomplex.utils.expression.DependencyExpression;
 import ivorius.reccomplex.world.gen.feature.structure.Structure;
 import ivorius.reccomplex.world.gen.feature.structure.StructureRegistry;
 import ivorius.reccomplex.world.gen.feature.structure.VariableDomain;
@@ -72,7 +72,7 @@ public class GenericStructure implements Structure<GenericStructure.InstanceData
 
     public final List<GenerationType> generationTypes = new ArrayList<>();
     public TransformerMulti transformer = new TransformerMulti();
-    public final DependencyMatcher dependencies = new DependencyMatcher();
+    public final DependencyExpression dependencies = new DependencyExpression();
 
     public NBTTagCompound worldDataCompound;
 
@@ -486,7 +486,7 @@ public class GenericStructure implements Structure<GenericStructure.InstanceData
             if (jsonObject.has("dependencyExpression"))
                 structureInfo.dependencies.setExpression(JsonUtils.getString(jsonObject, "dependencyExpression"));
             else if (jsonObject.has("dependencies")) // Legacy
-                structureInfo.dependencies.setExpression(DependencyMatcher.ofMods(context.<String[]>deserialize(jsonObject.get("dependencies"), String[].class)));
+                structureInfo.dependencies.setExpression(DependencyExpression.ofMods(context.<String[]>deserialize(jsonObject.get("dependencies"), String[].class)));
 
             if (jsonObject.has("worldData"))
                 structureInfo.worldDataCompound = context.deserialize(jsonObject.get("worldData"), NBTTagCompound.class);

@@ -18,12 +18,12 @@ import java.util.function.Function;
 /**
  * Created by lukas on 01.05.15.
  */
-public class GenerationTypeMatcher extends BoolFunctionExpressionCache<GenerationType, Object>
+public class GenerationTypeExpression extends BoolFunctionExpressionCache<GenerationType, Object>
 {
     public static final String ID_PREFIX = "id=";
     public static final String TYPE_PREFIX = "type=";
 
-    public GenerationTypeMatcher()
+    public GenerationTypeExpression()
     {
         super(RCBoolAlgebra.algebra(), true, TextFormatting.GREEN + "Any Generation");
 

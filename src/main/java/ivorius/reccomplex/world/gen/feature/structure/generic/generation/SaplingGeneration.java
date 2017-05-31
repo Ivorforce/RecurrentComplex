@@ -16,7 +16,7 @@ import ivorius.reccomplex.utils.algebra.ExpressionCache;
 import ivorius.reccomplex.world.gen.feature.structure.Environment;
 import ivorius.reccomplex.world.gen.feature.structure.Placer;
 import ivorius.reccomplex.world.gen.feature.structure.generic.BlockPattern;
-import ivorius.reccomplex.utils.expression.EnvironmentMatcher;
+import ivorius.reccomplex.utils.expression.EnvironmentExpression;
 import ivorius.reccomplex.world.gen.feature.structure.generic.placement.GenericPlacer;
 import net.minecraft.util.math.BlockPos;
 
@@ -33,7 +33,7 @@ public class SaplingGeneration extends GenerationType
 
     public BlockPos spawnShift;
 
-    public EnvironmentMatcher environmentMatcher;
+    public EnvironmentExpression environmentExpression;
 
     @Nonnull
     public BlockPattern pattern;
@@ -48,7 +48,7 @@ public class SaplingGeneration extends GenerationType
         super(id != null ? id : randomID(SaplingGeneration.class));
         this.generationWeight = generationWeight;
         this.spawnShift = spawnShift;
-        environmentMatcher = ExpressionCache.of(new EnvironmentMatcher(), environmentExpression);
+        this.environmentExpression = ExpressionCache.of(new EnvironmentExpression(), environmentExpression);
         this.pattern = pattern;
     }
 
@@ -91,7 +91,7 @@ public class SaplingGeneration extends GenerationType
 
     public boolean generatesIn(Environment environment)
     {
-        return environmentMatcher.test(environment);
+        return environmentExpression.test(environment);
     }
 
     @Nonnull
@@ -140,7 +140,7 @@ public class SaplingGeneration extends GenerationType
             jsonObject.addProperty("spawnShiftY", src.spawnShift.getY());
             jsonObject.addProperty("spawnShiftZ", src.spawnShift.getZ());
 
-            jsonObject.addProperty("environmentExpression", src.environmentMatcher.getExpression());
+            jsonObject.addProperty("environmentExpression", src.environmentExpression.getExpression());
             jsonObject.add("pattern", BlockPattern.gson.toJsonTree(src.pattern));
 
             return jsonObject;

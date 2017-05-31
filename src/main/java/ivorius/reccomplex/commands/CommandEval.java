@@ -10,8 +10,7 @@ import ivorius.reccomplex.RecurrentComplex;
 import ivorius.reccomplex.commands.parameters.RCExpect;
 import ivorius.reccomplex.commands.parameters.RCParameters;
 import ivorius.reccomplex.utils.ServerTranslations;
-import ivorius.reccomplex.utils.algebra.ExpressionCache;
-import ivorius.reccomplex.utils.expression.DependencyMatcher;
+import ivorius.reccomplex.utils.expression.DependencyExpression;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
@@ -49,7 +48,7 @@ public class CommandEval extends CommandBase
     {
         RCParameters parameters = RCParameters.of(args);
 
-        DependencyMatcher matcher = parameters.rc().expression(new DependencyMatcher()).require();
+        DependencyExpression matcher = parameters.rc().expression(new DependencyExpression()).require();
 
         boolean result = matcher.test(RecurrentComplex.saver);
         commandSender.addChatMessage(ServerTranslations.get(result ? "commands.rceval.result.true" : "commands.rceval.result.false"));

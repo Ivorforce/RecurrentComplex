@@ -102,7 +102,10 @@ public class Expect<T extends Expect<T>>
 
             if (param.startsWith("-") && Doubles.tryParse(param) == null)
             {
-                flags.add(curName = param.substring(1));
+                if (param.length() == 1)
+                    curName = null;
+                else
+                    flags.add(curName = param.substring(1));
                 curIndex = 0;
             }
         }

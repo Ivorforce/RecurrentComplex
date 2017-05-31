@@ -10,6 +10,7 @@ import gnu.trove.list.TIntList;
 import gnu.trove.list.array.TIntArrayList;
 import ivorius.reccomplex.RCConfig;
 import ivorius.reccomplex.commands.parameters.RCExpect;
+import ivorius.reccomplex.commands.parameters.RCParameters;
 import ivorius.reccomplex.dimensions.DimensionDictionary;
 import ivorius.reccomplex.utils.ServerTranslations;
 import net.minecraft.command.CommandBase;
@@ -17,6 +18,7 @@ import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.WorldProvider;
 import net.minecraftforge.common.DimensionManager;
 
 import javax.annotation.Nullable;
@@ -59,24 +61,23 @@ public class CommandDimensionDict extends CommandBase
     @Override
     public void execute(MinecraftServer server, ICommandSender commandSender, String[] args) throws CommandException
     {
-        if (args.length < 2)
-            throw ServerTranslations.wrongUsageException("commands.dimensiondict.usage");
+        RCParameters parameters = RCParameters.of(args);
 
-        switch (args[0])
+        switch (parameters.get().first().require())
         {
             case "types":
             {
-                int dimensionID = parseInt(args[1]);
+                WorldProvider provider = parameters.mc().move(1).dimension(commandSender).require().provider;
 
-                commandSender.sendMessage(ServerTranslations.format("commands.dimensiondict.get", dimensionID,
-                        ServerTranslations.join(Lists.newArrayList(DimensionDictionary.getDimensionTypes(DimensionManager.getProvider(dimensionID))).stream()
+                commandSender.sendMessage(ServerTranslations.format("commands.dimensiondict.get", provider.getDimension(),
+                        ServerTranslations.join(Lists.newArrayList(DimensionDictionary.getDimensionTypes(provider)).stream()
                                 .map(RCTextStyle::dimensionType).toArray())
                 ));
                 break;
             }
             case "list":
             {
-                String type = args[1];
+                String type = parameters.get().at(1).require();
 
                 commandSender.sendMessage(ServerTranslations.format("commands.dimensiondict.list", type,
                         ServerTranslations.join(Arrays.stream(allDimensionsOfType(type).toArray())

@@ -46,7 +46,12 @@ public class Parameters
             String param = params.get(i);
 
             if (param.startsWith("-") && Doubles.tryParse(param) == null)
-                flags.add(curName = param.substring(1));
+            {
+                if (param.length() == 1)
+                    curName = null;
+                else
+                    flags.add(curName = param.substring(1));
+            }
             else
                 named.put(curName, param); // Can be infinite
         }

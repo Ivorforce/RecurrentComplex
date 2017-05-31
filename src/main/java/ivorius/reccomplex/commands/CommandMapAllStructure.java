@@ -17,6 +17,7 @@ import ivorius.reccomplex.network.PacketSaveStructureHandler;
 import ivorius.reccomplex.utils.RawResourceLocation;
 import ivorius.reccomplex.utils.ServerTranslations;
 import ivorius.reccomplex.utils.expression.ResourceExpression;
+import ivorius.reccomplex.utils.optional.IvOptional;
 import ivorius.reccomplex.world.gen.feature.structure.Structure;
 import ivorius.reccomplex.world.gen.feature.structure.StructureRegistry;
 import ivorius.reccomplex.world.gen.feature.structure.generic.GenericStructure;
@@ -57,7 +58,9 @@ public class CommandMapAllStructure extends CommandBase
     {
         RCParameters parameters = RCParameters.of(args);
 
-        ResourceExpression matcher = parameters.get("exp").resourceMatcher(StructureRegistry.INSTANCE::has).require();
+        ResourceExpression expression = new ResourceExpression(StructureRegistry.INSTANCE::has);
+        IvOptional.ifAbsent(parameters.rc("exp").expression(expression).optional(), () -> expression.setExpression(""));
+
         ResourceDirectory directory = parameters.rc("dir").resourceDirectory().optional().orElse(ResourceDirectory.ACTIVE);
 
         ICommand other = server.getCommandManager().getCommands().get(parameters.get().at(1).require());
@@ -70,7 +73,7 @@ public class CommandMapAllStructure extends CommandBase
         int saved = 0, failed = 0, skipped = 0;
         for (String id : StructureRegistry.INSTANCE.ids())
         {
-            if (!matcher.test(new RawResourceLocation(StructureRegistry.INSTANCE.status(id).getDomain(), id)))
+            if (!expression.test(new RawResourceLocation(StructureRegistry.INSTANCE.status(id).getDomain(), id)))
                 continue;
 
             Structure<?> info = StructureRegistry.INSTANCE.get(id);

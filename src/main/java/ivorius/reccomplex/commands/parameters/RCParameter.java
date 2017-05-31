@@ -17,7 +17,6 @@ import ivorius.reccomplex.world.gen.feature.structure.generic.generation.Generat
 import ivorius.reccomplex.world.gen.feature.structure.generic.generation.NaturalGeneration;
 import net.minecraft.command.CommandException;
 
-import javax.annotation.Nonnull;
 import java.util.function.Predicate;
 
 /**
@@ -52,13 +51,7 @@ public class RCParameter extends Parameter
 
     public Result<Predicate<Structure>> structurePredicate()
     {
-        return resourceMatcher(s1 -> !s1.isEmpty()).map(m -> s -> m.test(StructureRegistry.INSTANCE.resourceLocation(s)));
-    }
-
-    @Nonnull
-    public Result<ResourceMatcher> resourceMatcher(Predicate<String> isKnown)
-    {
-        return expression(new ResourceMatcher(isKnown));
+        return expression(new ResourceMatcher(s1 -> !s1.isEmpty())).map(m -> s -> m.test(StructureRegistry.INSTANCE.resourceLocation(s)));
     }
 
     @Override

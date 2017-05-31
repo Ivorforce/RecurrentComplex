@@ -15,6 +15,8 @@ import javax.annotation.Nullable;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Predicate;
+import java.util.stream.IntStream;
+import java.util.stream.Stream;
 
 /**
  * Created by lukas on 30.05.17.
@@ -114,6 +116,11 @@ public class Parameter
     public Result<String> text()
     {
         return at(0).map(s -> Strings.join(params, " "));
+    }
+
+    public Stream<Parameter> stream()
+    {
+        return IntStream.range(0, params.size()).mapToObj(this::move);
     }
 
     public interface Supplier<T>

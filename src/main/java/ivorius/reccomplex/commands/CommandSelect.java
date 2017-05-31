@@ -9,7 +9,7 @@ import ivorius.ivtoolkit.math.IvVecMathHelper;
 import ivorius.reccomplex.RCConfig;
 import ivorius.reccomplex.capability.SelectionOwner;
 import ivorius.reccomplex.commands.parameters.Expect;
-import ivorius.reccomplex.commands.parameters.Parameters;
+import ivorius.reccomplex.commands.parameters.RCParameters;
 import ivorius.reccomplex.utils.ServerTranslations;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.CommandException;
@@ -45,7 +45,7 @@ public class CommandSelect extends CommandBase
     @Override
     public void execute(MinecraftServer server, ICommandSender commandSender, String[] args) throws CommandException
     {
-        Parameters parameters = Parameters.of(this, args);
+        RCParameters parameters = RCParameters.of(args);
 
         SelectionOwner owner = RCCommands.getSelectionOwner(commandSender, null, false);
 
@@ -68,14 +68,14 @@ public class CommandSelect extends CommandBase
                     if (owner.getSelectedPoint1() == null)
                         owner.setSelectedPoint1(commandSender.getPosition());
 
-                    owner.setSelectedPoint1(parameters.get().move(1).pos(owner.getSelectedPoint1(), false).require());
+                    owner.setSelectedPoint1(parameters.mc().move(1).pos(owner.getSelectedPoint1(), false).require());
                 }
                 if (!subcommand.equals("point1"))
                 {
                     if (owner.getSelectedPoint2() == null)
                         owner.setSelectedPoint2(commandSender.getPosition());
 
-                    owner.setSelectedPoint2(parameters.get().move(1).pos(owner.getSelectedPoint2(), false).require());
+                    owner.setSelectedPoint2(parameters.mc().move(1).pos(owner.getSelectedPoint2(), false).require());
                 }
 
                 break;

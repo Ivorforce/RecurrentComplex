@@ -8,7 +8,7 @@ package ivorius.reccomplex.commands;
 import ivorius.ivtoolkit.math.AxisAlignedTransform2D;
 import ivorius.reccomplex.RCConfig;
 import ivorius.reccomplex.commands.parameters.Expect;
-import ivorius.reccomplex.commands.parameters.Parameters;
+import ivorius.reccomplex.commands.parameters.RCParameters;
 import ivorius.reccomplex.operation.OperationRegistry;
 import ivorius.reccomplex.utils.ServerTranslations;
 import ivorius.reccomplex.world.gen.feature.structure.schematics.OperationGenerateSchematic;
@@ -79,13 +79,13 @@ public class CommandImportSchematic extends CommandBase
     @Override
     public void execute(MinecraftServer server, ICommandSender commandSender, String[] args) throws CommandException
     {
-        Parameters parameters = Parameters.of(this, args);
+        RCParameters parameters = RCParameters.of(args);
 
         if (args.length < 1)
             throw ServerTranslations.wrongUsageException("commands.strucImportSchematic.usage");
 
         SchematicFile schematicFile = parseSchematic(parameters.get().at(0).require());
-        BlockPos pos = parameters.get("p").pos(commandSender.getPosition(), false).require();
+        BlockPos pos = parameters.mc("p").pos(commandSender.getPosition(), false).require();
         AxisAlignedTransform2D transform = RCCommands.transform(parameters.get("r"), parameters.get("m")).optional().orElse(AxisAlignedTransform2D.ORIGINAL);
 
         OperationRegistry.queueOperation(new OperationGenerateSchematic(schematicFile, transform, pos), commandSender);

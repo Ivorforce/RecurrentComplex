@@ -9,7 +9,7 @@ import ivorius.ivtoolkit.blocks.BlockSurfaceArea;
 import ivorius.ivtoolkit.blocks.BlockSurfacePos;
 import ivorius.reccomplex.RCConfig;
 import ivorius.reccomplex.commands.parameters.Expect;
-import ivorius.reccomplex.commands.parameters.Parameters;
+import ivorius.reccomplex.commands.parameters.RCParameters;
 import ivorius.reccomplex.utils.ServerTranslations;
 import ivorius.reccomplex.world.gen.feature.WorldGenStructures;
 import ivorius.reccomplex.world.gen.feature.structure.Structure;
@@ -57,11 +57,11 @@ public class CommandDecorate extends CommandBase
     @Override
     public void execute(MinecraftServer server, ICommandSender commandSender, String[] args) throws CommandException
     {
-        Parameters parameters = Parameters.of(this, args);
+        RCParameters parameters = RCParameters.of(args);
 
         BlockSurfaceArea area = new BlockSurfaceArea(
-                parameters.get().surfacePos(commandSender.getPosition(), false).require(),
-                parameters.get().move(2).surfacePos(commandSender.getPosition(), false).require()
+                parameters.iv().surfacePos(commandSender.getPosition(), false).require(),
+                parameters.iv().move(2).surfacePos(commandSender.getPosition(), false).require()
         );
         BlockSurfaceArea chunkArea = new BlockSurfaceArea(getChunkPos(area.getPoint1()), getChunkPos(area.getPoint2()));
         Predicate<Structure> structurePredicate = RCCommands.structurePredicate(parameters.get("exp")).optional().orElse(structureInfo -> true);

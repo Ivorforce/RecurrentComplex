@@ -11,7 +11,7 @@ import ivorius.ivtoolkit.tools.IvWorldData;
 import ivorius.reccomplex.RCConfig;
 import ivorius.reccomplex.capability.SelectionOwner;
 import ivorius.reccomplex.commands.parameters.Expect;
-import ivorius.reccomplex.commands.parameters.Parameters;
+import ivorius.reccomplex.commands.parameters.RCParameters;
 import ivorius.reccomplex.operation.OperationRegistry;
 import ivorius.reccomplex.utils.ServerTranslations;
 import ivorius.reccomplex.world.gen.feature.structure.OperationClearArea;
@@ -54,9 +54,9 @@ public class CommandSelectMove extends CommandBase
     @Override
     public void execute(MinecraftServer server, ICommandSender commandSender, String[] args) throws CommandException
     {
-        Parameters parameters = Parameters.of(this, args);
+        RCParameters parameters = RCParameters.of(args);
 
-        BlockPos pos = parameters.get("p").pos(commandSender.getPosition(), false).require();
+        BlockPos pos = parameters.mc("p").pos(commandSender.getPosition(), false).require();
         AxisAlignedTransform2D transform = RCCommands.transform(parameters.get("r"), parameters.get("m")).optional().orElse(AxisAlignedTransform2D.ORIGINAL);
 
         SelectionOwner selectionOwner = RCCommands.getSelectionOwner(commandSender, null, true);

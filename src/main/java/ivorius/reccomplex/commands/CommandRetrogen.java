@@ -8,7 +8,7 @@ package ivorius.reccomplex.commands;
 import ivorius.ivtoolkit.util.IvStreams;
 import ivorius.reccomplex.RCConfig;
 import ivorius.reccomplex.commands.parameters.Expect;
-import ivorius.reccomplex.commands.parameters.Parameters;
+import ivorius.reccomplex.commands.parameters.RCParameters;
 import ivorius.reccomplex.files.RCFiles;
 import ivorius.reccomplex.files.loading.FileSuffixFilter;
 import ivorius.reccomplex.utils.ServerTranslations;
@@ -105,10 +105,10 @@ public class CommandRetrogen extends CommandBase
     @Override
     public void execute(MinecraftServer server, ICommandSender commandSender, String[] args) throws CommandException
     {
-        Parameters parameters = Parameters.of(this, args);
+        RCParameters parameters = RCParameters.of(args);
 
         Predicate<Structure> structurePredicate = RCCommands.structurePredicate(parameters.get("exp")).optional().orElse(null);
-        WorldServer world = parameters.get("d").dimension(commandSender).require();
+        WorldServer world = parameters.mc("d").dimension(commandSender).require();
 
         long count = retrogen(world, structurePredicate);
 

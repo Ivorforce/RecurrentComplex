@@ -7,7 +7,7 @@ package ivorius.reccomplex.commands;
 
 import ivorius.reccomplex.RCConfig;
 import ivorius.reccomplex.commands.parameters.Expect;
-import ivorius.reccomplex.commands.parameters.Parameters;
+import ivorius.reccomplex.commands.parameters.RCParameters;
 import ivorius.reccomplex.utils.ServerTranslations;
 import ivorius.reccomplex.world.gen.feature.WorldStructureGenerationData;
 import net.minecraft.command.CommandBase;
@@ -46,10 +46,10 @@ public class CommandForgetAll extends CommandBase
     @Override
     public void execute(MinecraftServer server, ICommandSender commandSender, String[] args) throws CommandException
     {
-        Parameters parameters = Parameters.of(this, args);
+        RCParameters parameters = RCParameters.of(args);
         World world = commandSender.getEntityWorld();
 
-        BlockPos pos = parameters.get().pos(commandSender.getPosition(), false).require();
+        BlockPos pos = parameters.mc().pos(commandSender.getPosition(), false).require();
 
         WorldStructureGenerationData generationData = WorldStructureGenerationData.get(world);
         List<WorldStructureGenerationData.Entry> entries = generationData.entriesAt(pos).collect(Collectors.toList());

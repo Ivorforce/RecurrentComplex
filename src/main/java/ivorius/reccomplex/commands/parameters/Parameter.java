@@ -5,22 +5,8 @@
 
 package ivorius.reccomplex.commands.parameters;
 
-import ivorius.ivtoolkit.blocks.BlockSurfacePos;
-import ivorius.reccomplex.commands.RCCommands;
-import ivorius.reccomplex.files.loading.ResourceDirectory;
-import ivorius.reccomplex.utils.ServerTranslations;
-import ivorius.reccomplex.world.gen.feature.structure.Structure;
-import ivorius.reccomplex.world.gen.feature.structure.StructureRegistry;
-import ivorius.reccomplex.world.gen.feature.structure.generic.generation.GenerationType;
-import ivorius.reccomplex.world.gen.feature.structure.generic.generation.NaturalGeneration;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.CommandException;
-import net.minecraft.command.ICommandSender;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.WorldServer;
-import net.minecraft.world.biome.Biome;
-import net.minecraftforge.common.DimensionManager;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -33,17 +19,25 @@ import java.util.function.Predicate;
  */
 public class Parameter
 {
-    private int moved;
-    private final String name;
-    private final List<String> params;
+    protected final int moved;
+    protected final String name;
+    protected final List<String> params;
+
+    public Parameter(Parameter other)
+    {
+        moved = other.moved;
+        name = other.name;
+        params = other.params;
+    }
 
     public Parameter(String name, List<String> params)
     {
+        this.moved = 0;
         this.name = name;
         this.params = params;
     }
 
-    private Parameter(int moved, String name, List<String> params)
+    protected Parameter(int moved, String name, List<String> params)
     {
         this.moved = moved;
         this.name = name;
@@ -60,69 +54,24 @@ public class Parameter
         return at(0);
     }
 
-    public Result<BlockPos> pos(BlockPos ref, boolean centerBlock)
-    {
-        return at(0).failable().flatMap(x -> at(1).flatMap(y -> at(2).map(z ->
-                RCCommands.parseBlockPos(ref, new String[]{x, y, z}, 0, centerBlock))))
-                .orElse(() -> ref);
-    }
-
-    @Nonnull
-    public Result<BlockSurfacePos> surfacePos(BlockPos ref, boolean centerBlock)
-    {
-        return at(0).failable().flatMap(x -> at(1).map(z ->
-                RCCommands.surfacePos(ref, x, z, centerBlock)))
-                .orElse(() -> BlockSurfacePos.from(ref));
-    }
-
-    public Result<Biome> biome()
-    {
-        return at(0).map(ResourceLocation::new)
-                .map(Biome.REGISTRY::getObject, t -> ServerTranslations.commandException("commands.rc.nobiome"));
-    }
-
-    public Result<WorldServer> dimension(ICommandSender commandSender)
-    {
-        return at(0).filter(d -> !d.equals("~"), null).failable()
-                .map(CommandBase::parseInt).map(DimensionManager::getWorld, t -> ServerTranslations.commandException("commands.rc.nodimension"))
-                .orElse(() -> (WorldServer) commandSender.getEntityWorld());
-    }
-
-    public Result<Structure<?>> structure()
-    {
-        return at(0).map(StructureRegistry.INSTANCE::get,
-                t -> ServerTranslations.commandException("commands.strucGen.noStructure", at(0)));
-    }
-
-    public Result<GenerationType> generationType(Structure<?> structure)
-    {
-        return at(0).failable().map(structure::generationType, t -> ServerTranslations.commandException("No Generation by this ID"))
-                .orElse(() -> structure.<GenerationType>generationTypes(NaturalGeneration.class).stream().findFirst()
-                        .orElse(structure.generationTypes(GenerationType.class).stream().findFirst().orElse(null)));
-    }
-
-    public Result<ResourceDirectory> resourceDirectory()
-    {
-        return at(0).map(t -> {
-            try
-            {
-                return ResourceDirectory.valueOf(t);
-            }
-            catch (IllegalArgumentException e)
-            {
-                throw ServerTranslations.commandException("commands.rcsave.nodirectory");
-            }
-        });
-    }
-
-    public Result<Integer> integer(int idx)
+    public Result<Integer> intAt(int idx)
     {
         return at(idx).map(CommandBase::parseInt);
     }
 
-    public Result<Boolean> bool(int idx)
+    public Result<Boolean> booleanAt(int idx)
     {
         return at(idx).map(CommandBase::parseBoolean);
+    }
+
+    public Result<Double> doubleAt(int idx)
+    {
+        return at(idx).map(CommandBase::parseDouble);
+    }
+
+    public Result<Long> longAt(int idx)
+    {
+        return at(idx).map(CommandBase::parseLong);
     }
 
     public boolean has(int size)

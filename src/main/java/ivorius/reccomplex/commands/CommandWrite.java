@@ -8,7 +8,7 @@ package ivorius.reccomplex.commands;
 import ivorius.reccomplex.RCConfig;
 import ivorius.reccomplex.RecurrentComplex;
 import ivorius.reccomplex.commands.parameters.Expect;
-import ivorius.reccomplex.commands.parameters.Parameters;
+import ivorius.reccomplex.commands.parameters.RCParameters;
 import ivorius.reccomplex.files.loading.LeveledRegistry;
 import ivorius.reccomplex.files.loading.ResourceDirectory;
 import ivorius.reccomplex.utils.ServerTranslations;
@@ -46,7 +46,7 @@ public class CommandWrite extends CommandBase
     @Override
     public void execute(MinecraftServer server, ICommandSender commandSender, String[] args) throws CommandException
     {
-        Parameters parameters = Parameters.of(this, args);
+        RCParameters parameters = RCParameters.of(args);
 
         String adapterID = parameters.get().at(0).require();
         String id = parameters.get().at(1).require();
@@ -56,7 +56,7 @@ public class CommandWrite extends CommandBase
         if (!RecurrentComplex.saver.registry(adapterID).ids().contains(id))
             throw ServerTranslations.commandException("commands.rcsave.noelement");
 
-        ResourceDirectory directory = parameters.get("dir").resourceDirectory().optional().orElse(ResourceDirectory.ACTIVE);
+        ResourceDirectory directory = parameters.rc("dir").resourceDirectory().optional().orElse(ResourceDirectory.ACTIVE);
 
         if (RCCommands.informSaveResult(RecurrentComplex.saver.trySave(directory.toPath(), adapterID, id), commandSender, directory, adapterID, id))
         {
@@ -71,7 +71,7 @@ public class CommandWrite extends CommandBase
     @Override
     public List<String> getTabCompletionOptions(MinecraftServer server, ICommandSender sender, String[] args, @Nullable BlockPos pos)
     {
-        Parameters parameters = Parameters.of(this, args);
+        RCParameters parameters = RCParameters.of(args);
 
         return Expect.start()
                 .next(RecurrentComplex.saver.keySet())

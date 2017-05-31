@@ -16,7 +16,6 @@ import ivorius.reccomplex.world.gen.feature.StructureGenerator;
 import ivorius.reccomplex.world.gen.feature.structure.OperationGenerateStructure;
 import ivorius.reccomplex.world.gen.feature.structure.Placer;
 import ivorius.reccomplex.world.gen.feature.structure.Structure;
-import ivorius.reccomplex.world.gen.feature.structure.StructureRegistry;
 import ivorius.reccomplex.world.gen.feature.structure.generic.GenericStructure;
 import ivorius.reccomplex.world.gen.feature.structure.generic.generation.GenerationType;
 import net.minecraft.command.CommandBase;
@@ -70,7 +69,7 @@ public class CommandGenerateStructure extends CommandBase
         WorldServer world = parameters.get("d").dimension(commandSender).require();
         AxisAlignedTransform2D transform = RCCommands.transform(parameters.get("r"), parameters.get("m")).optional().orElse(null);
         GenerationType generationType = parameters.get("g").generationType(structure).require();
-        BlockSurfacePos pos = parameters.get("p").surfacePos(commandSender, false).require();
+        BlockSurfacePos pos = parameters.get("p").surfacePos(commandSender.getPosition(), false).require();
 
         Placer placer = generationType.placer();
 

@@ -56,7 +56,7 @@ public class CommandSelectMove extends CommandBase
     {
         Parameters parameters = Parameters.of(this, args);
 
-        BlockPos pos = parameters.get("p").pos(commandSender, false).require();
+        BlockPos pos = parameters.get("p").pos(commandSender.getPosition(), false).require();
         AxisAlignedTransform2D transform = RCCommands.transform(parameters.get("r"), parameters.get("m")).optional().orElse(AxisAlignedTransform2D.ORIGINAL);
 
         SelectionOwner selectionOwner = RCCommands.getSelectionOwner(commandSender, null, true);

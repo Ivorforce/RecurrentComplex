@@ -7,6 +7,8 @@ package ivorius.reccomplex.commands;
 
 import ivorius.reccomplex.RCConfig;
 import ivorius.ivtoolkit.blocks.BlockSurfacePos;
+import ivorius.reccomplex.commands.parameters.Expect;
+import ivorius.reccomplex.commands.parameters.Parameters;
 import ivorius.reccomplex.utils.ServerTranslations;
 import ivorius.reccomplex.world.gen.feature.WorldGenStructures;
 import net.minecraft.command.CommandBase;
@@ -45,19 +47,20 @@ public class CommandDecorateOne extends CommandBase
     @Override
     public void execute(MinecraftServer server, ICommandSender commandSender, String[] args) throws CommandException
     {
-        BlockSurfacePos coord = RCCommands.tryParseSurfaceBlockPos(commandSender, args, 0, false);
-
+        Parameters parameters = Parameters.of(this, args);
         WorldServer entityWorld = (WorldServer) commandSender.getEntityWorld();
-        if (!WorldGenStructures.generateRandomStructureInChunk(entityWorld.rand, coord.chunkCoord(), entityWorld, entityWorld.getBiome(coord.blockPos(0))))
+
+        BlockSurfacePos pos = parameters.get().surfacePos(commandSender.getPosition(), false).require();
+
+        if (!WorldGenStructures.generateRandomStructureInChunk(entityWorld.rand, pos.chunkCoord(), entityWorld, entityWorld.getBiome(pos.blockPos(0))))
             throw ServerTranslations.commandException("commands.rcdecorateone.none");
     }
 
     @Override
     public List<String> getTabCompletions(MinecraftServer server, ICommandSender sender, String[] args, @Nullable BlockPos pos)
     {
-        if (args.length == 1 || args.length == 2)
-            return getTabCompletionCoordinateXZ(args, 0, pos);
-
-        return Collections.emptyList();
+        return Expect.start()
+                .surfacePos(pos)
+                .get(server, sender, args, pos);
     }
 }

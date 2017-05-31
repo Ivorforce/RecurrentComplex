@@ -7,6 +7,8 @@ package ivorius.reccomplex.commands;
 
 import ivorius.reccomplex.RCConfig;
 import ivorius.reccomplex.RecurrentComplex;
+import ivorius.reccomplex.commands.parameters.Expect;
+import ivorius.reccomplex.commands.parameters.Parameters;
 import ivorius.reccomplex.files.loading.LeveledRegistry;
 import ivorius.reccomplex.files.loading.ResourceDirectory;
 import ivorius.reccomplex.utils.ServerTranslations;
@@ -44,18 +46,17 @@ public class CommandWrite extends CommandBase
     @Override
     public void execute(MinecraftServer server, ICommandSender commandSender, String[] args) throws CommandException
     {
-        if (args.length < 3)
-            throw ServerTranslations.wrongUsageException("commands.rcsave.usage");
+        Parameters parameters = Parameters.of(this, args);
 
-        String adapterID = args[0];
-        String id = args[1];
+        String adapterID = parameters.get().at(0).require();
+        String id = parameters.get().at(1).require();
 
         if (!RecurrentComplex.saver.has(adapterID))
             throw ServerTranslations.commandException("commands.rcsave.noregistry");
         if (!RecurrentComplex.saver.registry(adapterID).ids().contains(id))
             throw ServerTranslations.commandException("commands.rcsave.noelement");
 
-        ResourceDirectory directory = RCCommands.parseResourceDirectory(args[2]);
+        ResourceDirectory directory = parameters.get("dir").resourceDirectory().optional().orElse(ResourceDirectory.ACTIVE);
 
         if (RCCommands.informSaveResult(RecurrentComplex.saver.trySave(directory.toPath(), adapterID, id), commandSender, directory, adapterID, id))
         {
@@ -70,13 +71,12 @@ public class CommandWrite extends CommandBase
     @Override
     public List<String> getTabCompletions(MinecraftServer server, ICommandSender sender, String[] args, @Nullable BlockPos pos)
     {
-        if (args.length == 1)
-            return getListOfStringsMatchingLastWord(args, RecurrentComplex.saver.keySet());
-        else if (args.length == 2)
-            return getListOfStringsMatchingLastWord(args, Optional.ofNullable(RecurrentComplex.saver.get(args[0])).map(a -> a.getRegistry().ids()).orElse(Collections.emptySet()));
-        else if (args.length == 3)
-            return getListOfStringsMatchingLastWord(args, Arrays.asList(ResourceDirectory.values()));
+        Parameters parameters = Parameters.of(this, args);
 
-        return super.getTabCompletions(server, sender, args, pos);
+        return Expect.start()
+                .next(RecurrentComplex.saver.keySet())
+                .next(args1 -> parameters.get().at(0).optional().map(RecurrentComplex.saver::get).map(a -> a.getRegistry().ids()).orElse(Collections.emptySet()))
+                .named("dir").resourceDirectory()
+                .get(server, sender, args, pos);
     }
 }

@@ -14,7 +14,6 @@ import ivorius.reccomplex.utils.ServerTranslations;
 import ivorius.reccomplex.world.gen.feature.StructureGenerator;
 import ivorius.reccomplex.world.gen.feature.structure.OperationGenerateStructure;
 import ivorius.reccomplex.world.gen.feature.structure.Structure;
-import ivorius.reccomplex.world.gen.feature.structure.StructureRegistry;
 import ivorius.reccomplex.world.gen.feature.structure.generic.GenericStructure;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.CommandException;
@@ -57,7 +56,7 @@ public class CommandImportStructure extends CommandBase
         Structure<?> structure = parameters.get().structure().require();
         WorldServer world = parameters.get("d").dimension(commandSender).require();
         AxisAlignedTransform2D transform = RCCommands.transform(parameters.get("r"), parameters.get("m")).optional().orElse(AxisAlignedTransform2D.ORIGINAL);
-        BlockPos pos = parameters.get("p").pos(commandSender, false).require();
+        BlockPos pos = parameters.get("p").pos(commandSender.getPosition(), false).require();
 
         if (structure instanceof GenericStructure)
             OperationRegistry.queueOperation(new OperationGenerateStructure((GenericStructure) structure, structureID, transform, pos, true)

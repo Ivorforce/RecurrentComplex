@@ -85,7 +85,7 @@ public class CommandImportSchematic extends CommandBase
             throw ServerTranslations.wrongUsageException("commands.strucImportSchematic.usage");
 
         SchematicFile schematicFile = parseSchematic(parameters.get().at(0).require());
-        BlockPos pos = parameters.get("p").pos(commandSender, false).require();
+        BlockPos pos = parameters.get("p").pos(commandSender.getPosition(), false).require();
         AxisAlignedTransform2D transform = RCCommands.transform(parameters.get("r"), parameters.get("m")).optional().orElse(AxisAlignedTransform2D.ORIGINAL);
 
         OperationRegistry.queueOperation(new OperationGenerateSchematic(schematicFile, transform, pos), commandSender);

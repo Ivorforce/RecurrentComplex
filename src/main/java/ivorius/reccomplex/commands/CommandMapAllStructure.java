@@ -6,16 +6,17 @@
 package ivorius.reccomplex.commands;
 
 import ivorius.ivtoolkit.tools.IvWorldData;
+import ivorius.ivtoolkit.world.MockWorld;
 import ivorius.reccomplex.RCConfig;
 import ivorius.reccomplex.RecurrentComplex;
+import ivorius.reccomplex.commands.parameters.Expect;
+import ivorius.reccomplex.commands.parameters.Parameters;
 import ivorius.reccomplex.files.loading.LeveledRegistry;
 import ivorius.reccomplex.files.loading.ResourceDirectory;
 import ivorius.reccomplex.network.PacketSaveStructureHandler;
 import ivorius.reccomplex.utils.RawResourceLocation;
 import ivorius.reccomplex.utils.ServerTranslations;
-import ivorius.reccomplex.utils.algebra.ExpressionCache;
 import ivorius.reccomplex.utils.expression.ResourceMatcher;
-import ivorius.ivtoolkit.world.MockWorld;
 import ivorius.reccomplex.world.gen.feature.structure.Structure;
 import ivorius.reccomplex.world.gen.feature.structure.StructureRegistry;
 import ivorius.reccomplex.world.gen.feature.structure.generic.GenericStructure;
@@ -55,13 +56,12 @@ public class CommandMapAllStructure extends CommandBase
     @Override
     public void execute(MinecraftServer server, ICommandSender commandSender, String[] args) throws CommandException
     {
-        if (args.length < 3)
-            throw ServerTranslations.wrongUsageException("commands.rcmapall.usage");
+        Parameters parameters = Parameters.of(this, args);
 
-        ResourceMatcher matcher = ExpressionCache.of(new ResourceMatcher(StructureRegistry.INSTANCE.ids()::contains), args[0]);
-        ResourceDirectory directory = RCCommands.parseResourceDirectory(args[1]);
+        ResourceMatcher matcher = RCCommands.resourceMatcher(parameters.get("exp"), StructureRegistry.INSTANCE::has).require();
+        ResourceDirectory directory = parameters.get("dir").resourceDirectory().optional().orElse(ResourceDirectory.ACTIVE);
 
-        ICommand other = server.getCommandManager().getCommands().get(args[2]);
+        ICommand other = server.getCommandManager().getCommands().get(parameters.get().at(1).require());
 
         if (!(other instanceof CommandVirtual))
             throw ServerTranslations.commandException("commands.rcmap.nonvirtual");
@@ -78,7 +78,7 @@ public class CommandMapAllStructure extends CommandBase
 
             if (!(info instanceof GenericStructure))
             {
-                skipped ++;
+                skipped++;
                 continue;
             }
 
@@ -90,7 +90,7 @@ public class CommandMapAllStructure extends CommandBase
             try
             {
                 virtual.execute(world, new CommandSelecting.SelectingSender(commandSender, BlockPos.ORIGIN, worldData.blockCollection.area().getHigherCorner()),
-                        Arrays.copyOfRange(args, 3, args.length));
+                        parameters.get().at(2).optional().map(s -> s.split(" ")).orElse(new String[0]));
             }
             catch (MockWorld.VirtualWorldException ex)
             {
@@ -100,9 +100,9 @@ public class CommandMapAllStructure extends CommandBase
             structure.worldDataCompound = worldData.createTagCompound();
 
             if (PacketSaveStructureHandler.write(commandSender, structure, id, directory, true, false))
-                saved ++;
+                saved++;
             else
-                failed ++;
+                failed++;
         }
 
         commandSender.sendMessage(ServerTranslations.format("commands.rcmapall.result", saved, directory, failed, skipped));
@@ -114,11 +114,10 @@ public class CommandMapAllStructure extends CommandBase
     @Override
     public List<String> getTabCompletions(MinecraftServer server, ICommandSender sender, String[] args, @Nullable BlockPos pos)
     {
-        if (args.length == 1)
-            return getListOfStringsMatchingLastWord(args, StructureRegistry.INSTANCE.ids());
-        else if (args.length == 2)
-            return getListOfStringsMatchingLastWord(args, Arrays.asList(ResourceDirectory.values()));
-
-        return super.getTabCompletions(server, sender, args, pos);
+        return Expect.start()
+                .any("\"\"")
+                .named("exp").structure()
+                .named("dir").resourceDirectory()
+                .get(server, sender, args, pos);
     }
 }

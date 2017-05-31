@@ -37,7 +37,7 @@ public class IvParameter extends Parameter
     @Nonnull
     public Parameter.Result<BlockSurfacePos> surfacePos(BlockPos ref, boolean centerBlock)
     {
-        return first().failable().flatMap(x -> at(1).map(z ->
+        return first().missable().flatMap(x -> at(1).map(z ->
                 parseSurfacePos(ref, x, z, centerBlock)))
                 .orElse(() -> BlockSurfacePos.from(ref));
     }

@@ -45,6 +45,11 @@ public class Parameter
         this.params = params;
     }
 
+    protected static String parameterName(Parameter parameter, int index)
+    {
+        return String.format("%s (%d)", parameter.name != null ? " -" + parameter.name : "", parameter.moved + index);
+    }
+
     public Parameter move(int idx)
     {
         return new Parameter(moved + idx, name, params.subList(idx, params.size()));
@@ -78,7 +83,7 @@ public class Parameter
     protected void require(int size) throws CommandException
     {
         if (!has(size))
-            throw new CommandException(String.format("Missing required parameter: -%s (%d)", name, size + moved));
+            throw new ParameterNotFoundException(this, size);
     }
 
     public boolean has(int size)
@@ -205,6 +210,21 @@ public class Parameter
             });
         }
 
+        public Result<T> missable()
+        {
+            return new Result<T>(() ->
+            {
+                try
+                {
+                    return t.get();
+                }
+                catch (ParameterNotFoundException e)
+                {
+                    return null;
+                }
+            });
+        }
+
         @Nonnull
         public T require() throws CommandException
         {
@@ -213,7 +233,22 @@ public class Parameter
             return t;
         }
 
-        public Optional<T> optional()
+        public Optional<T> optional() throws CommandException
+        {
+            T t = null;
+
+            try
+            {
+                t = this.t.get();
+            }
+            catch (ParameterNotFoundException ignored)
+            {
+            }
+
+            return Optional.ofNullable(t);
+        }
+
+        public Optional<T> tryGet()
         {
             T t = null;
 
@@ -231,7 +266,15 @@ public class Parameter
         @Override
         public String toString()
         {
-            return optional().map(Object::toString).orElse("null");
+            return tryGet().map(Object::toString).orElse("null");
+        }
+    }
+
+    public static class ParameterNotFoundException extends CommandException
+    {
+        public ParameterNotFoundException(Parameter parameter, int index)
+        {
+            super("Missing required parameter:" + parameterName(parameter, index));
         }
     }
 }

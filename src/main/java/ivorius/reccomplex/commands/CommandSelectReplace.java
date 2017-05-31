@@ -13,8 +13,8 @@ import ivorius.reccomplex.capability.SelectionOwner;
 import ivorius.reccomplex.commands.parameters.RCExpect;
 import ivorius.reccomplex.commands.parameters.RCParameters;
 import ivorius.reccomplex.utils.ServerTranslations;
-import ivorius.reccomplex.utils.algebra.ExpressionCache;
 import ivorius.reccomplex.utils.expression.PositionedBlockMatcher;
+import ivorius.reccomplex.utils.optional.IvOptional;
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.command.CommandException;
@@ -71,7 +71,8 @@ public class CommandSelectReplace extends CommandVirtual
         int[] dstMeta = parameters.rc("metadata").metadatas().require();
         List<IBlockState> dst = IntStream.of(dstMeta).mapToObj(m -> BlockStates.fromMetadata(dstBlock, m)).collect(Collectors.toList());
 
-        PositionedBlockMatcher matcher = parameters.rc().move(1).expression(new PositionedBlockMatcher(RecurrentComplex.specialRegistry), "").require();
+        PositionedBlockMatcher matcher = new PositionedBlockMatcher(RecurrentComplex.specialRegistry);
+        IvOptional.ifAbsent(parameters.rc().move(1).expression(matcher).optional(), () -> matcher.setExpression(""));
 
         SelectionOwner selectionOwner = RCCommands.getSelectionOwner(commandSender, null, true);
         RCCommands.assertSize(commandSender, selectionOwner);

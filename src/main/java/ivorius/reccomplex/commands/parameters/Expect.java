@@ -10,6 +10,7 @@ import net.minecraft.command.ICommandSender;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.math.BlockPos;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.*;
 import java.util.function.Function;
@@ -103,15 +104,28 @@ public class Expect<T extends Expect<T>>
         Param param = this.params.get(curName);
 
         if (param != null && (curIndex < param.completion.size() || param.repeat))
-            return param.completion.get(Math.min(curIndex, param.completion.size() - 1)).complete(server, sender, paramArray, pos).stream()
+        {
+            List<String> paramCompletion = param.completion.get(Math.min(curIndex, param.completion.size() - 1)).complete(server, sender, paramArray, pos).stream()
                     // More than one word, let's wrap this in quotes
                     .map(s -> s.contains(" ") && !s.startsWith("\"") ? String.format("\"%s\"", s) : s)
-                    .collect(Collectors.toList());
+                    .collect(Collectors.toCollection(ArrayList::new));
 
+            // Also complete flags in case the user wants to switch the current
+            paramCompletion.addAll(flags(paramArray, flags));
+
+            return paramCompletion;
+        }
+
+        return flags(paramArray, flags);
+
+    }
+
+    @Nonnull
+    public List<String> flags(String[] paramArray, Set<String> flags)
+    {
         return getListOfStringsMatchingLastWord(paramArray, this.params.keySet().stream()
                 .filter(p -> p != null && !flags.contains(p))
                 .map(p -> "-" + p).collect(Collectors.toList()));
-
     }
 
     public interface Completer

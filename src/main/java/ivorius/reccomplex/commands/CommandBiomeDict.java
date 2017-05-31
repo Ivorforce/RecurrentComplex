@@ -9,7 +9,7 @@ import com.google.common.collect.Lists;
 import ivorius.ivtoolkit.tools.IvGsonHelper;
 import ivorius.reccomplex.RCConfig;
 import ivorius.reccomplex.commands.parameters.RCExpect;
-import ivorius.reccomplex.utils.BiomeDictionaryAccessor;
+import ivorius.reccomplex.utils.accessor.RCAccessorBiomeDictionary;
 import ivorius.reccomplex.utils.ServerTranslations;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.CommandException;
@@ -24,7 +24,6 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
 
 /**
@@ -88,7 +87,7 @@ public class CommandBiomeDict extends CommandBase
             }
             case "list":
             {
-                BiomeDictionary.Type type = RCGsonHelper.enumForNameIgnoreCase(args[1], BiomeDictionary.Type.values());
+                BiomeDictionary.Type type = RCAccessorBiomeDictionary.getTypeWeak(args[1]);
 
                 if (type != null)
                 {
@@ -118,7 +117,7 @@ public class CommandBiomeDict extends CommandBase
                 expect.biome();
                 break;
             case "list":
-                expect.next(BiomeDictionaryAccessor.getMap().keySet());
+                expect.next(RCAccessorBiomeDictionary.getMap().keySet());
                 break;
             default:
                 expect.skip(1);

@@ -6,8 +6,7 @@
 package ivorius.reccomplex.utils.expression;
 
 import com.google.common.collect.Lists;
-import ivorius.ivtoolkit.tools.IvGsonHelper;
-import ivorius.reccomplex.json.RCGsonHelper;
+import ivorius.reccomplex.utils.accessor.RCAccessorBiomeDictionary;
 import ivorius.reccomplex.utils.algebra.BoolFunctionExpressionCache;
 import ivorius.reccomplex.utils.algebra.RCBoolAlgebra;
 import ivorius.reccomplex.utils.algebra.SupplierCache;
@@ -102,8 +101,8 @@ public class BiomeExpression extends BoolFunctionExpressionCache<Biome, Object>
         @Override
         public Function<SupplierCache<Biome>, Boolean> parse(String var)
         {
-            BiomeDictionary.Type type = RCGsonHelper.enumForNameIgnoreCase(var, BiomeDictionary.Type.values());
-            return type != null ? b -> BiomeDictionary.isBiomeOfType(b.get(), type)
+            BiomeDictionary.Type type = RCAccessorBiomeDictionary.getTypeWeak(var);
+            return type != null ? b -> BiomeDictionary.hasType(b.get(), type)
                     || (type == BiomeDictionary.Type.WATER // Special test
                     && (BiomeDictionary.isBiomeOfType(b.get(), BiomeDictionary.Type.OCEAN)
                     || BiomeDictionary.isBiomeOfType(b.get(), BiomeDictionary.Type.RIVER))
@@ -113,7 +112,7 @@ public class BiomeExpression extends BoolFunctionExpressionCache<Biome, Object>
         @Override
         public Validity validity(String var, Object biomes)
         {
-            return RCGsonHelper.enumForNameIgnoreCase(var, BiomeDictionary.Type.values()) != null
+            return RCAccessorBiomeDictionary.getTypeWeak(var) != null
                     ? Validity.KNOWN : Validity.UNKNOWN;
         }
     }

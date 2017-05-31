@@ -1,9 +1,9 @@
 /*
  *  Copyright (c) 2014, Lukas Tenbrink.
- *  * http://lukas.axxim.net
+ *  * http://ivorius.net
  */
 
-package ivorius.reccomplex.utils;
+package ivorius.reccomplex.utils.accessor;
 
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.ICommandListener;

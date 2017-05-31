@@ -12,7 +12,7 @@ import net.minecraft.crash.CrashReportCategory;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.*;
 import ivorius.reccomplex.RCConfig;
-import ivorius.reccomplex.utils.RCAccessorCommandBase;
+import ivorius.reccomplex.utils.accessor.RCAccessorCommandBase;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextComponentString;

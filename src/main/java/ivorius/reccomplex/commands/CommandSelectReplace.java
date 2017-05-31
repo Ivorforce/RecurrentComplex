@@ -52,7 +52,7 @@ public class CommandSelectReplace extends CommandVirtual
         return RCExpect.startRC()
                 .block()
                 .block().repeat()
-                .named("m")
+                .named("metadata")
                 .metadata()
                 .get(server, sender, args, pos);
     }
@@ -68,7 +68,7 @@ public class CommandSelectReplace extends CommandVirtual
         RCParameters parameters = RCParameters.of(args);
 
         Block dstBlock = parameters.mc().block(commandSender).require();
-        int[] dstMeta = parameters.rc("m").metadatas().require();
+        int[] dstMeta = parameters.rc("metadata").metadatas().require();
         List<IBlockState> dst = IntStream.of(dstMeta).mapToObj(m -> BlockStates.fromMetadata(dstBlock, m)).collect(Collectors.toList());
 
         PositionedBlockMatcher matcher = parameters.rc().move(1).expression(new PositionedBlockMatcher(RecurrentComplex.specialRegistry), "").require();

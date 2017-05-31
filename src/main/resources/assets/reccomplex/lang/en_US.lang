@@ -59,11 +59,11 @@ commands.rc.large.error=The selection is too big! (And if it weren't, this comma
 commands.structure.notGeneric=Structure '%s' is not generic!
 commands.structure.notRegistered=No structure found by name '%s'!
 
-commands.strucExport.usage=/#export [blueprintName]
+commands.strucExport.usage=/#export -from [structure id]
 
 commands.strucEdit.usage=/#edit <structureName>
 
-commands.strucGen.usage=/#gen <structure name> -p [x] [z] -d [dimension] -g [generation id] -r [rotations] -m [mirror]
+commands.strucGen.usage=/#gen <structure name> -p [x] [z] -d [dimension] -gen [generation id] -r [rotations] -m [mirror]
 commands.strucGen.noPlace=The structure can't find anywhere suitable to spawn!
 commands.strucGen.noStructure=No structure registered by the name of '%s'
 
@@ -86,8 +86,8 @@ commands.selectModify.invalidMetadata=Metadata must be entered like '0,1,5', but
 
 commands.selectFill.usage=/#fill <block> [metadata1,metadata2,metadata3...]
 
-commands.selectReplace.usage=/#replace <dest> <destmetadata1,metadata2,metadata3...> <src positioned block expression>
-commands.selectProperty.usage=/#property <key> <value> [positioned block matcher]
+commands.selectReplace.usage=/#replace <dest> <src positioned block expression> -metadata [destination metadata 1,2,3...]
+commands.selectProperty.usage=/#property <key> <value> -exp [positioned block matcher]
 
 commands.selectFillSphere.usage=/#sphere <block> [metadata1,metadata2,metadata3...]
 
@@ -132,7 +132,7 @@ commands.strucImportSchematic.usage=/#importschematic "<Schematic Name>" -p [x] 
 commands.strucImportSchematic.missing=The file '%s' was not found in %s
 commands.strucImportSchematic.format=The file '%s' has an unsupported format (%s)
 
-commands.rcconvertschematic.usage=/#convertschematic "<Schematic Name>" <structure ID>
+commands.rcconvertschematic.usage=/#convertschematic "<Schematic Name>" -from <structure ID>
 
 commands.strucExportSchematic.usage=/#exportschematic <schematic name>
 commands.strucExportSchematic.success=Exported schematic to '%s'
@@ -189,7 +189,7 @@ commands.rcsearch.lookup=Look Up
 
 commands.rccontaining.usage=/#containing <block expression>
 
-commands.rcfiles.usage=/#files
+commands.rcfiles.usage=/#files -dir [directory]
 commands.rcrepository.usage=/#repository
 commands.rcbrowse.usage=/#browse
 
@@ -201,13 +201,13 @@ commands.rcretro.count=Retro-Generated %s chunks!
 
 commands.rcenable.usage=/#enable <registry id> <element id>
 commands.rcdisable.usage=/#enable <registry id> <element id>
-commands.rcsave.usage=/#write <registry id> <element id> <directory>
+commands.rcsave.usage=/#write <registry id> <element id> -dir [directory]
 commands.rcsave.noregistry=No such registry id!
 commands.rcsave.nodirectory=No such directory id!
 commands.rcsave.noelement=No such element!
 commands.rcsaveall.usage=/#writeall <registry id> [resource expression] -dir [directory]
 commands.rcsaveall.result=Saved %s elements to '%s'. %s failed.
-commands.rcdelete.usage=/#delete <registry id> <element id> <directory>
+commands.rcdelete.usage=/#delete <registry id> <element id> -dir <directory>
 commands.rcmap.usage=/#map <structure id> <command> -dir [directory]
 commands.rcmap.nonvirtual=Cannot map with this command!
 commands.rcmap.nonvirtual.arguments=Cannot map with these command arguments!

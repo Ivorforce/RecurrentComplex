@@ -6,7 +6,9 @@
 package ivorius.reccomplex.commands.parameters;
 
 import ivorius.ivtoolkit.blocks.BlockSurfacePos;
+import ivorius.ivtoolkit.math.AxisAlignedTransform2D;
 import net.minecraft.command.CommandBase;
+import net.minecraft.command.CommandException;
 import net.minecraft.command.NumberInvalidException;
 import net.minecraft.util.math.BlockPos;
 
@@ -40,5 +42,12 @@ public class IvParameter extends Parameter
         return first().missable().flatMap(x -> at(1).map(z ->
                 parseSurfacePos(ref, x, z, centerBlock)))
                 .orElse(() -> BlockSurfacePos.from(ref));
+    }
+
+    public Result<AxisAlignedTransform2D> transform(boolean mirror) throws CommandException
+    {
+        if (has(1) || mirror)
+            return first().missable().map(CommandBase::parseInt).orElse(() -> 0).map(r -> AxisAlignedTransform2D.from(r, mirror));
+        return Result.empty();
     }
 }

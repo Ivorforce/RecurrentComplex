@@ -58,7 +58,7 @@ public class CommandSelectDuplicate extends CommandBase
         BlockArea area = selectionOwner.getSelection();
 
         BlockPos pos = parameters.mc("p").pos(commandSender.getPosition(), false).require();
-        AxisAlignedTransform2D transform = RCCommands.transform(parameters.get("r"), parameters.get("m")).optional().orElse(AxisAlignedTransform2D.ORIGINAL);
+        AxisAlignedTransform2D transform = parameters.iv("r").transform(parameters.has("m")).optional().orElse(AxisAlignedTransform2D.ORIGINAL);
 
         IvWorldData worldData = IvWorldData.capture(commandSender.getEntityWorld(), area, true);
         NBTTagCompound worldDataCompound = worldData.createTagCompound();
@@ -75,7 +75,7 @@ public class CommandSelectDuplicate extends CommandBase
         return RCExpect.startRC()
                 .named("p").pos()
                 .named("r").rotation()
-                .named("m").mirror()
+                .flag("m")
                 .get(server, sender, args, pos);
     }
 

@@ -15,9 +15,9 @@ import java.util.Set;
  */
 public class IvParameters extends Parameters
 {
-    public IvParameters(Set<String> flags, ListMultimap<String, String> params)
+    public IvParameters(Parameters blueprint)
     {
-        super(flags, params);
+        super(blueprint);
     }
 
     public static IvParameters of(String[] args)

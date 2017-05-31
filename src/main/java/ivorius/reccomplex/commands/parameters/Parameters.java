@@ -17,7 +17,7 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.function.BiFunction;
+import java.util.function.Function;
 
 /**
  * Created by lukas on 30.05.17.
@@ -33,7 +33,13 @@ public class Parameters
         this.params = params;
     }
 
-    protected static <T> T of(String[] args, BiFunction<Set<String>, ListMultimap<String, String>, T> fun)
+    public Parameters(Parameters blueprint)
+    {
+        this.flags = blueprint.flags;
+        this.params = blueprint.params;
+    }
+
+    protected static <T> T of(String[] args, Function<Parameters, T> fun)
     {
         List<String> params = Arrays.asList(quoted(args));
 
@@ -56,7 +62,7 @@ public class Parameters
                 named.put(curName, param); // Can be infinite
         }
 
-        return fun.apply(flags, named);
+        return fun.apply(new Parameters(flags, named));
     }
 
     public static Parameters of(String[] args)
@@ -89,9 +95,9 @@ public class Parameters
         return list.stream().map(CommandImportSchematic::trimQuotes).toArray(String[]::new);
     }
 
-    public boolean has(@Nonnull String name)
+    public boolean has(@Nonnull String flag)
     {
-        return flags.contains(name);
+        return flags.contains(flag);
     }
 
     public Parameter get()

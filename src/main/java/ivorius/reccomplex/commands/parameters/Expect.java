@@ -44,6 +44,11 @@ public class Expect<T extends Expect<T>>
         return (T) this;
     }
 
+    public T flag(String name)
+    {
+        return named(name);
+    }
+
     public T skip(int num)
     {
         return next(Collections.emptyList());
@@ -114,7 +119,7 @@ public class Expect<T extends Expect<T>>
 
         if (param != null && (curIndex < param.completion.size() || param.repeat))
         {
-            Lists.newArrayList(flags(paramArray, flags));
+            Lists.newArrayList(remaining(paramArray, flags));
             List<String> paramCompletion = param.completion.get(Math.min(curIndex, param.completion.size() - 1)).complete(server, sender, paramArray, pos).stream()
                     // More than one word, let's wrap this in quotes
                     .map(s -> s.contains(" ") && !s.startsWith("\"") ? String.format("\"%s\"", s) : s)
@@ -122,17 +127,17 @@ public class Expect<T extends Expect<T>>
 
             // Also complete flags in case the user wants to switch the current
             if (params.get(params.size() - 1).startsWith("-"))
-                paramCompletion.addAll(flags(paramArray, flags));
+                paramCompletion.addAll(remaining(paramArray, flags));
 
             return paramCompletion;
         }
 
-        return flags(paramArray, flags);
+        return remaining(paramArray, flags);
 
     }
 
     @Nonnull
-    public List<String> flags(String[] paramArray, Set<String> flags)
+    public List<String> remaining(String[] paramArray, Set<String> flags)
     {
         return getListOfStringsMatchingLastWord(paramArray, this.params.keySet().stream()
                 .filter(p -> p != null && !flags.contains(p))

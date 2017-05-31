@@ -7,7 +7,6 @@ package ivorius.reccomplex.utils.accessor;
 
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
-import ivorius.reccomplex.utils.SafeReflector;
 import net.minecraftforge.common.BiomeDictionary;
 
 import java.util.ArrayList;

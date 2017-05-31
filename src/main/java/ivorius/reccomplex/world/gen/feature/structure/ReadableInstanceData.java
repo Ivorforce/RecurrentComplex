@@ -3,8 +3,9 @@
  *  * http://ivorius.net
  */
 
-package ivorius.reccomplex.utils;
+package ivorius.reccomplex.world.gen.feature.structure;
 
+import ivorius.reccomplex.utils.NBTStorable;
 import ivorius.reccomplex.world.gen.feature.StructureGenerator;
 import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTTagCompound;

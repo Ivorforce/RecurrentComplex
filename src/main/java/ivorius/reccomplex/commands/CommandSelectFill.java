@@ -8,6 +8,7 @@ package ivorius.reccomplex.commands;
 import ivorius.ivtoolkit.blocks.BlockStates;
 import ivorius.reccomplex.RCConfig;
 import ivorius.reccomplex.capability.SelectionOwner;
+import ivorius.reccomplex.commands.parameters.RCParameter;
 import ivorius.reccomplex.utils.ServerTranslations;
 import ivorius.ivtoolkit.world.MockWorld;
 import net.minecraft.block.Block;
@@ -62,7 +63,7 @@ public class CommandSelectFill extends CommandVirtual
         if (args.length >= 1)
         {
             Block dstBlock = getBlockByText(commandSender, args[0]);
-            int[] dstMeta = args.length >= 2 ? RCCommands.parseMetadatas(args[1]) : new int[]{0};
+            int[] dstMeta = args.length >= 2 ? RCParameter.parseMetadatas(args[1]) : new int[]{0};
             List<IBlockState> dst = IntStream.of(dstMeta).mapToObj(m -> BlockStates.fromMetadata(dstBlock, m)).collect(Collectors.toList());
 
             SelectionOwner selectionOwner = RCCommands.getSelectionOwner(commandSender, null, true);

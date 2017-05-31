@@ -6,13 +6,15 @@
 package ivorius.reccomplex.commands;
 
 import ivorius.ivtoolkit.blocks.BlockStates;
+import ivorius.ivtoolkit.world.MockWorld;
 import ivorius.reccomplex.RCConfig;
 import ivorius.reccomplex.RecurrentComplex;
 import ivorius.reccomplex.capability.SelectionOwner;
+import ivorius.reccomplex.commands.parameters.RCExpect;
+import ivorius.reccomplex.commands.parameters.RCParameters;
+import ivorius.reccomplex.utils.ServerTranslations;
 import ivorius.reccomplex.utils.algebra.ExpressionCache;
 import ivorius.reccomplex.utils.expression.PositionedBlockMatcher;
-import ivorius.reccomplex.utils.ServerTranslations;
-import ivorius.ivtoolkit.world.MockWorld;
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.command.CommandException;
@@ -47,12 +49,12 @@ public class CommandSelectReplace extends CommandVirtual
     @Override
     public List<String> getTabCompletions(MinecraftServer server, ICommandSender sender, String[] args, @Nullable BlockPos pos)
     {
-        if (args.length == 1)
-            return getListOfStringsMatchingLastWord(args, Block.REGISTRY.getKeys());
-        else if (args.length == 2)
-            return getListOfStringsMatchingLastWord(args, IntStream.range(0, 16).mapToObj(String::valueOf).collect(Collectors.toList()));
-        else
-            return getListOfStringsMatchingLastWord(args, Block.REGISTRY.getKeys());
+        return RCExpect.startRC()
+                .block()
+                .block()
+                .named("m")
+                .metadata()
+                .get(server, sender, args, pos);
     }
 
     public int getRequiredPermissionLevel()
@@ -63,30 +65,26 @@ public class CommandSelectReplace extends CommandVirtual
     @Override
     public void execute(MockWorld world, ICommandSender commandSender, String[] args) throws CommandException
     {
-        if (args.length >= 3)
+        RCParameters parameters = RCParameters.of(args);
+
+        Block dstBlock = parameters.mc().block(commandSender).require();
+        int[] dstMeta = parameters.rc("m").metadatas().require();
+        List<IBlockState> dst = IntStream.of(dstMeta).mapToObj(m -> BlockStates.fromMetadata(dstBlock, m)).collect(Collectors.toList());
+
+        PositionedBlockMatcher matcher = ExpressionCache.of(new PositionedBlockMatcher(RecurrentComplex.specialRegistry),
+                parameters.get().move(1).text());
+        RCCommands.ensureValid(matcher, 2);
+
+        SelectionOwner selectionOwner = RCCommands.getSelectionOwner(commandSender, null, true);
+        RCCommands.assertSize(commandSender, selectionOwner);
+
+        for (BlockPos coord : selectionOwner.getSelection())
         {
-            Block dstBlock = getBlockByText(commandSender, args[0]);
-            int[] dstMeta = RCCommands.parseMetadatas(args[1]);
-            List<IBlockState> dst = IntStream.of(dstMeta).mapToObj(m -> BlockStates.fromMetadata(dstBlock, m)).collect(Collectors.toList());
-
-            PositionedBlockMatcher matcher = ExpressionCache.of(new PositionedBlockMatcher(RecurrentComplex.specialRegistry), buildString(args, 2));
-            RCCommands.ensureValid(matcher, 2);
-
-            SelectionOwner selectionOwner = RCCommands.getSelectionOwner(commandSender, null, true);
-            RCCommands.assertSize(commandSender, selectionOwner);
-
-            for (BlockPos coord : selectionOwner.getSelection())
+            if (matcher.evaluate(() -> PositionedBlockMatcher.Argument.at(world, coord)))
             {
-                if (matcher.evaluate(() -> PositionedBlockMatcher.Argument.at(world, coord)))
-                {
-                    IBlockState state = dst.get(world.rand().nextInt(dst.size()));
-                    world.setBlockState(coord, state, 3);
-                }
+                IBlockState state = dst.get(world.rand().nextInt(dst.size()));
+                world.setBlockState(coord, state, 3);
             }
-        }
-        else
-        {
-            throw ServerTranslations.wrongUsageException("commands.selectReplace.usage");
         }
     }
 

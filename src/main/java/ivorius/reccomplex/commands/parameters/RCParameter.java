@@ -11,6 +11,7 @@ import ivorius.reccomplex.world.gen.feature.structure.Structure;
 import ivorius.reccomplex.world.gen.feature.structure.StructureRegistry;
 import ivorius.reccomplex.world.gen.feature.structure.generic.generation.GenerationType;
 import ivorius.reccomplex.world.gen.feature.structure.generic.generation.NaturalGeneration;
+import net.minecraft.command.CommandException;
 
 /**
  * Created by lukas on 31.05.17.
@@ -20,6 +21,26 @@ public class RCParameter extends Parameter
     public RCParameter(Parameter other)
     {
         super(other);
+    }
+
+    public static int[] parseMetadatas(String arg) throws CommandException
+    {
+        try
+        {
+            String[] strings = arg.split(",");
+            int[] ints = new int[strings.length];
+
+            for (int i = 0; i < strings.length; i++)
+            {
+                ints[i] = Integer.valueOf(strings[i]);
+            }
+
+            return ints;
+        }
+        catch (Exception ex)
+        {
+            throw ServerTranslations.wrongUsageException("commands.selectModify.invalidMetadata", arg);
+        }
     }
 
     @Override
@@ -54,5 +75,10 @@ public class RCParameter extends Parameter
                 throw ServerTranslations.commandException("commands.rcsave.nodirectory");
             }
         });
+    }
+
+    public Result<int[]> metadatas()
+    {
+        return at(0).map(RCParameter::parseMetadatas);
     }
 }

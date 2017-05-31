@@ -7,7 +7,7 @@ package ivorius.reccomplex.commands;
 
 import ivorius.reccomplex.RCConfig;
 import ivorius.reccomplex.RecurrentComplex;
-import ivorius.reccomplex.commands.parameters.Expect;
+import ivorius.reccomplex.commands.parameters.RCExpect;
 import ivorius.reccomplex.commands.parameters.RCParameters;
 import ivorius.reccomplex.files.loading.LeveledRegistry;
 import ivorius.reccomplex.files.loading.ResourceDirectory;
@@ -23,7 +23,10 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.math.BlockPos;
 
 import javax.annotation.Nullable;
-import java.util.*;
+import java.util.Collections;
+import java.util.List;
+import java.util.Optional;
+import java.util.Set;
 
 /**
  * Created by lukas on 03.08.14.
@@ -73,9 +76,9 @@ public class CommandWriteAll extends CommandBase
             boolean success = RecurrentComplex.saver.trySave(directory.toPath(), adapterID, id);
 
             if (success)
-                saved ++;
+                saved++;
             else
-                failed ++;
+                failed++;
         }
 
         commandSender.sendMessage(ServerTranslations.format("commands.rcsaveall.result", saved, directory, failed));
@@ -89,10 +92,13 @@ public class CommandWriteAll extends CommandBase
     {
         RCParameters parameters = RCParameters.of(args);
 
-        return Expect.start()
-                .next(RecurrentComplex.saver.keySet())
-                .next(args1 -> parameters.get().at(0).optional().map(RecurrentComplex.saver::get).map(a -> a.getRegistry().ids()).orElse(Collections.emptySet()))
-                .named("dir").resourceDirectory()
-                .get(server, sender, args, pos);
+        RCExpect<?> expect = RCExpect.startRC();
+        // Can't chain because of compiler bug :|
+
+        expect.next(RecurrentComplex.saver.keySet());
+        expect.next(args1 -> parameters.get().at(0).optional().map(RecurrentComplex.saver::get).map(a -> a.getRegistry().ids()).orElse(Collections.emptySet()));
+        expect.named("dir").resourceDirectory();
+
+        return expect.get(server, sender, args, pos);
     }
 }

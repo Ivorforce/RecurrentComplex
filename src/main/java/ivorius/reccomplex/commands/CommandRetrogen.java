@@ -7,7 +7,7 @@ package ivorius.reccomplex.commands;
 
 import ivorius.ivtoolkit.util.IvStreams;
 import ivorius.reccomplex.RCConfig;
-import ivorius.reccomplex.commands.parameters.Expect;
+import ivorius.reccomplex.commands.parameters.RCExpect;
 import ivorius.reccomplex.commands.parameters.RCParameters;
 import ivorius.reccomplex.files.RCFiles;
 import ivorius.reccomplex.files.loading.FileSuffixFilter;
@@ -118,7 +118,7 @@ public class CommandRetrogen extends CommandBase
     @Override
     public List<String> getTabCompletions(MinecraftServer server, ICommandSender sender, String[] args, @Nullable BlockPos pos)
     {
-        return Expect.start()
+        return RCExpect.startRC()
                 .named("exp").structurePredicate()
                 .named("d").dimension()
                 .get(server, sender, args, pos);

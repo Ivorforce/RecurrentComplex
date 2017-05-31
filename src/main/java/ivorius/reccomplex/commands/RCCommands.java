@@ -232,26 +232,6 @@ public class RCCommands
         return result;
     }
 
-    public static int[] parseMetadatas(String arg) throws CommandException
-    {
-        try
-        {
-            String[] strings = arg.split(",");
-            int[] ints = new int[strings.length];
-
-            for (int i = 0; i < strings.length; i++)
-            {
-                ints[i] = Integer.valueOf(strings[i]);
-            }
-
-            return ints;
-        }
-        catch (Exception ex)
-        {
-            throw ServerTranslations.wrongUsageException("commands.selectModify.invalidMetadata", arg);
-        }
-    }
-
     public static void ensureValid(ExpressionCache<?> matcher, int argument) throws CommandException
     {
         if (!matcher.isExpressionValid())

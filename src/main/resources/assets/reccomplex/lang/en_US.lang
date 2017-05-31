@@ -63,11 +63,11 @@ commands.strucExport.usage=/#export [blueprintName]
 
 commands.strucEdit.usage=/#edit <structureName>
 
-commands.strucGen.usage=/#gen <structureName> [x] [z] [dimension] [generation id] [spawn time] [up|down|fog|fade]
+commands.strucGen.usage=/#gen <structure name> -p [x] [z] -d [dimension] -g [generation id] -r [rotations] -m [mirror]
 commands.strucGen.noPlace=The structure can't find anywhere suitable to spawn!
 commands.strucGen.noStructure=No structure registered by the name of '%s'
 
-commands.strucImport.usage=/#import <structureName> [x] [y] [z] [rotation] [mirror:true|false]
+commands.strucImport.usage=/#import <structure name> -p [x] [y] [z] -d [dimension] -r [rotations] -m [mirror]
 commands.strucImport.noStructure=No structure registered by the name of '%s'
 
 commands.selectSet.usage=/#select <both|clear|point1|point2> [x] [y] [z]
@@ -128,7 +128,7 @@ commands.rcreopen.nogui=No GUI to reopen!
 commands.rcreopen.fail=Failed to reopen GUI!
 commands.rc.didhide=Hidden GUI - %s?
 
-commands.strucImportSchematic.usage=/#importschematic "<Schematic Name>" [x] [y] [z] [rotations (clockwise)] [mirror x:true|false]
+commands.strucImportSchematic.usage=/#importschematic "<Schematic Name>" -p [x] [y] [z] -r [rotations] -m [mirror]
 commands.strucImportSchematic.missing=The file '%s' was not found in %s
 commands.strucImportSchematic.format=The file '%s' has an unsupported format (%s)
 
@@ -193,10 +193,10 @@ commands.rcfiles.usage=/#files
 commands.rcrepository.usage=/#repository
 commands.rcbrowse.usage=/#browse
 
-commands.rcdecorate.usage=/#decorate <x min> <z min> <x max> <z max> [resource matcher: only generate these structures]
+commands.rcdecorate.usage=/#decorate <x min> <z min> <x max> <z max> -p [resource matcher: only generate these structures]
 commands.rcdecorateone.usage=/#decorateone [x] [z]
 commands.rcdecorateone.none=No suitable structures found!
-commands.rcretro.usage=/#retro [dimension] [resource matcher: only generate these structures]
+commands.rcretro.usage=/#retro -d [dimension] -p [resource matcher: only generate these structures]
 commands.rcretro.count=Retro-Generated %s chunks!
 
 commands.rcenable.usage=/#enable <registry id> <element id>

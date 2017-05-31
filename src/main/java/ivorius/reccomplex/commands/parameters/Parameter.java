@@ -75,20 +75,20 @@ public class Parameter
 
     public Result<WorldServer> dimension(ICommandSender commandSender)
     {
-        return at(0).filter(d -> !d.equals("~")).failable()
-                .map(CommandBase::parseInt).map(DimensionManager::getWorld, () -> ServerTranslations.commandException("commands.rc.nodimension"))
+        return at(0).filter(d -> !d.equals("~"), null).failable()
+                .map(CommandBase::parseInt).map(DimensionManager::getWorld, t -> ServerTranslations.commandException("commands.rc.nodimension"))
                 .orElse(() -> (WorldServer) commandSender.getEntityWorld());
     }
 
     public Result<Structure<?>> structure()
     {
         return at(0).map(StructureRegistry.INSTANCE::get,
-                () -> ServerTranslations.commandException("commands.strucGen.noStructure", at(0)));
+                t -> ServerTranslations.commandException("commands.strucGen.noStructure", at(0)));
     }
 
     public Result<GenerationType> generationType(Structure<?> structure)
     {
-        return at(0).failable().map(structure::generationType, () -> ServerTranslations.commandException("No Generation by this ID"))
+        return at(0).failable().map(structure::generationType, t -> ServerTranslations.commandException("No Generation by this ID"))
                 .orElse(() -> structure.<GenerationType>generationTypes(NaturalGeneration.class).stream().findFirst()
                         .orElse(structure.generationTypes(GenerationType.class).stream().findFirst().orElse(null)));
     }
@@ -145,10 +145,15 @@ public class Parameter
 
         public Result<T> filter(Predicate<T> fun)
         {
+            return filter(fun, null);
+        }
+
+        public Result<T> filter(Predicate<T> fun, @Nullable Function<T, CommandException> esc)
+        {
             return new Result<T>(() ->
             {
                 T t = this.t.get();
-                if (!fun.test(t)) throw new CommandException("Parameter not accepted!");
+                if (!fun.test(t) && esc != null) throw esc.apply(t);
                 return t;
             });
         }
@@ -158,7 +163,7 @@ public class Parameter
             return map(fun, null);
         }
 
-        public <O> Result<O> map(Function<T, O> fun, @Nullable Supplier<CommandException> exc)
+        public <O> Result<O> map(Function<T, O> fun, @Nullable Function<T, CommandException> exc)
         {
             return new Result<>(() ->
             {
@@ -167,7 +172,7 @@ public class Parameter
                 if (t == null) return null;
 
                 O o = fun.apply(t);
-                if (o == null && exc != null) throw exc.get();
+                if (o == null && exc != null) throw exc.apply(t);
 
                 return o;
             });

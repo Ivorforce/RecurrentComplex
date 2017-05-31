@@ -9,8 +9,8 @@ import ivorius.ivtoolkit.blocks.BlockSurfacePos;
 import ivorius.ivtoolkit.math.AxisAlignedTransform2D;
 import ivorius.reccomplex.RCConfig;
 import ivorius.reccomplex.RecurrentComplex;
-import ivorius.reccomplex.capability.SelectionOwner;
 import ivorius.reccomplex.capability.RCEntityInfo;
+import ivorius.reccomplex.capability.SelectionOwner;
 import ivorius.reccomplex.commands.parameters.Parameter;
 import ivorius.reccomplex.files.RCFiles;
 import ivorius.reccomplex.files.loading.FileLoader;
@@ -41,9 +41,11 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.nio.file.AccessDeniedException;
 import java.nio.file.Path;
-import java.util.*;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+import java.util.Set;
 import java.util.function.Predicate;
-import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
 /**
@@ -219,6 +221,7 @@ public class RCCommands
                 : BlockSurfacePos.from(sender.getPosition());
     }
 
+    // Since CommandBase's version requires a sender
     public static BlockSurfacePos surfacePos(BlockPos blockpos, String x, String z, boolean centerBlock) throws NumberInvalidException
     {
         return BlockSurfacePos.from(new BlockPos(CommandBase.parseDouble((double) blockpos.getX(), x, -30000000, 30000000, centerBlock), 0, CommandBase.parseDouble((double) blockpos.getZ(), z, -30000000, 30000000, centerBlock)));
@@ -272,28 +275,16 @@ public class RCCommands
         return CommandBase.getListOfStringsMatchingLastWord(args, Arrays.stream(DimensionManager.getIDs()).map(String::valueOf).collect(Collectors.toList()));
     }
 
-    public static WorldServer tryParseDimension(ICommandSender commandSender, String[] args, int dimIndex) throws CommandException
+    @Nonnull
+    protected static Parameter.Result<ResourceMatcher> resourceMatcher(Parameter parameter)
     {
-        WorldServer world = args.length <= dimIndex || args[dimIndex].equals("~")
-                ? (WorldServer) commandSender.getEntityWorld()
-                : DimensionManager.getWorld(CommandBase.parseInt(args[dimIndex]));
-        if (world == null)
-            throw ServerTranslations.commandException("commands.rc.nodimension");
-        return world;
+        return parameter.at(0).map(s -> ExpressionCache.of(new ResourceMatcher(s1 -> !s1.isEmpty()), s))
+                .filter(ExpressionCache::isExpressionValid, t -> new CommandException(t.getParseException().getMessage()));
     }
 
-    @Nonnull
-    protected static ResourceMatcher tryParseResourceMatcher(String[] args, int startPos)
+    protected static Parameter.Result<Predicate<Structure>> structurePredicate(Parameter parameter)
     {
-        return ExpressionCache.of(new ResourceMatcher((s1) -> !s1.isEmpty()), args.length >= startPos ? CommandBase.buildString(args, startPos) : "");
-    }
-
-    @Nonnull
-    protected static Predicate<Structure> tryParseStructurePredicate(String[] args, int startPos, Supplier<Predicate<Structure>> fallback)
-    {
-        return args.length >= startPos
-                ? s -> tryParseResourceMatcher(args, startPos).test(StructureRegistry.INSTANCE.resourceLocation(s))
-                : fallback.get();
+        return resourceMatcher(parameter).map(m -> s -> m.test(StructureRegistry.INSTANCE.resourceLocation(s)));
     }
 
     @Nonnull

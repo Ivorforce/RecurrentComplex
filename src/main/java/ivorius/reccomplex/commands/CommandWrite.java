@@ -79,7 +79,7 @@ public class CommandWrite extends CommandBase
 
         expect.next(RecurrentComplex.saver.keySet());
         expect.next(args1 -> parameters.get().at(0).optional().map(RecurrentComplex.saver::get).map(a -> a.getRegistry().ids()).orElse(Collections.emptySet()));
-        expect.<RCExpect>named("dir").resourceDirectory();
+        expect.named("dir").resourceDirectory();
 
         return expect.get(server, sender, args, pos);
     }

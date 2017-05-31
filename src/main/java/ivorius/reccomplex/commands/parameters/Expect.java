@@ -71,6 +71,14 @@ public class Expect<T extends Expect<T>>
         return next((server, sender, args, pos) -> completion.apply(args));
     }
 
+    public T repeat()
+    {
+        Param cur = params.get(this.cur);
+        if (cur == null) throw new IllegalStateException();
+        cur.repeat = true;
+        return (T) this;
+    }
+
     public List<String> get(MinecraftServer server, ICommandSender sender, String[] args, @Nullable BlockPos pos)
     {
         List<String> params = Arrays.asList(Parameters.quoted(args));
@@ -94,15 +102,16 @@ public class Expect<T extends Expect<T>>
 
         Param param = this.params.get(curName);
 
-        if (param == null || curIndex >= param.completion.size())
-            return getListOfStringsMatchingLastWord(paramArray, this.params.keySet().stream()
-                    .filter(p -> p != null && !flags.contains(p))
-                    .map(p -> "-" + p).collect(Collectors.toList()));
+        if (param != null && (curIndex < param.completion.size() || param.repeat))
+            return param.completion.get(Math.min(curIndex, param.completion.size() - 1)).complete(server, sender, paramArray, pos).stream()
+                    // More than one word, let's wrap this in quotes
+                    .map(s -> s.contains(" ") && !s.startsWith("\"") ? String.format("\"%s\"", s) : s)
+                    .collect(Collectors.toList());
 
-        return param.completion.get(curIndex).complete(server, sender, paramArray, pos).stream()
-                // More than one word, let's wrap this in quotes
-                .map(s -> s.contains(" ") && !s.startsWith("\"") ? String.format("\"%s\"", s) : s)
-                .collect(Collectors.toList());
+        return getListOfStringsMatchingLastWord(paramArray, this.params.keySet().stream()
+                .filter(p -> p != null && !flags.contains(p))
+                .map(p -> "-" + p).collect(Collectors.toList()));
+
     }
 
     public interface Completer
@@ -112,7 +121,8 @@ public class Expect<T extends Expect<T>>
 
     public class Param
     {
-        private final List<Completer> completion = new ArrayList<>();
+        protected final List<Completer> completion = new ArrayList<>();
+        protected boolean repeat;
 
         public Param next(Completer completion)
         {

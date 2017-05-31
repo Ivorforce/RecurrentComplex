@@ -115,6 +115,8 @@ public class CommandMapAllStructure extends CommandBase
     {
         return RCExpect.startRC()
                 .any("\"\"")
+                .skip(1)
+                .skip(1).repeat()
                 .named("exp").structure()
                 .named("dir").resourceDirectory()
                 .get(server, sender, args, pos);

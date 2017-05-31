@@ -51,7 +51,7 @@ public class CommandSelectReplace extends CommandVirtual
     {
         return RCExpect.startRC()
                 .block()
-                .block()
+                .block().repeat()
                 .named("m")
                 .metadata()
                 .get(server, sender, args, pos);

@@ -15,6 +15,7 @@ import ivorius.reccomplex.world.gen.feature.structure.generic.generation.Natural
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.WorldServer;
 import net.minecraftforge.common.DimensionManager;
 
@@ -57,6 +58,14 @@ public class Parameter
     }
 
     @Nonnull
+    public Result<BlockPos> pos(ICommandSender sender, boolean centerBlock)
+    {
+        return at(0).failable().flatMap(x -> at(1).flatMap(y -> at(2).map(z ->
+                CommandBase.parseBlockPos(sender, new String[]{x, y, z}, 0, centerBlock))))
+                .orElse(sender::getPosition);
+    }
+
+    @Nonnull
     public Result<BlockSurfacePos> surfacePos(ICommandSender sender, boolean centerBlock)
     {
         return at(0).failable().flatMap(x -> at(1).map(z ->
@@ -84,6 +93,16 @@ public class Parameter
                         .orElse(structure.generationTypes(GenerationType.class).stream().findFirst().orElse(null)));
     }
 
+    public Result<Integer> integer(int idx)
+    {
+        return at(idx).map(CommandBase::parseInt);
+    }
+
+    public Result<Boolean> bool(int idx)
+    {
+        return at(idx).map(CommandBase::parseBoolean);
+    }
+
     public boolean has(int size)
     {
         return size <= params.size();
@@ -100,23 +119,28 @@ public class Parameter
         });
     }
 
-    protected interface Supplier<T>
+    public interface Supplier<T>
     {
         T get() throws CommandException;
     }
 
-    protected interface Function<T, O>
+    public interface Function<T, O>
     {
         O apply(T t) throws CommandException;
     }
 
-    public class Result<T>
+    public static class Result<T>
     {
         private Supplier<T> t;
 
         public Result(Supplier<T> t)
         {
             this.t = t;
+        }
+
+        public static <T> Result<T> empty()
+        {
+            return new Result<T>(() -> null);
         }
 
         public Result<T> filter(Predicate<T> fun)

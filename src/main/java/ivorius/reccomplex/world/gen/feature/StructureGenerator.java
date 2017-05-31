@@ -112,7 +112,6 @@ public class StructureGenerator<S extends NBTStorable>
     }
 
     /**
-     *
      * @return null when creation failed, empty when no entry was created and an entry when there was
      */
     public Optional<WorldStructureGenerationData.StructureEntry> generate()
@@ -308,7 +307,7 @@ public class StructureGenerator<S extends NBTStorable>
         return this;
     }
 
-    public StructureGenerator<S> transform(@Nonnull AxisAlignedTransform2D transform)
+    public StructureGenerator<S> transform(AxisAlignedTransform2D transform)
     {
         this.transform = transform;
         return this;

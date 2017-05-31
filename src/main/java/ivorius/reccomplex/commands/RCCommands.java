@@ -11,6 +11,7 @@ import ivorius.reccomplex.RCConfig;
 import ivorius.reccomplex.RecurrentComplex;
 import ivorius.reccomplex.capability.SelectionOwner;
 import ivorius.reccomplex.capability.RCEntityInfo;
+import ivorius.reccomplex.commands.parameters.Parameter;
 import ivorius.reccomplex.files.RCFiles;
 import ivorius.reccomplex.files.loading.FileLoader;
 import ivorius.reccomplex.files.loading.LeveledRegistry;
@@ -418,5 +419,13 @@ public class RCCommands
     protected static String reason(RCFiles.ResourceLocationLoadException e)
     {
         return e.getCause() instanceof AccessDeniedException ? "Access Denied! (check your server's read privileges on the Minecraft directory)" : "Unknown Cause! (see logs)";
+    }
+
+    protected static Parameter.Result<AxisAlignedTransform2D> transform(Parameter rot, Parameter mir) throws CommandException
+    {
+        if (rot.has(1) || mir.has(1))
+            return rot.at(0).failable().map(CommandBase::parseInt).orElse(() -> 0)
+                    .flatMap(r -> mir.at(0).failable().map(CommandBase::parseBoolean).orElse(() -> false).map(m -> AxisAlignedTransform2D.from(r, m)));
+        return Parameter.Result.empty();
     }
 }

@@ -6,6 +6,7 @@
 package ivorius.reccomplex.commands;
 
 import ivorius.ivtoolkit.blocks.BlockSurfacePos;
+import ivorius.ivtoolkit.math.AxisAlignedTransform2D;
 import ivorius.reccomplex.RCConfig;
 import ivorius.reccomplex.commands.parameters.Expect;
 import ivorius.reccomplex.commands.parameters.Parameters;
@@ -64,31 +65,32 @@ public class CommandGenerateStructure extends CommandBase
     {
         Parameters parameters = Parameters.of(this, args);
 
-        String structureName = parameters.get().here().require();
+        String structureID = parameters.get().here().require();
         Structure<?> structure = parameters.get().structure().require();
         WorldServer world = parameters.get("d").dimension(commandSender).require();
-        BlockSurfacePos pos = parameters.get("p").surfacePos(commandSender, false).require();
+        AxisAlignedTransform2D transform = RCCommands.transform(parameters.get("r"), parameters.get("m")).optional().orElse(null);
         GenerationType generationType = parameters.get("g").generationType(structure).require();
+        BlockSurfacePos pos = parameters.get("p").surfacePos(commandSender, false).require();
 
         Placer placer = generationType.placer();
+
+        StructureGenerator<?> generator = new StructureGenerator<>(structure).world(world).generationInfo(generationType)
+                .structureID(structureID).randomPosition(pos, placer).fromCenter(true)
+                .transform(transform);
 
         if (structure instanceof GenericStructure)
         {
             GenericStructure genericStructureInfo = (GenericStructure) structure;
 
-            StructureGenerator<GenericStructure.InstanceData> generator = new StructureGenerator<>(genericStructureInfo).world(world)
-                    .randomPosition(pos, placer).fromCenter(true);
-
             Optional<BlockPos> lowerCoord = generator.lowerCoord();
             if (lowerCoord.isPresent())
-                OperationRegistry.queueOperation(new OperationGenerateStructure(genericStructureInfo, generationType.id(), generator.transform(), lowerCoord.get(), false).withStructureID(structureName).prepare(world), commandSender);
+                OperationRegistry.queueOperation(new OperationGenerateStructure(genericStructureInfo, generationType.id(), generator.transform(), lowerCoord.get(), false).withStructureID(structureID).prepare(world), commandSender);
             else
                 throw ServerTranslations.commandException("commands.strucGen.noPlace");
         }
         else
         {
-            if (new StructureGenerator<>(structure).world(world).generationInfo(generationType)
-                    .structureID(structureName).randomPosition(pos, placer).fromCenter(true).generate() == null)
+            if (generator.generate() == null)
                 throw ServerTranslations.commandException("commands.strucGen.noPlace");
         }
     }
@@ -104,14 +106,20 @@ public class CommandGenerateStructure extends CommandBase
                 .named("p")
                 .next((server1, sender1, args1, pos1) -> getTabCompletionCoordinateXZ(args1, 0, pos))
                 .next((server1, sender1, args1, pos1) -> getTabCompletionCoordinateXZ(args1, 1, pos))
-                .named("d").next(RCCommands::completeDimension)
-                .named("g").next((String[] args1) ->
+                .named("d")
+                .next(RCCommands::completeDimension)
+                .named("g")
+                .next((String[] args1) ->
                 {
                     Structure<?> structure = parameters.get().structure().optional().orElse(null);
                     if (structure instanceof GenericStructure)
                         return getListOfStringsMatchingLastWord(args1, structure.generationTypes(GenerationType.class).stream().map(GenerationType::id).collect(Collectors.toList()));
                     return Collections.emptyList();
                 })
+                .named("r")
+                .next(RCCommands::completeRotation)
+                .named("m")
+                .next(RCCommands::completeMirror)
                 .get(server, sender, args, pos);
 
         //        else if (args.length == 6)

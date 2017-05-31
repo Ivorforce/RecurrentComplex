@@ -7,6 +7,8 @@ package ivorius.reccomplex.commands;
 
 import ivorius.reccomplex.RCConfig;
 import ivorius.reccomplex.RecurrentComplex;
+import ivorius.reccomplex.commands.parameters.RCExpect;
+import ivorius.reccomplex.commands.parameters.RCParameters;
 import ivorius.reccomplex.utils.ServerTranslations;
 import ivorius.reccomplex.utils.algebra.ExpressionCache;
 import ivorius.reccomplex.utils.expression.DependencyMatcher;
@@ -45,11 +47,9 @@ public class CommandEval extends CommandBase
     @Override
     public void execute(MinecraftServer server, ICommandSender commandSender, String[] args) throws CommandException
     {
-        if (args.length < 1)
-            throw ServerTranslations.wrongUsageException("commands.rceval.usage");
+        RCParameters parameters = RCParameters.of(args);
 
-        DependencyMatcher matcher = ExpressionCache.of(new DependencyMatcher(), buildString(args, 0));
-        RCCommands.ensureValid(matcher, 0);
+        DependencyMatcher matcher = parameters.rc().expression(new DependencyMatcher(), null).require();
 
         boolean result = matcher.test(RecurrentComplex.saver);
         commandSender.addChatMessage(ServerTranslations.get(result ? "commands.rceval.result.true" : "commands.rceval.result.false"));
@@ -58,6 +58,8 @@ public class CommandEval extends CommandBase
     @Override
     public List<String> getTabCompletionOptions(MinecraftServer server, ICommandSender sender, String[] args, @Nullable BlockPos pos)
     {
-        return getListOfStringsMatchingLastWord(args, RCConfig.globalToggles.keySet().stream().map(s -> "global:" + s).collect(Collectors.toSet()));
+        return RCExpect.startRC()
+                .next(RCConfig.globalToggles.keySet().stream().map(s -> "global:" + s).collect(Collectors.toSet()))
+                .get(server, sender, args, pos);
     }
 }

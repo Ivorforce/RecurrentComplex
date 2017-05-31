@@ -7,19 +7,24 @@ package ivorius.reccomplex.commands;
 
 import ivorius.ivtoolkit.blocks.BlockArea;
 import ivorius.ivtoolkit.blocks.BlockAreas;
+import ivorius.ivtoolkit.world.MockWorld;
 import ivorius.reccomplex.RCConfig;
 import ivorius.reccomplex.RecurrentComplex;
 import ivorius.reccomplex.capability.SelectionOwner;
+import ivorius.reccomplex.commands.parameters.RCExpect;
+import ivorius.reccomplex.commands.parameters.RCParameters;
 import ivorius.reccomplex.utils.ServerTranslations;
 import ivorius.reccomplex.utils.algebra.ExpressionCache;
 import ivorius.reccomplex.utils.expression.PositionedBlockMatcher;
-import ivorius.ivtoolkit.world.MockWorld;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import java.util.List;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
@@ -57,6 +62,8 @@ public class CommandSelectWand extends CommandVirtual
         SelectionOwner selectionOwner = RCCommands.getSelectionOwner(commandSender, null, true);
         BlockArea area = selectionOwner.getSelection();
 
+        RCParameters parameters = RCParameters.of(args);
+
         boolean changed = true;
         int total = 0;
 
@@ -64,9 +71,7 @@ public class CommandSelectWand extends CommandVirtual
         {
             changed = false;
 
-            String exp = args.length > 0 ? buildString(args, 0) : "!is:air";
-            PositionedBlockMatcher matcher = ExpressionCache.of(new PositionedBlockMatcher(RecurrentComplex.specialRegistry), exp);
-            RCCommands.ensureValid(matcher, 0);
+            PositionedBlockMatcher matcher = parameters.rc().expression(new PositionedBlockMatcher(RecurrentComplex.specialRegistry), "!is:air").require();
 
             for (EnumFacing direction : EnumFacing.VALUES)
             {
@@ -81,5 +86,13 @@ public class CommandSelectWand extends CommandVirtual
         }
 
         selectionOwner.setSelection(area);
+    }
+
+    @Override
+    public List<String> getTabCompletions(MinecraftServer server, ICommandSender sender, String[] args, @Nullable BlockPos targetPos)
+    {
+        return RCExpect.startRC()
+                .block()
+                .get(server, sender, args, targetPos);
     }
 }

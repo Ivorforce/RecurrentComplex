@@ -51,8 +51,8 @@ public class CommandMapStructure extends CommandBase
     {
         RCParameters parameters = RCParameters.of(args);
 
-        String id = parameters.get().at(0).require();
-        GenericStructure structure = RCCommands.getGenericStructure(id);
+        String id = parameters.get().first().require();
+        GenericStructure structure = parameters.rc().genericStructure().require();
         ResourceDirectory directory = parameters.rc("dir").resourceDirectory().optional().orElse(ResourceDirectory.ACTIVE);
 
         ICommand other = server.getCommandManager().getCommands().get(parameters.get().at(1).require());

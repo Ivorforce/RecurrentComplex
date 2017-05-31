@@ -9,6 +9,7 @@ import com.google.common.collect.Lists;
 import gnu.trove.list.TIntList;
 import gnu.trove.list.array.TIntArrayList;
 import ivorius.reccomplex.RCConfig;
+import ivorius.reccomplex.commands.parameters.RCExpect;
 import ivorius.reccomplex.dimensions.DimensionDictionary;
 import ivorius.reccomplex.utils.ServerTranslations;
 import net.minecraft.command.CommandBase;
@@ -20,9 +21,7 @@ import net.minecraftforge.common.DimensionManager;
 
 import javax.annotation.Nullable;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
-import java.util.stream.Collectors;
 
 /**
  * Created by lukas on 03.08.14.
@@ -93,22 +92,22 @@ public class CommandDimensionDict extends CommandBase
     @Override
     public List<String> getTabCompletionOptions(MinecraftServer server, ICommandSender sender, String[] args, @Nullable BlockPos pos)
     {
-        if (args.length == 1)
-            return getListOfStringsMatchingLastWord(args, "types", "list");
+        RCExpect<?> expect = RCExpect.startRC()
+                .any("types", "list");
 
-        if (args[0].equals("types"))
+        switch (args[0])
         {
-            Integer[] dimensions = DimensionManager.getIDs();
-            String[] dimensionStrings = new String[dimensions.length];
-
-            for (int i = 0; i < dimensions.length; i++)
-                dimensionStrings[i] = String.valueOf(dimensions[i]);
-
-            return getListOfStringsMatchingLastWord(args, dimensionStrings);
+            case "types":
+                expect.dimension();
+                break;
+            case "list":
+                expect.next(DimensionDictionary.allRegisteredTypes());
+                break;
+            default:
+                expect.skip(1);
+                break;
         }
-        else if (args[0].equals("list"))
-            return getListOfStringsMatchingLastWord(args, DimensionDictionary.allRegisteredTypes());
 
-        return Collections.emptyList();
+        return expect.get(server, sender, args, pos);
     }
 }

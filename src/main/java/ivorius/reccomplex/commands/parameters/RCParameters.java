@@ -31,7 +31,7 @@ public class RCParameters extends IvParameters
         return new RCParameter(get());
     }
 
-    public RCParameter rc(@Nonnull String name) throws CommandException
+    public RCParameter rc(@Nonnull String name)
     {
         return new RCParameter(get(name));
     }

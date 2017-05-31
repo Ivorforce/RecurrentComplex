@@ -52,7 +52,7 @@ public class CommandImportStructure extends CommandBase
     {
         RCParameters parameters = RCParameters.of(args);
 
-        String structureID = parameters.get().here().require();
+        String structureID = parameters.get().first().require();
         Structure<?> structure = parameters.rc().structure().require();
         WorldServer world = parameters.mc("d").dimension(commandSender).require();
         AxisAlignedTransform2D transform = RCCommands.transform(parameters.get("r"), parameters.get("m")).optional().orElse(AxisAlignedTransform2D.ORIGINAL);
@@ -73,7 +73,7 @@ public class CommandImportStructure extends CommandBase
     {
         return RCExpect.startRC()
                 .structure()
-                .named("p").pos(pos)
+                .named("p").pos()
                 .named("d").dimension()
                 .named("r").rotation()
                 .named("m").mirror()

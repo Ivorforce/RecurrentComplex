@@ -11,7 +11,9 @@ import ivorius.ivtoolkit.blocks.BlockStates;
 import ivorius.ivtoolkit.world.MockWorld;
 import ivorius.reccomplex.RCConfig;
 import ivorius.reccomplex.capability.SelectionOwner;
+import ivorius.reccomplex.commands.parameters.RCExpect;
 import ivorius.reccomplex.commands.parameters.RCParameter;
+import ivorius.reccomplex.commands.parameters.RCParameters;
 import ivorius.reccomplex.utils.RCBlockLogic;
 import ivorius.reccomplex.utils.ServerTranslations;
 import ivorius.reccomplex.utils.expression.PreloadedBooleanExpression;
@@ -50,18 +52,20 @@ public class CommandSelectFlood extends CommandVirtual
     @Override
     public List<String> getTabCompletionOptions(MinecraftServer server, ICommandSender sender, String[] args, @Nullable BlockPos pos)
     {
-        if (args.length == 1)
-            return getListOfStringsMatchingLastWord(args, Block.REGISTRY.getKeys());
-        else if (args.length == 2)
-            return getListOfStringsMatchingLastWord(args, Collections.emptyList());
+        return RCExpect.startRC()
+                .block()
+                .metadata()
+                .next(args1 ->
+                {
+                    List<String> ret = new ArrayList<>();
 
-        List<String> ret = new ArrayList<>();
+                    ret.addAll(Arrays.stream(EnumFacing.values()).map(EnumFacing::getName2).collect(Collectors.toList()));
+                    ret.addAll(Arrays.stream(EnumFacing.Axis.values()).map(EnumFacing.Axis::getName).collect(Collectors.toList()));
+                    Collections.addAll(ret, "horizontal", "vertical");
 
-        ret.addAll(Arrays.stream(EnumFacing.values()).map(EnumFacing::getName2).collect(Collectors.toList()));
-        ret.addAll(Arrays.stream(EnumFacing.Axis.values()).map(EnumFacing.Axis::getName).collect(Collectors.toList()));
-        Collections.addAll(ret, "horizontal", "vertical");
-
-        return getListOfStringsMatchingLastWord(args, ret);
+                    return ret;
+                }).repeat()
+                .get(server, sender, args, pos);
     }
 
     public int getRequiredPermissionLevel()
@@ -72,53 +76,48 @@ public class CommandSelectFlood extends CommandVirtual
     @Override
     public void execute(MockWorld world, ICommandSender commandSender, String[] args) throws CommandException
     {
-        if (args.length >= 2)
+        RCParameters parameters = RCParameters.of(args);
+
+        SelectionOwner selectionOwner = RCCommands.getSelectionOwner(commandSender, null, true);
+        RCCommands.assertSize(commandSender, selectionOwner);
+
+        PreloadedBooleanExpression<EnumFacing> facingExpression = PreloadedBooleanExpression.with(exp ->
         {
-            SelectionOwner selectionOwner = RCCommands.getSelectionOwner(commandSender, null, true);
-            RCCommands.assertSize(commandSender, selectionOwner);
+            exp.addConstants(EnumFacing.values());
+            exp.addEvaluators(axis -> facing -> facing.getAxis() == axis, EnumFacing.Axis.values());
+            exp.addEvaluator("horizontal", f -> f.getHorizontalIndex() >= 0);
+            exp.addEvaluator("vertical", f -> f.getHorizontalIndex() < 0);
+        });
+        facingExpression.setExpression(parameters.get().move(2).text().optional().orElse(""));
 
-            PreloadedBooleanExpression<EnumFacing> facingExpression = PreloadedBooleanExpression.with(exp ->
+        List<EnumFacing> available = Arrays.stream(EnumFacing.values()).filter(facingExpression).collect(Collectors.toList());
+
+        List<BlockPos> dirty = Lists.newArrayList(selectionOwner.getSelection());
+        Set<BlockPos> visited = Sets.newHashSet(dirty);
+
+        Block dstBlock = parameters.mc().block(commandSender).require();
+        int[] dstMeta = parameters.rc().move(1).metadatas().optional().orElse(new int[1]);
+        List<IBlockState> dst = IntStream.of(dstMeta).mapToObj(m -> BlockStates.fromMetadata(dstBlock, m)).collect(Collectors.toList());
+
+        while (!dirty.isEmpty())
+        {
+            BlockPos pos = dirty.remove(dirty.size() - 1);
+
+            for (EnumFacing facing : available)
             {
-                exp.addConstants(EnumFacing.values());
-                exp.addEvaluators(axis -> facing -> facing.getAxis() == axis, EnumFacing.Axis.values());
-                exp.addEvaluator("horizontal", f -> f.getHorizontalIndex() >= 0);
-                exp.addEvaluator("vertical", f -> f.getHorizontalIndex() < 0);
-            });
-            facingExpression.setExpression(buildString(args, 2));
-
-            List<EnumFacing> available = Arrays.stream(EnumFacing.values()).filter(facingExpression).collect(Collectors.toList());
-
-            List<BlockPos> dirty = Lists.newArrayList(selectionOwner.getSelection());
-            Set<BlockPos> visited = Sets.newHashSet(dirty);
-
-            Block dstBlock = getBlockByText(commandSender, args[0]);
-            int[] dstMeta = args.length >= 2 ? RCParameter.parseMetadatas(args[1]) : new int[]{0};
-            List<IBlockState> dst = IntStream.of(dstMeta).mapToObj(m -> BlockStates.fromMetadata(dstBlock, m)).collect(Collectors.toList());
-
-            while (!dirty.isEmpty())
-            {
-                BlockPos pos = dirty.remove(dirty.size() - 1);
-
-                for (EnumFacing facing : available)
-                {
-                    BlockPos offset = pos.offset(facing);
-                    if (RCBlockLogic.isAir(world, offset) && visited.add(offset))
-                        dirty.add(offset);
-                }
-
-                if (visited.size() > MAX_FLOOD)
-                    throw new CommandException("Area too big to flood!");
+                BlockPos offset = pos.offset(facing);
+                if (RCBlockLogic.isAir(world, offset) && visited.add(offset))
+                    dirty.add(offset);
             }
 
-            for (BlockPos pos : visited)
-            {
-                IBlockState state = dst.get(world.rand().nextInt(dst.size()));
-                world.setBlockState(pos, state, 2);
-            }
+            if (visited.size() > MAX_FLOOD)
+                throw new CommandException("Area too big to flood!");
         }
-        else
+
+        for (BlockPos pos : visited)
         {
-            throw ServerTranslations.wrongUsageException("commands.selectFlood.usage");
+            IBlockState state = dst.get(world.rand().nextInt(dst.size()));
+            world.setBlockState(pos, state, 2);
         }
     }
 }

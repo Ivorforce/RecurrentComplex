@@ -7,6 +7,7 @@ package ivorius.reccomplex.commands.parameters;
 
 import ivorius.reccomplex.files.loading.ResourceDirectory;
 import ivorius.reccomplex.world.gen.feature.structure.StructureRegistry;
+import ivorius.reccomplex.world.gen.feature.structure.schematics.SchematicLoader;
 
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
@@ -37,6 +38,11 @@ public class RCExpect<T extends RCExpect<T>> extends IvExpect<T>
     public T structure()
     {
         return next(StructureRegistry.INSTANCE.ids());
+    }
+
+    public T schematic() {
+        return next(SchematicLoader.currentSchematicFileNames()
+                .stream().map(name -> name.contains(" ") ? String.format("\"%s\"", name) : name).collect(Collectors.toList()));
     }
 
     public T rotation()

@@ -6,15 +6,15 @@
 package ivorius.reccomplex.commands;
 
 import ivorius.ivtoolkit.blocks.BlockAreas;
+import ivorius.ivtoolkit.world.MockWorld;
 import ivorius.reccomplex.RCConfig;
 import ivorius.reccomplex.RecurrentComplex;
 import ivorius.reccomplex.capability.SelectionOwner;
+import ivorius.reccomplex.commands.parameters.RCExpect;
+import ivorius.reccomplex.commands.parameters.RCParameters;
 import ivorius.reccomplex.utils.ServerTranslations;
-import ivorius.reccomplex.utils.algebra.ExpressionCache;
 import ivorius.reccomplex.utils.expression.PositionedBlockMatcher;
-import ivorius.ivtoolkit.world.MockWorld;
 import ivorius.reccomplex.world.gen.feature.structure.generic.transformers.TransformerProperty;
-import net.minecraft.block.Block;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.server.MinecraftServer;
@@ -22,7 +22,6 @@ import net.minecraft.util.math.BlockPos;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -47,14 +46,11 @@ public class CommandSetProperty extends CommandVirtual
     @Override
     public List<String> getTabCompletionOptions(MinecraftServer server, ICommandSender sender, String[] args, @Nullable BlockPos pos)
     {
-        if (args.length == 1)
-            return getListOfStringsMatchingLastWord(args, TransformerProperty.propertyNameStream().collect(Collectors.toSet()));
-        else if (args.length == 2)
-            return getListOfStringsMatchingLastWord(args, TransformerProperty.propertyValueStream(args[0]).collect(Collectors.toSet()));
-        else if (args.length == 3)
-            return getListOfStringsMatchingLastWord(args, Block.REGISTRY.getKeys());
-
-        return Collections.emptyList();
+        return RCExpect.startRC()
+                .next(TransformerProperty.propertyNameStream().collect(Collectors.toSet()))
+                .next(args1 -> TransformerProperty.propertyValueStream(args1[0]).collect(Collectors.toSet()))
+                .named("exp").block()
+                .get(server, sender, args, pos);
     }
 
     public int getRequiredPermissionLevel()
@@ -65,26 +61,21 @@ public class CommandSetProperty extends CommandVirtual
     @Override
     public void execute(MockWorld world, ICommandSender commandSender, String[] args) throws CommandException
     {
-        if (args.length >= 2)
-        {
-            PositionedBlockMatcher matcher = ExpressionCache.of(new PositionedBlockMatcher(RecurrentComplex.specialRegistry), args.length > 2 ? buildString(args, 2) : "");
-            RCCommands.ensureValid(matcher, 2);
+        RCParameters parameters = RCParameters.of(args);
 
-            String propertyName = args[0];
-            String propertyValue = args[1];
+        PositionedBlockMatcher matcher = parameters.rc("exp")
+                .expression(new PositionedBlockMatcher(RecurrentComplex.specialRegistry), "").require();
 
-            SelectionOwner selectionOwner = RCCommands.getSelectionOwner(commandSender, null, true);
-            RCCommands.assertSize(commandSender, selectionOwner);
-            for (BlockPos pos : BlockAreas.mutablePositions(selectionOwner.getSelection()))
-            {
-                PositionedBlockMatcher.Argument at = PositionedBlockMatcher.Argument.at(world, pos);
-                if (matcher.test(at))
-                    TransformerProperty.withProperty(at.state, propertyName, propertyValue).ifPresent(state -> world.setBlockState(pos, state, 3));
-            }
-        }
-        else
+        String propertyName = parameters.get().first().require();
+        String propertyValue = parameters.get().at(1).require();
+
+        SelectionOwner selectionOwner = RCCommands.getSelectionOwner(commandSender, null, true);
+        RCCommands.assertSize(commandSender, selectionOwner);
+        for (BlockPos pos : BlockAreas.mutablePositions(selectionOwner.getSelection()))
         {
-            throw ServerTranslations.wrongUsageException("commands.selectProperty.usage");
+            PositionedBlockMatcher.Argument at = PositionedBlockMatcher.Argument.at(world, pos);
+            if (matcher.test(at))
+                TransformerProperty.withProperty(at.state, propertyName, propertyValue).ifPresent(state -> world.setBlockState(pos, state, 3));
         }
     }
 }

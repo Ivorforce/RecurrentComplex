@@ -8,6 +8,8 @@ package ivorius.reccomplex.commands;
 import ivorius.ivtoolkit.blocks.BlockArea;
 import ivorius.reccomplex.capability.SelectionOwner;
 import ivorius.ivtoolkit.world.MockWorld;
+import ivorius.reccomplex.commands.parameters.RCExpect;
+import ivorius.reccomplex.commands.parameters.RCParameters;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.CommandException;
 import net.minecraft.server.MinecraftServer;
@@ -40,10 +42,9 @@ public class CommandSelectNatural extends CommandVirtual
     @Override
     public List<String> getTabCompletionOptions(MinecraftServer server, ICommandSender sender, String[] args, @Nullable BlockPos pos)
     {
-        if (args.length == 1)
-            return getListOfStringsMatchingLastWord(args, "0", "1", "2");
-
-        return super.getTabCompletionOptions(server, sender, args, pos);
+        return RCExpect.startRC()
+                .any("0", "1", "2")
+                .get(server, sender, args, pos);
     }
 
     public int getRequiredPermissionLevel()
@@ -54,11 +55,13 @@ public class CommandSelectNatural extends CommandVirtual
     @Override
     void execute(MockWorld world, ICommandSender commandSender, String[] args) throws CommandException
     {
+        RCParameters parameters = RCParameters.of(args);
+
         SelectionOwner selectionOwner = RCCommands.getSelectionOwner(commandSender, null, true);
         RCCommands.assertSize(commandSender, selectionOwner);
         BlockArea area = selectionOwner.getSelection();
 
-        double expandFloor = args.length >= 1 ? parseDouble(args[0]) : 1;
+        double expandFloor = parameters.get().doubleAt(0).optional().orElse(1.);
 
         CommandSelectFloor.placeNaturalFloor(world, area, expandFloor);
         CommandSelectSpace.placeNaturalAir(world, area, 3, 3);

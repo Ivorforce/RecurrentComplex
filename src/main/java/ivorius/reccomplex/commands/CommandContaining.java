@@ -8,6 +8,8 @@ package ivorius.reccomplex.commands;
 import ivorius.ivtoolkit.blocks.IvBlockCollection;
 import ivorius.reccomplex.RCConfig;
 import ivorius.reccomplex.RecurrentComplex;
+import ivorius.reccomplex.commands.parameters.RCExpect;
+import ivorius.reccomplex.commands.parameters.RCParameters;
 import ivorius.reccomplex.utils.ServerTranslations;
 import ivorius.reccomplex.utils.algebra.ExpressionCache;
 import ivorius.reccomplex.utils.expression.BlockMatcher;
@@ -17,6 +19,10 @@ import net.minecraft.command.CommandBase;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.util.math.BlockPos;
+
+import javax.annotation.Nullable;
+import java.util.List;
 
 /**
  * Created by lukas on 25.05.14.
@@ -57,15 +63,20 @@ public class CommandContaining extends CommandBase
     @Override
     public void execute(MinecraftServer server, ICommandSender commandSender, String[] args) throws CommandException
     {
-        if (args.length >= 1)
-        {
-            BlockMatcher matcher = ExpressionCache.of(new BlockMatcher(RecurrentComplex.specialRegistry), buildString(args, 0));
-            RCCommands.ensureValid(matcher, 0);
-            CommandSearchStructure.postResultMessage(commandSender,
-                    RCTextStyle::structure, CommandSearchStructure.search(StructureRegistry.INSTANCE.ids(), name -> containedBlocks(StructureRegistry.INSTANCE.get(name), matcher))
-            );
-        }
-        else
-            throw ServerTranslations.commandException("commands.rccontaining.usage");
+        RCParameters parameters = RCParameters.of(args);
+
+        BlockMatcher matcher = parameters.rc().expression(new BlockMatcher(RecurrentComplex.specialRegistry), null).require();
+        RCCommands.ensureValid(matcher, 0);
+        CommandSearchStructure.postResultMessage(commandSender,
+                RCTextStyle::structure, CommandSearchStructure.search(StructureRegistry.INSTANCE.ids(), name -> containedBlocks(StructureRegistry.INSTANCE.get(name), matcher))
+        );
+    }
+
+    @Override
+    public List<String> getTabCompletions(MinecraftServer server, ICommandSender sender, String[] args, @Nullable BlockPos targetPos)
+    {
+        return RCExpect.startRC()
+                .block()
+                .get(server, sender, args, targetPos);
     }
 }

@@ -6,6 +6,8 @@
 package ivorius.reccomplex.commands;
 
 import ivorius.reccomplex.RCConfig;
+import ivorius.reccomplex.commands.parameters.RCExpect;
+import ivorius.reccomplex.commands.parameters.RCParameters;
 import ivorius.reccomplex.network.PacketEditStructureHandler;
 import ivorius.reccomplex.utils.ServerTranslations;
 import ivorius.reccomplex.world.gen.feature.structure.StructureRegistry;
@@ -47,26 +49,19 @@ public class CommandEditStructure extends CommandBase
     public void execute(MinecraftServer server, ICommandSender commandSender, String[] args) throws CommandException
     {
         EntityPlayerMP entityPlayerMP = getCommandSenderAsPlayer(commandSender);
+        RCParameters parameters = RCParameters.of(args);
 
-        if (args.length >= 1)
-        {
-            String structureID = args[0];
+        String id = parameters.get().first().require();
+        GenericStructure structure = parameters.rc().genericStructure().require();
 
-            GenericStructure structureInfo = RCCommands.getGenericStructure(structureID);
-            PacketEditStructureHandler.openEditStructure(structureInfo, structureID, entityPlayerMP);
-        }
-        else
-        {
-            throw ServerTranslations.commandException("commands.strucEdit.usage");
-        }
+        PacketEditStructureHandler.openEditStructure(structure, id, entityPlayerMP);
     }
 
     @Override
     public List<String> getTabCompletionOptions(MinecraftServer server, ICommandSender sender, String[] args, @Nullable BlockPos pos)
     {
-        if (args.length == 1)
-            return getListOfStringsMatchingLastWord(args, StructureRegistry.INSTANCE.ids());
-
-        return Collections.emptyList();
+        return RCExpect.startRC()
+                .structure()
+                .get(server, sender, args, pos);
     }
 }

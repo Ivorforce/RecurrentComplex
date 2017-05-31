@@ -8,7 +8,8 @@ package ivorius.reccomplex.commands;
 import com.google.common.collect.Lists;
 import ivorius.ivtoolkit.tools.IvGsonHelper;
 import ivorius.reccomplex.RCConfig;
-import ivorius.reccomplex.json.RCGsonHelper;
+import ivorius.reccomplex.commands.parameters.RCExpect;
+import ivorius.reccomplex.utils.BiomeDictionaryAccessor;
 import ivorius.reccomplex.utils.ServerTranslations;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.CommandException;
@@ -108,24 +109,22 @@ public class CommandBiomeDict extends CommandBase
     @Override
     public List<String> getTabCompletionOptions(MinecraftServer server, ICommandSender sender, String[] args, @Nullable BlockPos pos)
     {
-        if (args.length == 1)
-            return getListOfStringsMatchingLastWord(args, "types", "list", "search");
+        RCExpect<?> expect = RCExpect.startRC()
+                .any("types", "list", "search");
 
-        if (args[0].equals("types"))
+        switch (args[0])
         {
-            return getListOfStringsMatchingLastWord(args, Biome.REGISTRY.getKeys());
-        }
-        else if (args[0].equals("list"))
-        {
-            BiomeDictionary.Type[] types = BiomeDictionary.Type.values();
-            String[] typeNames = new String[types.length];
-
-            for (int i = 0; i < types.length; i++)
-                typeNames[i] = IvGsonHelper.serializedName(types[i]);
-
-            return getListOfStringsMatchingLastWord(args, typeNames);
+            case "types":
+                expect.biome();
+                break;
+            case "list":
+                expect.next(BiomeDictionaryAccessor.getMap().keySet());
+                break;
+            default:
+                expect.skip(1);
+                break;
         }
 
-        return Collections.emptyList();
+        return expect.get(server, sender, args, pos);
     }
 }

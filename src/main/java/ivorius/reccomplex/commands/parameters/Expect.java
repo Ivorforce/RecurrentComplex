@@ -81,6 +81,11 @@ public class Expect<T extends Expect<T>>
         return (T) this;
     }
 
+    public int index()
+    {
+        return params.size();
+    }
+
     public List<String> get(MinecraftServer server, ICommandSender sender, String[] args, @Nullable BlockPos pos)
     {
         List<String> params = Arrays.asList(Parameters.quoted(args));

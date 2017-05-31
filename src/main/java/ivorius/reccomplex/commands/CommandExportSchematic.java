@@ -11,8 +11,9 @@ import ivorius.ivtoolkit.blocks.IvBlockCollection;
 import ivorius.ivtoolkit.tools.IvWorldData;
 import ivorius.reccomplex.RCConfig;
 import ivorius.reccomplex.capability.SelectionOwner;
+import ivorius.reccomplex.commands.parameters.RCExpect;
+import ivorius.reccomplex.commands.parameters.RCParameters;
 import ivorius.reccomplex.utils.ServerTranslations;
-import ivorius.reccomplex.world.gen.feature.structure.StructureRegistry;
 import ivorius.reccomplex.world.gen.feature.structure.schematics.SchematicFile;
 import ivorius.reccomplex.world.gen.feature.structure.schematics.SchematicLoader;
 import net.minecraft.command.CommandBase;
@@ -22,7 +23,6 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.math.BlockPos;
 
 import javax.annotation.Nullable;
-import java.util.Collections;
 import java.util.List;
 
 /**
@@ -74,25 +74,22 @@ public class CommandExportSchematic extends CommandBase
     @Override
     public List<String> getTabCompletionOptions(MinecraftServer server, ICommandSender sender, String[] args, @Nullable BlockPos pos)
     {
-        if (args.length == 1)
-            return getListOfStringsMatchingLastWord(args, StructureRegistry.INSTANCE.ids());
-
-        return Collections.emptyList();
+        return RCExpect.startRC()
+                .schematic()
+                .get(server, sender, args, pos);
     }
 
     @Override
     public void execute(MinecraftServer server, ICommandSender commandSender, String[] args) throws CommandException
     {
+        RCParameters parameters = RCParameters.of(args);
+
         SelectionOwner selectionOwner = RCCommands.getSelectionOwner(commandSender, null, true);
         BlockArea area = selectionOwner.getSelection();
         RCCommands.assertSize(commandSender, selectionOwner);
 
-        String structureName;
-
-        if (args.length >= 1)
-            structureName = args[0];
-        else
-            structureName = "NewStructure_" + commandSender.getEntityWorld().rand.nextInt(1000);
+        String structureName = parameters.get().first().optional()
+                .orElse("NewStructure_" + commandSender.getEntityWorld().rand.nextInt(1000));
 
         BlockPos lowerCoord = area.getLowerCorner();
         BlockPos higherCoord = area.getHigherCorner();

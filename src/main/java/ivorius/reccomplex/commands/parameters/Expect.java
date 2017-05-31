@@ -5,6 +5,7 @@
 
 package ivorius.reccomplex.commands.parameters;
 
+import com.google.common.collect.Lists;
 import com.google.common.primitives.Doubles;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.server.MinecraftServer;
@@ -105,13 +106,15 @@ public class Expect<T extends Expect<T>>
 
         if (param != null && (curIndex < param.completion.size() || param.repeat))
         {
+            Lists.newArrayList(flags(paramArray, flags));
             List<String> paramCompletion = param.completion.get(Math.min(curIndex, param.completion.size() - 1)).complete(server, sender, paramArray, pos).stream()
                     // More than one word, let's wrap this in quotes
                     .map(s -> s.contains(" ") && !s.startsWith("\"") ? String.format("\"%s\"", s) : s)
                     .collect(Collectors.toCollection(ArrayList::new));
 
             // Also complete flags in case the user wants to switch the current
-            paramCompletion.addAll(flags(paramArray, flags));
+            if (params.get(params.size() - 1).startsWith("-"))
+                paramCompletion.addAll(flags(paramArray, flags));
 
             return paramCompletion;
         }

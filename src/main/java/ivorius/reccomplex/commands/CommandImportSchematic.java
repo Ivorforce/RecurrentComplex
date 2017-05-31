@@ -7,6 +7,7 @@ package ivorius.reccomplex.commands;
 
 import ivorius.ivtoolkit.math.AxisAlignedTransform2D;
 import ivorius.reccomplex.RCConfig;
+import ivorius.reccomplex.commands.parameters.Expect;
 import ivorius.reccomplex.commands.parameters.Parameters;
 import ivorius.reccomplex.operation.OperationRegistry;
 import ivorius.reccomplex.utils.ServerTranslations;
@@ -21,7 +22,6 @@ import net.minecraft.util.math.BlockPos;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -79,15 +79,14 @@ public class CommandImportSchematic extends CommandBase
     @Override
     public void execute(MinecraftServer server, ICommandSender commandSender, String[] args) throws CommandException
     {
-        args = Parameters.quoted(args);
+        Parameters parameters = Parameters.of(this, args);
 
         if (args.length < 1)
             throw ServerTranslations.wrongUsageException("commands.strucImportSchematic.usage");
 
-        SchematicFile schematicFile = parseSchematic(trimQuotes(args[0]));
-
-        BlockPos pos = RCCommands.tryParseBlockPos(commandSender, args, 1, false);
-        AxisAlignedTransform2D transform = RCCommands.tryParseTransform(args, 4);
+        SchematicFile schematicFile = parseSchematic(parameters.get().at(0).require());
+        BlockPos pos = parameters.get("p").pos(commandSender, false).require();
+        AxisAlignedTransform2D transform = RCCommands.transform(parameters.get("r"), parameters.get("m")).optional().orElse(AxisAlignedTransform2D.ORIGINAL);
 
         OperationRegistry.queueOperation(new OperationGenerateSchematic(schematicFile, transform, pos), commandSender);
     }
@@ -95,16 +94,17 @@ public class CommandImportSchematic extends CommandBase
     @Override
     public List<String> getTabCompletions(MinecraftServer server, ICommandSender sender, String[] args, @Nullable BlockPos pos)
     {
-        args = Parameters.quoted(args);
-
-        if (args.length == 1)
-            return getListOfStringsMatchingLastWord(args, SchematicLoader.currentSchematicFileNames()
-                    .stream().map(name -> name.contains(" ") ? String.format("\"%s\"", name) : name).collect(Collectors.toList()));
-        else if (args.length == 2 || args.length == 3 || args.length == 4)
-            return getTabCompletionCoordinate(args, args.length - 1, pos);
-        else if (args.length == 5 || args.length == 6)
-            return RCCommands.completeTransform(args, args.length - 5);
-
-        return Collections.emptyList();
+        return Expect.start()
+                .next(SchematicLoader.currentSchematicFileNames()
+                        .stream().map(name -> name.contains(" ") ? String.format("\"%s\"", name) : name).collect(Collectors.toList()))
+                .named("p")
+                .next(argss -> getTabCompletionCoordinate(argss, 0, pos))
+                .next(argss -> getTabCompletionCoordinate(argss, 1, pos))
+                .next(argss -> getTabCompletionCoordinate(argss, 2, pos))
+                .named("r")
+                .next(RCCommands::completeRotation)
+                .named("m")
+                .next(RCCommands::completeMirror)
+                .get(server, sender, args, pos);
     }
 }

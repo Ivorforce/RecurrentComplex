@@ -8,6 +8,7 @@ package ivorius.reccomplex.commands.parameters;
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.ListMultimap;
 import com.google.common.collect.Lists;
+import ivorius.reccomplex.commands.CommandImportSchematic;
 import joptsimple.internal.Strings;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommand;
@@ -75,7 +76,7 @@ public class Parameters
         if (lastQuote >= 0)
             list.add(Strings.join(Arrays.asList(args).subList(lastQuote, args.length), " "));
 
-        return list.toArray(new String[list.size()]);
+        return list.stream().map(CommandImportSchematic::trimQuotes).toArray(String[]::new);
     }
 
     public Parameter get()

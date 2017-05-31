@@ -68,7 +68,7 @@ public class CommandGenerateStructure extends CommandBase
         Structure<?> structure = parameters.rc().structure().require();
         WorldServer world = parameters.mc("d").dimension(commandSender).require();
         AxisAlignedTransform2D transform = RCCommands.transform(parameters.get("r"), parameters.get("m")).optional().orElse(null);
-        GenerationType generationType = parameters.rc("g").generationType(structure).require();
+        GenerationType generationType = parameters.rc("gen").generationType(structure).require();
         BlockSurfacePos pos = parameters.iv("p").surfacePos(commandSender.getPosition(), false).require();
 
         Placer placer = generationType.placer();
@@ -104,7 +104,7 @@ public class CommandGenerateStructure extends CommandBase
                 .structure()
                 .named("p").surfacePos()
                 .named("d").dimension()
-                .named("g")
+                .named("gen")
                 .next((String[] args1) ->
                 {
                     Structure<?> structure = parameters.rc().structure().optional().orElse(null);

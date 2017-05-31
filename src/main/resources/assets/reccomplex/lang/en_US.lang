@@ -59,15 +59,15 @@ commands.rc.large.error=The selection is too big! (And if it weren't, this comma
 commands.structure.notGeneric=Structure '%s' is not generic!
 commands.structure.notRegistered=No structure found by name '%s'!
 
-commands.strucExport.usage=/#export -from [structure id]
+commands.strucExport.usage=/#export --from [structure id]
 
 commands.strucEdit.usage=/#edit <structureName>
 
-commands.strucGen.usage=/#gen <structure name> -p [x] [z] -d [dimension] -gen [generation id] -r [rotations] -m [mirror]
+commands.strucGen.usage=/#gen <structure name> --p [x] [z] --d [dimension] --gen [generation id] --r [rotations] -m [mirror]
 commands.strucGen.noPlace=The structure can't find anywhere suitable to spawn!
 commands.strucGen.noStructure=No structure registered by the name of '%s'
 
-commands.strucImport.usage=/#import <structure name> -p [x] [y] [z] -d [dimension] -r [rotations] -m [mirror]
+commands.strucImport.usage=/#import <structure name> --p [x] [y] [z] --d [dimension] --r [rotations] --m [mirror]
 commands.strucImport.noStructure=No structure registered by the name of '%s'
 
 commands.selectSet.usage=/#select <both|clear|point1|point2> [x] [y] [z]
@@ -86,8 +86,8 @@ commands.selectModify.invalidMetadata=Metadata must be entered like '0,1,5', but
 
 commands.selectFill.usage=/#fill <block> [metadata1,metadata2,metadata3...]
 
-commands.selectReplace.usage=/#replace <dest> <src positioned block expression> -metadata [destination metadata 1,2,3...]
-commands.selectProperty.usage=/#property <key> <value> -exp [positioned block matcher]
+commands.selectReplace.usage=/#replace <dest> <src positioned block expression> --metadata [destination metadata 1,2,3...]
+commands.selectProperty.usage=/#property <key> <value> --exp [positioned block matcher]
 
 commands.selectFillSphere.usage=/#sphere <block> [metadata1,metadata2,metadata3...]
 
@@ -103,13 +103,13 @@ commands.strucReload.success=Reloaded all %s files.
 commands.selectCopy.usage=/#copy
 commands.selectCopy.success=Copied %s, %s, %s to %s, %s, %s to clipboard
 
-commands.strucPaste.usage=/#paste -p [x] [y] [z] -r [rotation] -m [mirror]
+commands.strucPaste.usage=/#paste --p [x] [y] [z] --r [rotation] --m [mirror]
 commands.strucPaste.noClipboard=You have to copy an area first!
-commands.strucPasteGen.usage=/#pastegen -p [x] [y] [z] -r [rotations] -m [mirror]
+commands.strucPasteGen.usage=/#pastegen --p [x] [y] [z] --r [rotations] -m [mirror]
 
-commands.selectMove.usage=/#move -p <x> <y> <z> -r [rotations] -m [mirror]
+commands.selectMove.usage=/#move --p <x> <y> <z> -r [rotations] --m [mirror]
 
-commands.selectDuplicate.usage=/#duplicate -p <x> <y> <z> -r [rotations] -m [mirror]
+commands.selectDuplicate.usage=/#duplicate --p <x> <y> <z> --r [rotations] --m [mirror]
 
 commands.rcpreview.usage=/#preview <none|bounds|shape>
 commands.rcpreview.invalid=Invalid preview type
@@ -128,11 +128,11 @@ commands.rcreopen.nogui=No GUI to reopen!
 commands.rcreopen.fail=Failed to reopen GUI!
 commands.rc.didhide=Hidden GUI - %s?
 
-commands.strucImportSchematic.usage=/#importschematic "<Schematic Name>" -p [x] [y] [z] -r [rotations] -m [mirror]
+commands.strucImportSchematic.usage=/#importschematic "<Schematic Name>" --p [x] [y] [z] --r [rotations] --m [mirror]
 commands.strucImportSchematic.missing=The file '%s' was not found in %s
 commands.strucImportSchematic.format=The file '%s' has an unsupported format (%s)
 
-commands.rcconvertschematic.usage=/#convertschematic "<Schematic Name>" -from <structure ID>
+commands.rcconvertschematic.usage=/#convertschematic "<Schematic Name>" --from <structure ID>
 
 commands.strucExportSchematic.usage=/#exportschematic <schematic name>
 commands.strucExportSchematic.success=Exported schematic to '%s'
@@ -189,29 +189,29 @@ commands.rcsearch.lookup=Look Up
 
 commands.rccontaining.usage=/#containing <block expression>
 
-commands.rcfiles.usage=/#files -dir [directory]
+commands.rcfiles.usage=/#files --dir [directory]
 commands.rcrepository.usage=/#repository
 commands.rcbrowse.usage=/#browse
 
-commands.rcdecorate.usage=/#decorate <x min> <z min> <x max> <z max> -exp [resource matcher: only generate these structures]
+commands.rcdecorate.usage=/#decorate <x min> <z min> <x max> <z max> --exp [resource matcher: only generate these structures]
 commands.rcdecorateone.usage=/#decorateone [x] [z]
 commands.rcdecorateone.none=No suitable structures found!
-commands.rcretro.usage=/#retro -d [dimension] -exp [resource matcher: only generate these structures]
+commands.rcretro.usage=/#retro --d [dimension] --exp [resource matcher: only generate these structures]
 commands.rcretro.count=Retro-Generated %s chunks!
 
 commands.rcenable.usage=/#enable <registry id> <element id>
 commands.rcdisable.usage=/#enable <registry id> <element id>
-commands.rcsave.usage=/#write <registry id> <element id> -dir [directory]
+commands.rcsave.usage=/#write <registry id> <element id> --dir [directory]
 commands.rcsave.noregistry=No such registry id!
 commands.rcsave.nodirectory=No such directory id!
 commands.rcsave.noelement=No such element!
-commands.rcsaveall.usage=/#writeall <registry id> [resource expression] -dir [directory]
+commands.rcsaveall.usage=/#writeall <registry id> [resource expression] --dir [directory]
 commands.rcsaveall.result=Saved %s elements to '%s'. %s failed.
 commands.rcdelete.usage=/#delete <registry id> <element id> -dir <directory>
 commands.rcmap.usage=/#map <structure id> <command> -dir [directory]
 commands.rcmap.nonvirtual=Cannot map with this command!
 commands.rcmap.nonvirtual.arguments=Cannot map with these command arguments!
-commands.rcmapall.usage=/#mapall <command> -exp [resource expression] -dir [directory]
+commands.rcmapall.usage=/#mapall <command> --exp [resource expression] --dir [directory]
 commands.rcmapall.result=Saved %s elements to '%s'. %s failed. %s skipped.
 
 commands.rcas.usage=/#as <entity> <command>

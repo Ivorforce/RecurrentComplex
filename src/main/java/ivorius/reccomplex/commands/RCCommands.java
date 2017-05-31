@@ -235,22 +235,6 @@ public class RCCommands
         return BlockSurfacePos.from(new BlockPos(CommandBase.parseDouble((double) blockpos.getX(), args[startIndex], -30000000, 30000000, centerBlock), 0, CommandBase.parseDouble((double) blockpos.getZ(), args[startIndex + 1], -30000000, 30000000, centerBlock)));
     }
 
-    public static List<String> completeRotation(String[] args)
-    {
-        return CommandBase.getListOfStringsMatchingLastWord(args, "0", "1", "2", "3");
-    }
-
-    public static List<String> completeMirror(String[] args)
-    {
-        return CommandBase.getListOfStringsMatchingLastWord(args, "false", "true");
-    }
-
-    @Nonnull
-    public static List<String> completeDimension(String[] args)
-    {
-        return CommandBase.getListOfStringsMatchingLastWord(args, Arrays.stream(DimensionManager.getIDs()).map(String::valueOf).collect(Collectors.toList()));
-    }
-
     @Nonnull
     protected static Parameter.Result<ResourceMatcher> resourceMatcher(Parameter parameter)
     {
@@ -261,12 +245,6 @@ public class RCCommands
     protected static Parameter.Result<Predicate<Structure>> structurePredicate(Parameter parameter)
     {
         return resourceMatcher(parameter).map(m -> s -> m.test(StructureRegistry.INSTANCE.resourceLocation(s)));
-    }
-
-    @Nonnull
-    protected static List<String> completeResourceMatcher(String[] args)
-    {
-        return CommandBase.getListOfStringsMatchingLastWord(args, StructureRegistry.INSTANCE.ids());
     }
 
     public static Biome parseBiome(String arg) throws CommandException

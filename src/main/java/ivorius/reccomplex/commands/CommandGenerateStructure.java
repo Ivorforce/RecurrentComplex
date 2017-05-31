@@ -102,10 +102,9 @@ public class CommandGenerateStructure extends CommandBase
         Parameters parameters = Parameters.of(this, args);
 
         return Expect.start()
-                .next(StructureRegistry.INSTANCE.ids())
+                .structure()
                 .named("p").surfacePos(pos)
-                .named("d")
-                .next(RCCommands::completeDimension)
+                .named("d").dimension()
                 .named("g")
                 .next((String[] args1) ->
                 {
@@ -114,10 +113,8 @@ public class CommandGenerateStructure extends CommandBase
                         return getListOfStringsMatchingLastWord(args1, structure.generationTypes(GenerationType.class).stream().map(GenerationType::id).collect(Collectors.toList()));
                     return Collections.emptyList();
                 })
-                .named("r")
-                .next(RCCommands::completeRotation)
-                .named("m")
-                .next(RCCommands::completeMirror)
+                .named("r").rotation()
+                .named("m").mirror()
                 .get(server, sender, args, pos);
 
         //        else if (args.length == 6)

@@ -76,8 +76,7 @@ public class CommandDecorate extends CommandBase
         return Expect.start()
                 .pos(pos)
                 .pos(pos)
-                .named("p")
-                .next(RCCommands::completeResourceMatcher)
+                .named("p").structurePredicate()
                 .get(server, sender, args, pos);
     }
 }

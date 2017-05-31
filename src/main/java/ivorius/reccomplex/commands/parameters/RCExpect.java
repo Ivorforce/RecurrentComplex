@@ -47,7 +47,7 @@ public class RCExpect<T extends RCExpect<T>> extends IvExpect<T>
 
     public T rotation()
     {
-        return next(args -> getListOfStringsMatchingLastWord(args, "0", "1", "2", "3"));
+        return any("0", "1", "2", "3");
     }
 
     public T resourceDirectory()

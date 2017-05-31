@@ -9,7 +9,7 @@ import ivorius.ivtoolkit.blocks.BlockSurfaceArea;
 import ivorius.ivtoolkit.blocks.BlockSurfacePos;
 import ivorius.reccomplex.RCConfig;
 import ivorius.reccomplex.commands.parameters.Expect;
-import ivorius.reccomplex.commands.parameters.Parameters;
+import ivorius.reccomplex.commands.parameters.RCParameters;
 import ivorius.reccomplex.utils.ServerTranslations;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.CommandException;
@@ -56,9 +56,9 @@ public class CommandSelectSetBiome extends CommandBase
     @Override
     public void execute(MinecraftServer server, ICommandSender commandSender, String[] args) throws CommandException
     {
-        Parameters parameters = Parameters.of(this, args);
+        RCParameters parameters = RCParameters.of(args);
 
-        Biome biome = parameters.get().biome().require();
+        Biome biome = parameters.mc().biome().require();
         byte biomeID = (byte) (Biome.REGISTRY.getIDForObject(biome) & 255);
 
         World world = commandSender.getEntityWorld();

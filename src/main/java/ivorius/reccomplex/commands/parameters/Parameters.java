@@ -9,25 +9,23 @@ import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.ListMultimap;
 import com.google.common.collect.Lists;
 import com.google.common.primitives.Doubles;
-import com.google.common.primitives.Ints;
 import ivorius.reccomplex.commands.CommandImportSchematic;
 import joptsimple.internal.Strings;
-import net.minecraft.command.CommandException;
-import net.minecraft.command.ICommand;
 
 import javax.annotation.Nonnull;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.function.BiFunction;
 
 /**
  * Created by lukas on 30.05.17.
  */
 public class Parameters
 {
-    private final Set<String> flags;
-    private final ListMultimap<String, String> params;
+    protected final Set<String> flags;
+    protected final ListMultimap<String, String> params;
 
     public Parameters(Set<String> flags, ListMultimap<String, String> params)
     {
@@ -35,7 +33,7 @@ public class Parameters
         this.params = params;
     }
 
-    public static Parameters of(ICommand command, String[] args)
+    protected static <T> T of(String[] args, BiFunction<Set<String>, ListMultimap<String, String>, T> fun)
     {
         List<String> params = Arrays.asList(quoted(args));
 
@@ -53,7 +51,12 @@ public class Parameters
                 named.put(curName, param); // Can be infinite
         }
 
-        return new Parameters(flags, named);
+        return fun.apply(flags, named);
+    }
+
+    public static Parameters of(String[] args)
+    {
+        return of(args, Parameters::new);
     }
 
     public static String[] quoted(String[] args)
@@ -81,17 +84,17 @@ public class Parameters
         return list.stream().map(CommandImportSchematic::trimQuotes).toArray(String[]::new);
     }
 
+    public boolean has(@Nonnull String name)
+    {
+        return flags.contains(name);
+    }
+
     public Parameter get()
     {
         return new Parameter("Ordered", params.get(null));
     }
 
-    public boolean has(@Nonnull String name) throws CommandException
-    {
-        return flags.contains(name);
-    }
-
-    public Parameter get(@Nonnull String name) throws CommandException
+    public Parameter get(@Nonnull String name)
     {
         return new Parameter(name, params.get(name));
     }

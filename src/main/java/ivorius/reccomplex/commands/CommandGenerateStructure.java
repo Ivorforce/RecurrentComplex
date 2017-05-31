@@ -9,7 +9,7 @@ import ivorius.ivtoolkit.blocks.BlockSurfacePos;
 import ivorius.ivtoolkit.math.AxisAlignedTransform2D;
 import ivorius.reccomplex.RCConfig;
 import ivorius.reccomplex.commands.parameters.Expect;
-import ivorius.reccomplex.commands.parameters.Parameters;
+import ivorius.reccomplex.commands.parameters.RCParameters;
 import ivorius.reccomplex.operation.OperationRegistry;
 import ivorius.reccomplex.utils.ServerTranslations;
 import ivorius.reccomplex.world.gen.feature.StructureGenerator;
@@ -62,14 +62,14 @@ public class CommandGenerateStructure extends CommandBase
     @ParametersAreNonnullByDefault
     public void execute(MinecraftServer server, ICommandSender commandSender, String[] args) throws CommandException
     {
-        Parameters parameters = Parameters.of(this, args);
+        RCParameters parameters = RCParameters.of(args);
 
         String structureID = parameters.get().here().require();
-        Structure<?> structure = parameters.get().structure().require();
-        WorldServer world = parameters.get("d").dimension(commandSender).require();
+        Structure<?> structure = parameters.rc().structure().require();
+        WorldServer world = parameters.mc("d").dimension(commandSender).require();
         AxisAlignedTransform2D transform = RCCommands.transform(parameters.get("r"), parameters.get("m")).optional().orElse(null);
-        GenerationType generationType = parameters.get("g").generationType(structure).require();
-        BlockSurfacePos pos = parameters.get("p").surfacePos(commandSender.getPosition(), false).require();
+        GenerationType generationType = parameters.rc("g").generationType(structure).require();
+        BlockSurfacePos pos = parameters.iv("p").surfacePos(commandSender.getPosition(), false).require();
 
         Placer placer = generationType.placer();
 
@@ -98,7 +98,7 @@ public class CommandGenerateStructure extends CommandBase
     @Override
     public List<String> getTabCompletions(MinecraftServer server, ICommandSender sender, String[] args, @Nullable BlockPos pos)
     {
-        Parameters parameters = Parameters.of(this, args);
+        RCParameters parameters = RCParameters.of(args);
 
         return Expect.start()
                 .structure()
@@ -107,7 +107,7 @@ public class CommandGenerateStructure extends CommandBase
                 .named("g")
                 .next((String[] args1) ->
                 {
-                    Structure<?> structure = parameters.get().structure().optional().orElse(null);
+                    Structure<?> structure = parameters.rc().structure().optional().orElse(null);
                     if (structure instanceof GenericStructure)
                         return getListOfStringsMatchingLastWord(args1, structure.generationTypes(GenerationType.class).stream().map(GenerationType::id).collect(Collectors.toList()));
                     return Collections.emptyList();

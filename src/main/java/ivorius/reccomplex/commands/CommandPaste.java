@@ -9,7 +9,7 @@ import ivorius.ivtoolkit.math.AxisAlignedTransform2D;
 import ivorius.reccomplex.RCConfig;
 import ivorius.reccomplex.capability.RCEntityInfo;
 import ivorius.reccomplex.commands.parameters.Expect;
-import ivorius.reccomplex.commands.parameters.Parameters;
+import ivorius.reccomplex.commands.parameters.RCParameters;
 import ivorius.reccomplex.operation.OperationRegistry;
 import ivorius.reccomplex.utils.ServerTranslations;
 import ivorius.reccomplex.world.gen.feature.structure.OperationGenerateStructure;
@@ -63,7 +63,7 @@ public class CommandPaste extends CommandBase
     @Override
     public void execute(MinecraftServer server, ICommandSender commandSender, String[] args) throws CommandException
     {
-        Parameters parameters = Parameters.of(this, args);
+        RCParameters parameters = RCParameters.of(args);
 
         EntityPlayerMP entityPlayerMP = getCommandSenderAsPlayer(commandSender);
         RCEntityInfo RCEntityInfo = RCCommands.getStructureEntityInfo(entityPlayerMP, null);
@@ -72,7 +72,7 @@ public class CommandPaste extends CommandBase
 
         if (worldData != null)
         {
-            BlockPos pos = parameters.get("p").pos(commandSender.getPosition(), false).require();
+            BlockPos pos = parameters.mc("p").pos(commandSender.getPosition(), false).require();
             AxisAlignedTransform2D transform = RCCommands.transform(parameters.get("r"), parameters.get("m")).optional().orElse(AxisAlignedTransform2D.ORIGINAL);
 
             GenericStructure structureInfo = GenericStructure.createDefaultStructure();

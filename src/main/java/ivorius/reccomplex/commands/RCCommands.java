@@ -193,18 +193,6 @@ public class RCCommands
             sender.sendMessage(ServerTranslations.get("commands.rc.large.warn"));
     }
 
-    // Since CommandBase's version requires a sender
-    public static BlockPos parseBlockPos(BlockPos blockpos, String[] args, int startIndex, boolean centerBlock) throws NumberInvalidException
-    {
-        return new BlockPos(CommandBase.parseDouble((double) blockpos.getX(), args[startIndex], -30000000, 30000000, centerBlock), CommandBase.parseDouble((double) blockpos.getY(), args[startIndex + 1], 0, 256, false), CommandBase.parseDouble((double) blockpos.getZ(), args[startIndex + 2], -30000000, 30000000, centerBlock));
-    }
-
-    // Since CommandBase's version requires a sender
-    public static BlockSurfacePos surfacePos(BlockPos blockpos, String x, String z, boolean centerBlock) throws NumberInvalidException
-    {
-        return BlockSurfacePos.from(new BlockPos(CommandBase.parseDouble((double) blockpos.getX(), x, -30000000, 30000000, centerBlock), 0, CommandBase.parseDouble((double) blockpos.getZ(), z, -30000000, 30000000, centerBlock)));
-    }
-
     @Nonnull
     protected static Parameter.Result<ResourceMatcher> resourceMatcher(Parameter parameter, Predicate<String> isKnown)
     {

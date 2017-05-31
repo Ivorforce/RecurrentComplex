@@ -8,7 +8,7 @@ package ivorius.reccomplex.commands;
 import ivorius.ivtoolkit.math.AxisAlignedTransform2D;
 import ivorius.reccomplex.RCConfig;
 import ivorius.reccomplex.commands.parameters.Expect;
-import ivorius.reccomplex.commands.parameters.Parameters;
+import ivorius.reccomplex.commands.parameters.RCParameters;
 import ivorius.reccomplex.operation.OperationRegistry;
 import ivorius.reccomplex.utils.ServerTranslations;
 import ivorius.reccomplex.world.gen.feature.StructureGenerator;
@@ -50,13 +50,13 @@ public class CommandImportStructure extends CommandBase
     @Override
     public void execute(MinecraftServer server, ICommandSender commandSender, String[] args) throws CommandException
     {
-        Parameters parameters = Parameters.of(this, args);
+        RCParameters parameters = RCParameters.of(args);
 
         String structureID = parameters.get().here().require();
-        Structure<?> structure = parameters.get().structure().require();
-        WorldServer world = parameters.get("d").dimension(commandSender).require();
+        Structure<?> structure = parameters.rc().structure().require();
+        WorldServer world = parameters.mc("d").dimension(commandSender).require();
         AxisAlignedTransform2D transform = RCCommands.transform(parameters.get("r"), parameters.get("m")).optional().orElse(AxisAlignedTransform2D.ORIGINAL);
-        BlockPos pos = parameters.get("p").pos(commandSender.getPosition(), false).require();
+        BlockPos pos = parameters.mc("p").pos(commandSender.getPosition(), false).require();
 
         if (structure instanceof GenericStructure)
             OperationRegistry.queueOperation(new OperationGenerateStructure((GenericStructure) structure, structureID, transform, pos, true)

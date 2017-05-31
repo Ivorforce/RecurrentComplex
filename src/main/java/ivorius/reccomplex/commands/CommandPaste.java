@@ -72,7 +72,7 @@ public class CommandPaste extends CommandBase
 
         if (worldData != null)
         {
-            BlockPos pos = parameters.get("p").pos(commandSender, false).require();
+            BlockPos pos = parameters.get("p").pos(commandSender.getPosition(), false).require();
             AxisAlignedTransform2D transform = RCCommands.transform(parameters.get("r"), parameters.get("m")).optional().orElse(AxisAlignedTransform2D.ORIGINAL);
 
             GenericStructure structureInfo = GenericStructure.createDefaultStructure();

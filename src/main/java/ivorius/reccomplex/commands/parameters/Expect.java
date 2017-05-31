@@ -5,11 +5,13 @@
 
 package ivorius.reccomplex.commands.parameters;
 
+import ivorius.reccomplex.files.loading.ResourceDirectory;
 import ivorius.reccomplex.world.gen.feature.structure.StructureRegistry;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.biome.Biome;
 import net.minecraftforge.common.DimensionManager;
 
 import javax.annotation.Nullable;
@@ -71,15 +73,30 @@ public class Expect
         return next(args -> getListOfStringsMatchingLastWord(args, "false", "true"));
     }
 
+    public Expect biome()
+    {
+        return next(Biome.REGISTRY.getKeys());
+    }
+
     public Expect dimension()
     {
         return next(args -> getListOfStringsMatchingLastWord(args, Arrays.stream(DimensionManager.getIDs()).map(String::valueOf).collect(Collectors.toList())));
+    }
+
+    public Expect resourceDirectory()
+    {
+        return any((Object[]) ResourceDirectory.values());
     }
 
     public Expect named(String name)
     {
         cur = name;
         return this;
+    }
+
+    public Expect skip(int num)
+    {
+        return next(Collections.emptyList());
     }
 
     public Expect next(Completer completion)
@@ -91,12 +108,17 @@ public class Expect
         return this;
     }
 
-    public Expect next(Collection<? extends String> completion)
+    public Expect any(Object... completion)
+    {
+        return next(Arrays.asList(completion));
+    }
+
+    public Expect next(Collection<?> completion)
     {
         return next((server, sender, args, pos) -> getListOfStringsMatchingLastWord(args, completion));
     }
 
-    public Expect next(Function<String[], List<String>> completion)
+    public Expect next(Function<String[], ? extends Collection<String>> completion)
     {
         return next((server, sender, args, pos) -> completion.apply(args));
     }
@@ -137,7 +159,7 @@ public class Expect
 
     public interface Completer
     {
-        public List<String> complete(MinecraftServer server, ICommandSender sender, String[] argss, @Nullable BlockPos pos);
+        public Collection<String> complete(MinecraftServer server, ICommandSender sender, String[] argss, @Nullable BlockPos pos);
     }
 
     public class Param

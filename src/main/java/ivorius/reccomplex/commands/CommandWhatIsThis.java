@@ -6,6 +6,8 @@
 package ivorius.reccomplex.commands;
 
 import ivorius.reccomplex.RCConfig;
+import ivorius.reccomplex.commands.parameters.Expect;
+import ivorius.reccomplex.commands.parameters.Parameters;
 import ivorius.reccomplex.utils.ServerTranslations;
 import ivorius.reccomplex.world.gen.feature.WorldStructureGenerationData;
 import net.minecraft.command.CommandBase;
@@ -24,7 +26,6 @@ import net.minecraft.world.World;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -71,9 +72,10 @@ public class CommandWhatIsThis extends CommandBase
     @Override
     public void execute(MinecraftServer server, ICommandSender commandSender, String[] args) throws CommandException
     {
+        Parameters parameters = Parameters.of(this, args);
         World world = commandSender.getEntityWorld();
 
-        BlockPos pos = RCCommands.tryParseBlockPos(commandSender, args, 0, false);
+        BlockPos pos = parameters.get().pos(commandSender.getPosition(), false).require();
 
         List<WorldStructureGenerationData.Entry> entries = WorldStructureGenerationData.get(world).entriesAt(pos).collect(Collectors.toCollection(ArrayList::new));
         if (entries.size() > 0)
@@ -86,9 +88,8 @@ public class CommandWhatIsThis extends CommandBase
     @Override
     public List<String> getTabCompletionOptions(MinecraftServer server, ICommandSender sender, String[] args, @Nullable BlockPos pos)
     {
-        if (args.length == 1 || args.length == 2 || args.length == 3)
-            return getTabCompletionCoordinate(args, 0, pos);
-
-        return Collections.emptyList();
+        return Expect.start()
+                .pos(pos)
+                .get(server, sender, args, pos);
     }
 }

@@ -107,7 +107,7 @@ public class CommandRetrogen extends CommandBase
     {
         Parameters parameters = Parameters.of(this, args);
 
-        Predicate<Structure> structurePredicate = RCCommands.structurePredicate(parameters.get("p")).optional().orElse(null);
+        Predicate<Structure> structurePredicate = RCCommands.structurePredicate(parameters.get("exp")).optional().orElse(null);
         WorldServer world = parameters.get("d").dimension(commandSender).require();
 
         long count = retrogen(world, structurePredicate);
@@ -119,7 +119,7 @@ public class CommandRetrogen extends CommandBase
     public List<String> getTabCompletionOptions(MinecraftServer server, ICommandSender sender, String[] args, @Nullable BlockPos pos)
     {
         return Expect.start()
-                .named("p").structurePredicate()
+                .named("exp").structurePredicate()
                 .named("d").dimension()
                 .get(server, sender, args, pos);
     }

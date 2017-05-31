@@ -25,12 +25,9 @@ import ivorius.reccomplex.world.gen.feature.structure.StructureRegistry;
 import ivorius.reccomplex.world.gen.feature.structure.generic.GenericStructure;
 import net.minecraft.command.*;
 import net.minecraft.util.EnumFacing;
-import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.ITextComponent;
-import net.minecraft.world.biome.Biome;
 import net.minecraftforge.client.ClientCommandHandler;
-import net.minecraftforge.common.DimensionManager;
 import net.minecraftforge.fml.common.event.FMLServerStartingEvent;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -40,11 +37,8 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.nio.file.AccessDeniedException;
 import java.nio.file.Path;
-import java.util.Arrays;
-import java.util.List;
 import java.util.Set;
 import java.util.function.Predicate;
-import java.util.stream.Collectors;
 
 /**
  * Created by lukas on 18.01.15.
@@ -199,24 +193,10 @@ public class RCCommands
             sender.addChatMessage(ServerTranslations.get("commands.rc.large.warn"));
     }
 
+    // Since CommandBase's version requires a sender
     public static BlockPos parseBlockPos(BlockPos blockpos, String[] args, int startIndex, boolean centerBlock) throws NumberInvalidException
     {
         return new BlockPos(CommandBase.parseDouble((double) blockpos.getX(), args[startIndex], -30000000, 30000000, centerBlock), CommandBase.parseDouble((double) blockpos.getY(), args[startIndex + 1], 0, 256, false), CommandBase.parseDouble((double) blockpos.getZ(), args[startIndex + 2], -30000000, 30000000, centerBlock));
-    }
-
-    public static BlockPos tryParseBlockPos(ICommandSender sender, String[] args, int startIndex, boolean centerBlock) throws NumberInvalidException
-    {
-        return args.length >= startIndex + 3
-                ? CommandBase.parseBlockPos(sender, args, startIndex, centerBlock)
-                : sender.getPosition();
-    }
-
-    @Nonnull
-    public static BlockSurfacePos tryParseSurfaceBlockPos(ICommandSender sender, String[] args, int startIndex, boolean centerBlock) throws NumberInvalidException
-    {
-        return args.length >= startIndex + 2
-                ? parseSurfaceBlockPos(sender, args, startIndex, centerBlock)
-                : BlockSurfacePos.from(sender.getPosition());
     }
 
     // Since CommandBase's version requires a sender
@@ -225,40 +205,16 @@ public class RCCommands
         return BlockSurfacePos.from(new BlockPos(CommandBase.parseDouble((double) blockpos.getX(), x, -30000000, 30000000, centerBlock), 0, CommandBase.parseDouble((double) blockpos.getZ(), z, -30000000, 30000000, centerBlock)));
     }
 
-    public static BlockSurfacePos parseSurfaceBlockPos(ICommandSender sender, String[] args, int startIndex, boolean centerBlock) throws NumberInvalidException
-    {
-        return parseSurfaceBlockPos(sender.getPosition(), args, startIndex, centerBlock);
-    }
-
-    public static BlockSurfacePos parseSurfaceBlockPos(BlockPos blockpos, String[] args, int startIndex, boolean centerBlock) throws NumberInvalidException
-    {
-        return BlockSurfacePos.from(new BlockPos(CommandBase.parseDouble((double) blockpos.getX(), args[startIndex], -30000000, 30000000, centerBlock), 0, CommandBase.parseDouble((double) blockpos.getZ(), args[startIndex + 1], -30000000, 30000000, centerBlock)));
-    }
-
     @Nonnull
-    protected static Parameter.Result<ResourceMatcher> resourceMatcher(Parameter parameter)
+    protected static Parameter.Result<ResourceMatcher> resourceMatcher(Parameter parameter, Predicate<String> isKnown)
     {
-        return parameter.at(0).map(s -> ExpressionCache.of(new ResourceMatcher(s1 -> !s1.isEmpty()), s))
+        return parameter.at(0).map(s -> ExpressionCache.of(new ResourceMatcher(isKnown), s))
                 .filter(ExpressionCache::isExpressionValid, t -> new CommandException(t.getParseException().getMessage()));
     }
 
     protected static Parameter.Result<Predicate<Structure>> structurePredicate(Parameter parameter)
     {
-        return resourceMatcher(parameter).map(m -> s -> m.test(StructureRegistry.INSTANCE.resourceLocation(s)));
-    }
-
-    public static Biome parseBiome(String arg) throws CommandException
-    {
-        ResourceLocation biomeID = new ResourceLocation(arg);
-        if (!Biome.REGISTRY.containsKey(biomeID))
-            throw ServerTranslations.commandException("commands.rc.nobiome");
-
-        return Biome.REGISTRY.getObject(biomeID);
-    }
-
-    public static List<String> completeBiome(String[] args)
-    {
-        return CommandBase.getListOfStringsMatchingLastWord(args, Biome.REGISTRY.getKeys());
+        return resourceMatcher(parameter, s1 -> !s1.isEmpty()).map(m -> s -> m.test(StructureRegistry.INSTANCE.resourceLocation(s)));
     }
 
     public static void informDeleteResult(Pair<Set<Path>, Set<Path>> result, ICommandSender sender, String filetype, String id, ResourceDirectory directory)
@@ -312,19 +268,6 @@ public class RCCommands
     {
         if (!matcher.isExpressionValid())
             throw new CommandException("Argument " + (argument + 1) + ": " + FunctionExpressionCaches.readableException(matcher));
-    }
-
-    @Nonnull
-    protected static ResourceDirectory parseResourceDirectory(String arg) throws CommandException
-    {
-        try
-        {
-            return ResourceDirectory.valueOf(arg);
-        }
-        catch (IllegalArgumentException e)
-        {
-            throw ServerTranslations.commandException("commands.rcsave.nodirectory");
-        }
     }
 
     public static GenericStructure getGenericStructure(String name) throws CommandException

@@ -8,6 +8,8 @@ package ivorius.reccomplex.commands;
 import ivorius.ivtoolkit.math.IvVecMathHelper;
 import ivorius.reccomplex.RCConfig;
 import ivorius.reccomplex.capability.SelectionOwner;
+import ivorius.reccomplex.commands.parameters.Expect;
+import ivorius.reccomplex.commands.parameters.Parameters;
 import ivorius.reccomplex.utils.ServerTranslations;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.CommandException;
@@ -43,52 +45,42 @@ public class CommandSelect extends CommandBase
     @Override
     public void execute(MinecraftServer server, ICommandSender commandSender, String[] args) throws CommandException
     {
+        Parameters parameters = Parameters.of(this, args);
+
         SelectionOwner owner = RCCommands.getSelectionOwner(commandSender, null, false);
 
-        if (args.length >= 1)
+        String subcommand = parameters.get().at(0).require();
+        switch (subcommand)
         {
-            switch (args[0])
-            {
-                case "clear":
-                    owner.setSelection(null);
-                    break;
-                case "get":
-                    commandSender.addChatMessage(ServerTranslations.format("commands.selectSet.get", translatePoint(owner.getSelectedPoint1()), translatePoint(owner.getSelectedPoint2())));
-                    if (owner.hasValidSelection())
-                        commandSender.addChatMessage(ServerTranslations.format("commands.selectSet.size", translateSize(owner.getSelection().areaSize()), IvVecMathHelper.product(owner.getSelection().areaSize())));
-                    break;
-                case "both":
-                case "point1":
-                case "point2":
-                    if (args.length >= 4)
-                    {
-                        if (!args[0].equals("point2"))
-                        {
-                            if (owner.getSelectedPoint1() == null)
-                                owner.setSelectedPoint1(commandSender.getPosition());
+            case "clear":
+                owner.setSelection(null);
+                break;
+            case "get":
+                commandSender.sendMessage(ServerTranslations.format("commands.selectSet.get", translatePoint(owner.getSelectedPoint1()), translatePoint(owner.getSelectedPoint2())));
+                if (owner.hasValidSelection())
+                    commandSender.sendMessage(ServerTranslations.format("commands.selectSet.size", translateSize(owner.getSelection().areaSize()), IvVecMathHelper.product(owner.getSelection().areaSize())));
+                break;
+            case "both":
+            case "point1":
+            case "point2":
+                if (!subcommand.equals("point2"))
+                {
+                    if (owner.getSelectedPoint1() == null)
+                        owner.setSelectedPoint1(commandSender.getPosition());
 
-                            owner.setSelectedPoint1(RCCommands.parseBlockPos(owner.getSelectedPoint1(), args, 1, false));
-                        }
-                        if (!args[0].equals("point1"))
-                        {
-                            if (owner.getSelectedPoint2() == null)
-                                owner.setSelectedPoint2(commandSender.getPosition());
+                    owner.setSelectedPoint1(parameters.get().move(1).pos(owner.getSelectedPoint1(), false).require());
+                }
+                if (!subcommand.equals("point1"))
+                {
+                    if (owner.getSelectedPoint2() == null)
+                        owner.setSelectedPoint2(commandSender.getPosition());
 
-                            owner.setSelectedPoint2(RCCommands.parseBlockPos(owner.getSelectedPoint2(), args, 1, false));
-                        }
-                    }
-                    else
-                    {
-                        throw ServerTranslations.wrongUsageException("commands.selectSet.usage");
-                    }
-                    break;
-                default:
-                    throw ServerTranslations.wrongUsageException("commands.selectSet.usage");
-            }
-        }
-        else
-        {
-            throw ServerTranslations.wrongUsageException("commands.selectSet.usage");
+                    owner.setSelectedPoint2(parameters.get().move(1).pos(owner.getSelectedPoint2(), false).require());
+                }
+
+                break;
+            default:
+                throw ServerTranslations.wrongUsageException("commands.selectSet.usage");
         }
     }
 
@@ -109,11 +101,9 @@ public class CommandSelect extends CommandBase
     @Override
     public List<String> getTabCompletionOptions(MinecraftServer server, ICommandSender sender, String[] args, @Nullable BlockPos pos)
     {
-        if (args.length == 1)
-            return getListOfStringsMatchingLastWord(args, "both", "clear", "point1", "point2", "get");
-        else if (args.length == 2 || args.length == 3 || args.length == 4)
-            return getTabCompletionCoordinate(args, args.length - 1, pos);
-
-        return super.getTabCompletionOptions(server, sender, args, pos);
+        return Expect.start()
+                .any("both", "clear", "point1", "point2", "get")
+                .pos(pos)
+                .get(server, sender, args, pos);
     }
 }

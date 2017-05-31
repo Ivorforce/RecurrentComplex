@@ -57,7 +57,7 @@ public class CommandSelectDuplicate extends CommandBase
         SelectionOwner selectionOwner = RCCommands.getSelectionOwner(commandSender, null, true);
         BlockArea area = selectionOwner.getSelection();
 
-        BlockPos pos = parameters.get("p").pos(commandSender, false).require();
+        BlockPos pos = parameters.get("p").pos(commandSender.getPosition(), false).require();
         AxisAlignedTransform2D transform = RCCommands.transform(parameters.get("r"), parameters.get("m")).optional().orElse(AxisAlignedTransform2D.ORIGINAL);
 
         IvWorldData worldData = IvWorldData.capture(commandSender.getEntityWorld(), area, true);

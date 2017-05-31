@@ -103,13 +103,13 @@ commands.strucReload.success=Reloaded all %s files.
 commands.selectCopy.usage=/#copy
 commands.selectCopy.success=Copied %s, %s, %s to %s, %s, %s to clipboard
 
-commands.strucPaste.usage=/#paste [x] [y] [z] [rotation] [mirror:true|false]
+commands.strucPaste.usage=/#paste -p [x] [y] [z] -r [rotation] -m [mirror]
 commands.strucPaste.noClipboard=You have to copy an area first!
-commands.strucPasteGen.usage=/#pastegen [x] [y] [z] [rotation] [mirror:true|false]
+commands.strucPasteGen.usage=/#pastegen -p [x] [y] [z] -r [rotations] -m [mirror]
 
-commands.selectMove.usage=/#move <x> <y> <z> [clockwise-rotations] [mirror x:true|false]
+commands.selectMove.usage=/#move -p <x> <y> <z> -r [rotations] -m [mirror]
 
-commands.selectDuplicate.usage=/#duplicate <x> <y> <z> [clockwise-rotations] [mirror x:true|false]
+commands.selectDuplicate.usage=/#duplicate -p <x> <y> <z> -r [rotations] -m [mirror]
 
 commands.rcpreview.usage=/#preview <none|bounds|shape>
 commands.rcpreview.invalid=Invalid preview type
@@ -193,10 +193,10 @@ commands.rcfiles.usage=/#files
 commands.rcrepository.usage=/#repository
 commands.rcbrowse.usage=/#browse
 
-commands.rcdecorate.usage=/#decorate <x min> <z min> <x max> <z max> -p [resource matcher: only generate these structures]
+commands.rcdecorate.usage=/#decorate <x min> <z min> <x max> <z max> -exp [resource matcher: only generate these structures]
 commands.rcdecorateone.usage=/#decorateone [x] [z]
 commands.rcdecorateone.none=No suitable structures found!
-commands.rcretro.usage=/#retro -d [dimension] -p [resource matcher: only generate these structures]
+commands.rcretro.usage=/#retro -d [dimension] -exp [resource matcher: only generate these structures]
 commands.rcretro.count=Retro-Generated %s chunks!
 
 commands.rcenable.usage=/#enable <registry id> <element id>
@@ -205,13 +205,13 @@ commands.rcsave.usage=/#write <registry id> <element id> <directory>
 commands.rcsave.noregistry=No such registry id!
 commands.rcsave.nodirectory=No such directory id!
 commands.rcsave.noelement=No such element!
-commands.rcsaveall.usage=/#writeall <registry id> <directory> [resource expression]
+commands.rcsaveall.usage=/#writeall <registry id> [resource expression] -dir [directory]
 commands.rcsaveall.result=Saved %s elements to '%s'. %s failed.
 commands.rcdelete.usage=/#delete <registry id> <element id> <directory>
-commands.rcmap.usage=/#map <structure id> <directory> <command>
+commands.rcmap.usage=/#map <structure id> <command> -dir [directory]
 commands.rcmap.nonvirtual=Cannot map with this command!
 commands.rcmap.nonvirtual.arguments=Cannot map with these command arguments!
-commands.rcmapall.usage=/#mapall <resource expression> <directory> <command>
+commands.rcmapall.usage=/#mapall <command> -exp [resource expression] -dir [directory]
 commands.rcmapall.result=Saved %s elements to '%s'. %s failed. %s skipped.
 
 commands.rcas.usage=/#as <entity> <command>

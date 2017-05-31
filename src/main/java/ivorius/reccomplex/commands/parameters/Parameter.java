@@ -7,6 +7,7 @@ package ivorius.reccomplex.commands.parameters;
 
 import ivorius.ivtoolkit.blocks.BlockSurfacePos;
 import ivorius.reccomplex.commands.RCCommands;
+import ivorius.reccomplex.files.loading.ResourceDirectory;
 import ivorius.reccomplex.utils.ServerTranslations;
 import ivorius.reccomplex.world.gen.feature.structure.Structure;
 import ivorius.reccomplex.world.gen.feature.structure.StructureRegistry;
@@ -15,8 +16,10 @@ import ivorius.reccomplex.world.gen.feature.structure.generic.generation.Natural
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.WorldServer;
+import net.minecraft.world.biome.Biome;
 import net.minecraftforge.common.DimensionManager;
 
 import javax.annotation.Nonnull;
@@ -57,20 +60,25 @@ public class Parameter
         return at(0);
     }
 
-    @Nonnull
-    public Result<BlockPos> pos(ICommandSender sender, boolean centerBlock)
+    public Result<BlockPos> pos(BlockPos ref, boolean centerBlock)
     {
         return at(0).failable().flatMap(x -> at(1).flatMap(y -> at(2).map(z ->
-                CommandBase.parseBlockPos(sender, new String[]{x, y, z}, 0, centerBlock))))
-                .orElse(sender::getPosition);
+                RCCommands.parseBlockPos(ref, new String[]{x, y, z}, 0, centerBlock))))
+                .orElse(() -> ref);
     }
 
     @Nonnull
-    public Result<BlockSurfacePos> surfacePos(ICommandSender sender, boolean centerBlock)
+    public Result<BlockSurfacePos> surfacePos(BlockPos ref, boolean centerBlock)
     {
         return at(0).failable().flatMap(x -> at(1).map(z ->
-                RCCommands.surfacePos(sender.getPosition(), x, z, centerBlock)))
-                .orElse(() -> BlockSurfacePos.from(sender.getPosition()));
+                RCCommands.surfacePos(ref, x, z, centerBlock)))
+                .orElse(() -> BlockSurfacePos.from(ref));
+    }
+
+    public Result<Biome> biome()
+    {
+        return at(0).map(ResourceLocation::new)
+                .map(Biome.REGISTRY::getObject, t -> ServerTranslations.commandException("commands.rc.nobiome"));
     }
 
     public Result<WorldServer> dimension(ICommandSender commandSender)
@@ -91,6 +99,20 @@ public class Parameter
         return at(0).failable().map(structure::generationType, t -> ServerTranslations.commandException("No Generation by this ID"))
                 .orElse(() -> structure.<GenerationType>generationTypes(NaturalGeneration.class).stream().findFirst()
                         .orElse(structure.generationTypes(GenerationType.class).stream().findFirst().orElse(null)));
+    }
+
+    public Result<ResourceDirectory> resourceDirectory()
+    {
+        return at(0).map(t -> {
+            try
+            {
+                return ResourceDirectory.valueOf(t);
+            }
+            catch (IllegalArgumentException e)
+            {
+                throw ServerTranslations.commandException("commands.rcsave.nodirectory");
+            }
+        });
     }
 
     public Result<Integer> integer(int idx)

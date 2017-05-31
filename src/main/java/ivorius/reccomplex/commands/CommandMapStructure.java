@@ -7,11 +7,12 @@ package ivorius.reccomplex.commands;
 
 import ivorius.ivtoolkit.tools.IvWorldData;
 import ivorius.reccomplex.RCConfig;
+import ivorius.reccomplex.commands.parameters.Expect;
+import ivorius.reccomplex.commands.parameters.Parameters;
 import ivorius.reccomplex.files.loading.ResourceDirectory;
 import ivorius.reccomplex.network.PacketSaveStructureHandler;
 import ivorius.reccomplex.utils.ServerTranslations;
 import ivorius.ivtoolkit.world.MockWorld;
-import ivorius.reccomplex.world.gen.feature.structure.StructureRegistry;
 import ivorius.reccomplex.world.gen.feature.structure.generic.GenericStructure;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.CommandException;
@@ -49,14 +50,13 @@ public class CommandMapStructure extends CommandBase
     @Override
     public void execute(MinecraftServer server, ICommandSender commandSender, String[] args) throws CommandException
     {
-        if (args.length < 3)
-            throw ServerTranslations.wrongUsageException("commands.rcmap.usage");
+        Parameters parameters = Parameters.of(this, args);
 
-        String id = args[0];
+        String id = parameters.get().at(0).require();
         GenericStructure structure = RCCommands.getGenericStructure(id);
-        ResourceDirectory directory = RCCommands.parseResourceDirectory(args[1]);
+        ResourceDirectory directory = parameters.get("dir").resourceDirectory().optional().orElse(ResourceDirectory.ACTIVE);
 
-        ICommand other = server.getCommandManager().getCommands().get(args[2]);
+        ICommand other = server.getCommandManager().getCommands().get(parameters.get().at(1).require());
 
         if (!(other instanceof CommandVirtual))
             throw ServerTranslations.commandException("commands.rcmap.nonvirtual");
@@ -68,7 +68,7 @@ public class CommandMapStructure extends CommandBase
         try
         {
             virtual.execute(world, new CommandSelecting.SelectingSender(commandSender, BlockPos.ORIGIN, worldData.blockCollection.area().getHigherCorner()),
-                    Arrays.copyOfRange(args, 3, args.length));
+                    parameters.get().at(2).optional().map(s -> s.split(" ")).orElse(new String[0]));
         }
         catch (MockWorld.VirtualWorldException ex)
         {
@@ -82,11 +82,10 @@ public class CommandMapStructure extends CommandBase
     @Override
     public List<String> getTabCompletionOptions(MinecraftServer server, ICommandSender sender, String[] args, @Nullable BlockPos pos)
     {
-        if (args.length == 1)
-            return getListOfStringsMatchingLastWord(args, StructureRegistry.INSTANCE.ids());
-        else if (args.length == 2)
-            return getListOfStringsMatchingLastWord(args, Arrays.asList(ResourceDirectory.values()));
-
-        return super.getTabCompletionOptions(server, sender, args, pos);
+        return Expect.start()
+                .structure()
+                .any("\"\"")
+                .named("dir").resourceDirectory()
+                .get(server, sender, args, pos);
     }
 }

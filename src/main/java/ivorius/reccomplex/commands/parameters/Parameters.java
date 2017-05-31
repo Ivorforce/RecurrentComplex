@@ -8,6 +8,8 @@ package ivorius.reccomplex.commands.parameters;
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.ListMultimap;
 import com.google.common.collect.Lists;
+import com.google.common.primitives.Doubles;
+import com.google.common.primitives.Ints;
 import ivorius.reccomplex.commands.CommandImportSchematic;
 import joptsimple.internal.Strings;
 import net.minecraft.command.CommandException;
@@ -45,7 +47,7 @@ public class Parameters
         {
             String param = params.get(i);
 
-            if (param.startsWith("-"))
+            if (param.startsWith("-") && Doubles.tryParse(param) == null)
                 flags.add(curName = param.substring(1));
             else
                 named.put(curName, param); // Can be infinite

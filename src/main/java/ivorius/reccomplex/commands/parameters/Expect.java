@@ -5,6 +5,8 @@
 
 package ivorius.reccomplex.commands.parameters;
 
+import com.google.common.primitives.Doubles;
+import com.google.common.primitives.Ints;
 import ivorius.reccomplex.files.loading.ResourceDirectory;
 import ivorius.reccomplex.world.gen.feature.structure.StructureRegistry;
 import net.minecraft.command.CommandBase;
@@ -137,7 +139,7 @@ public class Expect
             String param = params.get(i);
             curIndex++;
 
-            if (param.startsWith("-"))
+            if (param.startsWith("-") && Doubles.tryParse(param) == null)
             {
                 flags.add(curName = param.substring(1));
                 curIndex = 0;

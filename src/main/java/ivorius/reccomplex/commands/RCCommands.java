@@ -232,11 +232,6 @@ public class RCCommands
         return result;
     }
 
-    public static void ensureValid(ExpressionCache<?> matcher, int argument) throws CommandException
-    {
-        ensureValid(matcher, "" + (argument + 1));
-    }
-
     public static void ensureValid(ExpressionCache<?> matcher, String argument) throws CommandException
     {
         if (!matcher.isExpressionValid())

@@ -24,7 +24,7 @@ import ivorius.reccomplex.world.gen.feature.structure.context.StructureLoadConte
 import ivorius.reccomplex.world.gen.feature.structure.context.StructurePrepareContext;
 import ivorius.reccomplex.world.gen.feature.structure.context.StructureSpawnContext;
 import ivorius.reccomplex.world.gen.feature.structure.generic.WeightedBlockState;
-import ivorius.reccomplex.utils.expression.BlockMatcher;
+import ivorius.reccomplex.utils.expression.BlockExpression;
 import ivorius.reccomplex.utils.NBTStorable;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.init.Blocks;
@@ -41,18 +41,18 @@ import java.lang.reflect.Type;
 public class TransformerWorldScript extends TransformerSingleBlock<TransformerWorldScript.InstanceData>
 {
     public WorldScriptMulti script;
-    public BlockMatcher sourceMatcher;
+    public BlockExpression sourceMatcher;
 
     public TransformerWorldScript()
     {
-        this(null, new WorldScriptMulti(), BlockMatcher.of(RecurrentComplex.specialRegistry, Blocks.WOOL));
+        this(null, new WorldScriptMulti(), BlockExpression.of(RecurrentComplex.specialRegistry, Blocks.WOOL));
     }
 
     public TransformerWorldScript(@Nullable String id, WorldScriptMulti script, String sourceExpression)
     {
         super(id != null ? id : randomID(TransformerWorldScript.class));
         this.script = script;
-        this.sourceMatcher = ExpressionCache.of(new BlockMatcher(RecurrentComplex.specialRegistry), sourceExpression);
+        this.sourceMatcher = ExpressionCache.of(new BlockExpression(RecurrentComplex.specialRegistry), sourceExpression);
     }
 
     @Override

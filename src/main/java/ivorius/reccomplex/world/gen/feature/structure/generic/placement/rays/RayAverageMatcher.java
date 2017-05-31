@@ -20,7 +20,7 @@ import ivorius.reccomplex.gui.table.datasource.TableDataSourceSegmented;
 import ivorius.reccomplex.gui.table.datasource.TableDataSourceSupplied;
 import ivorius.reccomplex.json.JsonUtils;
 import ivorius.ivtoolkit.world.WorldCache;
-import ivorius.reccomplex.utils.expression.PositionedBlockMatcher;
+import ivorius.reccomplex.utils.expression.PositionedBlockExpression;
 import ivorius.reccomplex.world.gen.feature.structure.generic.placement.FactorLimit;
 import ivorius.reccomplex.world.gen.feature.structure.generic.placement.StructurePlaceContext;
 import net.minecraft.util.EnumFacing;
@@ -39,7 +39,7 @@ import static ivorius.reccomplex.world.gen.feature.structure.generic.placement.F
  */
 public class RayAverageMatcher extends FactorLimit.Ray
 {
-    public final PositionedBlockMatcher destMatcher = new PositionedBlockMatcher(RecurrentComplex.specialRegistry);
+    public final PositionedBlockExpression destMatcher = new PositionedBlockExpression(RecurrentComplex.specialRegistry);
     public boolean up;
 
     public RayAverageMatcher()
@@ -134,7 +134,7 @@ public class RayAverageMatcher extends FactorLimit.Ray
         double samples = floorBlocks < 16 * 16 ? 1 : Math.pow((16f * 16f) / floorBlocks, 0.7f);
 
         int averageGroundLevel = getAverageGroundLevel(up, y, context.boundingBox,
-                blockPos -> destMatcher.evaluate(() -> PositionedBlockMatcher.Argument.at(cache, blockPos)), cache.world.getHeight(),
+                blockPos -> destMatcher.evaluate(() -> PositionedBlockExpression.Argument.at(cache, blockPos)), cache.world.getHeight(),
                 samples, context.random);
         return averageGroundLevel >= 0 ? OptionalInt.of(averageGroundLevel) : OptionalInt.empty();
     }

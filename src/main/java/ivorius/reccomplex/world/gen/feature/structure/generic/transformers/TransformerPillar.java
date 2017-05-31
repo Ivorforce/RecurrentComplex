@@ -21,7 +21,7 @@ import ivorius.reccomplex.json.JsonUtils;
 import ivorius.reccomplex.world.gen.feature.structure.context.StructureLoadContext;
 import ivorius.reccomplex.world.gen.feature.structure.context.StructurePrepareContext;
 import ivorius.reccomplex.world.gen.feature.structure.context.StructureSpawnContext;
-import ivorius.reccomplex.utils.expression.BlockMatcher;
+import ivorius.reccomplex.utils.expression.BlockExpression;
 import net.minecraft.block.state.IBlockState;
 import ivorius.reccomplex.utils.NBTNone;
 import net.minecraft.block.Block;
@@ -39,19 +39,19 @@ import java.lang.reflect.Type;
  */
 public class TransformerPillar extends TransformerSingleBlock<NBTNone>
 {
-    public BlockMatcher sourceMatcher;
+    public BlockExpression sourceMatcher;
 
     public IBlockState destState;
 
     public TransformerPillar()
     {
-        this(null, BlockMatcher.of(RecurrentComplex.specialRegistry, Blocks.STONE, 0), Blocks.STONE.getDefaultState());
+        this(null, BlockExpression.of(RecurrentComplex.specialRegistry, Blocks.STONE, 0), Blocks.STONE.getDefaultState());
     }
 
     public TransformerPillar(@Nullable String id, String sourceExpression, IBlockState destState)
     {
         super(id != null ? id : randomID(TransformerPillar.class));
-        this.sourceMatcher = ExpressionCache.of(new BlockMatcher(RecurrentComplex.specialRegistry), sourceExpression);
+        this.sourceMatcher = ExpressionCache.of(new BlockExpression(RecurrentComplex.specialRegistry), sourceExpression);
         this.destState = destState;
     }
 

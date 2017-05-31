@@ -55,17 +55,17 @@ public class TableDataSourceExpression<T, U, E extends FunctionExpressionCache<T
 
     public static <T, U, E extends FunctionExpressionCache<T, ?, U>> TableDataSourceExpression<T, U, E> constructDefault(String title, List<String> tooltip, E e, U u)
     {
-        if (e instanceof BiomeMatcher)
+        if (e instanceof BiomeExpression)
             return new TableDataSourceExpression<>(title, tooltip, IvTranslations.formatLines("reccomplex.expression.biome.tooltip"), e, u);
-        else if (e instanceof BlockMatcher)
+        else if (e instanceof BlockExpression)
             return new TableDataSourceExpression<>(title, tooltip, IvTranslations.formatLines("reccomplex.expression.block.tooltip"), e, u);
-        else if (e instanceof PositionedBlockMatcher)
+        else if (e instanceof PositionedBlockExpression)
             return new TableDataSourceExpression<>(title, tooltip, IvTranslations.formatLines("reccomplex.expression.positioned_block.tooltip"), e, u);
-        else if (e instanceof DependencyMatcher)
+        else if (e instanceof DependencyExpression)
             return new TableDataSourceExpression<>(title, tooltip, IvTranslations.formatLines("reccomplex.expression.dependency.tooltip"), e, u);
-        else if (e instanceof DimensionMatcher)
+        else if (e instanceof DimensionExpression)
             return new TableDataSourceExpression<>(title, tooltip, IvTranslations.formatLines("reccomplex.expression.dimension.tooltip"), e, u);
-        else if (e instanceof EnvironmentMatcher)
+        else if (e instanceof EnvironmentExpression)
             return new TableDataSourceExpression<>(title, tooltip, IvTranslations.formatLines("reccomplex.expression.environment.tooltip"), e, u);
 
         throw new IllegalArgumentException();

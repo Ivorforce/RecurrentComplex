@@ -11,8 +11,7 @@ import ivorius.reccomplex.RecurrentComplex;
 import ivorius.reccomplex.commands.parameters.RCExpect;
 import ivorius.reccomplex.commands.parameters.RCParameters;
 import ivorius.reccomplex.utils.ServerTranslations;
-import ivorius.reccomplex.utils.algebra.ExpressionCache;
-import ivorius.reccomplex.utils.expression.BlockMatcher;
+import ivorius.reccomplex.utils.expression.BlockExpression;
 import ivorius.reccomplex.world.gen.feature.structure.Structure;
 import ivorius.reccomplex.world.gen.feature.structure.StructureRegistry;
 import net.minecraft.command.CommandBase;
@@ -46,7 +45,7 @@ public class CommandContaining extends CommandBase
         return ServerTranslations.usage("commands.rccontaining.usage");
     }
 
-    public static long containedBlocks(Structure structure, BlockMatcher matcher)
+    public static long containedBlocks(Structure structure, BlockExpression matcher)
     {
         if (structure == null)
             return 0;
@@ -65,7 +64,7 @@ public class CommandContaining extends CommandBase
     {
         RCParameters parameters = RCParameters.of(args);
 
-        BlockMatcher matcher = parameters.rc().expression(new BlockMatcher(RecurrentComplex.specialRegistry)).require();
+        BlockExpression matcher = parameters.rc().expression(new BlockExpression(RecurrentComplex.specialRegistry)).require();
 
         CommandSearchStructure.postResultMessage(commandSender,
                 RCTextStyle::structure, CommandSearchStructure.search(StructureRegistry.INSTANCE.ids(), name -> containedBlocks(StructureRegistry.INSTANCE.get(name), matcher))

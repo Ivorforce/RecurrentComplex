@@ -24,7 +24,7 @@ public class TableDataSourceWorldScriptMulti extends TableDataSourceSegmented
     {
         this.script = script;
         addManagedSegment(0, new TableDataSourceWorldScript(script));
-        addManagedSegment(1, TableDataSourceExpression.constructDefault(IvTranslations.get("reccomplex.worldscript.multi.condition"), script.environmentMatcher, null));
+        addManagedSegment(1, TableDataSourceExpression.constructDefault(IvTranslations.get("reccomplex.worldscript.multi.condition"), script.environmentExpression, null));
         addManagedSegment(2, new TableDataSourceWorldScriptList(script.scripts, delegate, navigator));
     }
 }

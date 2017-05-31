@@ -8,7 +8,7 @@ package ivorius.reccomplex.world.gen.feature.structure.generic;
 import com.google.gson.*;
 import ivorius.reccomplex.json.JsonUtils;
 import ivorius.reccomplex.utils.algebra.ExpressionCache;
-import ivorius.reccomplex.utils.expression.BiomeMatcher;
+import ivorius.reccomplex.utils.expression.BiomeExpression;
 import net.minecraft.world.biome.Biome;
 
 import java.lang.reflect.Type;
@@ -19,12 +19,12 @@ import java.util.regex.Matcher;
  */
 public class WeightedBiomeMatcher
 {
-    private BiomeMatcher biomeMatcher;
+    private BiomeExpression biomeExpression;
     private Double generationWeight;
 
     public WeightedBiomeMatcher(String expression, Double generationWeight)
     {
-        this.biomeMatcher = ExpressionCache.of(new BiomeMatcher(), expression);
+        this.biomeExpression = ExpressionCache.of(new BiomeExpression(), expression);
         this.generationWeight = generationWeight;
     }
 
@@ -50,17 +50,17 @@ public class WeightedBiomeMatcher
 
     public boolean matches(Biome biome)
     {
-        return biomeMatcher.test(biome);
+        return biomeExpression.test(biome);
     }
 
-    public BiomeMatcher getBiomeMatcher()
+    public BiomeExpression getBiomeExpression()
     {
-        return biomeMatcher;
+        return biomeExpression;
     }
 
     public String getDisplayString()
     {
-        return biomeMatcher.getDisplayString(null);
+        return biomeExpression.getDisplayString(null);
     }
 
     public static class Serializer implements JsonDeserializer<WeightedBiomeMatcher>, JsonSerializer<WeightedBiomeMatcher>
@@ -91,7 +91,7 @@ public class WeightedBiomeMatcher
         {
             JsonObject jsonobject = new JsonObject();
 
-            jsonobject.addProperty("biomes", generationInfo.getBiomeMatcher().getExpression());
+            jsonobject.addProperty("biomes", generationInfo.getBiomeExpression().getExpression());
             if (generationInfo.generationWeight != null)
                 jsonobject.addProperty("weight", generationInfo.generationWeight);
 

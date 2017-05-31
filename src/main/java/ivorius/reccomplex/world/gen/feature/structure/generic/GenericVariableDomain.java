@@ -7,20 +7,14 @@ package ivorius.reccomplex.world.gen.feature.structure.generic;
 
 import com.google.gson.*;
 import com.google.gson.annotations.SerializedName;
-import ivorius.ivtoolkit.math.AxisAlignedTransform2D;
 import ivorius.reccomplex.json.JsonUtils;
 import ivorius.reccomplex.utils.algebra.ExpressionCache;
-import ivorius.reccomplex.utils.expression.EnvironmentMatcher;
+import ivorius.reccomplex.utils.expression.EnvironmentExpression;
 import ivorius.reccomplex.world.gen.feature.structure.Environment;
-import ivorius.reccomplex.world.gen.feature.structure.Structure;
 import ivorius.reccomplex.world.gen.feature.structure.VariableDomain;
-import ivorius.reccomplex.world.gen.feature.structure.generic.generation.MazeGeneration;
-import ivorius.reccomplex.world.gen.feature.structure.generic.maze.Connector;
-import ivorius.reccomplex.world.gen.feature.structure.generic.maze.ConnectorFactory;
 
 import java.lang.reflect.Type;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 import java.util.Random;
 import java.util.stream.Stream;
@@ -91,7 +85,7 @@ public class GenericVariableDomain
     {
         public String id = "";
 
-        public EnvironmentMatcher condition = ExpressionCache.of(new EnvironmentMatcher(), "");
+        public EnvironmentExpression condition = ExpressionCache.of(new EnvironmentExpression(), "");
 
         public float chance = 0.5f;
 

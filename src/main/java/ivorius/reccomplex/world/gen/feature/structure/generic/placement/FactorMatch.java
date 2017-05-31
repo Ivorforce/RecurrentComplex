@@ -20,8 +20,8 @@ import ivorius.reccomplex.gui.table.TableNavigator;
 import ivorius.reccomplex.json.JsonUtils;
 import ivorius.reccomplex.utils.algebra.ExpressionCache;
 import ivorius.ivtoolkit.world.WorldCache;
-import ivorius.reccomplex.utils.expression.BlockMatcher;
-import ivorius.reccomplex.utils.expression.PositionedBlockMatcher;
+import ivorius.reccomplex.utils.expression.BlockExpression;
+import ivorius.reccomplex.utils.expression.PositionedBlockExpression;
 import ivorius.reccomplex.utils.*;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
@@ -37,8 +37,8 @@ import java.util.stream.Collectors;
  */
 public class FactorMatch extends GenericPlacer.Factor
 {
-    public BlockMatcher sourceMatcher;
-    public PositionedBlockMatcher destMatcher;
+    public BlockExpression sourceMatcher;
+    public PositionedBlockExpression destMatcher;
 
     public float requiredConformity;
 
@@ -50,8 +50,8 @@ public class FactorMatch extends GenericPlacer.Factor
     public FactorMatch(float priority, String sourceExpression, String destExpression, float requiredConformity)
     {
         super(priority);
-        this.sourceMatcher = ExpressionCache.of(new BlockMatcher(RecurrentComplex.specialRegistry), sourceExpression);
-        this.destMatcher = ExpressionCache.of(new PositionedBlockMatcher(RecurrentComplex.specialRegistry), destExpression);
+        this.sourceMatcher = ExpressionCache.of(new BlockExpression(RecurrentComplex.specialRegistry), sourceExpression);
+        this.destMatcher = ExpressionCache.of(new PositionedBlockExpression(RecurrentComplex.specialRegistry), destExpression);
 
         this.requiredConformity = requiredConformity;
     }
@@ -63,7 +63,7 @@ public class FactorMatch extends GenericPlacer.Factor
 
         for (BlockPos pos : sources)
         {
-            if (destMatcher.evaluate(() -> PositionedBlockMatcher.Argument.at(cache, pos)))
+            if (destMatcher.evaluate(() -> PositionedBlockExpression.Argument.at(cache, pos)))
                 matched[0]++;
             else
             {

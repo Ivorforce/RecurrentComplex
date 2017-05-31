@@ -18,12 +18,12 @@ import java.util.function.Function;
 /**
  * Created by lukas on 01.05.15.
  */
-public class CommandMatcher extends BoolFunctionExpressionCache<CommandMatcher.Argument, Object>
+public class CommandExpression extends BoolFunctionExpressionCache<CommandExpression.Argument, Object>
 {
     public static final String NAME_PREFIX = "name=";
     public static final String PERM_PREFIX = "canUseLevel:";
 
-    public CommandMatcher()
+    public CommandExpression()
     {
         super(RCBoolAlgebra.algebra(), true, TextFormatting.GREEN + "Any Command");
 
@@ -43,7 +43,7 @@ public class CommandMatcher extends BoolFunctionExpressionCache<CommandMatcher.A
         }
     }
 
-    protected class NameType extends VariableType<Boolean, CommandMatcher.Argument, Object>
+    protected class NameType extends VariableType<Boolean, CommandExpression.Argument, Object>
     {
         public NameType(String prefix, String suffix)
         {
@@ -63,7 +63,7 @@ public class CommandMatcher extends BoolFunctionExpressionCache<CommandMatcher.A
         }
     }
 
-    protected class PermType extends VariableType<Boolean, CommandMatcher.Argument, Object>
+    protected class PermType extends VariableType<Boolean, CommandExpression.Argument, Object>
     {
         public PermType(String prefix, String suffix)
         {

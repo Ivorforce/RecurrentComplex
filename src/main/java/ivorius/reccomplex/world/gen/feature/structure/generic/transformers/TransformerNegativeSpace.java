@@ -19,8 +19,8 @@ import ivorius.reccomplex.utils.algebra.ExpressionCache;
 import ivorius.reccomplex.world.gen.feature.structure.context.StructureLiveContext;
 import ivorius.reccomplex.world.gen.feature.structure.context.StructureLoadContext;
 import ivorius.reccomplex.world.gen.feature.structure.context.StructurePrepareContext;
-import ivorius.reccomplex.utils.expression.BlockMatcher;
-import ivorius.reccomplex.utils.expression.PositionedBlockMatcher;
+import ivorius.reccomplex.utils.expression.BlockExpression;
+import ivorius.reccomplex.utils.expression.PositionedBlockExpression;
 import net.minecraft.block.state.IBlockState;
 import ivorius.reccomplex.utils.NBTNone;
 import net.minecraft.nbt.NBTBase;
@@ -34,25 +34,25 @@ import java.lang.reflect.Type;
  */
 public class TransformerNegativeSpace extends Transformer<NBTNone>
 {
-    public BlockMatcher sourceMatcher;
-    public PositionedBlockMatcher destMatcher;
+    public BlockExpression sourceMatcher;
+    public PositionedBlockExpression destMatcher;
 
     public TransformerNegativeSpace()
     {
-        this(null, BlockMatcher.of(RecurrentComplex.specialRegistry, RCBlocks.genericSpace, 0), "");
+        this(null, BlockExpression.of(RecurrentComplex.specialRegistry, RCBlocks.genericSpace, 0), "");
     }
 
     public TransformerNegativeSpace(@Nullable String id, String sourceExpression, String destExpression)
     {
         super(id != null ? id : randomID(TransformerNegativeSpace.class));
-        this.sourceMatcher = ExpressionCache.of(new BlockMatcher(RecurrentComplex.specialRegistry), sourceExpression);
-        this.destMatcher = ExpressionCache.of(new PositionedBlockMatcher(RecurrentComplex.specialRegistry), destExpression);
+        this.sourceMatcher = ExpressionCache.of(new BlockExpression(RecurrentComplex.specialRegistry), sourceExpression);
+        this.destMatcher = ExpressionCache.of(new PositionedBlockExpression(RecurrentComplex.specialRegistry), destExpression);
     }
 
     @Override
     public boolean skipGeneration(NBTNone instanceData, StructureLiveContext context, BlockPos pos, IBlockState state, IvWorldData worldData, BlockPos sourcePos)
     {
-        return sourceMatcher.test(state) && (destMatcher.evaluate(() -> PositionedBlockMatcher.Argument.at(context.environment.world, pos)));
+        return sourceMatcher.test(state) && (destMatcher.evaluate(() -> PositionedBlockExpression.Argument.at(context.environment.world, pos)));
     }
 
     @Override

@@ -8,7 +8,6 @@ package ivorius.reccomplex.commands;
 import ivorius.reccomplex.RCConfig;
 import ivorius.reccomplex.RecurrentComplex;
 import ivorius.reccomplex.files.RCFiles;
-import ivorius.reccomplex.files.loading.LeveledRegistry;
 import ivorius.reccomplex.files.loading.ResourceDirectory;
 import ivorius.reccomplex.utils.ServerTranslations;
 import ivorius.reccomplex.world.gen.feature.selector.StructureSelector;
@@ -31,7 +30,6 @@ import net.minecraftforge.fml.common.ModContainer;
 
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.Arrays;
 import java.util.PriorityQueue;
 import java.util.function.BiPredicate;
 import java.util.stream.Stream;
@@ -120,7 +118,7 @@ public class CommandSanity extends CommandBase
 
 
         sane &= addGenerationLog(commandSender, VanillaGeneration.class, (structure, gen) ->
-                        values(Biome.REGISTRY).anyMatch(b -> gen.biomeMatcher.test(b))
+                        values(Biome.REGISTRY).anyMatch(b -> gen.biomeExpression.test(b))
                 , "Vanilla structure generation type won't accept any known biomes");
 
         sane &= addGenerationLog(commandSender, VanillaGeneration.class, (structure, gen) ->
@@ -173,7 +171,7 @@ public class CommandSanity extends CommandBase
 
 
         sane &= addGenerationLog(commandSender, StaticGeneration.class, (structure, gen) ->
-                        dimensions(server).anyMatch(d -> gen.dimensionMatcher.test(d.provider))
+                        dimensions(server).anyMatch(d -> gen.dimensionExpression.test(d.provider))
                 , "Static generation won't accept any known dimensions");
 
         if (sane)

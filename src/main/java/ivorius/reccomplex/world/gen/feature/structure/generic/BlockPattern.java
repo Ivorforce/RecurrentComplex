@@ -17,7 +17,7 @@ import ivorius.ivtoolkit.tools.NBTCompoundObjects;
 import ivorius.reccomplex.RecurrentComplex;
 import ivorius.reccomplex.json.JsonUtils;
 import ivorius.reccomplex.utils.algebra.ExpressionCache;
-import ivorius.reccomplex.utils.expression.PositionedBlockMatcher;
+import ivorius.reccomplex.utils.expression.PositionedBlockExpression;
 import ivorius.ivtoolkit.math.Transforms;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.math.BlockPos;
@@ -52,7 +52,7 @@ public class BlockPattern implements NBTCompoundObject
     public BlockPattern()
     {
         pattern.add(new Selection.Area(true, new int[]{0, 0, 0}, new int[]{0, 0, 0}, "Sapling"));
-        ingredients.add(new Ingredient("Sapling", ExpressionCache.of(new PositionedBlockMatcher(RecurrentComplex.specialRegistry), "block.id=minecraft:sapling"), true));
+        ingredients.add(new Ingredient("Sapling", ExpressionCache.of(new PositionedBlockExpression(RecurrentComplex.specialRegistry), "block.id=minecraft:sapling"), true));
     }
 
     private static Gson createGson()
@@ -91,7 +91,7 @@ public class BlockPattern implements NBTCompoundObject
     public boolean test(World world, BlockPos pos)
     {
         return pattern.compile(true).entrySet().stream().allMatch(
-                entry -> findIngredient(entry.getValue()).filter(i -> i.matcher.evaluate(() -> PositionedBlockMatcher.Argument.at(world, pos.add(BlockPositions.fromIntArray(entry.getKey().getCoordinates()))))).isPresent()
+                entry -> findIngredient(entry.getValue()).filter(i -> i.matcher.evaluate(() -> PositionedBlockExpression.Argument.at(world, pos.add(BlockPositions.fromIntArray(entry.getKey().getCoordinates()))))).isPresent()
         );
     }
 
@@ -143,17 +143,17 @@ public class BlockPattern implements NBTCompoundObject
     public static class Ingredient implements NBTCompoundObject
     {
         public String identifier;
-        public PositionedBlockMatcher matcher;
+        public PositionedBlockExpression matcher;
         public boolean delete;
 
         public Ingredient()
         {
             identifier = "";
-            matcher = ExpressionCache.of(new PositionedBlockMatcher(RecurrentComplex.specialRegistry), "");
+            matcher = ExpressionCache.of(new PositionedBlockExpression(RecurrentComplex.specialRegistry), "");
             delete = true;
         }
 
-        public Ingredient(String identifier, PositionedBlockMatcher matcher, boolean delete)
+        public Ingredient(String identifier, PositionedBlockExpression matcher, boolean delete)
         {
             this.identifier = identifier;
             this.matcher = matcher;
@@ -164,7 +164,7 @@ public class BlockPattern implements NBTCompoundObject
         public void readFromNBT(NBTTagCompound compound)
         {
             identifier = compound.getString("identifier");
-            matcher = ExpressionCache.of(new PositionedBlockMatcher(RecurrentComplex.specialRegistry), compound.getString("blockExpression"));
+            matcher = ExpressionCache.of(new PositionedBlockExpression(RecurrentComplex.specialRegistry), compound.getString("blockExpression"));
             delete = compound.getBoolean("delete");
         }
 
@@ -178,7 +178,7 @@ public class BlockPattern implements NBTCompoundObject
 
         public Ingredient copy()
         {
-            return new Ingredient(identifier, ExpressionCache.of(new PositionedBlockMatcher(matcher.registry), matcher.getExpression()), delete);
+            return new Ingredient(identifier, ExpressionCache.of(new PositionedBlockExpression(matcher.registry), matcher.getExpression()), delete);
         }
     }
 
@@ -229,7 +229,7 @@ public class BlockPattern implements NBTCompoundObject
             String blockExpression = JsonUtils.getString(jsonObject, "blockExpression", "");
             boolean delete = JsonUtils.getBoolean(jsonObject, "delete", true);
 
-            return new Ingredient(id, ExpressionCache.of(new PositionedBlockMatcher(registry), blockExpression), delete);
+            return new Ingredient(id, ExpressionCache.of(new PositionedBlockExpression(registry), blockExpression), delete);
         }
 
         @Override

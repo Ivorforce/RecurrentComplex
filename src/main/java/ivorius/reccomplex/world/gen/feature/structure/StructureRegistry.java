@@ -131,7 +131,7 @@ public class StructureRegistry extends SimpleLeveledRegistry<Structure<?>>
         {
             StaticGeneration info = input.getRight();
 
-            return info.dimensionMatcher.test(world.provider)
+            return info.dimensionExpression.test(world.provider)
                     && (info.pattern != null || Chunks.contains(chunkPos, info.getPos(spawnPos)));
         };
         Stream<Pair<Structure<?>, StaticGeneration>> statics = getStructureGenerations(StaticGeneration.class).stream().filter(predicate);

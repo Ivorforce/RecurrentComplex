@@ -29,7 +29,7 @@ public class TableDataSourceDimensionGen extends TableDataSourceSegmented
         this.generationInfo = generationInfo;
         this.tableDelegate = tableDelegate;
         
-        addManagedSegment(0, TableDataSourceExpression.constructDefault(IvTranslations.get("reccomplex.gui.dimensions"), generationInfo.getDimensionMatcher(), null));
+        addManagedSegment(0, TableDataSourceExpression.constructDefault(IvTranslations.get("reccomplex.gui.dimensions"), generationInfo.getDimensionExpression(), null));
     }
 
     @Nonnull

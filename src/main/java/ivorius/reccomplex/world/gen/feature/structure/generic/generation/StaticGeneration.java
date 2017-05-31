@@ -17,7 +17,7 @@ import ivorius.reccomplex.json.JsonUtils;
 import ivorius.reccomplex.utils.algebra.ExpressionCache;
 import ivorius.reccomplex.world.gen.feature.structure.Placer;
 import ivorius.reccomplex.world.gen.feature.structure.generic.placement.GenericPlacer;
-import ivorius.reccomplex.utils.expression.DimensionMatcher;
+import ivorius.reccomplex.utils.expression.DimensionExpression;
 import ivorius.reccomplex.world.gen.feature.structure.generic.presets.GenericPlacerPresets;
 import ivorius.ivtoolkit.blocks.BlockSurfacePos;
 import ivorius.reccomplex.utils.presets.PresettedObject;
@@ -36,7 +36,7 @@ public class StaticGeneration extends GenerationType
     private static Gson gson = createGson();
 
     public final PresettedObject<GenericPlacer> placer = new PresettedObject<>(GenericPlacerPresets.instance(), null);
-    public DimensionMatcher dimensionMatcher;
+    public DimensionExpression dimensionExpression;
 
     public boolean relativeToSpawn;
     public BlockSurfacePos position;
@@ -46,13 +46,13 @@ public class StaticGeneration extends GenerationType
 
     public StaticGeneration()
     {
-        this(null, ExpressionCache.of(new DimensionMatcher(), "0"), true, BlockSurfacePos.ORIGIN, null);
+        this(null, ExpressionCache.of(new DimensionExpression(), "0"), true, BlockSurfacePos.ORIGIN, null);
     }
 
-    public StaticGeneration(@Nullable String id, DimensionMatcher dimensionMatcher, boolean relativeToSpawn, BlockSurfacePos position, Pattern pattern)
+    public StaticGeneration(@Nullable String id, DimensionExpression dimensionExpression, boolean relativeToSpawn, BlockSurfacePos position, Pattern pattern)
     {
         super(id != null ? id : randomID(StaticGeneration.class));
-        this.dimensionMatcher = dimensionMatcher;
+        this.dimensionExpression = dimensionExpression;
         this.relativeToSpawn = relativeToSpawn;
         this.position = position;
         this.pattern = pattern;
@@ -162,7 +162,7 @@ public class StaticGeneration extends GenerationType
 
             Pattern pattern = jsonObject.has("pattern") ? gson.fromJson(jsonObject.get("pattern"), Pattern.class) : null;
 
-            StaticGeneration staticGenInfo = new StaticGeneration(id, ExpressionCache.of(new DimensionMatcher(), dimension), relativeToSpawn, new BlockSurfacePos(positionX, positionZ), pattern);
+            StaticGeneration staticGenInfo = new StaticGeneration(id, ExpressionCache.of(new DimensionExpression(), dimension), relativeToSpawn, new BlockSurfacePos(positionX, positionZ), pattern);
 
             if (!PresettedObjects.read(jsonObject, gson, staticGenInfo.placer, "placerPreset", "placer", new TypeToken<GenericPlacer>(){}.getType())
                     && jsonObject.has("generationY"))
@@ -182,7 +182,7 @@ public class StaticGeneration extends GenerationType
             jsonObject.addProperty("id", src.id);
 
             PresettedObjects.write(jsonObject, gson, src.placer, "placerPreset", "placer");
-            jsonObject.addProperty("dimensions", src.dimensionMatcher.getExpression());
+            jsonObject.addProperty("dimensions", src.dimensionExpression.getExpression());
 
             jsonObject.addProperty("relativeToSpawn", src.relativeToSpawn);
             jsonObject.addProperty("positionX", src.position.x);

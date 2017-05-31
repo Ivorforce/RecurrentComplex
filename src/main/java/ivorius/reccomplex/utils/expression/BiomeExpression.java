@@ -24,13 +24,13 @@ import java.util.stream.Collectors;
 /**
  * Created by lukas on 19.09.14.
  */
-public class BiomeMatcher extends BoolFunctionExpressionCache<Biome, Object>
+public class BiomeExpression extends BoolFunctionExpressionCache<Biome, Object>
 {
     public static final String BIOME_NAME_PREFIX = "name=";
     public static final String BIOME_ID_PREFIX = "id=";
     public static final String BIOME_TYPE_PREFIX = "type=";
 
-    public BiomeMatcher()
+    public BiomeExpression()
     {
         super(RCBoolAlgebra.algebra(), true, TextFormatting.GREEN + "Any Biome");
 

@@ -14,7 +14,7 @@ import ivorius.reccomplex.capability.SelectionOwner;
 import ivorius.reccomplex.commands.parameters.RCExpect;
 import ivorius.reccomplex.commands.parameters.RCParameters;
 import ivorius.reccomplex.utils.ServerTranslations;
-import ivorius.reccomplex.utils.expression.PositionedBlockMatcher;
+import ivorius.reccomplex.utils.expression.PositionedBlockExpression;
 import ivorius.reccomplex.utils.optional.IvOptional;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
@@ -55,11 +55,11 @@ public class CommandSelectCrop extends CommandVirtual
 
         RCParameters parameters = RCParameters.of(args);
 
-        PositionedBlockMatcher matcher = new PositionedBlockMatcher(RecurrentComplex.specialRegistry);
+        PositionedBlockExpression matcher = new PositionedBlockExpression(RecurrentComplex.specialRegistry);
         IvOptional.ifAbsent(parameters.rc().expression(matcher).optional(), () -> matcher.setExpression("is:air"));
 
         for (EnumFacing direction : EnumFacing.VALUES)
-            while (area != null && CommandSelectWand.sideStream(area, direction).allMatch(p -> matcher.test(PositionedBlockMatcher.Argument.at(world, p))))
+            while (area != null && CommandSelectWand.sideStream(area, direction).allMatch(p -> matcher.test(PositionedBlockExpression.Argument.at(world, p))))
                 area = BlockAreas.shrink(area, direction, 1);
 
         selectionOwner.setSelection(area);

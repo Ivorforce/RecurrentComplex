@@ -9,7 +9,7 @@ import ivorius.reccomplex.commands.RCCommands;
 import ivorius.reccomplex.files.loading.ResourceDirectory;
 import ivorius.reccomplex.utils.ServerTranslations;
 import ivorius.reccomplex.utils.algebra.ExpressionCache;
-import ivorius.reccomplex.utils.expression.ResourceMatcher;
+import ivorius.reccomplex.utils.expression.ResourceExpression;
 import ivorius.reccomplex.world.gen.feature.structure.Structure;
 import ivorius.reccomplex.world.gen.feature.structure.StructureRegistry;
 import ivorius.reccomplex.world.gen.feature.structure.generic.GenericStructure;
@@ -51,7 +51,7 @@ public class RCParameter extends Parameter
 
     public Result<Predicate<Structure>> structurePredicate()
     {
-        return expression(new ResourceMatcher(s1 -> !s1.isEmpty())).map(m -> s -> m.test(StructureRegistry.INSTANCE.resourceLocation(s)));
+        return expression(new ResourceExpression(s1 -> !s1.isEmpty())).map(m -> s -> m.test(StructureRegistry.INSTANCE.resourceLocation(s)));
     }
 
     @Override

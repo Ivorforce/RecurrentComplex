@@ -5,7 +5,6 @@
 
 package ivorius.reccomplex.utils.expression;
 
-import ivorius.ivtoolkit.blocks.IvBlockCollection;
 import ivorius.ivtoolkit.tools.MCRegistry;
 import ivorius.reccomplex.utils.RCBlockLogic;
 import ivorius.reccomplex.utils.algebra.BoolFunctionExpressionCache;
@@ -29,7 +28,7 @@ import java.util.function.Function;
 /**
  * Created by lukas on 16.09.16.
  */
-public class PositionedBlockMatcher extends BoolFunctionExpressionCache<PositionedBlockMatcher.Argument, Object>
+public class PositionedBlockExpression extends BoolFunctionExpressionCache<PositionedBlockExpression.Argument, Object>
 {
     public static final String BLOCK_PREFIX = "block.";
     public static final String IS_PREFIX = "is:";
@@ -38,7 +37,7 @@ public class PositionedBlockMatcher extends BoolFunctionExpressionCache<Position
 
     public final MCRegistry registry;
 
-    public PositionedBlockMatcher(MCRegistry registry)
+    public PositionedBlockExpression(MCRegistry registry)
     {
         super(RCBoolAlgebra.algebra(), true, TextFormatting.GREEN + "Any Block");
 
@@ -47,7 +46,7 @@ public class PositionedBlockMatcher extends BoolFunctionExpressionCache<Position
         addTypes(new BlockVariableType(BLOCK_PREFIX, "", registry), v -> v.alias("", ""));
         addTypes(new IsVariableType(IS_PREFIX, ""));
         addType(new SustainVariableType(SUSTAIN_PREFIX, ""));
-        addType(new BlocksVariableType(PositionedBlockMatcher.BLOCKS_PREFIX, ""));
+        addType(new BlocksVariableType(PositionedBlockExpression.BLOCKS_PREFIX, ""));
     }
 
     public static class Argument
@@ -79,7 +78,7 @@ public class PositionedBlockMatcher extends BoolFunctionExpressionCache<Position
         }
     }
 
-    public static class BlockVariableType extends DelegatingVariableType<Boolean, Argument, Object, IBlockState, Object, BlockMatcher>
+    public static class BlockVariableType extends DelegatingVariableType<Boolean, Argument, Object, IBlockState, Object, BlockExpression>
     {
         public final MCRegistry registry;
 
@@ -96,9 +95,9 @@ public class PositionedBlockMatcher extends BoolFunctionExpressionCache<Position
         }
 
         @Override
-        public BlockMatcher createCache()
+        public BlockExpression createCache()
         {
-            return new BlockMatcher(registry);
+            return new BlockExpression(registry);
         }
     }
 

@@ -25,12 +25,12 @@ import java.util.function.Function;
 /**
  * Created by lukas on 19.09.14.
  */
-public class DependencyMatcher extends BoolFunctionExpressionCache<FileSaver, FileSaver>
+public class DependencyExpression extends BoolFunctionExpressionCache<FileSaver, FileSaver>
 {
     public static final String MOD_PREFIX = "mod:";
     public static final String REGISTRY_PREFIX = "registry:";
 
-    public DependencyMatcher()
+    public DependencyExpression()
     {
         super(RCBoolAlgebra.algebra(), true, TextFormatting.GREEN + "No Dependencies");
 
@@ -92,7 +92,7 @@ public class DependencyMatcher extends BoolFunctionExpressionCache<FileSaver, Fi
         }
     }
 
-    protected static class RegistryVariableType extends DelegatingVariableType<Boolean, FileSaver, FileSaver, LeveledRegistry, LeveledRegistry, RegistryMatcher>
+    protected static class RegistryVariableType extends DelegatingVariableType<Boolean, FileSaver, FileSaver, LeveledRegistry, LeveledRegistry, RegistryExpression>
     {
         public RegistryVariableType(String prefix, String suffix)
         {
@@ -120,9 +120,9 @@ public class DependencyMatcher extends BoolFunctionExpressionCache<FileSaver, Fi
         }
 
         @Override
-        public RegistryMatcher createCache()
+        public RegistryExpression createCache()
         {
-            return new RegistryMatcher();
+            return new RegistryExpression();
         }
 
         @Override
@@ -131,7 +131,7 @@ public class DependencyMatcher extends BoolFunctionExpressionCache<FileSaver, Fi
             Optional<Pair<String, String>> split = splitOnce(var, ".");
             return split.map(p ->
             {
-                RegistryMatcher c = ExpressionCache.of(createCache(), p.getRight());
+                RegistryExpression c = ExpressionCache.of(createCache(), p.getRight());
                 return (Function<SupplierCache<FileSaver>, Boolean>) fileSaver -> c.evaluate(convertEvaluateArgument(var, fileSaver.get()));
             }).orElseThrow(IllegalStateException::new);
         }

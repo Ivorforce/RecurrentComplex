@@ -17,12 +17,12 @@ import java.util.function.Predicate;
 /**
  * Created by lukas on 01.05.15.
  */
-public class ResourceMatcher extends BoolFunctionExpressionCache<RawResourceLocation, Object>
+public class ResourceExpression extends BoolFunctionExpressionCache<RawResourceLocation, Object>
 {
     public static final String ID_PREFIX = "id=";
     public static final String DOMAIN_PREFIX = "domain=";
 
-    public ResourceMatcher(Predicate<String> isKnown)
+    public ResourceExpression(Predicate<String> isKnown)
     {
         super(RCBoolAlgebra.algebra(), true, TextFormatting.GREEN + "Any Structure");
 

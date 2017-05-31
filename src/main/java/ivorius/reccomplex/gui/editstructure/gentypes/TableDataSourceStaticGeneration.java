@@ -43,7 +43,7 @@ public class TableDataSourceStaticGeneration extends TableDataSourceSegmented
                 .addNavigation(() -> new TableDataSourcePlacer(generationInfo.placer, delegate, navigator))
                 .buildDataSource(IvTranslations.get("reccomplex.placer"), IvTranslations.getLines("reccomplex.placer.tooltip")));
 
-        addManagedSegment(4, TableDataSourceExpression.constructDefault(IvTranslations.get("reccomplex.gui.dimensions"), generationInfo.dimensionMatcher, null));
+        addManagedSegment(4, TableDataSourceExpression.constructDefault(IvTranslations.get("reccomplex.gui.dimensions"), generationInfo.dimensionExpression, null));
 
         addManagedSegment(5, TableCellMultiBuilder.create(navigator, delegate)
                 .addNavigation(() -> new TableDataSourceStaticPattern(generationInfo.pattern, delegate), () -> IvTranslations.get("reccomplex.generationInfo.static.pattern"))

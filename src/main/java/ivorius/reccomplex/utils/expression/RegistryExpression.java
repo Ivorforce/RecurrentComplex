@@ -17,11 +17,11 @@ import java.util.function.Function;
 /**
  * Created by lukas on 19.09.14.
  */
-public class RegistryMatcher extends BoolFunctionExpressionCache<LeveledRegistry, LeveledRegistry>
+public class RegistryExpression extends BoolFunctionExpressionCache<LeveledRegistry, LeveledRegistry>
 {
     public static final String HAS_PREFIX = "has:";
 
-    public RegistryMatcher()
+    public RegistryExpression()
     {
         super(RCBoolAlgebra.algebra(), true, TextFormatting.GREEN + "Any");
 

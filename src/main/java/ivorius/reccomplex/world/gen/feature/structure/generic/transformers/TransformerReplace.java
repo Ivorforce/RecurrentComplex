@@ -19,7 +19,7 @@ import ivorius.reccomplex.gui.table.datasource.TableDataSource;
 import ivorius.reccomplex.json.JsonUtils;
 import ivorius.reccomplex.utils.NBTNone;
 import ivorius.reccomplex.utils.algebra.ExpressionCache;
-import ivorius.reccomplex.utils.expression.BlockMatcher;
+import ivorius.reccomplex.utils.expression.BlockExpression;
 import ivorius.reccomplex.utils.presets.PresettedList;
 import ivorius.reccomplex.utils.presets.PresettedObjects;
 import ivorius.reccomplex.world.gen.feature.structure.Environment;
@@ -49,18 +49,18 @@ import java.util.function.Supplier;
 public class TransformerReplace extends TransformerSingleBlock<NBTNone>
 {
     public final PresettedList<WeightedBlockState> destination = new PresettedList<>(WeightedBlockStatePresets.instance(), null);
-    public BlockMatcher sourceMatcher;
+    public BlockExpression sourceMatcher;
 
     public TransformerReplace()
     {
-        this(null, BlockMatcher.of(RecurrentComplex.specialRegistry, Blocks.WOOL));
+        this(null, BlockExpression.of(RecurrentComplex.specialRegistry, Blocks.WOOL));
         destination.setPreset("air");
     }
 
     public TransformerReplace(@Nullable String id, String sourceExpression)
     {
         super(id != null ? id : randomID(TransformerReplace.class));
-        this.sourceMatcher = ExpressionCache.of(new BlockMatcher(RecurrentComplex.specialRegistry), sourceExpression);
+        this.sourceMatcher = ExpressionCache.of(new BlockExpression(RecurrentComplex.specialRegistry), sourceExpression);
     }
 
     public static void setBlock(StructureSpawnContext context, int[] areaSize, BlockPos pos, WeightedBlockState entry, Supplier<NBTTagCompound> tileEntity)
@@ -142,7 +142,7 @@ public class TransformerReplace extends TransformerSingleBlock<NBTNone>
             {
                 String sourceBlock = JsonUtils.getString(jsonObject, blockKey);
                 int sourceMeta = JsonUtils.getInt(jsonObject, metadataKey, -1);
-                return sourceMeta >= 0 ? String.format("%s & %s%d", sourceBlock, BlockMatcher.METADATA_PREFIX, sourceMeta) : sourceBlock;
+                return sourceMeta >= 0 ? String.format("%s & %s%d", sourceBlock, BlockExpression.METADATA_PREFIX, sourceMeta) : sourceBlock;
             }
 
             return null;

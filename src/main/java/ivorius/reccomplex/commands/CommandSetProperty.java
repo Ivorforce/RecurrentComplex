@@ -13,7 +13,7 @@ import ivorius.reccomplex.capability.SelectionOwner;
 import ivorius.reccomplex.commands.parameters.RCExpect;
 import ivorius.reccomplex.commands.parameters.RCParameters;
 import ivorius.reccomplex.utils.ServerTranslations;
-import ivorius.reccomplex.utils.expression.PositionedBlockMatcher;
+import ivorius.reccomplex.utils.expression.PositionedBlockExpression;
 import ivorius.reccomplex.utils.optional.IvOptional;
 import ivorius.reccomplex.world.gen.feature.structure.generic.transformers.TransformerProperty;
 import net.minecraft.command.CommandException;
@@ -64,7 +64,7 @@ public class CommandSetProperty extends CommandVirtual
     {
         RCParameters parameters = RCParameters.of(args);
 
-        PositionedBlockMatcher matcher = new PositionedBlockMatcher(RecurrentComplex.specialRegistry);
+        PositionedBlockExpression matcher = new PositionedBlockExpression(RecurrentComplex.specialRegistry);
         IvOptional.ifAbsent(parameters.rc("exp").expression(matcher).optional(), () -> matcher.setExpression(""));
 
         String propertyName = parameters.get().first().require();
@@ -74,7 +74,7 @@ public class CommandSetProperty extends CommandVirtual
         RCCommands.assertSize(commandSender, selectionOwner);
         for (BlockPos pos : BlockAreas.mutablePositions(selectionOwner.getSelection()))
         {
-            PositionedBlockMatcher.Argument at = PositionedBlockMatcher.Argument.at(world, pos);
+            PositionedBlockExpression.Argument at = PositionedBlockExpression.Argument.at(world, pos);
             if (matcher.test(at))
                 TransformerProperty.withProperty(at.state, propertyName, propertyValue).ifPresent(state -> world.setBlockState(pos, state, 3));
         }

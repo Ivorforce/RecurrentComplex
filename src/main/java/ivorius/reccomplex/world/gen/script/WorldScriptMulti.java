@@ -14,7 +14,7 @@ import ivorius.reccomplex.gui.worldscripts.multi.TableDataSourceWorldScriptMulti
 import ivorius.reccomplex.world.gen.feature.structure.context.StructureLoadContext;
 import ivorius.reccomplex.world.gen.feature.structure.context.StructurePrepareContext;
 import ivorius.reccomplex.world.gen.feature.structure.context.StructureSpawnContext;
-import ivorius.reccomplex.utils.expression.EnvironmentMatcher;
+import ivorius.reccomplex.utils.expression.EnvironmentExpression;
 import ivorius.reccomplex.utils.NBTStorable;
 import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTTagCompound;
@@ -33,7 +33,7 @@ import java.util.stream.Collectors;
 public class WorldScriptMulti implements WorldScript<WorldScriptMulti.InstanceData>
 {
     public final List<WorldScript> scripts = new ArrayList<>();
-    public final EnvironmentMatcher environmentMatcher = new EnvironmentMatcher();
+    public final EnvironmentExpression environmentExpression = new EnvironmentExpression();
 
     @Override
     public InstanceData prepareInstanceData(StructurePrepareContext context, BlockPos pos)
@@ -43,7 +43,7 @@ public class WorldScriptMulti implements WorldScript<WorldScriptMulti.InstanceDa
         for (WorldScript script : scripts)
             instanceData.addInstanceData(script, script.prepareInstanceData(context, pos));
 
-        instanceData.deactivated = !environmentMatcher.test(context.environment);
+        instanceData.deactivated = !environmentExpression.test(context.environment);
 
         return instanceData;
     }
@@ -85,7 +85,7 @@ public class WorldScriptMulti implements WorldScript<WorldScriptMulti.InstanceDa
         scripts.clear();
         scripts.addAll(NBTTagLists.compoundsFrom(compound, "scripts").stream().map(WorldScriptRegistry.INSTANCE::read).filter(Objects::nonNull).collect(Collectors.toList()));
 
-        environmentMatcher.setExpression(compound.getString("environmentMatcher"));
+        environmentExpression.setExpression(compound.getString("environmentMatcher"));
     }
 
     @Override
@@ -93,7 +93,7 @@ public class WorldScriptMulti implements WorldScript<WorldScriptMulti.InstanceDa
     {
         NBTTagLists.writeTo(compound, "scripts", scripts.stream().map(WorldScriptRegistry.INSTANCE::write).collect(Collectors.toList()));
 
-        compound.setString("environmentMatcher", environmentMatcher.getExpression());
+        compound.setString("environmentMatcher", environmentExpression.getExpression());
     }
 
     public static class InstanceData implements NBTStorable

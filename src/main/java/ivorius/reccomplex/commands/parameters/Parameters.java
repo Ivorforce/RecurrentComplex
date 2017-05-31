@@ -24,6 +24,8 @@ import java.util.function.Function;
  */
 public class Parameters
 {
+    public static final String flagPrefix = "--";
+
     protected final Set<String> flags;
     protected final ListMultimap<String, String> params;
 
@@ -51,12 +53,12 @@ public class Parameters
         {
             String param = params.get(i);
 
-            if (param.startsWith("-") && Doubles.tryParse(param) == null)
+            if (param.startsWith(flagPrefix))
             {
-                if (param.length() == 1)
+                if (param.length() == flagPrefix.length())
                     curName = null;
                 else
-                    flags.add(curName = param.substring(1));
+                    flags.add(curName = param.substring(flagPrefix.length()));
             }
             else
                 named.put(curName, param); // Can be infinite

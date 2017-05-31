@@ -105,12 +105,12 @@ public class Expect<T extends Expect<T>>
             String param = params.get(i);
             curIndex++;
 
-            if (param.startsWith("-") && Doubles.tryParse(param) == null)
+            if (param.startsWith(Parameters.flagPrefix))
             {
-                if (param.length() == 1)
+                if (param.length() == Parameters.flagPrefix.length())
                     curName = null;
                 else
-                    flags.add(curName = param.substring(1));
+                    flags.add(curName = param.substring(Parameters.flagPrefix.length()));
                 curIndex = 0;
             }
         }
@@ -126,7 +126,7 @@ public class Expect<T extends Expect<T>>
                     .collect(Collectors.toCollection(ArrayList::new));
 
             // Also complete flags in case the user wants to switch the current
-            if (params.get(params.size() - 1).startsWith("-"))
+            if (params.get(params.size() - 1).startsWith(Parameters.flagPrefix))
                 paramCompletion.addAll(remaining(paramArray, flags));
 
             return paramCompletion;
@@ -141,7 +141,7 @@ public class Expect<T extends Expect<T>>
     {
         return getListOfStringsMatchingLastWord(paramArray, this.params.keySet().stream()
                 .filter(p -> p != null && !flags.contains(p))
-                .map(p -> "-" + p).collect(Collectors.toList()));
+                .map(p -> Parameters.flagPrefix + p).collect(Collectors.toList()));
     }
 
     public interface Completer

@@ -6,6 +6,7 @@
 package ivorius.reccomplex.commands;
 
 import ivorius.reccomplex.RCConfig;
+import ivorius.reccomplex.commands.parameters.Parameters;
 import ivorius.reccomplex.network.PacketEditStructureHandler;
 import ivorius.reccomplex.utils.ServerTranslations;
 import ivorius.reccomplex.world.gen.feature.structure.StructureRegistry;
@@ -49,7 +50,7 @@ public class CommandConvertSchematic extends CommandBase
     @Override
     public void execute(MinecraftServer server, ICommandSender commandSender, String[] args) throws CommandException
     {
-        args = RCCommands.parseQuotedWords(args);
+        args = Parameters.quoted(args);
         EntityPlayerMP player = getCommandSenderAsPlayer(commandSender);
 
         if (args.length < 1)
@@ -68,7 +69,7 @@ public class CommandConvertSchematic extends CommandBase
     @Override
     public List<String> getTabCompletions(MinecraftServer server, ICommandSender sender, String[] args, @Nullable BlockPos pos)
     {
-        args = RCCommands.parseQuotedWords(args);
+        args = Parameters.quoted(args);
 
         if (args.length == 1)
             return getListOfStringsMatchingLastWord(args, SchematicLoader.currentSchematicFileNames()

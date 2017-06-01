@@ -7,6 +7,7 @@ package ivorius.reccomplex.commands;
 
 import ivorius.reccomplex.RCConfig;
 import ivorius.reccomplex.RecurrentComplex;
+import ivorius.reccomplex.Repository;
 import ivorius.reccomplex.capability.RCEntityInfo;
 import ivorius.reccomplex.capability.SelectionOwner;
 import ivorius.reccomplex.commands.clipboard.CommandPaste;
@@ -15,14 +16,15 @@ import ivorius.reccomplex.commands.files.CommandDelete;
 import ivorius.reccomplex.commands.files.CommandReload;
 import ivorius.reccomplex.commands.files.CommandWrite;
 import ivorius.reccomplex.commands.files.CommandWriteAll;
+import ivorius.reccomplex.commands.former.*;
 import ivorius.reccomplex.commands.info.CommandBiomeDict;
 import ivorius.reccomplex.commands.info.CommandDimensionDict;
+import ivorius.reccomplex.commands.parameters.DirectCommand;
 import ivorius.reccomplex.commands.preview.CommandCancel;
 import ivorius.reccomplex.commands.preview.CommandConfirm;
 import ivorius.reccomplex.commands.preview.CommandPreview;
 import ivorius.reccomplex.commands.schematic.CommandSchematic;
 import ivorius.reccomplex.commands.structure.*;
-import ivorius.reccomplex.commands.former.*;
 import ivorius.reccomplex.commands.structure.entry.CommandForget;
 import ivorius.reccomplex.commands.structure.entry.CommandSelectRemember;
 import ivorius.reccomplex.commands.structure.entry.CommandWhatIsThis;
@@ -33,7 +35,9 @@ import ivorius.reccomplex.files.loading.ResourceDirectory;
 import ivorius.reccomplex.utils.ServerTranslations;
 import ivorius.reccomplex.utils.algebra.ExpressionCache;
 import ivorius.reccomplex.utils.algebra.FunctionExpressionCaches;
-import net.minecraft.command.*;
+import net.minecraft.command.CommandException;
+import net.minecraft.command.ICommand;
+import net.minecraft.command.ICommandSender;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraftforge.client.ClientCommandHandler;
@@ -153,8 +157,8 @@ public class RCCommands
     {
         handler.registerCommand(new CommandVisitFiles());
 
-        handler.registerCommand(new CommandVisitRepository());
-        handler.registerCommand(new CommandVisitRepositoryBrowse());
+        handler.registerCommand(new DirectCommand(RCConfig.commandPrefix + "repository", s -> Repository.openWebLink(Repository.BASE_URL)).permitFor(0));
+        handler.registerCommand(new DirectCommand(RCConfig.commandPrefix + "browse", s -> Repository.openWebLink(Repository.browseURL())).permitFor(0));
     }
 
     @Nonnull

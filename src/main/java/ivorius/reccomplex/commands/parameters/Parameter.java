@@ -57,7 +57,7 @@ public class Parameter
 
     public Parameter move(int idx)
     {
-        return new Parameter(moved > 0 ? moved + idx : moved, name, params.subList(idx, params.size()));
+        return new Parameter(moved >= 0 ? moved + idx : moved, name, params.subList(idx, params.size()));
     }
 
     public Result<String> first()

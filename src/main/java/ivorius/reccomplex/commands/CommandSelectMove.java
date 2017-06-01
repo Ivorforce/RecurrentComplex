@@ -57,7 +57,7 @@ public class CommandSelectMove extends CommandBase
         RCParameters parameters = RCParameters.of(args, "m");
 
         BlockPos pos = parameters.pos("x", "y", "z", commandSender.getPosition(), false).require();
-        AxisAlignedTransform2D transform = parameters.transform("r", "m").optional().orElse(AxisAlignedTransform2D.ORIGINAL);
+        AxisAlignedTransform2D transform = parameters.transform("rotation", "mirror").optional().orElse(AxisAlignedTransform2D.ORIGINAL);
 
         SelectionOwner selectionOwner = RCCommands.getSelectionOwner(commandSender, null, true);
         RCCommands.assertSize(commandSender, selectionOwner);
@@ -77,8 +77,8 @@ public class CommandSelectMove extends CommandBase
     {
         return RCExpect.startRC()
                 .pos("x", "y", "z")
-                .named("r").rotation()
-                .flag("m")
+                .named("rotation").rotation()
+                .flag("mirror")
                 .get(server, sender, args, pos);
     }
 }

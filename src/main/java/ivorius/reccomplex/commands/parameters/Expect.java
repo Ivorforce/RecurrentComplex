@@ -28,7 +28,7 @@ public class Expect<T extends Expect<T>>
 
     Expect()
     {
-
+        getOrCreate(null);
     }
 
     public static <T extends Expect<T>> T start()
@@ -37,13 +37,13 @@ public class Expect<T extends Expect<T>>
         return (T) new Expect();
     }
 
-    public T named(String name)
+    public T named(@Nonnull String name)
     {
-        cur = name;
+        getOrCreate(cur = name);
         return (T) this;
     }
 
-    public T flag(String name)
+    public T flag(@Nonnull String name)
     {
         flags.add(name);
         return named(name);
@@ -56,11 +56,18 @@ public class Expect<T extends Expect<T>>
 
     public T next(Completer completion)
     {
-        Param cur = params.get(this.cur);
-        if (cur == null)
-            params.put(this.cur, cur = new Param());
+        Param cur = getOrCreate(this.cur);
         cur.next(completion);
         return (T) this;
+    }
+
+    @Nonnull
+    protected Param getOrCreate(String id)
+    {
+        Param param = params.get(id);
+        if (param == null)
+            params.put(this.cur, param = new Param());
+        return param;
     }
 
     public T any(Object... completion)
@@ -133,7 +140,7 @@ public class Expect<T extends Expect<T>>
         public Collection<String> complete(MinecraftServer server, ICommandSender sender, String[] argss, @Nullable BlockPos pos);
     }
 
-    public class Param
+    protected class Param
     {
         protected final List<Completer> completion = new ArrayList<>();
         protected boolean repeat;

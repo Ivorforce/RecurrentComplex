@@ -16,7 +16,6 @@ import ivorius.reccomplex.utils.ServerTranslations;
 import ivorius.reccomplex.world.gen.feature.structure.generic.GenericStructure;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.CommandException;
-import net.minecraft.command.ICommand;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.math.BlockPos;
@@ -81,7 +80,7 @@ public class CommandMapStructure extends CommandBase
         return RCExpect.startRC()
                 .structure()
                 .command()
-                .commandArguments(parameters.get().move(1)).repeat()
+                .commandArguments(parameters.get().move(1), sender).repeat()
                 .named("dir").resourceDirectory()
                 .get(server, sender, args, pos);
     }

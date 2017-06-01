@@ -32,13 +32,11 @@ import java.util.List;
  */
 public class CommandPaste extends CommandBase
 {
-    private boolean asSource = false;
     private String name;
     private String usage;
 
-    public CommandPaste(boolean asSource, String name, String usage)
+    public CommandPaste(String name, String usage)
     {
-        this.asSource = asSource;
         this.name = name;
         this.usage = usage;
     }
@@ -63,7 +61,7 @@ public class CommandPaste extends CommandBase
     @Override
     public void execute(MinecraftServer server, ICommandSender commandSender, String[] args) throws CommandException
     {
-        RCParameters parameters = RCParameters.of(args, "mirror");
+        RCParameters parameters = RCParameters.of(args, "mirror", "generate");
 
         EntityPlayerMP entityPlayerMP = getCommandSenderAsPlayer(commandSender);
         RCEntityInfo entityInfo = RCCommands.getStructureEntityInfo(entityPlayerMP, null);
@@ -76,12 +74,13 @@ public class CommandPaste extends CommandBase
         BlockPos pos = parameters.pos("x", "y", "z", commandSender.getPosition(), false).require();
         AxisAlignedTransform2D transform = parameters.transform("rotation", "mirror").optional().orElse(AxisAlignedTransform2D.ORIGINAL);
         String seed = parameters.get("seed").first().optional().orElse(null);
+        boolean generate = parameters.has("generate");
 
         GenericStructure structureInfo = GenericStructure.createDefaultStructure();
         structureInfo.worldDataCompound = worldData;
 
         // TODO Generate with generation info?
-        OperationRegistry.queueOperation(new OperationGenerateStructure(structureInfo, null, transform, pos, asSource)
+        OperationRegistry.queueOperation(new OperationGenerateStructure(structureInfo, null, transform, pos, generate)
                 .withSeed(seed)
                 .prepare((WorldServer) commandSender.getEntityWorld()), commandSender);
     }
@@ -95,6 +94,7 @@ public class CommandPaste extends CommandBase
                 .named("rotation").rotation()
                 .named("seed").randomString()
                 .flag("mirror")
+                .flag("generate")
                 .get(server, sender, args, pos);
     }
 }

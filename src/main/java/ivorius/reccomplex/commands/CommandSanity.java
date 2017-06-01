@@ -7,6 +7,8 @@ package ivorius.reccomplex.commands;
 
 import ivorius.reccomplex.RCConfig;
 import ivorius.reccomplex.RecurrentComplex;
+import ivorius.reccomplex.commands.parameters.RCExpect;
+import ivorius.reccomplex.commands.parameters.RCParameters;
 import ivorius.reccomplex.files.RCFiles;
 import ivorius.reccomplex.files.loading.ResourceDirectory;
 import ivorius.reccomplex.utils.ServerTranslations;
@@ -20,6 +22,7 @@ import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.registry.IRegistry;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraft.world.World;
@@ -28,8 +31,10 @@ import net.minecraftforge.common.DimensionManager;
 import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.fml.common.ModContainer;
 
+import javax.annotation.Nullable;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.List;
 import java.util.PriorityQueue;
 import java.util.function.BiPredicate;
 import java.util.stream.Stream;
@@ -59,19 +64,21 @@ public class CommandSanity extends CommandBase
     @Override
     public void execute(MinecraftServer server, ICommandSender commandSender, String[] args) throws CommandException
     {
+        RCParameters parameters = RCParameters.of(args, "silent");
+        boolean sane = true;
+
         if (StructureRegistry.INSTANCE.ids().isEmpty())
         {
-            commandSender.addChatMessage(new TextComponentString("No registered structures!"));
-            return;
+            commandSender.sendMessage(new TextComponentString("No registered structures!"));
+            sane = false;
         }
-
-        boolean sane = true;
 
         if (!Files.isReadable(ResourceDirectory.getCustomDirectory().toPath()))
         {
             commandSender.sendMessage(new TextComponentString("Can't read files from custom directory"));
             sane = false;
         }
+
         for (ModContainer mod : Loader.instance().getModList())
         {
             String domain = mod.getModId();
@@ -95,6 +102,7 @@ public class CommandSanity extends CommandBase
                 sane = false;
             }
         }
+
         if (!Files.isReadable(ResourceDirectory.getServerDirectory().toPath()))
         {
             commandSender.sendMessage(new TextComponentString("Can't read files from server directory"));
@@ -174,8 +182,8 @@ public class CommandSanity extends CommandBase
                         dimensions(server).anyMatch(d -> gen.dimensionExpression.test(d.provider))
                 , "Static generation won't accept any known dimensions");
 
-        if (sane)
-            commandSender.addChatMessage(new TextComponentString("No specific problems found!"));
+        if (sane && !parameters.has("silent"))
+            commandSender.sendMessage(new TextComponentString("No specific problems found!"));
     }
 
     public static <K, T> Stream<T> values(IRegistry<K, T> registry)
@@ -208,4 +216,11 @@ public class CommandSanity extends CommandBase
         return true;
     }
 
+    @Override
+    public List<String> getTabCompletions(MinecraftServer server, ICommandSender sender, String[] args, @Nullable BlockPos targetPos)
+    {
+        return RCExpect.startRC()
+                .flag("silent")
+                .get(server, sender, args, targetPos);
+    }
 }

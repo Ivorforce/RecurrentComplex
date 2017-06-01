@@ -7,6 +7,8 @@ package ivorius.reccomplex.commands;
 
 import ivorius.reccomplex.RCConfig;
 import ivorius.reccomplex.capability.RCEntityInfo;
+import ivorius.reccomplex.commands.parameters.RCExpect;
+import ivorius.reccomplex.commands.parameters.RCParameters;
 import ivorius.reccomplex.operation.Operation;
 import ivorius.reccomplex.utils.ServerTranslations;
 import net.minecraft.command.CommandBase;
@@ -17,7 +19,6 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.math.BlockPos;
 
 import javax.annotation.Nullable;
-import java.util.Collections;
 import java.util.List;
 
 /**
@@ -45,28 +46,26 @@ public class CommandPreview extends CommandBase
     @Override
     public void execute(MinecraftServer server, ICommandSender commandSender, String[] args) throws CommandException
     {
-        if (args.length < 1)
-            throw ServerTranslations.wrongUsageException("commands.rcpreview.usage");
+        RCParameters parameters = RCParameters.of(args);
 
         EntityPlayer player = getCommandSenderAsPlayer(commandSender);
         RCEntityInfo RCEntityInfo = RCCommands.getStructureEntityInfo(player, null);
 
-        Operation.PreviewType previewType = Operation.PreviewType.find(args[0]);
-        if (previewType == null)
-            throw ServerTranslations.commandException("commands.rcpreview.invalid");
+        Operation.PreviewType previewType = parameters.get().first()
+                .map(Operation.PreviewType::find, s -> ServerTranslations.commandException("commands.rcpreview.invalid"))
+                .require();
 
         RCEntityInfo.setPreviewType(previewType);
         RCEntityInfo.sendPreviewTypeToClients(player);
 
-        commandSender.addChatMessage(ServerTranslations.format("commands.rcpreview.success", args[0]));
+        commandSender.sendMessage(ServerTranslations.format("commands.rcpreview.success", previewType.key));
     }
 
     @Override
     public List<String> getTabCompletionOptions(MinecraftServer server, ICommandSender sender, String[] args, @Nullable BlockPos pos)
     {
-        if (args.length == 1)
-            return getListOfStringsMatchingLastWord(args, Operation.PreviewType.keys());
-
-        return Collections.emptyList();
+        return RCExpect.startRC()
+                .any((Object[]) Operation.PreviewType.keys())
+                .get(server, sender, args, pos);
     }
 }

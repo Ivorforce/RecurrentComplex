@@ -103,9 +103,8 @@ commands.strucReload.success=Reloaded all %s files.
 commands.selectCopy.usage=/#copy
 commands.selectCopy.success=Copied %s, %s, %s to %s, %s, %s to clipboard
 
-commands.strucPaste.usage=/#paste --x [x] --y [y] --z [z] --rotation [rotation] --mirror
+commands.strucPaste.usage=/#paste --x [x] --y [y] --z [z] --rotation [rotation] --mirror --generate --seed [seed]
 commands.strucPaste.noClipboard=You have to copy an area first!
-commands.strucPasteGen.usage=/#pastegen --x [x] --y [y] --z [z] --rotation [rotation] --mirror --seed [seed]
 
 commands.selectMove.usage=/#move --x [x] --y [y] --z [z] -r [rotations] --mirror
 

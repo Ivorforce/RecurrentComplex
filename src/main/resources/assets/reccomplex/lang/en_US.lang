@@ -218,7 +218,7 @@ commands.rceval.usage=/#eval <dependency expression>
 commands.rceval.result.true=True
 commands.rceval.result.false=False
 
-commands.rcsanity.usage=/#sanity --silent
+commands.rcsanity.usage=/#sanity --silent --short
 
 inventoryGen.vanilla=Vanilla Generator
 inventoryGen.custom=Custom Generator

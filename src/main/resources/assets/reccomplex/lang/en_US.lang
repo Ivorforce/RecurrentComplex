@@ -118,11 +118,11 @@ commands.rcreopen.nogui=No GUI to reopen!
 commands.rcreopen.fail=Failed to reopen GUI!
 commands.rc.didhide=Hidden GUI - %s?
 
-commands.strucImportSchematic.usage=/#importschematic "<Schematic Name>" --x [x] --y [y] --z [z] --rotation [rotation] --mirror
-commands.strucImportSchematic.missing=The file '%s' was not found in %s
-commands.strucImportSchematic.format=The file '%s' has an unsupported format (%s)
+commands.rcimportschematic.usage=import "<Schematic Name>" --x [x] --y [y] --z [z] --rotation [rotation] --mirror
+commands.rcimportschematic.missing=The file '%s' was not found in %s
+commands.rcimportschematic.format=The file '%s' has an unsupported format (%s)
 
-commands.rcconvertschematic.usage=/#convertschematic "<Schematic Name>" --from <structure ID>
+commands.rcconvertschematic.usage=convert "<Schematic Name>" --from <structure ID>
 
 commands.strucExportSchematic.usage=/#exportschematic <schematic name>
 commands.strucExportSchematic.success=Exported schematic to '%s'

@@ -9,6 +9,7 @@ import ivorius.reccomplex.RCConfig;
 import ivorius.reccomplex.RecurrentComplex;
 import ivorius.reccomplex.capability.RCEntityInfo;
 import ivorius.reccomplex.capability.SelectionOwner;
+import ivorius.reccomplex.commands.schematic.CommandSchematic;
 import ivorius.reccomplex.files.RCFiles;
 import ivorius.reccomplex.files.loading.FileLoader;
 import ivorius.reccomplex.files.loading.LeveledRegistry;
@@ -113,9 +114,7 @@ public class RCCommands
         event.registerServerCommand(biomeDict = new CommandBiomeDict());
         event.registerServerCommand(dimensionDict = new CommandDimensionDict());
 
-        event.registerServerCommand(new CommandImportSchematic());
-        event.registerServerCommand(new CommandExportSchematic());
-        event.registerServerCommand(new CommandConvertSchematic());
+        event.registerServerCommand(new CommandSchematic());
 
         event.registerServerCommand(new CommandWhatIsThis());
         event.registerServerCommand(forget = new CommandForget());

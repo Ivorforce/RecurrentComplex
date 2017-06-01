@@ -203,7 +203,16 @@ public class Parameter
             });
         }
 
-        public Result<T> orElse(Supplier<T> supplier)
+        public Result<T> orElse(T t)
+        {
+            return new Result<T>(() ->
+            {
+                T p = this.t.get();
+                return p != null ? p : t;
+            });
+        }
+
+        public Result<T> orElseGet(Supplier<T> supplier)
         {
             return new Result<T>(() ->
             {

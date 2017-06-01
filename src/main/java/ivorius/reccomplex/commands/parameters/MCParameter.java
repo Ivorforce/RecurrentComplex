@@ -17,7 +17,6 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.WorldServer;
 import net.minecraft.world.biome.Biome;
 import net.minecraftforge.common.BiomeDictionary;
-import net.minecraftforge.common.DimensionManager;
 
 /**
  * Created by lukas on 31.05.17.
@@ -43,11 +42,11 @@ public class MCParameter extends Parameter
 
     public Result<BlockPos> pos(Parameter yp, Parameter zp, BlockPos ref, boolean centerBlock)
     {
-        return first().missable().flatMap(x ->
-                yp.first().missable().flatMap(y ->
-                        zp.first().missable().map(z ->
+        return first().missable().orElse("~").flatMap(x ->
+                yp.first().missable().orElse("~").flatMap(y ->
+                        zp.first().missable().orElse("~").map(z ->
                                 parseBlockPos(ref, new String[]{x, y, z}, 0, centerBlock)
-                        ))).orElse(() -> ref);
+                        )));
     }
 
     public Result<BlockPos> pos(BlockPos ref, boolean centerBlock)
@@ -70,7 +69,7 @@ public class MCParameter extends Parameter
     {
         return first().filter(d -> !d.equals("~"), null).missable()
                 .map(CommandBase::parseInt).map(server::worldServerForDimension, t -> ServerTranslations.commandException("commands.rc.nodimension"))
-                .orElse(() -> (WorldServer) commandSender.getEntityWorld());
+                .orElse((WorldServer) commandSender.getEntityWorld());
     }
 
     public Result<Block> block(ICommandSender commandSender)

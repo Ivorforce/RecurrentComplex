@@ -5,7 +5,7 @@
 
 package ivorius.reccomplex.commands.schematic;
 
-import ivorius.reccomplex.commands.CommandExportStructure;
+import ivorius.reccomplex.commands.structure.CommandExportStructure;
 import ivorius.reccomplex.commands.parameters.RCExpect;
 import ivorius.reccomplex.commands.parameters.RCParameters;
 import ivorius.reccomplex.network.PacketEditStructureHandler;

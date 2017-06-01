@@ -6,6 +6,7 @@
 package ivorius.reccomplex.commands;
 
 import ivorius.reccomplex.Repository;
+import ivorius.reccomplex.commands.info.CommandDimensionDict;
 import ivorius.reccomplex.dimensions.DimensionDictionary;
 import ivorius.reccomplex.files.loading.ResourceDirectory;
 import ivorius.reccomplex.utils.RCStrings;
@@ -21,7 +22,6 @@ import net.minecraft.util.text.event.HoverEvent;
 import net.minecraft.world.biome.Biome;
 import net.minecraftforge.common.BiomeDictionary;
 import net.minecraftforge.common.DimensionManager;
-import org.apache.commons.lang3.StringUtils;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -32,7 +32,7 @@ import javax.annotation.Nullable;
 public class RCTextStyle
 {
     @Nonnull
-    protected static ITextComponent path(ResourceDirectory directory, String... path)
+    public static ITextComponent path(ResourceDirectory directory, String... path)
     {
         ITextComponent pathComponent = new TextComponentString(String.format("%s%s%s", directory, path.length > 0 ? "/" : "", Strings.join(path, "/")));
         pathComponent.getStyle().setColor(TextFormatting.GOLD);
@@ -42,7 +42,7 @@ public class RCTextStyle
     }
 
     @Nonnull
-    protected static ITextComponent submit(String id)
+    public static ITextComponent submit(String id)
     {
         ITextComponent submit = ServerTranslations.get("reccomplex.save.submit");
         submit.getStyle().setColor(TextFormatting.AQUA);
@@ -52,7 +52,7 @@ public class RCTextStyle
     }
 
     @Nonnull
-    protected static ITextComponent visitFile(String id)
+    public static ITextComponent visitFile(String id)
     {
         ITextComponent submit = ServerTranslations.get("reccomplex.save.submit");
         submit.getStyle().setColor(TextFormatting.AQUA);

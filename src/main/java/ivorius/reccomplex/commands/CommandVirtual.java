@@ -22,5 +22,5 @@ public abstract class CommandVirtual extends CommandBase
         execute(new MockWorld.Real(sender.getEntityWorld()), sender, args);
     }
 
-    abstract void execute(MockWorld world, ICommandSender commandSender, String[] args) throws CommandException;
+    public abstract void execute(MockWorld world, ICommandSender commandSender, String[] args) throws CommandException;
 }

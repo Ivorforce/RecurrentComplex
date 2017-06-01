@@ -43,7 +43,7 @@ public class CommandSelectCopy extends CommandVirtual
     }
 
     @Override
-    void execute(MockWorld world, ICommandSender commandSender, String[] args) throws CommandException
+    public void execute(MockWorld world, ICommandSender commandSender, String[] args) throws CommandException
     {
         RCEntityInfo RCEntityInfo = RCCommands.getStructureEntityInfo(commandSender, null);
 

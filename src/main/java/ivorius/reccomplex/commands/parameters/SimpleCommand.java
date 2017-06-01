@@ -24,6 +24,8 @@ public abstract class SimpleCommand extends CommandBase
     public String usage;
     public Supplier<Expect<?>> expector;
 
+    public int permissionLevel = 4;
+
     public SimpleCommand(String name)
     {
         this.name = name;
@@ -34,6 +36,18 @@ public abstract class SimpleCommand extends CommandBase
         this.name = name;
         this.usage = usage;
         this.expector = expector;
+    }
+
+    @Override
+    public int getRequiredPermissionLevel()
+    {
+        return permissionLevel;
+    }
+
+    public SimpleCommand permitFor(int level)
+    {
+        this.permissionLevel = permissionLevel;
+        return this;
     }
 
     @Override

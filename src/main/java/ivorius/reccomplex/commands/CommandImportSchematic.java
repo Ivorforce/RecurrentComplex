@@ -76,7 +76,7 @@ public class CommandImportSchematic extends CommandBase
 
         SchematicFile schematicFile = parseSchematic(parameters.get().first().require());
         BlockPos pos = parameters.pos("x", "y", "z", commandSender.getPosition(), false).require();
-        AxisAlignedTransform2D transform = parameters.transform("r", "m").optional().orElse(AxisAlignedTransform2D.ORIGINAL);
+        AxisAlignedTransform2D transform = parameters.transform("rotation", "mirror").optional().orElse(AxisAlignedTransform2D.ORIGINAL);
 
         OperationRegistry.queueOperation(new OperationGenerateSchematic(schematicFile, transform, pos), commandSender);
     }
@@ -87,8 +87,8 @@ public class CommandImportSchematic extends CommandBase
         return RCExpect.startRC()
                 .schematic()
                 .pos("x", "y", "z")
-                .named("r").rotation()
-                .flag("m")
+                .named("rotation").rotation()
+                .flag("mirror")
                 .get(server, sender, args, pos);
     }
 }

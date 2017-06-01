@@ -65,7 +65,7 @@ public class CommandGenerateStructure extends CommandBase
         String structureID = parameters.get().first().require();
         Structure<?> structure = parameters.rc().structure().require();
         WorldServer world = parameters.mc("d").dimension(server, commandSender).require();
-        AxisAlignedTransform2D transform = parameters.transform("r", "m").optional().orElse(null);
+        AxisAlignedTransform2D transform = parameters.transform("rotation", "mirror").optional().orElse(null);
         GenerationType generationType = parameters.rc("gen").generationType(structure).require();
         BlockSurfacePos pos = parameters.surfacePos("x", "z", commandSender.getPosition(), false).require();
         String seed = parameters.get("seed").first().optional().orElse(null);
@@ -110,9 +110,9 @@ public class CommandGenerateStructure extends CommandBase
                 .next((String[] args1) -> parameters.rc().genericStructure().tryGet()
                         .map(structure -> structure.generationTypes(GenerationType.class).stream().map(GenerationType::id).collect(Collectors.toList()))
                         .orElse(Collections.emptyList()))
-                .named("r").rotation()
+                .named("rotation").rotation()
                 .named("seed").randomString()
-                .flag("m")
+                .flag("mirror")
                 .get(server, sender, args, pos);
 
         //        else if (args.length == 6)

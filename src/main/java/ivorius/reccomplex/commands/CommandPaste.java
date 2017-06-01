@@ -74,7 +74,7 @@ public class CommandPaste extends CommandBase
             throw ServerTranslations.commandException("commands.strucPaste.noClipboard");
 
         BlockPos pos = parameters.pos("x", "y", "z", commandSender.getPosition(), false).require();
-        AxisAlignedTransform2D transform = parameters.transform("r", "m").optional().orElse(AxisAlignedTransform2D.ORIGINAL);
+        AxisAlignedTransform2D transform = parameters.transform("rotation", "mirror").optional().orElse(AxisAlignedTransform2D.ORIGINAL);
         String seed = parameters.get("seed").first().optional().orElse(null);
 
         GenericStructure structureInfo = GenericStructure.createDefaultStructure();
@@ -92,9 +92,9 @@ public class CommandPaste extends CommandBase
     {
         return RCExpect.startRC()
                 .pos("x", "y", "z")
-                .named("r").rotation()
+                .named("rotation").rotation()
                 .named("seed").randomString()
-                .flag("m")
+                .flag("mirror")
                 .get(server, sender, args, pos);
     }
 }

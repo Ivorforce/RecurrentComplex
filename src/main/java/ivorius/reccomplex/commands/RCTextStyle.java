@@ -10,6 +10,7 @@ import ivorius.reccomplex.dimensions.DimensionDictionary;
 import ivorius.reccomplex.files.loading.ResourceDirectory;
 import ivorius.reccomplex.utils.RCStrings;
 import ivorius.reccomplex.utils.ServerTranslations;
+import joptsimple.internal.Strings;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.Style;
@@ -31,9 +32,9 @@ import javax.annotation.Nullable;
 public class RCTextStyle
 {
     @Nonnull
-    protected static ITextComponent path(ResourceDirectory directory, String id)
+    protected static ITextComponent path(ResourceDirectory directory, String... path)
     {
-        ITextComponent pathComponent = new TextComponentString(String.format("%s/%s", directory, id));
+        ITextComponent pathComponent = new TextComponentString(String.format("%s%s%s", directory, path.length > 0 ? "/" : "", Strings.join(path, "/")));
         pathComponent.getStyle().setColor(TextFormatting.GOLD);
         pathComponent.getStyle().setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new TextComponentString("Visit File")));
         pathComponent.getStyle().setClickEvent(new ClickEvent(ClickEvent.Action.OPEN_FILE, directory.toFile().getAbsolutePath()));

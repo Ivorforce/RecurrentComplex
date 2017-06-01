@@ -22,7 +22,9 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.math.BlockPos;
 
 import javax.annotation.Nullable;
+import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * Created by lukas on 03.08.14.
@@ -81,10 +83,13 @@ public class CommandMapStructure extends CommandBase
     @Override
     public List<String> getTabCompletionOptions(MinecraftServer server, ICommandSender sender, String[] args, @Nullable BlockPos pos)
     {
+        RCParameters parameters = RCParameters.of(args);
+        Optional<ICommand> other = parameters.get().at(1).tryGet().map(server.getCommandManager().getCommands()::get);
+
         return RCExpect.startRC()
                 .structure()
-                .skip(1)
-                .skip(1).repeat()
+                .next(server.getCommandManager().getCommands().keySet())
+                .next(argss -> other.map(c -> c.getTabCompletions(server, sender, parameters.get().move(2).varargs(), pos)).orElse(Collections.emptyList())).repeat()
                 .named("dir").resourceDirectory()
                 .get(server, sender, args, pos);
     }

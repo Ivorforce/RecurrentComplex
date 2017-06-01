@@ -27,6 +27,7 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
 import javax.annotation.Nullable;
+import java.util.Random;
 
 /**
  * Created by lukas on 10.02.15.
@@ -44,6 +45,8 @@ public class OperationGenerateStructure implements Operation
     public String generationInfoID;
 
     protected GridQuadCache cachedShapeGrid;
+
+    protected String seed;
 
     protected final ReadableInstanceData<GenericStructure.InstanceData> instanceData = new ReadableInstanceData<>();
 
@@ -76,6 +79,12 @@ public class OperationGenerateStructure implements Operation
         return this;
     }
 
+    public OperationGenerateStructure withSeed(String seed)
+    {
+        this.seed = seed;
+        return this;
+    }
+
     public OperationGenerateStructure prepare(WorldServer world)
     {
         instanceData.setInstanceData(generator(world).instanceData().get());
@@ -96,6 +105,7 @@ public class OperationGenerateStructure implements Operation
     public StructureGenerator<GenericStructure.InstanceData> generator(WorldServer world)
     {
         StructureGenerator<GenericStructure.InstanceData> generator = new StructureGenerator<>(structure).world(world).generationInfo(generationInfoID)
+                .random(seed != null ? new Random(seed.hashCode()) : null)
                 .transform(transform).lowerCoord(lowerCoord)
                 .maturity(StructureSpawnContext.GenerateMaturity.FIRST).asSource(generateAsSource);
 
@@ -123,6 +133,9 @@ public class OperationGenerateStructure implements Operation
         if (structureID != null)
             compound.setString("structureIDForSaving", structureID);
 
+        if (seed != null)
+            compound.setString("seed", seed);
+
         instanceData.writeToNBT("instanceData", compound);
     }
 
@@ -141,6 +154,8 @@ public class OperationGenerateStructure implements Operation
         structureID = compound.hasKey("structureIDForSaving", Constants.NBT.TAG_STRING)
                 ? compound.getString("structureIDForSaving")
                 : null;
+
+        seed = compound.hasKey("seed") ? compound.getString("seed") : null;
 
         instanceData.readFromNBT("instanceData", compound);
     }

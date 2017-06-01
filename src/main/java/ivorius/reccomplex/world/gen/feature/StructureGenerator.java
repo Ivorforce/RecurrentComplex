@@ -302,7 +302,7 @@ public class StructureGenerator<S extends NBTStorable>
                 generationType != null ? generationType : generationInfoID != null ? structure().generationType(generationInfoID) : null);
     }
 
-    public StructureGenerator<S> random(@Nonnull Random random)
+    public StructureGenerator<S> random(Random random)
     {
         this.random = random;
         return this;

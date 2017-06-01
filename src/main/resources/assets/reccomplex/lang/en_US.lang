@@ -149,15 +149,12 @@ commands.whatisthis.one=This is: %s
 commands.whatisthis.many=This is any, or all of: %s
 
 commands.rcforget.forget=Forget %s
-commands.rcforget.usage=/#forget <UUID>
 commands.rcforget.unknown=Unknown entry UUID!
 commands.rcforget.success=Forgot %s!
+commands.rcforgetall.success=Forgot %s structures!
 
 commands.rcremember.usage=/#remember <name>
 commands.rcremember.success=Remembered %s!
-
-commands.rcforgetall.usage=/#forgetall [x] [y] [z]
-commands.rcforgetall.success=Forgot %s structures!
 
 commands.rclookup.usage=/#lookup <structure>
 commands.rclookup.reply.silent=%s: §bInactive§r, by: %s, is %s, %s

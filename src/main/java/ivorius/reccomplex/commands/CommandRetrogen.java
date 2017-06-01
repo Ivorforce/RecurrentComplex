@@ -108,7 +108,7 @@ public class CommandRetrogen extends CommandBase
         RCParameters parameters = RCParameters.of(args);
 
         Predicate<Structure> structurePredicate = parameters.rc("exp").structurePredicate().optional().orElse(null);
-        WorldServer world = parameters.mc("d").dimension(commandSender).require();
+        WorldServer world = parameters.mc("d").dimension(server, commandSender).require();
 
         long count = retrogen(world, structurePredicate);
 

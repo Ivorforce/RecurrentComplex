@@ -11,6 +11,7 @@ import net.minecraft.block.Block;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.command.NumberInvalidException;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.WorldServer;
@@ -65,10 +66,10 @@ public class MCParameter extends Parameter
         return first().map(RCAccessorBiomeDictionary::getTypeWeak, s -> ServerTranslations.commandException("commands.biomedict.notype", s));
     }
 
-    public Result<WorldServer> dimension(ICommandSender commandSender)
+    public Result<WorldServer> dimension(MinecraftServer server, ICommandSender commandSender)
     {
         return first().filter(d -> !d.equals("~"), null).missable()
-                .map(CommandBase::parseInt).map(DimensionManager::getWorld, t -> ServerTranslations.commandException("commands.rc.nodimension"))
+                .map(CommandBase::parseInt).map(server::worldServerForDimension, t -> ServerTranslations.commandException("commands.rc.nodimension"))
                 .orElse(() -> (WorldServer) commandSender.getEntityWorld());
     }
 

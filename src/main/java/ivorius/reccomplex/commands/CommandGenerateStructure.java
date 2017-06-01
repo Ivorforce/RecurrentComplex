@@ -66,7 +66,7 @@ public class CommandGenerateStructure extends CommandBase
 
         String structureID = parameters.get().first().require();
         Structure<?> structure = parameters.rc().structure().require();
-        WorldServer world = parameters.mc("d").dimension(commandSender).require();
+        WorldServer world = parameters.mc("d").dimension(server, commandSender).require();
         AxisAlignedTransform2D transform = parameters.transform("r", "m").optional().orElse(null);
         GenerationType generationType = parameters.rc("gen").generationType(structure).require();
         BlockSurfacePos pos = parameters.surfacePos("x", "z", commandSender.getPosition(), false).require();
@@ -77,7 +77,7 @@ public class CommandGenerateStructure extends CommandBase
                 .structureID(structureID).randomPosition(pos, placer).fromCenter(true)
                 .transform(transform);
 
-        if (structure instanceof GenericStructure)
+        if (structure instanceof GenericStructure && world == commandSender.getEntityWorld())
         {
             GenericStructure genericStructureInfo = (GenericStructure) structure;
 

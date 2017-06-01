@@ -5,23 +5,35 @@
 
 package ivorius.reccomplex.commands;
 
+import ivorius.ivtoolkit.blocks.BlockArea;
+import ivorius.ivtoolkit.blocks.BlockAreas;
 import ivorius.ivtoolkit.math.IvVecMathHelper;
+import ivorius.ivtoolkit.world.MockWorld;
 import ivorius.reccomplex.RCConfig;
+import ivorius.reccomplex.RecurrentComplex;
 import ivorius.reccomplex.capability.SelectionOwner;
 import ivorius.reccomplex.commands.parameters.*;
 import ivorius.reccomplex.utils.ServerTranslations;
+import ivorius.reccomplex.utils.expression.PositionedBlockExpression;
+import ivorius.reccomplex.utils.optional.IvOptional;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
 
+import javax.annotation.Nonnull;
 import java.util.function.Supplier;
+import java.util.stream.Stream;
+import java.util.stream.StreamSupport;
 
 /**
  * Created by lukas on 25.05.14.
  */
 public class CommandSelect extends CommandSplit
 {
+    // TODO Make virtual
+
     public CommandSelect()
     {
         add(new Command("clear")
@@ -68,6 +80,100 @@ public class CommandSelect extends CommandSplit
                 }
             }
         });
+
+        add(new Command("crop", "[positioned block expression]", () -> RCExpect.startRC().block())
+        {
+            @Override
+            public void execute(MinecraftServer server, ICommandSender sender, RCParameters parameters, SelectionOwner owner) throws CommandException
+            {
+                MockWorld world = MockWorld.of(sender.getEntityWorld());
+
+                BlockArea area = owner.getSelection();
+
+                PositionedBlockExpression matcher = new PositionedBlockExpression(RecurrentComplex.specialRegistry);
+                IvOptional.ifAbsent(parameters.rc().expression(matcher).optional(), () -> matcher.setExpression("is:air"));
+
+                for (EnumFacing direction : EnumFacing.VALUES)
+                    while (area != null && sideStream(area, direction).allMatch(p -> matcher.test(PositionedBlockExpression.Argument.at(world, p))))
+                        area = BlockAreas.shrink(area, direction, 1);
+
+                owner.setSelection(area);
+            }
+        });
+
+        add(new Command("wand", "[positioned block expression]", () -> RCExpect.startRC().block())
+        {
+            @Override
+            public void execute(MinecraftServer server, ICommandSender sender, RCParameters parameters, SelectionOwner owner) throws CommandException
+            {
+                MockWorld world = MockWorld.of(sender.getEntityWorld());
+                BlockArea area = owner.getSelection();
+
+                boolean changed = true;
+                int total = 0;
+
+                while (changed)
+                {
+                    changed = false;
+
+                    PositionedBlockExpression matcher = new PositionedBlockExpression(RecurrentComplex.specialRegistry);
+                    IvOptional.ifAbsent(parameters.rc().expression(matcher).optional(), () -> matcher.setExpression("!is:air"));
+
+                    for (EnumFacing direction : EnumFacing.VALUES)
+                    {
+                        BlockArea expand;
+
+                        while (sideStream((expand = BlockAreas.expand(area, direction, 1)), direction).anyMatch(p -> matcher.test(PositionedBlockExpression.Argument.at(world, p))) && (total++) < 300)
+                        {
+                            area = expand;
+                            changed = true;
+                        }
+                    }
+                }
+
+                owner.setSelection(area);
+            }
+        });
+
+        add(new Command("shrink", "[all] --x [x] --y [y] --z [z]", () -> RCExpect.startRC()
+                .any("1", "2", "3")
+                .named("x").any("1", "2", "3")
+                .named("y").any("1", "2", "3")
+                .named("z").any("1", "2", "3")
+        )
+        {
+            @Override
+            public void execute(MinecraftServer server, ICommandSender sender, RCParameters parameters, SelectionOwner owner) throws CommandException
+            {
+                BlockPos base = parameters.mc().pos(parameters.mc(), parameters.mc(), BlockPos.ORIGIN, false).require();
+                BlockPos shrink = parameters.pos("x", "y", "z", base, false).require();
+
+                owner.setSelection(BlockAreas.shrink(owner.getSelection(), shrink, shrink));
+            }
+        });
+
+        add(new Command("expand", "[all] --x [x] --y [y] --z [z]", () -> RCExpect.startRC()
+                .any("1", "2", "3")
+                .named("x").any("1", "2", "3")
+                .named("y").any("1", "2", "3")
+                .named("z").any("1", "2", "3")
+        )
+        {
+            @Override
+            public void execute(MinecraftServer server, ICommandSender sender, RCParameters parameters, SelectionOwner owner) throws CommandException
+            {
+                BlockPos base = parameters.mc().pos(parameters.mc(), parameters.mc(), BlockPos.ORIGIN, false).require();
+                BlockPos shrink = parameters.pos("x", "y", "z", base, false).require();
+
+                owner.setSelection(BlockAreas.expand(owner.getSelection(), shrink, shrink));
+            }
+        });
+    }
+
+    @Nonnull
+    protected static Stream<BlockPos> sideStream(BlockArea area, EnumFacing direction)
+    {
+        return StreamSupport.stream(BlockAreas.side(area, direction).spliterator(), false);
     }
 
     @Override

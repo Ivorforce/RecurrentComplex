@@ -74,12 +74,6 @@ commands.selectSet.get=Selection: %s to %s
 commands.selectSet.size=Size: %s (%s blocks)
 commands.selectSet.point.none=§onowhere§r
 
-commands.selectShift.usage=/#shift <x> <y> <z>
-commands.selectCrop.usage=/#crop [positioned block expression]
-commands.selectWand.usage=/#wand [positioned block expression]
-commands.selectShrink.usage=/#shrink <x> <y> <z>
-commands.selectExpand.usage=/#expand <x> <y> <z>
-
 commands.selectModify.noSelection=Player does not have a complete selection
 commands.selectModify.invalidMetadata=Metadata must be entered like '0,1,5', but was '%s'
 

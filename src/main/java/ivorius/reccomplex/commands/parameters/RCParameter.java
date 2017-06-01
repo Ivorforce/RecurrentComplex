@@ -87,7 +87,7 @@ public class RCParameter extends Parameter
     public Result<GenerationType> generationType(Structure<?> structure)
     {
         return first().missable().map(structure::generationType, t -> ServerTranslations.commandException("No Generation by this ID"))
-                .orElse(() -> structure.<GenerationType>generationTypes(NaturalGeneration.class).stream().findFirst()
+                .orElseGet(() -> structure.<GenerationType>generationTypes(NaturalGeneration.class).stream().findFirst()
                         .orElse(structure.generationTypes(GenerationType.class).stream().findFirst().orElse(null)));
     }
 

@@ -8,7 +8,6 @@ package ivorius.reccomplex.commands.parameters;
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.ListMultimap;
 import com.google.common.collect.Lists;
-import ivorius.reccomplex.commands.CommandImportSchematic;
 import joptsimple.internal.Strings;
 import org.apache.commons.lang3.ArrayUtils;
 
@@ -61,7 +60,7 @@ public class Parameters
             else
             {
                 order.add(curName);
-                named.put(curName, CommandImportSchematic.trimQuotes(arg));
+                named.put(curName, trimQuotes(arg));
                 curName = null;
             }
         }
@@ -97,6 +96,15 @@ public class Parameters
             list.add(Strings.join(Arrays.asList(args).subList(lastQuote, args.length), " "));
 
         return list.stream().toArray(String[]::new);
+    }
+
+    @Nonnull
+    public static String trimQuotes(String arg)
+    {
+        String trimmed = arg;
+        if (trimmed.startsWith("\""))
+            trimmed = trimmed.substring(1, trimmed.length() - (trimmed.length() > 1 && trimmed.endsWith("\"") ? 1 : 0));
+        return trimmed;
     }
 
     public boolean has(@Nonnull String flag)

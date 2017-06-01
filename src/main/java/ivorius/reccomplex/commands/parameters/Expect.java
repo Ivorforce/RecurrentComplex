@@ -5,7 +5,6 @@
 
 package ivorius.reccomplex.commands.parameters;
 
-import com.google.common.collect.Lists;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.math.BlockPos;
@@ -99,8 +98,8 @@ public class Expect<T extends Expect<T>>
 
     public List<String> get(MinecraftServer server, ICommandSender sender, String[] args, @Nullable BlockPos pos)
     {
-        List<String> params = Arrays.asList(Parameters.quoted(args));
-        String[] paramArray = params.toArray(new String[params.size()]);
+        List<String> quoted = Arrays.stream(Parameters.quoted(args)).map(Parameters::trimQuotes).collect(Collectors.toList());
+        String[] paramArray = quoted.toArray(new String[quoted.size()]);
 
         Parameters parameters = Parameters.of(args, flags.stream().toArray(String[]::new));
 
@@ -110,7 +109,7 @@ public class Expect<T extends Expect<T>>
 
         if (param != null && (entered.count() <= param.completion.size() || param.repeat)
                 // It notices we are entering a parameter so it won't be added to the parameters args anyway
-                && !params.get(params.size() - 1).startsWith(Parameters.flagPrefix))
+                && !quoted.get(quoted.size() - 1).startsWith(Parameters.flagPrefix))
         {
             return param.completion.get(Math.min(entered.count() - 1, param.completion.size() - 1)).complete(server, sender, paramArray, pos).stream()
                     // More than one word, let's wrap this in quotes

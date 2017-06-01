@@ -29,7 +29,6 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.math.BlockPos;
 
 import javax.annotation.Nullable;
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -65,12 +64,7 @@ public class CommandMapAllStructure extends CommandBase
 
         ResourceDirectory directory = parameters.rc("dir").resourceDirectory().optional().orElse(ResourceDirectory.ACTIVE);
 
-        ICommand other = server.getCommandManager().getCommands().get(parameters.get().first().require());
-
-        if (!(other instanceof CommandVirtual))
-            throw ServerTranslations.commandException("commands.rcmap.nonvirtual");
-
-        CommandVirtual virtual = (CommandVirtual) other;
+        CommandVirtual virtual = parameters.rc().virtualCommand(server).require();
 
         int saved = 0, failed = 0, skipped = 0;
         for (String id : StructureRegistry.INSTANCE.ids())
@@ -119,11 +113,10 @@ public class CommandMapAllStructure extends CommandBase
     public List<String> getTabCompletionOptions(MinecraftServer server, ICommandSender sender, String[] args, @Nullable BlockPos pos)
     {
         RCParameters parameters = RCParameters.of(args);
-        Optional<ICommand> other = parameters.get().first().tryGet().map(server.getCommandManager().getCommands()::get);
 
         return RCExpect.startRC()
-                .next(server.getCommandManager().getCommands().keySet())
-                .next(argss -> other.map(c -> c.getTabCompletions(server, sender, parameters.get().move(1).varargs(), pos)).orElse(Collections.emptyList())).repeat()
+                .command()
+                .commandArguments(parameters.get())
                 .named("exp").structure()
                 .named("dir").resourceDirectory()
                 .get(server, sender, args, pos);

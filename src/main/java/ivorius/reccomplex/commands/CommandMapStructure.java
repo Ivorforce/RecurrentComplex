@@ -6,13 +6,13 @@
 package ivorius.reccomplex.commands;
 
 import ivorius.ivtoolkit.tools.IvWorldData;
+import ivorius.ivtoolkit.world.MockWorld;
 import ivorius.reccomplex.RCConfig;
 import ivorius.reccomplex.commands.parameters.RCExpect;
 import ivorius.reccomplex.commands.parameters.RCParameters;
 import ivorius.reccomplex.files.loading.ResourceDirectory;
 import ivorius.reccomplex.network.PacketSaveStructureHandler;
 import ivorius.reccomplex.utils.ServerTranslations;
-import ivorius.ivtoolkit.world.MockWorld;
 import ivorius.reccomplex.world.gen.feature.structure.generic.GenericStructure;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.CommandException;
@@ -22,9 +22,7 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.math.BlockPos;
 
 import javax.annotation.Nullable;
-import java.util.Collections;
 import java.util.List;
-import java.util.Optional;
 
 /**
  * Created by lukas on 03.08.14.
@@ -56,13 +54,8 @@ public class CommandMapStructure extends CommandBase
         String id = parameters.get().first().require();
         GenericStructure structure = parameters.rc().genericStructure().require();
         ResourceDirectory directory = parameters.rc("dir").resourceDirectory().optional().orElse(ResourceDirectory.ACTIVE);
+        CommandVirtual virtual = parameters.rc().move(1).virtualCommand(server).require();
 
-        ICommand other = server.getCommandManager().getCommands().get(parameters.get().at(1).require());
-
-        if (!(other instanceof CommandVirtual))
-            throw ServerTranslations.commandException("commands.rcmap.nonvirtual");
-
-        CommandVirtual virtual = (CommandVirtual) other;
         IvWorldData worldData = structure.constructWorldData();
         MockWorld world = new MockWorld.WorldData(worldData);
 
@@ -84,12 +77,11 @@ public class CommandMapStructure extends CommandBase
     public List<String> getTabCompletionOptions(MinecraftServer server, ICommandSender sender, String[] args, @Nullable BlockPos pos)
     {
         RCParameters parameters = RCParameters.of(args);
-        Optional<ICommand> other = parameters.get().at(1).tryGet().map(server.getCommandManager().getCommands()::get);
 
         return RCExpect.startRC()
                 .structure()
-                .next(server.getCommandManager().getCommands().keySet())
-                .next(argss -> other.map(c -> c.getTabCompletions(server, sender, parameters.get().move(2).varargs(), pos)).orElse(Collections.emptyList())).repeat()
+                .command()
+                .commandArguments(parameters.get().move(1)).repeat()
                 .named("dir").resourceDirectory()
                 .get(server, sender, args, pos);
     }

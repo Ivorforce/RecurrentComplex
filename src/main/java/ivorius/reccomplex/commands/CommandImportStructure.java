@@ -50,11 +50,11 @@ public class CommandImportStructure extends CommandBase
     @Override
     public void execute(MinecraftServer server, ICommandSender commandSender, String[] args) throws CommandException
     {
-        RCParameters parameters = RCParameters.of(args, "m");
+        RCParameters parameters = RCParameters.of(args, "mirror");
 
         String structureID = parameters.get().first().require();
         Structure<?> structure = parameters.rc().structure().require();
-        WorldServer world = parameters.mc("d").dimension(server, commandSender).require();
+        WorldServer world = parameters.mc("dimension").dimension(server, commandSender).require();
         AxisAlignedTransform2D transform = parameters.transform("rotation", "mirror").optional().orElse(AxisAlignedTransform2D.ORIGINAL);
         BlockPos pos = parameters.pos("x", "y", "z", commandSender.getPosition(), false).require();
 
@@ -74,7 +74,7 @@ public class CommandImportStructure extends CommandBase
         return RCExpect.startRC()
                 .structure()
                 .pos("x", "y", "z")
-                .named("d").dimension()
+                .named("dimension").dimension()
                 .named("rotation").rotation()
                 .flag("mirror")
                 .get(server, sender, args, pos);

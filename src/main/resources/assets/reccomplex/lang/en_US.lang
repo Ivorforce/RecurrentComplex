@@ -63,11 +63,11 @@ commands.strucExport.usage=/#export --from [structure id]
 
 commands.strucEdit.usage=/#edit <structureName>
 
-commands.strucGen.usage=/#gen <structure name> --p [x] [z] --d [dimension] --gen [generation id] --rotation [rotation] --mirror --seed [seed]
+commands.strucGen.usage=/#gen <structure name> --p [x] [z] --dimension [dimension] --gen [generation id] --rotation [rotation] --mirror --seed [seed]
 commands.strucGen.noPlace=The structure can't find anywhere suitable to spawn!
 commands.strucGen.noStructure=No structure registered by the name of '%s'
 
-commands.strucImport.usage=/#import <structure name> --x [x] --y [y] --z [z] --d [dimension] --rotation [rotation] --mirror
+commands.strucImport.usage=/#import <structure name> --x [x] --y [y] --z [z] --dimension [dimension] --rotation [rotation] --mirror
 commands.strucImport.noStructure=No structure registered by the name of '%s'
 
 commands.selectSet.usage=/#select <both|clear|point1|point2> [x] [y] [z]
@@ -196,7 +196,7 @@ commands.rcbrowse.usage=/#browse
 commands.rcdecorate.usage=/#decorate <x min> <z min> <x max> <z max> --exp [resource matcher: only generate these structures]
 commands.rcdecorateone.usage=/#decorateone [x] [z]
 commands.rcdecorateone.none=No suitable structures found!
-commands.rcretro.usage=/#retro --d [dimension] --exp [resource matcher: only generate these structures]
+commands.rcretro.usage=/#retro --dimension [dimension] --exp [resource matcher: only generate these structures]
 commands.rcretro.count=Retro-Generated %s chunks!
 
 commands.rcenable.usage=/#enable <registry id> <element id>

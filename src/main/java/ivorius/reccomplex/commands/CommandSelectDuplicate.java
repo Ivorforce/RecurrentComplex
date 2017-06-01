@@ -52,7 +52,7 @@ public class CommandSelectDuplicate extends CommandBase
     @Override
     public void execute(MinecraftServer server, ICommandSender commandSender, String[] args) throws CommandException
     {
-        RCParameters parameters = RCParameters.of(args, "m");
+        RCParameters parameters = RCParameters.of(args, "mirror");
 
         SelectionOwner selectionOwner = RCCommands.getSelectionOwner(commandSender, null, true);
         BlockArea area = selectionOwner.getSelection();

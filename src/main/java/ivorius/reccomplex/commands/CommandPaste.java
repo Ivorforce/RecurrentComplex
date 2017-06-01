@@ -63,7 +63,7 @@ public class CommandPaste extends CommandBase
     @Override
     public void execute(MinecraftServer server, ICommandSender commandSender, String[] args) throws CommandException
     {
-        RCParameters parameters = RCParameters.of(args, "m");
+        RCParameters parameters = RCParameters.of(args, "mirror");
 
         EntityPlayerMP entityPlayerMP = getCommandSenderAsPlayer(commandSender);
         RCEntityInfo entityInfo = RCCommands.getStructureEntityInfo(entityPlayerMP, null);

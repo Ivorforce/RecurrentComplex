@@ -54,7 +54,7 @@ public class CommandSelectMove extends CommandBase
     @Override
     public void execute(MinecraftServer server, ICommandSender commandSender, String[] args) throws CommandException
     {
-        RCParameters parameters = RCParameters.of(args, "m");
+        RCParameters parameters = RCParameters.of(args, "mirror");
 
         BlockPos pos = parameters.pos("x", "y", "z", commandSender.getPosition(), false).require();
         AxisAlignedTransform2D transform = parameters.transform("rotation", "mirror").optional().orElse(AxisAlignedTransform2D.ORIGINAL);

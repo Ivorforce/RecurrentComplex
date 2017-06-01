@@ -1,9 +1,9 @@
 /*
  *  Copyright (c) 2014, Lukas Tenbrink.
- *  * http://lukas.axxim.net
+ *  * http://ivorius.net
  */
 
-package ivorius.reccomplex.commands;
+package ivorius.reccomplex.commands.schematic;
 
 import ivorius.ivtoolkit.blocks.BlockArea;
 import ivorius.ivtoolkit.blocks.BlockAreas;
@@ -11,6 +11,7 @@ import ivorius.ivtoolkit.blocks.IvBlockCollection;
 import ivorius.ivtoolkit.tools.IvWorldData;
 import ivorius.reccomplex.RCConfig;
 import ivorius.reccomplex.capability.SelectionOwner;
+import ivorius.reccomplex.commands.RCCommands;
 import ivorius.reccomplex.commands.parameters.RCExpect;
 import ivorius.reccomplex.commands.parameters.RCParameters;
 import ivorius.reccomplex.utils.ServerTranslations;
@@ -57,18 +58,13 @@ public class CommandExportSchematic extends CommandBase
     @Override
     public String getCommandName()
     {
-        return RCConfig.commandPrefix + "exportschematic";
-    }
-
-    public int getRequiredPermissionLevel()
-    {
-        return 4;
+        return "export";
     }
 
     @Override
     public String getCommandUsage(ICommandSender var1)
     {
-        return ServerTranslations.usage("commands.strucExportSchematic.usage");
+        return ServerTranslations.usage("commands.rcexportschematic.usage");
     }
 
     @Override

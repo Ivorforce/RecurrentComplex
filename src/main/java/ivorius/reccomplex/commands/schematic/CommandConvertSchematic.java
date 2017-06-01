@@ -3,16 +3,13 @@
  *  * http://ivorius.net
  */
 
-package ivorius.reccomplex.commands;
+package ivorius.reccomplex.commands.schematic;
 
-import ivorius.reccomplex.RCConfig;
-import ivorius.reccomplex.commands.parameters.Parameters;
+import ivorius.reccomplex.commands.CommandExportStructure;
 import ivorius.reccomplex.commands.parameters.RCExpect;
-import ivorius.reccomplex.commands.parameters.RCParameter;
 import ivorius.reccomplex.commands.parameters.RCParameters;
 import ivorius.reccomplex.network.PacketEditStructureHandler;
 import ivorius.reccomplex.utils.ServerTranslations;
-import ivorius.reccomplex.world.gen.feature.structure.StructureRegistry;
 import ivorius.reccomplex.world.gen.feature.structure.generic.GenericStructure;
 import ivorius.reccomplex.world.gen.feature.structure.schematics.SchematicFile;
 import ivorius.reccomplex.world.gen.feature.structure.schematics.SchematicLoader;
@@ -24,7 +21,6 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.math.BlockPos;
 
 import javax.annotation.Nullable;
-import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -36,12 +32,7 @@ public class CommandConvertSchematic extends CommandBase
     @Override
     public String getCommandName()
     {
-        return RCConfig.commandPrefix + "convertschematic";
-    }
-
-    public int getRequiredPermissionLevel()
-    {
-        return 2;
+        return "convert";
     }
 
     @Override

@@ -29,7 +29,7 @@ import java.util.List;
  */
 public class CommandExportStructure extends CommandBase
 {
-    protected static GenericStructure getNewGenericStructure(ICommandSender commandSender, RCParameter parameter) throws CommandException
+    public static GenericStructure getNewGenericStructure(ICommandSender commandSender, RCParameter parameter) throws CommandException
     {
         GenericStructure genericStructureInfo;
 

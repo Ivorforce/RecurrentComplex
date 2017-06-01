@@ -1,9 +1,9 @@
 /*
  *  Copyright (c) 2014, Lukas Tenbrink.
- *  * http://lukas.axxim.net
+ *  * http://ivorius.net
  */
 
-package ivorius.reccomplex.commands;
+package ivorius.reccomplex.commands.schematic;
 
 import ivorius.ivtoolkit.math.AxisAlignedTransform2D;
 import ivorius.reccomplex.RCConfig;
@@ -40,11 +40,11 @@ public class CommandImportSchematic extends CommandBase
         }
         catch (SchematicFile.UnsupportedSchematicFormatException e)
         {
-            throw ServerTranslations.commandException("commands.strucImportSchematic.format", schematicName, e.format);
+            throw ServerTranslations.commandException("commands.rcimportschematic.format", schematicName, e.format);
         }
 
         if (schematicFile == null)
-            throw ServerTranslations.commandException("commands.strucImportSchematic.missing", schematicName, SchematicLoader.getLookupFolderName());
+            throw ServerTranslations.commandException("commands.rcimportschematic.missing", schematicName, SchematicLoader.getLookupFolderName());
 
         return schematicFile;
     }
@@ -52,18 +52,13 @@ public class CommandImportSchematic extends CommandBase
     @Override
     public String getCommandName()
     {
-        return RCConfig.commandPrefix + "importschematic";
-    }
-
-    public int getRequiredPermissionLevel()
-    {
-        return 2;
+        return "import";
     }
 
     @Override
     public String getCommandUsage(ICommandSender var1)
     {
-        return ServerTranslations.usage("commands.strucImportSchematic.usage");
+        return ServerTranslations.usage("commands.rcimportschematic.usage");
     }
 
     @Override
@@ -72,7 +67,7 @@ public class CommandImportSchematic extends CommandBase
         RCParameters parameters = RCParameters.of(args, "mirror");
 
         if (args.length < 1)
-            throw ServerTranslations.wrongUsageException("commands.strucImportSchematic.usage");
+            throw ServerTranslations.wrongUsageException("commands.rcimportschematic.usage");
 
         SchematicFile schematicFile = parseSchematic(parameters.get().first().require());
         BlockPos pos = parameters.pos("x", "y", "z", commandSender.getPosition(), false).require();

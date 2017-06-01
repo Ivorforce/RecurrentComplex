@@ -49,15 +49,6 @@ public class CommandImportSchematic extends CommandBase
         return schematicFile;
     }
 
-    @Nonnull
-    public static String trimQuotes(String arg)
-    {
-        String schematicName = arg;
-        if (schematicName.indexOf("\"") == 0)
-            schematicName = schematicName.substring(1, schematicName.length() - 1);
-        return schematicName;
-    }
-
     @Override
     public String getCommandName()
     {

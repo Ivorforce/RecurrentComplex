@@ -58,7 +58,7 @@ public class CommandSelectDuplicate extends CommandBase
         BlockArea area = selectionOwner.getSelection();
 
         BlockPos pos = parameters.pos("x", "y", "z", commandSender.getPosition(), false).require();
-        AxisAlignedTransform2D transform = parameters.transform("r", "m").optional().orElse(null);
+        AxisAlignedTransform2D transform = parameters.transform("r", "m").optional().orElse(AxisAlignedTransform2D.ORIGINAL);
 
         IvWorldData worldData = IvWorldData.capture(commandSender.getEntityWorld(), area, true);
         NBTTagCompound worldDataCompound = worldData.createTagCompound();

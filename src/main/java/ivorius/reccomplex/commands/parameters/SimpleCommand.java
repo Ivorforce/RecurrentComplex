@@ -45,7 +45,7 @@ public abstract class SimpleCommand extends CommandBase
     @Override
     public String getUsage(ICommandSender sender)
     {
-        return String.format("/%s %s", name, usage);
+        return String.format("%s %s", name, usage);
     }
 
     @Override

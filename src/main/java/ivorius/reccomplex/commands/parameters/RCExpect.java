@@ -5,14 +5,14 @@
 
 package ivorius.reccomplex.commands.parameters;
 
+import ivorius.reccomplex.commands.CommandVirtual;
 import ivorius.reccomplex.files.loading.ResourceDirectory;
 import ivorius.reccomplex.world.gen.feature.structure.StructureRegistry;
 import ivorius.reccomplex.world.gen.feature.structure.schematics.SchematicLoader;
 
+import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
-
-import static net.minecraft.command.CommandBase.getListOfStringsMatchingLastWord;
 
 /**
  * Created by lukas on 31.05.17.
@@ -40,7 +40,8 @@ public class RCExpect<T extends RCExpect<T>> extends IvExpect<T>
         return next(StructureRegistry.INSTANCE.ids());
     }
 
-    public T schematic() {
+    public T schematic()
+    {
         return next(SchematicLoader.currentSchematicFileNames()
                 .stream().map(name -> name.contains(" ") ? String.format("\"%s\"", name) : name).collect(Collectors.toList()));
     }
@@ -58,5 +59,11 @@ public class RCExpect<T extends RCExpect<T>> extends IvExpect<T>
     public T metadata()
     {
         return next(IntStream.range(0, 16).mapToObj(String::valueOf).collect(Collectors.toList()));
+    }
+
+    public T virtualCommand()
+    {
+        return next((server, sender, args, pos) -> server.getCommandManager().getCommands().entrySet().stream()
+                .filter(e -> e.getValue() instanceof CommandVirtual).map(Map.Entry::getKey).collect(Collectors.toList()));
     }
 }

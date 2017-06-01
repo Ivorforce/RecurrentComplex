@@ -50,13 +50,13 @@ public class CommandImportStructure extends CommandBase
     @Override
     public void execute(MinecraftServer server, ICommandSender commandSender, String[] args) throws CommandException
     {
-        RCParameters parameters = RCParameters.of(args);
+        RCParameters parameters = RCParameters.of(args, "m");
 
         String structureID = parameters.get().first().require();
         Structure<?> structure = parameters.rc().structure().require();
         WorldServer world = parameters.mc("d").dimension(commandSender).require();
-        AxisAlignedTransform2D transform = parameters.iv("r").transform(parameters.has("m")).optional().orElse(AxisAlignedTransform2D.ORIGINAL);
-        BlockPos pos = parameters.mc("p").pos(commandSender.getPosition(), false).require();
+        AxisAlignedTransform2D transform = parameters.transform("r", "m").optional().orElse(null);
+        BlockPos pos = parameters.mc("x").pos(parameters.get("y"), parameters.get("z"), commandSender.getPosition(), false).require();
 
         if (structure instanceof GenericStructure)
             OperationRegistry.queueOperation(new OperationGenerateStructure((GenericStructure) structure, structureID, transform, pos, true)
@@ -73,7 +73,9 @@ public class CommandImportStructure extends CommandBase
     {
         return RCExpect.startRC()
                 .structure()
-                .named("p").pos()
+                .named("x").x()
+                .named("y").y()
+                .named("z").z()
                 .named("d").dimension()
                 .named("r").rotation()
                 .flag("m")

@@ -54,10 +54,10 @@ public class CommandSelectMove extends CommandBase
     @Override
     public void execute(MinecraftServer server, ICommandSender commandSender, String[] args) throws CommandException
     {
-        RCParameters parameters = RCParameters.of(args);
+        RCParameters parameters = RCParameters.of(args, "m");
 
-        BlockPos pos = parameters.mc("p").pos(commandSender.getPosition(), false).require();
-        AxisAlignedTransform2D transform = parameters.iv("r").transform(parameters.has("m")).optional().orElse(AxisAlignedTransform2D.ORIGINAL);
+        BlockPos pos = parameters.pos("x", "y", "z", commandSender.getPosition(), false).require();
+        AxisAlignedTransform2D transform = parameters.transform("r", "m").optional().orElse(null);
 
         SelectionOwner selectionOwner = RCCommands.getSelectionOwner(commandSender, null, true);
         RCCommands.assertSize(commandSender, selectionOwner);
@@ -76,7 +76,7 @@ public class CommandSelectMove extends CommandBase
     public List<String> getTabCompletions(MinecraftServer server, ICommandSender sender, String[] args, @Nullable BlockPos pos)
     {
         return RCExpect.startRC()
-                .named("p").pos()
+                .pos("x", "y", "z")
                 .named("r").rotation()
                 .flag("m")
                 .get(server, sender, args, pos);

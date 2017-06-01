@@ -6,7 +6,6 @@
 package ivorius.reccomplex.commands.parameters;
 
 import com.google.common.collect.Lists;
-import com.google.common.primitives.Doubles;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.math.BlockPos;
@@ -25,6 +24,7 @@ import static net.minecraft.command.CommandBase.getListOfStringsMatchingLastWord
 public class Expect<T extends Expect<T>>
 {
     protected final Map<String, Param> params = new HashMap<>();
+    protected final Set<String> flags = new HashSet<>();
     protected String cur;
 
     Expect()
@@ -46,6 +46,7 @@ public class Expect<T extends Expect<T>>
 
     public T flag(String name)
     {
+        flags.add(name);
         return named(name);
     }
 
@@ -96,44 +97,23 @@ public class Expect<T extends Expect<T>>
         List<String> params = Arrays.asList(Parameters.quoted(args));
         String[] paramArray = params.toArray(new String[params.size()]);
 
-        Set<String> flags = new HashSet<>();
-        int curIndex = 0;
+        Parameters parameters = Parameters.of(args, flags.stream().toArray(String[]::new));
 
-        String curName = null;
-        for (int i = 0; i < params.size() - 1; i++)
+        String lastID = parameters.order.get(parameters.order.size() - 1);
+        Parameter entered = lastID != null ? parameters.get(lastID) : parameters.get();
+        Param param = this.params.get(lastID);
+
+        if (param != null && (entered.count() <= param.completion.size() || param.repeat)
+                // It notices we are entering a parameter so it won't be added to the parameters args anyway
+                && !params.get(params.size() - 1).startsWith(Parameters.flagPrefix))
         {
-            String param = params.get(i);
-            curIndex++;
-
-            if (param.startsWith(Parameters.flagPrefix))
-            {
-                if (param.length() == Parameters.flagPrefix.length())
-                    curName = null;
-                else
-                    flags.add(curName = param.substring(Parameters.flagPrefix.length()));
-                curIndex = 0;
-            }
-        }
-
-        Param param = this.params.get(curName);
-
-        if (param != null && (curIndex < param.completion.size() || param.repeat))
-        {
-            Lists.newArrayList(remaining(paramArray, flags));
-            List<String> paramCompletion = param.completion.get(Math.min(curIndex, param.completion.size() - 1)).complete(server, sender, paramArray, pos).stream()
+            return param.completion.get(Math.min(entered.count() - 1, param.completion.size() - 1)).complete(server, sender, paramArray, pos).stream()
                     // More than one word, let's wrap this in quotes
                     .map(s -> s.contains(" ") && !s.startsWith("\"") ? String.format("\"%s\"", s) : s)
-                    .collect(Collectors.toCollection(ArrayList::new));
-
-            // Also complete flags in case the user wants to switch the current
-            if (params.get(params.size() - 1).startsWith(Parameters.flagPrefix))
-                paramCompletion.addAll(remaining(paramArray, flags));
-
-            return paramCompletion;
+                    .collect(Collectors.toList());
         }
 
-        return remaining(paramArray, flags);
-
+        return remaining(paramArray, parameters.flags);
     }
 
     @Nonnull

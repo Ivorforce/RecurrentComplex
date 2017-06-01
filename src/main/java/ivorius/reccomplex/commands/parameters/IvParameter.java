@@ -37,11 +37,17 @@ public class IvParameter extends Parameter
     }
 
     @Nonnull
+    public Parameter.Result<BlockSurfacePos> surfacePos(Parameter zp, BlockPos ref, boolean centerBlock)
+    {
+        return first().missable().flatMap(x ->
+                zp.first().missable().map(z ->
+                        parseSurfacePos(ref, x, z, centerBlock)
+                )).orElse(() -> BlockSurfacePos.from(ref));
+    }
+
     public Parameter.Result<BlockSurfacePos> surfacePos(BlockPos ref, boolean centerBlock)
     {
-        return first().missable().flatMap(x -> at(1).map(z ->
-                parseSurfacePos(ref, x, z, centerBlock)))
-                .orElse(() -> BlockSurfacePos.from(ref));
+        return surfacePos(move(1), ref, centerBlock);
     }
 
     public Result<AxisAlignedTransform2D> transform(boolean mirror) throws CommandException

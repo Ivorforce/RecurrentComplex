@@ -8,15 +8,12 @@ package ivorius.reccomplex.commands.parameters;
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.ListMultimap;
 import com.google.common.collect.Lists;
-import com.google.common.primitives.Doubles;
 import ivorius.reccomplex.commands.CommandImportSchematic;
 import joptsimple.internal.Strings;
+import org.apache.commons.lang3.ArrayUtils;
 
 import javax.annotation.Nonnull;
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.function.Function;
 
 /**
@@ -29,47 +26,52 @@ public class Parameters
     protected final Set<String> flags;
     protected final ListMultimap<String, String> params;
 
-    public Parameters(Set<String> flags, ListMultimap<String, String> params)
+    protected final List<String> order;
+
+    public Parameters(Set<String> flags, ListMultimap<String, String> params, List<String> order)
     {
         this.flags = flags;
         this.params = params;
+        this.order = order;
     }
 
     public Parameters(Parameters blueprint)
     {
         this.flags = blueprint.flags;
         this.params = blueprint.params;
+        this.order = blueprint.order;
     }
 
-    protected static <T> T of(String[] args, Function<Parameters, T> fun)
+    protected static <T> T of(String[] args, String[] flags, Function<Parameters, T> fun)
     {
-        List<String> params = Arrays.asList(quoted(args));
-
-        Set<String> flags = new HashSet<>();
+        Set<String> foundFlags = new HashSet<>();
+        List<String> order = new ArrayList<>();
         ListMultimap<String, String> named = ArrayListMultimap.create();
 
-        String curName = null;
-        for (int i = 0; i < params.size(); i++)
-        {
-            String param = params.get(i);
+        order.add(null);
 
-            if (param.startsWith(flagPrefix))
+        String curName = null;
+        for (String arg : quoted(args))
+        {
+            if (arg.startsWith(flagPrefix)) // Quoted arguments can never be arguments
             {
-                if (param.length() == flagPrefix.length())
-                    curName = null;
-                else
-                    flags.add(curName = param.substring(flagPrefix.length()));
+                foundFlags.add(curName = arg.substring(flagPrefix.length()));
+                if (ArrayUtils.contains(flags, curName)) curName = null;
             }
             else
-                named.put(curName, param); // Can be infinite
+            {
+                order.add(curName);
+                named.put(curName, CommandImportSchematic.trimQuotes(arg));
+                curName = null;
+            }
         }
 
-        return fun.apply(new Parameters(flags, named));
+        return fun.apply(new Parameters(foundFlags, named, order));
     }
 
-    public static Parameters of(String[] args)
+    public static Parameters of(String[] args, String... flags)
     {
-        return of(args, Parameters::new);
+        return of(args, flags, Parameters::new);
     }
 
     public static String[] quoted(String[] args)
@@ -94,7 +96,7 @@ public class Parameters
         if (lastQuote >= 0)
             list.add(Strings.join(Arrays.asList(args).subList(lastQuote, args.length), " "));
 
-        return list.stream().map(CommandImportSchematic::trimQuotes).toArray(String[]::new);
+        return list.stream().toArray(String[]::new);
     }
 
     public boolean has(@Nonnull String flag)
@@ -109,6 +111,6 @@ public class Parameters
 
     public Parameter get(@Nonnull String name)
     {
-        return new Parameter(name, params.get(name));
+        return new Parameter(has(name) && !params.containsKey(name) ? -1 : 0, name, params.get(name));
     }
 }

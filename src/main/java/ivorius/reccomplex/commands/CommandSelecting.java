@@ -57,8 +57,8 @@ public class CommandSelecting extends CommandBase
     public List<String> getTabCompletionOptions(MinecraftServer server, ICommandSender sender, String[] args, @Nullable BlockPos pos)
     {
         return RCExpect.startRC()
-                .pos()
-                .pos()
+                .xyz()
+                .xyz()
                 .skip(1).repeat()
                 .get(server, sender, args, pos);
     }

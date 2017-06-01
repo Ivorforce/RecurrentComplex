@@ -103,7 +103,7 @@ public class CommandSelect extends CommandBase
     {
         return RCExpect.startRC()
                 .any("both", "clear", "point1", "point2", "get")
-                .pos()
+                .xyz()
                 .get(server, sender, args, pos);
     }
 }

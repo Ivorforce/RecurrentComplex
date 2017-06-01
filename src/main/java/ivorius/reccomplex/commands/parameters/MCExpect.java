@@ -7,11 +7,9 @@ package ivorius.reccomplex.commands.parameters;
 
 import net.minecraft.block.Block;
 import net.minecraft.command.CommandBase;
-import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.biome.Biome;
 import net.minecraftforge.common.DimensionManager;
 
-import javax.annotation.Nullable;
 import java.util.Arrays;
 import java.util.stream.Collectors;
 
@@ -33,12 +31,31 @@ public class MCExpect<T extends MCExpect<T>> extends Expect<T>
         return (T) new MCExpect();
     }
 
-    public T pos()
+    public T xyz()
     {
-        int index = index();
-        return next((ser, sen, args, pos) -> CommandBase.getTabCompletionCoordinate(args, index, pos))
-                .next((ser, sen, args, pos) -> CommandBase.getTabCompletionCoordinate(args, index, pos))
-                .next((ser, sen, args, pos) -> CommandBase.getTabCompletionCoordinate(args, index, pos));
+        return x().y().z();
+    }
+
+    public T pos(String x, String y, String z)
+    {
+        return named(x).x()
+                .named(y).y()
+                .named(z).z();
+    }
+
+    public T x()
+    {
+        return next((ser, sen, args, pos) -> CommandBase.getTabCompletionCoordinate(args, index(), pos));
+    }
+
+    public T y()
+    {
+        return next((ser, sen, args, pos) -> CommandBase.getTabCompletionCoordinate(args, index() - 1, pos));
+    }
+
+    public T z()
+    {
+        return next((ser, sen, args, pos) -> CommandBase.getTabCompletionCoordinate(args, index() - 2, pos));
     }
 
     public T biome()

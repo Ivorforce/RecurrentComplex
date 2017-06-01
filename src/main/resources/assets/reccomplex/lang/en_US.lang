@@ -63,7 +63,7 @@ commands.strucExport.usage=/#export --from [structure id]
 
 commands.strucEdit.usage=/#edit <structureName>
 
-commands.strucGen.usage=/#gen <structure name> --p [x] [z] --dimension [dimension] --gen [generation id] --rotation [rotation] --mirror --seed [seed]
+commands.strucGen.usage=/#gen <structure name> --x [x] --z [z] --dimension [dimension] --gen [generation id] --rotation [rotation] --mirror --seed [seed]
 commands.strucGen.noPlace=The structure can't find anywhere suitable to spawn!
 commands.strucGen.noStructure=No structure registered by the name of '%s'
 

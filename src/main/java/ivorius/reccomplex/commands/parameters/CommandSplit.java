@@ -29,9 +29,8 @@ public abstract class CommandSplit extends CommandBase
             public void execute(MinecraftServer server, ICommandSender sender, String[] args) throws CommandException
             {
                 IvParameters parameters = IvParameters.of(args);
-                throw new WrongUsageException(get(parameters.get().first().require())
-                        .map(c -> c.getUsage(sender))
-                        .orElse(getUsage(sender))
+                throw new WrongUsageException(parameters.get().first().map(commands::get).optional()
+                        .orElse(CommandSplit.this).getUsage(sender)
                 );
             }
         });

@@ -62,14 +62,14 @@ public class CommandGenerateStructure extends CommandBase
     @ParametersAreNonnullByDefault
     public void execute(MinecraftServer server, ICommandSender commandSender, String[] args) throws CommandException
     {
-        RCParameters parameters = RCParameters.of(args);
+        RCParameters parameters = RCParameters.of(args, "m");
 
         String structureID = parameters.get().first().require();
         Structure<?> structure = parameters.rc().structure().require();
         WorldServer world = parameters.mc("d").dimension(commandSender).require();
-        AxisAlignedTransform2D transform = parameters.iv("r").transform(parameters.has("m")).optional().orElse(null);
+        AxisAlignedTransform2D transform = parameters.transform("r", "m").optional().orElse(null);
         GenerationType generationType = parameters.rc("gen").generationType(structure).require();
-        BlockSurfacePos pos = parameters.iv("p").surfacePos(commandSender.getPosition(), false).require();
+        BlockSurfacePos pos = parameters.surfacePos("x", "z", commandSender.getPosition(), false).require();
 
         Placer placer = generationType.placer();
 
@@ -102,7 +102,7 @@ public class CommandGenerateStructure extends CommandBase
 
         return RCExpect.startRC()
                 .structure()
-                .named("p").surfacePos()
+                .surfacePos("x", "z")
                 .named("d").dimension()
                 .named("gen")
                 .next((String[] args1) -> parameters.rc().genericStructure().tryGet()

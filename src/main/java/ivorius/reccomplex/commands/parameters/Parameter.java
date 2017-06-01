@@ -5,7 +5,6 @@
 
 package ivorius.reccomplex.commands.parameters;
 
-import ivorius.ivtoolkit.math.AxisAlignedTransform2D;
 import joptsimple.internal.Strings;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.CommandException;
@@ -23,6 +22,9 @@ import java.util.stream.Stream;
  */
 public class Parameter
 {
+    /**
+     * -1 for 'no argument provided'
+     */
     protected final int moved;
     protected final String name;
     protected final List<String> params;
@@ -50,12 +52,12 @@ public class Parameter
 
     protected static String parameterName(Parameter parameter, int index)
     {
-        return String.format("%s (%d)", parameter.name != null ? " -" + parameter.name : "", parameter.moved + index);
+        return String.format("%s (%d)", parameter.name != null ? " " + Parameters.flagPrefix + parameter.name : "", Math.max(parameter.moved, 0) + index);
     }
 
     public Parameter move(int idx)
     {
-        return new Parameter(moved + idx, name, params.subList(idx, params.size()));
+        return new Parameter(moved > 0 ? moved + idx : moved, name, params.subList(idx, params.size()));
     }
 
     public Result<String> first()
@@ -85,13 +87,20 @@ public class Parameter
 
     protected void require(int size) throws CommandException
     {
+        if (moved < 0)
+            throw new ArgumentMissingException(this, size);
         if (!has(size))
             throw new ParameterNotFoundException(this, size);
     }
 
+    public int count()
+    {
+        return params.size();
+    }
+
     public boolean has(int size)
     {
-        return size <= params.size();
+        return size <= count();
     }
 
     public Result<String> at(int index)
@@ -283,6 +292,14 @@ public class Parameter
         public ParameterNotFoundException(Parameter parameter, int index)
         {
             super("Missing required parameter:" + parameterName(parameter, index));
+        }
+    }
+
+    public static class ArgumentMissingException extends CommandException
+    {
+        public ArgumentMissingException(Parameter parameter, int index)
+        {
+            super("Parameter mssing an argument:" + parameterName(parameter, index));
         }
     }
 }

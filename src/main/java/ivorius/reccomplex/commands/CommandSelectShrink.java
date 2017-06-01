@@ -5,7 +5,6 @@
 
 package ivorius.reccomplex.commands;
 
-import ivorius.ivtoolkit.blocks.BlockArea;
 import ivorius.reccomplex.capability.SelectionOwner;
 import ivorius.ivtoolkit.world.MockWorld;
 import ivorius.reccomplex.commands.parameters.RCExpect;
@@ -58,7 +57,7 @@ public class CommandSelectShrink extends CommandVirtual
     public List<String> getTabCompletions(MinecraftServer server, ICommandSender sender, String[] args, @Nullable BlockPos targetPos)
     {
         return RCExpect.startRC()
-                .pos()
+                .xyz()
                 .get(server, sender, args, targetPos);
     }
 }

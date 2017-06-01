@@ -63,7 +63,7 @@ public class CommandPaste extends CommandBase
     @Override
     public void execute(MinecraftServer server, ICommandSender commandSender, String[] args) throws CommandException
     {
-        RCParameters parameters = RCParameters.of(args);
+        RCParameters parameters = RCParameters.of(args, "m");
 
         EntityPlayerMP entityPlayerMP = getCommandSenderAsPlayer(commandSender);
         RCEntityInfo RCEntityInfo = RCCommands.getStructureEntityInfo(entityPlayerMP, null);
@@ -72,8 +72,8 @@ public class CommandPaste extends CommandBase
 
         if (worldData != null)
         {
-            BlockPos pos = parameters.mc("p").pos(commandSender.getPosition(), false).require();
-            AxisAlignedTransform2D transform = parameters.iv("r").transform(parameters.has("m")).optional().orElse(AxisAlignedTransform2D.ORIGINAL);
+            BlockPos pos = parameters.pos("x", "y", "z", commandSender.getPosition(), false).require();
+            AxisAlignedTransform2D transform = parameters.transform("r", "m").optional().orElse(null);
 
             GenericStructure structureInfo = GenericStructure.createDefaultStructure();
             structureInfo.worldDataCompound = worldData;
@@ -92,7 +92,7 @@ public class CommandPaste extends CommandBase
     public List<String> getTabCompletions(MinecraftServer server, ICommandSender sender, String[] args, @Nullable BlockPos pos)
     {
         return RCExpect.startRC()
-                .named("p").pos()
+                .pos("x", "y", "z")
                 .named("r").rotation()
                 .flag("m")
                 .get(server, sender, args, pos);

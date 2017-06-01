@@ -21,9 +21,9 @@ public class RCParameters extends IvParameters
         super(blueprint);
     }
 
-    public static RCParameters of(String[] args)
+    public static RCParameters of(String[] args, String... flags)
     {
-        return of(args, RCParameters::new);
+        return of(args, flags, RCParameters::new);
     }
 
     public RCParameter rc()

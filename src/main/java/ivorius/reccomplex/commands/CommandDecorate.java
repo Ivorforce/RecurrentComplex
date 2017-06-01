@@ -74,8 +74,8 @@ public class CommandDecorate extends CommandBase
     public List<String> getTabCompletions(MinecraftServer server, ICommandSender sender, String[] args, @Nullable BlockPos pos)
     {
         return RCExpect.startRC()
-                .pos()
-                .pos()
+                .xyz()
+                .xyz()
                 .named("exp").structurePredicate()
                 .get(server, sender, args, pos);
     }

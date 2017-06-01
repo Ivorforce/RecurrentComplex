@@ -40,11 +40,18 @@ public class MCParameter extends Parameter
         return new MCParameter(super.move(idx));
     }
 
+    public Result<BlockPos> pos(Parameter yp, Parameter zp, BlockPos ref, boolean centerBlock)
+    {
+        return first().missable().flatMap(x ->
+                yp.first().missable().flatMap(y ->
+                        zp.first().missable().map(z ->
+                                parseBlockPos(ref, new String[]{x, y, z}, 0, centerBlock)
+                        ))).orElse(() -> ref);
+    }
+
     public Result<BlockPos> pos(BlockPos ref, boolean centerBlock)
     {
-        return first().missable().flatMap(x -> at(1).flatMap(y -> at(2).map(z ->
-                parseBlockPos(ref, new String[]{x, y, z}, 0, centerBlock))))
-                .orElse(() -> ref);
+        return pos(move(1), move(2), ref, centerBlock);
     }
 
     public Result<Biome> biome()

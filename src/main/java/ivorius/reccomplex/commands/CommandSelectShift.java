@@ -57,7 +57,7 @@ public class CommandSelectShift extends CommandVirtual
     public List<String> getTabCompletions(MinecraftServer server, ICommandSender sender, String[] args, @Nullable BlockPos targetPos)
     {
         return RCExpect.startRC()
-                .pos()
+                .xyz()
                 .get(server, sender, args, targetPos);
     }
 }

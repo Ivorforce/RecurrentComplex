@@ -78,14 +78,14 @@ public class CommandImportSchematic extends CommandBase
     @Override
     public void execute(MinecraftServer server, ICommandSender commandSender, String[] args) throws CommandException
     {
-        RCParameters parameters = RCParameters.of(args);
+        RCParameters parameters = RCParameters.of(args, "m");
 
         if (args.length < 1)
             throw ServerTranslations.wrongUsageException("commands.strucImportSchematic.usage");
 
         SchematicFile schematicFile = parseSchematic(parameters.get().first().require());
-        BlockPos pos = parameters.mc("p").pos(commandSender.getPosition(), false).require();
-        AxisAlignedTransform2D transform = parameters.iv("r").transform(parameters.has("m")).optional().orElse(AxisAlignedTransform2D.ORIGINAL);
+        BlockPos pos = parameters.mc("x").pos(parameters.get("y"), parameters.get("z"), commandSender.getPosition(), false).require();
+        AxisAlignedTransform2D transform = parameters.transform("r", "m").optional().orElse(null);
 
         OperationRegistry.queueOperation(new OperationGenerateSchematic(schematicFile, transform, pos), commandSender);
     }
@@ -95,7 +95,9 @@ public class CommandImportSchematic extends CommandBase
     {
         return RCExpect.startRC()
                 .schematic()
-                .named("p").pos()
+                .named("x").x()
+                .named("y").y()
+                .named("z").z()
                 .named("r").rotation()
                 .flag("m")
                 .get(server, sender, args, pos);

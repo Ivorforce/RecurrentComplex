@@ -9,27 +9,60 @@ import com.google.common.collect.Lists;
 import gnu.trove.list.TIntList;
 import gnu.trove.list.array.TIntArrayList;
 import ivorius.reccomplex.RCConfig;
+import ivorius.reccomplex.commands.parameters.CommandSplit;
 import ivorius.reccomplex.commands.parameters.RCExpect;
 import ivorius.reccomplex.commands.parameters.RCParameters;
+import ivorius.reccomplex.commands.parameters.SimpleCommand;
 import ivorius.reccomplex.dimensions.DimensionDictionary;
 import ivorius.reccomplex.utils.ServerTranslations;
-import net.minecraft.command.CommandBase;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.WorldProvider;
 import net.minecraftforge.common.DimensionManager;
 
-import javax.annotation.Nullable;
 import java.util.Arrays;
-import java.util.List;
 
 /**
  * Created by lukas on 03.08.14.
  */
-public class CommandDimensionDict extends CommandBase
+public class CommandDimensionDict extends CommandSplit
 {
+    public CommandDimensionDict()
+    {
+        add(new SimpleCommand("types", "<dimension>", () -> RCExpect.startRC().dimension())
+        {
+            @Override
+            public void execute(MinecraftServer server, ICommandSender sender, String[] args) throws CommandException
+            {
+                RCParameters parameters = RCParameters.of(args);
+
+                WorldProvider provider = parameters.mc().dimension(server, sender).require().provider;
+
+                sender.sendMessage(ServerTranslations.format("commands.dimensiondict.get", provider.getDimension(),
+                        ServerTranslations.join(Lists.newArrayList(DimensionDictionary.getDimensionTypes(provider)).stream()
+                                .map(RCTextStyle::dimensionType).toArray())
+                ));
+            }
+        });
+
+        add(new SimpleCommand("list", "<dimension type>", () -> RCExpect.startRC().next(DimensionDictionary.allRegisteredTypes()))
+        {
+            @Override
+            public void execute(MinecraftServer server, ICommandSender sender, String[] args) throws CommandException
+            {
+                RCParameters parameters = RCParameters.of(args);
+
+                String type = parameters.get().first().require();
+
+                sender.sendMessage(ServerTranslations.format("commands.dimensiondict.list", type,
+                        ServerTranslations.join(Arrays.stream(allDimensionsOfType(type).toArray())
+                                .mapToObj(RCTextStyle::dimension).toArray())
+                ));
+            }
+        });
+    }
+
     public static TIntList allDimensionsOfType(String type)
     {
         TIntList intList = new TIntArrayList();
@@ -50,65 +83,5 @@ public class CommandDimensionDict extends CommandBase
     public int getRequiredPermissionLevel()
     {
         return 2;
-    }
-
-    @Override
-    public String getUsage(ICommandSender commandSender)
-    {
-        return ServerTranslations.usage("commands.dimensiondict.usage");
-    }
-
-    @Override
-    public void execute(MinecraftServer server, ICommandSender commandSender, String[] args) throws CommandException
-    {
-        RCParameters parameters = RCParameters.of(args);
-
-        switch (parameters.get().first().require())
-        {
-            case "types":
-            {
-                WorldProvider provider = parameters.mc().move(1).dimension(server, commandSender).require().provider;
-
-                commandSender.sendMessage(ServerTranslations.format("commands.dimensiondict.get", provider.getDimension(),
-                        ServerTranslations.join(Lists.newArrayList(DimensionDictionary.getDimensionTypes(provider)).stream()
-                                .map(RCTextStyle::dimensionType).toArray())
-                ));
-                break;
-            }
-            case "list":
-            {
-                String type = parameters.get().at(1).require();
-
-                commandSender.sendMessage(ServerTranslations.format("commands.dimensiondict.list", type,
-                        ServerTranslations.join(Arrays.stream(allDimensionsOfType(type).toArray())
-                                .mapToObj(RCTextStyle::dimension).toArray())
-                ));
-                break;
-            }
-            default:
-                throw ServerTranslations.wrongUsageException("commands.dimensiondict.usage");
-        }
-    }
-
-    @Override
-    public List<String> getTabCompletions(MinecraftServer server, ICommandSender sender, String[] args, @Nullable BlockPos pos)
-    {
-        RCExpect<?> expect = RCExpect.startRC()
-                .any("types", "list");
-
-        switch (args[0])
-        {
-            case "types":
-                expect.dimension();
-                break;
-            case "list":
-                expect.next(DimensionDictionary.allRegisteredTypes());
-                break;
-            default:
-                expect.skip(1);
-                break;
-        }
-
-        return expect.get(server, sender, args, pos);
     }
 }

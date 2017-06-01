@@ -55,7 +55,7 @@ public class CommandBiomeDict extends CommandSplit
                 String biomeID = parameters.get().first().require();
                 Biome biome = parameters.mc().biome().require();
 
-                sender.sendMessage(ServerTranslations.format("commands.biomedict.get", biomeID,
+                sender.sendMessage(ServerTranslations.format("commands.biomedict.get", RCTextStyle.biome(biome),
                         ServerTranslations.join(Lists.newArrayList(BiomeDictionary.getTypes(biome)).stream()
                                 .map(RCTextStyle::biomeType).toArray())
                 ));
@@ -72,7 +72,7 @@ public class CommandBiomeDict extends CommandSplit
                 String typeID = parameters.get().first().require();
                 BiomeDictionary.Type type = parameters.mc().biomeDictionaryType().require();
 
-                sender.sendMessage(ServerTranslations.format("commands.biomedict.list", typeID,
+                sender.sendMessage(ServerTranslations.format("commands.biomedict.list", RCTextStyle.biomeType(type),
                         ServerTranslations.join(Lists.newArrayList(BiomeDictionary.getBiomes(type))
                                 .stream().map(RCTextStyle::biome).toArray())
                 ));

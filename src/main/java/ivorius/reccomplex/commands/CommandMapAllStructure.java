@@ -29,7 +29,9 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.math.BlockPos;
 
 import javax.annotation.Nullable;
+import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * Created by lukas on 03.08.14.
@@ -63,7 +65,7 @@ public class CommandMapAllStructure extends CommandBase
 
         ResourceDirectory directory = parameters.rc("dir").resourceDirectory().optional().orElse(ResourceDirectory.ACTIVE);
 
-        ICommand other = server.getCommandManager().getCommands().get(parameters.get().at(1).require());
+        ICommand other = server.getCommandManager().getCommands().get(parameters.get().first().require());
 
         if (!(other instanceof CommandVirtual))
             throw ServerTranslations.commandException("commands.rcmap.nonvirtual");
@@ -92,7 +94,7 @@ public class CommandMapAllStructure extends CommandBase
             try
             {
                 virtual.execute(world, new CommandSelecting.SelectingSender(commandSender, BlockPos.ORIGIN, worldData.blockCollection.area().getHigherCorner()),
-                        parameters.get().move(2).varargs());
+                        parameters.get().move(1).varargs());
             }
             catch (MockWorld.VirtualWorldException ex)
             {
@@ -107,7 +109,7 @@ public class CommandMapAllStructure extends CommandBase
                 failed++;
         }
 
-        commandSender.sendMessage(ServerTranslations.format("commands.rcmapall.result", saved, directory, failed, skipped));
+        commandSender.sendMessage(ServerTranslations.format("commands.rcmapall.result", saved, RCTextStyle.path(directory), failed, skipped));
 
         RCCommands.tryReload(RecurrentComplex.loader, LeveledRegistry.Level.CUSTOM);
         RCCommands.tryReload(RecurrentComplex.loader, LeveledRegistry.Level.SERVER);
@@ -116,10 +118,12 @@ public class CommandMapAllStructure extends CommandBase
     @Override
     public List<String> getTabCompletions(MinecraftServer server, ICommandSender sender, String[] args, @Nullable BlockPos pos)
     {
+        RCParameters parameters = RCParameters.of(args);
+        Optional<ICommand> other = parameters.get().first().tryGet().map(server.getCommandManager().getCommands()::get);
+
         return RCExpect.startRC()
-                .any("\"\"")
-                .skip(1)
-                .skip(1).repeat()
+                .next(server.getCommandManager().getCommands().keySet())
+                .next(argss -> other.map(c -> c.getTabCompletions(server, sender, parameters.get().move(1).varargs(), pos)).orElse(Collections.emptyList())).repeat()
                 .named("exp").structure()
                 .named("dir").resourceDirectory()
                 .get(server, sender, args, pos);

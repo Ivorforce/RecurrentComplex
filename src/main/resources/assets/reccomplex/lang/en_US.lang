@@ -63,11 +63,11 @@ commands.strucExport.usage=/#export --from [structure id]
 
 commands.strucEdit.usage=/#edit <structureName>
 
-commands.strucGen.usage=/#gen <structure name> --p [x] [z] --d [dimension] --gen [generation id] --r [rotations] -m [mirror]
+commands.strucGen.usage=/#gen <structure name> --p [x] [z] --d [dimension] --gen [generation id] --r [rotations] --m [mirror] --seed [seed]
 commands.strucGen.noPlace=The structure can't find anywhere suitable to spawn!
 commands.strucGen.noStructure=No structure registered by the name of '%s'
 
-commands.strucImport.usage=/#import <structure name> --p [x] [y] [z] --d [dimension] --r [rotations] --m [mirror]
+commands.strucImport.usage=/#import <structure name> --x [x] --y [y] --z [z] --d [dimension] --r [rotations] --m [mirror]
 commands.strucImport.noStructure=No structure registered by the name of '%s'
 
 commands.selectSet.usage=/#select <both|clear|point1|point2> [x] [y] [z]
@@ -103,13 +103,13 @@ commands.strucReload.success=Reloaded all %s files.
 commands.selectCopy.usage=/#copy
 commands.selectCopy.success=Copied %s, %s, %s to %s, %s, %s to clipboard
 
-commands.strucPaste.usage=/#paste --p [x] [y] [z] --r [rotation] --m [mirror]
+commands.strucPaste.usage=/#paste --x [x] --y [y] --z [z] --r [rotation] --m [mirror]
 commands.strucPaste.noClipboard=You have to copy an area first!
-commands.strucPasteGen.usage=/#pastegen --p [x] [y] [z] --r [rotations] -m [mirror]
+commands.strucPasteGen.usage=/#pastegen --x [x] --y [y] --z [z] --r [rotations] --m [mirror] --seed [seed]
 
-commands.selectMove.usage=/#move --p <x> <y> <z> -r [rotations] --m [mirror]
+commands.selectMove.usage=/#move --x [x] --y [y] --z [z] -r [rotations] --m [mirror]
 
-commands.selectDuplicate.usage=/#duplicate --p <x> <y> <z> --r [rotations] --m [mirror]
+commands.selectDuplicate.usage=/#duplicate --x [x] --y [y] --z [z] --r [rotations] --m [mirror]
 
 commands.rcpreview.usage=/#preview <none|bounds|shape>
 commands.rcpreview.invalid=Invalid preview type
@@ -128,7 +128,7 @@ commands.rcreopen.nogui=No GUI to reopen!
 commands.rcreopen.fail=Failed to reopen GUI!
 commands.rc.didhide=Hidden GUI - %s?
 
-commands.strucImportSchematic.usage=/#importschematic "<Schematic Name>" --p [x] [y] [z] --r [rotations] --m [mirror]
+commands.strucImportSchematic.usage=/#importschematic "<Schematic Name>" --x [x] --y [y] --z [z] --r [rotations] --m [mirror]
 commands.strucImportSchematic.missing=The file '%s' was not found in %s
 commands.strucImportSchematic.format=The file '%s' has an unsupported format (%s)
 

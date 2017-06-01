@@ -28,9 +28,7 @@ import net.minecraft.world.WorldServer;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
-import java.util.Collections;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -70,10 +68,12 @@ public class CommandGenerateStructure extends CommandBase
         AxisAlignedTransform2D transform = parameters.transform("r", "m").optional().orElse(null);
         GenerationType generationType = parameters.rc("gen").generationType(structure).require();
         BlockSurfacePos pos = parameters.surfacePos("x", "z", commandSender.getPosition(), false).require();
+        String seed = parameters.get("seed").first().optional().orElse(null);
 
         Placer placer = generationType.placer();
 
         StructureGenerator<?> generator = new StructureGenerator<>(structure).world(world).generationInfo(generationType)
+                .random(seed != null ? new Random(seed.hashCode()) : null)
                 .structureID(structureID).randomPosition(pos, placer).fromCenter(true)
                 .transform(transform);
 
@@ -83,7 +83,9 @@ public class CommandGenerateStructure extends CommandBase
 
             Optional<BlockPos> lowerCoord = generator.lowerCoord();
             if (lowerCoord.isPresent())
-                OperationRegistry.queueOperation(new OperationGenerateStructure(genericStructureInfo, generationType.id(), generator.transform(), lowerCoord.get(), false).withStructureID(structureID).prepare(world), commandSender);
+                OperationRegistry.queueOperation(new OperationGenerateStructure(genericStructureInfo, generationType.id(), generator.transform(), lowerCoord.get(), false)
+                        .withSeed(seed)
+                        .withStructureID(structureID).prepare(world), commandSender);
             else
                 throw ServerTranslations.commandException("commands.strucGen.noPlace");
         }
@@ -109,6 +111,7 @@ public class CommandGenerateStructure extends CommandBase
                         .map(structure -> structure.generationTypes(GenerationType.class).stream().map(GenerationType::id).collect(Collectors.toList()))
                         .orElse(Collections.emptyList()))
                 .named("r").rotation()
+                .named("seed").randomString()
                 .flag("m")
                 .get(server, sender, args, pos);
 

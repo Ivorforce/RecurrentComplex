@@ -66,25 +66,24 @@ public class CommandPaste extends CommandBase
         RCParameters parameters = RCParameters.of(args, "m");
 
         EntityPlayerMP entityPlayerMP = getCommandSenderAsPlayer(commandSender);
-        RCEntityInfo RCEntityInfo = RCCommands.getStructureEntityInfo(entityPlayerMP, null);
+        RCEntityInfo entityInfo = RCCommands.getStructureEntityInfo(entityPlayerMP, null);
 
-        NBTTagCompound worldData = RCEntityInfo.getWorldDataClipboard();
+        NBTTagCompound worldData = entityInfo.getWorldDataClipboard();
 
-        if (worldData != null)
-        {
-            BlockPos pos = parameters.pos("x", "y", "z", commandSender.getPosition(), false).require();
-            AxisAlignedTransform2D transform = parameters.transform("r", "m").optional().orElse(AxisAlignedTransform2D.ORIGINAL);
-
-            GenericStructure structureInfo = GenericStructure.createDefaultStructure();
-            structureInfo.worldDataCompound = worldData;
-
-            // TODO Generate with generation info?
-            OperationRegistry.queueOperation(new OperationGenerateStructure(structureInfo, null, transform, pos, asSource).prepare((WorldServer) commandSender.getEntityWorld()), commandSender);
-        }
-        else
-        {
+        if (worldData == null)
             throw ServerTranslations.commandException("commands.strucPaste.noClipboard");
-        }
+
+        BlockPos pos = parameters.pos("x", "y", "z", commandSender.getPosition(), false).require();
+        AxisAlignedTransform2D transform = parameters.transform("r", "m").optional().orElse(AxisAlignedTransform2D.ORIGINAL);
+        String seed = parameters.get("seed").first().optional().orElse(null);
+
+        GenericStructure structureInfo = GenericStructure.createDefaultStructure();
+        structureInfo.worldDataCompound = worldData;
+
+        // TODO Generate with generation info?
+        OperationRegistry.queueOperation(new OperationGenerateStructure(structureInfo, null, transform, pos, asSource)
+                .withSeed(seed)
+                .prepare((WorldServer) commandSender.getEntityWorld()), commandSender);
     }
 
     @Nonnull
@@ -94,6 +93,7 @@ public class CommandPaste extends CommandBase
         return RCExpect.startRC()
                 .pos("x", "y", "z")
                 .named("r").rotation()
+                .named("seed").randomString()
                 .flag("m")
                 .get(server, sender, args, pos);
     }

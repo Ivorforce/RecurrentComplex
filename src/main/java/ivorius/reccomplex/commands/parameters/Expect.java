@@ -79,6 +79,11 @@ public class Expect<T extends Expect<T>>
         return next((server, sender, args, pos) -> completion.apply(args));
     }
 
+    public T randomString()
+    {
+        return any(UUID.randomUUID().toString());
+    }
+
     public T repeat()
     {
         Param cur = params.get(this.cur);

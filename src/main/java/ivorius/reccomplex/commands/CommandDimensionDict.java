@@ -67,7 +67,7 @@ public class CommandDimensionDict extends CommandBase
         {
             case "types":
             {
-                WorldProvider provider = parameters.mc().move(1).dimension(commandSender).require().provider;
+                WorldProvider provider = parameters.mc().move(1).dimension(server, commandSender).require().provider;
 
                 commandSender.sendMessage(ServerTranslations.format("commands.dimensiondict.get", provider.getDimension(),
                         ServerTranslations.join(Lists.newArrayList(DimensionDictionary.getDimensionTypes(provider)).stream()

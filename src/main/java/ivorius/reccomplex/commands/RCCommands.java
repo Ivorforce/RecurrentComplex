@@ -36,6 +36,8 @@ import java.util.Set;
  */
 public class RCCommands
 {
+    public static ICommand sanity;
+
     @Nullable
     public static ICommand confirm;
     @Nullable
@@ -53,7 +55,7 @@ public class RCCommands
 
     public static void onServerStart(FMLServerStartingEvent event)
     {
-        event.registerServerCommand(new CommandSanity());
+        event.registerServerCommand(sanity = new CommandSanity());
 
         event.registerServerCommand(new CommandWrite());
         event.registerServerCommand(new CommandWriteAll());

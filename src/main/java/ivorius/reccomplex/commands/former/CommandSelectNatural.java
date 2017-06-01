@@ -53,7 +53,7 @@ public class CommandSelectNatural extends CommandVirtual
     }
 
     @Override
-    void execute(MockWorld world, ICommandSender commandSender, String[] args) throws CommandException
+    public void execute(MockWorld world, ICommandSender commandSender, String[] args) throws CommandException
     {
         RCParameters parameters = RCParameters.of(args);
 

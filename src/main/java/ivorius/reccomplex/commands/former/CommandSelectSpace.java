@@ -156,7 +156,7 @@ public class CommandSelectSpace extends CommandVirtual
     }
 
     @Override
-    void execute(MockWorld world, ICommandSender commandSender, String[] args) throws CommandException
+    public void execute(MockWorld world, ICommandSender commandSender, String[] args) throws CommandException
     {
         SelectionOwner selectionOwner = RCCommands.getSelectionOwner(commandSender, null, true);
         RCCommands.assertSize(commandSender, selectionOwner);

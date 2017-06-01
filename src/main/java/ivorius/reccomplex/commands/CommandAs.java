@@ -17,7 +17,6 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.math.BlockPos;
 
 import javax.annotation.Nullable;
-import java.util.Collections;
 import java.util.List;
 
 /**
@@ -67,7 +66,8 @@ public class CommandAs extends CommandBase
         return RCExpect.startRC()
                 .entity(server)
                 .command()
-                .commandArguments(parameters.get().move(1)).repeat()
+                .commandArguments(parameters.get().move(1),
+                        parameters.mc().entity(server, sender).tryGet().map(e -> (ICommandSender) e).orElse(sender)).repeat()
                 .get(server, sender, args, pos);
     }
 }

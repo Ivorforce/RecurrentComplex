@@ -7,10 +7,14 @@ package ivorius.reccomplex.commands.parameters;
 
 import net.minecraft.block.Block;
 import net.minecraft.command.CommandBase;
+import net.minecraft.command.ICommand;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.biome.Biome;
 import net.minecraftforge.common.DimensionManager;
 
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import static net.minecraft.command.CommandBase.getListOfStringsMatchingLastWord;
@@ -71,5 +75,24 @@ public class MCExpect<T extends MCExpect<T>> extends Expect<T>
     public T block()
     {
         return next(Block.REGISTRY.getKeys());
+    }
+
+    public T command()
+    {
+        return next((server, sender, args, pos) -> server.getCommandManager().getCommands().keySet());
+    }
+
+    public T commandArguments(Parameter parameter)
+    {
+        return next((server1, sender1, args1, pos1) ->
+        {
+            Optional<ICommand> other = parameter.first().tryGet().map(server1.getCommandManager().getCommands()::get);
+            return other.map(c -> c.getTabCompletions(server1, sender1, parameter.move(1).varargs(), pos1)).orElse(Collections.emptyList());
+        });
+    }
+
+    public T entity(MinecraftServer server)
+    {
+        return any((Object[]) server.getOnlinePlayerNames());
     }
 }

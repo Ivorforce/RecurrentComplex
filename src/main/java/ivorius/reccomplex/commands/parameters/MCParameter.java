@@ -9,8 +9,10 @@ import ivorius.reccomplex.utils.ServerTranslations;
 import ivorius.reccomplex.utils.accessor.RCAccessorBiomeDictionary;
 import net.minecraft.block.Block;
 import net.minecraft.command.CommandBase;
+import net.minecraft.command.ICommand;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.command.NumberInvalidException;
+import net.minecraft.entity.Entity;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
@@ -75,5 +77,15 @@ public class MCParameter extends Parameter
     public Result<Block> block(ICommandSender commandSender)
     {
         return first().map(s -> CommandBase.getBlockByText(commandSender, s));
+    }
+
+    public Result<ICommand> command(MinecraftServer server)
+    {
+        return first().map(server.getCommandManager().getCommands()::get);
+    }
+
+    public Result<Entity> entity(MinecraftServer server, ICommandSender sender)
+    {
+        return first().map(s -> CommandBase.getEntity(server, sender, s));
     }
 }

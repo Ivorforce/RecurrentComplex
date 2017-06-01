@@ -5,6 +5,7 @@
 
 package ivorius.reccomplex.commands.parameters;
 
+import ivorius.reccomplex.commands.CommandVirtual;
 import ivorius.reccomplex.commands.RCCommands;
 import ivorius.reccomplex.files.loading.ResourceDirectory;
 import ivorius.reccomplex.utils.ServerTranslations;
@@ -16,6 +17,7 @@ import ivorius.reccomplex.world.gen.feature.structure.generic.GenericStructure;
 import ivorius.reccomplex.world.gen.feature.structure.generic.generation.GenerationType;
 import ivorius.reccomplex.world.gen.feature.structure.generic.generation.NaturalGeneration;
 import net.minecraft.command.CommandException;
+import net.minecraft.server.MinecraftServer;
 
 import java.util.function.Predicate;
 
@@ -118,6 +120,16 @@ public class RCParameter extends Parameter
             T cache = ExpressionCache.of(t, s);
             RCCommands.ensureValid(cache, name);
             return cache;
+        });
+    }
+
+    public Result<CommandVirtual> virtualCommand(MinecraftServer server)
+    {
+        return new MCParameter(this).command(server).map(c ->
+        {
+            if (!(c instanceof CommandVirtual))
+                throw ServerTranslations.commandException("commands.rcmap.nonvirtual");
+            return (CommandVirtual) c;
         });
     }
 }

@@ -6,6 +6,8 @@
 package ivorius.reccomplex.commands;
 
 import ivorius.reccomplex.RCConfig;
+import ivorius.reccomplex.commands.parameters.RCExpect;
+import ivorius.reccomplex.commands.parameters.RCParameters;
 import ivorius.reccomplex.utils.ServerTranslations;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.CommandException;
@@ -43,10 +45,9 @@ public class CommandAs extends CommandBase
     @Override
     public void execute(MinecraftServer server, ICommandSender commandSender, String[] args) throws CommandException
     {
-        if (args.length < 2)
-            throw ServerTranslations.wrongUsageException("commands.rcas.usage");
+        RCParameters parameters = RCParameters.of(args);
 
-        Entity entity = getEntity(server, commandSender, args[0]);
+        Entity entity = parameters.mc().entity(server, commandSender).require();
         String command = buildString(args, 1);
 
         server.commandManager.executeCommand(entity, command);
@@ -61,6 +62,12 @@ public class CommandAs extends CommandBase
     @Override
     public List<String> getTabCompletions(MinecraftServer server, ICommandSender sender, String[] args, @Nullable BlockPos pos)
     {
-        return args.length == 1 ? getListOfStringsMatchingLastWord(args, server.getOnlinePlayerNames()) : Collections.<String>emptyList();
+        RCParameters parameters = RCParameters.of(args);
+
+        return RCExpect.startRC()
+                .entity(server)
+                .command()
+                .commandArguments(parameters.get().move(1)).repeat()
+                .get(server, sender, args, pos);
     }
 }

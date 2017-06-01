@@ -119,7 +119,6 @@ public class RCCommands
 
         event.registerServerCommand(new CommandWhatIsThis());
         event.registerServerCommand(forget = new CommandForget());
-        event.registerServerCommand(new CommandForgetAll());
         event.registerServerCommand(new CommandSelectRemember());
 
         event.registerServerCommand(lookup = new CommandLookupStructure());

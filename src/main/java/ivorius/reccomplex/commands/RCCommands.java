@@ -121,7 +121,7 @@ public class RCCommands
         event.registerServerCommand(new CommandSelectSetBiome());
 
         event.registerServerCommand(new CommandSelectCopy());
-        event.registerServerCommand(new CommandPaste("paste", "commands.strucPaste.usage"));
+        event.registerServerCommand(new CommandPaste());
 
         event.registerServerCommand(new CommandSelectMove());
         event.registerServerCommand(new CommandSelectDuplicate());

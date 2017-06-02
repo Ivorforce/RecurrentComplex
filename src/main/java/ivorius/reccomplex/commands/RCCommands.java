@@ -25,9 +25,8 @@ import ivorius.reccomplex.commands.preview.CommandConfirm;
 import ivorius.reccomplex.commands.preview.CommandPreview;
 import ivorius.reccomplex.commands.schematic.CommandSchematic;
 import ivorius.reccomplex.commands.structure.*;
-import ivorius.reccomplex.commands.structure.entry.CommandForget;
-import ivorius.reccomplex.commands.structure.entry.CommandSelectRemember;
-import ivorius.reccomplex.commands.structure.entry.CommandWhatIsThis;
+import ivorius.reccomplex.commands.structure.sight.CommandSight;
+import ivorius.reccomplex.commands.structure.sight.CommandSightCheck;
 import ivorius.reccomplex.files.RCFiles;
 import ivorius.reccomplex.files.loading.FileLoader;
 import ivorius.reccomplex.files.loading.LeveledRegistry;
@@ -69,7 +68,7 @@ public class RCCommands
 
     public static ICommand reopen;
 
-    public static ICommand forget;
+    public static CommandSight sight;
 
     public static ICommand biomeDict;
     public static ICommand dimensionDict;
@@ -136,9 +135,8 @@ public class RCCommands
 
         event.registerServerCommand(new CommandSchematic());
 
-        event.registerServerCommand(new CommandWhatIsThis());
-        event.registerServerCommand(forget = new CommandForget());
-        event.registerServerCommand(new CommandSelectRemember());
+        event.registerServerCommand(sight = new CommandSight());
+        event.registerServerCommand(new CommandSightCheck(RCConfig.commandPrefix + "whatisthis"));
 
         event.registerServerCommand(lookup = new CommandLookupStructure());
         event.registerServerCommand(list = new CommandListStructures());

@@ -106,6 +106,7 @@ public class GenericVillageCreationHandler implements VillagerRegistry.IVillageC
             return null;
 
         GenericVillagePiece genericVillagePiece = GenericVillagePiece.create(structureID, generationID, startPiece, generationDepth);
+        genericVillagePiece.seed = random.nextLong();
 
         if (genericVillagePiece == null)
             return kill(villagePiece);

@@ -170,6 +170,7 @@ public class StructureGenerator<S extends NBTStorable>
         WorldStructureGenerationData.StructureEntry structureEntry = WorldStructureGenerationData.StructureEntry.complete(structureID, generationInfoID, boundingBox, spawn.transform, !partially);
         structureEntry.blocking = structure.isBlocking();
         structureEntry.firstTime = false; // Been there done that
+        structureEntry.seed = seed();
 
         try
         {
@@ -233,8 +234,7 @@ public class StructureGenerator<S extends NBTStorable>
         return world;
     }
 
-    @Nonnull
-    public Long seed()
+    public long seed()
     {
         return this.seed != null ? this.seed : (this.seed = world().rand.nextLong());
     }

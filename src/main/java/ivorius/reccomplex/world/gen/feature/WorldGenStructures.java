@@ -5,15 +5,15 @@
 
 package ivorius.reccomplex.world.gen.feature;
 
+import ivorius.ivtoolkit.blocks.BlockSurfacePos;
 import ivorius.ivtoolkit.math.IvVecMathHelper;
 import ivorius.reccomplex.RCConfig;
 import ivorius.reccomplex.RecurrentComplex;
-import ivorius.ivtoolkit.blocks.BlockSurfacePos;
 import ivorius.reccomplex.world.gen.feature.selector.MixingStructureSelector;
 import ivorius.reccomplex.world.gen.feature.selector.NaturalStructureSelector;
 import ivorius.reccomplex.world.gen.feature.structure.Structure;
-import ivorius.reccomplex.world.gen.feature.structure.Structures;
 import ivorius.reccomplex.world.gen.feature.structure.StructureRegistry;
+import ivorius.reccomplex.world.gen.feature.structure.Structures;
 import ivorius.reccomplex.world.gen.feature.structure.context.StructureSpawnContext;
 import ivorius.reccomplex.world.gen.feature.structure.generic.generation.NaturalGeneration;
 import ivorius.reccomplex.world.gen.feature.structure.generic.generation.StaticGeneration;
@@ -35,6 +35,7 @@ import java.util.stream.Collectors;
  */
 public class WorldGenStructures
 {
+    public static final long POS_SEED = 1298319823120938102L;
 
     public static final int STRUCTURE_TRIES = 10;
 
@@ -73,7 +74,7 @@ public class WorldGenStructures
 
         generated.stream()
                 .filter(pair -> structurePredicate == null || structurePredicate.test(pair.getLeft()))
-                .forEach(pair -> planStructureInChunk(random, chunkPos, world, pair.getLeft(), pair.getRight(), false));
+                .forEach(pair -> planStructureInChunk(chunkPos, world, pair.getLeft(), pair.getRight(), random.nextLong()));
     }
 
     public static boolean generateRandomStructureInChunk(Random random, ChunkPos chunkPos, WorldServer world, Biome biomeGen)
@@ -88,7 +89,7 @@ public class WorldGenStructures
 
             if (pair != null)
             {
-                if (planStructureInChunk(random, chunkPos, world, pair.getLeft(), pair.getRight(), true))
+                if (planStructureInChunk(chunkPos, world, pair.getLeft(), pair.getRight(), random.nextLong()))
                     return true;
             }
         }
@@ -97,16 +98,16 @@ public class WorldGenStructures
     }
 
     // TODO Use !instantly to only plan structure but later generate
-    protected static boolean planStructureInChunk(Random random, ChunkPos chunkPos, WorldServer world, Structure<?> structure, NaturalGeneration naturalGenInfo, boolean instantly)
+    protected static boolean planStructureInChunk(ChunkPos chunkPos, WorldServer world, Structure<?> structure, NaturalGeneration naturalGenInfo, long seed)
     {
         String structureName = StructureRegistry.INSTANCE.id(structure);
 
-        BlockSurfacePos genPos = new BlockSurfacePos((chunkPos.x << 4) + 8 + random.nextInt(16), (chunkPos.z << 4) + 8 + random.nextInt(16));
+        BlockSurfacePos genPos = randomSurfacePos(chunkPos, seed);
 
         if (!naturalGenInfo.hasLimitations() || naturalGenInfo.getLimitations().areResolved(world, structureName))
         {
             StructureGenerator<?> generator = new StructureGenerator<>(structure).world(world).generationInfo(naturalGenInfo)
-                    .seed(random.nextLong()).maturity(StructureSpawnContext.GenerateMaturity.SUGGEST)
+                    .seed(seed).maturity(StructureSpawnContext.GenerateMaturity.SUGGEST)
                     .randomPosition(genPos, naturalGenInfo.placer.getContents()).fromCenter(true)
                     .partially(RecurrentComplex.PARTIALLY_SPAWN_NATURAL_STRUCTURES, chunkPos);
 
@@ -116,17 +117,18 @@ public class WorldGenStructures
                 return false;
             }
 
-            return generator.generate() !=  null;
+            return generator.generate() != null;
         }
 
         return false;
     }
 
-    public static void complementStructuresInChunk(Random random, final ChunkPos chunkPos, final WorldServer world, List<WorldStructureGenerationData.StructureEntry> complement)
+    public static void complementStructuresInChunk(final ChunkPos chunkPos, final WorldServer world, List<WorldStructureGenerationData.StructureEntry> complement)
     {
         WorldStructureGenerationData data = WorldStructureGenerationData.get(world);
 
-        complement.stream().filter(e -> !e.preventComplementation()).forEach(entry -> {
+        complement.stream().filter(e -> !e.preventComplementation()).forEach(entry ->
+        {
             Structure<?> structure = StructureRegistry.INSTANCE.get(entry.getStructureID());
 
             if (structure == null)
@@ -142,7 +144,7 @@ public class WorldGenStructures
             }
 
             new StructureGenerator<>(structure).world(world).generationInfo(entry.generationInfoID)
-                    .seed(random.nextLong()).boundingBox(entry.boundingBox).transform(entry.transform).generationBB(Structures.chunkBoundingBox(chunkPos))
+                    .seed(chunkSeed(entry.seed, chunkPos)).boundingBox(entry.boundingBox).transform(entry.transform).generationBB(Structures.chunkBoundingBox(chunkPos))
                     .structureID(entry.getStructureID()).instanceData(entry.instanceData)
                     // Could use entry.firstTime but then StructureGenerator would add a new entry
                     .maturity(StructureSpawnContext.GenerateMaturity.COMPLEMENT)
@@ -154,6 +156,22 @@ public class WorldGenStructures
                 data.markDirty();
             }
         });
+    }
+
+    public static long chunkSeed(long seed, ChunkPos chunkPos)
+    {
+        // From world.setRandomSeed
+        return (long) chunkPos.x * 341873128712L + (long) chunkPos.z * 132897987541L + seed;
+    }
+
+    public static BlockSurfacePos randomSurfacePos(ChunkPos chunkPos, long seed)
+    {
+        Random posRandom = new Random(seed ^ POS_SEED);
+        return BlockSurfacePos.from(chunkPos.getBlock(
+                posRandom.nextInt(16) + 8,
+                0,
+                posRandom.nextInt(16) + 8
+        ));
     }
 
     public static boolean decorate(WorldServer world, Random random, ChunkPos chunkPos, @Nullable Predicate<Structure> structurePredicate)
@@ -175,7 +193,7 @@ public class WorldGenStructures
                 data.checkChunk(chunkPos);
 
             if (!RecurrentComplex.PARTIALLY_SPAWN_NATURAL_STRUCTURES && structurePredicate == null)
-                complementStructuresInChunk(random, chunkPos, world, complement);
+                complementStructuresInChunk(chunkPos, world, complement);
 
             if ((!RCConfig.honorStructureGenerationOption || worldWantsStructures)
                     // If partially spawn, check chunks as having tried to add partial structures as into the thingy
@@ -201,7 +219,7 @@ public class WorldGenStructures
             }
 
             if (RecurrentComplex.PARTIALLY_SPAWN_NATURAL_STRUCTURES && structurePredicate == null)
-                complementStructuresInChunk(random, chunkPos, world, complement);
+                complementStructuresInChunk(chunkPos, world, complement);
         }
 
         return generated;

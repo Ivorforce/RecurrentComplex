@@ -9,8 +9,8 @@ import com.google.gson.annotations.SerializedName;
 import ivorius.ivtoolkit.tools.IvGsonHelper;
 import ivorius.reccomplex.RCConfig;
 import ivorius.reccomplex.RecurrentComplex;
-import ivorius.ivtoolkit.blocks.BlockSurfacePos;
 import ivorius.reccomplex.world.gen.feature.StructureGenerator;
+import ivorius.reccomplex.world.gen.feature.WorldGenStructures;
 import ivorius.reccomplex.world.gen.feature.selector.StructureSelector;
 import ivorius.reccomplex.world.gen.feature.structure.Placer;
 import ivorius.reccomplex.world.gen.feature.structure.Structure;
@@ -18,6 +18,7 @@ import ivorius.reccomplex.world.gen.feature.structure.StructureRegistry;
 import ivorius.reccomplex.world.gen.feature.structure.context.StructureSpawnContext;
 import ivorius.reccomplex.world.gen.feature.structure.generic.generation.VanillaDecorationGeneration;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.ChunkPos;
 import net.minecraft.world.WorldServer;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.biome.BiomeDecorator;
@@ -89,14 +90,15 @@ public class RCBiomeDecorator
         return amount;
     }
 
-    protected static int doDecorate(WorldServer worldIn, Random random, BlockPos chunkPos, DecorationType type, int amount, boolean lowChance)
+    protected static int doDecorate(WorldServer worldIn, Random random, BlockPos blockPos, DecorationType type, int amount, boolean lowChance)
     {
+        ChunkPos chunkPos = new ChunkPos(blockPos);
         double baseWeight = RCConfig.baseDecorationWeights.get(type);
 
         if (baseWeight <= 0)
             return amount;
 
-        Biome biomeIn = worldIn.getBiome(chunkPos.add(16, 0, 16));
+        Biome biomeIn = worldIn.getBiome(chunkPos.getBlock(16, 0, 16));
 
         StructureSelector<VanillaDecorationGeneration, DecorationType> selector = StructureRegistry.INSTANCE.decorationSelectors()
                 .get(biomeIn, worldIn.provider);
@@ -114,7 +116,7 @@ public class RCBiomeDecorator
         return adapters.stream().filter(a -> a.matches(worldIn, biomeIn, decorator, chunkPos, type)).findFirst().orElse(vanillaAdapter);
     }
 
-    public static int trySurface(WorldServer worldIn, Random random, BlockPos chunkPos, StructureSelector<VanillaDecorationGeneration, DecorationType> selector, DecorationType type, double totalWeight, double baseWeight, int vanillaAmount, boolean mayGiveUp)
+    public static int trySurface(WorldServer worldIn, Random random, ChunkPos chunkPos, StructureSelector<VanillaDecorationGeneration, DecorationType> selector, DecorationType type, double totalWeight, double baseWeight, int vanillaAmount, boolean mayGiveUp)
     {
         int rcAmount = amount(random, totalWeight * baseWeight, vanillaAmount);
 
@@ -124,31 +126,30 @@ public class RCBiomeDecorator
         for (int i = 0; i < rcAmount; i++)
         {
             for (int t = 0; t < STRUCTURE_TRIES; t++)
-               if (generateSurface(selector.selectOne(random, type, totalWeight), worldIn, chunkPos, random))
-                break;
+                if (generateSurface(selector.selectOne(random, type, totalWeight), worldIn, chunkPos, random))
+                    break;
         }
 
         return vanillaAmount - rcAmount;
     }
 
-    public static boolean generateSurface(Pair<Structure<?>, VanillaDecorationGeneration> generation, WorldServer worldIn, BlockPos chunkPos, Random random)
+    public static boolean generateSurface(Pair<Structure<?>, VanillaDecorationGeneration> generation, WorldServer worldIn, ChunkPos chunkPos, Random random)
     {
+        long seed = random.nextLong();
+        BlockPos shift = generation.getRight().spawnShift;
+
         return new StructureGenerator<>(generation.getLeft()).generationInfo(generation.getRight()).world(worldIn)
-                .seed(random.nextLong()).maturity(StructureSpawnContext.GenerateMaturity.SUGGEST)
+                .seed(seed).maturity(StructureSpawnContext.GenerateMaturity.SUGGEST)
                 .memorize(RCConfig.memorizeDecoration).allowOverlaps(true)
-                .randomPosition(randomSurfacePos(random, chunkPos.add(generation.getRight().spawnShift)), // Shift +1 because surface placer goes -1
-                        shift(generation.getRight().placer(), generation.getRight().spawnShift.getY() + 1)).fromCenter(true)
+                .randomPosition(WorldGenStructures.randomSurfacePos(chunkPos, seed).add(shift.getX(), shift.getZ()),
+                        // Shift +1 because surface placer goes -1
+                        shift(generation.getRight().placer(), shift.getY() + 1)).fromCenter(true)
                 .generate() != null;
     }
 
     protected static Placer shift(Placer placer, int y)
     {
         return (context, blockCollection) -> placer.place(context, blockCollection) + y;
-    }
-
-    protected static BlockSurfacePos randomSurfacePos(Random random, BlockPos chunkPos)
-    {
-        return BlockSurfacePos.from(chunkPos).add(random.nextInt(16) + 8, random.nextInt(16) + 8);
     }
 
     protected static int amount(Random random, double totalWeight, int picks)
@@ -195,6 +196,7 @@ public class RCBiomeDecorator
 
         /**
          * The amount of things generated
+         *
          * @return The amount. < 0 if ReC should not override decoration here.
          */
         int amount(WorldServer worldIn, Random random, Biome biome, BiomeDecorator decorator, BlockPos chunkPos, DecorationType type);

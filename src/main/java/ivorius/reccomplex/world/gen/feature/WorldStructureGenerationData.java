@@ -274,6 +274,8 @@ public class WorldStructureGenerationData extends WorldSavedData
         protected String structureID;
         protected String generationInfoID;
 
+        protected long seed;
+
         protected AxisAlignedTransform2D transform;
 
         protected NBTBase instanceData;
@@ -328,6 +330,9 @@ public class WorldStructureGenerationData extends WorldSavedData
             structureID = compound.getString("structureID");
             generationInfoID = compound.hasKey(generationInfoID, Constants.NBT.TAG_STRING) ? compound.getString("generationInfoID") : null;
 
+            seed = compound.hasKey("seed") ? compound.getLong("seed")
+                    : new Random().nextLong(); // Legacy
+
             transform = AxisAlignedTransform2D.from(compound.getInteger("rotation"), compound.getBoolean("mirrorX"));
 
             if (compound.hasKey("lowerCoord")) // legacy
@@ -354,6 +359,8 @@ public class WorldStructureGenerationData extends WorldSavedData
 
             compound.setString("structureID", structureID);
             if (generationInfoID != null) compound.setString("generationInfoID", generationInfoID);
+
+            compound.setLong("seed", seed);
 
             compound.setInteger("rotation", transform.getRotation());
             compound.setBoolean("mirrorX", transform.isMirrorX());

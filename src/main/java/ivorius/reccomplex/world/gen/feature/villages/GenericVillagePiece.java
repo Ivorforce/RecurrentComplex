@@ -39,6 +39,8 @@ public class GenericVillagePiece extends StructureVillagePieces.Village
     public String structureID;
     public String generationID;
 
+    public long seed;
+
     public boolean mirrorX;
     public boolean startedGeneration;
     public NBTBase instanceData;
@@ -102,7 +104,7 @@ public class GenericVillagePiece extends StructureVillagePieces.Village
         return new Environment(world, biome(world), field_189928_h, generationType);
     }
 
-    public void prepare(Random random, WorldServer world)
+    public void prepare(WorldServer world)
     {
         Structure<?> structure = StructureRegistry.INSTANCE.get(structureID);
 
@@ -117,7 +119,7 @@ public class GenericVillagePiece extends StructureVillagePieces.Village
         VanillaGeneration vanillaGenInfo = (VanillaGeneration) generationType;
         AxisAlignedTransform2D transform = getTransform(vanillaGenInfo.front, mirrorX, getCoordBaseMode().getOpposite());
 
-        instanceData = new StructureGenerator<>(structure).seed(random.nextLong()).environment(environment(world, generationType)).transform(transform).boundingBox(boundingBox)
+        instanceData = new StructureGenerator<>(structure).seed(seed).environment(environment(world, generationType)).transform(transform).boundingBox(boundingBox)
                 .instanceData().map(NBTStorable::writeToNBT).orElse(null);
     }
 
@@ -151,19 +153,19 @@ public class GenericVillagePiece extends StructureVillagePieces.Village
         }
 
         if (world instanceof WorldServer)
-            generate((WorldServer) world, random, boundingBox, structure, generationType, transform);
+            generate((WorldServer) world, boundingBox, structure, generationType, transform);
 
         return true;
     }
 
-    protected <T extends NBTStorable> void generate(WorldServer world, Random random, StructureBoundingBox generationBB, Structure<T> structure, GenerationType generationType, AxisAlignedTransform2D transform)
+    protected <T extends NBTStorable> void generate(WorldServer world, StructureBoundingBox generationBB, Structure<T> structure, GenerationType generationType, AxisAlignedTransform2D transform)
     {
         if (!startedGeneration)
-            prepare(random, world);
+            prepare(world);
 
         boolean firstTime = !startedGeneration;
         Optional<WorldStructureGenerationData.StructureEntry> entry = new StructureGenerator<>(structure).environment(environment(world, generationType))
-                .seed(random.nextLong()).lowerCoord(StructureBoundingBoxes.min(boundingBox)).transform(transform).generationBB(StructureBoundingBoxes.wholeHeightBoundingBox(world, generationBB))
+                .seed(seed).lowerCoord(StructureBoundingBoxes.min(boundingBox)).transform(transform).generationBB(StructureBoundingBoxes.wholeHeightBoundingBox(world, generationBB))
                 .generationLayer(componentType).structureID(structureID).maturity(firstTime ? StructureSpawnContext.GenerateMaturity.FIRST : StructureSpawnContext.GenerateMaturity.COMPLEMENT)
                 .instanceData(this.instanceData).generate();
         entry.ifPresent(structureEntry -> structureEntry.setPreventComplementation(true));
@@ -177,6 +179,7 @@ public class GenericVillagePiece extends StructureVillagePieces.Village
         super.writeStructureToNBT(tagCompound);
         tagCompound.setString("RcSId", structureID);
         tagCompound.setString("RcGtId", generationID);
+        tagCompound.setLong("seed", seed);
         tagCompound.setBoolean("RcMirror", mirrorX);
         tagCompound.setBoolean("RcStartGen", startedGeneration);
         if (instanceData != null)
@@ -189,6 +192,8 @@ public class GenericVillagePiece extends StructureVillagePieces.Village
         super.readStructureFromNBT(tagCompound);
         structureID = tagCompound.getString("RcSId");
         generationID = tagCompound.getString("RcGtId");
+        seed = tagCompound.hasKey("seed") ? tagCompound.getLong("seed")
+                : new Random().nextLong(); // Legacy
         mirrorX = tagCompound.getBoolean("RcMirror");
         startedGeneration = tagCompound.getBoolean("RcStartGen");
         instanceData = tagCompound.hasKey("RcInstDat") ? tagCompound.getTag("RcInstDat") : null;

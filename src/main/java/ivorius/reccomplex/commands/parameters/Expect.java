@@ -5,6 +5,7 @@
 
 package ivorius.reccomplex.commands.parameters;
 
+import ivorius.reccomplex.random.Person;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.math.BlockPos;
@@ -87,7 +88,8 @@ public class Expect<T extends Expect<T>>
 
     public T randomString()
     {
-        return any(UUID.randomUUID().toString());
+        Random rand = new Random();
+        return any(Person.chaoticName(rand, rand.nextBoolean()));
     }
 
     public T repeat()

@@ -50,7 +50,7 @@ public class WorldGenStructures
                 return;
 
             new StructureGenerator<>(structure).world(world).generationInfo(staticGenInfo)
-                    .random(random).randomPosition(pos, staticGenInfo.placer.getContents()).fromCenter(true)
+                    .seed(random.nextLong()).randomPosition(pos, staticGenInfo.placer.getContents()).fromCenter(true)
                     .partially(RecurrentComplex.PARTIALLY_SPAWN_NATURAL_STRUCTURES, chunkPos)
                     .generate();
         });
@@ -106,7 +106,7 @@ public class WorldGenStructures
         if (!naturalGenInfo.hasLimitations() || naturalGenInfo.getLimitations().areResolved(world, structureName))
         {
             StructureGenerator<?> generator = new StructureGenerator<>(structure).world(world).generationInfo(naturalGenInfo)
-                    .random(random).maturity(StructureSpawnContext.GenerateMaturity.SUGGEST)
+                    .seed(random.nextLong()).maturity(StructureSpawnContext.GenerateMaturity.SUGGEST)
                     .randomPosition(genPos, naturalGenInfo.placer.getContents()).fromCenter(true)
                     .partially(RecurrentComplex.PARTIALLY_SPAWN_NATURAL_STRUCTURES, chunkPos);
 
@@ -142,7 +142,7 @@ public class WorldGenStructures
             }
 
             new StructureGenerator<>(structure).world(world).generationInfo(entry.generationInfoID)
-                    .random(random).boundingBox(entry.boundingBox).transform(entry.transform).generationBB(Structures.chunkBoundingBox(chunkPos))
+                    .seed(random.nextLong()).boundingBox(entry.boundingBox).transform(entry.transform).generationBB(Structures.chunkBoundingBox(chunkPos))
                     .structureID(entry.getStructureID()).instanceData(entry.instanceData)
                     // Could use entry.firstTime but then StructureGenerator would add a new entry
                     .maturity(StructureSpawnContext.GenerateMaturity.COMPLEMENT)

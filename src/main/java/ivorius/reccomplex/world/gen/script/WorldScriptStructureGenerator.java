@@ -201,7 +201,7 @@ public class WorldScriptStructureGenerator implements WorldScript<WorldScriptStr
                             .subtract(transform.apply(BlockPos.ORIGIN, strucSize)).add(pos);
 
                     instanceData = new WorldScriptStructureGenerator.InstanceData(structureID, null, strucCoord, strucTransform,
-                            new StructureGenerator<>(structure).random(random).environment(context.environment).transform(strucTransform).lowerCoord(strucCoord).asSource(context.generateAsSource)
+                            new StructureGenerator<>(structure).seed(random.nextLong()).environment(context.environment).transform(strucTransform).lowerCoord(strucCoord).asSource(context.generateAsSource)
                                     .instanceData().orElse(null));
                 }
             }
@@ -240,7 +240,7 @@ public class WorldScriptStructureGenerator implements WorldScript<WorldScriptStr
                         .subtract(transform.apply(BlockPos.ORIGIN, strucSize)).add(pos);
 
                 instanceData = new WorldScriptStructureGenerator.InstanceData(structureID, generationInfo.id(), strucCoord, strucTransform,
-                        new StructureGenerator<>(structure).random(random).environment(context.environment).transform(strucTransform).asSource(context.generateAsSource)
+                        new StructureGenerator<>(structure).seed(random.nextLong()).environment(context.environment).transform(strucTransform).asSource(context.generateAsSource)
                                 .lowerCoord(strucCoord).instanceData().orElse(null));
             }
         }

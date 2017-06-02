@@ -6,6 +6,7 @@
 package ivorius.reccomplex.utils;
 
 import net.minecraft.util.text.TextFormatting;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.tuple.MutablePair;
 import org.apache.commons.lang3.tuple.Pair;
 
@@ -19,29 +20,38 @@ public class RCStrings
     /**
      * From StringUtils
      */
-    private static MutablePair<Integer, Integer> abbreviate(final String str, int offset, final int maxWidth) {
-        if (str == null) {
+    private static MutablePair<Integer, Integer> abbreviate(final String str, int offset, final int maxWidth)
+    {
+        if (str == null)
+        {
             return null;
         }
-        if (maxWidth < 4) {
+        if (maxWidth < 4)
+        {
             throw new IllegalArgumentException("Minimum abbreviation width is 4");
         }
-        if (str.length() <= maxWidth) {
+        if (str.length() <= maxWidth)
+        {
             return MutablePair.of(0, str.length());
         }
-        if (offset > str.length()) {
+        if (offset > str.length())
+        {
             offset = str.length();
         }
-        if (str.length() - offset < maxWidth - 3) {
+        if (str.length() - offset < maxWidth - 3)
+        {
             offset = str.length() - (maxWidth - 3);
         }
-        if (offset <= 4) {
+        if (offset <= 4)
+        {
             return MutablePair.of(0, maxWidth - 3);
         }
-        if (maxWidth < 7) {
+        if (maxWidth < 7)
+        {
             throw new IllegalArgumentException("Minimum abbreviation width with offset is 7");
         }
-        if (offset + maxWidth - 3 < str.length()) {
+        if (offset + maxWidth - 3 < str.length())
+        {
             Pair<Integer, Integer> abbreviated = abbreviate(str.substring(offset), 0, maxWidth - 3);
             return MutablePair.of(offset, offset + abbreviated.getRight());
         }
@@ -87,5 +97,25 @@ public class RCStrings
     public static String abbreviateFormatted(String str, int maxWidth)
     {
         return abbreviateFormatted(str, 0, maxWidth);
+    }
+
+    public static Long seed(String seed)
+    {
+        if (seed == null || StringUtils.isEmpty(seed))
+            return null;
+
+        try
+        {
+            long j = Long.parseLong(seed);
+
+            if (j != 0L)
+                return j;
+        }
+        catch (NumberFormatException var7)
+        {
+            return (long) seed.hashCode();
+        }
+
+        return null;
     }
 }

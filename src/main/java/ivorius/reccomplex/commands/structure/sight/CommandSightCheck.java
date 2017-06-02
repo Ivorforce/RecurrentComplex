@@ -3,7 +3,7 @@
  *  * http://ivorius.net
  */
 
-package ivorius.reccomplex.commands.structure.entry;
+package ivorius.reccomplex.commands.structure.sight;
 
 import ivorius.reccomplex.RCConfig;
 import ivorius.reccomplex.commands.RCCommands;
@@ -34,15 +34,22 @@ import java.util.stream.Collectors;
 /**
  * Created by lukas on 25.05.14.
  */
-public class CommandWhatIsThis extends CommandBase
+public class CommandSightCheck extends CommandBase
 {
+    private String name;
+
+    public CommandSightCheck(String name)
+    {
+        this.name = name;
+    }
+
     @Nonnull
     public static ITextComponent entryTextComponent(WorldStructureGenerationData.Entry entry)
     {
         TextComponentString forget = new TextComponentString("X");
         String uuidString = entry.getUuid().toString();
         forget.getStyle().setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND,
-                String.format("/%s %s", RCCommands.forget.getName(), uuidString)));
+                String.format("/%s %s id %s", RCCommands.sight.getName(), RCCommands.sight.delete.getName(), uuidString)));
         forget.getStyle().setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT,
                 ServerTranslations.format("commands.rcforget.forget", uuidString)));
         forget.getStyle().setColor(TextFormatting.RED);
@@ -57,7 +64,7 @@ public class CommandWhatIsThis extends CommandBase
     @Override
     public String getName()
     {
-        return RCConfig.commandPrefix + "whatisthis";
+        return name;
     }
 
     public int getRequiredPermissionLevel()
@@ -82,7 +89,7 @@ public class CommandWhatIsThis extends CommandBase
         List<WorldStructureGenerationData.Entry> entries = WorldStructureGenerationData.get(world).entriesAt(pos).collect(Collectors.toCollection(ArrayList::new));
         if (entries.size() > 0)
             commandSender.sendMessage(ServerTranslations.format(new ArrayList<ITextComponent>().size() > 1 ? "commands.whatisthis.many" : "commands.whatisthis.one",
-                    ServerTranslations.join(entries.stream().map(CommandWhatIsThis::entryTextComponent).collect(Collectors.toList()))));
+                    ServerTranslations.join(entries.stream().map(CommandSightCheck::entryTextComponent).collect(Collectors.toList()))));
         else
             commandSender.sendMessage(ServerTranslations.format("commands.whatisthis.none"));
     }

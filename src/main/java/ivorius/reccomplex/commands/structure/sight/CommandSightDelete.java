@@ -3,24 +3,19 @@
  *  * http://ivorius.net
  */
 
-package ivorius.reccomplex.commands.structure.entry;
+package ivorius.reccomplex.commands.structure.sight;
 
-import ivorius.reccomplex.RCConfig;
 import ivorius.reccomplex.commands.parameters.CommandSplit;
 import ivorius.reccomplex.commands.parameters.RCExpect;
 import ivorius.reccomplex.commands.parameters.RCParameters;
 import ivorius.reccomplex.commands.parameters.SimpleCommand;
 import ivorius.reccomplex.utils.ServerTranslations;
 import ivorius.reccomplex.world.gen.feature.WorldStructureGenerationData;
-import net.minecraft.command.CommandBase;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
 
-import javax.annotation.Nullable;
-import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -28,11 +23,12 @@ import java.util.stream.Collectors;
 /**
  * Created by lukas on 25.05.14.
  */
-public class CommandForget extends CommandSplit
+public class CommandSightDelete extends CommandSplit
 {
-    public CommandForget()
+    public CommandSightDelete()
     {
-        add(new SimpleCommand("id", "<id>", () -> RCExpect.startRC().skip(1)) {
+        add(new SimpleCommand("id", "<id>", () -> RCExpect.startRC().skip(1))
+        {
             @Override
             public void execute(MinecraftServer server, ICommandSender sender, String[] args) throws CommandException
             {
@@ -48,7 +44,8 @@ public class CommandForget extends CommandSplit
             }
         });
 
-        add(new SimpleCommand("all", "[x] [y] [z]", () -> RCExpect.startRC().xyz()) {
+        add(new SimpleCommand("all", "[x] [y] [z]", () -> RCExpect.startRC().xyz())
+        {
             @Override
             public void execute(MinecraftServer server, ICommandSender sender, String[] args) throws CommandException
             {
@@ -72,7 +69,7 @@ public class CommandForget extends CommandSplit
     @Override
     public String getName()
     {
-        return RCConfig.commandPrefix + "forget";
+        return "forget";
     }
 
     public int getRequiredPermissionLevel()

@@ -33,19 +33,14 @@ import java.util.List;
  */
 public class CommandPaste extends CommandBase
 {
-    private String name;
-    private String usage;
-
-    public CommandPaste(String name, String usage)
+    public CommandPaste()
     {
-        this.name = name;
-        this.usage = usage;
     }
 
     @Override
     public String getName()
     {
-        return RCConfig.commandPrefix + name;
+        return RCConfig.commandPrefix + "paste";
     }
 
     public int getRequiredPermissionLevel()
@@ -56,7 +51,7 @@ public class CommandPaste extends CommandBase
     @Override
     public String getUsage(ICommandSender var1)
     {
-        return ServerTranslations.usage(usage);
+        return ServerTranslations.usage("commands.strucPaste.usage");
     }
 
     @Override

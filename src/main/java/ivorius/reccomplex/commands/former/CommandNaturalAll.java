@@ -25,12 +25,12 @@ import java.util.List;
 /**
  * Created by lukas on 09.06.14.
  */
-public class CommandSelectNatural extends CommandVirtual
+public class CommandNaturalAll extends CommandVirtual
 {
     @Override
     public String getName()
     {
-        return RCConfig.commandPrefix + "natural";
+        return "smart";
     }
 
     @Override
@@ -43,7 +43,9 @@ public class CommandSelectNatural extends CommandVirtual
     public List<String> getTabCompletions(MinecraftServer server, ICommandSender sender, String[] args, @Nullable BlockPos pos)
     {
         return RCExpect.startRC()
-                .any("0", "1", "2")
+                .named("floor-expansion").any("0", "1", "2")
+                .named("space-distance-to-floor").any("3", "2", "1")
+                .named("space-max-closed-sides").any("3", "4", "5")
                 .get(server, sender, args, pos);
     }
 
@@ -61,9 +63,11 @@ public class CommandSelectNatural extends CommandVirtual
         RCCommands.assertSize(commandSender, selectionOwner);
         BlockArea area = selectionOwner.getSelection();
 
-        double expandFloor = parameters.get().doubleAt(0).optional().orElse(1.);
+        double expandFloor = parameters.get("floor-expansion").doubleAt(0).optional().orElse(1.);
+        int floorDistance = parameters.get("space-distance-to-floor").intAt(0).optional().orElse(0) + 1;
+        int maxClosedSides = parameters.get("space-max-closed-sides").intAt(1).optional().orElse(3);
 
-        CommandSelectFloor.placeNaturalFloor(world, area, expandFloor);
-        CommandSelectSpace.placeNaturalAir(world, area, 3, 3);
+        CommandNaturalFloor.placeNaturalFloor(world, area, expandFloor);
+        CommandNaturalSpace.placeNaturalAir(world, area, 3, 3);
     }
 }

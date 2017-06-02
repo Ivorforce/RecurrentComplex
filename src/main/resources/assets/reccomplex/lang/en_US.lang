@@ -84,9 +84,9 @@ commands.selectProperty.usage=/#property <key> <value> --exp [positioned block m
 
 commands.selectFlood.usage=/#flood <block> [metadata1,metadata2,metadata3...] <facing expression>
 
-commands.selectFloor.usage=/#floor [expansion]
-commands.selectSpace.usage=/#space[ [distance-to-floor] [max-closed-sides]
-commands.selectNatural.usage=/#natural [/#floor-expansion]
+commands.selectFloor.usage=floor --expansion [expansion]
+commands.selectSpace.usage=space --distance-to-floor [distance] --max-closed-sides [sides]
+commands.selectNatural.usage=smart --floor-expansion [expansion] --space-distance-to-floor [distance] --space-max-closed-sides [sides]
 
 commands.strucReload.usage=/#reload [CUSTOM|MODDED]
 commands.strucReload.success=Reloaded all %s files.
@@ -153,7 +153,7 @@ commands.rcforget.unknown=Unknown entry UUID!
 commands.rcforget.success=Forgot %s!
 commands.rcforgetall.success=Forgot %s structures!
 
-commands.rcremember.usage=/#remember <name>
+commands.rcremember.usage=remember <name>
 commands.rcremember.success=Remembered %s!
 
 commands.rclookup.usage=/#lookup <structure>

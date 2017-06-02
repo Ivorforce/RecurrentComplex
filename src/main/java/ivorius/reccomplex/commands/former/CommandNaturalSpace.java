@@ -34,7 +34,7 @@ import java.util.Set;
 /**
  * Created by lukas on 09.06.14.
  */
-public class CommandSelectSpace extends CommandVirtual
+public class CommandNaturalSpace extends CommandVirtual
 {
     public static int sidesClosed(MockWorld world, BlockPos coord, BlockArea area)
     {
@@ -132,7 +132,7 @@ public class CommandSelectSpace extends CommandVirtual
     @Override
     public String getName()
     {
-        return RCConfig.commandPrefix + "space";
+        return "space";
     }
 
     @Override
@@ -145,8 +145,8 @@ public class CommandSelectSpace extends CommandVirtual
     public List<String> getTabCompletions(MinecraftServer server, ICommandSender sender, String[] args, @Nullable BlockPos pos)
     {
         return RCExpect.startRC()
-                .any("3", "2", "1")
-                .any("3", "4", "5")
+                .named("distance-to-floor").any("3", "2", "1")
+                .named("max-closed-sides").any("3", "4", "5")
                 .get(server, sender, args, pos);
     }
 
@@ -164,8 +164,8 @@ public class CommandSelectSpace extends CommandVirtual
 
         RCParameters parameters = RCParameters.of(args);
 
-        int floorDistance = parameters.get().intAt(0).optional().orElse(0) + 1;
-        int maxClosedSides = parameters.get().intAt(1).optional().orElse(3);
+        int floorDistance = parameters.get("distance-to-floor").intAt(0).optional().orElse(0) + 1;
+        int maxClosedSides = parameters.get("max-closed-sides").intAt(1).optional().orElse(3);
 
         placeNaturalAir(world, area, floorDistance, maxClosedSides);
     }

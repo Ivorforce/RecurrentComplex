@@ -12,6 +12,7 @@ import ivorius.ivtoolkit.world.MockWorld;
 import ivorius.reccomplex.commands.CommandVirtual;
 import ivorius.reccomplex.commands.RCCommands;
 import ivorius.reccomplex.commands.parameters.RCExpect;
+import ivorius.reccomplex.commands.parameters.RCParameters;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.command.CommandException;
 import net.minecraft.server.MinecraftServer;
@@ -32,7 +33,7 @@ import java.util.Set;
 /**
  * Created by lukas on 09.06.14.
  */
-public class CommandSelectFloor extends CommandVirtual
+public class CommandNaturalFloor extends CommandVirtual
 {
     public static void placeNaturalFloor(MockWorld world, BlockArea area, double lowerExpansion)
     {
@@ -102,7 +103,7 @@ public class CommandSelectFloor extends CommandVirtual
     @Override
     public String getCommandName()
     {
-        return RCConfig.commandPrefix + "floor";
+        return "floor";
     }
 
     @Override
@@ -115,7 +116,7 @@ public class CommandSelectFloor extends CommandVirtual
     public List<String> getTabCompletionOptions(MinecraftServer server, ICommandSender sender, String[] args, @Nullable BlockPos pos)
     {
         return RCExpect.startRC()
-                .any("0", "1", "2")
+                .named("expansion").any("0", "1", "2")
                 .get(server, sender, args, pos);
     }
 
@@ -127,8 +128,10 @@ public class CommandSelectFloor extends CommandVirtual
     @Override
     public void execute(MockWorld world, ICommandSender commandSender, String[] args) throws CommandException
     {
+        RCParameters parameters = RCParameters.of(args);
+
         BlockArea area = RCCommands.getSelectionOwner(commandSender, null, true).getSelection();
-        double expandFloor = args.length >= 1 ? parseDouble(args[0]) : 1;
+        double expandFloor = parameters.get("expansion").doubleAt(0).optional().orElse(1.);
 
         placeNaturalFloor(world, area, expandFloor);
     }

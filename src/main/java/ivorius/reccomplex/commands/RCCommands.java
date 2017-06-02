@@ -117,11 +117,7 @@ public class RCCommands
         event.registerServerCommand(new CommandSetProperty());
         event.registerServerCommand(new CommandSelectFlood());
         if (!RecurrentComplex.isLite())
-        {
-            event.registerServerCommand(new CommandSelectFloor());
-            event.registerServerCommand(new CommandSelectSpace());
-            event.registerServerCommand(new CommandSelectNatural());
-        }
+            event.registerServerCommand(new CommandNatural());
         event.registerServerCommand(new CommandSelectSetBiome());
 
         event.registerServerCommand(new CommandSelectCopy());

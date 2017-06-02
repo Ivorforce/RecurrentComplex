@@ -117,7 +117,7 @@ public class GenericVillagePiece extends StructureVillagePieces.Village
         VanillaGeneration vanillaGenInfo = (VanillaGeneration) generationType;
         AxisAlignedTransform2D transform = getTransform(vanillaGenInfo.front, mirrorX, getCoordBaseMode().getOpposite());
 
-        instanceData = new StructureGenerator<>(structure).random(random).environment(environment(world, generationType)).transform(transform).boundingBox(boundingBox)
+        instanceData = new StructureGenerator<>(structure).seed(random.nextLong()).environment(environment(world, generationType)).transform(transform).boundingBox(boundingBox)
                 .instanceData().map(NBTStorable::writeToNBT).orElse(null);
     }
 
@@ -163,7 +163,7 @@ public class GenericVillagePiece extends StructureVillagePieces.Village
 
         boolean firstTime = !startedGeneration;
         Optional<WorldStructureGenerationData.StructureEntry> entry = new StructureGenerator<>(structure).environment(environment(world, generationType))
-                .random(random).lowerCoord(StructureBoundingBoxes.min(boundingBox)).transform(transform).generationBB(StructureBoundingBoxes.wholeHeightBoundingBox(world, generationBB))
+                .seed(random.nextLong()).lowerCoord(StructureBoundingBoxes.min(boundingBox)).transform(transform).generationBB(StructureBoundingBoxes.wholeHeightBoundingBox(world, generationBB))
                 .generationLayer(componentType).structureID(structureID).maturity(firstTime ? StructureSpawnContext.GenerateMaturity.FIRST : StructureSpawnContext.GenerateMaturity.COMPLEMENT)
                 .instanceData(this.instanceData).generate();
         entry.ifPresent(structureEntry -> structureEntry.setPreventComplementation(true));

@@ -79,7 +79,7 @@ public class WorldGenMaze
 
         BlockPos compLowerPos = getBoundingBox(roomSize, placedComponent, structure, componentInfo.transform).add(shift);
 
-        NBTStorable instanceData = new StructureGenerator<>(structure).random(random).environment(environment.copy(componentInfo.variableDomain))
+        NBTStorable instanceData = new StructureGenerator<>(structure).seed(random.nextLong()).environment(environment.copy(componentInfo.variableDomain))
                 .transform(Transforms.apply(componentInfo.transform, transform))
                 .lowerCoord(lowerCoord(structure, compLowerPos, componentInfo.transform, pos, transform))
                 .structureID(componentInfo.structureID)

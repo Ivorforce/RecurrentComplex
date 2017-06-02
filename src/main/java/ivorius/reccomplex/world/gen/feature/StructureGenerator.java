@@ -44,6 +44,11 @@ public class StructureGenerator<S extends NBTStorable>
 {
     public static final int MIN_DIST_TO_LIMIT = 1;
 
+    public static final long PLACE_SEED = 1923419028309182309L;
+    public static final long PREPARE_SEED = 2482039482903842269L;
+    public static final long GENERATE_SEED = 2309842093742837432L;
+    public static final long TRANSFORM_SEED = 1283901823092812394L;
+
     @Nullable
     private WorldServer world;
     @Nullable
@@ -62,7 +67,7 @@ public class StructureGenerator<S extends NBTStorable>
     @Nullable
     private Environment environment;
     @Nullable
-    private Random random;
+    private Long seed;
 
     @Nullable
     private AxisAlignedTransform2D transform;
@@ -203,7 +208,7 @@ public class StructureGenerator<S extends NBTStorable>
 
     public StructureGenerator<S> asChild(StructureSpawnContext context, VariableDomain variableDomain)
     {
-        return environment(context.environment.copy(variableDomain)).random(context.random).transform(context.transform)
+        return environment(context.environment.copy(variableDomain)).seed(context.random.nextLong()).transform(context.transform)
                 .generationBB(context.generationBB).generationPredicate(context.generationPredicate).generationLayer(context.generationLayer + 1)
                 .asSource(context.generateAsSource).maturity(context.generateMaturity.isFirstTime() ? StructureSpawnContext.GenerateMaturity.FIRST : StructureSpawnContext.GenerateMaturity.COMPLEMENT);
     }
@@ -228,9 +233,9 @@ public class StructureGenerator<S extends NBTStorable>
     }
 
     @Nonnull
-    public Random random()
+    public Long seed()
     {
-        return this.random != null ? this.random : world().rand;
+        return this.seed != null ? this.seed : (this.seed = world().rand.nextLong());
     }
 
     public StructureGenerator<S> structure(@Nonnull Structure<S> structure)
@@ -301,9 +306,9 @@ public class StructureGenerator<S extends NBTStorable>
                 generationType != null ? generationType : generationInfoID != null ? structure().generationType(generationInfoID) : null);
     }
 
-    public StructureGenerator<S> random(Random random)
+    public StructureGenerator<S> seed(Long seed)
     {
-        this.random = random;
+        this.seed = seed;
         return this;
     }
 
@@ -321,7 +326,7 @@ public class StructureGenerator<S extends NBTStorable>
         else
         {
             Structure<S> structure = structure();
-            Random random = random();
+            Random random = new Random(seed() ^ TRANSFORM_SEED);
 
             AxisAlignedTransform2D transform = AxisAlignedTransform2D.from(structure.isRotatable() ? random.nextInt(4) : 0, structure.isMirrorable() && random.nextBoolean());
             return this.transform = transform;
@@ -485,13 +490,13 @@ public class StructureGenerator<S extends NBTStorable>
     @Nonnull
     public StructurePlaceContext place()
     {
-        return new StructurePlaceContext(random(), environment(), transform(), surfaceBoundingBox());
+        return new StructurePlaceContext(new Random(seed() ^ PLACE_SEED), environment(), transform(), surfaceBoundingBox());
     }
 
     @Nonnull
     public Optional<StructurePrepareContext> prepare()
     {
-        return boundingBox().map(bb -> new StructurePrepareContext(transform(), bb, generateAsSource, environment(), random(), generateMaturity));
+        return boundingBox().map(bb -> new StructurePrepareContext(transform(), bb, generateAsSource, environment(), new Random(seed() ^ PREPARE_SEED), generateMaturity));
     }
 
     @Nonnull
@@ -503,7 +508,7 @@ public class StructureGenerator<S extends NBTStorable>
     @Nonnull
     public Optional<StructureSpawnContext> spawn()
     {
-        return boundingBox().map(bb -> new StructureSpawnContext(environment(), random(), transform(), bb, generationBB, generationPredicate, generationLayer, generateAsSource, generateMaturity));
+        return boundingBox().map(bb -> new StructureSpawnContext(environment(), new Random(seed() ^ GENERATE_SEED), transform(), bb, generationBB, generationPredicate, generationLayer, generateAsSource, generateMaturity));
     }
 
 }

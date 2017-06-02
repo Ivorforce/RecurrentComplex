@@ -13,6 +13,7 @@ import ivorius.ivtoolkit.rendering.grid.GridQuadCache;
 import ivorius.reccomplex.client.rendering.OperationRenderer;
 import ivorius.reccomplex.operation.Operation;
 import ivorius.reccomplex.utils.RCAxisAlignedTransform;
+import ivorius.reccomplex.utils.RCStrings;
 import ivorius.reccomplex.world.gen.feature.StructureGenerator;
 import ivorius.reccomplex.world.gen.feature.structure.context.StructureSpawnContext;
 import ivorius.reccomplex.world.gen.feature.structure.generic.GenericStructure;
@@ -105,7 +106,7 @@ public class OperationGenerateStructure implements Operation
     public StructureGenerator<GenericStructure.InstanceData> generator(WorldServer world)
     {
         StructureGenerator<GenericStructure.InstanceData> generator = new StructureGenerator<>(structure).world(world).generationInfo(generationInfoID)
-                .random(seed != null ? new Random(seed.hashCode()) : null)
+                .seed(RCStrings.seed(seed))
                 .transform(transform).lowerCoord(lowerCoord)
                 .maturity(StructureSpawnContext.GenerateMaturity.FIRST).asSource(generateAsSource);
 

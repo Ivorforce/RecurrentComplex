@@ -11,6 +11,7 @@ import ivorius.reccomplex.RCConfig;
 import ivorius.reccomplex.commands.parameters.RCExpect;
 import ivorius.reccomplex.commands.parameters.RCParameters;
 import ivorius.reccomplex.operation.OperationRegistry;
+import ivorius.reccomplex.utils.RCStrings;
 import ivorius.reccomplex.utils.ServerTranslations;
 import ivorius.reccomplex.world.gen.feature.StructureGenerator;
 import ivorius.reccomplex.world.gen.feature.structure.OperationGenerateStructure;
@@ -28,7 +29,9 @@ import net.minecraft.world.WorldServer;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
-import java.util.*;
+import java.util.Collections;
+import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 /**
@@ -73,7 +76,7 @@ public class CommandGenerateStructure extends CommandBase
         Placer placer = generationType.placer();
 
         StructureGenerator<?> generator = new StructureGenerator<>(structure).world(world).generationInfo(generationType)
-                .random(seed != null ? new Random(seed.hashCode()) : null)
+                .seed(RCStrings.seed(seed))
                 .structureID(structureID).randomPosition(pos, placer).fromCenter(true)
                 .transform(transform);
 

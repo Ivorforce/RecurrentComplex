@@ -134,7 +134,7 @@ public class RCBiomeDecorator
     public static boolean generateSurface(Pair<Structure<?>, VanillaDecorationGeneration> generation, WorldServer worldIn, BlockPos chunkPos, Random random)
     {
         return new StructureGenerator<>(generation.getLeft()).generationInfo(generation.getRight()).world(worldIn)
-                .random(random).maturity(StructureSpawnContext.GenerateMaturity.SUGGEST)
+                .seed(random.nextLong()).maturity(StructureSpawnContext.GenerateMaturity.SUGGEST)
                 .memorize(RCConfig.memorizeDecoration).allowOverlaps(true)
                 .randomPosition(randomSurfacePos(random, chunkPos.add(generation.getRight().spawnShift)), // Shift +1 because surface placer goes -1
                         shift(generation.getRight().placer(), generation.getRight().spawnShift.getY() + 1)).fromCenter(true)

@@ -151,7 +151,11 @@ public class RCTextStyle
     {
         ITextComponent component = ServerTranslations.format("commands.rcarea.get", pos(area.getPoint1()), pos(area.getPoint2()));
         component.getStyle().setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, ServerTranslations.get("commands.rcarea.select")));
-//        component.getStyle().setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, String.format("/%s %s", RCCommands.select.getName())));
+        component.getStyle().setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, String.format("/%s %s %d %d %d %d %d %d",
+                RCCommands.select.getName(), RCCommands.select.set.getName(),
+                area.getPoint1().getX(), area.getPoint1().getY(), area.getPoint1().getZ(),
+                area.getPoint2().getX(), area.getPoint2().getY(), area.getPoint2().getZ()
+        )));
         return component;
     }
 

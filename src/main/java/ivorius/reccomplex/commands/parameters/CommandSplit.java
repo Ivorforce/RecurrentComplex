@@ -13,13 +13,16 @@ import net.minecraft.util.math.BlockPos;
 
 import javax.annotation.Nullable;
 import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * Created by lukas on 01.06.17.
  */
-public abstract class CommandSplit extends CommandBase
+public class CommandSplit extends CommandBase
 {
     protected final Map<String, ICommand> commands = new HashMap<>();
+    protected String name;
+    protected int requiredPermission;
 
     public CommandSplit()
     {
@@ -36,6 +39,19 @@ public abstract class CommandSplit extends CommandBase
         });
     }
 
+    public CommandSplit(String name, ICommand... commands)
+    {
+        this();
+        this.name = name;
+        Arrays.stream(commands).forEach(this::add);
+    }
+
+    public CommandSplit(String name)
+    {
+        this();
+        this.name = name;
+    }
+
     public void add(ICommand command)
     {
         commands.put(command.getName(), command);
@@ -46,11 +62,23 @@ public abstract class CommandSplit extends CommandBase
         return Optional.ofNullable(commands.get(name));
     }
 
+    public CommandSplit permitFor(int permission)
+    {
+        this.requiredPermission = permission;
+        return this;
+    }
+
     @Override
     public String getUsage(ICommandSender sender)
     {
         return String.format("/%s <%s>", getName(),
                 Strings.join(Lists.newArrayList(commands.keySet()), "|"));
+    }
+
+    @Override
+    public String getName()
+    {
+        return name;
     }
 
     @Override
@@ -60,6 +88,10 @@ public abstract class CommandSplit extends CommandBase
             throw new WrongUsageException(getUsage(sender));
 
         ICommand iCommand = get(args[0]).orElseThrow(() -> new CommandException("Unknown command: " + args[0]));
+
+        if (!iCommand.checkPermission(server, sender))
+            throw new CommandException("commands.generic.permission");
+
         iCommand.execute(server, sender, Arrays.copyOfRange(args, 1, args.length));
     }
 
@@ -67,8 +99,28 @@ public abstract class CommandSplit extends CommandBase
     public List<String> getTabCompletions(MinecraftServer server, ICommandSender sender, String[] args, @Nullable BlockPos targetPos)
     {
         if (args.length == 1)
-            return getListOfStringsMatchingLastWord(args, commands.keySet());
+            return getListOfStringsMatchingLastWord(args, commands.entrySet().stream()
+                    .filter(e -> e.getValue().checkPermission(server, sender))
+                    .map(Map.Entry::getKey)
+                    .collect(Collectors.toList())
+            );
         return get(args[0]).map(c -> c.getTabCompletions(server, sender, Arrays.copyOfRange(args, 1, args.length), targetPos))
                 .orElse(Collections.emptyList());
+    }
+
+    @Override
+    public int getRequiredPermissionLevel()
+    {
+        return requiredPermission;
+    }
+
+    @Override
+    public boolean checkPermission(MinecraftServer server, ICommandSender sender)
+    {
+        // If any can use it, we show it
+        return super.checkPermission(server, sender) && commands.entrySet().stream()
+                .filter(e -> !e.getKey().equals("help"))
+                .map(Map.Entry::getValue)
+                .anyMatch(c -> c.checkPermission(server, sender));
     }
 }

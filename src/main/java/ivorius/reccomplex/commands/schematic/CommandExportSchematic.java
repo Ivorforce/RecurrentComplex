@@ -96,4 +96,10 @@ public class CommandExportSchematic extends CommandBase
 
         commandSender.sendMessage(ServerTranslations.format("commands.strucExportSchematic.success", structureName));
     }
+
+    @Override
+    public int getRequiredPermissionLevel()
+    {
+        return 4;
+    }
 }

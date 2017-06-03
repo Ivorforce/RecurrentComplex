@@ -70,4 +70,10 @@ public class CommandConvertSchematic extends CommandBase
                 .named("from").structure()
                 .get(server, sender, args, pos);
     }
+
+    @Override
+    public int getRequiredPermissionLevel()
+    {
+        return 4;
+    }
 }

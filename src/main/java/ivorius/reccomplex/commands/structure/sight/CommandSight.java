@@ -19,15 +19,11 @@ public class CommandSight extends CommandSplit
 
     public CommandSight()
     {
+        super(RCConfig.commandPrefix + "sight");
+
         add(delete = new CommandSightDelete());
         add(new CommandSightAdd());
         add(new CommandSightCheck("check"));
         add(info = new CommandSightInfo());
-    }
-
-    @Override
-    public String getName()
-    {
-        return RCConfig.commandPrefix + "sight";
     }
 }

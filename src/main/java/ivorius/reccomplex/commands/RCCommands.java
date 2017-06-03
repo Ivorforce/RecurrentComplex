@@ -19,11 +19,14 @@ import ivorius.reccomplex.commands.files.CommandWriteAll;
 import ivorius.reccomplex.commands.former.*;
 import ivorius.reccomplex.commands.info.CommandBiomeDict;
 import ivorius.reccomplex.commands.info.CommandDimensionDict;
+import ivorius.reccomplex.commands.parameters.CommandSplit;
 import ivorius.reccomplex.commands.parameters.DirectCommand;
 import ivorius.reccomplex.commands.preview.CommandCancel;
 import ivorius.reccomplex.commands.preview.CommandConfirm;
 import ivorius.reccomplex.commands.preview.CommandPreview;
-import ivorius.reccomplex.commands.schematic.CommandSchematic;
+import ivorius.reccomplex.commands.schematic.CommandConvertSchematic;
+import ivorius.reccomplex.commands.schematic.CommandExportSchematic;
+import ivorius.reccomplex.commands.schematic.CommandImportSchematic;
 import ivorius.reccomplex.commands.structure.*;
 import ivorius.reccomplex.commands.structure.sight.CommandSight;
 import ivorius.reccomplex.commands.structure.sight.CommandSightCheck;
@@ -68,7 +71,7 @@ public class RCCommands
 
     public static ICommand reopen;
 
-    public static CommandSelect select;
+    public static CommandSelection select;
     public static CommandSight sight;
 
     public static ICommand biomeDict;
@@ -99,7 +102,7 @@ public class RCCommands
 
         event.registerServerCommand(new CommandReload());
 
-        event.registerServerCommand(select = new CommandSelect());
+        event.registerServerCommand(select = new CommandSelection());
 
         if (!RecurrentComplex.isLite())
         {
@@ -118,7 +121,13 @@ public class RCCommands
         event.registerServerCommand(new CommandSetProperty());
         event.registerServerCommand(new CommandSelectFlood());
         if (!RecurrentComplex.isLite())
-            event.registerServerCommand(new CommandNatural());
+        {
+            event.registerServerCommand(new CommandSplit(RCConfig.commandPrefix + "natural",
+                    new CommandNaturalAll(),
+                    new CommandNaturalSpace(),
+                    new CommandNaturalFloor()
+            ));
+        }
         event.registerServerCommand(new CommandSelectSetBiome());
 
         event.registerServerCommand(new CommandSelectCopy());
@@ -130,7 +139,11 @@ public class RCCommands
         event.registerServerCommand(biomeDict = new CommandBiomeDict());
         event.registerServerCommand(dimensionDict = new CommandDimensionDict());
 
-        event.registerServerCommand(new CommandSchematic());
+        event.registerServerCommand(new CommandSplit(RCConfig.commandPrefix + "schematic",
+                new CommandImportSchematic(),
+                new CommandExportSchematic(),
+                new CommandConvertSchematic()
+        ));
 
         event.registerServerCommand(sight = new CommandSight());
         event.registerServerCommand(new CommandSightCheck(RCConfig.commandPrefix + "whatisthis"));

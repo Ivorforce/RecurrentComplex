@@ -27,6 +27,8 @@ public class CommandSightDelete extends CommandSplit
 {
     public CommandSightDelete()
     {
+        super("forget");
+
         add(new SimpleCommand("id", "<id>", () -> RCExpect.startRC().skip(1))
         {
             @Override
@@ -64,16 +66,7 @@ public class CommandSightDelete extends CommandSplit
                     sender.sendMessage(ServerTranslations.format("commands.rcforgetall.success", entries.size()));
             }
         });
-    }
 
-    @Override
-    public String getName()
-    {
-        return "forget";
-    }
-
-    public int getRequiredPermissionLevel()
-    {
-        return 2;
+        permitFor(2);
     }
 }

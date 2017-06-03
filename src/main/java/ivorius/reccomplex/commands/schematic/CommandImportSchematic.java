@@ -86,4 +86,10 @@ public class CommandImportSchematic extends CommandBase
                 .flag("mirror")
                 .get(server, sender, args, pos);
     }
+
+    @Override
+    public int getRequiredPermissionLevel()
+    {
+        return 4;
+    }
 }

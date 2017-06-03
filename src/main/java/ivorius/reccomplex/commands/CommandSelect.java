@@ -66,6 +66,15 @@ public class CommandSelect extends CommandSplit
             {
                 boolean first = !parameters.has("second");
                 boolean second = !parameters.has("first");
+                boolean shiftSecond = false;
+
+                // Assume we want to set both after another
+                if (!first && !second)
+                {
+                    shiftSecond = true;
+                    first = true;
+                    second = true;
+                }
 
                 if (first)
                 {
@@ -79,7 +88,7 @@ public class CommandSelect extends CommandSplit
                     if (owner.getSelectedPoint2() == null)
                         owner.setSelectedPoint2(sender.getPosition());
 
-                    owner.setSelectedPoint2(parameters.mc().pos(owner.getSelectedPoint2(), false).require());
+                    owner.setSelectedPoint2(parameters.mc().move(shiftSecond ? 3 : 0).pos(owner.getSelectedPoint2(), false).require());
                 }
             }
         });

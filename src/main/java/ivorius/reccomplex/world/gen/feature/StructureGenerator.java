@@ -362,10 +362,10 @@ public class StructureGenerator<S extends NBTStorable>
             int[] size = structureSize();
 
             if (this.lowerCoord != null)
-                boundingBox = Structures.structureBoundingBox(fromCenter ? lowerCoord.subtract(new Vec3i(size[0] / 2, 0, size[2] / 2)) : lowerCoord, size);
+                boundingBox = Structures.boundingBox(fromCenter ? lowerCoord.subtract(new Vec3i(size[0] / 2, 0, size[2] / 2)) : lowerCoord, size);
             else if (surfacePos != null && placer != null)
             {
-                boundingBox = Structures.structureBoundingBox((fromCenter ? surfacePos.subtract(size[0] / 2, size[2] / 2) : surfacePos).blockPos(0), size);
+                boundingBox = Structures.boundingBox((fromCenter ? surfacePos.subtract(size[0] / 2, size[2] / 2) : surfacePos).blockPos(0), size);
 
                 if (placed)
                 {

@@ -100,7 +100,7 @@ public class GenericVillageCreationHandler implements VillagerRegistry.IVillageC
 
         int[] structureSize = RCAxisAlignedTransform.applySize(transform, structure.size());
 
-        StructureBoundingBox strucBB = Structures.structureBoundingBox(new BlockPos(x, y, z), structureSize);
+        StructureBoundingBox strucBB = Structures.boundingBox(new BlockPos(x, y, z), structureSize);
 
         if (!GenericVillagePiece.canVillageGoDeeperC(strucBB) || StructureComponent.findIntersecting(pieces, strucBB) != null)
             return null;

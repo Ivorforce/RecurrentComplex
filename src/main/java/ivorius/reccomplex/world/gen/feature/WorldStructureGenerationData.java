@@ -346,7 +346,7 @@ public class WorldStructureGenerationData extends WorldSavedData
                 Structure structure = StructureRegistry.INSTANCE.get(structureID);
 
                 boundingBox = structure != null
-                        ? Structures.structureBoundingBox(lowerCoord, RCAxisAlignedTransform.applySize(transform, structure.size()))
+                        ? Structures.boundingBox(lowerCoord, RCAxisAlignedTransform.applySize(transform, structure.size()))
                         : new StructureBoundingBox();
             }
 

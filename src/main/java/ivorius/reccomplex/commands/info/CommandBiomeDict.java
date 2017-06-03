@@ -32,6 +32,8 @@ public class CommandBiomeDict extends CommandSplit
 {
     public CommandBiomeDict()
     {
+        super(RCConfig.commandPrefix + "biome");
+
         add(new SimpleCommand("search", "<terms>", Expect::start)
         {
             @Override
@@ -81,22 +83,13 @@ public class CommandBiomeDict extends CommandSplit
                 ));
             }
         });
+
+        permitFor(2);
     }
 
     @Nonnull
     public static Collection<String> keywords(ResourceLocation id, Biome biome)
     {
         return Arrays.asList(id.toString(), biome.getBiomeName());
-    }
-
-    @Override
-    public String getName()
-    {
-        return RCConfig.commandPrefix + "biome";
-    }
-
-    public int getRequiredPermissionLevel()
-    {
-        return 2;
     }
 }

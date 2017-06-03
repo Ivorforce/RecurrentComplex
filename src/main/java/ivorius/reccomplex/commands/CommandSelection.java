@@ -31,13 +31,13 @@ import java.util.stream.StreamSupport;
 /**
  * Created by lukas on 25.05.14.
  */
-public class CommandSelect extends CommandSplit
+public class CommandSelection extends CommandSplit
 {
     // TODO Make virtual
 
     public ICommand set;
 
-    public CommandSelect()
+    public CommandSelection()
     {
         add(new Command("clear")
         {
@@ -180,6 +180,8 @@ public class CommandSelect extends CommandSplit
                 owner.setSelection(BlockAreas.expand(owner.getSelection(), shrink, shrink));
             }
         });
+
+        permitFor(2);
     }
 
     @Nonnull
@@ -191,12 +193,7 @@ public class CommandSelect extends CommandSplit
     @Override
     public String getName()
     {
-        return RCConfig.commandPrefix + "select";
-    }
-
-    public int getRequiredPermissionLevel()
-    {
-        return 2;
+        return RCConfig.commandPrefix + "selection";
     }
 
     public static abstract class Command extends SimpleCommand

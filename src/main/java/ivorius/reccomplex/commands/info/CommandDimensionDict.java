@@ -31,6 +31,8 @@ public class CommandDimensionDict extends CommandSplit
 {
     public CommandDimensionDict()
     {
+        super(RCConfig.commandPrefix + "dimension");
+
         add(new SimpleCommand("types", "<dimension>", () -> RCExpect.startRC().dimension())
         {
             @Override
@@ -62,6 +64,8 @@ public class CommandDimensionDict extends CommandSplit
                 ));
             }
         });
+
+        permitFor(2);
     }
 
     public static TIntList allDimensionsOfType(String type)
@@ -73,16 +77,5 @@ public class CommandDimensionDict extends CommandSplit
                 intList.add(d);
         }
         return intList;
-    }
-
-    @Override
-    public String getName()
-    {
-        return RCConfig.commandPrefix + "dimension";
-    }
-
-    public int getRequiredPermissionLevel()
-    {
-        return 2;
     }
 }

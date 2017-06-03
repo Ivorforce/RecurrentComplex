@@ -5,6 +5,7 @@
 
 package ivorius.reccomplex.commands.parameters;
 
+import ivorius.reccomplex.utils.accessor.RCAccessorBiomeDictionary;
 import net.minecraft.block.Block;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.ICommand;
@@ -50,37 +51,49 @@ public class MCExpect<T extends MCExpect<T>> extends Expect<T>
 
     public T x()
     {
-        return next((ser, sen, args, pos) -> CommandBase.getTabCompletionCoordinate(args, index(), pos));
+        return next((ser, sen, args, pos) -> CommandBase.getTabCompletionCoordinate(args, index(), pos))
+                .optional("x");
     }
 
     public T y()
     {
-        return next((ser, sen, args, pos) -> CommandBase.getTabCompletionCoordinate(args, index() - 1, pos));
+        return next((ser, sen, args, pos) -> CommandBase.getTabCompletionCoordinate(args, index() - 1, pos))
+                .optional("y");
     }
 
     public T z()
     {
-        return next((ser, sen, args, pos) -> CommandBase.getTabCompletionCoordinate(args, index() - 2, pos));
+        return next((ser, sen, args, pos) -> CommandBase.getTabCompletionCoordinate(args, index() - 2, pos))
+                .optional("z");
     }
 
     public T biome()
     {
-        return next(Biome.REGISTRY.getKeys());
+        return next(Biome.REGISTRY.getKeys())
+                .optional("biome");
+    }
+
+    public T biomeType()
+    {
+        return next(RCAccessorBiomeDictionary.getMap().keySet()).optional("biome type");
     }
 
     public T dimension()
     {
-        return next(args -> getListOfStringsMatchingLastWord(args, Arrays.stream(DimensionManager.getIDs()).map(String::valueOf).collect(Collectors.toList())));
+        return next(args -> getListOfStringsMatchingLastWord(args, Arrays.stream(DimensionManager.getIDs()).map(String::valueOf).collect(Collectors.toList())))
+                .optional("dimension");
     }
 
     public T block()
     {
-        return next(Block.REGISTRY.getKeys());
+        return next(Block.REGISTRY.getKeys())
+                .optional("block");
     }
 
     public T command()
     {
-        return next((server, sender, args, pos) -> server.getCommandManager().getCommands().keySet());
+        return next((server, sender, args, pos) -> server.getCommandManager().getCommands().keySet())
+                .optional("command");
     }
 
     public T commandArguments(Parameter parameter, ICommandSender sender)
@@ -89,11 +102,13 @@ public class MCExpect<T extends MCExpect<T>> extends Expect<T>
         {
             Optional<ICommand> other = parameter.first().tryGet().map(server1.getCommandManager().getCommands()::get);
             return other.map(c -> c.getTabCompletions(server1, sender, parameter.move(1).varargs(), pos1)).orElse(Collections.emptyList());
-        });
+        })
+                .optional("args...");
     }
 
     public T entity(MinecraftServer server)
     {
-        return any((Object[]) server.getOnlinePlayerNames());
+        return any((Object[]) server.getOnlinePlayerNames())
+                .optional("entity");
     }
 }

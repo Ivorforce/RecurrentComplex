@@ -5,6 +5,8 @@
 
 package ivorius.reccomplex.commands.parameters;
 
+import ivorius.reccomplex.dimensions.DimensionDictionary;
+
 /**
  * Created by lukas on 31.05.17.
  */
@@ -30,5 +32,10 @@ public class IvExpect<T extends IvExpect<T>> extends MCExpect<T>
     {
         return named(x).x()
                 .named(z).z();
+    }
+
+    public T dimensionType()
+    {
+        return next(DimensionDictionary.allRegisteredTypes());
     }
 }

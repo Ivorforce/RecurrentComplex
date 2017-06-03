@@ -49,7 +49,7 @@ public class CommandDimensionDict extends CommandSplit
             }
         });
 
-        add(new SimpleCommand("list", "<dimension type>", () -> RCExpect.startRC().next(DimensionDictionary.allRegisteredTypes()))
+        add(new SimpleCommand("list", () -> RCExpect.startRC().dimensionType().required("dimension type"))
         {
             @Override
             public void execute(MinecraftServer server, ICommandSender sender, String[] args) throws CommandException

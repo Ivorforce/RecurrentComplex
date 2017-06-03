@@ -15,7 +15,6 @@ import javax.annotation.Nullable;
 import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
-import java.util.stream.IntStream;
 
 import static net.minecraft.command.CommandBase.getListOfStringsMatchingLastWord;
 
@@ -39,10 +38,16 @@ public class Expect<T extends Expect<T>>
         return (T) new Expect();
     }
 
+    protected T identity()
+    {
+        //noinspection unchecked
+        return (T) this;
+    }
+
     public T named(@Nonnull String name)
     {
         getOrCreate(cur = name);
-        return (T) this;
+        return identity();
     }
 
     public T flag(@Nonnull String name)
@@ -60,7 +65,7 @@ public class Expect<T extends Expect<T>>
     {
         Param cur = getOrCreate(this.cur);
         cur.next(completion);
-        return (T) this;
+        return identity();
     }
 
     @Nonnull
@@ -98,7 +103,7 @@ public class Expect<T extends Expect<T>>
         Param cur = params.get(this.cur);
         if (cur == null) throw new IllegalStateException();
         cur.repeat = true;
-        return (T) this;
+        return identity();
     }
 
     public int index()
@@ -117,11 +122,11 @@ public class Expect<T extends Expect<T>>
         Parameter entered = lastID != null ? parameters.get(lastID) : parameters.get();
         Param param = this.params.get(lastID);
 
-        if (param != null && (entered.count() <= param.completion.size() || param.repeat)
+        if (param != null && (entered.count() <= param.completions.size() || param.repeat)
                 // It notices we are entering a parameter so it won't be added to the parameters args anyway
                 && !quoted.get(quoted.size() - 1).startsWith(Parameters.flagPrefix))
         {
-            return param.completion.get(Math.min(entered.count() - 1, param.completion.size() - 1)).complete(server, sender, paramArray, pos).stream()
+            return param.completions.get(Math.min(entered.count() - 1, param.completions.size() - 1)).complete(server, sender, paramArray, pos).stream()
                     // More than one word, let's wrap this in quotes
                     .map(s -> s.contains(" ") && !s.startsWith("\"") ? String.format("\"%s\"", s) : s)
                     .collect(Collectors.toList());
@@ -138,15 +143,35 @@ public class Expect<T extends Expect<T>>
                 .map(p -> Parameters.flagPrefix + p).collect(Collectors.toList()));
     }
 
+    /**
+     * Useful only for usage()
+     */
+    public T description(String description)
+    {
+        getOrCreate(cur).description(description);
+        return identity();
+    }
+
+    public T optional(String name)
+    {
+        return description(cur != null ? String.format("[%s]", name) : String.format("<%s>", name));
+    }
+
+    public T required(String name)
+    {
+        return description(cur != null ? String.format("[%s]", name) : String.format("<%s>", name));
+    }
+
     public String usage()
     {
         return String.format("%s %s",
-                IntStream.range(0, params.get(null).completion.size())
-                        .mapToObj(i -> String.format("[%d]", i))
+                params.get(null).descriptions.stream()
                         .reduce("", (l, r) -> String.format("%s %s", l, r)),
-                params.keySet().stream()
-                        .filter(Objects::nonNull)
-                        .map(p -> String.format("--%s [%s]", p, p))
+                params.entrySet().stream()
+                        .filter(e -> e.getKey() != null)
+                        .flatMap(e -> e.getValue().descriptions.stream()
+                                .map(d -> String.format("--%s %s", e.getKey(), d))
+                        )
                         .reduce("", (l, r) -> String.format("%s %s", l, r))
         );
     }
@@ -158,12 +183,21 @@ public class Expect<T extends Expect<T>>
 
     protected class Param
     {
-        protected final List<Completer> completion = new ArrayList<>();
+        protected final List<Completer> completions = new ArrayList<>();
+        protected final List<String> descriptions = new ArrayList<>();
         protected boolean repeat;
 
         public Param next(Completer completion)
         {
-            this.completion.add(completion);
+            completions.add(completion);
+            descriptions.add(String.format("[%d]", completions.size()));
+            return this;
+        }
+
+        public Param description(String description)
+        {
+            descriptions.remove(descriptions.size() - 1);
+            descriptions.add(description);
             return this;
         }
     }

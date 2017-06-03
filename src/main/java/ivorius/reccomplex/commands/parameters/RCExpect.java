@@ -33,42 +33,42 @@ public class RCExpect<T extends RCExpect<T>> extends IvExpect<T>
     public T structurePredicate()
     {
         return structure()
-                .optional("structure predicate");
+                .optionalU("structure predicate");
     }
 
     public T structure()
     {
         return next(StructureRegistry.INSTANCE.ids())
-                .optional("structure");
+                .optionalU("structure");
     }
 
     public T schematic()
     {
         return next(SchematicLoader.currentSchematicFileNames()
                 .stream().map(name -> name.contains(" ") ? String.format("\"%s\"", name) : name).collect(Collectors.toList()))
-                .optional("schematic");
+                .optionalU("schematic");
     }
 
     public T rotation()
     {
-        return any("0", "1", "2", "3").optional("rotation");
+        return any("0", "1", "2", "3").optionalU("rotation");
     }
 
     public T resourceDirectory()
     {
-        return any((Object[]) ResourceDirectory.values()).optional("directory");
+        return any((Object[]) ResourceDirectory.values()).optionalU("directory");
     }
 
     public T metadata()
     {
         return next(IntStream.range(0, 16).mapToObj(String::valueOf).collect(Collectors.toList()))
-                .optional("metadata");
+                .optionalU("metadata");
     }
 
     public T virtualCommand()
     {
         return next((server, sender, args, pos) -> server.getCommandManager().getCommands().entrySet().stream()
                 .filter(e -> e.getValue() instanceof CommandVirtual).map(Map.Entry::getKey).collect(Collectors.toList()))
-                .optional("virtual command");
+                .optionalU("virtual command");
     }
 }

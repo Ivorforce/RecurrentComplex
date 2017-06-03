@@ -17,6 +17,7 @@ import ivorius.reccomplex.utils.ServerTranslations;
 import ivorius.reccomplex.utils.expression.PositionedBlockExpression;
 import ivorius.reccomplex.utils.optional.IvOptional;
 import net.minecraft.command.CommandException;
+import net.minecraft.command.ICommand;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.EnumFacing;
@@ -34,6 +35,8 @@ public class CommandSelect extends CommandSplit
 {
     // TODO Make virtual
 
+    public ICommand set;
+
     public CommandSelect()
     {
         add(new Command("clear")
@@ -50,13 +53,13 @@ public class CommandSelect extends CommandSplit
             @Override
             public void execute(MinecraftServer server, ICommandSender sender, RCParameters parameters, SelectionOwner owner) throws CommandException
             {
-                sender.sendMessage(ServerTranslations.format("commands.selectSet.get", translatePoint(owner.getSelectedPoint1()), translatePoint(owner.getSelectedPoint2())));
+                sender.sendMessage(ServerTranslations.format("commands.selectSet.get", RCTextStyle.area(owner.getSelection())));
                 if (owner.hasValidSelection())
-                    sender.sendMessage(ServerTranslations.format("commands.selectSet.size", translateSize(owner.getSelection().areaSize()), IvVecMathHelper.product(owner.getSelection().areaSize())));
+                    sender.sendMessage(ServerTranslations.format("commands.selectSet.size", RCTextStyle.size(owner.getSelection().areaSize()), IvVecMathHelper.product(owner.getSelection().areaSize())));
             }
         });
 
-        add(new Command("set", "[x] [y] [z] --first --second", () -> RCExpect.startRC().xyz().flag("first").flag("second"))
+        add(set = new Command("set", "[x] [y] [z] --first --second", () -> RCExpect.startRC().xyz().flag("first").flag("second"))
         {
             @Override
             public void execute(MinecraftServer server, ICommandSender sender, RCParameters parameters, SelectionOwner owner) throws CommandException
@@ -185,20 +188,6 @@ public class CommandSelect extends CommandSplit
     public int getRequiredPermissionLevel()
     {
         return 2;
-    }
-
-    protected Object translatePoint(BlockPos coord)
-    {
-        return coord != null
-                ? String.format("[%d,%d,%d]", coord.getX(), coord.getY(), coord.getZ())
-                : ServerTranslations.format("commands.selectSet.point.none");
-    }
-
-    protected Object translateSize(int[] size)
-    {
-        return size != null
-                ? String.format("[%d,%d,%d]", size[0], size[1], size[2])
-                : ServerTranslations.format("commands.selectSet.point.none");
     }
 
     public static abstract class Command extends SimpleCommand

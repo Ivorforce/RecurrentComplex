@@ -15,12 +15,14 @@ import net.minecraft.command.ICommand;
 public class CommandSight extends CommandSplit
 {
     public ICommand delete;
+    public ICommand info;
 
     public CommandSight()
     {
         add(delete = new CommandSightDelete());
         add(new CommandSightAdd());
         add(new CommandSightCheck("check"));
+        add(info = new CommandSightInfo());
     }
 
     @Override

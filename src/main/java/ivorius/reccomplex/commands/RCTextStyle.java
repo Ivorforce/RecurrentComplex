@@ -5,18 +5,18 @@
 
 package ivorius.reccomplex.commands;
 
+import ivorius.ivtoolkit.blocks.BlockArea;
 import ivorius.reccomplex.Repository;
 import ivorius.reccomplex.commands.info.CommandDimensionDict;
 import ivorius.reccomplex.dimensions.DimensionDictionary;
 import ivorius.reccomplex.files.loading.ResourceDirectory;
 import ivorius.reccomplex.utils.RCStrings;
 import ivorius.reccomplex.utils.ServerTranslations;
+import ivorius.reccomplex.world.gen.feature.WorldStructureGenerationData;
 import joptsimple.internal.Strings;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.Style;
-import net.minecraft.util.text.TextComponentString;
-import net.minecraft.util.text.TextFormatting;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.text.*;
 import net.minecraft.util.text.event.ClickEvent;
 import net.minecraft.util.text.event.HoverEvent;
 import net.minecraft.world.biome.Biome;
@@ -138,5 +138,73 @@ public class RCTextStyle
         component.getStyle().setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT,
                 ServerTranslations.format("commands.dimensiondict.get.number", CommandDimensionDict.allDimensionsOfType(type).size())));
         return component;
+    }
+
+    public static ITextComponent area(BlockPos left, BlockPos right)
+    {
+        return left == null || right == null
+                ? ServerTranslations.format("commands.rcarea.get", pos(left), pos(right))
+                : area(new BlockArea(left, right));
+    }
+
+    public static ITextComponent area(BlockArea area)
+    {
+        ITextComponent component = ServerTranslations.format("commands.rcarea.get", pos(area.getPoint1()), pos(area.getPoint2()));
+        component.getStyle().setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, ServerTranslations.get("commands.rcarea.select")));
+//        component.getStyle().setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, String.format("/%s %s", RCCommands.select.getName())));
+        return component;
+    }
+
+    @Nonnull
+    public static ITextComponent sight(WorldStructureGenerationData.Entry entry)
+    {
+        return sight(entry, false);
+    }
+
+    public static ITextComponent sight(WorldStructureGenerationData.Entry entry, boolean useID)
+    {
+        TextComponentString forget = new TextComponentString("X");
+        String uuidString = entry.getUuid().toString();
+        forget.getStyle().setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND,
+                String.format("/%s %s id %s", RCCommands.sight.getName(), RCCommands.sight.delete.getName(), uuidString)));
+        forget.getStyle().setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT,
+                ServerTranslations.format("commands.rcforget.forget", uuidString)));
+        forget.getStyle().setColor(TextFormatting.RED);
+
+        ITextComponent name;
+        if (useID)
+            name = copy(entry.getUuid().toString());
+        else
+        {
+            name = new TextComponentString(entry.description());
+            name.getStyle().setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, ServerTranslations.get("commands.rcsightinfo.lookup")));
+            name.getStyle().setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, String.format("/%s %s %s", RCCommands.sight.getName(), RCCommands.sight.info.getName(), entry.getUuid())));
+        }
+
+        name.getStyle().setColor(TextFormatting.AQUA);
+
+        return new TextComponentTranslation("%s (%s)", name, forget);
+    }
+
+    public static ITextComponent copy(String text)
+    {
+        ITextComponent comp = new TextComponentString(text);
+        comp.getStyle().setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, ServerTranslations.get("commands.rccopy.suggest")));
+        comp.getStyle().setClickEvent(new ClickEvent(ClickEvent.Action.SUGGEST_COMMAND, text));
+        return comp;
+    }
+
+    public static ITextComponent pos(BlockPos pos)
+    {
+        return pos != null
+                ? ServerTranslations.format("commands.rcpos.get", pos.getX(), pos.getY(), pos.getZ())
+                : ServerTranslations.format("commands.selectSet.point.none");
+    }
+
+    public static ITextComponent size(int[] size)
+    {
+        return size != null
+                ? ServerTranslations.format("commands.rcsize.get", size[0], size[1], size[2])
+                : ServerTranslations.format("commands.selectSet.point.none");
     }
 }

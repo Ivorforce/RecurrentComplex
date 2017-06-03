@@ -312,6 +312,11 @@ public class WorldStructureGenerationData extends WorldSavedData
             return transform;
         }
 
+        public long getSeed()
+        {
+            return seed;
+        }
+
         public boolean preventComplementation()
         {
             return preventComplementation;

@@ -70,9 +70,8 @@ commands.strucGen.noStructure=No structure registered by the name of '%s'
 commands.strucImport.usage=/#import <structure name> --x [x] --y [y] --z [z] --dimension [dimension] --rotation [rotation] --mirror
 commands.strucImport.noStructure=No structure registered by the name of '%s'
 
-commands.selectSet.get=Selection: %s to %s
+commands.selectSet.get=Selection: %s
 commands.selectSet.size=Size: %s (%s blocks)
-commands.selectSet.point.none=§onowhere§r
 
 commands.selectModify.noSelection=Player does not have a complete selection
 commands.selectModify.invalidMetadata=Metadata must be entered like '0,1,5', but was '%s'
@@ -92,7 +91,7 @@ commands.strucReload.usage=/#reload [CUSTOM|MODDED]
 commands.strucReload.success=Reloaded all %s files.
 
 commands.selectCopy.usage=/#copy
-commands.selectCopy.success=Copied %s, %s, %s to %s, %s, %s to clipboard
+commands.selectCopy.success=Copied (%s) to clipboard
 
 commands.strucPaste.usage=/#paste --x [x] --y [y] --z [z] --rotation [rotation] --mirror --generate --seed [seed]
 commands.strucPaste.noClipboard=You have to copy an area first!
@@ -148,8 +147,18 @@ commands.whatisthis.none=There is nothing here!
 commands.whatisthis.one=This is: %s
 commands.whatisthis.many=This is any, or all of: %s
 
+commands.rcarea.get=%s to %s
+commands.rcarea.select=Select this area
+commands.rcpos.get=[%d,%d,%d]
+commands.rcpos.none=§onowhere§r
+commands.rcsize.get=[%d,%d,%d]
+commands.rccopy.suggest=Copy
+
+commands.rcsightinfo.lookup=Sight Info
+commands.rcsightinfo.unknown=Unknown sight UUID!
+commands.rcsightinfo.get=%s %s, ID: %s
+commands.rcsightinfo.structure=%s %s, Seed: %s, ID: %s
 commands.rcforget.forget=Forget %s
-commands.rcforget.unknown=Unknown entry UUID!
 commands.rcforget.success=Forgot %s!
 commands.rcforgetall.success=Forgot %s structures!
 

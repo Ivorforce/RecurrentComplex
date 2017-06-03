@@ -10,6 +10,7 @@ import ivorius.ivtoolkit.world.MockWorld;
 import ivorius.reccomplex.capability.SelectionOwner;
 import ivorius.reccomplex.commands.CommandVirtual;
 import ivorius.reccomplex.commands.RCCommands;
+import ivorius.reccomplex.commands.RCTextStyle;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.CommandException;
 import net.minecraft.server.MinecraftServer;
@@ -53,10 +54,7 @@ public class CommandSelectCopy extends CommandVirtual
 
         IvWorldData worldData = IvWorldData.capture(world, area, true);
 
-        BlockPos lowerCorner = area.getLowerCorner();
-        BlockPos higherCorner = area.getHigherCorner();
-
         RCEntityInfo.setWorldDataClipboard(worldData.createTagCompound());
-        commandSender.sendMessage(ServerTranslations.format("commands.selectCopy.success", String.valueOf(lowerCorner.getX()), String.valueOf(lowerCorner.getY()), String.valueOf(lowerCorner.getZ()), String.valueOf(higherCorner.getX()), String.valueOf(higherCorner.getY()), String.valueOf(higherCorner.getZ())));
+        commandSender.sendMessage(ServerTranslations.format("commands.selectCopy.success", RCTextStyle.area(area)));
     }
 }

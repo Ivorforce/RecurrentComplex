@@ -38,7 +38,7 @@ public class CommandSightDelete extends CommandSplit
                 WorldStructureGenerationData.Entry entry = generationData.removeEntry(UUID.fromString(parameters.get().first().require()));
 
                 if (entry == null)
-                    throw ServerTranslations.commandException("commands.rcforget.unknown");
+                    throw ServerTranslations.commandException("commands.rcsightinfo.unknown");
                 else
                     sender.sendMessage(ServerTranslations.format("commands.rcforget.success", entry.description()));
             }

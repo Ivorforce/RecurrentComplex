@@ -57,7 +57,6 @@ public class CommandBiomeDict extends CommandSplit
             {
                 RCParameters parameters = RCParameters.of(args);
 
-                String biomeID = parameters.get().first().require();
                 Biome biome = parameters.mc().biome().require();
 
                 sender.sendMessage(ServerTranslations.format("commands.biomedict.get", RCTextStyle.biome(biome),
@@ -74,7 +73,6 @@ public class CommandBiomeDict extends CommandSplit
             {
                 RCParameters parameters = RCParameters.of(args);
 
-                String typeID = parameters.get().first().require();
                 BiomeDictionary.Type type = parameters.mc().biomeDictionaryType().require();
 
                 sender.sendMessage(ServerTranslations.format("commands.biomedict.list", RCTextStyle.biomeType(type),
